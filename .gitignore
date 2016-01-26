@@ -1,0 +1,3 @@
+flyspray/flyspray.conf.php
+wordpress/wp-config.php
+live/cache/*.json
