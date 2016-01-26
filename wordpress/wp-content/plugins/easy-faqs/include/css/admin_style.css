@@ -1,0 +1,702 @@
+/* Gold Plugins Settings Page Styles */
+.gold_plugins_settings form > h3,
+.gold_plugins_settings h3 {
+    font-size: 24px;
+    margin-top: 30px;
+    padding-bottom: 0px;
+}
+
+.gold_plugins_settings td h4 {
+    border-bottom: 1px solid #ccc;
+    font-size: 24px;
+    margin: 0 0 0 -10px;
+    padding-bottom: 10px;
+}
+
+.gold_plugins_settings td .section_intro {
+    margin-left: -10px;
+    padding-top: 10px;
+}
+
+
+.gold_plugins_settings .app_id_callout {
+	background-color: pink;
+	border: 1px solid red;
+	box-shadow: -1px 1px 0px red;
+	padding: 5px 15px 5px;
+	margin: 20px 0;
+}
+
+.gold_plugins_settings #plugin_status_table {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+	margin-bottom: 20px;
+	width: 800px;
+}
+
+.gold_plugins_settings #plugin_status_table tr.success td {
+	background-color: white;
+}
+
+.gold_plugins_settings #plugin_status_table tr.fail td {
+	background-color: lightpink;
+}
+
+
+.gold_plugins_settings #plugin_status_table td {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;	
+	padding: 10px 10px;
+	font-weight: bold;
+}
+
+.gold_plugins_settings #plugin_status_table td:first-child {
+	text-align: center;
+	width: 30px;
+}
+
+.gold_plugins_settings #plugin_status_table td:first-child img {	
+	height: auto;
+	width: 24px;
+}
+
+.gold_plugins_settings .alert_important {
+	background-color: orangered;
+	border-radius: 4px;
+    color: white;
+    padding: 15px;
+}
+
+.gold_plugins_settings .alert_important strong {
+	border-bottom: 1px solid salmon;
+    display: block;
+    margin-bottom: 7px;
+    padding-bottom: 6px;
+}
+
+.gold_plugins_settings.not-pro {
+    padding-right: 470px;
+    position: relative;
+}
+
+
+#signup_wrapper {
+    background-color: #ccc;
+    bottom: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 40px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 400px;
+}
+
+#signup_wrapper .customer_testimonial {
+	border-top: 1px solid #ccc;
+	color: gray;
+    font-size: 17px;
+    font-style: italic;
+    padding-top: 20px;	
+}
+
+#signup_wrapper .customer_testimonial .author {
+	display: block;
+    font-size: 14px;
+    font-style: normal;
+    margin-right: 18px;
+    margin-top: 13px;
+    text-align: right;
+}
+
+.gold_plugins_settings .gold_plugins_settings #signup_wrapper .u_to_p
+{
+	font-size: 10px;
+	margin: 0 0 30px;
+	padding: 2px 0 0 3px;				
+}
+.gold_plugins_settings .gold_plugins_settings #signup_wrapper .respect
+{
+	color: gray;
+	font-style: italic;
+	font-weight: bold;
+	padding-left: 5px;
+}
+
+				
+.gold_plugins_settings .green_bg {				
+	background: #009b21; /* Old browsers */
+	background: -moz-linear-gradient(top,  #009b21 0%, #007719 50%, #009b21 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#009b21), color-stop(50%,#007719), color-stop(100%,#009b21)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #009b21 0%,#007719 50%,#009b21 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #009b21 0%,#007719 50%,#009b21 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #009b21 0%,#007719 50%,#009b21 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #009b21 0%,#007719 50%,#009b21 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#009b21', endColorstr='#009b21',GradientType=0 ); /* IE6-9 */
+}
+			
+/* API Key boxes */
+.gold_plugins_settings .plugin_is_registered {
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    color: green;
+    font-weight: bold;
+}
+.gold_plugins_settings .plugin_is_not_registered {
+	background-color: white;
+    border-left: 6px solid orangered;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);	
+    color: orangered;
+    font-weight: bold;
+    padding: 10px 15px;
+}
+.gold_plugins_settings .plugin_is_not_registered a {
+	color: #0074a2;
+	text-decoration: underline;    
+}
+
+/* Styles for Settings Fields */
+.gold_plugins_settings .textarea_wrapper textarea {
+	height: 250px;
+	width: 100%;
+}
+
+
+/* MailChimp Form Embed Code - Slim - 08/17/2011 */
+.gold_plugins_settings  {
+	position: relative;
+}
+.gold_plugins_settings.not-pro  {
+	padding-right: 440px;
+}
+.gold_plugins_settings .topper {
+	background-color: dodgerblue;
+    color: white;
+    padding: 10px 20px;
+	border-top-left-radius: 5px;	
+	border-top-right-radius: 5px;
+	margin-top: 15px;
+}
+.gold_plugins_settings .topper h3 {
+    color: navajowhite;
+    font-size: 21px;
+    margin-bottom: 14px;
+}
+
+.gold_plugins_settings #mc_embed_signup form {display:block; position:relative; text-align:left; padding:10px 0 10px 3%}
+.gold_plugins_settings #mc_embed_signup h2 {font-weight:bold; padding:0; margin:15px 0; font-size:1.4em;}
+.gold_plugins_settings #mc_embed_signup input {-webkit-appearance:none;}
+.gold_plugins_settings #mc_embed_signup input[type=checkbox]{-webkit-appearance:checkbox;}
+.gold_plugins_settings #mc_embed_signup input[type=radio]{-webkit-appearance:radio;}
+.gold_plugins_settings #mc_embed_signup input:focus {border-color:#333;}
+.gold_plugins_settings #mc_embed_signup .button {clear:both; background-color: #aaa; border: 0 none; border-radius:4px; color: #FFFFFF; cursor: pointer; display: inline-block; font-size:15px; font-weight: bold; height: 32px; line-height: 32px; margin: 0 5px 10px 0; padding:0; text-align: center; text-decoration: none; vertical-align: top; white-space: nowrap; width: auto;}
+.gold_plugins_settings #mc_embed_signup .button:hover {background-color:#777;}
+.gold_plugins_settings #mc_embed_signup .small-meta {font-size: 11px;}
+.gold_plugins_settings #mc_embed_signup .nowrap {white-space:nowrap;}     
+.gold_plugins_settings #mc_embed_signup .clear {clear:none; display:inline;}
+
+.gold_plugins_settings #signup_wrapper #mc_embed_signup {
+	padding-bottom: 5px;
+	border-bottom-left-radius: 5px;	
+	border-bottom-right-radius: 5px;	
+}
+.gold_plugins_settings #mc_embed_signup h3 { 
+	color: #008888;
+    display: block;
+    font-size: 19px;
+    font-weight: bold;
+    margin: 0;
+    padding-bottom: 0;
+}
+.gold_plugins_settings #mc_embed_signup p.pitch {  
+	color: #454545;
+    margin-bottom: 20px;
+}
+.gold_plugins_settings #mc_embed_signup .secure {
+	text-align: center;
+	font-size: 8px;
+	line-height: 16px;
+	font-weight: bold;
+	font-family: Verdana, sans-serif;
+	text-transform: uppercase;
+	color: darkgray;
+	border-top: 1px solid #eee;
+	padding-top: 20px;
+}
+
+.gold_plugins_settings #mc_embed_signup .secure img {
+	display: inline-block;
+	margin-right: 5px;
+    position: relative;
+    top: 2px;
+}
+
+
+.gold_plugins_settings #mc_embed_signup .explain {
+	color: #808080;
+	width: auto;
+}
+.gold_plugins_settings #mc_embed_signup label {
+	color: #000000;
+	display: block;
+	font-size: 15px;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+.gold_plugins_settings #mc_embed_signup input.name,
+.gold_plugins_settings #mc_embed_signup input.email {
+	display:block;
+	padding:8px 0;
+	margin:0 4% 10px 0;
+	text-indent:5px;
+	width:100%;
+	min-width:130px;
+}
+.gold_plugins_settings #mc_embed_signup .smallBlueButton {
+	margin: 10px 0;
+    width: 100%;
+}
+
+
+.gold_plugins_settings #mc_embed_signup div#mce-responses {float:left; top:-1.4em; padding:0em .5em 0em .5em; overflow:hidden; width:90%;margin: 0 5%; clear: both;}
+.gold_plugins_settings #mc_embed_signup div.response {margin:1em 0; padding:1em .5em .5em 0; font-weight:bold; float:left; top:-1.5em; z-index:1; width:80%;}
+.gold_plugins_settings #mc_embed_signup #mce-error-response {display:none;}
+.gold_plugins_settings #mc_embed_signup #mce-success-response {color:#529214; display:none;}
+.gold_plugins_settings #mc_embed_signup label.error {display:block; float:none; width:auto; margin-left:1.05em; text-align:left; padding:.5em 0;}		
+.gold_plugins_settings #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+.gold_plugins_settings #mc_embed_signup{    
+			background-color: white;
+			border: 1px solid #DCDCDC;
+			clear: left;
+			color: #008000;
+			font: 14px Helvetica,Arial,sans-serif;
+			margin-top: 0px;
+			margin-bottom: 0px;
+			max-width: 800px;
+			padding: 15px 12px 5px;
+}
+.gold_plugins_settings #mc_embed_signup form{padding: 10px}
+
+.gold_plugins_settings #mc_embed_signup .special-offer {
+	color: #808080;
+	margin: 0;
+	padding: 0 0 3px;
+	text-transform: uppercase;
+}
+.gold_plugins_settings #mc_embed_signup .button {
+  background: #5dd934;
+  background-image: -webkit-linear-gradient(top, #5dd934, #549e18);
+  background-image: -moz-linear-gradient(top, #5dd934, #549e18);
+  background-image: -ms-linear-gradient(top, #5dd934, #549e18);
+  background-image: -o-linear-gradient(top, #5dd934, #549e18);
+  background-image: linear-gradient(to bottom, #5dd934, #549e18);
+  -webkit-border-radius: 5;
+  -moz-border-radius: 5;
+  border-radius: 5px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  line-height: 1.5;
+  height: auto;
+  margin-top: 7px;
+  text-decoration: none;
+  width: 100%;
+  text-align: center;
+}
+
+.gold_plugins_settings #mc_embed_signup .button:hover {
+  background: #65e831;
+  background-image: -webkit-linear-gradient(top, #65e831, #5dd934);
+  background-image: -moz-linear-gradient(top, #65e831, #5dd934);
+  background-image: -ms-linear-gradient(top, #65e831, #5dd934);
+  background-image: -o-linear-gradient(top, #65e831, #5dd934);
+  background-image: linear-gradient(to bottom, #65e831, #5dd934);
+  text-decoration: none;
+}
+.gold_plugins_settings #signup_wrapper {
+	max-width: 800px;
+}
+.gold_plugins_settings #signup_wrapper .u_to_p
+{
+	font-size: 10px;
+	margin: 0;
+	padding: 2px 0 0 3px;				
+}
+
+
+/* Easy FAQs Styles */
+.easy_faq_registered {
+	background-color: white;
+    border-left: 4px solid green;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    color: green;
+    font-weight: bold;
+    padding: 10px 15px;
+}
+.easy_faq_not_registered {
+	background-color: white;
+    border-left: 4px solid red;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+    color: red;
+    font-weight: bold;
+    padding: 10px 15px;
+}
+
+
+#gold_plugins_shortcode_generator .disabled
+{
+	/* IE 8 */
+	  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+
+	/* IE 5-7 */
+	filter: alpha(opacity=50);
+
+	/* Netscape */
+	-moz-opacity: 0.5;
+
+	/* Safari 1.x */
+	-khtml-opacity: 0.5;
+
+	/* Good browsers */
+	opacity: 0.5;
+}
+
+#gold_plugins_shortcode_generator .sc_gen_control_group
+{
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+#gold_plugins_shortcode_generator .sc_gen_control_group label
+{
+	display: block;
+}
+
+#gold_plugins_shortcode_generator .inline-select-wrapper
+{
+	display: inline-block;
+}
+
+#gold_plugins_shortcode_generator #sc_gen_output_wrapper {
+	display: none;
+}
+
+#gold_plugins_shortcode_generator #sc_gen_output {
+	min-height: 50px;
+	min-width: 800px;
+	
+}
+
+#gold_plugins_shortcode_generator #sc_gen_output_wrapper label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 20px;
+}
+
+#gold_plugins_shortcode_generator #sc_gen_output_wrapper p.description {
+    margin-bottom: 15px;
+}
+#gold_plugins_shortcode_generator .upgrade_notice {
+	margin-left: -10px;
+}
+
+.gold_plugins_settings .smallBlueButton {
+    background: linear-gradient(to bottom, #79bbff 5%, #378de5 100%) repeat scroll 0 0 #79bbff;
+    border: 1px solid #337bc4;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px -2px #111, 0 2px 5px 0 rgba(255, 255, 255, 0.3) inset;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: arial;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 12px 24px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #528ecc;
+}
+.gold_plugins_settings .smallBlueButton:hover {
+    background: linear-gradient(to bottom, #378de5 5%, #79bbff 100%) repeat scroll 0 0 #378de5;
+}
+.gold_plugins_settings .smallBlueButton:active {
+    position: relative;
+    top: 1px;
+}
+
+#mc-show-coupon-codes .upgrade_link {
+    background: none repeat scroll 0 0 #f7f7f7;
+    border-color: #ccc;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 0 #fff inset, 0 1px 0 rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    color: #555;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 15px;
+    margin: 0 0 15px;
+    padding: 12px 10px 17px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 100%;
+}
+
+#mc-show-coupon-codes .thx {
+	padding-bottom: 10px;
+}
+
+#mc-show-coupon-codes .package a {
+    display: inline-block;
+    font-weight: bold;
+	font-size: 18px;
+    margin-bottom: 6px;
+    text-decoration: none;
+}
+
+#mc-show-coupon-codes .desc a {
+	color: gray;
+    text-decoration: none;
+}
+
+#mc-show-coupon-codes.modern {
+    padding: 20px 10px 10px;
+}
+#mc-show-coupon-codes.modern h3 {
+    border-bottom: 0 none;
+}
+#mc-show-coupon-codes.modern .thx {
+    color: gray;
+}
+
+.gold_plugins_settings #mc_embed_signup .features {
+	background-color: lightyellow;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding: 20px 20px 10px;
+}
+.gold_plugins_settings #mc_embed_signup .features strong {
+	display: block;
+    font-size: 18px;
+    line-height: 26px;
+    margin-bottom: 14px;
+}
+
+.gold_plugins_settings #mc_embed_signup .features ul {
+	padding-left: 15px;
+}
+
+.gold_plugins_settings #mc_embed_signup .features ul li {
+	color: gray;
+	list-style-type: disc;
+	padding-bottom: 2px;
+	padding-left: 3px;
+	margin-left: 15px;
+	max-width: 85%;
+}
+
+/* Import / Export */
+.gp_upload_file_wrapper p:first-child {
+	font-weight: bold;
+	vertical-align: middle;
+	margin-bottom: 3px;
+}
+
+.gp_upload_file_wrapper #upload {
+	background-color: white;
+	font-weight: normal;
+	display: block;
+	padding: 4px;
+	margin-top: 6px;
+	margin-left: 2px;
+	border: 1px solid lightgray;
+}
+.gp_upload_file_wrapper p.submit {
+	margin-top: 3px;
+
+}
+
+/* Widget styling (GP Global) */
+
+/* Widgets */
+
+.widget-content .gp_widget_form_wrapper fieldset.radio_text_input {
+    border: 1px solid lightgray;
+    margin: 10px 3px 20px;
+    padding: 10px;
+}
+.widget-content .gp_widget_form_wrapper fieldset.radio_text_input .bikeshed_radio {
+	margin-top: -15px;
+}
+.widget-content .gp_widget_form_wrapper fieldset.radio_text_input .bikeshed_radio p {
+	margin-top: 0;
+}
+.widget-content .gp_widget_form_wrapper fieldset.radio_text_input .bikeshed_radio .radio_option label {
+	display: inline-block;
+	width: auto;
+}
+.widget-content .gp_widget_form_wrapper fieldset.radio_text_input .bikeshed_radio .radio_option input[type="text"] {
+	display: inline-block;
+    margin: 0 2px 0 4px;
+    position: relative;
+    text-align: right;
+    top: 2px;
+    width: 50px;
+}
+.widget-content .gp_widget_form_wrapper fieldset.radio_text_input .bikeshed_radio .radio_option.px_label::after {
+	content: " px";
+	position: relative;
+	top: 2px;
+}
+
+.widget-content .gp_widget_form_wrapper select {
+	width: 99%;
+}
+.widget-content .gp_widget_form_wrapper select.multi_left {
+	width: 37%; 
+	margin-right: 2%;
+	float:left;
+	
+}
+.widget-content .gp_widget_form_wrapper select.multi_right {
+	width: 59%;
+}
+
+.customize-control .widget-content .gp_widget_form_wrapper select.multi_left,
+.customize-control .widget-content .gp_widget_form_wrapper select.multi_right {
+	min-width: 35%;
+}
+
+.widgets-holder-wrap .gp_widget_form_wrapper .description.after_checkbox {
+	margin-top: -7px !important;
+	padding-left: 24px !important;
+}
+
+.gold_plugins_settings fieldset {
+    border: 1px solid #ccc !important;
+    display: block;
+    margin: 20px 0 !important;
+    padding: 0 20px !important;
+}
+
+.gold_plugins_settings fieldset legend {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Theme Preview screen */
+.easy-faqs-options-table {
+	max-width: 800px;
+}
+
+#easy_faqs_theme_preview {
+	max-width: 800px;
+	margin-top: 20px;
+	padding-top: 10px;
+    position: relative;
+}
+
+#easy_faqs_theme_preview_title {
+	margin-top: 0;
+	margin-left: 4px;
+}
+
+#easy_faqs_theme_preview_browser {
+	background-image: url('../img/browser-preview-middle.png');
+	height: 39px;
+	margin: 0 20px;
+	position: relative;
+}
+
+#easy_faqs_theme_preview_browser::before {
+	background-image: url('../img/browser-preview-left.png');
+	background-position: top left;
+	background-repeat: no-repeat;
+	content: " ";
+	height: 39px;
+	position: absolute;
+	left: -20px;
+	top: 0;
+	width: 200px;
+}
+
+#easy_faqs_theme_preview_browser::after {
+	background-image: url('../img/browser-preview-right.png');
+	background-position: top right;
+	background-repeat: no-repeat;
+	content: " ";
+	height: 39px;
+	position: absolute;
+	right: -20px;
+	top: 0;
+	width: 40px;
+}
+
+#easy_faqs_theme_preview_content {
+	background-color: #fff;
+	border: 1px solid lightgray;
+    margin: 0 0 0 4px;
+    max-width: 800px;
+    padding: 50px 30px 30px;
+	max-width: 800px;
+}
+
+#easy_faqs_theme_preview_color_picker {
+	position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+	z-index: 100;
+}
+
+#easy_faqs_theme_preview_color_picker .form-table {
+
+}
+
+#easy_faqs_theme_preview_color_picker .form-table label {
+	font-size: 12px;
+}
+
+#easy_faqs_theme_preview_color_picker .form-table th {
+	padding: 0;
+	vertical-align: middle;
+	text-align: right;
+}
+
+#easy_faqs_theme_preview_color_picker .form-table tr {
+	padding: 0;
+}
+
+#easy_faqs_theme_preview_color_picker .form-table td {
+	padding: 0;
+}
+
+
+#easy_faqs_theme_preview_color_picker label {
+	display: inline-block;
+}
+
+#easy_faqs_theme_preview_color_picker .bikeshed.bikeshed_color {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#easy_faqs_themes_pro_warning {
+    background: white none repeat scroll 0 0;
+    border-left: 3px solid orangered;
+    border-radius: 2px;
+    box-shadow: -2px 2px 2px #ccc;
+    font-weight: bold;
+    margin: 20px 0;
+    max-width: 760px;
+    padding: 3px 20px;
+}
+
+#easy_faqs_themes_pro_warning h3 {
+	font-size: 18px;
+	color: green;
+	margin-top: 18px;
+}

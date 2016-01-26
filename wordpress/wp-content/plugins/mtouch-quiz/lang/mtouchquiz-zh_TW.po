@@ -1,0 +1,648 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: mTouch Quiz\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2012-01-27 14:25:09+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-05-17 15:52+0800\n"
+"Last-Translator: Dinno Lin <dinno@mail.phc.edu.tw>\n"
+"Language-Team: 澎湖縣教網中心 <dinno@mail.phc.edu.tw>\n"
+"X-Poedit-Language: Chinese\n"
+"X-Poedit-Country: TAIWAN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "測驗已更新"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "測驗已刪除"
+
+#: quiz.php:18
+#: mtouchquiz.php:49
+msgid "Manage mTouch Quizzes"
+msgstr "管理 mTouch 測驗"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "編號"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "標題"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "問題數"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "建立於"
+
+#: quiz.php:33
+#: question.php:108
+msgid "Action"
+msgstr "動作"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "管理問題"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "編輯測驗選項"
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "您正在刪除此份測驗？將會刪除所有的問題與答案。按下 '確認' 刪除或 '取消' 回復。"
+
+#: quiz.php:59
+#: question.php:137
+msgid "Delete"
+msgstr "刪除"
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "找不到測驗。"
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "建立新測驗"
+
+#: question_form.php:17
+#: question_form.php:124
+#: question.php:101
+msgid "Question"
+msgstr "問題"
+
+#: question_form.php:35
+#: question_form.php:144
+#: show_quiz.php:418
+#: show_quiz.php:542
+msgid "Correct"
+msgstr "正確答案"
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr "分隔符號"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "答案："
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "提示："
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "請輸入問題"
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "請選擇一個正確答案"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "答案與提示"
+
+#: question_form.php:156
+#: show_quiz.php:437
+msgid "Hint"
+msgstr "提示內容"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "加入新答案"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "解釋"
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr "您可以使用此欄位解釋正確答案。當揭示正確答案時會顯示出來。"
+
+#: question_form.php:183
+#: question.php:106
+msgid "Point Value"
+msgstr "配分"
+
+#: question_form.php:197
+#: quiz_form.php:365
+msgid "Save"
+msgstr "儲存"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "返回問題頁面"
+
+#: mtouchquiz.php:47
+msgid "mTouch Quiz"
+msgstr "mTouch 測驗"
+
+#: mtouchquiz.php:49
+msgid "Manage Quizzes"
+msgstr "管理測驗"
+
+#: mtouchquiz.php:50
+#: premium.php:9
+msgid "Premium Features"
+msgstr "加價功能"
+
+#: mtouchquiz.php:79
+msgid "Settings"
+msgstr "設定"
+
+#: mtouchquiz.php:93
+msgid "mTouch Quiz Plugin Options"
+msgstr "mTouch Quiz 外掛選項"
+
+#: mtouchquiz.php:93
+msgid "mTouch Quiz Plugin"
+msgstr "mTouch Quiz 外掛"
+
+#: mtouchquiz.php:99
+msgid "You do not have sufficient permissions to access this page."
+msgstr "您沒有足夠的權限登入此頁。"
+
+#: mtouchquiz.php:121
+msgid "Options updated"
+msgstr "選項已更新"
+
+#: mtouchquiz.php:129
+msgid "Left Delimiter"
+msgstr "左分隔符號"
+
+#: mtouchquiz.php:132
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr "當分隔符號的勾選框勾選時使用左分隔符號。"
+
+#: mtouchquiz.php:137
+msgid "Right Delimiter"
+msgstr "右分隔符號"
+
+#: mtouchquiz.php:140
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr "當分隔符號的勾選框勾選時使用右分隔符號。"
+
+#: mtouchquiz.php:145
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "如果測驗未完成顯示警訊？"
+
+#: mtouchquiz.php:148
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr "測驗結果已儲存於此，離開測驗將遺失所有過程。"
+
+#: mtouchquiz.php:150
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "當使用者離開未完成的測驗時顯示一個警訊。"
+
+#: mtouchquiz.php:152
+msgid "Hide donation links"
+msgstr "隱藏捐款連結網址"
+
+#: mtouchquiz.php:155
+msgid "I already supported mTouch Quiz or prefer not to."
+msgstr "我已贊助 mTouch 測驗或尚未贊助。"
+
+#: mtouchquiz.php:160
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr "我將以電子郵件寄送語言翻譯檔給  Michael at gmichaelguy.com 讓其他人也可以獲得助益。;-)"
+
+#: mtouchquiz.php:162
+msgid "Save Changes"
+msgstr "儲存變更"
+
+#: mtouchquiz.php:620
+msgid "FAQ"
+msgstr "問與答"
+
+#: show_quiz.php:338
+msgid "Please wait while the activity loads.</br> If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr "請等候正載入啟動中。</br> 如果啟動尚未載入，試著按下瀏覽器的重新整理。此外，此頁面需要 javascript，請使用支援 javascript 的瀏覽器。"
+
+#: show_quiz.php:340
+msgid "If loading fails, click here to try again"
+msgstr "如果載入失敗，點此再試一次"
+
+#: show_quiz.php:345
+msgid "Start"
+msgstr "開始"
+
+#: show_quiz.php:351
+msgid "Your answers are highlighted below."
+msgstr "您的答案將以突出的顏色表示。"
+
+#: show_quiz.php:383
+msgid "Question %d"
+msgstr "問題 %d"
+
+#: show_quiz.php:421
+#: show_quiz.php:544
+msgid "Wrong"
+msgstr "錯誤"
+
+#: show_quiz.php:452
+msgid "Question %d Explanation:"
+msgstr "問題 %d 解釋："
+
+#: show_quiz.php:472
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr "當您完成時，請點選下方按鈕。任何您尚未完成的項目都會標示為錯誤。"
+
+#: show_quiz.php:474
+msgid "Get Results"
+msgstr "觀看結果"
+
+#: show_quiz.php:487
+msgid "There is 1 question to complete."
+msgstr "還剩下一個問題。"
+
+#: show_quiz.php:487
+msgid "There are %d questions to complete."
+msgstr "還剩下 %d 個問題。"
+
+#: show_quiz.php:493
+msgid "Go to Previous Question"
+msgstr "上一個問題"
+
+#: show_quiz.php:496
+msgid "List"
+msgstr "列表"
+
+#: show_quiz.php:499
+msgid "Go to Next Question"
+msgstr "下一個問題"
+
+#: show_quiz.php:507
+#: show_quiz.php:530
+msgid "Return"
+msgstr "返回"
+
+#: show_quiz.php:509
+msgid "Shaded items are complete."
+msgstr "遮蔽項目完成。"
+
+#: show_quiz.php:522
+msgid "End"
+msgstr "結束"
+
+#: show_quiz.php:534
+msgid "You have completed"
+msgstr "您已完成"
+
+#: show_quiz.php:536
+msgid "questions"
+msgstr "問題"
+
+#: show_quiz.php:538
+msgid "question"
+msgstr "問題"
+
+#: show_quiz.php:540
+msgid "Your score is"
+msgstr "您的分數是"
+
+#: show_quiz.php:546
+msgid "Partial-Credit"
+msgstr "部分信用"
+
+#: show_quiz.php:548
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr "您尚未完成測驗。一旦您離開此頁，您的紀錄將會遺失。"
+
+#: show_quiz.php:550
+msgid "Correct Answer"
+msgstr "正確答案"
+
+#: show_quiz.php:552
+msgid "You Selected"
+msgstr "您選取的"
+
+#: show_quiz.php:554
+msgid "Not Attempted"
+msgstr "沒有嘗試"
+
+#: show_quiz.php:556
+msgid "Final Score on Quiz"
+msgstr "最後測驗分數"
+
+#: show_quiz.php:558
+msgid "Attempted Questions Correct"
+msgstr "嘗試的問題正確"
+
+#: show_quiz.php:560
+msgid "Attempted Questions Wrong"
+msgstr "嘗試的問題錯誤"
+
+#: show_quiz.php:562
+msgid "Questions Not Attempted"
+msgstr "未嘗試的問題"
+
+#: show_quiz.php:564
+msgid "Total Questions on Quiz"
+msgstr "全部測驗問題"
+
+#: show_quiz.php:566
+msgid "Question Details"
+msgstr "問題細節"
+
+#: show_quiz.php:568
+msgid "Results"
+msgstr "結果"
+
+#: show_quiz.php:570
+msgid "Date"
+msgstr "日期"
+
+#: show_quiz.php:572
+msgid "Score"
+msgstr "分數"
+
+#: show_quiz.php:574
+msgid "Time allowed"
+msgstr "時間限制"
+
+#: show_quiz.php:575
+msgid "minutes"
+msgstr "分"
+
+#: show_quiz.php:576
+msgid "seconds"
+msgstr "秒"
+
+#: show_quiz.php:577
+msgid "Time used"
+msgstr "花費時間"
+
+#: show_quiz.php:578
+msgid "Answer Choice(s) Selected"
+msgstr "答案選項已選取"
+
+#: show_quiz.php:579
+msgid "Question Text"
+msgstr "問題描述"
+
+#: show_quiz.php:613
+#: quiz_form.php:211
+msgid "Need more practice!"
+msgstr "需要更多練習唷！"
+
+#: show_quiz.php:617
+#: quiz_form.php:211
+msgid "Keep trying!"
+msgstr "繼續努力唷！"
+
+#: show_quiz.php:621
+#: quiz_form.php:211
+msgid "Not bad!"
+msgstr "還不賴嘛！"
+
+#: show_quiz.php:625
+#: quiz_form.php:211
+msgid "Good work!"
+msgstr "好棒！"
+
+#: show_quiz.php:629
+#: quiz_form.php:211
+msgid "Perfect!"
+msgstr "太棒了！"
+
+#: show_quiz.php:637
+msgid "All done"
+msgstr "全部完成"
+
+#: question.php:17
+msgid "Question updated."
+msgstr "問題已更新。"
+
+#: question.php:21
+msgid "Question added."
+msgstr "問題已加入。"
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "新測驗已加入"
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "問題已刪除"
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr "測驗 ID 編號"
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr "管理問題"
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr "加入測驗至您的部落格，插入這段程式碼"
+
+#: question.php:95
+msgid "into any post."
+msgstr "至任一篇文章內。"
+
+#: question.php:103
+msgid "Number Answers"
+msgstr "選項數"
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr "答案數"
+
+#: question.php:134
+msgid "Edit"
+msgstr "編輯"
+
+#: question.php:136
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "您正在刪除問題，將會刪除問題的答案與提示。按下 '確定' 刪除或 '取消' 回復。"
+
+#: question.php:145
+msgid "No questions found."
+msgstr "找不到問題。"
+
+#: question.php:154
+msgid "Create New Question"
+msgstr "建立新問題"
+
+#: quiz_form.php:25
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr "<p>恭喜！您已完成 %%QUIZ_NAME%%。</p><p>全部題數有 %%TOTAL%% 題，您答對 %%SCORE%% 題。</p><p>您的表現評價： %%RATING%%</p>"
+
+#: quiz_form.php:41
+msgid "Quiz Name"
+msgstr "測驗名稱"
+
+#: quiz_form.php:43
+#: quiz_form.php:53
+msgid "Visual"
+msgstr "編輯器"
+
+#: quiz_form.php:43
+#: quiz_form.php:53
+msgid "HTML"
+msgstr "HTML 文字"
+
+#: quiz_form.php:51
+msgid "Quiz Start Screen"
+msgstr "測驗開始畫面"
+
+#: quiz_form.php:60
+msgid "For Email Submission of Quiz Results"
+msgstr "藉由電子郵件提交測驗結果"
+
+#: quiz_form.php:81
+#: quiz_form.php:112
+msgid "To allow users to submit their results to you via email, you need a "
+msgstr "讓使用者透過電子郵件傳送測驗結果給您，你需要"
+
+#: quiz_form.php:85
+msgid "<a href=\"http://gmichaelguy.com/quizplugin/go/premium/\" title=\"Find out about mTouch Quiz Premium Feature Addons\">For detailed instructions on how to configure this option visit the plugin homepage.</a>"
+msgstr "<a href=\"http://gmichaelguy.com/quizplugin/go/premium/\" title=\"認識關於 mTouch Quiz 加價功能外掛\">瞭解如何設定此項的操作指引請參訪外掛作者網站。</a>"
+
+#: quiz_form.php:94
+msgid "Final Screen"
+msgstr "結束畫面"
+
+#: quiz_form.php:99
+msgid "Usable Variables..."
+msgstr "可使用的變數..."
+
+#: quiz_form.php:103
+msgid "Variable"
+msgstr "變數"
+
+#: quiz_form.php:104
+msgid "Value"
+msgstr "功能"
+
+#: quiz_form.php:110
+msgid " location for emailing results. (You may put this variable in the ratings below for conditional email option)"
+msgstr "電子郵件傳送結果位置。(您可以在下方評價放置此變數以提供有條件的電子郵件選項)"
+
+#: quiz_form.php:120
+msgid "The number of correct answers"
+msgstr "正確答案數"
+
+#: quiz_form.php:124
+msgid "Total number of questions"
+msgstr "全部問題數"
+
+#: quiz_form.php:128
+msgid "Correct answer percentage"
+msgstr "正確答案百分比"
+
+#: quiz_form.php:132
+msgid "Number of answers you got wrong"
+msgstr "您答錯的答案數"
+
+#: quiz_form.php:136
+msgid "A rating of your performance. (Customize below.)"
+msgstr "您的表現評分 (可於下方自訂)"
+
+#: quiz_form.php:140
+msgid "Time Allowed in Seconds. (Requires Timer Add on)"
+msgstr "時間限制秒數 (需要 Timer Add on 外掛)"
+
+#: quiz_form.php:144
+msgid "Time Used in Seconds. (Requires Timer Add on)"
+msgstr "使用時間秒數 (需要 Timer Add on 外掛)"
+
+#: quiz_form.php:148
+msgid "The name of the quiz"
+msgstr "測驗名稱"
+
+#: quiz_form.php:201
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr "%%RATING%% 結束畫面上方自訂項"
+
+#: quiz_form.php:204
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr "輸入比率(只限全部數)與您想讓使用者收到的訊息在 %%RATING%% 變數內。其中一項訊息將會在使用者分數高於或等於列表分數時顯示。"
+
+#: quiz_form.php:257
+msgid "Add New Rating"
+msgstr "加入新評分"
+
+#: quiz_form.php:261
+msgid "Quiz Options"
+msgstr "測驗選項"
+
+#: quiz_form.php:266
+msgid "Options"
+msgstr "選項"
+
+#: quiz_form.php:268
+msgid "Shortcode arguments"
+msgstr "短碼(shortcode)參數"
+
+#: quiz_form.php:273
+msgid "Show all questions on a single page."
+msgstr "在單一頁面秀出全部問題。"
+
+#: quiz_form.php:278
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "允許多次回答問題答案的機會。*"
+
+#: quiz_form.php:283
+msgid "Show the hints, when available."
+msgstr "有提示時秀出提示。"
+
+#: quiz_form.php:288
+msgid "Display Quiz Start Screen before quiz."
+msgstr "在測驗開始前顯示開始畫面。"
+
+#: quiz_form.php:293
+msgid "Display Quiz Final Screen after quiz."
+msgstr "在測驗結束後顯示結束畫面。"
+
+#: quiz_form.php:298
+msgid "Randomly arrange questions."
+msgstr "隨機排序問題。"
+
+#: quiz_form.php:303
+msgid "Randomly arrange answers."
+msgstr "隨機排序答案。"
+
+#: quiz_form.php:308
+msgid "Never indicate the correct answers."
+msgstr "永不指示正確答案。"
+
+#: quiz_form.php:313
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "只在測驗結束後才指示正確答案。"
+
+#: quiz_form.php:318
+msgid "Indicate the correct answers at the end of each question."
+msgstr "回答每個問題後指出正確答案。"
+
+#: quiz_form.php:323
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr "* 必須同時選取以在每個問題後指示正確答案。"
+
+#: quiz_form.php:337
+msgid "Add a time limit and countdown clock."
+msgstr "加入時間限制和倒數計時器。"
+
+#: quiz_form.php:348
+msgid "To set a time limit and have a countdown clock, you need the "
+msgstr "設定時間限制與倒數計時器，您需要"
+
+#: quiz_form.php:352
+msgid "<a href=\"http://gmichaelguy.com/quizplugin/go/timer/\" title=\"mTouch Quiz Timer Addon\" target=\"_blank\">For detailed instructions on how to configure the timer option visit the plugin homepage.</a>"
+msgstr "<a href=\"http://gmichaelguy.com/quizplugin/go/timer/\" title=\"mTouch Quiz 計數外掛\" target=\"_blank\">瞭解如何設定計數器的操作請參訪外掛作者網站。</a>"
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "請勿直接呼叫此頁面。"
+

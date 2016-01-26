@@ -1,0 +1,43 @@
+div.blocTopGestionEquipe
+{
+	width:100%;
+	float: left;
+	height:350px;
+	padding-left: 10px;
+}
+
+div.blocBottomGestionEquipe
+{
+/*	float: left;*/
+	width: 100%; 
+	margin: 10px;
+	margin-top: 5px;
+}
+
+div.blocBottomGestionEquipe select, div.blocBottomGestionEquipe input
+{
+	/*margin-bottom: 15px;*/
+	width: 100%;
+	font-size:8.0pt;
+}
+
+div.blocTableGestionEquipe
+{
+	height:90%;	
+	width:95%;
+	margin-top: 15px;
+	overflow:auto;
+	overflow:scroll;
+	/*overflow-x:hidden;*/
+}
+
+div.blocBottomGestionEquipe label
+{
+	font-size:8.0pt;
+	width:100%;
+}
+
+#filtre_competition_special, #filtre_journee
+{
+	width:100%;
+}

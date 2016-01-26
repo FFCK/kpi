@@ -1,0 +1,60 @@
+#loading {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+#calendar, #calendarEN {
+	width: 900px;
+	margin: 0 auto;
+	background-color: #abc;
+}
+
+#calendar td, #calendarEN td {
+/*	border-color: black;*/
+}
+
+/* Championnat de France */
+.Nclass,
+.fc-agenda .Nclass .fc-event-time,
+.Nclass a {
+    background-color: #003399; /* background color */
+    border-color: #003399;     /* border color */
+    color: white;           /* text color */
+}
+
+/* Coupe de France */
+.CFclass,
+.fc-agenda .CFclass .fc-event-time,
+.CFclass a {
+    background-color: #800000; /* background color */
+    border-color: #800000;     /* border color */
+    color: white;           /* text color */
+}
+
+/* Championnat Régional */
+.Rclass,
+.fc-agenda .Rclass .fc-event-time,
+.Rclass a {
+    background-color: #3366CC; /* background color */
+    border-color: #3366CC;     /* border color */
+    color: white;           /* text color */
+}
+
+/* Championnats internationaux */
+.CEclass, .CMclass,
+.fc-agenda .CEclass .fc-event-time, .fc-agenda .CMclass .fc-event-time,
+.CEclass a, .CMclass a {
+    background-color: #003300; /* background color */
+    border-color: #003300;     /* border color */
+    color: white;           /* text color */
+}
+
+/* Tournois */
+.Tclass,
+.fc-agenda .Tclass .fc-event-time,
+.Tclass a {
+    background-color: #009933; /* background color */
+    border-color: #009933;     /* border color */
+    color: black;           /* text color */
+}

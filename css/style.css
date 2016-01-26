@@ -1,0 +1,394 @@
+html, body {margin: 0; padding: 0;
+	background: #EEEEEE;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 9.0pt; color: #2B3C60;}
+
+#banniere {height: 100px; color: #2B3C60; 
+	background: #EEEEEE url(banniere3.jpg) 0% 0% no-repeat;}
+#banniere img {float: right;}
+.connexion {float: right;
+	font: bold italic small-caps 11px Arial, sans-serif;
+	}
+	
+.footer {
+	clear: left;
+	width: 100%;
+	color: #2B3C60; background: #EEEEEE;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 9.0pt; text-align: center;
+	padding: 8px 0;
+	border-top: 3px groove #CCCCCC;
+	border-bottom: 3px groove #CCCCCC;
+}
+
+/* Menus Eric Meyer*/
+#nav {margin: 0; padding: 0; margin-left: 5px; width:100%; clear: left; height: 25px;}
+#nav li {list-style: none; float: left;
+	margin-left: 1px; padding-left: 12px;
+	font-size: 10px; line-height: 20px; white-space: nowrap;
+	background: #44619B url(tabs3-big.gif) 0 100% no-repeat;}
+
+#nav a {display: block; float: left; padding: 0 12px 0 0;
+	text-decoration: none; font-weight: bold;
+	background: #44619B url(tabs3-big.gif) 100% 100% no-repeat;
+	color: #BCD; width: .1em;}
+html>body #nav a {width: auto;}    /* fixes IE6 hack */
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+#nav a {float: none;}            /* End IE5-Mac hack */
+#nav .forum a {color: #F60;}
+#nav a:hover {color: #EFB700;}
+#nav .current, #nav .current a {color: #2B3C60; 
+	background-image: url(tabs3-big-ct.gif);}
+
+/* Menus FFCK */
+#boutonsH {
+    margin: 0;
+    padding: 0;
+    height: 39px;
+    width: 100%;
+}
+#nav2Left {
+    background-image: url("http://ffck.org/css/images/nav_left.gif");
+    background-repeat: no-repeat;
+    float: left;
+    height: 39px;
+    width: 8px;
+}
+#nav2Right {
+    background-image: url("http://ffck.org/css/images/nav_right.gif");
+    background-repeat: no-repeat;
+    float: left;
+    height: 39px;
+    width: 8px;
+}
+#nav2, #nav2 ul {
+    background-image: url("http://ffck.org/css/images/bg_menuH.gif");
+    background-repeat: repeat-x;
+    border: 0 none;
+    float: left;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1;
+    list-style: outside none none;
+    margin: 0 0 1em;
+    padding: 0;
+    width: 908px;
+    z-index: 1000;
+}
+#nav2 a {
+    background-image: url("http://ffck.org/css/images/bg_menuH.gif");
+    background-repeat: repeat-x;
+    color: #ffffff;
+    display: block;
+    height: 29px;
+    margin-left: 1px;
+    padding: 13px 0.5em 0;
+    text-decoration: none;
+}
+#nav2 a:hover {
+    color: #ce0d08;
+}
+#nav2 li {
+    background-image: url("http://ffck.org/css/images/nav_separator.gif");
+    background-position: left top;
+    background-repeat: no-repeat;
+    float: left;
+    height: 39px;
+    padding: 0;
+}
+#nav2 li ul {
+    background: none repeat scroll 0 0 #4088d6;
+    font-weight: normal;
+    height: auto;
+    left: -999em;
+    margin: 0;
+    opacity: 0.95;
+    padding: 0.5em 0;
+    position: absolute;
+    width: 15em;
+}
+#nav2 li li {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    height: auto;
+    padding-right: 0;
+    width: 15em;
+}
+#nav2 li ul a {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    height: auto;
+    opacity: 1;
+    padding-bottom: 0.3em;
+    padding-top: 0.3em;
+    width: 14em;
+}
+#nav2 li ul a:hover {
+    color: #ffffff;
+}
+#nav2 li ul ul {
+    margin: -1.75em 0 0 14em;
+}
+#nav2 li:hover ul ul, #nav2 li:hover ul ul ul, #nav2 li.sfhover ul ul, #nav2 li.sfhover ul ul ul {
+    left: -999em;
+}
+#nav2 li:hover ul, #nav2 li li:hover ul, #nav2 li li li:hover ul, #nav2 li.sfhover ul, #nav2 li li.sfhover ul, #nav2 li li li.sfhover ul {
+    left: auto;
+}
+#nav2 li:hover, #nav2 li.sfhover {
+    background: url("http://ffck.org/css/images/nav_separator.gif") no-repeat scroll left top rgba(0, 0, 0, 0);
+}
+#nav2 li li:hover, #nav2 li li.sfhover {
+    background: none repeat scroll 0 0 #19609c;
+}
+#nav2 .noSeparator, #nav2 .noSeparator:hover {
+    background-image: none;
+}
+
+/* GestionJournée */
+#formMatch {font-size:9.0pt; width:100%; margin: auto;}
+#comboCompet {width:280px;}
+#comboJournee {width:200px;}
+#addMatch, #updateMatch {width: 100px; font-size: 8.5pt;}
+
+/* iframes */
+#iframeRechercheLicenceIndi {visibility:hidden; 	position:absolute;}
+#iframeScore {visibility:hidden; position:absolute;}
+#SelectionOuiNon {visibility:hidden; position:absolute;}
+#SelectionCapitaineJoueur {visibility:hidden; position:absolute;}
+
+
+.saison {font-size: 8.0pt; font-weight: bold; background: #44619B; color: #BCD; margin-left: 5px; padding: 2px 4px;	border: 2px Ridge #BCD; border-radius: 5px;}
+.repere {font-size: 8.0pt; font-weight: bold; color: #2B3C60; padding-left: 5px;}
+
+.main {font-size: small;
+	color: #111;
+	margin: 0px;
+	margin-top: 2px;
+	padding: 0.5%;
+	width: 99%;
+	border: 0px solid #F00;}
+
+.combolong {width: 100px;}
+.boutonlong {width: 200px;}
+
+.ImportPCE input {width: 300px;}
+
+.titrePage {
+	width: 100%;	
+	text-align: center;
+	font: bold italic small-caps 15px Arial, sans-serif;
+	margin: 0;
+}
+.lienExterne {
+	display: none;
+}
+
+.liens {width: 100%; clear: left; text-align: center;}
+.liens a{display: block; float: left; margin: 3px 8px; font-size: 9.0pt;}
+
+.tableau {font-size: 8.0pt; empty-cells:show; border-spacing: 0px; border-collapse: collapse; 
+	border: 2px groove #666;
+	border-width: 0px 2px 2px 2px;
+	width: 100%; margin-left : auto; margin-right : auto;}
+.tableau thead {background: #334F64 url(titre_bg.gif) 0 0 repeat-x;}
+.tableau thead tr th{font-size: 8.0pt; color: #DDD; border: none;
+	background-color: #44619B;
+	color: #EFB700;
+	padding: 8px 0;}
+.tableau tr {}
+.tableau td {margin: 0; padding: 2px 3px; text-align: center;}
+.tableau tr.Selected {background: #EEEEEE;}
+.head2 {background: #7799BB; color: #DDD;}
+.tableauPublic thead {background: #334F64 url(titre2_bg.gif) 0 0 repeat-x;}
+.tableauPublic  th {
+	color: #44619b;
+}
+.tableau tbody tr th {
+	color: #44619b;
+	padding: 5px 0;
+}
+
+.impair {background: none;}
+.pair {background: #CDE;}
+
+.impair2 {background: #DDDDDD;}
+.pair2 {background: #EEEEEE;}
+.head2Public {background: #66AA88; color: #DDD;}
+
+.vert {background: #BFB;}
+.rouge {background: #FBB;}
+.gris {background: #DDF;}
+
+.grispetit {font-size: 8.0pt; font-style: italic; color: #666}
+
+.colorO {background: #BFB;}
+.colorCapO {background: #BFB;}
+.colorCapE {background: #FB0;}
+.colorCapA {background: #FB5;}
+.colorN {background: #FBB;}
+
+.past {
+	/*opacity: 0.5;*/
+	/*filter: alpha(opacity=50); /* for IE */
+	/* opacity with small font can sometimes look too faded
+	   might want to set the 'color' property instead
+	   making day-numbers bold also fixes the problem */
+	font-style: italic;
+	color: #666;
+	}
+.titreForm {background: #334F64 url(titre_bg.gif) 0 0 repeat-x; font-size: 8.0pt; color: #DDD; border: none; text-align: center; padding: 4px;}
+
+.blocLeft {
+	font-size:9.0pt;
+	/*font-weight: bold;*/
+	float: left;
+	width: 720px;	
+	text-align: center;
+}
+.Left2 {
+	width: 620px;	
+}
+
+.blocTable {
+	clear: left;
+	height: 450px;	
+	width: 100%;
+	margin: 5px 0px;
+	border: 1px solid #CDE;
+	overflow-y: auto;
+/*	overflow:scroll;*/
+	text-align: center;
+}
+
+.blocCentre {
+	width: 750px;
+	margin: 5px 0px;
+	margin-left: auto;
+	margin-right: auto;
+	/*border: 1px solid #CDE;*/
+	text-align: center;
+}
+
+.TitrePhaseFinale {
+	color: #666;
+}
+
+.table2 {height: 650px;}
+
+.blocMap{
+	width:100%;
+	text-align: center;
+}
+
+.blocMap2{
+	margin-left: auto;
+	margin-right: auto;
+	width:100%;
+	text-align: center;
+}
+
+.blocRight {
+	width:250px; 
+	float: left;
+	border: 3px groove #CCCCCC;
+	margin: 18px 6px;
+	background: #CCCCCC;
+}
+.Right2 {
+	width: 350px;	
+}
+.Right3 {
+	margin: 0;
+	width: 450px;	
+}
+.blocRight th, .blocTop th {
+	border: 3px groove #CCCCCC;
+}
+.blocRight td, .blocTop td, .blocMiddle td {
+	font-size:9.0pt;
+	padding: 2px;
+}
+.blocRight label, div.blocRight select, div.blocRight input {
+	font-size:8.0pt;
+	width:100%;
+}
+.blocTop label, div.blocTop select, div.blocTop input {
+	font-size:9.0pt;
+}
+.blocMiddle label, div.blocMiddle select, div.blocMiddle input {
+	font-size:9.0pt;
+}
+.blocRight td a, .blocTop td a, .blocMiddle td a {
+	font-size:9.0pt;
+}
+
+.blocTop {
+	width:99%;
+	border: 3px groove #CCCCCC;
+	background: #CCCCCC;
+	font-size:9.0pt;
+}
+
+.blocMiddle {
+	width:100%;
+	margin: 5px 0;
+}
+
+.blocBottom {
+	width:100%; 
+}
+
+.podium {
+	font-weight: bold;
+}
+.qualifies {
+	font-weight: bold;
+}
+.elimines {
+	color: #555;
+}
+.droite {
+	text-align: right;
+}
+
+.centre {
+	text-align: center;
+}
+
+.gauche {
+	text-align: left;
+}
+
+.histoLigne {
+	clear: left;
+	margin: 15px;
+	border: 1px ridge white;
+}
+.histoColonne {
+	float: left;
+}
+
+.blocCentre2 {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+.cliquableNomEquipe {    color: #44619B;
+    font-weight: bold;} /*font-weight: bold;*/
+.cliquableNomEquipe a:link, a:active, a:visited {text-decoration: none; color: #44619B;font-weight: bold;}
+.cliquableNomEquipe a:hover {text-decoration: underline; color: #44619B;}
+.cliquableScore {font-weight: bold; color: #44619B;}
+.cliquableScore a:link, a:active, a:visited {text-decoration: none; color: #44619B; font-weight: bold; }
+.cliquableScore a:hover {text-decoration: underline; color: #44619B;}
+.cliquableCompet {color: #44619B;}
+.cliquableCompet a:link, a:active, a:visited {text-decoration: none; color: #44619B;}
+.cliquableCompet a:hover {text-decoration: underline; color: #44619B;}
+
+.scoreProvisoire {font-style: italic; font-weight: normal; color: #6683BD;}
+.statutMatch {color: #EFB700; background-color: #44619B; border-radius: 3px; width: 100px; display: block; text-transform: uppercase; margin: auto;}
+.statutMatchOn {color: #CCDDEE; background-color: #6683BD; border-radius: 3px; width: 100px; display: block; text-transform: uppercase; font-style: italic; margin: auto;}
+.statutMatchATT {color: #CCDDEE; background-color: #888888; border-radius: 3px; width: 100px; display: block; text-transform: uppercase; font-style: italic; margin: auto;}
+
+/*.arb1, .arb2 {display: none;}*/
+
+#carte {height: 600px; width: 800px; }

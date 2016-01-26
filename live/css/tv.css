@@ -1,0 +1,200 @@
+body
+{
+	background-color:rgb(0,255,0);
+}
+
+img 
+{
+  vertical-align:center;
+}
+
+#banner_list
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/banner_list.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+#banner_single
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/banner_single.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+#banner_referee
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/banner_referee.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+#banner_presentation
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/banner_presentation.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+#list_team_title1
+{
+	position: absolute;
+	left:600px;
+	right:300px;
+	top:14%;
+	text-align:center;
+	font-weight: bold;
+	color:#3c3569;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:50px;
+}
+
+#list_team_title2
+{
+	position: absolute;
+	left:600px;
+	right:300px;
+	top:20%;
+	text-align:center;
+	font-weight: bold;
+	color:#3c3569;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:30px;
+}
+
+.list_team_player
+{
+	position: absolute;
+	left:575px;
+	right:0px;
+	text-align:left;
+	font-weight: bold;
+	color:#66899f;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:42px;
+}
+
+#list_team_player1 {	top:34%;}
+#list_team_player2 {	top:39.5%;}
+#list_team_player3 {	top:45%;}
+#list_team_player4 {	top:50.5%;}
+#list_team_player5 {	top:56%;}
+#list_team_player6 {	top:61.5%;}
+#list_team_player7 {	top:67%;}
+#list_team_player8 {	top:72.5%;}
+#list_team_player9 {	top:78%;}
+#list_team_player10 { top:83.5%;}
+
+#list_medals_title
+{
+	position: absolute;
+	left:600px;
+	right:300px;
+	top:14%;
+	text-align:center;
+	font-weight: bold;
+	color:#3c3569;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:60px;
+}
+
+.list_medals
+{
+	position: absolute;
+	left:600px;
+	right:0px;
+	text-align:left;
+	font-weight: bold;
+	color:#66899f;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:60px;
+}
+
+#list_medals1 {	top:34%;}
+#list_medals2 {	top:50%;}
+#list_medals3 {	top:67%;}
+
+.player_title
+{
+	position: absolute;
+	text-align:left;
+	font-weight: bold;
+	color:#66899f;
+	font-family:"Arial Narrow", Arial, sans-serif;
+}
+
+#player_title {	top:79%; left:740px; font-size:36px; }
+#player_title1 {	top:79%; left:770px; font-size:32px; }
+#player_title2 {	top:83%; left:870px; font-size:28px; }
+
+#presentation_line1
+{
+	position: absolute;
+	left:0px;
+	right:0px;
+	top:70%;
+	text-align:center;
+	font-weight: bold;
+	color:#3c3569;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:32px;
+}
+
+#presentation_line2
+{
+	position: absolute;
+	left:0px;
+	right:0px;
+	top:75%;
+	text-align:center;
+	font-weight: bold;
+	color:#66899f;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:38px;
+}
+
+#referee_line1
+{
+	position: absolute;
+	left:550px;
+	right:0px;
+	top:78%;
+	text-align:left;
+	font-weight: bold;
+	color:#66899f;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:36px;
+}
+
+#referee_line2
+{
+	position: absolute;
+	left:580px;
+	right:0px;
+	top:83%;
+	text-align:left;
+	font-weight: bold;
+	color:#3c3569;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:32px;
+}

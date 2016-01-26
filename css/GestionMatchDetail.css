@@ -1,0 +1,71 @@
+.gBtn {
+	background-color: transparent;
+	background-image: -webkit-linear-gradient(top,rgba(160,160,160,.75),rgba(110,110,110,.75));
+	border: 1px solid transparent;
+	color: #ccc;
+	position: relative;
+	display: inline-block;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	cursor: default;
+	font-size: 11px;
+	font-weight: bold;
+	text-align: center;
+	white-space: nowrap;
+	margin: 2px;
+	height: 20px;
+	line-height: 22px;
+	min-width: 100px;
+	outline: 0;
+	padding: 0 8px;
+}
+.gBtnLong {
+	min-width: 180px;
+}
+.gBtnCourt {
+	min-width: 60px;
+}
+.gBtnActif {
+	background-image: -webkit-linear-gradient(top,rgba(68,200,68,.75),rgba(40,140,40,.75));
+	color: #444;
+}
+
+
+.ui-autocomplete-category {
+	font-weight: bold;
+	padding: .2em .4em;
+	margin: .8em 0 .2em;
+	line-height: 1.5;
+}
+
+/* highlight results */
+.ui-autocomplete span.hl_results {
+    background-color: #ffff66;
+}
+ 
+/* loading - the AJAX indicator */
+.ui-autocomplete-loading {
+    background: white url('images/wait.gif') right center no-repeat;
+}
+ 
+/* scroll results 
+.ui-autocomplete {
+    max-height: 250px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar 
+    overflow-x: hidden;
+    /* add padding for vertical scrollbar 
+    padding-right: 5px;
+}
+ 
+.ui-autocomplete li {
+    font-size: 14px;
+}
+ 
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+
+* html .ui-autocomplete {
+    height: 250px;
+}
+*/

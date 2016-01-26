@@ -1,0 +1,691 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "kviz Aktualizovane"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "kviz vypusta"
+
+#: quiz.php:18 mtouchquiz.php:49
+msgid "Manage mTouch Quizzes"
+msgstr "Sprava mTouch Kvizy"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "ID"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "Nazov"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "Pocet otazok"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "Vytvorene"
+
+#: quiz.php:33 question.php:108
+msgid "Action"
+msgstr "Akcia"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "Sprava otazky"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "Upravit Quiz Options"
+
+#: quiz.php:58
+msgid ""
+"You are about to delete this quiz? This will delete all the questions and "
+"answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr ""
+"You are about to delete this quiz? This will delete all the questions and "
+"answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+
+#: quiz.php:59 question.php:137
+msgid "Delete"
+msgstr "Odstranit"
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "Ziadne Kvizy najdeny."
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "Vytvorit novy kviz"
+
+#: question_form.php:17 question_form.php:124 question.php:101
+msgid "Question"
+msgstr "Otazka"
+
+#: question_form.php:35 question_form.php:144 show_quiz.php:418
+#: show_quiz.php:542
+msgid "Correct"
+msgstr "Opravit"
+
+#: question_form.php:44 question_form.php:150
+msgid "Delimit"
+msgstr "vymedzit"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "Odpoved:"
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "Tip:"
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "Zadajte prosim otazku"
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "Prosim, vyberte spravnu odpoved"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "Odpovede a rady"
+
+#: question_form.php:156 show_quiz.php:437
+msgid "Hint"
+msgstr "Tip"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "Pridat novy odpoved"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "Vysvetlenie"
+
+#: question_form.php:177
+msgid ""
+"You can use this field to explain the correct answer. This will be shown "
+"whenever correct answers are revealed."
+msgstr ""
+"Mozete pouzit toto pole na vysvetlenie spravnu odpoved. To vam ukaze vzdy, "
+"ked su odhalene spravne odpovede."
+
+#: question_form.php:183 question.php:106
+msgid "Point Value"
+msgstr "Point Value"
+
+#: question_form.php:197 quiz_form.php:365
+msgid "Save"
+msgstr "Ulozit"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "Ist na otazky Page"
+
+#: mtouchquiz.php:47
+msgid "mTouch Quiz"
+msgstr "mTouch Quiz"
+
+#: mtouchquiz.php:49
+msgid "Manage Quizzes"
+msgstr "Sprava Kvizy"
+
+#: mtouchquiz.php:50 premium.php:9
+msgid "Premium Features"
+msgstr "premiova"
+
+#: mtouchquiz.php:79
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: mtouchquiz.php:93
+msgid "mTouch Quiz Plugin Options"
+msgstr "mTouch Kviz Plugin Options"
+
+#: mtouchquiz.php:93
+msgid "mTouch Quiz Plugin"
+msgstr "mTouch Quiz Plugin"
+
+#: mtouchquiz.php:99
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Nemate dostatocne opravnenia pre pristup k tejto stranke."
+
+#: mtouchquiz.php:121
+msgid "Options updated"
+msgstr "Moznosti aktualizacie"
+
+#: mtouchquiz.php:129
+msgid "Left Delimiter"
+msgstr "Lavy oddelovace"
+
+#: mtouchquiz.php:132
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr ""
+"Left oddelovac pouzit, ak je zaciarknute policko vedla odpovedat vstup."
+
+#: mtouchquiz.php:137
+msgid "Right Delimiter"
+msgstr "Right Oddelovac"
+
+#: mtouchquiz.php:140
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr ""
+"Pravy oddelovac pouzit, ak je zaciarknute policko vedla odpovedat vstup."
+
+#: mtouchquiz.php:145
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "Zobrazit upozornenie, ak Kviz nedokonceny?"
+
+#: mtouchquiz.php:148
+msgid ""
+"Since results to the quiz are stored locally, leaving the quiz page will "
+"lose all progress."
+msgstr ""
+"Vzhladom k tomu, vysledky na teste su ulozene lokalne, bude opustat kviz "
+"stranku strati vsetok pokrok."
+
+#: mtouchquiz.php:150
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "Zobrazit varovanie pred uzivatel opusti nedokoncenu kviz."
+
+#: mtouchquiz.php:152
+msgid "Hide donation links"
+msgstr "Skryt darovanie odkazy"
+
+#: mtouchquiz.php:155
+msgid "I already supported mTouch Quiz or prefer not to."
+msgstr "Uz som podporila mTouch Kviz alebo radsej nie."
+
+#: mtouchquiz.php:160
+msgid ""
+"I will email my completed translation file to Michael at gmichaelguy.com so "
+"that others can benefit from my work. ;-)"
+msgstr ""
+"Ja vam e-mail svoj vyplneny preklad subor s Michaelom na gmichaelguy.com "
+"tak, aby ostatni mohli mat uzitok z mojej prace. ;-)"
+
+#: mtouchquiz.php:162
+msgid "Save Changes"
+msgstr "Ulozit zmeny"
+
+#: mtouchquiz.php:620
+msgid "FAQ"
+msgstr "FAQ"
+
+#: show_quiz.php:338
+msgid ""
+"Please wait while the activity loads.</br> If this activity does not load, "
+"try refreshing your browser. Also, this page requires javascript. Please "
+"visit using a browser with javascript enabled."
+msgstr ""
+"Pockajte prosim, kym aktivita zatazenie. </ br> Ak tato aktivita nie je "
+"nacitat, skuste osviezujuci vas prehliadac. Tiez tato stranka vyzaduje "
+"javascript. Prosim, navstivte pouzivate prehliadac s aktivnym JavaScriptom."
+
+#: show_quiz.php:340
+msgid "If loading fails, click here to try again"
+msgstr "Ak loading nepodarí, kliknite tu a skúste to znova"
+
+#: show_quiz.php:345
+msgid "Start"
+msgstr "Start"
+
+#: show_quiz.php:351
+msgid "Your answers are highlighted below."
+msgstr "Vase odpovede su uvedene nizsie."
+
+#: show_quiz.php:383
+msgid "Question %d"
+msgstr "Otazka% d"
+
+#: show_quiz.php:421 show_quiz.php:544
+msgid "Wrong"
+msgstr "Wrong"
+
+#: show_quiz.php:452
+msgid "Question %d Explanation:"
+msgstr "Otazka% d Vysvetlenie:"
+
+#: show_quiz.php:472
+msgid ""
+"Once you are finished, click the button below. Any items you have not "
+"completed will be marked incorrect."
+msgstr ""
+"Akonahle budete hotovi, kliknite na tlacidlo nizsie. Vsetky polozky, ktore "
+"ste nedokoncili budu oznacene nespravne."
+
+#: show_quiz.php:474
+msgid "Get Results"
+msgstr "Ziskajte vysledky"
+
+#: show_quiz.php:487
+msgid "There is 1 question to complete."
+msgstr "K dispozicii je 1 otazka na dokoncenie."
+
+#: show_quiz.php:487
+msgid "There are %d questions to complete."
+msgstr "Existuje% d otazky dokoncit."
+
+#: show_quiz.php:493
+msgid "Go to Previous Question"
+msgstr "Prejst na predchadzajucu otazku"
+
+#: show_quiz.php:496
+msgid "List"
+msgstr "Zoznam"
+
+#: show_quiz.php:499
+msgid "Go to Next Question"
+msgstr "Prejst na dalsiu otazku"
+
+#: show_quiz.php:507 show_quiz.php:530
+msgid "Return"
+msgstr "Return"
+
+#: show_quiz.php:509
+msgid "Shaded items are complete."
+msgstr "Sede polozky su kompletne."
+
+#: show_quiz.php:522
+msgid "End"
+msgstr "Koniec"
+
+#: show_quiz.php:534
+msgid "You have completed"
+msgstr "Prave ste dokoncili"
+
+#: show_quiz.php:536
+msgid "questions"
+msgstr "otazky"
+
+#: show_quiz.php:538
+msgid "question"
+msgstr "dotaz"
+
+#: show_quiz.php:540
+msgid "Your score is"
+msgstr "Vasa skore"
+
+#: show_quiz.php:546
+msgid "Partial-Credit"
+msgstr "Ciastocne Credit"
+
+#: show_quiz.php:548
+msgid ""
+"You have not finished your quiz. If you leave this page, your progress will "
+"be lost."
+msgstr ""
+"Nemate dokoncite kviz. Ak nechate tuto stranku, budu vase liecba mohla byt "
+"stratena."
+
+#: show_quiz.php:550
+msgid "Correct Answer"
+msgstr "Spravna odpoved"
+
+#: show_quiz.php:552
+msgid "You Selected"
+msgstr "ste vybrali"
+
+#: show_quiz.php:554
+msgid "Not Attempted"
+msgstr "Nie je Pokus"
+
+#: show_quiz.php:556
+msgid "Final Score on Quiz"
+msgstr "Konecny vysledok na Quiz"
+
+#: show_quiz.php:558
+msgid "Attempted Questions Correct"
+msgstr "Pokus o otazky Upravit"
+
+#: show_quiz.php:560
+msgid "Attempted Questions Wrong"
+msgstr "Pokus o otazky Wrong"
+
+#: show_quiz.php:562
+msgid "Questions Not Attempted"
+msgstr "Otazky, ktore nie su Pokus"
+
+#: show_quiz.php:564
+msgid "Total Questions on Quiz"
+msgstr "Celkom Otazky k Quiz"
+
+#: show_quiz.php:566
+msgid "Question Details"
+msgstr "Otazka Podrobnosti"
+
+#: show_quiz.php:568
+msgid "Results"
+msgstr "Vysledky"
+
+#: show_quiz.php:570
+msgid "Date"
+msgstr "Datum"
+
+#: show_quiz.php:572
+msgid "Score"
+msgstr "Prehlad"
+
+#: show_quiz.php:574
+msgid "Time allowed"
+msgstr "Lehota"
+
+#: show_quiz.php:575
+msgid "minutes"
+msgstr "minut"
+
+#: show_quiz.php:576
+msgid "seconds"
+msgstr "sekund"
+
+#: show_quiz.php:577
+msgid "Time used"
+msgstr "Cas pouziva"
+
+#: show_quiz.php:578
+msgid "Answer Choice(s) Selected"
+msgstr "Odpovedat Choice (y) Vybrane"
+
+#: show_quiz.php:579
+msgid "Question Text"
+msgstr "Otazka Text"
+
+#: show_quiz.php:613 quiz_form.php:211
+msgid "Need more practice!"
+msgstr "Potrebujete viac praxe!"
+
+#: show_quiz.php:617 quiz_form.php:211
+msgid "Keep trying!"
+msgstr "Majte sa!"
+
+#: show_quiz.php:621 quiz_form.php:211
+msgid "Not bad!"
+msgstr "Nie je to zle!"
+
+#: show_quiz.php:625 quiz_form.php:211
+msgid "Good work!"
+msgstr "Dobra praca!"
+
+#: show_quiz.php:629 quiz_form.php:211
+msgid "Perfect!"
+msgstr "Perfect!"
+
+#: show_quiz.php:637
+msgid "All done"
+msgstr "Vsetko hotovo"
+
+#: question.php:17
+msgid "Question updated."
+msgstr "aktualizovane otazka."
+
+#: question.php:21
+msgid "Question added."
+msgstr "Otazka znie."
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "Novy kviz znie"
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "Otazka vypusta"
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr "Quiz Cislo"
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr "Sprava otazky v"
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr "Ak chcete pridat tento kviz do svojho blogu, vlozte kod"
+
+#: question.php:95
+msgid "into any post."
+msgstr "do akehokolvek prispevku."
+
+#: question.php:103
+msgid "Number Answers"
+msgstr "Pocet odpovedi"
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr "Pocet Spravne odpovede"
+
+#: question.php:134
+msgid "Edit"
+msgstr "Upravit"
+
+#: question.php:136
+msgid ""
+"You are about to delete this question. This will delete the answers and "
+"hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr ""
+"Chystate sa zmazat tuto otazku. Tym dojde k vymazaniu odpovede a rady na "
+"tuto otazku. Stlacte tlacidlo 'OK' pre vymazanie a 'Zrusit' na zastavenie."
+
+#: question.php:145
+msgid "No questions found."
+msgstr "Ziadne otazky najdene."
+
+#: question.php:154
+msgid "Create New Question"
+msgstr "Vytvorit novu otazku"
+
+#: quiz_form.php:25
+msgid ""
+"<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %"
+"%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%"
+"%</p>"
+msgstr ""
+"<p> Gratulujeme - ste dokoncili%%%% QUIZ_NAME </ p> Tie strelil%%%%sCORE z%% "
+"Celkom%% </ p> Vas vykon bol hodnoteny .. ako%% RATING%% </ p> "
+
+#: quiz_form.php:41
+msgid "Quiz Name"
+msgstr "Quiz Meno"
+
+#: quiz_form.php:43 quiz_form.php:53
+msgid "Visual"
+msgstr "Vizualne"
+
+#: quiz_form.php:43 quiz_form.php:53
+msgid "HTML"
+msgstr "HTML"
+
+#: quiz_form.php:51
+msgid "Quiz Start Screen"
+msgstr "Kviz obrazovky Start"
+
+#: quiz_form.php:60
+msgid "For Email Submission of Quiz Results"
+msgstr "pre e-mail Podanie Quiz vysledkov"
+
+#: quiz_form.php:81 quiz_form.php:112
+msgid "To allow users to submit their results to you via email, you need a "
+msgstr ""
+"Ak chcete umoznit pouzivatelom, aby predlozili svoje vysledky emailom, je "
+"potrebne"
+
+#: quiz_form.php:85
+msgid ""
+"<a href=\"http://gmichaelguy.com/quizplugin/go/premium/\" title=\"Find out "
+"about mTouch Quiz Premium Feature Addons\">For detailed instructions on how "
+"to configure this option visit the plugin homepage.</a>"
+msgstr ""
+"<a href=\"http://gmichaelguy.com/quizplugin/go/premium/\" title=\"Find sa o "
+"mTouch Feature Premium Quiz Addons\"> Podrobne pokyny o tom, ako "
+"konfigurovat tato volba navstivte plugin homepage. </ a> "
+
+#: quiz_form.php:94
+msgid "Final Screen"
+msgstr "Final Screen"
+
+#: quiz_form.php:99
+msgid "Usable Variables..."
+msgstr "Pouzitelne premenne ..."
+
+#: quiz_form.php:103
+msgid "Variable"
+msgstr "Premenna"
+
+#: quiz_form.php:104
+msgid "Value"
+msgstr "Hodnota"
+
+#: quiz_form.php:110
+msgid ""
+" location for emailing results. (You may put this variable in the ratings "
+"below for conditional email option)"
+msgstr ""
+"miesto pre posielanie e-mailov vysledkov. (mozete dat tuto premennu v "
+"hodnoteni nizsie pre podmienecne e-volby)"
+
+#: quiz_form.php:120
+msgid "The number of correct answers"
+msgstr "pocet spravnych odpovedi"
+
+#: quiz_form.php:124
+msgid "Total number of questions"
+msgstr "Celkovy pocet otazok"
+
+#: quiz_form.php:128
+msgid "Correct answer percentage"
+msgstr "Spravna odpoved uspesnost"
+
+#: quiz_form.php:132
+msgid "Number of answers you got wrong"
+msgstr "Pocet odpovedi ste sa mylili,"
+
+#: quiz_form.php:136
+msgid "A rating of your performance. (Customize below.)"
+msgstr "hodnotenie vasho vykonu. (Vlastne nizsie)."
+
+#: quiz_form.php:140
+msgid "Time Allowed in Seconds. (Requires Timer Add on)"
+msgstr "Cas povolena v priebehu niekolkych sekund. (Vyzaduje Timer Pridat na)"
+
+#: quiz_form.php:144
+msgid "Time Used in Seconds. (Requires Timer Add on)"
+msgstr "Cas pouzite v priebehu niekolkych sekund. (Vyzaduje Timer Pridat na)"
+
+#: quiz_form.php:148
+msgid "The name of the quiz"
+msgstr "Nazov kvizu"
+
+#: quiz_form.php:201
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr "%%%% HODNOTENIE prisposobena pre zaverecna obrazovka hore"
+
+#: quiz_form.php:204
+msgid ""
+"Enter the percent (whole numbers only) and the message you would like the "
+"user to receive in place of the %%RATING%% variable. One of these messages "
+"will be displayed if their score is greater than or equal to the listed "
+"score."
+msgstr ""
+"Zadajte percent (cele cisla iba) a spravu, ktoru chcete uzivatelovi prijimat "
+"v mieste RATING%%%% premenna. Jedna z tychto sprav sa zobrazi, ak je ich "
+"skore je vacsia ako alebo rovna uvedenemu skore . "
+
+#: quiz_form.php:257
+msgid "Add New Rating"
+msgstr "Pridat novy Hodnotenie"
+
+#: quiz_form.php:261
+msgid "Quiz Options"
+msgstr "Quiz Options"
+
+#: quiz_form.php:266
+msgid "Options"
+msgstr "Moznosti"
+
+#: quiz_form.php:268
+msgid "Shortcode arguments"
+msgstr "Shortcode argumenty"
+
+#: quiz_form.php:273
+msgid "Show all questions on a single page."
+msgstr "Zobrazit vsetky otazky na jednu stranku."
+
+#: quiz_form.php:278
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "Povolit mnohonasobne opportunites odpovedat na otazky. *"
+
+#: quiz_form.php:283
+msgid "Show the hints, when available."
+msgstr "Zobrazit rady, ak je k dispozicii."
+
+#: quiz_form.php:288
+msgid "Display Quiz Start Screen before quiz."
+msgstr "Zobrazit Kviz Uvodna obrazovka pred kvizu."
+
+#: quiz_form.php:293
+msgid "Display Quiz Final Screen after quiz."
+msgstr "Zobrazit Kviz zaverecna obrazovka po teste."
+
+#: quiz_form.php:298
+msgid "Randomly arrange questions."
+msgstr "Nahodne usporiadat otazky."
+
+#: quiz_form.php:303
+msgid "Randomly arrange answers."
+msgstr "Nahodne usporiadat odpovede."
+
+#: quiz_form.php:308
+msgid "Never indicate the correct answers."
+msgstr "Nikdy oznacuju spravne odpovede."
+
+#: quiz_form.php:313
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "Uvedte spravne odpovede len na konci testu."
+
+#: quiz_form.php:318
+msgid "Indicate the correct answers at the end of each question."
+msgstr "Uvedte spravne odpovede na konci kazdej otazky."
+
+#: quiz_form.php:323
+msgid ""
+"* Must also select Indicate the correct answers at the end of each question."
+msgstr "* Musi tiez vybrat Uvedte spravne odpovede na konci kazdej otazky."
+
+#: quiz_form.php:337
+msgid "Add a time limit and countdown clock."
+msgstr "Pridat lehotu a odpocitavacie hodiny."
+
+#: quiz_form.php:348
+msgid "To set a time limit and have a countdown clock, you need the "
+msgstr ""
+"Ak chcete nastavit casovy limit a maju odpocitavanie hodiny, budete "
+"potrebovat"
+
+#: quiz_form.php:352
+msgid ""
+"<a href=\"http://gmichaelguy.com/quizplugin/go/timer/\" title=\"mTouch Quiz "
+"Timer Addon\" target=\"_blank\">For detailed instructions on how to "
+"configure the timer option visit the plugin homepage.</a>"
+msgstr ""
+"<a href=\"http://gmichaelguy.com/quizplugin/go/timer/\" title=\"mTouch Quiz "
+"Timer Addon\" target=\"_blank\"> Podrobne pokyny o tom, ako konfigurovat "
+"casovac moznost navstivit plugin domovsku stranku. </ a> "
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "Nehovor tuto stranku priamo."

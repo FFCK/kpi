@@ -1,0 +1,521 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2011-01-04 16:53:55+00:00\n"
+"PO-Revision-Date: 2011-07-01 10:53-0600\n"
+"Last-Translator: Eduardo Aranda <contacto@sinetiks.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+
+#: quiz_form.php:21
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr "<p>Felicidades - has completado %%QUIZ_NAME%%.</p><p>Tu calificación es %%SCORE%% de un total de %%TOTAL%%.</p><p>Tu rendimiento es %%RATING%%</p>"
+
+#: quiz_form.php:37
+msgid "Quiz Name"
+msgstr "Nombre de la prueba"
+
+#: quiz_form.php:45
+msgid "Quiz Start Screen"
+msgstr "Pantalla de inicio"
+
+#: quiz_form.php:47
+msgid "Visual"
+msgstr "Visual"
+
+#: quiz_form.php:47
+msgid "HTML"
+msgstr "HTML"
+
+#: quiz_form.php:54
+msgid "Final Screen"
+msgstr "Pantalla final"
+
+#: quiz_form.php:59
+msgid "Usable Variables..."
+msgstr "Variables usables"
+
+#: quiz_form.php:63
+msgid "Variable"
+msgstr "Variable"
+
+#: quiz_form.php:64
+msgid "Value"
+msgstr "Valor"
+
+#: quiz_form.php:68
+msgid "The number of correct answers"
+msgstr "Número de respuestas correctas"
+
+#: quiz_form.php:72
+msgid "Total number of questions"
+msgstr "Número total de preguntas"
+
+#: quiz_form.php:76
+msgid "Correct answer percentage"
+msgstr "Porcentaje de respuestas correctas"
+
+#: quiz_form.php:80
+msgid "Number of answers you got wrong"
+msgstr "Número de respuestas malas"
+
+#: quiz_form.php:84
+msgid "A rating of your performance. (Customize below.)"
+msgstr "Una calificación de su desempeño.(Personalizar a continuación)"
+
+#: quiz_form.php:88
+msgid "The name of the quiz"
+msgstr "El nombre de la prueba"
+
+#: quiz_form.php:120
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr "Personalización de %%RATING%% para la pantalla final"
+
+#: quiz_form.php:123
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr "Introduzca el porcentaje (números enteros) y el mensaje que le gustaría que el usuario reciba en el lugar de la variable %%RATING%%. Uno de estos mensajes se mostrará si la puntuación es mayor o igual a la puntuación en la lista.\t"
+
+#: quiz_form.php:130
+#: show_quiz.php:397
+msgid "Need more practice!"
+msgstr "¡Necesitas más práctica!"
+
+#: quiz_form.php:130
+#: show_quiz.php:399
+msgid "Keep trying!"
+msgstr "¡Sigue intentándolo!"
+
+#: quiz_form.php:130
+#: show_quiz.php:401
+msgid "Not bad!"
+msgstr "¡Nada mal!"
+
+#: quiz_form.php:130
+#: show_quiz.php:403
+msgid "Good work!"
+msgstr "¡Buen trabajo!"
+
+#: quiz_form.php:130
+#: show_quiz.php:405
+msgid "Perfect!"
+msgstr "¡Perfecto!"
+
+#: quiz_form.php:176
+msgid "Add New Rating"
+msgstr "Agregar nuevo rating"
+
+#: quiz_form.php:180
+msgid "Quiz Options"
+msgstr "Opciones de la prueba"
+
+#: quiz_form.php:185
+msgid "Options"
+msgstr "Opciones"
+
+#: quiz_form.php:187
+msgid "Shortcode arguments"
+msgstr "Argumentos abreviados"
+
+#: quiz_form.php:192
+msgid "Show all questions on a single page."
+msgstr "Mostrar todas las preguntas en una sola página."
+
+#: quiz_form.php:197
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "Permitir oportunidades múltiples para responder a las preguntas .*"
+
+#: quiz_form.php:202
+msgid "Show the hints, when available."
+msgstr "Mostrar las sugerencias, cuando estén disponibles."
+
+#: quiz_form.php:207
+msgid "Display Quiz Start Screen before quiz."
+msgstr "Mostrar la pantalla de inicio de la prueba antes de empezar"
+
+#: quiz_form.php:212
+msgid "Display Quiz Final Screen after quiz."
+msgstr "Mostrar la pantalla de fin de prueba al terminar"
+
+#: quiz_form.php:217
+msgid "Randomly arrange questions."
+msgstr "Organizar las preguntas aleatoriamente"
+
+#: quiz_form.php:222
+msgid "Randomly arrange answers."
+msgstr "Organizar respuestas aleatoriamente"
+
+#: quiz_form.php:227
+msgid "Never indicate the correct answers."
+msgstr "Nunca indicar las respuestas correctas"
+
+#: quiz_form.php:232
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "Indicar las respuestas correctas al final del cuestionario"
+
+#: quiz_form.php:237
+msgid "Indicate the correct answers at the end of each question."
+msgstr "Indicar las respuestas correctas al final de cada pregunta"
+
+#: quiz_form.php:242
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr "* también debes seleccionar \"indicar las respuestas correctas al final de cada pregunta\""
+
+#: quiz_form.php:259
+#: question_form.php:197
+msgid "Save"
+msgstr "Guardar"
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "No llamar a esta página directamente"
+
+#: show_quiz.php:167
+msgid "Please wait while the activity loads.</br> If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr "Por favor, espera mientras se carga la actividad. </ Br> Si esta actividad no se carga, prueba a actualizar su navegador. Además, esta página requiere javascript. Por favor, visite el uso de un navegador con javascript activado."
+
+#: show_quiz.php:169
+msgid "If loading fails, click here to try again"
+msgstr "Si la carga falla, haga clic aquí para intentarlo de nuevo"
+
+#: show_quiz.php:173
+msgid "Start"
+msgstr "Comenzar"
+
+#: show_quiz.php:181
+msgid "Your answers are highlighted below."
+msgstr "Tus respuestas se muestran a continuación"
+
+#: show_quiz.php:211
+msgid "Question %d"
+msgstr "Pregunta %d"
+
+#: show_quiz.php:246
+#: show_quiz.php:367
+#: question_form.php:35
+#: question_form.php:144
+msgid "Correct"
+msgstr "Correcto"
+
+#: show_quiz.php:249
+#: show_quiz.php:368
+msgid "Wrong"
+msgstr "Erróneo"
+
+#: show_quiz.php:265
+#: question_form.php:156
+msgid "Hint"
+msgstr "Pista"
+
+#: show_quiz.php:280
+msgid "Question %d Explanation:"
+msgstr "Explicación de pregunta %d:"
+
+#: show_quiz.php:300
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr "Una vez que haya terminado, haga clic en el botón de abajo. Los elementos que no haya terminado serán marcados como incorrectos."
+
+#: show_quiz.php:302
+msgid "Get Results"
+msgstr "Obtener resultados"
+
+#: show_quiz.php:313
+msgid "There is 1 question to complete."
+msgstr "Hay una pregunta por responder."
+
+#: show_quiz.php:313
+msgid "There are %d questions to complete."
+msgstr "Hay %d preguntas por responder."
+
+#: show_quiz.php:320
+msgid "Go to Previous Question"
+msgstr "Ir a pregunta anterior"
+
+#: show_quiz.php:323
+msgid "List"
+msgstr "Lista"
+
+#: show_quiz.php:326
+msgid "Go to Next Question"
+msgstr "Ir a pregunta siguiente"
+
+#: show_quiz.php:336
+#: show_quiz.php:359
+msgid "Return"
+msgstr "Regresar"
+
+#: show_quiz.php:338
+msgid "Shaded items are complete."
+msgstr "Los elementos sombreados están completos"
+
+#: show_quiz.php:351
+msgid "End"
+msgstr "Fin"
+
+#: show_quiz.php:363
+msgid "You have completed"
+msgstr "Has completado"
+
+#: show_quiz.php:364
+msgid "questions"
+msgstr "preguntas"
+
+#: show_quiz.php:365
+msgid "question"
+msgstr "pregunta"
+
+#: show_quiz.php:366
+msgid "Your score is"
+msgstr "Tu calificación es"
+
+#: show_quiz.php:369
+msgid "Partial-Credit"
+msgstr "Puntaje-parcial"
+
+#: show_quiz.php:370
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr "Usted no ha terminado su examen. Si sale de esta página, su progreso se perderá."
+
+#: show_quiz.php:412
+msgid "All done"
+msgstr "Terminado"
+
+#: mtouchquiz.php:45
+msgid "mTouch Quiz"
+msgstr "mTouch Quiz"
+
+#: mtouchquiz.php:47
+#: quiz.php:18
+msgid "Manage mTouch Quizzes"
+msgstr "Administrar cuestionarios"
+
+#: mtouchquiz.php:47
+msgid "Manage Quizzes"
+msgstr "Administrar cuestionarios"
+
+#: mtouchquiz.php:72
+msgid "Settings"
+msgstr "Configuración"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin Options"
+msgstr "Opciones de mTouch Quiz"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin"
+msgstr "Plugin mTouch Quiz"
+
+#: mtouchquiz.php:92
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Usted no tiene permisos suficientes para acceder a esta página."
+
+#: mtouchquiz.php:107
+msgid "Options updated"
+msgstr "Opciones actualizadas"
+
+#: mtouchquiz.php:115
+msgid "Left Delimiter"
+msgstr "delimitador izquierdo"
+
+#: mtouchquiz.php:116
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr "Izquierda delimitador utilizado cuando la casilla está marcada al lado de respuesta de entrada."
+
+#: mtouchquiz.php:120
+msgid "Right Delimiter"
+msgstr "delimitador derecho"
+
+#: mtouchquiz.php:121
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr "derecha delimitador utilizado cuando la casilla está marcada al lado de la respuesta"
+
+#: mtouchquiz.php:126
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "Mostrar alertas si el cuestionario está sin terminar?"
+
+#: mtouchquiz.php:127
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr "Dado que los resultados de la prueba se almacenan localmente, salir de la página significa perder todo el progreso."
+
+#: mtouchquiz.php:128
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "Mostrar una advertencia antes de que un usuario deja una prueba incompleta."
+
+#: mtouchquiz.php:131
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr "voy a enviar un correo electrónico con el archivo de traducción completa a Michael en gmichaelguy.com para que otros puedan beneficiarse de mi trabajo. ;-)"
+
+#: mtouchquiz.php:133
+msgid "Save Changes"
+msgstr "Guardar cambios	"
+
+#: mtouchquiz.php:367
+msgid "FAQ"
+msgstr "FAQ"
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr "Delimitar"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "Respuesta:"
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "Pista:"
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "Por favor, introduzca la pregunta"
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "Por favor, seleccione una respuesta correcta"
+
+#: question_form.php:124
+#: question.php:101
+msgid "Question"
+msgstr "Pregunta"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "respuestas y sugerencias"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "Añadir Respuesta Nueva"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "Explicación"
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr "Usted puede usar este campo para explicar la respuesta correcta. Esto se mostrará cada vez que se revelan las respuestas correctas."
+
+#: question_form.php:183
+#: question.php:106
+msgid "Point Value"
+msgstr "Valor en puntos"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "Ir a la página Preguntas	"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "Cuestionario actualizado"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "Cuestionario borrado"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "ID"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "Título"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "Número de preguntas	"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "Creado el"
+
+#: quiz.php:33
+#: question.php:108
+msgid "Action"
+msgstr "Acción"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "Administrar preguntas"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "Editar opciones del cuestionario"
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Usted está a punto de eliminar este cuestionario? Esto eliminará todas las preguntas y respuestas en este cuestionario. Pulse 'OK' para borrar y \"Cancelar\" para detener."
+
+#: quiz.php:59
+#: question.php:137
+msgid "Delete"
+msgstr "Eliminar"
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "No se encontraron cuestionarios"
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "Crear nuevo cuestionario"
+
+#: question.php:17
+msgid "Question updated."
+msgstr "Pregunta actualizada"
+
+#: question.php:21
+msgid "Question added."
+msgstr "Pregunta agregada"
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "Nuevo cuestionaro agregado"
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "Pregunta borrada"
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr "ID de cuestionario"
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr "Administrar preguntas en"
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr "Para agregar este cuestionario a tu blog, inserta el código"
+
+#: question.php:95
+msgid "into any post."
+msgstr "en cualquier post"
+
+#: question.php:103
+msgid "Number Answers"
+msgstr "Numerar respuestas"
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr "Numerar respuestas correctas"
+
+#: question.php:134
+msgid "Edit"
+msgstr "Editar"
+
+#: question.php:136
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Usted está a punto de eliminar a esta pregunta. Esto eliminará las respuestas y sugerencias a esta pregunta. Pulse 'OK' para borrar y \"Cancelar\" para detener.	"
+
+#: question.php:145
+msgid "No questions found."
+msgstr "No se encontraron preguntas"
+
+#: question.php:154
+msgid "Create New Question"
+msgstr "Crear nueva pregunta"
+

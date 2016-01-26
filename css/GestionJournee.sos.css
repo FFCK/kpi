@@ -1,0 +1,58 @@
+div.blocLeftGestionEquipe
+{
+	width: 800px;
+	font-size:9.0pt;
+	font-weight: bold;
+float: left;
+}
+
+div.blocMiddleGestionEquipe
+{
+	width:100px;
+float: left;
+}
+
+div.blocRightGestionEquipe
+{
+	width:180px; 
+float: left;
+}
+
+div.blocTableGestionEquipe
+{
+	height:90%;	
+	width:100%;
+	overflow:auto;
+	overflow:scroll;
+	overflow-x:hidden;
+}
+
+div.blocMiddleGestionEquipe input
+{
+	width:100px;
+	font-size:9.0pt;
+	font-weight: bold; 
+}
+
+div.blocRightGestionEquipe label
+{
+	font-size:8.0pt;
+	width:100%;
+}
+
+div.blocRightGestionEquipe select
+{
+	font-size:8.0pt;
+	width:100%;
+}
+
+div.blocRightGestionEquipe input
+{
+	font-size:8.0pt;
+	width:100%;
+}
+
+table.tableGestionEquipe
+{
+	font-size:9.0pt;
+}

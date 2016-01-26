@@ -1,0 +1,520 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2011-01-04 16:53:55+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2011-03-29 05:51+0200\n"
+"Last-Translator: Can Kırca <cankirca@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: quiz_form.php:21
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr "<p>Tebrikler - %%QUIZ_NAME%% adlı sınavı başarıyla tamamladınız.</p><p>Sizin aldığınız skor %%SCORE%% en yüksek skor %%TOTAL%%.</p><p>Hakkınızdaki düşüncemiz %%RATING%%</p>"
+
+#: quiz_form.php:37
+msgid "Quiz Name"
+msgstr "Sınav adı"
+
+#: quiz_form.php:45
+msgid "Quiz Start Screen"
+msgstr "Sınav başlangıç ekranı"
+
+#: quiz_form.php:47
+msgid "Visual"
+msgstr "Görsel"
+
+#: quiz_form.php:47
+msgid "HTML"
+msgstr "HTML"
+
+#: quiz_form.php:54
+msgid "Final Screen"
+msgstr "Final ekranı"
+
+#: quiz_form.php:59
+msgid "Usable Variables..."
+msgstr "Kullanılabilir değişkenler"
+
+#: quiz_form.php:63
+msgid "Variable"
+msgstr "Değişken"
+
+#: quiz_form.php:64
+msgid "Value"
+msgstr "Değer"
+
+#: quiz_form.php:68
+msgid "The number of correct answers"
+msgstr "Doğru sayısı"
+
+#: quiz_form.php:72
+msgid "Total number of questions"
+msgstr "Soru sayısı"
+
+#: quiz_form.php:76
+msgid "Correct answer percentage"
+msgstr "Doğru yüzdesi"
+
+#: quiz_form.php:80
+msgid "Number of answers you got wrong"
+msgstr "Yaptığınız yanlış sayısı"
+
+#: quiz_form.php:84
+msgid "A rating of your performance. (Customize below.)"
+msgstr ""
+
+#: quiz_form.php:88
+msgid "The name of the quiz"
+msgstr "Sınav başlığı"
+
+#: quiz_form.php:120
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr ""
+
+#: quiz_form.php:123
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr ""
+
+#: quiz_form.php:130
+#: show_quiz.php:397
+msgid "Need more practice!"
+msgstr "Daha çok pratiğe ihtiyaç var"
+
+#: quiz_form.php:130
+#: show_quiz.php:399
+msgid "Keep trying!"
+msgstr "Böyle devam et"
+
+#: quiz_form.php:130
+#: show_quiz.php:401
+msgid "Not bad!"
+msgstr "Kötü değil"
+
+#: quiz_form.php:130
+#: show_quiz.php:403
+msgid "Good work!"
+msgstr "İyi çalışıyor"
+
+#: quiz_form.php:130
+#: show_quiz.php:405
+msgid "Perfect!"
+msgstr "Mükemmel"
+
+#: quiz_form.php:176
+msgid "Add New Rating"
+msgstr "Eklentiyi oyla"
+
+#: quiz_form.php:180
+msgid "Quiz Options"
+msgstr "Sınav seçenekleri"
+
+#: quiz_form.php:185
+msgid "Options"
+msgstr "Seçenekler"
+
+#: quiz_form.php:187
+msgid "Shortcode arguments"
+msgstr "Kod"
+
+#: quiz_form.php:192
+msgid "Show all questions on a single page."
+msgstr "Tüm soruları tek sayfada görüntüle."
+
+#: quiz_form.php:197
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "Çoklu yanıtlara izin ver."
+
+#: quiz_form.php:202
+msgid "Show the hints, when available."
+msgstr "Eğer varsa ipuçlarını göster."
+
+#: quiz_form.php:207
+msgid "Display Quiz Start Screen before quiz."
+msgstr "Sınav başlangıç ekranını görüntüle."
+
+#: quiz_form.php:212
+msgid "Display Quiz Final Screen after quiz."
+msgstr "Sınav sonrası skoru görüntüle."
+
+#: quiz_form.php:217
+msgid "Randomly arrange questions."
+msgstr "Soruları rastgele sırala."
+
+#: quiz_form.php:222
+msgid "Randomly arrange answers."
+msgstr "Yanıtları rastgele sırala."
+
+#: quiz_form.php:227
+msgid "Never indicate the correct answers."
+msgstr "Doğru yanıtları belirtme."
+
+#: quiz_form.php:232
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "Doğru yanıtları sınav sonunda belirt"
+
+#: quiz_form.php:237
+msgid "Indicate the correct answers at the end of each question."
+msgstr "Her sorunun yanıtını belirt"
+
+#: quiz_form.php:242
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr "* Her sorunun doğru yanıtını işaretleyiniz."
+
+#: quiz_form.php:259
+#: question_form.php:197
+msgid "Save"
+msgstr "Kaydet"
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "Bu sayfaya doğrudan ulaşılamaz."
+
+#: show_quiz.php:167
+msgid "Please wait while the activity loads.</br> If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr "Lütfen sayfa yüklenirken bekleyiniz, tarayıcınızda javascript desteğinin etkin olduğundan emin olunuz."
+
+#: show_quiz.php:169
+msgid "If loading fails, click here to try again"
+msgstr "Eğer sayfa yüklenmediyse buraya tıklayınız."
+
+#: show_quiz.php:173
+msgid "Start"
+msgstr "Başla"
+
+#: show_quiz.php:181
+msgid "Your answers are highlighted below."
+msgstr "Yanıtlarınız aşağıdaki gibidir."
+
+#: show_quiz.php:211
+msgid "Question %d"
+msgstr "Soru %d"
+
+#: show_quiz.php:246
+#: show_quiz.php:367
+#: question_form.php:35
+#: question_form.php:144
+msgid "Correct"
+msgstr "Doğru"
+
+#: show_quiz.php:249
+#: show_quiz.php:368
+msgid "Wrong"
+msgstr "Yanlış"
+
+#: show_quiz.php:265
+#: question_form.php:156
+msgid "Hint"
+msgstr "İpucu"
+
+#: show_quiz.php:280
+msgid "Question %d Explanation:"
+msgstr "%d numaralı soru için açıklama"
+
+#: show_quiz.php:300
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr "Sınavı tamamlamak için butona tıklayınız, yanlışlarınız gösterilecektir."
+
+#: show_quiz.php:302
+msgid "Get Results"
+msgstr "Sonuçları al."
+
+#: show_quiz.php:313
+msgid "There is 1 question to complete."
+msgstr "Tamamlamak için 1 soru kaldı."
+
+#: show_quiz.php:313
+msgid "There are %d questions to complete."
+msgstr "%d tamamladınız."
+
+#: show_quiz.php:320
+msgid "Go to Previous Question"
+msgstr "Önceki soru"
+
+#: show_quiz.php:323
+msgid "List"
+msgstr "Liste"
+
+#: show_quiz.php:326
+msgid "Go to Next Question"
+msgstr "Sonraki soru"
+
+#: show_quiz.php:336
+#: show_quiz.php:359
+msgid "Return"
+msgstr "Geri dön"
+
+#: show_quiz.php:338
+msgid "Shaded items are complete."
+msgstr "Tamamlananlar işaretlendi."
+
+#: show_quiz.php:351
+msgid "End"
+msgstr "Son"
+
+#: show_quiz.php:363
+msgid "You have completed"
+msgstr "Başarıyla tamamladınız."
+
+#: show_quiz.php:364
+msgid "questions"
+msgstr "sorular"
+
+#: show_quiz.php:365
+msgid "question"
+msgstr "soru"
+
+#: show_quiz.php:366
+msgid "Your score is"
+msgstr "Aldığınız skor"
+
+#: show_quiz.php:369
+msgid "Partial-Credit"
+msgstr ""
+
+#: show_quiz.php:370
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr "Sınavı henüz tamamlamadınız. Eğer sayfadan ayrılırsanız, verdiğiniz yanıtlar kaybolacak!"
+
+#: show_quiz.php:412
+msgid "All done"
+msgstr "Sona erdi"
+
+#: mtouchquiz.php:45
+msgid "mTouch Quiz"
+msgstr "mTouch Sınav eklentisi"
+
+#: mtouchquiz.php:47
+#: quiz.php:18
+msgid "Manage mTouch Quizzes"
+msgstr "mTouch sınavlarını yönet"
+
+#: mtouchquiz.php:47
+msgid "Manage Quizzes"
+msgstr "Sınavları yönet"
+
+#: mtouchquiz.php:72
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin Options"
+msgstr "mTouch sınav eklentisi seçenekleri"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin"
+msgstr "mTouch Sınav eklentisi"
+
+#: mtouchquiz.php:92
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Bu sayfayı görüntülemek için yeterli izne sahip değilsiniz."
+
+#: mtouchquiz.php:107
+msgid "Options updated"
+msgstr "Seçenekler güncellendi."
+
+#: mtouchquiz.php:115
+msgid "Left Delimiter"
+msgstr "Sol sınır"
+
+#: mtouchquiz.php:116
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr ""
+
+#: mtouchquiz.php:120
+msgid "Right Delimiter"
+msgstr "Sağ sınır"
+
+#: mtouchquiz.php:121
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr ""
+
+#: mtouchquiz.php:126
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "Sınav tamamlanmadıysa uyarı görüntülensin mi?"
+
+#: mtouchquiz.php:127
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr "Sayfadan çıkıldığında, yapılan sınav bilgileri kaybolacak."
+
+#: mtouchquiz.php:128
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "Boşluklar için uyarı görüntüle."
+
+#: mtouchquiz.php:131
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr "Siz de daha çok çeviri yaparak eklentiye katkıda bulunabilirsiniz. Tamamladığınız Çeviri dosyalarını Michael at gmichaelguy.com adresine gönderebilirsiniz. ;-)"
+
+#: mtouchquiz.php:133
+msgid "Save Changes"
+msgstr "Değişiklikleri kaydet"
+
+#: mtouchquiz.php:367
+msgid "FAQ"
+msgstr "Sıkça Sorulan Sorular"
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr "Sınır"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "Yanıt:"
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "İpucu:"
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "Lütfen soru giriniz."
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "Lütfen doğru yanıtı seçiniz."
+
+#: question_form.php:124
+#: question.php:101
+msgid "Question"
+msgstr "Soru"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "Yanıtlar"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "Yeni yanıt ekle"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "Açıklama"
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr "Bu kutuyu doğru yanıtı açıklamak için kullanabilirsiniz."
+
+#: question_form.php:183
+#: question.php:106
+msgid "Point Value"
+msgstr "Hedef değer"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "Soru sayfasına dön"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "Sınav güncellendi!"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "Sınav silindi!"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "ID"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "Başlık"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "Soru sayısı"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "Oluşturulma tarihi"
+
+#: quiz.php:33
+#: question.php:108
+msgid "Action"
+msgstr "Eylem"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "Soruları yönet"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "Sınav seçeneklerini düzenle"
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Bu sınavı silmek üzeresiniz, işlem tüm soru ve yanıtları da etkileyecek. İşleme devam etmek için 'Tamam' tuşuna, iptal etmek için 'İptal' tuşuna basınız."
+
+#: quiz.php:59
+#: question.php:137
+msgid "Delete"
+msgstr "Sil"
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "Herhangi bir kayıt bulunamadı."
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "Yeni sınav oluştur."
+
+#: question.php:17
+msgid "Question updated."
+msgstr "Soru güncellendi."
+
+#: question.php:21
+msgid "Question added."
+msgstr "Soru eklendi."
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "Yeni sınav eklendi."
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "Soru silindi!"
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr "Sınav ID numarası"
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr " içerisindeki soruları yönet"
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr "Oluşturduğunuz sınav uygulamasını bloğunuza eklemek için, bu kodu uygulamanın görüntülenmesini istediğiniz yere yapıştırın "
+
+#: question.php:95
+msgid "into any post."
+msgstr "herhangi bir yazı içerisinde."
+
+#: question.php:103
+msgid "Number Answers"
+msgstr "Yanıt sayısı"
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr "Yanlış sayısı"
+
+#: question.php:134
+msgid "Edit"
+msgstr "Düzenle"
+
+#: question.php:136
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Bu soruyu silmek üzeresiniz, silme işlemi sorunun yanıtını da etkileyecektir."
+
+#: question.php:145
+msgid "No questions found."
+msgstr "Soru bulunamadı"
+
+#: question.php:154
+msgid "Create New Question"
+msgstr "Yeni soru oluştur"
+

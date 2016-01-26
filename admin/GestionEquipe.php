@@ -1,0 +1,656 @@
+<?php
+
+include_once('../commun/MyPage.php');
+include_once('../commun/MyBdd.php');
+include_once('../commun/MyTools.php');
+
+// Gestion des Equipes
+
+class GestionEquipe extends MyPageSecure	 
+{	
+	function Load()
+	{
+		$_SESSION['updatecell_tableName'] = 'gickp_Competitions_Equipes';
+		$_SESSION['updatecell_where'] = 'Where Id = ';
+		$_SESSION['updatecell_document'] = 'formEquipe';
+		
+		$codeSaison = utyGetSaison();
+		$this->m_tpl->assign('codeSaison', $codeSaison);
+
+		$codeCompet = utyGetSession('codeCompet');
+		$codeCompet = utyGetPost('competition', $codeCompet);
+		$_SESSION['codeCompet'] = $codeCompet;
+
+		if ($codeCompet == '*')  
+			$codeCompet = '';
+		
+		$myBdd = new MyBdd();
+		
+		// Chargement des Compétitions ...
+		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif ";
+		$sql .= "From gickp_Competitions c, gickp_Competitions_Groupes g ";
+		$sql .= "Where c.Code_saison = '";
+		$sql .= $codeSaison;
+		$sql .= "' ";
+		$sql .= utyGetFiltreCompetition('c.');
+		$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+		if(utyGetSession('AfficheCompet') == 'NCF')
+			$sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
+		else
+			$sql .= " And c.Code Like '".utyGetSession('AfficheCompet')."%' ";
+		$sql .= " And c.Code_ref = g.Groupe ";
+		$sql .= " Order By c.Code_saison, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		
+		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
+		$num_results = mysql_num_rows($result);
+	
+		$arrayCompetition = array();
+		for ($i=0;$i<$num_results;$i++)
+		{
+			$row = mysql_fetch_array($result);
+			// Titre
+			if($row["Titre_actif"] != 'O' && $row["Soustitre"] != '')
+				$Libelle = $row["Soustitre"];
+			else
+				$Libelle = $row["Libelle"];
+			if($row["Soustitre2"] != '')
+				$Libelle .= ' - '.$row["Soustitre2"];
+			
+			// Si $codeCompet Vide on prend le premier de la liste ...
+			if ( (strlen($codeCompet) == 0) && ($i == 0) )
+				$codeCompet = $row["Code"];
+			
+			if ($row["Code"] == $codeCompet)
+			{
+				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "SELECTED" ) );
+				$this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
+			}
+			else
+				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "" ) );
+		}
+		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
+		$this->m_tpl->assign('codeCompet', $codeCompet);
+						
+		
+		// Chargement des Equipes ...
+		$arrayEquipe = array();
+		
+		if (strlen($codeCompet) > 0)
+		{ 
+			if ($codeCompet != 'POOL')
+			{
+				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  ";
+				$sql .= "From gickp_Competitions_Equipes ce, gickp_Club c ";
+				$sql .= "Where ce.Code_compet = '";
+				$sql .= $codeCompet;
+				$sql .= "' And ce.Code_saison = '";
+				$sql .= $codeSaison;
+				$sql .= "' And ce.Code_club = c.Code ";	 
+				$sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+			} else {
+				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage ";
+				$sql .= "From gickp_Competitions_Equipes ce ";
+				$sql .= "Where ce.Code_compet = '";
+				$sql .= $codeCompet;
+				$sql .= "' Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+			}
+			
+			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
+			$num_results = mysql_num_rows($result);
+		 
+			for ($i=0;$i<$num_results;$i++)
+			{
+				$row = mysql_fetch_array($result);	  
+				if (strlen($row['Code_comite_dep']) > 3)
+					$row['Code_comite_dep'] = 'FRA';
+				if ($row['Tirage'] != 0 or $row['Poule'] != '')
+					$this->m_tpl->assign('Tirage', 'ok');
+				array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'Code_comite_dep' => $row['Code_comite_dep'] ));
+			}
+		}	
+		$this->m_tpl->assign('arrayEquipe', $arrayEquipe);
+
+		//Mise à jour du nombre d'équipe de la compétition
+		$sql  = "Update gickp_Competitions set Nb_equipes = '";
+		$sql .= $num_results;
+		$sql .= "' Where Code = '";
+		$sql .= $codeCompet;
+		$sql .= "' And Code_saison = '";
+		$sql .= $codeSaison;
+		$sql .= "' ";
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur update 1 : ".$sql);
+
+		
+		// Les comites et les clubs ...
+		$codeComiteReg = utyGetSession('codeComiteReg', '*');
+		$codeComiteReg = utyGetPost('comiteReg', $codeComiteReg);
+		if (strlen($codeComiteReg) == 0) $codeComiteReg = '*';
+		
+		$codeComiteDep = utyGetSession('codeComiteDep', '*');
+		$codeComiteDep = utyGetPost('comiteDep', $codeComiteDep);
+		if (strlen($codeComiteDep) == 0) $codeComiteDep = '*';
+		
+		$codeClub = utyGetSession('codeClub', '*');
+		$codeClub = utyGetPost('club', $codeClub);
+		if (strlen($codeClub) == 0) $codeClub = '*';
+		
+		if (isset($_POST['ParamCmd']))	// @COSANDCO_WAMPSER
+		{
+			if ($codeComiteReg == '*' && $_POST['ParamCmd'] == 'changeComiteReg')
+			{
+				$codeComiteDep = '*';
+				$codeClub = '*';
+			}
+			
+			if ($codeComiteDep == '*' && $_POST['ParamCmd'] == 'changeComiteDep')
+			{
+				$codeClub = '*';
+			}
+		}
+			
+		$_SESSION['codeComiteReg'] = $codeComiteReg;
+		$_SESSION['codeComiteDep'] = $codeComiteDep;
+		$_SESSION['codeClub'] = $codeClub;
+
+		// Chargement des Comites Régionaux ...
+		$sql  = "Select Code, Libelle ";
+		$sql .= "From gickp_Comite_reg ";
+		$sql .= "Order By Code ";	 
+		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
+
+		$num_results = mysql_num_rows($result);
+	
+		$arrayComiteReg = array();
+		if ('*' == $codeComiteReg)
+			array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - Tous les Comités Régionaux', 'Selected' => 'SELECTED') );
+		else
+			array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - Tous les Comités Régionaux', 'Selected' => '') );
+	
+		for ($i=0;$i<$num_results;$i++)
+		{
+			$row = mysql_fetch_array($result);	  
+			
+			if ($row["Code"] == $codeComiteReg)
+				array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"]." - ".$row["Libelle"], 'Selected' => 'SELECTED' ) );
+			else
+				array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"]." - ".$row["Libelle"], 'Selected' => '' ) );
+		}
+		
+		$this->m_tpl->assign('arrayComiteReg', $arrayComiteReg);
+		
+		// Chargement des Comites Departementaux ...
+		$arrayComiteDep = array();
+		if ('*' == $codeComiteDep)
+		{
+			array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - Tous les Comités Départementaux', 'Selected' => 'SELECTED') );
+			$bSelectCombo = true;
+		}
+		else
+			array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - Tous les Comités Départementaux', 'Selected' => '') );
+		
+			$sql  = "Select Code, Libelle ";
+			$sql .= "From gickp_Comite_dep ";
+			if ($codeComiteReg != '*')
+			{
+				$sql .= "Where Code_comite_reg = '";
+				$sql .= $codeComiteReg;
+				$sql .= "' ";
+			}
+			$sql .= "Order By Code ";	 
+			
+			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
+			$num_results = mysql_num_rows($result);
+	
+			$bSelectCombo = false;	
+			for ($i=0;$i<$num_results;$i++)
+			{
+				$row = mysql_fetch_array($result);	
+				
+				if ($row["Code"] == $codeComiteDep)
+				{
+					array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code']." - ".$row['Libelle'], 'Selected' => 'SELECTED' ) );
+					$bSelectCombo = true;
+				}
+				else
+					array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code']." - ".$row['Libelle'], 'Selected' => '' ) );
+			}
+			
+//			if (!$bSelectCombo )
+//				$codeComiteDep = '*';
+//		}
+		
+		$this->m_tpl->assign('arrayComiteDep', $arrayComiteDep);
+		
+		// Chargement des Clubs ...
+		$arrayClub = array();
+		if ('*' == $codeClub)
+			array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - Tous les Clubs', 'Selected' => 'SELECTED') );
+		else
+			array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - Tous les Clubs', 'Selected' => '') );
+	
+			$sql  = "Select c.Code, c.Libelle ";
+			$sql .= "From gickp_Club c, gickp_Comite_dep cd ";
+			$sql .= "Where c.Code_comite_dep = cd.Code ";
+			if ($codeComiteReg != '*')
+			{
+				$sql .= "And cd.Code_comite_reg = '";
+				$sql .= $codeComiteReg;
+				$sql .= "' ";
+			}
+			if ($codeComiteDep != '*')
+			{
+				$sql .= "And c.Code_comite_dep = '";
+				$sql .= $codeComiteDep;
+				$sql .= "' ";
+			}
+			$sql .= "Order By c.Code ";	 
+			
+			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Club");
+			$num_results = mysql_num_rows($result);
+				
+			$bSelectCombo = false;	
+			for ($i=0;$i<$num_results;$i++)
+			{
+				$row = mysql_fetch_array($result);	
+				
+				if ($row["Code"] == $codeClub)
+				{
+					array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'].' - '.$row['Libelle'], 'Selected' => 'SELECTED' ) );
+					$bSelectCombo = true;
+				}
+				else
+					array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'].' - '.$row['Libelle'], 'Selected' => '' ) );
+			}
+			
+//			if (!$bSelectCombo )
+//				$codeClub = '*';
+//		}
+		$this->m_tpl->assign('arrayClub', $arrayClub);
+		
+		//Filtres
+		$filtreH = utyGetPost('filtreH', 1);
+		if($filtreH == 1)
+		{
+			$filtreH = true;
+			$filtreF = false;
+		}else{
+			$filtreH = false;
+			$filtreF = true;
+		}
+		$filtreJ = utyGetPost('filtreJ', false);
+		$filtre21 = utyGetPost('filtre21', false);
+		$filtreTous = utyGetPost('filtreTous', false);
+		if($filtreTous)
+		{
+			$filtreH = false;
+			$filtreF = false;
+			$filtreJ = false;
+			$filtre21 = false;
+		}
+		if($filtreTous) $this->m_tpl->assign('filtreTous', 'checked');
+		if($filtreH) $this->m_tpl->assign('filtreH', 'checked');
+		if($filtreF) $this->m_tpl->assign('filtreF', 'checked');
+		if($filtreJ) $this->m_tpl->assign('filtreJ', 'checked');
+		if($filtre21) $this->m_tpl->assign('filtre21', 'checked');
+		
+		// Chargement des Equipes Historique ...
+		$arrayHistoEquipe = array();
+		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '=> NOUVELLE EQUIPE...'));
+		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => ''));
+		
+		if ($codeComiteReg != '98')
+		{
+			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== CLUBS FRANCAIS ====', 'Code_club' => ''));
+			$sql  = "Select e.Numero, e.Libelle, e.Code_club ";
+			$sql .= "From gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd ";
+			$sql .= "Where e.Code_club = c.Code ";
+			$sql .= "And c.Code_comite_dep = cd.Code ";
+			$sql .= "And cd.Code_comite_reg != '98' ";
+			if ($codeComiteReg != '*')
+			{
+				$sql .= "And cd.Code_comite_reg = '";
+				$sql .= $codeComiteReg;
+				$sql .= "' ";
+			}
+			if ($codeComiteDep != '*')
+			{
+				$sql .= "And c.Code_comite_dep = '";
+				$sql .= $codeComiteDep;
+				$sql .= "' ";
+			}
+			if ($codeClub != '*')
+			{
+				$sql .= "And e.Code_club = '";
+				$sql .= $codeClub;
+				$sql .= "' ";
+			}
+			if(!$filtreTous)
+			{
+				$sql .= "And (";
+				($filtreH) ? $sql .= "e.Libelle Not Like '%F' And " : $sql .= "e.Libelle Like '%' And ";
+				($filtreF) ? $sql .= "e.Libelle Like '%F' And " : $sql .= "e.Libelle Not Like '%F' And ";
+				($filtreJ) ? $sql .= "(e.Libelle Like '%JH' Or e.Libelle Like '%JF') And " : $sql .= "e.Libelle Not Like '%JH' And e.Libelle Not Like '%JF' And ";
+				($filtre21) ? $sql .= "e.Libelle Like '%21%'" : $sql .= "e.Libelle Not Like '%21%'";
+				$sql .= ") ";
+			}
+			$sql .= "Order By e.Libelle ";
+			
+			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
+			$num_results = mysql_num_rows($result);
+			for ($i=0;$i<$num_results;$i++)
+			{
+				$row = mysql_fetch_array($result);	  
+				array_push($arrayHistoEquipe, array('Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club']));
+			}
+			array_push($arrayHistoEquipe, array('Numero' => '----', 'Libelle' => '==== TOTAL : '.$num_results.' équipes de club ====', 'Code_club' => ''));
+			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '', 'Code_club' => ''));
+		}
+		if ($codeComiteReg == '98' or $codeComiteReg == '*')
+		{
+			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== INTERNATIONAL ====', 'Code_club' => ''));
+			$sql  = "Select e.Numero, e.Libelle, e.Code_club ";
+			$sql .= "From gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd ";
+			$sql .= "Where e.Code_club = c.Code ";
+			$sql .= "And c.Code_comite_dep = cd.Code ";
+			$sql .= "And cd.Code_comite_reg = '98' ";
+			if ($codeComiteReg != '*')
+			{
+				$sql .= "And cd.Code_comite_reg = '";
+				$sql .= $codeComiteReg;
+				$sql .= "' ";
+			}
+			if ($codeComiteDep != '*')
+			{
+				$sql .= "And c.Code_comite_dep = '";
+				$sql .= $codeComiteDep;
+				$sql .= "' ";
+			}
+			if ($codeClub != '*')
+			{
+				$sql .= "And e.Code_club = '";
+				$sql .= $codeClub;
+				$sql .= "' ";
+			}
+			if(!$filtreTous)
+			{
+				$sql .= "And (";
+				($filtreH) ? $sql .= "e.Libelle Not Like '%Women%' And e.Libelle Not Like '%Ladies%' And e.Libelle Not Like '%Dames%' And " : $sql .= "e.Libelle Like '%' And ";
+				($filtreF) ? $sql .= "(e.Libelle Like '%Women%' Or e.Libelle Like '%Ladies%' Or e.Libelle Like '%Dames%') And " : $sql .= "e.Libelle Not Like '%Women%' And e.Libelle Not Like '%Ladies' And e.Libelle Not Like '%Dames%' And ";
+				($filtreJ) ? $sql .= "(e.Libelle Like '%JH%' Or e.Libelle Like '%JF%') And " : $sql .= "e.Libelle Not Like '%JH%' And e.Libelle Not Like '%JF%' And ";
+				($filtre21) ? $sql .= "e.Libelle Like '%21%'" : $sql .= "e.Libelle Not Like '%21%'";
+				$sql .= ") ";
+			}
+			$sql .= "Order By e.Libelle ";	 
+			
+			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
+			$num_results = mysql_num_rows($result);
+			for ($i=0;$i<$num_results;$i++)
+			{
+				$row = mysql_fetch_array($result);	  
+				array_push($arrayHistoEquipe, array('Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club']));
+			}
+			array_push($arrayHistoEquipe, array('Numero' => '----', 'Libelle' => '==== TOTAL : '.$num_results.' équipes internationales ====', 'Code_club' => ''));
+			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '', 'Code_club' => ''));
+		}
+		$this->m_tpl->assign('arrayHistoEquipe', $arrayHistoEquipe);
+	}
+	
+	function Add()
+	{
+		$myBdd = new MyBdd();
+		
+		$codeCompet = utyGetPost('competition');
+		$codeSaison = utyGetSaison();
+		$libelleEquipe = utyGetPost('libelleEquipe');
+		$histoEquipe = utyGetPost('histoEquipe');
+		$codeClub = utyGetPost('club');
+		
+		foreach($histoEquipe as $selectValue)
+		{
+			if ($codeCompet == '' or $codeCompet == '*')
+			{
+				$alertMessage .= 'Aucune competition sélectionnée';
+				return;
+			}
+			if ((int) $selectValue == 0)
+			{
+				// Inscription Manuelle ...
+				if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) )
+				{
+					$sql  = "Insert Into gickp_Equipe (Libelle, Code_club) Values ('";
+					$sql .= $libelleEquipe;
+					$sql .= "','";
+					$sql .= $codeClub;
+					$sql .= "') ";
+					mysql_query($sql, $myBdd->m_link) Or die ("Erreur insert 1");
+
+					$sql  = "Select LAST_INSERT_ID() Numero ";
+					$result = mysql_query($sql, $myBdd->m_link) Or die ("Erreur Select");
+					if (mysql_num_rows($result) == 1)
+					{
+							$row = mysql_fetch_array($result);
+							$selectValue = mysql_insert_id();
+					}
+				}
+			}
+			
+			if ((int) $selectValue == 0)
+				return;
+			
+			$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet, Code_saison, Libelle, Code_club, Numero) Select '";
+			$sql .= $codeCompet;
+			$sql .= "','";
+			$sql .= $codeSaison;
+			$sql .= "', Libelle, Code_club, Numero ";
+			$sql .= "From gickp_Equipe Where Numero = $selectValue";
+			
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert 2");
+			if($insertValue)
+				$insertValue .= ',';
+			$insertValue .= $selectValue;
+		}	
+		$_SESSION['codeCompet'] = $codeCompet;
+		$_SESSION['codeComiteReg'] = utyGetPost('comiteReg');
+		$_SESSION['codeComiteDep'] = utyGetPost('comiteDep');
+		$_SESSION['codeClub'] = $codeClub;
+
+		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $insertValue);
+	}
+	
+	function Add2()
+	{
+		$myBdd = new MyBdd();
+		
+		$codeCompet = utyGetPost('competition');
+		$codeSaison = utyGetSaison();
+		$EquipeNum = utyGetPost('EquipeNum');
+		$EquipeNom = utyGetPost('EquipeNom');
+		$checkCompo = utyGetPost('checkCompo');
+		$plEquipe = utyGetPost('plEquipe', '');
+		$tirEquipe = utyGetPost('tirEquipe', 0);
+		$cltChEquipe = utyGetPost('cltChEquipe', 0);
+		$cltCpEquipe = utyGetPost('cltCpEquipe', 0);
+		
+		if ($EquipeNum != '')
+		{
+			if ($codeCompet == '' or $codeCompet == '*')
+			{
+				$alertMessage .= 'Aucune competition sélectionnée';
+				return;
+			}
+		
+			$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau) Select '";
+			$sql .= $codeCompet;
+			$sql .= "','";
+			$sql .= $codeSaison;
+			$sql .= "', Libelle, Code_club, Numero, '".$plEquipe."', '".$tirEquipe."', '".$cltChEquipe."', '".$cltCpEquipe."' ";
+			$sql .= "From gickp_Equipe Where Numero = $EquipeNum";
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert 3<br><br>".$sql);
+			
+			$EquipeId = mysql_insert_id();
+			if($checkCompo != '')
+			{
+				$checkCompo = split('-', $checkCompo);
+				// Insertion des Joueurs Equipes ...
+				$sql  = "Insert Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) ";
+				$sql .= "Select $EquipeId, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine ";
+				$sql .= "From gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, gickp_Competitions_Equipes c, gickp_Categorie d, gickp_Liste_Coureur e ";
+				$sql .= "Where a.Id_equipe = b.Id ";
+				$sql .= "And a.Matric = e.Matric ";
+				$sql .= "And a.Id_equipe = c.Id ";
+				$sql .= "And b.Numero = $EquipeNum ";
+				$sql .= "And b.Code_compet = '".$checkCompo[1]."' And b.Code_saison = '".$checkCompo[0]."' ";
+				$sql .= "And " ;
+				$sql .= $checkCompo[0];
+				$sql .= "-Year(e.Naissance) between d.Age_min And d.Age_max ";
+				mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2 (transmettez cette requête à laurent@poloweb.org) : <br><br>".$sql);
+			}
+		}
+		
+		
+		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $EquipeNom);
+	}
+	
+	function Tirage()
+	{
+		$myBdd = new MyBdd();
+		
+		$codeCompet = utyGetPost('competition');
+		$codeSaison = utyGetSaison();
+		$equipeTirage = utyGetPost('equipeTirage');
+		$pouleTirage = utyGetPost('pouleTirage');
+		$ordreTirage = utyGetPost('ordreTirage');
+		
+		$sql  = "Update gickp_Competitions_Equipes ";
+		$sql .= "Set Tirage = $ordreTirage, ";
+		$sql .= "Poule = '".$pouleTirage."' ";
+		$sql .= "Where Code_compet = '";
+		$sql .= $codeCompet;
+		$sql .= "' And Code_saison = '";
+		$sql .= $codeSaison;
+		$sql .= "' And Id = $equipeTirage ";	 
+	
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur update tirage :<br>".$sql);
+		$myBdd->utyJournal('Tirage au sort', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $equipeTirage.' -> '.$ordreTirage);
+	}
+
+	function Remove()
+	{
+		$ParamCmd = '';
+		if (isset($_POST['ParamCmd']))
+			$ParamCmd = $_POST['ParamCmd'];
+			
+		$arrayParam = split ('[,]', $ParamCmd);		
+		if (count($arrayParam) == 0)
+			return; // Rien à Detruire ...
+		for ($i=0;$i<count($arrayParam);$i++)
+		{
+			if ($i > 0)
+				$listEquipes .= ",";
+			
+			$listEquipes .= $arrayParam[$i];
+		}
+
+		$myBdd = new MyBdd();
+			
+		$sql = "Delete From gickp_Competitions_Equipes Where Id In (";
+		$sql .= $listEquipes;
+		$sql .= ")";
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+
+		$sql = "Delete From gickp_Competitions_Equipes_Joueurs Where Id_equipe In (";
+		$sql .= $listEquipes;
+		$sql .= ")";
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+
+		$myBdd->utyJournal('Suppression  equipes', utyGetSaison(), utyGetPost('codeCompet'), 'NULL', 'NULL', 'NULL', $ParamCmd);
+	}
+	
+	function Duplicate($bDelete)
+	{
+		$codeCompet = utyGetPost('competition');
+		$codeCompetRef = utyGetPost('competitionRef');
+		$codeSaison = utyGetSaison();
+
+		if ( (strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0) )
+		{
+			$myBdd = new MyBdd();
+			
+			if ($bDelete)
+			{
+				// Suppression des Joueurs Equipes 
+				$sql  = "Delete FROM gickp_Competitions_Equipes_Joueurs Where Id_equipe In (";
+				$sql .= "Select a.Id From gickp_Competitions_Equipes a Where a.Code_compet = '$codeCompet' And a.Code_saison = '$codeSaison' )";
+				mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+		
+				// Suppression des Equipes 
+				$sql = "Delete From gickp_Competitions_Equipes Where Code_compet = '$codeCompet' And Code_saison = '$codeSaison'  ";
+				mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+			}
+			
+			// Insertion des Equipes ...
+			$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) ";
+			$sql .= "Select '$codeCompet', Code_saison, Libelle, Code_club, Numero, Id ";
+			$sql .= "From gickp_Competitions_Equipes Where Code_compet = '$codeCompetRef' And Code_saison = '$codeSaison' ";
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert");
+			
+			// Insertion des Joueurs Equipes ...
+			$sql  = "Insert Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) ";
+			$sql .= "Select b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine ";
+			$sql .= "From gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, gickp_Competitions_Equipes c ";
+			$sql .= "Where a.Id_equipe = b.Id_dupli ";
+			$sql .= "And a.Id_equipe = c.Id ";
+			$sql .= "And c.Code_compet = '$codeCompetRef' And c.Code_saison = '$codeSaison' ";
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2");
+
+			$myBdd->utyJournal('Duplication  equipes', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', 'Depuis '.$codeCompetRef);
+		}
+	}
+	
+	function GestionEquipe()
+	{			
+	  MyPageSecure::MyPageSecure(10);
+		
+		$alertMessage = '';
+		
+		$Cmd = '';
+		if (isset($_POST['Cmd']))
+			$Cmd = $_POST['Cmd'];
+
+		if (strlen($Cmd) > 0)
+		{
+			if ($Cmd == 'Add')
+				($_SESSION['Profile'] <= 3) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				
+			if ($Cmd == 'Add2')
+				($_SESSION['Profile'] <= 3) ? $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				
+			if ($Cmd == 'Tirage')
+				($_SESSION['Profile'] <= 4) ? $this->Tirage() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				
+			if ($Cmd == 'Remove')
+				($_SESSION['Profile'] <= 3) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				
+			if ($Cmd == 'Duplicate')
+				($_SESSION['Profile'] <= 3) ? $this->Duplicate(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				
+			if ($Cmd == 'RemoveAndDuplicate')
+				($_SESSION['Profile'] <= 3) ? $this->Duplicate(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				
+			if ($alertMessage == '')
+			{
+				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+				exit;
+			}
+		}
+
+		$this->SetTemplate("Gestion des Equipes", "Equipes", false);
+		$this->Load();
+		$this->m_tpl->assign('AlertMessage', $alertMessage);
+		$this->DisplayTemplate('GestionEquipe');
+	}
+}		  	
+
+$page = new GestionEquipe();
+
+?>

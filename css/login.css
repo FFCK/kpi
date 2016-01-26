@@ -1,0 +1,22 @@
+div.blocformlogin
+{
+	margin: auto;
+	padding-left: 20px;
+	font-size:9.0pt;
+	font-weight: bold;
+	border: 0px solid #FF0;
+}
+
+div.blocformlogin label
+{
+	font-size:9.0pt;
+	width:100px;
+	margin-left: 5px;
+}
+
+div.blocformlogin input
+{
+	font-size:9.0pt;
+	width:100px;
+}
+

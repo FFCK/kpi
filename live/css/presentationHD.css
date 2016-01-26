@@ -1,0 +1,83 @@
+body
+{
+	background-color:rgb(0,255,0);
+}
+
+div#bandeau_presentation
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/PRESENTATION.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+div#match_nom
+{
+	position: absolute;
+	top: 600px;
+	left: 0px;
+	right: 0px;
+	text-align:center;
+	font-weight: bold;
+	font-size:32px;
+	color:black;
+}
+
+div#nation1
+{	
+	position: absolute;
+	left: 555px;
+	top:650px;
+}
+
+div#nation2
+{	
+	position: absolute;
+	left: 948px;
+	top:650px;
+}
+
+div#equipe1
+{	
+	position: absolute;
+	left: 615px;
+	top:652px;
+	color:black;
+	font-size:18px;
+	font-weight: bold;
+}
+div#equipe2
+{	
+	position: absolute;
+	left: 815px;
+	top:652px;
+	color:black;
+	font-size:18px;
+	font-weight: bold;
+}
+
+div#score1
+{
+	position: absolute;
+	left: 360px;
+	top:620px;
+	color:red;
+	font-size:64px;
+	font-weight: bold;
+	text-shadow: 0 0 5px #000000;
+}
+
+div#score2
+{
+	position: absolute;
+	left: 1150px;
+	top:620px;
+	color:red;
+	font-size:64px;
+	font-weight: bold;
+	text-shadow: 0 0 5px #000000;
+}

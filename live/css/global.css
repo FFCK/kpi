@@ -1,0 +1,83 @@
+body
+{
+	background-color:rgb(0,255,0);
+    background-image: url("../img/TITRE.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+img.centre
+{
+display: block;
+height: 70px;
+margin-left: auto;
+margin-right: auto 
+}
+
+@font-face {
+    font-family: "cosandco_digit";
+/*   src: url('DS-DIGIB.TTF');
+    src: url('agil_digitall.ttf');
+    src: url('EHSMB.TTF');
+   src: url('Open24DisplaySt.TTF');
+    src: url('jd_digital.TTF');
+    src: url('V5PRC___.TTF');
+    src: url('Digitaldream.TTF');
+*/	
+    src: url('Digitaldream.TTF');
+}
+
+#match_horloge {
+    font-family: "cosandco_digit", Helvetica, Arial, sans-serif;
+	color:yellow;
+	font-size:128px;
+	background:black;
+	width:100%;
+}
+
+#logo_header {
+    background: url("THURY2014_Bandeau entete.jpg");
+    background-size: 100%;
+	background-repeat: no-repeat;
+	height:150px;
+}
+
+#match_nom
+{
+	color: white;
+	text-shadow: 0 0 4px #000000;
+	font-weight: bold;
+}
+
+.score
+{
+	font-weight: bold;
+	font-size:48px;
+}
+
+.bloc_equipe
+{
+	background:rgb(240,240,240);
+	color:black;
+	text-shadow: 0 0 3px #000000;
+	font-weight: bold;
+}
+
+.bloc_joueur
+{
+	background:rgb(240,240,240);
+	color:black;
+	font-weight: bold;
+}
+
+.etat_stop
+{
+	color:red;
+	font-weight: bold;
+}
+
+.etat_start
+{
+	color:green;
+	font-weight: bold;
+}

@@ -1,0 +1,126 @@
+body
+{
+	background-color:rgb(0,255,0);
+}
+
+div#bandeau_score
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/SCORE.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+#match_horloge
+{
+	position: absolute;
+	top: 9.5%;
+	left: 48.2%;
+	font-size:20px;
+	font-weight: bold;
+	color:black;
+}
+
+#match_horloge_etat
+{
+	position: absolute;
+	top: 15%;
+	left: 48.5%;
+}
+
+.etat_stop
+{
+	color:red;
+	font-weight: bold;
+	font-size:14px;
+}
+
+.etat_start
+{
+	color:green;
+	font-weight: bold;
+	font-size:14px;
+}
+
+div#nation1
+{	
+	position: absolute;
+	left: 36.0%;
+	top:9.5%;
+}
+
+div#nation2
+{	
+	position: absolute;
+	left: 61.5%;
+	top:9.5%;
+}
+
+div#equipe1
+{	
+	position: absolute;
+	left: 40%;
+	top:9.5%;
+	color:white;
+	font-size:18px;
+	font-weight: bold;
+}
+div#equipe2
+{	
+	position: absolute;
+	left: 54%;
+	top:9.5%;
+	color:white;
+	font-size:18px;
+	font-weight: bold;
+}
+
+div#score1
+{	
+	position: absolute;
+	left: 46.5%;
+	top:3.5%;
+	font-size:24px;
+	font-weight: bold;
+	color:black;
+}
+
+div#score2
+{	
+	position: absolute;
+	left: 52.5%;
+	top:3.5%;
+	font-size:24px;
+	font-weight: bold;
+	color:black;
+}
+
+div#bandeau_goal
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/GOAL.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	display:none;
+}
+
+div#match_event
+{
+	position: absolute;
+	left: 600px;
+	top:690px;
+	font-size:22px;
+	font-weight: bold;
+	color:black;
+}
+
+
+

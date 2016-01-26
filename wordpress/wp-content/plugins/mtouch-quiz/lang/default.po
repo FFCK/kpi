@@ -1,0 +1,647 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: mTouch Quiz\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2012-01-27 14:25:09+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-01-27 09:28-0500\n"
+"Last-Translator: G. Michael Guy <michael@gmichaelguy.com>\n"
+"Language-Team: G. Michael Guy\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr ""
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr ""
+
+#: quiz.php:18
+#: mtouchquiz.php:49
+msgid "Manage mTouch Quizzes"
+msgstr ""
+
+#: quiz.php:28
+msgid "ID"
+msgstr ""
+
+#: quiz.php:30
+msgid "Title"
+msgstr ""
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr ""
+
+#: quiz.php:32
+msgid "Created on"
+msgstr ""
+
+#: quiz.php:33
+#: question.php:108
+msgid "Action"
+msgstr ""
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr ""
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr ""
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr ""
+
+#: quiz.php:59
+#: question.php:137
+msgid "Delete"
+msgstr ""
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr ""
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr ""
+
+#: question_form.php:17
+#: question_form.php:124
+#: question.php:101
+msgid "Question"
+msgstr ""
+
+#: question_form.php:35
+#: question_form.php:144
+#: show_quiz.php:418
+#: show_quiz.php:542
+msgid "Correct"
+msgstr ""
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr ""
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr ""
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr ""
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr ""
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr ""
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr ""
+
+#: question_form.php:156
+#: show_quiz.php:437
+msgid "Hint"
+msgstr ""
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr ""
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr ""
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr ""
+
+#: question_form.php:183
+#: question.php:106
+msgid "Point Value"
+msgstr ""
+
+#: question_form.php:197
+#: quiz_form.php:365
+msgid "Save"
+msgstr ""
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr ""
+
+#: mtouchquiz.php:47
+msgid "mTouch Quiz"
+msgstr ""
+
+#: mtouchquiz.php:49
+msgid "Manage Quizzes"
+msgstr ""
+
+#: mtouchquiz.php:50
+#: premium.php:9
+msgid "Premium Features"
+msgstr ""
+
+#: mtouchquiz.php:79
+msgid "Settings"
+msgstr ""
+
+#: mtouchquiz.php:93
+msgid "mTouch Quiz Plugin Options"
+msgstr ""
+
+#: mtouchquiz.php:93
+msgid "mTouch Quiz Plugin"
+msgstr ""
+
+#: mtouchquiz.php:99
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: mtouchquiz.php:121
+msgid "Options updated"
+msgstr ""
+
+#: mtouchquiz.php:129
+msgid "Left Delimiter"
+msgstr ""
+
+#: mtouchquiz.php:132
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr ""
+
+#: mtouchquiz.php:137
+msgid "Right Delimiter"
+msgstr ""
+
+#: mtouchquiz.php:140
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr ""
+
+#: mtouchquiz.php:145
+msgid "Show Alerts if Quiz unfinished?"
+msgstr ""
+
+#: mtouchquiz.php:148
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr ""
+
+#: mtouchquiz.php:150
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr ""
+
+#: mtouchquiz.php:152
+msgid "Hide donation links"
+msgstr ""
+
+#: mtouchquiz.php:155
+msgid "I already supported mTouch Quiz or prefer not to."
+msgstr ""
+
+#: mtouchquiz.php:160
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr ""
+
+#: mtouchquiz.php:162
+msgid "Save Changes"
+msgstr ""
+
+#: mtouchquiz.php:620
+msgid "FAQ"
+msgstr ""
+
+#: show_quiz.php:338
+msgid "Please wait while the activity loads.</br> If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr ""
+
+#: show_quiz.php:340
+msgid "If loading fails, click here to try again"
+msgstr ""
+
+#: show_quiz.php:345
+msgid "Start"
+msgstr ""
+
+#: show_quiz.php:351
+msgid "Your answers are highlighted below."
+msgstr ""
+
+#: show_quiz.php:383
+msgid "Question %d"
+msgstr ""
+
+#: show_quiz.php:421
+#: show_quiz.php:544
+msgid "Wrong"
+msgstr ""
+
+#: show_quiz.php:452
+msgid "Question %d Explanation:"
+msgstr ""
+
+#: show_quiz.php:472
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr ""
+
+#: show_quiz.php:474
+msgid "Get Results"
+msgstr ""
+
+#: show_quiz.php:487
+msgid "There is 1 question to complete."
+msgstr ""
+
+#: show_quiz.php:487
+msgid "There are %d questions to complete."
+msgstr ""
+
+#: show_quiz.php:493
+msgid "Go to Previous Question"
+msgstr ""
+
+#: show_quiz.php:496
+msgid "List"
+msgstr ""
+
+#: show_quiz.php:499
+msgid "Go to Next Question"
+msgstr ""
+
+#: show_quiz.php:507
+#: show_quiz.php:530
+msgid "Return"
+msgstr ""
+
+#: show_quiz.php:509
+msgid "Shaded items are complete."
+msgstr ""
+
+#: show_quiz.php:522
+msgid "End"
+msgstr ""
+
+#: show_quiz.php:534
+msgid "You have completed"
+msgstr ""
+
+#: show_quiz.php:536
+msgid "questions"
+msgstr ""
+
+#: show_quiz.php:538
+msgid "question"
+msgstr ""
+
+#: show_quiz.php:540
+msgid "Your score is"
+msgstr ""
+
+#: show_quiz.php:546
+msgid "Partial-Credit"
+msgstr ""
+
+#: show_quiz.php:548
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr ""
+
+#: show_quiz.php:550
+msgid "Correct Answer"
+msgstr ""
+
+#: show_quiz.php:552
+msgid "You Selected"
+msgstr ""
+
+#: show_quiz.php:554
+msgid "Not Attempted"
+msgstr ""
+
+#: show_quiz.php:556
+msgid "Final Score on Quiz"
+msgstr ""
+
+#: show_quiz.php:558
+msgid "Attempted Questions Correct"
+msgstr ""
+
+#: show_quiz.php:560
+msgid "Attempted Questions Wrong"
+msgstr ""
+
+#: show_quiz.php:562
+msgid "Questions Not Attempted"
+msgstr ""
+
+#: show_quiz.php:564
+msgid "Total Questions on Quiz"
+msgstr ""
+
+#: show_quiz.php:566
+msgid "Question Details"
+msgstr ""
+
+#: show_quiz.php:568
+msgid "Results"
+msgstr ""
+
+#: show_quiz.php:570
+msgid "Date"
+msgstr ""
+
+#: show_quiz.php:572
+msgid "Score"
+msgstr ""
+
+#: show_quiz.php:574
+msgid "Time allowed"
+msgstr ""
+
+#: show_quiz.php:575
+msgid "minutes"
+msgstr ""
+
+#: show_quiz.php:576
+msgid "seconds"
+msgstr ""
+
+#: show_quiz.php:577
+msgid "Time used"
+msgstr ""
+
+#: show_quiz.php:578
+msgid "Answer Choice(s) Selected"
+msgstr ""
+
+#: show_quiz.php:579
+msgid "Question Text"
+msgstr ""
+
+#: show_quiz.php:613
+#: quiz_form.php:211
+msgid "Need more practice!"
+msgstr ""
+
+#: show_quiz.php:617
+#: quiz_form.php:211
+msgid "Keep trying!"
+msgstr ""
+
+#: show_quiz.php:621
+#: quiz_form.php:211
+msgid "Not bad!"
+msgstr ""
+
+#: show_quiz.php:625
+#: quiz_form.php:211
+msgid "Good work!"
+msgstr ""
+
+#: show_quiz.php:629
+#: quiz_form.php:211
+msgid "Perfect!"
+msgstr ""
+
+#: show_quiz.php:637
+msgid "All done"
+msgstr ""
+
+#: question.php:17
+msgid "Question updated."
+msgstr ""
+
+#: question.php:21
+msgid "Question added."
+msgstr ""
+
+#: question.php:74
+msgid "New quiz added"
+msgstr ""
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr ""
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr ""
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr ""
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr ""
+
+#: question.php:95
+msgid "into any post."
+msgstr ""
+
+#: question.php:103
+msgid "Number Answers"
+msgstr ""
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr ""
+
+#: question.php:134
+msgid "Edit"
+msgstr ""
+
+#: question.php:136
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr ""
+
+#: question.php:145
+msgid "No questions found."
+msgstr ""
+
+#: question.php:154
+msgid "Create New Question"
+msgstr ""
+
+#: quiz_form.php:25
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr ""
+
+#: quiz_form.php:41
+msgid "Quiz Name"
+msgstr ""
+
+#: quiz_form.php:43
+#: quiz_form.php:53
+msgid "Visual"
+msgstr ""
+
+#: quiz_form.php:43
+#: quiz_form.php:53
+msgid "HTML"
+msgstr ""
+
+#: quiz_form.php:51
+msgid "Quiz Start Screen"
+msgstr ""
+
+#: quiz_form.php:60
+msgid "For Email Submission of Quiz Results"
+msgstr ""
+
+#: quiz_form.php:81
+#: quiz_form.php:112
+msgid "To allow users to submit their results to you via email, you need a "
+msgstr ""
+
+#: quiz_form.php:85
+msgid "<a href=\"http://gmichaelguy.com/quizplugin/go/premium/\" title=\"Find out about mTouch Quiz Premium Feature Addons\">For detailed instructions on how to configure this option visit the plugin homepage.</a>"
+msgstr ""
+
+#: quiz_form.php:94
+msgid "Final Screen"
+msgstr ""
+
+#: quiz_form.php:99
+msgid "Usable Variables..."
+msgstr ""
+
+#: quiz_form.php:103
+msgid "Variable"
+msgstr ""
+
+#: quiz_form.php:104
+msgid "Value"
+msgstr ""
+
+#: quiz_form.php:110
+msgid " location for emailing results. (You may put this variable in the ratings below for conditional email option)"
+msgstr ""
+
+#: quiz_form.php:120
+msgid "The number of correct answers"
+msgstr ""
+
+#: quiz_form.php:124
+msgid "Total number of questions"
+msgstr ""
+
+#: quiz_form.php:128
+msgid "Correct answer percentage"
+msgstr ""
+
+#: quiz_form.php:132
+msgid "Number of answers you got wrong"
+msgstr ""
+
+#: quiz_form.php:136
+msgid "A rating of your performance. (Customize below.)"
+msgstr ""
+
+#: quiz_form.php:140
+msgid "Time Allowed in Seconds. (Requires Timer Add on)"
+msgstr ""
+
+#: quiz_form.php:144
+msgid "Time Used in Seconds. (Requires Timer Add on)"
+msgstr ""
+
+#: quiz_form.php:148
+msgid "The name of the quiz"
+msgstr ""
+
+#: quiz_form.php:201
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr ""
+
+#: quiz_form.php:204
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr ""
+
+#: quiz_form.php:257
+msgid "Add New Rating"
+msgstr ""
+
+#: quiz_form.php:261
+msgid "Quiz Options"
+msgstr ""
+
+#: quiz_form.php:266
+msgid "Options"
+msgstr ""
+
+#: quiz_form.php:268
+msgid "Shortcode arguments"
+msgstr ""
+
+#: quiz_form.php:273
+msgid "Show all questions on a single page."
+msgstr ""
+
+#: quiz_form.php:278
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr ""
+
+#: quiz_form.php:283
+msgid "Show the hints, when available."
+msgstr ""
+
+#: quiz_form.php:288
+msgid "Display Quiz Start Screen before quiz."
+msgstr ""
+
+#: quiz_form.php:293
+msgid "Display Quiz Final Screen after quiz."
+msgstr ""
+
+#: quiz_form.php:298
+msgid "Randomly arrange questions."
+msgstr ""
+
+#: quiz_form.php:303
+msgid "Randomly arrange answers."
+msgstr ""
+
+#: quiz_form.php:308
+msgid "Never indicate the correct answers."
+msgstr ""
+
+#: quiz_form.php:313
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr ""
+
+#: quiz_form.php:318
+msgid "Indicate the correct answers at the end of each question."
+msgstr ""
+
+#: quiz_form.php:323
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr ""
+
+#: quiz_form.php:337
+msgid "Add a time limit and countdown clock."
+msgstr ""
+
+#: quiz_form.php:348
+msgid "To set a time limit and have a countdown clock, you need the "
+msgstr ""
+
+#: quiz_form.php:352
+msgid "<a href=\"http://gmichaelguy.com/quizplugin/go/timer/\" title=\"mTouch Quiz Timer Addon\" target=\"_blank\">For detailed instructions on how to configure the timer option visit the plugin homepage.</a>"
+msgstr ""
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr ""
+

@@ -1,0 +1,520 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2011-01-04 16:53:55+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2011-06-07 13:22+0200\n"
+"Last-Translator: Shakhar Pelled <espelled@yahoo.com>\n"
+"Language-Team: \n"
+
+#: quiz_form.php:21
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr "<p>ברכות - השלמתם את מבחן- %%QUIZ_NAME%%.</p><p>ציונכם הוא %%SCORE%% מתוך %%TOTAL%%.</p><p>הביצועים שלכם דורגו ברמת %%RATING%%</p>"
+
+#: quiz_form.php:37
+msgid "Quiz Name"
+msgstr "שם המבחן"
+
+#: quiz_form.php:45
+msgid "Quiz Start Screen"
+msgstr "מסך הפתיחה של המבחן"
+
+#: quiz_form.php:47
+msgid "Visual"
+msgstr "חזותי"
+
+#: quiz_form.php:47
+msgid "HTML"
+msgstr "HTML"
+
+#: quiz_form.php:54
+msgid "Final Screen"
+msgstr "מסך הסיום"
+
+#: quiz_form.php:59
+msgid "Usable Variables..."
+msgstr "משתנים בהם ניתן להשתמש..."
+
+#: quiz_form.php:63
+msgid "Variable"
+msgstr "משתנה"
+
+#: quiz_form.php:64
+msgid "Value"
+msgstr "ערך"
+
+#: quiz_form.php:68
+msgid "The number of correct answers"
+msgstr "מספר התשובות הנכונות"
+
+#: quiz_form.php:72
+msgid "Total number of questions"
+msgstr "סך כל התשובות"
+
+#: quiz_form.php:76
+msgid "Correct answer percentage"
+msgstr "אחוז התשובות הנכונות:"
+
+#: quiz_form.php:80
+msgid "Number of answers you got wrong"
+msgstr "מספר התשובות השגויות"
+
+#: quiz_form.php:84
+msgid "A rating of your performance. (Customize below.)"
+msgstr "דירוג של ביצועיכם. (התאם אישית להלן.)"
+
+#: quiz_form.php:88
+msgid "The name of the quiz"
+msgstr "שם המבחן"
+
+#: quiz_form.php:120
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr "התאמת %%RATING%% למסך הסיום "
+
+#: quiz_form.php:123
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr "הזינו את האחוזים (מספרים שלמים בלבד) ואת ההודעה שברצונכם להעביר למשתמש במקום המשתנה של ה-%%RATING%%. אחת מהודעות אלה תוצג אם הציון יהיה גבוה מזה שרשמתם או שווה אליו."
+
+#: quiz_form.php:130
+#: show_quiz.php:397
+msgid "Need more practice!"
+msgstr "צריך להמשיך לתרגל!"
+
+#: quiz_form.php:130
+#: show_quiz.php:399
+msgid "Keep trying!"
+msgstr "צריך להמשיך לנסות!"
+
+#: quiz_form.php:130
+#: show_quiz.php:401
+msgid "Not bad!"
+msgstr "לא רע!"
+
+#: quiz_form.php:130
+#: show_quiz.php:403
+msgid "Good work!"
+msgstr "עבודה טובה!"
+
+#: quiz_form.php:130
+#: show_quiz.php:405
+msgid "Perfect!"
+msgstr "מושלם!"
+
+#: quiz_form.php:176
+msgid "Add New Rating"
+msgstr "להוספת דירוג חדש"
+
+#: quiz_form.php:180
+msgid "Quiz Options"
+msgstr "אפשרויות שאלון"
+
+#: quiz_form.php:185
+msgid "Options"
+msgstr "אפשרויות"
+
+#: quiz_form.php:187
+msgid "Shortcode arguments"
+msgstr "ארגומנטים של קוד קצר"
+
+#: quiz_form.php:192
+msgid "Show all questions on a single page."
+msgstr "הצג את כל השאלות בעמוד אחד."
+
+#: quiz_form.php:197
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "יש יותר מהזדמנות אחת לענות על שאלות.*"
+
+#: quiz_form.php:202
+msgid "Show the hints, when available."
+msgstr "אם קיימים רמזים, הצג אותם."
+
+#: quiz_form.php:207
+msgid "Display Quiz Start Screen before quiz."
+msgstr "הצג את מסך הפתיחה של המבחן, לפני המבחן."
+
+#: quiz_form.php:212
+msgid "Display Quiz Final Screen after quiz."
+msgstr "הצג את מסך הציון של המבחן, אחרי המבחן."
+
+#: quiz_form.php:217
+msgid "Randomly arrange questions."
+msgstr "סדר את השאלות באופן אקראי."
+
+#: quiz_form.php:222
+msgid "Randomly arrange answers."
+msgstr "סדר את התשובות באופן אקראי."
+
+#: quiz_form.php:227
+msgid "Never indicate the correct answers."
+msgstr "לעולם אל תציין את התשובות הנכונות."
+
+#: quiz_form.php:232
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "ציין את התשובות הנכונות רק בסוף המבחן."
+
+#: quiz_form.php:237
+msgid "Indicate the correct answers at the end of each question."
+msgstr "ציין את התשובות הנכונות בסוף כל שאלה."
+
+#: quiz_form.php:242
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr "* חייב גם לבחור \"ציין את התשובות הנכונות\" בסוף כל שאלה."
+
+#: quiz_form.php:259
+#: question_form.php:197
+msgid "Save"
+msgstr "שמור"
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "אל תקרא לעמוד זה ישירות."
+
+#: show_quiz.php:167
+msgid "Please wait while the activity loads.</br> If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr "אנא המתן לטעינת הפעילות.</br>אם פעילות זו אינה נטענת, נסה לרענן את העמוד. כמו כן, עמוד זה זקוק לג'ווה-סקריפט. אנא נסה לטעון אותו באמצעות דפדפן בו הופעלה האפשרות של ג'ווה-סקריפט."
+
+#: show_quiz.php:169
+msgid "If loading fails, click here to try again"
+msgstr "אם הטעינה נכשלת, לחץ כאן כדי לנסות שוב"
+
+#: show_quiz.php:173
+msgid "Start"
+msgstr "התחל"
+
+#: show_quiz.php:181
+msgid "Your answers are highlighted below."
+msgstr "התשובות שענית מסומנות להלן.."
+
+#: show_quiz.php:211
+msgid "Question %d"
+msgstr "שאלה %d"
+
+#: show_quiz.php:246
+#: show_quiz.php:367
+#: question_form.php:35
+#: question_form.php:144
+msgid "Correct"
+msgstr "תשובה נכונה"
+
+#: show_quiz.php:249
+#: show_quiz.php:368
+msgid "Wrong"
+msgstr "תשובה שגויה"
+
+#: show_quiz.php:265
+#: question_form.php:156
+msgid "Hint"
+msgstr "רמז"
+
+#: show_quiz.php:280
+msgid "Question %d Explanation:"
+msgstr "הסבר לתשובה  %d: "
+
+#: show_quiz.php:300
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr "אם סיימת, לחץ/י על הכפתור למטה. כל הפריטים שלא הושלמו יסומנו כשגויים."
+
+#: show_quiz.php:302
+msgid "Get Results"
+msgstr "הצג תוצאות"
+
+#: show_quiz.php:313
+msgid "There is 1 question to complete."
+msgstr "עדיין נותרה שאלה 1 שיש להשלים"
+
+#: show_quiz.php:313
+msgid "There are %d questions to complete."
+msgstr "עדיין נותרו %d  שאלות שיש להשלים"
+
+#: show_quiz.php:320
+msgid "Go to Previous Question"
+msgstr "חזרה לשאלה הקודמת"
+
+#: show_quiz.php:323
+msgid "List"
+msgstr "רשימה"
+
+#: show_quiz.php:326
+msgid "Go to Next Question"
+msgstr "מעבר לשאלה הבאה"
+
+#: show_quiz.php:336
+#: show_quiz.php:359
+msgid "Return"
+msgstr "חזרה"
+
+#: show_quiz.php:338
+msgid "Shaded items are complete."
+msgstr "הפריטים המסומנים הושלמו."
+
+#: show_quiz.php:351
+msgid "End"
+msgstr "סוף"
+
+#: show_quiz.php:363
+msgid "You have completed"
+msgstr "השלמת "
+
+#: show_quiz.php:364
+msgid "questions"
+msgstr "שאלות"
+
+#: show_quiz.php:365
+msgid "question"
+msgstr "שאלה"
+
+#: show_quiz.php:366
+msgid "Your score is"
+msgstr "הציון שלך הוא"
+
+#: show_quiz.php:369
+msgid "Partial-Credit"
+msgstr "ניקוד-חלקי"
+
+#: show_quiz.php:370
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr "המבחן לא הושלם. עזיבת עמוד זה, תגרום לאבדן החלק שהושלם."
+
+#: show_quiz.php:412
+msgid "All done"
+msgstr "סיימת"
+
+#: mtouchquiz.php:45
+msgid "mTouch Quiz"
+msgstr "מבחן אם-טאץ'"
+
+#: mtouchquiz.php:47
+#: quiz.php:18
+msgid "Manage mTouch Quizzes"
+msgstr "ניהול מבחני אם-טאץ'"
+
+#: mtouchquiz.php:47
+msgid "Manage Quizzes"
+msgstr "ניהול מבחנים"
+
+#: mtouchquiz.php:72
+msgid "Settings"
+msgstr "הגדרות"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin Options"
+msgstr "אפשרויות תוסף מבחן אם-טאץ'"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin"
+msgstr "תוסף מבחן אם-טאץ'"
+
+#: mtouchquiz.php:92
+msgid "You do not have sufficient permissions to access this page."
+msgstr "אין לך הרשאות מספיקות כדי לגשת לעמוד זה."
+
+#: mtouchquiz.php:107
+msgid "Options updated"
+msgstr "האפשרויות עודכנו"
+
+#: mtouchquiz.php:115
+msgid "Left Delimiter"
+msgstr "תוחם שמאלי"
+
+#: mtouchquiz.php:116
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr "התוחם השמאלי יופעל בעת סימון התיבה לצד קלט התשובה."
+
+#: mtouchquiz.php:120
+msgid "Right Delimiter"
+msgstr "תוחם ימני"
+
+#: mtouchquiz.php:121
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr "התוחם הימני יופעל בעת סימון התיבה לצד קלט התשובה."
+
+#: mtouchquiz.php:126
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "האם להציג התראה אם לא סיימו את המבחן?"
+
+#: mtouchquiz.php:127
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr "מאחר ותוצאות המבחן נשמרות באופן מקומי, עזיבת עמוד המבחן תביא לאובדן הנתונים שהוזנו עד כה."
+
+#: mtouchquiz.php:128
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "הצג התראה כאשר משתמש עוזב לפני סיום המבחן."
+
+#: mtouchquiz.php:131
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr "אשלח את קובץ התרגום שלי למיכאל באתר gmichaelguy.com, כדי שגם אחרים יוכלו ליהנות מעבודתי. ;-)"
+
+#: mtouchquiz.php:133
+msgid "Save Changes"
+msgstr "שמור שינויים"
+
+#: mtouchquiz.php:367
+msgid "FAQ"
+msgstr "שאלות נפוצות"
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr "הכנסת תוחם"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "תשובה:"
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "רמז:"
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "אנא הזן את השאלה"
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "אנא בחר תשובה נכונה"
+
+#: question_form.php:124
+#: question.php:101
+msgid "Question"
+msgstr "שאלה"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "תשובות ורמזים"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "הוסף תשובה חדשה"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "הסבר"
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr "תוכל להשתמש בשדה זה כדי להסביר את התשובה הנכונה. תשובה זו תוצג בכל פעם בה מוצגות התשובות הנכונות."
+
+#: question_form.php:183
+#: question.php:106
+msgid "Point Value"
+msgstr "ערך בנקודות"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "עבור לעמוד השאלות"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "המבחן עודכן"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "המבחן נמחק"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "מספר זהות"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "כותרת"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "מספר שאלות"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "נוצר ביום"
+
+#: quiz.php:33
+#: question.php:108
+msgid "Action"
+msgstr "פעולה"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "ניהול שאלות"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "עריכת אפשרויות המבחן"
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "האם באמת למחוק את המבחן? פעולה זו תמחק את כל התשובות והשאלות שבמבחן זה. לחצו \"אישור\" כדי למחוק, ו\"ביטול\" כדי לעצור. "
+
+#: quiz.php:59
+#: question.php:137
+msgid "Delete"
+msgstr "מחק"
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "לא נמצאו מבחנים."
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "צור מבחן חדש"
+
+#: question.php:17
+msgid "Question updated."
+msgstr "השאלה עודכנה."
+
+#: question.php:21
+msgid "Question added."
+msgstr "השאלה נוספה."
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "נוסף מבחן חדש"
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "השאלה נמחקה"
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr "מספר המבחן"
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr "נהל את השאלות בתוך"
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr "כדי להוסיף מבחן זה לבלוג שלך, הכנס את הקוד"
+
+#: question.php:95
+msgid "into any post."
+msgstr "לתוך כל פוסט."
+
+#: question.php:103
+msgid "Number Answers"
+msgstr "מספר את התשובות"
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr "מספר את התשובות הנכונות"
+
+#: question.php:134
+msgid "Edit"
+msgstr "ערוך"
+
+#: question.php:136
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "שאלה זו תימחק. פעולה זו תמחק את התשובות והרמזים לשאלה זו. לחצו \"אישור\" כדי למחוק, ו\"ביטול\" כדי לעצור "
+
+#: question.php:145
+msgid "No questions found."
+msgstr "לא נמצאו שאלות."
+
+#: question.php:154
+msgid "Create New Question"
+msgstr "צור שאלה חדשה"
+

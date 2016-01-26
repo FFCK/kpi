@@ -1,0 +1,520 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2011-01-04 16:53:55+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2011-04-05 11:51+0100\n"
+"Last-Translator: Andreas Lundgren <andreas.lundgren@norran.se>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: quiz_form.php:21
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr "<p>Tack! Du har just gjort %%QUIZ_NAME%% på norran.se!</p><p>Din poäng: %%SCORE%% av %%TOTAL%%.</p><p>Ditt betyg: %%RATING%%</p>"
+
+#: quiz_form.php:37
+msgid "Quiz Name"
+msgstr "Quiznamn"
+
+#: quiz_form.php:45
+msgid "Quiz Start Screen"
+msgstr "Quizzens förstasida"
+
+#: quiz_form.php:47
+msgid "Visual"
+msgstr "Visuell"
+
+#: quiz_form.php:47
+msgid "HTML"
+msgstr "HTML"
+
+#: quiz_form.php:54
+msgid "Final Screen"
+msgstr "Quizzens slutsida"
+
+#: quiz_form.php:59
+msgid "Usable Variables..."
+msgstr "Användbara variabler"
+
+#: quiz_form.php:63
+msgid "Variable"
+msgstr "Variabel"
+
+#: quiz_form.php:64
+msgid "Value"
+msgstr "Värde"
+
+#: quiz_form.php:68
+msgid "The number of correct answers"
+msgstr "Antal rätta svar"
+
+#: quiz_form.php:72
+msgid "Total number of questions"
+msgstr "Totalt antal frågor"
+
+#: quiz_form.php:76
+msgid "Correct answer percentage"
+msgstr "Rätta svar (procent)"
+
+#: quiz_form.php:80
+msgid "Number of answers you got wrong"
+msgstr "Antel felaktiga svar"
+
+#: quiz_form.php:84
+msgid "A rating of your performance. (Customize below.)"
+msgstr "Betygsättning av resultat (anpassa nedan)."
+
+#: quiz_form.php:88
+msgid "The name of the quiz"
+msgstr "Quizzens namn"
+
+#: quiz_form.php:120
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr "%%RATING%% Anpassning för quizzens slutsida ovan"
+
+#: quiz_form.php:123
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr "Ange procent (i siffror) och det meddelande du vill att användaren ska få i stället för %%RATING%% variabel. Ett av dessa meddelanden visas om deras poäng är större än eller lika med de angivna poängen."
+
+#: quiz_form.php:130
+#: show_quiz.php:397
+msgid "Need more practice!"
+msgstr "Öva mera!"
+
+#: quiz_form.php:130
+#: show_quiz.php:399
+msgid "Keep trying!"
+msgstr "Bättre kan du!"
+
+#: quiz_form.php:130
+#: show_quiz.php:401
+msgid "Not bad!"
+msgstr "Inte illa!"
+
+#: quiz_form.php:130
+#: show_quiz.php:403
+msgid "Good work!"
+msgstr "Bra jobbat!"
+
+#: quiz_form.php:130
+#: show_quiz.php:405
+msgid "Perfect!"
+msgstr "Du spikade den!"
+
+#: quiz_form.php:176
+msgid "Add New Rating"
+msgstr "Lägg till nytt betyg"
+
+#: quiz_form.php:180
+msgid "Quiz Options"
+msgstr "Quiz-inställningar"
+
+#: quiz_form.php:185
+msgid "Options"
+msgstr "Inställningar"
+
+#: quiz_form.php:187
+msgid "Shortcode arguments"
+msgstr "Shortcode-argument"
+
+#: quiz_form.php:192
+msgid "Show all questions on a single page."
+msgstr "Visa alla frågor på en enda sida."
+
+#: quiz_form.php:197
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "Tillåt möjlighet att svara på frågor flera gånger.*"
+
+#: quiz_form.php:202
+msgid "Show the hints, when available."
+msgstr "Visa ledtrådar, när de finns."
+
+#: quiz_form.php:207
+msgid "Display Quiz Start Screen before quiz."
+msgstr "Visa quizzens förstasida före quizzen."
+
+#: quiz_form.php:212
+msgid "Display Quiz Final Screen after quiz."
+msgstr "Visa quizzens slutsidan efter quizzen."
+
+#: quiz_form.php:217
+msgid "Randomly arrange questions."
+msgstr "Slumpa frågornas ordning."
+
+#: quiz_form.php:222
+msgid "Randomly arrange answers."
+msgstr "Slumpa ordningen av svaren."
+
+#: quiz_form.php:227
+msgid "Never indicate the correct answers."
+msgstr "Visa aldrig vilka alternativ som är de rätta svaren."
+
+#: quiz_form.php:232
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "Visa vilka alternativ som var rätt svar efter quizzen avslutats."
+
+#: quiz_form.php:237
+msgid "Indicate the correct answers at the end of each question."
+msgstr "Visa det rätta svaret efter varje besvarad fråga."
+
+#: quiz_form.php:242
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr "* Måste också välja Visa det rätta svaret efter varje besvarad fråga."
+
+#: quiz_form.php:259
+#: question_form.php:197
+msgid "Save"
+msgstr "Spara"
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "Anropa inte denna sida direkt."
+
+#: show_quiz.php:167
+msgid "Please wait while the activity loads.</br> If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr "Var god vänta medan aktiviteten laddar. </ br> Om denna aktivitet inte laddar, testa att ladda om sidan. Quizzar kräver  JavaScript. Använd en webbläsare med JavaScript aktiverat."
+
+#: show_quiz.php:169
+msgid "If loading fails, click here to try again"
+msgstr "Om laddningen misslyckas, klicka här för att försöka igen"
+
+#: show_quiz.php:173
+msgid "Start"
+msgstr "Starta"
+
+#: show_quiz.php:181
+msgid "Your answers are highlighted below."
+msgstr "Dina svar är markerade nedan."
+
+#: show_quiz.php:211
+msgid "Question %d"
+msgstr "Fråga %d"
+
+#: show_quiz.php:246
+#: show_quiz.php:367
+#: question_form.php:35
+#: question_form.php:144
+msgid "Correct"
+msgstr "Rätt"
+
+#: show_quiz.php:249
+#: show_quiz.php:368
+msgid "Wrong"
+msgstr "Fel"
+
+#: show_quiz.php:265
+#: question_form.php:156
+msgid "Hint"
+msgstr "Ledtråd"
+
+#: show_quiz.php:280
+msgid "Question %d Explanation:"
+msgstr "Fråga %d förklaring:"
+
+#: show_quiz.php:300
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr "När du är klar klickar du på knappen nedan. Eventuella frågor du har inte besvarat kommer att märkas som felaktiga."
+
+#: show_quiz.php:302
+msgid "Get Results"
+msgstr "Se resultat"
+
+#: show_quiz.php:313
+msgid "There is 1 question to complete."
+msgstr "Du har 1 obesvarad fråga."
+
+#: show_quiz.php:313
+msgid "There are %d questions to complete."
+msgstr "Du har %d obesvarade frågor."
+
+#: show_quiz.php:320
+msgid "Go to Previous Question"
+msgstr "Föregående fråga"
+
+#: show_quiz.php:323
+msgid "List"
+msgstr "Se alla frågor"
+
+#: show_quiz.php:326
+msgid "Go to Next Question"
+msgstr "Nästa fråga"
+
+#: show_quiz.php:336
+#: show_quiz.php:359
+msgid "Return"
+msgstr "Återgå"
+
+#: show_quiz.php:338
+msgid "Shaded items are complete."
+msgstr "Skuggade frågor är besvarade."
+
+#: show_quiz.php:351
+msgid "End"
+msgstr "Slut"
+
+#: show_quiz.php:363
+msgid "You have completed"
+msgstr "Du har slutfört"
+
+#: show_quiz.php:364
+msgid "questions"
+msgstr "frågor"
+
+#: show_quiz.php:365
+msgid "question"
+msgstr "fråga"
+
+#: show_quiz.php:366
+msgid "Your score is"
+msgstr "Din poäng är"
+
+#: show_quiz.php:369
+msgid "Partial-Credit"
+msgstr "Delpoäng"
+
+#: show_quiz.php:370
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr "Du har inte avslutat frågesporten. Om du lämnar denna sida kommer ditt resultat gå förlorat."
+
+#: show_quiz.php:412
+msgid "All done"
+msgstr "Du är färdig"
+
+#: mtouchquiz.php:45
+msgid "mTouch Quiz"
+msgstr "Quizzar"
+
+#: mtouchquiz.php:47
+#: quiz.php:18
+msgid "Manage mTouch Quizzes"
+msgstr "Hantera quizzar"
+
+#: mtouchquiz.php:47
+msgid "Manage Quizzes"
+msgstr "Hantera quizzar"
+
+#: mtouchquiz.php:72
+msgid "Settings"
+msgstr "Inställningar"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin Options"
+msgstr "mTouch Quiz-tilläggsinställningar"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin"
+msgstr "mTouch Quiz-tillägg"
+
+#: mtouchquiz.php:92
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Du har inte tillräcklig behörighet för att komma åt sidan."
+
+#: mtouchquiz.php:107
+msgid "Options updated"
+msgstr "Inställningar uppdaterade"
+
+#: mtouchquiz.php:115
+msgid "Left Delimiter"
+msgstr "Vänster avgränsare"
+
+#: mtouchquiz.php:116
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr "Vänster avgränsare används när kryssrutan intill svarsfältet är markerad."
+
+#: mtouchquiz.php:120
+msgid "Right Delimiter"
+msgstr "Höger avgränsare"
+
+#: mtouchquiz.php:121
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr "Höger avgränsare används när kryssrutan intill svarsfältet är markerad."
+
+#: mtouchquiz.php:126
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "Visa varningar om quizzen inte är avslutad?"
+
+#: mtouchquiz.php:127
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr "Eftersom resultaten till frågesporten lagras lokalt kommer du att förlora ditt resultat om du lämnar sidan."
+
+#: mtouchquiz.php:128
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "Visa en varning före en användare lämnar en oavslutad quiz."
+
+#: mtouchquiz.php:131
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr ""
+
+#: mtouchquiz.php:133
+msgid "Save Changes"
+msgstr "Spara ändringar"
+
+#: mtouchquiz.php:367
+msgid "FAQ"
+msgstr "FAQ"
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr "Avgränsa"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "Svar:"
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "Ledtråd:"
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "Vänligen skriv in frågan"
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "Vänligen ange minst ett svar som är rätt"
+
+#: question_form.php:124
+#: question.php:101
+msgid "Question"
+msgstr "Fråga"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "Svar och ledtrådar"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "Lägg till nytt svar"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "Förklaring"
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr "Du kan använda detta fält för att förklara det rätta svaret. Förklaringen visas när de rätta svaren avslöjas."
+
+#: question_form.php:183
+#: question.php:106
+msgid "Point Value"
+msgstr "Poängvärde"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "Gå till frågesidan"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "Quiz uppdaterad"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "Quiz raderad"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "ID"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "Titel"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "Antal frågor"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "Skapad den"
+
+#: quiz.php:33
+#: question.php:108
+msgid "Action"
+msgstr "Åtgärd"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "Hantera frågor"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "Redigera quiz-inställningar"
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Du håller på att ta bort denna quiz! Detta kommer att radera alla frågor och svar inom denna frågesport. Vill du fortsätta?"
+
+#: quiz.php:59
+#: question.php:137
+msgid "Delete"
+msgstr "Radera"
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "Inga quizzar funna."
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "Skapa ny quiz"
+
+#: question.php:17
+msgid "Question updated."
+msgstr "Fråga uppdaterad."
+
+#: question.php:21
+msgid "Question added."
+msgstr "Fråga skapad."
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "Ny quiz skapad"
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "Fråga raderad"
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr "Quizzens ID"
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr "Hantera frågor i"
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr "För att lägga till denna quiz på en sida, skriv in koden"
+
+#: question.php:95
+msgid "into any post."
+msgstr "på något inlägg."
+
+#: question.php:103
+msgid "Number Answers"
+msgstr "Antal svar"
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr "Antal rätta svar"
+
+#: question.php:134
+msgid "Edit"
+msgstr "Redigera"
+
+#: question.php:136
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Du håller på att ta bort denna fråga! Detta kommer att radera svaren och ledtrådar för denna fråga. Vill du fortsätta?"
+
+#: question.php:145
+msgid "No questions found."
+msgstr "Inga frågor funna."
+
+#: question.php:154
+msgid "Create New Question"
+msgstr "Skapa ny fråga"
+

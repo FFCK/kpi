@@ -1,0 +1,526 @@
+# Translation of the WordPress plugin mTouch Quiz by G. Michael Guy.
+# Copyright (C) 2010
+# This file is distributed under the same license as the  package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mTouch Quiz\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2011-01-04 16:53:55+00:00\n"
+"PO-Revision-Date: 2011-07-27 00:20+0100\n"
+"Last-Translator: gebr. van den beukel <info@gebr.nl>\n"
+"Language-Team: gebr. van den beukel\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: NETHERLANDS\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: quiz_form.php:21
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr "<p>Gefeliciteerd! - u heeft de %%QUIZ_NAME%% quiz afgerond.</p><p>U heeft %%SCORE%% van de %%TOTAL%% vragen goed.</p><p>Dat is %%RATING%%</p>"
+
+#: quiz_form.php:37
+msgid "Quiz Name"
+msgstr "Quiz naam"
+
+#: quiz_form.php:45
+msgid "Quiz Start Screen"
+msgstr "Quiz - start scherm"
+
+#: quiz_form.php:47
+msgid "Visual"
+msgstr "WYSIWYG"
+
+#: quiz_form.php:47
+msgid "HTML"
+msgstr "HTML"
+
+#: quiz_form.php:54
+msgid "Final Screen"
+msgstr "Resultaatscherm"
+
+#: quiz_form.php:59
+msgid "Usable Variables..."
+msgstr "Gebruikte variabelen..."
+
+#: quiz_form.php:63
+msgid "Variable"
+msgstr "Variabele"
+
+#: quiz_form.php:64
+msgid "Value"
+msgstr "Waarde"
+
+#: quiz_form.php:68
+msgid "The number of correct answers"
+msgstr "Aantal goede antwoorden"
+
+#: quiz_form.php:72
+msgid "Total number of questions"
+msgstr "Totaal aantal vragen"
+
+#: quiz_form.php:76
+msgid "Correct answer percentage"
+msgstr "Percentage goede antwoorden"
+
+#: quiz_form.php:80
+msgid "Number of answers you got wrong"
+msgstr "Aantal foute antwoorden"
+
+#: quiz_form.php:84
+msgid "A rating of your performance. (Customize below.)"
+msgstr "De beoordeling van uw antwoorden. (Hieronder aan te passen.)"
+
+#: quiz_form.php:88
+msgid "The name of the quiz"
+msgstr "Quiz naam"
+
+#: quiz_form.php:120
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr "%%RATING%% Aanpassing voor het Resultaatscherm"
+
+#: quiz_form.php:123
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr "Voer het percentage in (geheel getal) en het bericht dat u de gebruiker wil laten zien in plaats van de %%RATING%% variabele. Eén van de berichten is te zien indien de score groter of gelijk is aan het ingevoerde percentage."
+
+#: quiz_form.php:130
+#: show_quiz.php:397
+msgid "Need more practice!"
+msgstr "Meer oefenen!"
+
+#: quiz_form.php:130
+#: show_quiz.php:399
+msgid "Keep trying!"
+msgstr "Probeer het nog een keer!"
+
+#: quiz_form.php:130
+#: show_quiz.php:401
+msgid "Not bad!"
+msgstr "Dat is niet slecht!"
+
+#: quiz_form.php:130
+#: show_quiz.php:403
+msgid "Good work!"
+msgstr "Goed gedaan!"
+
+#: quiz_form.php:130
+#: show_quiz.php:405
+msgid "Perfect!"
+msgstr "Perfect!"
+
+#: quiz_form.php:176
+msgid "Add New Rating"
+msgstr "Voer een nieuwe beoordeling toe"
+
+#: quiz_form.php:180
+msgid "Quiz Options"
+msgstr "Quiz opties"
+
+#: quiz_form.php:185
+msgid "Options"
+msgstr "Opties"
+
+#: quiz_form.php:187
+msgid "Shortcode arguments"
+msgstr "Shortcode variabelen"
+
+#: quiz_form.php:192
+msgid "Show all questions on a single page."
+msgstr "Alle antwoorden op één pagina laten zien."
+
+#: quiz_form.php:197
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "Sta meer dan één antwoord toe.*"
+
+#: quiz_form.php:202
+msgid "Show the hints, when available."
+msgstr "Laat een hint zien, indien aanwezig."
+
+#: quiz_form.php:207
+msgid "Display Quiz Start Screen before quiz."
+msgstr "Laat het Startscherm zien."
+
+#: quiz_form.php:212
+msgid "Display Quiz Final Screen after quiz."
+msgstr "Laat het Resultaatscherm zien."
+
+#: quiz_form.php:217
+msgid "Randomly arrange questions."
+msgstr "Vragen in willekeurige volgorde."
+
+#: quiz_form.php:222
+msgid "Randomly arrange answers."
+msgstr "Antwoorden in willekeurige volgorde."
+
+#: quiz_form.php:227
+msgid "Never indicate the correct answers."
+msgstr "Laat de juiste antwoorden niet zien."
+
+#: quiz_form.php:232
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "Geef de juiste antwoorden pas aan het eind van de quiz."
+
+#: quiz_form.php:237
+msgid "Indicate the correct answers at the end of each question."
+msgstr "Geef de juiste antwoorden aan het eind van elke vraag."
+
+#: quiz_form.php:242
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr "* Verplichte optie: Geef de juiste antwoorden aan het eind van elke vraag."
+
+#: quiz_form.php:259
+#: question_form.php:197
+msgid "Save"
+msgstr "Bewaren"
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "Gebruik deze pagina niet om naar te verwijzen."
+
+#: show_quiz.php:167
+msgid "Please wait while the activity loads.</br> If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr "Wacht even tot de quiz geladen is.</br>Als de quiz niet laadt, probeer dan de browser nogmaals te laden. Let er op, deze pagina gebruikt javascript. De browser moet javascript ondersteunen."
+
+#: show_quiz.php:169
+msgid "If loading fails, click here to try again"
+msgstr "Als de quiz niet laadt, klik hier om opnieuw te proberen."
+
+#: show_quiz.php:173
+msgid "Start"
+msgstr "Begin de quiz"
+
+#: show_quiz.php:181
+msgid "Your answers are highlighted below."
+msgstr "De antwoorden zijn hieronder aangegeven."
+
+#: show_quiz.php:211
+msgid "Question %d"
+msgstr "Vraag %d"
+
+#: show_quiz.php:246
+#: show_quiz.php:367
+#: question_form.php:35
+#: question_form.php:144
+msgid "Correct"
+msgstr "Juist"
+
+#: show_quiz.php:249
+#: show_quiz.php:368
+msgid "Wrong"
+msgstr "Fout"
+
+#: show_quiz.php:265
+#: question_form.php:156
+msgid "Hint"
+msgstr "Tip"
+
+#: show_quiz.php:280
+msgid "Question %d Explanation:"
+msgstr "Vraag %d"
+
+#: show_quiz.php:300
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr "Als u klaar bent, klik u op de knop hieronder. Quizonderdelen die niet afgerond zijn, worden als onjuist beoordeeld."
+
+#: show_quiz.php:302
+msgid "Get Results"
+msgstr "Laat het resultaat zien"
+
+#: show_quiz.php:313
+msgid "There is 1 question to complete."
+msgstr "Er is nog 1 vraag te beantwoorden."
+
+#: show_quiz.php:313
+msgid "There are %d questions to complete."
+msgstr "Er zijn nog %d vragen te beantwoorden."
+
+#: show_quiz.php:320
+msgid "Go to Previous Question"
+msgstr "Vorige vraag"
+
+#: show_quiz.php:323
+msgid "List"
+msgstr "Overzicht"
+
+#: show_quiz.php:326
+msgid "Go to Next Question"
+msgstr "Volgende vraag"
+
+#: show_quiz.php:336
+#: show_quiz.php:359
+msgid "Return"
+msgstr "Terug"
+
+#: show_quiz.php:338
+msgid "Shaded items are complete."
+msgstr "Grijze blokken zijn reeds beantwoord."
+
+#: show_quiz.php:351
+msgid "End"
+msgstr "Einde"
+
+#: show_quiz.php:363
+msgid "You have completed"
+msgstr "U bent klaar met"
+
+#: show_quiz.php:364
+msgid "questions"
+msgstr "vragen"
+
+#: show_quiz.php:365
+msgid "question"
+msgstr "vraag"
+
+#: show_quiz.php:366
+msgid "Your score is"
+msgstr "Uw score is"
+
+#: show_quiz.php:369
+msgid "Partial-Credit"
+msgstr "deels juist"
+
+#: show_quiz.php:370
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr "De quiz is nog niet afgerond. Als u nu deze pagina verlaat, wordt uw score niet bewaard."
+
+#: show_quiz.php:412
+msgid "All done"
+msgstr "Alle vragen beantwoord"
+
+#: mtouchquiz.php:45
+msgid "mTouch Quiz"
+msgstr "mTouch Quiz"
+
+#: mtouchquiz.php:47
+#: quiz.php:18
+msgid "Manage mTouch Quizzes"
+msgstr "Beheer de quizzen van mTouch"
+
+#: mtouchquiz.php:47
+msgid "Manage Quizzes"
+msgstr "Beheer quizzen"
+
+#: mtouchquiz.php:72
+msgid "Settings"
+msgstr "Instellingen"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin Options"
+msgstr "mTouch Quiz Plugin opties"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin"
+msgstr "mTouch Quiz Plugin"
+
+#: mtouchquiz.php:92
+msgid "You do not have sufficient permissions to access this page."
+msgstr "U heeft niet voldoende rechten om deze pagina te benaderen."
+
+#: mtouchquiz.php:107
+msgid "Options updated"
+msgstr "Opties zijn bewerkt"
+
+#: mtouchquiz.php:115
+msgid "Left Delimiter"
+msgstr "Scheidingsteken - links"
+
+#: mtouchquiz.php:116
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr "Linker scheidingsteken (wordt gebruikt als de tickbox wordt aangevinkt bij antwoord ingave)"
+
+#: mtouchquiz.php:120
+msgid "Right Delimiter"
+msgstr "Scheidingsteken - rechts"
+
+#: mtouchquiz.php:121
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr "Rechter scheidingsteken (wordt gebruikt als de tickbox wordt aangevinkt bij antwoord ingave)"
+
+#: mtouchquiz.php:126
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "Laat bericht zien als de quiz niet voltooid is?"
+
+#: mtouchquiz.php:127
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr "De resultaten van de quiz zullen niet worden bewaard als u de quiz verlaat."
+
+#: mtouchquiz.php:128
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "Laat een waarschuwing zien als de gebruiker een quiz verlaat die niet is afgemaakt."
+
+#: mtouchquiz.php:131
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr "ha ha ;-)"
+
+#: mtouchquiz.php:133
+msgid "Save Changes"
+msgstr "Bewaar de veranderingen"
+
+#: mtouchquiz.php:367
+msgid "FAQ"
+msgstr "FAQ"
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr "Scheidingstekens gebruiken"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "Antwoord:"
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "Tip:"
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "Voer een vraag in"
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "Kies het juiste antwoord"
+
+#: question_form.php:124
+#: question.php:101
+msgid "Question"
+msgstr "Vraag"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "Antwoorden en tips"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "Nieuw antwoord toevoegen"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "Verklaring"
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr "Gebruik dit veld om het antwoord te verklaren. Het wordt zichtbaar als het juiste antwoord wordt gegeven."
+
+#: question_form.php:183
+#: question.php:106
+msgid "Point Value"
+msgstr "Punten"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "Naar de vragenpagina"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "Quiz geüpdated"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "Quiz verwijderd"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "ID"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "Titel"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "Aantal vragen"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "Gemaakt op"
+
+#: quiz.php:33
+#: question.php:108
+msgid "Action"
+msgstr "Actie"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "Beheer van de vragen"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "Verander de opties van deze quiz"
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Klik 'OK' om de quiz met alle vragen & antwoorden te verwijderen. Klik op 'Cancel' om terug te gaan."
+
+#: quiz.php:59
+#: question.php:137
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "Geen quiz gevonden."
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "Maak een nieuwe quiz"
+
+#: question.php:17
+msgid "Question updated."
+msgstr "Vraag geüpdated."
+
+#: question.php:21
+msgid "Question added."
+msgstr "Vraag toegevoegd."
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "Nieuwe quiz toegevoegd"
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "Vraag verwijderd"
+
+#: question.php:86
+msgid "Quiz ID Number"
+msgstr "Quiz ID nummer"
+
+#: question.php:87
+msgid "Manage Questions in "
+msgstr "Vragen beheren in"
+
+#: question.php:93
+msgid "To add this quiz to your blog, insert the code "
+msgstr "Om de quiz in uw blog toe te voegen, gebruikt u deze code"
+
+#: question.php:95
+msgid "into any post."
+msgstr "in een post."
+
+#: question.php:103
+msgid "Number Answers"
+msgstr "Aantal antwoorden"
+
+#: question.php:105
+msgid "Number Correct Answers"
+msgstr "Aantal juiste antwoorden"
+
+#: question.php:134
+msgid "Edit"
+msgstr "Veranderen"
+
+#: question.php:136
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Klik 'OK' om de vraag (met de tips) te verwijderen. Klik op 'Cancel' om terug te gaan."
+
+#: question.php:145
+msgid "No questions found."
+msgstr "Geen vragen gevonden."
+
+#: question.php:154
+msgid "Create New Question"
+msgstr "Maak een nieuwe vraag"
+

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms version="1.5.3">
+	<form labelPlacement="top_label" useCurrentUserAsAuthor="1">
+		<title><![CDATA[Quiz Results]]></title>
+		<confirmation type="message">
+			<message><![CDATA[Your results have been submitted.]]></message>
+		</confirmation>
+		<button type="text">
+			<text><![CDATA[Submit]]></text>
+		</button>
+		<fields>
+			<field id="9" size="medium" type="name">
+				<label><![CDATA[Name]]></label>
+				<inputs>
+					<input id="9.3">
+						<label><![CDATA[First]]></label>
+					</input>
+					<input id="9.6">
+						<label><![CDATA[Last]]></label>
+					</input>
+				</inputs>
+			</field>
+			<field id="10" size="medium" type="email">
+				<label><![CDATA[Email]]></label>
+			</field>
+			<field id="12" size="medium" type="section" displayOnly="1">
+				<description><![CDATA[mTouch Quiz will automatically populate the fields below. Feel Free to add additional fields for the Quiz Taker to complete using the "Add Fields" options to the right.]]></description>
+				<cssClass><![CDATA[mtq_auto]]></cssClass>
+				<label><![CDATA[mTouch Quiz Populated Fields]]></label>
+			</field>
+			<field id="11" size="medium" type="hidden">
+				<defaultValue><![CDATA[{date_mdy}]]></defaultValue>
+				<label><![CDATA[Date]]></label>
+			</field>
+			<field id="6" size="medium" type="text">
+				<description><![CDATA[The name of the quiz]]></description>
+				<cssClass><![CDATA[mtq_quiz_name]]></cssClass>
+				<label><![CDATA[Quiz Name]]></label>
+			</field>
+			<field id="1" size="medium" type="textarea">
+				<cssClass><![CDATA[mtq]]></cssClass>
+				<label><![CDATA[Results Summary]]></label>
+			</field>
+			<field id="2" size="medium" type="number">
+				<description><![CDATA[The number of correct answers. This has the same value as the %%SCORE%% Variable on the Final Screen.]]></description>
+				<cssClass><![CDATA[mtq_score]]></cssClass>
+				<label><![CDATA[Score]]></label>
+			</field>
+			<field id="3" size="medium" type="number">
+				<description><![CDATA[The total number of questions.  This has the same value as the %%TOTAL%% Variable on the Final Screen.]]></description>
+				<cssClass><![CDATA[mtq_total]]></cssClass>
+				<label><![CDATA[Total Questions]]></label>
+			</field>
+			<field id="4" size="medium" type="number">
+				<description><![CDATA[Correct answer percentage.  This has the same value as the %%PERCENTAGE%% Variable on the Final Screen.]]></description>
+				<cssClass><![CDATA[mtq_percentage]]></cssClass>
+				<label><![CDATA[Percentage]]></label>
+			</field>
+			<field id="5" size="medium" type="number">
+				<description><![CDATA[Number of wrong answers.  This has the same value as the %%WRONG_ANSWERS%% Variable on the Final Screen.]]></description>
+				<cssClass><![CDATA[mtq_wrong_answers]]></cssClass>
+				<label><![CDATA[Wrong Answers]]></label>
+			</field>
+			<field id="7" size="medium" type="number">
+				<description><![CDATA[Time allowed (Requires timer add on).  This has the same value as the %%TIME_ALLOWED%% Variable on the Final Screen.]]></description>
+				<cssClass><![CDATA[mtq_time_allowed]]></cssClass>
+				<label><![CDATA[Time Allowed (Seconds)]]></label>
+			</field>
+			<field id="8" size="medium" type="number">
+				<description><![CDATA[Time used (Requires timer add on).  This has the same value as the %%TIME_USED%% Variable on the Final Screen.]]></description>
+				<cssClass><![CDATA[mtq_time_used]]></cssClass>
+				<label><![CDATA[Time Used (Seconds)]]></label>
+			</field>
+		</fields>
+	</form>
+</forms>

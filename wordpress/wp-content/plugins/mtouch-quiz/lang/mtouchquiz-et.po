@@ -1,0 +1,527 @@
+# Translation of the WordPress plugin   by .
+# Copyright (C) 2010
+# This file is distributed under the same license as the  package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mTouch Quiz EE\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/mtouch-quiz\n"
+"POT-Creation-Date: 2010-11-29 22:48+0000\n"
+"PO-Revision-Date: 2010-12-14 14:57+0200\n"
+"Last-Translator: Martin Orn <martin@adm.ee>\n"
+"Language-Team: ADM <martin@adm.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Estonian\n"
+"X-Poedit-Country: ESTONIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: mtouchquiz.php:45
+msgid "mTouch Quiz"
+msgstr "mTouch Quiz küsitlused"
+
+#: mtouchquiz.php:47
+#: quiz.php:18
+msgid "Manage mTouch Quizzes"
+msgstr "Halda mTouch küsimustikke"
+
+#: mtouchquiz.php:47
+msgid "Manage Quizzes"
+msgstr "Halda küsitlusi"
+
+#: mtouchquiz.php:72
+msgid "Settings"
+msgstr "Seaded"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin Options"
+msgstr "mTouch Quiz plugina valikud"
+
+#: mtouchquiz.php:86
+msgid "mTouch Quiz Plugin"
+msgstr "mTouch Quiz plugin"
+
+#: mtouchquiz.php:92
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Teil ei ole selle lehe nägemiseks piisavalt õigusi."
+
+#: mtouchquiz.php:107
+msgid "Options updated"
+msgstr "Valikud muudetud"
+
+#: mtouchquiz.php:115
+msgid "Left Delimiter"
+msgstr "Vasak eraldaja"
+
+#: mtouchquiz.php:116
+msgid "Left delimiter used when box is checked next to answer input."
+msgstr "Vasak eraldajat kasutatakse, kui valik on tehtud vastava vastuse juures."
+
+#: mtouchquiz.php:120
+msgid "Right Delimiter"
+msgstr "Parem eraldaja"
+
+#: mtouchquiz.php:121
+msgid "Right delimiter used when box is checked next to answer input."
+msgstr "Parem eraldajat kasutatakse, kui valik on tehtud vastava vastuse juures."
+
+#: mtouchquiz.php:126
+msgid "Show Alerts if Quiz unfinished?"
+msgstr "Näitan veateateid, kui küsitlus on lõpetamata?"
+
+#: mtouchquiz.php:127
+msgid "Since results to the quiz are stored locally, leaving the quiz page will lose all progress."
+msgstr "Kuna küsitluse tulemused on salvestatud lokaalselt, siis küsitlusest eemaldumisega kaovad ka vastused."
+
+#: mtouchquiz.php:128
+msgid "Display a warning before a user leaves an unfinished quiz."
+msgstr "Kuva hoiatust, kui kasutaja lahkub lõpetamata küsitlusest."
+
+#: mtouchquiz.php:131
+msgid "I will email my completed translation file to Michael at gmichaelguy.com so that others can benefit from my work. ;-)"
+msgstr "Ma saadan oma lõpetatud tõlkefaili Michaelile aadressil gmichaelguy.com, et ka teised saaksid minu tööst kasu. ;-)"
+
+#: mtouchquiz.php:133
+msgid "Save Changes"
+msgstr "Salvesta muudatused"
+
+#: mtouchquiz.php:308
+msgid "FAQ"
+msgstr "KKK"
+
+#: question.php:17
+msgid "Question updated."
+msgstr "Küsimus uuendatud."
+
+#: question.php:21
+msgid "Question added."
+msgstr "Küsimus lisatud."
+
+#: question.php:74
+msgid "New quiz added"
+msgstr "Uus küsiltus lisatud"
+
+#: question.php:80
+msgid "Question Deleted"
+msgstr "Küsimus kustutatud"
+
+#: question.php:86
+msgid "Manage Questions in "
+msgstr "Halda küsimusi küstluses"
+
+#: question.php:92
+msgid "To add this quiz to your blog, insert the code "
+msgstr "Et lisada seda küsitlust oma blogisse, lisa järgmine koodijupp"
+
+#: question.php:94
+msgid "into any post."
+msgstr "vastavasse postitusse."
+
+#: question.php:100
+#: question_form.php:17
+#: question_form.php:124
+msgid "Question"
+msgstr "Küsimus"
+
+#: question.php:102
+msgid "Number Answers"
+msgstr "Vastuste hulk"
+
+#: question.php:104
+msgid "Number Correct Answers"
+msgstr "Korrektsete vastuste hulk"
+
+#: question.php:105
+#: question_form.php:183
+msgid "Point Value"
+msgstr "Punktiskoor"
+
+#: question.php:107
+#: quiz.php:33
+msgid "Action"
+msgstr "Tegevus"
+
+#: question.php:133
+msgid "Edit"
+msgstr "Muuda"
+
+#: question.php:135
+msgid "You are about to delete this question. This will delete the answers and hints to this question. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Olete kustutama seda küsimust. See kustutab ka selle küsimuse vastused ja vihjed. Vajutage 'OK', et jätkata kustutamist või 'Tühista', et katkestada tegevus."
+
+#: question.php:136
+#: quiz.php:59
+msgid "Delete"
+msgstr "Kustuta"
+
+#: question.php:144
+msgid "No questions found."
+msgstr "Küsimusi ei leitud."
+
+#: question.php:153
+msgid "Create New Question"
+msgstr "Loo uus küsimus"
+
+#: question_form.php:17
+msgid " "
+msgstr " "
+
+#: question_form.php:35
+#: question_form.php:144
+#: show_quiz.php:318
+msgid "Correct"
+msgstr "Korrektne"
+
+#: question_form.php:44
+#: question_form.php:150
+msgid "Delimit"
+msgstr "Piiritle"
+
+#: question_form.php:52
+msgid "Answer:"
+msgstr "Vastus:"
+
+#: question_form.php:58
+msgid "Hint:"
+msgstr "Vihje:"
+
+#: question_form.php:84
+msgid "Please enter the question"
+msgstr "Plaun sisestage küsimus"
+
+#: question_form.php:111
+msgid "Please select a correct answer"
+msgstr "Palun valige korrektne vastus"
+
+#: question_form.php:132
+msgid "Answers and Hints"
+msgstr "Vastused ja vihjed"
+
+#: question_form.php:156
+#: show_quiz.php:241
+msgid "Hint"
+msgstr "Vihje"
+
+#: question_form.php:166
+msgid "Add New Answer"
+msgstr "Lisa uus vastus"
+
+#: question_form.php:171
+msgid "Explanation"
+msgstr "Selgitus"
+
+#: question_form.php:177
+msgid "You can use this field to explain the correct answer. This will be shown whenever correct answers are revealed."
+msgstr "Te võite kasutada seda lahtrit, et kirjeldada õiget vastust. Seda kuvatakse, kui õiged vastused on selgunud."
+
+#: question_form.php:197
+#: quiz_form.php:259
+msgid "Save"
+msgstr "Salvesta"
+
+#: question_form.php:200
+msgid "Go to Questions Page"
+msgstr "Mine küsimuste lehele"
+
+#: quiz.php:5
+msgid "Quiz Updated"
+msgstr "Küsitlus uuendatud"
+
+#: quiz.php:12
+msgid "Quiz Deleted"
+msgstr "Küsitlus kustutatud"
+
+#: quiz.php:28
+msgid "ID"
+msgstr "ID"
+
+#: quiz.php:30
+msgid "Title"
+msgstr "Pealkiri"
+
+#: quiz.php:31
+msgid "Number Of Questions"
+msgstr "Küsimuste hulk"
+
+#: quiz.php:32
+msgid "Created on"
+msgstr "Loodud"
+
+#: quiz.php:53
+msgid "Manage Questions"
+msgstr "Halda küsimusi"
+
+#: quiz.php:56
+msgid "Edit Quiz Options"
+msgstr "Muuda küsitluse valikuid"
+
+#: quiz.php:58
+msgid "You are about to delete this quiz? This will delete all the questions and answers within this quiz. Press 'OK' to delete and 'Cancel' to stop."
+msgstr "Te olete kustutama seda küsitlust. See kustutab ka kõik selle küsitluse küsimused ja vastused. Vajutage 'OK', et jätkata kustutamist või 'Tühista', et katkestada tegevus."
+
+#: quiz.php:67
+msgid "No Quizzes found."
+msgstr "Küsitlusi ei leitud."
+
+#: quiz.php:76
+msgid "Create New Quiz"
+msgstr "Looge uus küsitlus"
+
+#: quiz_form.php:21
+#, php-format
+msgid "<p>Congratulations - you have completed %%QUIZ_NAME%%.</p><p>You scored %%SCORE%% out of %%TOTAL%%.</p><p>Your performance has been rated as %%RATING%%</p>"
+msgstr "<p>Õnnitlused - olete edukalt läbinud küsitluse %%QUIZ_NAME%%.</p><p>Teie skoor on %%SCORE%% punkti %%TOTAL%%-st võimalikust.</p><p>Teie reiting on %%RATING%%</p>"
+
+#: quiz_form.php:28
+msgid " Quiz"
+msgstr "Küsitlus"
+
+#: quiz_form.php:37
+msgid "Quiz Name"
+msgstr "Küsitluse nimetus"
+
+#: quiz_form.php:45
+msgid "Quiz Start Screen"
+msgstr "Küsitluse avakaader"
+
+#: quiz_form.php:47
+msgid "Visual"
+msgstr "Visuaalne"
+
+#: quiz_form.php:47
+msgid "HTML"
+msgstr "HTML"
+
+#: quiz_form.php:54
+msgid "Final Screen"
+msgstr "Lõpukaader"
+
+#: quiz_form.php:59
+msgid "Usable Variables..."
+msgstr "Kasutatavad muutujad..."
+
+#: quiz_form.php:63
+msgid "Variable"
+msgstr "Muutuja"
+
+#: quiz_form.php:64
+msgid "Value"
+msgstr "Väärtus"
+
+#: quiz_form.php:68
+msgid "The number of correct answers"
+msgstr "Korrektsete vastuste hulk"
+
+#: quiz_form.php:72
+msgid "Total number of questions"
+msgstr "Küsimuste hulk"
+
+#: quiz_form.php:76
+msgid "Correct answer percentage"
+msgstr "Korrektsete vastuste protsent"
+
+#: quiz_form.php:80
+msgid "Number of answers you got wrong"
+msgstr "Valede vastuste hulk"
+
+#: quiz_form.php:84
+msgid "A rating of your performance. (Customize below.)"
+msgstr "Reiting (muudetav allpool)"
+
+#: quiz_form.php:88
+msgid "The name of the quiz"
+msgstr "Küsitluse nimi"
+
+#: quiz_form.php:120
+#, php-format
+msgid "%%RATING%% Customization for Final Screen above"
+msgstr "%%RATING%% lõpukaadri jaoks kohandamine"
+
+#: quiz_form.php:123
+#, php-format
+msgid "Enter the percent (whole numbers only) and the message you would like the user to receive in place of the %%RATING%% variable. One of these messages will be displayed if their score is greater than or equal to the listed score."
+msgstr "Sisestage protsent (ainult täisarvud) ja sõnum, mida soovite vastajale kuvada %%RATING%% muutuja asemel. Ühte neist sõnumitest kuvatakse, kui vastaja skoor on suurem või võrdne allolevaga."
+
+#: quiz_form.php:130
+#: show_quiz.php:341
+msgid "Need more practice!"
+msgstr "vajate rohkem harjutamist!"
+
+#: quiz_form.php:130
+#: show_quiz.php:343
+msgid "Keep trying!"
+msgstr "Proovige veel!"
+
+#: quiz_form.php:130
+#: show_quiz.php:345
+msgid "Not bad!"
+msgstr "Pole paha!"
+
+#: quiz_form.php:130
+#: show_quiz.php:347
+msgid "Good work!"
+msgstr "hea töö!"
+
+#: quiz_form.php:130
+#: show_quiz.php:349
+msgid "Perfect!"
+msgstr "Suurepärane!"
+
+#: quiz_form.php:176
+msgid "Add New Rating"
+msgstr "Lisage uus reiting"
+
+#: quiz_form.php:180
+msgid "Quiz Options"
+msgstr "Küsitluse valikud"
+
+#: quiz_form.php:185
+msgid "Options"
+msgstr "valikud"
+
+#: quiz_form.php:187
+msgid "Shortcode arguments"
+msgstr "Lühikoodi argumendid"
+
+#: quiz_form.php:192
+msgid "Show all questions on a single page."
+msgstr "Näita kõiki küsimusi ühel lehel."
+
+#: quiz_form.php:197
+msgid "Allow multiple opportunites to answer questions.*"
+msgstr "Luba mitut võimalust küsimusele vastamisel.*"
+
+#: quiz_form.php:202
+msgid "Show the hints, when available."
+msgstr "Kuva vihjed, kui võimalik."
+
+#: quiz_form.php:207
+msgid "Display Quiz Start Screen before quiz."
+msgstr "Kuva küsitluse avakaadrit enne küsitlust."
+
+#: quiz_form.php:212
+msgid "Display Quiz Final Screen after quiz."
+msgstr "Kuva küsitluse lõpukaadrit pärast küsitluse läbimist."
+
+#: quiz_form.php:217
+msgid "Randomly arrange questions."
+msgstr "Esita küsimused juhuslikus järjekorras."
+
+#: quiz_form.php:222
+msgid "Randomly arrange answers."
+msgstr "Esita vastused juhuslikus järjekorras."
+
+#: quiz_form.php:227
+msgid "Never indicate the correct answers."
+msgstr "Ära näita kunagi korrektseid vastuseid."
+
+#: quiz_form.php:232
+msgid "Indicate the correct answers only at the end of the quiz."
+msgstr "Näita korrektseid vastuseid ainult küsitluse lõpus."
+
+#: quiz_form.php:237
+msgid "Indicate the correct answers at the end of each question."
+msgstr "Näita korrektseid vastuseid iga küsimuse järel."
+
+#: quiz_form.php:242
+msgid "* Must also select Indicate the correct answers at the end of each question."
+msgstr "* Eeldab, et valitud on ka Näita korrektseid vastuseid iga küsimuse järel."
+
+#: show_quiz.php:168
+msgid "Please wait while the activity loads. If this activity does not load, try refreshing your browser. Also, this page requires javascript. Please visit using a browser with javascript enabled."
+msgstr "Palun oodake, kuni toimub laadimine. Kui laadimine takerdub, siis värskendage brauserit. Samuti vajab see leht javascripti. Palun kasutaje brauserit, millel on javascript lubatud."
+
+#: show_quiz.php:170
+msgid "Start"
+msgstr "Alustage"
+
+#: show_quiz.php:181
+msgid "Your answers are highlighed below."
+msgstr "Teie küsimused on allpool esile tõstetud"
+
+#: show_quiz.php:192
+#, php-format
+msgid "Question %d"
+msgstr "Küsimus %d"
+
+#: show_quiz.php:255
+#, php-format
+msgid "Question %d Explanation:"
+msgstr "Küsimuse %d selgitus:"
+
+#: show_quiz.php:272
+msgid "Once you are finished, click the button below. Any items you have not completed will be marked incorrect."
+msgstr "Kui olete lõpetanud, klõpsake allolevale nupule. Kõik mittevastatud punktid märgistatakse ebakorrektseteks."
+
+#: show_quiz.php:273
+msgid "Get Results"
+msgstr "Vaata tulemusi"
+
+#: show_quiz.php:276
+msgid "There is 1 question to complete."
+msgstr "Lõpuni on jäänud 1 küsimus."
+
+#: show_quiz.php:276
+#, php-format
+msgid "There are %d questions to complete."
+msgstr "Lõpuni on jäänud %d küsimust."
+
+#: show_quiz.php:277
+#: show_quiz.php:297
+msgid "Return"
+msgstr "Tagasi"
+
+#: show_quiz.php:278
+msgid "Shaded items are complete."
+msgstr "Värvitud punktid on läbitud."
+
+#: show_quiz.php:290
+msgid "End"
+msgstr "Lõpp"
+
+#: show_quiz.php:306
+msgid "List"
+msgstr "Nimekiri"
+
+#: show_quiz.php:314
+msgid "You have completed"
+msgstr "Te olete lõpetanud"
+
+#: show_quiz.php:315
+msgid "questions"
+msgstr "küsimused"
+
+#: show_quiz.php:316
+msgid "question"
+msgstr "küsimus"
+
+#: show_quiz.php:317
+msgid "Your score is"
+msgstr "Teie skoor on"
+
+#: show_quiz.php:319
+msgid "Wrong"
+msgstr "Vale"
+
+#: show_quiz.php:320
+msgid "Partial-Credit"
+msgstr "Osaline-Krediit"
+
+#: show_quiz.php:321
+msgid "You have not finished your quiz. If you leave this page, your progress will be lost."
+msgstr "Te ei ole küsitlusele vastamist lõpetanud. Kui te lahkute sellelt lehelt, teie senised vastused hävivad."
+
+#: show_quiz.php:356
+msgid "All done"
+msgstr "Kõik kombes"
+
+#: show_quiz.php:367
+msgid "Email Results"
+msgstr "Saatke tulemused e-mailiga"
+
+#: wpframe.php:33
+msgid "Don't call this page directly."
+msgstr "Ärge kutsuge seda lehte otse väla."
+

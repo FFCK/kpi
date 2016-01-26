@@ -1,0 +1,182 @@
+body
+{
+	background-color:rgb(255,255,255);
+}
+
+#container_1
+{
+	position:absolute;
+	background-color:rgb(100,0,0);
+	left:0%;
+	width:50%;
+	height:50%;
+} 
+
+#container_2
+{
+	position:absolute;
+	background-color:rgb(0,100,0);
+	left:50%;
+	width:50%;
+	height:50%;
+} 
+
+#container_3
+{
+	position:absolute;
+	background-color:rgb(0,0,100);
+	left:0%;
+	top:50%;
+	width:50%;
+	height:50%;
+} 
+
+#container_4
+{
+	position:absolute;
+	background-color:rgb(50,0,50);
+	left:50%;
+	top:50%;
+	width:50%;
+	height:50%;
+} 
+
+div.match_horloge
+{
+	position: absolute;
+	left: 50%;
+	top:1%;
+	font-size:28px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:yellow;
+}
+
+div.match_periode
+{
+	position: absolute;
+	left: 70%;
+	top:1%;
+	font-size:24px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:yellow;
+}
+
+div.nation1
+{	
+	position: absolute;
+	left: 15.0%;
+	top:10%;
+	color:yellow;
+}
+
+div.nation2
+{	
+	position: absolute;
+	left: 80%;
+	top:10%;
+	color:yellow;
+}
+
+div.equipe1
+{	
+	position: absolute;
+	left: 30%;
+	top:10%;
+	color:white;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+}
+
+div.equipe2
+{	
+	position: absolute;
+	left: 60%;
+	top:10%;
+	color:white;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+}
+
+div.score1
+{	
+	position: absolute;
+	top: 20%;
+	left: 40%;
+	font-size:28px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	Color:yellow;
+}
+
+div.score2
+{	
+	position: absolute;
+	top:20%;
+	left: 60%;
+	font-size:28px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	Color : yellow;
+}
+
+div.score_separation
+{	
+	position: absolute;
+	top:20%;
+	left: 50%;
+	font-size:28px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	Color :red;
+}
+
+div.bandeau_goal
+{
+	position: absolute;
+	top:50%;
+	width:100%;
+/*	display:none;*/
+}
+
+div.match_event_line1
+{
+	width:100%;
+	font-weight: bold;
+	color:yellow;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:28px;
+	text-align:center;
+}
+
+div.match_event_line2
+{
+	width:100%;
+	font-weight: bold;
+	color:yellow;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:28px;
+	text-align:center;
+}
+
+div.lien_pdf
+{
+	position: absolute;
+	width:100%;
+	top:90%;
+	font-weight: bold;
+	color:white;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:14px;
+	text-align:center;
+}
+
+div.lien_pdf a
+{
+	color:white;
+}
+
+

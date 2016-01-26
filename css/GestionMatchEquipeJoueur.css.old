@@ -1,0 +1,56 @@
+div.blocLeftGestionEquipe
+{
+	float: left;
+	margin-left: 15px; 
+	width:750px;
+	height:400px;
+}
+
+div.blocRightGestionEquipe
+{
+	float: left;
+	height:400px;
+	width:200px;
+	margin: 10px;
+	margin-top: 30px;
+}
+
+div.blocTableGestionEquipe
+{
+	height:400px;	
+	width:100%;
+	overflow:auto;
+	overflow:scroll;
+	clear:left;
+}
+
+div.blocRightGestionEquipe label
+{
+	font-size:8.0pt;
+	width:100%;
+}
+
+div.blocRightGestionEquipe select
+{
+	font-size:8.0pt;
+	width:100%;
+}
+
+div.blocRightGestionEquipe input
+{
+	font-size:8.0pt;
+	width:100%;
+}
+
+table.tableGestionEquipe
+{
+	font-size:9.0pt;
+}
+
+#SelectionCapitaineJoueur
+{
+	visibility:hidden;
+	position:absolute;
+}
+
+

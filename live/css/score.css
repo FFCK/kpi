@@ -1,0 +1,154 @@
+body
+{
+	background-color:rgb(0,255,0);
+/*	background-color:rgb(0,0,0);*/
+}
+
+div#bandeau_score
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/SCORE.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+#match_horloge
+{
+	position: absolute;
+	left: 45.3%;
+	top:3.5%;
+	font-size:28px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#3c3569;
+}
+
+#match_periode
+{
+	position: absolute;
+	left: 51.5%;
+	width:3%;
+	top:3.5%;
+	font-size:28px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#3c3569;
+	text-align:center;
+}
+
+div#nation1
+{	
+	position: absolute;
+	left: 36.0%;
+	top:8.1%;
+}
+
+div#nation2
+{	
+	position: absolute;
+	left: 61.5%;
+	top:8.1%;
+}
+
+div#equipe1
+{	
+	position: absolute;
+	left: 39.9%;
+	top:8.1%;
+	color:white;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#f8f8f8;
+}
+
+div#equipe2
+{	
+	position: absolute;
+	left: 53%;
+	top:8.1%;
+	color:white;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#f8f8f8;
+}
+
+div#score1
+{	
+	position: absolute;
+	top: 7.5%;
+	left: 48.2%;
+	font-size:30px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	Color : #3c3569
+}
+
+div#score2
+{	
+	position: absolute;
+	top:7.5%;
+	left: 50.5%;
+	font-size:30px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	Color : #3c3569
+}
+
+div#score_separation
+{	
+	position: absolute;
+	top:7.5%;
+	left: 49.6%;
+	font-size:24px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	Color : #3c3569;
+}
+
+div#bandeau_goal
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom:0px;
+	right:0px;
+    background-image: url("../img/GOAL.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+	display:none;
+}
+
+div#match_event_line1
+{
+	position: absolute;
+	left: 45.0%;
+	top:79.5%;
+	font-size:22px;
+	font-weight: bold;
+	color:#3c3569;
+	font-family:"Arial Narrow", Arial, sans-serif;
+}
+
+div#match_event_line2
+{
+	position: absolute;
+	left: 48%;
+	top:82.4%;
+	font-size:20px;
+	font-weight: bold;
+	color:#66899f;
+	font-family:"Arial Narrow", Arial, sans-serif;
+}
+
+div#lien_pdf
+{
+	display:none;
+}
+
+
