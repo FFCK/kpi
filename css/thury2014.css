@@ -1,6 +1,6 @@
-/* Désactive les liens */a {       pointer-events: none;       cursor: default;}html, body {	background: none;}
-#banniere {	display: none;	}
-.footer {	display: none;	}
+/* Désactive les liens */a {       pointer-events: none;       cursor: default;}html, body {	background: none;}
+#banniere {	display: none;	}
+.footer {	display: none;	}
 
-/* Menus Eric Meyer*/#nav {	display: none;	}
+/* Menus Eric Meyer*/#nav {	display: none;	}
 .repere {	display: none;	}.main {	}.combolong {}.boutonlong {}.titrePage {	display: none;}.soustitrePage {	display: none;}.lienExterne {	display: none;}.saison {	display: none;}.liens {}.liens a{}.tableau {	border: none;}.tableau thead {}.tableau thead tr th{	color: black;}.tableau tr {}.tableau td {}.tableau tr.Selected {}.head2 {}.head2Public {	background-color: #CCCCCC;	color: black;}.tableauPublic thead {	background: none;	background-color: #777777;}.tableauPublic tbody th {	background: none;	background-color: #A9A9A9;}.impair {}.pair {}.impair2 {	background-color: #DDDDDD;}.pair2 {	background-color: #EEEEEE;}.vert {	background: none;}.rouge {}.gris {}.colorO {}.colorCapO {}.colorCapE {}.colorN {}.titreForm {}.blocLeft {	width: 100%;	}.Left2 {	width: 100%;}.blocTable {	border: none;}.table2 {height: auto;}.blocMap{}.blocRight {display: none;	}.Right2 {display: none;	}.Right3 {display: none;	}.blocTop {}.blocMiddle {}/*.blocCentre {display: none;	}*/.blocBottom {}.arb1, .arb2 {display: none}.tableauPublic  th {	color: #44619b;}.tableau thead tr th {	background-color: #44619B;	color: #EFB700;	padding: 8px 0;}.tableau tbody tr th {	color: #44619b;	padding: 5px 0;}.cliquableNomEquipe a:link {    color: #44619B;    font-weight: bold;}.cliquableScore a:link {    color: #44619B;    font-weight: bold;}.scoreProvisoire{    color: #6683BD;    font-weight: bold;}.statutMatchOn {	background-color: #6683BD;}.statutMatchATT {    color: #CCDDEE;}.statutMatch{    color: #EFB700;	background-color: #44619B;}.pdfLink { display: none; }.classementCoupe {max-width: 50%; }

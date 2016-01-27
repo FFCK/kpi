@@ -1,784 +1,784 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
-	<head>
-		<title>Feuille de marque 2.0</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link href="jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
-		<link href="jquery.dataTables.css" rel="stylesheet">
-		<style>
-			body {font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-weight: bold; background-color: #DDDDFF;}
-			.gauche {float: left;}
-			.droite {float: right;}
-			.centre {text-align: center;}
-			.moitie {width: 49%; float: left;}
-			.note {font-style: italic; text-align: center;}
-			#listA, #listB {border: 1px solid #79B7E7; border-spacing : 0; border-collapse : collapse;}
-			#listA {float: left;}
-			#listB {float: right;}
-			.list_chrono {width: 85px; background-color: #F5F8F9; text-align: center;}
-			.list_evt {width: 22px; text-align: center;}
-			#logo {width: 150px; position:fixed; top: 5px; left: 5px;}
-			label {font-weight: bold; }
-			#selectionA, #selectionB { vertical-align: top;}
-			#selectionA + h3 { background: url("images/ui-bg_inset-hard_100_f5f8f9_1x100.png") repeat-x scroll 50% 50% #F5F8F9;
-				border: 1px solid #79B7E7;
-				color: #E17009;
-				font-weight: bold;}
-			#selectionA ul li {width: 100%;}
-			.maxWidth {width: 100%;}
-			.joueur {width: 100%;}
-				
-			#heure, #time_evt, #chrono_ajust, #periode_ajust, #end_match_time {width:50px; text-align: center; background-color: #DFEFFC;}
-			#time_end_match {width: 60px; text-align: center; background-color: #DFEFFC;}
-			#selectionChrono {width: 160px;}
-			#zoneChrono, #zoneTemps {
-				border: 3px outset #C5DBEC; border-radius: 8px; padding: 3px;
-				background-color: #CEDEEB;
-				}
-			#zoneChrono, #zoneTemps, #zoneEvt {margin-bottom: 3px;}
-			.fm_bouton {
-				background: url("images/ui-bg_glass_85_dfeffc_1x400.png") repeat-x scroll 50% 50% #DFEFFC;
-				border: 1px solid #C5DBEC;
-				color: #2E6E9E;
-				font-weight: bold;
-				width: 100%;
-				display: block;
-				text-decoration: none;
-				border-radius: 5px;
-				font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
-				cursor: pointer;
-				display: inline-block;
-				line-height: normal;
-				overflow: visible;
-				padding: 0.3em 0;
-				position: relative;
-				text-align: center;
-				vertical-align: middle;
-				}
-			.fm_bouton:hover {color: #E17009; border: 1px solid #79B7E7;}
-			.actif {
-				background: url("images/ui-bg_flat_55_fbec88_40x100.png") repeat-x scroll 50% 50% #F5F8F9;
-				border: 1px solid #79B7E7;
-				color: #E17009;
-				font-weight: bold;
-				}
-			.inactif {
-				background: url("images/ui-bg_flat_75_ffffff_40x100.png") repeat-x scroll 50% 50% #FFFFFF;
-				border: 1px solid #EEEEEE;
-				color: #ACFAFA; /* 8AC8F8 */
-				}
-			
-			.fm_input_text {font-size: 1em; border-radius: 5px; background-color: #DFEFFC; font-weight: bold;}
-			.statut, .periode {width: 150px; margin: 1px 0;}
-			.chronoButton, .evtButton, .evtButton2 {width: 45%;}
-			.evtButton {height: 50px; line-height:50px;}
-			.evtButton > img {height: 40px; vertical-align:middle;}
-			.but {background: url("buts.png") no-repeat 50% 50%; background-size: contain; padding: 0.6em}
-			.c_evt {position:absolute; top: 0; right: 5px;}
-			.c_evt > img {float: right; margin-left: 2px; }
-			.c_carton {height: 25px; }
-			.c_but {height: 15px; }
-			.icon_parametres {cursor: pointer; background: url("images/ui-icons_454545_256x240.png"); background-position: -192px -112px; height: 16px; width: 16px; position: absolute;}
-			.icon_rignt {cursor: pointer; background: url("images/ui-icons_6da8d5_256x240.png"); background-position: -32px -16px; height: 16px; width: 16px; position: absolute;}
-			.score {
-				font-family: Trebuchet MS, Verdana, sans-serif; font-weight: normal; font-size: 1.3em; color: white; background: url("bg_score.png") repeat-x 50% 50%;
-				border-radius: 5px; padding: 3px; margin: 3px; text-align: center; width: 25px
-				}
-			#scoreA {position:absolute; right:5px; top:5px; }
-			#scoreB {position:absolute; left:5px; top:5px; }
-			#avert {position:fixed; top: 5px; left: 5px; }
-			.avertText {
-				background: url("images/ui-bg_flat_0_aaaaaa_40x100.png") repeat-x scroll 50% 50% #AAAAAA;
-				border: 1px solid #999999;
-				color: #FFFFFF;
-				font-weight: bold;
-				font-style: italic;
-				padding: 3px 10px; margin: 0 2px;
-				width: 350px; text-align: center;
-				}
-			.fm_tabs {width: 185px; position:fixed; top: 5px; right: 5px; padding: 3px; text-align: left;}
-			.editOfficiel, .editStatut, .editNo {color: blue;}
-			.editOfficiel:hover, .editStatut:hover, .editNo:hover {text-decoration: underline; cursor: pointer; }
-			.editNo input {width: 20px; }
-			.editNo button {width: 38px; }
-			#equipeA td, #equipeB td {text-align: center; }
-		</style>
-		
-		<script type="text/javascript" src="jquery-1.11.0.min.js"></script>
-		<script type="text/javascript" src="jquery-ui-1.10.4.custom.min.js"></script>
-		<script type="text/javascript" src="jquery.cookie.js"></script>
-		<script type="text/javascript" src="jquery.jeditable.js"></script>
-		<script type="text/javascript" src="jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="jquery.maskedinput.min.js"></script>
-		<script>
-			$(function() {
-				function avertissement(texte) { //Messages
-					$('#avert').append('<div class="avertText">' + texte + '</div>');
-					$('.avertText:last').show('blind',{},800).text(texte).delay(1500).fadeOut(1200);
-				}
-				function custom_alert(output_msg, title_msg) { //Alert
-					if (output_msg == '')
-						output_msg = 'Pas de message à afficher.';
-					if (title_msg == '')
-						title_msg = 'Attention';
-					$('div.simple_alert').remove();
-					$("<div></div>").html(output_msg).dialog({
-						dialogClass:'simple_alert',
-						title: title_msg,
-						resizable: false,
-						modal: true,
-						buttons: {
-							"Ok": function() {
-								$( this ).dialog( "close" );
-							}
-						}
-					});
-				}
-				
-				$( document ).tooltip();
-				$("#chrono_ajust").mask("99:99");
-				$("#periode_ajust").mask("99:99");
-				$("#time_evt").mask("99:99");
-				$("#end_match_time, #time_end_match").mask("99h99");
-				
-				$('#accordion').accordion({
-					header: "h3",
-					heightStyle: "content"
-				});
-				$('.editOfficiel').editable('save.php', {
-					style   : 'display: inline',
-					submit  : 'OK',
-				});
-				$('.editStatut').editable('save.php', {
-					data   : " {'-':'Joueur','C':'Capitaine','E':'Entraîneur'}",
-					type   : 'select',
-					submit  : 'OK',
-				});
-				$('.editNo').editable('save.php', {
-					style   : 'display: inline',
-					submit  : 'OK',
-				});
-				
-				/* COMPO EQUIPE */
-				 $('#equipeA, #equipeB').dataTable( {
-					"paging":   false,
-					"ordering": false,
-					"info":     false,
-					"searching": false,
-					bJQueryUI: true,
-				} );
-
-				/* TYPE MATCH */
-				$('#typeMatch').buttonset();
-				$('#typeMatchElimination').click(function(){
-					$('#P1, #P2, #TB').removeClass('inactif');
-				});
-				$('#typeMatchClassement').click(function(){
-					$('#P1, #P2, #TB').addClass('inactif');
-				});
-				/* STATUT */
-				$('.statut').click(function( event ) {
-					event.preventDefault();
-					$('.statut').removeClass('actif');
-					$(this).addClass('actif');
-					if($(this).attr('id') == 'ON') {
-						$('.joueurs, #zoneEvt, #zoneTemps, .periode').show();
-						$('#M1').click();
-					} else {
-						$('.joueurs, #zoneEvt, #zoneTemps, .periode').hide();
-					}
-				});
-				$('#ATT').click(function (event) {
-					avertissement('Match en attente de débuter');
-				});
-				$('#END').click(function (event) {
-					avertissement('Match terminé');
-					avertissement('Saisissez heure de fin');
-					var end_time = new Date();
-					var end_hours = end_time.getHours();
-					if (end_hours < 10) {end_hours = '0' + end_hours;}
-					var end_minuts = end_time.getMinutes();
-					if (end_minuts < 10) {end_minuts = '0' + end_minuts;}
-					$('#time_end_match, #end_match_time').val(end_hours + 'h' + end_minuts);
-					$('#dialog_end_match').dialog('open');
-					$('#end_match_time').removeClass('inactif').addClass('actif');
-				});
-				/* DIALOG END MATCH */
-				$( "#dialog_end_match" ).dialog({
-					autoOpen: false,
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$( this ).dialog( "close" );
-							$('#end_match_time').val($('#time_end_match').val());
-						}
-					}
-				});
-				/* PERIODE */
-				$('.periode').click(function( event ) {
-					event.preventDefault();
-					$('.periode').removeClass('actif');
-					$(this).addClass('actif');
-					$('.statut').removeClass('actif');
-					$('#ON').addClass('actif');
-					$('#end_match_time').removeClass('actif').addClass('inactif')
-					$('.joueurs, .equipes, .evtButton, .chronoButton, .evtButton2').removeClass('inactif');
-					var texte;
-					switch ($(this).attr('id')) {
-						case 'P1':
-							texte = '1ère prolongation : 3 minutes';
-							minut_max = '03';
-							second_max = '00';
-							break;
-						case 'P2':
-							texte = '2nde prolongation : 3 minutes';
-							minut_max = '03';
-							second_max = '00';
-							break;
-						case 'TB':
-							texte = 'Tirs au but';
-							minut_max = '03';
-							second_max = '00';
-							break;
-						case 'M2':
-							texte = '2nde période : 10 minutes';
-							minut_max = '10';
-							second_max = '00';
-							break;
-						default:
-							texte = '1ère période : 10 minutes';
-							minut_max = '10';
-							second_max = '00';
-							break;
-					}
-					avertissement(texte);
-				});
-				
-				/* BOUTONS MATCH */
-				$('.joueurs, .equipes').click(function( event ) {
-					event.preventDefault();
-					$('.joueurs, .equipes').removeClass('actif');
-					$(this).addClass('actif');
-				});
-				$('.evtButton').click(function( event ) {
-					event.preventDefault();
-					$('.evtButton').removeClass('actif');
-					$(this).addClass('actif');
-					$('#time_evt').val($('#heure').val());
-					$('#valid_evt').removeClass('inactif')
-				});
-				$('#valid_evt').click(function( event ) {
-					event.preventDefault();
-					//enregistrement, ajout ligne...
-					var texte;
-					var ligne_nom = $('.joueurs[class*="actif"]').attr('data-player');
-					var ligne_num = $('.joueurs[class*="actif"]').attr('data-nb') + '- ';
-					var ligne_equipe = $('.joueurs[class*="actif"]').attr('data-equipe');
-					var ligne_evt = $('.evtButton[class*="actif"]').attr('data-evt');
-					if(ligne_nom === undefined) {
-						ligne_nom = $('.equipes[class*="actif"]').attr('data-player');
-						ligne_equipe = $('.equipes[class*="actif"]').attr('data-equipe');
-						ligne_num = '';
-						if(ligne_nom === undefined) {
-							custom_alert('Vous devez sélectionner un joueur ou une équipe !');
-							return;
-						}
-					}
-					if(ligne_evt === undefined) {return;}
-					texte  = $('#time_evt').val() + ' ' + ligne_evt;
-					texte += ' ' + ligne_equipe + ' ' + ligne_num + ligne_nom;
-					avertissement(texte);
-					var texte2 = '<tr><td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td><td class="list_evt">';
-					if(ligne_evt == 'But') {
-						texte2 += 'But';
-						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="but1.png" />');
-					}
-					texte2 += '</td><td>' + ligne_num + ligne_nom + '</td><td class="list_evt">';
-					if(ligne_evt == 'Carton vert') {
-						texte2 += 'V';
-						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="carton_vert.png" />');
-					}
-					texte2 += '</td><td class="list_evt">';
-					if(ligne_evt == 'Carton jaune') {
-						texte2 += 'J';
-						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="carton_jaune.png" />');
-					}
-					texte2 += '</td><td class="list_evt">';
-					if(ligne_evt == 'Carton rouge') {
-						texte2 += 'R';
-						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="carton_rouge.png" />');
-					}
-					texte2 += '</td></tr>';
-					$('.evtButton, .joueurs, .equipes').removeClass('actif');
-					$('#valid_evt').addClass('inactif');
-					if(ligne_equipe == 'A'){
-						if(ligne_evt == 'But')
-							$('#scoreA').text(parseInt($('#scoreA').text()) + 1);
-						$('#listA').append(texte2);
-					}else{
-						if(ligne_evt == 'But')
-							$('#scoreB').text(parseInt($('#scoreB').text()) + 1);
-						$('#listB').append(texte2);
-					}
-							
-				});
-				$('#reset_evt').click(function( event ) {
-					event.preventDefault();
-					$('.evtButton, .joueurs, .equipes').removeClass('actif');
-					$('#valid_evt').addClass('inactif');
-					//$('.joueurs').removeClass('actif');
-					$('#time_evt').val('');
-				});
-								
-				/* DIALOG AJUST */
-				$( "#dialog_ajust" ).dialog({
-					autoOpen: false,
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$( this ).dialog( "close" );
-							var split_period = $('#periode_ajust').val();
-							split_period = split_period.split(':');
-							minut_max = split_period[0];
-							second_max = split_period[1];
-							var split_chrono = $('#chrono_ajust').val();
-							split_chrono = split_chrono.split(':');
-							run_time.setTime(split_chrono[0] * 60000 + split_chrono[1] * 1000);
-							$('#stop_button').click();
-							$('#run_time_display').text(run_time.toLocaleString());
-							$('#heure').val($('#chrono_ajust').val());
-						},
-						"Annuler": function() {
-							$( this ).dialog( "close" );
-						}
-					}
-				});
-				$( "#dialog_ajust_opener" ).click(function() {
-					$('#chrono_ajust').val($('#heure').val());
-					$('#periode_ajust').val(minut_max + ':' + second_max);
-					$( "#dialog_ajust" ).dialog( "open" );
-				});
-				/* DIALOG END */
-				$( "#dialog_end" ).dialog({
-					autoOpen: false,
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$( this ).dialog( "close" );
-						}
-					}
-				});
-				$( "#dialog_end_opener" ).click(function() {
-					$('#periode_end').text(minut_max + ':' + second_max);
-					$( "#dialog_end" ).dialog( "open" );
-				});
-				
-				/* CHRONO */
-				var timer, chrono, start_time, run_time, minut_max = 10, second_max = '00';
-				Raz();
-				$('#stop_button').hide();
-				$('#run_button').hide();
-				
-				function Raz() {
-					$('#heure').val('00:00');
-					$.removeCookie('chrono');
-				}
-				function Horloge() {
-					var temp_time = new Date();
-					run_time.setTime(temp_time.getTime() - start_time.getTime());
-					$('#run_time_display').text(run_time.toLocaleString());
-					var minut_ = run_time.getMinutes();
-					if (minut_ < 10) {minut_ = '0' + minut_;}
-					var second_ = run_time.getSeconds();
-					if (second_ < 10) {second_ = '0' + second_;}
-					$('#heure').val(minut_ + ':' + second_);
-					/* Contrôle maxi */
-					if(minut_ >= minut_max && second_ >= second_max)
-					{
-						clearInterval(timer);
-						$('#periode_end').text(minut_max + ':' + second_max);
-						//alert('Temps terminé ' + minut_max + ':' + second_max);
-						$('#stop_button').click();
-						$( "#dialog_end" ).dialog( "open" );
-					}
-				}
-				$('#start_button').click(function(){
-					start_time = new Date();
-					run_time = new Date();
-					run_time.setTime(0);
-					timer = setInterval(Horloge, 100);
-					$('#start_time_display').text(start_time.toLocaleString());
-					$('#run_time_display').text(run_time.toLocaleString());
-					$('#start_button').hide();
-					$('#stop_button').show();
-					$('#heure').css('background-color', '#99FF99');
-				});
-				$('#stop_button').click(function(){
-					$('#stop_time_display').text(run_time.toLocaleString());
-					clearInterval(timer);
-					$('#run_button').show();
-					$('#stop_button').hide();
-					$('#heure').css('background-color', '#FF9999');
-				});
-				$('#run_button').click(function(){
-					$('#run_time_display').text(run_time.toLocaleString());
-					start_time = new Date();
-					start_time.setTime(start_time.getTime() - run_time.getTime());
-					timer = setInterval(Horloge, 100);
-					$('#run_button').hide();
-					$('#stop_button').show();
-					$('#heure').css('background-color', '#99FF99');
-				});
-				$('#raz_button').click(function(){
-					$('#start_button').show();
-					$('#run_button').hide();
-					$('#stop_button').hide();
-					clearInterval(timer);
-					Raz();
-					$('#heure').css('background-color', '#DFEFFC');
-					avertissement('Chrono remis à zéro');
-				});
-				/* TABS */
-				$('#tabs-1_link').hide();
-				$('#tabs-2').hide();
-				$('.fm_tabs').click(function() {
-					$('.fm_tabs').toggle();
-					$('.tabs_content').toggle();
-				});
-				/* END MATCH */
-				$('#end_match_time').addClass('inactif').val('00h00');
-				/* PARAMETRES PAR DEFAUT */
-				$('#ATT').click();
-				$('#typeMatchClassement').click();
-			});
-		</script>
-	</head>
-	<body>
-		<form>
-			<img src="FFCK.gif" id="logo" />
-			<div id="avert"></div>
-			<a href="#" class="fm_bouton fm_tabs" id="tabs-1_link" title="Déroulement du match">Déroulement du match<span class="icon_rignt"></span></a>
-			<a href="#" class="fm_bouton fm_tabs" id="tabs-2_link" title="Paramètres du match">Paramètres du match<span class="icon_parametres"></span></a>
-			<h3 class="centre">15th International Tournament of Pas de Calais - Saint Omer<br />
-			Samedi 24 mai 2014&nbsp;&nbsp;-&nbsp;&nbsp;10:30&nbsp;&nbsp;-&nbsp;&nbsp;Terrain 1</h3>
-			<div id="tabs-1" class="tabs_content">
-				<table class="maxWidth" id="deroulement_match">
-					<tr>
-						<th colspan="3">
-								Match :
-								<a href="#" id="ATT" class="fm_bouton statut actif">En attente</a><a href="#" id="ON" class="fm_bouton statut">En cours</a><a href="#" id="END" class="fm_bouton statut">Terminé</a>
-								Fin : <input type="text" id="end_match_time" class="fm_input_text" value="00h00" />
-								<br />
-								<a href="#" id="M1" class="fm_bouton periode">1ère période</a><a href="#" id="M2" class="fm_bouton periode">2nde période</a><a href="#" id="P1" class="fm_bouton periode">1ère prolong.</a><a href="#" id="P2" class="fm_bouton periode">2nde prolong.</a><a href="#" id="TB" class="fm_bouton periode">Tirs au but</a>
-							<hr>
-						</th>
-					</tr>
-					<tr>
-						<td id="selectionA">
-							<a href="#" class="fm_bouton equipes" data-equipe="A" data-player="Equipe A">Equipe A<br />
-								<img src="FRA.png" width="25px" /> Saint Omer
-								<span class="score" id="scoreA">0</span>
-							</a>
-							<br /><br />
-							<a href="#" id="B321650" data-equipe="A" data-player="Bernard C." data-nb="1" class="fm_bouton joueurs">1 - Bernard C.<span class="c_evt"></span></a>
-							<a href="#" id="B321651" data-equipe="A" data-player="Gilles B." data-nb="2" class="fm_bouton joueurs">2 - Gilles B.<span class="c_evt"></span></a>
-							<a href="#" id="B321654" data-equipe="A" data-player="Bastien B." data-nb="3" class="fm_bouton joueurs">3 - Bastien B. (C)<span class="c_evt"></span></a>
-							<a href="#" id="B321655" data-equipe="A" data-player="Yacine T." data-nb="4" class="fm_bouton joueurs">4 - Yacine T.&nbsp;<span class="c_evt"></span></a>
-							<a href="#" id="B321656" data-equipe="A" data-player="Thomas L." data-nb="5" class="fm_bouton joueurs">5 - Thomas L.<span class="c_evt"></span></a>
-							<a href="#" id="B321657" data-equipe="A" data-player="Alain R." data-nb="6" class="fm_bouton joueurs">6 - Alain R.<span class="c_evt"></span></a>
-							<a href="#" id="B321658" data-equipe="A" data-player="Roger P." data-nb="7" class="fm_bouton joueurs">7 - Roger P.<span class="c_evt"></span></a>
-							<a href="#" id="B321659" data-equipe="A" data-player="Matthieu F." data-nb="8" class="fm_bouton joueurs">8 - Matthieu F.<span class="c_evt"></span></a>
-						</td>
-						<td id="selectionChrono" class="centre">
-							<div id="zoneChrono">
-								Chrono : <input type="text" id="heure" class="fm_input_text" readonly />
-								<span class="icon_parametres" id="dialog_ajust_opener" title="Paramètres du chrono"></span>
-								<br />
-								<a href="#" id="start_button" class="fm_bouton chronoButton">Start</a>
-								<a href="#" id="run_button" class="fm_bouton chronoButton">Run</a>
-								<a href="#" id="stop_button" class="fm_bouton chronoButton">Stop</a>
-								<a href="#" id="raz_button" class="fm_bouton chronoButton">RAZ</a>
-							</div>
-							<div id="zoneEvt">
-								<a href="#" id="evt_but" data-evt="But" class="fm_bouton evtButton"><span class="but">But</span></a>
-								<a href="#" id="evt_vert" data-evt="Carton vert" class="fm_bouton evtButton"><img src="carton_vert.png" /></a>
-								<a href="#" id="evt_tir" data-evt="Tir" class="fm_bouton evtButton">Tir</a>
-								<a href="#" id="evt_jaune" data-evt="Carton jaune" class="fm_bouton evtButton"><img src="carton_jaune.png" /></a>
-								<a href="#" id="evt_arr" data-evt="Arrêt" class="fm_bouton evtButton">Arrêt</a>
-								<a href="#" id="evt_rouge" data-evt="Carton rouge" class="fm_bouton evtButton"><img src="carton_rouge.png" /></a>
-							</div>
-							<div id="zoneTemps">
-								Temps : <input type="text" size="4" class="fm_input_text" id="time_evt" />
-								<a href="#" id="valid_evt" class="fm_bouton evtButton2">Valider</a>
-								<a href="#" id="reset_evt" class="fm_bouton evtButton2">Annuler</a>
-							</div>
-						</td>
-						<td id="selectionB">
-							<a href="#" class="fm_bouton equipes" data-equipe="B" data-player="Equipe B">
-								<span class="score" id="scoreB">0</span>Equipe B<br />
-								<img src="BEL.png" width="25px" /> BEL U21 Men
-							</a>
-							<br /><br />
-							<a href="#" id="B321650" data-equipe="B" data-player="Bernard C." data-nb="1" class="fm_bouton joueurs">1 - Bernard C.<span class="c_evt"></span></a>
-							<a href="#" id="B321651" data-equipe="B" data-player="Gilles B." data-nb="2" class="fm_bouton joueurs">2 - Gilles B.<span class="c_evt"></span></a>
-							<a href="#" id="B321654" data-equipe="B" data-player="Bastien B." data-nb="3" class="fm_bouton joueurs">3 - Bastien B. (C)<span class="c_evt"></span></a>
-							<a href="#" id="B321655" data-equipe="B" data-player="Yacine T." data-nb="4" class="fm_bouton joueurs">4 - Yacine T.&nbsp;<span class="c_evt"></span></a>
-							<a href="#" id="B321656" data-equipe="B" data-player="Thomas L." data-nb="5" class="fm_bouton joueurs">5 - Thomas L.<span class="c_evt"></span></a>
-							<a href="#" id="B321657" data-equipe="B" data-player="Alain R." data-nb="6" class="fm_bouton joueurs">6 - Alain R.<span class="c_evt"></span></a>
-							<a href="#" id="B321658" data-equipe="B" data-player="Roger P." data-nb="7" class="fm_bouton joueurs">7 - Roger P.<span class="c_evt"></span></a>
-							<a href="#" id="B321659" data-equipe="B" data-player="Matthieu F." data-nb="8" class="fm_bouton joueurs">8 - Matthieu F.<span class="c_evt"></span></a>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="3">
-							<table id="listA" class="moitie" border="1">
-
-							</table>
-							&nbsp;
-							<table id="listB" class="moitie" border="1">
-							
-							</table>
-							<!-- variables date du chrono
-							<i>
-								Start time:<span id="start_time_display"></span>
-								<br />
-								Run time:<span id="run_time_display"></span>
-								<br />
-								Stop time:<span id="stop_time_display"></span>
-							</i>
-							-->
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div id="tabs-2" class="tabs_content">
-				<div id="accordion">
-					<div class="note">A remplir avant le début du match</div>
-					<h3>Officiels</h3>
-					<div>
-						<div class="moitie">
-							<label>Secrétaire : </label><span class="editOfficiel" id="secretaire">Jules Auffray</span><br />
-							<label>Chronomètre : </label><span class="editOfficiel" id="chrono">Jules Auffray</span><br />
-							<label>Chronomètre temps de jeu : </label><span class="editOfficiel" id="timeshoot">Jules Auffray</span><br />
-							<br />
-							<label>Arbitre principal : </label><span class="editOfficiel" id="principal">Jules Auffray</span><br />
-							<label>Arbitre secondaire : </label><span class="editOfficiel" id="secondaire">Jules Auffray</span><br />
-							<label>Juge de ligne : </label><span class="editOfficiel" id="ligne1">Jules Auffray</span><br />
-							<label>Juge de ligne : </label><span class="editOfficiel" id="ligne2">Jules Auffray</span><br />
-						</div>
-						<div class="moitie droite">
-							<label>Responsable organisation (R1): </label>Frederic Gruyelle<br />
-							<label>Responsable inscriptions (RZ): </label>Frederic Gruyelle<br />
-							<label>Club organisateur : </label>CKCSO<br />
-							<br />
-							Type de match : 
-							<span id="typeMatch">
-								<input type="radio" name="typeMatch" id="typeMatchClassement" checked="checked" /><label for="typeMatchClassement" title="Egalité possible">match de classement</label>
-								<input type="radio" name="typeMatch" id="typeMatchElimination" /><label for="typeMatchElimination" title="Vainqueur obligatoire">match à élimination</label>
-							</span>
-						</div>
-					</div>			
-					<h3>Equipe A - Saint Omer</h3>
-					<div>
-						<table class="dataTable" id="equipeA">
-							<thead>
-								<tr>
-									<th>N°</th>
-									<th>Statut</th>
-									<th>Prénom</th>
-									<th>Nom</th>
-									<th>Licence</th>
-									<th>Cat.</th>
-									<th>Supp</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td class="editNo">1</td>
-									<td class="editStatut">-</td>
-									<td>Bernard</td>
-									<td>C.</td>
-									<td>200375</td>
-									<td>CAD</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">2</td>
-									<td class="editStatut">-</td>
-									<td>Gilles</td>
-									<td>B.</td>
-									<td>205329</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">3</td>
-									<td class="editStatut">C</td>
-									<td>Bastien</td>
-									<td>B.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">4</td>
-									<td class="editStatut">-</td>
-									<td>Yacine</td>
-									<td>T.</td>
-									<td>200375</td>
-									<td>CAD</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">5</td>
-									<td class="editStatut">-</td>
-									<td>Thomas</td>
-									<td>L.</td>
-									<td>205329</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">6</td>
-									<td class="editStatut">-</td>
-									<td>Alain</td>
-									<td>R.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">7</td>
-									<td class="editStatut">-</td>
-									<td>Roger</td>
-									<td>P.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">8</td>
-									<td class="editStatut">-</td>
-									<td>Matthieu</td>
-									<td>F.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>			
-					<h3>Equipe B - BEL U21 Men</h3>
-					<div>
-						<table class="dataTable" id="equipeB">
-							<thead>
-								<tr>
-									<th>N°</th>
-									<th>Statut</th>
-									<th>Prénom</th>
-									<th>Nom</th>
-									<th>Licence</th>
-									<th>Cat.</th>
-									<th>Supp</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td class="editNo">1</td>
-									<td class="editStatut">-</td>
-									<td>Bernard</td>
-									<td>C.</td>
-									<td>200375</td>
-									<td>CAD</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">2</td>
-									<td class="editStatut">-</td>
-									<td>Gilles</td>
-									<td>B.</td>
-									<td>205329</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">3</td>
-									<td class="editStatut">C</td>
-									<td>Bastien</td>
-									<td>B.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">4</td>
-									<td class="editStatut">-</td>
-									<td>Yacine</td>
-									<td>T.</td>
-									<td>200375</td>
-									<td>CAD</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">5</td>
-									<td class="editStatut">-</td>
-									<td>Thomas</td>
-									<td>L.</td>
-									<td>205329</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">6</td>
-									<td class="editStatut">-</td>
-									<td>Alain</td>
-									<td>R.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">7</td>
-									<td class="editStatut">-</td>
-									<td>Roger</td>
-									<td>P.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-								<tr>
-									<td class="editNo">8</td>
-									<td class="editStatut">-</td>
-									<td>Matthieu</td>
-									<td>F.</td>
-									<td>198614</td>
-									<td>SEN</td>
-									<td>X</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>			
-				</div>			
-			</div>
-				<div id="dialog_ajust" title="Paramètres du chrono">
-					<p>
-						Ajuster le chrono : <input type="text" id="chrono_ajust" class="fm_input_text" />
-					</p>
-					<p>
-						Durée de la période : <input type="text" id="periode_ajust" class="fm_input_text" />
-					</p>
-				</div>
-				<div id="dialog_end" title="Fin de période">
-					<p class="centre">
-						<span class="fm_input_text" id="periode_end">00:00</span><br />Période terminée
-					</p>
-				</div>
-				<div id="dialog_end_match" title="Fin du match">
-					<p class="centre">
-						Heure fin de match : <input type="text" id="time_end_match" class="fm_input_text" />
-					</p>
-				</div>
-
-		</form>
-	</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+	<head>
+		<title>Feuille de marque 2.0</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
+		<link href="jquery.dataTables.css" rel="stylesheet">
+		<style>
+			body {font-family: Lucida Grande,Lucida Sans,Arial,sans-serif; font-weight: bold; background-color: #DDDDFF;}
+			.gauche {float: left;}
+			.droite {float: right;}
+			.centre {text-align: center;}
+			.moitie {width: 49%; float: left;}
+			.note {font-style: italic; text-align: center;}
+			#listA, #listB {border: 1px solid #79B7E7; border-spacing : 0; border-collapse : collapse;}
+			#listA {float: left;}
+			#listB {float: right;}
+			.list_chrono {width: 85px; background-color: #F5F8F9; text-align: center;}
+			.list_evt {width: 22px; text-align: center;}
+			#logo {width: 150px; position:fixed; top: 5px; left: 5px;}
+			label {font-weight: bold; }
+			#selectionA, #selectionB { vertical-align: top;}
+			#selectionA + h3 { background: url("images/ui-bg_inset-hard_100_f5f8f9_1x100.png") repeat-x scroll 50% 50% #F5F8F9;
+				border: 1px solid #79B7E7;
+				color: #E17009;
+				font-weight: bold;}
+			#selectionA ul li {width: 100%;}
+			.maxWidth {width: 100%;}
+			.joueur {width: 100%;}
+				
+			#heure, #time_evt, #chrono_ajust, #periode_ajust, #end_match_time {width:50px; text-align: center; background-color: #DFEFFC;}
+			#time_end_match {width: 60px; text-align: center; background-color: #DFEFFC;}
+			#selectionChrono {width: 160px;}
+			#zoneChrono, #zoneTemps {
+				border: 3px outset #C5DBEC; border-radius: 8px; padding: 3px;
+				background-color: #CEDEEB;
+				}
+			#zoneChrono, #zoneTemps, #zoneEvt {margin-bottom: 3px;}
+			.fm_bouton {
+				background: url("images/ui-bg_glass_85_dfeffc_1x400.png") repeat-x scroll 50% 50% #DFEFFC;
+				border: 1px solid #C5DBEC;
+				color: #2E6E9E;
+				font-weight: bold;
+				width: 100%;
+				display: block;
+				text-decoration: none;
+				border-radius: 5px;
+				font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
+				cursor: pointer;
+				display: inline-block;
+				line-height: normal;
+				overflow: visible;
+				padding: 0.3em 0;
+				position: relative;
+				text-align: center;
+				vertical-align: middle;
+				}
+			.fm_bouton:hover {color: #E17009; border: 1px solid #79B7E7;}
+			.actif {
+				background: url("images/ui-bg_flat_55_fbec88_40x100.png") repeat-x scroll 50% 50% #F5F8F9;
+				border: 1px solid #79B7E7;
+				color: #E17009;
+				font-weight: bold;
+				}
+			.inactif {
+				background: url("images/ui-bg_flat_75_ffffff_40x100.png") repeat-x scroll 50% 50% #FFFFFF;
+				border: 1px solid #EEEEEE;
+				color: #ACFAFA; /* 8AC8F8 */
+				}
+			
+			.fm_input_text {font-size: 1em; border-radius: 5px; background-color: #DFEFFC; font-weight: bold;}
+			.statut, .periode {width: 150px; margin: 1px 0;}
+			.chronoButton, .evtButton, .evtButton2 {width: 45%;}
+			.evtButton {height: 50px; line-height:50px;}
+			.evtButton > img {height: 40px; vertical-align:middle;}
+			.but {background: url("buts.png") no-repeat 50% 50%; background-size: contain; padding: 0.6em}
+			.c_evt {position:absolute; top: 0; right: 5px;}
+			.c_evt > img {float: right; margin-left: 2px; }
+			.c_carton {height: 25px; }
+			.c_but {height: 15px; }
+			.icon_parametres {cursor: pointer; background: url("images/ui-icons_454545_256x240.png"); background-position: -192px -112px; height: 16px; width: 16px; position: absolute;}
+			.icon_rignt {cursor: pointer; background: url("images/ui-icons_6da8d5_256x240.png"); background-position: -32px -16px; height: 16px; width: 16px; position: absolute;}
+			.score {
+				font-family: Trebuchet MS, Verdana, sans-serif; font-weight: normal; font-size: 1.3em; color: white; background: url("bg_score.png") repeat-x 50% 50%;
+				border-radius: 5px; padding: 3px; margin: 3px; text-align: center; width: 25px
+				}
+			#scoreA {position:absolute; right:5px; top:5px; }
+			#scoreB {position:absolute; left:5px; top:5px; }
+			#avert {position:fixed; top: 5px; left: 5px; }
+			.avertText {
+				background: url("images/ui-bg_flat_0_aaaaaa_40x100.png") repeat-x scroll 50% 50% #AAAAAA;
+				border: 1px solid #999999;
+				color: #FFFFFF;
+				font-weight: bold;
+				font-style: italic;
+				padding: 3px 10px; margin: 0 2px;
+				width: 350px; text-align: center;
+				}
+			.fm_tabs {width: 185px; position:fixed; top: 5px; right: 5px; padding: 3px; text-align: left;}
+			.editOfficiel, .editStatut, .editNo {color: blue;}
+			.editOfficiel:hover, .editStatut:hover, .editNo:hover {text-decoration: underline; cursor: pointer; }
+			.editNo input {width: 20px; }
+			.editNo button {width: 38px; }
+			#equipeA td, #equipeB td {text-align: center; }
+		</style>
+		
+		<script type="text/javascript" src="jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="jquery-ui-1.10.4.custom.min.js"></script>
+		<script type="text/javascript" src="jquery.cookie.js"></script>
+		<script type="text/javascript" src="jquery.jeditable.js"></script>
+		<script type="text/javascript" src="jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="jquery.maskedinput.min.js"></script>
+		<script>
+			$(function() {
+				function avertissement(texte) { //Messages
+					$('#avert').append('<div class="avertText">' + texte + '</div>');
+					$('.avertText:last').show('blind',{},800).text(texte).delay(1500).fadeOut(1200);
+				}
+				function custom_alert(output_msg, title_msg) { //Alert
+					if (output_msg == '')
+						output_msg = 'Pas de message à afficher.';
+					if (title_msg == '')
+						title_msg = 'Attention';
+					$('div.simple_alert').remove();
+					$("<div></div>").html(output_msg).dialog({
+						dialogClass:'simple_alert',
+						title: title_msg,
+						resizable: false,
+						modal: true,
+						buttons: {
+							"Ok": function() {
+								$( this ).dialog( "close" );
+							}
+						}
+					});
+				}
+				
+				$( document ).tooltip();
+				$("#chrono_ajust").mask("99:99");
+				$("#periode_ajust").mask("99:99");
+				$("#time_evt").mask("99:99");
+				$("#end_match_time, #time_end_match").mask("99h99");
+				
+				$('#accordion').accordion({
+					header: "h3",
+					heightStyle: "content"
+				});
+				$('.editOfficiel').editable('save.php', {
+					style   : 'display: inline',
+					submit  : 'OK',
+				});
+				$('.editStatut').editable('save.php', {
+					data   : " {'-':'Joueur','C':'Capitaine','E':'Entraîneur'}",
+					type   : 'select',
+					submit  : 'OK',
+				});
+				$('.editNo').editable('save.php', {
+					style   : 'display: inline',
+					submit  : 'OK',
+				});
+				
+				/* COMPO EQUIPE */
+				 $('#equipeA, #equipeB').dataTable( {
+					"paging":   false,
+					"ordering": false,
+					"info":     false,
+					"searching": false,
+					bJQueryUI: true,
+				} );
+
+				/* TYPE MATCH */
+				$('#typeMatch').buttonset();
+				$('#typeMatchElimination').click(function(){
+					$('#P1, #P2, #TB').removeClass('inactif');
+				});
+				$('#typeMatchClassement').click(function(){
+					$('#P1, #P2, #TB').addClass('inactif');
+				});
+				/* STATUT */
+				$('.statut').click(function( event ) {
+					event.preventDefault();
+					$('.statut').removeClass('actif');
+					$(this).addClass('actif');
+					if($(this).attr('id') == 'ON') {
+						$('.joueurs, #zoneEvt, #zoneTemps, .periode').show();
+						$('#M1').click();
+					} else {
+						$('.joueurs, #zoneEvt, #zoneTemps, .periode').hide();
+					}
+				});
+				$('#ATT').click(function (event) {
+					avertissement('Match en attente de débuter');
+				});
+				$('#END').click(function (event) {
+					avertissement('Match terminé');
+					avertissement('Saisissez heure de fin');
+					var end_time = new Date();
+					var end_hours = end_time.getHours();
+					if (end_hours < 10) {end_hours = '0' + end_hours;}
+					var end_minuts = end_time.getMinutes();
+					if (end_minuts < 10) {end_minuts = '0' + end_minuts;}
+					$('#time_end_match, #end_match_time').val(end_hours + 'h' + end_minuts);
+					$('#dialog_end_match').dialog('open');
+					$('#end_match_time').removeClass('inactif').addClass('actif');
+				});
+				/* DIALOG END MATCH */
+				$( "#dialog_end_match" ).dialog({
+					autoOpen: false,
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+							$('#end_match_time').val($('#time_end_match').val());
+						}
+					}
+				});
+				/* PERIODE */
+				$('.periode').click(function( event ) {
+					event.preventDefault();
+					$('.periode').removeClass('actif');
+					$(this).addClass('actif');
+					$('.statut').removeClass('actif');
+					$('#ON').addClass('actif');
+					$('#end_match_time').removeClass('actif').addClass('inactif')
+					$('.joueurs, .equipes, .evtButton, .chronoButton, .evtButton2').removeClass('inactif');
+					var texte;
+					switch ($(this).attr('id')) {
+						case 'P1':
+							texte = '1ère prolongation : 3 minutes';
+							minut_max = '03';
+							second_max = '00';
+							break;
+						case 'P2':
+							texte = '2nde prolongation : 3 minutes';
+							minut_max = '03';
+							second_max = '00';
+							break;
+						case 'TB':
+							texte = 'Tirs au but';
+							minut_max = '03';
+							second_max = '00';
+							break;
+						case 'M2':
+							texte = '2nde période : 10 minutes';
+							minut_max = '10';
+							second_max = '00';
+							break;
+						default:
+							texte = '1ère période : 10 minutes';
+							minut_max = '10';
+							second_max = '00';
+							break;
+					}
+					avertissement(texte);
+				});
+				
+				/* BOUTONS MATCH */
+				$('.joueurs, .equipes').click(function( event ) {
+					event.preventDefault();
+					$('.joueurs, .equipes').removeClass('actif');
+					$(this).addClass('actif');
+				});
+				$('.evtButton').click(function( event ) {
+					event.preventDefault();
+					$('.evtButton').removeClass('actif');
+					$(this).addClass('actif');
+					$('#time_evt').val($('#heure').val());
+					$('#valid_evt').removeClass('inactif')
+				});
+				$('#valid_evt').click(function( event ) {
+					event.preventDefault();
+					//enregistrement, ajout ligne...
+					var texte;
+					var ligne_nom = $('.joueurs[class*="actif"]').attr('data-player');
+					var ligne_num = $('.joueurs[class*="actif"]').attr('data-nb') + '- ';
+					var ligne_equipe = $('.joueurs[class*="actif"]').attr('data-equipe');
+					var ligne_evt = $('.evtButton[class*="actif"]').attr('data-evt');
+					if(ligne_nom === undefined) {
+						ligne_nom = $('.equipes[class*="actif"]').attr('data-player');
+						ligne_equipe = $('.equipes[class*="actif"]').attr('data-equipe');
+						ligne_num = '';
+						if(ligne_nom === undefined) {
+							custom_alert('Vous devez sélectionner un joueur ou une équipe !');
+							return;
+						}
+					}
+					if(ligne_evt === undefined) {return;}
+					texte  = $('#time_evt').val() + ' ' + ligne_evt;
+					texte += ' ' + ligne_equipe + ' ' + ligne_num + ligne_nom;
+					avertissement(texte);
+					var texte2 = '<tr><td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td><td class="list_evt">';
+					if(ligne_evt == 'But') {
+						texte2 += 'But';
+						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="but1.png" />');
+					}
+					texte2 += '</td><td>' + ligne_num + ligne_nom + '</td><td class="list_evt">';
+					if(ligne_evt == 'Carton vert') {
+						texte2 += 'V';
+						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="carton_vert.png" />');
+					}
+					texte2 += '</td><td class="list_evt">';
+					if(ligne_evt == 'Carton jaune') {
+						texte2 += 'J';
+						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="carton_jaune.png" />');
+					}
+					texte2 += '</td><td class="list_evt">';
+					if(ligne_evt == 'Carton rouge') {
+						texte2 += 'R';
+						$('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="carton_rouge.png" />');
+					}
+					texte2 += '</td></tr>';
+					$('.evtButton, .joueurs, .equipes').removeClass('actif');
+					$('#valid_evt').addClass('inactif');
+					if(ligne_equipe == 'A'){
+						if(ligne_evt == 'But')
+							$('#scoreA').text(parseInt($('#scoreA').text()) + 1);
+						$('#listA').append(texte2);
+					}else{
+						if(ligne_evt == 'But')
+							$('#scoreB').text(parseInt($('#scoreB').text()) + 1);
+						$('#listB').append(texte2);
+					}
+							
+				});
+				$('#reset_evt').click(function( event ) {
+					event.preventDefault();
+					$('.evtButton, .joueurs, .equipes').removeClass('actif');
+					$('#valid_evt').addClass('inactif');
+					//$('.joueurs').removeClass('actif');
+					$('#time_evt').val('');
+				});
+								
+				/* DIALOG AJUST */
+				$( "#dialog_ajust" ).dialog({
+					autoOpen: false,
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+							var split_period = $('#periode_ajust').val();
+							split_period = split_period.split(':');
+							minut_max = split_period[0];
+							second_max = split_period[1];
+							var split_chrono = $('#chrono_ajust').val();
+							split_chrono = split_chrono.split(':');
+							run_time.setTime(split_chrono[0] * 60000 + split_chrono[1] * 1000);
+							$('#stop_button').click();
+							$('#run_time_display').text(run_time.toLocaleString());
+							$('#heure').val($('#chrono_ajust').val());
+						},
+						"Annuler": function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
+				$( "#dialog_ajust_opener" ).click(function() {
+					$('#chrono_ajust').val($('#heure').val());
+					$('#periode_ajust').val(minut_max + ':' + second_max);
+					$( "#dialog_ajust" ).dialog( "open" );
+				});
+				/* DIALOG END */
+				$( "#dialog_end" ).dialog({
+					autoOpen: false,
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
+				$( "#dialog_end_opener" ).click(function() {
+					$('#periode_end').text(minut_max + ':' + second_max);
+					$( "#dialog_end" ).dialog( "open" );
+				});
+				
+				/* CHRONO */
+				var timer, chrono, start_time, run_time, minut_max = 10, second_max = '00';
+				Raz();
+				$('#stop_button').hide();
+				$('#run_button').hide();
+				
+				function Raz() {
+					$('#heure').val('00:00');
+					$.removeCookie('chrono');
+				}
+				function Horloge() {
+					var temp_time = new Date();
+					run_time.setTime(temp_time.getTime() - start_time.getTime());
+					$('#run_time_display').text(run_time.toLocaleString());
+					var minut_ = run_time.getMinutes();
+					if (minut_ < 10) {minut_ = '0' + minut_;}
+					var second_ = run_time.getSeconds();
+					if (second_ < 10) {second_ = '0' + second_;}
+					$('#heure').val(minut_ + ':' + second_);
+					/* Contrôle maxi */
+					if(minut_ >= minut_max && second_ >= second_max)
+					{
+						clearInterval(timer);
+						$('#periode_end').text(minut_max + ':' + second_max);
+						//alert('Temps terminé ' + minut_max + ':' + second_max);
+						$('#stop_button').click();
+						$( "#dialog_end" ).dialog( "open" );
+					}
+				}
+				$('#start_button').click(function(){
+					start_time = new Date();
+					run_time = new Date();
+					run_time.setTime(0);
+					timer = setInterval(Horloge, 100);
+					$('#start_time_display').text(start_time.toLocaleString());
+					$('#run_time_display').text(run_time.toLocaleString());
+					$('#start_button').hide();
+					$('#stop_button').show();
+					$('#heure').css('background-color', '#99FF99');
+				});
+				$('#stop_button').click(function(){
+					$('#stop_time_display').text(run_time.toLocaleString());
+					clearInterval(timer);
+					$('#run_button').show();
+					$('#stop_button').hide();
+					$('#heure').css('background-color', '#FF9999');
+				});
+				$('#run_button').click(function(){
+					$('#run_time_display').text(run_time.toLocaleString());
+					start_time = new Date();
+					start_time.setTime(start_time.getTime() - run_time.getTime());
+					timer = setInterval(Horloge, 100);
+					$('#run_button').hide();
+					$('#stop_button').show();
+					$('#heure').css('background-color', '#99FF99');
+				});
+				$('#raz_button').click(function(){
+					$('#start_button').show();
+					$('#run_button').hide();
+					$('#stop_button').hide();
+					clearInterval(timer);
+					Raz();
+					$('#heure').css('background-color', '#DFEFFC');
+					avertissement('Chrono remis à zéro');
+				});
+				/* TABS */
+				$('#tabs-1_link').hide();
+				$('#tabs-2').hide();
+				$('.fm_tabs').click(function() {
+					$('.fm_tabs').toggle();
+					$('.tabs_content').toggle();
+				});
+				/* END MATCH */
+				$('#end_match_time').addClass('inactif').val('00h00');
+				/* PARAMETRES PAR DEFAUT */
+				$('#ATT').click();
+				$('#typeMatchClassement').click();
+			});
+		</script>
+	</head>
+	<body>
+		<form>
+			<img src="FFCK.gif" id="logo" />
+			<div id="avert"></div>
+			<a href="#" class="fm_bouton fm_tabs" id="tabs-1_link" title="Déroulement du match">Déroulement du match<span class="icon_rignt"></span></a>
+			<a href="#" class="fm_bouton fm_tabs" id="tabs-2_link" title="Paramètres du match">Paramètres du match<span class="icon_parametres"></span></a>
+			<h3 class="centre">15th International Tournament of Pas de Calais - Saint Omer<br />
+			Samedi 24 mai 2014&nbsp;&nbsp;-&nbsp;&nbsp;10:30&nbsp;&nbsp;-&nbsp;&nbsp;Terrain 1</h3>
+			<div id="tabs-1" class="tabs_content">
+				<table class="maxWidth" id="deroulement_match">
+					<tr>
+						<th colspan="3">
+								Match :
+								<a href="#" id="ATT" class="fm_bouton statut actif">En attente</a><a href="#" id="ON" class="fm_bouton statut">En cours</a><a href="#" id="END" class="fm_bouton statut">Terminé</a>
+								Fin : <input type="text" id="end_match_time" class="fm_input_text" value="00h00" />
+								<br />
+								<a href="#" id="M1" class="fm_bouton periode">1ère période</a><a href="#" id="M2" class="fm_bouton periode">2nde période</a><a href="#" id="P1" class="fm_bouton periode">1ère prolong.</a><a href="#" id="P2" class="fm_bouton periode">2nde prolong.</a><a href="#" id="TB" class="fm_bouton periode">Tirs au but</a>
+							<hr>
+						</th>
+					</tr>
+					<tr>
+						<td id="selectionA">
+							<a href="#" class="fm_bouton equipes" data-equipe="A" data-player="Equipe A">Equipe A<br />
+								<img src="FRA.png" width="25px" /> Saint Omer
+								<span class="score" id="scoreA">0</span>
+							</a>
+							<br /><br />
+							<a href="#" id="B321650" data-equipe="A" data-player="Bernard C." data-nb="1" class="fm_bouton joueurs">1 - Bernard C.<span class="c_evt"></span></a>
+							<a href="#" id="B321651" data-equipe="A" data-player="Gilles B." data-nb="2" class="fm_bouton joueurs">2 - Gilles B.<span class="c_evt"></span></a>
+							<a href="#" id="B321654" data-equipe="A" data-player="Bastien B." data-nb="3" class="fm_bouton joueurs">3 - Bastien B. (C)<span class="c_evt"></span></a>
+							<a href="#" id="B321655" data-equipe="A" data-player="Yacine T." data-nb="4" class="fm_bouton joueurs">4 - Yacine T.&nbsp;<span class="c_evt"></span></a>
+							<a href="#" id="B321656" data-equipe="A" data-player="Thomas L." data-nb="5" class="fm_bouton joueurs">5 - Thomas L.<span class="c_evt"></span></a>
+							<a href="#" id="B321657" data-equipe="A" data-player="Alain R." data-nb="6" class="fm_bouton joueurs">6 - Alain R.<span class="c_evt"></span></a>
+							<a href="#" id="B321658" data-equipe="A" data-player="Roger P." data-nb="7" class="fm_bouton joueurs">7 - Roger P.<span class="c_evt"></span></a>
+							<a href="#" id="B321659" data-equipe="A" data-player="Matthieu F." data-nb="8" class="fm_bouton joueurs">8 - Matthieu F.<span class="c_evt"></span></a>
+						</td>
+						<td id="selectionChrono" class="centre">
+							<div id="zoneChrono">
+								Chrono : <input type="text" id="heure" class="fm_input_text" readonly />
+								<span class="icon_parametres" id="dialog_ajust_opener" title="Paramètres du chrono"></span>
+								<br />
+								<a href="#" id="start_button" class="fm_bouton chronoButton">Start</a>
+								<a href="#" id="run_button" class="fm_bouton chronoButton">Run</a>
+								<a href="#" id="stop_button" class="fm_bouton chronoButton">Stop</a>
+								<a href="#" id="raz_button" class="fm_bouton chronoButton">RAZ</a>
+							</div>
+							<div id="zoneEvt">
+								<a href="#" id="evt_but" data-evt="But" class="fm_bouton evtButton"><span class="but">But</span></a>
+								<a href="#" id="evt_vert" data-evt="Carton vert" class="fm_bouton evtButton"><img src="carton_vert.png" /></a>
+								<a href="#" id="evt_tir" data-evt="Tir" class="fm_bouton evtButton">Tir</a>
+								<a href="#" id="evt_jaune" data-evt="Carton jaune" class="fm_bouton evtButton"><img src="carton_jaune.png" /></a>
+								<a href="#" id="evt_arr" data-evt="Arrêt" class="fm_bouton evtButton">Arrêt</a>
+								<a href="#" id="evt_rouge" data-evt="Carton rouge" class="fm_bouton evtButton"><img src="carton_rouge.png" /></a>
+							</div>
+							<div id="zoneTemps">
+								Temps : <input type="text" size="4" class="fm_input_text" id="time_evt" />
+								<a href="#" id="valid_evt" class="fm_bouton evtButton2">Valider</a>
+								<a href="#" id="reset_evt" class="fm_bouton evtButton2">Annuler</a>
+							</div>
+						</td>
+						<td id="selectionB">
+							<a href="#" class="fm_bouton equipes" data-equipe="B" data-player="Equipe B">
+								<span class="score" id="scoreB">0</span>Equipe B<br />
+								<img src="BEL.png" width="25px" /> BEL U21 Men
+							</a>
+							<br /><br />
+							<a href="#" id="B321650" data-equipe="B" data-player="Bernard C." data-nb="1" class="fm_bouton joueurs">1 - Bernard C.<span class="c_evt"></span></a>
+							<a href="#" id="B321651" data-equipe="B" data-player="Gilles B." data-nb="2" class="fm_bouton joueurs">2 - Gilles B.<span class="c_evt"></span></a>
+							<a href="#" id="B321654" data-equipe="B" data-player="Bastien B." data-nb="3" class="fm_bouton joueurs">3 - Bastien B. (C)<span class="c_evt"></span></a>
+							<a href="#" id="B321655" data-equipe="B" data-player="Yacine T." data-nb="4" class="fm_bouton joueurs">4 - Yacine T.&nbsp;<span class="c_evt"></span></a>
+							<a href="#" id="B321656" data-equipe="B" data-player="Thomas L." data-nb="5" class="fm_bouton joueurs">5 - Thomas L.<span class="c_evt"></span></a>
+							<a href="#" id="B321657" data-equipe="B" data-player="Alain R." data-nb="6" class="fm_bouton joueurs">6 - Alain R.<span class="c_evt"></span></a>
+							<a href="#" id="B321658" data-equipe="B" data-player="Roger P." data-nb="7" class="fm_bouton joueurs">7 - Roger P.<span class="c_evt"></span></a>
+							<a href="#" id="B321659" data-equipe="B" data-player="Matthieu F." data-nb="8" class="fm_bouton joueurs">8 - Matthieu F.<span class="c_evt"></span></a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<table id="listA" class="moitie" border="1">
+
+							</table>
+							&nbsp;
+							<table id="listB" class="moitie" border="1">
+							
+							</table>
+							<!-- variables date du chrono
+							<i>
+								Start time:<span id="start_time_display"></span>
+								<br />
+								Run time:<span id="run_time_display"></span>
+								<br />
+								Stop time:<span id="stop_time_display"></span>
+							</i>
+							-->
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id="tabs-2" class="tabs_content">
+				<div id="accordion">
+					<div class="note">A remplir avant le début du match</div>
+					<h3>Officiels</h3>
+					<div>
+						<div class="moitie">
+							<label>Secrétaire : </label><span class="editOfficiel" id="secretaire">Jules Auffray</span><br />
+							<label>Chronomètre : </label><span class="editOfficiel" id="chrono">Jules Auffray</span><br />
+							<label>Chronomètre temps de jeu : </label><span class="editOfficiel" id="timeshoot">Jules Auffray</span><br />
+							<br />
+							<label>Arbitre principal : </label><span class="editOfficiel" id="principal">Jules Auffray</span><br />
+							<label>Arbitre secondaire : </label><span class="editOfficiel" id="secondaire">Jules Auffray</span><br />
+							<label>Juge de ligne : </label><span class="editOfficiel" id="ligne1">Jules Auffray</span><br />
+							<label>Juge de ligne : </label><span class="editOfficiel" id="ligne2">Jules Auffray</span><br />
+						</div>
+						<div class="moitie droite">
+							<label>Responsable organisation (R1): </label>Frederic Gruyelle<br />
+							<label>Responsable inscriptions (RZ): </label>Frederic Gruyelle<br />
+							<label>Club organisateur : </label>CKCSO<br />
+							<br />
+							Type de match : 
+							<span id="typeMatch">
+								<input type="radio" name="typeMatch" id="typeMatchClassement" checked="checked" /><label for="typeMatchClassement" title="Egalité possible">match de classement</label>
+								<input type="radio" name="typeMatch" id="typeMatchElimination" /><label for="typeMatchElimination" title="Vainqueur obligatoire">match à élimination</label>
+							</span>
+						</div>
+					</div>			
+					<h3>Equipe A - Saint Omer</h3>
+					<div>
+						<table class="dataTable" id="equipeA">
+							<thead>
+								<tr>
+									<th>N°</th>
+									<th>Statut</th>
+									<th>Prénom</th>
+									<th>Nom</th>
+									<th>Licence</th>
+									<th>Cat.</th>
+									<th>Supp</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="editNo">1</td>
+									<td class="editStatut">-</td>
+									<td>Bernard</td>
+									<td>C.</td>
+									<td>200375</td>
+									<td>CAD</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">2</td>
+									<td class="editStatut">-</td>
+									<td>Gilles</td>
+									<td>B.</td>
+									<td>205329</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">3</td>
+									<td class="editStatut">C</td>
+									<td>Bastien</td>
+									<td>B.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">4</td>
+									<td class="editStatut">-</td>
+									<td>Yacine</td>
+									<td>T.</td>
+									<td>200375</td>
+									<td>CAD</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">5</td>
+									<td class="editStatut">-</td>
+									<td>Thomas</td>
+									<td>L.</td>
+									<td>205329</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">6</td>
+									<td class="editStatut">-</td>
+									<td>Alain</td>
+									<td>R.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">7</td>
+									<td class="editStatut">-</td>
+									<td>Roger</td>
+									<td>P.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">8</td>
+									<td class="editStatut">-</td>
+									<td>Matthieu</td>
+									<td>F.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>			
+					<h3>Equipe B - BEL U21 Men</h3>
+					<div>
+						<table class="dataTable" id="equipeB">
+							<thead>
+								<tr>
+									<th>N°</th>
+									<th>Statut</th>
+									<th>Prénom</th>
+									<th>Nom</th>
+									<th>Licence</th>
+									<th>Cat.</th>
+									<th>Supp</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="editNo">1</td>
+									<td class="editStatut">-</td>
+									<td>Bernard</td>
+									<td>C.</td>
+									<td>200375</td>
+									<td>CAD</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">2</td>
+									<td class="editStatut">-</td>
+									<td>Gilles</td>
+									<td>B.</td>
+									<td>205329</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">3</td>
+									<td class="editStatut">C</td>
+									<td>Bastien</td>
+									<td>B.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">4</td>
+									<td class="editStatut">-</td>
+									<td>Yacine</td>
+									<td>T.</td>
+									<td>200375</td>
+									<td>CAD</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">5</td>
+									<td class="editStatut">-</td>
+									<td>Thomas</td>
+									<td>L.</td>
+									<td>205329</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">6</td>
+									<td class="editStatut">-</td>
+									<td>Alain</td>
+									<td>R.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">7</td>
+									<td class="editStatut">-</td>
+									<td>Roger</td>
+									<td>P.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+								<tr>
+									<td class="editNo">8</td>
+									<td class="editStatut">-</td>
+									<td>Matthieu</td>
+									<td>F.</td>
+									<td>198614</td>
+									<td>SEN</td>
+									<td>X</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>			
+				</div>			
+			</div>
+				<div id="dialog_ajust" title="Paramètres du chrono">
+					<p>
+						Ajuster le chrono : <input type="text" id="chrono_ajust" class="fm_input_text" />
+					</p>
+					<p>
+						Durée de la période : <input type="text" id="periode_ajust" class="fm_input_text" />
+					</p>
+				</div>
+				<div id="dialog_end" title="Fin de période">
+					<p class="centre">
+						<span class="fm_input_text" id="periode_end">00:00</span><br />Période terminée
+					</p>
+				</div>
+				<div id="dialog_end_match" title="Fin du match">
+					<p class="centre">
+						Heure fin de match : <input type="text" id="time_end_match" class="fm_input_text" />
+					</p>
+				</div>
+
+		</form>
+	</body>
 </html>
