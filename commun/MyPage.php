@@ -53,7 +53,7 @@ class MyPage
 			array_push($arrayMenu, array('name' => 'Historique', 'href' => 'Historique.php'));
 			array_push($arrayMenu, array('name' => 'Palmares', 'href' => 'Palmares.php'));
 			array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'Cartographie.php'));
-			array_push($arrayMenu, array('name' => 'Forum', 'href' => 'http://www.poloweb.org/forum/'));
+//			array_push($arrayMenu, array('name' => 'Forum', 'href' => 'http://www.poloweb.org/forum/'));
 			array_push($arrayMenu, array('name' => 'Administration', 'href' => 'admin/GestionCompetition.php'));
 		}
 		else
