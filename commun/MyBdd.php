@@ -143,6 +143,12 @@ class MyBdd
 				$this->ImportPCE_Juges($buffer);	 
 				continue;
 			}
+            //surclassements
+			if (strcasecmp($section, "surclassements") == 0)
+			{
+				$this->ImportPCE_Surclassements($buffer);	 
+				continue;
+			}
 		}	
 
 		fclose($fp);  			   
@@ -206,11 +212,19 @@ class MyBdd
 				$nbArbitres++;
 				continue;
 			}
-		}	
+
+            if (strcasecmp($section, "surclassements") == 0)
+			{
+				$this->ImportPCE_Surclassements($buffer);
+				$nbSurclassements++;
+				continue;
+			}
+}	
 
 		fclose($fp);  			   
 		array_push($this->m_arrayinfo, "Mise à jour ".$nbLicenciés." licenciés..." );
 		array_push($this->m_arrayinfo, "Mise à jour ".$nbArbitres." arbitres..." );
+		array_push($this->m_arrayinfo, "Mise à jour ".$nbSurclassements." surclassements..." );
 		// Lancement des mises à jour ...
 		$this->ImportPCE_MajClub();	 
 		$this->ImportPCE_MajComiteReg();
@@ -372,6 +386,37 @@ class MyBdd
 		$res = mysql_query($query, $this->m_link);
 		$query  = "UPDATE gickp_Arbitre SET Arb = 'Int' WHERE International = 'O' ";							 	   
 		$res = mysql_query($query, $this->m_link);
+
+	}	 
+
+    // Importation de la section [surclassements] du fichier PCE 
+	function ImportPCE_Surclassements($buffer)				
+	{	
+		$arrayToken = explode(";", $buffer);   
+		$nbToken = count($arrayToken);
+		if ($nbToken != 6)
+		{												  
+			array_push($this->m_arrayinfo, "Erreur [surclassements] : ".$buffer);
+			return;
+		}
+		
+		$matric =  $arrayToken[0];
+		$nom = $arrayToken[1];
+		$prenom = $arrayToken[2];
+		$discipline = $arrayToken[3];
+		$categorie = $arrayToken[4];
+        $dateSurclassement = $arrayToken[5];
+        $dateSurclassement = explode('/',$dateSurclassement);
+        $dateSurclassement = implode('-',$dateSurclassement);
+		$saisonSurclassement = $this->m_saisonPCE;
+
+        if($discipline == 'KAP'){
+            $query  = "REPLACE INTO gickp_Surclassements VALUES ($matric, $saisonSurclassement, '$categorie', '$dateSurclassement')";							 	   
+            $res = mysql_query($query, $this->m_link);
+            if (!$res) {
+                array_push($this->m_arrayinfo, "Erreur SQL " . mysql_error());
+            }
+        }
 
 	}	 
 
