@@ -108,7 +108,7 @@ function testframe()
 	<li ><a href="Historique.php"><? echo $Historique ?></a></li>
 	<li ><a href="Palmares.php"><? echo $Palmares?></a></li>
 	<li ><a href="Cartographie.php">Clubs</a></li>
-	<li class="forum"><a href="http://www.poloweb.org/forum/">Forum</a></li>
+	<!--<li class="forum"><a href="http://www.poloweb.org/forum/">Forum</a></li>-->
 	<li ><a href="admin/GestionCompetition.php"><? echo $Administration ?></a></li>
 	<li ><a href="?lang=EN&cat=5"><img vspace="3" width="22" height="14" src="img/Pays/GBR.png" alt="EN" title="EN" border="0"></a></li>
 	<li ><a href="?lang=FR&cat=1"><img vspace="3" width="22" height="14" src="img/Pays/FRA.png" alt="FR" title="FR" border="0"></a></li>
