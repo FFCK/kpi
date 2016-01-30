@@ -17,8 +17,8 @@ class GestionAthlete extends MyPageSecure
 		$Athlete = utyGetGet('Athlete', $Athlete);
 		$this->m_tpl->assign('Athlete', $Athlete);
                 
-                $SaisonAthlete = utyGetSession('SaisonAthlete', utyGetSaison());
-                $SaisonAthlete = utyGetPost('SaisonAthlete', $SaisonAthlete);
+        $SaisonAthlete = utyGetSession('SaisonAthlete', utyGetSaison());
+        $SaisonAthlete = utyGetPost('SaisonAthlete', $SaisonAthlete);
 		$this->m_tpl->assign('SaisonAthlete', $SaisonAthlete);
 
                 // Saisons	
@@ -39,8 +39,10 @@ class GestionAthlete extends MyPageSecure
 		if ($Athlete != '')
 		{
 			// Données générales
-			$sql  = "SELECT c.*, cl.Libelle nomclub, dep.Libelle nomcd, reg.Libelle nomcr "
-                                . "FROM gickp_Liste_Coureur c, gickp_Club cl, gickp_Comite_dep dep, gickp_Comite_reg reg "
+			$sql  = "SELECT c.*, cl.Libelle nomclub, dep.Libelle nomcd, reg.Libelle nomcr, s.Date date_surclassement "
+                                . "FROM gickp_Liste_Coureur c "
+                                . "LEFT OUTER JOIN gickp_Surclassements s ON (c.Matric = s.Matric AND s.Saison = '2016'), "
+                                . "gickp_Club cl, gickp_Comite_dep dep, gickp_Comite_reg reg "
                                 . "WHERE c.Numero_club = cl.Code "
                                 . "AND c.Numero_comite_dept = dep.Code "
                                 . "AND c.Numero_comite_reg = reg.Code "
@@ -49,6 +51,7 @@ class GestionAthlete extends MyPageSecure
 			if ($myBdd->NumRows($result) != 1)
 				return;
 			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+            $row['date_surclassement'] = utyDateUsToFr($row['date_surclassement']);
 			$this->m_tpl->assign('Courreur', $row);
 			$this->m_tpl->assign('Athlete_id', $row['Nom'].' '.$row['Prenom']);
 			// Arbitre

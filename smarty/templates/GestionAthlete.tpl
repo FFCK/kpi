@@ -28,16 +28,16 @@
 						<tr>
 							<th colspan=4>
 								Saison:
-                                                                    <select name="SaisonAthlete"  id="SaisonAthlete" onChange="submit()">
-                                                                            {section name=i loop=$arraySaison} 
-                                                                                    <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $SaisonAthlete}selected{/if}>{$arraySaison[i].Code}</Option>
-                                                                            {/section}
-                                                                    </select>
-                                                                        &nbsp;&nbsp;
+                                    <select name="SaisonAthlete"  id="SaisonAthlete" onChange="submit()">
+                                        {section name=i loop=$arraySaison} 
+                                            <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $SaisonAthlete}selected{/if}>{$arraySaison[i].Code}</Option>
+                                        {/section}
+                                    </select>
+                                        &nbsp;&nbsp;
 									<u>Licence n° {$Courreur.Matric}</u>&nbsp;&nbsp;
-                                                                        <b>{$Courreur.Nom} {$Courreur.Prenom}</b> ({$Courreur.Sexe}) né(e) le {$Courreur.Naissance|date_format:"%d/%m/%Y"}
-                                                                        <br>
-									<br>
+                                        <b>{$Courreur.Nom} {$Courreur.Prenom}</b> ({$Courreur.Sexe}) né(e) le {$Courreur.Naissance|date_format:"%d/%m/%Y"}
+                                        <br>{if $Courreur.date_surclassement}<b class='vert'>Surclassé à la date du {$Courreur.date_surclassement}</b>{/if}
+                                        <br>
 							</th>
 						</tr>
 						<tr>
