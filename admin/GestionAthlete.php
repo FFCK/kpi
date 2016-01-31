@@ -21,10 +21,10 @@ class GestionAthlete extends MyPageSecure
         $SaisonAthlete = utyGetPost('SaisonAthlete', $SaisonAthlete);
 		$this->m_tpl->assign('SaisonAthlete', $SaisonAthlete);
 
-                // Saisons	
+        // Saisons	
 		$sql  = "Select Code "
-                        . "From gickp_Saison "
-                        . "Order By Code DESC ";	 
+                    . "From gickp_Saison "
+                    . "Order By Code DESC ";	 
 		$result = $myBdd->Query($sql);
 		$num_results = $myBdd->NumRows($result);
 		$arraySaison = array();
@@ -40,23 +40,24 @@ class GestionAthlete extends MyPageSecure
 		{
 			// Données générales
 			$sql  = "SELECT c.*, cl.Libelle nomclub, dep.Libelle nomcd, reg.Libelle nomcr, s.Date date_surclassement "
-                                . "FROM gickp_Liste_Coureur c "
-                                . "LEFT OUTER JOIN gickp_Surclassements s ON (c.Matric = s.Matric AND s.Saison = '2016'), "
-                                . "gickp_Club cl, gickp_Comite_dep dep, gickp_Comite_reg reg "
-                                . "WHERE c.Numero_club = cl.Code "
-                                . "AND c.Numero_comite_dept = dep.Code "
-                                . "AND c.Numero_comite_reg = reg.Code "
-                                . "AND c.Matric = '$Athlete' ";
+                        . "FROM gickp_Liste_Coureur c "
+                        . "LEFT OUTER JOIN gickp_Surclassements s ON (c.Matric = s.Matric AND s.Saison = $SaisonAthlete), "
+                        . "gickp_Club cl, gickp_Comite_dep dep, gickp_Comite_reg reg "
+                        . "WHERE c.Numero_club = cl.Code "
+                        . "AND c.Numero_comite_dept = dep.Code "
+                        . "AND c.Numero_comite_reg = reg.Code "
+                        . "AND c.Matric = '$Athlete' ";
 			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) != 1)
-				return;
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+			if ($myBdd->NumRows($result) != 1) {
+                return;
+            }
+            $row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
             $row['date_surclassement'] = utyDateUsToFr($row['date_surclassement']);
 			$this->m_tpl->assign('Courreur', $row);
 			$this->m_tpl->assign('Athlete_id', $row['Nom'].' '.$row['Prenom']);
 			// Arbitre
 			$sql  = "SELECT * FROM gickp_Arbitre "
-                                . "WHERE Matric = '$Athlete' ";
+                        . "WHERE Matric = '$Athlete' ";
 			$result = $myBdd->Query($sql);
 			if ($myBdd->NumRows($result) == 1)
 			{

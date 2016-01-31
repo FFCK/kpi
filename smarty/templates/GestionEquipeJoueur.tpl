@@ -200,7 +200,8 @@
 								<td>
 									<label for="naissanceJoueur2">Date Naissance :</label>
 									<input type="text" name="naissanceJoueur2" readonly maxlength=10 id="naissanceJoueur2" >
-									<input type="hidden" name="categJoueur2" id="categJoueur2" />
+                                    <input type="hidden" name="categJoueur2" id="categJoueur2" />
+                                    <span id="categJoueur3"></span><span id="surclassement3"></span>
 								</td>
 								<td>
 									<label for="sexeJoueur2">Sexe :</label>

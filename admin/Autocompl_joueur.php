@@ -83,10 +83,12 @@ include_once('../commun/MyTools.php');
         $q = utyGetGet('q');
         $q = preg_replace('`^[0]*`','',$q);
 
-        $sql  = "Select lc.*, c.Libelle ";
-        $sql .= "From gickp_Liste_Coureur lc, gickp_Club c ";
-        $sql .= "Where (lc.Matric Like '%".ltrim($q, '0')."%' ";
-        $sql .= "Or UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') ";
+        $sql  = "Select lc.*, c.Libelle, s.Date date_surclassement "
+                . "From gickp_Liste_Coureur lc "
+                . "LEFT OUTER JOIN gickp_Surclassements s ON (lc.Matric = s.Matric AND s.Saison = ".  utyGetSaison() ."), "
+                . "gickp_Club c "
+                . "Where (lc.Matric Like '%".ltrim($q, '0')."%' "
+                . "Or UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') ";
         $sql .= "Or UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') ";
         $sql .= ") And lc.Numero_club = c.Code ";
         $sql .= "Order by lc.Nom, lc.Prenom ";
@@ -106,6 +108,7 @@ include_once('../commun/MyTools.php');
 		$pagaie_ECA = $row['Pagaie_ECA'];
 		$certificat_CK = $row['Etat_certificat_CK'];
 		$certificat_APS = $row['Etat_certificat_APS'];
-		echo "$matric - $nom $prenom ($club - $libelle)|$matric|$nom|$prenom|$naissance|$sexe|$nom2|$prenom2|$origine|$pagaie_ECA|$certificat_CK|$certificat_APS|$libelle\n";
+        $date_surclassement = utyDateUsToFr($row['date_surclassement']);
+		echo "$matric - $nom $prenom ($club - $libelle)|$matric|$nom|$prenom|$naissance|$sexe|$nom2|$prenom2|$origine|$pagaie_ECA|$certificat_CK|$certificat_APS|$libelle|$date_surclassement\n";
 	}
 ?>

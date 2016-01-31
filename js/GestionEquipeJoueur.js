@@ -233,13 +233,19 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 			$("#prenomJoueur2").val(data[3]);
 			$("#naissanceJoueur2").val(data[4]);
 			$("#sexeJoueur2").val(data[5]);
-			if(typeCompet == 'CH' || typeCompet == 'CF'){
+            catJoueurs2 = calculCategorie(data[4], saisonCompet);
+			$("#categJoueur2").val(catJoueurs2);
+            $("#categJoueur3").text(catJoueurs2);
+            surclassement = data[13];
+            //if(surclassement != ''){
+                $("#surclassement3").html('<br><b>Surcl: ' + surclassement + '</b>');
+            //}
+			if(typeCompet == 'CH' || typeCompet == 'CF' || typeCompet == 'MC'){
 				$("#origineJoueur2").text(data[8]);
 				$("#pagaieJoueur2").text(data[9]);
 				$("#CKJoueur2").text(data[10]);
 				$("#APSJoueur2").text(data[11]);
-				$("#catJoueur2").text(calculCategorie(data[4], saisonCompet));
-				$("#categJoueur2").val($("#catJoueur2").text());
+                $("#catJoueur2").text(catJoueurs2);
 				var motif = '';
 				if(data[8] < saisonCompet){
 					motif = '(Saison licence)';
