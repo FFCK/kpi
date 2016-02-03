@@ -104,7 +104,7 @@
 										</td>
 										<td>{$arrayJoueur[i].Numero_club}</td>
 										<td>{$arrayJoueur[i].Categ}
-                                            {if $arrayJoueur[i].date_surclassement != ''}<span title="Surclassement au {$arrayJoueur[i].date_surclassement}"><b>#S</b></span>{/if}
+                                            {if $arrayJoueur[i].date_surclassement != ''}<span class="vert" title="Surclassement au {$arrayJoueur[i].date_surclassement}">#S</span>{/if}
                                              - {$arrayJoueur[i].Sexe}</td>
 										<td {if $arrayJoueur[i].Pagaie_ECA == '' or $arrayJoueur[i].Pagaie_ECA == 'PAGB' or $arrayJoueur[i].Pagaie_ECA == 'PAGJ'} class='highlight2'{/if}>
 											<img width="16" src="../img/EC-{$arrayJoueur[i].Pagaie_ECA}.gif" alt="Pagaie Eau Calme" title="Pagaie Eau Calme" />
