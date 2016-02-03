@@ -103,7 +103,9 @@
 											{/if}
 										</td>
 										<td>{$arrayJoueur[i].Numero_club}</td>
-										<td>{$arrayJoueur[i].Categ} - {$arrayJoueur[i].Sexe}</td>
+										<td>{$arrayJoueur[i].Categ}
+                                            {if $arrayJoueur[i].date_surclassement != ''}<span title="Surclassement au {$arrayJoueur[i].date_surclassement}"><b>#S</b></span>{/if}
+                                             - {$arrayJoueur[i].Sexe}</td>
 										<td {if $arrayJoueur[i].Pagaie_ECA == '' or $arrayJoueur[i].Pagaie_ECA == 'PAGB' or $arrayJoueur[i].Pagaie_ECA == 'PAGJ'} class='highlight2'{/if}>
 											<img width="16" src="../img/EC-{$arrayJoueur[i].Pagaie_ECA}.gif" alt="Pagaie Eau Calme" title="Pagaie Eau Calme" />
 											<!--<img hspace="1" width="16" height="16" src="../img/EV-{$arrayJoueur[i].Pagaie_EVI}.gif" alt="Pagaie Eau Vive" title="Pagaie Eau Vive" border="0">
@@ -201,13 +203,17 @@
 									<label for="naissanceJoueur2">Date Naissance :</label>
 									<input type="text" name="naissanceJoueur2" readonly maxlength=10 id="naissanceJoueur2" >
                                     <input type="hidden" name="categJoueur2" id="categJoueur2" />
-                                    <span id="categJoueur3"></span><span id="surclassement3"></span>
-								</td>
+                                </td>
 								<td>
 									<label for="sexeJoueur2">Sexe :</label>
 									<input type="text" name="sexeJoueur2" readonly maxlength=1 id="sexeJoueur2" >
 								</td>
 							</tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span id="categJoueur3"></span><span id="surclassement3"></span>
+								</td>
+                            </tr>
 							<tr>
 								<td colspan=2><center><i>Optionnel :</i></center></td>
 							</tr>

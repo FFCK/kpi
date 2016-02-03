@@ -235,11 +235,11 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 			$("#sexeJoueur2").val(data[5]);
             catJoueurs2 = calculCategorie(data[4], saisonCompet);
 			$("#categJoueur2").val(catJoueurs2);
-            $("#categJoueur3").text(catJoueurs2);
+            $("#categJoueur3").text('Cat: ' + catJoueurs2);
             surclassement = data[13];
-            //if(surclassement != ''){
-                $("#surclassement3").html('<br><b>Surcl: ' + surclassement + '</b>');
-            //}
+            if(surclassement != ''){
+                $("#surclassement3").html(' <b>Surcl: ' + surclassement + '</b>');
+            }
 			if(typeCompet == 'CH' || typeCompet == 'CF' || typeCompet == 'MC'){
 				$("#origineJoueur2").text(data[8]);
 				$("#pagaieJoueur2").text(data[9]);
