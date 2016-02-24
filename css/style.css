@@ -300,6 +300,17 @@ html>body #nav a {width: auto;}    /* fixes IE6 hack */
 	margin: 0;
 	width: 450px;	
 }
+.Left3 {
+    padding: 15px;
+	width: 400px;
+    float: left;
+}
+.Right4 {
+    padding: 15px;
+    width: 400px;
+    float: right;
+}
+
 .blocRight th, .blocTop th {
 	border: 3px groove #CCCCCC;
 }

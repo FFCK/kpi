@@ -15,19 +15,29 @@
 			</script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
 		<!-- End Piwik Tracking Code -->
 	{/literal}
-	<center>
-		<a href="https://www.facebook.com/KIPsport" target="_blank">
-			<img src="wordpress/wp-content/uploads/2015/01/KIPSport.png" width=120 border=none>
+	<div class="Left3">
+		<a href="https://www.facebook.com/ffckkp/" target="_blank">
+            <img src="img/ffck_kayakpolo.jpg" height=120 border=none alt=""/>
 		</a>
 		<br />
-		Suivez notre partenaire info sur 
+		La page officielle 
+		<a href="https://www.facebook.com/ffckkp/" target="_blank">
+			<img src="wordpress/wp-content/plugins/social-media-feather/synved-social/image/social/regular/32x32/facebook.png" width="20" border="none">
+		</a>
+    </div>
+    <div class="Right4">
+		<a href="https://www.facebook.com/KIPsport" target="_blank">
+			<img src="wordpress/wp-content/uploads/2015/01/KIPSport.png" height=120 border=none>
+		</a>
+		<br />
+		Notre partenaire 
 		<a href="https://www.facebook.com/KIPsport" target="_blank">
 			<img src="wordpress/wp-content/plugins/social-media-feather/synved-social/image/social/regular/32x32/facebook.png" width="20" border="none">
 		</a> et 
 		<a href="https://twitter.com/KipSport" target="_blank">
 			<img src="wordpress/wp-content/plugins/social-media-feather/synved-social/image/social/regular/32x32/twitter.png" width="20" border="none">
 		</a>
-	</center>
+	</div>
 {else}
 	{literal}
 		<!-- Piwik -->
@@ -43,19 +53,29 @@
 			</script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
 		<!-- End Piwik Tracking Code -->
 	{/literal}
-	<center>
-		<a href="https://www.facebook.com/KIPsport" target="_blank">
-			<img src="../wordpress/wp-content/uploads/2015/01/KIPSport.png" width=120 border=none>
+	<div class="Left3">
+		<a href="https://www.facebook.com/ffckkp/" target="_blank">
+            <img src="../img/ffck_kayakpolo.jpg" height=120 border=none alt=""/>
 		</a>
 		<br />
-		Suivez notre partenaire info sur 
+		La page officielle 
+		<a href="https://www.facebook.com/ffckkp/" target="_blank">
+			<img src="../wordpress/wp-content/plugins/social-media-feather/synved-social/image/social/regular/32x32/facebook.png" width="20" border="none">
+		</a>
+    </div>
+    <div class="Right4">
+		<a href="https://www.facebook.com/KIPsport" target="_blank">
+			<img src="../wordpress/wp-content/uploads/2015/01/KIPSport.png" height=120 border=none>
+		</a>
+		<br />
+		Notre partenaire 
 		<a href="https://www.facebook.com/KIPsport" target="_blank">
 			<img src="../wordpress/wp-content/plugins/social-media-feather/synved-social/image/social/regular/32x32/facebook.png" width="20" border="none">
 		</a> et 
 		<a href="https://twitter.com/KipSport" target="_blank">
 			<img src="../wordpress/wp-content/plugins/social-media-feather/synved-social/image/social/regular/32x32/twitter.png" width="20" border="none">
 		</a>
-	</center>
+	</div>
 {/if}
 </div>
 
