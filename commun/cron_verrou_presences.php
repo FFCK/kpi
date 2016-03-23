@@ -10,7 +10,7 @@
 		$sql .= "WHERE 1 ";
 		$sql .= "AND Code_saison = 2015 ";
 		$sql .= "AND Date_debut > CURDATE() ";
-		$sql .= "AND DATEDIFF(Date_debut, CURDATE()) < 7 ; ";
+		$sql .= "AND DATEDIFF(Date_debut, CURDATE()) < 6 ; ";
 		//$sql .= "AND (Code_competition LIKE 'N%' OR Code_competition LIKE 'CF%') ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
 		$num_results = mysql_num_rows($result);
