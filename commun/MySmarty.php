@@ -6,7 +6,7 @@ include_once('MyConfig.php');
 if (PRODUCTION)	 
 	require('/home/users2/p/poloweb/www/agil/Smarty-Lib/Smarty.class.php');
 else
-	require('/wamp/www/Smarty-Lib/Smarty.class.php');
+	require('/var/www/html/kpi/Smarty-Lib/Smarty.class.php');
 			   
 $smarty = new Smarty();
 
@@ -28,10 +28,10 @@ class MySmarty extends Smarty
 		}
 		else
 		{
-			$this->template_dir = '/wamp/www/smarty/templates';
-			$this->compile_dir = '/wamp/www/smarty/templates_c';
-			$this->cache_dir = '/wamp/www/smarty/cache';
-			$this->config_dir = '/wamp/www/smarty/configs';
+			$this->template_dir = '/var/www/html/kpi/smarty/templates';
+			$this->compile_dir = '/var/www/html/kpi/smarty/templates_c';
+			$this->cache_dir = '/var/www/html/kpi/smarty/cache';
+			$this->config_dir = '/var/www/html/kpi/smarty/configs';
 		}
 				
 		$this->caching = false;
