@@ -44,7 +44,7 @@ class MyBdd
 		}
 		else
 		{ 
-			/* Parametres Localhost wamp */	   
+			/* Parametres Localhost wamp et dev */	   
 			$this->m_login = "***";
 			$this->m_password = "***";	
 			$this->m_database = "***";			  

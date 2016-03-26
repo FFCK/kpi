@@ -34,7 +34,8 @@ define('DB_USER', '***');
 define('DB_PASSWORD', '***');
 
 /** Adresse de l'hébergement MySQL. */
-define('DB_HOST', 'cl1-sql1');
+//define('DB_HOST', 'cl1-sql1');
+define('DB_HOST', 'localhost');
 
 /** Jeu de caractères à utiliser par la base de données lors de la création des tables. */
 define('DB_CHARSET', 'utf8');

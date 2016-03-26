@@ -59,17 +59,17 @@ class MyPage
 		else
 		{
 			// Menu "Administration" ...
-			if (PRODUCTION)
+			if (PRODUCTION || DEV)
 				array_push($arrayMenu, array('name' => 'Accueil Public', 'href' => '../'));
 			if (isset($profile) && $profile<=10)
 				array_push($arrayMenu, array('name' => 'Competitions', 'href' => 'GestionCompetition.php'));
 			if (isset($profile) && $profile<=9)
 				array_push($arrayMenu, array('name' => 'Docs', 'href' => 'GestionDoc.php'));
-			if (isset($profile) && $profile<=2 && PRODUCTION)
+			if (isset($profile) && $profile<=2 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Evenements', 'href' => 'GestionEvenement.php'));
 			if (isset($profile) && $profile<=9)
 				array_push($arrayMenu, array('name' => 'Equipes', 'href' => 'GestionEquipe.php'));
-			if (isset($profile) && $profile<=9 && PRODUCTION)
+			if (isset($profile) && $profile<=9 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'GestionStructure.php'));
 			if (isset($profile) && $profile<=6)
 				array_push($arrayMenu, array('name' => 'Athlètes', 'href' => 'GestionAthlete.php'));
@@ -83,18 +83,20 @@ class MyPage
 				array_push($arrayMenu, array('name' => 'Stats', 'href' => 'GestionStats.php'));
 			if (isset($profile) && $profile<=6)
 				array_push($arrayMenu, array('name' => 'Import', 'href' => 'ImportPCE.php'));
-			if (isset($profile) && $profile<=3 && PRODUCTION)
+			if (isset($profile) && $profile<=3 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Utilisateurs', 'href' => 'GestionUtilisateur.php'));
 		}
 		
 		$this->m_arrayMenu = $arrayMenu;
 		
-		if (PRODUCTION)
+		if (PRODUCTION || DEV)
 		{
 			$this->m_tpl->assign('bProd', True);
 			$loc = '';
-			$this->m_tpl->assign('bMirror', $_SESSION['mirror']);
-		}
+            if (isset($_SESSION['mirror'])) {
+                $this->m_tpl->assign('bMirror', $_SESSION['mirror']);
+            }
+        }
 		else // Mode Local
 		{
 			$this->m_tpl->assign('bProd', False);
