@@ -1,0 +1,14 @@
+/**
+
+Stylesheets for TinyMCE editor.
+* @package Theme_Material
+* GPL3 Licensed
+
+*/
+
+
+.wp-caption{
+	background-color: transparent;
+	border: none;
+}
+

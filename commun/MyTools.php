@@ -179,6 +179,23 @@ function utyGetGet($param, $default = '')
 		return $default;
 }
 
+// utyGetSessionPostGet
+
+function utyGetSessionPostGet($param, $default = '')
+{
+    if (isset($_GET[$param])) {
+        return $_GET[$param];
+    } elseif (isset($_POST[$param])) {
+        return $_POST[$param];
+    } elseif (isset($_SESSION[$param])) {
+        return $_SESSION[$param];
+    } else {
+        return $default;
+    }
+
+    return $default;
+}
+
 // utyGetPDF
 
 function utyGetPDF($param)

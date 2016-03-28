@@ -19,7 +19,7 @@ $pagehookfaq          = '';
 
 class link_library_plugin_admin {
 
-	function link_library_plugin_admin() {
+	function __construct() {
 		add_action( 'admin_init', array( $this, 'action_admin_init' ) );
 
 		//add filter for WordPress 2.8 changed backend box system !
@@ -716,6 +716,8 @@ class link_library_plugin_admin {
 		// If general options don't exist, create them
 		if ( $genoptions == false ) {
 			$genoptions = ll_reset_gen_settings( 'return_and_set' );
+		} else {
+			$genoptions = wp_parse_args( $genoptions, ll_reset_gen_settings( 'return' ) );
 		}
 
 		$settingsname = 'LinkLibraryPP' . $settings;
@@ -1021,8 +1023,8 @@ class link_library_plugin_admin {
 
 						#sortable li {
 							list-style: none;
-							margin: 0 6px 4px 6px;
-							padding: 10px 15px 10px 15px;
+							margin: 0 4px 4px 4px;
+							padding: 10px 10px 10px 10px;
 							border: #CCCCCC solid 1px;
 							color: #fff;
 							display: inline;
@@ -1236,7 +1238,7 @@ class link_library_plugin_admin {
 			}
 		}
 
-		foreach ( array( 'debugmode', 'emaillinksubmitter', 'suppressemailfooter', 'usefirstpartsubmittername', 'hidedonation' ) as $option_name ) {
+		foreach ( array( 'debugmode', 'emaillinksubmitter', 'suppressemailfooter', 'usefirstpartsubmittername', 'hidedonation', 'addlinkakismet' ) as $option_name ) {
 			if ( isset( $_POST[$option_name] ) ) {
 				$genoptions[$option_name] = true;
 			} else {
@@ -1349,6 +1351,7 @@ class link_library_plugin_admin {
 
 				while ( ( $data = fgetcsv( $handle, 5000, "," ) ) !== false ) {
 					$row += 1;
+
 					if ( $skiprow == 1 && isset( $_POST['firstrowheaders'] ) && $row >= 2 ) {
 						$skiprow = 0;
 					} elseif ( !isset( $_POST['firstrowheaders'] ) ) {
@@ -1358,26 +1361,31 @@ class link_library_plugin_admin {
 					if ( !$skiprow ) {
 						if ( count( $data ) == 16 ) {
 							if ( !empty( $data[5] ) ) {
-								$existingcatquery = "SELECT t.term_id FROM " . $this->db_prefix() . "terms t, " . $this->db_prefix() . "term_taxonomy tt ";
-								$existingcatquery .= "WHERE t.name = '%s' AND t.term_id = tt.term_id AND tt.taxonomy = 'link_category'";
+								$incomingcatdata = explode( ',', $data[5] );
+								$newlinkcat = array();
 
-								$existingcatqueryprepped = $wpdb->prepare( $existingcatquery, esc_html( $data[5] ) );
+								foreach ( $incomingcatdata as $incomingcat ) {
+									$existingcatquery = "SELECT t.term_id FROM " . $this->db_prefix() . "terms t, " . $this->db_prefix() . "term_taxonomy tt ";
+									$existingcatquery .= "WHERE t.name = '%s' AND t.term_id = tt.term_id AND tt.taxonomy = 'link_category'";
 
-								$existingcat = $wpdb->get_var( $existingcatqueryprepped );
+									$existingcatqueryprepped = $wpdb->prepare( $existingcatquery, esc_html( $incomingcat ) );
 
-								if ( !$existingcat ) {
-									$newlinkcatdata = array( "cat_name" => $data[5], "category_description" => "", "category_nicename" => esc_sql( $data[5] ) );
-									$newlinkcat     = wp_insert_category( $newlinkcatdata );
+									$existingcat = $wpdb->get_var( $existingcatqueryprepped );
 
-									$newcatarray = array( "term_id" => $newlinkcat );
+									if ( !$existingcat ) {
+										$newlinkcatdata = array( "cat_name" => $incomingcat, "category_description" => "", "category_nicename" => esc_sql( $data[5] ) );
+										$newlinkcat     = wp_insert_category( $newlinkcatdata );
 
-									$newcattype = array( "taxonomy" => 'link_category' );
+										$newcatarray = array( "term_id" => $newlinkcat );
 
-									$wpdb->update( $this->db_prefix() . 'term_taxonomy', $newcattype, $newcatarray );
+										$newcattype = array( "taxonomy" => 'link_category' );
 
-									$newlinkcat = array( $newlinkcat );
-								} else {
-									$newlinkcat = array( $existingcat );
+										$wpdb->update( $this->db_prefix() . 'term_taxonomy', $newcattype, $newcatarray );
+
+										$newlinkcat[] = $newlinkcat;
+									} else {
+										$newlinkcat[] = $existingcat;
+									}
 								}
 								
 								$newrating = intval( $data[14] );
@@ -1545,7 +1553,7 @@ class link_library_plugin_admin {
 					'beforecatlist1', 'beforecatlist2', 'beforecatlist3', 'catnameoutput', 'linkaddfrequency',
 					'defaultsinglecat', 'rsspreviewcount', 'rssfeedinlinecount', 'linksperpage', 'catdescpos',
 					'catlistdescpos', 'rsspreviewwidth', 'rsspreviewheight', 'numberofrssitems',
-					'displayweblink', 'sourceweblink', 'showtelephone', 'sourcetelephone', 'showemail', 'sourceimage', 'sourcename', 'popup_width', 'popup_height'
+					'displayweblink', 'sourceweblink', 'showtelephone', 'sourcetelephone', 'showemail', 'sourceimage', 'sourcename', 'popup_width', 'popup_height', 'rssfeedinlinedayspublished'
 				)
 				as $option_name
 			) {
@@ -1583,7 +1591,7 @@ class link_library_plugin_admin {
 					'showaddlinkrss', 'showaddlinkdesc', 'showaddlinkcat', 'showaddlinknotes', 'addlinkcustomcat',
 					'showaddlinkreciprocal', 'showaddlinksecondurl', 'showaddlinktelephone', 'showaddlinkemail', 'showcustomcaptcha', 'showlinksubmittername',
 					'showaddlinksubmitteremail', 'showlinksubmittercomment', 'showuserlargedescription', 'cat_letter_filter', 'beforefirstlink', 'afterlastlink',
-					'searchfieldtext', 'catfilterlabel'
+					'searchfieldtext', 'catfilterlabel', 'searchnoresultstext', 'addlinkdefaultcat', 'beforesubmittername', 'aftersubmittername'
 				) as $option_name
 			) {
 				if ( isset( $_POST[$option_name] ) ) {
@@ -1600,7 +1608,8 @@ class link_library_plugin_admin {
 					'addlinkreqlogin', 'showcatlinkcount', 'publishrssfeed', 'showname', 'enablerewrite', 'storelinksubmitter', 'showlinkhits', 'showcaptcha',
 					'showlargedescription', 'addlinknoaddress', 'featuredfirst', 'usetextareaforusersubmitnotes', 'showcatonsearchresults', 'shownameifnoimage',
 					'enable_link_popup', 'nocatonstartup', 'showlinksonclick', 'showinvisibleadmin', 'combineresults', 'showifreciprocalvalid',
-					'cat_letter_filter_autoselect', 'cat_letter_filter_showalloption'
+					'cat_letter_filter_autoselect', 'cat_letter_filter_showalloption', 'emailsubmitter', 'addlinkakismet', 'rssfeedinlineskipempty',
+					'current_user_links', 'showsubmittername'
 				)
 				as $option_name
 			) {
@@ -2182,6 +2191,12 @@ class link_library_plugin_admin {
 				</td>
 			</tr>
 			<tr>
+				<td class='lltooltip' style='width:250px'><?php _e( 'Validate all submitted links with Akismet', 'link-library' ); ?></td>
+				<td class='lltooltip' style='width:75px;padding-right:20px'>
+					<input type="checkbox" id="addlinkakismet" name="addlinkakismet" <?php checked( $genoptions['addlinkakismet'] ); ?> />
+				</td>
+			</tr>
+			<tr>
 				<td class='lltooltip' title='<?php _e( 'URL that user will be redirected to after submitting new link. When used, the short code [link-library-addlinkcustommsg] should be placed on the destination page.', 'link-library' ); ?>.' style='width:250px'><?php _e( 'Link Acknowledgement URL', 'link-library' ); ?></td>
 				<td class='lltooltip' style='width:75px;padding-right:20px' title='<?php _e( 'URL that user will be redirected to after submitting new link. When used, the short code [link-library-addlinkcustommsg] should be placed on the destination page.', 'link-library' ); ?>.'>
 					<input type="text" id="linksubmissionthankyouurl" name="linksubmissionthankyouurl" size="60" value='<?php echo $genoptions['linksubmissionthankyouurl']; ?>' />
@@ -2306,9 +2321,10 @@ class link_library_plugin_admin {
 			$linkquery .= "FROM " . $this->db_prefix() . "links_extrainfo le ";
 			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "links l ON (le.link_id = l.link_id) ";
 			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "term_relationships tr ON (l.link_id = tr.object_id) ";
-			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "term_taxonomy tt ON (tt.term_taxonomy_id = tr.term_taxonomy_id AND tt.taxonomy = 'link_category') ";
+			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "term_taxonomy tt ON (tt.term_taxonomy_id = tr.term_taxonomy_id) ";
 			$linkquery .= "LEFT JOIN " . $this->db_prefix() . "terms t ON (t.term_id = tt.term_id) ";
 			$linkquery .= "WHERE l.link_description like '%LinkLibrary:AwaitingModeration:RemoveTextToApprove%' ";
+			$linkquery .= "AND tt.taxonomy = 'link_category' ";
 			$linkquery .= " ORDER by link_name ASC";
 
 			if ( $genoptions['debugmode'] ) {
@@ -2723,6 +2739,11 @@ class link_library_plugin_admin {
 					<td><?php _e( 'Cat filter label', 'link-library' ); ?></td>
 					<td><input type="text" id="catfilterlabel" name="catfilterlabel" size="20" value="<?php echo $options['catfilterlabel']; ?>" /></td>
 				</tr>
+				<tr>
+					<td><?php _e( 'Only display links submitted by current user', 'link-library' ); ?></td>
+					<td><input type="checkbox" id="current_user_links" name="current_user_links" <?php checked( $options['current_user_links'] ); ?>/></td>
+					<td></td><td></td>
+				</tr>
 			</table>
 		</div>
 
@@ -3090,11 +3111,16 @@ class link_library_plugin_admin {
 		<br /><br />
 		<ul id="sortable">
 			<?php if ( $options['dragndroporder'] == '' ) {
-				$dragndroporder = '1,2,3,4,5,6,7,8,9,10';
+				$dragndroporder = '1,2,3,4,5,6,7,8,9,10,11,12,13';
 			} else {
 				$dragndroporder = $options['dragndroporder'];
 			}
 			$dragndroparray = explode( ',', $dragndroporder );
+
+			if ( !in_array( '13', $dragndroparray ) ) {
+				$dragndroparray[] = '13';
+			}
+
 			if ( $dragndroparray ) {
 				foreach ( $dragndroparray as $arrayelements ) {
 					switch ( $arrayelements ) {
@@ -3124,7 +3150,7 @@ class link_library_plugin_admin {
 							<?php break;
 						case 7:
 							?>
-							<li id="7" style='background-color: #5ccccc'><?php _e( 'Web Link', 'link-library' ); ?></li>
+							<li id="7" style='background-color: #5ccccc'><?php _e( 'Link', 'link-library' ); ?></li>
 							<?php break;
 						case 8:
 							?>
@@ -3145,6 +3171,10 @@ class link_library_plugin_admin {
 						case 12:
 							?>
 							<li id="12" style='background-color: #33ccff'><?php _e( 'Large Desc', 'link-library' ); ?></li>
+							<?php break;
+						case 13:
+							?>
+							<li id="13" style='background-color: #33eecc'><?php _e( 'Submitter Name', 'link-library' ); ?></li>
 							<?php break;
 					}
 				}
@@ -3193,11 +3223,17 @@ class link_library_plugin_admin {
 			<td style='background: #FFF'></td>
 		</tr>
 		<?php if ( $options['dragndroporder'] == '' ) {
-			$dragndroporder = '1,2,3,4,5,6,7,8,9,10';
+			$dragndroporder = '1,2,3,4,5,6,7,8,9,10,11,12,13';
 		} else {
 			$dragndroporder = $options['dragndroporder'];
 		}
+
 		$dragndroparray = explode( ',', $dragndroporder );
+
+		if ( !in_array( '13', $dragndroparray ) ) {
+			$dragndroparray[] = '13';
+		}
+
 		if ( $dragndroparray ) {
 			foreach ( $dragndroparray as $arrayelements ) {
 				switch ( $arrayelements ) {
@@ -3504,6 +3540,23 @@ class link_library_plugin_admin {
 							<td style='background: #FFF'></td>
 						</tr>
 						<?php break;
+					case 13: /* -------------------------------- Link Submitter Name -------------------------------------------*/
+						?>
+						<tr>
+							<td style='background-color: #33eecc;color:#fff' class="lltooltip" title='<?php _e( 'This column allows for the output of text/code before and after the Link Large Description', 'link-library' ); ?>'><?php _e( 'Submitter Name', 'link-library' ); ?></td>
+							<td style='text-align:center;background: #FFF'>
+								<input type="checkbox" id="showsubmittername" name="showsubmittername" <?php checked( $options['showsubmittername'] ); ?>/>
+							</td>
+							<td style='background: #FFF' class="lltooltip" title='<?php _e( 'Code/Text to be displayed before Link Large Description', 'link-library' ); ?>'>
+								<input type="text" id="beforesubmittername" name="beforesubmittername" size="22" value="<?php echo stripslashes( $options['beforesubmittername'] ); ?>" />
+							</td>
+							<td style='background: #FFF' class="lltooltip" title='<?php _e( 'Code/Text to be displayed after Link Large Description', 'link-library' ); ?>'>
+								<input type="text" id="aftersubmittername" name="aftersubmittername" size="22" value="<?php echo stripslashes( $options['aftersubmittername'] ); ?>" />
+							</td>
+							<td style='background: #FFF'></td>
+							<td style='background: #FFF'></td>
+						</tr>
+						<?php break;
 				}
 			}
 		}
@@ -3688,9 +3741,7 @@ class link_library_plugin_admin {
 					<?php _e( 'Show RSS Feed Content in Link Library output', 'link-library' ); ?>
 				</td>
 				<td>
-					<input type="checkbox" id="rssfeedinlinecontent" name="rssfeedinlinecontent" <?php if ( $options['rssfeedinlinecontent'] ) {
-						echo ' checked="checked" ';
-					} ?>/>
+					<input type="checkbox" id="rssfeedinlinecontent" name="rssfeedinlinecontent" <?php checked( $options['rssfeedinlinecontent'] ); ?>/>
 				</td>
 				<td>
 					<?php _e( 'Number of RSS articles shown in Link Library Output', 'link-library' ); ?>
@@ -3702,8 +3753,12 @@ class link_library_plugin_admin {
 						echo strval( $options['rssfeedinlinecount'] );
 					} ?>" />
 				</td>
-				<td></td>
-				<td></td>
+				<td><?php _e( 'Max number of days since published', 'link-library' ); ?></td>
+				<td><input type="text" id="rssfeedinlinedayspublished" name="rssfeedinlinedayspublished" size="2" value="<?php if ( empty( $options['rssfeedinlinedayspublished'] ) ) {
+						echo '7';
+					} else {
+						echo strval( $options['rssfeedinlinedayspublished'] );
+					} ?>" /></td>
 			</tr>
 			<tr>
 				<td><?php _e( 'RSS Preview Width', 'link-library' ); ?></td>
@@ -3720,8 +3775,8 @@ class link_library_plugin_admin {
 					} else {
 						echo strval( $options['rsspreviewheight'] );
 					} ?>" /></td>
-				<td></td>
-				<td></td>
+				<td><?php _e( 'Skip links with no RSS inline items', 'link-library' ); ?></td>
+				<td><input type="checkbox" id="rssfeedinlineskipempty" name="rssfeedinlineskipempty" <?php checked( $options['rssfeedinlineskipempty'] ); ?>/></td>
 			</tr>
 		</table>
 		</div>
@@ -3841,7 +3896,15 @@ class link_library_plugin_admin {
 						<input type="text" id="searchfieldtext" name="searchfieldtext" size="30" value="<?php echo $options['searchfieldtext']; ?>" />
 					</td>
 				</tr>
-
+				<tr>
+					<td style='width:200px'><?php _e( 'Search No Results Text', 'link-library' ); ?></td>
+					<?php if ( empty( $options['searchnoresultstext'] ) ) {
+						$options['searchnoresultstext'] = __( 'No links found matching your search criteria', 'link-library' );
+					} ?>
+					<td style='padding-right:20px'>
+						<input type="text" id="searchnoresultstext" name="searchnoresultstext" size="80" value="<?php echo $options['searchnoresultstext']; ?>" />
+					</td>
+				</tr>
 				<tr>
 					<td class="lltooltip" title='<?php _e( 'Leave empty when links are to be displayed on same page as search box', 'link-library' ); ?>'><?php _e( 'Results Page Address', 'link-library' ); ?></td>
 					<td class="lltooltip" title='<?php _e( 'Leave empty when links are to be displayed on same page as search box', 'link-library' ); ?>'>
@@ -3951,46 +4014,44 @@ class link_library_plugin_admin {
 		<tr>
 			<td style='width:200px'><?php _e( 'Show user links immediately', 'link-library' ); ?></td>
 			<td style='width:75px;padding-right:20px'>
-				<input type="checkbox" id="showuserlinks" name="showuserlinks" <?php if ( $options['showuserlinks'] ) {
-					echo ' checked="checked" ';
-				} ?>/></td>
+				<input type="checkbox" id="showuserlinks" name="showuserlinks" <?php checked( $options['showuserlinks'] ); ?>/></td>
 			<td style='width: 20px'></td>
 			<td style='width: 20px'></td>
 			<td style='width:250px'><?php _e( 'E-mail admin on link submission', 'link-library' ); ?></td>
 			<td style='width:75px;padding-right:20px'>
-				<input type="checkbox" id="emailnewlink" name="emailnewlink" <?php if ( $options['emailnewlink'] ) {
-					echo ' checked="checked" ';
-				} ?>/></td>
+				<input type="checkbox" id="emailnewlink" name="emailnewlink" <?php checked( $options['emailnewlink'] ); ?>/></td>
+			<td style='width: 20px'></td>
+		</tr>
+		<tr>
+			<td style='width:200px'><?php _e( 'Validate links with Akismet', 'link-library' ); ?></td>
+			<td style='width:75px;padding-right:20px'><input type="checkbox" id="addlinkakismet" name="addlinkakismet" <?php checked( $options['addlinkakismet'] ); ?>/></td></td>
+			<td style='width: 20px'></td>
+			<td style='width: 20px'></td>
+			<td style='width:250px'><?php _e( 'E-mail submitter', 'link-library' ); ?></td>
+			<td style='width:75px;padding-right:20px'>
+				<input type="checkbox" id="emailsubmitter" name="emailsubmitter" <?php checked ( $options['emailsubmitter'] ); ?>/></td>
 			<td style='width: 20px'></td>
 		</tr>
 		<tr>
 			<td style='width:200px'><?php _e( 'Require login to display form', 'link-library' ); ?></td>
 			<td style='width:75px;padding-right:20px'>
-				<input type="checkbox" id="addlinkreqlogin" name="addlinkreqlogin" <?php if ( $options['addlinkreqlogin'] ) {
-					echo ' checked="checked" ';
-				} ?>/></td>
+				<input type="checkbox" id="addlinkreqlogin" name="addlinkreqlogin" <?php checked( $options['addlinkreqlogin'] ); ?>/></td>
 			<td style='width: 20px'></td>
 			<td style='width: 20px'></td>
 			<td style='width:250px'><?php _e( 'Allow link submission with empty link', 'link-library' ); ?></td>
 			<td style='width:75px;padding-right:20px'>
-				<input type="checkbox" id="addlinknoaddress" name="addlinknoaddress" <?php if ( $options['addlinknoaddress'] ) {
-					echo ' checked="checked" ';
-				} ?>/></td>
+				<input type="checkbox" id="addlinknoaddress" name="addlinknoaddress" <?php checked( $options['addlinknoaddress'] ); ?>/></td>
 			<td style='width: 20px'></td>
 		</tr>
 		<tr>
 			<td style='width:200px'><?php _e( 'Display captcha', 'link-library' ); ?></td>
 			<td style='width:75px;padding-right:20px'>
-				<input type="checkbox" id="showcaptcha" name="showcaptcha" <?php if ( $options['showcaptcha'] ) {
-					echo ' checked="checked" ';
-				} ?>/></td>
+				<input type="checkbox" id="showcaptcha" name="showcaptcha" <?php checked( $options['showcaptcha'] ); ?>/></td>
 			<td style='width: 20px'></td>
 			<td style='width: 20px'></td>
 			<td class='lltooltip' title='<?php _e( 'This function will only store data when users are logged in to Wordpress', 'link-library' ); ?>.' style='width:250px'><?php _e( 'Store login name on link submission', 'link-library' ); ?></td>
 			<td style='width:75px;padding-right:20px'>
-				<input type="checkbox" id="storelinksubmitter" name="storelinksubmitter" <?php if ( $options['storelinksubmitter'] ) {
-					echo ' checked="checked" ';
-				} ?>/></td>
+				<input type="checkbox" id="storelinksubmitter" name="storelinksubmitter" <?php checked( $options['storelinksubmitter'] ); ?>/></td>
 			<td style='width: 20px'></td>
 		</tr>
 		<tr>
@@ -4056,6 +4117,41 @@ class link_library_plugin_admin {
 			<td colspan=3 class='lltooltip' title='<?php _e( 'Comma-seperated list of categories to be displayed in category selection box (e.g. 1,5,4)', 'link-library' ); ?>'>
 				<input type="text" id="addlinkcatlistoverride" name="addlinkcatlistoverride" size="50" value="<?php echo $options['addlinkcatlistoverride']; ?>" />
 			<td style='width:200px'></td>
+		</tr>
+		<tr>
+			<td style='width:200px'><?php _e( 'Default category', 'link-library' ); ?></td>
+			<td>
+				<?php
+
+				global $wpdb;
+				$linkcatquery = 'SELECT distinct t.name, t.term_id, t.slug as category_nicename, tt.description as category_description ';
+				$linkcatquery .= 'FROM ' . $this->db_prefix() . 'terms t ';
+				$linkcatquery .= 'LEFT JOIN ' . $this->db_prefix() . 'term_taxonomy tt ON (t.term_id = tt.term_id) ';
+				$linkcatquery .= 'LEFT JOIN ' . $this->db_prefix() . 'term_relationships tr ON (tt.term_taxonomy_id = tr.term_taxonomy_id) ';
+
+				$linkcatquery .= 'WHERE tt.taxonomy = "link_category" ';
+
+				if ( !empty( $categorylist ) ) {
+				$linkcatquery .= ' AND t.term_id in (' . $categorylist. ')';
+				}
+
+				if ( !empty( $excludecategorylist ) ) {
+				$linkcatquery .= ' AND t.term_id not in (' . $excludecategorylist . ')';
+				}
+
+				$linkcatquery .= ' ORDER by t.name ASC';
+
+				$linkcats = $wpdb->get_results( $linkcatquery );
+
+				if ( $linkcats ) { ?>
+					<select name="addlinkdefaultcat" id="addlinkdefaultcat" value="<?php echo $options['addlinkdefaultcat']; ?>">
+					<option value="nodefaultcat">No default category</option>
+						<?php foreach ( $linkcats as $linkcat ) { ?>
+							<option value="<?php echo $linkcat->term_id; ?>" <?php selected( $linkcat->term_id, $options['addlinkdefaultcat'] ); ?>><?php echo $linkcat->name; ?></option>
+						<?php } ?>
+					</select>
+				<?php } ?>
+			</td>
 		</tr>
 		<tr>
 			<td style='width:200px'><?php _e( 'User-submitted category', 'link-library' ); ?></td>
@@ -4467,19 +4563,19 @@ class link_library_plugin_admin {
 			<tr>
 				<td><?php _e( 'Link Submitter', 'link-library' ); ?></td>
 				<td>
-					<input disabled type="text" id="ll_submitter" name="ll_submitter" size="80" value="<?php echo( isset( $extradata['link_submitter'] ) ? esc_attr( stripslashes( $extradata['link_submitter'] ) ) : '' ); ?>" />
+					<input type="text" id="ll_submitter" name="ll_submitter" size="80" value="<?php echo( isset( $extradata['link_submitter'] ) ? esc_attr( stripslashes( $extradata['link_submitter'] ) ) : '' ); ?>" />
 				</td>
 			</tr>
 			<tr>
 				<td><?php _e( 'Link Submitter Name', 'link-library' ); ?></td>
 				<td>
-					<input disabled type="text" id="link_submitter_name" name="link_submitter_name" size="80" value="<?php echo( isset( $extradata['link_submitter_name'] ) ? esc_attr( stripslashes( $extradata['link_submitter_name'] ) ) : '' ); ?>" />
+					<input type="text" id="link_submitter_name" name="link_submitter_name" size="80" value="<?php echo( isset( $extradata['link_submitter_name'] ) ? esc_attr( stripslashes( $extradata['link_submitter_name'] ) ) : '' ); ?>" />
 				</td>
 			</tr>
 			<tr>
 				<td><?php _e( 'Link Submitter E-mail', 'link-library' ); ?></td>
 				<td>
-					<input disabled type="text" id="link_submitter_email" name="link_submitter_email" size="80" value="<?php echo( isset( $extradata['link_submitter_email'] ) ? esc_attr( stripslashes( $extradata['link_submitter_email'] ) ) : '' ); ?>" />
+					<input type="text" id="link_submitter_email" name="link_submitter_email" size="80" value="<?php echo( isset( $extradata['link_submitter_email'] ) ? esc_attr( stripslashes( $extradata['link_submitter_email'] ) ) : '' ); ?>" />
 				</td>
 			</tr>
 			<tr>
@@ -4810,6 +4906,18 @@ class link_library_plugin_admin {
 
 			if ( isset( $_POST['link_textfield'] ) ) {
 				$updatearray['link_textfield'] = $_POST['link_textfield'];
+			}
+
+			if ( isset( $_POST['ll_submitter'] ) ) {
+				$updatearray['link_submitter'] = $_POST['ll_submitter'];
+			}
+
+			if ( isset( $_POST['link_submitter_name'] ) ) {
+				$updatearray['link_submitter_name'] = $_POST['link_submitter_name'];
+			}
+
+			if ( isset( $_POST['link_submitter_email'] ) ) {
+				$updatearray['link_submitter_email'] = $_POST['link_submitter_email'];
 			}
 
 			if ( isset( $_POST['link_no_follow'] ) && $_POST['link_no_follow'] == 'on' ) {

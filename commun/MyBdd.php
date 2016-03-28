@@ -1033,13 +1033,13 @@ class MyBdd
 	// GetCompetition 	
 	function GetCompetition($codeCompet, $codeSaison)
 	{
-		$sql  = "Select *, ";
+		$sql  = "SELECT *, ";
 		$sql .= "DATE_FORMAT(Date_calcul,'%d/%m/%y à %Hh%i') Date_calcul,";
 		$sql .= "DATE_FORMAT(Date_publication, '%d/%m/%y à %Hh%i') Date_publication, ";
 		$sql .= "DATE_FORMAT(Date_publication_calcul, '%d/%m/%y à %Hh%i') Date_publication_calcul, ";
 		$sql .= "Code_uti_calcul, Code_uti_publication, Mode_calcul, Mode_publication_calcul ";
-		$sql .= "From gickp_Competitions ";
-		$sql .= "Where Code = '$codeCompet' And Code_saison = '$codeSaison' "; 		
+		$sql .= "FROM gickp_Competitions ";
+		$sql .= "WHERE Code = '$codeCompet' And Code_saison = '$codeSaison' "; 		
 	
 		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select");
 		if (mysql_num_rows($result) == 1)

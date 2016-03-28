@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Material\n"
+"POT-Creation-Date: 2014-12-23 12:45+0800\n"
+"PO-Revision-Date: 2014-12-23 12:45+0800\n"
+"Last-Translator: Klyment Wong <klymentwong@gmail.com>\n"
+"Language-Team: Klyment Wong <klymentwong@gmail.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.7.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: 404.php:14
+msgid "Error 404 - Nothing Found"
+msgstr ""
+
+#: 404.php:16
+msgid "It looks like nothing was found here. Maybe try a search?"
+msgstr ""
+
+#: archive.php:19
+#, php-format
+msgid "Daily Archives for %s"
+msgstr ""
+
+#: archive.php:21
+#, php-format
+msgid "Monthly Archives for %s"
+msgstr ""
+
+#: archive.php:21
+msgctxt "Monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#: archive.php:23
+#, php-format
+msgid "Yearly Archives for %s"
+msgstr ""
+
+#: archive.php:23
+msgctxt "Yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#: archive.php:25
+msgid "Archives"
+msgstr ""
+
+#: author.php:17
+#, php-format
+msgid "All posts by %s."
+msgstr ""
+
+#: category.php:18
+#, php-format
+msgid "Category Archives for %s"
+msgstr ""
+
+#: comments.php:14
+msgid "You cannot access this page directly."
+msgstr ""
+
+#: comments.php:23
+msgid ""
+"This post is password protected. Enter the password to view the comments."
+msgstr ""
+
+#: comments.php:41
+msgid "Comments are closed."
+msgstr ""
+
+#: comments.php:48
+#, php-format
+msgctxt "Comment title"
+msgid "One comment"
+msgid_plural "%1$s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:65
+msgid "<i class=\"fa fa-angle-double-left\"></i> Older Comments"
+msgstr ""
+
+#: comments.php:69
+msgid "Newer Comments <i class=\"fa fa-angle-double-right\"></i>"
+msgstr ""
+
+#: content-audio.php:33 content-gallery.php:33 content-image.php:33
+#: content-link.php:15 content-quote.php:15 content-video.php:33
+#: content.php:42
+msgid "Continue reading &rarr;"
+msgstr ""
+
+#: content-audio.php:44 content-gallery.php:44 content-image.php:44
+#: content-link.php:33 content-video.php:44
+msgid "Written by "
+msgstr ""
+
+#: content-none.php:11
+msgid "Nothing found!"
+msgstr ""
+
+#: footer.php:23
+msgid "Theme Material"
+msgstr ""
+
+#: framework/widget-social-links.php:19
+msgid "Material: Social Links"
+msgstr ""
+
+#: framework/widget-social-links.php:22
+msgid "A custom widget that displays social network links."
+msgstr ""
+
+#: framework/widget-social-links.php:34
+msgid "Social Links"
+msgstr ""
+
+#: framework/widget-social-links.php:48
+msgid "Title:"
+msgstr ""
+
+#: framework/widget-social-links.php:54
+msgid "Facebook:"
+msgstr ""
+
+#: framework/widget-social-links.php:60
+msgid "Twitter:"
+msgstr ""
+
+#: framework/widget-social-links.php:66
+msgid "Instagram:"
+msgstr ""
+
+#: framework/widget-social-links.php:72
+msgid "LinkedIn:"
+msgstr ""
+
+#: framework/widget-social-links.php:78
+msgid "Pinterest:"
+msgstr ""
+
+#: functions.php:80
+msgid "Main Menu"
+msgstr ""
+
+#: functions.php:107
+msgid " Posted on "
+msgstr ""
+
+#: functions.php:114
+msgid " by "
+msgstr ""
+
+#: functions.php:132
+msgid "Categorized in "
+msgstr ""
+
+#: functions.php:138
+msgid "Tagged with "
+msgstr ""
+
+#: functions.php:144 page.php:39 template-full-width.php:39
+msgid "Edit"
+msgstr ""
+
+#: functions.php:152
+msgid "Leave a comment"
+msgstr ""
+
+#: functions.php:152
+msgid "One comment so far"
+msgstr ""
+
+#: functions.php:152
+#, php-format
+msgid "View all % comments"
+msgstr ""
+
+#: functions.php:174
+msgid "<i class=\"fa fa-angle-double-left\"></i> Older Posts"
+msgstr ""
+
+#: functions.php:181
+msgid "Newer Posts <i class=\"fa fa-angle-double-right\"></i>"
+msgstr ""
+
+#: functions.php:204
+msgid "Main Widget Area"
+msgstr ""
+
+#: functions.php:206
+msgid "Appears on posts and pages."
+msgstr ""
+
+#: functions.php:216
+msgid "Footer Widget Area"
+msgstr ""
+
+#: functions.php:218
+msgid "Appears on the footer."
+msgstr ""
+
+#: functions.php:376
+#, php-format
+msgid "Page %s"
+msgstr ""
+
+#: header.php:54
+msgid "Toggle navigation"
+msgstr ""
+
+#: search.php:18
+#, php-format
+msgid "Search Results for %s"
+msgstr ""
+
+#: tag.php:18
+#, php-format
+msgid "Tag Archives for %s"
+msgstr ""

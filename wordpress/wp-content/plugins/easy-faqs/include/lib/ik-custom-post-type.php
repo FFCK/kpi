@@ -28,6 +28,8 @@ class ikFAQsCustomPostType
 	{
 		$singular = ucwords($postType['name']);
 		$plural = isset($postType['plural']) ? ucwords($postType['plural']) : $singular . 's';
+		$display_singular = isset($postType['display_singular']) ? $postType['display_singular'] : $singular;
+		$display_plural = isset($postType['display_plural']) ? $postType['display_plural'] : $plural;
 
 		$this->customPostTypeName = strtolower($singular);
 		$this->customPostTypeSingular = $singular;
@@ -37,16 +39,16 @@ class ikFAQsCustomPostType
 		{		
 			$labels = array
 			(
-				'name' => _x($plural, 'post type general name', $this->textdomain),
-				'singular_name' => _x($singular, 'post type singular name', $this->textdomain),
-				'add_new' => _x('Add New ' . $singular, strtolower($singular), $this->textdomain),
-				'add_new_item' => __('Add New ' . $singular, $this->textdomain),
-				'edit_item' => __('Edit ' . $singular, $this->textdomain),
-				'new_item' => __('New ' . $singular, $this->textdomain),
-				'view_item' => __('View ' . $singular, $this->textdomain),
-				'search_items' => __('Search ' . $plural, $this->textdomain),
-				'not_found' =>  __('No ' . strtolower($plural) . ' found', $this->textdomain),
-				'not_found_in_trash' => __('No ' . strtolower($plural) . ' found in Trash', $this->textdomain), 
+				'name' => _x($display_plural, 'post type general name', $this->textdomain),
+				'singular_name' => _x($display_singular, 'post type singular name', $this->textdomain),
+				'add_new' => _x('Add New ' . $display_singular, strtolower($singular), $this->textdomain),
+				'add_new_item' => __('Add New ' . $display_singular, $this->textdomain),
+				'edit_item' => __('Edit ' . $display_singular, $this->textdomain),
+				'new_item' => __('New ' . $display_singular, $this->textdomain),
+				'view_item' => __('View ' . $display_singular, $this->textdomain),
+				'search_items' => __('Search ' . $display_plural, $this->textdomain),
+				'not_found' =>  __('No ' . $display_plural . ' found', $this->textdomain),
+				'not_found_in_trash' => __('No ' . $display_plural . ' found in Trash', $this->textdomain), 
 				'parent_item_colon' => ''
 			);
 			
@@ -60,6 +62,7 @@ class ikFAQsCustomPostType
 				'capability_type' => 'post',
 				'hierarchical' => false,
 				'supports' => array('title','editor','author','thumbnail','excerpt','comments','custom-fields'),
+				'menu_icon' => isset($postType['menu_icon']) ? $postType['menu_icon'] : false				
 			); 
 			$this->customPostTypeArgs = $args;
 	

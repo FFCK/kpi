@@ -37,8 +37,19 @@ class FAQsPlugin_Importer
 		set_time_limit(0);		
 		
 		$faqs = $this->csv_to_array($faqs_file);
-		
+
+		?>
+		<!-- Progress bar holder -->
+		<div id="progress" style="width:500px;border:1px solid #ccc;"></div>
+		<!-- Progress information -->
+		<div id="information" style="width"></div>
+		<?php
+		//for the progress bar
+		$i=0;
+		$total = count($faqs);
 		foreach($faqs as $faq){	//look for a location with the same address and phone number				
+			$i ++;//for the progress bar
+			
 			//defaults
 			$the_question = '';
 			$the_answer = '';
@@ -73,11 +84,36 @@ class FAQsPlugin_Importer
 				//update_post_meta( $new_id, '_ikcf_street_address', $street_address );
 			   
 				$inserted = true;
-				echo "<p>Successfully imported '{$the_question}'!</p>";
+				
+				/* progress bar */
+				// Calculate the percentation
+				$percent = intval($i/$total * 100)."%";
+				
+				// Javascript for updating the progress bar and information
+				echo '<script language="javascript">
+				document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#ddd;\">&nbsp;</div>";
+				document.getElementById("information").innerHTML="'.$i.' row(s) processed.";
+				</script>';
+
+				
+				// This is for the buffer achieve the minimum size in order to flush data
+				echo str_repeat(' ',1024*64);
+
+				
+				// Send output to browser immediately
+				flush();
+				/* end progress bar */
+				
+				//wait a second
+				usleep(1000000);
 				
 			} else { //rejected as duplicate
 				echo "<p>Could not import <em>{$the_question}</em>; rejected as Duplicate</p>";
 			}
+
+			//tell user that the process is completed
+			//for progress bar
+			echo '<script language="javascript">document.getElementById("information").innerHTML="Process completed"</script>';
 		}
 	}
 	
@@ -125,7 +161,7 @@ class FAQsPlugin_Importer
 			if ( is_wp_error( $result ) ){
 				echo $result;
 			} else {
-				echo "<p>FAQs successfully imported!</p>";
+				echo "<p><strong>FAQs successfully imported!</strong></p>";
 			}
 		}
 		echo '</form>';

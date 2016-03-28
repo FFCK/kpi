@@ -1,0 +1,73 @@
+<div class="container">
+    <article class="col-md-6 padTopBottom">        
+        <div class="form-horizontal">
+            <label class="col-sm-2">{#Chercher#}:</label>
+            <input class="col-sm-6" type="text" id="rechercheEquipe" placeholder="{#Nom_de_l_equipe#}">
+            <input class="col-sm-2" type="hidden" id="equipeId" value="{$equipeId}">
+            <h2 class="col-sm-12 text-center" id="nomEquipe">{$nomEquipe}</h2>
+            <div class="form-group">
+                <div class="col-sm-12 text-center" id="nomClub">
+                    <a class="btn btn-xs btn-default" href='kpclubs.php?clubId={$Code_club}' title='{#Club#}'>
+                        {$Club}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {if $eColors}
+            <div class="col-sm-12" id="equipeColors">
+                <a href="{$eColors}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eColors}" alt="{$nomEquipe}"></a>
+            </div>
+        {elseif $eLogo}
+            <div class="col-sm-6 col-sm-offset-3" id="equipeColors">
+                <a href="{$eLogo}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eLogo}" alt="{$nomEquipe}"></a>
+            </div>
+        {/if}
+        {if $eTeam}
+            <div class="col-sm-12" id="equipeTeam">
+                <a href="{$eTeam}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eTeam}" alt="{$nomEquipe}"></a>
+            </div>
+        {/if}
+    </article>
+    
+    <article class="col-md-6 padTopBottom" id="equipePalmares">        
+            <h3 class="col-sm-12">{#Palmares#}:</h3>
+            {section  name=i loop=$arraySaisons}
+                {assign var='Saison' value=$arraySaisons[i].Saison}
+                <table class='table table-striped table-hover' id='tableMatchs'>
+                    <caption><h3>{$Saison}</h3></caption>
+                    <tbody>        
+                        {section  name=j loop=$arrayPalmares[$Saison]}
+                            {if $arrayPalmares[$Saison][j].Code_tour == 10}
+                                <tr>
+                                    <td>
+                                        <a class="btn btn-xs btn-default" href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}' title='{#Classement#}'>
+                                            {$arrayPalmares[$Saison][j].Competitions}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {$arrayPalmares[$Saison][j].Classt}
+                                        {if $arrayPalmares[$Saison][j].Classt > 0 && $arrayPalmares[$Saison][j].Classt <= 3}
+                                            <img class="pull-right" width="20" src="img/medal{$arrayPalmares[$Saison][j].Classt}.gif" alt="{$arrayPalmares[$Saison][j].Classt}" title="{$arrayPalmares[$Saison][j].Classt}" />
+                                        {/if}
+
+                                    </td>
+                                </tr>
+                            {else}
+                                <tr>
+                                    <td class="text-right">
+                                        <a class="btn btn-xs btn-default" href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}' title='{#Classement#}'>
+                                            <i>{$arrayPalmares[$Saison][j].Competitions}</i>
+                                        </a>
+                                        <i>{$arrayPalmares[$Saison][j].Classt}</i>
+                                    </td>
+                                    <td>
+                                        
+                                    </td>
+                                </tr>
+                            {/if}
+                        {/section}
+                    </tbody>
+                </table>
+            {/section}
+    </article>
+</div>
