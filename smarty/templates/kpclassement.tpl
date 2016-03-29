@@ -217,7 +217,7 @@
                     <div class="page-header">
                         <h4>
                             {$arrayJournee[i].Lieu} ({$arrayJournee[i].Departement}) {$arrayJournee[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayJournee[i].Date_fin|date_format:'%d/%m/%Y'}
-                            <a class="btn btn-xs btn-default pull-right" href="kpdetails.php?J={$arrayJournee[i].Id_journee}" title="{#Details#}">{#Details#}</a>
+                            <a class="btn btn-xs btn-default pull-right" href="kpdetails.php?Compet={$codeCompet}&J={$arrayJournee[i].Id_journee}" title="{#Details#}">{#Details#}</a>
                         </h4>
                     </div>
                     {section name=j loop=$arrayMatchs[$idJournee]}

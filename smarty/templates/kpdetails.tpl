@@ -62,7 +62,7 @@
                 <h4>Autres journées de la compétition</h4>
                 {section name=i loop=$arrayListJournees}
                     <p>
-                        <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}bg-blue{else}btn-info{/if}" href="kpdetails.php?J={$arrayListJournees[i].Id_journee}" role="button">
+                        <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}bg-blue{else}btn-info{/if}" href="kpdetails.php?Compet={$journee[0].Code_competition}&Group={$codeCompetGroup}&J={$arrayListJournees[i].Id_journee}" role="button">
                             {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} à {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
                         </a>
                     </p>

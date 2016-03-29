@@ -99,7 +99,7 @@ class Classement extends MyPage
                         . "AND a.Code_club = d.Code "
                         . "AND c.Code_competition = '$codeCompet' "
                         . "AND c.Code_saison = $codeSaison "
-                        . "ORDER BY c.Niveau DESC, b.Id_journee ASC, b.Clt_publi ASC, b.Diff_publi DESC, b.Plus_publi ASC ";
+                        . "ORDER BY c.Niveau DESC, c.Date_debut DESC, b.Id_journee ASC, b.Clt_publi ASC, b.Diff_publi DESC, b.Plus_publi ASC ";
                 $result = $myBdd->Query($sql);
                 while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
                     if (strlen($row['Code_comite_dep']) > 3) {

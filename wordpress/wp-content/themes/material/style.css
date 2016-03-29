@@ -89,3 +89,10 @@ nav li.menu-item.active a { color: #FFFFFF; }
 	padding-top: 7.5px;
 	padding-bottom: 7.5px;
 }
+
+.menu-menuprincipal-container li:hover,
+.menu-nav1-container li:hover
+{
+    background-color: #f9f9f9;
+    border-radius: .25em;
+}
