@@ -323,7 +323,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		$capitaineJoueur = utyGetPost('capitaineJoueur2', '-');
 		$numeroJoueur = utyGetPost('numeroJoueur2', '');
 		
-		if (strlen($idEquipe) > 0)
+		if ($idEquipe > 0)
 		{
 			$myBdd = new MyBdd();
 			if (strlen($matricJoueur) == 0)

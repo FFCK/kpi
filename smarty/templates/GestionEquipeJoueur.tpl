@@ -25,7 +25,7 @@
 					<br>
 					<br>
 					<div class='liens'>
-						{if $profile <= 8 && $Verrou != 'O' && $AuthModif == 'O'}
+						{if $profile <= 8 && $Verrou != 'O' && $AuthModif == 'O' && $idEquipe > 0}
 							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', true);return false;"><img width="21" src="../img/tous.gif" alt="Sélectionner tous" title="Sélectionner tous" /></a>
 							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', false);return false;"><img width="21" src="../img/aucun.gif" alt="Sélectionner aucun" title="Sélectionner aucun" /></a>
 							<a href="#" onclick="RemoveCheckboxes('formEquipeJoueur', 'checkEquipeJoueur')"><img width="16" src="../img/supprimer.gif" alt="Supprimer la sélection" title="Supprimer la sélection" /></a>
@@ -36,6 +36,9 @@
 						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img width="20" src="../img/pdf.gif" /></a>						
 						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img width="20" src="../img/pdfEN.gif" /></a>						
 						<select name='idEquipe' id='idEquipe' onChange="changeEquipe();">
+                            {if $idEquipe <= 0}
+                                <Option Value="" selected>Sélectionner...</option>
+                            {/if}
 							{section name=i loop=$arrayEquipe} 
 								<Option Value="{$arrayEquipe[i].Id}" {if $idEquipe == $arrayEquipe[i].Id}selected{/if}>{$arrayEquipe[i].Code_comite_dep} - {$arrayEquipe[i].Libelle}</Option>
 							{/section}
@@ -80,7 +83,7 @@
 									</tr>
 									{/if}
 									<tr class='{cycle values="impair,pair"}  colorCap{$arrayJoueur[i].Capitaine}'>
-										{if $profile <= 7 && $Verrou != 'O' && $AuthModif == 'O'}
+										{if $profile <= 7 && $Verrou != 'O' && $AuthModif == 'O' && $idEquipe > 0}
 											<td><input type="checkbox" name="checkEquipeJoueur" value="{$arrayJoueur[i].Matric}" id="checkDelete{$smarty.section.i.iteration}" /></td>
 											<td width="30" class='directInput text' tabindex='1{$smarty.section.i.iteration}0'><span href="#" Id="Numero-{$arrayJoueur[i].Matric}-{$idEquipe}">{$arrayJoueur[i].Numero}</span></td>
 											<!--<td><a href="#" Id="numero{$arrayJoueur[i].Matric}" onclick="DoNumero({$arrayJoueur[i].Matric},'{$arrayJoueur[i].Numero}')">{$arrayJoueur[i].Numero}</a></td>-->
@@ -143,7 +146,7 @@
 							{/if}
 						</div>
 					</div>
-					{if $profile <= 7}
+					{if $profile <= 7 && $idEquipe > 0}
 						<div>
 							<i>Dernier ajout ou suppression dans la liste des présents
 							<br>le {$LastUpdate} par {$LastUpdater}.</i>
@@ -166,7 +169,7 @@
 		        
 
 			    <div class='blocRight'>
-					{if $profile <= 7 && $Verrou != 'O' && $AuthModif == 'O'}
+					{if $profile <= 7 && $Verrou != 'O' && $AuthModif == 'O' && $idEquipe > 0}
 						<table width=100%>
 							<tr>
 								<th class='titreForm' colspan=2>
