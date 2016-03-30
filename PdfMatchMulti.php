@@ -93,15 +93,15 @@ class FeuilleMatch extends MyPage
 			
 			// Langue
 			$langue = parse_ini_file("commun/MyLang.ini", true);
-			if(utyGetGet('lang') == 'EN')
+			if(utyGetGet('lang') == 'en')
 				$row6['En_actif'] = 'O';
-			elseif(utyGetGet('lang') == 'FR')
+			elseif(utyGetGet('lang') == 'fr')
 				$row6['En_actif'] = '';
 				
 			if($row6['En_actif'] == 'O')
-				$lang = $langue['EN'];
+				$lang = $langue['en'];
 			else
-				$lang = $langue['FR'];
+				$lang = $langue['fr'];
 
 			$competition = html_entity_decode($row['Nom']);
 			$lieu = html_entity_decode($row['Lieu']);

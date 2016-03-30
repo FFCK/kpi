@@ -35,15 +35,15 @@ class FeuilleCltNiveau extends MyPage
 
 		// Langue
 		$langue = parse_ini_file("commun/MyLang.ini", true);
-		if($_GET['lang'] == 'EN')
+		if($_GET['lang'] == 'en')
 			$arrayCompetition['En_actif'] = 'O';
-		elseif($_GET['lang'] == 'FR')
+		elseif($_GET['lang'] == 'fr')
 			$arrayCompetition['En_actif'] = '';
 			
 		if($arrayCompetition['En_actif'] == 'O')
-			$lang = $langue[EN];
+			$lang = $langue['en'];
 		else
-			$lang = $langue[FR];
+			$lang = $langue['fr'];
 
 		//Création
 		$pdf = new FPDF('L');
