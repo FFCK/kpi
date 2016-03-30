@@ -42,7 +42,7 @@
 {section  name=i loop=$arrayCompetition}
     {if $arrayCompetition[i].Statut != 'ATT'}
         {assign var='codetemp' value=$arrayCompetition[i].codeCompet}
-        <div class="container-fluid">
+        <div class="container">
             <article class="padTopBottom{if $arrayEquipe_publi[$codetemp][0].Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if}">
                 {if $recordCompetition[0].LogoLink != ''}
                     <div class="text-center">

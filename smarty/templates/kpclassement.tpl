@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="container">
     <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if}">
         {if $recordCompetition.Statut != 'END'}
             <div class="label label-warning">Classement provisoire</div>
