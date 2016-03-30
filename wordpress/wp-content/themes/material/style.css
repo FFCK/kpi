@@ -96,3 +96,12 @@ nav li.menu-item.active a { color: #FFFFFF; }
     background-color: #f9f9f9;
     border-radius: .25em;
 }
+
+.flex-footer {
+    display: flex;
+    justify-content: space-around;
+}
+
+.flex-footer div {
+    width: 220px;
+}
