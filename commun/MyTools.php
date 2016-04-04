@@ -464,9 +464,11 @@ function utyEquipesAffectAutoFR($intitule)
 			//preg_match("/([A-O])/",$intitule[$j],$codePoule); // lettre de poule
 			preg_match("/([A-Z]+)/",$intitule[$j],$codeLettres); // lettre
 			preg_match("/([0-9]+)/",$intitule[$j],$codeNumero); // numero de match ou classement de poule
-				$posNumero = strpos($intitule[$j], $codeNumero[1]);
-				$posLettres = strpos($intitule[$j], $codeLettres[1]);
-				if($posNumero > $posLettres){
+				if(isset($codeNumero[1]))
+                    $posNumero = strpos($intitule[$j], $codeNumero[1]);
+				if(isset($codeLettres[1]))
+                    $posLettres = strpos($intitule[$j], $codeLettres[1]);
+				if(isset($codeLettres[1]) && $posNumero > $posLettres){
 					switch($codeLettres[1]){
 						case 'T' : // tirage
 						case 'D' : // draw
@@ -486,14 +488,16 @@ function utyEquipesAffectAutoFR($intitule)
 							break;
 					}
 				}else{ // poule
-					if($codeNumero[1] == 1)
-						$resultat = '(1er Poule '.$codeLettres[1].')';
-					elseif($codeNumero[1] == 2)
-						$resultat = '(2nd Poule '.$codeLettres[1].')';
-					elseif($codeNumero[1] == 3)
-						$resultat = '(3e Poule '.$codeLettres[1].')';
-					elseif($codeNumero[1] > 3)
-						$resultat = '('.$codeNumero[1].'e Poule '.$codeLettres[1].')';
+                    if(isset($codeNumero[1])){
+                        if($codeNumero[1] == 1)
+                            $resultat = '(1er Poule '.$codeLettres[1].')';
+                        elseif($codeNumero[1] == 2)
+                            $resultat = '(2nd Poule '.$codeLettres[1].')';
+                        elseif($codeNumero[1] == 3)
+                            $resultat = '(3e Poule '.$codeLettres[1].')';
+                        elseif($codeNumero[1] > 3)
+                            $resultat = '('.$codeNumero[1].'e Poule '.$codeLettres[1].')';
+                    }
 				}
 			$result[$j] = $resultat;
 		}

@@ -17,7 +17,7 @@
 				<input type='hidden' name='Pub' Value=''/>
 				<input type='hidden' name='Verrou' Value=''/>
 				
-				<div class='col-md-3 col-sm-6 col-xs-12'>
+				<div class='col-md-2 col-sm-4 col-xs-8'>
 								<label for="Saison">{#Saison#}</label>
 								<select name="Saison" onChange="submit()">
 									{section name=i loop=$arraySaison} 
@@ -58,6 +58,10 @@
                 {else}
                     <div class='col-md-3 col-sm-6 col-xs-12'></div>
 				{/if}
+				<div class='col-md-1 col-sm-2 col-xs-4 text-center'>
+                    <br>
+                    <a class="pdfLink badge pull-right" href="PdfListeMatchs.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
+				</div>
 
 				<div class='col-md-3 col-sm-6 col-xs-12 text-center'>
                     <div id="fb-root"></div>
