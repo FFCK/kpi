@@ -6,12 +6,12 @@
 		<meta name="Author" Content="LG" />
         
         <!-- FB Meta -->
-		<meta property="og:image" content="http://kayak-polo.info/img/KPI.png" />
-		<link rel="image_src" href="http://kayak-polo.info/img/KPI.png" />
-		<!--<meta property="og:title" content="kayak-polo.info" />-->
-		<meta property="og:type" content="article" />
-		<!--<meta property="og:url" content="http://kayak-polo.info"/>-->
-		<!--<meta property="og:description" content="kayak polo français" />-->
+		<meta property="og:image" content="http://kayak-polo.info/img/newKPI2.jpg" />
+		<link rel="image_src" href="http://kayak-polo.info/img/newKPI2.jpg" />
+		<meta property="og:title" content="kayak-polo.info" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="http://www.kayak-polo.info"/>
+		<meta property="og:description" content="FFCK - Commission Nationale d'Activité Kayak-Polo" />
 		<meta property="og:site_name" content="KAYAK-POLO.INFO" />
         
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
