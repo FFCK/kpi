@@ -12,7 +12,8 @@
         <div class="form-horizontal">
             <label class="col-sm-2">{#Chercher#}:</label>
             <input class="col-sm-6" type="text" id="rechercheClub" placeholder="{#Nom_ou_numero_de_club#}">
-            <input class="col-sm-2" type="hidden" id="clubId" value="{$clubId}">
+            <input type="hidden" id="clubId" value="{$clubId}">
+            <a class="btn btn-default pull-right" href="kplogos.php">Tous les clubs...</a>
             <div class="row">
                 <h3 class="col-sm-12" id="clubLibelle">Club:</h3>
                 <h3 class="col-sm-4 col-sm-offset-4" id="clubLogo"></h3>
