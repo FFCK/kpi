@@ -6,7 +6,10 @@
 <div class="container" id="selector">
     <article class="col-md-12 padTopBottom">
         <div class="col-md-10 col-md-offset-1">
-            <br>
+                <br>
+                <br>
+                <br>
+                <br>
             {section name=i loop=$arrayLogos}
                 <div class="col-md-1 col-sm-2 col-xs-3">
                     <a href="http://www.kayak-polo.info/kpclubs.php?clubId={$arrayLogos[i]}">
