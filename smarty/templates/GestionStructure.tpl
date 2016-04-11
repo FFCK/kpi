@@ -19,7 +19,7 @@
 				</div>
 			</div>
 			
-			{if $profile <=3}
+			{if $profile <=3 or $user == '229824' or $user == '115989'}
 			<form method="POST" action="GestionStructure.php" name="formStructure" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' Value=''/>
 				<input type='hidden' name='ParamCmd' Value=''/>
@@ -43,19 +43,19 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="postal">Adresse postale :</label>
+								<label for="postal">Adresse postale :<br>(ex: 27 rue du Bout du Monde - 99000 La Fin)</label>
 								<input type="text" name="postal" maxlength=100 id="postal"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for="www">Adresse Internet :</label>
+								<label for="www">Adresse Internet :<br>(ex: http://www.monsite.fr)</label>
 								<input type="text" name="www" maxlength=60 id="www"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for="email">Adresse email :</label>
+                                <label for="email">Adresse email :<br>(éviter si possible les adresses personnelles)</label>
 								<input type="text" name="email" maxlength=40 id="email"/>
 							</td>
 						</tr>
@@ -63,6 +63,7 @@
 							<td>
 								<label for="coord">Coordonnées géographiques lat,long<br>(ex : 48.856614, 2.3522219)</label>
 								<input type="text" name="coord" maxlength=60 id="coord"/>
+								<input type="hidden" name="coord2" maxlength=60 id="coord2"/>
 							</td>
 						</tr>
 					<!--	<tr>
