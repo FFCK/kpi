@@ -15,16 +15,29 @@ class Equipes extends MyPage
         $Code_club = 0;
         $Club =  '';
 
-		$Equipe = utyGetSession('Equipe', '0');
+		$Equipe = utyGetSession('Equipe', 0);
 		$Equipe = utyGetPost('Equipe', $Equipe);
 		$Equipe = utyGetGet('Equipe', $Equipe);
 		$this->m_tpl->assign('Equipe', $Equipe);
 		$_SESSION['Equipe'] = $Equipe;
         $Saison = utyGetSaison();
-		
-		$sql  = "SELECT g.id, e.Libelle Equipe, c.Libelle Competitions, c.Code, c.Code_ref, c.Code_tour, "
-                . "c.Code_saison Saison, IF(c.Code_typeclt = 'CHPT', e.Clt_publi, e.CltNiveau_publi) Classt, "
-                . "e.Code_club, cl.Libelle Club "
+        
+        $sql = "SELECT e.Libelle Equipe, e.Code_club, cl.Libelle Club "
+                . "FROM gickp_Equipe e, gickp_Club cl "
+                . "WHERE e.Numero = $Equipe "
+                . "AND cl.Code = e.Code_club";
+//        echo $sql;
+        $result = $myBdd->Query($sql);
+        $row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+        $nomEquipe = $row['Equipe'];
+        $Code_club = $row['Code_club'];
+        $Club =  $row['Club'];
+        $this->m_tpl->assign('nomEquipe', $nomEquipe);
+        $this->m_tpl->assign('Code_club', $Code_club);
+        $this->m_tpl->assign('Club', $Club);
+
+        $sql  = "SELECT g.id, c.Libelle Competitions, c.Code, c.Code_ref, c.Code_tour, "
+                . "c.Code_saison Saison, IF(c.Code_typeclt = 'CHPT', e.Clt_publi, e.CltNiveau_publi) Classt "
                 . "FROM gickp_Competitions_Equipes e, gickp_Competitions c, gickp_Competitions_Groupes g, gickp_Club cl "
                 . "WHERE c.Code = e.Code_compet "
                 . "AND c.Code_ref = g.Groupe "
@@ -48,13 +61,7 @@ class Equipes extends MyPage
 				$arrayPalmares[$tempSaison][] = array('Code' => $row['Code'], 'Code_tour' => $row['Code_tour'], 'Code_ref' => $row['Code_ref'], 
                                                     'Competitions' => $row['Competitions'], 'Saison' => $row['Saison'], 'Classt' => $row['Classt'] );
             }
-            $nomEquipe = $row['Equipe'];
-            $Code_club = $row['Code_club'];
-            $Club =  $row['Club'];
 		}
-        $this->m_tpl->assign('nomEquipe', $nomEquipe);
-        $this->m_tpl->assign('Code_club', $Code_club);
-        $this->m_tpl->assign('Club', $Club);
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
 		$this->m_tpl->assign('arrayPalmares', $arrayPalmares);
         

@@ -19,7 +19,7 @@
             </div>
         {elseif $eLogo}
             <div class="col-sm-6 col-sm-offset-3" id="equipeColors">
-                <a href="{$eLogo}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eLogo}" alt="{$nomEquipe}"></a>
+                <a href="kpclubs.php?clubId={$Code_club}" title='{#Club#}'><img class="img-responsive img-thumbnail" src="{$eLogo}" alt="{$nomEquipe}"></a>
             </div>
         {/if}
         {if $eTeam}
@@ -68,6 +68,8 @@
                         {/section}
                     </tbody>
                 </table>
+            {sectionelse}
+                <em class="text-right">{#Pas_de_classement_equipe#}.</em>
             {/section}
     </article>
 </div>

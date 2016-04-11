@@ -49,13 +49,13 @@
         document.body.appendChild(script);
     }
     window.onload = loadScript;
-
+//    window.onload = markActivation;
 
 // AUTRES FONCTIONS
     j(function(){
         if(j('#clubId').val() != ''){
             infosActivation();
-            markActivation();
+            //markActivation(); 
         }
     });
     //Activation infoWindow sur événement extérieur
@@ -67,6 +67,8 @@
 			infosActivation();
 		}
     }
+    
+
     function infosActivation(){
         var clubId = j('#clubId').val();
         j.get(
@@ -79,7 +81,6 @@
                 j( '#postal' ).html(data[0].postal !== null ? data[0].postal : '');
                 j( "#www" ).html(data[0].www !== null ? '<a class="btn btn-sm btn-default" href="'+data[0].www+'" target="_blank">'+data[0].www+'</a>' : '');
                 j( "#email" ).html(data[0].email !== null ? '<a class="btn btn-sm btn-default" href="mailto:'+data[0].email+'">'+data[0].email+'</a>' : '');
-                j( "#coord" ).text(data[0].coord !== null ? data[0].coord : '');
                 j( "#comitedep" ).text(data[0].comitedep !== null ? data[0].comitedep : '');
                 j( "#comitereg" ).text(data[0].comitereg !== null ? data[0].comitereg : '');
                 if( j( "#comitereg" ).text() == 'INTERNATIONAL' ){
@@ -99,11 +100,16 @@
                     j('#clubLogo').text('');
                 }
                 j( "#rechercheClub" ).val('');
+                data[0].coord !== null ? j( "#coord" ).show() : j( "#coord" ).hide();
             },
             'json'
         );
             
     }
+    
+    j( "#coord" ).click(function(){
+        markActivation();
+    });
     
     j( "#rechercheClub" ).autocomplete({
         source: 'searchClubs.php',
@@ -111,12 +117,6 @@
         select: function( event, ui ) {
             event.preventDefault();
             j( "#clubId" ).val(ui.item.idClub);
-//            j( "#clubLibelle" ).val(ui.item.label);
-//            j( "#postal" ).html(ui.item.postal !== null ? ui.item.postal : '');
-//            j( "#www" ).html(ui.item.www !== null ? '<a href="'+ui.item.www+'" target="_blank">'+ui.item.www+'</a>' : '');
-//            j( "#email" ).html(ui.item.email !== null ? '<a href="mailto:'+ui.item.email+'">'+ui.item.email+'</a>' : '');
-//            j( "#coord" ).text(ui.item.coord !== null ? ui.item.coord : '');
-//            j( "#rechercheClub" ).val('');
             markActivation();
         }
     });
@@ -126,7 +126,7 @@
 
 
 
-    // A REVOIR
+    // TODO
     function MailUpdat()
     {
             var club = document.forms['formCartographie'].elements['club'].value;

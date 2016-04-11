@@ -64,7 +64,7 @@ class FeuilleCltNiveau extends MyPageSecure
 			
 		$pdf->SetFont('Arial','I',8);
 		$pdf->SetXY(94, 258);
-		if($lang == $langue[EN])
+		if($lang == $langue['en'])
 			$pdf->Write(4, date('Y-m-d H:i'));
 		else
 			$pdf->Write(4, date('d/m/Y à H:i'));

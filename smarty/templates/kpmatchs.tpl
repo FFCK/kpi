@@ -17,7 +17,7 @@
 				<input type='hidden' name='Pub' Value=''/>
 				<input type='hidden' name='Verrou' Value=''/>
 				
-				<div class='col-md-2 col-sm-4 col-xs-8'>
+				<div class='col-md-2 col-sm-4 col-xs-6'>
 								<label for="Saison">{#Saison#}</label>
 								<select name="Saison" onChange="submit()">
 									{section name=i loop=$arraySaison} 
@@ -25,7 +25,7 @@
 									{/section}
 								</select>
                 </div>
-				<div class='col-md-3 col-sm-6 col-xs-12'>
+				<div class='col-md-4 col-sm-8 col-xs-12'>
 								<label for="Group">{#Competition#}</label>
 								<select name="Group" onChange="submit();">
 										<Option Value="">{#Selectionnez#}...</Option>
@@ -58,17 +58,20 @@
                 {else}
                     <div class='col-md-3 col-sm-6 col-xs-12'></div>
 				{/if}
-				<div class='col-md-1 col-sm-2 col-xs-4 text-center'>
+				<div class='col-md-1 col-sm-2 col-xs-4'>
                     <br>
-                    <a class="pdfLink badge pull-right" href="PdfListeMatchs.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
+                    <a class="pdfLink badge text-center" href="PdfListeMatchs.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
 				</div>
 
-				<div class='col-md-3 col-sm-6 col-xs-12 text-center'>
-                    <div id="fb-root"></div>
-					<div class="fb-like pull-right" data-href="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
-                    <br>
-                    <a class="btn btn-default pull-left" href='kpclassements.php?Compet={$codeCurrentCompet}&Group={$codeCompetGroup}&Saison={$Saison}'>{#Classements#}...</a>
-				</div>
+				<div class='col-md-2 col-sm-4 col-xs-8 text-center'>
+                    <div class="row">
+                        <div id="fb-root"></div>
+                        <div class="fb-like pull-right" data-href="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
+                    </div>
+                    <div class="row">
+                        <a class="btn btn-default pull-right" href='kpclassements.php?Compet={$codeCurrentCompet}&Group={$codeCompetGroup}&Saison={$Saison}'>{#Classements#}...</a>
+                    </div>
+                </div>
         </form>
     </article>
 </div>

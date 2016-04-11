@@ -13,10 +13,13 @@
             <label class="col-sm-2">{#Chercher#}:</label>
             <input class="col-sm-6" type="text" id="rechercheClub" placeholder="{#Nom_ou_numero_de_club#}">
             <input type="hidden" id="clubId" value="{$clubId}">
-            <a class="btn btn-primary pull-right" href="kplogos.php">Tous les clubs...</a>
+            <a class="btn btn-primary pull-right" href="kplogos.php">{#Tous_les_clubs#}...</a>
             <div class="row">
-                <h3 class="col-sm-12" id="clubLibelle">Club:</h3>
-                <h3 class="col-sm-4 col-sm-offset-4" id="clubLogo"></h3>
+                <h3 class="col-xs-12" id="clubLibelle">Club:</h3>
+            </div>
+            <div class="row">
+                <span class="col-xs-1"><img id="coord" class="img-responsive" style="cursor: pointer;" src="img/mapmarker.png" title="{#Localiser#}"></span>
+                <h3 class="col-xs-4 col-xs-offset-3" id="clubLogo"></h3>
             </div>
             <div class="form-group">
                 <label class="col-sm-4">CD:</label>
@@ -37,10 +40,6 @@
             <div class="form-group">
                 <label class="col-sm-4">{#Adresse#}:</label>
                 <div class="col-sm-8" id="postal"></div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4">{#Coordonnees#}:</label>
-                <div class="col-sm-8" id="coord"></div>
             </div>
             <div class="form-group">
                 <label class="col-sm-4">{#Equipes#}:</label>
@@ -82,6 +81,7 @@
 
             //création des marqueurs
             {/literal}{$mapParam}{literal}
+
         }
     </script>
 {/literal}

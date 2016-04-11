@@ -27,7 +27,8 @@ class MyPage
 	{				 
 		$this->m_tpl = new MySmarty();
 		
-			// Utilisateur
+		$this->m_tpl->assign('NUM_VERSION', NUM_VERSION);
+        // Utilisateur
 		$this->m_tpl->assign('user', utyGetSession('User'));
 		$profile = utyGetSession('Profile');
 		$profile = utyGetPost('profilTest', $profile);

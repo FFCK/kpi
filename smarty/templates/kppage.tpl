@@ -16,12 +16,12 @@
         
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <link rel="pingback" href="http://www.ffck.org/kpi/wordpress/xmlrpc.php">
+        <link rel="pingback" href="http://kayak-polo.info/wordpress/xmlrpc.php">
         <link rel="profile" href="http://gmpg.org/xfn/11">
         <!-- Mobile Specific Meta -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux" href="http://www.ffck.org/kpi/?feed=rss2" />
-        <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux des commentaires" href="http://www.ffck.org/kpi/?feed=comments-rss2" />
+        <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux" href="http://kayak-polo.info/?feed=rss2" />
+        <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux des commentaires" href="http://kayak-polo.info/?feed=comments-rss2" />
 
         <link rel='stylesheet' href='css/fullcalendar.min.css' type='text/css' media='all' />
         <link rel='stylesheet' id='material-custom-css'  href='wordpress/wp-content/themes/material/stylesheets/styles.css?ver=4.2.1' type='text/css' media='all' />
@@ -30,16 +30,16 @@
         <link rel="stylesheet" href="css/jquery-ui.css">
         <link rel="stylesheet" href="css/fontawesome/font-awesome.css">
         
-        <script type='text/javascript' src='wordpress/wp-includes/js/jquery/jquery.js?ver=1.11.2'></script>
-        <script type='text/javascript' src='js/jquery-ui-1.11.4.min.js'></script>
-        <script type='text/javascript' src='js/jquery.dataTables.min.js'></script>
-        <script type='text/javascript' src='wordpress/wp-content/themes/material/javascripts/bootstrap.min.js?ver=4.2.1'></script>
-        <script type='text/javascript' src='wordpress/wp-content/themes/material/javascripts/main.js?ver=4.2.1'></script>
+        <script type='text/javascript' src='wordpress/wp-includes/js/jquery/jquery.js?ver=1.11.2&v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery-ui-1.11.4.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='wordpress/wp-content/themes/material/javascripts/bootstrap.min.js?ver=4.2.1&v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='wordpress/wp-content/themes/material/javascripts/main.js?ver=4.2.1&v={$NUM_VERSION}'></script>
         <!--<script type='text/javascript' src='//cdn.datatables.net/responsive/1.0.6/js/dataTables.responsive.min.js'></script>-->
         <!--[if lt IE 9]><script src="http://www.ffck.org/kpi/wordpress/wp-content/themes/material/javascripts/html5shiv.js"></script><![endif]-->
         {if $contenutemplate == 'kpcalendrier'}
-            <script type='text/javascript' src='js/moment.min.js'></script>
-            <script type='text/javascript' src='js/fullcalendar.min.js'></script>
+            <script type='text/javascript' src='js/moment.min.js?v={$NUM_VERSION}'></script>
+            <script type='text/javascript' src='js/fullcalendar.min.js?v={$NUM_VERSION}'></script>
         {/if}
         {literal}
             <style type="text/css" id="custom-background-css">
@@ -74,10 +74,10 @@
         {if $css_supp && is_file($temp)}
             <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css">
         {/if}
-        <script src="js/formTools.js" defer></script>
+        <script src="js/formTools.js?v={$NUM_VERSION}" defer></script>
         {assign var=temp value="js/$contenutemplate.js"} 
         {if is_file($temp)}
-            <script src="js/{$contenutemplate}.js" defer></script>
+            <script src="js/{$contenutemplate}.js?v={$NUM_VERSION}" defer></script>
         {/if}
         <title>{$smarty.config.$title|default:$title}</title>
 	</head>
