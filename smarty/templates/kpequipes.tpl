@@ -14,7 +14,7 @@
             </div>
         </div>
         {if $eColors}
-            <div class="col-sm-12" id="equipeColors">
+            <div class="col-xs-10 col-xs-offset-1" id="equipeColors">
                 <a href="{$eColors}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eColors}" alt="{$nomEquipe}"></a>
             </div>
         {elseif $eLogo}
