@@ -22,14 +22,14 @@
                 <a href="kpclubs.php?clubId={$Code_club}" title='{#Club#}'><img class="img-responsive img-thumbnail" src="{$eLogo}" alt="{$nomEquipe}"></a>
             </div>
         {/if}
+    </article>
+    
+    <article class="col-md-6 padTopBottom" id="equipePalmares">        
         {if $eTeam}
             <div class="col-sm-12" id="equipeTeam">
                 <a href="{$eTeam}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eTeam}" alt="{$nomEquipe}"></a>
             </div>
         {/if}
-    </article>
-    
-    <article class="col-md-6 padTopBottom" id="equipePalmares">        
             <h3 class="col-sm-12">{#Palmares#}:</h3>
             {section  name=i loop=$arraySaisons}
                 {assign var='Saison' value=$arraySaisons[i].Saison}
