@@ -18,7 +18,7 @@
                 <a href="{$eColors}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eColors}" alt="{$nomEquipe}"></a>
             </div>
         {elseif $eLogo}
-            <div class="col-sm-6 col-sm-offset-3" id="equipeColors">
+            <div class="col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="equipeColors">
                 <a href="kpclubs.php?clubId={$Code_club}" title='{#Club#}'><img class="img-responsive img-thumbnail" src="{$eLogo}" alt="{$nomEquipe}"></a>
             </div>
         {/if}
