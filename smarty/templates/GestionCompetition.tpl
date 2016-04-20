@@ -1,10 +1,10 @@
 		<div class="main">
-			<form method="POST" action="GestionCompetition.php" name="formCompet" enctype="multipart/form-data">
-						<input type='hidden' name='Cmd' Value=''/>
-						<input type='hidden' name='ParamCmd' Value=''/>
-						<input type='hidden' name='verrouCompet' Value=''/>
-						<input type='hidden' name='Verrou' Value=''/>
-						<input type='hidden' name='Pub' Value=''/>
+			<form method="POST" action="GestionCompetition.php" name="formCompet" id="formCompet" enctype="multipart/form-data">
+						<input type='hidden' name='Cmd' id="Cmd" Value=''/>
+						<input type='hidden' name='ParamCmd' id="ParamCmd" Value=''/>
+						<input type='hidden' name='verrouCompet' id="verrouCompet" Value=''/>
+						<input type='hidden' name='Verrou' id="Verrou" Value=''/>
+						<input type='hidden' name='Pub' id="Pub" Value=''/>
 
 			{if $profile != 9}
 				<div class='blocLeft'>
@@ -646,6 +646,32 @@
 						<tr>
 							<td>
 								<input type="button" name="RenomEquipe" id="RenomEquipe" value="Renommer">
+							</td>
+						</tr>
+					</table>
+					<table width=100%>
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Fusionner deux équipes</label>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<label for="FusionEquipeSource">Source (sera supprimé)</label>
+								<input type="hidden" name="numFusionEquipeSource" id="numFusionEquipeSource">
+								<input type="text" name="FusionEquipeSource" size=40 id="FusionEquipeSource">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="FusionEquipeCible">Cible (sera conservé)</label>
+								<input type="hidden" name="numFusionEquipeCible" id="numFusionEquipeCible">
+								<input type="text" name="FusionEquipeCible" size=40 id="FusionEquipeCible">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" name="FusionEquipes" id="FusionEquipes" value="Fusionner">
 							</td>
 						</tr>
 					</table>
