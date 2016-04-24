@@ -135,10 +135,59 @@ function changeHistoEquipe()
 //	return jQuery(a).text().toUpperCase()
 //		.indexOf(m[3].toUpperCase()) >= 0;
 //};
-
+function initTitu(champs, valeur, valeur2)
+{
+    
+}
 
 $(document).ready(function() {
-	$.extend($.expr[':'], {
+	//Init Titulaires
+	$('#InitTitulaireCompet').click(function(){
+		var champs = 'Compet';
+		var valeur = $('#competition').val();
+		var valeur2 = $('#competition option:selected').text();
+		if(valeur == '*'){
+			alert('Sélectionnez une compétition !');
+            return;
+		}
+        if($('#verrouCompet').attr('data-verrou') == 'N') {
+            alert('Verrouillez les feuilles de présence avant ! (cadenas rouge, à côté)');
+            return;
+        }
+        if(!confirm('Confirmez-vous la mise à jour des feuilles de matchs\navec les compositions des feuilles de présence ?\n(toutes les équipes, matchs non verrouillés uniquement)\n'+champs+' : '+valeur2))
+        {
+            return;
+        }
+        //ajax
+        $.post("InitTitulaireJQ.php", {
+            champs: champs,
+            valeur: valeur,
+            valeur3: -1
+        }, function(data) {
+            alert(data);
+        });
+	});
+
+	//Init Titulaires
+	$('#verrouCompet').click(function(){
+        if(!confirm('Confirmez-vous le verrouillage des feuilles de présence ?')) {
+            return;
+        }
+        //ajax
+        $.post("VerrouCompetJQ.php", {
+            verrou: $('#verrouCompet').attr('data-verrou'),
+            compet: $('#competition').val(),
+        }, function(data) {
+            if(data == 'O' || data == 'N'){
+                $('#verrouCompet').attr('src', '../img/verrou2'+data+'.gif')
+                                  .attr('data-verrou', data);
+            }else{
+                alert(data);
+            }
+        });
+	});
+
+    $.extend($.expr[':'], {
 	  'icontains': function(elem, i, match, array) {
 		return (elem.textContent || elem.innerText || '').toLowerCase()
 			.indexOf((match[3] || "").toLowerCase()) >= 0;

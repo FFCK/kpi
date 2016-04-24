@@ -37,17 +37,22 @@
 									</fieldset>
 								</td>
 								<td>
-									<a href="FeuilleGroups.php" target="_blank" alt="Liste des &eacute;quipes par poule" title="Liste des &eacute;quipes par poule"><img width="20" src="../img/pdf.gif" /></a>						
-									<a href="FeuillePresence.php" target="_blank" alt="Toutes les feuilles de pr&eacute;sence" title="Toutes les feuilles de pr&eacute;sence"><img width="20" src="../img/pdfMulti.gif" /></a>						
-									<a href="FeuillePresenceEN.php" target="_blank" alt="Toutes les feuilles de pr&eacute;sence - Anglais" title="Toutes les feuilles de pr&eacute;sence - Anglais"><img width="20" src="../img/pdfEN.gif" /></a>						
-									<a href="FeuillePresenceCat.php" target="_blank" alt="Feuilles de pr&eacute;sence par cat&eacute;gorie" title="Feuilles de pr&eacute;sence par cat&eacute;gorie"><img width="20" src="../img/pdfMulti.gif" />Cat</a>						
+									<a href="FeuilleGroups.php" target="_blank" title="Liste des &eacute;quipes par poule"><img width="20" src="../img/pdf.gif" /></a>						
+									<a href="FeuillePresence.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence"><img width="20" src="../img/pdfMulti.gif" /></a>						
+									<a href="FeuillePresenceEN.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence - Anglais"><img width="20" src="../img/pdfEN.gif" /></a>						
+									<a href="FeuillePresenceCat.php" target="_blank" title="Feuilles de pr&eacute;sence par cat&eacute;gorie"><img width="20" src="../img/pdfMulti.gif" />Cat</a>						
 									&nbsp;<button id='actuButton' type="button" ><img src="../img/actualiser.gif">Recharger</button>
+                                    {if $profile <= 4 && $Statut == 'ON'}
+                                        <img class="cliquable" data-verrou="{$Verrou}" height="22" src="../img/verrou2{$Verrou}.gif" id="verrouCompet" title='(dé)verrouiller les feuilles de présence'>
+                                        &nbsp;
+                                        <img class="cliquable" height="22" src="../img/init.gif" id="InitTitulaireCompet" title="Transférer les compos sur les feuilles de match (non verrouillées)">
+                                    {/if}
 								</td>
 							</tr>
 						</table>
 					</div>
 					<div class='blocTable'>
-						<table class='tableau' id='tableEquipes' name='tableEquipes'>
+						<table class='tableau' id='tableEquipes'>
 							<thead>
 								<tr>
 									<th>&nbsp;</th>
