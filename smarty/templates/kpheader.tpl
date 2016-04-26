@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-12 banner">
-                <img class="site-banner" width="1300" alt="FFCK" src="http://www.ffck.org/kpi/wordpress/wp-content/uploads/2015/06/bandeau_ffck3.png" />
+                <img class="site-banner" width="1300" alt="FFCK" src="wordpress/wp-content/uploads/2016/03/bandeau_ffck3.png" />
             </div>
             <!-- /.col-xs-12 -->
         </div>
