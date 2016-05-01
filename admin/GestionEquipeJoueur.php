@@ -74,7 +74,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		if ($idEquipe > 0)
 		{
 			// Nom de l'Equipe et de la Compétition ...
-			$sql  = "Select eq.Code_compet, eq.Code_club, eq.Code_saison, eq.Libelle, cp.Verrou ";
+			$sql  = "Select eq.Code_compet, eq.Code_club, eq.Code_saison, eq.Libelle, cp.Verrou, cp.Statut ";
 			$sql .= "From gickp_Competitions_Equipes eq, gickp_Competitions cp ";
 			$sql .= "Where eq.Code_compet = cp.Code And cp.Code_saison = '";
 			$sql .= utyGetSaison();
@@ -109,8 +109,8 @@ class GestionEquipeJoueur extends MyPageSecure
 				$this->m_tpl->assign('typeCompet', $typeCompet);	
 				$this->m_tpl->assign('headerSubTitle', $infoEquipe);	
 				$this->m_tpl->assign('infoEquipe2', $infoEquipe2);	
-				$this->m_tpl->assign('Verrou', $row['Verrou']);	
-				
+				$this->m_tpl->assign('Verrou', $row['Verrou']);
+				$this->m_tpl->assign('Statut', $row['Statut']);
 			}
 			
 			// Intégrer les coureurs de la recherche Licence ...

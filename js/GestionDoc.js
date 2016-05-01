@@ -1,5 +1,9 @@
 $(document).ready(function() {
-	$('#evenement').change(function(){
+	$("*").tooltip({
+		showURL: false
+	});
+    
+    $('#evenement').change(function(){
 		theTarget = $(this).val();
 		Saison = $('#laSaison').val();
 		$('#linkEvt1').attr('href','FeuilleListeMatchs.php?idEvenement=' + theTarget);

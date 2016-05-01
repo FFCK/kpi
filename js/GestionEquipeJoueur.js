@@ -272,6 +272,11 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 		}
 	});
 
+	// Actualiser
+	$('#actuButton').click(function(){
+		$('#formEquipeJoueur').submit();
+	});
+
 });
 
 function changeEquipe(){

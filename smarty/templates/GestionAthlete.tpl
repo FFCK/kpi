@@ -8,18 +8,15 @@
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}' />
 				
 				<div class='titrePage'>Statistiques athlète</div>
-				<!--<center class='rouge'><i>Version BETA (Signaler les bugs)</i></center>-->
 				<div class='blocTop'>
 								<label>Recherche (nom, prénom ou licence)</label>
 								<input type="text" name="choixJoueur" id="choixJoueur" size="30" />
 								<input type="submit" name="maj" id="maj" value="Mise à jour" />
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<label for="comboarbitre1">Recherche avancée</label>
-								<a href="#"  id='rechercheAthlete'><img width="16" src="../img/b_search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
+								<a href="#"  id="rechercheAthlete"><img height="18" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
 								<br />
-								<!--<label for="Athlete">Athlète sélectionné</label>-->
-								<input type="hidden" size="5" name="Athlete" id="Athlete" value="{$Athlete}" />
-								<!--<input type="text" size="30" name="Athlete_id" readonly id="Athlete_id" value="{$Athlete_id}" tabindex="12"/>-->
+								<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete}" />
 								
 				</div>
 				{if $Courreur.Matric != ''}

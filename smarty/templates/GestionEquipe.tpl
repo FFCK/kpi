@@ -27,25 +27,25 @@
 							<tr>
 								<td width=200>
 									<fieldset>
-										<a href="#" title="S&eacute;lectionner tous" onclick="setCheckboxes('formEquipe', 'checkEquipe', true);return false;"><img width="21" src="../img/tous.gif" /></a>
-										<a href="#" title="S&eacute;lectionner aucun" onclick="setCheckboxes('formEquipe', 'checkEquipe', false);return false;"><img width="21" src="../img/aucun.gif" /></a>
+										<a href="#" title="S&eacute;lectionner tous" onclick="setCheckboxes('formEquipe', 'checkEquipe', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" /></a>
+										<a href="#" title="S&eacute;lectionner aucun" onclick="setCheckboxes('formEquipe', 'checkEquipe', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" /></a>
 										{if $profile <=6 && $AuthModif == 'O' && $bProd}
-											<a href="#" title="Supprimer la s&eacute;lection" onclick="RemoveCheckboxes('formEquipe', 'checkEquipe')"><img width="16" src="../img/supprimer.gif" /></a>
+											<a href="#" title="Supprimer la s&eacute;lection" onclick="RemoveCheckboxes('formEquipe', 'checkEquipe')"><img height="25" src="../img/glyphicons-17-bin.png" /></a>
 										{/if}
-										<a href="#" onclick=""><img src="../img/map.gif" width="20" alt="Cartographier la s&eacute;lection (en construction)" title="Cartographier la s&eacute;lection (en construction)" /></a>
+										<a href="#" onclick=""><img src="../img/map.gif" height="25" alt="Cartographier la s&eacute;lection (en construction)" title="Cartographier la s&eacute;lection (en construction)" /></a>
 										&nbsp;&nbsp;&nbsp;
 									</fieldset>
 								</td>
 								<td>
-									<a href="FeuilleGroups.php" target="_blank" title="Liste des &eacute;quipes par poule"><img width="20" src="../img/pdf.gif" /></a>						
-									<a href="FeuillePresence.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence"><img width="20" src="../img/pdfMulti.gif" /></a>						
-									<a href="FeuillePresenceEN.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence - Anglais"><img width="20" src="../img/pdfEN.gif" /></a>						
-									<a href="FeuillePresenceCat.php" target="_blank" title="Feuilles de pr&eacute;sence par cat&eacute;gorie"><img width="20" src="../img/pdfMulti.gif" />Cat</a>						
-									&nbsp;<button id='actuButton' type="button" ><img src="../img/actualiser.gif">Recharger</button>
+									<a href="FeuilleGroups.php" target="_blank" title="Liste des &eacute;quipes par poule"><img height="25" src="../img/pdf.png" /></a>						
+									<a href="FeuillePresence.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence"><img height="25" src="../img/pdf2.png" /></a>						
+									<a href="FeuillePresenceEN.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence - Anglais"><img height="25" src="../img/pdfEN.png" /></a>						
+									<a href="FeuillePresenceCat.php" target="_blank" title="Feuilles de pr&eacute;sence par cat&eacute;gorie"><img height="25" src="../img/pdf2.png" />Cat</a>						
+									<img class="cliquable" id="actuButton" title="Recharger" height="25" src="../img/glyphicons-82-refresh.png">
                                     {if $profile <= 4 && $Statut == 'ON'}
-                                        <img class="cliquable" data-verrou="{$Verrou}" height="22" src="../img/verrou2{$Verrou}.gif" id="verrouCompet" title='(dé)verrouiller les feuilles de présence'>
+                                        <img class="cliquable" data-verrou="{$Verrou}" height="25" src="../img/verrou2{$Verrou}.gif" id="verrouCompet" title='(dé)verrouiller les feuilles de présence'>
                                         &nbsp;
-                                        <img class="cliquable" height="22" src="../img/init.gif" id="InitTitulaireCompet" title="Transférer les compos sur les feuilles de match (non verrouillées)">
+                                        <img class="cliquable" height="25" src="../img/b_update.png" id="InitTitulaireCompet" title="Transférer les compos sur les feuilles de match (non verrouillées)">
                                     {/if}
 								</td>
 							</tr>
@@ -71,26 +71,23 @@
 								{section name=i loop=$arrayEquipe} 
 									{if $PouleX != $arrayEquipe[i].Poule && $arrayEquipe[i].Poule != ''}
 										<tr class='colorO'>
-											<th colspan=8><b>Poule {$arrayEquipe[i].Poule}</b></td>
+											<th colspan=8><b>Poule {$arrayEquipe[i].Poule}</b></th>
 										</tr>
 									{/if}
 									<tr class='{cycle values="impair,pair"}'>
 										{assign var='PouleX' value=$arrayEquipe[i].Poule}
 										<td><input type="checkbox" name="checkEquipe" value="{$arrayEquipe[i].Id}" id="checkDelete{$smarty.section.i.iteration}" /></td>
-						<!--<td class='directInput numMatch'><span Id="Numero_ordre-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Numero_ordre}</span></td>-->
 										<td><span {if $profile <=6 && $AuthModif == 'O'}class='directInput textPoule' {/if}tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}0' Id="Poule-{$arrayEquipe[i].Id}-text">{$arrayEquipe[i].Poule}</span></td>
 										<td><span {if $profile <=6 && $AuthModif == 'O'}class='directInput textTirage' {/if}tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}1' Id="Tirage-{$arrayEquipe[i].Id}-text">{if $arrayEquipe[i].Tirage == '0'}{else}{$arrayEquipe[i].Tirage}{/if}</span></td>
 										{if $Code_niveau == 'INT'}
 											<td> <img width="20" src="../img/Pays/{$arrayEquipe[i].Code_comite_dep}.png" alt="{$arrayEquipe[i].Code_comite_dep}" title="{$arrayEquipe[i].Code_comite_dep}" /></td>
 										{/if}
 		
-									{*	<td><a href="#" Id="Numero{$arrayEquipe[i].Id}" onclick="updateCell('{$arrayEquipe[i].Id}', 'Numero','{$arrayEquipe[i].Numero}')">{$arrayEquipe[i].Numero}</A></td>	*}
-									{*	<td>{$arrayEquipe[i].Numero}</td>*}
 										<td class="cliquableNomEquipe"><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" alt="Feuille de pr&eacute;sence" title="Feuille de pr&eacute;sence">{$arrayEquipe[i].Libelle}</A></td>
-										<td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" alt="Feuille de pr&eacute;sence" title="Feuille de pr&eacute;sence"><img width="10" src="../img/b_sbrowse.png" /></A></td>
+										<td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" alt="Feuille de pr&eacute;sence" title="Feuille de pr&eacute;sence"><img height="25" src="../img/b_sbrowse.png" /></A></td>
 										<td>{$arrayEquipe[i].Code_club}</td>
 										{if $profile <= 3 && $AuthModif == 'O' && $bProd}
-											<td><a href="#" onclick="RemoveCheckbox('formEquipe', '{$arrayEquipe[i].Id}');return false;"><img width="16" src="../img/supprimer.gif" alt="Supprimer" title="Supprimer" /></a></td>
+											<td><a href="#" onclick="RemoveCheckbox('formEquipe', '{$arrayEquipe[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" /></a></td>
 										{else}<td>&nbsp;</td>{/if}
 									</tr>
 								{/section}

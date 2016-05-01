@@ -4,7 +4,7 @@
 	
 		<div class="main">
 				
-			<form method="POST" action="GestionEquipeJoueur.php" name="formEquipeJoueur" enctype="multipart/form-data">
+			<form method="POST" action="GestionEquipeJoueur.php" name="formEquipeJoueur" id="formEquipeJoueur" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' Value='' />
 				<input type='hidden' name='ParamCmd' Value='' />
 				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Competitions_Equipes_Joueurs' />
@@ -26,15 +26,12 @@
 					<br>
 					<div class='liens'>
 						{if $profile <= 8 && $Verrou != 'O' && $AuthModif == 'O' && $idEquipe > 0}
-							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', true);return false;"><img width="21" src="../img/tous.gif" alt="Sélectionner tous" title="Sélectionner tous" /></a>
-							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', false);return false;"><img width="21" src="../img/aucun.gif" alt="Sélectionner aucun" title="Sélectionner aucun" /></a>
-							<a href="#" onclick="RemoveCheckboxes('formEquipeJoueur', 'checkEquipeJoueur')"><img width="16" src="../img/supprimer.gif" alt="Supprimer la sélection" title="Supprimer la sélection" /></a>
+							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" alt="Sélectionner tous" title="Sélectionner tous" /></a>
+							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" title="Sélectionner aucun" /></a>
+							<a href="#" onclick="RemoveCheckboxes('formEquipeJoueur', 'checkEquipeJoueur')"><img height="25" src="../img/glyphicons-17-bin.png" alt="Supprimer la sélection" title="Supprimer la sélection" /></a>
 						{/if}
-				<!--		<a href="FeuillePresence.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img width="20" height="20" src="../img/pdf.gif" border="0"></a>						
-						<a href="FeuillePresenceEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img width="20" height="20" src="../img/pdfEN.gif" border="0"></a>						
-				-->
-						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img width="20" src="../img/pdf.gif" /></a>						
-						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img width="20" src="../img/pdfEN.gif" /></a>						
+						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img height="25" src="../img/pdf.png" /></a>						
+						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img height="25" src="../img/pdfEN.png" /></a>						
 						<select name='idEquipe' id='idEquipe' onChange="changeEquipe();">
                             {if $idEquipe <= 0}
                                 <Option Value="" selected>Sélectionner...</option>
@@ -43,7 +40,7 @@
 								<Option Value="{$arrayEquipe[i].Id}" {if $idEquipe == $arrayEquipe[i].Id}selected{/if}>{$arrayEquipe[i].Code_comite_dep} - {$arrayEquipe[i].Libelle}</Option>
 							{/section}
 						</select>
-						<button id='actuButton' type="button" onclick="submit()"><img src="../img/actualiser.gif" />Recharger</button>
+                        <img class="cliquable" id="actuButton" title="Recharger" height="25" src="../img/glyphicons-82-refresh.png">
 					</div>
 					<div class='blocTable'>
 						<table class='tableau' id='tableMatchs'>
@@ -111,13 +108,11 @@
                                              - {$arrayJoueur[i].Sexe}</td>
 										<td {if $arrayJoueur[i].Pagaie_ECA == '' or $arrayJoueur[i].Pagaie_ECA == 'PAGB' or $arrayJoueur[i].Pagaie_ECA == 'PAGJ'} class='highlight2'{/if}>
 											<img width="16" src="../img/EC-{$arrayJoueur[i].Pagaie_ECA}.gif" alt="Pagaie Eau Calme" title="Pagaie Eau Calme" />
-											<!--<img hspace="1" width="16" height="16" src="../img/EV-{$arrayJoueur[i].Pagaie_EVI}.gif" alt="Pagaie Eau Vive" title="Pagaie Eau Vive" border="0">
-											<img hspace="1" width="16" height="16" src="../img/ME-{$arrayJoueur[i].Pagaie_MER}.gif" alt="Pagaie Mer" title="Pagaie Mer" border="0">-->
 										</td>
 										<td><!--<span title='Loisir'>{$arrayJoueur[i].CertifAPS}</span>/-->{if $arrayJoueur[i].CertifCK != 'OUI'}<span class='highlight2' title='Compétition'>NON</span>{else}<span title='Compétition'>OUI</span>{/if}</td>
 										<td>{$arrayJoueur[i].Arbitre}</td>
 										{if $profile <= 7 && $Verrou != 'O' && $AuthModif == 'O'}
-											<td><a href="#" onclick="RemoveCheckbox('formEquipeJoueur', '{$arrayJoueur[i].Matric}');return false;"><img width="16" src="../img/supprimer.gif" alt="Supprimer" title="Supprimer" /></a></td>
+											<td><a href="#" onclick="RemoveCheckbox('formEquipeJoueur', '{$arrayJoueur[i].Matric}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" /></a></td>
 										{else}
 											<td>&nbsp;</td>
 										{/if}
@@ -136,13 +131,13 @@
 								<br>
 								<br>
 								<br>
-								<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img width="20" src="../img/pdf.gif" />Feuille de présence PDF</a>						
+								<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img height="25" src="../img/pdf.png" />Feuille de présence PDF</a>						
 							{if $typeCompet == 'CH' or $typeCompet == 'CF'}
 								<br>
 								<b>Les feuilles de présence doivent impérativement être saisies et mises à jour au plus tard 
 								<br>7 jours avant chaque journée de Championnat de France et de Coupe de France.</b>
 							{else}
-								<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img width="20" src="../img/pdfEN.gif" />Feuille de présence PDF - EN</a>						
+								<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img height="25" src="../img/pdfEN.png" />Feuille de présence PDF - EN</a>						
 							{/if}
 						</div>
 					</div>
@@ -160,8 +155,7 @@
 							<option value='A'>A - Arbitre (non joueur)</option>
 							<option value='X'>X - Inactif (non joueur)</option>
 						</select>
-						<!--<img id='validButton' width="16" height="16" src="../img/valider.gif" alt="Valider" title="Valider" border="0">-->
-						<img id='annulButton' width="16" src="../img/annuler.gif" alt="Annuler" title="Annuler" />
+						<img id='annulButton' height="20" src="../img/annuler.gif" alt="Annuler" title="Annuler" />
 						<input type=hidden id='variables' value='' />
 					</div>
 

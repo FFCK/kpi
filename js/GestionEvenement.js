@@ -72,7 +72,7 @@ function paramEvt(idEvt)
 }
 	
 $(document).ready(function() {
-
+    
 	// Maskedinput
 	//$.mask.definitions['h'] = "[A-O]";
 	$('.dpt').mask("?***");
