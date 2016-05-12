@@ -1,31 +1,28 @@
 function validJoueur()
 {
-		var nomJoueur = document.forms['formEquipeJoueur'].elements['nomJoueur'].value;
+		var nomJoueur = $('#nomJoueur').val();
 		if (nomJoueur.length == 0)
 		{
 			alert("Le Nom du Joueur est Vide... Ajout Impossible !");
 			return false;
 		}
-		
-		var prenomJoueur = document.forms['formEquipeJoueur'].elements['prenomJoueur'].value;
+		var prenomJoueur = $('#prenomJoueur').val();
 		if (prenomJoueur.length == 0)
 		{
 			alert("Le prénom du Joueur est Vide... Ajout Impossible !");
 			return false;
 		}
-		
 		return true;
 }
 
 function validJoueur2()
 {
-		var nomJoueur2 = document.forms['formEquipeJoueur'].elements['nomJoueur2'].value;
+		var nomJoueur2 = $('#nomJoueur2').val();
 		if (nomJoueur2.length == 0)
 		{
 			alert("Aucun joueur sélectionné, Ajout Impossible !");
 			return false;
 		}
-				
 		return true;
 }
 
@@ -33,46 +30,33 @@ function Add()
 {
 	if (!validJoueur())
 		return;
-
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'Add';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = '';
-	document.forms['formEquipeJoueur'].submit();
+	$('#Cmd').val('Add');
+	$('#ParamCmd').val('');
+	$('#formEquipeJoueur').submit();
 }
 
 function Add2()
 {
 	if (!validJoueur2())
 		return;
-
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'Add2';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = '';
-	document.forms['formEquipeJoueur'].submit();
+	$('#Cmd').val('Add2');
+	$('#ParamCmd').val('');
+	$('#formEquipeJoueur').submit();
 }
 
 function AddCoureur(matric, categ)
 {
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'AddCoureur';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = matric +'|'+categ;
-	document.forms['formEquipeJoueur'].submit();
+	$('#Cmd').val('AddCoureur');
+	$('#ParamCmd').val(matric + '|' + categ);
+	$('#formEquipeJoueur').submit();
 }
 
 function Find()
 {
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'Find';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = '';
-	document.forms['formEquipeJoueur'].submit();
+	$('#Cmd').val('Find');
+	$('#ParamCmd').val('');
+	$('#formEquipeJoueur').submit();
 }
-/*
-function DoNumero(matric, numero)	// Prototype remplacé par Jquery
-{
-	var obj = document.getElementById("numero"+matric)
-	
-	var posx = findPosX(obj);
-	var posy = findPosY(obj) + 150;
-
-	window.open('GestionEquipeJoueurNumero.php?matric='+matric+'&numero='+numero, 'Numéro', 'left='+posx+', top='+posy+', width=250,height=100,menubar=no,scrollbars=yes,resizable=yes');
-}
-*/
 
 $(document).ready(function() { //Jquery + NoConflict='J'
 
@@ -80,7 +64,7 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 	$(".champsHeure").mask("99:99");
 
 	// Direct Input (numero joueur)
-	//Ajout title
+	// Ajout title
 	$('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante');
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
 	$('#tableMatchs').bind('keydown',function(e){
@@ -218,7 +202,8 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	
 	$('#irregularite').hide();
-
+    $('#addEquipeJoueurImpossible').hide();
+    
 	$("#choixJoueur").autocomplete('Autocompl_joueur.php', {
 		width: 550,
 		max: 50,
@@ -238,32 +223,37 @@ $(document).ready(function() { //Jquery + NoConflict='J'
             $("#categJoueur3").text('Cat: ' + catJoueurs2);
             surclassement = data[13];
             if(surclassement != ''){
-                $("#surclassement3").html(' <b>Surcl: ' + surclassement + '</b>');
+                $(".surclassement3").html('<b>Surcl: ' + surclassement + '</b>');
+            }else if(catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'){
+                $(".surclassement3").html('Pas de surclassement');    
             }
+            $("#origineJoueur2").text(data[8]);
+            $("#pagaieJoueur2").text(data[9]);
+            $("#CKJoueur2").text(data[10]);
+            $("#APSJoueur2").text(data[11]);
+            $("#catJoueur2").text(catJoueurs2);
 			if(typeCompet == 'CH' || typeCompet == 'CF' || typeCompet == 'MC'){
-				$("#origineJoueur2").text(data[8]);
-				$("#pagaieJoueur2").text(data[9]);
-				$("#CKJoueur2").text(data[10]);
-				$("#APSJoueur2").text(data[11]);
-                $("#catJoueur2").text(catJoueurs2);
+                var surcl_necess = $('#surcl_necess').val();
 				var motif = '';
 				if(data[8] < saisonCompet){
 					motif = '(Saison licence)';
 				}else if(data[10] != 'OUI'){
 					motif = '(Certificat CK)';
-				//}else if(data[11] != 'OUI'){
-				//	motif = '(Certificat APS)';
 				}else if(data[9] == '' || data[9] == 'PAGB' || data[9] == 'PAGJ'){
 					motif = '(Pagaie couleur)';
-				}
+				}else if(surclassement == '' && surcl_necess == 1 && catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'){
+                    motif = '(Surclassement obligatoire)';
+                }
 				if (motif != ''){
 					$('#motif').text(motif);
 					$('#irregularite').show();
 					$('#addEquipeJoueur2').hide();
+					$('#addEquipeJoueurImpossible').show();
 				}else{
 					$('#motif').text(motif);
 					$('#irregularite').hide();
 					$('#addEquipeJoueur2').show();
+					$('#addEquipeJoueurImpossible').hide();
 				}
 				//Autoriser pagaie différente pour arbitres et entraineurs... ?
 				

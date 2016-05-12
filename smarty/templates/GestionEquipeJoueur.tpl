@@ -1,21 +1,19 @@
     &nbsp;(<a href="GestionEquipe.php">Retour</a>)
-
-    <!--<iframe name="SelectionCapitaineJoueur" id="SelectionCapitaineJoueur" SRC="SelectionCapitaineJoueur.php" width="350" height="160" FRAMEBORDER="yes"></iframe>-->
-	
 		<div class="main">
 				
 			<form method="POST" action="GestionEquipeJoueur.php" name="formEquipeJoueur" id="formEquipeJoueur" enctype="multipart/form-data">
-				<input type='hidden' name='Cmd' Value='' />
-				<input type='hidden' name='ParamCmd' Value='' />
-				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Competitions_Equipes_Joueurs' />
-				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Matric = ' />
-				<input type='hidden' name='AjaxAnd' id='AjaxAnd' Value='And Id_equipe = ' />
-				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
-				<input type='hidden' name='idEquipe' Value='{$idEquipe}' />
-				<input type='hidden' name='typeCompet' id='typeCompet' Value='{$typeCompet}' />
-				<input type='hidden' name='saisonCompet' id='saisonCompet' Value='{$Saison}' />
+				<input type='hidden' name='Cmd' id='Cmd' value='' />
+				<input type='hidden' name='ParamCmd' id='ParamCmd' value='' />
+				<input type='hidden' name='AjaxTableName' id='AjaxTableName' value='gickp_Competitions_Equipes_Joueurs' />
+				<input type='hidden' name='AjaxWhere' id='AjaxWhere' value='Where Matric = ' />
+				<input type='hidden' name='AjaxAnd' id='AjaxAnd' value='And Id_equipe = ' />
+				<input type='hidden' name='AjaxUser' id='AjaxUser' value='{$user}'/>
+				<input type='hidden' name='idEquipe' id='idEquipe' value='{$idEquipe}' />
+				<input type='hidden' name='typeCompet' id='typeCompet' value='{$typeCompet}' />
+				<input type='hidden' name='saisonCompet' id='saisonCompet' value='{$Saison}' />
+				<input type='hidden' name='surcl_necess' id='surcl_necess' value='{$surcl_necess}' />
 
-				<div class='blocLeft'>
+                <div class='blocLeft'>
 					<div class='titrePage' tabindex='1'>Feuille de présence {$infoEquipe2}</div>
 					{if $typeCompet == 'CH'}
 						<div class='titrePage'><i>Joueurs présents pour la prochaine journée de Championnat de France</i></div>
@@ -30,8 +28,8 @@
 							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" title="Sélectionner aucun" /></a>
 							<a href="#" onclick="RemoveCheckboxes('formEquipeJoueur', 'checkEquipeJoueur')"><img height="25" src="../img/glyphicons-17-bin.png" alt="Supprimer la sélection" title="Supprimer la sélection" /></a>
 						{/if}
-						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img height="25" src="../img/pdf.png" /></a>						
-						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img height="25" src="../img/pdfEN.png" /></a>						
+						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" title="Feuille de présence PDF"><img height="25" src="../img/pdf.png" /></a>						
+						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" title="Feuille de présence PDF - EN"><img height="25" src="../img/pdfEN.png" /></a>						
 						<select name='idEquipe' id='idEquipe' onChange="changeEquipe();">
                             {if $idEquipe <= 0}
                                 <Option Value="" selected>Sélectionner...</option>
@@ -131,13 +129,13 @@
 								<br>
 								<br>
 								<br>
-								<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF" title="Feuille de présence PDF"><img height="25" src="../img/pdf.png" />Feuille de présence PDF</a>						
+								<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" title="Feuille de présence PDF"><img height="25" src="../img/pdf.png" />Feuille de présence PDF</a>						
 							{if $typeCompet == 'CH' or $typeCompet == 'CF'}
 								<br>
 								<b>Les feuilles de présence doivent impérativement être saisies et mises à jour au plus tard 
 								<br>7 jours avant chaque journée de Championnat de France et de Coupe de France.</b>
 							{else}
-								<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" alt="Feuille de présence PDF - EN" title="Feuille de présence PDF - EN"><img height="25" src="../img/pdfEN.png" />Feuille de présence PDF - EN</a>						
+								<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" title="Feuille de présence PDF - EN"><img height="25" src="../img/pdfEN.png" />Feuille de présence PDF - EN</a>						
 							{/if}
 						</div>
 					</div>
@@ -208,7 +206,7 @@
 							</tr>
                             <tr>
                                 <td colspan="2">
-                                    <span id="categJoueur3"></span><span id="surclassement3"></span>
+                                    <span id="categJoueur3"></span> <span class="surclassement3"></span>
 								</td>
                             </tr>
 							<tr>
@@ -217,7 +215,7 @@
 							<tr>
 								<td>
 									<label for="capitaineJoueur2">Capit./Entr./Arbitre:</label>
-									<select name="capitaineJoueur2">
+									<select name="capitaineJoueur2" id='capitaineJoueur2'>
 										<Option Value="-" SELECTED>Joueur</Option>
 										<Option Value="C">Capitaine</Option>
 										<Option Value="E">Entraineur (non joueur)</Option>
@@ -238,31 +236,31 @@
 									<td>
 										Licence<br />
 										Certif CK (Compet.)<br />
-										Certif APS (Loisir)<br />
+										<!--Certif APS (Loisir)<br />-->
 										Pagaie ECA<br />
 										Cat.
 									</td>
 									<td>
 										<span id="origineJoueur2"></span><br />
 										<span id="CKJoueur2"></span><br />
-										<span id="APSJoueur2"></span><br />
+										<!--<span id="APSJoueur2"></span><br />-->
 										<span id="pagaieJoueur2"></span><br />
-										<span id="catJoueur2"></span><br />
+										<span id="catJoueur2"></span>
+                                        
 									</td>
 								</tr>
+                                <tr>
+                                    <td colspan="2"><span class="surclassement3"></span></td>
+                                </tr>
 							{/if}
 							<tr>
 								<td colspan=2 align="center">
 									<span id="irregularite" class='highlight2'>Ce joueur n'est pas en règle<br />pour une compétition nationale</span>
 									<br />
 									<span id="motif" class='highlight2'></span>
-									{if $profile <= 3}
-										<br />
-										<input type="button" onclick="Add2();" name="addEquipeJoueur3" id="addEquipeJoueur3" value="<< Ajouter">
-									{else}
-										<br />
-										<input type="button" onclick="Add2();" name="addEquipeJoueur2" id="addEquipeJoueur2" value="<< Ajouter">
-									{/if}
+                                    <br />
+                                    <input type="button" onclick="Add2();" name="addEquipeJoueur2" id="addEquipeJoueur2" value="<< Ajouter">
+                                    <input type="button" id="addEquipeJoueurImpossible" value="Ajout impossible !">
 								</td>
 							</tr>
 						</table>
@@ -276,7 +274,7 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="button" onclick="Find();" name="findJoueur" value="&reg; Recherche Licenciés...">
+									<input type="button" onclick="Find();" name="findJoueur" id="findJoueur" value="&reg; Recherche Licenciés...">
 								</td>
 							</tr>
 						</table>
@@ -284,8 +282,7 @@
 						<br>
 
 						{if $profile <= 3 && $Verrou != 'O' && $AuthModif == 'O' && $typeCompet != 'CH' && $typeCompet != 'CF'}
-						<table width=100% alt="Si un licencié est introuvable dans les formulaires de recherche ci-dessus, pensez à mettre à jour la base des licenciés dans l'onglet Import"
-							title="Si un licencié est introuvable dans les formulaires de recherche ci-dessus, pensez à mettre à jour la base des licenciés dans l'onglet Import">
+						<table width=100% title="Si un licencié est introuvable dans les formulaires de recherche ci-dessus, pensez à mettre à jour la base des licenciés dans l'onglet Import">
 							<tr>
 								<th class='titreForm' colspan=2>
 									<label>Créer & ajouter un licencié</label>
@@ -323,7 +320,7 @@
 								</td>
 								<td>
 									<label for="sexeJoueur">Sexe :</label>
-									<select name="sexeJoueur" onChange="">
+									<select name="sexeJoueur" id="sexeJoueur" onChange="">
 										<Option Value="M" SELECTED>Masculin</Option>
 										<Option Value="F">Féminin</Option>
 									</select>
@@ -335,7 +332,7 @@
 							<tr>
 								<td>
 									<label for="capitaineJoueur">Capit./Entr./Arbitre:</label>
-									<select name="capitaineJoueur">
+									<select name="capitaineJoueur" id="capitaineJoueur">
 										<Option Value="-" SELECTED>Joueur</Option>
 										<Option Value="C">Capitaine</Option>
 										<Option Value="E">Entraineur (non joueur)</Option>
@@ -351,7 +348,7 @@
 							<tr>
 								<td colspan=2>
 									<label for="arbitreJoueur">Niveau d'arbitrage :</label>
-									<select name="arbitreJoueur">
+									<select name="arbitreJoueur" id="arbitreJoueur">
 										<Option Value="" SELECTED>--- Aucun ---</Option>
 										<Option Value="REG">Régional</Option>
 										<Option Value="IR">Inter-Régional</Option>
@@ -363,7 +360,7 @@
 							<tr>
 								<td colspan=2>
 									<br>
-									<input type="button" onclick="Add();" name="addEquipeJoueur" value="<< Ajouter">
+									<input type="button" onclick="Add();" name="addEquipeJoueur" id="addEquipeJoueur" value="<< Ajouter">
 								</td>
 							</tr>
 						</table>

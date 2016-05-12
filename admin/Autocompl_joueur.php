@@ -106,9 +106,22 @@ include_once('../commun/MyTools.php');
 		$sexe = $row['Sexe'];
 		$origine = $row['Origine'];
 		$pagaie_ECA = $row['Pagaie_ECA'];
+		$pagaie_EVI = $row['Pagaie_EVI'];
+		$pagaie_MER = $row['Pagaie_MER'];
+        $pagaies = ['', 'PAGB', 'PAGJ'];
+        if(in_array($pagaie_ECA, $pagaies)) { //si pas de pagaie verte ECA (ou plus)
+            if(in_array($pagaie_EVI, $pagaies)) { // si pas de pagaie verte EVI (ou plus)
+                if(!in_array($pagaie_MER, $pagaies)) { // si une pagaie verte MER (ou plus)
+                    $pagaie_ECA = 'PAGV'; // sinon ECA est au moins verte
+                }
+            } else {
+                $pagaie_ECA = 'PAGV'; // sinon ECA est au moins verte
+            }
+        }
+        
 		$certificat_CK = $row['Etat_certificat_CK'];
 		$certificat_APS = $row['Etat_certificat_APS'];
         $date_surclassement = utyDateUsToFr($row['date_surclassement']);
-		echo "$matric - $nom $prenom ($club - $libelle)|$matric|$nom|$prenom|$naissance|$sexe|$nom2|$prenom2|$origine|$pagaie_ECA|$certificat_CK|$certificat_APS|$libelle|$date_surclassement\n";
+        $return = "$matric - $nom $prenom ($club - $libelle)|$matric|$nom|$prenom|$naissance|$sexe|$nom2|$prenom2|$origine|$pagaie_ECA|$certificat_CK|$certificat_APS|$libelle|$date_surclassement\n";
+        echo $return;
 	}
-?>

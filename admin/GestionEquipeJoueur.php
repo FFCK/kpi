@@ -106,11 +106,16 @@ class GestionEquipeJoueur extends MyPageSecure
 					$typeCompet = 'CF';
 				else
 					$typeCompet = '';
+                $surcl_necess = 0;
+                if(in_array(substr($row['Code_compet'],0,3), ['N1F', 'N1H', 'N2H', 'N3H', 'N4H', 'NQH', 'CFF', 'CFH'])){
+                    $surcl_necess = 1;
+                }
 				$this->m_tpl->assign('typeCompet', $typeCompet);	
 				$this->m_tpl->assign('headerSubTitle', $infoEquipe);	
 				$this->m_tpl->assign('infoEquipe2', $infoEquipe2);	
 				$this->m_tpl->assign('Verrou', $row['Verrou']);
 				$this->m_tpl->assign('Statut', $row['Statut']);
+				$this->m_tpl->assign('surcl_necess', $surcl_necess);
 			}
 			
 			// Intégrer les coureurs de la recherche Licence ...
