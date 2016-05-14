@@ -100,14 +100,16 @@ class GestionEquipeJoueur extends MyPageSecure
 							$row['Verrou'] = '';
 					}
 				}
-				if(substr($row['Code_compet'],0,1) == 'N')
+				if(substr($row['Code_compet'],0,1) == 'N' || $row['Code_compet'] == 'MCP')
 					$typeCompet = 'CH';
 				elseif(substr($row['Code_compet'],0,2) == 'CF')
 					$typeCompet = 'CF';
 				else
 					$typeCompet = '';
                 $surcl_necess = 0;
-                if(in_array(substr($row['Code_compet'],0,3), ['N1F', 'N1H', 'N2H', 'N3H', 'N4H', 'NQH', 'CFF', 'CFH'])){
+                $array_surcl_neccessaire = array('N1F', 'N1H', 'N2H', 'N3H', 'N4H', 'NQH', 'CFF', 'CFH', 'MCP');
+                $codeCompetReduit = substr($row['Code_compet'],0,3);
+                if(in_array($codeCompetReduit, $array_surcl_neccessaire)){
                     $surcl_necess = 1;
                 }
 				$this->m_tpl->assign('typeCompet', $typeCompet);	

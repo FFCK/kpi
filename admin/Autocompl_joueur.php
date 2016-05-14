@@ -108,7 +108,7 @@ include_once('../commun/MyTools.php');
 		$pagaie_ECA = $row['Pagaie_ECA'];
 		$pagaie_EVI = $row['Pagaie_EVI'];
 		$pagaie_MER = $row['Pagaie_MER'];
-        $pagaies = ['', 'PAGB', 'PAGJ'];
+        $pagaies = array('', 'PAGB', 'PAGJ');
         if(in_array($pagaie_ECA, $pagaies)) { //si pas de pagaie verte ECA (ou plus)
             if(in_array($pagaie_EVI, $pagaies)) { // si pas de pagaie verte EVI (ou plus)
                 if(!in_array($pagaie_MER, $pagaies)) { // si une pagaie verte MER (ou plus)
