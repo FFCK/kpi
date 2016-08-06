@@ -19,7 +19,7 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 		$('#iframeRechercheLicenceIndi2').toggle();
 	});
 
-	$("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	$("#choixJoueur").autocomplete('Autocompl_joueur3.php', {
 		width: 550,
 		max: 50,
 		mustMatch: false,

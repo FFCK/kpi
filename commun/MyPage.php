@@ -72,7 +72,7 @@ class MyPage
 				array_push($arrayMenu, array('name' => 'Equipes', 'href' => 'GestionEquipe.php'));
 			if (isset($profile) && $profile<=9 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'GestionStructure.php'));
-			if (isset($profile) && $profile<=6)
+			if (isset($profile) && $profile<=7)
 				array_push($arrayMenu, array('name' => 'Athlètes', 'href' => 'GestionAthlete.php'));
 			if (isset($profile) && $profile<=9)
 				array_push($arrayMenu, array('name' => 'Journees_phases', 'href' => 'GestionCalendrier.php'));
