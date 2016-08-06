@@ -12,10 +12,12 @@
 								<label>Recherche (nom, prénom ou licence)</label>
 								<input type="text" name="choixJoueur" id="choixJoueur" size="30" />
 								<input type="submit" name="maj" id="maj" value="Mise à jour" />
-								&nbsp;&nbsp;&nbsp;&nbsp;
-								<label for="comboarbitre1">Recherche avancée</label>
-								<a href="#"  id="rechercheAthlete"><img height="18" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
-								<br />
+                                {if $profile <= 6}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <label>Recherche avancée</label>
+                                    <a href="#" id="rechercheAthlete"><img height="18" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
+								{/if}
+                                <br />
 								<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete}" />
 								
 				</div>
