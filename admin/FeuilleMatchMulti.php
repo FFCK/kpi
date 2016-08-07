@@ -4,7 +4,7 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
+//define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 require_once('../qrcode/qrcode.class.php');
@@ -112,10 +112,11 @@ class FeuilleMatch extends MyPage
 				$paysB = '';
 			
 			// Langue
+            $getlang = utyGetGet('lang', 'fr');
 			$langue = parse_ini_file("../commun/MyLang.ini", true);
-			if($_GET['lang'] == 'en')
+			if($getlang == 'en')
 				$row6['En_actif'] = 'O';
-			elseif($_GET['lang'] == 'fr')
+			elseif($getlang == 'fr')
 				$row6['En_actif'] = '';
 				
 			if($row6['En_actif'] == 'O')
@@ -168,12 +169,12 @@ class FeuilleMatch extends MyPage
 				else
 					$EquipesAffectAuto = utyEquipesAffectAutoFR($intitule);
 			}
-			if (($equipea == '') && $EquipesAffectAuto[0] != '')
+			if (($equipea == '') && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '')
 			{
 				$equipea = $EquipesAffectAuto[0];
 				$equipeaFormat = 'Auto';
 			}
-			if ($equipeb == '' && $EquipesAffectAuto[1] != '')
+			if ($equipeb == '' && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '')
 			{
 				$equipeb = $EquipesAffectAuto[1];
 				$equipebFormat = 'Auto';
@@ -181,11 +182,11 @@ class FeuilleMatch extends MyPage
 			$arbsup = array(" (Pool Arbitres 1)", " REG", " NAT", " INT", "-A", "-B", "-C");
 			if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
 				$row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
-			elseif ($EquipesAffectAuto[2] != '')
+			elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '')
 				$row['Arbitre_principal'] = $EquipesAffectAuto[2];
 			if($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1')
 				$row['Arbitre_secondaire'] = str_replace($arbsup, '', $row['Arbitre_secondaire']);
-			elseif ($EquipesAffectAuto[3] != '')
+			elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '')
 				$row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
 			//
 
@@ -435,6 +436,7 @@ class FeuilleMatch extends MyPage
 
 			$scoreMitempsA = '';
 			$scoreMitempsB = '';
+            $nblignes = 0;
 
 			for ($i=1;$i<=$num_results5;$i++)
 			{
@@ -771,25 +773,25 @@ class FeuilleMatch extends MyPage
 //			for($i=0;$i<23;$i++)	// @COSANDCO_WAMPSER
 			{
 				$pdf->SetFillColor(170,255,170);
-				$pdf->Cell(5,4,$detail[$i]['d2'],1,0,'C',1);
+				$pdf->Cell(5,4,isset($detail[$i]['d2']) ? $detail[$i]['d2'] : '',1,0,'C',1);
 				$pdf->SetFillColor(255,255,170);
-				$pdf->Cell(5,4,$detail[$i]['d3'],1,0,'C',1);
+				$pdf->Cell(5,4,isset($detail[$i]['d3']) ? $detail[$i]['d3'] : '',1,0,'C',1);
 				$pdf->SetFillColor(255,170,170);
-				$pdf->Cell(5,4,$detail[$i]['d4'],1,0,'C',1);
-				$pdf->Cell(36,4,$detail[$i]['d1'],1,0,'L');
-				$pdf->Cell(6,4,$detail[$i]['d5'],1,0,'C');
+				$pdf->Cell(5,4,isset($detail[$i]['d4']) ? $detail[$i]['d4'] : '',1,0,'C',1);
+				$pdf->Cell(36,4,isset($detail[$i]['d1']) ? $detail[$i]['d1'] : '',1,0,'L');
+				$pdf->Cell(6,4,isset($detail[$i]['d5']) ? $detail[$i]['d5'] : '',1,0,'C');
 				$pdf->Cell(1,4,"",0,0,'C');
-				$pdf->Cell(19,4,$detail[$i]['d6'],1,0,'C');
+				$pdf->Cell(19,4,isset($detail[$i]['d6']) ? $detail[$i]['d6'] : '',1,0,'C');
 				$pdf->Cell(1,4,"",0,0,'C');
-				$pdf->Cell(6,4,$detail[$i]['d7'],1,0,'C');
-				$pdf->Cell(36,4,$detail[$i]['d11'],1,0,'L');
+				$pdf->Cell(6,4,isset($detail[$i]['d7']) ? $detail[$i]['d7'] : '',1,0,'C');
+				$pdf->Cell(36,4,isset($detail[$i]['d11']) ? $detail[$i]['d11'] : '',1,0,'L');
 				$pdf->SetFillColor(170,255,170);
-				$pdf->Cell(5,4,$detail[$i]['d8'],1,0,'C',1);
+				$pdf->Cell(5,4,isset($detail[$i]['d8']) ? $detail[$i]['d8'] : '',1,0,'C',1);
 				$pdf->SetFillColor(255,255,170);
-				$pdf->Cell(5,4,$detail[$i]['d9'],1,0,'C',1);
+				$pdf->Cell(5,4,isset($detail[$i]['d9']) ? $detail[$i]['d9'] : '',1,0,'C',1);
 				$pdf->SetFillColor(255,170,170);
-				$pdf->Cell(5,4,$detail[$i]['d10'],1,1,'C',1);
-				}
+				$pdf->Cell(5,4,isset($detail[$i]['d10']) ? $detail[$i]['d10'] : '',1,1,'C',1);
+            }
 			$pdf->Ln(1);
 
 			$pdf->SetFont('Arial','I',10);
@@ -963,26 +965,26 @@ class FeuilleMatch extends MyPage
 					for($i=0;$i<($nblignes-26);$i++)
 		//			for($i=0;$i<23;$i++)	// @COSANDCO_WAMPSER
 					{
-						$pdf->SetFillColor(170,255,170);
-						$pdf->Cell(5,4,$detail2[$i]['d2'],1,0,'C',1);
-						$pdf->SetFillColor(255,255,170);
-						$pdf->Cell(5,4,$detail2[$i]['d3'],1,0,'C',1);
-						$pdf->SetFillColor(255,170,170);
-						$pdf->Cell(5,4,$detail2[$i]['d4'],1,0,'C',1);
-						$pdf->Cell(36,4,$detail2[$i]['d1'],1,0,'L');
-						$pdf->Cell(6,4,$detail2[$i]['d5'],1,0,'C');
-						$pdf->Cell(1,4,"",0,0,'C');
-						$pdf->Cell(19,4,$detail2[$i]['d6'],1,0,'C');
-						$pdf->Cell(1,4,"",0,0,'C');
-						$pdf->Cell(6,4,$detail2[$i]['d7'],1,0,'C');
-						$pdf->Cell(36,4,$detail2[$i]['d11'],1,0,'L');
-						$pdf->SetFillColor(170,255,170);
-						$pdf->Cell(5,4,$detail2[$i]['d8'],1,0,'C',1);
-						$pdf->SetFillColor(255,255,170);
-						$pdf->Cell(5,4,$detail2[$i]['d9'],1,0,'C',1);
-						$pdf->SetFillColor(255,170,170);
-						$pdf->Cell(5,4,$detail2[$i]['d10'],1,1,'C',1);
-						}
+                        $pdf->SetFillColor(170,255,170);
+                        $pdf->Cell(5,4,isset($detail2[$i]['d2']) ? $detail2[$i]['d2'] : '',1,0,'C',1);
+                        $pdf->SetFillColor(255,255,170);
+                        $pdf->Cell(5,4,isset($detail2[$i]['d3']) ? $detail2[$i]['d3'] : '',1,0,'C',1);
+                        $pdf->SetFillColor(255,170,170);
+                        $pdf->Cell(5,4,isset($detail2[$i]['d4']) ? $detail2[$i]['d4'] : '',1,0,'C',1);
+                        $pdf->Cell(36,4,isset($detail2[$i]['d1']) ? $detail2[$i]['d1'] : '',1,0,'L');
+                        $pdf->Cell(6,4,isset($detail2[$i]['d5']) ? $detail2[$i]['d5'] : '',1,0,'C');
+                        $pdf->Cell(1,4,"",0,0,'C');
+                        $pdf->Cell(19,4,isset($detail2[$i]['d6']) ? $detail2[$i]['d6'] : '',1,0,'C');
+                        $pdf->Cell(1,4,"",0,0,'C');
+                        $pdf->Cell(6,4,isset($detail2[$i]['d7']) ? $detail2[$i]['d7'] : '',1,0,'C');
+                        $pdf->Cell(36,4,isset($detail2[$i]['d11']) ? $detail2[$i]['d11'] : '',1,0,'L');
+                        $pdf->SetFillColor(170,255,170);
+                        $pdf->Cell(5,4,isset($detail2[$i]['d8']) ? $detail2[$i]['d8'] : '',1,0,'C',1);
+                        $pdf->SetFillColor(255,255,170);
+                        $pdf->Cell(5,4,isset($detail2[$i]['d9']) ? $detail2[$i]['d9'] : '',1,0,'C',1);
+                        $pdf->SetFillColor(255,170,170);
+                        $pdf->Cell(5,4,isset($detail2[$i]['d10']) ? $detail2[$i]['d10'] : '',1,1,'C',1);
+                    }
 					$pdf->Ln(1);
 				}
 
