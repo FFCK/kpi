@@ -83,6 +83,11 @@ include_once('../commun/MyTools.php');
         $q = utyGetGet('q');
         $q = preg_replace('`^[0]*`','',$q);
 
+        if (strlen($q) < 2){
+            echo 'Trop court...';
+            return;
+        }
+        
         $sql  = "Select lc.*, c.Libelle, s.Date date_surclassement "
                 . "From gickp_Liste_Coureur lc "
                 . "LEFT OUTER JOIN gickp_Surclassements s ON (lc.Matric = s.Matric AND s.Saison = ".  utyGetSaison() ."), "

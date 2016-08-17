@@ -4,7 +4,7 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
+//define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 // Pieds de page
@@ -244,7 +244,7 @@ class FeuillePresence extends MyPage
 				
 			for ($j=0;$j<$nbJoueurs;$j++)
 			{
-				if($arrayJoueur{$idEquipe}[$j]['Matric'] != '')
+				if(isset($arrayJoueur{$idEquipe}[$j]['Matric']) && $arrayJoueur{$idEquipe}[$j]['Matric'] != '')
 				{
 					$pdf->Cell(25,7,'','',0,'C');
 					$pdf->Cell(16,7,$arrayJoueur{$idEquipe}[$j]['Numero'],'B',0,'C');
