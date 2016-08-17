@@ -51,8 +51,9 @@
                         {/if}
                         <img class="img2" width="700" id='logo' src='{$recordCompetition[0].LogoLink}' alt="logo" />
                         {if $recordCompetition[0].Web != ''}
-                                <br />
-                                {$recordCompetition[0].Web}
+                                <div>
+                                    <img class="img3" width="50" id='logo' src='img/www.png' alt="link" />
+                                </div>
                             </a>
                             <br />
                         {/if}
@@ -67,6 +68,9 @@
                             {$arrayCompetition[i].libelleCompet}
                         {else}
                             {$arrayCompetition[i].Soustitre}
+                        {/if}
+                        {if $arrayCompetition[i].Soustitre != ''}
+                            <br>{$arrayCompetition[i].Soustitre2}
                         {/if}
                         <div class='pull-right'>
                             <a class="btn btn-default" href='kpclassement.php?Compet={$idCompet}'>{#Details#}...</a>
