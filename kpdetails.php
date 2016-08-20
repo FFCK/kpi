@@ -49,9 +49,10 @@ class Details extends MyPage
                     . "AND c.Publication = 'O' "
                     . "ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $arrayListJournees = array();
+            $journee = array();
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
-                if($row['Id_journee'] == $idSelJournee){
+                if($row['Id_journee'] == $idSelJournee || $idSelJournee == '*'){
                     $row['Selected'] = true;
                     $journee[] = $row;
                 }else{

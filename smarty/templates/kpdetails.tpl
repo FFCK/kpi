@@ -48,13 +48,13 @@
             <div class="form-horizontal">
                 <h4>Accès direct</h4>
                 <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpmatchs.php?J={$journee[0].Id_journee}" role="button">Matchs de la journée</a>
+                    <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}J={$journee[0].Id_journee}" role="button">Matchs de la journée</a>
                 </div>
                 <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpmatchs.php?Compet={$journee[0].Code_competition}&J=*" role="button">Tous les matchs</a>
+                    <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J=*" role="button">Tous les matchs</a>
                 </div>
                 <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpclassement.php?Compet={$journee[0].Code_competition}" role="button">Classement</a>
+                    <a class="btn bg-blue" href="kpclassement.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" role="button">Classement</a>
                 </div>
                 <br>
                 <br>
@@ -62,7 +62,8 @@
                 <h4>Autres journées de la compétition</h4>
                 {section name=i loop=$arrayListJournees}
                     <p>
-                        <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}bg-blue{else}btn-info{/if}" href="kpdetails.php?Compet={$journee[0].Code_competition}&Group={$codeCompetGroup}&J={$arrayListJournees[i].Id_journee}" role="button">
+                        <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}bg-blue{else}btn-info{/if}" 
+                           href="kpdetails.php?Saison={$arrayListJournees[i].Code_saison}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}" role="button">
                             {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} à {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
                         </a>
                     </p>
@@ -70,7 +71,7 @@
                     <p class="text-info">Aucune autre journée</p>
                 {/section}
             </div>
-    </article>
+        </article>
     {else}
         <article class="col-md-6 padTopBottom">
             <div class="form-horizontal">
@@ -111,13 +112,13 @@
             <div class="form-horizontal">
                 <h4>Accès direct</h4>
                 <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpmatchs.php?Compet={$journee[0].Code_competition}&J=*" role="button">Tous les matchs</a>
+                    <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J=*" role="button">Tous les matchs</a>
                 </div>
                 <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpclassement.php?Compet={$journee[0].Code_competition}" role="button">Classement</a>
+                    <a class="btn bg-blue" href="kpclassement.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" role="button">Classement</a>
                 </div>
                 <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpclassements.php?Group={$journee[0].Code_ref}" role="button">Tous les classements</a>
+                    <a class="btn bg-blue" href="kpclassements.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" role="button">Tous les classements</a>
                 </div>
                 <br>
                 <br>
@@ -125,7 +126,8 @@
                 <h4>Autres phases ou catégories de la compétition</h4>
                 {section name=i loop=$arrayListJournees}
                     <p>
-                        <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}bg-blues{else}btn-info{/if}" href="kpdetails.php?Compet={$arrayListJournees[i].Code_competition}" role="button">
+                        <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}bg-blue{else}btn-info{/if}" 
+                           href="kpdetails.php?Saison={$arrayListJournees[i].Code_saison}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*" role="button">
                             {$arrayListJournees[i].Nom}
                         </a>
                     </p>

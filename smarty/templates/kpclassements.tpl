@@ -7,6 +7,7 @@
     </div>
 </div>
 
+
 <div class="container" id="selector">
     <article class="col-md-12 padTopBottom">
 			<form method="POST" action="kpclassements.php#selector" name="formClassement" enctype="multipart/form-data">
@@ -33,7 +34,8 @@
 				<div class='col-md-4 col-sm-12 col-xs-12 text-center'>
 					<div class="fb-like pull-right" data-href="http://www.kayak-polo.info/kpclassements.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                     <br>
-                    <a class="btn btn-default pull-left" href='kphistorique.php?Compet={$idCompet}'>{#Historique#}...</a>
+                    <a class="btn btn-default" href='kphistorique.php?Compet={$idCompet}'>{#Historique#}...</a>
+                    <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassements.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" id="share_btn"><img src="img/share.png" width="16"></a>
 				</div>
             </form>
     </article>
