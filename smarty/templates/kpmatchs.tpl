@@ -63,13 +63,14 @@
                     <a class="pdfLink badge text-center" href="PdfListeMatchs.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
 				</div>
 
-				<div class='col-md-2 col-sm-4 col-xs-8 text-center'>
+				<div class='col-md-2 col-sm-4 col-xs-8 text-right'>
                     <div class="row">
                         <div id="fb-root"></div>
-                        <div class="fb-like pull-right" data-href="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
+                        <div class="fb-like" data-href="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                     </div>
                     <div class="row">
-                        <a class="btn btn-default pull-right" href='kpclassements.php?Compet={$codeCurrentCompet}&Group={$codeCompetGroup}&Saison={$Saison}'>{#Classements#}...</a>
+                        <a class="btn btn-default" href='kpclassements.php?Compet={$codeCurrentCompet}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$idSelJournee}'>{#Classements#}...</a>
+                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Compet={$idSelCompet}&Saison={$Saison}&Journee={$idSelJournee}" id="share_btn"><img src="img/share.png" width="16"></a>
                     </div>
                 </div>
         </form>
