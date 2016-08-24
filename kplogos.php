@@ -18,7 +18,7 @@ class Logos extends MyPage
             $part = explode('-',$file);
             if(isset($part[1])){
                 $part2 = explode('.',$part[1]);
-                if(is_file($dir.'/'.$file) && $part2[1] == 'png'){
+                if(isset($part2[1]) && is_file($dir.'/'.$file) && $part2[1] == 'png'){
                     $arrayLogos[] = $part[0];
                 }
             }

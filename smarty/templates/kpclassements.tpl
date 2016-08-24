@@ -13,13 +13,13 @@
 			<form method="POST" action="kpclassements.php#selector" name="formClassement" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' Value='' />
 				<input type='hidden' name='ParamCmd' Value='' />
-				<div class='col-md-4 col-sm-6 col-xs-12'>
-								<label for="saisonTravail">{#Saison#} :</label>
-								<select name="saisonTravail" onChange="submit()">
-									{section name=i loop=$arraySaison} 
-										<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{if $arraySaison[i].Code eq $sessionSaison}=> {/if}{$arraySaison[i].Code}</Option>
-									{/section}
-								</select>
+				<div class='col-md-2 col-sm-6 col-xs-12'>
+                    <label for="saisonTravail">{#Saison#} :</label>
+                    <select name="saisonTravail" onChange="submit()">
+                        {section name=i loop=$arraySaison} 
+                            <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{if $arraySaison[i].Code eq $sessionSaison}=> {/if}{$arraySaison[i].Code}</Option>
+                        {/section}
+                    </select>
                 </div>
 				<div class='col-md-4 col-sm-6 col-xs-12'>
                     <label for="codeCompetGroup">{#Competition#} :</label>
@@ -31,13 +31,13 @@
                         {/section}
                     </select>
                 </div>
-				<div class='col-md-4 col-sm-12 col-xs-12 text-right'>
+				<div class='col-md-6 col-sm-12 col-xs-12 text-right'>
                     <div class="row">
-                        <div class="fb-like" data-href="http://www.kayak-polo.info/kpclassements.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
+                        <div class="fb-like" data-href="http://www.kayak-polo.info/kpclassements.php?Saison={$sessionSaison}&Group={$codeCompetGroup}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                     </div>
                     <div class="row">
-                        <a class="btn btn-default" href='kphistorique.php?Compet={$idCompet}'>{#Historique#}...</a>
-                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassements.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" id="share_btn"><img src="img/share.png" width="16"></a>
+                        <a class="btn btn-default" href='kphistorique.php?Group={$codeCompetGroup}'>{#Historique#}...</a>
+                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassements.php?Saison={$sessionSaison}&Group={$codeCompetGroup}" id="share_btn"><img src="img/share.png" width="16"></a>
                     </div>
                 </div>
             </form>
@@ -78,9 +78,9 @@
                             <br>{$arrayCompetition[i].Soustitre2}
                         {/if}
                         <div class='pull-right'>
-                            <a class="btn btn-default" href='kpclassement.php?Compet={$idCompet}'>{#Details#}...</a>
+                            <a class="btn btn-default" href='kpclassement.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Deroulement#}...</a>
                             {if $arrayEquipe_publi[$codetemp][0].existMatch == 1}
-                                &nbsp;<a class="btn btn-default" href='kpmatchs.php?Compet={$idCompet}'>{#Matchs#}...</a>
+                                &nbsp;<a class="btn btn-default" href='kpmatchs.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Matchs#}...</a>
                             {/if}
                         </div>
 

@@ -25,6 +25,7 @@ class Classement extends MyPage
 		$this->m_tpl->assign('Saison', $codeSaison);
 	
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
         //Logo
 		if($codeCompet != -1)
@@ -40,6 +41,7 @@ class Classement extends MyPage
 		$arrayEquipe_journee_publi = array();
 		$arrayEquipe_publi = array();
         $arrayJournee = array();
+        $arrayMatchs = array();
 
 		// Par défaut type Championnat et compétition non internationale...
 		$typeClt = $recordCompetition['Code_typeclt'];

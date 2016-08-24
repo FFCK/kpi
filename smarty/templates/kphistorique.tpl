@@ -14,18 +14,23 @@
 				<input type='hidden' name='Cmd' Value='' />
 				<input type='hidden' name='ParamCmd' Value='' />
 				<div class='col-md-8 col-sm-8 col-xs-12 form-group'>
-								<label for="Group">{#Competition#} :</label>
-								<select name="Group" onChange="submit();">
-										<Option Value="">{#Selectionnez#}...</Option>
-									{section name=i loop=$arrayCompetitionGroupe}
-										{assign var='temporaire' value=$arrayCompetitionGroupe[i][1]}
-										<Option Value="{$arrayCompetitionGroupe[i][1]}" {$arrayCompetitionGroupe[i][3]}>{$smarty.config.$temporaire|default:$arrayCompetitionGroupe[i][2]}</Option>
-									{/section}
-								</select>
+                    <label for="Group">{#Competition#} :</label>
+                    <select name="Group" onChange="submit();">
+                            <Option Value="">{#Selectionnez#}...</Option>
+                        {section name=i loop=$arrayCompetitionGroupe}
+                            {assign var='temporaire' value=$arrayCompetitionGroupe[i][1]}
+                            <Option Value="{$arrayCompetitionGroupe[i][1]}" {$arrayCompetitionGroupe[i][3]}>{$smarty.config.$temporaire|default:$arrayCompetitionGroupe[i][2]}</Option>
+                        {/section}
+                    </select>
                 </div>
-				<div class='col-md-4 col-sm-4 col-xs-12 text-center'>
-					<div class="fb-like pull-right" data-href="http://www.kayak-polo.info/kphistorique.php?Group={$codeCompetGroup}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
-				</div>
+				<div class='col-md-4 col-sm-4 col-xs-12 text-right'>
+                    <div class="row">
+                        <div class="fb-like" data-href="http://www.kayak-polo.info/kphistorique.php?Group={$codeCompetGroup}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
+                    </div>
+                    <div class="row">
+                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kphistorique.php?Group={$codeCompetGroup}" id="share_btn"><img src="img/share.png" width="16"></a>
+                    </div>
+                </div>
             </form>
     </article>
 </div>
