@@ -88,6 +88,34 @@ class Details extends MyPage
             }
             $this->m_tpl->assign('journee', $journee);
             $this->m_tpl->assign('arrayListJournees', $arrayListJournees);
+            
+            // Chargement des Equipes ...
+            $arrayEquipe = array();
+            if (strlen($idSelCompet) > 0 && $idSelCompet != '*')
+            { 
+                $sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  ";
+                $sql .= "From gickp_Competitions_Equipes ce, gickp_Club c ";
+                $sql .= "Where ce.Code_compet = '";
+                $sql .= $idSelCompet;
+                $sql .= "' And ce.Code_saison = '";
+                $sql .= $codeSaison;
+                $sql .= "' And ce.Code_club = c.Code ";	 
+                $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+
+                $result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
+                $num_results = mysql_num_rows($result);
+
+                for ($i=0;$i<$num_results;$i++)
+                {
+                    $row = mysql_fetch_array($result);	  
+                    if (strlen($row['Code_comite_dep']) > 3)
+                        $row['Code_comite_dep'] = 'FRA';
+                    if ($row['Tirage'] != 0 or $row['Poule'] != '')
+                        $this->m_tpl->assign('Tirage', 'ok');
+                    array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'Code_comite_dep' => $row['Code_comite_dep'] ));
+                }
+            }	
+            $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
         }
 
 	}

@@ -11,8 +11,15 @@
     {if $type == 'CHPT'}
         <article class="col-md-6 padTopBottom">        
             <div class="form-horizontal">
-                <h2 class="col-sm-12" id="competition">{$journee[0].Libelle_compet}</h2>
-                <h3 class="col-sm-12 text-info" id="journee">{$journee[0].Nom}</h3>
+                {if $journee[0].Titre_actif != 'O' && $journee[0].Soustitre2 != ''}
+                    <h2 class="col-sm-12" id="competition">{$journee[0].Soustitre}</h2>
+                    <h3 class="col-sm-12 text-info" id="journee">{$journee[0].Soustitre2}</h3>
+                {else}
+                    <h2 class="col-sm-12" id="competition">{$journee[0].Libelle}</h2>
+                    <h3 class="col-sm-12 text-info" id="journee">{$journee[0].Soustitre2}</h3>
+                {/if}
+
+                
                 <div class="form-group">
                     <label class="col-sm-4">Date</label>
                     <div class="col-sm-8" id="date_debut">{$journee[0].Date_debut|date_format:'%d/%m/%Y'} - {$journee[0].Date_fin|date_format:'%d/%m/%Y'}</div>
@@ -42,6 +49,19 @@
                     <label class="col-sm-4">{#Chef_arbitres#}</label>
                     <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
                 </div>
+            </div>
+            <div>
+                <hr>
+                <h2 class="col-sm-12">Equipes engagées...</h2>
+                <ul>
+                    {section name=i loop=$arrayEquipes}
+                        <li>{$arrayEquipes[i].Libelle}
+                            
+                        </li>
+                    {sectionelse}
+                        <li>Information non disponible</li>
+                    {/section}
+                </ul>
             </div>
         </article>
         <article class="col-md-6 padTopBottom">        
@@ -75,8 +95,13 @@
     {else}
         <article class="col-md-6 padTopBottom">
             <div class="form-horizontal">
-                <h2 class="col-sm-12" id="competition">{$journee[0].Libelle_compet}</h2>
-                <h3 class="col-sm-12 text-info" id="journee">{$journee[0].Nom}</h3>
+                {if $journee[0].Titre_actif != 'O' && $journee[0].Soustitre2 != ''}
+                    <h2 class="col-sm-12" id="competition">{$journee[0].Soustitre}</h2>
+                    <h3 class="col-sm-12 text-info" id="journee">{$journee[0].Soustitre2}</h3>
+                {else}
+                    <h2 class="col-sm-12" id="competition">{$journee[0].Libelle}</h2>
+                    <h3 class="col-sm-12 text-info" id="journee">{$journee[0].Soustitre2}</h3>
+                {/if}
                 <div class="form-group">
                     <label class="col-sm-4">Date</label>
                     <div class="col-sm-8" id="date_debut">{$journee[0].Date_debut|date_format:'%d/%m/%Y'} - {$journee[0].Date_fin|date_format:'%d/%m/%Y'}</div>
@@ -110,6 +135,19 @@
         </article>
         <article class="col-md-6 padTopBottom">        
             <div class="form-horizontal">
+                <h2 class="col-sm-12">Equipes engagées...</h2>
+                <ul>
+                    {section name=i loop=$arrayEquipe}
+                        <li>{$arrayEquipe[i].Libelle}
+                            
+                        </li>
+                    {sectionelse}
+                        <li>Information non disponible</li>
+                    {/section}
+                </ul>
+                <hr>
+            </div>
+            <div class="form-horizontal">
                 <h4>Accès direct</h4>
                 <div class="col-sm-4 text-center">
                     <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J=*" role="button">Tous les matchs</a>
@@ -127,8 +165,12 @@
                 {section name=i loop=$arrayListJournees}
                     <p>
                         <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}bg-blue{else}btn-info{/if}" 
-                           href="kpdetails.php?Saison={$arrayListJournees[i].Code_saison}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*" role="button">
-                            {$arrayListJournees[i].Nom}
+                            href="kpdetails.php?Saison={$arrayListJournees[i].Code_saison}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*" role="button">
+                            {if $arrayListJournees[i].Titre_actif != 'O' && $arrayListJournees[i].Soustitre2 != ''}
+                                {$arrayListJournees[i].Soustitre} - {$arrayListJournees[i].Soustitre2}
+                            {else}
+                                {$arrayListJournees[i].Libelle} - {$arrayListJournees[i].Soustitre2}
+                            {/if}
                         </a>
                     </p>
                 {sectionelse}
