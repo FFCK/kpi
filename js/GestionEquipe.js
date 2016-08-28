@@ -1,49 +1,51 @@
+jq = jQuery.noConflict();
+
 function changeCompetition()
 {
-	$("#ParamCmd").val('');
-	$("#formEquipe").submit();
+	jq("#ParamCmd").val('');
+	jq("#formEquipe").submit();
 }
 
 function changeComiteReg()
 {
-	$("#ParamCmd").val('changeComiteReg');
-	$("#formEquipe").submit();
+	jq("#ParamCmd").val('changeComiteReg');
+	jq("#formEquipe").submit();
 }
 
 function changeComiteDep()
 {
-	$("#ParamCmd").val('changeComiteDep');
-	$("#formEquipe").submit();
+	jq("#ParamCmd").val('changeComiteDep');
+	jq("#formEquipe").submit();
 }
 
 function changeClub()
 {
-	$("#ParamCmd").val('changeClub');
-	$("#formEquipe").submit();
+	jq("#ParamCmd").val('changeClub');
+	jq("#formEquipe").submit();
 }
 
 function validEquipe()	
 {
-	var histoEquipe = $("#histoEquipe").val();
+	var histoEquipe = jq("#histoEquipe").val();
 	  
 	if ( (histoEquipe.length > 0) && (histoEquipe[0] != '0') )
 		return true; // Une Equipe de l'historique est sélectionnée ...
 
-	var libelleEquipe = $("#libelleEquipe").val();
+	var libelleEquipe = jq("#libelleEquipe").val();
 	if (histoEquipe[0] == '0' && libelleEquipe.length == 0)
 	{
 		alert("Le Nom de l'Equipe est Vide ..., Ajout nouvelle équipe impossible !");
 		return false;
 	}
 
-	var competition = $("#competition").val();
+	var competition = jq("#competition").val();
 	if (competition == '')
 	{
 		alert("Sélectionnez une compétition !");
 		return false;
 	}
 
-	var codeClub = $("#club").val();
+	var codeClub = jq("#club").val();
 	if (histoEquipe[0] == '0' &&  codeClub.length > 0 && codeClub != '*' )
 		return true; // Le Code du Club est bon ...
 	if	(codeClub == '*')
@@ -55,19 +57,19 @@ function validEquipe()
 
 function validEquipe2()	
 {
-	var EquipeNum = $("#EquipeNum").val();
+	var EquipeNum = jq("#EquipeNum").val();
 	  
 	if ( (EquipeNum.length > 0) && (EquipeNum[0] != '0') )
 		return true; // Une Equipe est sélectionnée ...
 
-	var libelleEquipe = $("#EquipeNom").val();
+	var libelleEquipe = jq("#EquipeNom").val();
 	if (libelleEquipe.length == 0)
 	{
 		alert("Recherchez une équipe !");
 		return false;
 	}
 
-	var competition = $("#competition").val();
+	var competition = jq("#competition").val();
 	if (competition == '')
 	{
 		alert("Sélectionnez une compétition !");
@@ -79,34 +81,34 @@ function Add()
 {
 	if (!validEquipe())
 		return;
-	$("#Cmd").val('Add');
-	$("#ParamCmd").val('');
-	$("#formEquipe").submit();
+	jq("#Cmd").val('Add');
+	jq("#ParamCmd").val('');
+	jq("#formEquipe").submit();
 }
 
 function Add2()
 {
 	if (!validEquipe2())
 		return;
-	$("#Cmd").val('Add2');
-	$("#ParamCmd").val('');
-	$("#formEquipe").submit();
+	jq("#Cmd").val('Add2');
+	jq("#ParamCmd").val('');
+	jq("#formEquipe").submit();
 }
 
 function Tirage()
 {
-	$("#Cmd").val('Tirage');
-	$("#ParamCmd").val('');
-	$("#formEquipe").submit();
+	jq("#Cmd").val('Tirage');
+	jq("#ParamCmd").val('');
+	jq("#formEquipe").submit();
 }
 
 function dupliEquipe()
 {
 	if (confirm("Voulez-vous Dupliquer les Equipes ?")) 
 	{
-		$("#Cmd").val('Duplicate');
-		$("#ParamCmd").val('');
-		$("#formEquipe").submit();
+		jq("#Cmd").val('Duplicate');
+		jq("#ParamCmd").val('');
+		jq("#formEquipe").submit();
 	}
 }
 		
@@ -114,9 +116,9 @@ function removeanddupliEquipe()
 {
 	if (confirm("Voulez-vous Supprimer puis Dupliquer les Equipes ?")) 
  	{
-		$("#Cmd").val('RemoveAndDuplicate');
-		$("#ParamCmd").val('');
-		$("#formEquipe").submit();
+		jq("#Cmd").val('RemoveAndDuplicate');
+		jq("#ParamCmd").val('');
+		jq("#formEquipe").submit();
   	}
 }
 		
@@ -140,17 +142,17 @@ function initTitu(champs, valeur, valeur2)
     
 }
 
-$(document).ready(function() {
+jq(document).ready(function() {
 	//Init Titulaires
-	$('#InitTitulaireCompet').click(function(){
+	jq('#InitTitulaireCompet').click(function(){
 		var champs = 'Compet';
-		var valeur = $('#competition').val();
-		var valeur2 = $('#competition option:selected').text();
+		var valeur = jq('#competition').val();
+		var valeur2 = jq('#competition option:selected').text();
 		if(valeur == '*'){
 			alert('Sélectionnez une compétition !');
             return;
 		}
-        if($('#verrouCompet').attr('data-verrou') == 'N') {
+        if(jq('#verrouCompet').attr('data-verrou') == 'N') {
             alert('Verrouillez les feuilles de présence avant ! (cadenas rouge, à côté)');
             return;
         }
@@ -159,7 +161,7 @@ $(document).ready(function() {
             return;
         }
         //ajax
-        $.post("InitTitulaireJQ.php", {
+        jq.post("InitTitulaireJQ.php", {
             champs: champs,
             valeur: valeur,
             valeur3: -1
@@ -169,17 +171,17 @@ $(document).ready(function() {
 	});
 
 	//Init Titulaires
-	$('#verrouCompet').click(function(){
+	jq('#verrouCompet').click(function(){
         if(!confirm('Confirmez-vous le verrouillage des feuilles de présence ?')) {
             return;
         }
         //ajax
-        $.post("VerrouCompetJQ.php", {
-            verrou: $('#verrouCompet').attr('data-verrou'),
-            compet: $('#competition').val(),
+        jq.post("VerrouCompetJQ.php", {
+            verrou: jq('#verrouCompet').attr('data-verrou'),
+            compet: jq('#competition').val(),
         }, function(data) {
             if(data == 'O' || data == 'N'){
-                $('#verrouCompet').attr('src', '../img/verrou2'+data+'.gif')
+                jq('#verrouCompet').attr('src', '../img/verrou2'+data+'.gif')
                                   .attr('data-verrou', data);
             }else{
                 alert(data);
@@ -187,50 +189,50 @@ $(document).ready(function() {
         });
 	});
 
-    $.extend($.expr[':'], {
+    jq.extend(jq.expr[':'], {
 	  'icontains': function(elem, i, match, array) {
 		return (elem.textContent || elem.innerText || '').toLowerCase()
 			.indexOf((match[3] || "").toLowerCase()) >= 0;
 	  }
 	});
 
-	$("#filtreText").keyup(function(){
-		var str = $(this).val();
-		$("#histoEquipe option")
+	jq("#filtreText").keyup(function(){
+		var str = jq(this).val();
+		jq("#histoEquipe option")
 			.hide()
 			.filter(':icontains("' + str + '")')
 			.show();
 	});
-	$("#filtreTextButton").click(function(){
-		var str = $("#filtreText").val();
-		$("#histoEquipe option").show();
+	jq("#filtreTextButton").click(function(){
+		var str = jq("#filtreText").val();
+		jq("#histoEquipe option").show();
 		if(str != '')
 		{
-			$("#histoEquipe option").hide();
-			$("#histoEquipe option:icontains('"+str+"')").show();
+			jq("#histoEquipe option").hide();
+			jq("#histoEquipe option:icontains('"+str+"')").show();
 		}
 	});
-	$("#filtreAnnulButton").click(function(){
-		$("#filtreText").val('');
-		$("#histoEquipe option").show();
+	jq("#filtreAnnulButton").click(function(){
+		jq("#filtreText").val('');
+		jq("#histoEquipe option").show();
 	});
 
 	// Actualiser
-	$('#actuButton').click(function(){
-		$('#formEquipe').submit();
+	jq('#actuButton').click(function(){
+		jq('#formEquipe').submit();
 	});
 	
 	
 	// Maskedinput
-	$.mask.definitions['h'] = "[A-O]";
-	//$("#inputZone").mask("9");
+	jq.mask.definitions['h'] = "[A-O]";
+	//jq("#inputZone").mask("9");
 	
 	
 	// Direct Input (date, heure, intitule)
 	//Ajout title
-	$('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante. Lettre A à O pour les poules, nombre 0 à 99 pour le tirage');
+	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante. Lettre A à O pour les poules, nombre 0 à 99 pour le tirage');
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
-	$('#tableEquipes').bind('keydown',function(e){
+	jq('#tableEquipes').bind('keydown',function(e){
 		if(e.which == 13)
 		{
 			validationDonnee();
@@ -238,61 +240,61 @@ $(document).ready(function() {
 		}
 	}); 
 	// blur d'une input => validation de la donnée
-	$('#inputZone').live('blur', function(){
-		var Classe = $(this).attr('class');
+	jq('#inputZone').live('blur', function(){
+		var Classe = jq(this).attr('class');
 		validationDonnee(Classe);
 	});
 	// focus sur un span du tableau => remplace le span par un input
-	$('#tableEquipes td > span.directInput').focus(function(event){
+	jq('#tableEquipes td > span.directInput').focus(function(event){
 		event.preventDefault();
-		var valeur = $(this).text();
-		var tabindexVal = $(this).attr('tabindex');
-		$(this).attr('tabindex',tabindexVal+1000);
-		if($(this).hasClass('textPoule'))
+		var valeur = jq(this).text();
+		var tabindexVal = jq(this).attr('tabindex');
+		jq(this).attr('tabindex',tabindexVal+1000);
+		if(jq(this).hasClass('textPoule'))
 		{
-			$(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			$('#inputZone').mask("h",{placeholder:" "});
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
+			jq('#inputZone').mask("h",{placeholder:" "});
 		}
-		else if($(this).hasClass('textTirage'))
+		else if(jq(this).hasClass('textTirage'))
 		{
-			$(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			$('#inputZone').mask("9?9",{placeholder:" "});
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
+			jq('#inputZone').mask("9?9",{placeholder:" "});
 		}
-		$(this).hide();
-		setTimeout( function() { $('#inputZone').select() }, 0 );
+		jq(this).hide();
+		setTimeout( function() { jq('#inputZone').select() }, 0 );
 	});
 	// focus sur une cellule du tableau => remplace le span par un input
-	$('#tableEquipes td.directInput').focus(function(event){
+	jq('#tableEquipes td.directInput').focus(function(event){
 		event.preventDefault();
-		var valeur = $(this).text();
-		var tabindexVal = $(this).attr('tabindex');
-		$(this).attr('tabindex',tabindexVal+1000);
-		if($(this).hasClass('textPoule'))
+		var valeur = jq(this).text();
+		var tabindexVal = jq(this).attr('tabindex');
+		jq(this).attr('tabindex',tabindexVal+1000);
+		if(jq(this).hasClass('textPoule'))
 		{
-			$(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			$('#inputZone').mask("h",{placeholder:" "});
+			jq(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
+			jq('#inputZone').mask("h",{placeholder:" "});
 		}
-		else if($(this).hasClass('textTirage'))
+		else if(jq(this).hasClass('textTirage'))
 		{
-			$(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			$('#inputZone').mask("9?9",{placeholder:" "});
+			jq(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
+			jq('#inputZone').mask("9?9",{placeholder:" "});
 		}
-		$(this).children("span").hide();
-		setTimeout( function() { $('#inputZone').select() }, 0 );
+		jq(this).children("span").hide();
+		setTimeout( function() { jq('#inputZone').select() }, 0 );
 		
 	});
 	// Validation des données 
 	function validationDonnee(Classe){
-		var nouvelleValeur = $('#inputZone').val();
-		var tabindexVal = $('#inputZone').attr('tabindex');
+		var nouvelleValeur = jq('#inputZone').val();
+		var tabindexVal = jq('#inputZone').attr('tabindex');
 		if(Classe == 'directInputSpan'){
-			$('#inputZone + span').attr('tabindex',tabindexVal);
+			jq('#inputZone + span').attr('tabindex',tabindexVal);
 		}else if(Classe == 'directInputTd'){
-			$('#inputZone').parent('td').attr('tabindex',tabindexVal);
+			jq('#inputZone').parent('td').attr('tabindex',tabindexVal);
 		}
-		$('#inputZone + span').show();
-		var valeur = $('#inputZone + span').text();
-		var identifiant = $('#inputZone + span').attr('id');
+		jq('#inputZone + span').show();
+		var valeur = jq('#inputZone + span').text();
+		var identifiant = jq('#inputZone + span').attr('id');
 		var identifiant2 = identifiant.split('-');
 		var typeValeur = identifiant2[0];
 		var numMatch = identifiant2[1];
@@ -303,11 +305,11 @@ $(document).ready(function() {
 				valeurTransmise2 = valeurTransmise.split('/');
 				valeurTransmise = valeurTransmise2[2]+'-'+valeurTransmise2[1]+'-'+valeurTransmise2[0];
 			}
-			var AjaxWhere = $('#AjaxWhere').val();
-			var AjaxTableName = $('#AjaxTableName').val();
+			var AjaxWhere = jq('#AjaxWhere').val();
+			var AjaxTableName = jq('#AjaxTableName').val();
 			var AjaxAnd = '';
-			var AjaxUser = $('#AjaxUser').val();
-			$.get("UpdateCellJQ.php",
+			var AjaxUser = jq('#AjaxUser').val();
+			jq.get("UpdateCellJQ.php",
 				{
 					AjTableName: AjaxTableName,
 					AjWhere: AjaxWhere,
@@ -323,46 +325,46 @@ $(document).ready(function() {
 					if(data != 'OK!'){
 						alert('mise à jour impossible : '+data);
 					}else{
-						$('#'+identifiant).text(nouvelleValeur);
+						jq('#'+identifiant).text(nouvelleValeur);
 					}
 				}
 			);
 		};
-		$('#inputZone').remove();
+		jq('#inputZone').remove();
 	}
 
 	//Autocomplete recherche equipe
-	$('#plEquipe').mask("h",{placeholder:" "});
-	$('#tirEquipe').mask("9?9",{placeholder:" "});
-	$('#cltChEquipe').mask("9?9",{placeholder:" "});
-	$('#cltCpEquipe').mask("9?9",{placeholder:" "});
-	$('#ShowCompo').hide();	
-	$("#choixEquipe").autocomplete('Autocompl_equipe.php', {
+	jq('#plEquipe').mask("h",{placeholder:" "});
+	jq('#tirEquipe').mask("9?9",{placeholder:" "});
+	jq('#cltChEquipe').mask("9?9",{placeholder:" "});
+	jq('#cltCpEquipe').mask("9?9",{placeholder:" "});
+	jq('#ShowCompo').hide();	
+	jq("#choixEquipe").autocomplete('Autocompl_equipe.php', {
 		width: 550,
 		max: 50,
 		mustMatch: true,
 	});
-	$("#choixEquipe").result(function(event, data, formatted) {
+	jq("#choixEquipe").result(function(event, data, formatted) {
 		if (data) {
 			var lequipe = data[1];
-			var lasaison = $("#Saison").val();
-			$("#EquipeNom").val(data[0]);
-			$('#EquipeNum').val(lequipe);
-			$('#EquipeNumero').val(lequipe);
-			$('#ShowCompo').show();	
-			$.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function(data2) {
-				$('#GetCompo').html( data2 );//"REPRISE DES COMPOSITIONS D'EQUIPE:<br>"&
+			var lasaison = jq("#Saison").val();
+			jq("#EquipeNom").val(data[0]);
+			jq('#EquipeNum').val(lequipe);
+			jq('#EquipeNumero').val(lequipe);
+			jq('#ShowCompo').show();	
+			jq.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function(data2) {
+				jq('#GetCompo').html( data2 );//"REPRISE DES COMPOSITIONS D'EQUIPE:<br>"&
 			});
 			//, function(data2) {
 			//	}, "json");
 		}
 	});
-	$("#annulEquipe2").click(function(){
-		$('#ShowCompo').hide();
-		$('#plEquipe').val('');
-		$('#tirEquipe').val('');
-		$('#cltChEquipe').val('');
-		$('#cltCpEquipe').val('');
+	jq("#annulEquipe2").click(function(){
+		jq('#ShowCompo').hide();
+		jq('#plEquipe').val('');
+		jq('#tirEquipe').val('');
+		jq('#cltChEquipe').val('');
+		jq('#cltCpEquipe').val('');
 	});
 	
 

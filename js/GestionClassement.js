@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 function changeCompetition()
 {
 	document.forms['formClassement'].elements['Cmd'].value = '';
@@ -89,13 +91,13 @@ function transfert()
 	}
 	
 	// Verification qu'une comp&eacute;tition est choisie ainsi qu'une saison ...
-	var codeCompetTransfert = $('#codeCompetTransfert option:selected').val();
+	var codeCompetTransfert = jq('#codeCompetTransfert option:selected').val();
 	if (codeCompetTransfert.length == 0)
 	{
 		alert("Aucune comp&eacute;tition de transfert s&eacute;lectionn&eacute;e !!! ...");
 		return false;
 	}
-	var codeSaisonTransfert = $('#codeSaisonTransfert option:selected').val();
+	var codeSaisonTransfert = jq('#codeSaisonTransfert option:selected').val();
 	if (codeSaisonTransfert.length == 0)
 	{
 		alert("Aucune saison de transfert s&eacute;lectionn&eacute;e !!! ...");
@@ -125,16 +127,16 @@ function sessionSaison()
 	}
 }
 
-$(document).ready(function() { //Jquery
+jq(document).ready(function() { //Jquery
 
 	// Actualiser
-	$('#actuButton').click(function(){
-		$('#formClassement').submit();
+	jq('#actuButton').click(function(){
+		jq('#formClassement').submit();
 	});
 	//Ajout title
-	$('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer &agrave;  la valeur suivante');
+	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer &agrave;  la valeur suivante');
 	// contr&ocirc;le touche entr&eacute;e (valide les donn&eacute;es en cours mais pas le formulaire)
-	$('.tableauJQ').bind('keydown',function(e){
+	jq('.tableauJQ').bind('keydown',function(e){
 		if(e.which == 13)
 		{
 			validationDonnee();
@@ -142,27 +144,27 @@ $(document).ready(function() { //Jquery
 		}
 	}); 
 	// blur d'une input => validation de la donn&eacute;e
-	$('#inputZone').live('blur', function(){
+	jq('#inputZone').live('blur', function(){
 		validationDonnee();
 	});
 	// focus sur un lien du tableau => remplace le lien par un input
-	$('.directInput').focus(function(event){
+	jq('.directInput').focus(function(event){
 		event.preventDefault();
-		var valeur = $(this).text();
-		var tabindexVal = $(this).attr('tabindex');
-		$(this).attr('tabindex',tabindexVal+1000);
-		$(this).before('<input type="text" id="inputZone" class="champsPoints" tabindex="'+tabindexVal+'" size="1" value="'+valeur+'">');
-		$(this).hide();
-		setTimeout( function() { $('#inputZone').select() }, 0 );
+		var valeur = jq(this).text();
+		var tabindexVal = jq(this).attr('tabindex');
+		jq(this).attr('tabindex',tabindexVal+1000);
+		jq(this).before('<input type="text" id="inputZone" class="champsPoints" tabindex="'+tabindexVal+'" size="1" value="'+valeur+'">');
+		jq(this).hide();
+		setTimeout( function() { jq('#inputZone').select() }, 0 );
 	});
 	
 	function validationDonnee(){
-		var nouvelleValeur = $('#inputZone').val();
-		var tabindexVal = $('#inputZone').attr('tabindex');
-		$('#inputZone + span').attr('tabindex',tabindexVal);
-		$('#inputZone + span').show();
-		var valeur = $('#inputZone + span').text();
-		var identifiant = $('#inputZone + span').attr('id');
+		var nouvelleValeur = jq('#inputZone').val();
+		var tabindexVal = jq('#inputZone').attr('tabindex');
+		jq('#inputZone + span').attr('tabindex',tabindexVal);
+		jq('#inputZone + span').show();
+		var valeur = jq('#inputZone + span').text();
+		var identifiant = jq('#inputZone + span').attr('id');
 		var identifiant2 = identifiant.split('-');
 		var typeValeur = identifiant2[0];
 		var numEquipe = identifiant2[1];
@@ -181,19 +183,19 @@ $(document).ready(function() { //Jquery
 			diviseur = 100;
 		}
 		if(valeur != nouvelleValeur){
-			var AjaxWhere = $('#AjaxWhere').val();
-			var AjaxUser = $('#AjaxUser').val();
+			var AjaxWhere = jq('#AjaxWhere').val();
+			var AjaxUser = jq('#AjaxUser').val();
 			if(numJournee != '')
 			{
-				var AjaxTableName = $('#AjaxTableName2').val();
+				var AjaxTableName = jq('#AjaxTableName2').val();
 				var AjaxAnd = '';
 			}
 			else
 			{
-				var AjaxTableName = $('#AjaxTableName').val();
-				var AjaxAnd = $('#AjaxAnd').val();
+				var AjaxTableName = jq('#AjaxTableName').val();
+				var AjaxAnd = jq('#AjaxAnd').val();
 			}
-			$.get("UpdateCellJQ.php",
+			jq.get("UpdateCellJQ.php",
 				{
 					AjTableName: AjaxTableName,
 					AjWhere: AjaxWhere,
@@ -209,12 +211,12 @@ $(document).ready(function() { //Jquery
 					if(data != 'OK!'){
 						alert('mise &agrave;  jour impossible : '+data);
 					}else{
-						$('#'+identifiant).text(nouvelleValeur/diviseur);
+						jq('#'+identifiant).text(nouvelleValeur/diviseur);
 					}
 				}
 			);
 		};
-		$('#inputZone').remove();
+		jq('#inputZone').remove();
 	}
 
 
