@@ -22,11 +22,11 @@ function Find()
 	document.forms['formRerchercheLicenceIndi2'].submit();
 }
 
-jq('#CancelRechercheIndi').on('click', function(){
+jq('#CancelRechercheIndi').live('click', function(){
 	jq('#iframeRechercheLicenceIndi2', window.parent.document).hide(); 
 });
 
-jq('.cliquableCheckbox').on('click', function(){
+jq('.cliquableCheckbox').live('click', function(){
 	jq(this).attr('checked', false);
 	var identifiant = jq(this).attr('id');
 	var identifiant2 = identifiant.split('-');

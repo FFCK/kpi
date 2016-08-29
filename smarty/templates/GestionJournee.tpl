@@ -1,6 +1,6 @@
 		&nbsp;(<a href="GestionCalendrier.php">Retour</a>)
 		<br>
-		<iframe name="iframeRechercheLicenceIndi2" id="iframeRechercheLicenceIndi2" SRC="RechercheLicenceIndi2.php" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>
+{*		<iframe name="iframeRechercheLicenceIndi2" id="iframeRechercheLicenceIndi2" SRC="RechercheLicenceIndi2.php" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>*}
 		<div class="main">
 			<form method="POST" action="GestionJournee.php" name="formJournee" id="formJournee" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value=''/>
@@ -164,7 +164,7 @@
 										<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
 									{/section}
 								</select>
-								<a href="#"  id='rechercheArbitre1'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
+{*								<a href="#"  id='rechercheArbitre1'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>*}
 							</td>
 						</tr>
 						<tr class="hideTr">
@@ -237,8 +237,8 @@
 										<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
 									{/section}
 								</select>
-								<a href="#" id='rechercheArbitre2'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
-							</td>
+{*								<a href="#" id='rechercheArbitre2'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
+*}							</td>
 						</tr>
 						<tr class="hideTr">
 							<td align="left" id='clickup' style="color:#555555" colspan="2">
