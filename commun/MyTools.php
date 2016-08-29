@@ -488,7 +488,7 @@ function utyEquipesAffectAutoFR($intitule)
 							break;
 					}
 				}else{ // poule
-                    if(isset($codeNumero[1])){
+                    if(isset($codeNumero[1]) && isset($codeLettres[1])){
                         if($codeNumero[1] == 1)
                             $resultat = '(1er Poule '.$codeLettres[1].')';
                         elseif($codeNumero[1] == 2)

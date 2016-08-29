@@ -62,6 +62,33 @@ class Details extends MyPage
             }
             $this->m_tpl->assign('journee', $journee);
             $this->m_tpl->assign('arrayListJournees', $arrayListJournees);
+            
+            $sql  = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep
+                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c 
+                    WHERE m.Id_journee = $idSelJournee
+                    AND ce.Code_club = c.Code
+                    AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)";
+            $arrayEquipe = array();
+            $result = $myBdd->Query($sql);
+            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+                //Logos
+                $row['logo'] = '';
+                $row['club'] = $row['Code_club'];
+                if(is_file('img/KIP/logo/'.$row['club'].'-logo.png')){
+                    $row['logo'] = 'img/KIP/logo/'.$row['club'].'-logo.png';
+                }elseif(is_file('img/Nations/'.substr($row['club'], 0, 3).'.png')){
+                    $row['club'] = substr($row['club'], 0, 3);
+                    $row['logo'] = 'img/Nations/'.$row['club'].'.png';
+                }
+
+                if (strlen($row['Code_comite_dep']) > 3) {
+                    $row['Code_comite_dep'] = 'FRA';
+                }
+                array_push($arrayEquipe, $row);
+            }
+            $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
+                
+
         }else{
             // Chargement des Compétitions ...
             $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, c.Libelle Libelle_compet, c.*, 0 Selected "
@@ -91,6 +118,8 @@ class Details extends MyPage
             
             // Chargement des Equipes ...
             $arrayEquipe = array();
+            $arrayPoule = array();
+            $poule = '';
             if (strlen($idSelCompet) > 0 && $idSelCompet != '*')
             { 
                 $sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  ";
@@ -103,19 +132,41 @@ class Details extends MyPage
                 $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 
                 $result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
-                $num_results = mysql_num_rows($result);
+                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+                    //Logos
+                    $logo = '';
+                    $club = $row['Code_club'];
+                    if(is_file('img/KIP/logo/'.$club.'-logo.png')){
+                        $logo = 'img/KIP/logo/'.$club.'-logo.png';
+                    }elseif(is_file('img/Nations/'.substr($club, 0, 3).'.png')){
+                        $club = substr($club, 0, 3);
+                        $logo = 'img/Nations/'.$club.'.png';
+                    }
 
-                for ($i=0;$i<$num_results;$i++)
-                {
-                    $row = mysql_fetch_array($result);	  
-                    if (strlen($row['Code_comite_dep']) > 3)
+                    if (strlen($row['Code_comite_dep']) > 3) {
                         $row['Code_comite_dep'] = 'FRA';
-                    if ($row['Tirage'] != 0 or $row['Poule'] != '')
+                    }
+                    if ($row['Tirage'] != 0 or $row['Poule'] != '') {
                         $this->m_tpl->assign('Tirage', 'ok');
-                    array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'Code_comite_dep' => $row['Code_comite_dep'] ));
+                    }
+                    if ($row['Poule'] != $poule) {
+                        $arrayPoule[] = $row['Poule'];
+                    }
+                    $poule = $row['Poule'];
+                    $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
+                                                        'Libelle' => $row['Libelle'], 
+                                                        'Code_club' => $row['Code_club'],
+                                                        'Code_comite_dep' => $row['Code_comite_dep'],
+                                                        'logo' => $logo,
+                                                        'club' => $club,
+                                                        'Numero' => $row['Numero'], 
+                                                        'Poule' => $row['Poule'], 
+                                                        'Tirage' => $row['Tirage'], 
+                                                        'Code_comite_dep' => $row['Code_comite_dep'] );
                 }
             }	
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
+            $this->m_tpl->assign('arrayPoule', $arrayPoule);
         }
 
 	}
