@@ -65,7 +65,7 @@ class Details extends MyPage
             
             $sql  = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep
                     FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c 
-                    WHERE m.Id_journee = $idSelJournee
+                    WHERE m.Id_journee = '$idSelJournee'
                     AND ce.Code_club = c.Code
                     AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)";
             $arrayEquipe = array();

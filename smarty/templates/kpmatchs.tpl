@@ -17,50 +17,58 @@
 				<input type='hidden' name='Pub' Value=''/>
 				<input type='hidden' name='Verrou' Value=''/>
 				
-				<div class='col-md-2 col-sm-4 col-xs-6'>
-								<label for="Saison">{#Saison#}</label>
-								<select name="Saison" onChange="submit()">
-									{section name=i loop=$arraySaison} 
-										<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $Saison}selected{/if}>{$arraySaison[i].Code}</Option>
-									{/section}
-								</select>
+				<div class='col-md-1 col-sm-4 col-xs-6'>
+                    <label for="Saison">{#Saison#}</label>
+                    <select name="Saison" onChange="submit()">
+                        {section name=i loop=$arraySaison} 
+                            <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $Saison}selected{/if}>{$arraySaison[i].Code}</Option>
+                        {/section}
+                    </select>
                 </div>
 				<div class='col-md-4 col-sm-8 col-xs-12'>
-								<label for="Group">{#Competition#}</label>
-								<select name="Group" onChange="submit();">
-										<Option Value="">{#Selectionnez#}...</Option>
-									{section name=i loop=$arrayCompetitionGroupe}
-										{assign var='temporaire' value=$arrayCompetitionGroupe[i][1]}
-										<Option Value="{$arrayCompetitionGroupe[i][1]}" {$arrayCompetitionGroupe[i][3]}>{$smarty.config.$temporaire|default:$arrayCompetitionGroupe[i][2]}</Option>
-									{/section}
-								</select>
+                    <label for="Group">{#Competition#}</label>
+                    <select name="Group" onChange="submit();">
+                            <Option Value="">{#Selectionnez#}...</Option>
+                        {section name=i loop=$arrayCompetitionGroupe}
+                            {assign var='temporaire' value=$arrayCompetitionGroupe[i][1]}
+                            <Option Value="{$arrayCompetitionGroupe[i][1]}" {$arrayCompetitionGroupe[i][3]}>{$smarty.config.$temporaire|default:$arrayCompetitionGroupe[i][2]}</Option>
+                        {/section}
+                    </select>
                 </div>
 				{if $arrayCompetition[0].Code_typeclt == 'CHPT'}
                     <div class='col-md-3 col-sm-6 col-xs-12'>
-                                        <label for="J">{#Journee#}</label>
-                                        <select name="J" onChange="submit();">
-                                            <Option Value="*" Selected>{#Toutes#}</Option>
-                                            {section name=i loop=$arrayListJournees}
-                                                    <Option Value="{$arrayListJournees[i].Id}" {if $idSelJournee == $arrayListJournees[i].Id}Selected{/if}>{$arrayListJournees[i].Date_debut} - {$arrayListJournees[i].Lieu}</Option>
-                                            {/section}
-                                        </select>
+                        <label for="J">{#Journee#}</label>
+                        <select name="J" onChange="submit();">
+                            <Option Value="*" Selected>{#Toutes#}</Option>
+                            {section name=i loop=$arrayListJournees}
+                                    <Option Value="{$arrayListJournees[i].Id}" {if $idSelJournee == $arrayListJournees[i].Id}Selected{/if}>{$arrayListJournees[i].Date_debut} - {$arrayListJournees[i].Lieu}</Option>
+                            {/section}
+                        </select>
+                    </div>
+                    <div class='col-md-1 col-sm-6 col-xs-12'>
+                        <label></label>
+                        <a class="btn btn-default" href='kpdetails.php?Compet={$idSelCompet}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
                     </div>
                 {elseif $nbCompet > 1}
                     <div class='col-md-3 col-sm-6 col-xs-12'>
-                                        <label for="Compet">{#Categorie#}Cat.</label>
-                                        <select name="Compet" onChange="submit();">
-                                            <Option Value="*" Selected>{#Toutes#}</Option>
-                                            {section name=i loop=$arrayCompetition}
-                                                    <Option Value="{$arrayCompetition[i].Code}" {if $idSelCompet == $arrayCompetition[i].Code}Selected{/if}>{$arrayCompetition[i].Soustitre2|default:$arrayCompetition[i].Libelle}</Option>
-                                            {/section}
-                                        </select>
+                        <label for="Compet">{#Categorie#}Cat.</label>
+                        <select name="Compet" onChange="submit();">
+                            <Option Value="*" Selected>{#Toutes#}</Option>
+                            {section name=i loop=$arrayCompetition}
+                                    <Option Value="{$arrayCompetition[i].Code}" {if $idSelCompet == $arrayCompetition[i].Code}Selected{/if}>{$arrayCompetition[i].Soustitre2|default:$arrayCompetition[i].Libelle}</Option>
+                            {/section}
+                        </select>
+                    </div>
+                    <div class='col-md-1 col-sm-6 col-xs-12'>
+                        <label></label>
+                        <a class="btn btn-default" href='kpdetails.php?Compet={$idSelCompet}&Group={$codeCompetGroup}&Saison={$Saison}&typ=CP'>{#Infos#}</a>
                     </div>
                 {else}
                     <div class='col-md-3 col-sm-6 col-xs-12'></div>
 				{/if}
 				<div class='col-md-1 col-sm-2 col-xs-4'>
-                    <br>
-                    <a class="pdfLink badge text-center" href="PdfListeMatchs.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
+                    <label></label>
+                    <a class="pdfLink btn btn-default" href="PdfListeMatchs.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
 				</div>
 
 				<div class='col-md-2 col-sm-4 col-xs-8 text-right'>

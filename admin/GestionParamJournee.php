@@ -8,14 +8,12 @@ include_once('../commun/MyTools.php');
 
 class GestionParamJournee extends MyPageSecure	 
 {	
-	function Load()
-	{
+	function Load() {
 		$idJournee = utyGetSession('idJournee', 0);
 		$this->m_tpl->assign('idJournee', $idJournee);
 		$myBdd = new MyBdd();
 
-		if ($idJournee != 0)
-		{		
+		if ($idJournee != 0) {		
 			// Liste ...
 			$sql  = "Select j.Id, j.Code_competition, j.Code_saison, j.Phase, j.Niveau, j.Date_debut, j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Type, ";
 			$sql .= "j.Plan_eau, j.Departement, j.Responsable_insc, j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, ";
@@ -26,8 +24,7 @@ class GestionParamJournee extends MyPageSecure
 			$sql .= "And j.Code_saison = c.Code_saison ";
 
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-			if (mysql_num_rows($result) == 1)
-			{
+			if (mysql_num_rows($result) == 1) {
 				$ListJournees = array();
 				$row = mysql_fetch_array($result);	  
 				
@@ -51,8 +48,7 @@ class GestionParamJournee extends MyPageSecure
 				$this->m_tpl->assign('ChefArbitre', $row['ChefArbitre']);
 				$this->m_tpl->assign('Code_typeclt', $row['Code_typeclt']);
 				
-				if ($row['Code_typeclt'] = 'CP')
-				{
+				if ($row['Code_typeclt'] = 'CP') {
 					$sql2  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre ";
 					$sql2 .= "From gickp_Journees ";
 					$sql2 .= "Where Code_competition = '".$row['Code_competition']."' ";
@@ -62,17 +58,14 @@ class GestionParamJournee extends MyPageSecure
 					$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Select 2 =>  ".$sql2);
 					$num_results2 = mysql_num_rows($result2);
 					
-					for ($i=0;$i<$num_results2;$i++)
-					{
+					for ($i=0;$i<$num_results2;$i++) {
 						$row2 = mysql_fetch_array($result2);	  
 						array_push($ListJournees, $row2);
 					}
 					$this->m_tpl->assign('ListJournees', $ListJournees);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			$this->m_tpl->assign('Num_Journee', 0);
 			$this->m_tpl->assign('J_saison', utyGetSaison());
 			$this->m_tpl->assign('J_competition', utyGetSession('codeCompet'));
@@ -87,8 +80,7 @@ class GestionParamJournee extends MyPageSecure
 
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
 		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++)
-		{
+		for ($i=0;$i<$num_results;$i++) {
 			$row = mysql_fetch_array($result);
 			array_push($arrayCompetition, array( 'Code' => $row['Code'],  'Libelle' => $row['Libelle']));
 		}
@@ -99,16 +91,14 @@ class GestionParamJournee extends MyPageSecure
 		$sql  = "Select distinct Code From gickp_Saison order by Code ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
 		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++)
-		{
+		for ($i=0;$i<$num_results;$i++) {
 			$row = mysql_fetch_array($result);
 			array_push($arraySaisons, array( 'Code' => $row['Code']));
 		}
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
 	}
 	
-	function Ok()
-	{
+	function Ok() {
 		$idJournee = utyGetPost('idJournee', -1);
 		$dupliThis = utyGetPost('dupliThis');
 		
@@ -139,25 +129,26 @@ class GestionParamJournee extends MyPageSecure
 		$diffdate = round(($d1-$d2)/60/60/24);
 		
 		
-		if ($idJournee != 0 && $dupliThis != 'Duppli')
-		{
-			if (!utyIsAutorisationJournee($idJournee))
-				die ("Vous n'avez pas l'autorisation de modifier cette journée ! (<a href='javascript:history.back()'>Retour</a>)");
-			
-			// Modification ...
+		if ($idJournee != 0 && $dupliThis != 'Duppli') {
+			if (!utyIsAutorisationJournee($idJournee)) {
+                die("Vous n'avez pas l'autorisation de modifier cette journée ! (<a href='javascript:history.back()'>Retour</a>)");
+            }
+
+            // Modification ...
 			$myBdd = new MyBdd();
 	
-			$sql  = "Update gickp_Journees Set Code_competition = '$J_competition', Code_saison = '$J_saison', Type = '$Type', Phase = '$Phase', Niveau = '$Niveau', Date_debut = '$Date_debut', Date_fin = '$Date_fin', ";
-			$sql .= "Nom = '$Nom', Libelle = '$Libelle', Lieu = '$Lieu', Plan_eau = '$Plan_eau', ";
-			$sql .= "Departement = '$Departement', Responsable_insc = '$Responsable_insc', ";
-			$sql .= "Responsable_R1 = '$Responsable_R1', Organisateur = '$Organisateur', Delegue = '$Delegue', ChefArbitre = '$ChefArbitre' ";
-			$sql .= "Where Id = $idJournee ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			$sql  = 'Update gickp_Journees Set Code_competition = "'.$J_competition.'", Code_saison = "'.$J_saison.'", '
+                    . 'Type = "'.$Type.'", Phase = "'.$Phase.'", Niveau = "'.$Niveau.'", Date_debut = "'.$Date_debut.'", '
+                    . 'Date_fin = "'.$Date_fin.'", '
+                    . 'Nom = "'.$Nom.'", Libelle = "'.$Libelle.'", Lieu = "'.$Lieu.'", Plan_eau = "'.$Plan_eau.'", '
+                    . 'Departement = "'.$Departement.'", Responsable_insc = "'.$Responsable_insc.'", '
+                    . 'Responsable_R1 = "'.$Responsable_R1.'", Organisateur = "'.$Organisateur.'", '
+                    . 'Delegue = "'.$Delegue.'", ChefArbitre = "'.$ChefArbitre.'" '
+                    . 'Where Id = '.$idJournee.' ';
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
 		
-		$myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
-		}
-		else
-		{
+            $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
+		} else {
 			// Création ...
 			$nextIdJournee = $this->GetNextIdJournee();
 			
@@ -171,10 +162,7 @@ class GestionParamJournee extends MyPageSecure
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert :<br>".$sql);
 			
 			//Copie des matchs
-			if($AvecMatchs == 'oui')
-			{
-				
-			
+			if($AvecMatchs == 'oui') {
 				$sql2a  = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
 				mysql_query($sql2a, $myBdd->m_link) or die ("Erreur Insert 2a ".$sql2a);
 				$sql2  = "INSERT INTO gickp_Tmp (Num) SELECT DISTINCT ce.Id FROM gickp_Competitions_Equipes ce, gickp_Journees j ";
@@ -189,8 +177,7 @@ class GestionParamJournee extends MyPageSecure
 
 				$sql4  = "Insert Into gickp_Matchs (Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, Validation) ";
 				$sql4 .= "Select $nextIdJournee, ";
-				if ($Niveau <= 1 && $CodMatchs == 'oui')
-				{
+				if ($Niveau <= 1 && $CodMatchs == 'oui') {
 					$sql4 .= "CONCAT(m.Libelle, ' [T', ta.Id, '/T', tb.Id, ']'), ";
 					$sql4 .= "DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation ";
 					$sql4 .= "FROM gickp_Matchs m ";
@@ -198,9 +185,7 @@ class GestionParamJournee extends MyPageSecure
 					$sql4 .= "WHERE m.Id_journee = $idJournee ";
 					$sql4 .= "AND ta.Num=m.Id_equipeA ";
 					$sql4 .= "AND tb.Num=m.Id_equipeB ";
-				}
-				else
-				{
+				} else {
 					$sql4 .= "m.Libelle, ";
 					$sql4 .= "DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation ";
 					$sql4 .= "FROM gickp_Matchs m ";
@@ -213,16 +198,14 @@ class GestionParamJournee extends MyPageSecure
 			$myBdd->utyJournal('Ajout journee', $codeSaison, $J_competition, '', $nextIdJournee);
 		}			
 		
-		if (isset($_SESSION['ParentUrl']))
-		{
+		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
 	}
 	
-	function DuppliListJournees()
-	{
+	function DuppliListJournees() {
 		$Date_debut = utyDateFrToUs(utyGetPost('Date_debut'));
 		$Date_fin = utyDateFrToUs(utyGetPost('Date_fin'));
 		$Nom = utyGetPost('Nom');
@@ -237,8 +220,7 @@ class GestionParamJournee extends MyPageSecure
 		$ChefArbitre = utyGetPost('ChefArbitre');
 
 		$listJournees = explode (",", utyGetPost('ParamCmd'));
-		foreach($listJournees as $Journee) 
-		{
+		foreach($listJournees as $Journee) {
 			// Modification ...
 			$myBdd = new MyBdd();
 	
@@ -247,24 +229,21 @@ class GestionParamJournee extends MyPageSecure
 			$sql .= "Departement = '$Departement', Responsable_insc = '$Responsable_insc', ";
 			$sql .= "Responsable_R1 = '$Responsable_R1', Organisateur = '$Organisateur', Delegue = '$Delegue', ChefArbitre = '$ChefArbitre' ";
 			$sql .= "Where Id = $Journee ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
 		
 			$myBdd->utyJournal('Modification journee', '', '', '', $Journee);
 		}
 		
-		if (isset($_SESSION['ParentUrl']))
-		{
+		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
 	}
 	
-	function AjustDates()
-	{
+	function AjustDates() {
 		$idJournee = utyGetPost('idJournee', -1);
-		if ($idJournee != 0)
-		{
+		if ($idJournee != 0) {
 			$myBdd = new MyBdd();
 	
 			$sql  = "Select Date_debut, Date_fin From gickp_Journees ";
@@ -279,44 +258,34 @@ class GestionParamJournee extends MyPageSecure
 			$sql  = "Update gickp_Matchs set Date_match = '".$Date_debut."' ";
 			$sql .= "Where Id_journee = $idJournee ";
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert : ".$sql);
-			
 		}			
-	
 	}
 
-	function GetNextIdJournee()
-	{
+	function GetNextIdJournee() {
 		$myBdd = new MyBdd();
 
 		$sql  = "Select max(Id) maxId From gickp_Journees Where Id < 19000001 ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
 	
-		if (mysql_num_rows($result) == 1)
-		{
+		if (mysql_num_rows($result) == 1) {
 			$row = mysql_fetch_array($result);	  
 			return ((int) $row['maxId'])+1;
-		}
-		else
-		{
+		} else {
 			return 1;
 		}
 	}		
 	
-	function Cancel()
-	{
-		if (isset($_SESSION['ParentUrl']))
-		{
+	function Cancel() {
+		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
 	}
 	
-	function Duplicate()
-	{
+	function Duplicate() {
 		$idJournee = utyGetPost('idJournee', -1);
-		if ($idJournee != 0)
-		{
+		if ($idJournee != 0) {
 			$nextIdJournee = $this->GetNextIdJournee();
 			
 			$myBdd = new MyBdd();
@@ -330,8 +299,7 @@ class GestionParamJournee extends MyPageSecure
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert");
 		}			
 		
-		if (isset($_SESSION['ParentUrl']))
-		{
+		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	
@@ -340,8 +308,7 @@ class GestionParamJournee extends MyPageSecure
 		$myBdd->utyJournal('Dupplication journee', '', '', '', $nextIdJournee); // A compléter (saison, compétition, options)
 	}
 	
-	function GestionParamJournee()
-	{			
+	function GestionParamJournee() {			
 		MyPageSecure::MyPageSecure(10);
 		
 		$alertMessage = '';
@@ -350,25 +317,28 @@ class GestionParamJournee extends MyPageSecure
 		if (isset($_POST['Cmd']))
 			$Cmd = $_POST['Cmd'];
 
-		if (strlen($Cmd) > 0)
-		{
-			if ($Cmd == 'Ok')
-				($_SESSION['Profile'] <= 4) ? $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'DuppliListJournees')
-				($_SESSION['Profile'] <= 4) ? $this->DuppliListJournees() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'AjustDates')
-				($_SESSION['Profile'] <= 2) ? $this->AjustDates() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Cancel')
-				($_SESSION['Profile'] <= 10) ? $this->Cancel() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Duplicate')
-				($_SESSION['Profile'] <= 4) ? $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-			
-			if ($alertMessage == '')
-			{
+		if (strlen($Cmd) > 0) {
+			if ($Cmd == 'Ok') {
+                ($_SESSION['Profile'] <= 4) ? $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'DuppliListJournees') {
+                ($_SESSION['Profile'] <= 4) ? $this->DuppliListJournees() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'AjustDates') {
+                ($_SESSION['Profile'] <= 2) ? $this->AjustDates() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Cancel') {
+                ($_SESSION['Profile'] <= 10) ? $this->Cancel() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Duplicate') {
+                ($_SESSION['Profile'] <= 4) ? $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($alertMessage == '') {
 				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
 			}
