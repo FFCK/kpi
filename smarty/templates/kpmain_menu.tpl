@@ -24,6 +24,8 @@
             <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-958{if $currentmenu eq $arraymenu[i].name} active{/if}">
                 {if $temporaire == 'Accueil' && $lang == 'en'}
                     <a href="./?lang=en">
+                {elseif $temporaire == 'Accueil' && $lang == 'fr'}
+                    <a href="./?lang=fr">
                 {else}
                     <a href="{$arraymenu[i].href}">
                 {/if}
