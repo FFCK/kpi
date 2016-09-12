@@ -30,27 +30,35 @@ class GestionMatchDetail extends MyPageSecure
 	
 	function Load()
 	{
-		$inputText = '<form method="GET" action="FeuilleMarque2.php" name="formFeuille" enctype="multipart/form-data">
-						<input type="tel" name="idMatch" /><input type="submit" value="Envoyer" />
-					</form>';
 		$idMatch = utyGetGet('idMatch', -1);
 		$langue = parse_ini_file("../commun/MyLang.ini", true);
-		$version = utyGetSession('lang', 'FR');
+		$version = utyGetSession('lang', 'fr');
 		$version = utyGetGet('lang', $version);
 		$_SESSION['lang'] = $version;
 		$lang = $langue[$version];
+		$inputText = '<form method="GET" action="FeuilleMarque2.php" name="formFeuille" enctype="multipart/form-data">
+						<input type="tel" name="idMatch" /><input type="submit" value="Go" />
+					</form>
+                    <br>';
+        if($version == 'fr') {
+            $inputText .= '<a href="'.$_SERVER['REQUEST_URI'].'&lang=en">English version...</a>';
+        } else {
+            $inputText .= '<a href="'.$_SERVER['REQUEST_URI'].'&lang=fr">Version française...</a>';
+        }
 		
 		if($idMatch < 1)
-			die ('Sélectionnez un numéro de feuille de marque !<br />'.$inputText);
+			die ($lang['Selectionnez_feuille'].'<br />'.$inputText);
 		$myBdd = new MyBdd();
 		// Contrôle autorisation journée
-		$sql  = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, m.Heure_fin, j.*, j.Code_saison saison, c.*, m.Type Type_match, m.Validation Valid_match, m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, ce2.Code_club clubB ";
-		$sql .= "FROM gickp_Matchs m left outer join gickp_Competitions_Equipes ce1 on (ce1.Id = m.Id_equipeA) ";
-		$sql .= "left outer join gickp_Competitions_Equipes ce2 on (ce2.Id = m.Id_equipeB), gickp_Journees j, gickp_Competitions c ";
-		$sql .= "WHERE m.Id = $idMatch ";
-		$sql .= "AND m.Id_journee = j.Id ";
-		$sql .= "AND j.Code_competition = c.Code ";
-		$sql .= "AND j.Code_saison = c.Code_saison ";
+		$sql  = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, m.Heure_fin, j.*, j.Code_saison saison, c.*, "
+                . "m.Type Type_match, m.Validation Valid_match, m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, "
+                . "ce2.Libelle equipeB, ce2.Code_club clubB "
+                . "FROM gickp_Matchs m left outer join gickp_Competitions_Equipes ce1 on (ce1.Id = m.Id_equipeA) "
+                . "left outer join gickp_Competitions_Equipes ce2 on (ce2.Id = m.Id_equipeB), gickp_Journees j, gickp_Competitions c "
+                . "WHERE m.Id = $idMatch "
+                . "AND m.Id_journee = j.Id "
+                . "AND j.Code_competition = c.Code "
+                . "AND j.Code_saison = c.Code_saison ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 		$row = mysql_fetch_array($result);
 		$saison = $row['saison'];
@@ -59,14 +67,16 @@ class GestionMatchDetail extends MyPageSecure
 		$periodeMatch = $row['periodeMatch'];
 		$typeMatch = $row['typeMatch'];
 		$heure_fin = $row['Heure_fin'];
-		if($row['ScoreA'] == '')
+		if (!isset($row['saison'])) {
+            die( $lang['Numero_non_valide'] . $inputText );
+        }
+		if ($row['Id_equipeA'] < 1 || $row['Id_equipeB'] < 1) {
+            die($lang['Equipes_non_affectees'] . $inputText);
+        }
+        if($row['ScoreA'] == '')
 			$row['ScoreA'] = 0;
 		if($row['ScoreB'] == '')
 			$row['ScoreB'] = 0;
-		if(!isset($row['Id_equipeA']))
-			die ('Numéro non valide.<br />Sélectionnez une autre feuille de marque !<br />'.$inputText);
-		if($row['Id_equipeA'] < 1 || $row['Id_equipeB'] < 1)
-			die ('Les équipes ne sont pas affectées.<br />Sélectionnez une autre feuille de marque !<br />'.$inputText);
 		if (!utyIsAutorisationJournee($row['Id_journee'])){
 			$readonly = 'O';
 			$verrou = 'O';
@@ -121,8 +131,6 @@ class GestionMatchDetail extends MyPageSecure
 			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id ";
 			$result5 = mysql_query($sql5, $myBdd->m_link) or die ("Erreur Load<br />".$sql5);
 			$num_results5 = mysql_num_rows($result5);
-			
-
 ?>
 <!doctype html>
 <html lang="fr">
@@ -142,6 +150,19 @@ class GestionMatchDetail extends MyPageSecure
 		<script type="text/javascript" src="v2/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="v2/jquery.maskedinput.min.js"></script>
 		<script>
+            var ancienne_ligne = 0;
+            var idMatch = <?php echo $idMatch ?>;
+            var idEquipeA = <?php echo $row['Id_equipeA'] ?>;
+            var idEquipeB = <?php echo $row['Id_equipeB'] ?>;
+            var typeMatch = "<?php echo $typeMatch ?>";
+            var statutMatch = "<?php echo $statutMatch ?>";
+            var publiMatch = "<?php echo $publiMatch ?>";
+            var periode_en_cours = "<?php echo $periodeMatch ?>";
+            var lang = {};
+            <?php foreach ($lang as $key => $value) {
+                $key = str_replace('-', '_', $key);
+                echo 'lang.'.$key.' = "'.$value.'"; 
+                        ' ; }  ?>
 			$(function() {
 				var theInEvent = false;
 				
@@ -193,9 +214,9 @@ class GestionMatchDetail extends MyPageSecure
 				//Alert
 				function custom_alert(output_msg, title_msg) { 
 					if (output_msg == '')
-						output_msg = 'Pas de message à afficher.';
+						output_msg = lang.Aucun_message;
 					if (title_msg == '')
-						title_msg = 'Attention';
+						title_msg = lang.Attention;
 					$('div.simple_alert').remove();
 					$("<div></div>").html(output_msg).dialog({
 						dialogClass:'simple_alert',
@@ -229,21 +250,24 @@ class GestionMatchDetail extends MyPageSecure
 					heightStyle: "content"
 				});
 				$('#typeMatch').buttonset();
+				$('#controleMatch').buttonset();
+                $('#publiMatch').buttonset();
+                
 			<?php if($verrou == 'O' || $_SESSION['Profile'] <= 0 || $_SESSION['Profile'] > 6) { ?>
-				$('#typeMatch').click(function( event ){
+                $('#typeMatch').click(function( event ){
 					event.preventDefault();
 				});
 			<?php	}	?>
-				/* CONTROLE */
-				$('#controleMatch').buttonset();
+				
 			<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-				$('#controleVerrou').click(function( event ){
+                /* CONTROLE */
+                $('#controleVerrou').click(function( event ){
 					event.preventDefault();
 					if($('#scoreA3').text() != $('#scoreA4').text() || $('#scoreB3').text() != $('#scoreB4').text()){
 						$('div.simple_alert').remove();
-						$("<div></div>").html('Le score provisoire n\'a pas été validé !').dialog({
+						$("<div></div>").html(lang.score_non_valide).dialog({
 							dialogClass:'simple_alert',
-							title: 'Attention !',
+							title: lang.Attention,
 							resizable: false,
 							modal: true,
 							buttons: {
@@ -258,18 +282,18 @@ class GestionMatchDetail extends MyPageSecure
 						});
 					} else {
 						$('div.simple_alert').remove();
-						$("<div></div>").html('Contrôle feuille de match, vérifiez :<br />- paramètres<br />- compositions des équipes<br />- buts et cartons, <br />- score final<br /><br /> confirmez-vous ?').dialog({
+						$("<div></div>").html(lang.controle_feuille).dialog({
 							dialogClass:'simple_alert',
-							title: 'Confirmation ?',
+							title: lang.Confirmation + ' ?',
 							resizable: false,
 							modal: true,
 							buttons: {
-								"Oui": function() {
+								"Oui/Yes": function() {
 									$( this ).dialog( "close" );
 									$.post(
 										'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 										{ // variables
-											Id_Match : <?php echo $idMatch ?>,
+											Id_Match : idMatch,
 											Valeur : 'O',
 											TypeUpdate : 'Validation'
 										},
@@ -277,16 +301,15 @@ class GestionMatchDetail extends MyPageSecure
 											if(data == 'OK'){
 												$('.statut, .periode, #zoneTemps, #zoneChrono, .match').hide();
 												$('#reset_evt').click();
-												window.location = 'FeuilleMarque2.php?idMatch=<?php echo $idMatch ?>';
-											}
-											else{
-												custom_alert('Changement impossible', 'Attention');
+												window.location = 'FeuilleMarque2.php?idMatch=' + idMatch;
+											}else{
+												custom_alert(lang.Action_impossible, lang.Attention);
 											}
 										},
 										'text' // Format des données reçues.
 									);
 								},
-								"Non": function() {
+								"Non/No": function() {
 									$('#controleOuvert').click();
 									$( this ).dialog( "close" );
 								}
@@ -300,7 +323,7 @@ class GestionMatchDetail extends MyPageSecure
 						$.post(
 							'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 							{ // variables
-								Id_Match : <?php echo $idMatch ?>,
+								Id_Match : idMatch,
 								Valeur : '',
 								TypeUpdate : 'Validation'
 							},
@@ -309,36 +332,37 @@ class GestionMatchDetail extends MyPageSecure
 									$('.statut, .periode, #zoneTemps, #zoneChrono, .match').show();
 									//$('.statut[class*="actif"]').click();
 									$('#reset_evt').click();
-									window.location = 'FeuilleMarque2.php?idMatch=<?php echo $idMatch ?>';
+									window.location = 'FeuilleMarque2.php?idMatch=' + idMatch;
 								}
 								else{
-									custom_alert('Changement impossible', 'Attention');
+									custom_alert(lang.Action_impossible, lang.Attention);
 								}
 							},
 							'text' // Format des données reçues.
 						);
 					//}
 				});
-			<?php } ?>
+			
+            
+            
+            
 				/* PUBLICATION */
-				$('#publiMatch').buttonset();
-			<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-				$('#prive').click(function( event ){
+                $('#prive').click(function( event ){
 					event.preventDefault();
-					if(confirm('Dé-publier le match ?')){
+					if(confirm(lang['Depublier_le_match'])){
 						$.post(
 							'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 							{ // variables
-								Id_Match : <?php echo $idMatch ?>,
+								Id_Match : idMatch,
 								Valeur : '',
 								TypeUpdate : 'Publication'
 							},
 							function(data){ // callback
 								if(data == 'OK'){
-									window.location = 'FeuilleMarque2.php?idMatch=<?php echo $idMatch ?>';
+									window.location = 'FeuilleMarque2.php?idMatch=' + idMatch;
 								}
 								else{
-									custom_alert('Changement impossible', 'Attention');
+									custom_alert(lang.Action_impossible, lang.Attention);
 								}
 							},
 							'text' // Format des données reçues.
@@ -349,20 +373,20 @@ class GestionMatchDetail extends MyPageSecure
 				});
 				$('#public').click(function( event ){
 					event.preventDefault();
-					if(confirm('Publier le match ?')){
+					if(confirm(lang.Depublier_le_match)){
 						$.post(
 							'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 							{ // variables
-								Id_Match : <?php echo $idMatch ?>,
+								Id_Match : idMatch,
 								Valeur : 'O',
 								TypeUpdate : 'Publication'
 							},
 							function(data){ // callback
 								if(data == 'OK'){
-									window.location = 'FeuilleMarque2.php?idMatch=<?php echo $idMatch ?>';
+									window.location = 'FeuilleMarque2.php?idMatch=' + idMatch;
 								}
 								else{
-									custom_alert('Changement impossible', 'Attention');
+									custom_alert(lang.Action_impossible, lang.Attention);
 								}
 							},
 							'text' // Format des données reçues.
@@ -376,20 +400,20 @@ class GestionMatchDetail extends MyPageSecure
 				/****************************************************/
 				$('#validScore').click(function( event ){
 					event.preventDefault();
-					if(confirm('Valider ce score ' + $('#scoreA').text() + '-' + $('#scoreB').text() + ' ?')){
+					if(confirm(lang.Valider_score + $('#scoreA').text() + '-' + $('#scoreB').text() + ' ?')){
 						$.post(
 							'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 							{ // variables
-								Id_Match : <?php echo $idMatch ?>,
+								Id_Match : idMatch,
 								Valeur : $('#scoreA').text() + '-' + $('#scoreB').text(),
 								TypeUpdate : 'ValidScore'
 							},
 							function(data){ // callback
 								if(data == 'OK'){
-									window.location = 'FeuilleMarque2.php?idMatch=<?php echo $idMatch ?>';
+									window.location = 'FeuilleMarque2.php?idMatch=' + idMatch;
 								}
 								else{
-									custom_alert('Changement impossible', 'Attention');
+									custom_alert(lang.Action_impossible, lang.Attention);
 								}
 							},
 							'text' // Format des données reçues.
@@ -404,7 +428,7 @@ class GestionMatchDetail extends MyPageSecure
 					submit  : 'OK',
 					cssclass : 'autocompleteOfficiel',
 					indicator : '<img src="images/indicator.gif">',
-					submitdata : {idMatch: <?php echo $idMatch ?>},
+					submitdata : {idMatch: idMatch},
 					type      : 'autocomplete',
 					placeholder : '<i class="placehold">Cliquez pour modifier...</i>', 
 					//tooltip   : "Clic pour modifier",
@@ -421,13 +445,13 @@ class GestionMatchDetail extends MyPageSecure
 					type      : 'catcomplete',
 					placeholder : '<i class="placehold">Cliquez pour modifier...</i>', 
 					indicator : '<img src="images/indicator.gif">',
-					submitdata : {idMatch: <?php echo $idMatch ?>},
+					submitdata : {idMatch: idMatch},
 					//tooltip   : "Clic pour modifier",
 					//onblur    : "submit",
 					autocomplete : { //parametres transmis au plugin autocomplete
 						minLength  : 2,
 						delay: 200,
-						source     : 'Autocompl_arb3.php?idMatch=<?php echo $idMatch ?>',
+						source     : 'Autocompl_arb3.php?idMatch=' + idMatch,
 						//select: function( event, ui ) {
 						//	$( "#MatricTransmit" ).val( ui.item.matric );
 						//	return false;
@@ -439,7 +463,7 @@ class GestionMatchDetail extends MyPageSecure
 					data   : " {'-':'Joueur','C':'Capitaine','E':'Entraîneur'}",
 					placeholder : '-', 
 					indicator : '<img src="images/indicator.gif">',
-					submitdata : {idMatch: <?php echo $idMatch ?>},
+					submitdata : {idMatch: idMatch},
 					type   : 'select',
 					submit  : 'OK',
 					callback : function(value, settings) {
@@ -459,7 +483,7 @@ class GestionMatchDetail extends MyPageSecure
 					placeholder : '-', 
 					submit  : 'OK',
 					indicator : '<img src="images/indicator.gif">',
-					submitdata : {idMatch: <?php echo $idMatch ?>},
+					submitdata : {idMatch: idMatch},
 					type      : 'spinner',
 					callback : function(value, settings) {
 						idjoueur = $(this).attr('id').split('-');
@@ -471,9 +495,9 @@ class GestionMatchDetail extends MyPageSecure
 				$('.suppression').click(function(){
 					matricSupp = $(this).attr('id').split('-');
 					$('div.simple_alert').remove();
-					$("<div></div>").html('Confirmez-vous la suppression du joueur ' + matricSupp[2] + ' de l\'équipe ' + matricSupp[1] + ' ?').dialog({
+					$("<div></div>").html(Confirm_suppression_joueur + matricSupp[2] + ' ' + lang.Equipe + ' ' + matricSupp[1] + ' ?').dialog({
 						dialogClass:'simple_alert',
-						title: 'Suppression de joueur',
+						title: lang.Suppression_joueur,
 						resizable: false,
 						modal: true,
 						buttons: {
@@ -482,7 +506,7 @@ class GestionMatchDetail extends MyPageSecure
 								$.post(
 									'v2/delJoueur.php', // Le fichier cible côté serveur.
 									{
-										Id_Match : <?php echo $idMatch ?>,
+										Id_Match : idMatch,
 										Matric : matricSupp[2],
 										Equipe : matricSupp[1]
 									},
@@ -490,18 +514,18 @@ class GestionMatchDetail extends MyPageSecure
 										if(data == 'OK'){
 											$('#No-'+matricSupp[2]).parent().remove();
 											$('a.joueurs[data-id='+matricSupp[2]+']').remove();
-											custom_alert('Joueur ' + matricSupp[2] + ' supprimé', 'Attention');
+											custom_alert(lang.Joueur_supprime + ' ' + matricSupp[2], lang.Attention);
 										}
 										else{
-											custom_alert('Suppression impossible', 'Attention');
+											custom_alert(lang.Action_impossible, lang.Attention);
 										}
 									},
 									'text' // Format des données reçues.
 								);
 							},
-							"Annuler": function() {
+							"Annuler/Dismiss": function() {
 								$( this ).dialog( "close" );
-								custom_alert('joueur non supprimé', 'Attention');
+								custom_alert(lang.Joueur_non_supprime, lang.Attention);
 							}
 						}
 					});
@@ -511,16 +535,15 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/initPresents.php', // Le fichier cible côté serveur.
 						{
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							codeEquipe : 'A',
-							idEquipe : <?php echo $row['Id_equipeA'] ?>
+							idEquipe : idEquipeA
 						},
 						function(data){ // callback
 							if(data == 'OK'){
-								window.location = 'FeuilleMarque2.php?idMatch=<?php echo $idMatch ?>';
-							}
-							else{
-								custom_alert('Initialisation impossible', 'Attention');
+								window.location = 'FeuilleMarque2.php?idMatch=' + idMatch;
+							} else {
+								custom_alert(lang.Action_impossible, lang.Attention);
 							}
 						},
 						'text' // Format des données reçues.
@@ -530,16 +553,16 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/initPresents.php', // Le fichier cible côté serveur.
 						{
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							codeEquipe : 'B',
-							idEquipe : <?php echo $row['Id_equipeB'] ?>
+							idEquipe : idEquipeB
 						},
 						function(data){ // callback
 							if(data == 'OK'){
-								window.location = 'FeuilleMarque2.php?idMatch=<?php echo $idMatch ?>';
+								window.location = 'FeuilleMarque2.php?idMatch=' + idMatch;
 							}
 							else{
-								custom_alert('Initialisation impossible', 'Attention');
+								custom_alert(lang.Action_impossible, lang.Attention);
 							}
 						},
 						'text' // Format des données reçues.
@@ -548,32 +571,32 @@ class GestionMatchDetail extends MyPageSecure
 				// COMMENTAIRES
 				$('#comments').editable('v2/saveComments.php', {
 					style   : 'display: inline',
-					placeholder : 'Cliquer pour modifier...', 
+					placeholder : lang.Cliquez_pour_modifier + '...', 
 					type : 'textarea',
 					indicator : '<img src="images/indicator.gif">',
-					tooltip   : "Cliquez pour modifier",
-					submitdata : {idMatch: <?php echo $idMatch ?>},
+					tooltip   : lang.Cliquez_pour_modifier,
+					submitdata : {idMatch: idMatch},
 					submit  : 'OK',
 				});
 
 				/* TYPE MATCH */
 				$('#typeMatchElimination').click(function(){
-					if(confirm('Match à élimination : vainqueur obligatoire. Confirmez-vous ?')){
+					if(confirm(lang.Vainqueur_obligatoire_confirmez)){
 						$.post(
 							'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 							{ // variables
-								Id_Match : <?php echo $idMatch ?>,
+								Id_Match : idMatch,
 								Valeur : 'E',
 								TypeUpdate : 'Type'
 							},
 							function(data){ // callback
 								if(data == 'OK'){
-									typeMatch = 'elimination';
+									typeMatch = 'E';
 									$('#P1, #P2, #TB').show();
 									$('#typeMatchImg').attr('src', '../img/typeE.png');
 								}
 								else{
-									custom_alert('Changement impossible<br />' + data, 'Attention');
+									custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention);
 								}
 							},
 							'text' // Format des données reçues.
@@ -581,22 +604,22 @@ class GestionMatchDetail extends MyPageSecure
 					}
 				});
 				$('#typeMatchClassement').click(function(){
-					if(confirm('Match de classement : égalité possible. Confirmez-vous ?')){
+					if(confirm(lang.Egalite_possible)){
 						$.post(
 							'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 							{ // variables
-								Id_Match : <?php echo $idMatch ?>,
+								Id_Match : idMatch,
 								Valeur : 'C',
 								TypeUpdate : 'Type'
 							},
 							function(data){ // callback
 								if(data == 'OK'){
-									typeMatch = 'classement';
+									typeMatch = 'C';
 									$('#P1, #P2, #TB').hide();
 									$('#typeMatchImg').attr('src', '../img/typeC.png');
 								}
 								else{
-									custom_alert('Changement impossible<br />' + data, 'Attention');
+									custom_alert(lang.Action_impossible + '<br>' + data, lang.Attention);
 								}
 							},
 							'text' // Format des données reçues.
@@ -610,7 +633,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 						{ // variables
-							Id_Match : <?php echo $idMatch ?>,
+							Id_Match : idMatch,
 							Valeur : valeur,
 							TypeUpdate : 'Statut'
 						},
@@ -624,7 +647,7 @@ class GestionMatchDetail extends MyPageSecure
 								if(valeur == 'ON')// && valeur2 == ''
 									$('#M1').click();
 							}else{
-								custom_alert('Echec update<br />'+data, 'Echec');
+								custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention);
 							}
 						},
 						'text' // Format des données reçues.
@@ -637,13 +660,13 @@ class GestionMatchDetail extends MyPageSecure
 					}else if(leStatut == 'ON'){
 						$('.joueurs, #zoneTemps, #M1, #M2, #zoneChrono').show();
 						$('.endmatch').hide();
-						if(typeMatch == 'elimination') {
+						if(typeMatch == 'E') {
 							$('#P1, #P2, #TB').show();
 						}
 					}else if(leStatut == 'END'){
 						if(leClick == 'O'){
-							avertissement('Match terminé');
-							avertissement('Saisissez l\'heure de fin');
+							avertissement(lang.Fin_match);
+							avertissement(lang.Saisissez_heure_fin);
 							var end_time = new Date();
 							var end_hours = end_time.getHours();
 							if (end_hours < 10) {
@@ -667,58 +690,8 @@ class GestionMatchDetail extends MyPageSecure
 						}
 					}
 				}
-			<?php	}	?>
-				/* DIALOG END MATCH */
-				$( "#dialog_end_match" ).dialog({
-					autoOpen: false,
-					modal: true,
-					width: 500,
-					buttons: {
-						Ok: function() {
-							$( this ).dialog( "close" );
-							$.post(
-								'v2/saveComments.php', // Le fichier cible côté serveur.
-								{ // variables
-									idMatch : <?php echo $idMatch ?>,
-									value : $('#commentaires').val(),
-									heure_fin_match : $('#time_end_match').val()
-								},
-								function(data){ // callback
-									if(data == $('#commentaires').val()){
-										$('#end_match_time').removeClass('inactif').addClass('actif');
-										$('#end_match_time').val($('#time_end_match').val());
-										$('#raz_button').click();
-										$('#run_button').hide();
-										$('.statut').removeClass('actif');
-										$('#END').addClass('actif');
-										$('#zoneTemps, .periode, #zoneChrono').hide();
-										$('.endmatch').show();
-										$('#comments').text($('#commentaires').val());
-									}else{
-										custom_alert('Changement impossible<br />' + data, 'Attention');
-									}
-								},
-								'text' // Format des données reçues.
-							);
-						},
-						'Annuler': function() {
-							$( this ).dialog( "close" );
-						}
-					}
-				});
-				/* DIALOG END */
-				$( "#dialog_end" ).dialog({
-					autoOpen: false,
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$( this ).dialog( "close" );
-							$('#heure').val(minut_max + ':' + second_max);
-						}
-					}
-				});
-			<?php if($verrou != 'O') { ?>
-				$( "#dialog_end_opener" ).click(function() {
+
+                $( "#dialog_end_opener" ).click(function() {
 					$('#periode_end').text(minut_max + ':' + second_max);
 					$( "#dialog_end" ).dialog( "open" );
 				});
@@ -732,7 +705,7 @@ class GestionMatchDetail extends MyPageSecure
 						$.post(
 							'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 							{ // variables
-								Id_Match : <?php echo $idMatch ?>,
+								Id_Match : idMatch,
 								Valeur : valeur,
 								TypeUpdate : 'Periode'
 							},
@@ -746,27 +719,27 @@ class GestionMatchDetail extends MyPageSecure
 									$('#'+valeur).addClass('actif');
 									switch (valeur) {
 										case 'P1':
-											texte = '1ère prolongation : 5 minutes';
-											minut_max = '05';
+											texte = lang.period_P1 + ' : 3 minutes';
+											minut_max = '03';
 											second_max = '00';
 											break;
 										case 'P2':
-											texte = '2nde prolongation : 5 minutes';
-											minut_max = '05';
+											texte = lang.period_P2 + ' : 3 minutes';
+											minut_max = '03';
 											second_max = '00';
 											break;
 										case 'TB':
-											texte = 'Tirs au but';
+											texte = lang.period_TB;
 											minut_max = '05';
 											second_max = '00';
 											break;
 										case 'M2':
-											texte = '2nde période : 10 minutes';
+											texte = lang.period_M2 + ' : 10 minutes';
 											minut_max = '10';
 											second_max = '00';
 											break;
 										default:
-											texte = '1ère période : 10 minutes';
+											texte = lang.period_M1 + ' : 10 minutes';
 											minut_max = '10';
 											second_max = '00';
 											break;
@@ -777,7 +750,7 @@ class GestionMatchDetail extends MyPageSecure
 									$('#dialog_ajust_periode').html($('.periode[class*="actif"]').html());
 									$( "#dialog_ajust" ).dialog( "open" );
 								}else{
-									custom_alert('Echec update<br />'+data, 'Echec');
+									custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention);
 								}
 							},
 							'text' // Format des données reçues.
@@ -787,35 +760,8 @@ class GestionMatchDetail extends MyPageSecure
 						$('#'+valeur).addClass('actif');
 					}
 				});
-			<?php	}	?>
-				/* DIALOG AJUST */
-				$( "#dialog_ajust" ).dialog({
-					autoOpen: false,
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$( this ).dialog( "close" );
-							var split_period = $('#periode_ajust').val();
-							split_period = split_period.split(':');
-							minut_max = split_period[0];
-							second_max = split_period[1];
-							var split_chrono = $('#chrono_ajust').val();
-							split_chrono = split_chrono.split(':');
-							run_time.setTime(split_chrono[0] * 60000 + split_chrono[1] * 1000);
-							$('#stop_button').click();
-							$('#run_time_display').text(run_time.toLocaleString()); //debug
-							$('#heure').val($('#chrono_ajust').val());
-							if($('#chrono_ajust').val() == '00:00'){
-								$('#run_button').hide();
-							}
-						},
-						"Annuler": function() {
-							$( this ).dialog( "close" );
-						}
-					}
-				});
-			<?php if($verrou != 'O') { ?>
-				$( "#dialog_ajust_opener, #heure" ).click(function() {
+
+                $( "#dialog_ajust_opener, #heure" ).click(function() {
 					$('#chrono_ajust').val($('#heure').val());
 					$('#periode_ajust').val(minut_max + ':' + second_max);
 					$('#dialog_ajust_periode').text($('.periode[class="actif"]').attr('id'));
@@ -867,7 +813,7 @@ class GestionMatchDetail extends MyPageSecure
 						ligne_id_joueur = '';
 						if(ligne_nom === undefined) {
 							
-							custom_alert('Vous devez sélectionner un joueur ou une équipe !');
+							custom_alert(lang.Selectionnez_equipe_joueur);
 							return;
 						}
 					}
@@ -902,7 +848,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/evt_match.php', // Le fichier cible côté serveur.
 						{ // variables
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							ligne : code_ligne,
 							idLigne : 0,
 							type : 'insert'
@@ -921,9 +867,9 @@ class GestionMatchDetail extends MyPageSecure
 								texteBut += '</td>';
 								texteNom = '<td class="list_nom">' + ligne_num + ligne_nom ;
 								if(ligne_evt == 'Tir contre')
-									texteNom += ' (Tir contré)';
+									texteNom += ' (' + lang.Tir_contre + ')';
 								if(ligne_evt == 'Tir')
-									texteNom += ' (Tir)';
+									texteNom += ' (' + lang.Tir + ')';
 								texteNom += '</td>';
 								texteVert = '<td class="list_evt">'
 								if(ligne_evt == 'Carton vert') {
@@ -932,12 +878,12 @@ class GestionMatchDetail extends MyPageSecure
 									//si 2 verts...
 									var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
 									if(nb_cartons == 2) {
-										custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_vert.png" /> pour ce joueur !<br />Vérifier type de faute.', 'Attention');
+										custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + '<br>' + lang.Verifier_type_faute, lang.Attention);
 									}
 									//si 3 verts...
 									var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
 									if(nb_cartons >= 3) {
-										custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_vert.png" /> pour ce joueur !<br />Avertir l\'arbitre, modifier en jaune.', 'Attention');
+										custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + '<br />' + lang.Avertir_arbitre, lang.Attention);
 									}
 									// Carton d'équipe
 								/*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
@@ -958,7 +904,7 @@ class GestionMatchDetail extends MyPageSecure
 									//si 2 jaunes...
 									var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune.png"]').length;
 									if(nb_cartons >= 2) {
-										custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_jaune.png" /> pour ce joueur !', 'Attention');
+										custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur, lang.Attention);
 									}
 								}
 								texteJaune += '</td>';
@@ -993,7 +939,7 @@ class GestionMatchDetail extends MyPageSecure
 								$.post(
 									'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 									{ // variables
-										Id_Match : <?php echo $idMatch ?>,
+										Id_Match : idMatch,
 										Valeur : $('#scoreA').text() + '-' + $('#scoreB').text(),
 										TypeUpdate : 'ValidScoreDetail'
 									},
@@ -1001,7 +947,7 @@ class GestionMatchDetail extends MyPageSecure
 									'text' // Format des données reçues.
 								);
 							}else{
-								custom_alert('Changement impossible<br />' + data, 'suppression');
+								custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention);
 							}
 							theInEvent = false;
 
@@ -1069,7 +1015,7 @@ class GestionMatchDetail extends MyPageSecure
 						ligne_num = '';
 						ligne_id_joueur = '';
 						if(ligne_nom === undefined) {
-							custom_alert('Vous devez sélectionner un joueur ou une équipe !');
+							custom_alert(lang.Selectionnez_equipe_joueur);
 							return;
 						}
 					}
@@ -1084,7 +1030,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/evt_match.php', // Le fichier cible côté serveur.
 						{ // variables
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							ligne : code_ligne,
 							ancienneLigne : ancienne_ligne,
 							idLigne : id_ligne,
@@ -1125,9 +1071,9 @@ class GestionMatchDetail extends MyPageSecure
 								texteBut += '</td>';
 								texteNom = '<td class="list_nom">' + ligne_num + ligne_nom ;
 								if(ligne_evt == 'Tir contre')
-									texteNom += ' (Tir contré)';
+									texteNom += ' (' + lang.Tir_contre + ')';
 								if(ligne_evt == 'Tir')
-									texteNom += ' (Tir)';
+									texteNom += ' (' + lang.Tir + ')';
 								texteNom += '</td>';
 								texteVert = '<td class="list_evt">'
 								if(ligne_evt == 'Carton vert') {
@@ -1191,7 +1137,7 @@ class GestionMatchDetail extends MyPageSecure
 								$.post(
 									'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 									{ // variables
-										Id_Match : <?php echo $idMatch ?>,
+										Id_Match : idMatch,
 										Valeur : $('#scoreA').text() + '-' + $('#scoreB').text(),
 										TypeUpdate : 'ValidScoreDetail'
 									},
@@ -1214,7 +1160,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/evt_match.php', // Le fichier cible côté serveur.
 						{ // variables
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							ligne : code_ligne,
 							ancienneLigne : ancienne_ligne,
 							idLigne : id_ligne,
@@ -1247,7 +1193,7 @@ class GestionMatchDetail extends MyPageSecure
 								$.post(
 									'v2/StatutPeriode.php', // Le fichier cible côté serveur.
 									{ // variables
-										Id_Match : <?php echo $idMatch ?>,
+										Id_Match : idMatch,
 										Valeur : $('#scoreA').text() + '-' + $('#scoreB').text(),
 										TypeUpdate : 'ValidScoreDetail'
 									},
@@ -1255,7 +1201,7 @@ class GestionMatchDetail extends MyPageSecure
 									'text' // Format des données reçues.
 								);
 							}else{
-								custom_alert('Changement impossible<br />' + data, 'suppression');
+								custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention);
 							}
 						},
 						'text' // Format des données reçues.
@@ -1270,7 +1216,7 @@ class GestionMatchDetail extends MyPageSecure
 				$.post(
 					'v2/getChrono.php',
 					{
-						idMatch : <?php echo $idMatch ?>,
+						idMatch : idMatch,
 					},
 					function(data){
 						if(data.action == 'start' || data.action == 'run'){
@@ -1291,9 +1237,9 @@ class GestionMatchDetail extends MyPageSecure
 					//		$('#chrono_plus').hide();
 							$('#heure').css('background-color', '#009900');
 							timer = setInterval(Horloge, 500);
-							avertissement('Chrono en cours');
+							avertissement(lang.Chrono + ' ' + lang.en_cours);
 							$('#tabs-2_link').click();
-						}else if(data.action == 'stop'){
+						} else if(data.action == 'stop'){
 							temp_time = new Date();
 							start_time = new Date();
 							run_time = new Date();
@@ -1316,7 +1262,7 @@ class GestionMatchDetail extends MyPageSecure
 							var second_ = run_time.getSeconds();
 							if (second_ < 10) {second_ = '0' + second_;}
 							$('#heure').val(minut_ + ':' + second_);
-							avertissement('Chrono arrêté');
+							avertissement(lang.Chrono + ' ' + lang.arrete);
 							$('#tabs-2_link').click();
 						}
 					},
@@ -1406,7 +1352,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/ajax_updateChrono.php',
 						{
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							start_time : start_time.getTime(),
 							run_time : run_time.getTime(),
 						},
@@ -1470,7 +1416,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/setChrono.php',
 						{
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							action : 'start',
 							start_time : start_time.getTime(),
 							run_time : run_time.getTime(),
@@ -1497,7 +1443,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/setChrono.php',
 						{
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							action : 'stop',
 							start_time : start_time.getTime(),
 							run_time : run_time.getTime(),
@@ -1530,7 +1476,7 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/setChrono.php', // : replace table chrono ligne idMatch...
 						{
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							action : 'run',
 							start_time : start_time.getTime(),
 							run_time : run_time.getTime(),
@@ -1556,18 +1502,95 @@ class GestionMatchDetail extends MyPageSecure
 					$.post(
 						'v2/setChrono.php',
 						{
-							idMatch : <?php echo $idMatch ?>,
+							idMatch : idMatch,
 							action : 'RAZ',
 						},
 						function(data){
 							if(data == 'OK'){
-								avertissement('RAZ chrono');
+								avertissement(lang.RAZ + ' ' + lang.chrono);
 							}
 						},
 						'text'
 					);
 				});
 			<?php	}	?>
+                
+                /* DIALOG END MATCH */
+				$( "#dialog_end_match" ).dialog({
+					autoOpen: false,
+					modal: true,
+					width: 500,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+							$.post(
+								'v2/saveComments.php', // Le fichier cible côté serveur.
+								{ // variables
+									idMatch : idMatch,
+									value : $('#commentaires').val(),
+									heure_fin_match : $('#time_end_match').val()
+								},
+								function(data){ // callback
+									if(data == $('#commentaires').val()){
+										$('#end_match_time').removeClass('inactif').addClass('actif');
+										$('#end_match_time').val($('#time_end_match').val());
+										$('#raz_button').click();
+										$('#run_button').hide();
+										$('.statut').removeClass('actif');
+										$('#END').addClass('actif');
+										$('#zoneTemps, .periode, #zoneChrono').hide();
+										$('.endmatch').show();
+										$('#comments').text($('#commentaires').val());
+									}else{
+										custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention);
+									}
+								},
+								'text' // Format des données reçues.
+							);
+						},
+						'Annuler/Dismiss': function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
+				/* DIALOG END */
+				$( "#dialog_end" ).dialog({
+					autoOpen: false,
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+							$('#heure').val(minut_max + ':' + second_max);
+						}
+					}
+				});
+			
+				/* DIALOG AJUST */
+				$( "#dialog_ajust" ).dialog({
+					autoOpen: false,
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+							var split_period = $('#periode_ajust').val();
+							split_period = split_period.split(':');
+							minut_max = split_period[0];
+							second_max = split_period[1];
+							var split_chrono = $('#chrono_ajust').val();
+							split_chrono = split_chrono.split(':');
+							run_time.setTime(split_chrono[0] * 60000 + split_chrono[1] * 1000);
+							$('#stop_button').click();
+							$('#run_time_display').text(run_time.toLocaleString()); //debug
+							$('#heure').val($('#chrono_ajust').val());
+							if($('#chrono_ajust').val() == '00:00'){
+								$('#run_button').hide();
+							}
+						},
+						"Annuler/Dismiss": function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
 
 				/* TABS */
 				$('#tabs-1_link').hide();
@@ -1604,7 +1627,7 @@ class GestionMatchDetail extends MyPageSecure
 				$('#pdfFeuille').buttonset();
 				$('#pdfFeuille').click(function(event) {
 					event.preventDefault();
-					window.open('FeuilleMatchMulti.php?listMatch=<?php echo $idMatch ?>','_blank');
+					window.open('FeuilleMatchMulti.php?listMatch=' + idMatch,'_blank');
 				});
 				/* PARAMETRES PAR DEFAUT */
 				var run_time = new Date();
@@ -1612,59 +1635,55 @@ class GestionMatchDetail extends MyPageSecure
 					$('#controleVerrou').attr('checked','checked');
 					$('#zoneTemps, #zoneChrono, .match, #initA, #initB, .suppression').hide();
 					$('#typeMatch label').not('.ui-state-active').hide();				// masque le type match inactif !!
-					//$('#reset_evt').click();
 				<?php	}else{	?>
 					$('#zoneTemps, #zoneChrono, .match').show();
 					//$('.statut[class*="actif"]').click();
 					$('#reset_evt').click();
-					<?php if($typeMatch == 'C'){	?>
-						typeMatch = 'classement';
-						$('#P1, #P2, #TB').hide();
-					<?php	}else{	?>
-						typeMatch = 'elimination';
-						$('#P1, #P2, #TB').show();
-					<?php	}	?>
-					statutActive('<?php echo $statutMatch ?>', 'N');
+                    if(typeMatch == 'C') {
+                        $('#P1, #P2, #TB').hide();
+                    } else {
+                        $('#P1, #P2, #TB').show();
+                    }
+					statutActive(statutMatch, 'N');
 				<?php	}	?>
 				$('#end_match_time').val('<?php echo substr($heure_fin,-5,2).'h'.substr($heure_fin,-2) ?>');
-				<?php if($statutMatch != 'END'){	?>
-					$('.endmatch').hide();
-				<?php	}	?>
-				$('#<?php echo $periodeMatch ?>').addClass('actif');
-				switch ('<?php echo $periodeMatch ?>') {
+				if(statutMatch != 'END') {
+                    $('.endmatch').hide();
+                }
+				$('#' + periode_en_cours).addClass('actif');
+				switch (periode_en_cours) {
 					case 'P1':
-						texte = '1ère prolongation : 3 minutes';
+						texte = lang.period_P1 + ' : 3 minutes';
 						minut_max = '03';
 						second_max = '00';
 						break;
 					case 'P2':
-						texte = '2nde prolongation : 3 minutes';
+						texte = lang.period_P2 + ' : 3 minutes';
 						minut_max = '03';
 						second_max = '00';
 						break;
 					case 'TB':
-						texte = 'Tirs au but';
+						texte = lang.period_TB;
 						minut_max = '03';
 						second_max = '00';
 						break;
 					case 'M2':
-						texte = '2nde période : 10 minutes';
+						texte = lang.period_M2 + ' : 10 minutes';
 						minut_max = '10';
 						second_max = '00';
 						break;
 					default:
-						texte = '1ère période : 10 minutes';
+						texte = lang.period_M1 + ' : 10 minutes';
 						minut_max = '10';
 						second_max = '00';
 						break;
 				}
 				$('#update_evt').hide();
 				$('#delete_evt').hide();
-				var periode_en_cours = '<?php echo $periodeMatch ?>';
 				
 				/* Evt chargés */
 				<?php
-				for ($i=1;$i<=$num_results5;$i++)
+				for ($i=1; $i<=$num_results5; $i++)
 				{
 					$row5 = mysql_fetch_array($result5);
 					$evtEquipe = $row5['Equipe_A_B'];
@@ -1701,8 +1720,8 @@ class GestionMatchDetail extends MyPageSecure
 		<form>
 			<img src="v2/FFCK.gif" id="logo" />
 			<div id="avert"></div>
-			<a href="#" class="fm_bouton fm_tabs" id="tabs-1_link">Paramètres du match<span class="icon_parametres"></span></a>
-			<a href="#" class="fm_bouton fm_tabs" id="tabs-2_link">Déroulement du match<span class="icon_rignt"></span></a>
+			<a href="#" class="fm_bouton fm_tabs" id="tabs-1_link"><?php echo $lang['Parametres_match']; ?><span class="icon_parametres"></span></a>
+			<a href="#" class="fm_bouton fm_tabs" id="tabs-2_link"><?php echo $lang['Deroulement_match']; ?><span class="icon_rignt"></span></a>
 			<h3 class="centre"><?php 
 				echo $row['Code_competition'];
 				if($row['Code_typeclt'] == 'CHPT')
@@ -1711,105 +1730,117 @@ class GestionMatchDetail extends MyPageSecure
 					echo ' ('.$row['Soustitre2'].')';
 				if($row['Phase'] != '')
 					echo ' - '.$row['Phase'];
-				echo ' - Match n°'.$row['Numero_ordre']; ?><br />
-			<?php echo utyDateUsToFr($row['Date_match']).' à '.$row['Heure_match'].' - Terrain '.$row['Terrain']; ?></h3>
+				echo ' - ' . $lang['Match_no'] . $row['Numero_ordre']; ?><br />
+                <?php 
+                    if($version == 'en') {
+                        echo $row['Date_match'];
+                    } else {
+                        echo utyDateUsToFr($row['Date_match']);
+                    }
+                    echo ' ' . $lang['a_'] . ' ' . $row['Heure_match'] . ' - ' . $lang['Terrain'] . ' '.$row['Terrain']; 
+                ?>
+            </h3>
 			<div id="tabs-1" class="tabs_content">
 				<div id="accordion">
-					<div class="note">A remplir avant le début du match</div>
-					<h3>Paramètres du match ID# <?php echo $idMatch; ?></h3>
+					<div class="note"><?php echo $lang['A_remplir']; ?></div>
+					<h3><?php echo $lang['Parametres_match']; ?> ID# <?php echo $idMatch; ?></h3>
 					<div>
 						<div class="moitie">
-							Type de match : 
+							<?php echo $lang['Type_match']; ?> : 
 							<br />
 							<span id="typeMatch">
-								<input type="radio" name="typeMatchtypeMatch" id="typeMatchClassement" <?php if($row['Type_match'] == 'C') echo 'checked="checked"'; ?> /><label for="typeMatchClassement" title="Egalité possible">match de classement</label>
-								<input type="radio" name="typeMatch" id="typeMatchElimination" <?php if($row['Type_match'] == 'E') echo 'checked="checked"'; ?> /><label for="typeMatchElimination" title="Vainqueur obligatoire">match à élimination</label>
+								<input type="radio" name="typeMatchtypeMatch" id="typeMatchClassement" <?php if($row['Type_match'] == 'C') echo 'checked="checked"'; ?> />
+                                <label for="typeMatchClassement" title="<?php echo $lang['Egalite_possible']; ?>"><?php echo $lang['Match_classement']; ?></label>
+								<input type="radio" name="typeMatch" id="typeMatchElimination" <?php if($row['Type_match'] == 'E') echo 'checked="checked"'; ?> />
+                                <label for="typeMatchElimination" title="<?php echo $lang['Vainqueur_obligatoire']; ?>"><?php echo $lang['Match_elimination']; ?></label>
 							</span>
-							<img id="typeMatchImg" style="vertical-align:middle;" title="<?php if($row['Type_match'] == 'C'){ echo 'Match de classement'; }else{ echo 'Match à élimination';} ?>" alt="Type de match" src="../img/type<?php echo $row['Type_match']; ?>.png" />
-							<br />
-							<br />
+							<img id="typeMatchImg" style="vertical-align:middle;" title="<?php if($row['Type_match'] == 'C'){ echo $lang['Match_classement']; }else{ echo $lang['Match_elimination'];} ?>" alt="<?php echo $lang['Type_match']; ?>" src="../img/type<?php echo $row['Type_match']; ?>.png" />
+                            <br>
+							<br>
 							<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-								<span title="PC course seulement">Publication match : </span>
+								<span title="<?php echo $lang['PC_Course_seulement']; ?>"><?php echo $lang['Publication']; ?> : </span>
 								<br />
 								<span id="publiMatch">
-									<input type="radio" name="publiMatch" id="prive" <?php if($publiMatch != 'O') echo 'checked="checked"'; ?> /><label for="prive" title="Match non public">Privé</label>
-									<input type="radio" name="publiMatch" id="public" <?php if($publiMatch == 'O') echo 'checked="checked"'; ?> /><label for="public" title="Match public">Public</label>
+									<input type="radio" name="publiMatch" id="prive" <?php if($publiMatch != 'O') echo 'checked="checked"'; ?> /><label for="prive" title="<?php echo $lang['Match_prive']; ?>"><?php echo $lang['Prive']; ?></label>
+									<input type="radio" name="publiMatch" id="public" <?php if($publiMatch == 'O') echo 'checked="checked"'; ?> /><label for="public" title="<?php echo $lang['Match_public']; ?>"><?php echo $lang['Public']; ?></label>
 								</span>
 							<?php } ?>
-							<img height="30" style="vertical-align:middle;" title="Publier O/N" alt="Publier O/N" src="../img/oeil2<?php if($publiMatch == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
+							<img height="30" style="vertical-align:middle;" title="<?php echo $lang['Publier']; ?> ?" alt="<?php echo $lang['Publier']; ?> ?" src="../img/oeil2<?php if($publiMatch == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
 							<br />
 							<br />
-							<input type="button" id="pdfFeuille" name="pdfFeuille" value="Version PDF" />
+							<input type="button" id="pdfFeuille" name="pdfFeuille" value="PDF" />
+                            <a href="../lang.php?lang=fr&p=fm2&idMatch=<?php echo $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
+                            <a href="../lang.php?lang=en&p=fm2&idMatch=<?php echo $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
 							<br />
 							<br />
-							Charger une autre feuille de match :
+							<?php echo $lang['Charger_autre_feuille']; ?> :
 							<br />
-							ID# <input type="tel" id="idFeuille" /><input type="button" id="chargeFeuille" value="Charger" />
+							ID# <input type="tel" id="idFeuille" /><input type="button" id="chargeFeuille" value="<?php echo $lang['Charger']; ?>" />
 						</div>
 						<div class="moitie droite">
 							<span id="validScoreMatch">
-								<i>Score officiel :<br />
+								<i><?php echo $lang['Score_officiel']; ?> :<br />
 								<span class="presentScore"><?php echo $row['equipeA']; ?> <span class="score" id="scoreA4"><?php echo $row['ScoreA']; ?></span> - <span class="score" id="scoreB4"><?php echo $row['ScoreB']; ?></span> <?php echo $row['equipeB']; ?></span>
 								</i>
 								<br />
 								<br />
-								Score provisoire (calculé nb de buts) :<br />
+								<?php echo $lang['Score_provisoire']; ?> :<br />
 								<span class="presentScore"><?php echo $row['equipeA']; ?> <span class="score" id="scoreA3">0</span> - <span class="score" id="scoreB3">0</span> <?php echo $row['equipeB']; ?></span>
 								<?php if($verrou != 'O') { ?>
 									<br />
 									<br />
-									<input type="button" id="validScore" name="validScore" value="Valider ce score" />
+									<input type="button" id="validScore" name="validScore" value="<?php echo $lang['Valider_score']; ?>" />
 								<?php } ?>
 							</span>
 							<br />
 							<br />
-							<span title="PC course seulement">Contrôle match : </span>
+							<span title="<?php echo $lang['PC_Course_seulement']; ?>"><?php echo $lang['Controle_match']; ?> : </span>
 							<br />
 							<span id="controleMatch">
 								<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-									<input type="radio" name="controleMatch" id="controleOuvert" <?php if($verrou != 'O') echo 'checked="checked"'; ?> /><label for="controleOuvert">Ouvert</label>
+									<input type="radio" name="controleMatch" id="controleOuvert" <?php if($verrou != 'O') echo 'checked="checked"'; ?> /><label for="controleOuvert"><?php echo $lang['Ouvert']; ?></label>
 								<?php } ?>
-								<input type="radio" name="controleMatch" id="controleVerrou" <?php if($verrou == 'O') echo 'checked="checked"'; ?> /><label for="controleVerrou">Verrouillé</label>
+								<input type="radio" name="controleMatch" id="controleVerrou" <?php if($verrou == 'O') echo 'checked="checked"'; ?> /><label for="controleVerrou"><?php echo $lang['Verrouille']; ?></label>
 							</span>
-							<img height="30" style="vertical-align:middle;" title="Verrouiller O/N" alt="Verrouiller O/N" src="../img/verrou2<?php if($verrou == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
+							<img height="30" style="vertical-align:middle;" title="<?php echo $lang['Verrouille']; ?> ?" alt="<?php echo $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if($verrou == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
 						</div>
 					</div>
-					<h3>Officiels</h3>
+					<h3><?php echo $lang['Officiels']; ?></h3>
 					<div>
 						<div class="moitie">
-							<label>Secrétaire : </label><br /><span class="editOfficiel" id="Secretaire"><?php echo $row['Secretaire']; ?></span><br />
-							<label>Chronomètre : </label><br /><span class="editOfficiel" id="Chronometre"><?php echo $row['Chronometre']; ?></span><br />
-							<label>Chronomètre temps d'action de but : </label><br /><span class="editOfficiel" id="Timeshoot"><?php echo $row['Timeshoot']; ?></span><br />
+							<label><?php echo $lang['Secretaire']; ?> : </label><br /><span class="editOfficiel" id="Secretaire"><?php echo $row['Secretaire']; ?></span><br />
+							<label><?php echo $lang['Chronometre']; ?> : </label><br /><span class="editOfficiel" id="Chronometre"><?php echo $row['Chronometre']; ?></span><br />
+							<label><?php echo $lang['Time_shoot']; ?> : </label><br /><span class="editOfficiel" id="Timeshoot"><?php echo $row['Timeshoot']; ?></span><br />
 							<br />
-							<label>Arbitre principal : </label><br /><span class="editArbitres" id="Arbitre_principal"><?php echo $row['Arbitre_principal']; ?></span><br />
-							<label>Arbitre secondaire : </label><br /><span class="editArbitres" id="Arbitre_secondaire"><?php echo $row['Arbitre_secondaire']; ?></span><br />
-							<label>Juge de ligne : </label><br /><span class="editOfficiel" id="Ligne1"><?php echo $row['Ligne1']; ?></span><br />
-							<label>Juge de ligne : </label><br /><span class="editOfficiel" id="Ligne2"><?php echo $row['Ligne2']; ?></span><br />
+							<label><?php echo $lang['Arbitre_1']; ?> : </label><br /><span class="editArbitres" id="Arbitre_principal"><?php echo $row['Arbitre_principal']; ?></span><br />
+							<label><?php echo $lang['Arbitre_2']; ?> : </label><br /><span class="editArbitres" id="Arbitre_secondaire"><?php echo $row['Arbitre_secondaire']; ?></span><br />
+							<label><?php echo $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne1"><?php echo $row['Ligne1']; ?></span><br />
+							<label><?php echo $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne2"><?php echo $row['Ligne2']; ?></span><br />
 						</div>
 						<div class="moitie droite">
-							<label>Club organisateur : </label><?php echo $row['Organisateur']; ?><br />
-							<label><?php echo $lang['R1']; //Responsable organisation (R1)?>: </label><?php echo $row['Responsable_R1']; ?><br />
-							<label>Délégué CNA : </label><?php echo $row['Delegue']; ?><br />
-							<label>Chef des arbitres : </label><?php echo $row['ChefArbitre']; ?><br />
-							<label>Responsable compétition (RC): </label><?php echo $row['Responsable_insc']; ?><br />
+							<label><?php echo $lang['Club_organisateur']; ?> : </label><?php echo $row['Organisateur']; ?><br />
+							<label><?php echo $lang['R1'] ?> : </label><?php echo $row['Responsable_R1']; ?><br />
+							<label><?php echo $lang['Delegue'] ?> : </label><?php echo $row['Delegue']; ?><br />
+							<label><?php echo $lang['Chef_arbitre'] ?> : </label><?php echo $row['ChefArbitre']; ?><br />
+							<label><?php echo $lang['RC'] ?> : </label><?php echo $row['Responsable_insc']; ?><br />
 							<br />
 
 						</div>
 					</div>
-					<h3>Equipe A - <img src="../img/Pays/<?php echo $paysA; ?>.png" width="25px" height="16" /> <?php echo $row['equipeA']; ?>								
+					<h3><?php echo $lang['Equipe'] ?> A - <img src="../img/Pays/<?php echo $paysA; ?>.png" width="25" height="16" /> <?php echo $row['equipeA']; ?>								
 						<span class="score" id="scoreA2">0</span>
 					</h3>
 					<div>
 						<table class="dataTable" id="equipeA">
 							<thead>
 								<tr>
-									<th>N°</th>
-									<th>Statut</th>
-									<th>Nom</th>
-									<th>Prénom</th>
-									<th>Licence</th>
+									<th><?php echo $lang['Num'] ?></th>
+									<th><?php echo $lang['Statut'] ?></th>
+									<th><?php echo $lang['Nom'] ?></th>
+									<th><?php echo $lang['Prenom'] ?></th>
+									<th><?php echo $lang['Licence'] ?></th>
 									<th>Cat.</th>
-									<th>Supp</th>
+									<th><?php echo $lang['Supp'] ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -1831,7 +1862,7 @@ class GestionMatchDetail extends MyPageSecure
 											$joueur_temp .= $row3["Matric"];
 										$joueur_temp .= '</td>';
 										$joueur_temp .= '<td>'.$age.'</td>';
-										$joueur_temp .= '<td><a href="#" class="suppression" title="Supprimer le joueur" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+										$joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$joueur_temp .= '</tr>';
 									}else{
 										$entr_temp  = '<tr>';
@@ -1844,7 +1875,7 @@ class GestionMatchDetail extends MyPageSecure
 											$entr_temp .= $row3["Matric"];
 										$entr_temp .= '</td>';
 										$entr_temp .= '<td>'.$age.'</td>';
-										$entr_temp .= '<td><a href="#" class="suppression" title="Supprimer le joueur" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+										$entr_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$entr_temp .= '</tr>';
 										$joueur_temp = '';
 									}
@@ -1856,22 +1887,22 @@ class GestionMatchDetail extends MyPageSecure
 							?>
 							</tbody>
 						</table>
-						<input type="button" name="initA" id="initA" value="Recharger les joueurs présents" />
+						<input type="button" name="initA" id="initA" value="<?php echo $lang['Recharger_joueurs'] ?>" />
 					</div>			
-					<h3>Equipe B - <img src="../img/Pays/<?php echo $paysB; ?>.png" width="25px" height="16" /> <?php echo $row['equipeB']; ?>								
+					<h3><?php echo $lang['Equipe'] ?> B - <img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>								
 						<span class="score" id="scoreB2">0</span>
 					</h3>
 					<div>
 						<table class="dataTable" id="equipeB">
 							<thead>
 								<tr>
-									<th>N°</th>
-									<th>Statut</th>
-									<th>Nom</th>
-									<th>Prénom</th>
-									<th>Licence</th>
+									<th><?php echo $lang['Num'] ?></th>
+									<th><?php echo $lang['Statut'] ?></th>
+									<th><?php echo $lang['Nom'] ?></th>
+									<th><?php echo $lang['Prenom'] ?></th>
+									<th><?php echo $lang['Licence'] ?></th>
 									<th>Cat.</th>
-									<th>Supp</th>
+									<th><?php echo $lang['Supp'] ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -1893,7 +1924,7 @@ class GestionMatchDetail extends MyPageSecure
 											$joueur_temp .= $row4["Matric"];
 										$joueur_temp .= '</td>';
 										$joueur_temp .= '<td>'.$age.'</td>';
-										$joueur_temp .= '<td><a href="#" class="suppression" title="Supprimer le joueur" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+										$joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$joueur_temp .= '</tr>';
 									}else{
 										$entr_temp  = '<tr>';
@@ -1906,7 +1937,7 @@ class GestionMatchDetail extends MyPageSecure
 											$entr_temp .= $row4["Matric"];
 										$entr_temp .= '</td>';
 										$entr_temp .= '<td>'.$age.'</td>';
-										$entr_temp .= '<td><a href="#" class="suppression" title="Supprimer le joueur" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+										$entr_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$entr_temp .= '</tr>';
 										$joueur_temp = '';
 									}
@@ -1918,7 +1949,7 @@ class GestionMatchDetail extends MyPageSecure
 							?>
 							</tbody>
 						</table>
-						<input type="button" name="initB" id="initB" value="Recharger les joueurs présents" />
+						<input type="button" name="initB" id="initB" value="<?php echo $lang['Recharger_joueurs'] ?>" />
 					</div>			
 				</div>			
 			</div>
@@ -1926,23 +1957,30 @@ class GestionMatchDetail extends MyPageSecure
 				<table class="maxWidth" id="deroulement_match">
 					<tr>
 						<th colspan="3">
-							<span class="match">Match :</span>
-							<a href="#" id="ATT" class="fm_bouton statut<?php if($statutMatch == 'ATT') echo ' actif'; ?>">En attente</a><a href="#" id="ON" class="fm_bouton statut<?php if($statutMatch == 'ON') echo ' actif'; ?>">En cours</a><a href="#" id="END" class="fm_bouton statut<?php if($statutMatch == 'END') echo ' actif'; ?>">Terminé</a>
-							<span class="endmatch">Fin : </span><input type="tel" id="end_match_time" class="fm_input_text endmatch" value="<?php echo $row['Heure_fin']; ?>" />
+							<span class="match"></span>
+							<a href="#" id="ATT" class="fm_bouton statut<?php if($statutMatch == 'ATT') echo ' actif'; ?>"><?php echo $lang['En_attente']; ?></a>
+                            <a href="#" id="ON" class="fm_bouton statut<?php if($statutMatch == 'ON') echo ' actif'; ?>"><?php echo $lang['En_cours']; ?></a>
+                            <a href="#" id="END" class="fm_bouton statut<?php if($statutMatch == 'END') echo ' actif'; ?>"><?php echo $lang['Termine']; ?></a>
+							<span class="endmatch"><?php echo $lang['Fin'] ?> : </span><input type="tel" id="end_match_time" class="fm_input_text endmatch" value="<?php echo $row['Heure_fin']; ?>" />
 							<br />
-							<a href="#" id="M1" class="fm_bouton periode<?php if($periodeMatch == 'M1') echo ' actif'; ?>">1ère période</a><a href="#" id="M2" class="fm_bouton periode<?php if($periodeMatch == 'M2') echo ' actif'; ?>">2nde période</a><a href="#" id="P1" class="fm_bouton periode<?php if($periodeMatch == 'P1') echo ' actif'; ?>">1ère prolong.</a><a href="#" id="P2" class="fm_bouton periode<?php if($periodeMatch == 'P2') echo ' actif'; ?>">2nde prolong.</a><a href="#" id="TB" class="fm_bouton periode<?php if($periodeMatch == 'TB') echo ' actif'; ?>">Tirs au but</a>
+							<a href="#" id="M1" class="fm_bouton periode<?php if($periodeMatch == 'M1') echo ' actif'; ?>"><?php echo $lang['period_M1']; ?></a>
+                            <a href="#" id="M2" class="fm_bouton periode<?php if($periodeMatch == 'M2') echo ' actif'; ?>"><?php echo $lang['period_M2']; ?></a>
+                            <a href="#" id="P1" class="fm_bouton periode<?php if($periodeMatch == 'P1') echo ' actif'; ?>"><?php echo $lang['period_P1']; ?></a>
+                            <a href="#" id="P2" class="fm_bouton periode<?php if($periodeMatch == 'P2') echo ' actif'; ?>"><?php echo $lang['period_P2']; ?></a>
+                            <a href="#" id="TB" class="fm_bouton periode<?php if($periodeMatch == 'TB') echo ' actif'; ?>"><?php echo $lang['period_TB']; ?></a>
 <!-- CHRONO DEBUG
 <br />
 start_time: <span id="start_time_display"></span><br />
 run_time: <span id="run_time_display"></span><br />
 stop_time: <span id="stop_time_display"></span><br />
+
 -->
 						</th>
 					</tr>
 					<tr>
 						<td id="selectionA">
-							<a href="#" class="fm_bouton equipes" data-equipe="A" data-player="Equipe A">Equipe A<br />
-								<img src="../img/Pays/<?php echo $paysA; ?>.png" width="25px" height="16" /> <?php echo $row['equipeA']; ?>
+							<a href="#" class="fm_bouton equipes" data-equipe="A" data-player="Equipe A"><?php echo $lang['Equipe']; ?> A<br />
+								<img src="../img/Pays/<?php echo $paysA; ?>.png" width="25" height="16" /> <?php echo $row['equipeA']; ?>
 								<span class="score" id="scoreA">0</span>
 							</a>
 							<br /><br />
@@ -1972,40 +2010,40 @@ stop_time: <span id="stop_time_display"></span><br />
 						<td id="selectionChrono" class="centre">
 							<div id="zoneChrono">
 								<img id="chrono_moins" src="v2/images/moins.gif" />
-								<span id="chronoText">Chrono : </span><span id="updateChrono"><img src="v2/valider.gif" /></span><input type="tel" id="heure" class="fm_input_text" title="Paramètres du chrono" readonly />
-								<span class="icon_parametres" id="dialog_ajust_opener" title="Paramètres du chrono"></span>
+								<span id="chronoText"><?php echo $lang['Chrono'] ?> : </span><span id="updateChrono"><img src="v2/valider.gif" /></span><input type="tel" id="heure" class="fm_input_text" title="<?php echo $lang['Parametres_chrono'] ?>" readonly />
+								<span class="icon_parametres" id="dialog_ajust_opener" title="<?php echo $lang['Parametres_chrono'] ?>"></span>
 								<img id="chrono_plus" src="v2/images/plus.gif" /><br />
 								
 								<a href="#" id="start_button" class="fm_bouton chronoButton">Start</a>
 								<a href="#" id="run_button" class="fm_bouton chronoButton">Run</a>
 								<a href="#" id="stop_button" class="fm_bouton chronoButton">Stop</a>
-								<a href="#" id="raz_button" class="fm_bouton chronoButton">RAZ</a>
+								<a href="#" id="raz_button" class="fm_bouton chronoButton"><?php echo $lang['RAZ'] ?></a>
 							</div>
 							<div id="zoneEvt">
-								<a href="#" id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but">But</span></a>
+								<a href="#" id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but"><?php echo $lang['But'] ?></span></a>
 								<a href="#" id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton"><img src="v2/carton_vert.png" /></a>
-								<a href="#" id="evt_arr" data-evt="Tir contre" data-code="A" class="fm_bouton evtButton" title="Tir contré (par le gardien ou un défenseur)">Tir contré</a>
+								<a href="#" id="evt_arr" data-evt="Tir contre" data-code="A" class="fm_bouton evtButton" title="<?php echo $lang['Tir_contre_gardien'] ?>"><?php echo $lang['Tir_contre'] ?></a>
 								<a href="#" id="evt_jaune" data-evt="Carton jaune" data-code="J" class="fm_bouton evtButton"><img src="v2/carton_jaune.png" /></a>
-								<a href="#" id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="Tir non cadré">Tir</a>
+								<a href="#" id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?php echo $lang['Tir_non_cadre'] ?>"><?php echo $lang['Tir'] ?></a>
 								<a href="#" id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton"><img src="v2/carton_rouge.png" /></a>
 							</div>
 							<div id="zoneTemps">
 								<img id="time_moins" src="v2/images/moins.gif" />
 								<img id="time_plus" src="v2/images/plus.gif" />
-								Temps : <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00" />
+								<?php echo $lang['Temps'] ?> : <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00" />
 								<img id="time_moins2" src="v2/images/moins.gif" />
 								<img id="time_plus2" src="v2/images/plus.gif" />
 								<br />
-								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3">Valider</a>
-								<a href="#" id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> Modifier</a>
-								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> Suppr.</a>
-								<a href="#" id="reset_evt" class="fm_bouton evtButton2">Annuler</a>
+								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3">OK</a>
+								<a href="#" id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?php echo $lang['Modifier'] ?></a>
+								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?>.</a>
+								<a href="#" id="reset_evt" class="fm_bouton evtButton2"><?php echo $lang['Annuler'] ?></a>
 							</div>
 						</td>
 						<td id="selectionB">
 							<a href="#" class="fm_bouton equipes" data-equipe="B" data-player="Equipe B">
-								<span class="score" id="scoreB">0</span>Equipe B<br />
-								<img src="../img/Pays/<?php echo $paysB; ?>.png" width="25px" height="16" /> <?php echo $row['equipeB']; ?>
+								<span class="score" id="scoreB">0</span><?php echo $lang['Equipe'] ?> B<br />
+								<img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>
 							</a>
 							<br /><br />
 							<?php 			
@@ -2036,17 +2074,17 @@ stop_time: <span id="stop_time_display"></span><br />
 						<td colspan="3">
 							<table id="list_header" class="maxWidth ui-state-default">
 								<tr>
-									<th class="list_evt_v">V</th>
-									<th class="list_evt_j">J</th>
-									<th class="list_evt_r">R</th>
-									<th class="list_nom">Equipe A</th>
-									<th class="list_evt_b">B</th>
-									<th class="list_chrono" id="change_ordre" title="Changer l'ordre">Temps <img src="../img/up.png" /></th>
-									<th class="list_evt_b">B</th>
-									<th class="list_nom">Equipe B</th>
-									<th class="list_evt_v">V</th>
-									<th class="list_evt_j">J</th>
-									<th class="list_evt_r">R</th>
+									<th class="list_evt_v"><?php echo $lang['V'] ?></th>
+									<th class="list_evt_j"><?php echo $lang['J'] ?></th>
+									<th class="list_evt_r"><?php echo $lang['R'] ?></th>
+									<th class="list_nom"><?php echo $lang['Equipe'] ?> A</th>
+									<th class="list_evt_b"><?php echo $lang['B'] ?></th>
+									<th class="list_chrono" id="change_ordre" title="<?php echo $lang['Changer_ordre'] ?>"><?php echo $lang['Temps'] ?> <img src="../img/up.png" /></th>
+									<th class="list_evt_b"><?php echo $lang['B'] ?></th>
+									<th class="list_nom"><?php echo $lang['Equipe'] ?> B</th>
+									<th class="list_evt_v"><?php echo $lang['V'] ?></th>
+									<th class="list_evt_j"><?php echo $lang['J'] ?></th>
+									<th class="list_evt_r"><?php echo $lang['R'] ?></th>
 								</tr>
 							</table>
 							<table id="list" class="maxWidth">
@@ -2125,33 +2163,33 @@ stop_time: <span id="stop_time_display"></span><br />
 					</tr>
 				</table>
 				<br />
-				Commentaires :
+				<?php echo $lang['Commentaires'] ?> :
 				<div id="comments"><?php echo $row['Commentaires_officiels'];?></div>
 				<br />
 				<br />
 				<br />
 			</div>
-				<div id="dialog_ajust" title="Paramètres du chrono">
+				<div id="dialog_ajust" title="<?php echo $lang['Parametres_chrono'] ?>">
 					<h3 id="dialog_ajust_periode">
 					</h3>
 					<p>
-						Ajuster le chrono : <input type="tel" id="chrono_ajust" class="fm_input_text" />
+						<?php echo $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
 					</p>
 					<p>
-						Durée de la période : <input type="tel" id="periode_ajust" class="fm_input_text" />
+						<?php echo $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
 					</p>
 				</div>
-				<div id="dialog_end" title="Fin de période">
+				<div id="dialog_end" title="<?php echo $lang['Fin_periode'] ?>">
 					<p class="centre">
-						<span class="fm_input_text" id="periode_end">00:00</span><br />Période terminée
+						<span class="fm_input_text" id="periode_end">00:00</span><br /><?php echo $lang['Periode_terminee'] ?>
 					</p>
 				</div>
-				<div id="dialog_end_match" title="Fin du match">
+				<div id="dialog_end_match" title="<?php echo $lang['Fin_match'] ?>">
 					<p class="centre">
-						Heure fin de match : <input type="tel" id="time_end_match" class="fm_input_text" />
+						<?php echo $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
 					</p>
 					<p class="centre">
-						Commentaires officiels :<br />
+						<?php echo $lang['Commentaires_officiels'] ?> :<br />
 						<textarea id="commentaires" rows="4" cols="50"></textarea>
 					</p>
 				</div>

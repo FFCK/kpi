@@ -21,7 +21,7 @@ switch ($referer) {
         header('Location: index.php?lang=' . $lang);
         break;
     case 'fm2' :
-        header('Location: index.php?idMatch=' . $idMatch);
+        header('Location: admin/FeuilleMarque2.php?idMatch=' . $idMatch);
         break;
 }
 
