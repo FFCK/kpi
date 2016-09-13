@@ -60,6 +60,8 @@ function Find()
 	jq('#formEquipeJoueur').submit();
 }
 
+
+
 jq(document).ready(function() { //Jquery + NoConflict='J'
 
 	// Maskedinput
@@ -269,8 +271,9 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#formEquipeJoueur').submit();
 	});
 
+    jq('#changeEquipe').change(function(){
+    	jq(location).attr('href', "?idEquipe=" + jq(this).val());
+    });
+
 });
 
-function changeEquipe(){
-	jq(location).attr('href', "?idEquipe=" + jq('#idEquipe').val());
-}

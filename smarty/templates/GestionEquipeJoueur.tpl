@@ -30,7 +30,7 @@
 						{/if}
 						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" title="Feuille de présence PDF"><img height="25" src="../img/pdf.png" /></a>						
 						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" title="Feuille de présence PDF - EN"><img height="25" src="../img/pdfEN.png" /></a>						
-						<select name='idEquipe' id='idEquipe' onChange="changeEquipe();">
+						<select name='changeEquipe' id='changeEquipe'>
                             {if $idEquipe <= 0}
                                 <Option Value="" selected>Sélectionner...</option>
                             {/if}
