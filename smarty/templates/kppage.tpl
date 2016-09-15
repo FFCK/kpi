@@ -24,15 +24,17 @@
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux des commentaires" href="http://kayak-polo.info/?feed=comments-rss2" />
 
         <link rel='stylesheet' href='css/fullcalendar.min.css' type='text/css' media='all' />
-        <link rel='stylesheet' id='material-custom-css'  href='wordpress/wp-content/themes/material/stylesheets/styles.css?ver=4.2.1' type='text/css' media='all' />
-        <link rel='stylesheet' id='material-main-css'  href='wordpress/wp-content/themes/material/style.css?ver=4.2.1' type='text/css' media='all' />
-        <link rel='stylesheet' id='my_style-css'  href='css/jquery.dataTables.css?ver=4.2.1' type='text/css' media='all' />
-        <link rel="stylesheet" href="css/jquery-ui.css">
-        <link rel="stylesheet" href="css/fontawesome/font-awesome.css">
+        <link rel='stylesheet' id='material-custom-css' href='wordpress/wp-content/themes/material/stylesheets/styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel='stylesheet' id='material-main-css' href='wordpress/wp-content/themes/material/style.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel="stylesheet" href="css/jquery-ui.css?v={$NUM_VERSION}">
+        <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
         
         <script type='text/javascript' src='wordpress/wp-includes/js/jquery/jquery.js?ver=1.11.2&v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='js/jquery-ui-1.11.4.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='wordpress/wp-content/themes/material/javascripts/bootstrap.min.js?ver=4.2.1&v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='wordpress/wp-content/themes/material/javascripts/main.js?ver=4.2.1&v={$NUM_VERSION}'></script>
         <!--<script type='text/javascript' src='//cdn.datatables.net/responsive/1.0.6/js/dataTables.responsive.min.js'></script>-->
@@ -63,7 +65,7 @@
 
         {assign var=temp value="css/$contenutemplate.css"} 
         {if is_file($temp)}
-            <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css" />
+            <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
         {/if}
         <!-- 
             Css = '' (simply, zsainto, ckca...) 
@@ -72,7 +74,7 @@
         -->
         {assign var=temp value="css/$css_supp.css"} 
         {if $css_supp && is_file($temp)}
-            <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css">
+            <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css?v={$NUM_VERSION}">
         {/if}
         <script src="js/formTools.js?v={$NUM_VERSION}" defer></script>
         {assign var=temp value="js/$contenutemplate.js"} 
