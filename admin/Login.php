@@ -50,7 +50,7 @@ class Login extends MyPage
 				$email_reply = 'laurent@poloweb.org'; 
 				$message_texte  = 'Bonjour '.$row['Identite'].','."\n\n".'Nous vous confirmons la modification de votre mot de passe kayak-polo.info'; 
 				$message_texte .= "\n\n".'Votre identifiant : '.$row['Code']; 
-				$message_texte .= "\n".'Votre nouveau mot de passe '.' :'.$gpwd;
+				$message_texte .= "\n".'Votre nouveau mot de passe : '.$gpwd;
 				$message_texte .= "\n\n".'Connectez-vous sur http://www.kayak-polo.info onglet Administration.'; 
 				$message_texte .= "\n".'Lors de votre prochaine connexion, n\'oubliez pas de changer votre mot de passe en cliquant sur Mes Paramètres.'; 
 				$message_texte .= "\n\n".'A bientôt.'; 
