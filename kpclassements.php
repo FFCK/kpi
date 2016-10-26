@@ -48,7 +48,7 @@ class Classements extends MyPage
 			//Compétitions internationales
             $arrayCompetitionGroupe = array();
             array_push($arrayCompetitionGroupe, array('', 'CI', '=== COMPETITIONS INTERNATIONALES ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id < 7 AND id > 0 ORDER BY id";
+            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id > 0 AND id < 10 ORDER BY id";
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
                 if ($row["Groupe"] == $codeCompetGroup) {
@@ -59,7 +59,7 @@ class Classements extends MyPage
             }
 			//Compétitions nationales
             array_push($arrayCompetitionGroupe, array('', 'CN', '=== COMPETITIONS NATIONALES ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 7 AND id < 25 ORDER BY id";
+            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 10 AND id < 40 ORDER BY id";
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
                 if ($row["Groupe"] == $codeCompetGroup) {
@@ -70,7 +70,7 @@ class Classements extends MyPage
             }
 			//Compétitions régionales
             array_push($arrayCompetitionGroupe, array('', 'CR', '=== COMPETITIONS REGIONALES ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 25 AND id < 40 ORDER BY id";
+            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 40 AND id < 60 ORDER BY id";
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
                 if ($row["Groupe"] == $codeCompetGroup) {
@@ -81,7 +81,7 @@ class Classements extends MyPage
             }
 			//Tournois
             array_push($arrayCompetitionGroupe, array('', 'T', '=== TOURNOIS ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id > 40 AND id <> 60 ORDER BY id";
+            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 60 AND id < 100 ORDER BY id";
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
                 if ($row["Groupe"] == $codeCompetGroup) {
