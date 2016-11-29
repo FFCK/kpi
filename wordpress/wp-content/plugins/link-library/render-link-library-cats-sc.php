@@ -196,7 +196,7 @@ function RenderLinkLibraryCategories( $LLPluginClass, $generaloptions, $libraryo
 
                 // Display the category name
                 $countcat += 1;
-                if ( 'table' == $flatlist && ( ( 1 == $countcat % $num_columns ) || ( 1 == $num_columns ) ) ) {
+                if ( $num_columns > 0 && 'table' == $flatlist && ( ( 1 == $countcat % $num_columns ) || ( 1 == $num_columns ) ) ) {
                     $output .= "<tr>\n";
                 }
 
@@ -381,12 +381,12 @@ function RenderLinkLibraryCategories( $LLPluginClass, $generaloptions, $libraryo
 
                 $output .= ( $catterminator );
 
-                if ( 'table' == $flatlist and ( 0 == $countcat % $num_columns ) ) {
+                if ( $num_columns > 0 && 'table' == $flatlist and ( 0 == $countcat % $num_columns ) ) {
                     $output .= "</tr>\n";
                 }
             }
 
-            if ( 'table' == $flatlist and ( 3 == $countcat % $num_columns ) ) {
+            if ( $num_columns > 0 && 'table' == $flatlist and ( 3 == $countcat % $num_columns ) ) {
                 $output .= "</tr>\n";
             }
 

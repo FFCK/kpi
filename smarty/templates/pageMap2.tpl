@@ -12,7 +12,7 @@
 			<link rel="stylesheet" type="text/css" href="css/style.css">
 			<link rel="stylesheet" type="text/css" href="css/{$contenutemplate}.css" />
 
-			<script language="JavaScript" type="text/javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+			<script language="JavaScript" type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
 			<script language="JavaScript" type="text/javascript" src="js/formTools.js"></script>
 			<script language="JavaScript" type="text/javascript" src="js/{$contenutemplate}.js"></script>
 		{else}
@@ -20,7 +20,7 @@
 			<link rel="stylesheet" type="text/css" href="../css/GestionStyle.css">
 			<link rel="stylesheet" type="text/css" href="../css/{$contenutemplate}.css" />
 
-			<script language="JavaScript" type="text/javascript" src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+			<script language="JavaScript" type="text/javascript" src="../js/jquery-1.11.2.min.js"></script>
 			<script language="JavaScript" type="text/javascript" src="../js/formTools.js"></script>
 			<script language="JavaScript" type="text/javascript" src="../js/{$contenutemplate}.js"></script>
 		{/if}

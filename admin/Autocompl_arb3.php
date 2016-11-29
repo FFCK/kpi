@@ -91,7 +91,7 @@ include_once('../commun/MyBdd.php');
 	$sql .= "And (a.Matric Like '%".ltrim($term, '0')."%' ";
 	$sql .= "Or UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER('%".$term."%') ";
 	$sql .= "Or UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER('%".$term."%') ";
-	$sql .= "Or UPPER(b.Libelle) LIKE UPPER('%".$q."%') ";
+	$sql .= "Or UPPER(b.Libelle) LIKE UPPER('%".$term."%') ";
 	$sql .= ") ";
 	$sql .= "Order By a.Nom, a.Prenom ";
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Pool arbitres : ".$sql);

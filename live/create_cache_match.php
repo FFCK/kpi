@@ -29,9 +29,9 @@ class CacheMatch
 	
 	function InitFTP()
 	{
-		$ftp_server="ffck.org";
-		$ftp_user_name="agil-classements";
-		$ftp_user_pass="Yeoph2EiwoseipaeBejie9hae9ahd6oo";
+		$ftp_server="***";
+		$ftp_user_name="***";
+		$ftp_user_pass="***";
 
 		// set up basic connection
 		$this->m_idFTP = ftp_connect($ftp_server);

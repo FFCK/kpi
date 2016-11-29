@@ -1,6 +1,6 @@
 		&nbsp;(<a href="GestionCalendrier.php">Retour</a>)
 		<br>
-		<iframe name="iframeRechercheLicenceIndi2" id="iframeRechercheLicenceIndi2" SRC="RechercheLicenceIndi2.php" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>
+{*		<iframe name="iframeRechercheLicenceIndi2" id="iframeRechercheLicenceIndi2" SRC="RechercheLicenceIndi2.php" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>*}
 		<div class="main">
 			<form method="POST" action="GestionJournee.php" name="formJournee" id="formJournee" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value=''/>
@@ -28,7 +28,7 @@
 							<td align="center">
 								<label for="comboCompet">Filtre Compétition</label>
 								{if $profile <= 6 && $AuthModif == 'O'}
-								<a href="#" id="InitTitulaireCompet"><img width="16" src="../img/init.gif" alt="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" title="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" /></a>
+								<a href="#" id="InitTitulaireCompet"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" title="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" /></a>
 								{/if}
 								<br>
 								<select id="comboCompet" name="comboCompet" onChange="changeCompet();" tabindex="1">
@@ -141,7 +141,7 @@
 							</td>
 							<td align="left">
 								<label for="equipeA">Equipe A</label>
-								<a href="#" id="InitTitulaireEquipeA"><img width="16" src="../img/init.gif" alt="Ré-affecter les joueurs présents pour l'équipe A sélectionnée" title="Ré-affecter les joueurs présents pour l'équipe A sélectionnée" /></a>
+								<a href="#" id="InitTitulaireEquipeA"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour l'équipe A sélectionnée" title="Ré-affecter les joueurs présents pour l'équipe A sélectionnée" /></a>
 								<br>
 								<select name="equipeA" id="equipeA" onChange="changeEquipeA();" tabindex="8">
 									<Option Value="-1">---</Option>
@@ -164,13 +164,13 @@
 										<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
 									{/section}
 								</select>
-								<a href="#"  id='rechercheArbitre1'><img width="16" src="../img/b_search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
+{*								<a href="#"  id='rechercheArbitre1'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>*}
 							</td>
 						</tr>
 						<tr class="hideTr">
 							<td align="center" colspan="2">
 								<label for="comboJournee">Journée/Phase/Poule du match</label>
-								<a href="#" id="InitTitulaireJournee"><img width="16" src="../img/init.gif" alt="Ré-affecter les joueurs présents pour toute la journée / phase sélectionnée" title="Ré-affecter les joueurs présents pour toute la journée / phase sélectionnée" /></a>
+								<a href="#" id="InitTitulaireJournee"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour toute la journée / phase sélectionnée" title="Ré-affecter les joueurs présents pour toute la journée / phase sélectionnée" /></a>
 								<br>
 								<select id="comboJournee" name="comboJournee" tabindex="2">
 									<option Value="*" Selected>--- Sélectionnez --- (OBLIGATOIRE)</Option>
@@ -214,7 +214,7 @@
 							</td>
 							<td align="left">
 								<label for="equipeB">Equipe B</label>
-								<a href="#" id="InitTitulaireEquipeB"><img width="16" src="../img/init.gif" alt="Ré-affecter les joueurs présents pour l'équipe B sélectionnée" title="Ré-affecter les joueurs présents pour l'équipe B sélectionnée" /></a>
+								<a href="#" id="InitTitulaireEquipeB"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour l'équipe B sélectionnée" title="Ré-affecter les joueurs présents pour l'équipe B sélectionnée" /></a>
 								<br>
 								<select name="equipeB" id="equipeB" onChange="changeEquipeB();" tabindex="10">
 									<Option Value="-1">---</Option>
@@ -237,11 +237,11 @@
 										<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
 									{/section}
 								</select>
-								<a href="#" id='rechercheArbitre2'><img width="16" src="../img/b_search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
-							</td>
+{*								<a href="#" id='rechercheArbitre2'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
+*}							</td>
 						</tr>
 						<tr class="hideTr">
-							<td align="left" id='clickup' name='clickup' style="color:#555555" colspan="2">
+							<td align="left" id='clickup' style="color:#555555" colspan="2">
 								<i><u>Masquer le formulaire</u></i>
 							</td>
 							<td align="center" colspan=2>
@@ -253,7 +253,7 @@
 								<a href="GestionEquipeJoueur.php?idEquipe=1"><i>Pool arbitres...</i></a>
 							</td>
 						</tr>
-						<tr id='clickdown' name='clickdown'>
+						<tr id='clickdown'>
 							<td colspan="6" align="left" style="color:#555555"><i><u>Afficher le formulaire</u></i></td>
 						</tr>
 					</table>
@@ -266,37 +266,37 @@
 						       	<fieldset>
 									<label>Sélection:</label>
 									&nbsp;
-									<a href="#" {$TropDeMatchs} onclick="setCheckboxes('formJournee', 'checkMatch', true);return false;"><img width="24" src="../img/tous.gif" alt="Sélectionner tous" title="Sélectionner tous" /></a>
-									<a href="#" {$TropDeMatchs} onclick="setCheckboxes('formJournee', 'checkMatch', false);return false;"><img width="24" src="../img/aucun.gif" alt="Sélectionner aucun" title="Sélectionner aucun" /></a>
+									<a href="#" {$TropDeMatchs} onclick="setCheckboxes('formJournee', 'checkMatch', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" alt="Sélectionner tous" title="Sélectionner tous" /></a>
+									<a href="#" {$TropDeMatchs} onclick="setCheckboxes('formJournee', 'checkMatch', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" alt="Sélectionner aucun" title="Sélectionner aucun" /></a>
 									{if $profile <= 6 && $AuthModif == 'O'}
-										<a href="#" {$TropDeMatchs} onclick="RemoveCheckboxes('formJournee', 'checkMatch')" alt="Supprimer la sélection {$TropDeMatchsMsg}" title="Supprimer la sélection {$TropDeMatchsMsg}"><img width="24" src="../img/supprimer.gif" /></a>
-										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');publiMultiMatchs();" alt="Publier/dépublier la sélection {$TropDeMatchsMsg}" title="Publier/dépublier la sélection {$TropDeMatchsMsg}"><img width="29" src="../img/oeil2.gif" /></a>
+										<a href="#" {$TropDeMatchs} onclick="RemoveCheckboxes('formJournee', 'checkMatch')" title="Supprimer la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/glyphicons-17-bin.png" /></a>
+										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');publiMultiMatchs();" title="Publier/dépublier la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/oeil2.gif" /></a>
 										{if $profile <= 4 && $AuthModif == 'O'}
-											<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');verrouPubliMultiMatchs();" alt="Verrouiller & Publier la sélection {$TropDeMatchsMsg}" title="Verrouiller & Publier la sélection {$TropDeMatchsMsg}"><img width="29" src="../img/oeilverrou2.gif" /></a>
-											<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');verrouMultiMatchs();" alt="Verrouiller/déverrouiller la sélection {$TropDeMatchsMsg}" title="Verrouiller/déverrouiller la sélection {$TropDeMatchsMsg}"><img width="29" src="../img/verrou2.gif" /></a>
+											<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');verrouPubliMultiMatchs();" title="Verrouiller & Publier la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/oeilverrou2.gif" /></a>
+											<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');verrouMultiMatchs();" title="Verrouiller/déverrouiller la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/verrou2.gif" /></a>
 										{/if}
-										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');affectMultiMatchs();" alt="Affectation auto des équipes et arbitres pour la sélection {$TropDeMatchsMsg}" title="Affectation auto des équipes et arbitres pour la sélection {$TropDeMatchsMsg}"><img width="29" src="../img/AffectAuto.gif" /></a>
-										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');annulMultiMatchs();" alt="Annuler l'affectation auto des équipes et arbitres pour la sélection (supprime équipes et arbitres) {$TropDeMatchsMsg}" title="Annuler l'affectation auto des équipes et arbitres pour la sélection (supprime équipes et arbitres) {$TropDeMatchsMsg}"><img width="29" src="../img/AnnulAuto.gif" /></a>
-										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');changeMultiMatchs();" alt="Changer de journée / de phase / de poule pour la sélection {$TropDeMatchsMsg}" title="Changer de journée / de phase / de poule pour la sélection {$TropDeMatchsMsg}"><img width="24" height="24" src="../img/Chang.gif" border="0"></a>
+										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');affectMultiMatchs();" title="Affectation auto des équipes et arbitres pour la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/AffectAuto.gif" /></a>
+										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');annulMultiMatchs();" title="Annuler l'affectation auto des équipes et arbitres pour la sélection (supprime équipes et arbitres) {$TropDeMatchsMsg}"><img height="25" src="../img/AnnulAuto.gif" /></a>
+										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');changeMultiMatchs();" title="Changer de journée / de phase / de poule pour la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/Chang.gif" border="0"></a>
 									{/if}
-									<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');this.href='FeuilleMatchMulti.php?listMatch='+document.formJournee.ParamCmd.value;" Target="_blank" alt="Feuilles de Matchs pour la sélection {$TropDeMatchsMsg}" title="Feuilles de Matchs pour la sélection {$TropDeMatchsMsg}"><img width="24" src="../img/pdfMulti.gif" /></a>
+									<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');this.href='FeuilleMatchMulti.php?listMatch='+document.formJournee.ParamCmd.value;" Target="_blank" title="Feuilles de Matchs pour la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/pdf2.png" /></a>
 								</fieldset>
 							</td>
 							<td width=450>
 						       	<fieldset>
 									<label>Tous les matchs:</label>
 									&nbsp;
-									<a href="FeuilleListeMatchs.php" {$TropDeMatchs} Target="_blank" alt="Liste des Matchs {$TropDeMatchsMsg}" title="Liste des Matchs {$TropDeMatchsMsg}"><img width="36" src="../img/ListeFR.gif" /></a>
+									<a href="FeuilleListeMatchs.php" {$TropDeMatchs} Target="_blank" title="Liste des Matchs {$TropDeMatchsMsg}"><img height="25" src="../img/ListeFR.gif" /></a>
 									&nbsp;
-									<a href="FeuilleListeMatchsEN.php" {$TropDeMatchs} Target="_blank" alt="Game list (EN) {$TropDeMatchsMsg}" title="Game list (EN) {$TropDeMatchsMsg}"><img width="36" src="../img/ListeEN.gif" /></a>
+									<a href="FeuilleListeMatchsEN.php" {$TropDeMatchs} Target="_blank" title="Game list (EN) {$TropDeMatchsMsg}"><img height="25" src="../img/ListeEN.gif" /></a>
 									&nbsp;
-									<a href="FeuilleMatchMulti.php?listMatch={$listMatch}" {$TropDeMatchs} Target="_blank" alt="Toutes les feuilles de Matchs {$TropDeMatchsMsg}" title="Toutes les feuilles de Matchs {$TropDeMatchsMsg}"><img width="24" src="../img/pdfMulti.gif" /></a>
+									<a href="FeuilleMatchMulti.php?listMatch={$listMatch}" {$TropDeMatchs} Target="_blank" title="Toutes les feuilles de Matchs {$TropDeMatchsMsg}"><img height="25" src="../img/pdf2.png" /></a>
 									&nbsp;
-									<a href="tableau_tbs.php" alt="Export tableau des matchs (OpenOffice / Excel)" title="Export tableau des matchs (OpenOffice / Excel)"><img width="24" src="../img/OOo.gif" /></a>
+									<a href="tableau_tbs.php" title="Export tableau des matchs (LibreOffice / Excel)"><img height="25" src="../img/ods.png" /></a>
 									&nbsp;
-									<a href="../PdfListeMatchs.php" {$TropDeMatchs} Target="_blank" alt="Liste publique des Matchs {$TropDeMatchsMsg}" title="Liste publique des Matchs {$TropDeMatchsMsg}"><img width="36" src="../img/ListeFR.gif" /></a>
+									<a href="../PdfListeMatchs.php" {$TropDeMatchs} Target="_blank" title="Liste publique des Matchs {$TropDeMatchsMsg}"><img height="25" src="../img/ListeFR.gif" /></a>
 									&nbsp;
-									<a href="../PdfListeMatchsEN.php" {$TropDeMatchs} Target="_blank" alt="Public Game list (EN) {$TropDeMatchsMsg}" title="Public Game list (EN) {$TropDeMatchsMsg}"><img width="36" src="../img/ListeEN.gif" /></a>
+									<a href="../PdfListeMatchsEN.php" {$TropDeMatchs} Target="_blank" title="Public Game list (EN) {$TropDeMatchsMsg}"><img height="25" src="../img/ListeEN.gif" /></a>
 								</fieldset>
 							</td>
 							<td>
@@ -312,7 +312,7 @@
 							<thead>
 								<tr>
 									<th>&nbsp;</th>
-									<th><img width="19" height="16" src="../img/oeil2.gif" alt="Publier ?" title="Publier ?" border="0"></th>
+									<th><img height="25" src="../img/oeil2.gif" alt="Publier ?" title="Publier ?" border="0"></th>
 									<th>N°</th>
 									<th width=45>&nbsp;</th>
 									<th>Heure</th>
@@ -328,7 +328,7 @@
 									<th>Terr</th>
 									<th>Equipe A</th>
 									<th>Sc A</th>
-									<th><img width="19" height="16" src="../img/verrou2.gif" alt="Verrouiller ?" title="Verrouiller ? (et publier le score)" border="0"></th>
+									<th><img height="25" src="../img/verrou2.gif" alt="Verrouiller ?" title="Verrouiller ? (et publier le score)" border="0"></th>
 									<th>Sc B</th>
 									<th>Equipe B</th>
 									<th>Arbitre 1 </th>	
@@ -343,21 +343,15 @@
 										<td><input type="checkbox" name="checkMatch" value="{$arrayMatchs[i].Id}" id="checkDelete{$smarty.section.i.iteration}" /></td>
 										{if $arrayMatchs[i].MatchAutorisation == 'O' && $profile <= 6 && $AuthModif == 'O'}
 											<td class='color{$arrayMatchs[i].Publication}2'>
-											<!--
-												<a href="#" Id="Publication{$arrayMatchs[i].Id}" onclick="publiMatch('{$arrayMatchs[i].Id}','{$arrayMatchs[i].Publication}')">
-													<img width="24" height="24" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
-												</a>
-											-->
-												<img class="publiMatch" data-valeur="{$arrayMatchs[i].Publication}" data-id="{$arrayMatchs[i].Id}" width="24" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" alt="Publier O/N" title="{if $arrayMatchs[i].Publication == 'O'}Public{else}Non public{/if}" />
+												<img class="publiMatch" data-valeur="{$arrayMatchs[i].Publication}" data-id="{$arrayMatchs[i].Id}" height="25" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" alt="Publier O/N" title="{if $arrayMatchs[i].Publication == 'O'}Public{else}Non public{/if}" />
 											</td>
 											{if $arrayMatchs[i].Validation != 'O'}
 												<td><span class='directInput numMatch' Id="Numero_ordre-{$arrayMatchs[i].Id}-text" tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}0'>{$arrayMatchs[i].Numero_ordre}</span></td>
 												<td width=80>
-													<a href="#" class="showOn" onclick="ParamMatch({$arrayMatchs[i].Id})"><img width="16" height="16" src="../img/b_edit.png" alt="Modifier" title="Modifier le match" border="0"></a>
-													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img width="17" height="17" src="../img/pdf.gif" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
+													<a href="#" class="showOn" onclick="ParamMatch({$arrayMatchs[i].Id})"><img height="20" src="../img/glyphicons-31-pencil.png" alt="Modifier" title="Modifier le match" border="0"></a>
+													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img height="20" src="../img/pdf.png" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
 													<br />
-													<!--<a href="#" class="showOn" onclick="window.open('GestionMatchDetail1.php?idMatch={$arrayMatchs[i].Id}&numOrdre={$arrayMatchs[i].Numero_ordre}','Feuille'); return false;" ><img width="20" height="16" src="../img/b_match.png" alt="Feuille de match en ligne" title="Feuille de match en ligne" border="0"></a>-->
-													<a href="#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="24" src="v2/images/tab.png" alt="Feuille de match en ligne" title="Feuille de match en ligne v2.0" border="0"></a>
+													<a href="#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="20" src="../img/glyphicons-163-ipad.png" alt="Feuille de match en ligne" title="Feuille de match en ligne v2.0" border="0"></a>
 												</td>
 												<td><span class='directInput date' Id="Date_match-{$arrayMatchs[i].Id}-date" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
 													<span class='directInput heure' Id="Heure_match-{$arrayMatchs[i].Id}-time" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span></td>
@@ -372,24 +366,16 @@
 												<td><img class="typeMatch" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}" src="../img/type{$arrayMatchs[i].Type}.png" title="{if $arrayMatchs[i].Type == 'C'}Classement{else}Elimination{/if}" /></td>
 												<td><span class='directInput terrain' tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}4" Id="Terrain-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 												<td>
-													<!--{if $arrayMatchs[i].Id_equipeA != '0' && $arrayMatchs[i].Id_equipeA != ''}
-														<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A">{$arrayMatchs[i].EquipeA}</a>&nbsp;
-													{else}-->													<!--{/if}-->
 													<span class="directInput equipe{if $arrayMatchs[i].Id_equipeA < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}" data-equipe="A">{$arrayMatchs[i].EquipeA}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td><span class='directInput score' tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}5" Id="ScoreA-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].ScoreA}</span></td>
 												<td class='color{$arrayMatchs[i].Validation}2'>
 													{if $profile <= 6 && $AuthModif == 'O'}
-													<!--
-														<a href="#" Id="Validation{$arrayMatchs[i].Id}" onclick="verrouMatch('{$arrayMatchs[i].Id}','{$arrayMatchs[i].Validation}')">
-															<img width="24" height="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
-														</a>
-													-->
-														<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}" width="24" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="{if $arrayMatchs[i].Validation == 'O'}Validé / verrouillé (score public){else}Non validé (score non public){/if}" />
+														<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}" height="25" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="{if $arrayMatchs[i].Validation == 'O'}Validé / verrouillé (score public){else}Non validé (score non public){/if}" />
 													{else}
-														<img width="24" height="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
+														<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
 													{/if}
 													{if $arrayMatchs[i].Statut == 'ON'}
 														<span class="statutMatchOn" title="Période {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode}</span>
@@ -405,7 +391,7 @@
 												<td>
 													<span class="directInput equipe{if $arrayMatchs[i].Id_equipeB < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeB-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeB}" data-equipe="B">{$arrayMatchs[i].EquipeB}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td>
 													<span class="directInput arbitre{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_principal" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Arbitre_principal-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_principal|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
@@ -415,15 +401,14 @@
 												</td>
 												<td>{if $arrayMatchs[i].CoeffA != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}</td>
 												<td>{if $arrayMatchs[i].CoeffB != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}</td>
-												<td><a href="#" onclick="RemoveCheckbox('formJournee', '{$arrayMatchs[i].Id}');return false;"><img width="16" height="16" src="../img/supprimer.gif" alt="Supprimer" title="Supprimer" border="0"></a></td>
+												<td><a href="#" onclick="RemoveCheckbox('formJournee', '{$arrayMatchs[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" border="0"></a></td>
 											{else}
 												<td><span class='directInputOff numMatch' Id="Numero_ordre-{$arrayMatchs[i].Id}-text" tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}0'>{$arrayMatchs[i].Numero_ordre}</span></td>
 												<td width=80>
-													<a href="#" class="showOff" onclick="ParamMatch({$arrayMatchs[i].Id})"><img width="16" height="16" src="../img/b_edit.png" alt="Modifier" title="Modifier le match" border="0"></a>
-													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img width="17" height="17" src="../img/pdf.gif" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
+													<a href="#" class="showOff" onclick="ParamMatch({$arrayMatchs[i].Id})"><img height="20" src="../img/glyphicons-31-pencil.png" alt="Modifier" title="Modifier le match" border="0"></a>
+													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img height="20" src="../img/pdf.png" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
 													<br />
-													<!--<a href="#" class="showOff" onclick="window.open('GestionMatchDetail1.php?idMatch={$arrayMatchs[i].Id}&numOrdre={$arrayMatchs[i].Numero_ordre}','Feuille'); return false;" ><img width="20" height="16" src="../img/b_match.png" alt="Feuille de match en ligne" title="Feuille de match en ligne" border="0"></a>-->
-													<a href="#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="24" src="v2/images/tab.png" alt="Feuille de match en ligne" title="Feuille de match en ligne v2.0" border="0"></a>
+													<a href="#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="20" src="../img/glyphicons-163-ipad.png" alt="Feuille de match en ligne" title="Feuille de match en ligne v2.0" border="0"></a>
 												</td>
 												<td><span class='directInputOff date' Id="Date_match-{$arrayMatchs[i].Id}-date" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
 													<span class='directInputOff heure' Id="Heure_match-{$arrayMatchs[i].Id}-time" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span></td>
@@ -440,19 +425,14 @@
 												<td>
 													<span class="directInputOff equipe{if $arrayMatchs[i].Id_equipeA < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}" data-equipe="A">{$arrayMatchs[i].EquipeA}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td><span class='directInputOff score' tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}5" Id="ScoreA-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].ScoreA}</span></td>
 												<td class='color{$arrayMatchs[i].Validation}2'>
 													{if $profile <= 6 && $AuthModif == 'O'}
-													<!--	
-														<a href="#" Id="Validation{$arrayMatchs[i].Id}" onclick="verrouMatch('{$arrayMatchs[i].Id}','{$arrayMatchs[i].Validation}')">
-															<img width="24" height="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
-														</a>
-													-->	
-														<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}" width="24" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="{if $arrayMatchs[i].Validation == 'O'}Validé / verrouillé (score public){else}Non validé (score non public){/if}" />
+														<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}" height="25" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="{if $arrayMatchs[i].Validation == 'O'}Validé / verrouillé (score public){else}Non validé (score non public){/if}" />
 													{else}
-														<img width="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
+														<img height="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
 													{/if}
 													{if $arrayMatchs[i].Statut == 'ON'}
 														<span class="statutMatchOn" title="Période {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode}</span>
@@ -468,7 +448,7 @@
 												<td>
 													<span class="directInputOff equipe{if $arrayMatchs[i].Id_equipeB < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeB-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeB}" data-equipe="B">{$arrayMatchs[i].EquipeB}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td>
 													<span class="directInputOff arbitre{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_principal" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Arbitre_principal-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_principal|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
@@ -482,15 +462,14 @@
 											{/if}
 										{elseif $arrayMatchs[i].MatchAutorisation == 'O' && $profile == 9 && $AuthModif == 'O'}
 											<td>	
-												<img width="24" height="24" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
+												<img height="24" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
 											</td>
 											{if $arrayMatchs[i].Validation != 'O'}
 												<td>{$arrayMatchs[i].Numero_ordre}</td>
 												<td width=80>
-													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img width="17" height="17" src="../img/pdf.gif" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
+													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img height="20" src="../img/pdf.png" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
 													<br />
-													<!--<a href="#" onclick="window.open('GestionMatchDetail1.php?idMatch={$arrayMatchs[i].Id}&numOrdre={$arrayMatchs[i].Numero_ordre}','Feuille'); return false;" ><img width="20" height="16" src="../img/b_match.png" alt="Feuille de match en ligne" title="Feuille de match en ligne" border="0"></a>-->
-													<a href="hey#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="24" src="v2/images/tab.png" alt="Feuille de match en ligne" title="Feuille de match en ligne v2.0" border="0"></a>
+													<a href="hey#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="20" src="../img/glyphicons-163-ipad.png" alt="Feuille de match en ligne" title="Feuille de match en ligne v2.0" border="0"></a>
 												</td>
 												<td>{$arrayMatchs[i].Date_match}<br>
 													{$arrayMatchs[i].Heure_match}</td>
@@ -506,11 +485,11 @@
 												<td>
 													<span>{$arrayMatchs[i].EquipeA}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td class='directInput score' tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}5"><span Id="ScoreA-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].ScoreA}</span></td>
 												<td class='color{$arrayMatchs[i].Validation}2'>
-													<img width="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
+													<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
 													{if $arrayMatchs[i].Statut == 'ON'}
 														<span class="statutMatchOn" title="Période {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode}</span>
 														<span class="scoreProvisoire" title="Score provisoire">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
@@ -523,7 +502,7 @@
 												<td>
 													<span>{$arrayMatchs[i].EquipeB}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td>{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
 												<td>{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
@@ -533,7 +512,7 @@
 											{else}
 												<td>{$arrayMatchs[i].Numero_ordre}</td>
 												<td width=80>
-													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img width="17" height="17" src="../img/pdf.gif" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
+													<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img height="20" src="../img/pdf.png" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
 												</td>
 												<td>{$arrayMatchs[i].Date_match}<br>
 													{$arrayMatchs[i].Heure_match}</td>
@@ -550,17 +529,17 @@
 												<td>
 													<span>{$arrayMatchs[i].EquipeA}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td>{$arrayMatchs[i].ScoreA}</td>
 												<td class='color{$arrayMatchs[i].Validation}2'>
-													<img width="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
+													<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
 												</td>
 												<td>{$arrayMatchs[i].ScoreB}</td>
 												<td>
 													<span>{$arrayMatchs[i].EquipeB}</span>
 													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img width="10" src="../img/b_sbrowse.png"></a>
+													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
 												<td>{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
 												<td>{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
@@ -570,11 +549,11 @@
 											{/if}
 										{else}
 											<td>	
-												<img width="24" height="24" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
+												<img height="25" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
 											</td>
 											<td>{$arrayMatchs[i].Numero_ordre}</td>
 											<td width=80>
-												<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img width="17" height="17" src="../img/pdf.gif" alt="Feuille de match Pdf" title="Feuille de match Pdf" border="0"></a>
+												<a href="FeuilleMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank"><img height="20" src="../img/pdf.png" alt="Feuille de match Pdf" title="Feuille de match Pdf" ></a>
 											</td>
 											<td>{$arrayMatchs[i].Date_match}<br>
 												{$arrayMatchs[i].Heure_match}</td>
@@ -590,17 +569,17 @@
 											<td>
 												<span>{$arrayMatchs[i].EquipeA}</span>
 												<br />
-												<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img width="10" src="../img/b_sbrowse.png"></a>
+												<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
 											</td>
 											<td>{$arrayMatchs[i].ScoreA|default:'&nbsp;'}</td>
 											<td>
-												<img width="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
+												<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
 											</td>
 											<td>{$arrayMatchs[i].ScoreB|default:'&nbsp;'}</td>
 											<td>
 												<span>{$arrayMatchs[i].EquipeB}</span>
 												<br />
-												<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img width="10" src="../img/b_sbrowse.png"></a>
+												<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
 											</td>
 											<td>{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
 											<td>{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>

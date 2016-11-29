@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 // GOOGLE MAP API
 
     var map;
@@ -198,17 +200,17 @@
 			}
 	}
 		
-$(document).ready(function() {
+jq(document).ready(function() {
 
 	//Autocomplete recherche equipe
-	$("#libelleEquipe2").autocomplete('Autocompl_equipe.php', {
+	jq("#libelleEquipe2").autocomplete('Autocompl_equipe.php', {
 		width: 550,
 		max: 50,
 		mustMatch: false,
 	});
-	$("#libelleEquipe2").result(function(event, data, formatted) {
+	jq("#libelleEquipe2").result(function(event, data, formatted) {
 		if (data) {
-			$("#libelleEquipe2").val(data[2]);
+			jq("#libelleEquipe2").val(data[2]);
 		}
 	});
 	

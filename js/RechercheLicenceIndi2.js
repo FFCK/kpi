@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 function changeComiteReg()
 {
 	document.forms['formRerchercheLicenceIndi2'].elements['Cmd'].value = '';
@@ -20,21 +22,21 @@ function Find()
 	document.forms['formRerchercheLicenceIndi2'].submit();
 }
 
-$('#CancelRechercheIndi').live('click', function(){
-	$('#iframeRechercheLicenceIndi2', window.parent.document).hide(); 
+jq('#CancelRechercheIndi').live('click', function(){
+	jq('#iframeRechercheLicenceIndi2', window.parent.document).hide(); 
 });
 
-$('.cliquableCheckbox').live('click', function(){
-	$(this).attr('checked', false);
-	var identifiant = $(this).attr('id');
+jq('.cliquableCheckbox').live('click', function(){
+	jq(this).attr('checked', false);
+	var identifiant = jq(this).attr('id');
 	var identifiant2 = identifiant.split('-');
 	var matric = identifiant2[0];
 	var identite = identifiant2[1];
-	var zoneMatric = $('#zoneMatric').val();
-	var zoneIdentite = $('#zoneIdentite').val();
-	$('#'+zoneMatric, window.parent.document).val(matric);
-	$('#'+zoneIdentite, window.parent.document).val(identite);
+	var zoneMatric = jq('#zoneMatric').val();
+	var zoneIdentite = jq('#zoneIdentite').val();
+	jq('#'+zoneMatric, window.parent.document).val(matric);
+	jq('#'+zoneIdentite, window.parent.document).val(identite);
 	
-	$('#iframeRechercheLicenceIndi2', window.parent.document).hide(); 
+	jq('#iframeRechercheLicenceIndi2', window.parent.document).hide(); 
 
 });

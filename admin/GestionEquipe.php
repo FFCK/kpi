@@ -27,11 +27,10 @@ class GestionEquipe extends MyPageSecure
 		$myBdd = new MyBdd();
 		
 		// Chargement des Compétitions ...
-		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif ";
-		$sql .= "From gickp_Competitions c, gickp_Competitions_Groupes g ";
-		$sql .= "Where c.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";
+		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif,"
+                . "c.Verrou, c.Statut "
+                . "From gickp_Competitions c, gickp_Competitions_Groupes g "
+                . "Where c.Code_saison = '" . $codeSaison . "' ";
 		$sql .= utyGetFiltreCompetition('c.');
 		$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
 		if(utyGetSession('AfficheCompet') == 'NCF')
@@ -64,6 +63,13 @@ class GestionEquipe extends MyPageSecure
 			{
 				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "SELECTED" ) );
 				$this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
+                $this->m_tpl->assign('Statut', $row["Statut"]);
+                if($row["Verrou"] == 'O') {
+                    $Verrou = 'O';
+                } else {
+                    $Verrou = 'N';
+                }
+                $this->m_tpl->assign('Verrou', $Verrou);
 			}
 			else
 				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "" ) );

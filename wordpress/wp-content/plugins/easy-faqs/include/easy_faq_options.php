@@ -124,10 +124,14 @@ class easyFAQOptions
 		register_setting( 'easy-faqs-settings-group', 'easy_faqs_registered_url' );
 		register_setting( 'easy-faqs-settings-group', 'easy_faqs_registered_key' );
 		
+		register_setting( 'easy-faqs-settings-group', 'easy_faqs_excerpt_text', array($this, 'easy_faqs_excerpt_text') );
+		register_setting( 'easy-faqs-settings-group', 'easy_faqs_excerpt_length', array($this, 'easy_faqs_excerpt_length') );
+		register_setting( 'easy-faqs-settings-group', 'easy_faqs_link_excerpt_to_full' );
+		register_setting( 'easy-faqs-settings-group', 'easy_faqs_use_custom_excerpt' );
+		
 		// theme options
 		register_setting( 'easy-faqs-theme-settings-group', 'faqs_style' );
 		register_setting( 'easy-faqs-theme-settings-group', 'easy_faqs_preview_window_background' );
-
 
 		//submission form options
 		register_setting( 'easy-faqs-submission-form-options-group', 'easy_faqs_use_captcha' );
@@ -148,6 +152,24 @@ class easyFAQOptions
 		register_setting( 'easy-faqs-submission-form-options-group', 'easy_faqs_general_error_message' );
 	}
 
+	function easy_faqs_excerpt_text($val){
+		//if nothing set, default to Continue Reading
+		if(strlen($val)<1){
+			return "Continue Reading";
+		} else {
+			return $val;
+		}
+	}
+	
+	function easy_faqs_excerpt_length($val){
+		//if nothing set, default to 55
+		if(strlen($val)<1){
+			return 55;
+		} else {
+			return intval($val);
+		}
+	}
+	
 	function settings_page_top(){
 		$title = "Easy FAQs Settings";
 		$message = "Easy FAQs Settings Updated.";
@@ -155,7 +177,33 @@ class easyFAQOptions
 		global $pagenow;
 		global $current_user;
 		get_currentuserinfo();
-	?>
+	?>	
+		<?php if(isValidFAQKey()): ?>
+		<div class="wrap easy_faqs_wrapper gold_plugins_settings">
+		<?php else: ?>
+		<div class="wrap easy_faqs_wrapper gold_plugins_settings not-pro">
+		<?php endif; ?>
+		<h2><?php echo $title; ?></h2>
+		<?php if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true') : ?>
+		<div id="message" class="updated fade"><p><?php echo $message; ?></p></div>
+		<?php endif;
+		
+		$this->get_and_output_current_tab($pagenow);	
+	}
+	
+	function settings_page_bottom(){
+		if(!isValidFAQKey()): ?>		
+			<?php $this->output_sidebar_coupon_form(); ?>
+		<?php endif; ?>
+		</div>
+		<?php
+	}
+	
+	function output_sidebar_coupon_form()
+	{
+		global $current_user;
+		global $pagenow;
+?>
 	<script type="text/javascript">
 	jQuery(function () {
 		if (typeof(gold_plugins_init_coupon_box) == 'function') {
@@ -163,22 +211,21 @@ class easyFAQOptions
 		}
 	});
 	</script>
-	<?php if(isValidFAQKey()): ?>
-	<div class="wrap easy_faqs_wrapper gold_plugins_settings">
-	<?php else: ?>
-	<div class="wrap easy_faqs_wrapper gold_plugins_settings not-pro">
-	<?php endif; ?>
-		<h2><?php echo $title; ?></h2>
 		<?php if(!isValidFAQKey()): ?>
 			<!-- Begin MailChimp Signup Form -->
 			<style type="text/css">
 			</style>
 			<div id="signup_wrapper">
-				<div class="topper">
-					<h3>Save 20% on Easy FAQs Pro!</h3>
-					<p class="pitch">Submit your name and email and we’ll send you a coupon for 20% off your upgrade to the Pro version.</p>
+				<div class="topper yellow_orange_bg">
+					<h3>Upgrade To Easy FAQs Pro!</h3>
+					<p class="pitch" style="font-size: 14px">When you upgrade, you'll instantly unlock Accordion Style FAQs, the Submit A Question Form, 100+ professionally designed themes, Import&nbsp;&amp;&nbsp;Export, personalized support, and more!</p>
+					<a class="upgrade_link" href="https://goldplugins.com/our-plugins/easy-faqs-details/?utm_source=cpn_box&utm_campaign=upgrade&utm_banner=learn_more" title="Learn More">Learn More About Easy FAQs Pro &raquo;</a>
 				</div>
 				<div id="mc_embed_signup">
+					<div class="save_now">
+						<h3>Save 10% Now!</h3>
+						<p class="pitch">Subscribe to our newsletter now, and we’ll send you a coupon for 10% off your upgrade to the Pro version.</p>
+					</div>
 					<form action="" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
 						<div class="fields_wrapper">
 							<label for="mce-NAME">Your Name:</label>
@@ -193,36 +240,15 @@ class easyFAQOptions
 						
 						<input type="hidden" name="PRODUCT" value="Easy FAQs Pro" />
 						<input type="hidden" id="mc-upgrade-plugin-name" value="Easy FAQs Pro" />
-						<input type="hidden" id="mc-upgrade-link-per" value="https://goldplugins.com/purchase/easy-faqs/single?promo=newsub20" />
-						<input type="hidden" id="mc-upgrade-link-biz" value="https://goldplugins.com/purchase/easy-faqs/business?promo=newsub20" />
-						<input type="hidden" id="mc-upgrade-link-dev" value="https://goldplugins.com/purchase/easy-faqs/developer?promo=newsub20" />
-
-						<div class="features">
-							<strong>When you upgrade to Pro, you'll instantly unlock:</strong>
-							<ul>
-								<li>100+ Professionally Designed Themes</li>
-								<li>Question Submission forms for your users</li>
-								<li>Accordion-Style FAQ pages</li>
-								<li>Quick Links for your FAQ pages</li>
-								<li>Search Forms for your FAQs</li>
-								<li>Import/Export your FAQs</li>
-								<li>Remove all banners from the admin area</li>							
-								<li>And more!</li>								
-							</ul>
-							<a class="learn_more_link" href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_campaign=upgrade_sidebar&utm_source=learn_more_link" target="_blank">Click Here To Learn More! &raquo;</a>
-						</div>
+						<input type="hidden" id="mc-upgrade-link-per" value="https://goldplugins.com/purchase/easy-faqs/single?promo=newsub10" />
+						<input type="hidden" id="mc-upgrade-link-biz" value="https://goldplugins.com/purchase/easy-faqs/business?promo=newsub10" />
+						<input type="hidden" id="mc-upgrade-link-dev" value="https://goldplugins.com/purchase/easy-faqs/developer?promo=newsub10" />
 					</form>
 				</div>
 				<p class="u_to_p"><a href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/">Upgrade to Easy FAQs Pro now</a> to remove banners like this one.</p>
 			</div>
 			<!--End mc_embed_signup-->
-		<?php endif; ?>
-		
-		<?php if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true') : ?>
-		<div id="message" class="updated fade"><p><?php echo $message; ?></p></div>
 		<?php endif;
-		
-		$this->get_and_output_current_tab($pagenow);	
 	}
 	
 	function get_and_output_current_tab($pagenow){
@@ -288,19 +314,41 @@ class easyFAQOptions
 					// FAQS - View All Text (text)
 					$this->shed->text( array('name' => 'faqs_read_more_text', 'label' =>'FAQs View All Text', 'value' => get_option('faqs_read_more_text'), 'description' => 'This is the Text of the \'View All\' Link.  Default text is "View All."  This is only displayed if a URL is set in the above field, FAQs View All Link.') );
 					
-					// Hide Images in Feed (checkbox)
+					// FAQ show featured image (checkbox)
 					$checked = (get_option('faqs_image') == '1');
 					$this->shed->checkbox( array('name' => 'faqs_image', 'label' =>'Show FAQ Images', 'value' => 1, 'checked' => $checked, 'description' => 'If checked, the Featured Image for each FAQ will be shown before the FAQ\'s answer.', 'inline_label' => 'Show FAQ Images') );
 				?>
 			</table>
+			<fieldset>
+			<legend>FAQ Excerpt Options</legend>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_faqs_excerpt_length">Excerpt Length</label></th>
+					<td><input type="text" name="easy_faqs_excerpt_length" id="easy_faqs_excerpt_length" value="<?php echo get_option('easy_faqs_excerpt_length', 55); ?>"  style="width: 250px" />
+					<p class="description">This is the number of words to use in a shortened answer.  The default value is 55 words.</p>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label for="easy_faqs_excerpt_text">Excerpt Text</label></th>
+					<td><input type="text" name="easy_faqs_excerpt_text" id="easy_faqs_excerpt_text" value="<?php echo get_option('easy_faqs_excerpt_text', 'Continue Reading'); ?>"  style="width: 250px" />
+					<p class="description">The text used after the Excerpt.  If you are linking your Excerpts to Full Answers, this text is used in the Link.  This defaults to "Continue Reading".</p>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label for="easy_faqs_link_excerpt_to_full">Link Excerpts to Full Answer</label></th>
+					<td><input type="checkbox" name="easy_faqs_link_excerpt_to_full" id="easy_faqs_link_excerpt_to_full" value="1" <?php if(get_option('easy_faqs_link_excerpt_to_full', true)){ ?> checked="CHECKED" <?php } ?>/>
+					<p class="description">If checked, shortened answers will end with a link that goes to the full length Answer.</p>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
 			<?php include('registration_options.php'); ?>
 			
 			<p class="submit">
 				<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 			</p>
 		</form>
-		</div>						
-		<?php
+		<?php $this->settings_page_bottom();
 	}
 	
 	function themes_page()
@@ -330,10 +378,10 @@ class easyFAQOptions
 					);
 					$current_theme = get_option('faqs_style');
 					$themes = EasyFAQs_Config::all_themes(isValidFAQKey(), false);
-					$desc = 'Select a theme to see how it would look with your FAQs. <br /><br /> If \'No Theme\' is selected, only your theme\'s own CSS, and any Custom CSS you\'ve added, will be applied to your FAQs.';
+					$desc = '';
 					if (!isValidFAQKey())
 					{
-						$desc = 'Select a theme to see how it would look with your FAQs. You can preview the Pro themes as well, although you will not be able to select them.<br /><br /> If \'No Theme\' is selected, only your theme\'s own CSS, and any Custom CSS you\'ve added, will be applied to your FAQs.';						
+						$desc = '';						
 					}
 					$this->shed->grouped_select( array('name' => 'faqs_style', 'options' => $themes, 'label' =>'FAQs Theme', 'value' => $current_theme, 'description' => $desc) );
 
@@ -352,11 +400,34 @@ class easyFAQOptions
 				</div>
 				<div id="easy_faqs_theme_preview_browser"></div>
 				<div id="easy_faqs_theme_preview_content">
-					<?php
-						$faqs_shortcode = 'faqs';
-						$preview_shortcode = sprintf('[%s theme="%s" style="accordion-collapsed" count="5"]', $faqs_shortcode, $current_theme);
-						echo do_shortcode($preview_shortcode);
-					?>
+					<div class="easy-faqs-wrapper easy-faqs-theme-office-red easy-faqs-theme-office easy-faqs-accordion">
+						<div class="easy-faq" id="easy-faq-20141">
+							<h3 class="easy-faq-title" style=""><span class="easy-faqs-title-before"></span><span class="easy-faqs-title-text">How do I upgrade to Easy FAQs Pro?</span><span class="easy-faqs-title-after"></span></h3>
+							<div class="easy-faq-body" style="">
+								<p>Its easy! Simply visit <a href="http://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_source=plugin_settings&utm_campaign=theme_preview_faqs_first_faq_in_the_list" target="_blank">our website</a> and purchase the license of your choice. Right away, you'll receive an API key that you can enter into the settings page here, instantly unlocking all of the Pro features.</p>
+							</div>
+						</div>
+						<div class="easy-faq" id="easy-faq-20140">
+							<h3 class="easy-faq-title" style=""><span class="easy-faqs-title-before"></span><span class="easy-faqs-title-text">What will I recevive when I upgrade?</span><span class="easy-faqs-title-after"></span></h3>
+							<div class="easy-faq-body" style="">
+								<p>When you upgrade, you'll instantly unlock:</p>
+								<ul>
+									<li>All 100+ Professionally Designed Themes</li>
+									<li>Accordion Style FAQs</li>
+									<li>The Submit A Question Form</li>
+									<li>Import & Export functonality</li>
+									<li>Personalized support</li>
+									<li>And more! You'll receive free updates and new features for a year after your upgrade.</li>
+								</ul>
+							</div>
+						</div>
+						<div class="easy-faq" id="easy-faq-20142">
+							<h3 class="easy-faq-title" style=""><span class="easy-faqs-title-before"></span><span class="easy-faqs-title-text">What will happen to my data and settings when I upgrade?</span><span class="easy-faqs-title-after"></span></h3>
+							<div class="easy-faq-body" style="">
+								<p>Nothing at all! All of your FAQs, settings, and other data will be preserved when you upgrade.</p>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			
@@ -374,8 +445,7 @@ class easyFAQOptions
 				<input type="submit" class="button-primary" value="<?php _e('Set Theme') ?>" />
 			</p>
 		</form>
-		</div>						
-		<?php
+		<?php $this->settings_page_bottom();
 	}
 	
 	function submission_form_options() {
@@ -552,14 +622,13 @@ class easyFAQOptions
 				<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 			</p>
 		</form>
-		</div>		
-		<?php
+		<?php $this->settings_page_bottom();
 	}
 	
 	function help_settings_page(){
 		$this->settings_page_top();
 		include('pages/help.html');					
-		?></div><?php			
+		$this->settings_page_bottom();
 	}	
 		
 	function shortcode_generator_page() {
@@ -567,229 +636,45 @@ class easyFAQOptions
 		$categories = get_terms( 'easy-faq-category', 'orderby=title&hide_empty=0' );
 		?>
 		<div id="gold_plugins_shortcode_generator">
-			<h3>Shortcode Generator</h3>			
-			<p>Select the options you'd like, and then click the "Build My Shortcode!" button. You'll get a shortcode that you can copy and paste into any post or page.</p>
+			<h3>Shortcode Generator</h3>
+		
+			<p>Using the buttons below, select your desired method and options for displaying FAQs.</p>
+			<p>Instructions:</p>
+			<ol>
+				<li>Click the FAQs button, below,</li>
+				<li>Pick from the available display methods listed, such as List of FAQs,</li>
+				<li>Set the options for your desired method of display,</li>
+				<li>Click "Insert Now" to generate the shortcode.</li>
+				<li>The generated shortcode will appear in the textarea below - simply copy and paste this into the Page or Post where you would like FAQs to appear!</li>
+			</ol>
 			
-			<form id="easy_faqs_shortcode_generator">
-				<table class="form-table">
-					<tbody>										
-<?php
-					// FAQs Theme (select)
-					$themes = array(
-						'default_style' => 'Default Theme',
-						'no_style' => 'No Theme',
-					);
-					$themes = EasyFAQs_Config::all_themes(isValidFAQKey());
-					$desc = 'Select which theme you\'d like to use.  If \'No Theme\' is selected, only your Theme\'s CSS, and any Custom CSS you\'ve added, will be used.';
-					$this->shed->grouped_select( array('name' => 'sc_gen_theme', 'options' => $themes, 'label' =>'FAQs Theme', 'value' => get_option('faqs_style'), 'description' => $desc) );
-
-?>
-						<tr>
-							<th scope="row">
-								<div class="sc_gen_control_group">
-									<label for="sc_gen_count">Count</label>
-								</div>
-							</th>
-							<td>
-								<input type="text" class="valid_int" id="sc_gen_count" value="10" />
-								<p class="description">How many FAQs would you like to show? If you have more than this number, we'll show a View All link.</p>
-								<p class="description tip"><strong>Tip:</strong> Leave this blank to show all FAQs (unlimited)</p>
-							</td>
-						</tr>
-												
-						<tr>
-							<th scope="row">
-								<div class="sc_gen_control_group">
-									<label for="sc_gen_read_more_url">View All URL</label>
-								</div>
-							</th>
-							<td>
-								<input type="text" id="sc_gen_read_more_url" value="" />
-								<p class="description">The URL of your FAQs page. If you have more FAQs than are currently displayed, we'll show this link.</p>
-								<p class="description"><strong>Tip:</strong> leave this blank to hide the View All link entirely.</p>
-							</td>
-						</tr>
-						
-						<tr>
-							<th scope="row">
-								<div class="sc_gen_control_group">
-									<label for="sc_gen_read_more_text">View All Link Text</label>
-								</div>
-							</th>
-							<td>
-								<input type="text" id="sc_gen_read_more_text" value="View All FAQs" />
-								<p class="description">The anchor text for the 'View All' link. If you have more FAQs than are currently displayed, we'll show this link.</p>
-							</td>
-						</tr>
-
-						<tr>
-							<th scope="row">
-								<div class="sc_gen_control_group">
-									<label for="sc_gen_order_by">Order By</label>
-								</div>
-							</th>
-							<td>
-								<div class="inline-select-wrapper">
-									<select id="sc_gen_order_by">
-										<option value="rand">Random</option>
-										<option value="id">ID</option>
-										<option value="author">Author</option>
-										<option value="title" selected="selected">Title</option>
-										<option value="name">Name</option>
-										<option value="date">Date</option>
-										<option value="modified">Last Modified</option>
-										<option value="parent">Parent ID</option>								
-									</select>
-								</div>
-								<div class="inline-select-wrapper">
-									<select id="sc_gen_order_dir">
-										<option value="asc">Ascending (ASC)</option>
-										<option value="desc">Descending (DESC)</option>
-									</select>
-								</div>
-								<p class="description">How should we order your FAQs?</p>
-							</td>
-						</tr>
-						
-						<tr>
-							<th scope="row">
-								<div class="sc_gen_control_group">
-									<label for="sc_gen_category">Filter By Category</label>
-								</div>
-							</th>
-							<td>
-								<select id="sc_gen_category">
-									<option value="all">All Categories</option>
-									<?php foreach($categories as $cat):?>
-									<option value="<?=$cat->slug?>"><?=htmlentities($cat->name)?></option>
-									<?php endforeach; ?>
-								</select>
-								<p class="description"><a href="<?php echo admin_url('edit-tags.php?taxonomy=easy-faq-category&post_type=faq'); ?>">Manage Categories</a></p>
-							</td>
-						</tr>
-						
-						<tr>
-							<th scope="row">
-								Featured Images
-							</th>
-							<td>							
-								<div class="sc_gen_control_group">
-									<label for="sc_gen_show_thumbs">
-										<input type="checkbox" class="checkbox" id="sc_gen_show_thumbs" value="yes" />
-										Show Featured Images with each FAQ?
-									</label>
-								</div>
-							</td>
-						</tr>
-						
-						<?php if (!isValidFAQKey()):?>
-						<tr>
-							<td colspan="2">
-								<div class="upgrade_notice">
-									<p class="easy_faq_not_registered"><strong>These settings require Easy FAQs Pro.</strong>&nbsp;&nbsp;&nbsp;<a class="button" target="blank" href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_source=shortcode_generator&utm_campaign=pro_upgrade">Upgrade Now</a></p>
-								</div>
-							</td>
-						</tr>
-						<?php endif; ?>
-						
-						<?php if (!isValidFAQKey()):?>
-						<tr class="disabled">
-						<?php else: ?>
-						<tr>
-						<?php endif; ?>
-							<th scope="row">
-								Quick Links
-							</th>
-							<td>
-								<div class="sc_gen_control_group">
-									<label for="sc_gen_quick_links">
-										<input type="checkbox" class="checkbox" id="sc_gen_quick_links" value="yes" />
-										Include a Quick Links section?
-									</label>
-								</div>
-							</td>
-						</tr>
-						
-						<?php if (!isValidFAQKey()):?>
-						<tr class="disabled">
-						<?php else: ?>
-						<tr>
-						<?php endif; ?>
-							<th scope="row">
-								<label for="sc_gen_quick_links_cols">Quick Links Columns</label>
-							</th>
-							<td>
-								<input type="text" class="valid_int" id="sc_gen_quick_links_cols" value="2" />
-								<p class="description">How many columns should your Quick Links section have?</p>
-							</td>
-						</tr>
-						
-						
-						<?php if (!isValidFAQKey()):?>
-						<tr class="disabled">
-						<?php else: ?>
-						<tr>
-						<?php endif; ?>
-							<th scope="row">
-								Accordion Style
-							</th>
-							<td>
-								<div class="sc_gen_control_group sc_gen_control_group_radio">
-									<label title="Normal Style">
-										<input type="radio" value="normal" id="sc_gen_style_normal" name="sc_gen_style" checked="checked">
-										<span>Normal Style</span>
-									</label>
-									<label title="Accordion Style - First FAQ Visible">
-										<input type="radio" value="accordion" id="sc_gen_style_accordion_first_open" name="sc_gen_style">
-										<span>Accordion Style - First FAQ Visible</span>
-									</label>
-									<label title="Accordion Style - All FAQs Start Collapsed">
-										<input type="radio" value="accordion-collapsed" id="sc_gen_style_accordion_closed" name="sc_gen_style">
-										<span>Accordion Style - All FAQs Start Collapsed</span>
-									</label>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				
-				<?php if (!isValidFAQKey()):?>
-				<input type="hidden" name="is_pro" id="is_pro" value="0" />
-				<?php else: ?>
-				<input type="hidden" name="is_pro" id="is_pro" value="1" />
-				<?php endif; ?>
-				
-				
-				<p class="submit">
-					<button id="sc_generate" class="button button-primary" type="button">Build My Shortcode!</button>
-				</p>
-				
-				<div id="sc_gen_output_wrapper">
-					<label for="sc_gen_output">Here is your Shortcode!</label>
-					<p class="description">Copy and paste this shortcode into any page or post to display your FAQs!</p>
-					<textarea id="sc_gen_output" rows="4" cols="80"></textarea>
-				</div>
-				
-			</form>
+			<div id="easy-faqs-shortcode-generator">
+			<?php 
+				$content = "";//initial content displayed in the editor_id
+				$editor_id = "easy_faqs_shortcode_generator";//HTML id attribute for the textarea NOTE hyphens will break it
+				$settings = array(
+					//'tinymce' => false,//don't display tinymce
+					'quicktags' => false,
+				);
+				wp_editor($content, $editor_id, $settings); 
+			?>
+			</div>
 		</div><!-- end #gold_plugins_shortcode_generator -->
-		</div><!--end settings_page-->
-		<?php 
+		<?php $this->settings_page_bottom();
 	}
 
 
 	function import_export_page(){
 		//import export yang		
 		$this->settings_page_top();
-		if(!isValidFAQKey()){ //not pro
-		?>
+		
+		if( !isValidFAQKey() ): // not pro ?>
 		<h3>FAQs Importer</h3>	
 		<p class="easy_faq_not_registered"><strong>These features require Easy FAQs Pro.</strong>&nbsp;&nbsp;&nbsp;<a class="button" target="blank" href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_campaign=upgrade&utm_source=plugin&utm_banner=import_upgrade">Upgrade Now</a></p>
 		
 		<h3>FAQs Exporter</h3>		
 		<p class="easy_faq_not_registered"><strong>These features require Easy FAQs Pro.</strong>&nbsp;&nbsp;&nbsp;<a class="button" target="blank" href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_campaign=upgrade&utm_source=plugin&utm_banner=export_upgrade">Upgrade Now</a></p>
-		<?php 
-			} else { //is pro
-		?>
+		<?php else: //is pro ?>
 			<form method="POST" action="" enctype="multipart/form-data">
 				<h3>FAQs Importer</h3>	
 				<?php 
@@ -803,8 +688,8 @@ class easyFAQOptions
 					FAQsPlugin_Exporter::output_form();
 				?>
 			</form>
-		<?php	} ?>
-		</div><?php			
+		<?php endif; ?>
+		<?php $this->settings_page_bottom();
 	}
 	
 	function recent_searches_page() {
@@ -894,8 +779,7 @@ class easyFAQOptions
 		<?php else: ?>
 		<p class="easy_faq_not_registered"><strong>This feature requires Easy FAQs Pro.</strong>&nbsp;&nbsp;&nbsp;<a class="button" target="blank" href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_campaign=upgrade_search&utm_source=plugin&utm_banner=recent_searches">Upgrade Now</a></p>
 		<?php endif; ?>
-		</div><!--end settings_page-->
-	<?php 
+	<?php $this->settings_page_bottom();	
 	}
 	
 } // end class

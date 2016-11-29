@@ -18,8 +18,8 @@ include_once('../../commun/MyTools.php');
 	// M1-00:00-V-A-186002-5
 	$ligne = $_POST['ligne'];
 	$ligne = explode('-', $ligne);
-	$ancienneLigne = $_POST['ancienneLigne'];
-	$ancienneLigne = explode('-', $ancienneLigne);
+//	$ancienneLigne = $_POST['ancienneLigne'];
+//	$ancienneLigne = explode('-', $ancienneLigne);
 	$type = $_POST['type'];
 	$idLigne = $_POST['idLigne'];
 	$idLigne = explode('_', $idLigne);

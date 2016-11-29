@@ -156,7 +156,7 @@ include_once('../commun/MyTools.php');
 		$sql .= "Order by e.Libelle ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_equipe : ".$sql);
-	//$num_results = mysql_num_rows($result);
+	$resultGlobal = '';
 	//header('Content-Type: application/json; charset=ISO-8859-1');
 	//$response = array();
 	while ($row = mysql_fetch_assoc($result)) {

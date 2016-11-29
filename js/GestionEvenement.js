@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 function validEvenement()
 {
 		var libelle = document.forms['formEvenement'].elements['Libelle'].value;
@@ -71,12 +73,12 @@ function paramEvt(idEvt)
 	document.forms['formEvenement'].submit();
 }
 	
-$(document).ready(function() {
-
+jq(document).ready(function() {
+    
 	// Maskedinput
-	//$.mask.definitions['h'] = "[A-O]";
-	$('.dpt').mask("?***");
-	$('.date').mask("99/99/9999");
-	//$("#inputZone").mask("9");
+	//jq.mask.definitions['h'] = "[A-O]";
+	jq('.dpt').mask("?***");
+	jq('.date').mask("99/99/9999");
+	//jq("#inputZone").mask("9");
 
 });

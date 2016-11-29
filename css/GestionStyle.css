@@ -359,6 +359,8 @@ td.colorCapC {background: #BFB;} /*vert*/
 	border: 3px outset #3333EE;
 }
 
+.cliquable {cursor:pointer;}
+
 .cliquableNomEquipe {color: #1B3E69;} /*font-weight: bold;*/
 .cliquableNomEquipe a:link, .cliquableNomEquipe a:active, .cliquableNomEquipe a:visited {text-decoration: none; color: #334F64;}
 .cliquableNomEquipe a:hover {text-decoration: underline; color: #334F64;}
@@ -368,6 +370,7 @@ td.colorCapC {background: #BFB;} /*vert*/
 .cliquableCompet {color: #334F64;}
 .cliquableCompet a:link, .cliquableCompet a:active, .cliquableCompet a:visited {text-decoration: none; color: #334F64;}
 .cliquableCompet a:hover {text-decoration: underline; color: #334F64;}
+
 
 .scoreProvisoire {font-style: italic; font-weight: normal; color: #38556C;background-color: #BBBBBB; border-radius: 3px; width: 40px; display: block; margin: auto;}
 .statutMatch, .statutCompetEND {color: #CCEEDD; background-color: #334F64; border-radius: 3px; width: 40px; display: block; text-transform: uppercase; margin: auto;}

@@ -37,10 +37,10 @@
 					<div class='titrePage'>Liste des arbitres</div>
 				{/if}
 				<div class='liens'>
-					<a href="FeuilleStats.php" Target="_blank" title="Version pdf"><img width="20" alt="pdf FR" src="../img/pdfFR.gif"></a>
-					<a href="FeuilleStatsEN.php" Target="_blank" title="Version pdf EN"><img width="20" alt="pdf EN" src="../img/pdfEN.gif"></a>
+					<a href="FeuilleStats.php" Target="_blank" title="Version pdf"><img height="30" alt="pdf FR" src="../img/pdfFR.png"></a>
+					<a href="FeuilleStatsEN.php" Target="_blank" title="Version pdf EN"><img height="30" alt="pdf EN" src="../img/pdfEN.png"></a>
                     {if $sql_csv != ''}
-                        <a href="upload_csv.php?action=export" title="Téléchargement CSV : {$sql_csv}"><img width="20" alt="CSV" src="../img/csv.png"></a>
+                        <a href="upload_csv.php?action=export" title="Téléchargement CSV : {$sql_csv}"><img height="30" alt="CSV" src="../img/csv.png"></a>
                     {/if}
 					<div align=right><span id='reachspan'><i>Surligner:</i></span><input type=text name='reach' id='reach' size='20'></div>
 				</div>

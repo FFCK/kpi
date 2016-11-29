@@ -1,6 +1,6 @@
 		<!--<iframe name="iframeRechercheLicenceIndi" id='iframeRechercheLicenceIndi' SRC="RechercheLicenceIndi.php" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>-->
-		<iframe name="iframeRechercheLicenceIndi2" id='iframeRechercheLicenceIndi2' SRC="RechercheLicenceIndi2.php?zoneMatric=guser&zoneIdentite=gidentite" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>
-		<div class="main">
+{*		<iframe name="iframeRechercheLicenceIndi2" id='iframeRechercheLicenceIndi2' SRC="RechercheLicenceIndi2.php?zoneMatric=guser&zoneIdentite=gidentite" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>
+*}		<div class="main">
 			<form method="POST" action="GestionUtilisateur.php" name="formUser" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value=''/>
 				<input type='hidden' name='ParamCmd' id='ParamCmd' Value=''/>
@@ -22,7 +22,7 @@
 							<td rowspan=2 colspan=2 width=270>
 								<label for="choixJoueur">Recherche (nom, prénom ou licence)</label>
 								<input size="50" type="text" name="choixJoueur" id="choixJoueur" >
-								<img id='rechercheUtilisateur' hspace="2" width="16" height="17" src="../img/b_search.png" alt="Recherche avancée" title="Recherche avancée" border="0" align=absbottom>
+{*								<img id='rechercheUtilisateur' hspace="2" width="16" height="17" src="../img/b_search.png" alt="Recherche avancée" title="Recherche avancée" border="0" align=absbottom>*}
 								<hr>
 								<label for="guser">Licence</label>
 								<br>

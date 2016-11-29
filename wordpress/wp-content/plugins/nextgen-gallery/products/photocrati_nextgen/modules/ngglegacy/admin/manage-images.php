@@ -187,6 +187,14 @@ jQuery(function (){
       //prevent the browser to follow the link
       return false;
     });
+
+	// If too many of these are generated the cookie becomes so large servers will reject HTTP requests
+	// Wait some time for other listeners to catch this event and then purge it from the browser
+	Frame_Event_Publisher.listen_for('attach_to_post:thumbnail_modified', function(data) {
+		setTimeout(function() {
+			Frame_Event_Publisher.delete_cookie("X-Frame-Events_" + data.id);
+		}, 400);
+	});
 });
 
 function checkAll(form)
@@ -281,7 +289,10 @@ jQuery(document).ready( function($) {
 	jQuery('.iedit').mouseover(
 		function(e){
 			jQuery(this).parent().find('.row-actions').css('visibility', 'hidden');
-			jQuery(this).next('.row_actions:first').find('.row-actions:first').css('visibility', 'visible');
+			jQuery(this).next('.row_actions:first').find('.row-actions:first').css({
+				'visibility': 'visible',
+				'left': 0 // WP 4.4 compatibility; it assigns left:-9999em by default to row-actions
+			});
 		}
 	);
 

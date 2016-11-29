@@ -55,7 +55,7 @@ var gold_plugins_get_coupon_box_new = function () {
 	var coupon_html = 
 	'<div id="mc-show-coupon-codes" class="modern">' + 
 		'<h3>Your Coupon Code Is On The Way!</h3>' +
-		'<p class="thx">We\'ve sent you an email with your coupon code for 20% off @plugin_name! If you don\'t see it within a few minutes, you might want to look in your Junk Mail folder.</p>' + 
+		'<p class="thx">We\'ve sent you an email with your coupon code for 10% off @plugin_name! If you don\'t see it within a few minutes, you might want to look in your Junk Mail folder.</p>' + 
 		'<h4><strong>Ready to buy now?</strong></h4>' +
 		'<p class="thx">If you\'re ready to buy now, <a href="@personal_url" target="_blank">click here to visit the pricing page</a>. Your coupon code will be applied automatically.</p>' +
 	'</div>';

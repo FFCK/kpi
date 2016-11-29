@@ -1,11 +1,12 @@
+jq = jQuery.noConflict();
 /*
 /*
  * Reprise de la fonction ajax saveOfficiel (officiels matchs)
  * A adapter pour sauvegarde des officiels de journée
  */
-$(document).ready(function() {
+jq(document).ready(function() {
 //    /* OFFICIELS */
-//    $('.editOfficiel').editable('ajax/saveOfficielJournee.php', {
+//    jq('.editOfficiel').editable('ajax/saveOfficielJournee.php', {
 //        style   : 'display: inline',
 //        submit  : 'OK',
 //        cssclass : 'autocompleteOfficiel',
@@ -23,7 +24,7 @@ $(document).ready(function() {
 //        }
 //    });
 
-	$("#Representant").autocomplete('Autocompl_joueur.php', {
+	jq("#Representant").autocomplete('Autocompl_joueur.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -31,10 +32,10 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#Representant").result(function(event, data, formatted) {
+	jq("#Representant").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[7] + ' ' + data[6] + ' (' + data[12] + ')';
-			$("#Representant").val(nom);
+			jq("#Representant").val(nom);
 		}
 	});
 });

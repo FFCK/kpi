@@ -44,7 +44,7 @@ class submitFAQsWidget extends WP_Widget
 			?>
 			<div class="gp_widget_form_wrapper">
 				<p><strong>Please Note:</strong><br/> This Feature Requires Easy FAQs Pro.</p>
-				<p><a href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_source=submit_faqs_widget&utm_campaign=upgrade" target="_blank"><?php echo FAQ_UPGRADE_TEXT; ?></a></p>
+				<p><a href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_source=submit_faqs_widget&utm_campaign=upgrade" target="_blank"><?php echo $easy_faqs->get_str('FAQ_UPGRADE_TEXT'); ?></a></p>
 			</div>
 			<?php
 		}
@@ -58,6 +58,10 @@ class submitFAQsWidget extends WP_Widget
 
 	function widget($args, $instance){
 		global $easy_faqs;
+		global $easy_faqs_in_widget;
+		$easy_faqs_in_widget = true;
+		
+		
 		
 		extract($args, EXTR_SKIP);
 

@@ -67,11 +67,11 @@
 						    </select>
 						</td>
 						<td>
-							<a href="GestionJournee.php?idJournee=*"><img align="absbottom" width="16" height="16" src="../img/b_browse.png" alt="Tous les matchs" title="Tous les matchs" border="0">Voir tous les Matchs</a>
+							<a href="GestionJournee.php?idJournee=*"><img align="absbottom" height="20" src="../img/b_match.png" alt="Tous les matchs" title="Tous les matchs"> Voir tous les Matchs</a>
 						</td>
 						{if $profile <= 4 && $AuthModif == 'O'}
 							<td>
-								<a href="#" onclick="ParamJournee(0);"><img align="bottom" width="16" height="16" src="../img/b_insrow.png" alt="Ajouter une journee" title="Ajouter une journee" border="0">Ajouter une Journée</A></td>
+								<a href="#" onclick="ParamJournee(0);"><img align="bottom" height="20" src="../img/glyphicons-191-plus-sign.png" alt="Ajouter une journee" title="Ajouter une journee"> Ajouter une Journée</A></td>
 							</td>
 						{/if}
 					</tr>
@@ -84,13 +84,13 @@
 						<tr>
 							<td>
 								Sélection :&nbsp;
-								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', true);return false;"><img width="21" height="19" src="../img/tous.gif" alt="Sélectionner tous" title="Sélectionner tous" border="0"></a>
+								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" alt="Sélectionner tous" title="Sélectionner tous" border="0"></a>
 								&nbsp;
-								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', false);return false;"><img width="21" height="19" src="../img/aucun.gif" alt="Sélectionner aucun" title="Sélectionner aucun" border="0"></a>
+								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" alt="Sélectionner aucun" title="Sélectionner aucun" border="0"></a>
 								&nbsp;
-								<a href="#" onclick="SelectedCheckboxes('formCalendrier', 'checkJournee');publiMultiJournees();" alt="Publier/dépublier les journées/phases cochées" title="Publier/dépublier les journées/phases cochées"><img width="29" height="24" src="../img/oeil2.gif" alt="Publier/Dépublier la sélection" title="Publier/Dépublier la sélection" border="0"></a>
+								<a href="#" onclick="SelectedCheckboxes('formCalendrier', 'checkJournee');publiMultiJournees();" alt="Publier/dépublier les journées/phases cochées" title="Publier/dépublier les journées/phases cochées"><img height="25" src="../img/oeil2.gif" alt="Publier/Dépublier la sélection" title="Publier/Dépublier la sélection" border="0"></a>
 								&nbsp;
-								<a href="#" onclick="RemoveCheckboxes('formCalendrier', 'checkJournee')" alt="Supprimer les journées cochées" title="Supprimer les journées/phases cochées"><img width="16" height="16" src="../img/supprimer.gif" alt="Supprimer la sélection" title="Supprimer la sélection" border="0"></a>
+								<a href="#" onclick="RemoveCheckboxes('formCalendrier', 'checkJournee')" alt="Supprimer les journées cochées" title="Supprimer les journées/phases cochées"><img height="25" src="../img/glyphicons-17-bin.png" alt="Supprimer la sélection" title="Supprimer la sélection" border="0"></a>
 							</td>
 						</tr>
 					</table>
@@ -104,7 +104,7 @@
 								{if $profile <= 3 && $AuthModif == 'O'}
 									<th>&nbsp;</th>
 								{/if}
-								<th width=18><img width="19" height="16" src="../img/oeil2.gif" alt="Publier ?" title="Publier ?" border="0"></th>
+								<th width=18><img height="18" src="../img/oeil2.gif" alt="Publier ?" title="Publier ?" border="0"></th>
 								<th>N°</th>
 								<th>&nbsp;</th>
 								<th>Compét.</th>
@@ -128,30 +128,25 @@
 												<td><input type="checkbox" name="checkJournee" value="{$arrayJournees[i].Id}" id="checkDelete{$smarty.section.i.iteration}" /></td>
 											{/if}
 											<td class="color{$arrayJournees[i].Publication|default:'N'}2">
-										<!--	
-												<a href="#" Id="Publication{$arrayJournees[i].Id}" onclick="publiJournee({$arrayJournees[i].Id}, '{$arrayJournees[i].Publication}')">
-													<img width="24" height="24" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
-												</a>
-										-->	
-												<img class="publiJournee" data-valeur="{$arrayJournees[i].Publication}" data-id="{$arrayJournees[i].Id}" width="24" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="{if $arrayJournees[i].Publication == 'O'}Public{else}Non public{/if}" />
+												<img class="publiJournee" data-valeur="{$arrayJournees[i].Publication}" data-id="{$arrayJournees[i].Id}" height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="{if $arrayJournees[i].Publication == 'O'}Public{else}Non public{/if}" />
 											</td>
 											<td align="left">{$arrayJournees[i].Id}</td> 
 											<td width=70>
-												<a href="#" onclick="ParamJournee({$arrayJournees[i].Id});"><img width="16" height="16" src="../img/b_edit.png" alt="Modifier" title="Modifier les Paramètres de la journée" border="0"></a>
-												<a href="#" onclick="duplicate({$arrayJournees[i].Id});"><img width="16" height="16" src="../img/b_copy.png" alt="Dupliquer" title="Dupliquer" border="0"></a>
-												<a href='GestionJournee.php?idJournee={$arrayJournees[i].Id}'><img width="16" height="16" src="../img/b_browse.png" alt="Accès aux matchs - journée {$arrayJournees[i].Id}" title="Accès aux matchs - journée {$arrayJournees[i].Id}" border="0"></a>
+												<a href="#" onclick="ParamJournee({$arrayJournees[i].Id});"><img height="16" src="../img/glyphicons-31-pencil.png" alt="Modifier" title="Modifier les Paramètres de la journée" border="0"></a>
+												<a href="#" onclick="duplicate({$arrayJournees[i].Id});"><img height="20" src="../img/glyphicons-511-duplicate.png" alt="Dupliquer" title="Dupliquer" border="0"></a>
+												<a href='GestionJournee.php?idJournee={$arrayJournees[i].Id}'><img height="20" src="../img/b_match.png" alt="Accès aux matchs - journée {$arrayJournees[i].Id}" title="Accès aux matchs - journée {$arrayJournees[i].Id}" border="0"></a>
 											</td>
 										{else}
 											{if $profile <= 3 && $AuthModif == 'O'}
 												<td>&nbsp;</td>
 											{/if}
 											<td class="color{$arrayJournees[i].Publication|default:'N'}2">
-												<img width="24" height="24" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
+												<img height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
 											</td>
 											<td align="left">{$arrayJournees[i].Id}</td> 
 											<td align="left">
 												<a href='GestionJournee.php?idJournee={$arrayJournees[i].Id}'>
-													<img align="absbottom" width="16" height="16" src="../img/b_browse.png" alt="Accès aux matchs - journée {$arrayJournees[i].Id}" title="Accès aux matchs - journée {$arrayJournees[i].Id}" border="0">
+													<img align="absbottom" height="20" src="../img/b_match.png" alt="Accès aux matchs - journée {$arrayJournees[i].Id}" title="Accès aux matchs - journée {$arrayJournees[i].Id}" border="0">
 												</a> 
 											</td>
 										{/if}
@@ -160,19 +155,18 @@
 											<td>&nbsp;</td>
 										{/if}
 										<td class="color{$arrayJournees[i].Publication|default:'N'}2">
-											<img width="24" height="24" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
+											<img height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N">
 										</td>
 										<td align="left">{$arrayJournees[i].Id}</td> 
 										<td class="rouge">
 											<input type="checkbox" class="checkassoc2" data-id="{$arrayJournees[i].Id}" {$arrayJournees[i].Checked} />
-											<!--<input type="checkbox" class="checkassoc" onclick="ClickEvenementJournee({$arrayJournees[i].Id});" id="checkEvenementJournee{$arrayJournees[i].Id}" {$arrayJournees[i].Checked} />-->
 										</td>
 									{else}
 										{if $profile <= 3 && $AuthModif == 'O'}
 											<td>&nbsp;</td>
 										{/if}
 										<td class="color{$arrayJournees[i].Publication|default:'N'}2">
-											<img width="24" height="24" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N" border="0">
+											<img height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" alt="Publier O/N" title="Publier O/N">
 										</td>
 										<td align="left">{$arrayJournees[i].Id}</td> 
 										<td class="rouge">&nbsp;</td>
@@ -190,7 +184,7 @@
 									{if $arrayJournees[i].Date_debut != $arrayJournees[i].Date_fin} - {$arrayJournees[i].Date_fin}{/if}</td>
 									<td>{$arrayJournees[i].Lieu|default:'&nbsp;'}</td>
 									<td>{$arrayJournees[i].Departement|default:'&nbsp;'}</td>
-                                                                        <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="Officiels"><img src="../img/b_search.png" alt="Officiels"></a>
+                                                                        <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="Officiels"><img height="18" src="../img/glyphicons-28-search.png" alt="Officiels"></a>
                                                                         <td>
 										{if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
 										{if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
@@ -199,7 +193,7 @@
 									</td>
 									
 									{if $arrayJournees[i].Autorisation eq true && $profile <= 4 && $AuthModif == 'O'}
-										<td><a href="#" onclick="RemoveCheckbox('formCalendrier', '{$arrayJournees[i].Id}');return false;"><img width="16" height="16" src="../img/supprimer.gif" alt="Supprimer" title="Supprimer" border="0"></a></td>
+										<td><a href="#" onclick="RemoveCheckbox('formCalendrier', '{$arrayJournees[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer"></a></td>
 									{else}
 										<td>&nbsp;</td>
 									{/if}

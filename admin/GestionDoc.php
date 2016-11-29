@@ -57,9 +57,9 @@ class GestionDoc extends MyPageSecure
 		{
 			$row = mysql_fetch_array($result);	  
 			if ($row["Id"] == $idEvenement)
-				array_push($arrayEvenement, array( 'Id' => $row['Id'], 'Libelle' => $row['Id'].' - '.$row['Libelle'].$PublicEvt, 'Selection' => 'SELECTED' ) );
+				array_push($arrayEvenement, array( 'Id' => $row['Id'], 'Libelle' => $row['Id'].' - '.$row['Libelle'], 'Selection' => 'SELECTED' ) );
 			else
-				array_push($arrayEvenement, array( 'Id' => $row['Id'], 'Libelle' => $row['Id'].' - '.$row['Libelle'].$PublicEvt, 'Selection' => '' ) );
+				array_push($arrayEvenement, array( 'Id' => $row['Id'], 'Libelle' => $row['Id'].' - '.$row['Libelle'], 'Selection' => '' ) );
 		}
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 

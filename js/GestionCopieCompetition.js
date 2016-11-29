@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 function Duppli()
 {
 	if(confirm("Copier la structure des matchs ?"))
@@ -34,12 +36,12 @@ function Cancel()
 	document.forms['formCopieCompetition'].submit();
 }
 
-$(document).ready(function() {
+jq(document).ready(function() {
 
 	// Maskedinput
-	//$.mask.definitions['h'] = "[A-O]";
-	$('.dpt').mask("?***");
-	$('.date').mask("99/99/9999");
-	//$("#inputZone").mask("9");
+	//jq.mask.definitions['h'] = "[A-O]";
+	jq('.dpt').mask("?***");
+	jq('.date').mask("99/99/9999");
+	//jq("#inputZone").mask("9");
 
 });

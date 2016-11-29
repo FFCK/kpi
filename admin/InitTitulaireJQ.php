@@ -5,9 +5,9 @@ include_once('../commun/MyTools.php');
 
 session_start();
 
-$champs = utyGetPost('champs', '');
-$valeur = utyGetPost('valeur', '');
-$valeur3 = utyGetPost('valeur3', '');
+$champs = utyGetPost('champs', ''); // Compet
+$valeur = utyGetPost('valeur', ''); // N2H
+$valeur3 = utyGetPost('valeur3', ''); // -1
 if($champs == '' || $valeur == '')
 {
 	echo 'Pas de valeur transmise';
@@ -39,20 +39,24 @@ function initCompet($valeur)
 {
 	$codeCompet = $valeur;
 	$codeSaison = utyGetSaison();
-	$idMatch = utyGetSession('idMatch', -1);
+	//$idMatch = utyGetSession('idMatch', -1);
 	$lstJournee = utyGetSession('lstJournee', -1);
 
 	// Chargement des Matchs en jeux ...
-	$sql  = "Select a.Id, a.Id_equipeA, a.Id_equipeB ";
-	$sql .= "From gickp_Matchs a, gickp_Journees b ";
-	if ($idMatch < 0)
-		$sql .= "Where a.Id_journee In ($lstJournee) ";
-	else
-		$sql .= "Where a.Id = $idMatch ";
-	$sql .= "And a.Validation != 'O' ";
-	$sql .= "And a.Id_journee = b.Id ";
-	$sql .= "And b.Code_competition = '$codeCompet' ";
-	$sql .= "And b.Code_saison = '$codeSaison' ";
+	$sql  = "SELECT a.Id, a.Id_equipeA, a.Id_equipeB ";
+	$sql .= "FROM gickp_Matchs a, gickp_Journees b ";
+//	if ($idMatch > 0) {
+//		$sql .= "WHERE a.Id = $idMatch ";
+//    } else 
+    if ($lstJournee != -1) {
+		$sql .= "WHERE a.Id_journee In ($lstJournee) ";
+    } else {
+        $sql .= 'WHERE 1 ';
+    }
+	$sql .= "AND a.Validation != 'O' ";
+	$sql .= "AND a.Id_journee = b.Id ";
+	$sql .= "AND b.Code_competition = '$codeCompet' ";
+	$sql .= "AND b.Code_saison = '$codeSaison' ";
 
 	$myBdd = new MyBdd();
 

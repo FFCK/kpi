@@ -1,10 +1,13 @@
-$(document).ready(function() {
-	$("#evenement").change(function(){
-		$("#competition").val('*');
-		$("#formCalendrier").submit();
-	});	$(".typeJournee").click(function(){
+jq = jQuery.noConflict();
+
+jq(document).ready(function() {
+	jq("#evenement").change(function(){
+		jq("#competition").val('*');
+		jq("#formCalendrier").submit();
+	});
+	jq(".typeJournee").click(function(){
 		//if(confirm('Confirmez-vous le changement de statut ?')){
-			laJournee = $(this);
+			laJournee = jq(this);
 			laJournee.attr('src', 'v2/images/indicator.gif');
 			if(laJournee.attr('data-valeur') == 'C'){
 				changeType = 'E';
@@ -12,7 +15,8 @@ $(document).ready(function() {
 			}else{
 				changeType = 'C';
 				textType = 'Classement';
-			}			$.post(
+			}
+			jq.post(
 				'v2/StatutJournee.php', // Le fichier cible côté serveur.
 				{ // variables
 					Id_Journee : laJournee.attr('data-id'),
@@ -34,9 +38,10 @@ $(document).ready(function() {
 				'text' // Format des données reçues.
 			);
 		//}
-	});	$(".publiJournee").click(function(){
+	});
+	jq(".publiJournee").click(function(){
 		//if(confirm('Confirmez-vous le changement de publication ?')){
-			laJournee = $(this);
+			laJournee = jq(this);
 			laJournee.attr('src', 'v2/images/indicator.gif');
 			if(laJournee.attr('data-valeur') == 'O'){
 				changeType = 'N';
@@ -45,7 +50,7 @@ $(document).ready(function() {
 				changeType = 'O';
 				textType = 'Public';
 			}
-			$.post(
+			jq.post(
 				'v2/StatutJournee.php', // Le fichier cible côté serveur.
 				{ // variables
 					Id_Journee : laJournee.attr('data-id'),
@@ -69,18 +74,18 @@ $(document).ready(function() {
 		//}
 	});
 	
-	$(".checkassoc2").click(function(event){
+	jq(".checkassoc2").click(function(event){
 			event.preventDefault();
-			var laJournee = $(this);
+			var laJournee = jq(this);
 			var idJournee = laJournee.attr('data-id');
-			var idEvenement = $('#evenement').val();
+			var idEvenement = jq('#evenement').val();
 			var statut = laJournee.attr('checked');
 			laJournee.after('<img src="v2/images/indicator.gif" />').hide();
 			
 				
 			//alert(statut);
 	/*		
-			laSaison = $('#saisonTravail').val();
+			laSaison = jq('#saisonTravail').val();
 			if(statut == '0' || statut == 'ATT'){
 				changeType = 'ON';
 			}else if(statut == 'ON'){
@@ -89,7 +94,7 @@ $(document).ready(function() {
 				changeType = 'ATT';
 			}
 	*/
-			$.post(
+			jq.post(
 				'v2/setEvenementJournee.php', // Le fichier cible côté serveur.
 				{ // variables
 					Id_Evenement : idEvenement,

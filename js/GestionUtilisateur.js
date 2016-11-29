@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 function validUser()
 {
 	var user = document.forms['formUser'].elements['guser'].value;
@@ -83,73 +85,73 @@ function updateUser(code)
 		
 /*		function rechercheLicenceUtilisateur()	// Prototype remplacé par Jquery
 		{
-			if ($('iframeRechercheLicenceIndi').getStyle('visibility') == 'visible')
+			if (jq('iframeRechercheLicenceIndi').getStyle('visibility') == 'visible')
 			{
 				alert("Recherche d'utilisateur déja en cours ...");
 				return;
 			}
-	 		$('iframeRechercheLicenceIndi').src = 'RechercheLicenceIndi.php?zoneMatric=guser&zoneIdentite=gidentite';
-			var v = $('gidentite');
+	 		jq('iframeRechercheLicenceIndi').src = 'RechercheLicenceIndi.php?zoneMatric=guser&zoneIdentite=gidentite';
+			var v = jq('gidentite');
  			var p = v.viewportOffset();
 			var posy = p[1];
- 	 		$('iframeRechercheLicenceIndi').setStyle({ left:'250px', top:posy+'px' });
- 	 		$('iframeRechercheLicenceIndi').setStyle({ visibility:'visible' });
+ 	 		jq('iframeRechercheLicenceIndi').setStyle({ left:'250px', top:posy+'px' });
+ 	 		jq('iframeRechercheLicenceIndi').setStyle({ visibility:'visible' });
 		}
 */
 
-$(document).ready(function() { //Jquery + NoConflict='J'
+jq(document).ready(function() { //Jquery + NoConflict='J'
 
-	$('#iframeRechercheLicenceIndi2').hide();
+	jq('#iframeRechercheLicenceIndi2').hide();
 	// Recherche utilisateur
-	$('#rechercheUtilisateur').click(function(e){
-		$('#iframeRechercheLicenceIndi2').toggle();
+	jq('#rechercheUtilisateur').click(function(e){
+		jq('#iframeRechercheLicenceIndi2').toggle();
 	});
 
-	$("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
 		width: 550,
 		max: 50,
 		mustMatch: true,
 	});
-	$("#choixJoueur").result(function(event, data, formatted) {
+	jq("#choixJoueur").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[7]+' '+data[6];
-			$("#guser").val(data[1]);
-			$("#gidentite").val(nom);
+			jq("#guser").val(data[1]);
+			jq("#gidentite").val(nom);
 		}
 	});
 	
 	//Affiche, masque formulaire
-	$('#tabledown').hide();
-	var act = $('#Action').val();
+	jq('#tabledown').hide();
+	var act = jq('#Action').val();
 	if(act != 'Update')
 	{
-		$('#tabledown').toggle();
-		$('#tableup').toggle();
+		jq('#tabledown').toggle();
+		jq('#tableup').toggle();
 	}
-	$('#clickup').click(function() {
-		$('#tabledown').toggle();
-		$('#tableup').toggle();
+	jq('#clickup').click(function() {
+		jq('#tabledown').toggle();
+		jq('#tableup').toggle();
 	});
-	$('#clickdown').click(function() {
-		$('#tabledown').toggle();
-		$('#tableup').toggle();
+	jq('#clickdown').click(function() {
+		jq('#tabledown').toggle();
+		jq('#tableup').toggle();
 	});
 
 	// Highlight
-    $('#reach').bind('keyup change', function(ev) {
+    jq('#reach').bind('keyup change', function(ev) {
         // pull in the new value
-        var searchTerm = $(this).val();
+        var searchTerm = jq(this).val();
         // remove any old highlighted terms
-        $('.tableau').removeHighlight();
+        jq('.tableau').removeHighlight();
         // disable highlighting if empty
         if ( searchTerm ) {
             // highlight the new term
-            $('.tableau').highlight( searchTerm );
-			$('.tableau thead').removeHighlight();
+            jq('.tableau').highlight( searchTerm );
+			jq('.tableau thead').removeHighlight();
         }
     });
 	
-	$('#msgStandard').click(function(){
+	jq('#msgStandard').click(function(){
 		var texte = "\n************************************************************************\n";
 		texte += "Vous devez obligatoirement faire figurer dans les feuilles de présence de votre équipe sur KPI tous les compétiteurs qui seront amenés ";
 		texte += "à participer à au moins un match de la prochaine journée de Championnat de France, ou de la Coupe de France.\n";
@@ -171,7 +173,7 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 		texte += "\n";
 		texte += "Tutoriel : http://www.kayak-polo.info/?page_id=987 \n";
 		texte += "\n************************************************************************";
-		$('#message_complementaire').text(texte);
+		jq('#message_complementaire').text(texte);
 	});
 	
 });
