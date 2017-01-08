@@ -11,30 +11,33 @@ class Login extends MyPage
 	function Login()
 	{
 		session_start();
+        $myBdd = new MyBdd();
+        
+		if (isset($_GET['Src'])) {
+            $loginTarget = $myBdd->RealEscapeString($_GET['Src']);
+            $_SESSION['loginTarget'] = $loginTarget;
+        }
 
-		if (isset($_GET['Src']))
-			$_SESSION['loginTarget'] = $_GET['Src'];
-		
-		//if ($_SESSION['loginTarget'] == 'index.php' || $_SESSION['loginTarget'] == 'Login.php' || $_SESSION['loginTarget'] == '')
+        //if ($_SESSION['loginTarget'] == 'index.php' || $_SESSION['loginTarget'] == 'Login.php' || $_SESSION['loginTarget'] == '')
 		//	$_SESSION['loginTarget'] = '/Index2.php';
 			
 		if ( (isset($_POST['User'])) && (isset($_POST['Mel']))  && ($_POST['Mode'] == 'Regeneration') )
 		{
-			$user = preg_replace('`^[0]*`','',$_POST['User']);
-			$myBdd = new MyBdd();
+			$user = preg_replace( '`^[0]*`', '', $myBdd->RealEscapeString( trim( $_POST['User'] ) ) );
+            $mel = $myBdd->RealEscapeString( trim( $_POST['Mel'] ) );
+            
 			$sql  = "Select u.* ";
 			$sql .= "From gickp_Utilisateur u, gickp_Liste_Coureur c ";
 			$sql .= "Where u.Code = '";
 			$sql .= $user;
 			$sql .= "' ";
 			$sql .= "And u.Mail = '";
-			$sql .= $_POST['Mel'];
+			$sql .= $mel;
 			$sql .= "' ";
 			$sql .= "and u.Code = c.Matric ";
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
 			if (mysql_num_rows($result) == 1)
 			{
-				$user = preg_replace('`^[0]*`','',$_POST['User']);
 				$row = mysql_fetch_array($result);
 				$gpwd = Genere_Password(10);
 				//Mise à jour mot de passe
@@ -77,8 +80,7 @@ class Login extends MyPage
 		}
 		elseif ( (isset($_POST['User'])) && (isset($_POST['Pwd']))  && ($_POST['Mode'] == 'Connexion') )
 		{
-			$user = preg_replace('`^[0]*`','',$_POST['User']);
-			$myBdd = new MyBdd();
+			$user = preg_replace( '`^[0]*`', '', $myBdd->RealEscapeString( trim( $_POST['User'] ) ) );
 			$sql  = "Select u.*, ";
 			$sql .= "c.Nom, c.Prenom, c.Numero_club ";
 			$sql .= "From gickp_Utilisateur u, gickp_Liste_Coureur c ";
@@ -162,4 +164,3 @@ class Login extends MyPage
 
 $page = new Login();
 
-?>
