@@ -170,15 +170,32 @@ class MyBdd
 		$section = "";
 		$nbLicenciés = 0;
 		$nbArbitres = 0;
-		
-	 	
-		$fp = fopen("https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce", "r");
+		$file = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce";
+        $newfile = "pce.pce";
+        
+        $arrRequestHeaders = array(
+            'http'=>array(
+                'method'        =>'GET',
+                'protocol_version'    =>1.1,
+                'follow_location'    =>1,
+                'header'=>    "User-Agent: Anamera-Feed/1.0\r\n" .
+                "Referer: $source\r\n" .
+                $ifmodhdr
+            )
+        );
+        
+	 	if (!copy($file, $newfile, stream_context_create($arrRequestHeaders))) {
+            array_push($this->m_arrayinfo, "La copie $file du fichier a échoué...\n");
+            return;
+        }
+        
+		$fp = fopen($newfile, "r");
 		if (!$fp)
 		{				
 			array_push($this->m_arrayinfo, "Ouverture impossible du fichier distant");
 		}	  
 		
-		array_push($this->m_arrayinfo, "Importation du fichier PCE distant");
+		array_push($this->m_arrayinfo, "Importation du fichier PCE");
 		  		   
 		while (!feof($fp))
 		{
@@ -254,7 +271,7 @@ class MyBdd
 		
 		if ($nbToken < 17)
 		{												  
-			array_push($this->m_arrayinfo, "Erreur [licencies] : ".$buffer);
+			array_push($this->m_arrayinfo, "Erreur [licencies] : ".$buffer." - token = ".$nbToken);
 			return;
 		}
 		
