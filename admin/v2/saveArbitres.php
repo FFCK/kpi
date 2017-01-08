@@ -14,11 +14,11 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = $_POST['idMatch'];
-	$id = $_POST['id'];
+	$idMatch = (int)$_POST['idMatch'];
+	$id = (int)$_POST['id'];
 	$value = explode('|',$_POST['value']);
-	$value[0] = trim($value[0]);
-	$value[1] = trim($value[1]);
+	$value[0] = $myBdd->RealEscapeString(trim($value[0]));
+	$value[1] = $myBdd->RealEscapeString(trim($value[1]));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -30,7 +30,9 @@ include_once('../../commun/MyTools.php');
 	// *****************************************************************************
 */
 	// Contrôle autorisation journée
-	$sql  = "Select Id_journee, Validation from gickp_Matchs where Id = ".$idMatch;
+	$sql  = "SELECT Id_journee, Validation "
+            . "FROM gickp_Matchs "
+            . "WHERE Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 	$row = mysql_fetch_array($result);
 	if (!utyIsAutorisationJournee($row['Id_journee']))
@@ -38,7 +40,8 @@ include_once('../../commun/MyTools.php');
 	if ($row['Validation']=='O')
 		die ("Ce match est verrouillé !");
 	
-	$sql  = "UPDATE gickp_Matchs SET ".$id." = '".$value[0]."' ";
+	$sql  = "UPDATE gickp_Matchs "
+            . "SET ".$id." = '".$value[0]."' ";
 	if($id == 'Arbitre_principal' && $value[1] != '')
 		$sql .= ", Matric_arbitre_principal = ".$value[1]." ";
 	if($id == 'Arbitre_secondaire' && $value[1] != '')
@@ -47,4 +50,3 @@ include_once('../../commun/MyTools.php');
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
 	echo $value[0]; 
 
-?>

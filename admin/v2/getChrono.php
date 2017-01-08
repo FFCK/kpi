@@ -14,7 +14,7 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = $_POST['idMatch'];
+	$idMatch = (int)$_POST['idMatch'];
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);

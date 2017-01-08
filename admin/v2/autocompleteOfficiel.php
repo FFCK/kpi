@@ -5,11 +5,11 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$q = $_GET['term'];
-	$sql  = "SELECT Nom, Prenom, Matric FROM gickp_Liste_Coureur ";
-	$sql .= "WHERE Nom like '%".$q."%' ";
-	$sql .= "OR Prenom like '%".$q."%' ";
-	$sql .= "OR Matric like '".$q."%' ";
+	$q = $myBdd->RealEscapeString(trim($_GET['term']));
+	$sql  = "SELECT Nom, Prenom, Matric FROM gickp_Liste_Coureur "
+            . "WHERE Nom like '%".$q."%' "
+            . "OR Prenom like '%".$q."%' "
+            . "OR Matric like '".$q."%' ";
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 	$num_results = mysql_num_rows($result);
 	$json = array();

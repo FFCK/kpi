@@ -14,9 +14,10 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = $_POST['idMatch'];
-	$id = explode('-',$_POST['id']);
-	$value = $_POST['value'];
+	$idMatch = (int)$_POST['idMatch'];
+	$id = explode('-', $_POST['id']);
+    $matric = (int)$id[1];
+	$value = $myBdd->RealEscapeString(trim($_POST['value']));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -36,8 +37,10 @@ include_once('../../commun/MyTools.php');
 	if ($row['Validation']=='O')
 		die ("Ce match est verrouillé !");
 	
-	$sql  = "UPDATE gickp_Matchs_Joueurs SET Capitaine = '".$value."' WHERE Id_match = ".$idMatch." AND Matric = ".$id[1];
+	$sql  = "UPDATE gickp_Matchs_Joueurs "
+            . "SET Capitaine = '" . $value . "' "
+            . "WHERE Id_match = " . $idMatch . " "
+            . "AND Matric = " . $matric;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
 	echo $value; 
 
-?>

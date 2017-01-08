@@ -16,9 +16,9 @@ include_once('../../live/create_cache_match.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = $_POST['idMatch'];
-	$start_time = $_POST['start_time'];
-	$run_time = $_POST['run_time'];
+	$idMatch = (int)$_POST['idMatch'];
+	$start_time = $myBdd->RealEscapeString(trim($_POST['start_time']));
+	$run_time = $myBdd->RealEscapeString(trim($_POST['run_time']));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -30,10 +30,15 @@ include_once('../../live/create_cache_match.php');
 	// *****************************************************************************
 */
 	if($action == 'RAZ'){
-		$sql  = "DELETE FROM gickp_Chrono WHERE IdMatch = '".$idMatch."' ";
+		$sql  = "DELETE FROM gickp_Chrono "
+                . "WHERE IdMatch = '".$idMatch."' ";
 	}else{
 		$start_time_server = time()%86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
-		$sql  = "UPDATE gickp_Chrono SET start_time = '".$start_time."', start_time_server = ".$start_time_server.", run_time = '".$run_time."' WHERE IdMatch = '".$idMatch."' ";
+		$sql  = "UPDATE gickp_Chrono "
+                . "SET start_time = '".$start_time."', "
+                . "start_time_server = ".$start_time_server.", "
+                . "run_time = '".$run_time."' "
+                . "WHERE IdMatch = '".$idMatch."' ";
 	}
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace/Delete<br />".$sql);
 	
@@ -43,4 +48,4 @@ include_once('../../live/create_cache_match.php');
 	
 	echo "OK"; 
 
-?>
+    

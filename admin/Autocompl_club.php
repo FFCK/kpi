@@ -8,16 +8,16 @@ include_once('../commun/MyTools.php');
 	$myBdd = new MyBdd();
 	
 	// Chargement
-		$q = utyGetGet('q');
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 		$q = preg_replace('`^[0]*`','',$q);
 		$resultGlobal = '';
 		
 			// Clubs
-			$sql  = "Select * ";
-			$sql .= "From gickp_Club ";
-			$sql .= "Where (UPPER(Libelle) LIKE UPPER('%".$q."%') ";
-			$sql .= "Or UPPER(Code) LIKE UPPER('".$q."%')) ";
-			$sql .= "Order By Code ";	 
+			$sql  = "SELECT * ";
+			$sql .= "FROM gickp_Club ";
+			$sql .= "WHERE (UPPER(Libelle) LIKE UPPER('%".$q."%') ";
+			$sql .= "OR UPPER(Code) LIKE UPPER('".$q."%')) ";
+			$sql .= "ORDER BY Code ";	 
 			$result = $myBdd->Query($sql);
 			while ($row = $myBdd->FetchAssoc($result))
 			{
@@ -26,6 +26,3 @@ include_once('../commun/MyTools.php');
 			}
 		//echo $resultGlobal;
 	echo $resultGlobal;
-
-
-?>

@@ -147,13 +147,13 @@ include_once('../commun/MyTools.php');
 
 	// Chargement
 		//$sql  = "Select Code, Libelle ";
-		$q = utyGetGet('q');
-		$sql  = "Select *  ";
-		$sql .= "From gickp_Competitions ";
-		$sql .= "Where Code Like '%".$q."%' ";
-		$sql .= "Or Libelle Like '%".$q."%' ";
-		$sql .= "Group by Code, Libelle ";
-		$sql .= "Order by Code_saison DESC, Code, Libelle ";
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
+		$sql  = "SELECT * "
+                . "FROM gickp_Competitions "
+                . "WHERE Code LIKE '%".$q."%' "
+                . "OR Libelle LIKE '%".$q."%' "
+                . "GROUP BY Code, Libelle "
+                . "ORDER BY Code_saison DESC, Code, Libelle ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_compet 1<br>".$sql);
 	//$num_results = mysql_num_rows($result);
@@ -205,4 +205,3 @@ include_once('../commun/MyTools.php');
 	}
 	echo $response;
 */
-?>

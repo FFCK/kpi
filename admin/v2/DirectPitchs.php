@@ -10,6 +10,7 @@ class GestionDirectPitchs extends MyPage
 
 	function Load()
 	{
+        $myBdd = new MyBdd();
 		$inputText = '<form method="GET" action="DirectPitchs.php" name="formPitchs" enctype="multipart/form-data">
 						Saison:<input type="text" name="saison" value="'.date('Y').'"/><br />
 						Compétition:<input type="text" name="idCompet" /><br />
@@ -18,25 +19,27 @@ class GestionDirectPitchs extends MyPage
 						<input type="submit" value="Envoyer" />
 					</form>'; 
 		$saison = utyGetGet('saison', date('Y'));
-		$idEvt = utyGetGet('idEvt', '');
-		$idCompet = utyGetGet('idCompet', '');
-		$intervalle = utyGetGet('intervalle', 40);
+		$idEvt = (int)utyGetGet('idEvt', '');
+		$idCompet = (int)utyGetGet('idCompet', '');
+		$intervalle = (int)utyGetGet('intervalle', 40);
 		$intervalle -= 5;
-		$debug = utyGetGet('debug', 0);
-		$datePitch = utyGetGet('datePitch', '');
-		$heurePitch = utyGetGet('heurePitch', '');
-		if($idCompet == '' && $idEvt == '')
-			die ('Sélectionnez une compétition ou un événement<br /><br />'.$inputText);
-		$myBdd = new MyBdd();
+		$debug = (int)utyGetGet('debug', 0);
+		$datePitch = $myBdd->RealEscapeString(trim(utyGetGet('datePitch', '')));
+		$heurePitch = $myBdd->RealEscapeString(trim(utyGetGet('heurePitch', '')));
+        
+		if ($idCompet == '' && $idEvt == '') {
+            die('Sélectionnez une compétition ou un événement<br /><br />' . $inputText);
+        }
 		// Chargement des matchs à afficher
 		$sql  = "SELECT c.Code, c.Libelle nomCompet, c.Soustitre, c.Soustitre2, m.*, j.Id, j.Code_competition, j.Code_saison, ";
 		$sql .= "ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, ce2.Code_club clubB ";
 		$sql .= "FROM gickp_Matchs m left outer join gickp_Competitions_Equipes ce1 on (ce1.Id = m.Id_equipeA) ";
 		$sql .= "left outer join gickp_Competitions_Equipes ce2 on (ce2.Id = m.Id_equipeB), ";
 		$sql .= "gickp_Journees j, gickp_Competitions c";
-		if($idEvt != '')
-			$sql .= ", gickp_Evenement_Journees ej ";
-		$sql .= " WHERE m.Id_journee = j.Id ";
+		if ($idEvt != '') {
+            $sql .= ", gickp_Evenement_Journees ej ";
+        }
+        $sql .= " WHERE m.Id_journee = j.Id ";
 		$sql .= "AND j.Code_competition = c.Code ";
 		$sql .= "AND j.Code_saison = c.Code_saison ";
 		$sql .= "AND j.Code_saison = ".$saison." ";

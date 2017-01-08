@@ -146,14 +146,14 @@ include_once('../commun/MyTools.php');
 			
 
 	// Chargement
-		$q = utyGetGet('q');
-		$sql  = "Select e.Numero, e.Libelle, e.Code_club, c.Libelle nomClub ";
-		$sql .= "From gickp_Equipe e, gickp_Club c ";
-		$sql .= "Where (UPPER(e.Libelle) LIKE UPPER('%".$q."%') ";
-		$sql .= "Or UPPER(e.Code_club) LIKE UPPER('%".$q."%') ";
-		$sql .= "Or UPPER(c.Libelle) LIKE UPPER('%".$q."%')) ";
-		$sql .= "And e.Code_club = c.Code ";
-		$sql .= "Order by e.Libelle ";
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
+		$sql  = "SELECT e.Numero, e.Libelle, e.Code_club, c.Libelle nomClub "
+                . "FROM gickp_Equipe e, gickp_Club c "
+                . "WHERE (UPPER(e.Libelle) LIKE UPPER('%".$q."%') "
+                . "OR UPPER(e.Code_club) LIKE UPPER('%".$q."%') "
+                . "OR UPPER(c.Libelle) LIKE UPPER('%".$q."%')) "
+                . "AND e.Code_club = c.Code "
+                . "ORDER BY e.Libelle ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_equipe : ".$sql);
 	//$num_results = mysql_num_rows($result);
@@ -184,4 +184,3 @@ include_once('../commun/MyTools.php');
 	}
 	echo $response;
 */
-?>

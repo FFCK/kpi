@@ -10,10 +10,11 @@ if(!$isAjax) {
 	
 //include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
-//include_once('../commun/MyTools.php');
+include_once('../commun/MyTools.php');
 	
+	$myBdd = new MyBdd();
 	// Chargement
-	$term = trim($_GET['term']);
+	$term = $myBdd->RealEscapeString(trim(utyGetGet('term')));
 	// replace multiple spaces with one
 	$term = preg_replace('/\s+/', ' ', $term);
 	// supprime les 0 devant les numéros de licence
@@ -31,14 +32,13 @@ include_once('../commun/MyBdd.php');
 	}
 	// *****************************************************************************
  */
-	$myBdd = new MyBdd();
-	$sql  = "Select *, MAX(Code_saison) last_Saison  ";
-	$sql .= "From gickp_Competitions ";
-	$sql .= "Where Code != 'POOL' ";
-	$sql .= "AND (Code Like '%".$term."%' ";
-	$sql .= "Or Libelle Like '%".$term."%') ";
-	$sql .= "Group by Code, Libelle ";
-	$sql .= "Order by Code_niveau, Code, Libelle ";
+	$sql  = "SELECT *, MAX(Code_saison) last_Saison "
+            . "FROM gickp_Competitions "
+            . "WHERE Code != 'POOL' "
+            . "AND (Code Like '%".$term."%' "
+            . "OR Libelle Like '%".$term."%') "
+            . "GROUP BY Code, Libelle "
+            . "ORDER BY Code_niveau, Code, Libelle ";
 	$result = $myBdd->Query($sql);
 	while($row = $myBdd->FetchAssoc($result)) {
 		$jRow['code'] = $row['Code'];
@@ -75,4 +75,3 @@ include_once('../commun/MyBdd.php');
 	}
 	$json = json_encode($a_json);
 	print $json;
-?>

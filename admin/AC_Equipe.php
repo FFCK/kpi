@@ -10,10 +10,11 @@ if(!$isAjax) {
 	
 //include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
-//include_once('../commun/MyTools.php');
+include_once('../commun/MyTools.php');
 	
+	$myBdd = new MyBdd();
 	// Chargement
-	$term = trim($_GET['term']);
+	$term = $myBdd->RealEscapeString(trim(utyGetGet('term')));
 	// replace multiple spaces with one
 	$term = preg_replace('/\s+/', ' ', $term);
 	// supprime les 0 devant les numéros de licence
@@ -31,14 +32,13 @@ include_once('../commun/MyBdd.php');
 	}
 	// *****************************************************************************
  */
-	$myBdd = new MyBdd();
-	$sql  = "Select e.Numero, e.Libelle, e.Code_club, c.Libelle nomClub ";
-	$sql .= "From gickp_Equipe e, gickp_Club c ";
-	$sql .= "Where (UPPER(e.Libelle) LIKE UPPER('%".$term."%') ";
-	$sql .= "Or UPPER(e.Code_club) LIKE UPPER('%".$term."%') ";
-	$sql .= "Or UPPER(c.Libelle) LIKE UPPER('%".$term."%')) ";
-	$sql .= "And e.Code_club = c.Code ";
-	$sql .= "Order by e.Libelle ";
+	$sql  = "SELECT e.Numero, e.Libelle, e.Code_club, c.Libelle nomClub "
+            . "FROM gickp_Equipe e, gickp_Club c "
+            . "WHERE (UPPER(e.Libelle) LIKE UPPER('%".$term."%') "
+            . "OR UPPER(e.Code_club) LIKE UPPER('%".$term."%') "
+            . "OR UPPER(c.Libelle) LIKE UPPER('%".$term."%')) "
+            . "AND e.Code_club = c.Code "
+            . "ORDER BY e.Libelle ";
 	
 	$result = $myBdd->Query($sql);
 	while($row = $myBdd->FetchAssoc($result)) {
@@ -50,4 +50,3 @@ include_once('../commun/MyBdd.php');
 	}
 	$json = json_encode($a_json);
 	print $json;
-?>

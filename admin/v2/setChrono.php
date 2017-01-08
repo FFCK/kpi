@@ -16,8 +16,8 @@ include_once('../../live/create_cache_match.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = $_POST['idMatch'];
-	$action = $_POST['action'];
+	$idMatch = (int)$_POST['idMatch'];
+	$action = $myBdd->RealEscapeString(trim($_POST['action']));
 	$start_time = $_POST['start_time'];
 	$run_time = $_POST['run_time'];
 	$max_time = $_POST['max_time'];
@@ -32,10 +32,17 @@ include_once('../../live/create_cache_match.php');
 	// *****************************************************************************
 */
 	if($action == 'RAZ'){
-		$sql  = "DELETE FROM gickp_Chrono WHERE IdMatch = '".$idMatch."' ";
+		$sql  = "DELETE FROM gickp_Chrono "
+                . "WHERE IdMatch = '".$idMatch."' ";
 	}else{
 		$start_time_server = time()%86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
-		$sql  = "REPLACE gickp_Chrono SET IdMatch = '".$idMatch."', action = '".$action."', start_time = '".$start_time."', start_time_server = ".$start_time_server.", run_time = '".$run_time."', max_time = '".$max_time."' ";
+		$sql  = "REPLACE gickp_Chrono "
+                . "SET IdMatch = '".$idMatch."', "
+                . "action = '".$action."', "
+                . "start_time = '".$start_time."', "
+                . "start_time_server = ".$start_time_server.", "
+                . "run_time = '".$run_time."', "
+                . "max_time = '".$max_time."' ";
 	}
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace/Delete<br />".$sql);
 	
@@ -44,5 +51,3 @@ include_once('../../live/create_cache_match.php');
 	$cMatch->MatchChrono($myBdd, $idMatch);
 	
 	echo "OK"; 
-
-?>

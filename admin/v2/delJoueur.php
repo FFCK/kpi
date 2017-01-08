@@ -14,9 +14,9 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = $_POST['Id_Match'];
-	$Matric = $_POST['Matric'];
-	$Equipe = $_POST['Equipe'];
+	$idMatch = (int)$_POST['Id_Match'];
+	$Matric = (int)$_POST['Matric'];
+	$Equipe = $myBdd->RealEscapeString(trim($_POST['Equipe']));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -36,7 +36,10 @@ include_once('../../commun/MyTools.php');
 	if ($row['Validation']=='O')
 		die ("Ce match est verrouillé !");
 	
-	$sql  = "DELETE FROM gickp_Matchs_Joueurs WHERE Id_match = ".$idMatch." AND Matric = ".$Matric." AND Equipe = '".$Equipe."' ";
+	$sql  = "DELETE FROM gickp_Matchs_Joueurs "
+            . "WHERE Id_match = ".$idMatch." "
+            . "AND Matric = ".$Matric." "
+            . "AND Equipe = '".$Equipe."' ";
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur DELETE<br />".$sql);
 	echo 'OK';
 ?>

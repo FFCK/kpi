@@ -80,18 +80,18 @@ include_once('../commun/MyTools.php');
 			
 
 	// Chargement
-        $q = utyGetGet('q');
+        $q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
         $q = preg_replace('`^[0]*`','',$q);
 
-        $sql  = "Select lc.*, c.Libelle, s.Date date_surclassement "
-                . "From gickp_Liste_Coureur lc "
+        $sql  = "SELECT lc.*, c.Libelle, s.Date date_surclassement "
+                . "FROM gickp_Liste_Coureur lc "
                 . "LEFT OUTER JOIN gickp_Surclassements s ON (lc.Matric = s.Matric AND s.Saison = ".  utyGetSaison() ."), "
                 . "gickp_Club c "
-                . "Where (lc.Matric Like '%".ltrim($q, '0')."%' "
-                . "Or UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') ";
-        $sql .= "Or UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') ";
+                . "WHERE (lc.Matric Like '%".ltrim($q, '0')."%' "
+                . "OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') ";
+        $sql .= "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') ";
         $sql .= ") And lc.Numero_club = c.Code ";
-        $sql .= "Order by lc.Nom, lc.Prenom ";
+        $sql .= "ORDER BY lc.Nom, lc.Prenom ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_joueur : ".$sql);
 	while ($row = mysql_fetch_assoc($result)) {
@@ -111,4 +111,3 @@ include_once('../commun/MyTools.php');
         $date_surclassement = utyDateUsToFr($row['date_surclassement']);
 		echo "$matric - $nom $prenom ($club - $libelle)|$matric|$nom|$prenom|$naissance|$sexe|$nom2|$prenom2|$origine|$pagaie_ECA|$certificat_CK|$certificat_APS|$libelle|$date_surclassement\n";
 	}
-?>

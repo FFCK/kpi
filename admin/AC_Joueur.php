@@ -10,10 +10,11 @@ if(!$isAjax) {
 	
 //include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
-//include_once('../commun/MyTools.php');
+include_once('../commun/MyTools.php');
 	
+	$myBdd = new MyBdd();
 	// Chargement
-	$term = trim($_GET['term']);
+	$term = $myBdd->RealEscapeString(trim(utyGetGet('term')));
 	// replace multiple spaces with one
 	$term = preg_replace('/\s+/', ' ', $term);
 	// supprime les 0 devant les numéros de licence
@@ -31,15 +32,14 @@ include_once('../commun/MyBdd.php');
 	}
 	// *****************************************************************************
  */
-	$myBdd = new MyBdd();
-	$sql  = "Select lc.*, c.Libelle ";
-	$sql .= "From gickp_Liste_Coureur lc, gickp_Club c ";
-	$sql .= "Where (lc.Matric Like '%".ltrim($term, '0')."%' ";
-	$sql .= "Or UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$term."%') ";
-	$sql .= "Or UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$term."%') ";
-	$sql .= ") And lc.Numero_club = c.Code ";
-	$sql .= "Order by lc.Nom, lc.Prenom ";
-	$sql .= "limit 0, 40 ";
+	$sql  = "SELECT lc.*, c.Libelle "
+            . "FROM gickp_Liste_Coureur lc, gickp_Club c "
+            . "WHERE (lc.Matric Like '%".ltrim($term, '0')."%' "
+            . "OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$term."%') "
+            . "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$term."%') "
+            . ") AND lc.Numero_club = c.Code "
+            . "ORDER BY lc.Nom, lc.Prenom "
+            . "LIMIT 0, 40 ";
 	$result = $myBdd->Query($sql);
 	while($row = $myBdd->FetchAssoc($result)) {
 		$jRow["club"] = $row['Numero_club'];
@@ -58,4 +58,3 @@ include_once('../commun/MyBdd.php');
 	}
 	$json = json_encode($a_json);
 	print $json;
-?>

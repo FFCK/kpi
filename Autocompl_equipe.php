@@ -1,7 +1,8 @@
 <?php
 //include_once('../commun/MyBdd.php');
 	include_once('commun/MyBdd.php');
-
+    include_once('../commun/MyTools.php');
+    
 	$myBdd = new MyBdd();
 	
 	function __encode($var){
@@ -145,11 +146,11 @@
 			
 
 	// Chargement
-		//$sql  = "Select Code, Libelle ";
-		$sql  = "Select *  ";
-		$sql .= "From gickp_Equipe ";
-		$sql .= "Where Libelle Like '%".$_GET['q']."%' ";
-		$sql .= "Order by Libelle ";
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
+		$sql  = "SELECT * "
+                . "FROM gickp_Equipe "
+                . "WHERE Libelle LIKE '%".$q."%' "
+                . "ORDER BY Libelle ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_equipe :   ".$sql);
 	//$num_results = mysql_num_rows($result);
@@ -181,4 +182,3 @@
 	}
 	echo $response;
 */
-?>

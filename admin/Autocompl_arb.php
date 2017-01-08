@@ -149,10 +149,10 @@ include_once('../commun/MyTools.php');
 
 		// Chargement
 		$j = utyGetSession('sessionJournee','');
-		$j = utyGetGet('journee', $j);
+		$j = (int)utyGetGet('journee', $j);
 		$m = utyGetSession('sessionMatch','');
-		$m = utyGetGet('sessionMatch',$m);
-		$q = utyGetGet('q');
+		$m = (int)utyGetGet('sessionMatch',$m);
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 		$q = preg_replace('`^[0]*`','',$q);
 		$resultGlobal = '';
 		

@@ -8,16 +8,16 @@ include_once('../commun/MyTools.php');
 	$myBdd = new MyBdd();
 	
 	// Chargement
-		$q = utyGetGet('q');
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 		$q = preg_replace('`^[0]*`','',$q);
 		$resultGlobal = '';
 		
 			// Referentiel Villes
-			$sql  = "Select ville_nom, ville_nom_reel, ville_departement, ville_code_postal ";
-			$sql .= "From villes_france_free ";
-			$sql .= "Where UPPER(ville_nom) LIKE UPPER('%".$q."%') ";
-			$sql .= "or ville_code_postal LIKE UPPER('".$q."%') ";
-			$sql .= "Order By ville_departement, ville_code_postal, ville_nom_reel ";	 
+			$sql  = "SELECT ville_nom, ville_nom_reel, ville_departement, ville_code_postal "
+                    . "FROM villes_france_free "
+                    . "WHERE UPPER(ville_nom) LIKE UPPER('%".$q."%') "
+                    . "OR ville_code_postal LIKE UPPER('".$q."%') "
+                    . "ORDER BY ville_departement, ville_code_postal, ville_nom_reel ";	 
 			$result = $myBdd->Query($sql);
 			while ($row = $myBdd->FetchAssoc($result))
 			{
@@ -26,6 +26,3 @@ include_once('../commun/MyTools.php');
 			}
 		//echo $resultGlobal;
 	echo $resultGlobal;
-
-
-?>

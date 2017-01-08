@@ -14,9 +14,9 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = $_POST['idMatch'];
-	$idEquipe = $_POST['idEquipe'];
-	$Equipe = $_POST['equipe'];
+	$idMatch = (int)$_POST['idMatch'];
+	$idEquipe = (int)$_POST['idEquipe'];
+	$Equipe = $myBdd->RealEscapeString(trim($_POST['equipe'])); // A / B
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -27,15 +27,16 @@ include_once('../../commun/MyTools.php');
 	}
 	// *****************************************************************************
 */
-	$sql  = "UPDATE gickp_Matchs SET Id_equipe".$Equipe." = ".$idEquipe." WHERE Id = ".$idMatch;
+	$sql  = "UPDATE gickp_Matchs "
+            . "SET Id_equipe".$Equipe." = ".$idEquipe." "
+            . "WHERE Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update<br />".$sql);
 	// Vidage compo
-	$sql  = "Delete From gickp_Matchs_Joueurs ";
-	$sql .= "Where Id_match = $idMatch ";
-	$sql .= "And Equipe = '".$Equipe."' ";
+	$sql  = "DELETE FROM gickp_Matchs_Joueurs "
+            . "WHERE Id_match = $idMatch "
+            . "AND Equipe = '".$Equipe."' ";
 	mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete => ".$sql);
 	
 	echo "OK"; 
 
-?>
 

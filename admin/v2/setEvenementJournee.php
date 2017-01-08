@@ -14,9 +14,9 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$Id_Evenement = $_POST['Id_Evenement'];
-	$Id_Journee = $_POST['Id_Journee'];
-	$Valeur = $_POST['Valeur'];
+	$Id_Evenement = (int)$_POST['Id_Evenement'];
+	$Id_Journee = (int)$_POST['Id_Journee'];
+	$Valeur = $myBdd->RealEscapeString(trim($_POST['Valeur']));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -29,11 +29,13 @@ include_once('../../commun/MyTools.php');
 */
 
 	if($Valeur == 'true'){
-		$sql  = "Replace Into gickp_Evenement_Journees (Id_Evenement, Id_Journee) Values ($Id_Evenement, $Id_Journee)";
+		$sql  = "REPLACE INTO gickp_Evenement_Journees (Id_Evenement, Id_Journee) "
+                . "VALUES ($Id_Evenement, $Id_Journee)";
 	}elseif($Valeur == 'false'){
-		$sql  = "Delete From gickp_Evenement_Journees Where Id_Evenement = $Id_Evenement And Id_Journee = $Id_Journee ";
+		$sql  = "DELETE FROM gickp_Evenement_Journees "
+                . "WHERE Id_Evenement = $Id_Evenement "
+                . "AND Id_Journee = $Id_Journee ";
 	}
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
 	echo 'OK';
 	//echo $Id_Evenement.' - '.$Id_Journee.' - '.$Valeur.'<br />'.$sql;
-?>

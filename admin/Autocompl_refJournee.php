@@ -8,15 +8,15 @@ include_once('../commun/MyTools.php');
 	$myBdd = new MyBdd();
 	
 	// Chargement
-		$q = utyGetGet('q');
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 		$q = preg_replace('`^[0]*`','',$q);
 		$resultGlobal = '';
 		
 			// Referentiel Journees
-			$sql  = "Select * ";
-			$sql .= "From gickp_Ref_Journee ";
-			$sql .= "Where UPPER(nom) LIKE UPPER('%".$q."%') ";
-			$sql .= "Order By nom ";	 
+			$sql  = "SELECT * ";
+			$sql .= "FROM gickp_Ref_Journee ";
+			$sql .= "WHERRE UPPER(nom) LIKE UPPER('%".$q."%') ";
+			$sql .= "ORDER BY nom ";	 
 			$result = $myBdd->Query($sql);
 			while ($row = $myBdd->FetchAssoc($result))
 			{
@@ -25,6 +25,3 @@ include_once('../commun/MyTools.php');
 			}
 		//echo $resultGlobal;
 	echo $resultGlobal;
-
-
-?>

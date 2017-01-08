@@ -14,9 +14,9 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idJournee = $_POST['Id_Journee'];
-	$Valeur = $_POST['Valeur'];
-	$TypeUpdate = $_POST['TypeUpdate'];
+	$idJournee = (int)$_POST['Id_Journee'];
+	$Valeur = $myBdd->RealEscapeString(trim($_POST['Valeur']));
+	$TypeUpdate = $myBdd->RealEscapeString(trim($_POST['TypeUpdate']));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -28,15 +28,20 @@ include_once('../../commun/MyTools.php');
 	// *****************************************************************************
 */
 	// Contrôle autorisation journée
-	$sql  = "Select Id, Validation from gickp_Journees where Id = ".$idJournee;
+	$sql  = "SELECT Id, Validation "
+            . "FROM gickp_Journees "
+            . "WHERE Id = ".$idJournee;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 	$row = mysql_fetch_array($result);
-	if (!utyIsAutorisationJournee($row['Id_journee']))
-		die ("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
-	if ($TypeUpdate != 'Validation' && $TypeUpdate != 'Publication' && $row['Validation']=='O')
-		die ("Ce match est verrouillé !");
-	
-	$sql  = "UPDATE gickp_Journees SET ".$TypeUpdate." = '".$Valeur."' WHERE Id = ".$idJournee;
+	if (!utyIsAutorisationJournee($row['Id_journee'])) {
+        die("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
+    }
+    if ($TypeUpdate != 'Validation' && $TypeUpdate != 'Publication' && $row['Validation'] == 'O') {
+        die("Ce match est verrouillé !");
+    }
+
+    $sql  = "UPDATE gickp_Journees "
+            . "SET ".$TypeUpdate." = '".$Valeur."' "
+            . "WHERE Id = ".$idJournee;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
 	echo 'OK';
-?>

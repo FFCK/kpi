@@ -13,12 +13,12 @@ include_once('../commun/MyBdd.php');
 //include_once('../commun/MyTools.php');
 	
 	// Chargement
-	$term = trim($_GET['term']);
+	$term = $myBdd->RealEscapeString(trim($_GET['term']));
 	// replace multiple spaces with one
 	$term = preg_replace('/\s+/', ' ', $term);
 	// supprime les 0 devant les numéros de licence
 	$term = preg_replace('`^[0]*`','',$term);
-	$idMatch = trim($_GET['idMatch']);
+	$idMatch = (int)trim($_GET['idMatch']);
  
 	$jRow = array();
 	$a_json = array();
@@ -137,4 +137,3 @@ include_once('../commun/MyBdd.php');
 
 	$json = json_encode($a_json);
 	print $json;
-?>

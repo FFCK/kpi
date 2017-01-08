@@ -14,10 +14,10 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idCompet = $_POST['Id_Compet'];
-	$Valeur = $_POST['Valeur'];
-	$TypeUpdate = $_POST['TypeUpdate'];
-	$idSaison = $_POST['idSaison'];
+	$idCompet = $myBdd->RealEscapeString(trim($_POST['Id_Compet']));
+	$Valeur = $myBdd->RealEscapeString(trim($_POST['Valeur']));
+	$TypeUpdate = $myBdd->RealEscapeString(trim($_POST['TypeUpdate']));
+	$idSaison = $myBdd->RealEscapeString(trim($_POST['idSaison']));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -37,7 +37,9 @@ include_once('../../commun/MyTools.php');
 	if ($TypeUpdate != 'Validation' && $TypeUpdate != 'Publication' && $row['Validation']=='O')
 		die ("Ce match est verrouillé !");
 */	
-	$sql  = "UPDATE gickp_Competitions SET ".$TypeUpdate." = '".$Valeur."' WHERE Code = '".$idCompet."' AND Code_saison = ".$idSaison;
+	$sql  = "UPDATE gickp_Competitions "
+            . "SET ".$TypeUpdate." = '".$Valeur."' "
+            . "WHERE Code = '".$idCompet."' "
+            . "AND Code_saison = ".$idSaison;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
 	echo 'OK';
-?>

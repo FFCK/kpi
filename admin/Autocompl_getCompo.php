@@ -6,17 +6,17 @@ include_once('../commun/MyTools.php');
 	$myBdd = new MyBdd();
 	
 	// Chargement
-		$codeSaison = utyGetGet('s');
+		$codeSaison = $myBdd->RealEscapeString(trim(utyGetGet('s')));
 		$codeSaison2 = $codeSaison - 1;
-		$q = utyGetGet('q');
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 
-		$sql  = "SELECT ce.Code_saison, ce.Code_compet ";
-		$sql .= "FROM `gickp_Competitions_Equipes` ce, `gickp_Competitions_Equipes_Joueurs` cej ";
-		$sql .= "WHERE ce.Id = cej.Id_equipe ";
-		$sql .= "AND (ce.Code_saison = $codeSaison OR ce.Code_saison = $codeSaison2) ";
-		$sql .= "AND ce.Numero = ".$q." ";
-		$sql .= "GROUP BY ce.Code_compet, ce.Code_saison ";
-		$sql .= "ORDER BY ce.Code_saison DESC, ce.Code_compet ";
+		$sql  = "SELECT ce.Code_saison, ce.Code_compet "
+                . "FROM `gickp_Competitions_Equipes` ce, `gickp_Competitions_Equipes_Joueurs` cej "
+                . "WHERE ce.Id = cej.Id_equipe "
+                . "AND (ce.Code_saison = $codeSaison OR ce.Code_saison = $codeSaison2) "
+                . "AND ce.Numero = ".$q." "
+                . "GROUP BY ce.Code_compet, ce.Code_saison "
+                . "ORDER BY ce.Code_saison DESC, ce.Code_compet ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_getCompo : ".$sql);
 	//$num_results = mysql_num_rows($result);
@@ -44,4 +44,3 @@ include_once('../commun/MyTools.php');
 	}
 	echo $response;
 */
-?>

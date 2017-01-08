@@ -10,7 +10,10 @@ class GestionMatchDetail extends MyPageSecure
 
 	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
 	{
-		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
+		$sql = "SELECT COUNT(*) Nb "
+                . "FROM gickp_Matchs_Joueurs "
+                . "WHERE Id_match = $idMatch "
+                . "AND Equipe = '$numEquipe' ";
 		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select");
 
 		if (mysql_num_rows($result) != 1)
@@ -20,37 +23,42 @@ class GestionMatchDetail extends MyPageSecure
 		if ((int) $row['Nb'] > 0)
 			return;
 			
-		$sql  = "Replace Into gickp_Matchs_Joueurs ";
-		$sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-		$sql .= "Where Id_equipe = $idEquipe ";
-		$sql .= "AND Capitaine <> 'X' ";
-		$sql .= "AND Capitaine <> 'A' ";
+		$sql  = "REPLACE INTO gickp_Matchs_Joueurs "
+                . "SELECT $idMatch, Matric, Numero, '$numEquipe', Capitaine "
+                . "FROM gickp_Competitions_Equipes_Joueurs "
+                . "WHERE Id_equipe = $idEquipe "
+                . "AND Capitaine <> 'X' "
+                . "AND Capitaine <> 'A' ";
 		mysql_query($sql, $bdd->m_link) or die ("Erreur Replace InitTitulaireEquipe");
  	}
 	
 	function Load()
 	{
+		$myBdd = new MyBdd();
 		$inputText = '<form method="GET" action="FeuilleMarque2.php" name="formFeuille" enctype="multipart/form-data">
 						<input type="text" name="idMatch" /><input type="submit" value="Envoyer" />
 					</form>';
-		$idMatch = utyGetGet('idMatch', -1);
+		$idMatch = (int)utyGetGet('idMatch', -1);
 		$langue = parse_ini_file("../../commun/MyLang.ini", true);
 		$version = utyGetSession('lang', 'FR');
-		$version = utyGetGet('lang', $version);
+		$version = $myBdd->RealEscapeString(trim(utyGetGet('lang', $version)));
 		$_SESSION['lang'] = $version;
 		$lang = $langue[$version];
 		
 		if($idMatch < 1)
 			die ('Sélectionnez un numéro de feuille de marque !<br />'.$inputText);
-		$myBdd = new MyBdd();
 		// Contrôle autorisation journée
-		$sql  = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, m.Heure_fin, j.*, j.Code_saison saison, c.*, m.Type Type_match, m.Validation Valid_match, m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, ce2.Code_club clubB ";
-		$sql .= "FROM gickp_Matchs m left outer join gickp_Competitions_Equipes ce1 on (ce1.Id = m.Id_equipeA) ";
-		$sql .= "left outer join gickp_Competitions_Equipes ce2 on (ce2.Id = m.Id_equipeB), gickp_Journees j, gickp_Competitions c ";
-		$sql .= "WHERE m.Id = $idMatch ";
-		$sql .= "AND m.Id_journee = j.Id ";
-		$sql .= "AND j.Code_competition = c.Code ";
-		$sql .= "AND j.Code_saison = c.Code_saison ";
+		$sql  = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, m.Heure_fin, j.*, j.Code_saison saison, c.*, "
+                . "m.Type Type_match, m.Validation Valid_match, m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, "
+                . "ce2.Libelle equipeB, ce2.Code_club clubB "
+                . "FROM gickp_Matchs m "
+                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (ce1.Id = m.Id_equipeA) "
+                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (ce2.Id = m.Id_equipeB), "
+                . "gickp_Journees j, gickp_Competitions c "
+                . "WHERE m.Id = $idMatch "
+                . "AND m.Id_journee = j.Id "
+                . "AND j.Code_competition = c.Code "
+                . "AND j.Code_saison = c.Code_saison ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 		$row = mysql_fetch_array($result);
 		$saison = $row['saison'];

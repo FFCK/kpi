@@ -14,11 +14,10 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = utyGetPost('idMatch');
-	$value = utyGetPost('value');
-	$value2 = $myBdd->RealEscapeString($value);
+	$idMatch = (int)utyGetPost('idMatch');
+	$value2 = $myBdd->RealEscapeString(trim(utyGetPost('value')));
 	if(isset($_POST['heure_fin_match'])){
-		$heure_fin_match = $_POST['heure_fin_match'];
+		$heure_fin_match = $myBdd->RealEscapeString(trim($_POST['heure_fin_match']));
 		$heure_fin_match = '00:'.substr($heure_fin_match,-5,2).':'.substr($heure_fin_match,-2);
 	}else{
 		$heure_fin_match = '';

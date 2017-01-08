@@ -85,26 +85,26 @@ include_once('../commun/MyTools.php');
 		// Chargement
 		$j = utyGetSession('sessionJournee','');
 		$m = utyGetSession('sessionMatch','');
-		$m = utyGetGet('sessionMatch',$m);
-		$q = utyGetGet('q');
+		$m = (int)utyGetGet('sessionMatch',$m);
+		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 		$q = preg_replace('`^[0]*`','',$q);
 		$resultGlobal = '';
 		
-		if($j == '' && $m == '')
+		if($j == '' && ($m == '' || $m == 0))
 			$resultGlobal .= "Selectionnez une journee / une phase !|XXX|||\n";
 		else
 		{
 			// Equipes
 			$resultGlobal .= "------------- Equipes engagées -------------\n";
-			$sql  = "Select a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet ";
-			$sql .= "From gickp_Competitions_Equipes a, gickp_Journees b ";
-			$sql .= "Where a.Code_compet = b.Code_competition ";
-			$sql .= "And a.Code_saison = b.Code_saison ";
+			$sql  = "SELECT a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet "
+                    . "FROM gickp_Competitions_Equipes a, gickp_Journees b "
+                    . "WHERE a.Code_compet = b.Code_competition "
+                    . "AND a.Code_saison = b.Code_saison ";
 			if($j != '')
-				$sql .= "And b.Id = ".$j." ";
-			$sql .= "And UPPER(a.Libelle) LIKE UPPER('%".$q."%') ";
-			$sql .= "Group By a.Libelle ";	 
-			$sql .= "Order By a.Poule, a.Tirage, a.Libelle ";	 
+				$sql .= "AND b.Id = ".$j." ";
+			$sql .= "AND UPPER(a.Libelle) LIKE UPPER('%".$q."%') "
+                    . "GROUP BY a.Libelle "
+                    . "ORDER BY a.Poule, a.Tirage, a.Libelle ";	 
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Equipes : ".$sql);
 			while ($row = mysql_fetch_assoc($result))
 			{
@@ -116,24 +116,23 @@ include_once('../commun/MyTools.php');
 			// Joueurs
 			$resultGlobal .= ".\n";
 			$resultGlobal .= "----------------- Joueurs -----------------\n";
-			$sql  = "Select distinct a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau ";
-			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, ";
-			$sql .= "gickp_Competitions_Equipes b, gickp_Journees d, gickp_Matchs e ";
-			$sql .= "Where a.Id_equipe = b.Id ";
-			$sql .= "And b.Code_compet = d.Code_competition ";
-			$sql .= "And b.Code_saison = d.Code_saison ";
-			$sql .= "And d.Id = e.Id_journee ";
+			$sql  = "SELECT distinct a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau "
+                    . "FROM gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, "
+                    . "gickp_Competitions_Equipes b, gickp_Journees d, gickp_Matchs e "
+                    . "WHERE a.Id_equipe = b.Id "
+                    . "AND b.Code_compet = d.Code_competition "
+                    . "AND b.Code_saison = d.Code_saison "
+                    . "AND d.Id = e.Id_journee ";
 			if($j != '')
-				$sql .= "And d.Id = ".$j." ";
+				$sql .= "AND d.Id = ".$j." ";
 			elseif($m != '')
-				$sql .= "And e.Id = ".$m." ";
-			$sql .= "And (a.Matric Like '%".ltrim($q, '0')."%' ";
-			$sql .= "Or UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER('%".$q."%') ";
-			$sql .= "Or UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER('%".$q."%') ";
-			$sql .= "Or UPPER(b.Libelle) LIKE UPPER('%".$q."%') ";
-			$sql .= ") ";
-			//$sql .= "Group By b.Libelle ";	 
-			$sql .= "Order by b.Libelle, a.Nom, a.Prenom ";
+				$sql .= "AND e.Id = ".$m." ";
+			$sql .= "AND (a.Matric Like '%".ltrim($q, '0')."%' "
+                    . "OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER('%".$q."%') "
+                    . "OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER('%".$q."%') "
+                    . "OR UPPER(b.Libelle) LIKE UPPER('%".$q."%') "
+                    . ") "
+                    . "ORDER BY b.Libelle, a.Nom, a.Prenom ";
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Joueurs : ".$sql);
 			while ($row = mysql_fetch_assoc($result))
 			{
@@ -151,16 +150,16 @@ include_once('../commun/MyTools.php');
 			$resultGlobal .= ".\n";
 			$resultGlobal .= ".\n";
 			$resultGlobal .= "----- Pool arbitres (hors équipes engagées) -----\n";
-			$sql  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau ";
-			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
-			$sql .= "Where a.Id_equipe = b.Id ";
-			$sql .= "And b.Code_compet = 'POOL' ";
-			$sql .= "And (a.Matric Like '%".ltrim($q, '0')."%' ";
-			$sql .= "Or UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER('%".$q."%') ";
-			$sql .= "Or UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER('%".$q."%') ";
-			$sql .= "Or UPPER(b.Libelle) LIKE UPPER('%".$q."%') ";
-			$sql .= ") ";
-			$sql .= "Order By a.Nom, a.Prenom ";
+			$sql  = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau "
+                    . "FROM gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  "
+                    . "WHERE a.Id_equipe = b.Id "
+                    . "AND b.Code_compet = 'POOL' "
+                    . "AND (a.Matric Like '%".ltrim($q, '0')."%' "
+                    . "OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER('%".$q."%') "
+                    . "OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER('%".$q."%') "
+                    . "OR UPPER(b.Libelle) LIKE UPPER('%".$q."%') "
+                    . ") "
+                    . "ORDER BY a.Nom, a.Prenom ";
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Pool arbitres : ".$sql);
 			while ($row = mysql_fetch_assoc($result))
 			{
@@ -179,15 +178,14 @@ include_once('../commun/MyTools.php');
 			// Autres arbitres
 			$resultGlobal .= ".\n";
 			$resultGlobal .= "----- Autres arbitres (hors équipes engagées) -----\n";
-			$sql  = "Select lc.*, c.Libelle, b.Arb, b.niveau ";
-				//$sql .= "From gickp_Liste_Coureur lc left outer join gickp_Arbitre b on lc.Matric = b.Matric, gickp_Club c ";
-			$sql .= "From gickp_Liste_Coureur lc, gickp_Arbitre b, gickp_Club c ";
-			$sql .= "Where lc.Matric = b.Matric ";
-			$sql .= "And (lc.Matric Like '%".ltrim($q, '0')."%' ";
-			$sql .= "Or UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') ";
-			$sql .= "Or UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') ";
-			$sql .= ") And lc.Numero_club = c.Code ";
-			$sql .= "Order by lc.Nom, lc.Prenom ";
+			$sql  = "SELECT lc.*, c.Libelle, b.Arb, b.niveau "
+                    . "FROM gickp_Liste_Coureur lc, gickp_Arbitre b, gickp_Club c "
+                    . "WHERE lc.Matric = b.Matric "
+                    . "AND (lc.Matric Like '%".ltrim($q, '0')."%' "
+                    . "OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') "
+                    . "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') "
+                    . ") AND lc.Numero_club = c.Code "
+                    . "ORDER BY lc.Nom, lc.Prenom ";
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autres arbitres : ".$sql);
 			while ($row = mysql_fetch_assoc($result))
 			{
@@ -208,4 +206,3 @@ include_once('../commun/MyTools.php');
 		//echo $resultGlobal;
 	echo $resultGlobal;
 
-?>
