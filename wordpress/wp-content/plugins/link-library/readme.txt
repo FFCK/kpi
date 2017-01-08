@@ -3,7 +3,7 @@ Contributors: jackdewey
 Donate link: http://ylefebvre.ca/wordpress-plugins/link-library
 Tags: link, list, directory, page, library, AJAX, RSS, feeds, inline, search, paging, add, submit, import, batch, pop-up
 Requires at least: 3.0
-Tested up to: 4.3
+Tested up to: 4.4
 Stable tag: stable
 
 The purpose of this plugin is to add the ability to output a list of link categories and a complete list of links with notes and descriptions.
@@ -58,6 +58,63 @@ In addition to specifying a library, categories to be displayed can be specified
 Further configuration is available under the Link Library Settings panel.
 
 == Changelog ==
+
+= 5.9.12.15 =
+* Adds submitter name as a field that can be displayed
+
+= 5.9.12.14 =
+* Fix to only display a single link when using singlelinkid parameter
+
+= 5.9.12.13 =
+* Added ability to only display links submitted by the current logged user
+
+= 5.9.12.12 =
+* Fix div error in previous release
+
+= 5.9.12.11 =
+* Added ability to only display RSS feed inline if they are no older than a certain number of days
+* Added ability to hide links if they do not have any inline RSS items to display
+
+= 5.9.12.10 =
+* Added support to specify multiple categories for imported links, comma-separated
+
+= 5.9.12.9 =
+* Fixes to avoid possible division by 0 if number of columns if set to null or 0
+
+= 5.9.12.8 =
+* Corrections to link submission generated e-mails
+
+= 5.9.12.7 =
+* Fixed issues for PHP 7 compatibility
+* Added conditions only to filter unused fields from e-mail notification for new user links
+* Added information fields to visitor e-mail when new link is submitted
+
+= 5.9.12.6 =
+* Fix issue where deleting Settings #1 resets general options
+
+= 5.9.12.5 =
+* Added general setting to enable Akismet filtering for all libraries
+
+= 5.9.12.4 =
+* Fix for link pop-up not working properly from link image
+
+= 5.9.12.3 =
+* Added ability to translate messages from link submission form validation script
+* Fixed min length validation of link submission form fields
+* Made URL a link in user submission notification e-mail and added textual category name instead of having only ID
+
+= 5.9.12.2 =
+* Added option to specify default category in user link submission form
+* Added support to validate user links using Akismet (requires Akismet plugin and valid Akismet key)
+* Corrected issue with phantom links appearing in Moderation list
+
+= 5.9.12.1 =
+* Added configuration field under Search tab to allow users to define No Results text to be displayed
+* Added max lengths to field in user submission form
+* Added option to send e-mail notification to visitors when they submit links
+
+= 5.9.12 =
+* Change way that lik pop-up dialog content is loaded to avoid conflicts with other plugins
 
 = 5.9.11.7 =
 * Allow shortcodes to be executed in link pop-up content

@@ -27,7 +27,8 @@ class MyPage
 	{				 
 		$this->m_tpl = new MySmarty();
 		
-			// Utilisateur
+		$this->m_tpl->assign('NUM_VERSION', NUM_VERSION);
+        // Utilisateur
 		$this->m_tpl->assign('user', utyGetSession('User'));
 		$profile = utyGetSession('Profile');
 		$profile = utyGetPost('profilTest', $profile);
@@ -45,14 +46,14 @@ class MyPage
 		{
 			// Menu "Public"
 			array_push($arrayMenu, array('name' => 'Accueil', 'href' => 'index.php'));
-			array_push($arrayMenu, array('name' => 'Calendrier', 'href' => 'Calendrier.php'));
-			array_push($arrayMenu, array('name' => 'Matchs', 'href' => 'Journee.php'));
-//			array_push($arrayMenu, array('name' => 'Matchs', 'href' => 'Journees.php'));
+			array_push($arrayMenu, array('name' => 'Calendrier', 'href' => 'kpcalendrier.php'));
+			array_push($arrayMenu, array('name' => 'Matchs', 'href' => 'kpmatchs.php'));
+//			array_push($arrayMenu, array('name' => 'Matchs', 'href' => 'Journee.php'));
 //			array_push($arrayMenu, array('name' => 'Classement', 'href' => 'Classement.php'));
-			array_push($arrayMenu, array('name' => 'Classements', 'href' => 'Classements.php'));
-			array_push($arrayMenu, array('name' => 'Historique', 'href' => 'Historique.php'));
-			array_push($arrayMenu, array('name' => 'Palmares', 'href' => 'Palmares.php'));
-			array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'Cartographie.php'));
+			array_push($arrayMenu, array('name' => 'Classements', 'href' => 'kpclassements.php'));
+			array_push($arrayMenu, array('name' => 'Historique', 'href' => 'kphistorique.php'));
+			array_push($arrayMenu, array('name' => 'Equipes', 'href' => 'kpequipes.php'));
+			array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'kpclubs.php'));
 //			array_push($arrayMenu, array('name' => 'Forum', 'href' => 'http://www.poloweb.org/forum/'));
 			array_push($arrayMenu, array('name' => 'Administration', 'href' => 'admin/GestionCompetition.php'));
 		}
@@ -71,7 +72,7 @@ class MyPage
 				array_push($arrayMenu, array('name' => 'Equipes', 'href' => 'GestionEquipe.php'));
 			if (isset($profile) && $profile<=9 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'GestionStructure.php'));
-			if (isset($profile) && $profile<=6)
+			if (isset($profile) && $profile<=7)
 				array_push($arrayMenu, array('name' => 'Athlètes', 'href' => 'GestionAthlete.php'));
 			if (isset($profile) && $profile<=9)
 				array_push($arrayMenu, array('name' => 'Journees_phases', 'href' => 'GestionCalendrier.php'));
@@ -144,7 +145,7 @@ class MyPage
 			
 			// Langues
 		//$smarty->config_dir = 'http://kayak-polo.info/commun/';
-		$lang = utyGetSession('lang', 'FR');
+		$lang = utyGetSession('lang', 'fr');
 		$lang = utyGetGet('lang', $lang);
 		$_SESSION['lang'] = $lang;
 		$this->m_tpl->assign('lang', $lang);
@@ -212,6 +213,20 @@ class MyPage
 			$this->DisplayTemplateGlobal('pageCalendar');
 	}
 	
+	// DisplayTemplateWP
+	function DisplayTemplateWP($tplName)
+	{
+			$this->m_tpl->assign('contenutemplate', $tplName);	
+			$this->DisplayTemplateGlobal('pageWP');
+	}
+	
+	// DisplayTemplateNew
+	function DisplayTemplateNew($tplName)
+	{
+			$this->m_tpl->assign('contenutemplate', $tplName);	
+			$this->DisplayTemplateGlobal('kppage');
+	}
+    
 	// DisplayTemplate
 	function DisplayTemplateGlobal($tplName)
 	{

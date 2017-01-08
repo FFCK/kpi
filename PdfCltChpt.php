@@ -4,7 +4,7 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
+//define('FPDF_FONTPATH','font/');
 require('fpdf/fpdf.php');
 
 require_once('qrcode/qrcode.class.php');
@@ -35,15 +35,15 @@ class FeuilleCltNiveau extends MyPage
 
 		// Langue
 		$langue = parse_ini_file("commun/MyLang.ini", true);
-		if($_GET['lang'] == 'EN')
+		if(isset($_GET['lang']) && $_GET['lang'] == 'en')
 			$arrayCompetition['En_actif'] = 'O';
-		elseif($_GET['lang'] == 'FR')
+		else
 			$arrayCompetition['En_actif'] = '';
 			
 		if($arrayCompetition['En_actif'] == 'O')
-			$lang = $langue[EN];
+			$lang = $langue['en'];
 		else
-			$lang = $langue[FR];
+			$lang = $langue['fr'];
 
 		//Création
 		$pdf = new FPDF('L');
@@ -203,7 +203,7 @@ class FeuilleCltNiveau extends MyPage
 		}
 		$pdf->SetFont('Arial','I',8);
 		$pdf->SetXY(250, 185);
-		if($lang == $langue[EN])
+		if($lang == $langue['en'])
 			$pdf->Write(4, date('Y-m-d H:i'));
 		else
 			$pdf->Write(4, date('d/m/Y à H:i'));			

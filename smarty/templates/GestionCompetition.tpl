@@ -1,22 +1,15 @@
 		<div class="main">
-			<form method="POST" action="GestionCompetition.php" name="formCompet" enctype="multipart/form-data">
-						<input type='hidden' name='Cmd' Value=''/>
-						<input type='hidden' name='ParamCmd' Value=''/>
-						<input type='hidden' name='verrouCompet' Value=''/>
-						<input type='hidden' name='Verrou' Value=''/>
-						<input type='hidden' name='Pub' Value=''/>
+			<form method="POST" action="GestionCompetition.php" name="formCompet" id="formCompet" enctype="multipart/form-data">
+						<input type='hidden' name='Cmd' id="Cmd" Value=''/>
+						<input type='hidden' name='ParamCmd' id="ParamCmd" Value=''/>
+						<input type='hidden' name='verrouCompet' id="verrouCompet" Value=''/>
+						<input type='hidden' name='Verrou' id="Verrou" Value=''/>
+						<input type='hidden' name='Pub' id="Pub" Value=''/>
 
 			{if $profile != 9}
 				<div class='blocLeft'>
 					<h3 class='titrePage'>Compétitions / poules</h3>
 					<br>
-					{*
-					<div class='liens'>		
-						<a href="#" onclick="setCheckboxes('formCompet', 'checkCompet', true);return false;">Tout cocher</a>
-						<a href="#" onclick="setCheckboxes('formCompet', 'checkCompet', false);return false;">Tout décocher</a>
-						<a href="#" onclick="RemoveCheckboxes('formCompet', 'checkCompet')">Supprimer la sélection</a>
-					</div>
-					*}
 					<div class='liens'>		
 						<label for="saisonTravail">Saison :</label>
 						<select name="saisonTravail"  id="saisonTravail" onChange="sessionSaison()">
@@ -77,11 +70,6 @@
 										
 										<td class='color{$arrayCompet[i].Publication}2'>
 											{if $profile <= 4 && $AuthModif == 'O' && $arrayCompet[i].Code_ref != 'M'}
-											<!--
-												<a href="#" Id="Publication{$arrayCompet[i].Code}" onclick="publiCompet('{$arrayCompet[i].Code}', '{$arrayCompet[i].Publication}')">
-													<img hspace="2" width="24" height="24" src="../img/oeil2{$arrayCompet[i].Publication}.gif" alt="Publier O/N" title="Publier O/N" border="0">
-												</a>
-											-->	
 												<img class="publiCompet" data-valeur="{$arrayCompet[i].Publication}" data-id="{$arrayCompet[i].Code}" width="24" src="../img/oeil2{$arrayCompet[i].Publication|default:'N'}.gif" alt="Publier O/N" title="{if $arrayCompet[i].Publication == 'O'}Public{else}Non public{/if}" />
 											{elseif $arrayCompet[i].Code_ref != 'M'}
 												<img width="24" src="../img/oeil2{$arrayCompet[i].Publication}.gif" alt="Publier O/N" title="Publier O/N" />
@@ -89,7 +77,7 @@
 										</td>
 										<td>{$arrayCompet[i].Code}</td>
 										{if $profile <= 3 && $AuthModif == 'O'}
-											<td><a href="#" Id="Param{$arrayCompet[i].Code}" onclick="paramCompet('{$arrayCompet[i].Code}')"><img hspace="2" width="18" height="18" src="../img/b_edit.png" alt="Modifier" title="Modifier" border="0"></a></td>
+											<td><a href="#" Id="Param{$arrayCompet[i].Code}" onclick="paramCompet('{$arrayCompet[i].Code}')"><img hspace="2" width="18" height="18" src="../img/glyphicons-31-pencil.png" alt="Modifier" title="Modifier" border="0"></a></td>
 										{else}<td>&nbsp;</td>{/if}
 										<td>{$arrayCompet[i].Code_niveau|default:'&nbsp;'}</td>
 										<td	class="cliquableNomEquipe"
@@ -133,7 +121,7 @@
 										-->
 										<td>{$arrayCompet[i].nbMatchs|default:'&nbsp;'}</td>
 										{if $profile <= 2 && $AuthModif == 'O'}
-											<td><a href="#" onclick="RemoveCheckbox('formCompet', '{$arrayCompet[i].Code}');return false;"><img hspace="2" width="16" height="16" src="../img/supprimer.gif" alt="Supprimer" title="Supprimer" border="0"></a></td>
+											<td><a href="#" onclick="RemoveCheckbox('formCompet', '{$arrayCompet[i].Code}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" border="0"></a></td>
 										{else}<td>&nbsp;</td>{/if}
 									</tr>
 								{/section}
@@ -646,6 +634,32 @@
 						<tr>
 							<td>
 								<input type="button" name="RenomEquipe" id="RenomEquipe" value="Renommer">
+							</td>
+						</tr>
+					</table>
+					<table width=100%>
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Fusionner deux équipes</label>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<label for="FusionEquipeSource">Source (sera supprimé)</label>
+								<input type="hidden" name="numFusionEquipeSource" id="numFusionEquipeSource">
+								<input type="text" name="FusionEquipeSource" size=40 id="FusionEquipeSource">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="FusionEquipeCible">Cible (sera conservé)</label>
+								<input type="hidden" name="numFusionEquipeCible" id="numFusionEquipeCible">
+								<input type="text" name="FusionEquipeCible" size=40 id="FusionEquipeCible">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" name="FusionEquipes" id="FusionEquipes" value="Fusionner">
 							</td>
 						</tr>
 					</table>

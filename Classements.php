@@ -53,7 +53,7 @@ class Classements extends MyPage
 		// Chargement des Groupes
 			//Compétitions internationales
 		$arrayCompetitionGroupe = array();
-		$sql  = "Select * From gickp_Competitions_Groupes Where id < 7 And id > 0 Order by id";
+		$sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id > 0 AND id < 10 ORDER BY id";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 6a");
 		$num_results = mysql_num_rows($result);
 		array_push($arrayCompetitionGroupe, array('', 'CI', '=== COMPETITIONS INTERNATIONALES ===', '' ) );
@@ -66,7 +66,7 @@ class Classements extends MyPage
 				array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], "" ) );
 		}
 			//Compétitions nationales
-		$sql  = "Select * From gickp_Competitions_Groupes Where id >= 7 And id < 25 Order by id";
+		$sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 10 AND id < 40 ORDER BY id";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 6a");
 		$num_results = mysql_num_rows($result);
 		array_push($arrayCompetitionGroupe, array('', 'CN', '=== COMPETITIONS NATIONALES ===', '' ) );
@@ -79,7 +79,7 @@ class Classements extends MyPage
 				array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], "" ) );
 		}
 			//Compétitions régionales
-		$sql  = "Select * From gickp_Competitions_Groupes Where id >= 25 And id < 40 Order by id";
+		$sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 40 AND id < 60 ORDER BY id";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 6a");
 		$num_results = mysql_num_rows($result);
 		array_push($arrayCompetitionGroupe, array('', 'CR', '=== COMPETITIONS REGIONALES ===', '' ) );
@@ -92,7 +92,7 @@ class Classements extends MyPage
 				array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], "" ) );
 		}
 			//Tournois
-		$sql  = "Select * From gickp_Competitions_Groupes Where id > 40 And id <> 60 Order by id";
+		$sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 60 AND id < 100 ORDER BY id";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 6a");
 		$num_results = mysql_num_rows($result);
 		array_push($arrayCompetitionGroupe, array('', 'T', '=== TOURNOIS ===', '' ) );

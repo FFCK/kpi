@@ -42,10 +42,6 @@
                             <script src="js/{$contenutemplate}.js"></script>
                         {/if}
 
-			<!--
-			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-			<script src="http://hayageek.github.io/jQuery-Upload-File/jquery.uploadfile.min.js"></script>
-			-->
 		{else}
 			<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
 			<link rel="stylesheet" type="text/css" href="../css/GestionStyle.css" />
@@ -77,10 +73,6 @@
 			{if is_file($temp)}
 				<script src="../js/{$contenutemplate}.js"></script>
 			{/if}
-			<!--
-			<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-			<script src="http://hayageek.github.io/jQuery-Upload-File/jquery.uploadfile.min.js"></script>
-			-->
 		{/if}
 		<title>{$smarty.config.$title|default:$title}</title>
 	</head>

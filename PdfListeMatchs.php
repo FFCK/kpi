@@ -4,7 +4,7 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
+//define('FPDF_FONTPATH','font/');
 require('fpdf/fpdf.php');
 
 require_once('qrcode/qrcode.class.php');

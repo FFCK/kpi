@@ -1,38 +1,40 @@
-$(document).ready(function() { //Jquery + NoConflict='J'
+jq = jQuery.noConflict();
+
+jq(document).ready(function() { //Jquery + NoConflict='J'
 
 	// Highlight
-    $('#reach').bind('keyup change', function(ev) {
+    jq('#reach').bind('keyup change', function(ev) {
         // pull in the new value
-        var searchTerm = $(this).val();
+        var searchTerm = jq(this).val();
         // remove any old highlighted terms
-        $('.tableau').removeHighlight();
+        jq('.tableau').removeHighlight();
         // disable highlighting if empty
         if ( searchTerm ) {
             // highlight the new term
-            $('.tableau').highlight( searchTerm );
-			$('.tableau thead').removeHighlight();
+            jq('.tableau').highlight( searchTerm );
+			jq('.tableau thead').removeHighlight();
         }
     });
 
 	//Recherches athletes
-	//$('#iframeRechercheLicenceIndi2').hide();
+	//jq('#iframeRechercheLicenceIndi2').hide();
 	/*
-	$('#rechercheAthlete').click(function(e){
-		$('#iframeRechercheLicenceIndi2').attr('src', 'RechercheLicenceIndi2.php?zoneMatric=Athlete&zoneIdentite=choixJoueur');
-		$('#iframeRechercheLicenceIndi2').toggle();
+	jq('#rechercheAthlete').click(function(e){
+		jq('#iframeRechercheLicenceIndi2').attr('src', 'RechercheLicenceIndi2.php?zoneMatric=Athlete&zoneIdentite=choixJoueur');
+		jq('#iframeRechercheLicenceIndi2').toggle();
 	});
 	*/
-	$("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
 		width: 550,
 		max: 50,
 		mustMatch: false,
 	});
-	$("#choixJoueur").result(function(event, data, formatted) {
+	jq("#choixJoueur").result(function(event, data, formatted) {
 		if (data) {
-			$("#Athlete").val(data[1]);
+			jq("#Athlete").val(data[1]);
 			var athl = data[1];
-			$("#choixJoueur").val(data[0]);
-			$("#rechercheAthlete").attr( "href", "GestionAthlete.php?Athlete="+athl );
+			jq("#choixJoueur").val(data[0]);
+			jq("#rechercheAthlete").attr( "href", "GestionAthlete.php?Athlete="+athl );
 		}
 	});
 	

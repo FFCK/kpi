@@ -74,7 +74,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		if ($idEquipe > 0)
 		{
 			// Nom de l'Equipe et de la Compétition ...
-			$sql  = "Select eq.Code_compet, eq.Code_club, eq.Code_saison, eq.Libelle, cp.Verrou ";
+			$sql  = "Select eq.Code_compet, eq.Code_club, eq.Code_saison, eq.Libelle, cp.Verrou, cp.Statut ";
 			$sql .= "From gickp_Competitions_Equipes eq, gickp_Competitions cp ";
 			$sql .= "Where eq.Code_compet = cp.Code And cp.Code_saison = '";
 			$sql .= utyGetSaison();
@@ -100,17 +100,24 @@ class GestionEquipeJoueur extends MyPageSecure
 							$row['Verrou'] = '';
 					}
 				}
-				if(substr($row['Code_compet'],0,1) == 'N')
+				if(substr($row['Code_compet'],0,1) == 'N' || $row['Code_compet'] == 'MCP')
 					$typeCompet = 'CH';
 				elseif(substr($row['Code_compet'],0,2) == 'CF')
 					$typeCompet = 'CF';
 				else
 					$typeCompet = '';
+                $surcl_necess = 0;
+                $array_surcl_neccessaire = array('N1F', 'N1H', 'N2H', 'N3H', 'N4H', 'NQH', 'CFF', 'CFH', 'MCP');
+                $codeCompetReduit = substr($row['Code_compet'],0,3);
+                if(in_array($codeCompetReduit, $array_surcl_neccessaire)){
+                    $surcl_necess = 1;
+                }
 				$this->m_tpl->assign('typeCompet', $typeCompet);	
 				$this->m_tpl->assign('headerSubTitle', $infoEquipe);	
 				$this->m_tpl->assign('infoEquipe2', $infoEquipe2);	
-				$this->m_tpl->assign('Verrou', $row['Verrou']);	
-				
+				$this->m_tpl->assign('Verrou', $row['Verrou']);
+				$this->m_tpl->assign('Statut', $row['Statut']);
+				$this->m_tpl->assign('surcl_necess', $surcl_necess);
 			}
 			
 			// Intégrer les coureurs de la recherche Licence ...
@@ -323,7 +330,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		$capitaineJoueur = utyGetPost('capitaineJoueur2', '-');
 		$numeroJoueur = utyGetPost('numeroJoueur2', '');
 		
-		if (strlen($idEquipe) > 0)
+		if ($idEquipe > 0)
 		{
 			$myBdd = new MyBdd();
 			if (strlen($matricJoueur) == 0)

@@ -35,7 +35,9 @@ class singleFAQWidget extends WP_Widget
 			'faqid' => null,
 			'show_faq_image' => get_option('faqs_image'),
 			'faq_read_more_link_text' => get_option('faqs_read_more_text',	'Read More'),
-			'faq_read_more_link' => get_option('faqs_link')
+			'faq_read_more_link' => get_option('faqs_link'),
+			'use_excerpt' => false,
+			'theme' => get_option('faqs_style','')
 		);
 		$instance = wp_parse_args( (array) $instance, $widget_defaults );
 		$title = $instance['title'];
@@ -43,16 +45,18 @@ class singleFAQWidget extends WP_Widget
 		$faq_read_more_link_text = $instance['faq_read_more_link_text'];
 		$faq_read_more_link = $instance['faq_read_more_link'];
 		$show_faq_image = $instance['show_faq_image'];
+		$use_excerpt = $instance['use_excerpt'];
 		$theme = $instance['theme'];
 		?>
 		<div class="gp_widget_form_wrapper">		
-			<p>
+			<p class="hide_in_popup">
 				<label for="<?php echo $this->get_field_id('title'); ?>">Widget Title: </label>
 				<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
 			</p>
 			<p>
 				<label for="<?php echo $this->get_field_id('theme'); ?>">Theme: </label>
 				<?php EasyFAQs_Config::output_theme_selector($this->get_field_id('theme'), $this->get_field_name('theme'), $theme, isValidFAQKey()); ?>
+				<?php EasyFAQs_Config::output_upgrade_link(); ?>
 			</p>			
 			<?php
 				$faqs = get_posts('post_type=faq&posts_per_page=-1&nopaging=true');
@@ -68,6 +72,7 @@ class singleFAQWidget extends WP_Widget
 				<p><label for="<?php echo $this->get_field_id('faq_read_more_link'); ?>">View All Link Destination: <input class="widefat" id="<?php echo $this->get_field_id('faq_read_more_link'); ?>" name="<?php echo $this->get_field_name('faq_read_more_link'); ?>" type="text" value="<?php echo esc_attr($faq_read_more_link); ?>" /></label></p>
 				<p><label for="<?php echo $this->get_field_id('faq_read_more_link_text'); ?>">View All Link Text: <input class="widefat" id="<?php echo $this->get_field_id('faq_read_more_link_text'); ?>" name="<?php echo $this->get_field_name('faq_read_more_link_text'); ?>" type="text" value="<?php echo esc_attr($faq_read_more_link_text); ?>" /></label></p>
 				<p><input class="widefat" id="<?php echo $this->get_field_id('show_faq_image'); ?>" name="<?php echo $this->get_field_name('show_faq_image'); ?>" type="checkbox" value="1" <?php if($show_faq_image){ ?>checked="CHECKED"<?php } ?>/><label for="<?php echo $this->get_field_id('show_faq_image'); ?>">Show FAQ Image</label></p>
+				<p><input class="widefat" id="<?php echo $this->get_field_id('use_excerpt'); ?>" name="<?php echo $this->get_field_name('use_excerpt'); ?>" type="checkbox" value="1" <?php if($use_excerpt){ ?>checked="CHECKED"<?php } ?>/><label for="<?php echo $this->get_field_id('use_excerpt'); ?>">Use Excerpt for Long Answers</label></p>
 			</fieldset>
 		</div>
 		<?php
@@ -81,11 +86,14 @@ class singleFAQWidget extends WP_Widget
 		$instance['faq_read_more_link_text'] = $new_instance['faq_read_more_link_text'];
 		$instance['faq_read_more_link'] = $new_instance['faq_read_more_link'];
 		$instance['show_faq_image'] = $new_instance['show_faq_image'];
+		$instance['use_excerpt'] = $new_instance['use_excerpt'];
 		return $instance;
 	}
 
 	function widget($args, $instance){
 		global $easy_faqs;
+		global $easy_faqs_in_widget;
+		$easy_faqs_in_widget = true;
 		
 		extract($args, EXTR_SKIP);
 
@@ -96,6 +104,7 @@ class singleFAQWidget extends WP_Widget
 		$faq_read_more_link_text = empty($instance['faq_read_more_link_text']) ? null : $instance['faq_read_more_link_text'];
 		$faq_read_more_link = empty($instance['faq_read_more_link']) ? null : $instance['faq_read_more_link'];
 		$show_faq_image = empty($instance['show_faq_image']) ? null : $instance['show_faq_image'];
+		$use_excerpt = empty($instance['use_excerpt']) ? null : $instance['use_excerpt'];
 
 		if (!empty($title)){
 			echo $before_title . $title . $after_title;;
@@ -107,6 +116,7 @@ class singleFAQWidget extends WP_Widget
 			'read_more_link_text' => $faq_read_more_link_text,
 			'read_more_link' => $faq_read_more_link,
 			'show_thumbs' => $show_faq_image,
+			'use_excerpt' => $use_excerpt
 		);
 		echo $easy_faqs->outputSingleFAQ($atts);
 

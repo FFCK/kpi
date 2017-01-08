@@ -248,7 +248,7 @@ class GestionStructure extends MyPageSecure
 				($_SESSION['Profile'] <= 2) ? $this->AddClub() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'UpdateClub')
-				($_SESSION['Profile'] <= 3) ? $this->UpdateClub() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 3 or $_SESSION['User'] == '229824' or $_SESSION['User'] == '115989') ? $this->UpdateClub() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($alertMessage == '')
 			{

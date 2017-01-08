@@ -1,31 +1,30 @@
+jq = jQuery.noConflict();
+
 function validJoueur()
 {
-		var nomJoueur = document.forms['formEquipeJoueur'].elements['nomJoueur'].value;
+		var nomJoueur = jq('#nomJoueur').val();
 		if (nomJoueur.length == 0)
 		{
 			alert("Le Nom du Joueur est Vide... Ajout Impossible !");
 			return false;
 		}
-		
-		var prenomJoueur = document.forms['formEquipeJoueur'].elements['prenomJoueur'].value;
+		var prenomJoueur = jq('#prenomJoueur').val();
 		if (prenomJoueur.length == 0)
 		{
 			alert("Le prénom du Joueur est Vide... Ajout Impossible !");
 			return false;
 		}
-		
 		return true;
 }
 
 function validJoueur2()
 {
-		var nomJoueur2 = document.forms['formEquipeJoueur'].elements['nomJoueur2'].value;
+		var nomJoueur2 = jq('#nomJoueur2').val();
 		if (nomJoueur2.length == 0)
 		{
 			alert("Aucun joueur sélectionné, Ajout Impossible !");
 			return false;
 		}
-				
 		return true;
 }
 
@@ -33,57 +32,46 @@ function Add()
 {
 	if (!validJoueur())
 		return;
-
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'Add';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = '';
-	document.forms['formEquipeJoueur'].submit();
+	jq('#Cmd').val('Add');
+	jq('#ParamCmd').val('');
+	jq('#formEquipeJoueur').submit();
 }
 
 function Add2()
 {
 	if (!validJoueur2())
 		return;
-
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'Add2';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = '';
-	document.forms['formEquipeJoueur'].submit();
+	jq('#Cmd').val('Add2');
+	jq('#ParamCmd').val('');
+	jq('#formEquipeJoueur').submit();
 }
 
 function AddCoureur(matric, categ)
 {
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'AddCoureur';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = matric +'|'+categ;
-	document.forms['formEquipeJoueur'].submit();
+	jq('#Cmd').val('AddCoureur');
+	jq('#ParamCmd').val(matric + '|' + categ);
+	jq('#formEquipeJoueur').submit();
 }
 
 function Find()
 {
-	document.forms['formEquipeJoueur'].elements['Cmd'].value = 'Find';
-	document.forms['formEquipeJoueur'].elements['ParamCmd'].value = '';
-	document.forms['formEquipeJoueur'].submit();
+	jq('#Cmd').val('Find');
+	jq('#ParamCmd').val('');
+	jq('#formEquipeJoueur').submit();
 }
-/*
-function DoNumero(matric, numero)	// Prototype remplacé par Jquery
-{
-	var obj = document.getElementById("numero"+matric)
-	
-	var posx = findPosX(obj);
-	var posy = findPosY(obj) + 150;
 
-	window.open('GestionEquipeJoueurNumero.php?matric='+matric+'&numero='+numero, 'Numéro', 'left='+posx+', top='+posy+', width=250,height=100,menubar=no,scrollbars=yes,resizable=yes');
-}
-*/
 
-$(document).ready(function() { //Jquery + NoConflict='J'
+
+jq(document).ready(function() { //Jquery + NoConflict='J'
 
 	// Maskedinput
-	$(".champsHeure").mask("99:99");
+	jq(".champsHeure").mask("99:99");
 
 	// Direct Input (numero joueur)
-	//Ajout title
-	$('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante');
+	// Ajout title
+	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante');
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
-	$('#tableMatchs').bind('keydown',function(e){
+	jq('#tableMatchs').bind('keydown',function(e){
 		if(e.which == 13)
 		{
 			validationDonnee();
@@ -91,46 +79,46 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 		}
 	}); 
 	// blur d'une input => validation de la donnée
-	$('#inputZone').live('blur', function(){
-		var Classe = $(this).attr('class');
+	jq('#inputZone').live('blur', function(){
+		var Classe = jq(this).attr('class');
 		validationDonnee(Classe);
 	});
 	// focus sur une cellule du tableau => remplace le span par un input
-	$('#tableMatchs td.directInput').focus(function(event){
+	jq('#tableMatchs td.directInput').focus(function(event){
 		event.preventDefault();
-		var valeur = $(this).text();
-		var tabindexVal = $(this).attr('tabindex');
-		$(this).attr('tabindex',tabindexVal+1000);
-		if($(this).hasClass('text'))
+		var valeur = jq(this).text();
+		var tabindexVal = jq(this).attr('tabindex');
+		jq(this).attr('tabindex',tabindexVal+1000);
+		if(jq(this).hasClass('text'))
 		{
-			$(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
+			jq(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
 		}
-		$(this).children("span").hide();
-		setTimeout( function() { $('#inputZone').select() }, 0 );
+		jq(this).children("span").hide();
+		setTimeout( function() { jq('#inputZone').select() }, 0 );
 	});
 	
 	function validationDonnee(Classe){
-		var nouvelleValeur = $('#inputZone').val();
-		var tabindexVal = $('#inputZone').attr('tabindex');
+		var nouvelleValeur = jq('#inputZone').val();
+		var tabindexVal = jq('#inputZone').attr('tabindex');
 		if(Classe == 'directInputSpan'){
-			$('#inputZone + span').attr('tabindex',tabindexVal);
+			jq('#inputZone + span').attr('tabindex',tabindexVal);
 		}else if(Classe == 'directInputTd'){
-			$('#inputZone').parent('td').attr('tabindex',tabindexVal);
+			jq('#inputZone').parent('td').attr('tabindex',tabindexVal);
 		}
-		$('#inputZone + span').show();
-		var valeur = $('#inputZone + span').text();
-		var identifiant = $('#inputZone + span').attr('id');
+		jq('#inputZone + span').show();
+		var valeur = jq('#inputZone + span').text();
+		var identifiant = jq('#inputZone + span').attr('id');
 		var identifiant2 = identifiant.split('-');
 		var typeValeur = identifiant2[0];
 		var numJoueur = identifiant2[1];
 		var numEquipe = identifiant2[2];
 		if(valeur != nouvelleValeur){
 			valeurTransmise = nouvelleValeur;
-			var AjaxWhere = $('#AjaxWhere').val();
-			var AjaxTableName = $('#AjaxTableName').val();
-			var AjaxAnd = $('#AjaxAnd').val();;
-			var AjaxUser = $('#AjaxUser').val();
-			$.get("UpdateCellJQ.php",
+			var AjaxWhere = jq('#AjaxWhere').val();
+			var AjaxTableName = jq('#AjaxTableName').val();
+			var AjaxAnd = jq('#AjaxAnd').val();;
+			var AjaxUser = jq('#AjaxUser').val();
+			jq.get("UpdateCellJQ.php",
 				{
 					AjTableName: AjaxTableName,
 					AjWhere: AjaxWhere,
@@ -146,48 +134,48 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 					if(data != 'OK!'){
 						alert('mise à jour impossible : '+data);
 					}else{
-						$('#'+identifiant).text(nouvelleValeur);
+						jq('#'+identifiant).text(nouvelleValeur);
 					}
 				}
 			);
 		};
-		$('#inputZone').remove();
+		jq('#inputZone').remove();
 	}
 	
 	// directSelect (Capitaine)
-	$('#directSelecteur').hide();
-	$('.directSelect').click(function(e){
+	jq('#directSelecteur').hide();
+	jq('.directSelect').click(function(e){
 		posX = e.pageX - 10;
 		posY = e.pageY - 15;
-		$('#directSelecteur').css('left', posX +'px');
-		$('#directSelecteur').css('top', posY +'px');
-		$('#directSelecteur').toggle();
-		var valeur = $(this).children('span').text();
-		var variables = $(this).children('span').attr('id');
-		$(this).attr('id', 'directSelected');
-		$('#variables').val(variables);
-		$('#directSelecteurSelect option').removeAttr('selected');
-		$('#directSelecteurSelect option').each(function(){
-			if($(this).val() == valeur){
-				$(this).attr('selected','selected');
+		jq('#directSelecteur').css('left', posX +'px');
+		jq('#directSelecteur').css('top', posY +'px');
+		jq('#directSelecteur').toggle();
+		var valeur = jq(this).children('span').text();
+		var variables = jq(this).children('span').attr('id');
+		jq(this).attr('id', 'directSelected');
+		jq('#variables').val(variables);
+		jq('#directSelecteurSelect option').removeAttr('selected');
+		jq('#directSelecteurSelect option').each(function(){
+			if(jq(this).val() == valeur){
+				jq(this).attr('selected','selected');
 			};
 		});
 	});
 	
 	// Validation directSelect
-	$('#directSelecteurSelect').change(function(){
-		var variables = $('#variables').val();
+	jq('#directSelecteurSelect').change(function(){
+		var variables = jq('#variables').val();
 		var variables = variables.split('-');
 		var typeValeur = variables[0];
 		var numJoueur = variables[1];
 		var numEquipe = variables[2];
-		var nouvelleValeur = $('#directSelecteurSelect option:selected').val();
+		var nouvelleValeur = jq('#directSelecteurSelect option:selected').val();
 			valeurTransmise = nouvelleValeur;
-			var AjaxWhere = $('#AjaxWhere').val();
-			var AjaxTableName = $('#AjaxTableName').val();
-			var AjaxAnd = $('#AjaxAnd').val();;
-			var AjaxUser = $('#AjaxUser').val();
-			$.get("UpdateCellJQ.php",
+			var AjaxWhere = jq('#AjaxWhere').val();
+			var AjaxTableName = jq('#AjaxTableName').val();
+			var AjaxAnd = jq('#AjaxAnd').val();;
+			var AjaxUser = jq('#AjaxUser').val();
+			jq.get("UpdateCellJQ.php",
 				{
 					AjTableName: AjaxTableName,
 					AjWhere: AjaxWhere,
@@ -202,68 +190,74 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 				function(data){
 					if(data != 'OK!'){
 						alert('mise à jour impossible : '+data);
-						$('#directSelected').removeAttr('id');
-						$('#directSelecteur').toggle();
+						jq('#directSelected').removeAttr('id');
+						jq('#directSelecteur').toggle();
 					}else{
-						$('#directSelected').children('span').text(valeurTransmise);
-						$('#directSelected').removeAttr('id');
-						$('#directSelecteur').toggle();
+						jq('#directSelected').children('span').text(valeurTransmise);
+						jq('#directSelected').removeAttr('id');
+						jq('#directSelecteur').toggle();
 					}
 				}
 			);
 	});
-	$('#annulButton').click(function(){
-		$('#directSelected').removeAttr('id');
-		$('#directSelecteur').toggle();
+	jq('#annulButton').click(function(){
+		jq('#directSelected').removeAttr('id');
+		jq('#directSelecteur').toggle();
 	});
 	
-	$('#irregularite').hide();
-
-	$("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	jq('#irregularite').hide();
+    jq('#addEquipeJoueurImpossible').hide();
+    
+	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
 		width: 550,
 		max: 50,
 		mustMatch: true,
 	});
-	$("#choixJoueur").result(function(event, data, formatted) {
-		var saisonCompet = $('#saisonCompet').val();
-		var typeCompet = $('#typeCompet').val();
+	jq("#choixJoueur").result(function(event, data, formatted) {
+		var saisonCompet = jq('#saisonCompet').val();
+		var typeCompet = jq('#typeCompet').val();
 		if (data) {
-			$("#matricJoueur2").val(data[1]);
-			$("#nomJoueur2").val(data[2]);
-			$("#prenomJoueur2").val(data[3]);
-			$("#naissanceJoueur2").val(data[4]);
-			$("#sexeJoueur2").val(data[5]);
+			jq("#matricJoueur2").val(data[1]);
+			jq("#nomJoueur2").val(data[2]);
+			jq("#prenomJoueur2").val(data[3]);
+			jq("#naissanceJoueur2").val(data[4]);
+			jq("#sexeJoueur2").val(data[5]);
             catJoueurs2 = calculCategorie(data[4], saisonCompet);
-			$("#categJoueur2").val(catJoueurs2);
-            $("#categJoueur3").text('Cat: ' + catJoueurs2);
+			jq("#categJoueur2").val(catJoueurs2);
+            jq("#categJoueur3").text('Cat: ' + catJoueurs2);
             surclassement = data[13];
             if(surclassement != ''){
-                $("#surclassement3").html(' <b>Surcl: ' + surclassement + '</b>');
+                jq(".surclassement3").html('<b>Surcl: ' + surclassement + '</b>');
+            }else if(catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'){
+                jq(".surclassement3").html('Pas de surclassement');    
             }
+            jq("#origineJoueur2").text(data[8]);
+            jq("#pagaieJoueur2").text(data[9]);
+            jq("#CKJoueur2").text(data[10]);
+            jq("#APSJoueur2").text(data[11]);
+            jq("#catJoueur2").text(catJoueurs2);
 			if(typeCompet == 'CH' || typeCompet == 'CF' || typeCompet == 'MC'){
-				$("#origineJoueur2").text(data[8]);
-				$("#pagaieJoueur2").text(data[9]);
-				$("#CKJoueur2").text(data[10]);
-				$("#APSJoueur2").text(data[11]);
-                $("#catJoueur2").text(catJoueurs2);
+                var surcl_necess = jq('#surcl_necess').val();
 				var motif = '';
 				if(data[8] < saisonCompet){
 					motif = '(Saison licence)';
 				}else if(data[10] != 'OUI'){
 					motif = '(Certificat CK)';
-				//}else if(data[11] != 'OUI'){
-				//	motif = '(Certificat APS)';
 				}else if(data[9] == '' || data[9] == 'PAGB' || data[9] == 'PAGJ'){
 					motif = '(Pagaie couleur)';
-				}
+				}else if(surclassement == '' && surcl_necess == 1 && catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'){
+                    motif = '(Surclassement obligatoire)';
+                }
 				if (motif != ''){
-					$('#motif').text(motif);
-					$('#irregularite').show();
-					$('#addEquipeJoueur2').hide();
+					jq('#motif').text(motif);
+					jq('#irregularite').show();
+					jq('#addEquipeJoueur2').hide();
+					jq('#addEquipeJoueurImpossible').show();
 				}else{
-					$('#motif').text(motif);
-					$('#irregularite').hide();
-					$('#addEquipeJoueur2').show();
+					jq('#motif').text(motif);
+					jq('#irregularite').hide();
+					jq('#addEquipeJoueur2').show();
+					jq('#addEquipeJoueurImpossible').hide();
 				}
 				//Autoriser pagaie différente pour arbitres et entraineurs... ?
 				
@@ -272,8 +266,14 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 		}
 	});
 
+	// Actualiser
+	jq('#actuButton').click(function(){
+		jq('#formEquipeJoueur').submit();
+	});
+
+    jq('#changeEquipe').change(function(){
+    	jq(location).attr('href', "?idEquipe=" + jq(this).val());
+    });
+
 });
 
-function changeEquipe(){
-	$(location).attr('href', "?idEquipe=" + $('#idEquipe').val());
-}

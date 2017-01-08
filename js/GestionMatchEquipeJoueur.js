@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 function FindLicence()
 {
 	document.forms['formMatchEquipeJoueur'].elements['Cmd'].value = 'FindLicence';
@@ -76,16 +78,16 @@ function DoNumero(matric, numero)	// Prototype remplacé par Jquery
 }
 */
 
-$(document).ready(function() { //Jquery + NoConflict='J'
+jq(document).ready(function() { //Jquery + NoConflict='J'
 
 	// Maskedinput
-	$(".champsHeure").mask("99:99");
+	jq(".champsHeure").mask("99:99");
 
 	// Direct Input (numero joueur)
 	//Ajout title
-	$('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante');
+	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante');
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
-	$('#tableMatchs').bind('keydown',function(e){
+	jq('#tableMatchs').bind('keydown',function(e){
 		if(e.which == 13)
 		{
 			validationDonnee();
@@ -93,46 +95,46 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 		}
 	}); 
 	// blur d'une input => validation de la donnée
-	$('#inputZone').live('blur', function(){
-		var Classe = $(this).attr('class');
+	jq('#inputZone').live('blur', function(){
+		var Classe = jq(this).attr('class');
 		validationDonnee(Classe);
 	});
 	// focus sur une cellule du tableau => remplace le span par un input
-	$('#tableMatchs td.directInput').focus(function(event){
+	jq('#tableMatchs td.directInput').focus(function(event){
 		event.preventDefault();
-		var valeur = $(this).text();
-		var tabindexVal = $(this).attr('tabindex');
-		$(this).attr('tabindex',tabindexVal+1000);
-		if($(this).hasClass('text'))
+		var valeur = jq(this).text();
+		var tabindexVal = jq(this).attr('tabindex');
+		jq(this).attr('tabindex',tabindexVal+1000);
+		if(jq(this).hasClass('text'))
 		{
-			$(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
+			jq(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
 		}
-		$(this).children("span").hide();
-		setTimeout( function() { $('#inputZone').select() }, 0 );
+		jq(this).children("span").hide();
+		setTimeout( function() { jq('#inputZone').select() }, 0 );
 	});
 	
 	function validationDonnee(Classe){
-		var nouvelleValeur = $('#inputZone').val();
-		var tabindexVal = $('#inputZone').attr('tabindex');
+		var nouvelleValeur = jq('#inputZone').val();
+		var tabindexVal = jq('#inputZone').attr('tabindex');
 		if(Classe == 'directInputSpan'){
-			$('#inputZone + span').attr('tabindex',tabindexVal);
+			jq('#inputZone + span').attr('tabindex',tabindexVal);
 		}else if(Classe == 'directInputTd'){
-			$('#inputZone').parent('td').attr('tabindex',tabindexVal);
+			jq('#inputZone').parent('td').attr('tabindex',tabindexVal);
 		}
-		$('#inputZone + span').show();
-		var valeur = $('#inputZone + span').text();
-		var identifiant = $('#inputZone + span').attr('id');
+		jq('#inputZone + span').show();
+		var valeur = jq('#inputZone + span').text();
+		var identifiant = jq('#inputZone + span').attr('id');
 		var identifiant2 = identifiant.split('-');
 		var typeValeur = identifiant2[0];
 		var numJoueur = identifiant2[1];
 		var numMatch = identifiant2[2];
 		if(valeur != nouvelleValeur){
 			valeurTransmise = nouvelleValeur;
-			var AjaxWhere = $('#AjaxWhere').val();
-			var AjaxTableName = $('#AjaxTableName').val();
-			var AjaxAnd = $('#AjaxAnd').val();;
-			var AjaxUser = $('#AjaxUser').val();
-			$.get("UpdateCellJQ.php",
+			var AjaxWhere = jq('#AjaxWhere').val();
+			var AjaxTableName = jq('#AjaxTableName').val();
+			var AjaxAnd = jq('#AjaxAnd').val();;
+			var AjaxUser = jq('#AjaxUser').val();
+			jq.get("UpdateCellJQ.php",
 				{
 					AjTableName: AjaxTableName,
 					AjWhere: AjaxWhere,
@@ -148,48 +150,48 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 					if(data != 'OK!'){
 						alert('mise à jour impossible : '+data);
 					}else{
-						$('#'+identifiant).text(nouvelleValeur);
+						jq('#'+identifiant).text(nouvelleValeur);
 					}
 				}
 			);
 		};
-		$('#inputZone').remove();
+		jq('#inputZone').remove();
 	}
 	
 	// directSelect (Capitaine)
-	$('#directSelecteur').hide();
-	$('.directSelect').click(function(e){
+	jq('#directSelecteur').hide();
+	jq('.directSelect').click(function(e){
 		posX = e.pageX - 10;
 		posY = e.pageY - 15;
-		$('#directSelecteur').css('left', posX +'px');
-		$('#directSelecteur').css('top', posY +'px');
-		$('#directSelecteur').toggle();
-		var valeur = $(this).children('span').text();
-		var variables = $(this).children('span').attr('id');
-		$(this).attr('id', 'directSelected');
-		$('#variables').val(variables);
-		$('#directSelecteurSelect option').removeAttr('selected');
-		$('#directSelecteurSelect option').each(function(){
-			if($(this).val() == valeur){
-				$(this).attr('selected','selected');
+		jq('#directSelecteur').css('left', posX +'px');
+		jq('#directSelecteur').css('top', posY +'px');
+		jq('#directSelecteur').toggle();
+		var valeur = jq(this).children('span').text();
+		var variables = jq(this).children('span').attr('id');
+		jq(this).attr('id', 'directSelected');
+		jq('#variables').val(variables);
+		jq('#directSelecteurSelect option').removeAttr('selected');
+		jq('#directSelecteurSelect option').each(function(){
+			if(jq(this).val() == valeur){
+				jq(this).attr('selected','selected');
 			};
 		});
 	});
 	
 	// Validation
-	$('#directSelecteurSelect').change(function(){
-		var variables = $('#variables').val();
+	jq('#directSelecteurSelect').change(function(){
+		var variables = jq('#variables').val();
 		var variables = variables.split('-');
 		var typeValeur = variables[0];
 		var numJoueur = variables[1];
 		var numEquipe = variables[2];
-		var nouvelleValeur = $('#directSelecteurSelect option:selected').val();
+		var nouvelleValeur = jq('#directSelecteurSelect option:selected').val();
 			valeurTransmise = nouvelleValeur;
-			var AjaxWhere = $('#AjaxWhere').val();
-			var AjaxTableName = $('#AjaxTableName').val();
-			var AjaxAnd = $('#AjaxAnd').val();;
-			var AjaxUser = $('#AjaxUser').val();
-			$.get("UpdateCellJQ.php",
+			var AjaxWhere = jq('#AjaxWhere').val();
+			var AjaxTableName = jq('#AjaxTableName').val();
+			var AjaxAnd = jq('#AjaxAnd').val();;
+			var AjaxUser = jq('#AjaxUser').val();
+			jq.get("UpdateCellJQ.php",
 				{
 					AjTableName: AjaxTableName,
 					AjWhere: AjaxWhere,
@@ -204,33 +206,33 @@ $(document).ready(function() { //Jquery + NoConflict='J'
 				function(data){
 					if(data != 'OK!'){
 						alert('mise à jour impossible : '+data);
-						$('#directSelected').removeAttr('id');
-						$('#directSelecteur').toggle();
+						jq('#directSelected').removeAttr('id');
+						jq('#directSelecteur').toggle();
 					}else{
-						$('#directSelected').children('span').text(valeurTransmise);
-						$('#directSelected').removeAttr('id');
-						$('#directSelecteur').toggle();
+						jq('#directSelected').children('span').text(valeurTransmise);
+						jq('#directSelected').removeAttr('id');
+						jq('#directSelecteur').toggle();
 					}
 				}
 			);
 	});
-	$('#annulButton').click(function(){
-		$('#directSelected').removeAttr('id');
-		$('#directSelecteur').toggle();
+	jq('#annulButton').click(function(){
+		jq('#directSelected').removeAttr('id');
+		jq('#directSelecteur').toggle();
 	});
 	
-	$("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
 		width: 550,
 		max: 50,
 		mustMatch: true,
 	});
-	$("#choixJoueur").result(function(event, data, formatted) {
+	jq("#choixJoueur").result(function(event, data, formatted) {
 		if (data) {
-			$("#matricJoueur2").val(data[1]);
-			$("#nomJoueur2").val(data[2]);
-			$("#prenomJoueur2").val(data[3]);
-			$("#naissanceJoueur2").val(data[4]);
-			$("#sexeJoueur2").val(data[5]);
+			jq("#matricJoueur2").val(data[1]);
+			jq("#nomJoueur2").val(data[2]);
+			jq("#prenomJoueur2").val(data[3]);
+			jq("#naissanceJoueur2").val(data[4]);
+			jq("#sexeJoueur2").val(data[5]);
 		}
 	});
 

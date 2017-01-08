@@ -4,7 +4,7 @@ Plugin Name: Easy FAQs
 Plugin URI: https://goldplugins.com/our-plugins/easy-faqs-details/
 Description: Easy FAQs - Provides custom post type, shortcodes, widgets, and other functionality for Frequently Asked Questions (FAQs).
 Author: Gold Plugins
-Version: 1.13.1
+Version: 1.13.7
 Author URI: https://goldplugins.com
 Text Domain: easy-faqs
 
@@ -27,11 +27,13 @@ along with Easy FAQs .  If not, see <http://www.gnu.org/licenses/>.
 global $easy_faqs_footer_css_output;
 
 require_once('include/easy_faqs_config.php');	
-include('include/lib/lib.php');
-include('include/lib/str_highlight.php');
-include('include/lib/database_setup.php');
-include('include/lib/easy_faqs_search_faqs.class.php');
-include('include/lib/BikeShed/bikeshed.php');	
+require_once('include/lib/lib.php');
+require_once('include/lib/str_highlight.php');
+require_once('include/lib/database_setup.php');
+require_once('include/lib/easy_faqs_search_faqs.class.php');
+require_once('include/lib/BikeShed/bikeshed.php');	
+require_once("include/lib/GP_Media_Button/gold-plugins-media-button.class.php");
+require_once("include/lib/GP_Janus/gp-janus.class.php");
 
 class easyFAQs
 {
@@ -43,49 +45,45 @@ class easyFAQs
 	function __construct()
 	{					
 		//set class variable for tracking pro
-		if(isValidFAQKey()){
+		if ( isValidFAQKey() ) {
 			$this->is_pro = true;
-		}
-		
-		//load plugin text domain
-		$plugin_dir = basename(dirname(__FILE__));
-		load_plugin_textdomain( 'easy-faqs', false, $plugin_dir );
+		}		
 		
 		//load strings with translations
-		include('include/lib/strings.php');
+		$this->strings = include('include/lib/strings.php');
 	
 		// load subsclasses
 		$this->SearchFAQs = new EasyFAQs_SearchFAQs($this);
 		
 		//create shortcodes
-		add_shortcode('single_faq', array($this, 'outputSingleFAQ'));
-		add_shortcode('faqs', array($this, 'outputFAQs'));
-		add_shortcode('faqs-by-category', array($this, 'outputFAQsByCategory'));
-		add_shortcode('faqs_by_category', array($this, 'outputFAQsByCategory')); // i've heard it both ways
-		add_shortcode('submit_faq', array($this, 'submitFAQForm'));
+		add_shortcode( 'single_faq', array($this, 'outputSingleFAQ') );
+		add_shortcode( 'faqs', array($this, 'outputFAQs') );
+		add_shortcode( 'faqs-by-category', array($this, 'outputFAQsByCategory') );
+		add_shortcode( 'faqs_by_category', array($this, 'outputFAQsByCategory') ); // i've heard it both ways
+		add_shortcode( 'submit_faq', array($this, 'submitFAQForm') );
 		
 		// register search_faqs shortcode and recent searches dashboard widget for pro users only
-		if (isValidFAQKey()) {
-			add_shortcode('search_faqs', array($this->SearchFAQs, 'outputSearchForm'));
-			add_action( 'wp_dashboard_setup', array($this->SearchFAQs, 'add_dashboard_widget') );		
+		if ( isValidFAQKey() ) {
+			add_shortcode( 'search_faqs', array($this->SearchFAQs, 'outputSearchForm') );
+			add_action( 'wp_dashboard_setup', array($this->SearchFAQs, 'add_dashboard_widget') );
 		}
 
 		//add JS
-		add_action( 'wp_enqueue_scripts', array($this, 'easy_faqs_setup_js' ));
-		add_action( 'admin_enqueue_scripts', array($this, 'easy_faqs_setup_js' ));
+		add_action( 'wp_enqueue_scripts', array($this, 'easy_faqs_setup_js') );
+		add_action( 'admin_enqueue_scripts', array($this, 'easy_faqs_setup_js') );
 
 		//add CSS
-		add_action( 'wp_enqueue_scripts', array($this, 'easy_faqs_setup_css' ));
-		add_action( 'admin_enqueue_scripts', array($this, 'easy_faqs_setup_css' ));
+		add_action( 'wp_enqueue_scripts', array($this, 'easy_faqs_setup_css') );
+		add_action( 'admin_enqueue_scripts', array($this, 'easy_faqs_setup_css') );
 
 		//add Custom CSS
-		add_action( 'wp_head', array($this, 'easy_faqs_setup_custom_css'));
+		add_action( 'wp_head', array($this, 'easy_faqs_setup_custom_css') );
 
 		//register sidebar widgets
-		add_action( 'widgets_init', array($this, 'easy_faqs_register_widgets' ));
+		add_action( 'widgets_init', array($this, 'easy_faqs_register_widgets') );
 
 		//do stuff
-		add_action( 'after_setup_theme', array($this, 'easy_faqs_setup_faqs' ));
+		add_action( 'after_setup_theme', array($this, 'easy_faqs_setup_faqs') );
 
 		//add example shortcode to list of faqs
 		add_filter('manage_faq_posts_columns', array($this, 'easy_faqs_column_head'), 10);  
@@ -96,10 +94,10 @@ class easyFAQs
 		add_action('manage_easy-faq-category_custom_column', array($this, 'easy_faqs_cat_columns_content'), 10, 3); 
 		
 		// admin init
-		add_action('admin_enqueue_scripts', array($this, 'admin_init'));
+		add_action( 'admin_enqueue_scripts', array($this, 'admin_init') );
 		
 		// add Google web fonts if needed
-		add_action( 'wp_enqueue_scripts', array($this, 'enqueue_webfonts'));
+		add_action( 'wp_enqueue_scripts', array($this, 'enqueue_webfonts') );
 		
 		//add our custom links for Settings and Support to various places on the Plugins page
 		$plugin = plugin_basename(__FILE__);
@@ -107,13 +105,60 @@ class easyFAQs
 		add_filter( 'plugin_row_meta', array($this, 'add_custom_links_to_plugin_description'), 10, 2 );	
 		
 		/* Look for Export requests */
-		add_action('admin_init', array($this, 'process_export'));
+		add_action( 'admin_init', array($this, 'process_export') );
 
 		//flush rewrite rules - only do this once!
 		//we do this to prevent 404s when viewing individual FAQs
-		register_activation_hook( __FILE__, array($this, 'easy_faqs_rewrite_flush'));
+		register_activation_hook( __FILE__, array($this, 'easy_faqs_rewrite_flush') );
+		
+		//add our function to customize the excerpt, if enabled
+		add_filter( 'excerpt_more', array($this,'easy_faqs_excerpt_more'), 9999 );
+		add_filter( 'excerpt_length', array($this, 'easy_faqs_excerpt_length'), 9999 );
+	
+		//override content filter on single faqs 
+		//to load the proper HTML structure and content for displaying an faq
+		add_filter( 'the_content', array($this, 'single_faq_content_filter') );
+		
+		// add media buttons to admin
+		$cur_post_type = ( isset($_GET['post']) ? get_post_type(intval($_GET['post'])) : '' );
+		if( is_admin() && ( empty($_REQUEST['post_type']) || $_REQUEST['post_type'] !== 'faq' ) && ($cur_post_type !== 'faq') )
+		{
+			global $EasyFAQs_MediaButton;
+			$EasyFAQs_MediaButton = new Easy_FAQs_Gold_Plugins_Media_Button('FAQs', 'format-chat');
+			$EasyFAQs_MediaButton->add_button('Single FAQ', 'single_faq', 'singlefaqwidget', 'format-chat');
+			$EasyFAQs_MediaButton->add_button('List of FAQs',  'faqs', 'listfaqswidget', 'format-chat');
+			
+			if( $this->is_pro ){
+				$EasyFAQs_MediaButton->add_button('Search FAQs',  'search_faqs', 'searchfaqswidget', 'format-chat');
+			}
+		}
+		
+		// load Janus
+		if (class_exists('GP_Janus')) {
+			$easy_faqs_Janus = new GP_Janus();
+		}
 	}
 
+	//runs when viewing a single faq's page (ie, you clicked on the continue reading link from the excerpt)
+	function single_faq_content_filter($content) {
+		global $easy_faqs_in_widget;
+		global $easy_faq_in_content_filter;
+		
+		//THE GEORGE FIX
+		wp_reset_postdata();
+		
+		//not running in a widget, is running in a single view or archive view such as category, tag, date, the post type is an faq
+		if ( empty($easy_faqs_in_widget) && ( is_single() || is_archive() ) && get_post_type() == 'faq' ) {				
+			$easy_faq_in_content_filter = true;
+			//load needed data
+			$postid = get_the_ID();
+			$template_content = $this->outputSingleFAQ( array('id' => $postid) );
+			$easy_faq_in_content_filter = false;
+			return $template_content;
+		}
+		return $content;
+	}
+	
 	//only do this once
 	function easy_faqs_rewrite_flush() {		
 		$this->easy_faqs_setup_faqs();
@@ -127,7 +172,8 @@ class easyFAQs
 		//RWG: only enqueue scripts and styles on Easy T admin pages
 		$screen = get_current_screen();
 		
-		if(strpos($hook,'easy-faqs')!==false || $screen->id === "widgets" || (function_exists('is_customize_preview') && is_customize_preview())){
+		if ( strpos($hook,'easy-faqs')!==false || $screen->id === "widgets" || ( function_exists('is_customize_preview') && is_customize_preview() ) )
+		{
 			wp_register_style( 'easy_faqs_admin_stylesheet', plugins_url('include/css/admin_style.css', __FILE__) );
 			wp_enqueue_style( 'easy_faqs_admin_stylesheet' );
 			
@@ -148,6 +194,37 @@ class easyFAQs
 		}
 	}
 
+	//apply any excerpt settings
+	/* add customized continue reading link to answers, if set */
+	function easy_faqs_excerpt_more( $more ) {
+		global $post;
+		
+		//if this is an faq, use our customization
+		if ($post->post_type == 'faq') {
+			if ( get_option('easy_faqs_link_excerpt_to_full', false) ) {
+				return ' <a class="more-link" href="' . get_permalink( get_the_ID() ) . '">' . get_option('easy_faqs_excerpt_text') . '</a>';
+			} else {
+				return ' ' . get_option('easy_faqs_excerpt_text');
+			}			
+		} else {
+		//otherwise, return the currently set $more value
+			return $more;
+		}
+	}
+	//checks to see if this is an faq
+	//if it is, loads custom excerpt length and uses it
+	//otherwise use current wordpress setting
+	function easy_faqs_excerpt_length( $length ) {
+		global $post;
+		
+		//if this is an faq, use our customization
+		if ($post->post_type == 'faq') {
+			return get_option('easy_faqs_excerpt_length',55);
+		}
+		
+		return $length;
+	}
+	
 	//add an inline link to the settings page, before the "deactivate" link
 	function add_settings_link_to_plugin_action_links($links) { 
 	  $settings_link = '<a href="admin.php?page=easy-faqs-settings">Settings</a>';
@@ -164,12 +241,12 @@ class easyFAQs
 		/** Check if $plugin_file matches the passed $file name */
 		if ( $file == $plugin_file )
 		{		
-			$new_links['settings_link'] = '<a href="admin.php?page=easy-faqs-settings">' . FAQ_SETTINGS_TEXT . '</a>';
-			$new_links['support_link'] = '<a href="https://goldplugins.com/contact/?utm-source=plugin_menu&utm_campaign=support&utm_banner=easy-faqs" target="_blank">' . FAQ_SUPPORT_TEXT . '</a>';
+			$new_links['settings_link'] = '<a href="admin.php?page=easy-faqs-settings">' . htmlentities( $this->get_str('FAQ_SETTINGS_TEXT') ) . '</a>';
+			$new_links['support_link'] = '<a href="https://goldplugins.com/contact/?utm-source=plugin_menu&utm_campaign=support&utm_banner=easy-faqs" target="_blank">' . htmlentities( $this->get_str('FAQ_SUPPORT_TEXT') ) . '</a>';
 			
-			if(!isValidFAQKey()){
+			if ( !isValidFAQKey() ) {
 				$new_links['upgrade_to_pro'] = '<a href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_source=plugin_menu&utm_campaign=up
-				grade" target="_blank">' . FAQ_UPGRADE_TEXT . '</a>';
+				grade" target="_blank">' . htmlentities( $this->get_str('FAQ_UPGRADE_TEXT') ) . '</a>';
 			}
 			
 			$links = array_merge( $links, $new_links);
@@ -179,7 +256,7 @@ class easyFAQs
 
 	//setup JS
 	function easy_faqs_setup_js() {
-		if(isValidFAQKey() || is_admin()){
+		if ( isValidFAQKey() || is_admin() ) {
 			wp_enqueue_script('jquery-ui-accordion');
 			wp_enqueue_script(
 				'easy-faqs',
@@ -189,7 +266,7 @@ class easyFAQs
 			);
 		}
 		
-		if (is_admin()) {
+		if ( is_admin() ) {
 			wp_enqueue_script(
 				'gp-easy_faqs_theme_selector',
 				plugins_url('include/js/gp-easy_faqs_theme_selector.js', __FILE__),
@@ -204,7 +281,7 @@ class easyFAQs
 	function easy_faqs_setup_css() {
 		wp_register_style( 'easy_faqs_style', plugins_url('include/css/style.css', __FILE__) );
 		
-		switch(get_option('faqs_style')){
+		switch ( get_option('faqs_style') ) {
 			case 'no_style':
 				break;
 			case 'default_style':
@@ -214,15 +291,17 @@ class easyFAQs
 		}
 	}	
 
-	function easy_faqs_send_notification_email($submitted_question = array()){
+	function easy_faqs_send_notification_email( $submitted_question = array() )
+	{
 		//get e-mail address from post meta field
-		$email_addresses = explode(",", get_option('easy_faqs_submit_notification_address', get_bloginfo('admin_email')));
+		$email_addresses = explode( ",", get_option( 'easy_faqs_submit_notification_address', get_bloginfo('admin_email') ) );
 	 
-		$subject = NEW_FAQ_SUBMISSION_SUBJECT . get_bloginfo('name');
-		$body = NEW_FAQ_SUBMISSION_BODY;
+		// these fields the only two which are not escaped with htmlentities
+		$subject = $this->get_str('NEW_FAQ_SUBMISSION_SUBJECT') . get_bloginfo('name');
+		$body = $this->get_str('NEW_FAQ_SUBMISSION_BODY');
 		
 		//see if option is set to include question in e-mail
-		if(get_option('easy_faqs_submit_notification_include_question')){ //option is set, build message containing question		
+		if ( get_option('easy_faqs_submit_notification_include_question') ) { //option is set, build message containing question		
 			$body .= "\r\n Name: {$submitted_question['post']['post_title']} \r\n";
 			$body .= " Question: {$submitted_question['post']['post_content']} \r\n";
 		}
@@ -231,8 +310,8 @@ class easyFAQs
 		$headers = 'From: ' . get_bloginfo('name') . ' <'.get_bloginfo('admin_email').'>' . "\r\n";
 		
 		//loop through available e-mail addresses and fire off the e-mails!
-		foreach($email_addresses as $email_address){
-			if(wp_mail($email_address, $subject, $body, $headers)){
+		foreach ( $email_addresses as $email_address ) {
+			if ( wp_mail($email_address, $subject, $body, $headers) ) {
 				//mail sent!
 			} else {
 				//failure!
@@ -259,7 +338,7 @@ class easyFAQs
 		return $captcha_correct;
 	}	
 		
-	function easy_faqs_outputCaptcha(){
+	function easy_faqs_outputCaptcha() {
 		// Instantiate the ReallySimpleCaptcha class, which will handle all of the heavy lifting
 		$captcha = new ReallySimpleCaptcha();
 		 
@@ -326,44 +405,45 @@ class easyFAQs
 	}
 
 	//submit faq shortcode
-	function submitFAQForm($atts){   
+	function submitFAQForm($atts)
+	{
 			ob_start();
 			
 			// process form submissions
 			$inserted = false;
        
-			if( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) && $_POST['action'] == "post_faq") {
+			if ( $_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['action']) && $_POST['action'] == "post_faq" ) {
 				//only process submissions from logged in users
-				if(isValidFAQKey()){  
+				if ( isValidFAQKey() ) {
 					$do_not_insert = false;
 					
 					if (isset ($_POST['the-title']) && strlen($_POST['the-title']) > 0) {
-							$title =  __("Question from: ", $this->textdomain) . $_POST['the-title'];
+						$title = $this->get_str('QUESTION_FROM');
 					} else {
-							$title_error = '<p class="easy_faqs_error">' . FAQ_FORM_ERROR_NAME . '</p>';
-							$do_not_insert = true;
+						$title_error = '<p class="easy_faqs_error">' . htmlentities( $this->get_str('FAQ_FORM_ERROR_NAME') ) . '</p>';
+						$do_not_insert = true;
 					}	
 				   
 					if (isset ($_POST['the-body']) && strlen($_POST['the-body']) > 0) {
-							$body = $_POST['the-body'];
+						$body = $_POST['the-body'];
 					} else {
-							$body_error = '<p class="easy_faqs_error">' . FAQ_FORM_ERROR_QUESTION . '</p>';
-							$do_not_insert = true;
+						$body_error = '<p class="easy_faqs_error">' . htmlentities( $this->get_str('FAQ_FORM_ERROR_QUESTION') ) . '</p>';
+						$do_not_insert = true;
 					}		
 				
-					if(class_exists('ReallySimpleCaptcha') && get_option('easy_faqs_use_captcha',0)){ 
+					if ( class_exists('ReallySimpleCaptcha') && get_option('easy_faqs_use_captcha',0) ) {
 						$correct = $this->easy_faqs_check_captcha(); 
-						if(!$correct){
-							$captcha_error = '<p class="easy_faqs_error">' . FAQ_FORM_ERROR_CAPTCHA . '</p>';
+						if (!$correct) {
+							$captcha_error = '<p class="easy_faqs_error">' . htmlentities( $this->get_str('FAQ_FORM_ERROR_CAPTCHA') ) . '</p>';
 							$do_not_insert = true;
 						}
 					}
 				
-					if(isset($captcha_error) || isset($body_error) || isset($title_error)){
-						echo '<p class="easy_faqs_error">' . FAQ_FORM_ERROR_SUBMISSION . '</p>';
+					if ( isset($captcha_error) || isset($body_error) || isset($title_error) ) {
+						echo '<p class="easy_faqs_error">' . htmlentities( $this->get_str('FAQ_FORM_ERROR_SUBMISSION') ) . '</p>';
 					}
 				   
-					if(!$do_not_insert){
+					if (!$do_not_insert) {
 						$post = array(
 								'post_title'    => $title,
 								'post_content'  => $body,
@@ -376,15 +456,16 @@ class easyFAQs
 					   
 						$inserted = true;              
 					}
-				} else {
-					echo __("You must have a valid key to perform this action.", $this->textdomain);
+				}
+				else {
+					echo htmlentities( $this->get_str('MUST_HAVE_VALID_KEY') );
 				}
 			}       
 		   
 			$content = '';
 		   
-			if(isValidFAQKey()){     
-				if($inserted){
+			if ( isValidFAQKey() ) {     
+				if ($inserted) {
 					//collect info for notification e-mail
 					$submitted_question = array(
 						'post' => $post
@@ -392,7 +473,7 @@ class easyFAQs
 					
 					$redirect_url = get_option('easy_faqs_submit_success_redirect_url','');
 					$this->easy_faqs_send_notification_email($submitted_question);
-					if(strlen($redirect_url) > 2){
+					if (strlen($redirect_url) > 2) {
 						echo '<script type="text/javascript">window.location.replace("'.$redirect_url.'");</script>';
 					} else {					
 						echo '<p class="easy_faqs_submission_success_message">' . get_option('easy_faqs_submit_success_message','Thank You For Your Submission!') . '</p>';
@@ -401,25 +482,27 @@ class easyFAQs
 				<!-- New Post Form -->
 				<div id="postbox">
 					<form id="new_post" name="new_post" method="post">
-						<div class="easy_faqs_field_wrap <?php if(isset($title_error)){ echo "easy_faqs_field_wrap_error"; }//if a name wasn't entered add the wrap error class ?>">
-							<?php if(isset($title_error)){ echo $title_error; }//if a title wasn't entered display a message ?>
-							<label for="the-title"><?php echo FAQ_FORM_NAME; ?></label><br />
+						<div class="easy_faqs_field_wrap <?php if ( isset($title_error) ) { echo "easy_faqs_field_wrap_error"; }//if a name wasn't entered add the wrap error class ?>">
+							<?php if ( isset($title_error) ) { echo $title_error; }//if a title wasn't entered display a message ?>
+							<label for="the-title"><?php echo htmlentities( $this->get_str('FAQ_FORM_NAME') ); ?></label><br />
 							<input type="text" id="the-title" tabindex="1" name="the-title" />
-							<p class="easy_faqs_description"><?php echo FAQ_FORM_NAME_DESCRIPTION; ?></p>
+							<p class="easy_faqs_description"><?php echo htmlentities( $this->get_str('FAQ_FORM_NAME_DESCRIPTION') ); ?></p>
 						</div>
-						<div class="easy_faqs_field_wrap <?php if(isset($body_error)){ echo "easy_faqs_field_wrap_error"; }//if a question wasn't entered add the wrap error class ?>">
-							<?php if(isset($body_error)){ echo $body_error; }//if a question wasn't entered display a message ?>
-							<label for="the-body"><?php echo FAQ_FORM_QUESTION; ?></label><br />
+						<div class="easy_faqs_field_wrap <?php if ( isset($body_error) ) { echo "easy_faqs_field_wrap_error"; }//if a question wasn't entered add the wrap error class ?>">
+							<?php if ( isset($body_error) ) { echo $body_error; }//if a question wasn't entered display a message ?>
+							<label for="the-body"><?php echo htmlentities( $this->get_str('FAQ_FORM_QUESTION') ); ?></label><br />
 							<textarea id="the-body" tabindex="2" name="the-body" cols="50" rows="6"></textarea>
-							<p class="easy_faqs_description"><?php echo FAQ_FORM_QUESTION_DESCRIPTION ?></p>
+							<p class="easy_faqs_description"><?php echo htmlentities( $this->get_str('FAQ_FORM_QUESTION_DESCRIPTION') ); ?></p>
 						</div>
 		
 						<?php
-							if(class_exists('ReallySimpleCaptcha') && get_option('easy_faqs_use_captcha',0)){ 
+							if ( class_exists('ReallySimpleCaptcha') && get_option('easy_faqs_use_captcha',0) ) {
 								?>
-								<div class="easy_faqs_field_wrap <?php if(isset($captcha_error)){ echo "easy_faqs_field_wrap_error"; }//if a captcha wasn't entered add the wrap error class ?>">
+								<div class="easy_faqs_field_wrap <?php if ( isset($captcha_error) ) { echo "easy_faqs_field_wrap_error"; } //if a captcha wasn't entered add the wrap error class ?>">
 								<?php 
-									if(isset($captcha_error)){ echo $captcha_error; }
+									if ( isset($captcha_error) ) {
+										echo $captcha_error;
+									}
 									$this->easy_faqs_outputCaptcha(); 
 								?>
 								</div>
@@ -427,7 +510,7 @@ class easyFAQs
 							} 
 						?>
 						
-						<div class="easy_faqs_field_wrap"><input type="submit" value="<?php echo FAQ_SUBMIT_QUESTION_BUTTON; ?>" tabindex="3" id="submit" name="submit" /></div>
+						<div class="easy_faqs_field_wrap"><input type="submit" value="<?php echo htmlentities( $this->get_str('FAQ_SUBMIT_QUESTION_BUTTON') ); ?>" tabindex="3" id="submit" name="submit" /></div>
 						<input type="hidden" name="action" value="post_faq" />
 						<?php wp_nonce_field( 'new-post' ); ?>
 					</form>
@@ -447,7 +530,7 @@ class easyFAQs
 		//use this to track if css has been output
 		global $easy_faqs_footer_css_output;
 		
-		if($easy_faqs_footer_css_output){
+		if ($easy_faqs_footer_css_output) {
 			return;
 		} else {
 			echo '<style type="text/css" media="screen">' . get_option('easy_faqs_custom_css') . "</style>";
@@ -465,7 +548,7 @@ class easyFAQs
 			$string = rtrim($string, ',;.');	
 
 			// add ellipsis if needed
-			if (is_string($ellipsis)) {
+			if ( is_string($ellipsis) ) {
 				$string .= $ellipsis;
 			} elseif ($ellipsis) {
 				$string .= '&hellip;';
@@ -506,7 +589,7 @@ class easyFAQs
 	}
 	
 	//setup custom post type for faqs
-	function easy_faqs_setup_faqs(){
+	function easy_faqs_setup_faqs() {
 		//include custom post type code
 		include('include/lib/ik-custom-post-type.php');
 		//include options code
@@ -514,7 +597,14 @@ class easyFAQs
 		$easy_faqs_options = new easyFAQOptions($this);
 				
 		//setup post type for faqs
-		$postType = array('name' => 'FAQ', 'plural' =>'faqs', 'slug' => 'faq' );
+		$postType = array(
+			'name' => 'FAQ',
+			'display_singular' =>'FAQ',
+			'display_plural' =>'FAQs',
+			'plural' =>'faqs',
+			'slug' => 'faq',
+			'menu_icon' => 'dashicons-format-chat'
+		);
 		$fields = array(); 
 		$myCustomType = new ikFAQsCustomPostType($postType, $fields, false, $this->textdomain);
 		register_taxonomy( 'easy-faq-category', 'faq', array( 'hierarchical' => true, 'label' => 'FAQ Category', 'rewrite' => array('slug' => 'faq-category', 'with_front' => true) ) ); 
@@ -523,12 +613,12 @@ class easyFAQs
 		$supportedTypes = get_theme_support( 'post-thumbnails' );
 		
 		//none set, add them just to our type
-		if( $supportedTypes === false ){
+		if ( $supportedTypes === false ) {
 			add_theme_support( 'post-thumbnails', array( 'faq' ) );       
 			//for the faq thumb images    
 		}
 		//specifics set, add our to the array
-		elseif( is_array( $supportedTypes ) ){
+		elseif ( is_array( $supportedTypes ) ) {
 			$supportedTypes[0][] = 'faq';
 			add_theme_support( 'post-thumbnails', $supportedTypes[0] );
 			//for the faq thumb images
@@ -587,13 +677,21 @@ class easyFAQs
 			'class' => '',
 			'theme' => ''			
 		), $atts ) );
-		$loop = new WP_Query(array( 'post_type' => 'faq','p' => $id, 'easy-faq-category' => $category));
-		$faqs_list_html = $this->displayFAQsFromQuery($loop, $atts);		
+		
+		$loop = new WP_Query(
+			array( 
+				'post_type' => 'faq',
+				'p' => $id,
+				'easy-faq-category' => $category
+			)
+		);
+		
+		$faqs_list_html = $this->displayFAQsFromQuery($loop, $atts);
 		return $faqs_list_html;
 	}
 	
 	// Generic function to display the results of a WP_Query ($loop)
-	function displayFAQsFromQuery($loop, $atts = array())
+	function displayFAQsFromQuery( $loop, $atts = array() )
 	{
 		// load default shortcode attributes into an array
 		// and merge with anything specified
@@ -602,16 +700,24 @@ class easyFAQs
 			'id' => NULL,
 			'category' => '',
 			'show_thumbs' => get_option('faqs_image'),
-			'style' => '',			
+			'style' => '',
+			'accordion_style' => '',
 			'quicklinks' => false,
 			'scroll_offset' => 0,
 			'read_more_link_text' =>  get_option('faqs_read_more_text', 'Read More'),
 			'highlight_word' => '',
 			'class' => '',
-			'theme' => ''
+			'theme' => '',
+			'use_excerpt' => false
 		), $atts ) );
 		
 
+		//RWG:	support for the temporary reality in which shortcode generators were outputting
+		//		accordion_style instead of style
+		if( isset($accordion_style) && strlen($accordion_style) > 2 ){
+			$style = $accordion_style;
+		}
+		
 		// start building the HTML now
 		$output = '';
 		
@@ -632,9 +738,9 @@ class easyFAQs
 			}
 		}
 		
-		if( $style == "accordion" && (isValidFAQKey() || is_admin()) ) {
+		if ( $style == "accordion" && ( isValidFAQKey() || is_admin() ) ) {
 			$wrapper_classes[] = 'easy-faqs-accordion';
-		} else if( $style == "accordion-collapsed" && (isValidFAQKey() || is_admin()) ){
+		} else if ( $style == "accordion-collapsed" && ( isValidFAQKey() || is_admin() ) ) {
 			$wrapper_classes[] = 'easy-faqs-accordion-collapsed';
 		} else {
 			$wrapper_classes[] = 'easy-faqs-no-ac';
@@ -642,7 +748,7 @@ class easyFAQs
 		$output = sprintf( '<div class="%s">', implode(' ', $wrapper_classes) );
 		
 		//output QuickLinks, if available and pro
-		if($quicklinks && isValidFAQKey()){
+		if ( $quicklinks && isValidFAQKey() ) {
 			ob_start();
 			$this->outputQuickLinks($atts);
 			$output .= ob_get_contents();
@@ -661,8 +767,14 @@ class easyFAQs
 			$faq['content'] = get_post_meta($postid, '_ikcf_short_content', true); 		
 			
 			// if nothing is set for the short content, use the long content instead
-			if(strlen($faq['content']) < 2){
-				$faq['content'] = get_the_content($postid); 
+			// RWG: I don't recall what the short content is, but I'm leaving it untouched WRT the excerpt
+			if (strlen($faq['content']) < 2) {
+				//if the excerpt attribute is set, (use_excerpt=1), use the excerpt instead of long content
+				if ($use_excerpt) {
+					$faq['content'] = get_the_excerpt();
+				} else {
+					$faq['content'] = get_the_content($postid); 
+				}
 			}
 			
 			// add an image, if requested
@@ -679,7 +791,7 @@ class easyFAQs
 			$answer_html = $this->build_the_answer($faq, $read_more_link, $read_more_link_text, $image_html);
 			
 			// highlight the query in the question & answer
-			if (strlen(trim($highlight_word)) > 0) {
+			if ( strlen( trim($highlight_word) ) > 0 ) {
 				$highlight_tag = '<span class="search_highlight">\1</span>';				
 				$highlight_tag = apply_filters('easy_faqs_search_highlight_tag', $highlight_tag);
 				$question_html = gp_str_highlight($question_html, $highlight_word, null, $highlight_tag);
@@ -706,26 +818,35 @@ class easyFAQs
 	{
 		$h3 = '<h3 class="easy-faq-title" style="%s"><span class="easy-faqs-title-before"></span><span class="easy-faqs-title-text">%s</span><span class="easy-faqs-title-after"></span></h3>';
 		$style_str = $this->build_typography_css('easy_faqs_question_');
-		$output = sprintf($h3, $style_str, get_the_title($postid));
+		$output = sprintf( $h3, $style_str, get_the_title($postid) );
 		return apply_filters( 'easy_faqs_question', $output);
 	}
 	
 	function build_the_answer($faq, $read_more_link = '', $read_more_link_text = '', $image_html = '')
 	{
+		//track whether or not we're inside the_content filter
+		global $easy_faq_in_content_filter;
+		
 		$template = '<div class="easy-faq-body" style="%s">%s %s</div>';		
 		$content_str = '';
 		
 		// add featured image if present
-		if (!empty($image_html)) {			
+		if ( !empty($image_html) ) {
 			$featured_image_div = sprintf('<div class="easy-faq-featured-image">%s</div>', $image_html);
 			$content_str .= apply_filters('easy_faqs_featured_image', $featured_image_div, $faq);
 		}
 		
-		$content_str .= apply_filters('the_content', $faq['content']);
+		//if we're currently in the content filter, don't try and apply it again :-)
+		if ($easy_faq_in_content_filter) {
+			$content_str .= $faq['content'];
+		} else {
+			$content_str .= apply_filters('the_content', $faq['content']);
+		}
+		
 		$style_str = $this->build_typography_css('easy_faqs_answer_');
 		
 		// add the read more link (if the user's options say to do so)
-		if(!empty($read_more_link)) {
+		if ( !empty($read_more_link) ) {
 			// build the read more link to be inserted
 			$link_template = '<a class="easy-faq-read-more-link" style="%s" href="%s">%s</a>';
 			$link_style_str = $this->build_typography_css('easy_faqs_read_more_link_');
@@ -744,7 +865,7 @@ class easyFAQs
 	//passed the atts for the shortcode of faqs this is displayed above
 	//loads faq data into a loop object
 	//loops through that object and outputs quicklinks for those FAQs
-	function outputQuickLinks($atts, $by_category = false){		
+	function outputQuickLinks($atts, $by_category = false) {		
 		//load shortcode attributes into an array
 		extract( shortcode_atts( array(
 			'count' => -1,
@@ -760,7 +881,7 @@ class easyFAQs
 		
 		$scroll_offset = intval($scroll_offset);
 		
-		if($by_category){
+		if ($by_category) {
 			//load list of FAQ categories
 			$categories = array();
 			$args = array();
@@ -784,11 +905,11 @@ class easyFAQs
 				$categories = get_terms('easy-faq-category', $args);		
 			}
 
-			$quick_links_title = '<h3 class="quick-links" id="quick-links-top">' . FAQ_QUICK_LINKS_LABEL . '</h3>';
+			$quick_links_title = '<h3 class="quick-links" id="quick-links-top">' . htmlentities( $this->get_str('FAQ_QUICK_LINKS_LABEL') ) . '</h3>';
 			echo apply_filters( 'easy_faqs_quick_links_title', $quick_links_title);
 			
 			//loop through categories, outputting a heading for the category and the list of faqs in that category
-			foreach($categories as $category)
+			foreach ($categories as $category)
 			{
 				//output title of category as a heading
 				$category_name = apply_filters( 'easy_faqs_category_name', $category->name);
@@ -796,18 +917,27 @@ class easyFAQs
 				echo apply_filters( 'easy_faqs_quick_links_category_heading', $category_heading);
 
 				//load faqs into an array
-				$loop = new WP_Query(array( 'post_type' => 'faq','posts_per_page' => $count, 'orderby' => $orderby, 'order' => $order, 'easy-faq-category' => $category->slug));
+				$loop = new WP_Query( 
+					array( 
+						'post_type' => 'faq',
+						'posts_per_page' => $count,
+						'orderby' => $orderby,
+						'order' => $order,
+						'easy-faq-category' => $category->slug
+					)
+				);
 			
 				$i = 0;
 				$r = $loop->post_count;
 				
-				if(!$colcount){
+				if ( !$colcount ) {
 					$divCount = intval($r/5);
 					//if there are trailing testimonials, make sure we take into account the final div
-					if($r%5!=0){
+					if ( ($r % 5) != 0 ) {
 						$divCount ++;
-					}		
-				} else {
+					}
+				}
+				else {
 					$divCount = intval($colcount);
 				}
 				
@@ -815,7 +945,7 @@ class easyFAQs
 				printf ('<div class="faq-questions" data-scroll_offset="%d">', $scroll_offset);
 				echo "<ol style=\"-webkit-column-count: {$divCount}; -moz-column-count: {$divCount}; column-count: {$divCount};\">";
 				
-				while($loop->have_posts()) : $loop->the_post();
+				while( $loop->have_posts() ) : $loop->the_post();
 
 					$postid = get_the_ID();
 					
@@ -832,15 +962,23 @@ class easyFAQs
 			} 
 		} else {
 			//load faqs into an array
-			$loop = new WP_Query(array( 'post_type' => 'faq','posts_per_page' => $count, 'orderby' => $orderby, 'order' => $order, 'easy-faq-category' => $category));
+			$loop = new WP_Query(
+				array( 
+					'post_type' => 'faq',
+					'posts_per_page' => $count,
+					'orderby' => $orderby,
+					'order' => $order,
+					'easy-faq-category' => $category
+				)
+			);
 		
 			$i = 0;
 			$r = $loop->post_count;
 			
-			if(!$colcount){
-				$divCount = intval($r/5);
+			if ( !$colcount ) {
+				$divCount = intval( $r/5 );
 				//if there are trailing testimonials, make sure we take into account the final div
-				if($r%5!=0){
+				if ( ($r % 5) != 0 ) {
 					$divCount ++;
 				}		
 			} else {
@@ -853,7 +991,7 @@ class easyFAQs
 			printf ('<div class="faq-questions" data-scroll_offset="%d">', $scroll_offset);
 			echo "<ol style=\"-webkit-column-count: {$divCount}; -moz-column-count: {$divCount}; column-count: {$divCount};\">";
 			
-			while($loop->have_posts()) : $loop->the_post();
+			while( $loop->have_posts() ) : $loop->the_post();
 
 				$postid = get_the_ID();
 				
@@ -899,7 +1037,7 @@ class easyFAQs
 	}
 	
 	//output all faqs grouped by category
-	function outputFAQsByCategory($atts){ 
+	function outputFAQsByCategory($atts) { 
 		
 		//load shortcode attributes into an array
 		extract( shortcode_atts( array(
@@ -913,6 +1051,7 @@ class easyFAQs
 			'show_thumbs' => get_option('faqs_image'),
 			'read_more_link_text' =>  get_option('faqs_read_more_text', 'Read More'),
 			'style' => '',
+			'accordion_style' => '',
 			'quicklinks' => false,
 			'scroll_offset' => 0,
 			'orderby' => 'date',//'none','ID','author','title','name','date','modified','parent','rand','menu_order'
@@ -922,7 +1061,7 @@ class easyFAQs
 			
 		), $atts ) );
 				
-		if(!is_numeric($count)){
+		if ( !is_numeric($count) ) {
 			$count = -1;
 		}
 		
@@ -963,7 +1102,7 @@ class easyFAQs
 		}
 
 		//output QuickLinks, if available and pro
-		if($quicklinks && isValidFAQKey()){
+		if ( $quicklinks && isValidFAQKey() ) {
 			$this->outputQuickLinks($atts, true);
 		} 
 		
@@ -972,7 +1111,7 @@ class easyFAQs
 		$atts['quicklinks'] = false;
 
 		//loop through categories, outputting a heading for the category and the list of faqs in that category
-		foreach($categories as $category)
+		foreach ($categories as $category)
 		{	
 			//output title of category as a heading
 			$category_name = apply_filters( 'easy_faqs_category_name', $category->name);
@@ -980,9 +1119,16 @@ class easyFAQs
 			echo apply_filters( 'easy_faqs_category_heading', $category_heading);
 		
 			//load faqs into an array and then output them as a list
-			$loop = new WP_Query(array( 'post_type' => 'faq','posts_per_page' => $count, 'orderby' => $orderby, 'order' => $order, 'easy-faq-category' => $category->slug));
-			echo $this->displayFAQsFromQuery($loop, $atts);
-			
+			$loop = new WP_Query(
+				array( 
+					'post_type' => 'faq',
+					'posts_per_page' => $count,
+					'orderby' => $orderby,
+					'order' => $order,
+					'easy-faq-category' => $category->slug
+				)
+			);
+			echo $this->displayFAQsFromQuery($loop, $atts);			
 		}//endforeach categories
 		
 		$content = ob_get_contents();
@@ -1043,7 +1189,7 @@ class easyFAQs
 		 */
 		 
 		$option_val = get_option($prefix . 'font_family', '');
-		if (!empty($option_val)) {
+		if ( !empty($option_val) ) {
 			// strip off 'google:' prefix if needed
 			$option_val = str_replace('google:', '', $option_val);
 
@@ -1057,7 +1203,7 @@ class easyFAQs
 		 * Font Size
 		 */
 		$option_val = get_option($prefix . 'font_size', '');
-		if (!empty($option_val)) {
+		if ( !empty($option_val) ) {
 			// append 'px' if needed
 			if ( is_numeric($option_val) ) {
 				$option_val .= 'px';
@@ -1069,7 +1215,7 @@ class easyFAQs
 		 * Font Color
 		 */
 		$option_val = get_option($prefix . 'font_color', '');
-		if (!empty($option_val)) {
+		if ( !empty($option_val) ) {
 			$output .= sprintf($css_rule_template, 'color', $option_val);
 		}
 
@@ -1081,7 +1227,7 @@ class easyFAQs
 
 		// Convert the value to 2 CSS rules, font-style and font-weight
 		// NOTE: we lowercase the value before comparison, for simplification
-		switch(strtolower($option_val))
+		switch ( strtolower($option_val) )
 		{
 			case 'regular':
 				// not bold not italic
@@ -1120,11 +1266,11 @@ class easyFAQs
 	function enqueue_webfonts()
 	{
 		$font_list = $this->list_required_google_fonts();
-		$font_list_encoded = array_map('urlencode', $this->list_required_google_fonts());
+		$font_list_encoded = array_map( 'urlencode', $this->list_required_google_fonts() );
 		$font_str = implode('|', $font_list_encoded);
 		
 		//don't register this unless a font is set to register
-		if(strlen($font_str)>2){
+		if (strlen($font_str)>2) {
 			$protocol = is_ssl() ? 'https:' : 'http:';
 			$font_url = $protocol . '//fonts.googleapis.com/css?family=' . $font_str;
 			wp_register_style( 'easy_faqs_webfonts', $font_url);
@@ -1176,8 +1322,18 @@ class easyFAQs
 			exit();
 		}
 	}
+	
+	function get_str($key = '', $default_value = '')
+	{
+		if ( !empty($this->strings) && !empty($this->strings[$key]) ) {
+			return $this->strings[$key];
+		} else {
+			return $default_value;
+		}
+	}
+	
 }//end easyFAQs
 
-if (!isset($easy_faqs)){
+if ( !isset($easy_faqs) ) {
 	$easy_faqs = new easyFAQs();
 }

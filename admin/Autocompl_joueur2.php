@@ -20,6 +20,11 @@ include_once('../commun/MyTools.php');
 	// supprime les 0 devant les numéros de licence
 	$term = preg_replace('`^[0]*`','',$term);
  
+    if (strlen($term) < 2){
+        echo 'Trop court...';
+        return;
+    }
+        
 	$a_json = array();
 	$jRow = array();
 /*	// SECURITY HOLE ***************************************************************

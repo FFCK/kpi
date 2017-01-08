@@ -156,6 +156,7 @@ include_once('../commun/MyTools.php');
                 . "ORDER BY Code_saison DESC, Code, Libelle ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_compet 1<br>".$sql);
+    $resultGlobal = '';
 	//$num_results = mysql_num_rows($result);
 	//header('Content-Type: application/json; charset=ISO-8859-1');
 	//$response = array();

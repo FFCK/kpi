@@ -2,12 +2,12 @@
 
 class EasyFAQs_Config
 {
-	function all_themes($is_pro = false, $disable_if_not_pro = true)
+	public static function all_themes($is_pro = false, $disable_if_not_pro = true)
 	{
 		return array_merge(self::free_themes(), self::pro_themes($is_pro, $disable_if_not_pro));
 	}
 
-	function free_themes()
+	public static function free_themes()
 	{
 		//array of free themes that are available
 		//includes names
@@ -33,7 +33,7 @@ class EasyFAQs_Config
 		);		
 	}
 	
-	function pro_themes($is_pro = false, $disable_if_not_pro = true)
+	public static function pro_themes($is_pro = false, $disable_if_not_pro = true)
 	{
 		//array of pro themes that are available
 		//includes names
@@ -198,7 +198,7 @@ class EasyFAQs_Config
 		return $pro_themes;
 	}
 	
-	function output_theme_selector($field_id, $field_name, $current = '', $is_pro = false)
+	public static function output_theme_selector($field_id, $field_name, $current = '', $is_pro = false)
 	{
 ?>		
 		<select class="widefat" id="<?php echo $field_id ?>" name="<?php echo $field_name; ?>">
@@ -208,18 +208,28 @@ class EasyFAQs_Config
 				{
 					$skip_next = true;
 					foreach ($group_themes as $theme_slug => $theme_name) {
+						$disabled = is_array($theme_name) && isset($theme_name['disabled']) ? $theme_name['disabled'] : false;
+						$theme_name = is_array($theme_name) ? $theme_name['name'] : $theme_name;
+						$disabled_attr = ($disabled ? 'disabled="disabled"' : 'xx');
 						if ($skip_next) {
 							printf('<optgroup label="%s">', $theme_name);
 							$skip_next = false;
 							continue;
 						}
-						$selected = ( strcmp($theme_slug, $current) == 0 ) ? 'selected="selected"' : '';
-						printf('<option value="%s" %s>%s</option>', $theme_slug, $selected, $theme_name);
+						$selected_attr = ( strcmp($theme_slug, $current) == 0 ) ? 'selected="selected"' : '';
+						printf('<option value="%s" %s %s>%s</option>', $theme_slug, $selected_attr, $disabled_attr, $theme_name);
 					}
 					echo '</optgroup>';
 				}
-				?>
-			</select>
+			?>
+		</select>
 <?php
+	}
+	
+	public static function output_upgrade_link()
+	{
+		if ( !isValidFAQKey() ) {
+			echo '<em><a target="_blank" href="https://goldplugins.com/our-plugins/easy-faqs-details/upgrade-to-easy-faqs-pro/?utm_source=wp_widgets&utm_campaign=widget_themes">Upgrade To Unlock All 100+ Pro Themes!</a></em>';
+		}
 	}
 }

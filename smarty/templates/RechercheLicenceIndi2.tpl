@@ -1,14 +1,13 @@
 <html>
 	<head>				  
-	<link rel="stylesheet" type="text/css" href="../css/style.css" />
-	<link rel="stylesheet" type="text/css" href="../css/RechercheLicence.css" />
+	<link rel="stylesheet" type="text/css" href="../css/style.css?v=2.5" />
+	<link rel="stylesheet" type="text/css" href="../css/RechercheLicence.css?v=2.5" />
 	<title>{$title}</title>
 	
 	{literal}
-		<script language="JavaScript" src="../js/jquery-1.5.2.min.js" type="text/javascript"></script>
-		<!--<script language="JavaScript" src="../js/prototype.js" type="text/javascript"></script>-->
-		<script language="JavaScript" src="../js/formTools.js" type="text/javascript"></script>
-		<script language="JavaScript" src="../js/RechercheLicenceIndi2.js" type="text/javascript"></script>
+		<script language="JavaScript" src="../js/jquery-1.5.2.min.js?v=2.5" type="text/javascript"></script>
+		<script language="JavaScript" src="../js/formTools.js?v=2.5" type="text/javascript"></script>
+		<script language="JavaScript" src="../js/RechercheLicenceIndi2.js?v=2.5" type="text/javascript"></script>
 	{/literal}
 
 	</head>	  

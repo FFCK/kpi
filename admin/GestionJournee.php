@@ -418,18 +418,18 @@ class GestionJournee extends MyPageSecure
 						$EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
 					}
 
-					if (($row['EquipeA'] == '') && $EquipesAffectAuto[0] != '')
+					if (($row['EquipeA'] == '') && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '')
 						$row['EquipeA'] = $EquipesAffectAuto[0];
-					if ($row['EquipeB'] == '' && $EquipesAffectAuto[1] != '')
+					if ($row['EquipeB'] == '' && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '')
 						$row['EquipeB'] = $EquipesAffectAuto[1];
 					$arbsup = array(" (Pool Arbitres 1)");//   , " REG", " NAT", " INT", "-A", "-B", "-C"
 					if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
 						$row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
-					elseif ($EquipesAffectAuto[2] != '')
+					elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '')
 						$row['Arbitre_principal'] = $EquipesAffectAuto[2];
 					if($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1')
 						$row['Arbitre_secondaire'] = str_replace($arbsup, '', $row['Arbitre_secondaire']);
-					elseif ($EquipesAffectAuto[3] != '')
+					elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '')
 						$row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
 					
 					$StdOrSelected = 'Std';

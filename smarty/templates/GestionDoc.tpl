@@ -37,63 +37,63 @@
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Equipes</td>
 										<td>Liste Equipes par poule</td>
-										<td><a href="FeuilleGroups.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleGroups.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Equipes</td>
 										<td>Feuilles de présence FR</td>
-										<td><a href="FeuillePresence.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuillePresence.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Equipes</td>
 										<td>Feuilles de présence EN</td>
-										<td><a href="FeuillePresenceEN.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuillePresenceEN.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Matchs</td>
 										<td>Liste FR</td>
-										<td><a href="FeuilleListeMatchs.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfListeMatchs.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleListeMatchs.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfListeMatchs.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Matchs</td>
 										<td>Liste EN</td>
-										<td><a href="FeuilleListeMatchsEN.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfListeMatchsEN.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleListeMatchsEN.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfListeMatchsEN.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Matchs</td>
 										<td>Liste OpenOffice</td>
-										<td><a href="tableau_tbs.php" Target="_blank"><img width="20" src="../img/OOo.gif" /></a></td>
+										<td><a href="tableau_tbs.php" Target="_blank"><img height="22" src="../img/ods.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Matchs</td>
 										<td>Feuilles de match</td>
-										<td><a href="FeuilleMatchMulti.php?listMatch={$listMatchs}" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfMatchMulti.php?listMatch={$listMatchs}" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleMatchMulti.php?listMatch={$listMatchs}" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfMatchMulti.php?listMatch={$listMatchs}" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 								{if $detailsCompet.Code_typeclt == 'CHPT'}
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Classements</td>
 										<td>Classement Général</td>
-										<td><a href="FeuilleCltChpt.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfCltChpt.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Classements</td>
 										<td>Détail par équipe</td>
-										<td><a href="FeuilleCltChptDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfCltChptDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Classements</td>
 										<td>Détail par journée</td>
-										<td><a href="FeuilleCltNiveauJournee.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfCltNiveauJournee.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									{if $user == '42054'}
 										<tr>
@@ -105,52 +105,52 @@
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Classements</td>
 											<td>Classement Général</td>
-											<td><a href="FeuilleCltNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a href="../PdfCltNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a href="FeuilleCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a href="../PdfCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Classements</td>
 											<td>Détail par phase</td>
-											<td><a href="FeuilleCltNiveauPhase.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a href="../PdfCltNiveauPhase.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<!--<tr class='{cycle values="impair,pair"}'>
 											<td>Classements</td>
 											<td>Détail par niveau</td>
-											<td><a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a href="../PdfCltNiveauNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a href="../PdfCltNiveauNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>-->
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Classements</td>
 											<td>Détail par équipe</td>
-											<td><a href="FeuilleCltNiveauDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a href="../PdfCltNiveauDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 									{/if}
 								{else}
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Classements</td>
 										<td>Classement Général</td>
-										<td><a href="FeuilleCltNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfCltNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Classements</td>
 										<td>Détail par phase</td>
-										<td><a href="FeuilleCltNiveauPhase.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfCltNiveauPhase.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<!--<tr class='{cycle values="impair,pair"}'>
 										<td>Classements</td>
 										<td>Détail par niveau</td>
-										<td><a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfCltNiveauNiveau.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfCltNiveauNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>-->
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Classements</td>
 										<td>Détail par équipe</td>
-										<td><a href="FeuilleCltNiveauDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="../PdfCltNiveauDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									{if $user == '42054'}
 										<tr>
@@ -162,32 +162,32 @@
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Classements</td>
 											<td>Classement Général</td>
-											<td><a href="FeuilleCltChpt.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a href="../PdfCltChpt.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a href="FeuilleCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a href="../PdfCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Classements</td>
 											<td>Détail par équipe</td>
-											<td><a href="FeuilleCltChptDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a href="../PdfCltChptDetail.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a href="FeuilleCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a href="../PdfCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Classements</td>
 											<td>Détail par journée</td>
-											<td><a href="FeuilleCltNiveauJournee.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a href="../PdfCltNiveauJournee.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a href="FeuilleCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 									{/if}
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Liens</td>
 										<td>Liens accès direct</td>
-										<td><a href="../PdfQrCodes.php?S={$sessionSaison}&Compet={$codeCompet}" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="../PdfQrCodes.php?S={$sessionSaison}&Compet={$codeCompet}" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Live</td>
 										<td>En direct des terrains</td>
-										<td><a href="../DirectPitchs.php?saison={$sessionSaison}&idCompet={$codeCompet}" Target="_blank"><img width="20" src="../img/web.png" /></a></td>
+										<td><a href="../DirectPitchs.php?saison={$sessionSaison}&idCompet={$codeCompet}" Target="_blank"><img height="22" src="../img/web.png" /></a></td>
 										<td></td>
 									</tr>
 								{/if}
@@ -215,25 +215,25 @@
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Matchs</td>
 											<td>Matchs de l'événement</td>
-											<td><a id="linkEvt1" href="FeuilleListeMatchs.php?idEvenement=" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a id="linkEvt2" href="../PdfListeMatchs.php?idEvenement=" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a id="linkEvt1" href="FeuilleListeMatchs.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a id="linkEvt2" href="../PdfListeMatchs.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Matchs</td>
 											<td>Matchs de l'événement EN</td>
-											<td><a id="linkEvt3" href="FeuilleListeMatchsEN.php?idEvenement=" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-											<td><a id="linkEvt4" href="../PdfListeMatchsEN.php?idEvenement=" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a id="linkEvt3" href="FeuilleListeMatchsEN.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+											<td><a id="linkEvt4" href="../PdfListeMatchsEN.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Liens</td>
 											<td>Liens accès direct</td>
-											<td><a id="linkEvt5" href="../PdfQrCodes.php?" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+											<td><a id="linkEvt5" href="../PdfQrCodes.php?" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
 											<td>Live</td>
 											<td>En direct des terrains</td>
-											<td><a id="linkEvt6" href="../DirectPitchs.php" Target="_blank"><img width="20" src="../img/web.png" /></a></td>
+											<td><a id="linkEvt6" href="../DirectPitchs.php" Target="_blank"><img height="22" src="../img/web.png" /></a></td>
 											<td></td>
 										</tr>
 									{/if}
@@ -248,56 +248,56 @@
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Meilleurs buteurs</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Buteurs" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Buteurs" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Buteurs" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Buteurs" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Meilleure attaque</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Attaque" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Attaque" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Attaque" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Attaque" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Meilleure défense</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Defense" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Defense" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Defense" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Defense" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Cartons</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Cartons" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Cartons" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Cartons" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Cartons" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Cartons par équipe</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CartonsEquipe" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CartonsEquipe" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CartonsEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CartonsEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Classement disciplinaire individuel</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Fairplay" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Fairplay" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Fairplay" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Fairplay" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Classement disciplinaire par équipe</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=FairplayEquipe" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=FairplayEquipe" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=FairplayEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=FairplayEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Arbitrages individuels</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Arbitrage" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Arbitrage" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Arbitrage" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Arbitrage" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
 										<td>Arbitrages par équipe</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=ArbitrageEquipe" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=ArbitrageEquipe" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=ArbitrageEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=ArbitrageEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<!--<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
@@ -311,8 +311,8 @@
 												<Option Value="V2">Vétéran 2</Option>
 												<Option Value="V3">Vétéran 3</Option>
 											</select> (matchs joués)</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees4" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees4" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees4" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees4" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>-->
 							<thead>
 								<tr>
@@ -325,37 +325,37 @@
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Contrôle</td>
 										<td>Feuilles de présence par catégorie</td>
-										<td><a href="FeuillePresenceCat.php" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuillePresenceCat.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Contrôle</td>
 										<td>Matchs joués par club</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Contrôle</td>
 										<td>Matchs joués par équipe</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Contrôle</td>
 										<td>Irrégularités à contrôler (matchs joués)</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td class='drag'>Contrôle</td>
 										<td>Matchs joués Championnat de France</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesN" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesN" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Contrôle</td>
 										<td>Matchs joués Coupe de France</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesCF" Target="_blank"><img width="20" src="../img/pdf.gif" /></a></td>
+										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesCF" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td></td>
 									</tr>
 							</tbody>
@@ -383,8 +383,8 @@
 						</tr>
 						<tr>
 							<td align='center' colspan=4>
-								{if $detailsCompet.Publication == 'O'}<img width="20" src="../img/oeil2O.gif" />
-								{else}<img width="20" src="../img/oeil2N.gif" />{/if}
+								{if $detailsCompet.Publication == 'O'}<img height="22" src="../img/oeil2O.gif" />
+								{else}<img height="22" src="../img/oeil2N.gif" />{/if}
 							</td>
 						</tr>
 						<tr>

@@ -1,3 +1,5 @@
+jq = jQuery.noConflict();
+
 function DuppliListJournees()
 {
 	document.forms['formParamJournee'].elements['Cmd'].value = 'DuppliListJournees';
@@ -79,15 +81,15 @@ function Duplicate()
 	document.forms['formParamJournee'].elements['ParamCmd'].value = '';
 	document.forms['formParamJournee'].submit();
 }
-$(document).ready(function() {
+jq(document).ready(function() {
 
 	// Maskedinput
-	//$.mask.definitions['h'] = "[A-O]";
-	//$('#Departement').mask("999");
-	$('.dpt').mask("?***");
-	$('.date').mask("99/99/9999");
+	//jq.mask.definitions['h'] = "[A-O]";
+	//jq('#Departement').mask("999");
+	jq('.dpt').mask("?***");
+	jq('.date').mask("99/99/9999");
 
-	$("#Lieu").autocomplete('Autocompl_ville.php', {
+	jq("#Lieu").autocomplete('Autocompl_ville.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -95,13 +97,13 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#Lieu").result(function(event, data, formatted) {
+	jq("#Lieu").result(function(event, data, formatted) {
 		if (data) {
-			$("#Lieu").val(data[1]);
-			$("#Departement").val(data[2]);
+			jq("#Lieu").val(data[1]);
+			jq("#Departement").val(data[2]);
 		}
 	});
-	$("#Nom").autocomplete('Autocompl_refJournee.php', {
+	jq("#Nom").autocomplete('Autocompl_refJournee.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -109,13 +111,13 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#Nom").result(function(event, data, formatted) {
+	jq("#Nom").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[1];
-			$("#Nom").val(nom);
+			jq("#Nom").val(nom);
 		}
 	});
-	$("#Organisateur").autocomplete('Autocompl_club.php', {
+	jq("#Organisateur").autocomplete('Autocompl_club.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -123,13 +125,13 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#Organisateur").result(function(event, data, formatted) {
+	jq("#Organisateur").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[1];
-			$("#Organisateur").val(nom);
+			jq("#Organisateur").val(nom);
 		}
 	});
-	$("#Responsable_R1").autocomplete('Autocompl_joueur.php', {
+	jq("#Responsable_R1").autocomplete('Autocompl_joueur.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -137,13 +139,13 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#Responsable_R1").result(function(event, data, formatted) {
+	jq("#Responsable_R1").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[7]+' '+data[6];
-			$("#Responsable_R1").val(nom);
+			jq("#Responsable_R1").val(nom);
 		}
 	});
-	$("#Responsable_insc").autocomplete('Autocompl_joueur.php', {
+	jq("#Responsable_insc").autocomplete('Autocompl_joueur.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -151,13 +153,13 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#Responsable_insc").result(function(event, data, formatted) {
+	jq("#Responsable_insc").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[7]+' '+data[6];
-			$("#Responsable_insc").val(nom);
+			jq("#Responsable_insc").val(nom);
 		}
 	});
-	$("#Delegue").autocomplete('Autocompl_joueur.php', {
+	jq("#Delegue").autocomplete('Autocompl_joueur.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -165,13 +167,13 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#Delegue").result(function(event, data, formatted) {
+	jq("#Delegue").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[7]+' '+data[6];
-			$("#Delegue").val(nom);
+			jq("#Delegue").val(nom);
 		}
 	});
-	$("#ChefArbitre").autocomplete('Autocompl_joueur.php', {
+	jq("#ChefArbitre").autocomplete('Autocompl_joueur.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -179,10 +181,10 @@ $(document).ready(function() {
 		cacheLength: 1,
 		scrollHeight: 320,
 	});
-	$("#ChefArbitre").result(function(event, data, formatted) {
+	jq("#ChefArbitre").result(function(event, data, formatted) {
 		if (data) {
 			var nom = data[7]+' '+data[6];
-			$("#ChefArbitre").val(nom);
+			jq("#ChefArbitre").val(nom);
 		}
 	});
 	
