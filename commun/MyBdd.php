@@ -189,6 +189,8 @@ class MyBdd
             return;
         }
         
+        $tempsIntermediaire = time() - $debutTraitement;
+        
 		$fp = fopen($newfile, "r");
 		if (!$fp)
 		{				
@@ -251,7 +253,7 @@ class MyBdd
 		array_push($this->m_arrayinfo, "" );
 		array_push($this->m_arrayinfo, "Traitement terminé avec succès." );
 		$secondes = time() - $debutTraitement;
-		array_push($this->m_arrayinfo, $secondes." secondes." );
+		array_push($this->m_arrayinfo, $secondes." secondes (dl=".$tempsIntermediaire.")." );
 
 	}		
 	
