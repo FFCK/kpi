@@ -711,45 +711,43 @@ class GestionJournee extends MyPageSecure
 	
 	function Update()
 	{
-		$idMatch = utyGetSession('idMatch', 0);
+		$myBdd = new MyBdd();
+        
+        $idMatch = utyGetSession('idMatch', 0);
 		
 		$_SESSION['Intervalle_match'] = utyGetSession('Intervalle_match','40');
 		if (isset($_POST['Intervalle_match']))
 			$_SESSION['Intervalle_match'] = $_POST['Intervalle_match'];
 		
-		$idJournee = utyGetPost('comboJournee', 0);
+		$idJournee = (int)utyGetPost('comboJournee', 0);
 
-		$numMatch = utyGetPost('Num_match', '');
-		$dateMatch = utyGetPost('Date_match', '');
-		$heureMatch = utyGetPost('Heure_match', '');
-		$Libelle = utyGetPost('Libelle', '');
-		$Terrain = utyGetPost('Terrain', '');
-		$Type = utyGetPost('Type', '');
+		$numMatch = (int)utyGetPost('Num_match', '');
+		$dateMatch = $myBdd->RealEscapeString(trim(utyGetPost('Date_match', '')));
+		$heureMatch = $myBdd->RealEscapeString(trim(utyGetPost('Heure_match', '')));
+		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle', '')));
+		$Terrain = $myBdd->RealEscapeString(trim(utyGetPost('Terrain', '')));
+		$Type = $myBdd->RealEscapeString(trim(utyGetPost('Type', '')));
 		
-		$idEquipeA = utyGetPost('idEquipeA', -1);
-		$idEquipeB = utyGetPost('idEquipeB', -1);
+		$idEquipeA = (int)utyGetPost('idEquipeA', -1);
+		$idEquipeB = (int)utyGetPost('idEquipeB', -1);
 	
-		$arbitre1 = utyGetPost('arbitre1', '');
+		$arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre1', '')));
 		if (strlen($arbitre1) == 0)
-			$arbitre1 = utyGetPost('comboarbitre1', '');
-		
-		$arbitre1_matric = utyGetPost('arbitre1_matric', '');
+			$arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre1', '')));
+		$arbitre1_matric = (int)utyGetPost('arbitre1_matric', '');
 			
-		$arbitre2 = utyGetPost('arbitre2', '');
+		$arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre2', '')));
 		if (strlen($arbitre2) == 0)
-			$arbitre2 = utyGetPost('comboarbitre2', '');
+			$arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre2', '')));
+		$arbitre2_matric = (int)utyGetPost('arbitre2_matric', '');
 			
-		$arbitre2_matric = utyGetPost('arbitre2_matric', '');
-			
-		$coeffA = utyGetPost('coeffA', '');
-		if (strlen($coeffA) == 0)
+		$coeffA = (float)utyGetPost('coeffA', 1);
+		if (strlen($coeffA) == 0 || $coeffA == 0)
 			$coeffA = 1.0;
 			
-		$coeffB = utyGetPost('coeffB', '');
-		if (strlen($coeffB) == 0)
+		$coeffB = (float)utyGetPost('coeffB', 1);
+		if (strlen($coeffB) == 0 || $coeffB == 0)
 			$coeffB = 1.0;
-
-		$myBdd = new MyBdd();
 		
 		if ( ($idMatch > 0) && ($idJournee != 0) )
 		{
@@ -800,47 +798,48 @@ class GestionJournee extends MyPageSecure
 			
 	function Add()
 	{
-		$idJournee = utyGetPost('comboJournee', 0);
-		
-		$numMatch = utyGetPost('Num_match', '');
-		$dateMatch = utyGetPost('Date_match', '');
-		$heureMatch = utyGetPost('Heure_match', '');
-		$Libelle = utyGetPost('Libelle', '');
-		$Terrain = utyGetPost('Terrain', '');
-		$Type = utyGetPost('Type', '');
-				
-		$idEquipeA = utyGetPost('idEquipeA', -1);
-		$idEquipeB = utyGetPost('idEquipeB', -1);
-		
-		$arbitre1 = utyGetPost('arbitre1', '');
-		if (strlen($arbitre1) == 0)
-			$arbitre1 = utyGetPost('comboarbitre1', '');
-			
-		$arbitre1_matric = utyGetPost('arbitre1_matric', '');
-					
-		$arbitre2 = utyGetPost('arbitre2', '');
-		if (strlen($arbitre2) == 0)
-			$arbitre2 = utyGetPost('comboarbitre2', '');
-			
-		$arbitre2_matric = utyGetPost('arbitre2_matric', '');
-		
-		$coeffA = utyGetPost('coeffA', '');
-		if (strlen($coeffA) == 0)
-			$coeffA = 1.0;
-			
-		$coeffB = utyGetPost('coeffB', '');
-		if (strlen($coeffB) == 0)
-			$coeffB = 1.0;
-
 		$myBdd = new MyBdd();
-	
-		if ($idJournee != 0)
-		{
-			if (strlen($numMatch) == 0)
-				$numMatch = $this->LastNumeroOrdre($idJournee) + 1;
-			
+		$idJournee = (int)utyGetPost('comboJournee', 0);
+		
+		$numMatch = (int)utyGetPost('Num_match', '');
+		$dateMatch = $myBdd->RealEscapeString(trim(utyGetPost('Date_match', '')));
+		$heureMatch = $myBdd->RealEscapeString(trim(utyGetPost('Heure_match', '')));
+		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle', '')));
+		$Terrain = $myBdd->RealEscapeString(trim(utyGetPost('Terrain', '')));
+		$Type = $myBdd->RealEscapeString(trim(utyGetPost('Type', '')));
+				
+		$idEquipeA = (int)utyGetPost('idEquipeA', -1);
+		$idEquipeB = (int)utyGetPost('idEquipeB', -1);
+		
+		$arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre1', '')));
+		if (strlen($arbitre1) == 0) {
+            $arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre1', '')));
+        }
+        $arbitre1_matric = $myBdd->RealEscapeString(trim(utyGetPost('arbitre1_matric', '')));
+					
+		$arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre2', '')));
+		if (strlen($arbitre2) == 0) {
+            $arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre2', '')));
+        }
+        $arbitre2_matric = $myBdd->RealEscapeString(trim(utyGetPost('arbitre2_matric', '')));
+		
+		$coeffA = (float)utyGetPost('coeffA', 1);
+		if (strlen($coeffA) == 0) {
+            $coeffA = 1.0;
+        }
 
-			$sql  = "Insert Into gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, Terrain, Type, ";
+        $coeffB = (float)utyGetPost('coeffB', 1);
+		if (strlen($coeffB) == 0) {
+            $coeffB = 1.0;
+        }
+
+        if ($idJournee != 0)
+		{
+			if (strlen($numMatch) == 0) {
+                $numMatch = $this->LastNumeroOrdre($idJournee) + 1;
+            }
+
+            $sql  = "Insert Into gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, Terrain, Type, ";
 			$sql .= "Id_equipeA, Id_equipeB, ScoreA, ScoreB, Arbitre_principal, Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB) Values (";
 			$sql .= $idJournee;
 			$sql .= ",";
@@ -895,40 +894,26 @@ class GestionJournee extends MyPageSecure
 		$arrayParam = split ('[,]', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
-
 		
 		$myBdd = new MyBdd();
 		
 		//Contrôle suppression possible
 		$sql = "Select Id From gickp_Matchs_Detail Where Id_match In ($ParamCmd) ";
 
-
-
-
-
-
-
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
 		if (mysql_num_rows($result) != 0 && $_SESSION['Profile'] != 1)
 			die ("Il reste des évènements dans ces matchs ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
 		
-
 		//Vidage des joueurs du match
-		$sql  = "DELETE FROM gickp_Matchs_Joueurs USING gickp_Matchs_Joueurs, gickp_Matchs ";
-
-
-
-		$sql .= "WHERE gickp_Matchs_Joueurs.Id_match = gickp_Matchs.Id ";
-		$sql .= "AND gickp_Matchs_Joueurs.Id_match In ($ParamCmd) ";
-
-
-
-		$sql .= "AND gickp_Matchs.Validation != 'O'; ";
+		$sql  = "DELETE FROM gickp_Matchs_Joueurs USING gickp_Matchs_Joueurs, gickp_Matchs "
+                . "WHERE gickp_Matchs_Joueurs.Id_match = gickp_Matchs.Id "
+                . "AND gickp_Matchs_Joueurs.Id_match In ($ParamCmd) "
+                . "AND gickp_Matchs.Validation != 'O'; ";
 		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete joueurs matchs<br />".$sql);
+        
 		// Suppression
 		$sql  = "Delete From gickp_Matchs Where Id In ($ParamCmd) ";
 		$sql .= "And Validation != 'O' ";
-
 		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete matchs<br />".$sql);
 		
 		$myBdd->utyJournal('Suppression matchs', '', '', 'NULL', 'NULL', $ParamCmd);
@@ -970,7 +955,7 @@ class GestionJournee extends MyPageSecure
 
 	function ParamMatch()
 	{
-		$idMatch = utyGetPost('ParamCmd', -1);
+		$idMatch = (int)utyGetPost('ParamCmd', -1);
 		$_SESSION['idMatch'] = $idMatch;
 		
 		$_POST['comboJournee2'] = '';
@@ -1013,7 +998,7 @@ class GestionJournee extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 		
-		$idJournee = utyGetPost('comboJournee', 0);
+		$idJournee = (int)utyGetPost('comboJournee', 0);
 		
 		$myBdd = new MyBdd();
 		
@@ -1466,7 +1451,7 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
-		$idJournee = utyGetPost('comboJournee', 0);
+		$idJournee = (int)utyGetPost('comboJournee', 0);
 
 		$myBdd = new MyBdd();
 		
@@ -1574,4 +1559,3 @@ class GestionJournee extends MyPageSecure
 
 $page = new GestionJournee();
 
-?>
