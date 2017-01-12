@@ -258,14 +258,19 @@
 									<span id="irregularite" class='highlight2'>Ce joueur n'est pas en règle<br />pour une compétition nationale</span>
 									<br />
 									<span id="motif" class='highlight2'></span>
-                                    <br />
-                                    <input type="button" onclick="Add2();" name="addEquipeJoueur2" id="addEquipeJoueur2" value="<< Ajouter">
                                     <input type="button" id="addEquipeJoueurImpossible" value="Ajout impossible !">
+									{if $profile < 3}
+                                        <br />
+										<input type="button" onclick="Add2();" name="addEquipeJoueur3" id="addEquipeJoueur3" value="<< Ajouter (profil 1/2)">
+									{else}
+										<br />
+                                        <input type="button" onclick="Add2();" name="addEquipeJoueur2" id="addEquipeJoueur2" value="<< Ajouter">
+                                    {/if}
 								</td>
 							</tr>
 						</table>
 					{/if}
-					{if $profile <= 3 && $Verrou != 'O' && $AuthModif == 'O'}
+					{if $profile < 3 && $Verrou != 'O' && $AuthModif == 'O'}
 						<table width=100%>
 							<tr>
 								<th class='titreForm' colspan=2>

@@ -135,7 +135,11 @@ class GestionEquipeJoueur extends MyPageSecure
 				$sql .= "-Year(a.Naissance) between c.Age_min And c.Age_max ";
 				
 				mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace");
-
+                
+                // TODO : Journal d'insertion ! 
+                // $myBdd->utyJournal($action, $saison='', $competition='', $evenement='NULL', $journee='NULL', $match='NULL', $journal='', $user='')
+                //
+                //
 				// Vidage gickp_Recherche_Licence ...				
 				$sql = "Delete From gickp_Recherche_Licence Where Signature = '";
 				$sql .= $_SESSION['Signature'];
@@ -218,14 +222,16 @@ class GestionEquipeJoueur extends MyPageSecure
 			array_splice($arrayJoueur, 9, 0, $decaleEntraineur);
 		}
 */		
-
-		$sql  = "Select j.Dates, j.Users, j.Journal, u.Identite ";
-		$sql .= "From gickp_Journal j, gickp_Utilisateur u ";
-		$sql .= "Where j.Users = u.Code ";
-		$sql .= "And (j.Actions = 'Ajout titulaire' Or j.Actions = 'Suppression titulaire') ";
-		$sql .= "And j.Journal Like 'Equipe : ".$idEquipe." -%' ";
-		$sql .= "Order by j.Dates Desc ";
-		$sql .= "Limit 1 ";
+        // Affichage dernière modification
+		$sql  = "SELECT j.Dates, j.Users, j.Journal, u.Identite "
+                . "FROM gickp_Journal j, gickp_Utilisateur u "
+                . "WHERE j.Users = u.Code "
+                . "AND ( j.Actions = 'Ajout titulaire' "
+                . "OR j.Actions = 'Suppression titulaire' "
+                . "OR j.Actions = 'Modification gickp_Competitions_Equipes_' ) "
+                . "AND j.Journal Like 'Equipe : ".$idEquipe." -%' "
+                . "ORDER BY j.Dates Desc "
+                . "LIMIT 1 ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Last Update<br>".$sql);
 		$num_results = mysql_num_rows($result);
 		for ($i=0;$i<$num_results;$i++)
@@ -473,5 +479,5 @@ class GestionEquipeJoueur extends MyPageSecure
 
 $page = new GestionEquipeJoueur();
 
-?>
+
 
