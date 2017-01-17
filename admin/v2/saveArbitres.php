@@ -15,7 +15,7 @@ include_once('../../commun/MyTools.php');
 
 	$myBdd = new MyBdd();
 	$idMatch = (int)$_POST['idMatch'];
-	$id = (int)$_POST['id'];
+	$id = $myBdd->RealEscapeString(trim($_POST['id']));
 	$value = explode('|',$_POST['value']);
 	$value[0] = $myBdd->RealEscapeString(trim($value[0]));
 	$value[1] = $myBdd->RealEscapeString(trim($value[1]));
