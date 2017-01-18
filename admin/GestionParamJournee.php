@@ -99,30 +99,31 @@ class GestionParamJournee extends MyPageSecure
 	}
 	
 	function Ok() {
-		$idJournee = utyGetPost('idJournee', -1);
-		$dupliThis = utyGetPost('dupliThis');
+        $myBdd = new MyBdd();
+		$idJournee = (int)utyGetPost('idJournee', -1);
+		$dupliThis = $myBdd->RealEscapeString(trim(utyGetPost('dupliThis')));
 		
-		$J_saison = utyGetPost('J_saison');
-		$J_competition = utyGetPost('J_competition');
-		$Phase = htmlspecialchars (utyGetPost('Phase'));
-		$Niveau = utyGetPost('Niveau');
-		$Type = utyGetPost('Type');
-		$Date_debut = utyDateFrToUs(utyGetPost('Date_debut'));
-		$Date_origine = utyDateFrToUs(utyGetPost('Date_origine'));
-		$Date_fin = utyDateFrToUs(utyGetPost('Date_fin'));
-		$Nom = htmlspecialchars (utyGetPost('Nom'));
-		$Libelle = htmlspecialchars (utyGetPost('Libelle'));
-		$Lieu = htmlspecialchars (utyGetPost('Lieu'));
-		$Plan_eau = htmlspecialchars (utyGetPost('Plan_eau'));
-		$Departement = utyGetPost('Departement');
-		$Responsable_insc = htmlspecialchars (utyGetPost('Responsable_insc'));
-		$Responsable_R1 = htmlspecialchars (utyGetPost('Responsable_R1'));
-		$Organisateur = htmlspecialchars (utyGetPost('Organisateur'));
-		$Delegue = htmlspecialchars (utyGetPost('Delegue'));
-		$ChefArbitre = htmlspecialchars (utyGetPost('ChefArbitre'));
+		$J_saison = $myBdd->RealEscapeString(trim(utyGetPost('J_saison')));
+		$J_competition = $myBdd->RealEscapeString(trim(utyGetPost('J_competition')));
+		$Phase = $myBdd->RealEscapeString(trim(utyGetPost('Phase')));
+		$Niveau = $myBdd->RealEscapeString(trim(utyGetPost('Niveau')));
+		$Type = $myBdd->RealEscapeString(trim(utyGetPost('Type')));
+		$Date_debut = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_debut'))));
+		$Date_origine = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_origine'))));
+		$Date_fin = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_fin'))));
+		$Nom = $myBdd->RealEscapeString(trim(utyGetPost('Nom')));
+		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle')));
+		$Lieu = $myBdd->RealEscapeString(trim(utyGetPost('Lieu')));
+		$Plan_eau = $myBdd->RealEscapeString(trim(utyGetPost('Plan_eau')));
+		$Departement = $myBdd->RealEscapeString(trim(utyGetPost('Departement')));
+		$Responsable_insc = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_insc')));
+		$Responsable_R1 = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_R1')));
+		$Organisateur = $myBdd->RealEscapeString(trim(utyGetPost('Organisateur')));
+		$Delegue = $myBdd->RealEscapeString(trim(utyGetPost('Delegue')));
+		$ChefArbitre = $myBdd->RealEscapeString(trim(utyGetPost('ChefArbitre')));
 
-		$AvecMatchs = utyGetPost('AvecMatchs');
-		$CodMatchs = utyGetPost('CodMatchs');
+		$AvecMatchs = $myBdd->RealEscapeString(trim(utyGetPost('AvecMatchs')));
+		$CodMatchs = $myBdd->RealEscapeString(trim(utyGetPost('CodMatchs')));
 		
 		$d1 = strtotime($Date_debut.' 00:00:00'); 
 		$d2 = strtotime($Date_origine.' 00:00:00'); 
@@ -135,16 +136,15 @@ class GestionParamJournee extends MyPageSecure
             }
 
             // Modification ...
-			$myBdd = new MyBdd();
-	
-			$sql  = 'Update gickp_Journees Set Code_competition = "'.$J_competition.'", Code_saison = "'.$J_saison.'", '
+    		$sql  = 'UPDATE gickp_Journees '
+                    . 'SET Code_competition = "'.$J_competition.'", Code_saison = "'.$J_saison.'", '
                     . 'Type = "'.$Type.'", Phase = "'.$Phase.'", Niveau = "'.$Niveau.'", Date_debut = "'.$Date_debut.'", '
                     . 'Date_fin = "'.$Date_fin.'", '
                     . 'Nom = "'.$Nom.'", Libelle = "'.$Libelle.'", Lieu = "'.$Lieu.'", Plan_eau = "'.$Plan_eau.'", '
                     . 'Departement = "'.$Departement.'", Responsable_insc = "'.$Responsable_insc.'", '
                     . 'Responsable_R1 = "'.$Responsable_R1.'", Organisateur = "'.$Organisateur.'", '
                     . 'Delegue = "'.$Delegue.'", ChefArbitre = "'.$ChefArbitre.'" '
-                    . 'Where Id = '.$idJournee.' ';
+                    . 'WHERE Id = '.$idJournee.' ';
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
 		
             $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
@@ -152,11 +152,9 @@ class GestionParamJournee extends MyPageSecure
 			// Création ...
 			$nextIdJournee = $this->GetNextIdJournee();
 			
-			$myBdd = new MyBdd();
-	
-			$sql  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
+    		$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
 			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) ";
-			$sql .= "Values ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
+			$sql .= "VALUES ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
 			$sql .= "'$Departement', '$Responsable_insc', '$Responsable_R1', '$Organisateur', '$Delegue', '$ChefArbitre') ";
 
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert :<br>".$sql);
@@ -206,29 +204,28 @@ class GestionParamJournee extends MyPageSecure
 	}
 	
 	function DuppliListJournees() {
-		$Date_debut = utyDateFrToUs(utyGetPost('Date_debut'));
-		$Date_fin = utyDateFrToUs(utyGetPost('Date_fin'));
-		$Nom = utyGetPost('Nom');
-		$Libelle = utyGetPost('Libelle');
-		$Lieu = utyGetPost('Lieu');
-		$Plan_eau = utyGetPost('Plan_eau');
-		$Departement = utyGetPost('Departement');
-		$Responsable_insc = utyGetPost('Responsable_insc');
-		$Responsable_R1 = utyGetPost('Responsable_R1');
-		$Organisateur = utyGetPost('Organisateur');
-		$Delegue = utyGetPost('Delegue');
-		$ChefArbitre = utyGetPost('ChefArbitre');
-
-		$listJournees = explode (",", utyGetPost('ParamCmd'));
+		$myBdd = new MyBdd();
+        $Date_debut = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_debut'))));
+		$Date_fin = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_fin'))));
+		$Nom = $myBdd->RealEscapeString(trim(utyGetPost('Nom')));
+		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle')));
+		$Lieu = $myBdd->RealEscapeString(trim(utyGetPost('Lieu')));
+		$Plan_eau = $myBdd->RealEscapeString(trim(utyGetPost('Plan_eau')));
+		$Departement = $myBdd->RealEscapeString(trim(utyGetPost('Departement')));
+		$Responsable_insc = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_insc')));
+		$Responsable_R1 = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_R1')));
+		$Organisateur = $myBdd->RealEscapeString(trim(utyGetPost('Organisateur')));
+		$Delegue = $myBdd->RealEscapeString(trim(utyGetPost('Delegue')));
+		$ChefArbitre = $myBdd->RealEscapeString(trim(utyGetPost('ChefArbitre')));
+		$listJournees = explode (",", $myBdd->RealEscapeString(trim(utyGetPost('ParamCmd'))));
+        
 		foreach($listJournees as $Journee) {
 			// Modification ...
-			$myBdd = new MyBdd();
-	
-			$sql  = "Update gickp_Journees Set Date_debut = '$Date_debut', Date_fin = '$Date_fin', ";
-			$sql .= "Nom = '$Nom', Libelle = '$Libelle', Lieu = '$Lieu', Plan_eau = '$Plan_eau', ";
-			$sql .= "Departement = '$Departement', Responsable_insc = '$Responsable_insc', ";
-			$sql .= "Responsable_R1 = '$Responsable_R1', Organisateur = '$Organisateur', Delegue = '$Delegue', ChefArbitre = '$ChefArbitre' ";
-			$sql .= "Where Id = $Journee ";
+			$sql  = "UPDATE gickp_Journees SET Date_debut = '$Date_debut', Date_fin = '$Date_fin', "
+                    . "Nom = '$Nom', Libelle = '$Libelle', Lieu = '$Lieu', Plan_eau = '$Plan_eau', "
+                    . "Departement = '$Departement', Responsable_insc = '$Responsable_insc', "
+                    . "Responsable_R1 = '$Responsable_R1', Organisateur = '$Organisateur', Delegue = '$Delegue', ChefArbitre = '$ChefArbitre' "
+                    . "WHERE Id = $Journee ";
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
 		
 			$myBdd->utyJournal('Modification journee', '', '', '', $Journee);
@@ -242,21 +239,21 @@ class GestionParamJournee extends MyPageSecure
 	}
 	
 	function AjustDates() {
-		$idJournee = utyGetPost('idJournee', -1);
+		$idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
 		if ($idJournee != 0) {
 			$myBdd = new MyBdd();
 	
-			$sql  = "Select Date_debut, Date_fin From gickp_Journees ";
-			$sql .= "Where Id = $idJournee ";
+			$sql  = "SELECT Date_debut, Date_fin "
+                    . "FROM gickp_Journees "
+                    . "WHERE Id = $idJournee ";
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
 			$row = mysql_fetch_row($result);
 			$Date_debut = $row[0];
 			$Date_fin = $row[1];
 			
-			//die ($Date_debut);
-			
-			$sql  = "Update gickp_Matchs set Date_match = '".$Date_debut."' ";
-			$sql .= "Where Id_journee = $idJournee ";
+			$sql  = "UPDATE gickp_Matchs "
+                    . "SET Date_match = '".$Date_debut."' "
+                    . "WHERE Id_journee = $idJournee ";
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert : ".$sql);
 		}			
 	}
@@ -264,7 +261,9 @@ class GestionParamJournee extends MyPageSecure
 	function GetNextIdJournee() {
 		$myBdd = new MyBdd();
 
-		$sql  = "Select max(Id) maxId From gickp_Journees Where Id < 19000001 ";
+		$sql  = "SELECT max(Id) maxId "
+                . "FROM gickp_Journees "
+                . "WHERE Id < 19000001 ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
 	
 		if (mysql_num_rows($result) == 1) {
@@ -284,17 +283,18 @@ class GestionParamJournee extends MyPageSecure
 	}
 	
 	function Duplicate() {
-		$idJournee = utyGetPost('idJournee', -1);
+		$myBdd = new MyBdd();
+        $idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
 		if ($idJournee != 0) {
 			$nextIdJournee = $this->GetNextIdJournee();
-			
-			$myBdd = new MyBdd();
 	
-			$sql  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
-			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) ";
-			$sql .= "Select $nextIdJournee, Code_competition, code_saison, Phase, Type, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
-			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre ";
-			$sql .= "From gickp_Journees Where Id = $idJournee ";
+			$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, "
+                    . "Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, "
+                    . "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) "
+                    . "SELECT $nextIdJournee, Code_competition, code_saison, Phase, Type, Niveau, Date_debut, Date_fin, "
+                    . "Nom, Libelle, Lieu, Plan_eau, "
+                    . "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre "
+                    . "FROM gickp_Journees Where Id = $idJournee ";
 
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert");
 		}			

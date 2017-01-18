@@ -13,10 +13,10 @@ include_once('../commun/MyTools.php');
 		$resultGlobal = '';
 		
 			// Referentiel Journees
-			$sql  = "SELECT * ";
-			$sql .= "FROM gickp_Ref_Journee ";
-			$sql .= "WHERRE UPPER(nom) LIKE UPPER('%".$q."%') ";
-			$sql .= "ORDER BY nom ";	 
+			$sql  = "SELECT * "
+                    . "FROM gickp_Ref_Journee "
+                    . "WHERE UPPER(nom) LIKE UPPER('%".$q."%') "
+                    . "ORDER BY nom ";	 
 			$result = $myBdd->Query($sql);
 			while ($row = $myBdd->FetchAssoc($result))
 			{
