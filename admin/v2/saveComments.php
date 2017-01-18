@@ -33,7 +33,7 @@ include_once('../../commun/MyTools.php');
 	// *****************************************************************************
 */
 	// Contrôle autorisation journée
-	$sql  = "Select Id_journee, Validation from gickp_Matchs where Id = ".$idMatch;
+	$sql  = "SELECT Id_journee, Validation FROM gickp_Matchs WHERE Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 	$row = mysql_fetch_array($result);
 	if (!utyIsAutorisationJournee($row['Id_journee']))
@@ -46,6 +46,5 @@ include_once('../../commun/MyTools.php');
 		$sql .= ", Heure_fin = '".$heure_fin_match."' ";
 	$sql .= "WHERE Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
-	echo $value; 
+	echo $value2; 
 
-?>
