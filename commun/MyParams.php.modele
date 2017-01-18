@@ -1,0 +1,21 @@
+<?php
+// Paramètres de connexion
+
+// Prod
+define('PARAM_PROD_LOGIN', '');
+define('PARAM_PROD_PASSWORD', '');
+define('PARAM_PROD_DB', '');
+define('PARAM_PROD_SERVER', '');
+
+// Mirror
+define('PARAM_MIRROR_LOGIN', '');
+define('PARAM_MIRROR_PASSWORD', '');
+define('PARAM_MIRROR_DB', '');
+define('PARAM_MIRROR_SERVER', '');
+
+
+// Local
+define('PARAM_LOCAL_LOGIN', '');
+define('PARAM_LOCAL_PASSWORD', '');
+define('PARAM_LOCAL_DB', '');
+define('PARAM_LOCAL_SERVER', '');

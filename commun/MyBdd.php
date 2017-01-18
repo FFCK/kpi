@@ -3,6 +3,7 @@
 // Connexion à la base de données , Importation des données PCE 
 
 include_once('MyConfig.php');
+include_once('MyParams.php');
 
 define("BUFFER_LENGTH", 2048); 		// Taille du Buffer pour la lecture d'une ligne d'un fichier PCE
 
@@ -18,37 +19,32 @@ class MyBdd
 	var $m_saisonPCE;
 	  
 	// Constructeur 
-	function MyBdd($mirror=false)
-	{							  
-		if (PRODUCTION)
-		{
-			if (isset($_SESSION['mirror']))
-				if ($_SESSION['mirror'] == '1')
-					$mirror = true;
-			
-			/* Parametres Hebergement phpnet.org */
-			if ($mirror)
-			{
-				$this->m_login = "***";
-				$this->m_password = "***";	
-				$this->m_database = "***";			  
-				$this->m_server = "cl1-sql7";
+	function MyBdd($mirror=false) {							  
+		if (PRODUCTION) {
+			if (isset($_SESSION['mirror'])) {
+                if ($_SESSION['mirror'] == '1') {
+                    $mirror = true;
+                }
+            }
+
+            /* Parametres Hebergement phpnet.org */
+			if ($mirror) {
+				$this->m_login = PARAM_MIRROR_LOGIN;
+				$this->m_password = PARAM_MIRROR_PASSWORD;	
+				$this->m_database = PARAM_MIRROR_DB;			  
+				$this->m_server = PARAM_MIRROR_SERVER;
+			} else {
+				$this->m_login = PARAM_PROD_LOGIN;
+				$this->m_password = PARAM_PROD_PASSWORD;	
+				$this->m_database = PARAM_PROD_DB;			  
+				$this->m_server = PARAM_PROD_SERVER;
 			}
-			else
-			{
-				$this->m_login = "***";
-				$this->m_password = "***";	
-				$this->m_database = "***";			  
-				$this->m_server = "cl1-sql1";
-			}
-		}
-		else
-		{ 
+		} else { 
 			/* Parametres Localhost wamp et dev */	   
-			$this->m_login = "***";
-			$this->m_password = "***";	
-			$this->m_database = "***";			  
-			$this->m_server = "localhost";
+			$this->m_login = PARAM_LOCAL_LOGIN;
+			$this->m_password = PARAM_LOCAL_PASSWORD;	
+			$this->m_database = PARAM_LOCAL_DB;			  
+			$this->m_server = PARAM_LOCAL_SERVER;
 		} 
 		
 		$this->m_arrayinfo = array();	
@@ -58,18 +54,15 @@ class MyBdd
 		$this->m_saisonPCE = $this->GetActiveSaison();
 	}	
 					
- 	function Connect()
-	{  
+ 	function Connect() {  
 		$this->m_link = mysql_connect($this->m_server, $this->m_login, $this->m_password);
 		mysql_query("SET NAMES 'UTF8'");
-		if (!$this->m_link)
-		{		
+		if (!$this->m_link) {		
 			die('Impossible de se connecter : ' . mysql_error());
 		}
 					  
 		$db = mysql_select_db($this->m_database, $this->m_link);
-		if (!$db) 
-		{
+		if (!$db) {
 			die('Impossible de sélectionner la base de données : ' . mysql_error());
 		}
 	}  
