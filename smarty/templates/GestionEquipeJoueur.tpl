@@ -285,8 +285,8 @@
 						</table>
 						<br>
 						<br>
-
-						{if $profile <= 3 && $Verrou != 'O' && $AuthModif == 'O' && $typeCompet != 'CH' && $typeCompet != 'CF'}
+                    {/if}
+					{if $profile <= 3 && $Verrou != 'O' && $AuthModif == 'O' && $typeCompet != 'CH' && $typeCompet != 'CF'}
 						<table width=100% title="Si un licencié est introuvable dans les formulaires de recherche ci-dessus, pensez à mettre à jour la base des licenciés dans l'onglet Import">
 							<tr>
 								<th class='titreForm' colspan=2>
@@ -369,7 +369,7 @@
 								</td>
 							</tr>
 						</table>
-						{/if}
+					
 							
 					{/if}
 					{if $Verrou == 'O'}
