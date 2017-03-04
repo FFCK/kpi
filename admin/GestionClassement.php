@@ -511,12 +511,16 @@ class GestionClassement extends MyPageSecure
 				$scoreA = $row['ScoreA'];
 				$scoreB = $row['ScoreB'];
 				
-				$coeffA = $row['CoeffA'];
-				$coeffB = $row['CoeffB'];
-				if (strlen($coeffA) == 0) $coeffA = 1.0;
-				if (strlen($coeffB) == 0) $coeffB = 1.0;
-				$coeffA = (double) $coeffA;
-				$coeffB = (double) $coeffB;
+				$coeffA = (double) $row['CoeffA'];
+				$coeffB = (double) $row['CoeffB'];
+				if ($coeffA == 0) {
+                    $coeffA = 1.0;
+                }
+                if ($coeffB == 0) {
+                    $coeffB = 1.0;
+                }
+//              $coeffA = $coeffA;
+//				$coeffB = $coeffB;
 				
 				$idEquipeA = $row['Id_equipeA'];
 				$idEquipeB = $row['Id_equipeB'];
@@ -524,13 +528,15 @@ class GestionClassement extends MyPageSecure
 				if (!utyIsScoreOk($scoreA, $scoreB))
 				{
 					// Score Non Valide ...
-					if (!utyIsTypeCltCoupe($typeClt))
-						continue;
-						
-					if (!utyIsEquipeOk($idEquipeA, $idEquipeB))
-						continue;
-						
-					// Score non valide mais pris en compte pour les niveaux Coupe ...
+					if (!utyIsTypeCltCoupe($typeClt)) {
+                        continue;
+                    }
+
+                    if (!utyIsEquipeOk($idEquipeA, $idEquipeB)) {
+                        continue;
+                    }
+
+                    // Score non valide mais pris en compte pour les niveaux Coupe ...
 					$scoreA = '';
 					$scoreB = '';
 				}
@@ -540,10 +546,11 @@ class GestionClassement extends MyPageSecure
 				$arrayCltB = array ('Pts' => 0, 'J' => 0, 'G' => 0, 'N' => 0, 'P' => 0, 'F' => 0, 'Plus' => 0, 'Moins' => 0, 'Diff' => 0, 'PtsNiveau' => 0);
 				
 				$niveau = $row['Niveau'];
-				if (strlen($niveau) == 0)
-					$niveau = 0;
-					
-				$idJournee = $row['Id_journee'];
+				if (strlen($niveau) == 0) {
+                    $niveau = 0;
+                }
+
+                $idJournee = $row['Id_journee'];
 				$Points = $row['Points'];
 				
 				$this->SetArrayClt($scoreA, $scoreB, $niveau, $arrayCltA, $arrayCltB, $coeffA, $coeffB, $Points);
@@ -581,12 +588,12 @@ class GestionClassement extends MyPageSecure
 		{
 				// Score OK ...
 				$bScoreOk = true;
-				if ( $scoreA == '' || $scoreB == '' || $scoreA == '?' || $scoreB == '?')
-					//$bScoreOk = false;
-					return;
-					
-				if ($bScoreOk)
-				{
+				if ($scoreA == '' || $scoreB == '' || $scoreA == '?' || $scoreB == '?') {
+                    //$bScoreOk = false;
+                    return;
+                }
+
+                if ($bScoreOk) {
 					$arrayCltA['J'] = 1;
 					$arrayCltB['J'] = 1;
 				}
