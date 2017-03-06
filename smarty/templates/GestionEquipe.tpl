@@ -9,6 +9,7 @@
 				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = ' />
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}' />
 				<input type='hidden' name='Saison' id='Saison' Value='{$codeSaison}' />
+                <input type='hidden' name='Compet' id='Compet' value='{$codeCompet}' />
 	
 				<div class='blocLeft Left2'>
 					<div class='titrePage'>Equipes engag&eacute;es</div>

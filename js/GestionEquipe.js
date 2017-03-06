@@ -351,12 +351,10 @@ jq(document).ready(function() {
 			jq("#EquipeNom").val(data[0]);
 			jq('#EquipeNum').val(lequipe);
 			jq('#EquipeNumero').val(lequipe);
-			jq('#ShowCompo').show();	
-			jq.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function(data2) {
-				jq('#GetCompo').html( data2 );//"REPRISE DES COMPOSITIONS D'EQUIPE:<br>"&
-			});
-			//, function(data2) {
-			//	}, "json");
+            jq('#ShowCompo').show();	
+            jq.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function(data2) {
+                jq('#GetCompo').html( data2 );//"REPRISE DES COMPOSITIONS D'EQUIPE:<br>"
+            });
 		}
 	});
 	jq("#annulEquipe2").click(function(){

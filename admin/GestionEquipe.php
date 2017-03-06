@@ -405,11 +405,11 @@ class GestionEquipe extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 		
-		$codeCompet = utyGetPost('competition');
+		$codeCompet = $myBdd->RealEscapeString(utyGetPost('competition'));
 		$codeSaison = utyGetSaison();
-		$libelleEquipe = utyGetPost('libelleEquipe');
+		$libelleEquipe = $myBdd->RealEscapeString(utyGetPost('libelleEquipe'));
 		$histoEquipe = utyGetPost('histoEquipe');
-		$codeClub = utyGetPost('club');
+		$codeClub = $myBdd->RealEscapeString(utyGetPost('club'));
 		
 		foreach($histoEquipe as $selectValue)
 		{
@@ -456,8 +456,8 @@ class GestionEquipe extends MyPageSecure
 			$insertValue .= $selectValue;
 		}	
 		$_SESSION['codeCompet'] = $codeCompet;
-		$_SESSION['codeComiteReg'] = utyGetPost('comiteReg');
-		$_SESSION['codeComiteDep'] = utyGetPost('comiteDep');
+		$_SESSION['codeComiteReg'] = $myBdd->RealEscapeString(utyGetPost('comiteReg'));
+		$_SESSION['codeComiteDep'] = $myBdd->RealEscapeString(utyGetPost('comiteDep'));
 		$_SESSION['codeClub'] = $codeClub;
 
 		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $insertValue);
@@ -467,15 +467,15 @@ class GestionEquipe extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 		
-		$codeCompet = utyGetPost('competition');
+		$codeCompet = $myBdd->RealEscapeString(utyGetPost('competition'));
 		$codeSaison = utyGetSaison();
-		$EquipeNum = utyGetPost('EquipeNum');
-		$EquipeNom = utyGetPost('EquipeNom');
-		$checkCompo = utyGetPost('checkCompo');
-		$plEquipe = utyGetPost('plEquipe', '');
-		$tirEquipe = utyGetPost('tirEquipe', 0);
-		$cltChEquipe = utyGetPost('cltChEquipe', 0);
-		$cltCpEquipe = utyGetPost('cltCpEquipe', 0);
+		$EquipeNum = $myBdd->RealEscapeString(utyGetPost('EquipeNum'));
+		$EquipeNom = $myBdd->RealEscapeString(utyGetPost('EquipeNom'));
+		$checkCompo = $myBdd->RealEscapeString(utyGetPost('checkCompo'));
+		$plEquipe = $myBdd->RealEscapeString(utyGetPost('plEquipe', ''));
+		$tirEquipe = $myBdd->RealEscapeString(utyGetPost('tirEquipe', 0));
+		$cltChEquipe = $myBdd->RealEscapeString(utyGetPost('cltChEquipe', 0));
+		$cltCpEquipe = $myBdd->RealEscapeString(utyGetPost('cltCpEquipe', 0));
 		
 		if ($EquipeNum != '')
 		{
@@ -521,11 +521,11 @@ class GestionEquipe extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 		
-		$codeCompet = utyGetPost('competition');
+		$codeCompet = $myBdd->RealEscapeString(utyGetPost('competition'));
 		$codeSaison = utyGetSaison();
-		$equipeTirage = utyGetPost('equipeTirage');
-		$pouleTirage = utyGetPost('pouleTirage');
-		$ordreTirage = utyGetPost('ordreTirage');
+		$equipeTirage = $myBdd->RealEscapeString(utyGetPost('equipeTirage'));
+		$pouleTirage = $myBdd->RealEscapeString(utyGetPost('pouleTirage'));
+		$ordreTirage = $myBdd->RealEscapeString(utyGetPost('ordreTirage'));
 		
 		$sql  = "Update gickp_Competitions_Equipes ";
 		$sql .= "Set Tirage = $ordreTirage, ";
@@ -574,8 +574,8 @@ class GestionEquipe extends MyPageSecure
 	
 	function Duplicate($bDelete)
 	{
-		$codeCompet = utyGetPost('competition');
-		$codeCompetRef = utyGetPost('competitionRef');
+		$codeCompet = $myBdd->RealEscapeString(utyGetPost('competition'));
+		$codeCompetRef = $myBdd->RealEscapeString(utyGetPost('competitionRef'));
 		$codeSaison = utyGetSaison();
 
 		if ( (strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0) )
