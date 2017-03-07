@@ -34,7 +34,7 @@ class Details extends MyPage
 		$_SESSION['idSelCompet'] = $idSelCompet;
 		$this->m_tpl->assign('idSelCompet', $idSelCompet);
         
-        $type = utyGetGet('typ','CHPT');
+        $type = utyGetGet('typ', 'CHPT');
         $this->m_tpl->assign('type', $type);
 
         if($type == 'CHPT'){
@@ -63,10 +63,15 @@ class Details extends MyPage
             $this->m_tpl->assign('journee', $journee);
             $this->m_tpl->assign('arrayListJournees', $arrayListJournees);
             
-            $sql  = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep
-                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c 
-                    WHERE m.Id_journee = '$idSelJournee'
-                    AND ce.Code_club = c.Code
+            $sql  = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep             
+                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c ";
+            if($idSelJournee != '*') {
+                $sql .= "WHERE m.Id_journee = $idSelJournee ";
+            } else {
+                $sql .= "WHERE ce.Code_compet = '$idSelCompet' "
+                        . "AND ce.Code_saison = $codeSaison ";
+            }
+            $sql .= "AND ce.Code_club = c.Code
                     AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)";
             $arrayEquipe = array();
             $result = $myBdd->Query($sql);
@@ -130,7 +135,7 @@ class Details extends MyPage
                 $sql .= $codeSaison;
                 $sql .= "' And ce.Code_club = c.Code ";	 
                 $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
-
+                
                 $result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
                 while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
                     //Logos
@@ -149,10 +154,14 @@ class Details extends MyPage
                     if ($row['Tirage'] != 0 or $row['Poule'] != '') {
                         $this->m_tpl->assign('Tirage', 'ok');
                     }
+                    if($row['Poule'] == '') {
+                        $row['Poule'] = '-';
+                    }
                     if ($row['Poule'] != $poule) {
                         $arrayPoule[] = $row['Poule'];
                     }
                     $poule = $row['Poule'];
+                    
                     $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
                                                         'Libelle' => $row['Libelle'], 
                                                         'Code_club' => $row['Code_club'],

@@ -183,7 +183,7 @@
                 <div class="row">
                     {section name=i loop=$arrayPoule}
                         <div class="col-md-6 text-center text-info">
-                            {if $arrayPoule[i] != ''}
+                            {if $arrayPoule[i] != '-'}
                                 <h3>{#Poule#} {$arrayPoule[i]}</h3>
                             {/if}
                             {assign var='poule' value=$arrayPoule[i]}
