@@ -8,32 +8,32 @@
 
 			{if $profile != 9}
 				<div class='blocLeft'>
-					<h3 class='titrePage'>Compétitions / poules</h3>
+					<h3 class='titrePage'>{#Competitions_poules#}</h3>
 					<br>
 					<div class='liens'>		
-						<label for="saisonTravail">Saison :</label>
+						<label for="saisonTravail">{#Saison#} :</label>
 						<select name="saisonTravail"  id="saisonTravail" onChange="sessionSaison()">
 							{section name=i loop=$arraySaison} 
-								<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} (Travail){/if}</Option>
+								<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} ({#Travail#}){/if}</Option>
 							{/section}
 						</select>
-						<label for="AfficheCompet">Afficher :</label>
+						<label for="AfficheCompet">{#Afficher#} :</label>
 						<select name="AfficheNiveau" onChange="changeAffiche()">
-							<Option Value="" selected>Tous les niveaux</Option>
-							<Option Value="INT"{if $AfficheNiveau == 'INT'} selected{/if}>Compétitions Internationales</Option>
-							<Option Value="NAT"{if $AfficheNiveau == 'NAT'} selected{/if}>Compétitions Nationales</Option>
-							<Option Value="REG"{if $AfficheNiveau == 'REG'} selected{/if}>Compétitions Régionales</Option>
+							<Option Value="" selected>{#Tous_les_niveaux#}</Option>
+							<Option Value="INT"{if $AfficheNiveau == 'INT'} selected{/if}>{#Competitions_Internationales#}</Option>
+							<Option Value="NAT"{if $AfficheNiveau == 'NAT'} selected{/if}>{#Competitions_Nationales#}</Option>
+							<Option Value="REG"{if $AfficheNiveau == 'REG'} selected{/if}>{#Competitions_Regionales#}</Option>
 						</select>
 						<select name="AfficheCompet" onChange="changeAffiche()">
-							<Option Value="" selected>Toutes les compétitions</Option>
-							<Option Value="N"{if $AfficheCompet == 'N'} selected{/if}>Championnat de France</Option>
-							<Option Value="CF"{if $AfficheCompet == 'CF'} selected{/if}>Coupe de France</Option>
-							<Option Value="NCF"{if $AfficheCompet == 'NCF'} selected{/if}>Championnat & Coupe de France</Option>
-							<Option Value="REG"{if $AfficheCompet == 'REG'} selected{/if}>Championnats régionaux</Option>
-							<Option Value="DEP"{if $AfficheCompet == 'DEP'} selected{/if}>Championnats départementaux</Option>
-							<Option Value="T-"{if $AfficheCompet == 'T-'} selected{/if}>Tournois Internationaux</Option>
+							<Option Value="" selected>{#Toutes_les_competitions#}</Option>
+							<Option Value="N"{if $AfficheCompet == 'N'} selected{/if}>{#Championnat_de_France#}</Option>
+							<Option Value="CF"{if $AfficheCompet == 'CF'} selected{/if}>{#Coupe_de_France#}</Option>
+							<Option Value="NCF"{if $AfficheCompet == 'NCF'} selected{/if}>{#Championnat_Coupe_de_France#}</Option>
+							<Option Value="REG"{if $AfficheCompet == 'REG'} selected{/if}>{#Championnats_regionaux#}</Option>
+							<Option Value="DEP"{if $AfficheCompet == 'DEP'} selected{/if}>{#Championnats_departementaux#}</Option>
+							<Option Value="T-"{if $AfficheCompet == 'T-'} selected{/if}>{#Tournois_Internationaux#}</Option>
 							{if $profile <= 4}
-								<Option Value="M"{if $AfficheCompet == 'M'} selected{/if}>Modèles</Option>
+								<Option Value="M"{if $AfficheCompet == 'M'} selected{/if}>{#Modeles#}</Option>
 							{/if}
 						</select>
 					</div>
