@@ -1,8 +1,9 @@
 <?php
+include_once('../commun/MyParams.php');
 
-$ftp_server="***";
-$ftp_user_name="***";
-$ftp_user_pass="***";
+$ftp_server = FTP_SERVER;
+$ftp_user_name = FTP_USER_NAME;
+$ftp_user_pass = FTP_USER_PASS;
 
 // set up basic connection
 $idFTP = ftp_connect($ftp_server);
