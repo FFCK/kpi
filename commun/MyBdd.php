@@ -1057,19 +1057,11 @@ class MyBdd
 		if (mysql_num_rows($result) == 1)
 		{
 			$row = mysql_fetch_array($result);
-			
-		//	return array( 'Code' => $row["Code"], 'Code_niveau' => $row["Code_niveau"], 'Libelle' => $row["Libelle"],
-		//				     		'Code_ref' => $row["Code_ref"], 'Code_typeclt' => $row["Code_typeclt"], 
-		//								'Age_min' => $row["Age_min"], 'Age_max' => $row["Age_max"], 'Sexe' => $row["Sexe"],
-		//						  	'Code_tour' => $row["Code_tour"], 'Qualifies' => $row["Qualifies"], 'Elimines' => $row["Elimines"],
-		//						  	'Date_calcul' => $row["Date_calcul"], 'Date_publication' => $row["Date_publication"], 'Date_publication_calcul' => $row["Date_publication_calcul"],
-		//						  	'Code_uti_calcul' => $row["Code_uti_calcul"], 'Code_uti_publication' => $row["Code_uti_publication"], 'Mode_calcul' => $row["Mode_calcul"], 'Mode_publication_calcul' => $row["Mode_publication_calcul"]
-		//					  	);
 			return $row;
 		}
 		return array( 'Code' => '', 'Code_niveau' => '', 'Libelle' => '',
 					     		'Code_ref' => '', 'Code_typeclt' => '', 
-									'Age_min' => '', 'Age_max' => '', 'Sexe' => '',
+                                'Age_min' => '', 'Age_max' => '', 'Sexe' => '',
 							  	'Code_tour' => '', 'Qualifies' => '', 'Elimines' => '',
 							  	'Date_calcul' => '', 'Date_publication' => '', 'Date_publication_calcul' => '',
 							  	'Code_uti_calcul' => '', 'Code_uti_publication' => '', 'Mode_calcul' => '', 'Mode_publication_calcul' => ''
@@ -1126,9 +1118,9 @@ class MyBdd
 				$row = mysql_fetch_array($result);
 				$maxMatric = (int) $row['maxMatric'];
 				
-				return max($maxMatric+1, ***);
+				return $maxMatric + 1;
 		}
-		return ***;
+		return 0;
 	}
 	
 	// GetCodeClubEquipe 	
