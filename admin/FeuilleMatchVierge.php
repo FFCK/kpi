@@ -30,15 +30,15 @@ class FeuilleMatch extends MyPage
 		
 		// Langue
 		$langue = parse_ini_file("../commun/MyLang.ini", true);
-		if($_GET['lang'] == 'EN')
+		if($_GET['lang'] == 'en')
 		{
-			$lang = $langue[EN];
+			$lang = $langue[en];
 			$date =  $row['Date_match'];
 			$dateprint = date('Y-m-d');
 		}
 		else
 		{
-			$lang = $langue[FR];
+			$lang = $langue[fr];
 			$date =  utyDateUsToFr($row['Date_match']);
 			$dateprint = date('d/m/Y');
 		}
@@ -68,9 +68,11 @@ class FeuilleMatch extends MyPage
 
 		$pdf->SetFillColor(200,200,200);
 		$pdf->SetFont('Arial','B',14);
-		$pdf->Cell(135,6,$lang['FEUILLE_DE_MARQUE'],'B','1','C');
+//		$pdf->Cell(135,6,$lang['FEUILLE_DE_MARQUE'],'B','1','C');
+        $pdf->Cell(135,2,'','B','1','C');
+        
 		$pdf->SetFont('Arial','I',7);
-		$pdf->Cell(135,4,$lang['A_remplir'],'LR','1','C');
+//		$pdf->Cell(135,4,$lang['A_remplir'],'LR','1','C');
 		$pdf->Cell(135,1,"",'LR','1','C');
 
 		$pdf->SetFont('Arial','',10);
@@ -107,8 +109,9 @@ class FeuilleMatch extends MyPage
 		$pdf->Cell(135,1,"",'LTR','1','L');
 		$pdf->Cell(135,4,$lang['Arbitre_1'].": ".$principal,'LR','1','L');
 		$pdf->Cell(135,4,$lang['Arbitre_2'].": ".$secondaire,'LR','1','L');
-		$pdf->Cell(68,4,$lang['Secretaire'].": ".$secretaire,'L','0','L');
-		$pdf->Cell(67,4,$lang['Chronometre'].": ".$chronometre,'R','1','L');
+		$pdf->Cell(135,4,$lang['Secretaire'].": ".$secretaire,'LR','1','L');
+		$pdf->Cell(135,4,$lang['Chronometre'].": ".$chronometre,'LR','1','L');
+		$pdf->Cell(135,4,$lang['Time_shoot2'].": ".$timeshoot,'LR','1','L');
 		$pdf->Cell(135,1,"",'LBR','1','C');
 
 		//Equipe A
@@ -184,7 +187,7 @@ class FeuilleMatch extends MyPage
 		$pdf->SetY(8);
 
 		$pdf->SetFont('Arial','B',14);
-		$pdf->Cell(135,6,$lang['DEROULEMENT_DU_MATCH'],0,'1','C');
+		$pdf->Cell(135,6,$lang['FEUILLE_DE_MARQUE'],0,'1','C');
 
 		$pdf->SetFont('Arial','',10);
 		$pdf->Cell(15,5,$lang['Equ_A'].": ",'LT',0,'L',1);
@@ -277,31 +280,47 @@ class FeuilleMatch extends MyPage
 		$pdf->Cell(41,8,$equipeb,0,1,'C');
 		$pdf->Ln(2);
 
-		$pdf->SetLineWidth(0.2);
-		$pdf->SetFont('Arial','',10);
-		$pdf->Cell(135,4,$lang['Remarques'],'LRT',1,'L');
-		$pdf->SetFont('Arial','',7);
-		$pdf->Cell(135,3,$lang['A_defaut'],'LR','1','L');
-		$pdf->SetFont('Arial','I',9);
-		$pdf->Cell(135,4,'','LR',1,'L');
-		$pdf->Cell(135,4,$Commentaires1,'LR',1,'L');
-		$pdf->Cell(135,4,'','LRB',1,'L');
+        $pdf->SetLineWidth(0.2);
+        $pdf->SetFont('Arial','',10);
+        $pdf->Cell(93,4,$lang['Remarques'],'LRT',0,'L');
+        $pdf->SetFont('Arial','',10);
+        $pdf->Cell(21,4,$lang['Heure_debut'],'LRT',0,'C');
+        $pdf->Cell(21,4,$lang['Heure_fin'],'LRT',1,'C');
+        $pdf->SetFont('Arial','',7);
+        $pdf->Cell(93,3,$lang['A_defaut'],'LR',0,'L');
+        $pdf->Cell(21,3,'','LR',0,'L');
+        $pdf->Cell(21,3,'','LR',1,'L');
+        $pdf->SetFont('Arial','I',9);
+        $pdf->Cell(93,4,'','LR',0,'L');
+        $pdf->Cell(21,4,$heure_debut,'LRB',0,'C');
+        $pdf->Cell(21,4,$heure_fin,'LRB',1,'C');
+        $pdf->Cell(114,4,$Commentaires1,'LR',0,'L');
+        $pdf->Cell(21,4,'','LR',1,'L');
+        $pdf->Cell(114,4,'','LRB',0,'L');
+        $pdf->Cell(21,4,'','LR',1,'L');
 
-		//signatures
-		$pdf->Ln(1);
-		$pdf->SetFont('Arial','',10);
-		$pdf->Cell(21,12,$lang['Signatures'],'LRT','0','C');
-		$pdf->Cell(38,12,"",'1','0','C');
-		$pdf->Cell(38,12,"",'1','0','C');
-		$pdf->Cell(38,12,"",'1','1','C');
-		$pdf->Cell(21,4,$lang['apres_match'],'LRB','0','C');
-		$pdf->Cell(38,4,$lang['Capitaine']." A",'1','0','C');
-		$pdf->Cell(38,4,$lang['Capitaine']." B",'1','0','C');
-		$pdf->Cell(38,4,$lang['Arbitre_1'],'1','1','C');
-		$pdf->SetX(10);
-		$pdf->SetFont('Arial','',6);
-		$pdf->Cell(140,3,$lang['observation'],0,0,'L');
-		
+            
+        //signatures
+        $pdf->Ln(1);
+        $pdf->SetFont('Arial','',10);
+        $pdf->Cell(21,12,$lang['Signatures'],'LRT','0','C');
+        $pdf->Cell(31,12,"",'1','0','C');
+        $pdf->Cell(31,12,"",'1','0','C');
+        $pdf->Cell(31,12,"",'1','0','C');
+        $pdf->Cell(21,12,"",'LRB','1','C');
+        $pdf->Cell(21,4,$lang['apres_match'],'LRB',0,'C');
+        $pdf->Cell(31,4,$lang['Capitaine']." A",1,0,'C');
+        //$pdf->Cell(31,4,$lang['Entraineur']." A",1,0,'C');
+        $pdf->Cell(31,4,$lang['Capitaine']." B",1,0,'C');
+        //$pdf->Cell(31,4,$lang['Entraineur']." B",1,0,'C');
+        $pdf->Cell(31,4,$lang['Arbitre_1'],1,0,'C');
+        $pdf->SetFont('Arial','',9);
+        $pdf->Cell(21,4,"ID #".$idMatch,1,1,'C');
+        $pdf->SetX(10);
+        $pdf->SetFont('Arial','',6);
+        $pdf->Cell(140,3,$lang['observation'],0,0,'L');
+            
+        		
 		$pdf->Cell(135,3,"ID #".$idMatch." - ".$lang['impression'].": ".$dateprint." ".date("H:i"),0,1,'R');
 
 		$pdf->SetX(10);
@@ -314,5 +333,3 @@ class FeuilleMatch extends MyPage
 //Création des feuilles
 $page = new FeuilleMatch();
 
-
-?>

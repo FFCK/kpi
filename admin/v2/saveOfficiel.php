@@ -15,7 +15,7 @@ include_once('../../commun/MyTools.php');
 
 	$myBdd = new MyBdd();
 	$idMatch = (int)$_POST['idMatch'];
-	$id = (int)$_POST['id'];
+	$id = $myBdd->RealEscapeString(utyGetPost('id'));
 	$value = $myBdd->RealEscapeString(trim($_POST['value']));
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));

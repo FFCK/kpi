@@ -46,5 +46,5 @@ include_once('../../commun/MyTools.php');
 		$sql .= ", Heure_fin = '".$heure_fin_match."' ";
 	$sql .= "WHERE Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
-	echo $value2; 
+	echo utyGetPost('value'); 
 

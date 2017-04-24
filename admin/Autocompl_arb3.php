@@ -11,7 +11,7 @@ if(!$isAjax) {
 //include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 //include_once('../commun/MyTools.php');
-	
+	$myBdd = new MyBdd();	
 	// Chargement
 	$term = $myBdd->RealEscapeString(trim($_GET['term']));
 	// replace multiple spaces with one
@@ -32,7 +32,7 @@ include_once('../commun/MyBdd.php');
 	}
 	// *****************************************************************************
 */ 
-	$myBdd = new MyBdd();
+
 	$idEquipes = '';
 	//Equipes
 	$sql  = "SELECT j.Id, j.Code_saison, j.Code_competition, ce.Libelle, ce.Poule, ce.Tirage, ce.Id idEquipe ";
