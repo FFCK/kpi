@@ -349,117 +349,18 @@
 								</td>
 							</tr>
 						{/if}
-					{if $typeCompetition=='Championnat'}
-						<tr>
-							<td colspan=2 align='left'><b>Admin<br><i>"provisoire"</i></b></td>
-							<td colspan=2 align='right'><b>Public</b></td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleCltChpt.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral admin" title="Classement g&eacute;n&eacute;ral admin" /></a>
-							</td>
-							<td colspan=2 align='center'>Classement g&eacute;n&eacute;ral</td>
-							<td align='right'>
-							{if $Code_uti_publication != ''}
-								<a href="../PdfCltChpt.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral public" title="Classement g&eacute;n&eacute;ral public" /></a>
-							{/if}
-							</td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleCltChptDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe admin" title="D&eacute;tail par &eacute;quipe admin" /></a>
-							</td>
-							<td colspan=2 align='center'>D&eacute;tail par &eacute;quipe</td>
-							<td align='right'>
-							{if $Code_uti_publication != ''}
-								<a href="../PdfCltChptDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe public" title="D&eacute;tail par &eacute;quipe public" /></a>
-							{/if}
-							</td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleCltNiveauJournee.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par journ&eacute;e admin" title="D&eacute;tail par journ&eacute;e admin" /></a>
-							</td>
-							<td colspan=2 align='center'>D&eacute;tail par journ&eacute;e</td>
-							<td align='right'>
-							{if $Code_uti_publication != ''}
-								<a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par journ&eacute;e public" title="D&eacute;tail par journ&eacute;e public" /></a>
-							{/if}
-							</td>
-						</tr>
-					{else}
-						<tr>
-							<td colspan=2 align='left'><b>Admin<br><i>"provisoire"</i></b></td>
-							<td colspan=2 align='right'><b>Public</b></td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleCltNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral admin" title="Classement g&eacute;n&eacute;ral admin" /></a>
-							</td>
-							<td colspan=2 align='center'>Classement g&eacute;n&eacute;ral</td>
-							<td align='right'>
-							{if $Code_uti_publication != ''}
-								<a href="../PdfCltNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral public" title="Classement g&eacute;n&eacute;ral public" /></a>
-							{/if}
-							</td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase admin" title="D&eacute;tail par phase admin" /></a>
-							</td>
-							<td colspan=2 align='center'>D&eacute;tail par phase</td>
-							<td align='right'>
-							{if $Code_uti_publication != ''}
-								<a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase public" title="D&eacute;tail par phase public" /></a>
-							{/if}
-							</td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par niveau admin" title="D&eacute;tail par niveau admin" /></a>
-							</td>
-							<td colspan=2 align='center'>D&eacute;tail par niveau</td>
-							<td align='right'>
-							{if $Code_uti_publication != ''}
-								<a href="../PdfCltNiveauNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par niveau public" title="D&eacute;tail par niveau public" /></a>
-							{/if}
-							</td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe admin" title="D&eacute;tail par &eacute;quipe admin" /></a>
-							</td>
-							<td colspan=2 align='center'>D&eacute;tail par &eacute;quipe</td>
-							<td align='right'>
-							{if $Code_uti_publication != ''}
-								<a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe public" title="D&eacute;tail par &eacute;quipe public" /></a>
-							{/if}
-							</td>
-						</tr>
-					{/if}
-						<tr>
-							<td colspan=4 align='center'><hr></td>
-						</tr>
-						<tr>
-							<td align='left'>
-								<a href="FeuilleListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30" src="../img/pdf.png" alt="Liste des matchs admin" title="Liste des matchs admin" /></a>
-							</td>
-							<td colspan=2 align='center'>Matchs</td>
-							<td align='right'>
-								<a href="../PdfListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30" src="../img/pdf.png" alt="Liste des matchs public" title="Liste des matchs public" /></a>
-							</td>
-						</tr>
+					
 					</table>
 					<br>
 					<table width="100%">
 						<tr>
-							<th class='titreForm' colspan=3>
+							<th class='titreForm' colspan=4>
 								<label>Classement public</label>
 							</th>
 						</tr>
 						<tr>
 							
-							<td colspan=3 align='center' class='color{if $Date_publication_calcul eq $Date_calcul}O{else}N{/if}'>
+							<td colspan=4 align='center' class='color{if $Date_publication_calcul eq $Date_calcul}O{else}N{/if}'>
 								{if $Code_uti_publication != ''}
 									{if $Date_publication_calcul == '00/00/00 &agrave;  00h00'}Classement manuel{else}Calcul&eacute; le {$Date_publication_calcul}{/if}<br>
 									Publi&eacute; le {$Date_publication}<br>
@@ -475,7 +376,7 @@
 						</tr>
 						{if ($profile <= 4) && $AuthModif == 'O'}
 							<tr>
-								<td colspan=3 align='center'>
+								<td colspan=4 align='center'>
 									<input type="button" onclick="publicationClt();" name="Publier" value="Publier le nouveau classement">
 								</td>
 							</tr>
@@ -483,14 +384,119 @@
 						{if ($profile <= 3) && $AuthModif == 'O'}
 							<tr>
 								<td>&nbsp;&nbsp;</td>
-								<td align='center'>
+								<td align='center' colspan="2">
 									<br>
 									<input type="button" onclick="depublicationClt();" name="D&eacute;-publier" value="-Supprimer le classement public-">
 								</td>
 								<td>&nbsp;&nbsp;</td>
 							</tr>
 						{/if}
+                        
+                    </table>
+                        
+                    <table>
+                        {if $typeCompetition=='Championnat'}
+                            <tr>
+                                <td colspan=2 align='left'><b>Admin<br><i>(provisoire)</i></b></td>
+                                <td colspan=2 align='right'><b>Public</b></td>
+                            </tr>
+                            <tr>
+                                <td align='left'>
+                                    <a href="FeuilleCltChpt.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral admin" title="Classement g&eacute;n&eacute;ral admin" /></a>
+                                </td>
+                                <td colspan=2 align='center'>Classement g&eacute;n&eacute;ral</td>
+                                <td align='right'>
+                                {if $Code_uti_publication != ''}
+                                    <a href="../PdfCltChpt.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral public" title="Classement g&eacute;n&eacute;ral public" /></a>
+                                {/if}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align='left'>
+                                    <a href="FeuilleCltChptDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe admin" title="D&eacute;tail par &eacute;quipe admin" /></a>
+                                </td>
+                                <td colspan=2 align='center'>D&eacute;tail par &eacute;quipe</td>
+                                <td align='right'>
+                                {if $Code_uti_publication != ''}
+                                    <a href="../PdfCltChptDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe public" title="D&eacute;tail par &eacute;quipe public" /></a>
+                                {/if}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align='left'>
+                                    <a href="FeuilleCltNiveauJournee.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par journ&eacute;e admin" title="D&eacute;tail par journ&eacute;e admin" /></a>
+                                </td>
+                                <td colspan=2 align='center'>D&eacute;tail par journ&eacute;e</td>
+                                <td align='right'>
+                                {if $Code_uti_publication != ''}
+                                    <a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par journ&eacute;e public" title="D&eacute;tail par journ&eacute;e public" /></a>
+                                {/if}
+                                </td>
+                            </tr>
+                        {else}
+                            <tr>
+                                <td colspan=2 align='left'><b>Admin<br><i>(provisoire)</i></b></td>
+                                <td colspan=2 align='right'><b>Public</b></td>
+                            </tr>
+                            <tr>
+                                <td align='left'>
+                                    <a href="FeuilleCltNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral admin" title="Classement g&eacute;n&eacute;ral admin" /></a>
+                                </td>
+                                <td colspan=2 align='center'>Classement g&eacute;n&eacute;ral</td>
+                                <td align='right'>
+                                {if $Code_uti_publication != ''}
+                                    <a href="../PdfCltNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral public" title="Classement g&eacute;n&eacute;ral public" /></a>
+                                {/if}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align='left'>
+                                    <a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase admin" title="D&eacute;tail par phase admin" /></a>
+                                </td>
+                                <td colspan=2 align='center'>D&eacute;tail par phase</td>
+                                <td align='right'>
+                                {if $Code_uti_publication != ''}
+                                    <a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase public" title="D&eacute;tail par phase public" /></a>
+                                {/if}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align='left'>
+                                    <a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par niveau admin" title="D&eacute;tail par niveau admin" /></a>
+                                </td>
+                                <td colspan=2 align='center'>D&eacute;tail par niveau</td>
+                                <td align='right'>
+                                {if $Code_uti_publication != ''}
+                                    <a href="../PdfCltNiveauNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par niveau public" title="D&eacute;tail par niveau public" /></a>
+                                {/if}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align='left'>
+                                    <a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe admin" title="D&eacute;tail par &eacute;quipe admin" /></a>
+                                </td>
+                                <td colspan=2 align='center'>D&eacute;tail par &eacute;quipe</td>
+                                <td align='right'>
+                                {if $Code_uti_publication != ''}
+                                    <a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe public" title="D&eacute;tail par &eacute;quipe public" /></a>
+                                {/if}
+                                </td>
+                            </tr>
+                        {/if}
+						<tr>
+							<td colspan=4 align='center'><hr></td>
+						</tr>
+						<tr>
+							<td align='left'>
+								<a href="FeuilleListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30" src="../img/pdf.png" alt="Liste des matchs admin" title="Liste des matchs admin" /></a>
+							</td>
+							<td colspan=2 align='center'>Matchs</td>
+							<td align='right'>
+								<a href="../PdfListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30" src="../img/pdf.png" alt="Liste des matchs public" title="Liste des matchs public" /></a>
+							</td>
+						</tr>
 					</table>
+                            
 					{if $profile <= 4 && $AuthModif == 'O'}
 						<br>
 						<table width="100%">
