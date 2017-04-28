@@ -13,11 +13,11 @@
 				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = '/>
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
 				
-				<div class='titrePage'>Liste des matchs</div>
+				<div class='titrePage'>{#Liste_des_Matchs#}</div>
 					<table id="formMatch">
 						<tr class='filtres cadregris'>
 							<td align="center">
-								<label for="evenement">Filtre Evénement</label>
+								<label for="evenement">{#Filtre_evenement#}</label>
 								<br>
 								<select name="evenement" id="evenement" onChange="submit();">
 									{section name=i loop=$arrayEvenement} 
@@ -26,9 +26,9 @@
 								</select>
 							</td>
 							<td align="center">
-								<label for="comboCompet">Filtre Compétition</label>
+								<label for="comboCompet">{#Filtre_competition#}</label>
 								{if $profile <= 6 && $AuthModif == 'O'}
-								<a href="#" id="InitTitulaireCompet"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" title="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" /></a>
+                                    <a href="#" id="InitTitulaireCompet"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" title="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" /></a>
 								{/if}
 								<br>
 								<select id="comboCompet" name="comboCompet" onChange="changeCompet();" tabindex="1">
@@ -42,7 +42,7 @@
 								</select>
 							</td>
 							<td align="center">
-								<label for="comboJournee2">Filtre Journée/Phase/Poule</label>
+								<label for="comboJournee2">{#Filtre_journee_phase_poule#}</label>
 								<br>
 								<select id="comboJournee2" name="comboJournee2" onChange="changeCompet();" tabindex="2">
 									<Option Value="*" Selected>Toutes...</Option>
@@ -64,28 +64,28 @@
 								</select>
 							</td>
 							<td align="center">
-								<label for="filtreMois">Filtre Date / Terrain</label>
+								<label for="filtreMois">{#Filtre_Date_Terrain#}</label>
 								<br>
 								<select name="filtreJour" id="filtreJour" onChange="submit();">
-										<Option Value="" {if $filtreJour == ''}selected{/if}>---Tous---</Option>
+										<Option Value="" {if $filtreJour == ''}selected{/if}>---{#Tous#}---</Option>
 									 {foreach from=$listeJours key=k item=v}
 										<Option Value="{$k}" {if $filtreJour == $k}selected{/if}>{$v}</Option>
 									 {/foreach}
 							    </select>
 								<select name="filtreTerrain" id="filtreTerrain" onChange="submit();">
-										<Option Value="" {if $filtreTerrain == ''}selected{/if}>---Tous---</Option>
-										<Option Value="1" {if $filtreTerrain == '1'}selected{/if}>Terr. 1</Option>
-										<Option Value="2" {if $filtreTerrain == '2'}selected{/if}>Terr. 2</Option>
-										<Option Value="3" {if $filtreTerrain == '3'}selected{/if}>Terr. 3</Option>
-										<Option Value="4" {if $filtreTerrain == '4'}selected{/if}>Terr. 4</Option>
-										<Option Value="5" {if $filtreTerrain == '5'}selected{/if}>Terr. 5</Option>
-										<Option Value="6" {if $filtreTerrain == '6'}selected{/if}>Terr. 6</Option>
-										<Option Value="7" {if $filtreTerrain == '7'}selected{/if}>Terr. 7</Option>
-										<Option Value="8" {if $filtreTerrain == '8'}selected{/if}>Terr. 8</Option>
+										<Option Value="" {if $filtreTerrain == ''}selected{/if}>---{#Tous#}---</Option>
+										<Option Value="1" {if $filtreTerrain == '1'}selected{/if}>{#Terr#}. 1</Option>
+										<Option Value="2" {if $filtreTerrain == '2'}selected{/if}>{#Terr#}. 2</Option>
+										<Option Value="3" {if $filtreTerrain == '3'}selected{/if}>{#Terr#}. 3</Option>
+										<Option Value="4" {if $filtreTerrain == '4'}selected{/if}>{#Terr#}. 4</Option>
+										<Option Value="5" {if $filtreTerrain == '5'}selected{/if}>{#Terr#}. 5</Option>
+										<Option Value="6" {if $filtreTerrain == '6'}selected{/if}>{#Terr#}. 6</Option>
+										<Option Value="7" {if $filtreTerrain == '7'}selected{/if}>{#Terr#}. 7</Option>
+										<Option Value="8" {if $filtreTerrain == '8'}selected{/if}>{#Terr#}. 8</Option>
 							    </select>
 							</td>
 							<td align="center">
-								<label for="filtreMois">Ordre de tri</label>
+								<label for="filtreMois">{#Ordre_tri#}</label>
 								<br>
 								<select name="orderMatchs" onChange="ChangeOrderMatchs('{$idSelJournee}');">
 								{section name=i loop=$arrayOrderMatchs}
@@ -96,17 +96,7 @@
 									{/if}
 								{/section}
 								</select>
-{*								<label for="filtreJour">Filtre Jours</label>
-								<br>
-								<select name="filtreJour" onChange="ChangeOrderMatchs('{$idSelJournee}');">
-										<Option Value="" {if $filtreJour == ''}selected{/if}>--Hors service--</Option>
-
-									{section name=i loop=$arrayJours}
-										<Option Value="{$arrayJours[i]}">{$arrayJours[i]}</Option>
-									{/section}
-
-							    </select>
-*}							</td>
+							</td>
 						</tr>
 					</table>
 				<div class='blocTop'>
@@ -114,25 +104,25 @@
 					<table id="formMatch">
 						<tr class="hideTr">
 							<td align="left" title="Intervalle entre chaque début de match">
-								<label for="Intervalle_match">Intervale matchs</label>
+								<label for="Intervalle_match">{#Intervale_matchs#}</label>
 								<br>
 								<input type="text" size="1" name="Intervalle_match" value="{$Intervalle_match}">min.
 							</td>
 							<td>
 								Type :
-								<img id="typeMatch1" src="../img/type{$Type|default:'C'}.png" {if $Type == "E"}alt="Elimination" title="Match éliminatoire"{else}alt="Classement" title="Match de classement"{/if} />
+								<img id="typeMatch1" src="../img/type{$Type|default:'C'}.png" {if $Type == "E"}alt="{#Elimination#}" title="{#Match_eliminatoire#}"{else}alt="{#Classement#}" title="{#Match_de_classement#}"{/if} />
 								<input type="hidden" name="Type" id="Type" value="{$Type|default:'C'}" />
 							</td>
 							<td align="left">
 								<table>
 									<tr>
 										<td>
-											<label for="Libelle">Intitulé [codage]</label>
+											<label for="Libelle">{#Intitule_codage#}</label>
 											<br>
 											<input type="text" size="18" name="Libelle" placeholder="[A-B/PRIN-SEC]" value="{$Libelle}" maxlength=30" tabindex="7"/>
 										</td>
 										<td>
-											<label for="Num_match">Match N°</label>
+											<label for="Num_match">{#Match#} N°</label>
 											<br>
 											<input type="text" size="3" name="Num_match" id="Num_match" value="{$Num_match}" tabindex="5"/>
 										</td>
@@ -140,7 +130,7 @@
 								</table>
 							</td>
 							<td align="left">
-								<label for="equipeA">Equipe A</label>
+								<label for="equipeA">{#Equipe#} A</label>
 								<a href="#" id="InitTitulaireEquipeA"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour l'équipe A sélectionnée" title="Ré-affecter les joueurs présents pour l'équipe A sélectionnée" /></a>
 								<br>
 								<select name="equipeA" id="equipeA" onChange="changeEquipeA();" tabindex="8">
@@ -153,11 +143,11 @@
 								<input size="1" type="text" name="coeffA" value="{$coeffA}" tabindex="9" />
 							</td>
 							<td align="left">
-								<label for="arbitre1">Arbitre</label>
+								<label for="arbitre1">{#Arbitre#}</label>
 								<input type="text" size="30" name="arbitre1" id="arbitre1" placeholder="nom prenom, n° licence ou équipe" value="{$arbitre1}" tabindex="12"/>
 								<input type="text" size="5" name="arbitre1_matric" readonly id="arbitre1_matric" value="{$arbitre1_matric}"/>
 								<br />
-								<label for="comboarbitre1">principal</label>
+								<label for="comboarbitre1">{#Principal#}</label>
 								<select class="combolong" name="comboarbitre1" onChange="arbitre1_matric.value=this.options[this.selectedIndex].value; arbitre1.value=this.options[this.selectedIndex].text;" tabindex="13">
 									<Option Value="-1"></Option>
 									{section name=i loop=$arrayArbitre}
@@ -169,11 +159,11 @@
 						</tr>
 						<tr class="hideTr">
 							<td align="center" colspan="2">
-								<label for="comboJournee">Journée/Phase/Poule du match</label>
+								<label for="comboJournee">{#Journee_Phase_Poule_du_match#}</label>
 								<a href="#" id="InitTitulaireJournee"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour toute la journée / phase sélectionnée" title="Ré-affecter les joueurs présents pour toute la journée / phase sélectionnée" /></a>
 								<br>
 								<select id="comboJournee" name="comboJournee" tabindex="2">
-									<option Value="*" Selected>--- Sélectionnez --- (OBLIGATOIRE)</Option>
+									<option Value="*" Selected>--- {#Selectionnez#} --- ({#OBLIGATOIRE#})</Option>
 									{section name=i loop=$arrayJourneesAutorisees}
 										{if $idCurrentJournee eq $arrayJourneesAutorisees[i].Id}
 											{if $arrayJourneesAutorisees[i].Code_typeclt == 'CP'}
@@ -200,12 +190,12 @@
 											<input type="text" size="10" class='date' name="Date_match" value="{$Date_match}" tabindex="3" onfocus="displayCalendar(document.forms[0].Date_match,'dd/mm/yyyy',this)" >
 										</td>
 										<td>
-											<label for="Heure_match">Heure</label>
+											<label for="Heure_match">{#Heure#}</label>
 											<br>
 											<input type="text" size="5" class='champsHeure' name="Heure_match" value="{$Heure_match}" tabindex="4"/>
 										</td>
 										<td>
-											<label for="Terrain">Terrain</label>
+											<label for="Terrain">{#Terrain#}</label>
 											<br>
 											<input type="text" size="3" name="Terrain" value="{$Terrain}" maxlength=12 tabindex="6"/>
 										</td>
@@ -213,7 +203,7 @@
 								</table>
 							</td>
 							<td align="left">
-								<label for="equipeB">Equipe B</label>
+								<label for="equipeB">{#Equipe#} B</label>
 								<a href="#" id="InitTitulaireEquipeB"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour l'équipe B sélectionnée" title="Ré-affecter les joueurs présents pour l'équipe B sélectionnée" /></a>
 								<br>
 								<select name="equipeB" id="equipeB" onChange="changeEquipeB();" tabindex="10">
@@ -226,11 +216,11 @@
 								<input size="1" type="text" name="coeffB" value="{$coeffB}" tabindex="11" />
 							</td>
 							<td align="left">
-								<label for="arbitre2">Arbitre</label>
+								<label for="arbitre2">{#Arbitre#}</label>
 								<input type="text" size="30" name="arbitre2" id="arbitre2" placeholder="nom prenom, n° licence ou équipe" value="{$arbitre2}" tabindex="14"/>
 								<input type="text" size="5" name="arbitre2_matric" readonly id="arbitre2_matric" value="{$arbitre2_matric}"/>
 								<br />
-								<label for="comboarbitre2">secondaire</label>
+								<label for="comboarbitre2">{#Secondaire#}</label>
 								<select class="combolong" name="comboarbitre2" onChange="arbitre2_matric.value=this.options[this.selectedIndex].value; arbitre2.value=this.options[this.selectedIndex].text;" tabindex="15">
 									<Option Value="-1"></Option>
 									{section name=i loop=$arrayArbitre}
@@ -242,19 +232,19 @@
 						</tr>
 						<tr class="hideTr">
 							<td align="left" id='clickup' style="color:#555555" colspan="2">
-								<i><u>Masquer le formulaire</u></i>
+								<i><u>{#Masquer_le_formulaire#}</u></i>
 							</td>
 							<td align="center" colspan=2>
-								<input type="button" onclick="Add();" id="addMatch" name="addMatch" value="Ajouter" tabindex="16">
-								<input type="button" {if $idMatch eq '-1'} disabled {/if} onclick="Update();" id="updateMatch" name="updateMatch" value="Modifier" tabindex="17">
-								<input type="button" onclick="Raz();" id="razMatch" name="razMatch" value="Annuler" tabindex="18">
+								<input type="button" onclick="Add();" id="addMatch" name="addMatch" value="{#Ajouter#}" tabindex="16">
+								<input type="button" {if $idMatch eq '-1'} disabled {/if} onclick="Update();" id="updateMatch" name="updateMatch" value="{#Modifier#}" tabindex="17">
+								<input type="button" onclick="Raz();" id="razMatch" name="razMatch" value="{#Annuler#}" tabindex="18">
 							</td>
 							<td align="right">
-								<a href="GestionEquipeJoueur.php?idEquipe=1"><i>Pool arbitres...</i></a>
+								<a href="GestionEquipeJoueur.php?idEquipe=1"><i>{#Pool_arbitres#}...</i></a>
 							</td>
 						</tr>
 						<tr id='clickdown'>
-							<td colspan="6" align="left" style="color:#555555"><i><u>Afficher le formulaire</u></i></td>
+							<td colspan="6" align="left" style="color:#555555"><i><u>{#Afficher_le_formulaire#}</u></i></td>
 						</tr>
 					</table>
 					{/if}
@@ -264,7 +254,7 @@
 						<tr>
 							<td width=480>
 						       	<fieldset>
-									<label>Sélection:</label>
+									<label>{#Selection#}:</label>
 									&nbsp;
 									<a href="#" {$TropDeMatchs} onclick="setCheckboxes('formJournee', 'checkMatch', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" alt="Sélectionner tous" title="Sélectionner tous" /></a>
 									<a href="#" {$TropDeMatchs} onclick="setCheckboxes('formJournee', 'checkMatch', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" alt="Sélectionner aucun" title="Sélectionner aucun" /></a>
@@ -284,7 +274,7 @@
 							</td>
 							<td width=450>
 						       	<fieldset>
-									<label>Tous les matchs:</label>
+									<label>{#Tous_les_matchs#}:</label>
 									&nbsp;
 									<a href="FeuilleListeMatchs.php" {$TropDeMatchs} Target="_blank" title="Liste des Matchs {$TropDeMatchsMsg}"><img height="25" src="../img/ListeFR.gif" /></a>
 									&nbsp;
@@ -301,7 +291,7 @@
 							</td>
 							<td>
 								&nbsp;&nbsp;
-								<span id='reachspan'><i>Surligner:</i></span><input type=text name='reach' id='reach' size='20'>
+								<span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach' size='20'>
 							</td>
 						</tr>
 					</table>
@@ -313,26 +303,26 @@
 								<tr>
 									<th>&nbsp;</th>
 									<th><img height="25" src="../img/oeil2.gif" alt="Publier ?" title="Publier ?" border="0"></th>
-									<th>N°</th>
+									<th>{#Num#}</th>
 									<th width=45>&nbsp;</th>
-									<th>Heure</th>
+									<th>{#Heure#}</th>
 									<th>Cat.</th>
 									{if $PhaseLibelle == 1}
-										<th>Phase</th>
-										<th>Intitulé</th>
+										<th>{#Phase#}</th>
+										<th>{#Intitule#}</th>
 									{else}
-										<th>Code</th>
-										<th>Lieu</th>
+										<th>{#Code#}</th>
+										<th>{#Lieu#}</th>
 									{/if}
-									<th>Type</th>
-									<th>Terr</th>
-									<th>Equipe A</th>
-									<th>Sc A</th>
+									<th>{#Type#}</th>
+									<th>{#Terr#}</th>
+									<th>{#Equipe#} A</th>
+									<th>{#Sc#} A</th>
 									<th><img height="25" src="../img/verrou2.gif" alt="Verrouiller ?" title="Verrouiller ? (et publier le score)" border="0"></th>
-									<th>Sc B</th>
-									<th>Equipe B</th>
-									<th>Arbitre 1 </th>	
-									<th>Arbitre 2 </th>	
+									<th>{#Sc#} B</th>
+									<th>{#Equipe#} B</th>
+									<th>{#Arbitre#} 1 </th>	
+									<th>{#Arbitre#} 2 </th>	
 									<th colspan=2>coef.</th>
 									<th>&nbsp;</th>
 								</tr>
@@ -594,7 +584,7 @@
 						<br />
 					</div>
 						{assign var='nbmatch' value=$smarty.section.i.iteration-1}
-						{if $nbmatch > 0}Nb matchs : {$nbmatch}{/if}
+						{if $nbmatch > 0}{#Nb_matchs#} : {$nbmatch}{/if}
 				</div>
 			</form>
 		</div>

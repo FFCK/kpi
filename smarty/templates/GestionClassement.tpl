@@ -11,14 +11,14 @@
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
 
 				<div class='blocLeft'>
-					<div class='titrePage'>Classement</div>
-					<label for="saisonTravail">Saison :</label>
+					<div class='titrePage'>{#Classement#}</div>
+					<label for="saisonTravail">{#Saison#} :</label>
 					<select name="saisonTravail" onChange="sessionSaison()">
 						{section name=i loop=$arraySaison} 
 							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} (Travail){/if}</Option>
 						{/section}
 					</select>
-					<label for="codeCompet">Comp&eacute;tition :</label>
+					<label for="codeCompet">{#Competition#} :</label>
 					<select name="codeCompet" onChange="changeCompetition();">
 						{section name=i loop=$arrayCompetition} 
 							<Option Value="{$arrayCompetition[i][0]}" {$arrayCompetition[i][2]}>{$arrayCompetition[i][1]}</Option>
@@ -27,7 +27,7 @@
 					&nbsp;
 					<a href="GestionJournee.php?Compet={$codeCompet}" title="Acc&egrave;s direct aux matchs de cette comp&eacute;tition"><img src="../img/b_match.png" alt="Matchs" height="20"></a>
 					<br>
-					<label for="orderCompet">Type de classement : </label>
+					<label for="orderCompet">{#Type_de_classement#} : </label>
 					{if $profile <= 3 && $AuthModif == 'O'}
 						<select name="orderCompet" onChange="changeOrderCompetition();">
 							{section name=i loop=$arrayOrderCompetition} 
@@ -57,18 +57,18 @@
 										<th></th>
 									{/if}
 									<th>Cl.</th>
-									<th>Classement type {$typeCompetition}</th>
+									<th>{#Classement#} type {$typeCompetition}</th>
 									{if $typeCompetition=='Championnat'}
-										<th>Pts</th>
+										<th>{#Pts#}</th>
 									{/if}
-									<th>J</th>
-									<th>G</th>
-									<th>N</th>
-									<th>P</th>
-									<th>F</th>
+									<th>{#J#}</th>
+									<th>{#G#}</th>
+									<th>{#N#}</th>
+									<th>{#P#}</th>
+									<th>{#F#}</th>
 									<th>+</th>
 									<th>-</th>
-									<th>Diff</th>
+									<th>{#Diff#}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -143,7 +143,7 @@
 							<table id='tableauJQ2' class='tableauJQ tableau'>
 								<thead>
 									<tr>
-										<th colspan="12">Classement par phase</th>
+										<th colspan="12">{#Classement_par_phase#}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -154,15 +154,15 @@
 										{if $arrayEquipe_journee[i].Id_journee != $idJournee}
 											<tr class='head2'>
 												<th colspan="3">{$arrayEquipe_journee[i].Phase} ({$arrayEquipe_journee[i].Lieu})</th>
-												<th>Pts</th>
-												<th>J</th>
-												<th>G</th>
-												<th>N</th>
-												<th>P</th>
-												<th>F</th>
+												<th>{#Pts#}</th>
+												<th>{#J#}</th>
+												<th>{#G#}</th>
+												<th>{#N#}</th>
+												<th>{#P#}</th>
+												<th>{#F#}</th>
 												<th>+</th>
 												<th>-</th>
-												<th>Diff</th>
+												<th>{#Diff#}</th>
 											</tr>
 										{/if}
 										{assign var='idJournee' value=$arrayEquipe_journee[i].Id_journee}
@@ -203,18 +203,18 @@
 									{if $Code_niveau == 'INT'}
 										<th>&nbsp;</th>
 									{/if}
-									<th colspan="2">Classement public</th>
+									<th colspan="2">{#Classement_public#}</th>
 									{if $typeCompetition=='Championnat'}
-										<th>Pts</th>
+										<th>{#Pts#}</th>
 									{/if}
-									<th>J</th>
-									<th>G</th>
-									<th>N</th>
-									<th>P</th>
-									<th>F</th>
-									<th>+</th>
-									<th>-</th>
-									<th>Diff</th>
+                                    <th>{#J#}</th>
+                                    <th>{#G#}</th>
+                                    <th>{#N#}</th>
+                                    <th>{#P#}</th>
+                                    <th>{#F#}</th>
+                                    <th>+</th>
+                                    <th>-</th>
+                                    <th>{#Diff#}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -265,7 +265,7 @@
 								<thead>
 									<tr>
 										<th></th>
-										<th colspan="11">Classement public par phase</th>
+										<th colspan="11">{#Classement_public_par_phase#}</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -276,15 +276,15 @@
 										{if $arrayEquipe_journee_publi[i].Id_journee != $idJournee}
 											<tr class='head2Public'>
 												<th colspan="3">{$arrayEquipe_journee_publi[i].Phase} ({$arrayEquipe_journee_publi[i].Lieu})</th>
-												<th>Pts</th>
-												<th>J</th>
-												<th>G</th>
-												<th>N</th>
-												<th>P</th>
-												<th>F</th>
-												<th>+</th>
-												<th>-</th>
-												<th>Diff</th>
+												<th>{#Pts#}</th>
+												<th>{#J#}</th>
+                                                <th>{#G#}</th>
+                                                <th>{#N#}</th>
+                                                <th>{#P#}</th>
+                                                <th>{#F#}</th>
+                                                <th>+</th>
+                                                <th>-</th>
+                                                <th>{#Diff#}</th>
 											</tr>
 										{/if}
 										{assign var='idJournee' value=$arrayEquipe_journee_publi[i].Id_journee}
@@ -319,24 +319,24 @@
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=4>
-								<label>Classement type {$typeCompetition}</label>
+								<label>{#Classement#} type {$typeCompetition}</label>
 							</th>
 						</tr>
 						<tr>
 							<td align='center' colspan=4>
-								{if $Date_calcul == '00/00/00 &agrave;  00h00'}Classement non calcul&eacute;{else}
-								Calcul du {$Date_calcul}<br>&nbsp;(par {$UserName_calcul}){/if}<br>
+								{if $Date_calcul == '00/00/00 &agrave;  00h00'}{#Classement_non_calcule#}{else}
+								{#Calcul#}: {$Date_calcul}<br>&nbsp;({#par#} {$UserName_calcul}){/if}<br>
 								<hr>
 							</td>
 						</tr>
 						{if ($profile <= 6 or $profile == 9) && $AuthModif == 'O'}
 							<tr>
 								<td align='center' width=20><input type="checkbox" name="allMatchs" id="allMatchs" value="ok"{if $Mode_calcul == 'tous'} checked{/if}></td>
-								<td colspan=3>Inclure les matchs non verrouill&eacute;s</td>
+								<td colspan=3>{#Inclure_les_matchs_non_verrouilles#}</td>
 							</tr>
 							<tr>
 								<td colspan=4>
-									<input type="button" onclick="computeClt();" name="Calculer" value="Recalculer">
+									<input type="button" onclick="computeClt();" name="Calculer" value="{#Recalculer#}">
 								</td>
 							</tr>
 						{/if}
@@ -344,7 +344,7 @@
 							<tr>
 								<td colspan=4>
 									<hr>
-									<input type="button" onclick="initClt();" name="Initialiser" value="Classement initial...">
+									<input type="button" onclick="initClt();" name="Initialiser" value="{#Classement_initial#}...">
 									<hr>
 								</td>
 							</tr>
@@ -355,29 +355,34 @@
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=4>
-								<label>Classement public</label>
+								<label>{#Classement_public#}</label>
 							</th>
 						</tr>
 						<tr>
 							
 							<td colspan=4 align='center' class='color{if $Date_publication_calcul eq $Date_calcul}O{else}N{/if}'>
 								{if $Code_uti_publication != ''}
-									{if $Date_publication_calcul == '00/00/00 &agrave;  00h00'}Classement manuel{else}Calcul&eacute; le {$Date_publication_calcul}{/if}<br>
-									Publi&eacute; le {$Date_publication}<br>
-									par {$UserName_publication}
+									{if $Date_publication_calcul == '00/00/00 &agrave;  00h00'}
+                                        {#Classement_manuel#}
+                                    {else}
+                                        {#Calcul#}: {$Date_publication_calcul}
+                                    {/if}
+                                    <br>
+									{#Publication#}: {$Date_publication}<br>
+									{#par#} {$UserName_publication}
 									{if $Date_publication_calcul != $Date_calcul}
-									<br><br>
-									Attention : Classement publi&eacute;<br>diff&eacute;rent du dernier calcul !
+                                        <br><br>
+                                        {#Attention_classement_different#}
 									{/if}
 								{else}
-									Classement non publi&eacute; !
+									{#Classement_non_publie#} !
 								{/if}
 							</td>
 						</tr>
 						{if ($profile <= 4) && $AuthModif == 'O'}
 							<tr>
 								<td colspan=4 align='center'>
-									<input type="button" onclick="publicationClt();" name="Publier" value="Publier le nouveau classement">
+									<input type="button" onclick="publicationClt();" name="Publier" value="{#Publier_nouveau_classement#}">
 								</td>
 							</tr>
 						{/if}
@@ -386,7 +391,7 @@
 								<td>&nbsp;&nbsp;</td>
 								<td align='center' colspan="2">
 									<br>
-									<input type="button" onclick="depublicationClt();" name="D&eacute;-publier" value="-Supprimer le classement public-">
+									<input type="button" onclick="depublicationClt();" name="D&eacute;-publier" value="-{#Supprimer_classement_public#}-">
 								</td>
 								<td>&nbsp;&nbsp;</td>
 							</tr>
@@ -397,14 +402,14 @@
                     <table>
                         {if $typeCompetition=='Championnat'}
                             <tr>
-                                <td colspan=2 align='left'><b>Admin<br><i>(provisoire)</i></b></td>
+                                <td colspan=2 align='left'><b>Admin<br><i>({#Provisoire#})</i></b></td>
                                 <td colspan=2 align='right'><b>Public</b></td>
                             </tr>
                             <tr>
                                 <td align='left'>
                                     <a href="FeuilleCltChpt.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral admin" title="Classement g&eacute;n&eacute;ral admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>Classement g&eacute;n&eacute;ral</td>
+                                <td colspan=2 align='center'>{#Classement_general#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltChpt.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral public" title="Classement g&eacute;n&eacute;ral public" /></a>
@@ -415,7 +420,7 @@
                                 <td align='left'>
                                     <a href="FeuilleCltChptDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe admin" title="D&eacute;tail par &eacute;quipe admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>D&eacute;tail par &eacute;quipe</td>
+                                <td colspan=2 align='center'>{#Detail_par_equipe#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltChptDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe public" title="D&eacute;tail par &eacute;quipe public" /></a>
@@ -426,7 +431,7 @@
                                 <td align='left'>
                                     <a href="FeuilleCltNiveauJournee.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par journ&eacute;e admin" title="D&eacute;tail par journ&eacute;e admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>D&eacute;tail par journ&eacute;e</td>
+                                <td colspan=2 align='center'>{#Detail_par_journee#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par journ&eacute;e public" title="D&eacute;tail par journ&eacute;e public" /></a>
@@ -435,14 +440,14 @@
                             </tr>
                         {else}
                             <tr>
-                                <td colspan=2 align='left'><b>Admin<br><i>(provisoire)</i></b></td>
+                                <td colspan=2 align='left'><b>Admin<br><i>({#Provisoire#})</i></b></td>
                                 <td colspan=2 align='right'><b>Public</b></td>
                             </tr>
                             <tr>
                                 <td align='left'>
                                     <a href="FeuilleCltNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral admin" title="Classement g&eacute;n&eacute;ral admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>Classement g&eacute;n&eacute;ral</td>
+                                <td colspan=2 align='center'>{#Classement_general#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="Classement g&eacute;n&eacute;ral public" title="Classement g&eacute;n&eacute;ral public" /></a>
@@ -453,7 +458,7 @@
                                 <td align='left'>
                                     <a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase admin" title="D&eacute;tail par phase admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>D&eacute;tail par phase</td>
+                                <td colspan=2 align='center'>{#Detail_par_phase#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase public" title="D&eacute;tail par phase public" /></a>
@@ -464,7 +469,7 @@
                                 <td align='left'>
                                     <a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par niveau admin" title="D&eacute;tail par niveau admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>D&eacute;tail par niveau</td>
+                                <td colspan=2 align='center'>{#Detail_par_niveau#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltNiveauNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par niveau public" title="D&eacute;tail par niveau public" /></a>
@@ -475,7 +480,7 @@
                                 <td align='left'>
                                     <a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe admin" title="D&eacute;tail par &eacute;quipe admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>D&eacute;tail par &eacute;quipe</td>
+                                <td colspan=2 align='center'>{#Detail_par_equipe#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe public" title="D&eacute;tail par &eacute;quipe public" /></a>
@@ -490,7 +495,7 @@
 							<td align='left'>
 								<a href="FeuilleListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30" src="../img/pdf.png" alt="Liste des matchs admin" title="Liste des matchs admin" /></a>
 							</td>
-							<td colspan=2 align='center'>Matchs</td>
+							<td colspan=2 align='center'>{#Matchs#}</td>
 							<td align='right'>
 								<a href="../PdfListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30" src="../img/pdf.png" alt="Liste des matchs public" title="Liste des matchs public" /></a>
 							</td>

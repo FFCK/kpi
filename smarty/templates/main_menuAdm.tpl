@@ -13,11 +13,11 @@
 			
 		{/section}
 		{if $bPublic}
-			<li {if $lang == 'EN'} class="current"{/if}><a href="?lang=EN"><img width="22" src="img/Pays/GBR.png" alt="EN" title="EN" /></a></li>
-			<li {if $lang == 'FR'} class="current"{/if}><a href="?lang=FR"><img width="22" src="img/Pays/FRA.png" alt="FR" title="FR" /></a></li>
+			<li {if $lang == 'en'} class="current"{/if}><a href="?lang=en"><img width="22" src="img/Pays/GBR.png" alt="EN" title="EN" /></a></li>
+			<li {if $lang == 'fr'} class="current"{/if}><a href="?lang=fr"><img width="22" src="img/Pays/FRA.png" alt="FR" title="FR" /></a></li>
 		{else}
-			<li {if $lang == 'EN'} class="current"{/if}><a href="?lang=EN"><img width="22" src="../img/Pays/GBR.png" alt="EN" title="EN" /></a></li>
-			<li {if $lang == 'FR'} class="current"{/if}><a href="?lang=FR"><img width="22" src="../img/Pays/FRA.png" alt="FR" title="FR" /></a></li>
+			<li {if $lang == 'en'} class="current"{/if}><a href="?lang=en"><img width="22" src="../img/Pays/GBR.png" alt="EN" title="EN" /></a></li>
+			<li {if $lang == 'fr'} class="current"{/if}><a href="?lang=fr"><img width="22" src="../img/Pays/FRA.png" alt="FR" title="FR" /></a></li>
 		{/if}
 	</ul>
 	{if $currentmenu != 'Accueil'}
