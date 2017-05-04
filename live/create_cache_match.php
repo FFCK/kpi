@@ -1,5 +1,4 @@
 <?php
-include_once('../commun/MyParams.php');
 
 class CacheMatch
 {
@@ -17,7 +16,7 @@ class CacheMatch
 		else
 			$this->m_bCache = true;
 			
-		$this->m_bFTP = true;
+		$this->m_bFTP = false; // fopen !
 		if ($this->m_bFTP)
 			$this->InitFTP();
     }
@@ -69,9 +68,20 @@ class CacheMatch
 		{
 			$in = array("è", "é", "ê", "ç", "ô", "î", "â", "à","È", "É", "Ê", "Ç", "Ô", "Î", "Â", "À", "Ï", "Ä", "Ë", "Ö", "Ü");  
 			$out = array("&egrave;","&eacute;","&ecric;","&ccedil;","&ocirc;","&icirc;","&acirc;","&agrave;","&Egrave;","&Eacute;","&Ecric;","&Ccedil;","&Ocirc;","&Icirc;","&Acirc;","&Agrave;","&Iuml;","&Auml;","&Euml;", "&Ouml;", "&Uuml;");
-			file_put_contents($_SERVER['DOCUMENT_ROOT']."/live/cache/$fileName", str_replace($in,$out,ob_get_contents()."@@END@@"));
+			$content = str_replace($in, $out, ob_get_contents() . "@@END@@");
+            if($this->m_bFTP) {
+                // C'est pas du FTP !!!
+                file_put_contents($_SERVER['DOCUMENT_ROOT']."/live/cache/$fileName", $content);
+            } else {
+                if(!file_put_contents(dirname(__FILE__) . "/cache/$fileName", $content)) {
+                    $error = "Ecriture échouée :";
+                }
+            }
+            
 			ob_end_clean();
-			
+            if(isset($error)) {
+                echo $error;
+            }
 /*
 			if ($this->m_bFTP)
 			{
@@ -343,4 +353,3 @@ class CacheMatch
 			return $tMatchs[$idBest]['Id'];
 	}
 }	
-?>

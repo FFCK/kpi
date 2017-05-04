@@ -10,7 +10,6 @@ if(!$isAjax) {
 	
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
-
 include_once('../../live/create_cache_match.php');
 
 	session_start();

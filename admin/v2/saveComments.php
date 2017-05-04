@@ -36,10 +36,16 @@ include_once('../../commun/MyTools.php');
 	$sql  = "SELECT Id_journee, Validation FROM gickp_Matchs WHERE Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 	$row = mysql_fetch_array($result);
-	if (!utyIsAutorisationJournee($row['Id_journee']))
-		die ("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
-	if ($row['Validation']=='O')
-		die ("Ce match est verrouillé !");
+	if (!utyIsAutorisationJournee($row['Id_journee'])) {
+        header('HTTP/1.0 401 Unauthorized');
+        echo "Vous n'avez pas l'autorisation de modifier les matchs de cette journée !";
+        exit;
+    }
+	if ($row['Validation']=='O') {
+        header('HTTP/1.0 401 Unauthorized');
+        echo "Ce match est verrouillé !";
+        exit;
+    }
 	
 	$sql  = "UPDATE gickp_Matchs SET Commentaires_officiels = '".$value2."'";
 	if($heure_fin_match != '')

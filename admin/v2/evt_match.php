@@ -14,14 +14,14 @@ include_once('../../commun/MyTools.php');
 	session_start();
 
 	$myBdd = new MyBdd();
-	$idMatch = (int)$_POST['idMatch'];
+	$idMatch = (int)utyGetPost('idMatch', 0);
 	// M1-00:00-V-A-186002-5
-	$ligne = $myBdd->RealEscapeString(trim($_POST['ligne']));
+	$ligne = $myBdd->RealEscapeString(trim(utyGetPost('ligne')));
 	$ligne = explode('-', $ligne);
-	$ancienneLigne = $myBdd->RealEscapeString(trim($_POST['ancienneLigne']));
+	$ancienneLigne = $myBdd->RealEscapeString(trim(utyGetPost('ancienneLigne')));
 	$ancienneLigne = explode('-', $ancienneLigne);
-	$type = $myBdd->RealEscapeString(trim($_POST['type']));
-	$idLigne = $myBdd->RealEscapeString(trim($_POST['idLigne']));
+	$type = $myBdd->RealEscapeString(trim(utyGetPost('type')));
+	$idLigne = $myBdd->RealEscapeString(trim(utyGetPost('idLigne')));
 	$idLigne = explode('_', $idLigne);
 	
 /*	// SECURITY HOLE ***************************************************************

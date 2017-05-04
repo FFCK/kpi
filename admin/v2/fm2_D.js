@@ -36,7 +36,10 @@
 									}
 								},
 								'text' // Format des données reçues.
-							);
+							)
+                            .fail(function(xhr, status, error){
+                                custom_alert(lang.Action_impossible + '<br>' + error, lang.Attention);
+                            });
 						},
 						'Annuler/Dismiss': function() {
 							$( this ).dialog( "close" );
