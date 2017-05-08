@@ -143,7 +143,7 @@
 								<table class='tableau2'>
 									<thead>
 										<tr>
-											<th colspan=11>Matchs joués</th>
+											<th colspan=13>Matchs joués</th>
 										</tr>
 										<tr>
 											<th>Saison</th>
@@ -157,6 +157,8 @@
 											<th>Vert</th>
 											<th>Jaune</th>
 											<th>Rouge</th>
+                                            <th>Tirs</th>
+                                            <th>Arrêts</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -184,10 +186,14 @@
 													{if $Joueur[i].Vert > 0}<td class='vert'>{$Joueur[i].Vert}</td>{else}<td></td>{/if}
 													{if $Joueur[i].Jaune > 0}<td class='jaune'>{$Joueur[i].Jaune}</td>{else}<td></td>{/if}
 													{if $Joueur[i].Rouge > 0}<td class='rouge'>{$Joueur[i].Rouge}</td>{else}<td></td>{/if}
+													{if $Joueur[i].Tir > 0}<td class='gris'>{$Joueur[i].Tir}</td>{else}<td></td>{/if}
+													{if $Joueur[i].Arret > 0}<td class='gris'>{$Joueur[i].Arret}</td>{else}<td></td>{/if}
 												{else}
 													<td><i>{$Joueur[i].eqA} / {$Joueur[i].eqB}</i></td>
 													<td>&nbsp;</td>
 													<td><i>n°{$Joueur[i].Num} {$Joueur[i].Capitaine|replace:'E':'Entraineur'|replace:'A':'Arbitre'|replace:'C':'Cap'|replace:'-':''}</i></td>
+													<td>&nbsp;</td>
+													<td>&nbsp;</td>
 													<td>&nbsp;</td>
 													<td>&nbsp;</td>
 													<td>&nbsp;</td>

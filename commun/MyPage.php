@@ -227,6 +227,13 @@ class MyPage
 			$this->DisplayTemplateGlobal('kppage');
 	}
     
+	// DisplayTemplateLogin
+	function DisplayTemplateLogin($tplName)
+	{
+			$this->m_tpl->assign('contenutemplate', $tplName);	
+			$this->DisplayTemplateGlobal('pagelogin');
+	}
+    
 	// DisplayTemplate
 	function DisplayTemplateGlobal($tplName)
 	{

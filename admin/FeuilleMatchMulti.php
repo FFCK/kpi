@@ -59,7 +59,7 @@ class FeuilleMatch extends MyPage
 			// Infos match
 		//	if(!Is_Numeric ($chaqueMatch[$h]))
 		//		return;
-			$sql  = "Select a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Type, ";
+			$sql  = "Select a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Type, ";
 			$sql .= "a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, ";
 			$sql .= "b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison ";
 			$sql .= "From gickp_Matchs a, gickp_Journees b ";
@@ -233,6 +233,7 @@ class FeuilleMatch extends MyPage
 			}
 			$secretaire = $row['Secretaire'];
 			$chronometre = $row['Chronometre'];
+            $timeshoot =  $row['Timeshoot'];
 			$phase = $row['Phase'];
 			if($row6['En_actif'] == 'O')
 			{

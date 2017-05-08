@@ -18,10 +18,8 @@ class UnLogin extends MyPage
   		$_SESSION = array();
 		}
 
-		header("Location: http://".$_SERVER['HTTP_HOST'].MAIN_DIRECTORY."/index.php");	
+		header("Location: ../index.php");	
 	}		
 }		  	
 
 $page = new UnLogin();
-
-?>

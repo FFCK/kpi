@@ -36,7 +36,7 @@ class GestionMatchDetail extends MyPageSecure
 		$version = utyGetGet('lang', $version);
 		$_SESSION['lang'] = $version;
 		$lang = $langue[$version];
-		$inputText = '<form method="GET" action="FeuilleMarque2.php" name="formFeuille" enctype="multipart/form-data">
+		$inputText = '<form method="GET" action="FeuilleMarque3stats.php" name="formFeuille" enctype="multipart/form-data">
 						<input type="tel" name="idMatch" /><input type="submit" value="Go" />
 					</form>
                     <br>';
@@ -127,7 +127,6 @@ class GestionMatchDetail extends MyPageSecure
 			$sql5 .= "c.Nom, c.Prenom ";
 			$sql5 .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
 			$sql5 .= "Where d.Id_match = $idMatch ";
-			//$sql5 .= "AND d.Equipe_A_B = 'A' ";
 			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id ";
 			$result5 = mysql_query($sql5, $myBdd->m_link) or die ("Erreur Load<br />".$sql5);
 			$num_results5 = mysql_num_rows($result5);
@@ -136,10 +135,11 @@ class GestionMatchDetail extends MyPageSecure
 <html lang="fr">
 <head>
 		<meta charset="utf-8">
-		<title>Match <?php echo $row['Numero_ordre']; ?></title>
+		<title><?php echo $lang['Match'] . ' ' . $row['Numero_ordre']; ?> (Stats)</title>
 		<link href="v2/jquery-ui.min.css" rel="stylesheet">
 		<link href="v2/jquery.dataTables.css" rel="stylesheet">
 		<link href="v2/fmv2.css" rel="stylesheet">
+		<link href="v2/fmv3stats.css" rel="stylesheet">
 		<?php if($verrou != 'O') { ?>
 			<link href="v2/fmv2O.css" rel="stylesheet">
 		<?php	}	?>
@@ -172,7 +172,7 @@ class GestionMatchDetail extends MyPageSecure
             var start_time = new Date();
             
         </script>
-		<script type="text/javascript" src="v2/fm2_A.js"></script>
+		<script type="text/javascript" src="v2/fm3stats_A.js"></script>
 
     <?php if($verrou == 'O' || $_SESSION['Profile'] <= 0 || $_SESSION['Profile'] > 6) { ?>
         <script>    
@@ -185,14 +185,14 @@ class GestionMatchDetail extends MyPageSecure
     <?php	}	?>
 				
     <?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-        <script type="text/javascript" src="v2/fm2_B.js"></script>
+        <script type="text/javascript" src="v2/fm3stats_B.js"></script>
     <?php } ?>
         
     <?php if($verrou != 'O') { ?>
-        <script type="text/javascript" src="v2/fm2_C.js"></script>
+        <script type="text/javascript" src="v2/fm3stats_C.js"></script>
     <?php	}	?>
         
-        <script type="text/javascript" src="v2/fm2_D.js"></script>
+        <script type="text/javascript" src="v2/fm3stats_D.js"></script>
         <script>
             
             $(function() {
@@ -210,12 +210,7 @@ class GestionMatchDetail extends MyPageSecure
                     } else {
                         $('#P1, #P2, #TB').show();
                     }
-					statutActive(statutMatch, 'N');
 				<?php	}	?>
-				$('#end_match_time').val('<?php echo substr($heure_fin,-5,2).'h'.substr($heure_fin,-2) ?>');
-				if(statutMatch != 'END') {
-                    $('.endmatch').hide();
-                }
 				$('#' + periode_en_cours).addClass('actif');
 				switch (periode_en_cours) {
 					case 'P1':
@@ -274,7 +269,7 @@ class GestionMatchDetail extends MyPageSecure
                         default:
                             $evt_temp_js = '';
 							break;
-					}
+                    }
 					echo $evt_temp_js;
 				}
 				if($num_results5 >= 1)
@@ -289,8 +284,8 @@ class GestionMatchDetail extends MyPageSecure
 		<form>
 			<img src="v2/FFCK.gif" id="logo" />
 			<div id="avert"></div>
-			<a href="#" class="fm_bouton fm_tabs" id="tabs-1_link"><?php echo $lang['Parametres_match']; ?><span class="icon_parametres"></span></a>
-			<a href="#" class="fm_bouton fm_tabs" id="tabs-2_link"><?php echo $lang['Deroulement_match']; ?><span class="icon_rignt"></span></a>
+			<a id="btn_change_match" class="fm_bouton fm_tabs" ><?php echo $lang['Changer_match']; ?>...</a>
+			<!--<a id="btn_change_match" class="fm_bouton fm_tabs" >Changer de match...</a>-->
 			<h3 class="centre"><?php 
 				echo $row['Code_competition'];
 				if($row['Code_typeclt'] == 'CHPT')
@@ -299,7 +294,7 @@ class GestionMatchDetail extends MyPageSecure
 					echo ' ('.$row['Soustitre2'].')';
 				if($row['Phase'] != '')
 					echo ' - '.$row['Phase'];
-				echo ' - ' . $lang['Match_no'] . $row['Numero_ordre']; ?><br />
+				echo ' - ' . $lang['Match_no'] . $row['Numero_ordre']; ?> (Stats)<br />
                 <?php 
                     if($version == 'en') {
                         echo $row['Date_match'];
@@ -309,237 +304,16 @@ class GestionMatchDetail extends MyPageSecure
                     echo ' ' . $lang['a_'] . ' ' . $row['Heure_match'] . ' - ' . $lang['Terrain'] . ' '.$row['Terrain']; 
                 ?>
             </h3>
-			<div id="tabs-1" class="tabs_content">
-				<div id="accordion">
-					<div class="note"><?php echo $lang['A_remplir']; ?></div>
-					<h3><?php echo $lang['Parametres_match']; ?> ID# <?php echo $idMatch; ?></h3>
-					<div>
-						<div class="moitie">
-							<?php echo $lang['Type_match']; ?> : 
-							<br />
-							<span id="typeMatch">
-								<input type="radio" name="typeMatchtypeMatch" id="typeMatchClassement" <?php if($row['Type_match'] == 'C') echo 'checked="checked"'; ?> />
-                                <label for="typeMatchClassement" title="<?php echo $lang['Egalite_possible']; ?>"><?php echo $lang['Match_classement']; ?></label>
-								<input type="radio" name="typeMatch" id="typeMatchElimination" <?php if($row['Type_match'] == 'E') echo 'checked="checked"'; ?> />
-                                <label for="typeMatchElimination" title="<?php echo $lang['Vainqueur_obligatoire']; ?>"><?php echo $lang['Match_elimination']; ?></label>
-							</span>
-							<img id="typeMatchImg" style="vertical-align:middle;" title="<?php if($row['Type_match'] == 'C'){ echo $lang['Match_classement']; }else{ echo $lang['Match_elimination'];} ?>" alt="<?php echo $lang['Type_match']; ?>" src="../img/type<?php echo $row['Type_match']; ?>.png" />
-                            <br>
-							<br>
-							<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-								<span title="<?php echo $lang['PC_Course_seulement']; ?>"><?php echo $lang['Publication']; ?> : </span>
-								<br />
-								<span id="publiMatch">
-									<input type="radio" name="publiMatch" id="prive" <?php if($publiMatch != 'O') echo 'checked="checked"'; ?> /><label for="prive" title="<?php echo $lang['Match_prive']; ?>"><?php echo $lang['Prive']; ?></label>
-									<input type="radio" name="publiMatch" id="public" <?php if($publiMatch == 'O') echo 'checked="checked"'; ?> /><label for="public" title="<?php echo $lang['Match_public']; ?>"><?php echo $lang['Public']; ?></label>
-								</span>
-							<?php } ?>
-							<img height="30" style="vertical-align:middle;" title="<?php echo $lang['Publier']; ?> ?" alt="<?php echo $lang['Publier']; ?> ?" src="../img/oeil2<?php if($publiMatch == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
-							<br />
-							<br />
-							<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="btn_stats" name="btn_stats" value="Stats" />
-							<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="pdfFeuille" name="pdfFeuille" value="PDF" />
-                            <a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=fr&p=fm2&idMatch=<?php echo $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
-                            <a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=en&p=fm2&idMatch=<?php echo $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
-							<br />
-							<br />
-							<?php echo $lang['Charger_autre_feuille']; ?> :
-							<br />
-							ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" />
-                            <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?php echo $lang['Charger']; ?>" />
-						</div>
-						<div class="moitie droite">
-							<span id="validScoreMatch">
-								<i><?php echo $lang['Score_officiel']; ?> :<br />
-								<span class="presentScore"><?php echo $row['equipeA']; ?> <span class="score" id="scoreA4"><?php echo $row['ScoreA']; ?></span> - <span class="score" id="scoreB4"><?php echo $row['ScoreB']; ?></span> <?php echo $row['equipeB']; ?></span>
-								</i>
-								<br />
-								<br />
-								<?php echo $lang['Score_provisoire']; ?> :<br />
-								<span class="presentScore"><?php echo $row['equipeA']; ?> <span class="score" id="scoreA3">0</span> - <span class="score" id="scoreB3">0</span> <?php echo $row['equipeB']; ?></span>
-								<?php if($verrou != 'O') { ?>
-									<br />
-									<br />
-									<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="validScore" name="validScore" value="<?php echo $lang['Valider_score']; ?>" />
-								<?php } ?>
-							</span>
-							<br />
-							<br />
-							<span title="<?php echo $lang['PC_Course_seulement']; ?>"><?php echo $lang['Controle_match']; ?> : </span>
-							<br />
-							<span id="controleMatch">
-								<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-									<input type="radio" name="controleMatch" id="controleOuvert" <?php if($verrou != 'O') echo 'checked="checked"'; ?> /><label for="controleOuvert"><?php echo $lang['Ouvert']; ?></label>
-								<?php } ?>
-								<input type="radio" name="controleMatch" id="controleVerrou" <?php if($verrou == 'O') echo 'checked="checked"'; ?> /><label for="controleVerrou"><?php echo $lang['Verrouille']; ?></label>
-							</span>
-							<img height="30" style="vertical-align:middle;" title="<?php echo $lang['Verrouille']; ?> ?" alt="<?php echo $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if($verrou == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
-						</div>
-					</div>
-					<h3><?php echo $lang['Officiels']; ?></h3>
-					<div>
-						<div class="moitie">
-							<label><?php echo $lang['Secretaire']; ?> : </label><br /><span class="editOfficiel" id="Secretaire"><?php echo $row['Secretaire']; ?></span><br />
-							<label><?php echo $lang['Chronometre']; ?> : </label><br /><span class="editOfficiel" id="Chronometre"><?php echo $row['Chronometre']; ?></span><br />
-							<label><?php echo $lang['Time_shoot']; ?> : </label><br /><span class="editOfficiel" id="Timeshoot"><?php echo $row['Timeshoot']; ?></span><br />
-							<br />
-							<label><?php echo $lang['Arbitre_1']; ?> : </label><br /><span class="editArbitres" id="Arbitre_principal"><?php echo $row['Arbitre_principal']; ?></span><br />
-							<label><?php echo $lang['Arbitre_2']; ?> : </label><br /><span class="editArbitres" id="Arbitre_secondaire"><?php echo $row['Arbitre_secondaire']; ?></span><br />
-							<label><?php echo $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne1"><?php echo $row['Ligne1']; ?></span><br />
-							<label><?php echo $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne2"><?php echo $row['Ligne2']; ?></span><br />
-						</div>
-						<div class="moitie droite">
-							<label><?php echo $lang['Club_organisateur']; ?> : </label><?php echo $row['Organisateur']; ?><br />
-							<label><?php echo $lang['R1'] ?> : </label><?php echo $row['Responsable_R1']; ?><br />
-							<label><?php echo $lang['Delegue'] ?> : </label><?php echo $row['Delegue']; ?><br />
-							<label><?php echo $lang['Chef_arbitre'] ?> : </label><?php echo $row['ChefArbitre']; ?><br />
-							<label><?php echo $lang['RC'] ?> : </label><?php echo $row['Responsable_insc']; ?><br />
-							<br />
-
-						</div>
-					</div>
-					<h3><?php echo $lang['Equipe'] ?> A - <img src="../img/Pays/<?php echo $paysA; ?>.png" width="25" height="16" /> <?php echo $row['equipeA']; ?>								
-						<span class="score" id="scoreA2">0</span>
-					</h3>
-					<div>
-						<table class="dataTable" id="equipeA">
-							<thead>
-								<tr>
-									<th><?php echo $lang['Num'] ?></th>
-									<th><?php echo $lang['Statut'] ?></th>
-									<th><?php echo $lang['Nom'] ?></th>
-									<th><?php echo $lang['Prenom'] ?></th>
-									<th><?php echo $lang['Licence'] ?></th>
-									<th>Cat.</th>
-									<th><?php echo $lang['Supp'] ?></th>
-								</tr>
-							</thead>
-							<tbody>
-							<?php
-								$joueur_temp = '';
-								$entr_temp = '';
-								for ($i=1;$i<=$num_results3;$i++)
-								{
-									$row3 = mysql_fetch_array($result3);
-									$age = utyCodeCategorie2($row3["Naissance"], $saison);
-									if($row3["Capitaine"] != 'E'){
-										$joueur_temp  = '<tr>';
-										$joueur_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</td>';
-										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row3["Prenom"])).'</td>';
-										$joueur_temp .= '<td>';
-										if($row3["Matric"] < 2000000)
-											$joueur_temp .= $row3["Matric"];
-										$joueur_temp .= '</td>';
-										$joueur_temp .= '<td>'.$age.'</td>';
-										$joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
-										$joueur_temp .= '</tr>';
-									}else{
-										$entr_temp  = '<tr>';
-										$entr_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</td>';
-										$entr_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row3["Prenom"])).'</td>';
-										$entr_temp .= '<td>';
-										if($row3["Matric"] < 2000000)
-											$entr_temp .= $row3["Matric"];
-										$entr_temp .= '</td>';
-										$entr_temp .= '<td>'.$age.'</td>';
-										$entr_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
-										$entr_temp .= '</tr>';
-										$joueur_temp = '';
-									}
-									echo $joueur_temp;
-								}
-								echo $entr_temp;
-								if($num_results3 >= 1)
-									mysql_data_seek($result3,0); 
-							?>
-							</tbody>
-						</table>
-						<input class="ui-button ui-widget ui-corner-all" type="button" name="initA" id="initA" value="<?php echo $lang['Recharger_joueurs'] ?>" />
-					</div>			
-					<h3><?php echo $lang['Equipe'] ?> B - <img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>								
-						<span class="score" id="scoreB2">0</span>
-					</h3>
-					<div>
-						<table class="dataTable" id="equipeB">
-							<thead>
-								<tr>
-									<th><?php echo $lang['Num'] ?></th>
-									<th><?php echo $lang['Statut'] ?></th>
-									<th><?php echo $lang['Nom'] ?></th>
-									<th><?php echo $lang['Prenom'] ?></th>
-									<th><?php echo $lang['Licence'] ?></th>
-									<th>Cat.</th>
-									<th><?php echo $lang['Supp'] ?></th>
-								</tr>
-							</thead>
-							<tbody>
-							<?php
-								$joueur_temp = '';
-								$entr_temp = '';
-								for ($i=1;$i<=$num_results4;$i++)
-								{
-									$row4 = mysql_fetch_array($result4);
-									$age = utyCodeCategorie2($row4["Naissance"], $saison);
-									if($row4["Capitaine"] != 'E'){
-										$joueur_temp  = '<tr>';
-										$joueur_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</td>';
-										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
-										$joueur_temp .= '<td>';
-										if($row4["Matric"] < 2000000)
-											$joueur_temp .= $row4["Matric"];
-										$joueur_temp .= '</td>';
-										$joueur_temp .= '<td>'.$age.'</td>';
-										$joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
-										$joueur_temp .= '</tr>';
-									}else{
-										$entr_temp  = '<tr>';
-										$entr_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</td>';
-										$entr_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
-										$entr_temp .= '<td>';
-										if($row4["Matric"] < 2000000)
-											$entr_temp .= $row4["Matric"];
-										$entr_temp .= '</td>';
-										$entr_temp .= '<td>'.$age.'</td>';
-										$entr_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
-										$entr_temp .= '</tr>';
-										$joueur_temp = '';
-									}
-									echo $joueur_temp;
-								}
-								echo $entr_temp;
-								if ($num_results4 >= 1) {
-                                    mysql_data_seek($result4, 0);
-                                }
-                            ?>
-							</tbody>
-						</table>
-						<input class="ui-button ui-widget ui-corner-all" type="button" name="initB" id="initB" value="<?php echo $lang['Recharger_joueurs'] ?>" />
-					</div>			
-				</div>			
-			</div>
-			<div id="tabs-2" class="tabs_content">
 				<table class="maxWidth" id="deroulement_match">
 					<tr>
 						<th colspan="3">
 							<span class="match"></span>
-							<a href="#" id="ATT" class="fm_bouton statut<?php if($statutMatch == 'ATT') echo ' actif'; ?>"><?php echo $lang['En_attente']; ?></a>
-                            <a href="#" id="ON" class="fm_bouton statut<?php if($statutMatch == 'ON') echo ' actif'; ?>"><?php echo $lang['En_cours']; ?></a>
-                            <a href="#" id="END" class="fm_bouton statut<?php if($statutMatch == 'END') echo ' actif'; ?>"><?php echo $lang['Termine']; ?></a>
-							<span class="endmatch"><?php echo $lang['Fin'] ?> : </span><input type="tel" id="end_match_time" class="fm_input_text endmatch" value="<?php echo $row['Heure_fin']; ?>" />
-							<br />
 							<a href="#" id="M1" class="fm_bouton periode<?php if($periodeMatch == 'M1') echo ' actif'; ?>"><?php echo $lang['period_M1']; ?></a>
                             <a href="#" id="M2" class="fm_bouton periode<?php if($periodeMatch == 'M2') echo ' actif'; ?>"><?php echo $lang['period_M2']; ?></a>
                             <a href="#" id="P1" class="fm_bouton periode<?php if($periodeMatch == 'P1') echo ' actif'; ?>"><?php echo $lang['period_P1']; ?></a>
                             <a href="#" id="P2" class="fm_bouton periode<?php if($periodeMatch == 'P2') echo ' actif'; ?>"><?php echo $lang['period_P2']; ?></a>
                             <a href="#" id="TB" class="fm_bouton periode<?php if($periodeMatch == 'TB') echo ' actif'; ?>"><?php echo $lang['period_TB']; ?></a>
+                            
 <!-- CHRONO DEBUG
 <br />
 start_time: <span id="start_time_display"></span><br />
@@ -580,17 +354,6 @@ stop_time: <span id="stop_time_display"></span><br />
 							?>
 						</td>
 						<td id="selectionChrono" class="centre">
-							<div id="zoneChrono">
-								<img id="chrono_moins" src="v2/images/moins.gif" />
-								<span id="chronoText"><?php echo $lang['Chrono'] ?> : </span><span id="updateChrono"><img src="v2/valider.gif" /></span><input type="tel" id="heure" class="fm_input_text" title="<?php echo $lang['Parametres_chrono'] ?>" readonly />
-								<span class="icon_parametres" id="dialog_ajust_opener" title="<?php echo $lang['Parametres_chrono'] ?>"></span>
-								<img id="chrono_plus" src="v2/images/plus.gif" /><br />
-								
-								<a href="#" id="start_button" class="fm_bouton chronoButton">Start</a>
-								<a href="#" id="run_button" class="fm_bouton chronoButton">Run</a>
-								<a href="#" id="stop_button" class="fm_bouton chronoButton">Stop</a>
-								<a href="#" id="raz_button" class="fm_bouton chronoButton"><?php echo $lang['RAZ'] ?></a>
-							</div>
 							<div id="zoneEvt">
 								<a href="#" id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but"><?php echo $lang['But'] ?></span></a>
 								<a href="#" id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton"><img src="v2/carton_vert.png" /></a>
@@ -605,6 +368,8 @@ stop_time: <span id="stop_time_display"></span><br />
 								<?php echo $lang['Temps'] ?> : <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00" />
 								<img id="time_moins2" src="v2/images/moins.gif" />
 								<img id="time_plus2" src="v2/images/plus.gif" />
+								<img id="time_moins3" src="v2/images/moins.gif" />
+								<img id="time_plus3" src="v2/images/plus.gif" />
 								<br />
 								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3">OK</a>
 								<a href="#" id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?php echo $lang['Modifier'] ?></a>
@@ -660,8 +425,6 @@ stop_time: <span id="stop_time_display"></span><br />
 								</tr>
 							</table>
 							<table id="list" class="maxWidth">
-<!--
--->
 								<?php
 								$evt_temp = '';
 								for ($i=1;$i<=$num_results5;$i++)
@@ -740,32 +503,17 @@ stop_time: <span id="stop_time_display"></span><br />
 				<br />
 				<br />
 				<br />
-			</div>
-				<div id="dialog_ajust" title="<?php echo $lang['Parametres_chrono'] ?>">
-					<h3 id="dialog_ajust_periode">
-					</h3>
-					<p>
-						<?php echo $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
-					</p>
-					<p>
-						<?php echo $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
-					</p>
-				</div>
-				<div id="dialog_end" title="<?php echo $lang['Fin_periode'] ?>">
-					<p class="centre">
-						<span class="fm_input_text" id="periode_end">00:00</span><br /><?php echo $lang['Periode_terminee'] ?>
-					</p>
-				</div>
-				<div id="dialog_end_match" title="<?php echo $lang['Fin_match'] ?>">
-					<p class="centre">
-						<?php echo $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
-					</p>
-					<p class="centre">
-						<?php echo $lang['Commentaires_officiels'] ?> :<br />
-						<textarea id="commentaires" rows="4" cols="50"></textarea>
-					</p>
-				</div>
-
+                
+            <div id="dialog_change_match" title="<?php echo $lang['Charger_autre_feuille'] ?>">
+                <h3 id="dialog_ajust_periode">
+                </h3>
+                <p class="centre">
+                    ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" />
+                    <br>
+                    <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?php echo $lang['Charger']; ?>" />
+                </p>
+                
+            </div>
 		</form>
 	</body>
 </html>
@@ -782,3 +530,4 @@ stop_time: <span id="stop_time_display"></span><br />
 }		  	
 
 $page = new GestionMatchDetail();
+

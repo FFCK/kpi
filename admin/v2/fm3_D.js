@@ -115,11 +115,11 @@
 					}
 				});
 				
-				// VERSION PDF
+				/* VERSION PDF */
 				$('#pdfFeuille').buttonset();
 				$('#pdfFeuille').click(function(event) {
 					event.preventDefault();
-					window.open('FeuilleMatchMulti.php?listMatch=' + idMatch, '_blank');
+					window.open('FeuilleMatchMulti.php?listMatch=' + idMatch,'_blank');
 				});
                 
                 // Stats

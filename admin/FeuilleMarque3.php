@@ -36,7 +36,7 @@ class GestionMatchDetail extends MyPageSecure
 		$version = utyGetGet('lang', $version);
 		$_SESSION['lang'] = $version;
 		$lang = $langue[$version];
-		$inputText = '<form method="GET" action="FeuilleMarque2.php" name="formFeuille" enctype="multipart/form-data">
+		$inputText = '<form method="GET" action="FeuilleMarque3.php" name="formFeuille" enctype="multipart/form-data">
 						<input type="tel" name="idMatch" /><input type="submit" value="Go" />
 					</form>
                     <br>';
@@ -127,7 +127,6 @@ class GestionMatchDetail extends MyPageSecure
 			$sql5 .= "c.Nom, c.Prenom ";
 			$sql5 .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
 			$sql5 .= "Where d.Id_match = $idMatch ";
-			//$sql5 .= "AND d.Equipe_A_B = 'A' ";
 			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id ";
 			$result5 = mysql_query($sql5, $myBdd->m_link) or die ("Erreur Load<br />".$sql5);
 			$num_results5 = mysql_num_rows($result5);
@@ -172,7 +171,7 @@ class GestionMatchDetail extends MyPageSecure
             var start_time = new Date();
             
         </script>
-		<script type="text/javascript" src="v2/fm2_A.js"></script>
+		<script type="text/javascript" src="v2/fm3_A.js"></script>
 
     <?php if($verrou == 'O' || $_SESSION['Profile'] <= 0 || $_SESSION['Profile'] > 6) { ?>
         <script>    
@@ -185,14 +184,14 @@ class GestionMatchDetail extends MyPageSecure
     <?php	}	?>
 				
     <?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-        <script type="text/javascript" src="v2/fm2_B.js"></script>
+        <script type="text/javascript" src="v2/fm3_B.js"></script>
     <?php } ?>
         
     <?php if($verrou != 'O') { ?>
-        <script type="text/javascript" src="v2/fm2_C.js"></script>
+        <script type="text/javascript" src="v2/fm3_C.js"></script>
     <?php	}	?>
         
-        <script type="text/javascript" src="v2/fm2_D.js"></script>
+        <script type="text/javascript" src="v2/fm3_D.js"></script>
         <script>
             
             $(function() {
@@ -458,7 +457,7 @@ class GestionMatchDetail extends MyPageSecure
 							?>
 							</tbody>
 						</table>
-						<input class="ui-button ui-widget ui-corner-all" type="button" name="initA" id="initA" value="<?php echo $lang['Recharger_joueurs'] ?>" />
+						<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" name="initA" id="initA" value="<?php echo $lang['Recharger_joueurs'] ?>" />
 					</div>			
 					<h3><?php echo $lang['Equipe'] ?> B - <img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>								
 						<span class="score" id="scoreB2">0</span>
@@ -518,10 +517,10 @@ class GestionMatchDetail extends MyPageSecure
 								if ($num_results4 >= 1) {
                                     mysql_data_seek($result4, 0);
                                 }
-                            ?>
+							?>
 							</tbody>
 						</table>
-						<input class="ui-button ui-widget ui-corner-all" type="button" name="initB" id="initB" value="<?php echo $lang['Recharger_joueurs'] ?>" />
+						<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" name="initB" id="initB" value="<?php echo $lang['Recharger_joueurs'] ?>" />
 					</div>			
 				</div>			
 			</div>
@@ -660,8 +659,6 @@ stop_time: <span id="stop_time_display"></span><br />
 								</tr>
 							</table>
 							<table id="list" class="maxWidth">
-<!--
--->
 								<?php
 								$evt_temp = '';
 								for ($i=1;$i<=$num_results5;$i++)
@@ -741,30 +738,30 @@ stop_time: <span id="stop_time_display"></span><br />
 				<br />
 				<br />
 			</div>
-				<div id="dialog_ajust" title="<?php echo $lang['Parametres_chrono'] ?>">
-					<h3 id="dialog_ajust_periode">
-					</h3>
-					<p>
-						<?php echo $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
-					</p>
-					<p>
-						<?php echo $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
-					</p>
-				</div>
-				<div id="dialog_end" title="<?php echo $lang['Fin_periode'] ?>">
-					<p class="centre">
-						<span class="fm_input_text" id="periode_end">00:00</span><br /><?php echo $lang['Periode_terminee'] ?>
-					</p>
-				</div>
-				<div id="dialog_end_match" title="<?php echo $lang['Fin_match'] ?>">
-					<p class="centre">
-						<?php echo $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
-					</p>
-					<p class="centre">
-						<?php echo $lang['Commentaires_officiels'] ?> :<br />
-						<textarea id="commentaires" rows="4" cols="50"></textarea>
-					</p>
-				</div>
+            <div id="dialog_ajust" title="<?php echo $lang['Parametres_chrono'] ?>">
+                <h3 id="dialog_ajust_periode">
+                </h3>
+                <p>
+                    <?php echo $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
+                </p>
+                <p>
+                    <?php echo $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
+                </p>
+            </div>
+            <div id="dialog_end" title="<?php echo $lang['Fin_periode'] ?>">
+                <p class="centre">
+                    <span class="fm_input_text" id="periode_end">00:00</span><br /><?php echo $lang['Periode_terminee'] ?>
+                </p>
+            </div>
+            <div id="dialog_end_match" title="<?php echo $lang['Fin_match'] ?>">
+                <p class="centre">
+                    <?php echo $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
+                </p>
+                <p class="centre">
+                    <?php echo $lang['Commentaires_officiels'] ?> :<br />
+                    <textarea id="commentaires" rows="4" cols="50"></textarea>
+                </p>
+            </div>
 
 		</form>
 	</body>
@@ -782,3 +779,4 @@ stop_time: <span id="stop_time_display"></span><br />
 }		  	
 
 $page = new GestionMatchDetail();
+

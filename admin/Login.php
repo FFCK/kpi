@@ -158,7 +158,7 @@ class Login extends MyPage
 
 		$this->m_tpl->assign('Pwd', '');
 				
-		$this->DisplayTemplate('Login');
+		$this->DisplayTemplateLogin('Login');
 	}
 }		  	
 

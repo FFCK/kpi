@@ -28,6 +28,7 @@
 			#chrono_moins {width: 35px; float: left; top : 5px; left: 10px;}
 			#time_plus,  #time_moins {width: 25px; float: left; top : 5px; left: 10px; margin-left: 5px;}
 			#time_plus2, #time_moins2 {width: 25px; float: right; top : 5px; right: 10px; margin-right: 5px;}
+			#time_plus3, #time_moins3 {width: 25px; float: right; top : 5px; right: 10px; margin-right: 5px;}
 			#chronoText {width: 50px; }
 			#updateChrono { width: 50px; padding-right: 40px;}
 			
