@@ -476,7 +476,10 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		else if(jq(this).hasClass('arbitre'))
 		{
 			jq(this).before('<input type="text" id="inputZone2" class="directInputSpan" tabindex="'+tabindexVal+'" size="22" value="'+valeur+'">');
-			jq(this).before('<br /><input type="button" id="inputZone2valid" data-value2="0" value="valider"><input type="button" id="inputZone2annul" value="Annuler">');
+			jq(this).before('<br>\n\
+                            <input type="button" id="inputZone2valid" data-value2="0" value="valider">\n\
+                            <input type="button" id="inputZone2annul" value="Annuler">\n\
+                            <input type="button" id="inputZone2vid" data-value2="0" value="vider">');
 			datamatch = jq(this).attr('data-match');
 			datajournee = jq(this).attr('data-journee');
 			dataid = jq(this).attr('data-id');
@@ -495,12 +498,13 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			});
 			jq("#inputZone2").result(function(event, data, formatted) {
 				if (data) {
-					if(data[1] == 'XXX')
-					{
-						//jq("#inputZone2").val('');
-					}
-					else
-					{
+					if(data[1] == 'XXX') {
+						jq("#inputZone2").val('');
+						jq("#inputZone2valid").attr('data-match', datamatch);
+						jq("#inputZone2valid").attr('data-id', dataid);
+						jq("#inputZone2valid").attr('data-value', '');
+						jq("#inputZone2valid").attr('data-value2', 0);
+					} else {
 						if(data[4] != '')
 							var nomArb = data[2]+' '+data[3]+' ('+data[4]+') '+data[5];
 						else
@@ -530,11 +534,12 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	jq('#inputZone2annul').live('click', function(event){
 		event.preventDefault;
-		jq('#inputZone2annul + span').show();
+		jq('#inputZone2vid + span').show();
 		jq('#inputZone2 + br').remove();
 		jq('#inputZone2').remove();
 		jq('#inputZone2valid').remove();
 		jq('#inputZone2annul').remove();
+		jq('#inputZone2vid').remove();
 	});
 	jq('#inputZone2valid').live('click', function(event){
 		event.preventDefault;
@@ -561,11 +566,48 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 						jq('#inputZone2annul ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
 					}
 					//compléter format(retour ligne, contrôle valeur n°arbitre)
-					jq('#inputZone2annul + span').show();
+					jq('#inputZone2vid + span').show();
 					jq('#inputZone2 + br').remove();
 					jq('#inputZone2').remove();
 					jq('#inputZone2valid').remove();
 					jq('#inputZone2annul').remove();
+					jq('#inputZone2vid').remove();
+				}
+			},
+			'text' // Format des données reçues.
+		);
+	});
+	jq('#inputZone2vid').live('click', function(event){
+		event.preventDefault;
+		lavaleur = '';
+		lavaleur2 = 0;
+		lavaleur3 = lavaleur + '|' + lavaleur2;
+		lidMatch = datamatch;
+		lid = dataid;
+		jq.post(
+			'v2/saveArbitres.php', // Le fichier cible côté serveur.
+			{
+				idMatch : lidMatch,
+				id : lid,
+				value : lavaleur3
+			},
+			function(data){ // callback
+				if(data){
+					lavaleur = lavaleur.replace(' (',' <br />(');
+					lavaleur = lavaleur.replace(') ',')<br /> ');
+					jq('#inputZone2annul + span').html(lavaleur);
+					if(lavaleur2 == 0){
+						jq('#inputZone2annul ~ span').addClass('pbArb').attr('title','Arbitre non identifié');
+					}else{
+						jq('#inputZone2annul ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
+					}
+					//compléter format(retour ligne, contrôle valeur n°arbitre)
+					jq('#inputZone2vid + span').show();
+					jq('#inputZone2 + br').remove();
+					jq('#inputZone2').remove();
+					jq('#inputZone2valid').remove();
+					jq('#inputZone2annul').remove();
+					jq('#inputZone2vid').remove();
 				}
 			},
 			'text' // Format des données reçues.

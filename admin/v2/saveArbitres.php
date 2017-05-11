@@ -18,7 +18,12 @@ include_once('../../commun/MyTools.php');
 	$id = $myBdd->RealEscapeString(trim($_POST['id']));
 	$value = explode('|',$_POST['value']);
 	$value[0] = $myBdd->RealEscapeString(trim($value[0]));
-	$value[1] = $myBdd->RealEscapeString(trim($value[1]));
+	if(isset($value[1])) {
+        $value[1] = (int)$myBdd->RealEscapeString(trim($value[1]));
+    } else {
+        $value[1] = 0;
+    }
+    
 /*	// SECURITY HOLE ***************************************************************
 	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
 	$json_invalid = json_encode($a_json_invalid);
@@ -42,11 +47,15 @@ include_once('../../commun/MyTools.php');
 	
 	$sql  = "UPDATE gickp_Matchs "
             . "SET ".$id." = '".$value[0]."' ";
-	if($id == 'Arbitre_principal' && $value[1] != '')
+	if($id == 'Arbitre_principal')
 		$sql .= ", Matric_arbitre_principal = ".$value[1]." ";
-	if($id == 'Arbitre_secondaire' && $value[1] != '')
+	if($id == 'Arbitre_secondaire')
 		$sql .= ", Matric_arbitre_secondaire = ".$value[1]." ";
 	$sql .= "WHERE Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
-	echo $value[0]; 
-
+	if($value[0] != '') {
+        echo $value[0];
+    } else {
+        echo $value[1];
+    }
+//echo '<br>'.$sql.'<br>'.$value[1];

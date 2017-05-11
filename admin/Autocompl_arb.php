@@ -154,12 +154,13 @@ include_once('../commun/MyTools.php');
 		$m = (int)utyGetGet('sessionMatch',$m);
 		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 		$q = preg_replace('`^[0]*`','',$q);
-		$resultGlobal = '';
+		$resultGlobal = '(vider)|XXX||||\n';
 		
-		if($j == '' && $m == '')
-			$resultGlobal .= "Selectionnez une journee / une phase !|XXX|||\n";
-		else
-		{
+		if($j == '' && $m == '') {
+			$resultGlobal = "Selectionnez une journee / une phase !|XXX||||\n";
+        } elseif(strlen($q) < 2) {
+            $resultGlobal = "2 caractères minimum !|XXX||||\n";
+        } else {
 			// Equipes
 			$resultGlobal .= "------------- Equipes engagées -------------\n";
 			$sql  = "Select a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet ";
@@ -239,8 +240,12 @@ include_once('../commun/MyTools.php');
 				$matric = $row['Matric'];
 				$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
 				$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
-				$naissance = $row['Naissance'];
-				$sexe = $row['Sexe'];
+				if(isset($row['Naissance'])) {
+                    $naissance = $row['Naissance'];
+                }
+                if(isset($row['Sexe'])) {
+                    $sexe = $row['Sexe'];
+                }
 				$resultGlobal .= "$nom $prenom ($libelle) $arb|$matric|$nom|$prenom|$libelle|$arb\n";
 			}
 			// Autres arbitres
