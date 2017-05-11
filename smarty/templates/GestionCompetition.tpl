@@ -130,10 +130,10 @@
 					</div>
 				</div>
 			{/if}
-		    </form>    
   				<div class='blocRight'>
 					{if $profile == 9}
-					<form method="GET" action="FeuilleMarque2.php" name="formCompet" enctype="multipart/form-data">
+                    </form>    
+                        <form method="GET" action="FeuilleMarque2.php" name="formCompet" enctype="multipart/form-data">
 						<table width="100%" class='vert'>
 							<tr>
 								<th class='titreForm' colspan=2>
@@ -158,6 +158,7 @@
 								</td>
 							</tr>
 						</table>
+                        </form>
 					{elseif $profile <= 6}
 						<table width="100%" class='vert'>
 							<tr>
