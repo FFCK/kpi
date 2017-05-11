@@ -20,7 +20,7 @@
             
 		<title>{$smarty.config.$title|default:$title}</title>
 	</head>
-	<body onload="alertMsg('{$AlertMessage}')">
+	<body>
 
         {include file="$contenutemplate.tpl"}
         

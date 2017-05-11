@@ -1,0 +1,1 @@
+$(function() {    $('#chargeFeuille').click(function(event){        event.preventDefault();        var target = $('#target').val();        window.location = target + '?idMatch=' + $('#idFeuille').val();    });        $('#retour').click(function(event){        event.preventDefault();        window.location = 'GestionCompetition.php';    });});

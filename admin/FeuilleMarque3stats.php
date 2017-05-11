@@ -36,18 +36,12 @@ class GestionMatchDetail extends MyPageSecure
 		$version = utyGetGet('lang', $version);
 		$_SESSION['lang'] = $version;
 		$lang = $langue[$version];
-		$inputText = '<form method="GET" action="FeuilleMarque3stats.php" name="formFeuille" enctype="multipart/form-data">
-						<input type="tel" name="idMatch" /><input type="submit" value="Go" />
-					</form>
-                    <br>';
-        if($version == 'fr') {
-            $inputText .= '<a href="'.$_SERVER['REQUEST_URI'].'&lang=en">English version...</a>';
-        } else {
-            $inputText .= '<a href="'.$_SERVER['REQUEST_URI'].'&lang=fr">Version française...</a>';
-        }
 		
-		if($idMatch < 1)
-			die ($lang['Selectionnez_feuille'].'<br />'.$inputText);
+		if( $idMatch < 1 ) {
+            header("Location: SelectFeuille.php?target=FeuilleMarque3stats.php");
+			exit;
+        }
+        
 		$myBdd = new MyBdd();
 		// Contrôle autorisation journée
 		$sql  = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, m.Heure_fin, j.*, j.Code_saison saison, c.*, "
@@ -505,8 +499,6 @@ stop_time: <span id="stop_time_display"></span><br />
 				<br />
                 
             <div id="dialog_change_match" title="<?php echo $lang['Charger_autre_feuille'] ?>">
-                <h3 id="dialog_ajust_periode">
-                </h3>
                 <p class="centre">
                     ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" />
                     <br>

@@ -420,3 +420,15 @@ td.colorCapC {background: #BFB;} /*vert*/
 .newBtn {
     padding: 5px;
 }
+
+#accesFeuillelink {
+    text-decoration: none;    
+}
+#accesFeuilleButton {
+    display: block;
+    width: 100%;
+    padding: 15px 5px;
+    font-size: 1.5em;
+
+}
+

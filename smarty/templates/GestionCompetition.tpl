@@ -103,7 +103,7 @@
 											{/if}
 										</td>
 										<td>{$arrayCompet[i].Nb_equipes|default:'&nbsp;'}</td>
-										<td alt="Verrouiller les feuilles de présence" title="Verrouiller les feuilles de présence">
+										<td title="Verrouiller les feuilles de présence">
 											{if $profile <= 3 && $AuthModif == 'O'}
 											<!--
 												<a href="#" Id="Verrou{$arrayCompet[i].Code}" onclick="verrou('{$arrayCompet[i].Code}', '{$arrayCompet[i].Verrou}')">
@@ -130,10 +130,9 @@
 					</div>
 				</div>
 			{/if}
-		        
+		    </form>    
   				<div class='blocRight'>
 					{if $profile == 9}
-					</form>
 					<form method="GET" action="FeuilleMarque2.php" name="formCompet" enctype="multipart/form-data">
 						<table width="100%" class='vert'>
 							<tr>
@@ -166,7 +165,7 @@
 									<label class='maxWith'>Accès direct feuille de marque</label>
 								</th>
 							</tr>
-							<tr>
+							{*<tr>
 								<td colspan=2>
 									<label for="accesFeuille" class='maxWith'>Identifiant feuille de marque : </label>
 									<img border="0" title="Saisissez l'identifiant de la feuille de marque (numéro précédé de ID# en bas à droite de la feuille de marque) " 
@@ -174,13 +173,15 @@
 									src="../img/b_help.png" 
 									onclick="alert('Saisissez l\'identifiant de la feuille de marque (numéro précédé de ID# en bas à droite de la feuille de marque) ')">
 								</td>
-							</tr>
+							</tr>*}
 							<tr>
-								<td width="60%">
+								{*<td width="60%">
 									<input class='maxWith newInput' type="tel" name="accesFeuille" maxlength=15 id="accesFeuille" />
-								</td>
-								<td>
-									<input class='maxWith newBtn' type="button" name="accesFeuilleBtn" id="accesFeuilleBtn" value="Accès" />
+								</td>*}
+                                <td colspan="2">
+                                    <a href="FeuilleMarque2.php" target="_blank" id="accesFeuillelink">
+                                        <button class='maxWith newBtn' type="button" name="accesFeuilleButton" id="accesFeuilleButton">Feuille de marque</button>
+                                    </a>
 								</td>
 							</tr>
 						</table>

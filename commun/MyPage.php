@@ -228,7 +228,7 @@ class MyPage
 	}
     
 	// DisplayTemplateLogin
-	function DisplayTemplateLogin($tplName)
+	function DisplayTemplateBootstrap($tplName)
 	{
 			$this->m_tpl->assign('contenutemplate', $tplName);	
 			$this->DisplayTemplateGlobal('pagelogin');
