@@ -19,7 +19,7 @@
 			<link type="text/css" rel="stylesheet" href="css/jquery.tooltip.css" media="screen" />
                         {assign var=temp value="css/$contenutemplate.css"} 
                         {if is_file($temp)}
-                            <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css" />
+                            <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
                         {/if}
 			<!-- 
 				Css = '' (simply, zsainto, ckca...) 
@@ -36,21 +36,21 @@
 			<script src="js/jquery.tooltip.min.js"></script>
 			<script src="js/jquery.maskedinput.min.js"></script>
 			<script src="js/jquery.fixedheadertable.min.js"></script>
-			<script src="js/formTools.js"></script>
+			<script src="js/formTools.js?v={$NUM_VERSION}"></script>
                         {assign var=temp value="js/$contenutemplate.js"} 
                         {if is_file($temp)}
-                            <script src="js/{$contenutemplate}.js"></script>
+                            <script src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
                         {/if}
 
 		{else}
 			<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
-			<link rel="stylesheet" type="text/css" href="../css/GestionStyle.css" />
+			<link rel="stylesheet" type="text/css" href="../css/GestionStyle.css?v={$NUM_VERSION}" />
 			<link type="text/css" rel="stylesheet" href="../css/dhtmlgoodies_calendar.css?random=20051112" media="screen" />
 			<link type="text/css" rel="stylesheet" href="../css/jquery.autocomplete.css" media="screen" />
 			<link type="text/css" rel="stylesheet" href="../css/jquery.tooltip.css" media="screen" />
 			{assign var=temp value="../css/$contenutemplate.css"} 
 			{if is_file($temp)}
-				<link type="text/css" rel="stylesheet" href="../css/{$contenutemplate}.css" />
+				<link type="text/css" rel="stylesheet" href="../css/{$contenutemplate}.css?v={$NUM_VERSION}" />
 			{/if}
 			
 			<!-- 
@@ -68,10 +68,10 @@
 			<script src="../js/jquery.tooltip.min.js"></script>
 			<script src="../js/jquery.maskedinput.min.js"></script>
 			<script src="../js/jquery.fixedheadertable.min.js"></script>
-			<script src="../js/formTools.js"></script>
+			<script src="../js/formTools.js?v={$NUM_VERSION}"></script>
 			{assign var=temp value="../js/$contenutemplate.js"} 
 			{if is_file($temp)}
-				<script src="../js/{$contenutemplate}.js"></script>
+				<script src="../js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
 			{/if}
 		{/if}
 		<title>{$smarty.config.$title|default:$title}</title>

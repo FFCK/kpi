@@ -534,7 +534,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	jq('#inputZone2annul').live('click', function(event){
 		event.preventDefault;
-		jq('#inputZone2vid + span').show();
+		jq('#inputZone2vid ~ span').show();
 		jq('#inputZone2 + br').remove();
 		jq('#inputZone2').remove();
 		jq('#inputZone2valid').remove();
@@ -559,14 +559,14 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 				if(data){
 					lavaleur = lavaleur.replace(' (',' <br />(');
 					lavaleur = lavaleur.replace(') ',')<br /> ');
-					jq('#inputZone2annul + span').html(lavaleur);
+					jq('#inputZone2vid ~ span').html(lavaleur);
 					if(lavaleur2 == 0){
-						jq('#inputZone2annul ~ span').addClass('pbArb').attr('title','Arbitre non identifié');
+						jq('#inputZone2vid ~ span').addClass('pbArb').attr('title','Arbitre non identifié');
 					}else{
-						jq('#inputZone2annul ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
+						jq('#inputZone2vid ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
 					}
 					//compléter format(retour ligne, contrôle valeur n°arbitre)
-					jq('#inputZone2vid + span').show();
+					jq('#inputZone2vid ~ span').show();
 					jq('#inputZone2 + br').remove();
 					jq('#inputZone2').remove();
 					jq('#inputZone2valid').remove();
@@ -595,14 +595,14 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 				if(data){
 					lavaleur = lavaleur.replace(' (',' <br />(');
 					lavaleur = lavaleur.replace(') ',')<br /> ');
-					jq('#inputZone2annul + span').html(lavaleur);
+					jq('#inputZone2vid ~ span').html(lavaleur);
 					if(lavaleur2 == 0){
-						jq('#inputZone2annul ~ span').addClass('pbArb').attr('title','Arbitre non identifié');
+						jq('#inputZone2vid ~ span').addClass('pbArb').attr('title','Arbitre non identifié');
 					}else{
-						jq('#inputZone2annul ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
+						jq('#inputZone2vid ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
 					}
 					//compléter format(retour ligne, contrôle valeur n°arbitre)
-					jq('#inputZone2vid + span').show();
+					jq('#inputZone2vid ~ span').show();
 					jq('#inputZone2 + br').remove();
 					jq('#inputZone2').remove();
 					jq('#inputZone2valid').remove();
