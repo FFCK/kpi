@@ -227,6 +227,13 @@ class MyPage
 			$this->DisplayTemplateGlobal('kppage');
 	}
     
+	// DisplayTemplateFullPage
+	function DisplayTemplateFullPage($tplName)
+	{
+			$this->m_tpl->assign('contenutemplate', $tplName);	
+			$this->DisplayTemplateGlobal('fppage');
+	}
+    
 	// DisplayTemplateLogin
 	function DisplayTemplateBootstrap($tplName)
 	{
