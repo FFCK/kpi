@@ -1,4 +1,4 @@
-<div class="container titre">
+<div class="container titre"> 
     <div class="col-md-9">
         <h1 class="col-md-11 col-xs-9">{#Matchs#}</h1>
     </div>
