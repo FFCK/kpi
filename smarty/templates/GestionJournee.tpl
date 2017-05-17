@@ -1,6 +1,5 @@
 		&nbsp;(<a href="GestionCalendrier.php">Retour</a>)
 		<br>
-{*		<iframe name="iframeRechercheLicenceIndi2" id="iframeRechercheLicenceIndi2" SRC="RechercheLicenceIndi2.php" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>*}
 		<div class="main">
 			<form method="POST" action="GestionJournee.php" name="formJournee" id="formJournee" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value=''/>
@@ -309,7 +308,7 @@
 									<th>Cat.</th>
 									{if $PhaseLibelle == 1}
 										<th>{#Phase#}</th>
-										<th>{#Intitule#}</th>
+										<th>{#Code#}</th>
 									{else}
 										<th>{#Code#}</th>
 										<th>{#Lieu#}</th>

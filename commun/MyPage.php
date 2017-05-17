@@ -39,6 +39,7 @@ class MyPage
 		
 		$this->m_tpl->assign('userName', ucwords(strtolower(utyGetSession('userName'))));	
 		$this->m_tpl->assign('Club', utyGetSession('Club'));
+		$this->m_tpl->assign('masquer', utyGetSession('masquer', 0));
 
 		$arrayMenu = array();
 		

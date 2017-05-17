@@ -12,6 +12,7 @@
 			Limite : {$Limit_Clubs|default:'Aucune'}<br>
 			<a href="GestionParamUser.php">Mes paramètres</a><br>
 			<a href="UnLogin.php">Déconnexion</a><br>
+            <a href="" id="masquer" title="Masquer la bannière">Masquer</a><br>
 			{if $bMirror == 1}
 				<br>
 				<span class='vert'>Base Mirror</span>

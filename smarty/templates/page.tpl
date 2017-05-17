@@ -37,10 +37,10 @@
 			<script src="js/jquery.maskedinput.min.js"></script>
 			<script src="js/jquery.fixedheadertable.min.js"></script>
 			<script src="js/formTools.js?v={$NUM_VERSION}"></script>
-                        {assign var=temp value="js/$contenutemplate.js"} 
-                        {if is_file($temp)}
-                            <script src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
-                        {/if}
+            {assign var=temp value="js/$contenutemplate.js"} 
+            {if is_file($temp)}
+                <script src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
+            {/if}
 
 		{else}
 			<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
@@ -54,7 +54,7 @@
 			{/if}
 			
 			<!-- 
-				Css = '' (simply, zsainto, ckca...) 
+				Css = '' (simply, zsainto, ckca...)
 				notamment sur les pages Journee.php et Classements.php 
 				intégrer en iframe : 
 			-->
@@ -62,6 +62,9 @@
 			{if $css_supp && is_file($temp)}
 				<link type="text/css" rel="stylesheet" href="..css/{$css_supp}.css">
 			{/if}
+            <script>
+                masquer = {$masquer};
+            </script>
 			<script src="../js/dhtmlgoodies_calendar.js?random=20060118"></script>
 			<script src="../js/jquery-1.5.2.min.js"></script>
 			<script src="../js/jquery.autocomplete.min.js"></script>
