@@ -33,7 +33,7 @@
             <h3 class="col-sm-12">{#Palmares#}:</h3>
             {section  name=i loop=$arraySaisons}
                 {assign var='Saison' value=$arraySaisons[i].Saison}
-                <table class='table table-striped table-hover' id='tableMatchs'>
+                <table class='table table-striped table-hover table-condensed' id='tableMatchs'>
                     <caption><h3>{$Saison}</h3></caption>
                     <tbody>        
                         {section  name=j loop=$arrayPalmares[$Saison]}

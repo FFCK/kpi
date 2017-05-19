@@ -89,7 +89,7 @@
                         <div class="label label-warning">Classement provisoire</div>
                     {/if}
                 </div>
-                <table class='table table-striped table-hover' id='tableMatchs'>
+                <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
                     <thead>
                         {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
                             <tr>

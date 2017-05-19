@@ -28,7 +28,7 @@
         <a class="btn btn-default pull-right" href='kpclassements.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Classement_General#}Classement général...</a>
 
 		{*if $recordCompetition.Statut != 'END'*}
-            <table class='table table-striped table-hover' id='tableMatchs'>
+            <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
                 {if $recordCompetition.Code_typeclt == 'CHPT'}
                     <thead>
                         <tr>
@@ -129,7 +129,7 @@
             {if $arrayJournee[i].Type == 'C'}
                 <article class="padTopBottom table-responsive col-md-12">
                     <h4>{$arrayJournee[i].Phase}</h4>
-                    <table class='table table-striped table-hover' id='tableMatchs'>
+                    <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
                         <thead>
                             <tr>
                                 <th>#</th>

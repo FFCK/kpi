@@ -66,7 +66,7 @@
                 {section  name=j loop=$arrayCompets[$codesaison]}
                     {assign var='codecompet' value=$arrayCompets[$codesaison][j].code}
                     <div class="col-md-3 col-sm-6 col-xs-12">
-                        <table class='table table-striped table-hover' id='tableMatchs'>
+                        <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
                             <caption>
                                 {if $arrayCompets[$codesaison][j].Titre_actif != 'O' && $arrayCompets[$codesaison][j].Soustitre != ''}
                                     {$arrayCompets[$codesaison][j].Soustitre}
