@@ -100,7 +100,7 @@ class GestionEquipeJoueur extends MyPageSecure
 							$row['Verrou'] = '';
 					}
 				}
-				if(substr($row['Code_compet'],0,1) == 'N' || $row['Code_compet'] == 'MCP')
+				if(substr($row['Code_compet'],0,1) == 'N')
 					$typeCompet = 'CH';
 				elseif(substr($row['Code_compet'],0,2) == 'CF')
 					$typeCompet = 'CF';
@@ -248,47 +248,44 @@ class GestionEquipeJoueur extends MyPageSecure
 	
 	function Add()
 	{
-		
+		$myBdd = new MyBdd();
 		$idEquipe = utyGetPost('idEquipe', '');
 			
 		$matricJoueur = utyGetPost('matricJoueur', '');
-		$nomJoueur = utyGetPost('nomJoueur', '');
-		$prenomJoueur = utyGetPost('prenomJoueur', '');
-		$sexeJoueur = utyGetPost('sexeJoueur', '');
-		$naissanceJoueur = utyGetPost('naissanceJoueur', '');
-			$naissanceJoueur = utyDateFrToUs($naissanceJoueur);
-		$capitaineJoueur = utyGetPost('capitaineJoueur', '-');
-		$numeroJoueur = utyGetPost('numeroJoueur', '');
-		$arbitreJoueur = utyGetPost('arbitreJoueur', '');
+		$nomJoueur = strtoupper($myBdd->RealEscapeString(trim(utyGetPost('nomJoueur', ''))));
+		$prenomJoueur = strtoupper($myBdd->RealEscapeString(trim(utyGetPost('prenomJoueur', ''))));
+		$sexeJoueur = strtoupper($myBdd->RealEscapeString(trim(utyGetPost('sexeJoueur', ''))));
+		$naissanceJoueur = utyDateFrToUs(utyGetPost('naissanceJoueur', ''));
+		$capitaineJoueur = $myBdd->RealEscapeString(trim(utyGetPost('capitaineJoueur', '-')));
+		$numeroJoueur = $myBdd->RealEscapeString(trim(utyGetPost('numeroJoueur', '')));
+		$arbitreJoueur = $myBdd->RealEscapeString(trim(utyGetPost('arbitreJoueur', '')));
 		
 		if (strlen($idEquipe) > 0)
 		{
-			$myBdd = new MyBdd();
-	
 			$categJoueur = utyCodeCategorie2($naissanceJoueur);
 					
-			if (strlen($matricJoueur) == 0)
-				$matricJoueur = $myBdd->GetNextMatricLicence();
+			if (strlen($matricJoueur) == 0) {
+                $matricJoueur = $myBdd->GetNextMatricLicence();
+            }
 
-			$codeClub = $myBdd->GetCodeClubEquipe($idEquipe);
+            $codeClub = $myBdd->GetCodeClubEquipe($idEquipe);
 			$myBdd->InsertIfNotExistLicence($matricJoueur, $nomJoueur, $prenomJoueur, $sexeJoueur, $naissanceJoueur, $codeClub);
 			
 			$sql  = "Insert Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) Values (";
 			$sql .= $idEquipe;
-			$sql .= ",";
-			$sql .= mysql_real_escape_string($matricJoueur);
+			$sql .= ", $matricJoueur";
 			$sql .= ",'";
-			$sql .= mysql_real_escape_string($nomJoueur);
+			$sql .= $nomJoueur;
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($prenomJoueur);
+			$sql .= $prenomJoueur;
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($sexeJoueur);
+			$sql .= $sexeJoueur;
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($categJoueur);
+			$sql .= $categJoueur;
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($numeroJoueur);
+			$sql .= $numeroJoueur;
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($capitaineJoueur);
+			$sql .= $capitaineJoueur;
 			$sql .= "') ";
 			
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert");

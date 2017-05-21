@@ -153,34 +153,80 @@ class GestionAthlete extends MyPageSecure
 		}
 	}
 	
-	function Add()
+	function Update()
 	{
-
-
+        $myBdd = new MyBdd();
+        $update_matric = utyGetPost('update_matric');
+        if($update_matric < 2000000) {
+            return 'Modification interdite !';
+        }
+        $update_nom = strtoupper($myBdd->RealEscapeString(trim(utyGetPost('update_nom'))));
+        $update_prenom = strtoupper($myBdd->RealEscapeString(trim(utyGetPost('update_prenom'))));
+        $update_sexe = $myBdd->RealEscapeString(trim(utyGetPost('update_sexe')));
+        $update_naissance = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('update_naissance'))));
+        $update_saison = $myBdd->RealEscapeString(trim(utyGetPost('update_saison')));
+        
+        $sql  = "UPDATE gickp_Liste_Coureur SET Origine = $update_saison, Nom = '" . $update_nom . "', Prenom = '" . $update_prenom . "', "
+                . "Sexe = '" . $update_sexe . "', Naissance = '" . $update_naissance . "' "
+                . "WHERE Matric = $update_matric";
+        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+        
+        $sql  = "UPDATE gickp_Competitions_Equipes_Joueurs SET Nom = '" . $update_nom . "', Prenom = '" . $update_prenom . "', "
+                . "Sexe = '" . $update_sexe . "' "
+                . "WHERE Matric = $update_matric";
+        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+        
+        return "Modification effectuée !";
 	}
 	
-
+	function FusionJoueurs()
+	{
+		$myBdd = new MyBdd();
+		$numFusionSource = utyGetPost('numFusionSource', 0);
+		$numFusionCible = utyGetPost('numFusionCible', 0);
+		$sql  = "UPDATE `gickp_Matchs_Detail` ";
+		$sql .= "SET `Competiteur` = $numFusionCible "; 
+		$sql .= "WHERE `Competiteur` = $numFusionSource; ";
+		$myBdd->Query($sql);
+		$requete = $sql;
+		$sql  = "UPDATE `gickp_Matchs_Joueurs` ";
+		$sql .= "SET `Matric` = $numFusionCible ";
+		$sql .= "WHERE `Matric` = $numFusionSource; ";
+		$myBdd->Query($sql);
+		$requete .= '   '.$sql;
+		$sql  = "UPDATE `gickp_Competitions_Equipes_Joueurs` ";
+		$sql .= "SET `Matric` = $numFusionCible ";
+		$sql .= "WHERE `Matric` = $numFusionSource; ";
+		$myBdd->Query($sql);
+		$requete .= '   '.$sql;
+		$sql  = "DELETE FROM `gickp_Liste_Coureur` ";
+		$sql .= "WHERE `Matric` = $numFusionSource; ";
+		$myBdd->Query($sql);
+		$requete .= '   '.$sql;
+		$myBdd->utyJournal('Fusion Joueurs', utyGetSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numFusionSource.' => '.$numFusionCible);
+		return('Joueurs fusionnés : ');
+	}
 	
 	function GestionAthlete()
 	{			
-	  MyPageSecure::MyPageSecure(7);
-		
+        MyPageSecure::MyPageSecure(7);
+        
 		$alertMessage = '';
 	  
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
-
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$Cmd = utyGetPost('Cmd', '');
+		$ParamCmd = utyGetPost('ParamCmd', '');
 
 		if (strlen($Cmd) > 0)
 		{
-			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 6) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($alertMessage == '')
+			if ($Cmd == 'Update') {
+                ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+			if ($Cmd == 'FusionJoueurs') {
+                ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($alertMessage == '')
 			{
 				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
@@ -196,5 +242,3 @@ class GestionAthlete extends MyPageSecure
 }		  	
 
 $page = new GestionAthlete();
-
-?>

@@ -34,7 +34,8 @@
                                     </select>
                                         &nbsp;&nbsp;
 									<u>Licence n° {$Courreur.Matric}</u>&nbsp;&nbsp;
-                                        <b>{$Courreur.Nom} {$Courreur.Prenom}</b> ({$Courreur.Sexe}) né(e) le {$Courreur.Naissance|date_format:"%d/%m/%Y"}
+                                        <b>{$Courreur.Nom} {$Courreur.Prenom}</b> ({$Courreur.Sexe}) 
+                                        né(e) le {$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}
                                         <br>{if $Courreur.date_surclassement}<b class='vert'>Surclassé à la date du {$Courreur.date_surclassement}</b>{/if}
                                         <br>
 							</th>
@@ -69,6 +70,37 @@
 							</td>
 						</tr>
 					</table>
+                    {if $profile <= 2 && $Courreur.Matric > 2000000}
+                        <div class='blocTop'>
+                            <b>Modification : </b>
+                            <input type="hidden" name="update_matric" id="update_matric" value="{$Courreur.Matric}">
+                            Nom<input type="text" name="update_nom" id="update_nom" value="{$Courreur.Nom}">
+                            Prénom<input type="text" name="update_prenom" id="update_prenom" value="{$Courreur.Prenom}">
+                            Sexe<select id="update_sexe" name="update_sexe">
+                                <option value="M" {if $Courreur.Sexe == 'M'}selected{/if}>M</option>
+                                <option value="F" {if $Courreur.Sexe == 'F'}selected{/if}>F</option>
+                            </select>
+                            Naissance<input type="text" name="update_naissance" id="update_naissance" size="10" 
+                                            maxlength="10" minlength="10"  onfocus="displayCalendar(document.forms[0].update_naissance,'dd/mm/yyyy',this)"
+                                            value="{$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}">
+                            Saison<input type="text" name="update_saison" id="update_saison" size="4" maxlength="4" minlength="4" value="{$Courreur.Origine}">
+                            <input type="submit" id="update_button" value="Modifier">
+                        </div>
+                    {/if}
+                    {if $profile <= 2}
+                        <div class="blocTop">
+                            <b>Fusionner des licenciés : </b>
+                            <label for="FusionSource">Source (sera supprimé)</label>
+                            <input type="hidden" name="numFusionSource" id="numFusionSource">
+                            <input type="text" name="FusionSource" size=40 id="FusionSource">
+                            <label for="FusionCible">Cible (sera conservé)</label>
+                            <input type="hidden" name="numFusionCible" id="numFusionCible">
+                            <input type="text" name="FusionCible" size=40 id="FusionCible">
+                            <input type="button" name="FusionJoueurs" id="FusionJoueurs" value="Fusionner">
+                        </div>
+                            
+                    {/if}
+                    
 					<table class='tableau'>
 						<tr>
 							<td valign=top>

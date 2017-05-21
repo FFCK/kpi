@@ -62,6 +62,15 @@
 			{if $css_supp && is_file($temp)}
 				<link type="text/css" rel="stylesheet" href="..css/{$css_supp}.css">
 			{/if}
+
+		{/if}
+		<title>{$smarty.config.$title|default:$title}</title>
+	</head>
+	<body onload="testframe(); alertMsg('{$AlertMessage}')">
+		{include file='header.tpl'}
+		{include file='main_menu.tpl'}
+		{include file="$contenutemplate.tpl"}
+        {if !$bPublic}
             <script>
                 masquer = {$masquer};
             </script>
@@ -76,13 +85,7 @@
 			{if is_file($temp)}
 				<script src="../js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
 			{/if}
-		{/if}
-		<title>{$smarty.config.$title|default:$title}</title>
-	</head>
-	<body onload="testframe(); alertMsg('{$AlertMessage}')">
-		{include file='header.tpl'}
-		{include file='main_menu.tpl'}
-		{include file="$contenutemplate.tpl"}
-		{include file='footer.tpl'}
+        {/if}
+        {include file='footer.tpl'}
 	</body>
 </html>
