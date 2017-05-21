@@ -99,7 +99,7 @@
 						</tr>
 					</table>
 				<div class='blocTop'>
-					{if ($profile <= 6 or $profile == 9) && $AuthModif == 'O'}
+					{if ($profile <= 6) && $AuthModif == 'O'}
 					<table id="formMatch">
 						<tr class="hideTr">
 							<td colspan="4" align="left" title="Intervalle entre chaque début de match">
@@ -186,17 +186,20 @@
 									<th>Cat.</th>
 									{if $PhaseLibelle == 1}
 										<th>{#Phase#}</th>
-										<th>{#Intitule#}</th>
 									{else}
-										<th>{#Code#}</th>
 										<th>{#Lieu#}</th>
 									{/if}
 									<th>{#Terr#}</th>
-									<th>{#Equipe#} A</th>
-									<th><img height="25" src="../img/verrou2.gif" alt="Verrouiller ?" title="Verrouiller ? (et publier le score)" border="0"></th>
-									<th>{#Equipe#} B</th>
-									<th>{#Arbitre#} 1 </th>	
-									<th>{#Arbitre#} 2 </th>	
+									<th>{#Equipe#} A<br>
+                                        {#Equipe#} B</th>
+									<th><img height="25" src="../img/verrou2.gif"></th>
+									<th>{#Arbitre#} 1</th>	
+									<th>{#Arbitre#} 2</th>	
+									<th>{#Ligne#}</th>	
+									<th>{#Ligne#}</th>	
+									<th>{#Timeshoot#}</th>	
+									<th>{#Secretaire#}</th>	
+									<th>{#Chronometre#}</th>	
 								</tr>
 							</thead>
 							<tbody>
@@ -206,24 +209,31 @@
 										{if $arrayMatchs[i].MatchAutorisation == 'O' && $profile <= 6 && $AuthModif == 'O'}
 											{if $arrayMatchs[i].Validation != 'O'}
 												<td>{$arrayMatchs[i].Numero_ordre}</td>
-                                                <td>{$arrayMatchs[i].Date_match}<br>
+                                                <td><span class='date'>{$arrayMatchs[i].Date_match}</span><br>
                                                     {$arrayMatchs[i].Heure_match}</td>
                                                 <td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
                                                 {if $PhaseLibelle == 1}
                                                     <td><span class="phase">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
-                                                    <td>{$arrayMatchs[i].Libelle|default:'&nbsp;'}</td>
                                                 {else}
-                                                    <td colspan=2><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
+                                                    <td><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
                                                 {/if}
-                                                <td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
+                                                <td><span class='terrain'>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
                                                 <td>
                                                     <span>{$arrayMatchs[i].EquipeA}</span>
-                                                </td>
-                                                <td>
-                                                    <img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
-                                                </td>
-                                                <td>
+                                                    <br><br>
                                                     <span>{$arrayMatchs[i].EquipeB}</span>
+                                                </td>
+                                                <td>
+                                                    <img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif">
+                                                    {if $arrayMatchs[i].Statut == 'ON'}
+                                                        <span class="statutMatchOn">{$arrayMatchs[i].Periode}</span>
+                                                        <span class="scoreProvisoire">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
+                                                    {elseif $arrayMatchs[i].Statut == 'END'}
+                                                        <span class="statutMatchOn">{$arrayMatchs[i].Statut}</span>
+                                                        <span class="scoreProvisoire">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
+                                                    {else}
+                                                        <span class="scoreProvisoire">{$arrayMatchs[i].Statut}</span>
+                                                    {/if}
                                                 </td>
 												<td>
 													<span class="directInput arbitre{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_principal" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Arbitre_principal-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_principal|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
@@ -231,24 +241,37 @@
 												<td>
 													<span class="directInput arbitre{if $arrayMatchs[i].Arbitre_secondaire != '-1' && $arrayMatchs[i].Matric_arbitre_secondaire == 0} pbArb{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_secondaire" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Arbitre_secondaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_secondaire|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 												</td>
-											{else}
-												<td><span class='directInputOff numMatch' Id="Numero_ordre-{$arrayMatchs[i].Id}-text" tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}0'>{$arrayMatchs[i].Numero_ordre}</span></td>
-												<td><span class='directInputOff date' Id="Date_match-{$arrayMatchs[i].Id}-date" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
-													<span class='directInputOff heure' Id="Heure_match-{$arrayMatchs[i].Id}-time" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span></td>
-												<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
-												{if $PhaseLibelle == 1}
-													<td><span class="phase">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
-													<td><span class='directInputOff text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
-												{else}
-													<td><span class='directInputOff text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
-													<td><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
-												{/if}
-												<td><span class='directInputOff terrain' tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}4" Id="Terrain-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 												<td>
-													<span class="directInputOff equipe{if $arrayMatchs[i].Id_equipeA < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}" data-equipe="A">{$arrayMatchs[i].EquipeA}</span>
-													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
+													<span class="directInput" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Secretaire" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Secretaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Secretaire}</span>
 												</td>
+												<td>
+													<span class="directInput" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Chronometre" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Secretaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Chronometre}</span>
+												</td>
+												<td>
+													<span class="directInput" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Timeshoot" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Secretaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Timeshoot}</span>
+												</td>
+												<td>
+													<span class="directInput" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Ligne1" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Secretaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Ligne1}</span>
+												</td>
+												<td>
+													<span class="directInput" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Ligne2" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Secretaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Ligne2}</span>
+												</td>
+											{else}
+												<td>{$arrayMatchs[i].Numero_ordre}</td>
+												<td><span class='date'>{$arrayMatchs[i].Date_match}</span><br>
+													{$arrayMatchs[i].Heure_match}</td>
+                                                <td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
+												{if $PhaseLibelle == 1}
+													<td>{$arrayMatchs[i].Phase|default:'&nbsp;'}</td>
+												{else}
+													<td>{$arrayMatchs[i].Lieu|default:'&nbsp;'}</td>
+												{/if}
+												<td><span class='terrain'>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
+												<td>
+                                                    {$arrayMatchs[i].EquipeA}
+                                                    <br><br>
+                                                    {$arrayMatchs[i].EquipeB}
+                                                </td>
 												<td class='color{$arrayMatchs[i].Validation}2'>
 													{if $profile <= 6 && $AuthModif == 'O'}
 														<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}" height="25" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="{if $arrayMatchs[i].Validation == 'O'}Validé / verrouillé (score public){else}Non validé (score non public){/if}" />
@@ -266,84 +289,15 @@
 													{/if}
 												</td>
 												<td>
-													<span class="directInputOff equipe{if $arrayMatchs[i].Id_equipeB < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeB-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeB}" data-equipe="B">{$arrayMatchs[i].EquipeB}</span>
-													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
-												</td>
-												<td>
 													<span class="directInputOff arbitre{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_principal" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Arbitre_principal-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_principal|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 												</td>
 												<td>
 													<span class="directInputOff arbitre{if $arrayMatchs[i].Arbitre_secondaire != '-1' && $arrayMatchs[i].Matric_arbitre_secondaire == 0} pbArb{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_secondaire" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" Id="Arbitre_secondaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_secondaire|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 												</td>
 											{/if}
-										{elseif $arrayMatchs[i].MatchAutorisation == 'O' && $profile == 9 && $AuthModif == 'O'}
-											{if $arrayMatchs[i].Validation != 'O'}
-												<td>{$arrayMatchs[i].Numero_ordre}</td>
-												<td>{$arrayMatchs[i].Date_match}<br>
-													{$arrayMatchs[i].Heure_match}</td>
-												<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
-												{if $PhaseLibelle == 1}
-													<td><span class="phase">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
-													<td>{$arrayMatchs[i].Libelle|default:'&nbsp;'}</td>
-												{else}
-													<td colspan=2><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
-												{/if}
-												<td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
-												<td>
-													<span>{$arrayMatchs[i].EquipeA}</span>
-													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
-												</td>
-												<td class='color{$arrayMatchs[i].Validation}2'>
-													<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
-													{if $arrayMatchs[i].Statut == 'ON'}
-														<span class="statutMatchOn" title="Période {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode}</span>
-														<span class="scoreProvisoire" title="Score provisoire">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
-													{elseif $arrayMatchs[i].Statut == 'END'}
-														<span class="statutMatchOn" title="Match terminé">{$arrayMatchs[i].Statut}</span>
-														<span class="scoreProvisoire" title="Score provisoire">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
-													{/if}
-												</td>
-												<td>
-													<span>{$arrayMatchs[i].EquipeB}</span>
-													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
-												</td>
-												<td>{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
-												<td>{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
-											{else}
-												<td>{$arrayMatchs[i].Numero_ordre}</td>
-												<td>{$arrayMatchs[i].Date_match}<br>
-													{$arrayMatchs[i].Heure_match}</td>
-												<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
-												{if $PhaseLibelle == 1}
-													<td><span class="phase">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
-													<td>{$arrayMatchs[i].Libelle|default:'&nbsp;'}</td>
-												{else}
-													<td>{$arrayMatchs[i].Libelle|default:'&nbsp;'}</td>
-													<td><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
-												{/if}
-												<td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
-												<td>
-													<span>{$arrayMatchs[i].EquipeA}</span>
-													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
-												</td>
-												<td class='color{$arrayMatchs[i].Validation}2'>
-													<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
-												</td>
-												<td>
-													<span>{$arrayMatchs[i].EquipeB}</span>
-													<br />
-													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
-												</td>
-												<td>{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
-												<td>{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
-											{/if}
 										{else}
 											<td>{$arrayMatchs[i].Numero_ordre}</td>
-											<td>{$arrayMatchs[i].Date_match}<br>
+                                            <td><span class='date'>{$arrayMatchs[i].Date_match}</span><br>
 												{$arrayMatchs[i].Heure_match}</td>
 											<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
 											{if $PhaseLibelle == 1}
@@ -352,19 +306,23 @@
 											{else}
 												<td colspan=2><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
 											{/if}
-											<td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
+											<td><span class='terrain'>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 											<td>
-												<span>{$arrayMatchs[i].EquipeA}</span>
-												<br />
-												<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="Composition équipe A"><img height="20" src="../img/b_compo_match.png"></a>
-											</td>
+                                                {$arrayMatchs[i].EquipeA}
+                                                <br><br>
+                                                {$arrayMatchs[i].EquipeB}
+                                            </td>
 											<td>
-												<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
-											</td>
-											<td>
-												<span>{$arrayMatchs[i].EquipeB}</span>
-												<br />
-												<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=B" title="Composition équipe B"><img height="20" src="../img/b_compo_match.png"></a>
+												<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif">
+                                                {if $arrayMatchs[i].Statut == 'ON'}
+                                                    <span class="statutMatchOn">{$arrayMatchs[i].Periode}</span>
+                                                    <span class="scoreProvisoire">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
+                                                {elseif $arrayMatchs[i].Statut == 'END'}
+                                                    <span class="statutMatchOn">{$arrayMatchs[i].Statut}</span>
+                                                    <span class="scoreProvisoire">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
+                                                {else}
+                                                    <span class="scoreProvisoire">{$arrayMatchs[i].Statut}</span>
+                                                {/if}
 											</td>
 											<td>{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
 											<td>{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>

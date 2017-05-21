@@ -114,7 +114,7 @@ class GestionOfficiels extends MyPageSecure
 		// Chargement des Informations relatives aux Journées ...
 		if ($idSelJournee != '*')
 		{
-			$sql  = "Select Distinct b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, b.Lieu, b.Date_debut, b.Type ";
+			$sql  = "Select Distinct b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, b.Lieu, b.Date_debut, b.Type, a.Code_typeclt ";
 			$sql .= "From gickp_Journees b, gickp_Competitions a ";
 			$sql .= "Where b.Id = $idSelJournee ";
 			$sql .= "And a.Code = b.Code_competition ";
@@ -463,6 +463,11 @@ class GestionOfficiels extends MyPageSecure
 								'Arbitre_secondaire' => $row['Arbitre_secondaire'],
 								'Matric_arbitre_principal' => $row['Matric_arbitre_principal'],
 								'Matric_arbitre_secondaire' => $row['Matric_arbitre_secondaire'],
+								'Secretaire' => $row['Secretaire'],
+								'Chronometre' => $row['Chronometre'],
+								'Timeshoot' => $row['Timeshoot'],
+								'Ligne1' => $row['Ligne1'],
+								'Ligne2' => $row['Ligne2'],
 								'Code_competition' => $row['Code_competition'],
 								'Soustitre2' => $row['Soustitre2'],
 								'Phase' => $row['Phase'],
@@ -1467,7 +1472,7 @@ class GestionOfficiels extends MyPageSecure
 	
 	function GestionOfficiels()
 	{			
-	  MyPageSecure::MyPageSecure(10);
+	  MyPageSecure::MyPageSecure(6);
 		
 		$alertMessage = '';
 	  
