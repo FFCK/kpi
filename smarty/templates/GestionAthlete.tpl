@@ -21,6 +21,19 @@
 								<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete}" />
 								
 				</div>
+                {if $profile <= 2}
+                    <div class="blocTop">
+                        <b>Fusionner des licenciés : </b>
+                        <label for="FusionSource">Source (sera supprimé)</label>
+                        <input type="hidden" name="numFusionSource" id="numFusionSource">
+                        <input type="text" name="FusionSource" size=40 id="FusionSource">
+                        <label for="FusionCible">Cible (sera conservé)</label>
+                        <input type="hidden" name="numFusionCible" id="numFusionCible">
+                        <input type="text" name="FusionCible" size=40 id="FusionCible">
+                        <input type="button" name="FusionJoueurs" id="FusionJoueurs" value="Fusionner">
+                    </div>
+
+                {/if}
 				{if $Courreur.Matric != ''}
 				<div class='blocMiddle'>
 					<table class='tableau'>
@@ -86,19 +99,6 @@
                             Saison<input type="text" name="update_saison" id="update_saison" size="4" maxlength="4" minlength="4" value="{$Courreur.Origine}">
                             <input type="submit" id="update_button" value="Modifier">
                         </div>
-                    {/if}
-                    {if $profile <= 2}
-                        <div class="blocTop">
-                            <b>Fusionner des licenciés : </b>
-                            <label for="FusionSource">Source (sera supprimé)</label>
-                            <input type="hidden" name="numFusionSource" id="numFusionSource">
-                            <input type="text" name="FusionSource" size=40 id="FusionSource">
-                            <label for="FusionCible">Cible (sera conservé)</label>
-                            <input type="hidden" name="numFusionCible" id="numFusionCible">
-                            <input type="text" name="FusionCible" size=40 id="FusionCible">
-                            <input type="button" name="FusionJoueurs" id="FusionJoueurs" value="Fusionner">
-                        </div>
-                            
                     {/if}
                     
 					<table class='tableau'>
