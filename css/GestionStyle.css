@@ -202,7 +202,7 @@ td.colorCapC {background: #BFB;} /*vert*/
 
 .blocTable {
 	clear: left;
-	height: 450px;	
+	height: 500px;	
 	width: 100%;
 	margin: 5px 0px;
 	border: 1px solid #CDE;
@@ -432,3 +432,6 @@ td.colorCapC {background: #BFB;} /*vert*/
 
 }
 
+#clickup, #clickdown {
+    cursor: pointer;
+}

@@ -13,91 +13,91 @@
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
 				
 				<div class='titrePage'>{#Liste_des_Matchs#}</div>
-					<table id="formMatch">
-						<tr class='filtres cadregris'>
-							<td align="center">
-								<label for="evenement">{#Filtre_evenement#}</label>
-								<br>
-								<select name="evenement" id="evenement" onChange="submit();">
-									{section name=i loop=$arrayEvenement} 
-										<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection}>{$arrayEvenement[i].Libelle}</Option>
-									{/section}
-								</select>
-							</td>
-							<td align="center">
-								<label for="comboCompet">{#Filtre_competition#}</label>
-								{if $profile <= 6 && $AuthModif == 'O'}
-                                    <a href="#" id="InitTitulaireCompet"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" title="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" /></a>
-								{/if}
-								<br>
-								<select id="comboCompet" name="comboCompet" onChange="changeCompet();" tabindex="1">
-									{section name=i loop=$arrayCompet}
-										{if $codeCurrentCompet eq $arrayCompet[i].Code}
-											<Option Value="{$arrayCompet[i].Code}" Selected>{$arrayCompet[i].Code} - {$arrayCompet[i].Libelle}</Option>
-										{else}
-											<Option Value="{$arrayCompet[i].Code}">{$arrayCompet[i].Code} - {$arrayCompet[i].Libelle}</Option>
-										{/if}
-									{/section}
-								</select>
-							</td>
-							<td align="center">
-								<label for="comboJournee2">{#Filtre_journee_phase_poule#}</label>
-								<br>
-								<select id="comboJournee2" name="comboJournee2" onChange="changeCompet();" tabindex="2">
-									<Option Value="*" Selected>Toutes...</Option>
-									{section name=i loop=$arrayJourneesAutoriseesFiltre}
-										{if $idSelJournee eq $arrayJourneesAutoriseesFiltre[i].Id}
-											{if $arrayJourneesAutoriseesFiltre[i].Code_typeclt == 'CP'}
-												<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Niveau|string_format:"(%s)"}</Option>
-											{else}
-												<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" le %s "}{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:"à %s"}</Option>
-											{/if}
-										{else}
-											{if $arrayJourneesAutoriseesFiltre[i].Code_typeclt == 'CP'}
-												<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Niveau|string_format:"(%s)"}</Option>
-											{else}
-												<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" le %s "}{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:"à %s"}</Option>
-											{/if}
-										{/if}
-									{/section}
-								</select>
-							</td>
-							<td align="center">
-								<label for="filtreMois">{#Filtre_Date_Terrain#}</label>
-								<br>
-								<select name="filtreJour" id="filtreJour" onChange="submit();">
-										<Option Value="" {if $filtreJour == ''}selected{/if}>---{#Tous#}---</Option>
-									 {foreach from=$listeJours key=k item=v}
-										<Option Value="{$k}" {if $filtreJour == $k}selected{/if}>{$v}</Option>
-									 {/foreach}
-							    </select>
-								<select name="filtreTerrain" id="filtreTerrain" onChange="submit();">
-										<Option Value="" {if $filtreTerrain == ''}selected{/if}>---{#Tous#}---</Option>
-										<Option Value="1" {if $filtreTerrain == '1'}selected{/if}>{#Terr#}. 1</Option>
-										<Option Value="2" {if $filtreTerrain == '2'}selected{/if}>{#Terr#}. 2</Option>
-										<Option Value="3" {if $filtreTerrain == '3'}selected{/if}>{#Terr#}. 3</Option>
-										<Option Value="4" {if $filtreTerrain == '4'}selected{/if}>{#Terr#}. 4</Option>
-										<Option Value="5" {if $filtreTerrain == '5'}selected{/if}>{#Terr#}. 5</Option>
-										<Option Value="6" {if $filtreTerrain == '6'}selected{/if}>{#Terr#}. 6</Option>
-										<Option Value="7" {if $filtreTerrain == '7'}selected{/if}>{#Terr#}. 7</Option>
-										<Option Value="8" {if $filtreTerrain == '8'}selected{/if}>{#Terr#}. 8</Option>
-							    </select>
-							</td>
-							<td align="center">
-								<label for="filtreMois">{#Ordre_tri#}</label>
-								<br>
-								<select name="orderMatchs" onChange="ChangeOrderMatchs('{$idSelJournee}');">
-								{section name=i loop=$arrayOrderMatchs}
-									{if $orderMatchs eq $arrayOrderMatchs[i].Key}
-										<Option Value="{$arrayOrderMatchs[i].Key}" Selected>{$arrayOrderMatchs[i].Value}</Option>
-									{else}
-										<Option Value="{$arrayOrderMatchs[i].Key}">{$arrayOrderMatchs[i].Value}</Option>
-									{/if}
-								{/section}
-								</select>
-							</td>
-						</tr>
-					</table>
+                <table id="formFiltres">
+                    <tr class='filtres cadregris'>
+                        <td align="center">
+                            <label for="evenement">{#Filtre_evenement#}</label>
+                            <br>
+                            <select name="evenement" id="evenement" onChange="submit();">
+                                {section name=i loop=$arrayEvenement} 
+                                    <Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection}>{$arrayEvenement[i].Libelle}</Option>
+                                {/section}
+                            </select>
+                        </td>
+                        <td align="center">
+                            <label for="comboCompet">{#Filtre_competition#}</label>
+                            {if $profile <= 6 && $AuthModif == 'O'}
+                                <a href="#" id="InitTitulaireCompet"><img height="22" src="../img/b_update.png" alt="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" title="Ré-affecter les joueurs présents pour toute la compétition sélectionnée" /></a>
+                            {/if}
+                            <br>
+                            <select id="comboCompet" name="comboCompet" onChange="changeCompet();" tabindex="1">
+                                {section name=i loop=$arrayCompet}
+                                    {if $codeCurrentCompet eq $arrayCompet[i].Code}
+                                        <Option Value="{$arrayCompet[i].Code}" Selected>{$arrayCompet[i].Code} - {$arrayCompet[i].Libelle}</Option>
+                                    {else}
+                                        <Option Value="{$arrayCompet[i].Code}">{$arrayCompet[i].Code} - {$arrayCompet[i].Libelle}</Option>
+                                    {/if}
+                                {/section}
+                            </select>
+                        </td>
+                        <td align="center">
+                            <label for="comboJournee2">{#Filtre_journee_phase_poule#}</label>
+                            <br>
+                            <select id="comboJournee2" name="comboJournee2" onChange="changeCompet();" tabindex="2">
+                                <Option Value="*" Selected>Toutes...</Option>
+                                {section name=i loop=$arrayJourneesAutoriseesFiltre}
+                                    {if $idSelJournee eq $arrayJourneesAutoriseesFiltre[i].Id}
+                                        {if $arrayJourneesAutoriseesFiltre[i].Code_typeclt == 'CP'}
+                                            <Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Niveau|string_format:"(%s)"}</Option>
+                                        {else}
+                                            <Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" le %s "}{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:"à %s"}</Option>
+                                        {/if}
+                                    {else}
+                                        {if $arrayJourneesAutoriseesFiltre[i].Code_typeclt == 'CP'}
+                                            <Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Niveau|string_format:"(%s)"}</Option>
+                                        {else}
+                                            <Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">{$arrayJourneesAutoriseesFiltre[i].Code_competition} {$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} - {$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" le %s "}{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:"à %s"}</Option>
+                                        {/if}
+                                    {/if}
+                                {/section}
+                            </select>
+                        </td>
+                        <td align="center">
+                            <label for="filtreMois">{#Filtre_Date_Terrain#}</label>
+                            <br>
+                            <select name="filtreJour" id="filtreJour" onChange="submit();">
+                                    <Option Value="" {if $filtreJour == ''}selected{/if}>---{#Tous#}---</Option>
+                                 {foreach from=$listeJours key=k item=v}
+                                    <Option Value="{$k}" {if $filtreJour == $k}selected{/if}>{$v}</Option>
+                                 {/foreach}
+                            </select>
+                            <select name="filtreTerrain" id="filtreTerrain" onChange="submit();">
+                                    <Option Value="" {if $filtreTerrain == ''}selected{/if}>---{#Tous#}---</Option>
+                                    <Option Value="1" {if $filtreTerrain == '1'}selected{/if}>{#Terr#}. 1</Option>
+                                    <Option Value="2" {if $filtreTerrain == '2'}selected{/if}>{#Terr#}. 2</Option>
+                                    <Option Value="3" {if $filtreTerrain == '3'}selected{/if}>{#Terr#}. 3</Option>
+                                    <Option Value="4" {if $filtreTerrain == '4'}selected{/if}>{#Terr#}. 4</Option>
+                                    <Option Value="5" {if $filtreTerrain == '5'}selected{/if}>{#Terr#}. 5</Option>
+                                    <Option Value="6" {if $filtreTerrain == '6'}selected{/if}>{#Terr#}. 6</Option>
+                                    <Option Value="7" {if $filtreTerrain == '7'}selected{/if}>{#Terr#}. 7</Option>
+                                    <Option Value="8" {if $filtreTerrain == '8'}selected{/if}>{#Terr#}. 8</Option>
+                            </select>
+                        </td>
+                        <td align="center">
+                            <label for="filtreMois">{#Ordre_tri#}</label>
+                            <br>
+                            <select name="orderMatchs" onChange="ChangeOrderMatchs('{$idSelJournee}');">
+                            {section name=i loop=$arrayOrderMatchs}
+                                {if $orderMatchs eq $arrayOrderMatchs[i].Key}
+                                    <Option Value="{$arrayOrderMatchs[i].Key}" Selected>{$arrayOrderMatchs[i].Value}</Option>
+                                {else}
+                                    <Option Value="{$arrayOrderMatchs[i].Key}">{$arrayOrderMatchs[i].Value}</Option>
+                                {/if}
+                            {/section}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
 				<div class='blocTop'>
 					{if ($profile <= 6 or $profile == 9) && $AuthModif == 'O'}
 					<table id="formMatch">
@@ -139,7 +139,7 @@
 									{/section}
 								</select>
 								&nbsp;<label for="coeffA">Coef.</label>
-								<input size="1" type="text" name="coeffA" value="{$coeffA}" tabindex="9" />
+								<input size="1" type="text" name="coeffA" value="{$coeffA|default:'1'}" tabindex="9" />
 							</td>
 							<td align="left">
 								<label for="arbitre1">{#Arbitre#}</label>
@@ -212,7 +212,7 @@
 									{/section}
 								</select>
 								<label for="coeffB">Coef.</label>
-								<input size="1" type="text" name="coeffB" value="{$coeffB}" tabindex="11" />
+								<input size="1" type="text" name="coeffB" value="{$coeffB|default:'1'}" tabindex="11" />
 							</td>
 							<td align="left">
 								<label for="arbitre2">{#Arbitre#}</label>
