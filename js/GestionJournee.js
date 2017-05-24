@@ -483,6 +483,10 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			datamatch = jq(this).attr('data-match');
 			datajournee = jq(this).attr('data-journee');
 			dataid = jq(this).attr('data-id');
+            jq("#inputZone2valid").attr('data-match', datamatch);
+            jq("#inputZone2valid").attr('data-id', dataid);
+            jq("#inputZone2valid").attr('data-value', '');
+            jq("#inputZone2valid").attr('data-value2', 0);
 			// AUTOCOMPLETE ARBITRES
 			jq("#inputZone2").autocomplete('Autocompl_arb.php', {
 				width: 320,
@@ -498,17 +502,18 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			});
 			jq("#inputZone2").result(function(event, data, formatted) {
 				if (data) {
-					if(data[1] == 'XXX') {
-						jq("#inputZone2").val('');
+					if(typeof(data[1]) == 'undefined' || data[1] == 'XXX') {
+//						jq("#inputZone2").val('');
 						jq("#inputZone2valid").attr('data-match', datamatch);
 						jq("#inputZone2valid").attr('data-id', dataid);
 						jq("#inputZone2valid").attr('data-value', '');
 						jq("#inputZone2valid").attr('data-value2', 0);
 					} else {
-						if(data[4] != '')
+						if(data[4] != '') {
 							var nomArb = data[2]+' '+data[3]+' ('+data[4]+') '+data[5];
-						else
+                        } else{
 							var nomArb = data[2]+' '+data[3]+' '+data[5];
+                        }
 						jq("#inputZone2valid").attr('data-match', datamatch);
 						jq("#inputZone2valid").attr('data-id', dataid);
 						jq("#inputZone2valid").attr('data-value', nomArb);
@@ -543,7 +548,11 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	jq('#inputZone2valid').live('click', function(event){
 		event.preventDefault;
-		lavaleur = jq(this).attr('data-value');
+		if(jq(this).attr('data-value') != '') {
+            lavaleur = jq(this).attr('data-value');
+        } else {
+            lavaleur = jq('#inputZone2').val();
+        }
 		lavaleur2 = jq(this).attr('data-value2');
 		lavaleur3 = lavaleur + '|' + lavaleur2;
 		lidMatch = jq(this).attr('data-match');

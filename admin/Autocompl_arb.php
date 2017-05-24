@@ -154,7 +154,7 @@ include_once('../commun/MyTools.php');
 		$m = (int)utyGetGet('sessionMatch',$m);
 		$q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
 		$q = preg_replace('`^[0]*`','',$q);
-		$resultGlobal = '(vider)|XXX||||\n';
+		$resultGlobal = '';
 		
 		if($j == '' && $m == '') {
 			$resultGlobal = "Selectionnez une journee / une phase !|XXX||||\n";
@@ -162,7 +162,7 @@ include_once('../commun/MyTools.php');
             $resultGlobal = "2 caractères minimum !|XXX||||\n";
         } else {
 			// Equipes
-			$resultGlobal .= "------------- Equipes engagées -------------\n";
+			$resultGlobal .= "------------- Equipes engagées -------------|XXX\n";
 			$sql  = "Select a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet ";
 			$sql .= "From gickp_Competitions_Equipes a, gickp_Journees b ";
 			$sql .= "Where a.Code_compet = b.Code_competition ";
@@ -182,7 +182,7 @@ include_once('../commun/MyTools.php');
 			}
 			// Joueurs
 			$resultGlobal .= ".\n";
-			$resultGlobal .= "----------------- Joueurs -----------------\n";
+			$resultGlobal .= "----------------- Joueurs -----------------|XXX\n";
 			$sql  = "Select distinct a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, (c.Arb IS NULL) AS sortCol ";
 			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, ";
 			$sql .= "gickp_Competitions_Equipes b, gickp_Journees d, gickp_Matchs e ";
@@ -218,7 +218,7 @@ include_once('../commun/MyTools.php');
 			$resultGlobal .= ".\n";
 			$resultGlobal .= ".\n";
 			$resultGlobal .= ".\n";
-			$resultGlobal .= "----- Pool arbitres (hors équipes engagées) -----\n";
+			$resultGlobal .= "----- Pool arbitres (hors équipes engagées) -----|XXX\n";
 			$sql  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau ";
 			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
 			$sql .= "Where a.Id_equipe = b.Id ";
