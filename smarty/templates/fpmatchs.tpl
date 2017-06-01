@@ -91,14 +91,14 @@
                                                             <span class="btn btn-xs btn-primary">{$Match.EquipeB|default:'&nbsp;'}</span>
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                    {*<tr>
                                                         <td colspan="3" class="text-center arb1">
                                                             {if $Match.Arbitre_principal != '-1'}{$Match.Arbitre_principal}{else}&nbsp;{/if}
                                                         </td>
                                                         <td colspan="3" class="text-center arb2">
                                                             {if $Match.Arbitre_secondaire != '-1'}{$Match.Arbitre_secondaire}{else}&nbsp;{/if}
                                                         </td>
-                                                    </tr>
+                                                    </tr>*}
                                                 </table>
                                             </td>
                                         {else}

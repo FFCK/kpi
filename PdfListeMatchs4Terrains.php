@@ -313,7 +313,7 @@ class PdfListeMatchs extends MyPage
                             $pdf->SetFont('Arial','',6);
                             
                         }
-                        $pdf->Cell(17,5, $tab_terrain[$i][0]['Arbitre_principal'],1,$findeligne,'C');
+                        $pdf->Cell(17,5, str_replace('-1', '', $tab_terrain[$i][0]['Arbitre_principal']),1,$findeligne,'C');
                     } else {
                         $pdf->SetFont('Arial', '', 6);
                         $pdf->Cell(67, 5, 'Pause', 1,$findeligne,'C');

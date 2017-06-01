@@ -271,7 +271,7 @@
 									<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');this.href='FeuilleMatchMulti.php?listMatch='+document.formJournee.ParamCmd.value;" Target="_blank" title="Feuilles de Matchs pour la sélection {$TropDeMatchsMsg}"><img height="25" src="../img/pdf2.png" /></a>
 								</fieldset>
 							</td>
-							<td width=450>
+							<td width=520>
 						       	<fieldset>
 									<label>{#Tous_les_matchs#}:</label>
 									&nbsp;
@@ -286,7 +286,13 @@
 									<a href="../PdfListeMatchs.php" {$TropDeMatchs} Target="_blank" title="Liste publique des Matchs {$TropDeMatchsMsg}"><img height="25" src="../img/ListeFR.gif" /></a>
 									&nbsp;
 									<a href="../PdfListeMatchsEN.php" {$TropDeMatchs} Target="_blank" title="Public Game list (EN) {$TropDeMatchsMsg}"><img height="25" src="../img/ListeEN.gif" /></a>
-								</fieldset>
+									{if $profile <= 2}
+                                        &nbsp;
+                                        <a href="../PdfListeMatchs4Terrains.php" {$TropDeMatchs} Target="_blank" title="All games in one table (EN) {$TropDeMatchsMsg}"><img height="25" src="../img/Liste.gif" /></a>
+                                        &nbsp;
+                                        <a href="../fpmatchs.php" {$TropDeMatchs} Target="_blank" title="FullPage {$TropDeMatchsMsg}"><img height="25" src="../img/Liste.gif" /></a>
+                                    {/if}
+                                </fieldset>
 							</td>
 							<td>
 								&nbsp;&nbsp;

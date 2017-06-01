@@ -8,10 +8,10 @@ $(document).ready(function(){
 //        navigation: true,
 //        navigationPosition: 'right',
         afterRender: function () {
-            //on page load, start the slideshow
-//            slideTimeout = setInterval(function () {
-//                $.fn.fullpage.moveSectionDown();
-//            }, 5000);
+            //  on page load, start the slideshow
+            slideTimeout = setInterval(function () {
+                $.fn.fullpage.moveSectionDown();
+            }, 5000);
         }
     });
 
