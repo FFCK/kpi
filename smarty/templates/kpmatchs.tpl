@@ -90,12 +90,12 @@
                     {else}
                         <th>{#Lieu#}</th>
                     {/if}
-                    <th class="hidden-xs">{#Terr#}</th>
+                    <th>{#Terr#}</th>
                     <th class="cliquableNomEquipe">{#Equipe_A#}</th>
                     <th class="cliquableScore">{#Score#}</th>
                     <th class="cliquableNomEquipe">{#Equipe_B#}</th>
-                    <th class="arb1 hidden-xs">{#Arbitre_1#}</th>	
-                    <th class="arb2 hidden-xs">{#Arbitre_2#}</th>	
+                    <th class="arb1">{#Arbitre_1#}</th>	
+                    <th class="arb2">{#Arbitre_2#}</th>	
                 </tr>
             </thead>
             <tbody>
@@ -112,7 +112,7 @@
                             {else}
                                 <td>{$arrayMatchs[i].Lieu|default:'&nbsp;'}</td>
                             {/if}
-                            <td class="hidden-xs">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
+                            <td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
                             <td class="text-center" data-filter="{$arrayMatchs[i].EquipeA|default:'&nbsp;'}">
                                 <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
@@ -151,8 +151,8 @@
                                     <!--<span class="logoB" data-club="{$arrayMatchs[i].clubB}" data-logo="{$arrayMatchs[i].logoB}" ></span>-->
                                 {/if}
                             </td>
-                            <td class="arb1 hidden-xs">{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
-                            <td class="arb2 hidden-xs">{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
+                            <td class="arb1">{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
+                            <td class="arb2">{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
                     </tr>
                 {sectionelse}
                     <tr>
@@ -174,11 +174,18 @@
                     <th class="cliquableNomEquipe">{#Equipe_A#}</th>
                     <th class="cliquableScore">{#Score#}</th>
                     <th class="cliquableNomEquipe">{#Equipe_B#}</th>
-                    <th class="arb1 hidden-xs">{#Arbitre_1#}</th>	
-                    <th class="arb2 hidden-xs">{#Arbitre_2#}</th>	
+                    <th class="arb1">{#Arbitre_1#}</th>	
+                    <th class="arb2">{#Arbitre_2#}</th>	
                 </tr>
             </tfoot>
         </table>
         
 	</article>
 </div>
+<script>
+    {if $arrayCompetition[0].Code_typeclt == 'CP'}
+        table_ordre = [[ 2, 'asc' ], [ 4, 'asc' ]];
+    {else}
+        table_ordre = [[ 0, 'asc' ]];
+    {/if}
+</script>
