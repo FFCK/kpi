@@ -474,7 +474,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$_SESSION['codeComiteReg'] = utyCodeComiteReg($_SESSION['codeComiteDep']);
 		}
 		
-		header("Location: http://".$_SERVER['HTTP_HOST'].MAIN_DIRECTORY.'/admin/RechercheLicence.php');	
+		header("Location: RechercheLicence.php");	
 		exit;	
 	}
 	
@@ -525,5 +525,3 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 }		  	
 
 $page = new GestionMatchEquipeJoueur();
-
-?>
