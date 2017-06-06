@@ -23,6 +23,9 @@ switch ($referer) {
     case 'fm2' :
         header('Location: admin/FeuilleMarque2.php?idMatch=' . $idMatch);
         break;
+    case 'fm4' :
+        header('Location: admin/FeuilleMarque4.php?idMatch=' . $idMatch);
+        break;
 }
 
     
