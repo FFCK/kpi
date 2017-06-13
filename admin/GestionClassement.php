@@ -382,7 +382,7 @@ class GestionClassement extends MyPageSecure
 		
 		$this->CalculClassement($codeCompet,$typeClt, $tousLesMatchs);
 		
-		$this->FinalisationClassementChpt($codeCompet, $codeSaison);
+		$egalites = $this->FinalisationClassementChpt($codeCompet, $codeSaison);
 		$this->FinalisationClassementNiveau($codeCompet, $codeSaison);
 		
 		$this->FinalisationClassementNiveauChpt($codeCompet, $codeSaison);
@@ -407,6 +407,12 @@ class GestionClassement extends MyPageSecure
 
 		($tousLesMatchs == 'tous') ? $lesMatchs = 'Inclu matchs non verrouillés' : $lesMatchs = 'Uniquement matchs verrouillés';
 		$myBdd->utyJournal('Calcul Classement', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $lesMatchs);
+        
+        if($egalites > 1 && $typeClt == 'CHPT') {
+            return "Attention : $egalites équipes ou plus sont à égalité. Vérifiez si nécessaire la différence de but particulière !";
+        } else {
+            return '';
+        }
 	}
 
 	function InitClassement()
@@ -940,34 +946,36 @@ class GestionClassement extends MyPageSecure
 		$sql .= $codeCompet;
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
-		$sql .= "' Order By Pts Desc, Diff Desc ";	 
+		$sql .= "' Order By Pts DESC, Diff DESC, Plus DESC ";	 
 
 		$oldClt = 0;
 		$oldPts = 0;
 		
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2");
 		$num_results = mysql_num_rows($result);
+        $egalites = 1;
 		
 		for ($i=0;$i<$num_results;$i++)
 		{
 			$row = mysql_fetch_array($result);	 
 			
-			if ($row['Pts'] != $oldPts)
-			{
-				$clt = $i+1;
-				$oldClt = $clt;
-				$oldPts = $row['Pts'];
-			}
-			else
-				$clt = $oldClt;
-			
-			$sql  = "Update gickp_Competitions_Equipes Set Clt = ";
+			if ($row['Pts'] != $oldPts) {
+                $clt = $i + 1;
+                $oldClt = $clt;
+                $oldPts = $row['Pts'];
+            } else {
+                $clt = $oldClt;
+                $egalites ++;
+            }
+
+            $sql  = "Update gickp_Competitions_Equipes Set Clt = ";
 			$sql .= $clt;
 			$sql .= " Where Id = ";
 			$sql .= $row['Id'];
 			
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
 		}
+        return $egalites;
 	}
 	
 	function FinalisationClassementNiveau($codeCompet, $codeSaison)
@@ -1440,7 +1448,7 @@ class GestionClassement extends MyPageSecure
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'DoClassement')
-				($_SESSION['Profile'] <= 6) ? $this->DoClassement() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->DoClassement() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'PublicationClassement')
 				($_SESSION['Profile'] <= 4) ? $this->PublicationClassement() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
@@ -1473,4 +1481,3 @@ class GestionClassement extends MyPageSecure
 
 $page = new GestionClassement();
 
-?>
