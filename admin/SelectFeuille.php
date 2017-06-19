@@ -18,6 +18,7 @@ class SelectFeuille extends MyPageSecure
         switch ($target) {
             case 'FeuilleMarque3.php':
             case 'FeuilleMarque3stats.php':
+            case 'FeuilleMarque4.php':
                 $targetRemastered = $target;
                 break;
             default:

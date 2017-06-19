@@ -139,46 +139,54 @@ class GestionMatchDetail4 extends MyPageSecure
 		<title><?= $lang['Match']; ?> #<?= $row['Numero_ordre']; ?></title>
 		<!--<link href="v2/jquery-ui.min.css" rel="stylesheet">-->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <link href="../js/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <!--<link href="../js/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">-->
+        <link href="../js/bootstrap/css/bootstrap.darkly.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/jquery-ui-1.12.1.min.css" rel="stylesheet" type="text/css"/>
         <link href="../css/fontawesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
         <link href="../js/fullPage/jquery.fullpage.min.css" rel="stylesheet" rel="stylesheet">
-		<link href="../css/jquery.dataTables.css" rel="stylesheet">
+        <link href="../css/jquery-ui.darkness.min.css" rel="stylesheet" type="text/css"/>
         <link href="../css/feuillemarque4.css" rel="stylesheet" type="text/css">
 		<?php if($verrou != 'O') { ?>
-			<link href="v2/fmv2O.css" rel="stylesheet">
+			<link href="../css/feuillemarque4O.css" rel="stylesheet">
 		<?php	}	?>
 	</head>
 	<body>
         <div class="container-fluid">
             <form class="form-inline">
                 <div id="avert"></div>
-                <ul class="nav nav-pills" role="tablist">
-                    <li role="presentation" class="pull-right active">
-                        <a href="#page-2" aria-controls="page-2" role="tab" data-toggle="tab"><?= $lang['Deroulement_match']; ?></a>
-                    </li>
-                    <li role="presentation" class="pull-right">
-                        <a href="#page-1" aria-controls="page-1" role="tab" data-toggle="tab"><?= $lang['Parametres_match']; ?></a>
-                    </li>
-                    <li class="navbar-text h4">
-                        <?php 
-                            echo '<span class="hidden-sm hidden-xs">' . $row['Code_competition'];
-                            if($row['Code_typeclt'] == 'CHPT')
-                                echo ' ('.$row['Lieu'].')';
-                            elseif($row['Soustitre2'] != '')
-                                echo ' ('.$row['Soustitre2'].')';
-                            if($row['Phase'] != '')
-                                echo ' - '.$row['Phase'];
-                            echo ' - </span>' . $lang['Terrain'] . ' ' . $row['Terrain'];
-                            echo ' | ' . $lang['Match_no'] . $row['Numero_ordre'] . '<span class="hidden-sm hidden-xs">' . ' - ';
-                            if($version == 'en') {
-                                echo $row['Date_match'];
-                            } else {
-                                echo utyDateUsToFr($row['Date_match']);
-                            }
-                            echo ' ' . $lang['a_'] . '</span> ' . $row['Heure_match']; 
-                        ?>
-                    </li>
-                </ul>
+                <nav class="navbar navbar-default navbar-fixed-top">
+                    <div class="container-fluid">
+                        <ul class="nav navbar-nav navbar-left" role="tablist">
+                            <li class="navbar-text">
+                                <?php 
+                                    echo '<span class="hidden-sm hidden-xs">' . $row['Code_competition'];
+                                    if($row['Code_typeclt'] == 'CHPT')
+                                        echo ' ('.$row['Lieu'].')';
+                                    elseif($row['Soustitre2'] != '')
+                                        echo ' ('.$row['Soustitre2'].')';
+                                    if($row['Phase'] != '')
+                                        echo ' - '.$row['Phase'];
+                                    echo ' - </span>' . $lang['Terrain'] . ' ' . $row['Terrain'];
+                                    echo ' | ' . $lang['Match_no'] . $row['Numero_ordre'] . '<span class="hidden-sm hidden-xs">' . ' - ';
+                                    if($version == 'en') {
+                                        echo $row['Date_match'];
+                                    } else {
+                                        echo utyDateUsToFr($row['Date_match']);
+                                    }
+                                    echo ' ' . $lang['a_'] . '</span> ' . $row['Heure_match']; 
+                                ?>
+                            </li>
+                        </ul>    
+                        <ul class="nav navbar-nav navbar-right" role="tablist">
+                            <li role="presentation">
+                                <a href="#page-1" aria-controls="page-1" role="tab" data-toggle="tab" class="btn btn-default navbar-btn"><?= $lang['Parametres_match']; ?></a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#page-2" aria-controls="page-2" role="tab" data-toggle="tab" class="btn btn-default navbar-btn"><?= $lang['Deroulement_match']; ?></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
             </form>
             <div class="tab-content">
                 <div role="tabpanel" id="page-1" class="tab-pane">
@@ -186,11 +194,11 @@ class GestionMatchDetail4 extends MyPageSecure
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active"><a href="#parametres" aria-controls="parametres" role="tab" data-toggle="tab"><?= $lang['Parametres_match']; ?></a></li>
                             <li role="presentation"><a href="#officiels" aria-controls="officiels" role="tab" data-toggle="tab"><?= $lang['Officiels']; ?></a></li>
-                            <li role="presentation"><a href="#compoA" aria-controls="compoA" role="tab" data-toggle="tab"><img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16"> <?= $row['equipeA']; ?></a></li>
-                            <li role="presentation"><a href="#compoB" aria-controls="compoB" role="tab" data-toggle="tab"><img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16"> <?= $row['equipeB']; ?></a></li>
-                            <li class="navbar-text">ID# <?= $idMatch; ?></li>
+                            <li role="presentation"><a href="#compoA" aria-controls="compoA" role="tab" data-toggle="tab"><img src="../img/Pays/<?= $paysA; ?>.png" class="flag"> <?= $row['equipeA']; ?></a></li>
+                            <li role="presentation"><a href="#compoB" aria-controls="compoB" role="tab" data-toggle="tab"><img src="../img/Pays/<?= $paysB; ?>.png" class="flag"> <?= $row['equipeB']; ?></a></li>
+                            <li class="navbar-text pull-right"><i>ID# <?= $idMatch; ?></i></li>
                         </ul>
-                        <div class="bg-warning text-center"><?= $lang['A_remplir']; ?></div>
+                        <i class="badge"><?= $lang['A_remplir']; ?></i>
 
                         <div class="tab-content">
                             
@@ -217,8 +225,8 @@ class GestionMatchDetail4 extends MyPageSecure
                                         <br />
                                         <input class="btn btn-default" type="button" id="btn_stats" name="btn_stats" value="Stats" />
                                         <input class="btn btn-default" type="button" id="pdfFeuille" name="pdfFeuille" value="PDF" />
-                                        <a class="btn btn-default" href="../lang.php?lang=fr&p=fm4&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
-                                        <a class="btn btn-default" href="../lang.php?lang=en&p=fm4&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
+                                        <a class="btn btn-default" href="../lang.php?lang=fr&p=fm4&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/FRA.png" class="flag" align="bottom"></a>
+                                        <a class="btn btn-default" href="../lang.php?lang=en&p=fm4&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/GBR.png" class="flag" align="bottom"></a>
                                         <br />
                                         <br />
                                         <div class="form-group">
@@ -271,6 +279,8 @@ class GestionMatchDetail4 extends MyPageSecure
                                         
                                     </div>
                                 </div>
+                                <br>
+                                <br>
                             </div>
                             
                             <!-- Panneau officiels -->
@@ -298,7 +308,6 @@ class GestionMatchDetail4 extends MyPageSecure
                                     <br>
                                     <label><?= $lang['Ligne']; ?> : </label>
                                     <br><span class="editOfficiel" id="Ligne2"><?= $row['Ligne2']; ?></span>
-                                    <br>
                                 </div>
                                 <div class="col-sm-6">
                                     <br>
@@ -311,26 +320,26 @@ class GestionMatchDetail4 extends MyPageSecure
                                     <label><?= $lang['Chef_arbitre'] ?> : </label><?= $row['ChefArbitre']; ?>
                                     <br>
                                     <label><?= $lang['RC'] ?> : </label><?= $row['Responsable_insc']; ?>
-                                    <br>
-                                    <br>
                                 </div>
+                                <br>
+                                <br>
                             </div>
                             
                             <!-- Panneau compoA -->
                             <div role="tabpanel" class="tab-pane" id="compoA">
-                                <h3><?= $lang['Equipe'] ?> A - <img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16"> <?= $row['equipeA']; ?>								
+                                <h3><?= $lang['Equipe'] ?> A - <img src="../img/Pays/<?= $paysA; ?>.png" class="flag"> <?= $row['equipeA']; ?>								
                                     <span class="label label-primary" id="scoreA2"><?= $row['ScoreA']; ?></span>
                                 </h3>
-                                <table class="table table-condensed" id="equipeA">
+                                <table class="table table-condensed table-striped table-bordered" id="equipeA">
                                     <thead>
                                         <tr>
-                                            <th><?= $lang['Num'] ?></th>
-                                            <th><?= $lang['Statut'] ?></th>
-                                            <th><?= $lang['Nom'] ?></th>
-                                            <th><?= $lang['Prenom'] ?></th>
-                                            <th><?= $lang['Licence'] ?></th>
-                                            <th>Cat.</th>
-                                            <th><?= $lang['Supp'] ?></th>
+                                            <th class="text-center"><?= $lang['Num'] ?></th>
+                                            <th class="text-center"><?= $lang['Statut'] ?></th>
+                                            <th class="text-center"><?= $lang['Nom'] ?></th>
+                                            <th class="text-center"><?= $lang['Prenom'] ?></th>
+                                            <th class="text-center"><?= $lang['Licence'] ?></th>
+                                            <th class="text-center">Cat.</th>
+                                            <th class="text-center"><?= $lang['Supp'] ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -341,29 +350,29 @@ class GestionMatchDetail4 extends MyPageSecure
                                             $age = utyCodeCategorie2($row3["Naissance"], $saison);
                                             if($row3["Capitaine"] != 'E'){
                                                 $joueur_temp  = '<tr>';
-                                                $joueur_temp .= '<td><span class="btn btn-default btn-xs editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</span></td>';
-                                                $joueur_temp .= '<td><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</span></td>';
+                                                $joueur_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</span></td>';
+                                                $joueur_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</span></td>';
                                                 $joueur_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
                                                 $joueur_temp .= '<td>'.ucwords(strtolower($row3["Prenom"])).'</td>';
-                                                $joueur_temp .= '<td>';
+                                                $joueur_temp .= '<td class="text-right">';
                                                 if($row3["Matric"] < 2000000)
                                                     $joueur_temp .= $row3["Matric"];
                                                 $joueur_temp .= '</td>';
-                                                $joueur_temp .= '<td>'.$age.'</td>';
-                                                $joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+                                                $joueur_temp .= '<td class="text-center">'.$age.'</td>';
+                                                $joueur_temp .= '<td class="text-center"><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><span class="fa fa-trash text-danger"></span></a></td>';
                                                 $joueur_temp .= '</tr>';
                                             }else{
                                                 $entr_temp  = '<tr>';
-                                                $entr_temp .= '<td><span class="btn btn-default btn-xs editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</span></td>';
-                                                $entr_temp .= '<td><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</span></td>';
+                                                $entr_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</span></td>';
+                                                $entr_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</span></td>';
                                                 $entr_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
                                                 $entr_temp .= '<td>'.ucwords(strtolower($row3["Prenom"])).'</td>';
-                                                $entr_temp .= '<td>';
+                                                $entr_temp .= '<td class="text-right">';
                                                 if($row3["Matric"] < 2000000)
                                                     $entr_temp .= $row3["Matric"];
                                                 $entr_temp .= '</td>';
-                                                $entr_temp .= '<td>'.$age.'</td>';
-                                                $entr_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+                                                $entr_temp .= '<td class="text-center">'.$age.'</td>';
+                                                $entr_temp .= '<td class="text-center"><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><span class="fa fa-trash text-danger"></span></a></td>';
                                                 $entr_temp .= '</tr>';
                                                 $joueur_temp = '';
                                             }
@@ -375,23 +384,25 @@ class GestionMatchDetail4 extends MyPageSecure
                                     </tbody>
                                 </table>
                                 <input class="btn btn-default" type="button" name="initA" id="initA" value="<?= $lang['Recharger_joueurs'] ?>" />
+                                <br>
+                                <br>
                             </div>	
                             
                             <!-- Panneau compoB -->
                             <div role="tabpanel" class="tab-pane" id="compoB">
-                                <h3><?= $lang['Equipe'] ?> B - <img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>								
+                                <h3><?= $lang['Equipe'] ?> B - <img src="../img/Pays/<?= $paysB; ?>.png" class="flag"> <?= $row['equipeB']; ?>								
                                     <span class="label label-primary" id="scoreB2"><?= $row['ScoreA']; ?></span>
                                 </h3>
-                                <table class="table table-condensed" id="equipeB">
+                                <table class="table table-condensed table-striped table-bordered" id="equipeB">
                                     <thead>
                                         <tr>
-                                            <th><?= $lang['Num'] ?></th>
-                                            <th><?= $lang['Statut'] ?></th>
-                                            <th><?= $lang['Nom'] ?></th>
-                                            <th><?= $lang['Prenom'] ?></th>
-                                            <th><?= $lang['Licence'] ?></th>
-                                            <th>Cat.</th>
-                                            <th><?= $lang['Supp'] ?></th>
+                                            <th class="text-center"><?= $lang['Num'] ?></th>
+                                            <th class="text-center"><?= $lang['Statut'] ?></th>
+                                            <th class="text-center"><?= $lang['Nom'] ?></th>
+                                            <th class="text-center"><?= $lang['Prenom'] ?></th>
+                                            <th class="text-center"><?= $lang['Licence'] ?></th>
+                                            <th class="text-center">Cat.</th>
+                                            <th class="text-center"><?= $lang['Supp'] ?></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -402,29 +413,29 @@ class GestionMatchDetail4 extends MyPageSecure
                                             $age = utyCodeCategorie2($row4["Naissance"], $saison);
                                             if($row4["Capitaine"] != 'E'){
                                                 $joueur_temp  = '<tr>';
-                                                $joueur_temp .= '<td><span class="btn btn-default btn-xs editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</span></td>';
-                                                $joueur_temp .= '<td><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</span></td>';
+                                                $joueur_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</span></td>';
+                                                $joueur_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</span></td>';
                                                 $joueur_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
                                                 $joueur_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
-                                                $joueur_temp .= '<td>';
+                                                $joueur_temp .= '<td class="text-right">';
                                                 if($row4["Matric"] < 2000000)
                                                     $joueur_temp .= $row4["Matric"];
                                                 $joueur_temp .= '</td>';
-                                                $joueur_temp .= '<td>'.$age.'</td>';
-                                                $joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+                                                $joueur_temp .= '<td class="text-center">'.$age.'</td>';
+                                                $joueur_temp .= '<td class="text-center"><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><span class="fa fa-trash text-danger"></span></a></td>';
                                                 $joueur_temp .= '</tr>';
                                             }else{
                                                 $entr_temp  = '<tr>';
-                                                $entr_temp .= '<td><span class="btn btn-default btn-xs editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</span></td>';
-                                                $entr_temp .= '<td><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</span></td>';
+                                                $entr_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</span></td>';
+                                                $entr_temp .= '<td class="text-center"><span class="btn btn-default btn-xs editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</span></td>';
                                                 $entr_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
                                                 $entr_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
-                                                $entr_temp .= '<td>';
+                                                $entr_temp .= '<td class="text-right">';
                                                 if($row4["Matric"] < 2000000)
                                                     $entr_temp .= $row4["Matric"];
                                                 $entr_temp .= '</td>';
-                                                $entr_temp .= '<td>'.$age.'</td>';
-                                                $entr_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
+                                                $entr_temp .= '<td class="text-center">'.$age.'</td>';
+                                                $entr_temp .= '<td class="text-center"><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><span class="fa fa-trash text-danger"></span></a></td>';
                                                 $entr_temp .= '</tr>';
                                                 $joueur_temp = '';
                                             }
@@ -436,6 +447,8 @@ class GestionMatchDetail4 extends MyPageSecure
                                     </tbody>
                                 </table>
                                 <input class="btn btn-default" type="button" name="initB" id="initB" value="<?= $lang['Recharger_joueurs'] ?>" />
+                                <br>
+                                <br>
                             </div>			
                         </div>			
                     </form>
@@ -474,7 +487,7 @@ class GestionMatchDetail4 extends MyPageSecure
                                     <a href="#" class="btn btn-default btn-block equipes" data-equipe="A" data-player="Equipe A">
                                         <span class="score label label-primary pull-right" id="scoreA">0</span>
                                         <?= $lang['Equipe']; ?> A<br>
-                                        <img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>
+                                        <img src="../img/Pays/<?= $paysA; ?>.png" class="flag"> <?= $row['equipeA']; ?>
                                     </a>
                                     <br>
                                     <div class="btn-group-vertical btn-block" role="group">
@@ -503,20 +516,20 @@ class GestionMatchDetail4 extends MyPageSecure
                                 <div class="col-xs-4">
                                     <div id="zoneChrono" class="text-center">
                                         <div class="row">
-                                            <label id="chronoText"><?= $lang['Chrono'] ?> : </label>
-                                            <span id="chrono_moins" class="badge">-1</span>
-                                            <span id="updateChrono" class="fa fa-check-circle-o fa-2x"></span>
+                                            <!--<label id="chronoText"><?= $lang['Chrono'] ?> : </label>-->
+                                            <span id="chrono_moins10" class="badge plus_moins">-10</span>
+                                            <span id="chrono_moins" class="badge plus_moins">-1</span>
                                             <input type="time" id="heure" class="form-control input-time" title="<?= $lang['Parametres_chrono'] ?>" value="10:00" readonly>
                                             <span class="icon_parametres" id="dialog_ajust_opener" title="<?= $lang['Parametres_chrono'] ?>"></span>
-                                            <span id="chrono_plus" class="badge">+1</span>
+                                            <span id="chrono_plus" class="badge plus_moins">+1</span>
+                                            <span id="chrono_plus10" class="badge plus_moins">+10</span>
+                                            <span id="updateChrono" class="fa fa-check-circle-o fa-2x plus_moins"></span>
                                         </div>
                                         <div class="btn-group btn-group-justified">
-                                            <a href="#" id="start_button" class="btn btn-success btn-lg chronoButton"><span class="fa fa-play"></span> Start</a>
-                                            <a href="#" id="run_button" class="btn btn-success btn-lg chronoButton"><span class="fa fa-play"></span> Run</a>
-                                        </div>
-                                        <div class="btn-group btn-group-justified">
-                                            <a href="#" id="stop_button" class="btn btn-warning btn-lg chronoButton"><span class="fa fa-pause"></span> Stop</a>
-                                            <a href="#" id="raz_button" class="btn btn-default btn-lg chronoButton"><span class="fa fa-fast-backward"></span> <?= $lang['RAZ'] ?></a>
+                                            <a href="#" id="start_button" class="col-xs-6 btn btn-success btn-lg chronoButton"><span class="fa fa-play"></span> Start</a>
+                                            <a href="#" id="run_button" class="col-xs-6 btn btn-success btn-lg chronoButton"><span class="fa fa-play"></span> Run</a>
+                                            <a href="#" id="stop_button" class="col-xs-6 btn btn-warning btn-lg chronoButton"><span class="fa fa-pause"></span> Stop</a>
+                                            <a href="#" id="raz_button" class="col-xs-6 btn btn-default btn-lg chronoButton"><span class="fa fa-fast-backward"></span> <?= $lang['RAZ'] ?></a>
                                         </div>
                                     </div>
                                     <div id="zoneEvt" class="text-center">
@@ -535,14 +548,14 @@ class GestionMatchDetail4 extends MyPageSecure
                                     </div>
                                     <div id="zoneTemps" class="text-center">
                                         <div class="row">
-                                            <label><?= $lang['Temps'] ?> :</label>
-                                            <span id="time_moins" class="badge">-60</span>
-                                            <span id="time_moins3" class="badge">-10</span>
-                                            <span id="time_moins2" class="badge">-1</span>
+                                            <!--<label><?= $lang['Temps'] ?> :</label>-->
+                                            <span id="time_moins60" class="badge plus_moins">-60</span>
+                                            <span id="time_moins10" class="badge plus_moins">-10</span>
+                                            <span id="time_moins1" class="badge plus_moins">-1</span>
                                             <input type="time" size="4" class="form-control input-time" id="time_evt" value="00:00">
-                                            <span id="time_plus2" class="badge">+1</span>
-                                            <span id="time_plus3" class="badge">+10</span>
-                                            <span id="time_plus" class="badge">+60</span>
+                                            <span id="time_plus1" class="badge plus_moins">+1</span>
+                                            <span id="time_plus10" class="badge plus_moins">+10</span>
+                                            <span id="time_plus60" class="badge plus_moins">+60</span>
                                         </div>
                                         <div class="btn-group btn-group-justified">
                                             <a href="#" id="update_evt" data-id="" class="btn btn-lg btn-default evtButton2"><span class="fa fa-edit"></span> <?= $lang['Modifier'] ?></a>
@@ -558,7 +571,7 @@ class GestionMatchDetail4 extends MyPageSecure
                                     <a href="#" class="btn btn-default btn-block equipes" data-equipe="B" data-player="Equipe B">
                                         <span class="score label label-primary pull-left" id="scoreB">0</span>
                                         <?= $lang['Equipe']; ?> B<br>
-                                        <img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>
+                                        <img src="../img/Pays/<?= $paysB; ?>.png" class="flag"> <?= $row['equipeB']; ?>
                                     </a>
                                     <br>
                                     <div class="btn-group-vertical btn-block" role="group">
@@ -605,7 +618,7 @@ class GestionMatchDetail4 extends MyPageSecure
                                         <th class="list_evt_r"><?= $lang['R'] ?></th>
                                         <th class="list_nom"><?= $lang['Equipe'] ?> A</th>
                                         <th class="list_evt_b"><?= $lang['B'] ?></th>
-                                        <th class="list_chrono" id="change_ordre" title="<?= $lang['Changer_ordre'] ?>"><?= $lang['Temps'] ?> <img src="../img/up.png" /></th>
+                                        <th class="list_chrono" id="change_ordre" title="<?= $lang['Changer_ordre'] ?>"><?= $lang['Temps'] ?>  <span class="fa fa-sort-asc"</th>
                                         <th class="list_evt_b"><?= $lang['B'] ?></th>
                                         <th class="list_nom"><?= $lang['Equipe'] ?> B</th>
                                         <th class="list_evt_v"><?= $lang['V'] ?></th>
@@ -783,20 +796,36 @@ class GestionMatchDetail4 extends MyPageSecure
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-             
+
+        <div id="simple_alert" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
         
 		<script type="text/javascript" src="v2/jquery-1.11.0.min.js"></script>
         <script type='text/javascript' src='../js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
-        <script src="../js/fullPage/jquery.fullpage.min.js" type="text/javascript"></script>
-        <!--<script type="text/javascript" src="v2/jquery-ui-1.10.4.custom.min.js"></script>-->
+        <script type="text/javascript" src="../js/jquery-ui-1.12.1.min.js"></script>
+        <script type="text/javascript" src="../js/fullPage/jquery.fullpage.min.js"></script>
 		<script type="text/javascript" src="v2/jquery.jeditable.js"></script>
-		<script type="text/javascript" src="v2/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="v2/jquery.maskedinput.min.js"></script>
 		<script>
 //            $('#fullpage').fullpage({
 //                sectionsColor: ['#4A6FB1', '#939FAA', '#323539'],
 //                scrollOverflow: true
 //            });
+            var current_page = "FeuilleMarque4.php";
             var ancienne_ligne = 0;
             var theInEvent = false;
             var ordre_actuel = 'up';
@@ -819,7 +848,7 @@ class GestionMatchDetail4 extends MyPageSecure
             var start_time = new Date();
             
         </script>
-		<script type="text/javascript" src="v2/fm2_A.js"></script>
+		<script type="text/javascript" src="v2/fm4_A.js"></script>
 
     <?php if($verrou == 'O' || $_SESSION['Profile'] <= 0 || $_SESSION['Profile'] > 6) { ?>
         <script>    
@@ -832,14 +861,14 @@ class GestionMatchDetail4 extends MyPageSecure
     <?php	}	?>
 				
     <?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-        <script type="text/javascript" src="v2/fm2_B.js"></script>
+        <script type="text/javascript" src="v2/fm4_B.js"></script>
     <?php } ?>
         
     <?php if($verrou != 'O') { ?>
-        <script type="text/javascript" src="v2/fm2_C.js"></script>
+        <script type="text/javascript" src="v2/fm4_C.js"></script>
     <?php	}	?>
         
-        <script type="text/javascript" src="v2/fm2_D.js"></script>
+        <script type="text/javascript" src="v2/fm4_D.js"></script>
         <script>
             
             $(function() {

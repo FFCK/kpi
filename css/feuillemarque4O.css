@@ -1,0 +1,17 @@
+.editOfficiel, .editArbitres, .suppression, #comments {
+    color: #00b9eb; 
+    text-decoration: none;
+}
+.editOfficiel:hover, .editStatut:hover, .editNo:hover, .editArbitres:hover, .suppression:hover {
+    text-decoration: underline; 
+    cursor: pointer; 
+}
+.editNo input {
+    width: 20px; 
+}
+.editNo button {
+    width: 38px; 
+}
+.placehold {
+    font-style: italic; font-size: 0.8em; font-weight: normal;
+}
