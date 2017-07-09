@@ -107,8 +107,17 @@
 								<th width=18><img height="18" src="../img/oeil2.gif" alt="Publier ?" title="Publier ?" border="0"></th>
 								<th>N°</th>
 								<th>&nbsp;</th>
-								<th>Compét.</th>
-								<th>Niv.</th>
+								<th>Compét./Phase</th>
+								<th>Niv. <img width="12" src="../img/b_help.png" title="Importance de la phase dans le classement géléral. Par exemple :
+                                     <br>-Les premières poules sont toujours au niveau 1,
+                                     <br>-La finale est toujours au niveau le plus élevé,
+                                     <br>-Les demi-finales auront un niveau supérieur au match pour la 5ème place,
+                                     <br>même si elles se jouent avant."></th>
+								<th>Etape <img width="12" src="../img/b_help.png" title="Etape de la phase dans le schéma du système de jeu. Par exemple :
+                                     <br>-Les premières poules sont toujours à l'étape 1,
+                                     <br>-La finale est toujours à l'étape la plus élevée,
+                                     <br>-Plusieurs phases de niveau différents peuvent être à la même étape
+                                     <br>(la finale peut être à la même étape que la phase pour la 3ème place)."></th>
 								<th>Type</th>
 								<th>Nom</th>
 								<th>Date(s)</th>
@@ -174,6 +183,7 @@
 									
 									<td>{$arrayJournees[i].Code_competition}{if $arrayJournees[i].Phase != ''} - {$arrayJournees[i].Phase}{/if}</td>
 									<td>{$arrayJournees[i].Niveau}</td>
+									<td>{$arrayJournees[i].Etape}</td>
 									{if $profile <= 3 && $AuthModif == 'O'}
 										<td><img class="typeJournee" data-valeur="{$arrayJournees[i].Type}" data-id="{$arrayJournees[i].Id}" src="../img/type{$arrayJournees[i].Type}.png" title="{if $arrayJournees[i].Type == 'C'}Classement{else}Elimination{/if}" /></td>
 									{else}
