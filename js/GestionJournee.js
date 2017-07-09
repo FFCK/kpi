@@ -1,4 +1,4 @@
-jq = jQuery.noConflict();
+var jq = jQuery.noConflict();
 
 function changeEquipeA()
 {
@@ -10,28 +10,28 @@ function changeEquipeB()
 
 function validMatch()
 {
-		var dateMatch = document.forms['formJournee'].elements['Date_match'].value;
-		if (dateMatch.length == 0)
-		{
-			alert("La date est Vide ..., Ajout Impossible !");
-			return false;
-		}
-		
-		var heureMatch = document.forms['formJournee'].elements['Heure_match'].value;
-		if ((heureMatch.length != 5) || (heureMatch.charAt(2) != ':'))
-		{
-			if (!confirm("L'heure n'est pas valide (format hh:mm). Continuer ?")) 
-				return false;
-		}
-		
-		var journMatch = document.forms['formJournee'].elements['comboJournee'].value;
-		if (journMatch == '*')
-		{
-			alert("Vous n'avez pas sélectionné de journée / phase pour votre match , Ajout Impossible !");
-			return false;
-		}
-		
-		return true;
+    var dateMatch = document.forms['formJournee'].elements['Date_match'].value;
+    if (dateMatch.length == 0)
+    {
+        alert("La date est Vide ..., Ajout Impossible !");
+        return false;
+    }
+
+    var heureMatch = document.forms['formJournee'].elements['Heure_match'].value;
+    if ((heureMatch.length != 5) || (heureMatch.charAt(2) != ':'))
+    {
+        if (!confirm("L'heure n'est pas valide (format hh:mm). Continuer ?")) 
+            return false;
+    }
+
+    var journMatch = document.forms['formJournee'].elements['comboJournee'].value;
+    if (journMatch == '*')
+    {
+        alert("Vous n'avez pas sélectionné de journée / phase pour votre match , Ajout Impossible !");
+        return false;
+    }
+
+    return true;
 }
 
 function Add()

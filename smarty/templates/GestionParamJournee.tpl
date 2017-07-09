@@ -50,6 +50,7 @@
 								<label for="Phase">Phase (compétition type Coupe)</label><input type="text" name="Phase" value="{$Phase}"/>
 								<select id="PhaseList" name="PhaseList" onChange="Phase.value=this.options[this.selectedIndex].value">
 									<optgroup label="Modèles FR (EN plus bas)">
+										<Option Value="">(Sélectionnez...)</Option>
 										<Option Value="Poule A">Poule A</Option>
 										<Option Value="Poule B">Poule B</Option>
 										<Option Value="Poule C">Poule C</Option>

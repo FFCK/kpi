@@ -4,7 +4,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 // Pieds de page
@@ -62,12 +61,13 @@ class FeuillePresenceEquipe extends MyPage
 				// Chargement des Coureurs ...
 				if ($idEquipe != '')
 				{
-					$sql2  = "Select a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, ";
-					$sql2 .= "b.Origine, b.Numero_club, b.Pagaie_ECA, b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau ";
-					$sql2 .= "From gickp_Competitions_Equipes_Joueurs a ";
-					$sql2 .= "Left Outer Join gickp_Liste_Coureur b On (a.Matric = b.Matric) ";
-					$sql2 .= "Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric) ";
-					$sql2 .= "Where Id_Equipe = ";
+					$sql2  = "Select a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, "
+                            . "b.Origine, b.Numero_club, b.Pagaie_ECA, b.Etat_certificat_CK CertifCK, "
+                            . "b.Etat_certificat_APS CertifAPS, b.Reserve icf, c.Arb, c.niveau "
+                            . "From gickp_Competitions_Equipes_Joueurs a "
+                            . "Left Outer Join gickp_Liste_Coureur b On (a.Matric = b.Matric) "
+                            . "Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric) "
+                            . "Where Id_Equipe = ";
 					$sql2 .= $idEquipe;
 					$sql2 .= " Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";	 
 					//$sql2 .= " Order By Field(if(a.Capitaine='C','-',a.Capitaine), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";	 
@@ -121,7 +121,10 @@ class FeuillePresenceEquipe extends MyPage
 /*						// Pour décaler l'entraineur à la fin de la liste
 						if ($capitaine == 'E' or $capitaine == 'A')
 							$clefEntraineur = $i;
-*/							
+ * 
+*/						if ($row2['Matric'] > 2000000 && $row2['icf'] != NULL) {
+                            $row2['Matric'] = 'Icf-' . $row2['icf'];
+                        }				
 						if ($row2['Origine'] != $codeSaison)
 							$row2['Origine'] = ' ('.$row2['Origine'].')';
 						else
@@ -240,19 +243,33 @@ class FeuillePresenceEquipe extends MyPage
 				
 			for ($j=0;$j<$nbJoueurs;$j++)
 			{
-				$pdf->Cell(25,8,'','',0,'C');
-				$pdf->Cell(16,8,$arrayJoueur{$idEquipe}[$j]['Numero'],'B',0,'C');
-				$pdf->Cell(18,8,$arrayJoueur{$idEquipe}[$j]['Capitaine'],'B',0,'C');
-				$pdf->Cell(30,8,$arrayJoueur{$idEquipe}[$j]['Matric'].$arrayJoueur{$idEquipe}[$j]['Saison'],'B',0,'C');
-				$pdf->Cell(50,8,$arrayJoueur{$idEquipe}[$j]['Nom'],'B',0,'C');
-				$pdf->Cell(50,8,$arrayJoueur{$idEquipe}[$j]['Prenom'],'B',0,'C');
-				$pdf->Cell(28,8,$arrayJoueur{$idEquipe}[$j]['Categ'],'B',0,'C');
-				//$pdf->Cell(18,7,$arrayJoueur{$idEquipe}[$j]['Pagaie'],'LTRB',0,'C');
-				//$pdf->Cell(27,7,$arrayJoueur{$idEquipe}[$j]['CertifCK'],'LTRB',0,'C');
-				// $pdf->Cell(18,7,$arrayJoueur{$idEquipe}[$j]['CertifAPS'],'LTRB',0,'C');
-				$pdf->Cell(17,8,$arrayJoueur{$idEquipe}[$j]['Numero_club'],'B',0,'C');
-				$pdf->Cell(17,8,$arrayJoueur{$idEquipe}[$j]['Arbitre'],'B',1,'C');
-			}
+				if(isset($arrayJoueur{$idEquipe}[$j])){
+                    $pdf->Cell(25,8,'','',0,'C');
+                    $pdf->Cell(16,8,$arrayJoueur{$idEquipe}[$j]['Numero'],'B',0,'C');
+                    $pdf->Cell(18,8,$arrayJoueur{$idEquipe}[$j]['Capitaine'],'B',0,'C');
+                    $pdf->Cell(30,8,$arrayJoueur{$idEquipe}[$j]['Matric'].$arrayJoueur{$idEquipe}[$j]['Saison'],'B',0,'C');
+                    $pdf->Cell(50,8,$arrayJoueur{$idEquipe}[$j]['Nom'],'B',0,'C');
+                    $pdf->Cell(50,8,$arrayJoueur{$idEquipe}[$j]['Prenom'],'B',0,'C');
+                    $pdf->Cell(28,8,$arrayJoueur{$idEquipe}[$j]['Categ'],'B',0,'C');
+                    //$pdf->Cell(18,7,$arrayJoueur{$idEquipe}[$j]['Pagaie'],'LTRB',0,'C');
+                    //$pdf->Cell(27,7,$arrayJoueur{$idEquipe}[$j]['CertifCK'],'LTRB',0,'C');
+                    // $pdf->Cell(18,7,$arrayJoueur{$idEquipe}[$j]['CertifAPS'],'LTRB',0,'C');
+                    $pdf->Cell(17,8,$arrayJoueur{$idEquipe}[$j]['Numero_club'],'B',0,'C');
+                    $pdf->Cell(17,8,$arrayJoueur{$idEquipe}[$j]['Arbitre'],'B',1,'C');
+                } else {
+                    $pdf->Cell(25,8,'','',0,'C');
+                    $pdf->Cell(16,8,'','B',0,'C');
+                    $pdf->Cell(18,8,'','B',0,'C');
+                    $pdf->Cell(30,8,'','B',0,'C');
+                    $pdf->Cell(50,8,'','B',0,'C');
+                    $pdf->Cell(50,8,'','B',0,'C');
+                    $pdf->Cell(28,8,'','B',0,'C');
+//                    $pdf->Cell(18,8,'','B',0,'C');
+//                    $pdf->Cell(27,8,'','B',0,'C');
+//                    $pdf->Cell(18,7,'','LTRB',0,'C');
+                    $pdf->Cell(17,8,'','B',0,'C');
+                    $pdf->Cell(17,8,'','B',1,'C');                }
+            }
 		}
 		$pdf->Output("Presence sheet",'I');
 	}

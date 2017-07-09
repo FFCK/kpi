@@ -99,11 +99,13 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			// Chargement des Joueurs de l'Equipe déja inscrit ...
 			$arrayJoueur = array();
 			
-			$sql  = "Select a.Matric, a.Numero, a.Capitaine, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, b.Numero_club, ";
-			$sql .= "b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau ";
-			$sql .= "From gickp_Matchs_Joueurs a Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric), gickp_Liste_Coureur b ";
-			$sql .= "Where a.Matric = b.Matric ";
-			$sql .= "And a.Id_match = ";
+			$sql  = "Select a.Matric, a.Numero, a.Capitaine, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+                    . "b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, "
+                    . "b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, b.Reserve icf, c.Arb, c.niveau "
+                    . "From gickp_Matchs_Joueurs a Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric), "
+                    . "gickp_Liste_Coureur b "
+                    . "Where a.Matric = b.Matric "
+                    . "And a.Id_match = ";
 			$sql .= $idMatch;
 			$sql .= " And a.Equipe = '";
 			$sql .= $codeEquipe;
@@ -155,9 +157,11 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 					$clefEntraineur = $i;
 */						
 				array_push($arrayJoueur, array( 'Matric' => $row['Matric'], 'Numero' => $numero, 'Capitaine' => $capitaine,
-								                        'Nom' => ucwords(strtolower($row['Nom'])), 'Prenom' => ucwords(strtolower($row['Prenom'])),  'Pagaie' => $pagaie, 'CertifCK' => $row['CertifCK'],  'CertifAPS' => $row['CertifAPS'], 
-								                        'Sexe' => $row['Sexe'], 'Categ' => utyCodeCategorie2($row['Naissance']), 'Pagaie_ECA' => $row['Pagaie_ECA'], 'Pagaie_EVI' => $row['Pagaie_EVI'] ,  'Pagaie_MER' => $row['Pagaie_MER'],
- 														'Arbitre' => $row['Arb'], 'Saison' => $row['Origine'], 'Numero_club' => $row['Numero_club']) );
+                    'Nom' => ucwords(strtolower($row['Nom'])), 'Prenom' => ucwords(strtolower($row['Prenom'])),  
+                    'Pagaie' => $pagaie, 'CertifCK' => $row['CertifCK'],  'CertifAPS' => $row['CertifAPS'], 
+                    'Sexe' => $row['Sexe'], 'Categ' => utyCodeCategorie2($row['Naissance']), 'Pagaie_ECA' => $row['Pagaie_ECA'], 
+                    'Pagaie_EVI' => $row['Pagaie_EVI'] ,  'Pagaie_MER' => $row['Pagaie_MER'], 'Arbitre' => $row['Arb'], 
+                    'Saison' => $row['Origine'], 'Numero_club' => $row['Numero_club'], 'icf' => $row['icf']) );
 			}
 		}	
 		
