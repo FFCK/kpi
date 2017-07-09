@@ -49,7 +49,8 @@
 									<u>Licence n° {$Courreur.Matric}</u>&nbsp;&nbsp;
                                         <b>{$Courreur.Nom} {$Courreur.Prenom}</b> ({$Courreur.Sexe}) 
                                         né(e) le {$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}
-                                        <br>{if $Courreur.date_surclassement}<b class='vert'>Surclassé à la date du {$Courreur.date_surclassement}</b>{/if}
+                                        <br>{if $Courreur.Matric > 2000000 && $Courreur.Reserve != NULL}(Licence ICF : {$Courreur.Reserve}) {/if}
+                                        {if $Courreur.date_surclassement}<b class='vert'>Surclassé à la date du {$Courreur.date_surclassement}</b>{/if}
                                         <br>
 							</th>
 						</tr>
@@ -87,16 +88,27 @@
                         <div class='blocTop'>
                             <b>Modification : </b>
                             <input type="hidden" name="update_matric" id="update_matric" value="{$Courreur.Matric}">
-                            Nom<input type="text" name="update_nom" id="update_nom" value="{$Courreur.Nom}">
-                            Prénom<input type="text" name="update_prenom" id="update_prenom" value="{$Courreur.Prenom}">
-                            Sexe<select id="update_sexe" name="update_sexe">
+                            Nom:<input type="text" name="update_nom" id="update_nom" value="{$Courreur.Nom}">
+                            Prénom:<input type="text" name="update_prenom" id="update_prenom" value="{$Courreur.Prenom}">
+                            Sexe:<select id="update_sexe" name="update_sexe">
                                 <option value="M" {if $Courreur.Sexe == 'M'}selected{/if}>M</option>
                                 <option value="F" {if $Courreur.Sexe == 'F'}selected{/if}>F</option>
                             </select>
-                            Naissance<input type="text" name="update_naissance" id="update_naissance" size="10" 
+                            Naissance:<input type="text" name="update_naissance" id="update_naissance" size="10" 
                                             maxlength="10" minlength="10"  onfocus="displayCalendar(document.forms[0].update_naissance,'dd/mm/yyyy',this)"
                                             value="{$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}">
-                            Saison<input type="text" name="update_saison" id="update_saison" size="4" maxlength="4" minlength="4" value="{$Courreur.Origine}">
+                            <br>
+                            Dernière saison:<input type="text" name="update_saison" id="update_saison" size="4" maxlength="4" minlength="4" value="{$Courreur.Origine}">
+                            Licence ICF:<input type="tel" name="update_icf" id="update_icf" size="6" maxlength="10" minlength="2" value="{$Courreur.Reserve}">
+                            Niveau d'arbitrage:<select id="update_arb" name="update_arb">
+                                <option value="" {if $Arbitre.Arb == 'Néant'}selected{/if}>Néant</option>
+                                <option value="Reg" {if $Arbitre.Arb == 'Arbitre REGIONAL'}selected{/if}>REGIONAL</option>
+                                <option value="Nat" {if $Arbitre.Arb == 'Arbitre NATIONAL'}selected{/if}>NATIONAL</option>
+                                <option value="Int" {if $Arbitre.Arb == 'Arbitre INTERNATIONAL'}selected{/if}>INTERNATIONAL</option>
+                            </select>
+                            Nouveau club:<input type="text" name="update_club" id="update_club" size="4">
+                            <input type="hidden" name="update_cd" id="update_cd">
+                            <input type="hidden" name="update_cr" id="update_cr">
                             <input type="submit" id="update_button" value="Modifier">
                         </div>
                     {/if}

@@ -347,7 +347,7 @@
 								</td>
 								<td>
 									<label for="numeroJoueur">Numero</label>
-									<input type="text" name="numeroJoueur" maxlength=2 id="numeroJoueur">
+									<input type="tel" name="numeroJoueur" maxlength=2 size="3" id="numeroJoueur">
 								</td>
 							</tr>
 							<tr>
@@ -360,6 +360,14 @@
 										<Option Value="NAT">National</Option>
 										<Option Value="INT">International</Option>
 									</select>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label for="numicfJoueur">Licence ICF :</label>
+                                </td>
+                                <td>
+									<input type="tel" name="numicfJoueur" id="numicfJoueur" size="8">
 								</td>
 							</tr>
 							<tr>

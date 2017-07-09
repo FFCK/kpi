@@ -259,7 +259,8 @@ class GestionEquipeJoueur extends MyPageSecure
 		$capitaineJoueur = $myBdd->RealEscapeString(trim(utyGetPost('capitaineJoueur', '-')));
 		$numeroJoueur = $myBdd->RealEscapeString(trim(utyGetPost('numeroJoueur', '')));
 		$arbitreJoueur = $myBdd->RealEscapeString(trim(utyGetPost('arbitreJoueur', '')));
-		
+        $numicfJoueur = (int) $myBdd->RealEscapeString(trim(utyGetPost('numicfJoueur', '')));
+
 		if (strlen($idEquipe) > 0)
 		{
 			$categJoueur = utyCodeCategorie2($naissanceJoueur);
@@ -269,7 +270,7 @@ class GestionEquipeJoueur extends MyPageSecure
             }
 
             $codeClub = $myBdd->GetCodeClubEquipe($idEquipe);
-			$myBdd->InsertIfNotExistLicence($matricJoueur, $nomJoueur, $prenomJoueur, $sexeJoueur, $naissanceJoueur, $codeClub);
+			$myBdd->InsertIfNotExistLicence($matricJoueur, $nomJoueur, $prenomJoueur, $sexeJoueur, $naissanceJoueur, $codeClub, $numicfJoueur);
 			
 			$sql  = "Insert Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) Values (";
 			$sql .= $idEquipe;
@@ -294,23 +295,22 @@ class GestionEquipeJoueur extends MyPageSecure
 			{
 				$sql  = "Insert Into gickp_Arbitre (Matric, Regional, InterRegional, National, International, Arb) Values (";
 				$sql .= mysql_real_escape_string($matricJoueur);
-				switch ($arbitreJoueur)
-				{
-				case 'REG' :
-					$sql .= ",'O','N','N','N','Reg') ";
-					break;
-				case 'IR' :
-					$sql .= ",'N','O','N','N','IR') ";
-					break;
-				case 'NAT' :
-					$sql .= ",'N','N','O','N','Nat') ";
-					break;
-				case 'INT' :
-					$sql .= ",'N','N','O','O','Int') ";
-					break;
-				default :
-					$sql .= ",'N','N','N','N','') ";
-					break;
+				switch ($arbitreJoueur) {
+                    case 'REG' :
+                        $sql .= ",'O','N','N','N','Reg') ";
+                        break;
+                    case 'IR' :
+                        $sql .= ",'N','O','N','N','IR') ";
+                        break;
+                    case 'NAT' :
+                        $sql .= ",'N','N','O','N','Nat') ";
+                        break;
+                    case 'INT' :
+                        $sql .= ",'N','N','O','O','Int') ";
+                        break;
+                    default :
+                        $sql .= ",'N','N','N','N','') ";
+                        break;
 				}
 				mysql_query($sql, $myBdd->m_link) or die ("Erreur insert arb.<br />".$sql);
 			}
