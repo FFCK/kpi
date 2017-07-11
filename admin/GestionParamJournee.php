@@ -15,7 +15,7 @@ class GestionParamJournee extends MyPageSecure
 
 		if ($idJournee != 0) {		
 			// Liste ...
-			$sql  = "Select j.Id, j.Code_competition, j.Code_saison, j.Phase, j.Niveau, j.Etape, j.Date_debut, j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Type, ";
+			$sql  = "Select j.Id, j.Code_competition, j.Code_saison, j.Phase, j.Niveau, j.Etape, j.Nbequipes, j.Date_debut, j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Type, ";
 			$sql .= "j.Plan_eau, j.Departement, j.Responsable_insc, j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, ";
 			$sql .= "c.Code_typeclt ";
 			$sql .= "From gickp_Journees j, gickp_Competitions c ";
@@ -35,6 +35,7 @@ class GestionParamJournee extends MyPageSecure
 				$this->m_tpl->assign('Phase', $row['Phase']);
 				$this->m_tpl->assign('Niveau', $row['Niveau']);
 				$this->m_tpl->assign('Etape', $row['Etape']);
+				$this->m_tpl->assign('Nbequipes', $row['Nbequipes']);
 				$this->m_tpl->assign('Date_debut', utyDateUsToFr($row['Date_debut']));
 				$this->m_tpl->assign('Date_fin', utyDateUsToFr($row['Date_fin']));
 				$this->m_tpl->assign('Nom', $row['Nom']);
@@ -50,7 +51,7 @@ class GestionParamJournee extends MyPageSecure
 				$this->m_tpl->assign('Code_typeclt', $row['Code_typeclt']);
 				
 				if ($row['Code_typeclt'] = 'CP') {
-					$sql2  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Etape, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre ";
+					$sql2  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre ";
 					$sql2 .= "From gickp_Journees ";
 					$sql2 .= "Where Code_competition = '".$row['Code_competition']."' ";
 					$sql2 .= "And Code_saison = '".$row['Code_saison']."' ";
@@ -109,6 +110,7 @@ class GestionParamJournee extends MyPageSecure
 		$Phase = $myBdd->RealEscapeString(trim(utyGetPost('Phase')));
 		$Niveau = $myBdd->RealEscapeString(trim(utyGetPost('Niveau')));
 		$Etape = $myBdd->RealEscapeString(trim(utyGetPost('Etape')));
+		$Nbequipes = $myBdd->RealEscapeString(trim(utyGetPost('Nbequipes')));
 		$Type = $myBdd->RealEscapeString(trim(utyGetPost('Type')));
 		$Date_debut = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_debut'))));
 		$Date_origine = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_origine'))));
@@ -140,8 +142,8 @@ class GestionParamJournee extends MyPageSecure
             // Modification ...
     		$sql  = 'UPDATE gickp_Journees '
                     . 'SET Code_competition = "'.$J_competition.'", Code_saison = "'.$J_saison.'", '
-                    . 'Type = "'.$Type.'", Phase = "'.$Phase.'", Niveau = "'.$Niveau.'", Etape = "'.$Etape.'", Date_debut = "'.$Date_debut.'", '
-                    . 'Date_fin = "'.$Date_fin.'", '
+                    . 'Type = "'.$Type.'", Phase = "'.$Phase.'", Niveau = "'.$Niveau.'", Etape = "'.$Etape.'", '
+                    . 'Nbequipes = "'.$Nbequipes.'", Date_debut = "'.$Date_debut.'", Date_fin = "'.$Date_fin.'", '
                     . 'Nom = "'.$Nom.'", Libelle = "'.$Libelle.'", Lieu = "'.$Lieu.'", Plan_eau = "'.$Plan_eau.'", '
                     . 'Departement = "'.$Departement.'", Responsable_insc = "'.$Responsable_insc.'", '
                     . 'Responsable_R1 = "'.$Responsable_R1.'", Organisateur = "'.$Organisateur.'", '
@@ -154,9 +156,9 @@ class GestionParamJournee extends MyPageSecure
 			// Création ...
 			$nextIdJournee = $this->GetNextIdJournee();
 			
-    		$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
+    		$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
 			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) ";
-			$sql .= "VALUES ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Etape', '$Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
+			$sql .= "VALUES ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Etape', '$Nbequipes', $Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
 			$sql .= "'$Departement', '$Responsable_insc', '$Responsable_R1', '$Organisateur', '$Delegue', '$ChefArbitre') ";
 
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert :<br>".$sql);
@@ -290,10 +292,10 @@ class GestionParamJournee extends MyPageSecure
 		if ($idJournee != 0) {
 			$nextIdJournee = $this->GetNextIdJournee();
 	
-			$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, "
+			$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, "
                     . "Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, "
                     . "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) "
-                    . "SELECT $nextIdJournee, Code_competition, code_saison, Phase, Type, Niveau, Etape, Date_debut, Date_fin, "
+                    . "SELECT $nextIdJournee, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, Date_debut, Date_fin, "
                     . "Nom, Libelle, Lieu, Plan_eau, "
                     . "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre "
                     . "FROM gickp_Journees Where Id = $idJournee ";
