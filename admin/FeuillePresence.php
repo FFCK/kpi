@@ -260,10 +260,8 @@ class FeuillePresence extends MyPage
 				}
 			}
 		}
-		$pdf->Output('Feuilles de presence','I');
+		$pdf->Output('Feuilles de presence'.'.pdf','I');
 	}
 }
 
 $page = new FeuillePresence();
-
-?>

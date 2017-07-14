@@ -326,7 +326,7 @@ class FeuilleMatch extends MyPage
 		$pdf->SetX(10);
 		//	$pdf->Cell(135,3,"Renvoyer cette feuille au plus tard dans les 5 jours à l'autorité compétente.",0,0,'L');
 		
-		$pdf->Output('Match(s) '.$listMatch,'I');
+		$pdf->Output('Match(s) '.$listMatch.'.pdf','I');
 	}
 }
 

@@ -916,10 +916,8 @@ class FeuilleStats extends MyPage
 		}
 
 	
-		$pdf->Output('Statistics_'.$AfficheStat,'I');
+		$pdf->Output('Statistics_'.$AfficheStat.'.pdf','I');
 	}
 }
 
 $page = new FeuilleStats();
-
-?>

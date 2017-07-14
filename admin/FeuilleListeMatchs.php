@@ -466,7 +466,7 @@ class FeuilleListeMatchs extends MyPage
 		}
 		$pdf->Cell(273,3,'','T','1','C');
 
-		$pdf->Output('Liste matchs','I');
+		$pdf->Output('Liste matchs.pdf','I');
 	}
 }
 

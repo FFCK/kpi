@@ -271,10 +271,8 @@ class FeuillePresenceEquipe extends MyPage
                     $pdf->Cell(17,8,'','B',1,'C');                }
             }
 		}
-		$pdf->Output("Presence sheet",'I');
+		$pdf->Output("Presence sheet".'.pdf','I');
 	}
 }
 
 $page = new FeuillePresenceEquipe();
-
-?>

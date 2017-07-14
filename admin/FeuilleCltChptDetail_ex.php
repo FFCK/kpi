@@ -161,10 +161,8 @@ class FeuilleCltNiveau extends MyPage
 				$pdf->Ln(4);
 		}
 			
-		$pdf->Output('Classement par équipe '.$codeCompet,'I');
+		$pdf->Output('Classement par équipe '.$codeCompet.'.pdf','I');
 	}
 }
 
 $page = new FeuilleCltNiveau();
-
-?>

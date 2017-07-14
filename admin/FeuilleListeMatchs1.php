@@ -367,10 +367,8 @@ class FeuilleListeMatchs extends MyPage
 				break;
 			}
 		}
-		$pdf->Output('Liste matchs','I');
+		$pdf->Output('Liste matchs'.'.pdf','I');
 	}
 }
 
 $page = new FeuilleListeMatchs();
-
-?>

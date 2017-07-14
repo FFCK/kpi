@@ -12,16 +12,16 @@ class PDF extends FPDF
 {
 	function Footer()
 	{
-	    //Positionnement à 1,5 cm du bas
+	    //Positionnement ï¿½ 1,5 cm du bas
 	    $this->SetY(-15);
 	    //Police Arial italique 8
 	    $this->SetFont('Arial','I',8);
-	    //Numéro de page centré
+	    //Numï¿½ro de page centrï¿½
 	    $this->Cell(0,10,'Page '.$this->PageNo(),0,0,'C');
 	}
 }
  
-// Liste des présents par catégorie 
+// Liste des prï¿½sents par catï¿½gorie 
 class FeuillePresenceParCat extends MyPage	 
 {	
 	function FeuillePresenceParCat()
@@ -34,7 +34,7 @@ class FeuillePresenceParCat extends MyPage
 		$codeCompet = utyGetSession('codeCompet');
 		$codeSaison = utyGetSaison();
 
-		// Chargement des équipes ...
+		// Chargement des ï¿½quipes ...
 		$arrayEquipe = array();
 		$arrayJoueur = array();
 		$arrayCompetition = array();
@@ -53,7 +53,7 @@ class FeuillePresenceParCat extends MyPage
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Equipes");
 			$num_results = mysql_num_rows($result);
 			if ($num_results == 0)
-				die ('Aucune équipe dans cette compétition');
+				die ('Aucune ï¿½quipe dans cette compï¿½tition');
 			
 			$listEquipes = '';
 			for ($i=0;$i<$num_results;$i++)
@@ -140,12 +140,12 @@ class FeuillePresenceParCat extends MyPage
 
 			}
 			else
-				die ('Aucune équipe');
+				die ('Aucune ï¿½quipe');
 		}	
 		else
-			die ('Aucune compétition sélectionnée');
+			die ('Aucune compï¿½tition sï¿½lectionnï¿½e');
 
-		// Chargement des infos de la compétition
+		// Chargement des infos de la compï¿½tition
 		$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		if($arrayCompetition['Titre_actif'] == 'O')
 			$titreCompet = $arrayCompetition['Libelle'];
@@ -153,15 +153,15 @@ class FeuillePresenceParCat extends MyPage
 			$titreCompet = $arrayCompetition['Soustitre'];
 		if($arrayCompetition['Soustitre2'] != '')
 			$titreCompet .= ' - '.$arrayCompetition['Soustitre2'];
-//		$titreCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
+//		$titreCompet = 'Compï¿½tition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
 
 		$logo = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['LogoLink']);
 		$sponsor = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['SponsorLink']);
 //		print_r ($arrayJoueur);
-		// Entête PDF ...	  
+		// Entï¿½te PDF ...	  
  		$pdf = new PDF('L');
 		$pdf->Open();
-		$pdf->SetTitle("Feuilles de présence");
+		$pdf->SetTitle("Feuilles de prï¿½sence");
 		
 		$pdf->SetAuthor("Kayak-polo.info");
 		$pdf->SetCreator("Kayak-polo.info avec FPDF");
@@ -190,7 +190,7 @@ class FeuillePresenceParCat extends MyPage
 					$size = getimagesize($logo);
 					$largeur=$size[0];
 					$hauteur=$size[1];
-					$ratio=20/$hauteur;	//hauteur imposée de 20mm
+					$ratio=20/$hauteur;	//hauteur imposï¿½e de 20mm
 					$newlargeur=$largeur*$ratio;
 					$posi=149-($newlargeur/2);	//297mm = largeur de page
 					$pdf->image($logo, $posi, 8, 0,20);
@@ -201,7 +201,7 @@ class FeuillePresenceParCat extends MyPage
 					$size = getimagesize($sponsor);
 					$largeur=$size[0];
 					$hauteur=$size[1];
-					$ratio=16/$hauteur;	//hauteur imposée de 16mm
+					$ratio=16/$hauteur;	//hauteur imposï¿½e de 16mm
 					$newlargeur=$largeur*$ratio;
 					$posi=149-($newlargeur/2);	//297mm = largeur de page
 					$pdf->image($sponsor, $posi, 180, 0,16);
@@ -212,7 +212,7 @@ class FeuillePresenceParCat extends MyPage
 				$pdf->Cell(137,8,$titreCompet,'LT',0,'L');
 				$pdf->Cell(136,8,'Saison '.$codeSaison,'TR',1,'R');
 				$pdf->SetFont('Arial','B',14);
-				$pdf->Cell(273,8,"Feuille de présence - ".$arrayJoueur[$i]['Categ'],'LRB','1','C');
+				$pdf->Cell(273,8,"Feuille de prï¿½sence - ".$arrayJoueur[$i]['Categ'],'LRB','1','C');
 				$pdf->Ln(10);
 				
 				$lastCat = $arrayJoueur[$i]['Categ'];
@@ -245,10 +245,8 @@ class FeuillePresenceParCat extends MyPage
 			$pdf->Cell(12,7,$arrayJoueur[$i]['Numero_club'],'LTRB',0,'C');
 			$pdf->Cell(12,7,$arrayJoueur[$i]['Arbitre'],'LTRB',1,'C');
 		}
-		$pdf->Output('Présences par catégorie','I');
+		$pdf->Output('Presences_par_categorie'.'.pdf','I');
 	}
 }
 
 $page = new FeuillePresenceParCat();
-
-?>

@@ -335,5 +335,3 @@ class FeuilleMatch extends MyPage
 }
 
 $page = new FeuilleMatch();
-
-?>

@@ -256,11 +256,8 @@ class FeuillePresence extends MyPage
 				}
 			}
 		}
-		$pdf->Output('Presence sheets','I');
+		$pdf->Output('Presence sheets'.'.pdf','I');
 	}
 }
 
 $page = new FeuillePresence();
-
-?>
-

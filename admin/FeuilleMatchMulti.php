@@ -1046,7 +1046,7 @@ class FeuilleMatch extends MyPage
 			
 		}
 
-		$pdf->Output('Match(s) '.$listMatch,'I');
+		$pdf->Output('Match(s) '.$listMatch.'.pdf','I');
 	}
 }
 

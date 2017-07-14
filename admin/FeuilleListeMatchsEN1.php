@@ -370,10 +370,8 @@ class FeuilleListeMatchs extends MyPage
 				break;
 			}
 		}
-		$pdf->Output('Game list','I');
+		$pdf->Output('Game list'.'.pdf','I');
 	}
 }
 
 $page = new FeuilleListeMatchs();
-
-?>

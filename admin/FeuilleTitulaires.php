@@ -274,10 +274,8 @@ class FeuillePresenceEquipe extends MyPage
                 
 			}
 		}
-		$pdf->Output("Feuille de presence",'I');
+		$pdf->Output("Feuille de presence".'.pdf','I');
 	}
 }
 
 $page = new FeuillePresenceEquipe();
-
-?>

@@ -73,5 +73,3 @@ class FeuilleCltNiveau extends MyPageSecure
 }
 
 $page = new FeuilleCltNiveau();
-
-?>

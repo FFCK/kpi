@@ -467,11 +467,8 @@ class FeuilleListeMatchs extends MyPage
 		}
 		$pdf->Cell(273,3,'','T','1','C');
 
-		$pdf->Output('Game list','I');
+		$pdf->Output('Game list'.'.pdf','I');
 	}
 }
 
 $page = new FeuilleListeMatchs();
-
-?>
-

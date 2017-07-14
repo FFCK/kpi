@@ -245,10 +245,8 @@ class FeuillePresenceCat extends MyPage
 			$pdf->Cell(13,7,$arrayJoueur[$i]['Numero_club'],'B',0,'C');
 			$pdf->Cell(13,7,$arrayJoueur[$i]['Arbitre'],'B',1,'C');
 		}
-		$pdf->Output('Présences par catégorie','I');
+		$pdf->Output('Présences par catégorie'.'.pdf','I');
 	}
 }
 
 $page = new FeuillePresenceCat();
-
-?>
