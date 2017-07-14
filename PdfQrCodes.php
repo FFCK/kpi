@@ -182,9 +182,7 @@ class PdfQrCodes extends MyPage
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
 		$qrcode3->displayFPDF($pdf, 135, 140, 30);
 		
-		$pdf->Output('Game list','I');
+		$pdf->Output('Game list'.'.pdf','I');
 	}
 }
 $page = new PdfQrCodes();
-
-?>

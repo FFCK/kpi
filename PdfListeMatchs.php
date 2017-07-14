@@ -446,7 +446,7 @@ class PdfListeMatchs extends MyPage
 		}
 		//$pdf->Cell(22,3, '',0,0,'C');
 		$pdf->Cell(271,3,'','T','1','C');
-		$pdf->Output('Liste matchs','I');
+		$pdf->Output('Liste matchs'.'.pdf','I');
 	}
 }
 

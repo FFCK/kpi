@@ -448,10 +448,8 @@ class PdfListeMatchs extends MyPage
 		}
 		//$pdf->Cell(22,3, '',0,0,'C');
 		$pdf->Cell(271,3,'','T','1','C');
-		$pdf->Output('Game list','I');
+		$pdf->Output('Game list'.'.pdf','I');
 	}
 }
 
 $page = new PdfListeMatchs();
-
-?>

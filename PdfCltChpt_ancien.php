@@ -138,10 +138,8 @@ class FeuilleCltNiveau extends MyPage
 				$pdf->Cell(20, 5, $row['Diff_publi'],'LTBR','1','C');
 		}
 			
-		$pdf->Output('Classement '.$codeCompet,'I');
+		$pdf->Output('Classement '.$codeCompet.'.pdf','I');
 	}
 }
 
 $page = new FeuilleCltNiveau();
-
-?>

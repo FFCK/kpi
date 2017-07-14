@@ -207,10 +207,8 @@ class FeuilleCltNiveau extends MyPage
 			$pdf->Write(4, date('Y-m-d H:i'));
 		else
 			$pdf->Write(4, date('d/m/Y à H:i'));			
-		$pdf->Output('Classement '.$codeCompet,'I');
+		$pdf->Output('Classement '.$codeCompet.'.pdf','I');
 	}
 }
 
 $page = new FeuilleCltNiveau();
-
-?>

@@ -201,10 +201,8 @@ class FeuilleCltNiveau extends MyPage
 			$pdf->Ln(8);
 		}
 			
-		$pdf->Output('Détail par équipe '.$codeCompet,'I');
+		$pdf->Output('Détail par équipe '.$codeCompet.'.pdf','I');
 	}
 }
 
 $page = new FeuilleCltNiveau();
-
-?>

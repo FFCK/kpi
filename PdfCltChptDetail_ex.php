@@ -169,5 +169,3 @@ class FeuilleCltNiveau extends MyPage
 }
 
 $page = new FeuilleCltNiveau();
-
-?>
