@@ -61,6 +61,7 @@ class GestionMatchDetail extends MyPageSecure
 		$periodeMatch = $row['periodeMatch'];
 		$typeMatch = $row['typeMatch'];
 		$heure_fin = $row['Heure_fin'];
+        $inputText = ' <a href="SelectFeuille.php">' . $lang['Retour'] . '</a>';
 		if (!isset($row['saison'])) {
             die( $lang['Numero_non_valide'] . $inputText );
         }
@@ -159,8 +160,8 @@ class GestionMatchDetail extends MyPageSecure
                     }
                     echo ' ' . $lang['a_'] . ' ' . $row['Heure_match'] . ' - ' . $lang['Terrain'] . ' '.$row['Terrain']; 
                 ?>
-                <a href="#" class="fm_bouton fm_tabs" id="tabs-1_link"><?php echo $lang['Parametres_match']; ?><span class="icon_parametres"></span></a>
-                <a href="#" class="fm_bouton fm_tabs" id="tabs-2_link"><?php echo $lang['Deroulement_match']; ?><span class="icon_rignt"></span></a>
+                <a href="#" class="fm_bouton fm_tabs pull-right" id="tabs-1_link"><?php echo $lang['Parametres_match']; ?>...</a>
+                <a href="#" class="fm_bouton fm_tabs pull-right" id="tabs-2_link"><?php echo $lang['Deroulement_match']; ?>...</a>
             </p>
 			<div id="tabs-1" class="tabs_content">
 				<div id="accordion">
@@ -435,12 +436,12 @@ stop_time: <span id="stop_time_display"></span><br />
 								echo $entr_temp;
 							?>
                             
-                            <div class="fm_bouton fm_stats pull-left">
+<!--                            <div class="fm_bouton fm_stats pull-left">
                                 <?= $lang['Tir'] ?> : <span id='nb_tirs_A'></span>
 							</div>
                             <div class="fm_bouton fm_stats pull-right">
                                 <?= $lang['Tir_contre'] ?> : <span id='nb_arrets_A'></span>
-							</div>
+							</div>-->
 						</td>
 						<td id="selectionChrono" class="centre">
 							<div id="zoneChrono">
@@ -461,9 +462,9 @@ stop_time: <span id="stop_time_display"></span><br />
 							<div id="zoneEvt">
 								<a href="#" id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but"><?php echo $lang['But'] ?></span></a>
 								<a href="#" id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton"><img src="v2/carton_vert.png" /></a>
-								<a href="#" id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?php echo $lang['Tir_non_cadre'] ?>"><?php echo $lang['Tir'] ?></a>
+								<!--<a href="#" id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?php echo $lang['Tir_non_cadre'] ?>"><?php echo $lang['Tir'] ?></a>-->
 								<a href="#" id="evt_jaune" data-evt="Carton jaune" data-code="J" class="fm_bouton evtButton"><img src="v2/carton_jaune.png" /></a>
-								<a href="#" id="evt_arr" data-evt="Arret" data-code="A" class="fm_bouton evtButton" title="<?php echo $lang['Tir_contre_gardien'] ?>"><?php echo $lang['Tir_contre'] ?></a>
+								<!--<a href="#" id="evt_arr" data-evt="Arret" data-code="A" class="fm_bouton evtButton" title="<?php echo $lang['Tir_contre_gardien'] ?>"><?php echo $lang['Tir_contre'] ?></a>-->
 								<a href="#" id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton"><img src="v2/carton_rouge.png" /></a>
 							</div>
 							<div id="zoneTemps">
@@ -480,6 +481,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3">OK</a>
 								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?>.</a>
 								<a href="#" id="reset_evt" class="fm_bouton evtButton2"><?php echo $lang['Annuler'] ?></a>
+                                <a href="#" id="liste_evt" class="fm_bouton evtButton2"><?php echo $lang['Liste'] ?> <img id="list_down" src="../img/down.png"><img id="list_up" src="../img/up.png"></a>
 							</div>
 						</td>
 						<td id="selectionB">
@@ -509,12 +511,12 @@ stop_time: <span id="stop_time_display"></span><br />
 								}
 								echo $entr_temp;
 							?>
-                            <div class="fm_bouton fm_stats pull-left">
+<!--                            <div class="fm_bouton fm_stats pull-left">
                                 <?= $lang['Tir'] ?> : <span id='nb_tirs_B'></span>
 							</div>
                             <div class="fm_bouton fm_stats pull-right">
                                 <?= $lang['Tir_contre'] ?> : <span id='nb_arrets_B'></span>
-							</div>
+							</div>-->
 						</td>
 					</tr>
 					<tr>
@@ -617,30 +619,30 @@ stop_time: <span id="stop_time_display"></span><br />
 				<br />
 				<br />
 			</div>
-				<div id="dialog_ajust" title="<?php echo $lang['Parametres_chrono'] ?>">
-					<h3 id="dialog_ajust_periode">
-					</h3>
-					<p>
-						<?php echo $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
-					</p>
-					<p>
-						<?php echo $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
-					</p>
-				</div>
-				<div id="dialog_end" title="<?php echo $lang['Fin_periode'] ?>">
-					<p class="centre">
-						<span class="fm_input_text" id="periode_end">00:00</span><br /><?php echo $lang['Periode_terminee'] ?>
-					</p>
-				</div>
-				<div id="dialog_end_match" title="<?php echo $lang['Fin_match'] ?>">
-					<p class="centre">
-						<?php echo $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
-					</p>
-					<p class="centre">
-						<?php echo $lang['Commentaires_officiels'] ?> :<br />
-						<textarea id="commentaires" rows="4" cols="50"></textarea>
-					</p>
-				</div>
+            <div id="dialog_ajust" title="<?php echo $lang['Parametres_chrono'] ?>">
+                <h3 id="dialog_ajust_periode">
+                </h3>
+                <p>
+                    <?php echo $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
+                </p>
+                <p>
+                    <?php echo $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
+                </p>
+            </div>
+            <div id="dialog_end" title="<?php echo $lang['Fin_periode'] ?>">
+                <p class="centre">
+                    <span class="fm_input_text" id="periode_end">00:00</span><br /><?php echo $lang['Periode_terminee'] ?>
+                </p>
+            </div>
+            <div id="dialog_end_match" title="<?php echo $lang['Fin_match'] ?>">
+                <p class="centre">
+                    <?php echo $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
+                </p>
+                <p class="centre">
+                    <?php echo $lang['Commentaires_officiels'] ?> :<br />
+                    <textarea id="commentaires" rows="4" cols="50"></textarea>
+                </p>
+            </div>
 
 		</form>
         
@@ -753,6 +755,9 @@ stop_time: <span id="stop_time_display"></span><br />
 				
 				/* Evt chargés */
 				<?php
+				if($num_results5 >= 1)
+					mysql_data_seek($result5,0);
+				$evtEquipe = '';
                 $evt_tir['A'] = 0;
                 $evt_tir['B'] = 0;
                 $evt_arret['A'] = 0;
@@ -792,9 +797,6 @@ stop_time: <span id="stop_time_display"></span><br />
 					}
 					echo $evt_temp_js;
 				}
-				if($num_results5 >= 1)
-					mysql_data_seek($result5,0);
-				$evtEquipe = '';
                 
 
 				?>

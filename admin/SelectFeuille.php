@@ -16,6 +16,7 @@ class SelectFeuille extends MyPageSecure
         
         $target = utyGetGet('target', 'FeuilleMarque2.php');
         switch ($target) {
+            case 'FeuilleMarque2stats.php':
             case 'FeuilleMarque3.php':
             case 'FeuilleMarque3stats.php':
                 $targetRemastered = $target;

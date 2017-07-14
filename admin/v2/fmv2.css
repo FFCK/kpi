@@ -22,7 +22,8 @@
 				border: 3px outset #C5DBEC; border-radius: 8px; padding: 3px;
 				background-color: #CEDEEB;
 				}
-			/* #zoneChrono, #zoneTemps, #zoneEvt {margin-bottom: 3px;} */
+            #zoneChrono {margin-bottom: 3px;} 
+            #zoneTemps {margin-top: 3px;} 
 			
 /*			#chrono_plus  {float: right; top : 5px; right: 10px;}
 			#chrono_moins {width: 35px; float: left; top : 5px; left: 10px;}*/
@@ -56,7 +57,11 @@
 				}
 			.fm_bouton:hover {color: #E17009; border: 1px solid #79B7E7;}
             .fm_stats {
-                width: 110px;
+                width: 35%;
+                height: 20px;
+                margin-bottom: 3px;
+                background: none;
+                color: whitesmoke;
             }
 			.actif {
 				background: url("images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3baae3;
@@ -72,7 +77,7 @@
 				border: 1px solid #EEEEEE;
 				color: #ACFAFA; /* 8AC8F8 */
 				}
-			#valid_evt, #reset_evt, #delete_evt, #update_evt {margin-top: 10px; }
+			#valid_evt, #reset_evt, #delete_evt, #update_evt, #liste_evt {margin-top: 10px; }
 			#delete_evt {margin-left: 15px; }
 			#delete_evt img, #update_evt img {height: 15px; }
 			#list {border: 0px solid #79B7E7; border-spacing : 0; border-collapse : collapse; cursor: pointer;}
@@ -102,6 +107,7 @@
 			#raz_button {margin-left: 15px; }
 			.evtButton3 {width: 95%;}
 			.evtButton {height: 45px; line-height: 45px;}
+            .evtButtonBig {height: 65px; line-height: 65px;}
 			.evtButton > img {height: 35px; vertical-align: middle;}
 			.but {background: url("buts.png") no-repeat 50% 50%; background-size: contain; padding: 0.6em}
 			.c_evt {position:absolute; top: 0; right: 5px;}
@@ -182,6 +188,6 @@
                 margin-top: 5px;
                 margin-bottom: 10px;
             }
-            .fm_stats, .coach {
+            .coach {
                 margin-top: 10px;
             }

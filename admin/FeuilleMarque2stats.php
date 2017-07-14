@@ -4,7 +4,7 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-// Gestion de la Feuille de Match
+// Gestion des stats
 class GestionMatchDetail extends MyPageSecure	 
 {	
 
@@ -38,7 +38,7 @@ class GestionMatchDetail extends MyPageSecure
 		$lang = $langue[$version];
 		
 		if( $idMatch < 1 ) {
-            header("Location: SelectFeuille.php?target=FeuilleMarque3stats.php");
+            header("Location: SelectFeuille.php?target=FeuilleMarque2stats.php");
 			exit;
         }
         
@@ -58,7 +58,7 @@ class GestionMatchDetail extends MyPageSecure
 		$saison = $row['saison'];
 		$statutMatch = $row['statutMatch'];
 		$publiMatch = $row['PubliMatch'];
-		$periodeMatch = $row['periodeMatch'];
+		$periodeMatch = $row['periodeMatch'] != '' ? $row['periodeMatch'] : 'M1';
 		$typeMatch = $row['typeMatch'];
 		$heure_fin = $row['Heure_fin'];
 		if (!isset($row['saison'])) {
@@ -127,7 +127,7 @@ class GestionMatchDetail extends MyPageSecure
 ?>
 <!doctype html>
 <html lang="fr">
-<head>
+    <head>
 		<meta charset="utf-8">
 		<title><?php echo $lang['Match'] . ' ' . $row['Numero_ordre']; ?> (Stats)</title>
 		<link href="v2/jquery-ui.min.css" rel="stylesheet">
@@ -138,7 +138,231 @@ class GestionMatchDetail extends MyPageSecure
 			<link href="v2/fmv2O.css" rel="stylesheet">
 		<?php	}	?>
 		
-		<script type="text/javascript" src="v2/jquery-1.11.0.min.js"></script>
+
+	</head>
+	<body>
+		<form>
+			<!--<img src="v2/FFCK.gif" id="logo" />-->
+			<div id="avert"></div>
+			<!--<a id="btn_change_match" class="fm_bouton fm_tabs" >Changer de match...</a>-->
+			<p id="description-match"><?php 
+				echo $row['Code_competition'];
+				if($row['Code_typeclt'] == 'CHPT')
+					echo ' ('.$row['Lieu'].')';
+				elseif($row['Soustitre2'] != '')
+					echo ' ('.$row['Soustitre2'].')';
+				if($row['Phase'] != '')
+					echo ' - '.$row['Phase'];
+				echo ' - ' . $lang['Match_no'] . $row['Numero_ordre'] . ' - '; ?>
+                <?php 
+                    if($version == 'en') {
+                        echo $row['Date_match'];
+                    } else {
+                        echo utyDateUsToFr($row['Date_match']);
+                    }
+                    echo ' ' . $lang['a_'] . ' ' . $row['Heure_match'] . ' - ' . $lang['Terrain'] . ' '.$row['Terrain']; 
+                ?>
+                <a id="btn_change_match" class="fm_bouton fm_tabs pull-right" ><?php echo $lang['Changer_match']; ?>...</a>
+            </p>
+				<table class="maxWidth" id="deroulement_match">
+					<tr>
+						<th colspan="3">
+							<span class="match"></span>
+                            <span class="pull-left">
+                                <a href="#" id="M1" class="fm_bouton periode<?php if($periodeMatch == 'M1') echo ' actif'; ?>"><?php echo $lang['period_M1']; ?></a>
+                                <a href="#" id="M2" class="fm_bouton periode<?php if($periodeMatch == 'M2') echo ' actif'; ?>"><?php echo $lang['period_M2']; ?></a>
+                                <a href="#" id="P1" class="fm_bouton periode<?php if($periodeMatch == 'P1') echo ' actif'; ?>"><?php echo $lang['period_P1']; ?></a>
+                                <a href="#" id="P2" class="fm_bouton periode<?php if($periodeMatch == 'P2') echo ' actif'; ?>"><?php echo $lang['period_P2']; ?></a>
+                                <a href="#" id="TB" class="fm_bouton periode<?php if($periodeMatch == 'TB') echo ' actif'; ?>"><?php echo $lang['period_TB']; ?></a>
+                            </span>
+                            
+<!-- CHRONO DEBUG
+<br />
+start_time: <span id="start_time_display"></span><br />
+run_time: <span id="run_time_display"></span><br />
+stop_time: <span id="stop_time_display"></span><br />
+
+-->
+						</th>
+					</tr>
+					<tr>
+						<td id="selectionA">
+							<a href="#" class="fm_bouton equipes" data-equipe="A" data-player="Equipe A"><?php echo $lang['Equipe']; ?> A<br />
+								<img src="../img/Pays/<?php echo $paysA; ?>.png" width="25" height="16" /> <?php echo $row['equipeA']; ?>
+								<span class="score" id="scoreA"><?php echo $row['ScoreA']; ?></span>
+							</a>
+							
+							<?php 			
+								$joueur_temp = '';
+								$entr_temp = '';
+								for ($i=1;$i<=$num_results3;$i++)
+								{
+									$row3 = mysql_fetch_array($result3);
+									if($row3["Capitaine"] != 'E'){
+										$joueur_temp  = '<a href="#" id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
+										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
+										if($row3["Capitaine"] == 'C')
+											$joueur_temp .= ' (Cap.)';
+										$joueur_temp .= '</span><span class="c_evt"></span></a>';
+									}else{
+										$entr_temp .= '<a href="#" id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs coach">';
+										$entr_temp .= ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
+										$entr_temp .= '<span class="c_evt"></span></a>';
+										$joueur_temp = '';
+									}
+									echo $joueur_temp;
+								}
+								echo $entr_temp;
+							?>
+                            
+                            
+						</td>
+						<td id="selectionChrono" class="centre">
+                            <div>
+                                <div class="fm_bouton fm_stats pull-left">
+                                    <?= $lang['Tir'] ?> : <span id='nb_tirs_A'></span>
+                                </div>
+                                <div class="fm_bouton fm_stats pull-right">
+                                    <?= $lang['Tir'] ?> : <span id='nb_tirs_B'></span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="fm_bouton fm_stats pull-left">
+                                    <?= $lang['Tir_contre'] ?> : <span id='nb_arrets_A'></span>
+                                </div>
+                                <div class="fm_bouton fm_stats pull-right">
+                                    <?= $lang['Tir_contre'] ?> : <span id='nb_arrets_B'></span>
+                                </div>
+                            </div>
+                            <br><br>
+							<div id="zoneEvt">
+								<a href="#" id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton evtButtonBig" title="<?php echo $lang['Tir_non_cadre'] ?>"><?php echo $lang['Tir'] ?></a>
+								<a href="#" id="evt_arr" data-evt="Tir contre" data-code="A" class="fm_bouton evtButton evtButtonBig" title="<?php echo $lang['Tir_contre_gardien'] ?>"><?php echo $lang['Tir_contre'] ?></a>
+							</div>
+							<div id="zoneTemps">
+                                <img id="time_moins60" class="plusmoins" src="../img/moins60.png">
+								<img id="time_moins10" class="plusmoins" src="../img/moins10.png">
+								<img id="time_moins1" class="plusmoins" src="../img/moins1.png">
+                                
+                                <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00" />
+								<img id="time_plus1" class="plusmoins" src="../img/plus1.png">
+								<img id="time_plus10" class="plusmoins" src="../img/plus10.png">
+								<img id="time_plus60" class="plusmoins" src="../img/plus60.png">
+                                
+								<br />
+								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3 evtButtonBig">OK</a>
+								<a href="#" id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?php echo $lang['Modifier'] ?></a>
+								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?>.</a>
+								<a href="#" id="reset_evt" class="fm_bouton evtButton2"><?php echo $lang['Annuler'] ?></a>
+                                <a href="#" id="liste_evt" class="fm_bouton evtButton2"><?php echo $lang['Liste'] ?> <img id="list_down" src="../img/down.png"><img id="list_up" src="../img/up.png"></a>
+							</div>
+                            
+                            
+						</td>
+						<td id="selectionB">
+							<a href="#" class="fm_bouton equipes" data-equipe="B" data-player="Equipe B">
+								<span class="score" id="scoreB"><?php echo $row['ScoreB']; ?></span>
+                                <?php echo $lang['Equipe'] ?> B<br />
+								<img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>
+							</a>
+							<?php 			
+								$joueur_temp = '';
+								$entr_temp = '';
+								for ($i=1;$i<=$num_results4;$i++)
+								{
+									$row4 = mysql_fetch_array($result4);
+									if($row4["Capitaine"] != 'E'){
+										$joueur_temp  = '<a href="#" id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
+										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
+										if($row4["Capitaine"] == 'C')
+											$joueur_temp .= ' (Cap.)';
+										$joueur_temp .= '</span><span class="c_evt"></span></a>';
+									}else{
+										$entr_temp .= '<a href="#" id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs coach">';
+										$entr_temp .= ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
+										$entr_temp .= '<span class="c_evt"></span></a>';
+										$joueur_temp = '';
+									}
+									echo $joueur_temp;
+								}
+								echo $entr_temp;
+							?>
+                            
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<table id="list_header" class="maxWidth ui-state-default">
+								<tr>
+									<th class="list_nom"><?php echo $lang['Equipe'] ?> A</th>
+									<th class="list_chrono" id="change_ordre" title="<?php echo $lang['Changer_ordre'] ?>"><?php echo $lang['Temps'] ?> <img src="../img/up.png" /></th>
+									<th class="list_nom"><?php echo $lang['Equipe'] ?> B</th>
+								</tr>
+							</table>
+							<table id="list" class="maxWidth">
+								<?php
+								$evt_temp = '';
+								for ($i=1;$i<=$num_results5;$i++)
+								{
+                                    $row5 = mysql_fetch_array($result5);
+                                    if(in_array($row5["Id_evt_match"], array('A', 'T'))) {
+                                        $evtEquipe = $row5['Equipe_A_B'];
+                                        if($row5['Competiteur'] == '0'){
+                                            $row5["Numero"] = '';
+                                            $row5["Nom"] = 'Equipe';
+                                            $row5["Prenom"] = $evtEquipe;
+                                        }
+                                        $evt_temp  = '<tr id="ligne_'.$row5["Id"].'" data-code="'.$row5["Periode"].'-'.substr($row5["Temps"],-5).'-'.$row5["Id_evt_match"].'-'.$evtEquipe.'-'.$row5["Competiteur"].'-'.$row5["Numero"].'">';
+                                        if($evtEquipe == 'A'){
+                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].' - '.ucwords(strtolower($row5["Nom"])).' '.ucwords(strtolower($row5["Prenom"]));
+                                            if($row5["Id_evt_match"] == 'A')
+                                                $evt_temp .= ' (arrêt)';
+                                            if($row5["Id_evt_match"] == 'T')
+                                                $evt_temp .= ' (tir)';
+                                            $evt_temp .= '</td>';
+                                        } else {
+                                            $evt_temp .= '<td class="list_evt_vide"></td>';
+                                        }
+                                        $evt_temp .= '<td class="list_chrono">'.$row5["Periode"].' '.substr($row5["Temps"],-5).'</td>';
+                                        if($evtEquipe == 'B'){
+                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].' - '.ucwords(strtolower($row5["Nom"])).' '.ucwords(strtolower($row5["Prenom"]));
+                                            if($row5["Id_evt_match"] == 'A')
+                                                $evt_temp .= ' (arrêt)';
+                                            if($row5["Id_evt_match"] == 'T')
+                                                $evt_temp .= ' (tir)';
+                                            $evt_temp .= '</td>';
+                                        } else {
+                                            $evt_temp .= '<td class="list_evt_vide"></td>';
+                                        }
+                                        $evt_temp .= '</tr>';
+
+                                        echo $evt_temp;
+                                    }
+								}
+							?>
+							</table>
+							&nbsp;
+						</td>
+					</tr>
+				</table>
+				<br />
+				<?php echo $lang['Commentaires'] ?> :
+				<div id="comments"><?php echo $row['Commentaires_officiels'];?></div>
+				<br />
+				<br />
+				<br />
+                
+            <div id="dialog_change_match" title="<?php echo $lang['Charger_autre_feuille'] ?>">
+                <p class="centre">
+                    ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" />
+                    <br>
+                    <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?php echo $lang['Charger']; ?>" />
+                </p>
+                
+            </div>
+		</form>
+        
+        <script type="text/javascript" src="v2/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="v2/jquery-ui-1.10.4.custom.min.js"></script>
 		<script type="text/javascript" src="v2/jquery.jeditable.js"></script>
 		<script type="text/javascript" src="v2/jquery.dataTables.min.js"></script>
@@ -147,26 +371,26 @@ class GestionMatchDetail extends MyPageSecure
             var ancienne_ligne = 0;
             var theInEvent = false;
             var ordre_actuel = 'up';
-            var idMatch = <?php echo $idMatch ?>;
-            var idEquipeA = <?php echo $row['Id_equipeA'] ?>;
-            var idEquipeB = <?php echo $row['Id_equipeB'] ?>;
-            var typeMatch = "<?php echo $typeMatch ?>";
-            var statutMatch = "<?php echo $statutMatch ?>";
-            var publiMatch = "<?php echo $publiMatch ?>";
-            var periode_en_cours = "<?php echo $periodeMatch ?>";
+            var idMatch = <?= $idMatch ?>;
+            var idEquipeA = <?= $row['Id_equipeA'] ?>;
+            var idEquipeB = <?= $row['Id_equipeB'] ?>;
+            var typeMatch = "<?= $typeMatch ?>";
+            var statutMatch = "<?= $statutMatch ?>";
+            var publiMatch = "<?= $publiMatch ?>";
+            var periode_en_cours = "<?= $periodeMatch ?>";
             var lang = {};
             <?php foreach ($lang as $key => $value) {
                 $key = str_replace('-', '_', $key);
                 echo 'lang.'.$key.' = "'.$value.'"; 
                         ' ; 
-            }  ?>
+            } ?>
             var timer, chrono, start_time, run_time, minut_max = 10, second_max = '00';
             var run_time = new Date();
             var temp_time = new Date();
             var start_time = new Date();
             
         </script>
-		<script type="text/javascript" src="v2/fm3stats_A.js"></script>
+		<script type="text/javascript" src="v2/fm3stats_A.js?v=<?= NUM_VERSION ?>"></script>
 
     <?php if($verrou == 'O' || $_SESSION['Profile'] <= 0 || $_SESSION['Profile'] > 6) { ?>
         <script>    
@@ -179,14 +403,14 @@ class GestionMatchDetail extends MyPageSecure
     <?php	}	?>
 				
     <?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-        <script type="text/javascript" src="v2/fm3stats_B.js"></script>
+        <script type="text/javascript" src="v2/fm3stats_B.js?v=<?= NUM_VERSION ?>"></script>
     <?php } ?>
         
     <?php if($verrou != 'O') { ?>
-        <script type="text/javascript" src="v2/fm3stats_C.js"></script>
+        <script type="text/javascript" src="v2/fm3stats_C.js?v=<?= NUM_VERSION ?>"></script>
     <?php	}	?>
         
-        <script type="text/javascript" src="v2/fm3stats_D.js"></script>
+        <script type="text/javascript" src="v2/fm3stats_D.js?v=<?= NUM_VERSION ?>"></script>
         <script>
             
             $(function() {
@@ -235,287 +459,40 @@ class GestionMatchDetail extends MyPageSecure
 				}
 				$('#update_evt').hide();
 				$('#delete_evt').hide();
-				
 				/* Evt chargés */
 				<?php
+				if($num_results5 >= 1)
+					mysql_data_seek($result5,0);
+				$evtEquipe = '';
+                $evt_tir['A'] = 0;
+                $evt_tir['B'] = 0;
+                $evt_arret['A'] = 0;
+                $evt_arret['B'] = 0;
 				for ($i=1; $i<=$num_results5; $i++)
 				{
 					$row5 = mysql_fetch_array($result5);
 					$evtEquipe = $row5['Equipe_A_B'];
 					switch($row5["Id_evt_match"]){
-						case 'B':
-							$evt_temp_js = '$("#'.$evtEquipe.$row5['Competiteur'].' .c_evt").append("<img class=\'c_but\' src=\'v2/but1.png\' />");
-							$("#score'.$evtEquipe.', #score'.$evtEquipe.'2, #score'.$evtEquipe.'3").text(parseInt($("#score'.$evtEquipe.'").text()) + 1);
-							';
+						case 'T':
+                            $evt_tir[$evtEquipe] ++;
 							break;
-						case 'V':
-							$evt_temp_js = '$("#'.$evtEquipe.$row5['Competiteur'].' .c_evt").append("<img class=\'c_carton\' src=\'v2/carton_vert.png\' />");
-							';
-							break;
-						case 'J':
-							$evt_temp_js = '$("#'.$evtEquipe.$row5['Competiteur'].' .c_evt").append("<img class=\'c_carton\' src=\'v2/carton_jaune.png\' />");
-							';
-							break;
-						case 'R':
-							$evt_temp_js = '$("#'.$evtEquipe.$row5['Competiteur'].' .c_evt").append("<img class=\'c_carton\' src=\'v2/carton_rouge.png\' />");
-							';
+                        case 'A':
+                            $evt_arret[$evtEquipe] ++;
 							break;
                         default:
                             $evt_temp_js = '';
 							break;
                     }
-					echo $evt_temp_js;
 				}
-				if($num_results5 >= 1)
-					mysql_data_seek($result5,0);
-				$evtEquipe = '';
 
 				?>
+                $('#nb_tirs_A').text(<?= $evt_tir['A'] ?>);
+                $('#nb_tirs_B').text(<?= $evt_tir['B'] ?>);
+                $('#nb_arrets_A').text(<?= $evt_arret['A'] ?>);
+                $('#nb_arrets_B').text(<?= $evt_arret['B'] ?>);
 			});
 		</script>
-	</head>
-	<body>
-		<form>
-			<img src="v2/FFCK.gif" id="logo" />
-			<div id="avert"></div>
-			<a id="btn_change_match" class="fm_bouton fm_tabs" ><?php echo $lang['Changer_match']; ?>...</a>
-			<!--<a id="btn_change_match" class="fm_bouton fm_tabs" >Changer de match...</a>-->
-			<h3 class="centre"><?php 
-				echo $row['Code_competition'];
-				if($row['Code_typeclt'] == 'CHPT')
-					echo ' ('.$row['Lieu'].')';
-				elseif($row['Soustitre2'] != '')
-					echo ' ('.$row['Soustitre2'].')';
-				if($row['Phase'] != '')
-					echo ' - '.$row['Phase'];
-				echo ' - ' . $lang['Match_no'] . $row['Numero_ordre']; ?> (Stats)<br />
-                <?php 
-                    if($version == 'en') {
-                        echo $row['Date_match'];
-                    } else {
-                        echo utyDateUsToFr($row['Date_match']);
-                    }
-                    echo ' ' . $lang['a_'] . ' ' . $row['Heure_match'] . ' - ' . $lang['Terrain'] . ' '.$row['Terrain']; 
-                ?>
-            </h3>
-				<table class="maxWidth" id="deroulement_match">
-					<tr>
-						<th colspan="3">
-							<span class="match"></span>
-							<a href="#" id="M1" class="fm_bouton periode<?php if($periodeMatch == 'M1') echo ' actif'; ?>"><?php echo $lang['period_M1']; ?></a>
-                            <a href="#" id="M2" class="fm_bouton periode<?php if($periodeMatch == 'M2') echo ' actif'; ?>"><?php echo $lang['period_M2']; ?></a>
-                            <a href="#" id="P1" class="fm_bouton periode<?php if($periodeMatch == 'P1') echo ' actif'; ?>"><?php echo $lang['period_P1']; ?></a>
-                            <a href="#" id="P2" class="fm_bouton periode<?php if($periodeMatch == 'P2') echo ' actif'; ?>"><?php echo $lang['period_P2']; ?></a>
-                            <a href="#" id="TB" class="fm_bouton periode<?php if($periodeMatch == 'TB') echo ' actif'; ?>"><?php echo $lang['period_TB']; ?></a>
-                            
-<!-- CHRONO DEBUG
-<br />
-start_time: <span id="start_time_display"></span><br />
-run_time: <span id="run_time_display"></span><br />
-stop_time: <span id="stop_time_display"></span><br />
-
--->
-						</th>
-					</tr>
-					<tr>
-						<td id="selectionA">
-							<a href="#" class="fm_bouton equipes" data-equipe="A" data-player="Equipe A"><?php echo $lang['Equipe']; ?> A<br />
-								<img src="../img/Pays/<?php echo $paysA; ?>.png" width="25" height="16" /> <?php echo $row['equipeA']; ?>
-								<span class="score" id="scoreA">0</span>
-							</a>
-							<br /><br />
-							<?php 			
-								$joueur_temp = '';
-								$entr_temp = '';
-								for ($i=1;$i<=$num_results3;$i++)
-								{
-									$row3 = mysql_fetch_array($result3);
-									if($row3["Capitaine"] != 'E'){
-										$joueur_temp  = '<a href="#" id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
-										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
-										if($row3["Capitaine"] == 'C')
-											$joueur_temp .= ' (Cap.)';
-										$joueur_temp .= '</span><span class="c_evt"></span></a>';
-									}else{
-										$entr_temp = '<br /><br /><a href="#" id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
-										$entr_temp .= ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
-										$entr_temp .= '<span class="c_evt"></span></a>';
-										$joueur_temp = '';
-									}
-									echo $joueur_temp;
-								}
-								echo $entr_temp;
-							?>
-						</td>
-						<td id="selectionChrono" class="centre">
-							<div id="zoneEvt">
-								<!--<a href="#" id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but"><?php echo $lang['But'] ?></span></a>-->
-								<!--<a href="#" id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton"><img src="v2/carton_vert.png" /></a>-->
-								<a href="#" id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?php echo $lang['Tir_non_cadre'] ?>"><?php echo $lang['Tir'] ?></a>
-								<!--<a href="#" id="evt_jaune" data-evt="Carton jaune" data-code="J" class="fm_bouton evtButton"><img src="v2/carton_jaune.png" /></a>-->
-								<a href="#" id="evt_arr" data-evt="Tir contre" data-code="A" class="fm_bouton evtButton" title="<?php echo $lang['Tir_contre_gardien'] ?>"><?php echo $lang['Tir_contre'] ?></a>
-								<!--<a href="#" id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton"><img src="v2/carton_rouge.png" /></a>-->
-							</div>
-							<div id="zoneTemps">
-                                <img id="time_moins60" class="plusmoins" src="../img/moins60.png">
-								<img id="time_moins10" class="plusmoins" src="../img/moins10.png">
-								<img id="time_moins1" class="plusmoins" src="../img/moins1.png">
-                                
-<!--								<img id="time_moins" src="v2/images/moins.gif" />
-								<img id="time_plus" src="v2/images/plus.gif" />-->
-								<?php // echo $lang['Temps'] ?>
-                                <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00" />
-								<img id="time_plus1" class="plusmoins" src="../img/plus1.png">
-								<img id="time_plus10" class="plusmoins" src="../img/plus10.png">
-								<img id="time_plus60" class="plusmoins" src="../img/plus60.png">
-                                
-<!--                                <img id="time_moins2" src="v2/images/moins.gif" />
-								<img id="time_plus2" src="v2/images/plus.gif" />
-								<img id="time_moins3" src="v2/images/moins.gif" />
-								<img id="time_plus3" src="v2/images/plus.gif" />-->
-								<br />
-								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3">OK</a>
-								<a href="#" id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?php echo $lang['Modifier'] ?></a>
-								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?>.</a>
-								<a href="#" id="reset_evt" class="fm_bouton evtButton2"><?php echo $lang['Annuler'] ?></a>
-							</div>
-						</td>
-						<td id="selectionB">
-							<a href="#" class="fm_bouton equipes" data-equipe="B" data-player="Equipe B">
-								<span class="score" id="scoreB">0</span><?php echo $lang['Equipe'] ?> B<br />
-								<img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>
-							</a>
-							<br /><br />
-							<?php 			
-								$joueur_temp = '';
-								$entr_temp = '';
-								for ($i=1;$i<=$num_results4;$i++)
-								{
-									$row4 = mysql_fetch_array($result4);
-									if($row4["Capitaine"] != 'E'){
-										$joueur_temp  = '<a href="#" id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
-										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
-										if($row4["Capitaine"] == 'C')
-											$joueur_temp .= ' (Cap.)';
-										$joueur_temp .= '</span><span class="c_evt"></span></a>';
-									}else{
-										$entr_temp = '<br /><br /><a href="#" id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
-										$entr_temp .= ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
-										$entr_temp .= '<span class="c_evt"></span></a>';
-										$joueur_temp = '';
-									}
-									echo $joueur_temp;
-								}
-								echo $entr_temp;
-							?>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="3">
-							<table id="list_header" class="maxWidth ui-state-default">
-								<tr>
-									<th class="list_evt_v"><?php echo $lang['V'] ?></th>
-									<th class="list_evt_j"><?php echo $lang['J'] ?></th>
-									<th class="list_evt_r"><?php echo $lang['R'] ?></th>
-									<th class="list_nom"><?php echo $lang['Equipe'] ?> A</th>
-									<th class="list_evt_b"><?php echo $lang['B'] ?></th>
-									<th class="list_chrono" id="change_ordre" title="<?php echo $lang['Changer_ordre'] ?>"><?php echo $lang['Temps'] ?> <img src="../img/up.png" /></th>
-									<th class="list_evt_b"><?php echo $lang['B'] ?></th>
-									<th class="list_nom"><?php echo $lang['Equipe'] ?> B</th>
-									<th class="list_evt_v"><?php echo $lang['V'] ?></th>
-									<th class="list_evt_j"><?php echo $lang['J'] ?></th>
-									<th class="list_evt_r"><?php echo $lang['R'] ?></th>
-								</tr>
-							</table>
-							<table id="list" class="maxWidth">
-								<?php
-								$evt_temp = '';
-								for ($i=1;$i<=$num_results5;$i++)
-								{
-									$row5 = mysql_fetch_array($result5);
-									$evtEquipe = $row5['Equipe_A_B'];
-									if($row5['Competiteur'] == '0'){
-										$row5["Numero"] = '';
-										$row5["Nom"] = 'Equipe';
-										$row5["Prenom"] = $evtEquipe;
-									}
-									$evt_temp  = '<tr id="ligne_'.$row5["Id"].'" data-code="'.$row5["Periode"].'-'.substr($row5["Temps"],-5).'-'.$row5["Id_evt_match"].'-'.$evtEquipe.'-'.$row5["Competiteur"].'-'.$row5["Numero"].'">';
-									if($evtEquipe == 'A'){
-										$evt_temp .= '<td class="list_evt">';
-										if($row5["Id_evt_match"] == 'V')
-											$evt_temp .= '<img src="v2/carton_vert.png">';
-										$evt_temp .= '</td><td class="list_evt">';
-										if($row5["Id_evt_match"] == 'J')
-											$evt_temp .= '<img src="v2/carton_jaune.png">';
-										$evt_temp .= '</td><td class="list_evt">';
-										if($row5["Id_evt_match"] == 'R')
-											$evt_temp .= '<img src="v2/carton_rouge.png">';
-										$evt_temp .= '</td>';
-										$evt_temp .= '<td class="list_nom">'.$row5["Numero"].' - '.ucwords(strtolower($row5["Nom"])).' '.ucwords(strtolower($row5["Prenom"]));
-										if($row5["Id_evt_match"] == 'A')
-											$evt_temp .= ' (tir contré)';
-										if($row5["Id_evt_match"] == 'T')
-											$evt_temp .= ' (tir)';
-										$evt_temp .= '</td>';
-										$evt_temp .= '<td class="list_evt">';
-										if($row5["Id_evt_match"] == 'B')
-											$evt_temp .= '<img src="v2/but1.png">';
-										$evt_temp .= '</td>';
-									} else {
-										$evt_temp .= '<td colspan="5" class="list_evt_vide"></td>';
-									}
-									$evt_temp .= '<td class="list_chrono">'.$row5["Periode"].' '.substr($row5["Temps"],-5).'</td>';
-									if($evtEquipe == 'B'){
-										$evt_temp .= '<td class="list_evt">';
-										if($row5["Id_evt_match"] == 'B')
-											$evt_temp .= '<img src="v2/but1.png">';
-										$evt_temp .= '</td>';
-										$evt_temp .= '<td class="list_nom">'.$row5["Numero"].' - '.ucwords(strtolower($row5["Nom"])).' '.ucwords(strtolower($row5["Prenom"]));
-										if($row5["Id_evt_match"] == 'A')
-											$evt_temp .= ' (tir contré)';
-										if($row5["Id_evt_match"] == 'T')
-											$evt_temp .= ' (tir)';
-										$evt_temp .= '</td>';
-										$evt_temp .= '<td class="list_evt">';
-										if($row5["Id_evt_match"] == 'V')
-											$evt_temp .= '<img src="v2/carton_vert.png">';
-										$evt_temp .= '</td><td class="list_evt">';
-										if($row5["Id_evt_match"] == 'J')
-											$evt_temp .= '<img src="v2/carton_jaune.png">';
-										$evt_temp .= '</td><td class="list_evt">';
-										if($row5["Id_evt_match"] == 'R')
-											$evt_temp .= '<img src="v2/carton_rouge.png">';
-										$evt_temp .= '</td>';
-									} else {
-										$evt_temp .= '<td colspan="5" class="list_evt_vide"></td>';
-									}
-									$evt_temp .= '</tr>';
-									
-									
-									echo $evt_temp;
-								}
-							?>
-							</table>
-							&nbsp;
-						</td>
-					</tr>
-				</table>
-				<br />
-				<?php echo $lang['Commentaires'] ?> :
-				<div id="comments"><?php echo $row['Commentaires_officiels'];?></div>
-				<br />
-				<br />
-				<br />
-                
-            <div id="dialog_change_match" title="<?php echo $lang['Charger_autre_feuille'] ?>">
-                <p class="centre">
-                    ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" />
-                    <br>
-                    <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?php echo $lang['Charger']; ?>" />
-                </p>
-                
-            </div>
-		</form>
+        
 	</body>
 </html>
 

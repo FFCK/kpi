@@ -161,4 +161,10 @@ function Raz() {
 				$('#typeMatch').buttonset();
 				$('#controleMatch').buttonset();
                 $('#publiMatch').buttonset();
+                $('#list_up').hide();
+                $('#liste_evt').click(function(e){
+                    e.preventDefault();
+                    $('#list, #list_header, #list_up, #list_down').toggle();
+                });
+
             });

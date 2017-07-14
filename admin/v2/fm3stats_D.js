@@ -8,7 +8,7 @@
 
 				/* END MATCH */
 				/* Charge nouvelle feuille */
-                
+                $("#dialog_change_match").hide();
                 $('#btn_change_match').click(function(event){
 					event.preventDefault();
 					$("#dialog_change_match").dialog();
@@ -17,7 +17,7 @@
                 
 				$('#chargeFeuille').click(function(event){
 					event.preventDefault();
-					window.location = 'FeuilleMarque3stats.php?idMatch=' + $('#idFeuille').val();
+					window.location = 'FeuilleMarque2stats.php?idMatch=' + $('#idFeuille').val();
 				});
 				/* ORDRE EVTS */
 				$('#change_ordre').click(function() {
