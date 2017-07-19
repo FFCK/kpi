@@ -100,11 +100,18 @@
                             <br>
                             Dernière saison:<input type="text" name="update_saison" id="update_saison" size="4" maxlength="4" minlength="4" value="{$Courreur.Origine}">
                             Licence ICF:<input type="tel" name="update_icf" id="update_icf" size="6" maxlength="10" minlength="2" value="{$Courreur.Reserve}">
-                            Niveau d'arbitrage:<select id="update_arb" name="update_arb">
+                            Arbitrage:<select id="update_arb" name="update_arb">
                                 <option value="" {if $Arbitre.Arb == 'Néant'}selected{/if}>Néant</option>
                                 <option value="Reg" {if $Arbitre.Arb == 'Arbitre REGIONAL'}selected{/if}>REGIONAL</option>
                                 <option value="Nat" {if $Arbitre.Arb == 'Arbitre NATIONAL'}selected{/if}>NATIONAL</option>
                                 <option value="Int" {if $Arbitre.Arb == 'Arbitre INTERNATIONAL'}selected{/if}>INTERNATIONAL</option>
+                            </select>
+                            Niveau:<select id="update_niveau" name="update_niveau">
+                                <option value="" {if $Arbitre.niveau == ''}selected{/if}>-</option>
+                                <option value="A" {if $Arbitre.niveau == 'A'}selected{/if}>A</option>
+                                <option value="B" {if $Arbitre.niveau == 'B'}selected{/if}>B</option>
+                                <option value="C" {if $Arbitre.niveau == 'C'}selected{/if}>C</option>
+                                <option value="S" {if $Arbitre.niveau == 'S'}selected{/if}>S</option>
                             </select>
                             Nouveau club:<input type="text" name="update_club" id="update_club" size="4">
                             <input type="hidden" name="update_cd" id="update_cd">

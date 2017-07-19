@@ -167,6 +167,7 @@ class GestionAthlete extends MyPageSecure
         $update_saison = $myBdd->RealEscapeString(trim(utyGetPost('update_saison')));
         $update_icf = (int) $myBdd->RealEscapeString(trim(utyGetPost('update_icf')));
         $update_arb = $myBdd->RealEscapeString(trim(utyGetPost('update_arb')));
+        $update_niveau = $myBdd->RealEscapeString(trim(utyGetPost('update_niveau')));
         $update_club = $myBdd->RealEscapeString(trim(utyGetPost('update_club')));
         $update_cd = $myBdd->RealEscapeString(trim(utyGetPost('update_cd')));
         $update_cr = $myBdd->RealEscapeString(trim(utyGetPost('update_cr')));
@@ -194,16 +195,16 @@ class GestionAthlete extends MyPageSecure
         $sql  = "REPLACE INTO gickp_Arbitre VALUES ($update_matric, ";
         switch ($update_arb) {
             case 'Reg' :
-                $sql .= "'O','N','N','N','Reg','','','') ";
+                $sql .= "'O','N','N','N','Reg','','".$update_niveau."','".$update_saison."') ";
                 break;
             case 'IR' :
-                $sql .= "'N','O','N','N','IR','','','') ";
+                $sql .= "'N','O','N','N','IR','','".$update_niveau."','".$update_saison."') ";
                 break;
             case 'Nat' :
-                $sql .= "'N','N','O','N','Nat','','','') ";
+                $sql .= "'N','N','O','N','Nat','','".$update_niveau."','".$update_saison."') ";
                 break;
             case 'Int' :
-                $sql .= "'N','N','O','O','Int','','','') ";
+                $sql .= "'N','N','O','O','Int','','".$update_niveau."','".$update_saison."') ";
                 break;
             default :
                 $sql .= "'N','N','N','N','','','','') ";

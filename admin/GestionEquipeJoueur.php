@@ -259,7 +259,9 @@ class GestionEquipeJoueur extends MyPageSecure
 		$capitaineJoueur = $myBdd->RealEscapeString(trim(utyGetPost('capitaineJoueur', '-')));
 		$numeroJoueur = $myBdd->RealEscapeString(trim(utyGetPost('numeroJoueur', '')));
 		$arbitreJoueur = $myBdd->RealEscapeString(trim(utyGetPost('arbitreJoueur', '')));
+		$niveauJoueur = $myBdd->RealEscapeString(trim(utyGetPost('niveauJoueur', '')));
         $numicfJoueur = (int) $myBdd->RealEscapeString(trim(utyGetPost('numicfJoueur', '')));
+        $saisonJoueur = utyGetSaison();
 
 		if (strlen($idEquipe) > 0)
 		{
@@ -293,23 +295,23 @@ class GestionEquipeJoueur extends MyPageSecure
 			
 			if (($matricJoueur >= 2000000) && ($arbitreJoueur != ''))
 			{
-				$sql  = "Insert Into gickp_Arbitre (Matric, Regional, InterRegional, National, International, Arb) Values (";
+				$sql  = "Insert Into gickp_Arbitre (Matric, Regional, InterRegional, National, International, Arb, Livret, niveau, saison) Values (";
 				$sql .= mysql_real_escape_string($matricJoueur);
 				switch ($arbitreJoueur) {
                     case 'REG' :
-                        $sql .= ",'O','N','N','N','Reg') ";
+                        $sql .= ",'O','N','N','N','Reg','','".$niveauJoueur."','".$saisonJoueur."') ";
                         break;
                     case 'IR' :
-                        $sql .= ",'N','O','N','N','IR') ";
+                        $sql .= ",'N','O','N','N','IR','','".$niveauJoueur."','".$saisonJoueur."') ";
                         break;
                     case 'NAT' :
-                        $sql .= ",'N','N','O','N','Nat') ";
+                        $sql .= ",'N','N','O','N','Nat','','".$niveauJoueur."','".$saisonJoueur."') ";
                         break;
                     case 'INT' :
-                        $sql .= ",'N','N','O','O','Int') ";
+                        $sql .= ",'N','N','O','O','Int','','".$niveauJoueur."','".$saisonJoueur."') ";
                         break;
                     default :
-                        $sql .= ",'N','N','N','N','') ";
+                        $sql .= ",'N','N','N','N','','','','') ";
                         break;
 				}
 				mysql_query($sql, $myBdd->m_link) or die ("Erreur insert arb.<br />".$sql);

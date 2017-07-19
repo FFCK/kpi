@@ -352,14 +352,24 @@
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2>
-									<label for="arbitreJoueur">Niveau d'arbitrage :</label>
+								<td>
+									<label for="arbitreJoueur">Arbitrage :</label>
 									<select name="arbitreJoueur" id="arbitreJoueur">
 										<Option Value="" SELECTED>--- Aucun ---</Option>
 										<Option Value="REG">Régional</Option>
 										<Option Value="IR">Inter-Régional</Option>
 										<Option Value="NAT">National</Option>
 										<Option Value="INT">International</Option>
+									</select>
+								</td>
+                                <td>
+									<label for="niveauJoueur">Niveau :</label>
+									<select name="niveauJoueur" id="niveauJoueur">
+										<Option Value="" SELECTED>-</Option>
+										<Option Value="A">A</Option>
+										<Option Value="B">B</Option>
+										<Option Value="C">C</Option>
+										<Option Value="S">S</Option>
 									</select>
 								</td>
 							</tr>
