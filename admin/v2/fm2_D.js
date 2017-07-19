@@ -125,7 +125,7 @@
                 // Stats
 				$('#btn_stats').click(function(event) {
 					event.preventDefault();
-					window.open('FeuilleMarque3stats.php?idMatch=' + idMatch);
+					window.open('FeuilleMarque2stats.php?idMatch=' + idMatch);
 				});
             });
 

@@ -1137,7 +1137,7 @@ class MyBdd
 	}
 
 	// InsertIfNotExistLicence
-	function InsertIfNotExistLicence($matric, $nom, $prenom, $sexe, $naissance, $codeClub)
+	function InsertIfNotExistLicence($matric, $nom, $prenom, $sexe, $naissance, $codeClub, $numicf)
 	{
 		$sql  = "Select Count(*) Nb From gickp_Liste_Coureur Where matric = $matric";
 		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select InsertIfNotExistLicence");
@@ -1149,7 +1149,7 @@ class MyBdd
 		$arrayComiteDep = $this->GetComiteDep($arrayClub['Code_comite_dep']);
 		$arrayComiteReg = $this->GetComiteReg($arrayComiteDep['Code_comite_reg']);
 		$sql  = "Insert Into gickp_Liste_Coureur (Matric, Origine, Nom, Prenom, Sexe, Naissance, ";
-		$sql .= "Numero_club, Club, Numero_comite_dept, Comite_dept, Numero_comite_reg, Comite_reg) Values ($matric,'";
+		$sql .= "Numero_club, Club, Numero_comite_dept, Comite_dept, Numero_comite_reg, Comite_reg, Reserve) Values ($matric,'";
 		$sql .= utyGetSaison();
 		$sql .= "','";
 		$sql .= mysql_real_escape_string($nom);
@@ -1171,7 +1171,9 @@ class MyBdd
 		$sql .= $arrayComiteDep['Code_comite_reg'];
 		$sql .= "','";
 		$sql .= mysql_real_escape_string($arrayComiteReg['Libelle']);
-		$sql .= "')";
+		$sql .= "', ";
+		$sql .= mysql_real_escape_string($numicf);
+		$sql .= ")";
 		mysql_query($sql, $this->m_link) or die ("Erreur Insert InsertIfNotExistLicence");
 	}
 

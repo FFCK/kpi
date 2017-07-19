@@ -113,7 +113,71 @@ jq(document).ready(function() {
 				'text' // Format des données reçues.
 			);		
 	});
-	
+    jq('.directInput').attr('title','Cliquez pour modifier');
+    jq("body").delegate("span.directInput", "click", function(event){
+		event.preventDefault();
+//        alert('hello');
+        var valeur = jq(this).text();
+        var typeChamps = jq(this).attr('data-type');
+        switch(typeChamps) {
+            case 'text':
+                jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="7" data-anciennevaleur="'+valeur+'" value="'+valeur+'">');
+                break;
+            case 'tel':
+                jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" size="1" data-anciennevaleur="'+valeur+'" value="'+valeur+'">');
+                break;
+        }
+        jq(this).hide();
+		setTimeout( function() { 
+			jq('#inputZone').select();
+		}, 0 );
+    });
+    jq('#inputZone').live('keydown',function(e){
+		if(e.which == 13) {
+			jq(this).blur();
+			return false;
+		}
+	}); 
+    jq('#inputZone').live('blur', function(){
+        var thisSpan = jq('#inputZone + span');
+        var nouvelleValeur = jq(this).val();
+        var typeChamps = jq(this).attr('type');
+        var valeurEntier = nouvelleValeur | 0;
+        if(typeChamps == 'tel' && valeurEntier < 1){
+            jq(this).focus().css('border', '1px solid red');
+        } else {
+            if(nouvelleValeur != jq(this).attr('data-anciennevaleur')){
+                var AjaxWhere = jq('#AjaxWhere').val();
+                var AjaxTableName = jq('#AjaxTableName').val();
+                var AjaxAnd = '';
+                var AjaxUser = jq('#AjaxUser').val();
+                var numJournee = thisSpan.attr('data-id');
+                var typeValeur = thisSpan.attr('data-target');
+                jq.get("UpdateCellJQ.php",
+                    {
+                        AjTableName: AjaxTableName,
+                        AjWhere: AjaxWhere,
+                        AjTypeValeur: typeValeur,
+                        AjValeur: nouvelleValeur,
+                        AjAnd: AjaxAnd,
+                        AjId: numJournee,
+                        AjId2: '',
+                        AjUser: AjaxUser,
+                        AjOk: 'OK'
+                    },
+                    function(data){
+                        if(data != 'OK!'){
+                            alert('mise à jour impossible : '+data);
+                        }else{
+                            thisSpan.text(nouvelleValeur);
+                        }
+                    }
+                );
+            }
+            thisSpan.show();
+            jq(this).remove();
+        }
+	});
 });
 
 function changeCompetition()

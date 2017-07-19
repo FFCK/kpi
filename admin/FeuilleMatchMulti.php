@@ -59,12 +59,15 @@ class FeuilleMatch extends MyPage
 			// Infos match
 		//	if(!Is_Numeric ($chaqueMatch[$h]))
 		//		return;
-			$sql  = "Select a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Type, ";
-			$sql .= "a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, ";
-			$sql .= "b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison ";
-			$sql .= "From gickp_Matchs a, gickp_Journees b ";
-			$sql .= "Where a.Id in (".$chaqueMatch[$h].") ";
-			$sql .= "And a.Id_journee = b.Id ";
+			$sql  = "Select a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, "
+                    . "a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Type, "
+                    . "a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, "
+                    . "a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, "
+                    . "b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, "
+                    . "b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison "
+                    . "From gickp_Matchs a, gickp_Journees b "
+                    . "Where a.Id in (".$chaqueMatch[$h].") "
+                    . "And a.Id_journee = b.Id ";
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select <br />".$sql);
 			$num_results = mysql_num_rows($result);
 			if ($num_results != 1)
@@ -276,21 +279,24 @@ class FeuilleMatch extends MyPage
 				$diva[$i] =  '';
 			}
 
-			if ($row['Id_equipeA'] >= 1)
-				$this->InitTitulaireEquipe('A', $idMatch, $idEquipeA, $myBdd);
-			
-			$sql3  = "CREATE TEMPORARY TABLE tempA ";
-			$sql3 .= "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire, ";	
-			$sql3 .= "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur ";
- 			$sql3 .= "From gickp_Matchs_Joueurs a ";
-			$sql3 .= "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeA And c.Matric = a.Matric), "; 
-			$sql3 .= "gickp_Liste_Coureur b ";
-			$sql3 .= "Where a.Matric = b.Matric ";
-			$sql3 .= "And a.Id_match = $idMatch ";
-			$sql3 .= "And a.Equipe = 'A' ";
+			if ($row['Id_equipeA'] >= 1) {
+                $this->InitTitulaireEquipe('A', $idMatch, $idEquipeA, $myBdd);
+            }
+
+            $sql3  = "CREATE TEMPORARY TABLE tempA "
+                    . "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+                    . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
+                    . "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur "
+                    . "From gickp_Matchs_Joueurs a "
+                    . "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeA And c.Matric = a.Matric), "
+                    . "gickp_Liste_Coureur b "
+                    . "Where a.Matric = b.Matric "
+                    . "And a.Id_match = $idMatch "
+                    . "And a.Equipe = 'A' ";
 			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3);
-			$sql3  = "Select * From tempA ";
-			$sql3 .= "Order By flagEntraineur, Numero, Nom, Prenom ";	 
+			$sql3  = "Select * "
+                    . "From tempA "
+                    . "Order By flagEntraineur, Numero, Nom, Prenom ";	 
 			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql3);
 			$num_results3 = mysql_num_rows($result3);
 
@@ -323,21 +329,28 @@ class FeuilleMatch extends MyPage
 				}
 				
 				$prenoma[$j] = $row3['Prenom'];
-				if($row3['Matric'] < 2000000)
-					$licencea[$j] = $row3['Matric'];
-				else
-					$licencea[$j] = '';
-				if($row3['Nom'] != '' && $row3['Origine'] != '' && $row3['Origine'] < $saison)
-					$saisona[$j] = ' ('.$row3['Origine'].')';
-				
-				if ($row3['Matric_titulaire'] != $row3['Matric'])
-					$diva[$j] = utyCodeCategorie2($row3['Naissance']).'(sup)';
-				else
-					$diva[$j] = utyCodeCategorie2($row3['Naissance']);
+                if ($row3['Matric'] > 2000000 && $row3['icf'] != NULL) {
+                    $licencea[$j] = 'Icf-' . $row3['icf'];
+                } elseif ($row3['Matric'] < 2000000) {
+                    $licencea[$j] = $row3['Matric'];
+                } else {
+                    $licencea[$j] = '';
+                }
+                
+                if ($row3['Nom'] != '' && $row3['Origine'] != '' && $row3['Origine'] < $saison) {
+                    $saisona[$j] = ' (' . $row3['Origine'] . ')';
+                }
 
-				if ($row3["Capitaine"] == 'E' or $row3["Capitaine"] == 'A')
-					$j=$i-2;
-			}
+                if ($row3['Matric_titulaire'] != $row3['Matric']) {
+                    $diva[$j] = utyCodeCategorie2($row3['Naissance']) . '(sup)';
+                } else {
+                    $diva[$j] = utyCodeCategorie2($row3['Naissance']);
+                }
+
+                if ($row3["Capitaine"] == 'E' or $row3["Capitaine"] == 'A') {
+                    $j = $i - 2;
+                }
+            }
 			$sql3b = "DROP TEMPORARY TABLE tempA ";
 			mysql_query($sql3b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3b);
 			
@@ -355,18 +368,19 @@ class FeuilleMatch extends MyPage
 			if ($row['Id_equipeB'] >= 1)
 				$this->InitTitulaireEquipe('B', $idMatch, $idEquipeB, $myBdd);
 			
-			$sql4  = "CREATE TEMPORARY TABLE tempB ";
-			$sql4 .= "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire, ";	
-			$sql4 .= "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur ";
- 			$sql4 .= "From gickp_Matchs_Joueurs a ";
-			$sql4 .= "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeB And c.Matric = a.Matric), "; 
-			$sql4 .= "gickp_Liste_Coureur b ";
-			$sql4 .= "Where a.Matric = b.Matric ";
-			$sql4 .= "And a.Id_match = $idMatch ";
-			$sql4 .= "And a.Equipe = 'B' ";
+			$sql4  = "CREATE TEMPORARY TABLE tempB "
+                    . "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+                    . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
+                    . "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur "
+                    . "From gickp_Matchs_Joueurs a "
+                    . "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeB And c.Matric = a.Matric), "
+                    . "gickp_Liste_Coureur b "
+                    . "Where a.Matric = b.Matric "
+                    . "And a.Id_match = $idMatch "
+                    . "And a.Equipe = 'B' ";
 			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4);
-			$sql4  = "Select * From tempB ";
-			$sql4 .= "Order By flagEntraineur, Numero, Nom, Prenom ";	 
+			$sql4  = "Select * From tempB "
+                    . "Order By flagEntraineur, Numero, Nom, Prenom ";	 
 			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql4);
 			$num_results4 = mysql_num_rows($result4);
 
@@ -400,10 +414,13 @@ class FeuilleMatch extends MyPage
 				}
 				
 				$prenomb[$j] = $row4['Prenom'];
-				if($row4['Matric'] < 2000000)
-					$licenceb[$j] = $row4['Matric'];
-				else
-					$licenceb[$j] = '';
+				if ($row4['Matric'] > 2000000 && $row4['icf'] != NULL) {
+                    $licenceb[$j] = 'Icf-' . $row4['icf'];
+                } elseif ($row4['Matric'] < 2000000) {
+                    $licenceb[$j] = $row4['Matric'];
+                } else {
+                    $licenceb[$j] = '';
+                }
 				if($row4['Nom'] != '' && $row4['Origine'] != '' && $row4['Origine'] < $saison)
 					$saisonb[$j] = ' ('.$row4['Origine'].')';
 				

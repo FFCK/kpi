@@ -74,6 +74,19 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#formAthlete').submit();
 	});
 	
+    //Fusion joueurs
+	jq("#update_club").autocomplete('Autocompl_club2.php', {
+		width: 550,
+		max: 50,
+		mustMatch: false,
+	});
+	jq("#update_club").result(function(event, data, formatted) {
+		if (data) {
+			jq("#update_club").val(data[2]);
+			jq("#update_cd").val(data[3]);
+			jq("#update_cr").val(data[4]);
+		}
+	});
 });
 
 

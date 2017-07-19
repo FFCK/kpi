@@ -95,7 +95,8 @@
 										<td>{$arrayJoueur[i].Nom}</td>
 										<td>{$arrayJoueur[i].Prenom}</td>
 										<td>
-											{$arrayJoueur[i].Matric}{if $arrayJoueur[i].Saison < $sSaison} <span class='highlight2'>({$arrayJoueur[i].Saison})</span>{/if}
+											{if $arrayJoueur[i].Matric > 2000000 && $arrayJoueur[i].icf != NULL}Icf-{$arrayJoueur[i].icf}{else}{$arrayJoueur[i].Matric}{/if}
+                                            {if $arrayJoueur[i].Saison < $sSaison} <span class='highlight2'>({$arrayJoueur[i].Saison})</span>{/if}
 											{if $profile <= 6 && $AuthModif == 'O'}
 												<a href="GestionAthlete.php?Athlete={$arrayJoueur[i].Matric}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
 											{/if}
@@ -347,7 +348,7 @@
 								</td>
 								<td>
 									<label for="numeroJoueur">Numero</label>
-									<input type="text" name="numeroJoueur" maxlength=2 id="numeroJoueur">
+									<input type="tel" name="numeroJoueur" maxlength=2 size="3" id="numeroJoueur">
 								</td>
 							</tr>
 							<tr>
@@ -360,6 +361,14 @@
 										<Option Value="NAT">National</Option>
 										<Option Value="INT">International</Option>
 									</select>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label for="numicfJoueur">Licence ICF :</label>
+                                </td>
+                                <td>
+									<input type="tel" name="numicfJoueur" id="numicfJoueur" size="8">
 								</td>
 							</tr>
 							<tr>

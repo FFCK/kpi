@@ -12,7 +12,7 @@
 				<div class='blocRight Right3'>
 					<table class='tableau2'>
 						<tr>
-							<th class='titreForm' colspan=2>
+							<th class='titreForm' colspan=4>
 								{if $Num_Journee == 0}
 								<label>Créer une journée/phase</label>
 								{else}
@@ -30,8 +30,8 @@
 										{/section}
 								    </select>
 								</td>
-								<td><label for="J_competition">Competition</label>
-									<img hspace="2" width="18" height="18" src="../img/danger.png" alt="Attention aux conséquences d'une modification" title="Attention aux conséquences d'une modification" border="0">
+								<td colspan=3><label for="J_competition">Competition</label>
+									<img width="18" height="18" src="../img/danger.png" alt="Attention aux conséquences d'une modification" title="Attention aux conséquences d'une modification" border="0">
 									<select name="J_competition" onchange="alert('Attention, aux conséquences d une modification de ce paramètre')">
 										{section name=i loop=$arrayCompetition}
 											<Option Value="{$arrayCompetition[i].Code}" {if $arrayCompetition[i].Code == $J_competition}selected{/if}>{$arrayCompetition[i].Code} - {$arrayCompetition[i].Libelle}</Option>
@@ -42,7 +42,7 @@
 						{else}
 							<tr>
 								<td><label for="J_saison">Saison : </label>{$J_saison}<input type='hidden' name='J_saison' Value='{$J_saison}'/></td>
-								<td><label for="J_competition">Competition : </label>{$J_competition}<input type='hidden' name='J_competition' Value='{$J_competition}'/></td>
+								<td colspan=3><label for="J_competition">Competition : </label>{$J_competition}<input type='hidden' name='J_competition' Value='{$J_competition}'/></td>
 							</tr>
 						{/if}
 						<tr>
@@ -50,6 +50,7 @@
 								<label for="Phase">Phase (compétition type Coupe)</label><input type="text" name="Phase" value="{$Phase}"/>
 								<select id="PhaseList" name="PhaseList" onChange="Phase.value=this.options[this.selectedIndex].value">
 									<optgroup label="Modèles FR (EN plus bas)">
+										<Option Value="">(Sélectionnez...)</Option>
 										<Option Value="Poule A">Poule A</Option>
 										<Option Value="Poule B">Poule B</Option>
 										<Option Value="Poule C">Poule C</Option>
@@ -124,24 +125,51 @@
 									</optgroup>
 								</select>
 							</td>
-							<td width="50%">
-								<label for="Niveau">Niveau (compétition type Coupe)</label>
+							<td width="17%">
+								<label for="Niveau">Niveau</label>
+                                <img width="12" src="../img/b_help.png" title="Importance de la phase dans le classement géléral. Par exemple :
+                                     <br>-Les premières poules sont toujours au niveau 1,
+                                     <br>-La finale est toujours au niveau le plus élevé,
+                                     <br>-Les demi-finales auront un niveau supérieur au match pour la 5ème place,
+                                     <br>même si elles se jouent avant.">
 								<select size=1 id="Niveau" name="Niveau">
 								{section name=foo start=1 loop=30}
 									<Option Value="{$smarty.section.foo.index}"{if $smarty.section.foo.index==$Niveau} selected{/if}>{$smarty.section.foo.index}</Option>
 								{/section}
 								</select>
 							</td>
+							<td width="17%">
+								<label for="Etape">Etape</label>
+                                <img width="12" src="../img/b_help.png" title="Etape de la phase dans le schéma du système de jeu. Par exemple :
+                                     <br>-Les premières poules sont toujours à l'étape 1,
+                                     <br>-La finale est toujours à l'étape la plus élevée,
+                                     <br>-Plusieurs phases de niveau différents peuvent être à la même étape
+                                     <br>(la finale peut être à la même étape que la phase pour la 3ème place).">
+								<select id="Etape" name="Etape">
+								{section name=foo start=1 loop=20}
+									<Option Value="{$smarty.section.foo.index}"{if $smarty.section.foo.index==$Etape} selected{/if}>{$smarty.section.foo.index}</Option>
+								{/section}
+								</select>
+							</td>
+							<td width="16%">
+								<label for="Nbequipes">Nb éq.</label>
+                                <img width="12" src="../img/b_help.png" title="Nombre d'équipes (pour les poules de classement)">
+								<select id="Nbequipes" name="Nbequipes">
+								{section name=foo start=1 loop=20}
+									<Option Value="{$smarty.section.foo.index}"{if $smarty.section.foo.index==$Nbequipes} selected{/if}>{$smarty.section.foo.index}</Option>
+								{/section}
+								</select>
+							</td>
 						</tr>
 						<tr>
-							<td colspan=2>
+							<td colspan=4>
 								<label for="Type">Type de matchs : </label>
 								<span title="Matchs de poule, classement par points, égalité possible"><img src="../img/typeC.png" style="vertical-align: middle" />Classement</span><input type="radio" name="Type" value="C" checked />
 								&nbsp;&nbsp;<span title="Matchs éliminatoires, égalité impossible, prolongation si nécessaire"><img src="../img/typeE.png" style="vertical-align: middle" />Elimination</span><input type="radio" name="Type" value="E" {if $Type == 'E'}checked{/if} />
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2 class="vert" align='center'><label><b>Paramètres apparents dans le calendrier public</b></label></td>
+							<td colspan=4 class="vert" align='center'><label><b>Paramètres apparents dans le calendrier public</b></label></td>
 						</tr>
 						<tr>
 							<td class="vert">
@@ -149,14 +177,14 @@
 								<input type="text" class='date' name="Date_debut" value="{$Date_debut}" onfocus="displayCalendar(document.forms[0].Date_debut,'dd/mm/yyyy',this)" >
 								<input type="hidden" name="Date_origine" value="{$Date_debut}" >
 							</td>
-							<td class="vert"><label for="Date_fin"><b>Date_fin</b></label><input type="text" class='date' name="Date_fin" value="{$Date_fin}" onfocus="displayCalendar(document.forms[0].Date_fin,'dd/mm/yyyy',this)" ></td>
+							<td colspan=3 class="vert"><label for="Date_fin"><b>Date_fin</b></label><input type="text" class='date' name="Date_fin" value="{$Date_fin}" onfocus="displayCalendar(document.forms[0].Date_fin,'dd/mm/yyyy',this)" ></td>
 						</tr>
 						<tr>
 							<td class="vert"><label for="Lieu"><b>Lieu</b> (commune)</label><input type="text" name="Lieu" id="Lieu" value="{$Lieu}" placeholder="Commune ou code postal" /></td>
-							<td class="vert"><label for="Departement"><b>Département ou code pays (CIO)</b></label><input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement}" placeholder="N° département ou code pays (CIO)" /></td>
+							<td colspan=3 class="vert"><label for="Departement"><b>Département ou code pays (CIO)</b></label><input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement}" placeholder="N° département ou code pays (CIO)" /></td>
 						</tr>
 						<tr>
-							<td colspan=2 class="vert">
+							<td colspan=4 class="vert">
 								<label for="Nom"><b>Nom journée (CHPT) ou Nom compétition (CP)</b></label>
 								<img border="0" title="Nom qui apparaîtra dans le calendrier public." 
 								alt="Nom qui apparaîtra dans le calendrier public." 
@@ -173,21 +201,21 @@
 						</tr>
 						<tr>
 							<td><br><label for="Organisateur">Club Organisateur</label><input type="text" name="Organisateur" id="Organisateur" value="{$Organisateur}" placeholder="Nom ou numéro de club" /></td>
-							<td><br><label for="Plan_eau">Plan d'eau</label><input type="text" name="Plan_eau" value="{$Plan_eau}"/></td>
+							<td colspan=3><br><label for="Plan_eau">Plan d'eau</label><input type="text" name="Plan_eau" value="{$Plan_eau}"/></td>
 						</tr>
 						<tr>
 							<td><label for="Responsable_insc">Responsable compétition RC</label><input type="text" id="Responsable_insc" name="Responsable_insc" value="{$Responsable_insc}" placeholder="Nom prénom ou numéro de licence" /></td>
-							<td><label for="Responsable_R1">Responsable local R1</label><input type="text" id="Responsable_R1" name="Responsable_R1" value="{$Responsable_R1}" placeholder="Nom prénom ou numéro de licence" /></td>
+							<td colspan=3><label for="Responsable_R1">Responsable local R1</label><input type="text" id="Responsable_R1" name="Responsable_R1" value="{$Responsable_R1}" placeholder="Nom prénom ou numéro de licence" /></td>
 						</tr>
 						<tr>
 							<td><label for="Delegue">Délégué fédéral CNA</label><input type="text" id="Delegue" name="Delegue" value="{$Delegue}" placeholder="Nom prénom ou numéro de licence" /></td>
-							<td><label for="ChefArbitre">Chef des arbitres</label><input type="text" id="ChefArbitre" name="ChefArbitre" value="{$ChefArbitre}" placeholder="Nom prénom ou numéro de licence" /></td>
+							<td colspan=3><label for="ChefArbitre">Chef des arbitres</label><input type="text" id="ChefArbitre" name="ChefArbitre" value="{$ChefArbitre}" placeholder="Nom prénom ou numéro de licence" /></td>
 						</tr>
 						<tr>
 							{if $Num_Journee == 0}
-								<td colspan=2><input type="button" onclick="Ok();" name="Sauvegarder" value="Insérer la journée"></td>
+								<td colspan=4><input type="button" onclick="Ok();" name="Sauvegarder" value="Insérer la journée"></td>
 							{else}
-								<td colspan=2>
+								<td colspan=4>
 									<input type="button" onclick="Ok();" name="Sauvegarder" value="Sauvegarder les modifications">
 									<hr>
 								</td>
@@ -195,13 +223,13 @@
 						</tr>
 						<tr>
 							<td><label for="AvecMatchs">Inclure les matchs</label><input type="checkbox" name="AvecMatchs" value="oui"></td>
-							<td><label for="CodMatchs">Encoder les matchs de poule *</label><input type="checkbox" name="CodMatchs" value="oui"></td>
+							<td colspan=3><label for="CodMatchs">Encoder les matchs de poule *</label><input type="checkbox" name="CodMatchs" value="oui"></td>
 						</tr>
 						<tr>
-							<td colspan=2 align="right"><label>(* Uniquement s'ils ne sont pas déjà encodés)</label></td>
+							<td colspan=4 align="right"><label>(* Uniquement s'ils ne sont pas déjà encodés)</label></td>
 						</tr>
 						<tr>
-							<td colspan=2>
+							<td colspan=4>
 								<input type="button" onclick="Duppli();" name="Dupliquer" value="Sauvegarder comme nouvelle journée (dupliquer)">
 								<hr>
 							</td>

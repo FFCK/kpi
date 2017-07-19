@@ -165,16 +165,52 @@ class GestionAthlete extends MyPageSecure
         $update_sexe = $myBdd->RealEscapeString(trim(utyGetPost('update_sexe')));
         $update_naissance = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('update_naissance'))));
         $update_saison = $myBdd->RealEscapeString(trim(utyGetPost('update_saison')));
+        $update_icf = (int) $myBdd->RealEscapeString(trim(utyGetPost('update_icf')));
+        $update_arb = $myBdd->RealEscapeString(trim(utyGetPost('update_arb')));
+        $update_club = $myBdd->RealEscapeString(trim(utyGetPost('update_club')));
+        $update_cd = $myBdd->RealEscapeString(trim(utyGetPost('update_cd')));
+        $update_cr = $myBdd->RealEscapeString(trim(utyGetPost('update_cr')));
         
-        $sql  = "UPDATE gickp_Liste_Coureur SET Origine = $update_saison, Nom = '" . $update_nom . "', Prenom = '" . $update_prenom . "', "
-                . "Sexe = '" . $update_sexe . "', Naissance = '" . $update_naissance . "' "
-                . "WHERE Matric = $update_matric";
-        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+        $sql  = "UPDATE gickp_Liste_Coureur "
+                . "SET Origine = $update_saison, Nom = '" . $update_nom . "', Prenom = '" . $update_prenom . "', "
+                . "Sexe = '" . $update_sexe . "', Naissance = '" . $update_naissance . "', ";
+        if($update_icf > 0) {
+            $sql .= "Reserve = " . $update_icf . " ";
+        } else {
+            $sql .= "Reserve = NULL ";
+        }
+        if($update_club != '') {
+            $sql .= ", Numero_club = '" . $update_club . "', Numero_comite_dept = '" . $update_cd . "', Numero_comite_reg = '" . $update_cr . "' ";
+        }
+        $sql .= "WHERE Matric = $update_matric";
+        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
         
-        $sql  = "UPDATE gickp_Competitions_Equipes_Joueurs SET Nom = '" . $update_nom . "', Prenom = '" . $update_prenom . "', "
+        $sql  = "UPDATE gickp_Competitions_Equipes_Joueurs "
+                . "SET Nom = '" . $update_nom . "', Prenom = '" . $update_prenom . "', "
                 . "Sexe = '" . $update_sexe . "' "
                 . "WHERE Matric = $update_matric";
         mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+        
+        $sql  = "REPLACE INTO gickp_Arbitre VALUES ($update_matric, ";
+        switch ($update_arb) {
+            case 'Reg' :
+                $sql .= "'O','N','N','N','Reg','','','') ";
+                break;
+            case 'IR' :
+                $sql .= "'N','O','N','N','IR','','','') ";
+                break;
+            case 'Nat' :
+                $sql .= "'N','N','O','N','Nat','','','') ";
+                break;
+            case 'Int' :
+                $sql .= "'N','N','O','O','Int','','','') ";
+                break;
+            default :
+                $sql .= "'N','N','N','N','','','','') ";
+                break;
+        }
+        
+        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
         
         return "Modification effectuée !";
 	}
@@ -223,7 +259,7 @@ class GestionAthlete extends MyPageSecure
             }
 
 			if ($Cmd == 'FusionJoueurs') {
-                ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($alertMessage == '')
