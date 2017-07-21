@@ -65,6 +65,7 @@
 									<th>Equipe</th>
 									<th>Pr&eacute;sents</th>
 									<th># Club</th>
+									<th>Nb matchs</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -87,6 +88,7 @@
 										<td class="cliquableNomEquipe"><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" alt="Feuille de pr&eacute;sence" title="Feuille de pr&eacute;sence">{$arrayEquipe[i].Libelle}</A></td>
 										<td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" alt="Feuille de pr&eacute;sence" title="Feuille de pr&eacute;sence"><img height="25" src="../img/b_sbrowse.png" /></A></td>
 										<td>{$arrayEquipe[i].Code_club}</td>
+										<td>{$arrayEquipe[i].nbMatchs}</td>
 										{if $profile <= 3 && $AuthModif == 'O' && $bProd}
 											<td><a href="#" onclick="RemoveCheckbox('formEquipe', '{$arrayEquipe[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" /></a></td>
 										{else}<td>&nbsp;</td>{/if}

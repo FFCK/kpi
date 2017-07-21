@@ -85,18 +85,18 @@ class GestionEquipe extends MyPageSecure
 		{ 
 			if ($codeCompet != 'POOL')
 			{
-				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  ";
-				$sql .= "From gickp_Competitions_Equipes ce, gickp_Club c ";
-				$sql .= "Where ce.Code_compet = '";
+				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  "
+                        . "From gickp_Competitions_Equipes ce, gickp_Club c "
+                        . "Where ce.Code_compet = '";
 				$sql .= $codeCompet;
 				$sql .= "' And ce.Code_saison = '";
 				$sql .= $codeSaison;
-				$sql .= "' And ce.Code_club = c.Code ";	 
-				$sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+				$sql .= "' And ce.Code_club = c.Code "
+                        . " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			} else {
-				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage ";
-				$sql .= "From gickp_Competitions_Equipes ce ";
-				$sql .= "Where ce.Code_compet = '";
+				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage "
+                        . "From gickp_Competitions_Equipes ce "
+                        . "Where ce.Code_compet = '";
 				$sql .= $codeCompet;
 				$sql .= "' Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			}
@@ -106,12 +106,31 @@ class GestionEquipe extends MyPageSecure
 		 
 			for ($i=0;$i<$num_results;$i++)
 			{
-				$row = mysql_fetch_array($result);	  
+				$row = mysql_fetch_array($result);
+                $nbMatchs = 0;
+                $sql2  = "Select count(ce.Id) nbMatchs "
+                        . "FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Journees j "
+                        . "WHERE ce.Code_compet = '" . $codeCompet . "' "
+                        . "AND ce.Code_saison = '" . $codeSaison . "' "
+                        . "AND j.Code_competition = '" . $codeCompet . "' "
+                        . "AND j.Code_saison = '" . $codeSaison . "' "
+                        . "AND j.Id = m.Id_journee "
+                        . "AND ce.Id = " . $row['Id'] . " "
+                        . "AND (ce.Id = m.Id_equipeA "
+                        . "OR ce.Id = m.Id_equipeB) ";
+                $result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Load => ".$sql2);
+                $row2 = mysql_fetch_array($result2);
+                $nbMatchs = $row2['nbMatchs'];
+                
 				if (strlen($row['Code_comite_dep']) > 3)
 					$row['Code_comite_dep'] = 'FRA';
 				if ($row['Tirage'] != 0 or $row['Poule'] != '')
 					$this->m_tpl->assign('Tirage', 'ok');
-				array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'Code_comite_dep' => $row['Code_comite_dep'] ));
+                
+				array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 
+                    'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 
+                    'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'nbMatchs' => $nbMatchs, 
+                    'Code_comite_dep' => $row['Code_comite_dep'] ));
 			}
 		}	
 		$this->m_tpl->assign('arrayEquipe', $arrayEquipe);
