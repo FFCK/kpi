@@ -41,11 +41,11 @@
 							<td colspan=2 align=center>{$commentairesCompet}</td>
 						</tr>
 						<tr>
-							<td>Type de classement :</td>
+							<td>Classement :</td>
 							<td>{$codeTypeCltOrigine}</td>
 						</tr>
 						<tr>
-							<td>Nombre d'équipes :</td>
+							<td>Nbre d'équipes :</td>
 							<td>{$equipesOrigine}</td>
 						</tr>
 						<tr>
@@ -66,7 +66,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2 align=center>
+							<td colspan=2 align="center">
 								{if $codeTypeCltOrigine == 'CHPT'}
 									{section name=i loop=$arrayJournees}
 										{$arrayJournees[i].Lieu}<br>
@@ -107,11 +107,11 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Type de classement :</td>
+							<td>Classement :</td>
 							<td>{$codeTypeCltDestination}</td>
 						</tr>
 						<tr>
-							<td>Nombre d'équipes :</td>
+							<td>Nbre d'équipes :</td>
 							<td>{$equipesDestination}</td>
 						</tr>
 						<tr>
@@ -195,6 +195,64 @@
 							<td colspan=2>&nbsp;</td>
 						</tr>
 					</table>
+		        </div>
+				<div class='blocRight Right5'>
+                    <h3>
+                        Rechercher des schémas de compétitions
+                    </h3>
+                    <label for="recherche_nb_equipes">Nombre d'équipes : </label>
+                    <input type="tel" size="2" name="recherche_nb_equipes" id="recherche_nb_equipes" value="{$recherche_nb_equipes}">
+                    <input type="submit" name="valid_recherche_schema" id="valid_recherche_schema" value="Valider">
+                    <br>
+                    <br>
+                        <table class='tableau' id='tableCompet'>
+							<thead> 
+								<tr>
+									<th title="Saison">Saison</th>
+									<th title="Code">Code</th>
+									<th title="Niveau">Niv.</th>
+									<th title="Titre de la compétition">Libelle</th>
+									<th title="Compétition de référence">Groupe</th>
+									<th title="Tour/Phase">Tour</th>
+									<th title="Nombre d'équipes affectées">Equipes</th>
+									<th title="Nombre de matchs">Matchs</th>
+								</tr>
+							</thead> 
+							
+							<tbody>
+								{section name=i loop=$arraySchemas} 
+									<tr class='{cycle values="impair,pair"}'>
+										<td>{$arraySchemas[i].Code_saison}</td>
+										<td>{$arraySchemas[i].Code}</td>
+										<td>{$arraySchemas[i].Code_niveau|default:'&nbsp;'}</td>
+										<td	class="cliquableNomEquipe"
+											title="<center>
+											{if $arraySchemas[i].Titre_actif == 'O'}{$arraySchemas[i].Libelle}<br>{else}{$arraySchemas[i].Soustitre}<br>{/if}
+											{$arraySchemas[i].Soustitre2}
+											<br>- - -
+											<br>- - -
+											<br>Qualifiés : {$arraySchemas[i].Qualifies}
+											<br>Eliminés : {$arraySchemas[i].Elimines}
+											<br>- - -
+											<br><i>{$arraySchemas[i].commentairesCompet}</i><br><br>
+											</center>"
+										><a href='GestionDoc.php?Compet={$arraySchemas[i].Code}'>{if $arraySchemas[i].Titre_actif != 'O' && $arraySchemas[i].Soustitre != ''}{$arraySchemas[i].Soustitre}
+                                                {else}{$arraySchemas[i].Libelle}{/if}
+                                                {if $arraySchemas[i].Soustitre2 != ''}<br />{$arraySchemas[i].Soustitre2}{/if}</a></td>
+										<td>{$arraySchemas[i].Code_ref|default:'&nbsp;'}</td>
+										<td>{if $arraySchemas[i].Code_tour == '10'}F{else}{$arraySchemas[i].Code_tour|default:'&nbsp;'}{/if}</td>
+										<td>{$arraySchemas[i].Nb_equipes|default:'&nbsp;'}</td>
+										<td>{$arraySchemas[i].nbMatchs|default:'&nbsp;'}</td>
+									</tr>
+                                {sectionelse}
+                                    <tr>
+                                        <td colspan="7">Aucun résultat.</td>
+                                    </tr>
+                                    
+                                {/section}
+							</tbody>
+						</table>
+                    
 		        </div>
 			</form>			
 		</div>	  	   

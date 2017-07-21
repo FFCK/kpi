@@ -243,7 +243,12 @@ td.colorCapC {background: #BFB;} /*vert*/
     width: 400px;
     float: right;
 }
-
+.Right5 {
+    background: inherit;
+    width: 800px;
+    margin: 0px 6px;
+    border: none;
+}
 
 .blocRight th, .blocTop th {
 	border: 3px groove #CCCCCC;

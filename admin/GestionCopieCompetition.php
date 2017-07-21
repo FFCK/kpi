@@ -130,6 +130,52 @@ class GestionCopieCompetition extends MyPageSecure
 			$this->m_tpl->assign('Delegue', $row['Delegue']);
 		}
 		$this->m_tpl->assign('arrayJournees', $arrayJournees);
+        
+        
+        // Chargement des schémas
+        $recherche_nb_equipes = utyGetSession('recherche_nb_equipes', 0);
+		$recherche_nb_equipes = (int) utyGetPost('recherche_nb_equipes',$recherche_nb_equipes);
+		$_SESSION['recherche_nb_equipes'] = $recherche_nb_equipes;
+		$this->m_tpl->assign('recherche_nb_equipes', $recherche_nb_equipes);
+        
+        if($recherche_nb_equipes != 0) {
+            $arraySchemas = array();
+            $sql  = "SELECT c.*, g.id ";
+            $sql .= "FROM gickp_Competitions c, gickp_Competitions_Groupes g ";
+            $sql .= "WHERE 1=1 ";
+            $sql .= "AND c.Code_typeclt = 'CP' ";
+            $sql .= "AND c.Nb_equipes > 0 ";
+            $sql .= "AND c.Nb_equipes = $recherche_nb_equipes ";
+            $sql .= "AND c.Code_ref = g.Groupe ";
+            $sql .= "ORDER BY c.Code_saison DESC, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";	 
+            $result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
+
+            for ($i=0;$i<$num_results;$i++)
+            {
+                $row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+
+                $sql2  = "Select Count(m.Id) nbMatchs From gickp_Matchs m, gickp_Journees j ";
+                $sql2 .= "Where j.Id = m.Id_journee ";
+                $sql2 .= "And j.Code_competition = '".$row["Code"]."' ";
+                $sql2 .= "And j.Code_saison = ".$row["Code_saison"]." ";
+                $result2 = $myBdd->Query($sql2);
+                //$row2 = mysql_fetch_row($result2);
+                $row2 = $myBdd->FetchRow($result2, $resulttype=MYSQL_ASSOC);
+                $nbMatchs = $row2[0];
+                
+                if($nbMatchs > 0) {
+                    array_push($arraySchemas, array( 'Code' => $row["Code"], 'Code_saison' => $row['Code_saison'], 'Code_niveau' => $row["Code_niveau"], 'Libelle' => $row["Libelle"], 'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"],
+                                                'Code_ref' => $row["Code_ref"], 'GroupOrder' => $row["GroupOrder"], 'codeTypeClt' => $row["Code_typeclt"], 'Web' => $row["Web"], 
+                                                'ToutGroup' => $row["ToutGroup"], 'TouteSaisons' => $row["TouteSaisons"],
+                                                'En_actif' => $row['En_actif'], 'Titre_actif' => $row['Titre_actif'], 'Logo_actif' => $row['Logo_actif'], 'Sponsor_actif' => $row['Sponsor_actif'], 'Kpi_ffck_actif' => $row['Kpi_ffck_actif'], 
+                                                'Age_min' => $row["Age_min"], 'Age_max' => $row["Age_max"], 'Sexe' => $row["Sexe"], 'Points' => $row["Points"], 'Statut' => $row['Statut'],
+                                                'Code_tour' => $row["Code_tour"], 'Nb_equipes' => $row["Nb_equipes"], 'Verrou' => $row["Verrou"], 'Qualifies' => $row["Qualifies"], 'Elimines' => $row["Elimines"],
+                                                'commentairesCompet' => $row["commentairesCompet"], 'nbMatchs' => $nbMatchs ));
+                }
+            }
+            $this->m_tpl->assign('arraySchemas', $arraySchemas);
+        }
 	}
 	
 	function Ok()
