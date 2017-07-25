@@ -4,8 +4,7 @@
 				<input type='hidden' name='Cmd' Value=''/>
 				<input type='hidden' name='ParamCmd' Value=''/>
 
-				<iframe name="WordPressKPI" id="WordPressKPI" height="2000" SRC="../wordpress/" scrolling="auto" width="100%" FRAMEBORDER="no"></iframe>
-				
+                <h2 class="center-block">Pour la prod, inverser index.php et index_2.php</h2>
 			</form>			
 					
 		</div>	  	   
