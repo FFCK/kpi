@@ -318,7 +318,7 @@ class GestionDirectPitchs extends MyPage
 				<br />
 				<div class="pitchs">
 					<div class="pitch">
-						<?php if($array1[0]['Id'] != '') { ?>
+						<?php if(isset($array1[0]) && $array1[0]['Id'] != '') { ?>
 							<table class="incrust_table">
 								<thead>
 									<tr>
@@ -339,7 +339,7 @@ class GestionDirectPitchs extends MyPage
 						<?php } ?>
 					</div>
 					<div class="pitch">
-						<?php if($array2[0]['Id'] != '') { ?>
+						<?php if(isset($array2[0]) && $array2[0]['Id'] != '') { ?>
 							<table class="incrust_table">
 								<thead>
 									<tr>
@@ -360,7 +360,7 @@ class GestionDirectPitchs extends MyPage
 						<?php } ?>
 					</div>
 					<div class="pitch">
-						<?php if($array3[0]['Id'] != '') { ?>
+						<?php if(isset($array3[0]) && $array3[0]['Id'] != '') { ?>
 							<table class="incrust_table">
 								<thead>
 									<tr>
@@ -381,7 +381,7 @@ class GestionDirectPitchs extends MyPage
 						<?php } ?>
 					</div>
 					<div class="pitch">
-						<?php if($array4[0]['Id'] != '') { ?>
+						<?php if(isset($array4[0]) && $array4[0]['Id'] != '') { ?>
 							<table class="incrust_table">
 								<thead>
 									<tr>
@@ -402,7 +402,7 @@ class GestionDirectPitchs extends MyPage
 						<?php } ?>
 					</div>
 					<div class="pitch">
-						<?php if($array5[0]['Id'] != '') { ?>
+						<?php if(isset($array5[0]) && $array5[0]['Id'] != '') { ?>
 							<table class="incrust_table">
 								<thead>
 									<tr>
@@ -423,7 +423,7 @@ class GestionDirectPitchs extends MyPage
 						<?php } ?>
 					</div>
 					<div class="pitch">
-						<?php if($array6[0]['Id'] != '') { ?>
+						<?php if(isset($array6[0]) && $array6[0]['Id'] != '') { ?>
 							<table class="incrust_table">
 								<thead>
 									<tr>
@@ -469,8 +469,4 @@ class GestionDirectPitchs extends MyPage
 }		  	
 
 $page = new GestionDirectPitchs();
-
-
-?>
-
 
