@@ -1,6 +1,12 @@
-**KPI**
+__KPI__
 
-***Installation***
+___Prérequis___
+
+- Serveur LAMP ou WAMP
+- fonctionnel avec PHP 5.5
+- fonctionnel avec MySQL 
+
+___Installation___
 
 - installer la base de donnée
 
@@ -19,3 +25,9 @@ Si ce n'est pas le cas, forcer cette constante dans *commun/MyConfig.php*.
 
 
 Si aucun serveur de mail n'est fonctionnel, la réinitialisation du mot de passe ne fonctionnera pas.
+
+___CRON___
+
+- Mise à jour base des licenciés : commun/cron_maj_licencies.php  (quotidien)
+
+- Verrouillage des feuilles de présence (à J-6 de chaque journées de Championnat de France) commun/cron_verrou_presences.php 
