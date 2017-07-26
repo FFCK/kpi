@@ -17,3 +17,5 @@ Si ce n'est pas le cas, forcer cette constante dans *commun/MyConfig.php*.
 
 - Le fichier *index.php* n'inclue pas la page Wordpress d'accueil de KPI (utilisable via *index_2.php* si nécessaire)
 
+
+Si aucun serveur de mail n'est fonctionnel, la réinitialisation du mot de passe ne fonctionnera pas.
