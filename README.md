@@ -4,7 +4,7 @@ ___Prérequis___
 
 - Serveur LAMP ou WAMP
 - fonctionnel avec PHP 5.5
-- fonctionnel avec MySQL 
+- MySQL 5.5
 
 ___Installation___
 
@@ -30,4 +30,7 @@ ___CRON___
 
 - Mise à jour base des licenciés : commun/cron_maj_licencies.php  (quotidien)
 
-- Verrouillage des feuilles de présence (à J-6 de chaque journées de Championnat de France) commun/cron_verrou_presences.php 
+- Verrouillage des feuilles de présence (à J-6 de chaque journées de Championnat de France et Coupe de France) : commun/cron_verrou_presences.php  (quotidien)
+
+ 
+
