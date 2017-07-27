@@ -619,6 +619,7 @@ class GestionJournee extends MyPageSecure
 			$sql2  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau ";
 			$sql2 .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
 			$sql2 .= "Where a.Id_equipe = b.Id ";
+			$sql2 .= "And a.Capitaine = 'A' ";
 			$sql2 .= "And b.Code_compet = 'POOL' ";
 			$sql2 .= "Order By a.Nom, a.Prenom ";
 			$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Load 5b");
