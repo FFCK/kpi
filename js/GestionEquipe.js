@@ -334,7 +334,7 @@ jq(document).ready(function() {
 	}
 
 	//Autocomplete recherche equipe
-	jq('#plEquipe').mask("h",{placeholder:" "});
+	jq('#plEquipe').mask("h?h",{placeholder:" "});
 	jq('#tirEquipe').mask("9?9",{placeholder:" "});
 	jq('#cltChEquipe').mask("9?9",{placeholder:" "});
 	jq('#cltCpEquipe').mask("9?9",{placeholder:" "});
