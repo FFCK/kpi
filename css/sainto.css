@@ -44,12 +44,13 @@ html, body {
 }
 
 .tableau {
-	border: 2px groove red;
+	/*border: 2px groove #264679;*/
+	border: none;
 }
 .tableau thead {
 }
 .tableau thead tr th{
-	color: red;
+	color: #264679;
 }
 .tableau tr {
 }
@@ -138,5 +139,13 @@ html, body {
 }
 
 #fb-root, #selector, .site-header, .titre {
+    display: none;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.page-header .btn {
     display: none;
 }

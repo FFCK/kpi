@@ -224,13 +224,13 @@ jq(document).ready(function() {
 	
 	
 	// Maskedinput
-	jq.mask.definitions['h'] = "[A-O]";
+	jq.mask.definitions['h'] = "[A-Z]";
 	//jq("#inputZone").mask("9");
 	
 	
 	// Direct Input (date, heure, intitule)
 	//Ajout title
-	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante. Lettre A à O pour les poules, nombre 0 à 99 pour le tirage');
+	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante. Lettres A à ZZ pour les poules, nombre 0 à 99 pour le tirage');
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
 	jq('#tableEquipes').bind('keydown',function(e){
 		if(e.which == 13)
@@ -253,7 +253,7 @@ jq(document).ready(function() {
 		if(jq(this).hasClass('textPoule'))
 		{
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			jq('#inputZone').mask("h",{placeholder:" "});
+			jq('#inputZone').mask("h?h",{placeholder:" "});
 		}
 		else if(jq(this).hasClass('textTirage'))
 		{
@@ -334,7 +334,7 @@ jq(document).ready(function() {
 	}
 
 	//Autocomplete recherche equipe
-	jq('#plEquipe').mask("h",{placeholder:" "});
+	jq('#plEquipe').mask("h?h",{placeholder:" "});
 	jq('#tirEquipe').mask("9?9",{placeholder:" "});
 	jq('#cltChEquipe').mask("9?9",{placeholder:" "});
 	jq('#cltCpEquipe').mask("9?9",{placeholder:" "});
