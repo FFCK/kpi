@@ -1,0 +1,98 @@
+{* page.tpl Smarty *}
+{config_load file='../../commun/MyLang.conf' section=$lang}
+<!DOCTYPE html>
+<html lang="fr" xmlns:og="http://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="Author" Content="LG" />
+        
+        <!-- Mobile Specific Meta -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+        <link rel='stylesheet' href='css/fullcalendar.min.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        <link rel="stylesheet" href="css/jquery-ui.css?v={$NUM_VERSION}">
+        <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
+        
+        {literal}
+            <style type="text/css" id="custom-background-css">
+                body, .banner { background-color: #2670b3; }
+                .titre {color: white}
+                .fb-like { padding: 2px 0 3px; }
+                .bg-blue { background-color: #2670b3;
+                    border: 1px solid #2670b3;
+                    color: #ffffff; }
+                .bg-blue2 { background-color: #3C2F91;
+                    border: 1px solid #3C2F91;
+                    color: #ffffff; }
+                .bg-green { background-color: #3C9757;
+                    border: 1px solid #3C9757;
+                    color: #ffffff; }
+                .bg-brown { background-color: #993939;
+                    border: 1px solid #993939;
+                    color: #ffffff; }
+            </style>
+        {/literal}
+
+        {assign var=temp value="css/$contenutemplate.css"} 
+        {if is_file($temp)}
+            <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
+        {/if}
+        <!-- 
+            Css = '' (simply, zsainto, ckca...) 
+            notamment sur les pages Journee.php et Classements.php 
+            intégrer en iframe : 
+        -->
+        {assign var=temp value="css/$css_supp.css"} 
+        {if $css_supp && is_file($temp)}
+            <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css?v={$NUM_VERSION}">
+        {/if}
+        <title>{$smarty.config.$title|default:$title}</title>
+    </head>
+    <body onload="testframe(); alertMsg('{$AlertMessage}'); ">
+        {include file="$contenutemplate.tpl"}
+        
+        <script>
+            masquer = 0;
+        </script>
+        
+        <script type='text/javascript' src='js/jquery-1.11.2.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery-ui-1.11.4.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
+        <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
+        <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}" defer></script>
+        {assign var=temp value="js/$contenutemplate.js"} 
+        {if is_file($temp)}
+            <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}" defer></script>
+        {/if}
+        {if $contenutemplate == 'kpcalendrier'}
+            <script type='text/javascript' src='js/moment.min.js?v={$NUM_VERSION}'></script>
+            <script type='text/javascript' src='js/fullcalendar.min.js?v={$NUM_VERSION}'></script>
+        {/if}
+
+            
+        {literal}
+            <!-- Piwik -->
+            <script type="text/javascript">
+                var _paq = _paq || [];
+                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+                _paq.push(['trackPageView']);
+                _paq.push(['enableLinkTracking']);
+                (function() {
+                    var u="//poloweb.org/piwik/";
+                    _paq.push(['setTrackerUrl', u+'piwik.php']);
+                    _paq.push(['setSiteId', '1']);
+                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+                })();
+            </script>
+            <!-- End Piwik Code -->
+        {/literal}
+    
+    </body>
+</html>
