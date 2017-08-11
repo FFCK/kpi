@@ -54,7 +54,7 @@
                         {if $recordCompetition[0].Web != ''}
                             <a href='{$recordCompetition[0].Web}' target='_blank'>
                         {/if}
-                        <img class="img2" width="700" id='logo' src='{$recordCompetition[0].LogoLink}' alt="logo" />
+                        <img class="img2" height="100px" id='logo' src='{$recordCompetition[0].LogoLink}' alt="logo" />
                         {if $recordCompetition[0].Web != ''}
                                 <div>
                                     <img class="img3" width="50" id='logo' src='img/www.png' alt="link" />
@@ -86,7 +86,7 @@
 
                     </h3>
                     {if $arrayCompetition[i].Statut != 'END'}
-                        <div class="label label-warning">Classement provisoire</div>
+                        <div class="label label-warning">{#Classement_provisoire#}</div>
                     {/if}
                 </div>
                 <table class='table table-striped table-condensed table-hover' id='tableMatchs'>

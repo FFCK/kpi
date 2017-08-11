@@ -107,3 +107,25 @@ nav li.menu-item.active a { color: #FFFFFF; }
 }
 
 img.logo_img { height: 90px;}
+
+
+body, .banner { background-color: #2670b3; }
+.titre {color: white}
+.fb-like { padding: 2px 0 3px; }
+.bg-blue { background-color: #2670b3;
+    border: 1px solid #2670b3;
+    color: #ffffff; }
+.bg-blue2 { background-color: #3C2F91;
+    border: 1px solid #3C2F91;
+    color: #ffffff; }
+.bg-green { background-color: #3C9757;
+    border: 1px solid #3C9757;
+    color: #ffffff; }
+.bg-brown { background-color: #993939;
+    border: 1px solid #993939;
+    color: #ffffff; }
+
+/* Table Condensed */
+.table-condensed > thead > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > th, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > th, .table-condensed > tfoot > tr > td {
+    padding: 2px;
+}

@@ -32,26 +32,6 @@
         <link rel="stylesheet" href="css/jquery-ui.css?v={$NUM_VERSION}">
         <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
         
-        {literal}
-            <style type="text/css" id="custom-background-css">
-                body, .banner { background-color: #2670b3; }
-                .titre {color: white}
-                .fb-like { padding: 2px 0 3px; }
-                .bg-blue { background-color: #2670b3;
-                    border: 1px solid #2670b3;
-                    color: #ffffff; }
-                .bg-blue2 { background-color: #3C2F91;
-                    border: 1px solid #3C2F91;
-                    color: #ffffff; }
-                .bg-green { background-color: #3C9757;
-                    border: 1px solid #3C9757;
-                    color: #ffffff; }
-                .bg-brown { background-color: #993939;
-                    border: 1px solid #993939;
-                    color: #ffffff; }
-            </style>
-        {/literal}
-
         {assign var=temp value="css/$contenutemplate.css"} 
         {if is_file($temp)}
             <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />

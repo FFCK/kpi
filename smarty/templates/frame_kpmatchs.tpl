@@ -40,7 +40,7 @@
                             {/if}
                             <td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
                             <td class="text-center" data-filter="{$arrayMatchs[i].EquipeA|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
+                                <a class="btn btn-xs btn-default">
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -71,12 +71,12 @@
                                     <span class="statutMatchOn label label-info" title="{#scoreProvisoire#}">{#scoreProvisoire#}</span>*}
                                 {else}
                                     <button type="button" class="btn btn-default btn-sm" title="{#ATT#}">
-                                           {#ATT#}
+                                           ATT
                                     </button>
                                 {/if}
                             </td>
                             <td class="text-center" data-filter="{$arrayMatchs[i].EquipeB|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}">
+                                <a class="btn btn-xs btn-default">
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -117,7 +117,7 @@
 </div>
 <script>
     {if $arrayCompetition[0].Code_typeclt == 'CP'}
-        table_ordre = [[ 2, 'asc' ], [ 4, 'asc' ]];
+        table_ordre = [[ 1, 'asc' ], [ 4, 'asc' ]];
     {else}
         table_ordre = [[ 0, 'asc' ]];
     {/if}

@@ -83,8 +83,8 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>{#Cat#}</th>
                     <th>{#Date#}</th>
+                    <th>{#Cat#}</th>
                     {if $arrayCompetition[0].Code_typeclt == 'CP'}
                         <th>{#Poules#}</th>
                     {else}
@@ -105,8 +105,8 @@
                     {assign var='periode' value=$arrayMatchs[i].Periode}
                     <tr class='{$arrayMatchs[i].StdOrSelected} {$arrayMatchs[i].past}'>
                             <td>{$arrayMatchs[i].Numero_ordre}</td>
-                            <td>{$arrayMatchs[i].Code_competition}</td>
                             <td data-order="{$arrayMatchs[i].Date_EN} {$arrayMatchs[i].Heure_match}" data-filter="{$arrayMatchs[i].Date_match}">{$arrayMatchs[i].Date_match}<br /><span class="pull-right badge">{$arrayMatchs[i].Heure_match}</span></td>
+                            <td>{$arrayMatchs[i].Code_competition}</td>
                             {if $arrayCompetition[0].Code_typeclt == 'CP'}
                                 <td>{$arrayMatchs[i].Phase|default:'&nbsp;'}</td>
                             {else}
@@ -117,12 +117,14 @@
                                 <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
                                 </a>
-                                {if $arrayMatchs[i].logoA != ''}
-                                    <br><img class="img2" width="30" src="{$arrayMatchs[i].logoA}" alt="{$arrayMatchs[i].clubA}" />
-                                    <!--<span class="logoA" data-club="{$arrayMatchs[i].clubA}" data-logo="{$arrayMatchs[i].logoA}"></span>-->
-                                {/if}
                             </td>
                             <td class="text-center">
+                                {if $arrayMatchs[i].logoA != ''}
+                                    <img class="img2 pull-left" width="30" src="{$arrayMatchs[i].logoA}" alt="{$arrayMatchs[i].clubA}" />
+                                {/if}
+                                {if $arrayMatchs[i].logoB != ''}
+                                    <img class="img2 pull-right" width="30" src="{$arrayMatchs[i].logoB}" alt="{$arrayMatchs[i].clubB}" />
+                                {/if}
                                 {if $validation == 'O' && $arrayMatchs[i].ScoreA != '?' && $arrayMatchs[i].ScoreA != '' && $arrayMatchs[i].ScoreB != '?' && $arrayMatchs[i].ScoreB != ''}
                                     <a class="btn btn-xs btn-default" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank" title="{#Feuille_marque#}">
                                     {$arrayMatchs[i].ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$arrayMatchs[i].ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -146,10 +148,6 @@
                                 <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}">
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
-                                {if $arrayMatchs[i].logoB != ''}
-                                    <br><img class="img2" width="30" src="{$arrayMatchs[i].logoB}" alt="{$arrayMatchs[i].clubB}" />
-                                    <!--<span class="logoB" data-club="{$arrayMatchs[i].clubB}" data-logo="{$arrayMatchs[i].logoB}" ></span>-->
-                                {/if}
                             </td>
                             <td class="arb1">{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
                             <td class="arb2">{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
@@ -163,8 +161,8 @@
             <tfoot class="hidden-xs hidden-sm">
                 <tr>
                     <th>#</th>
-                    <th>{#Cat#}</th>
                     <th>{#Date#}</th>
+                    <th>{#Cat#}</th>
                     {if $PhaseLibelle == 1}
                         <th>{#Poules#}</th>
                     {else}
@@ -184,7 +182,7 @@
 </div>
 <script>
     {if $arrayCompetition[0].Code_typeclt == 'CP'}
-        table_ordre = [[ 2, 'asc' ], [ 4, 'asc' ]];
+        table_ordre = [[ 1, 'asc' ], [ 4, 'asc' ]];
     {else}
         table_ordre = [[ 0, 'asc' ]];
     {/if}

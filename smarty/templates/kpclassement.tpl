@@ -1,6 +1,7 @@
 <div class="container titre">
-    <div class="col-md-9">
-        <h2 class="col-md-11 col-xs-9">
+    <div class="col-md-12">
+        <h2 class="col-md-12">
+            <span class="label label-primary pull-right">{$Saison}</span>
             {if $recordCompetition.Titre_actif != 'O' && $recordCompetition.Soustitre2 != ''}
                 <span>{$recordCompetition.Soustitre}
                     <br />
@@ -12,23 +13,19 @@
                     {$recordCompetition.Soustitre2}
                 </span>
             {/if}
-            
         </h2>
-    </div>
-    <div class="col-md-3">
-        <span class="badge pull-right">{$smarty.config.Saison|default:'Saison'} {$Saison}</span>
     </div>
 </div>
 
 <div class="container">
-    <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if}">
+    <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if} tableClassement">
         {if $recordCompetition.Statut != 'END'}
-            <div class="label label-warning">Classement provisoire</div>
+            <div class="label label-warning">{#Classement_provisoire#}</div>
         {/if}
-        <a class="btn btn-default pull-right" href='kpclassements.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Classement_General#}Classement général...</a>
+        <a class="btn btn-default pull-right btn-navigation" href='kpclassements.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Classement_general#}...</a>
 
 		{*if $recordCompetition.Statut != 'END'*}
-            <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
+            <table class='table table-striped table-condensed table-hover'>
                 {if $recordCompetition.Code_typeclt == 'CHPT'}
                     <thead>
                         <tr>
@@ -127,9 +124,9 @@
         {section name=i loop=$arrayJournee}
             {assign var='idJournee' value=$arrayJournee[i].Id_journee}
             {if $arrayJournee[i].Type == 'C'}
-                <article class="padTopBottom table-responsive col-md-12">
+                <article class="padTopBottom table-responsive col-md-6 col-sm-12 tablePhase">
                     <h4>{$arrayJournee[i].Phase}</h4>
-                    <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
+                    <table class='table table-striped table-condensed table-hover'>
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -139,7 +136,7 @@
                                 <th>{#G#}</th>
                                 <th>{#N#}</th>
                                 <th>{#P#}</th>
-                                <th>{#F#}</th>
+{*                                <th>{#F#}</th>*}
                                 <th>+</th>
                                 <th>-</th>
                                 <th>{#Diff#}</th>
@@ -163,7 +160,7 @@
                                     <td>{$arrayEquipe_journee_publi[$idJournee][j].G}</td>
                                     <td>{$arrayEquipe_journee_publi[$idJournee][j].N}</td>
                                     <td>{$arrayEquipe_journee_publi[$idJournee][j].P}</td>
-                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].F}</td>
+{*                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].F}</td>*}
                                     <td>{$arrayEquipe_journee_publi[$idJournee][j].Plus}</td>
                                     <td>{$arrayEquipe_journee_publi[$idJournee][j].Moins}</td>
                                     <td>{$arrayEquipe_journee_publi[$idJournee][j].Diff}</td>
@@ -172,9 +169,9 @@
                         </tbody>
                     </table>
                 </article>
-            {else}
-                <article class="padTopBottom table-responsive col-md-6 col-md-offset-3">
-                    <h4 class="row">{$arrayJournee[i].Phase}</h4>
+            {elseif $arrayMatchs[$idJournee]|@count > 0}
+                <article class="padTopBottom table-responsive col-md-4 col-md-offset-4 tableMatch">
+                    <h4 class="row text-center">{$arrayJournee[i].Phase}</h4>
                     {section name=j loop=$arrayMatchs[$idJournee]}
                         <div class="row cliquableNomEquipe">
                             {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
@@ -192,7 +189,7 @@
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-primary">{$kpequipes[$idJournee][j].ScoreB}</span>
+                                    <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
                                     <a class="btn btn-xs btn-primary" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {else}
@@ -213,7 +210,7 @@
     {else}
         {section name=i loop=$arrayJournee}
             {assign var='idJournee' value=$arrayJournee[i].Id_journee}
-                <article class="padTopBottom table-responsive col-md-12">
+                <article class="padTopBottom table-responsive col-md-12 tableJournee">
                     <div class="page-header">
                         <h4>
                             {$arrayJournee[i].Lieu} ({$arrayJournee[i].Departement}) {$arrayJournee[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayJournee[i].Date_fin|date_format:'%d/%m/%Y'}

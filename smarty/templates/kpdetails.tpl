@@ -62,7 +62,7 @@
                 <hr>
                 <h4>{#Acces_direct2#}</h4>
                 <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}J={$journee[0].Id_journee}" 
+                    <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J={$journee[0].Id_journee}" 
                        role="button">{#Matchs_de_la_journee#}</a>
                 </div>
                 <div class="col-sm-4 text-center">

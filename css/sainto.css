@@ -8,22 +8,12 @@ html, body {
 	display: none;
 	}
 
-/* Menus Eric Meyer*/
 #nav {
 	display: none;
 	}
 .repere {
 	display: none;
 	}
-
-.main {
-	}
-
-.combolong {
-}
-.boutonlong {
-}
-
 
 .titrePage {
 	display: none;
@@ -38,28 +28,15 @@ html, body {
 	display: none;
 }
 
-.liens {
-}
-.liens a{
-}
-
 .tableau {
 	/*border: 2px groove #264679;*/
 	border: none;
 }
-.tableau thead {
-}
+
 .tableau thead tr th{
 	color: #264679;
 }
-.tableau tr {
-}
-.tableau td {
-}
-.tableau tr.Selected {
-}
-.head2 {
-}
+
 .head2Public {
 	background-color: #CCCCCC;
 	color: blue;
@@ -67,11 +44,6 @@ html, body {
 .tableauPublic thead {
 	background: none;
 	background-color: #BBBBBB;
-}
-
-.impair {
-}
-.pair {
 }
 
 .impair2 {
@@ -83,22 +55,6 @@ html, body {
 
 .vert {
 	background: none;
-}
-.rouge {
-}
-.gris {
-}
-
-.colorO {
-}
-.colorCapO {
-}
-.colorCapE {
-}
-.colorN {
-}
-
-.titreForm {
 }
 
 .blocLeft {
@@ -129,15 +85,6 @@ html, body {
 	display: none;
 	}
 
-.blocTop {
-}
-
-.blocMiddle {
-}
-
-.blocBottom {
-}
-
 #fb-root, #selector, .site-header, .titre {
     display: none;
 }
@@ -146,6 +93,14 @@ html, body {
     margin-bottom: 0;
 }
 
-.page-header .btn {
+.page-header .btn,
+.btn-navigation,
+.pdfLink 
+{
     display: none;
+}
+
+/* Table Condensed */
+.table-condensed > thead > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > th, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > th, .table-condensed > tfoot > tr > td {
+    padding: 2px;
 }
