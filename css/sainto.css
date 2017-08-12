@@ -78,3 +78,7 @@ body {
     border-color: #F5A707;
     font-weight: bold;
 }
+
+.tableau thead tr th.cliquableScore {
+    width: 130px;
+}

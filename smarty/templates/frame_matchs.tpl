@@ -46,10 +46,10 @@
                             </td>
                             <td class="text-center">
                                 {if $arrayMatchs[i].logoA != ''}
-                                    <img class="img2 pull-left" width="30" src="{$arrayMatchs[i].logoA}" alt="{$arrayMatchs[i].clubA}" />
+                                    <img class="img2 pull-left hidden-sm hidden-xs" width="30" src="{$arrayMatchs[i].logoA}" alt="{$arrayMatchs[i].clubA}" />
                                 {/if}
                                 {if $arrayMatchs[i].logoB != ''}
-                                    <img class="img2 pull-right" width="30" src="{$arrayMatchs[i].logoB}" alt="{$arrayMatchs[i].clubB}" />
+                                    <img class="img2 pull-right hidden-sm hidden-xs" width="30" src="{$arrayMatchs[i].logoB}" alt="{$arrayMatchs[i].clubB}" />
                                 {/if}
                                 {if $validation == 'O' && $arrayMatchs[i].ScoreA != '?' && $arrayMatchs[i].ScoreA != '' && $arrayMatchs[i].ScoreB != '?' && $arrayMatchs[i].ScoreB != ''}
                                     <button type="button" class="btn btn-success btn-sm" title="{#END#}">

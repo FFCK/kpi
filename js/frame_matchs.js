@@ -26,9 +26,9 @@ jq(document).ready(function(){
         "lengthMenu": [[6, 8, 10, 20, 50, -1], [6, 8, 10, 20, 50, "Tous"]],
         "pageLength": 10,
         "order": table_ordre,
-        "columnDefs": [
-            { "width": "130px", "targets": 6 }
-        ],
+//        "columnDefs": [
+//            { "width": "130px", "targets": 6 }
+//        ],
         initComplete: function () {
             this.api().columns([1,2,3,4]).every( function () {
                 var column = this;
