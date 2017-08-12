@@ -232,7 +232,7 @@ class MyPage
 	function DisplayTemplateFrame($tplName)
 	{
 			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('frame_kppage');
+			$this->DisplayTemplateGlobal('frame_page');
 	}
     
 	// DisplayTemplateFullPage

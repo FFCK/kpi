@@ -40,7 +40,7 @@
                             {/if}
                             <td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
                             <td class="text-center" data-filter="{$arrayMatchs[i].EquipeA|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default">
+                                <a class="btn btn-xs btn-default equipe">
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -76,7 +76,7 @@
                                 {/if}
                             </td>
                             <td class="text-center" data-filter="{$arrayMatchs[i].EquipeB|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default">
+                                <a class="btn btn-xs btn-default equipe">
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
                             </td>
