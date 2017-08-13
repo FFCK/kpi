@@ -82,3 +82,41 @@ body {
 .tableau thead tr th.cliquableScore {
     width: 130px;
 }
+.tableau thead tr th.bg-primary.text-white {
+    color: white;
+    background-color: #264679;
+}
+
+.tableau tbody tr td.pause {
+    color: #264679;
+    background-color: #EEEEEE;
+    border: 1px solid #DDDDDD;
+    text-align: center;
+    font-style: italic;
+}
+
+.separator {
+    /*background-color: #EEEEEE;*/
+}
+
+.titre-date {
+    color: white;
+}
+
+.terrains, .terrains .btn, .terrains .badge {
+    font-size: 0.8em;
+    line-height: 1;
+}
+.terrains h3 {
+    font-size: 1.1em;
+}
+.terrains .btn {
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+}
+.terrains .equipe {
+    border: none;
+    background: none;
+    
+}
