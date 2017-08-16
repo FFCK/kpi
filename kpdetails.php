@@ -176,6 +176,9 @@ class Details extends MyPage
             }	
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
             $this->m_tpl->assign('arrayPoule', $arrayPoule);
+            if(is_file('img/schemas/schema_' . $codeSaison . '_' . $idSelCompet . '.jpg')) {
+                $this->m_tpl->assign('schema', 'img/schemas/schema_' . $codeSaison . '_' . $idSelCompet . '.jpg');
+            }
         }
 
 	}

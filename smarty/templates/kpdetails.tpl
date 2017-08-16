@@ -162,19 +162,26 @@
                     <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
                 </div>
                 <hr>
-                <h4>{#Acces_direct2#}</h4>
-                <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J=*" 
-                       role="button">{#Tous_les_matchs#}</a>
+                <div class="form-group">
+                    <h4>{#Acces_direct2#}</h4>
+                    <div class="col-sm-4 text-center">
+                        <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J=*" 
+                           role="button">{#Tous_les_matchs#}</a>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <a class="btn bg-blue" href="kpclassement.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
+                           role="button">{#Classement#}</a>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <a class="btn bg-blue" href="kpclassements.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
+                           role="button">{#Tous_les_classements#}</a>
+                    </div>
                 </div>
-                <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpclassement.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
-                       role="button">{#Classement#}</a>
-                </div>
-                <div class="col-sm-4 text-center">
-                    <a class="btn bg-blue" href="kpclassements.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
-                       role="button">{#Tous_les_classements#}</a>
-                </div>
+                {if $schema}
+                    <hr>
+                    <h4>{#Schema#}</h4>
+                    <a href="{$schema}" target="_blank"><img class="img-responsive img-thumbnail" src="{$schema}"></a>
+                {/if}
             </div>
         </article>
         <article class="col-md-6 padTopBottom">        
