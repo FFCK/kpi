@@ -9,7 +9,7 @@ $myBdd = new MyBdd();
 $saison = (int) $myBdd->RealEscapeString(trim(utyGetGet('saison')));
 $competitions = explode(",", $myBdd->RealEscapeString(trim(utyGetGet('competitions'))));
 $competitions = "'" . implode("','", $competitions) . "'";
-$all = (int) $myBdd->RealEscapeString(trim(utyGetGet('all')));
+$all = (int) $myBdd->RealEscapeString(trim(utyGetGet('all', 2)));
 if($saison > 2000 && $competitions != '') {
     $arrayStats = [];
     switch($all){
@@ -67,7 +67,7 @@ if($saison > 2000 && $competitions != '') {
                 AND f.Code_compet IN ($competitions) 
                 AND f.Code_saison = $saison
                 GROUP BY a.Matric 
-                ORDER BY Equipe ASC, a.Numero, a.Nom, a.Prenom ";
+                ORDER BY Equipe ASC, j.Numero, a.Nom, a.Prenom ";
             break;
         default:
             echo "Paramètres incorrects (exemple: api_stats.php&saison=20xx&competitions=CODE1,CODE2&all=0 )";
