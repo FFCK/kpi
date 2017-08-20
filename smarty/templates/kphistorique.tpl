@@ -48,20 +48,22 @@
             {assign var='codesaison' value=$arraySaisons[i].saison}
             <article role="tabpanel" class="padTopBottom tab-pane{if $smarty.section.i.iteration == 1} active{/if}" id="saison{$arraySaisons[i].saison}">
                 <h3 class="row">
-                    <div class="col-md-6 col-sm-6">{#Saison#} {$arraySaisons[i].saison}</div>
+                    <div class="col-md-6 col-sm-6">
+                        {#Saison#} {$arraySaisons[i].saison}
+                        {if $arrayCompets[$codesaison][0].LogoLink != ''}
+                            <div class="hidden-xs">
+                                {if $arrayCompets[$codesaison][0].Web != ''}
+                                    <a href='{$arrayCompets[$codesaison][0].Web}' target='_blank'>
+                                {/if}
+                                <img class="img2" id='logo' src='{$arrayCompets[$codesaison][0].LogoLink}'>
+                                {if $arrayCompets[$codesaison][0].Web != ''}
+                                    </a>
+                                {/if}
+                            </div>
+                            <div class="hidden-xs"></div>
+                        {/if}
+                    </div>
                 </h3>
-                {if $arrayCompets[$codesaison][0].LogoLink != ''}
-                    <div class="col-md-2 col-sm-4 hidden-xs">
-						{if $arrayCompets[$codesaison][0].Web != ''}
-							<a href='{$arrayCompets[$codesaison][0].Web}' target='_blank'>
-						{/if}
-                                <img class="img-thumbnail" src='{$arrayCompets[$codesaison][0].LogoLink}'>
-						{if $arrayCompets[$codesaison][0].Web != ''}
-							</a>
-						{/if}
-					</div>
-                    <div class="col-md-1 col-sm-2 hidden-xs"></div>
-                {/if}
 
                 {section  name=j loop=$arrayCompets[$codesaison]}
                     {assign var='codecompet' value=$arrayCompets[$codesaison][j].code}

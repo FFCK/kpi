@@ -4,7 +4,6 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
 require('fpdf/fpdf.php');
 
 require_once('qrcode/qrcode.class.php');
@@ -32,12 +31,14 @@ class PdfListeMatchs extends MyPage
 		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
 		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select ".$sql);
 
-		if (mysql_num_rows($result) != 1)
+		if (mysql_num_rows($result) != 1) {
 			return;
+        }
 			
 		$row = mysql_fetch_array($result);
-		if ((int) $row['Nb'] > 0)
+		if ((int) $row['Nb'] > 0) {
 			return;
+        }
 			
 		$sql  = "Replace Into gickp_Matchs_Joueurs ";
 		$sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
@@ -50,7 +51,7 @@ class PdfListeMatchs extends MyPage
 	function PdfListeMatchs()
 	{
 		MyPage::MyPage();
-
+  	// Chargement des Matchs des journées ...
  		$filtreJour = utyGetSession('filtreJour', '');
 		$filtreJour = utyGetPost('filtreJour', $filtreJour);
 		$filtreJour = utyGetGet('filtreJour', $filtreJour);
@@ -59,7 +60,6 @@ class PdfListeMatchs extends MyPage
 		$filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
 		$filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
- 	// Chargement des Matchs des journées ...
 		$myBdd = new MyBdd();
 		$lstJournee = utyGetSession('lstJournee', 0);
 		$idEvenement = utyGetSession('idEvenement', -1);
@@ -72,8 +72,9 @@ class PdfListeMatchs extends MyPage
 			for ($j=0;$j<$num_results;$j++)
 			{
 				$row = mysql_fetch_array($result);
-				if ($lstJournee != '')
+				if ($lstJournee != '') {
 					$lstJournee .= ',';
+                }
 				$lstJournee .= $row['Id_journee'];
 			}
 		}
@@ -96,10 +97,11 @@ class PdfListeMatchs extends MyPage
 		$sql .= "Left Outer Join gickp_Competitions_Equipes b On (a.Id_equipeA = b.Id) "; 
 		$sql .= "Left Outer Join gickp_Competitions_Equipes c On (a.Id_equipeB = c.Id) ";
 		$sql .= ", gickp_Journees d ";
-		if($lstJournee == 0)
-			$sql .= "Where d.Code_competition = '".$laCompet."' And d.Code_saison = $codeSaison ";
-		else
+		if ($lstJournee == 0) {
+            $sql .= "Where d.Code_competition = '" . $laCompet . "' And d.Code_saison = $codeSaison ";
+        } else {
 			$sql .= "Where a.Id_journee In ($lstJournee) ";
+        }
 		if($filtreJour != '')
 		{
 			$sql .= "And a.Date_match = '".$filtreJour."' ";
@@ -120,8 +122,9 @@ class PdfListeMatchs extends MyPage
 		for ($j=0;$j<$num_results;$j++)
 		{
 			$row1 = mysql_fetch_array($result);	  
-			if (trim($row1['Phase']) != '')
+			if (trim($row1['Phase']) != '') {
 				$PhaseLibelle = 1;
+            }
 			$lastCompetEvt = $row1['Code_competition'];
 		}
 		$Oldrupture = "";
@@ -136,16 +139,43 @@ class PdfListeMatchs extends MyPage
 		else
 		{
 			$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-			if($arrayCompetition['Titre_actif'] == 'O')
+			if ($arrayCompetition['Titre_actif'] == 'O') {
 				$titreEvenementCompet = $arrayCompetition['Libelle'];
-			else
+            } else {
 				$titreEvenementCompet = $arrayCompetition['Soustitre'];
-			if($arrayCompetition['Soustitre2'] != '')
-				$titreEvenementCompet .= ' - '.$arrayCompetition['Soustitre2'];
+            }
+            if ($arrayCompetition['Soustitre2'] != '') {
+                $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
+            }
 			//$titreEvenementCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
 		}
-		$logo = str_replace('http://www.kayak-polo.info/','',$arrayCompetition['LogoLink']);
-		$sponsor = str_replace('http://www.kayak-polo.info/','',$arrayCompetition['SponsorLink']);
+        
+        if($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){
+            $arrayCompetition['BandeauLink'] = 'img/logo/' . $arrayCompetition['BandeauLink'];
+            if(is_file($arrayCompetition['BandeauLink'])) {
+                $bandeau = $arrayCompetition['BandeauLink'];
+            }
+        } elseif($arrayCompetition['BandeauLink'] != '') {
+            $bandeau = $arrayCompetition['BandeauLink'];
+        } 
+        if($arrayCompetition['LogoLink'] != '' && strpos($arrayCompetition['LogoLink'], 'http') === FALSE ){
+            $arrayCompetition['LogoLink'] = 'img/logo/' . $arrayCompetition['LogoLink'];
+            if(is_file($arrayCompetition['LogoLink'])) {
+                $logo = $arrayCompetition['LogoLink'];
+            }
+        } elseif($arrayCompetition['LogoLink'] != '') {
+            $logo = $arrayCompetition['LogoLink'];
+        }
+        
+        if($arrayCompetition['SponsorLink'] != '' && strpos($arrayCompetition['SponsorLink'], 'http') === FALSE ){
+            $arrayCompetition['SponsorLink'] = 'img/logo/' . $arrayCompetition['SponsorLink'];
+            if(is_file($arrayCompetition['SponsorLink'])) {
+                $sponsor = $arrayCompetition['SponsorLink'];
+            }
+        } elseif($arrayCompetition['SponsorLink'] != '') {
+            $sponsor = $arrayCompetition['SponsorLink'];
+        }
+        
 		// Entête PDF ...	  
  		$pdf = new PDF('L');
 		$pdf->Open();
@@ -154,39 +184,47 @@ class PdfListeMatchs extends MyPage
 		$pdf->SetCreator("Kayak-polo.info width FPDF");
 		$pdf->SetTopMargin(30);
 		$pdf->AddPage();
-		if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')
+		if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)) {
 			$pdf->SetAutoPageBreak(true, 28);
-		else
+        } else {
 			$pdf->SetAutoPageBreak(true, 15);
+        }
 		// Affichage
-			$qr_x = 262;
+        $qr_x = 262;
+        
 			// logo
 			if($arrayCompetition['Kpi_ffck_actif'] == 'O')
 			{
-				$pdf->Image('css/banniere1.jpg',10,8,72,15,'jpg',"http://www.kayak-polo.info");
-				$pdf->Image('img/ffck2.jpg',252,8,0,15,'jpg',"http://www.ffck.org");
-				$qr_x = 236;
+                $pdf->Image('img/logoKPI-small.jpg',125,10,0,20,'jpg',"http://www.ffck.org");
 			}
-			if($arrayCompetition['Logo_actif'] == 'O' && $logo != '')  //&& file_exists($logo)
-			{
+            if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
+                $size = getimagesize($bandeau);
+                $largeur=$size[0];
+                $hauteur=$size[1];
+                $ratio=20/$hauteur;	//hauteur imposée de 20mm
+                $newlargeur=$largeur*$ratio;
+                $posi=149-($newlargeur/2);	//210mm = largeur de page
+                $pdf->image($bandeau, $posi, 8, 0,20);
+            } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
 				$size = getimagesize($logo);
 				$largeur=$size[0];
 				$hauteur=$size[1];
 				$ratio=20/$hauteur;	//hauteur imposée de 20mm
 				$newlargeur=$largeur*$ratio;
-				$posi=149-($newlargeur/2);	//297mm = largeur de page
+                $posi=149-($newlargeur/2);	//210mm = largeur de page
 				$pdf->image($logo, $posi, 8, 0,20);
 			}
-			if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')  //&& file_exists($sponsor)
-			{
+
+			if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
 				$size = getimagesize($sponsor);
 				$largeur=$size[0];
 				$hauteur=$size[1];
 				$ratio=16/$hauteur;	//hauteur imposée de 16mm
 				$newlargeur=$largeur*$ratio;
-				$posi=149-($newlargeur/2);	//297mm = largeur de page
+                $posi=149-($newlargeur/2);	//210mm = largeur de page
 				$pdf->image($sponsor, $posi, 180, 0,16);
 			}
+
 		// QRCode
 		$qrcode = new QRcode('http://www.kayak-polo.info/Journee.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
@@ -201,41 +239,48 @@ class PdfListeMatchs extends MyPage
 		$pdf->Cell(273,6,"Game list",0,1,'C');
 		$pdf->Ln(3);
 		$heure1 = '';
-		if($num_results > 0)
-			mysql_data_seek($result,0);
+		if ($num_results > 0) {
+            mysql_data_seek($result, 0);
+        }
 		for ($i=0;$i<$num_results;$i++)
 		{
 			$row = mysql_fetch_array($result);
 			
 			$row['Soustitre2'] = $myBdd->GetSoustitre2Competition($row['Code_competition'], $codeSaison);
-			if($row['Soustitre2'] != '')
+			if ($row['Soustitre2'] != '') {
 				$row['Code_competition'] = $row['Soustitre2'];
+            }
 			$phase_match = $row['Phase'];
 			if ($row['Libelle'] != '')
 			{
 				$libelle = explode(']', $row['Libelle']);
-				if($libelle[1] != '')
-					$phase_match .= "  |  ".$libelle[1];
+				if ($libelle[1] != '') {
+                    $phase_match .= "  |  " . $libelle[1];
+                }
 				//Codes équipes	
 				$EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
 			}
-			if ($row['Id_equipeA'] >= 1)
+			if ($row['Id_equipeA'] >= 1) {
 				$this->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA'], $myBdd);
-			elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '')
+            } elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
 				$row['EquipeA'] = $EquipesAffectAuto[0];
-			if ($row['Id_equipeB'] >= 1)
+            }
+            if ($row['Id_equipeB'] >= 1) {
 				$this->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB'], $myBdd);
-			elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '')
+            } elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
 				$row['EquipeB'] = $EquipesAffectAuto[1];
+            }
 			$arbsup = array(" (Pool Arbitres 1)", " REG", " NAT", " INT", "-A", "-B", "-C", "-S");
-			if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
+			if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
 				$row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
-			elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '')
+            } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
 				$row['Arbitre_principal'] = $EquipesAffectAuto[2];
-			if($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1')
+            }
+            if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
 				$row['Arbitre_secondaire'] = str_replace($arbsup, '', $row['Arbitre_secondaire']);
-			elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '')
+            } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
 				$row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
+            }
 				// rupture ligne
 				if ($orderMatchsKey1 == "Numero_ordre")
 				{
@@ -289,11 +334,12 @@ class PdfListeMatchs extends MyPage
 						$pdf->Cell(8,5, '#','LTRB','0','C');
 						$pdf->Cell(16,5, 'Date','TRB','0','C');
 						$pdf->Cell(10,5, 'Time','TRB','0','C');
-						if ($PhaseLibelle == 1)
-							$pdf->Cell(52,5, 'Phase | Game','TRB','0','C');
-						else
-							$pdf->Cell(52,5, 'Place','TRB','0','C');
-						$pdf->Cell(11,5, 'Pitch.','TRB','0','C');
+						if ($PhaseLibelle == 1) {
+                            $pdf->Cell(52, 5, 'Phase | Game', 'TRB', '0', 'C');
+                        } else {
+                            $pdf->Cell(52, 5, 'Place', 'TRB', '0', 'C');
+                        }
+                        $pdf->Cell(11,5, 'Pitch.','TRB','0','C');
 						$pdf->Cell(35,5, 'Team A','TRB','0','C');
 						$pdf->Cell(14,5, 'Scores','TRB','0','C');
 						$pdf->Cell(35,5, 'Team B','TRB',0,'C');
@@ -309,11 +355,12 @@ class PdfListeMatchs extends MyPage
 						$pdf->Cell(16,5, 'Date','TRB','0','C');
 						$pdf->Cell(10,5, 'Time','TRB','0','C');
 						$pdf->Cell(17,5, 'Cat.','TRB','0','C');
-						if ($PhaseLibelle == 1)
-							$pdf->Cell(50,5, 'Phase | Game','TRB','0','C');
-						else
-							$pdf->Cell(50,5, 'Place','TRB','0','C');
-						$pdf->Cell(35,5, 'Team A','TRB','0','C');
+						if ($PhaseLibelle == 1) {
+                            $pdf->Cell(50, 5, 'Phase | Game', 'TRB', '0', 'C');
+                        } else {
+                            $pdf->Cell(50, 5, 'Place', 'TRB', '0', 'C');
+                        }
+                        $pdf->Cell(35,5, 'Team A','TRB','0','C');
 						$pdf->Cell(14,5, 'Scores','TRB','0','C');
 						$pdf->Cell(35,5, 'Team B','TRB',0,'C');
 						$pdf->Cell(45,5, 'First referee','TRB','0','C');
@@ -328,11 +375,12 @@ class PdfListeMatchs extends MyPage
 						$pdf->Cell(8,5, '#','LTRB','0','C');
 						$pdf->Cell(10,5, 'Time','TRB','0','C');
 						$pdf->Cell(17,5, 'Cat.','TRB','0','C');
-						if ($PhaseLibelle == 1)
-							$pdf->Cell(50,5, 'Phase | Game','TRB','0','C');
-						else
-							$pdf->Cell(50,5, 'Place','TRB','0','C');
-						$pdf->Cell(12,5, 'Pitch','TRB','0','C');
+						if ($PhaseLibelle == 1) {
+                            $pdf->Cell(50, 5, 'Phase | Game', 'TRB', '0', 'C');
+                        } else {
+                            $pdf->Cell(50, 5, 'Place', 'TRB', '0', 'C');
+                        }
+                        $pdf->Cell(12,5, 'Pitch','TRB','0','C');
 						$pdf->Cell(35,5, 'Team A','TRB','0','C');
 						$pdf->Cell(14,5, 'Scores','TRB','0','C');
 						$pdf->Cell(35,5, 'Team B','TRB',0,'C');
@@ -350,30 +398,35 @@ class PdfListeMatchs extends MyPage
 				$pdf->Cell(8,5, $row['Numero_ordre'],'LTBR','0','C');
 				$pdf->Cell(16,5, utyDateUsToFr($row['Date_match']),'TBR','0','C');
 				$pdf->Cell(10,5, $row['Heure_match'],'TBR','0','C');
-				if ($PhaseLibelle == 1)
-					$pdf->Cell(52,5, $phase_match,'TBR','0','C');
-				else
-					$pdf->Cell(52,5, html_entity_decode($row['Lieu']),'TRB','0','C');
+				if ($PhaseLibelle == 1) {
+                        $pdf->Cell(52, 5, $phase_match, 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(52, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
+                    }
 				$pdf->Cell(11,5, $row['Terrain'],'TBR','0','C');
 				$pdf->Cell(35,5, $row['EquipeA'],'TBR','0','C');
-				if ($row['ScoreA']!='?' && $row['Validation'] == 'O')
-					$pdf->Cell(7,5, $row['ScoreA'],'TBR','0','C');
-				else
-					$pdf->Cell(7,5, "",'TBR','0','C');
-				if ($row['ScoreB']!='?' && $row['Validation'] == 'O')
-					$pdf->Cell(7,5, $row['ScoreB'],'TBR','0','C');
-				else
-					$pdf->Cell(7,5, "",'TBR','0','C');
+				if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
+                        $pdf->Cell(7, 5, $row['ScoreA'], 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
+                    }
+                    if ($row['ScoreB'] != '?' && $row['Validation'] == 'O') {
+                        $pdf->Cell(7, 5, $row['ScoreB'], 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
+                    }
 				$pdf->Cell(35,5, $row['EquipeB'],'TBR',0,'C');
 				$pdf->SetFont('Arial','I',6);
-				if ($row['Arbitre_principal']=='-1')
-					$pdf->Cell(45,5, '','TBR',0,'C');
-				else
-					$pdf->Cell(45,5, $row['Arbitre_principal'],'TBR','0','C');
-				if ($row['Arbitre_secondaire']=='-1')
-					$pdf->Cell(45,5, '','TBR',1,'C');
-				else
-					$pdf->Cell(45,5, $row['Arbitre_secondaire'],'TBR',1,'C');
+				if ($row['Arbitre_principal'] == '-1') {
+                        $pdf->Cell(45, 5, '', 'TBR', 0, 'C');
+                    } else {
+                        $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', '0', 'C');
+                    }
+                    if ($row['Arbitre_secondaire'] == '-1') {
+                        $pdf->Cell(45, 5, '', 'TBR', 1, 'C');
+                    } else {
+                        $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
+                    }
 				break;
 			case "Terrain" :
 				$pdf->SetFont('Arial','',8);
@@ -382,72 +435,83 @@ class PdfListeMatchs extends MyPage
 				$pdf->Cell(16,5, utyDateUsToFr($row['Date_match']),'TBR','0','C');
 				$pdf->Cell(10,5, $row['Heure_match'],'TBR','0','C');
 				$pdf->Cell(17,5, $row['Code_competition'],'TBR','0','C');
-				if ($PhaseLibelle == 1)
-					$pdf->Cell(50,5, $phase_match,'TBR','0','C');
-				else
-					$pdf->Cell(50,5, html_entity_decode($row['Lieu']),'TRB','0','C');
+				if ($PhaseLibelle == 1) {
+                    $pdf->Cell(50, 5, $phase_match, 'TBR', '0', 'C');
+                } else {
+                    $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
+                }
 				$pdf->Cell(35,5, $row['EquipeA'],'TBR','0','C');
 				
-				if ($row['ScoreA']!='?' && $row['Validation'] == 'O')
-					$pdf->Cell(7,5, $row['ScoreA'],'TBR','0','C');
-				else
-					$pdf->Cell(7,5, "",'TBR','0','C');
-				if ($row['ScoreB']!='?' && $row['Validation'] == 'O')
-					$pdf->Cell(7,5, $row['ScoreB'],'TBR','0','C');
-				else
-					$pdf->Cell(7,5, "",'TBR','0','C');
+                if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
+                    $pdf->Cell(7, 5, $row['ScoreA'], 'TBR', '0', 'C');
+                } else {
+                    $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
+                }
+                if ($row['ScoreB'] != '?' && $row['Validation'] == 'O') {
+                    $pdf->Cell(7, 5, $row['ScoreB'], 'TBR', '0', 'C');
+                } else {
+                    $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
+                }
 				$pdf->Cell(35,5, $row['EquipeB'],'TBR',0,'C');
 				$pdf->SetFont('Arial','I',6);
-				if ($row['Arbitre_principal']=='-1')
-					$pdf->Cell(45,5, '','TBR',0,'C');
-				else
-					$pdf->Cell(45,5, $row['Arbitre_principal'],'TBR',0,'C');
-				if ($row['Arbitre_secondaire']=='-1')
-					$pdf->Cell(45,5, '','TBR',1,'C');
-				else
-					$pdf->Cell(45,5, $row['Arbitre_secondaire'],'TBR',1,'C');
+				if ($row['Arbitre_principal'] == '-1') {
+                    $pdf->Cell(45, 5, '', 'TBR', 0, 'C');
+                } else {
+                    $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', 0, 'C');
+                }
+                if ($row['Arbitre_secondaire'] == '-1') {
+                    $pdf->Cell(45, 5, '', 'TBR', 1, 'C');
+                } else {
+                    $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
+                }
 				break;
 			default :
 				$heure2 = $row['Heure_match'];
-				if($heure1 == $heure2)
+				if ($heure1 == $heure2) {
 					$ltbr = '';
-				else
+                } else {
 					$ltbr = 'T';
+                }
 				$heure1 = $heure2;
 				$pdf->SetFont('Arial','',8);
 				//$pdf->Cell(22,5, '',0,0,'C');
 				$pdf->Cell(8,5, $row['Numero_ordre'],'LR'.$ltbr,'0','C');
 				$pdf->Cell(10,5, $row['Heure_match'],'R'.$ltbr,'0','C');
 				$pdf->Cell(17,5, $row['Code_competition'],'R'.$ltbr,'0','C');
-				if ($PhaseLibelle == 1)
-					$pdf->Cell(50,5, $phase_match,'R'.$ltbr,'0','C');
-				else
-					$pdf->Cell(50,5, html_entity_decode($row['Lieu']),'R'.$ltbr,'0','C');
+				if ($PhaseLibelle == 1) {
+                    $pdf->Cell(50, 5, $phase_match, 'R' . $ltbr, '0', 'C');
+                } else {
+                    $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'R' . $ltbr, '0', 'C');
+                }
 				$pdf->Cell(12,5, $row['Terrain'],'R'.$ltbr,'0','C');
 				$pdf->Cell(35,5, $row['EquipeA'],'R'.$ltbr,'0','C');
-				if ($row['ScoreA']!='?' && $row['Validation'] == 'O')
-					$pdf->Cell(7,5, $row['ScoreA'],'R'.$ltbr,'0','C');
-				else
-					$pdf->Cell(7,5, "",'R'.$ltbr,'0','C');
-				if ($row['ScoreB']!='?' && $row['Validation'] == 'O')
-					$pdf->Cell(7,5, $row['ScoreB'],'R'.$ltbr,'0','C');
-				else
-					$pdf->Cell(7,5, "",'R'.$ltbr,'0','C');
+				if ($row['ScoreA'] != '?') {
+                    $pdf->Cell(7, 5, $row['ScoreA'], 'R' . $ltbr, '0', 'C');
+                } else {
+                    $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
+                }
+                if ($row['ScoreB'] != '?') {
+                    $pdf->Cell(7, 5, $row['ScoreB'], 'R' . $ltbr, '0', 'C');
+                } else {
+                    $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
+                }
 				$pdf->Cell(35,5, $row['EquipeB'],'R'.$ltbr,0,'C');
 				$pdf->SetFont('Arial','I',6);
-				if ($row['Arbitre_principal']=='-1')
-					$pdf->Cell(46,5, '','R'.$ltbr,0,'C');
-				else
-					$pdf->Cell(46,5, $row['Arbitre_principal'],'R'.$ltbr,0,'C');
-				if ($row['Arbitre_secondaire']=='-1')
-					$pdf->Cell(46,5, '','R'.$ltbr,1,'C');
-				else
-					$pdf->Cell(46,5, $row['Arbitre_secondaire'],'R'.$ltbr,1,'C');
+				if ($row['Arbitre_principal'] == '-1') {
+                    $pdf->Cell(46, 5, '', 'R' . $ltbr, 0, 'C');
+                } else {
+                    $pdf->Cell(46, 5, $row['Arbitre_principal'], 'R' . $ltbr, 0, 'C');
+                }
+                if ($row['Arbitre_secondaire'] == '-1') {
+                    $pdf->Cell(46, 5, '', 'R' . $ltbr, 1, 'C');
+                } else {
+                    $pdf->Cell(46, 5, $row['Arbitre_secondaire'], 'R' . $ltbr, 1, 'C');
+                }
 				break;
 			}
 		}
 		//$pdf->Cell(22,3, '',0,0,'C');
-		$pdf->Cell(271,3,'','T','1','C');
+		$pdf->Cell(273,3,'','T','1','C');
 		$pdf->Output('Game list'.'.pdf','I');
 	}
 }

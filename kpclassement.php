@@ -30,9 +30,22 @@ class Classement extends MyPage
         //Logo
 		if($codeCompet != -1)
 		{
-			$logo = "img/logo/".$codeSaison.'-'.$codeCompet.'.jpg';
-			if(file_exists($logo))
-				$this->m_tpl->assign('logo', $logo);
+            if($recordCompetition['BandeauLink'] != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE ){
+                $recordCompetition['BandeauLink'] = 'img/logo/' . $recordCompetition['BandeauLink'];
+                if(is_file($recordCompetition['BandeauLink'])) {
+                    $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
+                }
+            } elseif($recordCompetition['BandeauLink'] != '') {
+                $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
+            }
+            if($recordCompetition['LogoLink'] != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE ){
+                $recordCompetition['LogoLink'] = 'img/logo/' . $recordCompetition['LogoLink'];
+                if(is_file($recordCompetition['LogoLink'])) {
+                    $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
+                }
+            } elseif($recordCompetition['LogoLink'] != '') {
+                $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
+            }
 		}
 
 		// Chargement des Equipes ...
@@ -56,10 +69,13 @@ class Classement extends MyPage
                     . "WHERE ce.Code_compet = '$codeCompet' "
                     . "AND ce.Code_saison = $codeSaison "
                     . "AND ce.Code_club = c.Code ";
-                    if ($typeClt == 'CP')
-                        $sql .= "ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";	 
-                    else
-                        $sql .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";	 
+            if ($typeClt == 'CP') {
+                $sql .= "AND CltNiveau_publi > 0 ";
+                $sql .= "ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";	 
+            } else {
+                $sql .= "AND Clt_publi > 0 ";
+                $sql .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";
+            }
 	
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 

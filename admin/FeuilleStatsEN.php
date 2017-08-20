@@ -4,7 +4,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 // Pieds de page
@@ -54,6 +53,33 @@ class FeuilleStats extends MyPage
 				$CompetsList2 .= ' - '.$arrayCompetition['Soustitre2'];
 		}
 		
+        if($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){
+            $arrayCompetition['BandeauLink'] = '../img/logo/' . $arrayCompetition['BandeauLink'];
+            if(is_file($arrayCompetition['BandeauLink'])) {
+                $bandeau = $arrayCompetition['BandeauLink'];
+            }
+        } elseif($arrayCompetition['BandeauLink'] != '') {
+            $bandeau = $arrayCompetition['BandeauLink'];
+        } 
+        if($arrayCompetition['LogoLink'] != '' && strpos($arrayCompetition['LogoLink'], 'http') === FALSE ){
+            $arrayCompetition['LogoLink'] = '../img/logo/' . $arrayCompetition['LogoLink'];
+            if(is_file($arrayCompetition['LogoLink'])) {
+                $logo = $arrayCompetition['LogoLink'];
+            }
+        } elseif($arrayCompetition['LogoLink'] != '') {
+            $logo = $arrayCompetition['LogoLink'];
+        }
+        
+        if($arrayCompetition['SponsorLink'] != '' && strpos($arrayCompetition['SponsorLink'], 'http') === FALSE ){
+            $arrayCompetition['SponsorLink'] = '../img/logo/' . $arrayCompetition['SponsorLink'];
+            if(is_file($arrayCompetition['SponsorLink'])) {
+                $sponsor = $arrayCompetition['SponsorLink'];
+            }
+        } elseif($arrayCompetition['SponsorLink'] != '') {
+            $sponsor = $arrayCompetition['SponsorLink'];
+        }
+
+        
 		//Filtre stat
 		$AfficheStat = utyGetSession('AfficheStat', 'Buteurs');
 		$AfficheStat = utyGetGet('Stat', $AfficheStat);
@@ -407,7 +433,6 @@ class FeuilleStats extends MyPage
 								'Matric' => $row['Matric'],  
 								'Nom' => $row['Nom'],  
 								'Prenom' => $row['Prenom'],  
-								'Numero_club' => $row['Numero_club'],  
 								'nomEquipe' => $row['nomEquipe'],  
 								'Nb_matchs' => $row['Nb_matchs']));
 				}
@@ -526,14 +551,40 @@ class FeuilleStats extends MyPage
 								'Matric' => $row['Matric'],  
 								'Nom' => $row['Nom'],  
 								'Prenom' => $row['Prenom'],  
-								'Numero_club' => $row['Numero_club'],  
+//								'Numero_club' => $row['Numero_club'],  
 								'nomEquipe' => $row['nomEquipe'],  
 								'Nb_matchs' => $row['Nb_matchs']));
 				}
 				break;
+			case 'OfficielsJournees' : // Officiels Journees
+				$NomStat = 'Officiels par journée';
+				$sql  = "SELECT j.* ";
+				$sql .= "FROM gickp_Journees j ";
+				$sql .= "WHERE 1 ";
+				$sql .= "AND j.Code_competition IN $CompetsList ";
+				$sql .= "AND j.Code_saison = '$codeSaison' ";	 
+				$sql .= "GROUP BY j.Code_competition, j.Date_debut, j.Lieu ";
+				$sql .= "ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+				$sql .= "LIMIT 0,$nbLignes ";
+				$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
+				$num_results = mysql_num_rows($result);
+				
+				$arrayOfficielsJournees = array();
+				for ($i=0;$i<$num_results;$i++)
+				{
+					$row = mysql_fetch_array($result);	
+					array_push($arrayOfficielsJournees, array( 'Code_competition' => $row['Code_competition'], 
+								'Date_debut' => $row['Date_debut'],  
+								'Date_fin' => $row['Date_fin'],  
+								'Lieu' => $row['Lieu'],  
+								'Responsable_insc' => $row['Responsable_insc'],  
+								'Responsable_R1' => $row['Responsable_R1'],  
+								'Delegue' => $row['Delegue'],  
+								'ChefArbitre' => $row['ChefArbitre']));
+		}
+				break;
 		}
 
-//		print_r ($arrayJoueur{$idEquipe});
 		// Entête PDF ...	  
  		$pdf = new PDF('P');
 		$pdf->Open();
@@ -542,7 +593,7 @@ class FeuilleStats extends MyPage
 		$pdf->SetAuthor("Kayak-polo.info");
 		$pdf->SetCreator("Kayak-polo.info avec FPDF");
 		$pdf->SetAutoPageBreak(true, 15);
-		if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')
+		if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor))
 			$pdf->SetAutoPageBreak(true, 30);
 		else
 			$pdf->SetAutoPageBreak(true, 15);
@@ -551,12 +602,18 @@ class FeuilleStats extends MyPage
 		// logo
 		if($arrayCompetition['Kpi_ffck_actif'] == 'O')
 		{
-			$pdf->Image('../css/banniere1.jpg',10,10,0,12,'jpg',"http://www.kayak-polo.info");
-			$pdf->Image('../img/ffck2.jpg',163,10,0,12,'jpg',"http://www.ffck.org");
+			$pdf->Image('../img/logoKPI-small.jpg',84,10,0,20,'jpg',"http://www.ffck.org");
 		}
-		$logo = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['LogoLink']);
-		if($arrayCompetition['Logo_actif'] == 'O' && $logo != '' && $AfficheStat != 'CJoueesN' && $AfficheStat != 'CJoueesCF')  //&& file_exists($logo)
-		{
+
+		if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
+			$size = getimagesize($bandeau);
+			$largeur=$size[0];
+			$hauteur=$size[1];
+			$ratio=20/$hauteur;	//hauteur imposée de 20mm
+			$newlargeur=$largeur*$ratio;
+			$posi=105-($newlargeur/2);	//210mm = largeur de page
+			$pdf->image($bandeau, $posi, 8, 0,20);
+		} elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
 			$size = getimagesize($logo);
 			$largeur=$size[0];
 			$hauteur=$size[1];
@@ -565,9 +622,8 @@ class FeuilleStats extends MyPage
 			$posi=105-($newlargeur/2);	//210mm = largeur de page
 			$pdf->image($logo, $posi, 8, 0,20);
 		}
-		$sponsor = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['SponsorLink']);
-		if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '' && $AfficheStat != 'CJoueesN' && $AfficheStat != 'CJoueesCF')  //&& file_exists($sponsor)
-		{
+
+		if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
 			$size = getimagesize($sponsor);
 			$largeur=$size[0];
 			$hauteur=$size[1];
@@ -576,6 +632,8 @@ class FeuilleStats extends MyPage
 			$posi=105-($newlargeur/2);	//210mm = largeur de page
 			$pdf->image($sponsor, $posi, 267, 0,16);
 		}
+
+
 		// titre
 		if($AfficheStat == 'CJoueesN')
 			$CompetsList2 = 'Championnat de France';
@@ -912,6 +970,28 @@ class FeuilleStats extends MyPage
 						$pdf->Cell(12,7,$arrayCJouees2[$i]['Nb_matchs'],'B',1,'C');
 					}
 				}
+				break;
+			case 'OfficielsJournees' :
+				$pdf->SetFont('Arial','BI',10);
+				$pdf->Cell(10,7,'Compet','B',0,'C');
+				$pdf->Cell(20,7,'Date','B',0,'C');
+				$pdf->Cell(30,7,'Place','B',0,'C');
+				$pdf->Cell(30,7,'RC','B',0,'C');
+				$pdf->Cell(30,7,'Tech. Org.','B',0,'C');
+				$pdf->Cell(30,7,'Chief Off.','B',0,'C');
+				$pdf->Cell(30,7,'Chief ref.','B',1,'C');
+				$pdf->SetFont('Arial','',8);
+				$k = 0;
+				for ($i=0;$i<count($arrayOfficielsJournees);$i++)
+				{
+					$pdf->Cell(10,7,$arrayOfficielsJournees[$i]['Code_competition'],'B',0,'C');
+					$pdf->Cell(20,7,$arrayOfficielsJournees[$i]['Date_debut'],'B',0,'C');
+					$pdf->Cell(30,7,$arrayOfficielsJournees[$i]['Lieu'],'B',0,'C');
+					$pdf->Cell(30,7,$arrayOfficielsJournees[$i]['Responsable_insc'],'B',0,'C');
+					$pdf->Cell(30,7,$arrayOfficielsJournees[$i]['Responsable_R1'],'B',0,'C');
+					$pdf->Cell(30,7,$arrayOfficielsJournees[$i]['Delegue'],'B',0,'C');
+					$pdf->Cell(30,7,$arrayOfficielsJournees[$i]['ChefArbitre'],'B',1,'C');
+                }
 				break;
 		}
 

@@ -107,7 +107,17 @@ class GestionDoc extends MyPageSecure
 		$this->m_tpl->assign('codeCompet', $codeCompet);
 		
 		//Détails Compet
-		$this->m_tpl->assign('detailsCompet',$myBdd->GetCompetition($codeCompet, $codeSaison));
+        $detailsCompet = $myBdd->GetCompetition($codeCompet, $codeSaison);
+        if( $detailsCompet['BandeauLink'] != '' && strpos($detailsCompet['BandeauLink'], 'http') === FALSE ) {
+            $detailsCompet['BandeauLink'] = '../img/logo/' . $detailsCompet['BandeauLink'];
+        }
+        if( $detailsCompet['LogoLink'] != '' && strpos($detailsCompet['LogoLink'], 'http') === FALSE ) {
+            $detailsCompet['LogoLink'] = '../img/logo/' . $detailsCompet['LogoLink'];
+        }
+        if( $detailsCompet['SponsorLink'] != '' && strpos($detailsCompet['SponsorLink'], 'http') === FALSE ) {
+            $detailsCompet['SponsorLink'] = '../img/logo/' . $detailsCompet['SponsorLink'];
+        }
+		$this->m_tpl->assign('detailsCompet', $detailsCompet);
 		
 		//Equipes
 		$sql  = "Select count(Id) nbEquipes ";

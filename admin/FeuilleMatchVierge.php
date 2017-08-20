@@ -4,7 +4,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 // Gestion de la Feuille de Match
@@ -61,8 +60,7 @@ class FeuilleMatch extends MyPage
 		$pdf->SetY(9);
 
 		// Logos
-		$pdf->Image('../css/banniere1.jpg',10,10,0,10,'jpg',"http://www.kayak-polo.info");
-		$pdf->Image('../img/ffck2.jpg',118,10,0,10,'jpg',"http://www.ffck.org");
+        $pdf->Image('../img/logoKPI-small.jpg',65,10,0,11,'jpg',"http://www.ffck.org");
 
 		$pdf->Ln(11);
 

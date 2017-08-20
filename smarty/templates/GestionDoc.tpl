@@ -371,14 +371,13 @@
 						</tr>
 						<tr>
 							<td align='center' colspan=4>
-								<center>
-									{if $detailsCompet.Kpi_ffck_actif == 'O'}<img src='../css/banniere1.jpg' width=120px>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-									{if $detailsCompet.Kpi_ffck_actif == 'O'}&nbsp;&nbsp;<img src='../img/ffck2.jpg' width=70px>{/if}
+									{if $detailsCompet.Kpi_ffck_actif == 'O'}<img src='../img/logoKPI-small.jpg' width='70'>{/if}
+									{if $detailsCompet.Bandeau_actif == 'O'}<br><img src='{$detailsCompet.BandeauLink}' width=200>{/if}
+									{if $detailsCompet.Logo_actif == 'O'}<br><img src='{$detailsCompet.LogoLink}' width=100>{/if}
+									{if $detailsCompet.Titre_actif == 'O'}<br><b>{$detailsCompet.Libelle}</b>{else}<br><b>{$detailsCompet.Soustitre}</b>{/if}
+									<br>{$detailsCompet.Soustitre2}
+                                    {if $detailsCompet.Sponsor_actif == 'O'}<br><img src='{$detailsCompet.SponsorLink}' width=200>{/if}
 									<br>
-									{if $detailsCompet.Logo_actif == 'O'}<img src='{$detailsCompet.LogoLink}' width=80px>{/if}
-									<br>
-									<b>{if $detailsCompet.Titre_actif == 'O'}{$detailsCompet.Libelle}<br>{else}{$detailsCompet.Soustitre}<br>{/if}</b>
-									{$detailsCompet.Soustitre2}
 							</td>
 						</tr>
 						<tr>

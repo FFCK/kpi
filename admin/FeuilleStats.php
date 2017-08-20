@@ -4,7 +4,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 // Pieds de page
@@ -54,6 +53,33 @@ class FeuilleStats extends MyPage
 				$CompetsList2 .= ' - '.$arrayCompetition['Soustitre2'];
 		}
 		
+        if($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){
+            $arrayCompetition['BandeauLink'] = '../img/logo/' . $arrayCompetition['BandeauLink'];
+            if(is_file($arrayCompetition['BandeauLink'])) {
+                $bandeau = $arrayCompetition['BandeauLink'];
+            }
+        } elseif($arrayCompetition['BandeauLink'] != '') {
+            $bandeau = $arrayCompetition['BandeauLink'];
+        } 
+        if($arrayCompetition['LogoLink'] != '' && strpos($arrayCompetition['LogoLink'], 'http') === FALSE ){
+            $arrayCompetition['LogoLink'] = '../img/logo/' . $arrayCompetition['LogoLink'];
+            if(is_file($arrayCompetition['LogoLink'])) {
+                $logo = $arrayCompetition['LogoLink'];
+            }
+        } elseif($arrayCompetition['LogoLink'] != '') {
+            $logo = $arrayCompetition['LogoLink'];
+        }
+        
+        if($arrayCompetition['SponsorLink'] != '' && strpos($arrayCompetition['SponsorLink'], 'http') === FALSE ){
+            $arrayCompetition['SponsorLink'] = '../img/logo/' . $arrayCompetition['SponsorLink'];
+            if(is_file($arrayCompetition['SponsorLink'])) {
+                $sponsor = $arrayCompetition['SponsorLink'];
+            }
+        } elseif($arrayCompetition['SponsorLink'] != '') {
+            $sponsor = $arrayCompetition['SponsorLink'];
+        }
+
+        
 		//Filtre stat
 		$AfficheStat = utyGetSession('AfficheStat', 'Buteurs');
 		$AfficheStat = utyGetGet('Stat', $AfficheStat);
@@ -407,7 +433,6 @@ class FeuilleStats extends MyPage
 								'Matric' => $row['Matric'],  
 								'Nom' => $row['Nom'],  
 								'Prenom' => $row['Prenom'],  
-								'Numero_club' => $row['Numero_club'],  
 								'nomEquipe' => $row['nomEquipe'],  
 								'Nb_matchs' => $row['Nb_matchs']));
 				}
@@ -525,7 +550,7 @@ class FeuilleStats extends MyPage
 								'Matric' => $row['Matric'],  
 								'Nom' => $row['Nom'],  
 								'Prenom' => $row['Prenom'],  
-								'Numero_club' => $row['Numero_club'],  
+//								'Numero_club' => $row['Numero_club'],  
 								'nomEquipe' => $row['nomEquipe'],  
 								'Nb_matchs' => $row['Nb_matchs']));
 				}
@@ -559,7 +584,6 @@ class FeuilleStats extends MyPage
 				break;
 		}
 
-//		print_r ($arrayJoueur{$idEquipe});
 		// Entête PDF ...
  		$pdf = new PDF('P');
 		$pdf->Open();
@@ -568,21 +592,27 @@ class FeuilleStats extends MyPage
 		$pdf->SetAuthor("Kayak-polo.info");
 		$pdf->SetCreator("Kayak-polo.info avec FPDF");
 		$pdf->SetAutoPageBreak(true, 15);
-		if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')
+		if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor))
 			$pdf->SetAutoPageBreak(true, 30);
 		else
 			$pdf->SetAutoPageBreak(true, 15);
 		$pdf->AddPage();
 		// Affichage
-		// logo
+        // logo
 		if($arrayCompetition['Kpi_ffck_actif'] == 'O')
 		{
-			$pdf->Image('../css/banniere1.jpg',10,10,0,12,'jpg',"http://www.kayak-polo.info");
-			$pdf->Image('../img/ffck2.jpg',163,10,0,12,'jpg',"http://www.ffck.org");
+			$pdf->Image('../img/logoKPI-small.jpg',84,10,0,20,'jpg',"http://www.ffck.org");
 		}
-		$logo = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['LogoLink']);
-		if($arrayCompetition['Logo_actif'] == 'O' && $logo != '' && $AfficheStat != 'CJoueesN' && $AfficheStat != 'CJoueesCF')  //&& file_exists($logo)
-		{
+
+		if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
+			$size = getimagesize($bandeau);
+			$largeur=$size[0];
+			$hauteur=$size[1];
+			$ratio=20/$hauteur;	//hauteur imposée de 20mm
+			$newlargeur=$largeur*$ratio;
+			$posi=105-($newlargeur/2);	//210mm = largeur de page
+			$pdf->image($bandeau, $posi, 8, 0,20);
+		} elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
 			$size = getimagesize($logo);
 			$largeur=$size[0];
 			$hauteur=$size[1];
@@ -591,9 +621,8 @@ class FeuilleStats extends MyPage
 			$posi=105-($newlargeur/2);	//210mm = largeur de page
 			$pdf->image($logo, $posi, 8, 0,20);
 		}
-		$sponsor = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['SponsorLink']);
-		if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '' && $AfficheStat != 'CJoueesN' && $AfficheStat != 'CJoueesCF')  //&& file_exists($sponsor)
-		{
+
+		if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
 			$size = getimagesize($sponsor);
 			$largeur=$size[0];
 			$hauteur=$size[1];
@@ -602,7 +631,9 @@ class FeuilleStats extends MyPage
 			$posi=105-($newlargeur/2);	//210mm = largeur de page
 			$pdf->image($sponsor, $posi, 267, 0,16);
 		}
-		// titre
+
+
+        // titre
 		if($AfficheStat == 'CJoueesN')
 			$CompetsList2 = 'Championnat de France';
 		elseif($AfficheStat == 'CJoueesCF')

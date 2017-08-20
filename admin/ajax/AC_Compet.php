@@ -56,16 +56,18 @@ include_once('../../commun/MyBdd.php');
 		$jRow['Soustitre'] = $row['Soustitre'];
 		$jRow['Soustitre2'] = $row['Soustitre2'];
 		$jRow['Web'] = $row['Web'];
+		$jRow['BandeauLink'] = $row['BandeauLink'];
 		$jRow['LogoLink'] = $row['LogoLink'];
 		$jRow['SponsorLink'] = $row['SponsorLink'];
 		$jRow['ToutGroup'] = $row['ToutGroup'];
 		$jRow['TouteSaisons'] = $row['TouteSaisons'];
 		$jRow['Titre_actif'] = $row['Titre_actif'];
+		$jRow['Bandeau_actif'] = $row['Bandeau_actif'];
 		$jRow['Logo_actif'] = $row['Logo_actif'];
 		$jRow['Sponsor_actif'] = $row['Sponsor_actif'];
 		$jRow['Kpi_ffck_actif'] = $row['Kpi_ffck_actif'];
 		$jRow['En_actif'] = $row['En_actif'];
-		$jRow['resultGlobal'] = "$code - $libelle|$code|$libelle|$Code_niveau|$Code_ref|$Code_typeclt|$Code_tour|$Qualifies|$Elimines|$Points|$Soustitre|$Web|$LogoLink|$SponsorLink|$ToutGroup|$TouteSaisons|$GroupOrder|$Soustitre2|$Titre_actif|$Logo_actif|$Sponsor_actif|$Kpi_ffck_actif|$En_actif\n";
+		$jRow['resultGlobal'] = "$code - $libelle|$code|$libelle|$Code_niveau|$Code_ref|$Code_typeclt|$Code_tour|$Qualifies|$Elimines|$Points|$Soustitre|$Web|$LogoLink|$SponsorLink|$ToutGroup|$TouteSaisons|$GroupOrder|$Soustitre2|$Titre_actif|$Logo_actif|$Sponsor_actif|$Kpi_ffck_actif|$En_actif|$BandeauLink|$Bandeau_actif\n";
 		$jRow["label"] = $jRow["code"].' - '.$jRow["libelle"].' ('.$jRow["saison"].')';
 		$jRow["value"] = $jRow["code"];
 		$jRow["category"] = $row['Code_niveau'];
@@ -73,4 +75,3 @@ include_once('../../commun/MyBdd.php');
 	}
 	$json = json_encode($a_json);
 	print $json;
-?>

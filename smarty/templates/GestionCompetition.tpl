@@ -317,6 +317,15 @@
 							{if $editCompet == ''}
 								<tr>
 									<td colspan=4>
+										<label for="bandeauLink">Lien image bandeau compet :</label>
+										<input type="text" id="bandeauLink" name="bandeauLink">
+										<br>
+										<img hspace="2" width="200" src="" border="0" id='bandeauprovisoire'>
+										<br>
+									</td>
+								</tr>
+								<tr>
+									<td colspan=4>
 										<label for="logoLink">Lien image logo compet :</label>
 										<input type="text" id="logoLink" name="logoLink">
 										<br>
@@ -346,15 +355,17 @@
 										<td colspan=4>
 											<label for="logo_actif">Activer :</label>
 											<br>
+											<input type="checkbox" name="titre_actif" id="titre_actif" value='O' {if $titre_actif != ''}checked{/if}><label>Libellé (sinon : libellé 2)</label>
+											<br>
+											<input type="checkbox" name="en_actif" id="en_actif" value='O' {if $en_actif != ''}checked{/if}><label>Compétition en Anglais</label>
+											<br>
 											<input type="checkbox" name="kpi_ffck_actif" id="kpi_ffck_actif" value='O' {if $kpi_ffck_actif != ''}checked{/if}><label>Logo KPI/FFCK</label>
 											<br>
-											<input type="checkbox" name="titre_actif" id="titre_actif" value='O' {if $titre_actif != ''}checked{/if}><label>Libellé (sinon : libellé 2)</label>
+											<input type="checkbox" name="bandeau_actif" id="bandeau_actif" value='O' {if $bandeau_actif == 'O'}checked{/if}><label>Bandeau compétition</label>
 											<br>
 											<input type="checkbox" name="logo_actif" id="logo_actif" value='O' {if $logo_actif == 'O'}checked{/if}><label>Logo compétition</label>
 											<br>
 											<input type="checkbox" name="sponsor_actif" id="sponsor_actif" value='O' {if $sponsor_actif == 'O'}checked{/if}><label>Image Sponsor</label>
-											<br>
-											<input type="checkbox" name="en_actif" id="en_actif" value='O' {if $en_actif != ''}checked{/if}><label>Compétition en Anglais</label>
 										</td>
 									</tr>
 									<tr>
@@ -426,13 +437,17 @@
 							{else}
 								<tr>
 									<td colspan=4 align=center>
+										<label for="bandeauLink"><b>Lien image bandeau :</b></label>
+										<input type="text" id="bandeauLink" name="bandeauLink" value="{$bandeauLink}">
+                                        <img hspace="2" id='bandeauprovisoire' width="200" src="" alt="Bandeau actuel de la compétition" title="Bandeau actuel de la compétition" border="0">
+										<br>
 										<label for="logoLink"><b>Lien image logo :</b></label>
 										<input type="text" id="logoLink" name="logoLink" value="{$logoLink}">
-											<img hspace="2" id='logoprovisoire' width="200" src="{$logo}" alt="Logo actuel de la compétition" title="Logo actuel de la compétition" border="0">
+                                        <img hspace="2" id='logoprovisoire' width="200" src="" alt="Logo actuel de la compétition" title="Logo actuel de la compétition" border="0">
 										<br>
 										<label for="sponsorLink"><b>Lien image sponsor :</b></label>
 										<input type="text" id="sponsorLink" name="sponsorLink" value="{$sponsorLink}">
-											<img hspace="2" id='sponsorprovisoire' width="200" src="{$sponsor}" alt="Sponsor actuel de la compétition" title="Sponsor actuel de la compétition" border="0">
+                                        <img hspace="2" id='sponsorprovisoire' width="200" src="" alt="Sponsor actuel de la compétition" title="Sponsor actuel de la compétition" border="0">
 									</td>
 								</tr>
 								{*
@@ -454,15 +469,17 @@
 									<td colspan=4>
 										<label for="logo_actif">Activer :</label>
 										<br>
+										<input type="checkbox" name="titre_actif" id="titre_actif" value='O' {if $titre_actif != ''}checked{/if}><label>Libellé (sinon : libellé 2)</label>
+										<br>
+										<input type="checkbox" name="en_actif" id="en_actif" value='O' {if $en_actif != ''}checked{/if}><label>Compétition en Anglais</label>
+										<br>
 										<input type="checkbox" name="kpi_ffck_actif" id="kpi_ffck_actif" value='O' {if $kpi_ffck_actif != ''}checked{/if}><label>Logo KPI/FFCK</label>
 										<br>
-										<input type="checkbox" name="titre_actif" id="titre_actif" value='O' {if $titre_actif != ''}checked{/if}><label>Libellé (sinon : libellé 2)</label>
+										<input type="checkbox" name="bandeau_actif" id="bandeau_actif" value='O' {if $bandeau_actif == 'O'}checked{/if}><label>Bandeau compétition</label>
 										<br>
 										<input type="checkbox" name="logo_actif" id="logo_actif" value='O' {if $logo_actif == 'O'}checked{/if}><label>Logo compétition</label>
 										<br>
 										<input type="checkbox" name="sponsor_actif" id="sponsor_actif" value='O' {if $sponsor_actif == 'O'}checked{/if}><label>Image Sponsor</label>
-										<br>
-										<input type="checkbox" name="en_actif" id="en_actif" value='O' {if $en_actif != ''}checked{/if}><label>Compétition en Anglais</label>
 									</td>
 								</tr>
 								<tr>

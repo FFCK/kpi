@@ -44,26 +44,27 @@
     </article>
 </div>
 
+{if $recordCompetition[0].BandeauLink != '' or $recordCompetition[0].LogoLink != '' or $recordCompetition[0].Web != ''}
+    <div class="container logo_lien">
+        <article class="padTopBottom table-responsive col-md-6 col-md-offset-3">
+            <div class="text-center">
+                {if $recordCompetition[0].BandeauLink != ''}
+                    <img class="img2" id='logo' src='{$recordCompetition[0].BandeauLink}' alt="logo">
+                {else if $recordCompetition[0].LogoLink != ''}
+                    <img class="img2" id='logo' src='{$recordCompetition[0].LogoLink}' alt="logo">
+                {/if}
+                {if $recordCompetition[0].Web != ''}
+                    <p><a class="text-primary" href='{$recordCompetition[0].Web}' target='_blank'><i>{$recordCompetition[0].Web}</i></a></p>
+                {/if}
+            </div>
+        </article>
+    </div>
+{/if}
 {section  name=i loop=$arrayCompetition}
     {if $arrayCompetition[i].Statut != 'ATT'}
         {assign var='codetemp' value=$arrayCompetition[i].codeCompet}
         <div class="container">
             <article class="padTopBottom{if $arrayEquipe_publi[$codetemp][0].Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if}">
-                {if $recordCompetition[0].LogoLink != ''}
-                    <div class="text-center">
-                        {if $recordCompetition[0].Web != ''}
-                            <a href='{$recordCompetition[0].Web}' target='_blank'>
-                        {/if}
-                        <img class="img2" height="100px" id='logo' src='{$recordCompetition[0].LogoLink}' alt="logo" />
-                        {if $recordCompetition[0].Web != ''}
-                                <div>
-                                    <img class="img3" width="50" id='logo' src='img/www.png' alt="link" />
-                                </div>
-                            </a>
-                            <br />
-                        {/if}
-                    </div>
-                {/if}
                 <div class="page-header">
                     {assign var='idCompet' value=$arrayEquipe_publi[$codetemp][0].CodeCompet}
                     {assign var='idTour' value=$arrayEquipe_publi[$codetemp][0].Code_tour}

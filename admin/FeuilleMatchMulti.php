@@ -4,7 +4,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-//define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 require_once('../qrcode/qrcode.class.php');
@@ -22,14 +21,16 @@ class FeuilleMatch extends MyPage
 		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
 		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select");
 
-		if (mysql_num_rows($result) != 1)
-			return;
-			
-		$row = mysql_fetch_array($result);
-		if ((int) $row['Nb'] > 0)
-			return;
-			
-		$sql  = "Replace Into gickp_Matchs_Joueurs ";
+		if (mysql_num_rows($result) != 1) {
+            return;
+        }
+
+        $row = mysql_fetch_array($result);
+		if ((int) $row['Nb'] > 0) {
+            return;
+        }
+
+        $sql  = "Replace Into gickp_Matchs_Joueurs ";
 		$sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 		$sql .= "Where Id_equipe = $idEquipe ";
 		$sql .= "AND Capitaine <> 'X' ";
@@ -53,12 +54,11 @@ class FeuilleMatch extends MyPage
 		
 		$listMatch = utyGetGet('listMatch', -1);
 		$chaqueMatch = explode (',',$listMatch);
-		//echo $listMatch.'<br />';
+		
 		for ($h=0;$h<count($chaqueMatch);$h++)
 		{
 			// Infos match
-		//	if(!Is_Numeric ($chaqueMatch[$h]))
-		//		return;
+
 			$sql  = "Select a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, "
                     . "a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Type, "
                     . "a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, "
@@ -70,64 +70,90 @@ class FeuilleMatch extends MyPage
                     . "And a.Id_journee = b.Id ";
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select <br />".$sql);
 			$num_results = mysql_num_rows($result);
-			if ($num_results != 1)
-				die('Erreur Nb Matchs');
-			
-			$row = mysql_fetch_array($result);	  
+			if ($num_results != 1) {
+                die('Erreur Nb Matchs');
+            }
+
+            $row = mysql_fetch_array($result);	  
 			$idMatch = $row['Id'];
 			$saison = $row['Code_saison'];
 			$categorie = $row['Code_competition'];
 			$heure_fin = substr($row['Heure_fin'],-5);
-			if($heure_fin == '00:00')
-				$heure_fin = '';
+			if ($heure_fin == '00:00') {
+                $heure_fin = '';
+            }
 
-			// Données compétition
-			$sql6  = "Select * from  gickp_Competitions Where Code = '".$categorie."' And Code_saison = '".$saison."' ";
-			$result6 = mysql_query($sql6, $myBdd->m_link) or die ("Erreur Load 6");
-			if (mysql_num_rows($result6) == 1)
-			{
-				$row6 = mysql_fetch_array($result6);	  
-			}
-			
+            // Données compétition
+            $arrayCompetition = $myBdd->GetCompetition($categorie, $saison);
+            if($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){
+                $arrayCompetition['BandeauLink'] = '../img/logo/' . $arrayCompetition['BandeauLink'];
+                if(is_file($arrayCompetition['BandeauLink'])) {
+                    $bandeau = $arrayCompetition['BandeauLink'];
+                }
+            } elseif($arrayCompetition['BandeauLink'] != '') {
+                $bandeau = $arrayCompetition['BandeauLink'];
+            } 
+            if($arrayCompetition['LogoLink'] != '' && strpos($arrayCompetition['LogoLink'], 'http') === FALSE ){
+                $arrayCompetition['LogoLink'] = '../img/logo/' . $arrayCompetition['LogoLink'];
+                if(is_file($arrayCompetition['LogoLink'])) {
+                    $logo = $arrayCompetition['LogoLink'];
+                }
+            } elseif($arrayCompetition['LogoLink'] != '') {
+                $logo = $arrayCompetition['LogoLink'];
+            }
+
+            if($arrayCompetition['SponsorLink'] != '' && strpos($arrayCompetition['SponsorLink'], 'http') === FALSE ){
+                $arrayCompetition['SponsorLink'] = '../img/logo/' . $arrayCompetition['SponsorLink'];
+                if(is_file($arrayCompetition['SponsorLink'])) {
+                    $sponsor = $arrayCompetition['SponsorLink'];
+                }
+            } elseif($arrayCompetition['SponsorLink'] != '') {
+                $sponsor = $arrayCompetition['SponsorLink'];
+            }
+            
 			$idEquipeA = $row['Id_equipeA'];
 			$idEquipeB = $row['Id_equipeB'];
-			if ($idEquipeA == '')
-				$idEquipeA = 0;
-			if ($idEquipeB == '')
-				$idEquipeB = 0;
+			if ($idEquipeA == '') {
+                $idEquipeA = 0;
+            }
+            if ($idEquipeB == '') {
+                $idEquipeB = 0;
+            }
 
-			// drapeaux
-			if ($row6['Code_niveau'] == 'INT' && $idEquipeA != 0)
-			{
-				$paysA = substr($myBdd->GetCodeClubEquipe($idEquipeA), 0, 3);
-				if(is_numeric($paysA[0]) || is_numeric($paysA[1]) || is_numeric($paysA[2]))
-					$paysA = 'FRA';
-			}
-			else
-				$paysA = '';
-			if ($row6['Code_niveau'] == 'INT' && $idEquipeB != 0)
-			{
-				$paysB = substr($myBdd->GetCodeClubEquipe($idEquipeB), 0, 3);
-				if(is_numeric($paysB[0]) || is_numeric($paysB[1]) || is_numeric($paysB[2]))
-					$paysB = 'FRA';
-			}
-			else
-				$paysB = '';
-			
-			// Langue
+            // drapeaux
+			if ($arrayCompetition['Code_niveau'] == 'INT' && $idEquipeA != 0) {
+                $paysA = substr($myBdd->GetCodeClubEquipe($idEquipeA), 0, 3);
+                if (is_numeric($paysA[0]) || is_numeric($paysA[1]) || is_numeric($paysA[2])) {
+                    $paysA = 'FRA';
+                }
+            } else {
+                $paysA = '';
+            }
+            if ($arrayCompetition['Code_niveau'] == 'INT' && $idEquipeB != 0) {
+                $paysB = substr($myBdd->GetCodeClubEquipe($idEquipeB), 0, 3);
+                if (is_numeric($paysB[0]) || is_numeric($paysB[1]) || is_numeric($paysB[2])) {
+                    $paysB = 'FRA';
+                }
+            } else {
+                $paysB = '';
+            }
+
+            // Langue
             $getlang = utyGetGet('lang');
 			$langue = parse_ini_file("../commun/MyLang.ini", true);
-			if($getlang == 'en')
-				$row6['En_actif'] = 'O';
-			elseif($getlang == 'fr')
-				$row6['En_actif'] = '';
-				
-			if($row6['En_actif'] == 'O')
-				$lang = $langue['en'];
-			else
-				$lang = $langue['fr'];
+			if ($getlang == 'en') {
+                $arrayCompetition['En_actif'] = 'O';
+            } elseif ($getlang == 'fr') {
+                $arrayCompetition['En_actif'] = '';
+            }
 
-			$competition = html_entity_decode($row['Nom']);
+            if ($arrayCompetition['En_actif'] == 'O') {
+                $lang = $langue['en'];
+            } else {
+                $lang = $langue['fr'];
+            }
+
+            $competition = html_entity_decode($row['Nom']);
 			$lieu = html_entity_decode($row['Lieu']);
 			$dpt = $row['Departement'];
 			$terrain = $row['Terrain'];
@@ -139,10 +165,11 @@ class FeuilleMatch extends MyPage
 
 			$intitule = $row['Intitule'];
 			$intitule2 = str_replace($rep2, '', $intitule);
-			if($row6['En_actif'] == 'O')
-				$intitule2 = str_replace($rep3, $rep4, $intitule2);
+			if ($arrayCompetition['En_actif'] == 'O') {
+                $intitule2 = str_replace($rep3, $rep4, $intitule2);
+            }
 
-			// Nom Equipe A
+            // Nom Equipe A
 			$equipea =  '';
 			$equipeaFormat = '';
 			$sql1  = "Select Libelle From gickp_Competitions_Equipes Where Id = $idEquipeA";
@@ -167,11 +194,12 @@ class FeuilleMatch extends MyPage
 			//Affect Auto
 			if ($intitule != '')
 			{
-				if($row6['En_actif'] == 'O')
-					$EquipesAffectAuto = utyEquipesAffectAuto($intitule);
-				else
-					$EquipesAffectAuto = utyEquipesAffectAutoFR($intitule);
-			}
+				if ($arrayCompetition['En_actif'] == 'O') {
+                    $EquipesAffectAuto = utyEquipesAffectAuto($intitule);
+                } else {
+                    $EquipesAffectAuto = utyEquipesAffectAutoFR($intitule);
+                }
+            }
 			if (($equipea == '') && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '')
 			{
 				$equipea = $EquipesAffectAuto[0];
@@ -183,28 +211,32 @@ class FeuilleMatch extends MyPage
 				$equipebFormat = 'Auto';
 			}
 			$arbsup = array(" (Pool Arbitres 1)", " REG", " NAT", " INT", "-A", "-B", "-C");
-			if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
-				$row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
-			elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '')
-				$row['Arbitre_principal'] = $EquipesAffectAuto[2];
-			if($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1')
-				$row['Arbitre_secondaire'] = str_replace($arbsup, '', $row['Arbitre_secondaire']);
-			elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '')
-				$row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
-			//
+			if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
+                $row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
+            } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
+                $row['Arbitre_principal'] = $EquipesAffectAuto[2];
+            }
+            if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
+                $row['Arbitre_secondaire'] = str_replace($arbsup, '', $row['Arbitre_secondaire']);
+            } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
+                $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
+            }
+            //
 
 			$principal = $row['Arbitre_principal'];
-			if ($principal == '-1')
-				$principal = '';
-			$principal = str_replace($rep1, '', $principal);
+			if ($principal == '-1') {
+                $principal = '';
+            }
+            $principal = str_replace($rep1, '', $principal);
 
 			$secondaire = $row['Arbitre_secondaire'];
-			if ($secondaire == '-1')
-				$secondaire = '';
-			$secondaire = str_replace($rep1, '', $secondaire);
+			if ($secondaire == '-1') {
+                $secondaire = '';
+            }
+            $secondaire = str_replace($rep1, '', $secondaire);
 
 			$organisateur = html_entity_decode($row['Organisateur']);
-			if($row['Responsable_R1'] || $row6['En_actif'] == 'O')
+			if($row['Responsable_R1'] || $arrayCompetition['En_actif'] == 'O')
 			{
 				$responsable = substr(html_entity_decode($row['Responsable_R1']),0, 25);
 				$responsableT = $lang['R1'].': ';
@@ -214,7 +246,7 @@ class FeuilleMatch extends MyPage
 				$responsable = substr(html_entity_decode($row['Responsable_insc']),0, 25);
 				$responsableT = 'Resp: ';
 			}
-			if($row6['En_actif'] == 'O')
+			if($arrayCompetition['En_actif'] == 'O')
 			{
 				$delegue = html_entity_decode($row['Delegue']);
 				$delegueT = $lang['Delegue'].': ';
@@ -238,7 +270,7 @@ class FeuilleMatch extends MyPage
 			$chronometre = $row['Chronometre'];
             $timeshoot =  $row['Timeshoot'];
 			$phase = $row['Phase'];
-			if($row6['En_actif'] == 'O')
+			if($arrayCompetition['En_actif'] == 'O')
 			{
 				$date =  $row['Date_match'];
 				$dateprint = date('Y-m-d');
@@ -252,23 +284,26 @@ class FeuilleMatch extends MyPage
 			$no =  $row['Numero_ordre'];
 			$colorA = $row['ColorA'];
 			$colorB = $row['ColorB'];
-			if ($row['ScoreA'] != '?' && $row['ScoreA'] != '')
-				$ScoreA =  $row['ScoreA'];
-			else
-				$ScoreA =  '';
+			if ($row['ScoreA'] != '?' && $row['ScoreA'] != '') {
+                $ScoreA = $row['ScoreA'];
+            } else {
+                $ScoreA = '';
+            }
 
-			if ($row['ScoreB'] != '?' && $row['ScoreB'] != '')
-				$ScoreB =  $row['ScoreB'];
-			else
-				$ScoreB =  '';
+            if ($row['ScoreB'] != '?' && $row['ScoreB'] != '') {
+                $ScoreB = $row['ScoreB'];
+            } else {
+                $ScoreB = '';
+            }
 
-			$Commentaires = $row['Commentaires_officiels'];
+            $Commentaires = $row['Commentaires_officiels'];
 			$Commentaires1 = str_split($Commentaires, 85);//85
 			$Commentaires1 = $Commentaires1[0];
-			if(strlen($Commentaires) > 85)
-				$Commentaires1.= '...';
-			
-			// Info Equipe A
+			if (strlen($Commentaires) > 85) {
+                $Commentaires1.= '...';
+            }
+
+            // Info Equipe A
 			for ($i=1;$i<=10;$i++)
 			{
 				$na[$i] =  '';
@@ -284,19 +319,20 @@ class FeuilleMatch extends MyPage
             }
 
             $sql3  = "CREATE TEMPORARY TABLE tempA "
-                    . "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+                    . "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
                     . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
                     . "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur "
-                    . "From gickp_Matchs_Joueurs a "
-                    . "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeA And c.Matric = a.Matric), "
+                    . "FROM gickp_Matchs_Joueurs a "
+                    . "LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c ON (c.Id_equipe = $idEquipeA AND c.Matric = a.Matric), "
                     . "gickp_Liste_Coureur b "
-                    . "Where a.Matric = b.Matric "
-                    . "And a.Id_match = $idMatch "
-                    . "And a.Equipe = 'A' ";
+                    . "WHERE a.Matric = b.Matric "
+                    . "AND a.Id_match = $idMatch "
+                    . "AND a.Capitaine <> 'A' "
+                    . "AND a.Equipe = 'A' ";
 			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3);
-			$sql3  = "Select * "
-                    . "From tempA "
-                    . "Order By flagEntraineur, Numero, Nom, Prenom ";	 
+			$sql3  = "SELECT * "
+                    . "FROM tempA "
+                    . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";	 
 			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql3);
 			$num_results3 = mysql_num_rows($result3);
 
@@ -305,25 +341,14 @@ class FeuilleMatch extends MyPage
 			{
 				$j++;
 				$row3 = mysql_fetch_array($result3);	  
-				if ($row3["Capitaine"] == 'E')
-				{
+				if ($row3["Capitaine"] == 'E' && $j < 10) {
 					$j=10;
 					$noma[$j] = strtoupper($row3['Nom']).' ('.$lang['Entraineur'].')';
 					$na[$j] =  'E';
-				}
-				elseif ($row3["Capitaine"] == 'A')
-				{
-					$j=10;
-					$noma[$j] = strtoupper($row3['Nom']).' ('.$lang['Arbitre'].')';
-					$na[$j] =  'A';
-				}
-				elseif ($row3["Capitaine"] == 'C')
-				{
+				} elseif ($row3["Capitaine"] == 'C') {
 					$noma[$j] = strtoupper($row3['Nom']).' (Cap)';
 					$na[$j] =  $row3['Numero'];
-				}
-				else
-				{
+				} else {
 					$noma[$j] = strtoupper($row3['Nom']);
 					$na[$j] =  $row3['Numero'];
 				}
@@ -337,7 +362,7 @@ class FeuilleMatch extends MyPage
                     $licencea[$j] = '';
                 }
                 
-                if ($row3['Nom'] != '' && $row3['Origine'] != '' && $row3['Origine'] < $saison) {
+                if ($row3['Nom'] != '' && $row3['Matric'] < 2000000 && $row3['Origine'] != '' && $row3['Origine'] < $saison) {
                     $saisona[$j] = ' (' . $row3['Origine'] . ')';
                 }
 
@@ -365,22 +390,24 @@ class FeuilleMatch extends MyPage
 				$divb[$i] =  '';
 			}
 			
-			if ($row['Id_equipeB'] >= 1)
-				$this->InitTitulaireEquipe('B', $idMatch, $idEquipeB, $myBdd);
-			
-			$sql4  = "CREATE TEMPORARY TABLE tempB "
-                    . "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+			if ($row['Id_equipeB'] >= 1) {
+                $this->InitTitulaireEquipe('B', $idMatch, $idEquipeB, $myBdd);
+            }
+
+            $sql4  = "CREATE TEMPORARY TABLE tempB "
+                    . "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
                     . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
                     . "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur "
-                    . "From gickp_Matchs_Joueurs a "
-                    . "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeB And c.Matric = a.Matric), "
+                    . "FROM gickp_Matchs_Joueurs a "
+                    . "LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeB And c.Matric = a.Matric), "
                     . "gickp_Liste_Coureur b "
-                    . "Where a.Matric = b.Matric "
-                    . "And a.Id_match = $idMatch "
-                    . "And a.Equipe = 'B' ";
+                    . "WHERE a.Matric = b.Matric "
+                    . "AND a.Id_match = $idMatch "
+                    . "AND a.Capitaine <> 'A' "
+                    . "AND a.Equipe = 'B' ";
 			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4);
-			$sql4  = "Select * From tempB "
-                    . "Order By flagEntraineur, Numero, Nom, Prenom ";	 
+			$sql4  = "SELECT * FROM tempB "
+                    . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";	 
 			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql4);
 			$num_results4 = mysql_num_rows($result4);
 
@@ -390,25 +417,14 @@ class FeuilleMatch extends MyPage
 				$j++;
 				$row4 = mysql_fetch_array($result4);	
 				
-				if ($row4["Capitaine"] == 'E')
-				{
+				if ($row4["Capitaine"] == 'E' && $j < 10) {
 					$j=10;
 					$nomb[$j] = strtoupper($row4['Nom']).' ('.$lang['Entraineur'].')';
 					$nb[$j] =  'E';
-				}
-				elseif ($row4["Capitaine"] == 'A')
-				{
-					$j=10;
-					$nomb[$j] = strtoupper($row4['Nom']).' ('.$lang['Arbitre'].')';
-					$nb[$j] =  'A';
-				}
-				elseif ($row4["Capitaine"] == 'C')
-				{
+				} elseif ($row4["Capitaine"] == 'C') {
 					$nomb[$j] = strtoupper($row4['Nom']).' (Cap)';
 					$nb[$j] =  $row4['Numero'];
-				}
-				else
-				{
+				} else {
 					$nomb[$j] = strtoupper($row4['Nom']);
 					$nb[$j] =  $row4['Numero'];
 				}
@@ -421,17 +437,20 @@ class FeuilleMatch extends MyPage
                 } else {
                     $licenceb[$j] = '';
                 }
-				if($row4['Nom'] != '' && $row4['Origine'] != '' && $row4['Origine'] < $saison)
-					$saisonb[$j] = ' ('.$row4['Origine'].')';
-				
-				if ($row4['Matric_titulaire'] != $row4['Matric'])
-					$divb[$j] = utyCodeCategorie2($row4['Naissance']).'(sup)';
-				else
-					$divb[$j] = utyCodeCategorie2($row4['Naissance']);
+				if ($row4['Nom'] != '' && $row4['Matric'] < 2000000 && $row4['Origine'] != '' && $row4['Origine'] < $saison) {
+                    $saisonb[$j] = ' (' . $row4['Origine'] . ')';
+                }
 
-				if ($row4["Capitaine"] == 'E' or $row4["Capitaine"] == 'A')
-					$j=$i-2;
-			}
+                if ($row4['Matric_titulaire'] != $row4['Matric']) {
+                    $divb[$j] = utyCodeCategorie2($row4['Naissance']) . '(sup)';
+                } else {
+                    $divb[$j] = utyCodeCategorie2($row4['Naissance']);
+                }
+
+                if ($row4["Capitaine"] == 'E' or $row4["Capitaine"] == 'A') {
+                    $j = $i - 2;
+                }
+            }
 			$sql4b = "DROP TEMPORARY TABLE tempB; ";
 			mysql_query($sql4b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4b);
 
@@ -464,18 +483,20 @@ class FeuilleMatch extends MyPage
 				{
 					if($row5['Equipe_A_B'] == 'A')
 					{
-						if($row5['Nom']!='')
-							$d[1] = $row5['Numero'].'-'.ucwords(strtolower($row5['Nom'])).' '.$row5['Prenom']{0}.'.';
-						else
-							$d[1] = $lang['EQUIPE'].' A';
-						switch ($row5['Id_evt_match']) 
+						if ($row5['Nom'] != '') {
+                            $d[1] = $row5['Numero'] . '-' . ucwords(strtolower($row5['Nom'])) . ' ' . $row5['Prenom']{0} . '.';
+                        } else {
+                            $d[1] = $lang['EQUIPE'] . ' A';
+                        }
+                        switch ($row5['Id_evt_match']) 
 						{
 							case 'B':
 								$d[5] = 'X';
 								$scoreDetailA++;
-								if($row5['Periode'] == 'M1')
-									$scoreMitempsA ++;
-							    break;
+								if ($row5['Periode'] == 'M1') {
+                                    $scoreMitempsA ++;
+                                }
+                                break;
 							case 'V':
 							    $d[2] = 'X';
 							    break;
@@ -489,18 +510,20 @@ class FeuilleMatch extends MyPage
 					}
 					else 
 					{
-						if($row5['Nom']!='')
-							$d[11] = $row5['Numero'].'-'.ucwords(strtolower($row5['Nom'])).' '.$row5['Prenom']{0}.'.';
-						else
-							$d[11] = $lang['EQUIPE'].' B';
-						switch ($row5['Id_evt_match']) 
+						if ($row5['Nom'] != '') {
+                            $d[11] = $row5['Numero'] . '-' . ucwords(strtolower($row5['Nom'])) . ' ' . $row5['Prenom']{0} . '.';
+                        } else {
+                            $d[11] = $lang['EQUIPE'] . ' B';
+                        }
+                        switch ($row5['Id_evt_match']) 
 						{
 							case 'B':
 								$d[7] = 'X';
 								$scoreDetailB++;
-								if($row5['Periode'] == 'M1')
-									$scoreMitempsB ++;
-							    break;
+								if ($row5['Periode'] == 'M1') {
+                                    $scoreMitempsB ++;
+                                }
+                                break;
 							case 'V':
 							    $d[8] = 'X';
 							    break;
@@ -513,9 +536,10 @@ class FeuilleMatch extends MyPage
 						}
 					}
 					$d[6] = $row5['Periode'].' - ';
-					if(strftime("%M:%S",strtotime($row5['Temps']))!='00:00')
-						$d[6] .= strftime("%M:%S",strtotime($row5['Temps']));
-				}
+					if (strftime("%M:%S", strtotime($row5['Temps'])) != '00:00') {
+                        $d[6] .= strftime("%M:%S", strtotime($row5['Temps']));
+                    }
+                }
 				if ($i <= 26)
 				{
 					array_push($detail, array('d1' => $d[1], 'd2' => $d[2], 'd3' => $d[3], 'd4' => $d[4], 'd5' => $d[5], 'd6' => $d[6],
@@ -529,19 +553,22 @@ class FeuilleMatch extends MyPage
 				}
 			}
 			
-			if (($scoreDetailA != $ScoreA or $scoreDetailB != $ScoreB) && ($scoreDetailA != '' or $scoreDetailB != ''))
-				$typeScore = $lang['Provisoire'];
-			else
-				$typeScore = $lang['Final'];
-			
-			if ($scoreMitempsA != '' && $scoreMitempsB == '')
-				$scoreMitempsB = 0;
-			if ($scoreMitempsB != '' && $scoreMitempsA == '')
-				$scoreMitempsA = 0;
-				
-			
-			
-			// Production de la feuille de match PDF suivante
+			if (($scoreDetailA != $ScoreA or $scoreDetailB != $ScoreB) && ($scoreDetailA != '' or $scoreDetailB != '')) {
+                $typeScore = $lang['Provisoire'];
+            } else {
+                $typeScore = $lang['Final'];
+            }
+
+            if ($scoreMitempsA != '' && $scoreMitempsB == '') {
+                $scoreMitempsB = 0;
+            }
+            if ($scoreMitempsB != '' && $scoreMitempsA == '') {
+                $scoreMitempsA = 0;
+            }
+
+
+
+            // Production de la feuille de match PDF suivante
 			$pdf->AddPage();
 			$pdf->SetAutoPageBreak(true, 1);
 
@@ -554,27 +581,31 @@ class FeuilleMatch extends MyPage
 			$pdf->SetLeftMargin($x0);
 			$pdf->SetX($x0);
 			$pdf->SetY(9);
-//MAJ
-			// Logos
-			if($row6['Kpi_ffck_actif'] == 'O')
+
+            // logo
+            if($arrayCompetition['Kpi_ffck_actif'] == 'O')
 			{
-				$pdf->Image('../css/banniere1.jpg',10,10,0,10,'jpg',"http://www.kayak-polo.info");
-				$pdf->Image('../img/ffck2.jpg',118,10,0,10,'jpg',"http://www.ffck.org");
+                $pdf->Image('../img/logoKPI-small.jpg',65,10,0,11,'jpg',"http://www.ffck.org");
 			}
-			$logo = str_replace('http://www.kayak-polo.info/','../',$row6['LogoLink']);
-			if($row6['Logo_actif'] == 'O' && $logo != '')  //&& file_exists($logo)
-			{
+            if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
+				$size = getimagesize($bandeau);
+				$largeur=$size[0];
+				$hauteur=$size[1];
+				$ratio=11/$hauteur;
+				$newlargeur=$largeur*$ratio;
+				$posi=77-($newlargeur/2);
+				$pdf->image($bandeau, $posi, 8, 0,11);
+            } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
 				$size = getimagesize($logo);
 				$largeur=$size[0];
 				$hauteur=$size[1];
-				$ratio=11/$hauteur;	//hauteur imposée de 11mm
+				$ratio=11/$hauteur;
 				$newlargeur=$largeur*$ratio;
-				$posi=77-($newlargeur/2);	//210mm = largeur de page
+				$posi=77-($newlargeur/2);
 				$pdf->image($logo, $posi, 8, 0,11);
 			}
-			$sponsor = str_replace('http://www.kayak-polo.info/','../',$row6['SponsorLink']);
-			if($row6['Sponsor_actif'] == 'O' && $sponsor != '')  //&& file_exists($sponsor)
-			{
+
+            if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
 				$size = getimagesize($sponsor);
 				$largeur=$size[0];
 				$hauteur=$size[1];
@@ -596,16 +627,18 @@ class FeuilleMatch extends MyPage
 			$pdf->Cell(135,1,"",'LR','1','C');
 
 			$pdf->SetFont('Arial','',10);
-			if($row6['Titre_actif'] == 'O')
-				$pdf->Cell(111,4,$competition,'L','0','L');
-			else
-				$pdf->Cell(111,4,$row6['Soustitre'],'L','0','L');
-			if($row6['Soustitre2'] != '')	
-				$pdf->Cell(24,4,$row6['Soustitre2'],'R','1','R');
-			else	
-				$pdf->Cell(24,4,$categorie,'R','1','R');
+			if ($arrayCompetition['Titre_actif'] == 'O') {
+                $pdf->Cell(111, 4, $competition, 'L', '0', 'L');
+            } else {
+                $pdf->Cell(111, 4, $arrayCompetition['Soustitre'], 'L', '0', 'L');
+            }
+            if ($arrayCompetition['Soustitre2'] != '') {
+                $pdf->Cell(24, 4, $arrayCompetition['Soustitre2'], 'R', '1', 'R');
+            } else {
+                $pdf->Cell(24, 4, $categorie, 'R', '1', 'R');
+            }
 
-			$pdf->Cell(111,4,$lang['Organisateur'].": ".ucwords(strtolower($organisateur)),'L','0','L');
+            $pdf->Cell(111,4,$lang['Organisateur'].": ".ucwords(strtolower($organisateur)),'L','0','L');
 			$pdf->Cell(24,4,$lang['Saison'].": ".$saison,'R','1','L');
 
 			$pdf->Cell(68,4,$responsableT.ucwords(strtolower($responsable)),'L','0','L');
@@ -693,15 +726,15 @@ class FeuilleMatch extends MyPage
 			$pdf->Cell(15,6,"Cat",'1','1','C');
 
 			for($i=1 ; $i<=10 ; $i++)
-				{
+            {
 				$pdf->SetFont('Arial','',8);
 				$pdf->Cell(6,4,$nb[$i],'LRB','0','C');
 				$pdf->Cell(45,4,$nomb[$i],'LRB','0','C');
 				$pdf->Cell(45,4,ucwords(strtolower($prenomb[$i])),'LRB','0','C');
 				$pdf->Cell(24,4,$licenceb[$i].$saisonb[$i],'LRB','0','C');
 				$pdf->Cell(15,4,$divb[$i],'LRB','1','C');
-				$indiqsaison == '';
-				}
+				$indiqsaison = '';
+            }
 
 			//signatures
 			$pdf->Ln(1);
@@ -910,17 +943,14 @@ class FeuilleMatch extends MyPage
 			
 			$pdf->Cell(135,3,$lang['impression'].": ".$dateprint." ".date("H:i"),0,1,'R');
 			// Pays
-//			if ($row6['Code_niveau'] == 'INT' && $paysA != '' )
-//				$pdf->image('../img/Pays/'.$paysA.'.png', 154, 18, 5, 3);
-//			if ($row6['Code_niveau'] == 'INT' && $paysB != '')
-//				$pdf->image('../img/Pays/'.$paysB.'.png', 232, 18, 5, 3);
-			if ($row6['Code_niveau'] == 'INT' && $paysA != '' )
-				$pdf->image('../img/Pays/'.$paysA.'.png', 151, 15, 9, 6);
-			if ($row6['Code_niveau'] == 'INT' && $paysB != '')
-				$pdf->image('../img/Pays/'.$paysB.'.png', 229, 15, 9, 6);
+			if ($arrayCompetition['Code_niveau'] == 'INT' && $paysA != '') {
+                $pdf->image('../img/Pays/' . $paysA . '.png', 151, 15, 9, 6);
+            }
+            if ($arrayCompetition['Code_niveau'] == 'INT' && $paysB != '') {
+                $pdf->image('../img/Pays/' . $paysB . '.png', 229, 15, 9, 6);
+            }
 
-			$pdf->SetX(10);
-//			$pdf->Cell(135,3,"Renvoyer cette feuille au plus tard dans les 5 jours à l'autorité compétente.",0,0,'L');
+            $pdf->SetX(10);
 			
 			// Commentaires sur la 2ème page
 			if(strlen($Commentaires) > 85 or $nblignes > 26)
@@ -934,16 +964,18 @@ class FeuilleMatch extends MyPage
 				$pdf->SetY(9);
 				$pdf->SetFillColor(200,200,200);
 				$pdf->SetFont('Arial','',10);
-				if($row6['Titre_actif'] == 'O')
-					$pdf->Cell(111,4,$competition,'LT','0','L');
-				else
-					$pdf->Cell(111,4,$row6['Soustitre'],'LT','0','L');
-				if($row6['Soustitre2'] != '')	
-					$pdf->Cell(24,4,$row6['Soustitre2'],'RT','1','R');
-				else	
-					$pdf->Cell(24,4,$categorie,'RT','1','R');
+				if ($arrayCompetition['Titre_actif'] == 'O') {
+                    $pdf->Cell(111, 4, $competition, 'LT', '0', 'L');
+                } else {
+                    $pdf->Cell(111, 4, $arrayCompetition['Soustitre'], 'LT', '0', 'L');
+                }
+                if ($arrayCompetition['Soustitre2'] != '') {
+                    $pdf->Cell(24, 4, $arrayCompetition['Soustitre2'], 'RT', '1', 'R');
+                } else {
+                    $pdf->Cell(24, 4, $categorie, 'RT', '1', 'R');
+                }
 
-				$pdf->Cell(111,4,$lang['Organisateur'].": ".ucwords(strtolower($organisateur)),'L','0','L');
+                $pdf->Cell(111,4,$lang['Organisateur'].": ".ucwords(strtolower($organisateur)),'L','0','L');
 				$pdf->Cell(24,4,$lang['Saison'].": ".$saison,'R','1','L');
 
 				$pdf->Cell(68,4,$responsableT.ucwords(strtolower($responsable)),'L','0','L');
@@ -996,7 +1028,6 @@ class FeuilleMatch extends MyPage
 				if($nblignes > 26)
 				{
 					for($i=0;$i<($nblignes-26);$i++)
-		//			for($i=0;$i<23;$i++)	// @COSANDCO_WAMPSER
 					{
                         $pdf->SetFillColor(170,255,170);
                         $pdf->Cell(5,4,isset($detail2[$i]['d2']) ? $detail2[$i]['d2'] : '',1,0,'C',1);

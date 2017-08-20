@@ -50,10 +50,13 @@ class Classement extends MyPage
                     . "WHERE ce.Code_compet = '$codeCompet' "
                     . "AND ce.Code_saison = $codeSaison "
                     . "AND ce.Code_club = c.Code ";
-                    if ($typeClt == 'CP')
+                    if ($typeClt == 'CP') {
+                        $sql .= "AND CltNiveau_publi > 0 ";
                         $sql .= "ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";	 
-                    else
-                        $sql .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";	 
+                    } else {
+                        $sql .= "AND Clt_publi > 0 ";
+                        $sql .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";
+                    }
 	
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 

@@ -17,6 +17,22 @@
     </div>
 </div>
 
+{if $bandeau or $logo or $recordCompetition.Web}
+    <div class="container logo_lien">
+        <article class="padTopBottom table-responsive col-md-6 col-md-offset-3">
+            <div class="text-center">
+                {if $bandeau}
+                    <img class="img2" id='logo' src='{$bandeau}' alt="logo">
+                {else if $logo}
+                    <img class="img2" id='logo' src='{$logo}' alt="logo">
+                {/if}
+                {if $recordCompetition.Web}
+                    <p><a class="text-primary" href='{$recordCompetition.Web}' target='_blank'><i>{$recordCompetition.Web}</i></a></p>
+                {/if}
+            </div>
+        </article>
+    </div>
+{/if}
 <div class="container">
     <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if} tableClassement">
         {if $recordCompetition.Statut != 'END'}

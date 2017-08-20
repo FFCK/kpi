@@ -114,9 +114,21 @@ class Classements extends MyPage
 			$typeClt = $row['Code_typeclt'];
 			$Statut = $row['Statut'];
 			//if ($row['ToutGroup'] == 'O' && ($row['Web'] != '' || $row['LogoLink'] != ''))
-			if ($row['Web'] != '' || $row['LogoLink'] != '')
+            if($row['BandeauLink'] != '' && strpos($row['BandeauLink'], 'http') === FALSE ){
+                $row['BandeauLink'] = 'img/logo/' . $row['BandeauLink'];
+                if(!is_file($row['BandeauLink'])) {
+                    $row['BandeauLink'] = '';
+                }
+            }
+            if($row['LogoLink'] != '' && strpos($row['LogoLink'], 'http') === FALSE ){
+                $row['LogoLink'] = 'img/logo/' . $row['LogoLink'];
+                if(!is_file($row['LogoLink'])) {
+                    $row['LogoLink'] = '';
+                }
+            }
+			if ($row['Web'] != '' || $row['LogoLink'] != '' || $row['BandeauLink'] != '')
 			{
-				$recordCompetition[] = array( 'ToutGroup' => $row['ToutGroup'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'] );
+				$recordCompetition[] = array( 'ToutGroup' => $row['ToutGroup'], 'Web' => $row['Web'], 'BandeauLink' => $row['BandeauLink'], 'LogoLink' => $row['LogoLink'] );
 			}
 			//Existence de matchs
 			$sql2  = "SELECT m.Id "

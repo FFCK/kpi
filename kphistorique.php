@@ -122,6 +122,12 @@ class Historique extends MyPage
                 array_push($arraySaisons, array('saison' => $row['Code_saison']));
             }
 			$saison = $row['Code_saison'];
+            if($row['LogoLink'] != '' && strpos($row['LogoLink'], 'http') === FALSE ){
+                $row['LogoLink'] = 'img/logo/' . $row['LogoLink'];
+                if(!is_file($row['LogoLink'])) {
+                    $row['LogoLink'] = '';
+                }
+            }
             $arrayCompets[$saison][] = array('code' => $row["Code"], 'libelle' => $row["Libelle"], 
                                         'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"], 
                                         'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'],

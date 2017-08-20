@@ -1127,7 +1127,7 @@ class MyBdd
 	function GetCodeClubEquipe($idEquipe)
 	{
 			$sql  = "Select Code_club From gickp_Competitions_Equipes Where Id = $idEquipe";
-			$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetCodeClubEquipe");
+			$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetCodeClubEquipe : " . $idEquipe);
 			if (mysql_num_rows($result) == 1)
 			{
 				$row = mysql_fetch_array($result);

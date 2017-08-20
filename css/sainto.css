@@ -19,7 +19,8 @@ html, body,
 #fb-root, #selector, .site-header, .titre,
 .page-header .btn,
 .btn-navigation,
-.pdfLink 
+.pdfLink,
+.logo_lien
 {
     display: none;
 }
@@ -63,7 +64,7 @@ html, body,
 }
 
 body {
-    background-color: #264679;
+    /*background-color: #264679;*/
     font-family: 'Lato', sans-serif;
 }
 

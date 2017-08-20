@@ -4,7 +4,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-define('FPDF_FONTPATH','font/');
 require('../fpdf/fpdf.php');
 
 // Gestion de la Feuille de Classement
@@ -16,28 +15,53 @@ class FeuilleCltNiveau extends MyPage
 		$myBdd = new MyBdd();
 		
 		$codeCompet = utyGetSession('codeCompet', '');
+		//Saison
 		$codeSaison = utyGetSaison();
+        $titreDate = "Saison ".$codeSaison;
 		$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$titreCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
 		$qualif = $arrayCompetition['Qualifies'];
 		$elim = $arrayCompetition['Elimines'];
-		$logo = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['LogoLink']);
-		$sponsor = str_replace('http://www.kayak-polo.info/','../',$arrayCompetition['SponsorLink']);
-
+        if($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){
+            $arrayCompetition['BandeauLink'] = '../img/logo/' . $arrayCompetition['BandeauLink'];
+            if(is_file($arrayCompetition['BandeauLink'])) {
+                $bandeau = $arrayCompetition['BandeauLink'];
+            }
+        } elseif($arrayCompetition['BandeauLink'] != '') {
+            $bandeau = $arrayCompetition['BandeauLink'];
+        } 
+        if($arrayCompetition['LogoLink'] != '' && strpos($arrayCompetition['LogoLink'], 'http') === FALSE ){
+            $arrayCompetition['LogoLink'] = '../img/logo/' . $arrayCompetition['LogoLink'];
+            if(is_file($arrayCompetition['LogoLink'])) {
+                $logo = $arrayCompetition['LogoLink'];
+            }
+        } elseif($arrayCompetition['LogoLink'] != '') {
+            $logo = $arrayCompetition['LogoLink'];
+        }
+        
+        if($arrayCompetition['SponsorLink'] != '' && strpos($arrayCompetition['SponsorLink'], 'http') === FALSE ){
+            $arrayCompetition['SponsorLink'] = '../img/logo/' . $arrayCompetition['SponsorLink'];
+            if(is_file($arrayCompetition['SponsorLink'])) {
+                $sponsor = $arrayCompetition['SponsorLink'];
+            }
+        } elseif($arrayCompetition['SponsorLink'] != '') {
+            $sponsor = $arrayCompetition['SponsorLink'];
+        }
 		
-		//Saison
-			$titreDate = "Saison ".$codeSaison;
 
 		// Langue
 		$langue = parse_ini_file("../commun/MyLang.ini", true);
-		if($_GET['lang'] == 'en')
-			$arrayCompetition['En_actif'] = 'O';
-		elseif($_GET['lang'] == 'fr')
-			$arrayCompetition['En_actif'] = '';
-		if($arrayCompetition['En_actif'] == 'O')
-			$lang = $langue['en'];
-		else
-			$lang = $langue['fr'];
+		if (utyGetGet('lang') == 'en') {
+            $arrayCompetition['En_actif'] = 'O';
+        } elseif (utyGetGet('lang') == 'fr') {
+            $arrayCompetition['En_actif'] = '';
+        }
+
+        if ($arrayCompetition['En_actif'] == 'O') {
+            $lang = $langue['en'];
+        } else {
+            $lang = $langue['fr'];
+        }
 
 		//Création
 		$pdf = new FPDF('P');
@@ -46,19 +70,27 @@ class FeuilleCltNiveau extends MyPage
 		$pdf->SetAuthor("kayak-polo.info");
 		$pdf->SetCreator("kayak-polo.info");
 		$pdf->AddPage();
-		if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')
-			$pdf->SetAutoPageBreak(true, 30);
-		else
-			$pdf->SetAutoPageBreak(true, 15);
+		if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)) {
+            $pdf->SetAutoPageBreak(true, 30);
+        } else {
+            $pdf->SetAutoPageBreak(true, 15);
+        }
 
 		// logo
 		if($arrayCompetition['Kpi_ffck_actif'] == 'O')
 		{
-			$pdf->Image('../css/banniere1.jpg',10,10,0,12,'jpg',"http://www.kayak-polo.info");
-			$pdf->Image('../img/ffck2.jpg',168,10,0,12,'jpg',"http://www.ffck.org");
+			$pdf->Image('../img/logoKPI-small.jpg',84,10,0,20,'jpg',"http://www.ffck.org");
 		}
-		if($arrayCompetition['Logo_actif'] == 'O' && $logo != '')  //&& file_exists($logo)
-		{
+
+		if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
+			$size = getimagesize($bandeau);
+			$largeur=$size[0];
+			$hauteur=$size[1];
+			$ratio=20/$hauteur;	//hauteur imposée de 20mm
+			$newlargeur=$largeur*$ratio;
+			$posi=105-($newlargeur/2);	//210mm = largeur de page
+			$pdf->image($bandeau, $posi, 8, 0,20);
+		} elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
 			$size = getimagesize($logo);
 			$largeur=$size[0];
 			$hauteur=$size[1];
@@ -67,8 +99,8 @@ class FeuilleCltNiveau extends MyPage
 			$posi=105-($newlargeur/2);	//210mm = largeur de page
 			$pdf->image($logo, $posi, 8, 0,20);
 		}
-		if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')  //&& file_exists($sponsor)
-		{
+
+		if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
 			$size = getimagesize($sponsor);
 			$largeur=$size[0];
 			$hauteur=$size[1];
