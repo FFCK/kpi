@@ -339,43 +339,39 @@ class FeuilleMatch extends MyPage
 			$j=0;
 			for ($i=1;$i<=$num_results3;$i++)
 			{
-				$j++;
-				$row3 = mysql_fetch_array($result3);	  
-				if ($row3["Capitaine"] == 'E' && $j < 10) {
-					$j=10;
-					$noma[$j] = strtoupper($row3['Nom']).' ('.$lang['Entraineur'].')';
-					$na[$j] =  'E';
-				} elseif ($row3["Capitaine"] == 'C') {
-					$noma[$j] = strtoupper($row3['Nom']).' (Cap)';
-					$na[$j] =  $row3['Numero'];
-				} else {
-					$noma[$j] = strtoupper($row3['Nom']);
-					$na[$j] =  $row3['Numero'];
-				}
-				
-				$prenoma[$j] = $row3['Prenom'];
-                if ($row3['Matric'] > 2000000 && $row3['icf'] != NULL) {
-                    $licencea[$j] = 'Icf-' . $row3['icf'];
-                } elseif ($row3['Matric'] < 2000000) {
-                    $licencea[$j] = $row3['Matric'];
-                } else {
-                    $licencea[$j] = '';
-                }
-                
-                if ($row3['Nom'] != '' && $row3['Matric'] < 2000000 && $row3['Origine'] != '' && $row3['Origine'] < $saison) {
-                    $saisona[$j] = ' (' . $row3['Origine'] . ')';
-                }
+                            $j++;
+                            $row3 = mysql_fetch_array($result3);	  
+                            if ($row3["Capitaine"] == 'E' && $j <= 10) {
+                                    $j=10;
+                                    $noma[$j] = strtoupper($row3['Nom']).' ('.$lang['Entraineur'].')';
+                                    $na[$j] =  'E';
+                            } elseif ($row3["Capitaine"] == 'C') {
+                                    $noma[$j] = strtoupper($row3['Nom']).' (Cap)';
+                                    $na[$j] =  $row3['Numero'];
+                            } elseif ($row3["Capitaine"] != 'E') {
+                                    $noma[$j] = strtoupper($row3['Nom']);
+                                    $na[$j] =  $row3['Numero'];
+                            }
 
-                if ($row3['Matric_titulaire'] != $row3['Matric']) {
-                    $diva[$j] = utyCodeCategorie2($row3['Naissance']) . '(sup)';
-                } else {
-                    $diva[$j] = utyCodeCategorie2($row3['Naissance']);
-                }
+                            $prenoma[$j] = $row3['Prenom'];
+                            if ($row3['Matric'] > 2000000 && $row3['icf'] != NULL) {
+                                $licencea[$j] = 'Icf-' . $row3['icf'];
+                            } elseif ($row3['Matric'] < 2000000) {
+                                $licencea[$j] = $row3['Matric'];
+                            } else {
+                                $licencea[$j] = '';
+                            }
 
-                if ($row3["Capitaine"] == 'E' or $row3["Capitaine"] == 'A') {
-                    $j = $i - 2;
-                }
-            }
+                            if ($row3['Nom'] != '' && $row3['Matric'] < 2000000 && $row3['Origine'] != '' && $row3['Origine'] < $saison) {
+                                $saisona[$j] = ' (' . $row3['Origine'] . ')';
+                            }
+
+                            if ($row3['Matric_titulaire'] != $row3['Matric']) {
+                                $diva[$j] = utyCodeCategorie2($row3['Naissance']) . '(sup)';
+                            } else {
+                                $diva[$j] = utyCodeCategorie2($row3['Naissance']);
+                            }
+                        }
 			$sql3b = "DROP TEMPORARY TABLE tempA ";
 			mysql_query($sql3b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3b);
 			
@@ -414,43 +410,39 @@ class FeuilleMatch extends MyPage
 			$j=0;
 			for ($i=1;$i<=$num_results4;$i++)
 			{
-				$j++;
-				$row4 = mysql_fetch_array($result4);	
-				
-				if ($row4["Capitaine"] == 'E' && $j < 10) {
-					$j=10;
-					$nomb[$j] = strtoupper($row4['Nom']).' ('.$lang['Entraineur'].')';
-					$nb[$j] =  'E';
-				} elseif ($row4["Capitaine"] == 'C') {
-					$nomb[$j] = strtoupper($row4['Nom']).' (Cap)';
-					$nb[$j] =  $row4['Numero'];
-				} else {
-					$nomb[$j] = strtoupper($row4['Nom']);
-					$nb[$j] =  $row4['Numero'];
-				}
-				
-				$prenomb[$j] = $row4['Prenom'];
-				if ($row4['Matric'] > 2000000 && $row4['icf'] != NULL) {
-                    $licenceb[$j] = 'Icf-' . $row4['icf'];
-                } elseif ($row4['Matric'] < 2000000) {
-                    $licenceb[$j] = $row4['Matric'];
-                } else {
-                    $licenceb[$j] = '';
-                }
-				if ($row4['Nom'] != '' && $row4['Matric'] < 2000000 && $row4['Origine'] != '' && $row4['Origine'] < $saison) {
-                    $saisonb[$j] = ' (' . $row4['Origine'] . ')';
-                }
+                            $j++;
+                            $row4 = mysql_fetch_array($result4);	
 
-                if ($row4['Matric_titulaire'] != $row4['Matric']) {
-                    $divb[$j] = utyCodeCategorie2($row4['Naissance']) . '(sup)';
-                } else {
-                    $divb[$j] = utyCodeCategorie2($row4['Naissance']);
-                }
+                            if ($row4["Capitaine"] == 'E' && $j <= 10) {
+                                    $j=10;
+                                    $nomb[$j] = strtoupper($row4['Nom']).' ('.$lang['Entraineur'].')';
+                                    $nb[$j] =  'E';
+                            } elseif ($row4["Capitaine"] == 'C') {
+                                    $nomb[$j] = strtoupper($row4['Nom']).' (Cap)';
+                                    $nb[$j] =  $row4['Numero'];
+                            } elseif ($row4["Capitaine"] != 'E') {
+                                    $nomb[$j] = strtoupper($row4['Nom']);
+                                    $nb[$j] =  $row4['Numero'];
+                            }
 
-                if ($row4["Capitaine"] == 'E' or $row4["Capitaine"] == 'A') {
-                    $j = $i - 2;
-                }
-            }
+                            $prenomb[$j] = $row4['Prenom'];
+                            if ($row4['Matric'] > 2000000 && $row4['icf'] != NULL) {
+                                $licenceb[$j] = 'Icf-' . $row4['icf'];
+                            } elseif ($row4['Matric'] < 2000000) {
+                                $licenceb[$j] = $row4['Matric'];
+                            } else {
+                                $licenceb[$j] = '';
+                            }
+                                            if ($row4['Nom'] != '' && $row4['Matric'] < 2000000 && $row4['Origine'] != '' && $row4['Origine'] < $saison) {
+                                $saisonb[$j] = ' (' . $row4['Origine'] . ')';
+                            }
+
+                            if ($row4['Matric_titulaire'] != $row4['Matric']) {
+                                $divb[$j] = utyCodeCategorie2($row4['Naissance']) . '(sup)';
+                            } else {
+                                $divb[$j] = utyCodeCategorie2($row4['Naissance']);
+                            }
+                        }
 			$sql4b = "DROP TEMPORARY TABLE tempB; ";
 			mysql_query($sql4b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4b);
 
@@ -473,7 +465,7 @@ class FeuilleMatch extends MyPage
 
 			$scoreMitempsA = '';
 			$scoreMitempsB = '';
-            $nblignes = 0;
+                        $nblignes = 0;
 
 			for ($i=1;$i<=$num_results5;$i++)
 			{
