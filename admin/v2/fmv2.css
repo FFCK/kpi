@@ -191,3 +191,8 @@
             .coach {
                 margin-top: 10px;
             }
+            
+
+table.dataTable tbody tr.entraineur {
+    background-color: #EBEBBE;
+}

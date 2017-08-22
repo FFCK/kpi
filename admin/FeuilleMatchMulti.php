@@ -318,22 +318,21 @@ class FeuilleMatch extends MyPage
                 $this->InitTitulaireEquipe('A', $idMatch, $idEquipeA, $myBdd);
             }
 
-            $sql3  = "CREATE TEMPORARY TABLE tempA "
-                    . "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+            $sql3  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
                     . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
-                    . "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur "
+                    . "IF (a.Capitaine='E', 1, 0) flagEntraineur "
                     . "FROM gickp_Matchs_Joueurs a "
                     . "LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c ON (c.Id_equipe = $idEquipeA AND c.Matric = a.Matric), "
                     . "gickp_Liste_Coureur b "
                     . "WHERE a.Matric = b.Matric "
                     . "AND a.Id_match = $idMatch "
                     . "AND a.Capitaine <> 'A' "
-                    . "AND a.Equipe = 'A' ";
-			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3);
-			$sql3  = "SELECT * "
-                    . "FROM tempA "
+                    . "AND a.Equipe = 'A' "
                     . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";	 
-			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql3);
+			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3);
+//			$sql3  = "SELECT * "
+//                    . "FROM tempA "
+//			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql3);
 			$num_results3 = mysql_num_rows($result3);
 
 			$j=0;
@@ -342,7 +341,7 @@ class FeuilleMatch extends MyPage
                             $j++;
                             $row3 = mysql_fetch_array($result3);	  
                             if ($row3["Capitaine"] == 'E' && $j <= 10) {
-                                    $j=10;
+//                                    $j=10;
                                     $noma[$j] = strtoupper($row3['Nom']).' ('.$lang['Entraineur'].')';
                                     $na[$j] =  'E';
                             } elseif ($row3["Capitaine"] == 'C') {
@@ -372,8 +371,8 @@ class FeuilleMatch extends MyPage
                                 $diva[$j] = utyCodeCategorie2($row3['Naissance']);
                             }
                         }
-			$sql3b = "DROP TEMPORARY TABLE tempA ";
-			mysql_query($sql3b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3b);
+//			$sql3b = "DROP TEMPORARY TABLE tempA ";
+//			mysql_query($sql3b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql3b);
 			
 			// Info Equipe B
 			for ($i=1;$i<=10;$i++)
@@ -390,21 +389,20 @@ class FeuilleMatch extends MyPage
                 $this->InitTitulaireEquipe('B', $idMatch, $idEquipeB, $myBdd);
             }
 
-            $sql4  = "CREATE TEMPORARY TABLE tempB "
-                    . "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+            $sql4  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
                     . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
-                    . "IF (a.Capitaine='E', 'Z', 'A') flagEntraineur "
+                    . "IF (a.Capitaine='E', 1, 0) flagEntraineur "
                     . "FROM gickp_Matchs_Joueurs a "
                     . "LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeB And c.Matric = a.Matric), "
                     . "gickp_Liste_Coureur b "
                     . "WHERE a.Matric = b.Matric "
                     . "AND a.Id_match = $idMatch "
                     . "AND a.Capitaine <> 'A' "
-                    . "AND a.Equipe = 'B' ";
-			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4);
-			$sql4  = "SELECT * FROM tempB "
+                    . "AND a.Equipe = 'B' "
                     . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";	 
-			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql4);
+			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4);
+//			$sql4  = "SELECT * FROM tempB "
+//			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql4);
 			$num_results4 = mysql_num_rows($result4);
 
 			$j=0;
@@ -414,7 +412,7 @@ class FeuilleMatch extends MyPage
                             $row4 = mysql_fetch_array($result4);	
 
                             if ($row4["Capitaine"] == 'E' && $j <= 10) {
-                                    $j=10;
+//                                    $j=10;
                                     $nomb[$j] = strtoupper($row4['Nom']).' ('.$lang['Entraineur'].')';
                                     $nb[$j] =  'E';
                             } elseif ($row4["Capitaine"] == 'C') {
@@ -443,8 +441,8 @@ class FeuilleMatch extends MyPage
                                 $divb[$j] = utyCodeCategorie2($row4['Naissance']);
                             }
                         }
-			$sql4b = "DROP TEMPORARY TABLE tempB; ";
-			mysql_query($sql4b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4b);
+//			$sql4b = "DROP TEMPORARY TABLE tempB; ";
+//			mysql_query($sql4b, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql4b);
 
 			//Détail Match
 			$detail = array();
@@ -655,8 +653,8 @@ class FeuilleMatch extends MyPage
 			$pdf->Cell(135,4,$lang['Arbitre_1'].": ".$principal,'LR',1,'L');
 			$pdf->Cell(135,4,$lang['Arbitre_2'].": ".$secondaire,'LR',1,'L');
 			$pdf->Cell(135,4,$lang['Secretaire'].": ".$secretaire,'LR',1,'L');
-            $pdf->Cell(135,4,$lang['Chronometre'].": ".$chronometre,'LR',1,'L');
-            $pdf->Cell(135,4,$lang['Time_shoot2'].": ".$timeshoot,'LR',1,'L');
+                        $pdf->Cell(135,4,$lang['Chronometre'].": ".$chronometre,'LR',1,'L');
+                        $pdf->Cell(135,4,$lang['Time_shoot2'].": ".$timeshoot,'LR',1,'L');
 			$pdf->Cell(135,1,"",'LBR','1','C');
 
 			//Equipe A
@@ -683,15 +681,21 @@ class FeuilleMatch extends MyPage
 			$pdf->Cell(15,6,"Cat.",'1','1','C');
 
 			for($i=1 ; $i<=10 ; $i++)
-				{
-				$pdf->SetFont('Arial','',8);
-				$pdf->Cell(6,4,$na[$i],'LRB','0','C');
-				$pdf->Cell(45,4,$noma[$i],'LRB','0','C');
-				$pdf->Cell(45,4,ucwords(strtolower($prenoma[$i])),'LRB','0','C');
-				$pdf->Cell(24,4,$licencea[$i].$saisona[$i],'LRB','0','C');
-				$pdf->Cell(15,4,$diva[$i],'LRB','1','C');
-				$indiqsaison = '';
-				}
+                        {
+                            if($na[$i] == 'E'){
+                                $pdf->SetFillColor(235,235,190);
+                            } else {
+                                $pdf->SetFillColor(255,255,255);
+                            }
+                            $pdf->SetFont('Arial','',8);
+                            $pdf->Cell(6,4,$na[$i],'LRB','0','C',1);
+                            $pdf->Cell(45,4,$noma[$i],'LRB','0','C',1);
+                            $pdf->Cell(45,4,ucwords(strtolower($prenoma[$i])),'LRB','0','C',1);
+                            $pdf->Cell(24,4,$licencea[$i].$saisona[$i],'LRB','0','C',1);
+                            $pdf->Cell(15,4,$diva[$i],'LRB','1','C',1);
+                            $indiqsaison = '';
+                        }
+                        $pdf->SetFillColor(200,200,200);
 
 			//Equipe B
 
@@ -699,15 +703,12 @@ class FeuilleMatch extends MyPage
 
 			$pdf->SetFont('Arial','',10);
 			$pdf->Cell(45,5,$lang['Equipe_B'].":",'LTB','0','C',1);
-			if($equipebFormat == 'Auto')
-			{
-				$pdf->SetFont('Arial','I',9);
-				$pdf->Cell(90,5,$equipeb,'TRB','1','L',1);
-			}
-			else
-			{
-				$pdf->SetFont('Arial','B',14);
-				$pdf->Cell(90,5,$equipeb,'TRB','1','C',1);
+			if($equipebFormat == 'Auto') {
+                            $pdf->SetFont('Arial','I',9);
+                            $pdf->Cell(90,5,$equipeb,'TRB','1','L',1);
+			} else {
+                            $pdf->SetFont('Arial','B',14);
+                            $pdf->Cell(90,5,$equipeb,'TRB','1','C',1);
 			}
 			$pdf->SetFont('Arial','',10);
 
@@ -718,15 +719,21 @@ class FeuilleMatch extends MyPage
 			$pdf->Cell(15,6,"Cat",'1','1','C');
 
 			for($i=1 ; $i<=10 ; $i++)
-            {
-				$pdf->SetFont('Arial','',8);
-				$pdf->Cell(6,4,$nb[$i],'LRB','0','C');
-				$pdf->Cell(45,4,$nomb[$i],'LRB','0','C');
-				$pdf->Cell(45,4,ucwords(strtolower($prenomb[$i])),'LRB','0','C');
-				$pdf->Cell(24,4,$licenceb[$i].$saisonb[$i],'LRB','0','C');
-				$pdf->Cell(15,4,$divb[$i],'LRB','1','C');
-				$indiqsaison = '';
-            }
+                        {
+                            if($nb[$i] == 'E'){
+                                $pdf->SetFillColor(245,245,180);
+                            } else {
+                                $pdf->SetFillColor(255,255,255);
+                            }
+                            $pdf->SetFont('Arial','',8);
+                            $pdf->Cell(6,4,$nb[$i],'LRB','0','C',1);
+                            $pdf->Cell(45,4,$nomb[$i],'LRB','0','C',1);
+                            $pdf->Cell(45,4,ucwords(strtolower($prenomb[$i])),'LRB','0','C',1);
+                            $pdf->Cell(24,4,$licenceb[$i].$saisonb[$i],'LRB','0','C',1);
+                            $pdf->Cell(15,4,$divb[$i],'LRB','1','C',1);
+                            $indiqsaison = '';
+                        }
+                        $pdf->SetFillColor(200,200,200);
 
 			//signatures
 			$pdf->Ln(1);

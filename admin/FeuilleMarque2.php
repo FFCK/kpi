@@ -93,27 +93,27 @@ class GestionMatchDetail extends MyPageSecure
 		// Compo équipe A
 			if ($row['Id_equipeA'] >= 1)
 				$this->InitTitulaireEquipe('A', $idMatch, $row['Id_equipeA'], $myBdd);
-			$sql3  = "Select a.Matric, a.Numero, a.Capitaine, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire ";
+			$sql3  = "Select a.Matric, a.Numero, a.Capitaine, IF(a.Capitaine = 'E', 1, 0) Entraineur, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire ";
 			$sql3 .= "From gickp_Matchs_Joueurs a ";
 			$sql3 .= "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = ".$row['Id_equipeA']." And c.Matric = a.Matric), "; 
 			$sql3 .= "gickp_Liste_Coureur b ";
 			$sql3 .= "Where a.Matric = b.Matric ";
 			$sql3 .= "And a.Id_match = $idMatch ";
 			$sql3 .= "And a.Equipe = 'A' ";
-			$sql3 .= "Order By Numero, Nom, Prenom ";	 
+			$sql3 .= "Order By Entraineur, Numero, Nom, Prenom ";	 
 			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load");
 			$num_results3 = mysql_num_rows($result3);
 		// Compo équipe B
 			if ($row['Id_equipeB'] >= 1)
 				$this->InitTitulaireEquipe('B', $idMatch, $row['Id_equipeB'], $myBdd);
-			$sql4  = "Select a.Matric, a.Numero, a.Capitaine, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire ";
+			$sql4  = "Select a.Matric, a.Numero, a.Capitaine, IF(a.Capitaine = 'E', 1, 0) Entraineur, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire ";
 			$sql4 .= "From gickp_Matchs_Joueurs a ";
 			$sql4 .= "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = ".$row['Id_equipeB']." And c.Matric = a.Matric), "; 
 			$sql4 .= "gickp_Liste_Coureur b ";
 			$sql4 .= "Where a.Matric = b.Matric ";
 			$sql4 .= "And a.Id_match = $idMatch ";
 			$sql4 .= "And a.Equipe = 'B' ";
-			$sql4 .= "Order By Numero, Nom, Prenom ";	 
+			$sql4 .= "Order By Entraineur, Numero, Nom, Prenom ";	 
 			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load<br />".$sql4);
 			$num_results4 = mysql_num_rows($result4);
 
@@ -289,8 +289,9 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp .= '<td>'.$age.'</td>';
 										$joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$joueur_temp .= '</tr>';
+                                                                                $entr_temp  = '';
 									}else{
-										$entr_temp  = '<tr>';
+										$entr_temp  = '<tr class="entraineur">';
 										$entr_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
 										$entr_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
@@ -305,8 +306,8 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp = '';
 									}
 									echo $joueur_temp;
+                                                                        echo $entr_temp;
 								}
-								echo $entr_temp;
 								if($num_results3 >= 1)
 									mysql_data_seek($result3,0); 
 							?>
@@ -351,8 +352,9 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp .= '<td>'.$age.'</td>';
 										$joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$joueur_temp .= '</tr>';
+                                                                                $entr_temp  = '';
 									}else{
-										$entr_temp  = '<tr>';
+										$entr_temp  = '<tr class="entraineur>';
 										$entr_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
 										$entr_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
@@ -367,8 +369,8 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp = '';
 									}
 									echo $joueur_temp;
+                                                                        echo $entr_temp;
 								}
-								echo $entr_temp;
 								if ($num_results4 >= 1) {
                                     mysql_data_seek($result4, 0);
                                 }
