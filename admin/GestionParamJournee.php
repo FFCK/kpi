@@ -158,7 +158,7 @@ class GestionParamJournee extends MyPageSecure
 			
     		$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
 			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) ";
-			$sql .= "VALUES ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Etape', '$Nbequipes', $Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
+			$sql .= "VALUES ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Etape', '$Nbequipes', '$Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
 			$sql .= "'$Departement', '$Responsable_insc', '$Responsable_R1', '$Organisateur', '$Delegue', '$ChefArbitre') ";
 
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert :<br>".$sql);
