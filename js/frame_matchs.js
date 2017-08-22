@@ -24,7 +24,7 @@ jq(document).ready(function(){
             }
         },
         "lengthMenu": [[6, 8, 10, 20, 50, -1], [6, 8, 10, 20, 50, "Tous"]],
-        "pageLength": 10,
+        "pageLength": 20,
         "order": table_ordre,
 //        "columnDefs": [
 //            { "width": "130px", "targets": 6 }
@@ -55,7 +55,7 @@ jq(document).ready(function(){
         stateSave: false,
         fixedHeader: true,
         "lengthMenu": [[6, 8, 10, 20, 50, -1], [6, 8, 10, 20, 50, "Tous"]],
-        "pageLength": 10,
+        "pageLength": 20,
         "order": table_ordre,
         "columnDefs": [
             { "width": "130px", "targets": 6 }

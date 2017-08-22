@@ -64,7 +64,7 @@ html, body,
 }
 
 body {
-    /*background-color: #264679;*/
+    background-color: #264679;
     font-family: 'Lato', sans-serif;
 }
 
@@ -105,8 +105,8 @@ body {
 }
 
 .terrains, .terrains .btn, .terrains .badge {
-    font-size: 0.9em;
-    line-height: 1;
+    /*font-size: 0.9em;*/
+    /*line-height: 1.1;*/
 }
 .terrains h3 {
     font-size: 1.1em;
@@ -122,3 +122,34 @@ body {
     
 }
 
+.table-striped > tbody > tr:nth-child(2n+1) > td.cat[data-cat='Men'],
+.table-striped > tbody td.cat[data-cat='Men']
+{
+    background-color: #25467C;
+    color: white;
+    font-weight: bold;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td.cat[data-cat='Women'],
+.table-striped > tbody td.cat[data-cat='Women']
+{
+    background-color: #F8A710;
+    color: #25467C;
+    font-weight: bold;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td.cat[data-cat='Men U21'],
+.table-striped > tbody td.cat[data-cat='Men U21']
+{
+    background-color: #3769BB;
+    color: #F9A60C;
+    font-weight: bold;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td.cat[data-cat='Women U21'],
+.table-striped > tbody td.cat[data-cat='Women U21']
+{
+    background-color: #CE8806;
+    color: white;
+    font-weight: bold;
+}

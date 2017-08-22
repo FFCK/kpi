@@ -3,7 +3,7 @@
     <div class="section terrains">
         <div class="container-fluid titre-date">
             <div class="col-md-12">
-                <h3 class="col-md-11 col-xs-9">{#Matchs#} - {$arrayDates[i].date|date_format:"%d/%m/%Y"}</h3>
+                <h2 class="col-md-11 col-xs-9">{#Matchs#} {$arrayDates[i].date}</h2>
             </div>
         </div>
                 
@@ -47,7 +47,7 @@
                             <tr class='{$Match1.past}'>
                                 {if $Match1.Numero_ordre}
                                     <td>{$Match1.Numero_ordre}</td>
-                                    <td>{$Match1.Code_competition}</td>
+                                    <td class="cat" data-cat="{$Match1.Code_competition}">{$Match1.Code_competition}</td>
                                     <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                     <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
@@ -88,7 +88,7 @@
                                     
                                 {if $Match2.Numero_ordre}
                                     <td>{$Match2.Numero_ordre}</td>
-                                    <td>{$Match2.Code_competition}</td>
+                                    <td class="cat" data-cat="{$Match2.Code_competition}">{$Match2.Code_competition}</td>
                                     <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                     <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
@@ -169,7 +169,7 @@
                             <tr class='{$Match1.past}'>
                                 {if $Match1.Numero_ordre}
                                     <td>{$Match1.Numero_ordre}</td>
-                                    <td>{$Match1.Code_competition}</td>
+                                    <td class="cat" data-cat="{$Match1.Code_competition}">{$Match1.Code_competition}</td>
                                     <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                     <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
@@ -210,7 +210,7 @@
                                     
                                 {if $Match2.Numero_ordre}
                                     <td>{$Match2.Numero_ordre}</td>
-                                    <td>{$Match2.Code_competition}</td>
+                                    <td class="cat" data-cat="{$Match2.Code_competition}">{$Match2.Code_competition}</td>
                                     <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                     <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
