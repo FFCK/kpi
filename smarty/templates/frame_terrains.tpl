@@ -3,7 +3,7 @@
     <div class="section terrains">
         <div class="container-fluid titre-date">
             <div class="col-md-12">
-                <h2 class="col-md-11 col-xs-9">{#Matchs#} {$arrayDates[i].date}</h2>
+                <h3 class="col-md-11 col-xs-9">{#Matchs#} {$arrayDates[i].date}</h3>
             </div>
         </div>
                 
@@ -12,9 +12,9 @@
                 <table class='tableau table table-striped table-condensed table-responsive table-hover display compact'>
                     <thead>
                         <tr class="text-center">
-                            <th colspan="6" class="text-center bg-primary text-white">{#Terrain#} 1</th>
-                            <th rowspan="2" class="text-center">{#Heure#}</th>
-                            <th colspan="6" class="text-center bg-primary text-white">{#Terrain#} 2</th>
+                            <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} 1</th>
+                            <th rowspan="2" class="text-center" width="4%">{#Heure#}</th>
+                            <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} 2</th>
                         </tr>
                         <tr>
                             <th>#</th>
@@ -60,11 +60,11 @@
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut1 == 'ON' && $validation1 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut1 == 'END' && $validation1 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {else}
@@ -101,11 +101,11 @@
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut2 == 'ON' && $validation2 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut2 == 'END' && $validation2 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {else}
@@ -130,13 +130,14 @@
                         {/section}
                     </tbody>
                 </table>
-                    <p class="separator">&nbsp;</p>
+            </article>
+            <article class="table-responsive col-md-12 padTopBottom">
                 <table class='tableau table table-striped table-condensed table-responsive table-hover display compact'>
                     <thead>
                         <tr class="text-center">
-                            <th colspan="6" class="text-center bg-primary text-white">{#Terrain#} 3</th>
-                            <th rowspan="2" class="text-center">{#Heure#}</th>
-                            <th colspan="6" class="text-center bg-primary text-white">{#Terrain#} 4</th>
+                            <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} 3</th>
+                            <th rowspan="2" class="text-center" width="4%">{#Heure#}</th>
+                            <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} 4</th>
                         </tr>
                         <tr>
                             <th>#</th>
@@ -182,11 +183,11 @@
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut1 == 'ON' && $validation1 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut1 == 'END' && $validation1 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {else}
@@ -223,11 +224,11 @@
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut2 == 'ON' && $validation2 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {elseif $statut2 == 'END' && $validation2 != 'O'}
-                                            <button type="button" class="btn btn-warning btn-xs" title="{#scoreProvisoire#}">
+                                            <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                             </button>
                                         {else}

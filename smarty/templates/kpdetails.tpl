@@ -132,6 +132,10 @@
                 {/if}
             </div>
             <div class="form-horizontal">
+                {if $logo}
+                    <a href="{$logo}" target="_blank"><img class="img-responsive img-thumbnail img-rounded" src="{$logo}"></a>
+                    <hr>
+                {/if}
                 <div class="form-group">
                     <label class="col-sm-4">Date</label>
                     <div class="col-sm-8" id="date_debut">{$journee[0].Date_debut|date_format:'%d/%m/%Y'} - {$journee[0].Date_fin|date_format:'%d/%m/%Y'}</div>
