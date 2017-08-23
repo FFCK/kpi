@@ -186,28 +186,29 @@ class PdfQrCodes extends MyPage
 		$pdf->Cell(137,5,$titreEvenementCompet,0,0,'L');
 		$pdf->Cell(136,5,$titreDate,0,1,'R');
 		$pdf->SetFont('Arial','B',14);
+		$pdf->Cell(273,15,"",0,1,'C');
 		$pdf->Cell(273,6,"Liens - Links",0,1,'C');
 		$pdf->Ln(20);
 		
-		$pdf->Text(82, 65, 'Matchs - Games');
+		$pdf->Text(75, 85, 'Matchs - Games');
 		// QRCode Matchs
-		$qrcode = new QRcode('http://www.kayak-polo.info/Journee.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
+		$qrcode = new QRcode('http://www.kayak-polo.info/kpmatchs.php?Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison.'&lang=en', 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-		$qrcode->displayFPDF($pdf, 85, 70, 30);
+		$qrcode->displayFPDF($pdf, 75, 90, 40);
 		
 		
-		$pdf->Text(176, 65, 'Classement - Standing');
+		$pdf->Text(170, 85, 'Classement - Standing');
 		// QRCode Classements
-		$qrcode2 = new QRcode('http://www.kayak-polo.info/Classements.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
+		$qrcode2 = new QRcode('http://www.kayak-polo.info/kpclassements.php?Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison.'&lang=en', 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-		$qrcode2->displayFPDF($pdf, 185, 70, 30);
+		$qrcode2->displayFPDF($pdf, 175, 90, 40);
 
 
-		$pdf->Text(136, 135, 'Direct - Live');
-		// QRCode Live
-		$qrcode3 = new QRcode('http://www.kayak-polo.info/DirectPitchs.php?'.$lienDirectPitch, 'L'); // error level : L, M, Q, H
-		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-		$qrcode3->displayFPDF($pdf, 135, 140, 30);
+//		$pdf->Text(136, 135, 'Direct - Live');
+//		// QRCode Live
+//		$qrcode3 = new QRcode('http://www.kayak-polo.info/DirectPitchs.php?'.$lienDirectPitch, 'L'); // error level : L, M, Q, H
+//		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
+//		$qrcode3->displayFPDF($pdf, 135, 140, 30);
 		
 		$pdf->Output('Game list'.'.pdf','I');
 	}
