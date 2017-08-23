@@ -154,11 +154,12 @@
 								<table class='tableau2'>
 									<thead>
 										<tr>
-											<th colspan=6>Arbitrages</th>
+											<th colspan=7>Arbitrages</th>
 										</tr>
 										<tr>
 											<th>Saison</th>
 											<th>Date</th>
+											<th>Heure</th>
 											<th>Compét.</th>
 											<th>Match</th>
 											<th>Prin</th>
@@ -170,6 +171,7 @@
 											<tr>
 												<td>{$Arbitrages[i].Code_saison}</td>
 												<td>{$Arbitrages[i].Date_match|date_format:"%d/%m"}</td>
+												<td>{$Arbitrages[i].Heure_match}</td>
 												<td>{$Arbitrages[i].Code_competition}</td>
 												<td>{$Arbitrages[i].Numero_ordre}
 													{if $profile <= 3}
