@@ -1,6 +1,6 @@
 <?php
-include_once('../commun/MyBdd.php');
-include_once('./create_cache_match.php');
+include_once('base.php');
+include_once('create_cache_match.php');
 
 function CreateCache($bCache)
 {
@@ -45,7 +45,7 @@ function CreateCache($bCache)
 //CreateCache(true);
 
 $match = new CacheMatch($_GET);
-$db = new MyBdd();
+$db = new MyBase();
 
 $listMatch = array();
 array_push($listMatch, 1500);
@@ -56,6 +56,5 @@ $match->Match($db, 1500);
 $match->Match($db, 3772298);
 
 //$match->Terrain(1, 3772279);
-
 
 ?>

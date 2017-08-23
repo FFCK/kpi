@@ -19,12 +19,12 @@ div#bandeau_score
 #match_horloge
 {
 	position: absolute;
-	left: 45.3%;
-	top:3.5%;
-	font-size:28px;
+	left: 44.5%;
+	top:2.7%;
+	font-size:36px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#3c3569;
+	color:#274375;
 }
 
 #match_periode
@@ -32,61 +32,59 @@ div#bandeau_score
 	position: absolute;
 	left: 51.5%;
 	width:3%;
-	top:3.5%;
-	font-size:28px;
+	top:2.7%;
+	font-size:36px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#3c3569;
+	color:#f8a40e;
 	text-align:center;
 }
 
 div#nation1
 {	
 	position: absolute;
-	left: 36.0%;
+	left: 33%;
 	top:8.1%;
 }
 
 div#nation2
 {	
 	position: absolute;
-	left: 61.5%;
+	left: 64.5%;
 	top:8.1%;
 }
 
 div#equipe1
 {	
 	position: absolute;
-	left: 39.9%;
+	left: 36%;
 	top:8.1%;
-	color:white;
 	font-size:20px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#f8f8f8;
+	color:#274375;
 }
 
 div#equipe2
 {	
 	position: absolute;
-	left: 53%;
+	left: 53.5%;
 	top:8.1%;
-	color:white;
 	font-size:20px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#f8f8f8;
+	color:#274375;
 }
 
 div#score1
 {	
 	position: absolute;
 	top: 7.5%;
-	left: 48.2%;
-	font-size:30px;
+	left: 48.0%;
+	font-size:32px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color : #3c3569
+	Color : #f8a40e
 }
 
 div#score2
@@ -94,10 +92,10 @@ div#score2
 	position: absolute;
 	top:7.5%;
 	left: 50.5%;
-	font-size:30px;
+	font-size:32px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color : #3c3569
+	Color : #f8a40e
 }
 
 div#score_separation
@@ -105,10 +103,10 @@ div#score_separation
 	position: absolute;
 	top:7.5%;
 	left: 49.6%;
-	font-size:24px;
+	font-size:32px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color : #3c3569;
+	Color : #f8a40e;
 }
 
 div#bandeau_goal

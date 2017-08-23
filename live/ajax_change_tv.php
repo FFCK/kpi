@@ -1,27 +1,19 @@
 <?php
-include_once('../commun/MyBdd.php');
+include_once('base.php');
 
-$voie = $_GET['voie'];
-$show = $_GET['show'];
+$voie = utyGetInt($_GET, 'voie', 1);
+$show = utyGetString($_GET, 'show');
 
-$competition = '';
-if (isset($_GET['competition'])) $competition = $_GET['competition'];
+$competition = utyGetString($_GET, 'competition');
+$match = utyGetString($_GET, 'match');
+$team = utyGetString($_GET, 'team');
+$number = utyGetString($_GET, 'number');
+$medal = utyGetString($_GET, 'medal');
 
-$match = '';
-if (isset($_GET['match'])) $match = $_GET['match'];
+$db = new MyBase();
 
-$team = '';
-if (isset($_GET['team'])) $team = $_GET['team'];
-
-$number = '';
-if (isset($_GET['number'])) $number = $_GET['number'];
-
-$medal = '';
-if (isset($_GET['medal'])) $medal = $_GET['medal'];
-
-$db = new MyBdd();
-
-$url  = "show=$show";
+$url  = "live/tv.php";
+$url .= "?show=$show";
 $url .= "&competition=$competition";
 $url .= "&match=$match";
 $url .= "&team=$team";

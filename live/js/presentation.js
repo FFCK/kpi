@@ -151,7 +151,6 @@ function Init(terrain, speaker)
 	theContext.Speaker = speaker;
 	
 	theContext.Match.Add(-1); 
-
 	RefreshCacheTerrain();
 	
 	// Refresh du cache Global toute les 20 secondes ...

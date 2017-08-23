@@ -10,7 +10,7 @@ class Score extends MyPage
     {
     ?>
         <head>
-        <title>F.F.C.K.</title>
+        <title>Score</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="F.F.C.K.">
@@ -85,11 +85,13 @@ class Score extends MyPage
 		
 		$terrain = $this->GetParamInt('terrain', 1);
 		$speaker = $this->GetParamInt('speaker',0);
-		
+		$voie = $this->GetParamInt('voie', 0);
+
         ?>
         <script type="text/javascript" src="./js/match.js" ></script>
+		<script type="text/javascript" src="./js/voie.js" ></script>
         <script type="text/javascript" src="./js/score.js" ></script>
-        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo $terrain;?>,<?php echo $speaker;?>); }); </script>	
+        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo "$terrain,$speaker,$voie";?>); }); </script>	
         <?php
     }
 }

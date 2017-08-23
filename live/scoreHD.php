@@ -63,9 +63,10 @@ class Score extends MyPage
     {
         parent::Script();
 		
-		$idMatch = $this->GetParamInt('match',3772279);
+		$idMatch = $this->GetParamInt('match',3772819);
 		
         ?>
+        <script type="text/javascript" src="./js/match.js" ></script>
         <script type="text/javascript" src="./js/score.js" ></script>
         <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo $idMatch;?>); }); </script>	
         <?php

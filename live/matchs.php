@@ -1,5 +1,5 @@
 <?php
-include_once('../commun/MyBdd.php');
+include_once('base.php');
 include_once('page.php');
 
 class Matchs extends MyPage
@@ -39,10 +39,11 @@ class Matchs extends MyPage
 	function VerifNation($nation)
 	{
 		if (strlen($nation) > 3) $nation = substr($nation, 0,3);
+		if (strlen($nation) < 3) return 'FRA';
 		
 		for ($i=0;$i<strlen($nation);$i++)
 		{
-			$c = substr($nation,i,1);
+			$c = substr($nation, $i,1);
 			if ($c >= '0' && $c <= '9') return 'FRA';
 		}
 		return $nation;
@@ -54,7 +55,7 @@ class Matchs extends MyPage
 		return "<img class='centre' src='./img/nation/".$nation.".png' height='32' width='32' />";
 	}
 
-	function LoadMatch(&$db, &$tMatch, $terrain)
+	function LoadMatch(&$db, &$tMatch, $terrain, $heureMatch)
 	{
 		$cmd  = "SELECT a.Id, a.Terrain, a.Heure_match, a.Heure_fin, a.Statut, b.Code_competition, ";
 		$cmd .= "a.Id_EquipeA, a.Id_EquipeB, c.Libelle LibelleA, d.Libelle LibelleB, c.Code_club NationA, d.Code_club NationB ";
@@ -91,7 +92,7 @@ class Matchs extends MyPage
 
     function Content()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 	
 		$cmd  = "SELECT max(a.Heure_match) Heure_match ";
 		$cmd .= "FROM gickp_Matchs a, gickp_Journees b ";
@@ -113,16 +114,16 @@ class Matchs extends MyPage
 		echo '<div id="bandeau_presentation"></div>';
 		
 		$tMatch1 = null;
-		$this->LoadMatch($db, $tMatch1, 1);
+		$this->LoadMatch($db, $tMatch1, 1, $heureMatch);
 
 		$tMatch2 = null;
-		$this->LoadMatch($db, $tMatch2, 2);
+		$this->LoadMatch($db, $tMatch2, 2, $heureMatch);
 
 		$tMatch3 = null;
-		$this->LoadMatch($db, $tMatch3, 3);
+		$this->LoadMatch($db, $tMatch3, 3, $heureMatch);
 		
 		$tMatch4 = null;
-		$this->LoadMatch($db, $tMatch4, 4);
+		$this->LoadMatch($db, $tMatch4, 4, $heureMatch);
     }
 
     function Script()
@@ -134,7 +135,6 @@ class Matchs extends MyPage
         <?php
     }
 }
-
 // PdfMatchMulti.php?listMatch=
 
 new Matchs($_GET);

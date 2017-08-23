@@ -1,6 +1,8 @@
 var theContext = new Object();
-theContext.Voie = 0;
-theContext.Url = '';
+theContext.scenario_row = 0;
+theContext.scenario_url = "";
+theContext.scenario_duree_max = 0;
+theContext.scenario_duree = 0;
 
 function Go_list_medals()
 {
@@ -92,6 +94,11 @@ function Go_list_team()
 	Go(param);
 }
 
+function Go_presentation()
+{
+	ChangeVoie(+$('#list_presentation_channel').val(), $('#list_presentation_url').val());
+}
+
 function Go_raz()
 {
 	var param;
@@ -110,30 +117,38 @@ function Go(param)
 	});
 }
 
-function RefreshTV()
+function Go_scenario()
 {
-	var param;
-	param = "voie="+theContext.Voie;
-	$.ajax({ type: "GET", url: "ajax_refresh_tv.php", dataType: "html", data: param, cache: false, 
-                success: function(urlCurrent) {
-					if (urlCurrent.length <= 0) return;
-					if (theContext.Url == urlCurrent) return;
+	Next_scenario();
+	setInterval(RefreshScenario, 1000);
+}
 
-					window.location.href = './tv.php?'+urlCurrent+'&voie='+theContext.Voie;
-				}
-	});
+function Next_scenario()
+{
+	++theContext.scenario_row;
+	var url = $("#scenario_url"+theContext.scenario_row).val();
+	if ((url == '') || (url == "undefined"))
+		theContext.scenario_row = 1;
+	
+	theContext.scenario_url = $("#scenario_url"+theContext.scenario_row).val();
+	theContext.scenario_duree_max = parseInt($("#scenario_duree"+theContext.scenario_row).val(), 10);
+	theContext.scenario_duree = 0;
+	
+	var voie = $("#scenario_channel").val();
+	ChangeVoie(voie, theContext.scenario_url);
+}
+
+function RefreshScenario()
+{
+	++theContext.scenario_duree;
+	$("#tv_message").html("<b>Scenario en cours : "+theContext.scenario_url+" => "+theContext.scenario_duree+"/"+theContext.scenario_duree_max+"sec</b>");
+	if (theContext.scenario_duree > theContext.scenario_duree_max)
+		Next_scenario();
 }
 
 function Init(voie)
 {
-	theContext.Voie = voie;
-	
-	if (theContext.Voie > 0)
-	{
-		// Refresh toutes les 2 secondes ...
-		setInterval(RefreshTV, 2000);
-		return;
-	}
+	SetVoie(voie);
 	
 	// Mode "show=command"
 	$('#list_medals_btn').click( function () { Go_list_medals(); return false;});
@@ -145,5 +160,8 @@ function Init(voie)
 	$('#match_btn').click( function () { Go_match(); return false;});
 	$('#match_score_btn').click( function () { Go_match_score(); return false;});
 	$('#list_team_btn').click( function () { Go_list_team(); return false;});
+	$('#list_presentation_btn').click( function () { Go_presentation(); return false;});
+	$('#scenario_btn').click( function () { Go_scenario(); return false;});
+	
 	$('#raz_btn').click( function () { Go_raz(); return false;});
 }	

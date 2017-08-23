@@ -109,6 +109,9 @@ class CacheMatch
 		$arrayCache = array('id_match' => $idMatch, 'pitch' => $pitch);
 		echo json_encode($arrayCache);
 		$this->EndCache('event'.$idEvent.'_pitch'.$pitch.'.json');
+
+//		$db = new myBase();
+//		$this->Match($db, $idMatch);
 	}
 
 	function Match(&$db, $idMatch)
@@ -204,11 +207,10 @@ class CacheMatch
 		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
 		
 		// Chargement gickp_Matchs_Detail 
-		$cmd  = "Select a.*, b.Nom, b.Prenom  ";
-		$cmd .= "From gickp_Matchs_Detail a, gickp_Liste_Coureur b ";
+		$cmd  = "Select a.*, b.Nom, b.Prenom ";
+		$cmd .= "From gickp_Matchs_Detail a Left Outer Join gickp_Liste_Coureur b On (a.Competiteur = b.Matric) ";
 		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Competiteur = b.Matric ";
-		$cmd .= "Order By Id Desc ";
+		$cmd .= "Order By a.Id Desc ";
 		$cmd .= "Limit 5 ";
 		
 		$tMatchDetails = null;
@@ -285,6 +287,8 @@ class CacheMatch
 		}
 
 		$cmd .= "Order By a.Heure_match, a.Terrain ";
+//		echo $cmd."<BR>";
+		
 		
 		$tMatchs = null;
 		$db->LoadTable($cmd, $tMatchs);
@@ -306,6 +310,8 @@ class CacheMatch
 			if ($bNew) 
 				array_push($arrayPitch, $pitch);
 		}
+		
+		
 		
 		// Génération des fichiers 
 		$time = utyHHMM_To_MM($hourMatch);

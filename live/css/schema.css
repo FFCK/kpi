@@ -1,0 +1,55 @@
+body
+{
+/*	background-color:rgb(255,255,255);*/
+}
+
+#container_1
+{
+ 	position:absolute;
+	left:0%;
+	width:50%;
+	height:50%;
+
+	background-image: url("../img/schema/schema_2017_CEH.png");
+	background-repeat: no-repeat;
+	background-size: 82%;
+} 
+
+#container_2
+{
+	position:absolute;
+	left:50%;
+	width:50%;
+	height:50%;
+
+	background-image: url("../img/schema/schema_2017_CEH21.png");
+	background-repeat: no-repeat;
+	background-size: 82%;
+} 
+
+#container_3
+{
+	position:absolute;
+	left:0%;
+	top:50%;
+	width:50%;
+	height:50%;
+
+	background-image: url("../img/schema/schema_2017_CEF.png");
+	background-repeat: no-repeat;
+	background-size:85%;
+} 
+
+#container_4
+{
+	position:absolute;
+	left:50%;
+	top:50%;
+	width:50%;
+	height:50%;
+
+	background-image: url("../img/schema/schema_2017_CEF21.png");
+	background-repeat: no-repeat;
+	background-size: 85%;
+} 
+

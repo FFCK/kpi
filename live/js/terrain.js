@@ -5,7 +5,7 @@ function Go(idEvent, idMatch, pitch)
     param += '&match='+idMatch;
     param += '&pitch='+pitch;
     
-    alert("ajax_cache_pitch.php?"+param);
+//   alert("ajax_cache_pitch.php?"+param);
     $.ajax({ type: "GET", url: "ajax_cache_pitch.php", dataType: "html", data: param, cache: false, 
                 success: function(htmlData) {
 						alert(htmlData);

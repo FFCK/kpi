@@ -1,165 +1,225 @@
 body
 {
-	background-color:rgb(255,255,255);
+/*	background-color:rgb(255,255,255);*/
 }
 
 #container_1
 {
-	position:absolute;
-	background-color:rgb(100,0,0);
+ 	position:absolute;
 	left:0%;
 	width:50%;
 	height:50%;
+	
+	border-style:solid;
+    border-width:4px;
+	border-color:#274375;
+	
+	background-image: url("../img/fond_ecran_1920x1080.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
 } 
 
 #container_2
 {
 	position:absolute;
-	background-color:rgb(0,100,0);
 	left:50%;
 	width:50%;
 	height:50%;
+
+	border-style:solid;
+    border-width:4px;
+	border-color:#274375;
+	
+	background-image: url("../img/fond_ecran_1920x1080.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
 } 
 
 #container_3
 {
 	position:absolute;
-	background-color:rgb(0,0,100);
 	left:0%;
 	top:50%;
 	width:50%;
 	height:50%;
+
+	border-style:solid;
+    border-width:4px;
+	border-color:#274375;
+	
+	background-image: url("../img/fond_ecran_1920x1080.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
 } 
 
 #container_4
 {
 	position:absolute;
-	background-color:rgb(50,0,50);
 	left:50%;
 	top:50%;
 	width:50%;
 	height:50%;
+
+	border-style:solid;
+    border-width:4px;
+	border-color:#274375;
+	
+	background-image: url("../img/fond_ecran_1920x1080.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
 } 
+
+div.pitch
+{
+	left:0%;
+	width:100%;
+	top:0%;
+	height:10%;
+
+	text-align:center;
+	font-size:32px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#274375;
+}
+
+div.container_score
+{
+	left:0%;
+	width:100%;
+	top:10%;
+	height:50%;
+
+	background-image: url("../img/multi_score.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+div.container_goal
+{
+	left:0%;
+	width:100%;
+	top:50%;
+	height:40%;
+}
 
 div.match_horloge
 {
 	position: absolute;
-	left: 50%;
-	top:1%;
-	font-size:28px;
+	left: 36%;
+	top:16%;
+	font-size:32px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:yellow;
+	color:#274375;
 }
 
 div.match_periode
 {
 	position: absolute;
-	left: 70%;
-	top:1%;
-	font-size:24px;
+	left: 59%;
+	top:16%;
+	font-size:32px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:yellow;
+	color:#f8a40e;
 }
 
 div.nation1
 {	
 	position: absolute;
-	left: 15.0%;
-	top:10%;
-	color:yellow;
+	left: 1.0%;
+	top:31%;
 }
 
 div.nation2
 {	
 	position: absolute;
-	left: 80%;
-	top:10%;
+	left: 95%;
+	top:32%;
 	color:yellow;
 }
 
 div.equipe1
 {	
 	position: absolute;
-	left: 30%;
-	top:10%;
-	color:white;
-	font-size:20px;
+	left: 6%;
+	top:31%;
+	font-size:28px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#274375;
 }
 
 div.equipe2
 {	
 	position: absolute;
-	left: 60%;
-	top:10%;
-	color:white;
-	font-size:20px;
+	left: 62%;
+	top:31%;
+	font-size:28px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#274375;
 }
 
 div.score1
 {	
 	position: absolute;
-	top: 20%;
-	left: 40%;
-	font-size:28px;
+	top: 30%;
+	left: 42%;
+	font-size:36px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color:yellow;
+	color:#f8a40e;
 }
 
 div.score2
 {	
 	position: absolute;
-	top:20%;
-	left: 60%;
-	font-size:28px;
+	top:30%;
+	left: 54%;
+	font-size:36px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color : yellow;
+	color:#f8a40e;
 }
 
 div.score_separation
 {	
 	position: absolute;
-	top:20%;
-	left: 50%;
-	font-size:28px;
+	top:30%;
+	left: 48%;
+	font-size:36px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color :red;
+	color:#f8a40e;
 }
 
 div.bandeau_goal
 {
-	position: absolute;
-	top:50%;
-	width:100%;
-/*	display:none;*/
+	background-image: url("../img/multi_goal.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
 }
 
 div.match_event_line1
 {
 	width:100%;
 	font-weight: bold;
-	color:yellow;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	font-size:28px;
+	font-size:32px;
 	text-align:center;
+	color:#3c3569;
 }
 
 div.match_event_line2
 {
 	width:100%;
 	font-weight: bold;
-	color:yellow;
 	font-family:"Arial Narrow", Arial, sans-serif;
 	font-size:28px;
 	text-align:center;
+	color:#66899f;
 }
 
 div.lien_pdf
@@ -172,6 +232,7 @@ div.lien_pdf
 	font-family:"Arial Narrow", Arial, sans-serif;
 	font-size:14px;
 	text-align:center;
+	display:none;
 }
 
 div.lien_pdf a

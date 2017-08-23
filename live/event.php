@@ -1,5 +1,5 @@
 <?php
-include_once('../commun/MyBdd.php');
+include_once('base.php');
 include_once('create_cache_match.php');
 include_once('page.php');
 
@@ -12,7 +12,7 @@ class Event extends MyPage
     {
     ?>
         <head>
-        <title>Gestion Live</title>
+        <title>Event Live</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="F.F.C.K.">
@@ -42,11 +42,11 @@ class Event extends MyPage
 		<form method='GET' action='#' name='event_form' id='event_form' enctype='multipart/form-data'> 
 		
 		<label for='id_event'>Evénement N°</label>
-		<input type='text' id='id_event' name='id_event' Value='54'>
+		<input type='text' id='id_event' name='id_event' Value='85'>
 		<br>
-		
+
 		<label for='date_event'>Date</label>
-		<input type='text' id='date_event' name='date_event' Value='2014-09-24'>
+		<input type='text' id='date_event' name='date_event' Value='2017-08-24'>
 		<br>
 
 		<label for='hour_event'>Heure</label>
@@ -62,7 +62,7 @@ class Event extends MyPage
 		<br>
 
 		<label for='delay_event'>Délai de Rafraichissement (en s)</label>
-		<input type='text' id='delay_event' name='delay_event' Value='20'>
+		<input type='text' id='delay_event' name='delay_event' Value='10'>
 		<br>
 		
 		<button id='btn_go'>Lancer la génération</button>
@@ -79,7 +79,7 @@ class Event extends MyPage
         parent::Script();
         ?>
         <script type="text/javascript" src="./js/event.js" ></script>
-        <script type="text/javascript"> $(document).ready(function(){ Init(); }); </script>	
+        <script type="text/javascript">$(document).ready(function(){ Init(); }); </script>	
         <?php
     }
 }

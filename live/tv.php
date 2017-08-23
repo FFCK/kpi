@@ -1,7 +1,7 @@
 <?php
-include_once('page.php');	
-include_once('../commun/MyBdd.php');
-
+include_once('base.php');
+include_once('page.php');
+	
 class TV extends MyPage
 {
 	function Header() {}
@@ -11,7 +11,7 @@ class TV extends MyPage
     {
     ?>
         <head>
-        <title>F.F.C.K.</title>
+        <title>TV</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="F.F.C.K.">
@@ -98,7 +98,7 @@ class TV extends MyPage
 
 	function Content_List_Team()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -159,7 +159,7 @@ class TV extends MyPage
 	
 	function Content_List_Medals()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$competition = $this->GetParam('competition');
 
@@ -205,7 +205,7 @@ class TV extends MyPage
 
 	function Content_Player()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -241,14 +241,14 @@ class TV extends MyPage
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
-	
+		
 		$title = $this->ImgNation($rEquipe['Code_club']);
 		$title .= "&nbsp;<span>";
-		$title .= $rJoueur['Numero'];
+		$title .= utyGetString($rJoueur, 'Numero', '999');
 		$title .= ' - ';
-		$title .= $rJoueur['Nom'];
+		$title .= utyGetString($rJoueur, 'Nom', '???');
 		$title .= ' ';
-		$title .= $rJoueur['Prenom'];
+		$title .= utyGetString($rJoueur, 'Prenom','...');
 		$title .= "</span>";
 
 		echo "<div id='banner_single'></div>\n";
@@ -261,7 +261,7 @@ class TV extends MyPage
 
 	function Content_Player_Medal()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -301,11 +301,11 @@ class TV extends MyPage
 	
 		$title  = $this->ImgNation($rEquipe['Code_club']);
 		$title .= "&nbsp;<span>";
-		$title .= $rJoueur['Numero'];
+		$title .= utyGetString($rJoueur, 'Numero', '999');
 		$title .= ' - ';
-		$title .= $rJoueur['Nom'];
+		$title .= utyGetString($rJoueur, 'Nom', '???');
 		$title .= ' ';
-		$title .= $rJoueur['Prenom'];
+		$title .= utyGetString($rJoueur, 'Prenom', '...');
 		$title .= "</span>";
 
 		echo "<div id='banner_single'></div>\n";
@@ -320,7 +320,7 @@ class TV extends MyPage
 
 	function Content_Referee()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		
@@ -340,7 +340,7 @@ class TV extends MyPage
 
 	function Content_Match()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 			
@@ -387,7 +387,7 @@ class TV extends MyPage
 
 	function Content_Match_Score()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 			
@@ -438,7 +438,7 @@ class TV extends MyPage
 	
 	function Content_Team()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -477,7 +477,7 @@ class TV extends MyPage
 	
 	function Content_Team_Medal()
     {
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -528,8 +528,15 @@ class TV extends MyPage
 	{
 		echo "<select name='$id' id='$id'>";
 ?>		
-		<option value="2">Channel 2</option> 
 		<option value="1">Channel 1</option> 
+		<option value="2">Channel 2</option> 
+		<option value="3">Channel 3</option> 
+		<option value="4">Channel 4</option> 
+		<option value="5">Channel 5</option> 
+		<option value="6">Channel 6</option> 
+		<option value="7">Channel 7</option> 
+		<option value="8">Channel 8</option> 
+		<option value="9">Channel 9</option> 
 	  </select>
 <?php 
 	}
@@ -599,6 +606,44 @@ class TV extends MyPage
 <?php 
 	}
 	
+	
+	function Content_Command_Url($url)
+	{
+		echo "<select name='$url' id='$url'>";
+?>		
+		  <option value="live/score.php">live/score.php</option> 
+		  <option value="live/multi_score.php">live/multi_score.php</option> 
+		  <option value="live/schema.php">live/schema.php</option> 
+		  <option value="frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24">frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24</option> 
+	  </select>
+<?php 
+//		  http://www.kayak-polo.info/frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24
+	}
+	
+	function Content_Command_Scenario($scenario)
+	{
+		echo "<table name='$scenario' id='$scenario'>";
+?>		
+			<thead>
+			<tr>
+				<th>N°</th>
+				<th>Url</th>
+				<th>Durée</th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php for ($i=1;$i<=5;$i++) { ?>
+				<tr>
+					<td><?php echo $i;?></td>
+					<td><input type="text" name="scenario_url<?php echo$i;?>" id="scenario_url<?php echo$i;?>"></td>
+					<td><input type="text" name="scenario_duree<?php echo$i;?>" id="scenario_duree<?php echo$i;?>"></td>
+				</tr>
+			<?php } ?>
+			</tbody>
+	  </table>
+<?php 
+	}
+
 	function Content_Command()
 	{
 ?>
@@ -685,9 +730,27 @@ class TV extends MyPage
 			<td><label>Team</label> </td>
 			<td><?php $this->Content_Command_Team('list_team_team') ?></td>
 		</tr>
+		
+		<tr>
+			<td><button id="list_presentation_btn">Autre Présentation</button></td>
+			<td><?php $this->Content_Command_Channel('list_presentation_channel') ?></td>
+			<td><label>Url</label> </td>
+			<td><?php $this->Content_Command_Url('list_presentation_url') ?></td>
+		</tr>
 
 		<tr>
+			<td><button id="scenario_btn">Scénario</button></td>
+			<td><?php $this->Content_Command_Channel('scenario_channel') ?></td>
+			<td><?php $this->Content_Command_Scenario('scenario') ?></td>
+		</tr>
+		
+		<tr>
 			<td><button id="raz_btn">Reset</button></td>
+		</tr>
+
+		<tr>
+			<td>Message</td>
+			<td><div id="tv_message">Message</div></td>
 		</tr>
 		
 		</form>
@@ -698,7 +761,7 @@ class TV extends MyPage
 	
     function Content()
     {
-		$show = $this->GetParam('show');
+		$show = $this->GetParam('show', 'command');
 		if ($show == 'list_team')
 		{
 			$this->Content_List_Team();
@@ -763,15 +826,15 @@ class TV extends MyPage
     function Script()
     {
         parent::Script();
-
-		$voie = $this->GetParamInt('voie',1);
+		$voie = $this->GetParamInt('voie',0);
 
 		$show = $this->GetParam('show');
 		if ($show == 'command')
 			$voie = 0;
 
         ?>
-		<script type="text/javascript" src="./js/tv.js" ></script>
+		<script type="text/javascript" src="./js/voie.js" ></script>
+ 		<script type="text/javascript" src="./js/tv.js" ></script>
         <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo $voie;?>); }); </script>	
         <?php
     }

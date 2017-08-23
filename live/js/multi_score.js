@@ -205,20 +205,6 @@ function ParseCacheGlobal(jsonTxt)
 
 	$('#nation1_'+idMulti).html(ImgNation(jsonData.equipe1.club));
 	$('#nation2_'+idMulti).html(ImgNation(jsonData.equipe2.club));
-	
-	// Laurent 01/07
-	$('#categ_'+idMulti).html(jsonData.categ);
-	if(jsonData.phase != ''){
-		$('#phase_'+idMulti).html(jsonData.phase);
-	}
-	$('#match_statut_'+idMulti).html(jsonData.statut);
-	if(jsonData.statut == 'ON'){
-		$('#match_statut_'+idMulti).parent().addClass('btn-warning').removeClass('btn-default').removeClass('btn-success');
-	}else if(jsonData.statut == 'END'){
-		$('#match_statut_'+idMulti).parent().addClass('btn-success').removeClass('btn-default').removeClass('btn-warning');
-	}else{
-		$('#match_statut_'+idMulti).parent().addClass('btn-default').removeClass('btn-warning').removeClass('btn-success');
-	}
 }
 
 function RefreshCacheMultiPitch()
@@ -260,10 +246,10 @@ function ParseCacheMultiPitch(jsonTxt)
 	}
 }
 
-function Init(event, count)
+function Init(event, count, voie)
 {
 	theContext.Event = event;
-	alert("Event = "+theContext.Event);
+//	alert("Event = "+theContext.Event);
 	
 	for (var i=1;i<=count;i++)
 		theContext.Match.Add(-1); 
@@ -287,5 +273,7 @@ function Init(event, count)
 	
 	// Refresh Horloge toutes les secondes  ...
 	setInterval(RefreshHorloge, 1000);
+	
+	SetVoie(voie);
 }	
 

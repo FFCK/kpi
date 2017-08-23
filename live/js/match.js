@@ -63,7 +63,6 @@ recordMatch.prototype.SetIdEvent = function(id_event) { this.m_id_event = id_eve
 recordMatch.prototype.SetScore1 = function(score1) { this.m_score1 = score1; }
 recordMatch.prototype.SetScore2 = function(score2) { this.m_score2 = score2; }
 
-
 function tableMatch()
 {
 	this.m_array = new Array();
@@ -480,6 +479,8 @@ function GetLabelEvtMatch(evt_match)
 function RefreshCacheGlobal()
 {
 	var nb = theContext.Match.GetCount();
+//	alert("nb Match = "+nb);
+	
 	for (var i=0;i<nb;i++)
 	{
 		$.ajax({

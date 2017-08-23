@@ -254,7 +254,7 @@ function ParseCacheGlobal(jsonTxt)
 */
 }
 
-function Init(terrain, speaker)
+function Init(terrain, speaker, voie)
 {
 	theContext.Terrain = terrain;
 	theContext.Speaker = speaker;
@@ -266,7 +266,7 @@ function Init(terrain, speaker)
 	RefreshCacheScore();
 	RefreshCacheChrono();
 
-	// Refresh du cache Global toute les 30 secondesx ...
+	// Refresh du cache Global toute les 30 secondes ...
 	setInterval(RefreshCacheGlobal, 30000);
 
 	// Refresh du cache Score toute les 5 secondes ...
@@ -277,5 +277,7 @@ function Init(terrain, speaker)
 	
 	// Refresh Horloge toutes les secondes  ...
 	setInterval(RefreshHorloge, 1000);
+	
+	SetVoie(voie);
 }	
 

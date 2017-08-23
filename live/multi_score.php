@@ -10,7 +10,7 @@ class MultiScore extends MyPage
     {
     ?>
         <head>
-        <title>LIVE F.F.C.K.</title>
+        <title>Multi-Scores</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="F.F.C.K.">
@@ -34,7 +34,7 @@ class MultiScore extends MyPage
         </head>
     <?php
     }
-
+	
     function Content()
     {
 		$count = $this->GetParamInt('count', 4);
@@ -42,28 +42,34 @@ class MultiScore extends MyPage
 		for ($i=1;$i<=$count;$i++)
 		{
  ?>
-			<div id="container_<?php echo $i?>">
-				<div class="bandeau_score" id="bandeau_score_<?php echo $i?>"></div>
-		
-				<div class="match_horloge" id="match_horloge_<?php echo $i?>"></div>
-				<div class="match_periode" id="match_periode_<?php echo $i?>"></div>
-		 
-				<div class="equipe1" id="equipe1_<?php echo $i?>"></div>
-				<div class="equipe2" id="equipe2_<?php echo $i?>"></div>
-		 
-				<div class="nation1" id="nation1_<?php echo $i?>"></div>
-				<div class="nation2" id="nation2_<?php echo $i?>"></div>
-		  
-				<div class="score1" id="score1_<?php echo $i?>"></div>
-				<div class="score_separation" id="score_separation_<?php echo $i?>">-</div>
-				<div class="score2" id="score2_<?php echo $i?>"></div>
+			<div id="container_<?php echo $i;?>">
+				<div class="pitch">Pitch <?php echo $i;?></div>
+				<div class="container_score">
+					<div class="bandeau_score" id="bandeau_score_<?php echo $i?>"></div>
+			
+					<div class="match_horloge" id="match_horloge_<?php echo $i?>"></div>
+					<div class="match_periode" id="match_periode_<?php echo $i?>"></div>
+			 
+					<div class="equipe1" id="equipe1_<?php echo $i?>"></div>
+					<div class="equipe2" id="equipe2_<?php echo $i?>"></div>
+			 
+					<div class="nation1" id="nation1_<?php echo $i?>"></div>
+					<div class="nation2" id="nation2_<?php echo $i?>"></div>
+			  
+					<div class="score1" id="score1_<?php echo $i?>"></div>
+					<div class="score_separation" id="score_separation_<?php echo $i?>">-</div>
+					<div class="score2" id="score2_<?php echo $i?>"></div>
 
-				<div class="bandeau_goal" id="bandeau_goal_<?php echo $i?>">
-					<div class="match_event_line1" id="match_event_line1_<?php echo $i?>"></div>
-					<div class="match_event_line2" id="match_event_line2_<?php echo $i?>"></div>
+					<div class="lien_pdf" id="lien_pdf_<?php echo $i?>"></div>
 				</div>
-
-				<div class="lien_pdf" id="lien_pdf_<?php echo $i?>"></div>
+				
+				<div class="container_goal">
+					<div class="bandeau_goal" id="bandeau_goal_<?php echo $i?>">
+						<div>&nbsp;</div>
+						<div class="match_event_line1" id="match_event_line1_<?php echo $i?>"></div>
+						<div class="match_event_line2" id="match_event_line2_<?php echo $i?>"></div>
+					</div>
+				</div>
 			</div>
 <?php	
 		}
@@ -73,13 +79,15 @@ class MultiScore extends MyPage
     {
         parent::Script();
 	
-		$id_event = $this->GetParamInt('event', 0);
+		$id_event = $this->GetParamInt('event', 85);
 		$count = $this->GetParamInt('count', 4);
+		$voie = $this->GetParamInt('voie', 0);
 
 		?>
         <script type="text/javascript" src="./js/match.js" ></script>
+		<script type="text/javascript" src="./js/voie.js" ></script>
         <script type="text/javascript" src="./js/multi_score.js" ></script>
-        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo "$id_event,$count";?>); }); </script>	
+        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo "$id_event,$count,$voie";?>); }); </script>	
         <?php
     }
 }

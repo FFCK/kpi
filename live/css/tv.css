@@ -1,6 +1,10 @@
 body
 {
-	background-color:rgb(0,255,0);
+/*	background-color:rgb(0,255,0);*/
+
+	background-image: url("../img/fond_ecran_1920x1080.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
 }
 
 img 
@@ -143,7 +147,7 @@ img
 	font-family:"Arial Narrow", Arial, sans-serif;
 }
 
-#player_title {	top:79%; left:740px; font-size:36px; }
+#player_title {	top:79%; left:300px; font-size:36px; }
 #player_title1 {	top:79%; left:770px; font-size:32px; }
 #player_title2 {	top:83%; left:870px; font-size:28px; }
 
@@ -176,9 +180,9 @@ img
 #referee_line1
 {
 	position: absolute;
-	left:550px;
+	left:500px;
 	right:0px;
-	top:78%;
+	top:80%;
 	text-align:left;
 	font-weight: bold;
 	color:#66899f;
@@ -189,9 +193,9 @@ img
 #referee_line2
 {
 	position: absolute;
-	left:580px;
+	left:550px;
 	right:0px;
-	top:83%;
+	top:85%;
 	text-align:left;
 	font-weight: bold;
 	color:#3c3569;

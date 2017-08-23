@@ -1,5 +1,5 @@
 <?php
-include_once('../commun/MyBdd.php');
+include_once('base.php');
 include_once('create_cache_match.php');
 include_once('page.php');
 
@@ -38,7 +38,7 @@ class Terrain extends MyPage
 
     function Liste(&$db, $pitch)
   	{
-		$idEvent = 44;
+		$idEvent = 54;
 		
 		echo "<h1>Terrain n°$pitch</h1>\n";
 	
@@ -77,15 +77,15 @@ class Terrain extends MyPage
 	
     function Content()
   	{
-		$db = new MyBdd();
+		$db = new MyBase();
 		
 		$this->Liste($db, 1);
 		$this->Liste($db, 2);
 		$this->Liste($db, 3);
 		$this->Liste($db, 4);
 		
-		$cache = new CacheMatch($_GET);
-		$cache->Event($db, 54, '2014-09-24', '10:10');
+//		$cache = new CacheMatch($_GET);
+//		$cache->Event($db, 54, '2014-09-24', '10:10');
 
 /*		
  ?>
