@@ -282,32 +282,38 @@ class FeuilleListeMatchs extends MyPage
 					{
 						$pdf->Cell(273,3,'','T','1','C');
 						$pdf->AddPage();
-						// logo
-						if($arrayCompetition['Kpi_ffck_actif'] == 'O')
-						{
-							$pdf->Image('../css/banniere1.jpg',10,8,72,15,'jpg',"http://www.kayak-polo.info");
-							$pdf->Image('../img/ffck2.jpg',252,8,0,15,'jpg',"http://www.ffck.org");
-						}
-						if($arrayCompetition['Logo_actif'] == 'O' && $logo != '')  //&& file_exists($logo)
-						{
-							$size = getimagesize($logo);
-							$largeur=$size[0];
-							$hauteur=$size[1];
-							$ratio=20/$hauteur;	//hauteur imposée de 20mm
-							$newlargeur=$largeur*$ratio;
-							$posi=149-($newlargeur/2);	//297mm = largeur de page
-							$pdf->image($logo, $posi, 8, 0,20);
-						}
-						if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')  //&& file_exists($sponsor)
-						{
-							$size = getimagesize($sponsor);
-							$largeur=$size[0];
-							$hauteur=$size[1];
-							$ratio=16/$hauteur;	//hauteur imposée de 16mm
-							$newlargeur=$largeur*$ratio;
-							$posi=149-($newlargeur/2);	//297mm = largeur de page
-							$pdf->image($sponsor, $posi, 180, 0,16);
-						}
+                        // logo
+                        if($arrayCompetition['Kpi_ffck_actif'] == 'O')
+                        {
+                            $pdf->Image('../img/logoKPI-small.jpg',125,10,0,20,'jpg',"http://www.ffck.org");
+                        }
+                        if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
+                            $size = getimagesize($bandeau);
+                            $largeur=$size[0];
+                            $hauteur=$size[1];
+                            $ratio=20/$hauteur;	//hauteur imposée de 20mm
+                            $newlargeur=$largeur*$ratio;
+                            $posi=149-($newlargeur/2);	//210mm = largeur de page
+                            $pdf->image($bandeau, $posi, 8, 0,20);
+                        } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
+                            $size = getimagesize($logo);
+                            $largeur=$size[0];
+                            $hauteur=$size[1];
+                            $ratio=20/$hauteur;	//hauteur imposée de 20mm
+                            $newlargeur=$largeur*$ratio;
+                            $posi=149-($newlargeur/2);	//210mm = largeur de page
+                            $pdf->image($logo, $posi, 8, 0,20);
+                        }
+
+                        if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
+                            $size = getimagesize($sponsor);
+                            $largeur=$size[0];
+                            $hauteur=$size[1];
+                            $ratio=16/$hauteur;	//hauteur imposée de 16mm
+                            $newlargeur=$largeur*$ratio;
+                            $posi=149-($newlargeur/2);	//210mm = largeur de page
+                            $pdf->image($sponsor, $posi, 180, 0,16);
+                        }
 					}
 					$Oldrupture = $rupture;
 								

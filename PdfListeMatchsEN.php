@@ -149,7 +149,6 @@ class PdfListeMatchs extends MyPage
             }
 			//$titreEvenementCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
 		}
-        
         if($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){
             $arrayCompetition['BandeauLink'] = 'img/logo/' . $arrayCompetition['BandeauLink'];
             if(is_file($arrayCompetition['BandeauLink'])) {
@@ -191,7 +190,6 @@ class PdfListeMatchs extends MyPage
         }
 		// Affichage
         $qr_x = 262;
-        
 			// logo
 			if($arrayCompetition['Kpi_ffck_actif'] == 'O')
 			{
@@ -226,7 +224,7 @@ class PdfListeMatchs extends MyPage
 			}
 
 		// QRCode
-		$qrcode = new QRcode('http://www.kayak-polo.info/Journee.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
+		$qrcode = new QRcode('http://www.kayak-polo.info/kpmatchs.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison.'&lang=en', 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
 		$qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
@@ -293,35 +291,40 @@ class PdfListeMatchs extends MyPage
 				{
 					if ($Oldrupture != '')
 					{
-						$pdf->Cell(22,3, '',0,0,'C');
-						$pdf->Cell(227,3,'','T','1','C');
+						$pdf->Cell(273,3,'','T','1','C');
 						$pdf->AddPage();
-						// logo
-						if($arrayCompetition['Kpi_ffck_actif'] == 'O')
-						{
-							$pdf->Image('css/banniere1.jpg',10,8,72,15,'jpg',"http://www.kayak-polo.info");
-							$pdf->Image('img/ffck2.jpg',252,8,0,15,'jpg',"http://www.ffck.org");
-						}
-						if($arrayCompetition['Logo_actif'] == 'O' && $logo != '')  //&& file_exists($logo)
-						{
-							$size = getimagesize($logo);
-							$largeur=$size[0];
-							$hauteur=$size[1];
-							$ratio=20/$hauteur;	//hauteur imposée de 20mm
-							$newlargeur=$largeur*$ratio;
-							$posi=149-($newlargeur/2);	//297mm = largeur de page
-							$pdf->image($logo, $posi, 8, 0,20);
-						}
-						if($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '')  //&& file_exists($sponsor)
-						{
-							$size = getimagesize($sponsor);
-							$largeur=$size[0];
-							$hauteur=$size[1];
-							$ratio=16/$hauteur;	//hauteur imposée de 16mm
-							$newlargeur=$largeur*$ratio;
-							$posi=149-($newlargeur/2);	//297mm = largeur de page
-							$pdf->image($sponsor, $posi, 180, 0,16);
-						}
+                        // logo
+                        if($arrayCompetition['Kpi_ffck_actif'] == 'O')
+                        {
+                            $pdf->Image('img/logoKPI-small.jpg',125,10,0,20,'jpg',"http://www.ffck.org");
+                        }
+                        if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
+                            $size = getimagesize($bandeau);
+                            $largeur=$size[0];
+                            $hauteur=$size[1];
+                            $ratio=20/$hauteur;	//hauteur imposée de 20mm
+                            $newlargeur=$largeur*$ratio;
+                            $posi=149-($newlargeur/2);	//210mm = largeur de page
+                            $pdf->image($bandeau, $posi, 8, 0,20);
+                        } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
+                            $size = getimagesize($logo);
+                            $largeur=$size[0];
+                            $hauteur=$size[1];
+                            $ratio=20/$hauteur;	//hauteur imposée de 20mm
+                            $newlargeur=$largeur*$ratio;
+                            $posi=149-($newlargeur/2);	//210mm = largeur de page
+                            $pdf->image($logo, $posi, 8, 0,20);
+                        }
+
+                        if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
+                            $size = getimagesize($sponsor);
+                            $largeur=$size[0];
+                            $hauteur=$size[1];
+                            $ratio=16/$hauteur;	//hauteur imposée de 16mm
+                            $newlargeur=$largeur*$ratio;
+                            $posi=149-($newlargeur/2);	//210mm = largeur de page
+                            $pdf->image($sponsor, $posi, 180, 0,16);
+                        }
 					}
 					$Oldrupture = $rupture;
 					$pdf->Cell(60,5, '','','0','L');

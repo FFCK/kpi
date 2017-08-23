@@ -936,7 +936,7 @@ class FeuilleMatch extends MyPage
 			$pdf->Cell(140,3,$lang['observation'],0,0,'L');
 
 			// QRCode
-			$qrcode = new QRcode('http://kayak-polo.info/admin/v2/FeuilleMarque2.php?idMatch='.$idMatch, 'L'); // error level : L, M, Q, H
+			$qrcode = new QRcode('http://kayak-polo.info/admin/FeuilleMarque2.php?idMatch='.$idMatch, 'L'); // error level : L, M, Q, H
 			//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
 			$qrcode->displayFPDF($pdf, 264, 164, 21);
 			
