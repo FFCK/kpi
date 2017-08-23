@@ -292,7 +292,7 @@ class GestionMatchDetail extends MyPageSecure
                                                                                 $entr_temp  = '';
 									}else{
 										$entr_temp  = '<tr class="entraineur">';
-										$entr_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</td>';
+										$entr_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'"></td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
 										$entr_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
 										$entr_temp .= '<td>'.ucwords(strtolower($row3["Prenom"])).'</td>';
@@ -346,30 +346,32 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
 										$joueur_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
 										$joueur_temp .= '<td>';
-										if($row4["Matric"] < 2000000)
-											$joueur_temp .= $row4["Matric"];
-										$joueur_temp .= '</td>';
+										if ($row4["Matric"] < 2000000) {
+                                            $joueur_temp .= $row4["Matric"];
+                                        }
+                                        $joueur_temp .= '</td>';
 										$joueur_temp .= '<td>'.$age.'</td>';
 										$joueur_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$joueur_temp .= '</tr>';
-                                                                                $entr_temp  = '';
+                                        $entr_temp  = '';
 									}else{
-										$entr_temp  = '<tr class="entraineur>';
-										$entr_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</td>';
+										$entr_temp  = '<tr class="entraineur">';
+										$entr_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'"></td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
 										$entr_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
 										$entr_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
 										$entr_temp .= '<td>';
-										if($row4["Matric"] < 2000000)
-											$entr_temp .= $row4["Matric"];
-										$entr_temp .= '</td>';
+										if ($row4["Matric"] < 2000000) {
+                                            $entr_temp .= $row4["Matric"];
+                                        }
+                                        $entr_temp .= '</td>';
 										$entr_temp .= '<td>'.$age.'</td>';
 										$entr_temp .= '<td><a href="#" class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-B-'.$row4["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$entr_temp .= '</tr>';
 										$joueur_temp = '';
 									}
 									echo $joueur_temp;
-                                                                        echo $entr_temp;
+                                    echo $entr_temp;
 								}
 								if ($num_results4 >= 1) {
                                     mysql_data_seek($result4, 0);
