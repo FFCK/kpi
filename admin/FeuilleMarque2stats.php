@@ -240,16 +240,6 @@ stop_time: <span id="stop_time_display"></span><br />
 								<a href="#" id="evt_arr" data-evt="Tir contre" data-code="A" class="fm_bouton evtButton evtButtonBig" title="<?php echo $lang['Tir_contre_gardien'] ?>"><?php echo $lang['Tir_contre'] ?></a>
 							</div>
 							<div id="zoneTemps">
-                                <img id="time_moins60" class="plusmoins" src="../img/moins60.png">
-								<img id="time_moins10" class="plusmoins" src="../img/moins10.png">
-								<img id="time_moins1" class="plusmoins" src="../img/moins1.png">
-                                
-                                <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00" />
-								<img id="time_plus1" class="plusmoins" src="../img/plus1.png">
-								<img id="time_plus10" class="plusmoins" src="../img/plus10.png">
-								<img id="time_plus60" class="plusmoins" src="../img/plus60.png">
-                                
-								<br />
 								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3 evtButtonBig">OK</a>
 								<a href="#" id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?php echo $lang['Modifier'] ?></a>
 								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?>.</a>
