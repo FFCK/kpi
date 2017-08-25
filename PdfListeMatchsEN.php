@@ -488,12 +488,12 @@ class PdfListeMatchs extends MyPage
                 }
 				$pdf->Cell(12,5, $row['Terrain'],'R'.$ltbr,'0','C');
 				$pdf->Cell(35,5, $row['EquipeA'],'R'.$ltbr,'0','C');
-				if ($row['ScoreA'] != '?') {
+				if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
                     $pdf->Cell(7, 5, $row['ScoreA'], 'R' . $ltbr, '0', 'C');
                 } else {
                     $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
                 }
-                if ($row['ScoreB'] != '?') {
+                if ($row['ScoreB'] != '?' && $row['Validation'] == 'O') {
                     $pdf->Cell(7, 5, $row['ScoreB'], 'R' . $ltbr, '0', 'C');
                 } else {
                     $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
