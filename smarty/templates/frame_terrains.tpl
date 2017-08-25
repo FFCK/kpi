@@ -54,7 +54,7 @@
                                             {$Match1.EquipeA|default:'&nbsp;'}
                                         </a>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center"><span title="{$Match1.Id}">
                                         {if $validation1 == 'O' && $Match1.ScoreA != '?' && $Match1.ScoreA != '' && $Match1.ScoreB != '?' && $Match1.ScoreB != ''}
                                             <button type="button" class="btn btn-success btn-xs" title="{#END#}">
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -72,6 +72,7 @@
                                                    ATT
                                             </button>
                                         {/if}
+                                        </span>
                                     </td>
                                     <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
@@ -95,7 +96,7 @@
                                             {$Match2.EquipeA|default:'&nbsp;'}
                                         </a>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center"><span  title="{$Match2.Id}">
                                         {if $validation2 == 'O' && $Match2.ScoreA != '?' && $Match2.ScoreA != '' && $Match2.ScoreB != '?' && $Match2.ScoreB != ''}
                                             <button type="button" class="btn btn-success btn-xs" title="{#END#}">
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -113,6 +114,7 @@
                                                    ATT
                                             </button>
                                         {/if}
+                                        </span>
                                     </td>
                                     <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
@@ -177,7 +179,7 @@
                                             {$Match1.EquipeA|default:'&nbsp;'}
                                         </a>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center"><span  title="{$Match1.Id}">
                                         {if $validation1 == 'O' && $Match1.ScoreA != '?' && $Match1.ScoreA != '' && $Match1.ScoreB != '?' && $Match1.ScoreB != ''}
                                             <button type="button" class="btn btn-success btn-xs" title="{#END#}">
                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -195,6 +197,7 @@
                                                    ATT
                                             </button>
                                         {/if}
+                                        </span>
                                     </td>
                                     <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
@@ -218,7 +221,7 @@
                                             {$Match2.EquipeA|default:'&nbsp;'}
                                         </a>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center"><span  title="{$Match2.Id}">
                                         {if $validation2 == 'O' && $Match2.ScoreA != '?' && $Match2.ScoreA != '' && $Match2.ScoreB != '?' && $Match2.ScoreB != ''}
                                             <button type="button" class="btn btn-success btn-xs" title="{#END#}">
                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -236,6 +239,7 @@
                                                    ATT
                                             </button>
                                         {/if}
+                                        </span>
                                     </td>
                                     <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
                                         <a class="btn btn-xs btn-default equipe">
