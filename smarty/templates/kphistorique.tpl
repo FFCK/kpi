@@ -28,7 +28,7 @@
                         <div class="fb-like" data-href="http://www.kayak-polo.info/kphistorique.php?Group={$codeCompetGroup}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                     </div>
                     <div class="row">
-                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kphistorique.php?Group={$codeCompetGroup}" id="share_btn"><img src="img/share.png" width="16"></a>
+                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kphistorique.php?Group={$codeCompetGroup}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
                     </div>
                 </div>
             </form>

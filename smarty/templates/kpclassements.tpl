@@ -37,7 +37,7 @@
                     </div>
                     <div class="row">
                         <a class="btn btn-default" href='kphistorique.php?Group={$codeCompetGroup}'>{#Historique#}...</a>
-                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassements.php?Saison={$sessionSaison}&Group={$codeCompetGroup}" id="share_btn"><img src="img/share.png" width="16"></a>
+                        <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassements.php?Saison={$sessionSaison}&Group={$codeCompetGroup}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
                     </div>
                 </div>
             </form>
@@ -81,7 +81,12 @@
                         <div class='pull-right'>
                             <a class="btn btn-default" href='kpclassement.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Deroulement#}...</a>
                             {if $arrayEquipe_publi[$codetemp][0].existMatch == 1}
-                                &nbsp;<a class="btn btn-default" href='kpmatchs.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Matchs#}...</a>
+                               <a class="btn btn-default" href='kpmatchs.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Matchs#}...</a>
+                            {/if}
+                            {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
+                                <a class="btn btn-default" href='kpdetails.php?Compet={$idCompet}&Group={$codeCompetGroup}&Saison={$idSaison}&Journee={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
+                            {else}
+                                <a class="btn btn-default" href='kpdetails.php?Compet={$idCompet}&Group={$codeCompetGroup}&Saison={$idSaison}&typ=CP'>{#Infos#}</a>
                             {/if}
                         </div>
 
@@ -90,6 +95,7 @@
                         <div class="label label-warning">{#Classement_provisoire#}</div>
                     {/if}
                 </div>
+                {if $arrayCompetition[i].Statut == 'END' or $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
                 <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
                     <thead>
                         {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
@@ -169,6 +175,7 @@
                         {/section}
                     </tbody>
                 </table>
+                {/if}
             </article>
         </div>
     {/if}

@@ -33,14 +33,21 @@
         </article>
     </div>
 {/if}
-<div class="container">
+<div class="container" id="selector">
     <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if} tableClassement">
-        {if $recordCompetition.Statut != 'END'}
-            <div class="label label-warning">{#Classement_provisoire#}</div>
-        {/if}
-        <a class="btn btn-default pull-right btn-navigation" href='kpclassements.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Classement_general#}...</a>
-
-		{*if $recordCompetition.Statut != 'END'*}
+        <div class='pull-right'>
+            {if $recordCompetition.Statut != 'END'}
+                <div class="label label-warning">{#Classement_provisoire#}</div>
+            {/if}
+            {if $arrayCompetition[0].Code_typeclt == 'CHPT'}
+                <a class="btn btn-default" href='kpdetails.php?Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&Journee={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
+            {else}
+                <a class="btn btn-default" href='kpdetails.php?Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&typ=CP'>{#Infos#}</a>
+            {/if}
+            <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassement.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
+            <a class="btn btn-default btn-navigation" href='kpclassements.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Classement_general#}...</a>
+        </div>
+        {if $recordCompetition.Statut == 'END'}
             <table class='table table-striped table-condensed table-hover'>
                 {if $recordCompetition.Code_typeclt == 'CHPT'}
                     <thead>
@@ -134,7 +141,7 @@
                                 {/section}
                     </tbody>
             </table>
-        {*/if*}
+        {/if}
     </article>
     {if $recordCompetition.Code_typeclt == 'CP'}
         {section name=i loop=$arrayJournee}

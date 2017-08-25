@@ -71,7 +71,7 @@
                     {/if}
                     <a class="pdfLink btn btn-default" href="PdfListeMatchs{if $lang=='en'}EN{/if}.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
                     <a class="btn btn-default" href='kpclassements.php?Compet={$idSelCompet}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$idSelJournee}'>{#Classements#}...</a>
-                    <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Compet={$idSelCompet}&Saison={$Saison}&Journee={$idSelJournee}" id="share_btn"><img src="img/share.png" width="16"></a>
+                    <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Compet={$idSelCompet}&Saison={$Saison}&Journee={$idSelJournee}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
                 </div>
             </div>
         </form>
