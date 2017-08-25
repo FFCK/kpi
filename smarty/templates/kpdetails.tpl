@@ -61,17 +61,21 @@
                 </div>
                 <hr>
                 <h4>{#Acces_direct2#}</h4>
-                <div class="col-sm-4 text-center">
+                <div class="col-sm-3 text-center">
                     <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J={$journee[0].Id_journee}" 
                        role="button">{#Matchs_de_la_journee#}</a>
                 </div>
-                <div class="col-sm-4 text-center">
+                <div class="col-sm-3 text-center">
                     <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J=*" 
                        role="button">{#Tous_les_matchs#}</a>
                 </div>
-                <div class="col-sm-4 text-center">
+                <div class="col-sm-3 text-center">
                     <a class="btn bg-blue" href="kpclassement.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
                        role="button">{#Classement#}</a>
+                </div>
+                <div class="col-sm-3 text-center">
+                    <a class="btn bg-blue" href="kpstats.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
+                       role="button">{#Stats#}</a>
                 </div>
             </div>
         </article>
@@ -168,17 +172,21 @@
                 <hr>
                 <div class="form-group">
                     <h4>{#Acces_direct2#}</h4>
-                    <div class="col-sm-4 text-center">
+                    <div class="col-sm-3 text-center">
                         <a class="btn bg-blue" href="kpmatchs.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}&J=*" 
                            role="button">{#Tous_les_matchs#}</a>
                     </div>
-                    <div class="col-sm-4 text-center">
+                    <div class="col-sm-3 text-center">
                         <a class="btn bg-blue" href="kpclassement.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
                            role="button">{#Classement#}</a>
                     </div>
-                    <div class="col-sm-4 text-center">
+                    <div class="col-sm-3 text-center">
                         <a class="btn bg-blue" href="kpclassements.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
                            role="button">{#Tous_les_classements#}</a>
+                    </div>
+                    <div class="col-sm-3 text-center">
+                        <a class="btn bg-blue" href="kpstats.php?Saison={$journee[0].Code_saison}&Group={$journee[0].Code_ref}&Compet={$journee[0].Code_competition}" 
+                           role="button">{#Stats#}</a>
                     </div>
                 </div>
                 {if $schema}

@@ -36,7 +36,7 @@
                         <div class="fb-like" data-href="http://www.kayak-polo.info/kpclassements.php?Saison={$sessionSaison}&Group={$codeCompetGroup}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                     </div>
                     <div class="row">
-                        <a class="btn btn-default" href='kphistorique.php?Group={$codeCompetGroup}'>{#Historique#}...</a>
+                        <a class="btn btn-default" href='kphistorique.php?Group={$codeCompetGroup}'>{#Historique#}</a>
                         <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassements.php?Saison={$sessionSaison}&Group={$codeCompetGroup}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
                     </div>
                 </div>

@@ -133,3 +133,7 @@ body, .banner { background-color: #2670b3; }
 #logo.img2 {
     max-height: 100px;
 }
+
+#tableStats {
+    width: 100%;
+}
