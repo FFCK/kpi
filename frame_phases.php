@@ -23,7 +23,10 @@ class Classement extends MyPage
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
-	
+        
+        $Round = utyGetGet('Round', '%');
+		$this->m_tpl->assign('Round', $Round);
+        	
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
@@ -101,6 +104,7 @@ class Classement extends MyPage
                         . "AND a.Code_club = d.Code "
                         . "AND c.Code_competition = '$codeCompet' "
                         . "AND c.Code_saison = $codeSaison "
+                        . "AND c.Etape LIKE '$Round' "
                         . "ORDER BY c.Niveau DESC, c.Date_debut DESC, b.Id_journee ASC, b.Clt_publi ASC, b.Diff_publi DESC, b.Plus_publi ASC ";
                 $result = $myBdd->Query($sql);
                 while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
@@ -136,6 +140,7 @@ class Classement extends MyPage
                     ."AND d.Code_saison = $codeSaison "
                     ."AND a.Id_journee = d.Id "
                     ."AND a.Publication = 'O' "
+                    ."AND d.Etape LIKE '$Round' "
                     ."ORDER BY d.Niveau DESC, d.Id ASC ";
                 $result = $myBdd->Query($sql);
                 while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){

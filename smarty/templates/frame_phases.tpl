@@ -1,3 +1,10 @@
+<div class="container categorie">
+    <div class="col-md-12">
+        <h2 class="col-md-12">
+            {$recordCompetition.Soustitre2}
+        </h2>
+    </div>
+</div>
 <div class="container">
     {if $recordCompetition.Code_typeclt == 'CP'}
         {section name=i loop=$arrayJournee}
