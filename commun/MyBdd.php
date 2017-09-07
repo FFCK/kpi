@@ -156,6 +156,39 @@ class MyBdd
 		array_push($this->m_arrayinfo, "Traitement terminé avec succès." );
 	}		
 
+    /**
+     * Get a web file (HTML, XHTML, XML, image, etc.) from a URL.  Return an
+     * array containing the HTTP server response header fields and content.
+     */
+    function get_web_page( $url )
+    {
+        $options = array(
+            CURLOPT_RETURNTRANSFER => true,     // return web page
+            CURLOPT_HEADER         => false,    // don't return headers
+            CURLOPT_FOLLOWLOCATION => false,     // follow redirects
+            CURLOPT_ENCODING       => "",       // handle all encodings
+            CURLOPT_USERAGENT      => "spider", // who am i
+            CURLOPT_AUTOREFERER    => true,     // set referer on redirect
+            CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
+            CURLOPT_TIMEOUT        => 120,      // timeout on response
+            CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
+            CURLOPT_SSL_VERIFYPEER => false     // Disabled SSL Cert checks
+        );
+
+        $ch      = curl_init( $url );
+        curl_setopt_array( $ch, $options );
+        $content = curl_exec( $ch );
+        $err     = curl_errno( $ch );
+        $errmsg  = curl_error( $ch );
+        $header  = curl_getinfo( $ch );
+        curl_close( $ch );
+
+        $header['errno']   = $err;
+        $header['errmsg']  = $errmsg;
+        $header['content'] = $content;
+        return $header;
+    }
+
 	// Importation du fichier PCE Nouvelle formule
 	function ImportPCE2()
 	{
@@ -163,25 +196,16 @@ class MyBdd
 		$section = "";
 		$nbLicenciés = 0;
 		$nbArbitres = 0;
-		$file = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce";
-        $newfile = "pce.pce";
+		$url = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce?saison=2017";
+        $newfile = "pce1.pce";
         
-        $arrRequestHeaders = array(
-            'http'=>array(
-                'method'        =>'GET',
-                'protocol_version'    =>1.1,
-                'follow_location'    =>1,
-                'header'=>    "User-Agent: Anamera-Feed/1.0\r\n" .
-                "Referer: $source\r\n" .
-                $ifmodhdr
-            )
-        );
-        
-	 	if (!copy($file, $newfile, stream_context_create($arrRequestHeaders))) {
-            array_push($this->m_arrayinfo, "La copie $file du fichier a échoué...\n");
-            return;
+        if(!$header = $this->get_web_page($url)) {
+            array_push($this->m_arrayinfo, "Ouverture impossible du fichier distant");
         }
-        
+        if(!file_put_contents($newfile, $header['content'])) {
+            array_push($this->m_arrayinfo, "Ecriture impossible du fichier local");
+        }
+                
         $tempsIntermediaire = time() - $debutTraitement;
         
 		$fp = fopen($newfile, "r");
@@ -1068,6 +1092,48 @@ class MyBdd
 								);							  	
 	}		
 	
+    function GetGroups($public = 'public', $groupActif = '')
+    {
+//        if(isset($_SESSION['groups_' . $public])) {
+//            return $_SESSION['groups' . $public];
+//        } else {
+            $result = [];
+            $label[0] = 'Competitions_Internationales';
+            $label[1] = 'Competitions_Nationales';
+            $label[2] = 'Competitions_Regionales';
+            $label[3] = 'Tournois_Internationaux';
+            $label[4] = 'Continents';
+            if($public == 'public') {
+                $where = "WHERE section >= 0 AND section < 100 ";
+            } else {
+                $label[5] = 'AUTRES';
+                $where = "";
+            }
+            $sql  = "SELECT * "
+                    . "FROM gickp_Competitions_Groupes "
+                    . $where
+                    . "ORDER BY section, ordre ";
+            $query = $this->Query($sql);
+            $i = -1;
+            $j = '';
+            while ($row = $this->FetchArray($query)) {
+                if($j != $row['section']) {
+                    $i ++;
+                }
+                if($groupActif == $row['Groupe']) {
+                    $row['selected'] = 'selected';
+                } else {
+                    $row['selected'] = '';
+                }
+                $result[$i]['label'] = $label[$i];
+                $result[$i]['options'][] = $row;
+                $j = $row['section'];
+            }
+            $_SESSION['groups' . $public] = $result;
+            return $result;
+//        }
+    }
+    
 	// GetClub 	
 	function GetClub($codeClub)
 	{

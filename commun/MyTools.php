@@ -3,8 +3,45 @@ include_once('MyBdd.php');
 
 // MyTools.php
 
-// Transformation Date Us : YYYY-MM-DD en Date Fr Long : dddd DD mmmm YYYY
+/**
+ * 
+ * @param type array $recordCompetition
+ */
+function utyGetVisuels($recordCompetition, $admin = FALSE) {
+    $result = [];
+    if($admin) {
+        $rel = '../';
+    } else {
+        $rel = '';
+    }
+    if($recordCompetition['BandeauLink'] != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE ){
+        $recordCompetition['BandeauLink'] = $rel . 'img/logo/' . $recordCompetition['BandeauLink'];
+        if(is_file($recordCompetition['BandeauLink'])) {
+            $result['bandeau'] = $recordCompetition['BandeauLink'];
+        }
+    } elseif($recordCompetition['BandeauLink'] != '') {
+        $result['bandeau'] = $recordCompetition['BandeauLink'];
+    }
+    if($recordCompetition['LogoLink'] != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE ){
+        $recordCompetition['LogoLink'] = $rel . 'img/logo/' . $recordCompetition['LogoLink'];
+        if(is_file($recordCompetition['LogoLink'])) {
+            $result['logo'] = $recordCompetition['LogoLink'];
+        }
+    } elseif($recordCompetition['LogoLink'] != '') {
+        $result['logo'] = $recordCompetition['LogoLink'];
+    }
+    if($recordCompetition['SponsorLink'] != '' && strpos($recordCompetition['SponsorLink'], 'http') === FALSE ){
+        $recordCompetition['SponsorLink'] = $rel . 'img/logo/' . $recordCompetition['SponsorLink'];
+        if(is_file($recordCompetition['SponsorLink'])) {
+            $result['sponsor'] = $recordCompetition['SponsorLink'];
+        }
+    } elseif($recordCompetition['LogoLink'] != '') {
+        $result['sponsor'] = $recordCompetition['SponsorLink'];
+    }
+    return $result;
+}
 
+// Transformation Date Us : YYYY-MM-DD en Date Fr Long : dddd DD mmmm YYYY
 function utyDateUsToFrLong($dateUs, $separator = "-")
 {
 	$tab_dmy = explode($separator, $dateUs);

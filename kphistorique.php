@@ -45,51 +45,8 @@ class Historique extends MyPage
 		$this->m_tpl->assign('sessionSaison', $codeSaison);
 		
 		// Chargement des Groupes
-			//Compétitions internationales
-            $arrayCompetitionGroupe = array();
-            array_push($arrayCompetitionGroupe, array('', 'CI', '=== COMPETITIONS INTERNATIONALES ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id > 0 AND id < 10 ORDER BY id";
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
-                if ($row["Groupe"] == $codeCompetGroup) {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], "SELECTED"));
-                } else {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], ""));
-                }
-            }
-			//Compétitions nationales
-            array_push($arrayCompetitionGroupe, array('', 'CN', '=== COMPETITIONS NATIONALES ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 10 AND id < 40 ORDER BY id";
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
-                if ($row["Groupe"] == $codeCompetGroup) {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], "SELECTED"));
-                } else {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], ""));
-                }
-            }
-			//Compétitions régionales
-            array_push($arrayCompetitionGroupe, array('', 'CR', '=== COMPETITIONS REGIONALES ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 40 AND id < 60 ORDER BY id";
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
-                if ($row["Groupe"] == $codeCompetGroup) {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], "SELECTED"));
-                } else {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], ""));
-                }
-            }
-			//Tournois
-            array_push($arrayCompetitionGroupe, array('', 'T', '=== TOURNOIS ===', '' ) );
-            $sql  = "SELECT * FROM gickp_Competitions_Groupes WHERE id >= 60 AND id < 100 ORDER BY id";
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
-                if ($row["Groupe"] == $codeCompetGroup) {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], "SELECTED"));
-                } else {
-                    array_push($arrayCompetitionGroupe, array($row["id"], $row["Groupe"], $row["Libelle"], ""));
-                }
-            }
+        $arrayCompetitionGroupe = $myBdd->GetGroups('public', $codeCompetGroup);
+		$this->m_tpl->assign('arrayCompetitionGroupe', $arrayCompetitionGroupe);
 		
 		// Chargement des Compétitions ...
 		$arraySaisons = array();
@@ -207,13 +164,9 @@ class Historique extends MyPage
 		
 		}
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
-		$this->m_tpl->assign('arrayCompetitionGroupe', $arrayCompetitionGroupe);
 		$this->m_tpl->assign('arrayEquipe_publi', $arrayEquipe_publi);
 		$this->m_tpl->assign('recordCompetition', $recordCompetition);
 		$this->m_tpl->assign('typeClt', $typeClt);
-//		print_r($recordCompetition);
-//		print_r($arrayEquipe_publi);
-//		print_r($arrayCompetition);
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
 		$this->m_tpl->assign('arrayCompets', $arrayCompets);
 		$this->m_tpl->assign('arrayClts', $arrayClts);

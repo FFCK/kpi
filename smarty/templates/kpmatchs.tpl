@@ -28,10 +28,15 @@
             <div class='col-md-4 col-sm-8 col-xs-12'>
                 <label for="Group">{#Competition#}</label>
                 <select name="Group" onChange="submit();">
-                        <Option Value="">{#Selectionnez#}...</Option>
                     {section name=i loop=$arrayCompetitionGroupe}
-                        {assign var='temporaire' value=$arrayCompetitionGroupe[i][1]}
-                        <Option Value="{$arrayCompetitionGroupe[i][1]}" {$arrayCompetitionGroupe[i][3]}>{$smarty.config.$temporaire|default:$arrayCompetitionGroupe[i][2]}</Option>
+                        {assign var='options' value=$arrayCompetitionGroupe[i].options}
+                        {assign var='label' value=$arrayCompetitionGroupe[i].label}
+                        <optgroup label="{$smarty.config.$label|default:$label}">
+                            {section name=j loop=$options}
+                                {assign var='optionLabel' value=$options[j].Groupe}
+                                <Option Value="{$options[j].Groupe}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                            {/section}
+                        </optgroup>
                     {/section}
                 </select>
             </div>
