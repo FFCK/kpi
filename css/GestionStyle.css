@@ -159,7 +159,10 @@ position:absolute;
 .jaune {background: #FF0;}
 .rouge {background: #FBB;}
 .gris {background: #DDF;}
-.gris2 {background: #666;}
+.gris2 {
+    background: #555;
+    color: white;
+}
 
 .grispetit {font-size: 8.0pt; font-style: italic; color: #666}
 

@@ -18,10 +18,17 @@
 					<br />
 					<label for="codeCompet">Compétition :</label>
 					<select name="codeCompet" onChange="submit();">
-						{section name=i loop=$arrayCompetition} 
-							<Option Value="{$arrayCompetition[i][0]}" {$arrayCompetition[i][2]}>{$arrayCompetition[i][1]}</Option>
-						{/section}
-					</select>
+                        {section name=i loop=$arrayCompetition}
+                            {assign var='options' value=$arrayCompetition[i].options}
+                            {assign var='label' value=$arrayCompetition[i].label}
+                            <optgroup label="{$smarty.config.$label|default:$label}">
+                                {section name=j loop=$options}
+                                    {assign var='optionLabel' value=$options[j].Code}
+                                    <Option Value="{$options[j].Code}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                {/section}
+                            </optgroup>
+                        {/section}
+ 					</select>
 
 					<div class='blocTable table2'>
 						<table class='tableauJQ tableauClassement tableau'>

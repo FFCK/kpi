@@ -62,7 +62,14 @@
 							</thead> 
 							
 							<tbody>
-								{section name=i loop=$arrayCompet} 
+								{section name=i loop=$arrayCompet}
+                                    {if $arrayCompet[i].section != $j}
+                                        {assign var='sectionLabel' value=$arrayCompet[i].sectionLabel}
+                                        <tr class="gris2">
+                                            <th colspan="13">{$smarty.config.$sectionLabel|default:$sectionLabel}</th>
+                                        </tr>
+                                    {/if}
+                                    {assign var='j' value=$arrayCompet[i].section}
 									<tr class='{cycle values="impair,pair"} {$arrayCompet[i].StdOrSelected}'>
 										{*
 										<td><input type="checkbox" name="checkCompet" value="{$arrayCompet[i].Code}" id="checkDelete{$smarty.section.i.iteration}" /></td>
@@ -260,10 +267,16 @@
 								<td colspan=3>
 									<label for="codeRef">Groupe :</label>
 									<select name="codeRef" id="codeRef">
-										<Option Value="">= OBLIGATOIRE =</Option>
-										{section name=i loop=$arrayGroupCompet} 
-											<Option Value="{$arrayGroupCompet[i].Groupe}"{if $arrayGroupCompet[i].Groupe == $codeRef} selected{/if}>{$arrayGroupCompet[i].Groupe} - {$arrayGroupCompet[i].Libelle}</Option>
-										{/section}
+                                        {section name=i loop=$arrayGroupCompet}
+                                            {assign var='options' value=$arrayGroupCompet[i].options}
+                                            {assign var='label' value=$arrayGroupCompet[i].label}
+                                            <optgroup label="{$smarty.config.$label|default:$label}">
+                                                {section name=j loop=$options}
+                                                    {assign var='optionLabel' value=$options[j].Groupe}
+                                                    <Option Value="{$options[j].Groupe}" {if $options[j].Groupe == $codeRef} selected{/if}>{$options[j].Groupe} - {$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                                {/section}
+                                            </optgroup>
+                                        {/section}
 									</select>
 								</td>
 								<td>

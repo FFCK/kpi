@@ -1090,7 +1090,19 @@ class MyBdd
 							  	'Date_calcul' => '', 'Date_publication' => '', 'Date_publication_calcul' => '',
 							  	'Code_uti_calcul' => '', 'Code_uti_publication' => '', 'Mode_calcul' => '', 'Mode_publication_calcul' => ''
 								);							  	
-	}		
+    }
+    
+    function getSections(){
+        $result = array(
+            1 => 'Competitions_Internationales',
+            2 => 'Competitions_Nationales',
+            3 => 'Competitions_Regionales',
+            4 => 'Tournois_Internationaux',
+            5 => 'Continents',
+            100 => 'Divers'
+        );
+        return $result;
+    }
 	
     function GetGroups($public = 'public', $groupActif = '')
     {
@@ -1098,15 +1110,10 @@ class MyBdd
 //            return $_SESSION['groups' . $public];
 //        } else {
             $result = [];
-            $label[0] = 'Competitions_Internationales';
-            $label[1] = 'Competitions_Nationales';
-            $label[2] = 'Competitions_Regionales';
-            $label[3] = 'Tournois_Internationaux';
-            $label[4] = 'Continents';
+            $label = $this->getSections();
             if($public == 'public') {
-                $where = "WHERE section >= 0 AND section < 100 ";
+                $where = "WHERE section < 100 ";
             } else {
-                $label[5] = 'AUTRES';
                 $where = "";
             }
             $sql  = "SELECT * "
@@ -1119,13 +1126,13 @@ class MyBdd
             while ($row = $this->FetchArray($query)) {
                 if($j != $row['section']) {
                     $i ++;
+                    $result[$i]['label'] = $label[$row['section']];
                 }
                 if($groupActif == $row['Groupe']) {
                     $row['selected'] = 'selected';
                 } else {
                     $row['selected'] = '';
                 }
-                $result[$i]['label'] = $label[$i];
                 $result[$i]['options'][] = $row;
                 $j = $row['section'];
             }

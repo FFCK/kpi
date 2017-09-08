@@ -64,44 +64,59 @@ class GestionDoc extends MyPageSecure
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 
 		// Chargement des Compétitions ...
-		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif ";
-		$sql .= "From gickp_Competitions c, gickp_Competitions_Groupes g ";
-		$sql .= "Where c.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";
-		$sql .= utyGetFiltreCompetition('c.');
-		$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-		if(utyGetSession('AfficheCompet') == 'NCF')
-			$sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-		else
-			$sql .= " And c.Code Like '".utyGetSession('AfficheCompet')."%' ";
-		$sql .= " And c.Code_ref = g.Groupe ";
-		$sql .= " Order By c.Code_saison, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2");
-		$num_results = mysql_num_rows($result);
+		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif, "
+                . "g.section, g.ordre "
+                . "From gickp_Competitions c, gickp_Competitions_Groupes g "
+                . "Where c.Code_saison = '"
+                . $codeSaison
+                . "' "
+                . utyGetFiltreCompetition('c.')
+                . " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+		if (utyGetSession('AfficheCompet') == 'NCF') {
+            $sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
+        } else {
+            $sql .= " And c.Code Like '" . utyGetSession('AfficheCompet') . "%' ";
+        }
+        $sql .= " And c.Code_ref = g.Groupe ";
+		$sql .= " Order By c.Code_saison, g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		$result = $myBdd->Query($sql);
 		$arrayCompetition = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+        $i = -1;
+        $j = '';
+        $label = $myBdd->getSections();
+		while ($row = $myBdd->FetchArray($result)) {
 			// Titre
-			if($row["Titre_actif"] != 'O' && $row["Soustitre"] != '')
-				$Libelle = $row["Soustitre"];
-			else
-				$Libelle = $row["Libelle"];
-			if($row["Soustitre2"] != '')
-				$Libelle .= ' - '.$row["Soustitre2"];
+			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
+                $Libelle = $row["Soustitre"];
+            } else {
+                $Libelle = $row["Libelle"];
+            }
+            if ($row["Soustitre2"] != '') {
+                $Libelle .= ' - ' . $row["Soustitre2"];
+            }
 
-			if ( (strlen($codeCompet) == 0) && ($i == 0) )
- 				 $codeCompet = $row["Code"];
-			
-			if ($row["Code"] == $codeCompet)
-			{
-				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "SELECTED" ) );
-				$this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
-			}
-			else
-				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "" ) );
-		}
+            if ((strlen($codeCompet) == 0) && ($i == 0)) {
+                $codeCompet = $row["Code"];
+            }
+            if($j != $row['section']) {
+                $i ++;
+                $arrayCompetition[$i]['label'] = $label[$row['section']];
+            }
+            if($row["Code"] == $codeCompet) {
+                $row['selected'] = 'selected';
+            } else {
+                $row['selected'] = '';
+            }
+            $j = $row['section'];
+            $arrayCompetition[$i]['options'][] = $row;
+            
+//            if ($row["Code"] == $codeCompet) {
+//                array_push($arrayCompetition, array($row["Code"], $row["Code"] . " - " . $Libelle, "SELECTED"));
+//                $this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
+//            } else {
+//                array_push($arrayCompetition, array($row["Code"], $row["Code"] . " - " . $Libelle, ""));
+//            }
+        }
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		$_SESSION['codeCompet'] = $codeCompet;
 		$this->m_tpl->assign('codeCompet', $codeCompet);

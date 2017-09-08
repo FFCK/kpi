@@ -25,9 +25,16 @@
 							</td>
 							<td><label for="competOrigine">Competition Origine</label>
 								<select name="competOrigine" onchange="submit()">
-									{section name=i loop=$arrayCompetitionOrigine}
-										<Option Value="{$arrayCompetitionOrigine[i].Code}" {if $arrayCompetitionOrigine[i].Code == $competOrigine}selected{/if}>{$arrayCompetitionOrigine[i].Code} - {$arrayCompetitionOrigine[i].Libelle}</Option>
-									{/section}
+                                    {section name=i loop=$arrayCompetitionOrigine}
+                                        {assign var='options' value=$arrayCompetitionOrigine[i].options}
+                                        {assign var='label' value=$arrayCompetitionOrigine[i].label}
+                                        <optgroup label="{$smarty.config.$label|default:$label}">
+                                            {section name=j loop=$options}
+                                                {assign var='optionLabel' value=$options[j].Code}
+                                                <Option Value="{$options[j].Code}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                            {/section}
+                                        </optgroup>
+                                    {/section}
 								</select>
 							</td>
 						</tr>
@@ -95,9 +102,16 @@
 							</td>
 							<td><label for="competDestination">Competition Destination</label>
 								<select name="competDestination" onchange="submit()">
-									{section name=i loop=$arrayCompetitionDestination}
-										<Option Value="{$arrayCompetitionDestination[i].Code}" {if $arrayCompetitionDestination[i].Code == $competDestination}selected{/if}>{$arrayCompetitionDestination[i].Code} - {$arrayCompetitionDestination[i].Libelle}</Option>
-									{/section}
+                                    {section name=i loop=$arrayCompetitionDestination}
+                                        {assign var='options' value=$arrayCompetitionDestination[i].options}
+                                        {assign var='label' value=$arrayCompetitionDestination[i].label}
+                                        <optgroup label="{$smarty.config.$label|default:$label}">
+                                            {section name=j loop=$options}
+                                                {assign var='optionLabel' value=$options[j].Code}
+                                                <Option Value="{$options[j].Code}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                            {/section}
+                                        </optgroup>
+                                    {/section}
 								</select>
 							</td>
 						</tr>

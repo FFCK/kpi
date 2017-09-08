@@ -48,15 +48,31 @@ class GestionCopieCompetition extends MyPageSecure
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
 
 		//Liste des codes compétition origine
+        $label = $myBdd->getSections();
 		$arrayCompetitionOrigine = array();
-		$sql  = "Select Code, Libelle, Code_typeclt, Nb_equipes, Qualifies, Elimines, Soustitre, Soustitre2, commentairesCompet ";
-		$sql .= "From gickp_Competitions Where Code_saison = $saisonOrigine order by Code ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Compet Orig.");
-		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
-			array_push($arrayCompetitionOrigine, array( 'Code' => $row['Code'], 'Libelle' => $row['Libelle'] ));
+		$sql  = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, c.Soustitre, c.Soustitre2, "
+                . "c.commentairesCompet, g.section, g.ordre "
+                . "FROM gickp_Competitions c, gickp_Competitions_Groupes g "
+                . "WHERE c.Code_saison = $saisonOrigine "
+                . "AND c.Code_ref = g.Groupe "
+                . "ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
+		$result = $myBdd->Query($sql);
+        $i = -1;
+        $j = '';
+		while($row = $myBdd->FetchArray($result)) {
+            $row['sectionLabel'] = $label[$row['section']];
+            if($j != $row['section']) {
+                $i ++;
+                $arrayCompetitionOrigine[$i]['label'] = $label[$row['section']];
+            }
+            if($row["Code"] == $competOrigine) {
+                $row['selected'] = 'selected';
+            } else {
+                $row['selected'] = '';
+            }
+            $j = $row['section'];
+            $arrayCompetitionOrigine[$i]['options'][] = $row;
+
 			if ($row['Code'] == $competOrigine)
 			{
 				$this->m_tpl->assign('codeTypeCltOrigine', $row['Code_typeclt']);
@@ -72,16 +88,30 @@ class GestionCopieCompetition extends MyPageSecure
 		
 		//Liste des codes compétition destination
 		$arrayCompetitionDestination = array();
-		$sql  = "Select Code, Libelle, Code_typeclt, Nb_equipes, Qualifies, Elimines From gickp_Competitions ";
-		$sql .= "Where Code_saison = $saisonDestination ";
-		$sql .= utyGetFiltreCompetition('');
-		$sql .= "order by Code ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Compet Dest. =><br>   ".$sql);
-		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
-			array_push($arrayCompetitionDestination, array( 'Code' => $row['Code'], 'Libelle' => $row['Libelle'] ));
+		$sql  = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, c.Soustitre, c.Soustitre2, "
+                . "c.commentairesCompet, g.section, g.ordre "
+                . "FROM gickp_Competitions c, gickp_Competitions_Groupes g "
+                . "WHERE c.Code_saison = $saisonDestination "
+                . "AND c.Code_ref = g.Groupe "
+                . utyGetFiltreCompetition('')
+                . "ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
+		$result = $myBdd->Query($sql);
+        $i = -1;
+        $j = '';
+		while($row = $myBdd->FetchArray($result)) {
+            $row['sectionLabel'] = $label[$row['section']];
+            if($j != $row['section']) {
+                $i ++;
+                $arrayCompetitionDestination[$i]['label'] = $label[$row['section']];
+            }
+            if($row["Code"] == $competDestination) {
+                $row['selected'] = 'selected';
+            } else {
+                $row['selected'] = '';
+            }
+            $j = $row['section'];
+            $arrayCompetitionDestination[$i]['options'][] = $row;
+
 			if ($row['Code'] == $competDestination)
 			{
 				$this->m_tpl->assign('codeTypeCltDestination', $row['Code_typeclt']);
