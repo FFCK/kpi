@@ -28,7 +28,7 @@ class GestionEquipe extends MyPageSecure
 		
 		// Chargement des Compétitions ...
 		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif,"
-                . "c.Verrou, c.Statut "
+                . "c.Verrou, c.Statut, g.section, g.ordre "
                 . "From gickp_Competitions c, gickp_Competitions_Groupes g "
                 . "Where c.Code_saison = '" . $codeSaison . "' ";
 		$sql .= utyGetFiltreCompetition('c.');
@@ -38,42 +38,48 @@ class GestionEquipe extends MyPageSecure
 		else
 			$sql .= " And c.Code Like '".utyGetSession('AfficheCompet')."%' ";
 		$sql .= " And c.Code_ref = g.Groupe ";
-		$sql .= " Order By c.Code_saison, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
-		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
-	
+		$sql .= " Order By c.Code_saison, g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		$result = $myBdd->Query($sql);
 		$arrayCompetition = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+        $i = -1;
+        $j = '';
+        $label = $myBdd->getSections();
+		while ($row = $myBdd->FetchArray($result)) {
 			// Titre
-			if($row["Titre_actif"] != 'O' && $row["Soustitre"] != '')
-				$Libelle = $row["Soustitre"];
-			else
-				$Libelle = $row["Libelle"];
-			if($row["Soustitre2"] != '')
-				$Libelle .= ' - '.$row["Soustitre2"];
-			
-			// Si $codeCompet Vide on prend le premier de la liste ...
-			if ( (strlen($codeCompet) == 0) && ($i == 0) )
-				$codeCompet = $row["Code"];
-			
-			if ($row["Code"] == $codeCompet)
-			{
-				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "SELECTED" ) );
-				$this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
+			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
+                $Libelle = $row["Soustitre"];
+            } else {
+                $Libelle = $row["Libelle"];
+            }
+            if ($row["Soustitre2"] != '') {
+                $Libelle .= ' - ' . $row["Soustitre2"];
+            }
+
+            // Si $codeCompet Vide on prend le premier de la liste ...
+			if ((strlen($codeCompet) == 0) && ($i == 0)) {
+                $codeCompet = $row["Code"];
+            }
+
+            if($j != $row['section']) {
+                $i ++;
+                $arrayCompetition[$i]['label'] = $label[$row['section']];
+            }
+            if($row["Code"] == $codeCompet) {
+                $row['selected'] = 'selected';
+                $this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
                 $this->m_tpl->assign('Statut', $row["Statut"]);
-                if($row["Verrou"] == 'O') {
+                if ($row["Verrou"] == 'O') {
                     $Verrou = 'O';
                 } else {
                     $Verrou = 'N';
                 }
                 $this->m_tpl->assign('Verrou', $Verrou);
-			}
-			else
-				array_push($arrayCompetition, array($row["Code"], $row["Code"]." - ".$Libelle, "" ) );
-		}
+            } else {
+                $row['selected'] = '';
+            }
+            $j = $row['section'];
+            $arrayCompetition[$i]['options'][] = $row;
+        }
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		$this->m_tpl->assign('codeCompet', $codeCompet);
 						
@@ -94,19 +100,17 @@ class GestionEquipe extends MyPageSecure
 				$sql .= "' And ce.Code_club = c.Code "
                         . " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			} else {
-				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage "
-                        . "From gickp_Competitions_Equipes ce "
+				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep "
+                        . "From gickp_Competitions_Equipes ce, gickp_Club c "
                         . "Where ce.Code_compet = '";
 				$sql .= $codeCompet;
-				$sql .= "' Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+				$sql .= "' And ce.Code_club = c.Code "
+                        . "Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			}
 			
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
-			$num_results = mysql_num_rows($result);
-		 
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = mysql_fetch_array($result);
+			$result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
+            while($row = $myBdd->FetchArray($result)) {
                 $nbMatchs = 0;
                 $sql2  = "Select count(ce.Id) nbMatchs "
                         . "FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Journees j "
@@ -118,8 +122,8 @@ class GestionEquipe extends MyPageSecure
                         . "AND ce.Id = " . $row['Id'] . " "
                         . "AND (ce.Id = m.Id_equipeA "
                         . "OR ce.Id = m.Id_equipeB) ";
-                $result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Load => ".$sql2);
-                $row2 = mysql_fetch_array($result2);
+                $result2 = $myBdd->Query($sql2);
+                $row2 = $myBdd->FetchArray($result2);
                 $nbMatchs = $row2['nbMatchs'];
                 
 				if (strlen($row['Code_comite_dep']) > 3)

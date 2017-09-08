@@ -15,12 +15,19 @@
 					<div class='titrePage'>Equipes engag&eacute;es</div>
 					<label for="competition">Comp&eacute;tition :</label>
 					<select name='competition' id='competition' onChange="changeCompetition();">
-							<Option Value="">S&eacute;lectionner une comp&eacute;tition...</Option>
-						{section name=i loop=$arrayCompetition} 
-							<Option Value="{$arrayCompetition[i][0]}" {$arrayCompetition[i][2]}>{$arrayCompetition[i][1]}</Option>
-						{/section}
-							<Option Value="">--------------------</Option>
-							<Option Value="POOL" {if $codeCompet == 'POOL'}selected{/if}>Pool arbitres</Option>
+                        {section name=i loop=$arrayCompetition}
+                            {assign var='options' value=$arrayCompetition[i].options}
+                            {assign var='label' value=$arrayCompetition[i].label}
+                            <optgroup label="{$smarty.config.$label|default:$label}">
+                                {section name=j loop=$options}
+                                    {assign var='optionLabel' value=$options[j].Code}
+                                    <Option Value="{$options[j].Code}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                {/section}
+                            </optgroup>
+                        {/section}
+                        <optgroup label="Arbitres / Referees">
+                            <Option Value="POOL" {if $codeCompet == 'POOL'}selected{/if}>Pool arbitres</Option>
+                        </optgroup>
 					</select>
 
 					<div class='liens'>

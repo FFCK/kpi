@@ -44,11 +44,12 @@ class GestionEquipeJoueur extends MyPageSecure
 				$sql .= "' And ce.Code_club = c.Code ";	 
 				$sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			} else {
-				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage ";
-				$sql .= "From gickp_Competitions_Equipes ce ";
+				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep ";
+				$sql .= "From gickp_Competitions_Equipes ce, gickp_Club c ";
 				$sql .= "Where ce.Code_compet = '";
 				$sql .= $codeCompet;
-				$sql .= "' Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+				$sql .= "' And ce.Code_club = c.Code "
+                        . "Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			}
 			
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
