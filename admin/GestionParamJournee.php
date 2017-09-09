@@ -75,16 +75,27 @@ class GestionParamJournee extends MyPageSecure
 		
 		//Liste des codes compétition
 		$arrayCompetition = array();
-		$sql  = "Select c.* From gickp_Competitions c, gickp_Competitions_Groupes g ";
+		$sql  = "Select c.*, g.section, g.ordre From gickp_Competitions c, gickp_Competitions_Groupes g ";
 		$sql .= "WHERE c.Code_ref = g.Groupe ";
 		$sql .= "Group By c.Code ";
-		$sql .= "Order By c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		$sql .= "Order By g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
 
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
-		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++) {
-			$row = mysql_fetch_array($result);
-			array_push($arrayCompetition, array( 'Code' => $row['Code'],  'Libelle' => $row['Libelle']));
+		$result = $myBdd->Query($sql);
+        $i = -1;
+        $j = '';
+        $label = $myBdd->getSections();
+		while ($row = $myBdd->FetchArray($result)) {
+            if($j != $row['section']) {
+                $i ++;
+                $arrayCompetition[$i]['label'] = $label[$row['section']];
+            }
+            if($row["Code"] == utyGetSession('codeCompet')) {
+                $row['selected'] = 'selected';
+            } else {
+                $row['selected'] = '';
+            }
+            $j = $row['section'];
+            $arrayCompetition[$i]['options'][] = $row;
 		}
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 

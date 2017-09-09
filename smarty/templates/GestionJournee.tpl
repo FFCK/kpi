@@ -31,12 +31,15 @@
                             {/if}
                             <br>
                             <select id="comboCompet" name="comboCompet" onChange="changeCompet();" tabindex="1">
-                                {section name=i loop=$arrayCompet}
-                                    {if $codeCurrentCompet eq $arrayCompet[i].Code}
-                                        <Option Value="{$arrayCompet[i].Code}" Selected>{$arrayCompet[i].Code} - {$arrayCompet[i].Libelle}</Option>
-                                    {else}
-                                        <Option Value="{$arrayCompet[i].Code}">{$arrayCompet[i].Code} - {$arrayCompet[i].Libelle}</Option>
-                                    {/if}
+                                {section name=i loop=$arrayCompetition}
+                                    {assign var='options' value=$arrayCompetition[i].options}
+                                    {assign var='label' value=$arrayCompetition[i].label}
+                                    <optgroup label="{$smarty.config.$label|default:$label}">
+                                        {section name=j loop=$options}
+                                            {assign var='optionLabel' value=$options[j].Code}
+                                            <Option Value="{$options[j].Code}" {$options[j].selected}>{$options[j].Code} - {$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                        {/section}
+                                    </optgroup>
                                 {/section}
                             </select>
                         </td>

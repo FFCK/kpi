@@ -20,9 +20,16 @@
 					</select>
 					<label for="codeCompet">{#Competition#} :</label>
 					<select name="codeCompet" onChange="changeCompetition();">
-						{section name=i loop=$arrayCompetition} 
-							<Option Value="{$arrayCompetition[i][0]}" {$arrayCompetition[i][2]}>{$arrayCompetition[i][1]}</Option>
-						{/section}
+                        {section name=i loop=$arrayCompetition}
+                            {assign var='options' value=$arrayCompetition[i].options}
+                            {assign var='label' value=$arrayCompetition[i].label}
+                            <optgroup label="{$smarty.config.$label|default:$label}">
+                                {section name=j loop=$options}
+                                    {assign var='optionLabel' value=$options[j].Code}
+                                    <Option Value="{$options[j].Code}" {$options[j].selected}>{$options[j].Code} - {$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                {/section}
+                            </optgroup>
+                        {/section}
 					</select>
 					&nbsp;
 					<a href="GestionJournee.php?Compet={$codeCompet}" title="Acc&egrave;s direct aux matchs de cette comp&eacute;tition"><img src="../img/b_match.png" alt="Matchs" height="20"></a>

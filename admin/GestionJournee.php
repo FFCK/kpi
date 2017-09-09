@@ -252,43 +252,47 @@ class GestionJournee extends MyPageSecure
 		}
 		
 		// Chargement des Competitions relatives à l'Evenement ...
-		$arrayCompet = array();
+		$arrayCompetition = array();
 			
-		if ($idEvenement != -1)
-		{
-			array_push($arrayCompet, array( 'Code' => '*', 'Libelle' => 'Toutes les compétitions de l\'événement'));
-			$sql  = "Select Distinct c.GroupOrder, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif ";
-			$sql .= "From gickp_Evenement_Journees a, gickp_Journees b, gickp_Competitions c "; 
-			$sql .= "Where a.Id_evenement = $idEvenement ";
-			$sql .= "And a.Id_journee = b.Id  ";
-			$sql .= "And b.Code_competition = c.Code ";
-			$sql .= "And b.Code_saison = c.Code_saison ";
-			$sql .= "Order By c.GroupOrder, c.Code ";
-			
+		if ($idEvenement != -1) {
+            $arrayCompetition[0]['label'] = "Evenement";
+            $arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'Toutes les compétitions de l\'événement', 'selected' => 'selected' );
+            $i = 0;
+			$sql  = "Select Distinct c.GroupOrder, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, "
+                    . "c.Titre_actif, g.id, g.section, g.ordre "
+                    . "From gickp_Evenement_Journees a, gickp_Journees b, gickp_Competitions c, gickp_Competitions_Groupes g "
+                    . "Where a.Id_evenement = $idEvenement "
+                    . "And a.Id_journee = b.Id "
+                    . utyGetFiltreCompetition('c.')
+                    . " And b.Code_competition = c.Code "
+                    . "And b.Code_saison = c.Code_saison "
+                    . "And c.Code_ref = g.Groupe "
+                    . "Order By g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
+		} else {
+            $arrayCompetition[0]['label'] = "Evenement";
+            $arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'Toutes les compétitions sélectionnées', 'selected' => '' );
+            $i = -1;
+			$arrayCompetEvt = array( 'Code' => '*', 'Libelle' => 'Toutes les compétitions sélectionnées');
+			$sql  = "Select Distinct c.GroupOrder, c.Code, c.Libelle, c.Code_niveau, c.Code_ref, c.Code_tour, "
+                    . "c.Soustitre, c.Soustitre2, c.Titre_actif, g.id, g.section, g.ordre "
+                    . "From gickp_Competitions c, gickp_Competitions_Groupes g "
+                    . "Where 1 = 1 "
+                    . "AND c.Code_saison = " . utyGetSaison() . " "
+                    . utyGetFiltreCompetition('c.')
+                    . " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+			if (utyGetSession('AfficheCompet') == 'NCF') {
+                $sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
+            } else {
+                $sql .= " And c.Code Like '" . utyGetSession('AfficheCompet') . "%' ";
+            }
+            $sql .= " And c.Code_ref = g.Groupe "
+                    . " Order By c.Code_saison, g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";	 
 		}
-		else
-		{
-			array_push($arrayCompet, array( 'Code' => '*', 'Libelle' => 'Toutes les compétitions sélectionnées'));
-			$sql  = "Select Distinct c.GroupOrder, c.Code, c.Libelle, c.Code_niveau, c.Code_ref, c.Code_tour, c.Soustitre, c.Soustitre2, c.Titre_actif ";
-			$sql .= "From gickp_Competitions c, gickp_Competitions_Groupes g ";
-			$sql .= "Where c.Code_saison = '";
-			$sql .= utyGetSaison();
-			$sql .= "' ";
-			$sql .= utyGetFiltreCompetition('');
-			$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-			if(utyGetSession('AfficheCompet') == 'NCF')
-				$sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-			else
-				$sql .= " And c.Code Like '".utyGetSession('AfficheCompet')."%' ";
-			$sql .= " And c.Code_ref = g.Groupe ";
-			$sql .= " Order By c.Code_saison, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";	 
-		}
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2<br>".$sql);
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
 
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
+        $j = '';
+        $label = $myBdd->getSections();
+		while ($row = $myBdd->FetchArray($result)) {
 			// Titre
 			if($row["Titre_actif"] != 'O' && $row["Soustitre"] != '')
 				$Libelle = $row["Soustitre"];
@@ -297,7 +301,17 @@ class GestionJournee extends MyPageSecure
 			if($row["Soustitre2"] != '')
 				$Libelle .= ' - '.$row["Soustitre2"];
 
-			array_push($arrayCompet, array( 'Code' => $row['Code'], 'Libelle' => $Libelle ));
+            if($j != $row['section']) {
+                $i ++;
+                $arrayCompetition[$i]['label'] = $label[$row['section']];
+            }
+            if($row["Code"] == $codeCompet) {
+                $row['selected'] = 'selected';
+            } else {
+                $row['selected'] = '';
+            }
+            $j = $row['section'];
+            $arrayCompetition[$i]['options'][] = $row;
 		}
 
 		// Initialisation Date du match ...
@@ -648,7 +662,7 @@ class GestionJournee extends MyPageSecure
 		}
 
 		$this->m_tpl->assign('codeCurrentCompet', $codeCompet);
-		$this->m_tpl->assign('arrayCompet', $arrayCompet);
+		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		
 		if(($idEvenement == -1) && ($codeCompet == '*') && ($idSelJournee == '*') && ($_SESSION['Profile'] < 4))
 		{

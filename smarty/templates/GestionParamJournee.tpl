@@ -33,9 +33,16 @@
 								<td colspan=3><label for="J_competition">Competition</label>
 									<img width="18" height="18" src="../img/danger.png" alt="Attention aux conséquences d'une modification" title="Attention aux conséquences d'une modification" border="0">
 									<select name="J_competition" onchange="alert('Attention, aux conséquences d une modification de ce paramètre')">
-										{section name=i loop=$arrayCompetition}
-											<Option Value="{$arrayCompetition[i].Code}" {if $arrayCompetition[i].Code == $J_competition}selected{/if}>{$arrayCompetition[i].Code} - {$arrayCompetition[i].Libelle}</Option>
-										{/section}
+                                        {section name=i loop=$arrayCompetition}
+                                            {assign var='options' value=$arrayCompetition[i].options}
+                                            {assign var='label' value=$arrayCompetition[i].label}
+                                            <optgroup label="{$smarty.config.$label|default:$label}">
+                                                {section name=j loop=$options}
+                                                    {assign var='optionLabel' value=$options[j].Code}
+                                                    <Option Value="{$options[j].Code}" {$options[j].selected}>{$options[j].Code} - {$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                                {/section}
+                                            </optgroup>
+                                        {/section}
 								    </select>
 								</td>
 							</tr>

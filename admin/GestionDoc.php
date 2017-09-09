@@ -110,12 +110,6 @@ class GestionDoc extends MyPageSecure
             $j = $row['section'];
             $arrayCompetition[$i]['options'][] = $row;
             
-//            if ($row["Code"] == $codeCompet) {
-//                array_push($arrayCompetition, array($row["Code"], $row["Code"] . " - " . $Libelle, "SELECTED"));
-//                $this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
-//            } else {
-//                array_push($arrayCompetition, array($row["Code"], $row["Code"] . " - " . $Libelle, ""));
-//            }
         }
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		$_SESSION['codeCompet'] = $codeCompet;
