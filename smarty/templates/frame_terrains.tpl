@@ -74,10 +74,10 @@
                                             </a>
                                         </td>
                                         <td class="text-center">
-                                            <a class="btn btn-xs btn-default equipe">{$Match1.Arbitre_principal|default:'&nbsp;'}</a>
+                                            <a class="btn btn-xs btn-default arbitre">{$Match1.Arbitre_principal|default:'&nbsp;'}</a>
                                         </td>
                                         <td class="text-center">
-                                            <a class="btn btn-xs btn-default equipe">{$Match1.Arbitre_secondaire|default:'&nbsp;'}</a>
+                                            <a class="btn btn-xs btn-default arbitre">{$Match1.Arbitre_secondaire|default:'&nbsp;'}</a>
                                         </td>
                                     {else}
                                         <td colspan="6" class="pause">{#Pause#}</td>

@@ -116,12 +116,18 @@ body {
 .terrains .btn {
     padding-top: 0px;
     padding-bottom: 0px;
-
 }
 .terrains .equipe {
     border: none;
     background: none;
-    
+}
+
+.terrains .arbitre {
+    border: none;
+    background: none;
+    color: #222;
+    font-weight: bold;
+    font-style: italic;
 }
 
 .table-striped > tbody > tr:nth-child(2n+1) > td.cat[data-cat='Men'],

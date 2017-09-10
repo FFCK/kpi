@@ -33,4 +33,12 @@ ___CRON___
 - Verrouillage des feuilles de présence (à J-6 de chaque journées de Championnat de France et Coupe de France) : commun/cron_verrou_presences.php  (quotidien)
 
  
+___FRAME_TERRAINS___
+
+- Saison
+- Group ou Compets (csv)
+- lang (fr/en)
+- Css
+- filtreJour (AAAA-MM-DD)
+- terrains (csv : 1, 2 ou 4 terrains. 1 terrain = avec arbitres)
 
