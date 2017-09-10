@@ -166,10 +166,11 @@ class GestionUtilisateur extends MyPageSecure
 			$row = mysql_fetch_array($result);	  
 
 			$StdOrSelected = '';
-			if ($selectUser == $row["Code"])
-				$StdOrSelected = 'selected';
-				
-			$filtreSaisons = explode('|',$row['Filtre_saison']);
+			if ($selectUser == $row["Code"]) {
+                $StdOrSelected = 'selected';
+            }
+
+            $filtreSaisons = explode('|',$row['Filtre_saison']);
 			$filtreSaisons = array_slice ($filtreSaisons, 1);
 			$filtreSaisons = implode(', ',$filtreSaisons);
 
@@ -274,31 +275,40 @@ class GestionUtilisateur extends MyPageSecure
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		
 		// Chargement des Compétitions ...
-		$sql  = "Select Code, Libelle, Code_niveau ";
-		$sql .= "From gickp_Competitions ";
-		$sql .= "Group By Code Order By Code_niveau, Code ";
-		  
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
-		$num_results = mysql_num_rows($result);
+		$sql  = "Select Distinct c.Code, c.Libelle, c.Code_niveau, g.id, g.section, g.ordre "
+                . "From gickp_Competitions c, gickp_Competitions_Groupes g "
+                . "WHERE c.Code_ref = g.Groupe "
+                . "Group By c.Code "
+                . "Order By g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";
 		
 		$arrayCompetition = array();
-
-		if ($selectUser == '')
-			$select = $this->IsCompetitionSelectedPost('*');
-		else
-			$select = $this->IsStringSelected('*', $filtreCompetition);
+		$result = $myBdd->Query($sql);
+        
+        $arrayCompetitionsSelected = explode('|', trim($filtreCompetition, '|'));
+        if (in_array('*', $arrayCompetitionsSelected)) {
+            $selected = 'selected';
+        } else {
+            $selected = '';
+        }
+        $arrayCompetition[0]['label'] = "Toutes les compétitions";
+        $arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'Toutes les compétitions', 'selected' => $selected );
+            
+        $i = 0;
+        $j = '';
+        $label = $myBdd->getSections();
+		while ($row = $myBdd->FetchArray($result)){ 
+           if($j != $row['section']) {
+                $i ++;
+                $arrayCompetition[$i]['label'] = $label[$row['section']];
+            }
+            if(in_array($row["Code"], $arrayCompetitionsSelected)) {
+                $row['selected'] = 'selected';
+            } else {
+                $row['selected'] = '';
+            }
+            $j = $row['section'];
+            $arrayCompetition[$i]['options'][] = $row;
 		
-		array_push($arrayCompetition, array('Code' => '*', 'Libelle' => '* - Toutes les Compétitions', 'Selection' => $select));
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-		
-			if ($selectUser == '')
-				$select = $this->IsCompetitionSelectedPost($row["Code"]);
-			else
-				$select = $this->IsStringSelected($row["Code"], $filtreCompetition);
-
-			array_push($arrayCompetition, array('Code' => $row["Code"], 'Libelle' => $row['Code']. ' - '.$row["Libelle"], 'Selection' => $select ));
 		}
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		
@@ -660,5 +670,3 @@ class GestionUtilisateur extends MyPageSecure
 }		  	
 
 $page = new GestionUtilisateur();
-
-?>

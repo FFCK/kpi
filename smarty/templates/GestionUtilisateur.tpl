@@ -114,10 +114,20 @@
 													</select>
 													
 													<select name="comboCompetition[]" multiple="true" size="8">
-														{section name=i loop=$arrayCompetition} 
+                                                        {section name=i loop=$arrayCompetition}
+                                                            {assign var='options' value=$arrayCompetition[i].options}
+                                                            {assign var='label' value=$arrayCompetition[i].label}
+                                                            <optgroup label="{$smarty.config.$label|default:$label}">
+                                                                {section name=j loop=$options}
+                                                                    {assign var='optionLabel' value=$options[j].Code}
+                                                                    <Option Value="{$options[j].Code}" {$options[j].selected}>{$options[j].Code}-{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                                                {/section}
+                                                            </optgroup>
+                                                        {/section}
+{*														{section name=i loop=$arrayCompetition} 
 															<Option Value="{$arrayCompetition[i].Code}" {$arrayCompetition[i].Selection}>{$arrayCompetition[i].Libelle}</Option>
 														{/section}
-													</select>
+*}													</select>
 												</td>
 												<td>
 													{if $profile == 1}

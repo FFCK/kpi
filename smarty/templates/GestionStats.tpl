@@ -470,9 +470,19 @@
 				<tr>
 					<td colspan=2>
 						<label for="Compets">Compétitions:</label>
-						<DIV STYLE="overflow-x:scroll; overflow-y: hidden; height:200px;width:240px"> 
+						<div STYLE="overflow-x:scroll; overflow-y: hidden; height:200px;width:240px"> 
 							<select name="Compets[]" multiple size=12 style="width:350px">
-								{html_options options=$arrayCompets selected=$Compets}
+                                {section name=i loop=$arrayCompetition}
+                                    {assign var='options' value=$arrayCompetition[i].options}
+                                    {assign var='label' value=$arrayCompetition[i].label}
+                                    <optgroup label="{$smarty.config.$label|default:$label}">
+                                        {section name=j loop=$options}
+                                            {assign var='optionLabel' value=$options[j].Code}
+                                            <Option Value="{$options[j].Code}" {$options[j].selected}>{$options[j].Code}-{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                        {/section}
+                                    </optgroup>
+                                {/section}
+{*								{html_options options=$arrayCompets selected=$Compets}*}
 							</select>
 						</div>
 						<label><i>(Sélection multiple avec CTRL)</i></label>
