@@ -101,7 +101,8 @@ body {
 }
 
 .titre-date {
-    color: white;
+    display: none;
+    /*color: white;*/
 }
 
 .terrains, .terrains .btn, .terrains .badge {
@@ -121,4 +122,10 @@ body {
     background: none;
     
 }
-
+.terrains .arbitre {
+    border: none;
+    background: none;
+    color: #222;
+    font-weight: bold;
+    font-style: italic;
+}
