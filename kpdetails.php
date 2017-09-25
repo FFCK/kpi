@@ -179,8 +179,13 @@ class Details extends MyPage
             if(is_file('img/schemas/schema_' . $codeSaison . '_' . $idSelCompet . '.png')) {
                 $this->m_tpl->assign('schema', 'img/schemas/schema_' . $codeSaison . '_' . $idSelCompet . '.png');
             }
-        }
 
+        }
+        
+        $recordCompetition = $myBdd->GetCompetition($idSelCompet, $codeSaison);
+        $this->m_tpl->assign('recordCompetition', $recordCompetition);
+        //Logos
+        $this->m_tpl->assign('visuels', utyGetVisuels($recordCompetition));
 	}
 		
 

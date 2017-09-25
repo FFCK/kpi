@@ -16,7 +16,22 @@
         </div>
     </div>
 </div>
-
+{if $visuels.bandeau or $visuels.logo or $recordCompetition.Web}
+    <div class="container logo_lien">
+        <article class="padTopBottom table-responsive col-md-6 col-md-offset-3">
+            <div class="text-center">
+                {if $visuels.bandeau}
+                    <img class="img2" id='logo' src='{$visuels.bandeau}' alt="logo">
+                {else if $visuels.logo}
+                    <img class="img2" id='logo' src='{$visuels.logo}' alt="logo">
+                {/if}
+                {if $recordCompetition.Web}
+                    <p><a class="text-primary" href='{$recordCompetition.Web}' target='_blank'><i>{$recordCompetition.Web}</i></a></p>
+                {/if}
+            </div>
+        </article>
+    </div>
+{/if}
 <div class="container" id="selector">
     {if $type == 'CHPT'}
         <article class="col-md-6 padTopBottom">        
