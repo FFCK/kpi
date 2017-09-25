@@ -69,10 +69,12 @@
                     <div class="fb-like" data-href="http://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                 </div>
                 <div class="row">
-                    {if $arrayCompetition[0].Code_typeclt == 'CHPT' && $idSelCompet != '*'}
-                        <a class="btn btn-default" href='kpdetails.php?Compet={$idSelCompet}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
-                    {elseif $nbCompet > 1 && $idSelCompet != '*'}
-                        <a class="btn btn-default" href='kpdetails.php?Compet={$idSelCompet}&Group={$codeCompetGroup}&Saison={$Saison}&typ=CP'>{#Infos#}</a>
+                    {if $arrayCompetition[0].Code_typeclt == 'CHPT' && $arrayListJournees|count > 0}
+                        {if $idSelJournee == '*'}{assign var='selJournee' value=$arrayListJournees[0].Id}{else}{assign var='selJournee' value=$idSelJournee}{/if}
+                        <a class="btn btn-default" href='kpdetails.php?Compet={$codeCompetGroup}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$selJournee}&typ=CHPT'>{#Infos#}</a>
+                    {elseif $nbCompet > 1}
+                        {if $idSelCompet == '*'}{assign var='selCompet' value=$arrayCompetition[0].Code}{else}{assign var='selCompet' value=$idSelCompet}{/if}
+                        <a class="btn btn-default" href='kpdetails.php?Compet={$selCompet}&Group={$codeCompetGroup}&Saison={$Saison}&typ=CP'>{#Infos#}</a>
                     {/if}
                     <a class="pdfLink btn btn-default" href="PdfListeMatchs{if $lang=='en'}EN{/if}.php?S={$Saison}&Compet={$codeCompetGroup}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
                     <a class="btn btn-default" href='kpclassements.php?Compet={$idSelCompet}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$idSelJournee}'>{#Classements#}...</a>
