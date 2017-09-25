@@ -8,6 +8,14 @@ class MultiScore extends MyPage
 	
     function Head()
     {
+		$tv = $this->GetParamInt('tv', 0);
+		if ($tv == 1)
+			$tv = '_tv';
+		elseif ($tv == 2)
+			$tv = '_phone';
+		else
+			$tv = '';
+		
     ?>
         <head>
         <title>Multi-Scores</title>
@@ -23,7 +31,7 @@ class MultiScore extends MyPage
 		
         <!-- CSS styles -->
         <link href="./css/bootstrap.min.css" rel="stylesheet">
-		<link href="./css/multi_score.css" rel="stylesheet">
+		<link href="./css/multi_score<?php echo $tv;?>.css?tick=<?php echo uniqid()?>" rel="stylesheet">
 		
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>

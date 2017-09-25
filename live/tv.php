@@ -24,7 +24,7 @@ class TV extends MyPage
 		
         <!-- CSS styles -->
         <link href="./css/bootstrap.min.css" rel="stylesheet">
-		<link href="./css/tv.css" rel="stylesheet">
+		<link href="./css/tv_black.css?v3" rel="stylesheet">
 
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
@@ -54,9 +54,32 @@ class TV extends MyPage
 		return "<img class='centre' src='./img/nation/".$nation.".png' height='32' width='32' />";
 	}
 	
+	function ImgNation48($nation)
+	{
+		$nation = $this->VerifNation($nation);
+		return "<img class='centre' src='./img/nation/".$nation.".png' height='48' width='48' />";
+	}
+
+	
+	function ImgNation64($nation)
+	{
+		$nation = $this->VerifNation($nation);
+		return "<img class='centre' src='./img/nation/".$nation.".png' height='64' width='64' />";
+	}
+	
 	function ImgMedal($medal)
 	{
 		return "<img class='centre' src='./img/".$medal.".gif' height='32' width='32' />";
+	}
+	
+	function ImgMedal48($medal)
+	{
+		return "<img class='centre' src='./img/".$medal.".gif' height='48' width='48' />";
+	}
+	
+	function ImgMedal64($medal)
+	{
+		return "<img class='centre' src='./img/".$medal.".gif' height='64' width='64' />";
 	}
 
 	function LabelMedal($medal)
@@ -71,14 +94,16 @@ class TV extends MyPage
 	function VerifReferee(&$referee)
 	{
 		$referee = trim($referee);
-		if (substr($referee, -3) == 'INT')
-			$referee = substr($referee,0, strlen($referee)-3);
+		if (substr($referee, -5, 3) == 'INT')
+			$referee = substr($referee,0, strlen($referee)-5);
 			
 		$referee = trim($referee);
 		if (substr($referee, -1) != ')')
 			return '';
 			
-		return substr($referee,-4,3);
+		$nation = substr($referee,-4,3);
+		$referee = substr($referee,0,strlen($referee)-6);
+		return $nation;
 	}
 	
 	function GetPlayer(&$tJoueurs, $row)
@@ -87,12 +112,23 @@ class TV extends MyPage
 			return;
 			
 		$prenom = $tJoueurs[$row]['Prenom'];
-			
-		$line  = $tJoueurs[$row]['Numero'];
-		$line .= ' - ';
+		
+		$line = '<span class="numero_player">';
+		if ($tJoueurs[$row]['Numero'] != '0')
+		{
+			$line .= $tJoueurs[$row]['Numero'].' - ';
+		}
+		$line .= '</span><span class="name_player">';
 		$line .= strtoupper($tJoueurs[$row]['Nom']);
 		$line .= ' ';
 		$line .= strtoupper(substr($prenom,0,1)).strtolower(substr($prenom,1));
+		
+		if ($tJoueurs[$row]['Capitaine'] == 'C')
+			$line .= ' (Captain) ';
+		elseif ($tJoueurs[$row]['Capitaine'] == 'E')
+			$line .= ' (Coach) ';
+		$line .= '</span>';
+
 		return $line;
 	}
 
@@ -129,12 +165,13 @@ class TV extends MyPage
 		$cmd .= "Where a.Id_match = $idMatch ";
 		$cmd .= "And a.Equipe = '$equipe' ";
 		$cmd .= "And a.Matric = b.matric ";
+		$cmd .= "And (a.Capitaine Is Null Or a.Capitaine != 'E') ";
 		$cmd .= "Order By a.Numero ";
 
 		$tJoueurs = null;
 		$db->LoadTable($cmd, $tJoueurs);
 	
-		$title1 = $this->ImgNation($rEquipe['Code_club']);
+		$title1 = $this->ImgNation64($rEquipe['Code_club']);
 		$title1 .= "&nbsp;<span>";
 		$title1 .= $rEquipe['Libelle'];
 		$title1 .= "</span>";
@@ -145,6 +182,7 @@ class TV extends MyPage
 		echo "<div id='list_team_title1'>$title1</div>\n";
 //		echo "<div id='list_team_title2'>$title2</div>\n";
 
+		// Max 10 Joueurs
 		echo "<div id='list_team_player1' class='list_team_player'>".$this->GetPlayer($tJoueurs,0)."</div>\n";
 		echo "<div id='list_team_player2' class='list_team_player'>".$this->GetPlayer($tJoueurs,1)."</div>\n";
 		echo "<div id='list_team_player3' class='list_team_player'>".$this->GetPlayer($tJoueurs,2)."</div>\n";
@@ -155,8 +193,25 @@ class TV extends MyPage
 		echo "<div id='list_team_player8' class='list_team_player'>".$this->GetPlayer($tJoueurs,7)."</div>\n";
 		echo "<div id='list_team_player9' class='list_team_player'>".$this->GetPlayer($tJoueurs,8)."</div>\n";
 		echo "<div id='list_team_player10' class='list_team_player'>".$this->GetPlayer($tJoueurs,9)."</div>\n";
+		
+		// Chargement Entraineur  
+		$cmd  = "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
+		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
+		$cmd .= "Where a.Id_match = $idMatch ";
+		$cmd .= "And a.Equipe = '$equipe' ";
+		$cmd .= "And a.Matric = b.matric ";
+		$cmd .= "And (a.Capitaine Is Not Null And a.Capitaine = 'E') ";
+		$cmd .= "Order By a.Numero ";
+
+		$tJoueurs = null;
+		$db->LoadTable($cmd, $tJoueurs);
+
+		// Max 3 Entraineurs
+		echo "<div id='list_team_player11' class='list_team_player'>".$this->GetPlayer($tJoueurs,0)."</div>\n";
+		echo "<div id='list_team_player12' class='list_team_player'>".$this->GetPlayer($tJoueurs,1)."</div>\n";
+		echo "<div id='list_team_player13' class='list_team_player'>".$this->GetPlayer($tJoueurs,2)."</div>\n";
     }
-	
+
 	function Content_List_Medals()
     {
 		$db = new MyBase();
@@ -165,42 +220,46 @@ class TV extends MyPage
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = '2014'", $rCompetition);
+		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = '2017'", $rCompetition);
 
 		// Chargement des Equipes Classées ...
 		$cmd  = "Select * FROM gickp_Competitions_Equipes ";
-		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = '2014' ";
+		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = '2017' ";
 		$cmd .= "Order By CltNiveau ";
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
 		
-		echo "<div id='banner_list'></div>\n";
+		echo "<div id='banner_presentation'></div>\n";
 		$title = $rCompetition['Soustitre2'];
 		echo "<div id='list_medals_title'>$title</div>\n";
 
 		if (count($tEquipes) < 3) return;
 		
-		$title  = $this->ImgMedal('GOLD');
-		$title .= '&nbsp;<span>';
-		$title .= $this->VerifNation($tEquipes[0]['Libelle']);
-		$title .= '</span>&nbsp;';
-		$title .= $this->ImgNation($tEquipes[0]['Code_club']);
-		echo "<div id='list_medals1' class='list_medals'>$title</div>\n";
-		
-		$title  = $this->ImgMedal('SILVER');
-		$title .= '&nbsp;<span>';
-		$title .= $this->VerifNation($tEquipes[1]['Libelle']);
-		$title .= '</span>&nbsp;';
-		$title .= $this->ImgNation($tEquipes[1]['Code_club']);
-		echo "<div id='list_medals2' class='list_medals'>$title</div>\n";
-	
-		$title  = $this->ImgMedal('BRONZE');
-		$title .= '&nbsp;<span>';
-		$title .= $this->VerifNation($tEquipes[2]['Libelle']);
-		$title .= '</span>&nbsp;';
-		$title .= $this->ImgNation($tEquipes[2]['Code_club']);
-		echo "<div id='list_medals3' class='list_medals'>$title</div>\n";
+		?>
+		<table id="table_medals">
+			<tr>
+			<td class="col_img_medal"><?php echo $this->ImgMedal48('GOLD');?></td>
+			<td class="col_silver"></td>
+			<td class="col_gold"><?php echo $this->VerifNation($tEquipes[0]['Libelle']).' '.$this->ImgNation48($tEquipes[0]['Code_club']);?></td>
+			<td class="col_bronze"></td>
+			</tr>
+
+			<tr>
+			<td class="col_img_medal"><?php echo $this->ImgMedal48('SILVER');?></td>
+			<td class="col_silver"><?php echo $this->VerifNation($tEquipes[1]['Libelle']).' '.$this->ImgNation48($tEquipes[1]['Code_club']);?></td>
+			<td class="col_gold"></td>
+			<td class="col_bronze"></td>
+			</tr>
+
+			<tr>
+			<td class="col_img_medal"><?php echo $this->ImgMedal48('BRONZE');?></td>
+			<td class="col_silver"></td>
+			<td class="col_gold"></td>
+			<td class="col_bronze"><?php echo $this->VerifNation($tEquipes[2]['Libelle']).' '.$this->ImgNation48($tEquipes[2]['Code_club']);?></td>
+			</tr>
+		</table>
+	<?php
 	}
 
 	function Content_Player()
@@ -242,7 +301,7 @@ class TV extends MyPage
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
 		
-		$title = $this->ImgNation($rEquipe['Code_club']);
+		$title = $this->ImgNation64($rEquipe['Code_club']);
 		$title .= "&nbsp;<span>";
 		$title .= utyGetString($rJoueur, 'Numero', '999');
 		$title .= ' - ';
@@ -299,7 +358,7 @@ class TV extends MyPage
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
 	
-		$title  = $this->ImgNation($rEquipe['Code_club']);
+		$title  = $this->ImgNation64($rEquipe['Code_club']);
 		$title .= "&nbsp;<span>";
 		$title .= utyGetString($rJoueur, 'Numero', '999');
 		$title .= ' - ';
@@ -331,11 +390,11 @@ class TV extends MyPage
 
 		$arbitre  = $rMatch['Arbitre_principal'];
 		$nation = $this->VerifReferee($arbitre);
-		echo "<div id='referee_line1'>First Referee : ".$this->ImgNation($nation)."&nbsp;<span>".$arbitre."<span></div>\n";
+		echo "<div id='referee_line1'>First Referee : ".$this->ImgNation64($nation)."&nbsp;<span>".$arbitre."<span></div>\n";
 
 		$arbitre  = $rMatch['Arbitre_secondaire'];
 		$nation = $this->VerifReferee($arbitre);
-		echo "<div id='referee_line2'>Second Referee : ".$this->ImgNation($nation)."&nbsp;<span>".$arbitre."<span></div>\n";
+		echo "<div id='referee_line2'>Second Referee : ".$this->ImgNation64($nation)."&nbsp;<span>".$arbitre."<span></div>\n";
 	}
 
 	function Content_Match()
@@ -375,13 +434,13 @@ class TV extends MyPage
 		echo "<div id='presentation_line1'>$line</div>\n";
 		
 		// Ligne 2
-		$line  = $this->ImgNation($rEquipeA['Code_club']);
+		$line  = $this->ImgNation64($rEquipeA['Code_club']);
 		$line .= "&nbsp;<span>";
 		$line .= $rEquipeA['Libelle'];
 		$line .= " vs ";
 		$line .=  $rEquipeB['Libelle'];
 		$line .= "</span>&nbsp;";
-		$line .= $this->ImgNation($rEquipeB['Code_club']);
+		$line .= $this->ImgNation64($rEquipeB['Code_club']);
 		echo "<div id='presentation_line2'>$line</div>\n";
 	}
 
@@ -468,13 +527,13 @@ class TV extends MyPage
 
 		echo "<div id='banner_single'></div>\n";
 		
-		$title  = $this->ImgNation($rEquipe['Code_club']);
+		$title  = $this->ImgNation64($rEquipe['Code_club']);
 		$title .= '&nbsp;<span>';
 		$title .= $rEquipe['Libelle'];
 		$title .= '</span>';
 		echo "<div id='player_title' class='player_title'>$title</div>\n";
 	}
-	
+
 	function Content_Team_Medal()
     {
 		$db = new MyBase();
@@ -508,7 +567,7 @@ class TV extends MyPage
 
 		echo "<div id='banner_single'></div>\n";
 		
-		$title  = $this->ImgNation($rEquipe['Code_club']);
+		$title  = $this->ImgNation64($rEquipe['Code_club']);
 		$title .= '&nbsp;<span>';
 		$title .= $rEquipe['Libelle'];
 		$title .= '</span>';
@@ -545,10 +604,10 @@ class TV extends MyPage
 	{
 		echo "<select name='$id' id='$id'>";
 ?>		
-		  <option value="CMH">CMH</option> 
-		  <option value="CMF">CMF</option>
-		  <option value="CMH21">CMH21</option>
-		  <option value="CMF21">CMF21</option>
+		  <option value="CEH">CEH</option> 
+		  <option value="CEF">CEF</option>
+		  <option value="CEH21">CEH21</option>
+		  <option value="CEF21">CEF21</option>
 	  </select>
 <?php 
 	}
@@ -557,12 +616,9 @@ class TV extends MyPage
 	{
 		echo "<select name='$id' id='$id'>";
 ?>		
-		  <option value="3773047">3773047 : NZL Women - FRA Women (PF)</option> 
-		  <option value="3772928">3772928 : ITA Men	- ESP Men(PF)</option> 
-		  <option value="3773052">3773052 : GER Women	GBR Women</option> 
-		  <option value="3772931">3772931 : GER Men	FRA Men</option> 
-		  <option value="3772901">3772901 - Test JPN Men - AUS Men</option>
-		  
+		<option value="79261780">79261780 : GER Men - ESP Men</option>
+		<option value="79261829">79261829 : GER Women - FRA Women</option>
+ 
 	  </select>
 <?php 
 	}
@@ -613,6 +669,7 @@ class TV extends MyPage
 ?>		
 		  <option value="live/score.php">live/score.php</option> 
 		  <option value="live/multi_score.php">live/multi_score.php</option> 
+		  <option value="live/multi_score.php?tv=2">live/multi_score.php?tv=2</option> 
 		  <option value="live/schema.php">live/schema.php</option> 
 		  <option value="frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24">frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24</option> 
 	  </select>
@@ -632,11 +689,11 @@ class TV extends MyPage
 			</tr>
 			</thead>
 			<tbody>
-			<?php for ($i=1;$i<=5;$i++) { ?>
+			<?php for ($i=1;$i<=8;$i++) { ?>
 				<tr>
 					<td><?php echo $i;?></td>
-					<td><input type="text" name="scenario_url<?php echo$i;?>" id="scenario_url<?php echo$i;?>"></td>
-					<td><input type="text" name="scenario_duree<?php echo$i;?>" id="scenario_duree<?php echo$i;?>"></td>
+					<td><input type="text" style="width:1024px" name="scenario_url<?php echo$i;?>" id="scenario_url<?php echo$i;?>"></td>
+					<td><input type="text" style="width:64px"name="scenario_duree<?php echo$i;?>" id="scenario_duree<?php echo$i;?>"></td>
 				</tr>
 			<?php } ?>
 			</tbody>
@@ -740,8 +797,11 @@ class TV extends MyPage
 
 		<tr>
 			<td><button id="scenario_btn">Scénario</button></td>
-			<td><?php $this->Content_Command_Channel('scenario_channel') ?></td>
-			<td><?php $this->Content_Command_Scenario('scenario') ?></td>
+			<td><?php $this->Content_Command_Channel('scenario_channel') ?>
+				<br><br>
+				<button id="url_splitter">Url Splitter</button>
+			</td>
+			<td colspan="4"><?php $this->Content_Command_Scenario('scenario') ?></td>
 		</tr>
 		
 		<tr>
@@ -750,7 +810,7 @@ class TV extends MyPage
 
 		<tr>
 			<td>Message</td>
-			<td><div id="tv_message">Message</div></td>
+			<td colspan="4"><div id="tv_message">Message</div></td>
 		</tr>
 		
 		</form>

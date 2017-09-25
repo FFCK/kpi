@@ -74,7 +74,7 @@ table.scenario
 	top:14%;
 	text-align:center;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 	font-size:50px;
 }
@@ -87,7 +87,7 @@ table.scenario
 	top:20%;
 	text-align:center;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 	font-size:30px;
 }
@@ -95,63 +95,92 @@ table.scenario
 .list_team_player
 {
 	position: absolute;
-	left:425px;
+	left:450px;
 	right:0px;
 	text-align:left;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 	font-size:42px;
 }
 
 #list_team_player1 {	top:24%;}
-#list_team_player2 {	top:29.5%;}
+#list_team_player2 {	top:29%;}
 #list_team_player3 {	top:34%;}
-#list_team_player4 {	top:39.5%;}
-#list_team_player5 {	top:45%;}
-#list_team_player6 {	top:50.5%;}
-#list_team_player7 {	top:56%;}
-#list_team_player8 {	top:61.5%;}
-#list_team_player9 {	top:67%;}
-#list_team_player10 {	top:72.5%;}
-#list_team_player11 {	top:78%;}
-#list_team_player12 { top:83.5%;}
+#list_team_player4 {	top:39%;}
+#list_team_player5 {	top:44%;}
+#list_team_player6 {	top:49%;}
+#list_team_player7 {	top:54%;}
+#list_team_player8 {	top:59%;}
+#list_team_player9 {	top:64%;}
+#list_team_player10 {	top:69%;}
+#list_team_player11 {	top:74%;}
+#list_team_player12 {   top:79%;}
+#list_team_player13 {   top:84%;}
+#list_team_player14 {   top:89%;}
+
+span.numero_player 
+{
+	display: inline;
+	width:128px;
+}
+
+span.name_player 
+{
+	display: inline;
+}
 
 #list_medals_title
 {
 	position: absolute;
-	left:150px;
-	right:300px;
-	top:14%;
-	text-align:center;
+	left:400px;
+	top:74%;
+	text-align:left;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	font-size:60px;
+	font-size:40px;
 }
 
 .list_medals
 {
 	position: absolute;
-	left:600px;
+	left:1000px;
 	right:0px;
 	text-align:left;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	font-size:60px;
+	font-size:28px;
 }
 
-#list_medals1 {	top:34%;}
-#list_medals2 {	top:50%;}
-#list_medals3 {	top:67%;}
+#table_medals
+{
+	position: absolute;
+	left:600px;
+	top:754px;
+	text-align:left;
+	font-weight: bold;
+	color:black;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:28px;
+}
+
+td.col_img_medal
+{
+	width:150px;
+}
+
+td.col_silver { width:300px;}
+td.col_gold { width:300px;}
+td.col_bronze { width:300px;}
 
 .player_title
 {
 	position: absolute;
 	text-align:left;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 }
 
@@ -167,7 +196,7 @@ table.scenario
 	top:70%;
 	text-align:center;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 	font-size:32px;
 }
@@ -180,7 +209,7 @@ table.scenario
 	top:75%;
 	text-align:center;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 	font-size:38px;
 }
@@ -193,20 +222,20 @@ table.scenario
 	top:80%;
 	text-align:left;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	font-size:36px;
+	font-size:40px;
 }
 
 #referee_line2
 {
 	position: absolute;
-	left:550px;
+	left:500px;
 	right:0px;
 	top:85%;
 	text-align:left;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	font-size:32px;
+	font-size:40px;
 }

@@ -46,7 +46,7 @@ class Event extends MyPage
 		<br>
 
 		<label for='date_event'>Date</label>
-		<input type='text' id='date_event' name='date_event' Value='2017-08-24'>
+		<input type='text' id='date_event' name='date_event' Value='2017-08-27'>
 		<br>
 
 		<label for='hour_event'>Heure</label>

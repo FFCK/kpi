@@ -37,8 +37,8 @@ $url = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce?saison
  
 $header = get_web_page($url);
 
-echo "errno = ".$header['errno'].'<br>';
-echo "errmsg = ".$header['errmsg'].'<br>';
-echo "content = ".$header['content'].'<br>';
+echo "errno = ".$header['errno'].'<br><br>';
+echo "errmsg = ".$header['errmsg'].'<br><br>';
+echo "content = ".$header['content'].'<br><br>';
 
 ?>

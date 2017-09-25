@@ -1,0 +1,205 @@
+body
+{
+	background-color:rgb(225,225,225);
+}
+
+#container_1
+{
+ 	position:absolute;
+	left:0%;
+	width:50%;
+	height:50%;
+} 
+
+#container_2
+{
+	position:absolute;
+	left:50%;
+	width:50%;
+	height:50%;
+} 
+
+#container_3
+{
+	position:absolute;
+	left:0%;
+	top:50%;
+	width:50%;
+	height:50%;
+}
+ 
+#container_4
+{
+	position:absolute;
+	left:50%;
+	top:50%;
+	width:50%;
+	height:50%;
+} 
+
+div.pitch
+{
+	left:0%;
+	width:100%;
+	top:0%;
+	height:10%;
+
+	text-align:center;
+	font-size:12px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:#black;
+}
+
+div.container_score
+{
+	left:0%;
+	width:100%;
+	top:10%;
+	height:50%;
+}
+
+div.container_goal
+{
+	left:0%;
+	width:100%;
+	top:50%;
+	height:40%;
+}
+
+div.match_horloge
+{
+	position: absolute;
+	left: 36%;
+	top:15%;
+	font-size:40px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:black;
+}
+
+div.match_periode
+{
+	position: absolute;
+	left: 59%;
+	top:15%;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:red;
+}
+
+div.nation1
+{	
+	position: absolute;
+	left: 6%;
+	top:12%;
+}
+
+div.nation2
+{	
+	position: absolute;
+	left: 89%;
+	top:12%;
+	color:yellow;
+}
+
+div.equipe1
+{	
+	position: absolute;
+	left: 15%;
+	top:31%;
+	font-size:10px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:black;
+}
+
+div.equipe2
+{	
+	position: absolute;
+	left: 61%;
+	top:31%;
+	font-size:10px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:black;
+}
+
+div.score1
+{	
+	position: absolute;
+	top: 29%;
+	left: 42%;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:black;
+}
+
+div.score2
+{	
+	position: absolute;
+	top:29%;
+	left: 54%;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:black;
+}
+
+div.score_separation
+{	
+	position: absolute;
+	top:29%;
+	left: 48%;
+	font-size:20px;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	color:black;
+}
+
+div.bandeau_goal
+{
+/*
+	background-image: url("../img/multi_goal.png");
+	background-repeat: no-repeat;
+	background-size: 100%;
+*/
+}
+
+div.match_event_line1
+{
+	width:100%;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:32px;
+	text-align:center;
+	color:#3c3569;
+}
+
+div.match_event_line2
+{
+	width:100%;
+	font-weight: bold;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:28px;
+	text-align:center;
+	color:#66899f;
+}
+
+div.lien_pdf
+{
+	position: absolute;
+	width:100%;
+	top:90%;
+	font-weight: bold;
+	color:white;
+	font-family:"Arial Narrow", Arial, sans-serif;
+	font-size:14px;
+	text-align:center;
+	display:none;
+}
+
+
+

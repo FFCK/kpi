@@ -1,0 +1,33 @@
+// Phases
+http://www.kayak-polo.info/frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-26
+http://www.kayak-polo.info/frame_stats.php?Saison=2017&Group=CE&Compet=CEH&Css=sainto&nbLignes=25
+
+
+// 21 ANS
+http://www.kayak-polo.info/live/splitter.php?frame1=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEH21|A|Css=sainto|A|Round=1|A|lang=en&frame2=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEF21|A|Css=sainto|A|Round=1
+
+// SENIORS
+http://www.kayak-polo.info/live/splitter.php?frame1=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEH|A|Css=sainto|A|Round=1|A|lang=en&frame2=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEF|A|Css=sainto|A|Round=1
+
+
+frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-25
+live/schema.php
+
+// Ecran 2 
+live/splitter.php?frame1=www.kayak-polo.info/frame_terrains.php|Q|Saison=2017|A|Group=CE|A|lang=en|A|Css=sainto_hd|A|filtreJour=2017-08-26
+live/splitter.php?frame1=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEH21|A|Css=sainto|A|Round=4|A|lang=en&frame2=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEF21|A|Css=sainto|A|Round=3
+live/splitter.php?frame1=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEH|A|Css=sainto|A|Round=2|A|lang=en&frame2=www.kayak-polo.info/frame_phases|Q|Saison=2017|A|Group=CE|A|Compet=CEF|A|Css=sainto|A|Round=2
+
+// Stat Scorer 
+live/splitter.php?frame1=www.kayak-polo.info/frame_stats.php|Q|Saison=2017|A|Group=CE|A|Compet=CEH|A|Css=sainto|A|nbLignes=25|A|lang=en&frame2=www.kayak-polo.info/frame_stats.php|Q|Saison=2017|A|Group=CE|A|Compet=CEF|A|Css=sainto|A|nbLignes=25|A|lang=en
+live/splitter.php?frame1=www.kayak-polo.info/frame_stats.php|Q|Saison=2017|A|Group=CE|A|Compet=CEH21|A|Css=sainto|A|nbLignes=25|A|lang=en&frame2=www.kayak-polo.info/frame_stats.php|Q|Saison=2017|A|Group=CE|A|Compet=CEF21|A|Css=sainto|A|nbLignes=25|A|lang=en
+
+live/splitter.php?frame1=www.kayak-polo.info/img/schemas/schema_2017_CEF.png?frame2=www.kayak-polo.info/img/schemas/schema_2017_CEM.png
+
+
+// Schema 4
+http://www.kayak-polo.info/live/splitter.php?frame1=www.kayak-polo.info/img/schemas/schema_2017_CEH.png&frame2=www.kayak-polo.info/img/schemas/schema_2017_CEF.png&frame3=www.kayak-polo.info/img/schemas/schema_2017_CEH21.png&frame4=www.kayak-polo.info/img/schemas/schema_2017_CEF21.png
+
+// Schema 2 + 2
+http://www.kayak-polo.info/live/splitter.php?frame1=www.kayak-polo.info/img/schemas/schema_2017_CEH.png&frame2=www.kayak-polo.info/img/schemas/schema_2017_CEF.png
+http://www.kayak-polo.info/live/splitter.php?frame1=www.kayak-polo.info/img/schemas/schema_2017_CEH21.png&frame2=www.kayak-polo.info/img/schemas/schema_2017_CEF21.png

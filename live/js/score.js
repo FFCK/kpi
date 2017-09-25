@@ -53,6 +53,10 @@ function RefreshHorloge()
 		{
 			var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i);
 			if (temps_restant < 0) temps_restant = 0;
+			
+			// Evolution Chrono ...
+			if (theContext.Match.GetStatut(i) == 'END')
+				temps_restant = 0;
 
 			$('#match_horloge').html(SecToMMSS(temps_restant));
 			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i)));
@@ -119,23 +123,41 @@ function ParseCacheScore(jsonTxt)
 				line = ImgNation(theContext.Match.GetEquipe2(rowMatch));
 				
 			line += "&nbsp;<span>";
-			line += jsonData.event[0].Numero;
-			line += ' - ';
-			line += jsonData.event[0].Nom;
-			line += ' ';
-			line += jsonData.event[0].Prenom;
+			if (jsonData.event[0].Numero == "undefined")
+			{
+				if (jsonData.event[0].Equipe_A_B == 'A')
+					line = "Team "+theContext.Match.GetEquipe1(rowMatch);
+				else	
+					line = "Team "+theContext.Match.GetEquipe2(rowMatch);
+			}
+			else
+			{
+				line += jsonData.event[0].Numero;
+				line += ' - ';
+				line += jsonData.event[0].Nom;
+				line += ' ';
+				line += jsonData.event[0].Prenom;
+			}
 			line += "</span>";
 			$('#match_event_line2').html(line);
 			
 			$('#bandeau_goal').fadeIn(1);
-			$('#bandeau_goal').delay(6000).fadeOut(2000);
+			$('#bandeau_goal').delay(6000).fadeOut(0);
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId);
 	}
 	
-	$('#score1').html(jsonData.score1);
-	$('#score2').html(jsonData.score2);
+	var score1 = jsonData.score1;
+	if ( ((score1 == '') || (score1 == null)) && (jsonData.periode != 'ATT'))
+		score1 = '0';
+
+	var score2 = jsonData.score2;
+	if ( ((score2 == '') || (score2 == null)) && (jsonData.periode != 'ATT'))
+		score2 = '0';
+	
+	$('#score1').html(score1);
+	$('#score2').html(score2);
 }
 
 function ParseCacheChrono(jsonTxt)
@@ -209,23 +231,32 @@ function ParseCacheGlobal(jsonTxt)
 	// Mise à jour des données ...
 	theContext.Match.SetTickGlobal(rowMatch, jsonData.tick);
 	theContext.Match.SetStatut(rowMatch, jsonData.statut);
-	
+
+/*	
 	if (jsonData.statut == 'END')
 	{
 		window.location.href = "./presentation.php?terrain="+theContext.Terrain+"&speaker="+theContext.Speaker;
 		return;
 	}
+*/
 
 	$('#match_nom').html(jsonData.competition);
-
-	$('#equipe1').html(jsonData.equipe1.nom);
-	$('#equipe2').html(jsonData.equipe2.nom);
+	
+	var equipe1 = jsonData.equipe1.nom;
+	equipe1 = equipe1.replace(" Women", " W.");
+//	equipe1 = equipe1.replace(" Men", " M.");
+	$('#equipe1').html(equipe1);
+	
+	var equipe2 = jsonData.equipe2.nom;
+	equipe2 = equipe2.replace(" Women", " W.");
+//	equipe2 = equipe2.replace(" Men", " M.");
+	$('#equipe2').html(equipe2);
 	
 	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club);
 	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club);
 
-	$('#nation1').html(ImgNation(jsonData.equipe1.club));
-	$('#nation2').html(ImgNation(jsonData.equipe2.club));
+	$('#nation1').html(ImgNation48(jsonData.equipe1.club));
+	$('#nation2').html(ImgNation48(jsonData.equipe2.club));
 	
 /* Joueurs 
 	var htmlData = '';

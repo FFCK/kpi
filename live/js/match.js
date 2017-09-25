@@ -391,6 +391,18 @@ function ImgNation(nation)
 	return "<img class='centre' src='./img/nation/"+nation+".png' height='32' width='32' />";
 }
 
+function ImgNation48(nation)
+{
+	nation = VerifNation(nation);
+	return "<img class='centre' src='./img/nation/"+nation+".png' height='48' width='48' />";
+}
+
+function ImgNation64(nation)
+{
+	nation = VerifNation(nation);
+	return "<img class='centre' src='./img/nation/"+nation+".png' height='64' width='64' />";
+}
+
 function GetLabelPeriode(periode)
 {
 	switch(periode)
@@ -468,6 +480,9 @@ function GetLabelEvtMatch(evt_match)
 
 		case 'R':
 		return 'RED CARD';
+
+		case 'A':
+		return 'BLOCK';
 		
 		default:
 		break;
@@ -556,8 +571,11 @@ function ParseCacheTerrain(jsonTxt)
 	if (typeof(jsonData.id_match) == 'undefined')
 		return;	// Data JSON non correcte ...
 
+//	alert("ET1="+jsonTxt);
 	if (theContext.Match.GetId(0) != jsonData.id_match)
 	{
+//		alert("ET2 "+jsonData.id_match);
+
 		theContext.Match.SetId(0,jsonData.id_match);
 
 		RefreshCacheScore();

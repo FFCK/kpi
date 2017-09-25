@@ -11,6 +11,8 @@ div#bandeau_score
 	left: 0px;
 	bottom:0px;
 	right:0px;
+
+/*	background-image: url("../img/multi_score.png");*/
     background-image: url("../img/SCORE.png");
 	background-repeat: no-repeat;
 	background-size: 100%;
@@ -19,12 +21,12 @@ div#bandeau_score
 #match_horloge
 {
 	position: absolute;
-	left: 44.5%;
+	left: 44%;
 	top:2.7%;
-	font-size:36px;
+	font-size:40px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#274375;
+	color:black;
 }
 
 #match_periode
@@ -33,25 +35,25 @@ div#bandeau_score
 	left: 51.5%;
 	width:3%;
 	top:2.7%;
-	font-size:36px;
+	font-size:40px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#f8a40e;
 	text-align:center;
+	color:red;
 }
 
 div#nation1
 {	
 	position: absolute;
 	left: 33%;
-	top:8.1%;
+	top:7.8%;
 }
 
 div#nation2
 {	
 	position: absolute;
 	left: 64.5%;
-	top:8.1%;
+	top:7.8%;
 }
 
 div#equipe1
@@ -59,10 +61,10 @@ div#equipe1
 	position: absolute;
 	left: 36%;
 	top:8.1%;
-	font-size:20px;
+	font-size:30px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#274375;
+	color:black;
 }
 
 div#equipe2
@@ -70,10 +72,10 @@ div#equipe2
 	position: absolute;
 	left: 53.5%;
 	top:8.1%;
-	font-size:20px;
+	font-size:30px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	color:#274375;
+	color:black;
 }
 
 div#score1
@@ -81,10 +83,10 @@ div#score1
 	position: absolute;
 	top: 7.5%;
 	left: 48.0%;
-	font-size:32px;
+	font-size:40px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color : #f8a40e
+	Color:black
 }
 
 div#score2
@@ -92,10 +94,10 @@ div#score2
 	position: absolute;
 	top:7.5%;
 	left: 50.5%;
-	font-size:32px;
+	font-size:40px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color : #f8a40e
+	Color:black
 }
 
 div#score_separation
@@ -103,10 +105,10 @@ div#score_separation
 	position: absolute;
 	top:7.5%;
 	left: 49.6%;
-	font-size:32px;
+	font-size:40px;
 	font-weight: bold;
 	font-family:"Arial Narrow", Arial, sans-serif;
-	Color : #f8a40e;
+	Color:black
 }
 
 div#bandeau_goal
@@ -125,22 +127,22 @@ div#bandeau_goal
 div#match_event_line1
 {
 	position: absolute;
-	left: 45.0%;
+	left: 25.0%;
 	top:79.5%;
-	font-size:22px;
+	font-size:32px;
 	font-weight: bold;
-	color:#3c3569;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 }
 
 div#match_event_line2
 {
 	position: absolute;
-	left: 48%;
-	top:82.4%;
-	font-size:20px;
+	left: 28%;
+	top:84%;
+	font-size:28px;
 	font-weight: bold;
-	color:#66899f;
+	color:black;
 	font-family:"Arial Narrow", Arial, sans-serif;
 }
 

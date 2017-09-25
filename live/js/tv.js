@@ -138,6 +138,34 @@ function Next_scenario()
 	ChangeVoie(voie, theContext.scenario_url);
 }
 
+function Go_url_splitter()
+{
+	var url = '/live/splitter.php';
+	for (var i=1;i<10;i++)
+	{
+		var urlRow = $("#scenario_url"+i).val();
+		if ((urlRow == '') || (urlRow == "undefined"))
+			break;
+		
+		urlRow = urlRow.replace("?", "|Q|");
+		for (;;)
+		{	
+			var urlRow2 = urlRow.replace("&", "|A|");
+			if (urlRow2 == urlRow) break;
+			urlRow = urlRow2;
+		}
+		
+		if (i==1)
+			url += "?";
+		else
+			url += "&";
+		
+		url += "frame"+i+"="+urlRow;
+	}
+	
+	$("#tv_message").html("<b>URL progression : "+url);
+}
+
 function RefreshScenario()
 {
 	++theContext.scenario_duree;
@@ -162,6 +190,7 @@ function Init(voie)
 	$('#list_team_btn').click( function () { Go_list_team(); return false;});
 	$('#list_presentation_btn').click( function () { Go_presentation(); return false;});
 	$('#scenario_btn').click( function () { Go_scenario(); return false;});
+	$('#url_splitter').click( function () { Go_url_splitter(); return false;});
 	
 	$('#raz_btn').click( function () { Go_raz(); return false;});
 }	
