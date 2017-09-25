@@ -147,34 +147,10 @@ class PdfListeMatchs extends MyPage
             if ($arrayCompetition['Soustitre2'] != '') {
                 $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
             }
-			//$titreEvenementCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
 		}
-        if($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){
-            $arrayCompetition['BandeauLink'] = 'img/logo/' . $arrayCompetition['BandeauLink'];
-            if(is_file($arrayCompetition['BandeauLink'])) {
-                $bandeau = $arrayCompetition['BandeauLink'];
-            }
-        } elseif($arrayCompetition['BandeauLink'] != '') {
-            $bandeau = $arrayCompetition['BandeauLink'];
-        } 
-        if($arrayCompetition['LogoLink'] != '' && strpos($arrayCompetition['LogoLink'], 'http') === FALSE ){
-            $arrayCompetition['LogoLink'] = 'img/logo/' . $arrayCompetition['LogoLink'];
-            if(is_file($arrayCompetition['LogoLink'])) {
-                $logo = $arrayCompetition['LogoLink'];
-            }
-        } elseif($arrayCompetition['LogoLink'] != '') {
-            $logo = $arrayCompetition['LogoLink'];
-        }
-        
-        if($arrayCompetition['SponsorLink'] != '' && strpos($arrayCompetition['SponsorLink'], 'http') === FALSE ){
-            $arrayCompetition['SponsorLink'] = 'img/logo/' . $arrayCompetition['SponsorLink'];
-            if(is_file($arrayCompetition['SponsorLink'])) {
-                $sponsor = $arrayCompetition['SponsorLink'];
-            }
-        } elseif($arrayCompetition['SponsorLink'] != '') {
-            $sponsor = $arrayCompetition['SponsorLink'];
-        }
-        
+
+        $visuels = utyGetVisuels($arrayCompetition, FALSE);
+
 		// Entête PDF ...	  
  		$pdf = new PDF('L');
 		$pdf->Open();
@@ -183,49 +159,38 @@ class PdfListeMatchs extends MyPage
 		$pdf->SetCreator("Kayak-polo.info width FPDF");
 		$pdf->SetTopMargin(30);
 		$pdf->AddPage();
-		if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)) {
+		if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
 			$pdf->SetAutoPageBreak(true, 28);
         } else {
 			$pdf->SetAutoPageBreak(true, 15);
         }
 		// Affichage
         $qr_x = 262;
-			// logo
-			if($arrayCompetition['Kpi_ffck_actif'] == 'O')
-			{
-                $pdf->Image('img/logoKPI-small.jpg',125,10,0,20,'jpg',"http://www.ffck.org");
-			}
-            if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
-                $size = getimagesize($bandeau);
-                $largeur=$size[0];
-                $hauteur=$size[1];
-                $ratio=20/$hauteur;	//hauteur imposée de 20mm
-                $newlargeur=$largeur*$ratio;
-                $posi=149-($newlargeur/2);	//210mm = largeur de page
-                $pdf->image($bandeau, $posi, 8, 0,20);
-            } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
-				$size = getimagesize($logo);
-				$largeur=$size[0];
-				$hauteur=$size[1];
-				$ratio=20/$hauteur;	//hauteur imposée de 20mm
-				$newlargeur=$largeur*$ratio;
-                $posi=149-($newlargeur/2);	//210mm = largeur de page
-				$pdf->image($logo, $posi, 8, 0,20);
-			}
-
-			if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
-				$size = getimagesize($sponsor);
-				$largeur=$size[0];
-				$hauteur=$size[1];
-				$ratio=16/$hauteur;	//hauteur imposée de 16mm
-				$newlargeur=$largeur*$ratio;
-                $posi=149-($newlargeur/2);	//210mm = largeur de page
-				$pdf->image($sponsor, $posi, 180, 0,16);
-			}
+        // Bandeau
+        if($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])){
+            $img = redimImage($visuels['bandeau'], 297, 40, 20, 'C');
+            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+        // KPI + Logo    
+        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            $pdf->Image('img/logoKPI-small.jpg', 40, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+            $img = redimImage($visuels['logo'], 297, 40, 20, 'R');
+            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+        // KPI
+        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+        // Logo
+        } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
+            $img = redimImage($visuels['logo'], 297, 40, 20, 'C');
+            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+        }
+        // Sponsor
+        if($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])){
+            $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+            $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
+        }
 
 		// QRCode
 		$qrcode = new QRcode('http://www.kayak-polo.info/kpmatchs.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison.'&lang=en', 'L'); // error level : L, M, Q, H
-		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
 		$qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
 		$titreDate = "Season ".$codeSaison;
@@ -293,37 +258,27 @@ class PdfListeMatchs extends MyPage
 					{
 						$pdf->Cell(273,3,'','T','1','C');
 						$pdf->AddPage();
-                        // logo
-                        if($arrayCompetition['Kpi_ffck_actif'] == 'O')
-                        {
-                            $pdf->Image('img/logoKPI-small.jpg',125,10,0,20,'jpg',"http://www.ffck.org");
+                        // Bandeau
+                        if($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])){
+                            $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
+                            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+                        // KPI + Logo    
+                        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+                            $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+                            $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
+                            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+                        // KPI
+                        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+                            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+                        // Logo
+                        } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
+                            $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
+                            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                         }
-                        if($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)){
-                            $size = getimagesize($bandeau);
-                            $largeur=$size[0];
-                            $hauteur=$size[1];
-                            $ratio=20/$hauteur;	//hauteur imposée de 20mm
-                            $newlargeur=$largeur*$ratio;
-                            $posi=149-($newlargeur/2);	//210mm = largeur de page
-                            $pdf->image($bandeau, $posi, 8, 0,20);
-                        } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($logo)){
-                            $size = getimagesize($logo);
-                            $largeur=$size[0];
-                            $hauteur=$size[1];
-                            $ratio=20/$hauteur;	//hauteur imposée de 20mm
-                            $newlargeur=$largeur*$ratio;
-                            $posi=149-($newlargeur/2);	//210mm = largeur de page
-                            $pdf->image($logo, $posi, 8, 0,20);
-                        }
-
-                        if($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)){
-                            $size = getimagesize($sponsor);
-                            $largeur=$size[0];
-                            $hauteur=$size[1];
-                            $ratio=16/$hauteur;	//hauteur imposée de 16mm
-                            $newlargeur=$largeur*$ratio;
-                            $posi=149-($newlargeur/2);	//210mm = largeur de page
-                            $pdf->image($sponsor, $posi, 180, 0,16);
+                        // Sponsor
+                        if($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])){
+                            $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+                            $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
                         }
 					}
 					$Oldrupture = $rupture;

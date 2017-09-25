@@ -189,6 +189,125 @@ class MyBdd
         return $header;
     }
 
+    /**
+     * captureImg Rappatrie une image jpg distante sur le serveur
+     * 
+     * @param type $url
+     * @param type $type B|L|S (Bandeau, Logo, Sponsor)
+     * @param type $code Code compétition
+     * @param type $saison
+     */
+    function captureImg($url, $type, $code, $saison, $folder = "../img/logo/") {
+        $types = ['B', 'L', 'S'];
+        
+        // jpg, png, gif or bmp?
+        $exploded = explode('.',$url);
+        $ext = substr($exploded[count($exploded) - 1], 0, 3);
+        if($ext == 'jpe') {
+            $ext = 'jpg';
+        }
+        if(!in_array($type, $types)) {
+            echo "Type incorrect : $url !<br>";
+            return FALSE;
+        }
+        if(strpos($url, 'http://') === false 
+                && strpos($url, 'https://') === false
+                ) {
+            echo "Image locale : $url<br>";
+            return FALSE;
+        }
+        
+        $newfile = $type . '-' . $code . '-' . $saison;
+        
+        //Récupération du fichier distant
+        if(!$header = $this->get_web_page($url)) {
+            echo "Ouverture impossible du fichier distant<br>";
+            return FALSE;
+        }
+        //Déjà existant ? on incrémente
+        if(is_file($folder . $newfile . '.jpg')) {
+            for($i = 1; $i < 50; $i++) {
+                if(!is_file($folder . $newfile . '(' . $i . ')' . '.jpg')) {
+                    $newfile = $newfile . '(' . $i . ')';
+                    break;
+                }
+            }
+        }
+        $newfile = $newfile . '.' . $ext;
+
+        //Ecriture du fichier
+        if(!file_put_contents($folder . $newfile, $header['content'])) {
+            echo "Ecriture impossible du fichier local<br>";
+            return FALSE;
+        }
+        //Conversion en jpg
+        if ($ext == "png"){
+            if(!$newfile = $this->convertPngToJpg($folder, $newfile)) {
+                echo "Image $newfile inexploitable ! <br>";
+                return FALSE;
+            }
+        } elseif ($ext == "gif"){
+            if(!$newfile = $this->convertGifToJpg($folder, $newfile)) {
+                echo "Image $newfile inexploitable ! <br>";
+                return FALSE;
+            }
+        }
+        
+        return $newfile;
+    }
+    
+    /**
+     * convertPngToJpg
+     */
+    function convertPngToJpg($folder, $img) {
+        if(!$new_pic = imagecreatefrompng($folder . $img)) {
+            return FALSE;
+        }
+        $new_name = str_replace(".png", ".jpg", $img);
+        // Create a new true color image with the same size
+        $w = imagesx($new_pic);
+        $h = imagesy($new_pic);
+        $white = imagecreatetruecolor($w, $h);
+        // Fill the new image with white background
+        $bg = imagecolorallocate($white, 255, 255, 255);
+        imagefill($white, 0, 0, $bg);
+        // Copy original transparent image onto the new image
+        imagecopy($white, $new_pic, 0, 0, 0, 0, $w, $h);
+        $new_pic = $white;
+        imagejpeg($new_pic, $folder . $new_name);
+        //nettoyage
+        imagedestroy($new_pic);
+        unlink($folder . $img);
+        
+        return $new_name;
+    }
+    
+    /**
+     * convertGifToJpg
+     */
+    function convertGifToJpg($folder, $img) {
+        if(!$new_pic = imagecreatefromgif($folder . $img)){
+            return FALSE;
+        }
+        $new_name = str_replace(".gif", ".jpg", $img);
+        // Create a new true color image with the same size
+        $w = imagesx($new_pic);
+        $h = imagesy($new_pic);
+        $white = imagecreatetruecolor($w, $h);
+        // Fill the new image with white background
+        $bg = imagecolorallocate($white, 255, 255, 255);
+        imagefill($white, 0, 0, $bg);
+        // Copy original transparent image onto the new image
+        imagecopy($white, $new_pic, 0, 0, 0, 0, $w, $h);
+        $new_pic = $white;
+        imagejpeg($new_pic, $folder . $new_name);
+        //nettoyage
+        imagedestroy($new_pic);
+        unlink($folder . $img);
+        
+        return $new_name;
+    }
+    
 	// Importation du fichier PCE Nouvelle formule
 	function ImportPCE2()
 	{

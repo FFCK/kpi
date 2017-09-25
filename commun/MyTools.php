@@ -4,6 +4,35 @@ include_once('MyBdd.php');
 // MyTools.php
 
 /**
+ * Redimentionne image pour PDF
+ * 
+ * @param type $image
+ * @param type $hauteur hauteur de l'image redimentionnée
+ * @param type $largeurPage
+ * @param type $position (L, C, R)
+ */
+function redimImage($image, $largeurPage, $marge, $newHauteur, $position='C') {
+    $size = getimagesize($image);
+    $largeurActuelle = $size[0];
+    $hauteurActuelle = $size[1];
+    $ratio = $newHauteur / $hauteurActuelle;
+    $newLargeur = $largeurActuelle * $ratio;
+    switch ($position) {
+        case 'L':
+            $positionX = $marge;
+            break;
+        case 'R':
+            $positionX = $largeurPage - $marge - $newLargeur;
+            break;
+        default:
+            $positionX = ($largeurPage - $newLargeur) / 2;
+            break;
+    }
+    
+    return array('image' => $image, 'positionX' => $positionX, 'newHauteur' => $newHauteur);
+}
+
+/**
  * 
  * @param type array $recordCompetition
  */

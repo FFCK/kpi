@@ -42,3 +42,10 @@ ___FRAME_TERRAINS___
 - filtreJour (AAAA-MM-DD)
 - terrains (csv : 1, 2 ou 4 terrains. 1 terrain = avec arbitres)
 
+___FRAME_CATEGORIES___
+
+- Saison
+- Group et/ou Compet (une seule compétition)
+- lang (fr/en)
+- Css
+- filtreJour (AAA-MM-DD)
