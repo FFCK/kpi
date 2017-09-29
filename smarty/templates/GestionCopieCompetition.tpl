@@ -250,7 +250,7 @@
 											<br>- - -
 											<br><i>{$arraySchemas[i].commentairesCompet}</i><br><br>
 											</center>"
-										><a href='GestionDoc.php?Compet={$arraySchemas[i].Code}'>{if $arraySchemas[i].Titre_actif != 'O' && $arraySchemas[i].Soustitre != ''}{$arraySchemas[i].Soustitre}
+										><a href='GestionDoc.php?Compet={$arraySchemas[i].Code}&Saison={$arraySchemas[i].Code_saison}'>{if $arraySchemas[i].Titre_actif != 'O' && $arraySchemas[i].Soustitre != ''}{$arraySchemas[i].Soustitre}
                                                 {else}{$arraySchemas[i].Libelle}{/if}
                                                 {if $arraySchemas[i].Soustitre2 != ''}<br />{$arraySchemas[i].Soustitre2}{/if}</a></td>
 										<td>{$arraySchemas[i].Code_ref|default:'&nbsp;'}</td>

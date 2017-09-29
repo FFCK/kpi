@@ -14,6 +14,7 @@ class GestionDoc extends MyPageSecure
 		
 		$codeSaison = utyGetSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
+        $codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
 		
 		$saisonActive = $myBdd->GetActiveSaison();
