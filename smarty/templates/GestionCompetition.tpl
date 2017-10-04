@@ -695,6 +695,32 @@
 							</td>
 						</tr>
 					</table>
+					<table width=100%>
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Changer une équipe de club</label>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<label for="DeplaceEquipeSource">Equipe</label>
+								<input type="hidden" name="numDeplaceEquipeSource" id="numDeplaceEquipeSource">
+								<input type="text" name="DeplaceEquipeSource" size=40 id="DeplaceEquipeSource">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="DeplaceEquipeCible">Club cible</label>
+								<input type="hidden" name="numDeplaceEquipeCible" id="numDeplaceEquipeCible">
+								<input type="text" name="DeplaceEquipeCible" size=40 id="DeplaceEquipeCible">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" name="DeplaceEquipe" id="DeplaceEquipe" value="Déplacer">
+							</td>
+						</tr>
+					</table>
 					{/if}
 					{if $profile <= 4}
 					<table width="100%">
