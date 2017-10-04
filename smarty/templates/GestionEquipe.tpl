@@ -21,7 +21,7 @@
                             <optgroup label="{$smarty.config.$label|default:$label}">
                                 {section name=j loop=$options}
                                     {assign var='optionLabel' value=$options[j].Code}
-                                    <Option Value="{$options[j].Code}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+                                    <Option Value="{$options[j].Code}" {$options[j].selected}>{$options[j].Code} - {$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
                                 {/section}
                             </optgroup>
                         {/section}
