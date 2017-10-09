@@ -170,8 +170,7 @@ jq = jQuery.noConflict();
 			var libelleClub = document.forms['formStructure'].elements['libelleClub'].value;
 			var codeClub = document.forms['formStructure'].elements['codeClub'].value;
 			var comiteDep = document.forms['formStructure'].elements['comiteDep'].value;
-			if (comiteDep == "")
-			{
+			if (comiteDep == "" || comiteDep == "0000") {
 				alert("Sélectionner un Comité Départemental... Ajout Impossible !");
 				return false;
 			} else if (libelleClub.length == 0 || codeClub.length == 0) {
