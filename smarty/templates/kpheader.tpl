@@ -2,7 +2,7 @@
 
 <header class="site-header" role="banner">
 
-    <div class="container-fluid">
+    <div class="container-fluid hidden-xs">
         <div class="row">
             <div class="col-xs-12 banner">
                 <img class="site-banner" width="1300" alt="FFCK" src="img/bandeau_ffck3.png" />
@@ -18,7 +18,7 @@
                     <a rel="home" href="http://www.ffck.org/kpi/">
                         Kayak-polo.info
                     </a>
-                    <div class="tagline">
+                    <div class="tagline hidden-xs">
                         Commission Nationale d'Activité Kayak-Polo
                     </div>
                 </div>

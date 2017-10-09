@@ -1,0 +1,83 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 29 sept. 2017, 22:48:19
+    Author     : lgarr
+*/
+
+td.visible-xs-block:nth-child(2n+1) > table  {
+    background-color: #DDD;
+}
+
+.visible-xs-block table .btn-default {
+    background: none;
+    border: none;
+}
+
+.visible-xs-block table {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    padding: 0;
+}
+
+.visible-xs-block table tbody tr {
+    background: inherit;
+    line-height: 1em;
+    border: none;
+}
+
+table.dataTable.compact tbody td.visible-xs-block table tbody td {
+    border: none;
+    text-align: center;
+    padding: 0;
+}
+
+#teamfilter optgroup {
+    color: grey;
+    font-style: italic;
+}
+
+/*#teamfilter {
+    float: right;
+}*/
+
+/* Search highlight */
+table.dataTable span.highlight {
+  background-color: #FFFF00;
+  border-radius: 0.28571429rem;
+}
+
+table.dataTable span.column_highlight {
+  background-color: #FFFF00;
+  border-radius: 0.28571429rem;
+}
+@media (max-width: 767px) {
+    
+    table.dataTable.stripe tbody tr.odd, 
+    table.dataTable.display tbody tr.odd {
+        background-color: #d5d5d5;
+    }
+    .table-striped > tbody > tr:nth-child(2n+1) > td, 
+    .table-striped > tbody > tr:nth-child(2n+1) > th {
+        background-color: #d5d5d5;
+    }
+    th, td {
+        border: none;
+    }
+    table.dataTable.row-border tbody th, 
+    table.dataTable.row-border tbody td, 
+    table.dataTable.display tbody th, 
+    table.dataTable.display tbody td {
+        border: 1px 0 solid #888888;
+    }
+
+}
+.article_sans_bg {
+    /*background: none;*/
+}
+
+
