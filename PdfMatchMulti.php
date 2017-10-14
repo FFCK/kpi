@@ -519,7 +519,7 @@ class FeuilleMatch extends MyPage {
             }
             // Sponsor
             if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-                $img = redimImage($visuels['sponsor'], 297, 10, 11, 'C');
+                $img = redimImage($visuels['sponsor'], 297, 10, 12, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 190, 0, $img['newHauteur']);
             }
 
