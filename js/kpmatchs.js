@@ -33,8 +33,8 @@ jq(document).ready(function(){
         "pageLength": 10,
         "order": table_ordre,
         "columnDefs": [
-            { "width": "130px", "targets": 6 },
-            { "orderable": false, "targets": 10 }
+            { "width": "130px", "targets": 6 }
+//            { "orderable": false, "targets": 10 }
         ],
         initComplete: function () {
             // filtres date, categorie, lieu terrain
@@ -76,7 +76,8 @@ jq(document).ready(function(){
             this.api().columns([5,7]).every( function () {
                 var column = this;
                 column.cache( 'search' ).unique().sort().each( function ( d, j ) {
-                    if(jq.inArray(d.trim(), listTeams)<0) { // Si l'élément n'est pas déjà présent
+                    // Si l'élément n'est pas déjà présent et le premier caractère différent d'une parenthèse
+                    if(jq.inArray(d.trim(), listTeams)<0 && d.trim()[0] != '(') { 
                         listTeams.push( d.trim() );
                     }
                 } );
@@ -95,7 +96,8 @@ jq(document).ready(function(){
                 column.cache( 'search' ).unique().sort().each( function ( d, j ) {
                     nomArbitre = d.split("(", 1);
                     nomArbitre = nomArbitre[0].trim();
-                    if(jq.inArray(nomArbitre, listRefs) === -1 && nomArbitre != '') { // Si l'élément n'est pas déjà présent
+                    // Si l'élément n'est pas déjà présent
+                    if(jq.inArray(nomArbitre, listRefs) === -1 && nomArbitre != '') {
                         listRefs.push( nomArbitre );
                     }
                 } );
@@ -112,8 +114,8 @@ jq(document).ready(function(){
                 jq('#tableMatchs_fr_filter span.filtres').append(jq(this.footer()).find('select'));
             } );
             
-            jq('.dataTables_wrapper select, .dataTables_wrapper input').css('height', '34px').css('padding', '6px 12px')
-                            
+            jq('#tableMatchs_fr_length').append('&nbsp;&nbsp;<a class="btn btn-default" href="" title="Réactualiser"><img src="img/glyphicons-82-refresh.png" width="16"></a>');
+            jq('.dataTables_wrapper select, .dataTables_wrapper input').css('height', '34px').css('padding', '6px 12px');
         }
     } );
 
@@ -130,8 +132,8 @@ jq(document).ready(function(){
         "pageLength": 10,
         "order": table_ordre,
         "columnDefs": [
-            { "width": "130px", "targets": 6 },
-            { "orderable": false, "targets": 10 }
+            { "width": "130px", "targets": 6 }
+//            { "orderable": false, "targets": 10 }
         ],
         initComplete: function () {
             // filtres date, categorie, lieu terrain
@@ -173,7 +175,8 @@ jq(document).ready(function(){
             this.api().columns([5,7]).every( function () {
                 var column = this;
                 column.cache( 'search' ).unique().sort().each( function ( d, j ) {
-                    if(jq.inArray(d.trim(), listTeams)<0) { // Si l'élément n'est pas déjà présent
+                    // Si l'élément n'est pas déjà présent et le premier caractère différent d'une parenthèse
+                    if(jq.inArray(d.trim(), listTeams)<0 && d.trim()[0] != '(') {
                         listTeams.push( d.trim() );
                     }
                 } );
@@ -209,8 +212,8 @@ jq(document).ready(function(){
                 jq('#tableMatchs_en_filter span.filtres').append(jq(this.footer()).find('select'));
             } );
             
+            jq('#tableMatchs_en_length').append('&nbsp;&nbsp;<a class="btn btn-default" href="" title="Refresh"><img src="img/glyphicons-82-refresh.png" width="16"></a>');
             jq('.dataTables_wrapper select, .dataTables_wrapper input').css('height', '34px').css('padding', '6px 12px')
-
         }
     } );
 

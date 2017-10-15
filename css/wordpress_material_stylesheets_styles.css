@@ -6789,7 +6789,10 @@ margin-top: -9px;}
     
     .site-menu li{
         list-style: none;
-        padding:2px 0; 
+    }
+    .site-menu li a {
+        display: block;
+        padding: 8px 0;
     }
     
     .sub-menu li{

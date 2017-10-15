@@ -103,7 +103,7 @@
                     <th class="cliquableNomEquipe hidden-xs">{#Equipe_B#}</th>
                     <th class="arb1 hidden-xs">{#Arbitre_1#}</th>	
                     <th class="arb2 hidden-xs">{#Arbitre_2#}</th>
-                    <th class="visible-xs-block"></th>
+                    <th class="visible-xs-block">{#Matchs#}</th>
                 </tr>
             </thead>
             <tfoot class="hidden-xs">
