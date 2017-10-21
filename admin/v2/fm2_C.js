@@ -345,6 +345,7 @@
 					event.preventDefault();
 					$('.joueurs, .equipes').removeClass('actif');
 					$(this).addClass('actif');
+                    $('#time_evt').focus();
 				});
 				$('.evtButton').click(function( event ) {
 					event.preventDefault();
@@ -354,7 +355,15 @@
 						$('#time_evt').val($('#heure').val());
 					}
 					$('#valid_evt').removeClass('inactif');
+                    $('#time_evt').focus();
 				});
+                
+                $('#time_evt').keypress(function(e){
+                    if( e.which == 13 ){
+                        $(this).focus().blur();
+                        $('#valid_evt').click();
+                    }
+                });
                 
 				/* BUT = TEMPS MORT SYSTEMATIQUE */
                 $('#evt_but').click(function( event ) {

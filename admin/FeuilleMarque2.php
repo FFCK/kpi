@@ -476,7 +476,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								<img id="time_moins10" class="plusmoins" src="../img/moins10.png">
 								<img id="time_moins1" class="plusmoins" src="../img/moins1.png">
 								<?php // echo $lang['Temps'] ?>
-                                <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00" title="<?= $lang['Temps'] ?>">
+                                <input type="tel" size="4" class="fm_input_text" id="time_evt" value="00:00">
 								<img id="time_plus1" class="plusmoins" src="../img/plus1.png">
 								<img id="time_plus10" class="plusmoins" src="../img/plus10.png">
 								<img id="time_plus60" class="plusmoins" src="../img/plus60.png">
