@@ -61,33 +61,45 @@ class PdfListeMatchs extends MyPage
 		$filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
 		$myBdd = new MyBdd();
-		$lstJournee = utyGetSession('lstJournee', 0);
-		$idEvenement = utyGetSession('idEvenement', -1);
-		$idEvenement = utyGetGet('idEvenement', $idEvenement);
-		if(isset($_GET['idEvenement'])) {
-			$lstJournee = '';
-			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$_GET['idEvenement'];
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load =>  ".$sql);
-			$num_results = mysql_num_rows($result);
-			for ($j=0;$j<$num_results;$j++)
-			{
-				$row = mysql_fetch_array($result);
-				if ($lstJournee != '') {
-                    $lstJournee .= ',';
-                }
-                $lstJournee .= $row['Id_journee'];
-			}
-		}
 		$codeSaison = utyGetSaison();
 		$codeSaison = utyGetGet('S', $codeSaison);
-		$orderMatchs = utyGetSession('orderMatchs', 'Order By a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
+		$lstJournee = utyGetSession('lstJournee', 0);
+		$idEvenement = utyGetGet('idEvenement', -1);
 		$laCompet = utyGetSession('codeCompet', 0);
 		$laCompet = utyGetGet('Compet', $laCompet);
-		if($laCompet != 0)
-		{
+        $Group = utyGetGet('Group', '');
+		$orderMatchs = utyGetSession('orderMatchs', 'Order By a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
+        $titreEvenementCompet = '';
+
+        if($idEvenement !== -1) {
+			$lstJournee = [];
+			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$_GET['idEvenement'];
+			$result = $myBdd->Query($sql);
+			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+                $lstJournee[] = $row;
+			}
+            $lstJournee = implode(',', $lstJournee);
+            $where = "Where a.Id_journee In ($lstJournee) ";
+		} elseif($laCompet !== 0 && $laCompet !== '*') {
 			$lstJournee = 0;
 			$idEvenement = -1;
-		}
+            $where = "Where d.Code_competition = '" . $laCompet . "' And d.Code_saison = $codeSaison ";
+		} else {
+			$lstCompet = [];
+			$sql = "SELECT c.Code, g.Libelle "
+                    . "FROM gickp_Competitions c, gickp_Competitions_Groupes g "
+                    . "WHERE c.Code_saison = '" . $codeSaison . "' "
+                    . "AND c.Code_ref = '" . $Group . "' "
+                    . "AND c.Code_ref = g.Groupe ";
+			$result = $myBdd->Query($sql);
+			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+                $lstCompet[] = "'".$row['Code']."'";
+                $laCompet = $row['Code'];
+                $titreEvenementCompet = $row['Libelle'];
+			}
+            $lstCompet = implode(',', $lstCompet);
+            $where = "Where d.Code_competition IN (" . $lstCompet . ") And d.Code_saison = $codeSaison ";
+        }
 		$codeCompet = $laCompet;
 		$sql  = "Select a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, a.Date_match, a.Heure_match, ";
 		$sql .= "a.Libelle, a.Terrain, b.Libelle EquipeA, c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, ";
@@ -97,17 +109,11 @@ class PdfListeMatchs extends MyPage
 		$sql .= "Left Outer Join gickp_Competitions_Equipes b On (a.Id_equipeA = b.Id) "; 
 		$sql .= "Left Outer Join gickp_Competitions_Equipes c On (a.Id_equipeB = c.Id) ";
 		$sql .= ", gickp_Journees d ";
-		if ($lstJournee == 0) {
-            $sql .= "Where d.Code_competition = '" . $laCompet . "' And d.Code_saison = $codeSaison ";
-        } else {
-            $sql .= "Where a.Id_journee In ($lstJournee) ";
-        }
-        if($filtreJour != '')
-		{
+        $sql .= $where;
+        if($filtreJour != '') {
 			$sql .= "And a.Date_match = '".$filtreJour."' ";
 		}
-		if($filtreTerrain != '')
-		{
+		if($filtreTerrain != '') {
 			$sql .= "And a.Terrain = '".$filtreTerrain."' ";
 		}
 		$sql .= "And a.Id_journee = d.Id ";
@@ -119,8 +125,7 @@ class PdfListeMatchs extends MyPage
 		$num_results = mysql_num_rows($result);
 		
 		$PhaseLibelle = 0;
-		for ($j=0;$j<$num_results;$j++)
-		{
+		for ($j=0;$j<$num_results;$j++) {
 			$row1 = mysql_fetch_array($result);	  
 			if (trim($row1['Phase']) != '') {
                 $PhaseLibelle = 1;
@@ -129,15 +134,11 @@ class PdfListeMatchs extends MyPage
 		}
 		$Oldrupture = "";
 		// Chargement des infos de l'évènement ou de la compétition
-		$titreEvenementCompet = '';
-		if ($idEvenement != -1)
-		{
+		if ($idEvenement != -1) {
 			$libelleEvenement = $myBdd->GetEvenementLibelle($idEvenement);
 			$titreEvenementCompet = 'Evénement : '.$libelleEvenement;
 			$arrayCompetition = $myBdd->GetCompetition($lastCompetEvt, $codeSaison);
-		}
-		else
-		{
+		} elseif($titreEvenementCompet == '') {
 			$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 			if ($arrayCompetition['Titre_actif'] == 'O') {
                 $titreEvenementCompet = $arrayCompetition['Libelle'];
@@ -147,7 +148,9 @@ class PdfListeMatchs extends MyPage
             if ($arrayCompetition['Soustitre2'] != '') {
                 $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
             }
-		}
+		} else {
+			$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+        }
 
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
