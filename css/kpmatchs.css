@@ -61,20 +61,26 @@ table.dataTable span.column_highlight {
     table.dataTable.display tbody tr.odd {
         background-color: #d5d5d5;
     }
+    
     .table-striped > tbody > tr:nth-child(2n+1) > td, 
     .table-striped > tbody > tr:nth-child(2n+1) > th {
         background-color: #d5d5d5;
     }
+    
     th, td {
         border: none;
     }
+    
     table.dataTable.row-border tbody th, 
     table.dataTable.row-border tbody td, 
     table.dataTable.display tbody th, 
     table.dataTable.display tbody td {
         border: 1px 0 solid #888888;
     }
-
+    
+    .form-control {
+        padding: 6px 2px;
+    }
 }
 .article_sans_bg {
     /*background: none;*/
