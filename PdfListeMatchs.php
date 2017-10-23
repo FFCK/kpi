@@ -64,7 +64,8 @@ class PdfListeMatchs extends MyPage
 		$codeSaison = utyGetSaison();
 		$codeSaison = utyGetGet('S', $codeSaison);
 		$lstJournee = utyGetSession('lstJournee', 0);
-		$idEvenement = utyGetGet('idEvenement', -1);
+		$idEvenement = utyGetSession('idEvenement', -1);
+		$idEvenement = utyGetGet('idEvenement', $idEvenement);
 		$laCompet = utyGetSession('codeCompet', 0);
 		$laCompet = utyGetGet('Compet', $laCompet);
         $Group = utyGetGet('Group', '');
@@ -73,10 +74,10 @@ class PdfListeMatchs extends MyPage
 
         if($idEvenement !== -1) {
 			$lstJournee = [];
-			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$_GET['idEvenement'];
+			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$idEvenement;
 			$result = $myBdd->Query($sql);
 			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
-                $lstJournee[] = $row;
+                $lstJournee[] = $row['Id_journee'];
 			}
             $lstJournee = implode(',', $lstJournee);
             $where = "Where a.Id_journee In ($lstJournee) ";
