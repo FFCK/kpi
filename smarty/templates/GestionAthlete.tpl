@@ -39,19 +39,12 @@
 					<table class='tableau'>
 						<tr>
 							<th colspan=4>
-								Saison:
-                                    <select name="SaisonAthlete"  id="SaisonAthlete" onChange="submit()">
-                                        {section name=i loop=$arraySaison} 
-                                            <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $SaisonAthlete}selected{/if}>{$arraySaison[i].Code}</Option>
-                                        {/section}
-                                    </select>
-                                        &nbsp;&nbsp;
-									<u>Licence n° {$Courreur.Matric}</u>&nbsp;&nbsp;
-                                        <b>{$Courreur.Nom} {$Courreur.Prenom}</b> ({$Courreur.Sexe}) 
-                                        né(e) le {$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}
-                                        <br>{if $Courreur.Matric > 2000000 && $Courreur.Reserve != NULL}(Licence ICF : {$Courreur.Reserve}) {/if}
-                                        {if $Courreur.date_surclassement}<b class='vert'>Surclassé à la date du {$Courreur.date_surclassement}</b>{/if}
-                                        <br>
+                                <u>Licence n° {$Courreur.Matric}</u>&nbsp;&nbsp;
+                                <b>{$Courreur.Nom} {$Courreur.Prenom}</b> ({$Courreur.Sexe}) 
+                                né(e) le {$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}
+                                <br>{if $Courreur.Matric > 2000000 && $Courreur.Reserve != NULL}(Licence ICF : {$Courreur.Reserve}) {/if}
+                                {if $Courreur.date_surclassement}<b class='vert'>Surclassé à la date du {$Courreur.date_surclassement}</b>{/if}
+                                <br>
 							</th>
 						</tr>
 						<tr>
@@ -105,6 +98,8 @@
                                 <option value="Reg" {if $Arbitre.Arb == 'Arbitre REGIONAL'}selected{/if}>REGIONAL</option>
                                 <option value="Nat" {if $Arbitre.Arb == 'Arbitre NATIONAL'}selected{/if}>NATIONAL</option>
                                 <option value="Int" {if $Arbitre.Arb == 'Arbitre INTERNATIONAL'}selected{/if}>INTERNATIONAL</option>
+                                <option value="OTM" {if $Arbitre.Arb == 'Officiel table de marque'}selected{/if}>OTM</option>
+                                <option value="JO" {if $Arbitre.Arb == 'Jeune officiel'}selected{/if}>JO</option>
                             </select>
                             Niveau:<select id="update_niveau" name="update_niveau">
                                 <option value="" {if $Arbitre.niveau == ''}selected{/if}>-</option>
@@ -120,17 +115,25 @@
                         </div>
                     {/if}
                     
+                    <p><b>Saison:</b>
+                        <select name="SaisonAthlete"  id="SaisonAthlete" onChange="submit()">
+                            {section name=i loop=$arraySaison} 
+                                <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $SaisonAthlete}selected{/if}>{$arraySaison[i].Code}</Option>
+                            {/section}
+                        </select>
+                    </p>
 					<table class='tableau'>
 						<tr>
 							<td valign=top>
+                                
 								{if $Titulaire[0].Code_compet != ''}
 								<table class='tableau2'>
 									<thead>
 										<tr>
-											<th colspan=5>Feuilles de présence</th>
+											<th colspan=4>Feuilles de présence {$SaisonAthlete}</th>
 										</tr>
 										<tr>
-											<th>Saison</th>
+{*											<th>Saison</th>*}
 											<th>Compét.</th>
 											<th>Equipe</th>
 											<th>n°</th>
@@ -140,7 +143,7 @@
 									<tbody>
 										{section name=i loop=$Titulaire}
 											<tr>
-												<td>{$Titulaire[i].Code_saison}</td>
+{*												<td>{$Titulaire[i].Code_saison}</td>*}
 												<td>{$Titulaire[i].Code_compet}</td>
 												<td>{$Titulaire[i].Libelle}</td>
 												<td>n°{$Titulaire[i].Num} {$Titulaire[i].Capitaine|replace:'E':'Entraineur'|replace:'A':'Arbitre'|replace:'C':'Cap'|replace:'X':'INACTIF'|replace:'-':''}</td>
@@ -154,10 +157,10 @@
 								<table class='tableau2'>
 									<thead>
 										<tr>
-											<th colspan=7>Arbitrages</th>
+											<th colspan=6>Arbitrages {$SaisonAthlete}</th>
 										</tr>
 										<tr>
-											<th>Saison</th>
+{*											<th>Saison</th>*}
 											<th>Date</th>
 											<th>Heure</th>
 											<th>Compét.</th>
@@ -169,7 +172,7 @@
 									<tbody>
 										{section name=i loop=$Arbitrages}
 											<tr>
-												<td>{$Arbitrages[i].Code_saison}</td>
+{*												<td>{$Arbitrages[i].Code_saison}</td>*}
 												<td>{$Arbitrages[i].Date_match|date_format:"%d/%m"}</td>
 												<td>{$Arbitrages[i].Heure_match}</td>
 												<td>{$Arbitrages[i].Code_competition}</td>
@@ -190,16 +193,62 @@
 									</tbody>
 								</table>
 								{/if}
+								{if $OTM[0].Code_competition != ''}
+								<table class='tableau2'>
+									<thead>
+										<tr>
+											<th colspan=8>Table de marque {$SaisonAthlete}</th>
+										</tr>
+										<tr>
+{*											<th>Saison</th>*}
+											<th>Date</th>
+											<th>Heure</th>
+											<th>Compét.</th>
+											<th>Match</th>
+											<th>Sec</th>
+											<th>Chrono</th>
+											<th>T.S</th>
+											<th>Ligne</th>
+										</tr>
+									</thead>
+									<tbody>
+										{section name=i loop=$OTM}
+											<tr>
+{*												<td>{$Arbitrages[i].Code_saison}</td>*}
+												<td>{$OTM[i].Date_match|date_format:"%d/%m"}</td>
+												<td>{$OTM[i].Heure_match}</td>
+												<td>{$OTM[i].Code_competition}</td>
+												<td>{$OTM[i].Numero_ordre}
+													{if $profile <= 3}
+														<a href="FeuilleMatchMulti.php?listMatch={$OTM[i].Identifiant}" target="_blank"><img width="10" src="../img/b_plus.png" alt="Feuille de match" title="Feuille de match" /></a>
+													{/if}
+												</td>
+												{if $OTM[i].ScoreOK == 'O'}
+													<td>{$OTM[i].Sec}</td>
+													<td>{$OTM[i].Chrono}</td>
+													<td>{$OTM[i].TS}</td>
+													<td>{$OTM[i].Ligne}</td>
+												{else}
+													<td><i>{$OTM[i].Sec}</i></td>
+													<td><i>{$OTM[i].Chrono}</i></td>
+													<td><i>{$OTM[i].TS}</i></td>
+													<td><i>{$OTM[i].Ligne}</i></td>
+												{/if}
+											</tr>
+										{/section}
+									</tbody>
+								</table>
+								{/if}
 							</td>
 							<td>
 								{if $Joueur[0].Code_competition != ''}
 								<table class='tableau2'>
 									<thead>
 										<tr>
-											<th colspan=13>Matchs joués</th>
+											<th colspan=13>Matchs joués {$SaisonAthlete}</th>
 										</tr>
 										<tr>
-											<th>Saison</th>
+{*											<th>Saison</th>*}
 											<th>Date</th>
 											<th>Compétition</th>
 											<th>Match</th>
@@ -217,7 +266,7 @@
 									<tbody>
 										{section name=i loop=$Joueur}
 											<tr>
-												<td>{$Joueur[i].Code_saison}</td>
+{*												<td>{$Joueur[i].Code_saison}</td>*}
 												<td>{$Joueur[i].Date_match|date_format:"%d/%m"}</td>
 												<td>{$Joueur[i].Code_competition}</td>
 												<td>

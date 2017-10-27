@@ -423,7 +423,7 @@ class GestionOfficiels extends MyPageSecure
 						$row['EquipeA'] = $EquipesAffectAuto[0];
 					if ($row['EquipeB'] == '' && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '')
 						$row['EquipeB'] = $EquipesAffectAuto[1];
-					$arbsup = array(" (Pool Arbitres 1)");//   , " REG", " NAT", " INT", "-A", "-B", "-C"
+					$arbsup = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)");//   , " REG", " NAT", " INT", "-A", "-B", "-C"
 					if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
 						$row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
 					elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '')

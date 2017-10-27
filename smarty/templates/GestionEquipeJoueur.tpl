@@ -357,9 +357,10 @@
 									<select name="arbitreJoueur" id="arbitreJoueur">
 										<Option Value="" SELECTED>--- Aucun ---</Option>
 										<Option Value="REG">Régional</Option>
-										<Option Value="IR">Inter-Régional</Option>
 										<Option Value="NAT">National</Option>
 										<Option Value="INT">International</Option>
+										<Option Value="OTM">Officiel table de marque</Option>
+										<Option Value="JO">Jeune officiel</Option>
 									</select>
 								</td>
                                 <td>

@@ -127,7 +127,7 @@ class FeuilleMatch extends MyPage
 			$dpt = $row['Departement'];
 			$terrain = $row['Terrain'];
 			
-			$rep1 = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " REG", " NAT", " INT", "-A", "-B", "-C");
+            $rep1 = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S", " INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO");
 			$rep2 = array("[", "]");
 			$rep3 = array("V", "P", "1er", "2e", "e");
 			$rep4 = array("W", "L", "1st", "2nd", "th");
@@ -174,7 +174,7 @@ class FeuilleMatch extends MyPage
 				$equipeb = $EquipesAffectAuto[1];
 				$equipebFormat = 'Auto';
 			}
-			$arbsup = array(" (Pool Arbitres 1)", " REG", " NAT", " INT", "-A", "-B", "-C");
+            $arbsup = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S", " INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO");
 			if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
 				$row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
 			elseif ($EquipesAffectAuto[2] != '')

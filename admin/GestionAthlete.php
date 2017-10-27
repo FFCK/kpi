@@ -73,6 +73,12 @@ class GestionAthlete extends MyPageSecure
 					case 'Reg':
 						$row['Arb']='Arbitre REGIONAL';
 						break;
+					case 'OTM':
+						$row['Arb']='Officiel table de marque';
+						break;
+					case 'JO':
+						$row['Arb']='Jeune officiel';
+						break;
 					default :
 						$row['Arb']='Néant';
 						break;
@@ -99,7 +105,8 @@ class GestionAthlete extends MyPageSecure
 
 			// Arbitrages
 			$Arbitrages = array();
-			$sql  = "SELECT m.*, j.*, m.id Identifiant, if(m.Matric_arbitre_principal = '$Athlete','Prin','') Prin, if(m.Matric_arbitre_secondaire = '$Athlete','Sec','') Sec "
+			$sql  = "SELECT m.*, j.*, m.id Identifiant, if(m.Matric_arbitre_principal = '$Athlete','Prin','') Prin, "
+                                . "if(m.Matric_arbitre_secondaire = '$Athlete','Sec','') Sec "
                                 . "FROM gickp_Matchs m, gickp_Journees j "
                                 . "WHERE (m.Matric_arbitre_principal = '$Athlete' "
                                 . "OR m.Matric_arbitre_secondaire = '$Athlete') "
@@ -111,13 +118,45 @@ class GestionAthlete extends MyPageSecure
 			for ($i=0;$i<$num_results;$i++)
 			{
 				$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
-				if($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '')
-					$row['ScoreOK'] = 'O';
-				else
-					$row['ScoreOK'] = 'N';
-				array_push($Arbitrages, $row);
+				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
+                    $row['ScoreOK'] = 'O';
+                } else {
+                    $row['ScoreOK'] = 'N';
+                }
+                array_push($Arbitrages, $row);
 			}
 			$this->m_tpl->assign('Arbitrages', $Arbitrages);
+
+			// Table de marque
+			$OTM = array();
+			$sql  = "SELECT m.*, j.*, m.id Identifiant, "
+                                . "IF(m.Secretaire LIKE '%($Athlete)%','Sec','') Sec, "
+                                . "IF(m.Chronometre LIKE '%($Athlete)%','Chrono','') Chrono, "
+                                . "IF(m.Timeshoot LIKE '%($Athlete)%','TS','') TS, "
+                                . "IF(m.Ligne1 LIKE '%($Athlete)%' OR m.Ligne2 LIKE '%($Athlete)%','Ligne','') Ligne "
+                                . "FROM gickp_Matchs m, gickp_Journees j "
+                                . "WHERE (m.Secretaire LIKE '%($Athlete)%' "
+                                    . "OR m.Chronometre LIKE '%($Athlete)%' "
+                                    . "OR m.Timeshoot LIKE '%($Athlete)%' "
+                                    . "OR m.Ligne1 LIKE '%($Athlete)%' "
+                                    . "OR m.Ligne2 LIKE '%($Athlete)%' "
+                                . ") "
+                                . "AND m.Id_journee = j.Id "
+                                . "AND j.Code_saison = $SaisonAthlete "
+                                . "ORDER BY m.Date_match DESC, m.Heure_match DESC ";
+			$result = $myBdd->Query($sql);
+			$num_results = $myBdd->NumRows($result);
+			for ($i=0;$i<$num_results;$i++)
+			{
+				$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
+                    $row['ScoreOK'] = 'O';
+                } else {
+                    $row['ScoreOK'] = 'N';
+                }
+                array_push($OTM, $row);
+			}
+			$this->m_tpl->assign('OTM', $OTM);
 
 			// Joueur
 			$Joueur = array();
@@ -143,11 +182,12 @@ class GestionAthlete extends MyPageSecure
 			for ($i=0;$i<$num_results;$i++)
 			{
 				$row = mysql_fetch_array($result);
-				if($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '')
-					$row['ScoreOK'] = 'O';
-				else
-					$row['ScoreOK'] = 'N';
-				array_push($Joueur, $row);
+				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
+                    $row['ScoreOK'] = 'O';
+                } else {
+                    $row['ScoreOK'] = 'N';
+                }
+                array_push($Joueur, $row);
 			}
 			$this->m_tpl->assign('Joueur', $Joueur);
 		}
@@ -205,6 +245,12 @@ class GestionAthlete extends MyPageSecure
                 break;
             case 'Int' :
                 $sql .= "'N','N','O','O','Int','','".$update_niveau."','".$update_saison."') ";
+                break;
+            case 'OTM' :
+                $sql .= "'N','N','O','N','OTM','','".$update_niveau."','".$update_saison."') ";
+                break;
+            case 'JO' :
+                $sql .= "'N','N','O','N','JO','','".$update_niveau."','".$update_saison."') ";
                 break;
             default :
                 $sql .= "'N','N','N','N','','','','') ";

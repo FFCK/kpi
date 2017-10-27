@@ -56,7 +56,7 @@ if (!file_exists($template)) exit("File does not exist.");
 					$aRow['EquipeA'] = $EquipesAffectAuto[0];
 				if ($aRow['EquipeB'] == '' && $EquipesAffectAuto[1] != '')
 					$aRow['EquipeB'] = $EquipesAffectAuto[1];
-				$arbsup = array(" (Pool Arbitres 1)", " REG", " NAT", " INT");
+                $arbsup = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S", " INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO");
 				if($aRow['Arbitre_principal'] != '' && $aRow['Arbitre_principal'] != '-1')
 					$aRow['Arbitre_principal'] = str_replace($arbsup, '', $aRow['Arbitre_principal']);
 				elseif ($EquipesAffectAuto[2] != '')

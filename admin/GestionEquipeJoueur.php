@@ -124,16 +124,14 @@ class GestionEquipeJoueur extends MyPageSecure
 			// Intégrer les coureurs de la recherche Licence ...
 			if (isset($_SESSION['Signature']))
 			{
-				$sql  = "Replace Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ) ";
-				$sql .= "Select $idEquipe, a.Matric, a.Nom, a.Prenom, a.Sexe, c.Code ";
-				$sql .= "From gickp_Liste_Coureur a, gickp_Recherche_Licence b, gickp_Categorie c ";
-				$sql .= "Where a.Matric = b.Matric ";
-				$sql .= "And b.Signature = '";
-				$sql .= $_SESSION['Signature'];
-				$sql .= "' And b.Validation = 'O' ";
-				$sql .= "And " ;
-				$sql .= utyGetSaison();
-				$sql .= "-Year(a.Naissance) between c.Age_min And c.Age_max ";
+				$sql  = "REPLACE INTO gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ) "
+                        . "SELECT $idEquipe, a.Matric, a.Nom, a.Prenom, a.Sexe, c.Code "
+                        . "FROM gickp_Liste_Coureur a LEFT OUTER JOIN gickp_Categorie c "
+                        . "ON (" . utyGetSaison() . " - Year(a.Naissance) between c.Age_min And c.Age_max)"
+                        . ", gickp_Recherche_Licence b "
+                        . "WHERE a.Matric = b.Matric "
+                        . "AND b.Signature = '" . $_SESSION['Signature'] . "' "
+                        . "AND b.Validation = 'O' ";
 				
 				mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace");
                 
@@ -142,9 +140,8 @@ class GestionEquipeJoueur extends MyPageSecure
                 //
                 //
 				// Vidage gickp_Recherche_Licence ...				
-				$sql = "Delete From gickp_Recherche_Licence Where Signature = '";
-				$sql .= $_SESSION['Signature'];
-				$sql .= "'";
+				$sql = "DELETE FROM gickp_Recherche_Licence "
+                        . "WHERE Signature = '" . $_SESSION['Signature'] . "' ";
 				mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
 				
 				unset($_SESSION['Signature']);
@@ -311,6 +308,12 @@ class GestionEquipeJoueur extends MyPageSecure
                     case 'INT' :
                         $sql .= ",'N','N','O','O','Int','','".$niveauJoueur."','".$saisonJoueur."') ";
                         break;
+                    case 'OTM' :
+                        $sql .= ",'N','N','O','N','OTM','','".$niveauJoueur."','".$saisonJoueur."') ";
+                        break;
+                    case 'JO' :
+                        $sql .= ",'N','N','O','N','JO','','".$niveauJoueur."','".$saisonJoueur."') ";
+                        break;
                     default :
                         $sql .= ",'N','N','N','N','','','','') ";
                         break;
@@ -428,7 +431,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			$_SESSION['codeComiteReg'] = utyCodeComiteReg($_SESSION['codeComiteDep']);
 		}
 		
-		header("Location: http://".$_SERVER['HTTP_HOST'].MAIN_DIRECTORY.'/admin/RechercheLicence.php');	
+		header("Location: RechercheLicence.php");	
 		exit;	
 	}
 	

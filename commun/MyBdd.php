@@ -315,7 +315,8 @@ class MyBdd
 		$section = "";
 		$nbLicenciés = 0;
 		$nbArbitres = 0;
-		$url = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce?saison=2017";
+        $nbSurclassements = 0;
+		$url = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce?saison=" . date('Y');
         $newfile = "pce1.pce";
         
         if(!$header = $this->get_web_page($url)) {
@@ -500,48 +501,61 @@ class MyBdd
 		$prenom = $arrayToken[2];
 		$livret = $arrayToken[7];
 		$niveau = substr($livret, -1);
-		if($niveau != 'A' && $niveau != 'B' && $niveau != 'C')
-			$niveau = '';
-		$pos = strrpos($livret, "JREG");
-		if ($pos != false) { 
-			$niveau = 'S';
-		}
-		$pos = strrpos($livret, "JNAT");
-		if ($pos != false) { 
-			$niveau = 'S';
-		}
 		$saisonJuge = $this->m_saisonPCE;
 		
 		$regional = 'N';
 		$interregional = 'N';
 		$national = 'N';
 		$international = 'N';
-		
-		if (strlen($arrayToken[3]) > 0)
-			$regional = substr($arrayToken[3],0,1);
+        $Arb = '';
+		if (strlen($arrayToken[3]) > 0) {
+            $regional = substr($arrayToken[3], 0, 1);
+            if($regional == 'O') {
+                $Arb = "Reg";
+            }
+        }
 
-		if (strlen($arrayToken[4]) > 0)
-			$interregional = substr($arrayToken[4],0,1);
-		
-		if (strlen($arrayToken[5]) > 0)
-			$national = substr($arrayToken[5],0,1);
-			
-		if (strlen($arrayToken[6]) > 0)
-			$international = substr($arrayToken[6],0,1);
-		
-		$query  = "REPLACE INTO gickp_Arbitre VALUES ($matric, '$regional', '$interregional', '$national', '$international', '', '$livret', '$niveau', '$saisonJuge')";							 	   
-		$res = mysql_query($query, $this->m_link);
-		if (!$res)
-			array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
-		$query  = "UPDATE gickp_Arbitre SET Arb = 'Reg' WHERE Regional = 'O' ";							 	   
-		$res = mysql_query($query, $this->m_link);
-		$query  = "UPDATE gickp_Arbitre SET Arb = 'IR' WHERE InterRegional = 'O' ";							 	   
-		$res = mysql_query($query, $this->m_link);
-		$query  = "UPDATE gickp_Arbitre SET Arb = 'Nat' WHERE National = 'O' ";							 	   
-		$res = mysql_query($query, $this->m_link);
-		$query  = "UPDATE gickp_Arbitre SET Arb = 'Int' WHERE International = 'O' ";							 	   
-		$res = mysql_query($query, $this->m_link);
+        if (strlen($arrayToken[4]) > 0) {
+            $interregional = substr($arrayToken[4], 0, 1);
+            if($interregional == 'O') {
+                $Arb = "IR";
+            }
+        }
 
+        if (strlen($arrayToken[5]) > 0) {
+            $national = substr($arrayToken[5], 0, 1);
+            if($national == 'O') {
+                $Arb = "Nat";
+            }
+        }
+
+        if (strlen($arrayToken[6]) > 0) {
+            $international = substr($arrayToken[6], 0, 1);
+            if($international == 'O') {
+                $Arb = "Int";
+            }
+        }
+		if ($niveau != 'A' && $niveau != 'B' && $niveau != 'C') {
+            $niveau = '';
+        }
+		if (strrpos($livret, "JREG") !== false) { 
+			$niveau = 'S';
+		}
+		if (strrpos($livret, "JNAT") !== false) { 
+			$niveau = 'S';
+		}
+		if (strrpos($livret, "OTM") !== false) { 
+			$Arb = "OTM";
+		}
+		if (strrpos($livret, "JO") !== false) { 
+			$Arb = "JO";
+		}
+
+        $query  = "REPLACE INTO gickp_Arbitre VALUES ($matric, '$regional', '$interregional', '$national', '$international', '$Arb', '$livret', '$niveau', '$saisonJuge')";							 	   
+		$res = mysql_query($query, $this->m_link);
+		if (!$res) {
+            array_push($this->m_arrayinfo, "Erreur SQL " . mysql_error());
+        }
 	}	 
 
     // Importation de la section [surclassements] du fichier PCE 

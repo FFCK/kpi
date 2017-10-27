@@ -282,18 +282,20 @@ class MyPageSecure extends MyPage
 {
 	function MyPageSecure($profile)
 	{
-			session_start();
-			
-			// Test si Authentification et Niveau suffisant ...
-			if (isset($_SESSION['Profile']) && $_SESSION['Profile'] > 0)
-			{
-				if ($profile >= $_SESSION['Profile'])
-					return;
-			}
-				
-			//header("Location: http://".$_SERVER['HTTP_HOST'].MAIN_DIRECTORY."/admin/Login.php?Src=".$_SERVER['PHP_SELF']);	
-			header("Location: Login.php?Src=".$_SERVER['PHP_SELF']);	
-			exit;	
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Test si Authentification et Niveau suffisant ...
+        if (isset($_SESSION['Profile']) && $_SESSION['Profile'] > 0)
+        {
+            if ($profile >= $_SESSION['Profile'])
+                return;
+        }
+
+        //header("Location: http://".$_SERVER['HTTP_HOST'].MAIN_DIRECTORY."/admin/Login.php?Src=".$_SERVER['PHP_SELF']);	
+        header("Location: Login.php?Src=".$_SERVER['PHP_SELF']);	
+        exit;	
 	}
 }
 

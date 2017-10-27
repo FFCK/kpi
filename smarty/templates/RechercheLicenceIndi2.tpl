@@ -145,6 +145,18 @@
 							</td>
 						</tr>
 						<tr>
+							<td><label>Officiel table de marque</label></td>
+							<td>
+								<input type="checkbox" Name="CheckJugeOTM" {$CheckJugeOTM}/>
+							</td>
+						</tr>
+						<tr>
+							<td><label>Jeune officiel</label></td>
+							<td>
+								<input type="checkbox" Name="CheckJugeJO" {$CheckJugeJO}/>
+							</td>
+						</tr>
+						<tr>
 							<td colspan=2>
 								<br>
 								<input type="button" onclick="Find();" name="findLicence" value="<< Lancer la recherche">

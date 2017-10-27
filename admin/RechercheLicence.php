@@ -384,7 +384,7 @@ class RechercheLicence extends MyPageSecure
 			$sql = "Update gickp_Recherche_Licence Set Validation = 'O'";
 			$res = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
 					
-			header("Location: http://".$_SERVER['HTTP_HOST'].$parentUrl);	
+			header("Location: ".$parentUrl);	
 			exit;	
 		}
 	}
