@@ -331,6 +331,7 @@
 					}else{
 						$('.periode').removeClass('actif');
 						$('#'+valeur).addClass('actif');
+                        $('#time_evt').focus();
 					}
 				});
 
@@ -361,7 +362,11 @@
                 $('#time_evt').keypress(function(e){
                     if( e.which == 13 ){
                         $(this).focus().blur();
-                        $('#valid_evt').click();
+                        if($('#update_evt').attr('data-id') == ''){
+                            $('#valid_evt').click();
+                        } else {
+                            $('#update_evt').click();
+                        }
                     }
                 });
                 
@@ -592,6 +597,7 @@
 					}else{
 						$('a[data-player="Equipe ' + code_split[3] + '"]').addClass('actif');
 					}
+                    $('#time_evt').focus();
 				});
 				// UPDATE
 				$('#update_evt').click(function( event ) {
