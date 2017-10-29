@@ -94,7 +94,7 @@ class MyBdd
 		mysql_free_result($result);
 	}	   
 		 
-	// Importation du fichier PCE 
+	// Importation du fichier PCE local (ancienne version)
 	function ImportPCE($filePCE)
 	{
 	 	$fp = fopen($_SERVER['DOCUMENT_ROOT'] . "/PCE/". $filePCE, "r");
@@ -405,6 +405,7 @@ class MyBdd
 	// Importation de la section [licencies] du fichier PCE 
 	function ImportPCE_Licencies($buffer)				
 	{	
+        $replace_search = array('CANOE KAYAK', 'CANOE-KAYAK', 'C.K.');
 		$arrayToken = explode(";", $buffer);   
 		$nbToken = count($arrayToken);
 		
@@ -421,11 +422,11 @@ class MyBdd
 		$sexe = $arrayToken[3];
 		$naissance = $arrayToken[4];  
 
-		$club = $arrayToken[5];  
+		$club = str_replace($replace_search, 'CK', $arrayToken[5]);  
 		$num_club = $arrayToken[6];
-		$comite_dept = $arrayToken[7];
+		$comite_dept = str_replace($replace_search, 'CK', $arrayToken[7]);
 		$num_comite_dept = $arrayToken[8];
-		$comite_reg = $arrayToken[9];
+		$comite_reg = str_replace($replace_search, 'CK', $arrayToken[9]);
 		$num_comite_reg = $arrayToken[10];
 
 		$etat = $arrayToken[11];
@@ -586,105 +587,76 @@ class MyBdd
                 array_push($this->m_arrayinfo, "Erreur SQL " . mysql_error());
             }
         }
-
 	}	 
-
 			 
 	// Mise à Jour des Clubs à partir de la table gickp_Liste_Coureur ...
 	function ImportPCE_MajClub()				
 	{ 				  
 		array_push($this->m_arrayinfo, "Mise à jour des Clubs ...");
 
-		$query  = "CREATE TEMPORARY TABLE tmpClub ENGINE = HEAP ";
-		$query .= "SELECT Numero_club, Min(Club) Club , 'O' Officiel, '' Reserve , Min(Numero_comite_dept) Numero_comite_dept ";
-		$query .= "FROM gickp_Liste_Coureur ";
-		$query .= "GROUP BY Numero_club ";	  
-
-		$res = mysql_query($query, $this->m_link);
+        $query = 'INSERT INTO gickp_Club (Code, Libelle, Officiel, Reserve, Code_comite_dep) '
+                    . 'SELECT lc.Numero_club selNumero_club, lc.Club selClub , "O" selOfficiel, "" selReserve , '
+                        . 'Min(lc.Numero_comite_dept) selNumero_comite_dept '
+                    . 'FROM gickp_Liste_Coureur lc '
+                    . 'WHERE lc.Numero_club <> "0" AND lc.Numero_club <> "0000" AND lc.Numero_comite_reg <> "98" '
+                        . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
+                    . 'GROUP BY Numero_club '
+                . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
+                    . 'Reserve = VALUES(Reserve), Code_comite_dep = VALUES(Code_comite_dep) ';
+        $res = mysql_query($query, $this->m_link);
 		if (!$res)							 
 		{
 			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
 			return;
-		}		
-
-		$query  = "INSERT INTO gickp_Club (Code, Libelle, Officiel, Reserve, Code_comite_dep) ";
-		$query .= "SELECT * FROM tmpClub ";
-		$query .= "WHERE tmpClub.Numero_club Not In (Select gickp_Club.Code From gickp_Club) ";	 
-
-		$res = mysql_query($query, $this->m_link);
-		if (!$res)							 
-		{		
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
-			return;
-		}	
-		
-		$query = "UPDATE gickp_Club Set libelle = replace(libelle, 'CANOE KAYAK', 'CK') Where Libelle like '%CANOE KAYAK%' ";
-		$res = mysql_query($query, $this->m_link);
-		if (!$res)							 
-		{									   
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
-			return;
-		}	
+		}
 	}	   
 	
-	// Mise à Jour des Comités Régionaux à partir de la table gickp_Liste_Coureur ...
-	function ImportPCE_MajComiteReg()				
-	{ 								 
-		array_push($this->m_arrayinfo, "Mise à jour des Comités Régionaux ..." );
-
-		$query  = "CREATE TEMPORARY TABLE tmpcomite_reg ENGINE = HEAP ";
-		$query .= "Select Numero_comite_reg, Min(Comite_reg) Comite_reg, 'O' Officiel, '' Reserve ";
-		$query .= "FROM gickp_Liste_Coureur ";
-		$query .= "GROUP BY Numero_comite_reg ";	  
-
-		$res = mysql_query($query);
-		if (!$res)							 
-		{					  
-			array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
-			return;
-		}		
-
-		$query  = "INSERT INTO gickp_Comite_reg ";
-		$query .= "SELECT * FROM tmpcomite_reg ";
-		$query .= "WHERE tmpcomite_reg.Numero_comite_reg Not In (Select gickp_Comite_reg.Code from gickp_Comite_reg) ";	 
-
-		$res = mysql_query($query, $this->m_link);
-		if (!$res)							 
-		{
-			array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
-			return;
-		}		
-	}
-
 	// Mise à Jour des Comités Départementaux à partir de la table gickp_Liste_Coureur ...
 	function ImportPCE_MajComiteDept()				
 	{ 		
 		array_push($this->m_arrayinfo, "Mise à jour des Comités Départementaux  ...");
 
-		$query  = "CREATE TEMPORARY TABLE tmpcomite_dep ENGINE = HEAP ";		
-		$query .= "Select Numero_comite_dept, Min(Comite_dept) Comite_dept, 'O' Officiel, '' Reserve, Min(Numero_comite_reg) Numero_comite_reg ";		
-		$query .= "FROM gickp_Liste_Coureur ";
-		$query .= "GROUP BY Numero_comite_dept ";	  
-
-		$res = mysql_query($query, $this->m_link);
+        $query = 'INSERT INTO gickp_Comite_dep (Code, Libelle, Officiel, Reserve, Code_comite_reg) '
+                    . 'SELECT lc.Numero_comite_dept, lc.Comite_dept , "O" selOfficiel, "" selReserve, lc.Numero_comite_reg '
+                    . 'FROM gickp_Liste_Coureur lc '
+                    . 'WHERE lc.Numero_club <> "0" AND lc.Numero_club <> "0000" AND lc.Numero_comite_reg <> "98" '
+                        . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
+                        . 'AND lc.Comite_dept <> "" '
+                    . 'GROUP BY Numero_comite_dept '
+                . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
+                    . 'Reserve = VALUES(Reserve), Code_comite_reg = VALUES(Code_comite_reg) ';
+        $res = mysql_query($query, $this->m_link);
 		if (!$res)							 
-		{		
-			array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
+		{
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
 			return;
-		}		
+		}
+        
+	}	
+    
+    // Mise à Jour des Comités Régionaux à partir de la table gickp_Liste_Coureur ...
+	function ImportPCE_MajComiteReg()				
+	{ 								 
+		array_push($this->m_arrayinfo, "Mise à jour des Comités Régionaux ..." );
 
-		$query  = "INSERT INTO gickp_Comite_dep ";
-		$query .= "SELECT * FROM tmpcomite_dep ";
-		$query .= "WHERE tmpcomite_dep.Numero_comite_dept Not In (Select gickp_Comite_dep.Code from gickp_Comite_dep) ";	 
-
-		$res = mysql_query($query, $this->m_link);
+        $query = 'INSERT INTO gickp_Comite_reg (Code, Libelle, Officiel, Reserve) '
+                    . 'SELECT lc.Numero_comite_reg, lc.Comite_reg , "O" selOfficiel, "" selReserve '
+                    . 'FROM gickp_Liste_Coureur lc '
+                    . 'WHERE lc.Numero_club <> "0" AND lc.Numero_club <> "0000" AND lc.Numero_comite_reg <> "98" '
+                        . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
+                        . 'AND lc.Comite_reg <> "" '
+                    . 'GROUP BY Numero_comite_reg '
+                . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
+                    . 'Reserve = VALUES(Reserve) ';
+        $res = mysql_query($query, $this->m_link);
 		if (!$res)							 
-		{		
-			array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
+		{
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
 			return;
-		}		
-	}		
-		
+		}
+        
+	}
+
 	// Mise à Jour globale de certaines colonnes de la table gickp_Liste_Coureur ...
 	function ImportPCE_MajLicencies()				
 	{	   		
@@ -706,9 +678,6 @@ class MyBdd
 			return;
 		}		
 
-		// Transformation Club
-		// $query = "Update gickp_Liste_Coureur Set Club = replace(Club, 'CANOE KAYAK', 'CK') Where Club like '%CANOE KAYAK%' ";	
-		
 		// Vidage Club, CD, CR
 		$query = "Update gickp_Liste_Coureur Set Club = '', Comite_dept = '', Comite_reg = '' Where 1 ";		
 		$res = mysql_query($query, $this->m_link);
