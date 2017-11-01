@@ -209,7 +209,7 @@
                                         </td>
 									{/if}
 									{if $profile <= 3 && $AuthModif == 'O'}
-										<td><img class="typeJournee" data-valeur="{$arrayJournees[i].Type}" data-id="{$arrayJournees[i].Id}" src="../img/type{$arrayJournees[i].Type}.png" title="{if $arrayJournees[i].Type == 'C'}Classement{else}Elimination{/if}" /></td>
+										<td><img class="typeJournee" data-valeur="{$arrayJournees[i].Type}" data-id="{$arrayJournees[i].Id}" src="../img/type{$arrayJournees[i].Type}.png" title="{if $arrayJournees[i].Type == 'C'}Classement{else}Elimination{/if}" height="23" /></td>
 									{else}
 										<td><img src="../img/type{$arrayJournees[i].Type}.png" title="{if $arrayJournees[i].Type == 'C'}Classement{else}Elimination{/if}" /></td>
 									{/if}

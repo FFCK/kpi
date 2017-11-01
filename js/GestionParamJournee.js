@@ -39,7 +39,7 @@ function Duppli()
 	{
 		document.forms['formParamJournee'].elements['Cmd'].value = 'Ok';
 		document.forms['formParamJournee'].elements['ParamCmd'].value = '';
-		document.forms['formParamJournee'].elements['dupliThis'].value = 'Duppli';
+		document.forms['formParamJournee'].elements['duppliThis'].value = 'Duppli';
 		
 		var meme = 0
 		if(document.forms['formParamJournee'].elements['PrevSaison'].value == document.forms['formParamJournee'].elements['J_saison'].value)

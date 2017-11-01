@@ -17,6 +17,8 @@ class GestionClassement extends MyPageSecure
 		
 		$codeCompet = utyGetSession('codeCompet');
 		$codeCompet = utyGetPost('codeCompet', $codeCompet);
+        $compet = $myBdd->GetCompetition($codeCompet, $codeSaison);
+		$this->m_tpl->assign('compet', $compet);
 		
 		$codeSaisonTransfert = utyGetSession('codeSaisonTransfert',$saisonActive);
 		$codeSaisonTransfert = utyGetPost('codeSaisonTransfert', $codeSaisonTransfert);
@@ -314,40 +316,46 @@ class GestionClassement extends MyPageSecure
 		$this->m_tpl->assign('arrayEquipe_journee', $arrayEquipe_journee);
 		$this->m_tpl->assign('arrayEquipe_journee_publi', $arrayEquipe_journee_publi);
 		$this->m_tpl->assign('arrayEquipe_publi', $arrayEquipe_publi);
-		if(!isset($recordCompetition['Qualifies']))
-			$recordCompetition['Qualifies'] = 0;
-		if(!isset($recordCompetition['Elimines']))
-			$recordCompetition['Elimines'] = 0;
-		$this->m_tpl->assign('Qualifies_publi', $recordCompetition['Qualifies']);
+		if (!isset($recordCompetition['Qualifies'])) {
+            $recordCompetition['Qualifies'] = 0;
+        }
+        if (!isset($recordCompetition['Elimines'])) {
+            $recordCompetition['Elimines'] = 0;
+        }
+        $this->m_tpl->assign('Qualifies_publi', $recordCompetition['Qualifies']);
 		$this->m_tpl->assign('Elimines_publi', $recordCompetition['Elimines']);
 		
 		// Combo "CHPT" - "CP"		
 		$arrayOrderCompetition = array();
-		if ('CHPT' == $typeClt)
-			array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED') );
-		else
-			array_push($arrayOrderCompetition, array('CHPT', 'Championnat', '') );
-			
-		if ('CP' == $typeClt)
-			array_push($arrayOrderCompetition, array('CP', 'Coupe', 'SELECTED') );
-		else
-			array_push($arrayOrderCompetition, array('CP', 'Coupe', '') );
-		$this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
+		if ('CHPT' == $typeClt) {
+            array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED'));
+        } else {
+            array_push($arrayOrderCompetition, array('CHPT', 'Championnat', ''));
+        }
+
+        if ('CP' == $typeClt) {
+            array_push($arrayOrderCompetition, array('CP', 'Coupe', 'SELECTED'));
+        } else {
+            array_push($arrayOrderCompetition, array('CP', 'Coupe', ''));
+        }
+        $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)
 	{
-		if (strlen($codeCompet) == 0)
-			return 'CHPT';
-			
-		$myBdd = new MyBdd();
+		if (strlen($codeCompet) == 0) {
+            return 'CHPT';
+        }
+
+        $myBdd = new MyBdd();
 		
 		$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$typeClt = $recordCompetition['Code_typeclt'];
-		if ($typeClt != 'CP')
-			$typeClt = 'CHPT';
-		
-		return $typeClt;
+		if ($typeClt != 'CP') {
+            $typeClt = 'CHPT';
+        }
+
+        return $typeClt;
 	}
 	
 	function DoClassement()
@@ -358,12 +366,13 @@ class GestionClassement extends MyPageSecure
 		$codeCompet = utyGetPost('codeCompet');
 		$_SESSION['codeCompet'] = $codeCompet;
 		$allMatchs = utyGetPost('allMatchs');
-		if($allMatchs == 'ok')
-			$tousLesMatchs = 'tous';
-		else
-			$tousLesMatchs = '';
-	
-		// Recherche du type de Classement lié à cette compétition
+		if ($allMatchs == 'ok') {
+            $tousLesMatchs = 'tous';
+        } else {
+            $tousLesMatchs = '';
+        }
+
+        // Recherche du type de Classement lié à cette compétition
 		$typeClt = '';
 		
 		$sql  = "Select Code_typeclt From gickp_Competitions ";
@@ -511,9 +520,10 @@ class GestionClassement extends MyPageSecure
 			$sql .= "And b.Code_saison = '";
 			$sql .= $codeSaison;
 			$sql .= "' And b.Code_saison = c.Code_saison ";
-			if(!$tousLesMatchs) //uniquement les matchs validés (vérouillés)
-				$sql .= "And a.Validation = 'O' ";
-			$sql .= "Order By b.Id ";	 
+			if (!$tousLesMatchs) { //uniquement les matchs validés (vérouillés)
+            $sql .= "And a.Validation = 'O' ";
+        }
+        $sql .= "Order By b.Id ";	 
 			
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
 			$num_results = mysql_num_rows($result);
@@ -622,8 +632,7 @@ class GestionClassement extends MyPageSecure
 				$arrayCltB['Moins'] = $scoreA;
 				$arrayCltB['Diff'] = $scoreB - $scoreA;
 								
-				if ($scoreA > $scoreB)
-				{
+				if ($scoreA > $scoreB) {
 					// Victoire Equipe A et Défaite Equipe B ...
 					$arrayCltA['Pts'] = (int) ($ptsV * $coeffA);
 					$arrayCltA['G'] = 1;
@@ -635,8 +644,7 @@ class GestionClassement extends MyPageSecure
 					return;
 				}
 			  
-				if ($scoreB > $scoreA)
-				{
+				if ($scoreB > $scoreA) {
 					// Victoire Equipe B et Défaite Equipe A ...
 					$arrayCltA['Pts'] = (int) ($ptsP * $coeffA);
 					$arrayCltA['P'] = 1;
@@ -648,32 +656,27 @@ class GestionClassement extends MyPageSecure
 					return;
 				}
 			  
-			  // Match Null 
+                // Match Null 
 				$arrayCltA['Pts'] = (int) ($ptsN * $coeffA); //
-				if ($bScoreOk)
-				{
+				if ($bScoreOk) {
 					$arrayCltA['N'] = 1;
 					$arrayCltA['PtsNiveau'] = (double) pow(64, $niveau)*$ptsNiveauN;
-				}
-				else
-				{
+				} else {
 					$arrayCltA['PtsNiveau'] = (double) pow(64, $niveau)*$ptsNiveauNonjoue;
-			  }
+                }
 				
 				$arrayCltB['Pts'] = (int) ($ptsN * $coeffB);
-				if ($bScoreOk)
-				{
-					$arrayCltB['PtsNiveau'] = (double) pow(64, $niveau)*$ptsNiveauN;
-					$arrayCltB['N'] = 1;
-			  }
-				else
-					$arrayCltB['PtsNiveau'] = (double) pow(64, $niveau)*$ptsNiveauNonjoue;
-				return;
+				if ($bScoreOk) {
+                    $arrayCltB['PtsNiveau'] = (double) pow(64, $niveau) * $ptsNiveauN;
+                    $arrayCltB['N'] = 1;
+                } else {
+                    $arrayCltB['PtsNiveau'] = (double) pow(64, $niveau) * $ptsNiveauNonjoue;
+                }
+            return;
 		}
 		 
 		// Au moins une Equipe Forfait ...
-		if ( ($scoreA != 'F') && ($scoreB == 'F') )
-		{
+		if ( ($scoreA != 'F') && ($scoreB == 'F') ) {
 				// Victoire Equipe A 
 				$arrayCltA['Pts'] = (int) ($ptsV * $coeffA);
 				$arrayCltA['Plus'] = $scoreA;
@@ -690,8 +693,7 @@ class GestionClassement extends MyPageSecure
 				return;
 		}
 		 
-		if ( ($scoreA == 'F') && ($scoreB != 'F') )
-		{
+		if ( ($scoreA == 'F') && ($scoreB != 'F') ) {
 				// Victoire Equipe B 
 				$arrayCltA['J'] = 1;
 				$arrayCltA['F'] = 1;
@@ -708,8 +710,7 @@ class GestionClassement extends MyPageSecure
 				return;
 		}
 
-		if ( ($scoreA == 'F') && ($scoreB == 'F') )
-		{
+		if ( ($scoreA == 'F') && ($scoreB == 'F') ) {
 				// Double forfait
 				$arrayCltA['J'] = 1;
 				$arrayCltA['F'] = 1;

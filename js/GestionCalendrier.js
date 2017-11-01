@@ -5,8 +5,8 @@ jq(document).ready(function() {
 		jq("#competition").val('*');
 		jq("#formCalendrier").submit();
 	});
+    
 	jq(".typeJournee").click(function(){
-		//if(confirm('Confirmez-vous le changement de statut ?')){
 			laJournee = jq(this);
 			laJournee.attr('src', 'v2/images/indicator.gif');
 			if(laJournee.attr('data-valeur') == 'C'){
@@ -28,19 +28,17 @@ jq(document).ready(function() {
 						laJournee.attr('src', '../img/type' + changeType + '.png');
 						laJournee.attr('data-valeur', changeType);
 						laJournee.attr('title', textType);
-					}
-					else{
-						custom_alert('Changement impossible', 'Attention');
+					} else {
+						alert('Changement impossible');
 						laJournee.attr('src', '../img/type' + laJournee.attr('data-valeur') + '.png');
 						laJournee.attr('data-valeur', laJournee.attr('data-valeur'));
 					}
 				},
 				'text' // Format des données reçues.
 			);
-		//}
 	});
+    
 	jq(".publiJournee").click(function(){
-		//if(confirm('Confirmez-vous le changement de publication ?')){
 			laJournee = jq(this);
 			laJournee.attr('src', 'v2/images/indicator.gif');
 			if(laJournee.attr('data-valeur') == 'O'){
@@ -71,7 +69,6 @@ jq(document).ready(function() {
 				},
 				'text' // Format des données reçues.
 			);
-		//}
 	});
 	
 	jq(".checkassoc2").click(function(event){
@@ -80,20 +77,8 @@ jq(document).ready(function() {
 			var idJournee = laJournee.attr('data-id');
 			var idEvenement = jq('#evenement').val();
 			var statut = laJournee.attr('checked');
-			laJournee.after('<img src="v2/images/indicator.gif" />').hide();
+			laJournee.after('<img src="v2/images/indicator.gif"  height="23">').hide();
 			
-				
-			//alert(statut);
-	/*		
-			laSaison = jq('#saisonTravail').val();
-			if(statut == '0' || statut == 'ATT'){
-				changeType = 'ON';
-			}else if(statut == 'ON'){
-				changeType = 'END';
-			}else{
-				changeType = 'ATT';
-			}
-	*/
 			jq.post(
 				'v2/setEvenementJournee.php', // Le fichier cible côté serveur.
 				{ // variables
@@ -113,10 +98,11 @@ jq(document).ready(function() {
 				'text' // Format des données reçues.
 			);		
 	});
+    
     jq('.directInput').attr('title','Cliquez pour modifier');
+    
     jq("body").delegate("span.directInput", "click", function(event){
 		event.preventDefault();
-//        alert('hello');
         var valeur = jq(this).text();
         var typeChamps = jq(this).attr('data-type');
         switch(typeChamps) {
@@ -132,12 +118,14 @@ jq(document).ready(function() {
 			jq('#inputZone').select();
 		}, 0 );
     });
+    
     jq('#inputZone').live('keydown',function(e){
 		if(e.which == 13) {
 			jq(this).blur();
 			return false;
 		}
 	}); 
+    
     jq('#inputZone').live('blur', function(){
         var thisSpan = jq('#inputZone + span');
         var nouvelleValeur = jq(this).val();
@@ -230,19 +218,6 @@ function ClickEvenementJournee(idJournee)
 	document.forms['formCalendrier'].elements['ParamCmd'].value = idJournee;
 	document.forms['formCalendrier'].submit();
 }
-
-/*
-function publiJournee(idJournee, pub)
-{
-	if(!confirm('Confirmez-vous le changement ?'))
-		return false;
-		
-	document.forms['formCalendrier'].elements['Cmd'].value = 'PubliJournee';
-	document.forms['formCalendrier'].elements['ParamCmd'].value = idJournee;
-	document.forms['formCalendrier'].elements['Pub'].value = pub;
-	document.forms['formCalendrier'].submit();
-}
-*/
 
 function publiMultiJournees()
 {

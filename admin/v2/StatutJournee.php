@@ -33,7 +33,7 @@ include_once('../../commun/MyTools.php');
             . "WHERE Id = ".$idJournee;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 	$row = mysql_fetch_array($result);
-	if (!utyIsAutorisationJournee($row['Id_journee'])) {
+	if (!utyIsAutorisationJournee($row['Id'])) {
         die("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
     }
     if ($TypeUpdate != 'Validation' && $TypeUpdate != 'Publication' && $row['Validation'] == 'O') {

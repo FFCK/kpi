@@ -112,7 +112,7 @@
 							</td>
 							<td>
 								Type :
-								<img id="typeMatch1" src="../img/type{$Type|default:'C'}.png" {if $Type == "E"}alt="{#Elimination#}" title="{#Match_eliminatoire#}"{else}alt="{#Classement#}" title="{#Match_de_classement#}"{/if} />
+								<img id="typeMatch1" src="../img/type{$Type|default:'C'}.png" {if $Type == "E"}alt="{#Elimination#}" title="{#Match_eliminatoire#}"{else}alt="{#Classement#}" title="{#Match_de_classement#}"{/if} height="23">
 								<input type="hidden" name="Type" id="Type" value="{$Type|default:'C'}" />
 							</td>
 							<td align="left">
@@ -361,7 +361,7 @@
 													<td><span class='directInput text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
 													<td><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
 												{/if}
-												<td><img class="typeMatch" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}" src="../img/type{$arrayMatchs[i].Type}.png" title="{if $arrayMatchs[i].Type == 'C'}Classement{else}Elimination{/if}" /></td>
+												<td><img class="typeMatch" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}" src="../img/type{$arrayMatchs[i].Type}.png" title="{if $arrayMatchs[i].Type == 'C'}Classement{else}Elimination{/if}" height="23"></td>
 												<td><span class='directInput terrain' tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}4" Id="Terrain-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 												<td>
 													<span class="directInput equipe{if $arrayMatchs[i].Id_equipeA < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}" data-equipe="A">{$arrayMatchs[i].EquipeA}</span>
@@ -399,7 +399,7 @@
 												</td>
 												<td>{if $arrayMatchs[i].CoeffA != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}</td>
 												<td>{if $arrayMatchs[i].CoeffB != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}</td>
-												<td><a href="#" onclick="RemoveCheckbox('formJournee', '{$arrayMatchs[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" border="0"></a></td>
+												<td><a href="#" class="showOn" onclick="RemoveCheckbox('formJournee', '{$arrayMatchs[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" border="0"></a></td>
 											{else}
 												<td><span class='directInputOff numMatch' Id="Numero_ordre-{$arrayMatchs[i].Id}-text" tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}0'>{$arrayMatchs[i].Numero_ordre}</span></td>
 												<td width=80>
@@ -418,7 +418,7 @@
 													<td><span class='directInputOff text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
 													<td><span class="lieu">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></td>
 												{/if}
-												<td><img class="typeMatchOff" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}" src="../img/type{$arrayMatchs[i].Type}.png" title="{if $arrayMatchs[i].Type == 'C'}Classement{else}Elimination{/if}" /></td>
+												<td><img class="typeMatchOff" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}" src="../img/type{$arrayMatchs[i].Type}.png" title="{if $arrayMatchs[i].Type == 'C'}Classement{else}Elimination{/if}" height="23"></td>
 												<td><span class='directInputOff terrain' tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}4" Id="Terrain-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 												<td>
 													<span class="directInputOff equipe{if $arrayMatchs[i].Id_equipeA < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}" data-equipe="A">{$arrayMatchs[i].EquipeA}</span>
@@ -456,7 +456,7 @@
 												</td>
 												<td>{if $arrayMatchs[i].CoeffA != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}</td>
 												<td>{if $arrayMatchs[i].CoeffB != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}</td>
-												<td>&nbsp;</td>
+												<td><a href="#" class="showOff" onclick="RemoveCheckbox('formJournee', '{$arrayMatchs[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" border="0"></a></td>
 											{/if}
 										{elseif $arrayMatchs[i].MatchAutorisation == 'O' && $profile == 9 && $AuthModif == 'O'}
 											<td>	

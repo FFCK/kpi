@@ -10,7 +10,7 @@
 					style   : 'display: inline',
 					placeholder : lang.Cliquez_pour_modifier + '...', 
 					type : 'textarea',
-					indicator : '<img src="images/indicator.gif">',
+					indicator : '<img src="images/indicator.gif" height="23">',
 					tooltip   : lang.Cliquez_pour_modifier,
 					submitdata : {idMatch: idMatch},
 					submit  : 'OK',
@@ -162,16 +162,16 @@
                                     }
                                 }
                                 $('tr[id="ligne_' + data + '"]').attr('data-code', code_ligne);
-                                $.post(
-                                    'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                                    { // variables
-                                        Id_Match : idMatch,
-                                        Valeur : $('#scoreA').text() + '-' + $('#scoreB').text(),
-                                        TypeUpdate : 'ValidScoreDetail'
-                                    },
-                                    function(data){ },
-                                    'text' // Format des données reçues.
-                                );
+//                                $.post(
+//                                    'v2/StatutPeriode.php', // Le fichier cible côté serveur.
+//                                    { // variables
+//                                        Id_Match : idMatch,
+//                                        Valeur : $('#scoreA').text() + '-' + $('#scoreB').text(),
+//                                        TypeUpdate : 'ValidScoreDetail'
+//                                    },
+//                                    function(data){ },
+//                                    'text' // Format des données reçues.
+//                                );
 							}else{
 								custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention);
 							}

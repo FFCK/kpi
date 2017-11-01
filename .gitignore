@@ -4,3 +4,5 @@ flyspray/flyspray.conf.php
 wordpress/wp-config.php
 live/cache/*.json
 /nbproject/private/
+/archives/
+/admin/temp_ajust.php

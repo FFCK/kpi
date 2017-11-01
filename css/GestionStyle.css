@@ -443,3 +443,9 @@ td.colorCapC {background: #BFB;} /*vert*/
 #clickup, #clickdown {
     cursor: pointer;
 }
+
+div.blocRight input.bigbutton {
+    padding: 10px 4px;
+    font-size: 1.2em;
+    font-weight: bold;
+}

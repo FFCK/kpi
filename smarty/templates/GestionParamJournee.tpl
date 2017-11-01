@@ -4,7 +4,7 @@
 			<form method="POST" action="GestionParamJournee.php" name="formParamJournee" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' Value=''/>
 				<input type='hidden' name='ParamCmd' Value=''/>
-				<input type='hidden' name='dupliThis' Value=''/>
+				<input type='hidden' name='duppliThis' Value=''/>
 				<input type='hidden' name='PrevSaison' Value='{$J_saison}'/>
 				<input type='hidden' name='PrevCompetition' Value='{$J_competition}'/>
 				<input type='hidden' name='PrevDate' Value='{$Date_debut}'/>
@@ -237,7 +237,7 @@
 						</tr>
 						<tr>
 							<td colspan=4>
-								<input type="button" onclick="Duppli();" name="Dupliquer" value="Sauvegarder comme nouvelle journée (dupliquer)">
+								<input type="button" onclick="Duppli();" name="Dupliquer" value="Sauvegarder comme nouvelle journée (duppliquer)">
 								<hr>
 							</td>
 						</tr>
@@ -273,7 +273,7 @@
 						{/section}
 						<tr>
 							<td colspan=2>
-								<input type="button" onclick="DuppliListJournees()" name="Dupliquer" value="Appliquer ces paramètres sur les phases sélectionnées" title="Enregistrer les nouveaux paramètres avant de les dupliquer !">
+								<input type="button" onclick="DuppliListJournees()" name="Duppliquer" value="Appliquer ces paramètres sur les phases sélectionnées" title="Enregistrer les nouveaux paramètres avant de les duppliquer !">
 								<hr>
 							</td>
 						</tr>

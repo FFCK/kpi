@@ -219,7 +219,40 @@ jq(document).ready(function() { //Jquery
 		jq('#inputZone').remove();
 	}
 
-
+	jq(".statutCompet").click(function(){
+			laCompet = jq(this);
+			statut = laCompet.text();
+			laCompet.html('<img src="v2/images/indicator.gif" height="23">');
+			laSaison = jq('#saisonTravail').val();
+			if(statut == '0' || statut == 'ATT'){
+				changeType = 'ON';
+			}else if(statut == 'ON'){
+				changeType = 'END';
+			}else{
+				changeType = 'ATT';
+			}
+			jq.post(
+				'v2/StatutCompet.php', // Le fichier cible côté serveur.
+				{ // variables
+					Id_Compet : laCompet.attr('data-id'),
+					Valeur : changeType,
+					TypeUpdate : 'Statut',
+					idSaison : laSaison
+				},
+				function(data){ // callback
+					if(data == 'OK'){
+						laCompet.html(changeType);
+						laCompet.removeClass('statutCompetATT statutCompetON statutCompetEND').addClass('statutCompet' + changeType);
+					}
+					else{
+						laCompet.html(statut);
+						alert('Changement impossible <br />'+data);
+					}
+				},
+				'text' // Format des données reçues.
+			);
+			
+	});
 	
 });
 

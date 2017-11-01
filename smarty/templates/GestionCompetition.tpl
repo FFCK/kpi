@@ -49,7 +49,7 @@
 									<th width=63 title="Compétition de référence">Groupe</th>
 									<th title="Tour/Phase">Tour</th>
 									<th title="Type de compétition (Championnat ou Coupe/Tournoi)">Type</th>
-									<th title="Statut">Statut</th>
+									<th title="{#Statut#}">{#Statut#}</th>
 									<th title="Nombre d'équipes affectées">Equipes</th>
 									<th><img width="19" height="16" src="../img/verrou2.gif" alt="Verrouiller les feuilles de présence" title="Verrouiller les feuilles de présence" border="0"></th>
 									<!--
@@ -102,9 +102,9 @@
 										<td>{$arrayCompet[i].Code_ref|default:'&nbsp;'}</td>
 										<td>{if $arrayCompet[i].Code_tour == '10'}F{else}{$arrayCompet[i].Code_tour|default:'&nbsp;'}{/if}</td>
 										<td>{$arrayCompet[i].codeTypeClt|default:'&nbsp;'}</td>
-										<td title="Changer le statut">
+										<td title="{#Detail_statut#}">
 											{if $profile <= 3 && $AuthModif == 'O'}
-												<span class="statutCompet statutCompet{$arrayCompet[i].Statut}" data-id="{$arrayCompet[i].Code}" >{$arrayCompet[i].Statut}</span>
+												<span class="statutCompet statutCompet{$arrayCompet[i].Statut}" data-id="{$arrayCompet[i].Code}">{$arrayCompet[i].Statut}</span>
 											{else}
 												<span class="statutCompet{$arrayCompet[i].Statut}">{$arrayCompet[i].Statut}</span>
 											{/if}

@@ -114,7 +114,7 @@ class GestionParamJournee extends MyPageSecure
 	function Ok() {
         $myBdd = new MyBdd();
 		$idJournee = (int)utyGetPost('idJournee', -1);
-		$dupliThis = $myBdd->RealEscapeString(trim(utyGetPost('dupliThis')));
+		$duppliThis = $myBdd->RealEscapeString(trim(utyGetPost('duppliThis')));
 		
 		$J_saison = $myBdd->RealEscapeString(trim(utyGetPost('J_saison')));
 		$J_competition = $myBdd->RealEscapeString(trim(utyGetPost('J_competition')));
@@ -145,7 +145,7 @@ class GestionParamJournee extends MyPageSecure
 		$diffdate = round(($d1-$d2)/60/60/24);
 		
 		
-		if ($idJournee != 0 && $dupliThis != 'Duppli') {
+		if ($idJournee != 0 && $duppliThis != 'Duppli') {
 			if (!utyIsAutorisationJournee($idJournee)) {
                 die("Vous n'avez pas l'autorisation de modifier cette journée ! (<a href='javascript:history.back()'>Retour</a>)");
             }

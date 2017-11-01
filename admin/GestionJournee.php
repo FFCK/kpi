@@ -114,7 +114,7 @@ class GestionJournee extends MyPageSecure
 		// Chargement des Informations relatives aux Journées ...
 		if ($idSelJournee != '*')
 		{
-			$sql  = "Select Distinct b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, b.Lieu, b.Date_debut, b.Type ";
+			$sql  = "Select Distinct b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, b.Lieu, b.Date_debut, b.Type, a.Code_typeclt ";
 			$sql .= "From gickp_Journees b, gickp_Competitions a ";
 			$sql .= "Where b.Id = $idSelJournee ";
 			$sql .= "And a.Code = b.Code_competition ";

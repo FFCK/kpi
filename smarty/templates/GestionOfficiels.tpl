@@ -274,7 +274,7 @@
                                                 </td>
 												<td class='color{$arrayMatchs[i].Validation}2'>
 													{if $profile <= 6 && $AuthModif == 'O'}
-														<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}" height="25" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="{if $arrayMatchs[i].Validation == 'O'}Validé / verrouillé (score public){else}Non validé (score non public){/if}" />
+														<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}" height="25" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="{if $arrayMatchs[i].Validation == 'O'}Validé / verrouillé (score public){else}Non validé (score non public){/if}" height="24">
 													{else}
 														<img height="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" alt="Verrouiller O/N" title="Verrouiller O/N (et publier le score)" border="0">
 													{/if}

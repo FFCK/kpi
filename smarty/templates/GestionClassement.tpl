@@ -13,7 +13,7 @@
 				<div class='blocLeft'>
 					<div class='titrePage'>{#Classement#}</div>
 					<label for="saisonTravail">{#Saison#} :</label>
-					<select name="saisonTravail" onChange="sessionSaison()">
+					<select name="saisonTravail" id="saisonTravail" onChange="sessionSaison()">
 						{section name=i loop=$arraySaison} 
 							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} (Travail){/if}</Option>
 						{/section}
@@ -40,7 +40,7 @@
 							{section name=i loop=$arrayOrderCompetition} 
 								<Option Value="{$arrayOrderCompetition[i][0]}" {$arrayOrderCompetition[i][2]}>{$arrayOrderCompetition[i][1]}</Option>
 									{if $arrayOrderCompetition[i][2]=='SELECTED'}
-									{assign var='typeCompetition' value=$arrayOrderCompetition[i][1]}
+                                        {assign var='typeCompetition' value=$arrayOrderCompetition[i][1]}
 									{/if}
 							{/section}
 						</select>
@@ -326,6 +326,20 @@
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=4>
+								<label>{#Statut#}</label>
+							</th>
+						</tr>
+						<tr>
+							<td align='center' colspan=4>
+								{if $profile <= 3 && $AuthModif == 'O'}
+                                    <span class="statutCompet statutCompet{$compet.Statut}" data-id="{$compet.Code}" title="{#Detail_statut#}">{$compet.Statut}</span>
+                                {else}
+                                    <span class="statutCompet{$compet.Statut}">{$compet.Statut}</span>
+                                {/if}
+							</td>
+						</tr>
+						<tr>
+							<th class='titreForm' colspan=4>
 								<label>{#Classement#} type {$typeCompetition}</label>
 							</th>
 						</tr>
@@ -343,20 +357,10 @@
 							</tr>
 							<tr>
 								<td colspan=4>
-									<input type="button" onclick="computeClt();" name="Calculer" value="{#Recalculer#}">
+									<input class="bigbutton" type="button" onclick="computeClt();" name="Calculer" value="{#Recalculer#}">
 								</td>
 							</tr>
 						{/if}
-						{if $profile <= 6 && $AuthModif == 'O'}
-							<tr>
-								<td colspan=4>
-									<hr>
-									<input type="button" onclick="initClt();" name="Initialiser" value="{#Classement_initial#}...">
-									<hr>
-								</td>
-							</tr>
-						{/if}
-					
 					</table>
 					<br>
 					<table width="100%">
@@ -389,27 +393,17 @@
 						{if ($profile <= 4) && $AuthModif == 'O'}
 							<tr>
 								<td colspan=4 align='center'>
-									<input type="button" onclick="publicationClt();" name="Publier" value="{#Publier_nouveau_classement#}">
+									<input class="bigbutton" type="button" onclick="publicationClt();" name="Publier" value="{#Publier_nouveau_classement#}">
 								</td>
-							</tr>
-						{/if}
-						{if ($profile <= 3) && $AuthModif == 'O'}
-							<tr>
-								<td>&nbsp;&nbsp;</td>
-								<td align='center' colspan="2">
-									<br>
-									<input type="button" onclick="depublicationClt();" name="D&eacute;-publier" value="-{#Supprimer_classement_public#}-">
-								</td>
-								<td>&nbsp;&nbsp;</td>
 							</tr>
 						{/if}
                         
                     </table>
                         
-                    <table>
+                    <table width="100%">
                         {if $typeCompetition=='Championnat'}
                             <tr>
-                                <td colspan=2 align='left'><b>Admin<br><i>({#Provisoire#})</i></b></td>
+                                <td colspan=2 align='left' title="{#Provisoire#}"><b>Admin</b></td>
                                 <td colspan=2 align='right'><b>Public</b></td>
                             </tr>
                             <tr>
@@ -447,7 +441,7 @@
                             </tr>
                         {else}
                             <tr>
-                                <td colspan=2 align='left'><b>Admin<br><i>({#Provisoire#})</i></b></td>
+                                <td colspan=2 align='left' title="{#Provisoire#}"><b>Admin</b></td>
                                 <td colspan=2 align='right'><b>Public</b></td>
                             </tr>
                             <tr>
@@ -507,7 +501,23 @@
 								<a href="../PdfListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30" src="../img/pdf.png" alt="Liste des matchs public" title="Liste des matchs public" /></a>
 							</td>
 						</tr>
-					</table>
+						{if ($profile <= 3) && $AuthModif == 'O'}
+							<tr>
+								<td align='center' colspan="4">
+									<br>
+									<input type="button" onclick="depublicationClt();" name="D&eacute;-publier" value="-{#Supprimer_classement_public#}-">
+								</td>
+							</tr>
+						{/if}
+                        {if $profile <= 6 && $AuthModif == 'O'}
+							<tr>
+								<td colspan=4>
+									<br>
+									<input type="button" onclick="initClt();" name="Initialiser" value="{#Classement_initial#}...">
+								</td>
+							</tr>
+						{/if}
+                    </table>
                             
 					{if $profile <= 4 && $AuthModif == 'O'}
 						<br>

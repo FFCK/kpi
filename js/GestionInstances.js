@@ -10,7 +10,7 @@ jq(document).ready(function() {
 //        style   : 'display: inline',
 //        submit  : 'OK',
 //        cssclass : 'autocompleteOfficiel',
-//        indicator : '<img src="images/indicator.gif">',
+//        indicator : '<img src="images/indicator.gif" height="23">',
 //        /* TODO: adapter pour officiels journee */
 //        submitdata : {idJournee: 2}, 
 //        type      : 'autocomplete',
