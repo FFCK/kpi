@@ -27,25 +27,10 @@ class Classement extends MyPage
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
-        //Logo
+        //Logos
 		if($codeCompet != -1)
 		{
-            if($recordCompetition['BandeauLink'] != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE ){
-                $recordCompetition['BandeauLink'] = 'img/logo/' . $recordCompetition['BandeauLink'];
-                if(is_file($recordCompetition['BandeauLink'])) {
-                    $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
-                }
-            } elseif($recordCompetition['BandeauLink'] != '') {
-                $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
-            }
-            if($recordCompetition['LogoLink'] != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE ){
-                $recordCompetition['LogoLink'] = 'img/logo/' . $recordCompetition['LogoLink'];
-                if(is_file($recordCompetition['LogoLink'])) {
-                    $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
-                }
-            } elseif($recordCompetition['LogoLink'] != '') {
-                $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
-            }
+            $this->m_tpl->assign('visuels', utyGetVisuels($recordCompetition));
 		}
 
 		// Chargement des Equipes ...

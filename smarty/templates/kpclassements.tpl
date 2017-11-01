@@ -84,7 +84,9 @@
                             <br>{$arrayCompetition[i].Soustitre2}
                         {/if}
                         <div class='pull-right'>
-                            <a class="btn btn-default" href='kpclassement.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Deroulement#}...</a>
+                            {if $arrayCompetition[i].Statut != 'ON' or $arrayEquipe_publi[$codetemp][0].Code_typeclt != 'CP'}
+                                <a class="btn btn-default" href='kpclassement.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Deroulement#}...</a>
+                            {/if}
                             {if $arrayEquipe_publi[$codetemp][0].existMatch == 1}
                                <a class="btn btn-default" href='kpmatchs.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Matchs#}...</a>
                             {/if}
@@ -100,86 +102,90 @@
                         <div class="label label-warning">{#Classement_provisoire#}</div>
                     {/if}
                 </div>
-                {if $arrayCompetition[i].Statut == 'END' or $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
-                <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
-                    <thead>
-                        {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
-                            <tr>
-                                <th></th>
-                                <th>#</th>
-                                <th>{#Equipe#}</th>
-                                <th>{#Pts#}</th>
-                                <th>{#J#}</th>
-                                <th>{#G#}</th>
-                                <th>{#N#}</th>
-                                <th>{#P#}</th>
-                                <th>{#F#}</th>
-                                <th>+</th>
-                                <th>-</th>
-                                <th>{#Diff#}</th>
-                            </tr>
-                        {else}
-                            {*	<th colspan=2 width="12%">{#Clt#}</th>
-                                <th width="88%">{#Equipe#}</th>	*}
-                        {/if}
-                    </thead>
-                    <tbody>        
-                        {section  name=j loop=$arrayEquipe_publi[$codetemp]}
-                            <tr>
-                                {if $arrayEquipe_publi[$codetemp][j].Code_typeclt=='CHPT' && $arrayEquipe_publi[$codetemp][j].Code_tour=='10' && $arrayEquipe_publi[$codetemp][j].Clt <= 3 && $arrayEquipe_publi[$codetemp][j].Clt > 0 && $arrayEquipe_publi[$codetemp][j].Statut == 'END'}
-                                    <td class='medaille text-center'><img width="30" src="img/medal{$arrayEquipe_publi[$codetemp][j].Clt}.gif" alt="Podium" title="Podium" /></td>
-                                {elseif $arrayEquipe_publi[$codetemp][j].Code_typeclt=='CP' && $arrayEquipe_publi[$codetemp][j].Code_tour=='10' && $arrayEquipe_publi[$codetemp][j].CltNiveau <= 3 && $arrayEquipe_publi[$codetemp][j].CltNiveau > 0 && $arrayEquipe_publi[$codetemp][j].Statut == 'END'}
-                                    <td class='medaille text-center'><img width="30" src="img/medal{$arrayEquipe_publi[$codetemp][j].CltNiveau}.gif" alt="Podium" title="Podium" /></td>
-                                {elseif $arrayEquipe_publi[$codetemp][j].Code_typeclt=='CHPT'}
-                                    {if $smarty.section.j.iteration <= $arrayEquipe_publi[$codetemp][j].Qualifies}
-                                        <td class='qualifie text-center'><img width="30" src="img/up.gif" alt="Qualifié" title="Qualifié" /></td>
-                                    {elseif $smarty.section.j.iteration > $arrayEquipe_publi[$codetemp][j].Nb_equipes - $arrayEquipe_publi[$codetemp][j].Elimines}
-                                        <td class='elimine text-center'><img width="30" src="img/down.gif" alt="Eliminés" title="Eliminés" /></td>
+                {if $arrayCompetition[i].Statut == 'END' or $arrayEquipe_publi[$codetemp][0].Code_typeclt == 'CHPT'}
+                    <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
+                        <thead>
+                            {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
+                                <tr>
+                                    <th></th>
+                                    <th>#</th>
+                                    <th>{#Equipe#}</th>
+                                    <th>{#Pts#}</th>
+                                    <th>{#J#}</th>
+                                    <th>{#G#}</th>
+                                    <th>{#N#}</th>
+                                    <th>{#P#}</th>
+                                    <th>{#F#}</th>
+                                    <th>+</th>
+                                    <th>-</th>
+                                    <th>{#Diff#}</th>
+                                </tr>
+                            {else}
+                                {*	<th colspan=2 width="12%">{#Clt#}</th>
+                                    <th width="88%">{#Equipe#}</th>	*}
+                            {/if}
+                        </thead>
+                        <tbody>        
+                            {section  name=j loop=$arrayEquipe_publi[$codetemp]}
+                                <tr>
+                                    {if $arrayEquipe_publi[$codetemp][j].Code_typeclt == 'CHPT' && $arrayEquipe_publi[$codetemp][j].Code_tour == '10' && $arrayEquipe_publi[$codetemp][j].Clt <= 3 && $arrayEquipe_publi[$codetemp][j].Clt > 0 && $arrayEquipe_publi[$codetemp][j].Statut == 'END'}
+                                        <td class='medaille text-center'><img width="30" src="img/medal{$arrayEquipe_publi[$codetemp][j].Clt}.gif" alt="Podium" title="Podium" /></td>
+                                    {elseif $arrayEquipe_publi[$codetemp][j].Code_typeclt == 'CP' && $arrayEquipe_publi[$codetemp][j].Code_tour == '10' && $arrayEquipe_publi[$codetemp][j].CltNiveau <= 3 && $arrayEquipe_publi[$codetemp][j].CltNiveau > 0 && $arrayEquipe_publi[$codetemp][j].Statut == 'END'}
+                                        <td class='medaille text-center'><img width="30" src="img/medal{$arrayEquipe_publi[$codetemp][j].CltNiveau}.gif" alt="Podium" title="Podium" /></td>
+                                    {elseif $arrayEquipe_publi[$codetemp][j].Code_typeclt=='CHPT'}
+                                        {if $smarty.section.j.iteration <= $arrayEquipe_publi[$codetemp][j].Qualifies}
+                                            <td class='qualifie text-center'><img width="30" src="img/up.gif" alt="Qualifié" title="Qualifié" /></td>
+                                        {elseif $smarty.section.j.iteration > $arrayEquipe_publi[$codetemp][j].Nb_equipes - $arrayEquipe_publi[$codetemp][j].Elimines}
+                                            <td class='elimine text-center'><img width="30" src="img/down.gif" alt="Eliminés" title="Eliminés" /></td>
+                                        {else}
+                                            <td>&nbsp;</td>
+                                        {/if}
                                     {else}
-                                        <td>&nbsp;</td>
+                                        {if $smarty.section.j.iteration <= $arrayEquipe_publi[$codetemp][j].Qualifies}
+                                            <td class='qualifie text-center'><img width="30" src="img/up.gif" alt="Qualifié" title="Qualifié" /></td>
+                                        {elseif $smarty.section.j.iteration > $arrayEquipe_publi[$codetemp][j].Nb_equipes - $arrayEquipe_publi[$codetemp][j].Elimines}
+                                            <td class='elimine text-center'><img width="30" src="img/down.gif" alt="Eliminés" title="Eliminés" /></td>
+                                        {else}
+                                            <td>&nbsp;</td>
+                                        {/if}
                                     {/if}
-                                {else}
-                                    {if $smarty.section.j.iteration <= $arrayEquipe_publi[$codetemp][j].Qualifies}
-                                        <td class='qualifie text-center'><img width="30" src="img/up.gif" alt="Qualifié" title="Qualifié" /></td>
-                                    {elseif $smarty.section.j.iteration > $arrayEquipe_publi[$codetemp][j].Nb_equipes - $arrayEquipe_publi[$codetemp][j].Elimines}
-                                        <td class='elimine text-center'><img width="30" src="img/down.gif" alt="Eliminés" title="Eliminés" /></td>
-                                    {else}
-                                        <td>&nbsp;</td>
-                                    {/if}
-                                {/if}
 
-                                {if $arrayEquipe_publi[$codetemp][j].Code_typeclt=='CHPT'}
-                                    <td class="droite">
-                                        {$arrayEquipe_publi[$codetemp][j].Clt}
-                                        {if $arrayEquipe_publi[$codetemp][j].logo != ''}
-                                            <img class="img2 pull-right" width="30" src="{$arrayEquipe_publi[$codetemp][j].logo}" alt="{$arrayEquipe_publi[$codetemp][j].club}" />
-                                        {/if}
-                                    </td>
-                                    <td class="cliquableNomEquipe"><a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe_publi[$codetemp][j].Numero}' title='{#Palmares#}'>{$arrayEquipe_publi[$codetemp][j].Libelle}</a></td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].Pts/100}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].J}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].G}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].N}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].P}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].F}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].Plus}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].Moins}</td>
-                                    <td>{$arrayEquipe_publi[$codetemp][j].Diff}</td>
-                                {else}
-                                    <td class="droite">
-                                        {$arrayEquipe_publi[$codetemp][j].CltNiveau}
-                                    </td>
-                                    <td class="cliquableNomEquipe">
-                                        {if $arrayEquipe_publi[$codetemp][j].logo != ''}
-                                            <img class="img2 pull-left" width="30" src="{$arrayEquipe_publi[$codetemp][j].logo}" alt="{$arrayEquipe_publi[$codetemp][j].club}" />
-                                        {/if}
-										<a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe_publi[$codetemp][j].Numero}' title='{#Palmares#}'>{$arrayEquipe_publi[$codetemp][j].Libelle}</a>
-									</td>
-                                {/if}
-                            </tr>
-                        {/section}
-                    </tbody>
-                </table>
+                                    {if $arrayEquipe_publi[$codetemp][j].Code_typeclt=='CHPT'}
+                                        <td class="droite">
+                                            {$arrayEquipe_publi[$codetemp][j].Clt}
+                                            {if $arrayEquipe_publi[$codetemp][j].logo != ''}
+                                                <img class="img2 pull-right" width="30" src="{$arrayEquipe_publi[$codetemp][j].logo}" alt="{$arrayEquipe_publi[$codetemp][j].club}" />
+                                            {/if}
+                                        </td>
+                                        <td class="cliquableNomEquipe"><a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe_publi[$codetemp][j].Numero}' title='{#Palmares#}'>{$arrayEquipe_publi[$codetemp][j].Libelle}</a></td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].Pts/100}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].J}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].G}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].N}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].P}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].F}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].Plus}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].Moins}</td>
+                                        <td>{$arrayEquipe_publi[$codetemp][j].Diff}</td>
+                                    {else}
+                                        <td class="droite">
+                                            {$arrayEquipe_publi[$codetemp][j].CltNiveau}
+                                        </td>
+                                        <td class="cliquableNomEquipe">
+                                            {if $arrayEquipe_publi[$codetemp][j].logo != ''}
+                                                <img class="img2 pull-left" width="30" src="{$arrayEquipe_publi[$codetemp][j].logo}" alt="{$arrayEquipe_publi[$codetemp][j].club}" />
+                                            {/if}
+                                            <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe_publi[$codetemp][j].Numero}' title='{#Palmares#}'>{$arrayEquipe_publi[$codetemp][j].Libelle}</a>
+                                        </td>
+                                    {/if}
+                                </tr>
+                            {/section}
+                        </tbody>
+                    </table>
+                {elseif $arrayCompetition[i].Statut == 'ON' and $arrayEquipe_publi[$codetemp][0].Code_typeclt == 'CP'}
+                    <div class='pull-left'>
+                        <a class="btn btn-default" href='kpclassement.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Deroulement#}...</a>
+                    </div>
                 {/if}
             </article>
         </div>

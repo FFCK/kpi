@@ -209,12 +209,8 @@ class GestionClassement extends MyPageSecure
 				$row = mysql_fetch_array($result);	  
 				if (strlen($row['Code_comite_dep']) > 3)
 					$row['Code_comite_dep'] = 'FRA';
-				array_push($arrayEquipe, array( 'Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
-																        'Clt' => $row['Clt'], 'Pts' => $row['Pts'], 
-																        'J' => $row['J'], 'G' => $row['G'], 'N' => $row['N'], 
-																        'P' => $row['P'], 'F' => $row['F'], 'Plus' => $row['Plus'], 
-																        'Moins' => $row['Moins'], 'Diff' => $row['Diff'],
-																        'PtsNiveau' => $row['PtsNiveau'], 'CltNiveau' => $row['CltNiveau'] ));
+                
+				array_push($arrayEquipe, $row);
 			}
 			
 			// Classement public				
@@ -239,12 +235,8 @@ class GestionClassement extends MyPageSecure
 				$row = mysql_fetch_array($result);	  
 				if (strlen($row['Code_comite_dep']) > 3)
 					$row['Code_comite_dep'] = 'FRA';
-				array_push($arrayEquipe_publi, array( 'Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
-																        'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'], 
-																        'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'], 
-																        'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'], 
-																        'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
-																        'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'] ));
+				array_push($arrayEquipe_publi, $row);
+                
 				if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0))
 				{
 					$recordCompetition['Qualifies']	= 0;
@@ -257,7 +249,7 @@ class GestionClassement extends MyPageSecure
 				// Classement actuel par journée/phase
 				$sql  = "Select a.Id, a.Libelle, a.Code_club, ";
 				$sql .= "b.Id_journee, b.Clt, b.Pts, b.J, b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau, ";
-				$sql .= "c.Phase, c.Niveau, c.Lieu ";
+				$sql .= "c.Phase, c.Niveau, c.Lieu, c.Type ";
 				$sql .= "From gickp_Competitions_Equipes a, ";
 				$sql .= "gickp_Competitions_Equipes_Journee b Join gickp_Journees c On (b.Id_journee = c.Id) ";
 				$sql .= "Where a.Id = b.Id ";
@@ -274,18 +266,13 @@ class GestionClassement extends MyPageSecure
 				{
 					$row = mysql_fetch_array($result);	  
 							
-					array_push($arrayEquipe_journee, array( 'Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Id_journee' => $row['Id_journee'], 
-																	        'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Lieu' => $row['Lieu'], 'Clt' => $row['Clt'], 'Pts' => $row['Pts'], 
-																	        'J' => $row['J'], 'G' => $row['G'], 'N' => $row['N'], 
-																	        'P' => $row['P'], 'F' => $row['F'], 'Plus' => $row['Plus'], 
-																	        'Moins' => $row['Moins'], 'Diff' => $row['Diff'],
-																	        'PtsNiveau' => $row['PtsNiveau'], 'CltNiveau' => $row['CltNiveau'] ));
+					array_push($arrayEquipe_journee, $row);
 				}
 
 				// Classement public par journée/phase
 				$sql  = "Select a.Id, a.Libelle, a.Code_club, ";
 				$sql .= "b.Id_journee, b.Clt_publi, b.Pts_publi, b.J_publi, b.G_publi, b.N_publi, b.P_publi, b.F_publi, b.Plus_publi, b.Moins_publi, b.Diff_publi, b.PtsNiveau_publi, b.CltNiveau_publi, ";
-				$sql .= "c.Phase, c.Niveau, c.Lieu ";
+				$sql .= "c.Phase, c.Niveau, c.Lieu, c.Type ";
 				$sql .= "From gickp_Competitions_Equipes a, ";
 				$sql .= "gickp_Competitions_Equipes_Journee b Join gickp_Journees c On (b.Id_journee = c.Id) ";
 				$sql .= "Where a.Id = b.Id ";
@@ -302,12 +289,7 @@ class GestionClassement extends MyPageSecure
 				{
 					$row = mysql_fetch_array($result);	  
 							
-					array_push($arrayEquipe_journee_publi, array( 'Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Id_journee' => $row['Id_journee'], 
-																	        'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Lieu' => $row['Lieu'], 'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'], 
-																	        'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'], 
-																	        'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'], 
-																	        'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
-																	        'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'] ));
+					array_push($arrayEquipe_journee_publi, $row);
 				}
 
 			}

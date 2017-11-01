@@ -1,4 +1,4 @@
- 	 	&nbsp;(<a href="GestionCalendrier.php">Retour</a>)
+ 	 	&nbsp;(<a href="GestionCalendrier.php">{#Retour#}</a>)
 
 		<div class="main">
 			<form method="POST" action="GestionClassement.php" name="formClassement" id="formClassement" enctype="multipart/form-data">
@@ -15,7 +15,7 @@
 					<label for="saisonTravail">{#Saison#} :</label>
 					<select name="saisonTravail" id="saisonTravail" onChange="sessionSaison()">
 						{section name=i loop=$arraySaison} 
-							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} (Travail){/if}</Option>
+							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} ({#actuelle#}){/if}</Option>
 						{/section}
 					</select>
 					<label for="codeCompet">{#Competition#} :</label>
@@ -37,10 +37,12 @@
 					<label for="orderCompet">{#Type_de_classement#} : </label>
 					{if $profile <= 3 && $AuthModif == 'O'}
 						<select name="orderCompet" onChange="changeOrderCompetition();">
-							{section name=i loop=$arrayOrderCompetition} 
-								<Option Value="{$arrayOrderCompetition[i][0]}" {$arrayOrderCompetition[i][2]}>{$arrayOrderCompetition[i][1]}</Option>
+							{section name=i loop=$arrayOrderCompetition}
+                                {assign var='type' value=$arrayOrderCompetition[i][0]|cat:'_type'}
+								<Option Value="{$arrayOrderCompetition[i][0]}" {$arrayOrderCompetition[i][2]}>{$smarty.config.$type}</Option>
 									{if $arrayOrderCompetition[i][2]=='SELECTED'}
                                         {assign var='typeCompetition' value=$arrayOrderCompetition[i][1]}
+                                        {assign var='type2' value=$type}
 									{/if}
 							{/section}
 						</select>
@@ -138,26 +140,22 @@
 							{/section}
 							</tbody>
 						</table>
-						{if $typeCompetition=='Championnat'}
-							Le classement est effectu&eacute; par Points, puis Diff&eacute;rence de but. 
-							<br>
-							<b>Pour prendre en compte un classement diff&eacute;rent, modifier manuellement
-							<br>
-							l'ordre de classement des &eacute;quipes &agrave;  &eacute;galit&eacute; de points (colonne Cl.).</b>
-						{/if}
-						<br>
-						{if $typeCompetition != 'Championnat'}
+						{if $typeCompetition == 'Championnat'}
+                            {#Explication_classement_par_points#}
+                            <br>
+						{else}
+                            <br>
 							<table id='tableauJQ2' class='tableauJQ tableau'>
 								<thead>
 									<tr>
-										<th colspan="12">{#Classement_par_phase#}</th>
+										<th colspan="12">{#Deroulement#}</th>
 									</tr>
 								</thead>
 								<tbody>
 								{assign var='idJournee' value='0'}
 
 								{section name=i loop=$arrayEquipe_journee} 
-									{if $arrayEquipe_journee[i].J != 0}
+									{if $arrayEquipe_journee[i].J != 0 && $arrayEquipe_journee[i].Type == 'C'}
 										{if $arrayEquipe_journee[i].Id_journee != $idJournee}
 											<tr class='head2'>
 												<th colspan="3">{$arrayEquipe_journee[i].Phase} ({$arrayEquipe_journee[i].Lieu})</th>
@@ -194,7 +192,25 @@
 											<td width="40">{$arrayEquipe_journee[i].Moins}</td>
 											<td width="40">{$arrayEquipe_journee[i].Diff}</td>
 										</tr>
-									{/if}	
+									{/if}
+                                    {if $arrayEquipe_journee[i].Type == 'E'}
+                                        {if $arrayEquipe_journee[i].Id_journee != $idJournee}
+                                            <tr class='head2'>
+                                                <th colspan="12">{$arrayEquipe_journee[i].Phase} ({$arrayEquipe_journee[i].Lieu})</th>
+                                            </tr>
+										{/if}
+                                        {assign var='idJournee' value=$arrayEquipe_journee[i].Id_journee}
+                                        <tr height="17" class='{cycle values="impair,pair"}'>
+                                            {if $arrayEquipe_journee[i].Pts/100 > 2}
+                                                <td colspan="4"><b>{#Vainqueur#}</b></td>
+                                                <td colspan="8"><b>{$arrayEquipe_journee[i].Libelle}</b></td>
+                                            {else}
+                                                <td colspan="4"><i>{#Perdant#}</i></td>
+                                                <td colspan="8"><i>{$arrayEquipe_journee[i].Libelle}</i></td>
+                                                
+                                            {/if}
+                                        </tr>
+                                    {/if}
 								{/section}
 								</tbody>
 							</table>
@@ -225,45 +241,45 @@
 								</tr>
 							</thead>
 							<tbody>
-							{section name=i loop=$arrayEquipe_publi} 
-								<tr height="17" class='{cycle values="impair2,pair2"}'>
-									{if $smarty.section.i.iteration <= $Qualifies_publi}
-										<td class='vert'><img width="16" src="../img/up.gif" alt="Qualifi&eacute;" title="Qualifi&eacute;" /></td>
-									{elseif $smarty.section.i.iteration > $smarty.section.i.total - $Elimines_publi}
-										<td class='rouge'><img width="16" src="../img/down.gif" alt="Elimin&eacute;s" title="Elimin&eacute;s" /></td>
-									{else}
-										<td>&nbsp;</td>
-									{/if}
-									
-									<td>
-										{if $profile <= 4 && $AuthModif == 'O'}
-											<input type="checkbox" name="checkClassement" value="{$arrayEquipe_publi[i].Id}" id="checkClassement{$smarty.section.i.iteration}" />
-										{/if}
-									</td>
-									{if $Code_niveau == 'INT'}
-										<td><img width="20" src="../img/Pays/{$arrayEquipe_publi[i].Code_comite_dep}.png" alt="{$arrayEquipe_publi[i].Code_comite_dep}" title="{$arrayEquipe_publi[i].Code_comite_dep}" /></td>
-									{/if}
-									{if $typeCompetition=='Championnat'}
-										<td width="30">{$arrayEquipe_publi[i].Clt}</td>
-										<td width="200">{$arrayEquipe_publi[i].Libelle}</td>
-										<td width="40">{$arrayEquipe_publi[i].Pts/100}</td>
-									{else}
-										<td width="30">{$arrayEquipe_publi[i].CltNiveau}</td>
-										<td width="200">{$arrayEquipe_publi[i].Libelle}</td>
-										{*<td width="40">{$arrayEquipe_publi[i].PtsNiveau}</td>*}
-									{/if}
-									
-									<td width="30">{$arrayEquipe_publi[i].J}</td>
-									<td width="30">{$arrayEquipe_publi[i].G}</td>
-									<td width="30">{$arrayEquipe_publi[i].N}</td>
-									<td width="30">{$arrayEquipe_publi[i].P}</td>
-									<td width="30">{$arrayEquipe_publi[i].F}</td>
-									<td width="40">{$arrayEquipe_publi[i].Plus}</td>
-									<td width="40">{$arrayEquipe_publi[i].Moins}</td>
-									<td width="40">{$arrayEquipe_publi[i].Diff}</td>
-								
-								</tr>
-							{/section}
+                                {section name=i loop=$arrayEquipe_publi} 
+                                    <tr height="17" class='{cycle values="impair2,pair2"}'>
+                                        {if $smarty.section.i.iteration <= $Qualifies_publi}
+                                            <td class='vert'><img width="16" src="../img/up.gif" alt="Qualifi&eacute;" title="Qualifi&eacute;" /></td>
+                                        {elseif $smarty.section.i.iteration > $smarty.section.i.total - $Elimines_publi}
+                                            <td class='rouge'><img width="16" src="../img/down.gif" alt="Elimin&eacute;s" title="Elimin&eacute;s" /></td>
+                                        {else}
+                                            <td>&nbsp;</td>
+                                        {/if}
+
+                                        <td>
+                                            {if $profile <= 4 && $AuthModif == 'O'}
+                                                <input type="checkbox" name="checkClassement" value="{$arrayEquipe_publi[i].Id}" id="checkClassement{$smarty.section.i.iteration}" />
+                                            {/if}
+                                        </td>
+                                        {if $Code_niveau == 'INT'}
+                                            <td><img width="20" src="../img/Pays/{$arrayEquipe_publi[i].Code_comite_dep}.png" alt="{$arrayEquipe_publi[i].Code_comite_dep}" title="{$arrayEquipe_publi[i].Code_comite_dep}" /></td>
+                                        {/if}
+                                        {if $typeCompetition=='Championnat'}
+                                            <td width="30">{$arrayEquipe_publi[i].Clt}</td>
+                                            <td width="200">{$arrayEquipe_publi[i].Libelle}</td>
+                                            <td width="40">{$arrayEquipe_publi[i].Pts/100}</td>
+                                        {else}
+                                            <td width="30">{$arrayEquipe_publi[i].CltNiveau}</td>
+                                            <td width="200">{$arrayEquipe_publi[i].Libelle}</td>
+                                            {*<td width="40">{$arrayEquipe_publi[i].PtsNiveau}</td>*}
+                                        {/if}
+
+                                        <td width="30">{$arrayEquipe_publi[i].J}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].G}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].N}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].P}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].F}</td>
+                                        <td width="40">{$arrayEquipe_publi[i].Plus}</td>
+                                        <td width="40">{$arrayEquipe_publi[i].Moins}</td>
+                                        <td width="40">{$arrayEquipe_publi[i].Diff}</td>
+
+                                    </tr>
+                                {/section}
 							</tbody>
 						</table>
 						<br>
@@ -272,14 +288,14 @@
 								<thead>
 									<tr>
 										<th></th>
-										<th colspan="11">{#Classement_public_par_phase#}</th>
+										<th colspan="11">{#Deroulement#}</th>
 									</tr>
 								</thead>
 								<tbody>
 								{assign var='idJournee' value='0'}
 
 								{section name=i loop=$arrayEquipe_journee_publi} 
-									{if $arrayEquipe_journee_publi[i].J != 0}
+									{if $arrayEquipe_journee_publi[i].J_publi != 0 && $arrayEquipe_journee_publi[i].Type == 'C'}
 										{if $arrayEquipe_journee_publi[i].Id_journee != $idJournee}
 											<tr class='head2Public'>
 												<th colspan="3">{$arrayEquipe_journee_publi[i].Phase} ({$arrayEquipe_journee_publi[i].Lieu})</th>
@@ -302,19 +318,37 @@
 													<input type="checkbox" name="checkClassement" value="{$arrayEquipe_journee_publi[i].Id}" id="checkClassement{$smarty.section.i.iteration}" />
 												{/if}
 											</td>
-											<td width="30">{$arrayEquipe_journee_publi[i].Clt}</td>
+											<td width="30">{$arrayEquipe_journee_publi[i].Clt_publi}</td>
 											<td width="200">{$arrayEquipe_journee_publi[i].Libelle}</td>
-											<td width="40">{$arrayEquipe_journee_publi[i].Pts/100}</td>
-											<td width="30">{$arrayEquipe_journee_publi[i].J}</td>
-											<td width="30">{$arrayEquipe_journee_publi[i].G}</td>
-											<td width="30">{$arrayEquipe_journee_publi[i].N}</td>
-											<td width="30">{$arrayEquipe_journee_publi[i].P}</td>
-											<td width="30">{$arrayEquipe_journee_publi[i].F}</td>
-											<td width="40">{$arrayEquipe_journee_publi[i].Plus}</td>
-											<td width="40">{$arrayEquipe_journee_publi[i].Moins}</td>
-											<td width="40">{$arrayEquipe_journee_publi[i].Diff}</td>
+											<td width="40">{$arrayEquipe_journee_publi[i].Pts_publi/100}</td>
+											<td width="30">{$arrayEquipe_journee_publi[i].J_publi}</td>
+											<td width="30">{$arrayEquipe_journee_publi[i].G_publi}</td>
+											<td width="30">{$arrayEquipe_journee_publi[i].N_publi}</td>
+											<td width="30">{$arrayEquipe_journee_publi[i].P_publi}</td>
+											<td width="30">{$arrayEquipe_journee_publi[i].F_publi}</td>
+											<td width="40">{$arrayEquipe_journee_publi[i].Plus_publi}</td>
+											<td width="40">{$arrayEquipe_journee_publi[i].Moins_publi}</td>
+											<td width="40">{$arrayEquipe_journee_publi[i].Diff_publi}</td>
 										</tr>
 									{/if}
+                                    {if $arrayEquipe_journee_publi[i].Type == 'E'}
+                                        {if $arrayEquipe_journee_publi[i].Id_journee != $idJournee}
+                                            <tr class='head2Public'>
+                                                <th colspan="12">{$arrayEquipe_journee_publi[i].Phase} ({$arrayEquipe_journee_publi[i].Lieu})</th>
+                                            </tr>
+                                        {/if}
+                                        {assign var='idJournee' value=$arrayEquipe_journee_publi[i].Id_journee}
+                                        <tr height="17" class='{cycle values="impair,pair"}'>
+                                            {if $arrayEquipe_journee_publi[i].Pts_publi/100 > 2}
+                                                <td colspan="4"><b>{#Vainqueur#}</b></td>
+                                                <td colspan="8"><b>{$arrayEquipe_journee_publi[i].Libelle}</b></td>
+                                            {else}
+                                                <td colspan="4"><i>{#Perdant#}</i></td>
+                                                <td colspan="8"><i>{$arrayEquipe_journee_publi[i].Libelle}</i></td>
+
+                                            {/if}
+                                        </tr>
+                                    {/if}
 								{/section}
 								</tbody>
 							</table>
@@ -340,7 +374,7 @@
 						</tr>
 						<tr>
 							<th class='titreForm' colspan=4>
-								<label>{#Classement#} type {$typeCompetition}</label>
+								<label>Type : {$smarty.config.$type2}</label>
 							</th>
 						</tr>
 						<tr>
@@ -459,14 +493,14 @@
                                 <td align='left'>
                                     <a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase admin" title="D&eacute;tail par phase admin" /></a>
                                 </td>
-                                <td colspan=2 align='center'>{#Detail_par_phase#}</td>
+                                <td colspan=2 align='center'>{#Deroulement#}</td>
                                 <td align='right'>
                                 {if $Code_uti_publication != ''}
                                     <a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par phase public" title="D&eacute;tail par phase public" /></a>
                                 {/if}
                                 </td>
                             </tr>
-                            <tr>
+{*                            <tr>
                                 <td align='left'>
                                     <a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par niveau admin" title="D&eacute;tail par niveau admin" /></a>
                                 </td>
@@ -477,7 +511,7 @@
                                 {/if}
                                 </td>
                             </tr>
-                            <tr>
+*}                            <tr>
                                 <td align='left'>
                                     <a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="30" src="../img/pdf.png" alt="D&eacute;tail par &eacute;quipe admin" title="D&eacute;tail par &eacute;quipe admin" /></a>
                                 </td>
@@ -524,12 +558,12 @@
 						<table width="100%">
 							<tr>
 								<th class='titreForm'>
-									<label>Affectation, promotion, rel&eacute;gation</label>
+									<label>{#Affectation#} - {#Promotion#} - {#Relegation#}</label>
 								</th>
 							</tr>
 							<tr>
 								<td>
-									<label for="codeSaisonTransfert">Affecter vers saison :</label>
+									<label for="codeSaisonTransfert">{#Affecter_vers_saison#} :</label>
 									<select name="codeSaisonTransfert" id="codeSaisonTransfert" onchange="changeSaisonTransfert()">
 										{section name=i loop=$arraySaisonTransfert} 
 											<Option Value="{$arraySaisonTransfert[i].Code}" {if $arraySaisonTransfert[i].Code == $codeSaisonTransfert}selected{/if}>{$arraySaisonTransfert[i].Code}</Option>
@@ -539,7 +573,7 @@
 							</tr>
 							<tr>
 								<td>
-									<label for="codeCompetTransfert">Affecter vers comp&eacute;tition :</label>
+									<label for="codeCompetTransfert">{#Affecter_vers_competition#} :</label>
 									<select name="codeCompetTransfert" id="codeCompetTransfert">
 										{section name=i loop=$arrayCompetitionTransfert} 
 											<!--
@@ -553,7 +587,7 @@
 							<tr>
 								<td>
 									<br>
-									<input type="button" onclick="transfert();" name="Transfert" value="Affecter les &eacute;quipes coch&eacute;es">
+									<input type="button" onclick="transfert();" name="Transfert" value="{#Affecter_equipes_cochees#}">
 								</td>
 							</tr>
 						</table>
