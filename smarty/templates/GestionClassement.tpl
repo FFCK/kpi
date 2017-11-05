@@ -31,8 +31,6 @@
                             </optgroup>
                         {/section}
 					</select>
-					&nbsp;
-					<a href="GestionJournee.php?Compet={$codeCompet}" title="Acc&egrave;s direct aux matchs de cette comp&eacute;tition"><img src="../img/b_match.png" alt="Matchs" height="20"></a>
 					<br>
 					<label for="orderCompet">{#Type_de_classement#} : </label>
 					{if $profile <= 3 && $AuthModif == 'O'}
@@ -54,7 +52,7 @@
 							{/if}
 						{/section}
 					{/if}
-					<img height="20" class="cliquable" id="actuButton" title="Recharger" src="../img/glyphicons-82-refresh.png">
+					<img height="20" class="cliquable" id="actuButton" title="{#Recharger#}" src="../img/glyphicons-82-refresh.png">
 					<br>
 					<div class='blocTable table2'>
 						<table class='tableauJQ tableauClassement tableau'>

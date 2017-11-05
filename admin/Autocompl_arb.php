@@ -7,7 +7,15 @@ include_once('../commun/MyTools.php');
 
 	$myBdd = new MyBdd();
 	
-	function __encode($var){
+    // Langue
+    $langue = parse_ini_file("../commun/MyLang.ini", true);
+    if (utyGetSession('lang') == 'en') {
+        $lang = $langue['en'];
+    } else {
+        $lang = $langue['fr'];
+    }
+
+    function __encode($var){
 		global $html_entities;
  
 		foreach ($html_entities as $key => $value) {
@@ -162,7 +170,7 @@ include_once('../commun/MyTools.php');
             $resultGlobal = "2 caractères minimum !|XXX||||\n";
         } else {
 			// Equipes
-			$resultGlobal .= "------------- Equipes engagées -------------|XXX\n";
+			$resultGlobal .= '---------- ' . $lang['Equipes'] . ' ----------|XXX\n';
 			$sql  = "Select a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet ";
 			$sql .= "From gickp_Competitions_Equipes a, gickp_Journees b ";
 			$sql .= "Where a.Code_compet = b.Code_competition ";
@@ -182,7 +190,7 @@ include_once('../commun/MyTools.php');
 			}
 			// Joueurs
 			$resultGlobal .= ".\n";
-			$resultGlobal .= "----------------- Joueurs -----------------|XXX\n";
+			$resultGlobal .= '---------- ' . $lang['Joueurs'] . ' ----------|XXXn';
 			$sql  = "Select distinct a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, (c.Arb IS NULL) AS sortCol ";
 			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, ";
 			$sql .= "gickp_Competitions_Equipes b, gickp_Journees d, gickp_Matchs e ";
@@ -218,7 +226,7 @@ include_once('../commun/MyTools.php');
 			$resultGlobal .= ".\n";
 			$resultGlobal .= ".\n";
 			$resultGlobal .= ".\n";
-			$resultGlobal .= "----- Pool arbitres (hors équipes engagées) -----|XXX\n";
+			$resultGlobal .= '---------- ' . $lang['Pool_Arbitres'] . ' ----------|XXX\n';
 			$sql  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau ";
 			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
 			$sql .= "Where a.Id_equipe = b.Id ";
@@ -250,7 +258,7 @@ include_once('../commun/MyTools.php');
 			}
 			// Autres arbitres
 			$resultGlobal .= ".\n";
-			$resultGlobal .= "----- Autres arbitres (hors équipes engagées) -----\n";
+			$resultGlobal .= '---------- ' . $lang['Autres_Arbitres'] . ' ----------/n';
 			$sql  = "Select lc.*, c.Libelle, b.Arb, b.niveau ";
 				//$sql .= "From gickp_Liste_Coureur lc left outer join gickp_Arbitre b on lc.Matric = b.Matric, gickp_Club c ";
 			$sql .= "From gickp_Liste_Coureur lc, gickp_Arbitre b, gickp_Club c ";

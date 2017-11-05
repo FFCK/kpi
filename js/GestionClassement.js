@@ -37,7 +37,7 @@ function initClt()
 
 function publicationClt()
 {
-	if (!confirm('Confirmation de la Publication du Classement ? '))
+	if (!confirm('Confirmation ? '))
 		return false;
 
 	document.forms['formClassement'].elements['Cmd'].value = 'PublicationClassement';
@@ -47,10 +47,10 @@ function publicationClt()
 
 function depublicationClt()
 {
-	if (!confirm('Confirmation de la DE-Publication du Classement ? (Suppression du classement public)'))
+	if (!confirm('Suppression du classement public / Remove of public ranking ?'))
 		return false;
 
-	if (!confirm('ATTENTION : Suppression du classement public ?'))
+	if (!confirm('Confirmation ?'))
 		return false;
 
 	document.forms['formClassement'].elements['Cmd'].value = 'DePublicationClassement';
@@ -86,7 +86,7 @@ function transfert()
 	  
 	if (str.length == 0)
 	{
-		alert("Rien &agrave;  transf&eacute;rer !, aucune ligne s&eacute;lectionn&eacute;e !!!! ...");
+		alert("Rien à transférer / Nothing to transfer !");
 		return false;
 	}
 	
@@ -94,17 +94,17 @@ function transfert()
 	var codeCompetTransfert = jq('#codeCompetTransfert option:selected').val();
 	if (codeCompetTransfert.length == 0)
 	{
-		alert("Aucune comp&eacute;tition de transfert s&eacute;lectionn&eacute;e !!! ...");
+		alert("Sélectionner une compétition cible / Select a target competition !");
 		return false;
 	}
 	var codeSaisonTransfert = jq('#codeSaisonTransfert option:selected').val();
 	if (codeSaisonTransfert.length == 0)
 	{
-		alert("Aucune saison de transfert s&eacute;lectionn&eacute;e !!! ...");
+		alert("Sélectionner une saison cible / Select a target season !");
 		return false;
 	}
 
-	if (!confirm('Confirmation du Transfert ? '))
+	if (!confirm('Confirmation ? '))
 		return false;
 
 	document.forms['formClassement'].elements['Cmd'].value = 'Transfert';
@@ -116,7 +116,7 @@ function transfert()
 		
 function sessionSaison()
 {
-	if(!confirm('Confirmez-vous le changement de saison de travail ?\n(n\'affecte que votre session)'))
+	if(!confirm('Confirmation ?'))
 	{
 		document.forms['formClassement'].reset;
 		return;
@@ -133,8 +133,6 @@ jq(document).ready(function() { //Jquery
 	jq('#actuButton').click(function(){
 		jq('#formClassement').submit();
 	});
-	//Ajout title
-	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer &agrave;  la valeur suivante');
 	// contr&ocirc;le touche entr&eacute;e (valide les donn&eacute;es en cours mais pas le formulaire)
 	jq('.tableauJQ').bind('keydown',function(e){
 		if(e.which == 13)
@@ -209,7 +207,7 @@ jq(document).ready(function() { //Jquery
 				},
 				function(data){
 					if(data != 'OK!'){
-						alert('mise &agrave;  jour impossible : '+data);
+						alert('Mise à jour impossible / Impossible update : ' + data);
 					}else{
 						jq('#'+identifiant).text(nouvelleValeur/diviseur);
 					}
@@ -246,7 +244,7 @@ jq(document).ready(function() { //Jquery
 					}
 					else{
 						laCompet.html(statut);
-						alert('Changement impossible <br />'+data);
+						alert('Mise à jour impossible / Impossible update <br />' + data);
 					}
 				},
 				'text' // Format des données reçues.
