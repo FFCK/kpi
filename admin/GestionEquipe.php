@@ -10,7 +10,15 @@ class GestionEquipe extends MyPageSecure
 {	
 	function Load()
 	{
-		$_SESSION['updatecell_tableName'] = 'gickp_Competitions_Equipes';
+		// Langue
+        $langue = parse_ini_file("../commun/MyLang.ini", true);
+        if (utyGetSession('lang') == 'en') {
+            $lang = $langue['en'];
+        } else {
+            $lang = $langue['fr'];
+        }
+        
+        $_SESSION['updatecell_tableName'] = 'gickp_Competitions_Equipes';
 		$_SESSION['updatecell_where'] = 'Where Id = ';
 		$_SESSION['updatecell_document'] = 'formEquipe';
 		
@@ -21,10 +29,11 @@ class GestionEquipe extends MyPageSecure
 		$codeCompet = utyGetPost('competition', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
 
-		if ($codeCompet == '*')  
-			$codeCompet = '';
-		
-		$myBdd = new MyBdd();
+		if ($codeCompet == '*') {
+            $codeCompet = '';
+        }
+
+        $myBdd = new MyBdd();
 		
 		// Chargement des Compétitions ...
 		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif,"
@@ -33,11 +42,12 @@ class GestionEquipe extends MyPageSecure
                 . "Where c.Code_saison = '" . $codeSaison . "' ";
 		$sql .= utyGetFiltreCompetition('c.');
 		$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-		if(utyGetSession('AfficheCompet') == 'NCF')
-			$sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-		else
-			$sql .= " And c.Code Like '".utyGetSession('AfficheCompet')."%' ";
-		$sql .= " And c.Code_ref = g.Groupe ";
+		if (utyGetSession('AfficheCompet') == 'NCF') {
+            $sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
+        } else {
+            $sql .= " And c.Code Like '" . utyGetSession('AfficheCompet') . "%' ";
+        }
+        $sql .= " And c.Code_ref = g.Groupe ";
 		$sql .= " Order By c.Code_saison, g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
 		$result = $myBdd->Query($sql);
 		$arrayCompetition = array();
@@ -91,21 +101,21 @@ class GestionEquipe extends MyPageSecure
 		{ 
 			if ($codeCompet != 'POOL')
 			{
-				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  "
-                        . "From gickp_Competitions_Equipes ce, gickp_Club c "
-                        . "Where ce.Code_compet = '";
+				$sql  = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep, c.Libelle Club  "
+                        . "FROM gickp_Competitions_Equipes ce, gickp_Club c "
+                        . "WHERE ce.Code_compet = '";
 				$sql .= $codeCompet;
-				$sql .= "' And ce.Code_saison = '";
+				$sql .= "' AND ce.Code_saison = '";
 				$sql .= $codeSaison;
-				$sql .= "' And ce.Code_club = c.Code "
-                        . " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+				$sql .= "' AND ce.Code_club = c.Code "
+                        . " ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			} else {
-				$sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep "
-                        . "From gickp_Competitions_Equipes ce, gickp_Club c "
-                        . "Where ce.Code_compet = '";
+				$sql  = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep, c.Libelle Club "
+                        . "FROM gickp_Competitions_Equipes ce, gickp_Club c "
+                        . "WHERE ce.Code_compet = '";
 				$sql .= $codeCompet;
-				$sql .= "' And ce.Code_club = c.Code "
-                        . "Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+				$sql .= "' AND ce.Code_club = c.Code "
+                        . "ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			}
 			
 			$result = $myBdd->Query($sql);
@@ -126,13 +136,15 @@ class GestionEquipe extends MyPageSecure
                 $row2 = $myBdd->FetchArray($result2);
                 $nbMatchs = $row2['nbMatchs'];
                 
-				if (strlen($row['Code_comite_dep']) > 3)
-					$row['Code_comite_dep'] = 'FRA';
-				if ($row['Tirage'] != 0 or $row['Poule'] != '')
-					$this->m_tpl->assign('Tirage', 'ok');
-                
-				array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 
-                    'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 
+				if (strlen($row['Code_comite_dep']) > 3) {
+                    $row['Code_comite_dep'] = 'FRA';
+                }
+                if ($row['Tirage'] != 0 or $row['Poule'] != '') {
+                    $this->m_tpl->assign('Tirage', 'ok');
+                }
+
+                array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 
+                    'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Club' => $row['Club'], 
                     'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'nbMatchs' => $nbMatchs, 
                     'Code_comite_dep' => $row['Code_comite_dep'] ));
 			}
@@ -153,17 +165,23 @@ class GestionEquipe extends MyPageSecure
 		// Les comites et les clubs ...
 		$codeComiteReg = utyGetSession('codeComiteReg', '*');
 		$codeComiteReg = utyGetPost('comiteReg', $codeComiteReg);
-		if (strlen($codeComiteReg) == 0) $codeComiteReg = '*';
-		
-		$codeComiteDep = utyGetSession('codeComiteDep', '*');
+		if (strlen($codeComiteReg) == 0) {
+            $codeComiteReg = '*';
+        }
+
+        $codeComiteDep = utyGetSession('codeComiteDep', '*');
 		$codeComiteDep = utyGetPost('comiteDep', $codeComiteDep);
-		if (strlen($codeComiteDep) == 0) $codeComiteDep = '*';
-		
-		$codeClub = utyGetSession('codeClub', '*');
+		if (strlen($codeComiteDep) == 0) {
+            $codeComiteDep = '*';
+        }
+
+        $codeClub = utyGetSession('codeClub', '*');
 		$codeClub = utyGetPost('club', $codeClub);
-		if (strlen($codeClub) == 0) $codeClub = '*';
-		
-		if (isset($_POST['ParamCmd']))	// @COSANDCO_WAMPSER
+		if (strlen($codeClub) == 0) {
+            $codeClub = '*';
+        }
+
+        if (isset($_POST['ParamCmd']))	// @COSANDCO_WAMPSER
 		{
 			if ($codeComiteReg == '*' && $_POST['ParamCmd'] == 'changeComiteReg')
 			{
@@ -190,34 +208,34 @@ class GestionEquipe extends MyPageSecure
 		$num_results = mysql_num_rows($result);
 	
 		$arrayComiteReg = array();
-		if ('*' == $codeComiteReg)
-			array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - Tous les Comités Régionaux', 'Selected' => 'SELECTED') );
-		else
-			array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - Tous les Comités Régionaux', 'Selected' => '') );
-	
-		for ($i=0;$i<$num_results;$i++)
-		{
+		if ('*' == $codeComiteReg) {
+            array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
+        } else {
+            array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
+        }
+
+        for ($i=0;$i<$num_results;$i++) {
 			$row = mysql_fetch_array($result);	  
 			
-			if ($row["Code"] == $codeComiteReg)
-				array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"]." - ".$row["Libelle"], 'Selected' => 'SELECTED' ) );
-			else
-				array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"]." - ".$row["Libelle"], 'Selected' => '' ) );
-		}
+			if ($row["Code"] == $codeComiteReg) {
+                array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"] . " - " . $row["Libelle"], 'Selected' => 'SELECTED'));
+            } else {
+                array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"] . " - " . $row["Libelle"], 'Selected' => ''));
+            }
+        }
 		
 		$this->m_tpl->assign('arrayComiteReg', $arrayComiteReg);
 		
 		// Chargement des Comites Departementaux ...
 		$arrayComiteDep = array();
-		if ('*' == $codeComiteDep)
-		{
-			array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - Tous les Comités Départementaux', 'Selected' => 'SELECTED') );
-			$bSelectCombo = true;
-		}
-		else
-			array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - Tous les Comités Départementaux', 'Selected' => '') );
-		
-			$sql  = "Select Code, Libelle ";
+		if ('*' == $codeComiteDep) {
+            array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
+            $bSelectCombo = true;
+        } else {
+            array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
+        }
+
+        $sql  = "Select Code, Libelle ";
 			$sql .= "From gickp_Comite_dep ";
 			if ($codeComiteReg != '*')
 			{
@@ -231,18 +249,16 @@ class GestionEquipe extends MyPageSecure
 			$num_results = mysql_num_rows($result);
 	
 			$bSelectCombo = false;	
-			for ($i=0;$i<$num_results;$i++)
-			{
+			for ($i=0;$i<$num_results;$i++) {
 				$row = mysql_fetch_array($result);	
 				
-				if ($row["Code"] == $codeComiteDep)
-				{
-					array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code']." - ".$row['Libelle'], 'Selected' => 'SELECTED' ) );
-					$bSelectCombo = true;
-				}
-				else
-					array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code']." - ".$row['Libelle'], 'Selected' => '' ) );
-			}
+				if ($row["Code"] == $codeComiteDep) {
+                array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . " - " . $row['Libelle'], 'Selected' => 'SELECTED'));
+                $bSelectCombo = true;
+            } else {
+                array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . " - " . $row['Libelle'], 'Selected' => ''));
+            }
+        }
 			
 //			if (!$bSelectCombo )
 //				$codeComiteDep = '*';
@@ -252,12 +268,13 @@ class GestionEquipe extends MyPageSecure
 		
 		// Chargement des Clubs ...
 		$arrayClub = array();
-		if ('*' == $codeClub)
-			array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - Tous les Clubs', 'Selected' => 'SELECTED') );
-		else
-			array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - Tous les Clubs', 'Selected' => '') );
-	
-			$sql  = "Select c.Code, c.Libelle ";
+		if ('*' == $codeClub) {
+            array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
+        } else {
+            array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
+        }
+
+        $sql  = "Select c.Code, c.Libelle ";
 			$sql .= "From gickp_Club c, gickp_Comite_dep cd ";
 			$sql .= "Where c.Code_comite_dep = cd.Code ";
 			if ($codeComiteReg != '*')
@@ -278,18 +295,16 @@ class GestionEquipe extends MyPageSecure
 			$num_results = mysql_num_rows($result);
 				
 			$bSelectCombo = false;	
-			for ($i=0;$i<$num_results;$i++)
-			{
+			for ($i=0;$i<$num_results;$i++) {
 				$row = mysql_fetch_array($result);	
 				
-				if ($row["Code"] == $codeClub)
-				{
-					array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'].' - '.$row['Libelle'], 'Selected' => 'SELECTED' ) );
-					$bSelectCombo = true;
-				}
-				else
-					array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'].' - '.$row['Libelle'], 'Selected' => '' ) );
-			}
+				if ($row["Code"] == $codeClub) {
+                array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . ' - ' . $row['Libelle'], 'Selected' => 'SELECTED'));
+                $bSelectCombo = true;
+            } else {
+                array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . ' - ' . $row['Libelle'], 'Selected' => ''));
+            }
+        }
 			
 //			if (!$bSelectCombo )
 //				$codeClub = '*';
@@ -297,39 +312,40 @@ class GestionEquipe extends MyPageSecure
 		$this->m_tpl->assign('arrayClub', $arrayClub);
 		
 		//Filtres
-		$filtreH = utyGetPost('filtreH', 1);
-		if($filtreH == 1)
-		{
-			$filtreH = true;
-			$filtreF = false;
-		}else{
-			$filtreH = false;
-			$filtreF = true;
-		}
-		$filtreJ = utyGetPost('filtreJ', false);
-		$filtre21 = utyGetPost('filtre21', false);
-		$filtreTous = utyGetPost('filtreTous', false);
-		if($filtreTous)
-		{
-			$filtreH = false;
-			$filtreF = false;
-			$filtreJ = false;
-			$filtre21 = false;
-		}
-		if($filtreTous) $this->m_tpl->assign('filtreTous', 'checked');
-		if($filtreH) $this->m_tpl->assign('filtreH', 'checked');
-		if($filtreF) $this->m_tpl->assign('filtreF', 'checked');
-		if($filtreJ) $this->m_tpl->assign('filtreJ', 'checked');
-		if($filtre21) $this->m_tpl->assign('filtre21', 'checked');
+//		$filtreH = utyGetPost('filtreH', false);
+//		$filtreF = utyGetPost('filtreF', false);
+//		$filtreH = utyGetPost('filtreH', 1);
+//		if($filtreH == 1)
+//		{
+//			$filtreH = true;
+//			$filtreF = false;
+//		}else{
+//			$filtreH = false;
+//			$filtreF = true;
+//		}
+//		$filtreJ = utyGetPost('filtreJ', false);
+//		$filtre21 = utyGetPost('filtre21', false);
+//		$filtreTous = utyGetPost('filtreTous', false);
+//		if($filtreTous)
+//		{
+//			$filtreH = false;
+//			$filtreF = false;
+//			$filtreJ = false;
+//			$filtre21 = false;
+//		}
+//		if($filtreTous) $this->m_tpl->assign('filtreTous', 'checked');
+//		if($filtreH) $this->m_tpl->assign('filtreH', 'checked');
+//		if($filtreF) $this->m_tpl->assign('filtreF', 'checked');
+//		if($filtreJ) $this->m_tpl->assign('filtreJ', 'checked');
+//		if($filtre21) $this->m_tpl->assign('filtre21', 'checked');
 		
 		// Chargement des Equipes Historique ...
 		$arrayHistoEquipe = array();
-		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '=> NOUVELLE EQUIPE...'));
+		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '=> ' . $lang['NOUVELLE_EQUIPE'] . '...'));
 		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => ''));
 		
 		if ($codeComiteReg != '98')
 		{
-			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== CLUBS FRANCAIS ====', 'Code_club' => ''));
 			$sql  = "Select e.Numero, e.Libelle, e.Code_club ";
 			$sql .= "From gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd ";
 			$sql .= "Where e.Code_club = c.Code ";
@@ -353,30 +369,29 @@ class GestionEquipe extends MyPageSecure
 				$sql .= $codeClub;
 				$sql .= "' ";
 			}
-			if(!$filtreTous)
-			{
-				$sql .= "And (";
-				($filtreH) ? $sql .= "e.Libelle Not Like '%F' And " : $sql .= "e.Libelle Like '%' And ";
-				($filtreF) ? $sql .= "e.Libelle Like '%F' And " : $sql .= "e.Libelle Not Like '%F' And ";
-				($filtreJ) ? $sql .= "(e.Libelle Like '%JH' Or e.Libelle Like '%JF') And " : $sql .= "e.Libelle Not Like '%JH' And e.Libelle Not Like '%JF' And ";
-				($filtre21) ? $sql .= "e.Libelle Like '%21%'" : $sql .= "e.Libelle Not Like '%21%'";
-				$sql .= ") ";
-			}
+//			if(!$filtreTous)
+//			{
+//				$sql .= "And (";
+//				($filtreH) ? $sql .= "e.Libelle Not Like '%F' And " : $sql .= "e.Libelle Like '%' And ";
+//				($filtreF) ? $sql .= "e.Libelle Like '%F' And " : $sql .= "e.Libelle Not Like '%F' And ";
+//				($filtreJ) ? $sql .= "(e.Libelle Like '%JH' Or e.Libelle Like '%JF') And " : $sql .= "e.Libelle Not Like '%JH' And e.Libelle Not Like '%JF' And ";
+//				($filtre21) ? $sql .= "e.Libelle Like '%21%'" : $sql .= "e.Libelle Not Like '%21%'";
+//				$sql .= ") ";
+//			}
 			$sql .= "Order By e.Libelle ";
 			
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
 			$num_results = mysql_num_rows($result);
+			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== FRANCE (' . $num_results . ' ' . $lang['equipes'] . ') ====', 'Code_club' => ''));
 			for ($i=0;$i<$num_results;$i++)
 			{
 				$row = mysql_fetch_array($result);	  
 				array_push($arrayHistoEquipe, array('Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club']));
 			}
-			array_push($arrayHistoEquipe, array('Numero' => '----', 'Libelle' => '==== TOTAL : '.$num_results.' équipes de club ====', 'Code_club' => ''));
 			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '', 'Code_club' => ''));
 		}
 		if ($codeComiteReg == '98' or $codeComiteReg == '*')
 		{
-			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== INTERNATIONAL ====', 'Code_club' => ''));
 			$sql  = "Select e.Numero, e.Libelle, e.Code_club ";
 			$sql .= "From gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd ";
 			$sql .= "Where e.Code_club = c.Code ";
@@ -400,26 +415,25 @@ class GestionEquipe extends MyPageSecure
 				$sql .= $codeClub;
 				$sql .= "' ";
 			}
-			if(!$filtreTous)
-			{
-				$sql .= "And (";
-				($filtreH) ? $sql .= "e.Libelle Not Like '%Women%' And e.Libelle Not Like '%Ladies%' And e.Libelle Not Like '%Dames%' And " : $sql .= "e.Libelle Like '%' And ";
-				($filtreF) ? $sql .= "(e.Libelle Like '%Women%' Or e.Libelle Like '%Ladies%' Or e.Libelle Like '%Dames%') And " : $sql .= "e.Libelle Not Like '%Women%' And e.Libelle Not Like '%Ladies' And e.Libelle Not Like '%Dames%' And ";
-				($filtreJ) ? $sql .= "(e.Libelle Like '%JH%' Or e.Libelle Like '%JF%') And " : $sql .= "e.Libelle Not Like '%JH%' And e.Libelle Not Like '%JF%' And ";
-				($filtre21) ? $sql .= "e.Libelle Like '%21%'" : $sql .= "e.Libelle Not Like '%21%'";
-				$sql .= ") ";
-			}
+//			if(!$filtreTous)
+//			{
+//				$sql .= "And (";
+//				($filtreH) ? $sql .= "e.Libelle Not Like '%Women%' And e.Libelle Not Like '%Ladies%' And e.Libelle Not Like '%Dames%' And " : $sql .= "e.Libelle Like '%' And ";
+//				($filtreF) ? $sql .= "(e.Libelle Like '%Women%' Or e.Libelle Like '%Ladies%' Or e.Libelle Like '%Dames%') And " : $sql .= "e.Libelle Not Like '%Women%' And e.Libelle Not Like '%Ladies' And e.Libelle Not Like '%Dames%' And ";
+//				($filtreJ) ? $sql .= "(e.Libelle Like '%JH%' Or e.Libelle Like '%JF%') And " : $sql .= "e.Libelle Not Like '%JH%' And e.Libelle Not Like '%JF%' And ";
+//				($filtre21) ? $sql .= "e.Libelle Like '%21%'" : $sql .= "e.Libelle Not Like '%21%'";
+//				$sql .= ") ";
+//			}
 			$sql .= "Order By e.Libelle ";	 
 			
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
 			$num_results = mysql_num_rows($result);
+			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== INTERNATIONAL (' . $num_results . ' ' . $lang['equipes'] . ') ====', 'Code_club' => ''));
 			for ($i=0;$i<$num_results;$i++)
 			{
 				$row = mysql_fetch_array($result);	  
 				array_push($arrayHistoEquipe, array('Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club']));
 			}
-			array_push($arrayHistoEquipe, array('Numero' => '----', 'Libelle' => '==== TOTAL : '.$num_results.' équipes internationales ====', 'Code_club' => ''));
-			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '', 'Code_club' => ''));
 		}
 		$this->m_tpl->assign('arrayHistoEquipe', $arrayHistoEquipe);
 	}
@@ -436,16 +450,14 @@ class GestionEquipe extends MyPageSecure
 		
 		foreach($histoEquipe as $selectValue)
 		{
-			if ($codeCompet == '' or $codeCompet == '*')
-			{
+			if ($codeCompet == '' or $codeCompet == '*') {
 				$alertMessage .= 'Aucune competition sélectionnée';
 				return;
 			}
-			if ((int) $selectValue == 0)
-			{
+            
+			if ((int) $selectValue == 0) {
 				// Inscription Manuelle ...
-				if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) )
-				{
+				if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) ) {
 					$sql  = "Insert Into gickp_Equipe (Libelle, Code_club) Values ('";
 					$sql .= $libelleEquipe;
 					$sql .= "','";
@@ -455,18 +467,18 @@ class GestionEquipe extends MyPageSecure
 
 					$sql  = "Select LAST_INSERT_ID() Numero ";
 					$result = mysql_query($sql, $myBdd->m_link) Or die ("Erreur Select");
-					if (mysql_num_rows($result) == 1)
-					{
+					if (mysql_num_rows($result) == 1) {
 							$row = mysql_fetch_array($result);
 							$selectValue = mysql_insert_id();
 					}
 				}
 			}
 			
-			if ((int) $selectValue == 0)
-				return;
-			
-			$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet, Code_saison, Libelle, Code_club, Numero) Select '";
+			if ((int) $selectValue == 0) {
+                return;
+            }
+
+            $sql  = "Insert Into gickp_Competitions_Equipes (Code_compet, Code_saison, Libelle, Code_club, Numero) Select '";
 			$sql .= $codeCompet;
 			$sql .= "','";
 			$sql .= $codeSaison;
@@ -474,9 +486,10 @@ class GestionEquipe extends MyPageSecure
 			$sql .= "From gickp_Equipe Where Numero = $selectValue";
 			
 			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert 2");
-			if($insertValue)
-				$insertValue .= ',';
-			$insertValue .= $selectValue;
+			if ($insertValue) {
+                $insertValue .= ',';
+            }
+            $insertValue .= $selectValue;
 		}	
 		$_SESSION['codeCompet'] = $codeCompet;
 		$_SESSION['codeComiteReg'] = $myBdd->RealEscapeString(utyGetPost('comiteReg'));
@@ -566,18 +579,21 @@ class GestionEquipe extends MyPageSecure
 	function Remove()
 	{
 		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
-			
-		$arrayParam = split ('[,]', $ParamCmd);		
-		if (count($arrayParam) == 0)
-			return; // Rien à Detruire ...
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			if ($i > 0)
-				$listEquipes .= ",";
-			
-			$listEquipes .= $arrayParam[$i];
+		if (isset($_POST['ParamCmd'])) {
+            $ParamCmd = $_POST['ParamCmd'];
+        }
+
+        $arrayParam = split ('[,]', $ParamCmd);		
+		if (count($arrayParam) == 0) {
+            return;
+        } // Rien à Detruire ...
+		
+        for ($i=0;$i<count($arrayParam);$i++) {
+			if ($i > 0) {
+                $listEquipes .= ",";
+            }
+
+            $listEquipes .= $arrayParam[$i];
 		}
 
 		$myBdd = new MyBdd();
@@ -601,12 +617,10 @@ class GestionEquipe extends MyPageSecure
 		$codeCompetRef = $myBdd->RealEscapeString(utyGetPost('competitionRef'));
 		$codeSaison = utyGetSaison();
 
-		if ( (strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0) )
-		{
+		if ( (strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0) ) {
 			$myBdd = new MyBdd();
 			
-			if ($bDelete)
-			{
+			if ($bDelete) {
 				// Suppression des Joueurs Equipes 
 				$sql  = "Delete FROM gickp_Competitions_Equipes_Joueurs Where Id_equipe In (";
 				$sql .= "Select a.Id From gickp_Competitions_Equipes a Where a.Code_compet = '$codeCompet' And a.Code_saison = '$codeSaison' )";
@@ -643,31 +657,36 @@ class GestionEquipe extends MyPageSecure
 		$alertMessage = '';
 		
 		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
+		if (isset($_POST['Cmd'])) {
+            $Cmd = $_POST['Cmd'];
+        }
 
-		if (strlen($Cmd) > 0)
-		{
-			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 3) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Add2')
-				($_SESSION['Profile'] <= 3) ? $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Tirage')
-				($_SESSION['Profile'] <= 4) ? $this->Tirage() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 3) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Duplicate')
-				($_SESSION['Profile'] <= 3) ? $this->Duplicate(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'RemoveAndDuplicate')
-				($_SESSION['Profile'] <= 3) ? $this->Duplicate(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($alertMessage == '')
-			{
+        if (strlen($Cmd) > 0) {
+			if ($Cmd == 'Add') {
+                ($_SESSION['Profile'] <= 3) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Add2') {
+                ($_SESSION['Profile'] <= 3) ? $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Tirage') {
+                ($_SESSION['Profile'] <= 4) ? $this->Tirage() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Remove') {
+                ($_SESSION['Profile'] <= 3) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Duplicate') {
+                ($_SESSION['Profile'] <= 3) ? $this->Duplicate(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'RemoveAndDuplicate') {
+                ($_SESSION['Profile'] <= 3) ? $this->Duplicate(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($alertMessage == '') {
 				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
 			}
@@ -681,5 +700,3 @@ class GestionEquipe extends MyPageSecure
 }		  	
 
 $page = new GestionEquipe();
-
-?>

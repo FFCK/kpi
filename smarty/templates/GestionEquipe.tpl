@@ -1,4 +1,4 @@
-		&nbsp;(<a href="Admin.php">Retour</a>)
+		&nbsp;(<a href="Admin.php">{#Retour#}</a>)
 	
 		<div class="main">
 					
@@ -12,8 +12,8 @@
                 <input type='hidden' name='Compet' id='Compet' value='{$codeCompet}' />
 	
 				<div class='blocLeft Left2'>
-					<div class='titrePage'>Equipes engag&eacute;es</div>
-					<label for="competition">Comp&eacute;tition :</label>
+					<div class='titrePage'>{#Equipes_engagees#}</div>
+					<label for="competition">{#Competition#} :</label>
 					<select name='competition' id='competition' onChange="changeCompetition();">
                         {section name=i loop=$arrayCompetition}
                             {assign var='options' value=$arrayCompetition[i].options}
@@ -25,8 +25,8 @@
                                 {/section}
                             </optgroup>
                         {/section}
-                        <optgroup label="Arbitres / Referees">
-                            <Option Value="POOL" {if $codeCompet == 'POOL'}selected{/if}>Pool arbitres</Option>
+                        <optgroup label="{#Arbitres#}">
+                            <Option Value="POOL" {if $codeCompet == 'POOL'}selected{/if}>{#Pool_arbitres#}</Option>
                         </optgroup>
 					</select>
 
@@ -35,25 +35,25 @@
 							<tr>
 								<td width=200>
 									<fieldset>
-										<a href="#" title="S&eacute;lectionner tous" onclick="setCheckboxes('formEquipe', 'checkEquipe', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" /></a>
-										<a href="#" title="S&eacute;lectionner aucun" onclick="setCheckboxes('formEquipe', 'checkEquipe', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" /></a>
+										<a href="#" title="{#Tous#}" onclick="setCheckboxes('formEquipe', 'checkEquipe', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" /></a>
+										<a href="#" title="{#Aucun#}" onclick="setCheckboxes('formEquipe', 'checkEquipe', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" /></a>
 										{if $profile <=6 && $AuthModif == 'O' && $bProd}
-											<a href="#" title="Supprimer la s&eacute;lection" onclick="RemoveCheckboxes('formEquipe', 'checkEquipe')"><img height="25" src="../img/glyphicons-17-bin.png" /></a>
+											<a href="#" title="{#Supprimer#}" onclick="RemoveCheckboxes('formEquipe', 'checkEquipe')"><img height="25" src="../img/glyphicons-17-bin.png" /></a>
 										{/if}
-										<a href="#" onclick=""><img src="../img/map.gif" height="25" alt="Cartographier la s&eacute;lection (en construction)" title="Cartographier la s&eacute;lection (en construction)" /></a>
+{*										<a href="#" onclick=""><img src="../img/map.gif" height="25" alt="Cartographier la s&eacute;lection (en construction)" title="Cartographier la s&eacute;lection (en construction)" /></a>*}
 										&nbsp;&nbsp;&nbsp;
 									</fieldset>
 								</td>
 								<td>
-									<a href="FeuilleGroups.php" target="_blank" title="Liste des &eacute;quipes par poule"><img height="25" src="../img/pdf.png" /></a>						
-									<a href="FeuillePresence.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence"><img height="25" src="../img/pdf2.png" /></a>						
-									<a href="FeuillePresenceEN.php" target="_blank" title="Toutes les feuilles de pr&eacute;sence - Anglais"><img height="25" src="../img/pdfEN.png" /></a>						
-									<a href="FeuillePresenceCat.php" target="_blank" title="Feuilles de pr&eacute;sence par cat&eacute;gorie"><img height="25" src="../img/pdf2.png" />Cat</a>						
-									<img class="cliquable" id="actuButton" title="Recharger" height="25" src="../img/glyphicons-82-refresh.png">
+									<a href="FeuilleGroups.php" target="_blank" title="{#Poules#}"><img height="25" src="../img/pdf.png" /></a>						
+									<a href="FeuillePresence.php" target="_blank" title="Feuilles de présence"><img height="25" src="../img/pdf2.png" /></a>						
+									<a href="FeuillePresenceEN.php" target="_blank" title="Presence sheets"><img height="25" src="../img/pdfEN.png" /></a>						
+									<a href="FeuillePresenceCat.php" target="_blank" title="{#Feuilles_de_presence_par_categorie#}"><img height="25" src="../img/pdf2.png" />Cat</a>						
+									<img class="cliquable" id="actuButton" title="{#Recharger#}" height="25" src="../img/glyphicons-82-refresh.png">
                                     {if $profile <= 4 && $Statut == 'ON'}
-                                        <img class="cliquable" data-verrou="{$Verrou}" height="25" src="../img/verrou2{$Verrou}.gif" id="verrouCompet" title='(dé)verrouiller les feuilles de présence'>
+                                        <img class="cliquable" data-verrou="{$Verrou}" height="25" src="../img/verrou2{$Verrou}.gif" id="verrouCompet" title='{#Verrouiller#}'>
                                         &nbsp;
-                                        <img class="cliquable" height="25" src="../img/b_update.png" id="InitTitulaireCompet" title="Transférer les compos sur les feuilles de match (non verrouillées)">
+                                        <img class="cliquable" height="25" src="../img/b_update.png" id="InitTitulaireCompet" title="{#InitTitulaireCompet#}">
                                     {/if}
 								</td>
 							</tr>
@@ -64,15 +64,15 @@
 							<thead>
 								<tr>
 									<th>&nbsp;</th>
-									<th>Poule</th>
-									<th># Tirage</th>
+									<th>{#Poule#}</th>
+									<th># {#Tirage#}</th>
 									{if $Code_niveau == 'INT'}
 										<th>&nbsp;</th>
 									{/if}
-									<th>Equipe</th>
-									<th>Pr&eacute;sents</th>
-									<th># Club</th>
-									<th>Nb matchs</th>
+									<th>{#Equipe#}</th>
+									<th>{#Presents#}</th>
+									<th>Club</th>
+									<th>{#Nb_matchs#}</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -80,7 +80,7 @@
 								{section name=i loop=$arrayEquipe} 
 									{if $PouleX != $arrayEquipe[i].Poule && $arrayEquipe[i].Poule != ''}
 										<tr class='colorO'>
-											<th colspan=8><b>Poule {$arrayEquipe[i].Poule}</b></th>
+											<th colspan=9><b>{#Poule#} {$arrayEquipe[i].Poule}</b></th>
 										</tr>
 									{/if}
 									<tr class='{cycle values="impair,pair"}'>
@@ -92,19 +92,19 @@
 											<td> <img width="20" src="../img/Pays/{$arrayEquipe[i].Code_comite_dep}.png" alt="{$arrayEquipe[i].Code_comite_dep}" title="{$arrayEquipe[i].Code_comite_dep}" /></td>
 										{/if}
 		
-										<td class="cliquableNomEquipe"><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" alt="Feuille de pr&eacute;sence" title="Feuille de pr&eacute;sence">{$arrayEquipe[i].Libelle}</A></td>
-										<td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" alt="Feuille de pr&eacute;sence" title="Feuille de pr&eacute;sence"><img height="25" src="../img/b_sbrowse.png" /></A></td>
-										<td>{$arrayEquipe[i].Code_club}</td>
+										<td class="cliquableNomEquipe"><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" title="{#Feuille_de_presence#}">{$arrayEquipe[i].Libelle}</A></td>
+										<td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" title="{#Feuille_de_presence#}"><img height="25" src="../img/b_sbrowse.png" /></A></td>
+										<td title="{$arrayEquipe[i].Club}">{$arrayEquipe[i].Code_club}</td>
 										<td>{$arrayEquipe[i].nbMatchs}</td>
 										{if $profile <= 3 && $AuthModif == 'O' && $bProd}
-											<td><a href="#" onclick="RemoveCheckbox('formEquipe', '{$arrayEquipe[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="Supprimer" title="Supprimer" /></a></td>
+											<td><a href="#" onclick="RemoveCheckbox('formEquipe', '{$arrayEquipe[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" title="{#Supprimer#}" /></a></td>
 										{else}<td>&nbsp;</td>{/if}
 									</tr>
 								{/section}
 							</tbody>
 						</table>
 					</div>
-					<b>TOTAL = {$smarty.section.i.iteration-1|replace:-1:0} &eacute;quipes</b>
+					<b>TOTAL = {$smarty.section.i.iteration-1|replace:-1:0} {#Equipes#}</b>
 				</div>
 	        
 				{if $profile <=3 && $AuthModif == 'O' && $bProd}
@@ -112,27 +112,32 @@
 					<table width=100%>
 						<tr>
 							<th class='titreForm' colspan=2>
-								<label>Affecter une &eacute;quipe</label>
+								<label>{#Ajouter_une_equipe#}</label>
 							</th>
 						</tr>
 						<tr>
 							<td>
-								<label><b>Recherche :</b></label><input type="text" name="choixEquipe" id="choixEquipe" style="width:60%">
+								<label><b>{#Chercher#} :</b></label><input type="text" name="choixEquipe" id="choixEquipe" style="width:60%">
 								<br>
 								<div name="ShowCompo" id="ShowCompo">
 									<input type="hidden" name="EquipeNum" id="EquipeNum">
 									<input type="hidden" name="EquipeNumero" id="EquipeNumero">
 									<input type="text" name="EquipeNom" id="EquipeNom" style="width:100%" readonly>
-									<label title="Lettre A Ã  O majuscule" alt="Lettre A Ã  O majuscule">Poule:</label><input type="text" name="plEquipe" title="Lettre A &agrave;  O majuscule" alt="Lettre A &agrave;  O majuscule" id="plEquipe" style="width:8%" size=2>
-									<label title="Nombre 1 Ã  99" alt="Nombre 1 Ã  99">Tirage:</label><input type="text" name="tirEquipe" id="tirEquipe" title="Nombre 1 &agrave;  99" alt="Nombre 1 &agrave;  99" style="width:8%" size=2>
+									<label title="A - ZZZ">{#Poule#}:</label>
+                                    <input type="text" name="plEquipe" title="A - ZZZ" id="plEquipe" style="width:8%" size=2>
+									<label title="1 - 99">{#Tirage#}:</label>
+                                    <input type="text" name="tirEquipe" id="tirEquipe" title="1 - 99" style="width:8%" size=2>
 									{if $user =='42054'}
 										&nbsp;
-										<label title="Classement Championnat" alt="Classement Championnat">Clt.Chpt:</label><input type="text" name="cltChEquipe" id="cltChEquipe" style="width:8%" size=2>
-										<label title="Classement Coupe" alt="Classement Coupe">Clt.CP:</label><input type="text" name="cltCpEquipe" id="cltCpEquipe" style="width:8%" size=2>
+										<label title="Classement Championnat" alt="Classement Championnat">Clt.Chpt:</label>
+                                        <input type="text" name="cltChEquipe" id="cltChEquipe" style="width:8%" size=2>
+										<label title="Classement Coupe" alt="Classement Coupe">Clt.CP:</label>
+                                        <input type="text" name="cltCpEquipe" id="cltCpEquipe" style="width:8%" size=2>
 									{/if}
+                                    <br><b>{#Reprise_presence_precedentes#} :</b><br />
 									<span name="GetCompo" id="GetCompo"></span>
-									<input type="button" onclick="Add2();" name="addEquipe2" id="addEquipe2" value="<< Ajouter" style="width:45%">
-									<input type="button" name="annulEquipe2" id="annulEquipe2" value="Annuler" style="width:45%">
+									<input type="button" onclick="Add2();" name="addEquipe2" id="addEquipe2" value="<< {#Ajouter#}" style="width:45%">
+									<input type="button" name="annulEquipe2" id="annulEquipe2" value="{#Annuler#}" style="width:45%">
 								</div>
 							</td>
 						</tr>
@@ -140,12 +145,12 @@
 					<table width=100%>
 						<tr>
 							<th class='titreForm'>
-								<label>Recherche avanc&eacute;e / cr&eacute;ation</label>
+								<label>{#Recherche_avancee#}</label>
 							</th>
 						</tr>
 						<tr>
 							<td>
-								<label for="comiteReg">Comit&eacute; R&eacute;gional : </label>
+								<label for="comiteReg">{#Comite_regional#} : </label>
 								<select name="comiteReg" id="comiteReg" onChange="changeComiteReg();">
 									{section name=i loop=$arrayComiteReg} 
 										<Option Value="{$arrayComiteReg[i].Code}" {$arrayComiteReg[i].Selected}>{$arrayComiteReg[i].Libelle}</Option>
@@ -155,7 +160,7 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="comiteDep">Comit&eacute; D&eacute;partemental / Pays : </label>				    
+								<label for="comiteDep">{#Comite_departemental#} : </label>				    
 								<select name="comiteDep" id="comiteDep" onChange="changeComiteDep();">
 									{section name=i loop=$arrayComiteDep} 
 										<Option Value="{$arrayComiteDep[i].Code}" {$arrayComiteDep[i].Selected}>{$arrayComiteDep[i].Libelle}</Option>
@@ -165,7 +170,7 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="club">Club / Structure : </label>				    
+								<label for="club">Club / Structure : </label>
 								<select name="club" id="club" onChange="changeClub();">
 									{section name=i loop=$arrayClub} 
 										<Option Value="{$arrayClub[i].Code}" {$arrayClub[i].Selected}>{$arrayClub[i].Libelle}</Option>
@@ -173,7 +178,7 @@
 								</select>
 							</td>
 						</tr>
-						<tr>
+{*						<tr>
 							<td>
 								<label>Filtre Equipes :</label>
 								<input type="radio" name="filtreH" id="filtreH" value=1 {$filtreH} onclick="filtreTous.checked=false;submit()">H
@@ -183,7 +188,7 @@
 								<input type="checkbox" name="filtreTous" id="filtreTous" {$filtreTous|default:'selected'} onclick="submit()">TOUTES
 							</td>
 						</tr>
-						<tr>
+*}						{*<tr>
 							<td>
 								<!--
 								<label>Recherche :</label>
@@ -194,14 +199,13 @@
 								<span id='reachspan'><i>Surligner:</i></span><input type=text name='reach' id='reach' size='10'>
 								-->
 							</td>
-						</tr>
+						</tr>*}
 						<tr>
 							<td>
-								<label for="histoEquipe">Choix Equipes :</label>
-								<img title="Maintenez la touche CTRL pour s&eacute;lectionner plusieurs &eacute;quipes &agrave;  la fois." 
-								alt="Maintenez la touche CTRL pour s&eacute;lectionner plusieurs &eacute;quipes &agrave;  la fois." 
+								<label for="histoEquipe">{#Equipes#} :</label>
+								<img title="{#Choix_equipe_title#}" 
 								src="../img/b_help.png" 
-								onclick="alert('Maintenez la touche CTRL pour s&eacute;lectionner plusieurs &eacute;quipes &agrave;  la fois.')" />
+								onclick="alert('{#Choix_equipe_title#}')" />
 								<select name="histoEquipe[]" id="histoEquipe" class="histoEquip" onChange="changeHistoEquipe();" size="20" multiple>
 									{section name=i loop=$arrayHistoEquipe} 
 										{if $arrayHistoEquipe[i].Numero eq ''}
@@ -209,24 +213,21 @@
 										{else}
 											<Option Value="{$arrayHistoEquipe[i].Numero}">{$arrayHistoEquipe[i].Code_club} - {$arrayHistoEquipe[i].Libelle}</Option>
 										{/if}
-
 									{/section}
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for="libelleEquipe"><b>Nouvelle Equipe :</b></label>
-								<img title="ATTENTION ! Cliquez pour plus d'info." 
-								alt="ATTENTION ! Cliquez pour plus d'info." 
-								src="../img/b_help.png" 
-								onclick="alert('ATTENTION !\n Respectez bien le formalisme :\n \n -S&eacute;lectionnez le club d\'appartenance avant tout (+CR +CD),\n -Nom d\'&eacute;quipe en minuscule, premi&egrave;re lettre en majuscule,\n -Un espace avant le num&eacute;ro d\'ordre et avant la cat&eacute;gorie\n -Num&eacute;ro d\'ordre obligatoire, en chiffre romain : I II III IV\n -Cat&eacute;gorie f&eacute;minine avec \' F\' (\' Ladies\' ou \' Women\' pour les &eacute;quipes &eacute;trang&egrave;res)\n -Cat&eacute;gorie jeunes avec \' JF\' ou \' JH\' (masculine ou mixte)\n -Cat&eacute;gorie -21 ans avec \' -21\' (\' U21\' pour les &eacute;quipes &eacute;trang&egrave;res)\n \n Exemples :\n Acign&eacute; II, Acign&eacute; I F, Acign&eacute; JH, Belgium U21 Women, Keistad Ladies...')" />
+								<label for="libelleEquipe"><b>{#Creation#} :</b></label>
+								<img title="{#Formalisme_creation_equipe#}" 
+								src="../img/b_help.png" >
 								<input type="text" name="libelleEquipe" maxlength=40 id="libelleEquipe"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<input type="button" onclick="Add();" name="addEquipe" id="addEquipe" value="<< Ajouter">
+								<input type="button" onclick="Add();" name="addEquipe" id="addEquipe" value="<< {#Ajouter#}">
 							</td>
 						</tr>
 					</table>
@@ -236,12 +237,12 @@
 					<table width=100%>
 						<tr>
 							<th class='titreForm' colspan=3>
-								<label>Tirage au sort</label>
+								<label>{#Poules#} - {#Tirage#}</label>
 							</th>
 						</tr>
 						<tr>
 							<td>
-								<label for="equipeTirage">Equipe :</label>
+								<label for="equipeTirage">{#Equipe#} :</label>
 								<select name="equipeTirage" id="equipeTirage">
 									{section name=i loop=$arrayEquipe} 
 											<Option Value="{$arrayEquipe[i].Id}">{$arrayEquipe[i].Libelle}</Option>
@@ -249,7 +250,7 @@
 								</select>
 							</td>
 							<td>
-								<label for="pouleTirage">Poule :</label>
+								<label for="pouleTirage">{#Poule#} :</label>
 								<select name="pouleTirage" id="pouleTirage">
 									<Option Value="">nc</Option>
 									<Option Value="A">A</Option>
@@ -267,21 +268,32 @@
 									<Option Value="M">M</Option>
 									<Option Value="N">N</Option>
 									<Option Value="O">O</Option>
+									<Option Value="P">P</Option>
+									<Option Value="Q">Q</Option>
+									<Option Value="R">R</Option>
+									<Option Value="S">S</Option>
+									<Option Value="T">T</Option>
+									<Option Value="U">U</Option>
+									<Option Value="V">V</Option>
+									<Option Value="W">W</Option>
+									<Option Value="X">X</Option>
+									<Option Value="Y">Y</Option>
+									<Option Value="Z">Z</Option>
 								</select>
 							</td>
 							<td>
-								<label for="ordreTirage">Tirage :</label>
+								<label for="ordreTirage">{#Tirage#} :</label>
 								<select name="ordreTirage" id="ordreTirage">
 									<Option Value="0">nc</Option>
 									{section name=i loop=$arrayEquipe} 
-											<Option Value="{$smarty.section.i.iteration}">T{$smarty.section.i.iteration}</Option>
+											<Option Value="{$smarty.section.i.iteration}">{$smarty.section.i.iteration}</Option>
 									{/section}
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=3>
-								<input type="button" onclick="Tirage();" name="tirageEquipe" id="tirageEquipe" value="Valider ce tirage" />
+								<input type="button" onclick="Tirage();" name="tirageEquipe" id="tirageEquipe" value="{#Valider#}" />
 							</td>
 						</tr>
 					</table>

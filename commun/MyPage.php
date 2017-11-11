@@ -151,10 +151,11 @@ class MyPage
 		$_SESSION['lang'] = $lang;
 		$this->m_tpl->assign('lang', $lang);
 		
-			//Message d'erreur ou d'avertissement
-		if(!isset($AlertMessage))
-			$AlertMessage = '';
-		$this->m_tpl->assign('AlertMessage', $AlertMessage);
+        //Message d'erreur ou d'avertissement
+        if (!isset($AlertMessage)) {
+            $AlertMessage = '';
+        }
+        $this->m_tpl->assign('AlertMessage', $AlertMessage);
 
 	}
 	

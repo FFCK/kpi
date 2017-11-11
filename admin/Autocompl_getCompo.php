@@ -4,7 +4,15 @@ session_start();
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-	$myBdd = new MyBdd();
+// Langue
+$langue = parse_ini_file("../commun/MyLang.ini", true);
+if (utyGetSession('lang') == 'en') {
+    $lang = $langue['en'];
+} else {
+    $lang = $langue['fr'];
+}
+        
+    $myBdd = new MyBdd();
 	
 	// Chargement
         $codeCompet = utyGetSession('codeCompet');
@@ -25,7 +33,7 @@ include_once('../commun/MyTools.php');
             //$num_results = mysql_num_rows($result);
             //header('Content-Type: application/json; charset=ISO-8859-1');
             //$response = array();
-            echo "<br><b>Reprise des feuilles de présence précédentes :</b><br /><input type='radio' name='checkCompo' value='' checked /><i>Aucune reprise</i><br>";
+            echo "<input type='radio' name='checkCompo' value='' checked /><i>" . $lang['Aucune_reprise'] . "</i><br>";
             while ($row = mysql_fetch_assoc($result)) {
                 $Code_saison = $row['Code_saison'];
                 $Code_compet = $row['Code_compet'];

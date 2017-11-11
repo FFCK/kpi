@@ -73,6 +73,7 @@
         {if !$bPublic}
             <script>
                 masquer = {$masquer};
+                lang = '{$lang}';
             </script>
 			<script src="../js/dhtmlgoodies_calendar.js?random=20060118"></script>
 			<script src="../js/jquery-1.5.2.min.js"></script>

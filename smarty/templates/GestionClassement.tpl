@@ -199,13 +199,15 @@
 										{/if}
                                         {assign var='idJournee' value=$arrayEquipe_journee[i].Id_journee}
                                         <tr height="17" class='{cycle values="impair,pair"}'>
-                                            {if $arrayEquipe_journee[i].Pts/100 > 2}
+                                            {if $arrayEquipe_journee[i].G > 0}
                                                 <td colspan="4"><b>{#Vainqueur#}</b></td>
                                                 <td colspan="8"><b>{$arrayEquipe_journee[i].Libelle}</b></td>
-                                            {else}
+                                            {elseif $arrayEquipe_journee[i].J > 0}
                                                 <td colspan="4"><i>{#Perdant#}</i></td>
                                                 <td colspan="8"><i>{$arrayEquipe_journee[i].Libelle}</i></td>
-                                                
+                                            {else}    
+                                                <td colspan="4"></td>
+                                                <td colspan="8">{$arrayEquipe_journee[i].Libelle}</td>
                                             {/if}
                                         </tr>
                                     {/if}
@@ -310,11 +312,10 @@
 										{/if}
 										{assign var='idJournee' value=$arrayEquipe_journee_publi[i].Id_journee}
 										<tr height="17" class='{cycle values="impair2,pair2"}'>
-											
 											<td>
-												{if $profile <= 4 && $AuthModif == 'O'}
+												{*{if $profile <= 4 && $AuthModif == 'O'}
 													<input type="checkbox" name="checkClassement" value="{$arrayEquipe_journee_publi[i].Id}" id="checkClassement{$smarty.section.i.iteration}" />
-												{/if}
+												{/if}*}
 											</td>
 											<td width="30">{$arrayEquipe_journee_publi[i].Clt_publi}</td>
 											<td width="200">{$arrayEquipe_journee_publi[i].Libelle}</td>
@@ -337,12 +338,15 @@
                                         {/if}
                                         {assign var='idJournee' value=$arrayEquipe_journee_publi[i].Id_journee}
                                         <tr height="17" class='{cycle values="impair,pair"}'>
-                                            {if $arrayEquipe_journee_publi[i].Pts_publi/100 > 2}
+                                            {if $arrayEquipe_journee_publi[i].G_publi > 0}
                                                 <td colspan="4"><b>{#Vainqueur#}</b></td>
                                                 <td colspan="8"><b>{$arrayEquipe_journee_publi[i].Libelle}</b></td>
-                                            {else}
+                                            {elseif $arrayEquipe_journee_publi[i].J_publi > 0}
                                                 <td colspan="4"><i>{#Perdant#}</i></td>
                                                 <td colspan="8"><i>{$arrayEquipe_journee_publi[i].Libelle}</i></td>
+                                            {else}
+                                                <td colspan="4"></td>
+                                                <td colspan="8">{$arrayEquipe_journee_publi[i].Libelle}</td>
 
                                             {/if}
                                         </tr>

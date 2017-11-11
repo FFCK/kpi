@@ -1,5 +1,31 @@
 jq = jQuery.noConflict();
 
+var langue = [];
+
+if(lang == 'en')  {
+    langue['Cliquez_pour_modifier'] = 'Click to edit';
+    langue['Confirmer_MAJ'] = 'Confirm composition update ?';
+    langue['Confirmer_verrouillage'] = 'Confirm presence sheets lock ?';
+    langue['MAJ_impossible'] = 'Unable to update';
+    langue['Nom_equipe_vide'] = 'Team name is empty, unable to create';
+    langue['Rechercher_equipe'] = 'Search team';
+    langue['Selectionner_competition'] = 'Select a competition';
+    langue['Selectionner_club'] = 'Select a club';
+    langue['Verrouiller_avant'] = 'Lock presence sheets before !';
+} else {
+    langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
+    langue['Confirmer_MAJ'] = 'Confirmez-vous la mise à jour des feuilles de matchs ?';
+    langue['Confirmer_verrouillage'] = 'Confirmez-vous le verrouillage des feuilles de présence ?';
+    langue['MAJ_impossible'] = 'Mise à jour impossible';
+    langue['Nom_equipe_vide'] = 'Le Nom de l\'Equipe est vide, ajout impossible';
+    langue['Rechercher_equipe'] = 'Rechercher une équipe';
+    langue['Selectionner_competition'] = 'Sélectionnez une compétition';
+    langue['Selectionner_club'] = 'Sélectionnez un club';
+    langue['Verrouiller_avant'] = 'Verrouillez les feuilles de présence avant !';
+}
+
+'Confirmez-vous la mise à jour des feuilles de matchs\navec les compositions des feuilles de présence ?\n(toutes les équipes, matchs non verrouillés uniquement)'
+
 function changeCompetition()
 {
 	jq("#ParamCmd").val('');
@@ -28,30 +54,30 @@ function validEquipe()
 {
 	var histoEquipe = jq("#histoEquipe").val();
 	  
-	if ( (histoEquipe.length > 0) && (histoEquipe[0] != '0') )
+	if ( histoEquipe != null && histoEquipe != '0') {
 		return true; // Une Equipe de l'historique est sélectionnée ...
-
-	var libelleEquipe = jq("#libelleEquipe").val();
-	if (histoEquipe[0] == '0' && libelleEquipe.length == 0)
-	{
-		alert("Le Nom de l'Equipe est Vide ..., Ajout nouvelle équipe impossible !");
-		return false;
-	}
+    }
 
 	var competition = jq("#competition").val();
-	if (competition == '')
-	{
-		alert("Sélectionnez une compétition !");
+	if (competition == '') {
+		alert(langue['Selectionner_competition'] + " !");
+		return false;
+	}
+    
+	var libelleEquipe = jq("#libelleEquipe").val();
+	if ((histoEquipe == null || histoEquipe == '0') && libelleEquipe.length == 0) {
+		alert(langue['Nom_equipe_vide'] + " !");
 		return false;
 	}
 
 	var codeClub = jq("#club").val();
-	if (histoEquipe[0] == '0' &&  codeClub.length > 0 && codeClub != '*' )
+	if	(codeClub == '*') {
+		alert(langue['Selectionner_club'] + " !");
+    }
+	if ((histoEquipe == null || histoEquipe == '0') && codeClub.length > 0 && codeClub != '*' ) {
 		return true; // Le Code du Club est bon ...
-	if	(codeClub == '*')
-		alert("Le Club n'est pas renseigné ..., Ajout nouvelle équipe impossible ! Sélectionnez un CD/PAYS et un CLUB !");
-	if	(histoEquipe[0] != '0')
-		alert("Sélectionnez NOUVELLE EQUIPE");
+    }
+	
 	return false;
 }
 
@@ -65,22 +91,23 @@ function validEquipe2()
 	var libelleEquipe = jq("#EquipeNom").val();
 	if (libelleEquipe.length == 0)
 	{
-		alert("Recherchez une équipe !");
+		alert(langue['Rechercher_equipe'] + " !");
 		return false;
 	}
 
 	var competition = jq("#competition").val();
 	if (competition == '')
 	{
-		alert("Sélectionnez une compétition !");
+		alert(langue['Selectionner_competition'] + " !");
 		return false;
 	}
 }
 
 function Add()
 {
-	if (!validEquipe())
+	if (!validEquipe()) {
 		return;
+    }
 	jq("#Cmd").val('Add');
 	jq("#ParamCmd").val('');
 	jq("#formEquipe").submit();
@@ -102,44 +129,15 @@ function Tirage()
 	jq("#formEquipe").submit();
 }
 
-function dupliEquipe()
-{
-	if (confirm("Voulez-vous Dupliquer les Equipes ?")) 
-	{
-		jq("#Cmd").val('Duplicate');
-		jq("#ParamCmd").val('');
-		jq("#formEquipe").submit();
-	}
-}
-		
-function removeanddupliEquipe()
-{
-	if (confirm("Voulez-vous Supprimer puis Dupliquer les Equipes ?")) 
- 	{
-		jq("#Cmd").val('RemoveAndDuplicate');
-		jq("#ParamCmd").val('');
-		jq("#formEquipe").submit();
-  	}
-}
-		
 function changeHistoEquipe()
 {
-		var combo = document.forms['formEquipe'].elements['histoEquipe'];
-		var data = combo.options[combo.selectedIndex].value;
+	var histoEquipe = jq("#histoEquipe").val();
 		
-		if (data == '0')
-			document.forms['formEquipe'].elements['libelleEquipe'].disabled = false;
-		else
-			document.forms['formEquipe'].elements['libelleEquipe'].disabled = true;
-}
-
-//jQuery.expr[':'].icontains = function(a, i, m) {
-//	return jQuery(a).text().toUpperCase()
-//		.indexOf(m[3].toUpperCase()) >= 0;
-//};
-function initTitu(champs, valeur, valeur2)
-{
-    
+    if (histoEquipe == '0' || histoEquipe == '' || histoEquipe == null) {
+        jq("#libelleEquipe").removeAttr('disabled');
+    } else {
+        jq("#libelleEquipe").attr('disabled', 'disabled').attr('placeholder', '');
+    }
 }
 
 jq(document).ready(function() {
@@ -149,14 +147,14 @@ jq(document).ready(function() {
 		var valeur = jq('#competition').val();
 		var valeur2 = jq('#competition option:selected').text();
 		if(valeur == '*'){
-			alert('Sélectionnez une compétition !');
+			alert(langue['Selectionner_competition'] + " !");
             return;
 		}
         if(jq('#verrouCompet').attr('data-verrou') == 'N') {
-            alert('Verrouillez les feuilles de présence avant ! (cadenas rouge, à côté)');
+            alert(langue['Verrouiller_avant']);
             return;
         }
-        if(!confirm('Confirmez-vous la mise à jour des feuilles de matchs\navec les compositions des feuilles de présence ?\n(toutes les équipes, matchs non verrouillés uniquement)\n'+champs+' : '+valeur2))
+        if(!confirm(langue['Confirmer_MAJ'] + '\n'+champs+' : '+valeur2))
         {
             return;
         }
@@ -172,7 +170,7 @@ jq(document).ready(function() {
 
 	//Init Titulaires
 	jq('#verrouCompet').click(function(){
-        if(!confirm('Confirmez-vous le verrouillage des feuilles de présence ?')) {
+        if(!confirm(langue['Confirmer_MAJ'])) {
             return;
         }
         //ajax
@@ -230,7 +228,7 @@ jq(document).ready(function() {
 	
 	// Direct Input (date, heure, intitule)
 	//Ajout title
-	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante. Lettres A à ZZ pour les poules, nombre 0 à 99 pour le tirage');
+	jq('.directInput').attr('title', langue['Cliquez_pour_modifier']);
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
 	jq('#tableEquipes').bind('keydown',function(e){
 		if(e.which == 13)
@@ -253,36 +251,16 @@ jq(document).ready(function() {
 		if(jq(this).hasClass('textPoule'))
 		{
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			jq('#inputZone').mask("h?h",{placeholder:" "});
+			jq('#inputZone').mask("h?h",{placeholder:" "}).select();
 		}
 		else if(jq(this).hasClass('textTirage'))
 		{
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			jq('#inputZone').mask("9?9",{placeholder:" "});
+			jq('#inputZone').mask("9?9",{placeholder:" "}).select();
 		}
 		jq(this).hide();
-		setTimeout( function() { jq('#inputZone').select() }, 0 );
 	});
-	// focus sur une cellule du tableau => remplace le span par un input
-	jq('#tableEquipes td.directInput').focus(function(event){
-		event.preventDefault();
-		var valeur = jq(this).text();
-		var tabindexVal = jq(this).attr('tabindex');
-		jq(this).attr('tabindex',tabindexVal+1000);
-		if(jq(this).hasClass('textPoule'))
-		{
-			jq(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			jq('#inputZone').mask("h",{placeholder:" "});
-		}
-		else if(jq(this).hasClass('textTirage'))
-		{
-			jq(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-			jq('#inputZone').mask("9?9",{placeholder:" "});
-		}
-		jq(this).children("span").hide();
-		setTimeout( function() { jq('#inputZone').select() }, 0 );
-		
-	});
+
 	// Validation des données 
 	function validationDonnee(Classe){
 		var nouvelleValeur = jq('#inputZone').val();
@@ -323,9 +301,9 @@ jq(document).ready(function() {
 				},
 				function(data){
 					if(data != 'OK!'){
-						alert('mise à jour impossible : '+data);
+						alert(langue['MAJ_impossible'] + ' : ' + data);
 					}else{
-						jq('#'+identifiant).text(nouvelleValeur);
+						jq('#' + identifiant).text(nouvelleValeur);
 					}
 				}
 			);
