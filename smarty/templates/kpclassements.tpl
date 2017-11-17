@@ -76,12 +76,12 @@
                     {assign var='idSaison' value=$arrayEquipe_publi[$codetemp][0].CodeSaison}
                     <h3>
                         {if $arrayCompetition[i].Titre_actif == 'O'}
-                            {$arrayCompetition[i].libelleCompet}
+                            <span class="titreCompet{if $smarty.section.i.first} first{/if}">{$arrayCompetition[i].libelleCompet}</span>
                         {else}
-                            {$arrayCompetition[i].Soustitre}
+                            <span class="titreCompet{if $smarty.section.i.first} first{/if}">{$arrayCompetition[i].Soustitre}</span>
                         {/if}
                         {if $arrayCompetition[i].Soustitre != ''}
-                            <br>{$arrayCompetition[i].Soustitre2}
+                            <span class="soustitreCompet"><br>{$arrayCompetition[i].Soustitre2}</span>
                         {/if}
                         <div class='pull-right'>
                             {if $arrayCompetition[i].Statut != 'ON' or $arrayEquipe_publi[$codetemp][0].Code_typeclt != 'CP'}

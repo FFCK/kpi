@@ -1,0 +1,156 @@
+html, body,
+.impair2,
+.vert
+{
+	background: none;
+}
+
+#banniere,
+.footer,
+#nav,
+.repere,
+.titrePage,
+.soustitrePage,
+.lienExterne,
+.saison,
+.blocRight,
+.Right2,
+.Right3,
+#fb-root, #selector, .site-header, .titre,
+.page-header .btn,
+.btn-navigation,
+.pdfLink,
+.logo_lien
+{
+    display: none;
+}
+
+.tableau,
+.blocTable
+{
+	/*border: 2px groove #264679;*/
+	border: none;
+}
+
+.tableau thead tr th{
+	color: #264679;
+}
+
+.head2Public {
+	background-color: #CCCCCC;
+	color: blue;
+}
+.tableauPublic thead {
+	background: none;
+	background-color: #BBBBBB;
+}
+
+.pair2 {
+	background-color: #EEEEEE;
+}
+
+.blocLeft,
+.Left2
+{
+	width: 100%;	
+}
+
+.table2 {
+	height: auto;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+body {
+    /*background-color: #264679;*/
+    font-family: 'Lato', sans-serif;
+}
+
+.equipe, .table a.equipe, .score {
+    color: #264679;
+    font-weight: bold;
+}
+
+.equipe.btn-primary, .score.btn-primary {
+    color: white;
+    background-color: #F5A707;
+    border-color: #F5A707;
+    font-weight: bold;
+}
+
+.tableau thead tr th.cliquableScore {
+    width: 130px;
+}
+.tableau thead tr th.bg-primary.text-white {
+    color: white;
+    background-color: #264679;
+}
+
+.tableau tbody tr td.pause {
+    color: #264679;
+    background-color: #EEEEEE;
+    border: 1px solid #DDDDDD;
+    text-align: center;
+    font-style: italic;
+}
+
+.separator {
+    /*background-color: #EEEEEE;*/
+}
+
+.titre-date {
+    display: none;
+    /*color: white;*/
+}
+
+.terrains, .terrains .btn, .terrains .badge {
+    font-size: 0.9em;
+    line-height: 1;
+}
+.terrains h3 {
+    font-size: 1.1em;
+}
+.terrains .btn {
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+}
+.terrains .equipe {
+    border: none;
+    background: none;
+    
+}
+.terrains .arbitre {
+    border: none;
+    background: none;
+    color: #222;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Spécial US National */
+body, article, .page-header  {
+    background: #232323;
+    color: #d5d5d5;
+    font-weight: 400 !important;
+    font-family: 'Open Sans', sans-serif;
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td {
+    background: #232323;
+}
+.table-striped > tbody > tr:nth-child(2n+1):hover {
+    background: #232323;
+}
+.titreCompet, .soustitreCompet > br {
+    display: none;
+}
+.first.titreCompet {
+    display: block;
+    text-align: center;
+}
+.table > tbody > tr > td, tr, td {
+    border: none;
+    vertical-align: middle;
+}
