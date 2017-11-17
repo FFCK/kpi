@@ -1,17 +1,42 @@
 jq = jQuery.noConflict();
 
+var langue = [];
+
+if(lang == 'en')  {
+    langue['Aucun_joueur'] = 'No player selected. unable to add !';
+    langue['Certif'] = '(Med. Certificat)';
+    langue['Cliquez_pour_modifier'] = 'Click to edit';
+    langue['Joueur_vide'] = 'Player is empty. unable to add !';
+    langue['MAJ_impossible'] = 'Unable to update';
+    langue['Pagaie_couleur'] = '(Paddle level)';
+    langue['Prenom_vide'] = 'Player first name is empty. unable to add !';
+    langue['Saison_licence'] = '(Licence year)';
+    langue['Surclassement'] = '(Mandatory upgrade)';
+} else {
+    langue['Aucun_joueur'] = 'Aucun joueur sélectionné, ajout impossible !';
+    langue['Certif'] = '(Certificat CK)';
+    langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
+    langue['Joueur_vide'] = 'Joueur vide, ajout impossible !';
+    langue['MAJ_impossible'] = 'Mise à jour impossible';
+    langue['Pagaie_couleur'] = '(Pagaie couleur)';
+    langue['Prenom_vide'] = 'Prénom joueur vide, ajout impossible!';
+    langue['Saison_licence'] = '(Saison licence)';
+    langue['Surclassement'] = '(Surclassement obligatoire)';
+}
+
+
 function validJoueur()
 {
 		var nomJoueur = jq('#nomJoueur').val();
 		if (nomJoueur.length == 0)
 		{
-			alert("Le Nom du Joueur est Vide... Ajout Impossible !");
+			alert(langue['Joueur_vide']);
 			return false;
 		}
 		var prenomJoueur = jq('#prenomJoueur').val();
 		if (prenomJoueur.length == 0)
 		{
-			alert("Le prénom du Joueur est Vide... Ajout Impossible !");
+			alert(langue['Prenom_vide']);
 			return false;
 		}
 		return true;
@@ -22,7 +47,7 @@ function validJoueur2()
 		var nomJoueur2 = jq('#nomJoueur2').val();
 		if (nomJoueur2.length == 0)
 		{
-			alert("Aucun joueur sélectionné, Ajout Impossible !");
+			alert(langue['Prenom_vide']);
 			return false;
 		}
 		return true;
@@ -69,7 +94,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 
 	// Direct Input (numero joueur)
 	// Ajout title
-	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante');
+	jq('.directInput').attr('title', langue['Cliquez_pour_modifier']);
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
 	jq('#tableMatchs').bind('keydown',function(e){
 		if(e.which == 13)
@@ -132,7 +157,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 				},
 				function(data){
 					if(data != 'OK!'){
-						alert('mise à jour impossible : '+data);
+						alert(langue['MAJ_impossible'] + data);
 					}else{
 						jq('#'+identifiant).text(nouvelleValeur);
 					}
@@ -189,7 +214,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 				},
 				function(data){
 					if(data != 'OK!'){
-						alert('mise à jour impossible : '+data);
+						alert(langue['MAJ_impossible'] + data);
 						jq('#directSelected').removeAttr('id');
 						jq('#directSelecteur').toggle();
 					}else{
@@ -240,13 +265,13 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
                 var surcl_necess = jq('#surcl_necess').val();
 				var motif = '';
 				if(data[8] < saisonCompet){
-					motif = '(Saison licence)';
+					motif = langue['Saison_licence'];
 				}else if(data[10] != 'OUI'){
-					motif = '(Certificat CK)';
+					motif = langue['Certif'] ;
 				}else if(data[9] == '' || data[9] == 'PAGB' || data[9] == 'PAGJ'){
-					motif = '(Pagaie couleur)';
+					motif = langue['Pagaie_couleur'];
 				}else if(surclassement == '' && surcl_necess == 1 && catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'){
-                    motif = '(Surclassement obligatoire)';
+                    motif = langue['Surclassement'];
                 }
 				if (motif != ''){
 					jq('#motif').text(motif);
