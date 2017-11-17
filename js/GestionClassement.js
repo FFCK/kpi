@@ -1,5 +1,34 @@
 jq = jQuery.noConflict();
 
+var langue = [];
+
+if(lang == 'en')  {
+    langue['Confirmer'] = 'Confirm ?';
+    langue['MAJ_impossible'] = 'Unable to update';
+    langue['Match_de_classement'] = 'Classifying game';
+    langue['Match_eliminatoire'] = 'Playoffs';
+    langue['Non_valide'] = 'Unvalidated (private score)';
+    langue['Rien_a_transferer'] = 'Nothing to transfer !';
+    langue['Selection_competition_cible'] = 'Select a target competition !';
+    langue['Selection_saison_cible'] = 'Select a target season !';
+    langue['Suppression_classement'] = 'Remove of public ranking ?';
+    langue['Valider'] = 'Valid';
+    langue['Valide'] = 'Validated, locked (public score)';
+} else {
+    langue['Confirmer'] = 'Confirmer ?';
+    langue['MAJ_impossible'] = 'Mise à jour impossible';
+    langue['Match_de_classement'] = 'Match de classement';
+    langue['Match_eliminatoire'] = 'Match éliminatoire';
+    langue['Non_valide'] = 'Non validé (score non public)';
+    langue['Rien_a_transferer'] = 'Rien à transférer !';
+    langue['Selection_competition_cible'] = 'Sélectionner une compétition cible !';
+    langue['Selection_saison_cible'] = 'Sélectionner une saison cible !';
+    langue['Suppression_classement'] = 'Suppression du classement public ?';
+    langue['Valider'] = 'Valider';
+    langue['Valide'] = 'Validé / verrouillé (score public)';
+}
+
+
 function changeCompetition()
 {
 	document.forms['formClassement'].elements['Cmd'].value = '';
@@ -37,7 +66,7 @@ function initClt()
 
 function publicationClt()
 {
-	if (!confirm('Confirmation ? '))
+	if (!confirm(langue['Confirmer']))
 		return false;
 
 	document.forms['formClassement'].elements['Cmd'].value = 'PublicationClassement';
@@ -47,10 +76,10 @@ function publicationClt()
 
 function depublicationClt()
 {
-	if (!confirm('Suppression du classement public / Remove of public ranking ?'))
+	if (!confirm(langue['Suppression_classement']))
 		return false;
 
-	if (!confirm('Confirmation ?'))
+	if (!confirm(langue['Confirmer']))
 		return false;
 
 	document.forms['formClassement'].elements['Cmd'].value = 'DePublicationClassement';
@@ -66,8 +95,7 @@ function transfert()
 	var elts_count = (typeof(elts.length) != 'undefined') ? elts.length : 0;
 
 	var str = '';
-	if (elts_count) 
-	{
+	if (elts_count) {
 		for (var i = 0; i < elts_count; i++) 
 		{
 			if (elts[i].checked)
@@ -78,33 +106,28 @@ function transfert()
 				str += elts[i].value;
 			}
 		} 
-	}
-	else
-	{
+	} else {
 		str = elts.value;
 	}
 	  
-	if (str.length == 0)
-	{
-		alert("Rien à transférer / Nothing to transfer !");
+	if (str.length == 0) {
+		alert(langue['Rien_a_transferer']);
 		return false;
 	}
 	
 	// Verification qu'une comp&eacute;tition est choisie ainsi qu'une saison ...
 	var codeCompetTransfert = jq('#codeCompetTransfert option:selected').val();
-	if (codeCompetTransfert.length == 0)
-	{
-		alert("Sélectionner une compétition cible / Select a target competition !");
+	if (codeCompetTransfert.length == 0) {
+		alert(langue['Selection_competition_cible']);
 		return false;
 	}
 	var codeSaisonTransfert = jq('#codeSaisonTransfert option:selected').val();
-	if (codeSaisonTransfert.length == 0)
-	{
-		alert("Sélectionner une saison cible / Select a target season !");
+	if (codeSaisonTransfert.length == 0) {
+		alert(langue['Selection_saison_cible']);
 		return false;
 	}
 
-	if (!confirm('Confirmation ? '))
+	if (!confirm(langue['Confirmer']))
 		return false;
 
 	document.forms['formClassement'].elements['Cmd'].value = 'Transfert';
@@ -116,8 +139,7 @@ function transfert()
 		
 function sessionSaison()
 {
-	if(!confirm('Confirmation ?'))
-	{
+	if(!confirm(langue['Confirmer'])) {
 		document.forms['formClassement'].reset;
 		return;
 	} else {
@@ -135,8 +157,7 @@ jq(document).ready(function() { //Jquery
 	});
 	// contr&ocirc;le touche entr&eacute;e (valide les donn&eacute;es en cours mais pas le formulaire)
 	jq('.tableauJQ').bind('keydown',function(e){
-		if(e.which == 13)
-		{
+		if(e.which == 13) {
 			validationDonnee();
 			return false;
 		}
@@ -166,30 +187,25 @@ jq(document).ready(function() { //Jquery
 		var identifiant2 = identifiant.split('-');
 		var typeValeur = identifiant2[0];
 		var numEquipe = identifiant2[1];
-		if(typeof identifiant2[2] != 'undefined')
-		{
+		if(typeof identifiant2[2] != 'undefined') {
 			var numJournee = identifiant2[2];
-		}else{
+		} else {
 			var numJournee = '';
 		}
 
 		var diviseur = 1;
-		if(typeValeur == 'Pts')
-		{
+		if(typeValeur == 'Pts') {
 			nouvelleValeur = nouvelleValeur * 100;
 			valeur = valeur * 100;
 			diviseur = 100;
 		}
-		if(valeur != nouvelleValeur){
+		if(valeur != nouvelleValeur) {
 			var AjaxWhere = jq('#AjaxWhere').val();
 			var AjaxUser = jq('#AjaxUser').val();
-			if(numJournee != '')
-			{
+			if(numJournee != '') {
 				var AjaxTableName = jq('#AjaxTableName2').val();
 				var AjaxAnd = '';
-			}
-			else
-			{
+			} else {
 				var AjaxTableName = jq('#AjaxTableName').val();
 				var AjaxAnd = jq('#AjaxAnd').val();
 			}
@@ -205,10 +221,10 @@ jq(document).ready(function() { //Jquery
 					AjUser: AjaxUser,
 					AjOk: 'OK'
 				},
-				function(data){
-					if(data != 'OK!'){
-						alert('Mise à jour impossible / Impossible update : ' + data);
-					}else{
+				function(data) {
+					if(data != 'OK!') {
+						alert(langue['MAJ_impossible'] + ' : ' + data);
+					} else {
 						jq('#'+identifiant).text(nouvelleValeur/diviseur);
 					}
 				}
@@ -217,16 +233,16 @@ jq(document).ready(function() { //Jquery
 		jq('#inputZone').remove();
 	}
 
-	jq(".statutCompet").click(function(){
+	jq(".statutCompet").click(function() {
 			laCompet = jq(this);
 			statut = laCompet.text();
 			laCompet.html('<img src="v2/images/indicator.gif" height="23">');
 			laSaison = jq('#saisonTravail').val();
-			if(statut == '0' || statut == 'ATT'){
+			if(statut == '0' || statut == 'ATT') {
 				changeType = 'ON';
-			}else if(statut == 'ON'){
+			} else if(statut == 'ON') {
 				changeType = 'END';
-			}else{
+			} else {
 				changeType = 'ATT';
 			}
 			jq.post(
@@ -237,14 +253,13 @@ jq(document).ready(function() { //Jquery
 					TypeUpdate : 'Statut',
 					idSaison : laSaison
 				},
-				function(data){ // callback
+				function(data) { // callback
 					if(data == 'OK'){
 						laCompet.html(changeType);
 						laCompet.removeClass('statutCompetATT statutCompetON statutCompetEND').addClass('statutCompet' + changeType);
-					}
-					else{
+					} else {
 						laCompet.html(statut);
-						alert('Mise à jour impossible / Impossible update <br />' + data);
+						alert(langue['MAJ_impossible'] + ' : ' + data);
 					}
 				},
 				'text' // Format des données reçues.

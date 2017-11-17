@@ -1,5 +1,54 @@
 var jq = jQuery.noConflict();
 
+var langue = [];
+
+if(lang == 'en')  {
+    langue['Annuler'] = 'Cancel';
+    langue['Arbitre_non_identifie'] = 'Unidentified referee';
+    langue['Cliquez_pour_modifier'] = 'Click to edit';
+    langue['Confirm_affect'] = 'You should have recalculate group ranking first, confirm auto assignment ?';
+    langue['Confirm_delete'] = 'Delete teams & referees from selected games ?';
+    langue['Confirm_update'] = 'Confirm update ?';
+    langue['Confirmer_MAJ'] = 'Confirm composition update ?';
+    langue['Date_vide'] = 'Date is empty, unable to create !';
+    langue['Equipe_non_definie'] = 'Unidentified team';
+    langue['Heure_invalide'] = 'Time is invalid (format hh:mm), continue anymore ?';
+    langue['MAJ_impossible'] = 'Unable to update';
+    langue['Match_de_classement'] = 'Classifying game';
+    langue['Match_eliminatoire'] = 'Playoffs';
+    langue['Non_valide'] = 'Unvalidated (private score)';
+    langue['Select_journee'] = 'Select a matchday / phase / group.';
+    langue['Selection_journee'] = 'Select a matchday / phase / group first, unable to create !';
+    langue['Selection_competition'] = 'Select a competition !';
+    langue['Selection_equipe'] = 'Select a team !';
+    langue['Valider'] = 'Valid';
+    langue['Valide'] = 'Validated, locked (public score)';
+    langue['Vider'] = 'Empty';
+} else {
+    langue['Annuler'] = 'Annuler';
+    langue['Arbitre_non_identifie'] = 'Arbitre non identifié';
+    langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
+    langue['Confirm_affect'] = 'Vous devez avoir recalculé le classement, Confirmer l\affectation automatique ?';
+    langue['Confirm_delete'] = 'Supprimer les équipes et arbitres des matchs sélectionnés ?';
+    langue['Confirm_update'] = 'Confirmer le changement ?';
+    langue['Confirmer_MAJ'] = 'Confirmez-vous la mise à jour des feuilles de matchs ?';
+    langue['Date_vide'] = 'Date vide, ajout impossible !';
+    langue['Equipe_non_definie'] = 'Equipe non définie';
+    langue['Heure_invalide'] = 'Heure invalide (format hh:mm), continuer ?';
+    langue['MAJ_impossible'] = 'Mise à jour impossible';
+    langue['Match_de_classement'] = 'Match de classement';
+    langue['Match_eliminatoire'] = 'Match éliminatoire';
+    langue['Non_valide'] = 'Non validé (score non public)';
+    langue['Select_journee'] = 'Sélectionner une journée / phase / poule.';
+    langue['Selection_journee'] = 'Sélectionner une journée / phase / poule, ajout impossible !';
+    langue['Selection_competition'] = 'Sélectionner une compétition !';
+    langue['Selection_equipe'] = 'Sélectionner une équipe !';
+    langue['Valider'] = 'Valider';
+    langue['Valide'] = 'Validé / verrouillé (score public)';
+    langue['Vider'] = 'Vider';
+}
+
+
 function changeEquipeA()
 {
 }
@@ -13,21 +62,21 @@ function validMatch()
     var dateMatch = document.forms['formJournee'].elements['Date_match'].value;
     if (dateMatch.length == 0)
     {
-        alert("La date est Vide ..., Ajout Impossible !");
+        alert(langue['Date_vide']);
         return false;
     }
 
     var heureMatch = document.forms['formJournee'].elements['Heure_match'].value;
     if ((heureMatch.length != 5) || (heureMatch.charAt(2) != ':'))
     {
-        if (!confirm("L'heure n'est pas valide (format hh:mm). Continuer ?")) 
+        if (!confirm(langue['Heure_invalide'])) 
             return false;
     }
 
     var journMatch = document.forms['formJournee'].elements['comboJournee'].value;
     if (journMatch == '*')
     {
-        alert("Vous n'avez pas sélectionné de journée / phase pour votre match , Ajout Impossible !");
+        alert(langue['Selection_journee']);
         return false;
     }
 
@@ -93,7 +142,7 @@ function changeCompet()
 
 function publiMatch(idMatch, pub)
 {
-	if(!confirm('Confirmez-vous le changement ?'))
+	if(!confirm(langue['Confirm_update']))
 	{
 		return false;
 	}
@@ -105,7 +154,7 @@ function publiMatch(idMatch, pub)
 		
 function verrouMatch(idMatch, verrou)
 {
-	if(!confirm('Confirmez-vous le changement ?'))
+	if(!confirm(langue['Confirm_update']))
 	{
 		return false;
 	}
@@ -117,7 +166,7 @@ function verrouMatch(idMatch, verrou)
  		
 function publiMultiMatchs()
 {
-	if(!confirm('Publier/Dépublier les matchs sélectionnés. Confirmez-vous le changement ?'))
+	if(!confirm(langue['Confirm_update']))
 	{
 		return false;
 	}
@@ -127,7 +176,7 @@ function publiMultiMatchs()
  		
 function verrouMultiMatchs()
 {
-	if(!confirm('Verrouiller/Déverrouiller les matchs sélectionnés. Confirmez-vous le changement ?'))
+	if(!confirm(langue['Confirm_update']))
 	{
 		return false;
 	}
@@ -138,7 +187,7 @@ function verrouMultiMatchs()
 function verrouPubliMultiMatchs()
 {
 	var matchs = document.forms['formJournee'].elements['ParamCmd'].value;
-	if(!confirm('Verrouiller & Publier les matchs sélectionnés '+matchs+'. Confirmez-vous le changement ?'))
+	if(!confirm(langue['Confirm_update']))
 	{
 		return false;
 	}
@@ -148,7 +197,7 @@ function verrouPubliMultiMatchs()
 
 function affectMultiMatchs()
 {
-	if(!confirm('Vous devez avoir recalculé le classement ! \n=> Modifiez manuellement les classements en cas d\'égalité dans les poules. \nConfirmez-vous l\'affectation automatiquement des équipes pour les matchs sélectionnés ?'))
+	if(!confirm(langue['Confirm_affect']))
 	{
 		return false;
 	}
@@ -158,7 +207,7 @@ function affectMultiMatchs()
 
 function annulMultiMatchs()
 {
-	if(!confirm('Etes-vous sûr de vouloir supprimer les équipes et arbitres des matchs sélectionnés ?'))
+	if(!confirm(langue['Confirm_delete']))
 	{
 		return false;
 	}
@@ -171,11 +220,11 @@ function changeMultiMatchs()
 	var journ = jq('#comboJournee').val();
 	if(journ == '*')
 	{
-		alert('Selectionnez une journee / une phase / une poule !');
+		alert(langue['Select_journee']);
 		jq('#comboJournee').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).focus();
 		return false;
 	}
-	if(!confirm('Etes-vous sûr de vouloir changer la journée / la phase / la poule des matchs sélectionnés ?'))
+	if(!confirm(langue['Confirm_update']))
 	{
 		return false;
 	}
@@ -302,7 +351,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		var valeur = jq('#comboCompet').val();
 		var valeur2 = jq('#comboCompet option:selected').text();
 		if(valeur == '*'){
-			alert('Sélectionnez une compétition ci-dessous !');
+			alert(langue['Selectionner_competition']);
 		}else{
 			initTitu(champs, valeur, valeur2);
 		}
@@ -313,7 +362,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		var valeur = jq('#equipeA').val();
 		var valeur2 = jq('#equipeA option:selected').text();
 		if(valeur == '-1'){
-			alert('Sélectionnez une équipe ci-dessous !');
+			alert(langue['Selectionner_equipe']);
 		}else{
 			initTitu(champs, valeur, valeur2);
 		}
@@ -324,7 +373,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		var valeur = jq('#comboJournee').val();
 		var valeur2 = jq('#comboJournee option:selected').text();
 		if(valeur == '*'){
-			alert('Sélectionnez une journée/phase ci-dessous !');
+			alert(langue['Select_journee']);
 		}else{
 			initTitu(champs, valeur, valeur2);
 		}
@@ -335,14 +384,14 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		var valeur = jq('#equipeB').val();
 		var valeur2 = jq('#equipeB option:selected').text();
 		if(valeur == '-1'){
-			alert('Sélectionnez une équipe ci-dessous !');
+			alert(langue['Selectionner_equipe']);
 		}else{
 			initTitu(champs, valeur, valeur2);
 		}
 	});
 	function initTitu(champs, valeur, valeur2)
 	{
-		if(confirm('Voulez-vous supprimer tous les joueurs et ré-affecter\nles joueurs présents (sauf X-Inactifs et A-Arbitres)\npour les matchs non verrouillés de :\n'+champs+' : '+valeur2))
+		if(confirm(langue['Selectionner_equipe'] + '\n' + champs + ' : ' + valeur2))
 		{
 			//ajax
 			jq.post("InitTitulaireJQ.php", {
@@ -357,9 +406,9 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	
 	// Direct Input
 	//Ajout title
-	jq('.directInput').attr('title','Cliquez pour modifier');
-	jq('.pbArb').attr('title','Arbitre non identifié');
-	jq('.undefTeam').attr('title','Equipe non définie : rechargez la page pour actualiser l\'encodage.');
+	jq('.directInput').attr('title', langue['Cliquez_pour_modifier']);
+	jq('.pbArb').attr('title', langue['Arbitre_non_identifie']);
+	jq('.undefTeam').attr('title', langue['Equipe_non_definie']);
 	// contrôle touche entrée (valide les données en cours mais pas le formulaire)
 	jq('#tableMatchs').bind('keydown',function(e){
 		if(e.which == 13)
@@ -406,7 +455,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		else if(jq(this).hasClass('equipe'))
 		{
 			jq(this).before('<select id="selectZone" class="directInputSpan" tabindex="'+tabindexVal+'"></select>');
-			jq(this).before('<br /><input type="button" id="selectZoneAnnul" value="Annuler">');
+			jq(this).before('<br /><input type="button" id="selectZoneAnnul" value="' + langue['Annuler'] + '">');
 			datamatch = jq(this).attr('data-match');
 			dataidEquipe = jq(this).attr('data-idequipe');
 			dataequipe = jq(this).attr('data-equipe');
@@ -454,9 +503,9 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 							if(data){
 								jq('#selectZone ~ span').attr('data-idequipe', newIdEquipe).text(newEquipe).show();
 								if(newIdEquipe == '0'){
-									jq('#selectZone ~ span').addClass('undefTeam').attr('title','Equipe non définie : rechargez la page pour actualiser l\'encodage.');
+									jq('#selectZone ~ span').addClass('undefTeam').attr('title', langue['Equipe_non_definie']);
 								}else{
-									jq('#selectZone ~ span').removeClass('undefTeam').attr('title','Cliquez pour modifier');
+									jq('#selectZone ~ span').removeClass('undefTeam').attr('title',langue['Cliquez_pour_modifier']);
 								}
 								jq('#selectZone + br').remove();
 								jq('#selectZoneAnnul').remove();
@@ -477,9 +526,9 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		{
 			jq(this).before('<input type="text" id="inputZone2" class="directInputSpan" tabindex="'+tabindexVal+'" size="22" value="'+valeur+'">');
 			jq(this).before('<br>\n\
-                            <input type="button" id="inputZone2valid" data-value2="0" value="valider">\n\
-                            <input type="button" id="inputZone2annul" value="Annuler">\n\
-                            <input type="button" id="inputZone2vid" data-value2="0" value="vider">');
+                            <input type="button" id="inputZone2valid" data-value2="0" value="' + langue['Valider'] + '">\n\
+                            <input type="button" id="inputZone2annul" value="' + langue['Annuler'] + '">\n\
+                            <input type="button" id="inputZone2vid" data-value2="0" value="' + langue['Vider'] + '">');
 			datamatch = jq(this).attr('data-match');
 			datajournee = jq(this).attr('data-journee');
 			dataid = jq(this).attr('data-id');
@@ -570,9 +619,9 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 					lavaleur = lavaleur.replace(') ',')<br /> ');
 					jq('#inputZone2vid ~ span').html(lavaleur);
 					if(lavaleur2 == 0){
-						jq('#inputZone2vid ~ span').addClass('pbArb').attr('title','Arbitre non identifié');
+						jq('#inputZone2vid ~ span').addClass('pbArb').attr('title', langue['Arbitre_non_identifie']);
 					}else{
-						jq('#inputZone2vid ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
+						jq('#inputZone2vid ~ span').removeClass('pbArb').attr('title', langue['Cliquez_pour_modifier']);
 					}
 					//compléter format(retour ligne, contrôle valeur n°arbitre)
 					jq('#inputZone2vid ~ span').show();
@@ -606,9 +655,9 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 					lavaleur = lavaleur.replace(') ',')<br /> ');
 					jq('#inputZone2vid ~ span').html(lavaleur);
 					if(lavaleur2 == 0){
-						jq('#inputZone2vid ~ span').addClass('pbArb').attr('title','Arbitre non identifié');
+						jq('#inputZone2vid ~ span').addClass('pbArb').attr('title', langue['Arbitre_non_identifie']);
 					}else{
-						jq('#inputZone2vid ~ span').removeClass('pbArb').attr('title','Cliquez pour modifier');
+						jq('#inputZone2vid ~ span').removeClass('pbArb').attr('title', langue['Cliquez_pour_modifier']);
 					}
 					//compléter format(retour ligne, contrôle valeur n°arbitre)
 					jq('#inputZone2vid ~ span').show();
@@ -661,7 +710,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 				},
 				function(data){
 					if(data != 'OK!'){
-						alert('mise à jour impossible : '+data);
+						alert(langue['MAJ_impossible'] + ' : ' + data);
 					}else{
 						jq('#'+identifiant).text(nouvelleValeur);
 					}
@@ -681,7 +730,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		var typeValeur = identifiant2[0];
 		var numMatch = identifiant2[1];
 		var formatValeur = identifiant2[2];
-		if(valeur != nouvelleValeur && confirm('Confirmez-vous le changement pour ' + nouvelleValeur + ' ?')){
+		if(valeur != nouvelleValeur && confirm(langue['Confirm_update'] + ' : ' + nouvelleValeur + ' ?')){
 			valeurTransmise = nouvelleValeur;
 			if(formatValeur == 'date'){
 				valeurTransmise2 = valeurTransmise.split('/');
@@ -801,7 +850,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 						leMatch.attr('title', textType);
 					}
 					else{
-						custom_alert('Changement impossible', 'Attention');
+						alert(langue['MAJ_impossible']);
 						leMatch.attr('src', '../img/type' + leMatch.attr('data-valeur') + '.png');
 						leMatch.attr('data-valeur', leMatch.attr('data-valeur'));
 					}
@@ -813,10 +862,10 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	jq("#typeMatch1").click(function(){
 		if(jq("#Type").val() == 'C'){
 			jq("#Type").val("E");
-			jq("#typeMatch1").attr("src","../img/typeE.png").attr("alt","Elimination").attr("title", "Match éliminatoire");
+			jq("#typeMatch1").attr("src","../img/typeE.png").attr("title", langue['Match_eliminatoire']);
 		}else{
 			jq("#Type").val("C");
-			jq("#typeMatch1").attr("src","../img/typeC.png").attr("alt","Classement").attr("title", "Match de classement");
+			jq("#typeMatch1").attr("src","../img/typeC.png").attr("title", langue['Match_de_classement']);
 		}
 	});
 	jq("#comboJournee").change(function(){
@@ -824,10 +873,10 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		leType = jq("#comboJournee option[value=" + loption + "]").attr('data-type');
 		if(leType == 'E'){
 			jq("#Type").val("E");
-			jq("#typeMatch1").attr("src","../img/typeE.png").attr("alt","Elimination").attr("title", "Match éliminatoire");
+			jq("#typeMatch1").attr("src","../img/typeE.png").attr("title", langue['Match_eliminatoire']);
 		}else{
 			jq("#Type").val("C");
-			jq("#typeMatch1").attr("src","../img/typeC.png").attr("alt","Classement").attr("title", "Match de classement");
+			jq("#typeMatch1").attr("src","../img/typeC.png").attr("title", langue['Match_de_classement']);
 		}
 	});
 	jq(".publiMatch").click(function(){
@@ -836,7 +885,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			leMatch.attr('src', 'v2/images/indicator.gif');
 			if(leMatch.attr('data-valeur') == 'O'){
 				changeType = 'N';
-				textType = 'Non public';
+				textType = 'Private';
 			}else{
 				changeType = 'O';
 				textType = 'Public';
@@ -853,9 +902,8 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 						leMatch.attr('src', '../img/oeil2' + changeType + '.gif');
 						leMatch.attr('data-valeur', changeType);
 						leMatch.attr('title', textType);
-					}
-					else{
-						custom_alert('Changement impossible', 'Attention');
+					} else {
+						alert(langue['MAJ_impossible']);
 						leMatch.attr('src', '../img/oeil2' + leMatch.attr('data-valeur') + '.gif');
 						leMatch.attr('data-valeur', leMatch.attr('data-valeur'));
 					}
@@ -870,10 +918,10 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			leMatch.attr('src', 'v2/images/indicator.gif');
 			if(leMatch.attr('data-valeur') == 'O'){
 				changeType = 'N';
-				textType = 'Non validé (score non public)';
+				textType = langue['Non_valide'];
 			}else{
 				changeType = 'O';
-				textType = 'Validé / verrouillé (score public)';
+				textType = langue['Valide'];
 			}
 			jq.post(
 				'v2/StatutPeriode.php', // Le fichier cible côté serveur.
@@ -898,7 +946,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 						}
 					}
 					else{
-						custom_alert('Changement impossible', 'Attention');
+						alert(langue['MAJ_impossible']);
 						leMatch.attr('src', '../img/verrou2' + leMatch.attr('data-valeur') + '.gif');
 						leMatch.attr('data-valeur', leMatch.attr('data-valeur'));
 					}

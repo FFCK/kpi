@@ -5,7 +5,7 @@ var langue = [];
 if(lang == 'en')  {
     langue['Cliquez_pour_modifier'] = 'Click to edit';
     langue['Confirmer_MAJ'] = 'Confirm composition update ?';
-    langue['Confirmer_verrouillage'] = 'Confirm presence sheets lock ?';
+    langue['Confirmer_verrouillage'] = 'Confirm presence sheets lock / unlock ?';
     langue['MAJ_impossible'] = 'Unable to update';
     langue['Nom_equipe_vide'] = 'Team name is empty, unable to create';
     langue['Rechercher_equipe'] = 'Search team';
@@ -15,7 +15,7 @@ if(lang == 'en')  {
 } else {
     langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
     langue['Confirmer_MAJ'] = 'Confirmez-vous la mise à jour des feuilles de matchs ?';
-    langue['Confirmer_verrouillage'] = 'Confirmez-vous le verrouillage des feuilles de présence ?';
+    langue['Confirmer_verrouillage'] = 'Confirmez-vous le verrouillage / déverrouillage des feuilles de présence ?';
     langue['MAJ_impossible'] = 'Mise à jour impossible';
     langue['Nom_equipe_vide'] = 'Le Nom de l\'Equipe est vide, ajout impossible';
     langue['Rechercher_equipe'] = 'Rechercher une équipe';
@@ -23,8 +23,6 @@ if(lang == 'en')  {
     langue['Selectionner_club'] = 'Sélectionnez un club';
     langue['Verrouiller_avant'] = 'Verrouillez les feuilles de présence avant !';
 }
-
-'Confirmez-vous la mise à jour des feuilles de matchs\navec les compositions des feuilles de présence ?\n(toutes les équipes, matchs non verrouillés uniquement)'
 
 function changeCompetition()
 {
@@ -170,7 +168,7 @@ jq(document).ready(function() {
 
 	//Init Titulaires
 	jq('#verrouCompet').click(function(){
-        if(!confirm(langue['Confirmer_MAJ'])) {
+        if(!confirm(langue['Confirmer_verrouillage'])) {
             return;
         }
         //ajax
