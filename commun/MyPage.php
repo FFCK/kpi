@@ -74,7 +74,7 @@ class MyPage
 			if (isset($profile) && $profile<=9 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'GestionStructure.php'));
 			if (isset($profile) && $profile<=7)
-				array_push($arrayMenu, array('name' => 'Athlètes', 'href' => 'GestionAthlete.php'));
+				array_push($arrayMenu, array('name' => 'Athletes', 'href' => 'GestionAthlete.php'));
 			if (isset($profile) && $profile<=9)
 				array_push($arrayMenu, array('name' => 'Journees_phases', 'href' => 'GestionCalendrier.php'));
 			if (isset($profile) && $profile<=9)
@@ -144,8 +144,8 @@ class MyPage
 			$this->m_tpl->assign('css_supp', $css_sup);
 		}
 			
-			// Langues
-		//$smarty->config_dir = 'http://kayak-polo.info/commun/';
+        // Langues
+		// $smarty->config_dir = 'http://kayak-polo.info/commun/';
 		$lang = utyGetSession('lang', 'fr');
 		$lang = utyGetGet('lang', $lang);
 		$_SESSION['lang'] = $lang;

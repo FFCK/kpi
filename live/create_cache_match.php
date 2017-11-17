@@ -140,40 +140,40 @@ class CacheMatch
 		$idEquipeA =  $rMatch['Id_equipeA'];
 		$idEquipeB =  $rMatch['Id_equipeB'];
 		
-		// Chargement Equipe A 
-		$rEquipeA = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeA", $rEquipeA);
-		
-		// Chargement Equipe B 
+        $rEquipeA = null;
 		$rEquipeB = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeB", $rEquipeB);
-
-/*		
-		// Chargement Joueurs Equipe A 
-		$cmd  = "Select a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = 'A' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "Order By a.Numero ";
-
 		$tJoueursA = null;
-		$db->LoadTable($cmd, $tJoueursA);
-		
-		// Chargement Joueurs Equipe B 
-		$cmd  = "Select a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = 'B' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "Order By a.Numero ";
-
 		$tJoueursB = null;
-		$db->LoadTable($cmd, $tJoueursB);
-*/
+        
+		if($idEquipeA > 0) {
+            // Chargement Equipe A 
+            $db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeA", $rEquipeA);
 
-		$tJoueursA = '';
-		$tJoueursB = '';
+            // Chargement Joueurs Equipe A 
+            $cmd  = "Select a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
+            $cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
+            $cmd .= "Where a.Id_match = $idMatch ";
+            $cmd .= "And a.Equipe = 'A' ";
+            $cmd .= "And a.Matric = b.matric ";
+            $cmd .= "Order By a.Numero ";
+
+            $db->LoadTable($cmd, $tJoueursA);
+        }
+		
+		if($idEquipeB > 0) {
+            // Chargement Equipe B 
+            $db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeB", $rEquipeB);
+
+            // Chargement Joueurs Equipe B 
+            $cmd  = "Select a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
+            $cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
+            $cmd .= "Where a.Id_match = $idMatch ";
+            $cmd .= "And a.Equipe = 'B' ";
+            $cmd .= "And a.Matric = b.matric ";
+            $cmd .= "Order By a.Numero ";
+
+            $db->LoadTable($cmd, $tJoueursB);
+        }
 
 		// json ...
 		$arrayCache = array(

@@ -10,7 +10,15 @@ class GestionEquipeJoueur extends MyPageSecure
 {	
 	function Load()
 	{
-		$idEquipe = utyGetSession('idEquipe', -1);
+		// Langue
+        $langue = parse_ini_file("../commun/MyLang.ini", true);
+        if (utyGetSession('lang') == 'en') {
+            $lang = $langue['en'];
+        } else {
+            $lang = $langue['fr'];
+        }
+        
+        $idEquipe = utyGetSession('idEquipe', -1);
 		$idEquipe = utyGetGet('idEquipe', $idEquipe);	
 		$_SESSION['idEquipe'] = $idEquipe;
 		
@@ -87,7 +95,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			if ($num_results == 1)
 			{
 				$row = mysql_fetch_array($result);	  
-				$infoEquipe = 'Equipe : '.$row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
+				$infoEquipe = $lang['Equipe'] . ' : '.$row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
 				$infoEquipe2 = $row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
 				$_SESSION['infoEquipe'] = $infoEquipe;
 				$_SESSION['codeClub'] = $row['Code_club'];
@@ -473,7 +481,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Feuilles de présence", "Equipes", false);
+		$this->SetTemplate("Feuilles_de_presence", "Equipes", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionEquipeJoueur');

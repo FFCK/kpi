@@ -692,7 +692,7 @@ class GestionEquipe extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Gestion des Equipes", "Equipes", false);
+		$this->SetTemplate("Gestion_des_equipes", "Equipes", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionEquipe');

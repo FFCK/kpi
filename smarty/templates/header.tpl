@@ -8,11 +8,11 @@
 	<div id="banniere">
 		<img src="../img/FFCK2-ADMIN.gif" height=99 alt="FFCK Administration" title="FFCK Administration" />
 		<div class="connexion">
-			{$userName}<br>Adh.{$user} (profil {$profile})<br>
-			Limite : {$Limit_Clubs|default:'Aucune'}<br>
-			<a href="GestionParamUser.php">Mes paramètres</a><br>
-			<a href="UnLogin.php">Déconnexion</a><br>
-            <a href="" id="masquer" title="Masquer la bannière">Masquer</a><br>
+			{$userName}<br>{$user} ({#Profil#} {$profile})<br>
+			{#Limite#} : {$Limit_Clubs|default:$smarty.config.Aucune}<br>
+			<a href="GestionParamUser.php">{#Mes_parametres#}</a><br>
+			<a href="UnLogin.php">{#Deconnexion#}</a><br>
+            <a href="" id="masquer">{#Masquer#}</a><br>
 			{if $bMirror == 1}
 				<br>
 				<span class='vert'>Base Mirror</span>
@@ -26,7 +26,7 @@
 			<br>
 			<br>
 			{$userName}<br>
-			<a href="UnLogin.php">Déconnexion</a><br>
+			<a href="UnLogin.php">{#Deconnexion#}</a><br>
 		</div>
 	</div>
 {/if}

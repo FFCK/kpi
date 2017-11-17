@@ -1462,7 +1462,7 @@ class GestionClassement extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Gestion des Classements", "Classements", false);
+		$this->SetTemplate("Gestion_des_classements", "Classements", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionClassement');

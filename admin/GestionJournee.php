@@ -1574,7 +1574,7 @@ class GestionJournee extends MyPageSecure
 		if ($ParamCmd == 'changeCompet')
 			$_SESSION['idMatch'] = -1; // La Combo Compétition a changé => Plus aucun match n'est sélectionné ...
 		
-		$this->SetTemplate("Gestion des matchs", "Matchs", false);
+		$this->SetTemplate("Gestion_des_matchs", "Matchs", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		
