@@ -170,7 +170,7 @@ include_once('../commun/MyTools.php');
             $resultGlobal = "2 caractères minimum !|XXX||||\n";
         } else {
 			// Equipes
-			$resultGlobal .= '---------- ' . $lang['Equipes'] . ' ----------|XXX\n';
+			$resultGlobal .= "---------- " . $lang['Equipes'] . " ----------|XXX\n";
 			$sql  = "Select a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet ";
 			$sql .= "From gickp_Competitions_Equipes a, gickp_Journees b ";
 			$sql .= "Where a.Code_compet = b.Code_competition ";
@@ -189,8 +189,10 @@ include_once('../commun/MyTools.php');
 				$resultGlobal .= "$libelle|$matric|$libelle|||\n";
 			}
 			// Joueurs
-			$resultGlobal .= ".\n";
-			$resultGlobal .= '---------- ' . $lang['Joueurs'] . ' ----------|XXXn';
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "---------- " . $lang['Joueurs'] . " ----------|XXX\n";
 			$sql  = "Select distinct a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, (c.Arb IS NULL) AS sortCol ";
 			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, ";
 			$sql .= "gickp_Competitions_Equipes b, gickp_Journees d, gickp_Matchs e ";
@@ -199,11 +201,12 @@ include_once('../commun/MyTools.php');
 			$sql .= "And b.Code_saison = d.Code_saison ";
 			$sql .= "And d.Id = e.Id_journee ";
 			$sql .= "AND a.Capitaine <> 'X' ";
-			if($j != '')
-				$sql .= "And d.Id = ".$j." ";
-			elseif($m != '')
-				$sql .= "And e.Id = ".$m." ";
-			$sql .= "And (a.Matric Like '%".ltrim($q, '0')."%' ";
+			if ($j != '') {
+                $sql .= "And d.Id = " . $j . " ";
+            } elseif ($m != '') {
+                $sql .= "And e.Id = " . $m . " ";
+            }
+            $sql .= "And (a.Matric Like '%".ltrim($q, '0')."%' ";
 			$sql .= "Or UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER('%".$q."%') ";
 			$sql .= "Or UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER('%".$q."%') ";
 			$sql .= "Or UPPER(b.Libelle) LIKE UPPER('%".$q."%') ";
@@ -215,18 +218,20 @@ include_once('../commun/MyTools.php');
 			{
 				$libelle = $row['Libelle'];
 				$arb = strtoupper($row['Arb']);
-				if($row['niveau'] != '')
-					$arb .= '-'.$row['niveau'];
-				$matric = $row['Matric'];
+				if ($row['niveau'] != '') {
+                    $arb .= '-' . $row['niveau'];
+                }
+                $matric = $row['Matric'];
 				$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
 				$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 				$resultGlobal .= "($libelle) $nom $prenom $arb|$matric|$nom|$prenom|$libelle|$arb\n";
 			}
+//            die($resultGlobal);
 			// Pool
-			$resultGlobal .= ".\n";
-			$resultGlobal .= ".\n";
-			$resultGlobal .= ".\n";
-			$resultGlobal .= '---------- ' . $lang['Pool_Arbitres'] . ' ----------|XXX\n';
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "---------- " . $lang['Pool_Arbitres'] . " ----------|XXX\n";
 			$sql  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau ";
 			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
 			$sql .= "Where a.Id_equipe = b.Id ";
@@ -257,8 +262,10 @@ include_once('../commun/MyTools.php');
 				$resultGlobal .= "$nom $prenom ($libelle) $arb|$matric|$nom|$prenom|$libelle|$arb\n";
 			}
 			// Autres arbitres
-			$resultGlobal .= ".\n";
-			$resultGlobal .= '---------- ' . $lang['Autres_Arbitres'] . ' ----------/n';
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "|XXX\n";
+			$resultGlobal .= "---------- " . $lang['Autres_Arbitres'] . " ----------|XXX\n";
 			$sql  = "Select lc.*, c.Libelle, b.Arb, b.niveau ";
 				//$sql .= "From gickp_Liste_Coureur lc left outer join gickp_Arbitre b on lc.Matric = b.Matric, gickp_Club c ";
 			$sql .= "From gickp_Liste_Coureur lc, gickp_Arbitre b, gickp_Club c ";
@@ -275,9 +282,10 @@ include_once('../commun/MyTools.php');
 				$libelle = mb_convert_case(strtolower($row['Libelle']), MB_CASE_TITLE, "UTF-8");
 				//$arb = __encode(strtoupper($row['Arb']));
 				$arb = strtoupper($row['Arb']);
-				if($row['niveau'] != '')
-					$arb .= '-'.$row['niveau'];
-				$matric = $row['Matric'];
+				if ($row['niveau'] != '') {
+                    $arb .= '-' . $row['niveau'];
+                }
+                $matric = $row['Matric'];
 				//$nom = __encode(ucwords(strtolower($row['Nom'])));
 				//$prenom = __encode(ucwords(strtolower($row['Prenom'])));
 				$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
@@ -288,7 +296,7 @@ include_once('../commun/MyTools.php');
 			}
 			//Résultat
 		}
-		//echo $resultGlobal;
-	echo $resultGlobal;
+
+        echo $resultGlobal;
 
 
