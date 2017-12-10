@@ -1,5 +1,10 @@
 __KPI__
 
+___TODO___
+
+- Structure BDD
+- Fixtures
+
 ___Prérequis___
 
 - Serveur LAMP ou WAMP
@@ -20,6 +25,8 @@ Si ce n'est pas le cas, forcer cette constante dans *commun/MyConfig.php*.
 - Si l'installation est différentes, ajuster les chemins absolus et relatifs dans *commun/MyConfig.php*.
 
 - Créer et compléter le fichier *commun/MyParams.php* (sur le modèle de *commun/MyParams.php.modele*)
+
+- Pour Wordpress, créer et compléter le fichier *wordpress/wp-config.php* (sur le modèle de *wordpress/wp-config-sample.php*)
 
 - Le fichier *index.php* n'inclue pas la page Wordpress d'accueil de KPI (utilisable via *index_2.php* si nécessaire)
 
