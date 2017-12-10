@@ -62,7 +62,7 @@ class MyPage
 		{
 			// Menu "Administration" ...
 			if (PRODUCTION || DEV)
-				array_push($arrayMenu, array('name' => 'Accueil Public', 'href' => '../'));
+				array_push($arrayMenu, array('name' => 'Accueil_Public', 'href' => '../'));
 			if (isset($profile) && $profile<=10)
 				array_push($arrayMenu, array('name' => 'Competitions', 'href' => 'GestionCompetition.php'));
 			if (isset($profile) && $profile<=9)
