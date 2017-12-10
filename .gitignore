@@ -1,8 +1,9 @@
-/commun/MyParams.php
-/live/cache/*.json
+sources/live/base.php
+sources/commun/MyParams.php
+sources/live/cache/*.json
 flyspray/flyspray.conf.php
-wordpress/wp-config.php
-live/cache/*.json
-/nbproject/private/
-/archives/
-/admin/temp_ajust.php
+sources/wordpress/wp-config.php
+sources/live/cache/*.json
+sources/nbproject/private/
+sources/archives/
+sources/admin/temp_ajust.php
