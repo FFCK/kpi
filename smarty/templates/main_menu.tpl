@@ -1,17 +1,12 @@
 {* main_menu.tpl Smarty *}	 
 
-<!--
-	<div id="boutonsH">
-	<div id="nav2Left"></div>
-	<ul id="nav2">
--->
 	<ul id="nav">
 		{section name=i loop=$arraymenu} 
 			{assign var='temporaire' value=$arraymenu[i].name}
 			{if $currentmenu eq $arraymenu[i].name}
 				<li class="current"><a href="{$arraymenu[i].href}">{$smarty.config.$temporaire|default:$temporaire}</a></li>
 			{else}
-				<li {if $arraymenu[i].name == 'Forum' || $arraymenu[i].name == 'Accueil Public'}class="forum"{/if}>
+				<li {if $arraymenu[i].name == 'Forum' || $arraymenu[i].name == 'Accueil_Public'}class="forum"{/if}>
 					<a href="{$arraymenu[i].href}">{$smarty.config.$temporaire|default:$temporaire}</a>
 				</li>
 			{/if}
@@ -28,11 +23,6 @@
             {/if}
 		{/if}
 	</ul>
-<!--	
-	<div id="nav2Right"></div>
-	</div>
-	<br />
--->
 	{if $currentmenu != 'Accueil'}
         {assign var="headerTitle0" value=$headerTitle|replace:' ':'_'}
 		<span class='saison'>{$smarty.config.Saison|default:'Saison'} {$Saison}</span>

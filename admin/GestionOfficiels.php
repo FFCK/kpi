@@ -73,7 +73,13 @@ class GestionOfficiels extends MyPageSecure
 		$_SESSION['filtreMois'] = $filtreMois;
 		$this->m_tpl->assign('filtreMois', $filtreMois);
 		
-		$codeCompet = utyGetSession('codeCompet', '*');
+        //Filtre affichage type compet
+		$AfficheCompet = utyGetSession('AfficheCompet','');
+		$AfficheCompet = utyGetPost('AfficheCompet', $AfficheCompet);
+        $_SESSION['AfficheCompet'] = $AfficheCompet;
+		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
+
+        $codeCompet = utyGetSession('codeCompet', '*');
 		$codeCompet = utyGetPost('comboCompet', $codeCompet);
 		$codeCompet = utyGetGet('Compet', $codeCompet);
 		if($codeCompet != $_SESSION['codeCompet'] || isset($_GET['Compet']))
@@ -152,10 +158,15 @@ class GestionOfficiels extends MyPageSecure
 					$sql .= " And j.Code_saison = c.Code_saison ";
 					$sql .= utyGetFiltreCompetition('c.');			
 					$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-					if(utyGetSession('AfficheCompet') == 'NCF')
-						$sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-					else
-						$sql .= " And c.Code Like '".utyGetSession('AfficheCompet')."%' ";
+                    if ($AfficheCompet == 'N') {
+                        $sql .= " And c.Code Like 'N%' ";
+                    } elseif ($AfficheCompet == 'CF') {
+                        $sql .= " And c.Code Like 'CF%' ";
+                    } elseif ($AfficheCompet == 'M') {
+                        $sql .= " And c.Code_ref = 'M' ";
+                    } elseif($AfficheCompet > 0) {
+                        $sql .= " And g.section = '" . $AfficheCompet . "' ";
+                    }
 					$sql .= " Order by j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
 			}
 		}
@@ -276,10 +287,15 @@ class GestionOfficiels extends MyPageSecure
 			$sql .= "' ";
 			$sql .= utyGetFiltreCompetition('');
 			$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-			if(utyGetSession('AfficheCompet') == 'NCF')
-				$sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-			else
-				$sql .= " And c.Code Like '".utyGetSession('AfficheCompet')."%' ";
+            if ($AfficheCompet == 'N') {
+                $sql .= " And c.Code Like 'N%' ";
+            } elseif ($AfficheCompet == 'CF') {
+                $sql .= " And c.Code Like 'CF%' ";
+            } elseif ($AfficheCompet == 'M') {
+                $sql .= " And c.Code_ref = 'M' ";
+            } elseif($AfficheCompet > 0) {
+                $sql .= " And g.section = '" . $AfficheCompet . "' ";
+            }
 			$sql .= " And c.Code_ref = g.Groupe ";
 			$sql .= " Order By c.Code_saison, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";	 
 		}

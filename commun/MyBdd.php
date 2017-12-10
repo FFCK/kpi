@@ -1201,7 +1201,7 @@ class MyBdd
             3 => 'Competitions_Regionales',
             4 => 'Tournois_Internationaux',
             5 => 'Continents',
-            100 => 'Divers'
+            6 => 'Divers'
         );
         return $result;
     }
@@ -1214,7 +1214,7 @@ class MyBdd
             $result = [];
             $label = $this->getSections();
             if($public == 'public') {
-                $where = "WHERE section < 100 ";
+                $where = "WHERE section < 6 ";
             } else {
                 $where = "";
             }

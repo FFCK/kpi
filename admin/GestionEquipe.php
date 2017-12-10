@@ -33,6 +33,12 @@ class GestionEquipe extends MyPageSecure
             $codeCompet = '';
         }
 
+        //Filtre affichage type compet
+		$AfficheCompet = utyGetSession('AfficheCompet','');
+		$AfficheCompet = utyGetPost('AfficheCompet', $AfficheCompet);
+        $_SESSION['AfficheCompet'] = $AfficheCompet;
+		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
+
         $myBdd = new MyBdd();
 		
 		// Chargement des Compétitions ...
@@ -42,10 +48,14 @@ class GestionEquipe extends MyPageSecure
                 . "Where c.Code_saison = '" . $codeSaison . "' ";
 		$sql .= utyGetFiltreCompetition('c.');
 		$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-		if (utyGetSession('AfficheCompet') == 'NCF') {
-            $sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-        } else {
-            $sql .= " And c.Code Like '" . utyGetSession('AfficheCompet') . "%' ";
+		if ($AfficheCompet == 'N') {
+            $sql .= " And c.Code Like 'N%' ";
+        } elseif ($AfficheCompet == 'CF') {
+            $sql .= " And c.Code Like 'CF%' ";
+        } elseif ($AfficheCompet == 'M') {
+            $sql .= " And c.Code_ref = 'M' ";
+        } elseif($AfficheCompet > 0) {
+            $sql .= " And g.section = '" . $AfficheCompet . "' ";
         }
         $sql .= " And c.Code_ref = g.Groupe ";
 		$sql .= " Order By c.Code_saison, g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 

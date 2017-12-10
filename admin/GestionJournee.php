@@ -20,7 +20,13 @@ class GestionJournee extends MyPageSecure
             $lang = $langue['fr'];
         }
         
-		// Informations pour SelectionOuiNon ...
+        //Filtre affichage type compet
+		$AfficheCompet = utyGetSession('AfficheCompet','');
+		$AfficheCompet = utyGetPost('AfficheCompet', $AfficheCompet);
+        $_SESSION['AfficheCompet'] = $AfficheCompet;
+		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
+
+        // Informations pour SelectionOuiNon ...
 		$_SESSION['tableOuiNon'] = 'gickp_Matchs';
 		$_SESSION['columnOuiNon'] = 'Publication';
 		$_SESSION['columnOuiNon2'] = 'Validation';
@@ -145,9 +151,9 @@ class GestionJournee extends MyPageSecure
                 }
                 $sql .= " Order by a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
 			} else {
-					$sql  = "Select Distinct j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut, j.Type, c.Code_typeclt ";
-					$sql .= "From gickp_Journees j, gickp_Competitions c ";
-					if ($codeCompet != '*') {
+                $sql  = "Select Distinct j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut, j.Type, c.Code_typeclt ";
+                $sql .= "From gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g ";
+                if ($codeCompet != '*') {
                     $sql .= "Where j.Code_competition = '$codeCompet' And j.Code_saison = '";
                 } else {
                     $sql .= "Where j.Code_saison = '";
@@ -157,14 +163,19 @@ class GestionJournee extends MyPageSecure
 					if ($filtreMois > 0) {
                     $sql .= " And (MONTH(j.Date_debut) = $filtreMois OR MONTH(j.Date_fin) = $filtreMois) ";
                 }
+                $sql .= " AND c.Code_ref = g.Groupe ";
                 $sql .= " And j.Code_competition = c.Code ";
-					$sql .= " And j.Code_saison = c.Code_saison ";
-					$sql .= utyGetFiltreCompetition('c.');			
-					$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-					if (utyGetSession('AfficheCompet') == 'NCF') {
-                    $sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-                } else {
-                    $sql .= " And c.Code Like '" . utyGetSession('AfficheCompet') . "%' ";
+                $sql .= " And j.Code_saison = c.Code_saison ";
+                $sql .= utyGetFiltreCompetition('c.');			
+                $sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+                if ($AfficheCompet == 'N') {
+                    $sql .= " And c.Code Like 'N%' ";
+                } elseif ($AfficheCompet == 'CF') {
+                    $sql .= " And c.Code Like 'CF%' ";
+                } elseif ($AfficheCompet == 'M') {
+                    $sql .= " And c.Code_ref = 'M' ";
+                } elseif($AfficheCompet > 0) {
+                    $sql .= " And g.section = '" . $AfficheCompet . "' ";
                 }
                 $sql .= " Order by j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
 			}
@@ -218,7 +229,7 @@ class GestionJournee extends MyPageSecure
             $sql .= " Order by a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
 		} else {
             $sql  = "Select Distinct j.Id, j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Date_debut, c.Code_typeclt ";
-            $sql .= "From gickp_Journees j, gickp_Competitions c ";
+            $sql .= "From gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g ";
             if ($codeCompet != '*') {
                 $sql .= "Where j.Code_competition = '$codeCompet' And j.Code_saison = '";
             } else {
@@ -231,12 +242,17 @@ class GestionJournee extends MyPageSecure
             }
             $sql .= " And j.Code_competition = c.Code ";
             $sql .= " And j.Code_saison = c.Code_saison ";
+            $sql .= " And c.Code_ref = g.Groupe ";
             $sql .= utyGetFiltreCompetition('c.');			
             $sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-            if (utyGetSession('AfficheCompet') == 'NCF') {
-                $sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-            } else {
-                $sql .= " And c.Code Like '" . utyGetSession('AfficheCompet') . "%' ";
+            if ($AfficheCompet == 'N') {
+                $sql .= " And c.Code Like 'N%' ";
+            } elseif ($AfficheCompet == 'CF') {
+                $sql .= " And c.Code Like 'CF%' ";
+            } elseif ($AfficheCompet == 'M') {
+                $sql .= " And c.Code_ref = 'M' ";
+            } elseif($AfficheCompet > 0) {
+                $sql .= " And g.section = '" . $AfficheCompet . "' ";
             }
             $sql .= " Order by j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
 		}
@@ -294,10 +310,14 @@ class GestionJournee extends MyPageSecure
                     . "AND c.Code_saison = " . utyGetSaison() . " "
                     . utyGetFiltreCompetition('c.')
                     . " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-			if (utyGetSession('AfficheCompet') == 'NCF') {
-                $sql .= " And (c.Code Like 'N%' OR c.Code Like 'CF%') ";
-            } else {
-                $sql .= " And c.Code Like '" . utyGetSession('AfficheCompet') . "%' ";
+            if ($AfficheCompet == 'N') {
+                $sql .= " And c.Code Like 'N%' ";
+            } elseif ($AfficheCompet == 'CF') {
+                $sql .= " And c.Code Like 'CF%' ";
+            } elseif ($AfficheCompet == 'M') {
+                $sql .= " And c.Code_ref = 'M' ";
+            } elseif($AfficheCompet > 0) {
+                $sql .= " And g.section = '" . $AfficheCompet . "' ";
             }
             $sql .= " And c.Code_ref = g.Groupe "
                     . " Order By c.Code_saison, g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";	 

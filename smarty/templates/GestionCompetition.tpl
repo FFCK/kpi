@@ -28,10 +28,12 @@
 							<Option Value="" selected>{#Toutes_les_competitions#}</Option>
 							<Option Value="N"{if $AfficheCompet == 'N'} selected{/if}>{#Championnat_de_France#}</Option>
 							<Option Value="CF"{if $AfficheCompet == 'CF'} selected{/if}>{#Coupe_de_France#}</Option>
-							<Option Value="NCF"{if $AfficheCompet == 'NCF'} selected{/if}>{#Championnat_Coupe_de_France#}</Option>
-							<Option Value="REG"{if $AfficheCompet == 'REG'} selected{/if}>{#Championnats_regionaux#}</Option>
-							<Option Value="DEP"{if $AfficheCompet == 'DEP'} selected{/if}>{#Championnats_departementaux#}</Option>
-							<Option Value="T-"{if $AfficheCompet == 'T-'} selected{/if}>{#Tournois_Internationaux#}</Option>
+							{section name=i loop=10}
+                                {if $sectionLabels[i]}
+                                    {assign var='temp' value=$sectionLabels[i]}
+                                    <Option Value="{$smarty.section.i.index}"{if $AfficheCompet == $smarty.section.i.index} selected{/if}>{$smarty.config.$temp|default:$temp}</Option>
+                                {/if}   
+                            {/section}
 							{if $profile <= 4}
 								<Option Value="M"{if $AfficheCompet == 'M'} selected{/if}>{#Modeles#}</Option>
 							{/if}
