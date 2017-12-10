@@ -4,6 +4,6 @@ sources/live/cache/*.json
 flyspray/flyspray.conf.php
 sources/wordpress/wp-config.php
 sources/live/cache/*.json
-sources/nbproject/private/
+nbproject/private/
 sources/archives/
 sources/admin/temp_ajust.php

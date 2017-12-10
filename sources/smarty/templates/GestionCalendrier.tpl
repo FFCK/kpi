@@ -1,4 +1,4 @@
-	&nbsp;(<a href="Admin.php">Retour</a>)
+	&nbsp;(<a href="Admin.php">{#Retour#}</a>)
 	
 	<div class="main">
 		<form method="POST" action="GestionCalendrier.php" name="formCalendrier" id="formCalendrier" enctype="multipart/form-data">
@@ -10,12 +10,12 @@
             <input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = '/>
             <input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
                 
-			<div class='titrePage'>Journées / phases</div>
+			<div class='titrePage'>{#Journees#} / {#Phases#}</div>
 			<div class='blocTop'>
 				<table width="100%">
 					<tr>
 						<td>
-							<label for="evenement">Evénement :</label>
+							<label for="evenement">{#Evenement#} :</label>
 							<select name="evenement" id="evenement" onChange="changeEvenement();">
 								{section name=i loop=$arrayEvenement} 
 									<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection}>{$arrayEvenement[i].Libelle}</Option>
@@ -23,7 +23,7 @@
 						    </select>
 						</td>
 						<td colspan=2>
-							<label for="competition">Compétition :</label>
+							<label for="competition">{#Competition#} :</label>
 							<select name="competition" id="competition" onChange="changeCompetition();">
                                 {section name=i loop=$arrayCompetition}
                                     {assign var='options' value=$arrayCompetition[i].options}
@@ -40,11 +40,11 @@
 						<td align="right" rowspan=2>
 							{if $profile <= 3 && $AuthModif == 'O'}
 								{if $modeEvenement eq '1'}
-							    	Mode normal<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="1" Checked>
-							    	<br>Mode association evts<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="2">		
+							    	{#Mode_normal#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="1" Checked>
+							    	<br>{#Association_evts#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="2">		
 							    {else}
-							    	Mode normal<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="1">
-							    	<br><font color="FF0000">Mode association evts</font><input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="2" Checked>		
+							    	{#Mode_normal#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="1">
+							    	<br><font color="FF0000">{#Association_evts#}</font><input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="2" Checked>		
 								{/if}
 							{else}
 								&nbsp;
@@ -53,7 +53,7 @@
 					</tr>
 					<tr>
 						<td>
-							<label for="filtreMois">Mois :</label>
+							<label for="filtreMois">{#Mois#} :</label>
 							<select name="filtreMois" onChange="document.formCalendrier.submit();">
 									<Option Value="" {if $filtreMois == ''}selected{/if}>---Tous---</Option>
 									<Option Value="1" {if $filtreMois == '1'}selected{/if}>Janvier</Option>
@@ -69,7 +69,8 @@
 									<Option Value="11" {if $filtreMois == '11'}selected{/if}>Novembre</Option>
 									<Option Value="12" {if $filtreMois == '12'}selected{/if}>Décembre</Option>
 						    </select>
-							<label for="competitionOrder"> Trié par :</label>
+                            &nbsp;
+							<label for="competitionOrder">{#Tri#} :</label>
 							<select name="competitionOrder" onChange="changeCompetitionOrder();">
 								{section name=i loop=$arrayCompetitionOrder} 
 									<Option Value="{$arrayCompetitionOrder[i].Code}" {$arrayCompetitionOrder[i].Selection}>{$arrayCompetitionOrder[i].Libelle}</Option>
@@ -77,11 +78,11 @@
 						    </select>
 						</td>
 						<td>
-							<a href="GestionJournee.php?idJournee=*"><img align="absbottom" height="20" src="../img/b_match.png" alt="Tous les matchs" title="Tous les matchs"> Voir tous les Matchs</a>
+							<a href="GestionJournee.php?idJournee=*"><img align="absbottom" height="20" src="../img/b_match.png" title="{#Voir_tous_les_matchs#}"> {#Voir_tous_les_matchs#}</a>
 						</td>
 						{if $profile <= 4 && $AuthModif == 'O'}
 							<td>
-								<a href="#" onclick="ParamJournee(0);"><img align="bottom" height="20" src="../img/glyphicons-191-plus-sign.png" alt="Ajouter une journee" title="Ajouter une journee"> Ajouter une Journée</A></td>
+								<a href="#" onclick="ParamJournee(0);"><img align="bottom" height="20" src="../img/glyphicons-191-plus-sign.png" title="{#Ajouter_une_journee#}"> {#Ajouter_une_journee#}</a></td>
 							</td>
 						{/if}
 					</tr>
@@ -93,14 +94,14 @@
 					<table width="100%">
 						<tr>
 							<td>
-								Sélection :&nbsp;
-								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" alt="Sélectionner tous" title="Sélectionner tous" border="0"></a>
+								{#Selection#} :&nbsp;
+								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" alt="{#Tous#}" title="{#Tous#}" border="0"></a>
 								&nbsp;
-								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" alt="Sélectionner aucun" title="Sélectionner aucun" border="0"></a>
+								<a href="#" onclick="setCheckboxes('formCalendrier', 'checkJournee', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" alt="{#Aucun#}" title="{#Aucun#}" border="0"></a>
 								&nbsp;
-								<a href="#" onclick="SelectedCheckboxes('formCalendrier', 'checkJournee');publiMultiJournees();" alt="Publier/dépublier les journées/phases cochées" title="Publier/dépublier les journées/phases cochées"><img height="25" src="../img/oeil2.gif" alt="Publier/Dépublier la sélection" title="Publier/Dépublier la sélection" border="0"></a>
+								<a href="#" onclick="SelectedCheckboxes('formCalendrier', 'checkJournee');publiMultiJournees();" title="{#Publier#}"><img height="25" src="../img/oeil2.gif" alt="{#Publier#}" border="0"></a>
 								&nbsp;
-								<a href="#" onclick="RemoveCheckboxes('formCalendrier', 'checkJournee')" alt="Supprimer les journées cochées" title="Supprimer les journées/phases cochées"><img height="25" src="../img/glyphicons-17-bin.png" alt="Supprimer la sélection" title="Supprimer la sélection" border="0"></a>
+								<a href="#" onclick="RemoveCheckboxes('formCalendrier', 'checkJournee')" title="{#Supprimer#}"><img height="25" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" border="0"></a>
 							</td>
 						</tr>
 					</table>
@@ -114,11 +115,11 @@
 								{if $profile <= 3 && $AuthModif == 'O'}
 									<th>&nbsp;</th>
 								{/if}
-								<th width=18><img height="18" src="../img/oeil2.gif" alt="Publier ?" title="Publier ?" border="0"></th>
-								<th>N°</th>
+								<th width=18><img height="18" src="../img/oeil2.gif" alt="{#Publier#} ?" title="{#Publier#} ?" border="0"></th>
+								<th>Id</th>
 								<th>&nbsp;</th>
 								<th>Compét./Phase</th>
-								<th>Niv. <img width="12" src="../img/b_help.png" title="Importance de la phase dans le classement géléral. Par exemple :
+								<th>{#Niv#} <img width="12" src="../img/b_help.png" title="Importance de la phase dans le classement géléral. Par exemple :
                                      <br>-Les premières poules sont toujours au niveau 1,
                                      <br>-La finale est toujours au niveau le plus élevé,
                                      <br>-Les demi-finales auront un niveau supérieur au match pour la 5ème place,
@@ -132,11 +133,11 @@
                                     <th>Nbequipes <img width="12" src="../img/b_help.png" title="Nombre d'équipes (pour les poules de classement)"></th>
                                 {/if}
 								<th>Type</th>
-								<th>Nom</th>
-								<th>Date(s)</th>
-								<th>Lieu</th>
-								<th>Dpt.</th>
-								<th colspan="2">Officiels</th>
+								<th>{#Nom#}</th>
+								<th>{#Date#}</th>
+								<th>{#Lieu#}</th>
+								<th>{#Dpt#}</th>
+								<th colspan="2">{#Officiels#}</th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
