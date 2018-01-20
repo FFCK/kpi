@@ -599,7 +599,8 @@ class MyBdd
                         . 'Min(lc.Numero_comite_dept) selNumero_comite_dept '
                     . 'FROM gickp_Liste_Coureur lc '
                     . 'WHERE lc.Numero_club <> "0" AND lc.Numero_club <> "0000" AND lc.Numero_comite_reg <> "98" '
-                        . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
+                    . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
+                    . 'AND lc.Club != "" '
                     . 'GROUP BY Numero_club '
                 . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
                     . 'Reserve = VALUES(Reserve), Code_comite_dep = VALUES(Code_comite_dep) ';
