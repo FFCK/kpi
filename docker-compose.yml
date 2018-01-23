@@ -1,0 +1,40 @@
+version: '2'
+services:
+    web:
+        build: 
+            context: ./docker/web
+            dockerfile: Dockerfile
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./sources:/var/www/html
+            - ./docker/MyParams.php:/var/www/html/commun/MyParams.php
+            - ./docker/MySmarty.php:/var/www/html/commun/MySmarty.php
+            - ./docker/MyConfig.php:/var/www/html/commun/MyConfig.php
+            - ./docker/error.log:/var/log/apache2/error.log
+        environment:
+            - ALLOW_OVERRIDE=true
+        links:
+            - db
+    db:
+        build: 
+            context: ./docker/db
+            dockerfile: Dockerfile
+        image: mysql:latest
+        restart: always
+        volumes:
+            - /var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_USER: my_admin
+            MYSQL_PASSWORD: my_passwd
+            MYSQL_DATABASE: my_database
+        ports:
+            - 3306:3306
+    myadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        ports:
+            - 8081:80
+        links:
+            - db
