@@ -23,6 +23,7 @@ services:
             dockerfile: Dockerfile
         image: mysql:latest
         restart: always
+        command: mysqld --sql_mode=""
         volumes:
             - /var/lib/mysql
         environment:
@@ -38,3 +39,4 @@ services:
             - 8081:80
         links:
             - db
+
