@@ -91,6 +91,7 @@ session_start();
         
         $Profile = utyGetSession('Profile');
         $Limit_Clubs = utyGetSession('Limit_Clubs', '0000');
+        $Limit_Clubs_2 = str_replace(",", "','", $Limit_Clubs);
         
         $sql  = "SELECT lc.*, c.Libelle, s.Date date_surclassement "
                 . "FROM gickp_Liste_Coureur lc "
@@ -101,7 +102,7 @@ session_start();
                 . "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') "
                 . ") AND lc.Numero_club = c.Code ";
         if($Profile >= 7) {
-            $sql .= "AND lc.Numero_club IN (".$Limit_Clubs.") ";
+            $sql .= "AND lc.Numero_club IN ('".$Limit_Clubs_2."') ";
         }
         $sql .= "Order by lc.Nom, lc.Prenom ";
 	
