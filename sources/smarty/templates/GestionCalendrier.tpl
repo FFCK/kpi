@@ -162,7 +162,7 @@
 								<th>{#Nom#}</th>
 								<th>{#Date#}</th>
 								<th>{#Lieu#}</th>
-								<th>{#Dpt#}</th>
+								<th>{#Dpt_Pays#}</th>
 								<th colspan="2">{#Officiels#}</th>
 								<th>&nbsp;</th>
 							</tr>
