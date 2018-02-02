@@ -359,7 +359,7 @@ class GestionParamJournee extends MyPageSecure
 			}
 		}
 	
-		$this->SetTemplate("Paramètres d'une journée / phase", "Journees_phases", false);
+		$this->SetTemplate("Parametres_journee", "Journees_phases", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionParamJournee');
@@ -368,4 +368,3 @@ class GestionParamJournee extends MyPageSecure
 
 $page = new GestionParamJournee();
 
-?>
