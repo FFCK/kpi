@@ -1,39 +1,40 @@
-	&nbsp;(<a href="GestionCalendrier.php">Retour</a>)
+	&nbsp;(<a href="GestionCalendrier.php">{#Retour#}</a>)
 	
 	<div class="main">
 		<form method="POST" action="FeuilleInstances.php" name="formInstances" id="formInstances" enctype="multipart/form-data">
 			<input type='hidden' name='Cmd' Value=''/>
 			<input type='hidden' name='ParamCmd' Value=''/>
 
-			<div class='titrePage'>Instances de la journée</div>
+			<div class='titrePage'>{#Instances_de_la_journee#}</div>
 			<div class='blocTop centre'>
 				<table width="100%">
-                                    <tr>
-					<td>
-                                            <h3 align="center">{$arrayJournee.Nom}<h3>
-                                            <input type="hidden" name="NomJournee" value="{$arrayJournee.Nom}" >           
-                                            <h4 align="center">{$arrayJournee.Lieu} ({$arrayJournee.Departement})
-                                            <input type="hidden" name="Lieu" value="{$arrayJournee.Lieu}" >
-                                            <input type="hidden" name="Departement" value="{$arrayJournee.Departement}" >
-					    <br />{$arrayJournee.Date_debut|date_format:"%d/%m/%Y"} - {$arrayJournee.Date_fin|date_format:"%d/%m/%Y"}</h4>
-                                            <input type="hidden" name="Date_debut" value="{$arrayJournee.Date_debut|date_format:"%d/%m/%Y"}" >
-                                            <input type="hidden" name="Date_fin" value="{$arrayJournee.Date_fin|date_format:"%d/%m/%Y"}" >
-                                        </td>
+                    <tr>
+                        <td>
+                            <h3 align="center">{$arrayJournee.Nom}<h3>
+                            <input type="hidden" name="NomJournee" value="{$arrayJournee.Nom}" >           
+                            <h4 align="center">{$arrayJournee.Lieu} ({$arrayJournee.Departement})
+                                <input type="hidden" name="Lieu" value="{$arrayJournee.Lieu}" >
+                                <input type="hidden" name="Departement" value="{$arrayJournee.Departement}" >
+                                <br />{$arrayJournee.Date_debut|date_format:"%d/%m/%Y"} - {$arrayJournee.Date_fin|date_format:"%d/%m/%Y"}
+                            </h4>
+                            <input type="hidden" name="Date_debut" value="{$arrayJournee.Date_debut|date_format:"%d/%m/%Y"}" >
+                            <input type="hidden" name="Date_fin" value="{$arrayJournee.Date_fin|date_format:"%d/%m/%Y"}" >
+                        </td>
 					</tr>
 				</table>
 			</div>
 			<div class='blocMiddle centre'>
-                            Responsable de compétition : {$arrayJournee.Responsable_insc}
+                            {#RC#} : {$arrayJournee.Responsable_insc}
                             <br />
                             <br />
                             <table class="tableau tableau60">
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Comité de compétition</th>
+                                        <th colspan="2">{#Comite_de_competition#}</th>
                                     </tr>
                                 </thead>
                                 <tr>
-                                    <th>Responsable de l'organisation (R1)</th>
+                                    <th>{#R1#}</th>
                                     <td>
                                         <br />
                                         <span class="editOfficiel">{$arrayJournee.Responsable_R1}</span>
@@ -41,7 +42,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Délégué de la Commission Nationale d'Activité</th>
+                                    <th>{#Delegue_federal#}</th>
                                     <td>
                                         <br />
                                         <span class="editOfficiel">{$arrayJournee.Delegue}</span>
@@ -49,7 +50,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Chef des arbitres</th>
+                                    <th>{#Chef_arbitres#}</th>
                                     <td>
                                         <br />
                                         <span class="editOfficiel">{$arrayJournee.ChefArbitre}</span>
@@ -58,11 +59,11 @@
                                 </tr>
                                 <thead>
                                 <tr>
-                                    <th colspan="2">Jury d'appel</th>
+                                    <th colspan="2">{#Jury_appel#}</th>
                                 </tr>
                                 </thead>
                                 <tr>
-                                    <th>Délégué C.N.A (président du Jury)</th>
+                                    <th>{#Delegue_federal#} ({#President#})</th>
                                     <td>
                                         <br />
                                         <span class="editOfficiel">{$arrayJournee.Delegue}</span>
@@ -70,7 +71,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Responsable de l'organisation (R1)</th>
+                                    <th>{#R1#}</th>
                                     <td>
                                         <br />
                                         <span class="editOfficiel">{$arrayJournee.Responsable_R1}</span>
@@ -78,10 +79,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Représentant des compétiteurs</th>
+                                    <th>{#Representant_des_competiteurs#}</th>
                                     <td>
                                         <br />
-                                        <input type="text" name="Representant" id="Representant" size="60" placeholder="Nom prénom ou numéro de licence" class="ac_input" />
+                                        <input type="text" name="Representant" id="Representant" size="60" placeholder="{#Nom#} {#Prenom#} {#Licence#}" class="ac_input" />
                                         <br />
                                     </td>
                                 </tr>
