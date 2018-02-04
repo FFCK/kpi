@@ -1,32 +1,32 @@
-    &nbsp;(<a href="Admin.php">Retour</a>)
+    &nbsp;(<a href="Admin.php">{#Retour#}</a>)
 	<div class="main">
 		<form method="POST" action="GestionStats.php" name="formStats" enctype="multipart/form-data">
 			<input type='hidden' name='Cmd' Value=''/>
 			<input type='hidden' name='ParamCmd' Value=''/>
 			<div class='blocLeft'>
-				<div class='titrePage'>Statistiques {$codeSaison} (version béta)</div>
+				<div class='titrePage'>{#Statistiques#} {$codeSaison} (beta)</div>
 				{if $AfficheStat eq 'Buteurs'}
-					<div class='titrePage'>Meilleur buteur</div>
+					<div class='titrePage'>{#Meilleur_buteur#}</div>
 				{elseif $AfficheStat == 'Attaque'}
-					<div class='titrePage'>Meilleure attaque (buts des feuilles de match uniquement)</div>
+					<div class='titrePage'>{#Meilleure_attaque#} ({#Feuilles_marque#} {#seulement#})</div>
 				{elseif $AfficheStat == 'Defense'}
-					<div class='titrePage'>Meilleure défense (buts des feuilles de match uniquement)</div>
+					<div class='titrePage'>{#Meilleure_defense#} ({#Feuilles_marque#} {#seulement#})</div>
 				{elseif $AfficheStat == 'Cartons'}
-					<div class='titrePage'>Cartons</div>
+					<div class='titrePage'>{#Cartons#}</div>
 				{elseif $AfficheStat == 'CartonsEquipe'}
-					<div class='titrePage'>Cartons par équipe</div>
+					<div class='titrePage'>{#Cartons_par_equipe#}</div>
 				{elseif $AfficheStat == 'Fairplay'}
-					<div class='titrePage'>Classement disciplinaire individuel (rouge=4, jaune=2, vert=1)</div>
+					<div class='titrePage'>{#Classement_disciplinaire_individuel#} ({#Rouge#}=4, {#Jaune#}=2, {#Vert#}=1)</div>
 				{elseif $AfficheStat == 'FairplayEquipe'}
-					<div class='titrePage'>Classement disciplinaire par équipe (rouge=4, jaune=2, vert=1)</div>
+					<div class='titrePage'>{#Classement_disciplinaire_par_equipe#} ({#Rouge#}=4, {#Jaune#}=2, {#Vert#}=1)</div>
 				{elseif $AfficheStat == 'Arbitrage'}
-					<div class='titrePage'>Arbitrage</div>
+					<div class='titrePage'>{#Arbitrage#}</div>
 				{elseif $AfficheStat == 'ArbitrageEquipe'}
-					<div class='titrePage'>Arbitrage par équipe (seuls les arbitrages nominatifs sont pris en compte)</div>
+					<div class='titrePage'>{#Arbitrage_par_equipe#} ({#Arbitrages_nominatifs#} {#seulement#})</div>
 				{elseif $AfficheStat == 'CJouees'}
-					<div class='titrePage'>Compétitions jouées par club (matchs verrouillés)</div>
+					<div class='titrePage'>{#Competitions_jouees_par_club#} ({#Matchs_verrouilles#})</div>
 				{elseif $AfficheStat == 'CJouees2'}
-					<div class='titrePage'>Compétitions jouées par équipe (matchs verrouillés)</div>
+					<div class='titrePage'>{#Competitions_jouees_par_equipe#} ({#Matchs_verrouilles#})</div>
 				{elseif $AfficheStat == 'CJouees3'}
 					<div class='titrePage'>Irrégularités : licence, certificats, pagaie eau calme (matchs verrouillés)</div>
 				{elseif $AfficheStat == 'OfficielsJournees'}
@@ -395,18 +395,18 @@
 					<td>
 						<label for="AfficheStat">Statistique:</label>
 						<select name="AfficheStat" onChange="document.formStats.submit()">
-							<Option Value="Buteurs"{if $AfficheStat == 'Buteurs'} selected{/if}>Meilleur buteur</Option>
-							<Option Value="Attaque"{if $AfficheStat == 'Attaque'} selected{/if}>Meilleure attaque</Option>
-							<Option Value="Defense"{if $AfficheStat == 'Defense'} selected{/if}>Meilleure défense</Option>
-							<Option Value="Cartons"{if $AfficheStat == 'Cartons'} selected{/if}>Cartons</Option>
-							<Option Value="CartonsEquipe"{if $AfficheStat == 'CartonsEquipe'} selected{/if}>Cartons par équipe</Option>
-							<Option Value="Fairplay"{if $AfficheStat == 'Fairplay'} selected{/if}>Class. disciplinaire individuel</Option>
-							<Option Value="FairplayEquipe"{if $AfficheStat == 'FairplayEquipe'} selected{/if}>Class. disciplinaire par équipe</Option>
-							<Option Value="Arbitrage"{if $AfficheStat == 'Arbitrage'} selected{/if}>Arbitrage</Option>
-							<Option Value="ArbitrageEquipe"{if $AfficheStat == 'ArbitrageEquipe'} selected{/if}>Arbitrage par équipe</Option>
+							<Option Value="Buteurs"{if $AfficheStat == 'Buteurs'} selected{/if}>{#Meilleur_buteur#}</Option>
+							<Option Value="Attaque"{if $AfficheStat == 'Attaque'} selected{/if}>{#Meilleure_attaque#}</Option>
+							<Option Value="Defense"{if $AfficheStat == 'Defense'} selected{/if}>{#Meilleure_defense#}</Option>
+							<Option Value="Cartons"{if $AfficheStat == 'Cartons'} selected{/if}>{#Cartons#}</Option>
+							<Option Value="CartonsEquipe"{if $AfficheStat == 'CartonsEquipe'} selected{/if}>{#Cartons_par_equipe#}</Option>
+							<Option Value="Fairplay"{if $AfficheStat == 'Fairplay'} selected{/if}>{#Classement_disciplinaire_individuel#}</Option>
+							<Option Value="FairplayEquipe"{if $AfficheStat == 'FairplayEquipe'} selected{/if}>{#Classement_disciplinaire_par_equipe#}</Option>
+							<Option Value="Arbitrage"{if $AfficheStat == 'Arbitrage'} selected{/if}>{#Arbitrage#}</Option>
+							<Option Value="ArbitrageEquipe"{if $AfficheStat == 'ArbitrageEquipe'} selected{/if}>{#Arbitrage_par_equipe#}</Option>
 							{if $profile <= 6}
-								<Option Value="CJouees"{if $AfficheStat == 'CJouees'} selected{/if}>Compétitions jouées (clubs)</Option>
-								<Option Value="CJouees2"{if $AfficheStat == 'CJouees2'} selected{/if}>Compétitions jouées (équipes)</Option>
+								<Option Value="CJouees"{if $AfficheStat == 'CJouees'} selected{/if}>{#Competitions_jouees_par_club#}</Option>
+								<Option Value="CJouees2"{if $AfficheStat == 'CJouees2'} selected{/if}>{#Competitions_jouees_par_equipe#}</Option>
 								<Option Value="CJouees3"{if $AfficheStat == 'CJouees3'} selected{/if}>Irrégularités (matchs)</Option>
 								<Option Value="OfficielsJournees"{if $AfficheStat == 'OfficielsJournees'} selected{/if}>Officiels journées</Option>
 								<Option Value="OfficielsMatchs"{if $AfficheStat == 'OfficielsMatchs'} selected{/if}>Officiels matchs</Option>
