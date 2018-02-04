@@ -1,6 +1,6 @@
 <?php
 // Configuration Generale 
-define('NUM_VERSION','2.13.7');
+define('NUM_VERSION','2.13.8');
 
 if (strstr($_SERVER['DOCUMENT_ROOT'],'wamp') == false && strstr($_SERVER['HTTP_HOST'],'192.168') == false) {
 	define("PRODUCTION", TRUE); // TRUE => Site de Production ...
