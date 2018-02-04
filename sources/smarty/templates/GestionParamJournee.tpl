@@ -310,18 +310,16 @@
 					<table class='tableau2'>
 						<tr>
 							<th class='titreForm' colspan=2 width="100%">
-								<label>Appliquer ces paramètres sur les autres phases de la compétition</label>
+								<label>{#Appliquer_ces_parametres_sur_les_autres_phases#}</label>
 							</th>
 						</tr>
 						<tr>
 							<td colspan=2>
-								<b>Autres phases de la compétition {$J_competition} :</b>
+								<b>{#Autres_phases#} {$J_competition} :</b>
 								&nbsp;
 								<a href="#" onclick="setCheckboxes('formParamJournee', 'checkListJournees', true);return false;"><img hspace="2" width="21" height="19" src="../img/tous.gif" alt="Sélectionner tous" title="Sélectionner tous" border="0"></a>
 								&nbsp;
 								<a href="#" onclick="setCheckboxes('formParamJournee', 'checkListJournees', false);return false;"><img hspace="2" width="21" height="19" src="../img/aucun.gif" alt="Sélectionner aucun" title="Sélectionner aucun" border="0"></a>
-								<br>
-								<i>(sauf Phase et Niveau)</i>
 								<br>
 							</td>
 						</tr>
@@ -331,13 +329,13 @@
 									<input type="checkbox" name="checkListJournees" value="{$ListJournees[i].Id}"/>
 								</td>
 								<td>
-									N°{$ListJournees[i].Id} ({$ListJournees[i].Date_debut}) => {$ListJournees[i].Phase}
+									#{$ListJournees[i].Id} ({$ListJournees[i].Date_debut}) => {$ListJournees[i].Phase}
 								</td>
 							</tr>
 						{/section}
 						<tr>
 							<td colspan=2>
-								<input type="button" onclick="DuppliListJournees()" name="Duppliquer" value="Appliquer ces paramètres sur les phases sélectionnées" title="Enregistrer les nouveaux paramètres avant de les duppliquer !">
+								<input type="button" onclick="DuppliListJournees()" name="Duppliquer" value="{#Appliquer#}" title="{#Enregistrer_avant_appliquer#} !">
 								<hr>
 							</td>
 						</tr>
@@ -346,12 +344,12 @@
 					<table class='tableau2' width="100%">
 						<tr>
 							<th class='titreForm' colspan=2 width="100%">
-								<label>Ajuster les dates des matchs</label>
+								<label>{#Ajuster_les_dates_des_matchs#}</label>
 							</th>
 						</tr>
 						<tr>
 							<td colspan=2>
-								<input type="button" onclick="AjustDates();" name="Ajuster" value="Ajuster la date des matchs à la date de la journée">
+								<input type="button" onclick="AjustDates();" name="Ajuster" value="{#Ajuster_les_dates_des_matchs#}">
 							</td>
 						</tr>
 					</table>
