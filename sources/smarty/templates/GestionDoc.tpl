@@ -1,4 +1,4 @@
- 	 	&nbsp;(<a href="GestionCompetition.php">Retour</a>)
+ 	 	&nbsp;(<a href="GestionCompetition.php">{#Retour#}</a>)
 
 		<div class="main">
 			<form method="POST" action="GestionDoc.php" name="formDoc" id="formDoc" enctype="multipart/form-data">
@@ -9,14 +9,14 @@
 
 				<div class='blocLeft'>
 					<div class='titrePage'>Documents {$detailsCompet.Libelle}</div>
-					<label for="saisonTravail">Saison :</label>
+					<label for="saisonTravail">{#Saison#} :</label>
 					<select name="saisonTravail" onChange="submit()">
 						{section name=i loop=$arraySaison} 
-							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} (Travail){/if}</Option>
+							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} ({#Travail#}){/if}</Option>
 						{/section}
 					</select>
 					<br />
-					<label for="codeCompet">Compétition :</label>
+					<label for="codeCompet">{#Competition#} :</label>
 					<select name="codeCompet" onChange="submit();">
                         {section name=i loop=$arrayCompetition}
                             {assign var='options' value=$arrayCompetition[i].options}
@@ -34,70 +34,70 @@
 						<table class='tableauJQ tableauClassement tableau'>
 							<thead>
 								<tr>
-									<th>Catégorie</th>
-									<th>DOCUMENTS</th>
-									<th>Admin<br>(provisoire)</th>
-									<th>Public</th>
+									<th>{#Categorie#}</th>
+									<th>Documents</th>
+									<th>{#Provisoire#}</th>
+									<th>{#Public#}</th>
 								</tr>
 							</thead>
 							<tbody>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Equipes</td>
+										<td>{#Equipes#}</td>
 										<td>Liste Equipes par poule</td>
 										<td><a href="FeuilleGroups.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Equipes</td>
+										<td>{#Equipes#}</td>
 										<td>Feuilles de présence FR</td>
 										<td><a href="FeuillePresence.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Equipes</td>
+										<td>{#Equipes#}</td>
 										<td>Feuilles de présence EN</td>
 										<td><a href="FeuillePresenceEN.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Matchs</td>
+										<td>{#Matchs#}</td>
 										<td>Liste FR</td>
 										<td><a href="FeuilleListeMatchs.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfListeMatchs.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Matchs</td>
+										<td>{#Matchs#}</td>
 										<td>Liste EN</td>
 										<td><a href="FeuilleListeMatchsEN.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfListeMatchsEN.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Matchs</td>
+										<td>{#Matchs#}</td>
 										<td>Liste OpenOffice</td>
 										<td><a href="tableau_tbs.php" Target="_blank"><img height="22" src="../img/ods.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Matchs</td>
+										<td>{#Matchs#}</td>
 										<td>Feuilles de match</td>
 										<td><a href="FeuilleMatchMulti.php?listMatch={$listMatchs}" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfMatchMulti.php?listMatch={$listMatchs}" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 								{if $detailsCompet.Code_typeclt == 'CHPT'}
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Classements</td>
+										<td>{#Classements#}</td>
 										<td>Classement Général</td>
 										<td><a href="FeuilleCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Classements</td>
+										<td>{#Classements#}</td>
 										<td>Détail par équipe</td>
 										<td><a href="FeuilleCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Classements</td>
+										<td>{#Classements#}</td>
 										<td>Détail par journée</td>
 										<td><a href="FeuilleCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
@@ -110,13 +110,13 @@
 											<th>&nbsp;</th>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Classements</td>
+											<td>{#Classements#}</td>
 											<td>Classement Général</td>
 											<td><a href="FeuilleCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a href="../PdfCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Classements</td>
+											<td>{#Classements#}</td>
 											<td>Détail par phase</td>
 											<td><a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
@@ -128,7 +128,7 @@
 											<td><a href="../PdfCltNiveauNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>-->
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Classements</td>
+											<td>{#Classements#}</td>
 											<td>Détail par équipe</td>
 											<td><a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
@@ -136,25 +136,19 @@
 									{/if}
 								{else}
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Classements</td>
+										<td>{#Classements#}</td>
 										<td>Classement Général</td>
 										<td><a href="FeuilleCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfCltNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Classements</td>
+										<td>{#Classements#}</td>
 										<td>Détail par phase</td>
 										<td><a href="FeuilleCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfCltNiveauPhase.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
-									<!--<tr class='{cycle values="impair,pair"}'>
-										<td>Classements</td>
-										<td>Détail par niveau</td>
-										<td><a href="FeuilleCltNiveauNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
-										<td><a href="../PdfCltNiveauNiveau.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
-									</tr>-->
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Classements</td>
+										<td>{#Classements#}</td>
 										<td>Détail par équipe</td>
 										<td><a href="FeuilleCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
@@ -167,19 +161,19 @@
 											<th>&nbsp;</th>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Classements</td>
+											<td>{#Classements#}</td>
 											<td>Classement Général</td>
 											<td><a href="FeuilleCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a href="../PdfCltChpt.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Classements</td>
+											<td>{#Classements#}</td>
 											<td>Détail par équipe</td>
 											<td><a href="FeuilleCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a href="../PdfCltChptDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Classements</td>
+											<td>{#Classements#}</td>
 											<td>Détail par journée</td>
 											<td><a href="FeuilleCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
@@ -202,13 +196,13 @@
 										<thead>
 											<tr>
 												<th>&nbsp;</th>
-												<th>Evénement</th>
+												<th>{#Evenement#}</th>
 												<th>Admin</th>
 												<th>Public</th>
 											</tr>
 										</thead>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Evénement</td>
+											<td>{#Evenement#}</td>
 											<td>
 												<select name="evenement" id="evenement">
 													{section name=i loop=$arrayEvenement} 
@@ -220,13 +214,13 @@
 											<td></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Matchs</td>
+											<td>{#Matchs#}</td>
 											<td>Matchs de l'événement</td>
 											<td><a id="linkEvt1" href="FeuilleListeMatchs.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a id="linkEvt2" href="../PdfListeMatchs.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										</tr>
 										<tr class='{cycle values="impair,pair"}'>
-											<td>Matchs</td>
+											<td>{#Matchs#}</td>
 											<td>Matchs de l'événement EN</td>
 											<td><a id="linkEvt3" href="FeuilleListeMatchsEN.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 											<td><a id="linkEvt4" href="../PdfListeMatchsEN.php?idEvenement=" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
@@ -254,73 +248,58 @@
 							</thead>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Meilleurs buteurs</td>
+										<td>{#Meilleur_buteur#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Buteurs" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Buteurs" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Meilleure attaque</td>
+										<td>{#Meilleure_attaque#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Attaque" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Attaque" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Meilleure défense</td>
+										<td>{#Meilleure_defense#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Defense" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Defense" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Cartons</td>
+										<td>{#Cartons#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Cartons" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Cartons" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Cartons par équipe</td>
+										<td>{#Cartons_par_equipe#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CartonsEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CartonsEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Classement disciplinaire individuel</td>
+										<td>{#Classement_disciplinaire_individuel#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Fairplay" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Fairplay" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Classement disciplinaire par équipe</td>
+										<td>{#Classement_disciplinaire_par_equipe#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=FairplayEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=FairplayEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Arbitrages individuels</td>
+										<td>{#Arbitrage#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Arbitrage" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=Arbitrage" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td>Stats</td>
-										<td>Arbitrages par équipe</td>
+										<td>{#Arbitrage_par_equipe#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=ArbitrageEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=ArbitrageEquipe" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
-									<!--<tr class='{cycle values="impair,pair"}'>
-										<td>Stats</td>
-										<td>Joueurs catégorie <select id="Cat" name="Cat">
-												<option>Sélectionner</option>
-												<Option Value="MIN">Minime</Option>
-												<Option Value="CAD">Cadet</Option>
-												<Option Value="JUN">Junior</Option>
-												<Option Value="SEN">Senior</Option>
-												<Option Value="V1">Vétéran 1</Option>
-												<Option Value="V2">Vétéran 2</Option>
-												<Option Value="V3">Vétéran 3</Option>
-											</select> (matchs joués)</td>
-										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees4" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
-										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees4" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
-									</tr>-->
 							<thead>
 								<tr>
 									<th>&nbsp;</th>
@@ -330,37 +309,37 @@
 								</tr>
 							</thead>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Contrôle</td>
+										<td>{#Controle#}</td>
 										<td>Feuilles de présence par catégorie</td>
 										<td><a href="FeuillePresenceCat.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Contrôle</td>
-										<td>Matchs joués par club</td>
+										<td>{#Controle#}</td>
+										<td>{#Competitions_jouees_par_club#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Contrôle</td>
-										<td>Matchs joués par équipe</td>
+										<td>{#Controle#}</td>
+										<td>{#Competitions_jouees_par_equipe#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Contrôle</td>
-										<td>Irrégularités à contrôler (matchs joués)</td>
+										<td>{#Controle#}</td>
+										<td>{#Irregularites#} ({#Matchs_verrouilles#})</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td class='drag'>Contrôle</td>
+										<td class='drag'>{#Controle#}</td>
 										<td>Matchs joués Championnat de France</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesN" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>Contrôle</td>
+										<td>{#Controle#}</td>
 										<td>Matchs joués Coupe de France</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesCF" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td></td>
