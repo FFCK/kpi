@@ -1,3 +1,10 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+</IfModule>
+
+
 # BEGIN iThemes Security - Ne pas modifier ou supprimer cette ligne
 # iThemes Security Config Details: 2
 	# Activer les fonctionnalités de la liste noire de HackRepair.com - Sécurité > Réglages > Utilisateurs bannis > Liste noire par défaut
