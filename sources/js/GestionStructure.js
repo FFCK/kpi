@@ -15,7 +15,7 @@ jq = jQuery.noConflict();
 	// A function to create the marker and set up the event window
 	function createMarker2(point,name,html,web,mail,point2,post,logo) { // Markeur de club
 		var icon = new GIcon(G_DEFAULT_ICON);
-		icon.image = "http://www.kayak-polo.info/img/ffck_mappoint.png";
+		icon.image = "https://www.kayak-polo.info/img/ffck_mappoint.png";
 
 		var cor = new String(point);
 		var coor = cor.substring(1,cor.indexOf(')',1));
@@ -74,7 +74,7 @@ jq = jQuery.noConflict();
 	
     function createMarker(point,html) { //Markeur du géocodeur
 		var icon = new GIcon(G_DEFAULT_ICON);
-		icon.image = "http://www.kayak-polo.info/img/ffck_mappoint2.png";
+		icon.image = "https://www.kayak-polo.info/img/ffck_mappoint2.png";
 
 		var options = {
 		icon: icon,

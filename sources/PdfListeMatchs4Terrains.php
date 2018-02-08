@@ -154,7 +154,7 @@ class PdfListeMatchs extends MyPage
 		$pdf->SetTopMargin(30);
 
 		// QRCode
-		$qrcode = new QRcode('http://www.kayak-polo.info/Journee.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
+		$qrcode = new QRcode('https://www.kayak-polo.info/Journee.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
 		$qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
@@ -214,7 +214,7 @@ class PdfListeMatchs extends MyPage
             $pdf->AddPage();
             if($arrayCompetition['Kpi_ffck_actif'] == 'O')
             {
-                $pdf->Image('css/banniere1.jpg',10,8,72,15,'jpg',"http://www.kayak-polo.info");
+                $pdf->Image('css/banniere1.jpg',10,8,72,15,'jpg',"https://www.kayak-polo.info");
                 $pdf->Image('img/ffck2.jpg',252,8,0,15,'jpg',"http://www.ffck.org");
             }
             if($arrayCompetition['Logo_actif'] == 'O' && $logo != '')  //&& file_exists($logo)

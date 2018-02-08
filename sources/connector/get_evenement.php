@@ -1,7 +1,7 @@
 <?php	
 
 // Exemple : http://localhost/connector/get_evenement.php?lst=2,5
-//           http://kayak-polo.info/connector/get_evenement.php?lst=2,5
+//           https://kayak-polo.info/connector/get_evenement.php?lst=2,5
 
 include_once('../commun/MyConfig.php');
 include_once('../commun/MyBdd.php');

@@ -508,7 +508,7 @@ class GestionUtilisateur extends MyPageSecure
 			else
 				$message_texte .= 'est inchangé';
 			$message_texte .= "\n".'Vos fonctions : '.$gfonction; 
-			$message_texte .= "\n\n".'Connectez-vous sur http://www.kayak-polo.info onglet Administration.'; 
+			$message_texte .= "\n\n".'Connectez-vous sur https://www.kayak-polo.info onglet Administration.'; 
 			$message_texte .= "\n".'Lors de votre prochaine connexion, n\'oubliez pas de changer votre mot de passe en cliquant sur Mes Paramètres.'; 
 			if($message_complementaire != '')
 				$message_texte .= "\n\n".$message_complementaire;
@@ -532,7 +532,7 @@ class GestionUtilisateur extends MyPageSecure
 				$message_html .= 'est inchangé';
 			$message_html .= '<br>
 					Vos fonctions : '.$gfonction.'</p>
-					<p>Connectez-vous sur http://www.kayak-polo.info onglet <b>Administration</b>.<br>
+					<p>Connectez-vous sur https://www.kayak-polo.info onglet <b>Administration</b>.<br>
 					Par mesure de sécurité, n\'oubliez pas de changer régulièrement votre mot de passe en cliquant sur <b>Mes Paramètres</b>.</p>
 					<p>A bientôt.</p>
 					<p>Laurent,<br>Administrateur</p>			 

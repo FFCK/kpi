@@ -506,12 +506,12 @@ class FeuilleMatch extends MyPage {
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                 // KPI + Logo    
             } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-                $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 11, 'jpg', "http://www.kayak-polo.info");
+                $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                 // KPI
             } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-                $pdf->Image('img/logoKPI-small.jpg', 65, 10, 0, 11, 'jpg', "http://www.kayak-polo.info");
+                $pdf->Image('img/logoKPI-small.jpg', 65, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
                 // Logo
             } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'C');

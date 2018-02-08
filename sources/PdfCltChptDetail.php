@@ -60,12 +60,12 @@ class FeuilleCltNiveau extends MyPage
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI + Logo    
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 16, 'jpg', "http://www.kayak-polo.info");
+            $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 210, 10, 16, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('img/logoKPI-small.jpg', 84, 10, 0, 16, 'jpg', "http://www.kayak-polo.info");
+            $pdf->Image('img/logoKPI-small.jpg', 84, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
             // Logo
         } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 210, 10, 16, 'C');
@@ -78,7 +78,7 @@ class FeuilleCltNiveau extends MyPage
         }
 
         // QRCode
-		$qrcode = new QRcode('http://www.kayak-polo.info/Classements.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
+		$qrcode = new QRcode('https://www.kayak-polo.info/Classements.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
 		$qrcode->displayFPDF($pdf, 177, 240, 24);
 

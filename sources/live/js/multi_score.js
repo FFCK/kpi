@@ -265,7 +265,7 @@ function ParseCacheMultiPitch(jsonTxt)
 	{
 		var rowMatch = jsonData.pitch-1;
 		theContext.Match.SetId(rowMatch,jsonData.id_match);
-		$('#lien_pdf_'+(rowMatch+1).toString()).html("<a target='_blank' href='http://www.kayak-polo.info/PdfMatchMulti.php?listMatch="+jsonData.id_match+"'>Lien vers la Feuille de Match</a>");
+		$('#lien_pdf_'+(rowMatch+1).toString()).html("<a target='_blank' href='https://www.kayak-polo.info/PdfMatchMulti.php?listMatch="+jsonData.id_match+"'>Lien vers la Feuille de Match</a>");
 	}
 }
 
