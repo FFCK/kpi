@@ -45,7 +45,7 @@
     //Charge le script google maps API et lance la fonction initialiser()
     function loadScript() {
         var script = document.createElement("script");
-        script.src = "http://maps.googleapis.com/maps/api/js?sensor=false&callback=initialiser";
+        script.src = "https://maps.googleapis.com/maps/api/js?sensor=false&callback=initialiser";
         document.body.appendChild(script);
     }
     window.onload = loadScript;
