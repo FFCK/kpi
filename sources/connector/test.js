@@ -55,7 +55,7 @@ function OnImport2()
 	var lstEvt = $('#lstEvent').attr('value');
 
     alert('OnImport2 : '+lstEvt);
-    getRemoteData('http://kayak-polo.info/connector/get_evenement.php?lst='+lstEvt);
+    getRemoteData('https://kayak-polo.info/connector/get_evenement.php?lst='+lstEvt);
 }
 
 function OnImportServer()
@@ -96,11 +96,11 @@ function Init()
 	var href = window.location.href;
 /*
 	if (href.indexOf('localhost') >= 0)
-		$('#urlOrigine').attr('value', "http://kayak-polo.info/connector/get_evenement.php");
+		$('#urlOrigine').attr('value', "https://kayak-polo.info/connector/get_evenement.php");
 	else
 		$('#urlOrigine').attr('value', "http://localhost/connector/get_evenement.php");
 */
-	$('#urlOrigine').attr('value', "http://kayak-polo.info/connector/get_evenement.php");
+	$('#urlOrigine').attr('value', "https://kayak-polo.info/connector/get_evenement.php");
 	$('#lstEvent').attr('value', "2,5");
 	
 	if (href.indexOf('kayak-polo.info') >= 0)

@@ -145,7 +145,7 @@ class MyPage
 		}
 			
         // Langues
-		// $smarty->config_dir = 'http://kayak-polo.info/commun/';
+		// $smarty->config_dir = 'https://kayak-polo.info/commun/';
 		$lang = utyGetSession('lang', 'fr');
 		$lang = utyGetGet('lang', $lang);
 		$_SESSION['lang'] = $lang;

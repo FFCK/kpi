@@ -17,7 +17,7 @@ $pdf->SetAuthor("Poloweb.org");
 $pdf->SetCreator("Poloweb.org avec FPDF");
 $pdf->AddPage();
 $pdf->SetAutoPageBreak(true, 1);
-$pdf->Image('../css/banniere1.jpg',10,8,38,8,'jpg',"http://www.kayak-polo.info");
+$pdf->Image('../css/banniere1.jpg',10,8,38,8,'jpg',"https://www.kayak-polo.info");
 $pdf->Image('../css/logo_ffck4.png',130,8,13,8,'png',"http://www.ffck.org");
 $pdf->Ln(7);
 
@@ -26,7 +26,7 @@ $equipeA=utyGetPDF('equipea');
 $equipeB=utyGetPDF('equipeb');
 
 $pdf->SetSubject("Match ".$equipeA."/".$equipeB);
-$pdf->SetKeywords("kayak-Polo, match, canoë, kayak, ".$equipeA.", ".$equipeB);
+$pdf->SetKeywords("kayak-Polo, match, canoï¿½, kayak, ".$equipeA.", ".$equipeB);
 //Colonne 1
 
 $pdf->SetFillColor(200,200,200);
@@ -34,29 +34,29 @@ $pdf->SetFont('Arial','B',14);
 $pdf->Cell(135,6,"FEUILLE DE MARQUE",'1','1','C');
 
 $pdf->SetFont('Arial','I',8);
-$pdf->Cell(135,4,"A remplir par le secrétariat avant le début de match",'LR','1','C');
+$pdf->Cell(135,4,"A remplir par le secrï¿½tariat avant le dï¿½but de match",'LR','1','C');
 $pdf->Cell(135,2,"",'LR','1','C');
 
 $pdf->SetFont('Arial','',10);
-$pdf->Cell(100,4,"Compétition : ".utyGetPDF('competition'),'L','0','L');
+$pdf->Cell(100,4,"Compï¿½tition : ".utyGetPDF('competition'),'L','0','L');
 $pdf->Cell(35,4,utyGetPDF('categorie'),'R','1','R');
 
 $pdf->Cell(110,4,"Organisateur : ".ucwords(strtolower(utyGetPDF('organisateur'))),'L','0','L');
 $pdf->Cell(25,4,"Saison : ".utyGetPDF('saison'),'R','1','L');
 
 $pdf->Cell(68,4,"R1 : ".ucwords(strtolower(utyGetPDF('responsable'))),'L','0','L');
-$pdf->Cell(67,4,"Délégué : ".ucwords(strtolower(utyGetPDF('delegue'))),'R','1','L');
+$pdf->Cell(67,4,"Dï¿½lï¿½guï¿½ : ".ucwords(strtolower(utyGetPDF('delegue'))),'R','1','L');
 
 $pdf->Cell(135,1,"",'LR','1','C');
 $pdf->Cell(135,1,"",'LTR','1','C',1);
 $pdf->Cell(60,4,"Lieu : ".utyGetPDF('lieu'),'L','0','L',1);
 $pdf->Cell(25,4,"Le  ".utyGetPDF('date'),'0','0','L',1);
-$pdf->Cell(20,4," à  ".utyGetPDF('heure'),'0','0','L',1);
+$pdf->Cell(20,4," ï¿½  ".utyGetPDF('heure'),'0','0','L',1);
 $pdf->Cell(30,4,"Terrain : ".utyGetPDF('terrain'),'R','1','L',1);
 
 $pdf->Cell(60,4,"Phase : ".utyGetPDF('phase'),'L','0','L',1);
 $pdf->SetFont('Arial','B',10);
-$pdf->Cell(25,4,"Match n° ".utyGetPDF('no'),'0','0','L',1);
+$pdf->Cell(25,4,"Match nï¿½ ".utyGetPDF('no'),'0','0','L',1);
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(50,4,utyGetPDF('intitule'),'R','1','C',1);
 
@@ -70,8 +70,8 @@ if (utyGetPDF('secondaire') == '-1')
 	$secondaire = '';
 	else $secondaire = utyGetPDF('secondaire');
 $pdf->Cell(135,4,"Arbitre secondaire : ".utyGetPDF('secondaire'),'LR','1','L');
-$pdf->Cell(68,4,"Secrétaire : ".utyGetPDF('secretaire'),'L','0','L');
-$pdf->Cell(67,4,"Chronomètre : ".utyGetPDF('chrono'),'R','1','L');
+$pdf->Cell(68,4,"Secrï¿½taire : ".utyGetPDF('secretaire'),'L','0','L');
+$pdf->Cell(67,4,"Chronomï¿½tre : ".utyGetPDF('chrono'),'R','1','L');
 $pdf->Cell(135,1,"",'LBR','1','C');
 
 //Equipe A
@@ -83,9 +83,9 @@ $pdf->SetFont('Arial','B',14);
 $pdf->Cell(90,5,$equipeA,'TRB','1','C',1);
 $pdf->SetFont('Arial','',10);
 
-$pdf->Cell(6,6,"N°",'1','0','C');
+$pdf->Cell(6,6,"Nï¿½",'1','0','C');
 $pdf->Cell(45,6,"Nom",'1','0','C');
-$pdf->Cell(45,6,"Prénom",'1','0','C');
+$pdf->Cell(45,6,"Prï¿½nom",'1','0','C');
 $pdf->Cell(24,6,"Licence",'1','0','C');
 $pdf->Cell(15,6,"Cat.",'1','1','C');
 
@@ -170,9 +170,9 @@ $pdf->SetFont('Arial','B',14);
 $pdf->Cell(90,5,$equipeB,'TRB','1','C',1);
 $pdf->SetFont('Arial','',10);
 
-$pdf->Cell(6,6,"N°",'1','0','C');
+$pdf->Cell(6,6,"Nï¿½",'1','0','C');
 $pdf->Cell(45,6,"Nom",'1','0','C');
-$pdf->Cell(45,6,"Prénom",'1','0','C');
+$pdf->Cell(45,6,"Prï¿½nom",'1','0','C');
 $pdf->Cell(24,6,"Licence",'1','0','C');
 $pdf->Cell(15,6,"Cat",'1','1','C');
 
@@ -283,8 +283,8 @@ $pdf->SetFont('Arial','B',11);
 $pdf->Cell(45,6,$equipeB,'TRB',1,'C',1);
 
 $pdf->SetFont('Arial','',10);
-//$pdf->Cell(5,5,"N°",'1','0','C');
-$pdf->Cell(36,5,"N° - Nom",1,0,'C');
+//$pdf->Cell(5,5,"Nï¿½",'1','0','C');
+$pdf->Cell(36,5,"Nï¿½ - Nom",1,0,'C');
 $pdf->SetFillColor(170,255,170);
 $pdf->Cell(5,5,"V",1,0,'C',1);
 $pdf->SetFillColor(255,255,170);
@@ -302,8 +302,8 @@ $pdf->SetFillColor(255,255,170);
 $pdf->Cell(5,5,"J",1,0,'C',1);
 $pdf->SetFillColor(255,170,170);
 $pdf->Cell(5,5,"R",1,0,'C',1);
-//$pdf->Cell(5,5,"N°",'1','0','C');
-$pdf->Cell(36,5,"N° - Nom",1,1,'C');
+//$pdf->Cell(5,5,"Nï¿½",'1','0','C');
+$pdf->Cell(36,5,"Nï¿½ - Nom",1,1,'C');
 
 for($i=0;$i<24;$i++)
 	{
@@ -350,8 +350,8 @@ $pdf->SetLineWidth(0.2);
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(135,4,"Remarques / incidents / retards (rapport au dos si besoin)*",'LRT',1,'L');
 $pdf->SetFont('Arial','',7);
-//$pdf->Cell(135,3,"Si aucune observation n'est formulée,",'LR','1','L');
-$pdf->Cell(135,3,"A défaut, barrer la case et porter la mention R.A.S.",'LR','1','L');
+//$pdf->Cell(135,3,"Si aucune observation n'est formulï¿½e,",'LR','1','L');
+$pdf->Cell(135,3,"A dï¿½faut, barrer la case et porter la mention R.A.S.",'LR','1','L');
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(135,22,"",'LRB',1,'L');
 
@@ -362,17 +362,17 @@ $pdf->Cell(21,12,"Signatures",'LRT','0','C');
 $pdf->Cell(38,12,"",'1','0','C');
 $pdf->Cell(38,12,"",'1','0','C');
 $pdf->Cell(38,12,"",'1','1','C');
-$pdf->Cell(21,4,"après match",'LRB','0','C');
+$pdf->Cell(21,4,"aprï¿½s match",'LRB','0','C');
 $pdf->Cell(38,4,"Capitaine A",'1','0','C');
 $pdf->Cell(38,4,"Capitaine B",'1','0','C');
 $pdf->Cell(38,4,"Arbitre Principal",'1','1','C');
 
 $pdf->SetX(10);
 $pdf->SetFont('Arial','',7);
-$pdf->Cell(177,3,"* Tout rapport ou observation doit être manuscrit et signé par le demandeur et contre-signé par l'arbitre.",'0','1','L');
+$pdf->Cell(177,3,"* Tout rapport ou observation doit ï¿½tre manuscrit et signï¿½ par le demandeur et contre-signï¿½ par l'arbitre.",'0','1','L');
 $pdf->SetX(10);
-$pdf->Cell(177,3,"La feuille doit être renvoyée au plus tard dans les 5 jours à l'autorité compétente.",'0','0','L');
-$pdf->Cell(98,3,"Edité le ".date("d/m/Y")." à ".date("H:i"),'0','1','R');
+$pdf->Cell(177,3,"La feuille doit ï¿½tre renvoyï¿½e au plus tard dans les 5 jours ï¿½ l'autoritï¿½ compï¿½tente.",'0','0','L');
+$pdf->Cell(98,3,"Editï¿½ le ".date("d/m/Y")." ï¿½ ".date("H:i"),'0','1','R');
 
 $pdf->Output();
 

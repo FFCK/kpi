@@ -3,7 +3,7 @@ include_once('base.php');
 include_once('create_cache_match.php');
 
 // Exemple 
-// http://www.kayak-polo.info/live/ajax_cache_event.php?id_event=86&date_event=2017-08-24&hour_event=&offset_event=10&pitch_event=&delay_event=10
+// https://www.kayak-polo.info/live/ajax_cache_event.php?id_event=86&date_event=2017-08-24&hour_event=&offset_event=10&pitch_event=&delay_event=10
 
 $idEvent = $_GET['id_event'];
 $dateEvent = $_GET['date_event'];
@@ -22,4 +22,3 @@ $cache = new CacheMatch($_GET);
 $cache->Event($db, $idEvent, $dateEvent, $hourEventWork);
 		
 echo "Heure = $hourEvent, Heure Travail = $hourEventWork";
-?>
