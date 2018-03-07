@@ -37,23 +37,44 @@
 			<script language="JavaScript" type="text/javascript" src="../js/{$contenutemplate}.js"></script>
 		{/if}
 		{literal}
-			<script language="JavaScript" type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAWonor80iC2LsJ4C5x7MJsBRfQyOgPKrZ8po1VXyQgkC373NrwRQugr1dZEkzcuIqpSAIryIaw67HyQ"></script>
+			<!--<script language="JavaScript" type="text/javascript" src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAWonor80iC2LsJ4C5x7MJsBRfQyOgPKrZ8po1VXyQgkC373NrwRQugr1dZEkzcuIqpSAIryIaw67HyQ"></script>
 			<script language="JavaScript" type="text/javascript">
 				function loadparam() {
 					if (GBrowserIsCompatible()) {
-						{/literal}{$mapParam}{literal}
+						{/literal}{*{$mapParam}*}{literal}
 					}
 				}
-			</script>
+			</script>-->
+
 		{/literal}
 
-		<title>{$title}</title>
+		<title>{$smarty.config.$title|default:$title}</title>
 	</head>	  
-	<body onload="testframe(); load(); loadparam(); alertMsg('{$AlertMessage}')" onunload="GUnload()">
+	<body onload="testframe(); alertMsg('{$AlertMessage}')">
 		{include file='header.tpl'}
 		{include file='main_menu.tpl'} 
 		{include file="$contenutemplate.tpl"}
 		{include file='footer.tpl'}
+        {literal}
+        <script>
+            function initMap() {
+                geocoder = new google.maps.Geocoder();
+                var france = {lat: 46.85, lng: 1.75};
+                carte = new google.maps.Map(document.getElementById('map_canvas'), {
+                    zoom: 5,
+                    center: france
+                });
+                {/literal}{$mapParam}{literal}
+                //var marker = new google.maps.Marker({
+                //    position: france,
+                //    map: map
+                //});
+            }
+        </script>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwl3x6Qni1JEghMNAK-PGnmyk0kj-V0ws&callback=initMap">
+        </script>
+        {/literal}
 	</body>
 </html>
 

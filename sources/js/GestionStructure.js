@@ -50,13 +50,41 @@ jq = jQuery.noConflict();
 		return marker;
 	}
 
+    // géocodage
+    function codeAddress() {
+        var address = document.getElementById('address').value;
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                carte.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: carte,
+                    position: results[0].geometry.location,
+
+                });
+                carte.setZoom(9);
+                var infoWindow = new google.maps.InfoWindow();
+                infoWindow.setContent('<i>' + address + '</i>'
+                        + '<br><br>' 
+                        + results[0].formatted_address
+                        + '<br>'
+                        + results[0].geometry.location
+                        );
+                infoWindow.open(carte, marker);
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
+
 	// Sélection d'un club, affichage de sa fenêtre et remplissage du formulaire
-	function handleSelected() {
+	function handleSelected($markerClick = true) {
 		var club = document.forms['formStructure'].elements['club'].value;
 		if (club == "") {
-			map.closeInfoWindow();
-		} else if (gmarkers[club]) {
-			GEvent.trigger(gmarkers[club],"click");
+			infowindow.close();
+		} else if (markers[club]) {
+            if($markerClick) {
+                google.maps.event.trigger(markers[club],"click");
+            }
 			document.forms['formStructure'].elements['coord'].value = coord[club];
 			document.forms['formStructure'].elements['coord2'].value = coord2[club];
 			document.forms['formStructure'].elements['postal'].value = postal[club];
@@ -68,7 +96,7 @@ jq = jQuery.noConflict();
 			document.forms['formStructure'].elements['postal'].value = '';
 			document.forms['formStructure'].elements['www'].value = '';
 			document.forms['formStructure'].elements['email'].value = '';
-			map.closeInfoWindow();
+			infowindow.close();
 		}
 	}
 	
