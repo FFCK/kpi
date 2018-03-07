@@ -12,7 +12,7 @@
                 <br>
             {section name=i loop=$arrayLogos}
                 <div class="col-md-1 col-sm-2 col-xs-3">
-                    <a href="http://www.kayak-polo.info/kpclubs.php?clubId={$arrayLogos[i]}">
+                    <a href="https://www.kayak-polo.info/kpclubs.php?clubId={$arrayLogos[i]}">
                         <img class="img2" src="img/KIP/logo/{$arrayLogos[i]}-logo.png" alt="{$arrayLogos[i]}" />
                     </a>
                 </div>

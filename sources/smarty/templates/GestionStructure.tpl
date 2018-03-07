@@ -1,15 +1,19 @@
-		&nbsp;(<a href="GestionEquipe.php">Retour</a>)
+		&nbsp;(<a href="GestionEquipe.php">{#Retour#}</a>)
 		<div class="main">
 	
 			<div class='blocLeft Left2'>
-				<div class='titrePage'>Structures pratiquant le kayak-polo</div>
+				<div class='titrePage'>{#Structures_pratiquant_le_kayakpolo#}</div>
 				<br>
 				<div class='blocMap'>
 					<div id="map_canvas" style="width: 620px; height: 550px"></div>
 					<form name="formGeocode" onsubmit="return geocode(this.address.value);" enctype="multipart/form-data">
-						Adresse : <input type="text" size="70" name="address" value="Adresse, Ville, Pays" onclick="this.value=''" />
-						<input type="submit" value="Localiser" />
-						{if $profile > 3}
+						<input type="text" size="50" name="address" id="address" placeholder="{#Adresse_Ville_Pays#}" />
+						<input type="button" value="{#Localiser#}" onclick="codeAddress();" />
+						{if $lang == 'en'}
+							<br><br>If your club is not on the map, send coordinates
+							<br>(postal address, e-mail, website, GPS coordinates, logo)
+							<br>to laurent@poloweb.org.
+                        {else}
 							<br><br>Si votre club n'apparait pas sur la carte, transmettez ses coordonnées
 							<br>(adresse postale, email, site internet, coordonnées GPS, logo)
 							<br>à l'adresse laurent@poloweb.org.
@@ -27,14 +31,14 @@
 					<table width=100%>
 						<tr>
 							<th class='titreForm'>
-								<label>Géolocaliser les structures</label>
+								<label>{#Localiser#} {#stuctures#}</label>
 							</th>
 						</tr>
 						<tr>
 							<td>
-								<label for="club">Club pratiquant le kayak-polo : </label>				    
+								<label for="club">Club: </label>				    
 								<select name="club" id="club" onChange="handleSelected();">
-										<Option Value="">Sélectionner le Club...</Option>
+                                    <Option Value="">{#Selectionnez#}...</Option>
 									{section name=i loop=$arrayClub} 
 										<Option Value="{$arrayClub[i].Code}" {$arrayClub[i].Selected}>{$arrayClub[i].Libelle}</Option>
 									{/section}
@@ -43,25 +47,25 @@
 						</tr>
 						<tr>
 							<td>
-								<label for="postal">Adresse postale :<br>(ex: 27 rue du Bout du Monde - 99000 La Fin)</label>
+								<label for="postal">{#Adresse_postale#} :<br>(ex: 27 rue du Bout du Monde - 99000 La Fin)</label>
 								<input type="text" name="postal" maxlength=100 id="postal"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for="www">Adresse Internet :<br>(ex: http://www.monsite.fr)</label>
+								<label for="www">{#Site_internet#} :<br>(ex: http://www.monsite.fr)</label>
 								<input type="text" name="www" maxlength=60 id="www"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-                                <label for="email">Adresse email :<br>(éviter si possible les adresses personnelles)</label>
+                                <label for="email">{#Adresse_email#} :<br>(éviter si possible les adresses personnelles)</label>
 								<input type="text" name="email" maxlength=40 id="email"/>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for="coord">Coordonnées géographiques lat,long<br>(ex : 48.856614, 2.3522219)</label>
+								<label for="coord">{#Coordonnees_geographiques#} lat,long<br>(ex : 48.856614, 2.3522219)</label>
 								<input type="text" name="coord" maxlength=60 id="coord"/>
 								<input type="hidden" name="coord2" maxlength=60 id="coord2"/>
 							</td>
@@ -76,7 +80,7 @@
 						<tr>
 							<td>
 								<br>
-								<input type="button" onclick="UpdatClub();" name="UpdateClub" value="Mise à jour">
+								<input type="button" onclick="UpdatClub();" name="UpdateClub" value="{#MAJ#}">
 							</td>
 						</tr>
 					</table>

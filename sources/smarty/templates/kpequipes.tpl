@@ -10,6 +10,8 @@
                     <a class="btn btn-xs btn-default" href='kpclubs.php?clubId={$Code_club}' title='{#Club#}'>
                         {$Club}
                     </a>
+                    <div id="fb-root"></div>
+                    <div class="fb-like" data-href="https://www.kayak-polo.info/kpequipes.php?Equipe={$equipeId}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                 </div>
             </div>
         </div>
@@ -27,7 +29,8 @@
     <article class="col-md-6 padTopBottom" id="equipePalmares">        
         {if $eTeam}
             <div class="col-sm-12" id="equipeTeam">
-                <a href="{$eTeam}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eTeam}" alt="{$nomEquipe}"></a>
+                <a href="{$eTeam}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eTeam}" alt="{$nomEquipe}" title="{$nomEquipe}"></a>
+                <span class="pull-right badge">{$eSeason}</span>
             </div>
         {/if}
             <h3 class="col-sm-12">{#Palmares#}:</h3>

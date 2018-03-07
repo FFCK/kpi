@@ -41,7 +41,7 @@
             {else}
                 <a class="btn btn-default" href='kpdetails.php?Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&typ=CP'>{#Infos#}</a>
             {/if}
-            <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpstats.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
+            <a class="btn btn-default" title="{#Partager#}" data-link="https://www.kayak-polo.info/kpstats.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
             <a class="btn btn-default" href='kpclassement.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Deroulement#}...</a>
         </div>
         <h4>{#Meilleurs_buteurs#}</h4>
