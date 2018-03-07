@@ -12,7 +12,7 @@
 			piwikTracker.trackPageView();
 			piwikTracker.enableLinkTracking();
 			} catch( err ) {}
-			</script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+			</script><noscript><p><img src="https://www.poloweb.org/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
 		<!-- End Piwik Tracking Code -->
 	{/literal}
 {else}
@@ -27,12 +27,12 @@
 			piwikTracker.trackPageView();
 			piwikTracker.enableLinkTracking();
 			} catch( err ) {}
-			</script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
+			</script><noscript><p><img src="https://www.poloweb.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
 		<!-- End Piwik Tracking Code -->
 	{/literal}
 {/if}
 <center>
-	<img width="180" border="none" src="http://www.kayak-polo.info/wordpress/wp-content/uploads/2013/06/THURY2014_Logo-FR-300x136.png">
+	<img width="180" border="none" src="https://www.kayak-polo.info/wordpress/wp-content/uploads/2013/06/THURY2014_Logo-FR-300x136.png">
 </center>
 </div>
 
