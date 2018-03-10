@@ -65,22 +65,22 @@ class GestionAthlete extends MyPageSecure
 				switch ($row['Arb'])
 				{
 					case 'Int':
-						$row['Arb']='Arbitre INTERNATIONAL';
+						$row['Arb']='INTERNATIONAL';
 						break;
 					case 'Nat':
-						$row['Arb']='Arbitre NATIONAL';
+						$row['Arb']='NATIONAL';
 						break;
 					case 'Reg':
-						$row['Arb']='Arbitre REGIONAL';
+						$row['Arb']='REGIONAL';
 						break;
 					case 'OTM':
-						$row['Arb']='Officiel table de marque';
+						$_SESSION['lang'] == 'en' ? $row['Arb'] = 'Game official' : $row['Arb'] = 'Officiel table de marque';
 						break;
 					case 'JO':
-						$row['Arb']='Jeune officiel';
+						$_SESSION['lang']== 'en' ? $row['Arb'] = 'Young official' : $row['Arb'] = 'Jeune officiel';
 						break;
 					default :
-						$row['Arb']='Néant';
+						$row['Arb']='-';
 						break;
 				}
 				$this->m_tpl->assign('Arbitre', $row);
@@ -316,7 +316,7 @@ class GestionAthlete extends MyPageSecure
 			}
 		}
 	
-		$this->SetTemplate("Statistiques athlètes", "Athlètes", false);
+		$this->SetTemplate("Statistiques_athlete", "Athletes", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		
