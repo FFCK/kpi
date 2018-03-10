@@ -513,6 +513,22 @@
 					<br>
 					<br>
 					<hr>
+					{if $profile == 1}
+                        <div align='center' class='rouge'><i>Profil 1</i></div>
+                        <table width="100%">
+                            <tr>
+                                <th class='titreForm' colspan=2>
+                                    <label>{#Gestion_des_groupes#}</label>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colspan=2>
+                                    <a href="GestionGroupe.php">{#Gestion_des_groupes#}</a>
+                                </td>
+                            </tr>
+                        </table>
+                        
+					{/if}
 					<div align='center' class='rouge'><i>Profils 1 - 2</i></div>
 					<table width="100%">
 						<tr>
