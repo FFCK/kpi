@@ -60,10 +60,6 @@
                     center: france
                 });
                 {/literal}{$mapParam}{literal}
-                //var marker = new google.maps.Marker({
-                //    position: france,
-                //    map: map
-                //});
             }
         </script>
         <script async defer

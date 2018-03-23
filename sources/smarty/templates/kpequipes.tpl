@@ -3,7 +3,7 @@
         <div class="form-horizontal">
             <label class="col-sm-2">{#Chercher#}:</label>
             <input class="col-sm-6" type="text" id="rechercheEquipe" placeholder="{#Nom_de_l_equipe#}">
-            <input class="col-sm-2" type="hidden" id="equipeId" value="{$equipeId}">
+            <input class="col-sm-2" type="hidden" id="equipeId" value="{$Equipe}">
             <h2 class="col-sm-12 text-center" id="nomEquipe">{$nomEquipe}</h2>
             <div class="form-group">
                 <div class="col-sm-12 text-center" id="nomClub">
@@ -11,7 +11,7 @@
                         {$Club}
                     </a>
                     <div id="fb-root"></div>
-                    <div class="fb-like" data-href="https://www.kayak-polo.info/kpequipes.php?Equipe={$equipeId}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
+                    <div class="fb-like" data-href="https://www.kayak-polo.info/kpequipes.php?Equipe={$Equipe}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                 </div>
             </div>
         </div>
