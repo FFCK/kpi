@@ -15,7 +15,7 @@ class Equipes extends MyPage
         $Code_club = 0;
         $Club =  '';
 
-		$Equipe = utyGetSession('Equipe', 0);
+		$Equipe = utyGetSession('Equipe', 1);
 		$Equipe = utyGetPost('Equipe', $Equipe);
 		$Equipe = utyGetGet('Equipe', $Equipe);
 		$this->m_tpl->assign('Equipe', $Equipe);
