@@ -1,5 +1,9 @@
 <?php
-include_once('base.php');
+//include_once('base.php');
+include_once('../commun/MyParams.php');
+include_once('../commun/MyTools.php');
+include_once('../commun/MyBdd.php');
+
 include_once('page.php');
 	
 class TV extends MyPage
@@ -134,7 +138,7 @@ class TV extends MyPage
 
 	function Content_List_Team()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -214,7 +218,7 @@ class TV extends MyPage
 
 	function Content_List_Medals()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$competition = $this->GetParam('competition');
 
@@ -264,7 +268,7 @@ class TV extends MyPage
 
 	function Content_Player()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -320,7 +324,7 @@ class TV extends MyPage
 
 	function Content_Player_Medal()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -379,7 +383,7 @@ class TV extends MyPage
 
 	function Content_Referee()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		
@@ -399,7 +403,7 @@ class TV extends MyPage
 
 	function Content_Match()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 			
@@ -446,7 +450,7 @@ class TV extends MyPage
 
 	function Content_Match_Score()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 			
@@ -497,7 +501,7 @@ class TV extends MyPage
 	
 	function Content_Team()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -536,7 +540,7 @@ class TV extends MyPage
 
 	function Content_Team_Medal()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');

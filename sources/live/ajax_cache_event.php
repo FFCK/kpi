@@ -1,5 +1,5 @@
 <?php
-include_once('base.php');
+include_once('../commun/MyBdd.php');
 include_once('create_cache_match.php');
 
 // Exemple 
@@ -17,7 +17,7 @@ $time = utyHHMM_To_MM($hourEvent);
 $time += $offset_event;
 $hourEventWork = utyMM_To_HHMM($time);
 
-$db = new MyBase();
+$db = new MyBdd();
 $cache = new CacheMatch($_GET);
 $cache->Event($db, $idEvent, $dateEvent, $hourEventWork);
 		

@@ -12,4 +12,3 @@ if (isset($rTV['Url']))
 	echo $rTV['Url'];
 else
 	echo '';
-?>
