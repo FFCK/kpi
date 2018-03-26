@@ -1,0 +1,28 @@
+/* 
+    Created on : 20 mars 2018, 22:08:26
+    Author     : laurent
+*/
+
+/* Bootstrap Toggle v2.2.2 corrections for Bootsrtap 4*/
+.toggle-off {
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+.toggle.off {
+    border-color: rgba(0, 0, 0, .25);
+}
+
+.toggle-handle {
+    background-color: white;
+    border: thin rgba(0, 0, 0, .25) solid;
+}
+
+
+.modal-xl {
+    max-width: inherit;
+}
+#listTable th, #listTable td {
+    text-align: center;
+}
+.pointer {
+    cursor: pointer;
+}
