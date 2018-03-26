@@ -245,6 +245,24 @@ function utyGetGet($param, $default = '')
 		return $default;
 }
 
+// utyGetInt
+function utyGetInt($array, $param, $default = 1)
+{
+    if (isset($array[$param])) {
+        return (int) $array[$param];
+    }
+    return $default;
+}
+
+// utyGetString
+function utyGetString($array, $param, $default = 1)
+{
+    if (isset($array[$param])) {
+        return addslashes( $array[$param] );
+    }
+    return $default;
+}
+
 // utyGetSessionPostGet
 
 function utyGetSessionPostGet($param, $default = '')
