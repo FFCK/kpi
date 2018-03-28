@@ -191,11 +191,11 @@ class GestionDirectPitchs extends MyPage
 			#sponsorCompet {height: 70px; margin: auto; }
 			#titreCompet {display: block; float: left; line-height: 80px; padding: 0 10px; }
 			#dateCompet {display: block; float: right; line-height: 80px; padding: 0 10px; }
-			#direct {color: white; background: url("http://www.kayak-polo.info/admin/v2/bg_score.png") repeat-x 50% 50%;
+			#direct {color: white; background: url("https://www.kayak-polo.info/admin/v2/bg_score.png") repeat-x 50% 50%;
 				border-radius: 5px; font-family: Trebuchet MS, Verdana, sans-serif; float: left; 
 				text-align: center; text-shadow: 2px 1px 1px #BBBBBB; font-size: 1.6em; padding: 3px 10px; margin: 10px;}
 			#ejs_heure {float: right; font-family: Trebuchet MS, Verdana, sans-serif; font-size: 1.6em;
-				color: white; background: url("http://www.kayak-polo.info/admin/v2/bg_score.png") repeat-x 50% 50%;
+				color: white; background: url("https://www.kayak-polo.info/admin/v2/bg_score.png") repeat-x 50% 50%;
 				border-radius: 5px; padding: 3px 10px; margin: 10px; text-align: center; text-shadow: 2px 1px 1px #BBBBBB;
 				
 			}

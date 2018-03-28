@@ -566,12 +566,12 @@ class FeuilleStats extends MyPage {
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI + Logo    
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('../img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+            $pdf->Image('../img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 210, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('../img/logoKPI-small.jpg', 84, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+            $pdf->Image('../img/logoKPI-small.jpg', 84, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             // Logo
         } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 210, 10, 20, 'C');

@@ -217,10 +217,10 @@
                                             </td>
                                             <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="{#Officiels#}"><img height="18" src="../img/glyphicons-28-search.png" alt="{#Officiels#}"></a>
                                             <td>
-                                                {if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
-                                                {if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
-                                                {if $arrayJournees[i].Delegue != ''}Délégué: {$arrayJournees[i].Delegue}<br />{/if}
-                                                {if $arrayJournees[i].ChefArbitre != ''}Chef arbitres: {$arrayJournees[i].ChefArbitre}{/if}
+                                                {if $arrayJournees[i].Responsable_insc != ''}{#RC#}: {$arrayJournees[i].Responsable_insc}<br />{/if}
+                                                {if $arrayJournees[i].Responsable_R1 != ''}{#R1#}: {$arrayJournees[i].Responsable_R1}<br />{/if}
+                                                {if $arrayJournees[i].Delegue != ''}{#Delegue#}: {$arrayJournees[i].Delegue}<br />{/if}
+                                                {if $arrayJournees[i].ChefArbitre != ''}{#Chef_arbitres#}: {$arrayJournees[i].ChefArbitre}{/if}
                                             </td>
                                             <td><a href="#" onclick="RemoveCheckbox('formCalendrier', '{$arrayJournees[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" title="{#Supprimer#}"></a></td>
 										{else}

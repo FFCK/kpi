@@ -1,5 +1,9 @@
 <?php
-include_once('base.php');
+//include_once('base.php');
+include_once('../commun/MyParams.php');
+include_once('../commun/MyTools.php');
+include_once('../commun/MyBdd.php');
+
 include_once('page.php');
 	
 class TV extends MyPage
@@ -134,7 +138,7 @@ class TV extends MyPage
 
 	function Content_List_Team()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -214,22 +218,21 @@ class TV extends MyPage
 
 	function Content_List_Medals()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$competition = $this->GetParam('competition');
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = '2017'", $rCompetition);
+		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = " . utyGetSaison(), $rCompetition);
 
 		// Chargement des Equipes Classées ...
 		$cmd  = "Select * FROM gickp_Competitions_Equipes ";
-		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = '2017' ";
-		$cmd .= "Order By CltNiveau ";
+		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = " . utyGetSaison() . " ";
+		$cmd .= "Order By CltNiveau_publi ";
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
-		
 		echo "<div id='banner_presentation'></div>\n";
 		$title = $rCompetition['Soustitre2'];
 		echo "<div id='list_medals_title'>$title</div>\n";
@@ -264,7 +267,7 @@ class TV extends MyPage
 
 	function Content_Player()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -320,7 +323,7 @@ class TV extends MyPage
 
 	function Content_Player_Medal()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -379,7 +382,7 @@ class TV extends MyPage
 
 	function Content_Referee()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		
@@ -399,7 +402,7 @@ class TV extends MyPage
 
 	function Content_Match()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 			
@@ -446,7 +449,7 @@ class TV extends MyPage
 
 	function Content_Match_Score()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 			
@@ -497,7 +500,7 @@ class TV extends MyPage
 	
 	function Content_Team()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -536,7 +539,7 @@ class TV extends MyPage
 
 	function Content_Team_Medal()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
@@ -674,7 +677,7 @@ class TV extends MyPage
 		  <option value="frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24">frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24</option> 
 	  </select>
 <?php 
-//		  http://www.kayak-polo.info/frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24
+//		  https://www.kayak-polo.info/frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24
 	}
 	
 	function Content_Command_Scenario($scenario)

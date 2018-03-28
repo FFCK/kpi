@@ -50,7 +50,7 @@ function ChangeVoie(voie, url)
 	param += "&url="+url;
 
 //    alert("ajax_change_voie.php?"+param);
-    jq.ajax({ type: "GET", url: "ajax_change_voie.php", dataType: "html", data: param, cache: false, 
+    jq.ajax({ type: "GET", url: "./live/ajax_change_voie.php", dataType: "html", data: param, cache: false, 
                 success: function(htmlData) {
 						jq("#tv_message").html(htmlData);
 				}

@@ -46,11 +46,11 @@ else
 	<?php wp_head(); ?>
 	
 	<!-- Ajout Laurent -->
-		<meta property="og:image" content="http://kayak-polo.info/img/KPI.png" />
-		<link rel="image_src" href="http://kayak-polo.info/img/KPI.png" />
+		<meta property="og:image" content="https://kayak-polo.info/img/KPI.png" />
+		<link rel="image_src" href="https://kayak-polo.info/img/KPI.png" />
 		<meta property="og:title" content="kayak-polo.info" />
 		<meta property="og:type" content="article" />
-		<!--<meta property="og:url" content="http://kayak-polo.info" />-->
+		<!--<meta property="og:url" content="https://kayak-polo.info" />-->
 		<meta property="og:description" content="kayak polo français" />
 		<meta property="og:site_name" content="KAYAK-POLO.INFO" />
 		

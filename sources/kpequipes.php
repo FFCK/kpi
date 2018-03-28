@@ -15,7 +15,7 @@ class Equipes extends MyPage
         $Code_club = 0;
         $Club =  '';
 
-		$Equipe = utyGetSession('Equipe', 0);
+		$Equipe = utyGetSession('Equipe', 1);
 		$Equipe = utyGetPost('Equipe', $Equipe);
 		$Equipe = utyGetGet('Equipe', $Equipe);
 		$this->m_tpl->assign('Equipe', $Equipe);
@@ -66,18 +66,26 @@ class Equipes extends MyPage
 		$this->m_tpl->assign('arrayPalmares', $arrayPalmares);
         
         //Images
-        $eLink = $Equipe.'-'.($Saison+1);
+        $eSeason = $Saison;
+        $eLink = $Equipe.'-'.$eSeason;
         $eTeam = 'img/KIP/teams/'.$eLink.'-team.jpg';
         //die($eColors.'<br>'.$eTeam);
         if(is_file('img/KIP/colors/'.$Equipe.'-'.date('Y').'-colors.png')){
             $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.date('Y').'-colors.png');
+            $eSeason = date('Y');
         }elseif(is_file('img/KIP/colors/'.$Equipe.'-'.(date('Y')-1).'-colors.png')){
             $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.(date('Y')-1).'-colors.png');
+            $eSeason = date('Y')-1;
         }elseif(is_file('img/KIP/colors/'.$Equipe.'-'.(date('Y')-2).'-colors.png')){
             $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.(date('Y')-2).'-colors.png');
+            $eSeason = date('Y')-2;
+        }elseif(is_file('img/KIP/colors/'.$Equipe.'-'.(date('Y')-3).'-colors.png')){
+            $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.(date('Y')-3).'-colors.png');
+            $eSeason = date('Y')-3;
         }elseif(is_file('img/KIP/logo/'.$Code_club.'-logo.png')){
             $this->m_tpl->assign('eLogo', 'img/KIP/logo/'.$Code_club.'-logo.png');
         }
+        $this->m_tpl->assign('eSeason', $eSeason);
         
         if(is_file('img/KIP/teams/'.$Equipe.'-'.date('Y').'-team.jpg')){
             $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.date('Y').'-team.jpg');
@@ -85,6 +93,8 @@ class Equipes extends MyPage
             $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-1).'-team.jpg');
         }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-2).'-team.jpg')){
             $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-2).'-team.jpg');
+        }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-3).'-team.jpg')){
+            $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-3).'-team.jpg');
         }
         
         

@@ -13,7 +13,7 @@
                 piwikTracker.trackPageView();
                 piwikTracker.enableLinkTracking();
                 } catch( err ) {}
-                </script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
+                </script><noscript><p><img src="https://www.poloweb.org/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
             <!-- End Piwik Tracking Code -->
         {/literal}
         <div class="flex-footer">
@@ -41,7 +41,7 @@
                 piwikTracker.trackPageView();
                 piwikTracker.enableLinkTracking();
                 } catch( err ) {}
-                </script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
+                </script><noscript><p><img src="https://www.poloweb.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
             <!-- End Piwik Tracking Code -->
         {/literal}
         <div class="flex-footer">
