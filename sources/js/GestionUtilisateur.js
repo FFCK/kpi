@@ -171,7 +171,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		texte += "\n";
 		texte += "Contactez votre responsable de Championnat ou de Coupe pour toute difficulté.\n";
 		texte += "\n";
-		texte += "Tutoriel : http://www.kayak-polo.info/?page_id=987 \n";
+		texte += "Tutoriel : https://www.kayak-polo.info/?page_id=987 \n";
 		texte += "\n************************************************************************";
 		jq('#message_complementaire').text(texte);
 	});

@@ -3,49 +3,19 @@ jq = jQuery.noConflict();
 var langue = [];
 
 if(lang == 'en')  {
-        langue['Annuler'] = 'Cancel';
-        langue['Arbitre_non_identifie'] = 'Unidentified referee';
     langue['Cliquez_pour_modifier'] = 'Click to edit';
-        langue['Confirm_affect'] = 'You should have recalculate group ranking first, confirm auto assignment ?';
     langue['Confirm_delete'] = 'Delete selected phases ?';
     langue['Confirm_update'] = 'Confirm update ?';
     langue['Confirm_dupplicate'] = 'Confirm dupplicate ?';
-        langue['Date_vide'] = 'Date is empty, unable to create !';
-        langue['Equipe_non_definie'] = 'Unidentified team';
-        langue['Heure_invalide'] = 'Time is invalid (format hh:mm), continue anymore ?';
     langue['MAJ_impossible'] = 'Unable to update';
-        langue['Match_de_classement'] = 'Classifying game';
-        langue['Match_eliminatoire'] = 'Playoffs';
-        langue['Non_valide'] = 'Unvalidated (private score)';
-        langue['Select_journee'] = 'Select a matchday / phase / group.';
-        langue['Selection_journee'] = 'Select a matchday / phase / group first, unable to create !';
     langue['Selection_competition'] = 'Select a competition !';
-        langue['Selection_equipe'] = 'Select a team !';
-        langue['Valider'] = 'Valid';
-        langue['Valide'] = 'Validated, locked (public score)';
-        langue['Vider'] = 'Empty';
 } else {
-        langue['Annuler'] = 'Annuler';
-        langue['Arbitre_non_identifie'] = 'Arbitre non identifié';
     langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
-        langue['Confirm_affect'] = 'Vous devez avoir recalculé le classement, Confirmer l\affectation automatique ?';
     langue['Confirm_delete'] = 'Supprimer les journées/phases sélectionnées ?';
     langue['Confirm_update'] = 'Confirmer le changement ?';
     langue['Confirm_dupplicate'] = 'Confirmez-vous la copie ?';
-        langue['Date_vide'] = 'Date vide, ajout impossible !';
-        langue['Equipe_non_definie'] = 'Equipe non définie';
-        langue['Heure_invalide'] = 'Heure invalide (format hh:mm), continuer ?';
     langue['MAJ_impossible'] = 'Mise à jour impossible';
-        langue['Match_de_classement'] = 'Match de classement';
-        langue['Match_eliminatoire'] = 'Match éliminatoire';
-        langue['Non_valide'] = 'Non validé (score non public)';
-        langue['Select_journee'] = 'Sélectionner une journée / phase / poule.';
-        langue['Selection_journee'] = 'Sélectionner une journée / phase / poule, ajout impossible !';
     langue['Selection_competition'] = 'Sélectionner une compétition !';
-        langue['Selection_equipe'] = 'Sélectionner une équipe !';
-        langue['Valider'] = 'Valider';
-        langue['Valide'] = 'Validé / verrouillé (score public)';
-        langue['Vider'] = 'Vider';
 }
 
 

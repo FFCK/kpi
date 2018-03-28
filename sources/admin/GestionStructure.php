@@ -71,27 +71,68 @@ class GestionStructure extends MyPageSecure
 		for ($i=0;$i<$num_results;$i++)
 		{
 			$row = mysql_fetch_array($result);	
-			array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'].' - '.$row['Libelle'], 'Selected' => '', 'Coord2' =>  $row['Coord2'], 'Postal' =>  $row['Postal'], 'Coord' =>  $row['Coord']) );
+			array_push($arrayClub, array('Code' => $row['Code'], 
+                'Libelle' => $row['Code'].' - '.$row['Libelle'], 
+                'Selected' => '', 
+                'Coord2' =>  $row['Coord2'], 
+                'Postal' =>  $row['Postal'], 
+                'Coord' =>  $row['Coord'],
+                    ));
 			if($row['Coord'] != "")
 			{
 				$html = htmlspecialchars(addslashes($row['Libelle']));
-				$label = $row['Code'];
-				$post = $row['Postal'];
-				$web = $row['www'];
-				$mail = $row['email'];
-				if (file_exists('img/logo/club'.$row['Code'].'.jpg'))
-					$logo = $row['Code'];
-				else
-					$logo = 0;
-				$mapParam2  .= "\n					var point = new GLatLng(".$row['Coord'].");";
-				$mapParam2  .= "\n					var point2 = new GLatLng(".$row['Coord2'].");";
-				$mapParam2  .= "\n					var marker = createMarker2(point,'$label','$html','$web','$mail',point2,'$post','$logo');";
-				$mapParam2  .= "\n					map.addOverlay(marker);";
+				$code = $row['Code'];
+                $coord = $row['Coord'];
+				$postal = $row['Postal'];
+				$www = $row['www'];
+				$email = $row['email'];
+                $mapParam2  .= "\n	
+					var contentString = '<p id=\"infoWindowContent\" data-html=\"$html\" data-code=\"$code\" >$html</p>';
+					var marker = new google.maps.Marker({ 
+						position: new google.maps.LatLng($coord),
+						map: carte,
+						title: '$html',
+						icon: image,
+					});
+                    markers['$code'] = marker;
+                    coord['$code'] = \"$coord\";
+                    postal['$code'] = \"$postal\";
+                    www['$code'] = \"$www\";
+                    email['$code'] = \"$email\";
+                    
+                    google.maps.event.addListener(marker,'click', (function(marker, contentString, infowindow){ 
+                        return function() {
+                            infowindow.setContent(contentString);
+                            infowindow.open(carte, marker);
+                            jq('#club').val(jq('#infoWindowContent').attr('data-code'));
+                            handleSelected(false);
+                        };
+                    })(marker,contentString,infowindow));
+
+				";
+//                $html = htmlspecialchars(addslashes($row['Libelle']));
+//				$label = $row['Code'];
+//				$post = $row['Postal'];
+//				$web = $row['www'];
+//				$mail = $row['email'];
+//				if (file_exists('img/logo/club'.$row['Code'].'.jpg'))
+//					$logo = $row['Code'];
+//				else
+//					$logo = 0;
+//				$mapParam2  .= "\n					var point = new GLatLng(".$row['Coord'].");";
+//				$mapParam2  .= "\n					var point2 = new GLatLng(".$row['Coord2'].");";
+//				$mapParam2  .= "\n					var marker = createMarker2(point,'$label','$html','$web','$mail',point2,'$post','$logo');";
+//				$mapParam2  .= "\n					map.addOverlay(marker);";
 			}
 		}
-		
 		$this->m_tpl->assign('arrayClub', $arrayClub);
-		
+        //Chargement paramètres carte ...
+		$mapParam  = "image = {url: '../img/Map-Marker-Ball-Right-Azure-icon.png'};\n";
+        $mapParam .= "infowindow = new google.maps.InfoWindow({});\n";
+        $mapParam .= "markers = [];";
+        $mapParam .= $mapParam2;
+		$this->m_tpl->assign('mapParam', $mapParam);
+        
 		// Chargement des Clubs internationaux...
 		$arrayClubInt = array();
 
@@ -114,11 +155,11 @@ class GestionStructure extends MyPageSecure
 
 		//Chargement paramètres carte ...
 		
-		$mapParam  = "map.setCenter(new GLatLng(46.85, 1.75), 5);";
-        $mapParam .= $mapParam2;
+//		$mapParam  = "map.setCenter(new GLatLng(46.85, 1.75), 5);";
+//        $mapParam .= $mapParam2;
 
 	
-		$this->m_tpl->assign('mapParam', $mapParam);
+//		$this->m_tpl->assign('mapParam', $mapParam);
 	}
 		
 	function AddCD()
@@ -257,7 +298,7 @@ class GestionStructure extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Gestion des Structures", "Clubs", false);
+		$this->SetTemplate("Gestion_des_structures", "Clubs", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplateMap('GestionStructure');
@@ -265,5 +306,3 @@ class GestionStructure extends MyPageSecure
 }		  	
 
 $page = new GestionStructure();
-
-?>

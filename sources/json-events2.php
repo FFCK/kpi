@@ -34,10 +34,10 @@ include_once('commun/MyTools.php');
 	    		$datedebut = $datedebut[0].$datedebut[1].$datedebut[2];
 	        	$datejour = date('Ymd');
 				if($datedebut < $datejour)
-//					$url = utf8_encode('http://kayak-polo.info/Classement.php?Compet='.$row['Code_competition'].'&Saison='.$row['Code_saison'].'&Dat='.$row['Date_debut'].$typ);
-					$url = utf8_encode('http://kayak-polo.info/Classements.php?Compet='.$row['Code_competition'].'&Group='.$row['Code_ref'].'&Saison='.$row['Code_saison'].'&Dat='.$row['Date_debut'].$typ);
+//					$url = utf8_encode('https://kayak-polo.info/Classement.php?Compet='.$row['Code_competition'].'&Saison='.$row['Code_saison'].'&Dat='.$row['Date_debut'].$typ);
+					$url = utf8_encode('https://kayak-polo.info/Classements.php?Compet='.$row['Code_competition'].'&Group='.$row['Code_ref'].'&Saison='.$row['Code_saison'].'&Dat='.$row['Date_debut'].$typ);
 				else
-					$url = utf8_encode('http://kayak-polo.info/Journee.php?Compet='.$row['Code_competition'].'&Group='.$row['Code_ref'].'&Saison='.$row['Code_saison'].$typ);
+					$url = utf8_encode('https://kayak-polo.info/Journee.php?Compet='.$row['Code_competition'].'&Group='.$row['Code_ref'].'&Saison='.$row['Code_saison'].$typ);
 				
 			array_push($arrayCalendrier, array(	'id' => $row['Id'],
 												'title' => $title,
@@ -51,4 +51,4 @@ include_once('commun/MyTools.php');
 	echo json_encode($arrayCalendrier);
 	//echo json_encode(mb_convert_encoding($arrayCalendrier, "UTF-8", "ISO-8859-1"));
 	
-?>
+

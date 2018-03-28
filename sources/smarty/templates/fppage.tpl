@@ -6,17 +6,17 @@
 		<meta name="Author" Content="LG" />
         
         <!-- FB Meta -->
-		<meta property="og:image" content="http://kayak-polo.info/img/newKPI2.jpg" />
-		<link rel="image_src" href="http://kayak-polo.info/img/newKPI2.jpg" />
+		<meta property="og:image" content="https://www.kayak-polo.info/img/newKPI2.jpg" />
+		<link rel="image_src" href="https://www.kayak-polo.info/img/newKPI2.jpg" />
 		<meta property="og:title" content="kayak-polo.info" />
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content="http://www.kayak-polo.info"/>
+		<meta property="og:url" content="https://www.kayak-polo.info"/>
 		<meta property="og:description" content="FFCK - Commission Nationale d'Activité Kayak-Polo" />
 		<meta property="og:site_name" content="KAYAK-POLO.INFO" />
         
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <link rel="pingback" href="http://kayak-polo.info/wordpress/xmlrpc.php">
+        <link rel="pingback" href="httpw://www.kayak-polo.info/wordpress/xmlrpc.php">
         <link rel="profile" href="http://gmpg.org/xfn/11">
         <!-- Mobile Specific Meta -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">

@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="libraries/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="libraries/css/bootstrap-toggle.min.css">
+        <link rel="stylesheet" href="libraries/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" >
+        <link rel="stylesheet" href="libraries/css/flag-icon.min.css" >
+        <link rel="stylesheet" href="assets/report.css" >
+        
+        <title>Match 15</title>
+    </head>
+    <body>
+        <ul class="nav nav-pills ml-1" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="params-tab" data-toggle="tab" href="#params" 
+                   role="tab" aria-controls="params" aria-selected="true">
+                    <i class="fa fa-cog" title="Paramètres"></i> <span data-version="Parametres"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="running-tab" data-toggle="tab" href="#running" 
+                   role="tab" aria-controls="running" aria-selected="false">
+                    <i class="fa fa-play" title="Déroulement"></i> <span data-version="Deroulement"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" id="description-tab" data-toggle="tab" role="tab">
+                    <b><span data-version="Match"></span> #3 - 23/02/2018 16:20 - <span data-version="Terrain"></span> 2</b>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active my-1" id="params" role="tabpanel" aria-labelledby="params-tab">
+                <ul class="nav nav-pills ml-1" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="status-tab" data-toggle="tab" href="#status" 
+                           role="tab" aria-controls="status" aria-selected="true">
+                            <i class="fa fa-toggle-on"></i> <span data-version="Match"></span> #1234567
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="officials-tab" data-toggle="tab" href="#officials" 
+                           role="tab" aria-controls="officials" aria-selected="false">
+                            <i class="fa fa-user"></i> <span data-version="Officiels"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="equipeA-tab" data-toggle="tab" href="#equipeA" 
+                           role="tab" aria-controls="equipeA" aria-selected="false">
+                            <b class="badge badge-primary">A</b> <i class="flag-icon flag-icon-ru"></i> France Women A
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="equipeB-tab" data-toggle="tab" href="#equipeB" 
+                           role="tab" aria-controls="equipeB" aria-selected="false">
+                            <b class="badge badge-primary">B</b> <i class="flag-icon flag-icon-gh"></i> Netherland Women B
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <!-- Statuts -->
+                    <div class="tab-pane fade show active container-fluid" id="status" role="tabpanel" aria-labelledby="status-tab">
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5 text-center mt-2">
+                                <div>
+                                    <div>
+                                        <b><span data-version="Match"></span> ID#<i>1234567</i></b><br>
+                                        <a href="" class="btn btn-dark" id="change-btn" data-toggle="modal" data-target="#changeModal">
+                                            <i class="fa fa-exchange-alt"></i> <span data-version="Changer"></span>
+                                        </a>
+                                    </div>
+                                    <br>
+                                    <div>
+                                        <b><span data-version="TypeMatch"></span></b><br>
+                                        <input data-toggle="toggle" data-on="<i class='fa fa-list-ol'></i> <span data-version='Classement'>Classement</span>" 
+                                               data-off="<i class='fa fa-sitemap'></i> <span data-version='Elimination'>Elimination</span>" data-onstyle="info" 
+                                               data-offstyle="info" type="checkbox">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-around">
+                                    <div>
+                                        <b><span data-version="Visibilite"></span></b><br>
+                                        <input data-toggle="toggle" data-on="<i class='fa fa-eye'></i> <span data-version='Public'>Public</span>" 
+                                               data-off="<i class='fa fa-eye-slash'></i> <span data-version='Prive'>Privé</span>" data-onstyle="success" 
+                                               data-offstyle="danger" type="checkbox">
+                                    </div>
+                                    <div>
+                                        <b><span data-version="Controle"></span></b><br>
+                                        <input data-toggle="toggle" data-on="<i class='fa fa-lock-open'></i> <span data-version='Ouvert'>Ouvert</span>" 
+                                               data-off="<i class='fa fa-lock'></i> <span data-version='Verrouille'>Verrouillé</span>" data-onstyle="success" 
+                                               data-offstyle="danger" type="checkbox">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="d-flex justify-content-around">
+                                    <button type="button" class="btn btn-info"><i class="fa fa-file-pdf"></i> PDF</button>
+                                    <button type="button" class="btn btn-info"><i class="fa fa-calculator"></i> Stats</button>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-outline-dark langswitch" data-lang="fr">
+                                            <i class="flag-icon flag-icon-fr"></i> FR
+                                        </button>
+                                        <button type="button" class="btn btn-outline-dark langswitch" data-lang="en">
+                                            <i class="flag-icon flag flag-icon-gb"></i> EN
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7 text-center mt-2">
+                                <div class="card mb-5">Coupe de France Hommes 1er tour - Demi-finale</div>
+                                <b><span data-version="ScoreProvisoire"></span></b><br>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-outline-secondary disabled text-right">
+                                        <i>France Women A </i><i class="badge badge-dark">15</i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary disabled text-left">
+                                        <i class="badge badge-dark">15</i><i> Netherland Women B</i>
+                                    </button>
+                                </div>
+                                <div class="my-2">
+                                    <button type="button" class="btn btn-info">
+                                        <i class="fa fa-angle-double-down "></i> <span data-version="ValiderScore"></span> <i class="fa fa-angle-double-down "></i>
+                                    </button>
+                                </div>
+                                <b><span data-version="ScoreOfficiel"></span></b><br>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-info disabled text-right">
+                                        France Women A <b class="badge badge-dark">13</b>
+                                    </button>
+                                    <button type="button" class="btn btn-info disabled text-left">
+                                        <b class="badge badge-dark">8</b> Netherland Women B
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Officiels -->
+                    <div class="tab-pane fade container-fluid" id="officials" role="tabpanel" aria-labelledby="officials-tab">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <b><span data-version="Arbitre1"></span></b><br>
+                                        <input type="text" class="form-control form-control-sm" id="inputSecretaire" placeholder="Nom, Prénom, Licence">
+                                    </div>
+                                    <div class="form-group">
+                                        <b><span data-version="Arbitre2"></span></b><br>
+                                        <input type="text" class="form-control form-control-sm" id="inputChronometre" placeholder="Nom, Prénom, Licence">
+                                    </div>
+                                    <hr>
+                                    <div class="form-group">
+                                        <b><span data-version="Secretaire"></span></b><br>
+                                        <input type="text" class="form-control form-control-sm" id="inputSecretaire" placeholder="Nom, Prénom, Licence">
+                                    </div>
+                                    <div class="form-group">
+                                        <b><span data-version="Chronometre"></span></b><br>
+                                        <input type="text" class="form-control form-control-sm" id="inputChronometre" placeholder="Nom, Prénom, Licence">
+                                    </div>
+                                    <div class="form-group">
+                                        <b><span data-version="TimeShot"></span></b><br>
+                                        <input type="text" class="form-control form-control-sm" id="inputTimeshot" placeholder="Nom, Prénom, Licence">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <div class="form-group">
+                                        <b><span data-version="JugeLigne"></span></b><br>
+                                        <input type="text" class="form-control form-control-sm" id="inputTimeshot" placeholder="Nom, Prénom, Licence">
+                                    </div>
+                                    <div class="form-group">
+                                        <b><span data-version="JugeLigne"></span></b><br>
+                                        <input type="text" class="form-control form-control-sm" id="inputTimeshot" placeholder="Nom, Prénom, Licence">
+                                    </div>
+                                    <div>
+                                        <ul class="list-unstyled bg-light">
+                                            <li>
+                                                <b><span data-version="RespCompetition"></span> : </b>
+                                                <small>Denis Sainte-Martine</small>
+                                            </li>
+                                            <li>
+                                                <b><span data-version="ClubOrganisateur"></span> : </b>
+                                                <small>Canoë-Kayak Club de Thury-Harcourt</small>
+                                            </li>
+                                            <li>
+                                                <b><span data-version="RespOrganisation"></span> : </b>
+                                                <small>François-Xavier Duprez-de-la-Ruffinière</small>
+                                            </li>
+                                            <li>
+                                                <b><span data-version="Delegue"></span> : </b>
+                                                <small>Albert Einstein</small>
+                                            </li>
+                                            <li>
+                                                <b><span data-version="ChefArbitre"></span> : </b>
+                                                <small>Yves Tout</small>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Equipe A -->
+                    <div class="tab-pane fade" id="equipeA" role="tabpanel" aria-labelledby="equipeA-tab">
+                        <table class="table table-sm table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col"><span data-version="Statut"></span></th>
+                                    <th scope="col"><span data-version="Nom"></span></th>
+                                    <th scope="col"><span data-version="Prenom"></span></th>
+                                    <th scope="col"><span data-version="Licence"></span></th>
+                                    <th scope="col"><span data-version="Categorie"></span></th>
+                                    <th scope="col"><i class="fa fa-trash"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>-</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <td scope="row">2</td>
+                                    <td>-</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>-</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">4</th>
+                                    <td>-</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td>-</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">6</th>
+                                    <td>Cap.</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7</th>
+                                    <td>-</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">8</th>
+                                    <td>-</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <th scope="row">9</th>
+                                    <td>Coach</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <th scope="row">10</th>
+                                    <td>Coach</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <th scope="row">11</th>
+                                    <td>Coach</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a href="" class="btn btn-info" id="chargeA-btn">
+                            <i class="fa fa-sync-alt" title="Recharger équipe A"></i> <span data-version="RechargerJoueurs"></span> 
+                        </a>
+                    </div>
+                    
+                    <!-- Equipe B -->
+                    <div class="tab-pane fade" id="equipeB" role="tabpanel" aria-labelledby="equipeB-tab">
+                        <table class="table table-sm table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col"><span data-version="Statut"></span></th>
+                                    <th scope="col"><span data-version="Nom"></span></th>
+                                    <th scope="col"><span data-version="Prenom"></span></th>
+                                    <th scope="col"><span data-version="Licence"></span></th>
+                                    <th scope="col"><span data-version="Categorie"></span></th>
+                                    <th scope="col"><i class="fa fa-trash"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>-</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <td scope="row">2</td>
+                                    <td>-</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>-</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">4</th>
+                                    <td>-</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td>-</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">6</th>
+                                    <td>Cap.</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">7</th>
+                                    <td>-</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">8</th>
+                                    <td>-</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <th scope="row">9</th>
+                                    <td>Coach</td>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <th scope="row">10</th>
+                                    <td>Coach</td>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <th scope="row">11</th>
+                                    <td>Coach</td>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>123456</td>
+                                    <td>SEN</td>
+                                    <td><i class="fa fa-trash"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a href="" class="btn btn-info" id="chargeB-btn">
+                            <i class="fa fa-sync-alt" title="Recharger équipe B"></i> <span data-version="RechargerJoueurs"></span> 
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Déroulement du match -->
+            <div class="tab-pane fade " id="running" role="tabpanel" aria-labelledby="running-tab">
+                <!--<div class="btn-toolbar container-fluid justify-content-between" role="toolbar" aria-label="Toolbar with button groups">-->
+                <!--<div class="row">-->
+                    <div class="btn-group my-1 ml-1" role="group" aria-label="First group" >
+                        <button type="button" class="btn btn-outline-info">
+                            <i class="fa fa-pause"></i> <span data-version="EnAttente"></span>
+                        </button>
+                        <button type="button" class="btn btn-info">
+                            <i class="fa fa-play"></i> <span data-version="EnCours"></span>
+                        </button>
+                        <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#finMatchModal">
+                            <i class="fa fa-eject"></i> <span data-version="Termine"></span>
+                        </button>
+                    </div>
+                    <span id="endmatch"><span data-version="Fin"></span> : 
+                        <span id="end_match_time" class="badge badge-secondary actif">23:02</span>
+                    </span>
+                    <div class="btn-group float-right my-1 mr-1" role="group" aria-label="Second group">
+                        <button type="button" class="btn btn-outline-info"><span data-version="Periode"></span> 1</button>
+                        <button type="button" class="btn btn-info"><span data-version="Periode"></span> 2</button>
+                        <button type="button" class="btn btn-outline-info"><span data-version="Prolong"></span> 1</button>
+                        <button type="button" class="btn btn-outline-info"><span data-version="Prolong"></span> 2+</button>
+                        <button type="button" class="btn btn-outline-info"><span data-version="TAB"></span></button>
+                    </div>
+                <!--</div>-->
+                
+                <div class="card">
+                    <div class="row">
+                        <!-- Equipe A -->
+                        <div class="col mx-1">
+                            <button class="btn btn-lg btn-block btn-info">
+                                <b class="badge badge-dark h2 float-right">13</b>
+                                <i class="flag-icon flag-icon-ru"></i> France Women A
+                            </button>
+                            <div class="btn-group-vertical btn-block" role="group">
+                                <button class="btn btn-block btn-outline-dark">
+                                    1 - Laurent L.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    3 - Albert C. (Cap.)
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    4 - Gérard M. L.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    6 - Brutus M.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    7 - Albert C.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    13 - Gérard M. L.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    15 - Brutus M.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    22 - Fleur Z.
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Actions -->
+                        <div class="col-xs-3">
+                            <div class="row justify-content-center">
+                                <form class="form-inline">
+                                    <div class="text-center">
+                                        <i id="chrono_moins10" class="badge badge-pill badge-info pointer">-10</i>
+                                        <i id="chrono_moins1" class="badge badge-pill badge-info pointer">-1</i><br>
+                                        <i id="chrono_moins60" class="badge badge-pill badge-info pointer">-60</i>
+                                    </div>
+                                    &nbsp;
+                                    <h2 class="text-center">
+                                        <b id="Chrono" class="badge badge-success border border-dark pointer" data-toggle="modal" data-target="#chronoModal">09:00</b>
+                                    </h2>
+                                    &nbsp;
+                                    <div class="text-center">
+                                        <i id="chrono_plus1" class="badge badge-pill badge-info pointer">+1</i>
+                                        <i id="chrono_plus10" class="badge badge-pill badge-info pointer">+10</i><br>
+                                        <i id="chrono_plus60" class="badge badge-pill badge-info pointer">+60</i>
+                                    </div>
+                                </form>
+                            </div>
+                            <h2 class="text-center text-success invisible" id="checkChrono">
+                                <button class="btn btn-success">
+                                    <i class="fa fa-check-circle"></i> <span data-version="Confirmer"></span>
+                                </button>
+                            </h2>
+                            <div class="row d-flex justify-content-around my-2">
+                                    <button class="btn btn-dark col-5 timer-control" id="start_button">
+                                        <i class="fa fa-play"></i> Start
+                                    </button>
+                                    <button class="btn btn-dark col-5 timer-control" id="stop_button">
+                                        <i class="fa fa-pause"></i> Stop
+                                    </button>
+                                    <button class="btn btn-dark col-5 timer-control" id="restart_button">
+                                        <i class="fa fa-play"></i> Restart
+                                    </button>
+                                    <button class="btn btn-dark col-5" id="reset_button">
+                                        <i class="fa fa-undo"></i> <span data-version="Reset"></span>
+                                    </button>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-lg btn-outline-dark col-6">
+                                    <i class="fa fa-volleyball-ball fa-2x"></i>
+                                </button>
+                                <button class="btn btn-lg btn-outline-dark col-6 text-success">
+                                    <i class="fa fa-square fa-2x"></i>
+                                </button>
+                                <button class="btn btn-lg btn-outline-dark col-6 text-warning">
+                                    <i class="fa fa-square fa-2x"></i>
+                                </button>
+                                <button class="btn btn-lg btn-outline-dark col-6 text-danger">
+                                    <i class="fa fa-square fa-2x"></i>
+                                </button>
+                            </div>
+                            <div class="row justify-content-center my-2">
+                                <form class="form-inline">
+                                    <div class="text-center">
+                                        <i id="time_moins10" class="badge badge-pill badge-info pointer">-10</i>
+                                        <i id="time_moins1" class="badge badge-pill badge-info pointer">-1</i><br>
+                                        <i id="time_moins60" class="badge badge-pill badge-info pointer">-60</i>
+                                    </div>
+                                    &nbsp;
+                                    <h4>
+                                        <b id="Time_evt" class="badge badge-secondary border border-dark" data-toggle="modal" data-target="#timeModal">09:00</b>
+                                    </h4>
+                                    &nbsp;
+                                    <div class="text-center">
+                                        <i id="time_plus1" class="badge badge-pill badge-info pointer">+1</i>
+                                        <i id="time_plus10" class="badge badge-pill badge-info pointer">+10</i><br>
+                                        <i id="time_plus60" class="badge badge-pill badge-info pointer">+60</i>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="row">
+                                <button class="btn btn-lg btn-dark col-12">
+                                    <i class="fa fa-check"></i> OK
+                                </button>
+                                <button class="btn btn-outline-dark col-6">
+                                    <i class="fa fa-times"></i> <span data-version="Annuler"></span>
+                                </button>
+                                <button class="btn btn-outline-dark col-6" data-toggle="modal" data-target="#listeModal">
+                                    <i class="fa fa-bars"></i> <span data-version="Liste"></span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Equipe B -->
+                        <div class="col mx-1">
+                            <button class="btn btn-lg btn-block btn-info">
+                                <b class="badge badge-dark h2 float-left">9</b>
+                                <i class="flag-icon flag-icon-gh"></i> Netherland Women B
+                            </button>
+                            <div class="btn-group-vertical btn-block" role="group">
+                                <button class="btn btn-block btn-outline-dark">
+                                    1 - Laurent L.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    3 - Albert C. (Cap.)
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    4 - Gérard M. L.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    6 - Brutus M.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    7 - Albert C.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    13 - Gérard M. L.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    15 - Brutus M.
+                                </button>
+                                <button class="btn btn-block btn-outline-dark">
+                                    22 - Fleur Z.
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        
+        <!-- Modals -->
+        
+        <!-- Modal chrono -->
+        <div class="modal fade" id="chronoModal" tabindex="-1" role="dialog" aria-labelledby="chronoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="chronoModalLabel"><span data-version="ParametresChrono"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h2><span data-version="Periode"></span> 1</h2>
+                        <b><span data-version="DureePeriode"></span></b>
+                        <input type="time" value="10:00">
+                        <br>
+                        <b><span data-version="AjustChrono"></span></b>
+                        <input type="time" value="09:30">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fa fa-times"></i> <span data-version="Annuler"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            <i class="fa fa-check"></i> OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Change match -->
+        <div class="modal fade" id="changeModal" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changeModalLabel"><span data-version="Changer"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <b><span data-version="Changer"></span></b>
+                        <input type="tel" value="1234567">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fa fa-times"></i> <span data-version="Annuler"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            <i class="fa fa-check"></i> OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Time -->
+        <div class="modal fade" id="timeModal" tabindex="-1" role="dialog" aria-labelledby="timeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="timeModalLabel"><span data-version="Temps"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <b><span data-version="AjustTemps"></span></b>
+                        <input type="time" value="09:30">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fa fa-times"></i> <span data-version="Annuler"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            <i class="fa fa-check"></i> OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Period End -->
+        <div class="modal fade" id="PeriodEndModal" tabindex="-1" role="dialog" aria-labelledby="PeriodEndModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="PeriodEndModalLabel"><span data-version="PeriodEnd"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <b><span data-version="PeriodEnd"></span></b>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            <i class="fa fa-check"></i> OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Fin du match -->
+        <div class="modal fade" id="finMatchModal" tabindex="-1" role="dialog" aria-labelledby="finMatchModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="finMatchModalLabel"><span data-version="FinMatch"></span></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <b><span data-version="HeureFinMatch"></span></b>
+                        <input type="time" value="10:00">
+                        <br>
+                        <br>
+                        <b><span data-version="Comments"></span></b>
+                        <br>
+                        <textarea></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fa fa-times"></i> <span data-version="Annuler"></span>
+                        </button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            <i class="fa fa-check"></i> OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Liste -->
+        <div class="modal fade" id="listeModal" tabindex="-1" role="dialog" aria-labelledby="listeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <table class="table table-bordered table-hover table-sm" id="listTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 5px" class="table-success"><span data-version="V"></span></th>
+                                    <th scope="col" style="width: 5px" class="table-warning"><span data-version="J"></span></th>
+                                    <th scope="col" style="width: 5px" class="table-danger"><span data-version="R"></span></th>
+                                    <th scope="col" class="table-secondary"><span data-version="Equipe"></span> A</th>
+                                    <th scope="col" style="width: 5px"><span data-version="B"></span></th>
+                                    <th scope="col" style="width: 80px" class="table-secondary"><span data-version="Temps"></span></th>
+                                    <th scope="col" style="width: 5px"><span data-version="B"></span></th>
+                                    <th scope="col" class="table-secondary"><span data-version="Equipe"></span> B</th>
+                                    <th scope="col" style="width: 5px" class="table-success"><span data-version="V"></span></th>
+                                    <th scope="col" style="width: 5px" class="table-warning"><span data-version="J"></span></th>
+                                    <th scope="col" style="width: 5px" class="table-danger"><span data-version="R"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5"></td>
+                                    <td>M1 09:50</td>
+                                    <td></td>
+                                    <td>Joueur 1</td>
+                                    <td class="text-success">
+                                        <i class="fa fa-square"></i>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="text-warning">
+                                        <i class="fa fa-square"></i>
+                                    </td>
+                                    <td></td>
+                                    <td>Joueur 3</td>
+                                    <td></td>
+                                    <td>M1 08:34</td>
+                                    <td colspan="5"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Joueur 2</td>
+                                    <td class="text-warning">
+                                        <i class="fa fa-volleyball-ball"></i>
+                                    </td>
+                                    <td>M2 06:10</td>
+                                    <td colspan="5"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5"></td>
+                                    <td>TB 09:12</td>
+                                    <td></td>
+                                    <td>Joueur 7</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-danger">
+                                        <i class="fa fa-square"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-secondary pull-right" data-dismiss="modal">
+                            <i class="fa fa-times"></i> <span data-version="Fermer"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- JavaScript -->
+        <!-- jQuery first, then Bootstrap JS with Popper -->
+        <script src="libraries/js/jquery-3.3.1.min.js" ></script>
+        <script src="libraries/js/bootstrap.bundle.min.js" ></script>
+        <script src="libraries/js/bootstrap-toggle.min.js" ></script>
+        <script src="libraries/js/cache.min.js" ></script>
+        <script src="assets/report.js" ></script>
+    </body>
+</html>

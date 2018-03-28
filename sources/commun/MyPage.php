@@ -73,7 +73,7 @@ class MyPage
 				array_push($arrayMenu, array('name' => 'Equipes', 'href' => 'GestionEquipe.php'));
 			if (isset($profile) && $profile<=9 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'GestionStructure.php'));
-			if (isset($profile) && $profile<=7)
+			if (isset($profile) && $profile<=8)
 				array_push($arrayMenu, array('name' => 'Athletes', 'href' => 'GestionAthlete.php'));
 			if (isset($profile) && $profile<=9)
 				array_push($arrayMenu, array('name' => 'Journees_phases', 'href' => 'GestionCalendrier.php'));
@@ -145,7 +145,7 @@ class MyPage
 		}
 			
         // Langues
-		// $smarty->config_dir = 'http://kayak-polo.info/commun/';
+		// $smarty->config_dir = 'https://kayak-polo.info/commun/';
 		$lang = utyGetSession('lang', 'fr');
 		$lang = utyGetGet('lang', $lang);
 		$_SESSION['lang'] = $lang;
@@ -227,6 +227,13 @@ class MyPage
 	{
 			$this->m_tpl->assign('contenutemplate', $tplName);	
 			$this->DisplayTemplateGlobal('kppage');
+	}
+    
+	// DisplayTemplateNew
+	function DisplayTemplateNewWide($tplName)
+	{
+			$this->m_tpl->assign('contenutemplate', $tplName);	
+			$this->DisplayTemplateGlobal('kppagewide');
 	}
     
 	// DisplayTemplateFrame

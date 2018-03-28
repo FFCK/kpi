@@ -1,5 +1,9 @@
 <?php
-include_once('base.php');
+//include_once('base.php');
+include_once('../commun/MyParams.php');
+include_once('../commun/MyTools.php');
+include_once('../commun/MyBdd.php');
+
 
 $voie = utyGetInt($_GET, 'voie', 1);
 $show = utyGetString($_GET, 'show');
@@ -10,7 +14,7 @@ $team = utyGetString($_GET, 'team');
 $number = utyGetString($_GET, 'number');
 $medal = utyGetString($_GET, 'medal');
 
-$db = new MyBase();
+$db = new MyBdd();
 
 $url  = "live/tv.php";
 $url .= "?show=$show";
@@ -24,4 +28,3 @@ $cmd = "Update gickp_Tv Set Url = '$url' Where Voie = $voie ";
 $db->Query($cmd);
 
 echo "OK Voie $voie : ".$url;
-?>
