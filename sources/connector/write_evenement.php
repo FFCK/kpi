@@ -11,7 +11,7 @@ if (isset($_GET['json']))
 	
 //	echo 'json in write_evenement = '.$json;
 	
-	$handle = fopen('http://kayak-polo.info/connector/set_evenement.php?user='.$user.'&pwd='.$pwd.'&json='.urlencode($json), "rb");
+	$handle = fopen('https://kayak-polo.info/connector/set_evenement.php?user='.$user.'&pwd='.$pwd.'&json='.urlencode($json), "rb");
 	if($handle)
 	{
 		$contents = stream_get_contents($handle);

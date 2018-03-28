@@ -2,7 +2,7 @@ jq = jQuery.noConflict();
 
 var theLstEvt = '-1';
 var theLocalUrl = 'http://localhost/KPI2';
-var theDistantUrl = "http://www.kayak-polo.info";
+var theDistantUrl = "https://www.kayak-polo.info";
 
 function showDataConnector(data)
 {

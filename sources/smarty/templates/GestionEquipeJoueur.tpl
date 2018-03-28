@@ -26,7 +26,7 @@
 						{if $profile <= 8 && $Verrou != 'O' && $AuthModif == 'O' && $idEquipe > 0}
 							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', true);return false;"><img height="22" src="../img/glyphicons-155-more-checked.png" title="{#Tous#}" /></a>
 							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" title="{#Aucun#}" /></a>
-							<a href="#" onclick="RemoveCheckboxes('formEquipeJoueur', 'checkEquipeJoueur')"><img height="25" src="../img/glyphicons-17-bin.png" alt="Supprimer la sélection" title="{#Supprimer#}" /></a>
+							<a href="#" onclick="RemoveCheckboxes('formEquipeJoueur', 'checkEquipeJoueur')"><img height="25" src="../img/glyphicons-17-bin.png" title="{#Supprimer#}" /></a>
 						{/if}
 						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (FR)"><img height="25" src="../img/pdf.png" /></a>						
 						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" /></a>						
@@ -276,12 +276,12 @@
 						<table width="100%">
 							<tr>
 								<th class='titreForm' colspan=2>
-									<label>Recherche avancée</label>
+									<label>{#Recherche_avancee#}</label>
 								</th>
 							</tr>
 							<tr>
 								<td>
-									<input type="button" onclick="Find();" name="findJoueur" id="findJoueur" value="&reg; Recherche Licenciés...">
+									<input type="button" onclick="Find();" name="findJoueur" id="findJoueur" value="&reg; {#Chercher#}...">
 								</td>
 							</tr>
 						</table>
@@ -292,12 +292,12 @@
 						<table width="100%">
 							<tr>
 								<th class='titreForm' colspan=2>
-									<label>Créer & ajouter un licencié</label>
+									<label>{#Creer_ajouter_licencie#}</label>
 								</th>
 							</tr>
 							<tr>
 								<td colspan=2>
-									<label class="rouge">UNIQUEMENT POUR LES NOUVEAUX<br>COMPETITEURS ETRANGERS</label>
+									<label class="rouge">{#Uniquement_nouveaux_competiteurs_etrangers#}</label>
 									<hr>
 								</td>
 							</tr>
@@ -310,62 +310,62 @@
 							</tr>
 -->							<tr>
 								<td colspan=2>
-									<label for="nomJoueur">Nom :</label>
+									<label for="nomJoueur">{#Nom#} :</label>
 									<input type="text" name="nomJoueur" maxlength=30 id="nomJoueur"/>
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2>
-									<label for="prenomJoueur">Prénom :</label>
+									<label for="prenomJoueur">{#Prenom#} :</label>
 									<input type="text" name="prenomJoueur" maxlength=30 id="prenomJoueur"/>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<label for="naissanceJoueur">Date Naissance :</label>
+									<label for="naissanceJoueur">{#Date_naissance#} :</label>
 									<input type="text" name="naissanceJoueur" maxlength=10 id="naissanceJoueur" onfocus="displayCalendar(document.forms[0].naissanceJoueur,'dd/mm/yyyy',this)" >
 								</td>
 								<td>
-									<label for="sexeJoueur">Sexe :</label>
+									<label for="sexeJoueur">{#Sexe#} :</label>
 									<select name="sexeJoueur" id="sexeJoueur" onChange="">
-										<Option Value="M" SELECTED>Masculin</Option>
-										<Option Value="F">Féminin</Option>
+										<Option Value="M" SELECTED>{#Masculin#}</Option>
+										<Option Value="F">{#Feminin#}</Option>
 									</select>
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2><center><i>Optionnel :</i></center></td>
+								<td colspan=2><center><i>{#Optionnel#} :</i></center></td>
 							</tr>
 							<tr>
 								<td>
-									<label for="capitaineJoueur">Capit./Entr./Arbitre:</label>
+									<label for="capitaineJoueur">{#Capt#}./{#Entr#}./{#Arb#}:</label>
 									<select name="capitaineJoueur" id="capitaineJoueur">
-										<Option Value="-" SELECTED>Joueur</Option>
-										<Option Value="C">Capitaine</Option>
-										<Option Value="E">Entraineur (non joueur)</Option>
-										<Option Value="A">Arbitre (non joueur)</Option>
-										<Option Value="X">Inactif (non joueur)</Option>
+										<Option Value="-" SELECTED>{#Joueur#}</Option>
+										<Option Value="C">{#Capitaine#}</Option>
+										<Option Value="E">{#Entraineur#} ({#non_joueur#})</Option>
+										<Option Value="A">{#Arbitre#} ({#non_joueur#})</Option>
+										<Option Value="X">{#Inactif#} ({#non_joueur#})</Option>
 									</select>
 								</td>
 								<td>
-									<label for="numeroJoueur">Numero</label>
+									<label for="numeroJoueur">{#Num#}</label>
 									<input type="tel" name="numeroJoueur" maxlength=2 size="3" id="numeroJoueur">
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<label for="arbitreJoueur">Arbitrage :</label>
+									<label for="arbitreJoueur">{#Arbitrage#} :</label>
 									<select name="arbitreJoueur" id="arbitreJoueur">
-										<Option Value="" SELECTED>--- Aucun ---</Option>
-										<Option Value="REG">Régional</Option>
-										<Option Value="NAT">National</Option>
-										<Option Value="INT">International</Option>
-										<Option Value="OTM">Officiel table de marque</Option>
-										<Option Value="JO">Jeune officiel</Option>
+										<Option Value="" SELECTED>--- {#Aucun#} ---</Option>
+										<Option Value="REG">{#Regional#}</Option>
+										<Option Value="NAT">{#National#}</Option>
+										<Option Value="INT">{#International#}</Option>
+										<Option Value="OTM">{#Officiel_table_de_marque#}</Option>
+										<Option Value="JO">{#Jeune_officiel#}</Option>
 									</select>
 								</td>
                                 <td>
-									<label for="niveauJoueur">Niveau :</label>
+									<label for="niveauJoueur">{#Niveau#} :</label>
 									<select name="niveauJoueur" id="niveauJoueur">
 										<Option Value="" SELECTED>-</Option>
 										<Option Value="A">A</Option>
@@ -377,7 +377,7 @@
 							</tr>
 							<tr>
 								<td>
-									<label for="numicfJoueur">Licence ICF :</label>
+									<label for="numicfJoueur">{#Licence_ICF#} :</label>
                                 </td>
                                 <td>
 									<input type="tel" name="numicfJoueur" id="numicfJoueur" size="8">
@@ -386,7 +386,7 @@
 							<tr>
 								<td colspan=2>
 									<br>
-									<input type="button" onclick="Add();" name="addEquipeJoueur" id="addEquipeJoueur" value="<< Ajouter">
+									<input type="button" onclick="Add();" name="addEquipeJoueur" id="addEquipeJoueur" value="<< {#Ajouter#}">
 								</td>
 							</tr>
 						</table>
@@ -394,11 +394,19 @@
 							
 					{/if}
 					{if $Verrou == 'O'}
-						<b>Vous ne pouvez pas modifier les titulaires de cette équipe :</b>
-						<br>
-						- La compétition est verrouillée par le responsable ou le coordinateur,
-						<br>
-						- ou vous n'avez pas les droits sur ce club.
+                        {if $lang == 'en'}
+                            <b>You can't edit players of this team :</b>
+                            <br>
+                            - Competition is locked by the competition manager
+                            <br>
+                            - or you don't have permissions for this club.
+                        {else}
+                            <b>Vous ne pouvez pas modifier les titulaires de cette équipe :</b>
+                            <br>
+                            - La compétition est verrouillée par le responsable ou le coordinateur,
+                            <br>
+                            - ou vous n'avez pas les droits sur ce club.
+                        {/if}
 					{/if}
 			    </div>
 						

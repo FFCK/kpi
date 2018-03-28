@@ -45,7 +45,7 @@
                 <a class="btn btn-default" href='kpdetails.php?Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&typ=CP'>{#Infos#}</a>
             {/if}
             <a class="btn btn-default btn-navigation" href='kpstats.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Stats#}</a>
-            <a class="btn btn-default" title="{#Partager#}" data-link="http://www.kayak-polo.info/kpclassement.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
+            <a class="btn btn-default" title="{#Partager#}" data-link="https://www.kayak-polo.info/kpclassement.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
             <a class="btn btn-default btn-navigation" href='kpclassements.php?Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}'>{#Classement_general#}</a>
         </div>
         {if $recordCompetition.Statut == 'END'}

@@ -177,12 +177,12 @@ class PdfListeMatchs extends MyPage
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         // KPI + Logo    
         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('img/logoKPI-small.jpg', 40, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+            $pdf->Image('img/logoKPI-small.jpg', 40, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 262, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         // KPI
         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
         // Logo
         } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
             $img = redimImage($visuels['logo'], 262, 10, 20, 'C');
@@ -195,7 +195,7 @@ class PdfListeMatchs extends MyPage
         }
 
 		// QRCode
-		$qrcode = new QRcode('http://www.kayak-polo.info/kpmatchs.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
+		$qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
 		$qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
 		$titreDate = "Saison ".$codeSaison;
@@ -269,12 +269,12 @@ class PdfListeMatchs extends MyPage
                             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                         // KPI + Logo    
                         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-                            $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+                            $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                             $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
                             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                         // KPI
                         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-                            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "http://www.kayak-polo.info");
+                            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                         // Logo
                         } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
                             $img = redimImage($visuels['logo'], 297, 10, 20, 'C');

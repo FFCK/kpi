@@ -513,12 +513,12 @@ class FeuilleMatch extends MyPage {
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI + Logo    
             } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-                $pdf->Image('../img/logoKPI-small.jpg', 10, 10, 0, 11, 'jpg', "http://www.kayak-polo.info");
+                $pdf->Image('../img/logoKPI-small.jpg', 10, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI
             } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-                $pdf->Image('../img/logoKPI-small.jpg', 65, 10, 0, 11, 'jpg', "http://www.kayak-polo.info");
+                $pdf->Image('../img/logoKPI-small.jpg', 65, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
             // Logo
             } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'C');
@@ -532,7 +532,7 @@ class FeuilleMatch extends MyPage {
             
 //            // logo
 //            if ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-//                $pdf->Image('../img/logoKPI-small.jpg', 65, 10, 0, 11, 'jpg', "http://www.kayak-polo.info");
+//                $pdf->Image('../img/logoKPI-small.jpg', 65, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
 //            }
 //            if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)) {
 //                $size = getimagesize($bandeau);
@@ -875,7 +875,7 @@ class FeuilleMatch extends MyPage {
             $pdf->Cell(140, 3, $lang['observation'], 0, 0, 'L');
 
             // QRCode
-            $qrcode = new QRcode('http://kayak-polo.info/admin/FeuilleMarque2.php?idMatch=' . $idMatch, 'L'); // error level : L, M, Q, H
+            $qrcode = new QRcode('https://kayak-polo.info/admin/FeuilleMarque2.php?idMatch=' . $idMatch, 'L'); // error level : L, M, Q, H
             //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
             $qrcode->displayFPDF($pdf, 264, 164, 21);
 

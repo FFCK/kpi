@@ -1,46 +1,46 @@
-    &nbsp;(<a href="Admin.php">Retour</a>)
+    &nbsp;(<a href="Admin.php">{#Retour#}</a>)
 	<div class="main">
 		<form method="POST" action="GestionStats.php" name="formStats" enctype="multipart/form-data">
 			<input type='hidden' name='Cmd' Value=''/>
 			<input type='hidden' name='ParamCmd' Value=''/>
 			<div class='blocLeft'>
-				<div class='titrePage'>Statistiques {$codeSaison} (version béta)</div>
+				<div class='titrePage'>{#Statistiques#} {$codeSaison} (beta)</div>
 				{if $AfficheStat eq 'Buteurs'}
-					<div class='titrePage'>Meilleur buteur</div>
+					<div class='titrePage'>{#Meilleur_buteur#}</div>
 				{elseif $AfficheStat == 'Attaque'}
-					<div class='titrePage'>Meilleure attaque (buts des feuilles de match uniquement)</div>
+					<div class='titrePage'>{#Meilleure_attaque#} ({#Feuilles_marque#} {#seulement#})</div>
 				{elseif $AfficheStat == 'Defense'}
-					<div class='titrePage'>Meilleure défense (buts des feuilles de match uniquement)</div>
+					<div class='titrePage'>{#Meilleure_defense#} ({#Feuilles_marque#} {#seulement#})</div>
 				{elseif $AfficheStat == 'Cartons'}
-					<div class='titrePage'>Cartons</div>
+					<div class='titrePage'>{#Cartons#}</div>
 				{elseif $AfficheStat == 'CartonsEquipe'}
-					<div class='titrePage'>Cartons par équipe</div>
+					<div class='titrePage'>{#Cartons_par_equipe#}</div>
 				{elseif $AfficheStat == 'Fairplay'}
-					<div class='titrePage'>Classement disciplinaire individuel (rouge=4, jaune=2, vert=1)</div>
+					<div class='titrePage'>{#Classement_disciplinaire_individuel#} ({#Rouge#}=4, {#Jaune#}=2, {#Vert#}=1)</div>
 				{elseif $AfficheStat == 'FairplayEquipe'}
-					<div class='titrePage'>Classement disciplinaire par équipe (rouge=4, jaune=2, vert=1)</div>
+					<div class='titrePage'>{#Classement_disciplinaire_par_equipe#} ({#Rouge#}=4, {#Jaune#}=2, {#Vert#}=1)</div>
 				{elseif $AfficheStat == 'Arbitrage'}
-					<div class='titrePage'>Arbitrage</div>
+					<div class='titrePage'>{#Arbitrage#}</div>
 				{elseif $AfficheStat == 'ArbitrageEquipe'}
-					<div class='titrePage'>Arbitrage par équipe (seuls les arbitrages nominatifs sont pris en compte)</div>
+					<div class='titrePage'>{#Arbitrage_par_equipe#} ({#Arbitrages_nominatifs#} {#seulement#})</div>
 				{elseif $AfficheStat == 'CJouees'}
-					<div class='titrePage'>Compétitions jouées par club (matchs verrouillés)</div>
+					<div class='titrePage'>{#Competitions_jouees_par_club#} ({#Matchs_verrouilles#} {#seulement#})</div>
 				{elseif $AfficheStat == 'CJouees2'}
-					<div class='titrePage'>Compétitions jouées par équipe (matchs verrouillés)</div>
+					<div class='titrePage'>{#Competitions_jouees_par_equipe#} ({#Matchs_verrouilles#} {#seulement#})</div>
 				{elseif $AfficheStat == 'CJouees3'}
-					<div class='titrePage'>Irrégularités : licence, certificats, pagaie eau calme (matchs verrouillés)</div>
+					<div class='titrePage'>{#Irregularites#} ({#Matchs_verrouilles#} {#seulement#})</div>
 				{elseif $AfficheStat == 'OfficielsJournees'}
-					<div class='titrePage'>Officiels des journées</div>
+					<div class='titrePage'>{#Officiels_des_journees#}</div>
 				{elseif $AfficheStat == 'OfficielsMatchs'}
-					<div class='titrePage'>Officiels des matchs</div>
+					<div class='titrePage'>{#Officiels_des_matchs#}</div>
 				{elseif $AfficheStat == 'ListeArbitres'}
-					<div class='titrePage'>Liste des arbitres</div>
+					<div class='titrePage'>{#Arbitres#}</div>
 				{/if}
 				<div class='liens'>
-					<a href="FeuilleStats.php" Target="_blank" title="Version pdf"><img height="30" alt="pdf FR" src="../img/pdfFR.png"></a>
-					<a href="FeuilleStatsEN.php" Target="_blank" title="Version pdf EN"><img height="30" alt="pdf EN" src="../img/pdfEN.png"></a>
+					<a href="FeuilleStats.php" Target="_blank" title="Pdf (FR)"><img height="30" alt="pdf FR" src="../img/pdfFR.png"></a>
+					<a href="FeuilleStatsEN.php" Target="_blank" title="Pdf (EN)"><img height="30" alt="pdf EN" src="../img/pdfEN.png"></a>
                     {if $sql_csv != ''}
-                        <a href="upload_csv.php?action=export" title="Téléchargement CSV : {$sql_csv}"><img height="30" alt="CSV" src="../img/csv.png"></a>
+                        <a href="upload_csv.php?action=export" title="{#Telechargement#} CSV : {$sql_csv}"><img height="30" alt="CSV" src="../img/csv.png"></a>
                     {/if}
 					<div align=right><span id='reachspan'><i>Surligner:</i></span><input type=text name='reach' id='reach' size='20'></div>
 				</div>
@@ -50,117 +50,117 @@
 								<tr class='header'>
 									{if $AfficheStat == 'Buteurs'}
 										<th>#</th>
-										<th>Compet.</th>
+										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>Nom</th>
-										<th>Prenom</th>
-										<th>Sexe</th>
-										<th>Equipe</th>
-										<th>Buts</th>
+										<th>{#Nom#}</th>
+										<th>{#Prenom#}</th>
+										<th>{#Sexe#}</th>
+										<th>{#Equipe#}</th>
+										<th>{#Buts#}</th>
 									{elseif $AfficheStat == 'Attaque'}
 										<th>#</th>
-										<th>Compet.</th>
-										<th>Equipe</th>
+										<th>{#Comp#}.</th>
+										<th>{#Equipe#}</th>
 										<th>Buts marqués</th>
 									{elseif $AfficheStat == 'Defense'}
 										<th>#</th>
-										<th>Compet.</th>
-										<th>Equipe</th>
+										<th>{#Comp#}.</th>
+										<th>{#Equipe#}</th>
 										<th>Buts concédés</th>
 									{elseif $AfficheStat == 'Cartons'}
 										<th>#</th>
-										<th>Compet.</th>
+										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>Nom</th>
-										<th>Prenom</th>
-										<th>Sexe</th>
-										<th>Equipe</th>
-										<th>Vert</th>
-										<th>Jaune</th>
-										<th>Rouge</th>
+										<th>{#Nom#}</th>
+										<th>{#Prenom#}</th>
+										<th>{#Sexe#}</th>
+										<th>{#Equipe#}</th>
+										<th>{#Vert#}</th>
+										<th>{#Jaune#}</th>
+										<th>{#Rouge#}</th>
 									{elseif $AfficheStat == 'CartonsEquipe'}
 										<th>#</th>
-										<th>Compet.</th>
-										<th>Equipe</th>
-										<th>Vert</th>
-										<th>Jaune</th>
-										<th>Rouge</th>
+										<th>{#Comp#}.</th>
+										<th>{#Equipe#}</th>
+										<th>{#Vert#}</th>
+										<th>{#Jaune#}</th>
+										<th>{#Rouge#}</th>
 									{elseif $AfficheStat == 'Fairplay'}
 										<th>#</th>
-										<th>Compet.</th>
+										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>Nom</th>
-										<th>Prenom</th>
-										<th>Sexe</th>
-										<th>Equipe</th>
-										<th>Pts</th>
+										<th>{#Nom#}</th>
+										<th>{#Prenom#}</th>
+										<th>{#Sexe#}</th>
+										<th>{#Equipe#}</th>
+										<th>{#Pts#}</th>
 									{elseif $AfficheStat == 'FairplayEquipe'}
 										<th>#</th>
-										<th>Compet.</th>
-										<th>Equipe</th>
-										<th>Pts</th>
+										<th>{#Comp#}.</th>
+										<th>{#Equipe#}</th>
+										<th>{#Pts#}</th>
 									{elseif $AfficheStat == 'Arbitrage'}
 										<th>#</th>
-										<th>Compet.</th>
+										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>Nom</th>
-										<th>Prenom</th>
-										<th>Sexe</th>
-										<th>Principal</th>
-										<th>Secondaire</th>
+										<th>{#Nom#}</th>
+										<th>{#Prenom#}</th>
+										<th>{#Sexe#}</th>
+										<th>{#Principal#}</th>
+										<th>{#Secondaire#}</th>
 										<th>Total</th>
 									{elseif $AfficheStat == 'ArbitrageEquipe'}
 										<th>#</th>
-										<th>Compet.</th>
-										<th>Equipe</th>
-										<th>Principal</th>
-										<th>Secondaire</th>
+										<th>{#Comp#}.</th>
+										<th>{#Equipe#}</th>
+										<th>{#Principal#}</th>
+										<th>{#Secondaire#}</th>
 										<th>Total</th>
 									{elseif $AfficheStat == 'CJouees'}
 										<th>#</th>
 										<th>N°</th>
-										<th>Nom</th>
-										<th>Prenom</th>
+										<th>{#Nom#}</th>
+										<th>{#Prenom#}</th>
 										<th>Club</th>
-										<th>Competition</th>
-										<th>Nb_matchs</th>
+										<th>{#Competition#}</th>
+										<th>{#Nb_matchs#}</th>
 									{elseif $AfficheStat == 'CJouees2'}
 										<th>#</th>
 										<th>N°</th>
-										<th>Nom</th>
-										<th>Prenom</th>
-										<th>Equipe</th>
-										<th>Competition</th>
-										<th>Nb_matchs</th>
+										<th>{#Nom#}</th>
+										<th>{#Prenom#}</th>
+										<th>{#Equipe#}</th>
+										<th>{#Competition#}</th>
+										<th>{#Nb_matchs#}</th>
 									{elseif $AfficheStat == 'CJouees3'}
 										<th>#</th>
 										<th>N°</th>
-										<th>Nom</th>
-										<th>Prenom</th>
-										<th>Equipe</th>
-										<th>Competition</th>
-										<th>Irrégularités</th>
+										<th>{#Nom#}</th>
+										<th>{#Prenom#}</th>
+										<th>{#Equipe#}</th>
+										<th>{#Competition#}</th>
+										<th>{#Irregularites#}</th>
 									{elseif $AfficheStat == 'OfficielsJournees'}
-										<th>Compet.</th>
+										<th>{#Comp#}.</th>
 										<th>Date</th>
-										<th>Lieu</th>
-										<th>RC</th>
-										<th>R1</th>
-										<th>Délégué</th>
-										<th>Chef Arb.</th>
+										<th>{#Lieu#}</th>
+										<th>{#RC#}</th>
+										<th>{#R1#}</th>
+										<th>{#Delegue#}</th>
+										<th>{#Chef_arbitres#}</th>
 									{elseif $AfficheStat == 'OfficielsMatchs'}
-										<th>Compet. - Lieu</th>
+										<th>{#Comp#}. - {#Lieu#}</th>
 										<th>Date</th>
-										<th>Arb.</th>
-										<th>Lignes</th>
+										<th>{#Arb#}</th>
+										<th>{#Lignes#}</th>
 										<th>Table</th>
 									{elseif $AfficheStat == 'ListeArbitres'}
 										<th>#</th>
-										<th>Arbitre</th>
+										<th>{#Arbitre#}</th>
 										<th>Club</th>
-										<th>Niveau</th>
-										<th>Saison</th>
-										<th>Livret</th>
+										<th>{#Niveau#}</th>
+										<th>{#Saison#}</th>
+										<th>{#Livret#}</th>
 									{/if}
 								</tr>
 							</thead>
@@ -380,12 +380,12 @@
 			<table width=100%>
 				<tr>
 					<th class='titreForm' colspan=2>
-						<label>Sélection</label>
+						<label>{#Selection#}</label>
 					</th>
 				</tr>
 				<tr>
 					<td width=65>
-						<label for="codeSaison">Saison:</label>
+						<label for="codeSaison">{#Saison#}:</label>
 						<select name="codeSaison" onChange="document.formStats.submit()">
 						{section name=i loop=$arraySaison}
 							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $codeSaison}selected{/if}>{$arraySaison[i].Code}</Option>
@@ -393,84 +393,32 @@
 						</select>
 					</td>
 					<td>
-						<label for="AfficheStat">Statistique:</label>
+						<label for="AfficheStat">{#Statistiques#}:</label>
 						<select name="AfficheStat" onChange="document.formStats.submit()">
-							<Option Value="Buteurs"{if $AfficheStat == 'Buteurs'} selected{/if}>Meilleur buteur</Option>
-							<Option Value="Attaque"{if $AfficheStat == 'Attaque'} selected{/if}>Meilleure attaque</Option>
-							<Option Value="Defense"{if $AfficheStat == 'Defense'} selected{/if}>Meilleure défense</Option>
-							<Option Value="Cartons"{if $AfficheStat == 'Cartons'} selected{/if}>Cartons</Option>
-							<Option Value="CartonsEquipe"{if $AfficheStat == 'CartonsEquipe'} selected{/if}>Cartons par équipe</Option>
-							<Option Value="Fairplay"{if $AfficheStat == 'Fairplay'} selected{/if}>Class. disciplinaire individuel</Option>
-							<Option Value="FairplayEquipe"{if $AfficheStat == 'FairplayEquipe'} selected{/if}>Class. disciplinaire par équipe</Option>
-							<Option Value="Arbitrage"{if $AfficheStat == 'Arbitrage'} selected{/if}>Arbitrage</Option>
-							<Option Value="ArbitrageEquipe"{if $AfficheStat == 'ArbitrageEquipe'} selected{/if}>Arbitrage par équipe</Option>
+							<Option Value="Buteurs"{if $AfficheStat == 'Buteurs'} selected{/if}>{#Meilleur_buteur#}</Option>
+							<Option Value="Attaque"{if $AfficheStat == 'Attaque'} selected{/if}>{#Meilleure_attaque#}</Option>
+							<Option Value="Defense"{if $AfficheStat == 'Defense'} selected{/if}>{#Meilleure_defense#}</Option>
+							<Option Value="Cartons"{if $AfficheStat == 'Cartons'} selected{/if}>{#Cartons#}</Option>
+							<Option Value="CartonsEquipe"{if $AfficheStat == 'CartonsEquipe'} selected{/if}>{#Cartons_par_equipe#}</Option>
+							<Option Value="Fairplay"{if $AfficheStat == 'Fairplay'} selected{/if}>{#Classement_disciplinaire_individuel#}</Option>
+							<Option Value="FairplayEquipe"{if $AfficheStat == 'FairplayEquipe'} selected{/if}>{#Classement_disciplinaire_par_equipe#}</Option>
+							<Option Value="Arbitrage"{if $AfficheStat == 'Arbitrage'} selected{/if}>{#Arbitrage#}</Option>
+							<Option Value="ArbitrageEquipe"{if $AfficheStat == 'ArbitrageEquipe'} selected{/if}>{#Arbitrage_par_equipe#}</Option>
 							{if $profile <= 6}
-								<Option Value="CJouees"{if $AfficheStat == 'CJouees'} selected{/if}>Compétitions jouées (clubs)</Option>
-								<Option Value="CJouees2"{if $AfficheStat == 'CJouees2'} selected{/if}>Compétitions jouées (équipes)</Option>
-								<Option Value="CJouees3"{if $AfficheStat == 'CJouees3'} selected{/if}>Irrégularités (matchs)</Option>
-								<Option Value="OfficielsJournees"{if $AfficheStat == 'OfficielsJournees'} selected{/if}>Officiels journées</Option>
-								<Option Value="OfficielsMatchs"{if $AfficheStat == 'OfficielsMatchs'} selected{/if}>Officiels matchs</Option>
-								<Option Value="ListeArbitres"{if $AfficheStat == 'ListeArbitres'} selected{/if}>Liste des arbitres</Option>
+								<Option Value="CJouees"{if $AfficheStat == 'CJouees'} selected{/if}>{#Competitions_jouees_par_club#}</Option>
+								<Option Value="CJouees2"{if $AfficheStat == 'CJouees2'} selected{/if}>{#Competitions_jouees_par_equipe#}</Option>
+								<Option Value="CJouees3"{if $AfficheStat == 'CJouees3'} selected{/if}>{#Irregularites#}</Option>
+								<Option Value="OfficielsJournees"{if $AfficheStat == 'OfficielsJournees'} selected{/if}>{#Officiels_des_journees#}</Option>
+								<Option Value="OfficielsMatchs"{if $AfficheStat == 'OfficielsMatchs'} selected{/if}>{#Officiels_des_matchs#}</Option>
+								<Option Value="ListeArbitres"{if $AfficheStat == 'ListeArbitres'} selected{/if}>{#Arbitres#}</Option>
 							{/if}
 						</select>
 					</td>
 				</tr>
-<!--				<tr>
-					<td colspan=2>
-						<label for="AfficheNiveau">Niveau :</label>
-						<select name="AfficheNiveau" onChange="document.formStats.submit()">
-							<Option Value="" selected>Tous les niveaux</Option>
-							<Option Value="INT"{if $AfficheNiveau == 'INT'} selected{/if}>Compétitions Internationales</Option>
-							<Option Value="NAT"{if $AfficheNiveau == 'NAT'} selected{/if}>Compétitions Nationales</Option>
-							<Option Value="REG"{if $AfficheNiveau == 'REG'} selected{/if}>Compétitions Régionales</Option>
-						</select>
-					</td>
-				</tr>
 				<tr>
 					<td colspan=2>
-						<select name="AfficheCompet" onChange="document.formStats.submit()">
-							<Option Value="" selected>Toutes les compétitions</Option>
-							<Option Value="N"{if $AfficheCompet == 'N'} selected{/if}>Championnat de France</Option>
-							<Option Value="CF"{if $AfficheCompet == 'CF'} selected{/if}>Coupe de France</Option>
-							<Option Value="REG"{if $AfficheCompet == 'REG'} selected{/if}>Championnats régionaux</Option>
-							<Option Value="DEP"{if $AfficheCompet == 'DEP'} selected{/if}>Championnats départementaux</Option>
-							<Option Value="TI"{if $AfficheCompet == 'TI'} selected{/if}>Tournois Internationaux</Option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2>
-						<label for="codeCompet">Compétition :</label>
-						<select name="groupCompet" onChange="document.formStats.submit()">
-							<Option Value="" selected>Toutes les compétitions (Groupées)</Option>
-							{section name=i loop=$arrayGroupCompet}
-								<Option Value="{$arrayGroupCompet[i].Code_ref}" {$arrayGroupCompet[i].StdOrSelected}>{$arrayGroupCompet[i].Code_ref}-{$arrayGroupCompet[i].Libelle} (Toutes)</Option>
-							{/section}
-						</select>
-						<select name="codeCompet" onChange="document.formStats.submit()">
-							<Option Value="" selected>Toutes les compétitions</Option>
-							{section name=i loop=$arrayCompet}
-								<Option Value="{$arrayCompet[i].Code}" {$arrayCompet[i].StdOrSelected}>{$arrayCompet[i].Code}-{$arrayCompet[i].Libelle}</Option>
-							{/section}
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2>
-						<label for="AfficheJournee">Journée :</label>
-						<select name="AfficheJournee" onChange="document.formStats.submit()">
-							<Option Value="" selected>Toutes les journées</Option>
-							{section name=i loop=$arrayJournees}
-								<Option Value="{$arrayJournees[i].Id}" {$arrayJournees[i].StdOrSelected}>{$arrayJournees[i].Date_debut|string_format:"Le %s "}{$arrayJournees[i].Lieu|string_format:"à %s"} {$arrayJournees[i].Phase|string_format:"- %s"}{$arrayJournees[i].Niveau|string_format:"(%s)"}</Option>
-							{/section}
-						</select>
-					</td>
-				</tr>
--->
-				<tr>
-					<td colspan=2>
-						<label for="Compets">Compétitions:</label>
-						<div STYLE="overflow-x:scroll; overflow-y: hidden; height:200px;width:240px"> 
+						<label for="Compets">{#Competitions#}:</label>
+						<div STYLE="overflow-x:scroll; overflow-y: hidden; height:200px; width:240px"> 
 							<select name="Compets[]" multiple size=12 style="width:350px">
                                 {section name=i loop=$arrayCompetition}
                                     {assign var='options' value=$arrayCompetition[i].options}
@@ -482,40 +430,36 @@
                                         {/section}
                                     </optgroup>
                                 {/section}
-{*								{html_options options=$arrayCompets selected=$Compets}*}
 							</select>
 						</div>
-						<label><i>(Sélection multiple avec CTRL)</i></label>
+						<label><i>({#Selection_multiple_avec_CTRL#})</i></label>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<label for="nbLignes">Nb lignes:</label>
-						<input type="text" name="nbLignes" id="nbLignes" value="{$nbLignes|default:'30'}">
+						<label for="nbLignes">{#Nb_lignes#} :</label>
+						<input type="text" size="2" name="nbLignes" id="nbLignes" value="{$nbLignes|default:'30'}">
 					</td>
 					<td>
 						<br>
-						<input type="button" value="Mise à jour" onClick="submit()">
+						<input type="button" value="{#MAJ#}" onClick="submit()">
 						<br>
 						<br>
 					</td>
 				</tr>
 				<tr>
 					<th class='titreForm' colspan=2>
-						<label>Statistiques athlète</label>
+						<label>{#Statistiques_athlete#}</label>
 					</th>
 				</tr>
 				<tr>
 					<td colspan=2>
-						<label>Recherche (nom, prénom ou licence)</label>
-						<input type="text" name="choixJoueur" id="choixJoueur" size="30" />
-						<!--<input type="submit" name="maj" id="maj" value="Mise à jour">
+						<label>{#Chercher#}</label>
+						<input type="text" name="choixJoueur" id="choixJoueur" size="30" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" />
 						<br />
-						<label for="comboarbitre1">Recherche avancée</label>-->
+						<center><a href="GestionAthlete.php" id='rechercheAthlete'>{#Acces#}</a></center>
 						<br />
-						<center><a href="GestionAthlete.php" id='rechercheAthlete'>Accès</a></center>
-						<br />
-						<center><a href="GestionAthlete.php">Recherche avancée</a></center>
+						<center><a href="GestionAthlete.php">{#Recherche_avancee#}</a></center>
 						<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete}"/>
 					</td>
 				</tr>

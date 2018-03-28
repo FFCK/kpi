@@ -240,7 +240,7 @@ class GestionDoc extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Gestion Docs", "Docs", false);
+		$this->SetTemplate("Gestion_docs", "Docs", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionDoc');
@@ -249,4 +249,3 @@ class GestionDoc extends MyPageSecure
 
 $page = new GestionDoc();
 
-?>

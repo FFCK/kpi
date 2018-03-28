@@ -4,11 +4,11 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="Author" Content="LG" />
-		<meta property="og:image" content="http://kayak-polo.info/img/KPI.png" />
-		<link rel="image_src" href="http://kayak-polo.info/img/KPI.png" />
+		<meta property="og:image" content="https://www.kayak-polo.info/img/KPI.png" />
+		<link rel="image_src" href="https://www.kayak-polo.info/img/KPI.png" />
 		<!--<meta property="og:title" content="kayak-polo.info" />-->
 		<meta property="og:type" content="article" />
-		<!--<meta property="og:url" content="http://kayak-polo.info"/>-->
+		<!--<meta property="og:url" content="https://www.kayak-polo.info"/>-->
 		<!--<meta property="og:description" content="kayak polo français" />-->
 		<meta property="og:site_name" content="KAYAK-POLO.INFO" />
 		{if $bPublic}
