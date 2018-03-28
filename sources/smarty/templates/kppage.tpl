@@ -56,6 +56,7 @@
         
         <script>
             masquer = 0;
+            lang = '{$lang}';
         </script>
 
         <script type='text/javascript' src='js/jquery-1.11.2.min.js?v={$NUM_VERSION}'></script>

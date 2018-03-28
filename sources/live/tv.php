@@ -224,16 +224,15 @@ class TV extends MyPage
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = '2017'", $rCompetition);
+		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = " . utyGetSaison(), $rCompetition);
 
 		// Chargement des Equipes Classées ...
 		$cmd  = "Select * FROM gickp_Competitions_Equipes ";
-		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = '2017' ";
-		$cmd .= "Order By CltNiveau ";
+		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = " . utyGetSaison() . " ";
+		$cmd .= "Order By CltNiveau_publi ";
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
-		
 		echo "<div id='banner_presentation'></div>\n";
 		$title = $rCompetition['Soustitre2'];
 		echo "<div id='list_medals_title'>$title</div>\n";
