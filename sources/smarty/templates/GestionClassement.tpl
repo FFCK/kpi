@@ -260,23 +260,23 @@
                                             <td><img width="20" src="../img/Pays/{$arrayEquipe_publi[i].Code_comite_dep}.png" alt="{$arrayEquipe_publi[i].Code_comite_dep}" title="{$arrayEquipe_publi[i].Code_comite_dep}" /></td>
                                         {/if}
                                         {if $typeCompetition=='Championnat'}
-                                            <td width="30">{$arrayEquipe_publi[i].Clt}</td>
+                                            <td width="30">{$arrayEquipe_publi[i].Clt_publi}</td>
                                             <td width="200">{$arrayEquipe_publi[i].Libelle}</td>
-                                            <td width="40">{$arrayEquipe_publi[i].Pts/100}</td>
+                                            <td width="40">{$arrayEquipe_publi[i].Pts_publi/100}</td>
                                         {else}
-                                            <td width="30">{$arrayEquipe_publi[i].CltNiveau}</td>
+                                            <td width="30">{$arrayEquipe_publi[i].CltNiveau_publi}</td>
                                             <td width="200">{$arrayEquipe_publi[i].Libelle}</td>
                                             {*<td width="40">{$arrayEquipe_publi[i].PtsNiveau}</td>*}
                                         {/if}
 
-                                        <td width="30">{$arrayEquipe_publi[i].J}</td>
-                                        <td width="30">{$arrayEquipe_publi[i].G}</td>
-                                        <td width="30">{$arrayEquipe_publi[i].N}</td>
-                                        <td width="30">{$arrayEquipe_publi[i].P}</td>
-                                        <td width="30">{$arrayEquipe_publi[i].F}</td>
-                                        <td width="40">{$arrayEquipe_publi[i].Plus}</td>
-                                        <td width="40">{$arrayEquipe_publi[i].Moins}</td>
-                                        <td width="40">{$arrayEquipe_publi[i].Diff}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].J_publi}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].G_publi}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].N_publi}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].P_publi}</td>
+                                        <td width="30">{$arrayEquipe_publi[i].F_publi}</td>
+                                        <td width="40">{$arrayEquipe_publi[i].Plus_publi}</td>
+                                        <td width="40">{$arrayEquipe_publi[i].Moins_publi}</td>
+                                        <td width="40">{$arrayEquipe_publi[i].Diff_publi}</td>
 
                                     </tr>
                                 {/section}
