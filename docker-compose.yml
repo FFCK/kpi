@@ -36,7 +36,7 @@ services:
     myadmin:
         image: phpmyadmin/phpmyadmin:latest
         ports:
-            - 8081:80
+            - 8080:80
         links:
             - db
 

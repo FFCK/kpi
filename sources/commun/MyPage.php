@@ -229,6 +229,13 @@ class MyPage
 			$this->DisplayTemplateGlobal('kppage');
 	}
     
+	// DisplayTemplateNew
+	function DisplayTemplateNewWide($tplName)
+	{
+			$this->m_tpl->assign('contenutemplate', $tplName);	
+			$this->DisplayTemplateGlobal('kppagewide');
+	}
+    
 	// DisplayTemplateFrame
 	function DisplayTemplateFrame($tplName)
 	{
