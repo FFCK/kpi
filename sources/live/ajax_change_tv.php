@@ -16,7 +16,7 @@ $medal = utyGetString($_GET, 'medal');
 
 $db = new MyBdd();
 
-$url  = "live/tv.php";
+$url  = "live/tv2.php";
 $url .= "?show=$show";
 $url .= "&competition=$competition";
 $url .= "&match=$match";

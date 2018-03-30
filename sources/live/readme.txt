@@ -13,6 +13,7 @@ Liste des URL utilisés à Saint-Omer 2017
 2) tv.php 
 	http://www.kayak-polo.info/live/tv.php
 => Panneau de control qui permet d'envoyer sur les différentes voies les informations voulues 
+=> https://www.kayak-polo.info/kptv.php
 
 3) multi_score.php 
 	http://www.kayak-polo.info/live/multi_score.php 			=> Affichage classique
