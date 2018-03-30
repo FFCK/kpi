@@ -64,7 +64,7 @@ jq(document).ready(function(){
                 Go_team(jq('#channel').val(), jq('#match').val(), jq('#team').val())
                 break;
             case 'team_medal':
-                Go_team(jq('#channel').val(), jq('#match').val(), jq('#team').val(), jq('#medal').val())
+                Go_team_medal(jq('#channel').val(), jq('#match').val(), jq('#team').val(), jq('#medal').val())
                 break;
             case 'match':
                 Go_match(jq('#channel').val(), jq('#match').val())
