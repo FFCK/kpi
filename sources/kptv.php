@@ -88,7 +88,7 @@ class Tv extends MyPage
 	{			
         MyPage::MyPage();
 		
-		$this->SetTemplate("Tv control", "Matchs", true);
+		$this->SetTemplate("KPI Tv control", "Matchs", true);
 		$this->Load();
 //		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplateNewWide('kptv');

@@ -26,7 +26,7 @@
             </div>*}
             <!--     end col-xs-3    -->
 
-            {include file='kpmain_menu.tpl'}
+{*            {include file='kpmain_menu.tpl'}*}
 
         </div>
     </div>
