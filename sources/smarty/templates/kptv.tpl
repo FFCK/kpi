@@ -1,7 +1,7 @@
 <div class="container-fluid" id="selector">
     <article id="titre">
         <form id="filtre_evt" name="filtre_evt" method="post" action="">
-            <h1 class='col-sm-5'>{#Controle_tv#}</h1>
+            <h1 class='col-sm-6'>{#Controle_tv#}</h1>
             <div class='col-sm-4'>
                 <label>{#Evenement#}</label>
                 <select id="codeEvt" name="codeEvt">
@@ -22,9 +22,6 @@
                 <input type="hidden" id="filtreCompet" name="filtreCompet" value="{$filtreCompet}">
                 <input type="hidden" id="filtreChannel" name="filtreChannel" value="{$filtreChannel}">
                 <input type="hidden" id="filtrePres" name="filtrePres" value="{$filtrePres}">
-            </div>
-            <div class="col-sm-1">
-                <a href="live/score.php?voie=1" target="_blank" class="btn btn-warning">Controle</a>
             </div>
         </form>
     </article>
@@ -103,10 +100,13 @@
             </select>
         </div>
         <div class='col-sm-2'>
-            <button id="confirm" name="confirm" class="btn btn-lg btn-primary" data-pres="">
+            <button id="confirm" name="confirm" class="btn btn-lg btn-block btn-primary" data-pres="">
                 <label>{#Activer#}</label>
                 <img src="img/logo/2017-WG.jpg" class="img-rounded img-fluid">
             </button>
+            <a id="control" class="btn btn-xs btn-block btn-warning" href="live/tv2.php?voie={$filtreChannel}" target="_blank">
+                {#Controle#}
+            </a>
         </div>
         <br>
         <br>

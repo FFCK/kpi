@@ -15,7 +15,7 @@ class TV extends MyPage
     {
     ?>
         <head>
-            <title>TV2</title>
+            <title>KPI TV ()</title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta name="author" content="F.F.C.K.">
@@ -162,78 +162,70 @@ class TV extends MyPage
 		
 		$idMatch = $this->GetParamInt('match',-1);
 		$equipe = $this->GetParam('team', 'A');
-			
-		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
-
-		// Chargement Record Journée ...
-		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
-
-		// Chargement Record Compétition ...
-		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
-		if ($equipe == 'A')
-			$idEquipe =  $rMatch['Id_equipeA'];
-		else
-			$idEquipe =  $rMatch['Id_equipeB'];
-		
-		// Chargement Equipe 
+		// Chargement Equipe  
+		$cmd  = "SELECT c.Libelle, c.Code_club "
+                . "FROM gickp_Competitions_Equipes c "
+                . "LEFT OUTER JOIN gickp_Matchs m ON (c.Id = m.Id_equipe" . $equipe . ") "
+                . "WHERE m.Id = $idMatch";
+
 		$rEquipe = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipe", $rEquipe);
-
-		// Chargement Joueurs  
-		$cmd  = "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = '$equipe' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "And (a.Capitaine Is Null Or a.Capitaine != 'E') ";
-		$cmd .= "Order By a.Numero ";
-
-		$tJoueurs = null;
-		$db->LoadTable($cmd, $tJoueurs);
-	
-		$title1 = $this->ImgNation64($rEquipe['Code_club']);
-		$title1 .= "&nbsp;<span>";
-		$title1 .= $rEquipe['Libelle'];
-		$title1 .= "</span>";
-		
-//		$title2 = $rCompetition['Soustitre2'];
-
-		echo "<div id='banner_list'></div>\n";
-		echo "<div id='list_team_title1'>$title1</div>\n";
-//		echo "<div id='list_team_title2'>$title2</div>\n";
-
-		// Max 10 Joueurs
-		echo "<div id='list_team_player1' class='list_team_player'>".$this->GetPlayer($tJoueurs,0)."</div>\n";
-		echo "<div id='list_team_player2' class='list_team_player'>".$this->GetPlayer($tJoueurs,1)."</div>\n";
-		echo "<div id='list_team_player3' class='list_team_player'>".$this->GetPlayer($tJoueurs,2)."</div>\n";
-		echo "<div id='list_team_player4' class='list_team_player'>".$this->GetPlayer($tJoueurs,3)."</div>\n";
-		echo "<div id='list_team_player5' class='list_team_player'>".$this->GetPlayer($tJoueurs,4)."</div>\n";
-		echo "<div id='list_team_player6' class='list_team_player'>".$this->GetPlayer($tJoueurs,5)."</div>\n";
-		echo "<div id='list_team_player7' class='list_team_player'>".$this->GetPlayer($tJoueurs,6)."</div>\n";
-		echo "<div id='list_team_player8' class='list_team_player'>".$this->GetPlayer($tJoueurs,7)."</div>\n";
-		echo "<div id='list_team_player9' class='list_team_player'>".$this->GetPlayer($tJoueurs,8)."</div>\n";
-		echo "<div id='list_team_player10' class='list_team_player'>".$this->GetPlayer($tJoueurs,9)."</div>\n";
-		
-		// Chargement Entraineur  
-		$cmd  = "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = '$equipe' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "And (a.Capitaine Is Not Null And a.Capitaine = 'E') ";
-		$cmd .= "Order By a.Numero ";
+		$db->LoadRecord($cmd, $rEquipe);
+        
+        // Chargement Joueurs  
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+                . "CASE WHEN a.Capitaine = 'E' THEN 1 ELSE 0 END joueur "
+                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
+                . "WHERE a.Id_match = $idMatch "
+                . "AND a.Equipe = '$equipe' "
+                . "AND a.Matric = b.matric "
+//                . "AND (a.Capitaine Is Null OR a.Capitaine != 'E') "
+                . "ORDER BY joueur, a.Numero ";
 
 		$tJoueurs = null;
+        $coach = false;
 		$db->LoadTable($cmd, $tJoueurs);
-
-		// Max 3 Entraineurs
-		echo "<div id='list_team_player11' class='list_team_player'>".$this->GetPlayer($tJoueurs,0)."</div>\n";
-		echo "<div id='list_team_player12' class='list_team_player'>".$this->GetPlayer($tJoueurs,1)."</div>\n";
-		echo "<div id='list_team_player13' class='list_team_player'>".$this->GetPlayer($tJoueurs,2)."</div>\n";
+        
+        echo '
+            <div class="container-fluid">
+                <div id="banner_list" class="text-center">
+                    <div id="banner_line1" class="h2">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
+                        <span>
+                        ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
+                        </span>
+                    </div>
+            ';
+        foreach ($tJoueurs as $key => $joueur) {
+            if(utyGetString($joueur, 'Capitaine', '???') != 'E') {
+                if(utyGetString($joueur, 'Capitaine', '') == 'C') {
+                    $captain = ' (Capt)';
+                } else {
+                    $captain = '';
+                }
+                echo '
+                    <div class="banner_line">
+                        <span class="badge">' . utyGetInt($joueur, 'Numero', 999) . '</span>
+                        &nbsp;
+                        <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</span>
+                    </div>';
+            } else {
+                $coach = true;
+            }
+        }
+        if($coach) {
+            echo '<div class="banner_line">&nbsp;</div>';
+            foreach ($tJoueurs as $key => $joueur) {
+                if(utyGetString($joueur, 'Capitaine', '???') == 'E') {
+                    echo '
+                        <div class="banner_line">
+                            <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (Coach)</span>
+                        </div>';
+                }
+            }
+        }
+        echo '
+                </div>
+            </div>';
     }
 
 	function Content_List_Medals()
@@ -282,7 +274,24 @@ class TV extends MyPage
 			<td class="col_bronze"><?php echo $this->VerifNation($tEquipes[2]['Libelle']).' '.$this->ImgNation48($tEquipes[2]['Code_club']);?></td>
 			</tr>
 		</table>
+        
 	<?php
+    
+            echo '
+            <div class="container-fluid">
+                <div id="banner" class="text-center">
+                    <div id="banner_line1">' . $this->ImgNationCss($rJoueur['Numero_comite_dept']) . '&nbsp;
+                        <img src="../img/presentations/podium.png">
+                        <span>
+                        ' . ' ' . $numero
+                            . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
+                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
+                        </span>
+                    </div>
+                </div>
+            </div>';
+
+    
 	}
 
 	function Content_Player()
@@ -311,7 +320,7 @@ class TV extends MyPage
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
-                            . ' ' . utyGetString($rJoueur, 'Prenom','...') . '
+                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
                         </span>
                     </div>
                 </div>
@@ -345,7 +354,7 @@ class TV extends MyPage
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
-                            . ' ' . utyGetString($rJoueur, 'Prenom','...') . '
+                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
                         </span>
                     </div>
                     <div id="banner_line2">' . $this->ImgMedal($medaille) . '&nbsp;
@@ -676,7 +685,7 @@ class TV extends MyPage
 	function Content_Command()
 	{
 ?>
-		<form>
+<!--		<form>
 		<table class='table'>
 
 		<tr>
@@ -786,7 +795,7 @@ class TV extends MyPage
 		</tr>
 		
 		</form>
-		</table>
+		</table>-->
 	
 <?php	
 	}
@@ -850,7 +859,12 @@ class TV extends MyPage
         ?>
 		<script type="text/javascript" src="./js/voie.js" ></script>
  		<script type="text/javascript" src="./js/tv.js" ></script>
-        <script type="text/javascript"> $(document).ready(function(){ Init(<?= $voie; ?>); }); </script>	
+        <script type="text/javascript">
+            $(document).ready(function(){ 
+                Init(<?= $voie; ?>);
+                document.title = 'KPI TV (' + <?= $voie; ?> + ')';
+            }); 
+        </script>	
         <?php
     }
 }

@@ -11,6 +11,12 @@ jq(document).ready(function(){
         jq('#filtre_evt').submit();
     });
     
+    jq('#channel').change(function(){
+        jq('#control').attr('href', 'live/tv2.php?voie=' + jq(this).val());
+        jq('#filtreChannel').val(jq(this).val());
+    })
+    
+    
     jq('#presentation').change(function(){
         var presentation = jq(this).val();
         jq('#confirm').attr('data-pres', presentation)
@@ -98,8 +104,6 @@ jq(document).ready(function(){
                 break;
         } 
     });
-    
-    
     
     // Init
     jq('#presentation').change();
