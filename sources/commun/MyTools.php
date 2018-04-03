@@ -263,6 +263,15 @@ function utyGetString($array, $param, $default = 1)
     return $default;
 }
 
+// utyGetString
+function utyGetPrenom($array, $param, $default = 1)
+{
+    if (isset($array[$param])) {
+        return ucwords(strtolower(addslashes( $array[$param] )));
+    }
+    return $default;
+}
+
 // utyGetSessionPostGet
 
 function utyGetSessionPostGet($param, $default = '')

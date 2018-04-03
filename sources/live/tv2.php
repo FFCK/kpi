@@ -235,24 +235,47 @@ class TV extends MyPage
 		$competition = $this->GetParam('competition');
 
 		// Chargement Record Compétition ...
-		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = " . utyGetSaison(), $rCompetition);
+//		$rCompetition = null;
+//		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = " . utyGetSaison(), $rCompetition);
 
 		// Chargement des Equipes Classées ...
-		$cmd  = "Select * FROM gickp_Competitions_Equipes ";
-		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = " . utyGetSaison() . " ";
-		$cmd .= "Order By CltNiveau_publi ";
+		$cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi, c.Soustitre2 "
+                . "FROM gickp_Competitions c, gickp_Competitions_Equipes ce "
+                . "WHERE ce.Code_compet = '".$competition."' "
+                . "AND ce.Code_saison = " . utyGetSaison() . " "
+                . "AND c.Code = ce.Code_compet "
+                . "AND c.Code_saison = ce.Code_saison "
+                . "ORDER BY CltNiveau_publi "
+                . "LIMIT 0, 3 ";
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
-		echo "<div id='banner_presentation'></div>\n";
-		$title = $rCompetition['Soustitre2'];
-		echo "<div id='list_medals_title'>$title</div>\n";
+//		echo "<div id='banner_presentation'></div>\n";
+//		echo "<div id='list_medals_title'>$title</div>\n";
 
-		if (count($tEquipes) < 3) return;
+		if (count($tEquipes) != 3) {
+            return;
+        }
 		
+        echo '
+            <div class="container-fluid">
+                <div id="podium" class="text-center">
+                    <div id="podium_line1">' . $this->ImgNationCss($tEquipes[0]['Code_club']) . '&nbsp;
+                        <span>' . utyGetString($tEquipes[0], 'Libelle', '???') . '</span>
+                    </div>
+                    <div id="podium_line2">' . $this->ImgNationCss($tEquipes[1]['Code_club']) . '&nbsp;
+                        <span>' . utyGetString($tEquipes[1], 'Libelle', '???') . '</span>
+                    </div>
+                    <div id="podium_line3">' . $this->ImgNationCss($tEquipes[2]['Code_club']) . '&nbsp;
+                        <span>' . utyGetString($tEquipes[2], 'Libelle', '???') . '</span>
+                    </div>
+                    <div id="podium_categorie">
+                        <span>' . utyGetString($tEquipes[0], 'Soustitre2', '???') . '</span>
+                    </div>
+                </div>
+            </div>';
 		?>
-		<table id="table_medals">
+<!--		<table id="table_medals">
 			<tr>
 			<td class="col_img_medal"><?php echo $this->ImgMedal48('GOLD');?></td>
 			<td class="col_silver"></td>
@@ -273,23 +296,10 @@ class TV extends MyPage
 			<td class="col_gold"></td>
 			<td class="col_bronze"><?php echo $this->VerifNation($tEquipes[2]['Libelle']).' '.$this->ImgNation48($tEquipes[2]['Code_club']);?></td>
 			</tr>
-		</table>
+		</table>-->
         
 	<?php
     
-            echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">' . $this->ImgNationCss($rJoueur['Numero_comite_dept']) . '&nbsp;
-                        <img src="../img/presentations/podium.png">
-                        <span>
-                        ' . ' ' . $numero
-                            . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
-                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
-                        </span>
-                    </div>
-                </div>
-            </div>';
 
     
 	}
