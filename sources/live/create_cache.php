@@ -45,7 +45,7 @@ function CreateCache($bCache)
 //CreateCache(true);
 
 $match = new CacheMatch($_GET);
-$db = new MyBase();
+$db = new MyBdd();
 
 $listMatch = array();
 array_push($listMatch, 1500);
@@ -56,5 +56,3 @@ $match->Match($db, 1500);
 $match->Match($db, 3772298);
 
 //$match->Terrain(1, 3772279);
-
-?>

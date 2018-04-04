@@ -1,5 +1,5 @@
 <?php
-include_once('base.php');
+include_once('../commun/MyBdd.php');
 include_once('create_cache_match.php');
 
 // Exemple 
@@ -7,6 +7,6 @@ include_once('create_cache_match.php');
 
 $idMatch = $_GET['match'];
 
-$db = new MyBase();
+$db = new MyBdd();
 $cache = new CacheMatch($_GET);
 $cache->Match($db, $idMatch);
