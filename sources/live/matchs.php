@@ -92,7 +92,7 @@ class Matchs extends MyPage
 
     function Content()
     {
-		$db = new MyBase();
+		$db = new MyBdd();
 	
 		$cmd  = "SELECT max(a.Heure_match) Heure_match ";
 		$cmd .= "FROM gickp_Matchs a, gickp_Journees b ";
@@ -138,4 +138,3 @@ class Matchs extends MyPage
 // PdfMatchMulti.php?listMatch=
 
 new Matchs($_GET);
-?>

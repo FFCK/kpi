@@ -109,6 +109,8 @@ class CacheMatch
 		$arrayCache = array('id_match' => $idMatch, 'pitch' => $pitch);
 		echo json_encode($arrayCache);
 		$this->EndCache('event'.$idEvent.'_pitch'.$pitch.'.json');
+		echo json_encode($arrayCache);
+		$this->EndCache($pitch.'_terrain.json');
 
 //		$db = new myBase();
 //		$this->Match($db, $idMatch);
