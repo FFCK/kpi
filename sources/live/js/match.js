@@ -388,7 +388,11 @@ function VerifNation(nation)
 function ImgNation(nation)
 {
 	nation = VerifNation(nation);
-	return "<img class='centre' src='./img/nation/"+nation+".png' height='32' width='32' />";
+    if(nation.length > 0) {
+        return "<img class='centre' src='./img/nation/"+nation+".png' height='32' width='32' />";
+    } else {
+        return "";
+    }
 }
 
 function ImgNation48(nation)

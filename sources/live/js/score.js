@@ -96,7 +96,7 @@ function ParseCacheScore(jsonTxt)
 		return;	// Data JSON non correcte ...
 
 	var rowMatch = theContext.Match.GetRow(jsonData.id_match);
-	if (rowMatch < 0)
+    if (rowMatch < 0)
 		return; // Id Match pas dans la liste ... ???
 
 	if (jsonData.tick == theContext.Match.GetTickScore(rowMatch))
@@ -106,11 +106,9 @@ function ParseCacheScore(jsonTxt)
 	theContext.Match.SetPeriode(rowMatch, jsonData.periode);
 	
 	var nbEvents = jsonData.event.length;
-	if (nbEvents > 0)
-	{
+	if (nbEvents > 0) {
 		var lastId = jsonData.event[0].Id;
-		if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && (theContext.Match.GetIdEvent(rowMatch) >= 0))
-		{
+		if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && (theContext.Match.GetIdEvent(rowMatch) >= 0)) {
 			var line;
 			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
 			line += "&nbsp;";
@@ -123,15 +121,12 @@ function ParseCacheScore(jsonTxt)
 				line = ImgNation(theContext.Match.GetEquipe2(rowMatch));
 				
 			line += "&nbsp;<span>";
-			if (jsonData.event[0].Numero == "undefined")
-			{
+			if (jsonData.event[0].Numero == "undefined") {
 				if (jsonData.event[0].Equipe_A_B == 'A')
 					line = "Team "+theContext.Match.GetEquipe1(rowMatch);
 				else	
 					line = "Team "+theContext.Match.GetEquipe2(rowMatch);
-			}
-			else
-			{
+			} else {
 				line += jsonData.event[0].Numero;
 				line += ' - ';
 				line += jsonData.event[0].Nom;
@@ -141,8 +136,7 @@ function ParseCacheScore(jsonTxt)
 			line += "</span>";
 			$('#match_event_line2').html(line);
 			
-			$('#bandeau_goal').fadeIn(1);
-			$('#bandeau_goal').delay(6000).fadeOut(0);
+			$('#bandeau_goal').fadeIn(400).delay(6000).fadeOut(900);
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId);
@@ -245,11 +239,13 @@ function ParseCacheGlobal(jsonTxt)
 	var equipe1 = jsonData.equipe1.nom;
 	equipe1 = equipe1.replace(" Women", " W.");
 //	equipe1 = equipe1.replace(" Men", " M.");
+    equipe1 = equipe1.substr(0, 3);
 	$('#equipe1').html(equipe1);
 	
 	var equipe2 = jsonData.equipe2.nom;
 	equipe2 = equipe2.replace(" Women", " W.");
 //	equipe2 = equipe2.replace(" Men", " M.");
+    equipe2 = equipe2.substr(0, 3);
 	$('#equipe2').html(equipe2);
 	
 	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club);
@@ -257,6 +253,8 @@ function ParseCacheGlobal(jsonTxt)
 
 	$('#nation1').html(ImgNation48(jsonData.equipe1.club));
 	$('#nation2').html(ImgNation48(jsonData.equipe2.club));
+    
+    $('#categorie').html(jsonData.categ);
 	
 /* Joueurs 
 	var htmlData = '';
