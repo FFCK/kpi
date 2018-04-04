@@ -38,7 +38,8 @@ class Terrain extends MyPage
 
     function Liste(&$db, $pitch)
   	{
-		$idEvent = 93;
+		/* TODO: Event et Date_match dynamique */
+        $idEvent = 93;
 		
 		echo "<h1>Terrain n°$pitch</h1>\n";
 	

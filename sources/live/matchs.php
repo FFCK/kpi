@@ -64,6 +64,7 @@ class Matchs extends MyPage
 		$cmd .= "And a.Id_EquipeA = c.Id ";
 		$cmd .= "And a.Id_EquipeB = d.Id ";
 		//$cmd .= "AND a.Date_match = '2014-09-25' ";
+		/* TODO: Code_competition dynamique */
 		$cmd .= "And b.Code_competition In ('CECF', 'CECH') ";
 		$cmd .= "And a.Heure_fin = '00:00:00' ";
 		$cmd .= "And a.Statut In ('ATT', 'ON') ";
@@ -98,6 +99,7 @@ class Matchs extends MyPage
 		$cmd .= "FROM gickp_Matchs a, gickp_Journees b ";
 		$cmd .= "WHERE a.Id_journee = b.Id ";
 		//$cmd .= "AND a.Date_match = '2014-09-25' ";
+		/* TODO: Code_competition dynamique */
 		$cmd .= "And b.Code_competition In ('CECF', 'CECH') ";
 		$cmd .= "And a.Heure_fin != '00:00:00' ";
 		$cmd .= "And a.Statut In ('END') ";

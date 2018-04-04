@@ -264,11 +264,15 @@ function utyGetString($array, $param, $default = 1)
 }
 
 // utyGetString
-function utyGetPrenom($array, $param, $default = 1)
+function utyGetPrenom($array, $param, $default = '')
 {
     if (isset($array[$param])) {
-        return ucwords(strtolower(addslashes( $array[$param] )));
+        $prenom = str_replace ('-', '¿ ', strtolower(addslashes( $array[$param] ))); 
+        $prenom = ucwords ($prenom);
+        $prenom = str_replace ('¿ ', '-', $prenom);
+        return $prenom;
     }
+    
     return $default;
 }
 
