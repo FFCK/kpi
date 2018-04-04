@@ -73,8 +73,7 @@ class Score extends MyPage
 			<div id="match_event_line2"></div>
 		</div>
 
-		<div id="lien_pdf">
-		</div>
+		<div id="lien_pdf"></div>
 		
 		<?php
     }

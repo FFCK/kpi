@@ -38,7 +38,7 @@ class Terrain extends MyPage
 
     function Liste(&$db, $pitch)
   	{
-		$idEvent = 54;
+		$idEvent = 93;
 		
 		echo "<h1>Terrain n°$pitch</h1>\n";
 	
@@ -47,9 +47,9 @@ class Terrain extends MyPage
 		$cmd .= "WHERE a.Id_journee = b.Id ";
 		$cmd .= "And a.Id_EquipeA = c.Id ";
 		$cmd .= "And a.Id_EquipeB = d.Id ";
-		$cmd .= "AND a.Date_match = '2014-09-24' ";
+		$cmd .= "AND a.Date_match = '2018-04-04' ";
 		$cmd .= "And a.Terrain = $pitch ";
-		$cmd .= "And b.Code_competition In ('CMH', 'CMF', 'CMH21', 'CMF21') ";
+		$cmd .= "And b.Code_competition In ('CMH', 'CMF', 'CMH21', 'CMF21', 'MCP', 'MCP2') ";
 		$cmd .= "Order By a.Heure_match ";
 
 		$tMatch = null;
@@ -77,7 +77,7 @@ class Terrain extends MyPage
 	
     function Content()
   	{
-		$db = new MyBase();
+		$db = new MyBdd();
 		
 		$this->Liste($db, 1);
 		$this->Liste($db, 2);
@@ -124,4 +124,3 @@ class Terrain extends MyPage
 }
 
 new Terrain($_GET);
-?>
