@@ -274,34 +274,6 @@ class TV extends MyPage
                     </div>
                 </div>
             </div>';
-		?>
-<!--		<table id="table_medals">
-			<tr>
-			<td class="col_img_medal"><?php echo $this->ImgMedal48('GOLD');?></td>
-			<td class="col_silver"></td>
-			<td class="col_gold"><?php echo $this->VerifNation($tEquipes[0]['Libelle']).' '.$this->ImgNation48($tEquipes[0]['Code_club']);?></td>
-			<td class="col_bronze"></td>
-			</tr>
-
-			<tr>
-			<td class="col_img_medal"><?php echo $this->ImgMedal48('SILVER');?></td>
-			<td class="col_silver"><?php echo $this->VerifNation($tEquipes[1]['Libelle']).' '.$this->ImgNation48($tEquipes[1]['Code_club']);?></td>
-			<td class="col_gold"></td>
-			<td class="col_bronze"></td>
-			</tr>
-
-			<tr>
-			<td class="col_img_medal"><?php echo $this->ImgMedal48('BRONZE');?></td>
-			<td class="col_silver"></td>
-			<td class="col_gold"></td>
-			<td class="col_bronze"><?php echo $this->VerifNation($tEquipes[2]['Libelle']).' '.$this->ImgNation48($tEquipes[2]['Code_club']);?></td>
-			</tr>
-		</table>-->
-        
-	<?php
-    
-
-    
 	}
 
 	function Content_Player()
