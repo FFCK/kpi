@@ -52,7 +52,6 @@
                 
                 <option value="score" {if $filtrePres == 'score'}selected{/if}>Score</option>
                 <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
-                <option value="multi_score_2" {if $filtrePres == 'multi_score_2'}selected{/if}>Multi score 2</option>
                 <option value="schema" {if $filtrePres == 'schema'}selected{/if}>Schema</option>
                 <option value="frame_terrains" {if $filtrePres == 'frame_terrains'}selected{/if}>Terrains</option>
             </select>
@@ -100,11 +99,21 @@
                 <option value="GOLD">Gold</option>
             </select>
         </div>
+        <div class='col-sm-1 params' id='count-col'>
+            <label>Count</label>
+            <select id="count" name="count">
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+            </select>
+        </div>
         <div class='col-sm-1 params' id='speaker-col'>
             <label>Speaker</label>
             <select id="speaker" name="speaker">
                 <option value="0">Non</option>
                 <option value="1">Oui</option>
+                <option value="2">Peut-être</option>
             </select>
         </div>
         <div class='col-sm-2 pull-right'>

@@ -8,14 +8,7 @@ class MultiScore extends MyPage
 	
     function Head()
     {
-		$tv = $this->GetParamInt('tv', 0);
-		if ($tv == 1)
-			$tv = '_tv';
-		elseif ($tv == 2)
-			$tv = '_phone';
-		else
-			$tv = '';
-		
+		$speaker = $this->GetParamInt('speaker', 0);
     ?>
         <head>
         <title>Multi-Scores</title>
@@ -31,7 +24,12 @@ class MultiScore extends MyPage
 		
         <!-- CSS styles -->
         <link href="./css/bootstrap.min.css" rel="stylesheet">
-		<link href="./css/multi_score<?php echo $tv;?>.css?tick=<?php echo uniqid()?>" rel="stylesheet">
+		<link href="./css/multi_score.css?tick=<?php echo uniqid()?>" rel="stylesheet">
+        <?php if ($speaker == 1) { ?>
+            <link href="./css/multi_score_speaker.css?tick=<?php echo uniqid()?>" rel="stylesheet">
+        <?php } elseif ($speaker == 2) { ?>
+            <link href="./css/multi_score_phone.css?tick=<?php echo uniqid()?>" rel="stylesheet">
+        <?php } ?>
 		
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
@@ -47,39 +45,42 @@ class MultiScore extends MyPage
     {
 		$count = $this->GetParamInt('count', 4);
 
-		for ($i=1;$i<=$count;$i++)
-		{
- ?>
-			<div id="container_<?php echo $i;?>">
-				<div class="pitch">Pitch <?php echo $i;?></div>
-				<div class="container_score">
-					<div class="bandeau_score" id="bandeau_score_<?php echo $i?>"></div>
-			
-					<div class="match_horloge" id="match_horloge_<?php echo $i?>"></div>
-					<div class="match_periode" id="match_periode_<?php echo $i?>"></div>
-			 
-					<div class="equipe1" id="equipe1_<?php echo $i?>"></div>
-					<div class="equipe2" id="equipe2_<?php echo $i?>"></div>
-			 
-					<div class="nation1" id="nation1_<?php echo $i?>"></div>
-					<div class="nation2" id="nation2_<?php echo $i?>"></div>
-			  
-					<div class="score1" id="score1_<?php echo $i?>"></div>
-					<div class="score_separation" id="score_separation_<?php echo $i?>">-</div>
-					<div class="score2" id="score2_<?php echo $i?>"></div>
+        for ($i=1;$i<=$count;$i++) {
+        ?>
+            <div class='col-sm-6 quart'>
+                <div class="terrain btn btn-default disabled" id="terrain_<?= $i ?>">Pitch <?= $i ?></div>
+                <div class="bandeau_score" id="bandeau_score_<?= $i ?>">
+                    <div class="match_horloge" id="match_horloge_<?= $i ?>"></div>
+                    <div class="match_periode" id="match_periode_<?= $i ?>"></div>
 
-					<div class="lien_pdf" id="lien_pdf_<?php echo $i?>"></div>
-				</div>
-				
-				<div class="container_goal">
-					<div class="bandeau_goal" id="bandeau_goal_<?php echo $i?>">
-						<div>&nbsp;</div>
-						<div class="match_event_line1" id="match_event_line1_<?php echo $i?>"></div>
-						<div class="match_event_line2" id="match_event_line2_<?php echo $i?>"></div>
-					</div>
-				</div>
-			</div>
-<?php	
+                    <div class="equipe1" id="equipe1_<?= $i ?>"></div>
+                    <div class="equipe2" id="equipe2_<?= $i ?>"></div>
+
+                    <div class="nation1" id="nation1_<?= $i ?>"></div>
+                    <div class="nation2" id="nation2_<?= $i ?>"></div>
+
+                    <div class="score1" id="score1_<?= $i ?>"></div>
+                    <div class="score_separation" id="score_separation_<?= $i ?>">-</div>
+                    <div class="score2" id="score2_<?= $i ?>"></div>
+
+                    <div class="categorie" id="categorie_<?= $i ?>"></div>
+                </div>
+
+                <?php
+                if ($this->GetParam('speaker') == 1)
+                {
+                    ?>
+                    <div class="lien_pdf" id="lien_pdf_<?= $i ?>"></div>
+                    <?php
+                }
+                ?>
+
+                <div class="bandeau_goal" id="bandeau_goal_<?= $i ?>">
+                    <div class="match_event_line1" id="match_event_line1_<?= $i ?>"></div>
+                    <div class="match_event_line2" id="match_event_line2_<?= $i ?>"></div>
+                </div>
+            </div>     
+        <?php	
 		}
     }
 
@@ -101,4 +102,3 @@ class MultiScore extends MyPage
 }
 
 new MultiScore($_GET);
-?>
