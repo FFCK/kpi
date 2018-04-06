@@ -256,9 +256,10 @@ function ParseCacheGlobal(jsonTxt)
     
     $('#categorie').html(jsonData.categ);
     
-    $('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Game report</a>');
+    $('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch=' 
+            + jsonData.id_match 
+            + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>');
     $('#terrain').html('Pitch ' + jsonData.terrain);
-    console.log(jsonData);
 	
 /* Joueurs 
 	var htmlData = '';

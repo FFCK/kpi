@@ -19,7 +19,7 @@ function RefreshHorloge()
 	}
 	
 	var nb = theContext.Match.GetCount();
-	for (var i=0;i<nb;i++)
+	for (var i=0; i<nb; i++)
 	{
 		if ( (theContext.Match.GetEtat(i) == 'run') || (theContext.Match.GetEtat(i) == 'start') )
 		{
@@ -125,8 +125,7 @@ function ParseCacheScore(jsonTxt)
 			
 			$('#match_event_line2_'+idMulti).html(line);
 			
-			$('#bandeau_goal_'+idMulti).fadeIn(1);
-			$('#bandeau_goal_'+idMulti).delay(6000).fadeOut(2000);
+			$('#bandeau_goal_'+idMulti).fadeIn(400).delay(6000).fadeOut(900);
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId);
@@ -220,14 +219,22 @@ function ParseCacheGlobal(jsonTxt)
 	
 	$('#match_nom_'+idMulti).html(jsonData.competition);
 
-	$('#equipe1_'+idMulti).html(jsonData.equipe1.nom);
-	$('#equipe2_'+idMulti).html(jsonData.equipe2.nom);
+	$('#equipe1_'+idMulti).html(jsonData.equipe1.nom.substr(0, 3));
+	$('#equipe2_'+idMulti).html(jsonData.equipe2.nom.substr(0, 3));
 	
 	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club);
 	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club);
 
-	$('#nation1_'+idMulti).html(ImgNation(jsonData.equipe1.club));
-	$('#nation2_'+idMulti).html(ImgNation(jsonData.equipe2.club));
+	$('#nation1_'+idMulti).html(ImgNation48(jsonData.equipe1.club));
+	$('#nation2_'+idMulti).html(ImgNation48(jsonData.equipe2.club));
+    
+    $('#categorie_'+idMulti).html(jsonData.categ);
+    
+    $('#lien_pdf_'+idMulti).html('<a href="../PdfMatchMulti.php?listMatch=' 
+            + jsonData.id_match 
+            + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>');
+    $('#terrain_'+idMulti).html('Pitch ' + jsonData.terrain);
+	
 }
 
 function RefreshCacheMultiPitch()
@@ -265,7 +272,6 @@ function ParseCacheMultiPitch(jsonTxt)
 	{
 		var rowMatch = jsonData.pitch-1;
 		theContext.Match.SetId(rowMatch,jsonData.id_match);
-		$('#lien_pdf_'+(rowMatch+1).toString()).html("<a target='_blank' href='https://www.kayak-polo.info/PdfMatchMulti.php?listMatch="+jsonData.id_match+"'>Lien vers la Feuille de Match</a>");
 	}
 }
 
