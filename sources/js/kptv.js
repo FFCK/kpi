@@ -20,7 +20,6 @@ jq(document).ready(function(){
         jq('#terrain').val(jq(this).find('option:selected').data('terrain'));
     })
     
-    
     jq('#presentation').change(function(){
         var presentation = jq(this).val();
         jq('#confirm').attr('data-pres', presentation)
@@ -61,6 +60,9 @@ jq(document).ready(function(){
                 break;
             case 'force_cache_match':
                 jq('#match-col').show();
+                break;
+            case 'frame_terrains':
+                jq('#count-col').show();
                 break;
         }
     });
@@ -108,11 +110,28 @@ jq(document).ready(function(){
                 ChangeVoie(jq('#channel').val(), url);
                 break;
             case 'frame_terrains':
-//                frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24
-                url = 'frame_terrains.php?';
+                switch(jq('#count').val()){
+                    case '1': 
+                        terrains = '1';
+                        break;
+                    case '2':
+                        terrains = '1,2';
+                        break;
+                    case '3':
+                        terrains = '1,2,3';
+                        break;
+                    case '4':
+                        terrains = '1,2,3,4';
+                        break;
+                    default: 
+                        terrains = '1,2,3';
+                        break;
+                }
+//                frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24&terrains=1,2,3,4
+                url = 'frame_terrains.php?event=' + jq('#codeEvt').val() + '&Css=sainto_hd&terrains=' 
+                        + terrains + '&filtreJour=' + jq('#jour').val();
                 ChangeVoie(jq('#channel').val(), url);
                 break;
-                
                 
             case 'force_cache_match':
                 url = 'live/force_cache_match.php?match=' + jq('#match').val();

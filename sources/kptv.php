@@ -32,7 +32,7 @@ class Tv extends MyPage
         $_SESSION['filtrePres'] = $filtrePres;
         $this->m_tpl->assign('filtrePres', $filtrePres);
         
-		$jour = utyGetSession('jour', 0);
+		$jour = utyGetSession('jour', '');
 		$jour = utyGetPost('jour', $jour);
         $_SESSION['jour'] = $jour;
         $this->m_tpl->assign('jour', $jour);
@@ -67,7 +67,7 @@ class Tv extends MyPage
             $arrayCompet[] = $row['Code_competition'];
             $arrayJours[] = $row['Date_match'];
 //            echo $row['Code_competition'] . ' ' . $row['Date_match'] . ' ' . $row['Heure_match'] . ' #' . $row['Numero_ordre'] . ' ' . $row['equipeA'] . ' ' . $row['equipeB'] . '<br>';
-            if( ($row['Date_match'] == $jour || $jour == 0)
+            if( ($row['Date_match'] == $jour || $jour == '')
                     && ($row['Code_competition'] == $filtreCompet || $filtreCompet == '') ) {
                 array_push($arrayMatchs, $row);
             }
