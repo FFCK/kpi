@@ -6,25 +6,11 @@
         <meta charset="utf-8" />
         <meta name="Author" Content="LG" />
         
-        <!-- FB Meta -->
-        <meta property="og:image" content="https://www.kayak-polo.info/img/newKPI2.jpg" />
-        <link rel="image_src" href="https://www.kayak-polo.info/img/newKPI2.jpg" />
-        <meta property="og:title" content="kayak-polo.info" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.kayak-polo.info"/>
-        <meta property="og:description" content="FFCK - Commission Nationale d'Activité Kayak-Polo" />
-        <meta property="og:site_name" content="KAYAK-POLO.INFO" />
-
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <link rel="pingback" href="https://www.kayak-polo.info/wordpress/xmlrpc.php">
-        <link rel="profile" href="http://gmpg.org/xfn/11">
         <!-- Mobile Specific Meta -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux" href="http://kayak-polo.info/?feed=rss2" />
-        <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux des commentaires" href="http://kayak-polo.info/?feed=comments-rss2" />
 
-        <link rel='stylesheet' href='css/fullcalendar.min.css' type='text/css' media='all' />
         <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
         <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
         <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' />
