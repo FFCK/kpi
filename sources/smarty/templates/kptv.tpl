@@ -14,7 +14,7 @@
             <div class='col-sm-2'>
                 <label>{#Date#}</label>
                 <select id="jour" name="jour">
-                    <option value="0">{#Toutes#}</option>
+                    <option value="">{#Toutes#}</option>
                     {section name=i loop=$arrayJours}
                         <option value="{$arrayJours[i]}" {if $arrayJours[i] == $jour}selected{/if}>{$arrayJours[i]}</option>
                     {/section}
