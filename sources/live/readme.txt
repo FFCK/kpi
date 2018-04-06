@@ -41,6 +41,8 @@ Liste des URL utilisés à Saint-Omer 2017
 	permet de forcer et de créer les 3 fichiers de cache pour un match donné 
 	Exemple : http://www.kayak-polo.info/live/force_cache_match.php?match=79261771
 
+7) schema.php
+    Permet d'afficher 4 schemas sur une page. Non dynamique (liens vers les schémas dans /live/css/schema.css)
 
 => voir aussi /live/sql/url.txt et list_/live/sql/match.sql
 
