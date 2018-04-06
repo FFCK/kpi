@@ -9,4 +9,8 @@ $idMatch = $_GET['match'];
 
 $db = new MyBdd();
 $cache = new CacheMatch($_GET);
-$cache->Match($db, $idMatch);
+if($cache->Match($db, $idMatch)) {
+    echo "OK";
+} else {
+    echo "Hey !";
+}

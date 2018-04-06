@@ -586,7 +586,7 @@ function ParseCacheTerrain(jsonTxt)
 		RefreshCacheChrono();
 		RefreshCacheGlobal();
 		
-		if (theContext.Speaker == 1)
-			$('#lien_pdf').html("<a target='_blank' href='https://www.kayak-polo.info/PdfMatchMulti.php?listMatch="+jsonData.id_match+"'>Lien vers la Feuille de Match</a>");
+//		if (theContext.Speaker == 1)
+//			$('#lien_pdf').html("<a target='_blank' href='https://www.kayak-polo.info/PdfMatchMulti.php?listMatch="+jsonData.id_match+"'>Lien vers la Feuille de Match</a>");
 	}
 }
