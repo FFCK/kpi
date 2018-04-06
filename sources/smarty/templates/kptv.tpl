@@ -65,41 +65,49 @@
                 {/section}
             </select>
         </div>
-        <div class='col-sm-3'>
+        <div class='col-sm-3 params' id='match-col'>
             <label>{#Match#}</label>
-            <select id="match" name="match" class="params">
+            <select id="match" name="match">
                 {section name=i loop=$arrayMatchs}
-                    <option value="{$arrayMatchs[i].Id}">
-                        #{$arrayMatchs[i].Numero_ordre} ({$arrayMatchs[i].Heure_match})
+                    <option value="{$arrayMatchs[i].Id}" data-terrain="{$arrayMatchs[i].Terrain}">
+                        #{$arrayMatchs[i].Numero_ordre} {#Terr#}.{$arrayMatchs[i].Terrain} {$arrayMatchs[i].Heure_match}
                         : {$arrayMatchs[i].equipeA} - {$arrayMatchs[i].equipeB}
                     </option>
                 {/section}
             </select>
+            <input type="hidden" id="terrain" name="terrain" value="">
         </div>
-        <div class='col-sm-1'>
+        <div class='col-sm-1 params' id='team-col'>
             <label>{#Equipe#}</label>
-            <select id="team" name="team" class="params">
+            <select id="team" name="team">
                 <option value="A">A</option>
                 <option value="B">B</option>
             </select>
         </div>
-        <div class='col-sm-1'>
+        <div class='col-sm-1 params' id='number-col'>
             <label>{#Joueur#}</label>
-            <select id="number" name="number" class="params">
+            <select id="number" name="number">
                 {section name=i start=1 loop=20}
                     <option value="{$smarty.section.i.index}">{$smarty.section.i.index}</option>
                 {/section}
             </select>
         </div>
-        <div class='col-sm-1'>
+        <div class='col-sm-1 params' id='medal-col'>
             <label>{#Medaille#}</label>
-            <select id="medal" name="medal" class="params">
+            <select id="medal" name="medal">
                 <option value="BRONZE">Bronze</option>
                 <option value="SILVER">Silver</option>
                 <option value="GOLD">Gold</option>
             </select>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-sm-1 params' id='speaker-col'>
+            <label>Speaker</label>
+            <select id="speaker" name="speaker">
+                <option value="0">Non</option>
+                <option value="1">Oui</option>
+            </select>
+        </div>
+        <div class='col-sm-2 pull-right'>
             <button id="confirm" name="confirm" class="btn btn-lg btn-block btn-primary" data-pres="">
                 <label>{#Activer#}</label>
                 <img src="img/logo/2017-WG.jpg" class="img-rounded img-fluid">

@@ -255,6 +255,9 @@ function ParseCacheGlobal(jsonTxt)
 	$('#nation2').html(ImgNation48(jsonData.equipe2.club));
     
     $('#categorie').html(jsonData.categ);
+    
+    $('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Game report</a>');
+    $('#terrain').html('Pitch ' + jsonData.terrain);
 	
 /* Joueurs 
 	var htmlData = '';
