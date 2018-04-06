@@ -49,11 +49,12 @@
                 <option value="match" {if $filtrePres == 'match'}selected{/if}>Game</option>
                 <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
                 <option value="list_team" {if $filtrePres == 'list_team'}selected{/if}>List team</option>
-                
                 <option value="score" {if $filtrePres == 'score'}selected{/if}>Score</option>
                 <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
                 <option value="schema" {if $filtrePres == 'schema'}selected{/if}>Schema</option>
                 <option value="frame_terrains" {if $filtrePres == 'frame_terrains'}selected{/if}>Terrains</option>
+                
+                <option value="force_cache_match" {if $filtrePres == 'force_cache_match'}selected{/if}>Force cache match</option>
             </select>
         </div>
         <div class='col-sm-1'>
