@@ -121,6 +121,7 @@ class CacheMatch
 		$this->MatchGlobal($db, $idMatch);
 		$this->MatchScore($db, $idMatch);
 		$this->MatchChrono($db, $idMatch);
+        return true;
 	}
 	
 	function MatchGlobal(&$db, $idMatch)
