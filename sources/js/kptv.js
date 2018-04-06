@@ -16,6 +16,10 @@ jq(document).ready(function(){
         jq('#filtreChannel').val(jq(this).val());
     })
     
+    jq('#match').change(function(){
+        jq('#terrain').val(jq(this).find('option:selected').data('terrain'));
+    })
+    
     
     jq('#presentation').change(function(){
         var presentation = jq(this).val();
@@ -26,28 +30,31 @@ jq(document).ready(function(){
             case 'list_medals':
                 break;
             case 'referee':
-                jq('#match').show();
+                jq('#match-col').show();
                 break;
             case 'player':
-                jq('#match, #team, #number').show();
+                jq('#match-col, #team-col, #number-col').show();
                 break;
             case 'player_medal':
-                jq('#match, #team, #number, #medal').show();
+                jq('#match-col, #team-col, #number-col, #medal-col').show();
                 break;
             case 'team':
-                jq('#match, #team').show();
+                jq('#match-col, #team-col').show();
                 break;
             case 'team_medal':
-                jq('#match, #team, #medal').show();
+                jq('#match-col, #team-col, #medal-col').show();
                 break;
             case 'match':
-                jq('#match').show();
+                jq('#match-col').show();
                 break;
             case 'match_score':
-                jq('#match').show();
+                jq('#match-col').show();
                 break;
             case 'list_team':
-                jq('#match, #team').show();
+                jq('#match-col, #team-col').show();
+                break;
+            case 'score':
+                jq('#match-col, #speaker-col').show();
                 break;
         }
     });
@@ -82,7 +89,7 @@ jq(document).ready(function(){
                 Go_list_team(jq('#channel').val(), jq('#match').val(), jq('#team').val())
                 break;
             case 'score':
-                url = 'live/score.php';
+                url = 'live/score.php?terrain=' + jq('#terrain').val() + '&speaker=' + jq('#speaker').val();
                 ChangeVoie(jq('#channel').val(), url);
                 break;
             case 'multi_score':
@@ -107,6 +114,7 @@ jq(document).ready(function(){
     
     // Init
     jq('#presentation').change();
+    jq('#match').change();
 
 });
 

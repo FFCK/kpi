@@ -23,20 +23,15 @@ class Score extends MyPage
 		
         <!-- CSS styles -->
         <link href="./css/bootstrap.min.css" rel="stylesheet">
-	<?php
+        <link href="./css/score2.css" rel="stylesheet">
+        <?php
 		if ($this->GetParam('speaker') == '1')
 		{
-	?>
+            ?>
 			<link href="./css/score_speaker.css" rel="stylesheet">
-	<?php
+            <?php
 		}
-		else
-		{
-	?>
-			<link href="./css/score2.css" rel="stylesheet">
-	<?php
-		}
-	?>
+        ?>
 		
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
@@ -51,7 +46,7 @@ class Score extends MyPage
     function Content()
     {
     ?>			
-        <div id="match_horloge_etat"></div>
+        <!--<div id="match_horloge_etat"></div>-->
 
  
 		<div id="bandeau_score">
@@ -71,19 +66,20 @@ class Score extends MyPage
             <div id="categorie"></div>
         </div>
         
-        <!--<div class="container-fluid">-->
-            <div id="bandeau_goal">
-                <div id="match_event_line1"></div>
-                <div id="match_event_line2"></div>
-            </div>
-        <!--</div>-->
+        <?php
+		if ($this->GetParam('speaker') == '1')
+		{
+            ?>
+            <div id="lien_pdf"></div>
+            <div id="terrain" class="btn btn-default disabled"></div>
+            <?php
+		}
+        ?>
         
-<!--		<div id="bandeau_goal">
-			<div id="match_event_line1"></div>
-			<div id="match_event_line2"></div>
-		</div>-->
-
-		<div id="lien_pdf"></div>
+        <div id="bandeau_goal">
+            <div id="match_event_line1"></div>
+            <div id="match_event_line2"></div>
+        </div>
 		
 		<?php
     }
