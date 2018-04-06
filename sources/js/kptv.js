@@ -59,6 +59,9 @@ jq(document).ready(function(){
             case 'multi_score':
                 jq('#speaker-col, #count-col').show();
                 break;
+            case 'force_cache_match':
+                jq('#match-col').show();
+                break;
         }
     });
     
@@ -99,6 +102,7 @@ jq(document).ready(function(){
                 url = 'live/multi_score.php?event=' + jq('#codeEvt').val() + '&count=' + jq('#count').val() + '&speaker=' + jq('#speaker').val();
                 ChangeVoie(jq('#channel').val(), url);
                 break;
+                
             case 'schema':
                 url = 'live/schema.php';
                 ChangeVoie(jq('#channel').val(), url);
@@ -107,6 +111,12 @@ jq(document).ready(function(){
 //                frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24
                 url = 'frame_terrains.php?';
                 ChangeVoie(jq('#channel').val(), url);
+                break;
+                
+                
+            case 'force_cache_match':
+                url = 'live/force_cache_match.php?match=' + jq('#match').val();
+                Go_ajax(url);
                 break;
         } 
     });
@@ -228,6 +238,18 @@ function Go(param)
                 url: "live/ajax_change_tv.php", 
                 dataType: "html", 
                 data: param, 
+                cache: false, 
+                success: function(htmlData) {
+						alerte(htmlData);
+				}
+	});
+}
+
+function Go_ajax(param)
+{
+    jq.ajax({   type: "GET", 
+                url: param, 
+                dataType: "html", 
                 cache: false, 
                 success: function(htmlData) {
 						alerte(htmlData);

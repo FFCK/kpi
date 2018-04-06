@@ -42,6 +42,7 @@ class Schema extends MyPage
 		{
  ?>
 			<div id="container_<?php echo $i;?>">
+                <!--<img src="../img/schema/schema_2017_CEH21.png">-->
 			</div>
 <?php	
 		}
@@ -61,4 +62,3 @@ class Schema extends MyPage
 }
 
 new Schema($_GET);
-?>
