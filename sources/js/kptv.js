@@ -56,6 +56,9 @@ jq(document).ready(function(){
             case 'score':
                 jq('#match-col, #speaker-col').show();
                 break;
+            case 'multi_score':
+                jq('#speaker-col, #count-col').show();
+                break;
         }
     });
     
@@ -93,11 +96,7 @@ jq(document).ready(function(){
                 ChangeVoie(jq('#channel').val(), url);
                 break;
             case 'multi_score':
-                url = 'live/multi_score.php';
-                ChangeVoie(jq('#channel').val(), url);
-                break;
-            case 'multi_score_2':
-                url = 'live/multi_score.php?tv=2';
+                url = 'live/multi_score.php?event=' + jq('#codeEvt').val() + '&count=' + jq('#count').val() + '&speaker=' + jq('#speaker').val();
                 ChangeVoie(jq('#channel').val(), url);
                 break;
             case 'schema':
