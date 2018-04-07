@@ -121,10 +121,8 @@ jq(document).ready(function(){
                         terrains = '1,2,3';
                         break;
                     case '4':
-                        terrains = '1,2,3,4';
-                        break;
                     default: 
-                        terrains = '1,2,3';
+                        terrains = '1,2,3,4';
                         break;
                 }
 //                frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24&terrains=1,2,3,4
