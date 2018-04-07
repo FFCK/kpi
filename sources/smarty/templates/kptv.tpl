@@ -129,6 +129,11 @@
         <br>
         <br>
     </article>
+    <article>
+        <a id="event_params" class="btn btn-default" href="live/event.php" target="_blank">
+            {#Evenement#}
+        </a>
+    </article>
 </div>
 
 <!-- Modal -->
