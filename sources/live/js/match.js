@@ -548,7 +548,7 @@ function RefreshCacheChrono()
 function RefreshCacheTerrain()
 {
 	$.ajax({
-		url : './cache/'+theContext.Terrain+'_terrain.json',
+		url : './cache/event'+theContext.Event+'_pitch'+theContext.Terrain+'.json',
 		type: 'GET',
 		dataType: 'text',
 		cache: false,
@@ -566,7 +566,9 @@ theContext.Event = 0;
 
 function ParseCacheTerrain(jsonTxt)
 {
-	var iFind = jsonTxt.lastIndexOf("@@END@@");
+//    if(theContext.Match.GetId(0) == -1)
+//        return; // Pas de match sélectionné
+    var iFind = jsonTxt.lastIndexOf("@@END@@");
 	if (iFind == -1) return; // Aucune précence de @@END@@ => le fichier cache n'est pas complet ... => On sort
 
 	jsonTxt = jsonTxt.substring(0,iFind);
