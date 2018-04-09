@@ -29,7 +29,7 @@
         <div class='col-sm-1'>
             <label>Channel</label>
             <select id="channel" name="channel">
-                {section name=i start=1 loop=10}
+                {section name=i start=1 loop=21}
                     <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                         {$smarty.section.i.index}
                     </option>
@@ -40,6 +40,7 @@
             <label>{#Presentation#}</label>
             <select id="presentation" name="presentation">
                 <option value="" {if $filtrePres == ''}selected{/if}>{#Selectionnez#}</option>
+                <option value="empty" {if $filtrePres == 'empty'}selected{/if}>Empty page</option>
                 <option value="list_medals" {if $filtrePres == 'list_medals'}selected{/if}>Medals</option>
                 <option value="referee" {if $filtrePres == 'referee'}selected{/if}>Referees</option>
                 <option value="player" {if $filtrePres == 'player'}selected{/if}>Player</option>
