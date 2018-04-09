@@ -10,7 +10,6 @@ services:
         volumes:
             - ./sources:/var/www/html
             - ./docker/MyParams.php:/var/www/html/commun/MyParams.php
-            - ./docker/MySmarty.php:/var/www/html/commun/MySmarty.php
             - ./docker/MyConfig.php:/var/www/html/commun/MyConfig.php
             - ./docker/error.log:/var/log/apache2/error.log
         environment:
