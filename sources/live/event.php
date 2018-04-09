@@ -36,33 +36,64 @@ class Event extends MyPage
     <?php
     }
 
+    function Content_Events($evt)
+    {
+		$db = new MyBdd();
+		
+		// Chargement Evenements  
+		$cmd  = "SELECT e.* "
+                . "FROM gickp_Evenement e "
+                . "WHERE e.Publication = 'O' "
+                . "ORDER BY e.Date_debut DESC ";
+
+		$rEvents = null;
+		$db->LoadTable($cmd, $rEvents);
+                
+        $retour = '';
+        foreach ($rEvents as $key => $event) {
+            if(utyGetInt($event, 'Id', 0) == $evt) {
+                $selected = 'selected';
+            } else {
+                $selected = '';
+            }
+            $retour .= '<option value="' . utyGetInt($event, 'Id', 0) . '" ' . $selected . '>' 
+                    . utyGetInt($event, 'Id', 0) . ' - ' . utyGetString($event, 'Libelle', '???') . ' (' . utyGetString($event, 'Lieu', '???') . ')';
+            $retour .= '
+                ';
+        }
+        return $retour;
+	}
+    
 	function Content()
 	{
-		?>
+        ?>
 		<form method='GET' action='#' name='event_form' id='event_form' enctype='multipart/form-data'> 
 		
-		<label for='id_event'>Evénement N°</label>
-		<input type='text' id='id_event' name='id_event' Value='85'>
+		<label for='id_event'>Evénement :</label>
+		<!--<input type='text' id='id_event' name='id_event' Value='85'>-->
+        <select id='id_event' name='id_event'>
+            <?= $this->Content_Events(); ?>
+        </select>
 		<br>
 
 		<label for='date_event'>Date</label>
-		<input type='text' id='date_event' name='date_event' Value='2017-08-27'>
+		<input type='date' id='date_event' name='date_event' Value='<?= date('Y-m-d') ?>'>
 		<br>
 
 		<label for='hour_event'>Heure</label>
-		<input type='text' id='hour_event' name='hour_event' Value=''>
+		<input type='time' id='hour_event' name='hour_event' Value=''>
 		<br>
 		
 		<label for='hour_event'>Temps de Préparation</label>
-		<input type='text' id='offset_event' name='offset_event' Value='10'>
+        <input type='text' id='offset_event' name='offset_event' Value='10' size="2"> minutes
 		<br>
 
 		<label for='pitch_event'>Terrains</label>
-		<input type='text' id='pitch_event' name='pitch_event' Value=''>
+		<input type='text' id='pitch_event' name='pitch_event' Value='' size="1">
 		<br>
 
-		<label for='delay_event'>Délai de Rafraichissement (en s)</label>
-		<input type='text' id='delay_event' name='delay_event' Value='10'>
+		<label for='delay_event'>Délai de Rafraichissement</label>
+		<input type='text' id='delay_event' name='delay_event' Value='10' size="2"> secondes
 		<br>
 		
 		<button id='btn_go'>Lancer la génération</button>
@@ -85,4 +116,3 @@ class Event extends MyPage
 }
 
 new Event($_GET);
-?>
