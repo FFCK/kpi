@@ -88,6 +88,7 @@ class Score extends MyPage
     {
         parent::Script();
 		
+		$event = $this->GetParamInt('event', 0);
 		$terrain = $this->GetParamInt('terrain', 1);
 		$speaker = $this->GetParamInt('speaker',0);
 		$voie = $this->GetParamInt('voie', 0);
@@ -96,7 +97,7 @@ class Score extends MyPage
         <script type="text/javascript" src="./js/match.js" ></script>
 		<script type="text/javascript" src="./js/voie.js" ></script>
         <script type="text/javascript" src="./js/score.js" ></script>
-        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo "$terrain,$speaker,$voie";?>); }); </script>	
+        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo "$event,$terrain,$speaker,$voie";?>); }); </script>	
         <?php
     }
 }

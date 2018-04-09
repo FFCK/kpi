@@ -64,11 +64,17 @@ jq(document).ready(function(){
             case 'frame_terrains':
                 jq('#count-col').show();
                 break;
+            default:
+                break;
         }
     });
     
     jq('#confirm').click(function(){
         switch(jq('#confirm').attr('data-pres')) {
+            case 'empty':
+                url = 'live/tv2.php';
+                ChangeVoie(jq('#channel').val(), url);
+                break;
             case 'list_medals':
                 Go_list_medals(jq('#channel').val(), jq('#competition').val())
                 break;
@@ -97,7 +103,7 @@ jq(document).ready(function(){
                 Go_list_team(jq('#channel').val(), jq('#match').val(), jq('#team').val())
                 break;
             case 'score':
-                url = 'live/score.php?terrain=' + jq('#terrain').val() + '&speaker=' + jq('#speaker').val();
+                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val() + '&speaker=' + jq('#speaker').val();
                 ChangeVoie(jq('#channel').val(), url);
                 break;
             case 'multi_score':

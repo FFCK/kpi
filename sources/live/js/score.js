@@ -288,8 +288,9 @@ function ParseCacheGlobal(jsonTxt)
 */
 }
 
-function Init(terrain, speaker, voie)
+function Init(event, terrain, speaker, voie)
 {
+	theContext.Event = event;
 	theContext.Terrain = terrain;
 	theContext.Speaker = speaker;
 
