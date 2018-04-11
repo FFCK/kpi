@@ -49,14 +49,14 @@ class TV extends MyPage
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='centre' src='./img/nation/".$nation.".png' height='32' width='32' />";
+		return "<img class='centre' src='../img/Nations/".$nation.".png' height='32' width='32' />";
 	}
 	
 	function ImgNation48($nation)
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='centre' src='./img/nation/".$nation.".png' height='48' width='48' />";
+		return "<img class='centre' src='../img/Nations/".$nation.".png' height='48' width='48' />";
 	}
 
 	
@@ -64,39 +64,39 @@ class TV extends MyPage
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='centre' src='./img/nation/".$nation.".png' height='64' width='64' />";
+		return "<img class='centre' src='../img/Nations/".$nation.".png' height='64' width='64' />";
 	}
 	
 	function ImgNationCss($nation)
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='img_nation' src='./img/nation/".$nation.".png'>";
+		return "<img class='img_nation' src='../img/Nations/".$nation.".png'>";
 	}
 	
 	function ImgNationCss2($nation)
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='img_nation2' src='./img/nation/".$nation.".png'>";
+		return "<img class='img_nation2' src='../img/Nations/".$nation.".png'>";
 	}
 	
 	function ImgMedal($medal)
 	{
         if ($medal != 'GOLD' && $medal != 'SILVER' && $medal != 'BRONZE') { return ''; }
-		return "<img class='centre' src='./img/".$medal.".gif' height='32' width='32' />";
+		return "<img class='centre' src='../img/".$medal.".gif' height='32' width='32' />";
 	}
 	
 	function ImgMedal48($medal)
 	{
         if ($medal != 'GOLD' && $medal != 'SILVER' && $medal != 'BRONZE') { return ''; }
-		return "<img class='centre' src='./img/".$medal.".gif' height='48' width='48' />";
+		return "<img class='centre' src='../img/".$medal.".gif' height='48' width='48' />";
 	}
 	
 	function ImgMedal64($medal)
 	{
         if ($medal != 'GOLD' && $medal != 'SILVER' && $medal != 'BRONZE') { return ''; }
-		return "<img class='centre' src='./img/".$medal.".gif' height='64' width='64' />";
+		return "<img class='centre' src='../img/".$medal.".gif' height='64' width='64' />";
 	}
 
 	function LabelMedal($medal)
@@ -187,43 +187,85 @@ class TV extends MyPage
 		$db->LoadTable($cmd, $tJoueurs);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner_list" class="text-center">
-                    <div id="banner_line1" class="h2">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
+            <div class="container-fluid ban_list">
+                <div id="banner_list">
+                    <div id="banner_line1" class="h2 text-center">' . $this->ImgNation48(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
                     </div>
+                <div id="banner_lines">
             ';
-        foreach ($tJoueurs as $key => $joueur) {
-            if(utyGetString($joueur, 'Capitaine', '???') != 'E') {
-                if(utyGetString($joueur, 'Capitaine', '') == 'C') {
-                    $captain = ' (Capt)';
-                } else {
-                    $captain = '';
-                }
-                echo '
-                    <div class="banner_line">
-                        <span class="badge">' . utyGetInt($joueur, 'Numero', 999) . '</span>
-                        &nbsp;
-                        <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</span>
-                    </div>';
-            } else {
-                $coach = true;
-            }
-        }
-        if($coach) {
-            echo '<div class="banner_line">&nbsp;</div>';
-            foreach ($tJoueurs as $key => $joueur) {
-                if(utyGetString($joueur, 'Capitaine', '???') == 'E') {
-                    echo '
-                        <div class="banner_line">
-                            <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (Coach)</span>
-                        </div>';
-                }
-            }
-        }
+                    foreach ($tJoueurs as $key => $joueur) {
+                        if(utyGetString($joueur, 'Capitaine', '???') != 'E') {
+                            if(utyGetString($joueur, 'Capitaine', '') == 'C') {
+                                $captain = ' <span class="label label-warning capitaine">C</span>';
+                            } else {
+                                $captain = '';
+                            }
+                            echo '
+                                <div class="banner_line">
+                                    <span class="label label-primary numero">' . utyGetInt($joueur, 'Numero', 999) . '</span>
+                                    &nbsp;
+                                    <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</span>
+                                </div>';
+                        }
+                    }
         echo '
+                    </div>
+                </div>
+            </div>';
+    }
+	function Content_List_Coachs()
+    {
+		$db = new MyBdd();
+		
+		$idMatch = $this->GetParamInt('match',-1);
+		$equipe = $this->GetParam('team', 'A');
+		
+		// Chargement Equipe  
+		$cmd  = "SELECT c.Libelle, c.Code_club "
+                . "FROM gickp_Competitions_Equipes c "
+                . "LEFT OUTER JOIN gickp_Matchs m ON (c.Id = m.Id_equipe" . $equipe . ") "
+                . "WHERE m.Id = $idMatch";
+
+		$rEquipe = null;
+		$db->LoadRecord($cmd, $rEquipe);
+        
+        // Chargement Joueurs  
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
+                . "CASE WHEN a.Capitaine = 'E' THEN 1 ELSE 0 END joueur "
+                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
+                . "WHERE a.Id_match = $idMatch "
+                . "AND a.Equipe = '$equipe' "
+                . "AND a.Matric = b.matric "
+//                . "AND (a.Capitaine Is Null OR a.Capitaine != 'E') "
+                . "ORDER BY joueur, a.Numero ";
+
+		$tJoueurs = null;
+        $coach = false;
+		$db->LoadTable($cmd, $tJoueurs);
+        
+        echo '
+            <div class="container-fluid ban_list">
+                <div id="banner_list">
+                    <div id="banner_line1" class="h2 text-center">' . $this->ImgNation48(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
+                        <span>
+                        ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
+                        </span>
+                    </div>
+                <div id="banner_lines">
+            ';
+                    foreach ($tJoueurs as $key => $joueur) {
+                        if(utyGetString($joueur, 'Capitaine', '???') == 'E') {
+                            echo '
+                                <div class="banner_line">
+                                    <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (coach)</span>
+                                </div>';
+                        }
+                    }
+        echo '
+                    </div>
                 </div>
             </div>';
     }
@@ -233,16 +275,13 @@ class TV extends MyPage
 		$db = new MyBdd();
 		
 		$competition = $this->GetParam('competition');
-
-		// Chargement Record Compétition ...
-//		$rCompetition = null;
-//		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = " . utyGetSaison(), $rCompetition);
+		$saison = $this->GetParam('saison', utyGetSaison());
 
 		// Chargement des Equipes Classées ...
 		$cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi, c.Soustitre2 "
                 . "FROM gickp_Competitions c, gickp_Competitions_Equipes ce "
                 . "WHERE ce.Code_compet = '".$competition."' "
-                . "AND ce.Code_saison = " . utyGetSaison() . " "
+                . "AND ce.Code_saison = " . $saison . " "
                 . "AND c.Code = ce.Code_compet "
                 . "AND c.Code_saison = ce.Code_saison "
                 . "ORDER BY CltNiveau_publi "
@@ -250,8 +289,6 @@ class TV extends MyPage
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
-//		echo "<div id='banner_presentation'></div>\n";
-//		echo "<div id='list_medals_title'>$title</div>\n";
 
 		if (count($tEquipes) != 3) {
             return;
@@ -260,13 +297,13 @@ class TV extends MyPage
         echo '
             <div class="container-fluid">
                 <div id="podium" class="text-center">
-                    <div id="podium_line1">' . $this->ImgNationCss($tEquipes[0]['Code_club']) . '&nbsp;
+                    <div id="podium_line1">' . $this->ImgNation48($tEquipes[0]['Code_club']) . '&nbsp;
                         <span>' . utyGetString($tEquipes[0], 'Libelle', '???') . '</span>
                     </div>
-                    <div id="podium_line2">' . $this->ImgNationCss($tEquipes[1]['Code_club']) . '&nbsp;
+                    <div id="podium_line2">' . $this->ImgNation48($tEquipes[1]['Code_club']) . '&nbsp;
                         <span>' . utyGetString($tEquipes[1], 'Libelle', '???') . '</span>
                     </div>
-                    <div id="podium_line3">' . $this->ImgNationCss($tEquipes[2]['Code_club']) . '&nbsp;
+                    <div id="podium_line3">' . $this->ImgNation48($tEquipes[2]['Code_club']) . '&nbsp;
                         <span>' . utyGetString($tEquipes[2], 'Libelle', '???') . '</span>
                     </div>
                     <div id="podium_categorie">
@@ -274,6 +311,52 @@ class TV extends MyPage
                     </div>
                 </div>
             </div>';
+	}
+
+	function Content_Final_Ranking()
+    {
+		$db = new MyBdd();
+		
+		$competition = $this->GetParam('competition');
+		$saison = $this->GetParam('saison', utyGetSaison());
+		$start = $this->GetParam('start', 0);
+        
+		// Chargement des Equipes Classées ...
+		$cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi rank, c.Soustitre2 "
+                . "FROM gickp_Competitions c, gickp_Competitions_Equipes ce "
+                . "WHERE ce.Code_compet = '".$competition."' "
+                . "AND ce.Code_saison = " . $saison . " "
+                . "AND c.Code = ce.Code_compet "
+                . "AND c.Code_saison = ce.Code_saison "
+                . "ORDER BY CltNiveau_publi "
+                . "LIMIT $start, 10 ";
+		
+		$tEquipes = null;
+		$db->LoadTable($cmd, $tEquipes);
+
+        echo '
+            <div class="container-fluid ban_list">
+                <div id="banner_list">
+                    <div id="banner_line1" class="h2 text-center">' . $this->ImgNation48(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
+                        <span>
+                        ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
+                        </span>
+                    </div>
+                <div id="banner_lines">
+            ';
+                    foreach ($tEquipes as $key => $equipe) {
+                        echo '
+                            <div class="banner_line">
+                                <span class="label label-primary numero">' . utyGetInt($equipe, 'rank', 999) . '</span>
+                                &nbsp;' . $this->ImgNation48(utyGetString($equipe, 'Code_club', 999)) . '&nbsp;
+                                <span>' . utyGetString($equipe, 'Libelle', '???') . '&nbsp;</span>
+                            </div>';
+                    }
+        echo '
+                    </div>
+                </div>
+            </div>';
+        
 	}
 
 	function Content_Player()
@@ -296,9 +379,9 @@ class TV extends MyPage
 		$db->LoadRecord($cmd, $rJoueur);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">' . $this->ImgNationCss($rJoueur['Numero_comite_dept']) . '&nbsp;
+            <div class="container-fluid ban_single">
+                <div id="banner_single" class="text-center">
+                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept']) . '&nbsp;
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
@@ -330,16 +413,16 @@ class TV extends MyPage
 		$db->LoadRecord($cmd, $rJoueur);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">' . $this->ImgNationCss($rJoueur['Numero_comite_dept']) . '&nbsp;
+            <div class="container-fluid ban_double">
+                <div id="banner_double" class="text-center">
+                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept']) . '&nbsp;
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
                             . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
                         </span>
                     </div>
-                    <div id="banner_line2">' . $this->ImgMedal($medaille) . '&nbsp;
+                    <div id="banner_line2" class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
                         <span>
                         ' . $this->LabelMedal($medaille) . '
                         </span>
@@ -370,14 +453,14 @@ class TV extends MyPage
 		$nation2 = $this->VerifNation($nation2);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">First Referee : 
-                        ' . $this->ImgNationCss($nation1) . '&nbsp;
+            <div class="container-fluid ban_double">
+                <div id="banner_double" class="text-center">
+                    <div id="banner_line1" class="banner_line">First Referee : 
+                        ' . $this->ImgNation48($nation1) . '&nbsp;
                         <span>' . $arbitre1 . ' (' . $nation1 . ')</span>
                     </div>
-                    <div id="banner_line2">Second Referee : 
-                        ' . $this->ImgNationCss($nation2) . '&nbsp;
+                    <div id="banner_line2" class="banner_line">Second Referee : 
+                        ' . $this->ImgNation48($nation2) . '&nbsp;
                         <span>' . $arbitre2 . ' (' . $nation2 . ')</span>
                     </div>
                 </div>
@@ -406,17 +489,17 @@ class TV extends MyPage
 		$db->LoadRecord($cmd, $rMatch);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">
+            <div class="container-fluid ban_presentation">
+                <div id="banner_presentation" class="text-center">
+                    <div id="banner_line1" class="banner_line">
                         ' . utyGetString($rMatch, 'categorie', '???') . '
                         ' . utyGetString($rMatch, 'Phase', '???') . '
                          - Pitch
                         ' . utyGetString($rMatch, 'Terrain', '???') . '
                     </div>
-                    <div id="banner_line2" class="row">
+                    <div id="banner_line2" class="row banner_line">
                         <div class="col-md-6">
-                            ' . $this->ImgNationCss2($rMatch['ClubA']) . '&nbsp;
+                            ' . $this->ImgNation48($rMatch['ClubA']) . '&nbsp;
                             <span>
                             ' . utyGetString($rMatch, 'LibelleA', '???') . '
                             </span>
@@ -425,7 +508,7 @@ class TV extends MyPage
                             <span>
                             ' . utyGetString($rMatch, 'LibelleB', '???') . '
                             </span>
-                            &nbsp;' . $this->ImgNationCss2($rMatch['ClubB']) . '
+                            &nbsp;' . $this->ImgNation48($rMatch['ClubB']) . '
                         </div>
                     </div>
                 </div>
@@ -454,29 +537,31 @@ class TV extends MyPage
 		$db->LoadRecord($cmd, $rMatch);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">
+            <div class="container-fluid ban_presentation">
+                <div id="banner_presentation" class="text-center">
+                    <div id="banner_line1" class="banner_line">
                         ' . utyGetString($rMatch, 'categorie', '???') . '
                         ' . utyGetString($rMatch, 'Phase', '???') . '
                          - Pitch
                         ' . utyGetString($rMatch, 'Terrain', '???') . '
                     </div>
-                    <div id="banner_line2" class="row">
+                    <div id="banner_line2" class="row banner_line">
                         <div class="col-md-5">
-                            ' . $this->ImgNationCss2($rMatch['ClubA']) . '&nbsp;
+                            ' . $this->ImgNation48($rMatch['ClubA']) . '&nbsp;
                             <span>
                             ' . utyGetString($rMatch, 'LibelleA', '???') . '
                             </span>
                         </div>
                         <div class="col-md-2">
-                            ' . $rMatch['ScoreDetailA'] . ' - ' . $rMatch['ScoreDetailB'] . '
+                            <span class="label label-primary numero">' . $rMatch['ScoreDetailA'] . '</span>
+                             &nbsp;
+                            <span class="label label-primary numero">' . $rMatch['ScoreDetailB'] . '</span>
                         </div>
                         <div class="col-md-5">
                             <span>
                             ' . utyGetString($rMatch, 'LibelleB', '???') . '
                             </span>
-                            &nbsp;' . $this->ImgNationCss2($rMatch['ClubB']) . '
+                            &nbsp;' . $this->ImgNation48($rMatch['ClubB']) . '
                         </div>
                     </div>
                 </div>
@@ -500,9 +585,9 @@ class TV extends MyPage
 		$db->LoadRecord($cmd, $rEquipe);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">' . $this->ImgNationCss($rEquipe['Code_club']) . '&nbsp;
+            <div class="container-fluid ban_single">
+                <div id="banner_single" class="text-center">
+                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
@@ -529,14 +614,14 @@ class TV extends MyPage
 		$db->LoadRecord($cmd, $rEquipe);
         
         echo '
-            <div class="container-fluid">
-                <div id="banner" class="text-center">
-                    <div id="banner_line1">' . $this->ImgNationCss($rEquipe['Code_club']) . '&nbsp;
+            <div class="container-fluid ban_double">
+                <div id="banner_double" class="text-center">
+                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
                     </div>
-                    <div id="banner_line2">' . $this->ImgMedal($medaille) . '&nbsp;
+                    <div id="banner_line2" class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
                         <span>
                         ' . $this->LabelMedal($medaille) . '
                         </span>
@@ -546,85 +631,7 @@ class TV extends MyPage
 
 	}
 
-	function Content_Command_Channel($id)
-	{
-		echo "<select name='$id' id='$id'>";
-?>		
-		<option value="1">Channel 1</option> 
-		<option value="2">Channel 2</option> 
-		<option value="3">Channel 3</option> 
-		<option value="4">Channel 4</option> 
-		<option value="5">Channel 5</option> 
-		<option value="6">Channel 6</option> 
-		<option value="7">Channel 7</option> 
-		<option value="8">Channel 8</option> 
-		<option value="9">Channel 9</option> 
-	  </select>
-<?php 
-	}
 
-	function Content_Command_Competition($id)
-	{
-		echo "<select name='$id' id='$id'>";
-?>		
-		  <option value="CEH">CEH</option> 
-		  <option value="CEF">CEF</option>
-		  <option value="CEH21">CEH21</option>
-		  <option value="CEF21">CEF21</option>
-	  </select>
-<?php 
-	}
-
-	function Content_Command_Match($id)
-	{
-		echo "<select name='$id' id='$id'>";
-?>		
-		<option value="79261780">79261780 : GER Men - ESP Men</option>
-		<option value="79261829">79261829 : GER Women - FRA Women</option>
- 
-	  </select>
-<?php 
-	}
-
-	function Content_Command_Team($id)
-	{
-		echo "<select name='$id' id='$id'>";
-?>		
-		  <option value="A">Team A</option> 
-		  <option value="B">Team B</option>
-	  </select>
-<?php 
-	}
-
-	function Content_Command_Number($id)
-	{
-		echo "<select name='$id' id='$id'>";
-?>		
-		  <option value="1">Number 1</option> 
-		  <option value="2">Number 2</option> 
-		  <option value="3">Number 3</option> 
-		  <option value="4">Number 4</option> 
-		  <option value="5">Number 5</option> 
-		  <option value="6">Number 6</option> 
-		  <option value="7">Number 7</option> 
-		  <option value="8">Number 8</option> 
-		  <option value="9">Number 9</option> 
-		  <option value="10">Number 10</option> 
-	  </select>
-<?php 
-	}
-	
-	function Content_Command_Medal($id)
-	{
-		echo "<select name='$id' id='$id'>";
-?>		
-		  <option value="GOLD">Gold</option> 
-		  <option value="SILVER">Silver</option>
-		  <option value="BRONZE">Bronze</option>
-	  </select>
-<?php 
-	}
-	
 	
 	function Content_Command_Url($url)
 	{
@@ -664,130 +671,18 @@ class TV extends MyPage
 <?php 
 	}
 
-	function Content_Command()
-	{
-?>
-<!--		<form>
-		<table class='table'>
 
-		<tr>
-			<td><button id="list_medals_btn">Medals Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('list_medals_channel') ?></td>
-			<td><label>Competition</label></td> 
-			<td><?php $this->Content_Command_Competition('list_medals_competition') ?></td>
-		</tr>
-			
-		<tr>
-			<td><button id="referee_btn">Referees Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('referee_channel') ?></td>
-			<td><label>Match</label></td> 
-			<td><?php $this->Content_Command_Match('referee_match') ?></td>
-		</tr>
-	
-		<tr>
-			<td><button id="player_btn">Player Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('player_channel') ?></td>
-			<td><label>Match</label></td> 
-			<td><?php $this->Content_Command_Match('player_match') ?></td>
-			<td><label>Team</label> </td>
-			<td><?php $this->Content_Command_Team('player_team') ?></td>
-			<td><label>Number</label></td> 
-			<td><?php $this->Content_Command_Number('player_number') ?></td>
-		</tr>
-	
-		<tr>
-			<td><button id="player_medal_btn">Player width Medal Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('player_medal_channel') ?></td>
-			<td><label>Match</label></td> 
-			<td><?php $this->Content_Command_Match('player_medal_match') ?></td>
-			<td><label>Team</label> </td>
-			<td><?php $this->Content_Command_Team('player_medal_team') ?></td>
-			<td><label>Number</label></td> 
-			<td><?php $this->Content_Command_Number('player_medal_number') ?></td>
-			<td><label>Medal</label></td> 
-			<td><?php $this->Content_Command_Medal('player_medal_medal') ?></td>
-		</tr>
-		
-		<tr>
-			<td><button id="team_btn">Team Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('team_channel') ?></td>
-			<td><label>Match</label></td> 
-			<td><?php $this->Content_Command_Match('team_match') ?></td>
-			<td><label>Team</label> </td>
-			<td><?php $this->Content_Command_Team('team_team') ?></td>
-		</tr>
-
-		<tr>
-			<td><button id="team_medal_btn">Team Medal Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('team_medal_channel') ?></td>
-			<td><label>Match</label></td> 
-			<td><?php $this->Content_Command_Match('team_medal_match') ?></td>
-			<td><label>Team</label> </td>
-			<td><?php $this->Content_Command_Team('team_medal_team') ?></td>
-			<td><label>Medal</label></td> 
-			<td><?php $this->Content_Command_Medal('team_medal_medal') ?></td>
-		</tr>
-
-		<tr>
-			<td><button id="match_btn">Match Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('match_channel') ?></td>
-			<td><label>Match</label></td> 
-			<td><?php $this->Content_Command_Match('match_match') ?></td>
-		</tr>
-	
-		<tr>
-			<td><button id="match_score_btn">Match + Score Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('match_score_channel') ?></td>
-			<td><label>Match</label></td>
-			<td><?php $this->Content_Command_Match('match_score_match') ?></td>
-		</tr>
-
-		<tr>
-			<td><button id="list_team_btn">List Team Presentation</button></td>
-			<td><?php $this->Content_Command_Channel('list_team_channel') ?></td>
-			<td><label>Match</label> </td>
-			<td><?php $this->Content_Command_Match('list_team_match') ?></td>
-			<td><label>Team</label> </td>
-			<td><?php $this->Content_Command_Team('list_team_team') ?></td>
-		</tr>
-		
-		<tr>
-			<td><button id="list_presentation_btn">Autre Présentation</button></td>
-			<td><?php $this->Content_Command_Channel('list_presentation_channel') ?></td>
-			<td><label>Url</label> </td>
-			<td><?php $this->Content_Command_Url('list_presentation_url') ?></td>
-		</tr>
-
-		<tr>
-			<td><button id="scenario_btn">Scénario</button></td>
-			<td><?php $this->Content_Command_Channel('scenario_channel') ?>
-				<br><br>
-				<button id="url_splitter">Url Splitter</button>
-			</td>
-			<td colspan="4"><?php $this->Content_Command_Scenario('scenario') ?></td>
-		</tr>
-		
-		<tr>
-			<td><button id="raz_btn">Reset</button></td>
-		</tr>
-
-		<tr>
-			<td>Message</td>
-			<td colspan="4"><div id="tv_message">Message</div></td>
-		</tr>
-		
-		</form>
-		</table>-->
-	
-<?php	
-	}
 	
     function Content()
     {
-		$show = $this->GetParam('show', 'command');
+		$show = $this->GetParam('show', '');
         switch ($show) {
             case 'list_team':
                 $this->Content_List_Team();
+                return;
+                break;
+            case 'list_coachs':
+                $this->Content_List_Coachs();
                 return;
                 break;
             case 'list_medals':
@@ -822,8 +717,11 @@ class TV extends MyPage
                 $this->Content_Team_Medal();
                 return;
                 break;
-            case 'command':
-                $this->Content_Command();
+            case 'final_ranking':
+                $this->Content_Final_Ranking();
+                return;
+                break;
+            default:
                 return;
                 break;
         }

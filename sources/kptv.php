@@ -53,7 +53,7 @@ class Tv extends MyPage
         }
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
         
-        $sql  = "SELECT m.*, j.Code_competition, ce1.Libelle equipeA, ce2.Libelle equipeB "
+        $sql  = "SELECT m.*, j.Code_competition, j.Code_saison, ce1.Libelle equipeA, ce2.Libelle equipeB "
                 . "FROM gickp_Evenement_Journees evt, gickp_Journees j, gickp_Matchs m "
                 . "LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON m.Id_equipeA = ce1.Id "
                 . "LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON m.Id_equipeB = ce2.Id "
@@ -65,6 +65,7 @@ class Tv extends MyPage
         $result = $myBdd->Query($sql);
         while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
             $arrayCompet[] = $row['Code_competition'];
+            $saison = $row['Code_saison'];
             $arrayJours[] = $row['Date_match'];
 //            echo $row['Code_competition'] . ' ' . $row['Date_match'] . ' ' . $row['Heure_match'] . ' #' . $row['Numero_ordre'] . ' ' . $row['equipeA'] . ' ' . $row['equipeB'] . '<br>';
             if( ($row['Date_match'] == $jour || $jour == '')
@@ -77,6 +78,7 @@ class Tv extends MyPage
         $arrayJours = array_keys(array_flip($arrayJours));
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
         $this->m_tpl->assign('arrayMatchs', $arrayMatchs);
+        $this->m_tpl->assign('saison', $saison);
         $this->m_tpl->assign('arrayCompet', $arrayCompet);
         $this->m_tpl->assign('arrayJours', $arrayJours);
         
