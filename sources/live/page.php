@@ -112,14 +112,14 @@ class MyPage
     // BODY ...
     function Body()
     {
-		echo "<div class='container-fluid'>\n";
+//		echo "<div class='container-fluid'>\n";
 
         $this->Header();
         $this->Menu();
         $this->Content();
         $this->Footer();
  
-        echo "</div>\n";	// div container ...
+//        echo "</div>\n";	// div container ...
 
         $this->Script();
     }

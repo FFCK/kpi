@@ -52,6 +52,12 @@ jq(document).ready(function(){
             case 'list_team':
                 jq('#match-col, #team-col').show();
                 break;
+            case 'list_coachs':
+                jq('#match-col, #team-col').show();
+                break;
+            case 'final_ranking':
+                jq('#start-col').show();
+                break;
             case 'score':
                 jq('#match-col, #speaker-col').show();
                 break;
@@ -101,6 +107,12 @@ jq(document).ready(function(){
                 break;
             case 'list_team':
                 Go_list_team(jq('#channel').val(), jq('#match').val(), jq('#team').val())
+                break;
+            case 'list_coachs':
+                Go_list_coachs(jq('#channel').val(), jq('#match').val(), jq('#team').val())
+                break;
+            case 'final_ranking':
+                Go_final_ranking(jq('#channel').val(), jq('#saison').val(), jq('#competition').val(), jq('#start').val())
                 break;
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val() + '&speaker=' + jq('#speaker').val();
@@ -238,6 +250,28 @@ function Go_list_team(channel, match, team)
 	param += "&voie=" + channel;
 	param += "&match=" + match;
 	param += "&team=" + team;
+	Go(param);
+}
+
+function Go_list_coachs(channel, match, team)
+{
+	var param;
+	param  = "show=list_coachs";
+	param += "&voie=" + channel;
+	param += "&match=" + match;
+	param += "&team=" + team;
+	Go(param);
+}
+
+function Go_final_ranking(channel, saison, competition, start)
+{
+	var param;
+	param  = "show=final_ranking";
+	param += "&voie=" + channel;
+	param += "&saison=" + saison;
+	param += "&competition=" + competition;
+	param += "&start=" + start;
+    console.log(param);
 	Go(param);
 }
 

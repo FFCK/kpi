@@ -17,8 +17,84 @@ html, body
     width: 14%;
 }
 
-#banner
-{
+
+.ban_double {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_double.png');
+}
+
+#banner_double {
+    /*border: 1px solid red;*/
+    width: 1180px;
+    height: 138px;
+
+    position: absolute;
+    left: 405px;
+    top: 815px;
+    /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
+    /*background-color: whitesmoke;*/
+    
+    color: #000066;
+    font-weight: bold;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-size: 45px;
+}
+
+.ban_single {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_single.png');
+}
+
+#banner_single {
+    /*border: 1px solid red;*/
+    width: 1180px;
+    height: 138px;
+
+    position: absolute;
+    left: 405px;
+    top: 855px;
+    /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
+    /*background-color: whitesmoke;*/
+    
+    color: #000066;
+    font-weight: bold;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-size: 45px;
+}
+
+
+.ban_presentation {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_presentation.png');
+}
+
+#banner_presentation {
+    /*border: 1px solid red;*/
+    width: 1180px;
+    height: 138px;
+
+    position: absolute;
+    left: 355px;
+    top: 750px;
+    /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
+    /*background-color: whitesmoke;*/
+    
+    color: #000066;
+    font-weight: bold;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-size: 45px;
+}
+
+#banner {
     width: 60%;
     
     position: absolute;
@@ -34,29 +110,60 @@ html, body
     font-weight: bold;
     font-family: "Arial Narrow", Arial, sans-serif;
     font-size: 1.5vw;
-    
 }
 
-#banner_list
-{
-    width: 60%;
-    height: 70%;
+
+.ban_list {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../img/banner_list.png');
+}
+
+#banner_list {
+    width: 1030px;
+    height: 870px;
     
     position: absolute;
-    margin-left: 50vw;
-    margin-top: 50vh;
-    transform: translate(-50%, -50%);
-    
+    left: 405px;
+    top: 125px;
     padding: 10px 10px;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);
+    /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
     /*background-color: whitesmoke;*/
     
-    color: black;
+    color: #000066;
     font-weight: bold;
     font-family: "Arial Narrow", Arial, sans-serif;
-    font-size: 1.5vw;
-    
+    font-size: 45px;
 }
+
+#banner_line1 {
+/*    font-weight: bold;
+    width: 55%;
+    position: absolute;
+    right: 0px;
+    top: 35px;
+    font-size: 45px;*/
+
+}
+
+#banner_lines {
+    position: absolute;
+    top: 240px;
+    left: 55px;
+}
+
+.banner_line {
+    line-height: 60px;
+}
+span.capitaine {
+    vertical-align: middle;
+    font-size: 30px;
+}
+span.numero {
+    vertical-align: middle;
+    font-size: 30px;
+}
+
 
 #podium {
     position: absolute;
