@@ -82,7 +82,7 @@ jq(document).ready(function(){
                 ChangeVoie(jq('#channel').val(), url);
                 break;
             case 'list_medals':
-                Go_list_medals(jq('#channel').val(), jq('#competition').val())
+                Go_list_medals(jq('#channel').val(), jq('#saison').val(), jq('#competition').val())
                 break;
             case 'referee':
                 Go_referee(jq('#channel').val(), jq('#match').val())
@@ -163,11 +163,12 @@ jq(document).ready(function(){
 });
 
 
-function Go_list_medals(channel, competition)
+function Go_list_medals(channel, saison, competition)
 {
 	var param;
 	param  = "show=list_medals";
 	param += "&voie=" + channel;
+	param += "&saison=" + saison;
 	param += "&competition=" + competition;
 	Go(param);
 }
@@ -271,7 +272,6 @@ function Go_final_ranking(channel, saison, competition, start)
 	param += "&saison=" + saison;
 	param += "&competition=" + competition;
 	param += "&start=" + start;
-    console.log(param);
 	Go(param);
 }
 
