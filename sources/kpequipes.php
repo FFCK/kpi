@@ -67,6 +67,7 @@ class Equipes extends MyPage
         
         //Images
         $eSeason = $Saison;
+        $eSeason2 = $Saison;
         $eLink = $Equipe.'-'.$eSeason;
         $eTeam = 'img/KIP/teams/'.$eLink.'-team.jpg';
         //die($eColors.'<br>'.$eTeam);
@@ -89,13 +90,18 @@ class Equipes extends MyPage
         
         if(is_file('img/KIP/teams/'.$Equipe.'-'.date('Y').'-team.jpg')){
             $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.date('Y').'-team.jpg');
+            $eSeason2 = date('Y');
         }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-1).'-team.jpg')){
             $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-1).'-team.jpg');
+            $eSeason2 = date('Y')-1;
         }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-2).'-team.jpg')){
             $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-2).'-team.jpg');
+            $eSeason2 = date('Y')-2;
         }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-3).'-team.jpg')){
             $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-3).'-team.jpg');
+            $eSeason2 = date('Y')-3;
         }
+        $this->m_tpl->assign('eSeason2', $eSeason2);
         
         
 	}
