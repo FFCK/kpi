@@ -137,13 +137,26 @@ html, body
 }
 
 #banner_line1 {
-/*    font-weight: bold;
+    font-weight: bold;
     width: 55%;
     position: absolute;
     right: 0px;
-    top: 35px;
-    font-size: 45px;*/
+    top: 30px;
+    font-size: 45px;
+}
 
+#banner_line2 {
+    font-weight: bold;
+    width: 55%;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 45px;
+}
+
+.categorie {
+    font-size: 30px;
+    font-style: italic;
 }
 
 #banner_lines {
