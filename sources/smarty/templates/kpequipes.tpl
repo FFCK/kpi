@@ -18,6 +18,7 @@
         {if $eColors}
             <div class="col-xs-10 col-xs-offset-1" id="equipeColors">
                 <a href="{$eColors}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eColors}" alt="{$nomEquipe}"></a>
+                <span class="pull-right badge">{$eSeason}</span>
             </div>
         {elseif $eLogo}
             <div class="col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="equipeColors">
@@ -30,7 +31,7 @@
         {if $eTeam}
             <div class="col-sm-12" id="equipeTeam">
                 <a href="{$eTeam}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eTeam}" alt="{$nomEquipe}" title="{$nomEquipe}"></a>
-                <span class="pull-right badge">{$eSeason}</span>
+                <span class="pull-right badge">{$eSeason2}</span>
             </div>
         {/if}
             <h3 class="col-sm-12">{#Palmares#}:</h3>
