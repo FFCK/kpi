@@ -337,9 +337,10 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_list">
                 <div id="banner_list">
-                    <div id="banner_line1" class="h2 text-center">' . $this->ImgNation48(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
-                        <span>
-                        ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
+                    <div id="banner_line2" class="h2 text-center">
+                        FINAL RANKING<br>
+                        <span class="categorie">
+                        ' . ' ' . utyGetString($tEquipes[0], 'Soustitre2', '???') . '
                         </span>
                     </div>
                 <div id="banner_lines">
