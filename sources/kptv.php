@@ -40,7 +40,7 @@ class Tv extends MyPage
         $sql  = "SELECT * "
             . "FROM gickp_Evenement "
             . "WHERE Publication = 'O' "
-            . "ORDER BY Date_debut ";
+            . "ORDER BY Date_debut DESC ";
         $arrayEvts = array();
         $result = $myBdd->Query($sql);
         while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 

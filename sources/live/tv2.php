@@ -272,7 +272,8 @@ class TV extends MyPage
 
 	function Content_List_Medals()
     {
-		$db = new MyBdd();
+
+        $db = new MyBdd();
 		
 		$competition = $this->GetParam('competition');
 		$saison = $this->GetParam('saison', utyGetSaison());
@@ -290,12 +291,12 @@ class TV extends MyPage
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
 
-		if (count($tEquipes) != 3) {
+        if (count($tEquipes) != 3) {
             return;
         }
 		
         echo '
-            <div class="container-fluid">
+            <div class="container-fluid podium">
                 <div id="podium" class="text-center">
                     <div id="podium_line1">' . $this->ImgNation48($tEquipes[0]['Code_club']) . '&nbsp;
                         <span>' . utyGetString($tEquipes[0], 'Libelle', '???') . '</span>
@@ -315,7 +316,7 @@ class TV extends MyPage
 
 	function Content_Final_Ranking()
     {
-		$db = new MyBdd();
+        $db = new MyBdd();
 		
 		$competition = $this->GetParam('competition');
 		$saison = $this->GetParam('saison', utyGetSaison());
@@ -382,7 +383,7 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_single">
                 <div id="banner_single" class="text-center">
-                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept']) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgNation48(utyGetString($rJoueur, 'Numero_comite_dept', '???')) . '&nbsp;
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
@@ -416,14 +417,14 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_double">
                 <div id="banner_double" class="text-center">
-                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept']) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept']) . '&nbsp;
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
                             . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
                         </span>
                     </div>
-                    <div id="banner_line2" class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
                         <span>
                         ' . $this->LabelMedal($medaille) . '
                         </span>
@@ -456,11 +457,11 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_double">
                 <div id="banner_double" class="text-center">
-                    <div id="banner_line1" class="banner_line">First Referee : 
+                    <div class="banner_line">First Referee : 
                         ' . $this->ImgNation48($nation1) . '&nbsp;
                         <span>' . $arbitre1 . ' (' . $nation1 . ')</span>
                     </div>
-                    <div id="banner_line2" class="banner_line">Second Referee : 
+                    <div class="banner_line">Second Referee : 
                         ' . $this->ImgNation48($nation2) . '&nbsp;
                         <span>' . $arbitre2 . ' (' . $nation2 . ')</span>
                     </div>
@@ -492,13 +493,13 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_presentation">
                 <div id="banner_presentation" class="text-center">
-                    <div id="banner_line1" class="banner_line">
+                    <div class="banner_line">
                         ' . utyGetString($rMatch, 'categorie', '???') . '
                         ' . utyGetString($rMatch, 'Phase', '???') . '
                          - Pitch
                         ' . utyGetString($rMatch, 'Terrain', '???') . '
                     </div>
-                    <div id="banner_line2" class="row banner_line">
+                    <div class="row banner_line">
                         <div class="col-md-6">
                             ' . $this->ImgNation48($rMatch['ClubA']) . '&nbsp;
                             <span>
@@ -540,13 +541,13 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_presentation">
                 <div id="banner_presentation" class="text-center">
-                    <div id="banner_line1" class="banner_line">
+                    <div class="banner_line">
                         ' . utyGetString($rMatch, 'categorie', '???') . '
                         ' . utyGetString($rMatch, 'Phase', '???') . '
                          - Pitch
                         ' . utyGetString($rMatch, 'Terrain', '???') . '
                     </div>
-                    <div id="banner_line2" class="row banner_line">
+                    <div class="row banner_line">
                         <div class="col-md-5">
                             ' . $this->ImgNation48($rMatch['ClubA']) . '&nbsp;
                             <span>
@@ -588,7 +589,7 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_single">
                 <div id="banner_single" class="text-center">
-                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
@@ -617,12 +618,12 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_double">
                 <div id="banner_double" class="text-center">
-                    <div id="banner_line1" class="banner_line">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
                     </div>
-                    <div id="banner_line2" class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
                         <span>
                         ' . $this->LabelMedal($medaille) . '
                         </span>
