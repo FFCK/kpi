@@ -185,44 +185,43 @@ span.numero {
 
 #podium {
     position: absolute;
-    margin-left: 50vw;
-    bottom: 10px;
-    transform: translateX(-50%);
+    left: 365px;
+    bottom: 87px;
     
-    width: 1205px;
+    width: 1185px;
     height: 300px;
     
     color: black;
     font-weight: bold;
     font-family: "Arial Narrow", Arial, sans-serif;
     font-size: 1.5vw;
-    
 }
 
 #podium_categorie {
     position: absolute;
-    bottom: 25px;
+    bottom: 10px;
     margin-left: 50%;
     transform: translateX(-50%);
+    font-style: italic;
 }
 #podium_line1 {
-    width: 400px;
+    width: 420px;
     position: absolute;
-    bottom: 183px;
+    bottom: 150px;
     margin-left: 50%;
     transform: translateX(-50%);
 }
 #podium_line2 {
-    width: 400px;
+    width: 410px;
     position: absolute;
-    bottom: 157px;
+    bottom: 120px;
     left: 2px;
 }
 #podium_line3 {
-    width: 400px;
+    width: 410px;
     position: absolute;
-    bottom: 129px;
-    right: 2px;
+    bottom: 90px;
+    right: 0px;
 }
 
 

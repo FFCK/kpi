@@ -115,17 +115,19 @@ function ParseCacheScore(jsonTxt)
 			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
 			$('#match_event_line1').html(line);
 
-			if (jsonData.event[0].Equipe_A_B == 'A')
+			if (jsonData.event[0].Equipe_A_B == 'A') {
 				line = ImgNation(theContext.Match.GetEquipe1(rowMatch));
-			else
+            } else {
 				line = ImgNation(theContext.Match.GetEquipe2(rowMatch));
+            }
+            console.log(theContext.Match);
 				
 			line += "&nbsp;<span>";
 			if (jsonData.event[0].Numero == "undefined") {
 				if (jsonData.event[0].Equipe_A_B == 'A')
-					line = "Team "+theContext.Match.GetEquipe1(rowMatch);
+					line += "Team "+theContext.Match.GetEquipe1(rowMatch);
 				else	
-					line = "Team "+theContext.Match.GetEquipe2(rowMatch);
+					line += "Team "+theContext.Match.GetEquipe2(rowMatch);
 			} else {
 				line += jsonData.event[0].Numero;
 				line += ' - ';
@@ -136,7 +138,7 @@ function ParseCacheScore(jsonTxt)
 			line += "</span>";
 			$('#match_event_line2').html(line);
 			
-			$('#bandeau_goal').fadeIn(400).delay(6000).fadeOut(900);
+			$('#bandeau_goal').fadeIn(400);//.delay(6000).fadeOut(900);
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId);

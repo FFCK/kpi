@@ -40,25 +40,34 @@
         <div class='col-sm-2'>
             <label>{#Presentation#}</label>
             <select id="presentation" name="presentation">
-                <option value="" {if $filtrePres == ''}selected{/if}>{#Selectionnez#}</option>
-                <option value="empty" {if $filtrePres == 'empty'}selected{/if}>Empty page</option>
-                <option value="list_medals" {if $filtrePres == 'list_medals'}selected{/if}>Medals</option>
-                <option value="referee" {if $filtrePres == 'referee'}selected{/if}>Referees</option>
-                <option value="player" {if $filtrePres == 'player'}selected{/if}>Player</option>
-                <option value="player_medal" {if $filtrePres == 'player_medal'}selected{/if}>Player medal</option>
-                <option value="team" {if $filtrePres == 'team'}selected{/if}>Team</option>
-                <option value="team_medal" {if $filtrePres == 'team_medal'}selected{/if}>Team medal</option>
-                <option value="match" {if $filtrePres == 'match'}selected{/if}>Game</option>
-                <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
-                <option value="list_team" {if $filtrePres == 'list_team'}selected{/if}>List team</option>
-                <option value="list_coachs" {if $filtrePres == 'list_coachs'}selected{/if}>List coachs</option>
-                <option value="final_ranking" {if $filtrePres == 'final_ranking'}selected{/if}>Final ranking</option>
-                <option value="score" {if $filtrePres == 'score'}selected{/if}>Score</option>
-                <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
-                <option value="schema" {if $filtrePres == 'schema'}selected{/if}>Schema</option>
-                <option value="frame_terrains" {if $filtrePres == 'frame_terrains'}selected{/if}>Terrains</option>
-                
-                <option value="force_cache_match" {if $filtrePres == 'force_cache_match'}selected{/if}>Force cache match</option>
+                    <option value="" {if $filtrePres == ''}selected{/if}>{#Selectionnez#}</option>
+                    <option value="empty" {if $filtrePres == 'empty'}selected{/if}>Empty page</option>
+                <optgroup label="Before game inlays">
+                    <option value="match" {if $filtrePres == 'match'}selected{/if}>Game</option>
+                    <option value="list_team" {if $filtrePres == 'list_team'}selected{/if}>List team</option>
+                    <option value="list_coachs" {if $filtrePres == 'list_coachs'}selected{/if}>List coachs</option>
+                    <option value="team" {if $filtrePres == 'team'}selected{/if}>Team</option>
+                </optgroup>
+                <optgroup label="Running game inlays">
+                    <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
+                    <option value="referee" {if $filtrePres == 'referee'}selected{/if}>Referees</option>
+                    <option value="score" {if $filtrePres == 'score'}selected{/if}>Score</option>
+                    <option value="player" {if $filtrePres == 'player'}selected{/if}>Player</option>
+                </optgroup>
+                <optgroup label="After game inlays">
+                    <option value="list_medals" {if $filtrePres == 'list_medals'}selected{/if}>Medals</option>
+                    <option value="player_medal" {if $filtrePres == 'player_medal'}selected{/if}>Player medal</option>
+                    <option value="team_medal" {if $filtrePres == 'team_medal'}selected{/if}>Team medal</option>
+                    <option value="final_ranking" {if $filtrePres == 'final_ranking'}selected{/if}>Final ranking</option>
+                </optgroup>
+                <optgroup label="Screen display">
+                    <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
+                    <option value="schema" {if $filtrePres == 'schema'}selected{/if}>Schema</option>
+                    <option value="frame_terrains" {if $filtrePres == 'frame_terrains'}selected{/if}>Terrains</option>
+                    <option value="frame_phases" {if $filtrePres == 'frame_phases'}selected{/if}>Phases</option>
+                </optgroup>
+
+                    <option value="force_cache_match" {if $filtrePres == 'force_cache_match'}selected{/if}>Force cache match</option>
             </select>
         </div>
         <div class='col-sm-1'>
@@ -75,7 +84,7 @@
                 {section name=i loop=$arrayMatchs}
                     <option value="{$arrayMatchs[i].Id}" data-terrain="{$arrayMatchs[i].Terrain}">
                         #{$arrayMatchs[i].Numero_ordre} {#Terr#}.{$arrayMatchs[i].Terrain} {$arrayMatchs[i].Heure_match}
-                        : {$arrayMatchs[i].equipeA} - {$arrayMatchs[i].equipeB}
+                        : {$arrayMatchs[i].equipeA} - {$arrayMatchs[i].equipeB} [{$arrayMatchs[i].Phase}]
                     </option>
                 {/section}
             </select>
@@ -111,6 +120,20 @@
                 <option value="3">3</option>
                 <option value="2">2</option>
                 <option value="1">1</option>
+            </select>
+        </div>
+        <div class='col-sm-1 params' id='round-col'>
+            <label>Round</label>
+            <select id="round" name="round">
+                <option value="*">All</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
             </select>
         </div>
         <div class='col-sm-1 params' id='start-col'>
