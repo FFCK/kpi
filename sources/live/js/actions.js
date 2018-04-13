@@ -191,9 +191,9 @@ function Init(idMatch)
 {
 	theContext.Match.Add(idMatch); 
 
-	RefreshCacheChrono();
-	RefreshCacheScore();
 	RefreshCacheGlobal();
+	RefreshCacheChrono();
+	setTimeout(RefreshCacheScore(), 800);
 	
 	setInterval(RefreshCacheScore, 1000);
 }

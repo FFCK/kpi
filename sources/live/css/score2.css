@@ -121,9 +121,9 @@ div#score_separation {
 div#categorie {
     position: absolute;
     top: 101px;
-    left: 162px;
+    left: 137px;
     font-size: 20px;
-    width: 232px;
+    width: 282px;
     font-style: italic;
     color: whitesmoke;
     /*background-color: blue;*/
@@ -182,3 +182,11 @@ div#categorie {
     line-height: 60px;
 }
 
+span.capitaine {
+    vertical-align: middle;
+    font-size: 30px;
+}
+span.numero {
+    vertical-align: middle;
+    font-size: 30px;
+}

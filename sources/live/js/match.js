@@ -581,18 +581,15 @@ function ParseCacheTerrain(jsonTxt)
 	if (typeof(jsonData.id_match) == 'undefined')
 		return;	// Data JSON non correcte ...
 
-//	alert("ET1="+jsonTxt);
 	if (theContext.Match.GetId(0) != jsonData.id_match)
 	{
-//		alert("ET2 "+jsonData.id_match);
 
 		theContext.Match.SetId(0,jsonData.id_match);
 
-		RefreshCacheScore();
-		RefreshCacheChrono();
 		RefreshCacheGlobal();
+		RefreshCacheChrono();
+        // On laisse le temps de charger les infos du match pour récupérer le drapeau pays du dernier événement
+		setTimeout(RefreshCacheScore(), 800);
 		
-//		if (theContext.Speaker == 1)
-//			$('#lien_pdf').html("<a target='_blank' href='https://www.kayak-polo.info/PdfMatchMulti.php?listMatch="+jsonData.id_match+"'>Lien vers la Feuille de Match</a>");
 	}
 }
