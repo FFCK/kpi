@@ -15,41 +15,46 @@ div {
     font-family: "Arial Narrow", Arial, sans-serif;
     color: black;
     text-align: center;
+}
 
-    /*border: 2px dotted black;*/
+.ban_score {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../img/score.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
 }
 
 div#bandeau_score
 {
     position: absolute;
     margin-left: 50vw;
-    top: 10px;
-    transform: translateX(-50%);
+    top: 28px;
+    transform: translateX(-53%);
 
-    width: 552px;
+    width: 555px;
     height: 124px;
 
-    /*	background-image: url("../img/multi_score.png");*/
-    background-image: url("../img/SCORE.png");
+/*    background-image: url("../img/SCORE.png");
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: 100%;*/
 }
 
 #match_horloge
 {
     position: absolute;
-    left: 154px;
+    left: 159px;
     top: 0px;
-    font-size:40px;
+    font-size:35px;
     width: 123px;
 }
 
 #match_periode
 {
     position: absolute;
-    right: 154px;
+    right: 159px;
     top: 0px;
-    font-size: 40px;
+    font-size: 35px;
     color: red;
     width: 123px;
 }
@@ -71,27 +76,29 @@ div#nation2
 div#equipe1
 {	
     position: absolute;
-    left: 51px;
+    left: 62px;
     top: 54px;
-    font-size: 35px;
+    font-size: 30px;
     width: 165px;
+    color: white;
 }
 
 div#equipe2
 {	
     position: absolute;
-    right: 51px;
+    right: 62px;
     top: 54px;
-    font-size: 35px;
+    font-size: 30px;
     width: 165px;
+    color: white;
 }
 
 div#score1
 {	
     position: absolute;
     top: 47px;
-    left: 215px;
-    font-size: 40px;
+    left: 220px;
+    font-size: 35px;
     width: 62px;
 }
 
@@ -99,27 +106,33 @@ div#score2
 {	
     position: absolute;
     top: 47px;
-    right: 215px;
-    font-size: 40px;
+    right: 220px;
+    font-size: 35px;
     width: 62px;
 }
 
 div#score_separation {	
     position: absolute;
     top: 47px;
-    left: 270px;
-    font-size: 40px;
+    left: 274px;
+    font-size: 35px;
 }
 
 div#categorie {
     position: absolute;
-    top: 94px;
-    left: 180px;
-    font-size: 25px;
-    width: 192px;
+    top: 101px;
+    left: 162px;
+    font-size: 20px;
+    width: 232px;
+    font-style: italic;
+    color: whitesmoke;
+    /*background-color: blue;*/
+    background: linear-gradient(to bottom, #315891 0%, #315891 70%, white 100%);
+    border-radius: 0 0 5px 5px;
+    box-shadow: 4px 4px 4px #1e1e82;
 }
 
-#bandeau_goal {
+/*#bandeau_goal {
     width: 60%;
     height: 100px;
 
@@ -130,7 +143,7 @@ div#categorie {
 
     padding: 15px 50px;
     background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);
-    /*background-color: whitesmoke;*/
+    background-color: whitesmoke;
 
     color: black;
     font-weight: bold;
@@ -138,7 +151,34 @@ div#categorie {
     font-size: 1.5vw;
     display:none;
 
+}*/
+
+.ban_double {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_double.png');
 }
 
+#banner_double {
+    /*border: 1px solid red;*/
+    width: 1180px;
+    height: 138px;
 
+    position: absolute;
+    left: 405px;
+    top: 825px;
+    /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
+    /*background-color: whitesmoke;*/
+    
+    color: #000066;
+    font-weight: bold;
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-size: 45px;
+}
+
+.banner_line {
+    line-height: 60px;
+}
 

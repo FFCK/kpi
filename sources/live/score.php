@@ -48,22 +48,23 @@ class Score extends MyPage
     ?>			
         <!--<div id="match_horloge_etat"></div>-->
 
- 
-		<div id="bandeau_score">
-            <div id="match_horloge"></div>
-            <div id="match_periode"></div>
+        <div class="container-fluid ban_score">
+            <div id="bandeau_score">
+                <div id="match_horloge"></div>
+                <div id="match_periode"></div>
 
-            <div id="equipe1"></div>
-            <div id="equipe2"></div>
+                <div id="equipe1"></div>
+                <div id="equipe2"></div>
 
-            <div id="nation1"></div>
-            <div id="nation2"></div>
+                <div id="nation1"></div>
+                <div id="nation2"></div>
 
-            <div id="score1"></div>
-            <div id="score_separation">-</div>
-            <div id="score2"></div>
-            
-            <div id="categorie"></div>
+                <div id="score1"></div>
+                <div id="score_separation">-</div>
+                <div id="score2"></div>
+
+                <div id="categorie"></div>
+            </div>
         </div>
         
         <?php
@@ -75,10 +76,11 @@ class Score extends MyPage
             <?php
 		}
         ?>
-        
-        <div id="bandeau_goal">
-            <div id="match_event_line1"></div>
-            <div id="match_event_line2"></div>
+        <div id="bandeau_goal" class="ban_double">
+            <div id="banner_double" class="text-center">
+                <div id="match_event_line1" class="banner_line"></div>
+                <div id="match_event_line2" class="banner_line"></div>
+            </div>
         </div>
 		
 		<?php

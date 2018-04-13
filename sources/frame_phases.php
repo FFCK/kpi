@@ -24,7 +24,8 @@ class Classement extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
         
-        $Round = utyGetGet('Round', '%');
+        $Round = utyGetGet('Round', '*');
+        $Round = str_replace('*', '%', $Round);
 		$this->m_tpl->assign('Round', $Round);
         	
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -238,10 +239,20 @@ class Classement extends MyPage
 	// GestionClassement 		
 	function Classement()
 	{			
-	  MyPage::MyPage();
-		
+        MyPage::MyPage();
+        
+
 		$this->SetTemplate("Classement", "Classements", true);
 		$this->Load();
+		// COSANDCO : Gestion Param Voie ...
+		if (isset($_GET['voie']))
+		{
+			$voie = (int) $_GET['voie'];
+			if ($voie > 0)
+			{
+                $this->m_tpl->assign('voie', $voie);
+			}
+		}        
 //		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplateFrame('frame_phases');
 	}

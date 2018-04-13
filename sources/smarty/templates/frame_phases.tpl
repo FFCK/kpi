@@ -139,3 +139,7 @@
         
     {/if}
 </div>
+{if $voie}
+    <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
+    <script type="text/javascript">SetVoie({$voie});</script>
+{/if}
