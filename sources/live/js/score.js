@@ -116,11 +116,10 @@ function ParseCacheScore(jsonTxt)
 			$('#match_event_line1').html(line);
 
 			if (jsonData.event[0].Equipe_A_B == 'A') {
-				line = ImgNation(theContext.Match.GetEquipe1(rowMatch));
+				line = ImgNation48(theContext.Match.GetEquipe1(rowMatch));
             } else {
-				line = ImgNation(theContext.Match.GetEquipe2(rowMatch));
+				line = ImgNation48(theContext.Match.GetEquipe2(rowMatch));
             }
-            console.log(theContext.Match);
 				
 			line += "&nbsp;<span>";
 			if (jsonData.event[0].Numero == "undefined") {
@@ -129,11 +128,17 @@ function ParseCacheScore(jsonTxt)
 				else	
 					line += "Team "+theContext.Match.GetEquipe2(rowMatch);
 			} else {
-				line += jsonData.event[0].Numero;
-				line += ' - ';
+				line += '<span class="label label-primary numero">' + jsonData.event[0].Numero + '</span>';
+				line += ' ';
 				line += jsonData.event[0].Nom;
 				line += ' ';
 				line += jsonData.event[0].Prenom;
+                
+                if(jsonData.event[0].Capitaine == 'C') {
+                    line += ' <span class="label label-warning capitaine">C</span>';
+                } else if(jsonData.event[0].Capitaine == 'E') {
+                    line += ' (coach)';
+                }
 			}
 			line += "</span>";
 			$('#match_event_line2').html(line);
@@ -210,6 +215,7 @@ function ParseCacheGlobal(jsonTxt)
 	
 	jsonTxt = jsonTxt.substring(0,iFind);
 	jsonData = JSON && JSON.parse(jsonTxt) || $.parseJSON(jsonTxt);
+console.log(jsonData);
   
 	if (typeof(jsonData.id_match) == 'undefined')
 		return;	// Data JSON non correcte ...
@@ -256,7 +262,7 @@ function ParseCacheGlobal(jsonTxt)
 	$('#nation1').html(ImgNation48(jsonData.equipe1.club));
 	$('#nation2').html(ImgNation48(jsonData.equipe2.club));
     
-    $('#categorie').html(jsonData.categ);
+    $('#categorie').html(jsonData.categ + ' - ' + jsonData.phase);
     
     $('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch=' 
             + jsonData.id_match 
@@ -300,8 +306,8 @@ function Init(event, terrain, speaker, voie)
 	RefreshCacheTerrain();
 
 	RefreshCacheGlobal();
-	RefreshCacheScore();
 	RefreshCacheChrono();
+	setTimeout(RefreshCacheScore(), 800);
 
 	// Refresh du cache Global toute les 30 secondes ...
 	setInterval(RefreshCacheGlobal, 30000);

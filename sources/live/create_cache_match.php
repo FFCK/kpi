@@ -210,11 +210,13 @@ class CacheMatch
 		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
 		
 		// Chargement gickp_Matchs_Detail 
-		$cmd  = "Select a.*, b.Nom, b.Prenom ";
-		$cmd .= "From gickp_Matchs_Detail a Left Outer Join gickp_Liste_Coureur b On (a.Competiteur = b.Matric) ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "Order By a.Id Desc ";
-		$cmd .= "Limit 5 ";
+		$cmd  = "SELECT a.*, b.Nom, b.Prenom, c.Capitaine "
+                . "FROM gickp_Matchs_Detail a "
+                . "LEFT OUTER JOIN gickp_Liste_Coureur b On (a.Competiteur = b.Matric) "
+                . "LEFT OUTER JOIN gickp_Matchs_Joueurs c ON (a.Competiteur = c.Matric) "
+                . "WHERE a.Id_match = $idMatch "
+                . "ORDER BY a.Id Desc "
+                . "LIMIT 5 ";
 		
 		$tMatchDetails = null;
 		$db->LoadTable($cmd, $tMatchDetails);
