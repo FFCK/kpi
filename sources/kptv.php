@@ -53,7 +53,8 @@ class Tv extends MyPage
         }
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
         
-        $sql  = "SELECT m.*, j.Code_competition, j.Code_saison, ce1.Libelle equipeA, ce2.Libelle equipeB "
+        $sql  = "SELECT m.*, j.Code_competition, j.Code_saison, j.Phase, "
+                . "ce1.Libelle equipeA, ce2.Libelle equipeB "
                 . "FROM gickp_Evenement_Journees evt, gickp_Journees j, gickp_Matchs m "
                 . "LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON m.Id_equipeA = ce1.Id "
                 . "LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON m.Id_equipeB = ce2.Id "

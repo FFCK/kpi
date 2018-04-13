@@ -70,6 +70,9 @@ jq(document).ready(function(){
             case 'frame_terrains':
                 jq('#count-col').show();
                 break;
+            case 'frame_phases':
+                jq('#round-col').show();
+                break;
             default:
                 break;
         }
@@ -144,8 +147,18 @@ jq(document).ready(function(){
                         break;
                 }
 //                frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24&terrains=1,2,3,4
-                url = 'frame_terrains.php?event=' + jq('#codeEvt').val() + '&Css=sainto_hd&terrains=' 
-                        + terrains + '&filtreJour=' + jq('#jour').val();
+                url = 'frame_terrains.php?event=' + jq('#codeEvt').val() 
+                        + '&lang=en&saison=' + jq('#saison').val() 
+                        + '&Css=sainto_hd&terrains=' + terrains 
+                        + '&filtreJour=' + jq('#jour').val();
+                ChangeVoie(jq('#channel').val(), url);
+                break;
+            case 'frame_phases':
+                url = 'frame_phases.php?' 
+                        + 'lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Round=' + jq('#round').val() 
+//                        + '&Css=sainto_hd'
                 ChangeVoie(jq('#channel').val(), url);
                 break;
                 
