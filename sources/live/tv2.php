@@ -399,6 +399,14 @@ class TV extends MyPage
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
         
+        if(utyGetString($rJoueur, 'Capitaine', '???') == 'C') {
+            $capitaine = ' <span class="label label-warning capitaine">C</span>';
+        } else if(utyGetString($rJoueur, 'Capitaine', '???') == 'E') {
+            $capitaine = ' (coach)';
+        } else {
+            $capitaine = '';
+        }
+        
         echo '
             <div class="container-fluid ban_single">
                 <div id="banner_single" class="text-center">
@@ -406,7 +414,8 @@ class TV extends MyPage
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
-                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
+                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') 
+                            . $capitaine . '
                         </span>
                     </div>
                 </div>
@@ -433,6 +442,14 @@ class TV extends MyPage
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
         
+        if(utyGetString($rJoueur, 'Capitaine', '???') == 'C') {
+            $capitaine = ' <span class="label label-warning capitaine">C</span>';
+        } else if(utyGetString($rJoueur, 'Capitaine', '???') == 'E') {
+            $capitaine = ' (coach)';
+        } else {
+            $capitaine = '';
+        }
+        
         echo '
             <div class="container-fluid ban_double">
                 <div id="banner_double" class="text-center">
@@ -440,7 +457,8 @@ class TV extends MyPage
                         <span>
                         ' . ' ' . $numero
                             . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
-                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
+                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') 
+                            . $capitaine . '
                         </span>
                     </div>
                     <div class="banner_line">' . $this->ImgMedal48($medaille) . '&nbsp;
