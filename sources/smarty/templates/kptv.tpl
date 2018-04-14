@@ -47,10 +47,10 @@
                     <option value="list_team" {if $filtrePres == 'list_team'}selected{/if}>List team</option>
                     <option value="list_coachs" {if $filtrePres == 'list_coachs'}selected{/if}>List coachs</option>
                     <option value="team" {if $filtrePres == 'team'}selected{/if}>Team</option>
+                    <option value="referee" {if $filtrePres == 'referee'}selected{/if}>Referees</option>
                 </optgroup>
                 <optgroup label="Running game inlays">
                     <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
-                    <option value="referee" {if $filtrePres == 'referee'}selected{/if}>Referees</option>
                     <option value="score" {if $filtrePres == 'score'}selected{/if}>Score</option>
                     <option value="player" {if $filtrePres == 'player'}selected{/if}>Player</option>
                 </optgroup>
