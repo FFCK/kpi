@@ -173,7 +173,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="msgModal">
+{*<div class="modal fade" tabindex="-1" role="dialog" id="msgModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
@@ -184,4 +184,11 @@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+</div><!-- /.modal -->*}
+
+    <div id="msg" class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  <p>Bienvenue !</p>
+</div>

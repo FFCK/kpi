@@ -148,7 +148,7 @@ jq(document).ready(function(){
                 }
 //                frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24&terrains=1,2,3,4
                 url = 'frame_terrains.php?event=' + jq('#codeEvt').val() 
-                        + '&lang=en&saison=' + jq('#saison').val() 
+                        + '&lang=en&Saison=' + jq('#saison').val() 
                         + '&Css=sainto_hd&terrains=' + terrains 
                         + '&filtreJour=' + jq('#jour').val();
                 ChangeVoie(jq('#channel').val(), url);
@@ -327,7 +327,3 @@ function Go_ajax(param)
 	});
 }
 
-function alerte(data) {
-    jq('#msg').text(data);
-    jq('#msgModal').modal('show');
-}

@@ -52,7 +52,14 @@ function ChangeVoie(voie, url)
 //    alert("ajax_change_voie.php?"+param);
     jq.ajax({ type: "GET", url: "./live/ajax_change_voie.php", dataType: "html", data: param, cache: false, 
                 success: function(htmlData) {
-						jq("#tv_message").html(htmlData);
+						alerte(htmlData);
 				}
 	});
 }
+
+function alerte(data) {
+    jq('#msg p').text(data);
+    jq('#msg').fadeIn(500).delay(2000).fadeOut(900);
+}
+
+jq('#msg').fadeOut(900);
