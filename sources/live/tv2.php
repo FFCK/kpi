@@ -130,6 +130,23 @@ class TV extends MyPage
 		return $referee[0];
 	}
 	
+    function GetMedal($rank) {
+        switch ($rank) {
+            case 1:
+                return 'GOLD';
+                break;
+            case 2:
+                return 'SILVER';
+                break;
+            case 3:
+                return 'BRONZE';
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+    
 	function GetPlayer(&$tJoueurs, $row)
 	{
 		if ($row >= count($tJoueurs))
@@ -334,7 +351,7 @@ class TV extends MyPage
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
-
+        
         echo '
             <div class="container-fluid ban_list">
                 <div id="banner_list">
@@ -351,7 +368,9 @@ class TV extends MyPage
                             <div class="banner_line">
                                 <span class="label label-primary numero">' . utyGetInt($equipe, 'rank', 999) . '</span>
                                 &nbsp;' . $this->ImgNation48(utyGetString($equipe, 'Code_club', 999)) . '&nbsp;
-                                <span>' . utyGetString($equipe, 'Libelle', '???') . '&nbsp;</span>
+                                <span>' . utyGetString($equipe, 'Libelle', '???') . '&nbsp;</span>' 
+                                . $this->ImgMedal48($this->GetMedal(utyGetInt($equipe, 'rank', 999))) . '
+                                    
                             </div>';
                     }
         echo '

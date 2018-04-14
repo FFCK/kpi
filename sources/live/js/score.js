@@ -143,7 +143,7 @@ function ParseCacheScore(jsonTxt)
 			line += "</span>";
 			$('#match_event_line2').html(line);
 			
-			$('#bandeau_goal').fadeIn(400);//.delay(6000).fadeOut(900);
+			$('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900);
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId);
