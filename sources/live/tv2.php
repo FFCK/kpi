@@ -424,7 +424,7 @@ class TV extends MyPage
                             . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') . '
                         </span>
                     </div>
-                    <div class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgMedal48($medaille) . '&nbsp;
                         <span>
                         ' . $this->LabelMedal($medaille) . '
                         </span>
@@ -623,7 +623,7 @@ class TV extends MyPage
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
                     </div>
-                    <div class="banner_line">' . $this->ImgMedal($medaille) . '&nbsp;
+                    <div class="banner_line">' . $this->ImgMedal48($medaille) . '&nbsp;
                         <span>
                         ' . $this->LabelMedal($medaille) . '
                         </span>
