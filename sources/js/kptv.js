@@ -81,7 +81,7 @@ jq(document).ready(function(){
     jq('#confirm').click(function(){
         switch(jq('#confirm').attr('data-pres')) {
             case 'empty':
-                url = 'live/tv2.php';
+                url = 'live/tv2.php?show=empty';
                 ChangeVoie(jq('#channel').val(), url);
                 break;
             case 'list_medals':
