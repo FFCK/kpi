@@ -55,7 +55,7 @@
                     <option value="player" {if $filtrePres == 'player'}selected{/if}>Player</option>
                 </optgroup>
                 <optgroup label="After game inlays">
-                    <option value="list_medals" {if $filtrePres == 'list_medals'}selected{/if}>Medals</option>
+                    <option value="list_medals" {if $filtrePres == 'list_medals'}selected{/if}>Medals (podium)</option>
                     <option value="player_medal" {if $filtrePres == 'player_medal'}selected{/if}>Player medal</option>
                     <option value="team_medal" {if $filtrePres == 'team_medal'}selected{/if}>Team medal</option>
                     <option value="final_ranking" {if $filtrePres == 'final_ranking'}selected{/if}>Final ranking</option>

@@ -75,13 +75,15 @@ class Tv extends MyPage
             }
             
         }
-        $arrayCompet = array_keys(array_flip($arrayCompet));
-        $arrayJours = array_keys(array_flip($arrayJours));
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
         $this->m_tpl->assign('arrayMatchs', $arrayMatchs);
         $this->m_tpl->assign('saison', $saison);
-        $this->m_tpl->assign('arrayCompet', $arrayCompet);
-        $this->m_tpl->assign('arrayJours', $arrayJours);
+        if(is_array($arrayCompet)) {
+            $arrayCompet = array_keys(array_flip($arrayCompet));
+            $arrayJours = array_keys(array_flip($arrayJours));
+            $this->m_tpl->assign('arrayCompet', $arrayCompet);
+            $this->m_tpl->assign('arrayJours', $arrayJours);
+        }
         
 	}
 	
