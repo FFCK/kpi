@@ -398,11 +398,13 @@ class TV extends MyPage
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
+        $num = '<span class="label label-primary numero">' . $numero . '</span> ';
         
         if(utyGetString($rJoueur, 'Capitaine', '???') == 'C') {
             $capitaine = ' <span class="label label-warning capitaine">C</span>';
         } else if(utyGetString($rJoueur, 'Capitaine', '???') == 'E') {
             $capitaine = ' (coach)';
+            $num = '';
         } else {
             $capitaine = '';
         }
@@ -411,9 +413,8 @@ class TV extends MyPage
             <div class="container-fluid ban_single">
                 <div id="banner_single" class="text-center">
                     <div class="banner_line">' . $this->ImgNation48(utyGetString($rJoueur, 'Numero_comite_dept', '???')) . '&nbsp;
-                        <span>
-                        ' . ' ' . $numero
-                            . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
+                        <span>' . $num
+                            . utyGetString($rJoueur, 'Nom', '???') 
                             . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') 
                             . $capitaine . '
                         </span>
@@ -441,11 +442,13 @@ class TV extends MyPage
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
-        
+        $num = '<span class="label label-primary numero">' . $numero . '</span> ';
+
         if(utyGetString($rJoueur, 'Capitaine', '???') == 'C') {
             $capitaine = ' <span class="label label-warning capitaine">C</span>';
         } else if(utyGetString($rJoueur, 'Capitaine', '???') == 'E') {
             $capitaine = ' (coach)';
+            $num = '';
         } else {
             $capitaine = '';
         }
@@ -454,9 +457,8 @@ class TV extends MyPage
             <div class="container-fluid ban_double">
                 <div id="banner_double" class="text-center">
                     <div class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept']) . '&nbsp;
-                        <span>
-                        ' . ' ' . $numero
-                            . ' - ' . utyGetString($rJoueur, 'Nom', '???') 
+                        <span>' . $num
+                            . utyGetString($rJoueur, 'Nom', '???') 
                             . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') 
                             . $capitaine . '
                         </span>

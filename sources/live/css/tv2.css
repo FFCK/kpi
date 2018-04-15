@@ -60,14 +60,14 @@ html, body
 
     position: absolute;
     left: 405px;
-    top: 855px;
+    top: 848px;
     /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
     /*background-color: whitesmoke;*/
     
     color: #000066;
     font-weight: bold;
     font-family: "Arial Narrow", Arial, sans-serif;
-    font-size: 45px;
+    font-size: 40px;
 }
 
 

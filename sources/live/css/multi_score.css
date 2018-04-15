@@ -74,40 +74,40 @@ div.bandeau_score
 .match_horloge
 {
     position: absolute;
-    left: 200px;
+    left: 218px;
     top: 10px;
     font-size: 16px;
-    width: 61px;
+    width: 56px;
 }
 
 .match_periode
 {
     position: absolute;
-    right: 233px;
+    right: 220px;
     top: 10px;
     font-size: 16px;
     color: red;
-    width: 61px;
+    width: 56px;
 }
 
 div.nation1
 {	
     position: absolute;
-    left: 120px;
+    left: 135px;
     top: 31px;
 }
 
 div.nation2
 {	
     position: absolute;
-    right: 150px;
+    right: 135px;
     top: 31px;
 }
 
 div.equipe1
 {	
     position: absolute;
-    left: 156px;
+    left: 170px;
     top: 31px;
     font-size: 20px;
     width: 85px;
@@ -117,7 +117,7 @@ div.equipe1
 div.equipe2
 {	
     position: absolute;
-    right: 186px;
+    right: 170px;
     top: 31px;
     font-size: 20px;
     width: 85px;
@@ -128,7 +128,7 @@ div.score1
 {	
     position: absolute;
     top: 33px;
-    left: 232px;
+    left: 248px;
     font-size: 18px;
     width: 32px;
 }
@@ -137,7 +137,7 @@ div.score2
 {	
     position: absolute;
     top: 33px;
-    right: 263px;
+    right: 248px;
     font-size: 18px;
     width: 32px;
 }
@@ -145,21 +145,21 @@ div.score2
 div.score_separation {	
     position: absolute;
     top: 32px;
-    left: 258px;
+    left: 274px;
     font-size: 18px;
 }
 
 div.categorie {
     position: absolute;
     top: 60px;
-    left: 170px;
+    left: 185px;
     font-size: 12px;
     width: 182px;
     font-style: italic;
     color: whitesmoke;
     background: linear-gradient(to bottom, #315891 0%, #315891 70%, white 100%);
     border-radius: 0 0 5px 5px;
-    box-shadow: 4px 4px 4px #1e1e82;
+    box-shadow: 2px 2px 4px #1e1e82;
 }
 
 
