@@ -114,8 +114,9 @@ function ParseCacheScore(jsonTxt)
 				else	
 					line = "Team "+theContext.Match.GetEquipe2(rowMatch);
 			} else {
-				line += '<span class="label label-primary numero">' + jsonData.event[0].Numero + '</span>';
-				line += ' - ';
+                if(jsonData.event[0].Capitaine != 'E') {
+                    line += '<span class="label label-primary numero">' + jsonData.event[0].Numero + '</span>&nbsp;';
+                }
 				line += jsonData.event[0].Nom;
 				line += ' ';
 				line += jsonData.event[0].Prenom;
@@ -233,7 +234,7 @@ function ParseCacheGlobal(jsonTxt)
 	$('#nation1_'+idMulti).html(ImgNation(jsonData.equipe1.club));
 	$('#nation2_'+idMulti).html(ImgNation(jsonData.equipe2.club));
     
-    $('#categorie_'+idMulti).html(jsonData.categ);
+    $('#categorie_'+idMulti).html(jsonData.categ + ' - ' + jsonData.phase);
     
     $('#lien_pdf_'+idMulti).html('<a href="../PdfMatchMulti.php?listMatch=' 
             + jsonData.id_match 

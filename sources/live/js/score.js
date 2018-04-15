@@ -128,7 +128,9 @@ function ParseCacheScore(jsonTxt)
 				else	
 					line += "Team "+theContext.Match.GetEquipe2(rowMatch);
 			} else {
-				line += '<span class="label label-primary numero">' + jsonData.event[0].Numero + '</span>';
+                if(jsonData.event[0].Capitaine != 'E') {
+                    line += '<span class="label label-primary numero">' + jsonData.event[0].Numero + '</span>&nbsp;';
+                }
 				line += ' ';
 				line += jsonData.event[0].Nom;
 				line += ' ';
