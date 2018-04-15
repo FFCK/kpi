@@ -47,9 +47,10 @@ class MultiScore extends MyPage
 
         for ($i=1;$i<=$count;$i++) {
         ?>
-            <div class='col-sm-6 quart ban_score'>
-                <div class="container-fluid ban_score">
+            <div class='col-sm-6 quart'>
+                <div class="ban_score">
                     <div class="terrain btn btn-default disabled" id="terrain_<?= $i ?>">Pitch <?= $i ?></div>
+                    
                     <div class="bandeau_score" id="bandeau_score_<?= $i ?>">
                         <div class="match_horloge" id="match_horloge_<?= $i ?>"></div>
                         <div class="match_periode" id="match_periode_<?= $i ?>"></div>
