@@ -389,7 +389,7 @@ function ImgNation(nation)
 {
 	nation = VerifNation(nation);
     if(nation.length > 0) {
-        return "<img class='centre' src='../img/Nations/"+nation+".png' height='32' width='32' />";
+        return "<img class='centre' src='../img/Nations/"+nation+".png' height='32' />";
     } else {
         return "";
     }
@@ -398,7 +398,7 @@ function ImgNation(nation)
 function ImgNation48(nation)
 {
 	nation = VerifNation(nation);
-	return "<img class='centre' src='../img/Nations/"+nation+".png' height='48' width='48' />";
+	return "<img class='centre' src='../img/Nations/"+nation+".png' height='48' />";
 }
 
 function ImgNation64(nation)
@@ -448,19 +448,19 @@ function GetImgEvtMatch(evt_match)
     {
         case 'B':
         case 'T':
-            return "<img class='centre' src='../img/ball.png' height='48' />";
+            return "<img class='evt centre' src='../img/ball.png' height='48' />";
             break;
 
         case 'V':
-            return "<img class='centre' src='../img/carton_vert.png' height='48' />";
+            return "<img class='evt centre' src='../img/carton_vert.png' height='48' />";
             break;
 
         case 'J':
-            return "<img class='centre' src='../img/carton_jaune.png' height='48' />";
+            return "<img class='evt centre' src='../img/carton_jaune.png' height='48' />";
             break;
 
         case 'R':
-            return "<img class='centre' src='../img/carton_rouge.png' height='48' />";
+            return "<img class='evt centre' src='../img/carton_rouge.png' height='48' />";
             break;
 
         default:

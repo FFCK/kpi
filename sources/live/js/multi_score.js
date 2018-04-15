@@ -100,11 +100,12 @@ function ParseCacheScore(jsonTxt)
 			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
 			$('#match_event_line1_'+idMulti).html(line);
 
-			if (jsonData.event[0].Equipe_A_B == 'A')
+			if (jsonData.event[0].Equipe_A_B == 'A') {
 				line = ImgNation(theContext.Match.GetEquipe1(rowMatch));
-			else
+            } else {
 				line = ImgNation(theContext.Match.GetEquipe2(rowMatch));
-				
+            }
+            
 			line += "&nbsp;<span>";
 			if (jsonData.event[0].Numero == "undefined")
 			{
@@ -112,14 +113,18 @@ function ParseCacheScore(jsonTxt)
 					line = "Team "+theContext.Match.GetEquipe1(rowMatch);
 				else	
 					line = "Team "+theContext.Match.GetEquipe2(rowMatch);
-			}
-			else
-			{
-				line += jsonData.event[0].Numero;
+			} else {
+				line += '<span class="label label-primary numero">' + jsonData.event[0].Numero + '</span>';
 				line += ' - ';
 				line += jsonData.event[0].Nom;
 				line += ' ';
 				line += jsonData.event[0].Prenom;
+                
+                if(jsonData.event[0].Capitaine == 'C') {
+                    line += ' <span class="label label-warning capitaine">C</span>';
+                } else if(jsonData.event[0].Capitaine == 'E') {
+                    line += ' (coach)';
+                }
 			}
 			line += "</span>";
 			
@@ -225,8 +230,8 @@ function ParseCacheGlobal(jsonTxt)
 	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club);
 	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club);
 
-	$('#nation1_'+idMulti).html(ImgNation48(jsonData.equipe1.club));
-	$('#nation2_'+idMulti).html(ImgNation48(jsonData.equipe2.club));
+	$('#nation1_'+idMulti).html(ImgNation(jsonData.equipe1.club));
+	$('#nation2_'+idMulti).html(ImgNation(jsonData.equipe2.club));
     
     $('#categorie_'+idMulti).html(jsonData.categ);
     
