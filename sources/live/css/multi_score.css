@@ -65,10 +65,6 @@ div.bandeau_score
 
     width: 552px;
     height: 124px;
-
-    background-image: url("../img/SCORE.png");
-    background-repeat: no-repeat;
-    background-size: 100%;
 }
 
 .match_horloge
