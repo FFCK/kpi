@@ -47,25 +47,26 @@ class MultiScore extends MyPage
 
         for ($i=1;$i<=$count;$i++) {
         ?>
-            <div class='col-sm-6 quart'>
-                <div class="terrain btn btn-default disabled" id="terrain_<?= $i ?>">Pitch <?= $i ?></div>
-                <div class="bandeau_score" id="bandeau_score_<?= $i ?>">
-                    <div class="match_horloge" id="match_horloge_<?= $i ?>"></div>
-                    <div class="match_periode" id="match_periode_<?= $i ?>"></div>
+            <div class='col-sm-6 quart ban_score'>
+                <div class="container-fluid ban_score">
+                    <div class="terrain btn btn-default disabled" id="terrain_<?= $i ?>">Pitch <?= $i ?></div>
+                    <div class="bandeau_score" id="bandeau_score_<?= $i ?>">
+                        <div class="match_horloge" id="match_horloge_<?= $i ?>"></div>
+                        <div class="match_periode" id="match_periode_<?= $i ?>"></div>
 
-                    <div class="equipe1" id="equipe1_<?= $i ?>"></div>
-                    <div class="equipe2" id="equipe2_<?= $i ?>"></div>
+                        <div class="equipe1" id="equipe1_<?= $i ?>"></div>
+                        <div class="equipe2" id="equipe2_<?= $i ?>"></div>
 
-                    <div class="nation1" id="nation1_<?= $i ?>"></div>
-                    <div class="nation2" id="nation2_<?= $i ?>"></div>
+                        <div class="nation1" id="nation1_<?= $i ?>"></div>
+                        <div class="nation2" id="nation2_<?= $i ?>"></div>
 
-                    <div class="score1" id="score1_<?= $i ?>"></div>
-                    <div class="score_separation" id="score_separation_<?= $i ?>">-</div>
-                    <div class="score2" id="score2_<?= $i ?>"></div>
+                        <div class="score1" id="score1_<?= $i ?>"></div>
+                        <div class="score_separation" id="score_separation_<?= $i ?>">-</div>
+                        <div class="score2" id="score2_<?= $i ?>"></div>
 
-                    <div class="categorie" id="categorie_<?= $i ?>"></div>
+                        <div class="categorie" id="categorie_<?= $i ?>"></div>
+                    </div>
                 </div>
-
                 <?php
                 if ($this->GetParam('speaker') == 1)
                 {
@@ -74,10 +75,11 @@ class MultiScore extends MyPage
                     <?php
                 }
                 ?>
-
-                <div class="bandeau_goal" id="bandeau_goal_<?= $i ?>">
-                    <div class="match_event_line1" id="match_event_line1_<?= $i ?>"></div>
-                    <div class="match_event_line2" id="match_event_line2_<?= $i ?>"></div>
+                <div class="ban_double" id="bandeau_goal_<?= $i ?>">
+                    <div class="banner_double" id="banner_double_<?= $i ?>" class="text-center">
+                        <div class="banner_line" id="match_event_line1_<?= $i ?>"></div>
+                        <div class="banner_line" id="match_event_line2_<?= $i ?>"></div>
+                    </div>
                 </div>
             </div>     
         <?php	
