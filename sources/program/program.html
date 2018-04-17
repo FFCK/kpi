@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="libraries/css/bootstrap.min.css" >
+        <link rel="stylesheet" href="libraries/css/bootstrap-toggle.min.css">
+        <link rel="stylesheet" href="libraries/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css" >
+        <link rel="stylesheet" href="libraries/css/flag-icon.min.css" >
+        <link rel="stylesheet" href="assets/program.css" >
+        
+        <title>KPI-Program</title>
+    </head>
+    <body>
+        <nav class="navbar fixed-top navbar-light bg-light">
+            <!--<img src="/assets/brand/bootstrap-solid.svg" width="30" height="30" alt="">-->
+            <span class="navbar-brand"><span class="badge badge-secondary">KPI</span></span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSettings" aria-controls="navbarSettings" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSettings">
+                <form class="navbar-nav">
+                    <span class="nav-item navbar-text text-center h4" data-version="Parametres"></span>
+                    
+                    <div class="nav-item row mb-1">
+                        <button type="button" class="btn btn-light langswitch col" data-lang="fr">
+                            <i class="flag-icon flag-icon-fr"></i> FR
+                        </button>
+                        <button type="button" class="btn btn-light langswitch col" data-lang="en">
+                            <i class="flag-icon flag-icon-gb"></i> EN
+                        </button>
+                        <button type="button" class="btn btn-light col" id="init">
+                            <span class="fa fa-redo"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="input-group nav-item mb-1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="event-addon" data-version="Evenement"></span>
+                        </div>
+                        <select id="event" class="form-control">
+                        </select>
+                    </div>
+                    <div class="input-group nav-item mb-1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="saison-addon" data-version="Saison"></span>
+                        </div>
+                        <select id="saison" class="form-control">
+                        </select>
+                    </div>
+                    <div class="input-group nav-item mb-1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="competition-addon" data-version="Competition"></span>
+                        </div>
+                        <select id="competition" class="form-control">
+                            <optgroup label="Compétitions nationales">
+                                <option value="N1H">Nationale 1 Hommes</option>
+                                <option value="N2H">Nationale 2 Hommes</option>
+                                <option value="N3H">Nationale 3 Hommes</option>
+                                <option value="N4H">Nationale 4 Hommes</option>
+                            </optgroup>
+                            <optgroup label="Compétitions régionales">
+                                <option value="REG12">Nationale 1 Hommes</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="input-group nav-item mb-1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="categorie-addon" data-version="Categorie"></span>
+                        </div>
+                        <select id="categorie" class="form-control">
+                            <option value="CMH">Hommes</option>
+                            <option value="CMF">Femmes</option>
+                            <option value="CMH21">U21 Hommes</option>
+                            <option value="CMF21">U21 Femmes</option>
+                        </select>
+                    </div>
+                    <div class="input-group nav-item mb-1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="journee-addon" data-version="Journee"></span>
+                        </div>
+                        <select id="journee" class="form-control">
+                            <option value="2018-04-01">01/04/2018</option>
+                            <option value="2018-04-02">02/04/2018</option>
+                            <option value="2018-04-16">16/04/2018 (aujourd'hui)</option>
+                            <option value="2018-04-17">17/04/2018</option>
+                        </select>
+                    </div>
+                    <div class="input-group nav-item mb-1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="filtre-addon" data-version="Filtre"></span>
+                        </div>
+                        <select id="filtre" class="form-control">
+                            <option value="" data-version="Tout"></option>
+                            <optgroup label="" data-label="Equipes">
+                                <option value="AUT Men">AUT Men</option>
+                                <option value="BEL Men">BEL Men</option>
+                                <option value="BEL U21 Men">BEL U21 Men</option>
+                                <option value="CZE Women">CZE Women</option>
+                                <option value="DEN Men">DEN Men</option>
+                                <option value="DEN U21 Men">DEN U21 Men</option>
+                                <option value="DEN Women">DEN Women</option>
+                                <option value="ESP Men">ESP Men</option>
+                                <option value="ESP U21 Men">ESP U21 Men</option>
+                                <option value="ESP U21 Women">ESP U21 Women</option>
+                                <option value="ESP Women">ESP Women</option>
+                                <option value="FRA Men">FRA Men</option>
+                                <option value="FRA U21 Men">FRA U21 Men</option>
+                                <option value="FRA U21 Women">FRA U21 Women</option>
+                                <option value="FRA Women">FRA Women</option>
+                                <option value="GBR Men">GBR Men</option>
+                                <option value="GBR U21 Men">GBR U21 Men</option>
+                                <option value="GBR U21 Women">GBR U21 Women</option>
+                                <option value="GBR Women">GBR Women</option>
+                                <option value="GER Men">GER Men</option>
+                                <option value="GER U21 Men">GER U21 Men</option>
+                                <option value="GER U21 Women">GER U21 Women</option>
+                                <option value="GER Women">GER Women</option>
+                                <option value="HUN Men">HUN Men</option>
+                                <option value="IRL Men">IRL Men</option>
+                                <option value="IRL U21 Men">IRL U21 Men</option>
+                                <option value="IRL U21 Women">IRL U21 Women</option>
+                                <option value="ITA Men">ITA Men</option>
+                                <option value="ITA U21 Men">ITA U21 Men</option>
+                                <option value="ITA U21 Women">ITA U21 Women</option>
+                                <option value="ITA Women">ITA Women</option>
+                                <option value="LTU U21 Men">LTU U21 Men</option>
+                                <option value="NED Men">NED Men</option>
+                                <option value="NED U21 Men">NED U21 Men</option>
+                                <option value="NED U21 Women">NED U21 Women</option>
+                                <option value="NED Women">NED Women</option>
+                                <option value="POL Men">POL Men</option>
+                                <option value="POL U21 Men">POL U21 Men</option>
+                                <option value="POL U21 Women">POL U21 Women</option>
+                                <option value="POL Women">POL Women</option>
+                                <option value="POR Men">POR Men</option>
+                                <option value="POR U21 Men">POR U21 Men</option>
+                                <option value="RUS Men">RUS Men</option>
+                                <option value="RUS U21 Men">RUS U21 Men</option>
+                                <option value="RUS Women">RUS Women</option>
+                                <option value="SUI Men">SUI Men</option>
+                                <option value="SUI U21 Men">SUI U21 Men</option>
+                                <option value="SUI Women">SUI Women</option>
+                                <option value="SWE Men">SWE Men</option>
+                                <option value="SWE Women">SWE Women</option>
+                                <option value="UKR Men">UKR Men</option>
+                            </optgroup>
+                            <optgroup label="" data-label="Arbitres">
+                                <option value="Anderson Brian">Anderson Brian</option>
+                                <option value="Andziak-Ginter Marzena">Andziak-Ginter Marzena</option>
+                                <option value="Anthony Zoe">Anthony Zoe</option>
+                                <option value="Brackez Virginie">Brackez Virginie</option>
+                                <option value="Budde Ralf">Budde Ralf</option>
+                                <option value="Buis Danny">Buis Danny</option>
+                                <option value="Donzelli Andrea">Donzelli Andrea</option>
+                                <option value="Downs Sean">Downs Sean</option>
+                                <option value="Helbig Lars-Jan">Helbig Lars-Jan</option>
+                                <option value="Kanalehas Iván">Kanalehas Iván</option>
+                                <option value="Kravets Kirill">Kravets Kirill</option>
+                                <option value="Körber Swantje">Körber Swantje</option>
+                                <option value="Møller Hans-Henrik">Møller Hans-Henrik</option>
+                                <option value="Noel Dubuisson Thierry">Noel Dubuisson Thierry</option>
+                                <option value="Perger Carmen">Perger Carmen</option>
+                                <option value="Rashedi Mehrdad">Rashedi Mehrdad</option>
+                                <option value="Rol Martijn">Rol Martijn</option>
+                                <option value="Sondberg Asger">Sondberg Asger</option>
+                                <option value="Thomas Mark">Thomas Mark</option>
+                                <option value="Van Santen Niels">Van Santen Niels</option>
+                                <option value="Verganti Davide">Verganti Davide</option>
+                                <option value="Watts Steve">Watts Steve</option>
+                                <option value="Westerkamp Alexandra">Westerkamp Alexandra</option>
+                                <option value="Winter Elan">Winter Elan</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <a class="nav-item nav-link text-center" href="https://www.kayak-polo.info" target="_blank">kayak-polo.info</a>
+                </form>
+            </div>
+        </nav>
+        
+        
+        
+        <br>
+        Tableau
+        
+        <!-- JavaScript -->
+        <!-- jQuery first, then Bootstrap JS with Popper -->
+        <script src="libraries/js/jquery-3.3.1.min.js" ></script>
+        <script src="libraries/js/bootstrap.bundle.min.js" ></script>
+        <script src="libraries/js/bootstrap-toggle.min.js" ></script>
+        <script src="libraries/js/cache.min.js" ></script>
+        <script src="assets/program.js" ></script>
+    </body>
+</html>
