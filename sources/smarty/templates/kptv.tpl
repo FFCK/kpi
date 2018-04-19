@@ -41,6 +41,7 @@
             <label>{#Presentation#}</label>
             <select id="presentation" name="presentation">
                     <option value="" {if $filtrePres == ''}selected{/if}>{#Selectionnez#}</option>
+                    <option value="voie" {if $filtrePres == 'voie'}selected{/if}>Channel</option>
                     <option value="empty" {if $filtrePres == 'empty'}selected{/if}>Empty page</option>
                 <optgroup label="Before game inlays">
                     <option value="match" {if $filtrePres == 'match'}selected{/if}>Game</option>

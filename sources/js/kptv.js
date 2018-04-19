@@ -84,6 +84,10 @@ jq(document).ready(function(){
                 url = 'live/tv2.php?show=empty';
                 ChangeVoie(jq('#channel').val(), url);
                 break;
+            case 'voie':
+                url = 'live/tv2.php?show=voie';
+                ChangeVoie(jq('#channel').val(), url);
+                break;
             case 'list_medals':
                 Go_list_medals(jq('#channel').val(), jq('#saison').val(), jq('#competition').val())
                 break;
