@@ -17,6 +17,16 @@ html, body
     width: 14%;
 }
 
+.voie {
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+
+}
+
 
 .ban_double {
     height: 100vh;

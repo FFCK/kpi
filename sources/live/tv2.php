@@ -672,6 +672,15 @@ class TV extends MyPage
 
 	}
 
+	function Content_Voie()
+    {
+        $voie = $this->GetParamInt('voie',0);
+        echo '
+            <div class="container-fluid voie">
+                <button type="button" class="btn btn-danger btn-lg">' . $voie . '</button>
+            </div>';
+	}
+
 
 	
 	function Content_Command_Url($url)
@@ -720,6 +729,10 @@ class TV extends MyPage
         switch ($show) {
             case 'list_team':
                 $this->Content_List_Team();
+                return;
+                break;
+            case 'voie':
+                $this->Content_Voie();
                 return;
                 break;
             case 'list_coachs':
