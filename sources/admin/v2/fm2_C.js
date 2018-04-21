@@ -353,7 +353,9 @@
 					$('.evtButton').removeClass('actif');
 					$(this).addClass('actif');
 					if($('#update_evt').attr('data-id') == ''){
-						$('#time_evt').val($('#heure').val());
+                        if($('#heure').val() != '10:00' || $('#time_evt').val() == ''){
+                            $('#time_evt').val($('#heure').val());
+                        }
 					}
 					$('#valid_evt').removeClass('inactif');
                     $('#time_evt').focus();

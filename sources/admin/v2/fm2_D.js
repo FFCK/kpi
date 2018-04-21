@@ -75,6 +75,7 @@
 							$('#stop_button').click();
 							$('#run_time_display').text(run_time.toLocaleString()); //debug
 							$('#heure').val($('#chrono_ajust').val());
+                            $('#time_evt').val('');
 							if($('#chrono_ajust').val() == '00:00'){
 								$('#run_button').hide();
 							}

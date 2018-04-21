@@ -258,7 +258,8 @@ function utyGetInt($array, $param, $default = 1)
 function utyGetString($array, $param, $default = 1)
 {
     if (isset($array[$param])) {
-        return addslashes( $array[$param] );
+//        return addslashes( $array[$param] );
+        return $array[$param] ;
     }
     return $default;
 }
