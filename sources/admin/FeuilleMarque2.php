@@ -483,7 +483,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								<br />
 								<a href="#" id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?php echo $lang['Modifier'] ?></a>
 								<a href="#" id="valid_evt" class="fm_bouton evtButton2 evtButton3">OK</a>
-								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?>.</a>
+								<a href="#" id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?></a>
 								<a href="#" id="reset_evt" class="fm_bouton evtButton2"><?php echo $lang['Annuler'] ?></a>
                                 <a href="#" id="liste_evt" class="fm_bouton evtButton2"><?php echo $lang['Liste'] ?> <img id="list_down" src="../img/down.png"><img id="list_up" src="../img/up.png"></a>
 							</div>
