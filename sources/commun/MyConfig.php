@@ -1,6 +1,6 @@
 <?php
 // Configuration Generale 
-define('NUM_VERSION','2.13.9');
+define('NUM_VERSION','2.14.0');
 
 if (strstr($_SERVER['DOCUMENT_ROOT'],'wamp') == false && strstr($_SERVER['HTTP_HOST'],'192.168') == false) {
 	define("PRODUCTION", TRUE); // TRUE => Site de Production ...
@@ -15,7 +15,7 @@ if (strstr($_SERVER['DOCUMENT_ROOT'],'wamp') == false && strstr($_SERVER['HTTP_H
 
 if (PRODUCTION) {		  
 	// Site de Production
-	define('PATH_ABS', '/home/users2/p/poloweb/www/agil/');		// Chemin Absolu	 
+	define('PATH_ABS', '/var/www/html/');		// Chemin Absolu	 
 	define('PATH_REL', './');									// Chemin Relatif 	
 	define('MAIN_DIRECTORY', '');
 } elseif(DEV) {						 
