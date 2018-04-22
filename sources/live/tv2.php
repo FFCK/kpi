@@ -488,21 +488,23 @@ class TV extends MyPage
 		$arbitre1  = $this->CutReferee($rMatch['Arbitre_principal']);
         $nation1 = $rMatch['nation1'];
 		$nation1 = $this->VerifNation($nation1);
+        $nation1par = ($nation1 != '') ? ' (' . $nation1 . ')' : '';
 
 		$arbitre2  = $this->CutReferee($rMatch['Arbitre_secondaire']);
         $nation2 = $rMatch['nation2'];
 		$nation2 = $this->VerifNation($nation2);
+        $nation2par = ($nation2 != '') ? ' (' . $nation2 . ')' : '';
         
         echo '
             <div class="container-fluid ban_double">
                 <div id="banner_double" class="text-center">
                     <div class="banner_line">First Referee : 
                         ' . $this->ImgNation48($nation1) . '&nbsp;
-                        <span>' . $arbitre1 . ' (' . $nation1 . ')</span>
+                        <span>' . $arbitre1 . $nation1par . '</span>
                     </div>
                     <div class="banner_line">Second Referee : 
                         ' . $this->ImgNation48($nation2) . '&nbsp;
-                        <span>' . $arbitre2 . ' (' . $nation2 . ')</span>
+                        <span>' . $arbitre2 . $nation2par . '</span>
                     </div>
                 </div>
             </div>';
