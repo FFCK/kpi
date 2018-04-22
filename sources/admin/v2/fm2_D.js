@@ -99,6 +99,11 @@
 					event.preventDefault();
 					window.location = 'FeuilleMarque2.php?idMatch=' + $('#idFeuille').val();
 				});
+                $('#idFeuille').keypress(function(e){
+                    if( e.which == 13 && $(this).val() != ''){
+                        $('#chargeFeuille').click();
+                    }
+                });
 				/* ORDRE EVTS */
 				$('#change_ordre').click(function() {
 					if(ordre_actuel == 'up'){
