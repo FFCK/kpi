@@ -123,6 +123,10 @@
                 <option value="1">1</option>
             </select>
         </div>
+        <div class='col-sm-1 params' id='pitchs-col'>
+            <label>Pitchs</label>
+            <input type="text" id="pitchs" name="pitchs" value="1,2,3,4">
+        </div>
         <div class='col-sm-1 params' id='round-col'>
             <label>Round</label>
             <select id="round" name="round">
