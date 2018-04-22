@@ -346,7 +346,9 @@
 					event.preventDefault();
 					$('.joueurs, .equipes').removeClass('actif');
 					$(this).addClass('actif');
-                    $('#time_evt').focus();
+                    if($('.evtButton[class*="actif"]').attr('data-evt') !== undefined ) {
+                        $('#time_evt').focus();
+                    }
 				});
 				$('.evtButton').click(function( event ) {
 					event.preventDefault();
@@ -358,7 +360,9 @@
                         }
 					}
 					$('#valid_evt').removeClass('inactif');
-                    $('#time_evt').focus();
+                    if($('.joueurs[class*="actif"]').attr('data-player') !== undefined ) {
+                        $('#time_evt').focus();
+                    }
 				});
                 
                 $('#time_evt').keypress(function(e){
