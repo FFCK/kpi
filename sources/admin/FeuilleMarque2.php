@@ -199,7 +199,7 @@ class GestionMatchDetail extends MyPageSecure
 							<br />
 							<?php echo $lang['Charger_autre_feuille']; ?> :
 							<br />
-							ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" />
+							ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" pattern="[0-9]{8,9}">
                             <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?php echo $lang['Charger']; ?>" />
 						</div>
 						<div class="moitie droite">
