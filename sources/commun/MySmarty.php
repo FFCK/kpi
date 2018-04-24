@@ -1,8 +1,8 @@
 <?php					   
 
 // charge la librairie Smarty
-include_once('MyConfig.php');
-require(PATH_ABS.'Smarty-Lib/Smarty.class.php');
+require_once('MyConfig.php');
+require_once(PATH_ABS.'Smarty-Lib/Smarty.class.php');
 			   
 $smarty = new Smarty();
 
