@@ -47,7 +47,8 @@
 				background: url("images/ui-bg_glass_80_d7ebf9_1x400.png") repeat-x scroll 50% 50% #DFEFFC;
 				/*url("images/ui-bg_glass_85_dfeffc_1x400.png") repeat-x scroll 50% 50% #d7ebf9;*/
 				border: 1px solid #C5DBEC;
-				color: #2E6E9E;
+				/*color: #2E6E9E;*/
+				color: #004070;
 				font-weight: bold;
 				width: 100%;
 				text-decoration: none;
@@ -84,6 +85,9 @@
 				border: 1px solid #EEEEEE;
 				color: #ACFAFA; /* 8AC8F8 */
 				}
+            .ui-state-default:not(.ui-state-active) {
+                color: #004070;
+            }
 			#valid_evt, #reset_evt, #delete_evt, #update_evt, #liste_evt {margin-top: 10px; }
 			#delete_evt {margin-left: 15px; }
 			#delete_evt img, #update_evt img {height: 15px; }

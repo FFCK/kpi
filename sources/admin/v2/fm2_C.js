@@ -557,6 +557,7 @@ $(function() {
                             function(data){ },
                             'text' // Format des données reçues.
                         );
+                        // scroll en haut
                         $('html, body').animate({
                             scrollTop: $("#tabs-2").offset().top
                         }, 200);
@@ -760,6 +761,10 @@ $(function() {
                         function(data){ },
                         'text' // Format des données reçues.
                     );
+                    // scroll en haut
+                    $('html, body').animate({
+                        scrollTop: $("#tabs-2").offset().top
+                    }, 200);
                 }else{
                     custom_alert('Changement impossible<br />' + data, 'suppression');
                 }
