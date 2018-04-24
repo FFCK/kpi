@@ -21,6 +21,12 @@ define('PARAM_LOCAL_SERVER', 'db');
 
 
 // Ftp
-define('FTP_SERVER', 'ftp.phpnet.org');
-define('FTP_USER_NAME', 'poloweb_cache_match');
-define('FTP_USER_PASS', 'H1VqhzKcuuSyoeATjoAg');
+define('FTP_SERVER', '');
+define('FTP_USER_NAME', '');
+define('FTP_USER_PASS', '');
+
+
+// Path
+define('PATH_ABS', '/var/www/html/');		// Chemin Absolu	 
+define('PATH_REL', './');									// Chemin Relatif 	
+define('MAIN_DIRECTORY', '');
