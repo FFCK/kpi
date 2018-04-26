@@ -85,7 +85,22 @@
 						}
 					}
 				});
-
+                
+                /* DIALOG MOTIF */
+				$( "#dialog_motif" ).dialog({
+					autoOpen: false,
+					modal: true,
+					width: 800,
+					buttons: {
+						"Annuler/Dismiss": function() {
+							$( this ).dialog( "close" );
+							$('#motif').val('');
+							$('#motif_texte').val('');
+                            $('#time_evt').focus();
+						}
+					}
+				});
+			
 				/* TABS */
 				$('#tabs-1_link').hide();
 				$('#tabs-2').hide();

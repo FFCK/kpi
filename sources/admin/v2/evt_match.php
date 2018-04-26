@@ -17,9 +17,9 @@ include_once('../../commun/MyTools.php');
 	$idMatch = (int)utyGetPost('idMatch', 0);
 	// M1-00:00-V-A-186002-5
 	$ligne = $myBdd->RealEscapeString(trim(utyGetPost('ligne')));
-	$ligne = explode('-', $ligne);
-	$ancienneLigne = $myBdd->RealEscapeString(trim(utyGetPost('ancienneLigne')));
-	$ancienneLigne = explode('-', $ancienneLigne);
+	$ligne = explode(';', $ligne);
+//	$ancienneLigne = $myBdd->RealEscapeString(trim(utyGetPost('ancienneLigne')));
+//	$ancienneLigne = explode(';', $ancienneLigne);
 	$type = $myBdd->RealEscapeString(trim(utyGetPost('type')));
 	$idLigne = $myBdd->RealEscapeString(trim(utyGetPost('idLigne')));
 	$idLigne = explode('_', $idLigne);
@@ -46,13 +46,13 @@ include_once('../../commun/MyTools.php');
 	if($type == 'insert'){
 		$sql  = "INSERT INTO gickp_Matchs_Detail SET Id_match = ".$idMatch.", Periode = '".$ligne[0]."', ";
 		$sql .= "Temps = '00:".$ligne[1]."', Id_evt_match = '".$ligne[2]."', Competiteur = '".$ligne[4]."', ";
-		$sql .= "Numero = '".$ligne[5]."', Equipe_A_B = '".$ligne[3]."' ";
+		$sql .= "Numero = '".$ligne[5]."', Equipe_A_B = '".$ligne[3]."', motif = '".$ligne[6]."' ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur INSERT<br />".$sql);
 		echo mysql_insert_id();
 	}elseif($type == 'update'){
 		$sql  = "UPDATE gickp_Matchs_Detail SET Id_match = ".$idMatch.", Periode = '".$ligne[0]."', ";
 		$sql .= "Temps = '00:".$ligne[1]."', Id_evt_match = '".$ligne[2]."', Competiteur = '".$ligne[4]."', ";
-		$sql .= "Numero = '".$ligne[5]."', Equipe_A_B = '".$ligne[3]."' ";
+		$sql .= "Numero = '".$ligne[5]."', Equipe_A_B = '".$ligne[3]."', motif = '".$ligne[6]."' ";
 		$sql .= "WHERE Id = ".$idLigne[1];
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
 		echo 'OK';
@@ -62,4 +62,4 @@ include_once('../../commun/MyTools.php');
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur DELETE<br />".$sql);
 		echo 'OK';
 	}
-?>
+
