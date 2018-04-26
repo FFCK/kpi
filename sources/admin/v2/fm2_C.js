@@ -73,7 +73,7 @@ $(function() {
     });
     // COMPO EQUIPES
     $('.editStatut').editable('v2/saveStatut.php', {
-        data   : " {'-':'Joueur','C':'Capitaine','E':'Entraîneur'}",
+        data   : " {'-':'" + lang.Joueur + "','C':'" + lang.Capitaine + "','E':'" + lang.Entraineur + "'}",
         placeholder : '-', 
         indicator : '<img src="images/indicator.gif" height="23">',
         submitdata : {idMatch: idMatch},
@@ -377,7 +377,7 @@ $(function() {
             }
         }
         $('#valid_evt').removeClass('inactif');
-        if($('.joueurs[class*="actif"]').attr('data-player') !== undefined ) {
+        if($('.joueurs[class*="actif"]').attr('data-player') !== undefined || $('.equipes[class*="actif"]').attr('data-player') !== undefined) {
             if($(this).data('code') == 'V' || $(this).data('code') == 'J' || $(this).data('code') == 'R') {
                 $( "#dialog_motif" ).dialog( "open" );
             } else {
@@ -633,10 +633,10 @@ $(function() {
         $('a[id="' + code_split[0] + '"]').addClass('actif');
         $('#time_evt').val(code_split[1]);
         $('a[data-code="' + code_split[2] + '"]').addClass('actif');
-        if(code_split[4] != '') {
+        if(code_split[4] != '' && code_split[4] != 0) {
             $('a[data-id="' + code_split[4] + '"]').addClass('actif');
         }else{
-            $('a[data-player="Equipe ' + code_split[3] + '"]').addClass('actif');
+            $('a[data-player="Equipe ' + code_split[3] + '"], a[data-player="Team ' + code_split[3] + '"]').addClass('actif');
         }
         $('#zoneChrono').focus();
     });
