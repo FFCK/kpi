@@ -1,5 +1,8 @@
 			.editOfficiel, .editStatut, .editNo, .editArbitres, .suppression {color: blue; text-decoration: none;}
-			.editOfficiel:hover, .editStatut:hover, .editNo:hover, .editArbitres:hover, .suppression:hover {text-decoration: underline; cursor: pointer; }
+			.editOfficiel:hover, .editStatut:hover, .editNo:hover, .editArbitres:hover, .suppression:hover {
+                text-decoration: underline; 
+                cursor: pointer; 
+            }
 			.editNo input {width: 20px; }
 			.editNo button {width: 38px; }
 			.placehold {font-style: italic; font-size: 0.8em; font-weight: normal;}

@@ -102,7 +102,7 @@
 			#list {float: center;}
 			#list td {}
 			#list img, #listB img {height: 15px;}
-			#list tr:hover { border: 1px solid #5795C5; background-color: #FFFF66;}
+			#list tr:hover { border: 1px solid #5795C5; background-color: white; color: black;}
 			#list_header {border: 0px solid #79B7E7; border-spacing : 0; border-collapse : collapse; cursor: pointer;}
 			.list_evt_vide {width: 38%; }
 			.list_evt_b {width: 2%; text-align: center; border: 1px solid #79B7E7; background-color: white;}

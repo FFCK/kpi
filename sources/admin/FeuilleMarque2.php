@@ -143,7 +143,7 @@ class GestionMatchDetail extends MyPageSecure
 <html lang="fr">
     <head>
 		<meta charset="utf-8">
-		<title>Match <?php echo $row['Numero_ordre']; ?></title>
+		<title>Match <?= $row['Numero_ordre']; ?></title>
 		<link href="v2/jquery-ui.min.css" rel="stylesheet">
 		<link href="v2/jquery.dataTables.css" rel="stylesheet">
 		<link href="v2/fmv2.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
@@ -172,112 +172,112 @@ class GestionMatchDetail extends MyPageSecure
                     }
                     echo ' ' . $lang['a_'] . ' ' . $row['Heure_match'] . ' - ' . $lang['Terrain'] . ' '.$row['Terrain']; 
                 ?>
-                <a class="fm_bouton fm_tabs pull-right" id="tabs-1_link"><?php echo $lang['Parametres_match']; ?>...</a>
-                <a class="fm_bouton fm_tabs pull-right" id="tabs-2_link"><?php echo $lang['Deroulement_match']; ?>...</a>
+                <a class="fm_bouton fm_tabs pull-right" id="tabs-1_link"><?= $lang['Parametres_match']; ?>...</a>
+                <a class="fm_bouton fm_tabs pull-right" id="tabs-2_link"><?= $lang['Deroulement_match']; ?>...</a>
             </p>
 			<div id="tabs-1" class="tabs_content">
 				<div id="accordion">
-					<!--<div class="note"><?php echo $lang['A_remplir']; ?></div>-->
-					<h3><?php echo $lang['Parametres_match']; ?> ID# <?php echo $idMatch; ?></h3>
+					<!--<div class="note"><?= $lang['A_remplir']; ?></div>-->
+					<h3><?= $lang['Parametres_match']; ?> ID# <?= $idMatch; ?></h3>
 					<div>
 						<div class="moitie">
-							<?php echo $lang['Type_match']; ?> : 
+							<?= $lang['Type_match']; ?> : 
 							<br />
 							<span id="typeMatch">
 								<input type="radio" name="typeMatchtypeMatch" id="typeMatchClassement" <?php if($row['Type_match'] == 'C') echo 'checked="checked"'; ?> />
-                                <label for="typeMatchClassement" title="<?php echo $lang['Egalite_possible']; ?>"><?php echo $lang['Match_classement']; ?></label>
+                                <label for="typeMatchClassement" title="<?= $lang['Egalite_possible']; ?>"><?= $lang['Match_classement']; ?></label>
 								<input type="radio" name="typeMatch" id="typeMatchElimination" <?php if($row['Type_match'] == 'E') echo 'checked="checked"'; ?> />
-                                <label for="typeMatchElimination" title="<?php echo $lang['Vainqueur_obligatoire']; ?>"><?php echo $lang['Match_elimination']; ?></label>
+                                <label for="typeMatchElimination" title="<?= $lang['Vainqueur_obligatoire']; ?>"><?= $lang['Match_elimination']; ?></label>
 							</span>
-							<img id="typeMatchImg" style="vertical-align:middle;" title="<?php if($row['Type_match'] == 'C'){ echo $lang['Match_classement']; }else{ echo $lang['Match_elimination'];} ?>" alt="<?php echo $lang['Type_match']; ?>" src="../img/type<?php echo $row['Type_match']; ?>.png" />
+							<img id="typeMatchImg" style="vertical-align:middle;" title="<?php if($row['Type_match'] == 'C'){ echo $lang['Match_classement']; }else{ echo $lang['Match_elimination'];} ?>" alt="<?= $lang['Type_match']; ?>" src="../img/type<?= $row['Type_match']; ?>.png" />
                             <br>
 							<br>
 							<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-								<span title="<?php echo $lang['PC_Course_seulement']; ?>"><?php echo $lang['Publication']; ?> : </span>
+								<span title="<?= $lang['PC_Course_seulement']; ?>"><?= $lang['Publication']; ?> : </span>
 								<br />
 								<span id="publiMatch">
-									<input type="radio" name="publiMatch" id="prive" <?php if($publiMatch != 'O') echo 'checked="checked"'; ?> /><label for="prive" title="<?php echo $lang['Match_prive']; ?>"><?php echo $lang['Prive']; ?></label>
-									<input type="radio" name="publiMatch" id="public" <?php if($publiMatch == 'O') echo 'checked="checked"'; ?> /><label for="public" title="<?php echo $lang['Match_public']; ?>"><?php echo $lang['Public']; ?></label>
+									<input type="radio" name="publiMatch" id="prive" <?php if($publiMatch != 'O') echo 'checked="checked"'; ?> /><label for="prive" title="<?= $lang['Match_prive']; ?>"><?= $lang['Prive']; ?></label>
+									<input type="radio" name="publiMatch" id="public" <?php if($publiMatch == 'O') echo 'checked="checked"'; ?> /><label for="public" title="<?= $lang['Match_public']; ?>"><?= $lang['Public']; ?></label>
 								</span>
 							<?php } ?>
-							<img height="30" style="vertical-align:middle;" title="<?php echo $lang['Publier']; ?> ?" alt="<?php echo $lang['Publier']; ?> ?" src="../img/oeil2<?php if($publiMatch == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
+							<img height="30" style="vertical-align:middle;" title="<?= $lang['Publier']; ?> ?" alt="<?= $lang['Publier']; ?> ?" src="../img/oeil2<?php if($publiMatch == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
 							<br />
 							<br />
 							<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="btn_stats" name="btn_stats" value="Stats" />
 							<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="pdfFeuille" name="pdfFeuille" value="PDF" />
-                            <a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=fr&p=fm2&idMatch=<?php echo $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
-                            <a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=en&p=fm2&idMatch=<?php echo $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
+                            <a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=fr&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
+                            <a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=en&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
 							<br />
 							<br />
-							<?php echo $lang['Charger_autre_feuille']; ?> :
+							<?= $lang['Charger_autre_feuille']; ?> :
 							<br />
 							ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" pattern="[0-9]{8,9}">
-                            <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?php echo $lang['Charger']; ?>" />
+                            <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?= $lang['Charger']; ?>" />
 						</div>
 						<div class="moitie droite">
 							<span id="validScoreMatch">
-								<i><?php echo $lang['Score_officiel']; ?> :<br />
-								<span class="presentScore"><?php echo $row['equipeA']; ?> <span class="score" id="scoreA4"><?php echo $row['ScoreA']; ?></span> - <span class="score" id="scoreB4"><?php echo $row['ScoreB']; ?></span> <?php echo $row['equipeB']; ?></span>
+								<i><?= $lang['Score_officiel']; ?> :<br />
+								<span class="presentScore"><?= $row['equipeA']; ?> <span class="score" id="scoreA4"><?= $row['ScoreA']; ?></span> - <span class="score" id="scoreB4"><?= $row['ScoreB']; ?></span> <?= $row['equipeB']; ?></span>
 								</i>
 								<br />
 								<br />
-								<?php echo $lang['Score_provisoire']; ?> :<br />
-								<span class="presentScore"><?php echo $row['equipeA']; ?> <span class="score" id="scoreA3">0</span> - <span class="score" id="scoreB3">0</span> <?php echo $row['equipeB']; ?></span>
+								<?= $lang['Score_provisoire']; ?> :<br />
+								<span class="presentScore"><?= $row['equipeA']; ?> <span class="score" id="scoreA3">0</span> - <span class="score" id="scoreB3">0</span> <?= $row['equipeB']; ?></span>
 								<?php if($verrou != 'O') { ?>
 									<br />
 									<br />
-									<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="validScore" name="validScore" value="<?php echo $lang['Valider_score']; ?>" />
+									<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="validScore" name="validScore" value="<?= $lang['Valider_score']; ?>" />
 								<?php } ?>
 							</span>
 							<br />
 							<br />
-							<span title="<?php echo $lang['PC_Course_seulement']; ?>"><?php echo $lang['Controle_match']; ?> : </span>
+							<span title="<?= $lang['PC_Course_seulement']; ?>"><?= $lang['Controle_match']; ?> : </span>
 							<br />
 							<span id="controleMatch">
 								<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-									<input type="radio" name="controleMatch" id="controleOuvert" <?php if($verrou != 'O') echo 'checked="checked"'; ?> /><label for="controleOuvert"><?php echo $lang['Ouvert']; ?></label>
+									<input type="radio" name="controleMatch" id="controleOuvert" <?php if($verrou != 'O') echo 'checked="checked"'; ?> /><label for="controleOuvert"><?= $lang['Ouvert']; ?></label>
 								<?php } ?>
-								<input type="radio" name="controleMatch" id="controleVerrou" <?php if($verrou == 'O') echo 'checked="checked"'; ?> /><label for="controleVerrou"><?php echo $lang['Verrouille']; ?></label>
+								<input type="radio" name="controleMatch" id="controleVerrou" <?php if($verrou == 'O') echo 'checked="checked"'; ?> /><label for="controleVerrou"><?= $lang['Verrouille']; ?></label>
 							</span>
-							<img height="30" style="vertical-align:middle;" title="<?php echo $lang['Verrouille']; ?> ?" alt="<?php echo $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if($verrou == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
+							<img height="30" style="vertical-align:middle;" title="<?= $lang['Verrouille']; ?> ?" alt="<?= $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if($verrou == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
 						</div>
 					</div>
-					<h3><?php echo $lang['Officiels']; ?></h3>
+					<h3><?= $lang['Officiels']; ?></h3>
 					<div>
 						<div class="moitie">
-							<label><?php echo $lang['Secretaire']; ?> : </label><br /><span class="editOfficiel" id="Secretaire"><?php echo $row['Secretaire']; ?></span><br />
-							<label><?php echo $lang['Chronometre']; ?> : </label><br /><span class="editOfficiel" id="Chronometre"><?php echo $row['Chronometre']; ?></span><br />
-							<label><?php echo $lang['Time_shoot']; ?> : </label><br /><span class="editOfficiel" id="Timeshoot"><?php echo $row['Timeshoot']; ?></span><br />
+							<label><?= $lang['Secretaire']; ?> : </label><br /><span class="editOfficiel" id="Secretaire"><?= $row['Secretaire']; ?></span><br />
+							<label><?= $lang['Chronometre']; ?> : </label><br /><span class="editOfficiel" id="Chronometre"><?= $row['Chronometre']; ?></span><br />
+							<label><?= $lang['Time_shoot']; ?> : </label><br /><span class="editOfficiel" id="Timeshoot"><?= $row['Timeshoot']; ?></span><br />
 							<br />
-							<label><?php echo $lang['Arbitre_1']; ?> : </label><br /><span class="editArbitres" id="Arbitre_principal"><?php echo $row['Arbitre_principal']; ?></span><br />
-							<label><?php echo $lang['Arbitre_2']; ?> : </label><br /><span class="editArbitres" id="Arbitre_secondaire"><?php echo $row['Arbitre_secondaire']; ?></span><br />
-							<label><?php echo $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne1"><?php echo $row['Ligne1']; ?></span><br />
-							<label><?php echo $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne2"><?php echo $row['Ligne2']; ?></span><br />
+							<label><?= $lang['Arbitre_1']; ?> : </label><br /><span class="editArbitres" id="Arbitre_principal"><?= $row['Arbitre_principal']; ?></span><br />
+							<label><?= $lang['Arbitre_2']; ?> : </label><br /><span class="editArbitres" id="Arbitre_secondaire"><?= $row['Arbitre_secondaire']; ?></span><br />
+							<label><?= $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne1"><?= $row['Ligne1']; ?></span><br />
+							<label><?= $lang['Ligne']; ?> : </label><br /><span class="editOfficiel" id="Ligne2"><?= $row['Ligne2']; ?></span><br />
 						</div>
 						<div class="moitie droite">
-							<label><?php echo $lang['Club_organisateur']; ?> : </label><?php echo $row['Organisateur']; ?><br />
-							<label><?php echo $lang['R1'] ?> : </label><?php echo $row['Responsable_R1']; ?><br />
-							<label><?php echo $lang['Delegue'] ?> : </label><?php echo $row['Delegue']; ?><br />
-							<label><?php echo $lang['Chef_arbitre'] ?> : </label><?php echo $row['ChefArbitre']; ?><br />
-							<label><?php echo $lang['RC'] ?> : </label><?php echo $row['Responsable_insc']; ?><br />
+							<label><?= $lang['Club_organisateur']; ?> : </label><?= $row['Organisateur']; ?><br />
+							<label><?= $lang['R1'] ?> : </label><?= $row['Responsable_R1']; ?><br />
+							<label><?= $lang['Delegue'] ?> : </label><?= $row['Delegue']; ?><br />
+							<label><?= $lang['Chef_arbitre'] ?> : </label><?= $row['ChefArbitre']; ?><br />
+							<label><?= $lang['RC'] ?> : </label><?= $row['Responsable_insc']; ?><br />
 							<br />
 
 						</div>
 					</div>
-					<h3><?php echo $lang['Equipe'] ?> A - <img src="../img/Pays/<?php echo $paysA; ?>.png" width="25" height="16" /> <?php echo $row['equipeA']; ?>								
+					<h3><?= $lang['Equipe'] ?> A - <img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>								
 						<span class="score" id="scoreA2">0</span>
 					</h3>
 					<div>
 						<table class="dataTable" id="equipeA">
 							<thead>
 								<tr>
-									<th><?php echo $lang['Num'] ?></th>
-									<th><?php echo $lang['Statut'] ?></th>
-									<th><?php echo $lang['Nom'] ?></th>
-									<th><?php echo $lang['Prenom'] ?></th>
-									<th><?php echo $lang['Licence'] ?></th>
+									<th><?= $lang['Num'] ?></th>
+									<th><?= $lang['Statut'] ?></th>
+									<th><?= $lang['Nom'] ?></th>
+									<th><?= $lang['Prenom'] ?></th>
+									<th><?= $lang['Licence'] ?></th>
 									<th>Cat.</th>
-									<th><?php echo $lang['Supp'] ?></th>
+									<th><?= $lang['Supp'] ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -325,22 +325,22 @@ class GestionMatchDetail extends MyPageSecure
 							?>
 							</tbody>
 						</table>
-						<input class="ui-button ui-widget ui-corner-all" type="button" name="initA" id="initA" value="<?php echo $lang['Recharger_joueurs'] ?>" />
+						<input class="ui-button ui-widget ui-corner-all" type="button" name="initA" id="initA" value="<?= $lang['Recharger_joueurs'] ?>" />
 					</div>			
-					<h3><?php echo $lang['Equipe'] ?> B - <img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>								
+					<h3><?= $lang['Equipe'] ?> B - <img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>								
 						<span class="score" id="scoreB2">0</span>
 					</h3>
 					<div>
 						<table class="dataTable" id="equipeB">
 							<thead>
 								<tr>
-									<th><?php echo $lang['Num'] ?></th>
-									<th><?php echo $lang['Statut'] ?></th>
-									<th><?php echo $lang['Nom'] ?></th>
-									<th><?php echo $lang['Prenom'] ?></th>
-									<th><?php echo $lang['Licence'] ?></th>
+									<th><?= $lang['Num'] ?></th>
+									<th><?= $lang['Statut'] ?></th>
+									<th><?= $lang['Nom'] ?></th>
+									<th><?= $lang['Prenom'] ?></th>
+									<th><?= $lang['Licence'] ?></th>
 									<th>Cat.</th>
-									<th><?php echo $lang['Supp'] ?></th>
+									<th><?= $lang['Supp'] ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -391,7 +391,7 @@ class GestionMatchDetail extends MyPageSecure
                             ?>
 							</tbody>
 						</table>
-						<input class="ui-button ui-widget ui-corner-all" type="button" name="initB" id="initB" value="<?php echo $lang['Recharger_joueurs'] ?>" />
+						<input class="ui-button ui-widget ui-corner-all" type="button" name="initB" id="initB" value="<?= $lang['Recharger_joueurs'] ?>" />
 					</div>			
 				</div>			
 			</div>
@@ -401,17 +401,17 @@ class GestionMatchDetail extends MyPageSecure
 						<th colspan="3">
 							<span class="match"></span>
                             <span class="pull-left">
-                                <a id="ATT" class="fm_bouton statut<?php if($statutMatch == 'ATT') echo ' actif'; ?>"><?php echo $lang['En_attente']; ?></a>
-                                <a id="ON" class="fm_bouton statut<?php if($statutMatch == 'ON') echo ' actif'; ?>"><?php echo $lang['En_cours']; ?></a>
-                                <a id="END" class="fm_bouton statut<?php if($statutMatch == 'END') echo ' actif'; ?>"><?php echo $lang['Termine']; ?></a>
-                                <span class="endmatch"><?php echo $lang['Fin'] ?> : </span><input type="tel" id="end_match_time" class="fm_input_text endmatch" value="<?php echo $row['Heure_fin']; ?>" />
+                                <a id="ATT" class="fm_bouton statut<?php if($statutMatch == 'ATT') echo ' actif'; ?>"><?= $lang['En_attente']; ?></a>
+                                <a id="ON" class="fm_bouton statut<?php if($statutMatch == 'ON') echo ' actif'; ?>"><?= $lang['En_cours']; ?></a>
+                                <a id="END" class="fm_bouton statut<?php if($statutMatch == 'END') echo ' actif'; ?>"><?= $lang['Termine']; ?></a>
+                                <span class="endmatch"><?= $lang['Fin'] ?> : </span><input type="tel" id="end_match_time" class="fm_input_text endmatch" value="<?= $row['Heure_fin']; ?>" />
                             </span>
                             <span class="pull-right">
-                                <a id="M1" class="fm_bouton periode<?php if($periodeMatch == 'M1') echo ' actif'; ?>"><?php echo $lang['period_M1']; ?></a>
-                                <a id="M2" class="fm_bouton periode<?php if($periodeMatch == 'M2') echo ' actif'; ?>"><?php echo $lang['period_M2']; ?></a>
-                                <a id="P1" class="fm_bouton periode<?php if($periodeMatch == 'P1') echo ' actif'; ?>"><?php echo $lang['period_P1']; ?></a>
-                                <a id="P2" class="fm_bouton periode<?php if($periodeMatch == 'P2') echo ' actif'; ?>"><?php echo $lang['period_P2']; ?></a>
-                                <a id="TB" class="fm_bouton periode<?php if($periodeMatch == 'TB') echo ' actif'; ?>"><?php echo $lang['period_TB']; ?></a>
+                                <a id="M1" class="fm_bouton periode<?php if($periodeMatch == 'M1') echo ' actif'; ?>"><?= $lang['period_M1']; ?></a>
+                                <a id="M2" class="fm_bouton periode<?php if($periodeMatch == 'M2') echo ' actif'; ?>"><?= $lang['period_M2']; ?></a>
+                                <a id="P1" class="fm_bouton periode<?php if($periodeMatch == 'P1') echo ' actif'; ?>"><?= $lang['period_P1']; ?></a>
+                                <a id="P2" class="fm_bouton periode<?php if($periodeMatch == 'P2') echo ' actif'; ?>"><?= $lang['period_P2']; ?></a>
+                                <a id="TB" class="fm_bouton periode<?php if($periodeMatch == 'TB') echo ' actif'; ?>"><?= $lang['period_TB']; ?></a>
                             </span>
 <!-- CHRONO DEBUG
 <br />
@@ -424,8 +424,8 @@ stop_time: <span id="stop_time_display"></span><br />
 					</tr>
 					<tr>
 						<td id="selectionA">
-							<a class="fm_bouton equipes" data-equipe="A" data-player="Equipe A"><?php echo $lang['Equipe']; ?> A<br />
-								<img src="../img/Pays/<?php echo $paysA; ?>.png" width="25" height="16" /> <?php echo $row['equipeA']; ?>
+							<a class="fm_bouton equipes" data-equipe="A" data-player="<?= $lang['Equipe']; ?> A"><?= $lang['Equipe']; ?> A<br />
+								<img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>
 								<span class="score" id="scoreA">0</span>
 							</a>
 							
@@ -463,8 +463,8 @@ stop_time: <span id="stop_time_display"></span><br />
 							<div id="zoneChrono">
                                 <img id="chrono_moins10" class="plusmoins" src="../img/moins10.png" alt=""/>
                                 <img id="chrono_moins" class="plusmoins" src="../img/moins1.png" alt=""/>
-								<!--<span id="chronoText"><?php echo $lang['Chrono'] ?> : </span>-->
-								<span class="icon_parametres" id="dialog_ajust_opener" title="<?php echo $lang['Parametres_chrono'] ?>"></span>
+								<!--<span id="chronoText"><?= $lang['Chrono'] ?> : </span>-->
+								<span class="icon_parametres" id="dialog_ajust_opener" title="<?= $lang['Parametres_chrono'] ?>"></span>
                                 <input type="tel" id="heure" class="fm_input_text" readonly />
                                 <img id="chrono_plus" class="plusmoins" src="../img/plus1.png" alt="">
                                 <img id="chrono_plus10" class="plusmoins" src="../img/plus10.png" alt="">
@@ -473,14 +473,14 @@ stop_time: <span id="stop_time_display"></span><br />
 								<a id="start_button" class="fm_bouton chronoButton">Start</a>
 								<a id="run_button" class="fm_bouton chronoButton">Run</a>
 								<a id="stop_button" class="fm_bouton chronoButton">Stop</a>
-								<a id="raz_button" class="fm_bouton chronoButton"><?php echo $lang['RAZ'] ?></a>
+								<a id="raz_button" class="fm_bouton chronoButton"><?= $lang['RAZ'] ?></a>
 							</div>
 							<div id="zoneEvt">
-								<a id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but"><?php echo $lang['But'] ?></span></a>
+								<a id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but"><?= $lang['But'] ?></span></a>
 								<a id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton"><img src="v2/carton_vert.png" /></a>
-								<!--<a id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?php echo $lang['Tir_non_cadre'] ?>"><?php echo $lang['Tir'] ?></a>-->
+								<!--<a id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?= $lang['Tir_non_cadre'] ?>"><?= $lang['Tir'] ?></a>-->
 								<a id="evt_jaune" data-evt="Carton jaune" data-code="J" class="fm_bouton evtButton"><img src="v2/carton_jaune.png" /></a>
-								<!--<a id="evt_arr" data-evt="Arret" data-code="A" class="fm_bouton evtButton" title="<?php echo $lang['Tir_contre_gardien'] ?>"><?php echo $lang['Tir_contre'] ?></a>-->
+								<!--<a id="evt_arr" data-evt="Arret" data-code="A" class="fm_bouton evtButton" title="<?= $lang['Tir_contre_gardien'] ?>"><?= $lang['Tir_contre'] ?></a>-->
 								<a id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton"><img src="v2/carton_rouge.png" /></a>
 							</div>
 							<div id="zoneTemps">
@@ -493,17 +493,17 @@ stop_time: <span id="stop_time_display"></span><br />
 								<img id="time_plus10" class="plusmoins" src="../img/plus10.png">
 								<img id="time_plus60" class="plusmoins" src="../img/plus60.png">
 								<br />
-								<a id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?php echo $lang['Modifier'] ?></a>
+								<a id="update_evt" data-id="" class="fm_bouton evtButton2"><img src="v2/b_edit.png" /> <?= $lang['Modifier'] ?></a>
 								<a id="valid_evt" class="fm_bouton evtButton2 evtButton3">OK</a>
-								<a id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?php echo $lang['Supp'] ?></a>
-								<a id="reset_evt" class="fm_bouton evtButton2"><?php echo $lang['Annuler'] ?></a>
-                                <a id="liste_evt" class="fm_bouton evtButton2"><?php echo $lang['Liste'] ?> <img id="list_down" src="../img/down.png"><img id="list_up" src="../img/up.png"></a>
+								<a id="delete_evt" class="fm_bouton evtButton2"><img src="v2/supprimer.gif" /> <?= $lang['Supp'] ?></a>
+								<a id="reset_evt" class="fm_bouton evtButton2"><?= $lang['Annuler'] ?></a>
+                                <a id="liste_evt" class="fm_bouton evtButton2"><?= $lang['Liste'] ?> <img id="list_down" src="../img/down.png"><img id="list_up" src="../img/up.png"></a>
 							</div>
 						</td>
 						<td id="selectionB">
-							<a class="fm_bouton equipes" data-equipe="B" data-player="Equipe B">
-								<span class="score" id="scoreB">0</span><?php echo $lang['Equipe'] ?> B<br />
-								<img src="../img/Pays/<?php echo $paysB; ?>.png" width="25" height="16" /> <?php echo $row['equipeB']; ?>
+							<a class="fm_bouton equipes" data-equipe="B" data-player="<?= $lang['Equipe']; ?> B">
+								<span class="score" id="scoreB">0</span><?= $lang['Equipe']; ?> B<br />
+								<img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>
 							</a>
 							<?php 			
 								$joueur_temp = '';
@@ -539,17 +539,17 @@ stop_time: <span id="stop_time_display"></span><br />
 						<td colspan="3">
 							<table id="list_header" class="maxWidth ui-state-default">
 								<tr>
-									<th class="list_evt_v"><?php echo $lang['V'] ?></th>
-									<th class="list_evt_j"><?php echo $lang['J'] ?></th>
-									<th class="list_evt_r"><?php echo $lang['R'] ?></th>
-									<th class="list_nom"><?php echo $lang['Equipe'] ?> A</th>
-									<th class="list_evt_b"><?php echo $lang['B'] ?></th>
-									<th class="list_chrono" id="change_ordre" title="<?php echo $lang['Changer_ordre'] ?>"><?php echo $lang['Temps'] ?> <img src="../img/up.png" /></th>
-									<th class="list_evt_b"><?php echo $lang['B'] ?></th>
-									<th class="list_nom"><?php echo $lang['Equipe'] ?> B</th>
-									<th class="list_evt_v"><?php echo $lang['V'] ?></th>
-									<th class="list_evt_j"><?php echo $lang['J'] ?></th>
-									<th class="list_evt_r"><?php echo $lang['R'] ?></th>
+									<th class="list_evt_v"><?= $lang['V'] ?></th>
+									<th class="list_evt_j"><?= $lang['J'] ?></th>
+									<th class="list_evt_r"><?= $lang['R'] ?></th>
+									<th class="list_nom"><?= $lang['Equipe'] ?> A</th>
+									<th class="list_evt_b"><?= $lang['B'] ?></th>
+									<th class="list_chrono" id="change_ordre" title="<?= $lang['Changer_ordre'] ?>"><?= $lang['Temps'] ?> <img src="../img/up.png" /></th>
+									<th class="list_evt_b"><?= $lang['B'] ?></th>
+									<th class="list_nom"><?= $lang['Equipe'] ?> B</th>
+									<th class="list_evt_v"><?= $lang['V'] ?></th>
+									<th class="list_evt_j"><?= $lang['J'] ?></th>
+									<th class="list_evt_r"><?= $lang['R'] ?></th>
 								</tr>
 							</table>
 							<table id="list" class="maxWidth">
@@ -569,8 +569,11 @@ stop_time: <span id="stop_time_display"></span><br />
                                         $evtEquipe = $row5['Equipe_A_B'];
                                         if($row5['Competiteur'] == '0'){
                                             $row5["Numero"] = '';
-                                            $row5["Nom"] = 'Equipe';
+                                            $row5["Separatif"] = '';
+                                            $row5["Nom"] = $lang['Equipe'];
                                             $row5["Prenom"] = $evtEquipe;
+                                        } else {
+                                            $row5["Separatif"] = ' - ';
                                         }
                                         $evt_temp  = '<tr id="ligne_'.$row5["Id"].'" data-code="'.$row5["Periode"].';'
                                                 .substr($row5["Temps"],-5).';'.$row5["Id_evt_match"].';'.$evtEquipe.';'
@@ -586,7 +589,7 @@ stop_time: <span id="stop_time_display"></span><br />
                                             if($row5["Id_evt_match"] == 'R')
                                                 $evt_temp .= '<img src="v2/carton_rouge.png">';
                                             $evt_temp .= '</td>';
-                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].' - '
+                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
                                                     .ucwords(strtolower($row5["Nom"])).' '
                                                     .ucwords(strtolower($row5["Prenom"]))
                                                     .$row5['motif_texte'];
@@ -608,7 +611,7 @@ stop_time: <span id="stop_time_display"></span><br />
                                             if($row5["Id_evt_match"] == 'B')
                                                 $evt_temp .= '<img src="v2/but1.png">';
                                             $evt_temp .= '</td>';
-                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].' - '
+                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
                                                     .ucwords(strtolower($row5["Nom"])).' '
                                                     .ucwords(strtolower($row5["Prenom"]))
                                                     .$row5['motif_texte'];
@@ -642,39 +645,39 @@ stop_time: <span id="stop_time_display"></span><br />
 					</tr>
 				</table>
 				<br />
-				<?php echo $lang['Commentaires'] ?> :
-				<div id="comments"><?php echo $row['Commentaires_officiels'];?></div>
+				<?= $lang['Commentaires'] ?> :
+				<div id="comments"><?= $row['Commentaires_officiels'];?></div>
 				<br />
 				<br />
 				<br />
 			</div>
             
             <!-- Modales -->
-            <div id="dialog_ajust" title="<?php echo $lang['Parametres_chrono'] ?>">
+            <div id="dialog_ajust" title="<?= $lang['Parametres_chrono'] ?>">
                 <h3 id="dialog_ajust_periode">
                 </h3>
                 <p>
-                    <?php echo $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
+                    <?= $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
                 </p>
                 <p>
-                    <?php echo $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
+                    <?= $lang['Duree_periode'] ?> : <input type="tel" id="periode_ajust" class="fm_input_text" />
                 </p>
             </div>
-            <div id="dialog_end" title="<?php echo $lang['Fin_periode'] ?>">
+            <div id="dialog_end" title="<?= $lang['Fin_periode'] ?>">
                 <p class="centre">
-                    <span class="fm_input_text" id="periode_end">00:00</span><br /><?php echo $lang['Periode_terminee'] ?>
+                    <span class="fm_input_text" id="periode_end">00:00</span><br /><?= $lang['Periode_terminee'] ?>
                 </p>
             </div>
-            <div id="dialog_end_match" title="<?php echo $lang['Fin_match'] ?>">
+            <div id="dialog_end_match" title="<?= $lang['Fin_match'] ?>">
                 <p class="centre">
-                    <?php echo $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
+                    <?= $lang['Heure_fin_match'] ?> : <input type="tel" id="time_end_match" class="fm_input_text" />
                 </p>
                 <p class="centre">
-                    <?php echo $lang['Commentaires_officiels'] ?> :<br />
+                    <?= $lang['Commentaires_officiels'] ?> :<br />
                     <textarea id="commentaires" rows="4" cols="50"></textarea>
                 </p>
             </div>
-            <div id="dialog_motif" title="<?php echo $lang['Motif_carton'] ?>">
+            <div id="dialog_motif" title="<?= $lang['Motif_carton'] ?>">
                 <p class="centre">
                     <?php foreach ($motifs_cartons as $value) {
                         echo "
@@ -704,13 +707,13 @@ stop_time: <span id="stop_time_display"></span><br />
             var ancienne_ligne = 0;
             var theInEvent = false;
             var ordre_actuel = 'up';
-            var idMatch = <?php echo $idMatch ?>;
-            var idEquipeA = <?php echo $row['Id_equipeA'] ?>;
-            var idEquipeB = <?php echo $row['Id_equipeB'] ?>;
-            var typeMatch = "<?php echo $typeMatch ?>";
-            var statutMatch = "<?php echo $statutMatch ?>";
-            var publiMatch = "<?php echo $publiMatch ?>";
-            var periode_en_cours = "<?php echo $periodeMatch ?>";
+            var idMatch = <?= $idMatch ?>;
+            var idEquipeA = <?= $row['Id_equipeA'] ?>;
+            var idEquipeB = <?= $row['Id_equipeB'] ?>;
+            var typeMatch = "<?= $typeMatch ?>";
+            var statutMatch = "<?= $statutMatch ?>";
+            var publiMatch = "<?= $publiMatch ?>";
+            var periode_en_cours = "<?= $periodeMatch ?>";
             var lang = {};
             <?php foreach ($lang as $key => $value) {
                 $key = str_replace('-', '_', $key);
@@ -763,7 +766,7 @@ stop_time: <span id="stop_time_display"></span><br />
                     }
 					statutActive(statutMatch, 'N');
 				<?php	}	?>
-				$('#end_match_time').val('<?php echo substr($heure_fin,-5,2).'h'.substr($heure_fin,-2) ?>');
+				$('#end_match_time').val('<?= substr($heure_fin,-5,2).'h'.substr($heure_fin,-2) ?>');
 				if(statutMatch != 'END') {
                     $('.endmatch').hide();
                 }
