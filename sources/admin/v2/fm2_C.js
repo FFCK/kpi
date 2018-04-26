@@ -43,7 +43,7 @@ $(function() {
         indicator : '<img src="images/indicator.gif" height="23">',
         submitdata : {idMatch: idMatch},
         type      : 'autocomplete',
-        placeholder : '<i class="placehold">Cliquez pour modifier...</i>', 
+        placeholder : '<i class="placehold">' + lang.Cliquez_pour_modifier + '</i>', 
         //tooltip   : "Clic pour modifier",
         //onblur    : "submit",
         autocomplete : { //parametres transmis au plugin autocomplete
@@ -56,7 +56,7 @@ $(function() {
         style   : 'display: inline',
         submit  : 'OK',
         type      : 'catcomplete',
-        placeholder : '<i class="placehold">Cliquez pour modifier...</i>', 
+        placeholder : '<i class="placehold">' + lang.Cliquez_pour_modifier + '</i>', 
         indicator : '<img src="images/indicator.gif" height="23">',
         submitdata : {idMatch: idMatch},
         //tooltip   : "Clic pour modifier",
