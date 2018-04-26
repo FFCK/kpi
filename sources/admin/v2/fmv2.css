@@ -71,6 +71,29 @@
                 background: none;
                 color: whitesmoke;
             }
+            .tabs_content {
+                position: absolute;
+                top: 38px;
+                width: 100%
+            }
+            .fm_tabs2 {
+                width: auto;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .tabs2_content {
+                padding: 10px;
+            }
+            .tabs2_content {
+                background-color: white;
+                color: black;
+                border-radius: 5px;
+                min-height: 350px;
+                line-height: 1.3em;
+            }
+            #tabs2-A_link, #tabs2-B_link {width: 90px;}
+            #tabs2-C_link, #tabs2-D_link {width: auto; padding-right: 45px; text-align: left;}
+            
             .motifCarton {
                 width: 185px;
                 height: 115px;
