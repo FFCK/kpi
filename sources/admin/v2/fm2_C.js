@@ -346,12 +346,25 @@ $(function() {
         $( "#dialog_ajust" ).dialog( "open" );
     });
     /* BOUTONS MATCH */
+    $('.motifCarton').click(function( event ) {
+        event.preventDefault();
+        $('#motif').val($(this).data('motif'));
+        $('#motif_texte').val($(this).data('texte'));
+        // DEBUG
+        console.log($(this).data('motif') + ' : ' + $(this).data('texte'));
+        $( "#dialog_motif" ).dialog( "close" );
+        $('#time_evt').focus();
+    });
     $('.joueurs, .equipes').click(function( event ) {
         event.preventDefault();
         $('.joueurs, .equipes').removeClass('actif');
         $(this).addClass('actif');
         if($('.evtButton[class*="actif"]').attr('data-evt') !== undefined ) {
-            $('#time_evt').focus();
+            if($('.evtButton[class*="actif"]').data('code') == 'V' || $('.evtButton[class*="actif"]').data('code') == 'J' || $('.evtButton[class*="actif"]').data('code') == 'R') {
+                $( "#dialog_motif" ).dialog( "open" );
+            } else {
+                $('#time_evt').focus();
+            }
         }
     });
     $('.evtButton').click(function( event ) {
@@ -365,7 +378,11 @@ $(function() {
         }
         $('#valid_evt').removeClass('inactif');
         if($('.joueurs[class*="actif"]').attr('data-player') !== undefined ) {
-            $('#time_evt').focus();
+            if($(this).data('code') == 'V' || $(this).data('code') == 'J' || $(this).data('code') == 'R') {
+                $( "#dialog_motif" ).dialog( "open" );
+            } else {
+                $('#time_evt').focus();
+            }
         }
     });
 
@@ -404,6 +421,11 @@ $(function() {
         var ligne_id_joueur = $('.joueurs[class*="actif"]').attr('data-id');
         var ligne_equipe = $('.joueurs[class*="actif"]').attr('data-equipe');
         var ligne_evt = $('.evtButton[class*="actif"]').attr('data-evt');
+        var ligne_motif = $('#motif').val();
+        var ligne_motif_texte = $('#motif_texte').val();
+        if(ligne_motif_texte != '') {
+            ligne_motif_texte = ' (' + ligne_motif_texte + ')';
+        }
         if(ligne_evt === undefined) {
             theInEvent = false;
             return;
@@ -422,11 +444,12 @@ $(function() {
             }
         }
         var code_ligne = $('.periode[class*="actif"]').attr('id');
-        code_ligne += '-' + $('#time_evt').val();
-        code_ligne += '-' + $('.evtButton[class*="actif"]').attr('data-code');
-        code_ligne += '-' + ligne_equipe;
-        code_ligne += '-' + ligne_id_joueur;
-        code_ligne += '-' + ligne_nb;
+        code_ligne += ';' + $('#time_evt').val();
+        code_ligne += ';' + $('.evtButton[class*="actif"]').attr('data-code');
+        code_ligne += ';' + ligne_equipe;
+        code_ligne += ';' + ligne_id_joueur;
+        code_ligne += ';' + ligne_nb;
+        code_ligne += ';' + ligne_motif;
         texte  = $('#time_evt').val() + ' ' + ligne_evt;
         texte += ' éq.' + ligne_equipe + ' ' + ligne_num + ligne_nom;
         /* BUT = TEMPS MORT OPTIONNEL ?  */
@@ -479,7 +502,7 @@ $(function() {
                             $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />');
                         }
                         texteBut += '</td>';
-                        texteNom = '<td class="list_nom">' + ligne_num + ligne_nom ;
+                        texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte;
 
                         texteNom += '</td>';
                         texteVert = '<td class="list_evt">';
@@ -587,6 +610,10 @@ $(function() {
             $('.periode').removeClass('actif');
             $('#'+periode_en_cours).addClass('actif');
         }
+        // scroll en haut
+        $('html, body').animate({
+            scrollTop: $("#tabs-2").offset().top
+        }, 200);
     });
     // EDIT
     $('#list').on( "click", 'tr', function() {
@@ -601,7 +628,7 @@ $(function() {
         $('#delete_evt').show();
         //$('#reset_evt').addClass('evtButton3');
         $('#valid_evt').hide();
-        code_split = code_ligne.split('-');
+        code_split = code_ligne.split(';');
         ancienne_ligne = code_ligne;
         $('a[id="' + code_split[0] + '"]').addClass('actif');
         $('#time_evt').val(code_split[1]);
@@ -611,7 +638,7 @@ $(function() {
         }else{
             $('a[data-player="Equipe ' + code_split[3] + '"]').addClass('actif');
         }
-        $('#time_evt').focus();
+        $('#zoneChrono').focus();
     });
     // UPDATE
     $('#update_evt').click(function( event ) {
@@ -624,6 +651,11 @@ $(function() {
         var ligne_equipe = $('.joueurs[class*="actif"]').attr('data-equipe');
         var ligne_evt = $('.evtButton[class*="actif"]').attr('data-evt');
         if(ligne_evt === undefined) {return;}
+        var ligne_motif = $('#motif').val();
+        var ligne_motif_texte = $('#motif_texte').val();
+        if(ligne_motif_texte != '') {
+            ligne_motif_texte = ' (' + ligne_motif_texte + ')';
+        }
         var carton_equipe = 0;
         if(ligne_nom === undefined) {
             carton_equipe = 1;
@@ -637,11 +669,12 @@ $(function() {
             }
         }
         var code_ligne = $('.periode[class*="actif"]').attr('id');
-        code_ligne += '-' + $('#time_evt').val();
-        code_ligne += '-' + $('.evtButton[class*="actif"]').attr('data-code');
-        code_ligne += '-' + ligne_equipe;
-        code_ligne += '-' + ligne_id_joueur;
-        code_ligne += '-' + ligne_nb;
+        code_ligne += ';' + $('#time_evt').val();
+        code_ligne += ';' + $('.evtButton[class*="actif"]').attr('data-code');
+        code_ligne += ';' + ligne_equipe;
+        code_ligne += ';' + ligne_id_joueur;
+        code_ligne += ';' + ligne_nb;
+        code_ligne += ';' + ligne_motif;
         texte  = $('#time_evt').val() + ' ' + ligne_evt;
         texte += ' éq.' + ligne_equipe + ' ' + ligne_num + ligne_nom;
         $.post(
@@ -686,7 +719,7 @@ $(function() {
                         $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />');
                     }
                     texteBut += '</td>';
-                    texteNom = '<td class="list_nom">' + ligne_num + ligne_nom ;
+                    texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte ;
                     if(ligne_evt == 'Arret')
                         texteNom += ' (' + lang.Tir_contre + ')';
                     if(ligne_evt == 'Tir')
@@ -1038,6 +1071,12 @@ $(function() {
         $('#updateChrono img').hide();
     });
 
+    $('.chronoButton').click(function(){
+        // scroll en haut
+        $('html, body').animate({
+            scrollTop: $("#tabs-2").offset().top
+        }, 200);
+    });
     $('#start_button').click(function(){
         start_time = new Date();
         run_time = new Date();

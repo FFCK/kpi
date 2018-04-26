@@ -71,6 +71,13 @@
                 background: none;
                 color: whitesmoke;
             }
+            .motifCarton {
+                width: 185px;
+                height: 115px;
+            }
+            .motifCarton img {
+                height: 70px;
+            }
 			.actif {
 				background: url("images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3baae3;
 				border: 1px solid #79B7E7;

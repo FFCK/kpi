@@ -1,6 +1,6 @@
 <?php
 // Configuration Generale 
-define('NUM_VERSION','2.15.0');
+define('NUM_VERSION','2.16.0');
 
 require_once('MyParams.php');
 
