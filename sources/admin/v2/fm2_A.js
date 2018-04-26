@@ -154,10 +154,10 @@ $(function() {
         bJQueryUI: true,
     } );
 
-    $('#accordion').accordion({
-        header: "h3",
-        heightStyle: "content"
-    });
+//    $('#accordion').accordion({
+//        header: "h3",
+//        heightStyle: "content"
+//    });
     $('#typeMatch').buttonset();
     $('#controleMatch').buttonset();
     $('#publiMatch').buttonset();

@@ -108,6 +108,18 @@
 					$('.fm_tabs').toggle();
 					$('.tabs_content').toggle();
 				});
+				/* TABS SETTINGS */
+				$('#tabs2-A_link').addClass('actif');
+				$('#tabs2-B').hide();
+				$('#tabs2-C').hide();
+				$('#tabs2-D').hide();
+				$('.fm_tabs2').click(function() {
+					$('.fm_tabs2').removeClass('actif');
+					$(this).addClass('actif');
+                    var target = $(this).data('target');
+					$('.tabs2_content').hide();
+                    $('#' + target).show();
+				});
 				/* END MATCH */
 				/* Charge nouvelle feuille */
 				$('#chargeFeuille').click(function(event){

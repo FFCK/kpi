@@ -178,9 +178,21 @@ class GestionMatchDetail extends MyPageSecure
 			<div id="tabs-1" class="tabs_content">
 				<div id="accordion">
 					<!--<div class="note"><?= $lang['A_remplir']; ?></div>-->
-					<h3><?= $lang['Parametres_match']; ?> ID# <?= $idMatch; ?></h3>
-					<div>
+					<!--<h3><?= $lang['Parametres_match']; ?> ID# <?= $idMatch; ?></h3>-->
+                    <a class="fm_bouton fm_tabs2" id="tabs2-A_link" data-target="tabs2-A"><?= $lang['Parametres']; ?></a>
+                    <a class="fm_bouton fm_tabs2" id="tabs2-B_link" data-target="tabs2-B"><?= $lang['Officiels']; ?></a>
+                    <a class="fm_bouton fm_tabs2" id="tabs2-C_link" data-target="tabs2-C">
+                        A <img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>								
+						<span class="score" id="scoreA2">0</span>
+                    </a>
+                    <a class="fm_bouton fm_tabs2" id="tabs2-D_link" data-target="tabs2-D">
+                        B <img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>								
+						<span class="score" id="scoreB2">0</span>
+                    </a>
+                    <div class="tabs2_content" id="tabs2-A">
 						<div class="moitie">
+                            ID# <?= $idMatch; ?>
+							<br />
 							<?= $lang['Type_match']; ?> : 
 							<br />
 							<span id="typeMatch">
@@ -242,8 +254,8 @@ class GestionMatchDetail extends MyPageSecure
 							<img height="30" style="vertical-align:middle;" title="<?= $lang['Verrouille']; ?> ?" alt="<?= $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if($verrou == 'O'){ echo 'O';} else {echo 'N';} ?>.gif" />
 						</div>
 					</div>
-					<h3><?= $lang['Officiels']; ?></h3>
-					<div>
+					<!--<h3><?= $lang['Officiels']; ?></h3>-->
+                    <div class="tabs2_content" id="tabs2-B">
 						<div class="moitie">
 							<label><?= $lang['Secretaire']; ?> : </label><br /><span class="editOfficiel" id="Secretaire"><?= $row['Secretaire']; ?></span><br />
 							<label><?= $lang['Chronometre']; ?> : </label><br /><span class="editOfficiel" id="Chronometre"><?= $row['Chronometre']; ?></span><br />
@@ -264,10 +276,10 @@ class GestionMatchDetail extends MyPageSecure
 
 						</div>
 					</div>
-					<h3><?= $lang['Equipe'] ?> A - <img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>								
+<!--					<h3><?= $lang['Equipe'] ?> A - <img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>								
 						<span class="score" id="scoreA2">0</span>
-					</h3>
-					<div>
+					</h3>-->
+                    <div class="tabs2_content" id="tabs2-C">
 						<table class="dataTable" id="equipeA">
 							<thead>
 								<tr>
@@ -327,11 +339,11 @@ class GestionMatchDetail extends MyPageSecure
 						</table>
 						<input class="ui-button ui-widget ui-corner-all" type="button" name="initA" id="initA" value="<?= $lang['Recharger_joueurs'] ?>" />
 					</div>			
-					<h3><?= $lang['Equipe'] ?> B - <img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>								
+<!--					<h3><?= $lang['Equipe'] ?> B - <img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>								
 						<span class="score" id="scoreB2">0</span>
-					</h3>
-					<div>
-						<table class="dataTable" id="equipeB">
+					</h3>-->
+                    <div class="tabs2_content" id="tabs2-D">
+                        <table class="dataTable" id="equipeB">
 							<thead>
 								<tr>
 									<th><?= $lang['Num'] ?></th>
