@@ -305,8 +305,8 @@ class FeuilleMatch extends MyPage {
                     $na[$j] = $row3['Numero'];
                 }
 
-                $prenoma[$j] = $row3['Prenom'];
-                if ($row3['Matric'] > 2000000 && $row3['icf'] != NULL) {
+                $prenoma[$j] = utyUcWordNomCompose($row3['Prenom']);
+                if ($row3['Matric'] > 2000000 && $row3['icf'] != NULL && $row3['icf'] != 0) {
                     $licencea[$j] = 'Icf-' . $row3['icf'];
                 } elseif ($row3['Matric'] < 2000000) {
                     $licencea[$j] = $row3['Matric'];
@@ -369,8 +369,8 @@ class FeuilleMatch extends MyPage {
                     $nb[$j] = $row4['Numero'];
                 }
 
-                $prenomb[$j] = $row4['Prenom'];
-                if ($row4['Matric'] > 2000000 && $row4['icf'] != NULL) {
+                $prenomb[$j] = utyUcWordNomCompose($row4['Prenom']);
+                if ($row4['Matric'] > 2000000 && $row4['icf'] != NULL && $row4['icf'] != 0) {
                     $licenceb[$j] = 'Icf-' . $row4['icf'];
                 } elseif ($row4['Matric'] < 2000000) {
                     $licenceb[$j] = $row4['Matric'];
@@ -393,7 +393,7 @@ class FeuilleMatch extends MyPage {
             $scoreDetailA = 0;
             $scoreDetailB = 0;
 
-            $sql5 = "Select d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.Competiteur, d.Numero, d.Equipe_A_B, ";
+            $sql5 = "Select d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.Competiteur, d.Numero, d.Equipe_A_B, d.motif, ";
             $sql5 .= "c.Nom, c.Prenom ";
             $sql5 .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
             $sql5 .= "Where d.Id_match = $idMatch ";
@@ -414,9 +414,12 @@ class FeuilleMatch extends MyPage {
                     $d[$j] = '';
                 }
                 if ($row5['Id']) {
+                    if ($row5['motif'] != null) {
+                        $row5['motif'] = ' (' . $lang[$row5['motif']] . ')'; 
+                    }
                     if ($row5['Equipe_A_B'] == 'A') {
                         if ($row5['Nom'] != '') {
-                            $d[1] = $row5['Numero'] . '-' . ucwords(strtolower($row5['Nom'])) . ' ' . $row5['Prenom']{0} . '.';
+                            $d[1] = $row5['Numero'] . ' - ' . utyNomPrenomCourt($row5['Nom'], $row5['Prenom']) . $row5['motif'];
                         } else {
                             $d[1] = $lang['EQUIPE'] . ' A';
                         }
@@ -440,7 +443,7 @@ class FeuilleMatch extends MyPage {
                         }
                     } else {
                         if ($row5['Nom'] != '') {
-                            $d[11] = $row5['Numero'] . '-' . ucwords(strtolower($row5['Nom'])) . ' ' . $row5['Prenom']{0} . '.';
+                            $d[11] = $row5['Numero'] . ' - ' . utyNomPrenomCourt($row5['Nom'], $row5['Prenom']) . $row5['motif'];
                         } else {
                             $d[11] = $lang['EQUIPE'] . ' B';
                         }
@@ -643,7 +646,7 @@ class FeuilleMatch extends MyPage {
                 $pdf->SetFont('Arial', '', 8);
                 $pdf->Cell(6, 4, $na[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(45, 4, $noma[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, ucwords(strtolower($prenoma[$i])), 'LRB', '0', 'C', 1);
+                $pdf->Cell(45, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(24, 4, $licencea[$i] . $saisona[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(15, 4, $diva[$i], 'LRB', '1', 'C', 1);
                 $indiqsaison = '';
@@ -680,7 +683,7 @@ class FeuilleMatch extends MyPage {
                 $pdf->SetFont('Arial', '', 8);
                 $pdf->Cell(6, 4, $nb[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(45, 4, $nomb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, ucwords(strtolower($prenomb[$i])), 'LRB', '0', 'C', 1);
+                $pdf->Cell(45, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(24, 4, $licenceb[$i] . $saisonb[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(15, 4, $divb[$i], 'LRB', '1', 'C', 1);
                 $indiqsaison = '';
@@ -763,13 +766,13 @@ class FeuilleMatch extends MyPage {
             $pdf->Cell(5, 5, $lang['J'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 170, 170);
             $pdf->Cell(5, 5, $lang['R'], 1, 0, 'C', 1);
-            $pdf->Cell(36, 5, $lang['Num'] . " - " . $lang['Nom'], 1, 0, 'C');
+            $pdf->Cell(36, 5, $lang['Num'] . " (" . $lang['Motif_carton'] . ")", 1, 0, 'C');
             $pdf->Cell(6, 5, $lang['But'], 1, 0, 'C');
             $pdf->Cell(1, 5, "", 0, 0, 'C');
             $pdf->Cell(19, 5, "+ " . $lang['Temps'], 'LRB', '0', 'C');
             $pdf->Cell(1, 5, "", 0, 0, 'C');
             $pdf->Cell(6, 5, $lang['But'], 1, 0, 'C');
-            $pdf->Cell(36, 5, $lang['Num'] . " - " . $lang['Nom'], 1, 0, 'C');
+            $pdf->Cell(36, 5, $lang['Num'] . " (" . $lang['Motif_carton'] . ")", 1, 0, 'C');
             $pdf->SetFillColor(170, 255, 170);
             $pdf->Cell(5, 5, $lang['V'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 255, 170);
@@ -785,13 +788,13 @@ class FeuilleMatch extends MyPage {
                 $pdf->Cell(5, 4, isset($detail[$i]['d3']) ? $detail[$i]['d3'] : '', 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 170, 170);
                 $pdf->Cell(5, 4, isset($detail[$i]['d4']) ? $detail[$i]['d4'] : '', 1, 0, 'C', 1);
-                $pdf->Cell(36, 4, isset($detail[$i]['d1']) ? $detail[$i]['d1'] : '', 1, 0, 'L');
+                $pdf->Cell(36, 4, isset($detail[$i]['d1']) ? $detail[$i]['d1'] : '', 1, 0, 'C');
                 $pdf->Cell(6, 4, isset($detail[$i]['d5']) ? $detail[$i]['d5'] : '', 1, 0, 'C');
                 $pdf->Cell(1, 4, "", 0, 0, 'C');
                 $pdf->Cell(19, 4, isset($detail[$i]['d6']) ? $detail[$i]['d6'] : '', 1, 0, 'C');
                 $pdf->Cell(1, 4, "", 0, 0, 'C');
                 $pdf->Cell(6, 4, isset($detail[$i]['d7']) ? $detail[$i]['d7'] : '', 1, 0, 'C');
-                $pdf->Cell(36, 4, isset($detail[$i]['d11']) ? $detail[$i]['d11'] : '', 1, 0, 'L');
+                $pdf->Cell(36, 4, isset($detail[$i]['d11']) ? $detail[$i]['d11'] : '', 1, 0, 'C');
                 $pdf->SetFillColor(170, 255, 170);
                 $pdf->Cell(5, 4, isset($detail[$i]['d8']) ? $detail[$i]['d8'] : '', 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 255, 170);
