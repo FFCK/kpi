@@ -469,6 +469,27 @@ function utyStringQuote($string)
 	return $newstring;
 }
 
+function utyUcWordNomCompose($nom)
+{
+    if ($nom != '') {
+        $nom = str_replace ('-', 'µ ', strtolower( $nom )); 
+        $nom = str_replace ("'", '£ ', strtolower( $nom )); 
+        $nom = ucwords ($nom);
+        $nom = str_replace ('£ ', "'", $nom);
+        $nom = str_replace ('µ ', '-', $nom);
+        return $nom;
+    }
+    
+    return $nom;
+}
+
+function utyNomPrenomCourt($nom, $prenom) {
+    $reponse = ucwords(strtolower(substr($nom, 0, 3))) . '. ' 
+            . ucwords(strtolower(substr($prenom, 0, 1))) . '.';
+    return $reponse;
+}
+
+
 function utyEquipesAffectAuto($intitule)
 {
 	// On contrôle qu'il y a un crochet ouvrant et un fermant, et on prend le contenu.

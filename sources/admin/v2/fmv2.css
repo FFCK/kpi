@@ -10,7 +10,10 @@
 			.moitie {width: 49%; float: left;}
 			.note {font-style: italic; text-align: center; color: red;}
 			#logo {height: 90px; position: absolute; top: 5px; left: 5px;}
-			label {font-weight: bold; }
+			label {font-weight: bold; 
+                font-style: italic;
+                color: darkgoldenrod;
+            }
 			#selectionA, #selectionB { vertical-align: top; width: 35%}
 			#selectionA + h3 { background: url("images/ui-bg_inset-hard_100_f5f8f9_1x100.png") repeat-x scroll 50% 50% #F5F8F9;
 				border: 1px solid #79B7E7;

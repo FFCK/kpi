@@ -512,12 +512,12 @@ $(function() {
                             //si 2 verts...
                             var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
                             if(nb_cartons == 2) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + '<br>' + lang.Verifier_type_faute, lang.Attention);
+                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Verifier_type_faute + '.', lang.Attention);
                             }
                             //si 3 verts...
                             var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
                             if(nb_cartons >= 3) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + '<br />' + lang.Avertir_arbitre, lang.Attention);
+                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention);
                             }
                             // Carton d'équipe
                         /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
@@ -538,7 +538,7 @@ $(function() {
                             //si 2 jaunes...
                             var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune.png"]').length;
                             if(nb_cartons >= 2) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur, lang.Attention);
+                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention);
                             }
                         }
                         texteJaune += '</td>';
@@ -732,12 +732,12 @@ $(function() {
                         //si 2 verts...
                         var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
                         if(nb_cartons == 2) {
-                            custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_vert.png" /> pour ce joueur !<br />Vérifier type de faute.', 'Attention');
+                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Verifier_type_faute + '.', lang.Attention);
                         }
                         //si 3 verts...
                         var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
                         if(nb_cartons >= 3) {
-                            custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_vert.png" /> pour ce joueur !<br />Avertir l\'arbitre, modifier en jaune.', 'Attention');
+                            custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention);
                         }
                     /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
                             $('.joueurs[data-equipe="A"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
@@ -757,7 +757,7 @@ $(function() {
                         //si 2 jaunes...
                         var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune.png"]').length;
                         if(nb_cartons >= 2) {
-                            custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_jaune.png" /> pour ce joueur !', 'Attention');
+                            custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention);
                         }
                     }
                     texteJaune += '</td>';
