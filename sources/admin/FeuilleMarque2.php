@@ -48,8 +48,8 @@ class GestionMatchDetail extends MyPageSecure
             "r_ht",
             "r_p",
             "r_o",
-            "r_rep",
-            "r_un"
+            "r_un",
+            "r_rep"
         ];
 
                     
@@ -193,7 +193,7 @@ class GestionMatchDetail extends MyPageSecure
 						<div class="moitie">
                             ID# <?= $idMatch; ?>
 							<br />
-							<?= $lang['Type_match']; ?> : 
+							<label><?= $lang['Type_match']; ?></label>
 							<br />
 							<span id="typeMatch">
 								<input type="radio" name="typeMatchtypeMatch" id="typeMatchClassement" <?php if($row['Type_match'] == 'C') echo 'checked="checked"'; ?> />
@@ -205,7 +205,7 @@ class GestionMatchDetail extends MyPageSecure
                             <br>
 							<br>
 							<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
-								<span title="<?= $lang['PC_Course_seulement']; ?>"><?= $lang['Publication']; ?> : </span>
+								<label><span title="<?= $lang['PC_Course_seulement']; ?>"><?= $lang['Publication']; ?></span></label>
 								<br />
 								<span id="publiMatch">
 									<input type="radio" name="publiMatch" id="prive" <?php if($publiMatch != 'O') echo 'checked="checked"'; ?> /><label for="prive" title="<?= $lang['Match_prive']; ?>"><?= $lang['Prive']; ?></label>
@@ -221,7 +221,7 @@ class GestionMatchDetail extends MyPageSecure
                             <a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=en&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
 							<br />
 							<br />
-							<?= $lang['Charger_autre_feuille']; ?> :
+							<label><?= $lang['Charger_autre_feuille']; ?></label>
 							<br />
 							ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" pattern="[0-9]{8,9}">
                             <input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?= $lang['Charger']; ?>" />
@@ -233,7 +233,7 @@ class GestionMatchDetail extends MyPageSecure
 								</i>
 								<br />
 								<br />
-								<?= $lang['Score_provisoire']; ?> :<br />
+                                <label><?= $lang['Score_provisoire']; ?> :</label><br />
 								<span class="presentScore"><?= $row['equipeA']; ?> <span class="score" id="scoreA3">0</span> - <span class="score" id="scoreB3">0</span> <?= $row['equipeB']; ?></span>
 								<?php if($verrou != 'O') { ?>
 									<br />
@@ -243,7 +243,7 @@ class GestionMatchDetail extends MyPageSecure
 							</span>
 							<br />
 							<br />
-							<span title="<?= $lang['PC_Course_seulement']; ?>"><?= $lang['Controle_match']; ?> : </span>
+                            <label><span title="<?= $lang['PC_Course_seulement']; ?>"><?= $lang['Controle_match']; ?></span></label>
 							<br />
 							<span id="controleMatch">
 								<?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
@@ -304,8 +304,8 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp  = '<tr>';
 										$joueur_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</td>';
 										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row3["Prenom"])).'</td>';
+										$joueur_temp .= '<td>'.strtoupper($row3["Nom"]).'</td>';
+										$joueur_temp .= '<td>'.utyUcWordNomCompose($row3["Prenom"]).'</td>';
 										$joueur_temp .= '<td>';
 										if($row3["Matric"] < 2000000)
 											$joueur_temp .= $row3["Matric"];
@@ -318,8 +318,8 @@ class GestionMatchDetail extends MyPageSecure
 										$entr_temp  = '<tr class="entraineur">';
 										$entr_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'"></td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row3["Nom"])).'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row3["Prenom"])).'</td>';
+										$entr_temp .= '<td>'.strtoupper($row3["Nom"]).'</td>';
+										$entr_temp .= '<td>'.utyUcWordNomCompose($row3["Prenom"]).'</td>';
 										$entr_temp .= '<td>';
 										if($row3["Matric"] < 2000000)
 											$entr_temp .= $row3["Matric"];
@@ -330,7 +330,7 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp = '';
 									}
 									echo $joueur_temp;
-                                                                        echo $entr_temp;
+                                    echo $entr_temp;
 								}
 								if($num_results3 >= 1)
 									mysql_data_seek($result3,0); 
@@ -367,8 +367,8 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp  = '<tr>';
 										$joueur_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</td>';
 										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
-										$joueur_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
+										$joueur_temp .= '<td>'.strtoupper($row4["Nom"]).'</td>';
+										$joueur_temp .= '<td>'.utyUcWordNomCompose($row4["Prenom"]).'</td>';
 										$joueur_temp .= '<td>';
 										if ($row4["Matric"] < 2000000) {
                                             $joueur_temp .= $row4["Matric"];
@@ -382,8 +382,8 @@ class GestionMatchDetail extends MyPageSecure
 										$entr_temp  = '<tr class="entraineur">';
 										$entr_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'"></td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row4["Nom"])).'</td>';
-										$entr_temp .= '<td>'.ucwords(strtolower($row4["Prenom"])).'</td>';
+										$entr_temp .= '<td>'.strtoupper($row4["Nom"]).'</td>';
+										$entr_temp .= '<td>'.utyUcWordNomCompose($row4["Prenom"]).'</td>';
 										$entr_temp .= '<td>';
 										if ($row4["Matric"] < 2000000) {
                                             $entr_temp .= $row4["Matric"];
@@ -448,14 +448,14 @@ stop_time: <span id="stop_time_display"></span><br />
 								{
 									$row3 = mysql_fetch_array($result3);
 									if($row3["Capitaine"] != 'E'){
-										$joueur_temp  = '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
-										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
+										$joueur_temp  = '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
+										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
 										if($row3["Capitaine"] == 'C')
 											$joueur_temp .= ' (Cap.)';
 										$joueur_temp .= '</span><span class="c_evt"></span></a>';
 									}else{
-										$entr_temp .= '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs coach">';
-										$entr_temp .= ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
+										$entr_temp .= '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs coach">';
+										$entr_temp .= utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
 										$entr_temp .= '<span class="c_evt"></span></a>';
 										$joueur_temp = '';
 									}
@@ -524,14 +524,14 @@ stop_time: <span id="stop_time_display"></span><br />
 								{
 									$row4 = mysql_fetch_array($result4);
 									if($row4["Capitaine"] != 'E'){
-										$joueur_temp  = '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
-										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
+										$joueur_temp  = '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
+										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
 										if($row4["Capitaine"] == 'C')
 											$joueur_temp .= ' (Cap.)';
 										$joueur_temp .= '</span><span class="c_evt"></span></a>';
 									}else{
-										$entr_temp .= '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs coach">';
-										$entr_temp .= ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
+										$entr_temp .= '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs coach">';
+										$entr_temp .= utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
 										$entr_temp .= '<span class="c_evt"></span></a>';
 										$joueur_temp = '';
 									}
@@ -602,8 +602,8 @@ stop_time: <span id="stop_time_display"></span><br />
                                                 $evt_temp .= '<img src="v2/carton_rouge.png">';
                                             $evt_temp .= '</td>';
                                             $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
-                                                    .ucwords(strtolower($row5["Nom"])).' '
-                                                    .ucwords(strtolower($row5["Prenom"]))
+                                                    .utyUcWordNomCompose($row5["Nom"]).' '
+                                                    .$row5["Prenom"][0].'.'
                                                     .$row5['motif_texte'];
     //										if($row5["Id_evt_match"] == 'A')
     //											$evt_temp .= ' (arrêt)';
@@ -624,8 +624,8 @@ stop_time: <span id="stop_time_display"></span><br />
                                                 $evt_temp .= '<img src="v2/but1.png">';
                                             $evt_temp .= '</td>';
                                             $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
-                                                    .ucwords(strtolower($row5["Nom"])).' '
-                                                    .ucwords(strtolower($row5["Prenom"]))
+                                                    .utyUcWordNomCompose($row5["Nom"]).' '
+                                                    .$row5["Prenom"][0].'.'
                                                     .$row5['motif_texte'];
     //										if($row5["Id_evt_match"] == 'A')
     //											$evt_temp .= ' (arrêt)';
@@ -695,7 +695,7 @@ stop_time: <span id="stop_time_display"></span><br />
                         echo "
                             <div class='motifCarton fm_bouton' data-motif='" . $value . "' data-texte='" . $lang[$value] . "'>
                                 <img src='../img/referees/" . $value . ".jpg'>
-                                <br>" . $lang[$value] . "
+                                <br>" . $lang[$value . '_lg'] . "
                             </div>";
                     }
                     ?>

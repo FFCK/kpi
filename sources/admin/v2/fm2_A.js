@@ -85,7 +85,7 @@ function statutActive(leStatut, leClick){
             }else{
                 $('#time_end_match').val($('#end_match_time').val());
             }
-            $('#commentaires').val($('#comments').text());
+            $('#commentaires').val($('#comments').text().replace(lang.Cliquez_pour_modifier + '...', ''));
             $('#dialog_end_match').dialog('open');
             $('#reset_evt').click();
         }else{
