@@ -690,18 +690,16 @@ stop_time: <span id="stop_time_display"></span><br />
                 </p>
             </div>
             <div id="dialog_motif" title="<?= $lang['Motif_carton'] ?>">
-                <p class="centre">
                     <?php foreach ($motifs_cartons as $value) {
                         echo "
                             <div class='motifCarton fm_bouton' data-motif='" . $value . "' data-texte='" . $lang[$value] . "'>
-                                <img src='../img/referees/" . $value . ".jpg'>
+                                <img src='../img/referees/" . $value . ".png'>
                                 <br>" . $lang[$value . '_lg'] . "
                             </div>";
                     }
                     ?>
                     <input type="hidden" id="motif" value="">
                     <input type="hidden" id="motif_texte" value="">
-                </p>
             </div>
 
 		</form>
