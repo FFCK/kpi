@@ -55,6 +55,11 @@ table.dataTable span.column_highlight {
   background-color: #FFFF00;
   border-radius: 0.28571429rem;
 }
+
+.dataTables_wrapper select {
+    padding: 0px !important;
+}
+
 @media (max-width: 767px) {
     
     table.dataTable.stripe tbody tr.odd, 
@@ -79,7 +84,7 @@ table.dataTable span.column_highlight {
     }
     
     .form-control {
-        padding: 6px 2px;
+        /*padding: 6px 2px;*/
     }
     
     .site-logo {
