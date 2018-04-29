@@ -350,8 +350,6 @@ $(function() {
         event.preventDefault();
         $('#motif').val($(this).data('motif'));
         $('#motif_texte').val($(this).data('texte'));
-        // DEBUG
-        console.log($(this).data('motif') + ' : ' + $(this).data('texte'));
         $( "#dialog_motif" ).dialog( "close" );
         $('#time_evt').focus();
     });
@@ -363,6 +361,8 @@ $(function() {
             if($('.evtButton[class*="actif"]').data('code') == 'V' || $('.evtButton[class*="actif"]').data('code') == 'J' || $('.evtButton[class*="actif"]').data('code') == 'R') {
                 $( "#dialog_motif" ).dialog( "open" );
             } else {
+                $('#motif').val('');
+                $('#motif_texte').val('');
                 $('#time_evt').focus();
             }
         }
@@ -381,6 +381,8 @@ $(function() {
             if($(this).data('code') == 'V' || $(this).data('code') == 'J' || $(this).data('code') == 'R') {
                 $( "#dialog_motif" ).dialog( "open" );
             } else {
+                $('#motif').val('');
+                $('#motif_texte').val('');
                 $('#time_evt').focus();
             }
         }
