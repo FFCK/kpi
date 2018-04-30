@@ -61,14 +61,16 @@ class FeuillePresence extends MyPage {
 
                 // Chargement des Coureurs ...
                 if ($idEquipe != '') {
-                    $sql2 = "Select a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, ";
-                    $sql2 .= "b.Origine, b.Numero_club, b.Pagaie_ECA, b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau ";
-                    $sql2 .= "From gickp_Competitions_Equipes_Joueurs a ";
-                    $sql2 .= "Left Outer Join gickp_Liste_Coureur b On (a.Matric = b.Matric) ";
-                    $sql2 .= "Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric) ";
-                    $sql2 .= "Where Id_Equipe = ";
-                    $sql2 .= $idEquipe;
-                    $sql2 .= " Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";
+                    $sql2 = "Select a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, "
+                            . "b.Origine, b.Numero_club, b.Pagaie_ECA, b.Etat_certificat_CK CertifCK, "
+                            . "b.Etat_certificat_APS CertifAPS, b.Naissance, b.Reserve, c.Arb, c.niveau "
+                            . "From gickp_Competitions_Equipes_Joueurs a "
+                            . "Left Outer Join gickp_Liste_Coureur b On (a.Matric = b.Matric) "
+                            . "Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric) "
+                            . "Where Id_Equipe = "
+                            . $idEquipe
+                            . " Order By Field(if(a.Capitaine='C', '-', if(a.Capitaine='', '-', a.Capitaine)), '-', 'E', 'A', 'X'), "
+                            . "Numero, Nom, Prenom ";
 
                     $result2 = mysql_query($sql2, $myBdd->m_link) or die("Erreur Load Titulaires : " . $sql2 . ' - ' . $codeCompet . ' - ' . $row['Id'] . ' ! ');
                     $num_results2 = mysql_num_rows($result2);
@@ -128,6 +130,7 @@ class FeuillePresence extends MyPage {
                             'Sexe' => $row2['Sexe'], 'Categ' => $row2['Categ'], 'Pagaie' => $pagaie, 'CertifCK' => $row2['CertifCK'],
                             'CertifAPS' => $row2['CertifAPS'], 'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['Arb'],
                             'Saison' => $row2['Origine'], 'Numero_club' => $row2['Numero_club'],
+                            'Naissance' => $row2['Naissance'], 'Reserve' => $row2['Reserve'],
                             'nbJoueurs' => $num_results2));
                     }
                     array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'],
@@ -226,12 +229,19 @@ class FeuillePresence extends MyPage {
 
             for ($j = 0; $j < $nbJoueurs; $j++) {
                 if (isset($arrayJoueur{$idEquipe}[$j]['Matric']) && $arrayJoueur{$idEquipe}[$j]['Matric'] != '') {
+                    if($arrayJoueur{$idEquipe}[$j]['Matric'] >= 2000000) {
+                        if ($arrayJoueur{$idEquipe}[$j]['Reserve'] == '0') {
+                            $arrayJoueur{$idEquipe}[$j]['Matric'] = '';
+                        } else {
+                            $arrayJoueur{$idEquipe}[$j]['Matric'] = $arrayJoueur{$idEquipe}[$j]['Reserve'];
+                        }
+                    }
                     $pdf->Cell(25, 7, '', '', 0, 'C');
                     $pdf->Cell(16, 7, $arrayJoueur{$idEquipe}[$j]['Numero'], 'B', 0, 'C');
                     $pdf->Cell(8, 7, $arrayJoueur{$idEquipe}[$j]['Capitaine'], 'B', 0, 'C');
                     $pdf->Cell(25, 7, $arrayJoueur{$idEquipe}[$j]['Matric'] . $arrayJoueur{$idEquipe}[$j]['Saison'], 'B', 0, 'C');
-                    $pdf->Cell(45, 7, $arrayJoueur{$idEquipe}[$j]['Nom'], 'B', 0, 'C');
-                    $pdf->Cell(45, 7, $arrayJoueur{$idEquipe}[$j]['Prenom'], 'B', 0, 'C');
+                    $pdf->Cell(45, 7, strtoupper($arrayJoueur{$idEquipe}[$j]['Nom']), 'B', 0, 'C');
+                    $pdf->Cell(45, 7, utyUcWordNomCompose($arrayJoueur{$idEquipe}[$j]['Prenom']), 'B', 0, 'C');
                     $pdf->Cell(16, 7, $arrayJoueur{$idEquipe}[$j]['Categ'], 'B', 0, 'C');
                     $pdf->Cell(16, 7, $arrayJoueur{$idEquipe}[$j]['Pagaie'], 'B', 0, 'C');
                     $pdf->Cell(23, 7, $arrayJoueur{$idEquipe}[$j]['CertifCK'], 'B', 0, 'C');

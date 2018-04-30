@@ -156,7 +156,7 @@ class FeuillePresence extends MyPage {
         // Entête PDF ...	  
         $pdf = new PDF('L');
         $pdf->Open();
-        $pdf->SetTitle("Presence sheets");
+        $pdf->SetTitle("Team rosters");
 
         $pdf->SetAuthor("Kayak-polo.info");
         $pdf->SetCreator("Kayak-polo.info avec FPDF");
@@ -200,7 +200,7 @@ class FeuillePresence extends MyPage {
             $pdf->Cell(137, 8, $titreCompet, 0, 0, 'L');
             $pdf->Cell(136, 8, 'Season ' . $codeSaison, 0, 1, 'R');
             $pdf->SetFont('Arial', 'B', 14);
-            $pdf->Cell(273, 8, "Presence sheet - " . $row['Libelle'], 0, 1, 'C');
+            $pdf->Cell(273, 8, "Team rosters - " . $row['Libelle'], 0, 1, 'C');
             $pdf->Ln(10);
 
             $idEquipe = $row['Id'];
@@ -231,10 +231,13 @@ class FeuillePresence extends MyPage {
                     if ($arrayJoueur{$idEquipe}[$j]['Numero'] == '0') {
                         $arrayJoueur{$idEquipe}[$j]['Numero'] = '';
                     }
+                    if ($arrayJoueur{$idEquipe}[$j]['Reserve'] == '0') {
+                        $arrayJoueur{$idEquipe}[$j]['Reserve'] = '';
+                    }
                     $pdf->Cell(12, 8, $arrayJoueur{$idEquipe}[$j]['Numero'], 'B', 0, 'C');
                     $pdf->Cell(12, 8, $arrayJoueur{$idEquipe}[$j]['Capitaine'], 'B', 0, 'C');
-                    $pdf->Cell(50, 8, $arrayJoueur{$idEquipe}[$j]['Nom'], 'B', 0, 'C');
-                    $pdf->Cell(50, 8, $arrayJoueur{$idEquipe}[$j]['Prenom'], 'B', 0, 'C');
+                    $pdf->Cell(50, 8, strtoupper($arrayJoueur{$idEquipe}[$j]['Nom']), 'B', 0, 'C');
+                    $pdf->Cell(50, 8, utyUcWordNomCompose($arrayJoueur{$idEquipe}[$j]['Prenom']), 'B', 0, 'C');
                     $pdf->Cell(30, 8, $arrayJoueur{$idEquipe}[$j]['Naissance'], 'B', 0, 'C');
                     $pdf->Cell(18, 8, $arrayJoueur{$idEquipe}[$j]['Categ'], 'B', 0, 'C');
                     $pdf->Cell(25, 8, rtrim($arrayJoueur{$idEquipe}[$j]['Numero_club'], '00'), 'B', 0, 'C');
@@ -246,7 +249,7 @@ class FeuillePresence extends MyPage {
                 }
             }
         }
-        $pdf->Output('Presence sheets' . '.pdf', 'I');
+        $pdf->Output('Team rosters' . '.pdf', 'I');
     }
 
 }

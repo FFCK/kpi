@@ -305,7 +305,7 @@ class FeuilleMatch extends MyPage {
                 }
 
                 $prenoma[$j] = utyUcWordNomCompose($row3['Prenom']);
-                if ($row3['Matric'] > 2000000 && $row3['icf'] != NULL && $row3['icf'] != 0) {
+                if ($arrayCompetition['Code_niveau'] == 'INT' && $row3['icf'] != NULL && $row3['icf'] != 0) {
                     $licencea[$j] = 'Icf-' . $row3['icf'];
                 } elseif ($row3['Matric'] < 2000000) {
                     $licencea[$j] = $row3['Matric'];
@@ -369,8 +369,8 @@ class FeuilleMatch extends MyPage {
                 }
 
                 $prenomb[$j] = utyUcWordNomCompose($row4['Prenom']);
-                if ($row4['Matric'] > 2000000 && $row4['icf'] != NULL && $row4['icf'] != 0) {
-                    $licenceb[$j] = 'Icf-' . $row4['icf'];
+                if ($arrayCompetition['Code_niveau'] == 'INT' && $row4['icf'] != NULL && $row4['icf'] != 0) {
+                    $licenceb[$j] = $row4['icf'];
                 } elseif ($row4['Matric'] < 2000000) {
                     $licenceb[$j] = $row4['Matric'];
                 } else {

@@ -46,8 +46,8 @@
 								</td>
 								<td>
 									<a href="FeuilleGroups.php" target="_blank" title="{#Poules#}"><img height="25" src="../img/pdf.png" /></a>						
-									<a href="FeuillePresence.php" target="_blank" title="Feuilles de présence"><img height="25" src="../img/pdf2.png" /></a>						
-									<a href="FeuillePresenceEN.php" target="_blank" title="Presence sheets"><img height="25" src="../img/pdfEN.png" /></a>						
+									<a href="FeuillePresence.php" target="_blank" title="{#Feuilles_de_presence#} (FR)"><img height="25" src="../img/pdf2.png" /></a>						
+									<a href="FeuillePresenceEN.php" target="_blank" title="{#Feuilles_de_presence#} (EN)"><img height="25" src="../img/pdfEN.png" /></a>						
 									<a href="FeuillePresenceCat.php" target="_blank" title="{#Feuilles_de_presence_par_categorie#}"><img height="25" src="../img/pdf2.png" />Cat</a>						
 									<img class="cliquable" id="actuButton" title="{#Recharger#}" height="25" src="../img/glyphicons-82-refresh.png">
                                     {if $profile <= 4 && $Statut == 'ON'}
