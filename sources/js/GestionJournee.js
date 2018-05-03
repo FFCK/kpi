@@ -956,7 +956,12 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		//}
 	});
 	
-	
+	if(arrayCheck != '') {
+        arrayCheck = arrayCheck.split(',').forEach(function(item){
+            console.log(item);
+            jq('input[type="checkbox"][value="' + item + '"]').click();
+        });
+    }
 	
 
 });
