@@ -1229,17 +1229,18 @@ class GestionJournee extends MyPageSecure
 		$texte = '';
 		
 		// pour chaque match coché
-		for ($i=0;$i<count($arrayParam);$i++)
+		for ($i=0; $i<count($arrayParam); $i++)
 		{
 			$id = $arrayParam[$i];
-			$sql  = "Select m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, j.Code_competition, j.Code_saison ";
-			$sql .= "From gickp_Matchs m, gickp_Journees j ";
-			$sql .= "Where m.Id = ".$id." ";
-			$sql .= "AND m.Id_journee = j.Id ";
-			$sql .= "AND m.Validation <> 'O' "; 
-			$sql .= "AND (m.ScoreA = '' ";
-			$sql .= "OR m.ScoreA = '?' "; 
-			$sql .= "OR m.ScoreA IS NULL) "; 
+			$sql  = "Select m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, "
+                    . "m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, j.Code_saison "
+                    . "From gickp_Matchs m, gickp_Journees j "
+                    . "Where m.Id = ".$id." "
+                    . "AND m.Id_journee = j.Id "
+                    . "AND m.Validation <> 'O' "
+                    . "AND (m.ScoreA = '' "
+                    . "OR m.ScoreA = '?' "
+                    . "OR m.ScoreA IS NULL) "; 
 			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select : ".$sql);
 			if (mysql_num_rows($result) != 1)
 				die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
@@ -1259,9 +1260,20 @@ class GestionJournee extends MyPageSecure
 			// On sépare par tiret, slash, étoile, virgule ou point-virgule.
 			$libelle = preg_split("/[\-\/*,;]/",$libelle[0]);
 			// On analyse le contenu
-			for ($j=0;$j<4;$j++)
+			for ($j=0; $j<4; $j++)
 			{
-				$codeTirage = '';
+				// déjà un arbitre principal désigné nominativement
+                if($j == 2 && $row['Matric_arbitre_principal'] != 0) {
+                    $selectNom[2] = '';
+                    continue;
+                }
+				// déjà un arbitre secondaire désigné nominativement
+                if($j == 3 && $row['Matric_arbitre_secondaire'] != 0) {
+                    $selectNom[3] = '';
+                    continue;
+                }
+                
+                $codeTirage = '';
 				$codeVainqueur = '';
 				$codePerdant = '';
 				$codePoule = '';
@@ -1297,11 +1309,11 @@ class GestionJournee extends MyPageSecure
 				}
 				if($codeTirage != '')
 				{
-					$sql2  = "Select ce.Id, ce.Libelle Nom_equipe ";
-					$sql2 .= "From gickp_Competitions_Equipes ce ";
-					$sql2 .= "Where ce.Tirage = ".$codeNumero[1]." ";
-					$sql2 .= "AND ce.Code_compet = '".$row['Code_competition']."' ";
-					$sql2 .= "AND ce.Code_saison = ".$row['Code_saison']." ";
+					$sql2  = "Select ce.Id, ce.Libelle Nom_equipe "
+                            . "From gickp_Competitions_Equipes ce "
+                            . "Where ce.Tirage = ".$codeNumero[1]." "
+                            . "AND ce.Code_compet = '".$row['Code_competition']."' "
+                            . "AND ce.Code_saison = ".$row['Code_saison']." ";
 					$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Select 2a : ".$sql2);
 					if (mysql_num_rows($result2) != 1)
 					{
@@ -1320,15 +1332,15 @@ class GestionJournee extends MyPageSecure
 				}
 				elseif($codeVainqueur != '')
 				{
-					$sql2  = "Select m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB ";
-					$sql2 .= "From gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, gickp_Competitions_Equipes ce2 ";
-					$sql2 .= "Where m.Numero_ordre = ".$codeNumero[1]." ";
-					$sql2 .= "AND m.Id_journee = j.Id ";
-					$sql2 .= "AND m.Id_equipeA = ce.Id ";
-					$sql2 .= "AND m.Id_equipeB = ce2.Id ";
-					$sql2 .= "AND m.ScoreA <> m.ScoreB ";
-					$sql2 .= "AND j.Code_competition = '".$row['Code_competition']."' ";
-					$sql2 .= "AND j.Code_saison = ".$row['Code_saison']." ";
+					$sql2  = "Select m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB "
+                            . "From gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, gickp_Competitions_Equipes ce2 "
+                            . "Where m.Numero_ordre = ".$codeNumero[1]." "
+                            . "AND m.Id_journee = j.Id "
+                            . "AND m.Id_equipeA = ce.Id "
+                            . "AND m.Id_equipeB = ce2.Id "
+                            . "AND m.ScoreA <> m.ScoreB "
+                            . "AND j.Code_competition = '".$row['Code_competition']."' "
+                            . "AND j.Code_saison = ".$row['Code_saison']." ";
 					$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Select 2");
 					if (mysql_num_rows($result2) != 1)
 					{
@@ -1356,15 +1368,16 @@ class GestionJournee extends MyPageSecure
 				}
 				elseif($codePerdant != '')
 				{
-					$sql2  = "Select m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB ";
-					$sql2 .= "From gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, gickp_Competitions_Equipes ce2 ";
-					$sql2 .= "Where m.Numero_ordre = ".$codeNumero[1]." ";
-					$sql2 .= "AND m.Id_journee = j.Id ";
-					$sql2 .= "AND m.Id_equipeA = ce.Id ";
-					$sql2 .= "AND m.Id_equipeB = ce2.Id ";
-					$sql2 .= "AND m.ScoreA <> m.ScoreB ";
-					$sql2 .= "AND j.Code_competition = '".$row['Code_competition']."' ";
-					$sql2 .= "AND j.Code_saison = ".$row['Code_saison']." ";
+					$sql2  = "Select m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, "
+                            . "ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB "
+                            . "From gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, gickp_Competitions_Equipes ce2 "
+                            . "Where m.Numero_ordre = ".$codeNumero[1]." "
+                            . "AND m.Id_journee = j.Id "
+                            . "AND m.Id_equipeA = ce.Id "
+                            . "AND m.Id_equipeB = ce2.Id "
+                            . "AND m.ScoreA <> m.ScoreB "
+                            . "AND j.Code_competition = '".$row['Code_competition']."' "
+                            . "AND j.Code_saison = ".$row['Code_saison']." ";
 					$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Select 2");
 					if (mysql_num_rows($result2) != 1)
 					{
@@ -1392,22 +1405,22 @@ class GestionJournee extends MyPageSecure
 				}
 				elseif($codePoule != '')
 				{
-					$sql2  = "Select cej.Id, ce.Libelle Nom_equipe ";
-					$sql2 .= "From gickp_Competitions_Equipes_Journee cej, gickp_Journees j, gickp_Competitions_Equipes ce ";
-					$sql2 .= "Where cej.Clt = ".$codeNumero[1]." ";
-					$sql2 .= "AND cej.Id_journee = j.Id ";
-					$sql2 .= "AND cej.Id = ce.Id ";
-					$sql2 .= "AND (j.Phase LIKE '".$codePoule."' ";
-					$sql2 .= "OR j.Phase LIKE '%poule ".$codePoule."' ";
-					$sql2 .= "OR j.Phase LIKE '%Poule ".$codePoule."' ";
-					$sql2 .= "OR j.Phase LIKE '%Groupe ".$codePoule."' ";
-					$sql2 .= "OR j.Phase LIKE '%Group ".$codePoule."' ";
-					$sql2 .= "OR j.Phase LIKE '%poule ".$codePoule." %' ";
-					$sql2 .= "OR j.Phase LIKE '%Poule ".$codePoule." %' ";
-					$sql2 .= "OR j.Phase LIKE '%Groupe ".$codePoule." %' ";
-					$sql2 .= "OR j.Phase LIKE '%Group ".$codePoule." %') ";
-					$sql2 .= "AND j.Code_competition = '".$row['Code_competition']."' ";
-					$sql2 .= "AND j.Code_saison = ".$row['Code_saison']." ";
+					$sql2  = "Select cej.Id, ce.Libelle Nom_equipe "
+                            . "From gickp_Competitions_Equipes_Journee cej, gickp_Journees j, gickp_Competitions_Equipes ce "
+                            . "Where cej.Clt = ".$codeNumero[1]." "
+                            . "AND cej.Id_journee = j.Id "
+                            . "AND cej.Id = ce.Id "
+                            . "AND (j.Phase LIKE '".$codePoule."' "
+                            . "OR j.Phase LIKE '%poule ".$codePoule."' "
+                            . "OR j.Phase LIKE '%Poule ".$codePoule."' "
+                            . "OR j.Phase LIKE '%Groupe ".$codePoule."' "
+                            . "OR j.Phase LIKE '%Group ".$codePoule."' "
+                            . "OR j.Phase LIKE '%poule ".$codePoule." %' "
+                            . "OR j.Phase LIKE '%Poule ".$codePoule." %' "
+                            . "OR j.Phase LIKE '%Groupe ".$codePoule." %' "
+                            . "OR j.Phase LIKE '%Group ".$codePoule." %') "
+                            . "AND j.Code_competition = '".$row['Code_competition']."' "
+                            . "AND j.Code_saison = ".$row['Code_saison']." ";
 					$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Select 2 : ".$sql2);
 					if (mysql_num_rows($result2) != 1)
 					{
@@ -1456,6 +1469,7 @@ class GestionJournee extends MyPageSecure
 			//Journal
 			$myBdd->utyJournal('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], 'NULL', $row['Id_journee'], $id, '');
 		}
+        return implode(',', $arrayParam);
 	}
 
 	
@@ -1539,6 +1553,8 @@ class GestionJournee extends MyPageSecure
 		$ParamCmd = '';
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
+        
+//        $arrayCheck = '';
 
 		if (strlen($Cmd) > 0)
 		{
@@ -1575,8 +1591,14 @@ class GestionJournee extends MyPageSecure
 			if ($Cmd == 'VerrouPubliMultiMatchs')
 				($_SESSION['Profile'] <= 4) ? $this->VerrouPubliMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
-			if ($Cmd == 'AffectMultiMatchs')
-				($_SESSION['Profile'] <= 6) ? $this->AffectMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			if ($Cmd == 'AffectMultiMatchs') {
+				if($_SESSION['Profile'] <= 6) {
+                    $arrayCheck = $this->AffectMultiMatchs();
+                    $alertMessage = 'Affectation effectuée.';
+                } else { 
+                    $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                }
+            }
 
 			if ($Cmd == 'AnnulMultiMatchs')
 				($_SESSION['Profile'] <= 6) ? $this->AnnulMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
@@ -1584,13 +1606,13 @@ class GestionJournee extends MyPageSecure
 			if ($Cmd == 'ChangeMultiMatchs')
 				($_SESSION['Profile'] <= 6) ? $this->ChangeMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
-			if ($alertMessage == '')
-			{
+            
+			if ($alertMessage == '') {
 				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
 			}
 		}
-	
+        
 		if ($ParamCmd == 'changeCompet')
 			$_SESSION['idMatch'] = -1; // La Combo Compétition a changé => Plus aucun match n'est sélectionné ...
 		
@@ -1614,6 +1636,8 @@ class GestionJournee extends MyPageSecure
 		$this->m_tpl->assign('arbitre2_matric', utyGetSession('arbitre2_matric', ''));
 		$this->m_tpl->assign('coeffA', utyGetSession('coeffA', 1));
 		$this->m_tpl->assign('coeffB', utyGetSession('coeffB', 1));
+        
+		$this->m_tpl->assign('arrayCheck', $arrayCheck);
 		
 		$this->DisplayTemplate('GestionJournee');
 	}
