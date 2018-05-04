@@ -1,4 +1,4 @@
-		&nbsp;(<a href="Admin.php">Retour</a>)
+		&nbsp;(<a href="GestionCompetition.php">Retour</a>)
 		<iframe name="SelectionOuiNon" id="SelectionOuiNon" SRC="SelectionOuiNon.php" width="300" height="120" FRAMEBORDER="yes"></iframe>
 		<div class="main">
 			<form method="POST" action="GestionCompetition2.php" name="formCompet" enctype="multipart/form-data">

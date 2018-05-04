@@ -1,4 +1,4 @@
-		&nbsp;(<a href="Admin.php">{#Retour#}</a>)
+		&nbsp;(<a href="GestionCompetition.php">{#Retour#}</a>)
 	
 		<div class="main">
 					

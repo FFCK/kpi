@@ -1,4 +1,4 @@
-    &nbsp;(<a href="Admin.php">{#Retour#}</a>)
+    &nbsp;(<a href="GestionCompetition.php">{#Retour#}</a>)
 	<div class="main">
 		<form method="POST" action="GestionStats.php" name="formStats" enctype="multipart/form-data">
 			<input type='hidden' name='Cmd' Value=''/>
