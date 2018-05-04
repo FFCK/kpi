@@ -72,7 +72,7 @@ class PdfListeMatchs extends MyPage
 		$orderMatchs = utyGetSession('orderMatchs', 'Order By a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $titreEvenementCompet = '';
 
-        if($idEvenement !== -1) {
+        if($idEvenement != -1) {
 			$lstJournee = [];
 			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$idEvenement;
 			$result = $myBdd->Query($sql);
@@ -81,6 +81,7 @@ class PdfListeMatchs extends MyPage
 			}
             $lstJournee = implode(',', $lstJournee);
             $where = "Where a.Id_journee In ($lstJournee) ";
+//            echo $where . ' !<br>';
 		} elseif($laCompet !== 0 && $laCompet !== '*') {
 			$lstJournee = 0;
 			$idEvenement = -1;
