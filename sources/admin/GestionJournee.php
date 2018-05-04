@@ -472,9 +472,12 @@ class GestionJournee extends MyPageSecure
                 }
 				if($filtreJour == '' || $jour == $filtreJour)
 				{
-					if ($row['Libelle'] != '')
-					{
-						$EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
+                    if ($row['Libelle'] != '') {
+                        if(utyGetSession('lang') == 'en') {
+                            $EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
+                        } else {
+                            $EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
+                        }
 					}
 
 					if (($row['EquipeA'] == '') && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '')
@@ -1594,7 +1597,7 @@ class GestionJournee extends MyPageSecure
 			if ($Cmd == 'AffectMultiMatchs') {
 				if($_SESSION['Profile'] <= 6) {
                     $arrayCheck = $this->AffectMultiMatchs();
-                    $alertMessage = 'Affectation effectuée.';
+                    $alertMessage = $lang['Affectation'] . ' OK';
                 } else { 
                     $alertMessage = 'Vous n avez pas les droits pour cette action.';
                 }

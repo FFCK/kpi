@@ -200,7 +200,7 @@ class FeuillePresence extends MyPage {
             $pdf->Cell(137, 8, $titreCompet, 0, 0, 'L');
             $pdf->Cell(136, 8, 'Season ' . $codeSaison, 0, 1, 'R');
             $pdf->SetFont('Arial', 'B', 14);
-            $pdf->Cell(273, 8, "Team rosters - " . $row['Libelle'], 0, 1, 'C');
+            $pdf->Cell(273, 8, "Team roster - " . $row['Libelle'], 0, 1, 'C');
             $pdf->Ln(10);
 
             $idEquipe = $row['Id'];
@@ -215,7 +215,7 @@ class FeuillePresence extends MyPage {
             $pdf->Cell(18, 8, 'Cat.', 'B', 0, 'C');
             $pdf->Cell(25, 8, 'Club/Nation', 'B', 0, 'C');
             $pdf->Cell(28, 8, 'ICF #', 'B', 0, 'C');
-            $pdf->Cell(20, 8, 'Arb.', 'B', 1, 'C');
+            $pdf->Cell(20, 8, 'Ref.', 'B', 1, 'C');
             $pdf->SetFont('Arial', '', 10);
 
             // Mini 12 lignes par équipe

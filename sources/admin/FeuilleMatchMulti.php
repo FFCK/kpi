@@ -50,7 +50,7 @@ class FeuilleMatch extends MyPage {
         //Création du PDF de base
         $pdf = new PDF('L');
         $pdf->Open();
-        $pdf->SetTitle("Feuille de Marque");
+        $pdf->SetTitle($lang['Feuille_de_marque']);
 
         $pdf->SetAuthor("FFCK - Kayak-polo.info");
         $pdf->SetCreator("FFCK - Kayak-polo.info avec FPDF");
