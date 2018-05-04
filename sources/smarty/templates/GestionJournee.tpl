@@ -344,7 +344,7 @@
 							<tbody>
 								{section name=i loop=$arrayMatchs}
 									<tr class='{cycle values="impair,pair"} {$arrayMatchs[i].StdOrSelected}'>
-										<td><input type="checkbox" name="checkMatch" value="{$arrayMatchs[i].Id}" id="checkDelete{$smarty.section.i.iteration}" {if $arrayMatchs[i].Id|in_array:$arrayChecked}checked{/if} /></td>
+										<td><input type="checkbox" name="checkMatch" value="{$arrayMatchs[i].Id}" id="checkDelete{$smarty.section.i.iteration}"></td>
 										{if $arrayMatchs[i].MatchAutorisation == 'O' && $profile <= 6 && $AuthModif == 'O'}
 											<td class='color{$arrayMatchs[i].Publication}2'>
 												<img class="publiMatch" data-valeur="{$arrayMatchs[i].Publication}" data-id="{$arrayMatchs[i].Id}" height="25" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" title="{if $arrayMatchs[i].Publication == 'O'}{#Public#}{else}{#Prive#}{/if}" />

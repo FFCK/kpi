@@ -698,6 +698,10 @@ stop_time: <span id="stop_time_display"></span><br />
                             </div>";
                     }
                     ?>
+                    <div class='motifCarton fm_bouton' data-motif='unknown' data-texte='<?= $lang['unknown'] ?>'>
+                        <img src='../img/referees/unknown.png'>
+                        <br><?= $lang['unknown'] ?>
+                    </div>
                     <input type="hidden" id="motif" value="">
                     <input type="hidden" id="motif_texte" value="">
             </div>
