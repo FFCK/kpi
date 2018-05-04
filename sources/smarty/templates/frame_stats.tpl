@@ -7,7 +7,7 @@
 <div class="container">
     <article class="padTopBottom table-responsive col-md-8 col-md-offset-2 tableClassement">
         <h4>{#Meilleurs_buteurs#}</h4>
-        <table class='tableau' id='tableStats'>
+        <table class='table' id='tableStats'>
             <thead>
                 <tr class='header'>
                         <th></th>
@@ -23,13 +23,13 @@
             <tbody>
                 {section name=i loop=$arrayButeurs}
                     <tr class='{cycle values="impair,pair"}'>
-                        <td>{$smarty.section.i.iteration}</td>
+                        <td class="centre">{$smarty.section.i.iteration}</td>
                         <td>{$arrayButeurs[i].Nom}</td>
                         <td>{$arrayButeurs[i].Prenom}</td>
-                        <td>{$arrayButeurs[i].Sexe}</td>
-                        <td>{$arrayButeurs[i].Numero}</td>
-                        <td>{$arrayButeurs[i].Equipe}</td>
-                        <td>{$arrayButeurs[i].Buts}</td>
+                        <td class="centre">{$arrayButeurs[i].Sexe}</td>
+                        <td class="centre">{$arrayButeurs[i].Numero}</td>
+                        <td class="centre">{$arrayButeurs[i].Equipe}</td>
+                        <td class="centre">{$arrayButeurs[i].Buts}</td>
                     </tr>
                 {/section}
 {*                    <tr class='{cycle values="impair,pair"}'>
