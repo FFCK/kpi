@@ -11,8 +11,8 @@ $sql .= "FROM `gickp_Journees` ";
 $sql .= "WHERE 1 ";
 $sql .= "AND Code_saison = $saison ";
 $sql .= "AND Date_debut > CURDATE() ";
-$sql .= "AND DATEDIFF(Date_debut, CURDATE()) < 6 ; ";
-//$sql .= "AND (Code_competition LIKE 'N%' OR Code_competition LIKE 'CF%') ";
+$sql .= "AND DATEDIFF(Date_debut, CURDATE()) < 6 ";
+$sql .= "AND (Code_competition LIKE 'N%' OR Code_competition LIKE 'CF%') ";
 $result = $myBdd->Query($sql);
 while ($row = $myBdd->FetchArray($result, $resulttype = MYSQL_ASSOC)) {
     if (isset($codeCompet)) {
@@ -30,8 +30,8 @@ $sql .= "FROM `gickp_Journees` ";
 $sql .= "WHERE 1 ";
 $sql .= "AND Code_saison = $saison ";
 $sql .= "AND Date_fin < CURDATE() ";
-$sql .= "AND DATEDIFF(CURDATE(), Date_fin) < 3 ; ";
-//$sql .= "AND (Code_competition LIKE 'N%' OR Code_competition LIKE 'CF%') ";
+$sql .= "AND DATEDIFF(CURDATE(), Date_fin) < 3 ";
+$sql .= "AND (Code_competition LIKE 'N%' OR Code_competition LIKE 'CF%') ";
 $result = $myBdd->Query($sql);
 while ($row = $myBdd->FetchArray($result, $resulttype = MYSQL_ASSOC)) {
     if (isset($codeCompet2)) {
