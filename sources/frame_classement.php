@@ -72,13 +72,14 @@ class Classement extends MyPage
 				if (strlen($row['Code_comite_dep']) > 3) {
                     $row['Code_comite_dep'] = 'FRA';
                 }
-                array_push($arrayEquipe_publi, array( 'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
-																        'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'], 
-																        'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'], 
-																        'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'], 
-																        'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
-																        'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'], 
-                                                                        'logo' => $logo, 'club' => $club ));
+                array_push($arrayEquipe_publi, array( 'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 
+                    'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
+                    'Clt_publi' => $row['Clt_publi'], 'Pts_publi' => $row['Pts_publi'], 
+                    'J_publi' => $row['J_publi'], 'G_publi' => $row['G_publi'], 'N_publi' => $row['N_publi'], 
+                    'P_publi' => $row['P_publi'], 'F_publi' => $row['F_publi'], 'Plus_publi' => $row['Plus_publi'], 
+                    'Moins_publi' => $row['Moins_publi'], 'Diff_publi' => $row['Diff_publi'],
+                    'PtsNiveau_publi' => $row['PtsNiveau_publi'], 'CltNiveau_publi' => $row['CltNiveau_publi'], 
+                    'logo' => $logo, 'club' => $club ));
 				if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0)) {
 					$recordCompetition['Qualifies']	= 0;
 					$recordCompetition['Elimines'] = 0;
