@@ -98,6 +98,7 @@ class Event extends MyPage
 		
 		<button id='btn_go'>Lancer la génération</button>
 		<br>
+		<br>
 
 		<div id='info'></div>
 
