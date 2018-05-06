@@ -82,6 +82,10 @@ class CacheMatch
             if(isset($error)) {
                 echo $error;
             }
+//            else
+//            {
+//                echo '*';
+//            }
 /*
 			if ($this->m_bFTP)
 			{
@@ -104,16 +108,17 @@ class CacheMatch
 	
 	function Pitch($idEvent, $pitch, $idMatch)
 	{
-		$this->StartCache();
-
 		$arrayCache = array('id_match' => $idMatch, 'pitch' => $pitch);
+        
+        //Nouveau format
+		$this->StartCache();
 		echo json_encode($arrayCache);
 		$this->EndCache('event'.$idEvent.'_pitch'.$pitch.'.json');
+        
+        // Ancien format
+		$this->StartCache();
 		echo json_encode($arrayCache);
 		$this->EndCache($pitch.'_terrain.json');
-
-//		$db = new myBase();
-//		$this->Match($db, $idMatch);
 	}
 
 	function Match(&$db, $idMatch)
@@ -276,12 +281,12 @@ class CacheMatch
 	function Event(&$db, $idEvent, $dateMatch, $hourMatch, $arrayPitchs=null)
 	{
 		// Chargement de tous les Matchs de l'évenement pour la date indiquée et les terrains concernés ...
-		$cmd  = "SELECT a.* ";
-		$cmd .= "FROM gickp_Matchs a, gickp_Journees b, gickp_Evenement_Journees c ";
-		$cmd .= "WHERE a.Id_journee = b.Id ";
-		$cmd .= "And b.Id = c.Id_journee ";
-		$cmd .= "And c.Id_evenement = $idEvent ";
-		$cmd .= "And a.Date_match = '$dateMatch' ";
+		$cmd  = "SELECT a.* "
+                . "FROM gickp_Matchs a, gickp_Journees b, gickp_Evenement_Journees c "
+                . "WHERE a.Id_journee = b.Id "
+                . "And b.Id = c.Id_journee "
+                . "And c.Id_evenement = $idEvent "
+                . "And a.Date_match = '$dateMatch' ";
 
 		if ($arrayPitchs != null)
 		{
@@ -300,32 +305,34 @@ class CacheMatch
 		
 		// Prise des Terrains ...
 		$arrayPitch = array();
-		for ($i=0;$i<count($tMatchs);$i++)
+		foreach ($tMatchs as $tMatch)
 		{
-			$pitch = $tMatchs[$i]['Terrain'];
-			$bNew = true;
-			for ($j=0;$j<count($arrayPitch);$j++)
-			{
-				if ($arrayPitch[$j] == $pitch)
-				{
-					$bNew = false;
-					break;
-				}
-			}
-			if ($bNew) 
-				array_push($arrayPitch, $pitch);
+			$pitch = $tMatch['Terrain'];
+//			$bNew = true;
+//			for ($j=0;$j<count($arrayPitch);$j++)
+//			{
+//				if ($arrayPitch[$j] == $pitch)
+//				{
+//					$bNew = false;
+//					break;
+//				}
+//			}
+//			if ($bNew) 
+            array_push($arrayPitch, $pitch);
 		}
-		
+        $arrayPitch = array_unique($arrayPitch);
+//        var_dump($arrayPitch);
 		
 		
 		// Génération des fichiers 
 		$time = utyHHMM_To_MM($hourMatch);
-		for ($i=0;$i<count($arrayPitch);$i++)
+		foreach ($arrayPitch as $pitch)
 		{
-			$idMatch = $this->GetBestMatch($tMatchs, $arrayPitch[$i], $time);
+			$idMatch = $this->GetBestMatch($tMatchs, $pitch, $time);
 			if ($idMatch >= 0)
 			{
-				$this->Pitch($idEvent, $arrayPitch[$i], $idMatch);
+				$this->Pitch($idEvent, $pitch, $idMatch);
+                echo 'Terrain ' . $pitch . ' - Match ' . $idMatch . '<br>';
 			}
 		}
 	}

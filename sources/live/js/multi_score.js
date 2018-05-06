@@ -238,7 +238,7 @@ function ParseCacheGlobal(jsonTxt)
     
     $('#lien_pdf_'+idMulti).html('<a href="../PdfMatchMulti.php?listMatch=' 
             + jsonData.id_match 
-            + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>');
+            + '" target="_blank" class="btn btn-primary">Game report <span class="badge">#' + jsonData.numero_ordre + '</span></a>');
     $('#terrain_'+idMulti).html('Pitch ' + jsonData.terrain);
 	
 }
