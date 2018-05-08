@@ -104,6 +104,17 @@ class Stats extends MyPage
 		
 		$this->SetTemplate("Stats", "Classements", true);
 		$this->Load();
+        
+		// COSANDCO : Gestion Param Voie ...
+		if (isset($_GET['voie']))
+		{
+			$voie = (int) $_GET['voie'];
+			if ($voie > 0)
+			{
+                $this->m_tpl->assign('voie', $voie);
+			}
+		}        
+
 		$this->DisplayTemplateFrame('frame_stats');
 	}
 }		  	

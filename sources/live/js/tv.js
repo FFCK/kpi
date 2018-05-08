@@ -138,6 +138,14 @@ function Next_scenario()
 	ChangeVoie(voie, theContext.scenario_url);
 }
 
+function RefreshScenario()
+{
+	++theContext.scenario_duree;
+	$("#tv_message").html("<b>Scenario en cours : "+theContext.scenario_url+" => "+theContext.scenario_duree+"/"+theContext.scenario_duree_max+"sec</b>");
+	if (theContext.scenario_duree > theContext.scenario_duree_max)
+		Next_scenario();
+}
+
 function Go_url_splitter()
 {
 	var url = '/live/splitter.php';
@@ -166,13 +174,6 @@ function Go_url_splitter()
 	$("#tv_message").html("<b>URL progression : "+url);
 }
 
-function RefreshScenario()
-{
-	++theContext.scenario_duree;
-	$("#tv_message").html("<b>Scenario en cours : "+theContext.scenario_url+" => "+theContext.scenario_duree+"/"+theContext.scenario_duree_max+"sec</b>");
-	if (theContext.scenario_duree > theContext.scenario_duree_max)
-		Next_scenario();
-}
 
 function Init(voie)
 {

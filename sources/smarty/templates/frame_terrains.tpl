@@ -354,7 +354,7 @@
 {sectionelse}
     <div class="container-fluid" id="containor">
         <article class="table-responsive col-md-12 padTopBottom">
-            Aucun match à afficher
+            {#Aucun_match#}
         </article>
     </div>
 {/section}
