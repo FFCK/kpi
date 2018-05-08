@@ -35,7 +35,7 @@ function RefreshVoie()
 	});
 }
 	
-function ChangeVoie(voie, url)
+function ChangeVoie(voie, url, showUrl=0)
 {
 	url = url.replace("?", "|QU|");
 	for (;;)
@@ -49,10 +49,14 @@ function ChangeVoie(voie, url)
 	param  = "voie="+voie;
 	param += "&url="+url;
 
-//    alert("ajax_change_voie.php?"+param);
-    $.ajax({ type: "GET", url: "ajax_change_voie.php", dataType: "html", data: param, cache: false, 
-                success: function(htmlData) {
-						$("#tv_message").html(htmlData);
-				}
-	});
+    if(showUrl > 0){
+        param = param.replace('&voie=', '&v=');
+        jq('#showUrl' + showUrl).val('live/tv2.php?' + param);
+    } else {
+        $.ajax({ type: "GET", url: "ajax_change_voie.php", dataType: "html", data: param, cache: false, 
+                    success: function(htmlData) {
+                            $("#tv_message").html(htmlData);
+                    }
+        });
+    }
 }

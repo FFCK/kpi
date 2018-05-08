@@ -16,7 +16,12 @@ class Tv extends MyPage
 		$codeEvt = utyGetPost('codeEvt', $codeEvt);
         $_SESSION['codeEvt'] = $codeEvt;
         $this->m_tpl->assign('codeEvt', $codeEvt);
-		
+
+		$filtrePres = utyGetSession('filtrePres', '');
+		$filtrePres = utyGetPost('filtrePres', $filtrePres);
+        $_SESSION['filtrePres'] = $filtrePres;
+        $this->m_tpl->assign('filtrePres', $filtrePres);
+        		
 		$filtreCompet = utyGetSession('filtreCompet', '');
 		$filtreCompet = utyGetPost('filtreCompet', $filtreCompet);
         $_SESSION['filtreCompet'] = $filtreCompet;
@@ -27,16 +32,77 @@ class Tv extends MyPage
         $_SESSION['filtreChannel'] = $filtreChannel;
         $this->m_tpl->assign('filtreChannel', $filtreChannel);
 		
-		$filtrePres = utyGetSession('filtrePres', '');
-		$filtrePres = utyGetPost('filtrePres', $filtrePres);
-        $_SESSION['filtrePres'] = $filtrePres;
-        $this->m_tpl->assign('filtrePres', $filtrePres);
+		$filtreMatch = utyGetSession('filtreMatch', '');
+		$filtreMatch = utyGetPost('filtreMatch', $filtreMatch);
+        $_SESSION['filtreMatch'] = $filtreMatch;
+        $this->m_tpl->assign('filtreMatch', $filtreMatch);
+		
+		$filtrePres2 = utyGetSession('filtrePres2', '');
+		$filtrePres2 = utyGetPost('filtrePres2', $filtrePres2);
+        $_SESSION['filtrePres2'] = $filtrePres2;
+        $this->m_tpl->assign('filtrePres2', $filtrePres2);
         
+		$filtreCompet2 = utyGetSession('filtreCompet2', '');
+		$filtreCompet2 = utyGetPost('filtreCompet2', $filtreCompet2);
+        $_SESSION['filtreCompet2'] = $filtreCompet2;
+        $this->m_tpl->assign('filtreCompet2', $filtreCompet2);
+		
+		$filtreChannel2 = utyGetSession('filtreChannel2', '');
+		$filtreChannel2 = utyGetPost('filtreChannel2', $filtreChannel2);
+        $_SESSION['filtreChannel2'] = $filtreChannel2;
+        $this->m_tpl->assign('filtreChannel2', $filtreChannel2);
+		
+		$filtreMatch2 = utyGetSession('filtreMatch2', '');
+		$filtreMatch2 = utyGetPost('filtreMatch2', $filtreMatch2);
+        $_SESSION['filtreMatch2'] = $filtreMatch2;
+        $this->m_tpl->assign('filtreMatch2', $filtreMatch2);
+		
+		$filtrePres3 = utyGetSession('filtrePres3', '');
+		$filtrePres3 = utyGetPost('filtrePres3', $filtrePres3);
+        $_SESSION['filtrePres3'] = $filtrePres3;
+        $this->m_tpl->assign('filtrePres3', $filtrePres3);
+        
+		$filtreCompet3 = utyGetSession('filtreCompet3', '');
+		$filtreCompet3 = utyGetPost('filtreCompet3', $filtreCompet3);
+        $_SESSION['filtreCompet3'] = $filtreCompet3;
+        $this->m_tpl->assign('filtreCompet3', $filtreCompet3);
+		
+		$filtreChannel3 = utyGetSession('filtreChannel3', '');
+		$filtreChannel3 = utyGetPost('filtreChannel3', $filtreChannel3);
+        $_SESSION['filtreChannel3'] = $filtreChannel3;
+        $this->m_tpl->assign('filtreChannel3', $filtreChannel3);
+		
+		$filtreMatch3 = utyGetSession('filtreMatch3', '');
+		$filtreMatch3 = utyGetPost('filtreMatch3', $filtreMatch3);
+        $_SESSION['filtreMatch3'] = $filtreMatch3;
+        $this->m_tpl->assign('filtreMatch3', $filtreMatch3);
+		
+		$filtrePres4 = utyGetSession('filtrePres4', '');
+		$filtrePres4 = utyGetPost('filtrePres4', $filtrePres4);
+        $_SESSION['filtrePres4'] = $filtrePres4;
+        $this->m_tpl->assign('filtrePres4', $filtrePres4);
+        
+		$filtreCompet4 = utyGetSession('filtreCompet4', '');
+		$filtreCompet4 = utyGetPost('filtreCompet4', $filtreCompet4);
+        $_SESSION['filtreCompet4'] = $filtreCompet4;
+        $this->m_tpl->assign('filtreCompet4', $filtreCompet4);
+		
+		$filtreChannel4 = utyGetSession('filtreChannel4', '');
+		$filtreChannel4 = utyGetPost('filtreChannel4', $filtreChannel4);
+        $_SESSION['filtreChannel4'] = $filtreChannel4;
+        $this->m_tpl->assign('filtreChannel4', $filtreChannel4);
+		
+		$filtreMatch4 = utyGetSession('filtreMatch4', '');
+		$filtreMatch4 = utyGetPost('filtreMatch4', $filtreMatch4);
+        $_SESSION['filtreMatch4'] = $filtreMatch4;
+        $this->m_tpl->assign('filtreMatch4', $filtreMatch4);
+		
 		$jour = utyGetSession('jour', '');
 		$jour = utyGetPost('jour', $jour);
         $_SESSION['jour'] = $jour;
         $this->m_tpl->assign('jour', $jour);
         
+        // Evts
         $sql  = "SELECT * "
             . "FROM gickp_Evenement "
             . "WHERE Publication = 'O' "
@@ -53,6 +119,7 @@ class Tv extends MyPage
         }
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
         
+        // Matchs
         $sql  = "SELECT m.*, j.Code_competition, j.Code_saison, j.Phase, "
                 . "ce1.Libelle equipeA, ce2.Libelle equipeB "
                 . "FROM gickp_Evenement_Journees evt, gickp_Journees j, gickp_Matchs m "
@@ -63,6 +130,9 @@ class Tv extends MyPage
                 . "AND j.Id = m.Id_journee "
                 . "ORDER BY Date_match, Heure_match, Numero_ordre ";
         $arrayMatchs = array();
+        $arrayMatchs2 = array();
+        $arrayMatchs3 = array();
+        $arrayMatchs4 = array();
         $result = $myBdd->Query($sql);
         while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
             $arrayCompet[] = $row['Code_competition'];
@@ -73,10 +143,25 @@ class Tv extends MyPage
                     && ($row['Code_competition'] == $filtreCompet || $filtreCompet == '') ) {
                 array_push($arrayMatchs, $row);
             }
+            if( ($row['Date_match'] == $jour || $jour == '')
+                    && ($row['Code_competition'] == $filtreCompet2 || $filtreCompet2 == '') ) {
+                array_push($arrayMatchs2, $row);
+            }
+            if( ($row['Date_match'] == $jour || $jour == '')
+                    && ($row['Code_competition'] == $filtreCompet3 || $filtreCompet3 == '') ) {
+                array_push($arrayMatchs3, $row);
+            }
+            if( ($row['Date_match'] == $jour || $jour == '')
+                    && ($row['Code_competition'] == $filtreCompet4 || $filtreCompet4 == '') ) {
+                array_push($arrayMatchs4, $row);
+            }
             
         }
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
         $this->m_tpl->assign('arrayMatchs', $arrayMatchs);
+        $this->m_tpl->assign('arrayMatchs2', $arrayMatchs2);
+        $this->m_tpl->assign('arrayMatchs3', $arrayMatchs3);
+        $this->m_tpl->assign('arrayMatchs4', $arrayMatchs4);
         $this->m_tpl->assign('saison', $saison);
         if(is_array($arrayCompet)) {
             $arrayCompet = array_keys(array_flip($arrayCompet));
