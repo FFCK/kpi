@@ -173,7 +173,17 @@ class Classement extends MyPage
 		
 		$this->SetTemplate("Classement", "Classements", true);
 		$this->Load();
-//		$this->m_tpl->assign('AlertMessage', $alertMessage);
+        
+		// COSANDCO : Gestion Param Voie ...
+		if (isset($_GET['voie']))
+		{
+			$voie = (int) $_GET['voie'];
+			if ($voie > 0)
+			{
+                $this->m_tpl->assign('voie', $voie);
+			}
+		}        
+
 		$this->DisplayTemplateFrame('frame_classement');
 	}
 }		  	

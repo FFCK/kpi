@@ -32,44 +32,11 @@
                         <td class="centre">{$arrayButeurs[i].Buts}</td>
                     </tr>
                 {/section}
-{*                    <tr class='{cycle values="impair,pair"}'>
-                        <td>1</td>
-                        <td>VIGNET</td>
-                        <td>ERIC</td>
-                        <td>M</td>
-                        <td>Women</td>
-                        <td>PC Course</td>
-                        <td>5</td>
-                    </tr>
-                    <tr class='{cycle values="impair,pair"}'>
-                        <td>2</td>
-                        <td>SAINTE-MARTINE</td>
-                        <td>DENIS</td>
-                        <td>M</td>
-                        <td>U21 Men</td>
-                        <td>PC Course</td>
-                        <td>2</td>
-                    </tr>
-                    <tr class='{cycle values="impair,pair"}'>
-                        <td>3</td>
-                        <td>GARRIGUE</td>
-                        <td>NATHAN</td>
-                        <td>M</td>
-                        <td>U21 Women</td>
-                        <td>PC Course</td>
-                        <td>2</td>
-                    </tr>
-                    <tr class='{cycle values="impair,pair"}'>
-                        <td>4</td>
-                        <td>GARRIGUE</td>
-                        <td>LAURENT</td>
-                        <td>M</td>
-                        <td>DEV</td>
-                        <td>PC Course</td>
-                        <td>1</td>
-                    </tr>
-*}                    
             </tbody>
         </table>
     </article>
 </div>
+{if $voie}
+    <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
+    <script type="text/javascript">SetVoie({$voie});</script>
+{/if}

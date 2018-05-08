@@ -240,10 +240,10 @@ class Classement extends MyPage
 	function Classement()
 	{			
         MyPage::MyPage();
-        
 
 		$this->SetTemplate("Classement", "Classements", true);
 		$this->Load();
+        
 		// COSANDCO : Gestion Param Voie ...
 		if (isset($_GET['voie']))
 		{
@@ -253,8 +253,8 @@ class Classement extends MyPage
                 $this->m_tpl->assign('voie', $voie);
 			}
 		}        
-//		$this->m_tpl->assign('AlertMessage', $alertMessage);
-		$this->DisplayTemplateFrame('frame_phases');
+
+        $this->DisplayTemplateFrame('frame_phases');
 	}
 }		  	
 
