@@ -37,21 +37,20 @@ function RefreshVoie()
 	
 function ChangeVoie(voie, url, showUrl=0)
 {
-	url = url.replace("?", "|QU|");
+	url2 = url.replace("?", "|QU|");
 	for (;;)
 	{
-		var url2 = url.replace("&", "|AM|");
-		if (url2 == url) break;
-		url = url2;
+		var url3 = url2.replace("&", "|AM|");
+		if (url3 == url2) break;
+		url2 = url3;
 	}
 
 	var param;
 	param  = "voie="+voie;
-	param += "&url="+url;
+	param += "&url="+url2;
 
     if(showUrl > 0){
-        param = param.replace('&voie=', '&v=');
-        jq('#showUrl' + showUrl).val('live/tv2.php?' + param);
+        jq('#showUrl' + showUrl).val(url + "&voie="+voie);
     } else {
         jq.ajax({ type: "GET", url: "./live/ajax_change_voie.php", dataType: "html", data: param, cache: false, 
                     success: function(htmlData) {
