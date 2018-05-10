@@ -859,7 +859,6 @@ function Go_raz()
 function Go(param, showUrl=0)
 {
     if(showUrl > 0){
-        param = param.replace('&voie=', '&v=');
         jq('#showUrl' + showUrl).val('live/tv2.php?' + param);
     } else {
         jq.ajax({   type: "GET", 

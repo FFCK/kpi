@@ -684,6 +684,11 @@
         <a id="event_params" class="btn btn-default" href="live/event.php" target="_blank">
             {#Evenements#}
         </a>
+        &nbsp;
+        <a id="scenario_params" class="btn btn-default" href="live/scenario.php" target="_blank">
+            Scenario
+        </a>
+        
     </article>
 </div>
 
