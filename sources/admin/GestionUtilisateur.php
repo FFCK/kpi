@@ -662,7 +662,7 @@ class GestionUtilisateur extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Gestion des Utilisateurs", "Utilisateurs", false);
+		$this->SetTemplate("Gestion_des_utilisateurs", "Utilisateurs", false);
 		$this->Load($selectUser);
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionUtilisateur');
