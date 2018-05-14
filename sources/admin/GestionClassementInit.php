@@ -73,14 +73,12 @@ class GestionClassementInit extends MyPageSecure
 		
 	function GestionClassementInit()
 	{			
-		MyPageSecure::MyPageSecure(10);
+		MyPageSecure::MyPageSecure(4);
 		
-		$this->SetTemplate("Initialisation des Classements", "Classements", false);
+		$this->SetTemplate("Classement_initial", "Classements", false);
 		$this->Load();
 		$this->DisplayTemplate('GestionClassementInit');
 	}
 }		  	
 
 $page = new GestionClassementInit();
-
-?>

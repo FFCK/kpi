@@ -494,7 +494,7 @@
 							</tr>
 						</table>
 					{/if}
-					{if $profile <= 4}
+					{if $profile <= 3}
 					<br>
 					<table width="100%">
 						<tr>
@@ -696,31 +696,35 @@
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
-								<label>Verrou saisons précédentes</label>
+								<label>{#Verrou_saisons_precedentes#}</label>
 							</th>
 						</tr>
 						<tr>
 							<td colspan=2 align="center">
-								<label for="AuthSaison">Verrou</label>
-								{if $AuthSaison == 'O'}<b><i>INACTIF</i></b>
-								{else}<b>ACTIF</b>
+								{if $AuthSaison == 'O'}
+                                    <h2><i>{#Ouvert#}</i></h2>
+								{else}
+                                    <h2>{#Verrouille#}</h2>
 								{/if}
 							</td>
 						</tr>
-						{if $profile <= 2}
-						<tr>
-							<td>
-								<input type="button" name="ChangeAuthSaison" id="ChangeAuthSaison" onclick="changeAuthSaison()" value="Changer">
-							</td>
-						</tr>
-						{/if}
-						<tr>
+						{*<tr>
 							<td colspan=2 align="center">
-								{if $AuthModif == 'O'}<b><i>Compétitions déverrouillées.</i></b>
-								{else}<b>Par mesure de sécurité, les compétitions des saisons précédentes sont verrouillées.</b>
+								{if $AuthModif == 'O'}
+                                    <b><i>Compétitions déverrouillées.</i></b>
+								{else}
+                                    <b>Par mesure de sécurité, les compétitions des saisons précédentes sont verrouillées.</b>
 								{/if}
 							</td>
-						</tr>
+						</tr>*}
+                        {if $profile <= 2}
+                            <tr>
+                                <td>
+                                    <input type="button" name="ChangeAuthSaison" id="ChangeAuthSaison" onclick="changeAuthSaison()" value="{#Changer#}">
+                                </td>
+                            </tr>
+						{/if}
+						
 					</table>
 					<br>
 					{/if}
