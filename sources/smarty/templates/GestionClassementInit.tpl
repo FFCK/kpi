@@ -1,4 +1,4 @@
- 	 	&nbsp;(<a href="GestionClassement.php">Retour</a>)
+ 	 	&nbsp;(<a href="GestionClassement.php">{#Retour#}</a>)
 	
 		<div class="main">
 					
@@ -10,24 +10,24 @@
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
 
 				<div class='blocLeft'>
-					<div class='titrePage'>Classement initial {$codeCompet}</div>
-					<button id='actuButton' type="button" ><img src="../img/actualiser.gif">Recharger</button>
-					<input type='button' id='raz' value='Remise à zéro'>
+					<div class='titrePage'>{#Classement_initial#} {$codeCompet}</div>
+					<button id='actuButton' type="button" ><img src="../img/actualiser.gif">{#Recharger#}</button>
+					<input type='button' id='raz' value='{#Remise_a_zero#}'>
 					<div class='blocTable'>
 						<table id='tableauJQ' class='tableau'>
 							<thead>
 								<tr class='header'>
-									<th>Clt</th>
-									<th>Libelle</th>
-									<th>Pts</th>
-									<th>J</th>
-									<th>G</th>
-									<th>N</th>
-									<th>P</th>
-									<th>F</th>
-									<th>Plus</th>
-									<th>Moins</th>
-									<th>Diff</th>
+									<th>{#Clt#}</th>
+									<th>{#Equipe#}</th>
+									<th>{#Pts#}</th>
+									<th>{#J#}</th>
+									<th>{#G#}</th>
+									<th>{#N#}</th>
+									<th>{#P#}</th>
+									<th>{#F#}</th>
+									<th>+</th>
+									<th>-</th>
+									<th>{#Diff#}</th>
 								</tr>
 							</thead>
 							<tbody>

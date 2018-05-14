@@ -47,8 +47,11 @@
 					{else}
 						{section name=i loop=$arrayOrderCompetition} 
 							{if $arrayOrderCompetition[i][2]=='SELECTED'}
-								{assign var='typeCompetition' value=$arrayOrderCompetition[i][1]}
-								{$typeCompetition}
+								{if $typeCompetition=='Championnat'}
+                                    {#CHPT_type#}
+                                {else}
+                                    {#CP_type#}
+                                {/if}
 							{/if}
 						{/section}
 					{/if}
@@ -63,8 +66,8 @@
 									{if $Code_niveau == 'INT'}
 										<th></th>
 									{/if}
-									<th>Cl.</th>
-									<th>{#Classement#} type {$typeCompetition}</th>
+									<th>{#Clt#}</th>
+									<th>{#Equipe#}</th>
 									{if $typeCompetition=='Championnat'}
 										<th>{#Pts#}</th>
 									{/if}
@@ -376,7 +379,13 @@
 						</tr>
 						<tr>
 							<th class='titreForm' colspan=4>
-								<label>Type : {$smarty.config.$type2}</label>
+								<label>Type : 
+                                        {if $typeCompetition=='Championnat'}
+                                            {#CHPT_type#}
+                                        {else}
+                                            {#CP_type#}
+                                        {/if}
+                                </label>
 							</th>
 						</tr>
 						<tr>

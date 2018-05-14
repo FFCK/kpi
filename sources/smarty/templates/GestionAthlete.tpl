@@ -266,7 +266,7 @@
 											<th>{#Equipes#}</th>
 											<th>{#Score#}</th>
 											<th>#</th>
-											<th>{#But#}</th>
+											<th>{#Buts#}</th>
 											<th>{#Vert#}</th>
 											<th>{#Jaune#}</th>
 											<th>{#Rouge#}</th>
@@ -288,11 +288,11 @@
 												</td>
 												{if $Joueur[i].ScoreOK == 'O'}
 													{if $Joueur[i].Equipe == 'A'}
-														<td><b>{$Joueur[i].eqA}</b> / {$Joueur[i].eqB}</td>
-														<td>(<b>{$Joueur[i].ScoreA}</b>/{$Joueur[i].ScoreB})</td>
+														<td><b>{$Joueur[i].eqA}</b> - {$Joueur[i].eqB}</td>
+														<td>(<b>{$Joueur[i].ScoreA}</b>-{$Joueur[i].ScoreB})</td>
 													{else}
-														<td>{$Joueur[i].eqA} / <b>{$Joueur[i].eqB}</b></td>
-														<td>({$Joueur[i].ScoreA}/<b>{$Joueur[i].ScoreB}</b>)</td>
+														<td>{$Joueur[i].eqA} - <b>{$Joueur[i].eqB}</b></td>
+														<td>({$Joueur[i].ScoreA}-<b>{$Joueur[i].ScoreB}</b>)</td>
 													{/if}
 													{if $lang == 'en'}
                                                         <td><i>#{$Joueur[i].Num} {$Joueur[i].Capitaine|replace:'C':'Cap'|replace:'E':'Coach'|replace:'A':'Ref.'|replace:'-':''}</i></td>
@@ -306,7 +306,7 @@
 													{if $Joueur[i].Tir > 0}<td class='gris'>{$Joueur[i].Tir}</td>{else}<td></td>{/if}
 													{if $Joueur[i].Arret > 0}<td class='gris'>{$Joueur[i].Arret}</td>{else}<td></td>{/if}
 												{else}
-													<td><i>{$Joueur[i].eqA} / {$Joueur[i].eqB}</i></td>
+													<td><i>{$Joueur[i].eqA} - {$Joueur[i].eqB}</i></td>
 													<td>&nbsp;</td>
 													{if $lang == 'en'}
                                                         <td><i>#{$Joueur[i].Num} {$Joueur[i].Capitaine|replace:'C':'Cap'|replace:'E':'Coach'|replace:'A':'Ref.'|replace:'-':''}</i></td>
