@@ -40,6 +40,7 @@ include_once('../commun/MyTools.php');
 	$sql  = "SELECT lc.*, c.Libelle, a.Arb, a.niveau "
             . "FROM gickp_Liste_Coureur lc LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric), gickp_Club c "
             . "WHERE (lc.Matric Like '%".ltrim($term, '0')."%' "
+            . "OR lc.Reserve = '".trim($term)."' "
             . "OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$term."%') "
             . "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$term."%') "
             . ") AND lc.Numero_club = c.Code "
