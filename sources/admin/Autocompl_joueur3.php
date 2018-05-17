@@ -98,6 +98,7 @@ session_start();
                 . "LEFT OUTER JOIN gickp_Surclassements s ON (lc.Matric = s.Matric AND s.Saison = ".  utyGetSaison() ."), "
                 . "gickp_Club c "
                 . "WHERE (lc.Matric Like '%".ltrim($q, '0')."%' "
+                . "OR lc.Reserve = '".trim($q)."' "
                 . "OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') "
                 . "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') "
                 . ") AND lc.Numero_club = c.Code ";
