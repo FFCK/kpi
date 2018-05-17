@@ -76,7 +76,7 @@ try {
     // DO NOT USE $_FILES['upfile']['name'] WITHOUT ANY VALIDATION !!
     // On this example, obtain safe unique name from its binary data or name.
     $fileName = sprintf('./uploads/%s.%s',
-            sha1($_FILES['upfile']['tmp_name']),
+            sha1($_FILES['userfile']['tmp_name']),
             $ext
         );
     if (!move_uploaded_file(
@@ -179,7 +179,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                         . "'98', "
                         . "'" . $participant['Code'] . "') ";
                 $result = $myBdd->Query($sql);
-                echo '* ' . $participant['Organisation'] . ' - ' . $participant[TVName] .' => Inserted<br>';
+                echo '* ' . $participant['Organisation'] . ' - ' . $participant['TVName'] .' => Inserted<br>';
             }
         }
     }
