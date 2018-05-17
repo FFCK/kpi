@@ -1433,6 +1433,12 @@ class MyBdd
         return $result;
     }
 	
+    // AffectedRows			$affected_results = $myBdd->AffectedRows($result);
+    function AffectedRows()
+    {
+        return mysql_affected_rows($this->m_link);
+    }
+
     // NumRows			$num_results = $myBdd->NumRows($result);
     function NumRows($result)
     {

@@ -93,10 +93,11 @@ include_once('../commun/MyTools.php');
                 . "LEFT OUTER JOIN gickp_Surclassements s ON (lc.Matric = s.Matric AND s.Saison = ".  utyGetSaison() ."), "
                 . "gickp_Club c "
                 . "WHERE (lc.Matric Like '%".ltrim($q, '0')."%' "
-                . "OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') ";
-        $sql .= "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') ";
-        $sql .= ") And lc.Numero_club = c.Code ";
-        $sql .= "ORDER BY lc.Nom, lc.Prenom ";
+                . "OR lc.Reserve = '".trim($q)."' "
+                . "OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER('%".$q."%') "
+                . "OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') "
+                . ") And lc.Numero_club = c.Code "
+                . "ORDER BY lc.Nom, lc.Prenom ";
 	
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_joueur : ".$sql);
 	while ($row = mysql_fetch_assoc($result)) {
