@@ -94,7 +94,7 @@
                                 <option value="M" {if $Courreur.Sexe == 'M'}selected{/if}>M</option>
                                 <option value="F" {if $Courreur.Sexe == 'F'}selected{/if}>F</option>
                             </select>
-                            {#Naissance#}:<input type="text" name="update_naissance" id="update_naissance" size="10" 
+                            {#Date_naissance#}:<input type="text" name="update_naissance" id="update_naissance" size="10" 
                                             maxlength="10" minlength="10"  onfocus="displayCalendar(document.forms[0].update_naissance,'dd/mm/yyyy',this)"
                                             value="{$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}">
                             <br>
