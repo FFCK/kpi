@@ -56,8 +56,8 @@ class Splitter extends MyPage
 			$src = str_replace("|A|", "&", $src);
 
 ?>
-			<div id="container_<?php echo $i.'_'.$count;?>">
-				<iframe src="http://<?php echo $src;?>">
+			<div id="container_<?= $i.'_'.$count; ?>">
+				<iframe src="<?= $src; ?>">
 				</iframe>
 			</div>
 <?php	
@@ -72,10 +72,9 @@ class Splitter extends MyPage
         ?>
  		<script type="text/javascript" src="./js/voie.js" ></script>
  		<script type="text/javascript" src="./js/splitter.js" ></script>
-        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo "$voie";?>); }); </script>	
+        <script type="text/javascript"> $(document).ready(function(){ Init(<?= "$voie"; ?>); }); </script>	
         <?php
     }
 }
 
 new Splitter($_GET);
-?>
