@@ -3,7 +3,7 @@
 //include_once('create_cache_match.php');
 include_once('page.php');
 
-class Scenario extends MyPage
+class Spliturl extends MyPage
 {
 	function Header() {}
     function Footer() {}
@@ -12,7 +12,7 @@ class Scenario extends MyPage
     {
     ?>
         <head>
-        <title>Scenario Live</title>
+        <title>Split Url</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="author" content="F.F.C.K.">
@@ -36,23 +36,21 @@ class Scenario extends MyPage
     <?php
     }
 
-	function Content_Command_Scenario($scenario)
+	function Content_Command_Spliturl($split)
 	{
-		echo "<table name='$scenario' id='$scenario'>";
+		echo "<table name='$split' id='$split'>";
         ?>		
 			<thead>
 			<tr>
 				<th>N°</th>
 				<th>Url</th>
-				<th>Durée</th>
 			</tr>
 			</thead>
 			<tbody>
-			<?php for ($i=1; $i<=8; $i++) { ?>
+			<?php for ($i=1; $i<=4; $i++) { ?>
 				<tr>
 					<td><?= $i;?></td>
-					<td><input type="text" style="width:1024px" name="scenario_url<?= $i;?>" id="scenario_url<?= $i;?>"></td>
-					<td><input type="text" style="width:64px"name="scenario_duree<?= $i;?>" id="scenario_duree<?= $i;?>"></td>
+					<td><input type="text" style="width:1024px" name="split_url<?= $i;?>" id="split_url<?= $i;?>"></td>
 				</tr>
 			<?php } ?>
 			</tbody>
@@ -64,28 +62,16 @@ class Scenario extends MyPage
 	function Content()
 	{
         ?>
-		<form method='GET' action='#' name='scenario_form' id='scenario_form' enctype='multipart/form-data'> 
+		<form method='GET' action='#' name='spliturl_form' id='scenario_form' enctype='multipart/form-data'> 
             <article>
                 <div class="row">
-                    <div class='col-sm-2'>
-                        <label>Channel</label>
-                        <select id="scenario_channel" name="scenario_channel">
-                            <?php for ($i=1; $i<=20; $i++) { ?>
-                                <option value="<?= $i; ?>">
-                                    <?= $i; ?>
-                                </option>
-                            <?php } ?>
-                        </select>
-                        <br>
-                    </div>
-                    <div class='col-sm-10'>
-                        <?php $this->Content_Command_Scenario('scenario'); ?>
+                    <div class='col-sm-12'>
+                        <?php $this->Content_Command_Spliturl('split'); ?>
                     </div>
                 </div>
             </article>
 
-            <button id='scenario_btn' type="button">Lancer le scenario</button>
-            <button id="raz_btn" type="button">Reset</button>
+            <button id='split_btn' type="button">Lancer le split</button>
             <br>
             <br>
             <label>Message :</label>
@@ -99,10 +85,10 @@ class Scenario extends MyPage
         parent::Script();
         ?>
 		<script type="text/javascript" src="./js/voie.js" ></script>
-        <script type="text/javascript" src="./js/scenario.js" ></script>
+        <script type="text/javascript" src="./js/spliturl.js" ></script>
         <script type="text/javascript">$(document).ready(function(){ Init(); }); </script>	
         <?php
     }
 }
 
-new Scenario($_GET);
+new Spliturl($_GET);
