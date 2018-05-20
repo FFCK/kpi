@@ -678,8 +678,10 @@ class TV extends MyPage
     {
         $voie = $this->GetParamInt('voie',0);
         echo '
-            <div class="container-fluid voie">
-                <button type="button" class="btn btn-danger btn-lg">' . $voie . '</button>
+            <div class="container-fluid nuage">
+                <div class="voie">
+                    <button type="button" class="btn btn-danger btn-lg">' . $voie . '</button>
+                </div>
             </div>';
 	}
 
