@@ -49,18 +49,26 @@ class Splitter extends MyPage
 		// Gestion 1, 2 ou 4 Frames ...
 		if ($count > 2) $count = 4;
 		
-		for ($i=1;$i<=$count;$i++)
+		for ($i=1; $i<=$count; $i++)
 		{
 			$src = $this->GetParam("frame$i");
 			$src = str_replace("|Q|", "?", $src);
 			$src = str_replace("|A|", "&", $src);
 
-?>
-			<div id="container_<?= $i.'_'.$count; ?>">
-				<iframe src="<?= $src; ?>">
-				</iframe>
-			</div>
-<?php	
+            if(strpos($src, '.jpg') !== false || strpos($src, '.jpeg') !== false || strpos($src, '.png') !== false || strpos($src, '.gif') !== false) {
+                ?>
+                    <div id="container_<?= $i.'_'.$count; ?>" class="container_<?= $count ?>">
+                        <img src="<?= $src; ?>">
+                    </div>
+                <?php	
+            } else {
+                ?>
+                    <div id="container_<?= $i.'_'.$count; ?>" class="container_<?= $count ?>">
+                        <iframe src="<?= $src; ?>">
+                        </iframe>
+                    </div>
+                <?php	
+            }
 		}
     }
 

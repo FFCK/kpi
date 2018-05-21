@@ -62,21 +62,23 @@ class Spliturl extends MyPage
 	function Content()
 	{
         ?>
-		<form method='GET' action='#' name='spliturl_form' id='scenario_form' enctype='multipart/form-data'> 
-            <article>
-                <div class="row">
-                    <div class='col-sm-12'>
-                        <?php $this->Content_Command_Spliturl('split'); ?>
+        <div class="container">
+            <form method='GET' action='#' name='spliturl_form' id='scenario_form' enctype='multipart/form-data'> 
+                <article>
+                    <div class="row">
+                        <div class='col-sm-12'>
+                            <?php $this->Content_Command_Spliturl('split'); ?>
+                        </div>
                     </div>
-                </div>
-            </article>
+                </article>
 
-            <button id='split_btn' type="button">Lancer le split</button>
-            <br>
-            <br>
-            <label>Message :</label>
-            <div id="tv_message"></div>
-		</form>
+                <br>
+                <button id='split_btn' type="button">Lancer le split</button>
+                <br>
+                <br>
+                <div id="tv_message"></div>
+            </form>
+        </div>
 		<?php
     }
 	
