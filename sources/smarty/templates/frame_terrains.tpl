@@ -1,11 +1,11 @@
 {section name=i loop=$arrayDates}
     {assign var='Date' value=$arrayDates[i].date}
     <div class="section terrains">
-        <div class="container-fluid titre-date">
+        {*<div class="container-fluid titre-date">
             <div class="col-md-12">
                 <h3 class="col-md-11 col-xs-9">{#Matchs#} {$arrayDates[i].date}</h3>
             </div>
-        </div>
+        </div>*}
                 
         {if $nbTerrains == 1 }
             <div class="container-fluid" id="containor">
@@ -13,7 +13,7 @@
                     <table class='tableau table table-striped table-condensed table-responsive table-hover display compact'>
                         <thead>
                             <tr class="text-center">
-                                <th colspan="9" class="text-center bg-primary text-white" width="100%">{#Terrain#} {$lstTerrainsArray[0]}</th>
+                                <th colspan="9" class="text-center bg-primary text-white" width="100%">{$arrayDates[i].date} - {#Terrain#} {$lstTerrainsArray[0]}</th>
                             </tr>
                             <tr>
                                 <th class="text-center" width="4%">{#Heure#}</th>
@@ -99,9 +99,9 @@
                     <table class='tableau table table-striped table-condensed table-responsive table-hover display compact'>
                         <thead>
                             <tr class="text-center">
-                                <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} {$lstTerrainsArray[0]}</th>
+                                <th colspan="6" class="text-center bg-primary text-white" width="48%">{$arrayDates[i].date} - {#Terrain#} {$lstTerrainsArray[0]}</th>
                                 <th rowspan="2" class="text-center" width="4%">{#Heure#}</th>
-                                <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} {$lstTerrainsArray[1]}</th>
+                                <th colspan="6" class="text-center bg-primary text-white" width="48%">{$arrayDates[i].date} - {#Terrain#} {$lstTerrainsArray[1]}</th>
                             </tr>
                             <tr>
                                 <th>#</th>
@@ -227,9 +227,9 @@
                         <table class='tableau table table-striped table-condensed table-responsive table-hover display compact'>
                             <thead>
                                 <tr class="text-center">
-                                    <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} {$lstTerrainsArray[2]}</th>
+                                    <th colspan="6" class="text-center bg-primary text-white" width="48%">{$arrayDates[i].date} - {#Terrain#} {$lstTerrainsArray[2]}</th>
                                     <th rowspan="2" class="text-center" width="4%">{#Heure#}</th>
-                                    <th colspan="6" class="text-center bg-primary text-white" width="48%">{#Terrain#} {$lstTerrainsArray[3]}</th>
+                                    <th colspan="6" class="text-center bg-primary text-white" width="48%">{$arrayDates[i].date} - {#Terrain#} {$lstTerrainsArray[3]}</th>
                                 </tr>
                                 <tr>
                                     <th>#</th>
