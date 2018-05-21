@@ -14,7 +14,7 @@ function Go_scenario() {
 function Next_scenario() {
 	++theContext.scenario_row;
 	var url = $("#scenario_url"+theContext.scenario_row).val();
-	if ((url == '') || (url == "undefined"))
+	if ((url == '') || (typeof(url) == "undefined"))
 		theContext.scenario_row = 1;
 	
 	theContext.scenario_url = $("#scenario_url"+theContext.scenario_row).val();

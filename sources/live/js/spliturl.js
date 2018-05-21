@@ -1,10 +1,10 @@
 function Go_url_splitter()
 {
-	var url = 'live/splitter.php';
-	for (var i=1;i<10;i++)
+	var url = document.location.hostname + '/live/splitter.php';
+	for (var i=1; i<=5; i++)
 	{
 		var urlRow = $("#split_url"+i).val();
-		if ((urlRow == '') || (urlRow == "undefined"))
+		if ((urlRow == '') || (typeof(urlRow) == "undefined"))
 			break;
 		
 		urlRow = urlRow.replace("?", "|Q|");
@@ -23,7 +23,7 @@ function Go_url_splitter()
 		url += "frame"+i+"="+urlRow;
 	}
 	
-	$("#tv_message").html("<b>URL progression : "+url);
+	$("#tv_message").html("<b>URL progression : <br><br>" + url);
 }
 
 
