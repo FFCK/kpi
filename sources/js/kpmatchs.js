@@ -59,7 +59,7 @@ jq(document).ready(function(){
             jq('#tableMatchs_fr_filter label').addClass('hidden-xs');
             this.api().columns([10]).every( function () {
                 var column = this;
-                var select = jq('<span class="filtres"><span class="visible-xs-inline"><label>Filtre </label>\n\
+                var select = jq('<span class="filtres"><span><label>Filtre </label>\n\
                                     <select><option value="">Tout</option></select> </span><label> Date </label></span>')
                     .appendTo( jq('#tableMatchs_fr_filter') );
                     select.find('select').on( 'change', function () {
@@ -158,7 +158,7 @@ jq(document).ready(function(){
             jq('#tableMatchs_en_filter label').addClass('hidden-xs');
             this.api().columns([10]).every( function () {
                 var column = this;
-                var select = jq('<span class="filtres"><span class="visible-xs-inline"><label>Filter </label>\n\
+                var select = jq('<span class="filtres"><span><label>Filter </label>\n\
                                     <select><option value="">All</option></select> </span><label> Date </label></span>')
                     .appendTo( jq('#tableMatchs_en_filter') );
                     select.find('select').on( 'change', function () {
@@ -242,11 +242,20 @@ jq(document).ready(function(){
 
     jq('#selects_toggle').click(function(e){
         e.preventDefault();
-        jq('.selects').toggle();
+        jq('.selects').toggleClass('hidden-xs');
         jq('#selector article').toggleClass('article_sans_bg');
     });
     
+    var subtitle = jq('#Saison').val() + ' - ' + jq('#Group option:selected').html();
+    if(typeof(jq('#J').val()) != 'undefined' && jq('#J').val() != '*') {
+        subtitle += ' (' + jq('#J option:selected').html() + ')';
+    }
+    if(typeof(jq('#Compet').val()) != 'undefined' && jq('#Compet').val() != '*') {
+        subtitle += ' (' + jq('#Compet option:selected').html() + ')';
+    }
     jq('#selects_toggle:visible').click();
+    jq('#subtitle label').html(subtitle);
+    jq('#subtitle').removeClass('hidden-xs');
 });
 
 

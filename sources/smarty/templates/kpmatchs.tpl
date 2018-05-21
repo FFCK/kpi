@@ -16,7 +16,7 @@
             
             <div class='col-md-1 col-sm-4 col-xs-3 selects'>
                 <label for="Saison">{#Saison#}</label>
-                <select name="Saison" onChange="submit()">
+                <select name="Saison" onChange="submit()" id="Saison">
                     {section name=i loop=$arraySaison} 
                         <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $Saison}selected{/if}>{$arraySaison[i].Code}</Option>
                     {/section}
@@ -24,7 +24,7 @@
             </div>
             <div class='col-md-4 col-sm-8 col-xs-8 selects'>
                 <label for="Group">{#Competition#}</label>
-                <select name="Group" onChange="submit();">
+                <select name="Group" onChange="submit();" id="Group">
                     {section name=i loop=$arrayCompetitionGroupe}
                         {assign var='options' value=$arrayCompetitionGroupe[i].options}
                         {assign var='label' value=$arrayCompetitionGroupe[i].label}
@@ -37,13 +37,14 @@
                     {/section}
                 </select>
             </div>
+            <div class="visible-xs col-xs-11 selects bold" id="subtitle"><label></label></div>    
             <a class="visible-xs-block pull-right" href="" id="selects_toggle">
                 <img class="img-responsive" src="img/glyphicon-triangle-bottom.png" width="16">
             </a>
             {if $arrayCompetition[0].Code_typeclt == 'CHPT'}
-                <div class='col-md-3 col-sm-6 col-xs-12 selects'>
+                <div class='col-md-3 col-sm-6 col-xs-7 selects'>
                     <label for="J">{#Journee#}</label>
-                    <select name="J" onChange="submit();">
+                    <select name="J" onChange="submit();" id="J">
                         <Option Value="*" Selected>{#Toutes#}</Option>
                         {section name=i loop=$arrayListJournees}
                                 <Option Value="{$arrayListJournees[i].Id}" {if $idSelJournee == $arrayListJournees[i].Id}Selected{/if}>{if $lang == 'en'}{$arrayListJournees[i].Date_debut_en}{else}{$arrayListJournees[i].Date_debut}{/if} - {$arrayListJournees[i].Lieu}</Option>
@@ -51,9 +52,9 @@
                     </select>
                 </div>
             {elseif $nbCompet > 1}
-                <div class='col-md-3 col-sm-6 col-xs-12 selects'>
-                    <label for="Compet">{#Categorie#}Cat.</label>
-                    <select name="Compet" onChange="submit();">
+                <div class='col-md-3 col-sm-6 col-xs-7 selects'>
+                    <label for="Compet">{#Categorie#}</label>
+                    <select name="Compet" onChange="submit();" id="Compet">
                         <Option Value="*" Selected>{#Toutes#}</Option>
                         {section name=i loop=$arrayCompetition}
                                 <Option Value="{$arrayCompetition[i].Code}" {if $idSelCompet == $arrayCompetition[i].Code}Selected{/if}>{$arrayCompetition[i].Soustitre2|default:$arrayCompetition[i].Libelle}</Option>
@@ -61,9 +62,16 @@
                     </select>
                 </div>
             {else}
-                <div class='col-md-3 col-sm-6 col-xs-12 selects'></div>
+                <div class='col-md-3 col-sm-6 col-xs-7 selects'></div>
             {/if}
-            <div class='col-md-4 col-sm-6 col-xs-12 text-right selects'>
+            <div class='col-md-4 col-sm-6 col-xs-5 text-left selects'>
+                <label>{#Matchs_a_afficher#}</label>
+                <select name="next" onChange="submit();" id="next">
+                    <option value="">{#Tous#}</option>
+                    <option value="next" {if $next == 'next'}selected{/if}>{#Prochains_matchs#} {#seulement#}</option>
+                </select>
+            </div>
+            <div class='col-md-4 col-md-offset-8 col-sm-6 col-sm-offset-6 col-xs-12 text-right selects'>
                 <div class="row">
                     <div id="fb-root"></div>
                     <div class="fb-like" data-href="https://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
