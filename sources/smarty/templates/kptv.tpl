@@ -688,6 +688,10 @@
         <a id="scenario_params" class="btn btn-default" href="live/scenario.php" target="_blank">
             Scenario
         </a>
+        &nbsp;
+        <a id="split_params" class="btn btn-default" href="live/spliturl.php" target="_blank">
+            Split Url
+        </a>
         
     </article>
 </div>

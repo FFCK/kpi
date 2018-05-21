@@ -1,6 +1,6 @@
 function Go_url_splitter()
 {
-	var url = document.location.hostname + '/live/splitter.php';
+	var url = document.location.origin + '/live/splitter.php';
 	for (var i=1; i<=5; i++)
 	{
 		var urlRow = $("#split_url"+i).val();
@@ -14,7 +14,10 @@ function Go_url_splitter()
 			if (urlRow2 == urlRow) break;
 			urlRow = urlRow2;
 		}
-		
+		urlRow = urlRow.replace(document.location.origin, "");
+//		urlRow = urlRow.replace('http://', "");
+//		urlRow = urlRow.replace('https://', "");
+        
 		if (i==1)
 			url += "?";
 		else
@@ -22,8 +25,8 @@ function Go_url_splitter()
 		
 		url += "frame"+i+"="+urlRow;
 	}
-	
-	$("#tv_message").html("<b>URL progression : <br><br>" + url);
+    
+	$("#tv_message").html("<b>URL split : <a href='" + url + "' target='_blank'>" + url + "</a>");
 }
 
 
