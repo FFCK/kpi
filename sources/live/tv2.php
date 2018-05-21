@@ -680,7 +680,7 @@ class TV extends MyPage
         echo '
             <div class="container-fluid nuage">
                 <div class="voie">
-                    <button type="button" class="btn btn-danger btn-lg">' . $voie . '</button>
+                    <button type="button" class="btn btn-light btn-lg">' . $voie . '</button>
                 </div>
             </div>';
 	}
