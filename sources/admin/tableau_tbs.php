@@ -37,13 +37,12 @@ if (!file_exists($template)) exit("File does not exist.");
 		$listMatch = utyGetSession('listMatch',0);
 		
 		$arrayMatchs = array();
-		$sql  = "Select a.*, b.Libelle EquipeA, c.Libelle EquipeB, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Nom LibelleJournee ";
-		$sql .= "From gickp_Matchs a ";
-		$sql .= "Left Outer Join gickp_Competitions_Equipes b On (a.Id_equipeA = b.Id) "; 
-		$sql .= "Left Outer Join gickp_Competitions_Equipes c On (a.Id_equipeB = c.Id) ";
-		$sql .= ", gickp_Journees d ";
-		$sql .= "Where a.Id in (".$listMatch.") ";
-		$sql .= "And a.Id_journee = d.Id ";
+		$sql  = "SELECT a.*, b.Libelle EquipeA, c.Libelle EquipeB, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Nom LibelleJournee "
+                . "FROM gickp_Journees d, gickp_Matchs a "
+                . "LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) "
+                . "LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) "
+                . "WHERE a.Id in (".$listMatch.") "
+                . "AND a.Id_journee = d.Id ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
 		while ($aRow = mysql_fetch_array($result)) {
 				$aRow['Date_match'] = utyDateUsToFr($aRow['Date_match']);
@@ -56,13 +55,12 @@ if (!file_exists($template)) exit("File does not exist.");
 					$aRow['EquipeA'] = $EquipesAffectAuto[0];
 				if ($aRow['EquipeB'] == '' && $EquipesAffectAuto[1] != '')
 					$aRow['EquipeB'] = $EquipesAffectAuto[1];
-                $arbsup = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S", " INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO");
 				if($aRow['Arbitre_principal'] != '' && $aRow['Arbitre_principal'] != '-1')
-					$aRow['Arbitre_principal'] = str_replace($arbsup, '', $aRow['Arbitre_principal']);
+					$aRow['Arbitre_principal'] = utyArbSansNiveau($aRow['Arbitre_principal']);
 				elseif ($EquipesAffectAuto[2] != '')
 					$aRow['Arbitre_principal'] = $EquipesAffectAuto[2];
 				if($aRow['Arbitre_secondaire'] != '' && $aRow['Arbitre_secondaire'] != '-1')
-					$aRow['Arbitre_secondaire'] = str_replace($arbsup, '', $aRow['Arbitre_secondaire']);
+					$aRow['Arbitre_secondaire'] = utyArbSansNiveau($aRow['Arbitre_secondaire']);
 				elseif ($EquipesAffectAuto[3] != '')
 					$aRow['Arbitre_secondaire'] = $EquipesAffectAuto[3];
 				
@@ -80,5 +78,3 @@ if (!file_exists($template)) exit("File does not exist.");
 
 // Save as file on the disk (code example)
 //$TBS->Show(OPENTBS_FILE+TBS_EXIT, $file_name);
-
-?>

@@ -203,13 +203,12 @@ class FeuilleListeJournees extends MyPage
 			elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '')
 				$row['EquipeB'] = $EquipesAffectAuto[1];
 
-            $arbsup = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S", " INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO");
 			if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
-				$row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
+				$row['Arbitre_principal'] = utyArbSansNiveau($row['Arbitre_principal']);
 			elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '')
 				$row['Arbitre_principal'] = $EquipesAffectAuto[2];
 			if($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1')
-				$row['Arbitre_secondaire'] = str_replace($arbsup, '', $row['Arbitre_secondaire']);
+				$row['Arbitre_secondaire'] = utyArbSansNiveau($row['Arbitre_secondaire']);
 			elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '')
 				$row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
 			
