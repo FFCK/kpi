@@ -69,7 +69,7 @@ class PdfListeMatchs extends MyPage
 		$laCompet = utyGetSession('codeCompet', 0);
 		$laCompet = utyGetGet('Compet', $laCompet);
         $Group = utyGetGet('Group', '');
-		$orderMatchs = utyGetSession('orderMatchs', 'Order By a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
+		$orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $titreEvenementCompet = '';
 
         if($idEvenement != -1) {
@@ -80,12 +80,12 @@ class PdfListeMatchs extends MyPage
                 $lstJournee[] = $row['Id_journee'];
 			}
             $lstJournee = implode(',', $lstJournee);
-            $where = "Where a.Id_journee In ($lstJournee) ";
+            $where = "WHERE a.Id_journee In ($lstJournee) ";
 //            echo $where . ' !<br>';
 		} elseif($laCompet !== 0 && $laCompet !== '*') {
 			$lstJournee = 0;
 			$idEvenement = -1;
-            $where = "Where d.Code_competition = '" . $laCompet . "' And d.Code_saison = $codeSaison ";
+            $where = "WHERE d.Code_competition = '" . $laCompet . "' AND d.Code_saison = $codeSaison ";
 		} else {
 			$lstCompet = [];
 			$sql = "SELECT c.Code, g.Libelle "
@@ -100,26 +100,29 @@ class PdfListeMatchs extends MyPage
                 $titreEvenementCompet = $row['Libelle'];
 			}
             $lstCompet = implode(',', $lstCompet);
-            $where = "Where d.Code_competition IN (" . $lstCompet . ") And d.Code_saison = $codeSaison ";
+            $where = "WHERE d.Code_competition IN (" . $lstCompet . ") AND d.Code_saison = $codeSaison ";
         }
 		$codeCompet = $laCompet;
-		$sql  = "Select a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, a.Date_match, a.Heure_match, ";
-		$sql .= "a.Libelle, a.Terrain, b.Libelle EquipeA, c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, ";
-		$sql .= "a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, a.Validation, ";
-		$sql .= "d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee ";
-		$sql .= "From gickp_Matchs a ";
-		$sql .= "Left Outer Join gickp_Competitions_Equipes b On (a.Id_equipeA = b.Id) "; 
-		$sql .= "Left Outer Join gickp_Competitions_Equipes c On (a.Id_equipeB = c.Id) ";
-		$sql .= ", gickp_Journees d ";
+		$sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, a.Date_match, a.Heure_match, "
+                . "a.Libelle, a.Terrain, b.Libelle EquipeA, c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, "
+                . "a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, "
+                . "d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, "
+                . "e.Nom Nom_arb_prin, e.Prenom Prenom_arb_prin, f.Nom Nom_arb_sec, f.Prenom Prenom_arb_sec "
+                . "FROM gickp_Matchs a "
+                . "LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) "
+                . "LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) "
+                . "LEFT OUTER JOIN gickp_Liste_Coureur e ON (a.Matric_arbitre_principal = e.Matric) "
+                . "LEFT OUTER JOIN gickp_Liste_Coureur f ON (a.Matric_arbitre_secondaire = f.Matric) "
+                . ", gickp_Journees d ";
         $sql .= $where;
         if($filtreJour != '') {
-			$sql .= "And a.Date_match = '".$filtreJour."' ";
+			$sql .= "AND a.Date_match = '".$filtreJour."' ";
 		}
 		if($filtreTerrain != '') {
-			$sql .= "And a.Terrain = '".$filtreTerrain."' ";
+			$sql .= "AND a.Terrain = '".$filtreTerrain."' ";
 		}
-		$sql .= "And a.Id_journee = d.Id ";
-		$sql .= "And a.Publication = 'O' ";
+		$sql .= "AND a.Id_journee = d.Id ";
+		$sql .= "AND a.Publication = 'O' ";
 		$sql .= $orderMatchs;
 		
 		$orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
@@ -239,14 +242,19 @@ class PdfListeMatchs extends MyPage
             } elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
                 $row['EquipeB'] = $EquipesAffectAuto[1];
             }
-            $arbsup = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S", " INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO");
 			if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
-                $row['Arbitre_principal'] = str_replace($arbsup, '', $row['Arbitre_principal']);
+                $row['Arbitre_principal'] = utyArbSansNiveau(
+                    utyInitialesPrenomArbitre( 
+                            $row['Arbitre_principal'], $row['Nom_arb_prin'], 
+                            $row['Prenom_arb_prin'], $row['Matric_arbitre_principal']));
             } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
                 $row['Arbitre_principal'] = $EquipesAffectAuto[2];
             }
             if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
-                $row['Arbitre_secondaire'] = str_replace($arbsup, '', $row['Arbitre_secondaire']);
+                $row['Arbitre_secondaire'] = utyArbSansNiveau(
+                    utyInitialesPrenomArbitre( 
+                            $row['Arbitre_secondaire'], $row['Nom_arb_sec'], 
+                            $row['Prenom_arb_sec'], $row['Matric_arbitre_secondaire']));
             } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
                 $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
             }

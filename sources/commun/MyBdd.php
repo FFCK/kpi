@@ -933,35 +933,6 @@ class MyBdd
 	}
 	
     
-    /**
-     * Retourne le nom d'un arbitre formaté avec les initiales du prénom
-     * 
-     * @param string $refText nom de l'arbitre
-     * @param int $refId numéro de l'arbitre
-     * 
-     * @return string nom de l'arbitre reformaté
-     */
-    function GetInitialesPrenomArbitre($refText='', $refId = 0) {
-        if($refId == 0) {
-            return $refText;
-        }
-        
-        $query  = "SELECT Nom, Prenom FROM gickp_Liste_Coureur "
-                . "WHERE Matric = $refId ";
-        $result = $this->Query($query);
-        $row = $this->FetchAssoc($result);
-        
-        $nom_origine = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8")
-                .' '. mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
-        
-        $nom_destination = utyUcName($row['Nom'])
-                .' '. utyInitials($row['Prenom']);
-        
-        $result = str_replace($nom_origine, $nom_destination, $refText);
-        return $result;
-    }
-    
-    
 	// GetCategorie
 	function GetCategorie($age, &$code, &$libelle)
 	{
