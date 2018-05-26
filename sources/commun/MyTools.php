@@ -33,8 +33,10 @@ function redimImage($image, $largeurPage, $marge, $newHauteur, $position='C') {
 }
 
 /**
+ * Retourne les bandeau, logo et sponsor d'une compétition
  * 
- * @param type array $recordCompetition
+ * @param array $recordCompetition
+ * @return array bandeau, logo, sponsor
  */
 function utyGetVisuels($recordCompetition, $admin = FALSE) {
     $result = [];
@@ -264,21 +266,91 @@ function utyGetString($array, $param, $default = 1)
     return $default;
 }
 
-// utyGetString
+// utyGetPrenom
 function utyGetPrenom($array, $param, $default = '')
 {
     if (isset($array[$param])) {
-        $prenom = str_replace ('-', '¿ ', strtolower(addslashes( $array[$param] ))); 
-        $prenom = ucwords ($prenom);
-        $prenom = str_replace ('¿ ', '-', $prenom);
+        $prenom = utyUcName( $array[$param] ); 
         return $prenom;
     }
-    
     return $default;
 }
 
-// utyGetSessionPostGet
+/**
+ * ucfirst incluant tiret et apostrophe
+ * @param $string
+ * @return $string
+ */
+function utyUcName($string) {
+    $string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8"); 
+    
+    foreach (array('-', '\'') as $delimiter) {
+        if (strpos($string, $delimiter) !== false) {
+            str_replace($delimiter, ' £ ', $string);
+            $string = mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
+            str_replace(' £ ', $delimiter, $string);
+        }
+    }
+    return $string;
+}
 
+/**
+ * initials incluant tiret et apostrophe
+ * @param $string
+ * @return $string
+ */
+function utyInitials($string) {
+    $string = mb_convert_case(mb_strtolower($string, "UTF-8"), MB_CASE_TITLE, "UTF-8");
+    $response = '';
+    $words = preg_split("/(\s|\-|\.|\')/", $string, -1, PREG_SPLIT_DELIM_CAPTURE);
+    foreach ($words as $w) {
+        if ($w === ' ') {
+            $response .= '.' . $w;
+        } else {
+            $response .= mb_substr($w, 0, 1, "UTF-8");
+        }
+    }
+    $response = $response . '.';
+    return $response;
+}
+
+/**
+ * Retourne le nom d'un arbitre formaté avec les initiales du prénom
+ * 
+ * @param string $refText nom de l'arbitre
+ * @param int $refId numéro de l'arbitre
+ * 
+ * @return string nom de l'arbitre reformaté
+ */
+function utyInitialesPrenomArbitre($refText, $refNom, $refPrenom, $refId = 0) {
+    if($refId == 0) {
+        return $refText;
+    }
+
+    $nom_origine = mb_convert_case(mb_strtolower($refNom, "UTF-8"), MB_CASE_TITLE, "UTF-8")
+            . ' ' . mb_convert_case(mb_strtolower($refPrenom, "UTF-8"), MB_CASE_TITLE, "UTF-8");
+
+    $nom_destination = utyUcName($refNom) . ' ' . utyInitials($refPrenom);
+
+    $result = str_replace($nom_origine, $nom_destination, $refText);
+    return $result;
+}
+    
+
+/**
+ * arbitres sans niveau
+ * @param $string
+ * @return $string
+ */
+function utyArbSansNiveau($string) {
+    $arbsup = array(" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S", 
+        " INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO");
+    
+    $response = str_replace($arbsup, '', $string);
+    return $response;
+}
+
+// utyGetSessionPostGet
 function utyGetSessionPostGet($param, $default = '')
 {
     if (isset($_GET[$param])) {

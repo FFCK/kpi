@@ -15,7 +15,7 @@
                     <th class="cliquableNomEquipe">{#Equipe_A#}</th>
                     <th class="cliquableScore">{#Score#}</th>
                     <th class="cliquableNomEquipe">{#Equipe_B#}</th>
-                    {if $arbitres > 0}
+                    {if $arbitres == 1}
                         <th class="arb1">{#Arbitre_1#}</th>	
                         <th class="arb2">{#Arbitre_2#}</th>
                     {/if}
@@ -29,7 +29,8 @@
                     <tr class='{$arrayMatchs[i].StdOrSelected} {$arrayMatchs[i].past}'>
                             <td>{$arrayMatchs[i].Numero_ordre}</td>
                             <td data-order="{$arrayMatchs[i].Date_EN} {$arrayMatchs[i].Heure_match}" data-filter="{$arrayMatchs[i].Date_match}">
-                                {$arrayMatchs[i].Date_match}
+                                {if $lang=='en'}{$arrayMatchs[i].Date_EN}{else}{$arrayMatchs[i].Date_match}{/if}
+                                <br>
                                 <span class="pull-right badge">{$arrayMatchs[i].Heure_match}</span>
                             </td>
                             <td>{$arrayMatchs[i].Code_competition}</td>
@@ -80,9 +81,9 @@
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
                             </td>
-                            {if $arbitres > 0}
-                                <td class="arb1">{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
-                                <td class="arb2">{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}</td>
+                            {if $arbitres == 1}
+                                <td class="arb1">{if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal|replace:' (':'<br>('}{else}&nbsp;{/if}</td>
+                                <td class="arb2">{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:' (':'<br>('}{else}&nbsp;{/if}</td>
                             {/if}
                     </tr>
                 {sectionelse}
@@ -105,7 +106,7 @@
                     <th class="cliquableNomEquipe">{#Equipe_A#}</th>
                     <th class="cliquableScore">{#Score#}</th>
                     <th class="cliquableNomEquipe">{#Equipe_B#}</th>
-                    {if $arbitres > 0}
+                    {if $arbitres == 1}
                         <th class="arb1">{#Arbitre_1#}</th>	
                         <th class="arb2">{#Arbitre_2#}</th>
                     {/if}
