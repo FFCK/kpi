@@ -50,6 +50,7 @@
                 <div class='col-sm-1'>
                     <label>Channel</label>
                     <select id="channel" name="channel">
+                        <option value='1'>{#Selectionnez#}</option>
                         {section name=i start=1 loop=21}
                             <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                                 {$smarty.section.i.index}
@@ -209,6 +210,7 @@
                 <div class='col-sm-1'>
                     <label>Channel</label>
                     <select id="channel2" name="channel2">
+                        <option value='1'>{#Selectionnez#}</option>
                         {section name=i start=1 loop=21}
                             <option value="{$smarty.section.i.index}" {if $filtreChannel2 == $smarty.section.i.index}selected{/if}>
                                 {$smarty.section.i.index}
@@ -368,6 +370,7 @@
                 <div class='col-sm-1'>
                     <label>Channel</label>
                     <select id="channel3" name="channel3">
+                        <option value='1'>{#Selectionnez#}</option>
                         {section name=i start=1 loop=21}
                             <option value="{$smarty.section.i.index}" {if $filtreChannel3 == $smarty.section.i.index}selected{/if}>
                                 {$smarty.section.i.index}
@@ -527,6 +530,7 @@
                 <div class='col-sm-1'>
                     <label>Channel</label>
                     <select id="channel4" name="channel4">
+                        <option value='1'>{#Selectionnez#}</option>
                         {section name=i start=1 loop=21}
                             <option value="{$smarty.section.i.index}" {if $filtreChannel4 == $smarty.section.i.index}selected{/if}>
                                 {$smarty.section.i.index}
