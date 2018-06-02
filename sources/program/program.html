@@ -56,15 +56,6 @@
                             <span class="input-group-text" id="competition-addon" data-version="Competition"></span>
                         </div>
                         <select id="competition" class="form-control">
-                            <optgroup label="Compétitions nationales">
-                                <option value="N1H">Nationale 1 Hommes</option>
-                                <option value="N2H">Nationale 2 Hommes</option>
-                                <option value="N3H">Nationale 3 Hommes</option>
-                                <option value="N4H">Nationale 4 Hommes</option>
-                            </optgroup>
-                            <optgroup label="Compétitions régionales">
-                                <option value="REG12">Nationale 1 Hommes</option>
-                            </optgroup>
                         </select>
                     </div>
                     <div class="input-group nav-item mb-1">
@@ -184,7 +175,15 @@
         
         
         <br>
-        Tableau
+        <table id="mainTable" class="table-bordered" width="100%">
+            <thead>
+                <tr>
+                    <th>Saison</th>
+                    <th>Sélection</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
         
         <!-- JavaScript -->
         <!-- jQuery first, then Bootstrap JS with Popper -->
