@@ -29,7 +29,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#Representant").result(function(event, data, formatted) {
