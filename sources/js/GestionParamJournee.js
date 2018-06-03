@@ -94,7 +94,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#Lieu").result(function(event, data, formatted) {
@@ -108,7 +108,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#Nom").result(function(event, data, formatted) {
@@ -122,7 +122,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#Organisateur").result(function(event, data, formatted) {
@@ -136,7 +136,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#Responsable_R1").result(function(event, data, formatted) {
@@ -150,7 +150,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#Responsable_insc").result(function(event, data, formatted) {
@@ -164,7 +164,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#Delegue").result(function(event, data, formatted) {
@@ -178,7 +178,7 @@ jq(document).ready(function() {
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#ChefArbitre").result(function(event, data, formatted) {
