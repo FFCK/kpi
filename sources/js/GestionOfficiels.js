@@ -221,7 +221,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#arbitre1").result(function(event, data, formatted) {
@@ -256,7 +256,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		max: 80,
 		mustMatch: false,
 		minChars: 2,
-		cacheLength: 1,
+		cacheLength: 0,
 		scrollHeight: 320,
 	});
 	jq("#arbitre2").result(function(event, data, formatted) {
