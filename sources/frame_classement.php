@@ -17,9 +17,16 @@ class Classement extends MyPage
 			
 		$codeSaison = utyGetGet('Saison', utyGetSaison());
 		$this->m_tpl->assign('Saison', $codeSaison);
+        
+        if (utyGetGet('navCompet', false)) {
+            $arrayNavCompet = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
+            $this->m_tpl->assign('arrayNavCompet', $arrayNavCompet);
+        }
 	
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
+        
+        $this->m_tpl->assign('Css', utyGetGet('Css', ''));
         
         //Logo
 		if($codeCompet != -1)
