@@ -24,10 +24,17 @@ class Classement extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
         
+        if (utyGetGet('navCompet', false)) {
+            $arrayNavCompet = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
+            $this->m_tpl->assign('arrayNavCompet', $arrayNavCompet);
+        }
+        
         $Round = utyGetGet('Round', '*');
-        $Round = str_replace('*', '%', $Round);
 		$this->m_tpl->assign('Round', $Round);
-        	
+        $Round = str_replace('*', '%', $Round);
+        
+        $this->m_tpl->assign('Css', utyGetGet('Css', ''));
+
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
