@@ -1196,6 +1196,20 @@ class MyBdd
 								);							  	
     }
     
+	// GetCompetition 	
+	function GetOtherCompetitions($codeCompet, $codeSaison)
+	{
+		$sql  = "SELECT Code, Soustitre2 
+            FROM `gickp_Competitions`
+            WHERE Code_saison = 2018
+            AND Code_ref = (
+                SELECT Code_ref FROM `gickp_Competitions` WHERE Code = '$codeCompet' AND Code_saison = $codeSaison
+            )";
+	
+        $this->LoadTable($sql, $arrayLoad);
+        return $arrayLoad;
+    }
+    
     function getSections(){
         $result = array(
             1 => 'Competitions_Internationales',

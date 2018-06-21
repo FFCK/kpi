@@ -1,8 +1,19 @@
 <div class="container categorie">
     <div class="col-md-12">
-        <h2 class="col-md-12">
-            {$recordCompetition.Soustitre2}
-        </h2>
+        {section name=i loop=$arrayNavCompet}
+            {if $arrayNavCompet[i].Code == $codeCompet}
+                <a class="btn btn-primary">{$arrayNavCompet[i].Soustitre2}</a>
+            {else}
+                <a class="btn btn-default actif" 
+                   href="?lang={$lang}&Saison={$Saison}&Compet={$arrayNavCompet[i].Code}&Round={$Round}&Css={$Css}&navCompet=1">
+                    {$arrayNavCompet[i].Soustitre2}
+                </a>
+            {/if}
+        {sectionelse}
+            <h2 class="col-md-12">
+                {$recordCompetition.Soustitre2}
+            </h2>
+        {/section}
     </div>
 </div>
 <div class="container">
