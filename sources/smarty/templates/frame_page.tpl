@@ -64,7 +64,8 @@
                 _paq.push(['trackPageView']);
                 _paq.push(['enableLinkTracking']);
                 (function() {
-                    var u="//poloweb.org/piwik/";
+        	    var u = "https://www.poloweb.org/piwik/";
+                    //var u="//poloweb.org/piwik/";
                     _paq.push(['setTrackerUrl', u+'piwik.php']);
                     _paq.push(['setSiteId', '1']);
                     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
