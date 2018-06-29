@@ -32,6 +32,12 @@
             </div>
         </div>
     </div>
+{else}
+    <div class="container categorie">
+        <h2 class="col-md-12">
+            {$recordCompetition.Soustitre2}
+        </h2>
+    </div>
 {/if}
 <div class="container">
     <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if} tableClassement">

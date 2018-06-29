@@ -32,6 +32,12 @@
             </div>
         </div>
     </div>
+{else}
+    <div class="container categorie">
+        <h2 class="col-md-12">
+            {$recordCompetition.Soustitre2}
+        </h2>
+    </div>
 {/if}
 <div class="container">
     {if $recordCompetition.Code_typeclt == 'CP'}
