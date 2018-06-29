@@ -1,5 +1,20 @@
-<div class="container categorie">
+<div class="container-fluid categorie">
     <div class="col-md-6">
+        <a class="btn btn-default actif"
+            href="kpmatchs.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round=*&Css={$Css}&navGroup=1">
+            {#Matchs#}
+        </a>
+        <a class="btn btn-primary">{#Classement_par_phase#}</a>
+        <a class="btn btn-default actif" 
+            href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
+                    {#Classement#}
+        </a>
+        <a class="btn btn-default actif" 
+            href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
+                    {#Stats#}
+        </a>
+    </div>
+    <div class="col-md-6 text-right">
         {section name=i loop=$arrayNavGroup}
             {if $arrayNavGroup[i].Code == $codeCompet}
                 <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
@@ -14,17 +29,6 @@
                 {$recordCompetition.Soustitre2}
             </h2>
         {/section}
-    </div>
-    <div class="col-md-6 text-right">
-        <a class="btn btn-primary">{#Classement_par_phase#}</a>
-        <a class="btn btn-default actif" 
-            href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
-                    {#Classement#}
-        </a>
-        <a class="btn btn-default actif" 
-            href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
-                    {#Stats#}
-        </a>
     </div>
 </div>
 <div class="container">
