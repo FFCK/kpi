@@ -1,36 +1,38 @@
-<div class="container-fluid categorie">
-    <div class="col-md-6">
-        <a class="btn btn-default actif"
-            href="kpmatchs.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round=*&Css={$Css}&navGroup=1">
-            {#Matchs#}
-        </a>
-        <a class="btn btn-primary">{#Classement_par_phase#}</a>
-        <a class="btn btn-default actif" 
-            href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
-                    {#Classement#}
-        </a>
-        <a class="btn btn-default actif" 
-            href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
-                    {#Stats#}
-        </a>
+{if $navGroup}
+    <div class="container-fluid categorie">
+        <div class="col-md-12">
+            <a class="btn btn-default actif"
+                href="kpmatchs.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round=*&Css={$Css}&navGroup=1">
+                {#Matchs#}
+            </a>
+            <a class="btn btn-primary">{#Classement_par_phase#}</a>
+            <a class="btn btn-default actif" 
+                href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
+                        {#Classement#}
+            </a>
+            <a class="btn btn-default actif" 
+                href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
+                        {#Stats#}
+            </a>
+            <div class="pull-right">
+                {section name=i loop=$arrayNavGroup}
+                    {if $arrayNavGroup[i].Code == $codeCompet}
+                        <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
+                    {else}
+                        <a class="btn btn-default actif" 
+                           href="?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$arrayNavGroup[i].Code}&Round={$Round}&Css={$Css}&navGroup=1">
+                            {$arrayNavGroup[i].Soustitre2}
+                        </a>
+                    {/if}
+                {sectionelse}
+                    <h2 class="col-md-12">
+                        {$recordCompetition.Soustitre2}
+                    </h2>
+                {/section}
+            </div>
+        </div>
     </div>
-    <div class="col-md-6 text-right">
-        {section name=i loop=$arrayNavGroup}
-            {if $arrayNavGroup[i].Code == $codeCompet}
-                <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
-            {else}
-                <a class="btn btn-default actif" 
-                   href="?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$arrayNavGroup[i].Code}&Round={$Round}&Css={$Css}&navGroup=1">
-                    {$arrayNavGroup[i].Soustitre2}
-                </a>
-            {/if}
-        {sectionelse}
-            <h2 class="col-md-12">
-                {$recordCompetition.Soustitre2}
-            </h2>
-        {/section}
-    </div>
-</div>
+{/if}
 <div class="container">
     {if $recordCompetition.Code_typeclt == 'CP'}
         {section name=i loop=$arrayJournee}
