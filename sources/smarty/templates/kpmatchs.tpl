@@ -3,7 +3,60 @@
         <span class="badge pull-right">{$smarty.config.Saison|default:'Saison'} {$Saison}</span>
     </h1>
 </div>
-
+<div class="container-fluid categorie">
+    <div class="col-md-6">
+        <a class="btn btn-primary">{#Matchs#}</a>
+        <a class="btn btn-default actif" 
+            href="frame_phases.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round=*&Css={$Css}&navGroup=1">
+                    {#Classement_par_phase#}
+        </a>
+        <a class="btn btn-default actif" 
+            href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Css={$Css}&navGroup=1">
+                    {#Classement#}
+        </a>
+        <a class="btn btn-default actif" 
+            href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Css={$Css}&navGroup=1">
+                    {#Stats#}
+        </a>
+    </div>
+    <div class="col-md-6 text-right">
+        {if $next}
+            <a class="btn btn-primary actif" 
+               href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
+                {#Prochains_matchs#}
+            </a>
+        {else}
+            <a class="btn btn-default actif" 
+               href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
+                {#Prochains_matchs#}
+            </a>
+        {/if}
+        {if $arrayNavGroup}
+            {if '*' == $idSelCompet}
+                <a class="btn btn-primary">{#Tous#}</a>
+            {else}
+                <a class="btn btn-default actif" 
+                   href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet=*&Round={$Round}&Css={$Css}&navGroup=1">
+                    {#Tous#}
+                </a>
+            {/if}
+        {/if}
+        {section name=i loop=$arrayNavGroup}
+            {if $arrayNavGroup[i].Code == $idSelCompet}
+                <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
+            {else}
+                <a class="btn btn-default actif" 
+                   href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$arrayNavGroup[i].Code}&Round={$Round}&Css={$Css}&navGroup=1">
+                    {$arrayNavGroup[i].Soustitre2}
+                </a>
+            {/if}
+        {sectionelse}
+            <h2 class="col-md-12">
+                {$recordCompetition.Soustitre2}
+            </h2>
+        {/section}
+    </div>
+</div>
 <div class="container" id="selector">
     <article class="col-md-12 padTopBottom">
         <form method="POST" action="kpmatchs.php#containor" name="formJournee" id="formJournee" enctype="multipart/form-data">
