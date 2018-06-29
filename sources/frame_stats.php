@@ -23,7 +23,17 @@ class Stats extends MyPage
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
-	
+        
+        $group = utyGetGet('Group', 'N1H');
+		$this->m_tpl->assign('group', $group);
+                
+        if (utyGetGet('navGroup', false)) {
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
+            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+        }
+        
+        $this->m_tpl->assign('Css', utyGetGet('Css', ''));
+
 		$nbLignes = utyGetGet('nbLignes', 20);
 
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);

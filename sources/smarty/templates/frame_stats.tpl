@@ -1,9 +1,32 @@
-<div class="container stats">
-    <div class="col-md-12">
-        <h2 class="col-md-12">{$recordCompetition.Soustitre2}</h2>
+<div class="container categorie">
+    <div class="col-md-6">
+        {section name=i loop=$arrayNavGroup}
+            {if $arrayNavGroup[i].Code == $codeCompet}
+                <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
+            {else}
+                <a class="btn btn-default actif" 
+                   href="?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$arrayNavGroup[i].Code}&Round={$Round}&Css={$Css}&navGroup=1">
+                    {$arrayNavGroup[i].Soustitre2}
+                </a>
+            {/if}
+        {sectionelse}
+            <h2 class="col-md-12">
+                {$recordCompetition.Soustitre2}
+            </h2>
+        {/section}
+    </div>
+    <div class="col-md-6 text-right">
+        <a class="btn btn-default actif" 
+            href="frame_phases.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round=*&Css={$Css}&navGroup=1">
+                    {#Classement_par_phase#}
+        </a>
+        <a class="btn btn-default actif" 
+            href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
+                    {#Classement#}
+        </a>
+        <a class="btn btn-primary">{#Stats#}</a>
     </div>
 </div>
-
 <div class="container">
     <article class="padTopBottom table-responsive col-md-8 col-md-offset-2 tableClassement">
         <h4>{#Meilleurs_buteurs#}</h4>
