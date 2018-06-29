@@ -1202,14 +1202,14 @@ class MyBdd
 		if($codeCompet == '*') {
             $sql  = "SELECT Code, Soustitre2 
                 FROM `gickp_Competitions`
-                WHERE Code_saison = 2018
+                WHERE Code_saison = $codeSaison
                 AND Code_ref = '" . utyGetSession('codeCompetGroup') . "'
                 ORDER BY GroupOrder";
 	
         } else {
             $sql  = "SELECT Code, Soustitre2 
                 FROM `gickp_Competitions`
-                WHERE Code_saison = 2018
+                WHERE Code_saison = $codeSaison
                 AND Code_ref = (
                     SELECT Code_ref FROM `gickp_Competitions` WHERE Code = '$codeCompet' AND Code_saison = $codeSaison
                 ) ORDER BY GroupOrder";

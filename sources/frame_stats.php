@@ -30,6 +30,7 @@ class Stats extends MyPage
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
             $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+            $this->m_tpl->assign('navGroup', 1);
         }
         
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
