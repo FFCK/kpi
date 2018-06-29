@@ -24,9 +24,13 @@ class Classement extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
         
-        if (utyGetGet('navCompet', false)) {
-            $arrayNavCompet = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
-            $this->m_tpl->assign('arrayNavCompet', $arrayNavCompet);
+        $group = utyGetGet('Group', 'N1H');
+		$this->m_tpl->assign('group', $group);
+        
+        
+        if (utyGetGet('navGroup', false)) {
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
+            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
         }
         
         $Round = utyGetGet('Round', '*');
