@@ -135,8 +135,8 @@
 										<Option Value="Group Z">Group Z</Option>
 										<Option Value="Classifying">Classifying</Option>
 										<Option Value="1/8 final">1/8 final</Option>
-										<Option Value="1/4 final">1/4 final</Option>
-										<Option Value="1/2 final">1/2 final</Option>
+										<Option Value="1/4 final">Quarter-final</Option>
+										<Option Value="1/2 final">Semi-final</Option>
 										<Option Value="27th place">27th place</Option>
 										<Option Value="25th place">25th place</Option>
 										<Option Value="23rd place">23rd place</Option>
