@@ -114,6 +114,7 @@ class FeuillePresenceEquipe extends MyPage
 						$capitaine = $row2['Capitaine'];
 						if (strlen($capitaine) == 0)
 							$capitaine = '-';
+                        $capitaine = str_replace('E', 'Coach', $capitaine);
 							
 						if (is_null($row2['Arb']))
 							$row2['Arb'] = '';
@@ -121,9 +122,9 @@ class FeuillePresenceEquipe extends MyPage
 /*						// Pour décaler l'entraineur à la fin de la liste
 						if ($capitaine == 'E' or $capitaine == 'A')
 							$clefEntraineur = $i;
- * 
-*/						if ($row2['Matric'] > 2000000 && $row2['icf'] != NULL) {
-                            $row2['Matric'] = 'Icf-' . $row2['icf'];
+*/
+                        if ($row2['Matric'] > 2000000 && $row2['icf'] != NULL && $row2['icf'] != 0) {
+                            $row2['Matric'] = 'Icf:' . $row2['icf'];
                         }				
 						if ($row2['Origine'] != $codeSaison)
 							$row2['Origine'] = ' ('.$row2['Origine'].')';
@@ -244,7 +245,7 @@ class FeuillePresenceEquipe extends MyPage
 			$pdf->Cell(137,8,$titreCompet,0,0,'L');
 			$pdf->Cell(136,8,'Season : '.$codeSaison,0,1,'R');
 			$pdf->SetFont('Arial','B',14);
-			$pdf->Cell(273,8,"Presence sheet - ".$row['Libelle'],0,'1','C');
+			$pdf->Cell(273,8,"Team roster - ".$row['Libelle'],0,'1','C');
 			$pdf->Ln(10);
 
 			$idEquipe = $row['Id'];
@@ -261,7 +262,7 @@ class FeuillePresenceEquipe extends MyPage
 			//$pdf->Cell(27,7,'Certif. Comp.','LTR',0,'C');
 			// $pdf->Cell(18,7,'CertifAPS','LTR',0,'C');
 			$pdf->Cell(17,7,'Club','B',0,'C');
-			$pdf->Cell(17,7,'Arb','B',1,'C');
+			$pdf->Cell(17,7,'Ref.','B',1,'C');
 			$pdf->SetFont('Arial','',10);
 			
 			// Mini 12 lignes par équipe

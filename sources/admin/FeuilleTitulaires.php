@@ -114,6 +114,7 @@ class FeuillePresenceEquipe extends MyPage
 						$capitaine = $row2['Capitaine'];
 						if (strlen($capitaine) == 0)
 							$capitaine = '-';
+                        $capitaine = str_replace('E', 'Coach', $capitaine);
 							
 						if (is_null($row2['Arb']))
 							$row2['Arb'] = '';
@@ -122,8 +123,8 @@ class FeuillePresenceEquipe extends MyPage
 						if ($capitaine == 'E' or $capitaine == 'A')
 							$clefEntraineur = $i;
 */							
-						if ($row2['Matric'] > 2000000 && $row2['icf'] != NULL) {
-                            $row2['Matric'] = 'Icf-' . $row2['icf'];
+						if ($row2['Matric'] > 2000000 && $row2['icf'] != NULL && $row2['icf'] != 0) {
+                            $row2['Matric'] = 'Icf: ' . $row2['icf'];
                         }
                         if ($row2['Origine'] != $codeSaison)
 							$row2['Origine'] = ' ('.$row2['Origine'].')';
