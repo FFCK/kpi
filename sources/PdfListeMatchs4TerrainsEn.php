@@ -150,9 +150,9 @@ class PdfListeMatchs extends MyPage
         // Entête PDF ...	  
  		$pdf = new PDF('L');
 		$pdf->Open();
-		$pdf->SetTitle("Liste des Matchs");
+		$pdf->SetTitle("Game list");
 		$pdf->SetAuthor("Kayak-polo.info");
-		$pdf->SetCreator("Kayak-polo.info avec FPDF");
+		$pdf->SetCreator("Kayak-polo.info with FPDF");
 		$pdf->SetTopMargin(30);
         
         // Bandeau
@@ -182,13 +182,13 @@ class PdfListeMatchs extends MyPage
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
 		$qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
-		$titreDate = "Saison ".$codeSaison;
+		$titreDate = "Season ".$codeSaison;
 		// titre
 		$pdf->SetFont('Arial','BI',12);
 		$pdf->Cell(137,5,$titreEvenementCompet,0,0,'L');
 		$pdf->Cell(136,5,$titreDate,0,1,'R');
 		$pdf->SetFont('Arial','B',14);
-		$pdf->Cell(273,6,"Liste des Matchs",0,1,'C');
+		$pdf->Cell(273,6,"Game list",0,1,'C');
 		$pdf->Ln(3);
 		$heure1 = '';
 		if($num_results > 0)
@@ -207,7 +207,7 @@ class PdfListeMatchs extends MyPage
 				if($libelle[1] != '')
 					$phase_match .= "  |  ".$libelle[1];
 				//Codes équipes	
-				$EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
+				$EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
 			}
 			if ($row['Id_equipeA'] >= 1)
 				$this->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA'], $myBdd);
@@ -258,39 +258,42 @@ class PdfListeMatchs extends MyPage
                 $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
             }
             
+            $pdf->SetFillColor(220, 220, 220);
             $pdf->SetFont('Arial','B',7);
-            $pdf->Cell(30, 5, utyDateUsToFrLong($date), 0,1,'L');
+            $date = date_create($date);
+            $date = date_format($date, 'l d/m/Y');
+            $pdf->Cell(30, 5, $date, 0,1,'L');
             
             $pdf->Cell(10, 5, '', 0,0,'L');
-            $pdf->Cell(67, 5, 'Terrain 1', 1,0,'C');
-            $pdf->Cell(67, 5, 'Terrain 2', 1,0,'C');
-            $pdf->Cell(67, 5, 'Terrain 3', 1,0,'C');
-            $pdf->Cell(67, 5, 'Terrain 4', 1,1,'C');
+            $pdf->Cell(67, 5, 'Pitch 1', 1,0,'C',1);
+            $pdf->Cell(67, 5, 'Pitch 2', 1,0,'C',1);
+            $pdf->Cell(67, 5, 'Pitch 3', 1,0,'C',1);
+            $pdf->Cell(67, 5, 'Pitch 4', 1,1,'C',1);
             
-            $pdf->Cell(10,5, 'Heure',1,0,'C');
+            $pdf->Cell(10,5, 'Time',1,0,'C',1);
                         
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,0,'C');
+            $pdf->Cell(7,5, '#',1,0,'C',1);
+            $pdf->Cell(14,5, 'Cat.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team B',1,0,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,0,'C');
 
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,0,'C');
+            $pdf->Cell(7,5, '#',1,0,'C',1);
+            $pdf->Cell(14,5, 'Cat.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team B',1,0,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,0,'C');
 
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,0,'C');
+            $pdf->Cell(7,5, '#',1,0,'C',1);
+            $pdf->Cell(14,5, 'Cat.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team B',1,0,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,0,'C');
 
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,1,'C');
+            $pdf->Cell(7,5, '#',1,0,'C',1);
+            $pdf->Cell(14,5, 'Cat.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Team B',1,1,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,1,'C');
 
             foreach ($tab_heure as $heure => $tab_terrain) {
@@ -306,7 +309,7 @@ class PdfListeMatchs extends MyPage
                     }
 //                    echo '<pre>' . var_dump($tab_terrain) . '</pre>';
                     if (isset($tab_terrain[$i])) {
-                        $pdf->Cell(7,5, $tab_terrain[$i][0]['Numero_ordre'],1,0,'C');
+                        $pdf->Cell(7,5, $tab_terrain[$i][0]['Numero_ordre'],1,0,'C', 1);
                         $pdf->Cell(14,5, $tab_terrain[$i][0]['Code_competition'],1,0,'C');
                         
                         if(strlen($tab_terrain[$i][0]['EquipeA']) > 18) {
@@ -336,7 +339,7 @@ class PdfListeMatchs extends MyPage
 //                        $pdf->Cell(17,5, str_replace('-1', '', $tab_terrain[$i][0]['Arbitre_principal']),1,$findeligne,'C');
                     } else {
                         $pdf->SetFont('Arial', '', 6);
-                        $pdf->Cell(67, 5, 'Pause', 1,$findeligne,'C');
+                        $pdf->Cell(67, 5, 'Break', 1, $findeligne, 'C', 1);
                     }
                 }
             
@@ -394,7 +397,7 @@ class PdfListeMatchs extends MyPage
 //		}
 		//$pdf->Cell(22,3, '',0,0,'C');
 		$pdf->Cell(271,3,'','T','1','C');
-		$pdf->Output('Liste matchs'.'.pdf','I');
+		$pdf->Output('Game list'.'.pdf','I');
 	}
 }
 
