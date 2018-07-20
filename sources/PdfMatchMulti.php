@@ -294,7 +294,7 @@ class FeuilleMatch extends MyPage {
                 if ($row3["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
                     $noma[$j] = strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
-                    $na[$j] = 'E';
+                    $na[$j] = 'C';
                 } elseif ($row3["Capitaine"] == 'C') {
                     $noma[$j] = strtoupper($row3['Nom']) . ' (Cap)';
                     $na[$j] = $row3['Numero'];
@@ -358,7 +358,7 @@ class FeuilleMatch extends MyPage {
                 if ($row4["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
                     $nomb[$j] = strtoupper($row4['Nom']) . ' (' . $lang['Entraineur'] . ')';
-                    $nb[$j] = 'E';
+                    $nb[$j] = 'C';
                 } elseif ($row4["Capitaine"] == 'C') {
                     $nomb[$j] = strtoupper($row4['Nom']) . ' (Cap)';
                     $nb[$j] = $row4['Numero'];
