@@ -128,8 +128,9 @@ jq(document).ready(function(){
             "smart": false
         },
         searchHighlight: true,
-        "lengthMenu": [[6, 8, 10, 20, 50, -1], [6, 8, 10, 20, 50, "Tous"]],
+        "lengthMenu": [[6, 8, 10, 20, 50, -1], [6, 8, 10, 20, 50, "All"]],
         "pageLength": 10,
+        "bPaginate" : true,
         "order": table_ordre,
         "columnDefs": [
             { "width": "130px", "targets": 6 }
