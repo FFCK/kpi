@@ -107,8 +107,8 @@
                         </td>
                     </tr>
                 </table>
+                {if $profile <= 6 && $AuthModif == 'O'}
 				<div class='blocTop'>
-					{if ($profile <= 6 or $profile == 9) && $AuthModif == 'O'}
 					<table id="formMatch">
 						<tr class="hideTr">
 							<td align="left" title="{#Intervale_matchs_title#}">
@@ -255,8 +255,8 @@
 							<td colspan="6" align="left" style="color:#555555"><i><u>{#Afficher_le_formulaire#}</u></i></td>
 						</tr>
 					</table>
-					{/if}
 				</div>
+                {/if}
 				<div class='blocMiddle'>
 					<table width=100%>
 						<tr>
