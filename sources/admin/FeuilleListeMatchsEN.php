@@ -158,7 +158,7 @@ class FeuilleListeMatchs extends MyPage {
         $pdf->SetTopMargin(30);
         $pdf->AddPage();
         if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 28);
+            $pdf->SetAutoPageBreak(true, 25);
         } else {
             $pdf->SetAutoPageBreak(true, 15);
         }
