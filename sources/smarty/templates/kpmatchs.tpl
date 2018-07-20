@@ -205,7 +205,7 @@
                             {/if}
                             <td class="hidden-xs">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeA|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
+                                <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -217,7 +217,7 @@
                                     <img class="img2 pull-right hidden-sm hidden-xs" width="30" src="{$arrayMatchs[i].logoB}" alt="{$arrayMatchs[i].clubB}" />
                                 {/if}
                                 {if $validation == 'O' && $arrayMatchs[i].ScoreA != '?' && $arrayMatchs[i].ScoreA != '' && $arrayMatchs[i].ScoreB != '?' && $arrayMatchs[i].ScoreB != ''}
-                                    <a class="btn btn-xs btn-default" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank" title="{#Feuille_marque#}">
+                                    <a class="btn btn-xs btn-default report" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank" title="{#Feuille_marque#}">
                                     {$arrayMatchs[i].ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$arrayMatchs[i].ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                     </a>
                                     <br />
@@ -236,7 +236,7 @@
                                 {/if}
                             </td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeB|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}">
+                                <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}">
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -302,6 +302,9 @@
                 {/section}
             </tbody>
         </table>
+        <br>
+        <br>
+        <br>
 	</article>
 </div>
 <script>
