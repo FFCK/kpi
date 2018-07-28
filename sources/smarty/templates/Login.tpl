@@ -22,6 +22,12 @@
             <input type="hidden" name="Mode" id="Mode" value="Connexion">        
             <br>
             <br>
+            <div class="text-center">
+                <a class="ui-button ui-widget ui-corner-all" href="{$target}&lang=fr"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
+                <a class="ui-button ui-widget ui-corner-all" href="{$target}&lang=en"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
+            </div>
+            <br>
+            <br>
             <p class="text-center"><a href="mailto:laurent@poloweb.org?subject=Demande d'identifiant administrateur kayak-polo.info&body=Nom:%0D%0APrénom:%0D%0AN°Licence:%0D%0AFonctions fédérales:%0D%0AUn petit mot ?">{#Demander_identifiant#}</a></p>
             <br>
             <p class="text-center" id="perdu"><a href="" onClick="return false">{#j_ai_perdu_mon_mdp#}</a></p>
