@@ -16,6 +16,9 @@ class Login extends MyPage
 		if (isset($_GET['Src'])) {
             $loginTarget = $myBdd->RealEscapeString($_GET['Src']);
             $_SESSION['loginTarget'] = $loginTarget;
+            $target = str_replace('&lang=en', '', $loginTarget);
+            $target = str_replace('&lang=fr', '', $loginTarget);
+            $target = '/admin/Login.php?Src=' . $target;
         }
 
         //if ($_SESSION['loginTarget'] == 'index.php' || $_SESSION['loginTarget'] == 'Login.php' || $_SESSION['loginTarget'] == '')
@@ -150,7 +153,8 @@ class Login extends MyPage
 		}
 				
 		$this->SetTemplate("Connexion", "Accueil", false);
-		
+        $this->m_tpl->assign('target', $target);
+
 		if (isset($_SESSION['User']))
 			$this->m_tpl->assign('User', $_SESSION['User']);
 		else
