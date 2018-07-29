@@ -120,6 +120,9 @@
 								{/section}
 							</tbody>
 						</table>
+                        <span>Total : {$smarty.section.i.index}</span>
+                        <br>
+                        <br>
 						<div>
                             {#Feuille_de_presence_text1#}
 							<br>
