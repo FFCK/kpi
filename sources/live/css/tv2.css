@@ -1,3 +1,9 @@
+@font-face {
+  font-family: HelveticaNeueCondensedBold;
+  src: url(HelveticaNeueCondensedBold.ttf);
+  font-weight: bold;
+}
+
 html, body
 {
 	width: 100%;
@@ -15,6 +21,10 @@ html, body
 }
 .img_nation2 {
     width: 14%;
+}
+
+.text-top {
+    vertical-align: text-top;
 }
 
 .nuage {
@@ -58,7 +68,91 @@ html, body
     
     color: #000066;
     font-weight: bold;
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
+    font-size: 45px;
+}
+
+.ban_info_1_lines {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_info_1_lines.png');
+	background-repeat: no-repeat;
+}
+.ban_info_1_lines .logo_sm {
+    width: 113px;
+    height: 122px;
+    position: absolute;
+    left: 365px;
+    top: -215px;
+    background-image: url('../img/logo_sm.png');
+	background-repeat: no-repeat;
+}
+.ban_info_1_lines #banner_line1 {
+    top: -245px;
+}
+.ban_info_1_lines #banner_line2 {
+    top: -190px;
+    right: 20px;
+}
+
+#ban_info_1_lines {
+    /*border: 1px solid red;*/
+    width: 1060px;
+    height: 138px;
+
+    position: absolute;
+    left: 362px;
+    top: 834px;
+    /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
+    /*background-color: whitesmoke;*/
+    
+    color: #000066;
+    font-weight: bold;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
+    font-size: 45px;
+}
+
+.ban_info_2_lines {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_info_2_lines.png');
+	background-repeat: no-repeat;
+}
+.ban_info_2_lines .logo_sm {
+    width: 113px;
+    height: 122px;
+    position: absolute;
+    left: 365px;
+    top: -215px;
+    background-image: url('../img/logo_sm.png');
+	background-repeat: no-repeat;
+}
+.ban_info_2_lines #banner_line1 {
+    top: -245px;
+}
+.ban_info_2_lines #banner_line2 {
+    top: -190px;
+    right: 20px;
+}
+
+#ban_info_2_lines {
+    /*border: 1px solid red;*/
+    width: 1060px;
+    height: 138px;
+
+    position: absolute;
+    left: 362px;
+    top: 834px;
+    /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
+    /*background-color: whitesmoke;*/
+    
+    color: #000066;
+    font-weight: bold;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
     font-size: 45px;
 }
 
@@ -70,21 +164,31 @@ html, body
     background-image: url('../img/banner_single.png');
 	background-repeat: no-repeat;
 }
+.ban_single .logo_xs {
+    width: 83px;
+    height: 90px;
+    position: absolute;
+    left: 553px;
+    top: 830px;
+    background-image: url('../img/logo_xs.png');
+	background-repeat: no-repeat;
+}
+
 
 #banner_single {
     /*border: 1px solid red;*/
-    width: 1180px;
+    width: 680px;
     height: 138px;
 
     position: absolute;
-    left: 405px;
-    top: 848px;
+    left: 655px;
+    top: 853px;
     /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
     /*background-color: whitesmoke;*/
     
     color: #000066;
     font-weight: bold;
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
     font-size: 40px;
 }
 
@@ -95,6 +199,15 @@ html, body
     position: absolute;
     bottom: 0;
     background-image: url('../img/banner_presentation.png');
+	background-repeat: no-repeat;
+}
+.ban_presentation .logo_lg {
+    width: 311px;
+    height: 335px;
+    position: absolute;
+    left: 1100px;
+    top: 365px;
+    background-image: url('../img/logo_lg.png');
 	background-repeat: no-repeat;
 }
 
@@ -111,9 +224,10 @@ html, body
     
     color: #000066;
     font-weight: bold;
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
     font-size: 45px;
 }
+
 
 #banner {
     width: 60%;
@@ -129,7 +243,7 @@ html, body
     
     color: black;
     font-weight: bold;
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
     font-size: 1.5vw;
 }
 
@@ -138,6 +252,15 @@ html, body
     height: 100vh;
     width: 100vw;
     background-image: url('../img/banner_list.png');
+	background-repeat: no-repeat;
+}
+.ban_list .logo_sm {
+    width: 113px;
+    height: 122px;
+    position: absolute;
+    left: 725px;
+    top: 152px;
+    background-image: url('../img/logo_sm.png');
 	background-repeat: no-repeat;
 }
 
@@ -154,16 +277,16 @@ html, body
     
     color: #000066;
     font-weight: bold;
-    font-family: "Arial Narrow", Arial, sans-serif;
-    font-size: 45px;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
+    font-size: 38px;
 }
 
 #banner_line1 {
     font-weight: bold;
     width: 55%;
     position: absolute;
-    right: 0px;
-    top: 30px;
+    right: 20px;
+    top: 0px;
     font-size: 45px;
 }
 
@@ -172,8 +295,9 @@ html, body
     width: 55%;
     position: absolute;
     right: 0px;
-    top: 0px;
-    font-size: 45px;
+    top: 60px;
+    font-size: 35px;
+    color: #4b97cb;
 }
 
 .categorie {
@@ -183,13 +307,27 @@ html, body
 
 #banner_lines {
     position: absolute;
-    top: 240px;
-    left: 55px;
+    top: 235px;
+    left: 0px;
+    width: 100%;
 }
 
 .banner_line {
-    line-height: 60px;
+    line-height: 61px;
 }
+
+.banner_line.line1 {
+    color: #144361;
+}
+
+.banner_line.line2 {
+    color: #4b97cb;
+}
+
+.clair {
+    color: #4b97cb;
+}
+
 span.capitaine {
     vertical-align: middle;
     font-size: 30px;
@@ -216,7 +354,7 @@ span.numero {
     
     color: black;
     font-weight: bold;
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
     font-size: 1.5vw;
 }
 
