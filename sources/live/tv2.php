@@ -27,7 +27,7 @@ class TV extends MyPage
 
             <!-- CSS styles -->
             <link href="./css/bootstrap.min.css" rel="stylesheet">
-            <link href="./css/tv2.css" rel="stylesheet">
+            <link href="./css/tv2.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
 
         </head>
     <?php
@@ -611,18 +611,18 @@ class TV extends MyPage
                     <div id="banner_line2" class="h2 text-right">' . utyGetString($rMatch, 'categorie', '???') . '</div>
 
                     <div class="row banner_line">
-                        <div class="col-md-5">
+                        <div class="col-md-5 text-left">
                             ' . $this->ImgNation48($rMatch['ClubA']) . '&nbsp;
                             <span>
                             ' . utyGetString($rMatch, 'LibelleA', '???') . '
                             </span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 text-center">
                             <span class="label label-primary numero">' . $rMatch['ScoreDetailA'] . '</span>
                              &nbsp;
                             <span class="label label-primary numero">' . $rMatch['ScoreDetailB'] . '</span>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-5 text-right">
                             <span>
                             ' . utyGetString($rMatch, 'LibelleB', '???') . '
                             </span>
@@ -652,7 +652,7 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_single">
                 <div class="logo_xs"></div>
-                <div id="banner_single" class="text-right">
+                <div id="banner_single" class="text-center">
                     <div class="banner_line">
                         <span>
                             ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
@@ -819,8 +819,8 @@ class TV extends MyPage
             $voie = 0;
         }
         ?>
-		<script type="text/javascript" src="./js/voie.js" ></script>
- 		<script type="text/javascript" src="./js/tv.js" ></script>
+		<script type="text/javascript" src="./js/voie.js?v=<?= NUM_VERSION ?>" ></script>
+ 		<script type="text/javascript" src="./js/tv.js?v=<?= NUM_VERSION ?>" ></script>
         <script type="text/javascript">
             $(document).ready(function(){ 
                 Init(<?= $voie; ?>);

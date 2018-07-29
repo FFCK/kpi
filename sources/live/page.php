@@ -1,6 +1,8 @@
 <?php
 
-define("VERSION", "Version 1.0");
+require_once('../commun/MyConfig.php');
+
+define("VERSION", NUM_VERSION);
 
 // Classe de Base pour toutes les Pages ...
 class MyPage 		
