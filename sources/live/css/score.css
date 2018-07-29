@@ -133,22 +133,22 @@ div#categorie {
     box-shadow: 4px 4px 4px #1e1e82;
 }
 
-.ban_double {
+.ban_goal_card {
     height: 100vh;
     width: 100vw;
     position: absolute;
     bottom: 0;
-    background-image: url('../img/banner_double.png');
+    background-image: url('../img/banner_goal_card.png');
     display: none;
 }
 
-#banner_double {
+#banner_goal_card {
     width: 1180px;
     height: 138px;
 
     position: absolute;
-    left: 405px;
-    top: 825px;
+    left: 105px;
+    top: 780px;
     color: #000066;
     font-weight: bold;
     font-family: HelveticaNeueCondensedBold, Helvetica, sans-serif;
@@ -159,6 +159,23 @@ div#categorie {
     line-height: 60px;
 }
 
+#match_event_line1 {
+    font-size: 35px;
+    color: #4b97cb;
+    margin-left: 60px;
+}
+#match_event_line2 {
+    /*font-size: 35px;*/
+    color: #144361;
+}
+
+#goal_card {
+    position: absolute;
+    right: 250px;
+    top: 690px;
+
+}
+
 span.capitaine {
     vertical-align: middle;
     font-size: 30px;
@@ -167,3 +184,8 @@ span.numero {
     vertical-align: middle;
     font-size: 30px;
 }
+
+.clair {
+    color: #4b97cb;
+}
+
