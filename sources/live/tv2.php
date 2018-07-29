@@ -49,14 +49,14 @@ class TV extends MyPage
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='centre' src='../img/Nations/".$nation.".png' height='32' width='32' />";
+		return "<img class='centre text-top' src='../img/Nations/".$nation.".png' height='32' width='32' />";
 	}
 	
 	function ImgNation48($nation)
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='centre' src='../img/Nations/".$nation.".png' height='48' width='48' />";
+		return "<img class='centre text-top' src='../img/Nations/".$nation.".png' height='48' width='48' />";
 	}
 
 	
@@ -64,7 +64,7 @@ class TV extends MyPage
 	{
 		$nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) { return ''; }
-		return "<img class='centre' src='../img/Nations/".$nation.".png' height='64' width='64' />";
+		return "<img class='centre text-top' src='../img/Nations/".$nation.".png' height='64' width='64' />";
 	}
 	
 	function ImgNationCss($nation)
@@ -205,11 +205,16 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_list">
+                <div class="logo_sm"></div>
                 <div id="banner_list">
-                    <div id="banner_line1" class="h2 text-center">' . $this->ImgNation48(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
+                    <div id="banner_line1" class="h2 text-right">
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
+                        ' . $this->ImgNation64(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
+                    </div>
+                    <div id="banner_line2" class="h2 text-center">
+                        <span>CANOE POLO</span>
                     </div>
                 <div id="banner_lines">
             ';
@@ -222,10 +227,12 @@ class TV extends MyPage
                             }
                             echo '
                                 <div class="banner_line">
-                                    <span class="label label-primary numero">' . utyGetInt($joueur, 'Numero', 999) . '</span>
+                                    <div class="col-md-2 text-right clair">' . utyGetInt($joueur, 'Numero', 999) . '</div>
+                                    <div class="col-md-10">' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</div>
+<!--                                    <span class="label label-primary numero">' . utyGetInt($joueur, 'Numero', 999) . '</span>
                                     &nbsp;
                                     <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</span>
-                                </div>';
+-->                             </div>';
                         }
                     }
         echo '
@@ -265,11 +272,16 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_list">
+                <div class="logo_sm"></div>
                 <div id="banner_list">
-                    <div id="banner_line1" class="h2 text-center">' . $this->ImgNation48(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
+                    <div id="banner_line1" class="h2 text-right">
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
+                        ' . $this->ImgNation64(utyGetString($rEquipe, 'Code_club', 'FRA')) . '&nbsp;
+                    </div>
+                    <div id="banner_line2" class="h2 text-center">
+                        <span>CANOE POLO</span>
                     </div>
                 <div id="banner_lines">
             ';
@@ -277,7 +289,9 @@ class TV extends MyPage
                         if(utyGetString($joueur, 'Capitaine', '???') == 'E') {
                             echo '
                                 <div class="banner_line">
-                                    <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (coach)</span>
+                                    <div class="col-md-2 text-right clair">COACH</div>
+                                    <div class="col-md-10">' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</div>
+<!--                                    <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (coach)</span> -->
                                 </div>';
                         }
                     }
@@ -496,15 +510,20 @@ class TV extends MyPage
         $nation2par = ($nation2 != '') ? ' (' . $nation2 . ')' : '';
         
         echo '
-            <div class="container-fluid ban_double">
-                <div id="banner_double" class="text-center">
-                    <div class="banner_line">First Referee : 
-                        ' . $this->ImgNation48($nation1) . '&nbsp;
-                        <span>' . $arbitre1 . $nation1par . '</span>
+            <div class="container-fluid ban_info_2_lines">
+                <div id="ban_info_2_lines" class="text-center">
+                    <div class="logo_sm"></div>
+                    <div id="banner_line1" class="h2 text-right">REFEREES</div>
+                    <div id="banner_line2" class="h2 text-right">
+                        <span>CANOE POLO</span>
                     </div>
-                    <div class="banner_line">Second Referee : 
-                        ' . $this->ImgNation48($nation2) . '&nbsp;
-                        <span>' . $arbitre2 . $nation2par . '</span>
+                    <div class="banner_line">
+                        <div class="col-md-3 text-right clair">' . $this->ImgNation48($nation1) . ' ' . $nation1 . '</div>
+                        <div class="col-md-9 text-left">' . $arbitre1 . '</div>
+                    </div>
+                    <div class="banner_line"> 
+                        <div class="col-md-3 text-right clair">' . $this->ImgNation48($nation2) . ' ' . $nation2 . '</div>
+                        <div class="col-md-9 text-left">' . $arbitre2 . '</div>
                     </div>
                 </div>
             </div>';
@@ -533,25 +552,26 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_presentation">
+                <div class="logo_lg"></div>
                 <div id="banner_presentation" class="text-center">
-                    <div class="banner_line">
+                    <div class="banner_line line1">
                         ' . utyGetString($rMatch, 'categorie', '???') . '
                         ' . utyGetString($rMatch, 'Phase', '???') . '
                          - Pitch
                         ' . utyGetString($rMatch, 'Terrain', '???') . '
                     </div>
-                    <div class="row banner_line">
-                        <div class="col-md-6">
-                            ' . $this->ImgNation48($rMatch['ClubA']) . '&nbsp;
+                    <div class="row banner_line line2">
+                        <div class="col-md-6 text-right">
                             <span>
                             ' . utyGetString($rMatch, 'LibelleA', '???') . '
                             </span>
+                            &nbsp;' . $this->ImgNation48($rMatch['ClubA']) . '
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 text-left">
+                            ' . $this->ImgNation48($rMatch['ClubB']) . '&nbsp;
                             <span>
                             ' . utyGetString($rMatch, 'LibelleB', '???') . '
                             </span>
-                            &nbsp;' . $this->ImgNation48($rMatch['ClubB']) . '
                         </div>
                     </div>
                 </div>
@@ -580,14 +600,16 @@ class TV extends MyPage
 		$db->LoadRecord($cmd, $rMatch);
         
         echo '
-            <div class="container-fluid ban_presentation">
-                <div id="banner_presentation" class="text-center">
-                    <div class="banner_line">
-                        ' . utyGetString($rMatch, 'categorie', '???') . '
+            <div class="container-fluid ban_info_1_lines">
+                <div id="ban_info_1_lines" class="text-center">
+                    <div class="logo_sm"></div>
+                    <div id="banner_line1" class="h2 text-right">
                         ' . utyGetString($rMatch, 'Phase', '???') . '
-                         - Pitch
-                        ' . utyGetString($rMatch, 'Terrain', '???') . '
+                    <!--     - Pitch
+                        ' . utyGetString($rMatch, 'Terrain', '???') . '-->
                     </div>
+                    <div id="banner_line2" class="h2 text-right">' . utyGetString($rMatch, 'categorie', '???') . '</div>
+
                     <div class="row banner_line">
                         <div class="col-md-5">
                             ' . $this->ImgNation48($rMatch['ClubA']) . '&nbsp;
@@ -629,11 +651,13 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_single">
-                <div id="banner_single" class="text-center">
-                    <div class="banner_line">' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
+                <div class="logo_xs"></div>
+                <div id="banner_single" class="text-right">
+                    <div class="banner_line">
                         <span>
-                        ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
+                            ' . ' ' . utyGetString($rEquipe, 'Libelle', '???') . '
                         </span>
+                        ' . $this->ImgNation48($rEquipe['Code_club']) . '&nbsp;
                     </div>
                 </div>
             </div>';

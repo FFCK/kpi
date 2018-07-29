@@ -38,7 +38,7 @@ function RefreshHorloge()
 			if (temps_restant < 0) temps_restant = 0;
 	
 			$('#match_horloge').html(SecToMMSS(temps_restant));
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i)));
+			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')));
 /*			
 			if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
 			{
@@ -59,7 +59,7 @@ function RefreshHorloge()
 				temps_restant = 0;
 
 			$('#match_horloge').html(SecToMMSS(temps_restant));
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i)));
+			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')));
 
 /*			
 			if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
