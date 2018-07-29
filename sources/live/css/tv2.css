@@ -84,7 +84,7 @@ html, body
     width: 113px;
     height: 122px;
     position: absolute;
-    left: 365px;
+    left: 317px;
     top: -215px;
     background-image: url('../img/logo_sm.png');
 	background-repeat: no-repeat;
@@ -99,11 +99,11 @@ html, body
 
 #ban_info_1_lines {
     /*border: 1px solid red;*/
-    width: 1060px;
+    width: 1020px;
     height: 138px;
 
     position: absolute;
-    left: 362px;
+    left: 410px;
     top: 834px;
     /*background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 10%,rgba(255,255,255,0.8) 90%, rgba(255,255,255,0) 100%);*/
     /*background-color: whitesmoke;*/
@@ -111,7 +111,7 @@ html, body
     color: #000066;
     font-weight: bold;
     font-family: HelveticaNeueCondensedBold, Arial, sans-serif;
-    font-size: 45px;
+    font-size: 42px;
 }
 
 .ban_info_2_lines {
