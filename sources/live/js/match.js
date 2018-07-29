@@ -448,19 +448,19 @@ function GetImgEvtMatch(evt_match)
     {
         case 'B':
         case 'T':
-            return "<img class='evt centre' src='../img/ball.png' height='48' />";
+            return "<img class='evt centre' src='img/ball.png' />";
             break;
 
         case 'V':
-            return "<img class='evt centre' src='../img/carton_vert.png' height='48' />";
+            return "<img class='evt centre' src='img/greencard.png' />";
             break;
 
         case 'J':
-            return "<img class='evt centre' src='../img/carton_jaune.png' height='48' />";
+            return "<img class='evt centre' src='img/yellowcard.png' />";
             break;
 
         case 'R':
-            return "<img class='evt centre' src='../img/carton_rouge.png' height='48' />";
+            return "<img class='evt centre' src='img/redcard.png' />";
             break;
 
         default:

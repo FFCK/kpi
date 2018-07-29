@@ -68,7 +68,9 @@ class FeuillePresence extends MyPage {
                             . "Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric) "
                             . "Where Id_Equipe = ";
                     $sql2 .= $idEquipe;
-                    $sql2 .= " Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";
+                    $sql2 .= " AND a.Capitaine != 'A'"
+                            . " AND a.Capitaine != 'X'" 
+                            . " Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";
                     //$sql2 .= " Order By Field(if(a.Capitaine='C','-',a.Capitaine), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";	 
 
                     $result2 = mysql_query($sql2, $myBdd->m_link) or die("Erreur Load Titulaires : " . $sql2 . ' - ' . $codeCompet . ' - ' . $row['Id'] . ' ! ');
@@ -114,6 +116,7 @@ class FeuillePresence extends MyPage {
                         if (strlen($capitaine) == 0) {
                             $capitaine = '-';
                         }
+                        $capitaine = str_replace('E', 'Coach', $capitaine);
 
                         if (is_null($row2['Arb'])) {
                             $row2['Arb'] = '';
