@@ -23,7 +23,7 @@ class Score extends MyPage
 		
         <!-- CSS styles -->
         <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <link href="./css/score.css" rel="stylesheet">
+        <link href="./css/score.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
         <?php
 		if ($this->GetParam('speaker') == '1')
 		{
@@ -76,10 +76,11 @@ class Score extends MyPage
             <?php
 		}
         ?>
-        <div id="bandeau_goal" class="ban_double">
-            <div id="banner_double" class="text-center">
-                <div id="match_event_line1" class="banner_line"></div>
-                <div id="match_event_line2" class="banner_line"></div>
+        <div id="bandeau_goal" class="ban_goal_card">
+            <div id="goal_card"></div>
+            <div id="banner_goal_card" class="text-left">
+                <div id="match_event_line2" class="banner_line text-left"></div>
+                <div id="match_event_line1" class="banner_line text-left"></div>
             </div>
         </div>
 		
@@ -96,9 +97,9 @@ class Score extends MyPage
 		$voie = $this->GetParamInt('voie', 0);
 
         ?>
-        <script type="text/javascript" src="./js/match.js" ></script>
-		<script type="text/javascript" src="./js/voie.js" ></script>
-        <script type="text/javascript" src="./js/score.js" ></script>
+        <script type="text/javascript" src="./js/match.js?v=<?= NUM_VERSION ?>" ></script>
+		<script type="text/javascript" src="./js/voie.js?v=<?= NUM_VERSION ?>" ></script>
+        <script type="text/javascript" src="./js/score.js?v=<?= NUM_VERSION ?>" ></script>
         <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo "$event,$terrain,$speaker,$voie";?>); }); </script>	
         <?php
     }
