@@ -23,7 +23,7 @@ class Score extends MyPage
 		
         <!-- CSS styles -->
         <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <link href="./css/score2.css" rel="stylesheet">
+        <link href="./css/score.css" rel="stylesheet">
         <?php
 		if ($this->GetParam('speaker') == '1')
 		{
@@ -63,7 +63,7 @@ class Score extends MyPage
                 <div id="score_separation">-</div>
                 <div id="score2"></div>
 
-                <div id="categorie"></div>
+                <!--<div id="categorie"></div>-->
             </div>
         </div>
         
