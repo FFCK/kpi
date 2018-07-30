@@ -63,7 +63,7 @@
                                                 </button>
                                             {else}
                                                 <button type="button" class="btn btn-default btn-xs" title="{#ATT#}">
-                                                       ATT
+                                                       {#ATT#}
                                                 </button>
                                             {/if}
                                             </span>
@@ -156,7 +156,7 @@
                                                 </button>
                                             {else}
                                                 <button type="button" class="btn btn-default btn-xs" title="{#ATT#}">
-                                                       ATT
+                                                       {#ATT#}
                                                 </button>
                                             {/if}
                                             </span>
@@ -198,7 +198,7 @@
                                                 </button>
                                             {else}
                                                 <button type="button" class="btn btn-default btn-xs" title="{#ATT#}">
-                                                       ATT
+                                                       {#ATT#}
                                                 </button>
                                             {/if}
                                             </span>
@@ -284,7 +284,7 @@
                                                     </button>
                                                 {else}
                                                     <button type="button" class="btn btn-default btn-xs" title="{#ATT#}">
-                                                           ATT
+                                                           {#ATT#}
                                                     </button>
                                                 {/if}
                                                 </span>
@@ -326,7 +326,7 @@
                                                     </button>
                                                 {else}
                                                     <button type="button" class="btn btn-default btn-xs" title="{#ATT#}">
-                                                           ATT
+                                                           {#ATT#}
                                                     </button>
                                                 {/if}
                                                 </span>
