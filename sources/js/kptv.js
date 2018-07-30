@@ -45,6 +45,9 @@ jq(document).ready(function(){
             case 'player':
                 jq('#match-col, #game_report, #team-col, #number-col').show();
                 break;
+            case 'coach':
+                jq('#match-col, #game_report, #team-col, #number-col').show();
+                break;
             case 'player_medal':
                 jq('#match-col, #game_report, #team-col, #number-col, #medal-col').show();
                 break;
@@ -108,6 +111,9 @@ jq(document).ready(function(){
                 break;
             case 'player':
                 Go_player(jq('#channel').val(), jq('#match').val(), jq('#team').val(), jq('#number').val(), showUrl);
+                break;
+            case 'coach':
+                Go_coach(jq('#channel').val(), jq('#match').val(), jq('#team').val(), jq('#number').val(), showUrl);
                 break;
             case 'player_medal':
                 Go_player_medal(jq('#channel').val(), jq('#match').val(), jq('#team').val(), 
@@ -225,6 +231,9 @@ jq(document).ready(function(){
             case 'player':
                 jq('#match-col2, #game_report2, #team-col2, #number-col2').show();
                 break;
+            case 'coach':
+                jq('#match-col2, #game_report2, #team-col2, #number-col2').show();
+                break;
             case 'player_medal':
                 jq('#match-col2, #game_report2, #team-col2, #number-col2, #medal-col2').show();
                 break;
@@ -288,6 +297,9 @@ jq(document).ready(function(){
                 break;
             case 'player':
                 Go_player(jq('#channel2').val(), jq('#match2').val(), jq('#team2').val(), jq('#number2').val(), showUrl);
+                break;
+            case 'coach':
+                Go_coach(jq('#channel2').val(), jq('#match2').val(), jq('#team2').val(), jq('#number2').val(), showUrl);
                 break;
             case 'player_medal':
                 Go_player_medal(jq('#channel2').val(), jq('#match2').val(), jq('#team2').val(), 
@@ -406,6 +418,9 @@ jq(document).ready(function(){
             case 'player':
                 jq('#match-col3, #game_report3, #team-col3, #number-col3').show();
                 break;
+            case 'coach':
+                jq('#match-col3, #game_report3, #team-col3, #number-col3').show();
+                break;
             case 'player_medal':
                 jq('#match-col3, #game_report3, #team-col3, #number-col3, #medal-col3').show();
                 break;
@@ -469,6 +484,9 @@ jq(document).ready(function(){
                 break;
             case 'player':
                 Go_player(jq('#channel3').val(), jq('#match3').val(), jq('#team3').val(), jq('#number3').val(), showUrl);
+                break;
+            case 'coach':
+                Go_coach(jq('#channel3').val(), jq('#match3').val(), jq('#team3').val(), jq('#number3').val(), showUrl);
                 break;
             case 'player_medal':
                 Go_player_medal(jq('#channel3').val(), jq('#match3').val(), jq('#team3').val(), jq('#number3').val(), 
@@ -586,6 +604,9 @@ jq(document).ready(function(){
             case 'player':
                 jq('#match-col4, #game_report4, #team-col4, #number-col4').show();
                 break;
+            case 'coach':
+                jq('#match-col4, #game_report4, #team-col4, #number-col4').show();
+                break;
             case 'player_medal':
                 jq('#match-col4, #game_report4, #team-col4, #number-col4, #medal-col4').show();
                 break;
@@ -649,6 +670,9 @@ jq(document).ready(function(){
                 break;
             case 'player':
                 Go_player(jq('#channel4').val(), jq('#match4').val(), jq('#team4').val(), jq('#number4').val(), showUrl);
+                break;
+            case 'coach':
+                Go_coach(jq('#channel4').val(), jq('#match4').val(), jq('#team4').val(), jq('#number4').val(), showUrl);
                 break;
             case 'player_medal':
                 Go_player_medal(jq('#channel4').val(), jq('#match4').val(), jq('#team4').val(), jq('#number4').val(), 
@@ -760,6 +784,17 @@ function Go_player(channel, match, team, number, showUrl=0)
 {
 	var param;
 	param  = "show=player";
+	param += "&voie=" + channel;
+	param += "&match=" + match;
+	param += "&team=" + team;
+	param += "&number=" + number;
+	Go(param, showUrl);
+}
+
+function Go_coach(channel, match, team, number, showUrl=0)
+{
+	var param;
+	param  = "show=coach";
 	param += "&voie=" + channel;
 	param += "&match=" + match;
 	param += "&team=" + team;

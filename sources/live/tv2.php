@@ -416,6 +416,56 @@ class TV extends MyPage
                 . "WHERE a.Id_match = $idMatch "
                 . "AND a.Equipe = '$equipe' "
                 . "AND a.Matric = b.matric "
+                . "AND a.Capitaine != 'E' "
+                . "AND a.Numero = $numero ";
+
+		$rJoueur = null;
+		$db->LoadRecord($cmd, $rJoueur);
+        $num = '<span class="clair">' . $numero . '</span> ';
+        
+        if(utyGetString($rJoueur, 'Capitaine', '???') == 'C') {
+            $capitaine = ' <span class="label label-warning capitaine">C</span>';
+        } else if(utyGetString($rJoueur, 'Capitaine', '???') == 'E') {
+            $capitaine = ' (Coach)';
+            $num = '';
+        } else {
+            $capitaine = '';
+        }
+        
+        echo '
+            <div class="container-fluid ban_goal_card">
+                <div id="goal_card">' . $this->ImgNationFull(utyGetString($rJoueur, 'Numero_comite_dept', '???')) . '</div>
+                <div id="banner_goal_card" class="text-left">
+                    <div id="match_event_line2" class="banner_line text-left">
+                        &nbsp;
+                        <span>' . $num
+                            . utyGetString($rJoueur, 'Nom', '???') 
+                            . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') 
+                            . $capitaine . '
+                        </span>
+                    </div>
+                    <div id="match_event_line1" class="banner_line text-left">
+                        ' . utyGetString($rJoueur, 'Numero_comite_dept', '???') . '
+                    </div>
+                </div>
+            </div>';
+	}
+
+	function Content_Coach()
+    {
+		$db = new MyBdd();
+		
+		$idMatch = $this->GetParamInt('match',-1);
+		$equipe = $this->GetParam('team', 'A');
+		$numero = $this->GetParam('number', '1');
+		
+		// Chargement Joueurs  
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Numero_comite_dept "
+                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
+                . "WHERE a.Id_match = $idMatch "
+                . "AND a.Equipe = '$equipe' "
+                . "AND a.Matric = b.matric "
+                . "AND a.Capitaine = 'E' "
                 . "AND a.Numero = $numero ";
 
 		$rJoueur = null;
@@ -790,6 +840,10 @@ class TV extends MyPage
                 break;
             case 'player':
                 $this->Content_Player();
+                return;
+                break;
+            case 'coach':
+                $this->Content_Coach();
                 return;
                 break;
             case 'player_medal':
