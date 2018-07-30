@@ -690,16 +690,16 @@ class FeuilleMatch extends MyPage {
             $pdf->SetFillColor(200, 200, 200);
 
             //signatures
-            $pdf->Ln(1);
-            $pdf->SetFont('Arial', '', 10);
-            $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');
-            $pdf->Cell(38, 12, "", '1', '0', 'C');
-            $pdf->Cell(38, 12, "", '1', '0', 'C');
-            $pdf->Cell(38, 12, "", '1', '1', 'C');
-            $pdf->Cell(21, 4, $lang['avant_match'], 'LRB', '0', 'C');
-            $pdf->Cell(38, 4, $lang['Capitaine'] . " A", '1', '0', 'C');
-            $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
-            $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
+//            $pdf->Ln(1);
+//            $pdf->SetFont('Arial', '', 10);
+//            $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');
+//            $pdf->Cell(38, 12, "", '1', '0', 'C');
+//            $pdf->Cell(38, 12, "", '1', '0', 'C');
+//            $pdf->Cell(38, 12, "", '1', '1', 'C');
+//            $pdf->Cell(21, 4, $lang['avant_match'], 'LRB', '0', 'C');
+//            $pdf->Cell(38, 4, $lang['Capitaine'] . " A", '1', '0', 'C');
+//            $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
+//            $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
 
             //Colonne 2
 
