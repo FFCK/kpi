@@ -67,6 +67,13 @@ class TV extends MyPage
 		return "<img class='centre text-top' src='../img/Nations/".$nation.".png' height='64' width='64' />";
 	}
 	
+	function ImgNationFull($nation)
+	{
+		$nation = $this->VerifNation($nation);
+        if (strlen($nation) != 3) { return ''; }
+		return "<img class='centre text-top' src='../img/Nations/".$nation.".png' />";
+	}
+	
 	function ImgNationCss($nation)
 	{
 		$nation = $this->VerifNation($nation);
@@ -291,7 +298,7 @@ class TV extends MyPage
                                 <div class="banner_line">
                                     <div class="col-md-2 text-right clair">COACH</div>
                                     <div class="col-md-10">' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</div>
-<!--                                    <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (coach)</span> -->
+<!--                                    <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (Coach)</span> -->
                                 </div>';
                         }
                     }
@@ -368,8 +375,9 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_list">
-                <div id="banner_list">
-                    <div id="banner_line2" class="h2 text-center">
+                <div class="logo_sm"></div>
+                <div id="banner_list" class="final_ranking">
+                    <div id="banner_line1" class="h2 text-center">
                         FINAL RANKING<br>
                         <span class="categorie">
                         ' . ' ' . utyGetString($tEquipes[0], 'Soustitre2', '???') . '
@@ -412,26 +420,31 @@ class TV extends MyPage
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
-        $num = '<span class="label label-primary numero">' . $numero . '</span> ';
+        $num = '<span class="clair">' . $numero . '</span> ';
         
         if(utyGetString($rJoueur, 'Capitaine', '???') == 'C') {
             $capitaine = ' <span class="label label-warning capitaine">C</span>';
         } else if(utyGetString($rJoueur, 'Capitaine', '???') == 'E') {
-            $capitaine = ' (coach)';
+            $capitaine = ' (Coach)';
             $num = '';
         } else {
             $capitaine = '';
         }
         
         echo '
-            <div class="container-fluid ban_single">
-                <div id="banner_single" class="text-center">
-                    <div class="banner_line">' . $this->ImgNation48(utyGetString($rJoueur, 'Numero_comite_dept', '???')) . '&nbsp;
+            <div class="container-fluid ban_goal_card">
+                <div id="goal_card">' . $this->ImgNationFull(utyGetString($rJoueur, 'Numero_comite_dept', '???')) . '</div>
+                <div id="banner_goal_card" class="text-left">
+                    <div id="match_event_line2" class="banner_line text-left">
+                        &nbsp;
                         <span>' . $num
                             . utyGetString($rJoueur, 'Nom', '???') 
                             . ' ' . utyGetPrenom($rJoueur, 'Prenom','...') 
                             . $capitaine . '
                         </span>
+                    </div>
+                    <div id="match_event_line1" class="banner_line text-left">
+                        ' . utyGetString($rJoueur, 'Numero_comite_dept', '???') . '
                     </div>
                 </div>
             </div>';
@@ -461,7 +474,7 @@ class TV extends MyPage
         if(utyGetString($rJoueur, 'Capitaine', '???') == 'C') {
             $capitaine = ' <span class="label label-warning capitaine">C</span>';
         } else if(utyGetString($rJoueur, 'Capitaine', '???') == 'E') {
-            $capitaine = ' (coach)';
+            $capitaine = ' (Coach)';
             $num = '';
         } else {
             $capitaine = '';
@@ -492,19 +505,23 @@ class TV extends MyPage
 		$idMatch = $this->GetParamInt('match',-1);
 		
 		$rMatch = null;
-        $sql = "SELECT m.*, lc1.Numero_comite_dept nation1, lc2.Numero_comite_dept nation2 "
+        $sql = "SELECT m.*, "
+                . "lc1.Numero_comite_dept nation1, lc1.Nom nom_arb1, lc1.Prenom prenom_arb1, "
+                . "lc2.Numero_comite_dept nation2, lc2.Nom nom_arb2, lc2.Prenom prenom_arb2 "
                 . "FROM gickp_Matchs m "
                 . "LEFT OUTER JOIN gickp_Liste_Coureur lc1 ON (m.Matric_arbitre_principal = lc1.Matric) "
                 . "LEFT OUTER JOIN gickp_Liste_Coureur lc2 ON (m.Matric_arbitre_secondaire = lc2.Matric) "
                 . "WHERE Id = $idMatch";
 		$db->LoadRecord($sql, $rMatch);
 		
-		$arbitre1  = $this->CutReferee($rMatch['Arbitre_principal']);
+//		$arbitre1  = $this->CutReferee($rMatch['Arbitre_principal']);
+        $arbitre1 = strtoupper($rMatch['nom_arb1']) . ' ' . utyUcName($rMatch['prenom_arb1']);
         $nation1 = $rMatch['nation1'];
 		$nation1 = $this->VerifNation($nation1);
         $nation1par = ($nation1 != '') ? ' (' . $nation1 . ')' : '';
 
-		$arbitre2  = $this->CutReferee($rMatch['Arbitre_secondaire']);
+//		$arbitre2  = $this->CutReferee($rMatch['Arbitre_secondaire']);
+        $arbitre2 = strtoupper($rMatch['nom_arb2']) . ' ' . utyUcName($rMatch['prenom_arb2']);
         $nation2 = $rMatch['nation2'];
 		$nation2 = $this->VerifNation($nation2);
         $nation2par = ($nation2 != '') ? ' (' . $nation2 . ')' : '';
