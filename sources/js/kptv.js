@@ -23,6 +23,7 @@ jq(document).ready(function(){
         jq('#terrain').val(jq(this).find('option:selected').data('terrain'));
         jq('#filtreMatch').val(jq(this).val());
         jq('#filtreCompet').val(jq('#competition').val());
+        jq('#game_report').attr('href', '/PdfMatchMulti.php?listMatch=' + jq(this).val())
     })
     
     jq('#presentation').change(function(){
@@ -39,31 +40,31 @@ jq(document).ready(function(){
             case 'list_medals':
                 break;
             case 'referee':
-                jq('#match-col').show();
+                jq('#match-col, #game_report').show();
                 break;
             case 'player':
-                jq('#match-col, #team-col, #number-col').show();
+                jq('#match-col, #game_report, #team-col, #number-col').show();
                 break;
             case 'player_medal':
-                jq('#match-col, #team-col, #number-col, #medal-col').show();
+                jq('#match-col, #game_report, #team-col, #number-col, #medal-col').show();
                 break;
             case 'team':
-                jq('#match-col, #team-col').show();
+                jq('#match-col, #game_report, #team-col').show();
                 break;
             case 'team_medal':
-                jq('#match-col, #team-col, #medal-col').show();
+                jq('#match-col, #game_report, #team-col, #medal-col').show();
                 break;
             case 'match':
-                jq('#match-col').show();
+                jq('#match-col, #game_report').show();
                 break;
             case 'match_score':
-                jq('#match-col').show();
+                jq('#match-col, #game_report').show();
                 break;
             case 'list_team':
-                jq('#match-col, #team-col').show();
+                jq('#match-col, #game_report, #team-col').show();
                 break;
             case 'list_coachs':
-                jq('#match-col, #team-col').show();
+                jq('#match-col, #game_report, #team-col').show();
                 break;
             case 'final_ranking':
                 jq('#start-col').show();
@@ -75,7 +76,7 @@ jq(document).ready(function(){
                 jq('#speaker-col, #count-col').show();
                 break;
             case 'force_cache_match':
-                jq('#match-col').show();
+                jq('#match-col, #game_report').show();
                 break;
             case 'frame_terrains':
                 jq('#pitchs-col').show();
@@ -219,43 +220,43 @@ jq(document).ready(function(){
             case 'list_medals':
                 break;
             case 'referee':
-                jq('#match-col2').show();
+                jq('#match-col2, #game_report2').show();
                 break;
             case 'player':
-                jq('#match-col2, #team-col2, #number-col2').show();
+                jq('#match-col2, #game_report2, #team-col2, #number-col2').show();
                 break;
             case 'player_medal':
-                jq('#match-col2, #team-col2, #number-col2, #medal-col2').show();
+                jq('#match-col2, #game_report2, #team-col2, #number-col2, #medal-col2').show();
                 break;
             case 'team':
-                jq('#match-col2, #team-col2').show();
+                jq('#match-col2, #game_report2, #team-col2').show();
                 break;
             case 'team_medal':
-                jq('#match-col2, #team-col2, #medal-col2').show();
+                jq('#match-col2, #game_report2, #team-col2, #medal-col2').show();
                 break;
             case 'match':
-                jq('#match-col2').show();
+                jq('#match-col2, #game_report2').show();
                 break;
             case 'match_score':
-                jq('#match-col2').show();
+                jq('#match-col2, #game_report2').show();
                 break;
             case 'list_team':
-                jq('#match-col2, #team-col2').show();
+                jq('#match-col2, #game_report2, #team-col2').show();
                 break;
             case 'list_coachs':
-                jq('#match-col2, #team-col2').show();
+                jq('#match-col2, #game_report2, #team-col2').show();
                 break;
             case 'final_ranking':
                 jq('#start-col2').show();
                 break;
             case 'score':
-                jq('#match-col2, #speaker-col2').show();
+                jq('#match-col2, #game_report2, #speaker-col2').show();
                 break;
             case 'multi_score':
                 jq('#speaker-col2, #count-col2').show();
                 break;
             case 'force_cache_match':
-                jq('#match-col2').show();
+                jq('#match-col2, #game_report2').show();
                 break;
             case 'frame_terrains':
                 jq('#pitchs-col2').show();
@@ -400,43 +401,43 @@ jq(document).ready(function(){
             case 'list_medals':
                 break;
             case 'referee':
-                jq('#match-col3').show();
+                jq('#match-col3, #game_report3').show();
                 break;
             case 'player':
-                jq('#match-col3, #team-col3, #number-col3').show();
+                jq('#match-col3, #game_report3, #team-col3, #number-col3').show();
                 break;
             case 'player_medal':
-                jq('#match-col3, #team-col3, #number-col3, #medal-col3').show();
+                jq('#match-col3, #game_report3, #team-col3, #number-col3, #medal-col3').show();
                 break;
             case 'team':
-                jq('#match-col3, #team-col3').show();
+                jq('#match-col3, #game_report3, #team-col3').show();
                 break;
             case 'team_medal':
-                jq('#match-col3, #team-col3, #medal-col3').show();
+                jq('#match-col3, #game_report3, #team-col3, #medal-col3').show();
                 break;
             case 'match':
-                jq('#match-col3').show();
+                jq('#match-col3, #game_report3').show();
                 break;
             case 'match_score':
-                jq('#match-col3').show();
+                jq('#match-col3, #game_report3').show();
                 break;
             case 'list_team':
-                jq('#match-col3, #team-col3').show();
+                jq('#match-col3, #game_report3, #team-col3').show();
                 break;
             case 'list_coachs':
-                jq('#match-col3, #team-col3').show();
+                jq('#match-col3, #game_report3, #team-col3').show();
                 break;
             case 'final_ranking':
                 jq('#start-col3').show();
                 break;
             case 'score':
-                jq('#match-col3, #speaker-col3').show();
+                jq('#match-col3, #game_report3, #speaker-col3').show();
                 break;
             case 'multi_score':
                 jq('#speaker-col3, #count-col3').show();
                 break;
             case 'force_cache_match':
-                jq('#match-col3').show();
+                jq('#match-col3, #game_report3').show();
                 break;
             case 'frame_terrains':
                 jq('#pitchs-col3').show();
@@ -580,43 +581,43 @@ jq(document).ready(function(){
             case 'list_medals':
                 break;
             case 'referee':
-                jq('#match-col4').show();
+                jq('#match-col4, #game_report4').show();
                 break;
             case 'player':
-                jq('#match-col4, #team-col4, #number-col4').show();
+                jq('#match-col4, #game_report4, #team-col4, #number-col4').show();
                 break;
             case 'player_medal':
-                jq('#match-col4, #team-col4, #number-col4, #medal-col4').show();
+                jq('#match-col4, #game_report4, #team-col4, #number-col4, #medal-col4').show();
                 break;
             case 'team':
-                jq('#match-col4, #team-col4').show();
+                jq('#match-col4, #game_report4, #team-col4').show();
                 break;
             case 'team_medal':
-                jq('#match-col4, #team-col4, #medal-col4').show();
+                jq('#match-col4, #game_report4, #team-col4, #medal-col4').show();
                 break;
             case 'match':
-                jq('#match-col4').show();
+                jq('#match-col4, #game_report4').show();
                 break;
             case 'match_score':
-                jq('#match-col4').show();
+                jq('#match-col4, #game_report4').show();
                 break;
             case 'list_team':
-                jq('#match-col4, #team-col4').show();
+                jq('#match-col4, #game_report4, #team-col4').show();
                 break;
             case 'list_coachs':
-                jq('#match-col4, #team-col4').show();
+                jq('#match-col4, #game_report4, #team-col4').show();
                 break;
             case 'final_ranking':
                 jq('#start-col4').show();
                 break;
             case 'score':
-                jq('#match-col4, #speaker-col4').show();
+                jq('#match-col4, #game_report4, #speaker-col4').show();
                 break;
             case 'multi_score':
                 jq('#speaker-col4, #count-col4').show();
                 break;
             case 'force_cache_match':
-                jq('#match-col4').show();
+                jq('#match-col4, #game_report4').show();
                 break;
             case 'frame_terrains':
                 jq('#pitchs-col4').show();

@@ -66,22 +66,22 @@
                             <option value="voie" {if $filtrePres == 'voie'}selected{/if}>Channel</option>
                             <option value="empty" {if $filtrePres == 'empty'}selected{/if}>Empty page</option>
                         <optgroup label="Before game inlays">
-                            <option value="match" {if $filtrePres == 'match'}selected{/if}>Game</option>
-                            <option value="list_team" {if $filtrePres == 'list_team'}selected{/if}>List team</option>
-                            <option value="list_coachs" {if $filtrePres == 'list_coachs'}selected{/if}>List coachs</option>
-                            <option value="team" {if $filtrePres == 'team'}selected{/if}>Team</option>
+                            <option value="match" {if $filtrePres == 'match'}selected{/if}>Game (Category & teams)</option>
+                            <option value="list_team" {if $filtrePres == 'list_team'}selected{/if}>Players list</option>
+                            <option value="list_coachs" {if $filtrePres == 'list_coachs'}selected{/if}>Coaches list</option>
+                            <option value="team" {if $filtrePres == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres == 'referee'}selected{/if}>Referees</option>
+                            <option value="player" {if $filtrePres == 'player'}selected{/if}>Player name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
+                            <option value="score" {if $filtrePres == 'score'}selected{/if}>Live score</option>
                             <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
-                            <option value="score" {if $filtrePres == 'score'}selected{/if}>Score</option>
-                            <option value="player" {if $filtrePres == 'player'}selected{/if}>Player</option>
                         </optgroup>
                         <optgroup label="After game inlays">
-                            <option value="list_medals" {if $filtrePres == 'list_medals'}selected{/if}>Medals (podium)</option>
+{*                            <option value="list_medals" {if $filtrePres == 'list_medals'}selected{/if}>Medals (podium)</option>
                             <option value="player_medal" {if $filtrePres == 'player_medal'}selected{/if}>Player medal</option>
                             <option value="team_medal" {if $filtrePres == 'team_medal'}selected{/if}>Team medal</option>
-                            <option value="final_ranking" {if $filtrePres == 'final_ranking'}selected{/if}>Final ranking</option>
+*}                            <option value="final_ranking" {if $filtrePres == 'final_ranking'}selected{/if}>Final ranking</option>
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
@@ -186,9 +186,10 @@
                 </div>
             </div>
             <div class="row">
-                <a id="control" class="btn btn-warning col-sm-2" href="live/tv2.php?voie={$filtreChannel}" target="_blank">
+                <a id="control" class="btn btn-warning col-sm-1" href="live/tv2.php?voie={$filtreChannel}" target="_blank">
                     {#Controle#}
                 </a>
+                <a id="game_report" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl" name="getUrl" class="btn btn-success col-sm-1" data-showurl="1">
                     <label>Url</label>
                 </button>
@@ -226,22 +227,22 @@
                             <option value="voie" {if $filtrePres2 == 'voie'}selected{/if}>Channel</option>
                             <option value="empty" {if $filtrePres2 == 'empty'}selected{/if}>Empty page</option>
                         <optgroup label="Before game inlays">
-                            <option value="match" {if $filtrePres2 == 'match'}selected{/if}>Game</option>
-                            <option value="list_team" {if $filtrePres2 == 'list_team'}selected{/if}>List team</option>
-                            <option value="list_coachs" {if $filtrePres2 == 'list_coachs'}selected{/if}>List coachs</option>
-                            <option value="team" {if $filtrePres2 == 'team'}selected{/if}>Team</option>
+                            <option value="match" {if $filtrePres2 == 'match'}selected{/if}>Game (Category & teams)</option>
+                            <option value="list_team" {if $filtrePres2 == 'list_team'}selected{/if}>Players list</option>
+                            <option value="list_coachs" {if $filtrePres2 == 'list_coachs'}selected{/if}>Coaches list</option>
+                            <option value="team" {if $filtrePres2 == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres2 == 'referee'}selected{/if}>Referees</option>
+                            <option value="player" {if $filtrePres2 == 'player'}selected{/if}>Player name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
+                            <option value="score" {if $filtrePres2 == 'score'}selected{/if}>Live score</option>
                             <option value="match_score" {if $filtrePres2 == 'match_score'}selected{/if}>Game & score</option>
-                            <option value="score" {if $filtrePres2 == 'score'}selected{/if}>Score</option>
-                            <option value="player" {if $filtrePres2 == 'player'}selected{/if}>Player</option>
                         </optgroup>
                         <optgroup label="After game inlays">
-                            <option value="list_medals" {if $filtrePres2 == 'list_medals'}selected{/if}>Medals (podium)</option>
+{*                            <option value="list_medals" {if $filtrePres2 == 'list_medals'}selected{/if}>Medals (podium)</option>
                             <option value="player_medal" {if $filtrePres2 == 'player_medal'}selected{/if}>Player medal</option>
                             <option value="team_medal" {if $filtrePres2 == 'team_medal'}selected{/if}>Team medal</option>
-                            <option value="final_ranking" {if $filtrePres2 == 'final_ranking'}selected{/if}>Final ranking</option>
+*}                            <option value="final_ranking" {if $filtrePres2 == 'final_ranking'}selected{/if}>Final ranking</option>
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres2 == 'multi_score'}selected{/if}>Multi score</option>
@@ -346,9 +347,10 @@
                 </div>
             </div>
             <div class="row">
-                <a id="control2" class="btn btn-warning col-sm-2" href="live/tv2.php?voie={$filtreChannel2}" target="_blank">
+                <a id="control2" class="btn btn-warning col-sm-1" href="live/tv2.php?voie={$filtreChannel2}" target="_blank">
                     {#Controle#}
                 </a>
+                <a id="game_report2" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl2" name="getUrl2" class="btn btn-success col-sm-1" data-showurl="2">
                     <label>Url</label>
                 </button>
@@ -386,22 +388,22 @@
                             <option value="voie" {if $filtrePres3 == 'voie'}selected{/if}>Channel</option>
                             <option value="empty" {if $filtrePres3 == 'empty'}selected{/if}>Empty page</option>
                         <optgroup label="Before game inlays">
-                            <option value="match" {if $filtrePres3 == 'match'}selected{/if}>Game</option>
-                            <option value="list_team" {if $filtrePres3 == 'list_team'}selected{/if}>List team</option>
-                            <option value="list_coachs" {if $filtrePres3 == 'list_coachs'}selected{/if}>List coachs</option>
-                            <option value="team" {if $filtrePres3 == 'team'}selected{/if}>Team</option>
+                            <option value="match" {if $filtrePres3 == 'match'}selected{/if}>Game (Category & teams)</option>
+                            <option value="list_team" {if $filtrePres3 == 'list_team'}selected{/if}>Players list</option>
+                            <option value="list_coachs" {if $filtrePres3 == 'list_coachs'}selected{/if}>Coaches list</option>
+                            <option value="team" {if $filtrePres3 == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres3 == 'referee'}selected{/if}>Referees</option>
+                            <option value="player" {if $filtrePres3 == 'player'}selected{/if}>Player name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
+                            <option value="score" {if $filtrePres3 == 'score'}selected{/if}>Live score</option>
                             <option value="match_score" {if $filtrePres3 == 'match_score'}selected{/if}>Game & score</option>
-                            <option value="score" {if $filtrePres3 == 'score'}selected{/if}>Score</option>
-                            <option value="player" {if $filtrePres3 == 'player'}selected{/if}>Player</option>
                         </optgroup>
                         <optgroup label="After game inlays">
-                            <option value="list_medals" {if $filtrePres3 == 'list_medals'}selected{/if}>Medals (podium)</option>
+{*                            <option value="list_medals" {if $filtrePres3 == 'list_medals'}selected{/if}>Medals (podium)</option>
                             <option value="player_medal" {if $filtrePres3 == 'player_medal'}selected{/if}>Player medal</option>
                             <option value="team_medal" {if $filtrePres3 == 'team_medal'}selected{/if}>Team medal</option>
-                            <option value="final_ranking" {if $filtrePres3 == 'final_ranking'}selected{/if}>Final ranking</option>
+*}                            <option value="final_ranking" {if $filtrePres3 == 'final_ranking'}selected{/if}>Final ranking</option>
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres3 == 'multi_score'}selected{/if}>Multi score</option>
@@ -506,9 +508,10 @@
                 </div>
             </div>
             <div class="row">
-                <a id="control3" class="btn btn-warning col-sm-2" href="live/tv2.php?voie={$filtreChannel3}" target="_blank">
+                <a id="control3" class="btn btn-warning col-sm-1" href="live/tv2.php?voie={$filtreChannel3}" target="_blank">
                     {#Controle#}
                 </a>
+                <a id="game_report3" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl3" name="getUrl3" class="btn btn-success col-sm-1" data-showurl="3">
                     <label>Url</label>
                 </button>
@@ -546,22 +549,22 @@
                             <option value="voie" {if $filtrePres4 == 'voie'}selected{/if}>Channel</option>
                             <option value="empty" {if $filtrePres4 == 'empty'}selected{/if}>Empty page</option>
                         <optgroup label="Before game inlays">
-                            <option value="match" {if $filtrePres4 == 'match'}selected{/if}>Game</option>
-                            <option value="list_team" {if $filtrePres4 == 'list_team'}selected{/if}>List team</option>
-                            <option value="list_coachs" {if $filtrePres4 == 'list_coachs'}selected{/if}>List coachs</option>
-                            <option value="team" {if $filtrePres4 == 'team'}selected{/if}>Team</option>
+                            <option value="match" {if $filtrePres4 == 'match'}selected{/if}>Game (Category & teams)</option>
+                            <option value="list_team" {if $filtrePres4 == 'list_team'}selected{/if}>Players list</option>
+                            <option value="list_coachs" {if $filtrePres4 == 'list_coachs'}selected{/if}>Coaches list</option>
+                            <option value="team" {if $filtrePres4 == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres4 == 'referee'}selected{/if}>Referees</option>
+                            <option value="player" {if $filtrePres4 == 'player'}selected{/if}>Player name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
+                            <option value="score" {if $filtrePres4 == 'score'}selected{/if}>Live score</option>
                             <option value="match_score" {if $filtrePres4 == 'match_score'}selected{/if}>Game & score</option>
-                            <option value="score" {if $filtrePres4 == 'score'}selected{/if}>Score</option>
-                            <option value="player" {if $filtrePres4 == 'player'}selected{/if}>Player</option>
                         </optgroup>
                         <optgroup label="After game inlays">
-                            <option value="list_medals" {if $filtrePres4 == 'list_medals'}selected{/if}>Medals (podium)</option>
+{*                            <option value="list_medals" {if $filtrePres4 == 'list_medals'}selected{/if}>Medals (podium)</option>
                             <option value="player_medal" {if $filtrePres4 == 'player_medal'}selected{/if}>Player medal</option>
                             <option value="team_medal" {if $filtrePres4 == 'team_medal'}selected{/if}>Team medal</option>
-                            <option value="final_ranking" {if $filtrePres4 == 'final_ranking'}selected{/if}>Final ranking</option>
+*}                            <option value="final_ranking" {if $filtrePres4 == 'final_ranking'}selected{/if}>Final ranking</option>
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres4 == 'multi_score'}selected{/if}>Multi score</option>
@@ -666,9 +669,10 @@
                 </div>
             </div>
             <div class="row">
-                <a id="control4" class="btn btn-warning col-sm-2" href="live/tv2.php?voie={$filtreChannel4}" target="_blank">
+                <a id="control4" class="btn btn-warning col-sm-1" href="live/tv2.php?voie={$filtreChannel4}" target="_blank">
                     {#Controle#}
                 </a>
+                <a id="game_report4" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl4" name="getUrl4" class="btn btn-success col-sm-1" data-showurl="4">
                     <label>Url</label>
                 </button>
