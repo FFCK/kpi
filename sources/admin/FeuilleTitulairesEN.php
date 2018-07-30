@@ -191,7 +191,7 @@ class FeuillePresenceEquipe extends MyPage
         // Entête PDF ...	  
  		$pdf = new PDF('L');
 		$pdf->Open();
-		$pdf->SetTitle("Presence sheet");
+		$pdf->SetTitle("Team roster");
 		
 		$pdf->SetAuthor("Kayak-polo.info");
 		$pdf->SetCreator("Kayak-polo.info width FPDF");
@@ -255,13 +255,13 @@ class FeuillePresenceEquipe extends MyPage
 			$pdf->Cell(16,7,'#','B',0,'C');
 			$pdf->Cell(18,7,'Cap','B',0,'C');
 			$pdf->Cell(30,7,'ID','B',0,'C');
-			$pdf->Cell(50,7,'Name','B',0,'C');
-			$pdf->Cell(50,7,'First name','B',0,'C');
-			$pdf->Cell(28,7,'Categ','B',0,'C');
+			$pdf->Cell(60,7,'Name','B',0,'C');
+			$pdf->Cell(60,7,'First name','B',0,'C');
+//			$pdf->Cell(28,7,'Categ','B',0,'C');
 			//$pdf->Cell(18,7,'Pag. EC','LTR',0,'C');
 			//$pdf->Cell(27,7,'Certif. Comp.','LTR',0,'C');
 			// $pdf->Cell(18,7,'CertifAPS','LTR',0,'C');
-			$pdf->Cell(17,7,'Club','B',0,'C');
+			$pdf->Cell(25,7,'Club','B',0,'C');
 			$pdf->Cell(17,7,'Ref.','B',1,'C');
 			$pdf->SetFont('Arial','',10);
 			
@@ -278,13 +278,13 @@ class FeuillePresenceEquipe extends MyPage
                     $pdf->Cell(16,8,$arrayJoueur{$idEquipe}[$j]['Numero'],'B',0,'C');
                     $pdf->Cell(18,8,$arrayJoueur{$idEquipe}[$j]['Capitaine'],'B',0,'C');
                     $pdf->Cell(30,8,$arrayJoueur{$idEquipe}[$j]['Matric'].$arrayJoueur{$idEquipe}[$j]['Saison'],'B',0,'C');
-                    $pdf->Cell(50,8,$arrayJoueur{$idEquipe}[$j]['Nom'],'B',0,'C');
-                    $pdf->Cell(50,8,$arrayJoueur{$idEquipe}[$j]['Prenom'],'B',0,'C');
-                    $pdf->Cell(28,8,$arrayJoueur{$idEquipe}[$j]['Categ'],'B',0,'C');
+                    $pdf->Cell(60,8,$arrayJoueur{$idEquipe}[$j]['Nom'],'B',0,'C');
+                    $pdf->Cell(60,8,$arrayJoueur{$idEquipe}[$j]['Prenom'],'B',0,'C');
+//                    $pdf->Cell(28,8,$arrayJoueur{$idEquipe}[$j]['Categ'],'B',0,'C');
                     //$pdf->Cell(18,7,$arrayJoueur{$idEquipe}[$j]['Pagaie'],'LTRB',0,'C');
                     //$pdf->Cell(27,7,$arrayJoueur{$idEquipe}[$j]['CertifCK'],'LTRB',0,'C');
                     // $pdf->Cell(18,7,$arrayJoueur{$idEquipe}[$j]['CertifAPS'],'LTRB',0,'C');
-                    $pdf->Cell(17,8,$arrayJoueur{$idEquipe}[$j]['Numero_club'],'B',0,'C');
+                    $pdf->Cell(25,8,rtrim($arrayJoueur{$idEquipe}[$j]['Numero_club'], '00'),'B',0,'C');
                     $pdf->Cell(17,8,$arrayJoueur{$idEquipe}[$j]['Arbitre'],'B',1,'C');
                 } else {
                     $pdf->Cell(25,8,'','',0,'C');
@@ -301,7 +301,7 @@ class FeuillePresenceEquipe extends MyPage
                     $pdf->Cell(17,8,'','B',1,'C');                }
             }
 		}
-		$pdf->Output("Presence sheet".'.pdf','I');
+		$pdf->Output("Team roster".'.pdf','I');
 	}
 }
 
