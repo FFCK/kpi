@@ -10,7 +10,7 @@ body
 	width:50vw;
 	height:50vh;
 
-	background-image: url("../img/schema/schema_2018_CMH.png");
+	background-image: url("../../img/schemas/schema_2018_CMH.png");
 	background-repeat: no-repeat;
 	background-size: contain;
     background-position: center;
@@ -23,7 +23,7 @@ body
 	width:50vw;
 	height:50vh;
 
-	background-image: url("../img/schema/schema_2018_CMF.png");
+	background-image: url("../../img/schemas/schema_2018_CMF.png");
 	background-repeat: no-repeat;
 	background-size: contain;
     background-position: center;
@@ -37,7 +37,7 @@ body
 	width:50vw;
 	height:50vh;
 
-	background-image: url("../img/schema/schema_2018_CMH21.png");
+	background-image: url("../../img/schemas/schema_2018_CMH21.png");
 	background-repeat: no-repeat;
 	background-size: contain;
     background-position: center;
@@ -51,7 +51,7 @@ body
 	width:50vw;
 	height:50vh;
 
-	background-image: url("../img/schema/schema_2018_CMF21.png");
+	background-image: url("../../img/schemas/schema_2018_CMF21.png");
 	background-repeat: no-repeat;
 	background-size: contain;
     background-position: center;
