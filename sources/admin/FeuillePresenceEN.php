@@ -68,9 +68,7 @@ class FeuillePresence extends MyPage {
                             . "Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric) "
                             . "Where Id_Equipe = ";
                     $sql2 .= $idEquipe;
-                    $sql2 .= " AND a.Capitaine != 'A'"
-                            . " AND a.Capitaine != 'X'" 
-                            . " Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";
+                    $sql2 .= " Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";
                     //$sql2 .= " Order By Field(if(a.Capitaine='C','-',a.Capitaine), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";	 
 
                     $result2 = mysql_query($sql2, $myBdd->m_link) or die("Erreur Load Titulaires : " . $sql2 . ' - ' . $codeCompet . ' - ' . $row['Id'] . ' ! ');
@@ -212,11 +210,11 @@ class FeuillePresence extends MyPage {
             $pdf->Cell(16, 8, '', '', 0, 'C');
             $pdf->Cell(12, 8, '#', 'B', 0, 'C');
             $pdf->Cell(12, 8, 'Cap.', 'B', 0, 'C');
-            $pdf->Cell(50, 8, 'Name', 'B', 0, 'C');
-            $pdf->Cell(50, 8, 'First name', 'B', 0, 'C');
-            $pdf->Cell(30, 8, 'Birth date', 'B', 0, 'C');
-            $pdf->Cell(18, 8, 'Cat.', 'B', 0, 'C');
-            $pdf->Cell(25, 8, 'Club/Nation', 'B', 0, 'C');
+            $pdf->Cell(55, 8, 'Name', 'B', 0, 'C');
+            $pdf->Cell(55, 8, 'First name', 'B', 0, 'C');
+            $pdf->Cell(35, 8, 'Birth date', 'B', 0, 'C');
+//            $pdf->Cell(18, 8, 'Cat.', 'B', 0, 'C');
+            $pdf->Cell(28, 8, 'Club/Nation', 'B', 0, 'C');
             $pdf->Cell(28, 8, 'ICF #', 'B', 0, 'C');
             $pdf->Cell(20, 8, 'Ref.', 'B', 1, 'C');
             $pdf->SetFont('Arial', '', 10);
@@ -239,11 +237,11 @@ class FeuillePresence extends MyPage {
                     }
                     $pdf->Cell(12, 8, $arrayJoueur{$idEquipe}[$j]['Numero'], 'B', 0, 'C');
                     $pdf->Cell(12, 8, $arrayJoueur{$idEquipe}[$j]['Capitaine'], 'B', 0, 'C');
-                    $pdf->Cell(50, 8, strtoupper($arrayJoueur{$idEquipe}[$j]['Nom']), 'B', 0, 'C');
-                    $pdf->Cell(50, 8, utyUcWordNomCompose($arrayJoueur{$idEquipe}[$j]['Prenom']), 'B', 0, 'C');
-                    $pdf->Cell(30, 8, $arrayJoueur{$idEquipe}[$j]['Naissance'], 'B', 0, 'C');
-                    $pdf->Cell(18, 8, $arrayJoueur{$idEquipe}[$j]['Categ'], 'B', 0, 'C');
-                    $pdf->Cell(25, 8, rtrim($arrayJoueur{$idEquipe}[$j]['Numero_club'], '00'), 'B', 0, 'C');
+                    $pdf->Cell(55, 8, strtoupper($arrayJoueur{$idEquipe}[$j]['Nom']), 'B', 0, 'C');
+                    $pdf->Cell(55, 8, utyUcWordNomCompose($arrayJoueur{$idEquipe}[$j]['Prenom']), 'B', 0, 'C');
+                    $pdf->Cell(35, 8, $arrayJoueur{$idEquipe}[$j]['Naissance'], 'B', 0, 'C');
+//                    $pdf->Cell(18, 8, $arrayJoueur{$idEquipe}[$j]['Categ'], 'B', 0, 'C');
+                    $pdf->Cell(28, 8, rtrim($arrayJoueur{$idEquipe}[$j]['Numero_club'], '00'), 'B', 0, 'C');
                     $pdf->Cell(28, 8, $arrayJoueur{$idEquipe}[$j]['Reserve'], 'B', 0, 'C');
                     $pdf->Cell(20, 8, $arrayJoueur{$idEquipe}[$j]['Arbitre'], 'B', 1, 'C');
                 } else {
