@@ -72,6 +72,7 @@
                             <option value="team" {if $filtrePres == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres == 'referee'}selected{/if}>Referees</option>
                             <option value="player" {if $filtrePres == 'player'}selected{/if}>Player name</option>
+                            <option value="coach" {if $filtrePres == 'coach'}selected{/if}>Coach name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres == 'score'}selected{/if}>Live score</option>
@@ -233,6 +234,7 @@
                             <option value="team" {if $filtrePres2 == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres2 == 'referee'}selected{/if}>Referees</option>
                             <option value="player" {if $filtrePres2 == 'player'}selected{/if}>Player name</option>
+                            <option value="coach" {if $filtrePres2 == 'coach'}selected{/if}>Coach name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres2 == 'score'}selected{/if}>Live score</option>
@@ -394,6 +396,7 @@
                             <option value="team" {if $filtrePres3 == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres3 == 'referee'}selected{/if}>Referees</option>
                             <option value="player" {if $filtrePres3 == 'player'}selected{/if}>Player name</option>
+                            <option value="coach" {if $filtrePres3 == 'coach'}selected{/if}>Coach name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres3 == 'score'}selected{/if}>Live score</option>
@@ -555,6 +558,7 @@
                             <option value="team" {if $filtrePres4 == 'team'}selected{/if}>Team name</option>
                             <option value="referee" {if $filtrePres4 == 'referee'}selected{/if}>Referees</option>
                             <option value="player" {if $filtrePres4 == 'player'}selected{/if}>Player name</option>
+                            <option value="coach" {if $filtrePres4 == 'coach'}selected{/if}>Coach name</option>
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres4 == 'score'}selected{/if}>Live score</option>
