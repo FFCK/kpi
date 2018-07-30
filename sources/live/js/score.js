@@ -141,7 +141,7 @@ function ParseCacheScore(jsonTxt)
                 if(jsonData.event[0].Capitaine == 'C') {
                     line += ' <span class="label label-warning capitaine">C</span>';
                 } else if(jsonData.event[0].Capitaine == 'E') {
-                    line += ' (coach)';
+                    line += ' (Coach)';
                 }
 			}
 			line += "</span>";
@@ -149,7 +149,7 @@ function ParseCacheScore(jsonTxt)
             
             $('#goal_card').html(GetImgEvtMatch(jsonData.event[0].Id_evt_match));
 			
-			$('#bandeau_goal').fadeIn(600).delay(6000);//.fadeOut(900);
+			$('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900);
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId);

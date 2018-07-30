@@ -281,6 +281,10 @@ html, body
     font-size: 38px;
 }
 
+#banner_list.final_ranking {
+    margin-left: 50px;
+}
+
 #banner_line1 {
     font-weight: bold;
     width: 55%;
@@ -315,6 +319,11 @@ html, body
 .banner_line {
     line-height: 61px;
 }
+.player.banner_line {
+    line-height: 20px;
+}
+
+
 
 .banner_line.line1 {
     color: #144361;
@@ -385,8 +394,46 @@ span.numero {
     right: 0px;
 }
 
+.ban_goal_card {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_goal_card.png');
+}
+#banner_goal_card {
+    width: 1180px;
+    height: 138px;
+
+    position: absolute;
+    left: 105px;
+    top: 780px;
+    color: #000066;
+    font-weight: bold;
+    font-family: HelveticaNeueCondensedBold, Helvetica, sans-serif;
+    font-size: 45px;
+}
+#match_event_line1 {
+    font-size: 35px;
+    color: #4b97cb;
+    margin-left: 60px;
+}
+#match_event_line2 {
+    /*font-size: 35px;*/
+    color: #144361;
+}
+#goal_card {
+    position: absolute;
+    right: 250px;
+    top: 690px;
+}
+
+
+
 
 
 div {
     /*border: 1px solid black;*/
 }
+
+
