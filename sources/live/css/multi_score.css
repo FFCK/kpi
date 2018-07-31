@@ -1,3 +1,9 @@
+@font-face {
+  font-family: HelveticaNeueCondensedBold;
+  src: url(HelveticaNeueCondensedBold.ttf);
+  font-weight: bold;
+}
+
 html, body
 {
 	width: 100vw;
@@ -37,7 +43,7 @@ html, body
 
 div {
     font-weight: bold;
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: HelveticaNeueCondensedBold, Helvetica, sans-serif;
     color: black;
     text-align: center;
 }
@@ -71,33 +77,35 @@ div.bandeau_score
 {
     position: absolute;
     left: 218px;
-    top: 10px;
+    top: 64px;
     font-size: 16px;
     width: 56px;
+    color: #4b97cb;
 }
 
 .match_periode
 {
     position: absolute;
     right: 220px;
-    top: 10px;
+    top: 64px;
     font-size: 16px;
     color: red;
     width: 56px;
+    color: #4b97cb;
 }
 
 div.nation1
 {	
     position: absolute;
-    left: 135px;
-    top: 31px;
+    left: 150px;
+    top: 30px;
 }
 
 div.nation2
 {	
     position: absolute;
-    right: 135px;
-    top: 31px;
+    right: 150px;
+    top: 30px;
 }
 
 div.equipe1
@@ -107,7 +115,7 @@ div.equipe1
     top: 31px;
     font-size: 20px;
     width: 85px;
-    color: white;
+    color: #4b97cb;
 }
 
 div.equipe2
@@ -117,7 +125,7 @@ div.equipe2
     top: 31px;
     font-size: 20px;
     width: 85px;
-    color: white;
+    color: #4b97cb;
 }
 
 div.score1
@@ -192,11 +200,63 @@ div.categorie {
     height: 32px;
 }
 
+.ban_goal_card {
+    height: 50vh;
+    width: 50vw;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: url('../img/banner_goal_card_2.png') left bottom;
+    /*display: none;*/
+}
+
+.ban_name {
+    width: 590px;
+    height: 69px;
+
+    position: absolute;
+    left: 0px;
+    top: 390px;
+    color: #000066;
+    font-weight: bold;
+    font-family: HelveticaNeueCondensedBold, Helvetica, sans-serif;
+    font-size: 45px;
+}
+
+.banner_line1 {
+    line-height: 30px;
+    font-size: 28px;
+    color: #4b97cb;
+    margin-left: 60px;
+}
+.banner_line2 {
+    line-height: 30px;
+    font-size: 35px;
+    color: #144361;
+    margin-left: 60px;
+}
+
+#match_event_line2 {
+    /*font-size: 35px;*/
+    color: #144361;
+}
+
+.goal_card {
+    position: absolute;
+    right: 250px;
+    top: 345px;
+}
+
 span.capitaine {
     vertical-align: middle;
-    font-size: 15px;
+    font-size: 30px;
 }
 span.numero {
     vertical-align: middle;
-    font-size: 15px;
+    font-size: 30px;
 }
+
+.clair {
+    color: #4b97cb;
+}
+
