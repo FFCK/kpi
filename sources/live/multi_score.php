@@ -65,7 +65,7 @@ class MultiScore extends MyPage
                         <div class="score_separation" id="score_separation_<?= $i ?>">-</div>
                         <div class="score2" id="score2_<?= $i ?>"></div>
 
-                        <div class="categorie" id="categorie_<?= $i ?>"></div>
+                        <!--<div class="categorie" id="categorie_<?= $i ?>"></div>-->
                     </div>
                 </div>
                 <?php
@@ -76,10 +76,12 @@ class MultiScore extends MyPage
                     <?php
                 }
                 ?>
-                <div class="ban_double" id="bandeau_goal_<?= $i ?>">
-                    <div class="banner_double" id="banner_double_<?= $i ?>" class="text-center">
-                        <div class="banner_line" id="match_event_line1_<?= $i ?>"></div>
-                        <div class="banner_line" id="match_event_line2_<?= $i ?>"></div>
+               
+                <div id="bandeau_goal_<?= $i ?>" class="ban_goal_card">
+                    <div id="goal_card_<?= $i ?>" class="goal_card"></div>
+                    <div id="banner_goal_card_<?= $i ?>" class="ban_name text-left">
+                        <div id="match_event_line2_<?= $i ?>" class="banner_line1 text-left"></div>
+                        <div id="match_event_line1_<?= $i ?>" class="banner_line2 text-left clair"></div>
                     </div>
                 </div>
             </div>     
