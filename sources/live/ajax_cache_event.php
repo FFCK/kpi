@@ -11,8 +11,9 @@ $dateEvent = $_GET['date_event'];
 $hourEvent = $_GET['hour_event'];
 $offset_event = $_GET['offset_event'];
 
+// Ajuster selon le fuseau horaire
 if ($hourEvent == '')
-	$hourEvent = date('H:i');
+	$hourEvent = date('H:i', strtotime('-6 hours'));
 
 $time = utyHHMM_To_MM($hourEvent);
 $time += $offset_event;
