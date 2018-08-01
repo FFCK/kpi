@@ -286,7 +286,8 @@ class CacheMatch
                 . "WHERE a.Id_journee = b.Id "
                 . "And b.Id = c.Id_journee "
                 . "And c.Id_evenement = $idEvent "
-                . "And a.Date_match = '$dateMatch' ";
+                . "And a.Date_match = '$dateMatch' "
+                . "And a.Statut != 'ATT' ";
 
 		if ($arrayPitchs != null)
 		{
