@@ -108,15 +108,16 @@ function ParseCacheScore(jsonTxt)
 //			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
 			$('#match_event_line1_'+idMulti).html(line);
 
-			if (jsonData.event[0].Numero == "undefined") {
+			if (jsonData.event[0].Numero == "undefi") {
 				if (jsonData.event[0].Equipe_A_B == 'A')
-					line = "Team "+theContext.Match.GetEquipe1(rowMatch);
+					line = "Team "+theContext.Match.GetEquipe1(rowMatch).substring(0, 3);
 				else	
-					line = "Team "+theContext.Match.GetEquipe2(rowMatch);
+					line = "Team "+theContext.Match.GetEquipe2(rowMatch).substring(0, 3);
 			} else {
                 if(jsonData.event[0].Capitaine != 'E') {
                     line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;';
                 }
+                
 				line += ' ';
 				line += jsonData.event[0].Nom;
 				line += ' ';
@@ -134,7 +135,7 @@ function ParseCacheScore(jsonTxt)
 			
             $('#goal_card_'+idMulti).html(GetImgEvtMatch(jsonData.event[0].Id_evt_match));
 			
-			$('#bandeau_goal_'+idMulti).fadeIn(400).delay(6000);//.fadeOut(900);
+			$('#bandeau_goal_'+idMulti).fadeIn(400).delay(6000).fadeOut(900);
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId);
@@ -302,7 +303,7 @@ function Init(event, count, voie)
 	setInterval(RefreshCacheMultiPitch, 10000);
 
 	// Refresh du cache Global toute les 30 secondes ...
-	setInterval(RefreshCacheGlobal, 20000);
+	setInterval(RefreshCacheGlobal, 30000);
 
 	// Refresh du cache Score toute les 5 secondes ...
 //	setInterval(RefreshCacheScore, 5500);

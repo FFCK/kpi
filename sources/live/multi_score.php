@@ -80,8 +80,8 @@ class MultiScore extends MyPage
                 <div id="bandeau_goal_<?= $i ?>" class="ban_goal_card">
                     <div id="goal_card_<?= $i ?>" class="goal_card"></div>
                     <div id="banner_goal_card_<?= $i ?>" class="ban_name text-left">
-                        <div id="match_event_line2_<?= $i ?>" class="banner_line1 text-left"></div>
-                        <div id="match_event_line1_<?= $i ?>" class="banner_line2 text-left clair"></div>
+                        <div id="match_event_line2_<?= $i ?>" class="banner_line2 text-left"></div>
+                        <div id="match_event_line1_<?= $i ?>" class="banner_line1 text-left clair"></div>
                     </div>
                 </div>
             </div>     
