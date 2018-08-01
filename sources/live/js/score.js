@@ -123,12 +123,12 @@ function ParseCacheScore(jsonTxt)
 //			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
 			$('#match_event_line1').html(line);
 
-				
-			if (jsonData.event[0].Numero == "undefined") {
+            console.log(jsonData.event[0].Numero);
+			if (jsonData.event[0].Numero == 'undefi') {
 				if (jsonData.event[0].Equipe_A_B == 'A')
-					line = "Team "+theContext.Match.GetEquipe1(rowMatch);
+					line = "Team "+theContext.Match.GetEquipe1(rowMatch).substring(0, 3);
 				else	
-					line = "Team "+theContext.Match.GetEquipe2(rowMatch);
+					line = "Team "+theContext.Match.GetEquipe2(rowMatch).substring(0, 3);
 			} else {
                 if(jsonData.event[0].Capitaine != 'E') {
                     line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;';
@@ -315,6 +315,8 @@ function Init(event, terrain, speaker, voie)
 	RefreshCacheChrono();
 	setTimeout(RefreshCacheScore(), 800);
 
+	// Refresh du cache Terrain toute les 10 secondes ...
+	setInterval(RefreshCacheTerrain, 10000);
 	// Refresh du cache Global toute les 30 secondes ...
 	setInterval(RefreshCacheGlobal, 30000);
 
