@@ -216,24 +216,26 @@
                                 {if $arrayMatchs[i].logoB != ''}
                                     <img class="img2 pull-right hidden-sm hidden-xs" width="30" src="{$arrayMatchs[i].logoB}" alt="{$arrayMatchs[i].clubB}" />
                                 {/if}
+                                
                                 {if $validation == 'O' && $arrayMatchs[i].ScoreA != '?' && $arrayMatchs[i].ScoreA != '' && $arrayMatchs[i].ScoreB != '?' && $arrayMatchs[i].ScoreB != ''}
-                                    <a class="btn btn-xs btn-default report" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank" title="{#Feuille_marque#}">
-                                    {$arrayMatchs[i].ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$arrayMatchs[i].ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                    <span class="btn btn-xs btn-default ">{$arrayMatchs[i].ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$arrayMatchs[i].ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}</span>
+                                    <br />
+                                    <a class="statutMatch label label-success report" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" target="_blank">
+                                        {#Feuille_marque#}
                                     </a>
-                                    <br />
-                                    <span class="statutMatch label label-success" title="{#END#}">{#END#}</span>
                                 {elseif $statut == 'ON' && $validation != 'O'}
-                                    <span class="scoreProvisoire btn btn-xs btn-warning" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
+                                    <span class="scoreProvisoire btn btn-xs btn-warning">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
                                     <br />
-                                    <span class="statutMatchOn label label-info" title="{$smarty.config.$periode}">{$smarty.config.$periode}</span>
+                                    <span class="statutMatchOn label label-info">{$smarty.config.$periode}</span>
                                 {elseif $statut == 'END' && $validation != 'O'}
-                                    <span class="scoreProvisoire btn btn-xs btn-warning" role="presentation" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
+                                    <span class="scoreProvisoire btn btn-xs btn-warning" role="presentation">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
                                     <br />
-                                    <span class="statutMatchOn label label-info" title="{#scoreProvisoire#}">{#scoreProvisoire#}</span>
+                                    <span class="statutMatchOn label label-info">{#scoreProvisoire#}</span>
                                 {else}
                                     <br />
-                                    <span class="statutMatchATT label label-default" title="{#ATT#}">{#ATT#}</span>
+                                    <span class="statutMatchATT label label-default">{#ATT#}</span>
                                 {/if}
+                                
                             </td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeB|default:'&nbsp;'}">
                                 <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}">
