@@ -135,7 +135,7 @@ class GestionMatchDetail extends MyPageSecure
 			$sql5 .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
 			$sql5 .= "Where d.Id_match = $idMatch ";
 			//$sql5 .= "AND d.Equipe_A_B = 'A' ";
-			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id ";
+			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id_evt_match DESC, d.Id ";
 			$result5 = mysql_query($sql5, $myBdd->m_link) or die ("Erreur Load<br />".$sql5);
 			$num_results5 = mysql_num_rows($result5);
 ?>
