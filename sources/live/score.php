@@ -63,7 +63,6 @@ class Score extends MyPage
                 <div id="score_separation">-</div>
                 <div id="score2"></div>
 
-                <!--<div id="categorie"></div>-->
             </div>
         </div>
         
@@ -76,6 +75,8 @@ class Score extends MyPage
             <?php
 		}
         ?>
+        <div id="categorie"></div>
+        
         <div id="bandeau_goal" class="ban_goal_card">
             <div id="goal_card"></div>
             <div id="banner_goal_card" class="text-left">
