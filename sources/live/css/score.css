@@ -123,15 +123,17 @@ div#score_separation {
 
 div#categorie {
     position: absolute;
-    top: 101px;
-    left: 137px;
+    bottom: 50px;
+    left: 50px;
     font-size: 20px;
-    width: 282px;
+    /*width: 282px;*/
     font-style: italic;
-    color: whitesmoke;
-    background: linear-gradient(to bottom, #315891 0%, #315891 70%, white 100%);
-    border-radius: 0 0 5px 5px;
-    box-shadow: 4px 4px 4px #1e1e82;
+    color: #4b97cb;
+    background-color: #e3eef7;
+    border: 2px solid #457590;
+    border-radius: 7px;
+    /*box-shadow: 4px 4px 4px #1e1e82;*/
+    padding: 5px 15px;
 }
 
 .ban_goal_card {
