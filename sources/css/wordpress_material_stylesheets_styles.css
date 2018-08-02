@@ -8675,3 +8675,9 @@ tr {
 .fa-meanpath:before {
   content: "\f20c";
 }
+
+
+
+table a.report {
+    color: white;
+}
