@@ -17,7 +17,7 @@ class PDF extends FPDF {
         //Numéro de page à gauche
         $this->Cell(135, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
         //Date à droite
-        $this->Cell(135, 10, date('d/m/Y - H:i'), 0, 0, 'R');
+        $this->Cell(135, 10, date('d/m/Y - H:i', strtotime('-6 hours')), 0, 0, 'R');
     }
 
 }
