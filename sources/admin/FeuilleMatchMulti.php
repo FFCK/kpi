@@ -881,7 +881,7 @@ class FeuilleMatch extends MyPage {
             //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
             $qrcode->displayFPDF($pdf, 264, 164, 21);
 
-            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i"), 0, 1, 'R');
+            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime('-6 hours')), 0, 1, 'R');
             // Pays
             if ($arrayCompetition['Code_niveau'] == 'INT' && $paysA != '') {
                 $pdf->image('../img/Pays/' . $paysA . '.png', 151, 15, 9, 6);
@@ -1008,7 +1008,7 @@ class FeuilleMatch extends MyPage {
                 $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
                 $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
                 $pdf->SetFont('Arial', '', 7);
-                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i"), 0, 0, 'L');
+                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime('-6 hours')), 0, 0, 'L');
             }
         }
 
