@@ -370,7 +370,7 @@ class FeuilleMatch extends MyPage {
 
                 $prenomb[$j] = utyUcWordNomCompose($row4['Prenom']);
                 if ($arrayCompetition['Code_niveau'] == 'INT' && $row4['icf'] != NULL && $row4['icf'] != 0) {
-                    $licenceb[$j] = 'Icf-' . $row4['icf'];
+                    $licenceb[$j] = $row4['icf'];
                 } elseif ($row4['Matric'] < 2000000) {
                     $licenceb[$j] = $row4['Matric'];
                 } else {
@@ -633,8 +633,12 @@ class FeuilleMatch extends MyPage {
             $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
             $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
             $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
-            $pdf->Cell(24, 6, "Licence", '1', '0', 'C');
-            $pdf->Cell(15, 6, "Cat.", '1', '1', 'C');
+            if ($arrayCompetition['Code_niveau'] == 'INT') {
+                $pdf->Cell(39, 6, "", 1, 1, 'C');
+            } else {
+                $pdf->Cell(24, 6, "Licence", 1, 0, 'C');
+                $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
+            }
 
             for ($i = 1; $i <= 10; $i++) {
                 if ($na[$i] == 'E') {
@@ -646,8 +650,12 @@ class FeuilleMatch extends MyPage {
                 $pdf->Cell(6, 4, $na[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(45, 4, $noma[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(45, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(24, 4, $licencea[$i] . $saisona[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(15, 4, $diva[$i], 'LRB', '1', 'C', 1);
+                if ($arrayCompetition['Code_niveau'] == 'INT') {
+                    $pdf->Cell(39, 4, "", 'LRB', '1', 'C', 1);
+                } else {
+                    $pdf->Cell(24, 4, $licencea[$i] . $saisona[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(15, 4, $diva[$i], 'LRB', '1', 'C', 1);
+                }
                 $indiqsaison = '';
             }
             $pdf->SetFillColor(200, 200, 200);
@@ -670,8 +678,12 @@ class FeuilleMatch extends MyPage {
             $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
             $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
             $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
-            $pdf->Cell(24, 6, "Licence", '1', '0', 'C');
-            $pdf->Cell(15, 6, "Cat", '1', '1', 'C');
+            if ($arrayCompetition['Code_niveau'] == 'INT') {
+                $pdf->Cell(39, 6, "", 1, 1, 'C');
+            } else {
+                $pdf->Cell(24, 6, "Licence", 1, 0, 'C');
+                $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
+            }
 
             for ($i = 1; $i <= 10; $i++) {
                 if ($nb[$i] == 'E') {
@@ -683,8 +695,12 @@ class FeuilleMatch extends MyPage {
                 $pdf->Cell(6, 4, $nb[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(45, 4, $nomb[$i], 'LRB', '0', 'C', 1);
                 $pdf->Cell(45, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(24, 4, $licenceb[$i] . $saisonb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(15, 4, $divb[$i], 'LRB', '1', 'C', 1);
+                if ($arrayCompetition['Code_niveau'] == 'INT') {
+                    $pdf->Cell(39, 4, "", 'LRB', '1', 'C', 1);
+                } else {
+                    $pdf->Cell(24, 4, $licenceb[$i] . $saisonb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(15, 4, $divb[$i], 'LRB', '1', 'C', 1);
+                }
                 $indiqsaison = '';
             }
             $pdf->SetFillColor(200, 200, 200);

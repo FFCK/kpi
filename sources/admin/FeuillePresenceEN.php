@@ -208,15 +208,15 @@ class FeuillePresence extends MyPage {
 
             $pdf->SetFont('Arial', 'BI', 10);
             $pdf->Cell(16, 8, '', '', 0, 'C');
-            $pdf->Cell(12, 8, '#', 'B', 0, 'C');
-            $pdf->Cell(12, 8, 'Cap.', 'B', 0, 'C');
+            $pdf->Cell(22, 8, '#', 'B', 0, 'C');
+            $pdf->Cell(22, 8, 'Cap.', 'B', 0, 'C');
             $pdf->Cell(55, 8, 'Name', 'B', 0, 'C');
             $pdf->Cell(55, 8, 'First name', 'B', 0, 'C');
-            $pdf->Cell(35, 8, 'Birth date', 'B', 0, 'C');
+//            $pdf->Cell(35, 8, 'Birth date', 'B', 0, 'C');
 //            $pdf->Cell(18, 8, 'Cat.', 'B', 0, 'C');
-            $pdf->Cell(28, 8, 'Club/Nation', 'B', 0, 'C');
+            $pdf->Cell(38, 8, 'Club/Nation', 'B', 0, 'C');
             $pdf->Cell(28, 8, 'ICF #', 'B', 0, 'C');
-            $pdf->Cell(20, 8, 'Ref.', 'B', 1, 'C');
+            $pdf->Cell(25, 8, 'Ref.', 'B', 1, 'C');
             $pdf->SetFont('Arial', '', 10);
 
             // Mini 12 lignes par équipe
@@ -235,15 +235,15 @@ class FeuillePresence extends MyPage {
                     if ($arrayJoueur{$idEquipe}[$j]['Reserve'] == '0') {
                         $arrayJoueur{$idEquipe}[$j]['Reserve'] = '';
                     }
-                    $pdf->Cell(12, 8, $arrayJoueur{$idEquipe}[$j]['Numero'], 'B', 0, 'C');
-                    $pdf->Cell(12, 8, $arrayJoueur{$idEquipe}[$j]['Capitaine'], 'B', 0, 'C');
+                    $pdf->Cell(22, 8, $arrayJoueur{$idEquipe}[$j]['Numero'], 'B', 0, 'C');
+                    $pdf->Cell(22, 8, $arrayJoueur{$idEquipe}[$j]['Capitaine'], 'B', 0, 'C');
                     $pdf->Cell(55, 8, strtoupper($arrayJoueur{$idEquipe}[$j]['Nom']), 'B', 0, 'C');
                     $pdf->Cell(55, 8, utyUcWordNomCompose($arrayJoueur{$idEquipe}[$j]['Prenom']), 'B', 0, 'C');
-                    $pdf->Cell(35, 8, $arrayJoueur{$idEquipe}[$j]['Naissance'], 'B', 0, 'C');
+//                    $pdf->Cell(35, 8, $arrayJoueur{$idEquipe}[$j]['Naissance'], 'B', 0, 'C');
 //                    $pdf->Cell(18, 8, $arrayJoueur{$idEquipe}[$j]['Categ'], 'B', 0, 'C');
-                    $pdf->Cell(28, 8, rtrim($arrayJoueur{$idEquipe}[$j]['Numero_club'], '00'), 'B', 0, 'C');
+                    $pdf->Cell(38, 8, rtrim($arrayJoueur{$idEquipe}[$j]['Numero_club'], '00'), 'B', 0, 'C');
                     $pdf->Cell(28, 8, $arrayJoueur{$idEquipe}[$j]['Reserve'], 'B', 0, 'C');
-                    $pdf->Cell(20, 8, $arrayJoueur{$idEquipe}[$j]['Arbitre'], 'B', 1, 'C');
+                    $pdf->Cell(25, 8, $arrayJoueur{$idEquipe}[$j]['Arbitre'], 'B', 1, 'C');
                 } else {
                     $pdf->Cell(16, 8, '', '', 0, 'C');
                     $pdf->Cell(245, 8, '', 'B', 1, 'C');
