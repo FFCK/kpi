@@ -630,12 +630,15 @@ class FeuilleMatch extends MyPage {
             }
             $pdf->SetFont('Arial', '', 10);
 
-            $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
             if ($arrayCompetition['Code_niveau'] == 'INT') {
-                $pdf->Cell(39, 6, "", 1, 1, 'C');
+                $pdf->Cell(16, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Prenom'], '1', '0', 'C');
+                $pdf->Cell(9, 6, "", 1, 1, 'C');
             } else {
+                $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
                 $pdf->Cell(24, 6, "Licence", 1, 0, 'C');
                 $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
             }
@@ -647,12 +650,15 @@ class FeuilleMatch extends MyPage {
                     $pdf->SetFillColor(255, 255, 255);
                 }
                 $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(6, 4, $na[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $noma[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
                 if ($arrayCompetition['Code_niveau'] == 'INT') {
-                    $pdf->Cell(39, 4, "", 'LRB', '1', 'C', 1);
+                    $pdf->Cell(16, 4, $na[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $noma[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(9, 4, "", 'LRB', '1', 'C', 1);
                 } else {
+                    $pdf->Cell(6, 4, $na[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $noma[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
                     $pdf->Cell(24, 4, $licencea[$i] . $saisona[$i], 'LRB', '0', 'C', 1);
                     $pdf->Cell(15, 4, $diva[$i], 'LRB', '1', 'C', 1);
                 }
@@ -675,12 +681,15 @@ class FeuilleMatch extends MyPage {
             }
             $pdf->SetFont('Arial', '', 10);
 
-            $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
             if ($arrayCompetition['Code_niveau'] == 'INT') {
-                $pdf->Cell(39, 6, "", 1, 1, 'C');
+                $pdf->Cell(16, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Prenom'], '1', '0', 'C');
+                $pdf->Cell(9, 6, "", 1, 1, 'C');
             } else {
+                $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
                 $pdf->Cell(24, 6, "Licence", 1, 0, 'C');
                 $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
             }
@@ -692,12 +701,15 @@ class FeuilleMatch extends MyPage {
                     $pdf->SetFillColor(255, 255, 255);
                 }
                 $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(6, 4, $nb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $nomb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
                 if ($arrayCompetition['Code_niveau'] == 'INT') {
-                    $pdf->Cell(39, 4, "", 'LRB', '1', 'C', 1);
+                    $pdf->Cell(16, 4, $nb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $nomb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(9, 4, "", 'LRB', '1', 'C', 1);
                 } else {
+                    $pdf->Cell(6, 4, $nb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $nomb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
                     $pdf->Cell(24, 4, $licenceb[$i] . $saisonb[$i], 'LRB', '0', 'C', 1);
                     $pdf->Cell(15, 4, $divb[$i], 'LRB', '1', 'C', 1);
                 }
