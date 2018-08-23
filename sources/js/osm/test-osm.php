@@ -13,7 +13,7 @@
     </head>
     <body>
         <div id="map"></div>
-        
+        <div id="liste">Liste :</div>
         <!-- Javascript -->
         <script type="text/javascript" src="../leaflet/leaflet.js"></script>
         <script type="text/javascript" src="leafletembed.js"></script>
