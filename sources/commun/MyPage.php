@@ -40,6 +40,9 @@ class MyPage
 		$this->m_tpl->assign('userName', ucwords(strtolower(utyGetSession('userName'))));	
 		$this->m_tpl->assign('Club', utyGetSession('Club'));
 		$this->m_tpl->assign('masquer', utyGetSession('masquer', 0));
+        
+		$this->m_tpl->assign('tzOffset', utyGetSession('tzOffset'));
+        
 
 		$arrayMenu = array();
 		
@@ -227,6 +230,13 @@ class MyPage
 	{
 			$this->m_tpl->assign('contenutemplate', $tplName);	
 			$this->DisplayTemplateGlobal('kppage');
+	}
+    
+	// DisplayTemplateLeaflet
+	function DisplayTemplateLeaflet($tplName)
+	{
+			$this->m_tpl->assign('contenutemplate', $tplName);	
+			$this->DisplayTemplateGlobal('kppageleaflet');
 	}
     
 	// DisplayTemplateNew
