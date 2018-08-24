@@ -7,11 +7,13 @@
 header('Content-Type: text/html; charset=utf-8');
 
 // chemin/fichier.xml
-$file = 'uploads/ODF_DT_PARTIC_TEAMS_1360.xml';
+$file = 'uploads/20180704173619_ODF_DT_PARTIC_1246.xml';
+//$file = 'uploads/20180704173619_ODF_DT_PARTIC_TEAMS_1246.xml';
+//$file = 'uploads/ODF_DT_PARTIC_TEAMS_1360.xml';
 //$file = 'uploads/test.xml';
 
 if (!file_exists($file)) {
-    exit('Echec lors de l\'ouverture du fichier test.xml.');
+    exit('Echec lors de l\'ouverture du fichier xml.');
 }
     
 $xml = simplexml_load_file($file);
