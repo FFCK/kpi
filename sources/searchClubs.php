@@ -20,14 +20,17 @@ $term = trim(utyGetGet('term'));
 // replace multiple spaces with one
 $term = preg_replace('/\s+/', ' ', $term);
 $term2 = preg_replace('/\s/', '-', $term);
-$sql  = "SELECT DISTINCT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email "
-        ."FROM gickp_Club c, gickp_Equipe e "
-        ."WHERE c.Code = e.Code_club "
+$sql  = "SELECT DISTINCT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email, "
+        . "GROUP_CONCAT(CONCAT_WS(',', e.Numero, e.Libelle) ORDER BY e.Libelle ASC SEPARATOR ';') "
+        ."FROM gickp_Club c LEFT OUTER JOIN gickp_Equipe e ON (c.Code = e.Code_club) "
+//        ."FROM gickp_Club c JOIN gickp_Equipe e ON (c.Code = e.Code_club) "
+        ."WHERE 1=1 "
         ."AND (c.Code LIKE '".$term."%' "
         ."OR c.Libelle LIKE '%".$term."%' "
         ."OR e.Libelle LIKE '%".$term."%' "
         ."OR c.Libelle LIKE '%".$term2."%' "
         ."OR e.Libelle LIKE '%".$term2."%') "
+//        .") "
         ."ORDER BY c.Officiel DESC, c.Code, c.Libelle ";
 $result = $myBdd->Query($sql);
 while($row = $myBdd->FetchAssoc($result)) {

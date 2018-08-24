@@ -61,27 +61,9 @@
 
 {literal}
     <script type="text/javascript">
-        function initialiser() {
-            geocoder = new google.maps.Geocoder();
-            var latlng = new google.maps.LatLng(46.85, 1.73);
-            var options = {
-                center: latlng,
-                zoom: 5,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                panControl: true,
-                zoomControl: true,
-                zoomControlOptions: {
-                    style: google.maps.ZoomControlStyle.LARGE
-                },
-                scrollwheel: true,
-                draggable: true
-            };
-            carte = new google.maps.Map(document.getElementById("carte"), options);
-            var infoWindow = new google.maps.InfoWindow;
 
             //création des marqueurs
             {/literal}{$mapParam}{literal}
 
-        }
     </script>
 {/literal}
