@@ -8,6 +8,7 @@ var map;
 var ajaxRequest;
 var plotlist;
 var plotlayers=[];
+var plotlayers2={};
 
 //settings
 var thisMinZoom = 4;
@@ -79,7 +80,12 @@ function stateChanged() {
                 map.addLayer(plotmark);
                 plotmark.bindPopup("<h3>"+plotlist[i].name+"</h3>"+plotlist[i].details);
                 plotlayers.push(plotmark);
+                plotlayers2[plotmark.data.id] = plotmark;
+                document.getElementById('liste').innerHTML += '<div id="link_'+plotmark.data.id+'" >'+plotmark.data.id+'</div>';
             }
+//            console.log(plotlayers);
+            console.log(plotlayers2);
+            active();
         }
     }
 }
@@ -91,3 +97,11 @@ function removeMarkers() {
     plotlayers=[];
 }
 
+function active() {
+    document.getElementById('link_2254').onclick = function(){
+        plotlayers2[2254].fire('click');
+    };
+    document.getElementById('link_2255').onclick = function(){
+        plotlayers2[2255].fire('click');
+    };
+}
