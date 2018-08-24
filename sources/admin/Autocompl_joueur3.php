@@ -81,7 +81,7 @@ session_start();
 			
 
 	// Chargement
-        $q = utyGetGet('q');
+        $q = $myBdd->RealEscapeString(utyGetGet('q'));
         $q = preg_replace('`^[0]*`','',$q);
         
         if (strlen($q) < 2){
