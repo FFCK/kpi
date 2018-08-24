@@ -9,6 +9,7 @@
             <div id="connect">
                 <label for="password">{#Mot_de_passe#}</label>
                 <input type="password" name="Pwd" id="idPwd" class="form-control" placeholder="{#Mot_de_passe#}" required>
+                <input type="hidden" name="tzOffset" id="tzOffset" value="">
             </div>
             <div id="renv">
                 <label for="Mel">Email</label>
