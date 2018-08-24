@@ -145,20 +145,20 @@ if ($xmlDocumentType == 'DT_PARTIC') {
             if(in_array($participant['Code'], $listIcf)) {
                 $sql  = "UPDATE gickp_Liste_Coureur "
                         . "SET Origine = $xmlSaison, "
-                        . "Nom = '" . $participant['FamilyName'] . "', "
-                        . "Prenom = '" . $participant['GivenName'] . "', "
-                        . "Sexe = '" . $participant['Gender'] . "', "
-                        . "Naissance = '" . $participant['BirthDate'] . "', "
-                        . "Numero_club = '" . $participant['Club'] . "', "
-                        . "Numero_comite_dept = '" . $participant['Organisation'] . "', "
+                        . "Nom = '" . $myBdd->RealEscapeString($participant['FamilyName']) . "', "
+                        . "Prenom = '" . $myBdd->RealEscapeString($participant['GivenName']) . "', "
+                        . "Sexe = '" . $myBdd->RealEscapeString($participant['Gender']) . "', "
+                        . "Naissance = '" . $myBdd->RealEscapeString($participant['BirthDate']) . "', "
+                        . "Numero_club = '" . $myBdd->RealEscapeString($participant['Club']) . "', "
+                        . "Numero_comite_dept = '" . $myBdd->RealEscapeString($participant['Organisation']) . "', "
                         . "Numero_comite_reg = '98' "
-                        . "WHERE Reserve = '" . $participant['Code'] . "' "
+                        . "WHERE Reserve = '" . $myBdd->RealEscapeString($participant['Code']) . "' "
                         . "AND Matric > 2000000 ";
                 $result = $myBdd->Query($sql);
                 $sql  = "UPDATE gickp_Competitions_Equipes_Joueurs "
-                        . "SET Nom = '" . $participant['FamilyName'] . "', "
-                        . "Prenom = '" . $participant['GivenName'] . "', "
-                        . "Sexe = '" . $participant['Gender'] . "' "
+                        . "SET Nom = '" . $myBdd->RealEscapeString($participant['FamilyName']) . "', "
+                        . "Prenom = '" . $myBdd->RealEscapeString($participant['GivenName']) . "', "
+                        . "Sexe = '" . $myBdd->RealEscapeString($participant['Gender']) . "' "
                         . "WHERE Matric =  " . $matricIcf[(int) $participant['Code']] . " ";
                 $result = $myBdd->Query($sql);
                 echo '* ' . $participant['Organisation'] . ' - ' . $participant['TVName'] .' => Updated<br>';
@@ -170,16 +170,16 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                         . "(Matric, Origine, Nom, Prenom, Sexe, Naissance, Numero_club, Numero_comite_dept, Numero_comite_reg, Reserve) "
                         . "VALUES($matricJoueur, "
                         . "$xmlSaison, "
-                        . "'" . $participant['FamilyName'] . "', "
-                        . "'" . $participant['GivenName'] . "', "
-                        . "'" . $participant['Gender'] . "', "
-                        . "'" . $participant['BirthDate'] . "', "
-                        . "'" . $participant['Club'] . "', "
-                        . "'" . $participant['Organisation'] . "', "
+                        . "'" . $myBdd->RealEscapeString($participant['FamilyName']) . "', "
+                        . "'" . $myBdd->RealEscapeString($participant['GivenName']) . "', "
+                        . "'" . $myBdd->RealEscapeString($participant['Gender']) . "', "
+                        . "'" . $myBdd->RealEscapeString($participant['BirthDate']) . "', "
+                        . "'" . $myBdd->RealEscapeString($participant['Club']) . "', "
+                        . "'" . $myBdd->RealEscapeString($participant['Organisation']) . "', "
                         . "'98', "
-                        . "'" . $participant['Code'] . "') ";
+                        . "'" . $myBdd->RealEscapeString($participant['Code']) . "') ";
                 $result = $myBdd->Query($sql);
-                echo '* ' . $participant['Organisation'] . ' - ' . $participant['TVName'] .' => Inserted<br>';
+                echo '* ' . $myBdd->RealEscapeString($participant['Organisation']) . ' - ' . $myBdd->RealEscapeString($participant['TVName']) .' => Inserted<br>';
             }
         }
     }
@@ -193,15 +193,15 @@ if ($xmlDocumentType == 'DT_PARTIC') {
     echo 'File date : ' . $fileDate . '<br><br>';
     
     foreach ($xml->Competition as $competition) {
-        echo '<h3>Competition: '. $competition['Code'] . '</h3><ol>';
+        echo '<h3>Competition: '. $myBdd->RealEscapeString($competition['Code']) . '</h3><ol>';
         foreach ($competition->Team as $team) {
-            echo '<li>' . $team['Organisation'] 
-                    . ' (' . $team['Name'] 
-                    . ' ' . $team['Gender'] . ') '
-                    . 'Event = ' . $team->Discipline->RegisteredEvent['Event']
+            echo '<li>' . $myBdd->RealEscapeString($team['Organisation']) 
+                    . ' (' . $myBdd->RealEscapeString($team['Name']) 
+                    . ' ' . $myBdd->RealEscapeString($team['Gender']) . ') '
+                    . 'Event = ' . $myBdd->RealEscapeString($team->Discipline->RegisteredEvent['Event'])
                     . '<ul>';
             foreach ($team->Composition->Athlete as $athlete) {
-                echo '<li>' . $athlete['Order'] . ' - ' . $nomsIcf[(int) $athlete['Code']] . ' (' . $athlete['Code'] .')</li>';
+                echo '<li>' . $myBdd->RealEscapeString($athlete['Order']) . ' - ' . $nomsIcf[(int) $athlete['Code']] . ' (' . $myBdd->RealEscapeString($athlete['Code']) .')</li>';
             }
             echo '<br></ul>';
         } 
