@@ -70,6 +70,8 @@
 		<a href="https://twitter.com/KipSport" target="_blank"><img src="../img/twitter.png" width="20" border="none"></a>
 	</div>
 {/if}
+
+<script>console.log('TZ : {$tzOffset}')</script>
 </div>
 
 				  
