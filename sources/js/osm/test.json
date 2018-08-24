@@ -1,4 +1,12 @@
-[{"name":"CHALON SUR SAONE CK",
-  "lat":"46.78221697675778",
-  "lon":"4.867576360702515",
-  "details":"<a href='http://www.canoe-kayak-auxerre.org/' target='_blank'>http://www.canoe-kayak-auxerre.org/</a>"}]
+[
+    {   "id":"2254",
+        "name":"CHALON SUR SAONE CK",
+        "lat":"46.78221697675778",
+        "lon":"4.867576360702515",
+        "details":"<a href='http://www.chalon.fr/' target='_blank'>http://www.chalon.fr/</a>"},
+    {   "id":"2255",
+        "name":"BERTIER SUR MER",
+        "lat":"45.78221697675778",
+        "lon":"4.267576360702515",
+        "details":"<a href='http://www.canoe-kayak-auxerre.org/' target='_blank'>http://www.canoe-kayak-auxerre.org/</a>"}
+]
