@@ -18,7 +18,7 @@
                 <h3 class="col-xs-12" id="clubLibelle">Club:</h3>
             </div>
             <div class="row">
-                <span class="col-xs-1"><img id="coord" class="img-responsive" style="cursor: pointer;" src="img/mapmarker.png" title="{#Localiser#}"></span>
+                <span class="col-xs-1"><img id="localise" class="img-responsive" style="cursor: pointer;" src="img/mapmarker.png" title="{#Localiser#}"></span>
                 <h3 class="col-xs-4 col-xs-offset-3" id="clubLogo"></h3>
             </div>
             <div class="form-group">
