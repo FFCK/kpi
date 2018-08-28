@@ -1,6 +1,6 @@
 <?php
 // Configuration Generale 
-define('NUM_VERSION','2.22.0');
+define('NUM_VERSION','2.22.1');
 
 // Décalage horaire 
 define('DECALAGE', '-6 hours');
