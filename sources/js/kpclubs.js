@@ -19,7 +19,8 @@ jq(document).ready(function() {
     // var thisPlotsAPIUrl='APIurl.php?format=leaflet&bbox='+minll.lng+','+minll.lat+','+maxll.lng+','+maxll.lat;
 //    var thisPlotsAPIUrl = 'json-clubs.php';
     var thisPlotsAPIUrl = 'clubs.json';
-    var geocodApiUrl = 'https://api-adresse.data.gouv.fr/search/';
+//    var geocodApiUrl = 'https://api-adresse.data.gouv.fr/search/';  // France
+    var geocodApiUrl = ' https://nominatim.openstreetmap.org/search';  // International
 
     var blueIcon = L.icon({
         iconUrl: 'img/Map-Marker-Ball-Right-Azure-icon.png',
@@ -181,13 +182,14 @@ jq(document).ready(function() {
         source: function(request, response) {
             jq.get(geocodApiUrl, { 
                     q: request.term,
-                    limit: limit
+//                    limit: limit
+                    format: 'json',
+                    polygon_geojson: 1
                 }, function(data) {
                     var tab = [];
-                    data.features.forEach(function(e) {
-                        e.properties.lon = e.geometry.coordinates[0];
-                        e.properties.lat = e.geometry.coordinates[1];
-                        tab.push(e.properties);
+                    data.forEach(function(e) {
+                        e.label = e.display_name;
+                        tab.push(e);
                     });
                     response(tab);
             });
@@ -195,6 +197,7 @@ jq(document).ready(function() {
         minLength: 2,
         select: function( event, ui ) {
             event.preventDefault();
+            console.log(ui.item);
             var lat = ui.item.lat;
             var lon = ui.item.lon;
             var plotll = new L.LatLng(lat,lon, true);
@@ -207,7 +210,7 @@ jq(document).ready(function() {
                 this.bindPopup(titre).openPopup();
             });
             var layer = map.addLayer(plotmark);
-            var titre = '<div class="text-center"><b>'+ui.item.label+'</b><br><span class="coords">'+ui.item.lat+','+ui.item.lon+'</span></div>';
+            var titre = '<div class="text-center"><b>'+ui.item.display_name+'</b><br><span class="coords">'+ui.item.lat+','+ui.item.lon+'</span></div>';
             plotmark.bindPopup(titre).openPopup();
             map.setView([lat, lon], 8);
         }
