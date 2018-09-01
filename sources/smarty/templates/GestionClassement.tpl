@@ -156,7 +156,7 @@
 								{assign var='idJournee' value='0'}
 
 								{section name=i loop=$arrayEquipe_journee} 
-									{if $arrayEquipe_journee[i].J != 0 && $arrayEquipe_journee[i].Type == 'C'}
+									{if $arrayEquipe_journee[i].Type == 'C'}
 										{if $arrayEquipe_journee[i].Id_journee != $idJournee}
 											<tr class='head2'>
 												<th colspan="3">{$arrayEquipe_journee[i].Phase} ({$arrayEquipe_journee[i].Lieu})</th>
@@ -173,7 +173,13 @@
 										{/if}
 										{assign var='idJournee' value=$arrayEquipe_journee[i].Id_journee}
 										<tr height="17" class='{cycle values="impair,pair"}'>
-											<td>&nbsp;</td>
+											<td>
+                                                {if $arrayEquipe_journee[i].J == '0' && $profile <= 4 && $AuthModif == 'O'}
+                                                    <a href="" class="dropTeam" data-Id="{$arrayEquipe_journee[i].Id}" data-Id_journee="{$arrayEquipe_journee[i].Id_journee}"><img height="20" src="../img/glyphicons-17-bin.png" title="{#Supprimer#}" border="0"></a>
+                                                {else}
+                                                    &nbsp;
+                                                {/if}
+                                            </td>
 											{if $profile <= 4 && $AuthModif == 'O'}
 												<td width="30"><span class='directInput' Id="Clt-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}" tabindex="2{$smarty.section.i.iteration}0">{$arrayEquipe_journee[i].Clt}</span></td>
 												<td width="200">{$arrayEquipe_journee[i].Libelle}</td>
@@ -205,11 +211,18 @@
                                             {if $arrayEquipe_journee[i].G > 0}
                                                 <td colspan="4"><b>{#Vainqueur#}</b></td>
                                                 <td colspan="8"><b>{$arrayEquipe_journee[i].Libelle}</b></td>
-                                            {elseif $arrayEquipe_journee[i].J > 0}
+                                            {elseif $arrayEquipe_journee[i].P > 0}
                                                 <td colspan="4"><i>{#Perdant#}</i></td>
                                                 <td colspan="8"><i>{$arrayEquipe_journee[i].Libelle}</i></td>
                                             {else}    
-                                                <td colspan="4"></td>
+                                                <td>
+                                                    {if $arrayEquipe_journee[i].J == '0' && $profile <= 4 && $AuthModif == 'O'}
+                                                        <a href="" class="dropTeam" data-Id="{$arrayEquipe_journee[i].Id}" data-Id_journee="{$arrayEquipe_journee[i].Id_journee}"><img height="20" src="../img/glyphicons-17-bin.png" title="{#Supprimer#}" border="0"></a>
+                                                    {else}
+                                                        &nbsp;
+                                                    {/if}
+                                                </td>
+                                                <td colspan="3"></td>
                                                 <td colspan="8">{$arrayEquipe_journee[i].Libelle}</td>
                                             {/if}
                                         </tr>
@@ -298,7 +311,7 @@
 								{assign var='idJournee' value='0'}
 
 								{section name=i loop=$arrayEquipe_journee_publi} 
-									{if $arrayEquipe_journee_publi[i].J_publi != 0 && $arrayEquipe_journee_publi[i].Type == 'C'}
+									{if $arrayEquipe_journee_publi[i].Type == 'C'}
 										{if $arrayEquipe_journee_publi[i].Id_journee != $idJournee}
 											<tr class='head2Public'>
 												<th colspan="3">{$arrayEquipe_journee_publi[i].Phase} ({$arrayEquipe_journee_publi[i].Lieu})</th>
@@ -344,13 +357,12 @@
                                             {if $arrayEquipe_journee_publi[i].G_publi > 0}
                                                 <td colspan="4"><b>{#Vainqueur#}</b></td>
                                                 <td colspan="8"><b>{$arrayEquipe_journee_publi[i].Libelle}</b></td>
-                                            {elseif $arrayEquipe_journee_publi[i].J_publi > 0}
+                                            {elseif $arrayEquipe_journee_publi[i].P_publi > 0}
                                                 <td colspan="4"><i>{#Perdant#}</i></td>
                                                 <td colspan="8"><i>{$arrayEquipe_journee_publi[i].Libelle}</i></td>
                                             {else}
                                                 <td colspan="4"></td>
                                                 <td colspan="8">{$arrayEquipe_journee_publi[i].Libelle}</td>
-
                                             {/if}
                                         </tr>
                                     {/if}

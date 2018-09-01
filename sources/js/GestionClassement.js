@@ -266,6 +266,15 @@ jq(document).ready(function() { //Jquery
 			);
 			
 	});
+    
+    jq(".dropTeam").click(function(e) {
+        e.preventDefault();
+        if(confirm(langue['Confirmer'])) {
+            jq('#Cmd').val('DropTeam');
+            jq('#ParamCmd').val(jq(this).data('Id_journee') + ';' + jq(this).data('Id'));
+            jq('#formClassement').submit();
+        }
+    });
 	
 });
 
