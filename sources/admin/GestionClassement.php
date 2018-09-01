@@ -411,7 +411,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= $codeSaison;
 		$sql .= "'";	 
 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 1");
 
 		($tousLesMatchs == 'tous') ? $lesMatchs = 'Inclu matchs non verrouillés' : $lesMatchs = 'Uniquement matchs verrouillés';
 		$myBdd->utyJournal('Calcul Classement', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $lesMatchs);
@@ -461,7 +461,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= $codeSaison;
 			$sql .= "'";	 
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 2");
 	}
 	
 	function RazClassementCompetitionEquipeNiveau($codeCompet, $codeSaison)
@@ -845,7 +845,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeA ";
 		$sql .= " And Niveau = $niveau";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update A");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update C");
 		
 		// Equipe B ...
 		$sql  = "Update gickp_Competitions_Equipes_Niveau Set Pts=Pts+";
@@ -871,7 +871,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeB ";
 		$sql .= " And Niveau = $niveau";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update B");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update D");
 	}
 
 	// StepClassementCompetitionEquipeJournee
@@ -906,7 +906,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeA ";
 		$sql .= " And Id_journee = $idJournee";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update A");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update E");
 		
 		// Equipe B ...
 		$sql  = "Update gickp_Competitions_Equipes_Journee Set Pts=Pts+";
@@ -932,7 +932,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeB ";
 		$sql .= " And Id_journee = $idJournee";
 	
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update B");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update F");
 	}
 		
 	function FinalisationClassementChpt($codeCompet, $codeSaison)
@@ -973,7 +973,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " Where Id = ";
 			$sql .= $row['Id'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update G");
 		}
         return $egalites;
 	}
@@ -1018,7 +1018,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " Where Id = ";
 			$sql .= $row['Id'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update H");
 		}
 	}
 	
@@ -1074,7 +1074,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " And Niveau = ";
 			$sql .= $row['Niveau'];
 		
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update I");
 		}
 	}
 	
@@ -1134,7 +1134,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " And Niveau = ";
 			$sql .= $row['Niveau'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update J");
 		}
 	}
 	
@@ -1191,7 +1191,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " And Id_journee = ";
 			$sql .= $row['Id_journee'];
 		
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update K");
 		}
 	}
 	
@@ -1223,7 +1223,7 @@ class GestionClassement extends MyPageSecure
 			
 			if ($row['Id_journee'] != $oldIdJournee)
 			{
-				$oldIdJournee = $row['Id_journee'];
+                $oldIdJournee = $row['Id_journee'];
 				$clt = 1;
 				$oldClt = $clt;
 				$oldPts = $row['PtsNiveau'];
@@ -1244,14 +1244,14 @@ class GestionClassement extends MyPageSecure
 					$clt = $oldClt;
 			}
 					
-			$sql  = "Update gickp_Competitions_Equipes_Journee Set CltNiveau = ";
+			$sql  = "UPDATE gickp_Competitions_Equipes_Journee Set CltNiveau = ";
 			$sql .= $clt;
 			$sql .= " Where Id = ";
 			$sql .= $row['Id'];
 			$sql .= " And Id_journee = ";
 			$sql .= $row['Id_journee'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update L");
 		}
 	}
 
@@ -1274,7 +1274,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update M");
 
 		//Update Classement
 		$sql  = "Update gickp_Competitions_Equipes ";
@@ -1285,7 +1285,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 2");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update N");
 		
 		//Update Classement journées/phases
 		$sql  = "Update gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  ";
@@ -1298,7 +1298,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And c.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 3");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update O");
 		
 		//Update Classement niveau
 		$sql  = "Update gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b  ";
@@ -1310,7 +1310,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And b.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 4");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update P");
 
 
 		$myBdd->utyJournal('Publication Classement', $codeSaison, $codeCompet);
@@ -1335,7 +1335,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update Q");
 
 		//Update Classement
 		$sql  = "Update gickp_Competitions_Equipes ";
@@ -1345,7 +1345,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 2");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update R");
 		
 		//Update Classement journées/phases
 		$sql  = "Update gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  ";
@@ -1357,7 +1357,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And c.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 3");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update S");
 		
 		//Update Classement niveau
 		$sql  = "Update gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b  ";
@@ -1368,7 +1368,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And b.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 4");
+		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update T");
 
 
 		$myBdd->utyJournal('Publication Classement RAZ', $codeSaison, $codeCompet);
@@ -1392,7 +1392,7 @@ class GestionClassement extends MyPageSecure
 				
 				// Raz Id_dupli ... 
 				$sql  = "Update gickp_Competitions_Equipes Set Id_dupli = null Where Id_dupli In ($lstEquipe)";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+				mysql_query($sql, $myBdd->m_link) or die ("Erreur Update U");
 							
 				// Insertion des Equipes ...
 				$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) ";
@@ -1428,6 +1428,25 @@ class GestionClassement extends MyPageSecure
 		
 	}
 
+	function DropTeam()
+	{
+		$paramCmd = explode(';', utyGetPost('ParamCmd', ''));
+        $journee = $paramCmd[0];
+        $equipe = $paramCmd[1];
+        
+        $myBdd = new MyBdd();
+
+        // Suppression ... 
+        $sql  = "DELETE FROM gickp_Competitions_Equipes_Journee "
+                . "WHERE Id_journee = $journee "
+                . "AND Id = $equipe "
+                . "AND J = 0 ";
+        mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+        
+//        return 'Suppression effectuée';
+        return '';
+	}
+
 	function SetSessionSaison()
 	{
 		$codeSaison = utyGetPost('ParamCmd', '');
@@ -1461,6 +1480,9 @@ class GestionClassement extends MyPageSecure
 				
 			if ($Cmd == 'Transfert')
 				($_SESSION['Profile'] <= 3) ? $this->Transfert() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				
+			if ($Cmd == 'DropTeam')
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->DropTeam() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'SessionSaison')
 				($_SESSION['Profile'] <= 10) ? $this->SetSessionSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
