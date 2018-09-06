@@ -1,9 +1,7 @@
 <?php
 // Configuration Generale 
-define('NUM_VERSION','2.22.1');
+define('NUM_VERSION','2.23.0');
 
-// Décalage horaire 
-define('DECALAGE', '-6 hours');
 // Décalage horaire -35 minutes pour affichage des prochains matchs + match courant (kpmatchs.php)
 define('DECALAGE_MINUTES', '-395 minutes');
 
