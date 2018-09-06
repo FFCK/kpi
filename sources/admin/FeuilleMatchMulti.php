@@ -718,16 +718,18 @@ class FeuilleMatch extends MyPage {
             $pdf->SetFillColor(200, 200, 200);
 
             //signatures
-//            $pdf->Ln(1);
-//            $pdf->SetFont('Arial', '', 10);
-//            $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');
-//            $pdf->Cell(38, 12, "", '1', '0', 'C');
-//            $pdf->Cell(38, 12, "", '1', '0', 'C');
-//            $pdf->Cell(38, 12, "", '1', '1', 'C');
-//            $pdf->Cell(21, 4, $lang['avant_match'], 'LRB', '0', 'C');
-//            $pdf->Cell(38, 4, $lang['Capitaine'] . " A", '1', '0', 'C');
-//            $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
-//            $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
+            if(!in_array(substr($arrayCompetition['Code'], 0, 2), ['CE', 'CM', 'EC'])) {
+                $pdf->Ln(1);
+                $pdf->SetFont('Arial', '', 10);
+                $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');
+                $pdf->Cell(38, 12, "", '1', '0', 'C');
+                $pdf->Cell(38, 12, "", '1', '0', 'C');
+                $pdf->Cell(38, 12, "", '1', '1', 'C');
+                $pdf->Cell(21, 4, $lang['avant_match'], 'LRB', '0', 'C');
+                $pdf->Cell(38, 4, $lang['Capitaine'] . " A", '1', '0', 'C');
+                $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
+                $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
+            }
 
             //Colonne 2
 
@@ -909,7 +911,7 @@ class FeuilleMatch extends MyPage {
             //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
             $qrcode->displayFPDF($pdf, 264, 164, 21);
 
-            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime('-6 hours')), 0, 1, 'R');
+            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 1, 'R');
             // Pays
             if ($arrayCompetition['Code_niveau'] == 'INT' && $paysA != '') {
                 $pdf->image('../img/Pays/' . $paysA . '.png', 151, 15, 9, 6);
@@ -1036,7 +1038,7 @@ class FeuilleMatch extends MyPage {
                 $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
                 $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
                 $pdf->SetFont('Arial', '', 7);
-                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime('-6 hours')), 0, 0, 'L');
+                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 0, 'L');
             }
         }
 

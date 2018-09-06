@@ -187,9 +187,9 @@ class FeuilleCltNiveau extends MyPage {
             $pdf->SetXY(250, 185);
         }
         if ($lang == $langue['en']) {
-            $pdf->Write(4, date('Y-m-d H:i', strtotime('-6 hours')));
+            $pdf->Write(4, date('Y-m-d H:i', strtotime($_SESSION['tzOffset'])));
         } else {
-            $pdf->Write(4, date('d/m/Y à H:i', strtotime('-6 hours')));
+            $pdf->Write(4, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'])));
         }
         $pdf->Output('Classement ' . $codeCompet . '.pdf', 'I');
     }

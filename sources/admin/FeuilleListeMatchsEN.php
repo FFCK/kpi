@@ -18,7 +18,7 @@ class PDF extends FPDF {
         $this->SetFont('Arial', 'I', 8);
         //Numéro de page centré
         $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-        $this->Cell(136, 5, "Print " . date("Y-m-d") . "  " . date("H:i", strtotime('-6 hours')), 0, 1, 'R');
+        $this->Cell(136, 5, "Print " . date("Y-m-d H:i", strtotime($_SESSION['tzOffset'])), 0, 1, 'R');
     }
 
 }
