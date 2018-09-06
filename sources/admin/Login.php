@@ -106,7 +106,7 @@ class Login extends MyPage
 					$_SESSION['Club'] = $row['Numero_club'];
                     
                     // Timezone Offset in minutes - server timezone offset
-					$_SESSION['tzOffset'] = ((int) $myBdd->RealEscapeString( $_POST['tzOffset'] ) - 0) . ' minutes';
+					$_SESSION['tzOffset'] = ((int) $myBdd->RealEscapeString( $_POST['tzOffset'] ) - 120) . ' minutes';
                     
 					//Journées autorisées (+ journées de l'évènement autorisé)
 					$Filtre_Journee = $row["Filtre_journee"];
