@@ -25,3 +25,4 @@ sources/wordpress/readme.html
 sources/wordpress/sitemap.xml
 sources/wordpress/sitemap.xml.gz
 /docker/error.log
+/sources/clubs.json
