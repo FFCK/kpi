@@ -717,7 +717,8 @@ class FeuilleMatch extends MyPage {
             }
             $pdf->SetFillColor(200, 200, 200);
 
-            //signatures
+            //signatures avant match
+            // si la compétition n'est pas ICF ou ECA
             if(!in_array(substr($arrayCompetition['Code'], 0, 2), ['CE', 'CM', 'EC'])) {
                 $pdf->Ln(1);
                 $pdf->SetFont('Arial', '', 10);
