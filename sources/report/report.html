@@ -673,24 +673,24 @@
         <div class="modal fade" id="changeModal" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="changeModalLabel"><span data-version="Changer"></span></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <b><span data-version="Changer"></span></b>
-                        <input type="tel" value="1234567">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            <i class="fa fa-times"></i> <span data-version="Annuler"></span>
-                        </button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">
-                            <i class="fa fa-check"></i> OK
-                        </button>
-                    </div>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="changeModalLabel"><span data-version="Changer"></span></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <b><span data-version="Changer"></span></b>
+                            <input type="text" value="1234567" pattern="[0-9]{1,8}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-dismiss" data-dismiss="modal">
+                                <i class="fa fa-times"></i> <span data-version="Annuler"></span>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-confirm" data-dismiss="modal">
+                                <i class="fa fa-check"></i> OK
+                            </button>
+                        </div>
                 </div>
             </div>
         </div>
@@ -857,7 +857,6 @@
         <!-- jQuery first, then Bootstrap JS with Popper -->
         <script src="libraries/js/jquery-3.3.1.min.js" ></script>
         <script src="libraries/js/bootstrap.bundle.min.js" ></script>
-        <script src="libraries/js/bootstrap-toggle.min.js" ></script>
         <script src="libraries/js/cache.min.js" ></script>
         <script src="assets/report.js" ></script>
     </body>

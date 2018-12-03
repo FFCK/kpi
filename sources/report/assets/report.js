@@ -42,7 +42,7 @@ $(function () {
         Cachejs.Local.set('report', report);
     });
 
-    Raz();
+    Raz(); // chrono
     $('.timer-control').hide();
     $('#start_button').show();
     
@@ -73,6 +73,11 @@ function switchlang(lang) {
 
 /**************** CHRONO *******************/
 function Raz() {
+    start_time = new Date();
+    run_time = new Date();
+    start_time.setTime('1521800358378');
+    run_time.setTime('500');
+
     split_period = report.max_time.split(':');
     minut_max = split_period[0];
     second_max = split_period[1];
@@ -82,7 +87,7 @@ function Raz() {
 function Horloge() {
     var temp_time = new Date();
     // chrono
-    // run_time.setTime(temp_time.getTime() - start_time.getTime());
+     run_time.setTime(temp_time.getTime() - start_time.getTime());
 
     // compte à rebours
     var max_time1 = (minut_max * 60000) + (second_max * 1000);
@@ -172,10 +177,6 @@ function Horloge() {
 /*  Fonction InitTime */
 
 //    temp_time = new Date();
-//    start_time = new Date();
-//    run_time = new Date();
-//    start_time.setTime('1521800358378');
-//    run_time.setTime('500');
 //    $('#start_time_display').text(start_time.toLocaleString()); //debug
 //    $('#run_time_display').text(run_time.toLocaleString()); //debug
 //    max_time = '10:00';
