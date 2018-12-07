@@ -12,11 +12,11 @@
 						{if $lang == 'en'}
 							<br><br>If your club is not on the map, send coordinates
 							<br>(postal address, e-mail, website, GPS coordinates, logo)
-							<br>to laurent@poloweb.org.
+							<br>to contact@kayak-polo.info.
                         {else}
 							<br><br>Si votre club n'apparait pas sur la carte, transmettez ses coordonnées
 							<br>(adresse postale, email, site internet, coordonnées GPS, logo)
-							<br>à l'adresse laurent@poloweb.org.
+							<br>à l'adresse contact@kayak-polo.info.
 						{/if}
 
 					</form>			
