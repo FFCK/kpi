@@ -1412,7 +1412,7 @@ class GestionClassement extends MyPageSecure
 				$sql .= "And " ;
 				$sql .= $codeSaisonTransfert;
 				$sql .= "-Year(e.Naissance) between d.Age_min And d.Age_max ";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2 (transmettez cette requête à laurent@poloweb.org) : <br><br>".$sql);
+				mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2 (transmettez cette requête à contact@kayak-polo.info) : <br><br>".$sql);
 
 				$myBdd->utyJournal('Transfert Equipes', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', 'Equipes '.$lstEquipe.' vers '.$codeCompetTransfert.'-'.$codeSaisonTransfert);
 			}

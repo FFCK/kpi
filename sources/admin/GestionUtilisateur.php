@@ -221,7 +221,7 @@ class GestionUtilisateur extends MyPageSecure
 	
 		$this->m_tpl->assign('arrayUser', $arrayUser);
 		
-		$emails .= 'laurent@poloweb.org';
+		$emails .= 'contact@kayak-polo.info';
 		$this->m_tpl->assign('emails', $emails);
 
 		if ($selectUser == '')
@@ -498,8 +498,8 @@ class GestionUtilisateur extends MyPageSecure
 			
 			 //MAIL 
 			$sujet = $action.'de votre accès à kayak-polo.info (KPI)';
-			$email_expediteur = 'laurent@poloweb.org';
-			$email_reply = 'laurent@poloweb.org'; 
+			$email_expediteur = 'contact@kayak-polo.info';
+			$email_reply = 'contact@kayak-polo.info'; 
 			$message_texte  = 'Bonjour '.$gidentite.','."\n\n".'Nous vous confirmons la '.$action.'de votre accès à www.kayak-polo.info'; 
 			$message_texte .= "\n\n".'Votre identifiant : '.$guser; 
 			$message_texte .= "\n".'Votre mot de passe ';
@@ -595,7 +595,7 @@ class GestionUtilisateur extends MyPageSecure
 			$message_texte .= "\n\n".'Laurent,'; 
 			$message_texte .= "\n".'Administrateur.'; 
 			$message_texte .= "\n".'---------------------------------------'; 
-			$email_admin = 'lgarrigue@gmail.com';
+			$email_admin = 'contact@kayak-polo.info';
 			//ENVOI
 			$messageComplet = $message.$message_texte;
 			mail($email_admin,$sujet,$messageComplet,$headers);

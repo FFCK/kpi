@@ -229,13 +229,13 @@ jq(document).ready(function() {
                     alert("Sélectionner un Club... Mise à jour Impossible !");
                     return false;
                 } else {
-                    alert("Ce bouton transmet le contenu du formulaire complété par mail à l adresse laurent@poloweb.org.");
+                    alert("Ce bouton transmet le contenu du formulaire complété par mail à l adresse contact@kayak-polo.info.");
                     var postal = document.forms['formCartographie'].elements['postal'].value;
                     var www = document.forms['formCartographie'].elements['www'].value;
                     var email = document.forms['formCartographie'].elements['email'].value;
                     var coord = document.forms['formCartographie'].elements['coord'].value;
                     var texte = "Club = " + club + "<br>Adresse = " + postal + "<br>Web = " + www + "<br>Mail = " + email + "<br>GPS = " + coord;
-                    location.href="mailto:laurent@poloweb.org?subject=Kayak-polo.info : demande de mise à jour d'un club&body=" + texte;
+                    location.href="mailto:contact@kayak-polo.info?subject=Kayak-polo.info : demande de mise à jour d'un club&body=" + texte;
                 }
         }
 

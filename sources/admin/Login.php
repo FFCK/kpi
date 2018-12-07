@@ -52,8 +52,8 @@ class Login extends MyPage
 				$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
 				//MAIL 
 				$sujet = 'Modification de votre mot de passe kayak-polo.info (KPI)';
-				$email_expediteur = 'laurent@poloweb.org';
-				$email_reply = 'laurent@poloweb.org'; 
+				$email_expediteur = 'contact@kayak-polo.info';
+				$email_reply = 'contact@kayak-polo.info'; 
 				$message_texte  = 'Bonjour '.$row['Identite'].','."\n\n".'Nous vous confirmons la modification de votre mot de passe kayak-polo.info'; 
 				$message_texte .= "\n\n".'Votre identifiant : '.$row['Code']; 
 				$message_texte .= "\n".'Votre nouveau mot de passe : '.$gpwd;
