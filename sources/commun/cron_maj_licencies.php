@@ -15,5 +15,5 @@
 	fputs($fp, $msg); // on ecrit la ligne
 	fclose($fp);
     // Envoi du mail
-    $headers = 'From: KPI <laurent@kayak-polo.info>' . "\r\n";
+    $headers = 'From: KPI <contact@kayak-polo.info>' . "\r\n";
     mail('contact@kayak-polo.info', '[KPI-CRON]', $msg, $headers);
