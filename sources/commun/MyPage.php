@@ -1,6 +1,6 @@
 <?php
 header ('Content-type:text/html; charset=utf-8');
-
+ini_set("display_errors", 0);
 // Maintenance
 //die ('<h1>Site en cours de maintenance.<br />Merci de patienter quelques instants...</h1>');
 //phpinfo();
