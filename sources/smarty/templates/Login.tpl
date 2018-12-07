@@ -29,7 +29,7 @@
             </div>
             <br>
             <br>
-            <p class="text-center"><a href="mailto:laurent@poloweb.org?subject=Demande d'identifiant administrateur kayak-polo.info&body=Nom:%0D%0APrénom:%0D%0AN°Licence:%0D%0AFonctions fédérales:%0D%0AUn petit mot ?">{#Demander_identifiant#}</a></p>
+            <p class="text-center"><a href="mailto:contact@kayak-polo.info?subject=Demande d'identifiant administrateur kayak-polo.info&body=Nom:%0D%0APrénom:%0D%0AN°Licence:%0D%0AFonctions fédérales:%0D%0AUn petit mot ?">{#Demander_identifiant#}</a></p>
             <br>
             <p class="text-center" id="perdu"><a href="" onClick="return false">{#j_ai_perdu_mon_mdp#}</a></p>
             <br>

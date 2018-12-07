@@ -205,7 +205,7 @@
 				
 				<div class='blocBottom'>
 					<div class='liens'>
-						<a href="mailto:laurent@poloweb.org?bcc={$emails}">Envoyer un email aux utilisateurs ci-dessous</a>
+						<a href="mailto:contact@kayak-polo.info?bcc={$emails}">Envoyer un email aux utilisateurs ci-dessous</a>
 						<a href="GestionJournal.php">Journal des activités</a>
 						<label for='limitProfils'>Profils :</label>
 						<select name="limitProfils" onChange="formUser.submit()">
