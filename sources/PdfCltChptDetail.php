@@ -107,12 +107,10 @@ class FeuilleCltNiveau extends MyPage
 		$sql .= $codeSaison;
 		$sql .= "' And CltNiveau_publi != 0 ";
 		$sql .= "Order By Clt_publi Asc, Diff_publi Desc ";	 
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load<br>".$sql);
-		$num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+        $num_results = $myBdd->NumRows($result);
 		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
+        while($row = $myBdd->FetchAssoc($result)) {
 			
 			$idEquipe = $row['Id'];
 			$pdf->SetFont('Arial','B',12);
@@ -150,15 +148,13 @@ class FeuilleCltNiveau extends MyPage
 			$sql .= "' And (a.Id_equipeA = $idEquipe Or a.Id_equipeB = $idEquipe) ";	 
 			$sql .= "And a.Publication = 'O' ";	 
 			$sql .= "Order by b.Date_debut, b.Lieu ";
-			$result2 = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2");
-			$num_results2 = mysql_num_rows($result2);
+            $result2 = $myBdd->Query($sql);
+            $num_results2 = $myBdd->NumRows($result2);
 
 			$oldId_journee = '';
 			$pdf->SetFont('Arial','B',10);
 			
-			for ($j=0;$j<$num_results2;$j++)
-			{
-				$row2 = mysql_fetch_array($result2);	
+            while($row2 = $myBdd->FetchAssoc($result2)) {
 				if (($row2['ScoreA'] == '') || ($row2['ScoreA'] == '?')) {
                     continue;
                 } // Score non valide ...
@@ -166,25 +162,21 @@ class FeuilleCltNiveau extends MyPage
                     continue;
                 } // Score non valide ...
 				$Id_journee = $row2['Id_journee'];
-				if ($Id_journee != $oldId_journee)
-				{
+				if ($Id_journee != $oldId_journee) {
 					// Rupture journée ...
 					$oldId_journee = $Id_journee;
 					$pdf->Ln(2);
 					$pdf->SetFont('Arial','BI',10);
 					$pdf->Cell(190, 5, utyDateUsToFr($row2['Date_debut']).' - '.$row2['Lieu'], 0, 1,'C');
 				}
-				if($row2['Validation'] != 'O')
-				{
+				if($row2['Validation'] != 'O') {
 					$pdf->SetFont('Arial','',9);
 					$pdf->Cell(89, 4, $row2['LibelleA'], 0, 0,'R');
 					$pdf->Cell(5, 4, '', 0, 0,'C');
 					$pdf->Cell(2, 4, '-', 0, 0,'C');
 					$pdf->Cell(5, 4, '', 0, 0,'C');
 					$pdf->Cell(89, 4, $row2['LibelleB'], 0, 1,'L');
-				}
-				else
-				{
+				} else {
 					if ($row2['ScoreA'] > $row2['ScoreB']) {
                         $pdf->SetFont('Arial', 'B', 9);
                     } else {

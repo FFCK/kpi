@@ -14,14 +14,15 @@ class PDF extends FPDF {
 class FeuilleMatch extends MyPage {
 
     function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd) {
+		$myBdd = new MyBdd();
         $sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-        $result = mysql_query($sql, $bdd->m_link) or die("Erreur Select");
+        $result = $myBdd->Query($sql);
 
-        if (mysql_num_rows($result) != 1) {
+		if ($myBdd->NumRows($result) != 1) {
             return;
         }
 
-        $row = mysql_fetch_array($result);
+        $row = $myBdd->FetchArray($result);
         if ((int) $row['Nb'] > 0) {
             return;
         }
@@ -31,7 +32,7 @@ class FeuilleMatch extends MyPage {
         $sql .= "Where Id_equipe = $idEquipe ";
         $sql .= "AND Capitaine <> 'X' ";
         $sql .= "AND Capitaine <> 'A' ";
-        mysql_query($sql, $bdd->m_link) or die("Erreur Replace InitTitulaireEquipe");
+		$myBdd->Query($sql);
     }
 
     function FeuilleMatch() {
@@ -65,13 +66,13 @@ class FeuilleMatch extends MyPage {
                     . "From gickp_Matchs a, gickp_Journees b "
                     . "Where a.Id in (" . $chaqueMatch[$h] . ") "
                     . "And a.Id_journee = b.Id ";
-            $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Select <br />" . $sql);
-            $num_results = mysql_num_rows($result);
+            $result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
             if ($num_results != 1) {
                 die('Erreur Nb Matchs');
             }
 
-            $row = mysql_fetch_array($result);
+            $row = $myBdd->FetchAssoc($result);
             $idMatch = $row['Id'];
             $saison = $row['Code_saison'];
             $categorie = $row['Code_competition'];
@@ -147,9 +148,10 @@ class FeuilleMatch extends MyPage {
             $equipea = '';
             $equipeaFormat = '';
             $sql1 = "Select Libelle From gickp_Competitions_Equipes Where Id = $idEquipeA";
-            $result1 = mysql_query($sql1, $myBdd->m_link) or die("Erreur Load");
-            if (mysql_num_rows($result1) == 1) {
-                $row1 = mysql_fetch_array($result1);
+            $result1 = $myBdd->Query($sql1);
+
+            if ($myBdd->NumRows($result1) == 1) {
+                $row1 = $myBdd->FetchAssoc($result1);
                 $equipea = $row1['Libelle'];
             }
 
@@ -157,9 +159,9 @@ class FeuilleMatch extends MyPage {
             $equipeb = '';
             $equipebFormat = '';
             $sql2 = "Select Libelle From gickp_Competitions_Equipes Where Id = $idEquipeB";
-            $result2 = mysql_query($sql2, $myBdd->m_link) or die("Erreur Load");
-            if (mysql_num_rows($result2) == 1) {
-                $row2 = mysql_fetch_array($result2);
+            $result2 = $myBdd->Query($sql2);
+            if ($myBdd->NumRows($result2) == 1) {
+                $row2 = $myBdd->FetchAssoc($result2);
                 $equipeb = $row2['Libelle'];
             }
 
@@ -284,13 +286,12 @@ class FeuilleMatch extends MyPage {
                     . "AND a.Capitaine <> 'A' "
                     . "AND a.Equipe = 'A' "
                     . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";
-            $result3 = mysql_query($sql3, $myBdd->m_link) or die("Erreur Load 1 : " . $sql3);
-            $num_results3 = mysql_num_rows($result3);
+            $result3 = $myBdd->Query($sql3);
+            $num_results3 = $myBdd->NumRows($result3);
 
             $j = 0;
-            for ($i = 1; $i <= $num_results3; $i++) {
+            while($row3 = $myBdd->FetchAssoc($result3)) {
                 $j++;
-                $row3 = mysql_fetch_array($result3);
                 if ($row3["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
                     $noma[$j] = strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
@@ -347,13 +348,12 @@ class FeuilleMatch extends MyPage {
                     . "AND a.Capitaine <> 'A' "
                     . "AND a.Equipe = 'B' "
                     . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";
-            $result4 = mysql_query($sql4, $myBdd->m_link) or die("Erreur Load 1 : " . $sql4);
-            $num_results4 = mysql_num_rows($result4);
+            $result4 = $myBdd->Query($sql4);
+            $num_results4 = $myBdd->NumRows($result4);
 
             $j = 0;
-            for ($i = 1; $i <= $num_results4; $i++) {
+            while($row4 = $myBdd->FetchAssoc($result4)) {
                 $j++;
-                $row4 = mysql_fetch_array($result4);
 
                 if ($row4["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
@@ -398,16 +398,14 @@ class FeuilleMatch extends MyPage {
             $sql5 .= "AND d.Id_evt_match != 'T' ";
             $sql5 .= "AND d.Id_evt_match != 'A' ";
             $sql5 .= "Order By d.Periode ASC, d.Temps DESC, d.Id ";
-
-            $result5 = mysql_query($sql5, $myBdd->m_link) or die("Erreur Load " . $sql5);
-            $num_results5 = mysql_num_rows($result5);
+            $result5 = $myBdd->Query($sql5);
+            $num_results5 = $myBdd->NumRows($result5);
 
             $scoreMitempsA = '';
             $scoreMitempsB = '';
             $nblignes = 0;
 
-            for ($i = 1; $i <= $num_results5; $i++) {
-                $row5 = mysql_fetch_array($result5);
+            while($row5 = $myBdd->FetchAssoc($result5)) {
                 for ($j = 1; $j <= 11; $j++) {
                     $d[$j] = '';
                 }

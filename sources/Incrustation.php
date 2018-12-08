@@ -10,22 +10,25 @@ class Incrustation extends MyPage
 {	
 	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
 	{
+		$myBdd = new MyBdd();
 		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select");
+		$result = $myBdd->Query($sql);
 
-		if (mysql_num_rows($result) != 1)
-			return;
-			
-		$row = mysql_fetch_array($result);
-		if ((int) $row['Nb'] > 0)
-			return;
-			
-		$sql  = "Replace Into gickp_Matchs_Joueurs ";
+		if ($myBdd->NumRows($result) != 1) {
+            return;
+        }
+
+        $row = $myBdd->FetchArray($result);
+		if ((int) $row['Nb'] > 0) {
+            return;
+        }
+
+        $sql  = "Replace Into gickp_Matchs_Joueurs ";
 		$sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 		$sql .= "Where Id_equipe = $idEquipe ";
 		$sql .= "AND Capitaine <> 'X' ";
 		$sql .= "AND Capitaine <> 'A' ";
-		mysql_query($sql, $bdd->m_link) or die ("Erreur Replace InitTitulaireEquipe");
+		$result = $myBdd->Query($sql);
  	}
 	
 	function Load()
@@ -48,10 +51,9 @@ class Incrustation extends MyPage
 		$sql .= "Where a.Id = $idMatch ";
 		$sql .= "And a.Id_journee = b.Id ";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select ".$sql);
-		if (mysql_num_rows($result) == 1)
-		{
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1) {
+			$row = $myBdd->FetchArray($result);
 			
 			$SaisonMatch = $row['Code_saison'];
 			$this->m_tpl->assign('saison', $row['Code_saison']);
@@ -88,19 +90,17 @@ class Incrustation extends MyPage
 			
 			// Nom Equipe A
 			$sql  = "Select Libelle From gickp_Competitions_Equipes Where Id = $idEquipeA";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-			if (mysql_num_rows($result) == 1)
-			{
-				$row = mysql_fetch_array($result);	  
+            $result = $myBdd->Query($sql);
+            if ($myBdd->NumRows($result) == 1) {
+				$row = $myBdd->FetchArray($result);
 				$this->m_tpl->assign('equipea', $row['Libelle']);
 			}
 			
 			// Nom Equipe B
 			$sql  = "Select Libelle From gickp_Competitions_Equipes Where Id = $idEquipeB";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-			if (mysql_num_rows($result) == 1)
-			{
-				$row = mysql_fetch_array($result);	  
+            $result = $myBdd->Query($sql);
+            if ($myBdd->NumRows($result) == 1) {
+				$row = $myBdd->FetchArray($result);
 				$this->m_tpl->assign('equipeb', $row['Libelle']);
 			}
 			
@@ -116,40 +116,34 @@ class Incrustation extends MyPage
 			$sql .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
 			$sql .= "Where d.Id_match = $idMatch ";
 			$sql .= "Order By d.Periode, d.Temps, d.Id ";	 
-			
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load ".$sql);
-			$num_results = mysql_num_rows($result);
-
+            $result = $myBdd->Query($sql);
+			$num_results = $myBdd->NumRows($result);
 			if ($num_results == 0)
 			{
 				$lastPeriode = '';
 				$_SESSION['lastPeriode'] = '';
 			}
-			if ($num_results > 26)
-				$nblignes = $num_results;
-			else
-				$nblignes = 26;
+			if ($num_results > 26) {
+                $nblignes = $num_results;
+            } else {
+                $nblignes = 26;
+            }
 
-			for ($i=1;$i<=$num_results;$i++)
-			{
-				$row = mysql_fetch_array($result);
+            while($row = $myBdd->FetchAssoc($result)) {
 				for($j=0;$j<=11;$j++) { $d[$j] = '&nbsp;'; }
-				if($row['Id'])
-				{
-					
+				if($row['Id']) {
 					if($row['Equipe_A_B'] == 'A' && $row['Id_evt_match'] == 'B')
 						$scoreDetailA++;
 					if($row['Equipe_A_B'] == 'B' && $row['Id_evt_match'] == 'B')
 						$scoreDetailB++;
 					$d[6] = $row['Periode'];
-					if(strftime("%M:%S",strtotime($row['Temps']))!='00:00')
-					{
-						$d[6] .= ' - '.strftime("%M:%S",strtotime($row['Temps']));
-						$CChrono = strftime("%M:%S",strtotime($row['Temps']));
-					}
-					else
-						$CChrono = '';
-					$d[0] = $row['Id'];
+					if (strftime("%M:%S", strtotime($row['Temps'])) != '00:00') {
+                        $d[6] .= ' - ' . strftime("%M:%S", strtotime($row['Temps']));
+                        $CChrono = strftime("%M:%S", strtotime($row['Temps']));
+                    } else {
+                        $CChrono = '';
+                    }
+                    $d[0] = $row['Id'];
 					$lastPeriode = $row['Periode'];
 				}
 				array_push($detail, array('d0' => $d[0], 'd1' => $d[1], 'd2' => $d[2], 'd3' => $d[3], 'd4' => $d[4], 'd5' => $d[5], 'd6' => $d[6],
@@ -161,14 +155,16 @@ class Incrustation extends MyPage
 			$this->m_tpl->assign('scoreDetailB', $scoreDetailB);
 			$this->m_tpl->assign('scoreM1A', $scoreM1A);
 			$this->m_tpl->assign('scoreM1B', $scoreM1B);
-			if($scoreDetailA == $score_A && $scoreDetailB == $score_B)
-				$scoreEq = 'O';
-			else
-				$scoreEq = 'N';
-			$this->m_tpl->assign('scoreEq', $scoreEq);
-			if($thePeriode != '')
-				$lastPeriode = $thePeriode;
-			$this->m_tpl->assign('lastPeriode', $lastPeriode);
+			if ($scoreDetailA == $score_A && $scoreDetailB == $score_B) {
+                $scoreEq = 'O';
+            } else {
+                $scoreEq = 'N';
+            }
+            $this->m_tpl->assign('scoreEq', $scoreEq);
+			if ($thePeriode != '') {
+                $lastPeriode = $thePeriode;
+            }
+            $this->m_tpl->assign('lastPeriode', $lastPeriode);
 		}
 	}
 
@@ -187,4 +183,3 @@ class Incrustation extends MyPage
 
 $page = new Incrustation();
 
-?>

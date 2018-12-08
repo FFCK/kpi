@@ -36,10 +36,9 @@ class PdfQrCodes extends MyPage {
         if (isset($_GET['Evt'])) {
             $lstJournee = '';
             $sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = " . $_GET['Evt'];
-            $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load =>  " . $sql);
-            $num_results = mysql_num_rows($result);
-            for ($j = 0; $j < $num_results; $j++) {
-                $row = mysql_fetch_array($result);
+            $result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
+            while($row = $myBdd->FetchAssoc($result)) {
                 if ($lstJournee != '') {
                     $lstJournee .= ',';
                 }
@@ -74,11 +73,10 @@ class PdfQrCodes extends MyPage {
         $sql .= $orderMatchs;
 
         $orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
-        $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load =>  " . $sql);
-        $num_results = mysql_num_rows($result);
         $PhaseLibelle = 0;
-        for ($j = 0; $j < $num_results; $j++) {
-            $row1 = mysql_fetch_array($result);
+        $result = $myBdd->Query($sql);
+        $num_results = $myBdd->NumRows($result);
+        while($row1 = $myBdd->FetchAssoc($result)) {
             if ($row1['Phase'] != '' || $row1['Libelle'] != '') {
                 $PhaseLibelle = 1;
             }

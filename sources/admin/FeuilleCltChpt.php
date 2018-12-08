@@ -111,8 +111,8 @@ class FeuilleCltNiveau extends MyPage {
 
         $sql .= "' Order By Clt Asc, Diff Desc ";
 
-        $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-        $num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+        $num_results = $myBdd->NumRows($result);
 
         // recalcul des éliminés
         $elim = $num_results - $elim;
@@ -133,8 +133,7 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Cell(18, 5, '-', 'B', 0, 'C');
         $pdf->Cell(20, 5, '+/-', 'B', 1, 'C');
 
-        for ($i = 0; $i < $num_results; $i++) {
-            $row = mysql_fetch_array($result);
+        while($row = $myBdd->FetchAssoc($result)) {
             $separation = 0;
             //Séparation qualifiés
             if (($i + 1) > $qualif && $qualif != 0) {

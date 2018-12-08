@@ -29,22 +29,24 @@ class PdfListeMatchs extends MyPage
 {	
  	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
 	{
+		$myBdd = new MyBdd();
 		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select ".$sql);
+        $result = $myBdd->Query($sql);
 
-		if (mysql_num_rows($result) != 1)
+		if ($myBdd->NumRows($result) != 1) {
 			return;
-			
-		$row = mysql_fetch_array($result);
-		if ((int) $row['Nb'] > 0)
+        }
+        $row = $myBdd->FetchArray($result);
+		if ((int) $row['Nb'] > 0){
 			return;
-			
+        }
+        
 		$sql  = "Replace Into gickp_Matchs_Joueurs ";
 		$sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 		$sql .= "Where Id_equipe = $idEquipe ";
 		$sql .= "AND Capitaine <> 'X' ";
 		$sql .= "AND Capitaine <> 'A' ";
-		mysql_query($sql, $bdd->m_link) or die ("Erreur Replace InitTitulaireEquipe");
+		$myBdd->Query($sql);
  	}
 	   
 	function PdfListeMatchs()
@@ -66,14 +68,13 @@ class PdfListeMatchs extends MyPage
 		if(isset($_GET['idEvenement'])){
 			$lstJournee = '';
 			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$_GET['idEvenement'];
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load =>  ".$sql);
-			$num_results = mysql_num_rows($result);
-			for ($j=0;$j<$num_results;$j++)
-			{
-				$row = mysql_fetch_array($result);
-				if ($lstJournee != '')
-					$lstJournee .= ',';
-				$lstJournee .= $row['Id_journee'];
+            $result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
+            while($row = $myBdd->FetchAssoc($result)) {
+				if ($lstJournee != '') {
+                    $lstJournee .= ',';
+                }
+                $lstJournee .= $row['Id_journee'];
 			}
 		}
 		$codeSaison = utyGetSaison();
@@ -95,11 +96,12 @@ class PdfListeMatchs extends MyPage
 		$sql .= "Left Outer Join gickp_Competitions_Equipes b On (a.Id_equipeA = b.Id) "; 
 		$sql .= "Left Outer Join gickp_Competitions_Equipes c On (a.Id_equipeB = c.Id) ";
 		$sql .= ", gickp_Journees d ";
-		if($lstJournee == 0)
-			$sql .= "Where d.Code_competition = '".$laCompet."' And d.Code_saison = $codeSaison ";
-		else
-			$sql .= "Where a.Id_journee In ($lstJournee) ";
-		if($filtreJour != '')
+		if ($lstJournee == 0) {
+            $sql .= "Where d.Code_competition = '" . $laCompet . "' And d.Code_saison = $codeSaison ";
+        } else {
+            $sql .= "Where a.Id_journee In ($lstJournee) ";
+        }
+        if($filtreJour != '')
 		{
 			$sql .= "And a.Date_match = '".$filtreJour."' ";
 		}
@@ -112,16 +114,15 @@ class PdfListeMatchs extends MyPage
 		$sql .= $orderMatchs;
 
         $orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load =>  ".$sql);
-		$num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+        $num_results = $myBdd->NumRows($result);
 		
 		$PhaseLibelle = 0;
-		for ($j=0;$j<$num_results;$j++)
-		{
-			$row1 = mysql_fetch_array($result);	  
-			if (trim($row1['Phase']) != '')
-				$PhaseLibelle = 1;
-			$lastCompetEvt = $row1['Code_competition'];
+        while($row1 = $myBdd->FetchAssoc($result)) {
+			if (trim($row1['Phase']) != '') {
+                $PhaseLibelle = 1;
+            }
+            $lastCompetEvt = $row1['Code_competition'];
 		}
 		$Oldrupture = "";
 		// Chargement des infos de l'évènement ou de la compétition
@@ -135,13 +136,15 @@ class PdfListeMatchs extends MyPage
 		else
 		{
 			$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-			if($arrayCompetition['Titre_actif'] == 'O')
-				$titreEvenementCompet = $arrayCompetition['Libelle'];
-			else
-				$titreEvenementCompet = $arrayCompetition['Soustitre'];
-			if($arrayCompetition['Soustitre2'] != '')
-				$titreEvenementCompet .= ' - '.$arrayCompetition['Soustitre2'];
-			//$titreEvenementCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
+			if ($arrayCompetition['Titre_actif'] == 'O') {
+                $titreEvenementCompet = $arrayCompetition['Libelle'];
+            } else {
+                $titreEvenementCompet = $arrayCompetition['Soustitre'];
+            }
+            if ($arrayCompetition['Soustitre2'] != '') {
+                $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
+            }
+            //$titreEvenementCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
 		}
         
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
@@ -191,41 +194,46 @@ class PdfListeMatchs extends MyPage
 		$pdf->Cell(273,6,"Game list",0,1,'C');
 		$pdf->Ln(3);
 		$heure1 = '';
-		if($num_results > 0)
-			mysql_data_seek($result,0);
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		if($num_results > 0) {
+            $myBdd->DataSeek($result, 0);
+        }
+        while($row = $myBdd->FetchAssoc($result)) {
 			
 			$row['Soustitre2'] = $myBdd->GetSoustitre2Competition($row['Code_competition'], $codeSaison);
-			if($row['Soustitre2'] != '')
-				$row['Code_competition'] = $row['Soustitre2'];
-			$phase_match = $row['Phase'];
+			if ($row['Soustitre2'] != '') {
+                $row['Code_competition'] = $row['Soustitre2'];
+            }
+            $phase_match = $row['Phase'];
 			if ($row['Libelle'] != '')
 			{
 				$libelle = explode(']', $row['Libelle']);
-				if($libelle[1] != '')
-					$phase_match .= "  |  ".$libelle[1];
-				//Codes équipes	
+				if ($libelle[1] != '') {
+                    $phase_match .= "  |  " . $libelle[1];
+                }
+                //Codes équipes	
 				$EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
 			}
-			if ($row['Id_equipeA'] >= 1)
-				$this->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA'], $myBdd);
-			elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '')
-				$row['EquipeA'] = $EquipesAffectAuto[0];
-			if ($row['Id_equipeB'] >= 1)
-				$this->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB'], $myBdd);
-			elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '')
-				$row['EquipeB'] = $EquipesAffectAuto[1];
-			if($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1')
-				$row['Arbitre_principal'] = utyArbSansNiveau($row['Arbitre_principal']);
-			elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '')
-				$row['Arbitre_principal'] = $EquipesAffectAuto[2];
-			if($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1')
-				$row['Arbitre_secondaire'] = utyArbSansNiveau($row['Arbitre_secondaire']);
-			elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '')
-				$row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
-            
+			if ($row['Id_equipeA'] >= 1) {
+                $this->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA'], $myBdd);
+            } elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
+                $row['EquipeA'] = $EquipesAffectAuto[0];
+            }
+            if ($row['Id_equipeB'] >= 1) {
+                $this->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB'], $myBdd);
+            } elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
+                $row['EquipeB'] = $EquipesAffectAuto[1];
+            }
+            if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
+                $row['Arbitre_principal'] = utyArbSansNiveau($row['Arbitre_principal']);
+            } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
+                $row['Arbitre_principal'] = $EquipesAffectAuto[2];
+            }
+            if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
+                $row['Arbitre_secondaire'] = utyArbSansNiveau($row['Arbitre_secondaire']);
+            } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
+                $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
+            }
+
             $datematch = $row['Date_match'];
             $heure = $row['Heure_match'];
             $terrain = $row['Terrain'];
