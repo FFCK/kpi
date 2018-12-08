@@ -180,9 +180,8 @@ include_once('../commun/MyTools.php');
 			$sql .= "And UPPER(a.Libelle) LIKE UPPER('%".$q."%') ";
 			$sql .= "Group By a.Libelle ";	 
 			$sql .= "Order By a.Poule, a.Tirage, a.Libelle ";	 
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Equipes : ".$sql);
-			while ($row = mysql_fetch_assoc($result))
-			{
+            $result = $myBdd->Query($sql);
+            while($row = $myBdd->FetchAssoc($result)) {
 				//$libelle = __encode($row['Libelle']);
 				$libelle = $row['Libelle'];
 				$matric = '';
@@ -213,9 +212,8 @@ include_once('../commun/MyTools.php');
 			$sql .= ") ";
 			//$sql .= "Group By b.Libelle ";	 
 			$sql .= "Order by b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Joueurs : ".$sql);
-			while ($row = mysql_fetch_assoc($result))
-			{
+            $result = $myBdd->Query($sql);
+            while($row = $myBdd->FetchAssoc($result)) {
 				$libelle = $row['Libelle'];
 				$arb = strtoupper($row['Arb']);
 				if ($row['niveau'] != '') {
@@ -242,9 +240,8 @@ include_once('../commun/MyTools.php');
 			$sql .= "Or UPPER(b.Libelle) LIKE UPPER('%".$q."%') ";
 			$sql .= ") ";
 			$sql .= "Order By a.Nom, a.Prenom ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Pool arbitres : ".$sql);
-			while ($row = mysql_fetch_assoc($result))
-			{
+            $result = $myBdd->Query($sql);
+            while($row = $myBdd->FetchAssoc($result)) {
 				//$libelle = 'Pool Arbitres 1';
 				$libelle = substr($row['Libelle'],0,3);
 				$arb = strtoupper($row['Arb']);
@@ -275,9 +272,8 @@ include_once('../commun/MyTools.php');
 			$sql .= "Or UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$q."%') ";
 			$sql .= ") And lc.Numero_club = c.Code ";
 			$sql .= "Order by lc.Nom, lc.Prenom ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autres arbitres : ".$sql);
-			while ($row = mysql_fetch_assoc($result))
-			{
+            $result = $myBdd->Query($sql);
+            while($row = $myBdd->FetchAssoc($result)) {
 				$club = $row['Numero_club'];
 				$libelle = mb_convert_case(strtolower($row['Libelle']), MB_CASE_TITLE, "UTF-8");
 				//$arb = __encode(strtoupper($row['Arb']));

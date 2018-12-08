@@ -27,14 +27,15 @@ class PdfListeMatchs extends MyPage
 {	
  	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
 	{
+		$myBdd = new MyBdd();
 		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select ".$sql);
+        $result = $myBdd->Query($sql);
 
-		if (mysql_num_rows($result) != 1) {
+		if ($myBdd->NumRows($result) != 1) {
 			return;
         }
 			
-		$row = mysql_fetch_array($result);
+        $row = $myBdd->FetchArray($result);
 		if ((int) $row['Nb'] > 0) {
 			return;
         }
@@ -44,7 +45,7 @@ class PdfListeMatchs extends MyPage
 		$sql .= "Where Id_equipe = $idEquipe ";
 		$sql .= "AND Capitaine <> 'X' ";
 		$sql .= "AND Capitaine <> 'A' ";
-		mysql_query($sql, $bdd->m_link) or die ("Erreur Replace InitTitulaireEquipe");
+		$myBdd->Query($sql);
  	}
 	   
 	function PdfListeMatchs()
@@ -124,12 +125,11 @@ class PdfListeMatchs extends MyPage
 		$sql .= $orderMatchs;
 		
 		$orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load =>  ".$sql);
-		$num_results = mysql_num_rows($result);
-		
+        $result = $myBdd->Query($sql);
+        $num_results = $myBdd->NumRows($result);
+        
 		$PhaseLibelle = 0;
-		for ($j=0;$j<$num_results;$j++) {
-			$row1 = mysql_fetch_array($result);	  
+        while($row1 = $myBdd->FetchAssoc($result)) {
 			if (trim($row1['Phase']) != '') {
 				$PhaseLibelle = 1;
             }
@@ -210,11 +210,9 @@ class PdfListeMatchs extends MyPage
 		$pdf->Ln(3);
 		$heure1 = '';
 		if ($num_results > 0) {
-            mysql_data_seek($result, 0);
+            $myBdd->DataSeek($result, 0);
         }
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+        while($row = $myBdd->FetchAssoc($result)) {
 			
 			$row['Soustitre2'] = $myBdd->GetSoustitre2Competition($row['Code_competition'], $codeSaison);
 			if ($row['Soustitre2'] != '') {

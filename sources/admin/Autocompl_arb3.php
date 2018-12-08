@@ -43,8 +43,8 @@ include_once('../commun/MyBdd.php');
 	$sql .= "AND j.Code_competition = ce.Code_compet ";
 	$sql .= "Group By ce.Libelle ";	 
 	$sql .= "Order By ce.Poule, ce.Tirage, ce.Libelle ";	 
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_joueur : ".$sql);
-	while($row = mysql_fetch_assoc($result)) {
+    $result = $myBdd->Query($sql);
+    while($row = $myBdd->FetchAssoc($result)) {
 		$codeCompet = $row['Code_competition'];
 		$codeSaison = $row['Code_saison'];
 		$codeJournee = $row['Id'];
@@ -72,8 +72,8 @@ include_once('../commun/MyBdd.php');
 	$sql .= "Or UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER('%".$term."%') ";
 	$sql .= "Or UPPER(b.Libelle) LIKE UPPER ('%".$term."%') ) ";
 	$sql .= "Order by b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_joueur : <br />".$sql);
-	while($row = mysql_fetch_assoc($result)) {
+    $result = $myBdd->Query($sql);
+    while($row = $myBdd->FetchAssoc($result)) {
 		$arb = strtoupper($row['Arb']);
 		$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
 		$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
@@ -94,9 +94,8 @@ include_once('../commun/MyBdd.php');
 	$sql .= "Or UPPER(b.Libelle) LIKE UPPER('%".$term."%') ";
 	$sql .= ") ";
 	$sql .= "Order By a.Nom, a.Prenom ";
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Pool arbitres : ".$sql);
-	while ($row = mysql_fetch_assoc($result))
-	{
+    $result = $myBdd->Query($sql);
+    while($row = $myBdd->FetchAssoc($result)) {
 		//$libelle = 'Pool Arbitres 1';
 		$libelle = substr($row['Libelle'],0,3);
 		$arb = strtoupper($row['Arb']);
@@ -120,8 +119,8 @@ include_once('../commun/MyBdd.php');
 	$sql .= "Or UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER('%".$term."%') ";
 	$sql .= ") And lc.Numero_club = c.Code ";
 	$sql .= "Order by lc.Nom, lc.Prenom ";
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_joueur : <br />".$sql);
-	while($row = mysql_fetch_assoc($result)) {
+    $result = $myBdd->Query($sql);
+    while($row = $myBdd->FetchAssoc($result)) {
 		$libelle = mb_convert_case(strtolower($row['Libelle']), MB_CASE_TITLE, "UTF-8");
 		$arb = strtoupper($row['Arb']);
 		if($row['niveau'] != '')
