@@ -99,8 +99,8 @@ include_once('../commun/MyTools.php');
                 . ") And lc.Numero_club = c.Code "
                 . "ORDER BY lc.Nom, lc.Prenom ";
 	
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_joueur : ".$sql);
-	while ($row = mysql_fetch_assoc($result)) {
+    $result = $myBdd->Query($sql);
+    while($row = $myBdd->FetchAssoc($result)) {
 		$club = $row['Numero_club'];
 		$libelle = $row['Libelle'];
 		$matric = $row['Matric'];

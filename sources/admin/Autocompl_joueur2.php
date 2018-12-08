@@ -47,8 +47,8 @@ include_once('../commun/MyTools.php');
             . "ORDER BY lc.Nom, lc.Prenom "
             . "LIMIT 0, 40 ";
 	
-    $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load Autocomplet_joueur : " . $sql);
-    while ($row = mysql_fetch_assoc($result)) {
+    $result = $myBdd->Query($sql);
+    while($row = $myBdd->FetchAssoc($result)) {
         $jRow["club"] = $row['Numero_club'];
         $jRow["libelle"] = $row['Libelle'];
         $jRow["matric"] = $row['Matric'];

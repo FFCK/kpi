@@ -29,12 +29,12 @@ if (utyGetSession('lang') == 'en') {
                     . "GROUP BY ce.Code_compet, ce.Code_saison "
                     . "ORDER BY ce.Code_saison DESC, ce.Code_compet ";
 
-            $result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_getCompo : ".$sql);
+            $result = $myBdd->Query($sql);
             //$num_results = mysql_num_rows($result);
             //header('Content-Type: application/json; charset=ISO-8859-1');
             //$response = array();
             echo "<input type='radio' name='checkCompo' value='' checked /><i>" . $lang['Aucune_reprise'] . "</i><br>";
-            while ($row = mysql_fetch_assoc($result)) {
+            while($row = $myBdd->FetchAssoc($result)) {
                 $Code_saison = $row['Code_saison'];
                 $Code_compet = $row['Code_compet'];
                 echo "<input type='radio' name='checkCompo' value='$Code_saison-$Code_compet'/>$Code_saison - $Code_compet<br />";

@@ -1,7 +1,7 @@
 <?php
-//include_once('../commun/MyPage.php');
-include_once('../commun/MyBdd.php');
-include_once('../commun/MyTools.php');
+    //include_once('../commun/MyPage.php');
+    include_once('../commun/MyBdd.php');
+    include_once('../commun/MyTools.php');
 
 	$myBdd = new MyBdd();
 	
@@ -13,72 +13,7 @@ include_once('../commun/MyTools.php');
 		}
 		return $var;
 	}
-/*	
-	$html_entities = array (
-			"À" =>  "&Agrave;",	#capital a, grave accent
-			"Á" =>  "&Aacute;", 	#capital a, acute accent
-			"Â" =>  "&Acirc;", 	#capital a, circumflex accent
-			"Ã" =>  "&Atilde;", 	#capital a, tilde
-			"Ä" => "&Auml;",	#capital a, umlaut mark
-			"Å" => "&Aring;", 	#capital a, ring
-			"Æ" => "&AElig;", 	#capital ae
-			"Ç" => "&Ccedil;", 	#capital c, cedilla
-			"È" => "&Egrave;", 	#capital e, grave accent
-			"É" => "&Eacute;", 	#capital e, acute accent
-			"Ê" => "&Ecirc;", 	#capital e, circumflex accent
-			"Ë" => "&Euml;", 	#capital e, umlaut mark
-			"Ì" => "&Igrave;", 	#capital i, grave accent
-			"Í" => "&Iacute;", 	#capital i, acute accent
-			"Î" => "&Icirc;", 	#capital i, circumflex accent
-			"Ï" => "&Iuml;", 	#capital i, umlaut mark
-			"Ð" => "&ETH;",		#capital eth, Icelandic
-			"Ñ" => "&Ntilde;", 	#capital n, tilde
-			"Ò" => "&Ograve;", 	#capital o, grave accent
-			"Ó" => "&Oacute;", 	#capital o, acute accent
-			"Ô" => "&Ocirc;", 	#capital o, circumflex accent
-			"Õ" => "&Otilde;", 	#capital o, tilde
-			"Ö" => "&Ouml;", 	#capital o, umlaut mark
-			"Ø" => "&Oslash;", 	#capital o, slash
-			"Ù" => "&Ugrave;", 	#capital u, grave accent
-			"Ú" => "&Uacute;", 	#capital u, acute accent
-			"Û" => "&Ucirc;", 	#capital u, circumflex accent
-			"Ü" => "&Uuml;", 	#capital u, umlaut mark
-			"Ý" => "&Yacute;", 	#capital y, acute accent
-			"Þ" => "&THORN;", 	#capital THORN, Icelandic
-			"ß" => "&szlig;", 	#small sharp s, German
-			"à" => "&agrave;", 	#small a, grave accent
-			"á" => "&aacute;", 	#small a, acute accent
-			"â" => "&acirc;", 	#small a, circumflex accent
-			"ã" => "&atilde;", 	#small a, tilde
-			"ä" => "&auml;", 	#small a, umlaut mark
-			"å" => "&aring;", 	#small a, ring
-			"æ" => "&aelig;", 	#small ae
-			"ç" => "&ccedil;", 	#small c, cedilla
-			"è" => "&egrave;", 	#small e, grave accent
-			"é" => "&eacute;", 	#small e, acute accent
-			"ê" => "&ecirc;", 	#small e, circumflex accent
-			"ë" => "&euml;", 	#small e, umlaut mark
-			"ì" => "&igrave;", 	#small i, grave accent
-			"í" => "&iacute;", 	#small i, acute accent
-			"î" => "&icirc;", 	#small i, circumflex accent
-			"ï" => "&iuml;", 	#small i, umlaut mark
-			"ð" => "&eth;",		#small eth, Icelandic
-			"ñ" => "&ntilde;", 	#small n, tilde
-			"ò" => "&ograve;", 	#small o, grave accent
-			"ó" => "&oacute;", 	#small o, acute accent
-			"ô" => "&ocirc;", 	#small o, circumflex accent
-			"õ" => "&otilde;", 	#small o, tilde
-			"ö" => "&ouml;", 	#small o, umlaut mark
-			"ø" => "&oslash;", 	#small o, slash
-			"ù" => "&ugrave;", 	#small u, grave accent
-			"ú" => "&uacute;", 	#small u, acute accent
-			"û" => "&ucirc;", 	#small u, circumflex accent
-			"ü" => "&uuml;", 	#small u, umlaut mark
-			"ý" => "&yacute;", 	#small y, acute accent
-			"þ" => "&thorn;", 	#small thorn, Icelandic
-			"ÿ" => "&yuml;"		#small y, umlaut mark
-			);
-*/
+
 	$html_entities = array ( //SANS ACCENT !
 			"À" =>  "A",	#capital a, grave accent
 			"Á" =>  "A", 	#capital a, acute accent
@@ -155,32 +90,14 @@ include_once('../commun/MyTools.php');
                 . "AND e.Code_club = c.Code "
                 . "ORDER BY e.Libelle ";
 	
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Autocomplet_equipe : ".$sql);
 	$resultGlobal = '';
-	//header('Content-Type: application/json; charset=ISO-8859-1');
-	//$response = array();
-	while ($row = mysql_fetch_assoc($result)) {
+    $result = $myBdd->Query($sql);
+
+	while($row = $myBdd->FetchAssoc($result)) {
 		$Code_club = $row['Code_club'];
 		$nomClub = $row['nomClub'];
 		$Numero = $row['Numero'];
 		$Libelle = $row['Libelle'];
 		$resultGlobal .= "$Code_club - $Libelle ______($nomClub)|$Numero|$Libelle\n";
-		//$response[] = array("$code - $libelle", $code, $libelle);
-		//echo "$code - $libelle|$code|$libelle|$Code_niveau|$Code_ref|<br>\n";
 	}
 	echo $resultGlobal;
-	
-/*	header('Content-Type: application/json; charset=UTF-8');
-	echo json_encode($response);
-
-	$response = '';
-	$i = 0;
-	while ($row = mysql_fetch_assoc($result)) {
-		$code = $row['Code'];
-		$libelle = $row['Libelle'];
-		$response .= "$code - $libelle|$code|$libelle\n";
-		//$response[] = array($i++, "$code - $libelle|$code|$libelle\n");
-		//$response[] = array($i++, $row);
-	}
-	echo $response;
-*/

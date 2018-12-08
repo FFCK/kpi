@@ -8,7 +8,6 @@ header( 'content-type: text/html; charset=utf-8' );
 // Gestion de la Feuille de Match
 class GestionDirectPitchs extends MyPage	 
 {	
-
 	function Load()
 	{
 		$inputText = '<form method="GET" action="DirectPitchs.php" name="formPitchs" enctype="multipart/form-data">
@@ -29,18 +28,20 @@ class GestionDirectPitchs extends MyPage
 		$debug = utyGetGet('debug', 0);
 		$dateP = utyGetGet('dateP', '');
 		$heureP = utyGetGet('heureP', '');
-		if($idCompet == '' && $idEvt == '')
-			die ('Sélectionnez une compétition ou un événement<br /><br />'.$inputText);
-		$myBdd = new MyBdd();
+		if ($idCompet == '' && $idEvt == '') {
+            die('Sélectionnez une compétition ou un événement<br /><br />' . $inputText);
+        }
+        $myBdd = new MyBdd();
 		// Chargement des matchs à afficher
 		$sql  = "SELECT c.Code, c.Libelle nomCompet, c.Soustitre, c.Soustitre2, m.*, j.Id, j.Code_competition, j.Code_saison, ";
 		$sql .= "ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, ce2.Code_club clubB ";
 		$sql .= "FROM gickp_Matchs m left outer join gickp_Competitions_Equipes ce1 on (ce1.Id = m.Id_equipeA) ";
 		$sql .= "left outer join gickp_Competitions_Equipes ce2 on (ce2.Id = m.Id_equipeB), ";
 		$sql .= "gickp_Journees j, gickp_Competitions c";
-		if($idEvt != '')
-			$sql .= ", gickp_Evenement_Journees ej ";
-		$sql .= " WHERE m.Id_journee = j.Id ";
+		if ($idEvt != '') {
+            $sql .= ", gickp_Evenement_Journees ej ";
+        }
+        $sql .= " WHERE m.Id_journee = j.Id ";
 		$sql .= "AND j.Code_competition = c.Code ";
 		$sql .= "AND j.Code_saison = c.Code_saison ";
 		$sql .= "AND j.Code_saison = ".$saison." ";
@@ -62,29 +63,31 @@ class GestionDirectPitchs extends MyPage
 			$sql .= "AND CURTIME() > SUBTIME(TIME(m.Heure_match), '00:05:00')  ";
 			$sql .= "AND CURTIME() < ADDTIME(TIME(m.Heure_match), '00:".$intervalle.":00') ";
 		}
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select : <br />".$sql);
-		$num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 		$array1 = array();
 		$array2 = array();
 		$array3 = array();
 		$array4 = array();
 		$array5 = array();
 		$array6 = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
-			if(!isset($lastCompetEvt))
-				$lastCompetEvt = $row['Code'];
-			if(!isset($lastSaisonEvt))
-				$lastSaisonEvt = $row['Code_saison'];
-			// drapeaux
+        while($row = $myBdd->FetchAssoc($result)) {
+            if (!isset($lastCompetEvt)) {
+                $lastCompetEvt = $row['Code'];
+            }
+            if (!isset($lastSaisonEvt)) {
+                $lastSaisonEvt = $row['Code_saison'];
+            }
+            // drapeaux
 			$row['paysA'] = substr($row['clubA'], 0, 3);
-			if(is_numeric($row['paysA'][0]) || is_numeric($row['paysA'][1]) || is_numeric($row['paysA'][2]))
-				$row['paysA'] = 'FRA';
-			$row['paysB'] = substr($row['clubB'], 0, 3);
-			if(is_numeric($row['paysB'][0]) || is_numeric($row['paysB'][1]) || is_numeric($row['paysB'][2]))
-				$row['paysB'] = 'FRA';
-			// période, statut, validation
+			if (is_numeric($row['paysA'][0]) || is_numeric($row['paysA'][1]) || is_numeric($row['paysA'][2])) {
+                $row['paysA'] = 'FRA';
+            }
+            $row['paysB'] = substr($row['clubB'], 0, 3);
+			if (is_numeric($row['paysB'][0]) || is_numeric($row['paysB'][1]) || is_numeric($row['paysB'][2])) {
+                $row['paysB'] = 'FRA';
+            }
+            // période, statut, validation
 			if($row['Statut'] == 'ATT'){
 				$row['Periode'] = 'En attente';
 				$row['Score'] = $row['Heure_match'];
@@ -118,19 +121,25 @@ class GestionDirectPitchs extends MyPage
 			}
 			// répartition par terrain
 			$terrain = $row['Terrain'];
-			if($terrain == 1)
-				array_push($array1, $row);
-			if($terrain == 2)
-				array_push($array2, $row);
-			if($terrain == 3)
-				array_push($array3, $row);
-			if($terrain == 4)
-				array_push($array4, $row);
-			if($terrain == 5)
-				array_push($array5, $row);
-			if($terrain == 6)
-				array_push($array6, $row);
-		}
+			if ($terrain == 1) {
+                array_push($array1, $row);
+            }
+            if ($terrain == 2) {
+                array_push($array2, $row);
+            }
+            if ($terrain == 3) {
+                array_push($array3, $row);
+            }
+            if ($terrain == 4) {
+                array_push($array4, $row);
+            }
+            if ($terrain == 5) {
+                array_push($array5, $row);
+            }
+            if ($terrain == 6) {
+                array_push($array6, $row);
+            }
+        }
 		// Chargement des infos de l'évènement ou de la compétition
 		$titreEvenementCompet = '';
 		if ($idEvt != '')
@@ -142,13 +151,15 @@ class GestionDirectPitchs extends MyPage
 		else
 		{
 			$arrayCompetition = $myBdd->GetCompetition($idCompet, $saison);
-			if($arrayCompetition['Titre_actif'] == 'O')
-				$titreEvenementCompet = $arrayCompetition['Libelle'];
-			else
-				$titreEvenementCompet = $arrayCompetition['Soustitre'];
-			if($arrayCompetition['Soustitre2'] != '')
-				$titreEvenementCompet .= ' - '.$arrayCompetition['Soustitre2'];
-		}
+			if ($arrayCompetition['Titre_actif'] == 'O') {
+                $titreEvenementCompet = $arrayCompetition['Libelle'];
+            } else {
+                $titreEvenementCompet = $arrayCompetition['Soustitre'];
+            }
+            if ($arrayCompetition['Soustitre2'] != '') {
+                $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
+            }
+        }
 		$logo = str_replace('http://www.kayak-polo.info/','',$arrayCompetition['LogoLink']);
 		$sponsor = str_replace('http://www.kayak-polo.info/','',$arrayCompetition['SponsorLink']);
 		/*************************************************************************************/
@@ -276,11 +287,11 @@ class GestionDirectPitchs extends MyPage
 				else
 					heure0 = "";
 				DinaHeure = heure0 + heure + ":" + min0 + min + ":" + sec0 + sec;
-				which = DinaHeure
+				which = DinaHeure;
 				if (document.getElementById){
 					document.getElementById("ejs_heure").innerHTML=which;
 				}
-				setTimeout("HeureCheckEJS()", 1000)
+				setTimeout("HeureCheckEJS()", 1000);
 				}
 			window.onload = HeureCheckEJS;
 		</script>
@@ -291,13 +302,11 @@ class GestionDirectPitchs extends MyPage
 				<div class="pitchs1">
 					<?php
 						// logo
-						if($arrayCompetition['Kpi_ffck_actif'] == 'O')
-						{
+						if($arrayCompetition['Kpi_ffck_actif'] == 'O') {
 							echo '<img id="logoKPI" src="css/banniere1.jpg" />';
 							echo '<img id="logoFFCK" src="img/ffck2.jpg" />';
 						}
-						if($arrayCompetition['Logo_actif'] == 'O' && $logo != '')  //&& file_exists($logo)
-						{
+						if($arrayCompetition['Logo_actif'] == 'O' && $logo != '') { //&& file_exists($logo)
 							echo '<img id="logoCompet" src="'.$logo.'" />';
 						}
 						$titreDate = "Saison (Season) ".$saison;
@@ -312,9 +321,13 @@ class GestionDirectPitchs extends MyPage
 				</div>
 				<br />
 				<?php 
-					if($dateP != '') echo '<i>'.utyDateUsToFr($dateP).'</i>&nbsp;&nbsp;&nbsp;';
-					if($heureP != '') echo '<i>'.$heureP.'</i>';
-				?>
+					if ($dateP != '') {
+                        echo '<i>' . utyDateUsToFr($dateP) . '</i>&nbsp;&nbsp;&nbsp;';
+                    } 
+                    if ($heureP != '') {
+                        echo '<i>' . $heureP . '</i>';
+                    }
+                ?>
 				<br />
 				<div class="pitchs">
 					<div class="pitch">

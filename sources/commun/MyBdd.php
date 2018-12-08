@@ -1493,12 +1493,18 @@ class MyBdd
         return mysql_fetch_assoc($result);
     }
 
-   // FetchRow			$row = $myBdd->FetchRow($result);
+    // FetchRow			$row = $myBdd->FetchRow($result);
     function FetchRow($result)
     {
         return mysql_fetch_row($result);
     }
 	
+    // DataSeek			$row = $myBdd->DataSeek($result, $cursor);
+    function DataSeek($result, $cursor)
+    {
+        return mysql_data_seek($result, $cursor);
+    }
+    
     // RealEscapeString			$myBdd->RealEscapeString($codeCompet);
     function RealEscapeString($txt)
     {
