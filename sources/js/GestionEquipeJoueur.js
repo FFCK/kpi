@@ -253,7 +253,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
             surclassement = data[13];
             if(surclassement != ''){
                 jq(".surclassement3").html('<b>Surcl: ' + surclassement + '</b>');
-            }else if(catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'){
+            }else if(catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN' && catJoueurs2 != 'V1' && catJoueurs2 != 'V2' && catJoueurs2 != 'V3'){
                 jq(".surclassement3").html('Pas de surclassement');    
             }
             jq("#origineJoueur2").text(data[8]);
@@ -270,7 +270,8 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 					motif = langue['Certif'] ;
 				}else if(data[9] == '' || data[9] == 'PAGB' || data[9] == 'PAGJ'){
 					motif = langue['Pagaie_couleur'];
-				}else if(surclassement == '' && surcl_necess == 1 && catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'){
+				}else if(surclassement == '' && surcl_necess == 1 && catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'
+                         && catJoueurs2 != 'V1' && catJoueurs2 != 'V2' && catJoueurs2 != 'V3'){
                     motif = langue['Surclassement'];
                 }
 				if (motif != ''){
