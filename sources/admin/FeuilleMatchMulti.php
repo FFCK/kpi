@@ -59,7 +59,7 @@ class FeuilleMatch extends MyPage {
             // Infos match
 
             $sql = "Select a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, "
-                    . "a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Type, "
+                    . "a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Ligne1, a.Ligne2, a.Type, "
                     . "a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, "
                     . "a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, "
                     . "b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, "
@@ -229,6 +229,8 @@ class FeuilleMatch extends MyPage {
             $secretaire = $row['Secretaire'];
             $chronometre = $row['Chronometre'];
             $timeshoot = $row['Timeshoot'];
+            $ligne1 = $row['Ligne1'];
+            $ligne2 = $row['Ligne2'];
             $phase = $row['Phase'];
             if ($arrayCompetition['En_actif'] == 'O') {
                 $date = $row['Date_match'];
@@ -611,9 +613,13 @@ class FeuilleMatch extends MyPage {
             $pdf->Cell(135, 1, "", 'LTR', '1', 'L');
             $pdf->Cell(135, 4, $lang['Arbitre_1'] . ": " . $principal, 'LR', 1, 'L');
             $pdf->Cell(135, 4, $lang['Arbitre_2'] . ": " . $secondaire, 'LR', 1, 'L');
-            $pdf->Cell(135, 4, $lang['Secretaire'] . ": " . $secretaire, 'LR', 1, 'L');
-            $pdf->Cell(135, 4, $lang['Chronometre'] . ": " . $chronometre, 'LR', 1, 'L');
+            $pdf->SetFont('Arial', '', 9);
+            $pdf->Cell(75, 4, $lang['Secretaire'] . ": " . $secretaire, 'L', 0, 'L');
+            $pdf->Cell(60, 4, $lang['Ligne_abr'] . ": " . $ligne1, 'R', 1, 'L');
+            $pdf->Cell(75, 4, $lang['Chrono'] . ": " . $chronometre, 'L', 0, 'L');
+            $pdf->Cell(60, 4, $lang['Ligne_abr'] . ": " . $ligne2, 'R', 1, 'L');
             $pdf->Cell(135, 4, $lang['Time_shoot2'] . ": " . $timeshoot, 'LR', 1, 'L');
+            $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(135, 1, "", 'LBR', '1', 'C');
 
             //Equipe A
