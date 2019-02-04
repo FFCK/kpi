@@ -264,12 +264,11 @@
 									<br />
 									<span id="motif" class='highlight2'></span>
                                     <input type="button" id="addEquipeJoueurImpossible" value="Ajout impossible !">
+                                    <br />
+                                    <input type="button" onclick="Add2();" name="addEquipeJoueur2" id="addEquipeJoueur2" value="<< {#Ajouter#}">
 									{if $profile < 3}
                                         <br />
 										<input type="button" onclick="Add2();" name="addEquipeJoueur3" id="addEquipeJoueur3" value="<< {#Ajouter#} ({#Profil#} 1/2)">
-									{else}
-										<br />
-                                        <input type="button" onclick="Add2();" name="addEquipeJoueur2" id="addEquipeJoueur2" value="<< {#Ajouter#}">
                                     {/if}
 								</td>
 							</tr>
