@@ -511,15 +511,15 @@ $(function() {
                         if(ligne_evt == 'Carton vert') {
                             texteVert += '<img src="v2/carton_vert.png" />';
                             $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                            //si 2 verts...
+                            // si 2 verts...
                             var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
-                            if(nb_cartons == 2) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Verifier_type_faute + '.', lang.Attention);
-                            }
-                            //si 3 verts...
-                            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
-                            if(nb_cartons >= 3) {
+                            if(nb_cartons >= 2) {
                                 custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention);
+                            }
+                            // si 3 verts dans l'équipe
+                            var nb_cartons = $('.joueurs[data-equipe="' + ligne_equipe + '"] img[src="v2/carton_vert.png"]').length;
+                            if(nb_cartons > 3) {
+                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_cette_equipe + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention);
                             }
                             // Carton d'équipe
                         /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
@@ -731,15 +731,15 @@ $(function() {
                     if(ligne_evt == 'Carton vert') {
                         texteVert += '<img src="v2/carton_vert.png" />';
                         $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                        //si 2 verts...
+                        // si 2 verts...
                         var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
-                        if(nb_cartons == 2) {
-                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Verifier_type_faute + '.', lang.Attention);
+                        if(nb_cartons >= 2) {
+                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention);
                         }
-                        //si 3 verts...
-                        var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length;
-                        if(nb_cartons >= 3) {
-                            custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention);
+                        // si 3 verts dans l'équipe
+                        var nb_cartons = $('.joueurs[data-equipe="' + ligne_equipe + '"] img[src="v2/carton_vert.png"]').length;
+                        if(nb_cartons > 3) {
+                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_cette_equipe + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention);
                         }
                     /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
                             $('.joueurs[data-equipe="A"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
