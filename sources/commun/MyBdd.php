@@ -509,48 +509,45 @@ class MyBdd
 		$national = 'N';
 		$international = 'N';
         $Arb = '';
-		if (strlen($arrayToken[3]) > 0) {
-            $regional = substr($arrayToken[3], 0, 1);
-            if($regional == 'O') {
-                $Arb = "Reg";
-            }
-        }
-
-        if (strlen($arrayToken[4]) > 0) {
-            $interregional = substr($arrayToken[4], 0, 1);
-            if($interregional == 'O') {
-                $Arb = "IR";
-            }
-        }
-
-        if (strlen($arrayToken[5]) > 0) {
-            $national = substr($arrayToken[5], 0, 1);
-            if($national == 'O') {
-                $Arb = "Nat";
-            }
-        }
-
-        if (strlen($arrayToken[6]) > 0) {
-            $international = substr($arrayToken[6], 0, 1);
-            if($international == 'O') {
-                $Arb = "Int";
-            }
-        }
 		if ($niveau != 'A' && $niveau != 'B' && $niveau != 'C') {
             $niveau = '';
         }
-		if (strrpos($livret, "JREG") !== false) { 
-			$niveau = 'S';
-		}
-		if (strrpos($livret, "JNAT") !== false) { 
-			$niveau = 'S';
-		}
 		if (strrpos($livret, "OTM") !== false) { 
 			$Arb = "OTM";
 		}
 		if (strrpos($livret, "JO") !== false) { 
 			$Arb = "JO";
 		}
+		if (strlen($arrayToken[3]) > 0) {
+            $regional = substr($arrayToken[3], 0, 1);
+            if($regional == 'O') {
+                $Arb = "Reg";
+            }
+        }
+		if (strrpos($livret, "JREG") !== false) { 
+			$niveau = 'S';
+		}
+        if (strlen($arrayToken[4]) > 0) {
+            $interregional = substr($arrayToken[4], 0, 1);
+            if($interregional == 'O') {
+                $Arb = "IR";
+            }
+        }
+        if (strlen($arrayToken[5]) > 0) {
+            $national = substr($arrayToken[5], 0, 1);
+            if($national == 'O') {
+                $Arb = "Nat";
+            }
+        }
+		if (strrpos($livret, "JNAT") !== false) { 
+			$niveau = 'S';
+		}
+        if (strlen($arrayToken[6]) > 0) {
+            $international = substr($arrayToken[6], 0, 1);
+            if($international == 'O') {
+                $Arb = "Int";
+            }
+        }
 
         $query  = "REPLACE INTO gickp_Arbitre VALUES ($matric, '$regional', '$interregional', '$national', '$international', '$Arb', '$livret', '$niveau', '$saisonJuge')";							 	   
 		$res = mysql_query($query, $this->m_link);
@@ -932,6 +929,133 @@ class MyBdd
 		}
 	}
 	
+    // Check cumuls cartons
+    // Si carton rouge, calculer les cumuls tous cartons et aviser
+    // Si vert ou jaune : calculer les cumuls 
+    function CheckCardCumulation ($matric, $idMatch, $card, $motif) {
+        $cards = ['V', 'J', 'R'];
+        $card_colors = ['V' => 'Vert', 'J' => 'Jaune', 'R' => 'Rouge'];
+        $saison = utyGetSaison();
+        $headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
+        $destinataires = 'contact@kayak-polo.info,frederic.escaffre@mpsa.com,eric.vignet@sidel.com,dejonghebrice@yahoo.fr,virginiebrackez@aol.com,denissaintemartine@gmail.com,c.moal@laposte.net';
+//        $destinataires = 'contact@kayak-polo.info';
+        $msg2 = "";
+        $msg3 = "\r\ncf. Article RP KAP 16 du règlement sportif.\r\n\r\nCordialement\r\nKayak-polo.info";
+        $sql = "SELECT SQL_NO_CACHE lc.Nom, lc.Prenom, lc.Numero_club Club, md.Id_evt_match card,  "
+                . "COUNT(md.Id_evt_match) nb_total,  "
+				. "SUM(IF(j.Code_competition LIKE 'N%', 1, 0)) nb_champ,  "
+  				. "SUM(IF(j.Code_competition LIKE 'CF%', 1, 0)) nb_coupe,  "
+				. "SUM(IF(m.Id_journee = (  "
+                . "    SELECT Id_journee FROM gickp_Matchs WHERE Id = $idMatch "
+                . "), 1, 0)) nb_journee "
+//  				. ", SUM(IF(j.Code_competition LIKE 'M%', 1, 0)) nb_modele "
+                . "FROM gickp_Matchs_Detail md  "
+                . "INNER JOIN gickp_Matchs m ON (md.Id_match = m.Id) "
+                . "INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id)  "
+                . "INNER JOIN gickp_Liste_Coureur lc ON (md.Competiteur = lc.Matric)  "
+                . "WHERE md.Competiteur = $matric "
+                . "AND j.Code_saison = $saison "
+                . "AND md.Id_evt_match IN ('V','J','R')  "
+                . "AND (  "
+                . "    j.Code_competition LIKE 'N%'  "
+                . "    OR j.Code_competition LIKE 'CF%'  "
+//                . "    OR j.Code_competition LIKE 'M%'  "
+                . ") GROUP BY Id_evt_match  "
+                . "ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R')";
+                        
+        if(!in_array($card, $cards) || $matric == '') {
+            return;
+        }
+        switch ($card) {
+            case 'V':
+                $result = $this->Query($sql);
+                while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+                    $prenom = $row['Prenom'];
+                    $nom = $row['Nom'];
+                    $club = $row['Club'];
+                    $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n" 
+                            . "Championnat = " . $row['nb_champ'] . "\r\n"
+                            . "Coupe = " . $row['nb_coupe'] . "\r\n"
+                            . "Journée/phase = " . $row['nb_journee'] . "\r\n"
+                            . "Total = " . $row['nb_total'] . "\r\n"
+//                            . "Tests : " . $row['nb_modele'] . "\r\n"
+                            ;
+                    $array[] = $row;
+                }
+                if($array[0]['nb_total'] >= 6) {
+                    $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
+                            . "Bonjour, \r\n\r\n"
+                            . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
+                            . ") vient de faire l'objet d'un carton vert sur le match $idMatch,\r\n"
+                            . "   et cumule les cartons suivants en $saison :"
+                            . $msg2 . $msg3;
+                    $fp = fopen("../../commun/log_cards.txt","a");
+                    fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
+                    fclose($fp);
+                    // Envoi du mail
+                    mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
+                }
+                break;
+            case 'J':
+                $result = $this->Query($sql);
+                while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+                    $prenom = $row['Prenom'];
+                    $nom = $row['Nom'];
+                    $club = $row['Club'];
+                    $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n" 
+                            . "Championnat = " . $row['nb_champ'] . "\r\n"
+                            . "Coupe = " . $row['nb_coupe'] . "\r\n"
+                            . "Journée/phase = " . $row['nb_journee'] . "\r\n"
+                            . "Total = " . $row['nb_total'] . "\r\n"
+//                            . "Tests : " . $row['nb_modele'] . "\r\n"
+                            ;
+                    $array[] = $row;
+                }
+                if($array[1]['nb_total'] >= 3) {
+                    $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
+                            . "Bonjour, \r\n\r\n"
+                            . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
+                            . ") vient de faire l'objet d'un carton jaune sur le match $idMatch,\r\n"
+                            . "   et cumule les cartons suivants en $saison :"
+                            . $msg2 . $msg3;
+                    $fp = fopen("../../commun/log_cards.txt","a");
+                    fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
+                    fclose($fp);
+                    // Envoi du mail
+                    mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
+                }
+                break;
+            case 'R':
+                $result = $this->Query($sql);
+                while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+                    $prenom = $row['Prenom'];
+                    $nom = $row['Nom'];
+                    $club = $row['Club'];
+                    $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n" 
+                            . "Championnat = " . $row['nb_champ'] . "\r\n"
+                            . "Coupe = " . $row['nb_coupe'] . "\r\n"
+                            . "Journée/phase = " . $row['nb_journee'] . "\r\n"
+                            . "Total = " . $row['nb_total'] . "\r\n"
+//                            . "Tests : " . $row['nb_modele'] . "\r\n"
+                            ;
+                    $array[] = $row;
+                }
+                $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
+                        . "Bonjour, \r\n\r\n"
+                        . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
+                        . ") vient de faire l'objet d'un carton rouge sur le match $idMatch,\r\n"
+                        . "   et cumule les cartons suivants en $saison :"
+                        . $msg2 . $msg3;
+                $fp = fopen("../../commun/log_cards.txt","a");
+                fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
+                fclose($fp);
+                // Envoi du mail
+                mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
+                break;
+            default:
+                break;
+        }
+    }
     
 	// GetCategorie
 	function GetCategorie($age, &$code, &$libelle)

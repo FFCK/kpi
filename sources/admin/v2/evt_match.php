@@ -38,16 +38,19 @@ include_once('../../commun/MyTools.php');
 	$sql  = "Select Id_journee, Validation from gickp_Matchs where Id = ".$idMatch;
 	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
 	$row = mysql_fetch_array($result);
-	if (!utyIsAutorisationJournee($row['Id_journee']))
-		die ("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
-	if ($row['Validation']=='O')
-		die ("Ce match est verrouillé !");
+	if (!utyIsAutorisationJournee($row['Id_journee'])) {
+    die("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
+}
+if ($row['Validation'] == 'O') {
+    die("Ce match est verrouillé !");
+}
 
-	if($type == 'insert'){
+if($type == 'insert'){
 		$sql  = "INSERT INTO gickp_Matchs_Detail SET Id_match = ".$idMatch.", Periode = '".$ligne[0]."', ";
 		$sql .= "Temps = '00:".$ligne[1]."', Id_evt_match = '".$ligne[2]."', Competiteur = '".$ligne[4]."', ";
 		$sql .= "Numero = '".$ligne[5]."', Equipe_A_B = '".$ligne[3]."', motif = '".$ligne[6]."' ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur INSERT<br />".$sql);
+        $myBdd->CheckCardCumulation ($ligne[4], $idMatch, $ligne[2], $ligne[6]);
 		echo mysql_insert_id();
 	}elseif($type == 'update'){
 		$sql  = "UPDATE gickp_Matchs_Detail SET Id_match = ".$idMatch.", Periode = '".$ligne[0]."', ";
@@ -55,6 +58,7 @@ include_once('../../commun/MyTools.php');
 		$sql .= "Numero = '".$ligne[5]."', Equipe_A_B = '".$ligne[3]."', motif = '".$ligne[6]."' ";
 		$sql .= "WHERE Id = ".$idLigne[1];
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
+        $myBdd->CheckCardCumulation ($ligne[4], $idMatch, $ligne[2], $ligne[6]);
 		echo 'OK';
 	}elseif($type == 'delete'){
 		$sql  = "DELETE FROM gickp_Matchs_Detail  ";
@@ -62,4 +66,3 @@ include_once('../../commun/MyTools.php');
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur DELETE<br />".$sql);
 		echo 'OK';
 	}
-
