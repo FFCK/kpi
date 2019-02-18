@@ -512,12 +512,6 @@ class MyBdd
 		if ($niveau != 'A' && $niveau != 'B' && $niveau != 'C') {
             $niveau = '';
         }
-		if (strrpos($livret, "OTM") !== false) { 
-			$Arb = "OTM";
-		}
-		if (strrpos($livret, "JO") !== false) { 
-			$Arb = "JO";
-		}
 		if (strlen($arrayToken[3]) > 0) {
             $regional = substr($arrayToken[3], 0, 1);
             if($regional == 'O') {
@@ -548,6 +542,12 @@ class MyBdd
                 $Arb = "Int";
             }
         }
+		if (strrpos($livret, "OTM") !== false) { 
+			$Arb = "OTM";
+		}
+		if (strrpos($livret, "JO") !== false) { 
+			$Arb = "JO";
+		}
 
         $query  = "REPLACE INTO gickp_Arbitre VALUES ($matric, '$regional', '$interregional', '$national', '$international', '$Arb', '$livret', '$niveau', '$saisonJuge')";							 	   
 		$res = mysql_query($query, $this->m_link);
