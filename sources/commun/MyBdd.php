@@ -934,6 +934,9 @@ class MyBdd
     // Si vert ou jaune : calculer les cumuls 
     function CheckCardCumulation ($matric, $idMatch, $card, $motif) {
         $cards = ['V', 'J', 'R'];
+        if(!in_array($card, $cards) || $matric == '') {
+            return;
+        }
         $card_colors = ['V' => 'Vert', 'J' => 'Jaune', 'R' => 'Rouge'];
         $saison = utyGetSaison();
         $headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
@@ -947,7 +950,10 @@ class MyBdd
   				. "SUM(IF(j.Code_competition LIKE 'CF%', 1, 0)) nb_coupe,  "
 				. "SUM(IF(m.Id_journee = (  "
                 . "    SELECT Id_journee FROM gickp_Matchs WHERE Id = $idMatch "
-                . "), 1, 0)) nb_journee "
+                . "), 1, 0)) nb_journee, "
+                . "(SELECT Code_competition FROM gickp_Journees "
+                . "    INNER JOIN gickp_Matchs ON (gickp_Journees.Id = gickp_Matchs.Id_journee)"
+                . "    WHERE gickp_Matchs.Id = $idMatch ) AS compet "
 //  				. ", SUM(IF(j.Code_competition LIKE 'M%', 1, 0)) nb_modele "
                 . "FROM gickp_Matchs_Detail md  "
                 . "INNER JOIN gickp_Matchs m ON (md.Id_match = m.Id) "
@@ -962,26 +968,30 @@ class MyBdd
 //                . "    OR j.Code_competition LIKE 'M%'  "
                 . ") GROUP BY Id_evt_match  "
                 . "ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R')";
-                        
-        if(!in_array($card, $cards) || $matric == '') {
-            return;
+        $result = $this->Query($sql);
+        while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            $prenom = $row['Prenom'];
+            $nom = $row['Nom'];
+            $club = $row['Club'];
+            $compet = $row['compet'];
+            if(
+//                    substr($compet, 0, 1) != 'M' && 
+                    substr($compet, 0, 1) != 'N' && 
+                    substr($compet, 0, 2) != 'CF'
+                    ) {
+                return;
+            }
+            $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n" 
+                    . "Championnat = " . $row['nb_champ'] . "\r\n"
+                    . "Coupe = " . $row['nb_coupe'] . "\r\n"
+                    . "Journée/phase = " . $row['nb_journee'] . "\r\n"
+                    . "Total = " . $row['nb_total'] . "\r\n"
+//                            . "Tests : " . $row['nb_modele'] . "\r\n"
+                    ;
+            $array[] = $row;
         }
         switch ($card) {
             case 'V':
-                $result = $this->Query($sql);
-                while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
-                    $prenom = $row['Prenom'];
-                    $nom = $row['Nom'];
-                    $club = $row['Club'];
-                    $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n" 
-                            . "Championnat = " . $row['nb_champ'] . "\r\n"
-                            . "Coupe = " . $row['nb_coupe'] . "\r\n"
-                            . "Journée/phase = " . $row['nb_journee'] . "\r\n"
-                            . "Total = " . $row['nb_total'] . "\r\n"
-//                            . "Tests : " . $row['nb_modele'] . "\r\n"
-                            ;
-                    $array[] = $row;
-                }
                 if($array[0]['nb_total'] >= 6) {
                     $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
                             . "Bonjour, \r\n\r\n"
@@ -997,20 +1007,6 @@ class MyBdd
                 }
                 break;
             case 'J':
-                $result = $this->Query($sql);
-                while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
-                    $prenom = $row['Prenom'];
-                    $nom = $row['Nom'];
-                    $club = $row['Club'];
-                    $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n" 
-                            . "Championnat = " . $row['nb_champ'] . "\r\n"
-                            . "Coupe = " . $row['nb_coupe'] . "\r\n"
-                            . "Journée/phase = " . $row['nb_journee'] . "\r\n"
-                            . "Total = " . $row['nb_total'] . "\r\n"
-//                            . "Tests : " . $row['nb_modele'] . "\r\n"
-                            ;
-                    $array[] = $row;
-                }
                 if($array[1]['nb_total'] >= 3) {
                     $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
                             . "Bonjour, \r\n\r\n"
@@ -1026,31 +1022,19 @@ class MyBdd
                 }
                 break;
             case 'R':
-                $result = $this->Query($sql);
-                while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
-                    $prenom = $row['Prenom'];
-                    $nom = $row['Nom'];
-                    $club = $row['Club'];
-                    $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n" 
-                            . "Championnat = " . $row['nb_champ'] . "\r\n"
-                            . "Coupe = " . $row['nb_coupe'] . "\r\n"
-                            . "Journée/phase = " . $row['nb_journee'] . "\r\n"
-                            . "Total = " . $row['nb_total'] . "\r\n"
-//                            . "Tests : " . $row['nb_modele'] . "\r\n"
-                            ;
-                    $array[] = $row;
+                if($array[2]['nb_total'] >= 1) {
+                    $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
+                            . "Bonjour, \r\n\r\n"
+                            . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
+                            . ") vient de faire l'objet d'un carton rouge sur le match $idMatch (" . $array[2]['compet'] . "),\r\n"
+                            . "   et cumule les cartons suivants en $saison :"
+                            . $msg2 . $msg3;
+                    $fp = fopen("../../commun/log_cards.txt","a");
+                    fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
+                    fclose($fp);
+                    // Envoi du mail
+                    mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
                 }
-                $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
-                        . "Bonjour, \r\n\r\n"
-                        . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
-                        . ") vient de faire l'objet d'un carton rouge sur le match $idMatch,\r\n"
-                        . "   et cumule les cartons suivants en $saison :"
-                        . $msg2 . $msg3;
-                $fp = fopen("../../commun/log_cards.txt","a");
-                fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
-                fclose($fp);
-                // Envoi du mail
-                mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
                 break;
             default:
                 break;
