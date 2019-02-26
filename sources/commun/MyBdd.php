@@ -944,7 +944,7 @@ class MyBdd
 //        $destinataires = 'contact@kayak-polo.info';
         $msg2 = "";
         $msg3 = "\r\ncf. Article RP KAP 16 du règlement sportif.\r\n\r\nCordialement\r\nKayak-polo.info";
-        $sql = "SELECT SQL_NO_CACHE lc.Nom, lc.Prenom, lc.Numero_club Club, md.Id_evt_match card,  "
+        $sql = "SELECT lc.Nom, lc.Prenom, lc.Numero_club Club, md.Id_evt_match card,  "
                 . "COUNT(md.Id_evt_match) nb_total,  "
 				. "SUM(IF(j.Code_competition LIKE 'N%', 1, 0)) nb_champ,  "
   				. "SUM(IF(j.Code_competition LIKE 'CF%', 1, 0)) nb_coupe,  "
@@ -988,15 +988,15 @@ class MyBdd
                     . "Total = " . $row['nb_total'] . "\r\n"
 //                            . "Tests : " . $row['nb_modele'] . "\r\n"
                     ;
-            $array[] = $row;
+            $array[$row['card']] = $row;
         }
         switch ($card) {
             case 'V':
-                if($array[0]['nb_total'] >= 6) {
+                if($array['V']['nb_total'] >= 6) {
                     $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
                             . "Bonjour, \r\n\r\n"
                             . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
-                            . ") vient de faire l'objet d'un carton vert sur le match $idMatch,\r\n"
+                            . ") vient de faire l'objet d'un carton vert sur le match $idMatch (" . $array[0]['compet'] . "),\r\n"
                             . "   et cumule les cartons suivants en $saison :"
                             . $msg2 . $msg3;
                     $fp = fopen("../../commun/log_cards.txt","a");
@@ -1007,11 +1007,11 @@ class MyBdd
                 }
                 break;
             case 'J':
-                if($array[1]['nb_total'] >= 3) {
+                if($array['J']['nb_total'] >= 3) {
                     $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
                             . "Bonjour, \r\n\r\n"
                             . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
-                            . ") vient de faire l'objet d'un carton jaune sur le match $idMatch,\r\n"
+                            . ") vient de faire l'objet d'un carton jaune sur le match $idMatch (" . $array[1]['compet'] . "),\r\n"
                             . "   et cumule les cartons suivants en $saison :"
                             . $msg2 . $msg3;
                     $fp = fopen("../../commun/log_cards.txt","a");
@@ -1022,7 +1022,7 @@ class MyBdd
                 }
                 break;
             case 'R':
-                if($array[2]['nb_total'] >= 1) {
+                if($array['R']['nb_total'] >= 1) {
                     $msg = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n\r\n"
                             . "Bonjour, \r\n\r\n"
                             . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric 
