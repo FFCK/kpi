@@ -6,13 +6,17 @@ if(lang == 'en')  {
     langue['Annuler'] = 'Cancel';
     langue['Arbitre_non_identifie'] = 'Unidentified referee';
     langue['Cliquez_pour_modifier'] = 'Click to edit';
+    langue['Competition'] = 'Competition';
     langue['Confirm_affect'] = 'You should have recalculate group ranking first, confirm auto assignment ?';
     langue['Confirm_delete'] = 'Delete teams & referees from selected games ?';
     langue['Confirm_update'] = 'Confirm update ?';
     langue['Confirmer_MAJ'] = 'Confirm composition update ?';
     langue['Date_vide'] = 'Date is empty, unable to create !';
+    langue['Equipe'] = 'Team';
     langue['Equipe_non_definie'] = 'Unidentified team';
     langue['Heure_invalide'] = 'Time is invalid (format hh:mm), continue anymore ?';
+    langue['InitTitu'] = 'Delete all players and re-assign team rosters\n(excluding X-Unavailables and et A-Referees)\nfor unlocked games of :\n';
+    langue['Journee'] = 'matchday / phase / group';
     langue['MAJ_impossible'] = 'Unable to update';
     langue['Match_de_classement'] = 'Classifying game';
     langue['Match_eliminatoire'] = 'Playoffs';
@@ -28,13 +32,17 @@ if(lang == 'en')  {
     langue['Annuler'] = 'Annuler';
     langue['Arbitre_non_identifie'] = 'Arbitre non identifié';
     langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
+    langue['Competition'] = 'Compétition';
     langue['Confirm_affect'] = 'Vous devez avoir recalculé le classement, Confirmer l\affectation automatique ?';
     langue['Confirm_delete'] = 'Supprimer les équipes et arbitres des matchs sélectionnés ?';
     langue['Confirm_update'] = 'Confirmer le changement ?';
     langue['Confirmer_MAJ'] = 'Confirmez-vous la mise à jour des feuilles de matchs ?';
     langue['Date_vide'] = 'Date vide, ajout impossible !';
+    langue['Equipe'] = 'Equipe';
     langue['Equipe_non_definie'] = 'Equipe non définie';
     langue['Heure_invalide'] = 'Heure invalide (format hh:mm), continuer ?';
+    langue['InitTitu'] = 'Supprimer tous les joueurs et ré-affecter\nles joueurs présents (sauf X-Inactifs et A-Arbitres)\npour les matchs non verrouillés de :\n';
+    langue['Journee'] = 'journée / phase / poule';
     langue['MAJ_impossible'] = 'Mise à jour impossible';
     langue['Match_de_classement'] = 'Match de classement';
     langue['Match_eliminatoire'] = 'Match éliminatoire';
@@ -347,29 +355,29 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	//Init Titulaires
 	jq('#InitTitulaireCompet').click(function(e){
 		e.preventDefault();
-		var champs = 'Compet';
+		var champs = langue['Competition'];
 		var valeur = jq('#comboCompet').val();
 		var valeur2 = jq('#comboCompet option:selected').text();
 		if(valeur == '*'){
-			alert(langue['Selectionner_competition']);
+			alert(langue['Selection_competition']);
 		}else{
 			initTitu(champs, valeur, valeur2);
 		}
 	});
 	jq('#InitTitulaireEquipeA').click(function(e){
 		e.preventDefault();
-		var champs = 'Equipe';
+		var champs = langue['Equipe'];
 		var valeur = jq('#equipeA').val();
 		var valeur2 = jq('#equipeA option:selected').text();
 		if(valeur == '-1'){
-			alert(langue['Selectionner_equipe']);
+			alert(langue['Selection_equipe']);
 		}else{
 			initTitu(champs, valeur, valeur2);
 		}
 	});
 	jq('#InitTitulaireJournee').click(function(e){
 		e.preventDefault();
-		var champs = 'Journee';
+		var champs = langue['Journee'];
 		var valeur = jq('#comboJournee').val();
 		var valeur2 = jq('#comboJournee option:selected').text();
 		if(valeur == '*'){
@@ -380,18 +388,18 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	jq('#InitTitulaireEquipeB').click(function(e){
 		e.preventDefault();
-		var champs = 'Equipe';
+		var champs = langue['Equipe'];
 		var valeur = jq('#equipeB').val();
 		var valeur2 = jq('#equipeB option:selected').text();
 		if(valeur == '-1'){
-			alert(langue['Selectionner_equipe']);
+			alert(langue['Selection_equipe']);
 		}else{
 			initTitu(champs, valeur, valeur2);
 		}
 	});
 	function initTitu(champs, valeur, valeur2)
 	{
-		if(confirm(langue['Selectionner_equipe'] + '\n' + champs + ' : ' + valeur2))
+		if(confirm(langue['InitTitu'] + '\n' + champs + ' : ' + valeur2))
 		{
 			//ajax
 			jq.post("InitTitulaireJQ.php", {
