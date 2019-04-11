@@ -309,40 +309,46 @@
 								</tr>
 							</thead>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>{#Controle#}</td>
+										<td class='rouge'>{#Controle#}</td>
 										<td>{#Feuilles_de_presence_par_categorie#}</td>
 										<td><a href="FeuillePresenceCat.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td>&nbsp;</td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>{#Controle#}</td>
+										<td class='rouge'>{#Controle#}</td>
 										<td>{#Competitions_jouees_par_club#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>{#Controle#}</td>
+										<td class='rouge'>{#Controle#}</td>
 										<td>{#Competitions_jouees_par_equipe#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees2" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>{#Controle#}</td>
+										<td class='rouge'>{#Controle#}</td>
 										<td>{#Irregularites#} ({#Matchs_verrouilles#})</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees3" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td class='drag'>{#Controle#}</td>
+										<td class='rouge'>{#Controle#}</td>
 										<td>{#Matchs_joues_Championnat#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesN" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td></td>
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
-										<td>{#Controle#}</td>
+										<td class='rouge'>{#Controle#}</td>
 										<td>{#Matchs_joues_Coupe#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesCF" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td></td>
+									</tr>
+									<tr class='{cycle values="impair,pair"}'>
+										<td class='rouge'>{#Controle#}</td>
+										<td>{#Cartons#} ({#Cumul_saison#})</td>
+										<td><a href="FeuilleCards.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td><a href="FeuilleCards.php?lang=en" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									</tr>
 							</tbody>
 						</table>
