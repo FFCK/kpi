@@ -276,8 +276,11 @@
 										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');affectMultiMatchs();" title="{#Affectation_auto#} {$TropDeMatchsMsg}"><img height="25" src="../img/AffectAuto.gif" /></a>
 										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');annulMultiMatchs();" title="{#Annuler_Affectation_auto#} {$TropDeMatchsMsg}"><img height="25" src="../img/AnnulAuto.gif" /></a>
 										<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch');changeMultiMatchs();" title="{#Changer_de_poule#} {$TropDeMatchsMsg}"><img height="25" src="../img/Chang.gif" border="0"></a>
-									{/if}
+                                    {/if}
 									<a href="#" {$TropDeMatchs} onclick="SelectedCheckboxes('formJournee', 'checkMatch'); this.href='FeuilleMatchMulti.php?listMatch='+document.formJournee.ParamCmd.value;" Target="_blank" title="{#Feuilles_marque#} {$TropDeMatchsMsg}"><img height="25" src="../img/pdf2.png" /></a>
+                                    {if $profile == 1 && $AuthModif == 'O'}
+                                        <a id="numMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="numMultiMatchs();" title="{#Renumeroter_les_matchs#} {$TropDeMatchsMsg}"><img height="25" src="../img/numMatchs.png" border="0"></a>
+                                    {/if}
 								</fieldset>
 							</td>
 							<td width=520>

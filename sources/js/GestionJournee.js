@@ -241,6 +241,73 @@ function changeMultiMatchs()
 }
 
 
+function numMultiMatchs() {
+    jq('#numMultiMatchsBtn')
+            .hide()
+            .after('<span id="numMultiMatchsStart" class="right">\n\
+                        <br><label>Renuméroter à partir de :</label><input type="tel" size=2 value="1">\n\
+                        <input type="button" value="Confirmer">\n\
+                        <input type="button" value="Annuler">\n\
+                    </span>');
+}
+
+// Annuler
+jq("body").delegate('#numMultiMatchsStart input:button:last', 'click', function(e) {
+    e.preventDefault();
+    jq('#numMultiMatchsStart').remove();
+    jq('#numMultiMatchsBtn').show();
+});
+// Confirmer
+jq("body").delegate('#numMultiMatchsStart input:button:first', 'click', function(e) {
+//        e.preventDefault();
+    if(jq('#tableMatchs tbody input:checkbox:checked').length == 0) {
+        alert('Aucun match sélectionné');
+        return;
+    }
+    var numMultiMatchs = parseInt(jq('#numMultiMatchsStart input[type="tel"]').val());
+    var nbMatchsModifies = 0;
+//    console.log('longueur : ' + jq('#tableMatchs tbody input:checkbox:checked').length);
+    jq('#tableMatchs tbody input:checkbox:checked').each(function() {
+        var checkboxIdMatch = jq(this).val();
+        var numMatch = jq(this).parent().parent().find('.numMatch');
+        if(numMatch.text() != numMultiMatchs) {
+            var nouveauNumMatch = numMultiMatchs;
+            console.log(checkboxIdMatch + ' : ' + numMatch.text() + ' -> ' + nouveauNumMatch);
+//                alert(valeurPrecedente + ' => ' + numMultiMatchs);
+            var AjaxWhere = jq('#AjaxWhere').val();
+            var AjaxTableName = jq('#AjaxTableName').val();
+            var AjaxAnd = '';
+            var AjaxUser = jq('#AjaxUser').val();
+            jq.get("UpdateCellJQ.php",
+                {
+                    AjTableName: AjaxTableName,
+                    AjWhere: AjaxWhere,
+                    AjTypeValeur: 'Numero_ordre',
+                    AjValeur: nouveauNumMatch,
+                    AjAnd: AjaxAnd,
+                    AjId: checkboxIdMatch,
+                    AjId2: '',
+                    AjUser: AjaxUser,
+                    AjOk: 'OK'
+                },
+                function(data){
+                    if(data != 'OK!'){
+                        alert(langue['MAJ_impossible'] + ' : ' + data);
+                    }else{
+                        numMatch.text(nouveauNumMatch);
+                    }
+                }
+            );
+        }
+        numMultiMatchs = numMultiMatchs + 1;
+        nbMatchsModifies = nbMatchsModifies + 1;
+    });
+    alert(nbMatchsModifies + ' matchs modifiés.');
+    jq('#numMultiMatchsStart').remove();
+    jq('#numMultiMatchsBtn').show();
+});
+
+
 // ****************************************************************************************************
 
 jq(document).ready(function() { //Jquery + NoConflict='J'
