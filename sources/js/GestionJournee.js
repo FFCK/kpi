@@ -422,7 +422,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	//Init Titulaires
 	jq('#InitTitulaireCompet').click(function(e){
 		e.preventDefault();
-		var champs = langue['Competition'];
+		var champs = 'Compet';
 		var valeur = jq('#comboCompet').val();
 		var valeur2 = jq('#comboCompet option:selected').text();
 		if(valeur == '*'){
@@ -433,7 +433,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	jq('#InitTitulaireEquipeA').click(function(e){
 		e.preventDefault();
-		var champs = langue['Equipe'];
+		var champs = 'Equipe';
 		var valeur = jq('#equipeA').val();
 		var valeur2 = jq('#equipeA option:selected').text();
 		if(valeur == '-1'){
@@ -444,7 +444,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	jq('#InitTitulaireJournee').click(function(e){
 		e.preventDefault();
-		var champs = langue['Journee'];
+		var champs = 'Journee';
 		var valeur = jq('#comboJournee').val();
 		var valeur2 = jq('#comboJournee option:selected').text();
 		if(valeur == '*'){
@@ -455,7 +455,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	jq('#InitTitulaireEquipeB').click(function(e){
 		e.preventDefault();
-		var champs = langue['Equipe'];
+		var champs = 'Equipe';
 		var valeur = jq('#equipeB').val();
 		var valeur2 = jq('#equipeB option:selected').text();
 		if(valeur == '-1'){
