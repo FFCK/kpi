@@ -276,17 +276,16 @@
 									</thead>
 									<tbody>
 										{section name=i loop=$Joueur}
-											<tr>
-{*												<td>{$Joueur[i].Code_saison}</td>*}
-												<td>{$Joueur[i].Date_match|date_format:"%d/%m"}</td>
-												<td>{$Joueur[i].Code_competition}</td>
-												<td>
-													{$Joueur[i].Numero_ordre}
-													{if $profile <= 3}
-														<a href="FeuilleMatchMulti.php?listMatch={$Joueur[i].Identifiant}" target="_blank"><img width="10" src="../img/b_plus.png" alt="{#Feuille_marque#}" title="{#Feuille_marque#}" /></a>
-													{/if}
-												</td>
-												{if $Joueur[i].ScoreOK == 'O'}
+                                            {if $Joueur[i].ScoreOK == 'O'}
+                                                <tr>
+                                                    <td>{$Joueur[i].Date_match|date_format:"%d/%m"}</td>
+                                                    <td>{$Joueur[i].Code_competition}</td>
+                                                    <td>
+                                                        {$Joueur[i].Numero_ordre}
+                                                        {if $profile <= 3}
+                                                            <a href="FeuilleMatchMulti.php?listMatch={$Joueur[i].Identifiant}" target="_blank"><img width="10" src="../img/b_plus.png" alt="{#Feuille_marque#}" title="{#Feuille_marque#}" /></a>
+                                                        {/if}
+                                                    </td>
 													{if $Joueur[i].Equipe == 'A'}
 														<td><b>{$Joueur[i].eqA}</b> - {$Joueur[i].eqB}</td>
 														<td>(<b>{$Joueur[i].ScoreA}</b>-{$Joueur[i].ScoreB})</td>
@@ -305,7 +304,17 @@
 													{if $Joueur[i].Rouge > 0}<td class='rouge'>{$Joueur[i].Rouge}</td>{else}<td></td>{/if}
 													{if $Joueur[i].Tir > 0}<td class='gris'>{$Joueur[i].Tir}</td>{else}<td></td>{/if}
 													{if $Joueur[i].Arret > 0}<td class='gris'>{$Joueur[i].Arret}</td>{else}<td></td>{/if}
-												{else}
+                                                </tr>
+                                            {else}
+                                                <tr class="gris">
+                                                    <td><i>{$Joueur[i].Date_match|date_format:"%d/%m"}</i></td>
+                                                    <td><i>{$Joueur[i].Code_competition}</i></td>
+                                                    <td><i>
+                                                        {$Joueur[i].Numero_ordre}
+                                                        {if $profile <= 3}
+                                                            <a href="FeuilleMatchMulti.php?listMatch={$Joueur[i].Identifiant}" target="_blank"><img width="10" src="../img/b_plus.png" alt="{#Feuille_marque#}" title="{#Feuille_marque#}" /></a>
+                                                        {/if}</i>
+                                                    </td>
 													<td><i>{$Joueur[i].eqA} - {$Joueur[i].eqB}</i></td>
 													<td>&nbsp;</td>
 													{if $lang == 'en'}
@@ -313,14 +322,9 @@
 													{else}
                                                         <td><i>n°{$Joueur[i].Num} {$Joueur[i].Capitaine|replace:'E':'Entraineur'|replace:'A':'Arbitre'|replace:'C':'Cap'|replace:'-':''}</i></td>
                                                     {/if}
-                                                    <td>&nbsp;</td>
-													<td>&nbsp;</td>
-													<td>&nbsp;</td>
-													<td>&nbsp;</td>
-													<td>&nbsp;</td>
-													<td>&nbsp;</td>
-												{/if}
-											</tr>
+                                                    <td colspan="6">&nbsp;</td>
+                                                </tr>
+                                            {/if}
 										{/section}
 									</tbody>
 								</table>

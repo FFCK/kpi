@@ -6,7 +6,7 @@ if(lang == 'en')  {
     langue['Annuler'] = 'Cancel';
     langue['Arbitre_non_identifie'] = 'Unidentified referee';
     langue['Cliquez_pour_modifier'] = 'Click to edit';
-    langue['Competition'] = 'Competition';
+    langue['Compet'] = 'Competition';
     langue['Confirm_affect'] = 'You should have recalculate group ranking first, confirm auto assignment ?';
     langue['Confirm_delete'] = 'Delete teams & referees from selected games ?';
     langue['Confirm_update'] = 'Confirm update ?';
@@ -32,7 +32,7 @@ if(lang == 'en')  {
     langue['Annuler'] = 'Annuler';
     langue['Arbitre_non_identifie'] = 'Arbitre non identifié';
     langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
-    langue['Competition'] = 'Compétition';
+    langue['Compet'] = 'Compétition';
     langue['Confirm_affect'] = 'Vous devez avoir recalculé le classement, Confirmer l\affectation automatique ?';
     langue['Confirm_delete'] = 'Supprimer les équipes et arbitres des matchs sélectionnés ?';
     langue['Confirm_update'] = 'Confirmer le changement ?';
@@ -466,7 +466,8 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	});
 	function initTitu(champs, valeur, valeur2)
 	{
-		if(confirm(langue['InitTitu'] + '\n' + champs + ' : ' + valeur2))
+		var langChamps = langue[champs];
+        if(confirm(langue['InitTitu'] + '\n' + langChamps + ' : ' + valeur2))
 		{
 			//ajax
 			jq.post("InitTitulaireJQ.php", {
