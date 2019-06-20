@@ -40,8 +40,7 @@ class GestionCopieCompetition extends MyPageSecure
 		$sql  = "Select distinct Code From gickp_Saison order by Code ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
 		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++)
-		{
+		for ($i=0;$i<$num_results;$i++) {
 			$row = mysql_fetch_array($result);
 			array_push($arraySaisons, array( 'Code' => $row['Code']));
 		}
@@ -73,8 +72,7 @@ class GestionCopieCompetition extends MyPageSecure
             $j = $row['section'];
             $arrayCompetitionOrigine[$i]['options'][] = $row;
 
-			if ($row['Code'] == $competOrigine)
-			{
+			if ($row['Code'] == $competOrigine) {
 				$this->m_tpl->assign('codeTypeCltOrigine', $row['Code_typeclt']);
 				$this->m_tpl->assign('equipesOrigine', $row['Nb_equipes']);
 				$this->m_tpl->assign('qualifiesOrigine', $row['Qualifies']);
@@ -136,9 +134,10 @@ class GestionCopieCompetition extends MyPageSecure
 		{
 			$row = mysql_fetch_array($result);
 			array_push($arrayJournees, array( 'Niveau' => $row['Niveau'], 'Phase' => $row['Phase'], 'Lieu' => $row['Lieu'] ));
-			if($listJournees != '')
-				$listJournees .= ',';
-			$listJournees .= $row['Id'];
+			if ($listJournees != '') {
+                $listJournees .= ',';
+            }
+            $listJournees .= $row['Id'];
 		}
 		if ($num_results >= 1)
 		{
@@ -232,23 +231,21 @@ class GestionCopieCompetition extends MyPageSecure
 		
 		$init1erTour = utyGetPost('init1erTour');
 
-		if($Date_debut != '%' && $Date_origine != '%')
-		{
+		if($Date_debut != '%' && $Date_origine != '%') {
 			$d1 = strtotime($Date_debut.' 00:00:00'); 
 			$d2 = strtotime($Date_origine.' 00:00:00'); 
 			$diffdate = round(($d1-$d2)/60/60/24);
-		}
-		else
-		{
+		} else {
 			$diffdate = 0;
 		}
 		
 		$arrayJournees = array();
-		$sql  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Date_debut, Date_fin, Nom, Libelle, Type, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue ";
-		$sql .= "From gickp_Journees ";
-		$sql .= "Where Code_competition = '".$competOrigine;
-		$sql .= "' And Code_saison = $saisonOrigine ";
-		$sql .= "Order by Id ";
+		$sql  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, "
+                . "Libelle, Type, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue "
+                . "From gickp_Journees "
+                . "Where Code_competition = '".$competOrigine."' "
+                . "And Code_saison = $saisonOrigine "
+                . "Order by Id ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select journees : ".$sql);
 		$num_results = mysql_num_rows($result);
 
@@ -270,7 +267,7 @@ class GestionCopieCompetition extends MyPageSecure
 			$row = mysql_fetch_array($result);
 			$nextIdJournee = $this->GetNextIdJournee();
 			
-			$sql1  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Type, Date_debut, Date_fin, Nom, ";
+			$sql1  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, Type, Date_debut, Date_fin, Nom, ";
 			$sql1 .= "Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue) ";
 			$sql1 .= "Values ($nextIdJournee, '";
 			$sql1 .= $competDestination;
@@ -280,6 +277,10 @@ class GestionCopieCompetition extends MyPageSecure
 			$sql1 .= $row['Phase'];
 			$sql1 .= "', '";
 			$sql1 .= $row['Niveau'];
+			$sql1 .= "', '";
+			$sql1 .= $row['Etape'];
+			$sql1 .= "', '";
+			$sql1 .= $row['Nbequipes'];
 			$sql1 .= "', '";
 			$sql1 .= $row['Type'];
 			$sql1 .= "', '";
@@ -310,15 +311,17 @@ class GestionCopieCompetition extends MyPageSecure
 			
 			$sql4  = "Insert Into gickp_Matchs (Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, Type) ";
 			$sql4 .= "Select $nextIdJournee, ";
-			if ($row['Niveau'] <= 1 && $init1erTour == 'init')
-				$sql4 .= "CONCAT('[T', ta.Id, '/T', tb.Id, ']'), ";
-			else
-				$sql4 .= "m.Libelle, ";
-			$sql4 .= "DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, m.Numero_ordre, m.Type ";
+			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
+                $sql4 .= "CONCAT('[T', ta.Id, '/T', tb.Id, ']'), ";
+            } else {
+                $sql4 .= "m.Libelle, ";
+            }
+            $sql4 .= "DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, m.Numero_ordre, m.Type ";
 			$sql4 .= "FROM gickp_Matchs m ";
-			if ($row['Niveau'] <= 1 && $init1erTour == 'init')
-				$sql4 .= ", gickp_Tmp ta, gickp_Tmp2 tb ";
-			$sql4 .= "WHERE m.Id_journee = ".$row['Id']." ";
+			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
+                $sql4 .= ", gickp_Tmp ta, gickp_Tmp2 tb ";
+            }
+            $sql4 .= "WHERE m.Id_journee = ".$row['Id']." ";
 			if ($row['Niveau'] <= 1 && $init1erTour == 'init')
 			{
 				$sql4 .= "AND ta.Num=m.Id_equipeA ";
@@ -344,13 +347,10 @@ class GestionCopieCompetition extends MyPageSecure
 		$myBdd = new MyBdd();
 		$sql  = "Select max(Id) maxId From gickp_Journees Where Id < 19000001 ";
 		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-		if (mysql_num_rows($result) == 1)
-		{
+		if (mysql_num_rows($result) == 1) {
 			$row = mysql_fetch_array($result);	  
 			return ((int) $row['maxId'])+1;
-		}
-		else
-		{
+		} else {
 			return 1;
 		}
 	}		
@@ -377,13 +377,15 @@ class GestionCopieCompetition extends MyPageSecure
 
 		if (strlen($Cmd) > 0)
 		{
-			if ($Cmd == 'Ok')
-				($_SESSION['Profile'] <= 4) ? $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Cancel')
-				($_SESSION['Profile'] <= 10) ? $this->Cancel() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($alertMessage == '')
+			if ($Cmd == 'Ok') {
+                ($_SESSION['Profile'] <= 4) ? $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Cancel') {
+                ($_SESSION['Profile'] <= 10) ? $this->Cancel() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($alertMessage == '')
 			{
 				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
@@ -398,5 +400,3 @@ class GestionCopieCompetition extends MyPageSecure
 }		  	
 
 $page = new GestionCopieCompetition();
-
-?>
