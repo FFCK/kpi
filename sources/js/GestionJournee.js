@@ -401,6 +401,32 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			}
 		}
 	});
+    
+    // onChange="arbitre1_matric.value=this.options[this.selectedIndex].value; arbitre1.value=this.options[this.selectedIndex].text;"
+    
+    jq("#comboarbitre1b").change(function(){
+        if(jq('#arbitre1_matric').val() != '' && jq('#arbitre1_matric').val() != '-1') {
+            var arbitre = jq('#arbitre1').val();
+            var regExp = /\(([^)]+)\)/; // valeur entre parenthèses
+            var matches = regExp.exec(arbitre);
+            var remplace = arbitre.replace(matches[1], jq("#comboarbitre1b option:selected").text());
+            jq('#arbitre1').val(remplace);
+        } else {
+            jq('#arbitre1').val(jq("#comboarbitre1b option:selected").text());
+        }
+    });
+	
+    jq("#comboarbitre2b").change(function(){
+        if(jq('#arbitre2_matric').val() != '' && jq('#arbitre2_matric').val() != '-1') {
+            var arbitre = jq('#arbitre2').val();
+            var regExp = /\(([^)]+)\)/; // valeur entre parenthèses
+            var matches = regExp.exec(arbitre);
+            var remplace = arbitre.replace(matches[1], jq("#comboarbitre2b option:selected").text());
+            jq('#arbitre2').val(remplace);
+        } else {
+            jq('#arbitre2').val(jq("#comboarbitre2b option:selected").text());
+        }
+    });
 	
 	// Maskedinput
 	jq(".champsHeure").mask("99:99");

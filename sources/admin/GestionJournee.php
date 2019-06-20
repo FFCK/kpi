@@ -612,11 +612,12 @@ class GestionJournee extends MyPageSecure
 			$arrayEquipeA = array();
 			$arrayEquipeB = array();
 			$arrayArbitre = array();
+			$arrayArbitreEquipes = array();
 			
 			//ARBITRES
 			// Les arbitres peuvent être des équipes	
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => $lang['Pool_fin_de_liste']));
-			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Equipes'] . ' ----------'));
+			array_push($arrayArbitreEquipes, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Equipes'] . ' ----------'));
 		
 			for ($i=0;$i<$num_results;$i++)
 			{
@@ -634,11 +635,11 @@ class GestionJournee extends MyPageSecure
 					array_push($arrayEquipeB, array('Id' => $row['Id'], 'Libelle' => $libelleEquipe, 'Poule' => $row['Poule'], 'Code_compet'=> $codeCompetition, 'Selection' => 'SELECTED'));
 				else
 					array_push($arrayEquipeB, array('Id' => $row['Id'], 'Libelle' => $libelleEquipe, 'Poule' => $row['Poule'], 'Code_compet'=> $codeCompetition, 'Selection' => ''));
-				array_push($arrayArbitre, array('Matric' => '', 'Identite' => $libelleEquipe));
+				array_push($arrayArbitreEquipes, array('Matric' => '', 'Identite' => $libelleEquipe));
 			}
 
 			// Les arbitres potentiels peuvent aussi être les joueurs des Equipes ...
-			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => ''));
+//			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => ''));
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Joueurs'] . ' ----------'));
 			$sql  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, (c.Arb IS NULL) AS sortCol ";
 			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
@@ -704,6 +705,7 @@ class GestionJournee extends MyPageSecure
 			$this->m_tpl->assign('arrayEquipeA', $arrayEquipeA);
 			$this->m_tpl->assign('arrayEquipeB', $arrayEquipeB);
 			$this->m_tpl->assign('arrayArbitre', $arrayArbitre);
+			$this->m_tpl->assign('arrayArbitreEquipes', $arrayArbitreEquipes);
 
 			$this->m_tpl->assign('idCurrentJournee', $idJournee);
 			$this->m_tpl->assign('arrayJournees', $arrayJournees);

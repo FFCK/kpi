@@ -71,7 +71,7 @@
 	</div>
 {/if}
 
-<script>console.log('TZ : {$tzOffset}')</script>
+{*<script>console.log('TZ : {$tzOffset}')</script>*}
 </div>
 
 				  
