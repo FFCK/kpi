@@ -323,7 +323,10 @@
 							</td>
 							<td>
 								&nbsp;&nbsp;
-								<span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach' size='20'>
+								<span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach' size='5'>
+                                {if $profile <= 2}
+                                    <span id='reachspan2'><i>{#Surligner#}:</i></span><input type=text name='reach2' id='reach2' size='5'>
+                                {/if}
 							</td>
 						</tr>
 					</table>

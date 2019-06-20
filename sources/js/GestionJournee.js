@@ -925,6 +925,19 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
             jq('.tableau').highlight( searchTerm );
         }
     });
+    
+	// Highlight2
+    jq('#reach2').bind('keyup change', function(ev) {
+        // pull in the new value
+        var searchTerm = jq(this).val();
+        // remove any old highlighted terms
+        jq('.tableau').removeHighlight2();
+        // disable highlighting if empty
+        if ( searchTerm ) {
+            // highlight the new term
+            jq('.tableau').highlight2( searchTerm );
+        }
+    });
 
 	jq("body").delegate(".typeMatch", "click", function(){
 	//jq("body").on("click", ".typeMatch", function(){
