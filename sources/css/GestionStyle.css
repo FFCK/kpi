@@ -319,7 +319,7 @@ td.colorCapC {background: #BFB;} /*vert*/
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7); /* Opera 10.5+, IE 9.0 */
 }
 #reachspan2 {
-	background-color: #F0AE6C;
+	background-color: #FFC76B;
     -moz-border-radius: 5px; /* FF1+ */
     -webkit-border-radius: 5px; /* Saf3-4 */
     border-radius: 5px; /* Opera 10.5, IE 9, Saf5, Chrome */
@@ -340,7 +340,7 @@ td.colorCapC {background: #BFB;} /*vert*/
     background-color: #F0AE6C;
 }
 .highlight5 {
-    background-color: #F0AE6C;
+    background-color: #FFC76B;
     padding:1px 4px;
     margin:0 -4px;
     -moz-border-radius: 5px; /* FF1+ */
