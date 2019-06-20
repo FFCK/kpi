@@ -162,6 +162,14 @@
 										<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
 									{/section}
 								</select>
+								<label for="comboarbitre1b">{#Equipe#}</label>
+								<select class="combolong" name="comboarbitre1b" id="comboarbitre1b" tabindex="13">
+									<Option Value="-1"></Option>
+									{section name=i loop=$arrayArbitreEquipes}
+										<Option Value="{$arrayArbitreEquipes[i].Matric}">{$arrayArbitreEquipes[i].Identite}</Option>
+									{/section}
+								</select>
+                                    
 {*								<a href="#"  id='rechercheArbitre1'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>*}
 							</td>
 						</tr>
@@ -233,6 +241,13 @@
 									<Option Value="-1"></Option>
 									{section name=i loop=$arrayArbitre}
 										<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
+									{/section}
+								</select>
+								<label for="comboarbitre2b">{#Equipe#}</label>
+								<select class="combolong" name="comboarbitre2b" id="comboarbitre2b" tabindex="13">
+									<Option Value="-1"></Option>
+									{section name=i loop=$arrayArbitreEquipes}
+										<Option Value="{$arrayArbitreEquipes[i].Matric}">{$arrayArbitreEquipes[i].Identite}</Option>
 									{/section}
 								</select>
 {*								<a href="#" id='rechercheArbitre2'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
