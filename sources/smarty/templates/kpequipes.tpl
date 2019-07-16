@@ -17,12 +17,12 @@
         </div>
         {if $eColors}
             <div class="col-xs-10 col-xs-offset-1" id="equipeColors">
-                <a href="{$eColors}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eColors}" alt="{$nomEquipe}"></a>
+                <a href="{$eColors}?v={$NUM_VERSION}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eColors}?v={$NUM_VERSION}" alt="{$nomEquipe}"></a>
                 <span class="pull-right badge">{$eSeason}</span>
             </div>
         {elseif $eLogo}
             <div class="col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="equipeColors">
-                <a href="kpclubs.php?clubId={$Code_club}" title='{#Club#}'><img class="img-responsive img-thumbnail" src="{$eLogo}" alt="{$nomEquipe}"></a>
+                <a href="kpclubs.php?clubId={$Code_club}" title='{#Club#}'><img class="img-responsive img-thumbnail" src="{$eLogo}?v={$NUM_VERSION}" alt="{$nomEquipe}"></a>
             </div>
         {/if}
     </article>
@@ -30,7 +30,7 @@
     <article class="col-md-6 padTopBottom" id="equipePalmares">        
         {if $eTeam}
             <div class="col-sm-12" id="equipeTeam">
-                <a href="{$eTeam}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eTeam}" alt="{$nomEquipe}" title="{$nomEquipe}"></a>
+                <a href="{$eTeam}?v={$NUM_VERSION}" target="_blank"><img class="img-responsive img-thumbnail" src="{$eTeam}?v={$NUM_VERSION}" alt="{$nomEquipe}" title="{$nomEquipe}"></a>
                 <span class="pull-right badge">{$eSeason2}</span>
             </div>
         {/if}
