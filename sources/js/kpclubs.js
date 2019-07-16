@@ -145,7 +145,7 @@ jq(document).ready(function() {
         var club = clubList[clubId];
         jq('#clubId').val(clubId);
         jq('#clubLibelle').html(club.Libelle);
-        jq('#clubLogo').html('<img class="img2" src="img/KIP/logo/'+clubId+'-logo.png" height="120" alt="">');
+        jq('#clubLogo').html('<img class="img2" src="img/KIP/logo/'+clubId+'-logo.png?v='+version+'" height="120" alt="">');
         jq('#comitedep').html(club.comitedep);
         jq('#comitereg').html(club.comitereg);
         jq('#www').html('<a href="'+club.www+'" target="_blank">'+club.www+'</a>');
