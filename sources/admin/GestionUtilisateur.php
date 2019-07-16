@@ -10,18 +10,17 @@ class GestionUtilisateur extends MyPageSecure
 {	
 	function IsSelected($code, $arraySelection)
 	{
-     foreach($arraySelection as $selectValue)
-     {
-	     if ($selectValue == $code)
-	     	return 'SELECTED';
-   	 }
+        foreach($arraySelection as $selectValue) {
+            if ($selectValue == $code) {
+                return 'SELECTED';
+            }
+        }
    	 return '';
 	}
 
 	function IsSaisonSelectedPost($code)
 	{
-		if (isset($_POST['comboSaison']) && !empty($_POST['comboSaison']))
-		{
+		if (isset($_POST['comboSaison']) && !empty($_POST['comboSaison'])) {
 			return $this->IsSelected($code, $_POST['comboSaison']);
 		}
 		return '';
@@ -29,8 +28,7 @@ class GestionUtilisateur extends MyPageSecure
 
 	function IsCompetitionSelectedPost($code)
 	{
-		if (isset($_POST['comboCompetition']) && !empty($_POST['comboCompetition']))
-		{
+		if (isset($_POST['comboCompetition']) && !empty($_POST['comboCompetition'])) {
 			return $this->IsSelected($code, $_POST['comboCompetition']);
 		}
 		return '';
@@ -38,8 +36,7 @@ class GestionUtilisateur extends MyPageSecure
 	
 	function IsEvenementSelectedPost($code)
 	{
-		if (isset($_POST['comboEvenement']) && !empty($_POST['comboEvenement']))
-		{
+		if (isset($_POST['comboEvenement']) && !empty($_POST['comboEvenement'])) {
 			return $this->IsSelected($code, $_POST['comboEvenement']);
 		}
 		return '';
@@ -48,15 +45,15 @@ class GestionUtilisateur extends MyPageSecure
 	function IsStringSelected($code, $string)
 	{
 		$key = '|'.$code.'|';
-		if (strstr($string, $key) == FALSE)
-			return '';
-		return 'SELECTED';
+		if (strstr($string, $key) == FALSE) {
+            return '';
+        }
+        return 'SELECTED';
 	}
 
 	function GetFiltreSaison()
 	{
-		if (isset($_POST['comboSaison']) && !empty($_POST['comboSaison']))
-		{
+		if (isset($_POST['comboSaison']) && !empty($_POST['comboSaison'])) {
 			return $this->SetFiltreSaison($_POST['comboSaison']);
 		}
 		return '';
@@ -65,23 +62,24 @@ class GestionUtilisateur extends MyPageSecure
 	function SetFiltreSaison($arraySaison)
 	{
 		$lstSaison = '';	
-		foreach($arraySaison as $selectValue)
-		{
-			if ($selectValue == '*')
-				return '';
-			if ($lstSaison != '')
-				$lstSaison .= '|';
-			$lstSaison .= $selectValue;
+		foreach($arraySaison as $selectValue) {
+			if ($selectValue == '*') {
+                return '';
+            }
+            if ($lstSaison != '') {
+                $lstSaison .= '|';
+            }
+            $lstSaison .= $selectValue;
 		}
-		if ($lstSaison == '')
-			return '';
-		return '|'.$lstSaison.'|';
+		if ($lstSaison == '') {
+            return '';
+        }
+        return '|'.$lstSaison.'|';
 	}
 	
 	function GetFiltreCompetition()
 	{
-		if (isset($_POST['comboCompetition']) && !empty($_POST['comboCompetition']))
-		{
+		if (isset($_POST['comboCompetition']) && !empty($_POST['comboCompetition'])) {
 			return $this->SetFiltreCompetition($_POST['comboCompetition']);
 		}
 		return '';
@@ -90,23 +88,24 @@ class GestionUtilisateur extends MyPageSecure
 	function SetFiltreCompetition($arrayCompetition)
 	{
 		$lstCompetition = '';	
-		foreach($arrayCompetition as $selectValue)
-		{
-			if ($selectValue == '*')
-				return '';
-			if ($lstCompetition != '')
-				$lstCompetition .= '|';
-			$lstCompetition .= $selectValue;
+		foreach($arrayCompetition as $selectValue) {
+			if ($selectValue == '*') {
+                return '';
+            }
+            if ($lstCompetition != '') {
+                $lstCompetition .= '|';
+            }
+            $lstCompetition .= $selectValue;
 		}
-	 	if ($lstCompetition == '')
-			return '';
-		return '|'.$lstCompetition.'|';
+        if ($lstCompetition == '') {
+            return '';
+        }
+        return '|'.$lstCompetition.'|';
 	}
 		
 	function GetFiltreEvenement()
 	{
-		if (isset($_POST['comboEvenement']) && !empty($_POST['comboEvenement']))
-		{
+		if (isset($_POST['comboEvenement']) && !empty($_POST['comboEvenement'])) {
 			return $this->SetFiltreEvenement($_POST['comboEvenement']);
 		}
 		return '';
@@ -115,17 +114,19 @@ class GestionUtilisateur extends MyPageSecure
 	function SetFiltreEvenement($arrayEvenement)
 	{
 		$lstEvenement = '';	
-		foreach($arrayEvenement as $selectValue)
-		{
-			if ($selectValue == '*')
-				return '';
-			if ($lstEvenement != '')
-				$lstEvenement .= '|';
-			$lstEvenement .= $selectValue;
+		foreach($arrayEvenement as $selectValue) {
+			if ($selectValue == '*') {
+                return '';
+            }
+            if ($lstEvenement != '') {
+                $lstEvenement .= '|';
+            }
+            $lstEvenement .= $selectValue;
 		}
-	 	if ($lstEvenement == '')
-			return '';
-		return '|'.$lstEvenement.'|';
+        if ($lstEvenement == '') {
+            return '';
+        }
+        return '|'.$lstEvenement.'|';
 	}
 		
 	function Load($selectUser)
@@ -149,9 +150,7 @@ class GestionUtilisateur extends MyPageSecure
 		$sql .= " And u.Niveau like '";
 		$sql .= $limitProfils;
 		$sql .= "' Order by u.Niveau Asc, u.Identite Asc, u.Fonction Asc ";
-
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
-		$num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
 
 		$typeFiltreCompetition = '2';
 		$filtreSaison = '*';
@@ -161,10 +160,7 @@ class GestionUtilisateur extends MyPageSecure
 		$arrayUser = array();
 		$emails = '';
 		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-
+        while($row = $myBdd->FetchAssoc($result)) {
 			$StdOrSelected = '';
 			if ($selectUser == $row["Code"]) {
                 $StdOrSelected = 'selected';
@@ -181,8 +177,7 @@ class GestionUtilisateur extends MyPageSecure
 			$row["Date_debut"] = utyDateUsToFr($row["Date_debut"]);
 			$row["Date_fin"] = utyDateUsToFr($row["Date_fin"]);
 			
-			if(mb_ereg('('.$limitSaisons.')',$filtreSaisons) || $limitSaisons == '%' || $filtreSaisons == '')
-			{
+			if(mb_ereg('('.$limitSaisons.')',$filtreSaisons) || $limitSaisons == '%' || $filtreSaisons == '') {
 				array_push($arrayUser, array('Code' => $row["Code"], 'Identite' => $row["Identite"], 'StdOrSelected' => $StdOrSelected,
 													'filtreSaisons' => $filtreSaisons, 'Limitation_equipe_club' => $row['Limitation_equipe_club'],
 													'filtreCompets' => $filtreCompets, 'Mail' => $row["Mail"], 'Tel' => $row["Tel"], 'Fonction' => $row["Fonction"], 'Niveau' => $row['Niveau'],
@@ -192,30 +187,28 @@ class GestionUtilisateur extends MyPageSecure
 				$emails .= $row["Mail"].',';
 			}
 
-			if ($selectUser == $row["Code"])
-			{
-					$this->m_tpl->assign('action', 'Update');
-					
-					$this->m_tpl->assign('guser', $selectUser);
-					$this->m_tpl->assign('gidentite', $row['Identite']);
-					$this->m_tpl->assign('gmail', $row['Mail']);
-					$this->m_tpl->assign('gtel', $row['Tel']);
-					$this->m_tpl->assign('gfonction', $row['Fonction']);
-					$this->m_tpl->assign('gniveau', $row['Niveau']);
+			if ($selectUser == $row["Code"]) {
+                $this->m_tpl->assign('action', 'Update');
 
-					$this->m_tpl->assign('limitclub', $row['Limitation_equipe_club']);
-					$this->m_tpl->assign('filtre_journee', $row['Filtre_journee']);
-					$this->m_tpl->assign('filtre_competition_special', $row['Filtre_competition_sql']);
-					
-					$typeFiltreCompetition = $row['Type_filtre_competition'];
-					$filtreSaison = $row['Filtre_saison'];
-					$filtreCompetition = $row['Filtre_competition'];
-					$filtreEvenement = $row['Id_Evenement'];
-					
-					$this->m_tpl->assign('filtreEvenement', $row['Id_Evenement']);
-					$this->m_tpl->assign('Date_debut', $row['Date_debut']);
-					$this->m_tpl->assign('Date_fin', $row['Date_fin']);
+                $this->m_tpl->assign('guser', $selectUser);
+                $this->m_tpl->assign('gidentite', $row['Identite']);
+                $this->m_tpl->assign('gmail', $row['Mail']);
+                $this->m_tpl->assign('gtel', $row['Tel']);
+                $this->m_tpl->assign('gfonction', $row['Fonction']);
+                $this->m_tpl->assign('gniveau', $row['Niveau']);
 
+                $this->m_tpl->assign('limitclub', $row['Limitation_equipe_club']);
+                $this->m_tpl->assign('filtre_journee', $row['Filtre_journee']);
+                $this->m_tpl->assign('filtre_competition_special', $row['Filtre_competition_sql']);
+
+                $typeFiltreCompetition = $row['Type_filtre_competition'];
+                $filtreSaison = $row['Filtre_saison'];
+                $filtreCompetition = $row['Filtre_competition'];
+                $filtreEvenement = $row['Id_Evenement'];
+
+                $this->m_tpl->assign('filtreEvenement', $row['Id_Evenement']);
+                $this->m_tpl->assign('Date_debut', $row['Date_debut']);
+                $this->m_tpl->assign('Date_fin', $row['Date_fin']);
 			}																	 
 		}
 	
@@ -224,8 +217,7 @@ class GestionUtilisateur extends MyPageSecure
 		$emails .= 'contact@kayak-polo.info';
 		$this->m_tpl->assign('emails', $emails);
 
-		if ($selectUser == '')
-		{
+		if ($selectUser == '') {
 			$this->m_tpl->assign('action', utyGetPost('Action'));
 			
 			$this->m_tpl->assign('guser', utyGetPost('user'));
@@ -249,28 +241,25 @@ class GestionUtilisateur extends MyPageSecure
 		$sql  = "Select Code ";
 		$sql .= "From gickp_Saison ";
 		$sql .= "Order By Code DESC ";
-		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
 		
 		$arraySaison = array();
 		
-		if ($selectUser == '')
-			$select = $this->IsSaisonSelectedPost('*');
-		else
-			$select = $this->IsStringSelected('*', $filtreSaison);
-			
-		array_push($arraySaison, array('Code' => '*', 'Libelle' => '* - Toutes les Saisons', 'Selection' => $select));
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-					
-			if ($selectUser == '')
-				$select = $this->IsSaisonSelectedPost($row["Code"]);
-			else
-				$select = $this->IsStringSelected($row["Code"], $filtreSaison);
-				
-			array_push($arraySaison, array('Code' => $row["Code"], 'Libelle' => $row['Code']. ' - Saison '.$row['Code'], 'Selection' => $select));
+		if ($selectUser == '') {
+            $select = $this->IsSaisonSelectedPost('*');
+        } else {
+            $select = $this->IsStringSelected('*', $filtreSaison);
+        }
+
+        array_push($arraySaison, array('Code' => '*', 'Libelle' => '* - Toutes les Saisons', 'Selection' => $select));
+        while($row = $myBdd->FetchAssoc($result)) {
+			if ($selectUser == '') {
+                $select = $this->IsSaisonSelectedPost($row["Code"]);
+            } else {
+                $select = $this->IsStringSelected($row["Code"], $filtreSaison);
+            }
+
+            array_push($arraySaison, array('Code' => $row["Code"], 'Libelle' => $row['Code']. ' - Saison '.$row['Code'], 'Selection' => $select));
 		}
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		
@@ -313,35 +302,29 @@ class GestionUtilisateur extends MyPageSecure
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		
 		// Chargement des évènements
-		
 		$sql  = "Select * ";
 		$sql .= "From gickp_Evenement ";
 		$sql .= "Order By Id Desc ";
 		  
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Evenements => ".$sql);
-		$num_results = mysql_num_rows($result);
-		
+		$result = $myBdd->Query($sql);
 		$arrayEvenements = array();
 
-		if ($selectUser == '')
-			$select = $this->IsEvenementSelectedPost('*');
-		else
-			$select = $this->IsStringSelected('*', $filtreEvenement);
-			
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-		
-			if ($selectUser == '')
-				$select = $this->IsEvenementSelectedPost($row["Id"]);
-			else
-				$select = $this->IsStringSelected($row["Id"], $filtreEvenement);
+		if ($selectUser == '') {
+            $select = $this->IsEvenementSelectedPost('*');
+        } else {
+            $select = $this->IsStringSelected('*', $filtreEvenement);
+        }
 
-			array_push($arrayEvenements, array('Id' => $row["Id"], 'Libelle' => $row['Libelle'], 'Lieu' => $row["Lieu"], 'Selection' => $select ));
+        while ($row = $myBdd->FetchArray($result)){ 
+			if ($selectUser == '') {
+                $select = $this->IsEvenementSelectedPost($row["Id"]);
+            } else {
+                $select = $this->IsStringSelected($row["Id"], $filtreEvenement);
+            }
+
+            array_push($arrayEvenements, array('Id' => $row["Id"], 'Libelle' => $row['Libelle'], 'Lieu' => $row["Lieu"], 'Selection' => $select ));
 		}
 		$this->m_tpl->assign('arrayEvenements', $arrayEvenements);
-		
-		
 		
 	}
 	
@@ -360,10 +343,11 @@ class GestionUtilisateur extends MyPageSecure
 		$gfonction = utyGetPost('gfonction');
 		
 		$gniveau = utyGetPost('gniveau', 100);
-		if ($gniveau < utyGetSession('Profile'))
-			$gniveau = utyGetSession('Profile');
+		if ($gniveau < utyGetSession('Profile')) {
+            $gniveau = utyGetSession('Profile');
+        }
 
-		$typeFiltreCompetition = utyGetPost('filtre_competition', "1");
+        $typeFiltreCompetition = utyGetPost('filtre_competition', "1");
 		
 		$filtreCompetitionSql = '';
 		$filtreCompetition = '';
@@ -371,30 +355,26 @@ class GestionUtilisateur extends MyPageSecure
 		
 		$filtreEvenement = $this->GetFiltreEvenement(); // COSANDCO 
 		
-		if ($typeFiltreCompetition == "2") // Filtre Classique...
-		{
+		if ($typeFiltreCompetition == "2") { // Filtre Classique...
+		
 			$filtreSaison = $this->GetFiltreSaison();
 			$filtreCompetition = $this->GetFiltreCompetition();
 			// $filtreEvenement = $this->GetFiltreEvenement();// COSANDCO 
 			
-			if (strlen($filtreSaison) > 0)
-			{
+			if (strlen($filtreSaison) > 0) {
 				$txt = substr($filtreSaison, 1);
 				$txt = substr($txt, 0, -1);
 				$txt = str_replace("|","','", $txt);
 				$filtreCompetitionSql .= " And a.Code_saison In ('".$txt."')";
 			}
 			
-			if (strlen($filtreCompetition) > 0)
-			{
+			if (strlen($filtreCompetition) > 0) {
 				$txt = substr($filtreCompetition, 1);
 				$txt = substr($txt, 0, -1);
 				$txt = str_replace("|","','", $txt);
 				$filtreCompetitionSql .= " And a.Code In ('".$txt."')";
 		  }
-		}
-		elseif ($typeFiltreCompetition == "3")	 // Filtre Spécial
-		{
+		} elseif ($typeFiltreCompetition == "3") {	 // Filtre Spécial
 			$filtreCompetitionSql = utyGetPost('filtre_competition_special');
 		}
 		
@@ -408,50 +388,53 @@ class GestionUtilisateur extends MyPageSecure
 		$plusmail = utyGetPost('plusmail');
 		$plusPJ = utyGetPost('plusPJ');
 		$message_complementaire = utyGetPost('message_complementaire');
-		if (strlen($guser) > 0)
-		{
+		if (strlen($guser) > 0) {
 			$myBdd = new MyBdd();
 
-			if ($bNew)
-			{
-				$sql  = "Insert Into gickp_Utilisateur (Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, ";
-				$sql .=	"Type_filtre_competition, Filtre_competition, Filtre_saison, Filtre_competition_sql,";
-				$sql .=	"Filtre_journee, Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) Values ('";
-				$sql .= mysql_real_escape_string($guser);
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($gidentite);
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($gmail);
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($gtel);
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($gfonction);
-				$sql .= "',";
-				$sql .= $gniveau;
-				$sql .= ",";
-				$sql .= "'".md5($gpwd)."',";
-				$sql .= $typeFiltreCompetition;
-				$sql .= ",'";
-				$sql .= mysql_real_escape_string($filtreCompetition);
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($filtreSaison);
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($filtreCompetitionSql);
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($filtreJournee);
-				$sql .= "','";
-				$sql .= $limitclub;
-				$sql .= "','";
-				$sql .= mysql_real_escape_string($filtreEvenement);
-				$sql .= "','";
-				$sql .= $Date_debut;
-				$sql .= "','";
-				$sql .= $Date_fin;
-				$sql .= "')";
-				$action = "Création ";
-			}
-			else
-			{
+			if ($bNew) {
+                $sql = "SELECT Code FROM gickp_Utilisateur WHERE Code = '" . mysql_real_escape_string($guser) . "'";
+                $result = $myBdd->Query($sql);
+                if($myBdd->NumRows($result) == 1) {
+                    return "Utilisateur déjà existant !";
+                } else {
+                    $sql  = "Insert Into gickp_Utilisateur (Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, ";
+                    $sql .=	"Type_filtre_competition, Filtre_competition, Filtre_saison, Filtre_competition_sql,";
+                    $sql .=	"Filtre_journee, Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) Values ('";
+                    $sql .= mysql_real_escape_string($guser);
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($gidentite);
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($gmail);
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($gtel);
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($gfonction);
+                    $sql .= "',";
+                    $sql .= $gniveau;
+                    $sql .= ",";
+                    $sql .= "'".md5($gpwd)."',";
+                    $sql .= $typeFiltreCompetition;
+                    $sql .= ",'";
+                    $sql .= mysql_real_escape_string($filtreCompetition);
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($filtreSaison);
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($filtreCompetitionSql);
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($filtreJournee);
+                    $sql .= "','";
+                    $sql .= $limitclub;
+                    $sql .= "','";
+                    $sql .= mysql_real_escape_string($filtreEvenement);
+                    $sql .= "','";
+                    $sql .= $Date_debut;
+                    $sql .= "','";
+                    $sql .= $Date_fin;
+                    $sql .= "')";
+                    $action = "Création ";
+                    $myBdd->Query($sql);
+                }
+			} else {
 				$sql  = "Update gickp_Utilisateur Set Mail = '";
 				$sql .= mysql_real_escape_string($gmail);
 				$sql .= "', Tel = '";
@@ -481,64 +464,41 @@ class GestionUtilisateur extends MyPageSecure
 				$sql .= "', Date_fin = '";
 				$sql .= $Date_fin;
 				$sql .= "'";
-				if( $gpwd != '' )
-				{
+				if( $gpwd != '' ) {
 					$sql .= ", Pwd = '".md5($gpwd)."'";
 				}
 				$sql .= " Where Code = '";
 				$sql .= $guser;
 				$sql .= "' ";
 				$action = "Modification ";
+                $myBdd->Query($sql);
 			}
 			
-			echo $sql."<br>";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace    ".$sql);
-
 			$myBdd->utyJournal('Ajout Modif Utilisateur', '', '', 'NULL', 'NULL', 'NULL', $guser);
 			
-			 //MAIL 
+			//MAIL 
 			$sujet = $action.'de votre accès à kayak-polo.info (KPI)';
 			$email_expediteur = 'contact@kayak-polo.info';
 			$email_reply = 'contact@kayak-polo.info'; 
 			$message_texte  = 'Bonjour '.$gidentite.','."\n\n".'Nous vous confirmons la '.$action.'de votre accès à www.kayak-polo.info'; 
 			$message_texte .= "\n\n".'Votre identifiant : '.$guser; 
 			$message_texte .= "\n".'Votre mot de passe ';
-			if($gpwd != '')
-				$message_texte .= ' : '.$gpwd;
-			else
-				$message_texte .= 'est inchangé';
-			$message_texte .= "\n".'Vos fonctions : '.$gfonction; 
+			if ($gpwd != '') {
+                $message_texte .= ' : ' . $gpwd;
+            } else {
+                $message_texte .= 'est inchangé';
+            }
+            $message_texte .= "\n".'Vos fonctions : '.$gfonction; 
 			$message_texte .= "\n\n".'Connectez-vous sur https://www.kayak-polo.info onglet Administration.'; 
 			$message_texte .= "\n".'Lors de votre prochaine connexion, n\'oubliez pas de changer votre mot de passe en cliquant sur Mes Paramètres.'; 
-			if($message_complementaire != '')
-				$message_texte .= "\n\n".$message_complementaire;
-			$message_texte .= "\n\n".'A bientôt.'; 
+			if ($message_complementaire != '') {
+                $message_texte .= "\n\n" . $message_complementaire;
+            }
+            $message_texte .= "\n\n".'A bientôt.'; 
 			$message_texte .= "\n\n".'Laurent,'; 
 			$message_texte .= "\n".'Administrateur.'; 
 			$message_texte .= "\n".'---------------------------------------'; 
-			/*
-			$message_html = '<html> 
-			<head> 
-				 <title>'.$action.'de votre accès à www.kayak-polo.info</title> 
-			</head> 
-				 <body>
-					<p>Bonjour '.$gidentite.'</p>
-					<p>Nous vous confirmons la '.$action.'de votre accès à <b>kayak-polo.info</b></p>
-					<p>Votre identifiant : '.$guser.'<br>
-					Votre mot de passe ';
-			if($gpwd != '')
-				$message_html .= ' :'.$gpwd;
-			else
-				$message_html .= 'est inchangé';
-			$message_html .= '<br>
-					Vos fonctions : '.$gfonction.'</p>
-					<p>Connectez-vous sur https://www.kayak-polo.info onglet <b>Administration</b>.<br>
-					Par mesure de sécurité, n\'oubliez pas de changer régulièrement votre mot de passe en cliquant sur <b>Mes Paramètres</b>.</p>
-					<p>A bientôt.</p>
-					<p>Laurent,<br>Administrateur</p>			 
-				 </body> 
-			</html>'; 
-			*/
+			
 			//GENERE LA FRONTIERE DU MAIL ENTRE TEXTE ET HTML 
 			$frontiere = '-----=' . md5(uniqid(mt_rand())); 
 			//HEADERS DU MAIL 
@@ -560,8 +520,7 @@ class GestionUtilisateur extends MyPageSecure
 		//	$message2 .= $message_html."\n\n"; 
 			$message2 .= '--'.$frontiere."\n"; 
 			//PIECE JOINTE
-			if($plusPJ == 'Manuel7.pdf')
-			{
+			if($plusPJ == 'Manuel7.pdf') {
 				$messagePJ = 'Content-Type: application/pdf; name="Manuel7.pdf"'."\n"; 
 				$messagePJ .= 'Content-Transfer-Encoding: base64'."\n"; 
 				$messagePJ .= 'Content-Disposition:attachement; filename="../Manuel7.pdf"'."\n\n"; 
@@ -569,10 +528,11 @@ class GestionUtilisateur extends MyPageSecure
 			}
 			//ENVOI
 			$messageComplet = $message.$message_texte."\n\n".$message2.$messagePJ;
-			if($plusmail == 'O')
-				mail($gmail,$sujet,$messageComplet,$headers);
+			if ($plusmail == 'O') {
+                mail($gmail, $sujet, $messageComplet, $headers);
+            }
 
-			// MAIL ADMINISTRATEUR
+            // MAIL ADMINISTRATEUR
 			$sujet = $action.'accès KPI : '.$gidentite.' (par '.ucwords(strtolower(utyGetSession('userName'))).')';
 			$message_texte  = 'Bonjour, '."\n\n".'Nous vous confirmons la '.$action.'d\'un accès à www.kayak-polo.info.'; 
 			$message_texte .= "\n\n".'Identité : '.$gidentite; 
@@ -600,6 +560,7 @@ class GestionUtilisateur extends MyPageSecure
 			$messageComplet = $message.$message_texte;
 			mail($email_admin,$sujet,$messageComplet,$headers);
 
+            return "Utilisateur mis à jour.";
 		}
 	}
 	
@@ -608,29 +569,30 @@ class GestionUtilisateur extends MyPageSecure
 		$ParamCmd = utyGetPost('ParamCmd');
 			
 		$arrayParam = split ('[,]', $ParamCmd);		
-		if (count($arrayParam) == 0)
-			return; // Rien à Detruire ...
+		if (count($arrayParam) == 0) {
+            return;
+        } // Rien à Detruire ...
 			
 		$myBdd = new MyBdd();
 		$sql  = "Delete From gickp_Utilisateur Where Code In ('";
 
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			if ($i > 0)
-				$sql .= "','";
-			
-			$sql .= $arrayParam[$i];
+		for ($i=0;$i<count($arrayParam);$i++) {
+			if ($i > 0) {
+                $sql .= "','";
+            }
+
+            $sql .= $arrayParam[$i];
 			$myBdd->utyJournal('Suppression utilisateur', '', '', 'NULL', 'NULL', 'NULL', $arrayParam[$i]);
 		}
 		$sql .= "')";
 	
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+		$myBdd->Query($sql);
 			
 	}
 
 	function GestionUtilisateur()
 	{			
-	  MyPageSecure::MyPageSecure(3);
+        MyPageSecure::MyPageSecure(3);
 		
 		$alertMessage = '';
 	
@@ -638,25 +600,25 @@ class GestionUtilisateur extends MyPageSecure
 		$ParamCmd = utyGetPost('ParamCmd');
 		
 		$selectUser = '';
-		if ($Cmd == 'Edit')
-		{
+		if ($Cmd == 'Edit') {
 			$selectUser = utyGetPost('ParamCmd');
 			$Cmd = '';
 		}
 
-		if (strlen($Cmd) > 0)
-		{
-			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 3) ? $this->Replace(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Update')
-				($_SESSION['Profile'] <= 3) ? $this->Replace(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 2) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($alertMessage == '')
-			{
+		if (strlen($Cmd) > 0) {
+			if ($Cmd == 'Add') {
+                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Replace(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Update') {
+                ($_SESSION['Profile'] <= 3) ? $this->Replace(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($Cmd == 'Remove') {
+                ($_SESSION['Profile'] <= 2) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+            }
+
+            if ($alertMessage == '') {
 				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
 			}
