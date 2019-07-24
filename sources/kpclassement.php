@@ -34,8 +34,6 @@ class Classement extends MyPage
 		}
 
 		// Chargement des Equipes ...
-		$arrayEquipe = array();
-		$arrayEquipe_journee = array();
 		$arrayEquipe_journee_publi = array();
 		$arrayEquipe_publi = array();
         $arrayJournee = array();
@@ -123,21 +121,22 @@ class Classement extends MyPage
                                                                             'Code_comite_dep' => $row['Code_comite_dep']  );
 				}
 				// Matchs publics par journée / phase
-                $sql  = "SELECT a.Id, a.Id_journee, a.Numero_ordre, a.Date_match, a.Heure_match, a.Libelle, a.Terrain, a.Publication, a.Validation, "
-                    ."a.Statut, a.Periode, a.ScoreDetailA, a.ScoreDetailB, a.Id_equipeA, a.Id_equipeB, "
-                    ."b.Libelle EquipeA, c.Libelle EquipeB, b.Numero NumA, c.Numero NumB, "
-                    ."a.Terrain, a.ScoreA, a.ScoreB, a.CoeffA, a.CoeffB, "
-                    ."a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, "
-                    ."d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, d.Date_debut "
-                    ."FROM gickp_Matchs a "
-                    ."LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) "
-                    ."LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) "
-                    .", gickp_Journees d "
-                    ."WHERE d.Code_competition = '$codeCompet' "
-                    ."AND d.Code_saison = $codeSaison "
-                    ."AND a.Id_journee = d.Id "
-                    ."AND a.Publication = 'O' "
-                    ."ORDER BY d.Niveau DESC, d.Id ASC ";
+                $sql  = "SELECT a.Id, a.Id_journee, a.Numero_ordre, a.Date_match, a.Heure_match, a.Libelle, a.Terrain, "
+                        . "a.Publication, a.Validation, "
+                        ."a.Statut, a.Periode, a.ScoreDetailA, a.ScoreDetailB, a.Id_equipeA, a.Id_equipeB, "
+                        ."b.Libelle EquipeA, c.Libelle EquipeB, b.Numero NumA, c.Numero NumB, "
+                        ."a.Terrain, a.ScoreA, a.ScoreB, a.CoeffA, a.CoeffB, "
+                        ."a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, "
+                        ."d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, d.Date_debut "
+                        ."FROM gickp_Matchs a "
+                        ."LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) "
+                        ."LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) "
+                        .", gickp_Journees d "
+                        ."WHERE d.Code_competition = '$codeCompet' "
+                        ."AND d.Code_saison = $codeSaison "
+                        ."AND a.Id_journee = d.Id "
+                        ."AND a.Publication = 'O' "
+                        ."ORDER BY d.Niveau DESC, d.Id ASC ";
                 $result = $myBdd->Query($sql);
                 while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
                     $journee = $row['Id_journee'];
@@ -161,31 +160,33 @@ class Classement extends MyPage
 
 		// Combo "CHPT" - "CP"		
 		$arrayOrderCompetition = array();
-		if ('CHPT' == $typeClt)
-			array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED') );
-		else
-			array_push($arrayOrderCompetition, array('CHPT', 'Championnat', '') );
-			
-		if ('CP' == $typeClt)
-			array_push($arrayOrderCompetition, array('CP', 'Coupe', 'SELECTED') );
-		else
-			array_push($arrayOrderCompetition, array('CP', 'Coupe', '') );
-		$this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
+		if ('CHPT' == $typeClt) {
+            array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED'));
+        } else {
+            array_push($arrayOrderCompetition, array('CHPT', 'Championnat', ''));
+        }
+
+        if ('CP' == $typeClt) {
+            array_push($arrayOrderCompetition, array('CP', 'Coupe', 'SELECTED'));
+        } else {
+            array_push($arrayOrderCompetition, array('CP', 'Coupe', ''));
+        }
+        $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)
 	{
-		if (strlen($codeCompet) == 0)
-			return 'CHPT';
-			
-		$myBdd = new MyBdd();
-		
+		if (strlen($codeCompet) == 0) {
+            return 'CHPT';
+        }
+
+        $myBdd = new MyBdd();
 		$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$typeClt = $recordCompetition['Code_typeclt'];
-		if ($typeClt != 'CP')
-			$typeClt = 'CHPT';
-		
-		return $typeClt;
+		if ($typeClt != 'CP') {
+            $typeClt = 'CHPT';
+        }
+        return $typeClt;
 	}
 	
 	
@@ -193,41 +194,43 @@ class Classement extends MyPage
 	function ExistCompetitionEquipeNiveau($idEquipe, $niveau)
 	{
 		$myBdd = new MyBdd();
-	
-		$sql  = "Select Count(*) Nb From gickp_Competitions_Equipes_Niveau Where Id = $idEquipe And Niveau = $niveau ";
-		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 3");
-		if (mysql_num_rows($result) == 1)
-		{
-			$row = mysql_fetch_array($result);	 
-			if ($row['Nb'] == 1)
-				return; // Le record existe ...
+			$sql  = "SELECT COUNT(*) Nb "
+                . "FROM gickp_Competitions_Equipes_Niveau "
+                . "WHERE Id = $idEquipe "
+                . "AND Niveau = $niveau ";
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1) {
+			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			if ($row['Nb'] == 1) {
+                return;
+            } // Le record existe ...
 		}
 
-		$sql  = "Insert Into gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-		$sql .= "Values ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 1");
+		$sql  = "INSERT INTO gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, "
+                . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
+		$sql .= "VALUES ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
+		$myBdd->Query($sql);
 	}
 
 	// ExistCompetitionEquipeJournee
 	function ExistCompetitionEquipeJournee($idEquipe, $idJournee)
 	{
 		$myBdd = new MyBdd();
-		
-		$sql  = "Select count(*) Nb From gickp_Competitions_Equipes_Journee Where Id = $idEquipe And Id_journee = $idJournee";
-		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 4");
-		if (mysql_num_rows($result) == 1)
-		{
-			$row = mysql_fetch_array($result);	 
+		$sql  = "SELECT COUNT(*) Nb "
+                . "FROM gickp_Competitions_Equipes_Journee "
+                . "WHERE Id = $idEquipe "
+                . "AND Id_journee = $idJournee";
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1) {
+			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
 
-		$sql  = "Insert Into gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-		$sql .= "Values ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2");
+		$sql  = "INSERT INTO gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, "
+                . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
+		$sql .= "VALUES ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
+		$myBdd->Query($sql);
 	}
 	
 
