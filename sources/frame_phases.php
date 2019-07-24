@@ -44,12 +44,12 @@ class Classement extends MyPage
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
         //Logo
-		if($codeCompet != -1)
-		{
+		if($codeCompet != -1) {
 			$logo = "img/logo/".$codeSaison.'-'.$codeCompet.'.jpg';
-			if(file_exists($logo))
-				$this->m_tpl->assign('logo', $logo);
-		}
+			if (file_exists($logo)) {
+                $this->m_tpl->assign('logo', $logo);
+            }
+        }
 
 		// Chargement des Equipes ...
 		$arrayEquipe = array();
@@ -64,27 +64,27 @@ class Classement extends MyPage
         
         $journee = 0;
 		
-		if (strlen($codeCompet) > 0)
-		{
+		if (strlen($codeCompet) > 0) {
 			// Classement public				
 			$sql  = "SELECT ce.*, c.Code_comite_dep "
                     . "FROM gickp_Competitions_Equipes ce, gickp_Club c "
                     . "WHERE ce.Code_compet = '$codeCompet' "
                     . "AND ce.Code_saison = $codeSaison "
                     . "AND ce.Code_club = c.Code ";
-                    if ($typeClt == 'CP')
-                        $sql .= "ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";	 
-                    else
-                        $sql .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";	 
-	
+            if ($typeClt == 'CP') {
+                $sql .= "ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";
+            } else {
+                $sql .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";
+            }
+
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) { 
                 //Logos
                 $logo = '';
                 $club = $row['Code_club'];
-                if(is_file('img/KIP/logo/'.$club.'-logo.png')){
+                if (is_file('img/KIP/logo/'.$club.'-logo.png')) {
                     $logo = 'img/KIP/logo/'.$club.'-logo.png';
-                }elseif(is_file('img/Nations/'.substr($club, 0, 3).'.png')){
+                } elseif (is_file('img/Nations/'.substr($club, 0, 3).'.png')) {
                     $club = substr($club, 0, 3);
                     $logo = 'img/Nations/'.$club.'.png';
                 }
@@ -120,11 +120,11 @@ class Classement extends MyPage
                         . "AND c.Etape LIKE '$Round' "
                         . "ORDER BY c.Niveau DESC, c.Date_debut DESC, b.Id_journee ASC, b.Clt_publi ASC, b.Diff_publi DESC, b.Plus_publi ASC ";
                 $result = $myBdd->Query($sql);
-                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
                     if (strlen($row['Code_comite_dep']) > 3) {
                         $row['Code_comite_dep'] = 'FRA';
                     }
-                    if($journee != $row['Id_journee']){
+                    if ($journee != $row['Id_journee']) {
                         $arrayJournee[] = array('Id_journee' => $row['Id_journee'], 'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'],
                                                     'Date_debut' => $row['Date_debut'], 'Date_fin' => $row['Date_fin'],
                                                     'Lieu' => $row['Lieu'], 'Departement' => $row['Departement'] );
@@ -156,18 +156,16 @@ class Classement extends MyPage
                     ."AND d.Etape LIKE '$Round' "
                     ."ORDER BY d.Niveau DESC, d.Id ASC ";
                 $result = $myBdd->Query($sql);
-                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
                     $journee = $row['Id_journee'];
-                    if($row['Validation'] != 'O'){
+                    if ($row['Validation'] != 'O') {
                         $row['ScoreA'] = '';
                         $row['ScoreB'] = '';
                     }
-                    if($row['Id_equipeA'] > 1 && $row['Id_equipeB'] > 1){
+                    if ($row['Id_equipeA'] > 1 && $row['Id_equipeB'] > 1) {
                         $arrayMatchs[$journee][] = $row ;
                     }
                 }
-
-
 		}	
 		$this->m_tpl->assign('arrayEquipe_journee_publi', $arrayEquipe_journee_publi);
         $this->m_tpl->assign('arrayJournee', $arrayJournee);
@@ -178,31 +176,35 @@ class Classement extends MyPage
 
 		// Combo "CHPT" - "CP"		
 		$arrayOrderCompetition = array();
-		if ('CHPT' == $typeClt)
-			array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED') );
-		else
-			array_push($arrayOrderCompetition, array('CHPT', 'Championnat', '') );
-			
-		if ('CP' == $typeClt)
-			array_push($arrayOrderCompetition, array('CP', 'Coupe', 'SELECTED') );
-		else
-			array_push($arrayOrderCompetition, array('CP', 'Coupe', '') );
-		$this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
+		if ('CHPT' == $typeClt) {
+            array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED'));
+        } else {
+            array_push($arrayOrderCompetition, array('CHPT', 'Championnat', ''));
+        }
+
+        if ('CP' == $typeClt) {
+            array_push($arrayOrderCompetition, array('CP', 'Coupe', 'SELECTED'));
+        } else {
+            array_push($arrayOrderCompetition, array('CP', 'Coupe', ''));
+        }
+        $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)
 	{
-		if (strlen($codeCompet) == 0)
-			return 'CHPT';
-			
-		$myBdd = new MyBdd();
+		if (strlen($codeCompet) == 0) {
+            return 'CHPT';
+        }
+
+        $myBdd = new MyBdd();
 		
 		$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$typeClt = $recordCompetition['Code_typeclt'];
-		if ($typeClt != 'CP')
-			$typeClt = 'CHPT';
-		
-		return $typeClt;
+		if ($typeClt != 'CP') {
+            $typeClt = 'CHPT';
+        }
+
+        return $typeClt;
 	}
 	
 	
@@ -211,40 +213,42 @@ class Classement extends MyPage
 	{
 		$myBdd = new MyBdd();
 	
-		$sql  = "Select Count(*) Nb From gickp_Competitions_Equipes_Niveau Where Id = $idEquipe And Niveau = $niveau ";
-		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 3");
-		if (mysql_num_rows($result) == 1)
-		{
-			$row = mysql_fetch_array($result);	 
-			if ($row['Nb'] == 1)
-				return; // Le record existe ...
+		$sql  = "SELECT COUNT(*) Nb "
+                . "FROM gickp_Competitions_Equipes_Niveau "
+                . "WHERE Id = $idEquipe AND Niveau = $niveau ";
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1) {
+			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			if ($row['Nb'] == 1) {
+                return;
+            } // Le record existe ...
 		}
 
-		$sql  = "Insert Into gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-		$sql .= "Values ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 1");
+		$sql  = "INSERT INTO gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, "
+                . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
+		$sql .= "VALUES ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
+		$myBdd->Query($sql);
 	}
 
 	// ExistCompetitionEquipeJournee
 	function ExistCompetitionEquipeJournee($idEquipe, $idJournee)
 	{
 		$myBdd = new MyBdd();
-		
-		$sql  = "Select count(*) Nb From gickp_Competitions_Equipes_Journee Where Id = $idEquipe And Id_journee = $idJournee";
-		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 4");
-		if (mysql_num_rows($result) == 1)
-		{
-			$row = mysql_fetch_array($result);	 
+		$sql  = "SELECT COUNT(*) Nb "
+                . "FROM gickp_Competitions_Equipes_Journee "
+                . "WHERE Id = $idEquipe "
+                . "AND Id_journee = $idJournee";
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1) {
+			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
 
-		$sql  = "Insert Into gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-		$sql .= "Values ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2");
+		$sql  = "INSERT INTO gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, "
+                . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
+		$sql .= "VALUES ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
+		$myBdd->Query($sql);
 	}
 	
 
