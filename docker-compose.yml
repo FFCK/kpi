@@ -16,6 +16,7 @@ services:
             - ALLOW_OVERRIDE=true
         links:
             - db
+        tty: true
     db:
         build: 
             context: ./docker/db

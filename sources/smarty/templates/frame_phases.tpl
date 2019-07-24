@@ -41,10 +41,26 @@
 {/if}
 <div class="container">
     {if $recordCompetition.Code_typeclt == 'CP'}
+        {assign var='niveau' value=$arrayJournee[0].Niveau}
+        {assign var='compteur' value=0}
+        <article class="col-md-12">
         {section name=i loop=$arrayJournee}
+            {if $niveau != $arrayJournee[i].Niveau}
+                </article><article class="col-md-12">
+            {/if}
+            {assign var='niveau' value=$arrayJournee[i].Niveau}
             {assign var='idJournee' value=$arrayJournee[i].Id_journee}
             {if $arrayJournee[i].Type == 'C'}
-                <article class="padTopBottom table-responsive col-md-6 col-sm-12 tablePhase">
+                {assign var='compteur' value=$compteur+1}
+                {if $compteur == 2}
+                    {assign var='compteur' value=0}
+                {/if}
+                {if $niveau != $arrayJournee[i.index_next].Niveau && $compteur == 1}
+                    <div class="padTopBottom table-responsive col-md-6 col-md-offset-3 col-sm-12 tablePhase">
+                    {assign var='compteur' value=0}
+                {else}
+                    <div class="padTopBottom table-responsive col-md-6 col-sm-12 tablePhase">
+                {/if}
                     <h4>{$arrayJournee[i].Phase}</h4>
                     <table class='table table-striped table-condensed table-hover'>
                         <thead>
@@ -88,9 +104,9 @@
                             {/section}
                         </tbody>
                     </table>
-                </article>
+                </div>
             {elseif $arrayMatchs[$idJournee]|@count > 0}
-                <article class="padTopBottom table-responsive col-md-4 col-md-offset-4 tableMatch">
+                <div class="padTopBottom table-responsive col-md-4 col-md-offset-4 tableMatch">
                     <h4 class="row text-center">{$arrayJournee[i].Phase}</h4>
                     {section name=j loop=$arrayMatchs[$idJournee]}
                         <div class="row cliquableNomEquipe">
@@ -124,9 +140,10 @@
                             {/if}
                         </div>
                     {/section}
-                </article>
+                </div>
             {/if}
         {/section}
+        </article>
     {else}
         {section name=i loop=$arrayJournee}
             {assign var='idJournee' value=$arrayJournee[i].Id_journee}
