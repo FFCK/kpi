@@ -46,8 +46,9 @@
 						</select>
 					{else}
 						{section name=i loop=$arrayOrderCompetition} 
-							{if $arrayOrderCompetition[i][2]=='SELECTED'}
-								{if $typeCompetition=='Championnat'}
+							{if $arrayOrderCompetition[i][2] == 'SELECTED'}
+                                {assign var='typeCompetition' value=$arrayOrderCompetition[i][1]}
+								{if $typeCompetition == 'Championnat'}
                                     {#CHPT_type#}
                                 {else}
                                     {#CP_type#}
