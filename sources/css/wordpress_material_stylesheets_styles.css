@@ -8681,3 +8681,7 @@ tr {
 table a.report {
     color: white;
 }
+
+.mb5 {
+    margin-bottom: 5px;
+}
