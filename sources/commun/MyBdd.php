@@ -1305,22 +1305,28 @@ class MyBdd
     }
     
 	// GetCompetition 	
-	function GetOtherCompetitions($codeCompet, $codeSaison)
+	function GetOtherCompetitions($codeCompet, $codeSaison, $public=false)
 	{
 		if($codeCompet == '*') {
-            $sql  = "SELECT Code, Soustitre2 
+            $sql  = "SELECT Code, Code_ref, Soustitre2, Publication
                 FROM `gickp_Competitions`
                 WHERE Code_saison = $codeSaison
-                AND Code_ref = '" . utyGetSession('codeCompetGroup') . "'
-                ORDER BY GroupOrder";
+                AND Code_ref = '" . utyGetSession('codeCompetGroup') . "' ";
+            if ($public) {
+                $sql .= "AND Publication = 'O' ";
+            }
+            $sql .= "ORDER BY GroupOrder";
 	
         } else {
-            $sql  = "SELECT Code, Soustitre2 
+            $sql  = "SELECT Code, Code_ref, Soustitre2, Publication
                 FROM `gickp_Competitions`
                 WHERE Code_saison = $codeSaison
                 AND Code_ref = (
-                    SELECT Code_ref FROM `gickp_Competitions` WHERE Code = '$codeCompet' AND Code_saison = $codeSaison
-                ) ORDER BY GroupOrder";
+                    SELECT Code_ref FROM `gickp_Competitions` WHERE Code = '$codeCompet' AND Code_saison = $codeSaison ) ";
+            if ($public) {
+                $sql .= "AND Publication = 'O' ";
+            }
+            $sql .= "ORDER BY GroupOrder";
         }
 	
         $this->LoadTable($sql, $arrayLoad);

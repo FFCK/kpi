@@ -18,15 +18,18 @@ class Classement extends MyPage
 		$codeSaison = utyGetGet('Saison', utyGetSaison());
 		$this->m_tpl->assign('Saison', $codeSaison);
         
-        $group = utyGetGet('Group', 'N1H');
-		$this->m_tpl->assign('group', $group);
-        
         if (utyGetGet('navGroup', false)) {
-            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true);
             $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
             $this->m_tpl->assign('navGroup', 1);
         }
-	
+
+        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+		$this->m_tpl->assign('group', $group);
+        
+        $Round = utyGetGet('Round', '*');
+		$this->m_tpl->assign('Round', $Round);
+
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
@@ -104,6 +107,7 @@ class Classement extends MyPage
         $this->m_tpl->assign('recordCompetition', $recordCompetition);
 		$this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
 		$this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
+		$this->m_tpl->assign('page', 'classement');
 
 		// Combo "CHPT" - "CP"		
 		$arrayOrderCompetition = array();

@@ -1,10 +1,13 @@
 <?php
 // Configuration Generale 
-define('NUM_VERSION','2.15.0');
+define('NUM_VERSION','2.16.0');
 
 require_once('MyParams.php');
 
-if (strstr($_SERVER['DOCUMENT_ROOT'],'wamp') == false && strstr($_SERVER['HTTP_HOST'],'192.168') == false) {
+if (strstr($_SERVER['DOCUMENT_ROOT'],'wamp') == false 
+        && strstr($_SERVER['HTTP_HOST'],'192.168.') == false
+        && strstr($_SERVER['HTTP_HOST'],'172.') == false
+        ) {
 	define("PRODUCTION", TRUE); // TRUE => Site de Production ...
 } else {
 	define("PRODUCTION", FALSE); // FALSE => localhost

@@ -23,15 +23,18 @@ class Stats extends MyPage
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
-        
-        $group = utyGetGet('Group', 'N1H');
-		$this->m_tpl->assign('group', $group);
-                
+
         if (utyGetGet('navGroup', false)) {
-            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison);
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true);
             $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
             $this->m_tpl->assign('navGroup', 1);
         }
+
+        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+		$this->m_tpl->assign('group', $group);
+                
+        $Round = utyGetGet('Round', '*');
+		$this->m_tpl->assign('Round', $Round);
         
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
 
@@ -89,6 +92,7 @@ class Stats extends MyPage
                         'Buts' => $row['Buts']));
         }
         $this->m_tpl->assign('arrayButeurs', $arrayButeurs);
+		$this->m_tpl->assign('page', 'stats');
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)
