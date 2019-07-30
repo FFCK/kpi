@@ -4,19 +4,23 @@
     </h1>
 </div>
 {if $navGroup}
-    <div class="container-fluid categorie">
+    <div class="container-fluid categorie mb5">
         <div class="col-md-12">
             <a class="btn btn-primary">{#Matchs#}</a>
-            <a class="btn btn-default actif" 
-                href="frame_phases.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round=*&Css={$Css}&navGroup=1">
-                        {#Classement_par_phase#}
+            <a class="btn btn-default actif"
+                href="frame_chart.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                {#Deroulement#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Css={$Css}&navGroup=1">
+                href="frame_phases.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                        {#Phases#}
+            </a>
+            <a class="btn btn-default actif" 
+                href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Classement#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Css={$Css}&navGroup=1">
+                href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Stats#}
             </a>
             <div class="pull-right">

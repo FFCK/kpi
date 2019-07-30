@@ -1,4 +1,5 @@
-{if $navGroup}
+{include file='frame_navgroup.tpl'}
+{*{if $navGroup}
     <div class="container-fluid categorie">
         <div class="col-md-12">
             <a class="btn btn-default actif"
@@ -38,7 +39,7 @@
             {$recordCompetition.Soustitre2}
         </h2>
     </div>
-{/if}
+{/if}*}
 <div class="container">
     {if $recordCompetition.Code_typeclt == 'CP'}
         {assign var='niveau' value=$arrayJournee[0].Niveau}

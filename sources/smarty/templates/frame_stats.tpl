@@ -1,4 +1,5 @@
-{if $navGroup}
+{include file='frame_navgroup.tpl'}
+{*{if $navGroup}
     <div class="container-fluid categorie">
         <div class="col-md-12">
             <a class="btn btn-default actif"
@@ -37,7 +38,8 @@
         <h2 class="col-md-12">
             {$recordCompetition.Soustitre2}
         </h2>
-    </div>{/if}
+    </div>
+{/if}*}
 <div class="container">
     <article class="padTopBottom table-responsive col-md-8 col-md-offset-2 tableClassement">
         <h4>{#Meilleurs_buteurs#}</h4>
