@@ -88,7 +88,8 @@
                             <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
                             <option value="schema" {if $filtrePres == 'schema'}selected{/if}>Draws</option>
                             <option value="frame_terrains" {if $filtrePres == 'frame_terrains'}selected{/if}>Pitch games</option>
-                            <option value="frame_phases" {if $filtrePres == 'frame_phases'}selected{/if}>Group ranking</option>
+                            <option value="frame_chart" {if $filtrePres == 'frame_chart'}selected{/if}>Progress</option>
+                            <option value="frame_phases" {if $filtrePres == 'frame_phases'}selected{/if}>Phases</option>
                             <option value="frame_stats" {if $filtrePres == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
@@ -250,7 +251,8 @@
                             <option value="multi_score" {if $filtrePres2 == 'multi_score'}selected{/if}>Multi score</option>
                             <option value="schema" {if $filtrePres2 == 'schema'}selected{/if}>Draws</option>
                             <option value="frame_terrains" {if $filtrePres2 == 'frame_terrains'}selected{/if}>Pitch games</option>
-                            <option value="frame_phases" {if $filtrePres2 == 'frame_phases'}selected{/if}>Group ranking</option>
+                            <option value="frame_chart" {if $filtrePres2 == 'frame_chart'}selected{/if}>Progress</option>
+                            <option value="frame_phases" {if $filtrePres2 == 'frame_phases'}selected{/if}>Phases</option>
                             <option value="frame_stats" {if $filtrePres2 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres2 == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
@@ -412,7 +414,8 @@
                             <option value="multi_score" {if $filtrePres3 == 'multi_score'}selected{/if}>Multi score</option>
                             <option value="schema" {if $filtrePres3 == 'schema'}selected{/if}>Draws</option>
                             <option value="frame_terrains" {if $filtrePres3 == 'frame_terrains'}selected{/if}>Pitch games</option>
-                            <option value="frame_phases" {if $filtrePres3 == 'frame_phases'}selected{/if}>Group ranking</option>
+                            <option value="frame_chart" {if $filtrePres3 == 'frame_chart'}selected{/if}>Progress</option>
+                            <option value="frame_phases" {if $filtrePres3 == 'frame_phases'}selected{/if}>Phases</option>
                             <option value="frame_stats" {if $filtrePres3 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres3 == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
@@ -574,7 +577,8 @@
                             <option value="multi_score" {if $filtrePres4 == 'multi_score'}selected{/if}>Multi score</option>
                             <option value="schema" {if $filtrePres4 == 'schema'}selected{/if}>Draws</option>
                             <option value="frame_terrains" {if $filtrePres4 == 'frame_terrains'}selected{/if}>Pitch games</option>
-                            <option value="frame_phases" {if $filtrePres4 == 'frame_phases'}selected{/if}>Group ranking</option>
+                            <option value="frame_chart" {if $filtrePres4 == 'frame_chart'}selected{/if}>Progress</option>
+                            <option value="frame_phases" {if $filtrePres4 == 'frame_phases'}selected{/if}>Phases</option>
                             <option value="frame_stats" {if $filtrePres4 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres4 == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>

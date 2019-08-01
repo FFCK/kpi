@@ -87,6 +87,9 @@ jq(document).ready(function(){
             case 'frame_phases':
                 jq('#round-col').show();
                 break;
+            case 'frame_chart':
+                jq('#round-col').show();
+                break;
             default:
                 break;
         }
@@ -163,24 +166,32 @@ jq(document).ready(function(){
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
+            case 'frame_chart':
+                url = 'frame_chart.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Round=' + jq('#round').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
             case 'frame_phases':
-                url = 'frame_phases.php?' 
-                        + 'lang=en&Saison=' + jq('#saison').val() 
+                url = 'frame_phases.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
                         + '&Compet=' + jq('#competition').val() 
                         + '&Round=' + jq('#round').val() 
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
             case 'frame_stats':
-                url = 'frame_stats.php?' 
-                        + 'lang=en&Saison=' + jq('#saison').val() 
+                url = 'frame_stats.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
                         + '&Compet=' + jq('#competition').val() 
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
             case 'frame_classement':
-                url = 'frame_classement.php?' 
-                        + 'lang=en&Saison=' + jq('#saison').val() 
+                url = 'frame_classement.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val()  
                         + '&Compet=' + jq('#competition').val() 
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel').val(), url, showUrl);
