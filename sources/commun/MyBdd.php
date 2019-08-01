@@ -1305,9 +1305,18 @@ class MyBdd
     }
     
 	// GetCompetition 	
-	function GetOtherCompetitions($codeCompet, $codeSaison, $public=false)
+	function GetOtherCompetitions($codeCompet, $codeSaison, $public=false, $event=0)
 	{
-		if($codeCompet == '*') {
+		if ($event > 0) { // TODO : SELECTIONNER LES COMPETITIONS DE L'EVENEMENT !
+            $sql  = "SELECT c.Code, c.Code_ref, c.Soustitre2, c.Publication "
+                . "FROM `gickp_Competitions` c, `gickp_Journees` j, `gickp_Evenement_Journees` ej "
+                . "WHERE ej.Id_journee = j.Id "
+                . "AND j.Code_competition = c.Code "
+                . "AND j.Code_saison = c.Code_saison "
+                . "AND ej.Id_evenement = $event "
+                . "GROUP BY c.Code "
+                . "ORDER BY c.GroupOrder ";
+        } elseif ($codeCompet == '*') {
             $sql  = "SELECT Code, Code_ref, Soustitre2, Publication
                 FROM `gickp_Competitions`
                 WHERE Code_saison = $codeSaison
