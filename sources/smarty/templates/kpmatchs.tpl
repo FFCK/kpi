@@ -8,30 +8,30 @@
         <div class="col-md-12">
             <a class="btn btn-primary">{#Matchs#}</a>
             <a class="btn btn-default actif"
-                href="frame_chart.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_chart.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                 {#Deroulement#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_phases.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_phases.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Phases#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_classement.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_classement.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Classement#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_stats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Stats#}
             </a>
             <div class="pull-right">
                 {if $next}
                     <a class="btn btn-primary actif" 
-                       href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
                         {#Prochains_matchs#}
                     </a>
                 {else}
                     <a class="btn btn-default actif" 
-                       href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
                         {#Prochains_matchs#}
                     </a>
                 {/if}
@@ -40,7 +40,7 @@
                         <a class="btn btn-primary">{#Tous#}</a>
                     {else}
                         <a class="btn btn-default actif" 
-                           href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet=*&Round={$Round}&Css={$Css}&navGroup=1">
+                           href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet=*&Round={$Round}&Css={$Css}&navGroup=1">
                             {#Tous#}
                         </a>
                     {/if}
@@ -50,7 +50,7 @@
                         <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
                     {else}
                         <a class="btn btn-default actif" 
-                           href="?lang={$lang}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$arrayNavGroup[i].Code}&Round={$Round}&Css={$Css}&navGroup=1">
+                           href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$arrayNavGroup[i].Code}&Round={$Round}&Css={$Css}&navGroup=1">
                             {$arrayNavGroup[i].Soustitre2}
                         </a>
                     {/if}

@@ -24,8 +24,11 @@ class Classement extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
         
+        $event = utyGetGet('event', '0');
+		$this->m_tpl->assign('event', $event);
+        
         if (utyGetGet('navGroup', false)) {
-            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true);
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
             $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
             $this->m_tpl->assign('navGroup', 1);
         }
@@ -106,14 +109,27 @@ class Classement extends MyPage
             
 			// Journées
             $etapes = 0;
-            $sql  = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, "
-                    . "j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement "
-                    . "FROM gickp_Journees j "
-                    . "WHERE j.Code_competition = '$codeCompet' "
-                    . "AND j.Code_saison = $codeSaison "
-                    . "AND j.Etape LIKE '$Round' "
-                    . "AND j.Publication = 'O' "
-                    . "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
+            if ($event > 0) {
+                $sql  = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, "
+                        . "j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement "
+                        . "FROM gickp_Journees j, gickp_Evenement_Journees ej "
+                        . "WHERE ej.Id_journee = j.Id "
+                        . "AND ej.Id_evenement = $event "
+                        . "AND j.Code_competition = '$codeCompet' "
+                        . "AND j.Code_saison = $codeSaison "
+                        . "AND j.Etape LIKE '$Round' "
+                        . "AND j.Publication = 'O' "
+                        . "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
+            } else {
+                $sql  = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, "
+                        . "j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement "
+                        . "FROM gickp_Journees j "
+                        . "WHERE j.Code_competition = '$codeCompet' "
+                        . "AND j.Code_saison = $codeSaison "
+                        . "AND j.Etape LIKE '$Round' "
+                        . "AND j.Publication = 'O' "
+                        . "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
+            }
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
                 $arrayJournees[$row['Id_journee']] = $row;
@@ -125,7 +141,26 @@ class Classement extends MyPage
             }
             
             // Classement public par journée/phase
-            $sql  = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, "
+            if ($event > 0) {
+                $sql  = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, "
+                    . "cej.Id_journee, cej.Clt_publi, cej.Pts_publi, cej.J_publi, cej.G_publi, cej.N_publi, cej.P_publi, "
+                    . "cej.F_publi, cej.Plus_publi, cej.Moins_publi, cej.Diff_publi, cej.PtsNiveau_publi, cej.CltNiveau_publi, "
+                    . "j.Phase, j.Etape, j.Nbequipes, j.Niveau, j.Type, c.Code_comite_dep, "
+                    . "j.Date_debut, j.Date_fin, j.Lieu, j.Departement "
+                    . "FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Journee cej, "
+                    . "gickp_Journees j, gickp_Evenement_Journees ej, gickp_Club c "
+                    . "WHERE ej.Id_journee = j.Id "
+                    . "AND ej.Id_evenement = $event "
+                    . "AND ce.Id = cej.Id "
+                    . "AND cej.Id_journee = j.Id "
+                    . "AND ce.Code_club = c.Code "
+                    . "AND j.Code_competition = '$codeCompet' "
+                    . "AND j.Code_saison = $codeSaison "
+                    . "AND j.Etape LIKE '$Round' "
+                    . "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase, "
+                    . "cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
+            } else {
+                $sql  = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, "
                     . "cej.Id_journee, cej.Clt_publi, cej.Pts_publi, cej.J_publi, cej.G_publi, cej.N_publi, cej.P_publi, "
                     . "cej.F_publi, cej.Plus_publi, cej.Moins_publi, cej.Diff_publi, cej.PtsNiveau_publi, cej.CltNiveau_publi, "
                     . "j.Phase, j.Etape, j.Nbequipes, j.Niveau, j.Type, c.Code_comite_dep, "
@@ -142,6 +177,7 @@ class Classement extends MyPage
                     . "AND j.Etape LIKE '$Round' "
                     . "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase, "
                     . "cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
+            }
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
                 $arrayJournees[$row['Id_journee']]['Actif'] = 1;
@@ -167,22 +203,43 @@ class Classement extends MyPage
             }
             
             // Matchs publics par journée / phase
-            $sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, m.Publication, m.Validation, "
-                ."m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, m.Id_equipeA, m.Id_equipeB, "
-                ."ce1.Libelle EquipeA, ce2.Libelle EquipeB, ce1.Numero NumA, ce2.Numero NumB, "
-                ."m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, "
-                ."m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, "
-                ."j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut "
-                ."FROM gickp_Matchs m "
-                ."LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) "
-                ."LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) "
-                .", gickp_Journees j "
-                ."WHERE j.Code_competition = '$codeCompet' "
-                ."AND j.Code_saison = $codeSaison "
-                ."AND m.Id_journee = j.Id "
-                ."AND m.Publication = 'O' "
-                ."AND j.Etape LIKE '$Round' "
-                ."ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
+            if ($event > 0) {
+                $sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, m.Publication, m.Validation, "
+                    ."m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, m.Id_equipeA, m.Id_equipeB, "
+                    ."ce1.Libelle EquipeA, ce2.Libelle EquipeB, ce1.Numero NumA, ce2.Numero NumB, "
+                    ."m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, "
+                    ."m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, "
+                    ."j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut "
+                    ."FROM gickp_Matchs m "
+                    ."LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) "
+                    ."LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) "
+                    .", gickp_Journees j, gickp_Evenement_Journees ej "
+                    ."WHERE ej.Id_journee = j.Id "
+                    ."AND ej.Id_evenement = $event "
+                    ."AND j.Code_competition = '$codeCompet' "
+                    ."AND j.Code_saison = $codeSaison "
+                    ."AND m.Id_journee = j.Id "
+                    ."AND m.Publication = 'O' "
+                    ."AND j.Etape LIKE '$Round' "
+                    ."ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
+            } else {
+                $sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, m.Publication, m.Validation, "
+                    ."m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, m.Id_equipeA, m.Id_equipeB, "
+                    ."ce1.Libelle EquipeA, ce2.Libelle EquipeB, ce1.Numero NumA, ce2.Numero NumB, "
+                    ."m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, "
+                    ."m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, "
+                    ."j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut "
+                    ."FROM gickp_Matchs m "
+                    ."LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) "
+                    ."LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) "
+                    .", gickp_Journees j "
+                    ."WHERE j.Code_competition = '$codeCompet' "
+                    ."AND j.Code_saison = $codeSaison "
+                    ."AND m.Id_journee = j.Id "
+                    ."AND m.Publication = 'O' "
+                    ."AND j.Etape LIKE '$Round' "
+                    ."ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
+            }
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
                 $journee = $row['Id_journee'];
@@ -215,6 +272,7 @@ class Classement extends MyPage
                 ."LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) "
                 .", gickp_Journees j "
                 ."WHERE j.Code_competition = '$codeCompet' "
+                ."AND j.Type = 'C' "
                 ."AND j.Code_saison = $codeSaison "
                 ."AND m.Id_journee = j.Id "
                 ."AND m.Publication = 'O' "

@@ -24,8 +24,11 @@ class Stats extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
 
+        $event = utyGetGet('event', '0');
+		$this->m_tpl->assign('event', $event);
+        
         if (utyGetGet('navGroup', false)) {
-            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true);
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
             $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
             $this->m_tpl->assign('navGroup', 1);
         }
