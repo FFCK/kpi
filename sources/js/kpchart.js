@@ -8,7 +8,6 @@ jq(document).ready(function(){
         placement: 'right',
         content: function () {
             var temp = jq(this).attr('src');
-            //alert(temp);
             return '<img class="img-rounded" style="float:right;width:100px;max-width:100px;" src="'+temp+'" />';
         }
     });    
@@ -25,9 +24,11 @@ jq(document).ready(function(){
         document.execCommand('copy');
         jq('#share_link').remove();
     });
-    
+
     jq('html, body').animate({
-        scrollTop: jq("#selector").prev().offset().top
+        scrollTop: jq("#navGroup").prev().offset().top
       }, 1000)
 
 });
+
+

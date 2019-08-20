@@ -84,16 +84,16 @@
                             <span class="soustitreCompet"><br>{$arrayCompetition[i].Soustitre2}</span>
                         {/if}
                         <div class='pull-right'>
-                            {if $arrayCompetition[i].Statut != 'ON' or $arrayEquipe_publi[$codetemp][0].Code_typeclt != 'CP'}
-                                <a class="btn btn-default" href='kpclassement.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Deroulement#}...</a>
+                            {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
+                                <a class="btn btn-default" href='kpdetails.php?Saison={$idSaison}&event=0&Group={$codeCompetGroup}&Compet={$idCompet}&Journee={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
+                            {else}
+                                <a class="btn btn-default" href='kpdetails.php?Saison={$idSaison}&event=0&Group={$codeCompetGroup}&Compet={$idCompet}&typ=CP'>{#Infos#}</a>
                             {/if}
                             {if $arrayEquipe_publi[$codetemp][0].existMatch == 1}
-                               <a class="btn btn-default" href='kpmatchs.php?Saison={$idSaison}&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Matchs#}...</a>
+                               <a class="btn btn-default" href='kpmatchs.php?Saison={$idSaison}&event=0&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Matchs#}</a>
                             {/if}
-                            {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
-                                <a class="btn btn-default" href='kpdetails.php?Compet={$idCompet}&Group={$codeCompetGroup}&Saison={$idSaison}&Journee={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
-                            {else}
-                                <a class="btn btn-default" href='kpdetails.php?Compet={$idCompet}&Group={$codeCompetGroup}&Saison={$idSaison}&typ=CP'>{#Infos#}</a>
+                            {if $arrayCompetition[i].Statut != 'ON' or $arrayEquipe_publi[$codetemp][0].Code_typeclt != 'CP'}
+                                <a class="btn btn-default" href='kpchart.php?Saison={$idSaison}&event=0&Group={$codeCompetGroup}&Compet={$idCompet}'>{#Deroulement#}</a>
                             {/if}
                         </div>
 

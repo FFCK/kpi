@@ -1,4 +1,5 @@
-{include file='frame_navgroup.tpl'}
+{include file='kpnavgroup.tpl'}
+        
 <div class="container">
     {if $recordCompetition.Code_typeclt == 'CP'}
         {assign var='idJournee' value=$arrayListJournees[0]}
@@ -42,29 +43,29 @@
                         </thead>
                         <tbody>
                             {if $arrayJournees[$idJournee].Actif == 1}
-                                {section name=j loop=$arrayEquipe_journee_publi[$idJournee]}
-                                    <tr>
-                                        <td>
-                                            {$arrayEquipe_journee_publi[$idJournee][j].Clt}
-                                            {if $arrayEquipe_journee_publi[$idJournee][j].logo != ''}
-                                                <img class="img2 pull-right" width="30" src="{$arrayEquipe_journee_publi[$idJournee][j].logo}" alt="{$arrayEquipe_journee_publi[$idJournee][j].club}" />
-                                            {/if}
+                            {section name=j loop=$arrayEquipe_journee_publi[$idJournee]}
+                                <tr>
+                                    <td>
+                                        {$arrayEquipe_journee_publi[$idJournee][j].Clt}
+                                        {if $arrayEquipe_journee_publi[$idJournee][j].logo != ''}
+                                            <img class="img2 pull-right" width="30" src="{$arrayEquipe_journee_publi[$idJournee][j].logo}" alt="{$arrayEquipe_journee_publi[$idJournee][j].club}" />
+                                        {/if}
 
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-xs btn-default equipe">{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
-                                        </td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Pts/100}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].J}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].G}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].N}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].P}</td>
-    {*                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].F}</td>*}
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Plus}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Moins}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Diff}</td>
-                                    </tr>
-                                {/section}
+                                    </td>
+                                    <td class="cliquableNomEquipe">
+                                        <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayEquipe_journee_publi[$idJournee][j].Numero}" title="{#Palmares#}">{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
+                                    </td>
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].Pts/100}</td>
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].J}</td>
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].G}</td>
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].N}</td>
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].P}</td>
+{*                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].F}</td>*}
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].Plus}</td>
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].Moins}</td>
+                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].Diff}</td>
+                                </tr>
+                            {/section}
                             {else}
                                 {if $arrayEquipes[$idJournee]}
                                     {foreach from=$arrayEquipes[$idJournee] key=myId item=j}
@@ -113,30 +114,30 @@
                         <div class="row cliquableNomEquipe">
                             {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-primary equipe">{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-primary score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-primary" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {elseif $arrayMatchs[$idJournee][j].ScoreA < $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-primary score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-primary equipe">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                    <a class="btn btn-xs btn-primary" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {else}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {/if}
                         </div>
@@ -152,36 +153,37 @@
                     <div class="page-header">
                         <h4>
                             {$arrayJournee[i].Lieu} ({$arrayJournee[i].Departement}) {$arrayJournee[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayJournee[i].Date_fin|date_format:'%d/%m/%Y'}
+                            <a class="btn btn-xs btn-default pull-right" href="kpdetails.php?Saison={$Saison}&Group={$recordCompetition.Code_ref}&Compet={$codeCompet}&typ={$recordCompetition.Code_typeclt}&J={$arrayJournee[i].Id_journee}" title="{#Infos#}">{#Infos#}</a>
                         </h4>
                     </div>
                     {section name=j loop=$arrayMatchs[$idJournee]}
                         <div class="col-md-4 col-sm-6 col-xs-12">
                             {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-primary" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {elseif $arrayMatchs[$idJournee][j].ScoreA < $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-primary" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {else}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}" title="{#Palmares#}">{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {/if}
                         </div>
@@ -191,7 +193,3 @@
         
     {/if}
 </div>
-{if $voie}
-    <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
-    <script type="text/javascript">SetVoie({$voie});</script>
-{/if}

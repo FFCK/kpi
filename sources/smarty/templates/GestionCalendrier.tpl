@@ -22,7 +22,7 @@
 								{/section}
 						    </select>
 						</td>
-						<td colspan=2>
+						<td colspan=3>
 							<label for="competition">{#Competition#} :</label>
 							<select name="competition" id="competition" onChange="changeCompetition();">
                                 {section name=i loop=$arrayCompetition}
@@ -78,13 +78,25 @@
 						    </select>
 						</td>
 						<td>
-							<a href="GestionJournee.php?idJournee=*"><img align="absbottom" height="20" src="../img/b_match.png" title="{#Voir_tous_les_matchs#}"> {#Voir_tous_les_matchs#}</a>
+							<a href="GestionJournee.php?idJournee=*">
+                                <img align="absbottom" height="20" src="../img/b_match.png" title="{#Voir_tous_les_matchs#}">
+                                {#Voir_tous_les_matchs#}
+                            </a>
 						</td>
 						{if $profile <= 4 && $AuthModif == 'O'}
 							<td>
-								<a href="#" onclick="ParamJournee(0);"><img align="bottom" height="20" src="../img/glyphicons-191-plus-sign.png" title="{#Ajouter_une_journee#}"> {#Ajouter_une_journee#}</a></td>
-							</td>
+								<a href="#" onclick="ParamJournee(0);">
+                                    <img align="bottom" height="20" src="../img/glyphicons-191-plus-sign.png" title="{#Ajouter_une_journee#}">
+                                    {#Ajouter_une_journee#}
+                                </a>
+                            </td>
 						{/if}
+						<td>
+							<a href="GestionSchema.php" target="_blank">
+                                <img align="absbottom" height="20" src="../img/typeE.png" title="{#Schema#}">
+                                {#Schema#}
+                            </a>
+						</td>
 					</tr>
 				</table>
 			</div>

@@ -72,7 +72,7 @@ class PdfListeMatchs extends MyPage
 		$orderMatchs = utyGetSession('orderMatchs', 'Order By a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $titreEvenementCompet = '';
 
-        if($idEvenement != -1) {
+        if($idEvenement > 0) {
 			$lstJournee = [];
 			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$idEvenement;
 			$result = $myBdd->Query($sql);
@@ -137,7 +137,7 @@ class PdfListeMatchs extends MyPage
 		}
 		$Oldrupture = "";
 		// Chargement des infos de l'évènement ou de la compétition
-		if ($idEvenement != -1) {
+		if ($idEvenement > 0) {
 			$libelleEvenement = $myBdd->GetEvenementLibelle($idEvenement);
 			$titreEvenementCompet = 'Event : '.$libelleEvenement;
 			$arrayCompetition = $myBdd->GetCompetition($lastCompetEvt, $codeSaison);

@@ -2,7 +2,7 @@
     <div class="container-fluid categorie mb5">
         <div class="col-md-12">
             <a class="btn {if $page == 'matchs'}btn-primary{else}btn-default actif{/if}"
-                href="kpmatchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_matchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
                 {#Matchs#}
             </a>
             <a class="btn {if $page == 'chart'}btn-primary{else}btn-default actif{/if}"
@@ -22,6 +22,25 @@
                     {#Stats#}
             </a>
             <div class="pull-right">
+                {if $page == 'matchs'}
+                    {if $next}
+                        <a class="btn btn-primary actif" 
+                           href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet2}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
+                            {#Prochains_matchs#}
+                        </a>
+                    {else}
+                        <a class="btn btn-default actif" 
+                           href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet2}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
+                            {#Prochains_matchs#}
+                        </a>
+                    {/if}
+                    {if $arrayNavGroup}
+                        <a class="btn {if '*' == $codeCompet}btn-primary{else}btn-default actif{/if}" 
+                           href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet=*&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1">
+                            {#Tous#}
+                        </a>
+                    {/if}
+                {/if}
                 {section name=i loop=$arrayNavGroup}
                     {if $arrayNavGroup[i].Code == $codeCompet}
                         <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>

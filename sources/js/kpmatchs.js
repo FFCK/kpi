@@ -231,14 +231,16 @@ jq(document).ready(function(){
     });    
 
     jq('#share_btn').click(function(){
-        toCopy = jq(this).attr('data-link');
-        jq('#selector').prepend('<div class="alert alert-info alert-dismissible" role="alert" id="share_alert">'
+        toCopy = 'https://www.kayak-polo.info/' + jq('#btnkpmatch').attr('href');
+        jq('#share_alert').remove();
+        jq('#navTitle').after('<div class="alert alert-info alert-dismissible" role="alert" id="share_alert">'
                 + ' <button type="button" class="close" data-dismiss="alert" aria-label="Close">'
                 + '    <span aria-hidden="true">&times;</span>'
-                + ' </button><span id="share_link">' + toCopy + '</span>'
+                + ' </button><span>' + toCopy + '</span><input type="text" id="share_link" value="' + toCopy + '">'
                 + '</div>');
         jq('#share_link').select();
         document.execCommand('copy');
+        jq('#share_link').remove();
     });
 
     jq('#selects_toggle').click(function(e){
@@ -254,9 +256,18 @@ jq(document).ready(function(){
     if(typeof(jq('#Compet').val()) != 'undefined' && jq('#Compet').val() != '*') {
         subtitle += ' (' + jq('#Compet option:selected').html() + ')';
     }
-    jq('#selects_toggle:visible').click();
+    if(jq('#event').val() > 0) {
+        subtitle = jq('#Saison').val() + ' - ' + jq('#event option:selected').html();
+    }
+    
+//    jq('#selects_toggle:visible').click();
     jq('#subtitle label').html(subtitle);
     jq('#subtitle').removeClass('hidden-xs');
+    
+    jq('html, body').animate({
+        scrollTop: jq("#navGroup").prev().offset().top
+    }, 700)
+
 });
 
 
