@@ -1,52 +1,135 @@
-<div class="container titre"> 
-    <h1 class="col-xs-12">{#Matchs#}
-        <span class="badge pull-right">{$smarty.config.Saison|default:'Saison'} {$Saison}</span>
-    </h1>
+<div class="container saison">
+    <article class="col-md-12 padTopBottom">
+        <form method="POST" action="kpmatchs.php#containor" name="formJournee" id="formJournee" enctype="multipart/form-data">
+            <input type='hidden' name='Cmd' Value=''/>
+            <input type='hidden' name='ParamCmd' Value=''/>
+            <input type='hidden' name='idEquipeA' Value=''/>
+            <input type='hidden' name='idEquipeB' Value=''/>
+            <input type='hidden' name='Pub' Value=''/>
+            <input type='hidden' name='Verrou' Value=''/>
+            
+            <div class='col-md-1 col-sm-2 col-xs-2 hidden-xs selects'>
+                <label for="Saison">{#Saison#}</label>
+                <select name="Saison" onChange="submit()" id="Saison">
+                    {section name=i loop=$arraySaison} 
+                        <option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $Saison}selected{/if}>{$arraySaison[i].Code}</option>
+                    {/section}
+                </select>
+            </div>
+            <div class='col-md-2 col-sm-4 col-xs-4 hidden-xs selects'>
+                <label for="event">{#Evenement#}</label>
+                <select name="event" onChange="submit();" id="event">
+                    <option value="0" {if $event == 0}selected{/if}>--- {#Aucun#} ---</option>
+                    {section name=i loop=$arrayEvents}
+                        <option value="{$arrayEvents[i].Id}" {if $event == $arrayEvents[i].Id}selected{/if}>{$arrayEvents[i].Libelle}</option>
+                    {/section}
+                </select>
+            </div>
+            {if $event <= 0}
+                <div class='col-md-4 col-sm-6 col-xs-5 hidden-xs selects'>
+                    <label for="Group">{#Competition#}</label>
+                    <select name="Group" onChange="submit();" id="Group">
+                        {section name=i loop=$arrayCompetitionGroupe}
+                            {assign var='options' value=$arrayCompetitionGroupe[i].options}
+                            {assign var='label' value=$arrayCompetitionGroupe[i].label}
+                            <optgroup label="{$smarty.config.$label|default:$label}">
+                                {section name=j loop=$options}
+                                    {assign var='optionLabel' value=$options[j].Groupe}
+                                    <option Value="{$options[j].Groupe}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</option>
+                                {/section}
+                            </optgroup>
+                        {/section}
+                    </select>
+                </div>
+            {/if}   
+            <div class="visible-xs col-xs-11 selects bold" id="subtitle"><label></label></div>    
+            <a class="visible-xs-block col-xs-1 pull-right" href="" id="selects_toggle">
+                <img class="img-responsive" src="img/glyphicon-triangle-bottom.png" width="16">
+            </a>
+            {if $event <= 0}
+                {if $arrayCompetition[0].Code_typeclt == 'CHPT'}
+                    <div class='col-md-3 col-sm-6 col-xs-7 hidden-xs selects'>
+                        <label for="J">{#Journee#}</label>
+                        <select name="J" onChange="submit();" id="J">
+                            <option Value="*" Selected>{#Toutes#}</option>
+                            {section name=i loop=$arrayListJournees}
+                                    <option Value="{$arrayListJournees[i].Id}" {if $idSelJournee == $arrayListJournees[i].Id}Selected{/if}>
+                                        {if $lang == 'en'}{$arrayListJournees[i].Date_debut_en}
+                                        {else}{$arrayListJournees[i].Date_debut}
+                                        {/if} - {$arrayListJournees[i].Lieu}
+                                    </option>
+                            {/section}
+                        </select>
+                    </div>
+                {elseif $nbCompet > 1}
+                    <div class='col-md-3 col-sm-6 col-xs-7 hidden-xs selects'>
+                        <label for="Compet">{#Categorie#}</label>
+                        <select name="Compet" onChange="submit();" id="Compet">
+                            <option Value="*" Selected>{#Toutes#}</option>
+                            {section name=i loop=$arrayCompetition}
+                                    <option Value="{$arrayCompetition[i].Code}" {if $codeCompet == $arrayCompetition[i].Code}Selected{/if}>
+                                        {$arrayCompetition[i].Soustitre2|default:$arrayCompetition[i].Libelle}
+                                    </option>
+                            {/section}
+                        </select>
+                    </div>
+                {else}
+                    <div class='col-md-3 col-sm-6 col-xs-7 hidden-xs selects'></div>
+                {/if}
+            {/if}
+            <div class='col-md-2 col-sm-6 col-xs-5 hidden-xs text-right selects'>
+                <div id="fb-root"></div>
+                <div class="fb-like" data-href="https://www.kayak-polo.info/kpmatchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}" 
+                     data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
+                <br>
+                <a class="pdfLink btn btn-default" href="PdfListeMatchs{if $lang=='en'}EN{/if}.php?S={$Saison}&idEvenement={$event}&Group={$codeCompetGroup}&Compet={$codeCompet}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
+            </div>
+        </form>
+    </article>
 </div>
+                
 {if $navGroup}
+    {include file='kpnavgroup.tpl'}
+{else}
     <div class="container-fluid categorie mb5">
         <div class="col-md-12">
             <a class="btn btn-primary">{#Matchs#}</a>
             <a class="btn btn-default actif"
-                href="frame_chart.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_chart.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                 {#Deroulement#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_phases.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_phases.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Phases#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_classement.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_classement.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Classement#}
             </a>
             <a class="btn btn-default actif" 
-                href="frame_stats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
+                href="frame_stats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&Round={$Round}&Css={$Css}&navGroup=1">
                         {#Stats#}
             </a>
             <div class="pull-right">
                 {if $next}
                     <a class="btn btn-primary actif" 
-                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
                         {#Prochains_matchs#}
                     </a>
                 {else}
                     <a class="btn btn-default actif" 
-                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
                         {#Prochains_matchs#}
                     </a>
                 {/if}
                 {if $arrayNavGroup}
-                    {if '*' == $idSelCompet}
-                        <a class="btn btn-primary">{#Tous#}</a>
-                    {else}
-                        <a class="btn btn-default actif" 
-                           href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet=*&Round={$Round}&Css={$Css}&navGroup=1">
-                            {#Tous#}
-                        </a>
-                    {/if}
+                    <a class="btn {if '*' == $codeCompet}btn-primary{else}btn-default actif{/if}" 
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet=*&Round={$Round}&Css={$Css}&navGroup=1">
+                        {#Tous#}
+                    </a>
                 {/if}
                 {section name=i loop=$arrayNavGroup}
-                    {if $arrayNavGroup[i].Code == $idSelCompet}
+                    {if $arrayNavGroup[i].Code == $codeCompet}
                         <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
                     {else}
                         <a class="btn btn-default actif" 
@@ -63,94 +146,7 @@
         </div>
     </div>
 {/if}
-<div class="container" id="selector">
-    <article class="col-md-12 padTopBottom">
-        <form method="POST" action="kpmatchs.php#containor" name="formJournee" id="formJournee" enctype="multipart/form-data">
-            <input type='hidden' name='Cmd' Value=''/>
-            <input type='hidden' name='ParamCmd' Value=''/>
-            <input type='hidden' name='idEquipeA' Value=''/>
-            <input type='hidden' name='idEquipeB' Value=''/>
-            <input type='hidden' name='Pub' Value=''/>
-            <input type='hidden' name='Verrou' Value=''/>
-            
-            <div class='col-md-1 col-sm-4 col-xs-3 selects'>
-                <label for="Saison">{#Saison#}</label>
-                <select name="Saison" onChange="submit()" id="Saison">
-                    {section name=i loop=$arraySaison} 
-                        <Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $Saison}selected{/if}>{$arraySaison[i].Code}</Option>
-                    {/section}
-                </select>
-            </div>
-            <div class='col-md-4 col-sm-8 col-xs-8 selects'>
-                <label for="Group">{#Competition#}</label>
-                <select name="Group" onChange="submit();" id="Group">
-                    {section name=i loop=$arrayCompetitionGroupe}
-                        {assign var='options' value=$arrayCompetitionGroupe[i].options}
-                        {assign var='label' value=$arrayCompetitionGroupe[i].label}
-                        <optgroup label="{$smarty.config.$label|default:$label}">
-                            {section name=j loop=$options}
-                                {assign var='optionLabel' value=$options[j].Groupe}
-                                <Option Value="{$options[j].Groupe}" {$options[j].selected}>{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
-                            {/section}
-                        </optgroup>
-                    {/section}
-                </select>
-            </div>
-            <div class="visible-xs col-xs-11 selects bold" id="subtitle"><label></label></div>    
-            <a class="visible-xs-block pull-right" href="" id="selects_toggle">
-                <img class="img-responsive" src="img/glyphicon-triangle-bottom.png" width="16">
-            </a>
-            {if $arrayCompetition[0].Code_typeclt == 'CHPT'}
-                <div class='col-md-3 col-sm-6 col-xs-7 selects'>
-                    <label for="J">{#Journee#}</label>
-                    <select name="J" onChange="submit();" id="J">
-                        <Option Value="*" Selected>{#Toutes#}</Option>
-                        {section name=i loop=$arrayListJournees}
-                                <Option Value="{$arrayListJournees[i].Id}" {if $idSelJournee == $arrayListJournees[i].Id}Selected{/if}>{if $lang == 'en'}{$arrayListJournees[i].Date_debut_en}{else}{$arrayListJournees[i].Date_debut}{/if} - {$arrayListJournees[i].Lieu}</Option>
-                        {/section}
-                    </select>
-                </div>
-            {elseif $nbCompet > 1}
-                <div class='col-md-3 col-sm-6 col-xs-7 selects'>
-                    <label for="Compet">{#Categorie#}</label>
-                    <select name="Compet" onChange="submit();" id="Compet">
-                        <Option Value="*" Selected>{#Toutes#}</Option>
-                        {section name=i loop=$arrayCompetition}
-                                <Option Value="{$arrayCompetition[i].Code}" {if $idSelCompet == $arrayCompetition[i].Code}Selected{/if}>{$arrayCompetition[i].Soustitre2|default:$arrayCompetition[i].Libelle}</Option>
-                        {/section}
-                    </select>
-                </div>
-            {else}
-                <div class='col-md-3 col-sm-6 col-xs-7 selects'></div>
-            {/if}
-            <div class='col-md-4 col-sm-6 col-xs-5 text-left selects'>
-                <label>{#Matchs_a_afficher#}</label>
-                <select name="next" onChange="submit();" id="next">
-                    <option value="">{#Tous#}</option>
-                    <option value="next" {if $next == 'next'}selected{/if}>{#Prochains_matchs#} {#seulement#}</option>
-                </select>
-            </div>
-            <div class='col-md-4 col-md-offset-8 col-sm-6 col-sm-offset-6 col-xs-12 text-right selects'>
-                <div class="row">
-                    <div id="fb-root"></div>
-                    <div class="fb-like" data-href="https://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Saison={$sessionSaison}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
-                </div>
-                <div class="row">
-                    {if $arrayCompetition[0].Code_typeclt == 'CHPT' && $arrayListJournees|count > 0}
-                        {if $idSelJournee == '*'}{assign var='selJournee' value=$arrayListJournees[0].Id}{else}{assign var='selJournee' value=$idSelJournee}{/if}
-                        <a class="btn btn-default" href='kpdetails.php?Compet={$codeCompetGroup}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$selJournee}&typ=CHPT'>{#Infos#}</a>
-                    {elseif $nbCompet > 1}
-                        {if $idSelCompet == '*'}{assign var='selCompet' value=$arrayCompetition[0].Code}{else}{assign var='selCompet' value=$idSelCompet}{/if}
-                        <a class="btn btn-default" href='kpdetails.php?Compet={$selCompet}&Group={$codeCompetGroup}&Saison={$Saison}&typ=CP'>{#Infos#}</a>
-                    {/if}
-                    <a class="pdfLink btn btn-default" href="PdfListeMatchs{if $lang=='en'}EN{/if}.php?S={$Saison}&Group={$codeCompetGroup}&Compet={$idSelCompet}&Journee={$idSelJournee}" Target="_blank"><img width="20" src="img/pdf.gif" alt="{#Matchs#} (pdf)" title="{#Matchs#} (pdf)" /></a>
-                    <a class="btn btn-default" href='kpclassements.php?Compet={$idSelCompet}&Group={$codeCompetGroup}&Saison={$Saison}&Journee={$idSelJournee}'>{#Classements#}...</a>
-                    <a class="btn btn-default" title="{#Partager#}" data-link="https://www.kayak-polo.info/kpmatchs.php?Group={$codeCompetGroup}&Compet={$idSelCompet}&Saison={$Saison}&Journee={$idSelJournee}&lang={$lang}" id="share_btn"><img src="img/share.png" width="16"></a>
-                </div>
-            </div>
-        </form>
-    </article>
-</div>
+
 <div class="container-fluid" id="containor">
     <article class="table-responsive col-md-12 padTopBottom">
         <table class='tableau table table-striped table-condensed table-hover display compact' {if is_array($arrayMatchs[0])}id='tableMatchs_{$lang}'{/if}>

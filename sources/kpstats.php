@@ -24,32 +24,64 @@ class Stats extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
 	
-		$nbLignes = utyGetGet('nbLignes', 20);
+		$idSelJournee = utyGetGet('J', $idSelJournee);
+		$this->m_tpl->assign('idSelJournee', $idSelJournee);
+	
+        $event = utyGetGet('event', '0');
+		$this->m_tpl->assign('event', $event);
+        if ($event > 0) {
+            $eventTitle = $myBdd->GetEvenementLibelle($event);
+            $this->m_tpl->assign('eventTitle', $eventTitle);
+        }
+        
+        $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
+        $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+        $this->m_tpl->assign('navGroup', 1);
+
+        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+		$this->m_tpl->assign('group', $group);
+        
+		if ($event > 0 && $codeCompet == '*') {
+            $codeCompet = $arrayNavGroup[0]['Code'];
+            $_SESSION['codeCompet'] = $codeCompet;
+            $this->m_tpl->assign('codeCompet', $codeCompet);
+        }
+
+        $Round = utyGetGet('Round', '*');
+		$this->m_tpl->assign('Round', $Round);
+        $Round = str_replace('*', '%', $Round);
+
+        $nbLignes = utyGetGet('nbLignes', 20);
 
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
 		$this->m_tpl->assign('recordCompetition', $recordCompetition);
         
-        //Logo
-		if($codeCompet != -1)
-		{
-            if($recordCompetition['BandeauLink'] != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE ){
-                $recordCompetition['BandeauLink'] = 'img/logo/' . $recordCompetition['BandeauLink'];
-                if(is_file($recordCompetition['BandeauLink'])) {
-                    $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
-                }
-            } elseif($recordCompetition['BandeauLink'] != '') {
-                $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
-            }
-            if($recordCompetition['LogoLink'] != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE ){
-                $recordCompetition['LogoLink'] = 'img/logo/' . $recordCompetition['LogoLink'];
-                if(is_file($recordCompetition['LogoLink'])) {
-                    $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
-                }
-            } elseif($recordCompetition['LogoLink'] != '') {
-                $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
-            }
+        //Logos
+		if($codeCompet != -1) {
+            $this->m_tpl->assign('visuels', utyGetVisuels($recordCompetition));
 		}
+
+//        //Logo
+//		if($codeCompet != -1)
+//		{
+//            if($recordCompetition['BandeauLink'] != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE ){
+//                $recordCompetition['BandeauLink'] = 'img/logo/' . $recordCompetition['BandeauLink'];
+//                if(is_file($recordCompetition['BandeauLink'])) {
+//                    $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
+//                }
+//            } elseif($recordCompetition['BandeauLink'] != '') {
+//                $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
+//            }
+//            if($recordCompetition['LogoLink'] != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE ){
+//                $recordCompetition['LogoLink'] = 'img/logo/' . $recordCompetition['LogoLink'];
+//                if(is_file($recordCompetition['LogoLink'])) {
+//                    $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
+//                }
+//            } elseif($recordCompetition['LogoLink'] != '') {
+//                $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
+//            }
+//		}
 
         $sql  = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, COUNT(*) Buts "
             . "FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f "
@@ -78,6 +110,7 @@ class Stats extends MyPage
                         'Buts' => $row['Buts']));
         }
         $this->m_tpl->assign('arrayButeurs', $arrayButeurs);
+        $this->m_tpl->assign('page', 'stats');
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)
