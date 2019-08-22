@@ -90,6 +90,10 @@ nav li.menu-item.active a { color: #FFFFFF; }
 	padding-bottom: 7.5px;
 }
 
+.padBottom {
+	padding-bottom: 7.5px;
+}
+
 .menu-menuprincipal-container li:hover,
 .menu-nav1-container li:hover
 {
