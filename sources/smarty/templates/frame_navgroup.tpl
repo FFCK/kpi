@@ -59,7 +59,7 @@
         </div>
     </div>
 {else}
-    <div class="container categorie">
+    <div class="container-fluid titre" id="navTitle">
         <h2 class="col-md-12">
             {$recordCompetition.Soustitre2}
         </h2>

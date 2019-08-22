@@ -11,7 +11,7 @@
             {/if}
             {assign var='Etape' value=$arrayJournees[$idJournee].Etape}
             {if $arrayJournees[$idJournee].Type == 'C'}
-                <div class="padTopBottom table-responsive col-md-12 tablePhase">
+                <div class="padBottom table-responsive col-md-12 tablePhase">
                     <h4 class="row text-center">{$arrayJournees[$idJournee].Phase}</h4>
                     <table class='table table-striped table-condensed table-hover'>
                         <thead>
@@ -67,13 +67,10 @@
                     </table>
                 </div>
             {elseif $arrayMatchs[$idJournee]|@count > 0}
-                <div class="padTopBottom table-responsive col-md-12 tableMatch">
+                <div class="padBottom table-responsive col-md-12 tableMatch">
                     <h4 class="row text-center">{$arrayJournees[$idJournee].Phase}</h4>
                     {section name=j loop=$arrayMatchs[$idJournee]}
-                        {if $smarty.section.j.index is odd}
-                            <br>
-                        {/if}
-                        <div class="row cliquableNomEquipe">
+                        <div class="row cliquableNomEquipe {if !$smarty.section.j.last}padBottom{/if}">
                             {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-12 text-right">
                                     <a class="btn btn-xs btn-primary equipe">{$arrayMatchs[$idJournee][j].EquipeA}</a>
@@ -111,7 +108,7 @@
     {else}
         {section name=i loop=$arrayJournee}
             {assign var='idJournee' value=$arrayJournee[i].Id_journee}
-                <article class="padTopBottom table-responsive col-md-12 tableJournee">
+                <article class="padBottom table-responsive col-md-12 tableJournee">
                     <div class="page-header">
                         <h4>
                             {$arrayJournee[i].Lieu} ({$arrayJournee[i].Departement}) {$arrayJournee[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayJournee[i].Date_fin|date_format:'%d/%m/%Y'}
