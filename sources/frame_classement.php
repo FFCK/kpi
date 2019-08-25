@@ -110,7 +110,7 @@ class Classement extends MyPage
         $this->m_tpl->assign('recordCompetition', $recordCompetition);
 		$this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
 		$this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
-		$this->m_tpl->assign('page', 'classement');
+		$this->m_tpl->assign('page', 'Classement');
 
 		// Combo "CHPT" - "CP"		
 		$arrayOrderCompetition = array();

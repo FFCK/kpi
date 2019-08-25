@@ -95,7 +95,7 @@ class Stats extends MyPage
                         'Buts' => $row['Buts']));
         }
         $this->m_tpl->assign('arrayButeurs', $arrayButeurs);
-		$this->m_tpl->assign('page', 'stats');
+		$this->m_tpl->assign('page', 'Stats');
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)
@@ -118,7 +118,7 @@ class Stats extends MyPage
 	// Stats 		
 	function Stats()
 	{			
-	  MyPage::MyPage();
+        MyPage::MyPage();
 		
 		$this->SetTemplate("Stats", "Classements", true);
 		$this->Load();

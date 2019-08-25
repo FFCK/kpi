@@ -27,7 +27,7 @@ jq(document).ready(function(){
     });
     
     jq('html, body').animate({
-        scrollTop: jq("#selector").prev().offset().top
-      }, 1000)
+        scrollTop: jq("#navGroup").prev().offset().top
+    }, 700)
 
 });
