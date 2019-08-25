@@ -61,7 +61,7 @@
                             {/if}
                             <td class="hidden-xs">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeA|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
+                                <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}" target="_blank">
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -99,7 +99,7 @@
                                 
                             </td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeB|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default equipe">
+                                <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}" target="_blank">
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
                             </td>
