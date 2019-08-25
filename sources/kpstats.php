@@ -51,6 +51,8 @@ class Stats extends MyPage
 		$this->m_tpl->assign('Round', $Round);
         $Round = str_replace('*', '%', $Round);
 
+        $this->m_tpl->assign('Css', utyGetGet('Css', ''));
+
         $nbLignes = utyGetGet('nbLignes', 20);
 
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -61,27 +63,6 @@ class Stats extends MyPage
 		if($codeCompet != -1) {
             $this->m_tpl->assign('visuels', utyGetVisuels($recordCompetition));
 		}
-
-//        //Logo
-//		if($codeCompet != -1)
-//		{
-//            if($recordCompetition['BandeauLink'] != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE ){
-//                $recordCompetition['BandeauLink'] = 'img/logo/' . $recordCompetition['BandeauLink'];
-//                if(is_file($recordCompetition['BandeauLink'])) {
-//                    $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
-//                }
-//            } elseif($recordCompetition['BandeauLink'] != '') {
-//                $this->m_tpl->assign('bandeau', $recordCompetition['BandeauLink']);
-//            }
-//            if($recordCompetition['LogoLink'] != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE ){
-//                $recordCompetition['LogoLink'] = 'img/logo/' . $recordCompetition['LogoLink'];
-//                if(is_file($recordCompetition['LogoLink'])) {
-//                    $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
-//                }
-//            } elseif($recordCompetition['LogoLink'] != '') {
-//                $this->m_tpl->assign('logo', $recordCompetition['LogoLink']);
-//            }
-//		}
 
         $sql  = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, COUNT(*) Buts "
             . "FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f "
@@ -110,7 +91,7 @@ class Stats extends MyPage
                         'Buts' => $row['Buts']));
         }
         $this->m_tpl->assign('arrayButeurs', $arrayButeurs);
-        $this->m_tpl->assign('page', 'stats');
+        $this->m_tpl->assign('page', 'Stats');
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)

@@ -51,6 +51,8 @@ class Classement extends MyPage
 		$this->m_tpl->assign('Round', $Round);
         $Round = str_replace('*', '%', $Round);
 
+        $this->m_tpl->assign('Css', utyGetGet('Css', ''));
+
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
@@ -341,7 +343,7 @@ class Classement extends MyPage
 		$this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
 		$this->m_tpl->assign('etapes', $etapes);
         $this->m_tpl->assign('largeur', 12/$etapes);
-		$this->m_tpl->assign('page', 'phases');
+		$this->m_tpl->assign('page', 'Phases');
 
 		// Combo "CHPT" - "CP"		
 		$arrayOrderCompetition = array();

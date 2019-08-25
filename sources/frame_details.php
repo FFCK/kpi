@@ -10,26 +10,30 @@ class Details extends MyPage
 	function Load()
 	{
 		$myBdd = new MyBdd();
+
 		$codeCompetGroup = utyGetSession('codeCompetGroup', 'N1H');
 		$codeCompetGroup = utyGetPost('Group', $codeCompetGroup);
 		$codeCompetGroup = utyGetGet('Group', $codeCompetGroup);
-		$this->m_tpl->assign('codeCompetGroup', $codeCompetGroup);
+//		$this->m_tpl->assign('codeCompetGroup', $codeCompetGroup);
+		$this->m_tpl->assign('group', $codeCompetGroup);
         if ((!isset($_SESSION['codeCompetGroup']) or $codeCompetGroup != $_SESSION['codeCompetGroup']) 
                 and utyGetGet('Compet', '*') == '*') {
             $_GET['J'] = '*';
             $_GET['Compet'] = '*';
         }
 		$_SESSION['codeCompetGroup'] = $codeCompetGroup;
-
+		
+		$codeCompet = utyGetSession('codeCompet', 'N1H');
+		$codeCompet = utyGetPost('codeCompet', $codeCompet);
+		$codeCompet = utyGetGet('Compet', $codeCompet);
+		$_SESSION['codeCompet'] = $codeCompet;
+		$this->m_tpl->assign('codeCompet', $codeCompet);
+			
 		$codeSaison = utyGetSaison();
-		$codeSaison = utyGetPost('Saison', $codeSaison);
+		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
-        if($codeSaison != $_SESSION['Saison'] and utyGetGet('Compet', '*') == '*'){
-            $_GET['J'] = '*';
-            $_GET['Compet'] = '*';
-        }
-		$this->m_tpl->assign('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
+		$this->m_tpl->assign('Saison', $codeSaison);
         
 		$idSelJournee = utyGetSession('idSelJournee', '*');
 		$idSelJournee = utyGetPost('J', $idSelJournee);
@@ -40,12 +44,6 @@ class Details extends MyPage
         $Round = utyGetGet('Round', '*');
 		$this->m_tpl->assign('Round', $Round);
 
-		$codeCompet = utyGetSession('idSelCompet', '*');
-		$codeCompet = utyGetPost('Compet', $codeCompet);
-		$codeCompet = utyGetGet('Compet', $codeCompet);
-		$_SESSION['idSelCompet'] = $codeCompet;
-		$this->m_tpl->assign('codeCompet', $codeCompet);
-        
 		$filtreJour = utyGetGet('filtreJour', '');
 		$_SESSION['filtreJour'] = $filtreJour;
 		$this->m_tpl->assign('filtreJour', $filtreJour);
@@ -74,9 +72,11 @@ class Details extends MyPage
         }
 		$_SESSION['event'] = $event;
         
-        $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-        $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-        $this->m_tpl->assign('navGroup', 1);
+        if (utyGetGet('navGroup', false)) {
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
+            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+            $this->m_tpl->assign('navGroup', 1);
+        }
 
         if($codeCompet == '*' || count($arrayNavGroup) == 1) {
             $codeCompet = $arrayNavGroup[0]['Code'];
@@ -267,7 +267,7 @@ class Details extends MyPage
                     . "AND c.Publication = 'O' "
                     . "AND c.Code_ref = '$codeCompetGroup' "
                     . "GROUP BY c.Code "
-                    . "ORDER BY c.Code_niveau, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code ";	 
+                    . "ORDER BY c.Code_niveau, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code ";
             $arrayListJournees = array();
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
@@ -355,7 +355,7 @@ class Details extends MyPage
 
 	function Details()
 	{			
-	  MyPage::MyPage();
+        MyPage::MyPage();
 		
 		$alertMessage = '';
 		
@@ -372,10 +372,20 @@ class Details extends MyPage
 			}
 		}
 
-		$this->SetTemplate("Details", "Calendrier", true);
+		$this->SetTemplate("Details", "Matchs", true);
 		$this->Load();
-		$this->m_tpl->assign('AlertMessage', $alertMessage);
-		$this->DisplayTemplateNew('kpdetails');
+        
+		// COSANDCO : Gestion Param Voie ...
+		if (isset($_GET['voie']))
+		{
+			$voie = (int) $_GET['voie'];
+			if ($voie > 0)
+			{
+                $this->m_tpl->assign('voie', $voie);
+			}
+		}        
+
+		$this->DisplayTemplateFrame('frame_details');
 	}
 }		  	
 
