@@ -8685,3 +8685,9 @@ table a.report {
 .mb5 {
     margin-bottom: 5px;
 }
+
+.article {
+    background-color: #fff;
+    padding: 0px;
+    margin: 0px 7.5px 7.5px 7.5px;
+}

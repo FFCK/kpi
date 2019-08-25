@@ -1,5 +1,5 @@
 {if $visuels.bandeau or $visuels.logo or $recordCompetition.Web}
-    <div class="container logo_lien">
+    <div class="container logo_lien visible-lg visible-md">
         <div class="padTopBottom table-responsive col-md-12">
             <div class="text-center">
                 {if $recordCompetition.Web}
@@ -39,31 +39,31 @@
 </div>
 {*<a class="btn btn-default" title="{#Partager#}" data-link="https://www.kayak-polo.info/kpphases.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}" id="share_btn"><img src="img/share.png" width="16"></a>*}
 
-<div class="container-fluid" id="navGroup">
+<div class="container-fluid visible-lg" id="navGroup">
     <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-12{else} col-md-12{/if} tableClassement">
         <div class='pull-left'>
-            <a class="btn {if $page == 'matchs'}btn-primary{else}btn-default{/if} btn-navigation" id="btnkpmatch" href='kpmatchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}'>{#Matchs#}</a>
+            <a class="btn {if $page == 'Matchs'}btn-primary{else}btn-default{/if} btn-navigation" id="btnkpmatch" href='kpmatchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Matchs#}</a>
             {if $recordCompetition.Code_typeclt == 'CHPT'}
-                <a class="btn {if $page == 'details'}btn-primary{else}btn-default{/if}" href='kpdetails.php?lang={$lang}&event={$event}&Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&J={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
+                <a class="btn {if $page == 'Infos'}btn-primary{else}btn-default{/if}" href='kpdetails.php?lang={$lang}&event={$event}&Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&J={$idSelJournee}&typ=CHPT&Round={$Round}&Css={$Css}&navGroup=1'>{#Infos#}</a>
             {else}
-                <a class="btn {if $page == 'details'}btn-primary{else}btn-default{/if}" href='kpdetails.php?lang={$lang}&event={$event}&Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&J={$idSelJournee}&typ=CP'>{#Infos#}</a>
+                <a class="btn {if $page == 'Infos'}btn-primary{else}btn-default{/if}" href='kpdetails.php?lang={$lang}&event={$event}&Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&J={$idSelJournee}&typ=CP&Round={$Round}&Css={$Css}&navGroup=1'>{#Infos#}</a>
             {/if}
-            <a class="btn {if $page == 'chart'}btn-primary{else}btn-default{/if} btn-navigation" href='kpchart.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}'>{#Deroulement#}</a>
-            <a class="btn {if $page == 'phases'}btn-primary{else}btn-default{/if} btn-navigation" href='kpphases.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}'>{#Phases#}</a>
-            <a class="btn {if $page == 'classement'}btn-primary{else}btn-default{/if} btn-navigation" href='kpclassement.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}'>{#Classement#}</a>
-            <a class="btn {if $page == 'stats'}btn-primary{else}btn-default{/if} btn-navigation" href='kpstats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}'>{#Stats#}</a>
+            <a class="btn {if $page == 'Deroulement'}btn-primary{else}btn-default{/if} btn-navigation" href='kpchart.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Deroulement#}</a>
+            <a class="btn {if $page == 'Phases'}btn-primary{else}btn-default{/if} btn-navigation" href='kpphases.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Phases#}</a>
+            <a class="btn {if $page == 'Classement'}btn-primary{else}btn-default{/if} btn-navigation" href='kpclassement.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Classement#}</a>
+            <a class="btn {if $page == 'Stats'}btn-primary{else}btn-default{/if} btn-navigation" href='kpstats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Stats#}</a>
         </div>
-        
+
         <div class="pull-right">
-            {if $page == 'matchs'}
+            {if $page == 'Matchs'}
                 {if $next}
                     <a class="btn btn-primary actif" 
-                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
                         {#Prochains_matchs#}
                     </a>
                 {else}
                     <a class="btn btn-default actif" 
-                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet2}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
                         {#Prochains_matchs#}
                     </a>
                 {/if}
@@ -80,7 +80,7 @@
                     <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
                 {else}
                     <a class="btn btn-default actif" 
-                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$arrayNavGroup[i].Code_ref}&Compet={$arrayNavGroup[i].Code}&J={$idSelJournee}">
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$arrayNavGroup[i].Code_ref}&Compet={$arrayNavGroup[i].Code}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1">
                         {$arrayNavGroup[i].Soustitre2}
                     </a>
                 {/if}
@@ -91,4 +91,74 @@
             {/section}
         </div>
     </article>
+</div>
+
+<div class="container-fluid article hidden-lg">
+    <ul class="nav nav-pills">
+        <li role="presentation" class="dropdown">
+            <a id="drop5" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <b>{$smarty.config.$page}</b> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="drop5">
+                <li class="{if $page == 'Matchs'}active{/if}"><a id="btnkpmatch" href='kpmatchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Matchs#}</a></li>
+                {if $recordCompetition.Code_typeclt == 'CHPT'}
+                    <li class="{if $page == 'Infos'}active{/if}"><a href='kpdetails.php?lang={$lang}&event={$event}&Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&J={$idSelJournee}&typ=CHPT&Round={$Round}&Css={$Css}&navGroup=1'>{#Infos#}</a></li>
+                {else}
+                    <li class="{if $page == 'Infos'}active{/if}"><a href='kpdetails.php?lang={$lang}&event={$event}&Compet={$codeCompet}&Group={$Code_ref}&Saison={$Saison}&J={$idSelJournee}&typ=CP&Round={$Round}&Css={$Css}&navGroup=1'>{#Infos#}</a></li>
+                {/if}
+                <li class="{if $page == 'Deroulement'}active{/if}"><a href='kpchart.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Deroulement#}</a></li>
+                <li class="{if $page == 'Phases'}active{/if}"><a href='kpphases.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Phases#}</a></li>
+                <li class="{if $page == 'Classement'}active{/if}"><a href='kpclassement.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Classement#}</a></li>
+                <li class="{if $page == 'Stats'}active{/if}"><a href='kpstats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Stats#}</a></li>
+            </ul>
+        </li>
+        <li role="presentation" class="dropdown pull-right">
+            <a id="drop5" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                {section name=i loop=$arrayNavGroup}
+                    {if $arrayNavGroup[i].Code == $codeCompet}
+                        <b>{$arrayNavGroup[i].Soustitre2}</b>
+                    {/if}
+                {/section}
+                {if '*' == $codeCompet}
+                    <b>{#Toutes_divisions#}</b>
+                {/if}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="drop5">
+                {if $arrayNavGroup && $page == 'Matchs'}
+                    <li {if '*' == $codeCompet}class="active"{/if}>
+                        <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet=*&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1">
+                        {#Toutes_divisions#}</a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                {/if}
+                {section name=i loop=$arrayNavGroup}
+                    <li {if $arrayNavGroup[i].Code == $codeCompet}class="active"{/if}>
+                        <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$arrayNavGroup[i].Code_ref}&Compet={$arrayNavGroup[i].Code}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1">
+                        {$arrayNavGroup[i].Soustitre2}</a>
+                    </li>
+                {sectionelse}
+                    <a class="btn btn-primary">
+                        {$recordCompetition.Soustitre2}
+                    </a>
+                {/section}
+            </ul>
+        </li>
+        {if $page == 'Matchs'}
+            {if $next}
+                <li role="presentation" class="active pull-right">
+                    <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
+                        <b>{#Prochains_matchs#}</b>
+                    </a>
+                </li>
+            {else}
+                <li role="presentation" class="pull-right">
+                    <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
+                        <b>{#Prochains_matchs#}</b>
+                    </a>
+                </li>
+            {/if}
+        {/if}
+        
+    </ul>
 </div>
