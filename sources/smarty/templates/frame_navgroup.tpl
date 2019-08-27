@@ -5,6 +5,10 @@
                 href="frame_matchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
                     {#Matchs#}
             </a>
+            <a class="btn {if $page == 'Terrains'}btn-primary{else}btn-default actif{/if}"
+                href="frame_terrains.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
+                    {#Terrains#}
+            </a>
             {if $recordCompetition.Code_typeclt == 'CHPT'}
                 <a class="btn {if $page == 'Infos'}btn-primary{else}btn-default{/if}" 
                    href='frame_details.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&typ=CHPT&Round={$Round}&Css={$Css}&navGroup=1&J={$idSelJournee}'>
@@ -45,12 +49,37 @@
                             {#Prochains_matchs#}
                         </a>
                     {/if}
-                    {if $arrayNavGroup}
-                        <a class="btn {if '*' == $codeCompet}btn-primary{else}btn-default actif{/if}" 
-                           href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet=*&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1">
-                            {#Tous#}
+                {/if}
+                
+                {if $page == 'Terrains'}
+                    <span class="dropdown">
+                        <a id="drop4" class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <b>{#Date#}</b> <span class="caret"></span>
                         </a>
-                    {/if}
+                        <ul class="dropdown-menu" aria-labelledby="drop4">
+                            <li {if '' == $filtreJour}class="active"{/if}>
+                                <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&filtreJour=&Css={$Css}&navGroup=1">
+                                {#Tous#}</a>
+                            </li>
+                            {section name=i loop=$arrayJours}
+                                <li {if $arrayJours[i] == $filtreJour}class="active"{/if}>
+                                    <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&filtreJour={$arrayJours[i]}&Css={$Css}&navGroup=1">
+                                    {if $lang == 'fr'}{$arrayJours[i]|date_format:"%d/%m/%Y"}{else}{$arrayJours[i]}{/if}</a>
+                                </li>
+                            {sectionelse}
+                                <a class="btn btn-primary">
+                                    {#Aucune#}
+                                </a>
+                            {/section}
+                        </ul>
+                    </span>
+                {/if}
+                
+                {if ($page == 'Matchs' || $page == 'Terrains') && $arrayNavGroup}
+                    <a class="btn {if '*' == $codeCompet}btn-primary{else}btn-default actif{/if}" 
+                       href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet=*&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1">
+                        {#Tous#}
+                    </a>
                 {/if}
             
                 {section name=i loop=$arrayNavGroup}
@@ -74,11 +103,12 @@
     <div class="container-fluid article hidden-lg">
         <ul class="nav nav-pills">
             <li role="presentation" class="dropdown">
-                <a id="drop5" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a id="drop1" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <b>{$smarty.config.$page}</b> <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="drop5">
+                <ul class="dropdown-menu" aria-labelledby="drop1">
                     <li class="{if $page == 'Matchs'}active{/if}"><a id="btnkpmatch" href="frame_matchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">{#Matchs#}</a></li>
+                    <li class="{if $page == 'Terrains'}active{/if}"><a href="frame_terrains.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">{#Terrains#}</a></li>
                     {if $recordCompetition.Code_typeclt == 'CHPT'}
                         <li class="{if $page == 'Infos'}active{/if}"><a href='frame_details.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&typ=CHPT&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Infos#}</a></li>
                     {else}
@@ -91,7 +121,7 @@
                 </ul>
             </li>
             <li role="presentation" class="dropdown pull-right">
-                <a id="drop5" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <a id="drop2" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     {section name=i loop=$arrayNavGroup}
                         {if $arrayNavGroup[i].Code == $codeCompet}
                             <b>{$arrayNavGroup[i].Soustitre2}</b>
@@ -102,8 +132,8 @@
                     {/if}
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="drop5">
-                    {if $arrayNavGroup && $page == 'Matchs'}
+                <ul class="dropdown-menu" aria-labelledby="drop2">
+                    {if ($page == 'Matchs' || $page == 'Terrains') && $arrayNavGroup}
                         <li {if '*' == $codeCompet}class="active"{/if}>
                             <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet=*&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1">
                             {#Toutes_divisions#}</a>
@@ -122,6 +152,7 @@
                     {/section}
                 </ul>
             </li>
+            
             {if $page == 'Matchs'}
                 {if $next}
                     <li role="presentation" class="active pull-right">
@@ -137,7 +168,30 @@
                     </li>
                 {/if}
             {/if}
-
+            
+            {if $page == 'Terrains'}
+                <li role="presentation" class="dropdown pull-right">
+                    <a id="drop3" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        <b>{#Date#}</b> <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="drop3">
+                        <li {if '' == $filtreJour}class="active"{/if}>
+                            <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&filtreJour=&Css={$Css}&navGroup=1">
+                            {#Tous#}</a>
+                        </li>
+                        {section name=i loop=$arrayJours}
+                            <li {if $arrayJours[i] == $filtreJour}class="active"{/if}>
+                                <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&filtreJour={$arrayJours[i]}&Css={$Css}&navGroup=1">
+                                {if $lang == 'fr'}{$arrayJours[i]|date_format:"%d/%m/%Y"}{else}{$arrayJours[i]}{/if}</a>
+                            </li>
+                        {sectionelse}
+                            <a class="btn btn-primary">
+                                {#Aucune#}
+                            </a>
+                        {/section}
+                    </ul>
+                </li>
+            {/if}
         </ul>
     </div>
 
