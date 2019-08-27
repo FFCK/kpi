@@ -1,6 +1,6 @@
 {include file='frame_navgroup.tpl'}
-<div class="container">
-    {if $recordCompetition.Code_typeclt == 'CP'}
+{if $recordCompetition.Code_typeclt == 'CP'}
+    <div class="container">
         {assign var='idJournee' value=$arrayListJournees[0]}
         {assign var='niveau' value=$arrayJournees[$idJournee].Niveau}
         {assign var='compteur' value=0}
@@ -145,7 +145,9 @@
             {/if}
         {/section}
         </article>
-    {else}
+    </div>
+{else}
+    <div class="container-fluid">
         {section name=i loop=$arrayJournee}
             {assign var='idJournee' value=$arrayJournee[i].Id_journee}
                 <article class="padTopBottom table-responsive col-md-12 tableJournee">
@@ -189,8 +191,8 @@
                 </article>
         {/section}
         
-    {/if}
-</div>
+    </div>
+{/if}
 {if $voie}
     <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
     <script type="text/javascript">SetVoie({$voie});</script>
