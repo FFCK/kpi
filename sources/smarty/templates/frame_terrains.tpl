@@ -1,4 +1,4 @@
-{*{include file='frame_navgroup.tpl'}*}
+{include file='frame_navgroup.tpl'}
 {section name=i loop=$arrayDates}
     {assign var='Date' value=$arrayDates[i].date}
     <div class="section terrains">
