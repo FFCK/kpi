@@ -8691,3 +8691,9 @@ table a.report {
     padding: 0px;
     margin: 0px 7.5px 7.5px 7.5px;
 }
+
+.navbar-custom {
+    margin: 7.5px 0px;
+    padding: 3px 7.5px;
+    min-height: inherit;
+}
