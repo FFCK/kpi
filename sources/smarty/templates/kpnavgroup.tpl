@@ -73,7 +73,9 @@
             {if $page == 'Terrains'}
                 <span class="dropdown">
                     <a id="drop4" class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                        <b>{#Date#}</b> <span class="caret"></span>
+                        <span class="fa fa-calendar"></span>
+                        <b>{#Date#}</b>
+                        <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="drop4">
                         <li {if '' == $filtreJour}class="active"{/if}>
@@ -123,7 +125,9 @@
     <ul class="nav nav-pills">
         <li role="presentation" class="dropdown">
             <a id="drop5" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                <b>{$smarty.config.$page}</b> <span class="caret"></span>
+                <span class="fa fa-bars"></span>
+                <b>{$smarty.config.$page}</b>
+                <span class="caret"></span>
             </a>
             <ul class="dropdown-menu" aria-labelledby="drop5">
                 <li class="{if $page == 'Matchs'}active{/if}"><a id="btnkpmatch" href='kpmatchs.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$Code_ref}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&Css={$Css}&navGroup=1'>{#Matchs#}</a></li>
@@ -191,13 +195,16 @@
         {if $page == 'Terrains'}
             <li role="presentation" class="dropdown pull-right">
                 <a id="drop3" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <b>{#Date#}</b> <span class="caret"></span>
+                    <span class="fa fa-calendar"></span>
+                    <b>{#Date#}</b>
+                    <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="drop3">
                     <li {if '' == $filtreJour}class="active"{/if}>
                         <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&filtreJour=&Css={$Css}&navGroup=1">
                         {#Tous#}</a>
                     </li>
+                    <li role="separator" class="divider"></li>
                     {section name=i loop=$arrayJours}
                         <li {if $arrayJours[i] == $filtreJour}class="active"{/if}>
                             <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$codeCompetGroup}&Compet={$codeCompet}&J={$idSelJournee}&Round={$Round}&filtreJour={$arrayJours[i]}&Css={$Css}&navGroup=1">
