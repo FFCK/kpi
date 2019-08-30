@@ -37,8 +37,8 @@
                     <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
                 </div>
                 {if $schema}
+                    <label>{#Schema#}</label>
                     <hr>
-                    <h4>{#Schema#}</h4>
                     <a href="{$schema}" target="_blank"><img class="img-responsive img-thumbnail" src="{$schema}"></a>
                 {/if}
             </div>
