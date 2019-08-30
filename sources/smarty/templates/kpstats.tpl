@@ -1,9 +1,8 @@
 {include file='kpnavgroup.tpl'}
-
 <div class="container">
-    <article class="table-responsive col-md-8 col-md-offset-2">
+    <article class="padTopBottom table-responsive col-md-8 col-md-offset-2 tableClassement">
         <h4>{#Meilleurs_buteurs#}</h4>
-        <table class='tableau' id='tableStats'>
+        <table class='table' id='tableStats'>
             <thead>
                 <tr class='header'>
                         <th></th>

@@ -49,7 +49,7 @@
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
                         <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}bg-blue{else}btn-info{/if}" 
-                            href="kpdetails.php?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*" role="button">
+                            href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*" role="button">
                             {if $arrayListJournees[i].Titre_actif != 'O' && $arrayListJournees[i].Soustitre2 != ''}
                                 {$arrayListJournees[i].Soustitre} - {$arrayListJournees[i].Soustitre2}
                             {else}
@@ -70,7 +70,7 @@
                 {section name=i loop=$arrayPoule}
                     <div class="col-md-6 {if $arrayPoule[i] == $lastpoule}col-md-offset-3{/if} text-center text-info">
                         {if $arrayPoule[i] != '-'}
-                            <h3>{#Poule#} {$arrayPoule[i]}</h3>
+                            <h4>{#Poule#} {$arrayPoule[i]}</h4>
                         {/if}
                         {assign var='poule' value=$arrayPoule[i]}
                         <table class='table table-striped table-hover'>
@@ -80,7 +80,7 @@
                                         {if $arrayEquipe[$poule][j].logo != ''}
                                             <img class="img2 pull-left" width="28" src="{$arrayEquipe[$poule][j].logo}" alt="{$arrayEquipe[$poule][j].club}" />
                                         {/if}
-                                        <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe[$poule][j].Numero}' title='{#Palmares#}'>{$arrayEquipe[$poule][j].Libelle}</a>
+                                        <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe[$poule][j].Numero}' target="_blank" title='{#Palmares#}'>{$arrayEquipe[$poule][j].Libelle}</a>
                                     </td>
                                 </tr>
                             {/section}
@@ -138,7 +138,7 @@
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
                         <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}bg-blue{else}btn-info{/if}" 
-                           href="kpdetails.php?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}" role="button">
+                           href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}" role="button">
                             {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} à {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
                         </a>
                     </p>
@@ -168,7 +168,7 @@
                                     {if $arrayEquipe[i].logo != ''}
                                         <img class="img2 pull-left" width="28" src="{$arrayEquipe[i].logo}" alt="{$arrayEquipe[i].club}" />
                                     {/if}
-                                    <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe[i].Numero}' title='{#Palmares#}'>{$arrayEquipe[i].Libelle}</a>
+                                    <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe[i].Numero}' target="_blank" title='{#Palmares#}'>{$arrayEquipe[i].Libelle}</a>
                                 </td>
                             </tr>
                         {sectionelse}
