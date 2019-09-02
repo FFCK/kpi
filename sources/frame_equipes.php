@@ -152,12 +152,12 @@ class Equipes extends MyPage
 
 	function Equipes()
 	{			
-	  MyPage::MyPage();
+        MyPage::MyPage();
 		
 		$this->SetTemplate("Equipes", "Equipes", true);
 		$this->Load();
 		//$this->m_tpl->assign('AlertMessage', $alertMessage);
-		$this->DisplayTemplateNew('kpequipes');
+		$this->DisplayTemplateFrame('kpequipes');
 	}
 }		  	
 

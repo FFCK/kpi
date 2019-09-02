@@ -52,7 +52,7 @@
 
                                         </td>
                                         <td>
-                                            <a class="btn btn-xs btn-default equipe">{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
+                                            <a class="btn btn-xs btn-default"{if $arrayEquipe_journee_publi[$idJournee][j].Numero > 0} href="frame_equipes.php?Equipe={$arrayEquipe_journee_publi[$idJournee][j].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
                                         </td>
                                         <td>{$arrayEquipe_journee_publi[$idJournee][j].Pts/100}</td>
                                         <td>{$arrayEquipe_journee_publi[$idJournee][j].J}</td>
@@ -113,30 +113,30 @@
                         <div class="row cliquableNomEquipe">
                             {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-primary equipe">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumA > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-primary score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {elseif $arrayMatchs[$idJournee][j].ScoreA < $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-primary score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-primary equipe">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumB > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {else}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default equipe">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {/if}
                         </div>
@@ -160,30 +160,30 @@
                         <div class="col-md-4 col-sm-6 col-xs-12">
                             {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumA > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {elseif $arrayMatchs[$idJournee][j].ScoreA < $arrayMatchs[$idJournee][j].ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumB > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {else}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
                                     <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="frame_equipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                 </div>
                             {/if}
                         </div>

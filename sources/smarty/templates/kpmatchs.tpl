@@ -205,7 +205,7 @@
                             {/if}
                             <td class="hidden-xs">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeA|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
+                                <a class="btn btn-xs btn-default"{if $arrayMatchs[i].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -238,7 +238,7 @@
                                 
                             </td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeB|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default equipe" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}">
+                                <a class="btn btn-xs btn-default"{if $arrayMatchs[i].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -267,9 +267,9 @@
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="btn-group btn-block" role="group">
-                                        <span type="button" class="col-xs-5 text-right" href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}" title="{#Palmares#}">
+                                        <a class="col-xs-5 text-right"{if $arrayMatchs[i].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                             <b class="">{$arrayMatchs[i].EquipeA|default:'&nbsp;'}</b>
-                                        </span>
+                                        </a>
                                         
                                         {if $validation == 'O' && $arrayMatchs[i].ScoreA != '?' && $arrayMatchs[i].ScoreA != '' && $arrayMatchs[i].ScoreB != '?' && $arrayMatchs[i].ScoreB != ''}
                                             <span type="button" class="col-xs-2 label label-success" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank" title="{#Feuille_marque#}">
@@ -283,9 +283,9 @@
                                             <span type="button" class="col-xs-2 statutMatchATT label label-default" title="{#ATT#}">{#ATT#}</span>
                                         {/if}
                                         
-                                        <span type="button" class="col-xs-5 text-left" href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}" title="{#Palmares#}">
+                                        <a class="col-xs-5 text-left"{if $arrayMatchs[i].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                             <b class="">{$arrayMatchs[i].EquipeB|default:'&nbsp;'}</b>
-                                        </span>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-xs-6 text-left">

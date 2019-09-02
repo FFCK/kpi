@@ -48,7 +48,7 @@
                 </div>
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
-                        <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}bg-blue{else}btn-info{/if}" 
+                        <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}btn-primary{else}btn-default{/if}" 
                             href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*&navGroup={$navGroup}" role="button">
                             {if $arrayListJournees[i].Titre_actif != 'O' && $arrayListJournees[i].Soustitre2 != ''}
                                 {$arrayListJournees[i].Soustitre} - {$arrayListJournees[i].Soustitre2}
@@ -80,7 +80,7 @@
                                         {if $arrayEquipe[$poule][j].logo != ''}
                                             <img class="img2 pull-left" width="28" src="{$arrayEquipe[$poule][j].logo}" alt="{$arrayEquipe[$poule][j].club}" />
                                         {/if}
-                                        <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe[$poule][j].Numero}' target="_blank" title='{#Palmares#}'>{$arrayEquipe[$poule][j].Libelle}</a>
+                                        <a class="btn btn-xs btn-default" href='frame_equipes.php?Equipe={$arrayEquipe[$poule][j].Numero}&Compet={$codeCompet}&Css={$Css}' title='{#Palmares#}'>{$arrayEquipe[$poule][j].Libelle}</a>
                                     </td>
                                 </tr>
                             {/section}
@@ -91,7 +91,7 @@
                         <div class="row">
                     {/if}
                 {sectionelse}
-                    <div class="col-md-12 text-center">Information non disponible</div>
+                    <div class="col-md-12 text-center">{#Information_non_disponible#}</div>
                 {/section}
             </div>
         </article>
@@ -137,7 +137,7 @@
                 </div>
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
-                        <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}bg-blue{else}btn-info{/if}" 
+                        <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}btn-primary{else}btn-default{/if}" 
                            href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}" role="button">
                             {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} à {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
                         </a>
@@ -168,11 +168,11 @@
                                     {if $arrayEquipe[i].logo != ''}
                                         <img class="img2 pull-left" width="28" src="{$arrayEquipe[i].logo}" alt="{$arrayEquipe[i].club}" />
                                     {/if}
-                                    <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe[i].Numero}' target="_blank" title='{#Palmares#}'>{$arrayEquipe[i].Libelle}</a>
+                                    <a class="btn btn-xs btn-default" href='frame_equipes.php?Equipe={$arrayEquipe[i].Numero}&Compet={$codeCompet}&Css={$Css}' title='{#Palmares#}'>{$arrayEquipe[i].Libelle}</a>
                                 </td>
                             </tr>
                         {sectionelse}
-                            <div class="col-md-12 text-center">Information non disponible</div>
+                            <div class="col-md-12 text-center">{#Information_non_disponible#}</div>
                         {/section}
                     </table>
                 </div>
