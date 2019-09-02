@@ -15,8 +15,10 @@
                 {section name=i loop=$arrayButeurs}
                     <tr class='{cycle values="impair,pair"}'>
                         <td class="text-center">{$smarty.section.i.iteration}</td>
-                        <td>{$arrayButeurs[i].Nom} {$arrayButeurs[i].Prenom} #{$arrayButeurs[i].Numero}</td>
-                        <td>{$arrayButeurs[i].Equipe}</td>
+                        <td>{$arrayButeurs[i].Nom|upper} {$arrayButeurs[i].Prenom|upper} <i>#{$arrayButeurs[i].Numero}</i></td>
+                        <td>
+                            <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayButeurs[i].NumEquipe}&Compet={$codeCompet}&Css={$Css}' title='{#Palmares#}'>{$arrayButeurs[i].Equipe}</a>
+                        </td>
                         <td class="text-center">{$arrayButeurs[i].Buts}</td>
                     </tr>
                 {/section}

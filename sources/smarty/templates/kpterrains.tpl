@@ -46,15 +46,15 @@
                                         <td class="cat" data-cat="{$Match1.Code_competition}">{$Match1.Code_competition}</td>
                                         <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                         <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default equipe">
+                                            <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="kpequipes.php?Equipe={$Match1.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                 {$Match1.EquipeA|default:'&nbsp;'}
                                             </a>
                                         </td>
                                         <td class="text-center"><span title="{$Match1.Id}">
                                             {if $validation1 == 'O' && $Match1.ScoreA != '?' && $Match1.ScoreA != '' && $Match1.ScoreB != '?' && $Match1.ScoreB != ''}
-                                                <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                       {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                </button>
+                                                <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match1.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                </a>
                                             {elseif $statut1 == 'ON' && $validation1 != 'O'}
                                                 <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                        {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -71,7 +71,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default equipe">
+                                            <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="kpequipes.php?Equipe={$Match1.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                 {$Match1.EquipeB|default:'&nbsp;'}
                                             </a>
                                         </td>
@@ -141,15 +141,15 @@
                                         <td class="cat" data-cat="{$Match1.Code_competition}">{$Match1.Code_competition}</td>
                                         <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                         <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default equipe">
+                                            <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="kpequipes.php?Equipe={$Match1.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                 {$Match1.EquipeA|default:'&nbsp;'}
                                             </a>
                                         </td>
                                         <td class="text-center"><span title="{$Match1.Id}">
                                             {if $validation1 == 'O' && $Match1.ScoreA != '?' && $Match1.ScoreA != '' && $Match1.ScoreB != '?' && $Match1.ScoreB != ''}
-                                                <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                       {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                </button>
+                                                <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match1.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                </a>
                                             {elseif $statut1 == 'ON' && $validation1 != 'O'}
                                                 <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                        {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -166,7 +166,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default equipe">
+                                            <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="kpequipes.php?Equipe={$Match1.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                 {$Match1.EquipeB|default:'&nbsp;'}
                                             </a>
                                         </td>
@@ -183,15 +183,15 @@
                                         <td class="cat" data-cat="{$Match2.Code_competition}">{$Match2.Code_competition}</td>
                                         <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                         <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default equipe">
+                                            <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="kpequipes.php?Equipe={$Match2.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                 {$Match2.EquipeA|default:'&nbsp;'}
                                             </a>
                                         </td>
                                         <td class="text-center"><span  title="{$Match2.Id}">
                                             {if $validation2 == 'O' && $Match2.ScoreA != '?' && $Match2.ScoreA != '' && $Match2.ScoreB != '?' && $Match2.ScoreB != ''}
-                                                <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                       {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                </button>
+                                                <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match2.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                    {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                </a>
                                             {elseif $statut2 == 'ON' && $validation2 != 'O'}
                                                 <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                        {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -208,7 +208,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default equipe">
+                                            <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="kpequipes.php?Equipe={$Match2.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                 {$Match2.EquipeB|default:'&nbsp;'}
                                             </a>
                                         </td>
@@ -270,15 +270,15 @@
                                             <td class="cat" data-cat="{$Match1.Code_competition}">{$Match1.Code_competition}</td>
                                             <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="kpequipes.php?Equipe={$Match1.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
                                             <td class="text-center"><span  title="{$Match1.Id}">
                                                 {if $validation1 == 'O' && $Match1.ScoreA != '?' && $Match1.ScoreA != '' && $Match1.ScoreB != '?' && $Match1.ScoreB != ''}
-                                                    <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                           {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                    </button>
+                                                    <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match1.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                        {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                    </a>
                                                 {elseif $statut1 == 'ON' && $validation1 != 'O'}
                                                     <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                            {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -295,7 +295,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="kpequipes.php?Equipe={$Match1.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -312,15 +312,15 @@
                                             <td class="cat" data-cat="{$Match2.Code_competition}">{$Match2.Code_competition}</td>
                                             <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="kpequipes.php?Equipe={$Match2.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
                                             <td class="text-center"><span  title="{$Match2.Id}">
                                                 {if $validation2 == 'O' && $Match2.ScoreA != '?' && $Match2.ScoreA != '' && $Match2.ScoreB != '?' && $Match2.ScoreB != ''}
-                                                    <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                           {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                    </button>
+                                                    <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match2.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                        {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                    </a>
                                                 {elseif $statut2 == 'ON' && $validation2 != 'O'}
                                                     <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                            {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -337,7 +337,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="kpequipes.php?Equipe={$Match2.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -398,15 +398,15 @@
                                             <td class="cat" data-cat="{$Match1.Code_competition}">{$Match1.Code_competition}</td>
                                             <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="kpequipes.php?Equipe={$Match1.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
                                             <td class="text-center"><span  title="{$Match1.Id}">
                                                 {if $validation1 == 'O' && $Match1.ScoreA != '?' && $Match1.ScoreA != '' && $Match1.ScoreB != '?' && $Match1.ScoreB != ''}
-                                                    <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                           {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                    </button>
+                                                    <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match1.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                        {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                    </a>
                                                 {elseif $statut1 == 'ON' && $validation1 != 'O'}
                                                     <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                            {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -423,7 +423,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="kpequipes.php?Equipe={$Match1.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -440,15 +440,15 @@
                                             <td class="cat" data-cat="{$Match2.Code_competition}">{$Match2.Code_competition}</td>
                                             <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="kpequipes.php?Equipe={$Match2.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
                                             <td class="text-center"><span  title="{$Match2.Id}">
                                                 {if $validation2 == 'O' && $Match2.ScoreA != '?' && $Match2.ScoreA != '' && $Match2.ScoreB != '?' && $Match2.ScoreB != ''}
-                                                    <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                           {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                    </button>
+                                                    <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match2.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                        {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                    </a>
                                                 {elseif $statut2 == 'ON' && $validation2 != 'O'}
                                                     <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                            {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -465,7 +465,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="kpequipes.php?Equipe={$Match2.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -526,15 +526,15 @@
                                             <td class="cat" data-cat="{$Match1.Code_competition}">{$Match1.Code_competition}</td>
                                             <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="kpequipes.php?Equipe={$Match1.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
                                             <td class="text-center"><span  title="{$Match1.Id}">
                                                 {if $validation1 == 'O' && $Match1.ScoreA != '?' && $Match1.ScoreA != '' && $Match1.ScoreB != '?' && $Match1.ScoreB != ''}
-                                                    <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                           {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                    </button>
+                                                    <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match1.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                        {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                    </a>
                                                 {elseif $statut1 == 'ON' && $validation1 != 'O'}
                                                     <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                            {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -551,7 +551,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="kpequipes.php?Equipe={$Match1.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -568,15 +568,15 @@
                                             <td class="cat" data-cat="{$Match2.Code_competition}">{$Match2.Code_competition}</td>
                                             <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="kpequipes.php?Equipe={$Match2.NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
                                             <td class="text-center"><span  title="{$Match2.Id}">
                                                 {if $validation2 == 'O' && $Match2.ScoreA != '?' && $Match2.ScoreA != '' && $Match2.ScoreB != '?' && $Match2.ScoreB != ''}
-                                                    <button type="button" class="btn btn-success btn-xs" title="{#END#}">
-                                                           {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                    </button>
+                                                    <a class="btn btn-success btn-xs" href="PdfMatchMulti.php?listMatch={$Match2.Id}" target="_blank" title="{#END#} - {#Feuille_marque#}">
+                                                        {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                    </a>
                                                 {elseif $statut2 == 'ON' && $validation2 != 'O'}
                                                     <button type="button" class="btn btn-warning btn-xs scoreProvisoire" title="{#scoreProvisoire#}">
                                                            {$Match2.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$Match2.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
@@ -593,7 +593,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default equipe">
+                                                <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="kpequipes.php?Equipe={$Match2.NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>

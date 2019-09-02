@@ -384,10 +384,15 @@ html>body #nav a {width: auto;}    /* fixes IE6 hack */
 	text-align: center;
 }
 
-.cliquableNomEquipe {    color: #44619B;
+.cliquableNomEquipe {    
+    color: #44619B;
     font-weight: bold;} /*font-weight: bold;*/
-.cliquableNomEquipe a:link, a:active, a:visited {text-decoration: none; color: #44619B;font-weight: bold;}
+
+.cliquableNomEquipe a:link, .cliquableNomEquipe a:active, .cliquableNomEquipe a:visited {
+    text-decoration: none; color: #44619B;font-weight: bold;
+}
 .cliquableNomEquipe a:hover {text-decoration: underline; color: #44619B;}
+.cliquableNomEquipe.btn-primary, .cliquableNomEquipe.btn-primary
 .cliquableScore {font-weight: bold; color: #44619B;}
 .cliquableScore a:link, a:active, a:visited {text-decoration: none; color: #44619B; font-weight: bold; }
 .cliquableScore a:hover {text-decoration: underline; color: #44619B;}

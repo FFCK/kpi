@@ -109,7 +109,11 @@
                                                 <img class="img2 pull-right" width="30" src="{$arrayEquipe_publi[i].logo}" alt="{$arrayEquipe_publi[i].club}" />
                                             {/if}
                                         </td>
-                                        <td class="cliquableNomEquipe"><a class="btn btn-xs btn-default equipe">{$arrayEquipe_publi[i].Libelle}</a></td>
+                                        <td class="cliquableNomEquipe">
+                                            <a class="btn btn-xs btn-default" href="frame_equipes.php?Equipe={$arrayEquipe_publi[i].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}">
+                                                {$arrayEquipe_publi[i].Libelle}
+                                            </a>
+                                        </td>
                                         <td>{$arrayEquipe_publi[i].Pts_publi/100}</td>
                                         <td>{$arrayEquipe_publi[i].J_publi}</td>
                                         <td>{$arrayEquipe_publi[i].G_publi}</td>
@@ -127,7 +131,9 @@
                                             {if $arrayEquipe_publi[i].logo != ''}
                                                 <img class="img2 pull-left" width="30" src="{$arrayEquipe_publi[i].logo}" alt="{$arrayEquipe_publi[i].club}" />
                                             {/if}
-                                            <a class="btn btn-xs btn-default equipe">{$arrayEquipe_publi[i].Libelle}</a>
+                                            <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayEquipe_publi[i].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}">
+                                                {$arrayEquipe_publi[i].Libelle}
+                                            </a>
                                         </td>
                                         {*<td width="40">{$arrayEquipe_publi[i].PtsNiveau}</td>*}
                                     {/if}
