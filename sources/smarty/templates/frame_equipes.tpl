@@ -24,7 +24,7 @@
                             {$Club}
                         </a>
                         <div id="fb-root"></div>
-                        <div class="fb-like" data-href="https://www.kayak-polo.info/kpequipes.php?Equipe={$Equipe}&Compet={$codeCompet}&Css={$Css}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
+                        <div class="fb-like" data-href="https://www.kayak-polo.info/frame_equipes.php?Equipe={$Equipe}&Compet={$codeCompet}&Css={$Css}" data-layout="button" data-action="recommend" data-show-faces="false" data-share="true"></div>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 </div>
             {elseif $eLogo}
                 <div class="col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="equipeColors">
-                    <a {if !$arrayCompo}href="kpclubs.php?clubId={$Code_club}" title='{#Club#}'{/if}>
+                    <a {if !$arrayCompo}href="frame_clubs.php?clubId={$Code_club}" title='{#Club#}'{/if}>
                         <img class="img-responsive img-thumbnail" src="{$eLogo}?v={$NUM_VERSION}" alt="{$nomEquipe}">
                     </a>
                 </div>

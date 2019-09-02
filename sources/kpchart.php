@@ -269,8 +269,8 @@ class Classement extends MyPage
                         $intitule = utyEquipesAffectAuto($row['Libelle']);
                     } else {
                         $intitule = utyEquipesAffectAutoFR($row['Libelle']);
+                    }
                 }
-            }
                 if ($row['Id_equipeA'] <= 1) {
                     $row['EquipeA'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[0]));
                 }	
@@ -278,7 +278,7 @@ class Classement extends MyPage
                     $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
                 }
                 $arrayMatchs[$journee][] = $row ;
-		}	
+            }	
                 
             // Equipes par poules
             $sql  = "SELECT j.Id, m.Id_equipeA, m.Id_equipeB, m.Libelle, "
