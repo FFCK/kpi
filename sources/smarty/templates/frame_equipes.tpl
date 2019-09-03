@@ -1,4 +1,4 @@
-{if $arrayCompo || $Equipe == 0}
+{if $codeCompet != '' || $Equipe == 0}
     <div class="container-fluid" id="navGroup">
         <nav class="col-md-12 navbar navbar-custom">
             <div class='pull-left'>
@@ -12,7 +12,7 @@
     <div class="container">
         <article class="col-md-6 padTopBottom">
             <div class="form-horizontal">
-                {if !$arrayCompo}
+                {if $codeCompet == ''}
                     <label class="col-sm-2">{#Chercher#}:</label>
                     <input class="col-sm-6" type="text" id="rechercheEquipe" placeholder="{#Nom_de_l_equipe#}">
                     <input class="col-sm-2" type="hidden" id="equipeId" value="{$Equipe}">
@@ -54,7 +54,7 @@
                 </div>
             {/if}
 
-            {if $arrayCompo}
+            {if $codeCompet != ''}
             <div class="page-header">
                 <h4 class="text-info">{$recordCompetition.Soustitre}<br>{$recordCompetition.Soustitre2}</h4>
             </div>
@@ -105,6 +105,10 @@
                                         <span class="label label-danger">{$arrayCompo[i].rouges}</span>
                                     {/if}
                                 </td>
+                            </tr>
+                        {sectionelse}
+                            <tr>
+                                <td colspan="6" class="text-center">{#Information_non_disponible#}</td>
                             </tr>
                         {/section}
                     </tbody>

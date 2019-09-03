@@ -46,7 +46,7 @@
                                         <tr>
                                             <td></td>
                                             <td>
-                                                <a class="btn btn-xs btn-default equipe">{$j.Libelle}</a>
+                                                <a class="btn btn-xs btn-default"{if $j.Num > 0} href="frame_equipes.php?Equipe={$j.Num}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$j.Libelle}</a>
                                             </td>
                                             <td></td>
                                             <td></td>

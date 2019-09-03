@@ -20,15 +20,16 @@ class Equipes extends MyPage
 		$Equipe = (int) utyGetGet('Equipe', $Equipe);
 		$this->m_tpl->assign('Equipe', $Equipe);
 		$_SESSION['Equipe'] = $Equipe;
-        $Saison = utyGetSaison();
         
-        if ($Equipe > 0) {
+        $Saison = utyGetSaison();
+        $codeSaison = (int) utyGetGet('Saison', utyGetSaison());
+        
+        $codeCompet = utyGetGet('Compet', '');
+        $this->m_tpl->assign('codeCompet', $codeCompet);
+        
+        $this->m_tpl->assign('Css', utyGetGet('Css', ''));
             
-            $codeSaison = (int) utyGetGet('Saison', utyGetSaison());
-            $codeCompet = utyGetGet('Compet', '');
-            $this->m_tpl->assign('codeCompet', $codeCompet);
-
-            $this->m_tpl->assign('Css', utyGetGet('Css', ''));
+        if ($Equipe > 0) {
 
             // Equipe
             $sql = "SELECT e.Libelle Equipe, e.Code_club, cl.Libelle Club "
