@@ -6834,8 +6834,9 @@ div.entry-content {
   margin-bottom: 25px; }
 
 /* line 131, ../sass/styles.scss */
-div.entry-content a, .table a {
-  color: #428bca; }
+div.entry-content a {
+  color: #428bca; 
+}
 
 /* line 135, ../sass/styles.scss */
 .meta-reply, .meta-edit {
