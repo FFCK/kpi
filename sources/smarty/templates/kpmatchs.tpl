@@ -197,7 +197,7 @@
                             <td class="hidden-xs" data-order="{$arrayMatchs[i].Date_EN} {$arrayMatchs[i].Heure_match}" data-filter="{if $lang == 'en'}{$arrayMatchs[i].Date_EN}{else}{$arrayMatchs[i].Date_match}{/if}">
                                 {if $lang == 'en'}{$arrayMatchs[i].Date_EN}{else}{$arrayMatchs[i].Date_match}{/if}<br /><span class="pull-right badge">{$arrayMatchs[i].Heure_match}</span>
                             </td>
-                            <td class="hidden-xs">{$arrayMatchs[i].Code_competition}</td>
+                            <td class="hidden-xs">{$arrayMatchs[i].Categorie}</td>
                             {if $arrayCompetition[0].Code_typeclt == 'CP'}
                                 <td class="hidden-xs">{$arrayMatchs[i].Phase|default:'&nbsp;'}</td>
                             {else}
@@ -205,7 +205,7 @@
                             {/if}
                             <td class="hidden-xs">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeA|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default"{if $arrayMatchs[i].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                <a class="btn btn-xs btn-default"{if $arrayMatchs[i].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
                                     {$arrayMatchs[i].EquipeA|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -238,7 +238,7 @@
                                 
                             </td>
                             <td class="text-center hidden-xs" data-filter="{$arrayMatchs[i].EquipeB|default:'&nbsp;'}">
-                                <a class="btn btn-xs btn-default"{if $arrayMatchs[i].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                <a class="btn btn-xs btn-default"{if $arrayMatchs[i].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
                                     {$arrayMatchs[i].EquipeB|default:'&nbsp;'}
                                 </a>
                             </td>
@@ -267,7 +267,7 @@
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="btn-group btn-block" role="group">
-                                        <a class="col-xs-5 text-right"{if $arrayMatchs[i].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                        <a class="col-xs-5 text-right"{if $arrayMatchs[i].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
                                             <b class="">{$arrayMatchs[i].EquipeA|default:'&nbsp;'}</b>
                                         </a>
                                         
@@ -283,7 +283,7 @@
                                             <span type="button" class="col-xs-2 statutMatchATT label label-default" title="{#ATT#}">{#ATT#}</span>
                                         {/if}
                                         
-                                        <a class="col-xs-5 text-left"{if $arrayMatchs[i].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                        <a class="col-xs-5 text-left"{if $arrayMatchs[i].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
                                             <b class="">{$arrayMatchs[i].EquipeB|default:'&nbsp;'}</b>
                                         </a>
                                     </div>
