@@ -16,10 +16,11 @@
                     <table class='table table-striped table-condensed table-hover'>
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th class="text-center">#</th>
                                 <th>{#Equipes#}</th>
-                                <th>{#Pts#}</th>
-                                <th>{#Diff#}</th>
+                                <th class="text-center">{#Pts#}</th>
+                                <th class="text-center">{#J#}</th>
+                                <th class="text-center">{#Diff#}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,6 +38,7 @@
                                             <a class="btn btn-xs btn-default"{if $arrayEquipe_journee_publi[$idJournee][j].Numero > 0} href="kpequipes.php?Equipe={$arrayEquipe_journee_publi[$idJournee][j].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
                                         </td>
                                         <td class="text-center">{$arrayEquipe_journee_publi[$idJournee][j].Pts/100}</td>
+                                        <td class="text-center">{$arrayEquipe_journee_publi[$idJournee][j].J}</td>
                                         <td class="text-center">{$arrayEquipe_journee_publi[$idJournee][j].Diff}</td>
                                     </tr>
                                 {/section}
@@ -50,12 +52,14 @@
                                             </td>
                                             <td></td>
                                             <td></td>
+                                            <td></td>
                                         </tr>
                                     {/foreach}
                                 {else}
                                     {section name=k loop=$arrayJournees[$idJournee].Nbequipes}
                                         <tr>
                                             <td class="text-center">{$smarty.section.k.iteration}</td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -72,31 +76,64 @@
                     {section name=j loop=$arrayMatchs[$idJournee]}
                         <div class="row cliquableNomEquipe {if !$smarty.section.j.last}padBottom{/if}">
                             {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
-                                <div class="col-md-12 text-right">
-                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreA}</span>
-                                </div>
-                                <div class="col-md-12 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                <div class="col-md-12 text-right chart_match">
+                                    <table class="pull-right">
+                                        <tr>
+                                            <td rowspan="2">
+                                                <span class="chart_num_match">#{$arrayMatchs[$idJournee][j].Numero_ordre}</span>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                                <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                                <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             {elseif $arrayMatchs[$idJournee][j].ScoreA < $arrayMatchs[$idJournee][j].ScoreB}
-                                <div class="col-md-12 text-right">
-                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
-                                    <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                </div>
-                                <div class="col-md-12 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                <div class="col-md-12 text-right chart_match">
+                                    <table class="pull-right">
+                                        <tr>
+                                            <td rowspan="2">
+                                                <span class="chart_num_match">#{$arrayMatchs[$idJournee][j].Numero_ordre}</span>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                                <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                                <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             {else}
-                                <div class="col-md-12 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
-                                </div>
-                                <div class="col-md-12 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                <div class="col-md-12 text-right chart_match">
+                                    <table class="pull-right">
+                                        <tr>
+                                            <td rowspan="2">
+                                                <span class="chart_num_match">#{$arrayMatchs[$idJournee][j].Numero_ordre}</span>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                                <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                                <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             {/if}
                         </div>

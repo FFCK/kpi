@@ -8698,3 +8698,18 @@ table a.report {
     padding: 3px 7.5px;
     min-height: inherit;
 }
+
+.chart_num_match {
+    font-style: italic;
+    color: gray;
+    font-size: .9em;
+}
+
+.chart_match {
+    background-color: #f9f9f9;
+    padding: 1px;
+}
+
+.chart_match table, .chart_match tr, .chart_match td {
+    border: none;
+}
