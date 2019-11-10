@@ -31,7 +31,7 @@ jQuery(document).ready(function() {
 		header: {
 			right:  'today prev,next prevYear,nextYear'
 		},
-//		height: 550,
+		height: 550,
 		firstDay: 1,
 //		eventDrop: function(event, delta) {
 //			alert(event.title + ' was moved ' + delta + ' days\n' +
