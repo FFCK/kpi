@@ -204,11 +204,12 @@ jq(document).ready(function() { //Jquery
 			var AjaxUser = jq('#AjaxUser').val();
 			if(numJournee != '') {
 				var AjaxTableName = jq('#AjaxTableName2').val();
-				var AjaxAnd = '';
+				var AjaxAnd = jq('#AjaxAnd').val();
 			} else {
 				var AjaxTableName = jq('#AjaxTableName').val();
-				var AjaxAnd = jq('#AjaxAnd').val();
+				var AjaxAnd = '';
 			}
+			console.log(numJournee);
 			jq.get("UpdateCellJQ.php",
 				{
 					AjTableName: AjaxTableName,
