@@ -40,8 +40,8 @@ WHERE 1=1
 AND ce.Code_club = c.Code
 AND (ce.Code_compet LIKE 'N1H'
     OR ce.Code_compet LIKE 'N2H'
-    OR ce.Code_compet LIKE 'N3H'
-    OR ce.Code_compet LIKE 'N4H'
+    OR ce.Code_compet LIKE 'N3'
+    OR ce.Code_compet LIKE 'N4'
     OR ce.Code_compet LIKE 'CFH%') -- compte plusieurs fois les équipes qualifiés
 AND ce.Code_saison LIKE '2018'
 AND ce.Code_club NOT LIKE '%CD'
