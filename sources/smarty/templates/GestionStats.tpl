@@ -15,6 +15,8 @@
 					<div class='titrePage'>{#Cartons#}</div>
 				{elseif $AfficheStat == 'CartonsEquipe'}
 					<div class='titrePage'>{#Cartons_par_equipe#}</div>
+				{elseif $AfficheStat == 'CartonsCompetition'}
+					<div class='titrePage'>{#Cartons_par_competition#}</div>
 				{elseif $AfficheStat == 'Fairplay'}
 					<div class='titrePage'>{#Classement_disciplinaire_individuel#} ({#Rouge#}=4, {#Jaune#}=2, {#Vert#}=1)</div>
 				{elseif $AfficheStat == 'FairplayEquipe'}
@@ -82,6 +84,13 @@
 										<th>#</th>
 										<th>{#Comp#}.</th>
 										<th>{#Equipe#}</th>
+										<th>{#Vert#}</th>
+										<th>{#Jaune#}</th>
+										<th>{#Rouge#}</th>
+									{elseif $AfficheStat == 'CartonsCompetition'}
+										<th>#</th>
+										<th>{#Comp#}.</th>
+										<th>{#Buts#}</th>
 										<th>{#Vert#}</th>
 										<th>{#Jaune#}</th>
 										<th>{#Rouge#}</th>
@@ -207,7 +216,7 @@
 									<td>{$arrayCartons[i].Numero}</td>
 									<td>{$arrayCartons[i].Nom}
 										{if $profile <= 6}
-                                                                                    <a href="GestionAthlete.php?Athlete={$arrayCartons[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+											<a href="GestionAthlete.php?Athlete={$arrayCartons[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
 										{/if}</td>
 									<td>{$arrayCartons[i].Prenom}</td>
 									<td>{$arrayCartons[i].Sexe}</td>
@@ -226,6 +235,17 @@
 									<td>{$arrayCartonsEquipe[i].Vert}</td>
 									<td>{$arrayCartonsEquipe[i].Jaune}</td>
 									<td>{$arrayCartonsEquipe[i].Rouge}</td>
+								</tr>
+							{/section}
+						{elseif $AfficheStat == 'CartonsCompetition'}
+							{section name=i loop=$arrayCartonsCompetition}
+								<tr class='{cycle values="impair,pair"}'>
+									<td>{$smarty.section.i.iteration}</td>
+									<td>{$arrayCartonsCompetition[i].Competition}</td>
+									<td>{$arrayCartonsCompetition[i].Buts}</td>
+									<td>{$arrayCartonsCompetition[i].Vert}</td>
+									<td>{$arrayCartonsCompetition[i].Jaune}</td>
+									<td>{$arrayCartonsCompetition[i].Rouge}</td>
 								</tr>
 							{/section}
 						{elseif $AfficheStat == 'Fairplay'}
@@ -400,6 +420,7 @@
 							<Option Value="Defense"{if $AfficheStat == 'Defense'} selected{/if}>{#Meilleure_defense#}</Option>
 							<Option Value="Cartons"{if $AfficheStat == 'Cartons'} selected{/if}>{#Cartons#}</Option>
 							<Option Value="CartonsEquipe"{if $AfficheStat == 'CartonsEquipe'} selected{/if}>{#Cartons_par_equipe#}</Option>
+							<Option Value="CartonsCompetition"{if $AfficheStat == 'CartonsCompetition'} selected{/if}>{#Cartons_par_competition#}</Option>
 							<Option Value="Fairplay"{if $AfficheStat == 'Fairplay'} selected{/if}>{#Classement_disciplinaire_individuel#}</Option>
 							<Option Value="FairplayEquipe"{if $AfficheStat == 'FairplayEquipe'} selected{/if}>{#Classement_disciplinaire_par_equipe#}</Option>
 							<Option Value="Arbitrage"{if $AfficheStat == 'Arbitrage'} selected{/if}>{#Arbitrage#}</Option>
