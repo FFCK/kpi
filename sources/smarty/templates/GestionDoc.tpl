@@ -316,6 +316,12 @@
 									</tr>
 									<tr class='{cycle values="impair,pair"}'>
 										<td class='rouge'>{#Controle#}</td>
+										<td>{#Feuilles_de_presence_U21#}</td>
+										<td><a href="FeuillePresenceU21.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+										<td>&nbsp;</td>
+									</tr>
+									<tr class='{cycle values="impair,pair"}'>
+										<td class='rouge'>{#Controle#}</td>
 										<td>{#Competitions_jouees_par_club#}</td>
 										<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 										<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=30&Stat=CJouees" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
