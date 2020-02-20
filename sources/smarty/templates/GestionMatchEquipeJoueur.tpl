@@ -83,7 +83,7 @@
 									</td>
 									<td>{$arrayJoueur[i].Numero_club}</td>
 									<td>{$arrayJoueur[i].Categ} - {$arrayJoueur[i].Sexe}</td>
-									<td{if $arrayJoueur[i].Pagaie_ECA == '' or $arrayJoueur[i].Pagaie_ECA == 'PAGB' or $arrayJoueur[i].Pagaie_ECA == 'PAGJ'} class='highlight2'{/if}>
+									<td {if $arrayJoueur[i].Pagaie_ECA == '' or $arrayJoueur[i].Pagaie_ECA == 'PAGB' or $arrayJoueur[i].Pagaie_ECA == 'PAGJ'} class='highlight2'{/if}>
 										<img width="16" src="../img/EC-{$arrayJoueur[i].Pagaie_ECA}.gif" alt="Pagaie Eau Calme" title="Pagaie Eau Calme" />
 										<!--<img hspace="1" width="16" height="16" src="../img/EV-{$arrayJoueur[i].Pagaie_EVI}.gif" alt="Pagaie Eau Vive" title="Pagaie Eau Vive" border="0">
 										<img hspace="1" width="16" height="16" src="../img/ME-{$arrayJoueur[i].Pagaie_MER}.gif" alt="Pagaie Mer" title="Pagaie Mer" border="0">-->
