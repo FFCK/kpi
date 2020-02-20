@@ -4,7 +4,7 @@
 // Prod
 define('PARAM_PROD_LOGIN', 'root');
 define('PARAM_PROD_PASSWORD', 'root');
-define('PARAM_PROD_DB', 'poloweb_25_07_2019');
+define('PARAM_PROD_DB', 'poloweb_2019_12_13');
 define('PARAM_PROD_SERVER', 'db');
 
 // Mirror

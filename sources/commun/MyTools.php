@@ -175,6 +175,10 @@ function utyCodeCategorie2($dateNaissance, $saison = '')
 		case ($age >= 45 && $age <= 49): $cat = 'V3'; break;
 		case ($age >= 50 && $age <= 54): $cat = 'V4'; break;
 		case ($age >= 55 && $age <= 59): $cat = 'V5'; break;
+		case ($age >= 60 && $age <= 64): $cat = 'V6'; break;
+		case ($age >= 65 && $age <= 69): $cat = 'V7'; break;
+		case ($age >= 70 && $age <= 74): $cat = 'V8'; break;
+		case ($age >= 75): $cat = 'V9'; break;
 		default: $cat = '';
 	}
 	return $cat;
