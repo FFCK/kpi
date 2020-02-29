@@ -1,5 +1,5 @@
 {include file='frame_navgroup.tpl'}
-<div class="container-fluid">
+<div class="container-fluid flex">
     {if $recordCompetition.Code_typeclt == 'CP'}
         {assign var='idJournee' value=$arrayListJournees[0]}
         {assign var='Etape' value=$arrayJournees[$idJournee].Etape}
@@ -188,7 +188,3 @@
         
     {/if}
 </div>
-{if $voie}
-    <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
-    <script type="text/javascript">SetVoie({$voie});</script>
-{/if}

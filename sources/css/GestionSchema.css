@@ -3,10 +3,14 @@ article {
 }
 
 .chart_match {
-	background-color: #2670b317;
+	background-color: #2670b335;
 	padding: 1px;
 }
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
-	background-color: #2670b317;
+	background-color: #2670b335;
+}
+
+div.flex {
+	display: flex;
 }
