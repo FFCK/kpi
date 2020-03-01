@@ -175,9 +175,9 @@ function Go_url_splitter()
 }
 
 
-function Init(voie)
+function Init(voie, intervalle=3000)
 {
-	SetVoie(voie);
+	SetVoie(voie, intervalle);
 	
 	// Mode "show=command"
 	$('#list_medals_btn').click( function () { Go_list_medals(); return false;});

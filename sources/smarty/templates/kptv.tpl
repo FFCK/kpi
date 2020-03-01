@@ -50,12 +50,77 @@
                 <div class='col-sm-1'>
                     <label>Channel</label>
                     <select id="channel" name="channel">
-                        <option value='1'>{#Selectionnez#}</option>
-                        {section name=i start=1 loop=21}
-                            <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
-                                {$smarty.section.i.index}
-                            </option>
-                        {/section}
+                        <optgroup label="Channels">
+                            <option value='1'>{#Selectionnez#}</option>
+                            {section name=i start=1 loop=21}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 1">
+                            {section name=i start=101 loop=110}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 2">
+                            {section name=i start=201 loop=210}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 3">
+                            {section name=i start=301 loop=310}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 4">
+                            {section name=i start=401 loop=410}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 5">
+                            {section name=i start=501 loop=510}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 6">
+                            {section name=i start=601 loop=610}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 7">
+                            {section name=i start=701 loop=710}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 8">
+                            {section name=i start=801 loop=810}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
+                        <optgroup label="Scenario 9">
+                            {section name=i start=901 loop=910}
+                                <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
+                                    {$smarty.section.i.index}
+                                </option>
+                            {/section}
+                        </optgroup>
                     </select>
                     <br>
                 </div>
@@ -86,7 +151,7 @@
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
-                            <option value="schema" {if $filtrePres == 'schema'}selected{/if}>Draws</option>
+                            <option value="frame_categories" {if $filtrePres == 'frame_categories'}selected{/if}>Cat. games</option>
                             <option value="frame_terrains" {if $filtrePres == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres == 'frame_phases'}selected{/if}>Phases</option>
@@ -97,7 +162,7 @@
                             <option value="force_cache_match" {if $filtrePres == 'force_cache_match'}selected{/if}>Force cache match</option>
                     </select>
                 </div>
-                <div class='col-sm-1'>
+                <div class='col-sm-2'>
                     <label>{#Competition#}</label>
                     <select id="competition" name="competition">
                         <option value="" {if '' == $filtreCompet}selected{/if}>{#Selectionnez#}</option>
@@ -153,7 +218,7 @@
                 </div>
                 <div class='col-sm-1 params' id='pitchs-col'>
                     <label>Pitchs</label>
-                    <input type="text" id="pitchs" name="pitchs" value="1,2,3,4">
+                    <input class="form-control" type="text" id="pitchs" name="pitchs" value="1,2,3,4">
                 </div>
                 <div class='col-sm-1 params' id='round-col'>
                     <label>Round</label>
@@ -184,6 +249,14 @@
                         <option value="0">Non</option>
                         <option value="1">Oui</option>
                         <option value="2">Peut-être</option>
+                    </select>
+                </div>
+                <div class='col-sm-1 params' id='pg-col'>
+                    <label>Page</label>
+                    <select id="Pg" name="Pg">
+                        <option value="0">Tout</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
                     </select>
                 </div>
             </div>
@@ -249,7 +322,7 @@
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres2 == 'multi_score'}selected{/if}>Multi score</option>
-                            <option value="schema" {if $filtrePres2 == 'schema'}selected{/if}>Draws</option>
+                            <option value="frame_categories" {if $filtrePres2 == 'frame_categories'}selected{/if}>Cat. games</option>
                             <option value="frame_terrains" {if $filtrePres2 == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres2 == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres2 == 'frame_phases'}selected{/if}>Phases</option>
@@ -412,7 +485,7 @@
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres3 == 'multi_score'}selected{/if}>Multi score</option>
-                            <option value="schema" {if $filtrePres3 == 'schema'}selected{/if}>Draws</option>
+                            <option value="frame_categories" {if $filtrePres3 == 'frame_categories'}selected{/if}>Cat. games</option>
                             <option value="frame_terrains" {if $filtrePres3 == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres3 == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres3 == 'frame_phases'}selected{/if}>Phases</option>
@@ -575,7 +648,7 @@
                         </optgroup>
                         <optgroup label="Screen display">
                             <option value="multi_score" {if $filtrePres4 == 'multi_score'}selected{/if}>Multi score</option>
-                            <option value="schema" {if $filtrePres4 == 'schema'}selected{/if}>Draws</option>
+                            <option value="frame_categories" {if $filtrePres4 == 'frame_categories'}selected{/if}>Cat. games</option>
                             <option value="frame_terrains" {if $filtrePres4 == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres4 == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres4 == 'frame_phases'}selected{/if}>Phases</option>
@@ -701,12 +774,16 @@
             {#Evenements#}
         </a>
         &nbsp;
-        <a id="scenario_params" class="btn btn-default" href="live/scenario.php" target="_blank">
-            Scenario
+        <a id="scenario_live_params" class="btn btn-default" href="live/scenario.php" target="_blank">
+            Scenario Live
         </a>
         &nbsp;
         <a id="split_params" class="btn btn-default" href="live/spliturl.php" target="_blank">
             Split Url
+        </a>
+        &nbsp;
+        <a id="scenario_params" class="btn btn-default" href="kptvscenario.php" target="_blank">
+            Scenario
         </a>
         
     </article>

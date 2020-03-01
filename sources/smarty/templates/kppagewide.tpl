@@ -66,7 +66,6 @@
                 <script>
                     Init();
                 </script>
-
             {/literal}
         {/if}
         <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" defer></script>

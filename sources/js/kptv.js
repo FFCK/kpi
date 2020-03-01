@@ -81,6 +81,9 @@ jq(document).ready(function(){
             case 'force_cache_match':
                 jq('#match-col, #game_report').show();
                 break;
+            case 'frame_categories':
+                jq('#pg-col').show();
+                break;
             case 'frame_terrains':
                 jq('#pitchs-col').show();
                 break;
@@ -158,9 +161,20 @@ jq(document).ready(function(){
                 url = 'live/schema.php';
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
+            case 'frame_categories':
+                url = 'frame_categories.php?event=' + jq('#codeEvt').val() 
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&terrains=' + jq('#pitchs').val()
+                        + '&filtreJour=' + jq('#jour').val()
+                        + '&Css=' + css
+                        + '&Pg=' + jq('#Pg').val();
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
             case 'frame_terrains':
                 url = 'frame_terrains.php?event=' + jq('#codeEvt').val() 
                         + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition').val() 
                         + '&terrains=' + jq('#pitchs').val()
                         + '&filtreJour=' + jq('#jour').val()
                         + '&Css=' + css;

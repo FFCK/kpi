@@ -883,7 +883,8 @@ class TV extends MyPage
     function Script()
     {
         parent::Script();
-		$voie = $this->GetParamInt('voie',0);
+		$voie = $this->GetParamInt('voie', 0);
+		$intervalle = $this->GetParamInt('intervalle', 0);
 
 		$show = $this->GetParam('show');
 		if ($show == 'command') {
@@ -894,7 +895,7 @@ class TV extends MyPage
  		<script type="text/javascript" src="./js/tv.js?v=<?= NUM_VERSION ?>" ></script>
         <script type="text/javascript">
             $(document).ready(function(){ 
-                Init(<?= $voie; ?>);
+                Init(<?= $voie; ?>, <?= $intervalle; ?>);
                 document.title = 'KPI TV (' + <?= $voie; ?> + ')';
             }); 
         </script>	
