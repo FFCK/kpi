@@ -1,4 +1,4 @@
-jq = jQuery.noConflict();
+// jq = jQuery.noConflict();
 jq(document).ready(function(){
 
     // Refresh de la page toute les 60 secondes ...

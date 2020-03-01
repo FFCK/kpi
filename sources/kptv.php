@@ -6,7 +6,7 @@ include_once('commun/MyTools.php');
 
 // Tv
 	
-class Tv extends MyPage	 
+class Tv extends MyPageSecure	 
 {	
 	function Load()
 	{
@@ -174,9 +174,9 @@ class Tv extends MyPage
 	
     
 	// Tv 		
-	function Tv()
-	{			
-        MyPage::MyPage();
+	function __construct()
+    {
+        MyPageSecure::MyPageSecure(1);
 		
 		$this->SetTemplate("KPI Tv control", "Matchs", true);
 		$this->Load();

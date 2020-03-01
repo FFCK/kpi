@@ -1,4 +1,4 @@
-jq = jQuery.noConflict();
+// jq = jQuery.noConflict();
 jq(document).ready(function(){
     jq('body').popover({
         selector: '.img2',

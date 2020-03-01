@@ -730,7 +730,7 @@
 					{/if}
 					{if $user == '42054' or $user == '63155'}
 					<hr>
-					<div align='center' class='rouge'><i>User Laurent</i></div>
+					<div align='center' class='rouge'><i>User Laurent/Eric</i></div>
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
@@ -752,6 +752,22 @@
 									<option value="9" {if $profile == 9}Selected{/if}>9 - Table de Marque</option>
 									<option value="10" {if $profile == 10}Selected{/if}>10 - Non utilisé</option>
 								</select>
+							</td>
+						</tr>
+					</table>
+					{/if}
+					{if $user == '42054' or $user == '63155'}
+					<hr>
+					<div align='center' class='rouge'><i>User Laurent/Eric</i></div>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>TV control pannel</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<a href="../kptv.php" target="_blank">TV control pannel</a>
 							</td>
 						</tr>
 					</table>

@@ -72,8 +72,14 @@
                     g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
                 })();
             </script>
-            <!-- End Piwik Code -->
+            <!-- End Piwik Code !! -->
         {/literal}
-    
+
+        {if $voie}
+            <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
+            <script type="text/javascript">
+                SetVoie({$voie}, {$intervalle});
+            </script>
+        {/if}
     </body>
 </html>
