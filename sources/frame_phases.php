@@ -418,12 +418,15 @@ class Classement extends MyPage
 		$this->Load();
         
 		// COSANDCO : Gestion Param Voie ...
-		if (isset($_GET['voie']))
-		{
+		if (isset($_GET['voie'])) {
 			$voie = (int) $_GET['voie'];
-			if ($voie > 0)
-			{
+			if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
+            }
+            
+			$intervalle = (int) $_GET['intervalle'];
+			if ($intervalle > 0) {
+                $this->m_tpl->assign('intervalle', $intervalle);
 			}
 		}        
 

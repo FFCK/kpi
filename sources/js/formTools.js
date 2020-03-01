@@ -1,7 +1,10 @@
 //if ( typeof(jq) == "undefined" ) {
-    jq = jQuery.noConflict();
+jq = jQuery.noConflict();
+$ = jq;
 //}
-
+if ( typeof(lang) == "undefined" ) {
+	lang = 'en';
+}
 var langue_tools = [];
 
 if(lang == 'en')  {

@@ -1,61 +1,92 @@
 var theCurrentVoie = 0;
 var theCurrentVoieUrl = '';
 
-function SetVoie(voie)
-{
-	theCurrentVoie = voie;
-	theCurrentVoieUrl = window.location.href;
-	
-	if (voie > 0)
+// jq(document).ready(function() {
+
+	function SetVoie(voie, intervalle=3000)
 	{
-		// Refresh toutes les 4 secondes ...
-		setInterval(RefreshVoie, 4000);
+		theCurrentVoie = voie;
+		theCurrentVoieUrl = window.location.href;
+		if (voie > 0 && voie < 100)
+		{
+			setInterval(RefreshVoie, intervalle);
+		}
+		else if (voie >= 100)
+		{
+			RefreshScene(voie, intervalle);
+		}
 	}
-}
 
-function RefreshVoie()
-{
-	var param;
-	param = "voie="+theCurrentVoie;
-//	alert("ajax_refresh_voie.php?"+param+" -- "+theCurrentVoieUrl);
-	$.ajax({ type: "GET", url: "ajax_refresh_voie.php", dataType: "html", data: param, cache: false, 
-                success: function(urlCurrent) {
-					if (urlCurrent.length <= 0) return;
-					if (theCurrentVoieUrl.lastIndexOf(urlCurrent) == -1)
-					{
-						theCurrentVoieUrl = urlCurrent+'?voie='+theCurrentVoie; 
-//						alert("RefreshVoie !!!!! "+urlCurrent+" current="+theCurrentVoieUrl);
+	function RefreshVoie()
+	{
+		var param;
+		param = "voie="+theCurrentVoie;
+		$.ajax({ type: "GET", url: "ajax_refresh_voie.php", dataType: "html", data: param, cache: false, 
+			success: function(urlCurrent) {
+				if (urlCurrent.length <= 0) return;
+				if (theCurrentVoieUrl.lastIndexOf(urlCurrent) == -1)
+				{
+					theCurrentVoieUrl = urlCurrent+'?voie='+theCurrentVoie; 
 
-						if (urlCurrent.lastIndexOf("?") == -1)
-							window.location.href = '/'+urlCurrent+'?voie='+theCurrentVoie;
-						else
-							window.location.href = '/'+urlCurrent+'&voie='+theCurrentVoie;
+					if (urlCurrent.lastIndexOf("?") == -1) {
+						window.location.href = '/'+urlCurrent+'?voie='+theCurrentVoie;
+					} else {
+						window.location.href = '/'+urlCurrent+'&voie='+theCurrentVoie;
 					}
 				}
-	});
-}
-	
-function ChangeVoie(voie, url, showUrl=0)
-{
-	url2 = url.replace("?", "|QU|");
-	for (;;)
+			}
+		});
+	}
+		
+	function RefreshScene(voie, intervalle)
 	{
-		var url3 = url2.replace("&", "|AM|");
-		if (url3 == url2) break;
-		url2 = url3;
+		$.get(
+			"ajax_refresh_scene.php",
+			{ voie: voie },
+			function(data) {
+				if (data.Url.length <= 0) return;
+				if (data.Url.lastIndexOf("?") == -1) {
+					newUrl = '/'+data.Url+'?voie='+data.Voie+'&intervalle='+data.intervalle;
+				} else {
+					newUrl = '/'+data.Url+'&voie='+data.Voie+'&intervalle='+data.intervalle;
+				}
+				setTimeout(function(){window.location.href = newUrl}, intervalle);
+			},
+			'json'
+		);
+		
+	}
+		
+	function ChangeVoie(voie, url, showUrl=0)
+	{
+		url2 = url.replace("?", "|QU|");
+		for (;;)
+		{
+			var url3 = url2.replace("&", "|AM|");
+			if (url3 == url2) break;
+			url2 = url3;
+		}
+
+		var param;
+		param  = "voie="+voie;
+		param += "&url="+url2;
+
+		if(showUrl > 0){
+			$('#showUrl' + showUrl).val(url + "&voie="+voie);
+		} else {
+			$.ajax({ type: "GET", url: "ajax_change_voie.php", dataType: "html", data: param, cache: false, 
+						success: function(htmlData) {
+								alerte(htmlData);
+						}
+			});
+		}
 	}
 
-	var param;
-	param  = "voie="+voie;
-	param += "&url="+url2;
+	function alerte(data) {
+		$('#msg p').text(data);
+		$('#msg').fadeIn(500).delay(2000).fadeOut(900);
+	}
 
-    if(showUrl > 0){
-        jq('#showUrl' + showUrl).val(url + "&voie="+voie);
-    } else {
-        $.ajax({ type: "GET", url: "ajax_change_voie.php", dataType: "html", data: param, cache: false, 
-            success: function(htmlData) {
-                $("#tv_message").html(htmlData);
-            }
-        });
-    }
-}
+	$('#msg').fadeOut(900);
+
+// });
