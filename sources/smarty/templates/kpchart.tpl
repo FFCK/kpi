@@ -1,5 +1,5 @@
 {include file='kpnavgroup.tpl'}
-<div class="container-fluid">
+<div class="container-fluid flex">
     {if $recordCompetition.Code_typeclt == 'CP'}
         {assign var='idJournee' value=$arrayListJournees[0]}
         {assign var='Etape' value=$arrayJournees[$idJournee].Etape}
