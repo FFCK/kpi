@@ -19,7 +19,7 @@ class MyBdd
 	var $m_saisonPCE;
 	  
 	// Constructeur 
-	function MyBdd($mirror=false) {							  
+	function __construct($mirror=false) {							  
 		if (PRODUCTION) {
 			if (isset($_SESSION['mirror'])) {
                 if ($_SESSION['mirror'] == '1') {
@@ -56,14 +56,14 @@ class MyBdd
 					
  	function Connect() {  
 		$this->m_link = mysql_connect($this->m_server, $this->m_login, $this->m_password);
-		mysql_query("SET NAMES 'UTF8'");
+		$this->Query("SET NAMES 'UTF8'");
 		if (!$this->m_link) {		
-			die('Impossible de se connecter : ' . mysql_error());
+			die('Impossible de se connecter : ' . $this->Error());
 		}
 					  
 		$db = mysql_select_db($this->m_database, $this->m_link);
 		if (!$db) {
-			die('Impossible de sélectionner la base de données : ' . mysql_error());
+			die('Impossible de sélectionner la base de données : ' . $this->Error());
 		}
 	}  
 					
@@ -71,15 +71,15 @@ class MyBdd
 	function show_table($tableName)
 	{							   
 		$query = "Select * from ".$tableName;	 
-		$result = mysql_query($query, $m_link);
+		$result = $this->Query($query);
 		if (!$result) 
 		{
-			echo 'Impossible d\'exécuter la requête : ' . mysql_error();
+			echo 'Impossible d\'exécuter la requête : ' . $this->Error();
 			exit;	  
 		}
 		
 		$nbFields = mysql_num_fields($result);
-		$nbRows = mysql_num_rows($result); 
+		$nbRows = $this->NumRows($result); 
 		
 		for ($i=0;$i<$nbRows;$i++)
 		{			 
@@ -94,6 +94,329 @@ class MyBdd
 		mysql_free_result($result);
 	}	   
 		 
+	// AJOUT COSANDCO : 12 Septembre 2014 ...
+	
+	// Query 		$result = $myBdd->Query($sql);
+    function Query($sql)
+    {
+		if(null !== $_SESSION['Profile'] && $_SESSION['Profile'] == 1) {
+			$msg = $sql;
+		} else {
+			$msg = "Please contact administrator.";
+		}
+		$result = mysql_query($sql, $this->m_link) or die ("Error Query : ".$msg);
+        return $result;
+    }
+	
+	// Error 		$result = $myBdd->Error();
+    function Error()
+    {
+        $result = mysql_error() or die ("Error Error");
+        return $result;
+    }
+	
+    // AffectedRows			$affected_results = $myBdd->AffectedRows($result);
+    function AffectedRows()
+    {
+        return mysql_affected_rows($this->m_link);
+    }
+
+    // NumRows			$num_results = $myBdd->NumRows($result);
+    function NumRows($result)
+    {
+        return mysql_num_rows($result);
+    }
+
+    // NumFields			$num_fields = $myBdd->NumFields($result);
+    function NumFields($result)
+    {
+        return mysql_num_fields($result);
+    }
+    
+    // FieldName			$field_name = $myBdd->FieldName($result);
+    function FieldName($result, $field)
+    {
+        return mysql_field_name($result, $field);
+    }
+
+    // FetchArray		$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+    function FetchArray($result, $resulttype=MYSQL_ASSOC)
+    {
+        return mysql_fetch_array($result, $resulttype);
+    }
+
+     // FetchAssoc		$row = $myBdd->FetchAssoc($result);
+    function FetchAssoc($result)
+    {
+        return mysql_fetch_assoc($result);
+    }
+
+    // FetchRow			$row = $myBdd->FetchRow($result);
+    function FetchRow($result)
+    {
+        return mysql_fetch_row($result);
+    }
+	
+    // DataSeek			$row = $myBdd->DataSeek($result, $cursor);
+    function DataSeek($result, $cursor)
+    {
+        return mysql_data_seek($result, $cursor);
+    }
+    
+    // RealEscapeString			$myBdd->RealEscapeString($codeCompet);
+    function RealEscapeString($txt)
+    {
+        return mysql_real_escape_string($txt, $this->m_link);
+    }
+
+    // GetLastAutoIncrement
+    function GetLastAutoIncrement()
+    {
+        $result = $this->Query('Select LAST_INSERT_ID()');
+        $row = $this->FetchRow($result);
+        return (int) $row[0];
+    }
+
+    // ShowColumnsSQL
+    function ShowColumnsSQL($tableName, &$arrayColumns)
+    {
+        if ($arrayColumns == null){ 
+			$arrayColumns = array();
+		}
+        $result = $this->Query("SHOW COLUMNS FROM $tableName");
+        $num_results = $this->NumRows($result);
+        for ($i=0;$i<$num_results;$i++)
+        {
+            array_push($arrayColumns, $this->FetchArray($result));
+        }
+        return $num_results;
+    }
+	
+    // GetIndexColumn
+    function GetIndexColumn($tableName, $columnName)
+    {
+		$arrayColumns = array();
+		$this->ShowColumnsSQL($tableName, $arrayColumns);
+		return $this->GetIndexColumnByArray($columnName, $arrayColumns);
+	}
+	
+    function GetIndexColumnByArray($columnName, &$arrayColumns)
+    {
+		for ($i=0;$i<count($arrayColumns);$i++)
+		{
+			if ($arrayColumns[$i]['Field'] == $columnName)
+				return $i;
+		}
+        return -1;
+    }
+	
+    // IsNullSQL
+    function IsNullSQL($value)
+    {
+        $typeValue = gettype($value);
+        if ($typeValue == 'NULL') return true;
+        if (($typeValue == 'string') && ($value == '')) return true;
+
+        return false;
+    }
+
+    // ValueSQL
+    function ValueSQL($value, $type, $null)
+    {
+        if ($this->IsNullSQL($value))
+        {
+            if ($null == 'YES') 
+                return 'null';
+            else 
+                return "''";
+        }
+
+        $pos = strpos($type, 'int');
+        if (($pos !== false) && ($pos == 0)) return $value;
+
+        $pos = strpos($type, 'float');
+        if (($pos !== false) && ($pos == 0)) return $value;
+
+        $pos = strpos($type, 'double');
+        if (($pos !== false) && ($pos == 0)) return $value;
+
+        // On force le casting en string ...
+        settype($value, "string");
+        return "'".utyStringQuote($value)."'";
+    }
+
+    // SetSQL
+    function SetSQL($tableName, &$record, $bIgnoreNull=true, &$arrayColumns=null)
+    {
+        if ($arrayColumns == null)
+        {
+            $arrayColumns = array();
+            $this->ShowColumnsSQL($tableName, $arrayColumns);
+        }
+
+        $sql = '';
+
+        // Uniquement les colonnes presentes dans $record et $arrayColumns ...
+        $count = 0;
+        foreach($record as $key => $value)
+        {
+            if ($bIgnoreNull && $this->IsNullSQL($value))
+                continue;
+
+            for ($j=0;$j<count($arrayColumns);$j++)
+            {
+                if ($arrayColumns[$j]['Field'] == $key)
+                {
+                    if ($count == 0)
+                        $sql .= 'Set ';
+                    else
+                        $sql .= ',';
+                    ++$count;
+
+                    $sql .= $key.'=';
+                    $sql .= $this->ValueSQL($value, $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
+
+                    break;
+                }				
+            }
+        }
+
+        return $sql;
+    }
+
+    // InsertSQL
+    function InsertSQL($tableName, &$record, $bIgnoreNull=true, &$arrayColumns=null)
+    {
+        return "Insert Into $tableName ".$this->SetSQL($tableName, $record, $bIgnoreNull, $arrayColumns);
+    }
+
+    // UpdateSQL
+    function UpdateSQL($tableName, &$record, $bIgnoreNull=false, &$arrayColumns=null)
+    {
+        return "Update $tableName ".$this->SetSQL($tableName, $record, $bIgnoreNull, $arrayColumns);
+    }
+
+    // ReplaceSQL
+    function ReplaceSQL($tableName, &$record, $bIgnoreNull=false, &$arrayColumns=null)
+    {
+        return "Replace Into $tableName ".$this->SetSQL($tableName, $record, $bIgnoreNull, $arrayColumns);
+    }
+
+    // InsertBlocSQL
+    function InsertBlocSQL($tableName, &$tData, &$sql)
+    {
+        $sql = '';
+        $nbData = count($tData);
+        if ($nbData == 0) return;
+
+        $arrayColumns = array();
+        $this->ShowColumnsSQL($tableName, $arrayColumns);
+        $nbColumns = count($arrayColumns);
+
+        $sql .= "Insert Into $tableName (";
+        for ($j=0;$j<$nbColumns;$j++)
+        {
+                if ($j >0) $sql .= ',';
+                $sql .= $arrayColumns[$j]['Field'];
+        }
+        $sql .= ') Values ';
+
+        for ($i=0;$i<$nbData;$i++)
+        {
+            $record = &$tData[$i];
+
+            if ($i > 0) $sql .= ',';
+            $sql .= '(';
+            for ($j=0;$j<$nbColumns;$j++)
+            {
+                if ($j > 0) $sql .= ',';	
+
+                $key = $arrayColumns[$j]['Field'];
+                if (isset($record[$key]))
+                    $sql .= $this->ValueSQL($record[$key], $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
+                else
+                    //					$sql .= $this->ValueSQL('', $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
+                    $sql .= 'null';
+            }
+            $sql .= ')';
+        }
+    }
+
+    // ColumnsSQL
+    function ColumnsSQL($tableName, &$arrayColumns=null)
+    {
+        if ($arrayColumns == null)
+        {
+            $arrayColumns = array();
+            $this->ShowColumnsSQL($tableName, $arrayColumns);
+        }
+
+        $sql = '';
+        for ($j=0;$j<count($arrayColumns);$j++)
+        {
+            if ($sql != '')
+                $sql .= ',';
+
+            $sql .= $arrayColumns[$j]['Field'];
+        }
+        return $sql;
+    }
+
+    // ColumnsRecordSQL
+    function ColumnsRecordSQL(&$record, $bIgnoreNull=false)
+    {
+        $sql = '';
+        foreach($record as $key => $value)
+        {
+            if ($bIgnoreNull && $this->IsNullSQL($value))
+                continue;
+
+            if ($sql != '')
+                $sql .= ',';
+
+            $sql .= $key;
+        }
+
+        return $sql;
+    }
+
+    // LoadTable
+    function LoadTable($sql, &$arrayLoad)
+    {
+        $result = $this->Query($sql);
+        $num_results = $this->NumRows($result);
+
+        $arrayLoad = array();
+        for ($i=0;$i<$num_results;$i++)
+        {
+            array_push($arrayLoad, $this->FetchArray($result));
+        }
+    }
+
+    // LoadRecord
+    function LoadRecord($sql, &$record)
+    {
+        $result = $this->Query($sql);
+        if ($this->NumRows($result) >= 1)
+        {
+            $record = $this->FetchArray($result);
+        }
+        else
+        {
+            $record = array();
+        }
+    }
+	
+	// FIN AJOUT COSANDCO : 12 Septembre 2014 ...
+
+
+
+
+
+
+
+
+
 	// Importation du fichier PCE local (ancienne version)
 	function ImportPCE($filePCE)
 	{
@@ -441,25 +764,25 @@ class MyBdd
 		$query .= ",'";
 		$query .= $origine;
 		$query .= "','";
-		$query .= mysql_real_escape_string($nom);
+		$query .= $this->RealEscapeString($nom);
 		$query .= "','";
-		$query .= mysql_real_escape_string($prenom);
+		$query .= $this->RealEscapeString($prenom);
 		$query .= "','";
 		$query .= $sexe;
 		$query .= "','";
 		$query .= $naissance;	
 		$query .= "','";
-		$query .= mysql_real_escape_string($club);
+		$query .= $this->RealEscapeString($club);
 		$query .= "','";
-		$query .= mysql_real_escape_string($num_club);	
+		$query .= $this->RealEscapeString($num_club);	
 		$query .= "','";
-		$query .= mysql_real_escape_string($comite_dept);	
+		$query .= $this->RealEscapeString($comite_dept);	
 		$query .= "','";
-		$query .= mysql_real_escape_string($num_comite_dept);	
+		$query .= $this->RealEscapeString($num_comite_dept);	
 		$query .= "','";
-		$query .= mysql_real_escape_string($comite_reg);	
+		$query .= $this->RealEscapeString($comite_reg);	
 		$query .= "','";
-		$query .= mysql_real_escape_string($num_comite_reg);
+		$query .= $this->RealEscapeString($num_comite_reg);
 		$query .= "','";
 		$query .= $etat;	
 		$query .= "','";
@@ -480,9 +803,9 @@ class MyBdd
 		$query .= $etat_certificat_ck;
 		$query .= "')";
 
-		$res = mysql_query($query, $this->m_link);
+		$res = $this->Query($query);
 		if (!$res)
-			array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
+			array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
 	}	 
 	
 	// Importation de la section [juges_pol] du fichier PCE 
@@ -549,10 +872,11 @@ class MyBdd
 			$Arb = "JO";
 		}
 
-        $query  = "REPLACE INTO gickp_Arbitre VALUES ($matric, '$regional', '$interregional', '$national', '$international', '$Arb', '$livret', '$niveau', '$saisonJuge')";							 	   
-		$res = mysql_query($query, $this->m_link);
+        $query  = "REPLACE INTO gickp_Arbitre 
+			VALUES ($matric, '$regional', '$interregional', '$national', '$international', '$Arb', '$livret', '$niveau', '$saisonJuge')";							 	   
+		$res = $this->Query($query);
 		if (!$res) {
-            array_push($this->m_arrayinfo, "Erreur SQL " . mysql_error());
+            array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
         }
 	}	 
 
@@ -579,9 +903,9 @@ class MyBdd
 
         if($discipline == 'KAP'){
             $query  = "REPLACE INTO gickp_Surclassements VALUES ($matric, $saisonSurclassement, '$categorie', '$dateSurclassement')";							 	   
-            $res = mysql_query($query, $this->m_link);
+            $res = $this->Query($query);
             if (!$res) {
-                array_push($this->m_arrayinfo, "Erreur SQL " . mysql_error());
+                array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
             }
         }
 	}	 
@@ -601,10 +925,10 @@ class MyBdd
                     . 'GROUP BY Numero_club '
                 . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
                     . 'Reserve = VALUES(Reserve), Code_comite_dep = VALUES(Code_comite_dep) ';
-        $res = mysql_query($query, $this->m_link);
+        $res = $this->Query($query);
 		if (!$res)							 
 		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
 			return;
 		}
 	}	   
@@ -623,10 +947,10 @@ class MyBdd
                     . 'GROUP BY Numero_comite_dept '
                 . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
                     . 'Reserve = VALUES(Reserve), Code_comite_reg = VALUES(Code_comite_reg) ';
-        $res = mysql_query($query, $this->m_link);
+        $res = $this->Query($query);
 		if (!$res)							 
 		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
 			return;
 		}
         
@@ -646,10 +970,10 @@ class MyBdd
                     . 'GROUP BY Numero_comite_reg '
                 . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
                     . 'Reserve = VALUES(Reserve) ';
-        $res = mysql_query($query, $this->m_link);
+        $res = $this->Query($query);
 		if (!$res)							 
 		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
 			return;
 		}
         
@@ -661,27 +985,27 @@ class MyBdd
 		array_push($this->m_arrayinfo, "Traitement final base des licenciés ..." );
 		// Verication Sexe M ou F ...		   
 		$query = "Update gickp_Liste_Coureur Set Sexe = 'M' Where Sexe = 'H' ";		
-		$res = mysql_query($query, $this->m_link);
+		$res = $this->Query($query);
 		if (!$res)							 
 		{		
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
 			return;
 		}		
 
 		$query = "Update gickp_Liste_Coureur Set Sexe = 'F' Where Sexe = 'D' ";		
-		$res = mysql_query($query, $this->m_link);
+		$res = $this->Query($query);
 		if (!$res)							 
 		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
 			return;
 		}		
 
 		// Vidage Club, CD, CR
 		$query = "Update gickp_Liste_Coureur Set Club = '', Comite_dept = '', Comite_reg = '' Where 1 ";		
-		$res = mysql_query($query, $this->m_link);
+		$res = $this->Query($query);
 		if (!$res)							 
 		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".mysql_error());
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
 			return;
 		}		
 	}
@@ -787,8 +1111,8 @@ class MyBdd
 			}
 			
 			$query  = "Select Id From gickp_Journees Where Id = $id ";
-			$res = mysql_query($query, $this->m_link) or die ("Erreur Select ImportCalendrier() ");
-			if (mysql_num_rows($res) != 1)
+			$res = $this->Query($query) or die ("Erreur Select ImportCalendrier() ");
+			if ($this->NumRows($res) != 1)
 			{
 				// Cette journée n'existe pas ...
 				$query  = "INSERT INTO gickp_Journees (Id, Code_competition, Code_saison, Date_debut, Date_fin, Nom, Libelle, Lieu, Departement, Plan_eau, ";
@@ -804,37 +1128,37 @@ class MyBdd
 				$query .= "','";
 				$query .= $date_fin;
 				$query .= "','";
-				$query .= mysql_real_escape_string($nom);
+				$query .= $this->RealEscapeString($nom);
 				$query .= "','";
-				$query .= mysql_real_escape_string($libelle);
+				$query .= $this->RealEscapeString($libelle);
 				$query .= "','";
-				$query .= mysql_real_escape_string($lieu);
+				$query .= $this->RealEscapeString($lieu);
 				$query .= "','";
-				$query .= mysql_real_escape_string($dept);
+				$query .= $this->RealEscapeString($dept);
 				$query .= "','";
-				$query .= mysql_real_escape_string($plan_eau);
+				$query .= $this->RealEscapeString($plan_eau);
 				$query .= "','";
-				$query .= mysql_real_escape_string($responsable_insc);
+				$query .= $this->RealEscapeString($responsable_insc);
 				$query .= "','";
-				$query .= mysql_real_escape_string($responsable_insc_adr);
+				$query .= $this->RealEscapeString($responsable_insc_adr);
 				$query .= "','";
-				$query .= mysql_real_escape_string($responsable_insc_cp);
+				$query .= $this->RealEscapeString($responsable_insc_cp);
 				$query .= "','";
-				$query .= mysql_real_escape_string($responsable_insc_ville);
+				$query .= $this->RealEscapeString($responsable_insc_ville);
 				$query .= "','";
-				$query .= mysql_real_escape_string($responsable_r1);
+				$query .= $this->RealEscapeString($responsable_r1);
 				$query .= "','";
-				$query .= mysql_real_escape_string($etat);
+				$query .= $this->RealEscapeString($etat);
 				$query .= "','";
-				$query .= mysql_real_escape_string($code_organisateur);
+				$query .= $this->RealEscapeString($code_organisateur);
 				$query .= "','";
-				$query .= mysql_real_escape_string($organisateur);
+				$query .= $this->RealEscapeString($organisateur);
 				$query .= "','";
-				$query .= mysql_real_escape_string($organisateur_adr);
+				$query .= $this->RealEscapeString($organisateur_adr);
 				$query .= "','";
-				$query .= mysql_real_escape_string($organisateur_cp);
+				$query .= $this->RealEscapeString($organisateur_cp);
 				$query .= "','";
-				$query .= mysql_real_escape_string($organisateur_ville);
+				$query .= $this->RealEscapeString($organisateur_ville);
 				$query .= "')";
 				
 				$nbAdd++;
@@ -846,22 +1170,22 @@ class MyBdd
 				$query  = "UPDATE gickp_Journees ";
 				$query .= "SET Date_debut = '".$date_debut;
 				$query .= "', Date_fin = '".$date_fin;
-				$query .= "', Nom = '".mysql_real_escape_string($nom);
-				$query .= "', Libelle = '".mysql_real_escape_string($libelle);
-				$query .= "', Lieu = '".mysql_real_escape_string($lieu);
-				$query .= "', Departement = '".mysql_real_escape_string($dept);
-				$query .= "', Plan_eau = '".mysql_real_escape_string($plan_eau);
-				$query .= "', Responsable_insc = '".mysql_real_escape_string($responsable_insc);
-				$query .= "', Responsable_insc_adr = '".mysql_real_escape_string($responsable_insc_adr);
-				$query .= "', Responsable_insc_cp = '".mysql_real_escape_string($responsable_insc_cp);
-				$query .= "', Responsable_insc_ville = '".mysql_real_escape_string($responsable_insc_ville);
-				$query .= "', Responsable_R1 = '".mysql_real_escape_string($responsable_r1);
-				$query .= "', Etat = '".mysql_real_escape_string($etat);
-				$query .= "', Code_organisateur = '".mysql_real_escape_string($code_organisateur);
-				$query .= "', Organisateur = '".mysql_real_escape_string($organisateur);
-				$query .= "', Organisateur_adr = '".mysql_real_escape_string($organisateur_adr);
-				$query .= "', Organisateur_cp = '".mysql_real_escape_string($organisateur_cp);
-				$query .= "', Organisateur_ville = '".mysql_real_escape_string($organisateur_ville);
+				$query .= "', Nom = '".$this->RealEscapeString($nom);
+				$query .= "', Libelle = '".$this->RealEscapeString($libelle);
+				$query .= "', Lieu = '".$this->RealEscapeString($lieu);
+				$query .= "', Departement = '".$this->RealEscapeString($dept);
+				$query .= "', Plan_eau = '".$this->RealEscapeString($plan_eau);
+				$query .= "', Responsable_insc = '".$this->RealEscapeString($responsable_insc);
+				$query .= "', Responsable_insc_adr = '".$this->RealEscapeString($responsable_insc_adr);
+				$query .= "', Responsable_insc_cp = '".$this->RealEscapeString($responsable_insc_cp);
+				$query .= "', Responsable_insc_ville = '".$this->RealEscapeString($responsable_insc_ville);
+				$query .= "', Responsable_R1 = '".$this->RealEscapeString($responsable_r1);
+				$query .= "', Etat = '".$this->RealEscapeString($etat);
+				$query .= "', Code_organisateur = '".$this->RealEscapeString($code_organisateur);
+				$query .= "', Organisateur = '".$this->RealEscapeString($organisateur);
+				$query .= "', Organisateur_adr = '".$this->RealEscapeString($organisateur_adr);
+				$query .= "', Organisateur_cp = '".$this->RealEscapeString($organisateur_cp);
+				$query .= "', Organisateur_ville = '".$this->RealEscapeString($organisateur_ville);
 				$query .= "' WHERE ";
 				$query .= "Id = '".$id;
 				$query .= "' ";
@@ -870,10 +1194,10 @@ class MyBdd
 			*/
 			}
 				
-				$res = mysql_query($query, $this->m_link);
+				$res = $this->Query($query);
 				if (!$res)
 				{
-					array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
+					array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
 				}
 					
 				$this->ImportCalendrier_Competition($code_compet, $code_saison, $code_niveau, $nom);
@@ -889,12 +1213,12 @@ class MyBdd
 	{
 		//Chargement des libellés existants
 		$query  = "Select Code, Libelle From gickp_Competitions Order by Code_saison";
-		$result = mysql_query($query, $this->m_link) or die ("Erreur Select ImportCalendrier_Competition");
-		$num_results = mysql_num_rows($result);
+		$result = $this->Query($query) or die ("Erreur Select ImportCalendrier_Competition");
+		$num_results = $this->NumRows($result);
 		$arrayLibelles = array();
 		for ($i=0;$i<$num_results;$i++)
 		{
-			$row = mysql_fetch_array($result);	
+			$row = $this->FetchArray($result);	
 			$arrayLibelles[$row['Code']]=$row['Libelle'];
 		}
 		
@@ -905,8 +1229,8 @@ class MyBdd
 		$query .= $code_saison;
 		$query .= "' ";
 		
-		$result = mysql_query($query, $this->m_link) or die ("Erreur Select ImportCalendrier_Competition");
-		$num_results = mysql_num_rows($result);
+		$result = $this->Query($query) or die ("Erreur Select ImportCalendrier_Competition");
+		$num_results = $this->NumRows($result);
 		if(isset($arrayLibelles[$code_compet]))
 			$libelle = $arrayLibelles[$code_compet];
 	
@@ -920,12 +1244,12 @@ class MyBdd
 			$query .= "','";
 			$query .= $code_niveau;
 			$query .= "','";
-			$query .= mysql_real_escape_string($libelle);
+			$query .= $this->RealEscapeString($libelle);
 			$query .= "')";
 		
-			$result = mysql_query($query, $this->m_link);
+			$result = $this->Query($query);
 			if (!$result)
-				array_push($this->m_arrayinfo, "Erreur SQL ".mysql_error());
+				array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
 		}
 	}
 	
@@ -971,7 +1295,7 @@ class MyBdd
                 . ") GROUP BY Id_evt_match  "
                 . "ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R')";
         $result = $this->Query($sql);
-        while($row = $this->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+        while($row = $this->FetchArray($result)) {
             $prenom = $row['Prenom'];
             $nom = $row['Nom'];
             $club = $row['Club'];
@@ -1045,11 +1369,11 @@ class MyBdd
 	function GetCategorie($age, &$code, &$libelle)
 	{
 		$query  = "Select Code, Libelle From gickp_Categorie Where Age_min <= $age And Age_max >= $age ";
-		$result = mysql_query($query, $this->m_link) or die ("Erreur Select");
+		$result = $this->Query($query) or die ("Erreur Select");
 		
-		if (mysql_num_rows($result) == 1)
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	
+			$row = $this->FetchArray($result);	
 			  
 			$code = $row['Code'];
 			$libelle = $row['Libelle'];
@@ -1067,11 +1391,11 @@ class MyBdd
 	function GetCodeComiteDept($codeClub)
 	{
 		$query  = "Select Code_comite_dep From gickp_Club Where Code = '$codeClub' ";
-		$result = mysql_query($query, $this->m_link) or die ("Erreur Select");
+		$result = $this->Query($query) or die ("Erreur Select");
 		
-		if (mysql_num_rows($result) == 1)
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	
+			$row = $this->FetchArray($result);	
 			return $row['Code_comite_dep'];
 		}
 	
@@ -1082,11 +1406,11 @@ class MyBdd
 	function GetCodeComiteReg($codeComiteDept)
 	{
 		$query  = "Select Code_comite_reg From gickp_Comite_dep Where Code = '$codeComiteDept' ";
-		$result = mysql_query($query, $this->m_link) or die ("Erreur Select");
+		$result = $this->Query($query) or die ("Erreur Select");
 		
-		if (mysql_num_rows($result) == 1)
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	
+			$row = $this->FetchArray($result);	
 			return $row['Code_comite_reg'];
 		}
 	
@@ -1101,11 +1425,11 @@ class MyBdd
 		// Suppression des Matchs  
 		$sql  = "Delete FROM gickp_Matchs Where Id_journee In (";
 		$sql .= "Select Id From gickp_Journees Where Code_competition = '$codeCompet' And Code_saison = '$codeSaison' )";
-		mysql_query($sql, $this->m_link) or die ("Erreur Delete1");
+		$this->Query($sql) or die ("Erreur Delete1");
 
 		// Suppression des Journées
 		$sql = "Delete From gickp_Journees Where Code_competition = '$codeCompet' And Code_saison = '$codeSaison' ";
-		mysql_query($sql, $this->m_link) or die ("Erreur Delete2");
+		$this->Query($sql) or die ("Erreur Delete2");
 
 		// Insertion des Journées ...
 		$nextIdJournee = $this->GetNextIdJournee();
@@ -1117,7 +1441,7 @@ class MyBdd
 		$sql .= "From gickp_Journees ";
 		$sql .= "Where Code_competition = '$codeCompetRef' And Code_saison = '$codeSaison' ";
 		
-		mysql_query($sql, $this->m_link) or die ("Erreur Insert1");
+		$this->Query($sql) or die ("Erreur Insert1");
 			
 		// Insertion des Matchs ...
 		$sql  = "Insert Into gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, Terrain, ";
@@ -1128,32 +1452,32 @@ class MyBdd
 		$sql .= "Where a.Id_journee = b.Id ";
 		$sql .= "And b.Code_competition = '$codeCompetRef' And b.Code_saison = '$codeSaison' ";
 		$sql .= "And a.Id_journee = c.Id_dupli";
-		mysql_query($sql, $this->m_link) or die ("Erreur Insert 2");
+		$this->Query($sql) or die ("Erreur Insert 2");
 		
 		// Modification des Id_Equipes ...
 		$sql  = "Update gickp_Matchs a, gickp_Competitions_Equipes b Set a.Id_equipeA = b.Id ";
 		$sql .= "Where a.Id_equipeA = b.Id_dupli ";
 		$sql .= "And b.Code_compet = '$codeCompet' And b.Code_saison = '$codeSaison' ";
 		$sql .= "And a.Id_journee In (Select Id From gickp_Journees Where Code_competition = '$codeCompet' And Code_saison = '$codeSaison') ";
-		mysql_query($sql, $this->m_link) or die ("Erreur Update A");
+		$this->Query($sql) or die ("Erreur Update A");
 		
 		// Modification des Id_Equipes ...
 		$sql  = "Update gickp_Matchs a, gickp_Competitions_Equipes b Set a.Id_equipeB = b.Id ";
 		$sql .= "Where a.Id_equipeB = b.Id_dupli ";
 		$sql .= "And b.Code_compet = '$codeCompet' And b.Code_saison = '$codeSaison' ";
 		$sql .= "And a.Id_journee In (Select Id From gickp_Journees Where Code_competition = '$codeCompet' And Code_saison = '$codeSaison') ";
-		mysql_query($sql, $this->m_link) or die ("Erreur Update B");
+		$this->Query($sql) or die ("Erreur Update B");
 	}
 	
 	// GetNextIdJournee 	
 	function GetNextIdJournee()
 	{
 		$sql  = "Select min(Id) minId From gickp_Journees Where Id < 0 ";
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select");
+		$result = $this->Query($sql) or die ("Erreur Select");
 	
-		if (mysql_num_rows($result) == 1)
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	  
+			$row = $this->FetchArray($result);	  
 			return ((int) $row['minId'])-1;
 		}
 		else
@@ -1168,12 +1492,12 @@ class MyBdd
 		$lstJournee = '0';
 
 		$sql = "Select Id_journee From gickp_Evenement_Journees Where Id_evenement = $idEvenement "; 
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
+		$result = $this->Query($sql) or die ("Erreur Load");
+		$num_results = $this->NumRows($result);
 			
 		for ($i=0;$i<$num_results;$i++)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			
 			$lstJournee .= ',';
 			$lstJournee .= $row['Id_journee'];
@@ -1195,10 +1519,10 @@ class MyBdd
 	function GetActiveSaison()
 	{
 		$sql = "Select Code From gickp_Saison Where Etat = 'A' "; 
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetActiveSaison() ");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetActiveSaison() ");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return $row['Code'];
 		}
 		
@@ -1211,19 +1535,19 @@ class MyBdd
 	function GetSaison($date, $bNational)
 	{
 			if ($bNational)
-				return GetSaisonNational($date);
+				return $this->GetSaisonNational($date);
 			else
-				return GetSaisonInternational($date);
+				return $this->GetSaisonInternational($date);
 	}
 
 	// GetSaisonNational 	
 	function GetSaisonNational($date)
 	{
 		$sql = "Select Code From gickp_Saison Where Nat_debut <= '$date' And Nat_fin >= '$date' "; 
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetSaisonNational() ");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetSaisonNational() ");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return $row['Code'];
 		}
 
@@ -1234,10 +1558,10 @@ class MyBdd
 	function GetSaisonInternational($date)
 	{
 		$sql = "Select Code From gickp_Saison Where Inter_debut <= '$date' And Inter_fin >= '$date' "; 
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetSaisonInternational() ");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetSaisonInternational() ");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return $row['Code'];
 		}
 		
@@ -1248,10 +1572,10 @@ class MyBdd
 	function GetLabelCompetition($codeCompet, $codeSaison)
 	{
 		$sql = "Select Libelle From gickp_Competitions Where Code = '$codeCompet' And Code_saison = '$codeSaison' "; 
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetLabelCompetition() ");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetLabelCompetition() ");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return $row['Libelle'];
 		}
 
@@ -1262,10 +1586,10 @@ class MyBdd
 	function GetSoustitre2Competition($codeCompet, $codeSaison)
 	{
 		$sql = "Select Soustitre2 From gickp_Competitions Where Code = '$codeCompet' And Code_saison = '$codeSaison' "; 
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetSoustitre2Competition() ");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetSoustitre2Competition() ");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return $row['Soustitre2'];
 		}
 
@@ -1283,10 +1607,10 @@ class MyBdd
 		$sql .= "FROM gickp_Competitions ";
 		$sql .= "WHERE Code = '$codeCompet' And Code_saison = '$codeSaison' "; 		
 	
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return $row;
 		}
 		return array( 'Code' => '', 'Code_niveau' => '', 'Libelle' => '',
@@ -1420,10 +1744,10 @@ class MyBdd
 	function GetClub($codeClub)
 	{
 		$sql  = "Select Code, Libelle, Code_comite_dep From gickp_Club Where Code = '$codeClub' ";
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetClub");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetClub");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return array( 'Code' => $row["Code"], 'Libelle' => $row["Libelle"], 'Code_comite_dep' => $row["Code_comite_dep"] );
 		}
 		return array( 'Code' => '', 'Libelle' => '', 'Code_comite_dep' => '' );
@@ -1434,10 +1758,10 @@ class MyBdd
 	{
 		$sql  = "Select Code, Libelle, Code_comite_reg From gickp_Comite_dep Where Code = '$codeComiteDep' ";
 	
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetComiteDep");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetComiteDep");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return array( 'Code' => $row["Code"], 'Libelle' => $row["Libelle"], 'Code_comite_reg' => $row["Code_comite_reg"] );
 		}
 		return array( 'Code' => '', 'Libelle' => '', 'Code_comite_reg' => '' );
@@ -1447,10 +1771,10 @@ class MyBdd
 	function GetComiteReg($codeComiteReg)
 	{
 		$sql  = "Select Code, Libelle From gickp_Comite_reg Where Code = '$codeComiteReg' ";
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select codeComiteReg");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select codeComiteReg");
+		if ($this->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $this->FetchArray($result);
 			return array( 'Code' => $row["Code"], 'Libelle' => $row["Libelle"] );
 		}
 		return array( 'Code' => '', 'Libelle' => '' );
@@ -1460,10 +1784,10 @@ class MyBdd
 	function GetNextMatricLicence()
 	{
 		$sql = "Select max(Matric) maxMatric From gickp_Liste_Coureur ";
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetNextMatricJoueur");
-		if (mysql_num_rows($result) == 1)
+		$result = $this->Query($sql) or die ("Erreur Select GetNextMatricJoueur");
+		if ($this->NumRows($result) == 1)
 		{
-				$row = mysql_fetch_array($result);
+				$row = $this->FetchArray($result);
 				$maxMatric = (int) $row['maxMatric'];
 				
 				return $maxMatric + 1;
@@ -1475,10 +1799,10 @@ class MyBdd
 	function GetCodeClubEquipe($idEquipe)
 	{
 			$sql  = "Select Code_club From gickp_Competitions_Equipes Where Id = $idEquipe";
-			$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetCodeClubEquipe : " . $idEquipe);
-			if (mysql_num_rows($result) == 1)
+			$result = $this->Query($sql) or die ("Erreur Select GetCodeClubEquipe : " . $idEquipe);
+			if ($this->NumRows($result) == 1)
 			{
-				$row = mysql_fetch_array($result);
+				$row = $this->FetchArray($result);
 				return $row['Code_club'];
 			}
 			return '';
@@ -1488,8 +1812,8 @@ class MyBdd
 	function InsertIfNotExistLicence($matric, $nom, $prenom, $sexe, $naissance, $codeClub, $numicf)
 	{
 		$sql  = "Select Count(*) Nb From gickp_Liste_Coureur Where matric = $matric";
-		$result = mysql_query($sql, $this->m_link) or die ("Erreur Select InsertIfNotExistLicence");
-		$row = mysql_fetch_array($result);
+		$result = $this->Query($sql) or die ("Erreur Select InsertIfNotExistLicence");
+		$row = $this->FetchArray($result);
 		$nb = (int) $row['Nb'];
 		if ($nb != 0)
 			return;
@@ -1500,9 +1824,9 @@ class MyBdd
 		$sql .= "Numero_club, Club, Numero_comite_dept, Comite_dept, Numero_comite_reg, Comite_reg, Reserve) Values ($matric,'";
 		$sql .= utyGetSaison();
 		$sql .= "','";
-		$sql .= mysql_real_escape_string($nom);
+		$sql .= $this->RealEscapeString($nom);
 		$sql .= "','";
-		$sql .= mysql_real_escape_string($prenom);
+		$sql .= $this->RealEscapeString($prenom);
 		$sql .= "','";
 		$sql .= $sexe;
 		$sql .= "','";
@@ -1510,19 +1834,19 @@ class MyBdd
 		$sql .= "','";
 		$sql .= $codeClub;
 		$sql .= "','";
-		$sql .= mysql_real_escape_string($arrayClub['Libelle']);
+		$sql .= $this->RealEscapeString($arrayClub['Libelle']);
 		$sql .= "','";
 		$sql .= $arrayClub['Code_comite_dep'];
 		$sql .= "','";
-		$sql .= mysql_real_escape_string($arrayComiteDep['Libelle']);
+		$sql .= $this->RealEscapeString($arrayComiteDep['Libelle']);
 		$sql .= "','";
 		$sql .= $arrayComiteDep['Code_comite_reg'];
 		$sql .= "','";
-		$sql .= mysql_real_escape_string($arrayComiteReg['Libelle']);
+		$sql .= $this->RealEscapeString($arrayComiteReg['Libelle']);
 		$sql .= "', ";
-		$sql .= mysql_real_escape_string($numicf);
+		$sql .= $this->RealEscapeString($numicf);
 		$sql .= ")";
-		mysql_query($sql, $this->m_link) or die ("Erreur Insert InsertIfNotExistLicence");
+		$this->Query($sql) or die ("Erreur Insert InsertIfNotExistLicence");
 	}
 
 	// Journal des manipulations
@@ -1543,9 +1867,9 @@ class MyBdd
 		$sql .= "'".$evenement."', ";
 		$sql .= "'".$journee."', ";
 		$sql .= "'".$match."', ";
-		$sql .= "'".mysql_real_escape_string($journal)."'";
+		$sql .= "'".$this->RealEscapeString($journal)."'";
 		$sql .= ") ";
-		mysql_query($sql, $this->m_link) or die ("Erreur Insert Journal : ".$sql);
+		$this->Query($sql) or die ("Erreur Insert Journal : ".$sql);
 	}
 
 	// Journal des exportations
@@ -1559,7 +1883,7 @@ class MyBdd
 		$sql .= "'".$nomuser."', ";
 		$sql .= "'".$erreurs."'";
 		$sql .= ") ";
-		mysql_query($sql, $this->m_link) or die ("Erreur Insert Journal Export : ".$sql);
+		$this->Query($sql) or die ("Erreur Insert Journal Export : ".$sql);
 	}
 	
 	
@@ -1570,10 +1894,10 @@ class MyBdd
 			{
 				$sql  = "Select Identite From gickp_Utilisateur Where Code = '$idUser' ";
 				
-				$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetUserName<br>".$sql);
-				if (mysql_num_rows($result) == 1)
+				$result = $this->Query($sql) or die ("Erreur Select GetUserName<br>".$sql);
+				if ($this->NumRows($result) == 1)
 				{
-					$row = mysql_fetch_array($result);
+					$row = $this->FetchArray($result);
 					return $row['Identite'];
 				}
 			}
@@ -1581,322 +1905,21 @@ class MyBdd
 	}
 
 	// GetnumOrdre
-	function GetnumOrdre($id)
+	function GetnumOrdre($idUser)
 	{
 			if($idUser != '')
 			{
-				$sql  = "Select Numero_ordre From gickp_Matchs Where Id = '$id' ";
-				$result = mysql_query($sql, $this->m_link) or die ("Erreur Select GetnumOrdre<br>".$sql);
-				if (mysql_num_rows($result) == 1)
+				$sql  = "Select Numero_ordre From gickp_Matchs Where Id = '$idUser' ";
+				$result = $this->Query($sql) or die ("Erreur Select GetnumOrdre<br>".$sql);
+				if ($this->NumRows($result) == 1)
 				{
-					$row = mysql_fetch_array($result);
+					$row = $this->FetchArray($result);
 					return $row['Numero_ordre'];
 				}
 			}
 			return '';
 	}
 	
-	// AJOUT COSANDCO : 12 Septembre 2014 ...
-	
-	// Query 		$result = $myBdd->Query($sql);
-    function Query($sql)
-    {
-        $result = mysql_query($sql, $this->m_link) or die ("Error Query : ".$sql);
-        return $result;
-    }
-	
-    // AffectedRows			$affected_results = $myBdd->AffectedRows($result);
-    function AffectedRows()
-    {
-        return mysql_affected_rows($this->m_link);
-    }
 
-    // NumRows			$num_results = $myBdd->NumRows($result);
-    function NumRows($result)
-    {
-        return mysql_num_rows($result);
-    }
-
-    // NumFields			$num_fields = $myBdd->NumFields($result);
-    function NumFields($result)
-    {
-        return mysql_num_fields($result);
-    }
-    
-    // FieldName			$field_name = $myBdd->FieldName($result);
-    function FieldName($result, $field)
-    {
-        return mysql_field_name($result, $field);
-    }
-
-    // FetchArray		$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
-    function FetchArray($result, $resulttype=MYSQL_ASSOC)
-    {
-        return mysql_fetch_array($result, $resulttype);
-    }
-
-     // FetchAssoc		$row = $myBdd->FetchAssoc($result);
-    function FetchAssoc($result)
-    {
-        return mysql_fetch_assoc($result);
-    }
-
-    // FetchRow			$row = $myBdd->FetchRow($result);
-    function FetchRow($result)
-    {
-        return mysql_fetch_row($result);
-    }
-	
-    // DataSeek			$row = $myBdd->DataSeek($result, $cursor);
-    function DataSeek($result, $cursor)
-    {
-        return mysql_data_seek($result, $cursor);
-    }
-    
-    // RealEscapeString			$myBdd->RealEscapeString($codeCompet);
-    function RealEscapeString($txt)
-    {
-        return mysql_real_escape_string($txt, $this->m_link);
-    }
-
-    // GetLastAutoIncrement
-    function GetLastAutoIncrement()
-    {
-        $result = $this->Query('Select LAST_INSERT_ID()');
-        $row = $this->FetchRow($result);
-        return (int) $row[0];
-    }
-
-    // ShowColumnsSQL
-    function ShowColumnsSQL($tableName, &$arrayColumns)
-    {
-        if ($arrayColumns == null){ 
-			$arrayColumns = array();
-		}
-        $result = $this->Query("SHOW COLUMNS FROM $tableName");
-        $num_results = $this->NumRows($result);
-        for ($i=0;$i<$num_results;$i++)
-        {
-            array_push($arrayColumns, $this->FetchArray($result));
-        }
-        return $num_results;
-    }
-	
-    // GetIndexColumn
-    function GetIndexColumn($tableName, $columnName)
-    {
-		$arrayColumns = array();
-		$this->ShowColumnsSQL($tableName, $arrayColumns);
-		return $this->GetIndexColumnByArray($columnName, $arrayColumns);
-	}
-	
-    function GetIndexColumnByArray($columnName, &$arrayColumns)
-    {
-		for ($i=0;$i<count($arrayColumns);$i++)
-		{
-			if ($arrayColumns[$i]['Field'] == $columnName)
-				return $i;
-		}
-        return -1;
-    }
-	
-    // IsNullSQL
-    function IsNullSQL($value)
-    {
-        $typeValue = gettype($value);
-        if ($typeValue == 'NULL') return true;
-        if (($typeValue == 'string') && ($value == '')) return true;
-
-        return false;
-    }
-
-    // ValueSQL
-    function ValueSQL($value, $type, $null)
-    {
-        if ($this->IsNullSQL($value))
-        {
-            if ($null == 'YES') 
-                return 'null';
-            else 
-                return "''";
-        }
-
-        $pos = strpos($type, 'int');
-        if (($pos !== false) && ($pos == 0)) return $value;
-
-        $pos = strpos($type, 'float');
-        if (($pos !== false) && ($pos == 0)) return $value;
-
-        $pos = strpos($type, 'double');
-        if (($pos !== false) && ($pos == 0)) return $value;
-
-        // On force le casting en string ...
-        settype($value, "string");
-        return "'".utyStringQuote($value)."'";
-    }
-
-    // SetSQL
-    function SetSQL($tableName, &$record, $bIgnoreNull=true, &$arrayColumns=null)
-    {
-        if ($arrayColumns == null)
-        {
-            $arrayColumns = array();
-            $this->ShowColumnsSQL($tableName, $arrayColumns);
-        }
-
-        $sql = '';
-
-        // Uniquement les colonnes presentes dans $record et $arrayColumns ...
-        $count = 0;
-        foreach($record as $key => $value)
-        {
-            if ($bIgnoreNull && $this->IsNullSQL($value))
-                continue;
-
-            for ($j=0;$j<count($arrayColumns);$j++)
-            {
-                if ($arrayColumns[$j]['Field'] == $key)
-                {
-                    if ($count == 0)
-                        $sql .= 'Set ';
-                    else
-                        $sql .= ',';
-                    ++$count;
-
-                    $sql .= $key.'=';
-                    $sql .= $this->ValueSQL($value, $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
-
-                    break;
-                }				
-            }
-        }
-
-        return $sql;
-    }
-
-    // InsertSQL
-    function InsertSQL($tableName, &$record, $bIgnoreNull=true, &$arrayColumns=null)
-    {
-        return "Insert Into $tableName ".$this->SetSQL($tableName, $record, $bIgnoreNull, $arrayColumns);
-    }
-
-    // UpdateSQL
-    function UpdateSQL($tableName, &$record, $bIgnoreNull=false, &$arrayColumns=null)
-    {
-        return "Update $tableName ".$this->SetSQL($tableName, $record, $bIgnoreNull, $arrayColumns);
-    }
-
-    // ReplaceSQL
-    function ReplaceSQL($tableName, &$record, $bIgnoreNull=false, &$arrayColumns=null)
-    {
-        return "Replace Into $tableName ".$this->SetSQL($tableName, $record, $bIgnoreNull, $arrayColumns);
-    }
-
-    // InsertBlocSQL
-    function InsertBlocSQL($tableName, &$tData, &$sql)
-    {
-        $sql = '';
-        $nbData = count($tData);
-        if ($nbData == 0) return;
-
-        $arrayColumns = array();
-        $this->ShowColumnsSQL($tableName, $arrayColumns);
-        $nbColumns = count($arrayColumns);
-
-        $sql .= "Insert Into $tableName (";
-        for ($j=0;$j<$nbColumns;$j++)
-        {
-                if ($j >0) $sql .= ',';
-                $sql .= $arrayColumns[$j]['Field'];
-        }
-        $sql .= ') Values ';
-
-        for ($i=0;$i<$nbData;$i++)
-        {
-            $record = &$tData[$i];
-
-            if ($i > 0) $sql .= ',';
-            $sql .= '(';
-            for ($j=0;$j<$nbColumns;$j++)
-            {
-                if ($j > 0) $sql .= ',';	
-
-                $key = $arrayColumns[$j]['Field'];
-                if (isset($record[$key]))
-                    $sql .= $this->ValueSQL($record[$key], $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
-                else
-                    //					$sql .= $this->ValueSQL('', $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
-                    $sql .= 'null';
-            }
-            $sql .= ')';
-        }
-    }
-
-    // ColumnsSQL
-    function ColumnsSQL($tableName, &$arrayColumns=null)
-    {
-        if ($arrayColumns == null)
-        {
-            $arrayColumns = array();
-            $this->ShowColumnsSQL($tableName, $arrayColumns);
-        }
-
-        $sql = '';
-        for ($j=0;$j<count($arrayColumns);$j++)
-        {
-            if ($sql != '')
-                $sql .= ',';
-
-            $sql .= $arrayColumns[$j]['Field'];
-        }
-        return $sql;
-    }
-
-    // ColumnsRecordSQL
-    function ColumnsRecordSQL(&$record, $bIgnoreNull=false)
-    {
-        $sql = '';
-        foreach($record as $key => $value)
-        {
-            if ($bIgnoreNull && $this->IsNullSQL($value))
-                continue;
-
-            if ($sql != '')
-                $sql .= ',';
-
-            $sql .= $key;
-        }
-
-        return $sql;
-    }
-
-    // LoadTable
-    function LoadTable($sql, &$arrayLoad)
-    {
-        $result = $this->Query($sql);
-        $num_results = $this->NumRows($result);
-
-        $arrayLoad = array();
-        for ($i=0;$i<$num_results;$i++)
-        {
-            array_push($arrayLoad, $this->FetchArray($result));
-        }
-    }
-
-    // LoadRecord
-    function LoadRecord($sql, &$record)
-    {
-        $result = $this->Query($sql);
-        if ($this->NumRows($result) >= 1)
-        {
-            $record = $this->FetchArray($result);
-        }
-        else
-        {
-            $record = array();
-        }
-    }
-	
-	// FIN AJOUT COSANDCO : 12 Septembre 2014 ...
 }
 
