@@ -1,7 +1,11 @@
 {include file='kpnavgroup.tpl'}
 
 <div class="container">
-    <article class="col-md-6 col-md-offset-3">
+    {if $recordCompetition.Code_typeclt == 'CHPT'}
+        <article class="col-md-10 col-md-offset-1">
+    {else}
+        <article class="col-md-6 col-md-offset-3">
+    {/if}
         {if $recordCompetition.Statut == 'END'}
             <table class='table table-striped table-condensed table-hover'>
                 {if $recordCompetition.Code_typeclt == 'CHPT'}
