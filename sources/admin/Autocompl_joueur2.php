@@ -27,17 +27,8 @@ include_once('../commun/MyTools.php');
         
 	$a_json = array();
 	$jRow = array();
-/*	// SECURITY HOLE ***************************************************************
-	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
-	$json_invalid = json_encode($a_json_invalid);
-	// allow space, any unicode letter and digit, underscore and dash
-	if(preg_match("/[^\040\pL\pN_-]/u", $term)) {
-	  print $json_invalid;
-	  exit;
-	}
-	// *****************************************************************************
- */
-	$sql  = "SELECT lc.*, c.Libelle, a.Arb, a.niveau "
+
+    $sql  = "SELECT lc.*, c.Libelle, a.Arb, a.niveau "
             . "FROM gickp_Liste_Coureur lc LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric), gickp_Club c "
             . "WHERE (lc.Matric Like '%".ltrim($term, '0')."%' "
             . "OR lc.Reserve = '".trim($term)."' "

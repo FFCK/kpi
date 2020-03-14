@@ -23,7 +23,7 @@ if($saison > 2000 && $competitions != '') {
 
     $result = $myBdd->Query($sql);
     echo "Licence,Nom,Prenom,Competition,NumMatch,Date,Heure<br>";
-    while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+    while ($row = $myBdd->FetchArray($result)){
         echo $row['Matric'] . ',';
         echo $row['Nom'] . ',';
         echo $row['Prenom'] . ',';

@@ -16,23 +16,11 @@ include_once('../../commun/MyTools.php');
 	$myBdd = new MyBdd();
 	$idMatch = (int)$_POST['idMatch'];
 	$idJournee = (int)$_POST['idJournee'];
-/*	// SECURITY HOLE ***************************************************************
-	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
-	$json_invalid = json_encode($a_json_invalid);
-	// allow space, any unicode letter and digit, underscore and dash
-	if(preg_match("/[^\040\pL\pN_-]/u", $value)) {
-	  print $json_invalid;
-	  exit;
-	}
-	// *****************************************************************************
-*/
 	$data[] = array('Id' => 0, 'Libelle' => '( indéterminé )');
 	$sql  = "SELECT ce.Id, ce.Libelle FROM gickp_Competitions_Equipes ce, gickp_Journees j WHERE ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison AND j.Id = ".$idJournee;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
-	while ($row = mysql_fetch_array($result)) {	
+	$result = $myBdd->Query($sql);
+	while ($row = $myBdd->FetchArray($result)) {	
 		$data[] = $row;
 	}
 	$encode_donnees = json_encode($data);
 	echo $encode_donnees; 
-
-?>

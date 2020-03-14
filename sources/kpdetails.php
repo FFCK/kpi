@@ -124,7 +124,7 @@ class Details extends MyPage
                     . "ORDER BY c.GroupOrder ";	 
             $arrayListJournees = array();
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+            while ($row = $myBdd->FetchArray($result)){
                 if ($row['Code_competition'] == $codeCompet) {
                     $row['Selected'] == true;
                     $journee[] = $row;
@@ -150,8 +150,8 @@ class Details extends MyPage
                 $sql .= "' And ce.Code_club = c.Code ";	 
                 $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
                 
-                $result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
-                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+                $result = $myBdd->Query($sql);
+                while ($row = $myBdd->FetchArray($result)){
                     //Logos
                     $logo = '';
                     $club = $row['Code_club'];
@@ -212,7 +212,7 @@ class Details extends MyPage
             $arrayListJournees = array();
             $journee = array();
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+            while ($row = $myBdd->FetchArray($result)){
                 if($row['Id_journee'] == $idSelJournee || $idSelJournee == '*'){
                     $row['Selected'] = true;
                     $journee[] = $row;
@@ -236,7 +236,7 @@ class Details extends MyPage
                     AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)";
             $arrayEquipe = array();
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+            while ($row = $myBdd->FetchArray($result)){
                 //Logos
                 $row['logo'] = '';
                 $row['club'] = $row['Code_club'];
@@ -270,7 +270,7 @@ class Details extends MyPage
                     . "ORDER BY c.Code_niveau, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code ";	 
             $arrayListJournees = array();
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+            while ($row = $myBdd->FetchArray($result)){
                 if($row['Code_competition'] == $codeCompet){
                     $row['Selected'] == true;
                     $journee[] = $row;
@@ -298,7 +298,7 @@ class Details extends MyPage
                 $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
                 
                 $result = $myBdd->Query($sql);
-                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+                while ($row = $myBdd->FetchArray($result)){
                     //Logos
                     $logo = '';
                     $club = $row['Code_club'];
@@ -353,9 +353,9 @@ class Details extends MyPage
 	}
 		
 
-	function Details()
+	function __construct()
 	{			
-	  MyPage::MyPage();
+	    MyPage::MyPage();
 		
 		$alertMessage = '';
 		

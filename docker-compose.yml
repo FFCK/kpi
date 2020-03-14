@@ -17,6 +17,22 @@ services:
         links:
             - db
         # tty: true
+    webphp7:
+        build: 
+            context: ./docker/web7
+            dockerfile: Dockerfile
+        ports:
+            - 8087:80
+            - 447:443
+        volumes:
+            - ./sources:/var/www/html
+            - ./docker/MyParams.php:/var/www/html/commun/MyParams.php
+            - ./docker/MyConfig.php:/var/www/html/commun/MyConfig.php
+            - ./docker/error7.log:/var/log/apache2/error.log
+        environment:
+            - ALLOW_OVERRIDE=true
+        links:
+            - db
     db:
         build: 
             context: ./docker/db

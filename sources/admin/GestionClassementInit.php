@@ -23,24 +23,20 @@ class GestionClassementInit extends MyPageSecure
 		$sql .= utyGetSaison();
 		$sql .= "'";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-			
 			$sql  = "Select Id From gickp_Competitions_Equipes_Init Where Id = ";
 			$sql .= $row['Id'];
 			
-			$result2 = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-			if (mysql_num_rows($result2) == 0)
+			$result2 = $myBdd->Query($sql);
+			if ($myBdd->NumRows($result2) == 0)
 			{
 					// Insertion
 					$sql = "Insert Into gickp_Competitions_Equipes_Init (Id,Clt,Pts,J,G,N,P,F,Plus,Moins,Diff) Values (";
 					$sql .= $row['Id'];
 					$sql .= ",0,0,0,0,0,0,0,0,0,0)";
-					mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert"); 
+					$myBdd->Query($sql); 
 			}
 	  }
 	  
@@ -52,26 +48,21 @@ class GestionClassementInit extends MyPageSecure
 		$sql .= "' ";
 		$sql .= "ORDER BY b.Clt, b.Pts, b.Diff DESC ";
 	
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
-		$num_results = mysql_num_rows($result);
-		
-		// Chargement des Equipes ...
 		$arrayEquipe = array();
+		$result = $myBdd->Query($sql);
 		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-						
-			array_push($arrayEquipe, array( 'Id' => $row['Id'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'],
-															        'Clt' => $row['Clt'], 'Pts' => $row['Pts'], 
-															        'J' => $row['J'], 'G' => $row['G'], 'N' => $row['N'], 
-															        'P' => $row['P'], 'F' => $row['F'], 'Plus' => $row['Plus'], 
-															        'Moins' => $row['Moins'], 'Diff' => $row['Diff'] ));
+		while($row = $myBdd->FetchArray($result)) {
+			array_push($arrayEquipe, array( 'Id' => $row['Id'], 'Libelle' => $row['Libelle'], 
+				'Code_club' => $row['Code_club'],
+				'Clt' => $row['Clt'], 'Pts' => $row['Pts'], 
+				'J' => $row['J'], 'G' => $row['G'], 'N' => $row['N'], 
+				'P' => $row['P'], 'F' => $row['F'], 'Plus' => $row['Plus'], 
+				'Moins' => $row['Moins'], 'Diff' => $row['Diff'] ));
 		}	
 		$this->m_tpl->assign('arrayEquipe', $arrayEquipe);
 	}
 		
-	function GestionClassementInit()
+	function __construct()
 	{			
 		MyPageSecure::MyPageSecure(4);
 		

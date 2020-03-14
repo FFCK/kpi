@@ -16,8 +16,8 @@ $myBdd = new MyBdd();
 $sql  = "Select * From gickp_Utilisateur ";
 $sql .= "Where code = '$user'";
 
-$result = mysql_query($sql, $myBdd-> m_link)or die("SQL-Error :".$sql);
-$num_results = mysql_num_rows($result);
+$result = $myBdd->Query($sql);
+$num_results = $myBdd->NumRows($result);
 
 if ($num_results != 1)
 {
@@ -25,7 +25,7 @@ if ($num_results != 1)
 	return;
 }
 	
-$row = mysql_fetch_array($result);	 
+$row = $myBdd->FetchArray($result);	 
 $userEvenement = $row['Id_Evenement'];
 $UserIdentite = $row["Identite"];
 		
@@ -53,5 +53,4 @@ for ($i=0;$i<count($arraySrc);$i++)
 $myBdd->EvtExport($user, $lstEvenement, 'Import', $UserIdentite, '');
 
 echo 'OK';
-?>
 

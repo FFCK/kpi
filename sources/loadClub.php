@@ -55,7 +55,7 @@ $sql2  = "SELECT Numero, Libelle "
         . "WHERE Code_club = '".$row['Code']."' "
         . "ORDER BY Libelle ";
 $result2 = $myBdd->Query($sql2);
-while ($row2 = $myBdd->FetchArray($result2, $resulttype=MYSQL_ASSOC)){ 
+while ($row2 = $myBdd->FetchArray($result2)){ 
     $jRow["equipes"][] = $row2;
 }
 array_push($a_json, $jRow);

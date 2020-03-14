@@ -23,10 +23,10 @@ class GestionParamJournee extends MyPageSecure
 			$sql .= "And j.Code_competition = c.Code ";
 			$sql .= "And j.Code_saison = c.Code_saison ";
 
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-			if (mysql_num_rows($result) == 1) {
+			$result = $myBdd->Query($sql);
+			if ($myBdd->NumRows($result) == 1) {
 				$ListJournees = array();
-				$row = mysql_fetch_array($result);	  
+				$row = $myBdd->FetchArray($result);	  
 				
 				$this->m_tpl->assign('Num_Journee', $row['Id']);
 				$this->m_tpl->assign('J_saison', $row['Code_saison']);
@@ -57,11 +57,8 @@ class GestionParamJournee extends MyPageSecure
 					$sql2 .= "And Code_saison = '".$row['Code_saison']."' ";
 					$sql2 .= "Order by Niveau, Phase ";
 
-					$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Select 2 =>  ".$sql2);
-					$num_results2 = mysql_num_rows($result2);
-					
-					for ($i=0;$i<$num_results2;$i++) {
-						$row2 = mysql_fetch_array($result2);	  
+					$result2 = $myBdd->Query($sql2);
+					while($row2 = $myBdd->FetchArray($result2)) {
 						array_push($ListJournees, $row2);
 					}
 					$this->m_tpl->assign('ListJournees', $ListJournees);
@@ -102,10 +99,8 @@ class GestionParamJournee extends MyPageSecure
 		// Liste des saisons
 		$arraySaisons = array();
 		$sql  = "Select distinct Code From gickp_Saison order by Code ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
-		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++) {
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		while ($row = $myBdd->FetchArray($result)) {
 			array_push($arraySaisons, array( 'Code' => $row['Code']));
 		}
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
@@ -160,7 +155,7 @@ class GestionParamJournee extends MyPageSecure
                     . 'Responsable_R1 = "'.$Responsable_R1.'", Organisateur = "'.$Organisateur.'", '
                     . 'Delegue = "'.$Delegue.'", ChefArbitre = "'.$ChefArbitre.'" '
                     . 'WHERE Id = '.$idJournee.' ';
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
+			$myBdd->Query($sql);
 		
             $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
 		} else {
@@ -172,21 +167,21 @@ class GestionParamJournee extends MyPageSecure
 			$sql .= "VALUES ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Etape', '$Nbequipes', '$Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
 			$sql .= "'$Departement', '$Responsable_insc', '$Responsable_R1', '$Organisateur', '$Delegue', '$ChefArbitre') ";
 
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert :<br>".$sql);
+			$myBdd->Query($sql);
 			
 			//Copie des matchs
 			if($AvecMatchs == 'oui') {
 				$sql2a  = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-				mysql_query($sql2a, $myBdd->m_link) or die ("Erreur Insert 2a ".$sql2a);
+				$myBdd->Query($sql2a);
 				$sql2  = "INSERT INTO gickp_Tmp (Num) SELECT DISTINCT ce.Id FROM gickp_Competitions_Equipes ce, gickp_Journees j ";
 				$sql2 .= "WHERE ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison AND j.Id = $idJournee ORDER BY ce.Tirage; ";
-				mysql_query($sql2, $myBdd->m_link) or die ("Erreur Insert 2 ".$sql2);
+				$myBdd->Query($sql2);
 
 				$sql3a  = "CREATE TEMPORARY TABLE gickp_Tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-				mysql_query($sql3a, $myBdd->m_link) or die ("Erreur Insert 3a ".$sql3a);
+				$myBdd->Query($sql3a);
 				$sql3  = "INSERT INTO gickp_Tmp2 (Num) SELECT DISTINCT ce.Id FROM gickp_Competitions_Equipes ce, gickp_Journees j ";
 				$sql3 .= "WHERE ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison AND j.Id = $idJournee ORDER BY ce.Tirage; ";
-				mysql_query($sql3, $myBdd->m_link) or die ("Erreur Insert 3 ".$sql3);
+				$myBdd->Query($sql3);
 
 				$sql4  = "Insert Into gickp_Matchs (Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, Validation) ";
 				$sql4 .= "Select $nextIdJournee, ";
@@ -205,10 +200,10 @@ class GestionParamJournee extends MyPageSecure
 					$sql4 .= "WHERE m.Id_journee = $idJournee ";
 				}
 				
-				mysql_query($sql4, $myBdd->m_link) or die ("Erreur Insert 4 : ".$sql.'<br>'.$sql2a.'<br>'.$sql2.'<br>'.$sql3a.'<br>'.$sql3.'<br>'.$sql4);
+				$myBdd->Query($sql4);
 			}
 		
-			$myBdd->utyJournal('Ajout journee', $codeSaison, $J_competition, '', $nextIdJournee);
+			$myBdd->utyJournal('Ajout journee', $J_saison, $J_competition, '', $nextIdJournee);
 		}			
 		
 		if (isset($_SESSION['ParentUrl'])) {
@@ -241,7 +236,7 @@ class GestionParamJournee extends MyPageSecure
                     . "Departement = '$Departement', Responsable_insc = '$Responsable_insc', "
                     . "Responsable_R1 = '$Responsable_R1', Organisateur = '$Organisateur', Delegue = '$Delegue', ChefArbitre = '$ChefArbitre' "
                     . "WHERE Id = $Journee ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
+			$myBdd->Query($sql);
 		
 			$myBdd->utyJournal('Modification journee', '', '', '', $Journee);
 		}
@@ -254,6 +249,7 @@ class GestionParamJournee extends MyPageSecure
 	}
 	
 	function AjustDates() {
+		$myBdd = new MyBdd();
 		$idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
 		if ($idJournee != 0) {
 			$myBdd = new MyBdd();
@@ -261,15 +257,15 @@ class GestionParamJournee extends MyPageSecure
 			$sql  = "SELECT Date_debut, Date_fin "
                     . "FROM gickp_Journees "
                     . "WHERE Id = $idJournee ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
-			$row = mysql_fetch_row($result);
+			$result = $myBdd->Query($sql);
+			$row = $myBdd->FetchRow($result);
 			$Date_debut = $row[0];
 			$Date_fin = $row[1];
 			
 			$sql  = "UPDATE gickp_Matchs "
                     . "SET Date_match = '".$Date_debut."' "
                     . "WHERE Id_journee = $idJournee ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert : ".$sql);
+			$myBdd->Query($sql);
 		}			
 	}
 
@@ -279,10 +275,10 @@ class GestionParamJournee extends MyPageSecure
 		$sql  = "SELECT max(Id) maxId "
                 . "FROM gickp_Journees "
                 . "WHERE Id < 19000001 ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
+		$result = $myBdd->Query($sql);
 	
-		if (mysql_num_rows($result) == 1) {
-			$row = mysql_fetch_array($result);	  
+		if ($myBdd->NumRows($result) == 1) {
+			$row = $myBdd->FetchArray($result);	  
 			return ((int) $row['maxId'])+1;
 		} else {
 			return 1;
@@ -311,7 +307,7 @@ class GestionParamJournee extends MyPageSecure
                     . "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre "
                     . "FROM gickp_Journees Where Id = $idJournee ";
 
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert");
+			$myBdd->Query($sql);
 		}			
 		
 		if (isset($_SESSION['ParentUrl'])) {
@@ -323,7 +319,8 @@ class GestionParamJournee extends MyPageSecure
 		$myBdd->utyJournal('Dupplication journee', '', '', '', $nextIdJournee); // A compléter (saison, compétition, options)
 	}
 	
-	function GestionParamJournee() {			
+	function __construct()
+	{
 		MyPageSecure::MyPageSecure(10);
 		
 		$alertMessage = '';

@@ -7,16 +7,17 @@ include_once('../commun/MyTools.php');
 // Gestion de la Feuille de Match
 class GestionMatchDetail extends MyPageSecure	 
 {	
-
+	
 	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
 	{
+		$myBdd = new MyBdd();
 		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select");
+        $result = $myBdd->Query($sql);
 
-		if (mysql_num_rows($result) != 1)
+		if ($myBdd->NumRows($result) != 1)
 			return;
 			
-		$row = mysql_fetch_array($result);
+		$row = $myBdd->FetchArray($result);
 		if ((int) $row['Nb'] > 0)
 			return;
 			
@@ -25,11 +26,12 @@ class GestionMatchDetail extends MyPageSecure
 		$sql .= "Where Id_equipe = $idEquipe ";
 		$sql .= "AND Capitaine <> 'X' ";
 		$sql .= "AND Capitaine <> 'A' ";
-		mysql_query($sql, $bdd->m_link) or die ("Erreur Replace InitTitulaireEquipe");
+        $myBdd->Query($sql);
  	}
 	
 	function Load()
 	{
+		$myBdd = new MyBdd();
 		$idMatch = utyGetGet('idMatch', -1);
 		$langue = parse_ini_file("../commun/MyLang.ini", true);
 		$version = utyGetSession('lang', 'fr');
@@ -54,7 +56,6 @@ class GestionMatchDetail extends MyPageSecure
 
                     
                     
-		$myBdd = new MyBdd();
 		// Contrôle autorisation journée
 		$sql  = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, m.Heure_fin, j.*, j.Code_saison saison, c.*, "
                 . "m.Type Type_match, m.Validation Valid_match, m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, "
@@ -65,8 +66,8 @@ class GestionMatchDetail extends MyPageSecure
                 . "AND m.Id_journee = j.Id "
                 . "AND j.Code_competition = c.Code "
                 . "AND j.Code_saison = c.Code_saison ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
-		$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		$row = $myBdd->FetchArray($result);
 		$saison = $row['saison'];
 		$statutMatch = $row['statutMatch'];
 		$publiMatch = $row['PubliMatch'];
@@ -113,8 +114,8 @@ class GestionMatchDetail extends MyPageSecure
 			$sql3 .= "And a.Id_match = $idMatch ";
 			$sql3 .= "And a.Equipe = 'A' ";
 			$sql3 .= "Order By Entraineur, Numero, Nom, Prenom ";	 
-			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load");
-			$num_results3 = mysql_num_rows($result3);
+			$result3 = $myBdd->Query($sql3);
+			$num_results3 = $myBdd->NumRows($result3);
 		// Compo équipe B
 			if ($row['Id_equipeB'] >= 1)
 				$this->InitTitulaireEquipe('B', $idMatch, $row['Id_equipeB'], $myBdd);
@@ -126,8 +127,8 @@ class GestionMatchDetail extends MyPageSecure
 			$sql4 .= "And a.Id_match = $idMatch ";
 			$sql4 .= "And a.Equipe = 'B' ";
 			$sql4 .= "Order By Entraineur, Numero, Nom, Prenom ";	 
-			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load<br />".$sql4);
-			$num_results4 = mysql_num_rows($result4);
+			$result4 = $myBdd->Query($sql4);
+			$num_results4 = $myBdd->NumRows($result4);
 
 			// Evts
 			$sql5  = "Select d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.motif, d.Competiteur, d.Numero, d.Equipe_A_B, ";
@@ -136,8 +137,8 @@ class GestionMatchDetail extends MyPageSecure
 			$sql5 .= "Where d.Id_match = $idMatch ";
 			//$sql5 .= "AND d.Equipe_A_B = 'A' ";
 			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id_evt_match DESC, d.Id ";
-			$result5 = mysql_query($sql5, $myBdd->m_link) or die ("Erreur Load<br />".$sql5);
-			$num_results5 = mysql_num_rows($result5);
+			$result5 = $myBdd->Query($sql5);
+			$num_results5 = $myBdd->NumRows($result5);
 ?>
 <!doctype html>
 <html lang="fr">
@@ -298,7 +299,7 @@ class GestionMatchDetail extends MyPageSecure
 								$entr_temp = '';
 								for ($i=1;$i<=$num_results3;$i++)
 								{
-									$row3 = mysql_fetch_array($result3);
+									$row3 = $myBdd->FetchArray($result3);
 									$age = utyCodeCategorie2($row3["Naissance"], $saison);
 									if($row3["Capitaine"] != 'E'){
 										$joueur_temp  = '<tr>';
@@ -333,7 +334,7 @@ class GestionMatchDetail extends MyPageSecure
                                     echo $entr_temp;
 								}
 								if($num_results3 >= 1)
-									mysql_data_seek($result3,0); 
+								$myBdd->DataSeek($result3,0); 
 							?>
 							</tbody>
 						</table>
@@ -361,7 +362,7 @@ class GestionMatchDetail extends MyPageSecure
 								$entr_temp = '';
 								for ($i=1;$i<=$num_results4;$i++)
 								{
-									$row4 = mysql_fetch_array($result4);
+									$row4 = $myBdd->FetchArray($result4);
 									$age = utyCodeCategorie2($row4["Naissance"], $saison);
 									if($row4["Capitaine"] != 'E'){
 										$joueur_temp  = '<tr>';
@@ -398,7 +399,7 @@ class GestionMatchDetail extends MyPageSecure
                                     echo $entr_temp;
 								}
 								if ($num_results4 >= 1) {
-                                    mysql_data_seek($result4, 0);
+                                    $myBdd->DataSeek($result4, 0);
                                 }
                             ?>
 							</tbody>
@@ -446,7 +447,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								$entr_temp = '';
 								for ($i=1;$i<=$num_results3;$i++)
 								{
-									$row3 = mysql_fetch_array($result3);
+									$row3 = $myBdd->FetchArray($result3);
 									if($row3["Capitaine"] != 'E'){
 										$joueur_temp  = '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
 										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
@@ -522,7 +523,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								$entr_temp = '';
 								for ($i=1;$i<=$num_results4;$i++)
 								{
-									$row4 = mysql_fetch_array($result4);
+									$row4 = $myBdd->FetchArray($result4);
 									if($row4["Capitaine"] != 'E'){
 										$joueur_temp  = '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
 										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
@@ -571,7 +572,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								$evt_temp = '';
 								for ($i=1;$i<=$num_results5;$i++)
 								{
-									$row5 = mysql_fetch_array($result5);
+									$row5 = $myBdd->FetchArray($result5);
                                     if($row5['motif'] != '') {
                                         $row5['motif_texte'] = ' (' . $lang[$row5['motif']] . ')';
                                     } else {
@@ -818,7 +819,7 @@ stop_time: <span id="stop_time_display"></span><br />
 				/* Evt chargés */
 				<?php
 				if($num_results5 >= 1)
-					mysql_data_seek($result5,0);
+					$myBdd->DataSeek($result5,0);
 				$evtEquipe = '';
                 $evt_tir['A'] = 0;
                 $evt_tir['B'] = 0;
@@ -826,7 +827,7 @@ stop_time: <span id="stop_time_display"></span><br />
                 $evt_arret['B'] = 0;
 				for ($i=1; $i<=$num_results5; $i++)
 				{
-					$row5 = mysql_fetch_array($result5);
+					$row5 = $myBdd->FetchArray($result5);
 					$evtEquipe = $row5['Equipe_A_B'];
                     $evt_temp_js = '';
 					switch($row5["Id_evt_match"]){
@@ -876,7 +877,7 @@ stop_time: <span id="stop_time_display"></span><br />
 
 	}
 
-	function GestionMatchDetail()
+	function __construct()
 	{			
 		MyPageSecure::MyPageSecure(10);
 		$this->Load();

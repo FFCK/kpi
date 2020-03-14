@@ -11,7 +11,7 @@ require_once('qrcode/qrcode.class.php');
 // Gestion de la Feuille de Classement
 class FeuilleCltNiveau extends MyPage 
 {	
-	function FeuilleCltNiveau()
+	function __construct()
 	{
 		MyPage::MyPage();
 		$myBdd = new MyBdd();

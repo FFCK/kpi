@@ -18,12 +18,12 @@ class GestionParamUser extends MyPageSecure
 		$sql .= "WHERE u.Code = l.Matric ";
 		$sql .= "AND l.Matric = '".utyGetSession('User')."' ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Param User");
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 	
 		if ($num_results == 1)
 		{
-			$row = mysql_fetch_array($result);	
+			$row = $myBdd->FetchArray($result);	
 		
 			$this->m_tpl->assign('UCode', $row['Code']);
 			$this->m_tpl->assign('UIdentite', $row['Identite']);
@@ -60,7 +60,7 @@ class GestionParamUser extends MyPageSecure
 		$sql .= "Tel = '".utyGetPost('Tel')."' ";
 		$sql .= "WHERE Code = '".utyGetSession('User')."' ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update Param User");
+		$myBdd->Query($sql);
 	}
 	
 	function UpdatePassword()
@@ -77,8 +77,9 @@ class GestionParamUser extends MyPageSecure
 			$sql .= "FROM gickp_Utilisateur ";
 			$sql .= "WHERE Code = '".utyGetSession('User')."' ";	 
 
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select Password".$sql);
-			$row = mysql_fetch_array($result);
+			$result = $myBdd->Query($sql);
+
+			$row = $myBdd->FetchArray($result);
 			$real_pass = $row['Pwd'];
 			
 			if(md5($pass1) == $real_pass)
@@ -88,16 +89,16 @@ class GestionParamUser extends MyPageSecure
 				$sql .= "SET Pwd = '".md5($pass2)."' ";
 				$sql .= "WHERE Code = '".utyGetSession('User')."' ";	 
 				
-				$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update Password");
+				$result = $myBdd->Query($sql);
 			}
 			else
 				die("erreur change password");
 		}
 	}
 	
-	function GestionParamUser()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(100);
+	  	MyPageSecure::MyPageSecure(100);
 		
 		$Cmd = '';
 		if (isset($_POST['Cmd']))

@@ -22,20 +22,10 @@ include_once('../../commun/MyTools.php');
 	}else{
 		$heure_fin_match = '';
 	}
-/*	// SECURITY HOLE ***************************************************************
-	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
-	$json_invalid = json_encode($a_json_invalid);
-	// allow space, any unicode letter and digit, underscore and dash
-	if(preg_match("/[^\040\pL\pN_-]/u", $value)) {
-	  print $json_invalid;
-	  exit;
-	}
-	// *****************************************************************************
-*/
 	// Contrôle autorisation journée
 	$sql  = "SELECT Id_journee, Validation FROM gickp_Matchs WHERE Id = ".$idMatch;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
-	$row = mysql_fetch_array($result);
+	$result = $myBdd->Query($sql);
+	$row = $myBdd->FetchArray($result);
 	if (!utyIsAutorisationJournee($row['Id_journee'])) {
         header('HTTP/1.0 401 Unauthorized');
         echo "Vous n'avez pas l'autorisation de modifier les matchs de cette journée !";
@@ -51,6 +41,6 @@ include_once('../../commun/MyTools.php');
 	if($heure_fin_match != '')
 		$sql .= ", Heure_fin = '".$heure_fin_match."' ";
 	$sql .= "WHERE Id = ".$idMatch;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
+	$myBdd->Query($sql);
 	echo utyGetPost('value'); 
 

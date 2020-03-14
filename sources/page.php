@@ -13,44 +13,44 @@ class MyPage
     function __construct(&$arrayParams)
     {
         $this->m_arrayParams = &$arrayParams;
-		$this->Display();
+		    $this->Display();
     }
 
     // GetParam ...
     function GetParam($key, $defaultValue='')
     {
-		if (isset($this->m_arrayParams[$key]))
-			return $this->m_arrayParams[$key];
-		else
-			return $defaultValue;
+      if (isset($this->m_arrayParams[$key]))
+        return $this->m_arrayParams[$key];
+      else
+        return $defaultValue;
     }
 
     function GetParamBool($key, $defaultValue=false)
     {
-		if (isset($this->m_arrayParams[$key]))
-		{
-			if (((int) $this->m_arrayParams[$key]) == 0) 
-				return false;
-			else 
-				return true;
-		}
-		return $defaultValue;
+		  if (isset($this->m_arrayParams[$key]))
+      {
+        if (((int) $this->m_arrayParams[$key]) == 0) 
+          return false;
+        else 
+          return true;
+      }
+      return $defaultValue;
     }
 
     function GetParamInt($key, $defaultValue=-1)
     {
-		if (isset($this->m_arrayParams[$key]))
-			return (int) $this->m_arrayParams[$key];
-		else
-			return $defaultValue;
+      if (isset($this->m_arrayParams[$key]))
+        return (int) $this->m_arrayParams[$key];
+      else
+        return $defaultValue;
     }
 
     function GetParamDouble($key, $defaultValue=0.0)
     {
-		if (isset($this->m_arrayParams[$key]))
-			return (double) $this->m_arrayParams[$key];
-		else
-			return $defaultValue;
+      if (isset($this->m_arrayParams[$key]))
+        return (double) $this->m_arrayParams[$key];
+      else
+        return $defaultValue;
     }
 
     // Affichage Classique de la Page ...
@@ -68,9 +68,8 @@ class MyPage
     // Tag HTML ...
     function Html()
     {
-    ?>
-        <!DOCTYPE html>
-        <html lang="fr">
+    ?><!DOCTYPE html>
+      <html lang="fr">
     <?php
     }
 
@@ -78,7 +77,7 @@ class MyPage
     function Head()
     {
     ?>
-        <head>
+      <head>
         <title>F.F.C.K.</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,11 +87,11 @@ class MyPage
         <meta name="rating" content="general">
         <meta name="Robots" content="all">
         
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		    <meta name="viewport" content="width=device-width, initial-scale=1">
 		
         <!-- CSS styles -->
         <link href="./live/css/bootstrap.min.css" rel="stylesheet">
-		<link href="./live/css/global.css" rel="stylesheet">
+		    <link href="./live/css/global.css" rel="stylesheet">
 		
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!--[if lt IE 9]>
@@ -100,7 +99,7 @@ class MyPage
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 		
-        </head>
+      </head>
     <?php
     }
 
@@ -115,14 +114,11 @@ class MyPage
     function Body()
     {
 //		echo "<div class='container-fluid'>\n";
-
         $this->Header();
         $this->Menu();
         $this->Content();
         $this->Footer();
- 
 //        echo "</div>\n";	// div container ...
-
         $this->Script();
     }
 
@@ -142,7 +138,7 @@ class MyPage
 	</div>	
 */
     ?>
-		<img class="centre" src="./live/img/THURY2014_Bandeau entete.jpg" height="125" width="1240" />
+		  <img class="centre" src="./live/img/THURY2014_Bandeau entete.jpg" height="125" width="1240" />
     <?php
     }
 
@@ -160,16 +156,16 @@ class MyPage
     function Footer()
     {	
     ?>
-		<div class="row footer">
-			<img class="centre" src="./live/img/THURY2014_Bandeau bas.jpg" />
-		</div>	
+      <div class="row footer">
+        <img class="centre" src="./live/img/THURY2014_Bandeau bas.jpg" />
+      </div>	
     <?php
     }
 
     function Script()
     {
     ?>
-		<script src="live/js/jquery-1.11.2.min.js"></script>
+		    <script src="live/js/jquery-1.11.2.min.js"></script>
         <script type="text/javascript" src="./live/js/bootstrap.min.js"></script>
     <?php
     }

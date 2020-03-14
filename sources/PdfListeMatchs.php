@@ -51,7 +51,7 @@ class PdfListeMatchs extends MyPage
 		$myBdd->Query($sql);
  	}
 	   
-	function PdfListeMatchs()
+	function __construct()
 	{
 		MyPage::MyPage();
         // Chargement des Matchs des journées ...
@@ -79,7 +79,7 @@ class PdfListeMatchs extends MyPage
 			$lstJournee = [];
 			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$idEvenement;
 			$result = $myBdd->Query($sql);
-			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+			while ($row = $myBdd->FetchArray($result)) {
                 $lstJournee[] = $row['Id_journee'];
 			}
             $lstJournee = implode(',', $lstJournee);
@@ -97,7 +97,7 @@ class PdfListeMatchs extends MyPage
                     . "AND c.Code_ref = '" . $Group . "' "
                     . "AND c.Code_ref = g.Groupe ";
 			$result = $myBdd->Query($sql);
-			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+			while ($row = $myBdd->FetchArray($result)) {
                 $lstCompet[] = "'".$row['Code']."'";
                 $laCompet = $row['Code'];
                 $titreEvenementCompet = $row['Libelle'];
@@ -133,7 +133,7 @@ class PdfListeMatchs extends MyPage
 		$num_results = $myBdd->NumRows($result);
 		
 		$PhaseLibelle = 0;
-        while ($row = $myBdd->FetchArray($result)) {
+        while ($row1 = $myBdd->FetchArray($result)) {
 			if (trim($row1['Phase']) != '') {
                 $PhaseLibelle = 1;
             }
@@ -363,20 +363,57 @@ class PdfListeMatchs extends MyPage
 			
 			switch ($orderMatchsKey1)
 			{
-			case "Code_competition" :
-				$pdf->SetFont('Arial','',8);
-				//$pdf->Cell(22,5, '',0,0,'C');
-				$pdf->Cell(8,5, $row['Numero_ordre'],'LTBR','0','C');
-				$pdf->Cell(16,5, utyDateUsToFr($row['Date_match']),'TBR','0','C');
-				$pdf->Cell(10,5, $row['Heure_match'],'TBR','0','C');
-				if ($PhaseLibelle == 1) {
-                        $pdf->Cell(52, 5, $phase_match, 'TBR', '0', 'C');
+                case "Code_competition" :
+                    $pdf->SetFont('Arial','',8);
+                    //$pdf->Cell(22,5, '',0,0,'C');
+                    $pdf->Cell(8,5, $row['Numero_ordre'],'LTBR','0','C');
+                    $pdf->Cell(16,5, utyDateUsToFr($row['Date_match']),'TBR','0','C');
+                    $pdf->Cell(10,5, $row['Heure_match'],'TBR','0','C');
+                    if ($PhaseLibelle == 1) {
+                            $pdf->Cell(52, 5, $phase_match, 'TBR', '0', 'C');
+                        } else {
+                            $pdf->Cell(52, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
+                        }
+                        $pdf->Cell(11,5, $row['Terrain'],'TBR','0','C');
+                    $pdf->Cell(35,5, $row['EquipeA'],'TBR','0','C');
+                    if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
+                            $pdf->Cell(7, 5, $row['ScoreA'], 'TBR', '0', 'C');
+                        } else {
+                            $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
+                        }
+                        if ($row['ScoreB'] != '?' && $row['Validation'] == 'O') {
+                            $pdf->Cell(7, 5, $row['ScoreB'], 'TBR', '0', 'C');
+                        } else {
+                            $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
+                        }
+                        $pdf->Cell(35,5, $row['EquipeB'],'TBR',0,'C');
+                    $pdf->SetFont('Arial','I',6);
+                    if ($row['Arbitre_principal'] == '-1') {
+                            $pdf->Cell(45, 5, '', 'TBR', 0, 'C');
+                        } else {
+                            $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', '0', 'C');
+                        }
+                        if ($row['Arbitre_secondaire'] == '-1') {
+                            $pdf->Cell(45, 5, '', 'TBR', 1, 'C');
+                        } else {
+                            $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
+                        }
+                        break;
+                case "Terrain" :
+                    $pdf->SetFont('Arial','',8);
+                    //$pdf->Cell(22,5, '',0,0,'C');
+                    $pdf->Cell(8,5, $row['Numero_ordre'],'LTBR','0','C');
+                    $pdf->Cell(16,5, utyDateUsToFr($row['Date_match']),'TBR','0','C');
+                    $pdf->Cell(10,5, $row['Heure_match'],'TBR','0','C');
+                    $pdf->Cell(17,5, $row['Code_competition'],'TBR','0','C');
+                    if ($PhaseLibelle == 1) {
+                        $pdf->Cell(50, 5, $phase_match, 'TBR', '0', 'C');
                     } else {
-                        $pdf->Cell(52, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
+                        $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
                     }
-                    $pdf->Cell(11,5, $row['Terrain'],'TBR','0','C');
-				$pdf->Cell(35,5, $row['EquipeA'],'TBR','0','C');
-				if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
+                    $pdf->Cell(35,5, $row['EquipeA'],'TBR','0','C');
+
+                    if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
                         $pdf->Cell(7, 5, $row['ScoreA'], 'TBR', '0', 'C');
                     } else {
                         $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
@@ -387,11 +424,11 @@ class PdfListeMatchs extends MyPage
                         $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
                     }
                     $pdf->Cell(35,5, $row['EquipeB'],'TBR',0,'C');
-				$pdf->SetFont('Arial','I',6);
-				if ($row['Arbitre_principal'] == '-1') {
+                    $pdf->SetFont('Arial','I',6);
+                    if ($row['Arbitre_principal'] == '-1') {
                         $pdf->Cell(45, 5, '', 'TBR', 0, 'C');
                     } else {
-                        $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', '0', 'C');
+                        $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', 0, 'C');
                     }
                     if ($row['Arbitre_secondaire'] == '-1') {
                         $pdf->Cell(45, 5, '', 'TBR', 1, 'C');
@@ -399,86 +436,49 @@ class PdfListeMatchs extends MyPage
                         $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
                     }
                     break;
-			case "Terrain" :
-				$pdf->SetFont('Arial','',8);
-				//$pdf->Cell(22,5, '',0,0,'C');
-				$pdf->Cell(8,5, $row['Numero_ordre'],'LTBR','0','C');
-				$pdf->Cell(16,5, utyDateUsToFr($row['Date_match']),'TBR','0','C');
-				$pdf->Cell(10,5, $row['Heure_match'],'TBR','0','C');
-				$pdf->Cell(17,5, $row['Code_competition'],'TBR','0','C');
-				if ($PhaseLibelle == 1) {
-                    $pdf->Cell(50, 5, $phase_match, 'TBR', '0', 'C');
-                } else {
-                    $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
-                }
-                $pdf->Cell(35,5, $row['EquipeA'],'TBR','0','C');
-
-                if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
-                    $pdf->Cell(7, 5, $row['ScoreA'], 'TBR', '0', 'C');
-                } else {
-                    $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
-                }
-                if ($row['ScoreB'] != '?' && $row['Validation'] == 'O') {
-                    $pdf->Cell(7, 5, $row['ScoreB'], 'TBR', '0', 'C');
-                } else {
-                    $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
-                }
-                $pdf->Cell(35,5, $row['EquipeB'],'TBR',0,'C');
-				$pdf->SetFont('Arial','I',6);
-				if ($row['Arbitre_principal'] == '-1') {
-                    $pdf->Cell(45, 5, '', 'TBR', 0, 'C');
-                } else {
-                    $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', 0, 'C');
-                }
-                if ($row['Arbitre_secondaire'] == '-1') {
-                    $pdf->Cell(45, 5, '', 'TBR', 1, 'C');
-                } else {
-                    $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
-                }
-                break;
-			default :
-				$heure2 = $row['Heure_match'];
-				if ($heure1 == $heure2) {
-                    $ltbr = '';
-                } else {
-                    $ltbr = 'T';
-                }
-                $heure1 = $heure2;
-				$pdf->SetFont('Arial','',8);
-				//$pdf->Cell(22,5, '',0,0,'C');
-				$pdf->Cell(8,5, $row['Numero_ordre'],'LR'.$ltbr,'0','C');
-				$pdf->Cell(10,5, $row['Heure_match'],'R'.$ltbr,'0','C');
-				$pdf->Cell(17,5, $row['Code_competition'],'R'.$ltbr,'0','C');
-				if ($PhaseLibelle == 1) {
-                    $pdf->Cell(50, 5, $phase_match, 'R' . $ltbr, '0', 'C');
-                } else {
-                    $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'R' . $ltbr, '0', 'C');
-                }
-                $pdf->Cell(12,5, $row['Terrain'],'R'.$ltbr,'0','C');
-				$pdf->Cell(35,5, $row['EquipeA'],'R'.$ltbr,'0','C');
-				if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
-                    $pdf->Cell(7, 5, $row['ScoreA'], 'R' . $ltbr, '0', 'C');
-                } else {
-                    $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
-                }
-                if ($row['ScoreB'] != '?' && $row['Validation'] == 'O') {
-                    $pdf->Cell(7, 5, $row['ScoreB'], 'R' . $ltbr, '0', 'C');
-                } else {
-                    $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
-                }
-                $pdf->Cell(35,5, $row['EquipeB'],'R'.$ltbr,0,'C');
-				$pdf->SetFont('Arial','I',6);
-				if ($row['Arbitre_principal'] == '-1') {
-                    $pdf->Cell(46, 5, '', 'R' . $ltbr, 0, 'C');
-                } else {
-                    $pdf->Cell(46, 5, $row['Arbitre_principal'], 'R' . $ltbr, 0, 'C');
-                }
-                if ($row['Arbitre_secondaire'] == '-1') {
-                    $pdf->Cell(46, 5, '', 'R' . $ltbr, 1, 'C');
-                } else {
-                    $pdf->Cell(46, 5, $row['Arbitre_secondaire'], 'R' . $ltbr, 1, 'C');
-                }
-                break;
+                default :
+                    $heure2 = $row['Heure_match'];
+                    if ($heure1 == $heure2) {
+                        $ltbr = '';
+                    } else {
+                        $ltbr = 'T';
+                    }
+                    $heure1 = $heure2;
+                    $pdf->SetFont('Arial','',8);
+                    //$pdf->Cell(22,5, '',0,0,'C');
+                    $pdf->Cell(8,5, $row['Numero_ordre'],'LR'.$ltbr,'0','C');
+                    $pdf->Cell(10,5, $row['Heure_match'],'R'.$ltbr,'0','C');
+                    $pdf->Cell(17,5, $row['Code_competition'],'R'.$ltbr,'0','C');
+                    if ($PhaseLibelle == 1) {
+                        $pdf->Cell(50, 5, $phase_match, 'R' . $ltbr, '0', 'C');
+                    } else {
+                        $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'R' . $ltbr, '0', 'C');
+                    }
+                    $pdf->Cell(12,5, $row['Terrain'],'R'.$ltbr,'0','C');
+                    $pdf->Cell(35,5, $row['EquipeA'],'R'.$ltbr,'0','C');
+                    if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
+                        $pdf->Cell(7, 5, $row['ScoreA'], 'R' . $ltbr, '0', 'C');
+                    } else {
+                        $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
+                    }
+                    if ($row['ScoreB'] != '?' && $row['Validation'] == 'O') {
+                        $pdf->Cell(7, 5, $row['ScoreB'], 'R' . $ltbr, '0', 'C');
+                    } else {
+                        $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
+                    }
+                    $pdf->Cell(35,5, $row['EquipeB'],'R'.$ltbr,0,'C');
+                    $pdf->SetFont('Arial','I',6);
+                    if ($row['Arbitre_principal'] == '-1') {
+                        $pdf->Cell(46, 5, '', 'R' . $ltbr, 0, 'C');
+                    } else {
+                        $pdf->Cell(46, 5, $row['Arbitre_principal'], 'R' . $ltbr, 0, 'C');
+                    }
+                    if ($row['Arbitre_secondaire'] == '-1') {
+                        $pdf->Cell(46, 5, '', 'R' . $ltbr, 1, 'C');
+                    } else {
+                        $pdf->Cell(46, 5, $row['Arbitre_secondaire'], 'R' . $ltbr, 1, 'C');
+                    }
+                    break;
 			}
 		}
 		$pdf->Cell(273,3,'','T','1','C');

@@ -74,4 +74,3 @@ class Score extends MyPage
 }
 
 new Score($_GET);
-?>

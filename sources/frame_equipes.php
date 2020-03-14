@@ -4,7 +4,7 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-// Gestion des Equipes
+// Equipes
 	
 class Equipes extends MyPage	 
 {	
@@ -37,7 +37,7 @@ class Equipes extends MyPage
                     . "WHERE e.Numero = $Equipe "
                     . "AND cl.Code = e.Code_club";
             $result = $myBdd->Query($sql);
-            $row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+            $row = $myBdd->FetchArray($result);
             $nomEquipe = $row['Equipe'];
             $Code_club = $row['Code_club'];
             $Club =  $row['Club'];
@@ -62,7 +62,7 @@ class Equipes extends MyPage
             $arraySaisons = array();
             $tempSaison = 0;
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+            while ($row = $myBdd->FetchArray($result)){ 
                 if($row['Classt'] != 0) {
                     if($row['Saison'] != $tempSaison){
                         $arraySaisons[] = array('Saison' => $row['Saison']);
@@ -142,7 +142,7 @@ class Equipes extends MyPage
                         GROUP BY cej.Matric
                         ORDER BY Field(if(cej.Capitaine='C','-',if(cej.Capitaine='','-',cej.Capitaine)), '-', 'E', 'A', 'X'), cej.Numero, cej.Nom, cej.Prenom ";
                 $result = $myBdd->Query($sql);
-                while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+                while ($row = $myBdd->FetchArray($result)) {
                     $arrayCompo[] = $row;
                 }
                 $this->m_tpl->assign('arrayCompo', $arrayCompo);
@@ -151,7 +151,7 @@ class Equipes extends MyPage
 	}
 	
 
-	function Equipes()
+	function __construct()
 	{			
         MyPage::MyPage();
 		

@@ -4,7 +4,7 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-// Gestion des Classements
+// Classements
 	
 class Classement extends MyPage	 
 {	
@@ -24,7 +24,7 @@ class Classement extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
 	
-		$idSelJournee = utyGetGet('J', $idSelJournee);
+		$idSelJournee = utyGetGet('J', 0);
 		$this->m_tpl->assign('idSelJournee', $idSelJournee);
 	
         $event = utyGetGet('event', '0');
@@ -90,7 +90,7 @@ class Classement extends MyPage
             }
 	
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) { 
+            while ($row = $myBdd->FetchArray($result)) { 
                 //Logos
                 $logo = '';
                 $club = $row['Code_club'];
@@ -168,7 +168,7 @@ class Classement extends MyPage
                 . "WHERE Id = $idEquipe AND Niveau = $niveau ";
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1) {
                 return;
             } // Le record existe ...
@@ -190,7 +190,7 @@ class Classement extends MyPage
                 . "AND Id_journee = $idJournee";
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
@@ -202,8 +202,8 @@ class Classement extends MyPage
 	}
 	
 
-	// GestionClassement 		
-	function Classement()
+	// Classement 		
+	function __construct()
 	{			
 	  MyPage::MyPage();
 		

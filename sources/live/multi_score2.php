@@ -127,4 +127,3 @@ class MultiScore extends MyPage
 }
 
 new MultiScore($_GET);
-?>

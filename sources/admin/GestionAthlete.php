@@ -26,16 +26,13 @@ class GestionAthlete extends MyPageSecure
                     . "From gickp_Saison "
                     . "Order By Code DESC ";	 
 		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
 		$arraySaison = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arraySaison, $row);
 		}
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 
-                // Chargement des Informations relatives à l'athlète
+		// Chargement des Informations relatives à l'athlète
 		if ($Athlete != '')
 		{
 			// Données générales
@@ -51,7 +48,7 @@ class GestionAthlete extends MyPageSecure
 			if ($myBdd->NumRows($result) != 1) {
                 return;
             }
-            $row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+            $row = $myBdd->FetchArray($result);
             $row['date_surclassement'] = utyDateUsToFr($row['date_surclassement']);
 			$this->m_tpl->assign('Courreur', $row);
 			$this->m_tpl->assign('Athlete_id', $row['Nom'].' '.$row['Prenom']);
@@ -61,7 +58,7 @@ class GestionAthlete extends MyPageSecure
 			$result = $myBdd->Query($sql);
 			if ($myBdd->NumRows($result) == 1)
 			{
-				$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+				$row = $myBdd->FetchArray($result);
 				switch ($row['Arb'])
 				{
 					case 'Int':
@@ -95,10 +92,7 @@ class GestionAthlete extends MyPageSecure
                                 . "AND ce.Code_saison = $SaisonAthlete "
                                 . "ORDER BY ce.Code_compet ";
 			$result = $myBdd->Query($sql);
-			$num_results = $myBdd->NumRows($result);
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+			while($row = $myBdd->FetchArray($result)) {
 				array_push($Titulaire, $row);
 			}
 			$this->m_tpl->assign('Titulaire', $Titulaire);
@@ -114,10 +108,7 @@ class GestionAthlete extends MyPageSecure
                                 . "AND j.Code_saison = $SaisonAthlete "
                                 . "ORDER BY m.Date_match DESC, m.Heure_match DESC ";
 			$result = $myBdd->Query($sql);
-			$num_results = $myBdd->NumRows($result);
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+			while($row = $myBdd->FetchArray($result)) {
 				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
                 } else {
@@ -145,10 +136,7 @@ class GestionAthlete extends MyPageSecure
                                 . "AND j.Code_saison = $SaisonAthlete "
                                 . "ORDER BY m.Date_match DESC, m.Heure_match DESC ";
 			$result = $myBdd->Query($sql);
-			$num_results = $myBdd->NumRows($result);
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
+			while($row = $myBdd->FetchArray($result)) {
 				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
                 } else {
@@ -177,11 +165,8 @@ class GestionAthlete extends MyPageSecure
                                 . "AND j.Code_saison = $SaisonAthlete "
                                 . "GROUP BY m.Id "
                                 . "ORDER BY m.Date_match DESC, m.Heure_match DESC ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select : <br>".$sql);
-			$num_results = mysql_num_rows($result);
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = mysql_fetch_array($result);
+			$result = $myBdd->Query($sql);
+			while($row = $myBdd->FetchArray($result)) {
 				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
                 } else {
@@ -224,13 +209,13 @@ class GestionAthlete extends MyPageSecure
             $sql .= ", Numero_club = '" . $update_club . "', Numero_comite_dept = '" . $update_cd . "', Numero_comite_reg = '" . $update_cr . "' ";
         }
         $sql .= "WHERE Matric = $update_matric";
-        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
+        $myBdd->Query($sql);
         
         $sql  = "UPDATE gickp_Competitions_Equipes_Joueurs "
                 . "SET Nom = '" . $update_nom . "', Prenom = '" . $update_prenom . "', "
                 . "Sexe = '" . $update_sexe . "' "
                 . "WHERE Matric = $update_matric";
-        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+		$myBdd->Query($sql);
         
         $sql  = "REPLACE INTO gickp_Arbitre VALUES ($update_matric, ";
         switch ($update_arb) {
@@ -257,7 +242,7 @@ class GestionAthlete extends MyPageSecure
                 break;
         }
         
-        mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
+        $myBdd->Query($sql);
         
         return "Modification effectuée !";
 	}
@@ -272,25 +257,29 @@ class GestionAthlete extends MyPageSecure
 		$sql .= "WHERE `Competiteur` = $numFusionSource; ";
 		$myBdd->Query($sql);
 		$requete = $sql;
+
 		$sql  = "UPDATE `gickp_Matchs_Joueurs` ";
 		$sql .= "SET `Matric` = $numFusionCible ";
 		$sql .= "WHERE `Matric` = $numFusionSource; ";
 		$myBdd->Query($sql);
 		$requete .= '   '.$sql;
+
 		$sql  = "UPDATE `gickp_Competitions_Equipes_Joueurs` ";
 		$sql .= "SET `Matric` = $numFusionCible ";
 		$sql .= "WHERE `Matric` = $numFusionSource; ";
 		$myBdd->Query($sql);
 		$requete .= '   '.$sql;
+
 		$sql  = "DELETE FROM `gickp_Liste_Coureur` ";
 		$sql .= "WHERE `Matric` = $numFusionSource; ";
 		$myBdd->Query($sql);
 		$requete .= '   '.$sql;
+
 		$myBdd->utyJournal('Fusion Joueurs', utyGetSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numFusionSource.' => '.$numFusionCible);
 		return('Joueurs fusionnés : ');
 	}
 	
-	function GestionAthlete()
+	function __construct()
 	{			
         MyPageSecure::MyPageSecure(7);
         

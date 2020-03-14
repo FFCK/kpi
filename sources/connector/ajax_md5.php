@@ -6,5 +6,3 @@ $pwd = '';
 if (isset($_GET['pwd'])) $pwd = $_GET['pwd'];
 
 echo md5($user.md5($pwd));
-?>
-

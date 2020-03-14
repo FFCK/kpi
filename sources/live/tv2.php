@@ -297,7 +297,7 @@ class TV extends MyPage
                             echo '
                                 <div class="banner_line">
                                     <div class="col-md-2 text-right clair">COACH</div>
-                                    <div class="col-md-10">' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . $captain . '</div>
+                                    <div class="col-md-10">' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . '</div>
 <!--                                    <span>' . utyGetString($joueur, 'Nom', '???') . '&nbsp;' . utyGetPrenom($joueur, 'Prenom', '???') . ' (Coach)</span> -->
                                 </div>';
                         }

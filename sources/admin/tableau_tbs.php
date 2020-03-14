@@ -8,18 +8,10 @@ include_once('../commun/MyTools.php');
 if (isset($_GET['source'])) exit(highlight_file(__FILE__,true));
 
 // load the TinyButStrong libraries
-if (version_compare(PHP_VERSION,'5')<0) {
-	include_once('../opentbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
-} else {
-	include_once('../opentbs/tbs_class_php5.php'); // TinyButStrong template engine
-}
+include_once('../opentbs/tbs_class-3.11.0.php'); 
 
 // load the OpenTBS plugin
-if (file_exists('../opentbs/tbs_plugin_opentbs.php')) {
-	include_once('../opentbs/tbs_plugin_opentbs.php');
-} else {
-	include_once('../opentbs/tbs_plugin_opentbs.php');
-}
+include_once('../opentbs/tbs_plugin_opentbs-1.10.0.php');
 
 $TBS = new clsTinyButStrong; // new instance of TBS
 $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
@@ -43,8 +35,8 @@ if (!file_exists($template)) exit("File does not exist.");
                 . "LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) "
                 . "WHERE a.Id in (".$listMatch.") "
                 . "AND a.Id_journee = d.Id ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
-		while ($aRow = mysql_fetch_array($result)) {
+		$result = $myBdd->Query($sql);
+		while ($aRow = $myBdd->FetchArray($result)) {
 				$aRow['Date_match'] = utyDateUsToFr($aRow['Date_match']);
 				if ($aRow['Libelle'] != '')
 				{

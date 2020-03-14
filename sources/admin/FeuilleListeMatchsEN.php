@@ -27,14 +27,15 @@ class PDF extends FPDF {
 class FeuilleListeMatchs extends MyPage {
 
     function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd) {
+        $myBdd = new MyBdd();
         $sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-        $result = mysql_query($sql, $bdd->m_link) or die("Erreur Select " . $sql);
+        $result = $myBdd->Query($sql);
 
-        if (mysql_num_rows($result) != 1) {
+        if ($myBdd->NumRows($result) != 1) {
             return;
         }
 
-        $row = mysql_fetch_array($result);
+        $row = $myBdd->FetchArray($result);
         if ((int) $row['Nb'] > 0) {
             return;
         }
@@ -44,11 +45,12 @@ class FeuilleListeMatchs extends MyPage {
         $sql .= "Where Id_equipe = $idEquipe ";
         $sql .= "AND Capitaine <> 'X' ";
         $sql .= "AND Capitaine <> 'A' ";
-        mysql_query($sql, $bdd->m_link) or die("Erreur Replace InitTitulaireEquipe " . $sql);
+        $myBdd->Query($sql);
     }
 
-    function FeuilleListeMatchs() {
+    function __construct() {
         MyPage::MyPage();
+        $myBdd = new MyBdd();
 
         $filtreJour = utyGetSession('filtreJour', '');
         $filtreJour = utyGetPost('filtreJour', $filtreJour);
@@ -59,17 +61,16 @@ class FeuilleListeMatchs extends MyPage {
         $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
         // Chargement des Matchs des journées ...
-        $myBdd = new MyBdd();
         $lstJournee = utyGetSession('lstJournee', 0);
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (isset($_GET['idEvenement'])) {
             $lstJournee = '';
             $sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = " . $_GET['idEvenement'];
-            $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load =>  " . $sql);
-            $num_results = mysql_num_rows($result);
+            $result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
             for ($j = 0; $j < $num_results; $j++) {
-                $row = mysql_fetch_array($result);
+                $row = $myBdd->FetchArray($result);
                 if ($lstJournee != '') {
                     $lstJournee .= ',';
                 }
@@ -115,12 +116,12 @@ class FeuilleListeMatchs extends MyPage {
 
         $orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
 
-        $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-        $num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+        $num_results = $myBdd->NumRows($result);
 
         $PhaseLibelle = 0;
         for ($j = 0; $j < $num_results; $j++) {
-            $row1 = mysql_fetch_array($result);
+            $row1 = $myBdd->FetchArray($result);
             if ($row1['Phase'] != '' || $row1['Libelle'] != '') {
                 $PhaseLibelle = 1;
             }
@@ -204,10 +205,10 @@ class FeuilleListeMatchs extends MyPage {
         $pdf->Ln(3);
         $heure1 = '';
         if ($num_results > 0) {
-            mysql_data_seek($result, 0);
+            $myBdd->DataSeek($result, 0);
         }
         for ($i = 0; $i < $num_results; $i++) {
-            $row = mysql_fetch_array($result);
+            $row = $myBdd->FetchArray($result);
 
             $row['Soustitre2'] = $myBdd->GetSoustitre2Competition($row['Code_competition'], $codeSaison);
             if ($row['Soustitre2'] != '') {

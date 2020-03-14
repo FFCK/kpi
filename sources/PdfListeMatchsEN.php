@@ -48,7 +48,7 @@ class PdfListeMatchs extends MyPage
 		$myBdd->Query($sql);
  	}
 	   
-	function PdfListeMatchs()
+	function __construct()
 	{
 		MyPage::MyPage();
   	// Chargement des Matchs des journées ...
@@ -76,7 +76,7 @@ class PdfListeMatchs extends MyPage
 			$lstJournee = [];
 			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$idEvenement;
 			$result = $myBdd->Query($sql);
-			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+			while ($row = $myBdd->FetchArray($result)) {
                 $lstJournee[] = $row['Id_journee'];
 			}
             $lstJournee = implode(',', $lstJournee);
@@ -93,7 +93,7 @@ class PdfListeMatchs extends MyPage
                     . "AND c.Code_ref = '" . $Group . "' "
                     . "AND c.Code_ref = g.Groupe ";
 			$result = $myBdd->Query($sql);
-			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+			while ($row = $myBdd->FetchArray($result)) {
                 $lstCompet[] = "'".$row['Code']."'";
                 $laCompet = $row['Code'];
                 $titreEvenementCompet = $row['Libelle'];

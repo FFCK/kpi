@@ -8,14 +8,14 @@ include_once('../commun/MyTools.php');
 
 class UnLogin extends MyPage 
 {	
-	function UnLogin()
+	function __construct()
 	{
 		session_start();
 			
 		if (isset($_SESSION['User']))
 		{
 			unset ($_SESSION['User']);
-  		$_SESSION = array();
+  			$_SESSION = array();
 		}
 
 		header("Location: ../index.php");	

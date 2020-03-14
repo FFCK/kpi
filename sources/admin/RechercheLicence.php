@@ -31,24 +31,19 @@ class RechercheLicence extends MyPageSecure
 		$sql .= $signature;
 		$sql .= "' Order By a.Nom, a.Prenom ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
-		
 		$arrayCoureur = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-					
-			array_push($arrayCoureur, array( 'Matric' => $row['Matric'], 'Nom' => ucwords(strtolower($row['Nom'])), 'Prenom' => ucwords(strtolower($row['Prenom'])), 
-																			 'Sexe' => $row['Sexe'], 'Numero_club' => $row['Numero_club'], 'Club' => $row['Club'],
-																			 'Naissance' => utyDateUsToFr($row['Naissance']) , 
-																			 'Categ' => utyCodeCategorie2($row['Naissance']) ,
-																			 'Saison' => $row['Origine'] , 
-																			 'International' => $row['International'] ,
-																			 'National' =>  $row['National'] , 
-																			 'InterRegional' =>  $row['InterRegional'] , 
-																			 'Regional' =>  $row['Regional'] ));
-																			 
+		$result = $myBdd->Query($sql);
+		while ($row = $myBdd->FetchArray($result)) {
+			array_push($arrayCoureur, array( 'Matric' => $row['Matric'], 
+				'Nom' => ucwords(strtolower($row['Nom'])), 'Prenom' => ucwords(strtolower($row['Prenom'])), 
+				'Sexe' => $row['Sexe'], 'Numero_club' => $row['Numero_club'], 'Club' => $row['Club'],
+				'Naissance' => utyDateUsToFr($row['Naissance']) , 
+				'Categ' => utyCodeCategorie2($row['Naissance']) ,
+				'Saison' => $row['Origine'] , 
+				'International' => $row['International'] ,
+				'National' =>  $row['National'] , 
+				'InterRegional' =>  $row['InterRegional'] , 
+				'Regional' =>  $row['Regional'] ));
 		}
 		$this->m_tpl->assign('arrayCoureur', $arrayCoureur);
 		
@@ -76,27 +71,27 @@ class RechercheLicence extends MyPageSecure
 		$sql .= "From gickp_Comite_reg ";
 		$sql .= "Order By Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-
-		$num_results = mysql_num_rows($result);
-	
+		$result = $myBdd->Query($sql);
 		$arrayComiteReg = array();
-		if ('*' == $codeComiteReg)
-			array_push($arrayComiteReg, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Régionaux', 'Selection' => 'SELECTED' ) );
-		else
-			array_push($arrayComiteReg, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Régionaux', 'Selection' => '' ) );
+		$i = 0;
 		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-			
-			if ( ($i == 0) && (strlen($codeComiteReg) == 0) )
+		if ('*' == $codeComiteReg) {
+			array_push($arrayComiteReg, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Régionaux', 'Selection' => 'SELECTED' ) );
+		} else {
+			array_push($arrayComiteReg, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Régionaux', 'Selection' => '' ) );
+		}
+
+		while ($row = $myBdd->FetchArray($result)) {
+			if ( ($i == 0) && (strlen($codeComiteReg) == 0) ) {
 				$codeComiteReg = $row["Code"];
-			
-			if ($row["Code"] == $codeComiteReg)
+			}
+
+			if ($row["Code"] == $codeComiteReg) {
 				array_push($arrayComiteReg, array('Code' => $row['Code'], 'Libelle'=> $row['Code']." - ".$row['Libelle'], 'Selection' => 'SELECTED' ) );
-			else
+			} else {
 				array_push($arrayComiteReg, array('Code' => $row['Code'], 'Libelle'=> $row['Code']." - ".$row['Libelle'], 'Selection' => '' ) );
+			}
+			$i ++;
 		}
 		
 		$this->m_tpl->assign('arrayComiteReg', $arrayComiteReg);
@@ -115,26 +110,25 @@ class RechercheLicence extends MyPageSecure
 		}	
 		$sql .= "Order By Code ";	
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
-	
+		$result = $myBdd->Query($sql);
 		$arrayComiteDep = array();
-		if ('*' == $codeComiteDep)
+	
+		if ('*' == $codeComiteDep) {
 			array_push($arrayComiteDep, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Départementaux', 'Selection' => 'SELECTED' ) );
-		else
+		} else {
 			array_push($arrayComiteDep, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Départementaux', 'Selection' => '' ) );
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
-			
-			if ( ($i == 0) && (strlen($codeComiteDep) == 0) )
+		}
+
+		while ($row = $myBdd->FetchArray($result)) {
+			if ( ($i == 0) && (strlen($codeComiteDep) == 0) ) {
 				$codeComiteDep = $row["Code"];
+			}
 			
-			if ($row["Code"] == $codeComiteDep)
+			if ($row["Code"] == $codeComiteDep) {
 				array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => 'SELECTED' ) );
-			else
+			} else {
 				array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => '' ) );
+			}
 		}
 		$this->m_tpl->assign('arrayComiteDep', $arrayComiteDep);
 		
@@ -153,26 +147,25 @@ class RechercheLicence extends MyPageSecure
 		}
 		$sql .= " Order By Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Club");
-		$num_results = mysql_num_rows($result);
-	
+		$result = $myBdd->Query($sql);
 		$arrayClub = array();
-		if ('*' == $codeClub)
+	
+		if ('*' == $codeClub) {
 			array_push($arrayClub, array('Code' => '*', 'Libelle'=> '* - Tous les Clubs', 'Selection' => 'SELECTED' ) );
-		else
+		} else {
 			array_push($arrayClub, array('Code' => '*', 'Libelle'=> '* - Tous les Clubs', 'Selection' => '' ) );
+		}
 		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
-			
-			if ( ($i == 0) && (strlen($codeClub) == 0) )
+		while ($row = $myBdd->FetchArray($result)) {
+			if ( ($i == 0) && (strlen($codeClub) == 0) ) {
 				$codeClub = $row["Code"];
+			}
 			
-			if ($row["Code"] == $codeClub)
+			if ($row["Code"] == $codeClub) {
 				array_push($arrayClub, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => 'SELECTED' ) );
-			else
+			} else {
 				array_push($arrayClub, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => '' ) );
+			}
 		}
 		$this->m_tpl->assign('arrayClub', $arrayClub);
 	}
@@ -183,7 +176,7 @@ class RechercheLicence extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode('[,]', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 			
@@ -202,7 +195,7 @@ class RechercheLicence extends MyPageSecure
 		$sql .= ")";
 	
 		$myBdd = new MyBdd();
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+		$myBdd->Query($sql);
 	}
 	
 	function Find()
@@ -214,7 +207,7 @@ class RechercheLicence extends MyPageSecure
 		$sql .= "'";
 
 		$myBdd = new MyBdd();
-		$res = mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+		$myBdd->Query($sql);
 		
 		$sql  = "Insert Into gickp_Recherche_Licence (Signature, Matric) ";
 		$sql .= "Select '";
@@ -351,8 +344,7 @@ class RechercheLicence extends MyPageSecure
 			$sql .= " And Matric In (Select gickp_Arbitre.Matric From gickp_Arbitre $filterJuge) ";
 		}
 		
-		echo $sql;
-		$res = mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert !!!");
+		$myBdd->Query($sql);
 		
 		$_SESSION['matricJoueur'] = $matricJoueur;
 		$_SESSION['nomJoueur'] = $nomJoueur;
@@ -379,10 +371,10 @@ class RechercheLicence extends MyPageSecure
 			$sql .= ") ";
 
 			$myBdd = new MyBdd();
-			$res = mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+			$myBdd->Query($sql);
 			
 			$sql = "Update gickp_Recherche_Licence Set Validation = 'O'";
-			$res = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update");
+			$myBdd->Query($sql);
 					
 			header("Location: ".$parentUrl);	
 			exit;	
@@ -401,16 +393,16 @@ class RechercheLicence extends MyPageSecure
 			$sql .= "'";
 
 			$myBdd = new MyBdd();
-			$res = mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+			$myBdd->Query($sql);
 			
 			header("Location: http://".$_SERVER['HTTP_HOST'].$parentUrl);	
 			exit;	
 		}
 	}
 	
-	function RechercheLicence()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(10);
+	  	MyPageSecure::MyPageSecure(10);
 		
 		$Cmd = utyGetPost('Cmd');
 		$ParamCmd = utyGetPost('ParamCmd');
@@ -466,5 +458,3 @@ class RechercheLicence extends MyPageSecure
 }		  	
 
 $page = new RechercheLicence();
-
-?>

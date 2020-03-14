@@ -17,26 +17,15 @@ include_once('../../commun/MyTools.php');
 	$idMatch = (int)$_POST['idMatch'];
 	$idEquipe = (int)$_POST['idEquipe'];
 	$Equipe = $myBdd->RealEscapeString(trim($_POST['equipe'])); // A / B
-/*	// SECURITY HOLE ***************************************************************
-	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
-	$json_invalid = json_encode($a_json_invalid);
-	// allow space, any unicode letter and digit, underscore and dash
-	if(preg_match("/[^\040\pL\pN_-]/u", $value)) {
-	  print $json_invalid;
-	  exit;
-	}
-	// *****************************************************************************
-*/
 	$sql  = "UPDATE gickp_Matchs "
             . "SET Id_equipe".$Equipe." = ".$idEquipe." "
             . "WHERE Id = ".$idMatch;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update<br />".$sql);
+	$result = $myBdd->Query($sql);
 	// Vidage compo
 	$sql  = "DELETE FROM gickp_Matchs_Joueurs "
             . "WHERE Id_match = $idMatch "
             . "AND Equipe = '".$Equipe."' ";
-	mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete => ".$sql);
-	
+			$myBdd->Query($sql);	
 	echo "OK"; 
 
 

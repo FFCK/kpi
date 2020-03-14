@@ -102,7 +102,7 @@ class Stats extends MyPage
                 LIMIT 0, $nbLignes ";
         $arrayButeurs = array();
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+        while ($row = $myBdd->FetchArray($result)){ 
             array_push($arrayButeurs, array( 'Competition' => $row['Competition'], 
                         'Licence' => $row['Matric'],  
                         'Nom' => $row['Nom'],  
@@ -135,7 +135,7 @@ class Stats extends MyPage
 	
 
 	// Stats 		
-	function Stats()
+	function __construct()
 	{			
         MyPage::MyPage();
 		
