@@ -32,7 +32,7 @@ class Schema extends MyPageSecure
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
         
-		$idSelJournee = utyGetGet('J', $idSelJournee);
+		$idSelJournee = utyGetGet('J', -1);
 		$this->m_tpl->assign('idSelJournee', $idSelJournee);
 	
         $event = utyGetGet('event', '0');
@@ -96,7 +96,7 @@ class Schema extends MyPageSecure
             }
 	
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) { 
+            while ($row = $myBdd->FetchArray($result)) { 
                 //Logos
                 $logo = '';
                 $club = $row['Code_club'];
@@ -151,7 +151,7 @@ class Schema extends MyPageSecure
                 $sql .= "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
             }
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $arrayJournees[$row['Id_journee']] = $row;
                 $arrayJournees[$row['Id_journee']]['Actif'] = 0;
                 $arrayListJournees[] = $row['Id_journee'];
@@ -202,7 +202,7 @@ class Schema extends MyPageSecure
                     . "cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
             }
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $arrayJournees[$row['Id_journee']]['Actif'] = 1;
                 if (strlen($row['Code_comite_dep']) > 3) {
                     $row['Code_comite_dep'] = 'FRA';
@@ -264,7 +264,7 @@ class Schema extends MyPageSecure
                     ."ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
             }
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $journee = $row['Id_journee'];
                 if ($row['Validation'] != 'O') {
                     $row['ScoreA'] = '';
@@ -302,7 +302,7 @@ class Schema extends MyPageSecure
                 ."AND j.Etape LIKE '$Round' "
                 ."ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $journee = $row['Id'];
                 if ($row['Id_equipeA'] <= 1 || $row['Id_equipeB'] <= 1) {
                     if ($_SESSION['lang'] == 'en' ) {
@@ -397,7 +397,7 @@ class Schema extends MyPageSecure
                 . "WHERE Id = $idEquipe AND Niveau = $niveau ";
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1) {
                 return;
             } // Le record existe ...
@@ -419,7 +419,7 @@ class Schema extends MyPageSecure
                 . "AND Id_journee = $idJournee";
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
@@ -432,7 +432,7 @@ class Schema extends MyPageSecure
 	
 
 	// GestionClassement 		
-	function Schema()
+	function __construct()
 	{			
         MyPageSecure::MyPageSecure(10);
 		

@@ -34,3 +34,4 @@ SQL/sql9830.phpnet.org.poloweb4.jour1(2).sql.gz
 sources/kpi3/application/views/facebook_iframe.html.twig
 sources/kpi3/migration/TODO.md
 .vscode/*
+docker/error7.log

@@ -271,7 +271,6 @@ class MyPage
 	function DisplayTemplateGlobal($tplName)
 	{
 		$tplFullName  = $this->m_tpl->template_dir;
-		
 		$tplFullName .= '/';
 		$tplFullName .= $tplName;
 		$tplFullName .= $this->GetTemplateExtension();
@@ -317,4 +316,3 @@ class MyPageSecure extends MyPage
 	}
 }
 
-?>

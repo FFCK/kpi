@@ -60,12 +60,8 @@ class GestionEquipeJoueur extends MyPageSecure
                         . "Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
 			}
 			
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load => ".$sql);
-			$num_results = mysql_num_rows($result);
-		 
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = mysql_fetch_array($result);	  
+			$result = $myBdd->Query($sql);
+			while ($row = $myBdd->FetchArray($result)) {
 				if (strlen($row['Code_comite_dep']) > 3)
 					$row['Code_comite_dep'] = 'FRA';
 				if ($row['Tirage'] != 0 or $row['Poule'] != '')
@@ -91,11 +87,11 @@ class GestionEquipeJoueur extends MyPageSecure
 			$sql .= "' And eq.Id = ";
 			$sql .= $idEquipe;
 			
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-			$num_results = mysql_num_rows($result);
+			$result = $myBdd->Query($sql);
+			$num_results = $myBdd->NumRows($result);
 			if ($num_results == 1)
 			{
-				$row = mysql_fetch_array($result);	  
+				$row = $myBdd->FetchArray($result);	  
 				$infoEquipe = $lang['Equipe'] . ' : '.$row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
 				$infoEquipe2 = $row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
 				$_SESSION['infoEquipe'] = $infoEquipe;
@@ -144,8 +140,7 @@ class GestionEquipeJoueur extends MyPageSecure
                         . "WHERE a.Matric = b.Matric "
                         . "AND b.Signature = '" . $_SESSION['Signature'] . "' "
                         . "AND b.Validation = 'O' ";
-				
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace");
+				$myBdd->Query($sql);
                 
                 // TODO : Journal d'insertion ! 
                 // $myBdd->utyJournal($action, $saison='', $competition='', $evenement='NULL', $journee='NULL', $match='NULL', $journal='', $user='')
@@ -154,7 +149,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				// Vidage gickp_Recherche_Licence ...				
 				$sql = "DELETE FROM gickp_Recherche_Licence "
                         . "WHERE Signature = '" . $_SESSION['Signature'] . "' ";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+				$myBdd->Query($sql);
 				
 				unset($_SESSION['Signature']);
 			}			
@@ -171,12 +166,12 @@ class GestionEquipeJoueur extends MyPageSecure
 			$sql .= $idEquipe;
 			$sql .= " ORDER BY Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";	 //  
 
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load <br>".$sql);
-			$num_results = mysql_num_rows($result);
+			$result = $myBdd->Query($sql);
+			$num_results = $myBdd->NumRows($result);
 		
-			for ($i=0;$i<$num_results;$i++)
+			for ($i=0; $i<$num_results; $i++)
 			{
-				$row = mysql_fetch_array($result);
+				$row = $myBdd->FetchArray($result);
 				if($row['niveau'] != '')
 					$row['Arb'] .= '-'.$row['niveau'];
 				
@@ -242,11 +237,11 @@ class GestionEquipeJoueur extends MyPageSecure
                 . "AND j.Journal Like 'Equipe : ".$idEquipe." -%' "
                 . "ORDER BY j.Dates Desc "
                 . "LIMIT 1 ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Last Update<br>".$sql);
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 		for ($i=0;$i<$num_results;$i++)
 		{
-			$row = mysql_fetch_array($result);	  
+			$row = $myBdd->FetchArray($result);
 			$this->m_tpl->assign('LastUpdate', utyDateUsToFr(substr($row['Dates'],0,10)));
 			$this->m_tpl->assign('LastUpdater', $row['Identite']);
 			$this->m_tpl->assign('LastUpd', $row['Journal']);
@@ -301,12 +296,12 @@ class GestionEquipeJoueur extends MyPageSecure
 			$sql .= $capitaineJoueur;
 			$sql .= "') ";
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert");
+			$myBdd->Query($sql);
 			
 			if (($matricJoueur >= 2000000) && ($arbitreJoueur != ''))
 			{
 				$sql  = "Insert Into gickp_Arbitre (Matric, Regional, InterRegional, National, International, Arb, Livret, niveau, saison) Values (";
-				$sql .= mysql_real_escape_string($matricJoueur);
+				$sql .= $myBdd->RealEscapeString($matricJoueur);
 				switch ($arbitreJoueur) {
                     case 'REG' :
                         $sql .= ",'O','N','N','N','Reg','','".$niveauJoueur."','".$saisonJoueur."') ";
@@ -330,7 +325,7 @@ class GestionEquipeJoueur extends MyPageSecure
                         $sql .= ",'N','N','N','N','','','','') ";
                         break;
 				}
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur insert arb.<br />".$sql);
+				$myBdd->Query($sql);
 			}
 			
 			$myBdd->utyJournal('Ajout titulaire', '', '', 'NULL', 'NULL', 'NULL', 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
@@ -360,21 +355,21 @@ class GestionEquipeJoueur extends MyPageSecure
 			$sql  = "Insert Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) Values (";
 			$sql .= $idEquipe;
 			$sql .= ",";
-			$sql .= mysql_real_escape_string($matricJoueur);
+			$sql .= $myBdd->RealEscapeString($matricJoueur);
 			$sql .= ",'";
-			$sql .= mysql_real_escape_string($nomJoueur);
+			$sql .= $myBdd->RealEscapeString($nomJoueur);
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($prenomJoueur);
+			$sql .= $myBdd->RealEscapeString($prenomJoueur);
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($sexeJoueur);
+			$sql .= $myBdd->RealEscapeString($sexeJoueur);
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($categJoueur);
+			$sql .= $myBdd->RealEscapeString($categJoueur);
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($numeroJoueur);
+			$sql .= $myBdd->RealEscapeString($numeroJoueur);
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($capitaineJoueur);
+			$sql .= $myBdd->RealEscapeString($capitaineJoueur);
 			$sql .= "') ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert");
+			$myBdd->Query($sql);
 			
 			$myBdd->utyJournal('Ajout titulaire', '', '', 'NULL', 'NULL', 'NULL', 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
 		}
@@ -400,7 +395,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			$sql .= "Where Matric = ";
 			$sql .= $Matric;
 		
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert");
+			$myBdd->Query($sql);
 			
 			$myBdd->utyJournal('Ajout coureur', '', '', 'NULL', 'NULL', 'NULL', 'Equipe : '.$idEquipe.' - Joueur : '.$Matric);
 		}
@@ -411,7 +406,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		$idEquipe = utyGetPost('idEquipe', '');
 		$ParamCmd = utyGetPost('ParamCmd', '');
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode('[,]', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 			
@@ -429,7 +424,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		}
 		$sql .= ")";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+		$myBdd->Query($sql);
 
 	}
 	
@@ -447,9 +442,9 @@ class GestionEquipeJoueur extends MyPageSecure
 		exit;	
 	}
 	
-	function GestionEquipeJoueur()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(10);
+	 	MyPageSecure::MyPageSecure(10);
 		
 		$alertMessage = '';
 		

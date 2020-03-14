@@ -704,9 +704,9 @@ class GestionStats extends MyPageSecure
         $this->m_tpl->assign('sql_csv', $AfficheStat);
 	}
 	
-	function GestionStats()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(10);
+	    MyPageSecure::MyPageSecure(10);
 		
 		$alertMessage = '';
 		
@@ -720,8 +720,8 @@ class GestionStats extends MyPageSecure
 
 		if (strlen($Cmd) > 0)
 		{
-			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 2) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			// if ($Cmd == 'Add')
+			// 	($_SESSION['Profile'] <= 2) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($alertMessage == '')
 			{

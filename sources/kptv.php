@@ -109,7 +109,7 @@ class Tv extends MyPageSecure
             . "ORDER BY Date_debut DESC ";
         $arrayEvts = array();
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+        while ($row = $myBdd->FetchArray($result)){ 
             if( $row['Id'] == $codeEvt ) {
                 $row['selected'] = 'selected';
             } else {
@@ -134,7 +134,7 @@ class Tv extends MyPageSecure
         $arrayMatchs3 = array();
         $arrayMatchs4 = array();
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+        while ($row = $myBdd->FetchArray($result)){
             $arrayCompet[] = $row['Code_competition'];
             $saison = $row['Code_saison'];
             $arrayJours[] = $row['Date_match'];

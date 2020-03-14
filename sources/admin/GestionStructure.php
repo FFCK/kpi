@@ -25,13 +25,8 @@ class GestionStructure extends MyPageSecure
 		$sql .= "From gickp_Comite_reg ";
 		$sql .= "Order By Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load CR");
-
-		$num_results = mysql_num_rows($result);
-	
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"]." - ".$row["Libelle"], 'Selected' => '' ) );
 		}
 		
@@ -44,12 +39,8 @@ class GestionStructure extends MyPageSecure
 		$sql .= "From gickp_Comite_dep ";
 		$sql .= "Order By Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load CD");
-		$num_results = mysql_num_rows($result);
-
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code']." - ".$row['Libelle'], 'Selected' => '' ) );
 		}
 			
@@ -63,14 +54,9 @@ class GestionStructure extends MyPageSecure
 		$sql .= "Where c.Code = e.Code_club ";	 
 		$sql .= "Order By c.Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Club ".$sql);
-		$num_results = mysql_num_rows($result);
-		
+		$result = $myBdd->Query($sql);
 		$mapParam2 = '';
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arrayClub, array('Code' => $row['Code'], 
                 'Libelle' => $row['Code'].' - '.$row['Libelle'], 
                 'Selected' => '', 
@@ -78,8 +64,7 @@ class GestionStructure extends MyPageSecure
                 'Postal' =>  $row['Postal'], 
                 'Coord' =>  $row['Coord'],
                     ));
-			if($row['Coord'] != "")
-			{
+			if ($row['Coord'] != "") {
 				$html = htmlspecialchars(addslashes($row['Libelle']));
 				$code = $row['Code'];
                 $coord = $row['Coord'];
@@ -110,19 +95,6 @@ class GestionStructure extends MyPageSecure
                     })(marker,contentString,infowindow));
 
 				";
-//                $html = htmlspecialchars(addslashes($row['Libelle']));
-//				$label = $row['Code'];
-//				$post = $row['Postal'];
-//				$web = $row['www'];
-//				$mail = $row['email'];
-//				if (file_exists('img/logo/club'.$row['Code'].'.jpg'))
-//					$logo = $row['Code'];
-//				else
-//					$logo = 0;
-//				$mapParam2  .= "\n					var point = new GLatLng(".$row['Coord'].");";
-//				$mapParam2  .= "\n					var point2 = new GLatLng(".$row['Coord2'].");";
-//				$mapParam2  .= "\n					var marker = createMarker2(point,'$label','$html','$web','$mail',point2,'$post','$logo');";
-//				$mapParam2  .= "\n					map.addOverlay(marker);";
 			}
 		}
 		$this->m_tpl->assign('arrayClub', $arrayClub);
@@ -142,24 +114,13 @@ class GestionStructure extends MyPageSecure
 		$sql .= "And cd.Code_comite_reg = '98' ";	 
 		$sql .= "Order By c.Code_comite_dep, c.Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Club 2 : ".$sql);
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arrayClubInt, array('Code' => $row['Code'], 'Libelle' => $row['Code'].' - '.$row['Libelle']) );
 		}
 		
 		$this->m_tpl->assign('arrayClubInt', $arrayClubInt);
 
-		//Chargement paramètres carte ...
-		
-//		$mapParam  = "map.setCenter(new GLatLng(46.85, 1.75), 5);";
-//        $mapParam .= $mapParam2;
-
-	
-//		$this->m_tpl->assign('mapParam', $mapParam);
 	}
 		
 	function AddCD()
@@ -170,14 +131,14 @@ class GestionStructure extends MyPageSecure
 
 		$myBdd = new MyBdd();
 			
-				$sql  = "Insert Into gickp_Comite_dep (Code, Libelle, Code_comite_reg) Values ('";
-				$sql .= $codeCD;
-				$sql .= "','";
-				$sql .= $libelleCD;
-				$sql .= "','";
-				$sql .= $comiteReg;
-				$sql .= "') ";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur insert 1");
+		$sql  = "Insert Into gickp_Comite_dep (Code, Libelle, Code_comite_reg) Values ('";
+		$sql .= $codeCD;
+		$sql .= "','";
+		$sql .= $libelleCD;
+		$sql .= "','";
+		$sql .= $comiteReg;
+		$sql .= "') ";
+		$myBdd->Query($sql);
 			
 		$myBdd->utyJournal('Ajout CD', '', '', 'NULL', 'NULL', 'NULL', $codeCD);
 	}
@@ -211,15 +172,14 @@ class GestionStructure extends MyPageSecure
 		$sql .= "','";
 		$sql .= $email2;
 		$sql .= "') ";
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur insert 1");
+		$myBdd->Query($sql);
 		
 		$myBdd->utyJournal('Ajout Club', '', '', 'NULL', 'NULL', 'NULL', $codeClub);
 		
-		if($libelleEquipe2 != '')
-		{
+		if($libelleEquipe2 != '') {
 			$sql  = "Insert Into gickp_Equipe (Code_club, Libelle) Values ('".$codeClub."', '".$libelleEquipe2."')";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert 2");
-			$selectValue = mysql_insert_id();
+			$myBdd->Query($sql);
+			$selectValue = $myBdd->InsertId();
 			$myBdd->utyJournal('Ajout Equipe', '', '', 'NULL', 'NULL', 'NULL', $libelleEquipe2);
 			
 			if($affectEquipe != '')
@@ -233,8 +193,7 @@ class GestionStructure extends MyPageSecure
 				$sql .= utyGetSaison();
 				$sql .= "', Libelle, Code_club, Numero ";
 				$sql .= "From gickp_Equipe Where Numero = $selectValue";
-				
-				mysql_query($sql, $myBdd->m_link) or die ("<br>Erreur insert 2<br>".$sql);
+				$myBdd->Query($sql);
 			}
 		}
 			
@@ -256,7 +215,7 @@ class GestionStructure extends MyPageSecure
 		$sql .= "', Coord2 = '";
 		$sql .= $coord2;
 		$sql .= "', Postal = '";
-		$sql .= mysql_real_escape_string($postal);
+		$sql .= $myBdd->RealEscapeString($postal);
 		$sql .= "', www = '";
 		$sql .= $www;
 		$sql .= "', email = '";
@@ -265,14 +224,14 @@ class GestionStructure extends MyPageSecure
 		$sql .= "where Code = '";
 		$sql .= $club;
 		$sql .= "' ";
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur insert 1 : ".$sql);
+		$myBdd->Query($sql);
 			
 		$myBdd->utyJournal('Modification Club', '', '', 'NULL', 'NULL', 'NULL', $club);
 	}
 
-	function GestionStructure()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(10);
+	  	MyPageSecure::MyPageSecure(10);
 		
 		$alertMessage = '';
 		

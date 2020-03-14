@@ -10,7 +10,7 @@ require('../fpdf/fpdf.php');
 
 class FeuilleCltNiveau extends MyPage {
 
-    function FeuilleCltNiveau() {
+    function __construct() {
         MyPage::MyPage();
 
         $myBdd = new MyBdd();
@@ -133,6 +133,7 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Cell(18, 5, '-', 'B', 0, 'C');
         $pdf->Cell(20, 5, '+/-', 'B', 1, 'C');
 
+        $i = 0;
         while($row = $myBdd->FetchAssoc($result)) {
             $separation = 0;
             //Séparation qualifiés
@@ -177,6 +178,7 @@ class FeuilleCltNiveau extends MyPage {
             $pdf->Cell(18, 6, $row['Plus'], 'B', 0, 'C');
             $pdf->Cell(18, 6, $row['Moins'], 'B', 0, 'C');
             $pdf->Cell(20, 6, $row['Diff'], 'B', 1, 'C');
+            $i++;
         }
 
         $pdf->SetFont('Arial', 'I', 8);

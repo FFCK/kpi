@@ -16,7 +16,7 @@ function load( & $arrayJson, $sql,  & $bdd)
 //	for ($i = 0; $i < $num_results; $i++) {
 //		$row = mysql_fetch_array($result, MYSQL_ASSOC);
 	$result = $bdd->Query($sql);
-	while ($row = $bdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+	while ($row = $bdd->FetchArray($result)){ 
 		
 		$record = array();
 		foreach($row as $key => $value) {
@@ -339,4 +339,3 @@ else
 	echo $jsondata;
 }
 
-?>  

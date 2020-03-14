@@ -93,7 +93,7 @@ class FeuilleMatch extends MyPage
 		$pdf->Cell(135,1,"",'LTR','1','C',1);
 		$pdf->Cell(60,4,$lang['Lieu'].": ".$lieu." (".$dpt.")",'L','0','L',1);
 		$pdf->SetFont('Arial','B',12);
-		$pdf->Cell(40,4,$date."   ".$heure,'0','0','L',1);
+		$pdf->Cell(40,4,"Date/Heure",'0','0','L',1);
 		$pdf->Cell(35,4,$lang['Terrain'].": ".$terrain,'R','1','R',1);
 
 		$pdf->SetFont('Arial','',10);

@@ -69,4 +69,3 @@ class Presentation extends MyPage
 }
 
 new Presentation($_GET);
-?>

@@ -1,5 +1,4 @@
 <?php
-
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
@@ -392,7 +391,7 @@ class GestionUtilisateur extends MyPageSecure
 			$myBdd = new MyBdd();
 
 			if ($bNew) {
-                $sql = "SELECT Code FROM gickp_Utilisateur WHERE Code = '" . mysql_real_escape_string($guser) . "'";
+                $sql = "SELECT Code FROM gickp_Utilisateur WHERE Code = '" . $myBdd->RealEscapeString($guser) . "'";
                 $result = $myBdd->Query($sql);
                 if($myBdd->NumRows($result) == 1) {
                     return "Utilisateur déjà existant !";
@@ -400,32 +399,32 @@ class GestionUtilisateur extends MyPageSecure
                     $sql  = "Insert Into gickp_Utilisateur (Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, ";
                     $sql .=	"Type_filtre_competition, Filtre_competition, Filtre_saison, Filtre_competition_sql,";
                     $sql .=	"Filtre_journee, Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) Values ('";
-                    $sql .= mysql_real_escape_string($guser);
+                    $sql .= $myBdd->RealEscapeString($guser);
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($gidentite);
+                    $sql .= $myBdd->RealEscapeString($gidentite);
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($gmail);
+                    $sql .= $myBdd->RealEscapeString($gmail);
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($gtel);
+                    $sql .= $myBdd->RealEscapeString($gtel);
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($gfonction);
+                    $sql .= $myBdd->RealEscapeString($gfonction);
                     $sql .= "',";
                     $sql .= $gniveau;
                     $sql .= ",";
                     $sql .= "'".md5($gpwd)."',";
                     $sql .= $typeFiltreCompetition;
                     $sql .= ",'";
-                    $sql .= mysql_real_escape_string($filtreCompetition);
+                    $sql .= $myBdd->RealEscapeString($filtreCompetition);
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($filtreSaison);
+                    $sql .= $myBdd->RealEscapeString($filtreSaison);
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($filtreCompetitionSql);
+                    $sql .= $myBdd->RealEscapeString($filtreCompetitionSql);
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($filtreJournee);
+                    $sql .= $myBdd->RealEscapeString($filtreJournee);
                     $sql .= "','";
                     $sql .= $limitclub;
                     $sql .= "','";
-                    $sql .= mysql_real_escape_string($filtreEvenement);
+                    $sql .= $myBdd->RealEscapeString($filtreEvenement);
                     $sql .= "','";
                     $sql .= $Date_debut;
                     $sql .= "','";
@@ -436,29 +435,29 @@ class GestionUtilisateur extends MyPageSecure
                 }
 			} else {
 				$sql  = "Update gickp_Utilisateur Set Mail = '";
-				$sql .= mysql_real_escape_string($gmail);
+				$sql .= $myBdd->RealEscapeString($gmail);
 				$sql .= "', Tel = '";
-				$sql .= mysql_real_escape_string($gtel);
+				$sql .= $myBdd->RealEscapeString($gtel);
 				$sql .= "', Fonction = '";
-				$sql .= mysql_real_escape_string($gfonction);
+				$sql .= $myBdd->RealEscapeString($gfonction);
 				$sql .= "', Niveau = '";
 				$sql .= $gniveau;
 				$sql .= "', Identite = '";
-				$sql .= mysql_real_escape_string($gidentite);
+				$sql .= $myBdd->RealEscapeString($gidentite);
 				$sql .= "', Type_filtre_competition = ";
 				$sql .= $typeFiltreCompetition;
 				$sql .= ", Filtre_competition = '";
-				$sql .= mysql_real_escape_string($filtreCompetition);
+				$sql .= $myBdd->RealEscapeString($filtreCompetition);
 				$sql .= "', Filtre_saison = '";
-				$sql .= mysql_real_escape_string($filtreSaison);
+				$sql .= $myBdd->RealEscapeString($filtreSaison);
 				$sql .= "', Filtre_competition_sql = '";
-				$sql .= mysql_real_escape_string($filtreCompetitionSql);
+				$sql .= $myBdd->RealEscapeString($filtreCompetitionSql);
 				$sql .= "', Filtre_journee = '";
-				$sql .= mysql_real_escape_string($filtreJournee);
+				$sql .= $myBdd->RealEscapeString($filtreJournee);
 				$sql .= "', Limitation_equipe_club = '";
 				$sql .= $limitclub;
 				$sql .= "', Id_Evenement = '";
-				$sql .= mysql_real_escape_string($filtreEvenement);
+				$sql .= $myBdd->RealEscapeString($filtreEvenement);
 				$sql .= "', Date_debut = '";
 				$sql .= $Date_debut;
 				$sql .= "', Date_fin = '";
@@ -568,7 +567,7 @@ class GestionUtilisateur extends MyPageSecure
 	{
 		$ParamCmd = utyGetPost('ParamCmd');
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode('[,]', $ParamCmd);		
 		if (count($arrayParam) == 0) {
             return;
         } // Rien à Detruire ...
@@ -590,7 +589,7 @@ class GestionUtilisateur extends MyPageSecure
 			
 	}
 
-	function GestionUtilisateur()
+	function __construct()
 	{			
         MyPageSecure::MyPageSecure(3);
 		

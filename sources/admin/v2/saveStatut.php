@@ -18,20 +18,10 @@ include_once('../../commun/MyTools.php');
 	$id = explode('-', $_POST['id']);
     $matric = (int)$id[1];
 	$value = $myBdd->RealEscapeString(trim($_POST['value']));
-/*	// SECURITY HOLE ***************************************************************
-	$a_json_invalid = array(array("id" => "#", "value" => $term, "label" => "Only letters and digits are permitted..."));
-	$json_invalid = json_encode($a_json_invalid);
-	// allow space, any unicode letter and digit, underscore and dash
-	if(preg_match("/[^\040\pL\pN_-]/u", $value)) {
-	  print $json_invalid;
-	  exit;
-	}
-	// *****************************************************************************
-*/
 	// Contrôle autorisation journée
 	$sql  = "Select Id_journee, Validation from gickp_Matchs where Id = ".$idMatch;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
-	$row = mysql_fetch_array($result);
+	$result = $myBdd->Query($sql);
+	$row = $myBdd->FetchArray($result);
 	if (!utyIsAutorisationJournee($row['Id_journee']))
 		die ("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
 	if ($row['Validation']=='O')
@@ -41,6 +31,6 @@ include_once('../../commun/MyTools.php');
             . "SET Capitaine = '" . $value . "' "
             . "WHERE Id_match = " . $idMatch . " "
             . "AND Matric = " . $matric;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
+	$result = $myBdd->Query($sql);
 	echo $value; 
 

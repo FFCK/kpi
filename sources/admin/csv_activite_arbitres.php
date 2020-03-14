@@ -36,7 +36,7 @@ fputcsv($new_csv, array(
 ));
 
 $result = $myBdd->Query($sql);
-while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+while ($row = $myBdd->FetchArray($result)){
     fputcsv($new_csv, $row);
 }
 

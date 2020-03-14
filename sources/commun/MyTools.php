@@ -120,13 +120,20 @@ function utyYearOfDate($dateUs)
 	return 0;	// Error
 }
 
-// utyDateCmpFr 
-
+/**
+ * Comparaison de dates
+ *
+ * @param [type] $date1
+ * @param [type] $date2
+ * @return void
+ */
 function utyDateCmpFr($date1, $date2)
 {
 	$data1 = explode('/',$date1);
 	$data2 = explode('/',$date2);
-	
+	if (!isset($data1[2]) || !isset($data2[2])) {
+		return 0;
+	}
 	// Comparaison Annee
 	if ( (int) $data1[2] != (int) $data2[2] )
 		return (int) $data1[2] - (int) $data2[2];
@@ -708,7 +715,8 @@ function Genere_Password($size)
 {
     // Initialisation des caractères utilisables
     $characters = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
-        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
+		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", 
+		"p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
     $password = '';
     for($i=0; $i<$size; $i++)
     {
@@ -755,4 +763,3 @@ function utyMM_To_HHMM($time)
     return sprintf("%02d:%02d", $hour, $min);
 }
 
-?>

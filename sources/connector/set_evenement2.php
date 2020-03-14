@@ -17,10 +17,10 @@ if (isset($_GET['json']))
 		
 	$myBdd = new MyBdd(true);	// Connexion sur le site Mirroir (poloweb5)
 
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Error SQL : ".$sql);
-	if (mysql_num_rows($result) == 1)
+	$result = $myBdd->Query($sql);
+	if ($myBdd->NumRows($result) == 1)
 	{
-		$row = mysql_fetch_array($result);	  
+		$row = $myBdd->FetchArray($result);  
 		if ( ($row["Pwd"] === md5($pwd)) )
 		{
 			// Ici on peut intégrer les données ...
@@ -50,16 +50,16 @@ if (isset($_GET['json']))
 						$sql .= "Values (";
 						$sql .= $recEvenement[0];
 						$sql .= ",'";
-						$sql .= mysql_real_escape_string($recEvenement[1]);
+						$sql .= $myBdd->RealEscapeString($recEvenement[1]);
 						$sql .= "','";
-						$sql .= mysql_real_escape_string($recEvenement[2]);
+						$sql .= $myBdd->RealEscapeString($recEvenement[2]);
 						$sql .= "','";
 						$sql .= $recEvenement[3];
 						$sql .= "','";
 						$sql .= $recEvenement[4];
 						$sql .= "')";
 						
-						$result = mysql_query($sql, $myBdd->m_link) or die ("Error SQL : ".$sql);
+						$myBdd->Query($sql);
 					}
 				}
 				
@@ -79,4 +79,3 @@ else
 	echo 'Error Integration ...';
 }
 
-?>

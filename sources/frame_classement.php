@@ -76,7 +76,7 @@ class Classement extends MyPage
                     }
 	
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+            while ($row = $myBdd->FetchArray($result)){ 
                 //Logos
                 $logo = '';
                 $club = $row['Code_club'];
@@ -149,17 +149,17 @@ class Classement extends MyPage
 	
 		$sql  = "Select Count(*) Nb From gickp_Competitions_Equipes_Niveau Where Id = $idEquipe And Niveau = $niveau ";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 3");
-		if (mysql_num_rows($result) == 1)
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
 
 		$sql  = "Insert Into gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
 		$sql .= "Values ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 1");
+		$myBdd->Query($sql);
 	}
 
 	// ExistCompetitionEquipeJournee
@@ -169,10 +169,10 @@ class Classement extends MyPage
 		
 		$sql  = "Select count(*) Nb From gickp_Competitions_Equipes_Journee Where Id = $idEquipe And Id_journee = $idJournee";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 4");
-		if (mysql_num_rows($result) == 1)
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
@@ -180,14 +180,14 @@ class Classement extends MyPage
 		$sql  = "Insert Into gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
 		$sql .= "Values ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2");
+		$myBdd->Query($sql);
 	}
 	
 
-	// GestionClassement 		
-	function Classement()
+	// Classement 		
+	function __construct()
 	{			
-	  MyPage::MyPage();
+	  	MyPage::MyPage();
 		
 		$this->SetTemplate("Classement", "Classements", true);
 		$this->Load();

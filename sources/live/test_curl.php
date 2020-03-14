@@ -41,4 +41,3 @@ echo "errno = ".$header['errno'].'<br><br>';
 echo "errmsg = ".$header['errmsg'].'<br><br>';
 echo "content = ".$header['content'].'<br><br>';
 
-?>

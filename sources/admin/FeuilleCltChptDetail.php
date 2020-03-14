@@ -9,7 +9,7 @@ require('../fpdf/fpdf.php');
 // Gestion de la Feuille de Classement
 class FeuilleCltNiveau extends MyPage 
 {	
-	function FeuilleCltNiveau()
+	function __construct()
 	{
 		MyPage::MyPage();
 		$myBdd = new MyBdd();
@@ -100,13 +100,11 @@ class FeuilleCltNiveau extends MyPage
 		$sql .= $codeSaison;
 
 		$sql .= "' Order By Clt Asc, Diff Desc ";	 
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
-			
+        $result = $myBdd->Query($sql);
+        $num_results = $myBdd->NumRows($result);
+
+        for ($i = 0; $i < $num_results; $i++) {
+            $row = $myBdd->FetchArray($result);			
 			$idEquipe = $row['Id'];
 			$pdf->SetFont('Arial','B',12);
 			$pdf->Cell(55, 6, '',0,'0','L');
@@ -143,15 +141,15 @@ class FeuilleCltNiveau extends MyPage
 			$sql .= "' And (a.Id_equipeA = $idEquipe Or a.Id_equipeB = $idEquipe) ";	 
 
 			$sql .= "Order by b.Date_debut, b.Lieu ";
-			$result2 = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2");
-			$num_results2 = mysql_num_rows($result2);
+			$result2 = $myBdd->Query($sql);
+			$num_results2 = $myBdd->NumRows($result2);
 
 			$oldId_journee = '';
 			$pdf->SetFont('Arial','B',10);
 			
 			for ($j=0;$j<$num_results2;$j++)
 			{
-				$row2 = mysql_fetch_array($result2);	
+				$row2 = $myBdd->FetchArray($result2);	
 				if (($row2['ScoreA'] == '') || ($row2['ScoreA'] == '?')) {
                     continue;
                 } // Score non valide ...

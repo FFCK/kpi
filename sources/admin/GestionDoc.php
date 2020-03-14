@@ -33,12 +33,9 @@ class GestionDoc extends MyPageSecure
 		$sql  = "Select Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin ";
 		$sql .= "From gickp_Saison ";
 		$sql .= "Order By Code DESC ";	 
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
-		$num_results = mysql_num_rows($result);
 		$arraySaison = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
+        $result = $myBdd->Query($sql);
+        while ($row = $myBdd->FetchArray($result)){ 
 			array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
 										'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
 										'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
@@ -53,16 +50,13 @@ class GestionDoc extends MyPageSecure
 		$sql  = "Select Id, Libelle, Date_debut, Publication ";
 		$sql .= "From gickp_Evenement ";
 		$sql .= "Order By Date_debut DESC, Libelle ";	 
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
 		$arrayEvenement = array();
+        $result = $myBdd->Query($sql);
 		if (-1 == $idEvenement)
-			array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => 'SELECTED' ) );
+		array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => 'SELECTED' ) );
 		else
-			array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => '' ) );
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
+		array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => '' ) );
+		while ($row = $myBdd->FetchArray($result)){ 
 			if ($row["Id"] == $idEvenement)
 				array_push($arrayEvenement, array( 'Id' => $row['Id'], 'Libelle' => $row['Id'].' - '.$row['Libelle'], 'Selection' => 'SELECTED' ) );
 			else
@@ -144,12 +138,13 @@ class GestionDoc extends MyPageSecure
 		$sql .= "From gickp_Competitions_Equipes ";
 		$sql .= "Where Code_saison = '".$codeSaison."' ";
 		$sql .= "And Code_compet = '".$codeCompet."' "; 
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 3<br>".$sql);
-		$num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+        $row = $myBdd->FetchArray($result);
+		$num_results = $myBdd->NumRows($result);
 		$nbEquipes = 'X';
 		if($num_results == 1)
 		{
-			$row = mysql_fetch_array($result);
+			$row = $myBdd->FetchArray($result);
 			$nbEquipes = $row['nbEquipes'];
 		}
 		$this->m_tpl->assign('nbEquipes', $nbEquipes);
@@ -160,14 +155,12 @@ class GestionDoc extends MyPageSecure
 		$sql .= "Where j.Code_saison = '".$codeSaison."' ";
 		$sql .= "And j.Code_competition = '".$codeCompet."' "; 
 		$sql .= "Order By j.Niveau, j.Phase, j.Date_debut, j.Lieu ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 4<br>".$sql);
-		$num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 		$listJournees = '';
 		$nbJourneesPubli = 0;
 		$arrayJournees = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		while ($row = $myBdd->FetchArray($result)) {
 			if($row['Publication'] == 'O')
 				$nbJourneesPubli ++;
 			if($listJournees != '')
@@ -189,14 +182,12 @@ class GestionDoc extends MyPageSecure
 		$sql .= "And j.Code_competition = '".$codeCompet."' "; 
 		$sql .= "And j.Id = m.Id_journee ";
 		$sql .= "Order By m.Numero_ordre ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 5<br>".$sql);
-		$num_results = mysql_num_rows($result);
+        $result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 		$listMatchs = '';
 		$nbMatchsValid = 0;
 		$nbMatchsPubli = 0;
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		while ($row = $myBdd->FetchArray($result)) {
 			if($row['Publication'] == 'O')
 				$nbMatchsPubli ++;
 			if($row['Validation'] == 'O')
@@ -221,9 +212,9 @@ class GestionDoc extends MyPageSecure
 	}
 
 	// GestionDoc 		
-	function GestionDoc()
-	{			
-	  MyPageSecure::MyPageSecure(10);
+	function __construct()
+	{
+	  	MyPageSecure::MyPageSecure(10);
 		
 		$alertMessage = '';
 
