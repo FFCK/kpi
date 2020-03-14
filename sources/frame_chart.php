@@ -4,9 +4,9 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-// Gestion des Classements
+// Chart
 	
-class Classement extends MyPage	 
+class Chart extends MyPage	 
 {	
 	function Load()
 	{
@@ -80,7 +80,7 @@ class Classement extends MyPage
             }
 
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) { 
+            while ($row = $myBdd->FetchArray($result)) { 
                 //Logos
                 $logo = '';
                 $club = $row['Code_club'];
@@ -132,7 +132,7 @@ class Classement extends MyPage
                         . "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
             }
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $arrayJournees[$row['Id_journee']] = $row;
                 $arrayJournees[$row['Id_journee']]['Actif'] = 0;
                 $arrayListJournees[] = $row['Id_journee'];
@@ -180,7 +180,7 @@ class Classement extends MyPage
                     . "cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
             }
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $arrayJournees[$row['Id_journee']]['Actif'] = 1;
                 if (strlen($row['Code_comite_dep']) > 3) {
                     $row['Code_comite_dep'] = 'FRA';
@@ -242,7 +242,7 @@ class Classement extends MyPage
                     ."ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
             }
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $journee = $row['Id_journee'];
                 if ($row['Validation'] != 'O') {
                     $row['ScoreA'] = '';
@@ -280,7 +280,7 @@ class Classement extends MyPage
                 ."AND j.Etape LIKE '$Round' "
                 ."ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 $journee = $row['Id'];
                 if ($row['Id_equipeA'] <= 1 || $row['Id_equipeB'] <= 1) {
                     if ($_SESSION['lang'] == 'en' ) {
@@ -373,7 +373,7 @@ class Classement extends MyPage
                 . "WHERE Id = $idEquipe AND Niveau = $niveau ";
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1) {
                 return;
             } // Le record existe ...
@@ -395,7 +395,7 @@ class Classement extends MyPage
                 . "AND Id_journee = $idJournee";
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
@@ -407,8 +407,8 @@ class Classement extends MyPage
 	}
 	
 
-	// GestionClassement 		
-	function Classement()
+	// Chart 		
+	function __construct()
 	{			
         MyPage::MyPage();
 
@@ -432,4 +432,4 @@ class Classement extends MyPage
 	}
 }		  	
 
-$page = new Classement();
+$page = new Chart();

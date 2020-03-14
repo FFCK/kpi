@@ -48,17 +48,12 @@ class GestionClassement extends MyPageSecure
 		$sql .= "From gickp_Saison ";
 		$sql .= "Order By Code DESC ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
-	
 		$arraySaison = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
-			
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-										'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-										'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+				'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
+				'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
 		}
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
@@ -99,19 +94,19 @@ class GestionClassement extends MyPageSecure
                 $Libelle .= ' - ' . $row["Soustitre2"];
             }
 
-            if ((strlen($codeCompet) == 0) && (i == 0)) {
+            if ((strlen($codeCompet) == 0) && ($i == 0)) {
                 $codeCompet = $row["Code"];
             }
 
             if($j != $row['section']) {
-                $i ++;
-                $arrayCompetition[$i]['label'] = $label[$row['section']];
+				$i ++;
+				$arrayCompetition[$i]['label'] = $label[$row['section']];
             }
             if($row["Code"] == $codeCompet) {
-                $row['selected'] = 'selected';
+				$row['selected'] = 'selected';
                 $this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
             } else {
-                $row['selected'] = '';
+				$row['selected'] = '';
             }
             $j = $row['section'];
             $arrayCompetition[$i]['options'][] = $row;
@@ -129,15 +124,9 @@ class GestionClassement extends MyPageSecure
 		$sql .= utyGetFiltreCompetition('');
 		$sql .= " Order By Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 7");
-		$num_results = mysql_num_rows($result);
-	
-		$arrayCompetitionTransfert = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
-			
-			if ( (strlen($codeCompet) == 0) && (i == 0) )
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
+			if ( (strlen($codeCompet) == 0) && ($i == 0) )
  				 $codeCompet = $row["Code"];
 			
 			if ($row["Code"] == $codeCompet)
@@ -149,13 +138,9 @@ class GestionClassement extends MyPageSecure
 		
 		// Chargement des Saisons ...
 		$sql  = "Select Code From gickp_Saison Order By Code";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 66");
-		$num_results = mysql_num_rows($result);
-	
 		$arraySaison = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arraySaison, array('Code' => $row['Code'] ));
 		}
 		$this->m_tpl->assign('arraySaisonTransfert', $arraySaison);
@@ -211,16 +196,12 @@ class GestionClassement extends MyPageSecure
 			else
 				$sql .= "Order By ce.Clt Asc, ce.Diff Desc, ce.Libelle ";	 
 	
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 5");
-			$num_results = mysql_num_rows($result);
-		
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = mysql_fetch_array($result);	  
-				if (strlen($row['Code_comite_dep']) > 3)
+			$result = $myBdd->Query($sql);
+			while($row = $myBdd->FetchArray($result)) {
+				if (strlen($row['Code_comite_dep']) > 3) {
 					$row['Code_comite_dep'] = 'FRA';
-                
-				array_push($arrayEquipe, $row);
+				}
+                array_push($arrayEquipe, $row);
 			}
 			
 			// Classement public				
@@ -237,14 +218,11 @@ class GestionClassement extends MyPageSecure
 			else
 				$sql .= "Order By Clt_publi Asc, Diff_publi Desc ";	 
 	
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 5b");
-			$num_results = mysql_num_rows($result);
-		
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = mysql_fetch_array($result);	  
-				if (strlen($row['Code_comite_dep']) > 3)
+			$result = $myBdd->Query($sql);
+			while($row = $myBdd->FetchArray($result)) {
+				if (strlen($row['Code_comite_dep']) > 3) {
 					$row['Code_comite_dep'] = 'FRA';
+				}
 				array_push($arrayEquipe_publi, $row);
                 
 				if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0))
@@ -269,14 +247,9 @@ class GestionClassement extends MyPageSecure
 				$sql .= $codeSaison;
 				$sql .= "' Order By c.Niveau Desc, c.Phase Asc, c.Date_debut Asc, c.Lieu ASC, b.Clt Asc, b.Diff Desc, b.Plus Asc ";	 
 				
-				$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 5c");
-				$num_results = mysql_num_rows($result);
-			
-				for ($i=0;$i<$num_results;$i++)
-				{
-					$row = mysql_fetch_array($result);	  
-							
-					array_push($arrayEquipe_journee, $row);
+				$result = $myBdd->Query($sql);
+				while($row = $myBdd->FetchArray($result)) {
+						array_push($arrayEquipe_journee, $row);
 				}
 
 				// Classement public par journée/phase
@@ -292,14 +265,9 @@ class GestionClassement extends MyPageSecure
 				$sql .= $codeSaison;
 				$sql .= "' Order By c.Niveau Desc, c.Phase Asc, c.Date_debut Asc, c.Lieu ASC, b.Clt_publi Asc, b.Diff_publi Desc, b.Plus_publi Asc ";	 
 				
-				$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 5d");
-				$num_results = mysql_num_rows($result);
-			
-				for ($i=0;$i<$num_results;$i++)
-				{
-					$row = mysql_fetch_array($result);	  
-							
-					array_push($arrayEquipe_journee_publi, $row);
+				$result = $myBdd->Query($sql);
+				while($row = $myBdd->FetchArray($result)) {
+						array_push($arrayEquipe_journee_publi, $row);
 				}
 
 			}
@@ -374,11 +342,11 @@ class GestionClassement extends MyPageSecure
 		$sql .= $codeSaison;
 		$sql .= "'";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 2");
-		
-		if (mysql_num_rows($result) == 1)
+		$result = $myBdd->Query($sql);
+	
+		if ($myBdd->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	  
+			$row = $myBdd->FetchArray($result);	  
 			$typeClt = $row['Code_typeclt'];
 		}
 		
@@ -411,7 +379,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= $codeSaison;
 		$sql .= "'";	 
 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 1");
+		$myBdd->Query($sql);
 
 		($tousLesMatchs == 'tous') ? $lesMatchs = 'Inclu matchs non verrouillés' : $lesMatchs = 'Uniquement matchs verrouillés';
 		$myBdd->utyJournal('Calcul Classement', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $lesMatchs);
@@ -444,7 +412,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= $codeSaison;
 			$sql .= "'";	 
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur RAZ");
+			$myBdd->Query($sql);
 	}
 		
 	function InitClassementCompetitionEquipe($codeCompet, $codeSaison)
@@ -461,7 +429,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= $codeSaison;
 			$sql .= "'";	 
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update 2");
+			$myBdd->Query($sql);
 	}
 	
 	function RazClassementCompetitionEquipeNiveau($codeCompet, $codeSaison)
@@ -475,7 +443,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= "And b.Code_compet = '$codeCompet' ";
 			$sql .= "And b.Code_saison = '$codeSaison' ";
 
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update RAZ Niveau : ".$sql);
+			$myBdd->Query($sql);
 	}
 	
 	function RazClassementCompetitionEquipeJournee($codeCompet, $codeSaison)
@@ -489,7 +457,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= "Where b.Code_competition = '$codeCompet' ";
 			$sql .= "And b.Code_saison = '$codeSaison' ";
 
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update RAZ Journee : ".$sql);
+			$myBdd->Query($sql);
 	}
 
 	
@@ -517,12 +485,12 @@ class GestionClassement extends MyPageSecure
         }
         $sql .= "Order By b.Id ";	 
 			
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
-			$num_results = mysql_num_rows($result);
+			$result = $myBdd->Query($sql);
+			$num_results = $myBdd->NumRows($result);
 		
 			for ($i=0;$i<$num_results;$i++)
 			{
-				$row = mysql_fetch_array($result);
+				$row = $myBdd->FetchArray($result);
 				$scoreA = $row['ScoreA'];
 				$scoreB = $row['ScoreB'];
 				
@@ -723,17 +691,17 @@ class GestionClassement extends MyPageSecure
 	
 		$sql  = "Select Count(*) Nb From gickp_Competitions_Equipes_Niveau Where Id = $idEquipe And Niveau = $niveau ";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 3");
-		if (mysql_num_rows($result) == 1)
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	 
+			$row = $myBdd->FetchArray($result);	 
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
 
 		$sql  = "Insert Into gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
 		$sql .= "Values ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 1");
+		$myBdd->Query($sql);
 	}
 
 	// ExistCompetitionEquipeJournee
@@ -743,10 +711,10 @@ class GestionClassement extends MyPageSecure
 		
 		$sql  = "Select count(*) Nb From gickp_Competitions_Equipes_Journee Where Id = $idEquipe And Id_journee = $idJournee";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 4");
-		if (mysql_num_rows($result) == 1)
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1)
 		{
-			$row = mysql_fetch_array($result);	 
+			$row = $myBdd->FetchArray($result);	
 			if ($row['Nb'] == 1)
 				return; // Le record existe ...
 		}
@@ -754,7 +722,7 @@ class GestionClassement extends MyPageSecure
 		$sql  = "Insert Into gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
 		$sql .= "Values ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2");
+		$myBdd->Query($sql);
 	}
 	
 	// StepClassementCompetitionEquipe
@@ -785,7 +753,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= $arrayCltA['PtsNiveau'];
 		$sql .= " Where Id = $idEquipeA ";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update A : ".$sql);
+		$myBdd->Query($sql);
 		
 		// Equipe B ...
 		$sql  = "Update gickp_Competitions_Equipes Set Pts=Pts+";
@@ -810,7 +778,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= $arrayCltB['PtsNiveau'];
 		$sql .= " Where Id = $idEquipeB ";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update B");
+		$myBdd->Query($sql);
 	}
 	
 	// StepClassementCompetitionEquipeNiveau
@@ -845,7 +813,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeA ";
 		$sql .= " And Niveau = $niveau";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update C");
+		$myBdd->Query($sql);
 		
 		// Equipe B ...
 		$sql  = "Update gickp_Competitions_Equipes_Niveau Set Pts=Pts+";
@@ -871,7 +839,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeB ";
 		$sql .= " And Niveau = $niveau";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update D");
+		$myBdd->Query($sql);
 	}
 
 	// StepClassementCompetitionEquipeJournee
@@ -906,7 +874,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeA ";
 		$sql .= " And Id_journee = $idJournee";
 		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update E");
+		$myBdd->Query($sql);
 		
 		// Equipe B ...
 		$sql  = "Update gickp_Competitions_Equipes_Journee Set Pts=Pts+";
@@ -932,7 +900,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= " Where Id = $idEquipeB ";
 		$sql .= " And Id_journee = $idJournee";
 	
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update F");
+		$myBdd->Query($sql);
 	}
 		
 	function FinalisationClassementChpt($codeCompet, $codeSaison)
@@ -950,15 +918,11 @@ class GestionClassement extends MyPageSecure
 
 		$oldClt = 0;
 		$oldPts = 0;
+		$egalites = 1;
+		$i = 0;
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2");
-		$num_results = mysql_num_rows($result);
-        $egalites = 1;
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	 
-			
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			if ($row['Pts'] != $oldPts) {
                 $clt = $i + 1;
                 $oldClt = $clt;
@@ -973,7 +937,8 @@ class GestionClassement extends MyPageSecure
 			$sql .= " Where Id = ";
 			$sql .= $row['Id'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update G");
+			$myBdd->Query($sql);
+			$i ++;
 		}
         return $egalites;
 	}
@@ -994,14 +959,10 @@ class GestionClassement extends MyPageSecure
 		$oldClt = 0;
 		$oldPts = 0;
 		$oldDiff = 9999;
+		$i = 0;
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 3");
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	 
-			
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			if ( (abs($row['PtsNiveau']-$oldPts) >= 1) || ($row['Diff'] != $oldDiff) )
 			{
 				$clt = $i+1;
@@ -1018,7 +979,8 @@ class GestionClassement extends MyPageSecure
 			$sql .= " Where Id = ";
 			$sql .= $row['Id'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update H");
+			$myBdd->Query($sql);
+			$i ++;
 		}
 	}
 	
@@ -1040,13 +1002,8 @@ class GestionClassement extends MyPageSecure
 		$oldPts = 0;
 		$oldNiveau = -1;
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 4");
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0,$j=0;$i<$num_results;$i++,$j++)
-		{
-			$row = mysql_fetch_array($result);	
-			
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			if ($row['Niveau'] != $oldNiveau)
 			{
 				$oldNiveau = $row['Niveau'];
@@ -1074,7 +1031,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " And Niveau = ";
 			$sql .= $row['Niveau'];
 		
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update I");
+			$myBdd->Query($sql);
 		}
 	}
 	
@@ -1097,13 +1054,8 @@ class GestionClassement extends MyPageSecure
 		$oldDiff = 9999;
 		$oldNiveau = -1;
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 3");
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0,$j=0;$i<$num_results;$i++,$j++)
-		{
-			$row = mysql_fetch_array($result);	 
-			
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			if ($row['Niveau'] != $oldNiveau)
 			{
 				$oldNiveau = $row['Niveau'];
@@ -1134,7 +1086,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " And Niveau = ";
 			$sql .= $row['Niveau'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update J");
+			$myBdd->Query($sql);
 		}
 	}
 	
@@ -1157,13 +1109,8 @@ class GestionClassement extends MyPageSecure
 		$oldPts = 0;
 		$oldIdJournee = 0;
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 4");
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0,$j=0;$i<$num_results;$i++,$j++)
-		{
-			$row = mysql_fetch_array($result);	
-			
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			if ($row['Id_journee'] != $oldIdJournee)
 			{
 				$oldIdJournee = $row['Id_journee'];
@@ -1191,7 +1138,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " And Id_journee = ";
 			$sql .= $row['Id_journee'];
 		
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update K");
+			$myBdd->Query($sql);
 		}
 	}
 	
@@ -1214,13 +1161,8 @@ class GestionClassement extends MyPageSecure
 		$oldDiff = 9999;
 		$oldIdJournee = 0;
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 3");
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0,$j=0;$i<$num_results;$i++,$j++)
-		{
-			$row = mysql_fetch_array($result);	 
-			
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			if ($row['Id_journee'] != $oldIdJournee)
 			{
                 $oldIdJournee = $row['Id_journee'];
@@ -1251,7 +1193,7 @@ class GestionClassement extends MyPageSecure
 			$sql .= " And Id_journee = ";
 			$sql .= $row['Id_journee'];
 			
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Update L");
+			$myBdd->Query($sql);
 		}
 	}
 
@@ -1274,7 +1216,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update M");
+		$myBdd->Query($sql);
 
 		//Update Classement
 		$sql  = "Update gickp_Competitions_Equipes ";
@@ -1285,7 +1227,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update N");
+		$myBdd->Query($sql);
 		
 		//Update Classement journées/phases
 		$sql  = "Update gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  ";
@@ -1298,7 +1240,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And c.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update O");
+		$myBdd->Query($sql);
 		
 		//Update Classement niveau
 		$sql  = "Update gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b  ";
@@ -1310,7 +1252,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And b.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update P");
+		$myBdd->Query($sql);
 
 
 		$myBdd->utyJournal('Publication Classement', $codeSaison, $codeCompet);
@@ -1335,7 +1277,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update Q");
+		$myBdd->Query($sql);
 
 		//Update Classement
 		$sql  = "Update gickp_Competitions_Equipes ";
@@ -1345,7 +1287,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update R");
+		$myBdd->Query($sql);
 		
 		//Update Classement journées/phases
 		$sql  = "Update gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  ";
@@ -1357,7 +1299,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And c.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update S");
+		$myBdd->Query($sql);
 		
 		//Update Classement niveau
 		$sql  = "Update gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b  ";
@@ -1368,7 +1310,7 @@ class GestionClassement extends MyPageSecure
 		$sql .= "' And b.Code_saison = '";
 		$sql .= $codeSaison;
 		$sql .= "' ";	 
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Update T");
+		$myBdd->Query($sql);
 
 
 		$myBdd->utyJournal('Publication Classement RAZ', $codeSaison, $codeCompet);
@@ -1392,13 +1334,13 @@ class GestionClassement extends MyPageSecure
 				
 				// Raz Id_dupli ... 
 				$sql  = "Update gickp_Competitions_Equipes Set Id_dupli = null Where Id_dupli In ($lstEquipe)";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Update U");
+				$myBdd->Query($sql);
 							
 				// Insertion des Equipes ...
 				$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) ";
 				$sql .= "Select '$codeCompetTransfert', '$codeSaisonTransfert', Libelle, Code_club, Numero, Id ";
 				$sql .= "From gickp_Competitions_Equipes Where Id In ($lstEquipe) ";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert");
+				$myBdd->Query($sql);
 				
 				// Insertion des Joueurs Equipes ...
 				$sql  = "Insert Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) ";
@@ -1412,7 +1354,7 @@ class GestionClassement extends MyPageSecure
 				$sql .= "And " ;
 				$sql .= $codeSaisonTransfert;
 				$sql .= "-Year(e.Naissance) between d.Age_min And d.Age_max ";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Insert 2 (transmettez cette requête à contact@kayak-polo.info) : <br><br>".$sql);
+				$myBdd->Query($sql);
 
 				$myBdd->utyJournal('Transfert Equipes', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', 'Equipes '.$lstEquipe.' vers '.$codeCompetTransfert.'-'.$codeSaisonTransfert);
 			}
@@ -1441,7 +1383,7 @@ class GestionClassement extends MyPageSecure
                 . "WHERE Id_journee = $journee "
                 . "AND Id = $equipe "
                 . "AND J = 0 ";
-        mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+		$myBdd->Query($sql);
         
 //        return 'Suppression effectuée';
         return '';
@@ -1457,9 +1399,9 @@ class GestionClassement extends MyPageSecure
 	}
 
 	// GestionClassement 		
-	function GestionClassement()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(10);
+	  	MyPageSecure::MyPageSecure(10);
 		
 		$alertMessage = '';
 

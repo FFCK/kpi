@@ -39,13 +39,13 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				$sql .= $_SESSION['Signature'];
 				$sql .= "' And b.Validation = 'O' ";
 				
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace");
+				$myBdd->Query($sql);
 
 				// Vidage gickp_Recherche_Licence ...				
 				$sql = "Delete From gickp_Recherche_Licence Where Signature = '";
 				$sql .= $_SESSION['Signature'];
 				$sql .= "'";
-				mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+				$myBdd->Query($sql);
 				
 				unset($_SESSION['Signature']);
 		}
@@ -60,10 +60,10 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$sql .= "Where Id = ";
 			$sql .= $idMatch;
 			
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-			if (mysql_num_rows($result) == 1)
+			$result = $myBdd->Query($sql);
+			if ($myBdd->NumRows($result) == 1)
 			{
-					$row = mysql_fetch_array($result);	 
+					$row = $myBdd->FetchArray($result);	 
 					$Numero_ordre = $row['Numero_ordre'];
 						// Titre ...
 					$this->m_tpl->assign('headerTitle', '(Saison '.utyGetSaison().') Match n°'.$row['Numero_ordre'].' du '.utyDateUsToFr($row['Date_match']).' à '.$row['Heure_match'].' Terrain '.$row['Terrain'].' ('.$idMatch.')');	
@@ -81,10 +81,10 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$sql .= "And b.Id = ";
 			$sql .= $idMatch;
 				
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-			if (mysql_num_rows($result) == 1)
+			$result = $myBdd->Query($sql);
+			if ($myBdd->NumRows($result) == 1)
 			{
-					$row = mysql_fetch_array($result);	  
+					$row = $myBdd->FetchArray($result);	 
 					$idEquipe = $row['Id'];
 			
 					$infoEquipe = $row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
@@ -111,12 +111,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$sql .= $codeEquipe;
 			$sql .= "' Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";	 
 		
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-			$num_results = mysql_num_rows($result);
-			
-			for ($i=0;$i<$num_results;$i++)
-			{
-				$row = mysql_fetch_array($result);	  
+			$result = $myBdd->Query($sql);
+            while($row = $myBdd->FetchArray($result)) {
 				if($row['niveau'] != '')
 					$row['Arb'] .= '-'.$row['niveau'];
 				
@@ -190,8 +186,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		// Contrôle verrouillage Match ...
 		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-		$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		$row = $myBdd->FetchArray($result);
 		if ($row['Validation'] == 'O')
 			return;
 
@@ -201,7 +197,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$sql .= "AND Capitaine <> 'X' ";
 		$sql .= "AND Capitaine <> 'A' ";
 	
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace");
+		$myBdd->Query($sql, $myBdd->m_link) or die ("Erreur Replace");
 
 		$myBdd->utyJournal('Ajout titulaires match', '', '', '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
@@ -216,8 +212,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		// Contrôle verrouillage Match ...
 		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-		$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		$row = $myBdd->FetchArray($result);
 		if ($row['Validation'] == 'O')
 			return;
 
@@ -228,22 +224,22 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		if (strlen($idEquipe) > 0)
 		{
 			$myBdd = new MyBdd();
-			$categJoueur = utyCodeCategorie2($naissanceJoueur);
+			// $categJoueur = utyCodeCategorie2($naissanceJoueur);
 			if (strlen($matricJoueur) == 0)
 				$matricJoueur = $myBdd->GetNextMatricLicence();
 			//$idMatch, Matric, Numero, '$codeEquipe', Capitaine
 			$sql  = "Replace Into gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) Values (";
 			$sql .= $idMatch;
 			$sql .= ",";
-			$sql .= mysql_real_escape_string($matricJoueur);
+			$sql .= $myBdd->RealEscapeString($matricJoueur);
 			$sql .= ",'";
-			$sql .= mysql_real_escape_string($numeroJoueur);
+			$sql .= $myBdd->RealEscapeString($numeroJoueur);
 			$sql .= "','";
 			$sql .= $codeEquipe;
 			$sql .= "','";
-			$sql .= mysql_real_escape_string($capitaineJoueur);
+			$sql .= $myBdd->RealEscapeString($capitaineJoueur);
 			$sql .= "') ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur insert");
+			$myBdd->Query($sql);
 			
 			$myBdd->utyJournal('Ajout joueur', '', '', 'NULL', 'NULL', 'NULL', 'Match:'.$idMatch.' - Equipe:'.$codeEquipe.' - Joueur:'.$matricJoueur);
 		}
@@ -259,8 +255,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		// Contrôle verrouillage Match ...
 		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-		$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		$row = $myBdd->FetchArray($result);
 		if ($row['Validation'] == 'O')
 			return;
 
@@ -268,7 +264,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$sql .= "Where Id_match = $idMatch ";
 		$sql .= "And Equipe = '$codeEquipe' ";
 	
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete => ".$sql);
+		$myBdd->Query($sql);
 
 		$myBdd->utyJournal('Suppression joueurs match', '', '', '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
@@ -296,19 +292,15 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$sql .= $idEquipe;
 		$sql .= "') ";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
 			// Vidage
 			$sql2  = "Delete From gickp_Matchs_Joueurs Where Id_match = ";
 			$sql2 .= $row['Id'];
 			$sql2 .= " And Equipe = '$AB' ";
 			
-			mysql_query($sql2, $myBdd->m_link) or die ("Erreur Delete");
+			$myBdd->Query($sql2);
 			
 			//Selection de la compo à copier
 			$sql3  = "Select Matric, Numero, Capitaine From gickp_Matchs_Joueurs ";
@@ -317,12 +309,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$sql3 .= " And Equipe = '";
 			$sql3 .= $codeEquipe;
 			$sql3 .= "' ";
-			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load : ".$sql3);
-			$num_results3 = mysql_num_rows($result3);
-			
-			for ($j=0;$j<$num_results3;$j++)
-			{
-				$row3 = mysql_fetch_array($result3);
+			$result3 = $myBdd->Query($sql3);
+			while($row3 = $myBdd->FetchArray($result3)) {
 				//Insertion ligne par ligne compo à copier
 				$sql4  = "Insert Into gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) Values (";
 				$sql4 .= $row['Id'];
@@ -336,11 +324,9 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				$sql4 .= $row3['Capitaine'];
 				$sql4 .= "') ";
 
-				mysql_query($sql4, $myBdd->m_link) or die ("Erreur Insert : ".$sql4);
+				$myBdd->Query($sql4);
 			}
 		}
-				
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Dupli");
 
 		$myBdd->utyJournal('Copie Compo sur Journée', utyGetSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
@@ -352,6 +338,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$idMatch = utyGetSession('idMatch',-1);
 			
 		$idJournee = utyGetPost('ParamCmd');
+		$list = '';
 
 		$myBdd = new MyBdd();
 		//Sélection de la compétition et des journées concernées
@@ -363,12 +350,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$sql .= "WHERE Id = ";
 		$sql .= $idJournee;
 		$sql .= ") ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			if($list != '')
 				$list .= ',';
 			$list .= $row['Id'];
@@ -387,19 +370,15 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$sql .= $idEquipe;
 		$sql .= "') ";
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2 : ".$sql);
-		$num_results = mysql_num_rows($result);
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
 			// Vidage
 			$sql2  = "Delete From gickp_Matchs_Joueurs Where Id_match = ";
 			$sql2 .= $row['Id'];
 			$sql2 .= " And Equipe = '$AB' ";
 			
-			mysql_query($sql2, $myBdd->m_link) or die ("Erreur Delete");
+			$myBdd->Query($sql2);
 			
 			//Selection de la compo à copier
 			$sql3  = "Select Matric, Numero, Capitaine From gickp_Matchs_Joueurs ";
@@ -408,12 +387,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$sql3 .= " And Equipe = '";
 			$sql3 .= $codeEquipe;
 			$sql3 .= "' ";
-			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 3 : ".$sql3);
-			$num_results3 = mysql_num_rows($result3);
-			
-			for ($j=0;$j<$num_results3;$j++)
-			{
-				$row3 = mysql_fetch_array($result3);
+			$result3 = $myBdd->Query($sql3);
+			while($row3 = $myBdd->FetchArray($result3)) {
 				//Insertion ligne par ligne compo à copier
 				$sql4  = "Insert Into gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) Values (";
 				$sql4 .= $row['Id'];
@@ -427,19 +402,17 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				$sql4 .= $row3['Capitaine'];
 				$sql4 .= "') ";
 
-				mysql_query($sql4, $myBdd->m_link) or die ("Erreur Insert : ".$sql4);
+				$myBdd->Query($sql4);
 			}
 		}
 				
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Dupli");
-
 		$myBdd->utyJournal('Copie Compo sur Compet', utyGetSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
 
 	function Remove()
 	{
 		$ParamCmd = utyGetPost('ParamCmd');
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode('[,]', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 	
@@ -448,8 +421,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 		// Contrôle verrouillage Match ...
 		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-		$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		$row = $myBdd->FetchArray($result);
 		if ($row['Validation'] == 'O')
 			return;
 			
@@ -463,7 +436,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		}
 		$sql .= ")";
 	
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete");
+		$myBdd->Query($sql);
 		
 		$myBdd->utyJournal('Suppression joueurs match', '', '', '', '', $idMatch, 'joueurs : '.$ParamCmd);
 	}
@@ -482,9 +455,9 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		exit;	
 	}
 	
-	function GestionMatchEquipeJoueur()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(9);
+	  	MyPageSecure::MyPageSecure(9);
 		
 		$alertMessage = '';
 		

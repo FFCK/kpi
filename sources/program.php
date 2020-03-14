@@ -24,7 +24,7 @@ $sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin "
                 ."FROM gickp_Saison "
                 ."ORDER BY Code DESC";
 $result = $myBdd->Query($sql);
-while ($jRow = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+while ($jRow = $myBdd->FetchArray($result)){
     if($jRow['Code'] == $season) {
         $jRow['selected'] = 'selected';
     } else {

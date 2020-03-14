@@ -1,4 +1,5 @@
 <?php
+// TODO
 
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
@@ -43,18 +44,16 @@ class GestionOfficiels extends MyPageSecure
 		//$sql .= "Where Publication = 'O' ";
 		$sql .= "Order By Date_debut DESC, Libelle ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
-	
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
+
 		$arrayEvenement = array();
 		if (-1 == $idEvenement)
 			array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => '* - Tous les événements', 'Selection' => 'SELECTED' ) );
 		else
 			array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => '* - Tous les événements', 'Selection' => '' ) );
 
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
+		while($row = $myBdd->FetchArray($result)) {
 			if ($row["Publication"] == 'O')
 				$PublicEvt = ' (PUBLIC)';
 			else
@@ -173,15 +172,15 @@ class GestionOfficiels extends MyPageSecure
 		
 		$arrayJournees = array();
 		$arrayJourneesAutorisees = array();
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1 : ".$sql);
-		$num_results = mysql_num_rows($result);
-		
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
+	
 		$lstJournee = '';
 		if ($num_results != 0)
 		{
 			for ($i=0;$i<$num_results;$i++)
 			{
-				$row = mysql_fetch_array($result);	  
+				$row = $myBdd->FetchArray($result);	  
 				array_push($arrayJournees, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 'Code_typeclt' => $row['Code_typeclt'], 
 																				'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'], 
 																				'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
@@ -240,15 +239,15 @@ class GestionOfficiels extends MyPageSecure
 		}
 		
 		$arrayJourneesAutoriseesFiltre = array();
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1b : ".$sql);
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 		$PhaseLibelle = 0;
 		
 		if ($num_results != 0)
 		{
 			for ($i=0;$i<$num_results;$i++)
 			{
-				$row = mysql_fetch_array($result);
+				$row = $myBdd->FetchArray($result);
 				// S'il n'y a qu'une seule compétition et de type CP, on affichera les phases
 				if ($codeCompet != '*' && $row['Code_typeclt'] == 'CP')
 					$PhaseLibelle = 1;
@@ -299,13 +298,10 @@ class GestionOfficiels extends MyPageSecure
 			$sql .= " And c.Code_ref = g.Groupe ";
 			$sql .= " Order By c.Code_saison, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";	 
 		}
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 2<br>".$sql);
-		$num_results = mysql_num_rows($result);
-
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);	  
-			// Titre
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
+		while($row = $myBdd->FetchArray($result)) {
+		// Titre
 			if($row["Titre_actif"] != 'O' && $row["Soustitre"] != '')
 				$Libelle = $row["Soustitre"];
 			else
@@ -341,10 +337,10 @@ class GestionOfficiels extends MyPageSecure
 			$sql  = "Select Libelle, Lieu, Date_debut, Date_fin ";
 			$sql .= "From gickp_Evenement ";
 			$sql .= "Where Id = $idEvenement";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 2");
-			if (mysql_num_rows($result) == 1)
+			$result = $myBdd->Query($sql);
+			if ($myBdd->NumRows($result) == 1)
 			{
-				$row = mysql_fetch_array($result);	  	
+				$row = $myBdd->FetchArray($result);	  	
 				$headerSubTitle = '<span class="highlight4">'.$row['Libelle'].'</span>&nbsp;>&nbsp;';
 			}	
 			if ($codeCompet != '*')
@@ -413,8 +409,8 @@ class GestionOfficiels extends MyPageSecure
 			}
 			$sql .= $orderMatchs;
 			
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 3 =><br> ".$sql);
-			$num_results = mysql_num_rows($result);
+			$result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
 			
 			// Variables à initialiser : @COSANDCO_WAMPSERVER
 			$listMatch = '';
@@ -424,7 +420,7 @@ class GestionOfficiels extends MyPageSecure
 			
 			for ($i=0;$i<$num_results;$i++)
 			{
-				$row = mysql_fetch_array($result);	  
+				$row = $myBdd->FetchArray($result);	  
 				
 				$jour = $row['Date_match'];
 				$listeJours[$jour] = utyDateUsToFr($jour);
@@ -563,8 +559,8 @@ class GestionOfficiels extends MyPageSecure
 			
 		if ($lstJournee != '')
 		{
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 4 => <br>".$sql);
-			$num_results = mysql_num_rows($result);
+			$result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
 
 			$Id_equipeA = utyGetSession('Id_equipeA', -1);
 			$Id_equipeB = utyGetSession('Id_equipeB', -1);
@@ -580,7 +576,7 @@ class GestionOfficiels extends MyPageSecure
 		
 			for ($i=0;$i<$num_results;$i++)
 			{
-				$row = mysql_fetch_array($result);	  
+				$row = $myBdd->FetchArray($result);	  
 				
 				$libelleEquipe = $row['Libelle'];
 				$codeCompetition = $row['Code_compet'];
@@ -613,14 +609,14 @@ class GestionOfficiels extends MyPageSecure
 			$sql .= ") AND a.Capitaine <> 'X' ";
 			$sql .= "Order By b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
 		
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 5");
-			$num_results = mysql_num_rows($result);
+			$result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
 			
 			$libelleTemp = '';
 			
 			for ($i=0;$i<$num_results;$i++)
 			{
-				$row = mysql_fetch_array($result);
+				$row = $myBdd->FetchArray($result);
 				if ($row['Libelle'] != $libelleTemp)
 				{
 					array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---'));
@@ -643,11 +639,8 @@ class GestionOfficiels extends MyPageSecure
 			$sql2 .= "Where a.Id_equipe = b.Id ";
 			$sql2 .= "And b.Code_compet = 'POOL' ";
 			$sql2 .= "Order By a.Nom, a.Prenom ";
-			$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Load 5b");
-			$num_results2 = mysql_num_rows($result2);
-			for ($i=0;$i<$num_results2;$i++)
-			{
-				$row2 = mysql_fetch_array($result2);
+			$result2 = $myBdd->Query($sql2);
+            while($row2 = $myBdd->FetchArray($result2)) {
 				if (strlen($row2['Arb'])>0)
 					$arb = ' '.strtoupper($row2['Arb']);
 				else
@@ -701,11 +694,9 @@ class GestionOfficiels extends MyPageSecure
 		$sql .= "From gickp_Matchs ";
 		$sql .= "Where Id_journee = '$idJournee' ";
 		$sql .= "Order by Date_match, Heure_match, Numero_ordre ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 4 => <br>".$sql);
-		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
+		while($row = $myBdd->FetchArray($result)) {
 			$lastNumOrdre = $row['Numero_ordre'];
 			$lastDate = $row['Date_match'];
 			$lastHeure = $row['Heure_match'];
@@ -777,7 +768,7 @@ class GestionOfficiels extends MyPageSecure
 				$numMatch = $this->LastNumeroOrdre($idJournee) + 1;
 			
 			$sql  = "Select Id_equipeA, Id_equipeB From gickp_Matchs Where Id = $idMatch ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
+			$result = $myBdd->Query($sql);
 			$anciene_equipeA = mysql_result($result , 0 , "Id_equipeA");
 			$anciene_equipeB = mysql_result($result , 0 , "Id_equipeB");
 
@@ -1486,9 +1477,9 @@ class GestionOfficiels extends MyPageSecure
 		}
 	}
 	
-	function GestionOfficiels()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(6);
+	  	MyPageSecure::MyPageSecure(6);
 		
 		$alertMessage = '';
 	  

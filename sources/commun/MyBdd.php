@@ -54,119 +54,160 @@ class MyBdd
 		$this->m_saisonPCE = $this->GetActiveSaison();
 	}	
 					
- 	function Connect() {  
-		$this->m_link = mysql_connect($this->m_server, $this->m_login, $this->m_password);
-		$this->Query("SET NAMES 'UTF8'");
-		if (!$this->m_link) {		
-			die('Impossible de se connecter : ' . $this->Error());
-		}
-					  
-		$db = mysql_select_db($this->m_database, $this->m_link);
-		if (!$db) {
-			die('Impossible de sélectionner la base de données : ' . $this->Error());
+ 	function Connect() {
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			$this->m_link = mysql_connect($this->m_server, $this->m_login, $this->m_password);
+			$this->Query("SET NAMES 'UTF8'");
+			if (!$this->m_link) {		
+				die('Impossible de se connecter : ' . $this->Error());
+			}
+				
+			$db = mysql_select_db($this->m_database, $this->m_link);
+			if (!$db) {
+				die('Impossible de sélectionner la base de données : ' . $this->Error());
+			}
+			
+		} else {
+			$this->m_link = mysqli_connect( $this->m_server, $this->m_login, $this->m_password, $this->m_database)
+				or die('Impossible de se connecter');
+			$this->Query("SET NAMES 'UTF8'");
 		}
 	}  
 					
-	// a éliminer ...					 
-	function show_table($tableName)
-	{							   
-		$query = "Select * from ".$tableName;	 
-		$result = $this->Query($query);
-		if (!$result) 
-		{
-			echo 'Impossible d\'exécuter la requête : ' . $this->Error();
-			exit;	  
-		}
-		
-		$nbFields = mysql_num_fields($result);
-		$nbRows = $this->NumRows($result); 
-		
-		for ($i=0;$i<$nbRows;$i++)
-		{			 
-			$row = mysql_fetch_row($result);
-			
-			for ($j=0;$j<$nbFields;$j++)
-				echo $row[$j];	   
-				
-			echo "<BR>";
-		}
-		
-		mysql_free_result($result);
-	}	   
-		 
 	// AJOUT COSANDCO : 12 Septembre 2014 ...
 	
 	// Query 		$result = $myBdd->Query($sql);
     function Query($sql)
     {
-		if(null !== $_SESSION['Profile'] && $_SESSION['Profile'] == 1) {
-			$msg = $sql;
+		if(isset($_SESSION) && null !== $_SESSION['Profile'] && $_SESSION['Profile'] == 1) {
+			$msg = $this->Error() . '<br>' . $sql;
 		} else {
 			$msg = "Please contact administrator.";
 		}
-		$result = mysql_query($sql, $this->m_link) or die ("Error Query : ".$msg);
+
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			$result = mysql_query($sql, $this->m_link) or die ("Error Query : " . $msg);
+		} else {
+			$result = mysqli_query($this->m_link, $sql) or die ("Error Query : " . $msg);
+		}
         return $result;
     }
 	
 	// Error 		$result = $myBdd->Error();
     function Error()
     {
-        $result = mysql_error() or die ("Error Error");
+		$result = '';
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			if (mysql_errno())
+				$result = mysql_errno() . mysql_error() or die ("Error Error");
+		} else {
+			if (mysqli_errno($this->m_link))
+				$result = mysqli_error($this->m_link) or die ("Error Error");
+		}
         return $result;
     }
 	
     // AffectedRows			$affected_results = $myBdd->AffectedRows($result);
     function AffectedRows()
     {
-        return mysql_affected_rows($this->m_link);
-    }
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_affected_rows($this->m_link);
+		} else {
+			return mysqli_affected_rows($this->m_link);
+		}
+	}
+
+    // AffectedRows			$affected_results = $myBdd->AffectedRows($result);
+    function InsertId()
+    {
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_insert_id($this->m_link);
+		} else {
+			return mysqli_insert_id($this->m_link);
+		}
+	}
 
     // NumRows			$num_results = $myBdd->NumRows($result);
     function NumRows($result)
     {
-        return mysql_num_rows($result);
-    }
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_num_rows($result);
+		} else {
+			return mysqli_num_rows($result);
+		}
+	}
 
     // NumFields			$num_fields = $myBdd->NumFields($result);
     function NumFields($result)
     {
-        return mysql_num_fields($result);
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_num_fields($result);
+		} else {
+			return mysqli_num_fields($result);
+		}
     }
     
     // FieldName			$field_name = $myBdd->FieldName($result);
     function FieldName($result, $field)
     {
-        return mysql_field_name($result, $field);
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_field_name($result, $field);
+		} else {
+			return mysqli_fetch_field_direct ($result, $field);
+		}
     }
 
-    // FetchArray		$row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
-    function FetchArray($result, $resulttype=MYSQL_ASSOC)
+    // FetchArray		$row = $myBdd->FetchArray($result);
+    function FetchArray($result, $resulttype=MYSQLI_ASSOC)
     {
-        return mysql_fetch_array($result, $resulttype);
-    }
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			if ($resulttype == MYSQLI_ASSOC) {
+				$resulttype == MYSQL_ASSOC;
+			}
+			return mysql_fetch_array($result, $resulttype);
+		} else {
+			return mysqli_fetch_array($result, $resulttype);
+		}
+	}
 
      // FetchAssoc		$row = $myBdd->FetchAssoc($result);
     function FetchAssoc($result)
     {
-        return mysql_fetch_assoc($result);
-    }
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_fetch_assoc($result);
+		} else {
+			return mysqli_fetch_assoc($result);
+		}
+	}
 
     // FetchRow			$row = $myBdd->FetchRow($result);
     function FetchRow($result)
     {
-        return mysql_fetch_row($result);
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_fetch_row($result);
+		} else {
+			return mysqli_fetch_row($result);
+		}
     }
 	
     // DataSeek			$row = $myBdd->DataSeek($result, $cursor);
     function DataSeek($result, $cursor)
     {
-        return mysql_data_seek($result, $cursor);
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_data_seek($result, $cursor);
+		} else {
+			return mysqli_data_seek($result, $cursor);
+		}
     }
     
     // RealEscapeString			$myBdd->RealEscapeString($codeCompet);
     function RealEscapeString($txt)
     {
-        return mysql_real_escape_string($txt, $this->m_link);
+		if (substr(PHP_VERSION, 0, 1) < 7) {
+			return mysql_real_escape_string($txt, $this->m_link);
+		} else {
+			return mysqli_real_escape_string($this->m_link, $txt);
+		}
     }
 
     // GetLastAutoIncrement
@@ -335,7 +376,7 @@ class MyBdd
                 if (isset($record[$key]))
                     $sql .= $this->ValueSQL($record[$key], $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
                 else
-                    //					$sql .= $this->ValueSQL('', $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
+                    //	$sql .= $this->ValueSQL('', $arrayColumns[$j]['Type'], $arrayColumns[$j]['Null']);
                     $sql .= 'null';
             }
             $sql .= ')';
@@ -406,7 +447,7 @@ class MyBdd
             $record = array();
         }
     }
-	
+			 
 	// FIN AJOUT COSANDCO : 12 Septembre 2014 ...
 
 
@@ -1670,7 +1711,7 @@ class MyBdd
             3 => 'Competitions_Regionales',
             4 => 'Tournois_Internationaux',
             5 => 'Continents',
-            6 => 'Divers'
+            100 => 'Divers'
         );
         return $result;
     }

@@ -31,8 +31,8 @@ include_once('../../commun/MyTools.php');
 	$sql  = "SELECT Id, Validation "
             . "FROM gickp_Journees "
             . "WHERE Id = ".$idJournee;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
-	$row = mysql_fetch_array($result);
+	$result = $myBdd->Query($sql);
+	$row = $myBdd->FetchArray($result);
 	if (!utyIsAutorisationJournee($row['Id'])) {
         die("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
     }
@@ -43,5 +43,5 @@ include_once('../../commun/MyTools.php');
     $sql  = "UPDATE gickp_Journees "
             . "SET ".$TypeUpdate." = '".$Valeur."' "
             . "WHERE Id = ".$idJournee;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
+	$result = $myBdd->Query($sql);
 	echo 'OK';

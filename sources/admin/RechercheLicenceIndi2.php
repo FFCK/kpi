@@ -87,7 +87,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		
 			$arrayCoureur = array();
 			$result = $myBdd->Query($sql);
-			while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+			while ($row = $myBdd->FetchArray($result)) {
                 $int = 'N';
                 $nat = 'N';
                 $reg = 'N';
@@ -110,17 +110,18 @@ class RechercheLicenceIndi2 extends MyPageSecure
                         $jo = 'O';
                         break;
                 }
-				array_push($arrayCoureur, array( 'Matric' => $row['Matric'], 'Nom' => ucwords(strtolower($row['Nom'])), 
-																				 'Prenom' => ucwords(strtolower($row['Prenom'])), 
-																				 'Sexe' => $row['Sexe'], 'Numero_club' => $row['Numero_club'], 'Club' => $row['Club'],
-																				 'Naissance' => utyDateUsToFr($row['Naissance']) , 
-																				 'Categ' => utyCodeCategorie2($row['Naissance']) ,
-																				 'International' => $int ,
-																				 'National' =>  $nat , 
-																				 'Regional' =>  $reg ,
-																				 'OTM' =>  $otm ,
-																				 'JO' =>  $jo ,
-																				 'Arbitre' => $row['Arb'] ));
+                array_push($arrayCoureur, array( 'Matric' => $row['Matric'], 
+                    'Nom' => ucwords(strtolower($row['Nom'])), 
+                    'Prenom' => ucwords(strtolower($row['Prenom'])), 
+                    'Sexe' => $row['Sexe'], 'Numero_club' => $row['Numero_club'], 'Club' => $row['Club'],
+                    'Naissance' => utyDateUsToFr($row['Naissance']) , 
+                    'Categ' => utyCodeCategorie2($row['Naissance']) ,
+                    'International' => $int ,
+                    'National' =>  $nat , 
+                    'Regional' =>  $reg ,
+                    'OTM' =>  $otm ,
+                    'JO' =>  $jo ,
+                    'Arbitre' => $row['Arb'] ));
 																				 
 			}
 		}
@@ -132,9 +133,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		$sql .= "From gickp_Comite_reg ";
 		$sql .= "Order By Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 	
 		$arrayComiteReg = array();
 		if ('*' == $codeComiteReg) {
@@ -145,7 +145,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
 
         for ($i=0;$i<$num_results;$i++)
 		{
-			$row = mysql_fetch_array($result);	  
+			$row = $myBdd->FetchArray($result);	  
 			
 			if (($i == 0) && (strlen($codeComiteReg) == 0)) {
                 $codeComiteReg = $row["Code"];
@@ -175,8 +175,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		}	
 		$sql .= "Order By Code ";	
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load");
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 	
 		$arrayComiteDep = array();
 		if ('*' == $codeComiteDep) {
@@ -187,7 +187,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
 
         for ($i=0;$i<$num_results;$i++)
 		{
-			$row = mysql_fetch_array($result);	
+			$row = $myBdd->FetchArray($result);	  
 			
 			if (($i == 0) && (strlen($codeComiteDep) == 0)) {
                 $codeComiteDep = $row["Code"];
@@ -217,8 +217,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		}
 		$sql .= " Order By Code ";	 
 		
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load Club");
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+		$num_results = $myBdd->NumRows($result);
 	
 		$arrayClub = array();
 		if ('*' == $codeClub) {
@@ -229,8 +229,9 @@ class RechercheLicenceIndi2 extends MyPageSecure
 
         for ($i=0;$i<$num_results;$i++)
 		{
-			$row = mysql_fetch_array($result);	
-			
+            $result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
+                
 			if (($i == 0) && (strlen($codeClub) == 0)) {
                 $codeClub = $row["Code"];
             }
@@ -246,8 +247,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
 	
 	function OkRecherche()
 	{
-			$cmd = utyGetPost('Cmd');
-			if ($cmd != 'Find') {
+        $cmd = utyGetPost('Cmd');
+        if ($cmd != 'Find') {
             return false;
         }
 
@@ -265,10 +266,10 @@ class RechercheLicenceIndi2 extends MyPageSecure
         }
 
         $codeComiteReg = utyGetPost('comiteReg', '');
-			$codeComiteDep = utyGetPost('comiteDep', '');
-			$codeClub = utyGetPost('club', '');
+        $codeComiteDep = utyGetPost('comiteDep', '');
+        $codeClub = utyGetPost('club', '');
 
-			if ((strlen($codeComiteReg) > 0) && ($codeComiteReg != '*')) {
+        if ((strlen($codeComiteReg) > 0) && ($codeComiteReg != '*')) {
             return true;
         }
         if ((strlen($codeComiteDep) > 0) && ($codeComiteDep != '*')) {
@@ -300,9 +301,9 @@ class RechercheLicenceIndi2 extends MyPageSecure
         return false; // Tout est vide => on n'autorise pas la recherche ...
 	}
 		
-	function RechercheLicenceIndi2()
+	function __construct()
 	{			
-	  MyPageSecure::MyPageSecure(10);
+	    MyPageSecure::MyPageSecure(10);
 	
 		$this->SetTemplate("Recherche Licenciés", "", false);
 		$this->Load();

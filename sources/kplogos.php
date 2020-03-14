@@ -28,7 +28,7 @@ class Logos extends MyPage
 	}
 	
 
-	function Logos()
+	function __construct()
 	{			
         MyPage::MyPage();
 		

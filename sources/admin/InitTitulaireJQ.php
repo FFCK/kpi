@@ -39,15 +39,11 @@ function initCompet($valeur)
 {
 	$codeCompet = $valeur;
 	$codeSaison = utyGetSaison();
-	//$idMatch = utyGetSession('idMatch', -1);
 	$lstJournee = utyGetSession('lstJournee', -1);
 
 	// Chargement des Matchs en jeux ...
 	$sql  = "SELECT a.Id, a.Id_equipeA, a.Id_equipeB ";
 	$sql .= "FROM gickp_Matchs a, gickp_Journees b ";
-//	if ($idMatch > 0) {
-//		$sql .= "WHERE a.Id = $idMatch ";
-//    } else 
     if ($lstJournee != -1) {
 		$sql .= "WHERE a.Id_journee In ($lstJournee) ";
     } else {
@@ -60,12 +56,9 @@ function initCompet($valeur)
 
 	$myBdd = new MyBdd();
 
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load :".$sql);
-	$num_results = mysql_num_rows($result);
-
-	for ($i=0;$i<$num_results;$i++)
-	{
-		$row = mysql_fetch_array($result);	
+	$result = $myBdd->Query($sql);
+	$num_results = $myBdd->NumRows($result);
+	while ($row = $myBdd->FetchArray($result)) {	
 		
 		$idMatch = $row['Id'];
 		$idEquipeA = $row['Id_equipeA'];
@@ -73,26 +66,26 @@ function initCompet($valeur)
 		if($idEquipeA != '')
 		{
 			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'A'";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete :".$sql);
+			$myBdd->Query($sql);
 					
 			$sql  = "Replace Into gickp_Matchs_Joueurs ";
 			$sql .= "Select $idMatch, Matric, Numero, 'A', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 			$sql .= "Where Id_equipe = $idEquipeA ";
 			$sql .= "AND Capitaine <> 'X' ";
 			$sql .= "AND Capitaine <> 'A' ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace :".$sql);
+			$myBdd->Query($sql);
 		}
 		if($idEquipeB != '')
 		{
 			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'B'";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete :".$sql);
+			$myBdd->Query($sql);
 					
 			$sql  = "Replace Into gickp_Matchs_Joueurs ";
 			$sql .= "Select $idMatch, Matric, Numero, 'B', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 			$sql .= "Where Id_equipe = $idEquipeB ";
 			$sql .= "AND Capitaine <> 'X' ";
 			$sql .= "AND Capitaine <> 'A' ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace :".$sql);
+			$myBdd->Query($sql);
 		}
 	}
 	$myBdd->utyJournal('MAJ titulaires compétition', utyGetSaison(), utyGetSession('codeCompet', ''), '', '', '', $num_results.' m.', utyGetSession('User') );
@@ -113,12 +106,9 @@ function initJournee($valeur)
 	$sql .= $idJournee.' ';
 	$sql .= "And Validation != 'O' ";
 
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load :".$sql);
-	$num_results = mysql_num_rows($result);
-
-	for ($i=0;$i<$num_results;$i++)
-	{
-		$row = mysql_fetch_array($result);	
+	$result = $myBdd->Query($sql);
+	$num_results = $myBdd->NumRows($result);
+	while ($row = $myBdd->FetchArray($result)) {	
 		
 		$idMatch = $row['Id'];
 		$idEquipeA = $row['Id_equipeA'];
@@ -127,26 +117,26 @@ function initJournee($valeur)
 		if($idEquipeA != '')
 		{
 			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'A'";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete :".$sql);
+			$myBdd->Query($sql);
 					
 			$sql  = "Replace Into gickp_Matchs_Joueurs ";
 			$sql .= "Select $idMatch, Matric, Numero, 'A', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 			$sql .= "Where Id_equipe = $idEquipeA ";
 			$sql .= "AND Capitaine <> 'X' ";
 			$sql .= "AND Capitaine <> 'A' ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace :".$sql);
+			$myBdd->Query($sql);
 		}
 		if($idEquipeB != '')
 		{
 			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'B'";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete :".$sql);
+			$myBdd->Query($sql);
 					
 			$sql  = "Replace Into gickp_Matchs_Joueurs ";
 			$sql .= "Select $idMatch, Matric, Numero, 'B', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 			$sql .= "Where Id_equipe = $idEquipeB ";
 			$sql .= "AND Capitaine <> 'X' ";
 			$sql .= "AND Capitaine <> 'A' ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace :".$sql);
+			$myBdd->Query($sql);
 		}
 	}
 	$myBdd->utyJournal('MAJ titulaires journée', utyGetSaison(), utyGetSession('codeCompet', ''), '', $idJournee, '', $num_results.' m.', utyGetSession('User') );
@@ -173,12 +163,9 @@ function initEquipe($valeur, $valeur3)
 		$sql .= "Where Id = $idMatch ";
 	$sql .= "And (Id_equipeA = $idEquipe Or Id_equipeB = $idEquipe) ";
 	$sql .= "And Validation != 'O' ";
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load :".$sql);
-	$num_results = mysql_num_rows($result);
-
-	for ($i=0;$i<$num_results;$i++)
-	{
-		$row = mysql_fetch_array($result);	
+	$result = $myBdd->Query($sql);
+	$num_results = $myBdd->NumRows($result);
+	while ($row = $myBdd->FetchArray($result)) {	
 		
 		$idMatch = $row['Id'];
 		$idEquipeA = $row['Id_equipeA'];
@@ -187,42 +174,30 @@ function initEquipe($valeur, $valeur3)
 		if ($idEquipeA == $idEquipe)
 		{
 			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'A'";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete :".$sql);
+			$myBdd->Query($sql);
 					
 			$sql  = "Replace Into gickp_Matchs_Joueurs ";
 			$sql .= "Select $idMatch, Matric, Numero, 'A', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 			$sql .= "Where Id_equipe = $idEquipeA ";
 			$sql .= "AND Capitaine <> 'X' ";
 			$sql .= "AND Capitaine <> 'A' ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace :".$sql);
+			$myBdd->Query($sql);
 		}
 
 		if ($idEquipeB == $idEquipe)
 		{
 			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'B'";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Delete :".$sql);
+			$myBdd->Query($sql);
 					
 			$sql  = "Replace Into gickp_Matchs_Joueurs ";
 			$sql .= "Select $idMatch, Matric, Numero, 'B', Capitaine From gickp_Competitions_Equipes_Joueurs ";
 			$sql .= "Where Id_equipe = $idEquipeB ";
 			$sql .= "AND Capitaine <> 'X' ";
 			$sql .= "AND Capitaine <> 'A' ";
-			mysql_query($sql, $myBdd->m_link) or die ("Erreur Replace :".$sql);
+			$myBdd->Query($sql);
 		}
 	}
 	$myBdd->utyJournal('MAJ titulaires équipe', utyGetSaison(), utyGetSession('codeCompet', ''), '', '', '', 'J: '.$lstJournee.' - Eq: '.$idEquipe.' - '.$num_results.' m.', utyGetSession('User') );
 	$resultGlobal = "Initialisation des titulaires OK pour cette équipe, $num_results match(s) mis à jour.";
 	echo $resultGlobal;
 }
-
-/*
-$debug  = "Insert Into gickp_mouchard (Valeur) Values ('";
-$debug .= mysql_real_escape_string($sql);
-$debug .= "')";
-mysql_query($debug, $myBdd->m_link) or die ("Erreur Insert");
-*/ 
-
-
-//header('X-JSON:' . json_encode('success'));
-
-?>

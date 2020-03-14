@@ -174,4 +174,3 @@ class MyPage
     <?php
     }
 }
-?>

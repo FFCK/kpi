@@ -15,21 +15,21 @@ $key = $myBdd->RealEscapeString(trim(utyGetGet('AjId')));
 $key2 = $myBdd->RealEscapeString(trim(utyGetGet('AjId2', '')));
 $ok = $myBdd->RealEscapeString(trim(utyGetGet('AjOk')));
 $user = $myBdd->RealEscapeString(trim(utyGetGet('AjUser')));
-if($and != '' && $key2 != '')
+if ($and != '' && $key2 != '') {
 	$andText = $and."'".$key2."'";
-else
+} else {
 	$andText = '';
+}
 
-if($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key != '')
-{
+if($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key != '') {
 		$sql  = "UPDATE $tableName SET $typeValeur = '$valeur' $where '$key' ";
-		if($and != '' && $key2 != '')
+		if ($and != '' && $key2 != '') {
 			$sql .= $and.$key2." ";
-		
-		mysql_query($sql, $myBdd->m_link) or die ("Erreur ".$sql);
+		}
+		$myBdd->Query($sql, $myBdd->m_link) or die ("Erreur ".$sql);
 		$myBdd->utyJournal('Modification '.$tableName, utyGetSaison(), '', 'NULL', 'NULL', 'NULL', $key.'-'.$typeValeur.'->'.$valeur, $user);
 		echo 'OK!';
+} else {
+	echo 'Erreur : '.$tableName.'-where:'.$where.'-and:'.$and.'-type:'.$typeValeur.'-val:'.$valeur.'-key:'.$key.'-key2:'.$key2;
 }
-else echo 'Erreur : '.$tableName.'-where:'.$where.'-and:'.$and.'-type:'.$typeValeur.'-val:'.$valeur.'-key:'.$key.'-key2:'.$key2;
-		
-?>
+

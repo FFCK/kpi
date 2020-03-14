@@ -24,7 +24,7 @@ class Stats extends MyPage
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
 	
-		$idSelJournee = utyGetGet('J', $idSelJournee);
+		$idSelJournee = utyGetGet('J', 0);
 		$this->m_tpl->assign('idSelJournee', $idSelJournee);
 	
         $event = utyGetGet('event', '0');
@@ -65,24 +65,6 @@ class Stats extends MyPage
 		}
 
         // Stats buts
-//        $sql  = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, a.Prenom, a.Sexe, "
-//                    . "b.Numero, f.Libelle Equipe, COUNT(*) Buts "
-//            . "FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f "
-//            . "WHERE a.Matric = b.Competiteur "
-//            . "AND b.Id_match = c.Id "
-//            . "AND c.Id_journee = d.Id "
-//            . "AND d.Code_competition = f.Code_compet "
-//            . "AND d.Code_saison = f.Code_saison "
-//            . "AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) "
-//            . "AND d.Code_competition = '$codeCompet' "
-//            . "AND d.Code_saison = $codeSaison "
-//            . "AND b.Id_evt_match = 'B' "
-//            . "AND c.Validation = 'O' "
-//            . "AND c.Publication = 'O'"
-//                
-//            . "GROUP BY a.Matric "
-//            . "ORDER BY Buts DESC, a.Nom "
-//            . "LIMIT 0,$nbLignes ";
         $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ, cej.Numero, cej.Capitaine,
                     ce.Libelle Equipe, ce.Numero NumEquipe,
                     SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts
@@ -102,7 +84,7 @@ class Stats extends MyPage
                 LIMIT 0, $nbLignes ";
         $arrayButeurs = array();
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+        while ($row = $myBdd->FetchArray($result)){ 
             array_push($arrayButeurs, array( 'Competition' => $row['Competition'], 
                         'Licence' => $row['Matric'],  
                         'Nom' => $row['Nom'],  
@@ -135,7 +117,7 @@ class Stats extends MyPage
 	
 
 	// Stats 		
-	function Stats()
+	function __construct()
 	{			
 	  MyPage::MyPage();
 		

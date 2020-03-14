@@ -10,14 +10,15 @@ class GestionMatchDetail extends MyPageSecure
 
 	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
 	{
+		$myBdd = new MyBdd();
 		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-		$result = mysql_query($sql, $bdd->m_link) or die ("Erreur Select");
+        $result = $myBdd->Query($sql);
 
-		if (mysql_num_rows($result) != 1)
+		if ($myBdd->NumRows($result) != 1)
 			return;
 			
-		$row = mysql_fetch_array($result);
-		if ((int) $row['Nb'] > 0)
+			$row = $myBdd->FetchArray($result);
+			if ((int) $row['Nb'] > 0)
 			return;
 			
 		$sql  = "Replace Into gickp_Matchs_Joueurs ";
@@ -25,7 +26,7 @@ class GestionMatchDetail extends MyPageSecure
 		$sql .= "Where Id_equipe = $idEquipe ";
 		$sql .= "AND Capitaine <> 'X' ";
 		$sql .= "AND Capitaine <> 'A' ";
-		mysql_query($sql, $bdd->m_link) or die ("Erreur Replace InitTitulaireEquipe");
+        $myBdd->Query($sql);
  	}
 	
 	function Load()
@@ -53,8 +54,8 @@ class GestionMatchDetail extends MyPageSecure
                 . "AND m.Id_journee = j.Id "
                 . "AND j.Code_competition = c.Code "
                 . "AND j.Code_saison = c.Code_saison ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select<br />".$sql);
-		$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		$row = $myBdd->FetchArray($result);
 		$saison = $row['saison'];
 		$statutMatch = $row['statutMatch'];
 		$publiMatch = $row['PubliMatch'];
@@ -62,10 +63,10 @@ class GestionMatchDetail extends MyPageSecure
 		$typeMatch = $row['typeMatch'];
 		$heure_fin = $row['Heure_fin'];
 		if (!isset($row['saison'])) {
-            die( $lang['Numero_non_valide'] . $inputText );
+            die( $lang['Numero_non_valide'] );
         }
 		if ($row['Id_equipeA'] < 1 || $row['Id_equipeB'] < 1) {
-            die($lang['Equipes_non_affectees'] . $inputText);
+            die($lang['Equipes_non_affectees']);
         }
         if($row['ScoreA'] == '')
 			$row['ScoreA'] = 0;
@@ -100,8 +101,8 @@ class GestionMatchDetail extends MyPageSecure
 			$sql3 .= "And a.Id_match = $idMatch ";
 			$sql3 .= "And a.Equipe = 'A' ";
 			$sql3 .= "Order By Numero, Nom, Prenom ";	 
-			$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load");
-			$num_results3 = mysql_num_rows($result3);
+			$result3 = $myBdd->Query($sql3);
+			$num_results3 = $myBdd->NumRows($result3);
 		// Compo équipe B
 			if ($row['Id_equipeB'] >= 1)
 				$this->InitTitulaireEquipe('B', $idMatch, $row['Id_equipeB'], $myBdd);
@@ -113,8 +114,8 @@ class GestionMatchDetail extends MyPageSecure
 			$sql4 .= "And a.Id_match = $idMatch ";
 			$sql4 .= "And a.Equipe = 'B' ";
 			$sql4 .= "Order By Numero, Nom, Prenom ";	 
-			$result4 = mysql_query($sql4, $myBdd->m_link) or die ("Erreur Load<br />".$sql4);
-			$num_results4 = mysql_num_rows($result4);
+			$result4 = $myBdd->Query($sql4);
+			$num_results4 = $myBdd->NumRows($result4);
 
 			// Evts
 			$sql5  = "Select d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.Competiteur, d.Numero, d.Equipe_A_B, ";
@@ -122,8 +123,8 @@ class GestionMatchDetail extends MyPageSecure
 			$sql5 .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
 			$sql5 .= "Where d.Id_match = $idMatch ";
 			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id ";
-			$result5 = mysql_query($sql5, $myBdd->m_link) or die ("Erreur Load<br />".$sql5);
-			$num_results5 = mysql_num_rows($result5);
+			$result5 = $myBdd->Query($sql5);
+			$num_results5 = $myBdd->NumRows($result5);
 ?>
 <!doctype html>
 <html lang="fr">
@@ -197,7 +198,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								$entr_temp = '';
 								for ($i=1;$i<=$num_results3;$i++)
 								{
-									$row3 = mysql_fetch_array($result3);
+									$row3 = $myBdd->FetchArray($result3);
 									if($row3["Capitaine"] != 'E'){
 										$joueur_temp  = '<a href="#" id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
 										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.ucwords(strtolower($row3["Nom"])).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
@@ -260,7 +261,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								$entr_temp = '';
 								for ($i=1;$i<=$num_results4;$i++)
 								{
-									$row4 = mysql_fetch_array($result4);
+									$row4 = $myBdd->FetchArray($result4);
 									if($row4["Capitaine"] != 'E'){
 										$joueur_temp  = '<a href="#" id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
 										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.ucwords(strtolower($row4["Nom"])).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
@@ -294,7 +295,7 @@ stop_time: <span id="stop_time_display"></span><br />
 								$evt_temp = '';
 								for ($i=1;$i<=$num_results5;$i++)
 								{
-                                    $row5 = mysql_fetch_array($result5);
+									$row5 = $myBdd->FetchArray($result5);
                                     if(in_array($row5["Id_evt_match"], array('A', 'T'))) {
                                         $evtEquipe = $row5['Equipe_A_B'];
                                         if($row5['Competiteur'] == '0'){
@@ -452,7 +453,7 @@ stop_time: <span id="stop_time_display"></span><br />
 				/* Evt chargés */
 				<?php
 				if($num_results5 >= 1)
-					mysql_data_seek($result5,0);
+					$myBdd->DataSeek($result5,0);
 				$evtEquipe = '';
                 $evt_tir['A'] = 0;
                 $evt_tir['B'] = 0;
@@ -460,7 +461,7 @@ stop_time: <span id="stop_time_display"></span><br />
                 $evt_arret['B'] = 0;
 				for ($i=1; $i<=$num_results5; $i++)
 				{
-					$row5 = mysql_fetch_array($result5);
+					$row5 = $myBdd->FetchArray($result5);
 					$evtEquipe = $row5['Equipe_A_B'];
 					switch($row5["Id_evt_match"]){
 						case 'T':

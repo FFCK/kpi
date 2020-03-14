@@ -82,27 +82,6 @@ class CacheMatch
             if(isset($error)) {
                 echo $error;
             }
-//            else
-//            {
-//                echo '*';
-//            }
-/*
-			if ($this->m_bFTP)
-			{
-				$fp = fopen($_SERVER['DOCUMENT_ROOT']."/live/cache/$fileName", 'r');
-				if ($fp == false)
-					echo "FOPENNNNNNNNNNNNNNNNNNNN";
-				else
-					echo "FOPEN OK";
-				
-				if (!ftp_fput($this->m_idFTP, $fileName, $fp, FTP_BINARY)) 
-				{
-					echo "There was a problem while uploading $fileName\n";
-					exit;
-				}
-				fclose($fp);
-			}
-*/
 		}
 	}
 	

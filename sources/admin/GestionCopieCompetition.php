@@ -34,14 +34,12 @@ class GestionCopieCompetition extends MyPageSecure
 		$competDestination = utyGetPost('competDestination',$competDestination);
 		$_SESSION['competDestination'] = $competDestination;
 		$this->m_tpl->assign('competDestination', $competDestination);
-
+		
 		// Liste des saisons
 		$arraySaisons = array();
 		$sql  = "Select distinct Code From gickp_Saison order by Code ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load 1");
-		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++) {
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arraySaisons, array( 'Code' => $row['Code']));
 		}
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
@@ -128,22 +126,19 @@ class GestionCopieCompetition extends MyPageSecure
 		$sql .= "Where Code_competition = '".$competOrigine;
 		$sql .= "' And Code_saison = $saisonOrigine ";
 		$sql .= "Order by Niveau, Phase, Lieu ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select 1ère journee");
-		$num_results = mysql_num_rows($result);
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		$result = $myBdd->Query($sql);
+		while($row = $myBdd->FetchArray($result)) {
 			array_push($arrayJournees, array( 'Niveau' => $row['Niveau'], 'Phase' => $row['Phase'], 'Lieu' => $row['Lieu'] ));
 			if ($listJournees != '') {
                 $listJournees .= ',';
             }
             $listJournees .= $row['Id'];
 		}
-		if ($num_results >= 1)
+		if ($listJournees != '')
 		{
 			$sql2 = "Select Count(Id) nbMatchs From gickp_Matchs Where Id_journee in (".$listJournees.") ";
-			$result2 = mysql_query($sql2, $myBdd->m_link) or die ("Erreur Select nb matchs");
-			$row2 = mysql_fetch_array($result2);
+			$result2 = $myBdd->Query($sql2);
+			$row2 = $myBdd->FetchArray($result2);
 			
 			$this->m_tpl->assign('nbMatchs', $row2['nbMatchs']);
 			$this->m_tpl->assign('Date_debut', utyDateUsToFr($row['Date_debut']));
@@ -177,20 +172,15 @@ class GestionCopieCompetition extends MyPageSecure
             $sql .= "AND c.Nb_equipes = $recherche_nb_equipes ";
             $sql .= "AND c.Code_ref = g.Groupe ";
             $sql .= "ORDER BY c.Code_saison DESC, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";	 
-            $result = $myBdd->Query($sql);
-            $num_results = $myBdd->NumRows($result);
-
-            for ($i=0;$i<$num_results;$i++)
-            {
-                $row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC);
-
-                $sql2  = "Select Count(m.Id) nbMatchs From gickp_Matchs m, gickp_Journees j ";
+			$result = $myBdd->Query($sql);
+			while($row = $myBdd->FetchArray($result)) {
+	            $sql2  = "Select Count(m.Id) nbMatchs From gickp_Matchs m, gickp_Journees j ";
                 $sql2 .= "Where j.Id = m.Id_journee ";
                 $sql2 .= "And j.Code_competition = '".$row["Code"]."' ";
                 $sql2 .= "And j.Code_saison = ".$row["Code_saison"]." ";
                 $result2 = $myBdd->Query($sql2);
                 //$row2 = mysql_fetch_row($result2);
-                $row2 = $myBdd->FetchRow($result2, $resulttype=MYSQL_ASSOC);
+                $row2 = $myBdd->FetchRow($result2);
                 $nbMatchs = $row2[0];
                 
                 if($nbMatchs > 0) {
@@ -211,10 +201,12 @@ class GestionCopieCompetition extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 	
-		$saisonOrigine = utyGetSession('saisonOrigine',$codeSaison);
-		$competOrigine = utyGetSession('competOrigine',$codeCompet);
-		$saisonDestination = utyGetSession('saisonDestination',$codeSaison);
-		$competDestination = utyGetSession('competDestination',$codeCompet);
+		$codeSaison = utyGetSaison();
+		$codeCompet = utyGetSession('codeCompet');
+		$saisonOrigine = utyGetSession('saisonOrigine', $codeSaison);
+		$competOrigine = utyGetSession('competOrigine', $codeCompet);
+		$saisonDestination = utyGetSession('saisonDestination', $codeSaison);
+		$competDestination = utyGetSession('competDestination', $codeCompet);
 		
 		(utyGetPost('Date_debut') != '%') ? $Date_debut = utyDateFrToUs(utyGetPost('Date_debut')) : $Date_debut = '%';
 		(utyGetPost('Date_fin') != '%') ? $Date_fin = utyDateFrToUs(utyGetPost('Date_fin')) : $Date_fin = '%';
@@ -246,25 +238,22 @@ class GestionCopieCompetition extends MyPageSecure
                 . "Where Code_competition = '".$competOrigine."' "
                 . "And Code_saison = $saisonOrigine "
                 . "Order by Id ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select journees : ".$sql);
-		$num_results = mysql_num_rows($result);
+		$result = $myBdd->Query($sql);
+	
+		$sql2a  = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+		$myBdd->Query($sql2a);
+		$sql3a  = "CREATE TEMPORARY TABLE gickp_Tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+		$myBdd->Query($sql3a);
 
-			$sql2a  = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-			mysql_query($sql2a, $myBdd->m_link) or die ("Erreur Insert 2a ".$sql2a);
-			$sql3a  = "CREATE TEMPORARY TABLE gickp_Tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-			mysql_query($sql3a, $myBdd->m_link) or die ("Erreur Insert 3a ".$sql3a);
+		$sql2  = "INSERT INTO gickp_Tmp (Num) SELECT DISTINCT Id FROM gickp_Competitions_Equipes ";
+		$sql2 .= "WHERE Code_compet = '".$competOrigine."' AND Code_saison = $saisonOrigine ORDER BY Poule, Tirage, Libelle; ";
+		$myBdd->Query($sql2);
 
-			$sql2  = "INSERT INTO gickp_Tmp (Num) SELECT DISTINCT Id FROM gickp_Competitions_Equipes ";
-			$sql2 .= "WHERE Code_compet = '".$competOrigine."' AND Code_saison = $saisonOrigine ORDER BY Poule, Tirage, Libelle; ";
-			mysql_query($sql2, $myBdd->m_link) OR die ("Erreur Insert 2 ".$sql2);
+		$sql3  = "INSERT INTO gickp_Tmp2 (Num) SELECT DISTINCT Id FROM gickp_Competitions_Equipes ";
+		$sql3 .= "WHERE Code_compet = '".$competOrigine."' AND Code_saison = $saisonOrigine ORDER BY Poule, Tirage, Libelle; ";
+		$myBdd->Query($sql3);
 
-			$sql3  = "INSERT INTO gickp_Tmp2 (Num) SELECT DISTINCT Id FROM gickp_Competitions_Equipes ";
-			$sql3 .= "WHERE Code_compet = '".$competOrigine."' AND Code_saison = $saisonOrigine ORDER BY Poule, Tirage, Libelle; ";
-			mysql_query($sql3, $myBdd->m_link) or die ("Erreur Insert 3 ".$sql3);
-
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = mysql_fetch_array($result);
+		while($row = $myBdd->FetchArray($result)) {
 			$nextIdJournee = $this->GetNextIdJournee();
 			
 			$sql1  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, Type, Date_debut, Date_fin, Nom, ";
@@ -306,8 +295,7 @@ class GestionCopieCompetition extends MyPageSecure
 			$sql1 .= "', '";
 			($Delegue == '%') ? $sql1 .= $row['Delegue'] : $sql1 .= $Delegue ;
 			$sql1 .= "') ";
-			
-			mysql_query($sql1, $myBdd->m_link) or die ("Erreur Insert 1 : ".$sql1);
+			$myBdd->Query($sql1);
 			
 			$sql4  = "Insert Into gickp_Matchs (Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, Type) ";
 			$sql4 .= "Select $nextIdJournee, ";
@@ -328,9 +316,9 @@ class GestionCopieCompetition extends MyPageSecure
 				$sql4 .= "AND tb.Num=m.Id_equipeB ";
 			}
 			
-			mysql_query($sql4, $myBdd->m_link) or die ("Erreur Insert 4 : ".$sql4);
+			$myBdd->Query($sql4);
 		
-			$myBdd->utyJournal('Ajout journee', $codeSaison, $J_competition, '', $nextIdJournee);
+			$myBdd->utyJournal('Ajout journee', $codeSaison, $competDestination, '', $nextIdJournee);
 		}
 
 			
@@ -346,10 +334,10 @@ class GestionCopieCompetition extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 		$sql  = "Select max(Id) maxId From gickp_Journees Where Id < 19000001 ";
-		$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-		if (mysql_num_rows($result) == 1) {
-			$row = mysql_fetch_array($result);	  
-			return ((int) $row['maxId'])+1;
+		$result = $myBdd->Query($sql);
+		if ($myBdd->NumRows($result) == 1) {
+			$row = $myBdd->FetchArray($result);	  
+			return ((int) $row['maxId']) + 1;
 		} else {
 			return 1;
 		}
@@ -365,12 +353,12 @@ class GestionCopieCompetition extends MyPageSecure
 		}
 	}
 	
-	function GestionCopieCompetition()
-	{			
-	  MyPageSecure::MyPageSecure(4);
+	function __construct()
+	{
+	  	MyPageSecure::MyPageSecure(4);
 		
 		$alertMessage = '';
-	  
+		
 		$Cmd = '';
 		if (isset($_POST['Cmd']))
 			$Cmd = $_POST['Cmd'];

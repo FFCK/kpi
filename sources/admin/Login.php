@@ -8,7 +8,7 @@ include_once('../commun/MyTools.php');
 
 class Login extends MyPage 
 {	
-	function Login()
+	function __construct()
 	{
 		session_start();
         $myBdd = new MyBdd();
@@ -38,10 +38,10 @@ class Login extends MyPage
 			$sql .= $mel;
 			$sql .= "' ";
 			$sql .= "and u.Code = c.Matric ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
-			if (mysql_num_rows($result) == 1)
+			$result = $myBdd->Query($sql, $myBdd->m_link);
+			if ($myBdd->NumRows($result) == 1)
 			{
-				$row = mysql_fetch_array($result);
+				$row = $myBdd->FetchArray($result);
 				$gpwd = Genere_Password(10);
 				//Mise à jour mot de passe
 				$sql  = "Update gickp_Utilisateur ";
@@ -49,7 +49,7 @@ class Login extends MyPage
 				$sql .= "Where Code = '";
 				$sql .= $user;
 				$sql .= "' ";
-				$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Update : ".$sql);
+				$result = $myBdd->Query($sql, $myBdd->m_link);
 				//MAIL 
 				$sujet = 'Modification de votre mot de passe kayak-polo.info (KPI)';
 				$email_expediteur = 'contact@kayak-polo.info';
@@ -91,10 +91,10 @@ class Login extends MyPage
 			$sql .= $user;
 			$sql .= "' ";
 			$sql .= "and u.Code = c.Matric ";
-			$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Load : ".$sql);
-			if (mysql_num_rows($result) == 1)
+			$result = $myBdd->Query($sql, $myBdd->m_link);
+			if ($myBdd->NumRows($result) == 1)
 			{
-				$row = mysql_fetch_array($result);	  
+				$row = $myBdd->FetchArray($result);	  
 				if ( ($row["Pwd"] === md5($_POST['Pwd'])) )
 				{
 					$_SESSION['User'] = $user;
@@ -144,8 +144,8 @@ class Login extends MyPage
 					$sql3 .= utyGetFiltreCompetition('');
 					$sql3 .= " Order By Code_niveau, COALESCE(Code_ref, 'z'), Code_tour, Code ";	 
 					$sql3 .= "Limit 1 ";
-					$result3 = mysql_query($sql3, $myBdd->m_link) or die ("Erreur Load 3 : ".$sql3);
-					$row3 = mysql_fetch_array($result3);	
+					$result3 = $myBdd->Query($sql3, $myBdd->m_link);
+					$row3 = $myBdd->FetchArray($result3);	
 					$_SESSION['codeCompet'] = $row3['Code'];
 					
 					$myBdd->utyJournal('Connexion', '', '', '', '', NULL, $row['Prenom'].' '.$row['Nom'] );

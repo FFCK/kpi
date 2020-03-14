@@ -75,7 +75,7 @@ if($saison > 2000 && $competitions != '') {
     }
     
     $result = $myBdd->Query($sql);
-    while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+    while ($row = $myBdd->FetchArray($result)){ 
         array_push($arrayStats, $row);
     }
 

@@ -25,7 +25,7 @@ class PDF extends FPDF {
 // Liste des présents par catégorie 
 class FeuillePresenceU21 extends MyPage {
 
-    function FeuillePresenceU21() {
+    function __construct() {
         MyPage::MyPage();
 
         $myBdd = new MyBdd();
@@ -48,15 +48,15 @@ class FeuillePresenceU21 extends MyPage {
             $sql .= $codeSaison;
             $sql .= "' Order By Libelle, Id ";
 
-            $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load Equipes");
-            $num_results = mysql_num_rows($result);
+            $result = $myBdd->Query($sql);
+            $num_results = $myBdd->NumRows($result);
             if ($num_results == 0) {
                 die('Aucune équipe dans cette compétition');
             }
 
             $listEquipes = '';
             for ($i = 0; $i < $num_results; $i++) {
-                $row = mysql_fetch_array($result);
+                $row = $myBdd->FetchArray($result);
                 $idEquipe = $row['Id'];
                 if ($listEquipes != '') {
                     $listEquipes .= ',';
@@ -79,13 +79,13 @@ class FeuillePresenceU21 extends MyPage {
                 $sql2 .= "And LEFT(b.Naissance, 4) > ($codeSaison - 22) ";
                 $sql2 .= "Order By NomEquipe, b.Naissance DESC, Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";
 
-                $result2 = mysql_query($sql2, $myBdd->m_link) or die("Erreur Load Titulaires : " . $sql2 . ' - ' . $codeCompet . ' - ' . $row['Id'] . ' ! ');
-                $num_results2 = mysql_num_rows($result2);
+                $result2 = $myBdd->Query($sql2);
+                $num_results2 = $myBdd->NumRows($result2);
 
                 $arrayJoueur = array();
 
                 for ($j = 0; $j < $num_results2; $j++) {
-                    $row2 = mysql_fetch_array($result2);
+                    $row2 = $myBdd->FetchArray($result2);
 
                     $numero = $row2['Numero'];
                     if (strlen($numero) == 0) {

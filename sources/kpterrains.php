@@ -22,7 +22,7 @@ class Matchs extends MyPage
         }
 		$_SESSION['codeCompetGroup'] = $codeCompetGroup;
 
-		$codeSaison = utyGetPost('Saison', $codeSaison);
+		$codeSaison = utyGetPost('Saison', utyGetSaison());
 		$codeSaison = utyGetGet('Saison', $codeSaison);
         if($codeSaison != $_SESSION['Saison'] and utyGetGet('Compet', '*') == '*'){
             $_GET['J'] = '*';
@@ -54,7 +54,7 @@ class Matchs extends MyPage
                     . "WHERE j.Id = ej.Id_journee "
                     . "AND ej.Id_evenement = $event ";
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+            while ($row = $myBdd->FetchArray($result)){ 
                 if($Compets != '') {
                     $Compets .= ',';
                 }
@@ -154,7 +154,7 @@ class Matchs extends MyPage
         $nbCompet = $myBdd->NumRows($result);
         $listCompet = '';
 
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+        while ($row = $myBdd->FetchArray($result)){ 
             array_push($arrayCompetition, $row);
             if($idSelCompet == '*' || $idSelCompet == $row["Code"]) {
                 if ($listCompet) {
@@ -197,7 +197,7 @@ class Matchs extends MyPage
         }
         $arrayListJournees = array();
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+        while ($row = $myBdd->FetchArray($result)){
             array_push($arrayListJournees, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 
                                                 'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
                                                 'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
@@ -238,7 +238,7 @@ class Matchs extends MyPage
 		$arrayJournees = array();
 		$lstJournee = '';
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+        while ($row = $myBdd->FetchArray($result)){ 
 			array_push($arrayJournees, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 
                                                 'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
                                                 'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
@@ -291,7 +291,7 @@ class Matchs extends MyPage
             $idTerrain = '';
             
             $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)) {
+            while ($row = $myBdd->FetchArray($result)) {
                 if ($filtreJour == '' || $row['Date_match'] == $filtreJour) {
                     if ($row['Soustitre2'] != '') {
                         $row['Categorie'] = $row['Soustitre2'];
@@ -439,14 +439,7 @@ class Matchs extends MyPage
             $nbTerrains = count($numTerrain);
             $this->m_tpl->assign('nbTerrains', $nbTerrains);
             $this->m_tpl->assign('numTerrain', $numTerrain);
-            $this->m_tpl->assign('lstTerrainsArray', $lstTerrainsArray);
-            
-//            echo '<pre>';
-//            print_r($nbTerrains);
-//            print_r($arrayMatchs);
-//            echo '</pre>';
-            
-            
+            $this->m_tpl->assign('lstTerrainsArray', $lstTerrainsArray);            
 			$this->m_tpl->assign('listMatch', $listMatch);
 			$this->m_tpl->assign('arrayDates', $arrayDates);
 			$this->m_tpl->assign('arrayHeures', $arrayHeures);
@@ -464,7 +457,7 @@ class Matchs extends MyPage
 	}
 	
 	
-	function Matchs()
+	function __construct()
 	{			
 		MyPage::MyPage();
         

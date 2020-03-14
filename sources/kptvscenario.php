@@ -25,7 +25,7 @@ class Scenario extends MyPageSecure
                 . "ORDER BY Voie ";
         $arrayScenes = array();
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+        while ($row = $myBdd->FetchArray($result)){
             $arrayScenes[] = $row;
         }
         $this->m_tpl->assign('arrayScenes', $arrayScenes);

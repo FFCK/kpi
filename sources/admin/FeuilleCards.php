@@ -9,7 +9,7 @@ require('../fpdf/fpdf.php');
 // Gestion de la Feuille des Cartons
 class FeuilleCards extends MyPage 
 {	
-	function FeuilleCards()
+	function __construct()
 	{
 		MyPage::MyPage();
 		$myBdd = new MyBdd();
@@ -38,10 +38,8 @@ class FeuilleCards extends MyPage
         }
 
         if ($arrayCompetition['En_actif'] == 'O') {
-            $date = $row['Date_match'];
             $dateprint = date('Y-m-d H:i');
         } else {
-            $date = utyDateUsToFr($row['Date_match']);
             $dateprint = date('d/m/Y H:i');
         }
 
@@ -139,7 +137,7 @@ class FeuilleCards extends MyPage
         $pdf->SetFillColor(255, 170, 170);
         $pdf->Cell(16, 4, '', 1, 1, 'L', 1);
 
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+        while ($row = $myBdd->FetchArray($result)){
 			if($equipe != $row['Libelle']) {
                 $pdf->Ln(6);
                 $pdf->SetFont('Arial','B',10);
@@ -180,30 +178,6 @@ class FeuilleCards extends MyPage
             $pdf->Cell(16, 4, '', 1, 1, 'L', 1);
 
             $equipe = $row['Libelle'];
-            
-            
-//			$idEquipe = $row['Id'];
-//			$pdf->SetFont('Arial','B',12);
-//			$pdf->Cell(55, 6, '',0,'0','L');
-//			// médailles
-//			if ($row['Clt'] <= 3 && $row['Clt'] != 0 && $arrayCompetition['Code_tour'] == 'F') {
-//                $pdf->image('../img/medal' . $row['Clt'] . '.gif', $pdf->GetX(), $pdf->GetY() + 1, 3, 3);
-//            }
-//            $pdf->Cell(30, 6, $row['Clt'].'.', 0,'0','C');
-//			// drapeaux
-//			if ($arrayCompetition['Code_niveau'] == 'INT') {
-//                $pays = substr($row['Code_club'], 0, 3);
-//                if (is_numeric($pays[0]) || is_numeric($pays[1]) || is_numeric($pays[2])) {
-//                    $pays = 'FRA';
-//                }
-//                $pdf->image('../img/Pays/' . $pays . '.png', $pdf->GetX(), $pdf->GetY() + 1, 7, 4);
-//                $pdf->Cell(10, 6, '', 0, '0', 'C'); //Pays
-//            } else {
-//                $pdf->Cell(10, 6, '', 0, '0', 'C');
-//            }
-//
-//            $pdf->Cell(60,6, $row['Libelle'],0,1,'L');
-			
             
 		}
 			

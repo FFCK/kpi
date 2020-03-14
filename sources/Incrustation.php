@@ -168,7 +168,7 @@ class Incrustation extends MyPage
 		}
 	}
 
-	function Incrustation()
+	function __construct()
 	{			
 		MyPage::MyPage();
 		

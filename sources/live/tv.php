@@ -917,4 +917,3 @@ class TV extends MyPage
 }
 
 new TV($_GET);
-?>

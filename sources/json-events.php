@@ -20,7 +20,7 @@ $sql  = "SELECT j.*, c.* "
 
 $result = $myBdd->Query($sql);
 $arrayCalendrier = array();
-while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+while ($row = $myBdd->FetchArray($result)){
     $title = html_entity_decode($row['Nom'].' ('.$row['Lieu'].'-'.$row['Departement'].')');
     $compet = $row['Code_competition'];
     //Couleurs selon le type de compétition (championnat, coupe, tournoi, compétition internationale, régionale)

@@ -23,7 +23,7 @@ class PDF extends FPDF {
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class FeuilleStats extends MyPage {
 
-    function FeuilleStats() {
+    function __construct() {
         MyPage::MyPage();
 
         $myBdd = new MyBdd();
@@ -80,12 +80,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY a.Matric ";
                 $sql .= "ORDER BY Buts DESC, a.Nom ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayButeurs = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayButeurs, array('Competition' => $row['Competition'],
                         'Licence' => $row['Licence'],
                         'Nom' => $row['Nom'],
@@ -111,12 +111,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY Equipe ";
                 $sql .= "ORDER BY Buts DESC, Equipe ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayAttaque = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayAttaque, array('Competition' => $row['Competition'],
                         'Equipe' => $row['Equipe'],
                         'Buts' => $row['Buts']));
@@ -137,12 +137,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY Equipe ";
                 $sql .= "ORDER BY Buts ASC, Equipe ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayDefense = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayDefense, array('Competition' => $row['Competition'],
                         'Equipe' => $row['Equipe'],
                         'Buts' => $row['Buts']));
@@ -167,12 +167,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY a.Matric ";
                 $sql .= "ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Equipe, a.Nom ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayCartons = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayCartons, array('Competition' => $row['Competition'],
                         'Licence' => $row['Licence'],
                         'Nom' => $row['Nom'],
@@ -206,12 +206,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY Equipe ";
                 $sql .= "ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Equipe ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayCartonsEquipe = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayCartonsEquipe, array('Competition' => $row['Competition'],
                         'Licence' => $row['Licence'],
                         'Equipe' => $row['Equipe'],
@@ -237,12 +237,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY a.Matric ";
                 $sql .= "ORDER BY Fairplay Desc, a.Nom ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayFairplay = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayFairplay, array('Competition' => $row['Competition'],
                         'Licence' => $row['Licence'],
                         'Nom' => $row['Nom'],
@@ -269,12 +269,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY Equipe ";
                 $sql .= "ORDER BY Fairplay Desc, Equipe ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayFairplayEquipe = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayFairplayEquipe, array('Competition' => $row['Competition'],
                         'Equipe' => $row['Equipe'],
                         'Fairplay' => $row['Fairplay']));
@@ -294,12 +294,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY a.Matric ";
                 $sql .= "ORDER BY Total DESC, principal DESC, a.Nom ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load");
-                $num_results = mysql_num_rows($result);
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
 
                 $arrayArbitrage = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayArbitrage, array('Competition' => $row['Competition'],
                         'Licence' => $row['Licence'],
                         'Nom' => $row['Nom'],
@@ -324,12 +324,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY Equipe ";
                 $sql .= "ORDER BY principal DESC, secondaire DESC, Equipe ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayArbitrageEquipe = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayArbitrageEquipe, array('Competition' => $row['Competition'],
                         'Equipe' => $row['Equipe'],
                         'Principal' => $row['principal'],
@@ -355,12 +355,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "ORDER BY lc.Numero_club, lc.Nom, lc.Prenom, Competition DESC  ";
                 $sql .= "LIMIT 0,$nbLignes ";
 
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayCJouees = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayCJouees, array('Competition' => $row['Competition'],
                         'Matric' => $row['Matric'],
                         'Nom' => $row['Nom'],
@@ -386,12 +386,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY nomEquipe, mj.Matric, j.Code_competition ";
                 $sql .= "ORDER BY lc.Nom, lc.Prenom, Competition ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayCJouees2 = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayCJouees2, array('Competition' => $row['Competition'],
                         'Matric' => $row['Matric'],
                         'Nom' => $row['Nom'],
@@ -420,12 +420,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY nomEquipe, mj.Matric, j.Code_competition ";
                 $sql .= "ORDER BY lc.Nom, lc.Prenom, Competition ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayCJouees3 = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     $row['Irreg'] = '';
                     if ($row['Origine'] != $codeSaison) {
                         $row['Irreg'] = 'Licence ' . $row['Origine'];
@@ -472,12 +472,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY nomEquipe, lc.Matric, j.Code_competition ";
                 $sql .= "ORDER BY lc.Nom, lc.Prenom, Competition ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayCJouees2 = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayCJouees2, array('Competition' => $row['Competition'],
                         'Matric' => $row['Matric'],
                         'Nom' => $row['Nom'],
@@ -503,12 +503,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY nomEquipe, mj.Matric, j.Code_competition ";
                 $sql .= "ORDER BY lc.Nom, lc.Prenom, Competition ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayCJouees2 = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayCJouees2, array('Competition' => $row['Competition'],
                         'Matric' => $row['Matric'],
                         'Nom' => $row['Nom'],
@@ -528,12 +528,12 @@ class FeuilleStats extends MyPage {
                 $sql .= "GROUP BY j.Code_competition, j.Date_debut, j.Lieu ";
                 $sql .= "ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
                 $sql .= "LIMIT 0,$nbLignes ";
-                $result = mysql_query($sql, $myBdd->m_link) or die("Erreur Load : " . $sql);
-                $num_results = mysql_num_rows($result);
-
+                $result = $myBdd->Query($sql);
+                $num_results = $myBdd->NumRows($result);
+        
                 $arrayOfficielsJournees = array();
                 for ($i = 0; $i < $num_results; $i++) {
-                    $row = mysql_fetch_array($result);
+                    $row = $myBdd->FetchArray($result);
                     array_push($arrayOfficielsJournees, array('Code_competition' => $row['Code_competition'],
                         'Date_debut' => $row['Date_debut'],
                         'Date_fin' => $row['Date_fin'],

@@ -41,5 +41,5 @@ include_once('../../commun/MyTools.php');
             . "SET ".$TypeUpdate." = '".$Valeur."' "
             . "WHERE Code = '".$idCompet."' "
             . "AND Code_saison = ".$idSaison;
-	$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur UPDATE<br />".$sql);
+	$result = $myBdd->Query($sql);
 	echo 'OK';

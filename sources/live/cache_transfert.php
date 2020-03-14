@@ -1,6 +1,6 @@
 <?php
 
-$data = $_GET[json_data];
+$data = $_GET['json_data'];
 $data = urldecode($data);
 
 $fileName = "test.txt";
@@ -14,4 +14,3 @@ if ($fp)
 }
 
 echo "0";
-?>

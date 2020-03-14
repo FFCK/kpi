@@ -26,7 +26,7 @@ class PDF extends FPDF {
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfQrCodes extends MyPage {
 
-    function PdfQrCodes() {
+    function __construct() {
         MyPage::MyPage();
         // Chargement des titre ...
         $myBdd = new MyBdd();
@@ -167,7 +167,7 @@ class PdfQrCodes extends MyPage {
         //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
         $qrcode2->displayFPDF($pdf, 175, 90, 40);
 
-        $pdf->Output('Game list' . '.pdf', 'I');
+        $pdf->Output('Links.pdf', 'I');
     }
 
 }

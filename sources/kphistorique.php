@@ -36,7 +36,7 @@ class Historique extends MyPage
                 . "Order By Code DESC ";	 
 		$result = $myBdd->Query($sql);
 		$arraySaison = array();
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){
+        while ($row = $myBdd->FetchArray($result)){
             array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
 											'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
 											'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
@@ -74,7 +74,7 @@ class Historique extends MyPage
                 }
                 $sql .= "ORDER BY c.Code_saison DESC, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code";	 
         $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result, $resulttype=MYSQL_ASSOC)){ 
+        while ($row = $myBdd->FetchArray($result)){ 
             if($saison != $row['Code_saison']) {
                 array_push($arraySaisons, array('saison' => $row['Code_saison']));
             }
@@ -124,7 +124,7 @@ class Historique extends MyPage
                     }
 
             $result2 = $myBdd->Query($sql2);
-            while ($row2 = $myBdd->FetchArray($result2, $resulttype=MYSQL_ASSOC)){ 
+            while ($row2 = $myBdd->FetchArray($result2)){ 
                 //Logos
                 $logo = '';
                 $club = $row2['Code_club'];
@@ -223,7 +223,7 @@ class Historique extends MyPage
 	
 
 	// Historique		
-	function Historique()
+	function __construct()
 	{			
 		MyPage::MyPage();
 		
@@ -236,4 +236,3 @@ class Historique extends MyPage
 
 $page = new Historique();
 
-?>

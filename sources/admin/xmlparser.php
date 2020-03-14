@@ -28,7 +28,7 @@ if($xmlDocumentType == 'DT_PARTIC') {
         //       echo '-> '. $competition[Code] . '<br>';
        foreach ($competition->Participant as $participant) {
            //       echo '<pre>' . print_r($participant) . '</pre>';
-           echo '* ' . $participant[TVName] .'<br>';
+           echo '* ' . $participant['TVName'] .'<br>';
        } 
        echo '---';
     }
