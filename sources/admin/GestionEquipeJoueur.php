@@ -406,7 +406,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		$idEquipe = utyGetPost('idEquipe', '');
 		$ParamCmd = utyGetPost('ParamCmd', '');
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 			

@@ -400,7 +400,7 @@ class GestionCompetition extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);	//TODO	
+		$arrayParam = explode(',', $ParamCmd);	//TODO	
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 			
