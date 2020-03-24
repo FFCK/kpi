@@ -578,7 +578,7 @@ class GestionEquipe extends MyPageSecure
             $ParamCmd = $_POST['ParamCmd'];
         }
 
-        $arrayParam = explode('[,]', $ParamCmd);		
+        $arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0) {
             return;
         } // Rien à Detruire ...

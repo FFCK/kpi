@@ -323,7 +323,7 @@ class GestionCalendrier extends MyPageSecure
 	{
 		$ParamCmd = utyGetPost('ParamCmd');
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 			
@@ -469,7 +469,7 @@ class GestionCalendrier extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
