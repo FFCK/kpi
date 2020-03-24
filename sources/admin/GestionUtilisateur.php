@@ -567,7 +567,7 @@ class GestionUtilisateur extends MyPageSecure
 	{
 		$ParamCmd = utyGetPost('ParamCmd');
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0) {
             return;
         } // Rien à Detruire ...

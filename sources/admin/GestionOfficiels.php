@@ -904,7 +904,7 @@ class GestionOfficiels extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 		
@@ -1075,7 +1075,7 @@ class GestionOfficiels extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
@@ -1103,7 +1103,7 @@ class GestionOfficiels extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
@@ -1143,10 +1143,10 @@ class GestionOfficiels extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
-
+	
 		$myBdd = new MyBdd();
 		
 		// Change Publication	
@@ -1171,10 +1171,10 @@ class GestionOfficiels extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
-			return; // Rien à affecter ...
-
+			return; // Rien à changer ...
+	
 		$myBdd = new MyBdd();
 
 		$texte = '';
@@ -1417,10 +1417,10 @@ class GestionOfficiels extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
-			return; // Rien à affecter ...
-
+			return; // Rien à changer ...
+	
 		$myBdd = new MyBdd();
 
 		$texte = '';
@@ -1460,10 +1460,10 @@ class GestionOfficiels extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = split ('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
-
+	
 		$idJournee = (int)utyGetPost('comboJournee', 0);
 
 		$myBdd = new MyBdd();

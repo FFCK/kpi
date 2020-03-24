@@ -805,39 +805,39 @@ class GestionJournee extends MyPageSecure
 			if (strlen($numMatch) == 0)
 				$numMatch = $this->LastNumeroOrdre($idJournee) + 1;
 			
-			$sql  = "Select Id_equipeA, Id_equipeB From gickp_Matchs Where Id = $idMatch ";
+			$sql  = "SELECT Id_equipeA, Id_equipeB 
+				FROM gickp_Matchs 
+				WHERE Id = $idMatch ";
 			$result = $myBdd->Query($sql);
 			$row = $myBdd->FetchRow($result);
 			$anciene_equipeA = $row[0]["Id_equipeA"]; //TODO vérifier
 			$anciene_equipeB = $row[0]["Id_equipeB"];
 
-			$sql  = "Update gickp_Matchs Set Id_journee = $idJournee, Numero_ordre = $numMatch, Date_match='";
-			$sql .= utyDateFrToUs($dateMatch);
-			$sql .= "', Heure_match='$heureMatch', Libelle='$Libelle', Terrain='$Terrain', Type='$Type', Id_equipeA=$idEquipeA, Id_equipeB=$idEquipeB, ";
-			$sql .= "Arbitre_principal='";
-			$sql .= $arbitre1;
-			$sql .= "', Arbitre_secondaire='";
-			$sql .= $arbitre2;
-			$sql .= "',Matric_arbitre_principal='$arbitre1_matric', Matric_arbitre_secondaire='$arbitre2_matric', ";
-			$sql .= "CoeffA = $coeffA, CoeffB = $coeffB ";
-			$sql .= "Where Id = $idMatch ";
-			$sql .= "And Validation != 'O' ";
+			$sql  = "UPDATE gickp_Matchs 
+				SET Id_journee = $idJournee, Numero_ordre = $numMatch, 
+				Date_match='" . utyDateFrToUs($dateMatch) . "', Heure_match='$heureMatch', 
+				Libelle='$Libelle', Terrain='$Terrain', Type='$Type', 
+				Id_equipeA=$idEquipeA, Id_equipeB=$idEquipeB, Arbitre_principal='" . $arbitre1 . "', 
+				Arbitre_secondaire='" . $arbitre2 . "', Matric_arbitre_principal='$arbitre1_matric', 
+				Matric_arbitre_secondaire='$arbitre2_matric', CoeffA = $coeffA, CoeffB = $coeffB 
+				WHERE Id = $idMatch 
+				AND Validation != 'O' ";
 	
 			$myBdd->Query($sql);
 			
 			//Vidage des joueurs si l'équipe est vide ou modifiée
 			if($idEquipeA == -1 or $idEquipeA != $anciene_equipeA)
 			{
-				$sql  = "Delete From gickp_Matchs_Joueurs ";
-				$sql .= "Where Id_match = $idMatch ";
-				$sql .= "And Equipe = 'A' ";
+				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = $idMatch 
+					AND Equipe = 'A' ";
 				$myBdd->Query($sql);
 			}
 			if($idEquipeB == -1 or $idEquipeB != $anciene_equipeB)
 			{
-				$sql  = "Delete From gickp_Matchs_Joueurs ";
-				$sql .= "Where Id_match = $idMatch ";
-				$sql .= "And Equipe = 'B' ";
+				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = $idMatch 
+					AND Equipe = 'B' ";
 				$myBdd->Query($sql);
 			}
 			
@@ -891,8 +891,10 @@ class GestionJournee extends MyPageSecure
                 $numMatch = $this->LastNumeroOrdre($idJournee) + 1;
             }
 
-            $sql  = "Insert Into gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, Terrain, Type, ";
-			$sql .= "Id_equipeA, Id_equipeB, ScoreA, ScoreB, Arbitre_principal, Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB) Values (";
+			$sql  = "INSERT INTO gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, 
+				Libelle, Terrain, Type, Id_equipeA, Id_equipeB, ScoreA, ScoreB, Arbitre_principal, 
+				Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB) 
+				VALUES (";
 			$sql .= $idJournee;
 			$sql .= ",";
 			$sql .= $numMatch;
@@ -943,7 +945,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 		
@@ -951,10 +953,10 @@ class GestionJournee extends MyPageSecure
 		
 		//Contrôle suppression possible
 		$sql = "Select Id From gickp_Matchs_Detail Where Id_match In ($ParamCmd) ";
-
+		
 		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) != 0 && $_SESSION['Profile'] != 1)
-			die ("Il reste des évènements dans ces matchs ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
+		if ($myBdd->NumRows($result) != 0)
+			return "Il reste des évènements dans ces matchs ! Suppression impossible ";
 		
 		//Vidage des joueurs du match
 		$sql  = "DELETE FROM gickp_Matchs_Joueurs USING gickp_Matchs_Joueurs, gickp_Matchs "
@@ -964,20 +966,22 @@ class GestionJournee extends MyPageSecure
 		$myBdd->Query($sql);
         
 		// Suppression
-		$sql  = "Delete From gickp_Matchs Where Id In ($ParamCmd) ";
-		$sql .= "And Validation != 'O' ";
+		$sql  = "DELETE FROM gickp_Matchs 
+			WHERE Id IN ($ParamCmd) 
+			AND Validation != 'O' ";
 		$myBdd->Query($sql);
 
 		$myBdd->utyJournal('Suppression matchs', '', '', 'NULL', 'NULL', $ParamCmd);
+		return;
 	}
 	
 	function LastNumeroOrdre($idJournee)
 	{
 		$myBdd = new MyBdd();
 		
-		$sql  = "Select Code_competition, Code_saison, Date_debut ";
-		$sql .= "From gickp_Journees ";
-		$sql .= "Where Id = ";
+		$sql  = "SELECT Code_competition, Code_saison, Date_debut 
+			FROM gickp_Journees 
+			WHERE Id = ";
 		$sql .= $idJournee;
 			
 		$result = $myBdd->Query($sql);
@@ -990,10 +994,15 @@ class GestionJournee extends MyPageSecure
 			$dateDebut = $row['Date_debut'];
 		}
 		
-		$sql  = "Select Max(Numero_ordre) MaxNumeroOrdre From gickp_Matchs Where Id_journee In (";
-		$sql .= "Select Id From gickp_Journees Where Code_competition = '$codeCompet' ";
-		$sql .= "And Code_saison = '$codeSaison'";
-		$sql .= "And Date_debut <= '$dateDebut') ";
+		$sql  = "SELECT MAX(Numero_ordre) MaxNumeroOrdre 
+			FROM gickp_Matchs 
+			WHERE Id_journee IN (
+				SELECT Id 
+				FROM gickp_Journees 
+				WHERE Code_competition = '$codeCompet' 
+				AND Code_saison = '$codeSaison'
+				AND Date_debut <= '$dateDebut'
+			) ";
 		
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1)
@@ -1014,10 +1023,11 @@ class GestionJournee extends MyPageSecure
 		
 		$myBdd = new MyBdd();
 
-		$sql  = "Select Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, Terrain, Type, Id_equipeA, Id_equipeB, Arbitre_principal, Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB ";
-		$sql .= "From gickp_Matchs ";
-		$sql .= "Where Id = ";
-		$sql .= $idMatch;
+		$sql  = "SELECT Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, 
+			Terrain, Type, Id_equipeA, Id_equipeB, Arbitre_principal, Arbitre_secondaire, 
+			Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB 
+			FROM gickp_Matchs 
+			WHERE Id = $idMatch ";
 		
 		$result = $myBdd->Query($sql);
 		if ($myBdd->NumRows($result) == 1)
@@ -1055,11 +1065,10 @@ class GestionJournee extends MyPageSecure
 		$myBdd = new MyBdd();
 		
   	// Chargement des Matchs de la journée ...
-		$sql  = "Select Id, Id_equipeA, Id_equipeB ";
-		$sql .= "From gickp_Matchs ";
-		$sql .= "Where Id_journee = ";
-		$sql .= $idJournee;
-		$sql .= " And Validation <> 'O' ";
+		$sql  = "SELECT Id, Id_equipeA, Id_equipeB 
+			FROM gickp_Matchs 
+			WHERE Id_journee = $idJournee
+			AND Validation <> 'O' ";
 		
 		$result = $myBdd->Query($sql);
 		while($row = $myBdd->FetchArray($result)) {
@@ -1068,24 +1077,30 @@ class GestionJournee extends MyPageSecure
 			$idEquipeA = $row['Id_equipeA'];
 			$idEquipeB = $row['Id_equipeB'];
 	
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'A'";
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = $idMatch 
+				AND Equipe = 'A'";
 			$myBdd->Query($sql);
 					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'A', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeA ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
+			$sql  = "REPLACE INTO gickp_Matchs_Joueurs 
+				SELECT $idMatch, Matric, Numero, 'A', Capitaine 
+				FROM gickp_Competitions_Equipes_Joueurs 
+				WHERE Id_equipe = $idEquipeA 
+				AND Capitaine <> 'X' 
+				AND Capitaine <> 'A' ";
 			$myBdd->Query($sql);
 						
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'B'";
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = $idMatch 
+				AND Equipe = 'B'";
 			$myBdd->Query($sql);
 					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'B', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeB ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
+			$sql  = "REPLACE INTO gickp_Matchs_Joueurs 
+				SELECT $idMatch, Matric, Numero, 'B', Capitaine 
+				FROM gickp_Competitions_Equipes_Joueurs 
+				WHERE Id_equipe = $idEquipeB 
+				AND Capitaine <> 'X' 
+				AND Capitaine <> 'A' ";
 			$myBdd->Query($sql);
 		}
 		
@@ -1097,7 +1112,9 @@ class GestionJournee extends MyPageSecure
 		$idMatch = (int) utyGetPost('ParamCmd', 0);
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
-		$sql = "Update gickp_Matchs Set Publication = '$changePub' Where Id = '$idMatch' ";
+		$sql = "UPDATE gickp_Matchs 
+			SET Publication = '$changePub' 
+			WHERE Id = '$idMatch' ";
 		$myBdd = new MyBdd();
 		$myBdd->Query($sql);
 		
@@ -1110,7 +1127,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
@@ -1119,14 +1136,18 @@ class GestionJournee extends MyPageSecure
 		// Change Publication	
 		for ($i=0;$i<count($arrayParam);$i++)
 		{
-			$sql = "Select Publication From gickp_Matchs Where Id = ".$arrayParam[$i]." ";
-			//$sql .= "And Validation != 'O' ";
+			$sql = "SELECT Publication 
+				FROM gickp_Matchs 
+				WHERE Id = ".$arrayParam[$i]." ";
+
 			$result = $myBdd->Query($sql);
 			if ($myBdd->NumRows($result) != 1)
 				continue;
 			$row = $myBdd->FetchArray($result);
 			($row['Publication']=='O') ? $changePub = 'N' : $changePub = 'O';
-			$sql = "Update gickp_Matchs Set Publication = '$changePub' Where Id = '".$arrayParam[$i]."' ";
+			$sql = "UPDATE gickp_Matchs 
+				SET Publication = '$changePub' 
+				WHERE Id = '".$arrayParam[$i]."' ";
 			$myBdd->Query($sql);
 			$myBdd->utyJournal('Publication match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $changePub);
 		}
@@ -1138,7 +1159,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
@@ -1147,13 +1168,9 @@ class GestionJournee extends MyPageSecure
 		// Change Publication	
 		for ($i=0;$i<count($arrayParam);$i++)
 		{
-			//$sql = "Select Validation, Publication From gickp_Matchs Where Id = ".$arrayParam[$i]." ";
-			//$sql .= "And Validation != 'O' And Publication != 'O' ";
-			//$result = mysql_query($sql, $myBdd->m_link) or die ("Erreur Select");
-			//if (mysql_num_rows($result) != 1)
-			//	continue;
-			//$row = mysql_fetch_array($result);	
-			$sql = "Update gickp_Matchs Set Publication = 'O', Validation = 'O' Where Id = '".$arrayParam[$i]."' ";
+			$sql = "UPDATE gickp_Matchs 
+				SET Publication = 'O', Validation = 'O' 
+				WHERE Id = '".$arrayParam[$i]."' ";
 			$myBdd->Query($sql);
 			$myBdd->utyJournal('Verrou-Publi match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], 'O');
 		}
@@ -1164,7 +1181,9 @@ class GestionJournee extends MyPageSecure
 		$idMatch = (int) utyGetPost('ParamCmd', 0);
 		(utyGetPost('Verrou', '') != 'O') ? $changeVerrou = 'O' : $changeVerrou = 'N';
 		
-		$sql = "Update gickp_Matchs Set Validation = '$changeVerrou' Where Id = '$idMatch' ";
+		$sql = "UPDATE gickp_Matchs 
+			SET Validation = '$changeVerrou' 
+			WHERE Id = '$idMatch' ";
 		$myBdd = new MyBdd();
 		$myBdd->Query($sql);
 		
@@ -1178,7 +1197,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
@@ -1187,13 +1206,17 @@ class GestionJournee extends MyPageSecure
 		// Change Publication	
 		for ($i=0;$i<count($arrayParam);$i++)
 		{
-			$sql = "Select Validation From gickp_Matchs Where Id = ".$arrayParam[$i]." ";
+			$sql = "SELECT Validation 
+				FROM gickp_Matchs 
+				WHERE Id = ".$arrayParam[$i]." ";
 			$result = $myBdd->Query($sql);
 			if ($myBdd->NumRows($result) != 1)
 				continue;
 			$row = $myBdd->FetchArray($result);	
 			($row['Validation']=='O') ? $changeVerrou = 'N' : $changeVerrou = 'O';
-			$sql = "Update gickp_Matchs Set Validation = '$changeVerrou' Where Id = '".$arrayParam[$i]."' ";
+			$sql = "UPDATE gickp_Matchs 
+				SET Validation = '$changeVerrou' 
+				WHERE Id = '".$arrayParam[$i]."' ";
 			$myBdd->Query($sql);
 			$myBdd->utyJournal('Verrouillage match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $changeVerrou);
 		}
@@ -1206,7 +1229,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à affecter ...
 
@@ -1218,15 +1241,16 @@ class GestionJournee extends MyPageSecure
 		for ($i=0; $i<count($arrayParam); $i++)
 		{
 			$id = $arrayParam[$i];
-			$sql  = "Select m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, "
-                    . "m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, j.Code_saison "
-                    . "From gickp_Matchs m, gickp_Journees j "
-                    . "Where m.Id = ".$id." "
-                    . "AND m.Id_journee = j.Id "
-                    . "AND m.Validation <> 'O' "
-                    . "AND (m.ScoreA = '' "
-                    . "OR m.ScoreA = '?' "
-                    . "OR m.ScoreA IS NULL) "; 
+			$sql  = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
+				m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
+				j.Code_saison 
+				FROM gickp_Matchs m, gickp_Journees j 
+				WHERE m.Id = $id 
+				AND m.Id_journee = j.Id 
+				AND m.Validation <> 'O' 
+				AND (m.ScoreA = '' 
+					OR m.ScoreA = '?' 
+					OR m.ScoreA IS NULL) "; 
 			$result = $myBdd->Query($sql);
 			if ($myBdd->NumRows($result) != 1)
 				die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
@@ -1295,11 +1319,11 @@ class GestionJournee extends MyPageSecure
 				}
 				if($codeTirage != '')
 				{
-					$sql2  = "Select ce.Id, ce.Libelle Nom_equipe "
-                            . "From gickp_Competitions_Equipes ce "
-                            . "Where ce.Tirage = ".$codeNumero[1]." "
-                            . "AND ce.Code_compet = '".$row['Code_competition']."' "
-                            . "AND ce.Code_saison = ".$row['Code_saison']." ";
+					$sql2  = "SELECT ce.Id, ce.Libelle Nom_equipe 
+						FROM gickp_Competitions_Equipes ce 
+						WHERE ce.Tirage = $codeNumero[1] 
+						AND ce.Code_compet = '".$row['Code_competition']."' 
+						AND ce.Code_saison = ".$row['Code_saison']." ";
 					$result2 = $myBdd->Query($sql2);
 					if ($myBdd->NumRows($result2) != 1)
 					{
@@ -1318,137 +1342,122 @@ class GestionJournee extends MyPageSecure
 				}
 				elseif($codeVainqueur != '')
 				{
-					$sql2  = "Select m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB "
-                            . "From gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, gickp_Competitions_Equipes ce2 "
-                            . "Where m.Numero_ordre = ".$codeNumero[1]." "
-                            . "AND m.Id_journee = j.Id "
-                            . "AND m.Id_equipeA = ce.Id "
-                            . "AND m.Id_equipeB = ce2.Id "
-                            . "AND m.ScoreA <> m.ScoreB "
-                            . "AND j.Code_competition = '".$row['Code_competition']."' "
-                            . "AND j.Code_saison = ".$row['Code_saison']." ";
+					$sql2  = "SELECT m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, 
+						ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
+						FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
+						gickp_Competitions_Equipes ce2 
+						WHERE m.Numero_ordre = $codeNumero[1] 
+						AND m.Id_journee = j.Id 
+						AND m.Id_equipeA = ce.Id 
+						AND m.Id_equipeB = ce2.Id 
+						AND m.ScoreA <> m.ScoreB 
+						AND j.Code_competition = '".$row['Code_competition']."' 
+						AND j.Code_saison = ".$row['Code_saison']." ";
 					$result2 = $myBdd->Query($sql2);
-					if ($myBdd->NumRows($result2) != 1)					{
+					if ($myBdd->NumRows($result2) != 1)	{
 						$selectNum[$j]=0;
 						$selectNom[$j]='';
 						$vainqueur = 'erreur11';
-					}
-					else
-					{
+					} else {
 						$row2 = $myBdd->FetchArray($result2);
-						if(($row2['ScoreA'] > $row2['ScoreB'] && $row2['ScoreA'] != 'F') || $row2['ScoreB'] == 'F')
-						{
+						if(($row2['ScoreA'] > $row2['ScoreB'] && $row2['ScoreA'] != 'F') 
+							|| $row2['ScoreB'] == 'F') {
 							$selectNum[$j]=$row2['Id_equipeA'];
 							$selectNom[$j]=addslashes($row2['Nom_equipeA']);
 							$vainqueur = $row2['Nom_equipeA'];
-						}
-						else
-						{
+						} else {
 							$selectNum[$j]=$row2['Id_equipeB'];
 							$selectNom[$j]=addslashes($row2['Nom_equipeB']);
 							$vainqueur = $row2['Nom_equipeB'];
 						}
 					}
 					$texte .='Vainqueur match '.$codeNumero[1].' : '.$vainqueur.'<br>';
-				}
-				elseif($codePerdant != '')
-				{
-					$sql2  = "Select m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, "
-                            . "ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB "
-                            . "From gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, gickp_Competitions_Equipes ce2 "
-                            . "Where m.Numero_ordre = ".$codeNumero[1]." "
-                            . "AND m.Id_journee = j.Id "
-                            . "AND m.Id_equipeA = ce.Id "
-                            . "AND m.Id_equipeB = ce2.Id "
-                            . "AND m.ScoreA <> m.ScoreB "
-                            . "AND j.Code_competition = '".$row['Code_competition']."' "
-                            . "AND j.Code_saison = ".$row['Code_saison']." ";
+				} elseif($codePerdant != '') {
+					$sql2  = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
+						ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
+						FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
+						gickp_Competitions_Equipes ce2 
+						WHERE m.Numero_ordre = $codeNumero[1] 
+						AND m.Id_journee = j.Id 
+						AND m.Id_equipeA = ce.Id 
+						AND m.Id_equipeB = ce2.Id 
+						AND m.ScoreA <> m.ScoreB 
+						AND j.Code_competition = '".$row['Code_competition']."' 
+						AND j.Code_saison = ".$row['Code_saison']." ";
 					$result2 = $myBdd->Query($sql2);
-					if ($myBdd->NumRows($result2) != 1)
-					{
+					if ($myBdd->NumRows($result2) != 1) {
 						$selectNum[$j]=0;
 						$selectNom[$j]='';
 						$perdant = 'erreur12';
-					}
-					else
-					{
+					} else {
 						$row2 = $myBdd->FetchArray($result2);
-						if(($row2['ScoreA'] < $row2['ScoreB'] && $row2['ScoreB'] != 'F') || $row2['ScoreA'] == 'F')
-						{
+						if(($row2['ScoreA'] < $row2['ScoreB'] && $row2['ScoreB'] != 'F') 
+							|| $row2['ScoreA'] == 'F') {
 							$selectNum[$j]=$row2['Id_equipeA'];
 							$selectNom[$j]=addslashes($row2['Nom_equipeA']);
 							$perdant = $row2['Nom_equipeA'];
-						}
-						else
-						{
+						} else {
 							$selectNum[$j]=$row2['Id_equipeB'];
 							$selectNom[$j]=addslashes($row2['Nom_equipeB']);
 							$perdant = $row2['Nom_equipeB'];
 						}
 					}
 					$texte .='Perdant match '.$codeNumero[1].' : '.$perdant.'<br>';
-				}
-				elseif($codePoule != '')
-				{
-					$sql2  = "Select cej.Id, ce.Libelle Nom_equipe "
-                            . "From gickp_Competitions_Equipes_Journee cej, gickp_Journees j, gickp_Competitions_Equipes ce "
-                            . "Where cej.Clt = ".$codeNumero[1]." "
-                            . "AND cej.Id_journee = j.Id "
-                            . "AND cej.Id = ce.Id "
-                            . "AND (j.Phase LIKE '".$codePoule."' "
-                            . "OR j.Phase LIKE '%poule ".$codePoule."' "
-                            . "OR j.Phase LIKE '%Poule ".$codePoule."' "
-                            . "OR j.Phase LIKE '%Groupe ".$codePoule."' "
-                            . "OR j.Phase LIKE '%Group ".$codePoule."' "
-                            . "OR j.Phase LIKE '%poule ".$codePoule." %' "
-                            . "OR j.Phase LIKE '%Poule ".$codePoule." %' "
-                            . "OR j.Phase LIKE '%Groupe ".$codePoule." %' "
-                            . "OR j.Phase LIKE '%Group ".$codePoule." %') "
-                            . "AND j.Code_competition = '".$row['Code_competition']."' "
-                            . "AND j.Code_saison = ".$row['Code_saison']." ";
+				} elseif($codePoule != '') {
+					$sql2  = "SELECT cej.Id, ce.Libelle Nom_equipe 
+						FROM gickp_Competitions_Equipes_Journee cej, gickp_Journees j, 
+						gickp_Competitions_Equipes ce 
+						WHERE cej.Clt = $codeNumero[1] 
+						AND cej.Id_journee = j.Id 
+						AND cej.Id = ce.Id 
+						AND (j.Phase LIKE '".$codePoule."' 
+							OR j.Phase LIKE '%poule ".$codePoule."' 
+							OR j.Phase LIKE '%Poule ".$codePoule."' 
+							OR j.Phase LIKE '%Groupe ".$codePoule."' 
+							OR j.Phase LIKE '%Group ".$codePoule."' 
+							OR j.Phase LIKE '%poule ".$codePoule." %' 
+							OR j.Phase LIKE '%Poule ".$codePoule." %' 
+							OR j.Phase LIKE '%Groupe ".$codePoule." %' 
+							OR j.Phase LIKE '%Group ".$codePoule." %') 
+						AND j.Code_competition = '".$row['Code_competition']."' 
+						AND j.Code_saison = ".$row['Code_saison']." ";
 					$result2 = $myBdd->Query($sql2);
-					if ($myBdd->NumRows($result2) != 1)
-					{
+					if ($myBdd->NumRows($result2) != 1) {
 						$selectNum[$j]=0;
 						$selectNom[$j]='';
 						$clst = 'erreur13';
-					}
-					else
-					{
+					} else {
 						$row2 = $myBdd->FetchArray($result2);
 						$selectNum[$j]=$row2['Id'];
 						$selectNom[$j]=addslashes($row2['Nom_equipe']);
 						$clst = $row2['Nom_equipe'];
 					}
 					$texte .=$codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
-				}
-				else
-				{
+				} else {
 					$selectNum[$j]=0;
 					$selectNom[$j]='';
 				}
 			}
 			// Affectation
-			$sql3  = "Update gickp_Matchs Set Id_equipeA = '$selectNum[0]', Id_equipeB = '$selectNum[1]'";
+			$sql3  = "UPDATE gickp_Matchs 
+				SET Id_equipeA = '$selectNum[0]', Id_equipeB = '$selectNum[1]'";
 			if($selectNom[2] != '')
 				$sql3 .= ", Arbitre_principal = '$selectNom[2]'";
 			if($selectNom[3] != '')
 				$sql3 .= ", Arbitre_secondaire = '$selectNom[3]' ";
-			$sql3 .= " Where Id = '$id' ";
+			$sql3 .= " WHERE Id = '$id' ";
 			$myBdd->Query($sql3);
 			//Suppression des joueurs existants si changements d'équipes
-			if($selectNum[0] != $anciene_equipeA)
-			{
-				$sql  = "Delete From gickp_Matchs_Joueurs ";
-				$sql .= "Where Id_match = $id ";
-				$sql .= "And Equipe = 'A' ";
+			if($selectNum[0] != $anciene_equipeA) {
+				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = $id 
+					AND Equipe = 'A' ";
 				$myBdd->Query($sql);
 			}
-			if($selectNum[1] != $anciene_equipeB)
-			{
-				$sql  = "Delete From gickp_Matchs_Joueurs ";
-				$sql .= "Where Id_match = $id ";
-				$sql .= "And Equipe = 'B' ";
+			if($selectNum[1] != $anciene_equipeB) {
+				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = $id 
+					AND Equipe = 'B' ";
 				$myBdd->Query($sql);
 			}
 			//Journal
@@ -1465,7 +1474,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à affecter ...
 
@@ -1477,27 +1486,28 @@ class GestionJournee extends MyPageSecure
 		for ($i=0;$i<count($arrayParam);$i++)
 		{
 			$id = $arrayParam[$i];
-			$sql  = "Select m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison ";
-			$sql .= "From gickp_Matchs m, gickp_Journees j ";
-			$sql .= "Where m.Id = ".$id." ";
-			$sql .= "AND m.Id_journee = j.Id ";
-			$sql .= "AND m.Validation <> 'O' "; 
-			$sql .= "AND (m.ScoreA = '' ";
-			$sql .= "OR m.ScoreA = '?' "; 
-			$sql .= "OR m.ScoreA IS NULL) "; 
+			$sql  = "SELECT m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison 
+				FROM gickp_Matchs m, gickp_Journees j 
+				WHERE m.Id = $id
+				AND m.Id_journee = j.Id 
+				AND m.Validation <> 'O' 
+				AND (m.ScoreA = '' 
+					OR m.ScoreA = '?' 
+					OR m.ScoreA IS NULL) "; 
 			$result = $myBdd->Query($sql);
 			if ($myBdd->NumRows($result) != 1)
 				die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
 			$row = $myBdd->FetchArray($result);
-			$sql3  = "Update gickp_Matchs Set Id_equipeA = 0, Id_equipeB = 0, Arbitre_principal = -1, Arbitre_secondaire = -1 ";
-			$sql3 .= "Where Id = '$id' ";
+			$sql3  = "UPDATE gickp_Matchs 
+				SET Id_equipeA = 0, Id_equipeB = 0, Arbitre_principal = -1, Arbitre_secondaire = -1 
+				WHERE Id = '$id' ";
 			$myBdd->Query($sql3);
 		
 			$myBdd->utyJournal('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], 'NULL', $row['Id_journee'], $id, '');
 			//Suppression des joueurs existants
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $id ";
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = $id ";
 			$myBdd->Query($sql);
-
 		}
 		
 	}
@@ -1508,7 +1518,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
@@ -1519,7 +1529,10 @@ class GestionJournee extends MyPageSecure
 		// Change Journee	
 		for ($i=0;$i<count($arrayParam);$i++)
 		{
-			$sql = "Update gickp_Matchs Set Id_journee = $idJournee Where Id = ".$arrayParam[$i]." And Validation != 'O' ";
+			$sql = "UPDATE gickp_Matchs 
+				SET Id_journee = $idJournee 
+				WHERE Id = $arrayParam[$i] 
+				AND Validation != 'O' ";
 			$myBdd->Query($sql);
 			$myBdd->utyJournal('Change Journee match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $idJournee);
 		}
@@ -1553,7 +1566,7 @@ class GestionJournee extends MyPageSecure
 				($_SESSION['Profile'] <= 6) ? $this->Raz() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 6) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'ParamMatch')
 				($_SESSION['Profile'] <= 6) ? $this->ParamMatch() : $alertMessage = 'Vous n avez pas les droits pour cette action.';

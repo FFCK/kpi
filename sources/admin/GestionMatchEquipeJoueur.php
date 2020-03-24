@@ -412,7 +412,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 	function Remove()
 	{
 		$ParamCmd = utyGetPost('ParamCmd');
-		$arrayParam = explode('[,]', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 	
