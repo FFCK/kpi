@@ -44,7 +44,7 @@
             </div>
             <div class="form-horizontal">
                 <div class="page-header">
-                    <h3 class="text-info">{#Autres_categories#}</h3>
+                    <h3 class="text-info">{#Categories#}</h3>
                 </div>
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
