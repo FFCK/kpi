@@ -87,11 +87,15 @@ class Matchs extends MyPage
         $_SESSION['filtreJour'] = $filtreJour;
 		$this->m_tpl->assign('filtreJour', $filtreJour);
         
-		$Pg = utyGetSession('Pg', '');
-		$Pg = utyGetGet('Pg', $Pg);
-        $_SESSION['Pg'] = $Pg;
-		$this->m_tpl->assign('Pg', $Pg);
-        
+		$start = utyGetGet('start', 1);
+		$this->m_tpl->assign('start', $start);
+
+        $len = utyGetGet('len', 0);
+        if($len > 0) {
+            $len = $len + $start - 1;
+        }
+		$this->m_tpl->assign('len', $len);
+
         $terrains = utyGetSession('terrains', '');
         $terrains = utyGetGet('terrains', $terrains);
         $_SESSION['terrains'] = $terrains;

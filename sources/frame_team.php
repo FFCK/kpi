@@ -4,9 +4,9 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-// Equipes
+// Team
 	
-class Equipes extends MyPage	 
+class Team extends MyPage	 
 {	
 	function Load()
 	{
@@ -15,11 +15,11 @@ class Equipes extends MyPage
         $Code_club = 0;
         $Club =  '';
 
-		$Equipe = utyGetSession('Equipe', 1);
-		$Equipe = utyGetPost('Equipe', $Equipe);
-		$Equipe = (int) utyGetGet('Equipe', $Equipe);
-		$this->m_tpl->assign('Equipe', $Equipe);
-		$_SESSION['Equipe'] = $Equipe;
+		$Team = utyGetSession('Team', 1);
+		$Team = utyGetPost('Team', $Team);
+		$Team = (int) utyGetGet('Team', $Team);
+		$this->m_tpl->assign('Team', $Team);
+		$_SESSION['Team'] = $Team;
         
         $Saison = utyGetSaison();
         $codeSaison = (int) utyGetGet('Saison', utyGetSaison());
@@ -29,51 +29,23 @@ class Equipes extends MyPage
         
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
             
-        if ($Equipe > 0) {
+        if ($Team > 0) {
 
-            // Equipe
-            $sql = "SELECT e.Libelle Equipe, e.Code_club, cl.Libelle Club "
-                    . "FROM gickp_Equipe e, gickp_Club cl "
-                    . "WHERE e.Numero = $Equipe "
-                    . "AND cl.Code = e.Code_club";
+            // Team
+            $sql = "SELECT ce.Numero Equipe, ce.Libelle nomEquipe, ce.Code_club, cl.Libelle Club 
+                FROM gickp_Competitions_Equipes ce 
+                LEFT OUTER JOIN gickp_Club cl ON ce.Code_club = cl.Code 
+                WHERE ce.Id = $Team ";
             $result = $myBdd->Query($sql);
             $row = $myBdd->FetchArray($result);
-            $nomEquipe = $row['Equipe'];
+            $Equipe = (int) $row['Equipe'];
+            $nomEquipe = $row['nomEquipe'];
             $Code_club = $row['Code_club'];
             $Club =  $row['Club'];
+            $this->m_tpl->assign('Equipe', $Equipe);
             $this->m_tpl->assign('nomEquipe', $nomEquipe);
             $this->m_tpl->assign('Code_club', $Code_club);
             $this->m_tpl->assign('Club', $Club);
-
-            // Palmares
-            $sql  = "SELECT g.id, c.Libelle Competitions, c.Code, c.Code_ref, c.Code_tour, "
-                    . "c.Code_saison Saison, IF(c.Code_typeclt = 'CHPT', e.Clt_publi, e.CltNiveau_publi) Classt "
-                    . "FROM gickp_Competitions_Equipes e, gickp_Competitions c, gickp_Competitions_Groupes g, gickp_Club cl "
-                    . "WHERE c.Code = e.Code_compet "
-                    . "AND c.Code_ref = g.Groupe "
-                    . "AND e.Code_club = cl.Code "
-                    . "AND c.Code_saison = e.Code_saison "
-                    . "AND c.Statut = 'END' "
-                    . "AND c.Publication = 'O' "
-                    . "AND g.Id > 0 "
-                    . "AND e.Numero = $Equipe "
-                    . "ORDER BY Saison DESC, g.id, c.Code_tour DESC, c.Code ";
-            $arrayPalmares = array();
-            $arraySaisons = array();
-            $tempSaison = 0;
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)){ 
-                if($row['Classt'] != 0) {
-                    if($row['Saison'] != $tempSaison){
-                        $arraySaisons[] = array('Saison' => $row['Saison']);
-                    }
-                    $tempSaison = $row['Saison'];
-                    $arrayPalmares[$tempSaison][] = array('Code' => $row['Code'], 'Code_tour' => $row['Code_tour'], 'Code_ref' => $row['Code_ref'], 
-                                                        'Competitions' => $row['Competitions'], 'Saison' => $row['Saison'], 'Classt' => $row['Classt'] );
-                }
-            }
-            $this->m_tpl->assign('arraySaisons', $arraySaisons);
-            $this->m_tpl->assign('arrayPalmares', $arrayPalmares);
 
             //Images
             $eSeason = $Saison;
@@ -141,11 +113,13 @@ class Equipes extends MyPage
                         AND m.Publication = 'O'
                         GROUP BY cej.Matric
                         ORDER BY Field(if(cej.Capitaine='C','-',if(cej.Capitaine='','-',cej.Capitaine)), '-', 'E', 'A', 'X'), cej.Numero, cej.Nom, cej.Prenom ";
+                // die($sql);
                 $result = $myBdd->Query($sql);
                 while ($row = $myBdd->FetchArray($result)) {
                     $arrayCompo[] = $row;
                 }
                 $this->m_tpl->assign('arrayCompo', $arrayCompo);
+                // var_dump($Equipe);
             }
         }
 	}
@@ -170,9 +144,9 @@ class Equipes extends MyPage
 			}
 		}        
 
-		$this->DisplayTemplateFrame('kpequipes');
+		$this->DisplayTemplateFrame('frame_team');
 	}
 }		  	
 
-$page = new Equipes();
+$page = new Team();
 

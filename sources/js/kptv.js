@@ -81,17 +81,22 @@ jq(document).ready(function(){
             case 'force_cache_match':
                 jq('#match-col, #game_report').show();
                 break;
-            case 'frame_categories':
-                jq('#pg-col').show();
-                break;
             case 'frame_terrains':
                 jq('#pitchs-col').show();
                 break;
             case 'frame_phases':
                 jq('#round-col').show();
                 break;
+            case 'frame_categories':
+                jq('#lnstart-col, #lnlen-col').show();
+                break;
             case 'frame_chart':
                 jq('#round-col').show();
+                break;
+            case 'frame_details':
+                break;
+            case 'frame_team':
+                jq('#teamselect-col').show();
                 break;
             default:
                 break;
@@ -161,16 +166,6 @@ jq(document).ready(function(){
                 url = 'live/schema.php';
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
-            case 'frame_categories':
-                url = 'frame_categories.php?event=' + jq('#codeEvt').val() 
-                        + '&lang=en&Saison=' + jq('#saison').val() 
-                        + '&Compet=' + jq('#competition').val() 
-                        + '&terrains=' + jq('#pitchs').val()
-                        + '&filtreJour=' + jq('#jour').val()
-                        + '&Css=' + css
-                        + '&Pg=' + jq('#Pg').val();
-                ChangeVoie(jq('#channel').val(), url, showUrl);
-                break;
             case 'frame_terrains':
                 url = 'frame_terrains.php?event=' + jq('#codeEvt').val() 
                         + '&lang=en&Saison=' + jq('#saison').val() 
@@ -178,6 +173,25 @@ jq(document).ready(function(){
                         + '&terrains=' + jq('#pitchs').val()
                         + '&filtreJour=' + jq('#jour').val()
                         + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_phases':
+                url = 'frame_phases.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Round=' + jq('#round').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_categories':
+                url = 'frame_categories.php?event=' + jq('#codeEvt').val() 
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&terrains=' + jq('#pitchs').val()
+                        + '&filtreJour=' + jq('#jour').val()
+                        + '&Css=' + css
+                        + '&start=' + jq('#lnstart').val()
+                        + '&len=' + jq('#lnlen').val();
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
             case 'frame_chart':
@@ -188,10 +202,19 @@ jq(document).ready(function(){
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
-            case 'frame_phases':
-                url = 'frame_phases.php?event=' + jq('#codeEvt').val()
+            case 'frame_details':
+                url = 'frame_details.php?event=' + jq('#codeEvt').val()
                         + '&lang=en&Saison=' + jq('#saison').val() 
                         + '&Compet=' + jq('#competition').val() 
+                        + '&Round=' + jq('#round').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_team':
+                url = 'frame_team.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Team=' + jq('#teamselect').val() 
                         + '&Round=' + jq('#round').val() 
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel').val(), url, showUrl);
@@ -298,6 +321,17 @@ jq(document).ready(function(){
             case 'frame_phases':
                 jq('#round-col2').show();
                 break;
+            case 'frame_categories':
+                jq('#lnstart-col2, #lnlen-col2').show();
+                break;
+            case 'frame_chart':
+                jq('#round-col2').show();
+                break;
+            case 'frame_details':
+                break;
+            case 'frame_team':
+                jq('#teamselect-col2').show();
+                break;
             default:
                 break;
         }
@@ -367,7 +401,6 @@ jq(document).ready(function(){
                 ChangeVoie(jq('#channel2').val(), url, showUrl);
                 break;
             case 'frame_terrains':
-//                frame_terrains.php?Saison=2017&Group=CE&lang=en&Css=sainto_hd&filtreJour=2017-08-24&terrains=1,2,3,4
                 url = 'frame_terrains.php?event=' + jq('#codeEvt').val() 
                         + '&lang=en&Saison=' + jq('#saison').val() 
                         + '&terrains=' + jq('#pitchs2').val()
@@ -382,6 +415,42 @@ jq(document).ready(function(){
                         + '&Round=' + jq('#round2').val() 
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel2').val(), url, showUrl);
+                break;
+            case 'frame_categories':
+                url = 'frame_categories.php?event=' + jq('#codeEvt').val() 
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition2').val() 
+                        + '&terrains=' + jq('#pitchs2').val()
+                        + '&filtreJour=' + jq('#jour').val()
+                        + '&Css=' + css
+                        + '&start=' + jq('#lnstart2').val()
+                        + '&len=' + jq('#lnlen2').val();
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_chart':
+                url = 'frame_chart.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition2').val() 
+                        + '&Round=' + jq('#round2').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_details':
+                url = 'frame_details.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition2').val() 
+                        + '&Round=' + jq('#round2').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_team':
+                url = 'frame_team.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition2').val() 
+                        + '&Team=' + jq('#teamselect2').val() 
+                        + '&Round=' + jq('#round2').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
             case 'frame_stats':
                 url = 'frame_stats.php?' 
@@ -485,6 +554,17 @@ jq(document).ready(function(){
             case 'frame_phases':
                 jq('#round-col3').show();
                 break;
+            case 'frame_categories':
+                jq('#lnstart-col3, #lnlen-col3').show();
+                break;
+            case 'frame_chart':
+                jq('#round-col3').show();
+                break;
+            case 'frame_details':
+                break;
+            case 'frame_team':
+                jq('#teamselect-col3').show();
+                break;
             default:
                 break;
         }
@@ -568,6 +648,42 @@ jq(document).ready(function(){
                         + '&Round=' + jq('#round3').val() 
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel3').val(), url, showUrl);
+                break;
+            case 'frame_categories':
+                url = 'frame_categories.php?event=' + jq('#codeEvt').val() 
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition3').val() 
+                        + '&terrains=' + jq('#pitchs3').val()
+                        + '&filtreJour=' + jq('#jour').val()
+                        + '&Css=' + css
+                        + '&start=' + jq('#lnstart3').val()
+                        + '&len=' + jq('#lnlen3').val();
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_chart':
+                url = 'frame_chart.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition3').val() 
+                        + '&Round=' + jq('#round3').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_details':
+                url = 'frame_details.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition3').val() 
+                        + '&Round=' + jq('#round3').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_team':
+                url = 'frame_team.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition3').val() 
+                        + '&Team=' + jq('#teamselect3').val() 
+                        + '&Round=' + jq('#round3').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
             case 'frame_stats':
                 url = 'frame_stats.php?' 
@@ -671,6 +787,17 @@ jq(document).ready(function(){
             case 'frame_phases':
                 jq('#round-col4').show();
                 break;
+            case 'frame_categories':
+                jq('#lnstart-col4, #lnlen-col4').show();
+                break;
+            case 'frame_chart':
+                jq('#round-col4').show();
+                break;
+            case 'frame_details':
+                break;
+            case 'frame_team':
+                jq('#teamselect-col4').show();
+                break;
             default:
                 break;
         }
@@ -754,6 +881,42 @@ jq(document).ready(function(){
                         + '&Round=' + jq('#round4').val() 
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel4').val(), url, showUrl);
+                break;
+            case 'frame_categories':
+                url = 'frame_categories.php?event=' + jq('#codeEvt').val() 
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition4').val() 
+                        + '&terrains=' + jq('#pitchs4').val()
+                        + '&filtreJour=' + jq('#jour').val()
+                        + '&Css=' + css
+                        + '&start=' + jq('#lnstart4').val()
+                        + '&len=' + jq('#lnlen4').val();
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_chart':
+                url = 'frame_chart.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition4').val() 
+                        + '&Round=' + jq('#round4').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_details':
+                url = 'frame_details.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition4').val() 
+                        + '&Round=' + jq('#round4').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'frame_team':
+                url = 'frame_team.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val() 
+                        + '&Compet=' + jq('#competition4').val() 
+                        + '&Team=' + jq('#teamselect4').val() 
+                        + '&Round=' + jq('#round4').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
             case 'frame_stats':
                 url = 'frame_stats.php?' 
