@@ -155,6 +155,8 @@
                             <option value="frame_terrains" {if $filtrePres == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres == 'frame_phases'}selected{/if}>Phases</option>
+                            <option value="frame_details" {if $filtrePres == 'frame_details'}selected{/if}>Details</option>
+                            <option value="frame_team" {if $filtrePres == 'frame_team'}selected{/if}>Team details</option>
                             <option value="frame_stats" {if $filtrePres == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
@@ -189,6 +191,14 @@
                     <select id="team" name="team">
                         <option value="A">A</option>
                         <option value="B">B</option>
+                    </select>
+                </div>
+                <div class='col-sm-2 params' id='teamselect-col'>
+                    <label>{#Equipe#}</label>
+                    <select id="teamselect" name="teamselect">
+                        {section name=i loop=$arrayEquipes}
+                            <option value="{$arrayEquipes[i].id_equipe}">{$arrayEquipes[i].libelle_equipe}</option>
+                        {/section}
                     </select>
                 </div>
                 <div class='col-sm-1 params' id='number-col'>
@@ -251,13 +261,13 @@
                         <option value="2">Peut-être</option>
                     </select>
                 </div>
-                <div class='col-sm-1 params' id='pg-col'>
-                    <label>Page</label>
-                    <select id="Pg" name="Pg">
-                        <option value="0">Tout</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
+                <div class='col-sm-1 params' id='lnstart-col'>
+                    <label>Start</label>
+                    <input type="text" id="lnstart" name="lnstart" value="1" size="2">
+                </div>
+                <div class='col-sm-1 params' id='lnlen-col'>
+                    <label>Length</label>
+                    <input type="text" id="lnlen" name="lnlen" value="0" size="2">
                 </div>
             </div>
             <div class="row">
@@ -326,6 +336,8 @@
                             <option value="frame_terrains" {if $filtrePres2 == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres2 == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres2 == 'frame_phases'}selected{/if}>Phases</option>
+                            <option value="frame_details" {if $filtrePres2 == 'frame_details'}selected{/if}>Details</option>
+                            <option value="frame_team" {if $filtrePres2 == 'frame_team'}selected{/if}>Team details</option>
                             <option value="frame_stats" {if $filtrePres2 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres2 == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
@@ -333,7 +345,7 @@
                             <option value="force_cache_match" {if $filtrePres2 == 'force_cache_match'}selected{/if}>Force cache match</option>
                     </select>
                 </div>
-                <div class='col-sm-1'>
+                <div class='col-sm-2'>
                     <label>{#Competition#}</label>
                     <select id="competition2" name="competition2">
                         <option value="" {if '' == $filtreCompet2}selected{/if}>{#Selectionnez#}</option>
@@ -360,6 +372,14 @@
                     <select id="team2" name="team2">
                         <option value="A">A</option>
                         <option value="B">B</option>
+                    </select>
+                </div>
+                <div class='col-sm-2 params2' id='teamselect-col2'>
+                    <label>{#Equipe#}</label>
+                    <select id="teamselect2" name="teamselect2">
+                        {section name=i loop=$arrayEquipes2}
+                            <option value="{$arrayEquipes2[i].id_equipe}">{$arrayEquipes2[i].libelle_equipe}</option>
+                        {/section}
                     </select>
                 </div>
                 <div class='col-sm-1 params2' id='number-col2'>
@@ -421,6 +441,14 @@
                         <option value="1">Oui</option>
                         <option value="2">Peut-être</option>
                     </select>
+                </div>
+                <div class='col-sm-1 params2' id='lnstart-col2'>
+                    <label>Start</label>
+                    <input type="text" id="lnstart2" name="lnstart2" value="1" size="2">
+                </div>
+                <div class='col-sm-1 params2' id='lnlen-col2'>
+                    <label>Length</label>
+                    <input type="text" id="lnlen2" name="lnlen2" value="0" size="2">
                 </div>
             </div>
             <div class="row">
@@ -489,14 +517,16 @@
                             <option value="frame_terrains" {if $filtrePres3 == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres3 == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres3 == 'frame_phases'}selected{/if}>Phases</option>
-                            <option value="frame_stats" {if $filtrePres3 == 'frame_stats'}selected{/if}>Stats</option>
+                            <option value="frame_details" {if $filtrePres3 == 'frame_details'}selected{/if}>Details</option>
+                            <option value="frame_team" {if $filtrePres3 == 'frame_team'}selected{/if}>Team details</option>
+                          <option value="frame_stats" {if $filtrePres3 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres3 == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
 
                             <option value="force_cache_match" {if $filtrePres3 == 'force_cache_match'}selected{/if}>Force cache match</option>
                     </select>
                 </div>
-                <div class='col-sm-1'>
+                <div class='col-sm-2'>
                     <label>{#Competition#}</label>
                     <select id="competition3" name="competition3">
                         <option value="" {if '' == $filtreCompet3}selected{/if}>{#Selectionnez#}</option>
@@ -523,6 +553,14 @@
                     <select id="team3" name="team3">
                         <option value="A">A</option>
                         <option value="B">B</option>
+                    </select>
+                </div>
+                <div class='col-sm-2 params3' id='teamselect-col3'>
+                    <label>{#Equipe#}</label>
+                    <select id="teamselect3" name="teamselect3">
+                        {section name=i loop=$arrayEquipes3}
+                            <option value="{$arrayEquipes3[i].id_equipe}">{$arrayEquipes3[i].libelle_equipe}</option>
+                        {/section}
                     </select>
                 </div>
                 <div class='col-sm-1 params3' id='number-col3'>
@@ -584,6 +622,14 @@
                         <option value="1">Oui</option>
                         <option value="2">Peut-être</option>
                     </select>
+                </div>
+                <div class='col-sm-1 params3' id='lnstart-col3'>
+                    <label>Start</label>
+                    <input type="text" id="lnstart3" name="lnstart3" value="1" size="2">
+                </div>
+                <div class='col-sm-1 params3' id='lnlen-col3'>
+                    <label>Length</label>
+                    <input type="text" id="lnlen3" name="lnlen3" value="0" size="2">
                 </div>
             </div>
             <div class="row">
@@ -652,6 +698,8 @@
                             <option value="frame_terrains" {if $filtrePres4 == 'frame_terrains'}selected{/if}>Pitch games</option>
                             <option value="frame_chart" {if $filtrePres4 == 'frame_chart'}selected{/if}>Progress</option>
                             <option value="frame_phases" {if $filtrePres4 == 'frame_phases'}selected{/if}>Phases</option>
+                            <option value="frame_details" {if $filtrePres4 == 'frame_details'}selected{/if}>Details</option>
+                            <option value="frame_team" {if $filtrePres4 == 'frame_team'}selected{/if}>Team details</option>
                             <option value="frame_stats" {if $filtrePres4 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres4 == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
@@ -659,7 +707,7 @@
                             <option value="force_cache_match" {if $filtrePres4 == 'force_cache_match'}selected{/if}>Force cache match</option>
                     </select>
                 </div>
-                <div class='col-sm-1'>
+                <div class='col-sm-2'>
                     <label>{#Competition#}</label>
                     <select id="competition4" name="competition4">
                         <option value="" {if '' == $filtreCompet4}selected{/if}>{#Selectionnez#}</option>
@@ -686,6 +734,14 @@
                     <select id="team4" name="team4">
                         <option value="A">A</option>
                         <option value="B">B</option>
+                    </select>
+                </div>
+                <div class='col-sm-2 params4' id='teamselect-col4'>
+                    <label>{#Equipe#}</label>
+                    <select id="teamselect4" name="teamselect4">
+                        {section name=i loop=$arrayEquipes4}
+                            <option value="{$arrayEquipes4[i].id_equipe}">{$arrayEquipes4[i].libelle_equipe}</option>
+                        {/section}
                     </select>
                 </div>
                 <div class='col-sm-1 params4' id='number-col4'>
@@ -747,6 +803,14 @@
                         <option value="1">Oui</option>
                         <option value="2">Peut-être</option>
                     </select>
+                </div>
+                <div class='col-sm-1 params4' id='lnstart-col4'>
+                    <label>Start</label>
+                    <input type="text" id="lnstart4" name="lnstart4" value="1" size="2">
+                </div>
+                <div class='col-sm-1 params4' id='lnlen-col4'>
+                    <label>Length</label>
+                    <input type="text" id="lnlen4" name="lnlen4" value="0" size="2">
                 </div>
             </div>
             <div class="row">

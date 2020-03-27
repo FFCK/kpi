@@ -14,13 +14,12 @@ class Details extends MyPage
 		$codeCompetGroup = utyGetSession('codeCompetGroup', 'N1H');
 		$codeCompetGroup = utyGetPost('Group', $codeCompetGroup);
 		$codeCompetGroup = utyGetGet('Group', $codeCompetGroup);
-//		$this->m_tpl->assign('codeCompetGroup', $codeCompetGroup);
 		$this->m_tpl->assign('group', $codeCompetGroup);
-        if ((!isset($_SESSION['codeCompetGroup']) or $codeCompetGroup != $_SESSION['codeCompetGroup']) 
-                and utyGetGet('Compet', '*') == '*') {
-            $_GET['J'] = '*';
-            $_GET['Compet'] = '*';
-        }
+        // if ((!isset($_SESSION['codeCompetGroup']) or $codeCompetGroup != $_SESSION['codeCompetGroup']) 
+        //         and utyGetGet('Compet', '*') == '*') {
+        //     $_GET['J'] = '*';
+        //     $_GET['Compet'] = '*';
+        // }
 		$_SESSION['codeCompetGroup'] = $codeCompetGroup;
 		
 		$codeCompet = utyGetSession('codeCompet', 'N1H');
@@ -28,7 +27,7 @@ class Details extends MyPage
 		$codeCompet = utyGetGet('Compet', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
 		$this->m_tpl->assign('codeCompet', $codeCompet);
-			
+        
 		$codeSaison = utyGetSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
@@ -62,14 +61,14 @@ class Details extends MyPage
 		$event = utyGetPost('event', $event);
         $event = utyGetGet('event', $event);
 		$this->m_tpl->assign('event', $event);
-        if ($event != $_SESSION['event']) {
-            $codeCompet = '*';
-            $_SESSION['idSelCompet'] = $codeCompet;
-            $this->m_tpl->assign('codeCompet', $codeCompet);
-            $idSelJournee = '*';
-            $_SESSION['idSelJournee'] = $idSelJournee;
-            $this->m_tpl->assign('idSelJournee', $idSelJournee);
-        }
+        // if ($event != $_SESSION['event']) {
+        //     $codeCompet = '*';
+        //     $_SESSION['idSelCompet'] = $codeCompet;
+        //     $this->m_tpl->assign('codeCompet', $codeCompet);
+        //     $idSelJournee = '*';
+        //     $_SESSION['idSelJournee'] = $idSelJournee;
+        //     $this->m_tpl->assign('idSelJournee', $idSelJournee);
+        // }
 		$_SESSION['event'] = $event;
         
         if (utyGetGet('navGroup', false)) {
@@ -110,24 +109,30 @@ class Details extends MyPage
         
         if ($event > 0) {
             // Chargement des Compétitions de l'événement
-            $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, c.Libelle Libelle_compet, c.*, 0 Selected "
-                    . "FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej "
-                    . "WHERE 1 "
-                    . "AND j.Code_saison = $codeSaison "
-                    . "AND j.Code_competition = c.Code "
-                    . "AND j.Id = ej.Id_journee "
-                    . "AND j.Code_saison = c.Code_saison "
-                    . "AND j.Publication = 'O' "
-                    . "AND c.Publication = 'O' "
-                    . "AND ej.Id_evenement = $event "
-                    . "GROUP BY c.Code "
-                    . "ORDER BY c.GroupOrder ";	 
+            $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, 
+                c.Libelle Libelle_compet, c.*, 0 Selected 
+                FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
+                WHERE 1 
+                AND j.Code_saison = $codeSaison 
+                AND j.Code_competition = c.Code 
+                AND j.Id = ej.Id_journee 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                AND c.Publication = 'O' 
+                AND ej.Id_evenement = $event 
+                GROUP BY c.Code 
+                ORDER BY c.GroupOrder ";	 
             $arrayListJournees = array();
             $result = $myBdd->Query($sql);
             while ($row = $myBdd->FetchArray($result)){
                 if ($row['Code_competition'] == $codeCompet) {
                     $row['Selected'] == true;
                     $journee[] = $row;
+                    if ($codeCompetGroup != $row['Code_ref']) {
+                        $codeCompetGroup = $row['Code_ref'];
+                        $_SESSION['codeCompetGroup'] = $codeCompetGroup;
+                        $this->m_tpl->assign('group', $codeCompetGroup);
+                    }
                 } else {
                     $row['Selected'] == false;
                 }
@@ -141,14 +146,13 @@ class Details extends MyPage
             $arrayPoule = array();
             $poule = '';
             if (strlen($codeCompet) > 0 && $codeCompet != '*') { 
-                $sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  ";
-                $sql .= "From gickp_Competitions_Equipes ce, gickp_Club c ";
-                $sql .= "Where ce.Code_compet = '";
-                $sql .= $codeCompet;
-                $sql .= "' And ce.Code_saison = '";
-                $sql .= $codeSaison;
-                $sql .= "' And ce.Code_club = c.Code ";	 
-                $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+                $sql  = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, 
+                    c.Code_comite_dep  
+                    FROM gickp_Competitions_Equipes ce, gickp_Club c 
+                    WHERE ce.Code_compet = '$codeCompet' 
+                    AND ce.Code_saison = $codeSaison 
+                    AND ce.Code_club = c.Code 
+                    ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
                 
                 $result = $myBdd->Query($sql);
                 while ($row = $myBdd->FetchArray($result)){

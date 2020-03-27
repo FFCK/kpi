@@ -120,15 +120,20 @@ class Tv extends MyPageSecure
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
         
         // Matchs
-        $sql  = "SELECT m.*, j.Code_competition, j.Code_saison, j.Phase, "
-                . "ce1.Libelle equipeA, ce2.Libelle equipeB "
-                . "FROM gickp_Evenement_Journees evt, gickp_Journees j, gickp_Matchs m "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON m.Id_equipeA = ce1.Id "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON m.Id_equipeB = ce2.Id "
-                . "WHERE evt.Id_evenement = $codeEvt "
-                . "AND evt.Id_journee = m.Id_journee "
-                . "AND j.Id = m.Id_journee "
-                . "ORDER BY Date_match, Heure_match, Numero_ordre ";
+        $sql  = "SELECT m.*, j.Code_competition, j.Code_saison, j.Phase, 
+            m.Id_equipeA, m.Id_equipeB,
+            ce1.Libelle equipeA, ce2.Libelle equipeB 
+            FROM gickp_Evenement_Journees evt, gickp_Journees j, gickp_Matchs m 
+            LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON m.Id_equipeA = ce1.Id 
+            LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON m.Id_equipeB = ce2.Id 
+            WHERE evt.Id_evenement = $codeEvt 
+            AND evt.Id_journee = m.Id_journee 
+            AND j.Id = m.Id_journee 
+            ORDER BY Date_match, Heure_match, Numero_ordre ";
+        $arrayEquipes = array();
+        $arrayEquipes2 = array();
+        $arrayEquipes3 = array();
+        $arrayEquipes4 = array();
         $arrayMatchs = array();
         $arrayMatchs2 = array();
         $arrayMatchs3 = array();
@@ -138,26 +143,54 @@ class Tv extends MyPageSecure
             $arrayCompet[] = $row['Code_competition'];
             $saison = $row['Code_saison'];
             $arrayJours[] = $row['Date_match'];
-//            echo $row['Code_competition'] . ' ' . $row['Date_match'] . ' ' . $row['Heure_match'] . ' #' . $row['Numero_ordre'] . ' ' . $row['equipeA'] . ' ' . $row['equipeB'] . '<br>';
+            //            echo $row['Code_competition'] . ' ' . $row['Date_match'] . ' ' . $row['Heure_match'] . ' #' . $row['Numero_ordre'] . ' ' . $row['equipeA'] . ' ' . $row['equipeB'] . '<br>';
             if( ($row['Date_match'] == $jour || $jour == '')
                     && ($row['Code_competition'] == $filtreCompet || $filtreCompet == '') ) {
+                if(array_search($row['Id_equipeA'], array_column($arrayEquipes, 'id_equipe')) === false) {
+                    $arrayEquipes[] = array('id_equipe' => $row['Id_equipeA'], 'libelle_equipe' => $row['equipeA']);
+                }
+                if(array_search($row['Id_equipeB'], array_column($arrayEquipes, 'id_equipe')) === false) {
+                    $arrayEquipes[] = array('id_equipe' => $row['Id_equipeB'], 'libelle_equipe' => $row['equipeB']);
+                }
                 array_push($arrayMatchs, $row);
             }
             if( ($row['Date_match'] == $jour || $jour == '')
                     && ($row['Code_competition'] == $filtreCompet2 || $filtreCompet2 == '') ) {
+                if(array_search($row['Id_equipeA'], array_column($arrayEquipes2, 'id_equipe')) === false) {
+                    $arrayEquipes2[] = array('id_equipe' => $row['Id_equipeA'], 'libelle_equipe' => $row['equipeA']);
+                }
+                if(array_search($row['Id_equipeB'], array_column($arrayEquipes2, 'id_equipe')) === false) {
+                    $arrayEquipes2[] = array('id_equipe' => $row['Id_equipeB'], 'libelle_equipe' => $row['equipeB']);
+                }
                 array_push($arrayMatchs2, $row);
             }
             if( ($row['Date_match'] == $jour || $jour == '')
                     && ($row['Code_competition'] == $filtreCompet3 || $filtreCompet3 == '') ) {
+                if(array_search($row['Id_equipeA'], array_column($arrayEquipes3, 'id_equipe')) === false) {
+                    $arrayEquipes3[] = array('id_equipe' => $row['Id_equipeA'], 'libelle_equipe' => $row['equipeA']);
+                }
+                if(array_search($row['Id_equipeB'], array_column($arrayEquipes3, 'id_equipe')) === false) {
+                    $arrayEquipes3[] = array('id_equipe' => $row['Id_equipeB'], 'libelle_equipe' => $row['equipeB']);
+                }
                 array_push($arrayMatchs3, $row);
             }
             if( ($row['Date_match'] == $jour || $jour == '')
                     && ($row['Code_competition'] == $filtreCompet4 || $filtreCompet4 == '') ) {
+                if(array_search($row['Id_equipeA'], array_column($arrayEquipes4, 'id_equipe')) === false) {
+                    $arrayEquipes4[] = array('id_equipe' => $row['Id_equipeA'], 'libelle_equipe' => $row['equipeA']);
+                }
+                if(array_search($row['Id_equipeB'], array_column($arrayEquipes4, 'id_equipe')) === false) {
+                    $arrayEquipes4[] = array('id_equipe' => $row['Id_equipeB'], 'libelle_equipe' => $row['equipeB']);
+                }
                 array_push($arrayMatchs4, $row);
             }
             
         }
         $this->m_tpl->assign('arrayEvts', $arrayEvts);
+        $this->m_tpl->assign('arrayEquipes', $arrayEquipes);
+        $this->m_tpl->assign('arrayEquipes2', $arrayEquipes2);
+        $this->m_tpl->assign('arrayEquipes3', $arrayEquipes3);
+        $this->m_tpl->assign('arrayEquipes4', $arrayEquipes4);
         $this->m_tpl->assign('arrayMatchs', $arrayMatchs);
         $this->m_tpl->assign('arrayMatchs2', $arrayMatchs2);
         $this->m_tpl->assign('arrayMatchs3', $arrayMatchs3);

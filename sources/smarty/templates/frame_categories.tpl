@@ -2,13 +2,6 @@
 {section name=i loop=$arrayDates}
     {assign var='Date' value=$arrayDates[i].date}
     <div class="section terrains">
-        {*<div class="container-fluid titre-date">
-            <div class="col-md-12">
-                <h3 class="col-md-11 col-xs-9">{#Matchs#} {$arrayDates[i].date}</h3>
-            </div>
-        </div>*}
-                
-        {* {if $nbTerrains == 1 } *}
             {assign var='categorie' value=$numCategorie[0]}
             <div class="container-fluid" id="containor">
                 <article class="table-responsive col-md-12 padTopBottom">
@@ -21,7 +14,6 @@
                                 <th>#</th>
                                 <th class="text-center" width="4%">{#Heure#}</th>
                                 <th class="text-center" width="4%">{#Terrain#}</th>
-                                {* <th>{#Cat#}</th> *}
                                 <th>{#Poules#}</th>
                                 <th class="cliquableNomEquipe">{#Equipe_A#}</th>
                                 <th class="cliquableScore">{#Score#}</th>
@@ -32,10 +24,8 @@
                         </thead>
                         <tbody>
                             {section name=j loop=$arrayMatchs}
-                                {if ($Pg == 1 && $smarty.section.j.index <= $semiMatchs) 
-                                    or ($Pg == 2 && $smarty.section.j.index > $semiMatchs)
-                                    or ($Pg == 1 && $smarty.section.j.index > $semiMatchs && $Heure == $arrayMatchs[j].Heure_match)
-                                    or $Pg == 0}
+                                {if $smarty.section.j.iteration >= $start
+                                    && ($len <= 0 or $smarty.section.j.iteration <= $len)}
                                     {assign var='Heure' value=$arrayMatchs[j].Heure_match}
                                     {assign var='Match1' value=$arrayMatchs[j]}
                                     {assign var='validation1' value=$Match1.Validation}
