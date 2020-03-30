@@ -160,8 +160,13 @@
                             <option value="frame_stats" {if $filtrePres == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
-
+                        <optgroup label="API">
+                            <option value="api_players" {if $filtrePres == 'api_players'}selected{/if}>Players</option>
+                            <option value="api_stats" {if $filtrePres == 'api_stats'}selected{/if}>Stats</option>
+                        </optgroup>
+                        <optgroup label="Cache build">
                             <option value="force_cache_match" {if $filtrePres == 'force_cache_match'}selected{/if}>Force cache match</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class='col-sm-2'>
@@ -268,6 +273,25 @@
                 <div class='col-sm-1 params' id='lnlen-col'>
                     <label>Length</label>
                     <input type="text" id="lnlen" name="lnlen" value="0" size="2">
+                </div>
+                <div class='col-sm-2 params' id='competlist-col'>
+                    <label>Competitions</label>
+                    <input type="text" id="competlist" name="competlist" placeholder="CMH,CMF" value="{$filtreCompet}">
+                </div>
+                <div class='col-sm-2 params' id='option-col'>
+                    <label>option</label>
+                    <select id="option" name="option">
+                        <option value="0">Players with stats</option>
+                        <option value="1">All players</option>
+                        <option value="2">All players without stats</option>
+                    </select>
+                </div>
+                <div class='col-sm-1 params' id='format-col'>
+                    <label>format</label>
+                    <select id="format" name="format">
+                        <option value="json">json</option>
+                        <option value="csv">csv</option>
+                    </select>
                 </div>
             </div>
             <div class="row">
