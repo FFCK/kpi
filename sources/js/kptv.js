@@ -98,6 +98,10 @@ jq(document).ready(function(){
             case 'frame_team':
                 jq('#teamselect-col').show();
                 break;
+            case 'api_players':
+            case 'api_stats':
+                jq('#competlist-col, #format-col, #option-col').show();
+                break;
             default:
                 break;
         }
@@ -231,6 +235,19 @@ jq(document).ready(function(){
                         + '&lang=en&Saison=' + jq('#saison').val()  
                         + '&Compet=' + jq('#competition').val() 
                         + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'api_players':
+                url = 'api_players.php?saison=' + jq('#saison').val()  
+                        + '&competitions=' + jq('#competlist').val()
+                        + '&format=' + jq('#format').val();
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'api_stats':
+                url = 'api_stats.php?saison=' + jq('#saison').val()  
+                        + '&competitions=' + jq('#competlist').val()
+                        + '&all=' + jq('#option').val()
+                        + '&format=' + jq('#format').val();
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
                 
