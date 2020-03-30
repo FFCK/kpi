@@ -1,17 +1,18 @@
 <?php
 
-include_once('../commun/MyPage.php');
-include_once('../commun/MyBdd.php');
-include_once('../commun/MyTools.php');
+include_once('commun/MyPage.php');
+include_once('commun/MyBdd.php');
+include_once('commun/MyTools.php');
 
 session_start();
 $myBdd = new MyBdd();
+$format = $myBdd->RealEscapeString(trim(utyGetGet('format', 'csv')));
 $saison = (int) $myBdd->RealEscapeString(trim(utyGetGet('saison')));
 $competitions = explode(",", $myBdd->RealEscapeString(trim(utyGetGet('competitions'))));
 $competitions = "'" . implode("','", $competitions) . "'";
 //$all = (int) $myBdd->RealEscapeString(trim(utyGetGet('all', 2)));
 if($saison > 2000 && $competitions != '') {
-    $arrayStats = [];
+    $result_array = [];
     $sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, j.Code_competition, m.Numero_ordre, m.Date_match, m.Heure_match 
             FROM `gickp_Matchs_Joueurs` mj, gickp_Matchs m, gickp_Journees j, gickp_Liste_Coureur lc
             WHERE mj.Matric = lc.Matric
@@ -22,20 +23,25 @@ if($saison > 2000 && $competitions != '') {
             ORDER BY lc.Matric, m.Date_match, m.Heure_match";
 
     $result = $myBdd->Query($sql);
-    echo "Licence,Nom,Prenom,Competition,NumMatch,Date,Heure<br>";
+    // echo "Licence,Nom,Prenom,Competition,NumMatch,Date,Heure<br>";
     while ($row = $myBdd->FetchArray($result)){
-        echo $row['Matric'] . ',';
-        echo $row['Nom'] . ',';
-        echo $row['Prenom'] . ',';
-        echo $row['Code_competition'] . ',';
-        echo $row['Numero_ordre'] . ',';
-        echo $row['Date_match'] . ',';
-        echo $row['Heure_match'] . '<br>';
+        $result_array[] = $row;
     }
 
-//    header('Content-Type: application/json');
-//    echo json_encode($arrayStats);
+    if ($format == 'json') {
+        header('Content-Type: application/json');
+        echo json_encode($result_array);
+    } else { // CSV
+        header("Content-Type: text/csv");
+        $out = fopen('php://output', 'w');
+        fputcsv($out, array('Licence', 'Name', 'First name', 'Compet', 'Game', 'Date', 'Time'));
+        foreach ($result_array as $row) {
+            fputcsv($out, $row);
+        }
+        fclose($out);
+    }
+
 } else {
-    echo "Paramètres incorrects (exemple: api_joueurs.php&saison=20xx&competitions=CODE1,CODE2&all=0 )";
+    echo "Incorrect parameters (example: api_players.php?saison=20xx&competitions=CODE1,CODE2&all=0 )";
 }
 die();

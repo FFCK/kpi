@@ -1,11 +1,12 @@
 <?php
 
-include_once('../commun/MyPage.php');
-include_once('../commun/MyBdd.php');
-include_once('../commun/MyTools.php');
+include_once('commun/MyPage.php');
+include_once('commun/MyBdd.php');
+include_once('commun/MyTools.php');
 
 session_start();
 $myBdd = new MyBdd();
+$format = $myBdd->RealEscapeString(trim(utyGetGet('format', 'csv')));
 $saison = (int) $myBdd->RealEscapeString(trim(utyGetGet('saison')));
 $competitions = explode(",", $myBdd->RealEscapeString(trim(utyGetGet('competitions'))));
 $competitions = "'" . implode("','", $competitions) . "'";
@@ -32,7 +33,9 @@ if($saison > 2000 && $competitions != '') {
                 AND d.Code_saison = $saison
                 GROUP BY a.Matric 
                 ORDER BY Buts DESC, a.Nom ";
-            break;
+            $entete = array('Competition', 'Licence', 'Name', 'First name', 'Gender', 'Number', 'Team', 
+            'Goals', 'GC', 'YC', 'RC', 'Shots', 'Stops');
+        break;
         case 1: // Tous les joueurs : A corriger !
             $sql = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, 
                 a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
@@ -68,20 +71,33 @@ if($saison > 2000 && $competitions != '') {
                 AND f.Code_saison = $saison
                 GROUP BY a.Matric 
                 ORDER BY Equipe ASC, j.Numero, a.Nom, a.Prenom ";
+            $entete = array('Competition', 'Team', 'Number', 'Captain', 'Name', 'First name', 
+                'Birthdate', 'Gender', 'Licence', 'ICF#');
             break;
         default:
-            echo "Paramètres incorrects (exemple: api_stats.php&saison=20xx&competitions=CODE1,CODE2&all=0 )";
+            echo "Incorrect parameters (example: api_stats.php?saison=20xx&competitions=CODE1,CODE2&all=0 )";
             die();
     }
     
     $result = $myBdd->Query($sql);
-    while ($row = $myBdd->FetchArray($result)){ 
-        array_push($arrayStats, $row);
+    while ($row = $myBdd->FetchArray($result)){
+        $arrayStats[] = $row;
     }
 
-    header('Content-Type: application/json');
-    echo json_encode($arrayStats);
+    if ($format == 'json') {
+        header('Content-Type: application/json');
+        echo json_encode($arrayStats);
+    } else { // CSV
+        header("Content-Type: text/csv");
+        $out = fopen('php://output', 'w');
+        fputcsv($out, $entete);
+        foreach ($arrayStats as $row) {
+            fputcsv($out, $row);
+        }
+        fclose($out);
+    }
+
 } else {
-    echo "Paramètres incorrects (exemple: api_stats.php&saison=20xx&competitions=CODE1,CODE2&all=0 )";
+    echo "Incorrect parameters (example: api_stats.php?saison=20xx&competitions=CODE1,CODE2&all=0 )";
 }
 die();
