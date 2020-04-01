@@ -28,7 +28,7 @@ class Details extends MyPage
 		$_SESSION['codeCompet'] = $codeCompet;
 		$this->m_tpl->assign('codeCompet', $codeCompet);
         
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;

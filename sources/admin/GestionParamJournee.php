@@ -66,7 +66,7 @@ class GestionParamJournee extends MyPageSecure
 			}
 		} else {
 			$this->m_tpl->assign('Num_Journee', 0);
-			$this->m_tpl->assign('J_saison', utyGetSaison());
+			$this->m_tpl->assign('J_saison', $myBdd->GetActiveSaison());
 			$this->m_tpl->assign('J_competition', utyGetSession('codeCompet'));
 		}
 		
@@ -160,7 +160,7 @@ class GestionParamJournee extends MyPageSecure
             $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
 		} else {
 			// Création ...
-			$nextIdJournee = $this->GetNextIdJournee();
+			$nextIdJournee = $myBdd->GetNextIdJournee();
 			
     		$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
 			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) ";
@@ -268,22 +268,6 @@ class GestionParamJournee extends MyPageSecure
 			$myBdd->Query($sql);
 		}			
 	}
-
-	function GetNextIdJournee() {
-		$myBdd = new MyBdd();
-
-		$sql  = "SELECT max(Id) maxId "
-                . "FROM gickp_Journees "
-                . "WHERE Id < 19000001 ";
-		$result = $myBdd->Query($sql);
-	
-		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result);	  
-			return ((int) $row['maxId'])+1;
-		} else {
-			return 1;
-		}
-	}		
 	
 	function Cancel() {
 		if (isset($_SESSION['ParentUrl'])) {
@@ -297,7 +281,7 @@ class GestionParamJournee extends MyPageSecure
 		$myBdd = new MyBdd();
         $idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
 		if ($idJournee != 0) {
-			$nextIdJournee = $this->GetNextIdJournee();
+			$nextIdJournee = $myBdd->GetNextIdJournee();
 	
 			$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, "
                     . "Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, "

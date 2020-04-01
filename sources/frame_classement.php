@@ -15,7 +15,7 @@ class Classement extends MyPage
 		$codeCompet = utyGetGet('Compet',  'N1H');
 		$this->m_tpl->assign('codeCompet', $codeCompet);
 			
-		$codeSaison = utyGetGet('Saison', utyGetSaison());
+		$codeSaison = utyGetGet('Saison', $myBdd->GetActiveSaison());
 		$this->m_tpl->assign('Saison', $codeSaison);
         
         $event = utyGetGet('event', '0');

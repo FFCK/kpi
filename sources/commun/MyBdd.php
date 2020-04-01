@@ -13,7 +13,8 @@ class MyBdd
 	var $m_password;
 	var $m_database;
 	var $m_server;	
-	var $m_link;		 
+	var $m_link;
+	var $pdo;
 	var $m_arrayinfo;
 	
 	var $m_saisonPCE;
@@ -48,61 +49,50 @@ class MyBdd
 		} 
 		
 		$this->m_arrayinfo = array();	
+		$this->PDO();	   
 		
-		$this->Connect();		   
-		
-		$this->m_saisonPCE = $this->GetActiveSaison();
+		$this->Connect();	   
 	}	
+
+	/**
+	 * Connexion PDO
+	 */
+	function PDO() {
+		try {
+			$this->pdo = new PDO('mysql:host='.$this->m_server.';dbname='.$this->m_database, $this->m_login, $this->m_password);
+			$this->pdo->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION);
+			$this->pdo->exec("SET NAMES utf8");
+			// error_log("Connexion PDO", 0);
+		} catch (PDOException $e) {
+			die ('Une erreur MySQL est arrivée: ' . $e->getMessage());
+		}
+	}
 					
  	function Connect() {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			$this->m_link = mysql_connect($this->m_server, $this->m_login, $this->m_password);
-			$this->Query("SET NAMES 'UTF8'");
-			if (!$this->m_link) {		
-				die('Impossible de se connecter : ' . $this->Error());
-			}
-				
-			$db = mysql_select_db($this->m_database, $this->m_link);
-			if (!$db) {
-				die('Impossible de sélectionner la base de données : ' . $this->Error());
-			}
-			
-		} else {
-			$this->m_link = mysqli_connect( $this->m_server, $this->m_login, $this->m_password, $this->m_database)
-				or die('Impossible de se connecter');
-			$this->Query("SET NAMES 'UTF8'");
-		}
-	}  
-					
-	// AJOUT COSANDCO : 12 Septembre 2014 ...
-	
+		$this->m_link = mysqli_connect( $this->m_server, $this->m_login, $this->m_password, $this->m_database)
+			or die('Unable to connect!');
+		$this->Query("SET NAMES 'UTF8'");
+		// error_log("Connexion MySQLi", 0);
+	}
+
 	// Query 		$result = $myBdd->Query($sql);
     function Query($sql)
     {
-		if(isset($_SESSION) && null !== $_SESSION['Profile'] && $_SESSION['Profile'] == 1) {
-			$msg = $this->Error() . '<br>' . $sql;
+		if(isset($_SESSION) && $_SESSION['Profile'] == 1) {
+			$result = mysqli_query($this->m_link, $sql) or die ("Error Query : " . $sql);
 		} else {
-			$msg = "Please contact administrator.";
+			$result = mysqli_query($this->m_link, $sql) or die ("Error Query. Please contact admin");
 		}
-
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			$result = mysql_query($sql, $this->m_link) or die ("Error Query : " . $msg);
-		} else {
-			$result = mysqli_query($this->m_link, $sql) or die ("Error Query : " . $msg);
-		}
-        return $result;
+		// error_log("Query MySQLi : " . $sql, 0);
+		return $result;
     }
 	
 	// Error 		$result = $myBdd->Error();
     function Error()
     {
 		$result = '';
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			if (mysql_errno())
-				$result = mysql_errno() . mysql_error() or die ("Error Error");
-		} else {
-			if (mysqli_errno($this->m_link))
-				$result = mysqli_error($this->m_link) or die ("Error Error");
+		if (mysqli_errno($this->m_link)) {
+			$result = mysqli_error($this->m_link) or die ("Error Error");
 		}
         return $result;
     }
@@ -110,104 +100,61 @@ class MyBdd
     // AffectedRows			$affected_results = $myBdd->AffectedRows($result);
     function AffectedRows()
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_affected_rows($this->m_link);
-		} else {
-			return mysqli_affected_rows($this->m_link);
-		}
+		return mysqli_affected_rows($this->m_link);
 	}
 
     // AffectedRows			$affected_results = $myBdd->AffectedRows($result);
     function InsertId()
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_insert_id($this->m_link);
-		} else {
-			return mysqli_insert_id($this->m_link);
-		}
+		return mysqli_insert_id($this->m_link);
 	}
 
     // NumRows			$num_results = $myBdd->NumRows($result);
     function NumRows($result)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_num_rows($result);
-		} else {
-			return mysqli_num_rows($result);
-		}
+		return mysqli_num_rows($result);
 	}
 
     // NumFields			$num_fields = $myBdd->NumFields($result);
     function NumFields($result)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_num_fields($result);
-		} else {
-			return mysqli_num_fields($result);
-		}
+		return mysqli_num_fields($result);
     }
     
     // FieldName			$field_name = $myBdd->FieldName($result);
     function FieldName($result, $field)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_field_name($result, $field);
-		} else {
-			return mysqli_fetch_field_direct ($result, $field);
-		}
+		return mysqli_fetch_field_direct ($result, $field);
     }
 
     // FetchArray		$row = $myBdd->FetchArray($result);
     function FetchArray($result, $resulttype=MYSQLI_ASSOC)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			if ($resulttype == MYSQLI_ASSOC) {
-				$resulttype == MYSQL_ASSOC;
-			}
-			return mysql_fetch_array($result, $resulttype);
-		} else {
-			return mysqli_fetch_array($result, $resulttype);
-		}
+		return mysqli_fetch_array($result, $resulttype);
 	}
 
      // FetchAssoc		$row = $myBdd->FetchAssoc($result);
     function FetchAssoc($result)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_fetch_assoc($result);
-		} else {
-			return mysqli_fetch_assoc($result);
-		}
+		return mysqli_fetch_assoc($result);
 	}
 
     // FetchRow			$row = $myBdd->FetchRow($result);
     function FetchRow($result)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_fetch_row($result);
-		} else {
-			return mysqli_fetch_row($result);
-		}
+		return mysqli_fetch_row($result);
     }
 	
     // DataSeek			$row = $myBdd->DataSeek($result, $cursor);
     function DataSeek($result, $cursor)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_data_seek($result, $cursor);
-		} else {
-			return mysqli_data_seek($result, $cursor);
-		}
+		return mysqli_data_seek($result, $cursor);
     }
     
     // RealEscapeString			$myBdd->RealEscapeString($codeCompet);
     function RealEscapeString($txt)
     {
-		if (substr(PHP_VERSION, 0, 1) < 7) {
-			return mysql_real_escape_string($txt, $this->m_link);
-		} else {
-			return mysqli_real_escape_string($this->m_link, $txt);
-		}
+		return mysqli_real_escape_string($this->m_link, $txt);
     }
 
     // GetLastAutoIncrement
@@ -458,7 +405,10 @@ class MyBdd
 
 
 
-	// Importation du fichier PCE local (ancienne version)
+	/** 
+	 * Importation du fichier PCE local (ancienne version)
+	 * 
+	*/
 	function ImportPCE($filePCE)
 	{
 	 	$fp = fopen($_SERVER['DOCUMENT_ROOT'] . "/PCE/". $filePCE, "r");
@@ -520,158 +470,7 @@ class MyBdd
 		array_push($this->m_arrayinfo, "Traitement terminé avec succès." );
 	}		
 
-    /**
-     * Get a web file (HTML, XHTML, XML, image, etc.) from a URL.  Return an
-     * array containing the HTTP server response header fields and content.
-     */
-    function get_web_page( $url )
-    {
-        $options = array(
-            CURLOPT_RETURNTRANSFER => true,     // return web page
-            CURLOPT_HEADER         => false,    // don't return headers
-            CURLOPT_FOLLOWLOCATION => false,     // follow redirects
-            CURLOPT_ENCODING       => "",       // handle all encodings
-            CURLOPT_USERAGENT      => "spider", // who am i
-            CURLOPT_AUTOREFERER    => true,     // set referer on redirect
-            CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
-            CURLOPT_TIMEOUT        => 120,      // timeout on response
-            CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
-            CURLOPT_SSL_VERIFYPEER => false     // Disabled SSL Cert checks
-        );
 
-        $ch      = curl_init( $url );
-        curl_setopt_array( $ch, $options );
-        $content = curl_exec( $ch );
-        $err     = curl_errno( $ch );
-        $errmsg  = curl_error( $ch );
-        $header  = curl_getinfo( $ch );
-        curl_close( $ch );
-
-        $header['errno']   = $err;
-        $header['errmsg']  = $errmsg;
-        $header['content'] = $content;
-        return $header;
-    }
-
-    /**
-     * captureImg Rappatrie une image jpg distante sur le serveur
-     * 
-     * @param type $url
-     * @param type $type B|L|S (Bandeau, Logo, Sponsor)
-     * @param type $code Code compétition
-     * @param type $saison
-     */
-    function captureImg($url, $type, $code, $saison, $folder = "../img/logo/") {
-        $types = ['B', 'L', 'S'];
-        
-        // jpg, png, gif or bmp?
-        $exploded = explode('.',$url);
-        $ext = substr($exploded[count($exploded) - 1], 0, 3);
-        if($ext == 'jpe') {
-            $ext = 'jpg';
-        }
-        if(!in_array($type, $types)) {
-            echo "Type incorrect : $url !<br>";
-            return FALSE;
-        }
-        if(strpos($url, 'http://') === false 
-                && strpos($url, 'https://') === false
-                ) {
-            echo "Image locale : $url<br>";
-            return FALSE;
-        }
-        
-        $newfile = $type . '-' . $code . '-' . $saison;
-        
-        //Récupération du fichier distant
-        if(!$header = $this->get_web_page($url)) {
-            echo "Ouverture impossible du fichier distant<br>";
-            return FALSE;
-        }
-        //Déjà existant ? on incrémente
-        if(is_file($folder . $newfile . '.jpg')) {
-            for($i = 1; $i < 50; $i++) {
-                if(!is_file($folder . $newfile . '(' . $i . ')' . '.jpg')) {
-                    $newfile = $newfile . '(' . $i . ')';
-                    break;
-                }
-            }
-        }
-        $newfile = $newfile . '.' . $ext;
-
-        //Ecriture du fichier
-        if(!file_put_contents($folder . $newfile, $header['content'])) {
-            echo "Ecriture impossible du fichier local<br>";
-            return FALSE;
-        }
-        //Conversion en jpg
-        if ($ext == "png"){
-            if(!$newfile = $this->convertPngToJpg($folder, $newfile)) {
-                echo "Image $newfile inexploitable ! <br>";
-                return FALSE;
-            }
-        } elseif ($ext == "gif"){
-            if(!$newfile = $this->convertGifToJpg($folder, $newfile)) {
-                echo "Image $newfile inexploitable ! <br>";
-                return FALSE;
-            }
-        }
-        
-        return $newfile;
-    }
-    
-    /**
-     * convertPngToJpg
-     */
-    function convertPngToJpg($folder, $img) {
-        if(!$new_pic = imagecreatefrompng($folder . $img)) {
-            return FALSE;
-        }
-        $new_name = str_replace(".png", ".jpg", $img);
-        // Create a new true color image with the same size
-        $w = imagesx($new_pic);
-        $h = imagesy($new_pic);
-        $white = imagecreatetruecolor($w, $h);
-        // Fill the new image with white background
-        $bg = imagecolorallocate($white, 255, 255, 255);
-        imagefill($white, 0, 0, $bg);
-        // Copy original transparent image onto the new image
-        imagecopy($white, $new_pic, 0, 0, 0, 0, $w, $h);
-        $new_pic = $white;
-        imagejpeg($new_pic, $folder . $new_name);
-        //nettoyage
-        imagedestroy($new_pic);
-        unlink($folder . $img);
-        
-        return $new_name;
-    }
-    
-    /**
-     * convertGifToJpg
-     */
-    function convertGifToJpg($folder, $img) {
-        if(!$new_pic = imagecreatefromgif($folder . $img)){
-            return FALSE;
-        }
-        $new_name = str_replace(".gif", ".jpg", $img);
-        // Create a new true color image with the same size
-        $w = imagesx($new_pic);
-        $h = imagesy($new_pic);
-        $white = imagecreatetruecolor($w, $h);
-        // Fill the new image with white background
-        $bg = imagecolorallocate($white, 255, 255, 255);
-        imagefill($white, 0, 0, $bg);
-        // Copy original transparent image onto the new image
-        imagecopy($white, $new_pic, 0, 0, 0, 0, $w, $h);
-        $new_pic = $white;
-        imagejpeg($new_pic, $folder . $new_name);
-        //nettoyage
-        imagedestroy($new_pic);
-        unlink($folder . $img);
-        
-        return $new_name;
-    }
-    
 	// Importation du fichier PCE Nouvelle formule
 	function ImportPCE2()
 	{
@@ -683,7 +482,7 @@ class MyBdd
 		$url = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce?saison=" . date('Y');
         $newfile = "pce1.pce";
         
-        if(!$header = $this->get_web_page($url)) {
+        if (!$header = get_web_page($url)) {
             array_push($this->m_arrayinfo, "Ouverture impossible du fichier distant");
         }
         if(!file_put_contents($newfile, $header['content'])) {
@@ -693,53 +492,46 @@ class MyBdd
         $tempsIntermediaire = time() - $debutTraitement;
         
 		$fp = fopen($newfile, "r");
-		if (!$fp)
-		{				
+		if (!$fp) {				
 			array_push($this->m_arrayinfo, "Ouverture impossible du fichier distant");
 		}	  
 		
 		array_push($this->m_arrayinfo, "Importation du fichier PCE");
 		  		   
-		while (!feof($fp))
-		{
+		while (!feof($fp)) {
 			$buffer = trim( fgets($fp, BUFFER_LENGTH) );	
 			if (strlen($buffer) == 0)
 				continue;
 		
-			if ($buffer[0] == '[')
-			{
+			if ($buffer[0] == '[') {
 				// Prise de la section ...
 				$section = substr($buffer, 1, strlen($buffer)-2);	
 				continue;
 			}	
 			
-			if (strcasecmp($section, "date_valeur") == 0)
-			{
+			if (strcasecmp($section, "date_valeur") == 0) {
 				$this->ImportPCE_DateValeur($buffer);
 				continue;
 			}							
 					
-			if (strcasecmp($section, "licencies") == 0)
-			{
+			if (strcasecmp($section, "licencies") == 0) {
 				$this->ImportPCE_Licencies($buffer);
 				$nbLicenciés++;
 				continue;
 			}
 			
-			if (strcasecmp($section, "juges_kap") == 0)
-			{
+			if (strcasecmp($section, "juges_kap") == 0) {
 				$this->ImportPCE_Juges($buffer);
 				$nbArbitres++;
 				continue;
 			}
 
-            if (strcasecmp($section, "surclassements") == 0)
-			{
+            if (strcasecmp($section, "surclassements") == 0) {
 				$this->ImportPCE_Surclassements($buffer);
 				$nbSurclassements++;
 				continue;
 			}
-}	
+		}	
 
 		fclose($fp);  			   
 		array_push($this->m_arrayinfo, "Mise à jour ".$nbLicenciés." licenciés..." );
@@ -1303,7 +1095,7 @@ class MyBdd
             return;
         }
         $card_colors = ['V' => 'Vert', 'J' => 'Jaune', 'R' => 'Rouge'];
-        $saison = utyGetSaison();
+        $saison = $this->GetActiveSaison();
         $headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
         $destinataires = 'contact@kayak-polo.info,frederic.escaffre@mpsa.com,eric.vignet@sidel.com,dejonghebrice@yahoo.fr,virginiebrackez@aol.com,denissaintemartine@gmail.com,c.moal@laposte.net';
 //        $destinataires = 'contact@kayak-polo.info';
@@ -1461,7 +1253,7 @@ class MyBdd
 	// DupliJournee
 	function DupliJournee($codeCompet, $codeCompetRef)
 	{
-		$codeSaison = utyGetSaison();
+		$codeSaison = $this->GetActiveSaison();
 		
 		// Suppression des Matchs  
 		$sql  = "Delete FROM gickp_Matchs Where Id_journee In (";
@@ -1513,17 +1305,13 @@ class MyBdd
 	// GetNextIdJournee 	
 	function GetNextIdJournee()
 	{
-		$sql  = "Select min(Id) minId From gickp_Journees Where Id < 0 ";
-		$result = $this->Query($sql) or die ("Erreur Select");
-	
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);	  
-			return ((int) $row['minId'])-1;
-		}
-		else
-		{
-			return -1;
+		$sql  = "SELECT MAX(Id) maxId 
+			FROM gickp_Journees 
+			WHERE Id < 19000001 ";
+    	if ($row = $this->pdo->query($sql)->fetch()) {
+			return ((int) $row['maxId'])+1;
+		} else {
+			return 1;
 		}
 	}		
 	
@@ -1559,17 +1347,23 @@ class MyBdd
 	// GetActiveSaison 	
 	function GetActiveSaison()
 	{
-		$sql = "Select Code From gickp_Saison Where Etat = 'A' "; 
-		$result = $this->Query($sql) or die ("Erreur Select GetActiveSaison() ");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
-			return $row['Code'];
+		if (isset($_SESSION['Saison'])) {
+			return $_SESSION['Saison'];
+		}
+
+		$sql = "SELECT Code 
+			FROM gickp_Saison 
+			WHERE Etat = 'A' "; 
+		if ($row = $this->pdo->query($sql)->fetch()) {
+			$saison =  $row['Code'];
+		} else {
+			// Si Aucune Saison active en BDD on retourne l'année de la Date actuelle du Serveur 
+			$curDate = GetDate();
+			$saison = $curDate['year'];
 		}
 		
-		// Si Aucune Saison active en BDD on retourne la l'année de la Date actuelle du Serveur 
-		$curDate = GetDate();
-		return $curDate['year'];
+		$_SESSION['Saison'] = $saison;
+		return $saison;
 	}
 	
 	// GetSaison 	
@@ -1610,9 +1404,15 @@ class MyBdd
 	}
 	
 	// GetLabelCompetition 	
-	function GetLabelCompetition($codeCompet, $codeSaison)
+	function GetLabelCompetition($codeCompet, $codeSaison=false)
 	{
-		$sql = "Select Libelle From gickp_Competitions Where Code = '$codeCompet' And Code_saison = '$codeSaison' "; 
+		if (!$codeSaison) {
+			$codeSaison = $this->GetActiveSaison();
+		}
+		$sql = "SELECT Libelle 
+			FROM gickp_Competitions 
+			WHERE Code = '$codeCompet' 
+			AND Code_saison = '$codeSaison' "; 
 		$result = $this->Query($sql) or die ("Erreur Select GetLabelCompetition() ");
 		if ($this->NumRows($result) == 1)
 		{
@@ -1640,18 +1440,20 @@ class MyBdd
 	// GetCompetition 	
 	function GetCompetition($codeCompet, $codeSaison)
 	{
-		$sql  = "SELECT *, ";
-		$sql .= "DATE_FORMAT(Date_calcul,'%d/%m/%y à %Hh%i') Date_calcul,";
-		$sql .= "DATE_FORMAT(Date_publication, '%d/%m/%y à %Hh%i') Date_publication, ";
-		$sql .= "DATE_FORMAT(Date_publication_calcul, '%d/%m/%y à %Hh%i') Date_publication_calcul, ";
-		$sql .= "Code_uti_calcul, Code_uti_publication, Mode_calcul, Mode_publication_calcul ";
-		$sql .= "FROM gickp_Competitions ";
-		$sql .= "WHERE Code = '$codeCompet' And Code_saison = '$codeSaison' "; 		
-	
-		$result = $this->Query($sql) or die ("Erreur Select");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
+		$sql  = "SELECT *, 
+			DATE_FORMAT(Date_calcul,'%d/%m/%y à %Hh%i') Date_calcul, 
+			DATE_FORMAT(Date_publication, '%d/%m/%y à %Hh%i') Date_publication, 
+			DATE_FORMAT(Date_publication_calcul, '%d/%m/%y à %Hh%i') Date_publication_calcul, 
+			Code_uti_calcul, Code_uti_publication, Mode_calcul, Mode_publication_calcul 
+			FROM gickp_Competitions 
+			WHERE Code = :Code_competition 
+			AND Code_saison = :Code_saison "; 		
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array(
+			':Code_competition' => $codeCompet,
+			':Code_saison' => $codeSaison
+		));
+		if ($row = $result->fetch()) {
 			return $row;
 		}
 		return array( 'Code' => '', 'Code_niveau' => '', 'Libelle' => '',
@@ -1718,39 +1520,34 @@ class MyBdd
 	
     function GetGroups($public = 'public', $groupActif = '')
     {
-//        if(isset($_SESSION['groups_' . $public])) {
-//            return $_SESSION['groups' . $public];
-//        } else {
-            $result = [];
-            $label = $this->getSections();
-            if($public == 'public') {
-                $where = "WHERE section < 6 ";
-            } else {
-                $where = "";
-            }
-            $sql  = "SELECT * "
-                    . "FROM gickp_Competitions_Groupes "
-                    . $where
-                    . "ORDER BY section, ordre ";
-            $query = $this->Query($sql);
-            $i = -1;
-            $j = '';
-            while ($row = $this->FetchArray($query)) {
-                if($j != $row['section']) {
-                    $i ++;
-                    $result[$i]['label'] = $label[$row['section']];
-                }
-                if($groupActif == $row['Groupe']) {
-                    $row['selected'] = 'selected';
-                } else {
-                    $row['selected'] = '';
-                }
-                $result[$i]['options'][] = $row;
-                $j = $row['section'];
-            }
-            $_SESSION['groups' . $public] = $result;
-            return $result;
-//        }
+		$result = [];
+		$label = $this->getSections();
+		if($public == 'public') {
+			$where = "WHERE section < 6 ";
+		} else {
+			$where = "";
+		}
+		$sql  = "SELECT * 
+			FROM gickp_Competitions_Groupes 
+			$where
+			ORDER BY section, ordre ";
+		$i = -1;
+		$j = '';
+		foreach ($this->pdo->query($sql) as $row) {
+			if($j != $row['section']) {
+				$i ++;
+				$result[$i]['label'] = $label[$row['section']];
+			}
+			if($groupActif == $row['Groupe']) {
+				$row['selected'] = 'selected';
+			} else {
+				$row['selected'] = '';
+			}
+			$result[$i]['options'][] = $row;
+			$j = $row['section'];
+		}
+		$_SESSION['groups' . $public] = $result;
+		return $result;
     }
     
     /**
@@ -1762,23 +1559,22 @@ class MyBdd
      * @return array
      */
     function GetEvents($public = true, $all = true) {
-            if($public) {
-                $where = "WHERE Publication = 'O' ";
-            } else {
-                $where = "";
-            }
-            if ($all) {
-                $result[] = array('Id' => 0, 'Libelle' => 'Tous', 'Lieu' => '');
-            }
-            $sql  = "SELECT * "
-                    . "FROM gickp_Evenement "
-                    . $where
-                    . "ORDER BY Id DESC ";
-            $query = $this->Query($sql);
-            while ($row = $this->FetchArray($query)) {
-                $result[] = $row;
-            }
-            return $result;
+		if($public) {
+			$where = "WHERE Publication = 'O' ";
+		} else {
+			$where = "";
+		}
+		if ($all) {
+			$result[] = array('Id' => 0, 'Libelle' => 'Tous', 'Lieu' => '');
+		}
+		$sql  = "SELECT * 
+			FROM gickp_Evenement 
+			$where 
+			ORDER BY Id DESC ";
+		foreach ($this->pdo->query($sql) as $row) {
+			$result[] = $row;
+		}
+		return $result;
     }
     
 	// GetClub 	
@@ -1863,7 +1659,7 @@ class MyBdd
 		$arrayComiteReg = $this->GetComiteReg($arrayComiteDep['Code_comite_reg']);
 		$sql  = "Insert Into gickp_Liste_Coureur (Matric, Origine, Nom, Prenom, Sexe, Naissance, ";
 		$sql .= "Numero_club, Club, Numero_comite_dept, Comite_dept, Numero_comite_reg, Comite_reg, Reserve) Values ($matric,'";
-		$sql .= utyGetSaison();
+		$sql .= $this->GetActiveSaison();
 		$sql .= "','";
 		$sql .= $this->RealEscapeString($nom);
 		$sql .= "','";
@@ -1889,42 +1685,33 @@ class MyBdd
 		$sql .= ")";
 		$this->Query($sql) or die ("Erreur Insert InsertIfNotExistLicence");
 	}
-
+	
 	// Journal des manipulations
 	function utyJournal($action, $saison='', $competition='', $evenement='NULL', $journee='NULL', $match='NULL', $journal='', $user='')
 	{
 		if($saison == '')
-			$saison = utyGetSaison();
+			$saison = $this->GetActiveSaison();
 		if($competition == '')
 			$competition = utyGetSession('codeCompet', '');
 		if($user == '')
 			$user = utyGetSession('User');
-		$sql  = "INSERT INTO gickp_Journal (Dates ,Users ,Actions ,Saisons ,Competitions ,Evenements ,Journees ,Matchs ,Journal) VALUES (";
-		$sql .= "CURRENT_TIMESTAMP, ";
-		$sql .= "'".$user."', ";
-		$sql .= "'".$action."', ";
-		$sql .= "'".$saison."', ";
-		$sql .= "'".$competition."', ";
-		$sql .= "'".$evenement."', ";
-		$sql .= "'".$journee."', ";
-		$sql .= "'".$match."', ";
-		$sql .= "'".$this->RealEscapeString($journal)."'";
-		$sql .= ") ";
-		$this->Query($sql) or die ("Erreur Insert Journal : ".$sql);
+		$sql  = "INSERT INTO gickp_Journal (Dates, Users, Actions, Saisons, Competitions, Evenements, Journees, Matchs, Journal)
+			VALUES (CURRENT_TIMESTAMP,?,?,?,?,?,?,?,?) ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array(
+			$user, $action, $saison, $competition, $evenement, $journee, $match, $journal
+		));
 	}
 
 	// Journal des exportations
 	function EvtExport($user='', $evts, $direction, $nomuser, $erreurs='')
 	{
-		$sql  = "INSERT INTO gickp_Evenement_Export (Date ,Utilisateur ,Evenement ,Mouvement ,Parametres ,Erreurs) VALUES (";
-		$sql .= "CURRENT_TIMESTAMP, ";
-		$sql .= "'".$user."', ";
-		$sql .= "'".$evts."', ";
-		$sql .= "'".$direction."', ";
-		$sql .= "'".$nomuser."', ";
-		$sql .= "'".$erreurs."'";
-		$sql .= ") ";
-		$this->Query($sql) or die ("Erreur Insert Journal Export : ".$sql);
+		$sql  = "INSERT INTO gickp_Evenement_Export (Date ,Utilisateur ,Evenement ,Mouvement ,Parametres ,Erreurs) 
+			VALUES (CURRENT_TIMESTAMP, ?,?,?,?,?) ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array(
+			$user, $evts, $direction, $nomuser, $erreurs
+		));
 	}
 	
 	

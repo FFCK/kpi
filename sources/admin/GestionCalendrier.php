@@ -118,7 +118,7 @@ class GestionCalendrier extends MyPageSecure
                     . "c.Soustitre2, c.Titre_actif, g.id, g.section, g.ordre "
                     . "From gickp_Competitions c, gickp_Competitions_Groupes g "
                     . "Where c.Code_saison = '"
-                    . utyGetSaison()
+                    . $myBdd->GetActiveSaison()
                     . "' "
                     . utyGetFiltreCompetition('c.')
                     . " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
@@ -251,12 +251,12 @@ class GestionCalendrier extends MyPageSecure
 			$sql .= "And Code_competition = '";
 			$sql .= $codeCompet;
 			$sql .= "' ";
-            $competition = $myBdd->GetCompetition($codeCompet, utyGetSaison());
+            $competition = $myBdd->GetCompetition($codeCompet, $myBdd->GetActiveSaison());
             $this->m_tpl->assign('competition', $competition);
 		}
 		
 		$sql .= "And Code_saison = '";
-		$sql .= utyGetSaison();
+		$sql .= $myBdd->GetActiveSaison();
 		$sql .= "' ";
 		if($filtreMois > 0)
 			$sql .= "And (MONTH(Date_debut) = $filtreMois OR MONTH(Date_fin) = $filtreMois) ";
@@ -361,33 +361,14 @@ class GestionCalendrier extends MyPageSecure
 		$myBdd->Query($sql);
 	}
 
-	function GetNextIdJournee()
-	{
-		$myBdd = new MyBdd();
-
-		$sql  = "Select max(Id) maxId From gickp_Journees Where Id < 19000001 ";
-		$result = $myBdd->Query($sql);
-	
-		if ($myBdd->NumRows($result) == 1)
-		{
-			$row = $myBdd->FetchArray($result);	  
-			return ((int) $row['maxId'])+1;
-		}
-		else
-		{
-			return 1;
-		}
-	}		
-
 	function Duplicate()
 	{
 		$idJournee = utyGetPost('ParamCmd');
 		if ($idJournee != 0)
 		{
-			$nextIdJournee = $this->GetNextIdJournee();
-			
 			$myBdd = new MyBdd();
-	
+			$nextIdJournee = $myBdd->GetNextIdJournee();
+			
 			$sql  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Type, Lieu, Plan_eau, ";
 			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) ";
 			$sql .= "Select $nextIdJournee, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Type, Lieu, Plan_eau, ";
@@ -404,7 +385,7 @@ class GestionCalendrier extends MyPageSecure
 			exit;	
 		}
 
-		$myBdd->utyJournal('Dupplication journee', utyGetSaison(), '', '', $nextIdJournee); // A compléter (saison, compétition, options)
+		$myBdd->utyJournal('Dupplication journee', $myBdd->GetActiveSaison(), '', '', $nextIdJournee); // A compléter (saison, compétition, options)
 	}
 	
 	function ParamJournee()
@@ -486,7 +467,7 @@ class GestionCalendrier extends MyPageSecure
 			($row['Publication']=='O') ? $changePub = 'N' : $changePub = 'O';
 			$sql = "Update gickp_Journees Set Publication = '$changePub' Where Id = '".$arrayParam[$i]."' ";
 			$myBdd->Query($sql);
-			$myBdd->utyJournal('Publication journee', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $changePub);
+			$myBdd->utyJournal('Publication journee', $myBdd->GetActiveSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $changePub);
 		}
 	}
 	

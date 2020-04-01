@@ -21,7 +21,7 @@ class Equipes extends MyPage
 		$this->m_tpl->assign('Equipe', $Equipe);
 		$_SESSION['Equipe'] = $Equipe;
         
-        $Saison = utyGetSaison();
+        $Saison = $myBdd->GetActiveSaison();
         $codeSaison = (int) utyGetGet('Saison', utyGetSaison());
         
         $codeCompet = utyGetGet('Compet', '');
