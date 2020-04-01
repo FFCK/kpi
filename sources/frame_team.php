@@ -1,11 +1,9 @@
 <?php
-
 include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 // Team
-	
 class Team extends MyPage	 
 {	
 	function Load()
@@ -21,8 +19,8 @@ class Team extends MyPage
 		$this->m_tpl->assign('Team', $Team);
 		$_SESSION['Team'] = $Team;
         
-        $Saison = utyGetSaison();
-        $codeSaison = (int) utyGetGet('Saison', utyGetSaison());
+        $Saison = $myBdd->GetActiveSaison();
+        $codeSaison = (int) utyGetGet('Saison', $Saison);
         
         $codeCompet = utyGetGet('Compet', '');
         $this->m_tpl->assign('codeCompet', $codeCompet);
@@ -35,9 +33,11 @@ class Team extends MyPage
             $sql = "SELECT ce.Numero Equipe, ce.Libelle nomEquipe, ce.Code_club, cl.Libelle Club 
                 FROM gickp_Competitions_Equipes ce 
                 LEFT OUTER JOIN gickp_Club cl ON ce.Code_club = cl.Code 
-                WHERE ce.Id = $Team ";
-            $result = $myBdd->Query($sql);
-            $row = $myBdd->FetchArray($result);
+                WHERE ce.Id = ? ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($Team));
+            $row = $result->fetch();
+
             $Equipe = (int) $row['Equipe'];
             $nomEquipe = $row['nomEquipe'];
             $Code_club = $row['Code_club'];
@@ -94,32 +94,31 @@ class Team extends MyPage
 
                 // stats individuelles
                 $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ, cej.Numero, cej.Capitaine,
-                            SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts,
-                            SUM(IF(md.Id_evt_match = 'V', 1, 0)) verts,
-                            SUM(IF(md.Id_evt_match = 'J', 1, 0)) jaunes,
-                            SUM(IF(md.Id_evt_match = 'R', 1, 0)) rouges
-                        FROM gickp_Competitions_Equipes ce
-                        LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs cej ON ce.Id = cej.Id_equipe
-                        LEFT OUTER JOIN gickp_Journees j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
-                        LEFT OUTER JOIN gickp_Matchs m ON j.Id = m.Id_journee
-                        LEFT OUTER JOIN gickp_Matchs_Detail md ON m.Id = md.Id_match
-                        WHERE md.Competiteur = cej.Matric
-                        AND ce.Numero = $Equipe 
-                        AND ce.Code_compet = '$codeCompet' 
-                        AND ce.Code_saison = $codeSaison 
-                        AND cej.Capitaine != 'A'
-                        AND cej.Capitaine != 'X'
-                        AND m.Validation = 'O'
-                        AND m.Publication = 'O'
-                        GROUP BY cej.Matric
-                        ORDER BY Field(if(cej.Capitaine='C','-',if(cej.Capitaine='','-',cej.Capitaine)), '-', 'E', 'A', 'X'), cej.Numero, cej.Nom, cej.Prenom ";
-                // die($sql);
-                $result = $myBdd->Query($sql);
-                while ($row = $myBdd->FetchArray($result)) {
+                        SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts,
+                        SUM(IF(md.Id_evt_match = 'V', 1, 0)) verts,
+                        SUM(IF(md.Id_evt_match = 'J', 1, 0)) jaunes,
+                        SUM(IF(md.Id_evt_match = 'R', 1, 0)) rouges
+                    FROM gickp_Competitions_Equipes ce
+                    LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs cej ON ce.Id = cej.Id_equipe
+                    LEFT OUTER JOIN gickp_Journees j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
+                    LEFT OUTER JOIN gickp_Matchs m ON j.Id = m.Id_journee
+                    LEFT OUTER JOIN gickp_Matchs_Detail md ON m.Id = md.Id_match
+                    WHERE md.Competiteur = cej.Matric
+                    AND ce.Numero = ? 
+                    AND ce.Code_compet = ? 
+                    AND ce.Code_saison = ? 
+                    AND cej.Capitaine != 'A'
+                    AND cej.Capitaine != 'X'
+                    AND m.Validation = 'O'
+                    AND m.Publication = 'O'
+                    GROUP BY cej.Matric
+                    ORDER BY Field(if(cej.Capitaine='C','-',if(cej.Capitaine='','-',cej.Capitaine)), '-', 'E', 'A', 'X'), cej.Numero, cej.Nom, cej.Prenom ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array($Equipe, $codeCompet, $codeSaison));
+                while ($row = $result->fetch()) {
                     $arrayCompo[] = $row;
                 }
                 $this->m_tpl->assign('arrayCompo', $arrayCompo);
-                // var_dump($Equipe);
             }
         }
 	}
@@ -138,7 +137,7 @@ class Team extends MyPage
                 $this->m_tpl->assign('voie', $voie);
             }
             
-			$intervalle = (int) $_GET['intervalle'];
+			$intervalle = (int) utyGetGet('intervale', 0);
 			if ($intervalle > 0) {
                 $this->m_tpl->assign('intervalle', $intervalle);
 			}
