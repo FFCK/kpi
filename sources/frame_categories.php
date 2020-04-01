@@ -21,7 +21,7 @@ class Matchs extends MyPage
 		$_SESSION['idSelCompet'] = $codeCompet;
 		$this->m_tpl->assign('codeCompet', $codeCompet);
 
-        $codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
@@ -60,7 +60,7 @@ class Matchs extends MyPage
             $Compets = implode(',', $Compets1);
         }
         
-		$codeSaison = utyGetGet('Saison', utyGetSaison());
+		$codeSaison = utyGetGet('Saison', $myBdd->GetActiveSaison);
         if($codeSaison != $_SESSION['Saison']){
             $_GET['J'] = '*';
             $_GET['Compet'] = '*';

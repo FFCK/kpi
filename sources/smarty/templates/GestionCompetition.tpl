@@ -91,7 +91,7 @@
 										<td>{$arrayCompet[i].Code_niveau|default:'&nbsp;'}</td>
 										<td	class="cliquableNomEquipe"
 											title="<center>
-											{if $arrayCompet[i].Titre_actif == 'O'}{$arrayCompet[i].Libelle}<br>{else}{$arrayCompet[i].Soustitre}<br>{/if}
+											{if $arrayCompet[i].check_titre == 'O'}{$arrayCompet[i].Libelle}<br>{else}{$arrayCompet[i].Soustitre}<br>{/if}
 											{$arrayCompet[i].Soustitre2}
 											<br>- - -
 											<br>- - -
@@ -100,7 +100,7 @@
 											<br>- - -
 											<br><i>{$arrayCompet[i].commentairesCompet}</i><br><br>
 											</center>"
-										><a href='GestionDoc.php?Compet={$arrayCompet[i].Code}'>{if $arrayCompet[i].Titre_actif != 'O' && $arrayCompet[i].Soustitre != ''}{$arrayCompet[i].Soustitre}{else}{$arrayCompet[i].Libelle}{/if}{if $arrayCompet[i].Soustitre2 != ''}<br />{$arrayCompet[i].Soustitre2}{/if}</a></td>
+										><a href='GestionDoc.php?Compet={$arrayCompet[i].Code}'>{if $arrayCompet[i].check_titre != 'O' && $arrayCompet[i].Soustitre != ''}{$arrayCompet[i].Soustitre}{else}{$arrayCompet[i].Libelle}{/if}{if $arrayCompet[i].Soustitre2 != ''}<br />{$arrayCompet[i].Soustitre2}{/if}</a></td>
 										<td>{$arrayCompet[i].Code_ref|default:'&nbsp;'}</td>
 										<td>{if $arrayCompet[i].Code_tour == '10'}F{else}{$arrayCompet[i].Code_tour|default:'&nbsp;'}{/if}</td>
 										<td>{$arrayCompet[i].codeTypeClt|default:'&nbsp;'}</td>
@@ -339,19 +339,19 @@
 									</tr>
 -->									<tr>
 										<td colspan=4>
-											<label for="logo_actif">{#Activer#} :</label>
+											<label>{#Activer#} :</label>
 											<br>
-											<input type="checkbox" name="titre_actif" id="titre_actif" value='O' {if $titre_actif != ''}checked{/if}><label>Label ({#sinon#} : Label 2)</label>
+											<input type="checkbox" name="check_titre" id="check_titre" value="O" {if $check_titre != ''}checked{/if}><label>Label ({#sinon#} : Label 2)</label>
 											<br>
-											<input type="checkbox" name="en_actif" id="en_actif" value='O' {if $en_actif != ''}checked{/if}><label>{#Competition_en_anglais#}</label>
+											<input type="checkbox" name="check_en" id="check_en" value="O" {if $check_en != ''}checked{/if}><label>{#Competition_en_anglais#}</label>
 											<br>
-											<input type="checkbox" name="kpi_ffck_actif" id="kpi_ffck_actif" value='O' {if $kpi_ffck_actif != ''}checked{/if}><label>Logo KPI/FFCK</label>
+											<input type="checkbox" name="check_kpi_ffck" id="check_kpi_ffck" value="O" {if $check_kpi_ffck != ''}checked{/if}><label>Logo KPI/FFCK</label>
 											<br>
-											<input type="checkbox" name="bandeau_actif" id="bandeau_actif" value='O' {if $bandeau_actif == 'O'}checked{/if}><label>{#Bandeau#}</label>
+											<input type="checkbox" name="check_bandeau" id="check_bandeau" value="O" {if $check_bandeau != ''}checked{/if}><label>{#Bandeau#}</label>
 											<br>
-											<input type="checkbox" name="logo_actif" id="logo_actif" value='O' {if $logo_actif == 'O'}checked{/if}><label>Logo</label>
+											<input type="checkbox" name="check_logo" id="check_logo" value="O" {if $check_logo != ''}checked{/if}><label>Logo</label>
 											<br>
-											<input type="checkbox" name="sponsor_actif" id="sponsor_actif" value='O' {if $sponsor_actif == 'O'}checked{/if}><label>Sponsor</label>
+											<input type="checkbox" name="check_sponsor" id="check_sponsor" value="O" {if $check_sponsor != ''}checked{/if}><label>Sponsor</label>
 										</td>
 									</tr>
 									<tr>
@@ -434,19 +434,19 @@
 								</tr>
 								<tr>
 									<td colspan=4>
-										<label for="logo_actif">{#Activer#} :</label>
+										<label>{#Activer#} :</label>
 										<br>
-										<input type="checkbox" name="titre_actif" id="titre_actif" value='O' {if $titre_actif != ''}checked{/if}><label>Label ({#sinon#} : Label 2)</label>
+										<input type="checkbox" name="check_titre" id="check_titre" value="O" {if $check_titre != ''}checked{/if}><label>Label ({#sinon#} : Label 2)</label>
 										<br>
-										<input type="checkbox" name="en_actif" id="en_actif" value='O' {if $en_actif != ''}checked{/if}><label>{#Competition_en_anglais#}</label>
+										<input type="checkbox" name="check_en" id="check_en" value="O" {if $check_en != ''}checked{/if}><label>{#Competition_en_anglais#}</label>
 										<br>
-										<input type="checkbox" name="kpi_ffck_actif" id="kpi_ffck_actif" value='O' {if $kpi_ffck_actif != ''}checked{/if}><label>Logo KPI/FFCK</label>
+										<input type="checkbox" name="check_kpi_ffck" id="check_kpi_ffck" value="O" {if $check_kpi_ffck != ''}checked{/if}><label>Logo KPI/FFCK</label>
 										<br>
-										<input type="checkbox" name="bandeau_actif" id="bandeau_actif" value='O' {if $bandeau_actif == 'O'}checked{/if}><label>{#Bandeau#}</label>
+										<input type="checkbox" name="check_bandeau" id="check_bandeau" value="O" {if $check_bandeau != ''}checked{/if}><label>{#Bandeau#}</label>
 										<br>
-										<input type="checkbox" name="logo_actif" id="logo_actif" value='O' {if $logo_actif == 'O'}checked{/if}><label>Logo</label>
+										<input type="checkbox" name="check_logo" id="check_logo" value="O" {if $check_logo != ''}checked{/if}><label>Logo</label>
 										<br>
-										<input type="checkbox" name="sponsor_actif" id="sponsor_actif" value='O' {if $sponsor_actif == 'O'}checked{/if}><label>Sponsor</label>
+										<input type="checkbox" name="check_sponsor" id="check_sponsor" value="O" {if $check_sponsor != ''}checked{/if}><label>Sponsor</label>
 									</td>
 								</tr>
 								<tr>

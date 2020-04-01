@@ -443,12 +443,13 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 	
 	function FindLicence()
 	{
+		$myBdd = new MyBdd();
 		$_SESSION['Signature'] = uniqid('GMEJ-');
 
 		if (isset($_SESSION['codeClub']))
 		{
-			$_SESSION['codeComiteDep'] = utyCodeComiteDept($_SESSION['codeClub']);
-			$_SESSION['codeComiteReg'] = utyCodeComiteReg($_SESSION['codeComiteDep']);
+			$_SESSION['codeComiteDep'] = $myBdd->GetCodeComiteDept($_SESSION['codeClub']);
+			$_SESSION['codeComiteReg'] = $myBdd->GetCodeComiteReg($_SESSION['codeComiteDep']);
 		}
 		
 		header("Location: RechercheLicence.php");	

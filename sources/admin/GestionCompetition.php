@@ -9,16 +9,18 @@ class GestionCompetition extends MyPageSecure
 {	
 	function Load()
 	{
+		$myBdd = new MyBdd();
+
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
         if (utyGetSession('lang') == 'en') {
             $lang = $langue['en'];
         } else {
             $lang = $langue['fr'];
-        }
-        
-		$codeSaison = utyGetSaison();
+		}
 		
+		$codeSaison = $myBdd->GetActiveSaison();
+
 		$AuthSaison = utyGetSession('AuthSaison','');
 		$this->m_tpl->assign('AuthSaison', $AuthSaison);
 
@@ -51,29 +53,23 @@ class GestionCompetition extends MyPageSecure
 
 		$_SESSION['whereOuiNon'] = $where;
 		
-		$myBdd = new MyBdd();
-
 		// Chargement des Saisons ...
-		$sql  = "Select Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin ";
-		$sql .= "From gickp_Saison ";
-		$sql .= "Order By Code DESC ";	 
+		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
+			FROM gickp_Saison 
+			ORDER BY Code DESC ";	 
 		
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
-	
 		$arraySaison = array();
-		for ($i=0;$i<$num_results;$i++)
-		{
-			//$row = mysql_fetch_array($result);
-			$row = $myBdd->FetchArray($result);
+		foreach ($myBdd->pdo->query($sql) as $row) {
 			if ($row['Etat'] == 'A') {
                 $saisonActive = $row['Code'];
             }
             array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-										'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-										'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+				'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 
+				'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
+				'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 
+				'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
 		}
-		
+
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		$this->m_tpl->assign('sessionSaison', $codeSaison);
 		$this->m_tpl->assign('saisonActive', $saisonActive);
@@ -86,26 +82,23 @@ class GestionCompetition extends MyPageSecure
         $label = $myBdd->getSections();
         
 		$arrayCompet = array();
-		$sql  = "Select c.*, g.section, g.ordre, g.id ";
-		$sql .= "From gickp_Competitions c, gickp_Competitions_Groupes g ";
-		$sql .= "Where c.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";
+		$sql  = "SELECT c.*, g.section, g.ordre, g.id 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_saison = $codeSaison ";
 		$sql .= utyGetFiltreCompetition('c.');
-		$sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+		$sql .= " AND c.Code_niveau LIKE '".utyGetSession('AfficheNiveau')."%' ";
 		if ($AfficheCompet == 'N') {
-            $sql .= " And c.Code Like 'N%' ";
+            $sql .= " AND c.Code Like 'N%' ";
         } elseif ($AfficheCompet == 'CF') {
-            $sql .= " And c.Code Like 'CF%' ";
+            $sql .= " AND c.Code Like 'CF%' ";
         } elseif ($AfficheCompet == 'M') {
-            $sql .= " And c.Code_ref = 'M' ";
+            $sql .= " AND c.Code_ref = 'M' ";
         } elseif($AfficheCompet > 0) {
-            $sql .= " And g.section = '" . $AfficheCompet . "' ";
+            $sql .= " AND g.section = '" . $AfficheCompet . "' ";
         }
-        $sql .= " And c.Code_ref = g.Groupe ";
-		$sql .= " Order By c.Code_saison, g.section, g.ordre, g.id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
-        $result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+        $sql .= " AND c.Code_ref = g.Groupe ";
+		$sql .= " ORDER BY c.Code_saison, g.section, g.ordre, g.id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		foreach ($myBdd->pdo->query($sql) as $row) {
             $row['sectionLabel'] = $label[$row['section']];
 			$bandeau = '/img/logo/B-'.$row['Code_ref'].'-'.$codeSaison.'.jpg';
 			$logo = '/img/logo/L-'.$row['Code_ref'].'-'.$codeSaison.'.jpg';
@@ -125,22 +118,31 @@ class GestionCompetition extends MyPageSecure
                 $Publication = 'N';
             }
 
-            $sql2  = "Select Count(m.Id) nbMatchs From gickp_Matchs m, gickp_Journees j ";
-			$sql2 .= "Where j.Id = m.Id_journee ";
-			$sql2 .= "And j.Code_competition = '".$row["Code"]."' ";
-			$sql2 .= "And j.Code_saison = ".$codeSaison." ";
-			$result2 = $myBdd->Query($sql2);
-			$row2 = $myBdd->FetchRow($result2);
-			$nbMatchs = $row2[0];
-			
-			array_push($arrayCompet, array( 'Code' => $row["Code"], 'Code_niveau' => $row["Code_niveau"], 'Libelle' => $row["Libelle"], 'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"],
-											'Code_ref' => $row["Code_ref"], 'GroupOrder' => $row["GroupOrder"], 'codeTypeClt' => $row["Code_typeclt"], 'StdOrSelected' => $StdOrSelected, 'Web' => $row["Web"], 
-											'BandeauLink' => $bandeau, 'LogoLink' => $logo, 'SponsorLink' => $sponsor, 'ToutGroup' => $row["ToutGroup"], 'TouteSaisons' => $row["TouteSaisons"],
-											'En_actif' => $row['En_actif'], 'Titre_actif' => $row['Titre_actif'], 'Bandeau_actif' => $row['Bandeau_actif'], 'Logo_actif' => $row['Logo_actif'], 'Sponsor_actif' => $row['Sponsor_actif'], 'Kpi_ffck_actif' => $row['Kpi_ffck_actif'], 
-											'Age_min' => $row["Age_min"], 'Age_max' => $row["Age_max"], 'Sexe' => $row["Sexe"], 'Points' => $row["Points"], 'Statut' => $row['Statut'],
-											'Code_tour' => $row["Code_tour"], 'Nb_equipes' => $row["Nb_equipes"], 'Verrou' => $row["Verrou"], 'Qualifies' => $row["Qualifies"], 'Elimines' => $row["Elimines"],
-											'Publication' => $Publication, 'commentairesCompet' => $row["commentairesCompet"], 'nbMatchs' => $nbMatchs,
-                                            'section' => $row['section'], 'sectionLabel' => $row['sectionLabel']));
+            $sql2  = "SELECT COUNT(m.Id) nbMatchs 
+				FROM gickp_Matchs m, gickp_Journees j 
+				WHERE j.Id = m.Id_journee 
+				AND j.Code_competition = :Code_competition
+				AND j.Code_saison = :Code_saison ";
+			$result2 = $myBdd->pdo->prepare($sql2);
+			$result2->execute(array(
+				':Code_competition' => $row["Code"],
+				':Code_saison' => $codeSaison
+			));
+			$nbMatchs = $result2->fetchColumn();
+
+			array_push($arrayCompet, array( 'Code' => $row["Code"], 'Code_niveau' => $row["Code_niveau"], 
+				'Libelle' => $row["Libelle"], 'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"],
+				'Code_ref' => $row["Code_ref"], 'GroupOrder' => $row["GroupOrder"], 'codeTypeClt' => $row["Code_typeclt"], 
+				'StdOrSelected' => $StdOrSelected, 'Web' => $row["Web"], 'BandeauLink' => $bandeau, 'LogoLink' => $logo, 
+				'SponsorLink' => $sponsor, 'ToutGroup' => $row["ToutGroup"], 'TouteSaisons' => $row["TouteSaisons"],
+				'En_actif' => $row['En_actif'], 'Titre_actif' => $row['Titre_actif'], 'Bandeau_actif' => $row['Bandeau_actif'], 
+				'Logo_actif' => $row['Logo_actif'], 'Sponsor_actif' => $row['Sponsor_actif'], 
+				'Kpi_ffck_actif' => $row['Kpi_ffck_actif'], 'Age_min' => $row["Age_min"], 'Age_max' => $row["Age_max"], 
+				'Sexe' => $row["Sexe"], 'Points' => $row["Points"], 'Statut' => $row['Statut'],
+				'Code_tour' => $row["Code_tour"], 'Nb_equipes' => $row["Nb_equipes"], 'Verrou' => $row["Verrou"], 
+				'Qualifies' => $row["Qualifies"], 'Elimines' => $row["Elimines"],
+				'Publication' => $Publication, 'commentairesCompet' => $row["commentairesCompet"], 'nbMatchs' => $nbMatchs,
+				'section' => $row['section'], 'sectionLabel' => $row['sectionLabel']));
 		}
 		$this->m_tpl->assign('arrayCompet', $arrayCompet);
 		$this->m_tpl->assign('sectionLabels', $label);
@@ -157,19 +159,14 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('arrayTypeClt', $arrayTypeClt);
 
 		// Chargement des Codes Compétitions existants
-
 		$arrayCompetExist = array();
-		$sql  = "Select Code, Code_niveau, Libelle, Code_ref ";
-		$sql .= "From gickp_Competitions ";
-		$sql .= "Group by Code, Libelle Order By Code_ref, Code ";	 
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
-		
-		for ($i=0;$i<$num_results;$i++)
-		{
-			$row = $myBdd->FetchArray($result);
-
-			array_push($arrayCompetExist, array( 'Code' => $row["Code"], 'Libelle' => $row["Libelle"] ));
+		$sql  = "SELECT Code, Code_niveau, Libelle, Code_ref 
+			FROM gickp_Competitions 
+			GROUP BY Code, Libelle 
+			ORDER BY Code_ref, Code ";	 
+    	foreach ($myBdd->pdo->query($sql) as $row) {
+		array_push($arrayCompetExist, array( 'Code' => $row["Code"], 
+				'Libelle' => $row["Libelle"] ));
 		}
 		$this->m_tpl->assign('arrayCompetExist', $arrayCompetExist);
 
@@ -184,12 +181,12 @@ class GestionCompetition extends MyPageSecure
 		if(!isset($_SESSION['sponsorLink'])) $_SESSION['sponsorLink'] = '';
 		if(!isset($_SESSION['toutGroup'])) $_SESSION['toutGroup'] = '';
 		if(!isset($_SESSION['touteSaisons'])) $_SESSION['touteSaisons'] = '';
-		if(!isset($_SESSION['en_actif'])) $_SESSION['en_actif'] = '';
-		if(!isset($_SESSION['titre_actif'])) $_SESSION['titre_actif'] = 'O';
-		if(!isset($_SESSION['bandeau_actif'])) $_SESSION['bandeau_actif'] = '';
-		if(!isset($_SESSION['logo_actif'])) $_SESSION['logo_actif'] = '';
-		if(!isset($_SESSION['sponsor_actif'])) $_SESSION['sponsor_actif'] = '';
-		if(!isset($_SESSION['kpi_ffck_actif'])) $_SESSION['kpi_ffck_actif'] = 'O';
+		if(!isset($_SESSION['check_en'])) $_SESSION['check_en'] = 'O';
+		if(!isset($_SESSION['check_titre'])) $_SESSION['check_titre'] = 'O';
+		if(!isset($_SESSION['check_bandeau'])) $_SESSION['check_bandeau'] = 'O';
+		if(!isset($_SESSION['check_logo'])) $_SESSION['check_logo'] = 'O';
+		if(!isset($_SESSION['check_sponsor'])) $_SESSION['check_sponsor'] = 'O';
+		if(!isset($_SESSION['check_kpi_ffck'])) $_SESSION['check_kpi_ffck'] = 'O';
 		if(!isset($_SESSION['codeRef'])) $_SESSION['codeRef'] = 'AUTRES';
 		if(!isset($_SESSION['groupOrder'])) $_SESSION['groupOrder'] = '';
 		if(!isset($_SESSION['codeTypeClt'])) $_SESSION['codeTypeClt'] = '';
@@ -210,12 +207,12 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('sponsorLink', $_SESSION['sponsorLink']);
 		$this->m_tpl->assign('toutGroup', $_SESSION['toutGroup']);
 		$this->m_tpl->assign('touteSaisons', $_SESSION['touteSaisons']);
-		$this->m_tpl->assign('en_actif', $_SESSION['en_actif']);
-		$this->m_tpl->assign('titre_actif', $_SESSION['titre_actif']);
-		$this->m_tpl->assign('bandeau_actif', $_SESSION['bandeau_actif']);
-		$this->m_tpl->assign('logo_actif', $_SESSION['logo_actif']);
-		$this->m_tpl->assign('sponsor_actif', $_SESSION['sponsor_actif']);
-		$this->m_tpl->assign('kpi_ffck_actif', $_SESSION['kpi_ffck_actif']);
+		$this->m_tpl->assign('check_en', $_SESSION['check_en']);
+		$this->m_tpl->assign('check_titre', $_SESSION['check_titre']);
+		$this->m_tpl->assign('check_bandeau', $_SESSION['check_bandeau']);
+		$this->m_tpl->assign('check_logo', $_SESSION['check_logo']);
+		$this->m_tpl->assign('check_sponsor', $_SESSION['check_sponsor']);
+		$this->m_tpl->assign('check_kpi_ffck', $_SESSION['check_kpi_ffck']);
 		$this->m_tpl->assign('codeRef', $_SESSION['codeRef']);
 		$this->m_tpl->assign('groupOrder', $_SESSION['groupOrder']);
 		$this->m_tpl->assign('codeTypeClt', $_SESSION['codeTypeClt']);
@@ -245,197 +242,114 @@ class GestionCompetition extends MyPageSecure
 	function Add()
 	{
         $myBdd = new MyBdd();
-        $saison = utyGetSaison();
-		$codeCompet = $myBdd->RealEscapeString(utyGetPost('codeCompet'));
-		$labelCompet = $myBdd->RealEscapeString(utyGetPost('labelCompet'));
-		$soustitre = $myBdd->RealEscapeString(utyGetPost('soustitre'));
-		$soustitre2 = $myBdd->RealEscapeString(utyGetPost('soustitre2'));
-		$web = $myBdd->RealEscapeString(utyGetPost('web'));
-		$bandeauLink = $myBdd->RealEscapeString(utyGetPost('bandeauLink'));
-		if($bandeauLink2 = $myBdd->captureImg($bandeauLink, 'B', $codeCompet, $saison)) {
+		$saison = $myBdd->GetActiveSaison();
+		$codeCompet = utyGetPost('codeCompet');
+		// echo '<pre>'; print_r($_POST); echo '</pre>'; die(); //TODO
+		$bandeauLink = utyGetPost('bandeauLink');
+		if($bandeauLink2 = captureImg($bandeauLink, 'B', $codeCompet, $saison)) {
             $bandeauLink = $bandeauLink2;
         }		
-        $logoLink = $myBdd->RealEscapeString(utyGetPost('logoLink'));
-		if($logoLink2 = $myBdd->captureImg($logoLink, 'L', $codeCompet, $saison)) {
+        $logoLink = utyGetPost('logoLink');
+		if($logoLink2 = captureImg($logoLink, 'L', $codeCompet, $saison)) {
             $logoLink = $logoLink2;
         }
-		$sponsorLink = $myBdd->RealEscapeString(utyGetPost('sponsorLink'));
-		if($sponsorLink2 = $myBdd->captureImg($sponsorLink, 'S', $codeCompet, $saison)) {
+		$sponsorLink = utyGetPost('sponsorLink');
+		if($sponsorLink2 = captureImg($sponsorLink, 'S', $codeCompet, $saison)) {
             $sponsorLink = $sponsorLink2;
         }		
-        $toutGroup = '';
-		$touteSaisons = '';
-		$en_actif = utyGetPost('en_actif');
-		$titre_actif = utyGetPost('titre_actif');
-		$bandeau_actif = utyGetPost('bandeau_actif');
-		$logo_actif = utyGetPost('logo_actif');
-		$sponsor_actif = utyGetPost('sponsor_actif');
-		$kpi_ffck_actif = utyGetPost('kpi_ffck_actif');
-		$niveauCompet = utyGetPost('niveauCompet');
-		$codeRef = $myBdd->RealEscapeString(utyGetPost('codeRef'));
+		$codeRef = utyGetPost('codeRef');
 		if ($codeRef == '') {
             $codeRef = 'AUTRES';
         }
-        $groupOrder = utyGetPost('groupOrder');
-		$codeTypeClt = $myBdd->RealEscapeString(utyGetPost('codeTypeClt'));
-		$codeTour = utyGetPost('etape');
-		$qualifies = utyGetPost('qualifies');
-		$elimines = utyGetPost('elimines');
-		$points = utyGetPost('points');
-		$statut = utyGetPost('statut');
-		$publierCompet = utyGetPost('publierCompet');
 
-		$TitreJournee = $myBdd->RealEscapeString(utyGetPost('TitreJournee'));
+		$TitreJournee = utyGetPost('TitreJournee');
 		$Date_debut = utyDateFrToUs(utyGetPost('Date_debut'));
 		$Date_fin = utyDateFrToUs(utyGetPost('Date_fin'));
-		$Lieu = $myBdd->RealEscapeString(utyGetPost('Lieu'));
-		$Departement = $myBdd->RealEscapeString(utyGetPost('Departement'));
+		$Lieu = utyGetPost('Lieu');
+		$Departement = utyGetPost('Departement');
 		$publierJournee = utyGetPost('publierJournee');
         
 
 		if (strlen($codeCompet) > 0)
 		{
-			$sql  = "Insert Into gickp_Competitions (Code, Code_saison, Code_niveau, Libelle, Soustitre, Soustitre2, ";
-			$sql .= "Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif, Sponsor_actif, Kpi_ffck_actif, ";
-			$sql .= "Code_ref, GroupOrder, Code_typeclt, Code_tour, Qualifies, Elimines, Points, Statut, Publication) Values ('";
-			$sql .= $codeCompet;
-			$sql .= "','";
-			$sql .= $saison;
-			$sql .= "','";
-			$sql .= $niveauCompet;
-			$sql .= "','";
-			$sql .= $labelCompet;
-			$sql .= "','";
-			$sql .= $soustitre;
-			$sql .= "','";
-			$sql .= $soustitre2;
-			$sql .= "','";
-			$sql .= $web;
-			$sql .= "','";
-			$sql .= $bandeauLink;
-			$sql .= "','";
-			$sql .= $logoLink;
-			$sql .= "','";
-			$sql .= $sponsorLink;
-			$sql .= "','";
-			$sql .= $toutGroup;
-			$sql .= "','";
-			$sql .= $touteSaisons;
-			$sql .= "','";
-			$sql .= $en_actif;
-			$sql .= "','";
-			$sql .= $titre_actif;
-			$sql .= "','";
-			$sql .= $bandeau_actif;
-			$sql .= "','";
-			$sql .= $logo_actif;
-			$sql .= "','";
-			$sql .= $sponsor_actif;
-			$sql .= "','";
-			$sql .= $kpi_ffck_actif;
-			$sql .= "','";
-			$sql .= $codeRef;
-			$sql .= "','";
-			$sql .= $groupOrder;
-			$sql .= "','";
-			$sql .= $codeTypeClt;
-			$sql .= "','";
-			$sql .= $codeTour;
-			$sql .= "',";
-			$sql .= $qualifies;
-			$sql .= ",";
-			$sql .= $elimines;
-			$sql .= ",'";
-			$sql .= $points;
-			$sql .= "','";
-			$sql .= $statut;
-			$sql .= "','";
-			$sql .= $publierCompet;
-			$sql .= "')";
-			$myBdd->Query($sql);
+			$sql  = "INSERT INTO gickp_Competitions 
+				(Code, Code_saison, Code_niveau, Libelle, Soustitre, 
+				Soustitre2, Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons, 
+				En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
+				Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, 
+				Code_typeclt, Code_tour, Qualifies, Elimines, 
+				Points, Statut, Publication) 
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$codeCompet, $saison, utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'), 
+				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '', 
+				utyGetPost('check_en'), utyGetPost('check_titre'), utyGetPost('check_bandeau'), utyGetPost('check_logo'), 
+				utyGetPost('check_sponsor'), utyGetPost('check_kpi_ffck'), $codeRef, utyGetPost('groupOrder'),
+				utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
+				utyGetPost('points'), utyGetPost('statut'), utyGetPost('publierCompet')
+			));
+
 			
 			if($Date_debut != '')
 			{
-				$nextIdJournee = $this->GetNextIdJournee();
+				$nextIdJournee = $myBdd->GetNextIdJournee();
 				if($TitreJournee == '')
-					$TitreJournee = $labelCompet;
-				$sql  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
-				$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, Publication) ";
-				$sql .= "Values (".$nextIdJournee.", '";
-				$sql .= $codeCompet."', ";
-				$sql .= $saison . ", ";
-				$sql .= "'', 1, ";
-				$sql .= " '$Date_debut', '$Date_fin', '$TitreJournee', '', '$Lieu', '', ";
-				$sql .= "'$Departement', '', '', '', '', '$publierJournee') ";
-				$myBdd->Query($sql);
+					$TitreJournee = utyGetPost('labelCompet');
+				$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Date_debut, 
+					Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, 
+					Organisateur, Delegue, Publication) 
+					VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(
+					$nextIdJournee, $codeCompet, $saison, '', 1, $Date_debut, 
+					$Date_fin, $TitreJournee, '', $Lieu, '', $Departement, '', '', 
+					'', '', $publierJournee
+				));
 			}
 		}
 		
 		$this->RazCompet();
 		
-		$myBdd->utyJournal('Ajout Compet', $saison, $myBdd->RealEscapeString($codeCompet));
+		$myBdd->utyJournal('Ajout Compet', $saison, $codeCompet);
 	}
-	
-	function GetNextIdJournee()
-	{
-		$myBdd = new MyBdd();
-
-		$sql  = "Select max(Id) maxId From gickp_Journees Where Id < 19000001 ";
-		$result = $myBdd->Query($sql);
-	
-		if ($myBdd->NumRows($result) == 1)
-		{
-			$row = $myBdd->FetchArray($result);	  
-			return ((int) $row['maxId'])+1;
-		}
-		else
-		{
-			return 1;
-		}
-	}		
 	
 	function Remove()
 	{
+		$myBdd = new MyBdd();
+		$saison = $myBdd->GetActiveSaison();
+
 		$ParamCmd = '';
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
 		$arrayParam = explode(',', $ParamCmd);	//TODO	
-		if (count($arrayParam) == 0)
+		if (count($arrayParam) == 0) {
 			return; // Rien à Detruire ...
-			
-		$myBdd = new MyBdd();
+		} else {
+			$listParams = "";
+			for ($i=0; $i<count($arrayParam); $i++) {
+				if ($i > 0)
+					$listParams .= ",";
+				$listParams .= "'".$arrayParam[$i]."'";
+			}
+		}
 
 		//Contrôle suppression possible
-		$sql = "Select Id From gickp_Journees Where Code_competition In ('";
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			if ($i > 0)
-				$sql .= "','";
-			$sql .= $arrayParam[$i];
-		}
-		$sql .= "') and Code_saison = '".utyGetSaison()."' ";
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) != 0)
+		$sql = "SELECT Id 
+			FROM gickp_Journees 
+			WHERE Code_competition IN ($listParams) 
+			AND Code_saison = $saison ";
+		if ($row = $myBdd->pdo->query($sql)->fetch())
 			die ("Il reste des journées dans cette compétition ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
 		
 		// Suppression	
-		$sql  = "Delete From gickp_Competitions Where Code_saison = '";
-		$sql .= utyGetSaison();
-		$sql .= "' And Code In ('";
+		$sql  = "DELETE FROM gickp_Competitions 
+			WHERE Code IN ($listParams) 
+			AND Code_saison = $saison ";
+		$myBdd->pdo->exec($sql);
 
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			if ($i > 0)
-				$sql .= "','";
-			
-			$sql .= $arrayParam[$i];
-			
-			$myBdd->utyJournal('Suppression Compet', utyGetSaison(), $arrayParam[$i]);
-		}
-		$sql .= "')";
-	
-		$myBdd->Query($sql);
+		$myBdd->utyJournal('Suppression Compet', $myBdd->GetActiveSaison(), $arrayParam[$i]);
 
 	}
 	
@@ -452,12 +366,12 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['sponsorLink'] = '';
 			$_SESSION['toutGroup'] = '';
 			$_SESSION['touteSaisons'] = '';
-			$_SESSION['en_actif'] = '';
-			$_SESSION['titre_actif'] = 'O';
-			$_SESSION['bandeau_actif'] = '';
-			$_SESSION['logo_actif'] = '';
-			$_SESSION['sponsor_actif'] = '';
-			$_SESSION['kpi_ffck_actif'] = 'O';
+			$_SESSION['check_en'] = 'O';
+			$_SESSION['check_titre'] = 'O';
+			$_SESSION['check_bandeau'] = 'O';
+			$_SESSION['check_logo'] = 'O';
+			$_SESSION['check_sponsor'] = 'O';
+			$_SESSION['check_kpi_ffck'] = 'O';
 			$_SESSION['codeRef'] = '';
 			$_SESSION['groupOrder'] = '';
 			$_SESSION['codeTypeClt'] = '';
@@ -472,25 +386,23 @@ class GestionCompetition extends MyPageSecure
 
 	function ParamCompet()
 	{
+		$myBdd = new MyBdd();
+		$saison = $myBdd->GetActiveSaison();
+
 		$codeCompet = utyGetPost('ParamCmd', -1);
 		$_SESSION['codeCompet'] = $codeCompet;
-		
-		$myBdd = new MyBdd();
 
-		$sql  = "Select Code_niveau, Libelle, Soustitre, Soustitre2, Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif, Sponsor_actif, Kpi_ffck_actif, ";
-		$sql .= "Code_ref, GroupOrder, Code_typeclt, Code_tour, Qualifies, Elimines, Points, Statut, commentairesCompet, Publication ";
-		$sql .= "From gickp_Competitions ";
-		$sql .= "Where Code_saison = '";
-		$sql .= utyGetSaison();
-		$sql .= "' And Code = '";
-		$sql .= $codeCompet;
-		$sql .= "' ";
-		$result = $myBdd->Query($sql);
+		$sql  = "SELECT Code_niveau, Libelle, Soustitre, Soustitre2, Web, BandeauLink, LogoLink, 
+			SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
+			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, Code_tour, Qualifies, 
+			Elimines, Points, Statut, commentairesCompet, Publication 
+			FROM gickp_Competitions 
+			WHERE Code_saison = $saison 
+			AND Code = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($codeCompet));
 	
-		if ($myBdd->NumRows($result) == 1)
-		{
-			$row = $myBdd->FetchArray($result);
-			
+		if ($row = $result->fetch()) {
 			$_SESSION['editCompet'] = 1;
 			$_SESSION['codeCompet'] = $codeCompet;
 			$_SESSION['niveauCompet'] = $row['Code_niveau'];
@@ -502,13 +414,13 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['logoLink'] = $row['LogoLink'];
 			$_SESSION['sponsorLink'] = $row['SponsorLink'];
 			$_SESSION['toutGroup'] = '';
-			$_SESSION['en_actif'] = $row['En_actif'];
+			$_SESSION['check_en'] = $row['En_actif'];
 			$_SESSION['touteSaisons'] = '';
-			$_SESSION['titre_actif'] = $row['Titre_actif'];
-			$_SESSION['bandeau_actif'] = $row['Bandeau_actif'];
-			$_SESSION['logo_actif'] = $row['Logo_actif'];
-			$_SESSION['sponsor_actif'] = $row['Sponsor_actif'];
-			$_SESSION['kpi_ffck_actif'] = $row['Kpi_ffck_actif'];
+			$_SESSION['check_titre'] = $row['Titre_actif'];
+			$_SESSION['check_bandeau'] = $row['Bandeau_actif'];
+			$_SESSION['check_logo'] = $row['Logo_actif'];
+			$_SESSION['check_sponsor'] = $row['Sponsor_actif'];
+			$_SESSION['check_kpi_ffck'] = $row['Kpi_ffck_actif'];
 			$_SESSION['codeRef'] = $row['Code_ref'];
 			$_SESSION['groupOrder'] = $row['GroupOrder'];
 			$_SESSION['codeTypeClt'] = $row['Code_typeclt'];
@@ -524,105 +436,46 @@ class GestionCompetition extends MyPageSecure
 
 	function UpdateCompet()
 	{
-		$myBdd = new MyBdd();
+        $myBdd = new MyBdd();
+		$saison = $myBdd->GetActiveSaison();
+		$codeCompet = utyGetPost('codeCompet');
 
-        $saison = utyGetSaison();
-        $codeCompet = $myBdd->RealEscapeString(utyGetPost('codeCompet'));
-		$labelCompet = $myBdd->RealEscapeString(utyGetPost('labelCompet'));
-		$soustitre = $myBdd->RealEscapeString(utyGetPost('soustitre'));
-		$soustitre2 = $myBdd->RealEscapeString(utyGetPost('soustitre2'));
-		$web = $myBdd->RealEscapeString(utyGetPost('web'));
-		$bandeauLink = $myBdd->RealEscapeString(utyGetPost('bandeauLink'));
-		if($bandeauLink2 = $myBdd->captureImg($bandeauLink, 'B', $codeCompet, $saison)) {
+		$bandeauLink = utyGetPost('bandeauLink');
+		if($bandeauLink2 = captureImg($bandeauLink, 'B', $codeCompet, $saison)) {
             $bandeauLink = $bandeauLink2;
         }		
-        $logoLink = $myBdd->RealEscapeString(utyGetPost('logoLink'));
-		if($logoLink2 = $myBdd->captureImg($logoLink, 'L', $codeCompet, $saison)) {
+        $logoLink = utyGetPost('logoLink');
+		if($logoLink2 = captureImg($logoLink, 'L', $codeCompet, $saison)) {
             $logoLink = $logoLink2;
         }
-		$sponsorLink = $myBdd->RealEscapeString(utyGetPost('sponsorLink'));
-		if($sponsorLink2 = $myBdd->captureImg($sponsorLink, 'S', $codeCompet, $saison)) {
+		$sponsorLink = utyGetPost('sponsorLink');
+		if($sponsorLink2 = captureImg($sponsorLink, 'S', $codeCompet, $saison)) {
             $sponsorLink = $sponsorLink2;
         }		
-		$toutGroup = '';
-		$touteSaisons = '';
-		$en_actif = utyGetPost('en_actif');
-		$titre_actif = utyGetPost('titre_actif');
-		$bandeau_actif = utyGetPost('bandeau_actif');
-		$logo_actif = utyGetPost('logo_actif');
-		$sponsor_actif = utyGetPost('sponsor_actif');
-		$kpi_ffck_actif = utyGetPost('kpi_ffck_actif');
-		$niveauCompet = utyGetPost('niveauCompet');
-		$codeRef = $myBdd->RealEscapeString(utyGetPost('codeRef'));
-		$groupOrder = utyGetPost('groupOrder');
-		$codeTypeClt = utyGetPost('codeTypeClt');
-		$codeTour = utyGetPost('etape');
-		$qualifies = utyGetPost('qualifies');
-		$elimines = utyGetPost('elimines');
-		$points = utyGetPost('points');
-		$statut = utyGetPost('statut');
-		$commentairesCompet = $myBdd->RealEscapeString(utyGetPost('commentairesCompet'));
-		$publierCompet = utyGetPost('publierCompet');
-		
-		$sql  = "Update gickp_Competitions set Libelle = '";
-		$sql .= $labelCompet;
-		$sql .= "', Soustitre = '";
-		$sql .= $soustitre;
-		$sql .= "', Soustitre2 = '";
-		$sql .= $soustitre2;
-		$sql .= "', Web = '";
-		$sql .= $web;
-		$sql .= "', BandeauLink = '";
-		$sql .= $bandeauLink;
-		$sql .= "', LogoLink = '";
-		$sql .= $logoLink;
-		$sql .= "', SponsorLink = '";
-		$sql .= $sponsorLink;
-		$sql .= "', ToutGroup = '";
-		$sql .= $toutGroup;
-		$sql .= "', TouteSaisons = '";
-		$sql .= $touteSaisons;
-		$sql .= "', En_actif = '";
-		$sql .= $en_actif;
-		$sql .= "', Titre_actif = '";
-		$sql .= $titre_actif;
-		$sql .= "', Bandeau_actif = '";
-		$sql .= $bandeau_actif;
-		$sql .= "', Logo_actif = '";
-		$sql .= $logo_actif;
-		$sql .= "', Sponsor_actif = '";
-		$sql .= $sponsor_actif;
-		$sql .= "', Kpi_ffck_actif = '";
-		$sql .= $kpi_ffck_actif;
-		$sql .= "', Code_niveau = '";
-		$sql .= $niveauCompet;
-		$sql .= "', Code_ref = '";
-		$sql .= $codeRef;
-		$sql .= "', GroupOrder = '";
-		$sql .= $groupOrder;
-		$sql .= "', Code_typeclt = '";
-		$sql .= $codeTypeClt;
-		$sql .= "', Code_tour = '";
-		$sql .= $codeTour;
-		$sql .= "', Qualifies = '";
-		$sql .= $qualifies;
-		$sql .= "', Elimines = '";
-		$sql .= $elimines;
-		$sql .= "', Points = '";
-		$sql .= $points;
-		$sql .= "', Statut = '";
-		$sql .= $statut;
-		$sql .= "', commentairesCompet = '";
-		$sql .= $commentairesCompet;
-		$sql .= "', Publication = '";
-		$sql .= $publierCompet;
-		$sql .= "' ";
-		$sql .= "Where Code_saison = '";
-		$sql .= $saison;
-		$sql .= "' And Code = '";
-		$sql .= $codeCompet;
-		$sql .= "' ";
-		$result = $myBdd->Query($sql);
+		$codeRef = utyGetPost('codeRef');
+		if ($codeRef == '') {
+            $codeRef = 'AUTRES';
+        }
+
+		$sql  = "UPDATE gickp_Competitions 
+			SET Code_niveau = ?, Libelle = ?, Soustitre = ?, 
+			Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?, 
+			En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?, 
+			Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?, 
+			Code_typeclt = ?, Code_tour = ?, Qualifies = ?, Elimines = ?, 
+			Points = ?, Statut = ?, Publication = ?, commentairesCompet = ?
+			WHERE Code = ? 
+			AND Code_saison = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'), 
+			utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '', 
+			utyGetPost('check_en'), utyGetPost('check_titre'), utyGetPost('check_bandeau'), utyGetPost('check_logo'), 
+			utyGetPost('check_sponsor'), utyGetPost('check_kpi_ffck'), $codeRef, utyGetPost('groupOrder'),
+			utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
+			utyGetPost('points'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
+			$codeCompet, $saison 
+		));
         
 		$this->RazCompet();
 		$myBdd->utyJournal('Modif Competition', $saison, $codeCompet);
@@ -634,21 +487,21 @@ class GestionCompetition extends MyPageSecure
 		$Verrou = utyGetPost('Verrou');
 		($Verrou == 'O') ? $Verrou = '' : $Verrou = 'O';
 
+		
 		if (strlen($verrouCompet) > 0)
 		{
 			$myBdd = new MyBdd();
+			$saison = $myBdd->GetActiveSaison();
 
-			$sql  = "Update gickp_Competitions Set Verrou = '";
-			$sql .= $Verrou;
-			$sql .= "' Where Code_saison = '";
-			$sql .= utyGetSaison();
-			$sql .= "' And Code = '";
-			$sql .= $verrouCompet;
-			$sql .= "' ";
-			$myBdd->Query($sql);
+			$sql  = "UPDATE gickp_Competitions 
+				SET Verrou = ?
+				WHERE Code_saison = ?
+				AND Code = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($Verrou, $saison, $verrouCompet));
 		}
 		
-		$myBdd->utyJournal('Verrou Compet', utyGetSaison(), $verrouCompet);
+		$myBdd->utyJournal('Verrou Compet', $myBdd->GetActiveSaison(), $verrouCompet);
 	}
 
 	function SetSessionSaison()
@@ -668,11 +521,16 @@ class GestionCompetition extends MyPageSecure
 
 		$myBdd = new MyBdd();
 
-		$sql  = "Update gickp_Saison Set Etat = 'I' Where Etat = 'A' ";
-		$myBdd->Query($sql);
+		$sql  = "UPDATE gickp_Saison 
+			SET Etat = 'I' 
+			WHERE Etat = 'A' ";
+		$myBdd->pdo->exec($sql);
 
-		$sql = "Update gickp_Saison Set Etat = 'A' Where Code = '".$codeSaison."' ";
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Saison 
+			SET Etat = 'A' 
+			WHERE Code = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeSaison));
 		
 		$myBdd->utyJournal('Change Saison Active', $codeSaison);
 	}
@@ -690,36 +548,44 @@ class GestionCompetition extends MyPageSecure
 
 		$myBdd = new MyBdd();
 
-		$sql  = "INSERT INTO gickp_Saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin) VALUES (";
-		$sql .= "'".$newSaison."', ";
-		$sql .= "'I', ";
-		$sql .= "'".$newSaisonDN."', ";
-		$sql .= "'".$newSaisonFN."', ";
-		$sql .= "'".$newSaisonDI."', ";
-		$sql .= "'".$newSaisonFI."') ";
-		$myBdd->Query($sql);
+		$sql  = "INSERT INTO gickp_Saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin) 
+			VALUES (?, ?, ?, ?, ?, ?) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			$newSaison, 'I', $newSaisonDN, $newSaisonFN, $newSaisonDI, $newSaisonFI
+		));
 		
 		$myBdd->utyJournal('Ajout Saison', $newSaison);
 	}
 	
 	function PubliCompet()
 	{
+		$myBdd = new MyBdd();
+
 		$idCompet = utyGetPost('ParamCmd', 0);
+		$saison = $myBdd->GetActiveSaison();
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
-		$sql = "Update gickp_Competitions Set Publication = '$changePub' Where Code = '$idCompet' And Code_saison = '".utyGetSaison()."' ";
-		$myBdd = new MyBdd();
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions 
+			SET Publication = :changePub 
+			WHERE Code = :idCompet 
+			AND Code_saison = :saison ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			':changePub' => $changePub,
+			':idCompet' => $idCompet,
+			':saison' => $saison
+		));
 		
-		$myBdd->utyJournal('Publication competition', utyGetSaison(), $idCompet, 'NULL', 'NULL', 'NULL', $changePub);
+		$myBdd->utyJournal('Publication competition', $saison, $idCompet, 'NULL', 'NULL', 'NULL', $changePub);
 	}
 
 	function UploadLogo()
 	{
+		$myBdd = new MyBdd();
 		if(empty($_FILES['logo1']['tmp_name']))
 			$texte = " Pas de fichier reçu - erreur ".$_FILES['logo1']['error'];
-		$myBdd = new MyBdd();
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetSession('codeCompet');
 		$dossier = '/home/users2-new/p/poloweb/www/agil/img/logo/';
 		$fichier = $codeSaison.'-'.$codeCompet.'.jpg';
@@ -733,29 +599,26 @@ class GestionCompetition extends MyPageSecure
 		{
 			 $erreur .= 'Vous devez uploader un fichier de type png, gif, jpg, jpeg, txt ou doc...';
 		}
-		if($taille>$taille_maxi)
-		{
+		if($taille>$taille_maxi) {
 			$erreur .= 'Le fichier est trop gros...';
 		}
-		if(!isset($erreur)) //S'il n'y a pas d'erreur, on upload
-		{
-			if(move_uploaded_file($_FILES['logo1']['tmp_name'], $dossier . $fichier)) //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
-			{
+		if(!isset($erreur)) { //S'il n'y a pas d'erreur, on upload
+			//Si la fonction renvoie TRUE, c'est que ça a fonctionné...
+			if(move_uploaded_file($_FILES['logo1']['tmp_name'], $dossier . $fichier)) {
 				$erreur .= 'Upload effectué avec succès !';
 				$logo = "../img/logo/".$fichier;
-				$sql = "Update gickp_Competitions Set LogoLink = '$logo' Where Code = '$codeCompet' And Code_saison = '$codeSaison' ";
-				//$myBdd = new MyBdd();
-				$myBdd->Query($sql);
-				$myBdd->utyJournal('Insertion Logo', utyGetSaison(), $codeCompet, 'NULL', 'NULL', 'NULL', '');
-			}
-			else //Sinon (la fonction renvoie FALSE).
-			{
+				$sql = "UPDATE gickp_Competitions 
+					SET LogoLink = ? 
+					WHERE Code = ? 
+					AND Code_saison = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($logo, $codeCompet, $codeSaison));
+				$myBdd->utyJournal('Insertion Logo', $myBdd->GetActiveSaison(), $codeCompet, 'NULL', 'NULL', 'NULL', '');
+			} else { //Sinon (la fonction renvoie FALSE).
 				$erreur .= "Echec de l\'upload ! ".$texte;
 			}
-		}
-		else
-		{
-			 echo $erreur;
+		} else {
+			echo $erreur;
 		}		
 		return($erreur);
 	}
@@ -763,13 +626,13 @@ class GestionCompetition extends MyPageSecure
 	function DropLogo()
 	{
 		$myBdd = new MyBdd();
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetSession('codeCompet');
 		$dossier = '/home/users2-new/p/poloweb/www/agil/img/logo/';
 		$fichier = $codeSaison.'-'.$codeCompet.'.jpg';
 		$fichier2 = 'ex-'.$codeSaison.'-'.$codeCompet.'.jpg';
 		rename($dossier.$fichier, $dossier.$fichier2);
-		$myBdd->utyJournal('Suppression Logo', utyGetSaison(), $codeCompet, 'NULL', 'NULL', 'NULL', '');
+		$myBdd->utyJournal('Suppression Logo', $myBdd->GetActiveSaison(), $codeCompet, 'NULL', 'NULL', 'NULL', '');
 		return('Logo supprimé');
 	}
 
@@ -779,126 +642,134 @@ class GestionCompetition extends MyPageSecure
 		$numFusionSource = utyGetPost('numFusionSource', 0);
 		$numFusionCible = utyGetPost('numFusionCible', 0);
         // buts et cartons
-		$sql  = "UPDATE `gickp_Matchs_Detail` "
-                . "SET `Competiteur` = $numFusionCible "
-                . "WHERE `Competiteur` = $numFusionSource; ";
-		$myBdd->Query($sql);
-		$requete = $sql;
+		$sql  = "UPDATE gickp_Matchs_Detail 
+			SET Competiteur = ? 
+			WHERE Competiteur = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionCible, $numFusionSource));
+
         // compos matchs
-		$sql  = "UPDATE `gickp_Matchs_Joueurs` "
-                . "SET `Matric` = $numFusionCible "
-                . "WHERE `Matric` = $numFusionSource; ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
-        // feuilles de présence
-		$sql  = "UPDATE `gickp_Competitions_Equipes_Joueurs` "
-                . "SET `Matric` = $numFusionCible "
-                . "WHERE `Matric` = $numFusionSource; ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
-        // arbitre principal
-		$sql  = "UPDATE `gickp_Matchs` "
-                . "SET `Matric_arbitre_principal` = $numFusionCible "
-                . "WHERE `Matric_arbitre_principal` = $numFusionSource; ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
+		$sql  = "UPDATE gickp_Matchs_Joueurs 
+			SET Matric = ? 
+			WHERE Matric = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionCible, $numFusionSource));
+
+		// feuilles de présence
+		$sql  = "UPDATE gickp_Competitions_Equipes_Joueurs 
+			SET Matric = ? 
+			WHERE Matric = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionCible, $numFusionSource));
+
+		// arbitre principal
+		$sql  = "UPDATE gickp_Matchs 
+			SET Matric_arbitre_principal = ? 
+			WHERE Matric_arbitre_principal = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionCible, $numFusionSource));
+
         // arbitre secondaire
-		$sql  = "UPDATE `gickp_Matchs` "
-                . "SET `Matric_arbitre_secondaire` = $numFusionCible "
-                . "WHERE `Matric_arbitre_secondaire` = $numFusionSource; ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
-        
+		$sql  = "UPDATE gickp_Matchs 
+			SET Matric_arbitre_secondaire = ? 
+			WHERE Matric_arbitre_secondaire = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionCible, $numFusionSource));
+
         // Secretaire
-		$sql  = "UPDATE `gickp_Matchs` "
-                . "SET Secretaire = REPLACE(Secretaire, CONCAT('(', $numFusionSource, ')'), CONCAT('(', $numFusionCible, ')')) "
-                . "WHERE Secretaire LIKE CONCAT('%(', $numFusionSource, ')%') ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
-        
+		$sql  = "UPDATE gickp_Matchs 
+			SET Secretaire = REPLACE(Secretaire, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
+			WHERE Secretaire LIKE CONCAT('%(', :source, ')%') ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
+
         // Chronometre
-		$sql  = "UPDATE `gickp_Matchs` "
-                . "SET Chronometre = REPLACE(Chronometre, CONCAT('(', $numFusionSource, ')'), CONCAT('(', $numFusionCible, ')')) "
-                . "WHERE Chronometre LIKE CONCAT('%(', $numFusionSource, ')%') ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
+		$sql  = "UPDATE gickp_Matchs 
+			SET Chronometre = REPLACE(Chronometre, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
+			WHERE Chronometre LIKE CONCAT('%(', :source, ')%') ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
         
         // Timeshoot
-		$sql  = "UPDATE `gickp_Matchs` "
-                . "SET Timeshoot = REPLACE(Timeshoot, CONCAT('(', $numFusionSource, ')'), CONCAT('(', $numFusionCible, ')')) "
-                . "WHERE Timeshoot LIKE CONCAT('%(', $numFusionSource, ')%') ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
+		$sql  = "UPDATE gickp_Matchs 
+			SET Timeshoot = REPLACE(Timeshoot, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
+			WHERE Timeshoot LIKE CONCAT('%(', :source, ')%') ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
         
         // Ligne1
-		$sql  = "UPDATE `gickp_Matchs` "
-                . "SET Ligne1 = REPLACE(Ligne1, CONCAT('(', $numFusionSource, ')'), CONCAT('(', $numFusionCible, ')')) "
-                . "WHERE Ligne1 LIKE CONCAT('%(', $numFusionSource, ')%') ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
+		$sql  = "UPDATE gickp_Matchs 
+			SET Ligne1 = REPLACE(Ligne1, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
+			WHERE Ligne1 LIKE CONCAT('%(', :source, ')%') ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
         
         // Ligne2
-		$sql  = "UPDATE `gickp_Matchs` "
-                . "SET Ligne2 = REPLACE(Ligne2, CONCAT('(', $numFusionSource, ')'), CONCAT('(', $numFusionCible, ')')) "
-                . "WHERE Ligne2 LIKE CONCAT('%(', $numFusionSource, ')%') ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
+		$sql  = "UPDATE gickp_Matchs 
+			SET Ligne2 = REPLACE(Ligne2, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
+			WHERE Ligne2 LIKE CONCAT('%(', :source, ')%') ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
         
         // suppression
-		$sql  = "DELETE FROM `gickp_Liste_Coureur` ";
-		$sql .= "WHERE `Matric` = $numFusionSource; ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
-		$myBdd->utyJournal('Fusion Joueurs', utyGetSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numFusionSource.' => '.$numFusionCible);
+		$sql  = "DELETE FROM gickp_Liste_Coureur 
+			WHERE Matric = ?; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionSource));
 
-        return('Joueurs fusionnés : '.$requete);
+		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numFusionSource.' => '.$numFusionCible);
+
+        return('Joueurs fusionnés');
 	}
 
     function FusionEquipes() {
         $myBdd = new MyBdd();
 		$numFusionEquipeSource = utyGetPost('numFusionEquipeSource', 0);
 		$numFusionEquipeCible = utyGetPost('numFusionEquipeCible', 0);
-        $FusionEquipeSource= $myBdd->RealEscapeString(utyGetPost('FusionEquipeSource', ''));
-        $FusionEquipeCible = $myBdd->RealEscapeString(utyGetPost('FusionEquipeCible', ''));
+        $FusionEquipeSource= utyGetPost('FusionEquipeSource', '');
+        $FusionEquipeCible = utyGetPost('FusionEquipeCible', '');
 		if ($numFusionEquipeSource == 0 or $numFusionEquipeCible == 0 or $FusionEquipeSource == '' or $FusionEquipeCible == '') {
             return;
         }
-		$sql  = "UPDATE `gickp_Competitions_Equipes` ";
-		$sql .= "SET `Numero` = $numFusionEquipeCible, ";
-		$sql .= "`Libelle` = '".$FusionEquipeCible."' ";
-		$sql .= "WHERE `Numero` = $numFusionEquipeSource; ";
-		$myBdd->Query($sql);
-        
-        $sql  = "DELETE FROM `gickp_Equipe` ";
-		$sql .= "WHERE `Numero` = $numFusionEquipeSource; ";
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions_Equipes 
+			SET `Numero` = ?, 
+			Libelle = ?  
+			WHERE Numero = ?; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionEquipeCible, $FusionEquipeCible, $numFusionEquipeSource));
 
-		$myBdd->utyJournal('Fusion Equipes', utyGetSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $FusionEquipeSource.' => '.$FusionEquipeCible);
+        
+		$sql = "DELETE FROM gickp_Equipe 
+			WHERE Numero = ?; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numFusionEquipeSource));
+
+		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $FusionEquipeSource.' => '.$FusionEquipeCible);
 		return;
     }
 
     function DeplaceEquipe() {
         $myBdd = new MyBdd();
-		$numDeplaceEquipeSource = $myBdd->RealEscapeString(utyGetPost('numDeplaceEquipeSource', 0));
-		$numDeplaceEquipeCible = $myBdd->RealEscapeString(utyGetPost('numDeplaceEquipeCible', 0));
-//        $DeplaceEquipeSource= $myBdd->RealEscapeString(utyGetPost('DeplaceEquipeSource', ''));
-//        $DeplaceEquipeCible = $myBdd->RealEscapeString(utyGetPost('DeplaceEquipeCible', ''));
+		$numDeplaceEquipeSource = utyGetPost('numDeplaceEquipeSource', 0);
+		$numDeplaceEquipeCible = utyGetPost('numDeplaceEquipeCible', 0);
 		if ($numDeplaceEquipeSource === 0) {
             return "Equipe source vide : $numDeplaceEquipeSource";
         } elseif ($numDeplaceEquipeCible === 0) {
             return "Club cible vide : $numDeplaceEquipeCible";
         }
-		$sql  = "UPDATE `gickp_Competitions_Equipes` "
-                . "SET Code_club = '" . $numDeplaceEquipeCible . "' "
-                . "WHERE `Numero` = $numDeplaceEquipeSource; ";
-		$myBdd->Query($sql);
-
-        $sql  = "UPDATE `gickp_Equipe` "
-                . "SET Code_club = '" . $numDeplaceEquipeCible . "' "
-                . "WHERE `Numero` = $numDeplaceEquipeSource; ";
-		$myBdd->Query($sql);
-
-		$myBdd->utyJournal('Déplacement Equipe', utyGetSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numDeplaceEquipeSource.' => '.$numDeplaceEquipeCible);
+		$sql  = "UPDATE gickp_Competitions_Equipes 
+			SET Code_club = ?  
+			WHERE Numero = ?; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+				
+		$sql  = "UPDATE gickp_Equipe 
+			SET Code_club = ?  
+			WHERE Numero = ?; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+		
+		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numDeplaceEquipeSource.' => '.$numDeplaceEquipeCible);
 		return $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible;
     }
     
@@ -908,20 +779,21 @@ class GestionCompetition extends MyPageSecure
 		$numRenomSource = utyGetPost('numRenomSource', 0);
 		$RenomSource = utyGetPost('RenomSource', 0);
 		$RenomCible = utyGetPost('RenomCible', 0);
-		$sql  = "UPDATE gickp_Equipe ";
-		$sql .= "SET Libelle = '".$RenomCible."' "; 
-		$sql .= "WHERE Numero = '".$numRenomSource."'; ";
-		$myBdd->Query($sql);
-		$requete = $sql;
 
-		$sql  = "UPDATE gickp_Competitions_Equipes ";
-		$sql .= "SET Libelle = '".$RenomCible."' "; 
-		$sql .= "WHERE Numero = '".$numRenomSource."'; ";
-		$myBdd->Query($sql);
-		$requete .= '   '.$sql;
+		$sql  = "UPDATE gickp_Equipe 
+			SET Libelle = ?  
+			WHERE Numero = ?; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($RenomCible, $numRenomSource));
+		
+		$sql  = "UPDATE gickp_Competitions_Equipes 
+			SET Libelle = ?  
+			WHERE Numero = ?; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($RenomCible, $numRenomSource));
 
-		$myBdd->utyJournal('Rename Equipe', utyGetSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $RenomSource.' => '.$RenomCible);
-		return('Joueurs fusionnés : '.$requete);
+		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $RenomSource.' => '.$RenomCible);
+		return('Joueurs fusionnés');
 	}
 
 	function ChangeAuthSaison()

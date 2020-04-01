@@ -12,7 +12,7 @@ class GestionDoc extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 		
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
         $codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
@@ -30,15 +30,14 @@ class GestionDoc extends MyPageSecure
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
 
 		// Chargement des Saisons ...
-		$sql  = "Select Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin ";
-		$sql .= "From gickp_Saison ";
-		$sql .= "Order By Code DESC ";	 
+		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
+			FROM gickp_Saison 
+			ORDER BY Code DESC ";	 
 		$arraySaison = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){ 
+        foreach ($myBdd->pdo->query($sql) as $row) { 
 			array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-										'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-										'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+				'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
+				'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
 		}
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
@@ -47,16 +46,16 @@ class GestionDoc extends MyPageSecure
 		// Chargement des Evenements ...
 		$idEvenement = utyGetSession('idEvenement', -1);
 		$idEvenement = utyGetPost('evenement', $idEvenement);
-		$sql  = "Select Id, Libelle, Date_debut, Publication ";
-		$sql .= "From gickp_Evenement ";
-		$sql .= "Order By Date_debut DESC, Libelle ";	 
+		$sql  = "SELECT Id, Libelle, Date_debut, Publication 
+			FROM gickp_Evenement 
+			ORDER BY Date_debut DESC, Libelle ";	 
 		$arrayEvenement = array();
-        $result = $myBdd->Query($sql);
+        // $result = $myBdd->Query($sql);
 		if (-1 == $idEvenement)
-		array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => 'SELECTED' ) );
+			array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => 'SELECTED' ) );
 		else
-		array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => '' ) );
-		while ($row = $myBdd->FetchArray($result)){ 
+			array_push($arrayEvenement, array( 'Id' => -1, 'Libelle' => 'Sélectionnez l\'événement', 'Selection' => '' ) );
+		foreach ($myBdd->pdo->query($sql) as $row) { 
 			if ($row["Id"] == $idEvenement)
 				array_push($arrayEvenement, array( 'Id' => $row['Id'], 'Libelle' => $row['Id'].' - '.$row['Libelle'], 'Selection' => 'SELECTED' ) );
 			else
@@ -65,31 +64,29 @@ class GestionDoc extends MyPageSecure
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 
 		// Chargement des Compétitions ...
-		$sql  = "Select c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, c.Titre_actif, "
-                . "g.section, g.ordre "
-                . "From gickp_Competitions c, gickp_Competitions_Groupes g "
-                . "Where c.Code_saison = '"
-                . $codeSaison
-                . "' "
-                . utyGetFiltreCompetition('c.')
-                . " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+		$sql  = "SELECT c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, 
+			c.Soustitre, c.Soustitre2, c.Titre_actif, g.section, g.ordre 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_saison = $codeSaison "
+			. utyGetFiltreCompetition('c.') . "
+			AND c.Code_niveau LIKE '".utyGetSession('AfficheNiveau')."%' ";
 		if ($AfficheCompet == 'N') {
-            $sql .= " And c.Code Like 'N%' ";
+            $sql .= " AND c.Code LIKE 'N%' ";
         } elseif ($AfficheCompet == 'CF') {
-            $sql .= " And c.Code Like 'CF%' ";
+            $sql .= " AND c.Code LIKE 'CF%' ";
         } elseif ($AfficheCompet == 'M') {
-            $sql .= " And c.Code_ref = 'M' ";
+            $sql .= " AND c.Code_ref = 'M' ";
         } elseif($AfficheCompet > 0) {
-            $sql .= " And g.section = '" . $AfficheCompet . "' ";
+            $sql .= " AND g.section = '" . $AfficheCompet . "' ";
         }
-        $sql .= " And c.Code_ref = g.Groupe ";
-		$sql .= " Order By c.Code_saison, g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
-		$result = $myBdd->Query($sql);
+        $sql .= " AND c.Code_ref = g.Groupe ";
+		$sql .= " ORDER BY c.Code_saison, g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		// $result = $myBdd->Query($sql);
 		$arrayCompetition = array();
         $i = -1;
         $j = '';
         $label = $myBdd->getSections();
-		while ($row = $myBdd->FetchArray($result)) {
+		foreach ($myBdd->pdo->query($sql) as $row) { 
 			// Titre
 			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
                 $Libelle = $row["Soustitre"];
@@ -134,33 +131,32 @@ class GestionDoc extends MyPageSecure
 		$this->m_tpl->assign('detailsCompet', $detailsCompet);
 		
 		//Equipes
-		$sql  = "Select count(Id) nbEquipes ";
-		$sql .= "From gickp_Competitions_Equipes ";
-		$sql .= "Where Code_saison = '".$codeSaison."' ";
-		$sql .= "And Code_compet = '".$codeCompet."' "; 
-        $result = $myBdd->Query($sql);
-        $row = $myBdd->FetchArray($result);
-		$num_results = $myBdd->NumRows($result);
+		$sql = "SELECT COUNT(Id) nbEquipes 
+			FROM gickp_Competitions_Equipes 
+			WHERE Code_saison = $codeSaison 
+			AND Code_compet = '".$codeCompet."' "; 
 		$nbEquipes = 'X';
-		if($num_results == 1)
-		{
-			$row = $myBdd->FetchArray($result);
+		if ($row = $myBdd->pdo->query($sql)->fetch()) {
 			$nbEquipes = $row['nbEquipes'];
 		}
 		$this->m_tpl->assign('nbEquipes', $nbEquipes);
 		
 		//Journees/Phases
-		$sql  = "Select j.* ";
-		$sql .= "From gickp_Journees j ";
-		$sql .= "Where j.Code_saison = '".$codeSaison."' ";
-		$sql .= "And j.Code_competition = '".$codeCompet."' "; 
-		$sql .= "Order By j.Niveau, j.Phase, j.Date_debut, j.Lieu ";
-        $result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
+		$sql = "SELECT j.* 
+			FROM gickp_Journees j 
+			WHERE j.Code_saison = :Code_saison 
+			AND j.Code_competition = :Code_competition 
+			ORDER BY j.Niveau, j.Phase, j.Date_debut, j.Lieu ";
 		$listJournees = '';
 		$nbJourneesPubli = 0;
+		$num_results = 0;
 		$arrayJournees = array();
-		while ($row = $myBdd->FetchArray($result)) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			':Code_competition' => $codeCompet,
+			':Code_saison' => $codeSaison
+		));
+		while ($row = $result->fetch()) {
 			if($row['Publication'] == 'O')
 				$nbJourneesPubli ++;
 			if($listJournees != '')
@@ -169,6 +165,7 @@ class GestionDoc extends MyPageSecure
 			$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
 			$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
 			array_push($arrayJournees, array( 'Niveau' => $row['Niveau'], 'Phase' => $row['Phase'], 'Date_debut' => $row['Date_debut'], 'Date_fin' => $row['Date_fin'], 'Lieu' => $row['Lieu'] ));
+			$num_results ++;
 		}
 		$this->m_tpl->assign('nbJournees', $num_results);
 		$this->m_tpl->assign('nbJourneesPubli', $nbJourneesPubli);
@@ -176,18 +173,22 @@ class GestionDoc extends MyPageSecure
 		$this->m_tpl->assign('arrayJournees', $arrayJournees);
 
 		//Matchs
-		$sql  = "Select m.Id, m.Numero_ordre, m.Validation, m.Publication ";
-		$sql .= "From gickp_Journees j, gickp_Matchs m ";
-		$sql .= "Where j.Code_saison = '".$codeSaison."' ";
-		$sql .= "And j.Code_competition = '".$codeCompet."' "; 
-		$sql .= "And j.Id = m.Id_journee ";
-		$sql .= "Order By m.Numero_ordre ";
-        $result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
+		$sql = "SELECT m.Id, m.Numero_ordre, m.Validation, m.Publication 
+			FROM gickp_Journees j, gickp_Matchs m 
+			WHERE j.Code_saison = '".$codeSaison."' 
+			AND j.Code_competition = '".$codeCompet."' 
+			AND j.Id = m.Id_journee 
+			ORDER BY m.Numero_ordre ";
+		$num_results = 0;
 		$listMatchs = '';
 		$nbMatchsValid = 0;
 		$nbMatchsPubli = 0;
-		while ($row = $myBdd->FetchArray($result)) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			':Code_competition' => $codeCompet,
+			':Code_saison' => $codeSaison
+		));
+		while ($row = $result->fetch()) {
 			if($row['Publication'] == 'O')
 				$nbMatchsPubli ++;
 			if($row['Validation'] == 'O')
@@ -195,6 +196,7 @@ class GestionDoc extends MyPageSecure
 			if($listMatchs != '')
 				$listMatchs .= ',';
 			$listMatchs .= $row['Id'];
+			$num_results ++;
 		}
 		$this->m_tpl->assign('nbMatchs', $num_results);
 		$this->m_tpl->assign('nbMatchsValid', $nbMatchsValid);

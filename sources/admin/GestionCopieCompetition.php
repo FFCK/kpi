@@ -12,7 +12,7 @@ class GestionCopieCompetition extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 		
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetSession('codeCompet');
 		
 		$saisonOrigine = utyGetSession('saisonOrigine',$codeSaison);
@@ -201,7 +201,7 @@ class GestionCopieCompetition extends MyPageSecure
 	{
 		$myBdd = new MyBdd();
 	
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetSession('codeCompet');
 		$saisonOrigine = utyGetSession('saisonOrigine', $codeSaison);
 		$competOrigine = utyGetSession('competOrigine', $codeCompet);
@@ -254,7 +254,7 @@ class GestionCopieCompetition extends MyPageSecure
 		$myBdd->Query($sql3);
 
 		while($row = $myBdd->FetchArray($result)) {
-			$nextIdJournee = $this->GetNextIdJournee();
+			$nextIdJournee = $myBdd->GetNextIdJournee();
 			
 			$sql1  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, Type, Date_debut, Date_fin, Nom, ";
 			$sql1 .= "Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue) ";
@@ -329,19 +329,6 @@ class GestionCopieCompetition extends MyPageSecure
 			exit;	
 		}
 	}
-	
-	function GetNextIdJournee()
-	{
-		$myBdd = new MyBdd();
-		$sql  = "Select max(Id) maxId From gickp_Journees Where Id < 19000001 ";
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result);	  
-			return ((int) $row['maxId']) + 1;
-		} else {
-			return 1;
-		}
-	}		
 	
 	function Cancel()
 	{
