@@ -10,6 +10,8 @@ class GestionEvenement extends MyPageSecure
 {	
 	function Load()
 	{
+		$myBdd = new MyBdd();
+
 		$idEvenement = (int) utyGetSession('idEvenement', -1);
 		
 		// Informations pour SelectionOuiNon ...
@@ -17,16 +19,14 @@ class GestionEvenement extends MyPageSecure
 		$_SESSION['whereOuiNon'] = "Where Id = ";
 
 		// Chargement des Evenements
-		$myBdd = new MyBdd();
 		$arrayEvenement = array();
 		
-		$sql  = "Select Id, Libelle, Lieu, Date_debut, Date_fin, Publication ";
-		$sql .= "From gickp_Evenement ";
-		$sql .= "Order By Date_debut Desc, Libelle Desc ";	 
+		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication 
+			FROM gickp_Evenement 
+			ORDER BY Date_debut DESC, Libelle DESC ";	 
 	
 		$arrayEvenement = array();
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		foreach ($myBdd->pdo->query($sql) as $row) {
 			$StdOrSelected = 'Std';
 			if ($idEvenement == $row['Id'])
 				$StdOrSelected = 'Selected';
@@ -64,16 +64,10 @@ class GestionEvenement extends MyPageSecure
 
 		$myBdd = new MyBdd();
 
-		$sql  = "Insert Into gickp_Evenement (Libelle, Lieu, Date_debut, Date_fin) Values ('";
-		$sql .= $myBdd->RealEscapeString($libelle);
-		$sql .= "','";
-		$sql .= $myBdd->RealEscapeString($lieu);
-		$sql .= "','";
-		$sql .= utyDateFrToUs($datedebut);
-		$sql .= "','";
-		$sql .=  utyDateFrToUs($datefin);
-		$sql .= "')";
-		$myBdd->Query($sql);
+		$sql  = "INSERT INTO gickp_Evenement (Libelle, Lieu, Date_debut, Date_fin) 
+			VALUES (?,?,?,?) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($libelle, $lieu, utyDateFrToUs($datedebut), utyDateFrToUs($datefin)));
 		
 		$myBdd->utyJournal('Ajout Evenement', '', '', 'NULL', 'NULL', 'NULL', $libelle);
 	}
@@ -84,19 +78,11 @@ class GestionEvenement extends MyPageSecure
 		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
-			
-		$sql  = "Delete From gickp_Evenement Where Id In (";
-		for ($i=0; $i<count($arrayParam); $i++)
-		{
-			if ($i > 0)
-				$sql .= ",";
-			
-			$sql .= $arrayParam[$i];
-		}
-		$sql .= ")";
-	
+		
 		$myBdd = new MyBdd();
-		$myBdd->Query($sql);
+		$sql  = "DELETE FROM gickp_Evenement 
+			WHERE Id IN ($ParamCmd) ";
+		$myBdd->pdo->query($sql);
 		
 		$myBdd->utyJournal('Suppression Evenements', '', '', $ParamCmd);
 	}
@@ -106,9 +92,12 @@ class GestionEvenement extends MyPageSecure
 		$idEvt = (int) utyGetPost('ParamCmd', -1);
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
-		$sql = "Update gickp_Evenement Set Publication = '$changePub' Where Id = '$idEvt' ";
 		$myBdd = new MyBdd();
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Evenement 
+			SET Publication = ? 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($changePub, $idEvt));
 		
 		$myBdd->utyJournal('Publication evenement', utyGetSaison(), '', $idEvt, 'NULL', 'NULL', $changePub);
 	}
@@ -129,16 +118,12 @@ class GestionEvenement extends MyPageSecure
 		
 		$myBdd = new MyBdd();
 
-		$sql  = "Select Libelle, Lieu, Date_debut, Date_fin, Publication ";
-		$sql .= "From gickp_Evenement ";
-		$sql .= "Where Id = ";
-		$sql .= $idEvenement;
-		
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1)
-		{
-			$row = $myBdd->FetchArray($result);	  
-			
+		$sql  = "SELECT Libelle, Lieu, Date_debut, Date_fin, Publication 
+			FROM gickp_Evenement 
+			WHERE Id = ? ";		
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idEvenement));
+		if ($row = $result->fetch()) {
 			$_SESSION['idEvenement'] = $idEvenement;
 			$_SESSION['Libelle'] = $row['Libelle'];
 			$_SESSION['Lieu'] = $row['Lieu'];
@@ -157,19 +142,12 @@ class GestionEvenement extends MyPageSecure
 		
 		$myBdd = new MyBdd();
 
-		$sql  = "Update gickp_Evenement set Libelle = '";
-		$sql .= $myBdd->RealEscapeString($libelle);
-		$sql .= "', Lieu = '";
-		$sql .= $myBdd->RealEscapeString($lieu);
-		$sql .= "', Date_debut = '";
-		$sql .= utyDateFrToUs($datedebut);
-		$sql .= "', Date_fin = '";
-		$sql .=  utyDateFrToUs($datefin);
-		$sql .= "' ";
-		$sql .= "Where Id = ";
-		$sql .= $idEvenement;
-		
-		$myBdd->Query($sql);
+		$sql  = "UPDATE gickp_Evenement 
+			SET Libelle = ?, Lieu = ?, Date_debut = ?, Date_fin = ?
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($libelle, $lieu, utyDateFrToUs($datedebut), utyDateFrToUs($datefin), $idEvenement));
+
 		$this->RazEvt();
 		$myBdd->utyJournal('Modif Evenement', '', '', $idEvenement);
 	}
