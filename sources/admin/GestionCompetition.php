@@ -181,12 +181,12 @@ class GestionCompetition extends MyPageSecure
 		if(!isset($_SESSION['sponsorLink'])) $_SESSION['sponsorLink'] = '';
 		if(!isset($_SESSION['toutGroup'])) $_SESSION['toutGroup'] = '';
 		if(!isset($_SESSION['touteSaisons'])) $_SESSION['touteSaisons'] = '';
-		if(!isset($_SESSION['check_en'])) $_SESSION['check_en'] = 'O';
-		if(!isset($_SESSION['check_titre'])) $_SESSION['check_titre'] = 'O';
-		if(!isset($_SESSION['check_bandeau'])) $_SESSION['check_bandeau'] = 'O';
-		if(!isset($_SESSION['check_logo'])) $_SESSION['check_logo'] = 'O';
-		if(!isset($_SESSION['check_sponsor'])) $_SESSION['check_sponsor'] = 'O';
-		if(!isset($_SESSION['check_kpi_ffck'])) $_SESSION['check_kpi_ffck'] = 'O';
+		if(!isset($_SESSION['checken'])) $_SESSION['checken'] = 'O';
+		if(!isset($_SESSION['checktitre'])) $_SESSION['checktitre'] = 'O';
+		if(!isset($_SESSION['checkbandeau'])) $_SESSION['checkbandeau'] = 'O';
+		if(!isset($_SESSION['checklogo'])) $_SESSION['checklogo'] = 'O';
+		if(!isset($_SESSION['checksponsor'])) $_SESSION['checksponsor'] = 'O';
+		if(!isset($_SESSION['checkkpiffck'])) $_SESSION['checkkpiffck'] = 'O';
 		if(!isset($_SESSION['codeRef'])) $_SESSION['codeRef'] = 'AUTRES';
 		if(!isset($_SESSION['groupOrder'])) $_SESSION['groupOrder'] = '';
 		if(!isset($_SESSION['codeTypeClt'])) $_SESSION['codeTypeClt'] = '';
@@ -207,12 +207,12 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('sponsorLink', $_SESSION['sponsorLink']);
 		$this->m_tpl->assign('toutGroup', $_SESSION['toutGroup']);
 		$this->m_tpl->assign('touteSaisons', $_SESSION['touteSaisons']);
-		$this->m_tpl->assign('check_en', $_SESSION['check_en']);
-		$this->m_tpl->assign('check_titre', $_SESSION['check_titre']);
-		$this->m_tpl->assign('check_bandeau', $_SESSION['check_bandeau']);
-		$this->m_tpl->assign('check_logo', $_SESSION['check_logo']);
-		$this->m_tpl->assign('check_sponsor', $_SESSION['check_sponsor']);
-		$this->m_tpl->assign('check_kpi_ffck', $_SESSION['check_kpi_ffck']);
+		$this->m_tpl->assign('checken', $_SESSION['checken']);
+		$this->m_tpl->assign('checktitre', $_SESSION['checktitre']);
+		$this->m_tpl->assign('checkbandeau', $_SESSION['checkbandeau']);
+		$this->m_tpl->assign('checklogo', $_SESSION['checklogo']);
+		$this->m_tpl->assign('checksponsor', $_SESSION['checksponsor']);
+		$this->m_tpl->assign('checkkpiffck', $_SESSION['checkkpiffck']);
 		$this->m_tpl->assign('codeRef', $_SESSION['codeRef']);
 		$this->m_tpl->assign('groupOrder', $_SESSION['groupOrder']);
 		$this->m_tpl->assign('codeTypeClt', $_SESSION['codeTypeClt']);
@@ -284,8 +284,8 @@ class GestionCompetition extends MyPageSecure
 			$result->execute(array(
 				$codeCompet, $saison, utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'), 
 				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '', 
-				utyGetPost('check_en'), utyGetPost('check_titre'), utyGetPost('check_bandeau'), utyGetPost('check_logo'), 
-				utyGetPost('check_sponsor'), utyGetPost('check_kpi_ffck'), $codeRef, utyGetPost('groupOrder'),
+				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'), 
+				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
 				utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
 				utyGetPost('points'), utyGetPost('statut'), utyGetPost('publierCompet')
 			));
@@ -366,12 +366,12 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['sponsorLink'] = '';
 			$_SESSION['toutGroup'] = '';
 			$_SESSION['touteSaisons'] = '';
-			$_SESSION['check_en'] = 'O';
-			$_SESSION['check_titre'] = 'O';
-			$_SESSION['check_bandeau'] = 'O';
-			$_SESSION['check_logo'] = 'O';
-			$_SESSION['check_sponsor'] = 'O';
-			$_SESSION['check_kpi_ffck'] = 'O';
+			$_SESSION['checken'] = 'O';
+			$_SESSION['checktitre'] = 'O';
+			$_SESSION['checkbandeau'] = 'O';
+			$_SESSION['checklogo'] = 'O';
+			$_SESSION['checksponsor'] = 'O';
+			$_SESSION['checkkpiffck'] = 'O';
 			$_SESSION['codeRef'] = '';
 			$_SESSION['groupOrder'] = '';
 			$_SESSION['codeTypeClt'] = '';
@@ -414,13 +414,13 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['logoLink'] = $row['LogoLink'];
 			$_SESSION['sponsorLink'] = $row['SponsorLink'];
 			$_SESSION['toutGroup'] = '';
-			$_SESSION['check_en'] = $row['En_actif'];
+			$_SESSION['checken'] = $row['En_actif'];
 			$_SESSION['touteSaisons'] = '';
-			$_SESSION['check_titre'] = $row['Titre_actif'];
-			$_SESSION['check_bandeau'] = $row['Bandeau_actif'];
-			$_SESSION['check_logo'] = $row['Logo_actif'];
-			$_SESSION['check_sponsor'] = $row['Sponsor_actif'];
-			$_SESSION['check_kpi_ffck'] = $row['Kpi_ffck_actif'];
+			$_SESSION['checktitre'] = $row['Titre_actif'];
+			$_SESSION['checkbandeau'] = $row['Bandeau_actif'];
+			$_SESSION['checklogo'] = $row['Logo_actif'];
+			$_SESSION['checksponsor'] = $row['Sponsor_actif'];
+			$_SESSION['checkkpiffck'] = $row['Kpi_ffck_actif'];
 			$_SESSION['codeRef'] = $row['Code_ref'];
 			$_SESSION['groupOrder'] = $row['GroupOrder'];
 			$_SESSION['codeTypeClt'] = $row['Code_typeclt'];
@@ -470,8 +470,8 @@ class GestionCompetition extends MyPageSecure
 		$result->execute(array(
 			utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'), 
 			utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '', 
-			utyGetPost('check_en'), utyGetPost('check_titre'), utyGetPost('check_bandeau'), utyGetPost('check_logo'), 
-			utyGetPost('check_sponsor'), utyGetPost('check_kpi_ffck'), $codeRef, utyGetPost('groupOrder'),
+			utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'), 
+			utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
 			utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
 			utyGetPost('points'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
 			$codeCompet, $saison 
