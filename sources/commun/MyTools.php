@@ -96,7 +96,7 @@ function captureImg($url, $type, $code, $saison, $folder = "../img/logo/") {
 	$newfile = $type . '-' . $code . '-' . $saison;
 	
 	//Récupération du fichier distant
-	if(!$header = $this->get_web_page($url)) {
+	if(!$header = get_web_page($url)) {
 		// echo "Ouverture impossible du fichier distant<br>";
 		return FALSE;
 	}
