@@ -6,9 +6,9 @@
                     <a class="text-primary titre" href='{$recordCompetition.Web}' target='_blank'>
                 {/if}
                 {if $visuels.bandeau}
-                    <img id='logo' src='{$visuels.bandeau}' alt="logo"><br>
+                    <img class="img2" id='logo' src='{$visuels.bandeau}' alt="logo"><br>
                 {else if $visuels.logo}
-                    <img id='logo' src='{$visuels.logo}' alt="logo"><br>
+                    <img class="img2" id='logo' src='{$visuels.logo}' alt="logo"><br>
                 {/if}
                 {if $recordCompetition.Web}
                     <i>{$recordCompetition.Web}</i></a>
