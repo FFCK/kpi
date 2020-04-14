@@ -4,23 +4,34 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="Author" Content="LG" />
-		<meta property="og:image" content="https://www.kayak-polo.info/img/KPI.png" />
 		<link rel="image_src" href="https://www.kayak-polo.info/img/KPI.png" />
-		<!--<meta property="og:title" content="kayak-polo.info" />-->
-		<meta property="og:type" content="article" />
-		<!--<meta property="og:url" content="https://www.kayak-polo.info"/>-->
-		<!--<meta property="og:description" content="kayak polo français" />-->
-		<meta property="og:site_name" content="KAYAK-POLO.INFO" />
+		<meta name="description" content="Commission Nationale d&#039;Activité Kayak-Polo"/>
+		<meta name="robots" content="index, follow"/>
+		<link rel="canonical" href="https://www.kayak-polo.info" />
+		<link rel="next" href="https://www.kayak-polo.info/?paged=2" />
 		{if $bPublic}
+			<meta property="og:locale" content="fr_FR">
+			<meta property="og:type" content="website">
+			<meta property="og:title" content="Kayak-polo.info">
+			<meta property="og:url" content="https://www.kayak-polo.info">
+			<meta property="og:site_name" content="Kayak-polo.info">
+			<meta property="og:image" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
+			<meta property="og:image:secure_url" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
+			<meta property="og:image:width" content="1200">
+			<meta property="og:image:height" content="630">
+			<meta property="og:image:type" content="image/png">
+			<meta name="twitter:card" content="summary_large_image">
+			<meta name="twitter:title" content="Kayak-polo.info">
+			<meta name="twitter:image" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
 			<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 			<link rel="stylesheet" type="text/css" href="css/style.css" />
 			<link type="text/css" rel="stylesheet" href="css/dhtmlgoodies_calendar.css?random=20051112" media="screen" />
 			<link type="text/css" rel="stylesheet" href="css/jquery.autocomplete.css" media="screen" />
 			<link type="text/css" rel="stylesheet" href="css/jquery.tooltip.css" media="screen" />
-                        {assign var=temp value="css/$contenutemplate.css"} 
-                        {if is_file($temp)}
-                            <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
-                        {/if}
+			{assign var=temp value="css/$contenutemplate.css"} 
+			{if is_file($temp)}
+				<link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
+			{/if}
 			<!-- 
 				Css = '' (simply, zsainto, ckca...) 
 				notamment sur les pages Journee.php et Classements.php 

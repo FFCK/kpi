@@ -8,18 +8,25 @@
         <meta name="Author" Content="LG" />
         
         <!-- FB Meta -->
-        <meta property="og:image" content="https://www.kayak-polo.info/img/newKPI2.jpg" />
-        <link rel="image_src" href="https://www.kayak-polo.info/img/newKPI2.jpg" />
-        <meta property="og:title" content="kayak-polo.info" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.kayak-polo.info"/>
-        <meta property="og:description" content="FFCK - Commission Nationale d'Activité Kayak-Polo" />
-        <meta property="og:site_name" content="KAYAK-POLO.INFO" />
-
-        <link rel="shortcut icon" type="image/x-icon" href="{$adm}favicon.ico" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <link rel="pingback" href="https://www.kayak-polo.info/wordpress/xmlrpc.php">
-        <link rel="profile" href="http://gmpg.org/xfn/11">
+		<meta name="description" content="Commission Nationale d&#039;Activité Kayak-Polo"/>
+		<meta name="robots" content="index, follow"/>
+		<link rel="canonical" href="https://www.kayak-polo.info" />
+		<link rel="next" href="https://www.kayak-polo.info/?paged=2" />
+        {if $bPublic}
+            <meta property="og:locale" content="fr_FR">
+            <meta property="og:type" content="website">
+            <meta property="og:title" content="Kayak-polo.info">
+            <meta property="og:url" content="https://www.kayak-polo.info">
+            <meta property="og:site_name" content="Kayak-polo.info">
+            <meta property="og:image" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
+            <meta property="og:image:secure_url" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
+            <meta property="og:image:width" content="1200">
+            <meta property="og:image:height" content="630">
+            <meta property="og:image:type" content="image/png">
+            <meta name="twitter:card" content="summary_large_image">
+            <meta name="twitter:title" content="Kayak-polo.info">
+            <meta name="twitter:image" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
+        {/if}
         <!-- Mobile Specific Meta -->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux" href="http://kayak-polo.info/?feed=rss2" />
