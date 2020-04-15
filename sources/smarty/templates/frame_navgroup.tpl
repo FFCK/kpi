@@ -9,6 +9,10 @@
                 href="frame_terrains.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
                     {#Terrains#}
             </a>
+            <a class="btn {if $page == 'Categories'}btn-primary{else}btn-default actif{/if}"
+                href="frame_categories.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
+                    {#Categories#}
+            </a>
             {if $recordCompetition.Code_typeclt == 'CHPT'}
                 <a class="btn {if $page == 'Infos'}btn-primary{else}btn-default{/if}" 
                    href='frame_details.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&typ=CHPT&Round={$Round}&Css={$Css}&navGroup=1&J={$idSelJournee}'>

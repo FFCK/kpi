@@ -61,7 +61,6 @@ class Matchs extends MyPage
             $Compets = implode(',', $Compets1);
         }
         
-		$codeSaison = utyGetGet('Saison', $myBdd->GetActiveSaison);
         if($codeSaison != $_SESSION['Saison']){
             $_GET['J'] = '*';
             $_GET['Compet'] = '*';
@@ -204,8 +203,8 @@ class Matchs extends MyPage
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O' 
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
-                $result = $myBdd->pdo->prepare($sql);
-                $result->execute(array($event, $codeSaison));
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($event, $codeSaison));
         } else {
             $sql = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
                 FROM gickp_Journees j, gickp_Competitions c 
@@ -240,7 +239,7 @@ class Matchs extends MyPage
 			
 			// Chargement des Matchs des journées ...
             $sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, 
-                m.Publication, m.Validation, m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, 
+                m.Publication, m.Validation, m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, m.Id_equipeA, m.Id_equipeB, 
                 cea.Libelle EquipeA, ceb.Libelle EquipeB, cea.Numero NumA, ceb.Numero NumB, cea.Code_club clubA, 
                 ceb.Code_club clubB, m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, 
                 m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, 
@@ -363,6 +362,7 @@ class Matchs extends MyPage
                                 'Id' => $row['Id'], 'Id_journee' => $row['Id_journee'], 'Numero_ordre' => $row['Numero_ordre'], 
                                 'Date_match' => utyDateUsToFr($row['Date_match']),'Date_EN' => $row['Date_match'], 'Heure_match' => $row['Heure_match'],
                                 'Libelle' => $row['Libelle'], 'Terrain' => $row['Terrain'], 
+                                'Id_equipeA' => $row['Id_equipeA'], 'Id_equipeB' => $row['Id_equipeB'], 
                                 'EquipeA' => $row['EquipeA'], 'EquipeB' => $row['EquipeB'], 
                                 'NumA' => $row['NumA'], 'NumB' => $row['NumB'],
                                 'ScoreA' => $row['ScoreA'], 'ScoreB' => $row['ScoreB'], 
@@ -455,7 +455,7 @@ class Matchs extends MyPage
                 $this->m_tpl->assign('voie', $voie);
             }
             
-			$intervalle = (int) $_GET['intervalle'];
+			$intervalle = (int) utyGetGet('intervale', 0);
 			if ($intervalle > 0) {
                 $this->m_tpl->assign('intervalle', $intervalle);
 			}

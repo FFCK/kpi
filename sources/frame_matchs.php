@@ -111,10 +111,10 @@ class Matchs extends MyPage
 		$arraySaison = array();
         foreach ($myBdd->pdo->query($sql) as $row) {
 			array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-											'Nat_debut' => utyDateUsToFr($row['Nat_debut']),
-                                            'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-											'Inter_debut' => utyDateUsToFr($row['Inter_debut']),
-                                            'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+                'Nat_debut' => utyDateUsToFr($row['Nat_debut']),
+                'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
+                'Inter_debut' => utyDateUsToFr($row['Inter_debut']),
+                'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
 		}
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
@@ -279,6 +279,7 @@ class Matchs extends MyPage
 			// Chargement des Matchs des journées ...
             $sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, 
                 m.Publication, m.Validation, m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, 
+                m.Id_equipeA, m.Id_equipeB,
                 cea.Libelle EquipeA, ceb.Libelle EquipeB, cea.Numero NumA, ceb.Numero NumB, cea.Code_club clubA, 
                 ceb.Code_club clubB, m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, 
                 m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, 
@@ -398,6 +399,7 @@ class Matchs extends MyPage
                     'Date_EN' => $row['Date_match'], 'Heure_match' => $row['Heure_match'],
                     'Libelle' => $row['Libelle'], 'Terrain' => $row['Terrain'], 
                     'EquipeA' => $row['EquipeA'], 'EquipeB' => $row['EquipeB'], 
+                    'Id_equipeA' => $row['Id_equipeA'], 'Id_equipeB' => $row['Id_equipeB'], 
                     'NumA' => $row['NumA'], 'NumB' => $row['NumB'],
                     'ScoreA' => $row['ScoreA'], 'ScoreB' => $row['ScoreB'], 
                     'ScoreDetailA' => $row['ScoreDetailA'], 'ScoreDetailB' => $row['ScoreDetailB'], 

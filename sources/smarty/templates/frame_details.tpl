@@ -36,11 +36,6 @@
                     <label class="col-sm-4">{#Chef_arbitres#}</label>
                     <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
                 </div>
-                {if $schema}
-                    <label>{#Schema#}</label>
-                    <hr>
-                    <a href="{$schema}" target="_blank"><img class="img-responsive img-thumbnail" src="{$schema}"></a>
-                {/if}
             </div>
             <div class="form-horizontal">
                 <div class="page-header">
@@ -80,7 +75,7 @@
                                         {if $arrayEquipe[$poule][j].logo != ''}
                                             <img class="img2 pull-left" width="28" src="{$arrayEquipe[$poule][j].logo}" alt="{$arrayEquipe[$poule][j].club}" />
                                         {/if}
-                                        <a class="btn btn-xs btn-default" href='frame_equipes.php?Equipe={$arrayEquipe[$poule][j].Numero}&Compet={$codeCompet}&Css={$Css}' title='{#Palmares#}'>{$arrayEquipe[$poule][j].Libelle}</a>
+                                        <a class="btn btn-xs btn-default" href='frame_team.php?Team={$arrayEquipe[$poule][j].Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}' title='{#Palmares#}'>{$arrayEquipe[$poule][j].Libelle}</a>
                                     </td>
                                 </tr>
                             {/section}
@@ -168,7 +163,7 @@
                                     {if $arrayEquipe[i].logo != ''}
                                         <img class="img2 pull-left" width="28" src="{$arrayEquipe[i].logo}" alt="{$arrayEquipe[i].club}" />
                                     {/if}
-                                    <a class="btn btn-xs btn-default" href='frame_equipes.php?Equipe={$arrayEquipe[i].Numero}&Compet={$codeCompet}&Css={$Css}' title='{#Palmares#}'>{$arrayEquipe[i].Libelle}</a>
+                                    <a class="btn btn-xs btn-default" href='frame_team.php?Team={$arrayEquipe[i].Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}' title='{#Palmares#}'>{$arrayEquipe[i].Libelle}</a>
                                 </td>
                             </tr>
                         {sectionelse}
@@ -180,8 +175,3 @@
         </article>
     {/if}
 </div>
-
-{if $voie}
-    <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
-    <script type="text/javascript">SetVoie({$voie});</script>
-{/if}
