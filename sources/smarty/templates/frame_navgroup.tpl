@@ -106,7 +106,7 @@
         </div>
     </div>
 
-    <div class="container-fluid article hidden-lg">
+    <div class="container-fluid article hidden-lg navgroup">
         <ul class="nav nav-pills">
             <li role="presentation" class="dropdown">
                 <a id="drop1" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
