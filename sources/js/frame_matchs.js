@@ -40,7 +40,7 @@ jq(document).ready(function(){
             // filtres date, categorie, lieu terrain
             this.api().columns([1,2,3,4]).every( function () {
                 var column = this;
-                var select = jq('<select><option value="">Tout</option></select>')
+                var select = jq('<select><option value="">Toutes dates</option></select>')
                     .appendTo( jq(column.footer()).empty() )
                     .on( 'change', function () {
                         var val = jq.fn.dataTable.util.escapeRegex(
@@ -56,11 +56,12 @@ jq(document).ready(function(){
             } );
  
             // filtre équipes
-            jq('#tableMatchs_fr_filter label').addClass('hidden-xs');
+            jq('#tableMatchs_fr_filter label').addClass('hidden-xs pull-right');
             this.api().columns([10]).every( function () {
                 var column = this;
-                var select = jq('<span class="filtres"><span><label>Filtre </label>\n\
-                                    <select><option value="">Tout</option></select> </span><label> Date </label></span>')
+                var select = jq('<span class="filtres">\n\
+                        <span class="col-xs-7 col-sm-3"><select><option value="">Toutes équipes</option></select></span>\n\
+                        <span class="col-xs-5 col-sm-3"></span></span>')
                     .appendTo( jq('#tableMatchs_fr_filter') );
                     select.find('select').on( 'change', function () {
                         var val = jq.fn.dataTable.util.escapeRegex(
@@ -114,7 +115,7 @@ jq(document).ready(function(){
                 jq('#tableMatchs_fr_filter span.filtres').append(jq(this.footer()).find('select'));
             } );
             
-            jq('#tableMatchs_fr_length').append('&nbsp;&nbsp;<a class="btn btn-default" href="" title="Réactualiser"><img src="img/glyphicons-82-refresh.png" width="16"></a>');
+            jq('#tableMatchs_fr_length').append('&nbsp;&nbsp;<a class="btn btn-sm btn-default refresh" href="" title="Réactualiser"><img src="img/glyphicons-82-refresh.png" width="16"></a>');
             jq('.dataTables_wrapper select, .dataTables_wrapper input').css('height', '34px').css('padding', '6px 2px');
         }
     } );
@@ -140,7 +141,7 @@ jq(document).ready(function(){
             // filtres date, categorie, lieu terrain
             this.api().columns([1,2,3,4]).every( function () {
                 var column = this;
-                var select = jq('<select><option value="">All</option></select>')
+                var select = jq('<select><option value="">All dates</option></select>')
                     .appendTo( jq(column.footer()).empty() )
                     .on( 'change', function () {
                         var val = jq.fn.dataTable.util.escapeRegex(
@@ -156,11 +157,12 @@ jq(document).ready(function(){
             } );
  
             // filtre équipes
-            jq('#tableMatchs_en_filter label').addClass('hidden-xs');
+            jq('#tableMatchs_en_filter label').addClass('hidden-xs pull-right');
             this.api().columns([10]).every( function () {
                 var column = this;
-                var select = jq('<span class="filtres"><span><label>Filter </label>\n\
-                                    <select><option value="">All</option></select> </span><label> Date </label></span>')
+                var select = jq('<span class="filtres">\n\
+                        <span class="col-xs-7 col-sm-3"><select><option value="">All teams</option></select></span>\n\
+                        <span class="col-xs-5 col-sm-3"></span></span>')
                     .appendTo( jq('#tableMatchs_en_filter') );
                     select.find('select').on( 'change', function () {
                         var val = jq.fn.dataTable.util.escapeRegex(
@@ -213,7 +215,7 @@ jq(document).ready(function(){
                 jq('#tableMatchs_en_filter span.filtres').append(jq(this.footer()).find('select'));
             } );
             
-            jq('#tableMatchs_en_length').append('&nbsp;&nbsp;<a class="btn btn-default" href="" title="Refresh"><img src="img/glyphicons-82-refresh.png" width="16"></a>');
+            jq('#tableMatchs_en_length').append('&nbsp;&nbsp;<a class="btn btn-sm btn-default refresh" href="" title="Refresh"><img src="img/glyphicons-82-refresh.png" width="16"></a>');
             jq('.dataTables_wrapper select, .dataTables_wrapper input').css('height', '34px').css('padding', '6px 2px')
         }
     } );
@@ -244,7 +246,7 @@ jq(document).ready(function(){
 
     jq('#selects_toggle').click(function(e){
         e.preventDefault();
-        jq('.selects').toggleClass('hidden-xs');
+        jq('.selects').toggleClass('hidden-xs hidden-sm');
         jq('#selector article').toggleClass('article_sans_bg');
     });
 

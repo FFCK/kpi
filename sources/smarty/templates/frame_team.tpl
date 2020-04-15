@@ -1,5 +1,5 @@
 {if $navGroup}
-    <div class="container-fluid visible-lg categorie mb5">
+    <div class="container-fluid categorie mb5">
         <div class="col-md-12">
             <a class="btn btn-primary" onclick="history.back()">
                     < {#Retour#}
