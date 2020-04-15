@@ -1,5 +1,5 @@
 {include file='frame_navgroup.tpl'}
-<div class="container-fluid" id="containor">
+<div class="container-fluid frame_matchs" id="containor">
     <article class="table-responsive col-md-12 padTopBottom">
         <table class='tableau table table-striped table-condensed table-hover display compact' {if is_array($arrayMatchs[0])}id='tableMatchs_{$lang}'{/if}>
             <thead>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="btn-group btn-block" role="group">
-                                        <a class="col-xs-5 text-right"{if $arrayMatchs[i].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[i].Id_equipeA}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
+                                        <a class="col-xs-5 text-right">
                                             <b class="">{$arrayMatchs[i].EquipeA|default:'&nbsp;'}</b>
                                         </a>
                                         
@@ -152,7 +152,7 @@
                                             <span type="button" class="col-xs-2 statutMatchATT label label-default" title="{#ATT#}">{#ATT#}</span>
                                         {/if}
                                         
-                                        <a class="col-xs-5 text-left"{if $arrayMatchs[i].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[i].Id_equipeB}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
+                                        <a class="col-xs-5 text-left">
                                             <b class="">{$arrayMatchs[i].EquipeB|default:'&nbsp;'}</b>
                                         </a>
                                     </div>
