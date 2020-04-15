@@ -3,17 +3,17 @@ var theCurrentVoieUrl = '';
 
 // jq(document).ready(function() {
 
-	function SetVoie(voie, intervalle=4000)
+	function SetVoie(voie, intervalle=5000)
 	{
+		if (intervalle < 500) {
+			intervalle *= 1000;
+		}
 		theCurrentVoie = voie;
 		theCurrentVoieUrl = window.location.href;
-		if (voie > 0 && voie < 100)
-		{
-			// Refresh toutes les 4 secondes ...
+		if (voie > 0 && voie < 100) {
+			// Refresh toutes les 5 secondes ...
 			setInterval(RefreshVoie, intervalle);
-		}
-		else if (voie >= 100)
-		{
+		} else if (voie >= 100) {
 			RefreshScene(voie, intervalle);
 		}
 	}

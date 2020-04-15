@@ -17,7 +17,7 @@
                         <td class="text-center">{$smarty.section.i.iteration}</td>
                         <td>{$arrayButeurs[i].Nom|upper} {$arrayButeurs[i].Prenom|upper} <i>#{$arrayButeurs[i].Numero}</i></td>
                         <td>
-                            <a class="btn btn-xs btn-default" href='frame_equipes.php?Equipe={$arrayButeurs[i].NumEquipe}&Compet={$codeCompet}&Css={$Css}' title='{#Palmares#}'>{$arrayButeurs[i].Equipe}</a>
+                            <a class="btn btn-xs btn-default" href='frame_team.php?Team={$arrayButeurs[i].Id_equipe}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}' title='{#Palmares#}'>{$arrayButeurs[i].Equipe}</a>
                         </td>
                         <td class="text-center">{$arrayButeurs[i].Buts}</td>
                     </tr>
@@ -26,7 +26,3 @@
         </table>
     </article>
 </div>
-{if $voie}
-    <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" ></script>
-    <script type="text/javascript">SetVoie({$voie});</script>
-{/if}

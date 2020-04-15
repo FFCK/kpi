@@ -46,7 +46,7 @@
                                         <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                         <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                         <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="frame_equipes.php?Equipe={$Match1.NumA}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                            <a class="btn btn-xs btn-default"{if $Match1.Id_equipeA > 0} href="frame_team.php?Team={$Match1.Id_equipeA}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                 {$Match1.EquipeA|default:'&nbsp;'}
                                             </a>
                                         </td>
@@ -71,7 +71,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                            <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="frame_equipes.php?Equipe={$Match1.NumB}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                            <a class="btn btn-xs btn-default"{if $Match1.Id_equipeB > 0} href="frame_team.php?Team={$Match1.Id_equipeB}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                 {$Match1.EquipeB|default:'&nbsp;'}
                                             </a>
                                         </td>
@@ -142,7 +142,7 @@
                                             <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                             <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="frame_equipes.php?Equipe={$Match1.NumA}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                <a class="btn btn-xs btn-default"{if $Match1.Id_equipeA > 0} href="frame_team.php?Team={$Match1.Id_equipeA}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -167,7 +167,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="frame_equipes.php?Equipe={$Match1.NumB}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                <a class="btn btn-xs btn-default"{if $Match1.Id_equipeB > 0} href="frame_team.php?Team={$Match1.Id_equipeB}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                     {$Match1.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -184,7 +184,7 @@
                                             <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                             <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                             <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="frame_equipes.php?Equipe={$Match2.NumA}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                <a class="btn btn-xs btn-default"{if $Match2.Id_equipeA > 0} href="frame_team.php?Team={$Match2.Id_equipeA}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeA|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -209,7 +209,7 @@
                                                 </span>
                                             </td>
                                             <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                                <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="frame_equipes.php?Equipe={$Match2.NumB}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                <a class="btn btn-xs btn-default"{if $Match2.Id_equipeB > 0} href="frame_team.php?Team={$Match2.Id_equipeB}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                     {$Match2.EquipeB|default:'&nbsp;'}
                                                 </a>
                                             </td>
@@ -273,7 +273,7 @@
                                                 <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                                 <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                                 <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="frame_equipes.php?Equipe={$Match1.NumA}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match1.Id_equipeA > 0} href="frame_team.php?Team={$Match1.Id_equipeA}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match1.EquipeA|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -298,7 +298,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="frame_equipes.php?Equipe={$Match1.NumB}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match1.Id_equipeB > 0} href="frame_team.php?Team={$Match1.Id_equipeB}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match1.EquipeB|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -315,7 +315,7 @@
                                                 <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                                 <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                                 <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="frame_equipes.php?Equipe={$Match2.NumA}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match2.Id_equipeA > 0} href="frame_team.php?Team={$Match2.Id_equipeA}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match2.EquipeA|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -340,7 +340,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="frame_equipes.php?Equipe={$Match2.NumB}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match2.Id_equipeB > 0} href="frame_team.php?Team={$Match2.Id_equipeB}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match2.EquipeB|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -404,7 +404,7 @@
                                                 <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                                 <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                                 <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="frame_equipes.php?Equipe={$Match1.NumA}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match1.Id_equipeA > 0} href="frame_team.php?Team={$Match1.Id_equipeA}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match1.EquipeA|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -429,7 +429,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="frame_equipes.php?Equipe={$Match1.NumB}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match1.Id_equipeB > 0} href="frame_team.php?Team={$Match1.Id_equipeB}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match1.EquipeB|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -446,7 +446,7 @@
                                                 <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                                 <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                                 <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="frame_equipes.php?Equipe={$Match2.NumA}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match2.Id_equipeA > 0} href="frame_team.php?Team={$Match2.Id_equipeA}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match2.EquipeA|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -471,7 +471,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="frame_equipes.php?Equipe={$Match2.NumB}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match2.Id_equipeB > 0} href="frame_team.php?Team={$Match2.Id_equipeB}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match2.EquipeB|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -535,7 +535,7 @@
                                                 <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                                 <td>{$Match1.Phase|default:'&nbsp;'}</td>
                                                 <td class="text-center" data-filter="{$Match1.EquipeA|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match1.NumA > 0} href="frame_equipes.php?Equipe={$Match1.NumA}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match1.Id_equipeA > 0} href="frame_team.php?Team={$Match1.Id_equipeA}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match1.EquipeA|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -560,7 +560,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-center" data-filter="{$Match1.EquipeB|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match1.NumB > 0} href="frame_equipes.php?Equipe={$Match1.NumB}&Compet={$Match1.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match1.Id_equipeB > 0} href="frame_team.php?Team={$Match1.Id_equipeB}&Compet={$Match1.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match1.EquipeB|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -577,7 +577,7 @@
                                                 <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                                 <td>{$Match2.Phase|default:'&nbsp;'}</td>
                                                 <td class="text-center" data-filter="{$Match2.EquipeA|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match2.NumA > 0} href="frame_equipes.php?Equipe={$Match2.NumA}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match2.Id_equipeA > 0} href="frame_team.php?Team={$Match2.Id_equipeA}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match2.EquipeA|default:'&nbsp;'}
                                                     </a>
                                                 </td>
@@ -602,7 +602,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-center" data-filter="{$Match2.EquipeB|default:'&nbsp;'}">
-                                                    <a class="btn btn-xs btn-default"{if $Match2.NumB > 0} href="frame_equipes.php?Equipe={$Match2.NumB}&Compet={$Match2.Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
+                                                    <a class="btn btn-xs btn-default"{if $Match2.Id_equipeB > 0} href="frame_team.php?Team={$Match2.Id_equipeB}&Compet={$Match2.Code_competition}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>
                                                         {$Match2.EquipeB|default:'&nbsp;'}
                                                     </a>
                                                 </td>

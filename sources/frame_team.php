@@ -25,10 +25,13 @@ class Team extends MyPage
         $codeCompet = utyGetGet('Compet', '');
         $this->m_tpl->assign('codeCompet', $codeCompet);
         
+        if (utyGetGet('navGroup', false)) {
+            $this->m_tpl->assign('navGroup', 1);
+        }
+
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
             
         if ($Team > 0) {
-
             // Team
             $sql = "SELECT ce.Numero Equipe, ce.Libelle nomEquipe, ce.Code_club, cl.Libelle Club 
                 FROM gickp_Competitions_Equipes ce 
