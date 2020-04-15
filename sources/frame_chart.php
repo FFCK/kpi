@@ -27,19 +27,13 @@ class Chart extends MyPage
         $event = utyGetGet('event', '0');
 		$this->m_tpl->assign('event', $event);
         
-        // $arrayNavGroup = [];
-        // if (utyGetGet('navGroup', false)) {
-        //     $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-        //     $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-        //     $this->m_tpl->assign('navGroup', 1);
-        // }
-
-        // if (isset($arrayNavGroup[0]['Code_ref'])) {
-        //     $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
-        // } else {
-        //     $group = [];
-        // }
-		// $this->m_tpl->assign('group', $group);
+        if (utyGetGet('navGroup', false)) {
+            $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
+            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+            $this->m_tpl->assign('navGroup', 1);
+			$group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+			$this->m_tpl->assign('group', $group);
+        }
         
         $Round = utyGetGet('Round', '*');
 		$this->m_tpl->assign('Round', $Round);
@@ -358,67 +352,6 @@ class Chart extends MyPage
         $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
 	}
 	
-	// function GetTypeClt($codeCompet,  $codeSaison)
-	// {
-	// 	if (strlen($codeCompet) == 0) {
-    //         return 'CHPT';
-    //     }
-
-    //     $myBdd = new MyBdd();
-		
-	// 	$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-	// 	$typeClt = $recordCompetition['Code_typeclt'];
-	// 	if ($typeClt != 'CP') {
-    //         $typeClt = 'CHPT';
-    //     }
-
-    //     return $typeClt;
-	// }
-	
-	
-	// ExistCompetitionEquipeNiveau
-	// function ExistCompetitionEquipeNiveau($idEquipe, $niveau)
-	// {
-	// 	$myBdd = new MyBdd();
-	
-    //     $sql = "SELECT COUNT(*) Nb 
-    //         FROM gickp_Competitions_Equipes_Niveau 
-    //         WHERE Id = $idEquipe AND Niveau = $niveau ";
-	// 	$result = $myBdd->Query($sql);
-	// 	if ($myBdd->NumRows($result) == 1) {
-	// 		$row = $myBdd->FetchArray($result);	 
-	// 		if ($row['Nb'] == 1) {
-    //             return;
-    //         } // Le record existe ...
-	// 	}
-
-	// 	$sql  = "INSERT INTO gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, "
-    //             . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-	// 	$sql .= "VALUES ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-	// 	$myBdd->Query($sql);
-	// }
-
-	// ExistCompetitionEquipeJournee
-	// function ExistCompetitionEquipeJournee($idEquipe, $idJournee)
-	// {
-	// 	$myBdd = new MyBdd();
-	// 	$sql  = "SELECT COUNT(*) Nb "
-    //             . "FROM gickp_Competitions_Equipes_Journee "
-    //             . "WHERE Id = $idEquipe "
-    //             . "AND Id_journee = $idJournee";
-	// 	$result = $myBdd->Query($sql);
-	// 	if ($myBdd->NumRows($result) == 1) {
-	// 		$row = $myBdd->FetchArray($result);	 
-	// 		if ($row['Nb'] == 1)
-	// 			return; // Le record existe ...
-	// 	}
-
-	// 	$sql  = "INSERT INTO gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, "
-    //             . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-	// 	$sql .= "VALUES ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-	// 	$myBdd->Query($sql);
-	// }
-	
 
 	// Chart 		
 	function __construct()
@@ -435,7 +368,7 @@ class Chart extends MyPage
                 $this->m_tpl->assign('voie', $voie);
             }
             
-			$intervalle = (int) $_GET['intervalle'];
+			$intervalle = (int) utyGetGet('intervale', 0);
 			if ($intervalle > 0) {
                 $this->m_tpl->assign('intervalle', $intervalle);
 			}

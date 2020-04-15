@@ -35,7 +35,7 @@
 
                                         </td>
                                         <td>
-                                            <a class="btn btn-xs btn-default"{if $arrayEquipe_journee_publi[$idJournee][j].Numero > 0} href="frame_equipes.php?Equipe={$arrayEquipe_journee_publi[$idJournee][j].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
+                                            <a class="btn btn-xs btn-default"{if $arrayEquipe_journee_publi[$idJournee][j].Id > 0} href="frame_team.php?Team={$arrayEquipe_journee_publi[$idJournee][j].Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
                                         </td>
                                         <td class="text-center">{$arrayEquipe_journee_publi[$idJournee][j].Pts/100}</td>
                                         <td class="text-center">{$arrayEquipe_journee_publi[$idJournee][j].J}</td>
@@ -48,7 +48,7 @@
                                         <tr>
                                             <td></td>
                                             <td>
-                                                <a class="btn btn-xs btn-default"{if $j.Num > 0} href="frame_equipes.php?Equipe={$j.Num}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$j.Libelle}</a>
+                                                <a class="btn btn-xs btn-default"{if $j.Id > 0} href="frame_team.php?Team={$j.Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.Libelle}</a>
                                             </td>
                                             <td></td>
                                             <td></td>
@@ -83,13 +83,13 @@
                                                 <span class="chart_num_match">#{$arrayMatchs[$idJournee][j].Numero_ordre}</span>
                                             </td>
                                             <td>
-                                                <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                                <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                                 <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                                 <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
                                             </td>
                                         </tr>
@@ -103,13 +103,13 @@
                                                 <span class="chart_num_match">#{$arrayMatchs[$idJournee][j].Numero_ordre}</span>
                                             </td>
                                             <td>
-                                                <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                                <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                                 <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                                 <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                             </td>
                                         </tr>
@@ -123,13 +123,13 @@
                                                 <span class="chart_num_match">#{$arrayMatchs[$idJournee][j].Numero_ordre}</span>
                                             </td>
                                             <td>
-                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumA}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
                                                 <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[$idJournee][j].NumB}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                                <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
                                                 <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
                                             </td>
                                         </tr>

@@ -1,45 +1,4 @@
 {include file='frame_navgroup.tpl'}
-{*{if $navGroup}
-    <div class="container-fluid categorie">
-        <div class="col-md-12">
-            <a class="btn btn-default actif"
-                href="kpmatchs.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round=*&Css={$Css}&navGroup=1">
-                {#Matchs#}
-            </a>
-            <a class="btn btn-default actif" 
-                href="frame_phases.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round=*&Css={$Css}&navGroup=1">
-                        {#Classement_par_phase#}
-            </a>
-            <a class="btn btn-primary">{#Classement#}</a>
-            <a class="btn btn-default actif" 
-                href="frame_stats.php?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Css={$Css}&navGroup=1">
-                        {#Stats#}
-            </a>
-            <div class="pull-right">
-                {section name=i loop=$arrayNavGroup}
-                    {if $arrayNavGroup[i].Code == $codeCompet}
-                        <a class="btn btn-primary">{$arrayNavGroup[i].Soustitre2}</a>
-                    {else}
-                        <a class="btn btn-default actif" 
-                           href="?lang={$lang}&Saison={$Saison}&Group={$group}&Compet={$arrayNavGroup[i].Code}&Css={$Css}&navGroup=1">
-                            {$arrayNavGroup[i].Soustitre2}
-                        </a>
-                    {/if}
-                {sectionelse}
-                    <h2 class="col-md-12">
-                        {$recordCompetition.Soustitre2}
-                    </h2>
-                {/section}
-            </div>
-        </div>
-    </div>
-{else}
-    <div class="container categorie">
-        <h2 class="col-md-12">
-            {$recordCompetition.Soustitre2}
-        </h2>
-    </div>
-{/if}*}
 <div class="container">
     <article class="padTopBottom{if $recordCompetition.Code_typeclt != 'CHPT'} table-responsive col-md-6 col-md-offset-3{else} col-md-12{/if} tableClassement">
         {if $recordCompetition.Statut != 'END'}
@@ -110,7 +69,7 @@
                                             {/if}
                                         </td>
                                         <td class="cliquableNomEquipe">
-                                            <a class="btn btn-xs btn-default" href="frame_equipes.php?Equipe={$arrayEquipe_publi[i].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}">
+                                            <a class="btn btn-xs btn-default" href="frame_team.php?Team={$arrayEquipe_publi[i].Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}">
                                                 {$arrayEquipe_publi[i].Libelle}
                                             </a>
                                         </td>
@@ -131,7 +90,7 @@
                                             {if $arrayEquipe_publi[i].logo != ''}
                                                 <img class="img2 pull-left" width="30" src="{$arrayEquipe_publi[i].logo}" alt="{$arrayEquipe_publi[i].club}" />
                                             {/if}
-                                            <a class="btn btn-xs btn-default" href="kpequipes.php?Equipe={$arrayEquipe_publi[i].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}">
+                                            <a class="btn btn-xs btn-default" href="frame_team.php?Team={$arrayEquipe_publi[i].Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}">
                                                 {$arrayEquipe_publi[i].Libelle}
                                             </a>
                                         </td>

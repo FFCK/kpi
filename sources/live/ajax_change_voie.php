@@ -8,8 +8,12 @@ $url = utyGetString($_GET, 'url');
 $url = str_replace("|QU|", "?", $url);
 $url = str_replace("|AM|", "&", $url);
 
-$db = new MyBdd();
-$cmd = "Update gickp_Tv Set Url = '$url' Where Voie = $voie ";
-$db->Query($cmd);
+$myBdd = new MyBdd();
+
+$sql = "UPDATE gickp_Tv 
+    SET `Url` = ? 
+    WHERE Voie = ? ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($url, $voie));
 
 echo "OK Voie $voie : ".$url;

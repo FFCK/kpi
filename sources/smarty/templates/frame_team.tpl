@@ -1,3 +1,12 @@
+{if $navGroup}
+    <div class="container-fluid visible-lg categorie mb5">
+        <div class="col-md-12">
+            <a class="btn btn-primary" onclick="history.back()">
+                    < {#Retour#}
+            </a>
+        </div>
+    </div>
+{/if}
 {if $Equipe > 0}
     <div class="container-fluid flex">
         <article class="col-md-6 padTopBottom">
