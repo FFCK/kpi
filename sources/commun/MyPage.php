@@ -3,14 +3,12 @@ header ('Content-type:text/html; charset=utf-8');
 ini_set("display_errors", 0);
 // Maintenance
 //die ('<h1>Site en cours de maintenance.<br />Merci de patienter quelques instants...</h1>');
-//phpinfo();
 
 include_once('MyConfig.php');	 
 include_once('MySmarty.php');
 include_once('MyTools.php'); 
 
 // Classe de Base pour toutes les Pages ...
-
 class MyPage 		
 {		 			 							  
 	var $m_arrayMenu;	
@@ -52,13 +50,10 @@ class MyPage
 			array_push($arrayMenu, array('name' => 'Accueil', 'href' => 'index.php'));
 			array_push($arrayMenu, array('name' => 'Calendrier', 'href' => 'kpcalendrier.php'));
 			array_push($arrayMenu, array('name' => 'Matchs', 'href' => 'kpmatchs.php'));
-//			array_push($arrayMenu, array('name' => 'Matchs', 'href' => 'Journee.php'));
-//			array_push($arrayMenu, array('name' => 'Classement', 'href' => 'Classement.php'));
 			array_push($arrayMenu, array('name' => 'Classements', 'href' => 'kpclassements.php'));
 			array_push($arrayMenu, array('name' => 'Historique', 'href' => 'kphistorique.php'));
 			array_push($arrayMenu, array('name' => 'Equipes', 'href' => 'kpequipes.php'));
 			array_push($arrayMenu, array('name' => 'Clubs', 'href' => 'kpclubs.php'));
-//			array_push($arrayMenu, array('name' => 'Forum', 'href' => 'http://www.poloweb.org/forum/'));
 			array_push($arrayMenu, array('name' => 'Administration', 'href' => 'admin/GestionCompetition.php'));
 		}
 		else
