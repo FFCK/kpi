@@ -1469,41 +1469,56 @@ class MyBdd
 	function GetOtherCompetitions($codeCompet, $codeSaison, $public=false, $event=0)
 	{
 		if ($event > 0) { // TODO : SELECTIONNER LES COMPETITIONS DE L'EVENEMENT !
-            $sql  = "SELECT c.Code, c.Code_ref, c.Libelle, c.Soustitre, c.Soustitre2, c.Publication "
-                . "FROM `gickp_Competitions` c, `gickp_Journees` j, `gickp_Evenement_Journees` ej "
-                . "WHERE ej.Id_journee = j.Id "
-                . "AND j.Code_competition = c.Code "
-                . "AND j.Code_saison = c.Code_saison "
-                . "AND ej.Id_evenement = $event ";
+			$sql  = "SELECT c.Code, c.Code_ref, c.Libelle, c.Soustitre, c.Soustitre2, c.Publication 
+				FROM `gickp_Competitions` c, `gickp_Journees` j, `gickp_Evenement_Journees` ej 
+				WHERE ej.Id_journee = j.Id 
+				AND j.Code_competition = c.Code 
+				AND j.Code_saison = c.Code_saison 
+				AND ej.Id_evenement = ? ";
             if ($public) {
                 $sql .= "AND c.Publication = 'O' ";
             }
-            $sql .= "GROUP BY c.Code "
-                . "ORDER BY c.GroupOrder ";
-        } elseif ($codeCompet == '*') {
+			$sql .= "GROUP BY c.Code 
+				ORDER BY c.GroupOrder ";
+			$result = $this->pdo->prepare($sql);
+			$result->execute(array($event));
+		} elseif ($codeCompet == '*') {
             $sql  = "SELECT Code, Code_ref, Libelle, Soustitre, Soustitre2, Publication
                 FROM `gickp_Competitions`
-                WHERE Code_saison = $codeSaison
+                WHERE Code_saison = ?
                 AND Code_ref = '" . utyGetSession('codeCompetGroup') . "' ";
             if ($public) {
                 $sql .= "AND Publication = 'O' ";
             }
             $sql .= "ORDER BY GroupOrder";
-	
+			$result = $this->pdo->prepare($sql);
+			$result->execute(array($codeSaison));
         } else {
             $sql  = "SELECT Code, Code_ref, Libelle, Soustitre, Soustitre2, Publication
                 FROM `gickp_Competitions`
-                WHERE Code_saison = $codeSaison
+                WHERE Code_saison = :codeSaison
                 AND Code_ref = (
-                    SELECT Code_ref FROM `gickp_Competitions` WHERE Code = '$codeCompet' AND Code_saison = $codeSaison ) ";
+                    SELECT Code_ref 
+					FROM `gickp_Competitions` 
+					WHERE Code = :codeCompet 
+					AND Code_saison = :codeSaison
+				) ";
             if ($public) {
                 $sql .= "AND Publication = 'O' ";
             }
             $sql .= "ORDER BY GroupOrder";
+			$result = $this->pdo->prepare($sql);
+			$result->execute(array(
+				':codeSaison' => $codeSaison,
+				':codeCompet' => $codeCompet
+			));
         }
 	
-        $this->LoadTable($sql, $arrayLoad);
-        return $arrayLoad;
+		$return = [];
+		while ($row = $result->fetch()) {
+			$return[] = $row;
+		}
+		return $return;
     }
     
     function getSections(){
