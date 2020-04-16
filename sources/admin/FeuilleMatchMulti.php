@@ -17,24 +17,26 @@ class FeuilleMatch extends MyPage {
 
     function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd) {
         $myBdd = new MyBdd();
-        $sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-        $result = $myBdd->Query($sql);
+        $sql = "SELECT Count(*) Nb 
+            FROM gickp_Matchs_Joueurs 
+            WHERE Id_match = ? 
+            AND Equipe = ? ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($idMatch, $numEquipe));
 
-        if ($myBdd->NumRows($result) != 1) {
-            return;
-        }
-
-        $row = $myBdd->FetchArray($result);
+        $row = $result->fetch();
         if ((int) $row['Nb'] > 0) {
             return;
         }
 
-        $sql = "Replace Into gickp_Matchs_Joueurs ";
-        $sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-        $sql .= "Where Id_equipe = $idEquipe ";
-        $sql .= "AND Capitaine <> 'X' ";
-        $sql .= "AND Capitaine <> 'A' ";
-        $myBdd->Query($sql);
+        $sql = "REPLACE INTO gickp_Matchs_Joueurs 
+            SELECT ?, Matric, Numero, ?, Capitaine 
+            FROM gickp_Competitions_Equipes_Joueurs 
+            WHERE Id_equipe = ? 
+            AND Capitaine <> 'X' 
+            AND Capitaine <> 'A' ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($idMatch, $numEquipe, $idEquipe));
     }
 
     function __construct() {
@@ -46,6 +48,7 @@ class FeuilleMatch extends MyPage {
             die('Aucun match à afficher !');
         }
         $chaqueMatch = explode(',', $listMatch);
+        $arrayCompetition['En_actif'] = '';
         
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
@@ -72,23 +75,22 @@ class FeuilleMatch extends MyPage {
 
         for ($h = 0; $h < count($chaqueMatch); $h++) {
             // Infos match
-
-            $sql = "Select a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, "
-                    . "a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Ligne1, a.Ligne2, a.Type, "
-                    . "a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, "
-                    . "a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, "
-                    . "b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, "
-                    . "b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison "
-                    . "From gickp_Matchs a, gickp_Journees b "
-                    . "Where a.Id in (" . $chaqueMatch[$h] . ") "
-                    . "And a.Id_journee = b.Id ";
-            $result = $myBdd->Query($sql);
-            $num_results = $myBdd->NumRows($result);
-            if ($num_results != 1) {
-                die('Erreur Nb Matchs');
-            }
-
-            $row = $myBdd->FetchArray($result);
+            $matchcourant = $chaqueMatch[$h];
+            $sql = "SELECT a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, 
+                a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Ligne1, a.Ligne2, a.Type, 
+                a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, 
+                ce1.Code_club codeclubA, ce1.Libelle LibelleA, ce2.Code_club codeclubB, ce2.Libelle LibelleB, 
+                a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, 
+                b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, 
+                b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison 
+                FROM gickp_Matchs a
+                LEFT JOIN gickp_Journees b ON a.Id_journee = b.Id 
+                LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON a.Id_equipeA = ce1.Id
+                LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON a.Id_equipeB = ce2.Id
+                WHERE a.Id = ? ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($matchcourant));
+            $row = $result->fetch();
             $idMatch = $row['Id'];
             $saison = $row['Code_saison'];
             $categorie = $row['Code_competition'];
@@ -113,7 +115,7 @@ class FeuilleMatch extends MyPage {
 
             // drapeaux
             if ($arrayCompetition['Code_niveau'] == 'INT' && $idEquipeA != 0) {
-                $paysA = substr($myBdd->GetCodeClubEquipe($idEquipeA), 0, 3);
+                $paysA = substr($row['codeclubA'], 0, 3);
                 if (is_numeric($paysA[0]) || is_numeric($paysA[1]) || is_numeric($paysA[2])) {
                     $paysA = 'FRA';
                 }
@@ -121,7 +123,7 @@ class FeuilleMatch extends MyPage {
                 $paysA = '';
             }
             if ($arrayCompetition['Code_niveau'] == 'INT' && $idEquipeB != 0) {
-                $paysB = substr($myBdd->GetCodeClubEquipe($idEquipeB), 0, 3);
+                $paysB = substr($row['codeclubB'], 0, 3);
                 if (is_numeric($paysB[0]) || is_numeric($paysB[1]) || is_numeric($paysB[2])) {
                     $paysB = 'FRA';
                 }
@@ -161,24 +163,12 @@ class FeuilleMatch extends MyPage {
             }
 
             // Nom Equipe A
-            $equipea = '';
+            $equipea = $row['LibelleA'];
             $equipeaFormat = '';
-            $sql1 = "Select Libelle From gickp_Competitions_Equipes Where Id = $idEquipeA";
-            $result1 = $myBdd->Query($sql1);
-            if ($myBdd->NumRows($result1) == 1) {
-                $row1 = $myBdd->FetchArray($result1);
-                $equipea = $row1['Libelle'];
-            }
 
             // Nom Equipe B
-            $equipeb = '';
+            $equipeb = $row['LibelleB'];
             $equipebFormat = '';
-            $sql2 = "Select Libelle From gickp_Competitions_Equipes Where Id = $idEquipeB";
-            $result2 = $myBdd->Query($sql2, $myBdd->m_link) or die("Erreur Load");
-            if ($myBdd->NumRows($result2) == 1) {
-                $row2 = $myBdd->FetchArray($result2);
-                $equipeb = $row2['Libelle'];
-            }
 
             //Affect Auto
             if ($intitule != '') {
@@ -291,24 +281,22 @@ class FeuilleMatch extends MyPage {
                 $this->InitTitulaireEquipe('A', $idMatch, $idEquipeA, $myBdd);
             }
 
-            $sql3 = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
-                    . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
-                    . "IF (a.Capitaine='E', 1, 0) flagEntraineur "
-                    . "FROM gickp_Matchs_Joueurs a "
-                    . "LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c ON (c.Id_equipe = $idEquipeA AND c.Matric = a.Matric), "
-                    . "gickp_Liste_Coureur b "
-                    . "WHERE a.Matric = b.Matric "
-                    . "AND a.Id_match = $idMatch "
-                    . "AND a.Capitaine <> 'A' "
-                    . "AND a.Equipe = 'A' "
-                    . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";
-            $result3 = $myBdd->Query($sql3);
-            $num_results3 = $myBdd->NumRows($result3);
-
+            $sql3 = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, 
+                b.Origine, b.Reserve icf, c.Matric Matric_titulaire, 
+                IF (a.Capitaine='E', 1, 0) flagEntraineur 
+                FROM gickp_Liste_Coureur b, gickp_Matchs_Joueurs a 
+                LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c ON (c.Id_equipe = ? AND c.Matric = a.Matric) 
+                WHERE a.Matric = b.Matric 
+                AND a.Id_match = ? 
+                AND a.Capitaine <> 'A' 
+                AND a.Equipe = ? 
+                ORDER BY flagEntraineur, Numero, Nom, Prenom ";
+            $result3 = $myBdd->pdo->prepare($sql3);
+            $result3->execute(array($idEquipeA, $idMatch, 'A'));
+            
             $j = 0;
-            for ($i = 1; $i <= $num_results3; $i++) {
+            while($row3 = $result3->fetch()) {
                 $j++;
-                $row3 = $myBdd->FetchArray($result3);
                 if ($row3["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
                     $noma[$j] = strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
@@ -354,24 +342,11 @@ class FeuilleMatch extends MyPage {
                 $this->InitTitulaireEquipe('B', $idMatch, $idEquipeB, $myBdd);
             }
 
-            $sql4 = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
-                    . "b.Origine, b.Reserve icf, c.Matric Matric_titulaire, "
-                    . "IF (a.Capitaine='E', 1, 0) flagEntraineur "
-                    . "FROM gickp_Matchs_Joueurs a "
-                    . "LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = $idEquipeB And c.Matric = a.Matric), "
-                    . "gickp_Liste_Coureur b "
-                    . "WHERE a.Matric = b.Matric "
-                    . "AND a.Id_match = $idMatch "
-                    . "AND a.Capitaine <> 'A' "
-                    . "AND a.Equipe = 'B' "
-                    . "ORDER BY flagEntraineur, Numero, Nom, Prenom ";
-            $result4 = $myBdd->Query($sql4);
-            $num_results4 = $myBdd->NumRows($result4);
+            $result3->execute(array($idEquipeB, $idMatch, 'B'));
 
             $j = 0;
-            for ($i = 1; $i <= $num_results4; $i++) {
+            while($row4 = $result3->fetch()) {
                 $j++;
-                $row4 = $myBdd->FetchArray($result4);
 
                 if ($row4["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
@@ -409,23 +384,23 @@ class FeuilleMatch extends MyPage {
             $scoreDetailA = 0;
             $scoreDetailB = 0;
 
-            $sql5 = "Select d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.Competiteur, d.Numero, d.Equipe_A_B, d.motif, ";
-            $sql5 .= "c.Nom, c.Prenom ";
-            $sql5 .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
-            $sql5 .= "Where d.Id_match = $idMatch ";
-            $sql5 .= "AND d.Id_evt_match != 'T' ";
-            $sql5 .= "AND d.Id_evt_match != 'A' ";
-            $sql5 .= "Order By d.Periode ASC, d.Temps DESC, d.Id ";
-
-            $result5 = $myBdd->Query($sql5);
-            $num_results5 = $myBdd->NumRows($result5);
-
+            $sql5 = "SELECT d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.Competiteur, d.Numero, 
+                d.Equipe_A_B, d.motif, c.Nom, c.Prenom 
+                FROM gickp_Matchs_Detail d 
+                LEFT OUTER JOIN gickp_Liste_Coureur c ON d.Competiteur = c.Matric 
+                WHERE d.Id_match = ? 
+                AND d.Id_evt_match != 'T' 
+                AND d.Id_evt_match != 'A' 
+                ORDER BY d.Periode ASC, d.Temps DESC, d.Id ";
+            $result5 = $myBdd->pdo->prepare($sql5);
+            $result5->execute(array($idMatch));
+            
+            $j = 0;
             $scoreMitempsA = '';
             $scoreMitempsB = '';
             $nblignes = 0;
 
-            for ($i = 1; $i <= $num_results5; $i++) {
-                $row5 = $myBdd->FetchArray($result5);
+            while($row5 = $result5->fetch()) {
                 for ($j = 1; $j <= 11; $j++) {
                     $d[$j] = '';
                 }
