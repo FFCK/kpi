@@ -160,6 +160,9 @@
                             <option value="frame_stats" {if $filtrePres == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres == 'frame_classement'}selected{/if}>Ranking</option>
                         </optgroup>
+                        <optgroup label="Website / Smartphone">
+                            <option value="frame_matchs" {if $filtrePres == 'frame_matchs'}selected{/if}>Games</option>
+                        </optgroup>
                         <optgroup label="API">
                             <option value="api_players" {if $filtrePres == 'api_players'}selected{/if}>Players</option>
                             <option value="api_stats" {if $filtrePres == 'api_stats'}selected{/if}>Stats</option>
@@ -291,6 +294,13 @@
                     <select id="format" name="format">
                         <option value="json">json</option>
                         <option value="csv">csv</option>
+                    </select>
+                </div>
+                <div class='col-sm-1 params' id='navgroup-col'>
+                    <label>navbar</label>
+                    <select id="navgroup" name="navgroup">
+                        <option value="0">no</option>
+                        <option value="1">yes</option>
                     </select>
                 </div>
             </div>
