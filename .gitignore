@@ -35,3 +35,4 @@ sources/kpi3/application/views/facebook_iframe.html.twig
 sources/kpi3/migration/TODO.md
 .vscode/*
 docker/error7.log
+sources/commun/log_cron.txt
