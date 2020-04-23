@@ -19,7 +19,7 @@ class FeuilleCltNiveau extends MyPage {
 
         $codeCompet = utyGetSession('codeCompet', '');
         //Saison
-        $codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
         $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -108,17 +108,17 @@ class FeuilleCltNiveau extends MyPage {
 
         //données
 
-        $sql = "Select Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, Diff_publi, PtsNiveau_publi, CltNiveau_publi ";
-        $sql .= "From gickp_Competitions_Equipes ";
-        $sql .= "Where Code_compet = '";
-        $sql .= $codeCompet;
-        $sql .= "' And Code_saison = '";
-        $sql .= $codeSaison;
-        $sql .= "' And Clt_publi != 0 ";
-        $sql .= "Order By Clt_publi Asc, Diff_publi Desc ";
-
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+        $sql = "SELECT Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, 
+            G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, Diff_publi, 
+            PtsNiveau_publi, CltNiveau_publi 
+            FROM gickp_Competitions_Equipes 
+            WHERE Code_compet = ? 
+            AND Code_saison = ? 
+            AND Clt_publi != 0 
+            ORDER BY Clt_publi ASC, Diff_publi DESC ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
+        $num_results = $result->rowCount();
 
         // recalcul des éliminés
         $elim = $num_results - $elim;
@@ -126,20 +126,20 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->SetFont('Arial', 'BI', 11);
 
         $pdf->Cell(16, 5, '', 0, 0);
-        $pdf->Cell(20, 5, 'Rang', 'B', 0, 'C');
-        $pdf->Cell(55, 5, 'Equipe', 'B', 0, 'L');
-        $pdf->Cell(20, 5, 'Points', 'B', 0, 'C');
-        $pdf->Cell(18, 5, 'Joués', 'B', 0, 'C');
-        $pdf->Cell(18, 5, 'Gagnés', 'B', 0, 'C');
-        $pdf->Cell(18, 5, 'Nuls', 'B', 0, 'C');
-        $pdf->Cell(18, 5, 'Perdus', 'B', 0, 'C');
-        $pdf->Cell(18, 5, 'Forfaits', 'B', 0, 'C');
+        $pdf->Cell(20, 5, $lang['Clt'], 'B', 0, 'C');
+        $pdf->Cell(55, 5, $lang['Equipe'], 'B', 0, 'L');
+        $pdf->Cell(20, 5, $lang['Pts'], 'B', 0, 'C');
+        $pdf->Cell(18, 5, $lang['J'], 'B', 0, 'C');
+        $pdf->Cell(18, 5, $lang['G'], 'B', 0, 'C');
+        $pdf->Cell(18, 5, $lang['N'], 'B', 0, 'C');
+        $pdf->Cell(18, 5, $lang['P'], 'B', 0, 'C');
+        $pdf->Cell(18, 5, $lang['F'], 'B', 0, 'C');
         $pdf->Cell(18, 5, '+', 'B', 0, 'C');
         $pdf->Cell(18, 5, '-', 'B', 0, 'C');
         $pdf->Cell(20, 5, '+/-', 'B', 1, 'C');
 
         $i = 0;
-        while($row = $myBdd->FetchAssoc($result)) {
+        while ($row = $result->fetch()) {
             $separation = 0;
             //Séparation qualifiés
             if (($i + 1) > $qualif && $qualif != 0) {
