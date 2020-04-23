@@ -1085,6 +1085,38 @@ class MyBdd
 				array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
 		}
 	}
+
+	/**
+	 * InitTitulaireEquipe
+	 *
+	 * @param [type] $numEquipe
+	 * @param [type] $idMatch
+	 * @param [type] $idEquipe
+	 * @return void
+	 */
+	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd=false) {
+        $sql = "SELECT Count(*) Nb 
+            FROM gickp_Matchs_Joueurs 
+            WHERE Id_match = ? 
+            AND Equipe = ? ";
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array($idMatch, $numEquipe));
+
+        $row = $result->fetch();
+        if ((int) $row['Nb'] > 0) {
+            return;
+        }
+
+        $sql = "REPLACE INTO gickp_Matchs_Joueurs 
+            SELECT ?, Matric, Numero, ?, Capitaine 
+            FROM gickp_Competitions_Equipes_Joueurs 
+            WHERE Id_equipe = ? 
+            AND Capitaine <> 'X' 
+            AND Capitaine <> 'A' ";
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array($idMatch, $numEquipe, $idEquipe));
+    }
+
 	
     // Check cumuls cartons
     // Si carton rouge, calculer les cumuls tous cartons et aviser
@@ -1338,9 +1370,12 @@ class MyBdd
 	// GetEvenementLibelle	
 	function GetEvenementLibelle($idEvenement)
 	{
-		$sql = "SELECT Libelle FROM gickp_Evenement WHERE Id = $idEvenement "; 
-		$query = $this->Query($sql);
-        $row = $this->FetchArray($query);
+		$sql = "SELECT Libelle 
+			FROM gickp_Evenement 
+			WHERE Id = ? "; 
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array($idEvenement));
+        $row = $result->fetch();
         return $row['Libelle'];
 	}	
 	
