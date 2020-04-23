@@ -22,7 +22,8 @@ class Matchs extends MyPage
         }
 		$_SESSION['codeCompetGroup'] = $codeCompetGroup;
 
-		$codeSaison = utyGetPost('Saison', utyGetSaison());
+		$codeSaison = $myBdd->GetActiveSaison();
+		$codeSaison = utyGetPost('Saison', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
         if($codeSaison != $_SESSION['Saison'] and utyGetGet('Compet', '*') == '*'){
             $_GET['J'] = '*';
@@ -49,17 +50,19 @@ class Matchs extends MyPage
 		$this->m_tpl->assign('Round', $Round);
 		
         if($event > 0) {
-            $sql .= "SELECT DISTINCT(j.Code_competition), j.Code_saison "
-                    . "FROM gickp_Journees j, gickp_Evenement_Journees ej "
-                    . "WHERE j.Id = ej.Id_journee "
-                    . "AND ej.Id_evenement = $event ";
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)){ 
-                if($Compets != '') {
-                    $Compets .= ',';
-                }
-                $Compets .= $row['Code_competition'];
+            $sql .= "SELECT DISTINCT(j.Code_competition), j.Code_saison 
+                FROM gickp_Journees j, gickp_Evenement_Journees ej 
+                WHERE j.Id = ej.Id_journee 
+                AND ej.Id_evenement = ? ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($event));
+            while ($row = $result->fetch()) {
+                $arrayCompets[] = $row['Code_competition'];
             }
+        } elseif ($Compets != '') {
+            $arrayCompets = implode(',', $Compets);
+        } else {
+            $arrayCompets = [];
         }
         
 		$idSelJournee = utyGetSession('idSelJournee', '*');
@@ -71,14 +74,6 @@ class Matchs extends MyPage
 		$_SESSION['idSelJournee'] = $idSelJournee;
 		$this->m_tpl->assign('idSelJournee', $idSelJournee);
 		
-        if($Compets != '') {
-            $Compets = explode(',', $Compets);
-            foreach ($Compets as $value) {
-                $Compets1[] = "'" . $value . "'";
-            }
-            $Compets = implode(',', $Compets1);
-        }
-        
 		$codeSaison = utyGetGet('Saison', utyGetSaison());
         if($codeSaison != $_SESSION['Saison']){
             $_GET['J'] = '*';
@@ -140,115 +135,128 @@ class Matchs extends MyPage
         
 		// Chargement des Compétitions ...
 		$arrayCompetition = array();
-		$sql  = "SELECT * "
-                ."FROM gickp_Competitions "
-                ."WHERE Code_saison = $codeSaison "
-                ."AND (Publication='O' OR Code_ref = 'M') ";
-        if($Compets == '') {
-            $sql .= "AND Code_ref = '$codeCompetGroup' ";
+        if($Compets == '' && count($arrayCompets) == 0) {
+            $sql  = "SELECT * 
+                FROM gickp_Competitions 
+                WHERE Code_saison = ? 
+                AND (Publication='O' OR Code_ref = 'M') 
+                AND Code_ref = ? 
+                ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeSaison, $codeCompetGroup));
         } else {
-            $sql .= "AND Code IN ($Compets) ";
+            $in  = str_repeat('?,', count($arrayCompets) - 1) . '?';
+            $sql  = "SELECT * 
+                FROM gickp_Competitions 
+                WHERE Code_saison = ? 
+                AND (Publication='O' OR Code_ref = 'M') 
+                AND Code IN ($in) 
+                ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array_merge([$codeSaison], $arrayCompets));
         }
-        $sql .= "ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code ";
-        $result = $myBdd->Query($sql);
-        $nbCompet = $myBdd->NumRows($result);
-        $listCompet = '';
-
-        while ($row = $myBdd->FetchArray($result)){ 
+        $nbCompet = $result->rowCount();
+        while ($row = $result->fetch()) {
             array_push($arrayCompetition, $row);
             if($idSelCompet == '*' || $idSelCompet == $row["Code"]) {
-                if ($listCompet) {
-                    $listCompet .= ',';
-                }
-                $listCompet .= "'".$row["Code"]."'";
+                $listCompet[] = $row["Code"];
             }
 		}
         $this->m_tpl->assign('arrayCompetition', $arrayCompetition);
         $this->m_tpl->assign('nbCompet', $nbCompet);
-        
         // Chargement des Compétitions du groupe
         $arrayCompetitionDuGroupe = array();
-
+        
         if (!$listCompet) {
-            $listCompet = "'0'";
+            $listCompet = ['0'];
         }
-
+        
         // Chargement des journées
+        $in  = str_repeat('?,', count($listCompet) - 1) . '?';
         if ($event > 0) {
-            $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut "
-                    ."FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej "
-                    ."WHERE ej.Id_journee = j.Id "
-                    ."AND ej.Id_evenement = $event "
-                    ."AND j.Code_competition In (".$listCompet.") "
-                    ."AND j.Code_saison = '".$codeSaison."' "
-                    ."AND j.Code_competition = c.Code "
-                    ."AND j.Code_saison = c.Code_saison "
-                    ."AND j.Publication = 'O' "
-                    ."ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
+                FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
+                WHERE ej.Id_journee = j.Id 
+                AND ej.Id_evenement = ? 
+                AND j.Code_competition IN ($in) 
+                AND j.Code_saison = ? 
+                AND j.Code_competition = c.Code 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array_merge([$event], $listCompet, [$codeSaison]));
         } else {
-            $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut "
-                    ."FROM gickp_Journees j, gickp_Competitions c "
-                    ."WHERE j.Code_competition In (".$listCompet.") "
-                    ."AND j.Code_saison = '".$codeSaison."' "
-                    ."AND j.Code_competition = c.Code "
-                    ."AND j.Code_saison = c.Code_saison "
-                    ."AND j.Publication = 'O' "
-                    ."ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
+                FROM gickp_Journees j, gickp_Competitions c 
+                WHERE j.Code_competition IN ($in) 
+                AND j.Code_saison = ? 
+                AND j.Code_competition = c.Code 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array_merge($listCompet, [$codeSaison]));
         }
         $arrayListJournees = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){
+        while ($row = $result->fetch()) {
             array_push($arrayListJournees, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 
-                                                'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
-                                                'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
-                                                'Date_debut' => utyDateUsToFr($row['Date_debut']),
-                                                ));            
+                'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
+                'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
+                'Date_debut' => utyDateUsToFr($row['Date_debut']),
+            ));            
         }
 		$this->m_tpl->assign('arrayListJournees', $arrayListJournees);
         
         
 		// Chargement des Informations relatives aux Journées ...
 		if ($idSelJournee != '*') {
-			$sql  = "SELECT j.*, c.* "
-                    ."FROM gickp_Journees j, gickp_Competitions c "
-                    ."WHERE j.Id = $idSelJournee "
-                    ."AND j.Publication = 'O' ";
-			
-		} elseif ($event > 0) {
-			$sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut "
-                    ."FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej "
-                    ."WHERE ej.Id_journee = j.Id "
-                    ."AND ej.Id_evenement = $event "
-                    ."AND j.Code_competition In (".$listCompet.") "
-                    ."AND j.Code_saison = '".$codeSaison."' "
-                    ." AND j.Code_competition = c.Code "
-                    ." AND j.Code_saison = c.Code_saison "
-                    ." AND j.Publication = 'O' "
-                    ." ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
-		} else {
-			$sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut "
-                    ."FROM gickp_Journees j, gickp_Competitions c "
-                    ."WHERE j.Code_competition In (".$listCompet.") "
-                    ."AND j.Code_saison = '".$codeSaison."' "
-                    ." AND j.Code_competition = c.Code "
-                    ." AND j.Code_saison = c.Code_saison "
-                    ." AND j.Publication = 'O' "
-                    ." ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $sql  = "SELECT j.*, c.* 
+                FROM gickp_Journees j, gickp_Competitions c 
+                WHERE j.Id = ? 
+                AND j.Publication = 'O' ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($idSelJournee));
+        } elseif ($event > 0) {
+			$sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, 
+                j.Lieu, j.Date_debut 
+                FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
+                WHERE ej.Id_journee = j.Id 
+                AND ej.Id_evenement = ? 
+                AND j.Code_competition IN ($in) 
+                AND j.Code_saison = ? 
+                AND j.Code_competition = c.Code 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array_merge([$event], $listCompet, [$codeSaison]));
+        } else {
+			$sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, 
+                j.Lieu, j.Date_debut 
+                FROM gickp_Journees j, gickp_Competitions c 
+                WHERE j.Code_competition IN ($in) 
+                AND j.Code_saison = ? 
+                AND j.Code_competition = c.Code 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array_merge($listCompet, [$codeSaison]));
         }
 		$arrayJournees = array();
 		$lstJournee = '';
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){ 
+        while ($row = $result->fetch()) {
 			array_push($arrayJournees, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 
-                                                'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
-                                                'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
-                                                'Date_debut' => utyDateUsToFr($row['Date_debut']),
-                                                
-                                                ));
+                'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
+                'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
+                'Date_debut' => utyDateUsToFr($row['Date_debut']),
+            ));
             if ($lstJournee) {
                 $lstJournee .= ',';
             }
             $lstJournee .= $row['Id'];
+            $arrayInJournees[] = $row['Id'];
 		}
 		$_SESSION['lstJournee'] = $lstJournee;
 		
@@ -257,27 +265,33 @@ class Matchs extends MyPage
             // Ordre des Matchs 
 			$orderMatchs = 'ORDER BY m.Date_match, m.Heure_match, m.Terrain';
 			
-			// Chargement des Matchs des journées ...
-			$sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, "
-                    . "m.Publication, m.Validation, m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, "
-                    . "cea.Libelle EquipeA, ceb.Libelle EquipeB, cea.Numero NumA, ceb.Numero NumB, cea.Code_club clubA, ceb.Code_club clubB, "
-                    . "m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, "
-                    . "m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, "
-                    . "j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut, c.Soustitre2, "
-                    . "lcp.Nom Nom_arb_prin, lcp.Prenom Prenom_arb_prin, lcs.Nom Nom_arb_sec, lcs.Prenom Prenom_arb_sec "
-                    . "FROM gickp_Matchs m "
-                    . "LEFT OUTER JOIN gickp_Competitions_Equipes cea ON (m.Id_equipeA = cea.Id) "
-                    . "LEFT OUTER JOIN gickp_Competitions_Equipes ceb ON (m.Id_equipeB = ceb.Id) "
-                    . "LEFT OUTER JOIN gickp_Liste_Coureur lcp ON (m.Matric_arbitre_principal = lcp.Matric) "
-                    . "LEFT OUTER JOIN gickp_Liste_Coureur lcs ON (m.Matric_arbitre_secondaire = lcs.Matric) "
-                    . "INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id) "
-                    . "INNER JOIN gickp_Competitions c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison) "
-                    . "WHERE m.Id_journee IN ($lstJournee) "
-                    . "AND m.Publication = 'O' ";
+            // Chargement des Matchs des journées ...
+            $in  = str_repeat('?,', count($arrayInJournees) - 1) . '?';
+            $sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, 
+                m.Publication, m.Validation, m.Statut, m.Periode, m.ScoreDetailA, m.ScoreDetailB, 
+                cea.Libelle EquipeA, ceb.Libelle EquipeB, cea.Numero NumA, ceb.Numero NumB, cea.Code_club clubA, 
+                ceb.Code_club clubB, m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, 
+                m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, 
+                j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut, c.Soustitre2, 
+                lcp.Nom Nom_arb_prin, lcp.Prenom Prenom_arb_prin, lcs.Nom Nom_arb_sec, lcs.Prenom Prenom_arb_sec 
+                FROM gickp_Matchs m 
+                LEFT OUTER JOIN gickp_Competitions_Equipes cea ON (m.Id_equipeA = cea.Id) 
+                LEFT OUTER JOIN gickp_Competitions_Equipes ceb ON (m.Id_equipeB = ceb.Id) 
+                LEFT OUTER JOIN gickp_Liste_Coureur lcp ON (m.Matric_arbitre_principal = lcp.Matric) 
+                LEFT OUTER JOIN gickp_Liste_Coureur lcs ON (m.Matric_arbitre_secondaire = lcs.Matric) 
+                INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id) 
+                INNER JOIN gickp_Competitions c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison) 
+                WHERE m.Id_journee IN ($in) 
+                AND m.Publication = 'O' ";
             if ($terrains != '') {
-                $sql .= "AND m.Terrain IN ($terrains) ";
+                $in2  = str_repeat('?,', count($terrains) - 1) . '?';
+                $sqlterrains = " AND m.Terrain IN ($in2) ";
+                $result = $myBdd->pdo->prepare($sql . $sqlterrains . $orderMatchs);
+                $result->execute(array_merge($arrayInJournees, $terrains));
+            } else {
+                $result = $myBdd->pdo->prepare($sql . $orderMatchs);
+                $result->execute($arrayInJournees);
             }
-			$sql .= $orderMatchs;
 
         	$dateDebut = '';
 			$dateFin = '';
@@ -290,8 +304,7 @@ class Matchs extends MyPage
             $terrain_match = '';
             $idTerrain = '';
             
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)) {
+            while ($row = $result->fetch()) {
                 if ($filtreJour == '' || $row['Date_match'] == $filtreJour) {
                     if ($row['Soustitre2'] != '') {
                         $row['Categorie'] = $row['Soustitre2'];

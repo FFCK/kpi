@@ -20,18 +20,19 @@ $term = trim(utyGetGet('term'));
 // replace multiple spaces with one
 $term = preg_replace('/\s+/', ' ', $term);
 $term2 = preg_replace('/\s/', '-', $term);
-$sql  = "SELECT * "
-        ."FROM gickp_Equipe "
-        ."WHERE Code_club LIKE '".$term."%' "
-        ."OR Libelle LIKE '%".$term."%' "
-        ."OR Libelle LIKE '%".$term2."%' "
-        ."ORDER BY Libelle ";
-$result = $myBdd->Query($sql);
-while($row = $myBdd->FetchAssoc($result)) {
-    $jRow["value"] = $row['Libelle'];
-    $jRow["idEquipe"] = $row['Numero'];
-    $jRow["label"] = $row['Code_club'].' - '.$row['Libelle'].' ('.$row['Numero'].')';
-    $jRow["nomEquipe"] = $row['Numero'];
+$sql = "SELECT * 
+    FROM gickp_Equipe 
+    WHERE Code_club LIKE ? 
+    OR Libelle LIKE ? 
+    OR Libelle LIKE ? 
+    ORDER BY Libelle ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($term.'%', '%'.$term.'%', '%'.$term2.'%'));
+while ($row = $result->fetch()) { 
+    $jRow['value'] = $row['Libelle'];
+    $jRow['idEquipe'] = $row['Numero'];
+    $jRow['label'] = $row['Code_club'].' - '.$row['Libelle'].' ('.$row['Numero'].')';
+    $jRow['nomEquipe'] = $row['Numero'];
     array_push($a_json, $jRow);
 }
 $json = json_encode($a_json);
