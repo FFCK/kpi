@@ -38,7 +38,7 @@ class PdfListeMatchs extends MyPage
 		$filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
 		$myBdd = new MyBdd();
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetGet('S', $codeSaison);
 		$lstJournee = utyGetSession('lstJournee', 0);
 		$idEvenement = utyGetSession('idEvenement', -1);
@@ -46,7 +46,7 @@ class PdfListeMatchs extends MyPage
 		$laCompet = utyGetSession('codeCompet', 0);
 		$laCompet = utyGetGet('Compet', $laCompet);
         $Group = utyGetGet('Group', '');
-		$orderMatchs = utyGetSession('orderMatchs', 'Order By a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
+		$orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $titreEvenementCompet = '';
 
         if($idEvenement > 0) {
