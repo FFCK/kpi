@@ -20,21 +20,24 @@ $term = trim(utyGetGet('term'));
 // replace multiple spaces with one
 $term = preg_replace('/\s+/', ' ', $term);
 $term2 = preg_replace('/\s/', '-', $term);
-$sql  = "SELECT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email, "
-        . "GROUP_CONCAT(CONCAT_WS(',', e.Numero, e.Libelle) ORDER BY e.Libelle ASC SEPARATOR ';') "
-        ."FROM gickp_Club c LEFT OUTER JOIN gickp_Equipe e ON (c.Code = e.Code_club) "
-//        ."FROM gickp_Club c JOIN gickp_Equipe e ON (c.Code = e.Code_club) "
-        ."WHERE 1=1 "
-        ."AND (c.Code LIKE '".$term."%' "
-        ."OR c.Libelle LIKE '%".$term."%' "
-        ."OR e.Libelle LIKE '%".$term."%' "
-        ."OR c.Libelle LIKE '%".$term2."%' "
-        ."OR e.Libelle LIKE '%".$term2."%') "
-//        .") "
-        ."GROUP BY c.Code "
-        ."ORDER BY c.Officiel DESC, c.Code, c.Libelle ";
-$result = $myBdd->Query($sql);
-while($row = $myBdd->FetchAssoc($result)) {
+$sql = "SELECT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email, 
+        GROUP_CONCAT(CONCAT_WS(',', e.Numero, e.Libelle) ORDER BY e.Libelle ASC SEPARATOR ';') 
+        FROM gickp_Club c LEFT OUTER JOIN gickp_Equipe e ON (c.Code = e.Code_club) 
+        WHERE 1=1 
+        AND (c.Code LIKE :term 
+        OR c.Libelle LIKE :term1 
+        OR e.Libelle LIKE :term1 
+        OR c.Libelle LIKE :term2 
+        OR e.Libelle LIKE :term2) 
+        GROUP BY c.Code 
+        ORDER BY c.Officiel DESC, c.Code, c.Libelle ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array(
+        ':term' => $term.'%', 
+        ':term1' => '%'.$term.'%', 
+        ':term2' => '%'.$term2.'%'
+));
+while ($row = $result->fetch()) { 
     $jRow["value"] = $row['Libelle'];
     $jRow["idClub"] = $row['Code'];
     $jRow["label"] = $row['Code'].' - '.$row['Libelle'];

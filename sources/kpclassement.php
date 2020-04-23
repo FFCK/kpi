@@ -18,7 +18,7 @@ class Classement extends MyPage
 		$_SESSION['codeCompet'] = $codeCompet;
 		$this->m_tpl->assign('codeCompet', $codeCompet);
 			
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
@@ -76,21 +76,21 @@ class Classement extends MyPage
 		
 		if (strlen($codeCompet) > 0) {
 			// Classement public				
-			$sql  = "SELECT ce.*, c.Code_comite_dep "
-                    . "FROM gickp_Competitions_Equipes ce, gickp_Club c "
-                    . "WHERE ce.Code_compet = '$codeCompet' "
-                    . "AND ce.Code_saison = $codeSaison "
-                    . "AND ce.Code_club = c.Code ";
+			$sql = "SELECT ce.*, c.Code_comite_dep 
+				FROM gickp_Competitions_Equipes ce, gickp_Club c 
+				WHERE ce.Code_compet = ? 
+				AND ce.Code_saison = ? 
+				AND ce.Code_club = c.Code ";
             if ($typeClt == 'CP') {
-                $sql .= "AND CltNiveau_publi > 0 ";
-                $sql .= "ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";	 
+				$sql .= "AND CltNiveau_publi > 0 
+					ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";	 
             } else {
-                $sql .= "AND Clt_publi > 0 ";
-                $sql .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";
+				$sql .= "AND Clt_publi > 0 
+					ORDER BY Clt_publi Asc, Diff_publi Desc ";
             }
-	
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)) { 
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeCompet, $codeSaison));
+            while ($row = $result->fetch()) {
                 //Logos
                 $logo = '';
                 $club = $row['Code_club'];
@@ -138,67 +138,6 @@ class Classement extends MyPage
             array_push($arrayOrderCompetition, array('CP', 'Coupe', ''));
         }
         $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
-	}
-	
-	function GetTypeClt($codeCompet,  $codeSaison)
-	{
-		if (strlen($codeCompet) == 0) {
-            return 'CHPT';
-        }
-
-        $myBdd = new MyBdd();
-		
-		$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-		$typeClt = $recordCompetition['Code_typeclt'];
-		if ($typeClt != 'CP') {
-            $typeClt = 'CHPT';
-        }
-
-        return $typeClt;
-	}
-	
-	
-	// ExistCompetitionEquipeNiveau
-	function ExistCompetitionEquipeNiveau($idEquipe, $niveau)
-	{
-		$myBdd = new MyBdd();
-	
-			$sql  = "SELECT COUNT(*) Nb "
-                . "FROM gickp_Competitions_Equipes_Niveau "
-                . "WHERE Id = $idEquipe AND Niveau = $niveau ";
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result);	 
-			if ($row['Nb'] == 1) {
-                return;
-            } // Le record existe ...
-		}
-
-		$sql  = "INSERT INTO gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, "
-                . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-		$sql .= "VALUES ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		$myBdd->Query($sql);
-	}
-
-	// ExistCompetitionEquipeJournee
-	function ExistCompetitionEquipeJournee($idEquipe, $idJournee)
-	{
-		$myBdd = new MyBdd();
-		$sql  = "SELECT COUNT(*) Nb "
-                . "FROM gickp_Competitions_Equipes_Journee "
-                . "WHERE Id = $idEquipe "
-                . "AND Id_journee = $idJournee";
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchArray($result);	 
-			if ($row['Nb'] == 1)
-				return; // Le record existe ...
-		}
-
-		$sql  = "INSERT INTO gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, "
-                . "Plus, Moins, Diff, PtsNiveau, CltNiveau) ";
-		$sql .= "VALUES ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		$myBdd->Query($sql);
 	}
 	
 
