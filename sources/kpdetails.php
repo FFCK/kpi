@@ -21,7 +21,7 @@ class Details extends MyPage
         }
 		$_SESSION['codeCompetGroup'] = $codeCompetGroup;
 
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('Saison', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
         if($codeSaison != $_SESSION['Saison'] and utyGetGet('Compet', '*') == '*'){
@@ -110,21 +110,23 @@ class Details extends MyPage
         
         if ($event > 0) {
             // Chargement des Compétitions de l'événement
-            $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, c.Libelle Libelle_compet, c.*, 0 Selected "
-                    . "FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej "
-                    . "WHERE 1 "
-                    . "AND j.Code_saison = $codeSaison "
-                    . "AND j.Code_competition = c.Code "
-                    . "AND j.Id = ej.Id_journee "
-                    . "AND j.Code_saison = c.Code_saison "
-                    . "AND j.Publication = 'O' "
-                    . "AND c.Publication = 'O' "
-                    . "AND ej.Id_evenement = $event "
-                    . "GROUP BY c.Code "
-                    . "ORDER BY c.GroupOrder ";	 
+            $sql = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, 
+                c.Libelle Libelle_compet, c.*, 0 Selected 
+                FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
+                WHERE 1 
+                AND j.Code_saison = ? 
+                AND j.Code_competition = c.Code 
+                AND j.Id = ej.Id_journee 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                AND c.Publication = 'O' 
+                AND ej.Id_evenement = ? 
+                GROUP BY c.Code 
+                ORDER BY c.GroupOrder ";	 
             $arrayListJournees = array();
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)){
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeSaison, $event));
+            while ($row = $result->fetch()) {
                 if ($row['Code_competition'] == $codeCompet) {
                     $row['Selected'] == true;
                     $journee[] = $row;
@@ -141,17 +143,16 @@ class Details extends MyPage
             $arrayPoule = array();
             $poule = '';
             if (strlen($codeCompet) > 0 && $codeCompet != '*') { 
-                $sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  ";
-                $sql .= "From gickp_Competitions_Equipes ce, gickp_Club c ";
-                $sql .= "Where ce.Code_compet = '";
-                $sql .= $codeCompet;
-                $sql .= "' And ce.Code_saison = '";
-                $sql .= $codeSaison;
-                $sql .= "' And ce.Code_club = c.Code ";	 
-                $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
-                
-                $result = $myBdd->Query($sql);
-                while ($row = $myBdd->FetchArray($result)){
+                $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
+                    ce.Tirage, c.Code_comite_dep  
+                    FROM gickp_Competitions_Equipes ce, gickp_Club c 
+                    WHERE ce.Code_compet = ? 
+                    AND ce.Code_saison = ? 
+                    AND ce.Code_club = c.Code 
+                    ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array($codeCompet, $codeSaison));
+                while ($row = $result->fetch()) {
                     //Logos
                     $logo = '';
                     $club = $row['Code_club'];
@@ -177,15 +178,16 @@ class Details extends MyPage
                     $poule = $row['Poule'];
                     
                     $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
-                                                        'Libelle' => $row['Libelle'], 
-                                                        'Code_club' => $row['Code_club'],
-                                                        'Code_comite_dep' => $row['Code_comite_dep'],
-                                                        'logo' => $logo,
-                                                        'club' => $club,
-                                                        'Numero' => $row['Numero'], 
-                                                        'Poule' => $row['Poule'], 
-                                                        'Tirage' => $row['Tirage'], 
-                                                        'Code_comite_dep' => $row['Code_comite_dep'] );
+                        'Libelle' => $row['Libelle'], 
+                        'Code_club' => $row['Code_club'],
+                        'Code_comite_dep' => $row['Code_comite_dep'],
+                        'logo' => $logo,
+                        'club' => $club,
+                        'Numero' => $row['Numero'], 
+                        'Poule' => $row['Poule'], 
+                        'Tirage' => $row['Tirage'], 
+                        'Code_comite_dep' => $row['Code_comite_dep'] 
+                    );
                 }
             }	
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
@@ -200,19 +202,21 @@ class Details extends MyPage
             
         } elseif ($type == 'CHPT') {
             // Chargement des journées
-            $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, c.Libelle Libelle_compet, c.* "
-                    . "FROM gickp_Journees j, gickp_Competitions c "
-                    . "WHERE j.Code_competition = '$codeCompet' "
-                    . "AND j.Code_saison = $codeSaison "
-                    . "AND j.Code_competition = c.Code "
-                    . "AND j.Code_saison = c.Code_saison "
-                    . "AND j.Publication = 'O' "
-                    . "AND c.Publication = 'O' "
-                    . "ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
+            $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, 
+                c.Libelle Libelle_compet, c.* 
+                FROM gickp_Journees j, gickp_Competitions c 
+                WHERE j.Code_competition = ? 
+                AND j.Code_saison = ? 
+                AND j.Code_competition = c.Code 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                AND c.Publication = 'O' 
+                ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $arrayListJournees = array();
             $journee = array();
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)){
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeCompet, $codeSaison));
+            while ($row = $result->fetch()) {
                 if($row['Id_journee'] == $idSelJournee || $idSelJournee == '*'){
                     $row['Selected'] = true;
                     $journee[] = $row;
@@ -224,19 +228,26 @@ class Details extends MyPage
             $this->m_tpl->assign('journee', $journee);
             $this->m_tpl->assign('arrayListJournees', $arrayListJournees);
             
-            $sql  = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep             
-                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c ";
             if($idSelJournee != '*') {
-                $sql .= "WHERE m.Id_journee = $idSelJournee ";
+                $sql = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep 
+                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c 
+                    WHERE m.Id_journee = ? 
+                    AND ce.Code_club = c.Code 
+                    AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB) ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array($idSelJournee));
             } else {
-                $sql .= "WHERE ce.Code_compet = '$codeCompet' "
-                        . "AND ce.Code_saison = $codeSaison ";
+                $sql = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep 
+                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c 
+                    WHERE ce.Code_compet = ? 
+                    AND ce.Code_saison = ? 
+                    AND ce.Code_club = c.Code
+                    AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB) ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array($codeCompet, $codeSaison));
             }
-            $sql .= "AND ce.Code_club = c.Code
-                    AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)";
             $arrayEquipe = array();
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)){
+            while ($row = $result->fetch()) {
                 //Logos
                 $row['logo'] = '';
                 $row['club'] = $row['Code_club'];
@@ -257,25 +268,27 @@ class Details extends MyPage
 
         } else {
             // Chargement des Compétitions ...
-            $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, c.Libelle Libelle_compet, c.* "
-                    . "FROM gickp_Journees j, gickp_Competitions c "
-                    . "WHERE 1 "
-                    . "AND j.Code_saison = $codeSaison "
-                    . "AND j.Code_competition = c.Code "
-                    . "AND j.Code_saison = c.Code_saison "
-                    . "AND j.Publication = 'O' "
-                    . "AND c.Publication = 'O' "
-                    . "AND c.Code_ref = '$codeCompetGroup' "
-                    . "GROUP BY c.Code "
-                    . "ORDER BY c.Code_niveau, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code ";	 
+            $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, 
+                c.Libelle Libelle_compet, c.* 
+                FROM gickp_Journees j, gickp_Competitions c 
+                WHERE 1 
+                AND j.Code_saison = ? 
+                AND j.Code_competition = c.Code 
+                AND j.Code_saison = c.Code_saison 
+                AND j.Publication = 'O' 
+                AND c.Publication = 'O' 
+                AND c.Code_ref = ? 
+                GROUP BY c.Code 
+                ORDER BY c.Code_niveau, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code ";	 
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeSaison, $codeCompetGroup));
             $arrayListJournees = array();
-            $result = $myBdd->Query($sql);
-            while ($row = $myBdd->FetchArray($result)){
+            while ($row = $result->fetch()) {
                 if($row['Code_competition'] == $codeCompet){
-                    $row['Selected'] == true;
+                    $row['Selected'] = true;
                     $journee[] = $row;
                 }else{
-                    $row['Selected'] == false;
+                    $row['Selected'] = false;
                 }
                 array_push($arrayListJournees, $row);            
             }
@@ -288,17 +301,16 @@ class Details extends MyPage
             $poule = '';
             if (strlen($codeCompet) > 0 && $codeCompet != '*')
             { 
-                $sql  = "Select ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, c.Code_comite_dep  ";
-                $sql .= "From gickp_Competitions_Equipes ce, gickp_Club c ";
-                $sql .= "Where ce.Code_compet = '";
-                $sql .= $codeCompet;
-                $sql .= "' And ce.Code_saison = '";
-                $sql .= $codeSaison;
-                $sql .= "' And ce.Code_club = c.Code ";	 
-                $sql .= " Order By ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
-                
-                $result = $myBdd->Query($sql);
-                while ($row = $myBdd->FetchArray($result)){
+                $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
+                    ce.Tirage, c.Code_comite_dep  
+                    FROM gickp_Competitions_Equipes ce, gickp_Club c 
+                    WHERE ce.Code_compet = ? 
+                    AND ce.Code_saison = ? 
+                    AND ce.Code_club = c.Code 
+                    ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array($codeCompet, $codeSaison));
+                while ($row = $result->fetch()) {
                     //Logos
                     $logo = '';
                     $club = $row['Code_club'];
@@ -324,15 +336,16 @@ class Details extends MyPage
                     $poule = $row['Poule'];
                     
                     $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
-                                                        'Libelle' => $row['Libelle'], 
-                                                        'Code_club' => $row['Code_club'],
-                                                        'Code_comite_dep' => $row['Code_comite_dep'],
-                                                        'logo' => $logo,
-                                                        'club' => $club,
-                                                        'Numero' => $row['Numero'], 
-                                                        'Poule' => $row['Poule'], 
-                                                        'Tirage' => $row['Tirage'], 
-                                                        'Code_comite_dep' => $row['Code_comite_dep'] );
+                        'Libelle' => $row['Libelle'], 
+                        'Code_club' => $row['Code_club'],
+                        'Code_comite_dep' => $row['Code_comite_dep'],
+                        'logo' => $logo,
+                        'club' => $club,
+                        'Numero' => $row['Numero'], 
+                        'Poule' => $row['Poule'], 
+                        'Tirage' => $row['Tirage'], 
+                        'Code_comite_dep' => $row['Code_comite_dep'] 
+                    );
                 }
             }	
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
@@ -341,9 +354,6 @@ class Details extends MyPage
                 $poule = -1;
             }
             $this->m_tpl->assign('lastpoule', $poule);
-            if(is_file('img/schemas/schema_' . $codeSaison . '_' . $codeCompet . '.png')) {
-                $this->m_tpl->assign('schema', 'img/schemas/schema_' . $codeSaison . '_' . $codeCompet . '.png');
-            }
 
         }
         

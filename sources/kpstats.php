@@ -18,7 +18,7 @@ class Stats extends MyPage
 		$_SESSION['codeCompet'] = $codeCompet;
 		$this->m_tpl->assign('codeCompet', $codeCompet);
 			
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
@@ -65,27 +65,28 @@ class Stats extends MyPage
 		}
 
         // Stats buts
-        $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ, cej.Numero, cej.Capitaine,
-                    ce.Libelle Equipe, ce.Numero NumEquipe,
-                    SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts
-                FROM gickp_Competitions_Equipes ce
-                LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs cej ON ce.Id = cej.Id_equipe
-                LEFT OUTER JOIN gickp_Journees j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
-                LEFT OUTER JOIN gickp_Matchs m ON j.Id = m.Id_journee
-                LEFT OUTER JOIN gickp_Matchs_Detail md ON m.Id = md.Id_match
-                WHERE md.Competiteur = cej.Matric
-                AND md.Id_evt_match = 'B'
-                AND ce.Code_compet = '$codeCompet' 
-                AND ce.Code_saison = $codeSaison 
-                AND m.Validation = 'O'
-                AND m.Publication = 'O'
-                GROUP BY cej.Matric
-                ORDER BY buts DESC, cej.Nom, cej.Prenom
-                LIMIT 0, $nbLignes ";
+        $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ, cej.Numero, 
+            cej.Capitaine, ce.Libelle Equipe, ce.Numero NumEquipe, 
+            SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts 
+            FROM gickp_Competitions_Equipes ce 
+            LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs cej ON ce.Id = cej.Id_equipe
+            LEFT OUTER JOIN gickp_Journees j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
+            LEFT OUTER JOIN gickp_Matchs m ON j.Id = m.Id_journee
+            LEFT OUTER JOIN gickp_Matchs_Detail md ON m.Id = md.Id_match
+            WHERE md.Competiteur = cej.Matric
+            AND md.Id_evt_match = 'B'
+            AND ce.Code_compet = ? 
+            AND ce.Code_saison = ? 
+            AND m.Validation = 'O'
+            AND m.Publication = 'O'
+            GROUP BY cej.Matric
+            ORDER BY buts DESC, cej.Nom, cej.Prenom
+            LIMIT 0, $nbLignes ";
         $arrayButeurs = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){ 
-            array_push($arrayButeurs, array( 'Competition' => $row['Competition'], 
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
+        while ($row = $result->fetch()) {
+            array_push($arrayButeurs, array( 
                         'Licence' => $row['Matric'],  
                         'Nom' => $row['Nom'],  
                         'Prenom' => $row['Prenom'],  
@@ -98,23 +99,7 @@ class Stats extends MyPage
         $this->m_tpl->assign('arrayButeurs', $arrayButeurs);
         $this->m_tpl->assign('page', 'Stats');
 	}
-	
-	function GetTypeClt($codeCompet,  $codeSaison)
-	{
-		if (strlen($codeCompet) == 0)
-			return 'CHPT';
-			
-		$myBdd = new MyBdd();
 		
-		$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-		$typeClt = $recordCompetition['Code_typeclt'];
-		if ($typeClt != 'CP')
-			$typeClt = 'CHPT';
-		
-		return $typeClt;
-	}
-	
-	
 
 	// Stats 		
 	function __construct()

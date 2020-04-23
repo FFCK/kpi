@@ -23,23 +23,23 @@ class Historique extends MyPage
 		$codeCompet = utyGetGet('Compet', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
 
-		$activeSaison = $myBdd->GetActiveSaison();
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
 
 		// Chargement des Saisons ...
-		$sql  = "Select Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin "
-                . "From gickp_Saison "
-                . "Order By Code DESC ";	 
-		$result = $myBdd->Query($sql);
+		$sql = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
+			FROM gickp_Saison 
+			ORDER BY Code DESC ";
 		$arraySaison = array();
-        while ($row = $myBdd->FetchArray($result)){
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute();
+        while ($row = $result->fetch()) {
             array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-											'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-											'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+				'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
+				'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
 		}
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		$this->m_tpl->assign('sessionSaison', $codeSaison);
@@ -59,23 +59,28 @@ class Historique extends MyPage
         $saison = 0;
 		$existMatch = 0;
 		$typeClt = array();
-		$sql  = "SELECT c.*, g.Groupe "
-                . "FROM gickp_Competitions c, gickp_Competitions_Groupes g "
-                . "WHERE c.Publication='O' " . utyGetFiltreCompetition('c.') . " "
-				. "AND c.Code_tour = 10 "
-				. "AND c.Statut = 'END' "
-                . "AND c.Code_ref = g.Groupe ";
-                if ($codeCompetGroup[0] == 'N') {
-                    $sql .= "AND c.Code_ref Like 'N%' ";
-                } elseif ($codeCompetGroup[0] == 'C' && $codeCompetGroup[1] == 'F') {
-                    $sql .= "AND c.Code_ref Like 'CF%' ";
-                } else {
-                    $sql .= "AND c.Code_ref = '$codeCompetGroup' ";
-                }
-                $sql .= "ORDER BY c.Code_saison DESC, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code";	 
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){ 
-            if($saison != $row['Code_saison']) {
+		$filtreCompetition = utyGetFiltreCompetition('c.');
+		$sql = "SELECT c.*, g.Groupe 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Publication='O' 
+			$filtreCompetition 
+			AND c.Code_tour = 10 
+			AND c.Statut = 'END' 
+			AND c.Code_ref = g.Groupe 
+			AND c.Code_ref Like ? 
+			ORDER BY c.Code_saison DESC, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), 
+				c.GroupOrder, c.Code_tour, c.Code";
+			if ($codeCompetGroup[0] == 'N') {
+				$bindparam = 'N%';
+			} elseif ($codeCompetGroup[0] == 'C' && $codeCompetGroup[1] == 'F') {
+				$bindparam = 'CF%';
+			} else {
+				$bindparam = $codeCompetGroup;
+			}
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($bindparam));
+			while ($row = $result->fetch()) {
+				if($saison != $row['Code_saison']) {
                 array_push($arraySaisons, array('saison' => $row['Code_saison']));
             }
 			$saison = $row['Code_saison'];
@@ -86,9 +91,9 @@ class Historique extends MyPage
                 }
             }
             $arrayCompets[$saison][] = array('code' => $row["Code"], 'libelle' => $row["Libelle"], 
-                                        'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"], 
-                                        'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'],
-                                        'Titre_actif' => $row["Titre_actif"], 'selected' => 'SELECTED' ) ;
+				'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"], 
+				'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'],
+				'Titre_actif' => $row["Titre_actif"], 'selected' => 'SELECTED' ) ;
 
 			array_push($arrayCompetition, array($row["Code"], $row["Libelle"], "SELECTED" ) );
 			$codeCompet1 = $row['Code'];
@@ -99,32 +104,35 @@ class Historique extends MyPage
 				$recordCompetition[] = array( 'ToutGroup' => $row['ToutGroup'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'] );
 			}
 			//Existence de matchs
-			$sql2  = "SELECT m.Id "
-                    . "FROM gickp_Matchs m, gickp_Journees j "
-                    . "WHERE m.Id_journee = j.Id "
-                    . "AND m.Publication = 'O' "
-                    . "AND j.Publication = 'O' "
-                    . "AND j.Code_competition = '$codeCompet1' "
-                    . "AND j.Code_saison = '$saison' ";
-            $result2 = $myBdd->Query($sql2);
-			if ($myBdd->NumRows($result2) > 0) {
+			$sql2 = "SELECT m.Id 
+				FROM gickp_Matchs m, gickp_Journees j 
+				WHERE m.Id_journee = j.Id 
+				AND m.Publication = 'O' 
+				AND j.Publication = 'O' 
+				AND j.Code_competition = ? 
+				AND j.Code_saison = ? ";
+			$result2 = $myBdd->pdo->prepare($sql2);
+			$result2->execute(array($codeCompet1, $codeSaison));
+			if ($result2->rowCount() > 0) {
                 $existMatch = 1;
             }
 		
 			// Classement public				
-			$sql2  = "SELECT ce.*, c.Code_comite_dep "
-                    . "FROM gickp_Competitions_Equipes ce, gickp_Club c "
-                    . "WHERE ce.Code_compet = '$codeCompet1' "
-                    . "AND ce.Code_saison = '$saison' "
-                    . "AND ce.Code_club = c.Code ";	 
-                    if ($typeClt == 'CP') {
-                        $sql2 .= "ORDER BY CltNiveau_publi ASC, Diff_publi DESC ";
-                    } else {
-                        $sql2 .= "ORDER BY Clt_publi ASC, Diff_publi DESC ";
-                    }
-
-            $result2 = $myBdd->Query($sql2);
-            while ($row2 = $myBdd->FetchArray($result2)){ 
+			$sql2 = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, ce.Clt_publi, ce.Pts_publi, 
+				ce.J_publi, ce.G_publi, ce.N_publi, ce.P_publi, ce.F_publi, ce.Plus_publi, 
+				ce.Moins_publi, ce.Diff_publi, ce.PtsNiveau_publi, ce.CltNiveau_publi, c.Code_comite_dep 
+				FROM gickp_Competitions_Equipes ce, gickp_Club c 
+				WHERE ce.Code_compet = ? 
+				AND ce.Code_saison = ? 
+				AND ce.Code_club = c.Code ";	 
+				if ($typeClt == 'CP') {
+					$sql2 .= "ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";
+				} else {
+					$sql2 .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";
+				}
+			$result2 = $myBdd->pdo->prepare($sql2);
+			$result2->execute(array($codeCompet1, $codeSaison));
+			while ($row2 = $result2->fetch()) {
                 //Logos
                 $logo = '';
                 $club = $row2['Code_club'];
@@ -139,25 +147,25 @@ class Historique extends MyPage
                 }
                 if ($row2['Clt_publi'] != 0 || $row2['CltNiveau_publi']) {
 					$arrayEquipe_publi[] = array( 'CodeGroupe' => $codeGroupe, 'CodeCompet' => $row['Code'], 'CodeSaison' => $row['Code_saison'], 'LibelleCompet' => $row['Libelle'], 'Code_typeclt' => $row['Code_typeclt'],
-												'Code_tour' => $row['Code_tour'], 'Qualifies' => $row['Qualifies'], 'Elimines' => $row['Elimines'], 'Nb_equipes' => $row['Nb_equipes'],
-												'Code_niveau' => $row['Code_niveau'], 'Titre_actif' => $row['Titre_actif'], 'Soustitre' => $row['Soustitre'], 'Soustitre2' => $row['Soustitre2'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'], 'ToutGroup' => $row['ToutGroup'], /*'LogoOK' => $row['LogoOK'],*/
-												'Numero' => $row2['Numero'], 'Id' => $row2['Id'], 'Libelle' => $row2['Libelle'], 'Code_club' => $row2['Code_club'], 'Code_comite_dep' => $row2['Code_comite_dep'],
-												'Clt' => $row2['Clt_publi'], 'Pts' => $row2['Pts_publi'], 'existMatch' => $existMatch,
-												'J' => $row2['J_publi'], 'G' => $row2['G_publi'], 'N' => $row2['N_publi'], 
-												'P' => $row2['P_publi'], 'F' => $row2['F_publi'], 'Plus' => $row2['Plus_publi'], 
-												'Moins' => $row2['Moins_publi'], 'Diff' => $row2['Diff_publi'],
-												'PtsNiveau' => $row2['PtsNiveau_publi'], 'CltNiveau' => $row2['CltNiveau_publi'], 
-                                                'logo' => $logo, 'club' => $club );
+						'Code_tour' => $row['Code_tour'], 'Qualifies' => $row['Qualifies'], 'Elimines' => $row['Elimines'], 'Nb_equipes' => $row['Nb_equipes'],
+						'Code_niveau' => $row['Code_niveau'], 'Titre_actif' => $row['Titre_actif'], 'Soustitre' => $row['Soustitre'], 'Soustitre2' => $row['Soustitre2'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'], 'ToutGroup' => $row['ToutGroup'], /*'LogoOK' => $row['LogoOK'],*/
+						'Numero' => $row2['Numero'], 'Id' => $row2['Id'], 'Libelle' => $row2['Libelle'], 'Code_club' => $row2['Code_club'], 'Code_comite_dep' => $row2['Code_comite_dep'],
+						'Clt' => $row2['Clt_publi'], 'Pts' => $row2['Pts_publi'], 'existMatch' => $existMatch,
+						'J' => $row2['J_publi'], 'G' => $row2['G_publi'], 'N' => $row2['N_publi'], 
+						'P' => $row2['P_publi'], 'F' => $row2['F_publi'], 'Plus' => $row2['Plus_publi'], 
+						'Moins' => $row2['Moins_publi'], 'Diff' => $row2['Diff_publi'],
+						'PtsNiveau' => $row2['PtsNiveau_publi'], 'CltNiveau' => $row2['CltNiveau_publi'], 
+						'logo' => $logo, 'club' => $club );
 					$arrayClts[$saison][$codeCompet1][] = array( 'CodeGroupe' => $codeGroupe, 'CodeCompet' => $row['Code'], 'CodeSaison' => $row['Code_saison'], 'LibelleCompet' => $row['Libelle'], 'Code_typeclt' => $row['Code_typeclt'],
-												'Code_tour' => $row['Code_tour'], 'Qualifies' => $row['Qualifies'], 'Elimines' => $row['Elimines'], 'Nb_equipes' => $row['Nb_equipes'],
-												'Code_niveau' => $row['Code_niveau'], 'Titre_actif' => $row['Titre_actif'], 'Soustitre' => $row['Soustitre'], 'Soustitre2' => $row['Soustitre2'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'], 'ToutGroup' => $row['ToutGroup'], /*'LogoOK' => $row['LogoOK'],*/
-												'Numero' => $row2['Numero'], 'Id' => $row2['Id'], 'Libelle' => $row2['Libelle'], 'Code_club' => $row2['Code_club'], 'Code_comite_dep' => $row2['Code_comite_dep'],
-												'Clt' => $row2['Clt_publi'], 'Pts' => $row2['Pts_publi'], 'existMatch' => $existMatch,
-												'J' => $row2['J_publi'], 'G' => $row2['G_publi'], 'N' => $row2['N_publi'], 
-												'P' => $row2['P_publi'], 'F' => $row2['F_publi'], 'Plus' => $row2['Plus_publi'], 
-												'Moins' => $row2['Moins_publi'], 'Diff' => $row2['Diff_publi'],
-												'PtsNiveau' => $row2['PtsNiveau_publi'], 'CltNiveau' => $row2['CltNiveau_publi'], 
-												'logo' => $logo, 'club' => $club);
+						'Code_tour' => $row['Code_tour'], 'Qualifies' => $row['Qualifies'], 'Elimines' => $row['Elimines'], 'Nb_equipes' => $row['Nb_equipes'],
+						'Code_niveau' => $row['Code_niveau'], 'Titre_actif' => $row['Titre_actif'], 'Soustitre' => $row['Soustitre'], 'Soustitre2' => $row['Soustitre2'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'], 'ToutGroup' => $row['ToutGroup'], /*'LogoOK' => $row['LogoOK'],*/
+						'Numero' => $row2['Numero'], 'Id' => $row2['Id'], 'Libelle' => $row2['Libelle'], 'Code_club' => $row2['Code_club'], 'Code_comite_dep' => $row2['Code_comite_dep'],
+						'Clt' => $row2['Clt_publi'], 'Pts' => $row2['Pts_publi'], 'existMatch' => $existMatch,
+						'J' => $row2['J_publi'], 'G' => $row2['G_publi'], 'N' => $row2['N_publi'], 
+						'P' => $row2['P_publi'], 'F' => $row2['F_publi'], 'Plus' => $row2['Plus_publi'], 
+						'Moins' => $row2['Moins_publi'], 'Diff' => $row2['Diff_publi'],
+						'PtsNiveau' => $row2['PtsNiveau_publi'], 'CltNiveau' => $row2['CltNiveau_publi'], 
+						'logo' => $logo, 'club' => $club);
                     
 				}
 			}
@@ -173,55 +181,7 @@ class Historique extends MyPage
 
 	}
 	
-	function GetTypeClt($codeCompet,  $codeSaison)
-	{
-		if (strlen($codeCompet) == 0) {
-            return 'CHPT';
-        }
-        $myBdd = new MyBdd();
-		$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-		$typeClt = $recordCompetition['Code_typeclt'];
-		if ($typeClt != 'CP') {
-            $typeClt = 'CHPT';
-        }
-        return $typeClt;
-	}
 	
-	
-	// ExistCompetitionEquipeNiveau
-	function ExistCompetitionEquipeNiveau($idEquipe, $niveau)
-	{
-		$myBdd = new MyBdd();
-		$sql  = "SELECT COUNT(*) Nb FROM gickp_Competitions_Equipes_Niveau WHERE Id = $idEquipe AND Niveau = $niveau ";
-        $result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchRow($result);	 
-			if ($row['Nb'] == 1) {
-                return;
-            } // Le record existe ...
-		}
-		$sql  = "INSERT INTO gickp_Competitions_Equipes_Niveau (Id, Niveau, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) "
-                . "VALUES ($idEquipe, $niveau, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		$myBdd->Query($sql);
-	}
-
-	// ExistCompetitionEquipeJournee
-	function ExistCompetitionEquipeJournee($idEquipe, $idJournee)
-	{
-		$myBdd = new MyBdd();
-		$sql  = "SELECT COUNT(*) Nb FROM gickp_Competitions_Equipes_Journee WHERE Id = $idEquipe AND Id_journee = $idJournee";
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1) {
-			$row = $myBdd->FetchRow($result);	 
-			if ($row['Nb'] == 1)
-				return; // Le record existe ...
-		}
-		$sql  = "INSERT INTO gickp_Competitions_Equipes_Journee (Id, Id_journee, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) "
-                . "VALUES ($idEquipe, $idJournee, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
-		$myBdd->Query($sql);
-	}
-	
-
 	// Historique		
 	function __construct()
 	{			

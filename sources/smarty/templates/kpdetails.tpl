@@ -36,11 +36,6 @@
                     <label class="col-sm-4">{#Chef_arbitres#}</label>
                     <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
                 </div>
-                {if $schema}
-                    <label>{#Schema#}</label>
-                    <hr>
-                    <a href="{$schema}" target="_blank"><img class="img-responsive img-thumbnail" src="{$schema}"></a>
-                {/if}
             </div>
             <div class="form-horizontal">
                 <div class="page-header">
