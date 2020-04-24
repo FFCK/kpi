@@ -103,13 +103,14 @@ class Tv extends MyPageSecure
         $this->m_tpl->assign('jour', $jour);
         
         // Evts
-        $sql  = "SELECT * "
-            . "FROM gickp_Evenement "
-            . "WHERE Publication = 'O' "
-            . "ORDER BY Date_debut DESC ";
+        $sql  = "SELECT * 
+            FROM gickp_Evenement 
+            WHERE Publication = 'O' 
+            ORDER BY Date_debut DESC ";
         $arrayEvts = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){ 
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute();
+        while ($row = $result->fetch()) {
             if( $row['Id'] == $codeEvt ) {
                 $row['selected'] = 'selected';
             } else {
@@ -126,7 +127,7 @@ class Tv extends MyPageSecure
             FROM gickp_Evenement_Journees evt, gickp_Journees j, gickp_Matchs m 
             LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON m.Id_equipeA = ce1.Id 
             LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON m.Id_equipeB = ce2.Id 
-            WHERE evt.Id_evenement = $codeEvt 
+            WHERE evt.Id_evenement = ? 
             AND evt.Id_journee = m.Id_journee 
             AND j.Id = m.Id_journee 
             ORDER BY Date_match, Heure_match, Numero_ordre ";
@@ -138,8 +139,9 @@ class Tv extends MyPageSecure
         $arrayMatchs2 = array();
         $arrayMatchs3 = array();
         $arrayMatchs4 = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeEvt));
+        while ($row = $result->fetch()) {
             $arrayCompet[] = $row['Code_competition'];
             $saison = $row['Code_saison'];
             $arrayJours[] = $row['Date_match'];

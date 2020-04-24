@@ -16,8 +16,6 @@ jq(document).ready(function() {
     var thisStartZoom = 5;
     var thisStartLat = 46.85;
     var thisStartLon = 1.73;
-    // var thisPlotsAPIUrl='APIurl.php?format=leaflet&bbox='+minll.lng+','+minll.lat+','+maxll.lng+','+maxll.lat;
-//    var thisPlotsAPIUrl = 'json-clubs.php';
     var thisPlotsAPIUrl = 'clubs.json';
 //    var geocodApiUrl = 'https://api-adresse.data.gouv.fr/search/';  // France
     var geocodApiUrl = ' https://nominatim.openstreetmap.org/search';  // International

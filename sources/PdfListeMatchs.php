@@ -169,7 +169,6 @@ class PdfListeMatchs extends MyPage
         $codeCompet = $laCompet;
 
 		$orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
-        $num_results = $result->rowCount();
 		
 		$PhaseLibelle = 0;
         $resultarray = $result->fetchAll(PDO::FETCH_BOTH);

@@ -16,15 +16,10 @@ class FeuilleCltNiveauJournee extends MyPage {
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
-        $codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
         //Saison
-        $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-        $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';
-        $qualif = $arrayCompetition['Qualifies'];
-        $elim = $arrayCompetition['Elimines'];
-
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
         // Langue
@@ -91,8 +86,6 @@ class FeuilleCltNiveauJournee extends MyPage {
             $pdf->Cell(190, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
         }
 
-
-//		$pdf->Ln(4);
         if ($arrayCompetition['Soustitre2'] != '') {
             $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
@@ -107,23 +100,22 @@ class FeuilleCltNiveauJournee extends MyPage {
         // données
         $myBdd = new MyBdd();
 
-        $sql = "Select a.Id, a.Libelle, a.Code_club, ";
-        $sql .= "b.Id_journee, b.Clt_publi, b.Pts_publi, b.J_publi, b.G_publi, b.N_publi, b.P_publi, b.F_publi, b.Plus_publi, b.Moins_publi, b.Diff_publi, b.PtsNiveau_publi, b.CltNiveau_publi, ";
-        $sql .= "c.Date_debut, c.Lieu ";
-        $sql .= "From gickp_Competitions_Equipes a, ";
-        $sql .= "gickp_Competitions_Equipes_Journee b Join gickp_Journees c On (b.Id_journee = c.Id) ";
-        $sql .= "Where a.Id = b.Id ";
-        $sql .= "And c.Code_competition = '";
-        $sql .= $codeCompet;
-        $sql .= "' And c.Code_saison = '";
-        $sql .= utyGetSaison();
-        $sql .= "' Order By c.Date_debut Asc, c.Lieu ASC, b.Clt_publi Asc, b.Diff_publi Desc, b.Plus_publi Desc ";
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+        $sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt_publi, 
+            b.Pts_publi, b.J_publi, b.G_publi, b.N_publi, b.P_publi, b.F_publi, 
+            b.Plus_publi, b.Moins_publi, b.Diff_publi, b.PtsNiveau_publi, 
+            b.CltNiveau_publi, c.Date_debut, c.Lieu 
+            FROM gickp_Competitions_Equipes a, 
+            gickp_Competitions_Equipes_Journee b 
+            JOIN gickp_Journees c ON (b.Id_journee = c.Id) 
+            WHERE a.Id = b.Id 
+            AND c.Code_competition = ? 
+            AND c.Code_saison = ? 
+            ORDER BY c.Date_debut, c.Lieu, b.Clt_publi, b.Diff_publi, b.Plus_publi ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
 
         $idJournee = 0;
-        while($row = $myBdd->FetchAssoc($result)) {
-            $idEquipe = $row['Id'];
+        while ($row = $result->fetch()) {
             if ($row['Id_journee'] != $idJournee) {
                 $idJournee = $row['Id_journee'];
 
