@@ -74,8 +74,8 @@ class Matchs extends MyPage
 		$_SESSION['idSelJournee'] = $idSelJournee;
 		$this->m_tpl->assign('idSelJournee', $idSelJournee);
 		
-		$codeSaison = utyGetGet('Saison', utyGetSaison());
-        if($codeSaison != $_SESSION['Saison']){
+		$codeSaison = utyGetGet('Saison', $codeSaison);
+        if ($codeSaison != $_SESSION['Saison']) {
             $_GET['J'] = '*';
             $_GET['Compet'] = '*';
         }
