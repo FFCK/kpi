@@ -17,15 +17,10 @@ class FeuilleCltNiveau extends MyPage {
 
         $codeCompet = utyGetSession('codeCompet', '');
         //Saison
-        $codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
-        $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-        $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';
-        $qualif = $arrayCompetition['Qualifies'];
-        $elim = $arrayCompetition['Elimines'];
-
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
         // Langue
@@ -100,18 +95,18 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Ln(10);
 
         //données
-        $sql = "Select Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, Diff_publi, PtsNiveau_publi, CltNiveau_publi ";
-        $sql .= "From gickp_Competitions_Equipes ";
-        $sql .= "Where Code_compet = '";
-        $sql .= $codeCompet;
-        $sql .= "' And Code_saison = '";
-        $sql .= $codeSaison;
-        $sql .= "' And CltNiveau_publi != 0 ";
-        $sql .= "Order By Libelle Asc ";
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+        $sql = "SELECT Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, 
+            G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, 
+            Diff_publi, PtsNiveau_publi, CltNiveau_publi 
+            FROM gickp_Competitions_Equipes 
+            WHERE Code_compet = ?
+            AND Code_saison = ? 
+            AND CltNiveau_publi != 0 
+            ORDER BY Libelle ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
 		
-        while($row = $myBdd->FetchAssoc($result)) {
+        while ($row = $result->fetch()) {
             $idEquipe = $row['Id'];
             $pdf->SetFont('Arial', 'B', 12);
             $pdf->Cell(55, 6, '', 0, '0', 'L');
@@ -134,27 +129,28 @@ class FeuilleCltNiveau extends MyPage {
 
             $pdf->Cell(190, 6, $row['Libelle'], 0, 1, 'L');
             //Détail
-            $sql = "Select a.Id_equipeA, a.ScoreA, c.Libelle LibelleA, ";
-            $sql .= "       a.Id_equipeB, a.ScoreB, d.Libelle LibelleB, ";
-            $sql .= " a.Id, a.Id_journee, a.Validation, b.Niveau, b.Phase ";
-            $sql .= "From gickp_Journees b, gickp_Matchs a ";
-            $sql .= "Left Outer Join gickp_Competitions_Equipes c On (c.Id = a.Id_equipeA) ";
-            $sql .= "Left Outer Join gickp_Competitions_Equipes d On (d.Id = a.Id_equipeB) ";
-            $sql .= "Where a.Id_journee = b.Id ";
-            $sql .= "And b.Code_competition = '";
-            $sql .= $codeCompet;
-            $sql .= "' And b.Code_saison = '";
-            $sql .= $codeSaison;
-            $sql .= "' And (a.Id_equipeA = $idEquipe Or a.Id_equipeB = $idEquipe) ";
-            $sql .= "And a.Publication = 'O' ";
-            $sql .= "Order by b.Niveau, b.Phase ";
-            $result2 = $myBdd->Query($sql);
-            $num_results2 = $myBdd->NumRows($result2);
+            $sql2 = "SELECT a.Id_equipeA, a.ScoreA, c.Libelle LibelleA, a.Id_equipeB, a.ScoreB, 
+                d.Libelle LibelleB, a.Id, a.Id_journee, a.Validation, b.Niveau, b.Phase 
+                FROM gickp_Journees b, gickp_Matchs a 
+                LEFT OUTER JOIN gickp_Competitions_Equipes c ON (c.Id = a.Id_equipeA) 
+                LEFT OUTER JOIN gickp_Competitions_Equipes d ON (d.Id = a.Id_equipeB) 
+                WHERE a.Id_journee = b.Id 
+                AND b.Code_competition = :codeCompet 
+                AND b.Code_saison = :codeSaison 
+                AND (a.Id_equipeA = :idEquipe Or a.Id_equipeB = :idEquipe) 
+                AND a.Publication = 'O' 
+                ORDER BY b.Niveau, b.Phase ";
+            $result2 = $myBdd->pdo->prepare($sql2);
+            $result2->execute(array(
+                ':codeCompet' => $codeCompet, 
+                ':codeSaison' => $codeSaison, 
+                ':idEquipe' => $idEquipe, 
+            ));
 
             $oldNiveauPhase = '';
             $pdf->SetFont('Arial', 'B', 10);
 
-            while($row2 = $myBdd->FetchAssoc($result2)) {
+            while ($row2 = $result2->fetch()) {
                 if (($row2['ScoreA'] == '') || ($row2['ScoreA'] == '?')) {
                     continue;
                 } // Score non valide ...

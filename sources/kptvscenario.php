@@ -18,14 +18,16 @@ class Scenario extends MyPageSecure
         $this->m_tpl->assign('scenario', $scenario);
 
 		// Matchs
-        $sql  = "SELECT * "
-                . "FROM gickp_Tv "
-                . "WHERE Voie > $scenario "
-                . "AND Voie < $scenario + 100 "
-                . "ORDER BY Voie ";
-        $arrayScenes = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){
+        $sql  = "SELECT * 
+            FROM gickp_Tv 
+            WHERE Voie > :scenario 
+            AND Voie < :scenario + 100 
+            ORDER BY Voie ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array(
+            ':scenario' => $scenario
+        ));
+        while ($row = $result->fetch()) {
             $arrayScenes[] = $row;
         }
         $this->m_tpl->assign('arrayScenes', $arrayScenes);
@@ -36,17 +38,22 @@ class Scenario extends MyPageSecure
         $myBdd = new MyBdd();
         
 		for ($i = 1; $i < 10; $i++) {
-            $Url = $_POST['Url-' . $i];
-            $intervalle = $_POST['intervalle-' . $i];
-            $Voie = $_POST['Voie-' . $i];
+            $Url = utyGetPost('Url-' . $i, '');
+            $intervalle = utyGetPost('intervalle-' . $i, '');
+            $Voie = utyGetPost('Voie-' . $i, '');
 
             $sql = "UPDATE gickp_Tv
-                SET Url = '" . $Url . "', 
-                intervalle = " . $intervalle . "
-                WHERE Voie = " . $Voie;
-            $myBdd->Query($sql);
+                SET `Url` = :Url, 
+                intervalle = :intervalle 
+                WHERE Voie = :Voie ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array(
+                ':Url' => $Url,
+                ':intervalle' => $intervalle,
+                ':Voie' => $Voie
+            ));
         }
-		return "Scenario " . $_POST['scenario'] . " updated";	
+		return "Scenario " . utyGetPost('scenario', 'Unknown') . " updated";	
 	}    
 
 	// Scenario 		
