@@ -61,8 +61,8 @@ class Matchs extends MyPage
             $Compets = implode(',', $Compets1);
         }
         
-		$codeSaison = utyGetGet('Saison', utyGetSaison());
-        if($codeSaison != $_SESSION['Saison']){
+		$codeSaison = utyGetGet('Saison', $codeSaison);
+        if ($codeSaison != $_SESSION['Saison']) {
             $_GET['J'] = '*';
             $_GET['Compet'] = '*';
         }
