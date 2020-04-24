@@ -50,7 +50,7 @@ class Matchs extends MyPage
 		$this->m_tpl->assign('Round', $Round);
 		
         if($event > 0) {
-            $sql .= "SELECT DISTINCT(j.Code_competition), j.Code_saison 
+            $sql = "SELECT DISTINCT(j.Code_competition), j.Code_saison 
                 FROM gickp_Journees j, gickp_Evenement_Journees ej 
                 WHERE j.Id = ej.Id_journee 
                 AND ej.Id_evenement = ? ";
