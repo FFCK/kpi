@@ -33,7 +33,7 @@
                     <a href="{$eColors}?v={$NUM_VERSION}" target="_blank">
                         <img class="img-responsive img-thumbnail" src="{$eColors}?v={$NUM_VERSION}" alt="{$nomEquipe}">
                     </a>
-                    <span class="pull-right badge">{$eSeason}</span>
+                    <span class="pull-right badge"><i>{$eSeason}</i></span>
                 </div>
             {elseif $eLogo}
                 <div class="col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="equipeColors">
@@ -50,7 +50,7 @@
                     <a href="{$eTeam}?v={$NUM_VERSION}" target="_blank">
                         <img class="img-responsive img-thumbnail" src="{$eTeam}?v={$NUM_VERSION}" alt="{$nomEquipe}" title="{$nomEquipe}">
                     </a>
-                    <span class="pull-right badge">{$eSeason2}</span>
+                    <span class="pull-right badge"><i>{$eSeason2}</i></span>
                 </div>
             {/if}
 

@@ -18,13 +18,14 @@ $season = trim(utyGetGet('season'));
 $event = trim(utyGetGet('event'));
 $compet = trim(utyGetGet('compet'));
 
-// Chargement des matchs ...
+// Saisons ...
 $a_json = array();
-$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin "
-                ."FROM gickp_Saison "
-                ."ORDER BY Code DESC";
-$result = $myBdd->Query($sql);
-while ($jRow = $myBdd->FetchArray($result)){
+$sql = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
+    FROM gickp_Saison 
+    ORDER BY Code DESC ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute();
+while ($row = $result->fetch()) {
     if($jRow['Code'] == $season) {
         $jRow['selected'] = 'selected';
     } else {
