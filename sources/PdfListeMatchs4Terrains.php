@@ -27,32 +27,10 @@ class PDF extends FPDF
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfListeMatchs extends MyPage	 
 {	
- 	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
-	{
-		$myBdd = new MyBdd();
-		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-        $result = $myBdd->Query($sql);
-
-		if ($myBdd->NumRows($result) != 1) {
-			return;
-        }
-			
-        $row = $myBdd->FetchArray($result);
-		if ((int) $row['Nb'] > 0)
-			return;
-			
-		$sql  = "Replace Into gickp_Matchs_Joueurs ";
-		$sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-		$sql .= "Where Id_equipe = $idEquipe ";
-		$sql .= "AND Capitaine <> 'X' ";
-		$sql .= "AND Capitaine <> 'A' ";
-		$myBdd->Query($sql);
- 	}
-	   
-	function PdfListeMatchs()
+	function __construct()
 	{
 		MyPage::MyPage();
-  	// Chargement des Matchs des journées ...
+  	    // Chargement des Matchs des journées ...
 		$filtreJour = utyGetSession('filtreJour', '');
 		$filtreJour = utyGetPost('filtreJour', $filtreJour);
 		$filtreJour = utyGetGet('filtreJour', $filtreJour);
@@ -63,90 +41,110 @@ class PdfListeMatchs extends MyPage
 
 		$myBdd = new MyBdd();
 		$lstJournee = utyGetSession('lstJournee', 0);
-		$idEvenement = utyGetSession('idEvenement', -1);
+        $idEvenement = utyGetSession('idEvenement', -1);
 		$idEvenement = utyGetGet('idEvenement', $idEvenement);
-		if(isset($_GET['idEvenement'])){
-			$lstJournee = '';
-			$sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = ".$_GET['idEvenement'];
-            $result = $myBdd->Query($sql);
-            $num_results = $myBdd->NumRows($result);
-            while($row = $myBdd->FetchAssoc($result)) {
-				if ($lstJournee != '') {
-                    $lstJournee .= ',';
-                }
-                $lstJournee .= $row['Id_journee'];
+		if (isset($_GET['idEvenement'])) {
+			$lstJournee = [];
+			$sql = "SELECT Id_journee 
+                FROM gickp_Evenement_Journees 
+                WHERE Id_evenement = ? ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($_GET['idEvenement']));
+            while ($row = $result->fetch()) {
+                $lstJournee[] = $row['Id_journee'];
 			}
-		}
+		} else {
+            $lstJournee = explode(',', $lstJournee);
+        }
 		$codeSaison = utyGetSaison();
 		$codeSaison = utyGetGet('S', $codeSaison);
-		$orderMatchs = 'Order By a.Date_match, d.Lieu, a.Heure_match, a.Terrain';
+		$orderMatchs = 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain';
 		$laCompet = utyGetSession('codeCompet', 0);
 		$laCompet = utyGetGet('Compet', $laCompet);
-		if($laCompet != 0)
-		{
-			$lstJournee = 0;
+		if ($laCompet != 0) {
+			$lstJournee = [];
 			$idEvenement = -1;
 		}
 		$codeCompet = $laCompet;
-		$sql  = "Select a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, a.Date_match, a.Heure_match, ";
-		$sql .= "a.Libelle, a.Terrain, b.Libelle EquipeA, c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, ";
-		$sql .= "a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, a.Validation, ";
-		$sql .= "d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee ";
-		$sql .= "From gickp_Matchs a ";
-		$sql .= "Left Outer Join gickp_Competitions_Equipes b On (a.Id_equipeA = b.Id) "; 
-		$sql .= "Left Outer Join gickp_Competitions_Equipes c On (a.Id_equipeB = c.Id) ";
-		$sql .= ", gickp_Journees d ";
-		if ($lstJournee == 0) {
-            $sql .= "Where d.Code_competition = '" . $laCompet . "' And d.Code_saison = $codeSaison ";
-        } else {
-            $sql .= "Where a.Id_journee In ($lstJournee) ";
-        }
-        if($filtreJour != '')
-		{
-			$sql .= "And a.Date_match = '".$filtreJour."' ";
-		}
-		if($filtreTerrain != '')
-		{
-			$sql .= "And a.Terrain = '".$filtreTerrain."' ";
-		}
-		$sql .= "And a.Id_journee = d.Id ";
-//		$sql .= "And a.Publication = 'O' ";
-		$sql .= $orderMatchs;
-
-        $orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
-		
-		$PhaseLibelle = 0;
-        while($row1 = $myBdd->FetchAssoc($result)) {
-			if (trim($row1['Phase']) != '') {
-                $PhaseLibelle = 1;
+        if ($lstJournee != []) {
+            $in  = str_repeat('?,', count($lstJournee) - 1) . '?';
+            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
+                cp.Soustitre2 
+                FROM gickp_Competitions cp, gickp_Journees d, gickp_Matchs a 
+                LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
+                LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+                WHERE a.Id_journee = d.Id 
+                AND d.Code_competition = cp.Code 
+                AND d.Code_saison = cp.Code_saison 
+                AND a.Id_journee IN ($in) ";
+            $merge = $lstJournee;
+            if ($filtreJour != '') {
+                $sql .= "AND a.Date_match = ? ";
+                $merge = array_merge($merge, [$filtreJour]);
             }
+            if ($filtreTerrain != '') {
+                $sql .= "AND a.Terrain = ? ";
+                $merge = array_merge($merge, [$filtreTerrain]);
+            }
+            $sql .= $orderMatchs ;
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute($merge);
+        } else {
+            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
+                cp.Soustitre2 
+                FROM gickp_Competitions cp, gickp_Journees d, gickp_Matchs a 
+                LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
+                LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+                WHERE a.Id_journee = d.Id 
+                AND d.Code_competition = cp.Code 
+                AND d.Code_saison = cp.Code_saison 
+                AND d.Code_competition = ? 
+                AND d.Code_saison = ? ";
+            $merge = array($laCompet, $codeSaison);
+            if ($filtreJour != '') {
+                $sql .= "AND a.Date_match = ? ";
+                $merge = array_merge($merge, [$filtreJour]);
+            }
+            if ($filtreTerrain != '') {
+                $sql .= "AND a.Terrain = ? ";
+                $merge = array_merge($merge, [$filtreTerrain]);
+            }
+            $sql .= $orderMatchs ;
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute($merge);
+        }
+		
+        $resultarray = $result->fetchAll(PDO::FETCH_BOTH);
+        foreach ($resultarray as $key => $row1) {
             $lastCompetEvt = $row1['Code_competition'];
 		}
-		$Oldrupture = "";
 		// Chargement des infos de l'évènement ou de la compétition
 		$titreEvenementCompet = '';
-		if ($idEvenement != -1)
-		{
+		if ($idEvenement != -1) {
 			$libelleEvenement = $myBdd->GetEvenementLibelle($idEvenement);
 			$titreEvenementCompet = 'Evénement : '.$libelleEvenement;
 			$arrayCompetition = $myBdd->GetCompetition($lastCompetEvt, $codeSaison);
-		}
-		else
-		{
+		} else {
 			$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-			if($arrayCompetition['Titre_actif'] == 'O')
+			if ($arrayCompetition['Titre_actif'] == 'O') {
 				$titreEvenementCompet = $arrayCompetition['Libelle'];
-			else
-				$titreEvenementCompet = $arrayCompetition['Soustitre'];
-			if($arrayCompetition['Soustitre2'] != '')
-				$titreEvenementCompet .= ' - '.$arrayCompetition['Soustitre2'];
-			//$titreEvenementCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
+            } else {
+                $titreEvenementCompet = $arrayCompetition['Soustitre'];
+            }
+			if ($arrayCompetition['Soustitre2'] != '') {
+                $titreEvenementCompet .= ' - '.$arrayCompetition['Soustitre2'];
+            }
 		}
         
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
-
 
         // Entête PDF ...	  
  		$pdf = new PDF('L');
@@ -181,6 +179,7 @@ class PdfListeMatchs extends MyPage
 		// QRCode
 		$qrcode = new QRcode('https://www.kayak-polo.info/Journee.php?Compet='.$codeCompet.'&Group='.$arrayCompetition['Code_ref'].'&Saison='.$codeSaison, 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
+        $qr_x = 265;
 		$qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
 		$titreDate = "Saison ".$codeSaison;
@@ -191,14 +190,8 @@ class PdfListeMatchs extends MyPage
 		$pdf->SetFont('Arial','B',14);
 		$pdf->Cell(273,6,"Liste des Matchs",0,1,'C');
 		$pdf->Ln(3);
-		$heure1 = '';
-		if ($num_results > 0) {
-            $myBdd->DataSeek($result, 0);
-        }
-        while($row = $myBdd->FetchAssoc($result)) {
-			
-			$row['Soustitre2'] = $myBdd->GetSoustitre2Competition($row['Code_competition'], $codeSaison);
-			if ($row['Soustitre2'] != '') {
+        foreach ($resultarray as $key => $row) {
+            if ($row['Soustitre2'] != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
             }
             $phase_match = $row['Phase'];
@@ -211,12 +204,12 @@ class PdfListeMatchs extends MyPage
 				$EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
 			}
 			if ($row['Id_equipeA'] >= 1) {
-                $this->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA'], $myBdd);
+                $myBdd->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA']);
             } elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
                 $row['EquipeA'] = $EquipesAffectAuto[0];
             }
             if ($row['Id_equipeB'] >= 1) {
-                $this->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB'], $myBdd);
+                $myBdd->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB']);
             } elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
                 $row['EquipeB'] = $EquipesAffectAuto[1];
             }
@@ -263,39 +256,40 @@ class PdfListeMatchs extends MyPage
                 $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
             }
             
+            $pdf->SetFillColor(220, 220, 220);
             $pdf->SetFont('Arial','B',7);
             $pdf->Cell(30, 5, utyDateUsToFrLong($date), 0,1,'L');
             
             $pdf->Cell(10, 5, '', 0,0,'L');
-            $pdf->Cell(67, 5, 'Terrain 1', 1,0,'C');
-            $pdf->Cell(67, 5, 'Terrain 2', 1,0,'C');
-            $pdf->Cell(67, 5, 'Terrain 3', 1,0,'C');
-            $pdf->Cell(67, 5, 'Terrain 4', 1,1,'C');
+            $pdf->Cell(67, 5, 'Terrain 1', 1,0,'C',1);
+            $pdf->Cell(67, 5, 'Terrain 2', 1,0,'C',1);
+            $pdf->Cell(67, 5, 'Terrain 3', 1,0,'C',1);
+            $pdf->Cell(67, 5, 'Terrain 4', 1,1,'C',1);
             
-            $pdf->Cell(10,5, 'Heure',1,0,'C');
+            $pdf->Cell(10,5, 'Heure',1,0,'C',1);
                         
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,0,'C');
+            $pdf->Cell(7,5, 'N°',1,0,'C',1);
+            $pdf->Cell(14,5, 'Comp.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe B',1,0,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,0,'C');
 
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,0,'C');
+            $pdf->Cell(7,5, 'N°',1,0,'C',1);
+            $pdf->Cell(14,5, 'Comp.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe B',1,0,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,0,'C');
 
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,0,'C');
+            $pdf->Cell(7,5, 'N°',1,0,'C',1);
+            $pdf->Cell(14,5, 'Comp.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe B',1,0,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,0,'C');
 
-            $pdf->Cell(7,5, 'N°',1,0,'C');
-            $pdf->Cell(14,5, 'Comp.',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe A',1,0,'C');
-            $pdf->Cell(23,5, 'Equipe B',1,1,'C');
+            $pdf->Cell(7,5, 'N°',1,0,'C',1);
+            $pdf->Cell(14,5, 'Comp.',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe A',1,0,'C',1);
+            $pdf->Cell(23,5, 'Equipe B',1,1,'C',1);
 //            $pdf->Cell(17,5, 'Arbitre',1,1,'C');
 
             foreach ($tab_heure as $heure => $tab_terrain) {
@@ -311,7 +305,7 @@ class PdfListeMatchs extends MyPage
                     }
 //                    echo '<pre>' . var_dump($tab_terrain) . '</pre>';
                     if (isset($tab_terrain[$i])) {
-                        $pdf->Cell(7,5, $tab_terrain[$i][0]['Numero_ordre'],1,0,'C');
+                        $pdf->Cell(7,5, $tab_terrain[$i][0]['Numero_ordre'],1,0,'C',1);
                         $pdf->Cell(14,5, $tab_terrain[$i][0]['Code_competition'],1,0,'C');
                         
                         if(strlen($tab_terrain[$i][0]['EquipeA']) > 18) {
@@ -331,17 +325,9 @@ class PdfListeMatchs extends MyPage
                         }
                         $pdf->Cell(23,5, $tab_terrain[$i][0]['EquipeB'],1,$findeligne,'C');
                         
-//                        if(strlen($tab_terrain[$i][0]['Arbitre_principal']) > 18) {
-//                            $pdf->SetFont('Arial','',4);
-//                        } elseif(strlen($tab_terrain[$i][0]['Arbitre_principal']) > 10) {
-//                            $pdf->SetFont('Arial','',5);
-//                        } else {
-//                            $pdf->SetFont('Arial','',6);
-//                        }
-//                        $pdf->Cell(17,5, str_replace('-1', '', $tab_terrain[$i][0]['Arbitre_principal']),1,$findeligne,'C');
                     } else {
                         $pdf->SetFont('Arial', '', 6);
-                        $pdf->Cell(67, 5, 'Pause', 1,$findeligne,'C');
+                        $pdf->Cell(67, 5, 'Pause', 1,$findeligne,'C',1);
                     }
                 }
             
@@ -350,54 +336,7 @@ class PdfListeMatchs extends MyPage
 				
 
 						
-//                        
-						
-//				$heure2 = $row['Heure_match'];
-//				if ($heure1 != $heure2) {
-//                    $terrain = 1;
-//                    
-//                    
-//                } else {
-//                    $terrain ++;
-//                    switch ($terrain) {
-//                        case 2:
-//                            if($row['Terrain'] == 2) {
-//                                $pdf->Cell(7,5, $row['Numero_ordre'],1,0,'C');
-//                                $pdf->Cell(9,5, $row['Code_competition'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['EquipeA'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['EquipeB'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['Arbitre_principal'],1,0,'C');
-//                            } else {
-//                                $pdf->Cell(67, 5, 'Pause', 1,0,'C');
-//                            }
-//                        case 3:
-//                            if($row['Terrain'] == 3) {
-//                                $pdf->Cell(7,5, $row['Numero_ordre'],1,0,'C');
-//                                $pdf->Cell(9,5, $row['Code_competition'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['EquipeA'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['EquipeB'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['Arbitre_principal'],1,0,'C');
-//                            } else {
-//                                $pdf->Cell(67, 5, 'Pause', 1,0,'C');
-//                            }
-//                        case 4:
-//                            if($row['Terrain'] == 4) {
-//                                $pdf->Cell(7,5, $row['Numero_ordre'],1,0,'C');
-//                                $pdf->Cell(9,5, $row['Code_competition'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['EquipeA'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['EquipeB'],1,0,'C');
-//                                $pdf->Cell(17,5, $row['Arbitre_principal'],1,1,'C');
-//                            } else {
-//                                $pdf->Cell(67, 5, 'Pause', 1,1,'C');
-//                            }
-//                            break;
-//                    }
-//                        
-//                }
-//                $heure1 = $heure2;
-								
-//		}
-		//$pdf->Cell(22,3, '',0,0,'C');
+
 		$pdf->Cell(271,3,'','T','1','C');
 		$pdf->Output('Liste matchs'.'.pdf','I');
 	}

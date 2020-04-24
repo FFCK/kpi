@@ -20,12 +20,10 @@ class FeuilleCltNiveau extends MyPage
 		
 		$codeCompet = utyGetSession('codeCompet', '');
 		//Saison
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetGet('S', $codeSaison);
-        $titreDate = "Saison ".$codeSaison;
 		$arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 
-		$titreCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
 		$qualif = $arrayCompetition['Qualifies'];
 		$elim = $arrayCompetition['Elimines'];
         
@@ -106,17 +104,17 @@ class FeuilleCltNiveau extends MyPage
 
 		//données
 		
-		$sql  = "Select Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, Diff_publi, PtsNiveau_publi, CltNiveau_publi ";
-		$sql .= "From gickp_Competitions_Equipes ";
-		$sql .= "Where Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' And CltNiveau_publi != 0 ";
-		$sql .= "Order By CltNiveau_publi Asc, Diff_publi Desc ";	 
-	
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+		$sql = "SELECT Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, 
+			G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, Diff_publi, 
+			PtsNiveau_publi, CltNiveau_publi 
+			FROM gickp_Competitions_Equipes 
+			WHERE Code_compet = ?
+			AND Code_saison = ? 
+			AND CltNiveau_publi != 0 
+			ORDER BY CltNiveau_publi ASC, Diff_publi DESC ";	 
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
+        $num_results = $result->rowCount();
 		
 		// recalcul des éliminés
 		$elim = $num_results - $elim;
@@ -129,7 +127,7 @@ class FeuilleCltNiveau extends MyPage
 		$pdf->Ln(4);
 
 		$i = 0;
-        while($row = $myBdd->FetchAssoc($result)) {
+        while ($row = $result->fetch()) {
 			$separation = 0;
 			//Séparation qualifiés
 			if (($i+1) > $qualif && $qualif != 0)
