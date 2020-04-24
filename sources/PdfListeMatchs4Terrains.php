@@ -56,7 +56,7 @@ class PdfListeMatchs extends MyPage
 		} else {
             $lstJournee = explode(',', $lstJournee);
         }
-		$codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetGet('S', $codeSaison);
 		$orderMatchs = 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain';
 		$laCompet = utyGetSession('codeCompet', 0);
