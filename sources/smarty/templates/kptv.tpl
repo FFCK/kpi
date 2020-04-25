@@ -212,7 +212,7 @@
                 <div class='col-sm-1 params' id='number-col'>
                     <label>{#Joueur#}</label>
                     <select id="number" name="number">
-                        {section name=i start=1 loop=20}
+                        {section name=i start=0 loop=22}
                             <option value="{$smarty.section.i.index}">{$smarty.section.i.index}</option>
                         {/section}
                     </select>
@@ -303,6 +303,13 @@
                         <option value="1">yes</option>
                     </select>
                 </div>
+            </div>
+            <div class="row params text-right mb5" id="number-btn-col">
+                {section name=i start=0 loop=22}
+                    <button class="btn btn-primary number-btn" data-number="{$smarty.section.i.index}">
+                        {$smarty.section.i.index}
+                    </button>
+                {/section}
             </div>
             <div class="row">
                 <a id="control" class="btn btn-warning col-sm-1" href="live/tv2.php?voie={$filtreChannel}" target="_blank">

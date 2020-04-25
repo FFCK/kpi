@@ -43,13 +43,13 @@ jq(document).ready(function(){
                 jq('#match-col, #game_report').show();
                 break;
             case 'player':
-                jq('#match-col, #game_report, #team-col, #number-col').show();
+                jq('#match-col, #game_report, #team-col, #number-col, #number-btn-col').show();
                 break;
             case 'coach':
-                jq('#match-col, #game_report, #team-col, #number-col').show();
+                jq('#match-col, #game_report, #team-col, #number-col, #number-btn-col').show();
                 break;
             case 'player_medal':
-                jq('#match-col, #game_report, #team-col, #number-col, #medal-col').show();
+                jq('#match-col, #game_report, #team-col, #number-col, #number-btn-col, #medal-col').show();
                 break;
             case 'team':
                 jq('#match-col, #game_report, #team-col').show();
@@ -108,6 +108,13 @@ jq(document).ready(function(){
             default:
                 break;
         }
+    });
+
+    jq('.number-btn').click(function() {
+        var number = jq(this).data('number');
+        console.log(number);
+        jq('#number').val(number);
+        jq('#confirm').click();
     });
     
     jq('#confirm, #getUrl').click(function(){
