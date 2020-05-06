@@ -11,27 +11,21 @@ if(!$isAjax) {
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
 
-	session_start();
+session_start();
 
-	$myBdd = new MyBdd();
-	$idMatch = (int)$_POST['idMatch'];
-	$id = explode('-',$myBdd->RealEscapeString(trim($_POST['id'])));
-	$value = $myBdd->RealEscapeString(trim($_POST['value']));
-	// Contrôle autorisation journée
-	$sql  = "SELECT Id_journee, Validation "
-            . "FROM gickp_Matchs "
-            . "WHERE Id = ".$idMatch;
-	$result = $myBdd->Query($sql);
-	$row = $myBdd->FetchArray($result);
-			if (!utyIsAutorisationJournee($row['Id_journee']))
-		die ("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
-	if ($row['Validation']=='O')
-		die ("Ce match est verrouillé !");
-	
-	$sql  = "UPDATE gickp_Matchs_Joueurs "
-            . "SET Numero = '".$value."' "
-            . "WHERE Id_match = ".$idMatch." "
-            . "AND Matric = ".$id[1];
-	$result = $myBdd->Query($sql);
-	echo $value; 
+$myBdd = new MyBdd();
+$idMatch = (int) utyGetPost('idMatch');
+$id = explode('-', trim(utyGetPost('id')));
+$value = trim(utyGetPost('value'));
 
+// Contrôle autorisation journée
+$myBdd->AutorisationMatch($idMatch);
+
+$sql = "UPDATE gickp_Matchs_Joueurs 
+	SET Numero = ? 
+	WHERE Id_match = ? 
+	AND Matric = ? ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($value, $idMatch, $id[1]));
+
+echo $value; 

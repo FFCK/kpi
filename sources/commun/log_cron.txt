@@ -1,7 +1,0 @@
-
-Traitement termine avec succes. 10 secondes.
-2015-01-28 22:30 - Traitement termine avec succes. 9 secondes.
-2015-02-02 22:51 - Verrou competitions "REG18","T-MTP","T-R18".
-2018-03-22 04:07 - Mise à jour 25956 licenciés... Mise à jour 623 arbitres... Mise à jour 196 surclassements... 13 secondes (dl=0).
-2018-03-22 05:12 - Verrou competitions : , deverrou competitions : 
-2018-03-22 18:09 - Verrou competitions : "N1F","N3H","N4H", deverrou competitions : 

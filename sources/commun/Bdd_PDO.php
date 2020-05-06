@@ -14,7 +14,7 @@
         //...
     }
     // ou  (permet de boucler plusieurs fois sur le même résultat)
-    $resultarray = $result->fetchAll(PDO::FETCH_BOTH);
+    $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
     foreach ($resultarray as $key => $row) {
         //...
     }
@@ -34,7 +34,9 @@
         ':Code_competition' => $codeCompetition,
         ':Code_saison' => $codeSaison
     ));
-    $num_results = $result->rowCount();
+    $num_results = $result->rowCount(); // nombre de lignes sélectionnées
+    // nombre de lignes modifiées pour un UPDATE, DELETE, 
+    // nombre de lignes modifiées pour un REPLACE (x2 si Update effectif)
 
     while ($row = $result->fetch()) {}
     // ou
@@ -120,6 +122,7 @@
     $stm->execute(array_merge($params,$in_params)); // just merge two arrays
     $data = $stm->fetchAll();
 
+    $myBdd->pdo->lastInsertId();
 
     // DEBUG
     $result->debugDumpParams();

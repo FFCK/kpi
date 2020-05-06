@@ -11,21 +11,24 @@ if(!$isAjax) {
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
 
-	session_start();
+session_start();
 
-	$myBdd = new MyBdd();
-	$idMatch = (int)$_POST['idMatch'];
-	$idEquipe = (int)$_POST['idEquipe'];
-	$Equipe = $myBdd->RealEscapeString(trim($_POST['equipe'])); // A / B
-	$sql  = "UPDATE gickp_Matchs "
-            . "SET Id_equipe".$Equipe." = ".$idEquipe." "
-            . "WHERE Id = ".$idMatch;
-	$result = $myBdd->Query($sql);
-	// Vidage compo
-	$sql  = "DELETE FROM gickp_Matchs_Joueurs "
-            . "WHERE Id_match = $idMatch "
-            . "AND Equipe = '".$Equipe."' ";
-			$myBdd->Query($sql);	
-	echo "OK"; 
+$myBdd = new MyBdd();
+$idMatch = (int) utyGetPost('idMatch');
+$idEquipe = (int) utyGetPost('idEquipe');
+$Equipe = trim(utyGetPost('equipe')); // A / B
+$EquipeAB = 'Id_equipe' . $Equipe;
+$sql = "UPDATE gickp_Matchs 
+	SET $EquipeAB = ? 
+	WHERE Id = ? ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($idEquipe, $idMatch));
+	
+// Vidage compo
+$sql = "DELETE FROM gickp_Matchs_Joueurs 
+	WHERE Equipe = ? 
+	AND Id_match = ? ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($Equipe, $idMatch));
 
-
+echo "OK"; 

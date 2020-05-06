@@ -171,7 +171,7 @@ class PdfListeMatchs extends MyPage
 		$orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
 		
 		$PhaseLibelle = 0;
-        $resultarray = $result->fetchAll(PDO::FETCH_BOTH);
+        $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
         foreach ($resultarray as $key => $row1) {
 			if (trim($row1['Phase']) != '') {
                 $PhaseLibelle = 1;

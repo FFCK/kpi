@@ -122,7 +122,7 @@ class PdfListeMatchs extends MyPage
             $result->execute($merge);
         }
 		
-        $resultarray = $result->fetchAll(PDO::FETCH_BOTH);
+        $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
         foreach ($resultarray as $key => $row1) {
             $lastCompetEvt = $row1['Code_competition'];
 		}
