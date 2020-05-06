@@ -7,28 +7,6 @@ include_once('../commun/MyTools.php');
 // Gestion de la Feuille de Match
 class GestionMatchDetail extends MyPageSecure	 
 {	
-	
-	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd)
-	{
-		$myBdd = new MyBdd();
-		$sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-        $result = $myBdd->Query($sql);
-
-		if ($myBdd->NumRows($result) != 1)
-			return;
-			
-		$row = $myBdd->FetchArray($result);
-		if ((int) $row['Nb'] > 0)
-			return;
-			
-		$sql  = "Replace Into gickp_Matchs_Joueurs ";
-		$sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-		$sql .= "Where Id_equipe = $idEquipe ";
-		$sql .= "AND Capitaine <> 'X' ";
-		$sql .= "AND Capitaine <> 'A' ";
-        $myBdd->Query($sql);
- 	}
-	
 	function Load()
 	{
 		$myBdd = new MyBdd();
@@ -54,20 +32,22 @@ class GestionMatchDetail extends MyPageSecure
             "r_rep"
         ];
 
-                    
-                    
 		// Contrôle autorisation journée
-		$sql  = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, m.Heure_fin, j.*, j.Code_saison saison, c.*, "
-                . "m.Type Type_match, m.Validation Valid_match, m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, "
-                . "ce2.Libelle equipeB, ce2.Code_club clubB "
-                . "FROM gickp_Matchs m left outer join gickp_Competitions_Equipes ce1 on (ce1.Id = m.Id_equipeA) "
-                . "left outer join gickp_Competitions_Equipes ce2 on (ce2.Id = m.Id_equipeB), gickp_Journees j, gickp_Competitions c "
-                . "WHERE m.Id = $idMatch "
-                . "AND m.Id_journee = j.Id "
-                . "AND j.Code_competition = c.Code "
-                . "AND j.Code_saison = c.Code_saison ";
-		$result = $myBdd->Query($sql);
-		$row = $myBdd->FetchArray($result);
+		$sql = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, 
+			m.Heure_fin, j.*, j.Code_saison saison, c.*, m.Type Type_match, m.Validation Valid_match, 
+			m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, 
+			ce2.Code_club clubB 
+			FROM gickp_Journees j, gickp_Competitions c, gickp_Matchs m 
+			LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (ce1.Id = m.Id_equipeA) 
+			LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (ce2.Id = m.Id_equipeB) 
+			WHERE m.Id = ? 
+			AND m.Id_journee = j.Id 
+			AND j.Code_competition = c.Code 
+			AND j.Code_saison = c.Code_saison ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($idMatch));
+		$row = $result->fetch();
+
 		$saison = $row['saison'];
 		$statutMatch = $row['statutMatch'];
 		$publiMatch = $row['PubliMatch'];
@@ -104,41 +84,40 @@ class GestionMatchDetail extends MyPageSecure
 			$paysB = 'FRA';
 		
 		// Compo équipe A
-			if ($row['Id_equipeA'] >= 1)
-				$this->InitTitulaireEquipe('A', $idMatch, $row['Id_equipeA'], $myBdd);
-			$sql3  = "Select a.Matric, a.Numero, a.Capitaine, IF(a.Capitaine = 'E', 1, 0) Entraineur, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire ";
-			$sql3 .= "From gickp_Matchs_Joueurs a ";
-			$sql3 .= "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = ".$row['Id_equipeA']." And c.Matric = a.Matric), "; 
-			$sql3 .= "gickp_Liste_Coureur b ";
-			$sql3 .= "Where a.Matric = b.Matric ";
-			$sql3 .= "And a.Id_match = $idMatch ";
-			$sql3 .= "And a.Equipe = 'A' ";
-			$sql3 .= "Order By Entraineur, Numero, Nom, Prenom ";	 
-			$result3 = $myBdd->Query($sql3);
-			$num_results3 = $myBdd->NumRows($result3);
+			if ($row['Id_equipeA'] >= 1) {
+				$myBdd->InitTitulaireEquipe('A', $idMatch, $row['Id_equipeA']);
+			}
+			$sql3 = "SELECT a.Matric, a.Numero, a.Capitaine, IF(a.Capitaine = 'E', 1, 0) Entraineur, 
+				b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire 
+				FROM gickp_Liste_Coureur b, gickp_Matchs_Joueurs a 
+				LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c 
+					ON (c.Id_equipe = ? AND c.Matric = a.Matric) 
+				WHERE a.Matric = b.Matric 
+				AND a.Id_match = ? 
+				AND a.Equipe = ? 
+				ORDER BY Entraineur, Numero, Nom, Prenom ";	 
+			$result3 = $myBdd->pdo->prepare($sql3);
+			$result3->execute(array($row['Id_equipeA'], $idMatch, 'A'));
+			$num_results3 = $result3->rowCount();
+			$resultarray3 = $result3->fetchAll(PDO::FETCH_BOTH);
 		// Compo équipe B
-			if ($row['Id_equipeB'] >= 1)
-				$this->InitTitulaireEquipe('B', $idMatch, $row['Id_equipeB'], $myBdd);
-			$sql4  = "Select a.Matric, a.Numero, a.Capitaine, IF(a.Capitaine = 'E', 1, 0) Entraineur, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire ";
-			$sql4 .= "From gickp_Matchs_Joueurs a ";
-			$sql4 .= "Left Outer Join gickp_Competitions_Equipes_Joueurs c On (c.Id_equipe = ".$row['Id_equipeB']." And c.Matric = a.Matric), "; 
-			$sql4 .= "gickp_Liste_Coureur b ";
-			$sql4 .= "Where a.Matric = b.Matric ";
-			$sql4 .= "And a.Id_match = $idMatch ";
-			$sql4 .= "And a.Equipe = 'B' ";
-			$sql4 .= "Order By Entraineur, Numero, Nom, Prenom ";	 
-			$result4 = $myBdd->Query($sql4);
-			$num_results4 = $myBdd->NumRows($result4);
-
-			// Evts
-			$sql5  = "Select d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.motif, d.Competiteur, d.Numero, d.Equipe_A_B, ";
-			$sql5 .= "c.Nom, c.Prenom ";
-			$sql5 .= "From gickp_Matchs_Detail d Left Outer Join gickp_Liste_Coureur c On d.Competiteur = c.Matric ";
-			$sql5 .= "Where d.Id_match = $idMatch ";
-			//$sql5 .= "AND d.Equipe_A_B = 'A' ";
-			$sql5 .= "Order By d.Periode DESC, d.Temps ASC, d.Id_evt_match DESC, d.Id ";
-			$result5 = $myBdd->Query($sql5);
-			$num_results5 = $myBdd->NumRows($result5);
+			if ($row['Id_equipeB'] >= 1) {
+				$myBdd->InitTitulaireEquipe('B', $idMatch, $row['Id_equipeB']);
+			}
+			$result3->execute(array($row['Id_equipeB'], $idMatch, 'B'));
+			$num_results4 = $result3->rowCount();
+			$resultarray4 = $result3->fetchAll(PDO::FETCH_BOTH);
+		// Evts
+			$sql5 = "SELECT d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.motif, 
+				d.Competiteur, d.Numero, d.Equipe_A_B, c.Nom, c.Prenom 
+				FROM gickp_Matchs_Detail d 
+				LEFT OUTER JOIN gickp_Liste_Coureur c ON d.Competiteur = c.Matric 
+				WHERE d.Id_match = ? 
+				ORDER BY d.Periode DESC, d.Temps ASC, d.Id_evt_match DESC, d.Id ";
+			$result5 = $myBdd->pdo->prepare($sql5);
+			$result5->execute(array($idMatch));
+			$num_results5 = $result5->rowCount();
+			$resultarray5 = $result5->fetchAll(PDO::FETCH_BOTH);
 ?>
 <!doctype html>
 <html lang="fr">
@@ -297,33 +276,33 @@ class GestionMatchDetail extends MyPageSecure
 							<?php
 								$joueur_temp = '';
 								$entr_temp = '';
-								for ($i=1;$i<=$num_results3;$i++)
-								{
-									$row3 = $myBdd->FetchArray($result3);
+								foreach ($resultarray3 as $key => $row3) {
 									$age = utyCodeCategorie2($row3["Naissance"], $saison);
-									if($row3["Capitaine"] != 'E'){
+									if ($row3["Capitaine"] != 'E') {
 										$joueur_temp  = '<tr>';
 										$joueur_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</td>';
 										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
 										$joueur_temp .= '<td>'.strtoupper($row3["Nom"]).'</td>';
 										$joueur_temp .= '<td>'.utyUcWordNomCompose($row3["Prenom"]).'</td>';
 										$joueur_temp .= '<td>';
-										if($row3["Matric"] < 2000000)
+										if ($row3["Matric"] < 2000000) {
 											$joueur_temp .= $row3["Matric"];
+										}
 										$joueur_temp .= '</td>';
 										$joueur_temp .= '<td>'.$age.'</td>';
 										$joueur_temp .= '<td><a class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
 										$joueur_temp .= '</tr>';
-                                                                                $entr_temp  = '';
-									}else{
+										$entr_temp  = '';
+									} else {
 										$entr_temp  = '<tr class="entraineur">';
 										$entr_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'"></td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
 										$entr_temp .= '<td>'.strtoupper($row3["Nom"]).'</td>';
 										$entr_temp .= '<td>'.utyUcWordNomCompose($row3["Prenom"]).'</td>';
 										$entr_temp .= '<td>';
-										if($row3["Matric"] < 2000000)
+										if ($row3["Matric"] < 2000000) {
 											$entr_temp .= $row3["Matric"];
+										}
 										$entr_temp .= '</td>';
 										$entr_temp .= '<td>'.$age.'</td>';
 										$entr_temp .= '<td><a class="suppression" title="'.$lang['Suppression_joueur'].'" id="Supp-A-'.$row3["Matric"].'"><img src="v2/images/trash.png" width="20" /></a></td>';
@@ -333,8 +312,6 @@ class GestionMatchDetail extends MyPageSecure
 									echo $joueur_temp;
                                     echo $entr_temp;
 								}
-								if($num_results3 >= 1)
-								$myBdd->DataSeek($result3,0); 
 							?>
 							</tbody>
 						</table>
@@ -360,11 +337,9 @@ class GestionMatchDetail extends MyPageSecure
 							<?php
 								$joueur_temp = '';
 								$entr_temp = '';
-								for ($i=1;$i<=$num_results4;$i++)
-								{
-									$row4 = $myBdd->FetchArray($result4);
+								foreach ($resultarray4 as $key => $row4) {
 									$age = utyCodeCategorie2($row4["Naissance"], $saison);
-									if($row4["Capitaine"] != 'E'){
+									if ($row4["Capitaine"] != 'E') {
 										$joueur_temp  = '<tr>';
 										$joueur_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</td>';
 										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
@@ -398,9 +373,6 @@ class GestionMatchDetail extends MyPageSecure
 									echo $joueur_temp;
                                     echo $entr_temp;
 								}
-								if ($num_results4 >= 1) {
-                                    $myBdd->DataSeek($result4, 0);
-                                }
                             ?>
 							</tbody>
 						</table>
@@ -445,16 +417,14 @@ stop_time: <span id="stop_time_display"></span><br />
 							<?php 			
 								$joueur_temp = '';
 								$entr_temp = '';
-								for ($i=1;$i<=$num_results3;$i++)
-								{
-									$row3 = $myBdd->FetchArray($result3);
-									if($row3["Capitaine"] != 'E'){
+								foreach ($resultarray3 as $key => $row3) {
+									if ($row3["Capitaine"] != 'E') {
 										$joueur_temp  = '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
 										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
 										if($row3["Capitaine"] == 'C')
 											$joueur_temp .= ' (Cap.)';
 										$joueur_temp .= '</span><span class="c_evt"></span></a>';
-									}else{
+									} else {
 										$entr_temp .= '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs coach">';
 										$entr_temp .= utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
 										$entr_temp .= '<span class="c_evt"></span></a>';
@@ -521,16 +491,14 @@ stop_time: <span id="stop_time_display"></span><br />
 							<?php 			
 								$joueur_temp = '';
 								$entr_temp = '';
-								for ($i=1;$i<=$num_results4;$i++)
-								{
-									$row4 = $myBdd->FetchArray($result4);
-									if($row4["Capitaine"] != 'E'){
+								foreach ($resultarray4 as $key => $row4) {
+									if ($row4["Capitaine"] != 'E') {
 										$joueur_temp  = '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
 										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
 										if($row4["Capitaine"] == 'C')
 											$joueur_temp .= ' (Cap.)';
 										$joueur_temp .= '</span><span class="c_evt"></span></a>';
-									}else{
+									} else {
 										$entr_temp .= '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs coach">';
 										$entr_temp .= utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
 										$entr_temp .= '<span class="c_evt"></span></a>';
@@ -570,17 +538,15 @@ stop_time: <span id="stop_time_display"></span><br />
 -->
 								<?php
 								$evt_temp = '';
-								for ($i=1;$i<=$num_results5;$i++)
-								{
-									$row5 = $myBdd->FetchArray($result5);
-                                    if($row5['motif'] != '') {
+								foreach ($resultarray5 as $key => $row5) {
+                                    if ($row5['motif'] != '') {
                                         $row5['motif_texte'] = ' (' . $lang[$row5['motif']] . ')';
                                     } else {
                                         $row5['motif_texte'] = '';
                                     }
-                                    if($row5["Id_evt_match"] != 'A' && $row5["Id_evt_match"] != 'T') {
+                                    if ($row5["Id_evt_match"] != 'A' && $row5["Id_evt_match"] != 'T') {
                                         $evtEquipe = $row5['Equipe_A_B'];
-                                        if($row5['Competiteur'] == '0'){
+                                        if ($row5['Competiteur'] == '0') {
                                             $row5["Numero"] = '';
                                             $row5["Separatif"] = '';
                                             $row5["Nom"] = $lang['Equipe'];
@@ -591,7 +557,7 @@ stop_time: <span id="stop_time_display"></span><br />
                                         $evt_temp  = '<tr id="ligne_'.$row5["Id"].'" data-code="'.$row5["Periode"].';'
                                                 .substr($row5["Temps"],-5).';'.$row5["Id_evt_match"].';'.$evtEquipe.';'
                                                 .$row5["Competiteur"].';'.$row5["Numero"].';'.$row5["motif"].'">';
-                                        if($evtEquipe == 'A'){
+                                        if ($evtEquipe == 'A') {
                                             $evt_temp .= '<td class="list_evt">';
                                             if($row5["Id_evt_match"] == 'V')
                                                 $evt_temp .= '<img src="v2/carton_vert.png">';
@@ -619,7 +585,7 @@ stop_time: <span id="stop_time_display"></span><br />
                                             $evt_temp .= '<td colspan="5" class="list_evt_vide"></td>';
                                         }
                                         $evt_temp .= '<td class="list_chrono">'.$row5["Periode"].' '.substr($row5["Temps"],-5).'</td>';
-                                        if($evtEquipe == 'B'){
+                                        if ($evtEquipe == 'B') {
                                             $evt_temp .= '<td class="list_evt">';
                                             if($row5["Id_evt_match"] == 'B')
                                                 $evt_temp .= '<img src="v2/but1.png">';
@@ -753,13 +719,13 @@ stop_time: <span id="stop_time_display"></span><br />
         </script>
         <?php	}	?>
 				
-        <?php if($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
+        <?php if ($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
         <script type="text/javascript" src="v2/fm2_B.js?v=<?= NUM_VERSION ?>"></script>
         <?php } ?>
         
-        <?php if($verrou != 'O') { ?>
+        <?php if ($verrou != 'O') { ?>
         <script type="text/javascript" src="v2/fm2_C.js?v=<?= NUM_VERSION ?>"></script>
-        <?php	}	?>
+        <?php }	?>
         
         <script type="text/javascript" src="v2/fm2_D.js?v=<?= NUM_VERSION ?>"></script>
         <script>
@@ -818,19 +784,15 @@ stop_time: <span id="stop_time_display"></span><br />
 				
 				/* Evt chargés */
 				<?php
-				if($num_results5 >= 1)
-					$myBdd->DataSeek($result5,0);
 				$evtEquipe = '';
                 $evt_tir['A'] = 0;
                 $evt_tir['B'] = 0;
                 $evt_arret['A'] = 0;
                 $evt_arret['B'] = 0;
-				for ($i=1; $i<=$num_results5; $i++)
-				{
-					$row5 = $myBdd->FetchArray($result5);
+				foreach ($resultarray5 as $key => $row5) {
 					$evtEquipe = $row5['Equipe_A_B'];
                     $evt_temp_js = '';
-					switch($row5["Id_evt_match"]){
+					switch ($row5["Id_evt_match"]) {
 						case 'B':
 							$evt_temp_js = '$("#'.$evtEquipe.$row5['Competiteur'].' .c_evt").append("<img class=\'c_but\' src=\'v2/but1.png\' />");
 							$("#score'.$evtEquipe.', #score'.$evtEquipe.'2, #score'.$evtEquipe.'3").text(parseInt($("#score'.$evtEquipe.'").text()) + 1);

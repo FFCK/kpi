@@ -14,17 +14,20 @@ include_once('../../commun/MyTools.php');
 session_start();
 
 $myBdd = new MyBdd();
-$Id_Evenement = (int)$_POST['Id_Evenement'];
-$Id_Journee = (int)$_POST['Id_Journee'];
-$Valeur = $myBdd->RealEscapeString(trim($_POST['Valeur']));
+$Id_Evenement = (int) utyGetPost('Id_Evenement');
+$Id_Journee = (int) utyGetPost('Id_Journee');
+$Valeur = trim( utyGetPost('Valeur'));
 
 if ($Valeur == 'true') {
-	$sql  = "REPLACE INTO gickp_Evenement_Journees (Id_Evenement, Id_Journee) "
-			. "VALUES ($Id_Evenement, $Id_Journee)";
-} elseif($Valeur == 'false') {
-	$sql  = "DELETE FROM gickp_Evenement_Journees "
-			. "WHERE Id_Evenement = $Id_Evenement "
-			. "AND Id_Journee = $Id_Journee ";
+	$sql = "REPLACE INTO gickp_Evenement_Journees (Id_Evenement, Id_Journee) 
+		VALUES (?, ?)";
+	$result = $myBdd->pdo->prepare($sql);
+	$result->execute(array($Id_Evenement, $Id_Journee));
+} elseif ($Valeur == 'false') {
+	$sql = "DELETE FROM gickp_Evenement_Journees 
+		WHERE Id_Evenement = $Id_Evenement 
+		AND Id_Journee = $Id_Journee ";
+	$result = $myBdd->pdo->prepare($sql);
+	$result->execute(array($Id_Evenement, $Id_Journee));
 }
-$result = $myBdd->Query($sql);
 echo 'OK';
