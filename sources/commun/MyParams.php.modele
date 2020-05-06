@@ -24,3 +24,11 @@ define('PARAM_LOCAL_SERVER', '');
 define('FTP_SERVER', '');
 define('FTP_USER_NAME', '');
 define('FTP_USER_PASS', '');
+
+// Path
+define('PATH_ABS', '');		// Chemin Absolu	 
+define('PATH_REL', '');		// Chemin Relatif 	
+define('MAIN_DIRECTORY', '');
+
+// Destinataires alertes cartons
+define('CARD_ALERT_RECIPIENTS', '');

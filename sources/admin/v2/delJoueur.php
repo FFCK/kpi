@@ -11,24 +11,20 @@ if(!$isAjax) {
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
 
-	session_start();
+session_start();
 
-	$myBdd = new MyBdd();
-	$idMatch = (int)$_POST['Id_Match'];
-	$Matric = (int)$_POST['Matric'];
-	$Equipe = $myBdd->RealEscapeString(trim($_POST['Equipe']));
-	// Contrôle autorisation journée
-	$sql  = "Select Id_journee, Validation from gickp_Matchs where Id = ".$idMatch;
-	$result = $myBdd->Query($sql);
-	$row = $myBdd->FetchArray($result);
-	if (!utyIsAutorisationJournee($row['Id_journee']))
-		die ("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
-	if ($row['Validation']=='O')
-		die ("Ce match est verrouillé !");
-	
-	$sql  = "DELETE FROM gickp_Matchs_Joueurs "
-            . "WHERE Id_match = ".$idMatch." "
-            . "AND Matric = ".$Matric." "
-            . "AND Equipe = '".$Equipe."' ";
-	$result = $myBdd->Query($sql);
-	echo 'OK';
+$myBdd = new MyBdd();
+$idMatch = (int) utyGetPost('Id_Match');
+$Matric = (int) utyGetPost('Matric');
+$Equipe = trim(utyGetPost('Equipe'));
+// Contrôle autorisation journée
+$myBdd->AutorisationMatch($idMatch);
+
+$sql = "DELETE FROM gickp_Matchs_Joueurs 
+	WHERE Id_match = ? 
+	AND Matric = ? 
+	AND Equipe = ? ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($idMatch, $Matric, $Equipe));
+
+echo 'OK';

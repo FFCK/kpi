@@ -11,12 +11,16 @@ if(!$isAjax) {
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
 
-	session_start();
+session_start();
 
-	$myBdd = new MyBdd();
-	$idMatch = (int)$_POST['idMatch'];
-	$sql  = "SELECT * FROM gickp_Chrono WHERE IdMatch = '".$idMatch."' ";
-	$result = $myBdd->Query($sql);
-	$row = $myBdd->FetchArray($result);
-	$encode_donnees = json_encode($row);
-	echo $encode_donnees; 
+$myBdd = new MyBdd();
+$idMatch = (int) $_POST['idMatch'];
+$sql = "SELECT * 
+	FROM gickp_Chrono 
+	WHERE IdMatch = ? ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($idMatch));
+$row = $result->fetch();
+$encode_donnees = json_encode($row);
+header('Content-Type: application/json');
+echo $encode_donnees; 

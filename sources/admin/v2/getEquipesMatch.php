@@ -11,16 +11,21 @@ if(!$isAjax) {
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
 
-	session_start();
+session_start();
 
-	$myBdd = new MyBdd();
-	$idMatch = (int)$_POST['idMatch'];
-	$idJournee = (int)$_POST['idJournee'];
-	$data[] = array('Id' => 0, 'Libelle' => '( indéterminé )');
-	$sql  = "SELECT ce.Id, ce.Libelle FROM gickp_Competitions_Equipes ce, gickp_Journees j WHERE ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison AND j.Id = ".$idJournee;
-	$result = $myBdd->Query($sql);
-	while ($row = $myBdd->FetchArray($result)) {	
-		$data[] = $row;
-	}
-	$encode_donnees = json_encode($data);
-	echo $encode_donnees; 
+$myBdd = new MyBdd();
+$idJournee = (int) utyGetPost('idJournee');
+$data[] = array('Id' => 0, 'Libelle' => '( indéterminé )');
+$sql = "SELECT ce.Id, ce.Libelle 
+	FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+	WHERE ce.Code_compet = j.Code_competition 
+	AND ce.Code_saison = j.Code_saison 
+	AND j.Id = ? ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute(array($idJournee));
+while ($row = $result->fetch()) {	
+	$data[] = $row;
+}
+$encode_donnees = json_encode($data);
+header('Content-Type: application/json');
+echo $encode_donnees; 

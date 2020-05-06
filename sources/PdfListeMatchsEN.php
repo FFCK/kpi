@@ -171,7 +171,7 @@ class PdfListeMatchs extends MyPage
         $num_results = $result->rowCount();
         
         $PhaseLibelle = 0;
-        $resultarray = $result->fetchAll(PDO::FETCH_BOTH);
+        $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
         foreach ($resultarray as $key => $row1) {
 			if (trim($row1['Phase']) != '') {
 				$PhaseLibelle = 1;

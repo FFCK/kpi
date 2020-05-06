@@ -114,15 +114,30 @@ class CacheMatch
 		
 		// Chargement Record Match ...
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$sql = "SELECT * 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $db->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$rMatch = $result->fetch();		
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$sql = "SELECT * 
+			FROM gickp_Journees 
+			WHERE Id = ? ";
+		$result = $db->pdo->prepare($sql);
+		$result->execute(array($rMatch['Id_journee']));
+		$rJournee = $result->fetch();		
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$sql = "SELECT * 
+			FROM gickp_Competitions 
+			WHERE Code = ? ";
+		$result = $db->pdo->prepare($sql);
+		$result->execute(array($rJournee['Code_competition']));
+		$rCompetition = $result->fetch();		
 		
 		$idEquipeA =  $rMatch['Id_equipeA'];
 		$idEquipeB =  $rMatch['Id_equipeB'];
@@ -134,51 +149,69 @@ class CacheMatch
         
 		if($idEquipeA > 0) {
             // Chargement Equipe A 
-            $db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeA", $rEquipeA);
+			$sql = "SELECT * 
+				FROM gickp_Competitions_Equipes 
+				WHERE Id = ? ";
+			$result = $db->pdo->prepare($sql);
+			$result->execute(array($idEquipeA));
+			$rEquipeA = $result->fetch();		
 
             // Chargement Joueurs Equipe A 
-            $cmd  = "Select a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-            $cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-            $cmd .= "Where a.Id_match = $idMatch ";
-            $cmd .= "And a.Equipe = 'A' ";
-            $cmd .= "And a.Matric = b.matric ";
-            $cmd .= "Order By a.Numero ";
-
-            $db->LoadTable($cmd, $tJoueursA);
+			$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+				FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b 
+				WHERE a.Id_match = ? 
+				AND a.Equipe = ? 
+				AND a.Matric = b.matric 
+				ORDER BY a.Numero ";
+			$result = $db->pdo->prepare($sql);
+			$result->execute(array($idMatch, 'A'));
+			$tJoueursA = $result->fetchAll(PDO::FETCH_ASSOC);	
         }
 		
 		if($idEquipeB > 0) {
             // Chargement Equipe B 
-            $db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeB", $rEquipeB);
+			$sql = "SELECT * 
+				FROM gickp_Competitions_Equipes 
+				WHERE Id = ? ";
+			$result = $db->pdo->prepare($sql);
+			$result->execute(array($idEquipeB));
+			$rEquipeB = $result->fetch();		
 
             // Chargement Joueurs Equipe B 
-            $cmd  = "Select a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-            $cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-            $cmd .= "Where a.Id_match = $idMatch ";
-            $cmd .= "And a.Equipe = 'B' ";
-            $cmd .= "And a.Matric = b.matric ";
-            $cmd .= "Order By a.Numero ";
-
-            $db->LoadTable($cmd, $tJoueursB);
+			$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+				FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b 
+				WHERE a.Id_match = ? 
+				AND a.Equipe = ? 
+				AND a.Matric = b.matric 
+				ORDER BY a.Numero ";
+			$result = $db->pdo->prepare($sql);
+			$result->execute(array($idMatch, 'B'));
+			$tJoueursB = $result->fetchAll(PDO::FETCH_ASSOC);	
         }
 
 		// json ...
 		$arrayCache = array(
-							'id_match' => $idMatch,
-							'tick' => uniqid(), 
-							'categ' => $rCompetition['Soustitre2'],
-							'journee' => $rJournee['Nom'],
-							'phase' => $rJournee['Phase'],
-							'terrain' => $rMatch['Terrain'],
-							'date' => $rMatch['Date_match'],
-							'numero_ordre' => $rMatch['Numero_ordre'],
-							'validation' => $rMatch['Validation'],
-							'statut' => $rMatch['Statut'],
-							'arbitre' => $rMatch['Arbitre_principal'],
-							'arbitre_secondaire' => $rMatch['Arbitre_secondaire'],
-							'equipe1' => array( 'id' => $idEquipeA, 'nom' => $rEquipeA['Libelle'], 'club' => $rEquipeA['Code_club'], 'joueurs' => $tJoueursA),
-							'equipe2' => array( 'id' => $idEquipeB, 'nom' => $rEquipeB['Libelle'], 'club' => $rEquipeB['Code_club'], 'joueurs' => $tJoueursB)
-						);
+			'id_match' => $idMatch,
+			'tick' => uniqid(), 
+			'categ' => $rCompetition['Soustitre2'],
+			'journee' => $rJournee['Nom'],
+			'phase' => $rJournee['Phase'],
+			'terrain' => $rMatch['Terrain'],
+			'date' => $rMatch['Date_match'],
+			'numero_ordre' => $rMatch['Numero_ordre'],
+			'validation' => $rMatch['Validation'],
+			'statut' => $rMatch['Statut'],
+			'arbitre' => $rMatch['Arbitre_principal'],
+			'arbitre_secondaire' => $rMatch['Arbitre_secondaire'],
+			'equipe1' => array( 
+				'id' => $idEquipeA, 'nom' => $rEquipeA['Libelle'], 
+				'club' => $rEquipeA['Code_club'], 'joueurs' => $tJoueursA
+			),
+			'equipe2' => array( 
+				'id' => $idEquipeB, 'nom' => $rEquipeB['Libelle'], 
+				'club' => $rEquipeB['Code_club'], 'joueurs' => $tJoueursB
+			)
+		);
 		
 		echo json_encode($arrayCache);
 		$this->EndCache($idMatch.'_match_global.json');
@@ -191,29 +224,35 @@ class CacheMatch
 		
 		// Chargement Record Match ...
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$sql = "SELECT * 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $db->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$rMatch = $result->fetch();
 		
 		// Chargement gickp_Matchs_Detail 
-		$cmd  = "SELECT a.*, b.Nom, b.Prenom, c.Capitaine "
-                . "FROM gickp_Matchs_Detail a "
-                . "LEFT OUTER JOIN gickp_Liste_Coureur b On (a.Competiteur = b.Matric) "
-                . "LEFT OUTER JOIN gickp_Matchs_Joueurs c ON (a.Competiteur = c.Matric) "
-                . "WHERE a.Id_match = $idMatch "
-                . "ORDER BY a.Id Desc "
-                . "LIMIT 5 ";
-		
 		$tMatchDetails = null;
-		$db->LoadTable($cmd, $tMatchDetails);
+		$sql = "SELECT a.*, b.Nom, b.Prenom, c.Capitaine 
+			FROM gickp_Matchs_Detail a 
+			LEFT OUTER JOIN gickp_Liste_Coureur b On (a.Competiteur = b.Matric) 
+			LEFT OUTER JOIN gickp_Matchs_Joueurs c ON (a.Competiteur = c.Matric) 
+			WHERE a.Id_match = ? 
+			ORDER BY a.Id Desc 
+			LIMIT 5 ";
+		$result = $db->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$tMatchDetails = $result->fetchAll(PDO::FETCH_ASSOC);	
 		
 		// json ...
 		$arrayCache = array(
-							'id_match' => $idMatch,
-							'tick' => uniqid(), 
-							'periode' => $rMatch['Periode'],
-							'score1' => $rMatch['ScoreDetailA'],
-							'score2' => $rMatch['ScoreDetailB'],
-							'event' => $tMatchDetails
-						);
+			'id_match' => $idMatch,
+			'tick' => uniqid(), 
+			'periode' => $rMatch['Periode'],
+			'score1' => $rMatch['ScoreDetailA'],
+			'score2' => $rMatch['ScoreDetailB'],
+			'event' => $tMatchDetails
+		);
 		
 		echo json_encode($arrayCache);
 		
@@ -226,7 +265,12 @@ class CacheMatch
 		$this->StartCache();
 		
 		$rChrono = null;
-		$db->LoadRecord("Select * from gickp_Chrono Where IdMatch =  $idMatch", $rChrono);
+		$sql = "SELECT * 
+			FROM gickp_Chrono 
+			WHERE IdMatch = ? ";
+		$result = $db->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$rChrono = $result->fetch();
 		
 		if (!isset($rChrono['IdMatch']))
 		{
@@ -260,49 +304,42 @@ class CacheMatch
 	function Event(&$db, $idEvent, $dateMatch, $hourMatch, $arrayPitchs=null)
 	{
 		// Chargement de tous les Matchs de l'évenement pour la date indiquée et les terrains concernés ...
-		$cmd  = "SELECT a.* "
-                . "FROM gickp_Matchs a, gickp_Journees b, gickp_Evenement_Journees c "
-                . "WHERE a.Id_journee = b.Id "
-                . "And b.Id = c.Id_journee "
-                . "And c.Id_evenement = $idEvent "
-                . "And a.Date_match = '$dateMatch' "
-                . "And a.Statut != 'ATT' ";
-
-		if ($arrayPitchs != null)
-		{
-			if (count($arrayPitchs) > 0)
-			{
-				$cmd .= 'And a.Terrain In ('.implode(',', $arrayPitchs).') ';
-			}
-		}
-
-		$cmd .= "Order By a.Heure_match, a.Terrain ";
-//		echo $cmd."<BR>";
-		
-		
 		$tMatchs = null;
-		$db->LoadTable($cmd, $tMatchs);
+		if ($arrayPitchs != null && count($arrayPitchs) > 0) {
+			$in  = str_repeat('?,', count($arrayPitchs) - 1) . '?';
+			$sql = "SELECT a.* 
+				FROM gickp_Matchs a, gickp_Journees b, gickp_Evenement_Journees c 
+				WHERE a.Id_journee = b.Id 
+				AND b.Id = c.Id_journee 
+				AND c.Id_evenement = ? 
+				AND a.Date_match = ? 
+				AND a.Statut != 'ATT' 
+				AND a.Terrain IN ($in) 
+				ORDER BY a.Heure_match, a.Terrain ";		
+			$result = $db->pdo->prepare($sql);
+			$result->execute(array_merge([$idEvent], [$dateMatch], $arrayPitchs));
+		} else {
+			$sql = "SELECT a.* 
+				FROM gickp_Matchs a, gickp_Journees b, gickp_Evenement_Journees c 
+				WHERE a.Id_journee = b.Id 
+				AND b.Id = c.Id_journee 
+				AND c.Id_evenement = ? 
+				AND a.Date_match = ? 
+				AND a.Statut != 'ATT' 
+				ORDER BY a.Heure_match, a.Terrain ";		
+			$result = $db->pdo->prepare($sql);
+			$result->execute(array($idEvent, $dateMatch));
+		}
+		$tMatchs = $result->fetchAll(PDO::FETCH_ASSOC);	
 		
 		// Prise des Terrains ...
 		$arrayPitch = array();
 		foreach ($tMatchs as $tMatch)
 		{
 			$pitch = $tMatch['Terrain'];
-//			$bNew = true;
-//			for ($j=0;$j<count($arrayPitch);$j++)
-//			{
-//				if ($arrayPitch[$j] == $pitch)
-//				{
-//					$bNew = false;
-//					break;
-//				}
-//			}
-//			if ($bNew) 
             array_push($arrayPitch, $pitch);
 		}
-        $arrayPitch = array_unique($arrayPitch);
-//        var_dump($arrayPitch);
-		
+        $arrayPitch = array_unique($arrayPitch);		
 		
 		// Génération des fichiers 
 		$time = utyHHMM_To_MM($hourMatch);

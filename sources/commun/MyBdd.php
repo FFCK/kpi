@@ -405,70 +405,7 @@ class MyBdd
 
 
 
-	/** 
-	 * Importation du fichier PCE local (ancienne version)
-	 * 
-	*/
-	function ImportPCE($filePCE)
-	{
-	 	$fp = fopen($_SERVER['DOCUMENT_ROOT'] . "/PCE/". $filePCE, "r");
-		if (!$fp)
-		{				
-			array_push($this->m_arrayinfo, "Ouverture impossible du fichier ".$filePCE);
-		}	  
-		
-		array_push($this->m_arrayinfo, "Importation du fichier PCE ".$filePCE);
-		  		   
-		$section = "";
-		while (!feof($fp))
-		{
-			$buffer = trim( fgets($fp, BUFFER_LENGTH) );	
-			if (strlen($buffer) == 0)
-				continue;
-		
-			if ($buffer[0] == '[')
-			{
-				// Prise de la section ...
-				$section = substr($buffer, 1, strlen($buffer)-2);	
-				continue;
-			}	
-			
-			if (strcasecmp($section, "date_valeur") == 0)
-			{
-				$this->ImportPCE_DateValeur($buffer);	 
-				continue;
-			}							
-					
-			if (strcasecmp($section, "licencies") == 0)
-			{
-				$this->ImportPCE_Licencies($buffer);	 
-				continue;
-			}
-			
-			if (strcasecmp($section, "juges_pol") == 0)
-			{
-				$this->ImportPCE_Juges($buffer);	 
-				continue;
-			}
-            //surclassements
-			if (strcasecmp($section, "surclassements") == 0)
-			{
-				$this->ImportPCE_Surclassements($buffer);	 
-				continue;
-			}
-		}	
 
-		fclose($fp);  			   
-		
-		// Lancement des mises à jour ...
-		$this->ImportPCE_MajClub();	 
-		$this->ImportPCE_MajComiteReg();
-		$this->ImportPCE_MajComiteDept(); 
-		$this->ImportPCE_MajLicencies();
-		// Fin du traitement
-		array_push($this->m_arrayinfo, "" );
-		array_push($this->m_arrayinfo, "Traitement terminé avec succès." );
-	}		
 
 
 	// Importation du fichier PCE Nouvelle formule
@@ -497,7 +434,20 @@ class MyBdd
 		}	  
 		
 		array_push($this->m_arrayinfo, "Importation du fichier PCE");
-		  		   
+
+		$sql_licencies = "REPLACE INTO gickp_Liste_Coureur VALUES (
+			?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+		$result_licencies = $this->pdo->prepare($sql_licencies);
+	
+		$sql_juges = "REPLACE INTO gickp_Arbitre VALUES (
+			?,?,?,?,?,?,?,?,?)";
+		$result_juges = $this->pdo->prepare($sql_juges);
+				   
+		$sql_surclassements = "REPLACE INTO gickp_Surclassements VALUES (
+			?,?,?,?)";
+		$result_surclassements = $this->pdo->prepare($sql_surclassements);
+		
+
 		while (!feof($fp)) {
 			$buffer = trim( fgets($fp, BUFFER_LENGTH) );	
 			if (strlen($buffer) == 0)
@@ -515,28 +465,28 @@ class MyBdd
 			}							
 					
 			if (strcasecmp($section, "licencies") == 0) {
-				$this->ImportPCE_Licencies($buffer);
+				$this->ImportPCE_Licencies($buffer, $result_licencies);
 				$nbLicenciés++;
 				continue;
 			}
 			
 			if (strcasecmp($section, "juges_kap") == 0) {
-				$this->ImportPCE_Juges($buffer);
+				$this->ImportPCE_Juges($buffer, $result_juges);
 				$nbArbitres++;
 				continue;
 			}
 
             if (strcasecmp($section, "surclassements") == 0) {
-				$this->ImportPCE_Surclassements($buffer);
+				$this->ImportPCE_Surclassements($buffer, $result_surclassements);
 				$nbSurclassements++;
 				continue;
 			}
 		}	
 
 		fclose($fp);  			   
-		array_push($this->m_arrayinfo, "Mise à jour ".$nbLicenciés." licenciés..." );
-		array_push($this->m_arrayinfo, "Mise à jour ".$nbArbitres." arbitres..." );
-		array_push($this->m_arrayinfo, "Mise à jour ".$nbSurclassements." surclassements..." );
+		array_push($this->m_arrayinfo, "MAJ ".$nbLicenciés." licenciés..." );
+		array_push($this->m_arrayinfo, "MAJ ".$nbArbitres." arbitres..." );
+		array_push($this->m_arrayinfo, "MAJ ".$nbSurclassements." surclassements..." );
 		// Lancement des mises à jour ...
 		$this->ImportPCE_MajClub();	 
 		$this->ImportPCE_MajComiteReg();
@@ -559,7 +509,7 @@ class MyBdd
 	}
 	
 	// Importation de la section [licencies] du fichier PCE 
-	function ImportPCE_Licencies($buffer)				
+	function ImportPCE_Licencies($buffer, $result_licencies)				
 	{	
         $replace_search = array('CANOE KAYAK', 'CANOE-KAYAK', 'C.K.');
 		$arrayToken = explode(";", $buffer);   
@@ -592,57 +542,20 @@ class MyBdd
 		$etat_certificat_aps = $arrayToken[15];
 		$etat_certificat_ck = $arrayToken[16];
 							 
-		$query  = "REPLACE INTO gickp_Liste_Coureur VALUES (";							 	   
-		$query .= $matric;
-		$query .= ",'";
-		$query .= $origine;
-		$query .= "','";
-		$query .= $this->RealEscapeString($nom);
-		$query .= "','";
-		$query .= $this->RealEscapeString($prenom);
-		$query .= "','";
-		$query .= $sexe;
-		$query .= "','";
-		$query .= $naissance;	
-		$query .= "','";
-		$query .= $this->RealEscapeString($club);
-		$query .= "','";
-		$query .= $this->RealEscapeString($num_club);	
-		$query .= "','";
-		$query .= $this->RealEscapeString($comite_dept);	
-		$query .= "','";
-		$query .= $this->RealEscapeString($num_comite_dept);	
-		$query .= "','";
-		$query .= $this->RealEscapeString($comite_reg);	
-		$query .= "','";
-		$query .= $this->RealEscapeString($num_comite_reg);
-		$query .= "','";
-		$query .= $etat;	
-		$query .= "','";
-		$query .= $pagaie_evi;	
-		$query .= "','";
-		$query .= $pagaie_mer;	
-		$query .= "','";
-		$query .= $pagaie_eca;	
-		$query .= "',";
-		$query .= "null"; // Date Certificat CK
-		$query .= ",";
-		$query .= "null"; // Date Certificat APS
-		$query .= ",";
-		$query .= "null"; // Reserve
-		$query .= ",'";
-		$query .= $etat_certificat_aps;
-		$query .= "','";
-		$query .= $etat_certificat_ck;
-		$query .= "')";
+		$return = $result_licencies->execute(array(
+			$matric, $origine, $nom, $prenom, $sexe, $naissance, $club, $num_club,
+			$comite_dept, $num_comite_dept, $comite_reg, $num_comite_reg, $etat, 
+			$pagaie_evi, $pagaie_mer, $pagaie_eca, 'null', 'null', 'null', 
+			$etat_certificat_aps, $etat_certificat_ck
+		));
 
-		$res = $this->Query($query);
-		if (!$res)
+		if (!$return) {
 			array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
+		}
 	}	 
 	
 	// Importation de la section [juges_pol] du fichier PCE 
-	function ImportPCE_Juges($buffer)				
+	function ImportPCE_Juges($buffer, $result_juges)				
 	{	
 		$arrayToken = explode(";", $buffer);   
 		$nbToken = count($arrayToken);
@@ -705,16 +618,18 @@ class MyBdd
 			$Arb = "JO";
 		}
 
-        $query  = "REPLACE INTO gickp_Arbitre 
-			VALUES ($matric, '$regional', '$interregional', '$national', '$international', '$Arb', '$livret', '$niveau', '$saisonJuge')";							 	   
-		$res = $this->Query($query);
-		if (!$res) {
+		$return = $result_juges->execute(array(
+			$matric, $regional, $interregional, $national, 
+			$international, $Arb, $livret, $niveau, $saisonJuge
+		));
+
+		if (!$return) {
             array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
         }
 	}	 
 
     // Importation de la section [surclassements] du fichier PCE 
-	function ImportPCE_Surclassements($buffer)				
+	function ImportPCE_Surclassements($buffer, $result_surclassements)				
 	{	
 		$arrayToken = explode(";", $buffer);   
 		$nbToken = count($arrayToken);
@@ -734,10 +649,12 @@ class MyBdd
         $dateSurclassement = implode('-',$dateSurclassement);
 		$saisonSurclassement = $this->m_saisonPCE;
 
-        if($discipline == 'KAP'){
-            $query  = "REPLACE INTO gickp_Surclassements VALUES ($matric, $saisonSurclassement, '$categorie', '$dateSurclassement')";							 	   
-            $res = $this->Query($query);
-            if (!$res) {
+        if ($discipline == 'KAP') {
+			$return = $result_surclassements->execute(array(
+				$matric, $saisonSurclassement, $categorie, $dateSurclassement
+			));
+	
+			if (!$return) {
                 array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
             }
         }
@@ -747,21 +664,23 @@ class MyBdd
 	function ImportPCE_MajClub()				
 	{ 				  
 		array_push($this->m_arrayinfo, "Mise à jour des Clubs ...");
-
-        $query = 'INSERT INTO gickp_Club (Code, Libelle, Officiel, Reserve, Code_comite_dep) '
-                    . 'SELECT lc.Numero_club selNumero_club, lc.Club selClub , "O" selOfficiel, "" selReserve , '
-                        . 'Min(lc.Numero_comite_dept) selNumero_comite_dept '
-                    . 'FROM gickp_Liste_Coureur lc '
-                    . 'WHERE lc.Numero_club <> "0" AND lc.Numero_club <> "0000" AND lc.Numero_comite_reg <> "98" '
-                    . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
-                    . 'AND lc.Club != "" '
-                    . 'GROUP BY Numero_club '
-                . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
-                    . 'Reserve = VALUES(Reserve), Code_comite_dep = VALUES(Code_comite_dep) ';
-        $res = $this->Query($query);
-		if (!$res)							 
-		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
+        $sql = "INSERT INTO gickp_Club (Code, Libelle, Officiel, Reserve, Code_comite_dep) 
+			SELECT lc.Numero_club selNumero_club, lc.Club selClub , 'O' selOfficiel, 
+			'' selReserve, MIN(lc.Numero_comite_dept) selNumero_comite_dept 
+			FROM gickp_Liste_Coureur lc 
+			WHERE lc.Numero_club <> '0' 
+			AND lc.Numero_club <> '0000' 
+			AND lc.Numero_comite_reg <> '98' 
+			AND lc.Origine = ? 
+			AND lc.Club != '' 
+			GROUP BY Numero_club 
+			ON DUPLICATE KEY UPDATE 
+				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
+				Reserve = VALUES(Reserve), Code_comite_dep = VALUES(Code_comite_dep) ";
+		$result = $this->pdo->prepare($sql);
+		$return = $result->execute(array($this->m_saisonPCE));
+		if (!$return) {
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$sql." : ".$this->Error());
 			return;
 		}
 	}	   
@@ -770,20 +689,23 @@ class MyBdd
 	function ImportPCE_MajComiteDept()				
 	{ 		
 		array_push($this->m_arrayinfo, "Mise à jour des Comités Départementaux  ...");
-
-        $query = 'INSERT INTO gickp_Comite_dep (Code, Libelle, Officiel, Reserve, Code_comite_reg) '
-                    . 'SELECT lc.Numero_comite_dept, lc.Comite_dept , "O" selOfficiel, "" selReserve, lc.Numero_comite_reg '
-                    . 'FROM gickp_Liste_Coureur lc '
-                    . 'WHERE lc.Numero_club <> "0" AND lc.Numero_club <> "0000" AND lc.Numero_comite_reg <> "98" '
-                        . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
-                        . 'AND lc.Comite_dept <> "" '
-                    . 'GROUP BY Numero_comite_dept '
-                . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
-                    . 'Reserve = VALUES(Reserve), Code_comite_reg = VALUES(Code_comite_reg) ';
-        $res = $this->Query($query);
-		if (!$res)							 
-		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
+        $sql = "INSERT INTO gickp_Comite_dep (Code, Libelle, Officiel, Reserve, Code_comite_reg) 
+			SELECT lc.Numero_comite_dept, lc.Comite_dept , 'O' selOfficiel, 
+			'' selReserve, lc.Numero_comite_reg 
+			FROM gickp_Liste_Coureur lc 
+			WHERE lc.Numero_club <> '0' 
+			AND lc.Numero_club <> '0000' 
+			AND lc.Numero_comite_reg <> '98' 
+			AND lc.Origine = ? 
+			AND lc.Comite_dept <> '' 
+			GROUP BY Numero_comite_dept 
+			ON DUPLICATE KEY UPDATE 
+				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
+				Reserve = VALUES(Reserve), Code_comite_reg = VALUES(Code_comite_reg) ";
+		$result = $this->pdo->prepare($sql);
+		$return = $result->execute(array($this->m_saisonPCE));
+		if (!$return) {
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$sql." : ".$this->Error());
 			return;
 		}
         
@@ -793,20 +715,22 @@ class MyBdd
 	function ImportPCE_MajComiteReg()				
 	{ 								 
 		array_push($this->m_arrayinfo, "Mise à jour des Comités Régionaux ..." );
-
-        $query = 'INSERT INTO gickp_Comite_reg (Code, Libelle, Officiel, Reserve) '
-                    . 'SELECT lc.Numero_comite_reg, lc.Comite_reg , "O" selOfficiel, "" selReserve '
-                    . 'FROM gickp_Liste_Coureur lc '
-                    . 'WHERE lc.Numero_club <> "0" AND lc.Numero_club <> "0000" AND lc.Numero_comite_reg <> "98" '
-                        . 'AND lc.Origine = ' . $this->m_saisonPCE . ' '
-                        . 'AND lc.Comite_reg <> "" '
-                    . 'GROUP BY Numero_comite_reg '
-                . 'ON DUPLICATE KEY UPDATE Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), '
-                    . 'Reserve = VALUES(Reserve) ';
-        $res = $this->Query($query);
-		if (!$res)							 
-		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
+        $sql = "INSERT INTO gickp_Comite_reg (Code, Libelle, Officiel, Reserve) 
+			SELECT lc.Numero_comite_reg, lc.Comite_reg , 'O' selOfficiel, '' selReserve 
+			FROM gickp_Liste_Coureur lc 
+			WHERE lc.Numero_club <> '0' 
+			AND lc.Numero_club <> '0000' 
+			AND lc.Numero_comite_reg <> '98' 
+			AND lc.Origine = ? 
+            AND lc.Comite_reg <> '' 
+			GROUP BY Numero_comite_reg 
+			ON DUPLICATE KEY UPDATE 
+				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
+				Reserve = VALUES(Reserve) ";
+		$result = $this->pdo->prepare($sql);
+		$return = $result->execute(array($this->m_saisonPCE));
+		if (!$return) {
+			array_push($this->m_arrayinfo, "Erreur SQL : ".$sql." : ".$this->Error());
 			return;
 		}
         
@@ -817,30 +741,13 @@ class MyBdd
 	{	   		
 		array_push($this->m_arrayinfo, "Traitement final base des licenciés ..." );
 		// Verication Sexe M ou F ...		   
-		$query = "Update gickp_Liste_Coureur Set Sexe = 'M' Where Sexe = 'H' ";		
-		$res = $this->Query($query);
-		if (!$res)							 
-		{		
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
-			return;
-		}		
-
-		$query = "Update gickp_Liste_Coureur Set Sexe = 'F' Where Sexe = 'D' ";		
-		$res = $this->Query($query);
-		if (!$res)							 
-		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
-			return;
-		}		
+		$this->pdo->exec("UPDATE gickp_Liste_Coureur SET Sexe = 'M' WHERE Sexe = 'H' ");		
+		$this->pdo->exec("UPDATE gickp_Liste_Coureur SET Sexe = 'F' WHERE Sexe = 'D' ");		
 
 		// Vidage Club, CD, CR
-		$query = "Update gickp_Liste_Coureur Set Club = '', Comite_dept = '', Comite_reg = '' Where 1 ";		
-		$res = $this->Query($query);
-		if (!$res)							 
-		{
-			array_push($this->m_arrayinfo, "Erreur SQL : ".$query." : ".$this->Error());
-			return;
-		}		
+		$this->pdo->exec("UPDATE gickp_Liste_Coureur 
+			SET Club = '', Comite_dept = '', Comite_reg = '' 
+			WHERE 1 ");		
 	}
 
 
@@ -1094,7 +1001,7 @@ class MyBdd
 	 * @param [type] $idEquipe
 	 * @return void
 	 */
-	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd=false) {
+	function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $reinit=false) {
         $sql = "SELECT Count(*) Nb 
             FROM gickp_Matchs_Joueurs 
             WHERE Id_match = ? 
@@ -1103,7 +1010,7 @@ class MyBdd
         $result->execute(array($idMatch, $numEquipe));
 
         $row = $result->fetch();
-        if ((int) $row['Nb'] > 0) {
+        if ((int) $row['Nb'] > 0 && $reinit == false) {
             return;
         }
 
@@ -1117,6 +1024,32 @@ class MyBdd
         $result->execute(array($idMatch, $numEquipe, $idEquipe));
     }
 
+	/**
+	 * AutorisationMatch (journée autorisée, match non verrouillé)
+	 *
+	 * @param [int] $idMatch
+	 * @return void
+	 */
+	function AutorisationMatch($idMatch, $journeeUniquement = false) {
+		if ($idMatch == 0) {
+			header('HTTP/1.0 401 Unauthorized');
+			die("Vous n'avez pas l'autorisation de modifier ce match !");
+		}
+		$sql = "SELECT Id_journee, `Validation` 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$row = $result->fetch();		
+		if (!utyIsAutorisationJournee($row['Id_journee'])) {
+			header('HTTP/1.0 401 Unauthorized');
+			die("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
+		}
+		if ($row['Validation'] == 'O' && $journeeUniquement == false) {
+			header('HTTP/1.0 401 Unauthorized');
+			die("Ce match est verrouillé !");
+		}
+	}
 	
     // Check cumuls cartons
     // Si carton rouge, calculer les cumuls tous cartons et aviser
@@ -1129,47 +1062,47 @@ class MyBdd
         $card_colors = ['V' => 'Vert', 'J' => 'Jaune', 'R' => 'Rouge'];
         $saison = $this->GetActiveSaison();
         $headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
-        $destinataires = 'contact@kayak-polo.info,frederic.escaffre@mpsa.com,eric.vignet@sidel.com,dejonghebrice@yahoo.fr,virginiebrackez@aol.com,denissaintemartine@gmail.com,c.moal@laposte.net';
-//        $destinataires = 'contact@kayak-polo.info';
+       	$destinataires = CARD_ALERT_RECIPIENTS;
         $msg1 = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n"
                             . "Bonjour, \r\n\r\n";
         $msg2 = "";
         $msg3 = "\r\ncf. Article RP KAP 16 du règlement sportif.\r\n\r\nCordialement\r\nKayak-polo.info\r\n";
-        $sql = "SELECT lc.Nom, lc.Prenom, lc.Numero_club Club, md.Id_evt_match card,  "
-                . "COUNT(md.Id_evt_match) nb_total,  "
-				. "SUM(IF(j.Code_competition LIKE 'N%', 1, 0)) nb_champ,  "
-  				. "SUM(IF(j.Code_competition LIKE 'CF%', 1, 0)) nb_coupe,  "
-				. "SUM(IF(m.Id_journee = (  "
-                . "    SELECT Id_journee FROM gickp_Matchs WHERE Id = $idMatch "
-                . "), 1, 0)) nb_journee, "
-                . "(SELECT Code_competition FROM gickp_Journees "
-                . "    INNER JOIN gickp_Matchs ON (gickp_Journees.Id = gickp_Matchs.Id_journee)"
-                . "    WHERE gickp_Matchs.Id = $idMatch ) AS compet "
-//  				. ", SUM(IF(j.Code_competition LIKE 'M%', 1, 0)) nb_modele "
-                . "FROM gickp_Matchs_Detail md  "
-                . "INNER JOIN gickp_Matchs m ON (md.Id_match = m.Id) "
-                . "INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id)  "
-                . "INNER JOIN gickp_Liste_Coureur lc ON (md.Competiteur = lc.Matric)  "
-                . "WHERE md.Competiteur = $matric "
-                . "AND j.Code_saison = $saison "
-                . "AND md.Id_evt_match IN ('V','J','R')  "
-                . "AND (  "
-                . "    j.Code_competition LIKE 'N%'  "
-                . "    OR j.Code_competition LIKE 'CF%'  "
-//                . "    OR j.Code_competition LIKE 'M%'  "
-                . ") GROUP BY Id_evt_match  "
-                . "ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R')";
-        $result = $this->Query($sql);
-        while($row = $this->FetchArray($result)) {
+		$sql = "SELECT lc.Nom, lc.Prenom, lc.Numero_club Club, md.Id_evt_match card,  
+			COUNT(md.Id_evt_match) nb_total, 
+			SUM(IF(j.Code_competition LIKE 'N%', 1, 0)) nb_champ, 
+			SUM(IF(j.Code_competition LIKE 'CF%', 1, 0)) nb_coupe, 
+			SUM(IF(m.Id_journee = ( 
+				SELECT Id_journee FROM gickp_Matchs WHERE Id = $idMatch 
+				), 1, 0)) nb_journee, 
+				(SELECT Code_competition FROM gickp_Journees 
+				INNER JOIN gickp_Matchs ON (gickp_Journees.Id = gickp_Matchs.Id_journee) 
+				WHERE gickp_Matchs.Id = ? ) AS compet 
+				-- , SUM(IF(j.Code_competition LIKE 'M%', 1, 0)) nb_modele 
+			FROM gickp_Matchs_Detail md  
+			INNER JOIN gickp_Matchs m ON (md.Id_match = m.Id) 
+			INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id) 
+			INNER JOIN gickp_Liste_Coureur lc ON (md.Competiteur = lc.Matric) 
+			WHERE md.Competiteur = ? 
+			AND j.Code_saison = ? 
+			AND md.Id_evt_match IN ('V','J','R')  
+			AND (
+				j.Code_competition LIKE 'N%' 
+				OR j.Code_competition LIKE 'CF%' 
+				-- OR j.Code_competition LIKE 'M%' 
+				)
+			GROUP BY Id_evt_match 
+			ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R')";
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array($idMatch, $idMatch, $saison));
+        while($row = $result->fetch()) {
             $prenom = $row['Prenom'];
             $nom = $row['Nom'];
             $club = $row['Club'];
             $compet = $row['compet'];
-            if(
-                    substr($compet, 0, 1) != 'N' 
-                    && substr($compet, 0, 2) != 'CF'
-//                    && substr($compet, 0, 1) != 'M'
-                    ) {
+            if (substr($compet, 0, 1) != 'N' 
+				&& substr($compet, 0, 2) != 'CF'
+                // && substr($compet, 0, 1) != 'M'
+				) {
                 return;
             }
             $msg2 .= "\r\n" . $card_colors[$row['card']] . "s \r\n"
@@ -1184,7 +1117,7 @@ class MyBdd
         }
         switch ($card) {
             case 'V':
-                if($array['V']['nb_total'] >= 6) {
+                if(isset($array['V']['nb_total']) && $array['V']['nb_total'] >= 6) {
                     $msg = $msg1
                             . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric .")\r\n"
                             . "   vient de faire l'objet d'un carton vert sur le match $idMatch (" . $array['V']['compet'] . "),\r\n"
@@ -1198,7 +1131,7 @@ class MyBdd
                 }
                 break;
             case 'J':
-                if($array['J']['nb_total'] >= 3) {
+                if(isset($array['J']['nb_total']) && $array['J']['nb_total'] >= 3) {
                     $msg = $msg1
                             . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric .")\r\n"
                             . "   vient de faire l'objet d'un carton jaune sur le match $idMatch (" . $array['J']['compet'] . "),\r\n"
@@ -1212,7 +1145,7 @@ class MyBdd
                 }
                 break;
             case 'R':
-                if($array['R']['nb_total'] >= 1) {
+                if(isset($array['R']['nb_total']) && $array['R']['nb_total'] >= 1) {
                     $msg = $msg1
                             . $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric .")\r\n"
                             . "   vient de faire l'objet d'un carton rouge sur le match $idMatch (" . $array['R']['compet'] . "),\r\n"
@@ -1233,16 +1166,14 @@ class MyBdd
 	// GetCategorie
 	function GetCategorie($age, &$code, &$libelle)
 	{
-		$query  = "Select Code, Libelle From gickp_Categorie Where Age_min <= $age And Age_max >= $age ";
-		$result = $this->Query($query) or die ("Erreur Select");
-		
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);	
-			  
+		$sql = "SELECT Code, Libelle 
+			FROM gickp_Categorie 
+			WHERE Age_min <= :age AND Age_max >= :age ";
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array(':age' => $age));
+		if ($row = $result->fetch()) {
 			$code = $row['Code'];
 			$libelle = $row['Libelle'];
-			
 			return true;
 		}
 	
@@ -1255,12 +1186,13 @@ class MyBdd
 	// GetCodeComiteDept
 	function GetCodeComiteDept($codeClub)
 	{
-		$query  = "Select Code_comite_dep From gickp_Club Where Code = '$codeClub' ";
-		$result = $this->Query($query) or die ("Erreur Select");
+		$sql = "SELECT Code_comite_dep 
+			FROM gickp_Club 
+			WHERE Code = :codeClub ";
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array(':codeClub' => $codeClub));
 		
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);	
+		if ($row = $result->fetch()) {
 			return $row['Code_comite_dep'];
 		}
 	
@@ -1270,12 +1202,13 @@ class MyBdd
 	// GetCodeComiteReg
 	function GetCodeComiteReg($codeComiteDept)
 	{
-		$query  = "Select Code_comite_reg From gickp_Comite_dep Where Code = '$codeComiteDept' ";
-		$result = $this->Query($query) or die ("Erreur Select");
+		$sql  = "SELECT Code_comite_reg 
+			FROM gickp_Comite_dep 
+			WHERE Code = :codeComiteDept ";
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array(':codeComiteDept' => $codeComiteDept));
 		
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);	
+		if ($row = $result->fetch()) {
 			return $row['Code_comite_reg'];
 		}
 	
@@ -1413,11 +1346,13 @@ class MyBdd
 	// GetSaisonNational 	
 	function GetSaisonNational($date)
 	{
-		$sql = "Select Code From gickp_Saison Where Nat_debut <= '$date' And Nat_fin >= '$date' "; 
-		$result = $this->Query($sql) or die ("Erreur Select GetSaisonNational() ");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
+		$sql = "SELECT Code 
+			FROM gickp_Saison 
+			WHERE Nat_debut <= :date 
+			AND Nat_fin >= :date "; 
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array(':date' => $date));
+		if ($row = $result->fetch()) {
 			return $row['Code'];
 		}
 
@@ -1427,11 +1362,13 @@ class MyBdd
 	// GetSaisonInternational 	
 	function GetSaisonInternational($date)
 	{
-		$sql = "Select Code From gickp_Saison Where Inter_debut <= '$date' And Inter_fin >= '$date' "; 
-		$result = $this->Query($sql) or die ("Erreur Select GetSaisonInternational() ");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
+		$sql = "SELECT Code 
+			FROM gickp_Saison 
+			WHERE Inter_debut <= :date 
+			AND Inter_fin >= :date "; 
+        $result = $this->pdo->prepare($sql);
+        $result->execute(array(':date' => $date));
+		if ($row = $result->fetch()) {
 			return $row['Code'];
 		}
 		
