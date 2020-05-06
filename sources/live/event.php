@@ -3,6 +3,8 @@ include_once('base.php');
 include_once('create_cache_match.php');
 include_once('page.php');
 
+session_start();
+
 class Event extends MyPage
 {
 	function Header() {}
@@ -41,17 +43,17 @@ class Event extends MyPage
 		$db = new MyBdd();
 		
 		// Chargement Evenements  
-		$cmd  = "SELECT e.* "
+		$sql = "SELECT e.* "
                 . "FROM gickp_Evenement e "
                 . "WHERE e.Publication = 'O' "
                 . "ORDER BY e.Date_debut DESC ";
 
 		$rEvents = null;
-		$db->LoadTable($cmd, $rEvents);
-                
+        $result = $db->pdo->query($sql);
+        $rEvents = $result->fetchAll(PDO::FETCH_ASSOC);
         $retour = '';
         foreach ($rEvents as $key => $event) {
-            if(utyGetInt($event, 'Id', 0) == $evt) {
+            if (utyGetInt($event, 'Id', 0) == $evt) {
                 $selected = 'selected';
             } else {
                 $selected = '';
@@ -66,13 +68,16 @@ class Event extends MyPage
     
 	function Content()
 	{
+        // echo '<pre>';
+        // var_dump($_SESSION);
+        // echo '</pre>';
         ?>
 		<form method='GET' action='#' name='event_form' id='event_form' enctype='multipart/form-data'> 
 		
-		<label for='id_event'>Evénement :</label>
+		<label for='id_event'>Event:</label>
 		<!--<input type='text' id='id_event' name='id_event' Value='85'>-->
         <select id='id_event' name='id_event'>
-            <?= $this->Content_Events(); ?>
+            <?= $this->Content_Events($_SESSION['codeEvt']); ?>
         </select>
 		<br>
 
@@ -80,26 +85,27 @@ class Event extends MyPage
 		<input type='date' id='date_event' name='date_event' Value='<?= date('Y-m-d') ?>'>
 		<br>
 
-		<label for='hour_event'>Heure</label>
-		<input type='time' id='hour_event' name='hour_event' Value=''>
+		<label for='hour_event'>Time</label>
+		<input type='time' id='hour_event' name='hour_event' Value='<?= date('H:i') ?>'>
 		<br>
 		
-		<label for='hour_event'>Temps de Préparation</label>
+		<label for='hour_event'>Warm-up</label>
         <input type='text' id='offset_event' name='offset_event' Value='10' size="2"> minutes
 		<br>
 
-		<label for='pitch_event'>Terrains</label>
-		<input type='text' id='pitch_event' name='pitch_event' Value='' size="1">
+		<label for='pitch_event'>Pitches</label>
+		<input type='text' id='pitch_event' name='pitch_event' Value='4' size="1">
 		<br>
 
-		<label for='delay_event'>Délai de Rafraichissement</label>
-		<input type='text' id='delay_event' name='delay_event' Value='10' size="2"> secondes
+		<label for='delay_event'>Refresh delay</label>
+		<input type='text' id='delay_event' name='delay_event' Value='10' size="2"> seconds
 		<br>
 		
-		<button id='btn_go'>Lancer la génération</button>
+		<button id='btn_go'>Generate cache</button>
 		<br>
 		<br>
 
+		<h3 id='info_titre'></h3>
 		<div id='info'></div>
 
 		</form>
