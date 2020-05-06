@@ -875,15 +875,15 @@
                 
     <!-- Liens -->
     <article>
-        <a id="event_params" class="btn btn-default" href="live/event.php" target="_blank">
-            {#Evenements#}
+        <a id="event_params" class="btn btn-primary" href="live/event.php" target="_blank">
+            Event cache generator
         </a>
         &nbsp;
-        <a id="scenario_live_params" class="btn btn-default" href="live/scenario.php" target="_blank">
+        <a id="scenario_live_params" class="btn btn-default pull-right" href="live/scenario.php" target="_blank">
             Scenario Live
         </a>
         &nbsp;
-        <a id="split_params" class="btn btn-default" href="live/spliturl.php" target="_blank">
+        <a id="split_params" class="btn btn-default pull-right" href="live/spliturl.php" target="_blank">
             Split Url
         </a>
         &nbsp;

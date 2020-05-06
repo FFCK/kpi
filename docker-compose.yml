@@ -1,22 +1,5 @@
 version: '2'
 services:
-    web:
-        build: 
-            context: ./docker/web
-            dockerfile: Dockerfile
-        ports:
-            - 80:80
-            - 443:443
-        volumes:
-            - ./sources:/var/www/html
-            - ./docker/MyParams.php:/var/www/html/commun/MyParams.php
-            - ./docker/MyConfig.php:/var/www/html/commun/MyConfig.php
-            - ./docker/error.log:/var/log/apache2/error.log
-        environment:
-            - ALLOW_OVERRIDE=true
-        links:
-            - db
-        # tty: true
     webphp7:
         build: 
             context: ./docker/web7
@@ -33,6 +16,7 @@ services:
             - ALLOW_OVERRIDE=true
         links:
             - db
+            - mailcatcher
     db:
         build: 
             context: ./docker/db
@@ -55,4 +39,8 @@ services:
             - 8080:80
         links:
             - db
-
+    mailcatcher:
+        image: schickling/mailcatcher
+        # ports:
+        #     - 1025:1025
+        #     - 8025:8025
