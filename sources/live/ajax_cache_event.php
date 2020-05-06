@@ -24,4 +24,4 @@ $db = new MyBdd();
 $cache = new CacheMatch($_GET);
 $cache->Event($db, $idEvent, $dateEvent, $hourEventWork);
 		
-echo "Heure = $hourEvent, Heure Travail = $hourEventWork";
+echo "Time = $hourEvent, Working time = $hourEventWork";

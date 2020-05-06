@@ -29,8 +29,5 @@ class MyBase //extends advBase
 		
 		$this->m_arrayUrlCache = array();
 
-//		if ($bConnect) {
-//            $this->Connect();
-//        }
     }
 }
