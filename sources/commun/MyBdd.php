@@ -83,7 +83,7 @@ class MyBdd
 		} else {
 			$result = mysqli_query($this->m_link, $sql) or die ("Error Query. Please contact admin");
 		}
-		error_log("Query MySQLi : " . $sql, 0);
+		// error_log("Query MySQLi : " . $sql, 0);
 		return $result;
     }
 	
