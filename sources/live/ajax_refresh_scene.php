@@ -3,7 +3,7 @@ include_once('base.php');
 
 $voie = utyGetInt($_GET, 'voie', 1);
 
-$db = new MyBdd();
+$myBdd = new MyBdd();
 
 $scene = $voie % 100;
 $voie_min = $voie - $scene + 1;
