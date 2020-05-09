@@ -383,9 +383,12 @@ class GestionClassement extends MyPageSecure
         
         if ($egalites > 1 && $typeClt == 'CHPT') {
             return "Attention : $egalites équipes ou plus sont à égalité. Vérifiez si nécessaire la différence de but particulière !";
+        } elseif ($egalites > 1) {
+			die($egalites);
+            return $egalites;
         } else {
-            return '';
-        }
+			return '';
+		}
 	}
 
 	function InitClassement()
@@ -446,7 +449,7 @@ class GestionClassement extends MyPageSecure
 			RIGHT OUTER JOIN gickp_Journees b ON a.Id_journee = b.Id 
 			SET a.Clt=0, a.Pts=0, a.J=0, a.G=0, a.N=0, a.P=0, a.F=0, 
 			a.Plus=0, a.Moins=0, a.Diff=0, a.PtsNiveau=0, a.CltNiveau=0 
-			AND b.Code_competition = ? 
+			WHERE b.Code_competition = ? 
 			AND b.Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
@@ -925,14 +928,17 @@ class GestionClassement extends MyPageSecure
 			
 			// if ($goalaverage == 'gen' && $row['Pts'] == $oldPts && $row['Diff'] == $oldDiff && $row['Plus'] == $oldPlus) {
 			if ($goalaverage == 'gen' && $row['Pts'] == $oldPts) {
-                $clt = $oldClt;
-				$egalites ++;
+					// SI ON VEUT SIGNALER LES EGALITES SANS LES TRAITER (Goal Average Général)
+				// $clt = $oldClt;
+				// $egalites ++;
+					// SINON
+				$clt = $i + 1;
 			} elseif ($goalaverage != 'gen' && $row['Pts'] == $oldPts) {
 				$clt = $oldClt;
 				if (!in_array($oldId, $aEgalites[$row['Pts']])) {
-					$aEgalites[$clt][] = $oldId;
+					$aEgalites[$clt][$oldId] = $oldId;
 				}
-				$aEgalites[$clt][] = $row['Id'];
+				$aEgalites[$clt][$row['Id']] = $row['Id'];
             } else {
                 $clt = $i + 1;
             }
@@ -964,28 +970,28 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		// echo '<pre>';
-
-		// TODO: Contrôle goal average particulier
+		$rEgalites = [];
+		// Pour chaque égalité, sélection des matchs impliquant les équipes concernées
 		foreach ($aEgalites as $clt => $teams) {
 			$listTeams = implode(',', $teams);
-			$sql  = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
-					a.CoeffB, a.Id, a.Id_journee, b.Niveau, c.Points 
-					FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions c 
-					WHERE a.Id_journee = b.Id 
-					AND b.Code_competition = '" . $codeCompet . "' 
-					AND b.Code_competition = c.Code 
-					AND b.Code_saison = '" . $codeSaison . "' 
-					AND b.Code_saison = c.Code_saison 
-					AND a.Id_equipeA IN (" . $listTeams . ") 
-					AND a.Id_equipeB IN (" . $listTeams . ") ";
-			if (!$tousLesMatchs) { //uniquement les matchs validés (vérouillés)
+			$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
+				a.CoeffB, a.Id Idmatch, a.Id_journee, b.Niveau, c.Points 
+				FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions c 
+				WHERE a.Id_journee = b.Id 
+				AND b.Code_competition = '" . $codeCompet . "' 
+				AND b.Code_competition = c.Code 
+				AND b.Code_saison = '" . $codeSaison . "' 
+				AND b.Code_saison = c.Code_saison 
+				AND a.Id_equipeA IN (" . $listTeams . ") 
+				AND a.Id_equipeB IN (" . $listTeams . ") ";
+			if (!$tousLesMatchs) { // uniquement les matchs validés (vérouillés)
 				$sql .= "AND a.Validation = 'O' ";
 			}
-			$sql .= "ORDER BY b.Id ";	 
+			$sql .= "ORDER BY b.Id, a.Id ";
 			
 			$result = $myBdd->Query($sql);
 			while($row = $myBdd->FetchArray($result)) {
-				// var_dump($row);
+				$listmatchs[] = $row['Idmatch'];
 				$scoreA = $row['ScoreA'];
 				$scoreB = $row['ScoreB'];
 				
@@ -1020,29 +1026,80 @@ class GestionClassement extends MyPageSecure
 				$arrayCltA = array ('Pts' => 0, 'J' => 0, 'G' => 0, 'N' => 0, 'P' => 0, 'F' => 0, 'Plus' => 0, 'Moins' => 0, 'Diff' => 0, 'PtsNiveau' => 0);
 				$arrayCltB = array ('Pts' => 0, 'J' => 0, 'G' => 0, 'N' => 0, 'P' => 0, 'F' => 0, 'Plus' => 0, 'Moins' => 0, 'Diff' => 0, 'PtsNiveau' => 0);
 				
+				$rEgalites[$clt][$idEquipeA]['Pts'] = $rEgalites[$clt][$idEquipeA]['Pts'] ?? 0;
+				$rEgalites[$clt][$idEquipeA]['J'] = $rEgalites[$clt][$idEquipeA]['J'] ?? 0;
+				$rEgalites[$clt][$idEquipeA]['Plus'] = $rEgalites[$clt][$idEquipeA]['Plus'] ?? 0;
+				$rEgalites[$clt][$idEquipeA]['Diff'] = $rEgalites[$clt][$idEquipeA]['Diff'] ?? 0;
+				$rEgalites[$clt][$idEquipeB]['Pts'] = $rEgalites[$clt][$idEquipeB]['Pts'] ?? 0;
+				$rEgalites[$clt][$idEquipeB]['J'] = $rEgalites[$clt][$idEquipeB]['J'] ?? 0;
+				$rEgalites[$clt][$idEquipeB]['Plus'] = $rEgalites[$clt][$idEquipeB]['Plus'] ?? 0;
+				$rEgalites[$clt][$idEquipeB]['Diff'] = $rEgalites[$clt][$idEquipeB]['Diff'] ?? 0;
+
+
 				$niveau = $row['Niveau'];
 				if (strlen($niveau) == 0) {
 					$niveau = 0;
 				}
 
-				$idJournee = $row['Id_journee'];
 				$Points = $row['Points'];
 				
-				// $this->SetArrayClt($scoreA, $scoreB, $niveau, $arrayCltA, $arrayCltB, $coeffA, $coeffB, $Points);
+				$this->SetArrayClt($scoreA, $scoreB, $niveau, $arrayCltA, $arrayCltB, $coeffA, $coeffB, $Points);
 				
-				// // Incrementation gickp_Competitions_Equipes ...
-				// $this->StepClassementCompetitionEquipe($idEquipeA, $arrayCltA, $idEquipeB, $arrayCltB);
+				$rEgalites[$clt][$idEquipeA]['Pts'] = $rEgalites[$clt][$idEquipeA]['Pts'] + $arrayCltA['Pts'];
+				$rEgalites[$clt][$idEquipeA]['J'] = $rEgalites[$clt][$idEquipeA]['J'] + $arrayCltA['J'];
+				$rEgalites[$clt][$idEquipeA]['Plus'] = $rEgalites[$clt][$idEquipeA]['Plus'] + $arrayCltA['Plus'];
+				$rEgalites[$clt][$idEquipeA]['Diff'] = $rEgalites[$clt][$idEquipeA]['Diff'] + $arrayCltA['Diff'];
+				$rEgalites[$clt][$idEquipeB]['Pts'] = $rEgalites[$clt][$idEquipeB]['Pts'] + $arrayCltB['Pts'];
+				$rEgalites[$clt][$idEquipeB]['J'] = $rEgalites[$clt][$idEquipeB]['J'] + $arrayCltB['J'];
+				$rEgalites[$clt][$idEquipeB]['Plus'] = $rEgalites[$clt][$idEquipeB]['Plus'] + $arrayCltB['Plus'];
+				$rEgalites[$clt][$idEquipeB]['Diff'] = $rEgalites[$clt][$idEquipeB]['Diff'] + $arrayCltB['Diff'];
+			}
 
-				// // Incrementation gickp_Competitions_Equipes_Niveau ...
-				// $this->StepClassementCompetitionEquipeNiveau($idEquipeA, $arrayCltA, $idEquipeB, $arrayCltB, $niveau);
-				
-				// // Incrementation gickp_Competitions_Equipes_Journee ...
-				// $this->StepClassementCompetitionEquipeJournee($idEquipeA, $arrayCltA, $idEquipeB, $arrayCltB, $idJournee);
-			}	
 
+			foreach ($rEgalites[$clt] as $team => $team_value) {
+				$arrayCltGlobal[$clt][] = [
+					'clt' => $clt,
+					'team' => $team,
+					'Pts' => $team_value['Pts'],
+					'Plus' => $team_value['Plus'],
+					'Diff' => $team_value['Diff']
+				];
+			}
+
+			// Tri sur plusieurs colonnes, façon BDD
+			// Ajoute $data en tant que dernier paramètre, 
+			// pour trier par la clé commune
+			array_multisort(
+				array_column($arrayCltGlobal[$clt], 'Pts'), SORT_DESC, 
+				array_column($arrayCltGlobal[$clt], 'Diff'), SORT_DESC, 
+				array_column($arrayCltGlobal[$clt], 'Plus'), SORT_DESC, 
+				$arrayCltGlobal[$clt]
+			);
+			print_r($arrayCltGlobal[$clt]);
+
+			// incrémentation de 1 classement à partir du 2ème
+			for ($i = 1; $i < count($arrayCltGlobal[$clt]); $i ++) {
+				$arrayCltGlobal[$clt][$i]['clt'] += $i;
+
+				// update BDD pour la journée ou global si journée = false
+				// if (!$idJournee) {
+					$sql  = "UPDATE gickp_Competitions_Equipes 
+							SET Clt = " .$arrayCltGlobal[$clt][$i]['clt'] . "
+							WHERE Id = " . $arrayCltGlobal[$clt][$i]['team'];
+					echo 'Classement général :<br>' . $sql;
+				// } else {
+				// 	$sql  = "UPDATE gickp_Competitions_Equipes_Journee 
+				// 			SET Clt = " .$arrayCltGlobal[$clt][$i]['clt'] . "
+				// 			WHERE Id = " . $arrayCltGlobal[$clt][$i]['team'] . "
+				// 			AND Id_journee = " . $idJournee;
+				// 	echo 'Classement journée ' . $idJournee . ' :<br>' . $sql;
+				// }
+				$myBdd->Query($sql);
+			}
 
 		}
-		// var_dump($aEgalites);
+		
+		// print_r($listmatchs);
 		// echo '</pre>';
 		// die;	
 	}
