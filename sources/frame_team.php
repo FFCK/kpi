@@ -67,6 +67,9 @@ class Team extends MyPage
             }elseif(is_file('img/KIP/colors/'.$Equipe.'-'.(date('Y')-3).'-colors.png')){
                 $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.(date('Y')-3).'-colors.png');
                 $eSeason = date('Y')-3;
+            }elseif(is_file('img/KIP/colors/'.$Equipe.'-colors.png')){
+                $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-colors.png');
+                $eSeason = '';
             }elseif(is_file('img/KIP/logo/'.$Code_club.'-logo.png')){
                 $this->m_tpl->assign('eLogo', 'img/KIP/logo/'.$Code_club.'-logo.png');
             }elseif(is_file('img/Nations/'.substr($Code_club, 0, 3).'.png')){
