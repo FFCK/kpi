@@ -294,6 +294,13 @@
 								</td>
 							</tr>
 							<tr>
+								<td colspan=4 title='{#Goal_average#}'>
+									<label for="goalaverage">{#Goal_average#} : </label>
+									<input type="radio" name="goalaverage" value='gen' {if $goalaverage == 'gen'}checked{/if}><label>{#General#}</label>
+									<input type="radio" name="goalaverage" value='part' {if $goalaverage == 'part'}checked{/if}><label>{#Particulier#}</label>
+								</td>
+							</tr>
+							<tr>
 								<td colspan=4>
 									<hr />
 									<label for="web">Web</label>
