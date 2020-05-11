@@ -1705,18 +1705,18 @@ class MyBdd
 	// GetUser
 	function GetUserName($idUser)
 	{
-			if($idUser != '')
-			{
-				$sql  = "Select Identite From gickp_Utilisateur Where Code = '$idUser' ";
-				
-				$result = $this->Query($sql) or die ("Erreur Select GetUserName<br>".$sql);
-				if ($this->NumRows($result) == 1)
-				{
-					$row = $this->FetchArray($result);
-					return $row['Identite'];
-				}
+		if($idUser != '') {
+			$sql = "SELECT Identite 
+				FROM gickp_Utilisateur 
+				WHERE Code = ? ";
+			$result = $this->pdo->prepare($sql);
+			$result->execute(array($idUser));
+			if ($result->rowCount() == 1) {
+				$row = $result->fetch();
+				return $row['Identite'];
 			}
-			return '';
+		}
+		return '';
 	}
 
 	// GetnumOrdre
