@@ -121,7 +121,7 @@ class Stats extends MyPage
                 $this->m_tpl->assign('voie', $voie);
             }
             
-			$intervalle = (int) utyGetGet('intervale', 0);
+			$intervalle = (int) utyGetGet('intervalle', 0);
 			if ($intervalle > 0) {
                 $this->m_tpl->assign('intervalle', $intervalle);
 			}
