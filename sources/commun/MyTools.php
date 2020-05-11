@@ -713,61 +713,61 @@ function utyEquipesAffectAuto($intitule)
 {
 	// On contrôle qu'il y a un crochet ouvrant et un fermant, et on prend le contenu.
 	$intitule = preg_split("/[\[]/",$intitule);
-	if($intitule[1] == "")
+	if (!isset($intitule[1]) || $intitule[1] == "") {
 		return '';
+	}
 	$intitule = preg_split("/[\]]/",$intitule[1]);
-	if($intitule[0] == "")
+	if ($intitule[0] == "") {
 		return '';
-	//$texte .= '<br>'.$intitule[0].'<br>';
+	}
 	// On sépare par tiret, slash, étoile, virgule ou point-virgule.
 	$intitule = preg_split("/[\-\/*,;]/",$intitule[0]);
 	// On analyse le contenu
-	for ($j=0;$j<4;$j++)
-	{
-		if(isset($intitule[$j]))
-		{
+	for ($j=0;$j<4;$j++) {
+		if (isset($intitule[$j])) {
 			$resultat = '';
 			$codeTirage = '';
 			$codeVainqueur = '';
 			$codePerdant = '';
 			$codePoule = '';
-			//preg_match("/([T])/",$intitule[$j],$codeTirage); // tirage au sort
-			//preg_match("/([V])/",$intitule[$j],$codeVainqueur); // vainqueur
-			//preg_match("/([P])/",$intitule[$j],$codePerdant); // perdant
-			//preg_match("/([A-O])/",$intitule[$j],$codePoule); // lettre de poule
 			preg_match("/([A-Z]+)/",$intitule[$j],$codeLettres); // lettre
 			preg_match("/([0-9]+)/",$intitule[$j],$codeNumero); // numero de match ou classement de poule
+			if (isset($codeNumero[1])) {
 				$posNumero = strpos($intitule[$j], $codeNumero[1]);
+			}
+			if (isset($codeLettres[1])) {
 				$posLettres = strpos($intitule[$j], $codeLettres[1]);
-				if($posNumero > $posLettres){
-					switch($codeLettres[1]){
-						case 'T' : // tirage
-						case 'D' : // draw
-							$resultat = '(Team '.$codeNumero[1].')';
-							break;
-						case 'V' : // vainqueur
-						case 'G' : // gagnant
-						case 'W' : // winner
-							$resultat = '(Winner game #'.$codeNumero[1].')';
-							break;
-						case 'P' : // Perdant
-						case 'L' : // Loser
-							$resultat = '(Loser game #'.$codeNumero[1].')';
-							break;
-						default :
-							$resultat = 'ERREUR CODE : '.$intitule[$j];
-							break;
-					}
-				}else{ // poule
-					if($codeNumero[1] == 1)
-						$resultat = '(1st Group '.$codeLettres[1].')';
-					elseif($codeNumero[1] == 2)
-						$resultat = '(2nd Group '.$codeLettres[1].')';
-					elseif($codeNumero[1] == 3)
-						$resultat = '(3rd Group '.$codeLettres[1].')';
-					elseif($codeNumero[1] > 3)
-						$resultat = '('.$codeNumero[1].'th Group '.$codeLettres[1].')';
+			}
+			if (isset($codeLettres[1]) && $posNumero > $posLettres) { // Tirage ou match
+				switch($codeLettres[1]){
+					case 'T' : // tirage
+					case 'D' : // draw
+						$resultat = '(Team '.$codeNumero[1].')';
+						break;
+					case 'V' : // vainqueur
+					case 'G' : // gagnant
+					case 'W' : // winner
+						$resultat = '(Winner game #'.$codeNumero[1].')';
+						break;
+					case 'P' : // Perdant
+					case 'L' : // Loser
+						$resultat = '(Loser game #'.$codeNumero[1].')';
+						break;
+					default :
+						$resultat = 'ERREUR CODE : '.$intitule[$j];
+						break;
 				}
+			} elseif (isset($codeLettres[1]) && $posNumero < $posLettres) { // poule
+				if ($codeNumero[1] == 1) {
+					$resultat = '(1st Group '.$codeLettres[1].')';
+				} elseif ($codeNumero[1] == 2) {
+					$resultat = '(2nd Group '.$codeLettres[1].')';
+				} elseif ($codeNumero[1] == 3) {
+					$resultat = '(3rd Group '.$codeLettres[1].')';
+				} elseif ($codeNumero[1] > 3) {
+					$resultat = '('.$codeNumero[1].'th Group '.$codeLettres[1].')';
+				}
+			}
 			$result[$j] = $resultat;
 		}
 	}
@@ -778,65 +778,63 @@ function utyEquipesAffectAutoFR($intitule)
 {
 	// On contrôle qu'il y a un crochet ouvrant et un fermant, et on prend le contenu.
 	$intitule = preg_split("/[\[]/",$intitule);
-	if(!isset($intitule[1]) || $intitule[1] == "")
+	if (!isset($intitule[1]) || $intitule[1] == "") {
 		return '';
+	}
 	$intitule = preg_split("/[\]]/",$intitule[1]);
-	if($intitule[0] == "")
+	if ($intitule[0] == "") {
 		return '';
-	// $texte = '<br>'.$intitule[0].'<br>';
+	}
 	// On sépare par tiret, slash, étoile, virgule ou point-virgule.
 	$intitule = preg_split("/[\-\/*,;]/",$intitule[0]);
 	// On analyse le contenu
-	for ($j=0;$j<4;$j++)
-	{
-		if(isset($intitule[$j]))
-		{
+	for ($j=0;$j<4;$j++) {
+		if (isset($intitule[$j])) {
 			$resultat = '';
 			$codeTirage = '';
 			$codeVainqueur = '';
 			$codePerdant = '';
 			$codePoule = '';
-			//preg_match("/([T])/",$intitule[$j],$codeTirage); // tirage au sort
-			//preg_match("/([V])/",$intitule[$j],$codeVainqueur); // vainqueur
-			//preg_match("/([P])/",$intitule[$j],$codePerdant); // perdant
-			//preg_match("/([A-O])/",$intitule[$j],$codePoule); // lettre de poule
 			preg_match("/([A-Z]+)/",$intitule[$j],$codeLettres); // lettre
 			preg_match("/([0-9]+)/",$intitule[$j],$codeNumero); // numero de match ou classement de poule
-				if(isset($codeNumero[1]))
-                    $posNumero = strpos($intitule[$j], $codeNumero[1]);
-				if(isset($codeLettres[1]))
-                    $posLettres = strpos($intitule[$j], $codeLettres[1]);
-				if(isset($codeLettres[1]) && $posNumero > $posLettres){
-					switch($codeLettres[1]){
-						case 'T' : // tirage
-						case 'D' : // draw
-							$resultat = '(Equipe '.$codeNumero[1].')';
-							break;
-						case 'V' : // vainqueur
-						case 'G' : // gagnant
-						case 'W' : // winner
-							$resultat = '(Vainqueur match '.$codeNumero[1].')';
-							break;
-						case 'P' : // Perdant
-						case 'L' : // Loser
-							$resultat = '(Perdant match '.$codeNumero[1].')';
-							break;
-						default :
-							$resultat = 'ERREUR CODE : '.$intitule[$j];
-							break;
-					}
-				}else{ // poule
-                    if(isset($codeNumero[1]) && isset($codeLettres[1])){
-                        if($codeNumero[1] == 1)
-                            $resultat = '(1er Poule '.$codeLettres[1].')';
-                        elseif($codeNumero[1] == 2)
-                            $resultat = '(2nd Poule '.$codeLettres[1].')';
-                        elseif($codeNumero[1] == 3)
-                            $resultat = '(3e Poule '.$codeLettres[1].')';
-                        elseif($codeNumero[1] > 3)
-                            $resultat = '('.$codeNumero[1].'e Poule '.$codeLettres[1].')';
-                    }
+			if (isset($codeNumero[1])) {
+				$posNumero = strpos($intitule[$j], $codeNumero[1]);
+			}
+			if (isset($codeLettres[1])) {
+				$posLettres = strpos($intitule[$j], $codeLettres[1]);
+			}
+			if (isset($codeLettres[1]) && $posNumero > $posLettres) { // Tirage ou match
+				switch ($codeLettres[1]) {
+					case 'T' : // tirage
+					case 'D' : // draw
+						$resultat = '(Equipe '.$codeNumero[1].')';
+						break;
+					case 'V' : // vainqueur
+					case 'G' : // gagnant
+					case 'W' : // winner
+						$resultat = '(Vainqueur match '.$codeNumero[1].')';
+						break;
+					case 'P' : // Perdant
+					case 'L' : // Loser
+						$resultat = '(Perdant match '.$codeNumero[1].')';
+						break;
+					default :
+						$resultat = 'ERREUR CODE : '.$intitule[$j];
+						break;
 				}
+			} elseif (isset($codeLettres[1]) && $posNumero < $posLettres) { // poule
+				if (isset($codeNumero[1]) && isset($codeLettres[1])) {
+					if($codeNumero[1] == 1) {
+						$resultat = '(1er Poule '.$codeLettres[1].')';
+					} elseif ($codeNumero[1] == 2) {
+						$resultat = '(2nd Poule '.$codeLettres[1].')';
+					} elseif($codeNumero[1] == 3) {
+						$resultat = '(3e Poule '.$codeLettres[1].')';
+					} elseif($codeNumero[1] > 3) {
+						$resultat = '('.$codeNumero[1].'e Poule '.$codeLettres[1].')';
+					}
+				}
+			}
 			$result[$j] = $resultat;
 		}
 	}

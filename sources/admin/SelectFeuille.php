@@ -10,7 +10,7 @@ class SelectFeuille extends MyPageSecure
 		$this->DisplayTemplateBootstrap('SelectFeuille');
 	}
 
-    function SelectFeuille()
+    function __construct()
     {			
         MyPageSecure::MyPageSecure(10);
         

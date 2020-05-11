@@ -7,9 +7,11 @@ include_once('../commun/MyTools.php');
 // Gestion des Competitions
 class GestionCompetition extends MyPageSecure	 
 {	
+	var $myBdd;
+
 	function Load()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
@@ -17,10 +19,10 @@ class GestionCompetition extends MyPageSecure
             $lang = $langue['en'];
         } else {
             $lang = $langue['fr'];
-		}
-		
+        }
+        
 		$codeSaison = $myBdd->GetActiveSaison();
-
+		
 		$AuthSaison = utyGetSession('AuthSaison','');
 		$this->m_tpl->assign('AuthSaison', $AuthSaison);
 
@@ -64,12 +66,12 @@ class GestionCompetition extends MyPageSecure
                 $saisonActive = $row['Code'];
             }
             array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-				'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 
-				'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-				'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 
-				'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
-		}
-
+			'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 
+			'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
+			'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 
+			'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+	}
+		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		$this->m_tpl->assign('sessionSaison', $codeSaison);
 		$this->m_tpl->assign('saisonActive', $saisonActive);
@@ -138,7 +140,7 @@ class GestionCompetition extends MyPageSecure
 				'En_actif' => $row['En_actif'], 'Titre_actif' => $row['Titre_actif'], 'Bandeau_actif' => $row['Bandeau_actif'], 
 				'Logo_actif' => $row['Logo_actif'], 'Sponsor_actif' => $row['Sponsor_actif'], 
 				'Kpi_ffck_actif' => $row['Kpi_ffck_actif'], 'Age_min' => $row["Age_min"], 'Age_max' => $row["Age_max"], 
-				'Sexe' => $row["Sexe"], 'Points' => $row["Points"], 'Statut' => $row['Statut'],
+				'Sexe' => $row["Sexe"], 'Points' => $row["Points"], 'goalaverage' => $row['goalaverage'], 'Statut' => $row['Statut'],
 				'Code_tour' => $row["Code_tour"], 'Nb_equipes' => $row["Nb_equipes"], 'Verrou' => $row["Verrou"], 
 				'Qualifies' => $row["Qualifies"], 'Elimines' => $row["Elimines"],
 				'Publication' => $Publication, 'commentairesCompet' => $row["commentairesCompet"], 'nbMatchs' => $nbMatchs,
@@ -194,6 +196,7 @@ class GestionCompetition extends MyPageSecure
 		if(!isset($_SESSION['qualifies'])) $_SESSION['qualifies'] = '';
 		if(!isset($_SESSION['elimines'])) $_SESSION['elimines'] = '';
 		if(!isset($_SESSION['points'])) $_SESSION['points'] = '4-2-1-0';
+		if(!isset($_SESSION['goalaverage'])) $_SESSION['goalaverage'] = 'gen';
 		if(!isset($_SESSION['statut'])) $_SESSION['statut'] = 'ATT';
 		if(!isset($_SESSION['commentairesCompet'])) $_SESSION['commentairesCompet'] = '';
 		if(!isset($_SESSION['publierCompet'])) $_SESSION['publierCompet'] = '';
@@ -220,6 +223,7 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('qualifies', $_SESSION['qualifies']);
 		$this->m_tpl->assign('elimines', $_SESSION['elimines']);
 		$this->m_tpl->assign('points', $_SESSION['points']);
+		$this->m_tpl->assign('goalaverage', $_SESSION['goalaverage']);
 		$this->m_tpl->assign('statut', $_SESSION['statut']);
 		$this->m_tpl->assign('commentairesCompet', $_SESSION['commentairesCompet']);
 		$this->m_tpl->assign('publierCompet', $_SESSION['publierCompet']);
@@ -241,7 +245,7 @@ class GestionCompetition extends MyPageSecure
 	
 	function Add()
 	{
-        $myBdd = new MyBdd();
+        $myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
 		// echo '<pre>'; print_r($_POST); echo '</pre>'; die(); //TODO
@@ -278,7 +282,7 @@ class GestionCompetition extends MyPageSecure
 				En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
 				Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, 
 				Code_typeclt, Code_tour, Qualifies, Elimines, 
-				Points, Statut, Publication) 
+				Points, goalaverage, Statut, Publication) 
 				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(
@@ -287,15 +291,15 @@ class GestionCompetition extends MyPageSecure
 				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'), 
 				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
 				utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
-				utyGetPost('points'), utyGetPost('statut'), utyGetPost('publierCompet')
+				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet')
 			));
 
-			
 			if($Date_debut != '')
 			{
 				$nextIdJournee = $myBdd->GetNextIdJournee();
-				if($TitreJournee == '')
+				if($TitreJournee == '') {
 					$TitreJournee = utyGetPost('labelCompet');
+				}
 				$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Date_debut, 
 					Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, 
 					Organisateur, Delegue, Publication) 
@@ -316,7 +320,7 @@ class GestionCompetition extends MyPageSecure
 	
 	function Remove()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 
 		$ParamCmd = '';
@@ -334,15 +338,16 @@ class GestionCompetition extends MyPageSecure
 				$listParams .= "'".$arrayParam[$i]."'";
 			}
 		}
-
+			
 		//Contrôle suppression possible
 		$sql = "SELECT Id 
 			FROM gickp_Journees 
 			WHERE Code_competition IN ($listParams) 
 			AND Code_saison = $saison ";
-		if ($row = $myBdd->pdo->query($sql)->fetch())
+		if ($row = $myBdd->pdo->query($sql)->fetch()) {
 			die ("Il reste des journées dans cette compétition ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
-		
+		}
+
 		// Suppression	
 		$sql  = "DELETE FROM gickp_Competitions 
 			WHERE Code IN ($listParams) 
@@ -379,6 +384,7 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['qualifies'] = '';
 			$_SESSION['elimines'] = '';
 			$_SESSION['points'] = '4-2-1-0';
+			$_SESSION['goalaverage'] = 'gen';
 			$_SESSION['statut'] = 'ATT';
 			$_SESSION['commentairesCompet'] = '';
 			$_SESSION['publierCompet'] = '';
@@ -386,7 +392,7 @@ class GestionCompetition extends MyPageSecure
 
 	function ParamCompet()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 
 		$codeCompet = utyGetPost('ParamCmd', -1);
@@ -395,12 +401,12 @@ class GestionCompetition extends MyPageSecure
 		$sql  = "SELECT Code_niveau, Libelle, Soustitre, Soustitre2, Web, BandeauLink, LogoLink, 
 			SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
 			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, Code_tour, Qualifies, 
-			Elimines, Points, Statut, commentairesCompet, Publication 
+			Elimines, Points, goalaverage, Statut, commentairesCompet, Publication 
 			FROM gickp_Competitions 
-			WHERE Code_saison = $saison 
+			WHERE Code_saison = ? 
 			AND Code = ? ";
 			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($codeCompet));
+			$result->execute(array($saison, $codeCompet));
 	
 		if ($row = $result->fetch()) {
 			$_SESSION['editCompet'] = 1;
@@ -428,6 +434,7 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['qualifies'] = $row['Qualifies'];
 			$_SESSION['elimines'] = $row['Elimines'];
 			$_SESSION['points'] = $row['Points'];
+			$_SESSION['goalaverage'] = $row['goalaverage'];
 			$_SESSION['statut'] = $row['Statut'];
 			$_SESSION['commentairesCompet'] = $row['commentairesCompet'];
 			$_SESSION['publierCompet'] = $row['Publication'];
@@ -436,7 +443,7 @@ class GestionCompetition extends MyPageSecure
 
 	function UpdateCompet()
 	{
-        $myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
 
@@ -456,14 +463,14 @@ class GestionCompetition extends MyPageSecure
 		if ($codeRef == '') {
             $codeRef = 'AUTRES';
         }
-
+		
 		$sql  = "UPDATE gickp_Competitions 
 			SET Code_niveau = ?, Libelle = ?, Soustitre = ?, 
 			Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?, 
 			En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?, 
 			Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?, 
 			Code_typeclt = ?, Code_tour = ?, Qualifies = ?, Elimines = ?, 
-			Points = ?, Statut = ?, Publication = ?, commentairesCompet = ?
+			Points = ?, goalaverage = ?, Statut = ?, Publication = ?, commentairesCompet = ?
 			WHERE Code = ? 
 			AND Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -473,9 +480,10 @@ class GestionCompetition extends MyPageSecure
 			utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'), 
 			utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
 			utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
-			utyGetPost('points'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
+			utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
 			$codeCompet, $saison 
 		));
+        
         
 		$this->RazCompet();
 		$myBdd->utyJournal('Modif Competition', $saison, $codeCompet);
@@ -487,10 +495,9 @@ class GestionCompetition extends MyPageSecure
 		$Verrou = utyGetPost('Verrou');
 		($Verrou == 'O') ? $Verrou = '' : $Verrou = 'O';
 
-		
 		if (strlen($verrouCompet) > 0)
 		{
-			$myBdd = new MyBdd();
+			$myBdd = $this->myBdd;
 			$saison = $myBdd->GetActiveSaison();
 
 			$sql  = "UPDATE gickp_Competitions 
@@ -519,7 +526,7 @@ class GestionCompetition extends MyPageSecure
 		if (strlen($codeSaison) == 0)
 			return;
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$sql  = "UPDATE gickp_Saison 
 			SET Etat = 'I' 
@@ -546,7 +553,7 @@ class GestionCompetition extends MyPageSecure
 		if (strlen($newSaison) == 0)
 			return;
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$sql  = "INSERT INTO gickp_Saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin) 
 			VALUES (?, ?, ?, ?, ?, ?) ";
@@ -560,7 +567,7 @@ class GestionCompetition extends MyPageSecure
 	
 	function PubliCompet()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$idCompet = utyGetPost('ParamCmd', 0);
 		$saison = $myBdd->GetActiveSaison();
@@ -582,16 +589,17 @@ class GestionCompetition extends MyPageSecure
 
 	function UploadLogo()
 	{
-		$myBdd = new MyBdd();
-		if(empty($_FILES['logo1']['tmp_name']))
+		$myBdd = $this->myBdd;
+		if(empty($_FILES['logo1']['tmp_name']))	{
 			$texte = " Pas de fichier reçu - erreur ".$_FILES['logo1']['error'];
+		}
 		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetSession('codeCompet');
 		$dossier = '/home/users2-new/p/poloweb/www/agil/img/logo/';
 		$fichier = $codeSaison.'-'.$codeCompet.'.jpg';
 		$taille_maxi = 500000;
 		$taille = filesize($_FILES['logo1']['tmp_name']);
-		//$erreur = $taille;
+		$erreur = '';
 		$extensions = array('.png', '.gif', '.jpg', '.jpeg');
 		$extension = strrchr($_FILES['logo1']['name'], '.'); 
 		//Début des vérifications de sécurité...
@@ -625,7 +633,7 @@ class GestionCompetition extends MyPageSecure
 
 	function DropLogo()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetSession('codeCompet');
 		$dossier = '/home/users2-new/p/poloweb/www/agil/img/logo/';
@@ -638,7 +646,7 @@ class GestionCompetition extends MyPageSecure
 
 	function FusionJoueurs()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$numFusionSource = utyGetPost('numFusionSource', 0);
 		$numFusionCible = utyGetPost('numFusionCible', 0);
         // buts et cartons
@@ -655,14 +663,14 @@ class GestionCompetition extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($numFusionCible, $numFusionSource));
 
-		// feuilles de présence
+        // feuilles de présence
 		$sql  = "UPDATE gickp_Competitions_Equipes_Joueurs 
 			SET Matric = ? 
 			WHERE Matric = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($numFusionCible, $numFusionSource));
 
-		// arbitre principal
+        // arbitre principal
 		$sql  = "UPDATE gickp_Matchs 
 			SET Matric_arbitre_principal = ? 
 			WHERE Matric_arbitre_principal = ? ";
@@ -675,14 +683,14 @@ class GestionCompetition extends MyPageSecure
 			WHERE Matric_arbitre_secondaire = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($numFusionCible, $numFusionSource));
-
+        
         // Secretaire
 		$sql  = "UPDATE gickp_Matchs 
 			SET Secretaire = REPLACE(Secretaire, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
 			WHERE Secretaire LIKE CONCAT('%(', :source, ')%') ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
-
+        
         // Chronometre
 		$sql  = "UPDATE gickp_Matchs 
 			SET Chronometre = REPLACE(Chronometre, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
@@ -722,8 +730,9 @@ class GestionCompetition extends MyPageSecure
         return('Joueurs fusionnés');
 	}
 
-    function FusionEquipes() {
-        $myBdd = new MyBdd();
+	function FusionEquipes() 
+	{
+        $myBdd = $this->myBdd;
 		$numFusionEquipeSource = utyGetPost('numFusionEquipeSource', 0);
 		$numFusionEquipeCible = utyGetPost('numFusionEquipeCible', 0);
         $FusionEquipeSource= utyGetPost('FusionEquipeSource', '');
@@ -737,8 +746,8 @@ class GestionCompetition extends MyPageSecure
 			WHERE Numero = ?; ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($numFusionEquipeCible, $FusionEquipeCible, $numFusionEquipeSource));
-
-        
+		
+		
 		$sql = "DELETE FROM gickp_Equipe 
 			WHERE Numero = ?; ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -748,8 +757,9 @@ class GestionCompetition extends MyPageSecure
 		return;
     }
 
-    function DeplaceEquipe() {
-        $myBdd = new MyBdd();
+	function DeplaceEquipe() 
+	{
+        $myBdd = $this->myBdd;
 		$numDeplaceEquipeSource = utyGetPost('numDeplaceEquipeSource', 0);
 		$numDeplaceEquipeCible = utyGetPost('numDeplaceEquipeCible', 0);
 		if ($numDeplaceEquipeSource === 0) {
@@ -770,12 +780,13 @@ class GestionCompetition extends MyPageSecure
 		$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
 		
 		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numDeplaceEquipeSource.' => '.$numDeplaceEquipeCible);
+
 		return $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible;
     }
     
 	function RenomEquipe()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$numRenomSource = utyGetPost('numRenomSource', 0);
 		$RenomSource = utyGetPost('RenomSource', 0);
 		$RenomCible = utyGetPost('RenomCible', 0);
@@ -813,7 +824,9 @@ class GestionCompetition extends MyPageSecure
         if ($_SESSION['Profile'] == 9) {
             header("Location: SelectFeuille.php");
 			exit;
-        }
+		}
+		
+		$this->myBdd = new MyBdd();
         
 		$alertMessage = '';
 
