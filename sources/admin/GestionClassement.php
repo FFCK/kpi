@@ -14,7 +14,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$saisonActive = $myBdd->GetActiveSaison();
 		
 		$codeCompet = utyGetSession('codeCompet');
@@ -325,7 +325,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
 		$_SESSION['codeCompet'] = $codeCompet;
 		$allMatchs = utyGetPost('allMatchs');
@@ -464,7 +464,7 @@ class GestionClassement extends MyPageSecure
 	function CalculClassementJournee($codeCompet, $typeClt, $tousLesMatchs=false)
 	{
 		$myBdd = $this->myBdd;
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		if (!$tousLesMatchs) { //uniquement les matchs validés (vérouillés)
 			$sqlValidation = "AND a.Validation = 'O' ";
 		} else {
@@ -1415,7 +1415,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 	
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
 		$_SESSION['codeCompet'] = $codeCompet;
 		
@@ -1473,7 +1473,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 	
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
 		$_SESSION['codeCompet'] = $codeCompet;
 		
@@ -1522,7 +1522,7 @@ class GestionClassement extends MyPageSecure
 	function Transfert()
 	{
 		$codeCompet = utyGetPost('codeCompet');
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		
 		$codeCompetTransfert = utyGetPost('codeCompetTransfert');
 		$codeSaisonTransfert = utyGetPost('codeSaisonTransfert');
