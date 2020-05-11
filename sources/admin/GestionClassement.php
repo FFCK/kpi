@@ -1521,6 +1521,7 @@ class GestionClassement extends MyPageSecure
 	// Transfert des Equipes séléctionnées 		
 	function Transfert()
 	{
+		$myBdd = $this->myBdd;
 		$codeCompet = utyGetPost('codeCompet');
 		$codeSaison = $myBdd->GetActiveSaison();
 		
@@ -1533,7 +1534,6 @@ class GestionClassement extends MyPageSecure
 			&& (strlen($codeSaisonTransfert) > 0) 
 			&& (strlen($lstEquipe) > 0) ) {
 			if ($codeCompet.$codeSaison != $codeCompetTransfert.$codeSaisonTransfert) {
-				$myBdd = $this->myBdd;
 				
 				$arrayEquipes = explode(',', $lstEquipe);
 				$in = str_repeat('?,', count($arrayEquipes) - 1) . '?';
