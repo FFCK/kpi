@@ -27,7 +27,7 @@ if (!isset($rTV['Url']) || $rTV['Url'] == '') {
         ORDER BY Voie DESC
         LIMIT 1 ";
     $result = $myBdd->pdo->prepare($sql);
-    $result->execute(array($voie_max));
+    $result->execute(array($voie_min));
     $rTV = $result->fetch();
 }
 

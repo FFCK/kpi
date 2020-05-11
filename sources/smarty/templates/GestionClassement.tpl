@@ -142,6 +142,10 @@
 							{/section}
 							</tbody>
 						</table>
+						<div class="color0">
+							<b>{#Goal_average#} : <span class="rouge">{if $compet.goalaverage == 'gen'}{#General#}{else}{#Particulier#}{/if}</span></b>
+						</div>
+						<br>
 						{if $typeCompetition == 'Championnat'}
                             {#Explication_classement_par_points#}
                             <br>
