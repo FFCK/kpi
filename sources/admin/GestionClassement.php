@@ -1535,29 +1535,40 @@ class GestionClassement extends MyPageSecure
 			if ($codeCompet.$codeSaison != $codeCompetTransfert.$codeSaisonTransfert) {
 				$myBdd = $this->myBdd;
 				
+				$arrayEquipes = explode(',', $lstEquipe);
+				$in = str_repeat('?,', count($arrayEquipes) - 1) . '?';
+
 				// Raz Id_dupli ... 
-				$sql  = "Update gickp_Competitions_Equipes Set Id_dupli = null Where Id_dupli In ($lstEquipe)";
-				$myBdd->Query($sql);
-							
+				$sql = "UPDATE gickp_Competitions_Equipes 
+					SET Id_dupli = null 
+					WHERE Id_dupli IN ($in)";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute($arrayEquipes);
+									
 				// Insertion des Equipes ...
-				$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) ";
-				$sql .= "Select '$codeCompetTransfert', '$codeSaisonTransfert', Libelle, Code_club, Numero, Id ";
-				$sql .= "From gickp_Competitions_Equipes Where Id In ($lstEquipe) ";
-				$myBdd->Query($sql);
+				$sql = "INSERT INTO gickp_Competitions_Equipes 
+					(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) 
+					SELECT ?, ?, Libelle, Code_club, Numero, Id 
+					FROM gickp_Competitions_Equipes 
+					WHERE Id IN ($in) ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array_merge([$codeCompetTransfert], [$codeSaisonTransfert], $arrayEquipes));
 				
 				// Insertion des Joueurs Equipes ...
-				$sql  = "Insert Into gickp_Competitions_Equipes_Joueurs (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) ";
-				$sql .= "Select b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine ";
-				$sql .= "From gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, gickp_Competitions_Equipes c, gickp_Categorie d, gickp_Liste_Coureur e ";
-				$sql .= "Where a.Id_equipe = b.Id_dupli ";
-				$sql .= "And a.Matric = e.Matric ";
-				$sql .= "And a.Id_equipe = c.Id ";
-				$sql .= "And b.Id_dupli In ($lstEquipe) ";
-				$sql .= "And c.Code_compet = '$codeCompet' And c.Code_saison = '$codeSaison' ";
-				$sql .= "And " ;
-				$sql .= $codeSaisonTransfert;
-				$sql .= "-Year(e.Naissance) between d.Age_min And d.Age_max ";
-				$myBdd->Query($sql);
+				$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
+					SELECT b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine 
+					FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, 
+					gickp_Competitions_Equipes c, gickp_Categorie d, gickp_Liste_Coureur e 
+					WHERE a.Id_equipe = b.Id_dupli 
+					AND a.Matric = e.Matric 
+					AND a.Id_equipe = c.Id 
+					AND b.Id_dupli IN ($in) 
+					AND c.Code_compet = ? 
+					AND c.Code_saison = ? 
+					AND ? - Year(e.Naissance) BETWEEN d.Age_min AND d.Age_max ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array_merge($arrayEquipes, [$codeCompet], [$codeSaison], [$codeSaisonTransfert]));
 
 				$myBdd->utyJournal('Transfert Equipes', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', 'Equipes '.$lstEquipe.' vers '.$codeCompetTransfert.'-'.$codeSaisonTransfert);
 			} else {
@@ -1578,13 +1589,13 @@ class GestionClassement extends MyPageSecure
         $myBdd = $this->myBdd;
 
         // Suppression ... 
-        $sql  = "DELETE FROM gickp_Competitions_Equipes_Journee "
-                . "WHERE Id_journee = $journee "
-                . "AND Id = $equipe "
-                . "AND J = 0 ";
-		$myBdd->Query($sql);
+		$sql = "DELETE FROM gickp_Competitions_Equipes_Journee 
+			WHERE Id_journee = ? 
+			AND Id = ? 
+			AND J = 0 ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($journee, $equipe));
         
-//        return 'Suppression effectuée';
         return '';
 	}
 
