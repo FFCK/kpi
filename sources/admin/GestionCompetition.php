@@ -7,9 +7,11 @@ include_once('../commun/MyTools.php');
 // Gestion des Competitions
 class GestionCompetition extends MyPageSecure	 
 {	
+	var $myBdd;
+
 	function Load()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
@@ -53,8 +55,6 @@ class GestionCompetition extends MyPageSecure
 
 		$_SESSION['whereOuiNon'] = $where;
 		
-		$myBdd = new MyBdd();
-
 		// Chargement des Saisons ...
 		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
 			FROM gickp_Saison 
@@ -245,7 +245,7 @@ class GestionCompetition extends MyPageSecure
 	
 	function Add()
 	{
-        $myBdd = new MyBdd();
+        $myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
 		// echo '<pre>'; print_r($_POST); echo '</pre>'; die(); //TODO
@@ -320,7 +320,7 @@ class GestionCompetition extends MyPageSecure
 	
 	function Remove()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 
 		$ParamCmd = '';
@@ -392,7 +392,7 @@ class GestionCompetition extends MyPageSecure
 
 	function ParamCompet()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 
 		$codeCompet = utyGetPost('ParamCmd', -1);
@@ -443,7 +443,7 @@ class GestionCompetition extends MyPageSecure
 
 	function UpdateCompet()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
 
@@ -497,7 +497,7 @@ class GestionCompetition extends MyPageSecure
 
 		if (strlen($verrouCompet) > 0)
 		{
-			$myBdd = new MyBdd();
+			$myBdd = $this->myBdd;
 			$saison = $myBdd->GetActiveSaison();
 
 			$sql  = "UPDATE gickp_Competitions 
@@ -526,7 +526,7 @@ class GestionCompetition extends MyPageSecure
 		if (strlen($codeSaison) == 0)
 			return;
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$sql  = "UPDATE gickp_Saison 
 			SET Etat = 'I' 
@@ -553,7 +553,7 @@ class GestionCompetition extends MyPageSecure
 		if (strlen($newSaison) == 0)
 			return;
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$sql  = "INSERT INTO gickp_Saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin) 
 			VALUES (?, ?, ?, ?, ?, ?) ";
@@ -567,7 +567,7 @@ class GestionCompetition extends MyPageSecure
 	
 	function PubliCompet()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$idCompet = utyGetPost('ParamCmd', 0);
 		$saison = $myBdd->GetActiveSaison();
@@ -589,7 +589,7 @@ class GestionCompetition extends MyPageSecure
 
 	function UploadLogo()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		if(empty($_FILES['logo1']['tmp_name']))	{
 			$texte = " Pas de fichier reçu - erreur ".$_FILES['logo1']['error'];
 		}
@@ -633,7 +633,7 @@ class GestionCompetition extends MyPageSecure
 
 	function DropLogo()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$codeSaison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetSession('codeCompet');
 		$dossier = '/home/users2-new/p/poloweb/www/agil/img/logo/';
@@ -646,7 +646,7 @@ class GestionCompetition extends MyPageSecure
 
 	function FusionJoueurs()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$numFusionSource = utyGetPost('numFusionSource', 0);
 		$numFusionCible = utyGetPost('numFusionCible', 0);
         // buts et cartons
@@ -730,8 +730,9 @@ class GestionCompetition extends MyPageSecure
         return('Joueurs fusionnés');
 	}
 
-    function FusionEquipes() {
-        $myBdd = new MyBdd();
+	function FusionEquipes() 
+	{
+        $myBdd = $this->myBdd;
 		$numFusionEquipeSource = utyGetPost('numFusionEquipeSource', 0);
 		$numFusionEquipeCible = utyGetPost('numFusionEquipeCible', 0);
         $FusionEquipeSource= utyGetPost('FusionEquipeSource', '');
@@ -756,8 +757,9 @@ class GestionCompetition extends MyPageSecure
 		return;
     }
 
-    function DeplaceEquipe() {
-        $myBdd = new MyBdd();
+	function DeplaceEquipe() 
+	{
+        $myBdd = $this->myBdd;
 		$numDeplaceEquipeSource = utyGetPost('numDeplaceEquipeSource', 0);
 		$numDeplaceEquipeCible = utyGetPost('numDeplaceEquipeCible', 0);
 		if ($numDeplaceEquipeSource === 0) {
@@ -784,7 +786,7 @@ class GestionCompetition extends MyPageSecure
     
 	function RenomEquipe()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$numRenomSource = utyGetPost('numRenomSource', 0);
 		$RenomSource = utyGetPost('RenomSource', 0);
 		$RenomCible = utyGetPost('RenomCible', 0);
@@ -822,7 +824,9 @@ class GestionCompetition extends MyPageSecure
         if ($_SESSION['Profile'] == 9) {
             header("Location: SelectFeuille.php");
 			exit;
-        }
+		}
+		
+		$this->myBdd = new MyBdd();
         
 		$alertMessage = '';
 
