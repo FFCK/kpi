@@ -366,7 +366,7 @@ class GestionClassement extends MyPageSecure
 		$this->FinalisationClassementNiveauChpt($codeCompet, $codeSaison);
 		$this->FinalisationClassementNiveauNiveau($codeCompet, $codeSaison);
 		
-		$this->FinalisationClassementJourneeChpt($codeCompet, $codeSaison);
+		$this->FinalisationClassementJourneeChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs);
 		$this->FinalisationClassementJourneeNiveau($codeCompet, $codeSaison);
 	
 		$sql = "UPDATE gickp_Competitions 
@@ -729,55 +729,34 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 
+		$sql = "UPDATE gickp_Competitions_Equipes 
+			SET Pts = Pts + ?, 
+			J = J + ?, 
+			G = G + ?, 
+			N = N + ?, 
+			P = P + ?, 
+			F = F + ?, 
+			Plus = Plus + ?, 
+			Moins = Moins + ?, 
+			Diff = Diff + ?, 
+			PtsNiveau = PtsNiveau + ? 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		
 		// Equipe A ...
-		$sql  = "Update gickp_Competitions_Equipes Set Pts=Pts+";
-		$sql .= $arrayCltA['Pts'];
-		$sql .= ", J=J+";
-		$sql .= $arrayCltA['J'];
-		$sql .= ", G=G+";
-		$sql .= $arrayCltA['G'];
-		$sql .= ", N=N+";
-		$sql .= $arrayCltA['N'];
-		$sql .= ", P=P+";
-		$sql .= $arrayCltA['P'];
-		$sql .= ", F=F+";
-		$sql .= $arrayCltA['F'];
-		$sql .= ", Plus=Plus+";
-		$sql .= $arrayCltA['Plus'];
-		$sql .= ", Moins=Moins+";
-		$sql .= $arrayCltA['Moins'];;
-		$sql .= ", Diff=Diff+";
-		$sql .= $arrayCltA['Diff'];
-		$sql .= ", PtsNiveau = PtsNiveau+";
-		$sql .= $arrayCltA['PtsNiveau'];
-		$sql .= " Where Id = $idEquipeA ";
-		
-		$myBdd->Query($sql);
-		
+		$result->execute(array(
+			$arrayCltA['Pts'], $arrayCltA['J'], $arrayCltA['G'], $arrayCltA['N'], 
+			$arrayCltA['P'], $arrayCltA['F'], $arrayCltA['Plus'], $arrayCltA['Moins'], 
+			$arrayCltA['Diff'], $arrayCltA['PtsNiveau'], $idEquipeA
+		));
+
 		// Equipe B ...
-		$sql  = "Update gickp_Competitions_Equipes Set Pts=Pts+";
-		$sql .= $arrayCltB['Pts'];
-		$sql .= ", J=J+";
-		$sql .= $arrayCltB['J'];
-		$sql .= ", G=G+";
-		$sql .= $arrayCltB['G'];
-		$sql .= ", N=N+";
-		$sql .= $arrayCltB['N'];
-		$sql .= ", P=P+";
-		$sql .= $arrayCltB['P'];
-		$sql .= ", F=F+";
-		$sql .= $arrayCltB['F'];
-		$sql .= ", plus=plus+";
-		$sql .= $arrayCltB['Plus'];
-		$sql .= ", moins=moins+";
-		$sql .= $arrayCltB['Moins'];;
-		$sql .= ", Diff=Diff+";
-		$sql .= $arrayCltB['Diff'];
-		$sql .= ", PtsNiveau = PtsNiveau+";
-		$sql .= $arrayCltB['PtsNiveau'];
-		$sql .= " Where Id = $idEquipeB ";
-		
-		$myBdd->Query($sql);
+		$result->execute(array(
+			$arrayCltB['Pts'], $arrayCltB['J'], $arrayCltB['G'], $arrayCltB['N'], 
+			$arrayCltB['P'], $arrayCltB['F'], $arrayCltB['Plus'], $arrayCltB['Moins'], 
+			$arrayCltB['Diff'], $arrayCltB['PtsNiveau'], $idEquipeB
+		));
+
 	}
 	
 	// StepClassementCompetitionEquipeNiveau
@@ -788,57 +767,35 @@ class GestionClassement extends MyPageSecure
 		$this->ExistCompetitionEquipeNiveau($idEquipeA, $niveau);
 		$this->ExistCompetitionEquipeNiveau($idEquipeB, $niveau);
 				
+		$sql = "UPDATE gickp_Competitions_Equipes_Niveau 
+			SET Pts = Pts + ?, 
+			J = J + ?, 
+			G = G + ?, 
+			N = N + ?, 
+			P = P + ?, 
+			F = F + ?, 
+			Plus = Plus + ?, 
+			Moins = Moins + ?, 
+			Diff = Diff + ?, 
+			PtsNiveau = PtsNiveau + ? 
+			WHERE Id = ? 
+			AND Niveau = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		
 		// Equipe A ...
-		$sql  = "Update gickp_Competitions_Equipes_Niveau Set Pts=Pts+";
-		$sql .= $arrayCltA['Pts'];
-		$sql .= ", J=J+";
-		$sql .= $arrayCltA['J'];
-		$sql .= ", G=G+";
-		$sql .= $arrayCltA['G'];
-		$sql .= ", N=N+";
-		$sql .= $arrayCltA['N'];
-		$sql .= ", P=P+";
-		$sql .= $arrayCltA['P'];
-		$sql .= ", F=F+";
-		$sql .= $arrayCltA['F'];
-		$sql .= ", Plus=Plus+";
-		$sql .= $arrayCltA['Plus'];
-		$sql .= ", Moins=Moins+";
-		$sql .= $arrayCltA['Moins'];;
-		$sql .= ", Diff=Diff+";
-		$sql .= $arrayCltA['Diff'];
-		$sql .= ", PtsNiveau = PtsNiveau+";
-		$sql .= $arrayCltA['PtsNiveau'];
-		$sql .= " Where Id = $idEquipeA ";
-		$sql .= " And Niveau = $niveau";
-		
-		$myBdd->Query($sql);
-		
+		$result->execute(array(
+			$arrayCltA['Pts'], $arrayCltA['J'], $arrayCltA['G'], $arrayCltA['N'], 
+			$arrayCltA['P'], $arrayCltA['F'], $arrayCltA['Plus'], $arrayCltA['Moins'], 
+			$arrayCltA['Diff'], $arrayCltA['PtsNiveau'], $idEquipeA, $niveau
+		));
+
 		// Equipe B ...
-		$sql  = "Update gickp_Competitions_Equipes_Niveau Set Pts=Pts+";
-		$sql .= $arrayCltB['Pts'];
-		$sql .= ", J=J+";
-		$sql .= $arrayCltB['J'];
-		$sql .= ", G=G+";
-		$sql .= $arrayCltB['G'];
-		$sql .= ", N=N+";
-		$sql .= $arrayCltB['N'];
-		$sql .= ", P=P+";
-		$sql .= $arrayCltB['P'];
-		$sql .= ", F=F+";
-		$sql .= $arrayCltB['F'];
-		$sql .= ", plus=plus+";
-		$sql .= $arrayCltB['Plus'];
-		$sql .= ", moins=moins+";
-		$sql .= $arrayCltB['Moins'];;
-		$sql .= ", Diff=Diff+";
-		$sql .= $arrayCltB['Diff'];
-		$sql .= ", PtsNiveau = PtsNiveau+";
-		$sql .= $arrayCltB['PtsNiveau'];
-		$sql .= " Where Id = $idEquipeB ";
-		$sql .= " And Niveau = $niveau";
-		
-		$myBdd->Query($sql);
+		$result->execute(array(
+			$arrayCltB['Pts'], $arrayCltB['J'], $arrayCltB['G'], $arrayCltB['N'], 
+			$arrayCltB['P'], $arrayCltB['F'], $arrayCltB['Plus'], $arrayCltB['Moins'], 
+			$arrayCltB['Diff'], $arrayCltB['PtsNiveau'], $idEquipeB, $niveau
+		));
+
 	}
 
 	// StepClassementCompetitionEquipeJournee
@@ -849,57 +806,35 @@ class GestionClassement extends MyPageSecure
 		$this->ExistCompetitionEquipeJournee($idEquipeA, $idJournee);
 		$this->ExistCompetitionEquipeJournee($idEquipeB, $idJournee);
 				
+		$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+			SET Pts = Pts + ?, 
+			J = J + ?, 
+			G = G + ?, 
+			N = N + ?, 
+			P = P + ?, 
+			F = F + ?, 
+			Plus = Plus + ?, 
+			Moins = Moins + ?, 
+			Diff = Diff + ?, 
+			PtsNiveau = PtsNiveau + ? 
+			WHERE Id = ? 
+			AND Id_journee = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		
 		// Equipe A ...
-		$sql  = "Update gickp_Competitions_Equipes_Journee Set Pts=Pts+";
-		$sql .= $arrayCltA['Pts'];
-		$sql .= ", J=J+";
-		$sql .= $arrayCltA['J'];
-		$sql .= ", G=G+";
-		$sql .= $arrayCltA['G'];
-		$sql .= ", N=N+";
-		$sql .= $arrayCltA['N'];
-		$sql .= ", P=P+";
-		$sql .= $arrayCltA['P'];
-		$sql .= ", F=F+";
-		$sql .= $arrayCltA['F'];
-		$sql .= ", Plus=Plus+";
-		$sql .= $arrayCltA['Plus'];
-		$sql .= ", Moins=Moins+";
-		$sql .= $arrayCltA['Moins'];;
-		$sql .= ", Diff=Diff+";
-		$sql .= $arrayCltA['Diff'];
-		$sql .= ", PtsNiveau = PtsNiveau+";
-		$sql .= $arrayCltA['PtsNiveau'];
-		$sql .= " Where Id = $idEquipeA ";
-		$sql .= " And Id_journee = $idJournee";
-		
-		$myBdd->Query($sql);
-		
+		$result->execute(array(
+			$arrayCltA['Pts'], $arrayCltA['J'], $arrayCltA['G'], $arrayCltA['N'], 
+			$arrayCltA['P'], $arrayCltA['F'], $arrayCltA['Plus'], $arrayCltA['Moins'], 
+			$arrayCltA['Diff'], $arrayCltA['PtsNiveau'], $idEquipeA, $idJournee
+		));
+
 		// Equipe B ...
-		$sql  = "Update gickp_Competitions_Equipes_Journee Set Pts=Pts+";
-		$sql .= $arrayCltB['Pts'];
-		$sql .= ", J=J+";
-		$sql .= $arrayCltB['J'];
-		$sql .= ", G=G+";
-		$sql .= $arrayCltB['G'];
-		$sql .= ", N=N+";
-		$sql .= $arrayCltB['N'];
-		$sql .= ", P=P+";
-		$sql .= $arrayCltB['P'];
-		$sql .= ", F=F+";
-		$sql .= $arrayCltB['F'];
-		$sql .= ", plus=plus+";
-		$sql .= $arrayCltB['Plus'];
-		$sql .= ", moins=moins+";
-		$sql .= $arrayCltB['Moins'];;
-		$sql .= ", Diff=Diff+";
-		$sql .= $arrayCltB['Diff'];
-		$sql .= ", PtsNiveau = PtsNiveau+";
-		$sql .= $arrayCltB['PtsNiveau'];
-		$sql .= " Where Id = $idEquipeB ";
-		$sql .= " And Id_journee = $idJournee";
-	
-		$myBdd->Query($sql);
+		$result->execute(array(
+			$arrayCltB['Pts'], $arrayCltB['J'], $arrayCltB['G'], $arrayCltB['N'], 
+			$arrayCltB['P'], $arrayCltB['F'], $arrayCltB['Plus'], $arrayCltB['Moins'], 
+			$arrayCltB['Diff'], $arrayCltB['PtsNiveau'], $idEquipeB, $idJournee
+		));
+		
 	}
 		
 	function FinalisationClassementChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs)
@@ -909,24 +844,19 @@ class GestionClassement extends MyPageSecure
 		$oldId = 0;
 		$oldClt = 0;
 		$oldPts = 0;
-		$oldDiff = 0;
-		$oldPlus = 0;
 		$egalites = 1;
 		$i = 0;
 		$aEgalites = [];
 		
 		// Chargement des Equipes par ordre de Pts, Diff & Plus
-		$sql  = "SELECT Id, Clt, Pts, J, G, N, P, F, Plus, Moins, Diff 
+		$sql = "SELECT Id, Clt, Pts, J, G, N, P, F, Plus, Moins, Diff 
 				FROM gickp_Competitions_Equipes 
-				WHERE Code_compet = '" . $codeCompet . "' 
-				AND Code_saison = '" . $codeSaison . "' 
+				WHERE Code_compet = ? 
+				AND Code_saison = ? 
 				ORDER BY Pts DESC, Diff DESC, Plus DESC ";	 
-
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
-			// TODO: Contrôle goal average général ou particulier
-			
-			// if ($goalaverage == 'gen' && $row['Pts'] == $oldPts && $row['Diff'] == $oldDiff && $row['Plus'] == $oldPlus) {
+		$result2 = $myBdd->pdo->prepare($sql);
+		$result2->execute(array($codeCompet, $codeSaison));
+		while ($row = $result2->fetch()) {
 			if ($goalaverage == 'gen' && $row['Pts'] == $oldPts) {
 					// SI ON VEUT SIGNALER LES EGALITES SANS LES TRAITER (Goal Average Général)
 				// $clt = $oldClt;
@@ -935,7 +865,7 @@ class GestionClassement extends MyPageSecure
 				$clt = $i + 1;
 			} elseif ($goalaverage != 'gen' && $row['Pts'] == $oldPts) {
 				$clt = $oldClt;
-				if (!in_array($oldId, $aEgalites[$row['Pts']])) {
+				if (!isset($aEgalites[$clt]) || !in_array($oldId, $aEgalites[$clt])) {
 					$aEgalites[$clt][$oldId] = $oldId;
 				}
 				$aEgalites[$clt][$row['Id']] = $row['Id'];
@@ -946,14 +876,12 @@ class GestionClassement extends MyPageSecure
 			$oldClt = $clt;
 			$oldId =$row['Id'];
 			$oldPts = $row['Pts'];
-			$oldDiff = $row['Diff'];
-			$oldPlus = $row['Plus'];
 
-            $sql  = "UPDATE gickp_Competitions_Equipes 
-					SET Clt = " . $clt . "
-					WHERE Id = " . $row['Id'];
-			
-			$myBdd->Query($sql);
+            $sql = "UPDATE gickp_Competitions_Equipes 
+				SET Clt = ?
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($clt, $row['Id']));
 			$i ++;
 		}
 		if (count($aEgalites) > 0) {
@@ -969,28 +897,31 @@ class GestionClassement extends MyPageSecure
 	function GestionEgalitesClassementChpt($aEgalites, $codeCompet, $codeSaison, $tousLesMatchs)
 	{
 		$myBdd = $this->myBdd;
-		// echo '<pre>';
 		$rEgalites = [];
 		// Pour chaque égalité, sélection des matchs impliquant les équipes concernées
 		foreach ($aEgalites as $clt => $teams) {
 			$listTeams = implode(',', $teams);
+			if (!$tousLesMatchs) { // uniquement les matchs validés (vérouillés)
+				$sqlValidation = "AND a.Validation = 'O' ";
+			} else {
+				$sqlValidation = "";
+			}
 			$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
 				a.CoeffB, a.Id Idmatch, a.Id_journee, b.Niveau, c.Points 
 				FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions c 
 				WHERE a.Id_journee = b.Id 
-				AND b.Code_competition = '" . $codeCompet . "' 
 				AND b.Code_competition = c.Code 
-				AND b.Code_saison = '" . $codeSaison . "' 
 				AND b.Code_saison = c.Code_saison 
-				AND a.Id_equipeA IN (" . $listTeams . ") 
-				AND a.Id_equipeB IN (" . $listTeams . ") ";
-			if (!$tousLesMatchs) { // uniquement les matchs validés (vérouillés)
-				$sql .= "AND a.Validation = 'O' ";
-			}
-			$sql .= "ORDER BY b.Id, a.Id ";
+				AND b.Code_competition = ? 
+				AND b.Code_saison = ? 
+				AND a.Id_equipeA IN ($listTeams) 
+				AND a.Id_equipeB IN ($listTeams) 
+				$sqlValidation 
+				ORDER BY b.Id, a.Id ";
 			
-			$result = $myBdd->Query($sql);
-			while($row = $myBdd->FetchArray($result)) {
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($codeCompet, $codeSaison));
+			while ($row = $result->fetch()) {
 				$listmatchs[] = $row['Idmatch'];
 				$scoreA = $row['ScoreA'];
 				$scoreB = $row['ScoreB'];
@@ -1008,11 +939,6 @@ class GestionClassement extends MyPageSecure
 				$idEquipeB = $row['Id_equipeB'];
 				
 				if (!utyIsScoreOk($scoreA, $scoreB)) {
-					// Score Non Valide ...
-					// if (!utyIsTypeCltCoupe($typeClt)) {
-					// 	continue;
-					// }
-
 					if (!utyIsEquipeOk($idEquipeA, $idEquipeB)) {
 						continue;
 					}
@@ -1077,53 +1003,183 @@ class GestionClassement extends MyPageSecure
 			);
 			print_r($arrayCltGlobal[$clt]);
 
+			$sql = "UPDATE gickp_Competitions_Equipes 
+				SET Clt = ?
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+
 			// incrémentation de 1 classement à partir du 2ème
 			for ($i = 1; $i < count($arrayCltGlobal[$clt]); $i ++) {
 				$arrayCltGlobal[$clt][$i]['clt'] += $i;
 
 				// update BDD pour la journée ou global si journée = false
-				// if (!$idJournee) {
-					$sql  = "UPDATE gickp_Competitions_Equipes 
-							SET Clt = " .$arrayCltGlobal[$clt][$i]['clt'] . "
-							WHERE Id = " . $arrayCltGlobal[$clt][$i]['team'];
-					echo 'Classement général :<br>' . $sql;
-				// } else {
-				// 	$sql  = "UPDATE gickp_Competitions_Equipes_Journee 
-				// 			SET Clt = " .$arrayCltGlobal[$clt][$i]['clt'] . "
-				// 			WHERE Id = " . $arrayCltGlobal[$clt][$i]['team'] . "
-				// 			AND Id_journee = " . $idJournee;
-				// 	echo 'Classement journée ' . $idJournee . ' :<br>' . $sql;
-				// }
-				$myBdd->Query($sql);
+				$result->execute(array(
+					$arrayCltGlobal[$clt][$i]['clt'], 
+					$arrayCltGlobal[$clt][$i]['team']
+				));
 			}
 
 		}
 		
-		// print_r($listmatchs);
-		// echo '</pre>';
-		// die;	
+	}
+
+	/**
+	 * Egalités goal average particulier
+	 */
+	function GestionEgalitesClassementJourneeChpt($aEgalites, $codeCompet, $codeSaison, $tousLesMatchs)
+	{
+		$myBdd = $this->myBdd;
+		$rEgalites = [];
+		// Pour chaque poule
+		foreach ($aEgalites as $journee => $clts) {
+			// Pour chaque égalité, sélection des matchs impliquant les équipes concernées
+			foreach ($clts as $clt => $teams) {
+				$listTeams = implode(',', $teams);
+				if (!$tousLesMatchs) { // uniquement les matchs validés (vérouillés)
+					$sqlValidation = "AND a.Validation = 'O' ";
+				} else {
+					$sqlValidation = "";
+				}
+				$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
+					a.CoeffB, a.Id Idmatch, a.Id_journee, b.Niveau, c.Points 
+					FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions c 
+					WHERE a.Id_journee = b.Id 
+					AND b.Code_competition = c.Code 
+					AND b.Code_saison = c.Code_saison 
+					AND b.Id = ?
+					AND a.Id_equipeA IN ($listTeams) 
+					AND a.Id_equipeB IN ($listTeams) 
+					$sqlValidation 
+					ORDER BY b.Id, a.Id ";
+				
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($journee));
+				while ($row = $result->fetch()) {
+					$listmatchs[] = $row['Idmatch'];
+					$scoreA = $row['ScoreA'];
+					$scoreB = $row['ScoreB'];
+					
+					$coeffA = (double) $row['CoeffA'];
+					$coeffB = (double) $row['CoeffB'];
+					if ($coeffA == 0) {
+						$coeffA = 1.0;
+					}
+					if ($coeffB == 0) {
+						$coeffB = 1.0;
+					}
+					
+					$idEquipeA = $row['Id_equipeA'];
+					$idEquipeB = $row['Id_equipeB'];
+					
+					if (!utyIsScoreOk($scoreA, $scoreB)) {	
+						if (!utyIsEquipeOk($idEquipeA, $idEquipeB)) {
+							continue;
+						}
+	
+						// Score non valide mais pris en compte pour les niveaux Coupe ...
+						$scoreA = '';
+						$scoreB = '';
+					}
+					
+					// Initialisation des tableaux $arrayCltA et $arrayCltB ...
+					$arrayCltA = array ('Pts' => 0, 'J' => 0, 'G' => 0, 'N' => 0, 'P' => 0, 'F' => 0, 'Plus' => 0, 'Moins' => 0, 'Diff' => 0, 'PtsNiveau' => 0);
+					$arrayCltB = array ('Pts' => 0, 'J' => 0, 'G' => 0, 'N' => 0, 'P' => 0, 'F' => 0, 'Plus' => 0, 'Moins' => 0, 'Diff' => 0, 'PtsNiveau' => 0);
+					
+					$rEgalites[$clt][$idEquipeA]['Pts'] = $rEgalites[$clt][$idEquipeA]['Pts'] ?? 0;
+					$rEgalites[$clt][$idEquipeA]['J'] = $rEgalites[$clt][$idEquipeA]['J'] ?? 0;
+					$rEgalites[$clt][$idEquipeA]['Plus'] = $rEgalites[$clt][$idEquipeA]['Plus'] ?? 0;
+					$rEgalites[$clt][$idEquipeA]['Diff'] = $rEgalites[$clt][$idEquipeA]['Diff'] ?? 0;
+					$rEgalites[$clt][$idEquipeB]['Pts'] = $rEgalites[$clt][$idEquipeB]['Pts'] ?? 0;
+					$rEgalites[$clt][$idEquipeB]['J'] = $rEgalites[$clt][$idEquipeB]['J'] ?? 0;
+					$rEgalites[$clt][$idEquipeB]['Plus'] = $rEgalites[$clt][$idEquipeB]['Plus'] ?? 0;
+					$rEgalites[$clt][$idEquipeB]['Diff'] = $rEgalites[$clt][$idEquipeB]['Diff'] ?? 0;
+	
+	
+					$niveau = $row['Niveau'];
+					if (strlen($niveau) == 0) {
+						$niveau = 0;
+					}
+	
+					$Points = $row['Points'];
+					
+					$this->SetArrayClt($scoreA, $scoreB, $niveau, $arrayCltA, $arrayCltB, $coeffA, $coeffB, $Points);
+					
+					$rEgalites[$clt][$idEquipeA]['Pts'] = $rEgalites[$clt][$idEquipeA]['Pts'] + $arrayCltA['Pts'];
+					$rEgalites[$clt][$idEquipeA]['J'] = $rEgalites[$clt][$idEquipeA]['J'] + $arrayCltA['J'];
+					$rEgalites[$clt][$idEquipeA]['Plus'] = $rEgalites[$clt][$idEquipeA]['Plus'] + $arrayCltA['Plus'];
+					$rEgalites[$clt][$idEquipeA]['Diff'] = $rEgalites[$clt][$idEquipeA]['Diff'] + $arrayCltA['Diff'];
+					$rEgalites[$clt][$idEquipeB]['Pts'] = $rEgalites[$clt][$idEquipeB]['Pts'] + $arrayCltB['Pts'];
+					$rEgalites[$clt][$idEquipeB]['J'] = $rEgalites[$clt][$idEquipeB]['J'] + $arrayCltB['J'];
+					$rEgalites[$clt][$idEquipeB]['Plus'] = $rEgalites[$clt][$idEquipeB]['Plus'] + $arrayCltB['Plus'];
+					$rEgalites[$clt][$idEquipeB]['Diff'] = $rEgalites[$clt][$idEquipeB]['Diff'] + $arrayCltB['Diff'];
+				}
+	
+	
+				foreach ($rEgalites[$clt] as $team => $team_value) {
+					$arrayCltGlobal[$clt][] = [
+						'clt' => $clt,
+						'team' => $team,
+						'Pts' => $team_value['Pts'],
+						'Plus' => $team_value['Plus'],
+						'Diff' => $team_value['Diff']
+					];
+				}
+	
+				// Tri sur plusieurs colonnes, façon BDD
+				// Ajoute $data en tant que dernier paramètre, 
+				// pour trier par la clé commune
+				array_multisort(
+					array_column($arrayCltGlobal[$clt], 'Pts'), SORT_DESC, 
+					array_column($arrayCltGlobal[$clt], 'Diff'), SORT_DESC, 
+					array_column($arrayCltGlobal[$clt], 'Plus'), SORT_DESC, 
+					$arrayCltGlobal[$clt]
+				);
+				print_r($arrayCltGlobal[$clt]);
+	
+				$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+					SET Clt = ? 
+					WHERE Id = ? 
+					AND Id_journee = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				
+				// incrémentation de 1 classement à partir du 2ème
+				for ($i = 1; $i < count($arrayCltGlobal[$clt]); $i ++) {
+					$arrayCltGlobal[$clt][$i]['clt'] += $i;
+					
+					// update BDD pour la journée
+					$result->execute(array(
+						$arrayCltGlobal[$clt][$i]['clt'], $arrayCltGlobal[$clt][$i]['team'], $journee
+					));
+				}
+	
+			}
+		}
 	}
 
 	function FinalisationClassementNiveau($codeCompet, $codeSaison)
 	{
 		$myBdd = $this->myBdd;
 		
-		// Chargement des Equipes par ordre de Pts ...
-		$sql  = "Select Id, PtsNiveau, Diff ";
-		$sql .= "From gickp_Competitions_Equipes ";
-		$sql .= "Where Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' Order By PtsNiveau Desc, Diff Desc ";	 
-
 		$oldClt = 0;
 		$oldPts = 0;
 		$oldDiff = 9999;
 		$i = 0;
 		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$sql = "UPDATE gickp_Competitions_Equipes 
+		SET CltNiveau = ?
+		WHERE Id = ? ";
+		$result1 = $myBdd->pdo->prepare($sql);
+
+
+		// Chargement des Equipes par ordre de Pts ...
+		$sql = "SELECT Id, PtsNiveau, Diff 
+			FROM gickp_Competitions_Equipes 
+			WHERE Code_compet = ? 
+			AND Code_saison = ? 
+			ORDER BY PtsNiveau DESC, Diff DESC ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
+		while ($row = $result->fetch()) {
 			if ( (abs($row['PtsNiveau']-$oldPts) >= 1) || ($row['Diff'] != $oldDiff) ) {
 				$clt = $i + 1;
 				
@@ -1134,12 +1190,7 @@ class GestionClassement extends MyPageSecure
 				$clt = $oldClt;
 			}
 			
-			$sql  = "Update gickp_Competitions_Equipes Set CltNiveau = ";
-			$sql .= $clt;
-			$sql .= " Where Id = ";
-			$sql .= $row['Id'];
-			
-			$myBdd->Query($sql);
+			$result1->execute(array($clt, $row['Id']));
 			$i ++;
 		}
 	}
@@ -1148,23 +1199,29 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		// Chargement des Equipes par ordre de Pts ...
-		$sql  = "Select a.Id, a.Niveau, a.Clt, a.Pts, a.J, a.G, a.N, a.P, a.F, a.Plus, a.Moins, a.Diff ";
-		$sql .= "From gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And b.Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And b.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' Order By a.Niveau, a.Pts Desc, a.Diff Desc ";	 
-
 		$oldClt = 0;
 		$oldPts = 0;
 		$oldNiveau = -1;
 		$j = 0;
+
+		$sql = "UPDATE gickp_Competitions_Equipes_Niveau 
+			SET Clt = ? 
+			WHERE Id = ? 
+			AND Niveau = ? ";
+		$result1 = $myBdd->pdo->prepare($sql);
+
 		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {			
+		// Chargement des Equipes par ordre de Pts ...
+		$sql = "SELECT a.Id, a.Niveau, a.Clt, a.Pts, a.J, a.G, a.N, a.P, a.F, 
+			a.Plus, a.Moins, a.Diff 
+			FROM gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+			WHERE a.Id = b.Id 
+			AND b.Code_compet = ? 
+			AND b.Code_saison = ? 
+			ORDER BY a.Niveau, a.Pts DESC, a.Diff DESC ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
+		while ($row = $result->fetch()) {
 			if ($row['Niveau'] != $oldNiveau) {
 				$oldNiveau = $row['Niveau'];
 				$clt = 1;
@@ -1181,14 +1238,7 @@ class GestionClassement extends MyPageSecure
 				}
 			}
 					
-			$sql  = "Update gickp_Competitions_Equipes_Niveau Set Clt = ";
-			$sql .= $clt;
-			$sql .= " Where Id = ";
-			$sql .= $row['Id'];
-			$sql .= " And Niveau = ";
-			$sql .= $row['Niveau'];
-		
-			$myBdd->Query($sql);
+			$result1->execute(array($clt, $row['Id'], $row['Niveau']));
 			$j ++;
 		}
 	}
@@ -1197,24 +1247,28 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		// Chargement des Equipes par ordre de Pts ...
-		$sql  = "Select a.Id, a.Niveau, a.PtsNiveau, a.Diff ";
-		$sql .= "From gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And b.Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And b.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' Order By a.Niveau, a.PtsNiveau Desc, a.Diff Desc ";	 
-
 		$oldClt = 0;
 		$oldPts = 0;
 		$oldDiff = 9999;
 		$oldNiveau = -1;
 		$j = 0;
 		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {			
+		$sql = "UPDATE gickp_Competitions_Equipes_Niveau 
+			SET CltNiveau = ?  
+			WHERE Id = ? 
+			AND Niveau = ? ";
+		$result1 = $myBdd->pdo->prepare($sql);
+	
+		// Chargement des Equipes par ordre de Pts ...
+		$sql = "SELECT a.Id, a.Niveau, a.PtsNiveau, a.Diff 
+			FROM gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+			WHERE a.Id = b.Id 
+			AND b.Code_compet = ? 
+			AND b.Code_saison = ? 
+			ORDER BY a.Niveau, a.PtsNiveau DESC, a.Diff DESC ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
+		while ($row = $result->fetch()) {
 			if ($row['Niveau'] != $oldNiveau) {
 				$oldNiveau = $row['Niveau'];
 				$clt = 1;
@@ -1234,68 +1288,75 @@ class GestionClassement extends MyPageSecure
 				}
 			}
 					
-			$sql  = "Update gickp_Competitions_Equipes_Niveau Set CltNiveau = ";
-			$sql .= $clt;
-			$sql .= " Where Id = ";
-			$sql .= $row['Id'];
-			$sql .= " And Niveau = ";
-			$sql .= $row['Niveau'];
-			
-			$myBdd->Query($sql);
+			$result1->execute(array($clt, $row['Id'], $row['Niveau']));
 			$j ++;
 		}
 	}
 	
 	// FinalisationClassementJourneeChpt
-	function FinalisationClassementJourneeChpt($codeCompet, $codeSaison)
+	function FinalisationClassementJourneeChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs)
 	{
 		$myBdd = $this->myBdd;
 		
-		// Chargement des Equipes par ordre de Pts ...
-		$sql  = "Select a.Id, a.Id_journee, a.Clt, a.Pts, a.J, a.G, a.N, a.P, a.F, a.Plus, a.Moins, a.Diff ";
-		$sql .= "From gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And b.Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And b.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' Order By a.Id_journee, a.Pts Desc, a.Diff Desc, a.Plus Desc ";	 
-
+		$oldId = 0;
 		$oldClt = 0;
 		$oldPts = 0;
 		$oldIdJournee = 0;
-		$j = 0;
-		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
-			if ($row['Id_journee'] != $oldIdJournee) {
-				$oldIdJournee = $row['Id_journee'];
+		$i = 0;
+		$aEgalites = [];
+
+		$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+			SET Clt = ? 
+			WHERE Id = ? 
+			AND Id_journee = ? ";
+		$result1 = $myBdd->pdo->prepare($sql);
+
+
+		// Chargement des Equipes par ordre de Pts ...
+		$sql = "SELECT a.Id, a.Id_journee, a.Clt, a.Pts, a.J, a.G, a.N, a.P, 
+			a.F, a.Plus, a.Moins, a.Diff, j.Type 
+			FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Journee a
+			LEFT OUTER JOIN gickp_Journees j ON a.Id_journee = j.Id
+			WHERE a.Id = b.Id 
+			AND b.Code_compet = ? 
+			AND b.Code_saison = ? 
+			ORDER BY a.Id_journee, a.Pts DESC, a.Diff DESC, a.Plus DESC ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
+		while ($row = $result->fetch()) {
+			$idJournee = $row['Id_journee'];
+			if ($idJournee != $oldIdJournee) {
+				$oldIdJournee = $idJournee;
 				$clt = 1;
 				$oldClt = $clt;
 				$oldPts = $row['Pts'];
-				$j = 0;
+				$i = 0;
 			} else {
-				// TODO: Contrôle goal average général ou particulier
-
-				//if ($row['Pts'] != $oldPts)
-				//{
-					$clt = $j + 1;
-					$oldClt = $clt;
-					$oldPts = $row['Pts'];
-				//}
-				//else
-				//	$clt = $oldClt;
+				// Contrôle goal average général ou particulier
+				if ($goalaverage == 'gen' && $row['Pts'] == $oldPts) {
+					$clt = $i + 1;
+				} elseif ($goalaverage != 'gen' && $row['Pts'] == $oldPts) {
+					$clt = $oldClt;
+					if ($row['Type'] == 'C') {
+						if (!isset($aEgalites[$idJournee][$clt]) || !in_array($oldId, $aEgalites[$idJournee][$clt])) {
+							$aEgalites[$idJournee][$clt][$oldId] = $oldId;
+						}
+						$aEgalites[$idJournee][$clt][$row['Id']] = $row['Id'];
+					}
+				} else {
+					$clt = $i + 1;
+				}
 			}
-					
-			$sql  = "Update gickp_Competitions_Equipes_Journee Set Clt = ";
-			$sql .= $clt;
-			$sql .= " Where Id = ";
-			$sql .= $row['Id'];
-			$sql .= " And Id_journee = ";
-			$sql .= $row['Id_journee'];
-		
-			$myBdd->Query($sql);
-			$j ++;
+				
+			$oldClt = $clt;
+			$oldId =$row['Id'];
+			$oldPts = $row['Pts'];
+
+			$result1->execute(array($clt, $row['Id'], $row['Id_journee']));
+			$i ++;
+		}
+		if (count($aEgalites) > 0) {
+			$this->GestionEgalitesClassementJourneeChpt($aEgalites, $codeCompet, $codeSaison, $tousLesMatchs);
 		}
 	}
 	
@@ -1303,24 +1364,29 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		// Chargement des Equipes par ordre de Pts ...
-		$sql  = "Select a.Id, a.Id_journee, a.PtsNiveau, a.Diff ";
-		$sql .= "From gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And b.Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And b.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' Order By a.Id_journee, a.PtsNiveau Desc, a.Diff Desc ";	 
-
 		$oldClt = 0;
 		$oldPts = 0;
 		$oldDiff = 9999;
 		$oldIdJournee = 0;
 		$j = 0;
+
+		$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+			SET CltNiveau = ? 
+			WHERE Id = ? 
+			AND Id_journee = ? ";
+		$result1 = $myBdd->pdo->prepare($sql);
+
 		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		// Chargement des Equipes par ordre de Pts ...
+		$sql = "SELECT a.Id, a.Id_journee, a.PtsNiveau, a.Diff 
+			FROM gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b 
+			WHERE a.Id = b.Id 
+			AND b.Code_compet = ? 
+			AND b.Code_saison = ? 
+			ORDER BY a.Id_journee, a.PtsNiveau DESC, a.Diff DESC ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
+		while ($row = $result->fetch()) {
 			if ($row['Id_journee'] != $oldIdJournee) {
                 $oldIdJournee = $row['Id_journee'];
 				$clt = 1;
@@ -1339,15 +1405,8 @@ class GestionClassement extends MyPageSecure
 					$clt = $oldClt;
 				}
 			}
-					
-			$sql  = "UPDATE gickp_Competitions_Equipes_Journee Set CltNiveau = ";
-			$sql .= $clt;
-			$sql .= " Where Id = ";
-			$sql .= $row['Id'];
-			$sql .= " And Id_journee = ";
-			$sql .= $row['Id_journee'];
 
-			$myBdd->Query($sql);
+			$result1->execute(array($clt, $row['Id'], $row['Id_journee']));
 			$j ++;
 		}
 	}
@@ -1361,53 +1420,50 @@ class GestionClassement extends MyPageSecure
 		$_SESSION['codeCompet'] = $codeCompet;
 		
 		//Update date publication
-		$sql  = "Update gickp_Competitions Set Date_publication = '";
-		$sql .= date('Y-m-d H:i:s');
-		$sql .= "', Date_publication_calcul = Date_calcul, Code_uti_publication = '";
-		$sql .= utyGetSession('User');
-		$sql .= "', Mode_publication_calcul = Mode_calcul ";
-		$sql .= "Where Code = '";
-		$sql .= $codeCompet;
-		$sql .= "' And Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions 
+			SET Date_publication = DATE(), 
+			Date_publication_calcul = Date_calcul, 
+			Code_uti_publication = ?, 
+			Mode_publication_calcul = Mode_calcul 
+			WHERE Code = ?  
+			AND Code_saison = ? ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
 		//Update Classement
-		$sql  = "Update gickp_Competitions_Equipes ";
-		$sql .= "Set Pts_publi = Pts, Clt_publi = Clt, J_publi = J, G_publi = G, N_publi = N, P_publi = P, F_publi = F, ";
-		$sql .= "Plus_publi = Plus, Moins_publi = Moins, Diff_publi = Diff, PtsNiveau_publi = PtsNiveau, CltNiveau_publi = CltNiveau ";
-		$sql .= "Where Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions_Equipes 
+			SET Pts_publi = Pts, Clt_publi = Clt, J_publi = J, G_publi = G, 
+			N_publi = N, P_publi = P, F_publi = F, Plus_publi = Plus, 
+			Moins_publi = Moins, Diff_publi = Diff, PtsNiveau_publi = PtsNiveau, 
+			CltNiveau_publi = CltNiveau 
+			WHERE Code_compet = ? 
+			AND Code_saison = ? ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement journées/phases
-		$sql  = "Update gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  ";
-		$sql .= "Set a.Pts_publi = a.Pts, a.Clt_publi = a.Clt, a.J_publi = a.J, a.G_publi = a.G, a.N_publi = a.N, a.P_publi = a.P, a.F_publi = a.F, ";
-		$sql .= "a.Plus_publi = a.Plus, a.Moins_publi = a.Moins, a.Diff_publi = a.Diff, a.PtsNiveau_publi = a.PtsNiveau, a.CltNiveau_publi = a.CltNiveau ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And c.Id = a.Id_journee ";
-		$sql .= "And c.Code_competition = '";
-		$sql .= $codeCompet;
-		$sql .= "' And c.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  
+			SET a.Pts_publi = a.Pts, a.Clt_publi = a.Clt, a.J_publi = a.J, a.G_publi = a.G, 
+			a.N_publi = a.N, a.P_publi = a.P, a.F_publi = a.F, a.Plus_publi = a.Plus, a.Moins_publi = a.Moins, 
+			a.Diff_publi = a.Diff, a.PtsNiveau_publi = a.PtsNiveau, a.CltNiveau_publi = a.CltNiveau 
+			WHERE a.Id = b.Id 
+			AND c.Id = a.Id_journee 
+			AND c.Code_competition = ? 
+			AND c.Code_saison = ? ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement niveau
-		$sql  = "Update gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b  ";
-		$sql .= "Set a.Pts_publi = a.Pts, a.Clt_publi = a.Clt, a.J_publi = a.J, a.G_publi = a.G, a.N_publi = a.N, a.P_publi = a.P, a.F_publi = a.F, ";
-		$sql .= "a.Plus_publi = a.Plus, a.Moins_publi = a.Moins, a.Diff_publi = a.Diff, a.PtsNiveau_publi = a.PtsNiveau, a.CltNiveau_publi = a.CltNiveau ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And b.Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And b.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+			SET a.Pts_publi = a.Pts, a.Clt_publi = a.Clt, a.J_publi = a.J, a.G_publi = a.G, 
+			a.N_publi = a.N, a.P_publi = a.P, a.F_publi = a.F, a.Plus_publi = a.Plus, 
+			a.Moins_publi = a.Moins, a.Diff_publi = a.Diff, a.PtsNiveau_publi = a.PtsNiveau, 
+			a.CltNiveau_publi = a.CltNiveau 
+			WHERE a.Id = b.Id 
+			AND b.Code_compet = ? 
+			AND b.Code_saison = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
 
 
 		$myBdd->utyJournal('Publication Classement', $codeSaison, $codeCompet);
@@ -1422,51 +1478,42 @@ class GestionClassement extends MyPageSecure
 		$_SESSION['codeCompet'] = $codeCompet;
 		
 		//Update date publication
-		$sql  = "Update gickp_Competitions Set Date_publication = '";
-		$sql .= date('Y-m-d H:i:s');
-		$sql .= "', Date_publication_calcul = Date_calcul, Code_uti_publication = '";
-		$sql .= utyGetSession('User');
-		$sql .= "', Mode_publication_calcul = Mode_calcul ";
-		$sql .= "Where Code = '";
-		$sql .= $codeCompet;
-		$sql .= "' And Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions 
+			SET Date_publication = DATE(), 
+			Date_publication_calcul = Date_calcul, 
+			Code_uti_publication = ?, 
+			Mode_publication_calcul = Mode_calcul 
+			WHERE Code = ?  
+			AND Code_saison = ? ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
 		//Update Classement
-		$sql  = "Update gickp_Competitions_Equipes ";
-		$sql .= "Set Clt_publi = 0, CltNiveau_publi = 0 ";
-		$sql .= "Where Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions_Equipes 
+			SET Clt_publi = 0, CltNiveau_publi = 0 
+			WHERE Code_compet = ? 
+			AND Code_saison = ? ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement journées/phases
-		$sql  = "Update gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  ";
-		$sql .= "Set a.Clt_publi = 0, a.CltNiveau_publi = 0 ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And c.Id = a.Id_journee ";
-		$sql .= "And c.Code_competition = '";
-		$sql .= $codeCompet;
-		$sql .= "' And c.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  
+			SET a.Clt_publi = 0, a.CltNiveau_publi = 0 
+			WHERE a.Id = b.Id 
+			AND c.Id = a.Id_journee 
+			AND c.Code_competition = ? 
+			AND c.Code_saison = ? ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement niveau
-		$sql  = "Update gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b  ";
-		$sql .= "Set a.Clt_publi = 0, a.CltNiveau_publi = 0 ";
-		$sql .= "Where a.Id = b.Id ";
-		$sql .= "And b.Code_compet = '";
-		$sql .= $codeCompet;
-		$sql .= "' And b.Code_saison = '";
-		$sql .= $codeSaison;
-		$sql .= "' ";	 
-		$myBdd->Query($sql);
-
+		$sql = "UPDATE gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+			SET a.Clt_publi = 0, a.CltNiveau_publi = 0 
+			WHERE a.Id = b.Id 
+			AND b.Code_compet = ? 
+			AND b.Code_saison = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison));
 
 		$myBdd->utyJournal('Publication Classement RAZ', $codeSaison, $codeCompet);
 	}
