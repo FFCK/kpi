@@ -1,4 +1,4 @@
-<div class="container-fluid" id="selector">
+    <div class="container-fluid" id="selector">
     <article id="titre" class="container-fluid">
         <h1>{#Controle_tv#} - Scenario</h1>
         {if $AlertMessage}
@@ -18,6 +18,10 @@
                             <option value="{$smarty.section.i.index}" {if $smarty.section.i.index == $scenario}selected{/if}>{$smarty.section.i.index}</option>
                         {/section}
                     </select>
+                    <br>
+                    <br>
+                    <a class="btn btn-default col-md-12" href="?scenario={$scenario}">Refresh</a>
+
                 </div>
                 <div class='col-md-11'>
                     <table class="table table-light">

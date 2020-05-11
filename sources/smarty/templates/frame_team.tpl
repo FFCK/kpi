@@ -21,7 +21,7 @@
                 </div>
             </div>
             {if $eColors}
-                <div class="col-xs-10 col-xs-offset-1" id="equipeColors">
+                <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-3" id="equipeColors">
                     <a href="{$eColors}?v={$NUM_VERSION}" target="_blank">
                         <img class="img-responsive img-thumbnail" src="{$eColors}?v={$NUM_VERSION}" alt="{$nomEquipe}">
                     </a>
