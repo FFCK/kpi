@@ -15,7 +15,7 @@ class FeuilleCltNiveauJournee extends MyPage {
 
         $codeCompet = utyGetSession('codeCompet', '');
         //Saison
-        $codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
         $titreDate = "Saison " . $codeSaison;
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
         $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';
@@ -99,23 +99,20 @@ class FeuilleCltNiveauJournee extends MyPage {
         // données
         $myBdd = new MyBdd();
 
-        $sql = "Select a.Id, a.Libelle, a.Code_club, ";
-        $sql .= "b.Id_journee, b.Clt, b.Pts, b.J, b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau, ";
-        $sql .= "c.Date_debut, c.Lieu ";
-        $sql .= "From gickp_Competitions_Equipes a, ";
-        $sql .= "gickp_Competitions_Equipes_Journee b Join gickp_Journees c On (b.Id_journee = c.Id) ";
-        $sql .= "Where a.Id = b.Id ";
-        $sql .= "And c.Code_competition = '";
-        $sql .= $codeCompet;
-        $sql .= "' And c.Code_saison = '";
-        $sql .= utyGetSaison();
-        $sql .= "' Order By c.Date_debut Asc, c.Lieu ASC, b.Clt Asc, b.Diff Desc, b.Plus Desc ";
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+        $sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt, b.Pts, b.J, 
+            b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau, 
+            c.Date_debut, c.Lieu 
+            FROM gickp_Competitions_Equipes a, gickp_Competitions_Equipes_Journee b 
+            JOIN gickp_Journees c ON (b.Id_journee = c.Id) 
+            WHERE a.Id = b.Id 
+            AND c.Code_competition = ? 
+            AND c.Code_saison = ? 
+            ORDER BY c.Date_debut, c.Lieu, b.Clt, b.Diff DESC, b.Plus DESC ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
 
         $idJournee = 0;
-        for ($i = 0; $i < $num_results; $i++) {
-            $row = $myBdd->FetchArray($result);
+        while ($row = $result->fetch()){
             $idEquipe = $row['Id'];
             if ($row['Id_journee'] != $idJournee) {
                 $idJournee = $row['Id_journee'];

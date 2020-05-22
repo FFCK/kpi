@@ -30,7 +30,7 @@ class FeuilleGroups extends MyPage {
 
         $codeCompet = utyGetSession('codeCompet', '');
         //Saison
-        $codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
         $titreDate = "Saison " . $codeSaison;
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 
@@ -109,25 +109,17 @@ class FeuilleGroups extends MyPage {
 //		$pdf->Ln(10);
         //données
 
-        $sql = "Select Id, Libelle, Code_club, Poule, Tirage ";
-        $sql .= "From gickp_Competitions_Equipes ";
-        $sql .= "Where Code_compet = '";
-        $sql .= $codeCompet;
-        $sql .= "' And Code_saison = '";
-        $sql .= $codeSaison;
-        $sql .= "' Order By Poule, Tirage, Libelle ";
+        $sql = "SELECT Id, Libelle, Code_club, Poule, Tirage 
+            FROM gickp_Competitions_Equipes 
+            WHERE Code_compet = ? 
+            AND Code_saison = ? 
+            ORDER BY Poule, Tirage, Libelle ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
+        $num_results = $result->rowCount();
 
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
-
-        // recalcul des éliminés
-        //$elim = $num_results - $elim;
         $poule = '';
         $demi = $num_results / 2;
-        //$pdf->Cell(63, 6, '','',0,'L');
-        //$pdf->Cell(10, 6, '#', 0,0,'C');
-        //$pdf->Cell(10, 5, '', 0,'0','C'); //Pays
-        //$pdf->Cell(60, 6, $lang['Equipe'],0,1,'L');
         $pdf->Ln(6);
 
         //Colonne 1
@@ -139,10 +131,9 @@ class FeuilleGroups extends MyPage {
         $pdf->SetLeftMargin($x0);
         $pdf->SetX($x0);
         $pdf->SetY(50);
+        $i = 0;
 
-        for ($i = 0; $i < $num_results; $i++) {
-            $row = $myBdd->FetchArray($result);
-
+        while ($row = $result->fetch()){
             if ($poule != $row['Poule']) {
                 if ($i >= $demi && $demi != 0 && $num_results > 20) {
                     //Colonne 2
@@ -178,6 +169,7 @@ class FeuilleGroups extends MyPage {
                 $pdf->Cell(10, 6, '', 0, 0, 'C');
             }
             $pdf->Cell(65, 6, $row['Libelle'], 0, 1, 'L');
+            $i ++;
         }
 
         $pdf->Output($lang['Poules'] . ' ' . $codeCompet . '.pdf', 'I');

@@ -1421,7 +1421,7 @@ class GestionClassement extends MyPageSecure
 		
 		//Update date publication
 		$sql = "UPDATE gickp_Competitions 
-			SET Date_publication = DATE(), 
+			SET Date_publication = NOW(), 
 			Date_publication_calcul = Date_calcul, 
 			Code_uti_publication = ?, 
 			Mode_publication_calcul = Mode_calcul 
@@ -1479,7 +1479,7 @@ class GestionClassement extends MyPageSecure
 		
 		//Update date publication
 		$sql = "UPDATE gickp_Competitions 
-			SET Date_publication = DATE(), 
+			SET Date_publication = NOW(), 
 			Date_publication_calcul = Date_calcul, 
 			Code_uti_publication = ?, 
 			Mode_publication_calcul = Mode_calcul 
@@ -1497,21 +1497,18 @@ class GestionClassement extends MyPageSecure
 		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement journées/phases
-		$sql = "UPDATE gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  
-			SET a.Clt_publi = 0, a.CltNiveau_publi = 0 
-			WHERE a.Id = b.Id 
-			AND c.Id = a.Id_journee 
-			AND c.Code_competition = ? 
-			AND c.Code_saison = ? ";	 
+		$sql = "DELETE cej FROM gickp_Competitions_Equipes_Journee cej 
+			LEFT JOIN gickp_Journees j ON (j.Id = cej.Id_journee)
+			WHERE j.Code_competition = ? 
+			AND j.Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement niveau
-		$sql = "UPDATE gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
-			SET a.Clt_publi = 0, a.CltNiveau_publi = 0 
-			WHERE a.Id = b.Id 
-			AND b.Code_compet = ? 
-			AND b.Code_saison = ? ";
+		$sql = "DELETE cen FROM gickp_Competitions_Equipes_Niveau cen 
+			LEFT JOIN gickp_Competitions_Equipes ce ON (cen.Id = ce.Id) 
+			WHERE ce.Code_compet = ? 
+			AND ce.Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 

@@ -79,7 +79,7 @@ class GestionDoc extends MyPageSecure
 			$sqlAfficheCompet = " AND c.Code LIKE 'CF%' ";
 		} elseif ($AfficheCompet == 'M') {
 			$sqlAfficheCompet = " AND c.Code_ref = 'M' ";
-		} elseif($AfficheCompet > 0) {
+		} elseif ($AfficheCompet > 0) {
 			$sqlAfficheCompet = " AND g.section = ? ";
 			$arrayAfficheCompet = [$AfficheCompet];
 		}
@@ -94,7 +94,11 @@ class GestionDoc extends MyPageSecure
 			ORDER BY c.Code_saison, g.section, g.ordre, 
 				COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array_merge([$codeSaison], [utyGetSession('AfficheNiveau').'%'], $arrayAfficheCompet));
+		$result->execute(array_merge(
+			[$codeSaison], 
+			[utyGetSession('AfficheNiveau').'%'], 
+			$arrayAfficheCompet
+		));
 		while ($row = $result->fetch()) { 
 			// Titre
 			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {

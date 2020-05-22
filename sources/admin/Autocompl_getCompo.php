@@ -1,6 +1,13 @@
 <?php
+// prevent direct access *****************************************************
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
+strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if(!$isAjax) {
+  $user_error = 'Access denied - not an AJAX request...';
+  trigger_error($user_error, E_USER_ERROR);
+}
+// ***************************************************************************
 session_start();
-//include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
@@ -12,35 +19,30 @@ if (utyGetSession('lang') == 'en') {
     $lang = $langue['fr'];
 }
         
-    $myBdd = new MyBdd();
-	
-	// Chargement
-        $codeCompet = utyGetSession('codeCompet');
-        if(substr($codeCompet, 0, 1) != 'N' && substr($codeCompet, 0, 2) != 'CF') {
-            $codeSaison = $myBdd->RealEscapeString(trim(utyGetGet('s')));
-            $codeSaison2 = $codeSaison - 1;
-            $q = $myBdd->RealEscapeString(trim(utyGetGet('q')));
+$myBdd = new MyBdd();
 
-            $sql  = "SELECT ce.Code_saison, ce.Code_compet "
-                    . "FROM `gickp_Competitions_Equipes` ce, `gickp_Competitions_Equipes_Joueurs` cej "
-                    . "WHERE ce.Id = cej.Id_equipe "
-                    . "AND (ce.Code_saison = $codeSaison OR ce.Code_saison = $codeSaison2) "
-                    . "AND ce.Numero = ".$q." "
-                    . "GROUP BY ce.Code_compet, ce.Code_saison "
-                    . "ORDER BY ce.Code_saison DESC, ce.Code_compet ";
+// Chargement
+$codeCompet = utyGetSession('codeCompet');
+if (substr($codeCompet, 0, 1) != 'N' && substr($codeCompet, 0, 2) != 'CF') {
+    $codeSaison = (int) trim(utyGetGet('s'));
+    $codeSaison2 = $codeSaison - 1;
+    $q = (int) trim(utyGetGet('q'));
 
-            $result = $myBdd->Query($sql);
-            //$num_results = mysql_num_rows($result);
-            //header('Content-Type: application/json; charset=ISO-8859-1');
-            //$response = array();
-            echo "<input type='radio' name='checkCompo' value='' checked /><i>" . $lang['Aucune_reprise'] . "</i><br>";
-            while($row = $myBdd->FetchAssoc($result)) {
-                $Code_saison = $row['Code_saison'];
-                $Code_compet = $row['Code_compet'];
-                echo "<input type='radio' name='checkCompo' value='$Code_saison-$Code_compet'/>$Code_saison - $Code_compet<br />";
-                //$response[] = array("$code - $libelle", $code, $libelle);
-                //echo "$code - $libelle|$code|$libelle|$Code_niveau|$Code_ref|<br>\n";
-            }
-        } else {
-            echo '<br>-> Pas de reprise des feuilles de présences sur Championnat de France et Coupe de France<br>';
-        }
+    $sql = "SELECT ce.Code_saison, ce.Code_compet 
+        FROM `gickp_Competitions_Equipes` ce, `gickp_Competitions_Equipes_Joueurs` cej 
+        WHERE ce.Id = cej.Id_equipe 
+        AND (ce.Code_saison = ? OR ce.Code_saison = ?) 
+        AND ce.Numero = ? 
+        GROUP BY ce.Code_compet, ce.Code_saison 
+        ORDER BY ce.Code_saison DESC, ce.Code_compet ";
+    $result = $myBdd->pdo->prepare($sql);
+    $result->execute(array($codeSaison, $codeSaison2, $q));
+    echo "<input type='radio' name='checkCompo' value='' checked /><i>" . $lang['Aucune_reprise'] . "</i><br>";
+    while ($row = $result->fetch()) {
+        $Code_saison = $row['Code_saison'];
+        $Code_compet = $row['Code_compet'];
+        echo "<input type='radio' name='checkCompo' value='$Code_saison-$Code_compet'/>$Code_saison - $Code_compet<br />";
+    }
+} else {
+    echo '<br>-> Pas de reprise des feuilles de présences sur Championnat de France et Coupe de France<br>';
+}

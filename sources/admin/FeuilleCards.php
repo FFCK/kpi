@@ -102,12 +102,12 @@ class FeuilleCards extends MyPage
             JOIN gickp_Matchs m ON (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)
             JOIN gickp_Journees j ON (m.Id_journee = j.Id)
             LEFT OUTER JOIN gickp_Matchs_Detail md ON (m.Id = md.Id_match AND cej.Matric = md.Competiteur)
-            WHERE j.Code_saison = $codeSaison
-            AND j.Code_competition = '" . $codeCompet . "'
+            WHERE j.Code_saison = ? 
+            AND j.Code_competition = ? 
             GROUP BY ce.Libelle, cej.Matric
             ORDER BY ce.Libelle, FIELD(cej.Capitaine, 'E', 'A', 'X'), cej.Numero, cej.Nom, cej.Prenom;";
-        
-		$result = $myBdd->Query($sql);
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeSaison, $codeCompet));
         $equipe = '';
         
         $pdf->SetFont('Arial','B',10);
@@ -137,8 +137,8 @@ class FeuilleCards extends MyPage
         $pdf->SetFillColor(255, 170, 170);
         $pdf->Cell(16, 4, '', 1, 1, 'L', 1);
 
-        while ($row = $myBdd->FetchArray($result)){
-			if($equipe != $row['Libelle']) {
+        while ($row = $result->fetch()){
+			if ($equipe != $row['Libelle']) {
                 $pdf->Ln(6);
                 $pdf->SetFont('Arial','B',10);
                 $pdf->Cell(78, 5, $row['Libelle'], 1, 0, 'C');

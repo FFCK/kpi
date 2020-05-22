@@ -130,26 +130,25 @@ class GestionUtilisateur extends MyPageSecure
 		
 	function Load($selectUser)
 	{
+		$myBdd = new MyBdd();
 		$user = $_SESSION['User'];
 		$profile = $_SESSION['Profile'];
 		$limitProfils = utyGetPost('limitProfils','%');
 		$this->m_tpl->assign('limitProfils', $limitProfils);
 		$limitSaisons = utyGetPost('limitSaisons','%');
 		$this->m_tpl->assign('limitSaisons', $limitSaisons);
-		$Saison = utyGetSaison();
+		$Saison = $myBdd->GetActiveSaison();
 		$this->m_tpl->assign('Saison', $Saison);
 		
-		$myBdd = new MyBdd();
 		
 		// Chargement des Utilisateurs ...
-		$sql  = "Select u.* "; //, e.Libelle, e.Lieu ";
-		$sql .= "From gickp_Utilisateur u "; // left outer join gickp_Evenement e on u.Id_Evenement = e.Id ";
-		$sql .= "Where u.Niveau >= ";
-		$sql .= $profile;
-		$sql .= " And u.Niveau like '";
-		$sql .= $limitProfils;
-		$sql .= "' Order by u.Niveau Asc, u.Identite Asc, u.Fonction Asc ";
-        $result = $myBdd->Query($sql);
+		$sql = "SELECT u.* 
+			FROM gickp_Utilisateur u 
+			WHERE u.Niveau >= ? 
+			AND u.Niveau LIKE ? 
+			ORDER BY u.Niveau, u.Identite, u.Fonction ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($profile, $limitProfils));
 
 		$typeFiltreCompetition = '2';
 		$filtreSaison = '*';
@@ -159,7 +158,7 @@ class GestionUtilisateur extends MyPageSecure
 		$arrayUser = array();
 		$emails = '';
 		
-        while($row = $myBdd->FetchAssoc($result)) {
+		while ($row = $result->fetch()) {
 			$StdOrSelected = '';
 			if ($selectUser == $row["Code"]) {
                 $StdOrSelected = 'selected';
@@ -177,12 +176,14 @@ class GestionUtilisateur extends MyPageSecure
 			$row["Date_fin"] = utyDateUsToFr($row["Date_fin"]);
 			
 			if(mb_ereg('('.$limitSaisons.')',$filtreSaisons) || $limitSaisons == '%' || $filtreSaisons == '') {
-				array_push($arrayUser, array('Code' => $row["Code"], 'Identite' => $row["Identite"], 'StdOrSelected' => $StdOrSelected,
-													'filtreSaisons' => $filtreSaisons, 'Limitation_equipe_club' => $row['Limitation_equipe_club'],
-													'filtreCompets' => $filtreCompets, 'Mail' => $row["Mail"], 'Tel' => $row["Tel"], 'Fonction' => $row["Fonction"], 'Niveau' => $row['Niveau'],
-													'Id_Evenement' => $row["Id_Evenement"], 'Date_debut' => $row["Date_debut"], 'Date_fin' => $row["Date_fin"],
-													// 'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu']
-													));
+				array_push($arrayUser, array('Code' => $row["Code"], 'Identite' => $row["Identite"], 
+					'StdOrSelected' => $StdOrSelected, 'filtreSaisons' => $filtreSaisons, 
+					'Limitation_equipe_club' => $row['Limitation_equipe_club'],
+					'filtreCompets' => $filtreCompets, 'Mail' => $row["Mail"], 
+					'Tel' => $row["Tel"], 'Fonction' => $row["Fonction"], 'Niveau' => $row['Niveau'],
+					'Id_Evenement' => $row["Id_Evenement"], 'Date_debut' => $row["Date_debut"], 
+					'Date_fin' => $row["Date_fin"],
+				));
 				$emails .= $row["Mail"].',';
 			}
 
@@ -237,11 +238,11 @@ class GestionUtilisateur extends MyPageSecure
 		$this->m_tpl->assign('typeFiltreCompetition', $typeFiltreCompetition);
 		
 		// Chargement des Saisons ...
-		$sql  = "Select Code ";
-		$sql .= "From gickp_Saison ";
-		$sql .= "Order By Code DESC ";
-		$result = $myBdd->Query($sql);
-		
+		$sql = "SELECT Code 
+			FROM gickp_Saison 
+			ORDER BY Code DESC ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
 		$arraySaison = array();
 		
 		if ($selectUser == '') {
@@ -251,7 +252,7 @@ class GestionUtilisateur extends MyPageSecure
         }
 
         array_push($arraySaison, array('Code' => '*', 'Libelle' => '* - Toutes les Saisons', 'Selection' => $select));
-        while($row = $myBdd->FetchAssoc($result)) {
+		while ($row = $result->fetch()) {
 			if ($selectUser == '') {
                 $select = $this->IsSaisonSelectedPost($row["Code"]);
             } else {
@@ -263,14 +264,14 @@ class GestionUtilisateur extends MyPageSecure
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		
 		// Chargement des Compétitions ...
-		$sql  = "Select Distinct c.Code, c.Libelle, c.Code_niveau, g.id, g.section, g.ordre "
-                . "From gickp_Competitions c, gickp_Competitions_Groupes g "
-                . "WHERE c.Code_ref = g.Groupe "
-                . "Group By c.Code "
-                . "Order By g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";
-		
+		$sql = "SELECT DISTINCT c.Code, c.Libelle, c.Code_niveau, g.id, g.section, g.ordre 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_ref = g.Groupe 
+			GROUP BY c.Code 
+			ORDER BY g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
 		$arrayCompetition = array();
-		$result = $myBdd->Query($sql);
         
         $arrayCompetitionsSelected = explode('|', trim($filtreCompetition, '|'));
         if (in_array('*', $arrayCompetitionsSelected)) {
@@ -284,8 +285,8 @@ class GestionUtilisateur extends MyPageSecure
         $i = 0;
         $j = '';
         $label = $myBdd->getSections();
-		while ($row = $myBdd->FetchArray($result)){ 
-           if($j != $row['section']) {
+		while ($row = $result->fetch()) {
+			if ($j != $row['section']) {
                 $i ++;
                 $arrayCompetition[$i]['label'] = $label[$row['section']];
             }
@@ -301,11 +302,11 @@ class GestionUtilisateur extends MyPageSecure
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		
 		// Chargement des évènements
-		$sql  = "Select * ";
-		$sql .= "From gickp_Evenement ";
-		$sql .= "Order By Id Desc ";
-		  
-		$result = $myBdd->Query($sql);
+		$sql = "SELECT * 
+			FROM gickp_Evenement 
+			ORDER BY Id DESC ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
 		$arrayEvenements = array();
 
 		if ($selectUser == '') {
@@ -314,7 +315,7 @@ class GestionUtilisateur extends MyPageSecure
             $select = $this->IsStringSelected('*', $filtreEvenement);
         }
 
-        while ($row = $myBdd->FetchArray($result)){ 
+		while ($row = $result->fetch()) {
 			if ($selectUser == '') {
                 $select = $this->IsEvenementSelectedPost($row["Id"]);
             } else {
@@ -332,8 +333,7 @@ class GestionUtilisateur extends MyPageSecure
 		$guser = utyGetPost('guser');
 		$gpwd = utyGetPost('gpwd');
 		$generepwd = utyGetPost('generepwd');
-		if($generepwd == 'O')
-		{
+		if ($generepwd == 'O') {
 			$gpwd = Genere_Password(10);
 		}
 		$gidentite = utyGetPost('gidentite');
@@ -391,86 +391,48 @@ class GestionUtilisateur extends MyPageSecure
 			$myBdd = new MyBdd();
 
 			if ($bNew) {
-                $sql = "SELECT Code FROM gickp_Utilisateur WHERE Code = '" . $myBdd->RealEscapeString($guser) . "'";
-                $result = $myBdd->Query($sql);
-                if($myBdd->NumRows($result) == 1) {
+                $sql = "SELECT Code 
+					FROM gickp_Utilisateur 
+					WHERE Code = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($guser));
+                if ($result->rowCount() == 1) {
                     return "Utilisateur déjà existant !";
                 } else {
-                    $sql  = "Insert Into gickp_Utilisateur (Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, ";
-                    $sql .=	"Type_filtre_competition, Filtre_competition, Filtre_saison, Filtre_competition_sql,";
-                    $sql .=	"Filtre_journee, Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) Values ('";
-                    $sql .= $myBdd->RealEscapeString($guser);
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($gidentite);
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($gmail);
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($gtel);
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($gfonction);
-                    $sql .= "',";
-                    $sql .= $gniveau;
-                    $sql .= ",";
-                    $sql .= "'".md5($gpwd)."',";
-                    $sql .= $typeFiltreCompetition;
-                    $sql .= ",'";
-                    $sql .= $myBdd->RealEscapeString($filtreCompetition);
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($filtreSaison);
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($filtreCompetitionSql);
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($filtreJournee);
-                    $sql .= "','";
-                    $sql .= $limitclub;
-                    $sql .= "','";
-                    $sql .= $myBdd->RealEscapeString($filtreEvenement);
-                    $sql .= "','";
-                    $sql .= $Date_debut;
-                    $sql .= "','";
-                    $sql .= $Date_fin;
-                    $sql .= "')";
+                    $sql = "INSERT INTO gickp_Utilisateur 
+						(Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, Type_filtre_competition, 
+						Filtre_competition, Filtre_saison, Filtre_competition_sql, Filtre_journee, 
+						Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) 
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array(
+						$guser, $gidentite, $gmail, $gtel, $gfonction, $gniveau, md5($gpwd),
+						$typeFiltreCompetition, $filtreCompetition, $filtreSaison, 
+						$filtreCompetitionSql, $filtreJournee, $limitclub, $filtreEvenement,
+						$Date_debut, $Date_fin
+					));
                     $action = "Création ";
-                    $myBdd->Query($sql);
                 }
 			} else {
-				$sql  = "Update gickp_Utilisateur Set Mail = '";
-				$sql .= $myBdd->RealEscapeString($gmail);
-				$sql .= "', Tel = '";
-				$sql .= $myBdd->RealEscapeString($gtel);
-				$sql .= "', Fonction = '";
-				$sql .= $myBdd->RealEscapeString($gfonction);
-				$sql .= "', Niveau = '";
-				$sql .= $gniveau;
-				$sql .= "', Identite = '";
-				$sql .= $myBdd->RealEscapeString($gidentite);
-				$sql .= "', Type_filtre_competition = ";
-				$sql .= $typeFiltreCompetition;
-				$sql .= ", Filtre_competition = '";
-				$sql .= $myBdd->RealEscapeString($filtreCompetition);
-				$sql .= "', Filtre_saison = '";
-				$sql .= $myBdd->RealEscapeString($filtreSaison);
-				$sql .= "', Filtre_competition_sql = '";
-				$sql .= $myBdd->RealEscapeString($filtreCompetitionSql);
-				$sql .= "', Filtre_journee = '";
-				$sql .= $myBdd->RealEscapeString($filtreJournee);
-				$sql .= "', Limitation_equipe_club = '";
-				$sql .= $limitclub;
-				$sql .= "', Id_Evenement = '";
-				$sql .= $myBdd->RealEscapeString($filtreEvenement);
-				$sql .= "', Date_debut = '";
-				$sql .= $Date_debut;
-				$sql .= "', Date_fin = '";
-				$sql .= $Date_fin;
-				$sql .= "'";
+				$arrayQuery = array(
+					$gidentite, $gmail, $gtel, $gfonction, $gniveau, 
+					$typeFiltreCompetition, $filtreCompetition, $filtreSaison, 
+					$filtreCompetitionSql, $filtreJournee, $limitclub, 
+					$filtreEvenement, $Date_debut, $Date_fin
+				);
+				$sql = "UPDATE gickp_Utilisateur 
+					SET Identite = ?, Mail = ?, Tel = ?, Fonction = ?, Niveau = ?,  
+					Type_filtre_competition = ?, Filtre_competition = ?, Filtre_saison = ?, 
+					Filtre_competition_sql = ?, Filtre_journee = ?, Limitation_equipe_club = ?, 
+					Id_Evenement = ?, Date_debut = ?, Date_fin = ? ";
 				if( $gpwd != '' ) {
-					$sql .= ", Pwd = '".md5($gpwd)."'";
+					$sql .= ", Pwd = ? ";
+					$arrayQuery = array_merge($arrayQuery, [md5($gpwd)]);
 				}
-				$sql .= " Where Code = '";
-				$sql .= $guser;
-				$sql .= "' ";
+				$sql .= "WHERE Code = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array_merge($arrayQuery, [$guser]));
 				$action = "Modification ";
-                $myBdd->Query($sql);
 			}
 			
 			$myBdd->utyJournal('Ajout Modif Utilisateur', '', '', 'NULL', 'NULL', 'NULL', $guser);
@@ -519,7 +481,8 @@ class GestionUtilisateur extends MyPageSecure
 		//	$message2 .= $message_html."\n\n"; 
 			$message2 .= '--'.$frontiere."\n"; 
 			//PIECE JOINTE
-			if($plusPJ == 'Manuel7.pdf') {
+			$messagePJ = '';
+			if ($plusPJ == 'Manuel7.pdf') {
 				$messagePJ = 'Content-Type: application/pdf; name="Manuel7.pdf"'."\n"; 
 				$messagePJ .= 'Content-Transfer-Encoding: base64'."\n"; 
 				$messagePJ .= 'Content-Disposition:attachement; filename="../Manuel7.pdf"'."\n\n"; 
@@ -573,20 +536,17 @@ class GestionUtilisateur extends MyPageSecure
         } // Rien à Detruire ...
 			
 		$myBdd = new MyBdd();
-		$sql  = "Delete From gickp_Utilisateur Where Code In ('";
+		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
+		$sql = "DELETE FROM gickp_Utilisateur 
+			WHERE Code IN ($in) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
 
 		for ($i=0;$i<count($arrayParam);$i++) {
-			if ($i > 0) {
-                $sql .= "','";
-            }
-
-            $sql .= $arrayParam[$i];
 			$myBdd->utyJournal('Suppression utilisateur', '', '', 'NULL', 'NULL', 'NULL', $arrayParam[$i]);
 		}
 		$sql .= "')";
-	
-		$myBdd->Query($sql);
-			
+				
 	}
 
 	function __construct()

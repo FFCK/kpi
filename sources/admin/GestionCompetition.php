@@ -81,26 +81,37 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('arrayGroupCompet', $arrayGroupCompet);
         
 		// Chargement des Compétitions
-        $label = $myBdd->getSections();
-        
+		$label = $myBdd->getSections();
 		$arrayCompet = array();
-		$sql  = "SELECT c.*, g.section, g.ordre, g.id 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
-			WHERE c.Code_saison = $codeSaison ";
-		$sql .= utyGetFiltreCompetition('c.');
-		$sql .= " AND c.Code_niveau LIKE '".utyGetSession('AfficheNiveau')."%' ";
+		$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
+		$sqlAfficheCompet = '';
+		$arrayAfficheCompet = [];
 		if ($AfficheCompet == 'N') {
-            $sql .= " AND c.Code Like 'N%' ";
-        } elseif ($AfficheCompet == 'CF') {
-            $sql .= " AND c.Code Like 'CF%' ";
-        } elseif ($AfficheCompet == 'M') {
-            $sql .= " AND c.Code_ref = 'M' ";
-        } elseif($AfficheCompet > 0) {
-            $sql .= " AND g.section = '" . $AfficheCompet . "' ";
-        }
-        $sql .= " AND c.Code_ref = g.Groupe ";
-		$sql .= " ORDER BY c.Code_saison, g.section, g.ordre, g.id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
-		foreach ($myBdd->pdo->query($sql) as $row) {
+			$sqlAfficheCompet = " AND c.Code LIKE 'N%' ";
+		} elseif ($AfficheCompet == 'CF') {
+			$sqlAfficheCompet = " AND c.Code LIKE 'CF%' ";
+		} elseif ($AfficheCompet == 'M') {
+			$sqlAfficheCompet = " AND c.Code_ref = 'M' ";
+		} elseif ($AfficheCompet > 0) {
+			$sqlAfficheCompet = " AND g.section = ? ";
+			$arrayAfficheCompet = [$AfficheCompet];
+		}
+		$sql = "SELECT c.*, g.section, g.ordre, g.id 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_saison = ?  
+			$sqlFiltreCompetition 
+			AND c.Code_niveau LIKE ? 
+			AND c.Code_ref = g.Groupe 
+			$sqlAfficheCompet 
+			ORDER BY c.Code_saison, g.section, g.ordre, 
+				COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array_merge(
+			[$codeSaison], 
+			[utyGetSession('AfficheNiveau').'%'], 
+			$arrayAfficheCompet
+		));
+		while ($row = $result->fetch()) { 
             $row['sectionLabel'] = $label[$row['section']];
 			$bandeau = '/img/logo/B-'.$row['Code_ref'].'-'.$codeSaison.'.jpg';
 			$logo = '/img/logo/L-'.$row['Code_ref'].'-'.$codeSaison.'.jpg';
@@ -120,7 +131,7 @@ class GestionCompetition extends MyPageSecure
                 $Publication = 'N';
             }
 
-            $sql2  = "SELECT COUNT(m.Id) nbMatchs 
+            $sql2 = "SELECT COUNT(m.Id) nbMatchs 
 				FROM gickp_Matchs m, gickp_Journees j 
 				WHERE j.Id = m.Id_journee 
 				AND j.Code_competition = :Code_competition
@@ -167,8 +178,9 @@ class GestionCompetition extends MyPageSecure
 			GROUP BY Code, Libelle 
 			ORDER BY Code_ref, Code ";	 
     	foreach ($myBdd->pdo->query($sql) as $row) {
-		array_push($arrayCompetExist, array( 'Code' => $row["Code"], 
-				'Libelle' => $row["Libelle"] ));
+			array_push($arrayCompetExist, array( 
+				'Code' => $row["Code"], 'Libelle' => $row["Libelle"] 
+			));
 		}
 		$this->m_tpl->assign('arrayCompetExist', $arrayCompetExist);
 
@@ -274,16 +286,15 @@ class GestionCompetition extends MyPageSecure
 		$publierJournee = utyGetPost('publierJournee');
         
 
-		if (strlen($codeCompet) > 0)
-		{
-			$sql  = "INSERT INTO gickp_Competitions 
+		if (strlen($codeCompet) > 0) {
+			$sql = "INSERT INTO gickp_Competitions 
 				(Code, Code_saison, Code_niveau, Libelle, Soustitre, 
 				Soustitre2, Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons, 
 				En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
 				Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, 
 				Code_typeclt, Code_tour, Qualifies, Elimines, 
 				Points, goalaverage, Statut, Publication) 
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(
 				$codeCompet, $saison, utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'), 
@@ -294,13 +305,12 @@ class GestionCompetition extends MyPageSecure
 				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet')
 			));
 
-			if($Date_debut != '')
-			{
+			if ($Date_debut != '') {
 				$nextIdJournee = $myBdd->GetNextIdJournee();
 				if($TitreJournee == '') {
 					$TitreJournee = utyGetPost('labelCompet');
 				}
-				$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Date_debut, 
+				$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Date_debut, 
 					Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, 
 					Organisateur, Delegue, Publication) 
 					VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -327,7 +337,7 @@ class GestionCompetition extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
 			
-		$arrayParam = explode(',', $ParamCmd);	//TODO	
+		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0) {
 			return; // Rien à Detruire ...
 		} else {
@@ -340,19 +350,23 @@ class GestionCompetition extends MyPageSecure
 		}
 			
 		//Contrôle suppression possible
+		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
 		$sql = "SELECT Id 
 			FROM gickp_Journees 
-			WHERE Code_competition IN ($listParams) 
-			AND Code_saison = $saison ";
-		if ($row = $myBdd->pdo->query($sql)->fetch()) {
+			WHERE Code_competition IN ($in) 
+			AND Code_saison = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array_merge($arrayParam, [$saison]));
+		if ($result->rowCount() > 0) {
 			die ("Il reste des journées dans cette compétition ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
 		}
 
 		// Suppression	
-		$sql  = "DELETE FROM gickp_Competitions 
-			WHERE Code IN ($listParams) 
-			AND Code_saison = $saison ";
-		$myBdd->pdo->exec($sql);
+		$sql = "DELETE FROM gickp_Competitions 
+			WHERE Code IN ($in) 
+			AND Code_saison = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array_merge($arrayParam, [$saison]));
 
 		$myBdd->utyJournal('Suppression Compet', $myBdd->GetActiveSaison(), $arrayParam[$i]);
 
@@ -686,38 +700,58 @@ class GestionCompetition extends MyPageSecure
         
         // Secretaire
 		$sql  = "UPDATE gickp_Matchs 
-			SET Secretaire = REPLACE(Secretaire, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
-			WHERE Secretaire LIKE CONCAT('%(', :source, ')%') ";
+			SET Secretaire = REPLACE(Secretaire, :source, :cible) 
+			WHERE Secretaire LIKE :source2 ";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
+		$result->execute(array(
+			':cible' => '('.$numFusionCible.')', 
+			':source' => '('.$numFusionSource.')',
+			':source2' => '%('.$numFusionSource.')%'
+		));
         
         // Chronometre
 		$sql  = "UPDATE gickp_Matchs 
-			SET Chronometre = REPLACE(Chronometre, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
-			WHERE Chronometre LIKE CONCAT('%(', :source, ')%') ";
+			SET Chronometre = REPLACE(Chronometre, :source, :cible) 
+			WHERE Chronometre LIKE :source2 ";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
+		$result->execute(array(
+			':cible' => '('.$numFusionCible.')', 
+			':source' => '('.$numFusionSource.')',
+			':source2' => '%('.$numFusionSource.')%'
+		));
         
         // Timeshoot
 		$sql  = "UPDATE gickp_Matchs 
-			SET Timeshoot = REPLACE(Timeshoot, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
-			WHERE Timeshoot LIKE CONCAT('%(', :source, ')%') ";
+			SET Timeshoot = REPLACE(Timeshoot, :source, :cible) 
+			WHERE Timeshoot LIKE :source2 ";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
+		$result->execute(array(
+			':cible' => '('.$numFusionCible.')', 
+			':source' => '('.$numFusionSource.')',
+			':source2' => '%('.$numFusionSource.')%'
+		));
         
         // Ligne1
 		$sql  = "UPDATE gickp_Matchs 
-			SET Ligne1 = REPLACE(Ligne1, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
-			WHERE Ligne1 LIKE CONCAT('%(', :source, ')%') ";
+			SET Ligne1 = REPLACE(Ligne1, :source, :cible) 
+			WHERE Ligne1 LIKE :source2 ";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
+		$result->execute(array(
+			':cible' => '('.$numFusionCible.')', 
+			':source' => '('.$numFusionSource.')',
+			':source2' => '%('.$numFusionSource.')%'
+		));
         
         // Ligne2
 		$sql  = "UPDATE gickp_Matchs 
-			SET Ligne2 = REPLACE(Ligne2, CONCAT('(', :source, ')'), CONCAT('(', :cible, ')')) 
-			WHERE Ligne2 LIKE CONCAT('%(', :source, ')%') ";
+			SET Ligne2 = REPLACE(Ligne2, :source, :cible) 
+			WHERE Ligne2 LIKE :source2 ";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(':cible' => $numFusionCible, ':source' => $numFusionSource));
+		$result->execute(array(
+			':cible' => '('.$numFusionCible.')', 
+			':source' => '('.$numFusionSource.')',
+			':source2' => '%('.$numFusionSource.')%'
+		));
         
         // suppression
 		$sql  = "DELETE FROM gickp_Liste_Coureur 
@@ -830,13 +864,7 @@ class GestionCompetition extends MyPageSecure
         
 		$alertMessage = '';
 
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
-
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
 		if (strlen($Cmd) > 0)
 		{

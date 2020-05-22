@@ -1,5 +1,4 @@
 <?php
-
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
@@ -24,32 +23,11 @@ class PDF extends FPDF {
 }
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
-class FeuilleListeMatchs extends MyPage {
+class FeuilleListeMatchs extends MyPage 
+{
 
-    function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd) 
+    function __construct() 
     {
-        $myBdd = new MyBdd();
-        $sql = "Select Count(*) Nb From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = '$numEquipe' ";
-        $result = $myBdd->Query($sql);
-
-        if ($myBdd->NumRows($result) != 1) {
-            return;
-        }
-
-        $row = $myBdd->FetchArray($result);
-        if ((int) $row['Nb'] > 0) {
-            return;
-        }
-
-        $sql = "Replace Into gickp_Matchs_Joueurs ";
-        $sql .= "Select $idMatch, Matric, Numero, '$numEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-        $sql .= "Where Id_equipe = $idEquipe ";
-        $sql .= "AND Capitaine <> 'X' ";
-        $sql .= "AND Capitaine <> 'A' ";
-        $myBdd->Query($sql);
-    }
-
-    function __construct() {
         MyPage::MyPage();
         $myBdd = new MyBdd();
 
@@ -63,65 +41,73 @@ class FeuilleListeMatchs extends MyPage {
 
         // Chargement des Matchs des journées ...
         $lstJournee = utyGetSession('lstJournee', 0);
+        $arrayJournees = explode(',', $lstJournee);
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (isset($_GET['idEvenement'])) {
-            $lstJournee = '';
-            $sql = "SELECT Id_journee FROM gickp_Evenement_Journees WHERE Id_evenement = " . $_GET['idEvenement'];
-            $result = $myBdd->Query($sql);
-            $num_results = $myBdd->NumRows($result);
-            for ($j = 0; $j < $num_results; $j++) {
-                $row = $myBdd->FetchArray($result);
-                if ($lstJournee != '') {
-                    $lstJournee .= ',';
-                }
-                $lstJournee .= $row['Id_journee'];
+            $arrayJournees = [];
+            $sql = "SELECT Id_journee 
+                FROM gickp_Evenement_Journees 
+                WHERE Id_evenement = ? ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($_GET['idEvenement']));
+            while ($row = $result->fetch()){
+                $arrayJournees[] = $row['Id_journee'];
             }
         }
-        $codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
 
         $orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         if ($laCompet != 0) {
-            $lstJournee = 0;
+            $arrayJournees = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;
-        $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, a.Date_match, a.Heure_match, "
-                . "a.Libelle, a.Terrain, b.Libelle EquipeA, c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, "
-                . "a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, "
-                . "d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, "
-                . "e.Nom Nom_arb_prin, e.Prenom Prenom_arb_prin, f.Nom Nom_arb_sec, f.Prenom Prenom_arb_sec "
-                . "FROM gickp_Matchs a "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) "
-                . "LEFT OUTER JOIN gickp_Liste_Coureur e ON (a.Matric_arbitre_principal = e.Matric) "
-                . "LEFT OUTER JOIN gickp_Liste_Coureur f ON (a.Matric_arbitre_secondaire = f.Matric) "
-                . ", gickp_Journees d ";
-        if ($lstJournee == 0) {
-            $sql .= "WHERE d.Code_competition = '" . $laCompet . "' AND d.Code_saison = $codeSaison ";
+        $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
+            a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
+            c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
+            a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
+            d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
+            e.Nom Nom_arb_prin, e.Prenom Prenom_arb_prin, f.Nom Nom_arb_sec, 
+            f.Prenom Prenom_arb_sec, cp.Soustitre2  
+            FROM gickp_Competitions cp, gickp_Journees d, gickp_Matchs a 
+            LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
+            LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+            LEFT OUTER JOIN gickp_Liste_Coureur e ON (a.Matric_arbitre_principal = e.Matric) 
+            LEFT OUTER JOIN gickp_Liste_Coureur f ON (a.Matric_arbitre_secondaire = f.Matric) 
+            WHERE a.Id_journee = d.Id 
+            AND d.Code_competition = cp.Code 
+            AND d.Code_saison = cp.Code_saison ";
+        if (count($arrayJournees) == 0) {
+            $sql .= "AND d.Code_competition = ? 
+                AND d.Code_saison = ? ";
+            $arrayQuery = array($laCompet, $codeSaison);
         } else {
-            $sql .= "WHERE a.Id_journee In ($lstJournee) ";
+            $in = str_repeat('?,', count($arrayJournees) - 1) . '?';
+            $sql .= "AND a.Id_journee IN ($in) ";
+            $arrayQuery = $arrayJournees;
         }
-        $sql .= "AND a.Id_journee = d.Id ";
         if ($filtreJour != '') {
-            $sql .= "AND a.Date_match = '" . $filtreJour . "' ";
+            $sql .= "AND a.Date_match = ? ";
+            $arrayQuery = array_merge($arrayQuery, [$filtreJour]);
         }
         if ($filtreTerrain != '') {
-            $sql .= "AND a.Terrain = '" . $filtreTerrain . "' ";
+            $sql .= "AND a.Terrain = ? ";
+            $arrayQuery = array_merge($arrayQuery, [$filtreTerrain]);
         }
         $sql .= $orderMatchs;
 
         $orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
 
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute($arrayQuery);
 
         $PhaseLibelle = 0;
-        for ($j = 0; $j < $num_results; $j++) {
-            $row1 = $myBdd->FetchArray($result);
+        $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($resultarray as $key => $row1) {
             if ($row1['Phase'] != '' || $row1['Libelle'] != '') {
                 $PhaseLibelle = 1;
             }
@@ -167,24 +153,24 @@ class FeuilleListeMatchs extends MyPage {
         $qr_x = 262;
 
         // Bandeau
-        if($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])){
+        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         // KPI + Logo    
-        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $pdf->Image('../img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         // KPI
-        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
             $pdf->Image('../img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
         // Logo
-        } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
+        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         }
         // Sponsor
-        if($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])){
+        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
         }
@@ -198,13 +184,7 @@ class FeuilleListeMatchs extends MyPage {
         $pdf->Cell(273, 6, "Liste des Matchs", 0, 1, 'C');
         $pdf->Ln(3);
         $heure1 = '';
-        if ($num_results > 0) {
-            $myBdd->DataSeek($result, 0);
-        }
-        for ($i = 0; $i < $num_results; $i++) {
-            $row = $myBdd->FetchArray($result);
-
-            $row['Soustitre2'] = $myBdd->GetSoustitre2Competition($row['Code_competition'], $codeSaison);
+        foreach ($resultarray as $key => $row) {
             if ($row['Soustitre2'] != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
             }
@@ -219,12 +199,12 @@ class FeuilleListeMatchs extends MyPage {
             }
 
             if ($row['Id_equipeA'] >= 1) {
-                $this->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA'], $myBdd);
+                $myBdd->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA']);
             } elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
                 $row['EquipeA'] = $EquipesAffectAuto[0];
             }
             if ($row['Id_equipeB'] >= 1) {
-                $this->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB'], $myBdd);
+                $myBdd->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB']);
             } elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
                 $row['EquipeB'] = $EquipesAffectAuto[1];
             }

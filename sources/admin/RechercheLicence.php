@@ -23,20 +23,22 @@ class RechercheLicence extends MyPageSecure
 		if (isset($_SESSION['Signature']))
 			$signature = $_SESSION['Signature'];
 		
-		$sql  = "Select a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, a.Club, a.Origine, ";
-		$sql .= "c.International, c.National, c.InterRegional, c.Regional ";
-		$sql .= "From gickp_Liste_Coureur a Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric), gickp_Recherche_Licence b ";
-		$sql .= "Where a.Matric = b.Matric ";
-		$sql .= "And b.Signature = '";
-		$sql .= $signature;
-		$sql .= "' Order By a.Nom, a.Prenom ";	 
-		
+		$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, 
+			a.Club, a.Origine, c.International, c.National, c.InterRegional, c.Regional 
+			FROM gickp_Recherche_Licence b, gickp_Liste_Coureur a 
+			LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
+			WHERE a.Matric = b.Matric 
+			AND b.Signature = ? 
+			ORDER BY a.Nom, a.Prenom ";	 
 		$arrayCoureur = array();
-		$result = $myBdd->Query($sql);
-		while ($row = $myBdd->FetchArray($result)) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($signature));
+		while ($row = $result->fetch()) {
 			array_push($arrayCoureur, array( 'Matric' => $row['Matric'], 
-				'Nom' => ucwords(strtolower($row['Nom'])), 'Prenom' => ucwords(strtolower($row['Prenom'])), 
-				'Sexe' => $row['Sexe'], 'Numero_club' => $row['Numero_club'], 'Club' => $row['Club'],
+				'Nom' => ucwords(strtolower($row['Nom'])), 
+				'Prenom' => ucwords(strtolower($row['Prenom'])), 
+				'Sexe' => $row['Sexe'], 'Numero_club' => $row['Numero_club'], 
+				'Club' => $row['Club'],
 				'Naissance' => utyDateUsToFr($row['Naissance']) , 
 				'Categ' => utyCodeCategorie2($row['Naissance']) ,
 				'Saison' => $row['Origine'] , 
@@ -48,30 +50,21 @@ class RechercheLicence extends MyPageSecure
 		$this->m_tpl->assign('arrayCoureur', $arrayCoureur);
 		
 		// Les comites et les clubs ...
-		$codeComiteReg = '';
-		if (isset($_SESSION['codeComiteReg']))
-			$codeComiteReg = $_SESSION['codeComiteReg'];
-		if (isset($_POST['codeComiteReg']))
-			$codeComiteReg = $_POST['codeComiteReg'];
-			
-		$codeComiteDep = '';
-		if (isset($_SESSION['codeComiteDep']))
-			$codeComiteDep = $_SESSION['codeComiteDep'];
-		if (isset($_POST['codeComiteDep']))
-			$codeComiteDep = $_POST['codeComiteDep'];
-			
-		$codeClub = '';
-		if (isset($_SESSION['codeClub']))
-			$codeClub = $_SESSION['codeClub'];
-		if (isset($_POST['codeClub']))
-			$codeClub = $_POST['codeClub'];
+		$codeComiteReg = utyGetSession('codeComiteReg', '*');
+		$codeComiteReg = utyGetPost('codeComiteReg', $codeComiteReg);
+
+		$codeComiteDep = utyGetSession('codeComiteDep', '*');
+		$codeComiteDep = utyGetPost('codeComiteDep', $codeComiteDep);
+
+		$codeClub = utyGetSession('codeClub', '*');
+        $codeClub = utyGetPost('codeClub', $codeClub);
 
 		// Chargement des Comites Régionnaux ...
-		$sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Comite_reg ";
-		$sql .= "Order By Code ";	 
-		
-		$result = $myBdd->Query($sql);
+		$sql = "SELECT Code, Libelle 
+			FROM gickp_Comite_reg 
+			ORDER BY Code ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
 		$arrayComiteReg = array();
 		$i = 0;
 		
@@ -81,10 +74,10 @@ class RechercheLicence extends MyPageSecure
 			array_push($arrayComiteReg, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Régionaux', 'Selection' => '' ) );
 		}
 
-		while ($row = $myBdd->FetchArray($result)) {
-			if ( ($i == 0) && (strlen($codeComiteReg) == 0) ) {
-				$codeComiteReg = $row["Code"];
-			}
+		while ($row = $result->fetch()) {
+			// if ($i == 0 && strlen($codeComiteReg) == 0) {
+			// 	$codeComiteReg = $row["Code"];
+			// }
 
 			if ($row["Code"] == $codeComiteReg) {
 				array_push($arrayComiteReg, array('Code' => $row['Code'], 'Libelle'=> $row['Code']." - ".$row['Libelle'], 'Selection' => 'SELECTED' ) );
@@ -99,18 +92,22 @@ class RechercheLicence extends MyPageSecure
 		// Chargement des Comites Departementaux ...
 		if (strlen($codeComiteReg) == 0)
 			return;
-			
-		$sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Comite_dep ";
-		if ('*' != $codeComiteReg)
-		{
-			$sql .= "Where Code_comite_reg = '";
-			$sql .= $codeComiteReg;
-			$sql .= "'";
-		}	
-		$sql .= "Order By Code ";	
-		
-		$result = $myBdd->Query($sql);
+		if ('*' != $codeComiteReg) {
+			$sql = "SELECT Code, Libelle 
+				FROM gickp_Comite_dep 
+				WHERE Code_comite_reg = ? 
+				ORDER BY Code ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($codeComiteReg));
+		} else {
+			$sql = "SELECT Code, Libelle 
+				FROM gickp_Comite_dep 
+				ORDER BY Code ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute();
+		}
+		$i = 0;
+
 		$arrayComiteDep = array();
 	
 		if ('*' == $codeComiteDep) {
@@ -119,35 +116,40 @@ class RechercheLicence extends MyPageSecure
 			array_push($arrayComiteDep, array('Code' => '*', 'Libelle'=> '* - Tous les Comités Départementaux', 'Selection' => '' ) );
 		}
 
-		while ($row = $myBdd->FetchArray($result)) {
-			if ( ($i == 0) && (strlen($codeComiteDep) == 0) ) {
-				$codeComiteDep = $row["Code"];
-			}
+		while ($row = $result->fetch()) {
+			// if ($i == 0 && strlen($codeComiteDep) == 0) {
+			// 	$codeComiteDep = $row["Code"];
+			// }
 			
 			if ($row["Code"] == $codeComiteDep) {
 				array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => 'SELECTED' ) );
 			} else {
 				array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => '' ) );
 			}
+			$i ++;
 		}
 		$this->m_tpl->assign('arrayComiteDep', $arrayComiteDep);
 		
 		// Chargement des Clubs ...
-		if (strlen($codeComiteDep) == 0)
-			return;
+		// if (strlen($codeComiteDep) == 0)
+		// 	return;
 
-		$sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Club ";
-		
-		if ('*' != $codeComiteDep)
-		{
-			$sql .= "Where Code_comite_dep = '";
-			$sql .= $codeComiteDep;
-			$sql .= "'";
+		if ('*' != $codeComiteDep) {
+			$sql = "SELECT Code, Libelle 
+				FROM gickp_Club 
+				WHERE Code_comite_dep = ? 
+				ORDER BY Code ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($codeComiteDep));
+		} else {
+			$sql = "SELECT Code, Libelle 
+				FROM gickp_Club 
+				ORDER BY Code ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute();
 		}
-		$sql .= " Order By Code ";	 
+		$i = 0;
 		
-		$result = $myBdd->Query($sql);
 		$arrayClub = array();
 	
 		if ('*' == $codeClub) {
@@ -156,16 +158,17 @@ class RechercheLicence extends MyPageSecure
 			array_push($arrayClub, array('Code' => '*', 'Libelle'=> '* - Tous les Clubs', 'Selection' => '' ) );
 		}
 		
-		while ($row = $myBdd->FetchArray($result)) {
-			if ( ($i == 0) && (strlen($codeClub) == 0) ) {
-				$codeClub = $row["Code"];
-			}
+		while ($row = $result->fetch()) {
+			// if ($i == 0 && strlen($codeClub) == 0) {
+			// 	$codeClub = $row["Code"];
+			// }
 			
 			if ($row["Code"] == $codeClub) {
 				array_push($arrayClub, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => 'SELECTED' ) );
 			} else {
 				array_push($arrayClub, array('Code' => $row['Code'], 'Libelle'=> $row['Code'].' - '.$row['Libelle'], 'Selection' => '' ) );
 			}
+			$i ++;
 		}
 		$this->m_tpl->assign('arrayClub', $arrayClub);
 	}
@@ -174,119 +177,80 @@ class RechercheLicence extends MyPageSecure
 	{
 		$ParamCmd = '';
 		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
-			
+		$ParamCmd = $_POST['ParamCmd'];
+		
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
-			return; // Rien à Detruire ...
-			
+		return; // Rien à Detruire ...
+		
+		$myBdd = new MyBdd();
 		$signature = $_SESSION['Signature'];
 			
-		$sql  = "Delete From gickp_Recherche_Licence Where Signature = '";
-		$sql .= $signature;
-		$sql .= "' And Matric In (";
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			if ($i > 0)
-				$sql .= ",";
-			
-			$sql .= $arrayParam[$i];
-		}
-		$sql .= ")";
-	
-		$myBdd = new MyBdd();
-		$myBdd->Query($sql);
+		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
+		$sql = "DELETE FROM gickp_Recherche_Licence 
+			WHERE `Signature` = ? 
+			AND Matric IN ($in) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array_merge([$signature], $arrayParam));
 	}
 	
 	function Find()
 	{
+		$myBdd = new MyBdd();
 		$signature = $_SESSION['Signature'];
 			
-		$sql = "Delete From gickp_Recherche_Licence Where Signature = '";
-		$sql .= $signature;
-		$sql .= "'";
+		$sql = "DELETE FROM gickp_Recherche_Licence 
+			WHERE `Signature` = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($signature));
+		
+		$sql = "INSERT INTO gickp_Recherche_Licence (`Signature`, Matric) 
+			SELECT ?, lc.Matric 
+			FROM gickp_Liste_Coureur lc 
+			LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric)
+			WHERE lc.Matric IS NOT NULL ";
+		$arrayQuery = [$signature];
 
-		$myBdd = new MyBdd();
-		$myBdd->Query($sql);
-		
-		$sql  = "Insert Into gickp_Recherche_Licence (Signature, Matric) ";
-		$sql .= "Select '";
-		$sql .= $signature;
-		$sql .= "', Matric ";
-		$sql .= "From gickp_Liste_Coureur ";
-		$sql .= "Where Matric Is Not Null ";
-		
-		$matricJoueur = '-1';
-		if (isset($_POST['matricJoueur']))
-			$matricJoueur = $_POST['matricJoueur'];
-			
-		if (strlen($matricJoueur) > 0)
-		{
-			$sql .= " And Matric = ";
-			$sql .= $matricJoueur;
+		$matricJoueur = utyGetPost('matricJoueur', '-1');
+		if (strlen($matricJoueur) > 0) {
+			$sql .= "AND lc.Matric = ? ";
+			$arrayQuery = array_merge($arrayQuery, [$matricJoueur]);
 		}
 		
-		$nomJoueur = '';
-		if (isset($_POST['nomJoueur']))
-			$nomJoueur = $_POST['nomJoueur'];
-			
-		if (strlen($nomJoueur) > 0)
-		{
-			$sql .= " And Nom Like '";
-			$sql .= $nomJoueur;
-			$sql .= "%' ";
+		$nomJoueur = utyGetPost('nomJoueur', '');
+		if (strlen($nomJoueur) > 0) {
+			$sql .= "AND lc.Nom LIKE ? ";
+			$arrayQuery = array_merge($arrayQuery, [$nomJoueur.'%']);
 		}
 		
-		$prenomJoueur = '';
-		if (isset($_POST['prenomJoueur']))
-			$prenomJoueur = $_POST['prenomJoueur'];
-	
-		if (strlen($prenomJoueur) > 0)
-		{
-			$sql .= " And Prenom Like '";
-			$sql .= $prenomJoueur;
-			$sql .= "%' ";
-		}
-					
-		$sexeJoueur = '';
-		if (isset($_POST['sexeJoueur']))
-			$sexeJoueur = $_POST['sexeJoueur'];
-			
-		if (strlen($sexeJoueur) > 0)
-		{
-			$sql .= " And Sexe ='";
-			$sql .= $sexeJoueur;
-			$sql .= "' ";
+		$prenomJoueur = utyGetPost('prenomJoueur', '');
+		if (strlen($prenomJoueur) > 0) {
+			$sql .= "AND lc.Prenom LIKE ? ";
+			$arrayQuery = array_merge($arrayQuery, [$prenomJoueur.'%']);
 		}
 		
-		$codeComiteReg = '';
-		if (isset($_POST['codeComiteReg']))
-			$codeComiteReg = $_POST['codeComiteReg'];
-		if ( (strlen($codeComiteReg) > 0) && ($codeComiteReg != '*') )
-		{
-			$sql .= " And Numero_comite_reg = '";
-			$sql .= $codeComiteReg;
-			$sql .= "'";
+		$sexeJoueur = utyGetPost('sexeJoueur', '');
+		if (strlen($sexeJoueur) > 0) {
+			$sql .= "AND lc.Sexe = ? ";
+			$arrayQuery = array_merge($arrayQuery, [$sexeJoueur]);
 		}
-			
-		$codeComiteDep = '';
-		if (isset($_POST['codeComiteDep']))
-			$codeComiteDep = $_POST['codeComiteDep'];
-		if ( (strlen($codeComiteDep) > 0) && ($codeComiteDep != '*') )
-		{
-			$sql .= " And Numero_comite_dept = '";
-			$sql .= $codeComiteDep;
-			$sql .= "'";
-	}
-					
-		$codeClub = '';
-		if (isset($_POST['codeClub']))
-			$codeClub = $_POST['codeClub'];
-		if ( (strlen($codeClub) > 0) && ($codeClub != '*') )
-		{
-			$sql .= " And Numero_club = '";
-			$sql .= $codeClub;
-			$sql .= "'";
+		
+		$codeComiteReg = utyGetPost('codeComiteReg', '');
+		if (strlen($codeComiteReg) > 0 && $codeComiteReg != '*') {
+			$sql .= "AND lc.Numero_comite_reg = ? ";
+			$arrayQuery = array_merge($arrayQuery, [$codeComiteReg]);
+		}
+		
+		$codeComiteDep = utyGetPost('codeComiteDep', '');
+		if (strlen($codeComiteDep) > 0 && $codeComiteDep != '*') {
+			$sql .= "AND lc.Numero_comite_dept = ? ";
+			$arrayQuery = array_merge($arrayQuery, [$codeComiteDep]);
+		}
+		
+		$codeClub = utyGetPost('codeClub', '');
+		if (strlen($codeClub) > 0 && $codeClub != '*') {
+			$sql .= "AND lc.Numero_club = ? ";
+			$arrayQuery = array_merge($arrayQuery, [$codeClub]);
 		}
 		
 		$_SESSION['CheckJugeInter'] = false;
@@ -294,57 +258,32 @@ class RechercheLicence extends MyPageSecure
 		$_SESSION['CheckJugeInterReg'] = false;
 		$_SESSION['CheckJugeReg'] = false;
 
-		$filterJuge = '';
-		if (isset($_POST['CheckJugeInter']))
-		{
-			if (strlen($filterJuge) == 0)
-				$filterJuge .= ' Where ';
-			else
-				$filterJuge .= ' Or ';
-			$filterJuge .= "gickp_Arbitre.International = 'O'";
-
+		$CheckJugeInter = utyGetPost('CheckJugeInter', '');
+		if (strlen($CheckJugeInter) > 0) {
+			$sql .= "AND a.International = 'O' ";
 			$_SESSION['CheckJugeInter'] = true;
 		}
 		
-		if (isset($_POST['CheckJugeNational']))
-		{
-			if (strlen($filterJuge) == 0)
-				$filterJuge .= ' Where ';
-			else
-				$filterJuge .= ' Or ';
-			$filterJuge .= "gickp_Arbitre.National = 'O'";
-			
+		$CheckJugeNational = utyGetPost('CheckJugeNational', '');
+		if (strlen($CheckJugeNational) > 0) {
+			$sql .= "AND a.National = 'O' ";
 			$_SESSION['CheckJugeNational'] = true;
 		}
 		
-		if (isset($_POST['CheckJugeInterReg']))
-		{
-			if (strlen($filterJuge) == 0)
-				$filterJuge .= ' Where ';
-			else
-				$filterJuge .= ' Or ';
-			$filterJuge .= "gickp_Arbitre.InterRegional = 'O'";
-			
+		$CheckJugeInterReg = utyGetPost('CheckJugeInterReg', '');
+		if (strlen($CheckJugeInterReg) > 0) {
+			$sql .= "AND a.InterRegional = 'O' ";
 			$_SESSION['CheckJugeInterReg'] = true;
 		}
 		
-		if (isset($_POST['CheckJugeReg']))
-		{
-			if (strlen($filterJuge) == 0)
-				$filterJuge .= ' Where ';
-			else
-				$filterJuge .= ' Or ';
-			$filterJuge .= "gickp_Arbitre.Regional = 'O'";
-			
+		$CheckJugeReg = utyGetPost('CheckJugeReg', '');
+		if (strlen($CheckJugeReg) > 0) {
+			$sql .= "AND a.Regional = 'O' ";
 			$_SESSION['CheckJugeReg'] = true;
 		}
-				 
-		if (strlen($filterJuge) > 0)
-		{
-			$sql .= " And Matric In (Select gickp_Arbitre.Matric From gickp_Arbitre $filterJuge) ";
-		}
 		
-		$myBdd->Query($sql);
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayQuery);
 		
 		$_SESSION['matricJoueur'] = $matricJoueur;
 		$_SESSION['nomJoueur'] = $nomJoueur;
@@ -359,22 +298,24 @@ class RechercheLicence extends MyPageSecure
 	function Ok()
 	{
 		$parentUrl = utyGetSession('parentUrl');
-		if (strlen($parentUrl) > 0)
-		{
+		if (strlen($parentUrl) > 0) {
 			$signature = utyGetSession('Signature');
 			$ParamCmd = utyGetPost('ParamCmd');
+			$arrayParam = explode(',', $ParamCmd);
 			
-			$sql = "Delete From gickp_Recherche_Licence Where Signature = '";
-			$sql .= $signature;
-			$sql .= "' And Matric Not In (";
-			$sql .= $ParamCmd;
-			$sql .= ") ";
-
 			$myBdd = new MyBdd();
-			$myBdd->Query($sql);
+
+			$in = str_repeat('?,', count($arrayParam) - 1) . '?';
+			$sql = "DELETE FROM gickp_Recherche_Licence 
+				WHERE `Signature` = ? 
+				AND Matric NOT IN ($in) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array_merge([$signature], $arrayParam));
 			
-			$sql = "Update gickp_Recherche_Licence Set Validation = 'O'";
-			$myBdd->Query($sql);
+			$sql = "UPDATE gickp_Recherche_Licence 
+				SET `Validation` = 'O' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute();
 					
 			header("Location: ".$parentUrl);	
 			exit;	
@@ -384,16 +325,15 @@ class RechercheLicence extends MyPageSecure
 	function Cancel()
 	{
 		$parentUrl = utyGetSession('parentUrl');
-		if (strlen($parentUrl) > 0)
-		{
+		if (strlen($parentUrl) > 0) {
 			$signature = utyGetSession('Signature');
 			
-			$sql = "Delete From gickp_Recherche_Licence Where Signature = '";
-			$sql .= $signature;
-			$sql .= "'";
-
 			$myBdd = new MyBdd();
-			$myBdd->Query($sql);
+
+			$sql = "DELETE FROM gickp_Recherche_Licence 
+				WHERE `Signature` = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($signature));
 			
 			header("Location: http://".$_SERVER['HTTP_HOST'].$parentUrl);	
 			exit;	
@@ -407,8 +347,7 @@ class RechercheLicence extends MyPageSecure
 		$Cmd = utyGetPost('Cmd');
 		$ParamCmd = utyGetPost('ParamCmd');
 
-		if (strlen($Cmd) > 0)
-		{
+		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Ok')
 				$this->Ok();
 				

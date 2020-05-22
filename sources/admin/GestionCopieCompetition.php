@@ -37,9 +37,12 @@ class GestionCopieCompetition extends MyPageSecure
 		
 		// Liste des saisons
 		$arraySaisons = array();
-		$sql  = "Select distinct Code From gickp_Saison order by Code ";
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$sql = "SELECT DISTINCT Code 
+			FROM gickp_Saison 
+			ORDER BY Code ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+		while ($row = $result->fetch()) {
 			array_push($arraySaisons, array( 'Code' => $row['Code']));
 		}
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
@@ -47,22 +50,23 @@ class GestionCopieCompetition extends MyPageSecure
 		//Liste des codes compétition origine
         $label = $myBdd->getSections();
 		$arrayCompetitionOrigine = array();
-		$sql  = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, c.Soustitre, c.Soustitre2, "
-                . "c.commentairesCompet, g.section, g.ordre "
-                . "FROM gickp_Competitions c, gickp_Competitions_Groupes g "
-                . "WHERE c.Code_saison = $saisonOrigine "
-                . "AND c.Code_ref = g.Groupe "
-                . "ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
-		$result = $myBdd->Query($sql);
+		$sql = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, 
+			c.Soustitre, c.Soustitre2, c.commentairesCompet, g.section, g.ordre 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_saison = ? 
+			AND c.Code_ref = g.Groupe 
+			ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
         $i = -1;
         $j = '';
-		while($row = $myBdd->FetchArray($result)) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($saisonOrigine));
+		while ($row = $result->fetch()) {
             $row['sectionLabel'] = $label[$row['section']];
-            if($j != $row['section']) {
+            if ($j != $row['section']) {
                 $i ++;
                 $arrayCompetitionOrigine[$i]['label'] = $label[$row['section']];
             }
-            if($row["Code"] == $competOrigine) {
+            if ($row["Code"] == $competOrigine) {
                 $row['selected'] = 'selected';
             } else {
                 $row['selected'] = '';
@@ -84,23 +88,25 @@ class GestionCopieCompetition extends MyPageSecure
 		
 		//Liste des codes compétition destination
 		$arrayCompetitionDestination = array();
-		$sql  = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, c.Soustitre, c.Soustitre2, "
-                . "c.commentairesCompet, g.section, g.ordre "
-                . "FROM gickp_Competitions c, gickp_Competitions_Groupes g "
-                . "WHERE c.Code_saison = $saisonDestination "
-                . "AND c.Code_ref = g.Groupe "
-                . utyGetFiltreCompetition('')
-                . "ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
-		$result = $myBdd->Query($sql);
+		$sqlFiltreCompetition = utyGetFiltreCompetition('');
+		$sql = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, 
+			c.Soustitre, c.Soustitre2, c.commentairesCompet, g.section, g.ordre 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_saison = ? 
+			AND c.Code_ref = g.Groupe 
+            $sqlFiltreCompetition
+            ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
         $i = -1;
         $j = '';
-		while($row = $myBdd->FetchArray($result)) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($saisonDestination));
+		while ($row = $result->fetch()) {
             $row['sectionLabel'] = $label[$row['section']];
-            if($j != $row['section']) {
+            if ($j != $row['section']) {
                 $i ++;
                 $arrayCompetitionDestination[$i]['label'] = $label[$row['section']];
             }
-            if($row["Code"] == $competDestination) {
+            if ($row["Code"] == $competDestination) {
                 $row['selected'] = 'selected';
             } else {
                 $row['selected'] = '';
@@ -108,8 +114,7 @@ class GestionCopieCompetition extends MyPageSecure
             $j = $row['section'];
             $arrayCompetitionDestination[$i]['options'][] = $row;
 
-			if ($row['Code'] == $competDestination)
-			{
+			if ($row['Code'] == $competDestination) {
 				$this->m_tpl->assign('codeTypeCltDestination', $row['Code_typeclt']);
 				$this->m_tpl->assign('equipesDestination', $row['Nb_equipes']);
 				$this->m_tpl->assign('qualifiesDestination', $row['Qualifies']);
@@ -120,25 +125,28 @@ class GestionCopieCompetition extends MyPageSecure
 		
 		// Journées
 		$arrayJournees = array();
-		$listJournees = '';
-		$sql  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue ";
-		$sql .= "From gickp_Journees ";
-		$sql .= "Where Code_competition = '".$competOrigine;
-		$sql .= "' And Code_saison = $saisonOrigine ";
-		$sql .= "Order by Niveau, Phase, Lieu ";
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$listJournees = [];
+		$sql = "SELECT Id, Code_competition, Code_saison, Phase, Niveau, Date_debut, Date_fin, 
+			Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, 
+			Organisateur, Delegue 
+			FROM gickp_Journees 
+			WHERE Code_competition = ? 
+			AND Code_saison = ? 
+			ORDER By Niveau, Phase, Lieu ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($competOrigine , $saisonOrigine));
+		while ($row = $result->fetch()) {
 			array_push($arrayJournees, array( 'Niveau' => $row['Niveau'], 'Phase' => $row['Phase'], 'Lieu' => $row['Lieu'] ));
-			if ($listJournees != '') {
-                $listJournees .= ',';
-            }
-            $listJournees .= $row['Id'];
+			array_push($listJournees, $row['Id']);
 		}
-		if ($listJournees != '')
-		{
-			$sql2 = "Select Count(Id) nbMatchs From gickp_Matchs Where Id_journee in (".$listJournees.") ";
-			$result2 = $myBdd->Query($sql2);
-			$row2 = $myBdd->FetchArray($result2);
+		if (count($listJournees) > 0) {
+			$in = str_repeat('?,', count($listJournees) - 1) . '?';
+			$sql2 = "SELECT COUNT(Id) nbMatchs 
+				FROM gickp_Matchs 
+				WHERE Id_journee IN ($in) ";
+			$result2 = $myBdd->pdo->prepare($sql2);
+			$result2->execute($listJournees);
+			$row2 = $result2->fetch();
 			
 			$this->m_tpl->assign('nbMatchs', $row2['nbMatchs']);
 			$this->m_tpl->assign('Date_debut', utyDateUsToFr($row['Date_debut']));
@@ -162,35 +170,47 @@ class GestionCopieCompetition extends MyPageSecure
 		$_SESSION['recherche_nb_equipes'] = $recherche_nb_equipes;
 		$this->m_tpl->assign('recherche_nb_equipes', $recherche_nb_equipes);
         
-        if($recherche_nb_equipes != 0) {
+        if ($recherche_nb_equipes != 0) {
             $arraySchemas = array();
-            $sql  = "SELECT c.*, g.id ";
-            $sql .= "FROM gickp_Competitions c, gickp_Competitions_Groupes g ";
-            $sql .= "WHERE 1=1 ";
-            $sql .= "AND c.Code_typeclt = 'CP' ";
-            $sql .= "AND c.Nb_equipes > 0 ";
-            $sql .= "AND c.Nb_equipes = $recherche_nb_equipes ";
-            $sql .= "AND c.Code_ref = g.Groupe ";
-            $sql .= "ORDER BY c.Code_saison DESC, g.Id, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";	 
-			$result = $myBdd->Query($sql);
-			while($row = $myBdd->FetchArray($result)) {
-	            $sql2  = "Select Count(m.Id) nbMatchs From gickp_Matchs m, gickp_Journees j ";
-                $sql2 .= "Where j.Id = m.Id_journee ";
-                $sql2 .= "And j.Code_competition = '".$row["Code"]."' ";
-                $sql2 .= "And j.Code_saison = ".$row["Code_saison"]." ";
-                $result2 = $myBdd->Query($sql2);
-                //$row2 = mysql_fetch_row($result2);
-                $row2 = $myBdd->FetchRow($result2);
-                $nbMatchs = $row2[0];
+            $sql = "SELECT c.*, g.id 
+				FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+				WHERE 1=1 
+				AND c.Code_typeclt = 'CP' 
+				AND c.Nb_equipes > 0 
+				AND c.Nb_equipes = ? 
+				AND c.Code_ref = g.Groupe 
+				ORDER BY c.Code_saison DESC, g.Id, COALESCE(c.Code_ref, 'z'), 
+					c.Code_tour, c.GroupOrder, c.Code ";	 
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($recherche_nb_equipes));
+			while ($row = $result->fetch()) {
+	            $sql2 = "SELECT COUNT(m.Id) nbMatchs 
+					FROM gickp_Matchs m, gickp_Journees j 
+					WHERE j.Id = m.Id_journee 
+					AND j.Code_competition = ? 
+					AND j.Code_saison = ? ";
+				$result2 = $myBdd->pdo->prepare($sql2);
+				$result2->execute(array($row["Code"], $row["Code_saison"]));
+				$row2 = $result2->fetch();
+                $nbMatchs = $row2['nbMatchs'];
                 
                 if($nbMatchs > 0) {
-                    array_push($arraySchemas, array( 'Code' => $row["Code"], 'Code_saison' => $row['Code_saison'], 'Code_niveau' => $row["Code_niveau"], 'Libelle' => $row["Libelle"], 'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"],
-                                                'Code_ref' => $row["Code_ref"], 'GroupOrder' => $row["GroupOrder"], 'codeTypeClt' => $row["Code_typeclt"], 'Web' => $row["Web"], 
-                                                'ToutGroup' => $row["ToutGroup"], 'TouteSaisons' => $row["TouteSaisons"],
-                                                'En_actif' => $row['En_actif'], 'Titre_actif' => $row['Titre_actif'], 'Logo_actif' => $row['Logo_actif'], 'Sponsor_actif' => $row['Sponsor_actif'], 'Kpi_ffck_actif' => $row['Kpi_ffck_actif'], 
-                                                'Age_min' => $row["Age_min"], 'Age_max' => $row["Age_max"], 'Sexe' => $row["Sexe"], 'Points' => $row["Points"], 'Statut' => $row['Statut'],
-                                                'Code_tour' => $row["Code_tour"], 'Nb_equipes' => $row["Nb_equipes"], 'Verrou' => $row["Verrou"], 'Qualifies' => $row["Qualifies"], 'Elimines' => $row["Elimines"],
-                                                'commentairesCompet' => $row["commentairesCompet"], 'nbMatchs' => $nbMatchs ));
+					array_push($arraySchemas, array( 'Code' => $row["Code"], 
+						'Code_saison' => $row['Code_saison'], 'Code_niveau' => $row["Code_niveau"], 
+						'Libelle' => $row["Libelle"], 'Soustitre' => $row["Soustitre"], 
+						'Soustitre2' => $row["Soustitre2"],
+						'Code_ref' => $row["Code_ref"], 'GroupOrder' => $row["GroupOrder"], 
+						'codeTypeClt' => $row["Code_typeclt"], 'Web' => $row["Web"], 
+						'ToutGroup' => $row["ToutGroup"], 'TouteSaisons' => $row["TouteSaisons"],
+						'En_actif' => $row['En_actif'], 'Titre_actif' => $row['Titre_actif'], 
+						'Logo_actif' => $row['Logo_actif'], 'Sponsor_actif' => $row['Sponsor_actif'], 
+						'Kpi_ffck_actif' => $row['Kpi_ffck_actif'], 
+						'Age_min' => $row["Age_min"], 'Age_max' => $row["Age_max"], 
+						'Sexe' => $row["Sexe"], 'Points' => $row["Points"], 'Statut' => $row['Statut'],
+						'Code_tour' => $row["Code_tour"], 'Nb_equipes' => $row["Nb_equipes"], 
+						'Verrou' => $row["Verrou"], 'Qualifies' => $row["Qualifies"], 
+						'Elimines' => $row["Elimines"],
+						'commentairesCompet' => $row["commentairesCompet"], 'nbMatchs' => $nbMatchs ));
                 }
             }
             $this->m_tpl->assign('arraySchemas', $arraySchemas);
@@ -223,7 +243,7 @@ class GestionCopieCompetition extends MyPageSecure
 		
 		$init1erTour = utyGetPost('init1erTour');
 
-		if($Date_debut != '%' && $Date_origine != '%') {
+		if ($Date_debut != '%' && $Date_origine != '%') {
 			$d1 = strtotime($Date_debut.' 00:00:00'); 
 			$d2 = strtotime($Date_origine.' 00:00:00'); 
 			$diffdate = round(($d1-$d2)/60/60/24);
@@ -232,98 +252,93 @@ class GestionCopieCompetition extends MyPageSecure
 		}
 		
 		$arrayJournees = array();
-		$sql  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, "
-                . "Libelle, Type, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue "
-                . "From gickp_Journees "
-                . "Where Code_competition = '".$competOrigine."' "
-                . "And Code_saison = $saisonOrigine "
-                . "Order by Id ";
-		$result = $myBdd->Query($sql);
+		$sql = "SELECT Id, Code_competition, Code_saison, Phase, Niveau, Etape, Nbequipes, 
+			Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, Departement, 
+			Responsable_insc, Responsable_R1, Organisateur, Delegue 
+			FROM gickp_Journees 
+			WHERE Code_competition = ? 
+			AND Code_saison = ? 
+			ORDER BY Id ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($competOrigine, $saisonOrigine));
 	
-		$sql2a  = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-		$myBdd->Query($sql2a);
-		$sql3a  = "CREATE TEMPORARY TABLE gickp_Tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-		$myBdd->Query($sql3a);
+		$sql2a = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+		$myBdd->pdo->query($sql2a);
+		$sql3a = "CREATE TEMPORARY TABLE gickp_Tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+		$myBdd->pdo->query($sql3a);
 
-		$sql2  = "INSERT INTO gickp_Tmp (Num) SELECT DISTINCT Id FROM gickp_Competitions_Equipes ";
-		$sql2 .= "WHERE Code_compet = '".$competOrigine."' AND Code_saison = $saisonOrigine ORDER BY Poule, Tirage, Libelle; ";
-		$myBdd->Query($sql2);
+		$sql2 = "INSERT INTO gickp_Tmp (Num) 
+			SELECT DISTINCT Id 
+			FROM gickp_Competitions_Equipes 
+			WHERE Code_compet = ? 
+			AND Code_saison = ? 
+			ORDER BY Poule, Tirage, Libelle; ";
+		$result2 = $myBdd->pdo->prepare($sql2);
+		$result2->execute(array($competOrigine, $saisonOrigine));
 
-		$sql3  = "INSERT INTO gickp_Tmp2 (Num) SELECT DISTINCT Id FROM gickp_Competitions_Equipes ";
-		$sql3 .= "WHERE Code_compet = '".$competOrigine."' AND Code_saison = $saisonOrigine ORDER BY Poule, Tirage, Libelle; ";
-		$myBdd->Query($sql3);
+		$sql3 = "INSERT INTO gickp_Tmp2 (Num) 
+			SELECT DISTINCT Id 
+			FROM gickp_Competitions_Equipes 
+			WHERE Code_compet = ? 
+			AND Code_saison = ? 
+			ORDER BY Poule, Tirage, Libelle; ";
+		$result3 = $myBdd->pdo->prepare($sql3);
+		$result3->execute(array($competOrigine, $saisonOrigine));
 
-		while($row = $myBdd->FetchArray($result)) {
+		while ($row = $result->fetch()) {
+			if ($Date_debut == '%') $Date_debut = $row['Date_debut'];
+			if ($Date_fin == '%') $Date_fin = $row['Date_fin'];
+			if ($Nom == '%') $Nom = $row['Nom'];
+			if ($Libelle == '%') $Libelle = $row['Libelle'];
+			if ($Lieu == '%') $Lieu = $row['Lieu'];
+			if ($Plan_eau == '%') $Plan_eau = $row['Plan_eau'];
+			if ($Departement == '%') $Departement = $row['Departement'];
+			if ($Responsable_insc == '%') $Responsable_insc = $row['Responsable_insc'];
+			if ($Responsable_R1 == '%') $Responsable_R1 = $row['Responsable_R1'];
+			if ($Organisateur == '%') $Organisateur = $row['Organisateur'];
+			if ($Delegue == '%') $Delegue = $row['Delegue'];
+
 			$nextIdJournee = $myBdd->GetNextIdJournee();
+			$sql1 = "INSERT INTO gickp_Journees 
+				(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, `Type`, 
+				Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, 
+				Responsable_R1, Organisateur, Delegue) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+			$result1 = $myBdd->pdo->prepare($sql1);
+			$result1->execute(array(
+				$nextIdJournee, $competDestination, $saisonDestination, $row['Phase'], 
+				$row['Niveau'], $row['Etape'], $row['Nbequipes'], $row['Type'], $Date_debut,
+				$Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
+				$Responsable_R1, $Organisateur, $Delegue
+			));
 			
-			$sql1  = "Insert Into gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, Type, Date_debut, Date_fin, Nom, ";
-			$sql1 .= "Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue) ";
-			$sql1 .= "Values ($nextIdJournee, '";
-			$sql1 .= $competDestination;
-			$sql1 .= "', ";
-			$sql1 .= $saisonDestination;
-			$sql1 .= ", '";
-			$sql1 .= $row['Phase'];
-			$sql1 .= "', '";
-			$sql1 .= $row['Niveau'];
-			$sql1 .= "', '";
-			$sql1 .= $row['Etape'];
-			$sql1 .= "', '";
-			$sql1 .= $row['Nbequipes'];
-			$sql1 .= "', '";
-			$sql1 .= $row['Type'];
-			$sql1 .= "', '";
-			($Date_debut == '%') ? $sql1 .= $row['Date_debut'] : $sql1 .= $Date_debut ;
-			$sql1 .= "', '";
-			($Date_fin == '%') ? $sql1 .= $row['Date_fin'] : $sql1 .= $Date_fin ;
-			$sql1 .= "', '";
-			($Nom == '%') ? $sql1 .= $row['Nom'] : $sql1 .= $Nom ;
-			$sql1 .= "', '";
-			($Libelle == '%') ? $sql1 .= $row['Libelle'] : $sql1 .= $Libelle ;
-			$sql1 .= "', '";
-			($Lieu == '%') ? $sql1 .= $row['Lieu'] : $sql1 .= $Lieu ;
-			$sql1 .= "', '";
-			($Plan_eau == '%') ? $sql1 .= $row['Plan_eau'] : $sql1 .= $Plan_eau ;
-			$sql1 .= "', '";
-			($Departement == '%') ? $sql1 .= $row['Departement'] : $sql1 .= $Departement ;
-			$sql1 .= "', '";
-			($Responsable_insc == '%') ? $sql1 .= $row['Responsable_insc'] : $sql1 .= $Responsable_insc ;
-			$sql1 .= "', '";
-			($Responsable_R1 == '%') ? $sql1 .= $row['Responsable_R1'] : $sql1 .= $Responsable_R1 ;
-			$sql1 .= "', '";
-			($Organisateur == '%') ? $sql1 .= $row['Organisateur'] : $sql1 .= $Organisateur ;
-			$sql1 .= "', '";
-			($Delegue == '%') ? $sql1 .= $row['Delegue'] : $sql1 .= $Delegue ;
-			$sql1 .= "') ";
-			$myBdd->Query($sql1);
-			
-			$sql4  = "Insert Into gickp_Matchs (Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, Type) ";
-			$sql4 .= "Select $nextIdJournee, ";
+			$sql4 = "INSERT INTO gickp_Matchs 
+				(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Type`) 
+				SELECT ?, ";
 			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
                 $sql4 .= "CONCAT('[T', ta.Id, '/T', tb.Id, ']'), ";
             } else {
                 $sql4 .= "m.Libelle, ";
             }
-            $sql4 .= "DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, m.Numero_ordre, m.Type ";
-			$sql4 .= "FROM gickp_Matchs m ";
+			$sql4 .= "DATE_ADD(m.Date_match, INTERVAL + ? DAY), m.Heure_match, 
+				m.Terrain, m.Numero_ordre, m.Type 
+				FROM gickp_Matchs m ";
 			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
                 $sql4 .= ", gickp_Tmp ta, gickp_Tmp2 tb ";
             }
-            $sql4 .= "WHERE m.Id_journee = ".$row['Id']." ";
-			if ($row['Niveau'] <= 1 && $init1erTour == 'init')
-			{
-				$sql4 .= "AND ta.Num=m.Id_equipeA ";
-				$sql4 .= "AND tb.Num=m.Id_equipeB ";
+            $sql4 .= "WHERE m.Id_journee = ? ";
+			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
+				$sql4 .= "AND ta.Num=m.Id_equipeA 
+					AND tb.Num=m.Id_equipeB ";
 			}
-			
-			$myBdd->Query($sql4);
+			$result4 = $myBdd->pdo->prepare($sql4);
+			$result4->execute(array($nextIdJournee, $diffdate, $row['Id']));
 		
 			$myBdd->utyJournal('Ajout journee', $codeSaison, $competDestination, '', $nextIdJournee);
 		}
 
 			
-		if (isset($_SESSION['ParentUrl']))
-		{
+		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	

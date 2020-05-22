@@ -13,17 +13,16 @@ class GestionParamUser extends MyPageSecure
 		$myBdd = new MyBdd();
 		
 		// Chargement des infos Utilisateur
-		$sql  = "SELECT u.*, l.*, c.Libelle Nom_club ";
-		$sql .= "FROM gickp_Utilisateur u, gickp_Liste_Coureur l Left Join gickp_Club c on (l.Numero_club = c.Code) ";
-		$sql .= "WHERE u.Code = l.Matric ";
-		$sql .= "AND l.Matric = '".utyGetSession('User')."' ";	 
-		
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
-	
-		if ($num_results == 1)
-		{
-			$row = $myBdd->FetchArray($result);	
+		$sql = "SELECT u.*, l.*, c.Libelle Nom_club 
+			FROM gickp_Utilisateur u, gickp_Liste_Coureur l 
+			LEFT JOIN gickp_Club c ON (l.Numero_club = c.Code) 
+			WHERE u.Code = l.Matric 
+			AND l.Matric = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(utyGetSession('User')));
+		$num_results = $result->rowCount();
+		if ($num_results == 1) {
+			$row = $result->fetch();	
 		
 			$this->m_tpl->assign('UCode', $row['Code']);
 			$this->m_tpl->assign('UIdentite', $row['Identite']);
@@ -54,13 +53,16 @@ class GestionParamUser extends MyPageSecure
 		$myBdd = new MyBdd();
 
 		// Mise à jour des infos Utilisateur
-		$sql  = "UPDATE gickp_Utilisateur SET ";
-		$sql .= "Mail = '".utyGetPost('Mail1')."', ";
-		$sql .= "Fonction = '".utyGetPost('Fonction')."', ";
-		$sql .= "Tel = '".utyGetPost('Tel')."' ";
-		$sql .= "WHERE Code = '".utyGetSession('User')."' ";	 
-		
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Utilisateur 
+			SET Mail = ?, 
+			Fonction = ?, 
+			Tel = ? 
+			WHERE Code = ? ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			utyGetPost('Mail1'), utyGetPost('Fonction'), 
+			utyGetPost('Tel'), utyGetSession('User')
+		));
 	}
 	
 	function UpdatePassword()
@@ -69,30 +71,28 @@ class GestionParamUser extends MyPageSecure
 		$pass2 = utyGetPost('Pass2');
 		$pass3 = utyGetPost('Pass3');
 		
-		if(($pass1 != '') && ($pass2 == $pass3))
-		{
+		if ($pass1 != '' && $pass2 == $pass3) {
 			$myBdd = new MyBdd();
 			
-			$sql  = "SELECT Pwd ";
-			$sql .= "FROM gickp_Utilisateur ";
-			$sql .= "WHERE Code = '".utyGetSession('User')."' ";	 
+			$sql = "SELECT Pwd 
+				FROM gickp_Utilisateur 
+				WHERE Code = ? ";	 
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(utyGetSession('User')));
 
-			$result = $myBdd->Query($sql);
-
-			$row = $myBdd->FetchArray($result);
+			$row = $result->fetch();
 			$real_pass = $row['Pwd'];
 			
-			if(md5($pass1) == $real_pass)
-			{
+			if (md5($pass1) == $real_pass) {
 				// Mise à jour du mot de passe
-				$sql  = "UPDATE gickp_Utilisateur ";
-				$sql .= "SET Pwd = '".md5($pass2)."' ";
-				$sql .= "WHERE Code = '".utyGetSession('User')."' ";	 
-				
-				$result = $myBdd->Query($sql);
+				$sql = "UPDATE gickp_Utilisateur 
+					SET Pwd = ? 
+					WHERE Code = ? ";	 
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(md5($pass2), utyGetSession('User')));
 			}
 			else
-				die("erreur change password");
+				die("error change password");
 		}
 	}
 	
@@ -100,9 +100,7 @@ class GestionParamUser extends MyPageSecure
 	{			
 	  	MyPageSecure::MyPageSecure(100);
 		
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
 		if (strlen($Cmd) > 0)
 		{

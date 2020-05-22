@@ -32,62 +32,65 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		
 		$codeComiteReg = utyGetPost('comiteReg', '*');
 		$codeComiteDep = utyGetPost('comiteDep', '*');
-		$codeClub = utyGetPost('club', '*');
+        $codeClub = utyGetPost('club', '*');
+        
+        $arrayQuery = [];
 	
 		if ($this->OkRecherche()) {
-			$sql  = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, a.Club, b.Arb "
-                    . "FROM gickp_Liste_Coureur a Left Outer Join gickp_Arbitre b On (a.Matric = b.Matric) "
-                    . "WHERE a.Matric Is Not Null ";
-
+			$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, 
+                a.Club, b.Arb 
+                FROM gickp_Liste_Coureur a 
+                LEFT OUTER JOIN gickp_Arbitre b ON (a.Matric = b.Matric) 
+                WHERE a.Matric IS NOT NULL ";
 			if (strlen($matricJoueur) > 0) {
-				$sql .= " AND a.Matric = " . $matricJoueur . " ";
+                $sql .= " AND a.Matric = ? ";
+                $arrayQuery = array_merge($arrayQuery, [$matricJoueur]);
 			}
-			
 			if (strlen($nomJoueur) > 0) {
-				$sql .= " And a.Nom Like '" . $nomJoueur . "%' ";
+				$sql .= " AND a.Nom LIKE ? ";
+                $arrayQuery = array_merge($arrayQuery, [$nomJoueur.'%']);
 			}
-			
 			if (strlen($prenomJoueur) > 0) {
-				$sql .= " And a.Prenom Like '" . $prenomJoueur . "%' ";
+				$sql .= " AND a.Prenom LIKE ? ";
+                $arrayQuery = array_merge($arrayQuery, [$prenomJoueur.'%']);
 			}
-				
 			if (strlen($sexeJoueur) > 0) {
-				$sql .= " And a.Sexe = '" . $sexeJoueur . "' ";
+				$sql .= " AND a.Sexe = ? ";
+                $arrayQuery = array_merge($arrayQuery, [$sexeJoueur]);
 			}
-			
 			if ( (strlen($codeComiteReg) > 0) && ($codeComiteReg != '*') ) {
-				$sql .= " And a.Numero_comite_reg = '" . $codeComiteReg . "' ";
+				$sql .= " AND a.Numero_comite_reg = ? ";
+                $arrayQuery = array_merge($arrayQuery, [$codeComiteReg]);
 			}
-			
 			if ( (strlen($codeComiteDep) > 0) && ($codeComiteDep != '*') ) {
-				$sql .= " And a.Numero_comite_dept = '" . $codeComiteDep . "' ";
+				$sql .= " AND a.Numero_comite_dept = ? ";
+                $arrayQuery = array_merge($arrayQuery, [$codeComiteDep]);
 			}
-					
 			if ( (strlen($codeClub) > 0) && ($codeClub != '*') ) {
-				$sql .= " And a.Numero_club = '" . $codeClub . "' ";
+				$sql .= " AND a.Numero_club = ? ";
+                $arrayQuery = array_merge($arrayQuery, [$codeClub]);
 			}
-
 			if (isset($_POST['CheckJugeInter'])) {
-                $sql .= " And b.Arb = 'Int' ";
+                $sql .= " AND b.Arb = 'Int' ";
 			}
 			if (isset($_POST['CheckJugeNational'])) {
-                $sql .= " And b.Arb = 'Nat' ";
+                $sql .= " AND b.Arb = 'Nat' ";
 			}
 			if (isset($_POST['CheckJugeReg'])) {
-                $sql .= " And b.Arb = 'Reg' ";
+                $sql .= " AND b.Arb = 'Reg' ";
 			}
 			if (isset($_POST['CheckJugeOTM'])) {
-                $sql .= " And b.Arb = 'OTM' ";
+                $sql .= " AND b.Arb = 'OTM' ";
 			}
 			if (isset($_POST['CheckJugeJO'])) {
-                $sql .= " And b.Arb = 'JO' ";
+                $sql .= " AND b.Arb = 'JO' ";
 			}
-			
 			$sql .= " ORDER BY a.Nom, a.Prenom, a.Matric ";
 		
 			$arrayCoureur = array();
-			$result = $myBdd->Query($sql);
-			while ($row = $myBdd->FetchArray($result)) {
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute($arrayQuery);
+            while ($row = $result->fetch()) {
                 $int = 'N';
                 $nat = 'N';
                 $reg = 'N';
@@ -129,12 +132,12 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		$this->m_tpl->assign('arrayCoureur', $arrayCoureur);
 				
 		// Chargement des Comites Régionnaux ...
-		$sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Comite_reg ";
-		$sql .= "Order By Code ";	 
-		
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
+        $sql = "SELECT Code, Libelle 
+            FROM gickp_Comite_reg 
+            ORDER BY Code ";	 
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute();
+        $num_results = $result->rowCount();
 	
 		$arrayComiteReg = array();
 		if ('*' == $codeComiteReg) {
@@ -143,9 +146,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
             array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - Tous les Comités Régionaux', 'Selection' => ''));
         }
 
-        for ($i=0;$i<$num_results;$i++)
-		{
-			$row = $myBdd->FetchArray($result);	  
+        for ($i=0;$i<$num_results;$i++) {
+			$row = $result->fetch();	  
 			
 			if (($i == 0) && (strlen($codeComiteReg) == 0)) {
                 $codeComiteReg = $row["Code"];
@@ -165,19 +167,22 @@ class RechercheLicenceIndi2 extends MyPageSecure
             return;
         }
 
-        $sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Comite_dep ";
-		if ('*' != $codeComiteReg)
-		{
-			$sql .= "Where Code_comite_reg = '";
-			$sql .= $codeComiteReg;
-			$sql .= "'";
-		}	
-		$sql .= "Order By Code ";	
-		
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
-	
+		if ('*' != $codeComiteReg) {
+            $sql = "SELECT Code, Libelle 
+                FROM gickp_Comite_dep 
+                WHERE Code_comite_reg = ? 
+                ORDER BY Code ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeComiteReg));
+        } else {
+            $sql = "SELECT Code, Libelle 
+                FROM gickp_Comite_dep 
+                ORDER BY Code ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute();
+        }
+        $num_results = $result->rowCount();
+			
 		$arrayComiteDep = array();
 		if ('*' == $codeComiteDep) {
             array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - Tous les Comités Départementaux', 'Selection' => 'SELECTED'));
@@ -185,9 +190,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
             array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - Tous les Comités Départementaux', 'Selection' => ''));
         }
 
-        for ($i=0;$i<$num_results;$i++)
-		{
-			$row = $myBdd->FetchArray($result);	  
+        for ($i=0;$i<$num_results;$i++) {
+			$row = $result->fetch();	  
 			
 			if (($i == 0) && (strlen($codeComiteDep) == 0)) {
                 $codeComiteDep = $row["Code"];
@@ -206,19 +210,22 @@ class RechercheLicenceIndi2 extends MyPageSecure
             return;
         }
 
-        $sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Club ";
 		
-		if ('*' != $codeComiteDep)
-		{
-			$sql .= "Where Code_comite_dep = '";
-			$sql .= $codeComiteDep;
-			$sql .= "'";
-		}
-		$sql .= " Order By Code ";	 
-		
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
+		if ('*' != $codeComiteDep) {
+            $sql = "SELECT Code, Libelle 
+                FROM gickp_Club 
+                WHERE Code_comite_dep = ?
+                ORDER BY Code ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeComiteDep));
+		} else {
+            $sql = "SELECT Code, Libelle 
+                FROM gickp_Club 
+                ORDER BY Code ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute();
+        }
+        $num_results = $result->rowCount();
 	
 		$arrayClub = array();
 		if ('*' == $codeClub) {
@@ -227,11 +234,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
             array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - Tous les Clubs', 'Selection' => ''));
         }
 
-        for ($i=0;$i<$num_results;$i++)
-		{
-            $result = $myBdd->Query($sql);
-            $num_results = $myBdd->NumRows($result);
-                
+        for ($i=0;$i<$num_results;$i++) {
+			$row = $result->fetch();	  
 			if (($i == 0) && (strlen($codeClub) == 0)) {
                 $codeClub = $row["Code"];
             }

@@ -28,8 +28,8 @@
 							<a href="#" onclick="setCheckboxes('formEquipeJoueur', 'checkEquipeJoueur', false);return false;"><img height="22" src="../img/glyphicons-155-more-windows.png" title="{#Aucun#}" /></a>
 							<a href="#" onclick="RemoveCheckboxes('formEquipeJoueur', 'checkEquipeJoueur')"><img height="25" src="../img/glyphicons-17-bin.png" title="{#Supprimer#}" /></a>
 						{/if}
-						<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (FR)"><img height="25" src="../img/pdf.png" /></a>						
-						<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" /></a>						
+						<a href="FeuillePresence.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (FR)"><img height="25" src="../img/pdf.png" /></a>						
+						<a href="FeuillePresenceEN.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" /></a>						
 						<select name='changeEquipe' id='changeEquipe'>
                             {if $idEquipe <= 0}
                                 <Option Value="" selected>{#Selectionner#}...</option>
@@ -134,13 +134,13 @@
 								<br>
 								<br>
 								<br>
-								<a href="FeuilleTitulaires.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (FR)"><img height="25" src="../img/pdf.png" />{#Feuille_de_presence#} (PDF) (FR)</a>						
+								<a href="FeuillePresence.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (FR)"><img height="25" src="../img/pdf.png" />{#Feuille_de_presence#} (PDF) (FR)</a>						
 							{if $typeCompet == 'CH' or $typeCompet == 'CF'}
 								<br>
 								{#Feuille_de_presence_text5#}
 								{#Feuille_de_presence_text6#}
 							{else}
-								<a href="FeuilleTitulairesEN.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" />{#Feuille_de_presence#} (PDF) (EN)</a>						
+								<a href="FeuillePresenceEN.php?equipe={$idEquipe}" target="_blank" title="{#Feuille_de_presence#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" />{#Feuille_de_presence#} (PDF) (EN)</a>						
 							{/if}
 						</div>
 					</div>
