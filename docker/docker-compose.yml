@@ -2,16 +2,17 @@ version: '2'
 services:
     webphp7:
         build: 
-            context: ./docker/web7
+            context: ./web7
             dockerfile: Dockerfile
         ports:
             - 8087:80
             - 447:443
         volumes:
-            - ./sources:/var/www/html
-            - ./docker/MyParams.php:/var/www/html/commun/MyParams.php
-            - ./docker/MyConfig.php:/var/www/html/commun/MyConfig.php
-            - ./docker/error7.log:/var/log/apache2/error.log
+            - ../sources:/var/www/html
+            - ./MyParams.php:/var/www/html/commun/MyParams.php
+            - ./MyConfig.php:/var/www/html/commun/MyConfig.php
+            - ./error7.log:/var/log/apache2/error.log
+            - ./mail.log:/var/log/msmtp.log
         environment:
             - ALLOW_OVERRIDE=true
         links:
@@ -19,7 +20,7 @@ services:
             - mailcatcher
     db:
         build: 
-            context: ./docker/db
+            context: ./db
             dockerfile: Dockerfile
         image: mysql:latest
         restart: always
@@ -35,12 +36,19 @@ services:
             - 3306:3306
     myadmin:
         image: phpmyadmin/phpmyadmin:latest
+        environment:
+            UPLOAD_LIMIT: 262144000 # 256 Mo
         ports:
             - 8080:80
         links:
             - db
     mailcatcher:
         image: schickling/mailcatcher
-        # ports:
-        #     - 1025:1025
-        #     - 8025:8025
+        ports:
+            - 1025:1025
+            - 1080:1080
+    # mailcatcher:
+    #     image: maildev/maildev
+    #     ports:
+    #         - 1080:1080
+    #         - 1025:1025

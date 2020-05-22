@@ -24,32 +24,26 @@ class Login extends MyPage
         //if ($_SESSION['loginTarget'] == 'index.php' || $_SESSION['loginTarget'] == 'Login.php' || $_SESSION['loginTarget'] == '')
 		//	$_SESSION['loginTarget'] = '/Index2.php';
 			
-		if ( (isset($_POST['User'])) && (isset($_POST['Mel']))  && ($_POST['Mode'] == 'Regeneration') )
-		{
-			$user = preg_replace( '`^[0]*`', '', $myBdd->RealEscapeString( trim( $_POST['User'] ) ) );
-            $mel = $myBdd->RealEscapeString( trim( $_POST['Mel'] ) );
+		if ( (isset($_POST['User'])) && (isset($_POST['Mel']))  && ($_POST['Mode'] == 'Regeneration') ) {
+			$user = preg_replace('`^[0]*`', '', trim($_POST['User']));
+            $mel = trim(utyGetPost('Mel'));
             
-			$sql  = "Select u.* ";
-			$sql .= "From gickp_Utilisateur u, gickp_Liste_Coureur c ";
-			$sql .= "Where u.Code = '";
-			$sql .= $user;
-			$sql .= "' ";
-			$sql .= "And u.Mail = '";
-			$sql .= $mel;
-			$sql .= "' ";
-			$sql .= "and u.Code = c.Matric ";
-			$result = $myBdd->Query($sql, $myBdd->m_link);
-			if ($myBdd->NumRows($result) == 1)
-			{
-				$row = $myBdd->FetchArray($result);
+			$sql = "SELECT u.* 
+				FROM gickp_Utilisateur u, gickp_Liste_Coureur c 
+				WHERE u.Code = ? 
+				AND u.Mail = ? 
+				AND u.Code = c.Matric ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($user, $mel));
+			if ($result->rowCount() == 1) {
+				$row = $result->fetch();
 				$gpwd = Genere_Password(10);
 				//Mise à jour mot de passe
-				$sql  = "Update gickp_Utilisateur ";
-				$sql .= "Set Pwd = '".md5($gpwd)."' ";
-				$sql .= "Where Code = '";
-				$sql .= $user;
-				$sql .= "' ";
-				$result = $myBdd->Query($sql, $myBdd->m_link);
+				$sql = "UPDATE gickp_Utilisateur 
+					SET Pwd = ? 
+					WHERE Code = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(md5($gpwd), $user));
 				//MAIL 
 				$sujet = 'Modification de votre mot de passe kayak-polo.info (KPI)';
 				$email_expediteur = 'contact@kayak-polo.info';
@@ -80,23 +74,17 @@ class Login extends MyPage
 				$messageComplet = $message.$message_texte;
 				mail($_POST['Mel'],$sujet,$messageComplet,$headers);
 			}
-		}
-		elseif ( (isset($_POST['User'])) && (isset($_POST['Pwd']))  && ($_POST['Mode'] == 'Connexion') )
-		{
+		} elseif (isset($_POST['User']) && isset($_POST['Pwd'])  && $_POST['Mode'] == 'Connexion') {
 			$user = preg_replace( '`^[0]*`', '', $myBdd->RealEscapeString( trim( $_POST['User'] ) ) );
-			$sql  = "Select u.*, ";
-			$sql .= "c.Nom, c.Prenom, c.Numero_club ";
-			$sql .= "From gickp_Utilisateur u, gickp_Liste_Coureur c ";
-			$sql .= "Where u.Code = '";
-			$sql .= $user;
-			$sql .= "' ";
-			$sql .= "and u.Code = c.Matric ";
-			$result = $myBdd->Query($sql, $myBdd->m_link);
-			if ($myBdd->NumRows($result) == 1)
-			{
-				$row = $myBdd->FetchArray($result);	  
-				if ( ($row["Pwd"] === md5($_POST['Pwd'])) )
-				{
+			$sql = "SELECT u.*, c.Nom, c.Prenom, c.Numero_club 
+				FROM gickp_Utilisateur u, gickp_Liste_Coureur c 
+				WHERE u.Code = ? 
+				AND u.Code = c.Matric ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($user));
+			if ($result->rowCount() == 1) {
+				$row = $result->fetch();	  
+				if ($row["Pwd"] === md5($_POST['Pwd'])) {
 					$_SESSION['User'] = $user;
 					$_SESSION['Profile'] = $row["Niveau"];
 					$_SESSION['ProfileOrigine'] = $row["Niveau"];
@@ -135,17 +123,18 @@ class Login extends MyPage
 					$_SESSION['Evt_Date_fin'] =  $row['Date_fin'];
 					
 					// Chargement de la première Compétitions
-					$arrayCompet = array();
-					$sql3  = "Select Code ";
-					$sql3 .= "From gickp_Competitions ";
-					$sql3 .= "Where Code_saison = '";
-					$sql3 .= utyGetSaison();
-					$sql3 .= "' ";
-					$sql3 .= utyGetFiltreCompetition('');
-					$sql3 .= " Order By Code_niveau, COALESCE(Code_ref, 'z'), Code_tour, Code ";	 
-					$sql3 .= "Limit 1 ";
-					$result3 = $myBdd->Query($sql3, $myBdd->m_link);
-					$row3 = $myBdd->FetchArray($result3);	
+					$Saison = $myBdd->GetActiveSaison();
+					$sqlFiltreCompetition = utyGetFiltreCompetition('');
+					$sql3 = "SELECT Code 
+						FROM gickp_Competitions 
+						WHERE Code_saison = ? 
+						$sqlFiltreCompetition
+						ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), Code_tour, Code 
+						LIMIT 1 ";
+					$result3 = $myBdd->pdo->prepare($sql3);
+					$result3->execute(array($Saison));
+
+					$row3 = $result3->fetch();	
 					$_SESSION['codeCompet'] = $row3['Code'];
 					
 					$myBdd->utyJournal('Connexion', '', '', '', '', NULL, $row['Prenom'].' '.$row['Nom'] );

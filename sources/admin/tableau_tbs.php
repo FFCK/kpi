@@ -1,8 +1,7 @@
 <?php
-include_once('../commun/MyPage.php');
+// include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
-
 
 // Display this code source is asked.
 if (isset($_GET['source'])) exit(highlight_file(__FILE__,true));
@@ -29,32 +28,34 @@ if (!file_exists($template)) exit("File does not exist.");
 		$listMatch = utyGetSession('listMatch',0);
 		
 		$arrayMatchs = array();
-		$sql  = "SELECT a.*, b.Libelle EquipeA, c.Libelle EquipeB, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Nom LibelleJournee "
-                . "FROM gickp_Journees d, gickp_Matchs a "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) "
-                . "WHERE a.Id in (".$listMatch.") "
-                . "AND a.Id_journee = d.Id ";
-		$result = $myBdd->Query($sql);
-		while ($aRow = $myBdd->FetchArray($result)) {
-				$aRow['Date_match'] = utyDateUsToFr($aRow['Date_match']);
-				if ($aRow['Libelle'] != '')
-				{
-					$EquipesAffectAuto = utyEquipesAffectAutoFR($aRow['Libelle']);
-				}
+		$in = str_repeat('?,', count($listMatch) - 1) . '?';
+		$sql = "SELECT a.*, b.Libelle EquipeA, c.Libelle EquipeB, d.Code_competition, 
+			d.Phase, d.Niveau, d.Lieu, d.Nom LibelleJournee 
+			FROM gickp_Journees d, gickp_Matchs a 
+			LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
+			LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+			WHERE a.Id IN ($in) 
+			AND a.Id_journee = d.Id ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($listMatch);
+		while ($aRow = $result->fetch()) {
+			$aRow['Date_match'] = utyDateUsToFr($aRow['Date_match']);
+			if ($aRow['Libelle'] != '') {
+				$EquipesAffectAuto = utyEquipesAffectAutoFR($aRow['Libelle']);
+			}
 
-				if (($aRow['EquipeA'] == '') && $EquipesAffectAuto[0] != '')
-					$aRow['EquipeA'] = $EquipesAffectAuto[0];
-				if ($aRow['EquipeB'] == '' && $EquipesAffectAuto[1] != '')
-					$aRow['EquipeB'] = $EquipesAffectAuto[1];
-				if($aRow['Arbitre_principal'] != '' && $aRow['Arbitre_principal'] != '-1')
-					$aRow['Arbitre_principal'] = utyArbSansNiveau($aRow['Arbitre_principal']);
-				elseif ($EquipesAffectAuto[2] != '')
-					$aRow['Arbitre_principal'] = $EquipesAffectAuto[2];
-				if($aRow['Arbitre_secondaire'] != '' && $aRow['Arbitre_secondaire'] != '-1')
-					$aRow['Arbitre_secondaire'] = utyArbSansNiveau($aRow['Arbitre_secondaire']);
-				elseif ($EquipesAffectAuto[3] != '')
-					$aRow['Arbitre_secondaire'] = $EquipesAffectAuto[3];
+			if (($aRow['EquipeA'] == '') && $EquipesAffectAuto[0] != '')
+				$aRow['EquipeA'] = $EquipesAffectAuto[0];
+			if ($aRow['EquipeB'] == '' && $EquipesAffectAuto[1] != '')
+				$aRow['EquipeB'] = $EquipesAffectAuto[1];
+			if ($aRow['Arbitre_principal'] != '' && $aRow['Arbitre_principal'] != '-1')
+				$aRow['Arbitre_principal'] = utyArbSansNiveau($aRow['Arbitre_principal']);
+			elseif ($EquipesAffectAuto[2] != '')
+				$aRow['Arbitre_principal'] = $EquipesAffectAuto[2];
+			if ($aRow['Arbitre_secondaire'] != '' && $aRow['Arbitre_secondaire'] != '-1')
+				$aRow['Arbitre_secondaire'] = utyArbSansNiveau($aRow['Arbitre_secondaire']);
+			elseif ($EquipesAffectAuto[3] != '')
+				$aRow['Arbitre_secondaire'] = $EquipesAffectAuto[3];
 				
 			array_push($arrayMatchs, $aRow);
 		}

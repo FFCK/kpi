@@ -10,10 +10,10 @@
 				<div class='blocLeft'>
 					<div class='titrePage'>Recherche de licenciés</div>
 					<div class='liens'>
-					<a href="#" onclick="setCheckboxes('formRerchercheLicence', 'checkCoureur', true);return false;">Tout cocher</a>
-					<a href="#" onclick="setCheckboxes('formRerchercheLicence', 'checkCoureur', false);return false;">Tout décocher</a>
-					<a href="#" onclick="Ok();">Valider la sélection</a>
-					<a href="#" onclick="Cancel();">Annuler (retour)</a>
+					<a href="#" onclick="setCheckboxes('formRerchercheLicence', 'checkCoureur', true);return false;"><img width="21" src="../img/tous.gif" alt="Sélectionner tous" title="Sélectionner tous" /></a>
+					<a href="#" onclick="setCheckboxes('formRerchercheLicence', 'checkCoureur', false);return false;"><img width="21" src="../img/aucun.gif" alt="Sélectionner aucun" title="Sélectionner aucun" /></a>
+					<a href="#" onclick="Cancel();"><img width="16" src="../img/supprimer.gif" alt="Supprimer la sélection" title="Supprimer la sélection" /></a>
+					<a href="#" onclick="Ok();"><img width="16" src="../img/valider.gif" alt="Valider la sélection" title="Valider la sélection" /></a>
 					</div>
 					
 					<div class='blocTable'>
@@ -81,8 +81,8 @@
 								<label for="sexeJoueur">Sexe :</label>
 								<select name="sexeJoueur" onChange="">
 									<Option Value="" SELECTED>Tous</Option>
-									<Option Value="M">Masculin</Option>
-									<Option Value="F">Féminin</Option>
+									<Option Value="M" {if $sexeJoueur=='M'}selected{/if}>Masculin</Option>
+									<Option Value="F" {if $sexeJoueur=='F'}selected{/if}>Féminin</Option>
 								</select>
 							</td>
 						</tr>

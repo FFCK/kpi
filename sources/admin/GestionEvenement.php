@@ -8,9 +8,11 @@ include_once('../commun/MyTools.php');
 
 class GestionEvenement extends MyPageSecure	 
 {	
+	var $myBdd;
+
 	function Load()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$idEvenement = (int) utyGetSession('idEvenement', -1);
 		
@@ -35,13 +37,15 @@ class GestionEvenement extends MyPageSecure
 			if ($row['Publication'] != 'O')
 				$Publication = 'N';
 			
-			array_push($arrayEvenement, array( 'Id' => $row['Id'], 
-						'Libelle' => $row['Libelle'],  
-						'Lieu' => $row['Lieu'],  
-						'Date_debut' => utyDateUsToFr($row['Date_debut']), 
-						'Date_fin' => utyDateUsToFr($row['Date_fin']),
-						'StdOrSelected' => $StdOrSelected,
-						'Publication' => $Publication ));
+			array_push($arrayEvenement, array( 
+				'Id' => $row['Id'], 
+				'Libelle' => $row['Libelle'],  
+				'Lieu' => $row['Lieu'],  
+				'Date_debut' => utyDateUsToFr($row['Date_debut']), 
+				'Date_fin' => utyDateUsToFr($row['Date_fin']),
+				'StdOrSelected' => $StdOrSelected,
+				'Publication' => $Publication 
+			));
 		}
 		$_SESSION['Libelle'] = utyGetSession('Libelle','');
 		$_SESSION['Lieu'] = utyGetSession('Lieu','');
@@ -62,7 +66,7 @@ class GestionEvenement extends MyPageSecure
 		$datedebut = utyGetPost('Date_debut');
 		$datefin = utyGetPost('Date_fin');
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$sql  = "INSERT INTO gickp_Evenement (Libelle, Lieu, Date_debut, Date_fin) 
 			VALUES (?,?,?,?) ";
@@ -79,10 +83,12 @@ class GestionEvenement extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 		
-		$myBdd = new MyBdd();
-		$sql  = "DELETE FROM gickp_Evenement 
-			WHERE Id IN ($ParamCmd) ";
-		$myBdd->pdo->query($sql);
+		$myBdd = $this->myBdd;
+		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
+		$sql = "DELETE FROM gickp_Evenement 
+			WHERE Id IN ($in) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
 		
 		$myBdd->utyJournal('Suppression Evenements', '', '', $ParamCmd);
 	}
@@ -92,7 +98,7 @@ class GestionEvenement extends MyPageSecure
 		$idEvt = (int) utyGetPost('ParamCmd', -1);
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$sql = "UPDATE gickp_Evenement 
 			SET Publication = ? 
 			WHERE Id = ? ";
@@ -116,7 +122,7 @@ class GestionEvenement extends MyPageSecure
 		$idEvenement = utyGetPost('ParamCmd', -1);
 		$_SESSION['idEvenement'] = $idEvenement;
 		
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$sql  = "SELECT Libelle, Lieu, Date_debut, Date_fin, Publication 
 			FROM gickp_Evenement 
@@ -140,9 +146,9 @@ class GestionEvenement extends MyPageSecure
 		$datedebut = utyGetPost('Date_debut');
 		$datefin = utyGetPost('Date_fin');
 		
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
-		$sql  = "UPDATE gickp_Evenement 
+		$sql = "UPDATE gickp_Evenement 
 			SET Libelle = ?, Lieu = ?, Date_debut = ?, Date_fin = ?
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -156,15 +162,11 @@ class GestionEvenement extends MyPageSecure
 	{
 	  	MyPageSecure::MyPageSecure(2);
 		
+		$this->myBdd = new MyBdd();
+
 		$alertMessage = '';
 		
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
-
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
 		if (strlen($Cmd) > 0)
 		{

@@ -17,7 +17,7 @@ class FeuilleCltNiveau extends MyPage {
 
         $codeCompet = utyGetSession('codeCompet', '');
         //Saison
-        $codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
         $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -102,17 +102,15 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Ln(10);
 
         //données
-        $sql = "Select Id, Libelle, Code_club, Clt, Pts, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau ";
-        $sql .= "From gickp_Competitions_Equipes ";
-        $sql .= "Where Code_compet = '";
-        $sql .= $codeCompet;
-        $sql .= "' And Code_saison = '";
-        $sql .= $codeSaison;
-
-        $sql .= "' Order By Clt Asc, Diff Desc ";
-
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+        $sql = "SELECT Id, Libelle, Code_club, Clt, Pts, J, G, N, P, F, Plus, 
+            Moins, Diff, PtsNiveau, CltNiveau 
+            FROM gickp_Competitions_Equipes 
+            WHERE Code_compet = ? 
+            AND Code_saison = ? 
+            ORDER BY Clt, Diff DESC ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
+        $num_results = $result->rowCount();
 
         // recalcul des éliminés
         $elim = $num_results - $elim;
@@ -134,7 +132,7 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Cell(20, 5, '+/-', 'B', 1, 'C');
 
         $i = 0;
-        while($row = $myBdd->FetchAssoc($result)) {
+        while ($row = $result->fetch()){
             $separation = 0;
             //Séparation qualifiés
             if (($i + 1) > $qualif && $qualif != 0) {

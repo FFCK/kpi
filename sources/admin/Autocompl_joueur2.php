@@ -7,7 +7,6 @@ if(!$isAjax) {
   trigger_error($user_error, E_USER_ERROR);
 }
 // ***************************************************************************
-
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 	
@@ -62,6 +61,7 @@ while ($row = $result->fetch()) {
     $jRow["category"] = $row['Libelle'];
     array_push($a_json, $jRow);
 }
+
 $json = json_encode($a_json);
 header('Content-Type: application/json');
 print $json;

@@ -11,51 +11,46 @@ class GestionJournal extends MyPageSecure
 	function Load()
 	{
         $theLimit = utyGetSession('theLimit', 50);
-        if (isset($_POST['theLimit']))
-            $theLimit = $_POST['theLimit'];
+        $theLimit = (int) utyGetPost('theLimit', $theLimit);
         $_SESSION['theLimit'] = $theLimit;
         $this->m_tpl->assign('theLimit', $theLimit);
 
         $theUser = utyGetSession('theUser', '');
-        if (isset($_POST['theUser']))
-            $theUser = $_POST['theUser'];
+        $theUser = utyGetPost('theUser', $theUser);
         $_SESSION['theUser'] = $theUser;
         $this->m_tpl->assign('theUser', $theUser);
 
         $theAction = utyGetSession('theAction', '');
-        if (isset($_POST['theAction']))
-            $theAction = $_POST['theAction'];
+        $theAction = utyGetPost('theAction', $theAction);
         $_SESSION['theAction'] = $theAction;
         $this->m_tpl->assign('theAction', $theAction);
 
         $theSaison = utyGetSession('theSaison', '');
-        if (isset($_POST['theSaison']))
-            $theSaison = $_POST['theSaison'];
+        $theSaison = utyGetPost('theSaison', $theSaison);
         $_SESSION['theSaison'] = $theSaison;
         $this->m_tpl->assign('theSaison', $theSaison);
 
         $theCompet = utyGetSession('theCompet', '');
-        if (isset($_POST['theCompet']))
-            $theCompet = $_POST['theCompet'];
+        $theCompet = utyGetPost('theCompet', $theCompet);
         $_SESSION['theCompet'] = $theCompet;
         $this->m_tpl->assign('theCompet', $theCompet);
 
         // Chargement des Evenements
         $myBdd = new MyBdd();
-        $sql  = "Select j.Id, j.Dates, j.Users, j.Actions, j.Saisons, j.Competitions, j.Evenements, j.Journees, j.Matchs, j.Journal, ";
-        $sql .= "u.Identite, u.Fonction ";
-        $sql .= "From gickp_Journal j, gickp_Utilisateur u ";
-        $sql .= "Where u.Code = j.Users ";
-        $sql .= "And j.Users Like '".$theUser."%' ";
-        $sql .= "And j.Actions Like '".$theAction."%' ";
-        $sql .= "And j.Saisons Like '".$theSaison."%' ";
-        $sql .= "And j.Competitions Like '".$theCompet."%' ";
-        $sql .= "Order By j.Dates Desc ";	 
-        $sql .= "Limit $theLimit ";	 
-
+        $sql = "SELECT j.Id, j.Dates, j.Users, j.Actions, j.Saisons, j.Competitions, 
+            j.Evenements, j.Journees, j.Matchs, j.Journal, u.Identite, u.Fonction 
+            FROM gickp_Journal j, gickp_Utilisateur u 
+            WHERE u.Code = j.Users 
+            AND j.Users LIKE ? 
+            AND j.Actions LIKE ? 
+            AND j.Saisons LIKE ? 
+            AND j.Competitions LIKE ? 
+            ORDER BY j.Dates DESC 
+            LIMIT $theLimit ";	 
         $arrayJournal = array();
-        $result = $myBdd->Query($sql);
-        while($row = $myBdd->FetchArray($result)) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($theUser.'%', $theAction.'%', $theSaison.'%', $theCompet.'%'));
+        while ($row = $result->fetch()) {
             array_push($arrayJournal, array( 'Id' => $row['Id'], 
                         'Dates' => $row['Dates'],  
                         'Identite' => $row['Identite'],  
@@ -71,28 +66,30 @@ class GestionJournal extends MyPageSecure
         $this->m_tpl->assign('arrayJournal', $arrayJournal);
 
         // Chargement des Utilisateurs
-        $sql  = "Select Distinct j.Users, u.Identite, u.Fonction ";
-        $sql .= "From gickp_Journal j, gickp_Utilisateur u ";
-        $sql .= "Where u.Code = j.Users ";
-        $sql .= "Order By u.Identite ";	 
-
+        $sql = "SELECT DISTINCT j.Users, u.Identite, u.Fonction 
+            FROM gickp_Journal j, gickp_Utilisateur u 
+            WHERE u.Code = j.Users 
+            ORDER BY u.Identite ";	 
         $arrayUsers = array();
-        $result = $myBdd->Query($sql);
-        while($row = $myBdd->FetchArray($result)) {
-            array_push($arrayUsers, array( 'Code' => $row['Users'], 
-                        'Identite' => $row['Identite'],  
-                        'Fonction' => $row['Fonction']));
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+        while ($row = $result->fetch()) {
+            array_push($arrayUsers, array( 
+                'Code' => $row['Users'], 
+                'Identite' => $row['Identite'],  
+                'Fonction' => $row['Fonction']
+            ));
         }
         $this->m_tpl->assign('arrayUsers', $arrayUsers);
 
         // Chargement des actions
-        $sql  = "SELECT Distinct j.Actions "
-                . "FROM gickp_Journal j "
-                . "ORDER BY j.Actions ";	 
-
+        $sql = "SELECT DISTINCT j.Actions 
+            FROM gickp_Journal j 
+            ORDER BY j.Actions ";	 
         $arrayActions = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+        while ($row = $result->fetch()) {
             array_push($arrayActions, array('Action' => $row['Actions']));
         }
         $this->m_tpl->assign('arrayActions', $arrayActions);

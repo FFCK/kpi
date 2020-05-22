@@ -84,18 +84,18 @@
     /** 
      * Array 
     */
-    $in  = str_repeat('?,', count($in_array) - 1) . '?';
+    $in = str_repeat('?,', count($in_array) - 1) . '?';
     $sql = "SELECT * FROM my_table WHERE my_value IN ($in)";
-    $stm = $db->prepare($sql);
-    $stm->execute($in_array);
-    $data = $stm->fetchAll();
+    $result = $myBdd->pdo->prepare($sql);
+    $result->execute($in_array);
+    $data = $result->fetchAll();
 
     // In case there are other placeholders in the query, you could use the following approach (the code is taken from my PDO tutorial):
 
     // You could use array_merge() function to join all the variables into a single array, adding your other variables in the form of arrays, in the order they appear in your query:
 
     $arr = [1,2,3];
-    $in  = str_repeat('?,', count($arr) - 1) . '?';
+    $in = str_repeat('?,', count($arr) - 1) . '?';
     $sql = "SELECT * FROM table WHERE foo=? AND column IN ($in) AND bar=? AND baz=?";
     $stm = $db->prepare($sql);
     $params = array_merge([$foo], $arr, [$bar, $baz]);

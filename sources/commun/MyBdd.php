@@ -83,7 +83,7 @@ class MyBdd
 		} else {
 			$result = mysqli_query($this->m_link, $sql) or die ("Error Query. Please contact admin");
 		}
-		// error_log("Query MySQLi : " . $sql, 0);
+		// trigger_error("Query MySQLi : " . $sql);
 		return $result;
     }
 	
@@ -155,14 +155,6 @@ class MyBdd
     function RealEscapeString($txt)
     {
 		return mysqli_real_escape_string($this->m_link, $txt);
-    }
-
-    // GetLastAutoIncrement
-    function GetLastAutoIncrement()
-    {
-        $result = $this->Query('Select LAST_INSERT_ID()');
-        $row = $this->FetchRow($result);
-        return (int) $row[0];
     }
 
     // ShowColumnsSQL
@@ -1383,27 +1375,16 @@ class MyBdd
 		}
 		$sql = "SELECT Libelle 
 			FROM gickp_Competitions 
-			WHERE Code = '$codeCompet' 
-			AND Code_saison = '$codeSaison' "; 
-		$result = $this->Query($sql) or die ("Erreur Select GetLabelCompetition() ");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
+			WHERE Code = :Code_competition 
+			AND Code_saison = :Code_saison "; 
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array(
+			':Code_competition' => $codeCompet,
+			':Code_saison' => $codeSaison
+		));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();
 			return $row['Libelle'];
-		}
-
-		return '';
-	}
-
-	// GetSoustitre2Competition 	
-	function GetSoustitre2Competition($codeCompet, $codeSaison)
-	{
-		$sql = "Select Soustitre2 From gickp_Competitions Where Code = '$codeCompet' And Code_saison = '$codeSaison' "; 
-		$result = $this->Query($sql) or die ("Erreur Select GetSoustitre2Competition() ");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
-			return $row['Soustitre2'];
 		}
 
 		return '';
@@ -1567,11 +1548,13 @@ class MyBdd
 	// GetClub 	
 	function GetClub($codeClub)
 	{
-		$sql  = "Select Code, Libelle, Code_comite_dep From gickp_Club Where Code = '$codeClub' ";
-		$result = $this->Query($sql) or die ("Erreur Select GetClub");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
+		$sql = "SELECT Code, Libelle, Code_comite_dep 
+			FROM gickp_Club 
+			WHERE Code = ? ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array($codeClub));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();
 			return array( 'Code' => $row["Code"], 'Libelle' => $row["Libelle"], 'Code_comite_dep' => $row["Code_comite_dep"] );
 		}
 		return array( 'Code' => '', 'Libelle' => '', 'Code_comite_dep' => '' );
@@ -1580,12 +1563,13 @@ class MyBdd
 	// GetComiteDep 	
 	function GetComiteDep($codeComiteDep)
 	{
-		$sql  = "Select Code, Libelle, Code_comite_reg From gickp_Comite_dep Where Code = '$codeComiteDep' ";
-	
-		$result = $this->Query($sql) or die ("Erreur Select GetComiteDep");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
+		$sql = "SELECT Code, Libelle, Code_comite_reg 
+			FROM gickp_Comite_dep 
+			WHERE Code = ? ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array($codeComiteDep));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();
 			return array( 'Code' => $row["Code"], 'Libelle' => $row["Libelle"], 'Code_comite_reg' => $row["Code_comite_reg"] );
 		}
 		return array( 'Code' => '', 'Libelle' => '', 'Code_comite_reg' => '' );
@@ -1594,24 +1578,26 @@ class MyBdd
 	// GetComiteReg 	
 	function GetComiteReg($codeComiteReg)
 	{
-		$sql  = "Select Code, Libelle From gickp_Comite_reg Where Code = '$codeComiteReg' ";
-		$result = $this->Query($sql) or die ("Erreur Select codeComiteReg");
-		if ($this->NumRows($result) == 1)
-		{
-			$row = $this->FetchArray($result);
+		$sql = "SELECT Code, Libelle 
+			FROM gickp_Comite_reg 
+			WHERE Code = ? ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array($codeComiteReg));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();
 			return array( 'Code' => $row["Code"], 'Libelle' => $row["Libelle"] );
 		}
 		return array( 'Code' => '', 'Libelle' => '' );
 	}		
-
+		
 	// GetNextMatricLicence 	
 	function GetNextMatricLicence()
 	{
-		$sql = "Select max(Matric) maxMatric From gickp_Liste_Coureur ";
-		$result = $this->Query($sql) or die ("Erreur Select GetNextMatricJoueur");
-		if ($this->NumRows($result) == 1)
-		{
-				$row = $this->FetchArray($result);
+		$sql = "SELECT MAX(Matric) maxMatric 
+			FROM gickp_Liste_Coureur ";
+		$result = $this->pdo->query($sql);
+		if ($result->rowCount() == 1) {
+				$row = $result->fetch();
 				$maxMatric = (int) $row['maxMatric'];
 				
 				return $maxMatric + 1;
@@ -1622,11 +1608,13 @@ class MyBdd
 	// GetCodeClubEquipe 	
 	function GetCodeClubEquipe($idEquipe)
 	{
-			$sql  = "Select Code_club From gickp_Competitions_Equipes Where Id = $idEquipe";
-			$result = $this->Query($sql) or die ("Erreur Select GetCodeClubEquipe : " . $idEquipe);
-			if ($this->NumRows($result) == 1)
-			{
-				$row = $this->FetchArray($result);
+		$sql  = "SELECT Code_club 
+			FROM gickp_Competitions_Equipes 
+			WHERE Id = ? ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array($idEquipe));
+			if ($result->rowCount() == 1) {
+				$row = $result->fetch();
 				return $row['Code_club'];
 			}
 			return '';
@@ -1635,42 +1623,28 @@ class MyBdd
 	// InsertIfNotExistLicence
 	function InsertIfNotExistLicence($matric, $nom, $prenom, $sexe, $naissance, $codeClub, $numicf)
 	{
-		$sql  = "Select Count(*) Nb From gickp_Liste_Coureur Where matric = $matric";
-		$result = $this->Query($sql) or die ("Erreur Select InsertIfNotExistLicence");
-		$row = $this->FetchArray($result);
+		$sql = "SELECT COUNT(*) Nb 
+			FROM gickp_Liste_Coureur 
+			WHERE matric = ? ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array($matric));
+		$row = $result->fetch();
 		$nb = (int) $row['Nb'];
 		if ($nb != 0)
 			return;
 		$arrayClub = $this->GetClub($codeClub);
 		$arrayComiteDep = $this->GetComiteDep($arrayClub['Code_comite_dep']);
 		$arrayComiteReg = $this->GetComiteReg($arrayComiteDep['Code_comite_reg']);
-		$sql  = "Insert Into gickp_Liste_Coureur (Matric, Origine, Nom, Prenom, Sexe, Naissance, ";
-		$sql .= "Numero_club, Club, Numero_comite_dept, Comite_dept, Numero_comite_reg, Comite_reg, Reserve) Values ($matric,'";
-		$sql .= $this->GetActiveSaison();
-		$sql .= "','";
-		$sql .= $this->RealEscapeString($nom);
-		$sql .= "','";
-		$sql .= $this->RealEscapeString($prenom);
-		$sql .= "','";
-		$sql .= $sexe;
-		$sql .= "','";
-		$sql .= $naissance;
-		$sql .= "','";
-		$sql .= $codeClub;
-		$sql .= "','";
-		$sql .= $this->RealEscapeString($arrayClub['Libelle']);
-		$sql .= "','";
-		$sql .= $arrayClub['Code_comite_dep'];
-		$sql .= "','";
-		$sql .= $this->RealEscapeString($arrayComiteDep['Libelle']);
-		$sql .= "','";
-		$sql .= $arrayComiteDep['Code_comite_reg'];
-		$sql .= "','";
-		$sql .= $this->RealEscapeString($arrayComiteReg['Libelle']);
-		$sql .= "', ";
-		$sql .= $this->RealEscapeString($numicf);
-		$sql .= ")";
-		$this->Query($sql) or die ("Erreur Insert InsertIfNotExistLicence");
+		$sql = "INSERT INTO gickp_Liste_Coureur (Matric, Origine, Nom, Prenom, Sexe, Naissance, 
+			Numero_club, Club, Numero_comite_dept, Comite_dept, Numero_comite_reg, 
+			Comite_reg, Reserve) 
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+		$result = $this->pdo->prepare($sql);
+		$result->execute(array(
+			$matric, $this->GetActiveSaison(), $nom, $prenom, $sexe, $naissance, $codeClub,
+			$arrayClub['Libelle'], $arrayClub['Code_comite_dep'], $arrayComiteDep['Libelle'], 
+			$arrayComiteDep['Code_comite_reg'], $arrayComiteReg['Libelle'], $numicf
+		));
 	}
 	
 	// Journal des manipulations
@@ -1717,24 +1691,7 @@ class MyBdd
 			}
 		}
 		return '';
-	}
-
-	// GetnumOrdre
-	function GetnumOrdre($idUser)
-	{
-			if($idUser != '')
-			{
-				$sql  = "Select Numero_ordre From gickp_Matchs Where Id = '$idUser' ";
-				$result = $this->Query($sql) or die ("Erreur Select GetnumOrdre<br>".$sql);
-				if ($this->NumRows($result) == 1)
-				{
-					$row = $this->FetchArray($result);
-					return $row['Numero_ordre'];
-				}
-			}
-			return '';
-	}
-	
+	}	
 
 }
 

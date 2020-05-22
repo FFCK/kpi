@@ -1,203 +1,200 @@
 <?php
-include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
-
 session_start();
 
-$champs = utyGetPost('champs', ''); // Compet
-$valeur = utyGetPost('valeur', ''); // N2H
-$valeur3 = utyGetPost('valeur3', ''); // -1
-if($champs == '' || $valeur == '')
+class initTitulaires
 {
-	echo 'Pas de valeur transmise';
-	return;
-}
-if($valeur == '*' ||  $valeur == '-1')
-{
-	echo 'Selectionnez une '.$champs;
-	return;
-}
+	var $myBdd;
 
-switch($champs)
-{
-	case 'Compet':
-		initCompet($valeur);
-		break;
-	case 'Journee':
-		initJournee($valeur);
-		break;
-	case 'Equipe':
-		initEquipe($valeur, $valeur3);
-		break;
-	default:
-		echo 'Erreur Champs';
-		break;
-}
-		
-function initCompet($valeur)
-{
-	$codeCompet = $valeur;
-	$codeSaison = utyGetSaison();
-	$lstJournee = utyGetSession('lstJournee', -1);
-
-	// Chargement des Matchs en jeux ...
-	$sql  = "SELECT a.Id, a.Id_equipeA, a.Id_equipeB ";
-	$sql .= "FROM gickp_Matchs a, gickp_Journees b ";
-    if ($lstJournee != -1) {
-		$sql .= "WHERE a.Id_journee In ($lstJournee) ";
-    } else {
-        $sql .= 'WHERE 1 ';
-    }
-	$sql .= "AND a.Validation != 'O' ";
-	$sql .= "AND a.Id_journee = b.Id ";
-	$sql .= "AND b.Code_competition = '$codeCompet' ";
-	$sql .= "AND b.Code_saison = '$codeSaison' ";
-
-	$myBdd = new MyBdd();
-
-	$result = $myBdd->Query($sql);
-	$num_results = $myBdd->NumRows($result);
-	while ($row = $myBdd->FetchArray($result)) {	
-		
-		$idMatch = $row['Id'];
-		$idEquipeA = $row['Id_equipeA'];
-		$idEquipeB = $row['Id_equipeB'];
-		if($idEquipeA != '')
-		{
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'A'";
-			$myBdd->Query($sql);
-					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'A', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeA ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
+	function __construct()
+	{
+		$champs = utyGetPost('champs', ''); // Compet
+		$valeur = utyGetPost('valeur', ''); // N2H
+		$valeur3 = utyGetPost('valeur3', ''); // -1
+		if ($champs == '' || $valeur == '') {
+			echo 'Pas de valeur transmise';
+			return;
 		}
-		if($idEquipeB != '')
-		{
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'B'";
-			$myBdd->Query($sql);
-					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'B', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeB ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
+		if ($valeur == '*' ||  $valeur == '-1') {
+			echo 'Selectionnez une '.$champs;
+			return;
+		}
+
+		$this->myBdd = new MyBdd();
+
+		switch($champs) {
+			case 'Compet':
+				$this->initCompet($valeur);
+				break;
+			case 'Journee':
+				$this->initJournee($valeur);
+				break;
+			case 'Equipe':
+				$this->initEquipe($valeur, $valeur3);
+				break;
+			default:
+				echo 'Erreur Champs';
+				break;
 		}
 	}
-	$myBdd->utyJournal('MAJ titulaires compétition', utyGetSaison(), utyGetSession('codeCompet', ''), '', '', '', $num_results.' m.', utyGetSession('User') );
-	$resultGlobal = "Initialisation des titulaires OK pour la compétition, $num_results match(s) mis à jour.";
-	echo $resultGlobal;
-}
+	
+			
+	function initCompet($valeur) {
+		$myBdd = $this->myBdd;
+		$codeCompet = $valeur;
+		$codeSaison = $myBdd->GetActiveSaison();
+		$lstJournee = utyGetSession('lstJournee', -1);
 
-function initJournee($valeur)
-{
-	$idJournee = $valeur;
-
-	$myBdd = new MyBdd();
-
-	// Chargement des Matchs de la journée ...
-	$sql  = "Select Id, Id_equipeA, Id_equipeB ";
-	$sql .= "From gickp_Matchs ";
-	$sql .= "Where Id_journee = ";
-	$sql .= $idJournee.' ';
-	$sql .= "And Validation != 'O' ";
-
-	$result = $myBdd->Query($sql);
-	$num_results = $myBdd->NumRows($result);
-	while ($row = $myBdd->FetchArray($result)) {	
-		
-		$idMatch = $row['Id'];
-		$idEquipeA = $row['Id_equipeA'];
-		$idEquipeB = $row['Id_equipeB'];
-
-		if($idEquipeA != '')
-		{
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'A'";
-			$myBdd->Query($sql);
-					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'A', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeA ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
+		// Chargement des Matchs en jeux ...
+		$sql  = "SELECT a.Id, a.Id_equipeA, a.Id_equipeB 
+			FROM gickp_Matchs a, gickp_Journees b 
+			WHERE 1 
+			AND a.Validation != 'O' 
+			AND a.Id_journee = b.Id 
+			AND b.Code_competition = ? 
+			AND b.Code_saison = ? ";
+			$arrayQuery = array($codeCompet, $codeSaison);
+		if ($lstJournee != -1) {
+			$arrayJournees = explode(',', $lstJournee);
+			$in = str_repeat('?,', count($arrayJournees) - 1) . '?';
+			$sql .= "AND a.Id_journee IN ($in) ";
+			$arrayQuery = array_merge($arrayQuery, $arrayJournees);
 		}
-		if($idEquipeB != '')
-		{
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'B'";
-			$myBdd->Query($sql);
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayQuery);
+		$num_results = $result->rowCount();
+		while ($row = $result->fetch()) {	
+			$idMatch = $row['Id'];
+			$idEquipeA = $row['Id_equipeA'];
+			$idEquipeB = $row['Id_equipeB'];
+			$this->initMatch($idMatch, $idEquipeA, $idEquipeB);
+		}
+
+		$myBdd->utyJournal('MAJ titulaires compétition', $codeSaison, utyGetSession('codeCompet', ''), '', '', '', $num_results.' m.', utyGetSession('User') );
+		if ($_SESSION['lang'] == 'en') {
+			$resultGlobal = "Team rosters reassignment done for this competition, $num_results game(s) updated.";
+		} else {
+			$resultGlobal = "Initialisation des titulaires OK pour la compétition, $num_results match(s) mis à jour.";
+		}
+		echo $resultGlobal;
+	}
+
+	function initJournee($valeur)
+	{
+		$myBdd = $this->myBdd;
+		$idJournee = $valeur;
+		$codeSaison = $myBdd->GetActiveSaison();
+
+		// Chargement des Matchs de la journée ...
+		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
+			FROM gickp_Matchs 
+			WHERE Id_journee = ? 
+			AND Validation != 'O' ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee));
+		$num_results = $result->rowCount();
+		while ($row = $result->fetch()) {		
+			$idMatch = $row['Id'];
+			$idEquipeA = $row['Id_equipeA'];
+			$idEquipeB = $row['Id_equipeB'];
+
+			$this->initMatch($idMatch, $idEquipeA, $idEquipeB);
+		}
+		$myBdd->utyJournal('MAJ titulaires journée', $codeSaison, utyGetSession('codeCompet', ''), '', $idJournee, '', $num_results.' m.', utyGetSession('User') );
+		if ($_SESSION['lang'] == 'en') {
+			$resultGlobal = "Team rosters reassignment done for this gameday, $num_results game(s) updated.";
+		} else {
+			$resultGlobal = "Initialisation des titulaires OK pour la journée, $num_results match(s) mis à jour.";
+		}
+		echo $resultGlobal;
+	}
+
+	function initEquipe($valeur, $valeur3)
+	{
+		$myBdd = $this->myBdd;
+		$idEquipe = $valeur;
+		if ($valeur3 == '') {
+			$idMatch = utyGetSession('idMatch', -1);
+		} else {
+			$idMatch = $valeur3;
+		}
+		$lstJournee = utyGetSession('lstJournee', -1);
+		$codeSaison = $myBdd->GetActiveSaison();
+
+		// Chargement des Matchs en jeux ...
+		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
+			FROM gickp_Matchs 
+			WHERE 1 
+			AND (Id_equipeA = ? OR Id_equipeB = ?) 
+			AND `Validation` != 'O' ";
+		$arrayQuery = array($idEquipe, $idEquipe);
+		if ($idMatch < 0) {
+			$arrayJournees = explode(',', $lstJournee);
+			$in = str_repeat('?,', count($arrayJournees) - 1) . '?';
+			$sql .= "AND Id_journee IN ($in) ";
+			$arrayQuery = array_merge($arrayQuery, $arrayJournees);
+		} else {
+			$sql .= "AND Id = ? ";
+			$arrayQuery = array_merge($arrayQuery, [$idMatch]);
+		}
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayQuery);
+		$num_results = $result->rowCount();
+		while ($row = $result->fetch()) {		
+			$idMatch = $row['Id'];
+			$idEquipeA = $row['Id_equipeA'];
+			$idEquipeB = $row['Id_equipeB'];
+			
+			$this->initMatch($idMatch, $idEquipeA, $idEquipeB, $idEquipe);
+		}
+		$myBdd->utyJournal('MAJ titulaires équipe', $codeSaison, utyGetSession('codeCompet', ''), '', '', '', 'J: '.$lstJournee.' - Eq: '.$idEquipe.' - '.$num_results.' m.', utyGetSession('User') );
+		if ($_SESSION['lang'] == 'en') {
+			$resultGlobal = "Team rosters reassignment done for this team, $num_results game(s) updated.";
+		} else {
+			$resultGlobal = "Initialisation des titulaires OK pour cette équipe, $num_results match(s) mis à jour.";
+		}
+		echo $resultGlobal;
+	}
+
+	function initMatch($idMatch, $idEquipeA, $idEquipeB, $idEquipe = 0)
+	{
+		$myBdd = $this->myBdd;
+
+		if (($idEquipe == 0 && $idEquipeA != '') || ($idEquipeA == $idEquipe)) {
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Equipe = 'A' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
 					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'B', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeB ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
+			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+				SELECT ?, Matric, Numero, 'A', Capitaine 
+				FROM gickp_Competitions_Equipes_Joueurs 
+				WHERE Id_equipe = ? 
+				AND Capitaine <> 'X' 
+				AND Capitaine <> 'A' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $idEquipeA));
+		}
+		if (($idEquipe == 0 && $idEquipeB != '') || ($idEquipeB == $idEquipe)) {
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Equipe = 'B' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
+					
+			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+				SELECT ?, Matric, Numero, 'B', Capitaine 
+				FROM gickp_Competitions_Equipes_Joueurs 
+				WHERE Id_equipe = ? 
+				AND Capitaine <> 'X' 
+				AND Capitaine <> 'A' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $idEquipeB));
 		}
 	}
-	$myBdd->utyJournal('MAJ titulaires journée', utyGetSaison(), utyGetSession('codeCompet', ''), '', $idJournee, '', $num_results.' m.', utyGetSession('User') );
-	$resultGlobal = "Initialisation des titulaires OK pour la journée, $num_results match(s) mis à jour.";
-	echo $resultGlobal;
+
 }
 
-function initEquipe($valeur, $valeur3)
-{
-	$idEquipe = $valeur;
-	if($valeur3 == '')
-		$idMatch = utyGetSession('idMatch', -1);
-	else
-		$idMatch = $valeur3;
-	$lstJournee = utyGetSession('lstJournee', -1);
-	$myBdd = new MyBdd();
-
-	// Chargement des Matchs en jeux ...
-	$sql  = "Select Id, Id_equipeA, Id_equipeB ";
-	$sql .= "From gickp_Matchs ";
-	if ($idMatch < 0)
-		$sql .= "Where Id_journee In ($lstJournee) ";
-	else
-		$sql .= "Where Id = $idMatch ";
-	$sql .= "And (Id_equipeA = $idEquipe Or Id_equipeB = $idEquipe) ";
-	$sql .= "And Validation != 'O' ";
-	$result = $myBdd->Query($sql);
-	$num_results = $myBdd->NumRows($result);
-	while ($row = $myBdd->FetchArray($result)) {	
-		
-		$idMatch = $row['Id'];
-		$idEquipeA = $row['Id_equipeA'];
-		$idEquipeB = $row['Id_equipeB'];
-		
-		if ($idEquipeA == $idEquipe)
-		{
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'A'";
-			$myBdd->Query($sql);
-					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'A', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeA ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
-		}
-
-		if ($idEquipeB == $idEquipe)
-		{
-			$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Equipe = 'B'";
-			$myBdd->Query($sql);
-					
-			$sql  = "Replace Into gickp_Matchs_Joueurs ";
-			$sql .= "Select $idMatch, Matric, Numero, 'B', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-			$sql .= "Where Id_equipe = $idEquipeB ";
-			$sql .= "AND Capitaine <> 'X' ";
-			$sql .= "AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
-		}
-	}
-	$myBdd->utyJournal('MAJ titulaires équipe', utyGetSaison(), utyGetSession('codeCompet', ''), '', '', '', 'J: '.$lstJournee.' - Eq: '.$idEquipe.' - '.$num_results.' m.', utyGetSession('User') );
-	$resultGlobal = "Initialisation des titulaires OK pour cette équipe, $num_results match(s) mis à jour.";
-	echo $resultGlobal;
-}
+$initTitulaires = new initTitulaires();

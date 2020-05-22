@@ -39,53 +39,42 @@ class FeuillePresenceCat extends MyPage {
         $arrayCompetition = array();
 
         if (strlen($codeCompet) > 0) {
-            $sql = "Select Id, Libelle, Code_club, Numero ";
-            $sql .= "From gickp_Competitions_Equipes ";
-            $sql .= "Where Code_compet = '";
-
-            $sql .= $codeCompet;
-            $sql .= "' And Code_saison = '";
-            $sql .= $codeSaison;
-            $sql .= "' Order By Libelle, Id ";
-
-            $result = $myBdd->Query($sql);
-            $num_results = $myBdd->NumRows($result);
+            $sql = "SELECT Id, Libelle, Code_club, Numero 
+                FROM gickp_Competitions_Equipes 
+                WHERE Code_compet = ? 
+                AND Code_saison = ? 
+                ORDER BY Libelle, Id ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($codeCompet, $codeSaison));
+            $num_results = $result->rowCount();
             if ($num_results == 0) {
                 die('Aucune équipe dans cette compétition');
             }
+            $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
 
-            $listEquipes = '';
-            for ($i = 0; $i < $num_results; $i++) {
-                $row = $myBdd->FetchArray($result);
-                $idEquipe = $row['Id'];
-                if ($listEquipes != '') {
-                    $listEquipes .= ',';
-                }
-                $listEquipes .= $idEquipe;
+            foreach ($resultarray as $key => $row) {
+                $arrayEquipe[] = $row['Id'];
             }
 
             // Chargement des Coureurs ...
-            if ($idEquipe != '') {
-                $sql2 = "Select a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, ce.Libelle NomEquipe, ";
-                $sql2 .= "b.Origine, b.Numero_club, b.Pagaie_ECA, b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau ";
-                $sql2 .= "From gickp_Competitions_Equipes_Joueurs a ";
-                $sql2 .= "Left Outer Join gickp_Liste_Coureur b On (a.Matric = b.Matric) ";
-                $sql2 .= "Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric), ";
-                $sql2 .= "gickp_Competitions_Equipes ce ";
-                $sql2 .= "Where a.Id_Equipe in (";
-                $sql2 .= $listEquipes;
-                $sql2 .= ") ";
-                $sql2 .= "And ce.Id = a.Id_Equipe ";
-                $sql2 .= "Order By a.Categ, Id_Equipe, Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";
-
-                $result2 = $myBdd->Query($sql2);
-                $num_results2 = $myBdd->NumRows($result2);
-
+            if (count($arrayEquipe) > 0) {
+                $in = str_repeat('?,', count($arrayEquipe) - 1) . '?';
+                $sql2 = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, 
+                    ce.Libelle NomEquipe, b.Origine, b.Numero_club, b.Pagaie_ECA, 
+                    b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau 
+                    FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Joueurs a 
+                    LEFT OUTER JOIN gickp_Liste_Coureur b ON (a.Matric = b.Matric) 
+                    LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
+                    WHERE a.Id_Equipe IN ($in) 
+                    AND ce.Id = a.Id_Equipe 
+                    ORDER BY a.Categ, Id_Equipe, Field(IF(a.Capitaine='C','-',IF(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), 
+                    Numero, Nom, Prenom ";
+                $result2 = $myBdd->pdo->prepare($sql2);
+                $result2->execute($arrayEquipe);
+                $num_results2 = $result2->rowCount();
                 $arrayJoueur = array();
 
-                for ($j = 0; $j < $num_results2; $j++) {
-                    $row2 = $myBdd->FetchArray($result2);
-
+                while ($row2 = $result2->fetch()){
                     $numero = $row2['Numero'];
                     if (strlen($numero) == 0) {
                         $numero = 0;
@@ -94,7 +83,7 @@ class FeuillePresenceCat extends MyPage {
                         $row2['Arb'] .= '-' . $row2['niveau'];
                     }
 
-                    Switch ($row2['Pagaie_ECA']) {
+                    switch ($row2['Pagaie_ECA']) {
                         case 'PAGR' :
                             $pagaie = 'Rouge';
                             break;

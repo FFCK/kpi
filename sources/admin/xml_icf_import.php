@@ -101,11 +101,6 @@ if (!file_exists($fileName)) {
 }
     
 $xml = simplexml_load_file($fileName);
-
-// echo '<pre>';
-// print_r($xml);
-// echo '</pre>';
-// exit();
     
 $xmlDocumentType =  $xml['DocumentType']; // DT_PARTIC_TEAMS, DT_PARTIC
 
@@ -113,13 +108,14 @@ $myBdd = new MyBdd();
 $listIcf = [];
 $nomsIcf = [];
 $matricIcf = [];
-$sql  = "SELECT DISTINCT(Reserve), Nom, Prenom, Naissance, Matric "
-        . "FROM gickp_Liste_Coureur "
-        . "WHERE Reserve != '0' "
-        . "AND Reserve IS NOT NULL "
-        . "AND Matric > 2000000 ";
-$result = $myBdd->Query($sql);
-while($row = $myBdd->FetchAssoc($result)) {
+$sql = "SELECT DISTINCT(Reserve), Nom, Prenom, Naissance, Matric 
+    FROM gickp_Liste_Coureur 
+    WHERE Reserve != '0' 
+    AND Reserve IS NOT NULL 
+    AND Matric > 2000000 ";
+$result = $myBdd->pdo->prepare($sql);
+$result->execute();
+while($row = $result->fetch()) {
     $listIcf[] = $row['Reserve'];
     $nomsIcf[$row['Reserve']] = $row['Nom'] . ' ' . $row['Prenom'] . ' - ' . $row['Naissance'];
     $matricIcf[$row['Reserve']] = $row['Matric'];
@@ -135,51 +131,46 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                     .'-'.substr($participant['BirthDate'], 4, 2)
                     .'-'.substr($participant['BirthDate'], 6, 2);
             $participant['Club'] = $participant['Organisation'] . '00';
-            
-//            echo $participant[FamilyName] 
-//            . ' ' . $participant[GivenName] 
-//            . ' ' . $participant[BirthDate] 
-//            . ' - ' . $participant[Club].'<br>';
 
             // Le compétiteur existe déjà
-            if(in_array($participant['Code'], $listIcf)) {
-                $sql  = "UPDATE gickp_Liste_Coureur "
-                        . "SET Origine = $xmlSaison, "
-                        . "Nom = '" . $myBdd->RealEscapeString($participant['FamilyName']) . "', "
-                        . "Prenom = '" . $myBdd->RealEscapeString($participant['GivenName']) . "', "
-                        . "Sexe = '" . $myBdd->RealEscapeString($participant['Gender']) . "', "
-                        . "Naissance = '" . $myBdd->RealEscapeString($participant['BirthDate']) . "', "
-                        . "Numero_club = '" . $myBdd->RealEscapeString($participant['Club']) . "', "
-                        . "Numero_comite_dept = '" . $myBdd->RealEscapeString($participant['Organisation']) . "', "
-                        . "Numero_comite_reg = '98' "
-                        . "WHERE Reserve = '" . $myBdd->RealEscapeString($participant['Code']) . "' "
-                        . "AND Matric > 2000000 ";
-                $result = $myBdd->Query($sql);
-                $sql  = "UPDATE gickp_Competitions_Equipes_Joueurs "
-                        . "SET Nom = '" . $myBdd->RealEscapeString($participant['FamilyName']) . "', "
-                        . "Prenom = '" . $myBdd->RealEscapeString($participant['GivenName']) . "', "
-                        . "Sexe = '" . $myBdd->RealEscapeString($participant['Gender']) . "' "
-                        . "WHERE Matric =  " . $matricIcf[(int) $participant['Code']] . " ";
-                $result = $myBdd->Query($sql);
+            if (in_array($participant['Code'], $listIcf)) {
+                $sql = "UPDATE gickp_Liste_Coureur 
+                    SET Origine = ?, 
+                    Nom = ?, Prenom = ?, Sexe = ?, Naissance = ?, Numero_club = ?, 
+                    Numero_comite_dept = ?, Numero_comite_reg = '98' 
+                    WHERE Reserve = ? 
+                    AND Matric > 2000000 ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array(
+                    $xmlSaison, $participant['FamilyName'], $participant['GivenName'], 
+                    $participant['Gender'], $participant['BirthDate'], $participant['Club'], 
+                    $participant['Organisation'], $participant['Code']
+                ));
+
+                $sql = "UPDATE gickp_Competitions_Equipes_Joueurs 
+                    SET Nom = ?, Prenom = ?, Sexe = ? 
+                    WHERE Matric = ? ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array(
+                    $xmlSaison, $participant['FamilyName'], $participant['GivenName'], 
+                    $participant['Gender'], $matricIcf[(int) $participant['Code']]
+                ));
                 echo '* ' . $participant['Organisation'] . ' - ' . $participant['TVName'] .' => Updated<br>';
                 
             // Le compétiteur n'existe pas encore
             } else {
                 $matricJoueur = $myBdd->GetNextMatricLicence();
-                $sql  = "INSERT INTO gickp_Liste_Coureur "
-                        . "(Matric, Origine, Nom, Prenom, Sexe, Naissance, Numero_club, Numero_comite_dept, Numero_comite_reg, Reserve) "
-                        . "VALUES($matricJoueur, "
-                        . "$xmlSaison, "
-                        . "'" . $myBdd->RealEscapeString($participant['FamilyName']) . "', "
-                        . "'" . $myBdd->RealEscapeString($participant['GivenName']) . "', "
-                        . "'" . $myBdd->RealEscapeString($participant['Gender']) . "', "
-                        . "'" . $myBdd->RealEscapeString($participant['BirthDate']) . "', "
-                        . "'" . $myBdd->RealEscapeString($participant['Club']) . "', "
-                        . "'" . $myBdd->RealEscapeString($participant['Organisation']) . "', "
-                        . "'98', "
-                        . "'" . $myBdd->RealEscapeString($participant['Code']) . "') ";
-                $result = $myBdd->Query($sql);
-                echo '* ' . $myBdd->RealEscapeString($participant['Organisation']) . ' - ' . $myBdd->RealEscapeString($participant['TVName']) .' => Inserted<br>';
+                $sql = "INSERT INTO gickp_Liste_Coureur 
+                    (Matric, Origine, Nom, Prenom, Sexe, Naissance, Numero_club, 
+                    Numero_comite_dept, Numero_comite_reg, Reserve) 
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, '98', ?) ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array(
+                    $matricJoueur, $xmlSaison, $participant['FamilyName'], $participant['GivenName'], 
+                    $participant['Gender'], $participant['BirthDate'], $participant['Club'], 
+                    $participant['Organisation'], $participant['Code']
+                ));
+                echo '* ' . $participant['Organisation'] . ' - ' . $participant['TVName'] .' => Inserted<br>';
             }
         }
     }
@@ -193,15 +184,17 @@ if ($xmlDocumentType == 'DT_PARTIC') {
     echo 'File date : ' . $fileDate . '<br><br>';
     
     foreach ($xml->Competition as $competition) {
-        echo '<h3>Competition: '. $myBdd->RealEscapeString($competition['Code']) . '</h3><ol>';
+        echo '<h3>Competition: '. $competition['Code'] . '</h3><ol>';
         foreach ($competition->Team as $team) {
-            echo '<li>' . $myBdd->RealEscapeString($team['Organisation']) 
-                    . ' (' . $myBdd->RealEscapeString($team['Name']) 
-                    . ' ' . $myBdd->RealEscapeString($team['Gender']) . ') '
-                    . 'Event = ' . $myBdd->RealEscapeString($team->Discipline->RegisteredEvent['Event'])
-                    . '<ul>';
+            echo '<li>' . $team['Organisation'] 
+                . ' (' . $team['Name'] 
+                . ' ' . $team['Gender'] . ') '
+                . 'Event = ' . $team->Discipline->RegisteredEvent['Event']
+                . '<ul>';
             foreach ($team->Composition->Athlete as $athlete) {
-                echo '<li>' . $myBdd->RealEscapeString($athlete['Order']) . ' - ' . $nomsIcf[(int) $athlete['Code']] . ' (' . $myBdd->RealEscapeString($athlete['Code']) .')</li>';
+                echo '<li>' . $athlete['Order'] . ' - ' 
+                    . $nomsIcf[(int) $athlete['Code']] 
+                    . ' (' . $athlete['Code'] .')</li>';
             }
             echo '<br></ul>';
         } 

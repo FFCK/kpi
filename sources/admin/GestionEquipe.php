@@ -6,9 +6,11 @@ include_once('../commun/MyTools.php');
 // Gestion des Equipes
 class GestionEquipe extends MyPageSecure	 
 {	
+	var $myBdd;
+
 	function Load()
 	{
-        $myBdd = new MyBdd();
+        $myBdd = $this->myBdd;
 
 		// Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
@@ -40,29 +42,38 @@ class GestionEquipe extends MyPageSecure
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
 		
 		// Chargement des Compétitions ...
-		$sql  = "SELECT c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, 
-			c.Soustitre2, c.Titre_actif, c.Verrou, c.Statut, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
-			WHERE c.Code_saison = '" . $codeSaison . "' ";
-		$sql .= utyGetFiltreCompetition('c.');
-		$sql .= " AND c.Code_niveau LIKE '".utyGetSession('AfficheNiveau')."%' ";
-		if ($AfficheCompet == 'N') {
-            $sql .= " AND c.Code LIKE 'N%' ";
-        } elseif ($AfficheCompet == 'CF') {
-            $sql .= " AND c.Code LIKE 'CF%' ";
-        } elseif ($AfficheCompet == 'M') {
-            $sql .= " AND c.Code_ref = 'M' ";
-        } elseif($AfficheCompet > 0) {
-            $sql .= " AND g.section = '" . $AfficheCompet . "' ";
-        }
-		$sql .= " AND c.Code_ref = g.Groupe 
-			ORDER BY c.Code_saison, g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		$label = $myBdd->getSections();
 		$arrayCompetition = array();
+		$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
+		$sqlAfficheCompet = '';
+		$arrayAfficheCompet = [];
+		if ($AfficheCompet == 'N') {
+			$sqlAfficheCompet = " AND c.Code LIKE 'N%' ";
+		} elseif ($AfficheCompet == 'CF') {
+			$sqlAfficheCompet = " AND c.Code LIKE 'CF%' ";
+		} elseif ($AfficheCompet == 'M') {
+			$sqlAfficheCompet = " AND c.Code_ref = 'M' ";
+		} elseif ($AfficheCompet > 0) {
+			$sqlAfficheCompet = " AND g.section = ? ";
+			$arrayAfficheCompet = [$AfficheCompet];
+		}
+		$sql = "SELECT c.*, g.section, g.ordre, g.id 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_saison = ?  
+			$sqlFiltreCompetition 
+			AND c.Code_niveau LIKE ? 
+			AND c.Code_ref = g.Groupe 
+			$sqlAfficheCompet 
+			ORDER BY c.Code_saison, g.section, g.ordre, 
+				COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array_merge(
+			[$codeSaison], 
+			[utyGetSession('AfficheNiveau').'%'], 
+			$arrayAfficheCompet
+		));
         $i = -1;
         $j = '';
-        $label = $myBdd->getSections();
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute();
 		while ($row = $result->fetch()) {
 			// Titre
 			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
@@ -79,11 +90,11 @@ class GestionEquipe extends MyPageSecure
                 $codeCompet = $row["Code"];
             }
 
-            if($j != $row['section']) {
+            if ($j != $row['section']) {
                 $i ++;
                 $arrayCompetition[$i]['label'] = $label[$row['section']];
             }
-            if($row["Code"] == $codeCompet) {
+            if ($row["Code"] == $codeCompet) {
                 $row['selected'] = 'selected';
                 $this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
                 $this->m_tpl->assign('Statut', $row["Statut"]);
@@ -276,26 +287,23 @@ class GestionEquipe extends MyPageSecure
             array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
         }
 
-		$sql  = "SELECT c.Code, c.Libelle 
+		$arrayM = [];
+		$sql = "SELECT c.Code, c.Libelle 
 			FROM gickp_Club c, gickp_Comite_dep cd 
 			WHERE c.Code_comite_dep = cd.Code ";
-			if ($codeComiteReg != '*')
-			{
-				$sql .= "AND cd.Code_comite_reg = '";
-				$sql .= $codeComiteReg;
-				$sql .= "' ";
+			if ($codeComiteReg != '*') {
+				$sql .= "AND cd.Code_comite_reg = ? ";
+				$arrayM = array_merge($arrayM, [$codeComiteReg]);
 			}
-			if ($codeComiteDep != '*')
-			{
-				$sql .= "AND c.Code_comite_dep = '";
-				$sql .= $codeComiteDep;
-				$sql .= "' ";
+			if ($codeComiteDep != '*') {
+				$sql .= "AND c.Code_comite_dep = ? ";
+				$arrayM = array_merge($arrayM, [$codeComiteDep]);
 			}
 			$sql .= "ORDER BY c.Code ";	 
 			
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute();
-		while($row = $result->fetch()) {
+		$result->execute($arrayM);
+		while ($row = $result->fetch()) {
 			if ($row["Code"] == $codeClub) {
                 array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . ' - ' . $row['Libelle'], 'Selected' => 'SELECTED'));
             } else {
@@ -310,74 +318,65 @@ class GestionEquipe extends MyPageSecure
 		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '=> ' . $lang['NOUVELLE_EQUIPE'] . '...'));
 		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => ''));
 		
+		$arrayM = [];
 		if ($codeComiteReg != '98')
 		{
-			$sql  = "SELECT e.Numero, e.Libelle, e.Code_club 
+			$sql = "SELECT e.Numero, e.Libelle, e.Code_club 
 				FROM gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd 
 				WHERE e.Code_club = c.Code 
 				AND c.Code_comite_dep = cd.Code 
 				AND cd.Code_comite_reg != '98' ";
-			if ($codeComiteReg != '*')
-			{
-				$sql .= "AND cd.Code_comite_reg = '";
-				$sql .= $codeComiteReg;
-				$sql .= "' ";
+			if ($codeComiteReg != '*') {
+				$sql .= "AND cd.Code_comite_reg = ? ";
+				$arrayM = array_merge($arrayM, [$codeComiteReg]);
 			}
-			if ($codeComiteDep != '*')
-			{
-				$sql .= "AND c.Code_comite_dep = '";
-				$sql .= $codeComiteDep;
-				$sql .= "' ";
+			if ($codeComiteDep != '*') {
+				$sql .= "AND c.Code_comite_dep = ? ";
+				$arrayM = array_merge($arrayM, [$codeComiteDep]);
 			}
-			if ($codeClub != '*')
-			{
-				$sql .= "AND e.Code_club = '";
-				$sql .= $codeClub;
-				$sql .= "' ";
+			if ($codeClub != '*') {
+				$sql .= "AND e.Code_club = ? ";
+				$arrayM = array_merge($arrayM, [$codeClub]);
 			}
 			$sql .= "ORDER BY e.Libelle ";
 			
 			$result = $myBdd->pdo->prepare($sql);
-			$result->execute();
+			$result->execute($arrayM);
 			$num_results = $result->rowCount();
 			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== FRANCE (' . $num_results . ' ' . $lang['equipes'] . ') ====', 'Code_club' => ''));
-			while($row = $result->fetch()) {
+			while ($row = $result->fetch()) {
 				array_push($arrayHistoEquipe, array('Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club']));
 			}
 			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '', 'Code_club' => ''));
 		}
+
+		$arrayM = [];
 		if ($codeComiteReg == '98' or $codeComiteReg == '*')
 		{
-			$sql  = "SELECT e.Numero, e.Libelle, e.Code_club 
+			$sql = "SELECT e.Numero, e.Libelle, e.Code_club 
 				FROM gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd 
 				WHERE e.Code_club = c.Code 
 				AND c.Code_comite_dep = cd.Code 
 				AND cd.Code_comite_reg = '98' ";
-			if ($codeComiteReg != '*')
-			{
-				$sql .= "AND cd.Code_comite_reg = '";
-				$sql .= $codeComiteReg;
-				$sql .= "' ";
+			if ($codeComiteReg != '*') {
+				$sql .= "AND cd.Code_comite_reg = ? ";
+				$arrayM = array_merge($arrayM, [$codeComiteReg]);
 			}
-			if ($codeComiteDep != '*')
-			{
-				$sql .= "AND c.Code_comite_dep = '";
-				$sql .= $codeComiteDep;
-				$sql .= "' ";
+			if ($codeComiteDep != '*') {
+				$sql .= "AND c.Code_comite_dep = ? ";
+				$arrayM = array_merge($arrayM, [$codeComiteDep]);
 			}
-			if ($codeClub != '*')
-			{
-				$sql .= "AND e.Code_club = '";
-				$sql .= $codeClub;
-				$sql .= "' ";
+			if ($codeClub != '*') {
+				$sql .= "AND e.Code_club = ? ";
+				$arrayM = array_merge($arrayM, [$codeClub]);
 			}
 			$sql .= "ORDER BY e.Libelle ";	 
 			
 			$result = $myBdd->pdo->prepare($sql);
-			$result->execute();
+			$result->execute($arrayM);
 			$num_results = $result->rowCount();
 			array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '==== INTERNATIONAL (' . $num_results . ' ' . $lang['equipes'] . ') ====', 'Code_club' => ''));
-			while($row = $result->fetch()) {
+			while ($row = $result->fetch()) {
 				array_push($arrayHistoEquipe, array('Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club']));
 			}
 		}
@@ -386,7 +385,7 @@ class GestionEquipe extends MyPageSecure
 	
 	function Add()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
 		$codeCompet = utyGetPost('competition');
 		$codeSaison = $myBdd->GetActiveSaison();
@@ -435,7 +434,7 @@ class GestionEquipe extends MyPageSecure
 	
 	function Add2()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
 		$codeCompet = utyGetPost('competition');
 		$codeSaison = $myBdd->GetActiveSaison();
@@ -467,7 +466,7 @@ class GestionEquipe extends MyPageSecure
 			));
 			$EquipeId = $myBdd->pdo->lastInsertId();
 
-			if($checkCompo != '') {
+			if ($checkCompo != '') {
 				$checkCompo = explode('-', $checkCompo);
 				// Insertion des Joueurs Equipes ...
 				$sql  = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
@@ -481,7 +480,7 @@ class GestionEquipe extends MyPageSecure
 					AND b.Numero = :EquipeNum 
 					AND b.Code_compet = :checkCompo1 
 					AND b.Code_saison = :checkCompo0 
-					AND :checkCompo0 - Year(e.Naissance) between d.Age_min And d.Age_max ";
+					AND :checkCompo0 - Year(e.Naissance) BETWEEN d.Age_min AND d.Age_max ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array(
 					':EquipeId' => $EquipeId, 
@@ -498,7 +497,7 @@ class GestionEquipe extends MyPageSecure
 	
 	function Tirage()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
 		$codeCompet = utyGetPost('competition');
 		$codeSaison = $myBdd->GetActiveSaison();
@@ -525,7 +524,7 @@ class GestionEquipe extends MyPageSecure
 
 	function Remove()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$codeSaison = $myBdd->GetActiveSaison();
 
 		$ParamCmd = '';
@@ -538,31 +537,34 @@ class GestionEquipe extends MyPageSecure
             return;
         } // Rien à Detruire ...
 		
+		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
 		$sql = "DELETE FROM gickp_Competitions_Equipes 
-			WHERE Id IN ($ParamCmd)";
-		$myBdd->pdo->exec($sql);
+			WHERE Id IN ($in)";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
 
 		$sql = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
-			WHERE Id_equipe IN ($ParamCmd)";
-		$myBdd->pdo->exec($sql);
+			WHERE Id_equipe IN ($in)";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
 
 		$myBdd->utyJournal('Suppression  equipes', $codeSaison, utyGetPost('codeCompet'), 'NULL', 'NULL', 'NULL', $ParamCmd);
 	}
 	
 	function Duplicate($bDelete)
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		$codeCompet = utyGetPost('competition');
 		$codeCompetRef = utyGetPost('competitionRef');
 		$codeSaison = $myBdd->GetActiveSaison();
 
 		if ( (strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0) ) {
-			$myBdd = new MyBdd();
+			$myBdd = $this->myBdd;
 			
 			if ($bDelete) {
 				// Suppression des Joueurs Equipes 
 				$sql  = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
-					WHERE Id_equipe In (
+					WHERE Id_equipe IN (
 						SELECT a.Id 
 						FROM gickp_Competitions_Equipes a 
 						WHERE a.Code_compet = ? 
@@ -608,6 +610,8 @@ class GestionEquipe extends MyPageSecure
 	{
 	  	MyPageSecure::MyPageSecure(10);
 		
+		$this->myBdd = new MyBdd();
+
 		$alertMessage = '';
 		
 		$Cmd = '';

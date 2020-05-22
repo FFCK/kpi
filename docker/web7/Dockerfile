@@ -2,7 +2,13 @@ FROM newdeveloper/apache-php
 
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
-RUN apt-get update && apt-get install php-mbstring -y \
+COPY php.ini /etc/php/7.2/apache2/php.ini
+COPY msmtprc /etc/msmtprc
+RUN chmod 777 /etc/msmtprc
+RUN touch /var/log/msmtp.log
+RUN chmod 777 /var/log/msmtp.log
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install php-mbstring mailutils msmtp -y \
     && a2enmod headers \
     && a2enmod expires \
     && service apache2 restart

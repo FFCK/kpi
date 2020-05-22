@@ -8,25 +8,29 @@ include_once('../commun/MyTools.php');
 
 class GestionParamJournee extends MyPageSecure	 
 {	
-	function Load() {
+	var $myBdd;
+
+	function Load() 
+	{
 		$idJournee = utyGetSession('idJournee', 0);
 		$this->m_tpl->assign('idJournee', $idJournee);
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		if ($idJournee != 0) {		
 			// Liste ...
-			$sql  = "Select j.Id, j.Code_competition, j.Code_saison, j.Phase, j.Niveau, j.Etape, j.Nbequipes, j.Date_debut, j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Type, ";
-			$sql .= "j.Plan_eau, j.Departement, j.Responsable_insc, j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, ";
-			$sql .= "c.Code_typeclt ";
-			$sql .= "From gickp_Journees j, gickp_Competitions c ";
-			$sql .= "Where j.Id = $idJournee ";
-			$sql .= "And j.Code_competition = c.Code ";
-			$sql .= "And j.Code_saison = c.Code_saison ";
-
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) == 1) {
+			$sql = "SELECT j.Id, j.Code_competition, j.Code_saison, j.Phase, j.Niveau, 
+				j.Etape, j.Nbequipes, j.Date_debut, j.Date_fin, j.Nom, j.Libelle, j.Lieu, 
+				j.Type, j.Plan_eau, j.Departement, j.Responsable_insc, j.Responsable_R1, 
+				j.Organisateur, j.Delegue, j.ChefArbitre, c.Code_typeclt 
+				FROM gickp_Journees j, gickp_Competitions c 
+				WHERE j.Id = ? 
+				AND j.Code_competition = c.Code 
+				AND j.Code_saison = c.Code_saison ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idJournee));
+			if ($result->rowCount() == 1) {
 				$ListJournees = array();
-				$row = $myBdd->FetchArray($result);	  
+				$row = $result->fetch();	  
 				
 				$this->m_tpl->assign('Num_Journee', $row['Id']);
 				$this->m_tpl->assign('J_saison', $row['Code_saison']);
@@ -51,14 +55,16 @@ class GestionParamJournee extends MyPageSecure
 				$this->m_tpl->assign('Code_typeclt', $row['Code_typeclt']);
 				
 				if ($row['Code_typeclt'] = 'CP') {
-					$sql2  = "Select Id, Code_competition, Code_saison, Phase, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre ";
-					$sql2 .= "From gickp_Journees ";
-					$sql2 .= "Where Code_competition = '".$row['Code_competition']."' ";
-					$sql2 .= "And Code_saison = '".$row['Code_saison']."' ";
-					$sql2 .= "Order by Niveau, Phase ";
-
-					$result2 = $myBdd->Query($sql2);
-					while($row2 = $myBdd->FetchArray($result2)) {
+					$sql2 = "SELECT Id, Code_competition, Code_saison, Phase, Niveau, Etape, 
+						Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, 
+						Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre
+						FROM gickp_Journees 
+						WHERE Code_competition = '".$row['Code_competition']."' 
+						AND Code_saison = '".$row['Code_saison']."' 
+						ORDER BY Niveau, Phase ";
+					$result2 = $myBdd->pdo->prepare($sql2);
+					$result2->execute(array($idJournee));
+					while($row2 = $result2->fetch()) {
 						array_push($ListJournees, $row2);
 					}
 					$this->m_tpl->assign('ListJournees', $ListJournees);
@@ -72,21 +78,22 @@ class GestionParamJournee extends MyPageSecure
 		
 		//Liste des codes compétition
 		$arrayCompetition = array();
-		$sql  = "Select c.*, g.section, g.ordre From gickp_Competitions c, gickp_Competitions_Groupes g ";
-		$sql .= "WHERE c.Code_ref = g.Groupe ";
-		$sql .= "Group By c.Code ";
-		$sql .= "Order By g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
-
-		$result = $myBdd->Query($sql);
+		$sql = "SELECT c.*, g.section, g.ordre 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_ref = g.Groupe 
+			GROUP BY c.Code 
+			ORDER BY g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee));
         $i = -1;
         $j = '';
         $label = $myBdd->getSections();
-		while ($row = $myBdd->FetchArray($result)) {
-            if($j != $row['section']) {
+		while ($row = $result->fetch()) {
+            if ($j != $row['section']) {
                 $i ++;
                 $arrayCompetition[$i]['label'] = $label[$row['section']];
             }
-            if($row["Code"] == utyGetSession('codeCompet')) {
+            if ($row["Code"] == utyGetSession('codeCompet')) {
                 $row['selected'] = 'selected';
             } else {
                 $row['selected'] = '';
@@ -98,47 +105,50 @@ class GestionParamJournee extends MyPageSecure
 
 		// Liste des saisons
 		$arraySaisons = array();
-		$sql  = "Select distinct Code From gickp_Saison order by Code ";
-		$result = $myBdd->Query($sql);
-		while ($row = $myBdd->FetchArray($result)) {
+		$sql  = "SELECT DISTINCT Code 
+			FROM gickp_Saison 
+			ORDER BY Code ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+		while ($row = $result->fetch()) {
 			array_push($arraySaisons, array( 'Code' => $row['Code']));
 		}
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
 	}
 	
-	function Ok() {
-        $myBdd = new MyBdd();
+	function Ok() 
+	{
+        $myBdd = $this->myBdd;
 		$idJournee = (int)utyGetPost('idJournee', -1);
-		$duppliThis = $myBdd->RealEscapeString(trim(utyGetPost('duppliThis')));
+		$duppliThis = trim(utyGetPost('duppliThis'));
 		
-		$J_saison = $myBdd->RealEscapeString(trim(utyGetPost('J_saison')));
-		$J_competition = $myBdd->RealEscapeString(trim(utyGetPost('J_competition')));
-		$Phase = $myBdd->RealEscapeString(trim(utyGetPost('Phase')));
-		$Niveau = $myBdd->RealEscapeString(trim(utyGetPost('Niveau')));
-		$Etape = $myBdd->RealEscapeString(trim(utyGetPost('Etape')));
-		$Nbequipes = $myBdd->RealEscapeString(trim(utyGetPost('Nbequipes')));
-		$Type = $myBdd->RealEscapeString(trim(utyGetPost('Type')));
-		$Date_debut = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_debut'))));
-		$Date_origine = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_origine'))));
-		$Date_fin = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_fin'))));
-		$Nom = $myBdd->RealEscapeString(trim(utyGetPost('Nom')));
-		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle')));
-		$Lieu = $myBdd->RealEscapeString(trim(utyGetPost('Lieu')));
-		$Plan_eau = $myBdd->RealEscapeString(trim(utyGetPost('Plan_eau')));
-		$Departement = $myBdd->RealEscapeString(trim(utyGetPost('Departement')));
-		$Responsable_insc = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_insc')));
-		$Responsable_R1 = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_R1')));
-		$Organisateur = $myBdd->RealEscapeString(trim(utyGetPost('Organisateur')));
-		$Delegue = $myBdd->RealEscapeString(trim(utyGetPost('Delegue')));
-		$ChefArbitre = $myBdd->RealEscapeString(trim(utyGetPost('ChefArbitre')));
+		$J_saison = trim(utyGetPost('J_saison'));
+		$J_competition = trim(utyGetPost('J_competition'));
+		$Phase = trim(utyGetPost('Phase'));
+		$Niveau = trim(utyGetPost('Niveau'));
+		$Etape = trim(utyGetPost('Etape'));
+		$Nbequipes = trim(utyGetPost('Nbequipes'));
+		$Type = trim(utyGetPost('Type'));
+		$Date_debut = utyDateFrToUs(trim(utyGetPost('Date_debut')));
+		$Date_origine = utyDateFrToUs(trim(utyGetPost('Date_origine')));
+		$Date_fin = utyDateFrToUs(trim(utyGetPost('Date_fin')));
+		$Nom = trim(utyGetPost('Nom'));
+		$Libelle = trim(utyGetPost('Libelle'));
+		$Lieu = trim(utyGetPost('Lieu'));
+		$Plan_eau = trim(utyGetPost('Plan_eau'));
+		$Departement = trim(utyGetPost('Departement'));
+		$Responsable_insc = trim(utyGetPost('Responsable_insc'));
+		$Responsable_R1 = trim(utyGetPost('Responsable_R1'));
+		$Organisateur = trim(utyGetPost('Organisateur'));
+		$Delegue = trim(utyGetPost('Delegue'));
+		$ChefArbitre = trim(utyGetPost('ChefArbitre'));
 
-		$AvecMatchs = $myBdd->RealEscapeString(trim(utyGetPost('AvecMatchs')));
-		$CodMatchs = $myBdd->RealEscapeString(trim(utyGetPost('CodMatchs')));
+		$AvecMatchs = trim(utyGetPost('AvecMatchs'));
+		$CodMatchs = trim(utyGetPost('CodMatchs'));
 		
 		$d1 = strtotime($Date_debut.' 00:00:00'); 
 		$d2 = strtotime($Date_origine.' 00:00:00'); 
 		$diffdate = round(($d1-$d2)/60/60/24);
-		
 		
 		if ($idJournee != 0 && $duppliThis != 'Duppli') {
 			if (!utyIsAutorisationJournee($idJournee)) {
@@ -146,61 +156,85 @@ class GestionParamJournee extends MyPageSecure
             }
 
             // Modification ...
-    		$sql  = 'UPDATE gickp_Journees '
-                    . 'SET Code_competition = "'.$J_competition.'", Code_saison = "'.$J_saison.'", '
-                    . 'Type = "'.$Type.'", Phase = "'.$Phase.'", Niveau = "'.$Niveau.'", Etape = "'.$Etape.'", '
-                    . 'Nbequipes = "'.$Nbequipes.'", Date_debut = "'.$Date_debut.'", Date_fin = "'.$Date_fin.'", '
-                    . 'Nom = "'.$Nom.'", Libelle = "'.$Libelle.'", Lieu = "'.$Lieu.'", Plan_eau = "'.$Plan_eau.'", '
-                    . 'Departement = "'.$Departement.'", Responsable_insc = "'.$Responsable_insc.'", '
-                    . 'Responsable_R1 = "'.$Responsable_R1.'", Organisateur = "'.$Organisateur.'", '
-                    . 'Delegue = "'.$Delegue.'", ChefArbitre = "'.$ChefArbitre.'" '
-                    . 'WHERE Id = '.$idJournee.' ';
-			$myBdd->Query($sql);
-		
+			$sql = "UPDATE gickp_Journees 
+				SET Code_competition = ?, Code_saison = ?, 
+				`Type` = ?, Phase = ?, Niveau = ?, 
+				Etape = ?, Nbequipes = ?, Date_debut = ?, 
+				Date_fin = ?, Nom = ?, Libelle = ?, 
+				Lieu = ?, Plan_eau = ?, Departement = ?, 
+				Responsable_insc = ?, Responsable_R1 = ?, 
+				Organisateur = ?, Delegue = ?, 
+				ChefArbitre = ? 
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$J_competition, $J_saison, $Type, $Phase, $Niveau, $Etape, $Nbequipes, $Date_debut, 
+				$Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
+				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, $idJournee
+			));
+				
             $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
 		} else {
 			// Création ...
 			$nextIdJournee = $myBdd->GetNextIdJournee();
 			
-    		$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, ";
-			$sql .= "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) ";
-			$sql .= "VALUES ($nextIdJournee, '$J_competition', '$J_saison', '$Phase', '$Type', '$Niveau', '$Etape', '$Nbequipes', '$Date_debut', '$Date_fin', '$Nom', '$Libelle', '$Lieu', '$Plan_eau', ";
-			$sql .= "'$Departement', '$Responsable_insc', '$Responsable_R1', '$Organisateur', '$Delegue', '$ChefArbitre') ";
-
-			$myBdd->Query($sql);
+    		$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
+				`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
+				Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, 
+				Delegue, ChefArbitre) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$nextIdJournee, $J_competition, $J_saison, $Phase, $Type, $Niveau, $Etape, $Nbequipes, 
+				$Date_debut, $Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
+				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre
+			));
 			
 			//Copie des matchs
-			if($AvecMatchs == 'oui') {
-				$sql2a  = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-				$myBdd->Query($sql2a);
-				$sql2  = "INSERT INTO gickp_Tmp (Num) SELECT DISTINCT ce.Id FROM gickp_Competitions_Equipes ce, gickp_Journees j ";
-				$sql2 .= "WHERE ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison AND j.Id = $idJournee ORDER BY ce.Tirage; ";
-				$myBdd->Query($sql2);
+			if ($AvecMatchs == 'oui') {
+				$sql2a = "CREATE TEMPORARY TABLE gickp_Tmp 
+					(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+				$myBdd->pdo->exec($sql2a);
+				$sql2 = "INSERT INTO gickp_Tmp (Num) 
+					SELECT DISTINCT ce.Id 
+					FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+					WHERE ce.Code_compet = j.Code_competition 
+					AND ce.Code_saison = j.Code_saison 
+					AND j.Id = $idJournee 
+					ORDER BY ce.Tirage; ";
+				$myBdd->pdo->exec($sql2);
 
-				$sql3a  = "CREATE TEMPORARY TABLE gickp_Tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-				$myBdd->Query($sql3a);
-				$sql3  = "INSERT INTO gickp_Tmp2 (Num) SELECT DISTINCT ce.Id FROM gickp_Competitions_Equipes ce, gickp_Journees j ";
-				$sql3 .= "WHERE ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison AND j.Id = $idJournee ORDER BY ce.Tirage; ";
-				$myBdd->Query($sql3);
+				$sql3a = "CREATE TEMPORARY TABLE gickp_Tmp2 
+					(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+				$myBdd->pdo->exec($sql3a);
+				$sql3 = "INSERT INTO gickp_Tmp2 (Num) 
+					SELECT DISTINCT ce.Id 
+					FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+					WHERE ce.Code_compet = j.Code_competition 
+					AND ce.Code_saison = j.Code_saison 
+					AND j.Id = $idJournee 
+					ORDER BY ce.Tirage; ";
+				$myBdd->pdo->exec($sql3);
 
-				$sql4  = "Insert Into gickp_Matchs (Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, Validation) ";
-				$sql4 .= "Select $nextIdJournee, ";
 				if ($Niveau <= 1 && $CodMatchs == 'oui') {
-					$sql4 .= "CONCAT(m.Libelle, ' [T', ta.Id, '/T', tb.Id, ']'), ";
-					$sql4 .= "DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation ";
-					$sql4 .= "FROM gickp_Matchs m ";
-					$sql4 .= ", gickp_Tmp ta, gickp_Tmp2 tb ";
-					$sql4 .= "WHERE m.Id_journee = $idJournee ";
-					$sql4 .= "AND ta.Num=m.Id_equipeA ";
-					$sql4 .= "AND tb.Num=m.Id_equipeB ";
+					$sql4 = "INSERT INTO gickp_Matchs 
+						(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
+						SELECT $nextIdJournee, CONCAT(m.Libelle, ' [T', ta.Id, '/T', tb.Id, ']'), 
+						DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, 
+						m.Numero_ordre, m.Validation 
+						FROM gickp_Matchs m, gickp_Tmp ta, gickp_Tmp2 tb 
+						WHERE m.Id_journee = $idJournee 
+						AND ta.Num=m.Id_equipeA 
+						AND tb.Num=m.Id_equipeB ";
 				} else {
-					$sql4 .= "m.Libelle, ";
-					$sql4 .= "DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation ";
-					$sql4 .= "FROM gickp_Matchs m ";
-					$sql4 .= "WHERE m.Id_journee = $idJournee ";
+					$sql4 = "INSERT INTO gickp_Matchs 
+						(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
+						SELECT $nextIdJournee, m.Libelle, DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), 
+						m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation 
+						FROM gickp_Matchs m 
+						WHERE m.Id_journee = $idJournee ";
 				}
-				
-				$myBdd->Query($sql4);
+				$myBdd->pdo->exec($sql4);
 			}
 		
 			$myBdd->utyJournal('Ajout journee', $J_saison, $J_competition, '', $nextIdJournee);
@@ -213,30 +247,36 @@ class GestionParamJournee extends MyPageSecure
 		}
 	}
 	
-	function DuppliListJournees() {
-		$myBdd = new MyBdd();
-        $Date_debut = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_debut'))));
-		$Date_fin = utyDateFrToUs($myBdd->RealEscapeString(trim(utyGetPost('Date_fin'))));
-		$Nom = $myBdd->RealEscapeString(trim(utyGetPost('Nom')));
-		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle')));
-		$Lieu = $myBdd->RealEscapeString(trim(utyGetPost('Lieu')));
-		$Plan_eau = $myBdd->RealEscapeString(trim(utyGetPost('Plan_eau')));
-		$Departement = $myBdd->RealEscapeString(trim(utyGetPost('Departement')));
-		$Responsable_insc = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_insc')));
-		$Responsable_R1 = $myBdd->RealEscapeString(trim(utyGetPost('Responsable_R1')));
-		$Organisateur = $myBdd->RealEscapeString(trim(utyGetPost('Organisateur')));
-		$Delegue = $myBdd->RealEscapeString(trim(utyGetPost('Delegue')));
-		$ChefArbitre = $myBdd->RealEscapeString(trim(utyGetPost('ChefArbitre')));
-		$listJournees = explode (",", $myBdd->RealEscapeString(trim(utyGetPost('ParamCmd'))));
+	function DuppliListJournees() 
+	{
+		$myBdd = $this->myBdd;
+        $Date_debut = utyDateFrToUs(trim(utyGetPost('Date_debut')));
+		$Date_fin = utyDateFrToUs(trim(utyGetPost('Date_fin')));
+		$Nom = trim(utyGetPost('Nom'));
+		$Libelle = trim(utyGetPost('Libelle'));
+		$Lieu = trim(utyGetPost('Lieu'));
+		$Plan_eau = trim(utyGetPost('Plan_eau'));
+		$Departement = trim(utyGetPost('Departement'));
+		$Responsable_insc = trim(utyGetPost('Responsable_insc'));
+		$Responsable_R1 = trim(utyGetPost('Responsable_R1'));
+		$Organisateur = trim(utyGetPost('Organisateur'));
+		$Delegue = trim(utyGetPost('Delegue'));
+		$ChefArbitre = trim(utyGetPost('ChefArbitre'));
+		$listJournees = explode (",", trim(utyGetPost('ParamCmd')));
         
-		foreach($listJournees as $Journee) {
+		foreach ($listJournees as $Journee) {
 			// Modification ...
-			$sql  = "UPDATE gickp_Journees SET Date_debut = '$Date_debut', Date_fin = '$Date_fin', "
-                    . "Nom = '$Nom', Libelle = '$Libelle', Lieu = '$Lieu', Plan_eau = '$Plan_eau', "
-                    . "Departement = '$Departement', Responsable_insc = '$Responsable_insc', "
-                    . "Responsable_R1 = '$Responsable_R1', Organisateur = '$Organisateur', Delegue = '$Delegue', ChefArbitre = '$ChefArbitre' "
-                    . "WHERE Id = $Journee ";
-			$myBdd->Query($sql);
+			$sql = "UPDATE gickp_Journees 
+				SET Date_debut = ?, Date_fin = ?, Nom = ?, 
+				Libelle = ?, Lieu = ?, Plan_eau = ?, 
+				Responsable_R1 = ?, Organisateur = ?, 
+				Delegue = ?, ChefArbitre = ? 
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$Date_debut, $Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Responsable_R1, 
+				$Organisateur, $Delegue, $ChefArbitre, $Journee
+			));
 		
 			$myBdd->utyJournal('Modification journee', '', '', '', $Journee);
 		}
@@ -248,28 +288,31 @@ class GestionParamJournee extends MyPageSecure
 		}
 	}
 	
-	function AjustDates() {
-		$myBdd = new MyBdd();
+	function AjustDates() 
+	{
+		$myBdd = $this->myBdd;
 		$idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
 		if ($idJournee != 0) {
-			$myBdd = new MyBdd();
+			$myBdd = $this->myBdd;
 	
-			$sql  = "SELECT Date_debut, Date_fin "
-                    . "FROM gickp_Journees "
-                    . "WHERE Id = $idJournee ";
-			$result = $myBdd->Query($sql);
-			$row = $myBdd->FetchRow($result);
+			$sql = "SELECT Date_debut, Date_fin 
+				FROM gickp_Journees 
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idJournee));
+			$row = $result->fetch();
 			$Date_debut = $row[0];
-			$Date_fin = $row[1];
 			
-			$sql  = "UPDATE gickp_Matchs "
-                    . "SET Date_match = '".$Date_debut."' "
-                    . "WHERE Id_journee = $idJournee ";
-			$myBdd->Query($sql);
+			$sql = "UPDATE gickp_Matchs 
+				SET Date_match = ? 
+				WHERE Id_journee = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($Date_debut, $idJournee));
 		}			
 	}
 	
-	function Cancel() {
+	function Cancel() 
+	{
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
@@ -277,21 +320,24 @@ class GestionParamJournee extends MyPageSecure
 		}
 	}
 	
-	function Duplicate() {
-		$myBdd = new MyBdd();
+	function Duplicate() 
+	{
+		$myBdd = $this->myBdd;
         $idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
 		if ($idJournee != 0) {
 			$nextIdJournee = $myBdd->GetNextIdJournee();
 	
-			$sql  = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, "
-                    . "Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, "
-                    . "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) "
-                    . "SELECT $nextIdJournee, Code_competition, code_saison, Phase, Type, Niveau, Etape, Nbequipes, Date_debut, Date_fin, "
-                    . "Nom, Libelle, Lieu, Plan_eau, "
-                    . "Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre "
-                    . "FROM gickp_Journees Where Id = $idJournee ";
-
-			$myBdd->Query($sql);
+			$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
+				`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
+				Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, 
+				ChefArbitre) 
+				SELECT ?, Code_competition, code_saison, Phase, `Type`, Niveau, 
+				Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, 
+				Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre 
+				FROM gickp_Journees 
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($nextIdJournee, $idJournee));
 		}			
 		
 		if (isset($_SESSION['ParentUrl'])) {
@@ -306,6 +352,8 @@ class GestionParamJournee extends MyPageSecure
 	function __construct()
 	{
 		MyPageSecure::MyPageSecure(10);
+		
+		$this->myBdd = new MyBdd();
 		
 		$alertMessage = '';
 	  

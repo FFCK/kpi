@@ -15,17 +15,16 @@ class GestionInstances extends MyPageSecure
 		$idJournee = utyGetPost('idJournee', $idJournee);
 				
 		//Chargement infos journées
-		$sql = "SELECT j.Id, j.Code_competition, j.Type, j.Phase, j.Niveau, j.Date_debut, j.Date_fin, 
-				j.Nom, j.Libelle, j.Lieu, j.Plan_eau, j.Departement, 
-				j.Responsable_insc, j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, j.Publication
-				FROM gickp_Journees j
-				WHERE Id = $idJournee ";
+		$sql = "SELECT j.Id, j.Code_competition, j.Type, j.Phase, j.Niveau, j.Date_debut, 
+			j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Plan_eau, j.Departement, j.Responsable_insc, 
+			j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, j.Publication
+			FROM gickp_Journees j
+			WHERE Id = ? ";
 				// TODO: Ajouter le représentant des chefs d'équipes, entraîneurs et compétiteurs
 				// TODO: Ajouter le représentant du président de la CNA (président du Jury d'appel) ?
-		//echo $sql;
-		$result = $myBdd->Query($sql);
-		$row = $myBdd->FetchArray($result);
-		//array_push($arrayJournee, $row);
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee));
+		$row = $result->fetch();
 		$this->m_tpl->assign('arrayJournee', $row);
 	}
 	
@@ -41,15 +40,14 @@ class GestionInstances extends MyPageSecure
 		MyPageSecure::MyPageSecure(8);
 		
 		$alertMessage = '';
+
 		$Cmd = utyGetPost('Cmd');
 		
-		if (strlen($Cmd) > 0)
-		{
+		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Fonction')
 				($_SESSION['Profile'] <= 1) ? $this->Fonction() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
-			if ($alertMessage == '')
-			{
+			if ($alertMessage == '') {
 				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
 			}

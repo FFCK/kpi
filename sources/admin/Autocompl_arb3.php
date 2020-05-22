@@ -62,7 +62,7 @@ $sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau,
 	AND (a.Matric Like ? 
 		OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER(?) 
 		OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER(?) 
-		OR UPPER(b.Libelle) LIKE UPPER (?) 
+		OR UPPER(b.Libelle) LIKE UPPER(?) 
 	) 
 	ORDER BY b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
 $result = $myBdd->pdo->prepare($sql);

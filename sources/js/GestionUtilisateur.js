@@ -117,6 +117,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			var nom = data[7]+' '+data[6];
 			jq("#guser").val(data[1]);
 			jq("#gidentite").val(nom);
+			jq("#limitclub").val(data[14]);
 		}
 	});
 	
