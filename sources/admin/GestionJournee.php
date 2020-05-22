@@ -8,9 +8,11 @@ include_once('../commun/MyTools.php');
 
 class GestionJournee extends MyPageSecure	 
 {	
+	var $myBdd;
+
 	function Load()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
@@ -20,6 +22,8 @@ class GestionJournee extends MyPageSecure
             $lang = $langue['fr'];
         }
         
+		$codeSaison = $myBdd->GetActiveSaison();
+
         //Filtre affichage type compet
 		$AfficheCompet = utyGetSession('AfficheCompet','');
 		$AfficheCompet = utyGetPost('AfficheCompet', $AfficheCompet);
@@ -52,12 +56,11 @@ class GestionJournee extends MyPageSecure
 		$_SESSION['idEvenement'] = $idEvenement;
 		$this->m_tpl->assign('idEvenement', $idEvenement);
 		
-		$sql  = "Select Id, Libelle, Date_debut, Publication ";
-		$sql .= "From gickp_Evenement ";
-		//$sql .= "Where Publication = 'O' ";
-		$sql .= "Order By Date_debut DESC, Libelle ";	 
-		
-		$result = $myBdd->Query($sql);
+		$sql = "SELECT Id, Libelle, Date_debut, Publication 
+			FROM gickp_Evenement 
+			ORDER BY Date_debut DESC, Libelle ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
 		$arrayEvenement = array();
 		if (-1 == $idEvenement) {
             array_push($arrayEvenement, array('Id' => -1, 'Libelle' => 'Tous_les_evenements', 'Selection' => 'SELECTED'));
@@ -65,7 +68,7 @@ class GestionJournee extends MyPageSecure
             array_push($arrayEvenement, array('Id' => -1, 'Libelle' => 'Tous_les_evenements', 'Selection' => ''));
         }
 
-		while($row = $myBdd->FetchArray($result)) {
+		while ($row = $result->fetch()) {
 			if ($row["Publication"] == 'O')
 				$PublicEvt = ' (PUBLIC)';
 			else
@@ -87,35 +90,24 @@ class GestionJournee extends MyPageSecure
 		$codeCompet = utyGetSession('codeCompet', '*');
 		$codeCompet = utyGetPost('comboCompet', $codeCompet);
 		$codeCompet = utyGetGet('Compet', $codeCompet);
-		if($codeCompet != $_SESSION['codeCompet'] || isset($_GET['Compet']))
-		{
+		if ($codeCompet != $_SESSION['codeCompet'] || isset($_GET['Compet'])) {
 			$this->Raz();
 			$idSelJournee = '*';
 			$idMatch = -1;
-		}
-		else
-		{
+		} else {
 			$idSelJournee = utyGetSession('idSelJournee', '*');  //ATTENTION : Comportement à surveiller
 			$idSelJournee = utyGetPost('comboJournee2', $idSelJournee);
 			$idSelJournee = utyGetGet('idJournee', $idSelJournee);
-		//	if ($_GET['idJournee'] == '')
-		//		$idSelJournee = utyGetPost('comboJournee2', $idSelJournee);  // PAS CONVAINCU !
 				
-        if (!isset($_SESSION['idSelJournee'])) {
-            $_SESSION['idSelJournee'] = '';
-        }
-        if ($idSelJournee != $_SESSION['idSelJournee']) {
-            $idMatch = -1;
-        } else {
-            $idMatch = utyGetSession('idMatch', -1);
-        }
+			if (!isset($_SESSION['idSelJournee'])) {
+				$_SESSION['idSelJournee'] = '';
+			}
+			if ($idSelJournee != $_SESSION['idSelJournee']) {
+				$idMatch = -1;
+			} else {
+				$idMatch = utyGetSession('idMatch', -1);
+			}
 
-            //	if ($idSelJournee == '*')
-		//		$idSelJournee = '*';//utyGetSession('idSelJournee', '*');
-		//	else
-		//	{
-				// Chargement Initial de la page ..
-		//	}
 		}
 		$_SESSION['idMatch'] = $idMatch;
 		$_SESSION['idSelJournee'] = $idSelJournee;
@@ -127,152 +119,166 @@ class GestionJournee extends MyPageSecure
 			
 		// Chargement des Informations relatives aux Journées ...
 		if ($idSelJournee != '*') {
-			$sql  = "Select Distinct b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, b.Lieu, b.Date_debut, b.Type, a.Code_typeclt ";
-			$sql .= "From gickp_Journees b, gickp_Competitions a ";
-			$sql .= "Where b.Id = $idSelJournee ";
-			$sql .= "And a.Code = b.Code_competition ";
+			$sql = "SELECT DISTINCT b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, 
+				b.Lieu, b.Date_debut, b.Type, a.Code_typeclt 
+				FROM gickp_Journees b, gickp_Competitions a 
+				WHERE b.Id = ? 
+				AND a.Code = b.Code_competition ";
 			$sql .= utyGetFiltreCompetition('a.');			
-			
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idSelJournee));				
 			$idEvenement = -1;
 		} else {
 			if ($idEvenement != -1) {
-					$sql  = "Select Distinct a.Id, a.Code_competition, a.Phase, a.Niveau, a.Libelle, a.Lieu, a.Date_debut, a.Type, c.Code_typeclt ";
-					$sql .= "From gickp_Journees a, gickp_Evenement_Journees b, gickp_Competitions c ";
-					$sql .= "Where a.Id = b.Id_journee ";
-					$sql .= "And b.Id_evenement = $idEvenement ";
-					$sql .= "And a.Code_competition = c.Code ";
-					$sql .= "And a.Code_saison = c.Code_saison ";
-					if ($codeCompet != '*') {
-                    $sql .= "And a.Code_competition = '$codeCompet' ";
+				$sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Libelle, 
+					a.Lieu, a.Date_debut, a.Type, c.Code_typeclt 
+					FROM gickp_Journees a, gickp_Evenement_Journees b, gickp_Competitions c 
+					WHERE a.Id = b.Id_journee 
+					AND a.Code_competition = c.Code 
+					AND a.Code_saison = c.Code_saison 
+					AND b.Id_evenement = ? ";
+				$arrayQuery = [$idEvenement];
+				if ($codeCompet != '*') {
+					$sql .= "AND a.Code_competition = ? ";
+					$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
                 }
-                $sql .= " Order by a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
+                $sql .= "ORDER BY a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute($arrayQuery);
 			} else {
-                $sql  = "Select Distinct j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut, j.Type, c.Code_typeclt ";
-                $sql .= "From gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g ";
+				$arrayQuery = [$codeSaison];
+                $sql = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, 
+					j.Lieu, j.Date_debut, j.Type, c.Code_typeclt 
+					FROM gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g 
+					WHERE j.Code_saison = ? ";
                 if ($codeCompet != '*') {
-                    $sql .= "Where j.Code_competition = '$codeCompet' And j.Code_saison = '";
-                } else {
-                    $sql .= "Where j.Code_saison = '";
+                    $sql .= "AND j.Code_competition = ? ";
+					$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
                 }
-                $sql .= utyGetSaison();
-					$sql .= "' ";
-					if ($filtreMois > 0) {
-                    $sql .= " And (MONTH(j.Date_debut) = $filtreMois OR MONTH(j.Date_fin) = $filtreMois) ";
+				if ($filtreMois > 0) {
+                    $sql .= "AND (MONTH(j.Date_debut) = ? 
+						OR MONTH(j.Date_fin) = ?) ";
+					$arrayQuery = array_merge($arrayQuery, [$filtreMois], [$filtreMois]);
                 }
-                $sql .= " AND c.Code_ref = g.Groupe ";
-                $sql .= " And j.Code_competition = c.Code ";
-                $sql .= " And j.Code_saison = c.Code_saison ";
+                $sql .= "AND c.Code_ref = g.Groupe 
+					AND j.Code_competition = c.Code 
+					AND j.Code_saison = c.Code_saison ";
                 $sql .= utyGetFiltreCompetition('c.');			
-                $sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+                $sql .= "AND c.Code_niveau LIKE ? ";
+				$arrayQuery = array_merge($arrayQuery, [utyGetSession('AfficheNiveau').'%']);
                 if ($AfficheCompet == 'N') {
-                    $sql .= " And c.Code Like 'N%' ";
+                    $sql .= "AND c.Code LIKE 'N%' ";
                 } elseif ($AfficheCompet == 'CF') {
-                    $sql .= " And c.Code Like 'CF%' ";
+                    $sql .= "AND c.Code LIKE 'CF%' ";
                 } elseif ($AfficheCompet == 'M') {
-                    $sql .= " And c.Code_ref = 'M' ";
+                    $sql .= "AND c.Code_ref = 'M' ";
                 } elseif($AfficheCompet > 0) {
-                    $sql .= " And g.section = '" . $AfficheCompet . "' ";
+                    $sql .= "AND g.section = ? ";
+					$arrayQuery = array_merge($arrayQuery, [$AfficheCompet]);
                 }
-                $sql .= " Order by j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
+                $sql .= " ORDER BY j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute($arrayQuery);
 			}
 		}
 		
 		$arrayJournees = array();
 		$arrayJourneesAutorisees = array();
 		$i = 0;
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
-	
 		$lstJournee = '';
-		if ($num_results != 0)
-		{
-			while($row = $myBdd->FetchArray($result)) {
-				array_push($arrayJournees, array( 'Id' => $row['Id'], 
-					'Code_competition' => $row['Code_competition'], 'Code_typeclt' => $row['Code_typeclt'], 
-					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'], 
-					'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
-					'Date_debut' => utyDateUsToFr($row['Date_debut']) ));
-                if ($i > 0) {
-                    $lstJournee .= ',';
-                }
-                $lstJournee .= $row['Id'];
-				
-				// Journees autorisées seulement :
-				if (utyIsAutorisationJournee($row['Id']))
-				{
-					array_push($arrayJourneesAutorisees, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 'Lieu' => $row['Lieu'], 'Code_typeclt' => $row['Code_typeclt'],
-																					'Type' => $row['Type'], 'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Date_debut' => utyDateUsToFr($row['Date_debut']) ));
-				}
-				$i ++;
+		while ($row = $result->fetch()) {
+			array_push($arrayJournees, array( 'Id' => $row['Id'], 
+				'Code_competition' => $row['Code_competition'], 'Code_typeclt' => $row['Code_typeclt'], 
+				'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'], 
+				'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
+				'Date_debut' => utyDateUsToFr($row['Date_debut']) ));
+			if ($i > 0) {
+				$lstJournee .= ',';
 			}
+			$lstJournee .= $row['Id'];
+			
+			// Journees autorisées seulement :
+			if (utyIsAutorisationJournee($row['Id']))
+			{
+				array_push($arrayJourneesAutorisees, array( 'Id' => $row['Id'], 
+					'Code_competition' => $row['Code_competition'], 'Lieu' => $row['Lieu'], 
+					'Code_typeclt' => $row['Code_typeclt'], 'Type' => $row['Type'], 
+					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
+					'Date_debut' => utyDateUsToFr($row['Date_debut']) ));
+			}
+			$i ++;
 		}
 		
 		$_SESSION['lstJournee'] = $lstJournee;
 
 
 		// Chargement des Informations relatives aux Journées pour le filtre...
-		if ($idEvenement2 != -1)
-		{
-            $sql  = "Select Distinct a.Id, a.Code_competition, a.Phase, a.Niveau, a.Lieu, a.Date_debut, c.Code_typeclt ";
-            $sql .= "From gickp_Journees a, gickp_Evenement_Journees b, gickp_Competitions c ";
-            $sql .= "Where a.Id = b.Id_journee ";
-            $sql .= "And a.Code_competition = c.Code ";
-            $sql .= "And a.Code_saison = c.Code_saison ";
-            $sql .= "And b.Id_evenement = $idEvenement2 ";
-            if ($codeCompet != '*') {
-                $sql .= "And a.Code_competition = '$codeCompet' ";
+		if ($idEvenement2 != -1) {
+            $sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Lieu, 
+				a.Date_debut, c.Code_typeclt 
+				FROM gickp_Journees a, gickp_Evenement_Journees b, gickp_Competitions c 
+				WHERE a.Id = b.Id_journee 
+				AND a.Code_competition = c.Code 
+				AND a.Code_saison = c.Code_saison 
+				AND b.Id_evenement = ? ";
+			$arrayQuery = [$idEvenement2];
+			if ($codeCompet != '*') {
+                $sql .= "AND a.Code_competition = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
             }
-            $sql .= " Order by a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
+            $sql .= "ORDER BY a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayQuery);
 		} else {
-            $sql  = "Select Distinct j.Id, j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Date_debut, c.Code_typeclt ";
-            $sql .= "From gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g ";
+            $sql  = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Lieu, 
+				j.Date_debut, c.Code_typeclt 
+				FROM gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g 
+				WHERE j.Code_saison = ? ";
+			$arrayQuery = [$codeSaison];
             if ($codeCompet != '*') {
-                $sql .= "Where j.Code_competition = '$codeCompet' And j.Code_saison = '";
-            } else {
-                $sql .= "Where j.Code_saison = '";
+                $sql .= "AND j.Code_competition = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
             }
-            $sql .= utyGetSaison();
-            $sql .= "' ";
             if ($filtreMois > 0) {
-                $sql .= " And (MONTH(j.Date_debut) = $filtreMois OR MONTH(j.Date_fin) = $filtreMois) ";
+                $sql .= "AND (MONTH(j.Date_debut) = $filtreMois 
+					OR MONTH(j.Date_fin) = $filtreMois) ";
+				$arrayQuery = array_merge($arrayQuery, [$filtreMois], [$filtreMois]);
             }
-            $sql .= " And j.Code_competition = c.Code ";
-            $sql .= " And j.Code_saison = c.Code_saison ";
-            $sql .= " And c.Code_ref = g.Groupe ";
+			$sql .= "AND j.Code_competition = c.Code 
+				AND j.Code_saison = c.Code_saison 
+				AND c.Code_ref = g.Groupe ";
             $sql .= utyGetFiltreCompetition('c.');			
-            $sql .= " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
+            $sql .= "AND c.Code_niveau LIKE ? ";
+			$arrayQuery = array_merge($arrayQuery, [utyGetSession('AfficheNiveau').'%']);
             if ($AfficheCompet == 'N') {
-                $sql .= " And c.Code Like 'N%' ";
+                $sql .= " AND c.Code LIKE 'N%' ";
             } elseif ($AfficheCompet == 'CF') {
-                $sql .= " And c.Code Like 'CF%' ";
+                $sql .= " AND c.Code LIKE 'CF%' ";
             } elseif ($AfficheCompet == 'M') {
-                $sql .= " And c.Code_ref = 'M' ";
+                $sql .= " AND c.Code_ref = 'M' ";
             } elseif($AfficheCompet > 0) {
-                $sql .= " And g.section = '" . $AfficheCompet . "' ";
+                $sql .= " AND g.section = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$AfficheCompet]);
             }
-            $sql .= " Order by j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
+            $sql .= "ORDER BY j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayQuery);
 		}
 		
 		$arrayJourneesAutoriseesFiltre = array();
 		$PhaseLibelle = 0;
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
-		
-		if ($num_results != 0) {
-			while($row = $myBdd->FetchArray($result)) {
-				// S'il n'y a qu'une seule compétition et de type CP, on affichera les phases
-				if ($codeCompet != '*' && $row['Code_typeclt'] == 'CP') {
-                    $PhaseLibelle = 1;
-                }
-                if(utyGetSession('lang') == 'fr') {
-                    $row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
-                }
-                // Journees autorisées seulement :
-				if (utyIsAutorisationJournee($row['Id'])) {
-					array_push($arrayJourneesAutoriseesFiltre, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 'Lieu' => $row['Lieu'], 'Code_typeclt' => $row['Code_typeclt'],
-																					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Date_debut' => $row['Date_debut'] ));
-				}
-				
+		while ($row = $result->fetch()) {
+			// S'il n'y a qu'une seule compétition et de type CP, on affichera les phases
+			if ($codeCompet != '*' && $row['Code_typeclt'] == 'CP') {
+				$PhaseLibelle = 1;
+			}
+			if (utyGetSession('lang') == 'fr') {
+				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+			}
+			// Journees autorisées seulement :
+			if (utyIsAutorisationJournee($row['Id'])) {
+				array_push($arrayJourneesAutoriseesFiltre, array( 'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 'Lieu' => $row['Lieu'], 'Code_typeclt' => $row['Code_typeclt'],
+																				'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Date_debut' => $row['Date_debut'] ));
 			}
 		}
 		
@@ -282,46 +288,53 @@ class GestionJournee extends MyPageSecure
 		if ($idEvenement != -1) {
             $arrayCompetition[0]['label'] = "Evenement";
             $arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'Toutes_les_competitions_de_l_evenement', 'selected' => 'selected' );
-            $i = 0;
-			$sql  = "Select Distinct c.GroupOrder, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, "
-                    . "c.Titre_actif, g.id, g.section, g.ordre "
-                    . "From gickp_Evenement_Journees a, gickp_Journees b, gickp_Competitions c, gickp_Competitions_Groupes g "
-                    . "Where a.Id_evenement = $idEvenement "
-                    . "And a.Id_journee = b.Id "
-                    . utyGetFiltreCompetition('c.')
-                    . " And b.Code_competition = c.Code "
-                    . "And b.Code_saison = c.Code_saison "
-                    . "And c.Code_ref = g.Groupe "
-                    . "Order By g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
+			$i = 0;
+			$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
+			$sql = "SELECT DISTINCT c.GroupOrder, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, 
+				c.Titre_actif, g.id, g.section, g.ordre 
+				FROM gickp_Evenement_Journees a, gickp_Journees b, gickp_Competitions c, 
+				gickp_Competitions_Groupes g 
+				WHERE a.Id_evenement = ? 
+				AND a.Id_journee = b.Id 
+				$sqlFiltreCompetition 
+				AND b.Code_competition = c.Code 
+				AND b.Code_saison = c.Code_saison 
+				AND c.Code_ref = g.Groupe 
+				ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idEvenement));
 		} else {
             $arrayCompetition[0]['label'] = "Evenement";
-//            $arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'Toutes les compétitions sélectionnées', 'selected' => '' );
             $i = -1;
 			$arrayCompetEvt = array( 'Code' => '*', 'Libelle' => 'Toutes les compétitions sélectionnées');
-			$sql  = "Select Distinct c.GroupOrder, c.Code, c.Libelle, c.Code_niveau, c.Code_ref, c.Code_tour, "
-                    . "c.Soustitre, c.Soustitre2, c.Titre_actif, g.id, g.section, g.ordre "
-                    . "From gickp_Competitions c, gickp_Competitions_Groupes g "
-                    . "Where 1 = 1 "
-                    . "AND c.Code_saison = " . utyGetSaison() . " "
-                    . utyGetFiltreCompetition('c.')
-                    . " And c.Code_niveau Like '".utyGetSession('AfficheNiveau')."%' ";
-            if ($AfficheCompet == 'N') {
-                $sql .= " And c.Code Like 'N%' ";
+			$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
+			$sql = "SELECT DISTINCT c.GroupOrder, c.Code, c.Libelle, c.Code_niveau, c.Code_ref, 
+				c.Code_tour, c.Soustitre, c.Soustitre2, c.Titre_actif, g.id, g.section, g.ordre 
+				FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+				WHERE 1 = 1 
+				AND c.Code_saison = ? 
+				$sqlFiltreCompetition 
+                AND c.Code_niveau LIKE ? ";
+				$arrayQuery = array($codeSaison, utyGetSession('AfficheNiveau').'%');
+			if ($AfficheCompet == 'N') {
+                $sql .= "AND c.Code LIKE 'N%' ";
             } elseif ($AfficheCompet == 'CF') {
-                $sql .= " And c.Code Like 'CF%' ";
+                $sql .= "AND c.Code LIKE 'CF%' ";
             } elseif ($AfficheCompet == 'M') {
-                $sql .= " And c.Code_ref = 'M' ";
+                $sql .= "AND c.Code_ref = 'M' ";
             } elseif($AfficheCompet > 0) {
-                $sql .= " And g.section = '" . $AfficheCompet . "' ";
+                $sql .= "AND g.section = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$AfficheCompet]);
             }
-            $sql .= " And c.Code_ref = g.Groupe "
-                    . " Order By c.Code_saison, g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";	 
+			$sql .= "AND c.Code_ref = g.Groupe 
+				ORDER BY c.Code_saison, g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";	 
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayQuery);
 		}
-		$result = $myBdd->Query($sql);
 
         $j = '';
         $label = $myBdd->getSections();
-		while ($row = $myBdd->FetchArray($result)) {
+		while ($row = $result->fetch()) {
 			// Titre
 			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
                 $Libelle = $row["Soustitre"];
@@ -332,11 +345,11 @@ class GestionJournee extends MyPageSecure
                 $Libelle .= ' - ' . $row["Soustitre2"];
             }
 
-            if($j != $row['section']) {
+            if ($j != $row['section']) {
                 $i ++;
                 $arrayCompetition[$i]['label'] = $label[$row['section']];
             }
-            if($row["Code"] == $codeCompet) {
+            if ($row["Code"] == $codeCompet) {
                 $row['selected'] = 'selected';
             } else {
                 $row['selected'] = '';
@@ -346,10 +359,8 @@ class GestionJournee extends MyPageSecure
 		}
 
 		// Initialisation Date du match ...
-		if (!isset($_POST['Date_match']))
-		{
-            if (strlen(utyGetSession('Date_match')) == 0)
-            {
+		if (!isset($_POST['Date_match'])) {
+            if (strlen(utyGetSession('Date_match')) == 0) {
                 if (count($arrayJournees) >= 1) {
                     $_SESSION['Date_match'] = $arrayJournees[0]['Date_debut'];
                 }
@@ -358,21 +369,21 @@ class GestionJournee extends MyPageSecure
 
 		// Sous-titre
 		$headerSubTitle = '';
-		if ( (count($arrayJournees) == 1)) {  // || ($idEvenement == -1) )
+		if ( (count($arrayJournees) == 1)) {
 			$headerSubTitle = $arrayJournees[0]['Code_competition'];
 			if (strlen($arrayJournees[0]['Phase']) > 0) {
                 $headerSubTitle .= '/' . $arrayJournees[0]['Phase'] . ' (Niveau ' . $arrayJournees[0]['Niveau'] . ')';
             }
             $headerSubTitle .= ' - '.$arrayJournees[0]['Libelle'].' - '.$arrayJournees[0]['Date_debut'];
-		} else {  //if ($idEvenement != -1)
+		} else {
 			// Chargement Evenement ...
-			$sql  = "Select Libelle, Lieu, Date_debut, Date_fin ";
-			$sql .= "From gickp_Evenement ";
-			$sql .= "Where Id = $idEvenement";
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) == 1)
-			{
-				$row = $myBdd->FetchArray($result);	  	
+			$sql = "SELECT Libelle, Lieu, Date_debut, Date_fin 
+				FROM gickp_Evenement 
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idEvenement));
+			if ($result->rowCount() == 1) {
+				$row = $result->fetch();	  	
 				$headerSubTitle = '<span class="highlight4">'.$row['Libelle'].'</span>&nbsp;>&nbsp;';
 			}	
 			if ($codeCompet != '*') {
@@ -421,32 +432,34 @@ class GestionJournee extends MyPageSecure
 		$dateFin = '';
 		$arrayMatchs = array();
 		$arrayJours = array();
+		$arrayListJournees = explode(',', $lstJournee);
 		
-		if ($lstJournee != '')
-		{
+		if ($lstJournee != '') {
+			$arrayQuery = $arrayListJournees;
 			// Chargement des Matchs des journées ...
-			$sql  = "Select a.Id, a.Id_journee, a.Numero_ordre, a.Date_match, a.Heure_match, a.Libelle, a.Terrain, a.Publication, a.Validation, ";
-			$sql .= "a.Statut, a.Type, a.Periode, a.ScoreDetailA, a.ScoreDetailB, ";
-			$sql .= "b.Libelle EquipeA, c.Libelle EquipeB, a.Id_equipeA, a.Id_equipeB, ";
-			$sql .= "a.Terrain, a.ScoreA, a.ScoreB, a.CoeffA, a.CoeffB, ";
-			$sql .= "a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, ";
-			$sql .= "d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, ";
-			$sql .= "e.Soustitre2 ";
-			$sql .= "From gickp_Matchs a ";
-			$sql .= "Left Outer Join gickp_Competitions_Equipes b On (a.Id_equipeA = b.Id) "; 
-			$sql .= "Left Outer Join gickp_Competitions_Equipes c On (a.Id_equipeB = c.Id) ";
-			$sql .= ", gickp_Journees d, gickp_Competitions e ";
-			$sql .= "Where a.Id_journee In ($lstJournee) ";
-			$sql .= "And a.Id_journee = d.Id ";
-			$sql .= "And d.Code_competition = e.Code ";
-			$sql .= "And d.Code_saison = e.Code_saison ";
-			if($filtreTerrain != '')
-			{
-				$sql .= "And a.Terrain = '".$filtreTerrain."' ";
+			$in  = str_repeat('?,', count($arrayListJournees) - 1) . '?';
+			$sql = "SELECT a.Id, a.Id_journee, a.Numero_ordre, a.Date_match, a.Heure_match, 
+				a.Libelle, a.Terrain, a.Publication, a.Validation, a.Statut, a.Type, a.Periode, 
+				a.ScoreDetailA, a.ScoreDetailB, b.Libelle EquipeA, c.Libelle EquipeB, 
+				a.Id_equipeA, a.Id_equipeB, a.Terrain, a.ScoreA, a.ScoreB, a.CoeffA, a.CoeffB, 
+				a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, 
+				a.Matric_arbitre_secondaire, d.Code_competition, d.Phase, d.Niveau, d.Lieu, 
+				d.Libelle LibelleJournee, e.Soustitre2 
+				FROM gickp_Journees d, gickp_Competitions e, gickp_Matchs a 
+				LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
+				LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+				WHERE a.Id_journee IN ($in) 
+				AND a.Id_journee = d.Id 
+				AND d.Code_competition = e.Code 
+				AND d.Code_saison = e.Code_saison ";
+			if ($filtreTerrain != '') {
+				$sql .= "AND a.Terrain = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$filtreTerrain]);
 			}
 			$sql .= $orderMatchs;
 			
-			$result = $myBdd->Query($sql);
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayQuery);
 			
 			// Variables à initialiser : @COSANDCO_WAMPSERVER
 			$listMatch = '';
@@ -454,18 +467,16 @@ class GestionJournee extends MyPageSecure
 			
 			$listeJours = array();
 			
-            while($row = $myBdd->FetchArray($result)) {
-				
+			while ($row = $result->fetch()) {				
 				$jour = $row['Date_match'];
-                if(utyGetSession('lang') == 'fr') {
+                if (utyGetSession('lang') == 'fr') {
     				$listeJours[$jour] = utyDateUsToFr($jour);
                 } else {
     				$listeJours[$jour] = $jour;
                 }
-				if($filtreJour == '' || $jour == $filtreJour)
-				{
+				if ($filtreJour == '' || $jour == $filtreJour) {
                     if ($row['Libelle'] != '') {
-                        if(utyGetSession('lang') == 'en') {
+                        if (utyGetSession('lang') == 'en') {
                             $EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
                         } else {
                             $EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
@@ -503,44 +514,40 @@ class GestionJournee extends MyPageSecure
 						$MatchAutorisation = 'N';
 
 					array_push($arrayMatchs, array( 'Id' => $row['Id'], 'Id_journee' => $row['Id_journee'], 'Numero_ordre' => $row['Numero_ordre'],
-								//'Periode' => $Periode, 'PeriodeTitle' => $PeriodeTitle, 
-								'ScoreDetailA' => $row['ScoreDetailA'], 'ScoreDetailB' => $row['ScoreDetailB'], 
-								'Statut' => $row['Statut'], 'Periode' => $row['Periode'], 'Type' => $row['Type'],
-								'Date_match' => utyDateUsToFr($row['Date_match']), 'Heure_match' => $row['Heure_match'],
-								'Libelle' => $row['Libelle'], 'Terrain' => $row['Terrain'], 
-								'EquipeA' => $row['EquipeA'], 'EquipeB' => $row['EquipeB'],
-								'Id_equipeA' => $row['Id_equipeA'], 'Id_equipeB' => $row['Id_equipeB'], 
-								'ScoreA' => $row['ScoreA'], 'ScoreB' => $row['ScoreB'], 
-								'CoeffA' => $row['CoeffA'], 'CoeffB' => $row['CoeffB'],
-								'Arbitre_principal' => $row['Arbitre_principal'], 
-								'Arbitre_secondaire' => $row['Arbitre_secondaire'],
-								'Matric_arbitre_principal' => $row['Matric_arbitre_principal'],
-								'Matric_arbitre_secondaire' => $row['Matric_arbitre_secondaire'],
-								'Code_competition' => $row['Code_competition'],
-								'Soustitre2' => $row['Soustitre2'],
-								'Phase' => $row['Phase'],
-								'Niveau' => $row['Niveau'],
-								'Lieu' => $row['Lieu'],
-								'LibelleJournee' => $row['LibelleJournee'],
-								'StdOrSelected' => $StdOrSelected,
-								'MatchAutorisation' => $MatchAutorisation,
-								'Publication' => $Publication,
-								'Validation' => $Validation	));
+						'ScoreDetailA' => $row['ScoreDetailA'], 'ScoreDetailB' => $row['ScoreDetailB'], 
+						'Statut' => $row['Statut'], 'Periode' => $row['Periode'], 'Type' => $row['Type'],
+						'Date_match' => utyDateUsToFr($row['Date_match']), 'Heure_match' => $row['Heure_match'],
+						'Libelle' => $row['Libelle'], 'Terrain' => $row['Terrain'], 
+						'EquipeA' => $row['EquipeA'], 'EquipeB' => $row['EquipeB'],
+						'Id_equipeA' => $row['Id_equipeA'], 'Id_equipeB' => $row['Id_equipeB'], 
+						'ScoreA' => $row['ScoreA'], 'ScoreB' => $row['ScoreB'], 
+						'CoeffA' => $row['CoeffA'], 'CoeffB' => $row['CoeffB'],
+						'Arbitre_principal' => $row['Arbitre_principal'], 
+						'Arbitre_secondaire' => $row['Arbitre_secondaire'],
+						'Matric_arbitre_principal' => $row['Matric_arbitre_principal'],
+						'Matric_arbitre_secondaire' => $row['Matric_arbitre_secondaire'],
+						'Code_competition' => $row['Code_competition'],
+						'Soustitre2' => $row['Soustitre2'],
+						'Phase' => $row['Phase'],
+						'Niveau' => $row['Niveau'],
+						'Lieu' => $row['Lieu'],
+						'LibelleJournee' => $row['LibelleJournee'],
+						'StdOrSelected' => $StdOrSelected,
+						'MatchAutorisation' => $MatchAutorisation,
+						'Publication' => $Publication,
+						'Validation' => $Validation	));
 					
-					if($listMatch != '')
+					if ($listMatch != '')
 						$listMatch .= ',';
 					$listMatch .= $row['Id'];
 								
 					if ($row['Phase'] != '' && $row['Libelle'] != '')
 						$PhaseLibelle = 1;
 																					
-					if ($i == 0)
-					{
+					if ($i == 0) {
 						$dateDebut = utyDateUsToFr($row['Date_match']);
 						$dateFin = utyDateUsToFr($row['Date_match']);
-					}																				
-					else
-					{
+					} else {
 						if (utyDateCmpFr($dateDebut, utyDateUsToFr($row['Date_match'])) > 0)
 							$dateDebut = utyDateUsToFr($row['Date_match']);
 							
@@ -548,7 +555,7 @@ class GestionJournee extends MyPageSecure
 							$dateFin = utyDateUsToFr($row['Date_match']);
 					}
 					
-					if($jourmatch != $row['Date_match'])
+					if ($jourmatch != $row['Date_match'])
 						array_push($arrayJours, utyDateUsToFr($row['Date_match']));
 					$jourmatch = $row['Date_match'];
 				}
@@ -565,38 +572,30 @@ class GestionJournee extends MyPageSecure
 		$_SESSION['dateDebutEvenement'] = $dateDebut;
 		$_SESSION['dateFinEvenement'] = $dateFin;
 		
-		
-		if ( ($idMatch < 0) && (count($arrayMatchs) >= 1) )
-		{
-//			$idMatch = $arrayMatchs[0]['Id'];
-//			$idJournee = $arrayMatchs[0]['Id_journee'];
-		}			
-
 		// Chargement des Equipes A et B ...
-		if ($idMatch < 0 && $lstJournee != '')
-		{
-			$sql  = "Select Distinct a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet ";
-			$sql .= "From gickp_Competitions_Equipes a, gickp_Journees b ";
-			$sql .= "Where a.Code_compet = b.Code_competition ";
-			$sql .= "And a.Code_saison = b.Code_saison ";
-			$sql .= "And b.Id In ($lstJournee) ";
-			$sql .= " Order By a.Poule, a.Tirage, a.Libelle ";	 
-		}
-		elseif ($idMatch >= 0)
-		{
-			$sql  = "Select a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet ";
-			$sql .= "From gickp_Competitions_Equipes a, gickp_Journees b, gickp_Matchs c ";
-			$sql .= "Where a.Code_compet = b.Code_competition ";
-			$sql .= "And a.Code_saison = b.Code_saison ";
-			$sql .= "And b.Id = c.Id_journee ";
-			$sql .= "And c.Id = $idMatch ";
-			$sql .= " Order By a.Poule, a.Tirage, a.Libelle ";	 
+		if ($idMatch < 0 && $lstJournee != '') {
+			$in  = str_repeat('?,', count($arrayListJournees) - 1) . '?';
+			$sql = "SELECT DISTINCT a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet 
+				FROM gickp_Competitions_Equipes a, gickp_Journees b 
+				WHERE a.Code_compet = b.Code_competition 
+				AND a.Code_saison = b.Code_saison 
+				AND b.Id IN ($in) 
+				ORDER BY a.Poule, a.Tirage, a.Libelle ";	 
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayListJournees);
+		} elseif ($idMatch >= 0) {
+			$sql = "SELECT a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet 
+				FROM gickp_Competitions_Equipes a, gickp_Journees b, gickp_Matchs c 
+				WHERE a.Code_compet = b.Code_competition 
+				AND a.Code_saison = b.Code_saison 
+				AND b.Id = c.Id_journee 
+				AND c.Id = ? 
+				ORDER BY a.Poule, a.Tirage, a.Libelle ";	 
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
 		}
 			
-		if ($lstJournee != '')
-		{
-			$result = $myBdd->Query($sql);
-
+		if ($lstJournee != '') {
 			$Id_equipeA = utyGetSession('Id_equipeA', -1);
 			$Id_equipeB = utyGetSession('Id_equipeB', -1);
 
@@ -610,8 +609,8 @@ class GestionJournee extends MyPageSecure
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => $lang['Pool_fin_de_liste']));
 			array_push($arrayArbitreEquipes, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Equipes'] . ' ----------'));
 		
-            while($row = $myBdd->FetchArray($result)) {
-				
+			$arrayEquipes = [-1];
+            while ($row = $result->fetch()) {
 				$libelleEquipe = $row['Libelle'];
 				$codeCompetition = $row['Code_compet'];
 				
@@ -630,29 +629,22 @@ class GestionJournee extends MyPageSecure
 			}
 
 			// Les arbitres potentiels peuvent aussi être les joueurs des Equipes ...
-//			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => ''));
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Joueurs'] . ' ----------'));
-			$sql  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, (c.Arb IS NULL) AS sortCol ";
-			$sql .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
-			$sql .= "Where a.Id_equipe = b.Id ";
-
-			$sql .= "AND b.Id In (-1";
-			for ($i=0;$i<count($arrayEquipeA);$i++)
-			{
-				$sql .= ",";
-				$sql .= $arrayEquipeA[$i]['Id'];
-			}
-			$sql .= ") AND a.Capitaine <> 'X' ";
-			$sql .= "Order By b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
-		
-			$result = $myBdd->Query($sql);
-            $num_results = $myBdd->NumRows($result);
+			$in  = str_repeat('?,', count($arrayEquipes) - 1) . '?';
+			$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, 
+				(c.Arb IS NULL) AS sortCol 
+				FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Joueurs a 
+				LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric 
+				WHERE a.Id_equipe = b.Id 
+				AND b.Id IN ($in) 
+				AND a.Capitaine <> 'X' 
+				ORDER BY b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayEquipes);
 			
 			$libelleTemp = '';
-			
-            while($row = $myBdd->FetchArray($result)) {
-				if ($row['Libelle'] != $libelleTemp)
-				{
+            while ($row = $result->fetch()) {
+				if ($row['Libelle'] != $libelleTemp) {
 					array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---'));
 					$libelleTemp = $row['Libelle'];
 				}
@@ -668,14 +660,16 @@ class GestionJournee extends MyPageSecure
 			// Les arbitres potentiels font partie du Pool ...
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => ''));
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Pool_Arbitres'] . ' ----------'));
-			$sql2  = "Select a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau ";
-			$sql2 .= "From gickp_Competitions_Equipes_Joueurs a left outer join gickp_Arbitre c on a.Matric = c.Matric, gickp_Competitions_Equipes b  ";
-			$sql2 .= "Where a.Id_equipe = b.Id ";
-			$sql2 .= "And a.Capitaine = 'A' ";
-			$sql2 .= "And b.Code_compet = 'POOL' ";
-			$sql2 .= "Order By a.Nom, a.Prenom ";
-			$result2 = $myBdd->Query($sql2);
-            while($row2 = $myBdd->FetchArray($result2)) {
+			$sql2 = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau 
+				FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Joueurs a 
+				LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric 
+				WHERE a.Id_equipe = b.Id 
+				AND a.Capitaine = 'A' 
+				AND b.Code_compet = 'POOL' 
+				ORDER BY a.Nom, a.Prenom ";
+			$result2 = $myBdd->pdo->prepare($sql2);
+			$result2->execute();
+            while ($row2 = $result2->fetch()) {
 				if (strlen($row2['Arb']) > 0) {
                     $arb = ' ' . strtoupper($row2['Arb']);
                 } else {
@@ -702,13 +696,10 @@ class GestionJournee extends MyPageSecure
 		$this->m_tpl->assign('codeCurrentCompet', $codeCompet);
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		
-		if(($idEvenement == -1) && ($codeCompet == '*') && ($idSelJournee == '*') && ($_SESSION['Profile'] < 4))
-		{
+		if(($idEvenement == -1) && ($codeCompet == '*') && ($idSelJournee == '*') && ($_SESSION['Profile'] < 4)) {
 			$TropDeMatchs = 'disabled';
 			$TropDeMatchsMsg = ' (TROP DE MATCHS SELECTIONNES)';
-		}
-		else
-		{
+		} else {
 			$TropDeMatchs = '' ;
 			$TropDeMatchsMsg = '';
 		}
@@ -726,23 +717,22 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['Intervalle_match']))
 			$_SESSION['Intervalle_match'] = $_POST['Intervalle_match'];
 		
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		// Chargement des Matchs des journées ...
-		$sql  = "Select Numero_ordre, Date_match, Heure_match, Terrain, Type ";
-		$sql .= "From gickp_Matchs ";
-		$sql .= "Where Id_journee = '$idJournee' ";
-		$sql .= "Order by Date_match, Heure_match, Numero_ordre ";
-		$result = $myBdd->Query($sql);
-		$num_results = $myBdd->NumRows($result);
-		while($row = $myBdd->FetchArray($result)) {
+		$sql = "SELECT Numero_ordre, Date_match, Heure_match, Terrain, `Type` 
+			FROM gickp_Matchs 
+			WHERE Id_journee = ? 
+			ORDER BY Date_match, Heure_match, Numero_ordre ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee));
+		while ($row = $result->fetch()) {
 			$lastNumOrdre = $row['Numero_ordre'];
 			$lastDate = $row['Date_match'];
 			$lastHeure = $row['Heure_match'];
 			$lastTerrain = $row['Terrain'];
 			$lastType = $row['Type'];
 		}
-		if($num_results > 0)
-		{
+		if ($result->rowCount() > 0) {
 			$_SESSION['Date_match'] = utyDateUsToFr($lastDate);
 			$_SESSION['Heure_match'] = utyTimeInterval($lastHeure, utyGetSession('Intervalle_match'));
 			$_SESSION['Num_match'] = $lastNumOrdre+1;
@@ -762,7 +752,7 @@ class GestionJournee extends MyPageSecure
 	
 	function Update()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
         
         $idMatch = utyGetSession('idMatch', 0);
 		
@@ -770,75 +760,81 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['Intervalle_match']))
 			$_SESSION['Intervalle_match'] = $_POST['Intervalle_match'];
 		
-		$idJournee = (int)utyGetPost('comboJournee', 0);
+		$idJournee = (int) utyGetPost('comboJournee', 0);
 
-		$numMatch = (int)utyGetPost('Num_match', '');
-		$dateMatch = $myBdd->RealEscapeString(trim(utyGetPost('Date_match', '')));
-		$heureMatch = $myBdd->RealEscapeString(trim(utyGetPost('Heure_match', '')));
-		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle', '')));
-		$Terrain = $myBdd->RealEscapeString(trim(utyGetPost('Terrain', '')));
-		$Type = $myBdd->RealEscapeString(trim(utyGetPost('Type', '')));
+		$numMatch = (int) utyGetPost('Num_match', '');
+		$dateMatch = trim(utyGetPost('Date_match', ''));
+		$heureMatch = trim(utyGetPost('Heure_match', ''));
+		$Libelle = trim(utyGetPost('Libelle', ''));
+		$Terrain = trim(utyGetPost('Terrain', ''));
+		$Type = trim(utyGetPost('Type', ''));
 		
-		$idEquipeA = (int)utyGetPost('idEquipeA', -1);
-		$idEquipeB = (int)utyGetPost('idEquipeB', -1);
+		$idEquipeA = (int) utyGetPost('idEquipeA', -1);
+		$idEquipeB = (int) utyGetPost('idEquipeB', -1);
 	
-		$arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre1', '')));
+		$arbitre1 = trim(utyGetPost('arbitre1', ''));
 		if (strlen($arbitre1) == 0)
-			$arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre1', '')));
-		$arbitre1_matric = (int)utyGetPost('arbitre1_matric', '');
+			$arbitre1 = trim(utyGetPost('comboarbitre1', ''));
+		$arbitre1_matric = (int) utyGetPost('arbitre1_matric', '');
 			
-		$arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre2', '')));
+		$arbitre2 = trim(utyGetPost('arbitre2', ''));
 		if (strlen($arbitre2) == 0)
-			$arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre2', '')));
-		$arbitre2_matric = (int)utyGetPost('arbitre2_matric', '');
+			$arbitre2 = trim(utyGetPost('comboarbitre2', ''));
+		$arbitre2_matric = (int) utyGetPost('arbitre2_matric', '');
 			
-		$coeffA = (float)utyGetPost('coeffA', 1);
+		$coeffA = (float) utyGetPost('coeffA', 1);
 		if (strlen($coeffA) == 0 || $coeffA == 0)
 			$coeffA = 1.0;
 			
-		$coeffB = (float)utyGetPost('coeffB', 1);
+		$coeffB = (float) utyGetPost('coeffB', 1);
 		if (strlen($coeffB) == 0 || $coeffB == 0)
 			$coeffB = 1.0;
 		
-		if ( ($idMatch > 0) && ($idJournee != 0) )
-		{
+		if ( $idMatch > 0 && $idJournee != 0 ) {
 			if (strlen($numMatch) == 0)
 				$numMatch = $this->LastNumeroOrdre($idJournee) + 1;
 			
-			$sql  = "SELECT Id_equipeA, Id_equipeB 
+			$sql = "SELECT Id_equipeA, Id_equipeB 
 				FROM gickp_Matchs 
-				WHERE Id = $idMatch ";
-			$result = $myBdd->Query($sql);
-			$row = $myBdd->FetchRow($result);
-			$anciene_equipeA = $row[0]["Id_equipeA"]; //TODO vérifier
-			$anciene_equipeB = $row[0]["Id_equipeB"];
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
+			$row = $result->fetch();
+			// if (isset($row[0]["Id_equipeA"]))
+				$anciene_equipeA = $row["Id_equipeA"];
+			// if (isset($row[0]["Id_equipeB"]))
+				$anciene_equipeB = $row["Id_equipeB"];
 
-			$sql  = "UPDATE gickp_Matchs 
-				SET Id_journee = $idJournee, Numero_ordre = $numMatch, 
-				Date_match='" . utyDateFrToUs($dateMatch) . "', Heure_match='$heureMatch', 
-				Libelle='$Libelle', Terrain='$Terrain', Type='$Type', 
-				Id_equipeA=$idEquipeA, Id_equipeB=$idEquipeB, Arbitre_principal='" . $arbitre1 . "', 
-				Arbitre_secondaire='" . $arbitre2 . "', Matric_arbitre_principal='$arbitre1_matric', 
-				Matric_arbitre_secondaire='$arbitre2_matric', CoeffA = $coeffA, CoeffB = $coeffB 
-				WHERE Id = $idMatch 
-				AND Validation != 'O' ";
-	
-			$myBdd->Query($sql);
+			$sql = "UPDATE gickp_Matchs 
+				SET Id_journee = ?, Numero_ordre = ?, 
+				Date_match = ?, Heure_match = ?, 
+				Libelle = ?, Terrain = ?, `Type` = ?, 
+				Id_equipeA = ?, Id_equipeB = ?, Arbitre_principal = ?, 
+				Arbitre_secondaire = ?, Matric_arbitre_principal = ?, 
+				Matric_arbitre_secondaire = ?, CoeffA = ?, CoeffB = ? 
+				WHERE Id = ? 
+				AND `Validation` != 'O' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$idJournee, $numMatch, utyDateFrToUs($dateMatch), $heureMatch, $Libelle, $Terrain, 
+				$Type, $idEquipeA, $idEquipeB, $arbitre1, $arbitre2, $arbitre1_matric, 
+				$arbitre2_matric, $coeffA, $coeffB, $idMatch
+			));
 			
 			//Vidage des joueurs si l'équipe est vide ou modifiée
-			if($idEquipeA == -1 or $idEquipeA != $anciene_equipeA)
-			{
-				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = $idMatch 
+			if ($idEquipeA == -1 or $idEquipeA != $anciene_equipeA) {
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
 					AND Equipe = 'A' ";
-				$myBdd->Query($sql);
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch));
 			}
-			if($idEquipeB == -1 or $idEquipeB != $anciene_equipeB)
-			{
-				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = $idMatch 
+			if ($idEquipeB == -1 or $idEquipeB != $anciene_equipeB) {
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
 					AND Equipe = 'B' ";
-				$myBdd->Query($sql);
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch));
 			}
 			
 			$this->Raz();
@@ -850,37 +846,37 @@ class GestionJournee extends MyPageSecure
 			
 	function Add()
 	{
-		$myBdd = new MyBdd();
-		$idJournee = (int)utyGetPost('comboJournee', 0);
+		$myBdd = $this->myBdd;
+		$idJournee = (int) utyGetPost('comboJournee', 0);
 		
-		$numMatch = (int)utyGetPost('Num_match', '');
-		$dateMatch = $myBdd->RealEscapeString(trim(utyGetPost('Date_match', '')));
-		$heureMatch = $myBdd->RealEscapeString(trim(utyGetPost('Heure_match', '')));
-		$Libelle = $myBdd->RealEscapeString(trim(utyGetPost('Libelle', '')));
-		$Terrain = $myBdd->RealEscapeString(trim(utyGetPost('Terrain', '')));
-		$Type = $myBdd->RealEscapeString(trim(utyGetPost('Type', '')));
+		$numMatch = (int) utyGetPost('Num_match', '');
+		$dateMatch = trim(utyGetPost('Date_match', ''));
+		$heureMatch = trim(utyGetPost('Heure_match', ''));
+		$Libelle = trim(utyGetPost('Libelle', ''));
+		$Terrain = trim(utyGetPost('Terrain', ''));
+		$Type = trim(utyGetPost('Type', ''));
 				
-		$idEquipeA = (int)utyGetPost('idEquipeA', -1);
-		$idEquipeB = (int)utyGetPost('idEquipeB', -1);
+		$idEquipeA = (int) utyGetPost('idEquipeA', -1);
+		$idEquipeB = (int) utyGetPost('idEquipeB', -1);
 		
-		$arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre1', '')));
+		$arbitre1 = trim(utyGetPost('arbitre1', ''));
 		if (strlen($arbitre1) == 0) {
-            $arbitre1 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre1', '')));
+            $arbitre1 = trim(utyGetPost('comboarbitre1', ''));
         }
-        $arbitre1_matric = $myBdd->RealEscapeString(trim(utyGetPost('arbitre1_matric', '')));
+        $arbitre1_matric = trim(utyGetPost('arbitre1_matric', ''));
 					
-		$arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('arbitre2', '')));
+		$arbitre2 = trim(utyGetPost('arbitre2', ''));
 		if (strlen($arbitre2) == 0) {
-            $arbitre2 = $myBdd->RealEscapeString(trim(utyGetPost('comboarbitre2', '')));
+            $arbitre2 = trim(utyGetPost('comboarbitre2', ''));
         }
-        $arbitre2_matric = $myBdd->RealEscapeString(trim(utyGetPost('arbitre2_matric', '')));
+        $arbitre2_matric = trim(utyGetPost('arbitre2_matric', ''));
 		
-		$coeffA = (float)utyGetPost('coeffA', 1);
+		$coeffA = (float) utyGetPost('coeffA', 1);
 		if (strlen($coeffA) == 0) {
             $coeffA = 1.0;
         }
 
-        $coeffB = (float)utyGetPost('coeffB', 1);
+        $coeffB = (float) utyGetPost('coeffB', 1);
 		if (strlen($coeffB) == 0) {
             $coeffB = 1.0;
         }
@@ -891,42 +887,16 @@ class GestionJournee extends MyPageSecure
                 $numMatch = $this->LastNumeroOrdre($idJournee) + 1;
             }
 
-			$sql  = "INSERT INTO gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, 
-				Libelle, Terrain, Type, Id_equipeA, Id_equipeB, ScoreA, ScoreB, Arbitre_principal, 
+			$sql = "INSERT INTO gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, 
+				Libelle, Terrain, `Type`, Id_equipeA, Id_equipeB, Arbitre_principal, 
 				Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB) 
-				VALUES (";
-			$sql .= $idJournee;
-			$sql .= ",";
-			$sql .= $numMatch;
-			$sql .= ",'";
-			$sql .=  utyDateFrToUs($dateMatch);
-			$sql .= "','";
-			$sql .= $heureMatch;
-			$sql .= "','";
-			$sql .= $Libelle;
-			$sql .= "','";
-			$sql .= $Terrain;
-			$sql .= "','";
-			$sql .= $Type;
-			$sql .= "',";
-			$sql .= $idEquipeA;
-			$sql .= ",";
-			$sql .= $idEquipeB;
-			$sql .= ",'?','?','";
-			$sql .= $arbitre1;
-			$sql .= "','";
-			$sql .= $arbitre2;
-			$sql .= "','";
-			$sql .= $arbitre1_matric;
-			$sql .= "','";
-			$sql .= $arbitre2_matric;
-			$sql .= "',";
-			$sql .= $coeffA;
-			$sql .= ",";
-			$sql .= $coeffB;
-			$sql .= ")";
-		
-			$myBdd->Query($sql);
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$idJournee, $numMatch, utyDateFrToUs($dateMatch), $heureMatch, $Libelle, $Terrain, 
+				$Type, $idEquipeA, $idEquipeB, $arbitre1, $arbitre2, $arbitre1_matric, 
+				$arbitre2_matric, $coeffA, $coeffB
+			));
 		}
 		
 		$_SESSION['Intervalle_match'] = utyGetSession('Intervalle_match','40');
@@ -949,27 +919,33 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
 		
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
 		//Contrôle suppression possible
-		$sql = "Select Id From gickp_Matchs_Detail Where Id_match In ($ParamCmd) ";
-		
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) != 0)
+		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
+		$sql = "SELECT Id 
+			FROM gickp_Matchs_Detail 
+			WHERE Id_match IN ($in) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
+		if ($result->rowCount() > 0)
 			return "Il reste des évènements dans ces matchs ! Suppression impossible ";
 		
 		//Vidage des joueurs du match
-		$sql  = "DELETE FROM gickp_Matchs_Joueurs USING gickp_Matchs_Joueurs, gickp_Matchs "
-                . "WHERE gickp_Matchs_Joueurs.Id_match = gickp_Matchs.Id "
-                . "AND gickp_Matchs_Joueurs.Id_match In ($ParamCmd) "
-                . "AND gickp_Matchs.Validation != 'O'; ";
-		$myBdd->Query($sql);
+		$sql = "DELETE FROM gickp_Matchs_Joueurs 
+			USING gickp_Matchs_Joueurs, gickp_Matchs 
+			WHERE gickp_Matchs_Joueurs.Id_match = gickp_Matchs.Id 
+			AND gickp_Matchs_Joueurs.Id_match IN ($in) 
+			AND gickp_Matchs.Validation != 'O'; ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
         
 		// Suppression
 		$sql  = "DELETE FROM gickp_Matchs 
-			WHERE Id IN ($ParamCmd) 
-			AND Validation != 'O' ";
-		$myBdd->Query($sql);
+			WHERE Id IN ($in) 
+			AND `Validation` != 'O' ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
 
 		$myBdd->utyJournal('Suppression matchs', '', '', 'NULL', 'NULL', $ParamCmd);
 		return;
@@ -977,37 +953,34 @@ class GestionJournee extends MyPageSecure
 	
 	function LastNumeroOrdre($idJournee)
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
-		$sql  = "SELECT Code_competition, Code_saison, Date_debut 
+		$sql = "SELECT Code_competition, Code_saison, Date_debut 
 			FROM gickp_Journees 
-			WHERE Id = ";
-		$sql .= $idJournee;
-			
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1)
-		{
-			$row = $myBdd->FetchArray($result);
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();
 			
 			$codeCompet = $row['Code_competition'];
 			$codeSaison = $row['Code_saison'];
 			$dateDebut = $row['Date_debut'];
 		}
 		
-		$sql  = "SELECT MAX(Numero_ordre) MaxNumeroOrdre 
+		$sql = "SELECT MAX(Numero_ordre) MaxNumeroOrdre 
 			FROM gickp_Matchs 
 			WHERE Id_journee IN (
 				SELECT Id 
 				FROM gickp_Journees 
-				WHERE Code_competition = '$codeCompet' 
-				AND Code_saison = '$codeSaison'
-				AND Date_debut <= '$dateDebut'
+				WHERE Code_competition = ? 
+				AND Code_saison = ? 
+				AND Date_debut <= ? 
 			) ";
-		
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1)
-		{
-			$row = $myBdd->FetchArray($result);
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCompet, $codeSaison, $dateDebut));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();
 			return $row['MaxNumeroOrdre'];
 		}
 	
@@ -1016,24 +989,22 @@ class GestionJournee extends MyPageSecure
 
 	function ParamMatch()
 	{
-		$idMatch = (int)utyGetPost('ParamCmd', -1);
+		$idMatch = (int) utyGetPost('ParamCmd', -1);
 		$_SESSION['idMatch'] = $idMatch;
 		
 		$_POST['comboJournee2'] = '';
 		
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
-		$sql  = "SELECT Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, 
-			Terrain, Type, Id_equipeA, Id_equipeB, Arbitre_principal, Arbitre_secondaire, 
+		$sql = "SELECT Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, 
+			Terrain, `Type`, Id_equipeA, Id_equipeB, Arbitre_principal, Arbitre_secondaire, 
 			Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB 
 			FROM gickp_Matchs 
-			WHERE Id = $idMatch ";
-		
-		$result = $myBdd->Query($sql);
-		if ($myBdd->NumRows($result) == 1)
-		{
-			$row = $myBdd->FetchArray($result);
-			
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();			
 			$_SESSION['idJournee'] = $row['Id_journee'];
 			$_SESSION['Num_match'] = $row['Numero_ordre'];
 			$_SESSION['Date_match'] = utyDateUsToFr($row['Date_match']);
@@ -1058,50 +1029,53 @@ class GestionJournee extends MyPageSecure
 		
 	function InitTitulaire()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
 		$idJournee = (int)utyGetPost('comboJournee', 0);
 		
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 		
-  	// Chargement des Matchs de la journée ...
-		$sql  = "SELECT Id, Id_equipeA, Id_equipeB 
+  		// Chargement des Matchs de la journée ...
+		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
 			FROM gickp_Matchs 
-			WHERE Id_journee = $idJournee
-			AND Validation <> 'O' ";
-		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
-		
+			WHERE Id_journee = ?
+			AND `Validation` <> 'O' ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee));
+		while ($row = $result->fetch()) {		
 			$idMatch = $row['Id'];
 			$idEquipeA = $row['Id_equipeA'];
 			$idEquipeB = $row['Id_equipeB'];
 	
 			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				WHERE Id_match = $idMatch 
+				WHERE Id_match = ? 
 				AND Equipe = 'A'";
-			$myBdd->Query($sql);
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
 					
-			$sql  = "REPLACE INTO gickp_Matchs_Joueurs 
-				SELECT $idMatch, Matric, Numero, 'A', Capitaine 
+			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+				SELECT ?, Matric, Numero, 'A', Capitaine 
 				FROM gickp_Competitions_Equipes_Joueurs 
-				WHERE Id_equipe = $idEquipeA 
+				WHERE Id_equipe = ? 
 				AND Capitaine <> 'X' 
 				AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $idEquipeA));
 						
 			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				WHERE Id_match = $idMatch 
+				WHERE Id_match = ? 
 				AND Equipe = 'B'";
-			$myBdd->Query($sql);
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
 					
 			$sql  = "REPLACE INTO gickp_Matchs_Joueurs 
-				SELECT $idMatch, Matric, Numero, 'B', Capitaine 
+				SELECT ?, Matric, Numero, 'B', Capitaine 
 				FROM gickp_Competitions_Equipes_Joueurs 
-				WHERE Id_equipe = $idEquipeB 
+				WHERE Id_equipe = ? 
 				AND Capitaine <> 'X' 
 				AND Capitaine <> 'A' ";
-			$myBdd->Query($sql);
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $idEquipeB));
 		}
 		
 		$myBdd->utyJournal('Initialisation titulaires', '', '', 'NULL', $idJournee);
@@ -1109,16 +1083,18 @@ class GestionJournee extends MyPageSecure
 	
 	function PubliMatch()
 	{
+		$myBdd = $this->myBdd;
+		$codeSaison = $myBdd->GetActiveSaison();
 		$idMatch = (int) utyGetPost('ParamCmd', 0);
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
 		$sql = "UPDATE gickp_Matchs 
-			SET Publication = '$changePub' 
-			WHERE Id = '$idMatch' ";
-		$myBdd = new MyBdd();
-		$myBdd->Query($sql);
+			SET Publication = ? 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($changePub, $idMatch));
 		
-		$myBdd->utyJournal('Publication match', utyGetSaison(), '', 'NULL', 'NULL', $idMatch, $changePub);
+		$myBdd->utyJournal('Publication match', $codeSaison, '', 'NULL', 'NULL', $idMatch, $changePub);
 	}
 	
 	function PubliMultiMatchs()
@@ -1131,25 +1107,28 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
+		$codeSaison = $myBdd->GetActiveSaison();
 		
-		// Change Publication	
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			$sql = "SELECT Publication 
-				FROM gickp_Matchs 
-				WHERE Id = ".$arrayParam[$i]." ";
+		$sql = "SELECT Publication 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
 
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) != 1)
+		$sql2 = "UPDATE gickp_Matchs 
+			SET Publication = ? 
+			WHERE Id = ? ";
+		$result2 = $myBdd->pdo->prepare($sql2);
+
+		// Change Publication	
+		for ($i=0;$i<count($arrayParam);$i++) {
+			$result->execute(array($arrayParam[$i]));
+			if ($result->rowCount() != 1)
 				continue;
-			$row = $myBdd->FetchArray($result);
+			$row = $result->fetch();
 			($row['Publication']=='O') ? $changePub = 'N' : $changePub = 'O';
-			$sql = "UPDATE gickp_Matchs 
-				SET Publication = '$changePub' 
-				WHERE Id = '".$arrayParam[$i]."' ";
-			$myBdd->Query($sql);
-			$myBdd->utyJournal('Publication match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $changePub);
+			$result2->execute(array($changePub, $arrayParam[$i]));
+			$myBdd->utyJournal('Publication match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], $changePub);
 		}
 	}
 	
@@ -1163,16 +1142,18 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
+		$codeSaison = $myBdd->GetActiveSaison();
 		
+		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
+		$sql = "UPDATE gickp_Matchs 
+			SET Publication = 'O', Validation = 'O' 
+			WHERE Id IN ($in) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
 		// Change Publication	
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			$sql = "UPDATE gickp_Matchs 
-				SET Publication = 'O', Validation = 'O' 
-				WHERE Id = '".$arrayParam[$i]."' ";
-			$myBdd->Query($sql);
-			$myBdd->utyJournal('Verrou-Publi match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], 'O');
+		for ($i=0;$i<count($arrayParam);$i++) {
+			$myBdd->utyJournal('Verrou-Publi match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], 'O');
 		}
 	}
 	
@@ -1181,13 +1162,16 @@ class GestionJournee extends MyPageSecure
 		$idMatch = (int) utyGetPost('ParamCmd', 0);
 		(utyGetPost('Verrou', '') != 'O') ? $changeVerrou = 'O' : $changeVerrou = 'N';
 		
+		$myBdd = $this->myBdd;
+		$codeSaison = $myBdd->GetActiveSaison();
+
 		$sql = "UPDATE gickp_Matchs 
-			SET Validation = '$changeVerrou' 
-			WHERE Id = '$idMatch' ";
-		$myBdd = new MyBdd();
-		$myBdd->Query($sql);
+			SET Validation = ? 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($changeVerrou, $idMatch));
 		
-		$myBdd->utyJournal('Verrouillage match', utyGetSaison(), '', 'NULL', 'NULL', $idMatch, $changeVerrou);
+		$myBdd->utyJournal('Verrouillage match', $codeSaison, '', 'NULL', 'NULL', $idMatch, $changeVerrou);
 	}
 	
 	
@@ -1201,24 +1185,28 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
+		$codeSaison = $myBdd->GetActiveSaison();
 		
+		$sql = "SELECT `Validation` 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+
+		$sql2 = "UPDATE gickp_Matchs 
+			SET `Validation` = ? 
+			WHERE Id = ? ";
+		$result2 = $myBdd->pdo->prepare($sql2);
+
 		// Change Publication	
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			$sql = "SELECT Validation 
-				FROM gickp_Matchs 
-				WHERE Id = ".$arrayParam[$i]." ";
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) != 1)
+		for ($i=0;$i<count($arrayParam);$i++) {
+			$result->execute(array($arrayParam[$i]));
+			if ($result->rowCount() != 1)
 				continue;
-			$row = $myBdd->FetchArray($result);	
+			$row = $result->fetch();	
 			($row['Validation']=='O') ? $changeVerrou = 'N' : $changeVerrou = 'O';
-			$sql = "UPDATE gickp_Matchs 
-				SET Validation = '$changeVerrou' 
-				WHERE Id = '".$arrayParam[$i]."' ";
-			$myBdd->Query($sql);
-			$myBdd->utyJournal('Verrouillage match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $changeVerrou);
+			$result2->execute(array($changeVerrou, $arrayParam[$i]));
+			$myBdd->utyJournal('Verrouillage match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], $changeVerrou);
 		}
 	}
 	
@@ -1233,28 +1221,77 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à affecter ...
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$texte = '';
 		
+		$sql1 = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
+			m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
+			j.Code_saison 
+			FROM gickp_Matchs m, gickp_Journees j 
+			WHERE m.Id = ? 
+			AND m.Id_journee = j.Id 
+			AND m.Validation <> 'O' 
+			AND (m.ScoreA = '' 
+				OR m.ScoreA = '?' 
+				OR m.ScoreA IS NULL) "; 
+		$result1 = $myBdd->pdo->prepare($sql1);
+
+		$sql2 = "SELECT ce.Id, ce.Libelle Nom_equipe 
+			FROM gickp_Competitions_Equipes ce 
+			WHERE ce.Tirage = ? 
+			AND ce.Code_compet = ? 
+			AND ce.Code_saison = ? ";
+		$result2 = $myBdd->pdo->prepare($sql2);
+
+		$sql3 = "SELECT m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, 
+			ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
+			FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
+			gickp_Competitions_Equipes ce2 
+			WHERE m.Numero_ordre = ? 
+			AND m.Id_journee = j.Id 
+			AND m.Id_equipeA = ce.Id 
+			AND m.Id_equipeB = ce2.Id 
+			AND m.ScoreA <> m.ScoreB 
+			AND j.Code_competition = ? 
+			AND j.Code_saison = ? ";
+		$result3 = $myBdd->pdo->prepare($sql3);
+
+		$sql4 = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
+			ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
+			FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
+			gickp_Competitions_Equipes ce2 
+			WHERE m.Numero_ordre = ? 
+			AND m.Id_journee = j.Id 
+			AND m.Id_equipeA = ce.Id 
+			AND m.Id_equipeB = ce2.Id 
+			AND m.ScoreA <> m.ScoreB 
+			AND j.Code_competition = ? 
+			AND j.Code_saison = ? ";
+		$result4 = $myBdd->pdo->prepare($sql4);
+
+		$sql5  = "SELECT cej.Id, ce.Libelle Nom_equipe 
+			FROM gickp_Competitions_Equipes_Journee cej, gickp_Journees j, 
+			gickp_Competitions_Equipes ce 
+			WHERE cej.Clt = :codeNumero
+			AND cej.Id_journee = j.Id 
+			AND cej.Id = ce.Id 
+			AND (j.Phase LIKE :codePoule 
+				OR j.Phase LIKE CONCAT('%poule ', :codePoule, '%') 
+				OR j.Phase LIKE CONCAT('%Poule ', :codePoule, '%') 
+				OR j.Phase LIKE CONCAT('%Groupe ', :codePoule, '%') 
+				OR j.Phase LIKE CONCAT('%Group ', :codePoule, '%') 
+			AND j.Code_competition = :codeCompetition 
+			AND j.Code_saison = :codeSaison ";
+		$result5 = $myBdd->pdo->prepare($sql5);
+
 		// pour chaque match coché
-		for ($i=0; $i<count($arrayParam); $i++)
-		{
+		for ($i=0; $i<count($arrayParam); $i++) {
 			$id = $arrayParam[$i];
-			$sql  = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
-				m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
-				j.Code_saison 
-				FROM gickp_Matchs m, gickp_Journees j 
-				WHERE m.Id = $id 
-				AND m.Id_journee = j.Id 
-				AND m.Validation <> 'O' 
-				AND (m.ScoreA = '' 
-					OR m.ScoreA = '?' 
-					OR m.ScoreA IS NULL) "; 
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) != 1)
+			$result1->execute(array($id));
+			if ($result1->rowCount() != 1)
 				die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
-			$row = $myBdd->FetchArray($result);
+			$row = $result1->fetch();
 			$anciene_equipeA = $row['Id_equipeA'];
 			$anciene_equipeB = $row['Id_equipeB'];
 			
@@ -1270,10 +1307,9 @@ class GestionJournee extends MyPageSecure
 			// On sépare par tiret, slash, étoile, virgule ou point-virgule.
 			$libelle = preg_split("/[\-\/*,;]/",$libelle[0]);
 			// On analyse le contenu
-			for ($j=0; $j<4; $j++)
-			{
+			for ($j=0; $j<4; $j++) {
 				// déjà un arbitre principal désigné nominativement
-                if($j == 2 && $row['Matric_arbitre_principal'] != 0) {
+                if ($j == 2 && $row['Matric_arbitre_principal'] != 0) {
                     $selectNom[2] = '';
                     continue;
                 }
@@ -1287,16 +1323,12 @@ class GestionJournee extends MyPageSecure
 				$codeVainqueur = '';
 				$codePerdant = '';
 				$codePoule = '';
-				//preg_match("/([T])/",$libelle[$j],$codeTirage); // tirage au sort
-				//preg_match("/([V])/",$libelle[$j],$codeVainqueur); // vainqueur
-				//preg_match("/([P])/",$libelle[$j],$codePerdant); // perdant
-				//preg_match("/([A-O])/",$libelle[$j],$codePoule); // lettre de poule
 				preg_match("/([A-Z]+)/",$libelle[$j],$codeLettres); // lettre
 				preg_match("/([0-9]+)/",$libelle[$j],$codeNumero); // numero... de match ou classement de poule ou tirage
 				$posNumero = strpos($libelle[$j], $codeNumero[1]);
 				$posLettres = strpos($libelle[$j], $codeLettres[1]);
-				if($posNumero > $posLettres){
-					switch($codeLettres[1]){
+				if ($posNumero > $posLettres) { // tirage ou match
+					switch ($codeLettres[1]) {
 						case 'T' : // tirage
 						case 'D' : // draw
 							$codeTirage = $codeLettres[1];
@@ -1314,151 +1346,116 @@ class GestionJournee extends MyPageSecure
 							die("Code incorrect sur le match ".$id.". (<a href='javascript:history.back()'>Retour</a>)");
 							break;
 					}
-				}else{ // poule
+				} else { // poule
 					$codePoule = $codeLettres[1];
 				}
-				if($codeTirage != '')
-				{
-					$sql2  = "SELECT ce.Id, ce.Libelle Nom_equipe 
-						FROM gickp_Competitions_Equipes ce 
-						WHERE ce.Tirage = $codeNumero[1] 
-						AND ce.Code_compet = '".$row['Code_competition']."' 
-						AND ce.Code_saison = ".$row['Code_saison']." ";
-					$result2 = $myBdd->Query($sql2);
-					if ($myBdd->NumRows($result2) != 1)
-					{
-						$selectNum[$j]=0;
-						$selectNom[$j]='';
+				if ($codeTirage != '') { // Tirage
+					$result2->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
+					if ($result2->rowCount() != 1) {
+						$selectNum[$j] = 0;
+						$selectNom[$j] = '';
 						$clst = 'erreur10';
-					}
-					else
-					{
-						$row2 = $myBdd->FetchArray($result2);
-						$selectNum[$j]=$row2['Id'];
-						$selectNom[$j]=addslashes($row2['Nom_equipe']);
+					} else {
+						$row2 = $result2->fetch();
+						$selectNum[$j] = $row2['Id'];
+						$selectNom[$j] = addslashes($row2['Nom_equipe']);
 						$clst = $row2['Nom_equipe'];
 					}
-					$texte .=$codeNumero[1].'e poule '.$codePoule[1].' : '.$clst.'<br>';
-				}
-				elseif($codeVainqueur != '')
-				{
-					$sql2  = "SELECT m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, 
-						ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
-						FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
-						gickp_Competitions_Equipes ce2 
-						WHERE m.Numero_ordre = $codeNumero[1] 
-						AND m.Id_journee = j.Id 
-						AND m.Id_equipeA = ce.Id 
-						AND m.Id_equipeB = ce2.Id 
-						AND m.ScoreA <> m.ScoreB 
-						AND j.Code_competition = '".$row['Code_competition']."' 
-						AND j.Code_saison = ".$row['Code_saison']." ";
-					$result2 = $myBdd->Query($sql2);
-					if ($myBdd->NumRows($result2) != 1)	{
-						$selectNum[$j]=0;
-						$selectNom[$j]='';
+					$texte .= $codeNumero[1].'e poule '.$codePoule[1].' : '.$clst.'<br>';
+				} elseif($codeVainqueur != '') {
+					$result3->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
+					if ($result3->rowCount() != 1)	{
+						$selectNum[$j] = 0;
+						$selectNom[$j] = '';
 						$vainqueur = 'erreur11';
 					} else {
-						$row2 = $myBdd->FetchArray($result2);
-						if(($row2['ScoreA'] > $row2['ScoreB'] && $row2['ScoreA'] != 'F') 
-							|| $row2['ScoreB'] == 'F') {
-							$selectNum[$j]=$row2['Id_equipeA'];
-							$selectNom[$j]=addslashes($row2['Nom_equipeA']);
-							$vainqueur = $row2['Nom_equipeA'];
+						$row3 = $result3->fetch();
+						if (($row3['ScoreA'] > $row3['ScoreB'] && $row3['ScoreA'] != 'F') 
+							|| $row3['ScoreB'] == 'F') {
+							$selectNum[$j] = $row3['Id_equipeA'];
+							$selectNom[$j] = addslashes($row3['Nom_equipeA']);
+							$vainqueur = $row3['Nom_equipeA'];
 						} else {
-							$selectNum[$j]=$row2['Id_equipeB'];
-							$selectNom[$j]=addslashes($row2['Nom_equipeB']);
-							$vainqueur = $row2['Nom_equipeB'];
+							$selectNum[$j] = $row3['Id_equipeB'];
+							$selectNom[$j] = addslashes($row3['Nom_equipeB']);
+							$vainqueur = $row3['Nom_equipeB'];
 						}
 					}
-					$texte .='Vainqueur match '.$codeNumero[1].' : '.$vainqueur.'<br>';
+					$texte .= 'Vainqueur match '.$codeNumero[1].' : '.$vainqueur.'<br>';
 				} elseif($codePerdant != '') {
-					$sql2  = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
-						ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
-						FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
-						gickp_Competitions_Equipes ce2 
-						WHERE m.Numero_ordre = $codeNumero[1] 
-						AND m.Id_journee = j.Id 
-						AND m.Id_equipeA = ce.Id 
-						AND m.Id_equipeB = ce2.Id 
-						AND m.ScoreA <> m.ScoreB 
-						AND j.Code_competition = '".$row['Code_competition']."' 
-						AND j.Code_saison = ".$row['Code_saison']." ";
-					$result2 = $myBdd->Query($sql2);
-					if ($myBdd->NumRows($result2) != 1) {
-						$selectNum[$j]=0;
-						$selectNom[$j]='';
+					$result4->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
+					if ($result4->rowCount() != 1) {
+						$selectNum[$j] = 0;
+						$selectNom[$j] = '';
 						$perdant = 'erreur12';
 					} else {
-						$row2 = $myBdd->FetchArray($result2);
-						if(($row2['ScoreA'] < $row2['ScoreB'] && $row2['ScoreB'] != 'F') 
-							|| $row2['ScoreA'] == 'F') {
-							$selectNum[$j]=$row2['Id_equipeA'];
-							$selectNom[$j]=addslashes($row2['Nom_equipeA']);
-							$perdant = $row2['Nom_equipeA'];
+						$row4 = $result4->fetch();
+						if (($row4['ScoreA'] < $row4['ScoreB'] && $row4['ScoreB'] != 'F') 
+							|| $row4['ScoreA'] == 'F') {
+							$selectNum[$j] = $row4['Id_equipeA'];
+							$selectNom[$j] = addslashes($row4['Nom_equipeA']);
+							$perdant = $row4['Nom_equipeA'];
 						} else {
-							$selectNum[$j]=$row2['Id_equipeB'];
-							$selectNom[$j]=addslashes($row2['Nom_equipeB']);
-							$perdant = $row2['Nom_equipeB'];
+							$selectNum[$j] = $row4['Id_equipeB'];
+							$selectNom[$j] = addslashes($row4['Nom_equipeB']);
+							$perdant = $row4['Nom_equipeB'];
 						}
 					}
-					$texte .='Perdant match '.$codeNumero[1].' : '.$perdant.'<br>';
+					$texte .= 'Perdant match '.$codeNumero[1].' : '.$perdant.'<br>';
 				} elseif($codePoule != '') {
-					$sql2  = "SELECT cej.Id, ce.Libelle Nom_equipe 
-						FROM gickp_Competitions_Equipes_Journee cej, gickp_Journees j, 
-						gickp_Competitions_Equipes ce 
-						WHERE cej.Clt = $codeNumero[1] 
-						AND cej.Id_journee = j.Id 
-						AND cej.Id = ce.Id 
-						AND (j.Phase LIKE '".$codePoule."' 
-							OR j.Phase LIKE '%poule ".$codePoule."' 
-							OR j.Phase LIKE '%Poule ".$codePoule."' 
-							OR j.Phase LIKE '%Groupe ".$codePoule."' 
-							OR j.Phase LIKE '%Group ".$codePoule."' 
-							OR j.Phase LIKE '%poule ".$codePoule." %' 
-							OR j.Phase LIKE '%Poule ".$codePoule." %' 
-							OR j.Phase LIKE '%Groupe ".$codePoule." %' 
-							OR j.Phase LIKE '%Group ".$codePoule." %') 
-						AND j.Code_competition = '".$row['Code_competition']."' 
-						AND j.Code_saison = ".$row['Code_saison']." ";
-					$result2 = $myBdd->Query($sql2);
-					if ($myBdd->NumRows($result2) != 1) {
-						$selectNum[$j]=0;
-						$selectNom[$j]='';
+					$result5->execute(array(
+						':codeNumero' => $codeNumero[1],
+						':codePoule' => $codePoule,
+						':codeCompetition' => $row['Code_competition'], 
+						':codeSaison' => $row['Code_saison']
+					));
+					if ($result5->rowCount() != 1) {
+						$selectNum[$j] = 0;
+						$selectNom[$j] = '';
 						$clst = 'erreur13';
 					} else {
-						$row2 = $myBdd->FetchArray($result2);
-						$selectNum[$j]=$row2['Id'];
-						$selectNom[$j]=addslashes($row2['Nom_equipe']);
-						$clst = $row2['Nom_equipe'];
+						$row5 = $result5->fetch();
+						$selectNum[$j] = $row5['Id'];
+						$selectNom[$j] = addslashes($row5['Nom_equipe']);
+						$clst = $row5['Nom_equipe'];
 					}
-					$texte .=$codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
+					$texte .= $codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
 				} else {
 					$selectNum[$j]=0;
 					$selectNom[$j]='';
 				}
 			}
+
 			// Affectation
-			$sql3  = "UPDATE gickp_Matchs 
-				SET Id_equipeA = '$selectNum[0]', Id_equipeB = '$selectNum[1]'";
-			if($selectNom[2] != '')
-				$sql3 .= ", Arbitre_principal = '$selectNom[2]'";
-			if($selectNom[3] != '')
-				$sql3 .= ", Arbitre_secondaire = '$selectNom[3]' ";
-			$sql3 .= " WHERE Id = '$id' ";
-			$myBdd->Query($sql3);
-			//Suppression des joueurs existants si changements d'équipes
-			if($selectNum[0] != $anciene_equipeA) {
-				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = $id 
-					AND Equipe = 'A' ";
-				$myBdd->Query($sql);
+			$sql = "UPDATE gickp_Matchs 
+				SET Id_equipeA = ?, Id_equipeB = ? ";
+			$arrayQuery = array($selectNum[0], $selectNum[1]);
+			if ($selectNom[2] != '') {
+				$sql .= ", Arbitre_principal = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$selectNom[2]]);
 			}
-			if($selectNum[1] != $anciene_equipeB) {
-				$sql  = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = $id 
+			if ($selectNom[3] != '') {
+				$sql .= ", Arbitre_secondaire = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$selectNom[3]]);
+			}
+			$sql .= " WHERE Id = ? ";
+			$arrayQuery = array_merge($arrayQuery, [$id]);
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayQuery);
+			//Suppression des joueurs existants si changements d'équipes
+			if ($selectNum[0] != $anciene_equipeA) {
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
+					AND Equipe = 'A' ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($id));
+			}
+			if ($selectNum[1] != $anciene_equipeB) {
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
 					AND Equipe = 'B' ";
-				$myBdd->Query($sql);
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($id));
 			}
 			//Journal
 			$myBdd->utyJournal('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], 'NULL', $row['Id_journee'], $id, '');
@@ -1478,36 +1475,44 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à affecter ...
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$texte = '';
 		
+		$sql1 = "SELECT m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison 
+			FROM gickp_Matchs m, gickp_Journees j 
+			WHERE m.Id = ? 
+			AND m.Id_journee = j.Id 
+			AND m.Validation <> 'O' 
+			AND (m.ScoreA = '' 
+				OR m.ScoreA = '?' 
+				OR m.ScoreA IS NULL) "; 
+		$result1 = $myBdd->pdo->prepare($sql1);
+
+		$sql2 = "UPDATE gickp_Matchs 
+			SET Id_equipeA = 0, Id_equipeB = 0, 
+			Arbitre_principal = -1, Arbitre_secondaire = -1 
+			WHERE Id = ? ";
+		$result2 = $myBdd->pdo->prepare($sql2);
+
+		$sql3 = "DELETE FROM gickp_Matchs_Joueurs 
+		WHERE Id_match = ? ";
+		$result3 = $myBdd->pdo->prepare($sql3);
+
+
 		// pour chaque match coché
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
+		for ($i=0;$i<count($arrayParam);$i++) {
 			$id = $arrayParam[$i];
-			$sql  = "SELECT m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison 
-				FROM gickp_Matchs m, gickp_Journees j 
-				WHERE m.Id = $id
-				AND m.Id_journee = j.Id 
-				AND m.Validation <> 'O' 
-				AND (m.ScoreA = '' 
-					OR m.ScoreA = '?' 
-					OR m.ScoreA IS NULL) "; 
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) != 1)
+			$result1->execute(array($id));
+			if ($result1->rowCount() != 1)
 				die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
-			$row = $myBdd->FetchArray($result);
-			$sql3  = "UPDATE gickp_Matchs 
-				SET Id_equipeA = 0, Id_equipeB = 0, Arbitre_principal = -1, Arbitre_secondaire = -1 
-				WHERE Id = '$id' ";
-			$myBdd->Query($sql3);
+			$row = $result1->fetch();
+
+			$result2->execute(array($id));
 		
 			$myBdd->utyJournal('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], 'NULL', $row['Id_journee'], $id, '');
 			//Suppression des joueurs existants
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				WHERE Id_match = $id ";
-			$myBdd->Query($sql);
+			$result3->execute(array($id));
 		}
 		
 	}
@@ -1522,19 +1527,21 @@ class GestionJournee extends MyPageSecure
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
-		$idJournee = (int)utyGetPost('comboJournee', 0);
+		$idJournee = (int) utyGetPost('comboJournee', 0);
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
+		$codeSaison = $myBdd->GetActiveSaison();
 		
+		$sql = "UPDATE gickp_Matchs 
+			SET Id_journee = ? 
+			WHERE Id = ? 
+			AND Validation != 'O' ";
+		$result = $myBdd->pdo->prepare($sql);
+
 		// Change Journee	
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			$sql = "UPDATE gickp_Matchs 
-				SET Id_journee = $idJournee 
-				WHERE Id = $arrayParam[$i] 
-				AND Validation != 'O' ";
-			$myBdd->Query($sql);
-			$myBdd->utyJournal('Change Journee match', utyGetSaison(), '', 'NULL', 'NULL', $arrayParam[$i], $idJournee);
+		for ($i=0;$i<count($arrayParam);$i++) {
+			$result->execute(array($idJournee, $arrayParam[$i]));
+			$myBdd->utyJournal('Change Journee match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], $idJournee);
 		}
 	}
 	
@@ -1542,8 +1549,10 @@ class GestionJournee extends MyPageSecure
 	{			
 	  	MyPageSecure::MyPageSecure(10);
 		
+		$this->myBdd = new MyBdd();
+
 		$alertMessage = '';
-	  
+	  		
 		$Cmd = '';
 		if (isset($_POST['Cmd']))
 			$Cmd = $_POST['Cmd'];
@@ -1552,10 +1561,9 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['ParamCmd']))
 			$ParamCmd = $_POST['ParamCmd'];
         
-       $arrayCheck = '';
+       	$arrayCheck = '';
 
-		if (strlen($Cmd) > 0)
-		{
+		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Add')
 				($_SESSION['Profile'] <= 6) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
@@ -1590,9 +1598,9 @@ class GestionJournee extends MyPageSecure
 				($_SESSION['Profile'] <= 4) ? $this->VerrouPubliMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'AffectMultiMatchs') {
-				if($_SESSION['Profile'] <= 6) {
+				if ($_SESSION['Profile'] <= 6) {
                     $arrayCheck = $this->AffectMultiMatchs();
-                    $alertMessage = $lang['Affectation'] . ' OK';
+                    $alertMessage = 'Affectation OK';
                 } else { 
                     $alertMessage = 'Vous n avez pas les droits pour cette action.';
                 }

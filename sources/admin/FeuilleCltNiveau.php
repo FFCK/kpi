@@ -53,7 +53,7 @@ class FeuilleCltNiveau extends MyPage {
         }
 
         // Bandeau
-		if($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])){
+		if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 210, 10, 16, 'C');
 			$pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         // KPI + Logo    
@@ -70,7 +70,7 @@ class FeuilleCltNiveau extends MyPage {
 			$pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
 		}
         // Sponsor
-		if($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])){
+		if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
 			$img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
 			$pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
 		}
@@ -92,15 +92,15 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Cell(190, 5, $lang['CLASSEMENT_PROVISOIRE'], 0, 0, 'C');
         $pdf->Ln(10);
         //données
-        $sql = "Select Id, Libelle, Code_club, Clt, Pts, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau ";
-        $sql .= "From gickp_Competitions_Equipes ";
-        $sql .= "Where Code_compet = '";
-        $sql .= $codeCompet;
-        $sql .= "' And Code_saison = '";
-        $sql .= $codeSaison;
-        $sql .= "' Order By CltNiveau Asc, Diff Desc ";
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+        $sql = "SELECT Id, Libelle, Code_club, Clt, Pts, J, G, N, P, F, Plus, Moins, 
+            Diff, PtsNiveau, CltNiveau 
+            FROM gickp_Competitions_Equipes 
+            WHERE Code_compet = ? 
+            AND Code_saison = ? 
+            ORDER BY CltNiveau, Diff DESC ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
+        $num_results = $result->rowCount();
 
         // recalcul des éliminés
         $elim = $num_results - $elim;
@@ -112,7 +112,7 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Ln(4);
 
         for ($i = 0; $i < $num_results; $i++) {
-            $row = $myBdd->FetchArray($result);
+            $row = $result->fetch();
             $separation = 0;
             //Séparation qualifiés
             if (($i + 1) > $qualif && $qualif != 0) {

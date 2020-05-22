@@ -8,9 +8,11 @@ include_once('../commun/MyTools.php');
 
 class GestionStructure extends MyPageSecure	 
 {	
+	var $myBdd;
+
 	function Load()
 	{
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$codeCompet = utyGetSession('codeCompet');
 		$_SESSION['codeCompet'] = $codeCompet;
@@ -21,12 +23,12 @@ class GestionStructure extends MyPageSecure
 		// Chargement des Comites Régionnaux ...
 		$arrayComiteReg = array();
 
-		$sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Comite_reg ";
-		$sql .= "Order By Code ";	 
-		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$sql = "SELECT Code, Libelle 
+			FROM gickp_Comite_reg 
+			ORDER BY Code ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+		while ($row = $result->fetch()) {
 			array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"]." - ".$row["Libelle"], 'Selected' => '' ) );
 		}
 		
@@ -35,12 +37,12 @@ class GestionStructure extends MyPageSecure
 		// Chargement des Comites Departementaux ...
 		$arrayComiteDep = array();
 
-		$sql  = "Select Code, Libelle ";
-		$sql .= "From gickp_Comite_dep ";
-		$sql .= "Order By Code ";	 
-		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$sql = "SELECT Code, Libelle 
+			FROM gickp_Comite_dep 
+			ORDER BY Code ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+		while ($row = $result->fetch()) {
 			array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code']." - ".$row['Libelle'], 'Selected' => '' ) );
 		}
 			
@@ -48,15 +50,15 @@ class GestionStructure extends MyPageSecure
 		
 		// Chargement des Clubs ayant une équipe inscrite dans une compétition de polo ...
 		$arrayClub = array();
-
-		$sql  = "Select distinct c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email ";
-		$sql .= "From gickp_Club c, gickp_Equipe e ";
-		$sql .= "Where c.Code = e.Code_club ";	 
-		$sql .= "Order By c.Code ";	 
-		
-		$result = $myBdd->Query($sql);
 		$mapParam2 = '';
-		while($row = $myBdd->FetchArray($result)) {
+
+		$sql = "SELECT DISTINCT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email 
+			FROM gickp_Club c, gickp_Equipe e 
+			WHERE c.Code = e.Code_club 
+			ORDER BY c.Code ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+		while ($row = $result->fetch()) {
 			array_push($arrayClub, array('Code' => $row['Code'], 
                 'Libelle' => $row['Code'].' - '.$row['Libelle'], 
                 'Selected' => '', 
@@ -108,14 +110,14 @@ class GestionStructure extends MyPageSecure
 		// Chargement des Clubs internationaux...
 		$arrayClubInt = array();
 
-		$sql  = "Select distinct c.Code, c.Libelle ";
-		$sql .= "From gickp_Club c, gickp_Comite_dep cd ";
-		$sql .= "Where c.Code_comite_dep = cd.Code ";	 
-		$sql .= "And cd.Code_comite_reg = '98' ";	 
-		$sql .= "Order By c.Code_comite_dep, c.Code ";	 
-		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$sql = "SELECT DISTINCT c.Code, c.Libelle 
+			FROM gickp_Club c, gickp_Comite_dep cd 
+			WHERE c.Code_comite_dep = cd.Code 
+			AND cd.Code_comite_reg = '98' 
+			ORDER BY c.Code_comite_dep, c.Code ";	 
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+		while ($row = $result->fetch()) {
 			array_push($arrayClubInt, array('Code' => $row['Code'], 'Libelle' => $row['Code'].' - '.$row['Libelle']) );
 		}
 		
@@ -129,22 +131,20 @@ class GestionStructure extends MyPageSecure
 		$codeCD = utyGetPost('codeCD');
 		$libelleCD = utyGetPost('libelleCD');
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 			
-		$sql  = "Insert Into gickp_Comite_dep (Code, Libelle, Code_comite_reg) Values ('";
-		$sql .= $codeCD;
-		$sql .= "','";
-		$sql .= $libelleCD;
-		$sql .= "','";
-		$sql .= $comiteReg;
-		$sql .= "') ";
-		$myBdd->Query($sql);
+		$sql = "INSERT INTO gickp_Comite_dep (Code, Libelle, Code_comite_reg) 
+			VALUES (?, ?, ?) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeCD, $libelleCD, $comiteReg));
 			
 		$myBdd->utyJournal('Ajout CD', '', '', 'NULL', 'NULL', 'NULL', $codeCD);
 	}
 	
 	function AddClub()
 	{
+		$myBdd = $this->myBdd;
+
 		$comiteDep = utyGetPost('comiteDep');
 		$codeClub = utyGetPost('codeClub');
 		$libelleClub = utyGetPost('libelleClub');
@@ -154,46 +154,35 @@ class GestionStructure extends MyPageSecure
 		$email2 = utyGetPost('email2');
 		$libelleEquipe2 = utyGetPost('libelleEquipe2');
 		$affectEquipe = utyGetPost('affectEquipe');
-
-		$myBdd = new MyBdd();
+		$codeSaison = $myBdd->GetActiveSaison();
 			
-		$sql  = "Insert Into gickp_Club (Code, Libelle, Code_comite_dep, Coord, Postal, www, email) Values ('";
-		$sql .= $codeClub;
-		$sql .= "','";
-		$sql .= $libelleClub;
-		$sql .= "','";
-		$sql .= $comiteDep;
-		$sql .= "','";
-		$sql .= $coord2;
-		$sql .= "','";
-		$sql .= $postal2;
-		$sql .= "','";
-		$sql .= $www2;
-		$sql .= "','";
-		$sql .= $email2;
-		$sql .= "') ";
-		$myBdd->Query($sql);
+		$sql = "INSERT INTO gickp_Club 
+			(Code, Libelle, Code_comite_dep, Coord, Postal, www, email) 
+			VALUES (?, ?, ?, ?, ?, ?, ?) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codeClub, $libelleClub, $comiteDep, $coord2, $postal2, $www2, $email2));
 		
 		$myBdd->utyJournal('Ajout Club', '', '', 'NULL', 'NULL', 'NULL', $codeClub);
 		
-		if($libelleEquipe2 != '') {
-			$sql  = "Insert Into gickp_Equipe (Code_club, Libelle) Values ('".$codeClub."', '".$libelleEquipe2."')";
-			$myBdd->Query($sql);
-			$selectValue = $myBdd->InsertId();
+		if ($libelleEquipe2 != '') {
+			$sql = "INSERT INTO gickp_Equipe (Code_club, Libelle) 
+				VALUES ('".$codeClub."', '".$libelleEquipe2."')";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($codeClub, $libelleEquipe2));
+			$selectValue = $myBdd->pdo->lastInsertId();
+
 			$myBdd->utyJournal('Ajout Equipe', '', '', 'NULL', 'NULL', 'NULL', $libelleEquipe2);
 			
-			if($affectEquipe != '')
-			{
-				//echo $selectValue.' !';
+			if ($affectEquipe != '') {
 				if ((int) $selectValue == 0)
 					return;
-				$sql  = "Insert Into gickp_Competitions_Equipes (Code_compet, Code_saison, Libelle, Code_club, Numero) Select '";
-				$sql .= $affectEquipe;
-				$sql .= "','";
-				$sql .= utyGetSaison();
-				$sql .= "', Libelle, Code_club, Numero ";
-				$sql .= "From gickp_Equipe Where Numero = $selectValue";
-				$myBdd->Query($sql);
+				$sql = "INSERT INTO gickp_Competitions_Equipes 
+					(Code_compet, Code_saison, Libelle, Code_club, Numero) 
+					SELECT ?, ?, Libelle, Code_club, Numero 
+					FROM gickp_Equipe 
+					WHERE Numero = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($affectEquipe, $codeSaison, $selectValue));
 			}
 		}
 			
@@ -208,23 +197,14 @@ class GestionStructure extends MyPageSecure
 		$coord2 = utyGetPost('coord2');
 		$postal = utyGetPost('postal');
 
-		$myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 			
-		$sql  = "Update gickp_Club set Coord = '";
-		$sql .= $coord;
-		$sql .= "', Coord2 = '";
-		$sql .= $coord2;
-		$sql .= "', Postal = '";
-		$sql .= $myBdd->RealEscapeString($postal);
-		$sql .= "', www = '";
-		$sql .= $www;
-		$sql .= "', email = '";
-		$sql .= $email;
-		$sql .= "' ";
-		$sql .= "where Code = '";
-		$sql .= $club;
-		$sql .= "' ";
-		$myBdd->Query($sql);
+		$sql = "UPDATE gickp_Club 
+			SET Coord = ?, Coord2 = ?, Postal = ?, 
+			www = ?, email = ? 
+			WHERE Code = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($coord, $coord2, $postal, $www, $email, $club));
 			
 		$myBdd->utyJournal('Modification Club', '', '', 'NULL', 'NULL', 'NULL', $club);
 	}
@@ -232,6 +212,8 @@ class GestionStructure extends MyPageSecure
 	function __construct()
 	{			
 	  	MyPageSecure::MyPageSecure(10);
+		
+		$this->myBdd = new MyBdd();
 		
 		$alertMessage = '';
 		

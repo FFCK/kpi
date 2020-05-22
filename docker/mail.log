@@ -1,0 +1,15 @@
+May 16 23:20:04 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com mailsize=1086 smtpstatus=250 smtpmsg='250 Message accepted' exitcode=EX_OK
+May 16 23:20:04 host=mailcatcher tls=off auth=off from=user@domain.com recipients=contact@kayak-polo.info mailsize=972 smtpstatus=250 smtpmsg='250 Message accepted' exitcode=EX_OK
+May 16 23:43:32 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com mailsize=913 smtpstatus=250 smtpmsg='250 Message accepted' exitcode=EX_OK
+May 19 11:30:59 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 11:30:59 host=mailcatcher tls=off auth=off from=user@domain.com recipients=contact@kayak-polo.info errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 11:33:34 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 11:33:34 host=mailcatcher tls=off auth=off from=user@domain.com recipients=contact@kayak-polo.info errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 12:46:58 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 12:46:58 host=mailcatcher tls=off auth=off from=user@domain.com recipients=contact@kayak-polo.info errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 14:23:10 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 14:23:10 host=mailcatcher tls=off auth=off from=user@domain.com recipients=contact@kayak-polo.info errormsg='cannot connect to mailcatcher, port 1025: Connection refused' exitcode=EX_TEMPFAIL
+May 19 22:01:39 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com mailsize=1086 smtpstatus=250 smtpmsg='250 Message accepted' exitcode=EX_OK
+May 19 22:01:39 host=mailcatcher tls=off auth=off from=user@domain.com recipients=contact@kayak-polo.info mailsize=972 smtpstatus=250 smtpmsg='250 Message accepted' exitcode=EX_OK
+May 22 17:29:48 host=mailcatcher tls=off auth=off from=user@domain.com recipients=lgarrigue@gmail.com mailsize=1086 smtpstatus=250 smtpmsg='250 Message accepted' exitcode=EX_OK
+May 22 17:29:48 host=mailcatcher tls=off auth=off from=user@domain.com recipients=contact@kayak-polo.info mailsize=972 smtpstatus=250 smtpmsg='250 Message accepted' exitcode=EX_OK

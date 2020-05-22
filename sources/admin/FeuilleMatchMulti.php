@@ -1,5 +1,4 @@
 <?php
-
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
@@ -345,7 +344,7 @@ class FeuilleMatch extends MyPage {
             $result3->execute(array($idEquipeB, $idMatch, 'B'));
 
             $j = 0;
-            while($row4 = $result3->fetch()) {
+            while ($row4 = $result3->fetch()) {
                 $j++;
 
                 if ($row4["Capitaine"] == 'E' && $j <= 10) {
@@ -400,7 +399,7 @@ class FeuilleMatch extends MyPage {
             $scoreMitempsB = '';
             $nblignes = 0;
 
-            while($row5 = $result5->fetch()) {
+            while ($row5 = $result5->fetch()) {
                 for ($j = 1; $j <= 11; $j++) {
                     $d[$j] = '';
                 }
@@ -683,7 +682,7 @@ class FeuilleMatch extends MyPage {
 
             //signatures avant match
             // si la compétition n'est pas ICF ou ECA
-            if(!in_array(substr($arrayCompetition['Code'], 0, 2), ['CE', 'CM', 'EC'])) {
+            if (!in_array(substr($arrayCompetition['Code'], 0, 2), ['CE', 'CM', 'EC'])) {
                 $pdf->Ln(1);
                 $pdf->SetFont('Arial', '', 10);
                 $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');

@@ -8,13 +8,8 @@ include_once('../commun/MyBdd.php');
 
 function load( & $arrayJson, $sql,  & $bdd) 
 {
-	
 	$lstId = '-1';
 	$table = array();
-//	$result = mysql_query($sql, $bdd-> m_link)or die("SQL-Error :".$sql);
-//	$num_results = mysql_num_rows($result);
-//	for ($i = 0; $i < $num_results; $i++) {
-//		$row = mysql_fetch_array($result, MYSQL_ASSOC);
 	$result = $bdd->Query($sql);
 	while ($row = $bdd->FetchArray($result)){ 
 		
@@ -47,23 +42,20 @@ if (isset($_GET['session']))
 // Connexion BDD
 $myBdd = new MyBdd();
 
-if (PRODUCTION)
-{
+if (PRODUCTION) {
 	// Vérification user - pwd ...
-	$sql  = "Select * From gickp_Utilisateur ";
-	$sql .= "Where md5(concat(code,pwd)) = '$userpwd'";
+	$sql = "SELECT * 
+		FROM gickp_Utilisateur 
+		WHERE md5(concat(code,pwd)) = ? ";
+	$result = $myBdd->pdo->prepare($sql);
+	$result->execute(array($userpwd));
+	$num_results = $result->rowCount();
 
-//	$result = mysql_query($sql, $myBdd-> m_link) or die("SQL-Error :".$sql);
-	$result = $myBdd->Query($sql);
-//	$num_results = mysql_num_rows($result);
-	$num_results = $myBdd->NumRows($result);
 	$bKo = true;
 	$bUserPwd = false;
-	if ($num_results >= 1)
-	{
+	if ($num_results >= 1) {
 		$bUserPwd = true;
-//		$row = mysql_fetch_array($result);	 
-		$row = $myBdd->FetchRow($result);
+		$row = $result->fetch();
 		$userEvenement = $row['Id_Evenement'];
 		$Date_debut = $row["Date_debut"];
 		$Date_fin = $row["Date_fin"];
@@ -73,39 +65,26 @@ if (PRODUCTION)
 		$arraySrc = explode(',', $lstEvenement);
 		$arrayUser = explode('|', $userEvenement);
 		
-		for ($i=0;$i<count($arraySrc);$i++)
-		{
+		for ($i=0;$i<count($arraySrc);$i++) {
 			$bKo = true;
-			for ($j=0;$j<count($arrayUser);$j++)
-			{
-				if ($arraySrc[$i] == $arrayUser[$j])
-				{
+			for ($j=0;$j<count($arrayUser);$j++) {
+				if ($arraySrc[$i] == $arrayUser[$j]) {
 					$bKo = false;
 					break;
 				}
 			}
 		}
-/*		if(date() > $Date_fin)
-		{
-			alert('Date Expirée');
-			$bKo = true;
-		}
-*/
 	}
 
 	
-	if ($bKo)
-	{
-		if (isset($_GET['callback'])) 
-		{
+	if ($bKo) {
+		if (isset($_GET['callback'])) {
 			$callback = $_GET['callback'];
 			if ($bUserPwd)
 				echo $callback."('ERREUR Evènement ou date expirée...');";
 			else
 				echo $callback."('ERREUR Login ...');";
-		} 
-		else 
-		{
+		} else {
 			echo 'ERREUR Login ...';
 		}
 		return;

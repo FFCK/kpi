@@ -16,7 +16,7 @@ class FeuilleCltNiveauPhase extends MyPage
 
         $codeCompet = utyGetSession('codeCompet', '');
         //Saison
-        $codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
         $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -102,23 +102,23 @@ class FeuilleCltNiveauPhase extends MyPage
         // données
         $myBdd = new MyBdd();
 
-        $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, cej.Id_journee, cej.Clt, "
-                . "cej.Pts, cej.J, cej.G, cej.N, cej.P, cej.F, cej.Plus, cej.Moins, cej.Diff, cej.PtsNiveau, cej.CltNiveau, "
-                . "j.Phase, j.Niveau, j.Lieu, j.Type, "
-                . "IF(LEFT(j.Phase, 5) = 'Group' OR LEFT(j.Phase, 5) = 'Poule', j.Phase, 'Z') typePhase "
-                . "FROM gickp_Competitions_Equipes ce, "
-                . "gickp_Competitions_Equipes_Journee cej "
-                . "JOIN gickp_Journees j ON (cej.Id_journee = j.Id) "
-                . "WHERE ce.Id = cej.Id "
-                . "AND j.Code_competition = '" . $codeCompet . "' "
-                . "AND j.Code_saison = '" . utyGetSaison() . "' "
-                . "ORDER BY typePhase, j.Niveau, j.Phase, j.Date_debut, "
-                . "j.Lieu, cej.Clt, cej.Diff DESC, cej.Plus DESC ";
-        $result = $myBdd->Query($sql);
+        $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, cej.Id_journee, cej.Clt, 
+            cej.Pts, cej.J, cej.G, cej.N, cej.P, cej.F, cej.Plus, cej.Moins, cej.Diff, 
+            cej.PtsNiveau, cej.CltNiveau, j.Phase, j.Niveau, j.Lieu, j.Type, 
+            IF(LEFT(j.Phase, 5) = 'Group' OR LEFT(j.Phase, 5) = 'Poule', j.Phase, 'Z') typePhase 
+            FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Journee cej 
+            JOIN gickp_Journees j ON (cej.Id_journee = j.Id) 
+            WHERE ce.Id = cej.Id 
+            AND j.Code_competition = ? 
+            AND j.Code_saison = ? 
+            ORDER BY typePhase, j.Niveau, j.Phase, j.Date_debut, 
+                j.Lieu, cej.Clt, cej.Diff DESC, cej.Plus DESC ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute(array($codeCompet, $codeSaison));
 
         $idJournee = 0;
         $niveau = 1;
-        while($row = $myBdd->FetchAssoc($result)) {
+        while ($row = $result->fetch()){
             if ($niveau != $row['Niveau']) {
                 $pdf->Cell(85,4,"",0,0);
                 $pdf->Cell(20,4,"","B",1);
@@ -131,13 +131,14 @@ class FeuilleCltNiveauPhase extends MyPage
                     $pdf->SetFont('Arial', 'BI', 10);
                     $pdf->Cell(190, 5, $row['Phase'], 0, 1, 'C');
                     $pdf->SetFont('Arial', 'B', 9);
-                    $sql2 = "SELECT m.ScoreA, m.ScoreB, ce1.Libelle EquipeA, ce2.Libelle EquipeB "
-                            . "FROM gickp_Matchs m "
-                            . "LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) "
-                            . "LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) "
-                            . "WHERE m.Id_journee = " . $row['Id_journee'];
-                    $result2 = $myBdd->Query($sql2);
-                    while($row2 = $myBdd->FetchAssoc($result2)) {
+                    $sql2 = "SELECT m.ScoreA, m.ScoreB, ce1.Libelle EquipeA, ce2.Libelle EquipeB 
+                        FROM gickp_Matchs m 
+                        LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) 
+                        LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) 
+                        WHERE m.Id_journee = ? ";
+                    $result2 = $myBdd->pdo->prepare($sql2);
+                    $result2->execute(array($row['Id_journee']));
+                    while($row2 = $result2->fetch()) {
                         if ($row2['ScoreA'] > $row2['ScoreB']) {
                             $pdf->SetFont('Arial', 'B', 9);
                         } else {

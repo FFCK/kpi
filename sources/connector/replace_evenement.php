@@ -5,13 +5,13 @@ session_start();
 function GetOffset($tableName, &$bdd)
 {
 	$myBdd = new MyBdd();
-	$sql  = "Select max(Id) maxId From gickp_".$tableName;
-	$result = $myBdd->Query($sql);
-	$num_results = $myBdd->NumRows($result);
-		
-	if ($num_results >= 1)
-	{
-		$row = $myBdd->FetchArray($result);	 
+	$sql = "SELECT MAX(Id) maxId FROM gickp_".$tableName;
+	$result = $myBdd->pdo->prepare($sql);
+	$result->execute();
+	$num_results = $result->rowCount();
+			
+	if ($num_results >= 1) {
+		$row = $result->fetch();	 
 		$max = (int) $row["maxId"];
 		if ($max > 0) return $max + 1;
 	}
@@ -37,16 +37,13 @@ function Replace_Table($tableName, &$jsonArray, &$bdd, $indexCol1=-1, $offset1=0
 		if ($indexCol2 >= 0) $recTable[$indexCol2] = ((int) $recTable[$indexCol2])+$offset2;
 		if ($indexCol3 >= 0) $recTable[$indexCol3] = ((int) $recTable[$indexCol3])+$offset3;
 				
-		$sql  = "Replace Into gickp_".$tableName;
-		$sql .= " Values (";
-		for ($j=0;$j<count($recTable);$j++)
-		{
+		$sql = "REPLACE INTO gickp_".$tableName;
+		$sql .= " VALUES (";
+		for ($j=0;$j<count($recTable);$j++) {
 			if ($j > 0) 
 				$sql .= ',';
 			$sql .= "'";
-//			$sql .= mysql_real_escape_string(utf8_decode($recTable[$j]));
 			$sql .= $myBdd->RealEscapeString($recTable[$j]);
-			//$sql .= mysql_real_escape_string(mb_convert_encoding($recTable[$j], "ISO-8859-1", "UTF-8"));
 			$sql .= "'";
 		}
 		$sql .= ')';
@@ -60,7 +57,7 @@ function Replace_Table($tableName, &$jsonArray, &$bdd, $indexCol1=-1, $offset1=0
 function Replace_Evenement(& $jsonData)
 {
 	$jsonData = str_replace("\\\"", "\"", $jsonData);
-	if(!PRODUCTION){
+	if (!PRODUCTION) {
 		// Wamp a du mal avec les guillemets simples !
 		$jsonData = str_replace("\'","'",$jsonData);
 	}
@@ -68,8 +65,8 @@ function Replace_Evenement(& $jsonData)
 	$msg = '<br>size jsonArray = '.count($jsonArray).'<br>';
 	
 	$mirror = false;
-	if (isset($_SESSION['mirror'])){
-		if ($_SESSION['mirror'] == '1'){
+	if (isset($_SESSION['mirror'])) {
+		if ($_SESSION['mirror'] == '1') {
 			$mirror = true;
 		}
 	}
@@ -88,7 +85,7 @@ function Replace_Evenement(& $jsonData)
 	$msg .= '<br>offsetMatchDetail = '.$offsetMatchDetail;
 	$msg .= '<br>';		
 	
-	if(!PRODUCTION){
+	if (!PRODUCTION) {
 		$msg .= Replace_Table('Saison', $jsonArray, $bdd);
 		$msg .= Replace_Table('Competitions_Groupes', $jsonArray, $bdd);
 		$msg .= Replace_Table('Club', $jsonArray, $bdd);
@@ -126,8 +123,7 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	
 	$lstEvenement = '-1';
 	$rowsTable = $jsonTable['rows'];
-	for ($i=0;$i<$nbRows;$i++)
-	{
+	for ($i=0;$i<$nbRows;$i++) {
 		$recTable = $rowsTable[$i];
 		$lstEvenement .= ','.$recTable[0];
 	}
@@ -142,8 +138,7 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	$num_results = $myBdd->NumRows($result);
 	
 	$lstJournees = '-1';
-	for ($i = 0; $i < $num_results; $i++) 
-	{
+	for ($i = 0; $i < $num_results; $i++) {
 		$row = $myBdd->FetchArray($result);	 
 		$lstJournees .= ','.$row[0];
 	}
@@ -156,8 +151,7 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	$num_results = $myBdd->NumRows($result);
 	
 	$lstMatchs = '-1';
-	for ($i = 0; $i < $num_results; $i++) 
-	{
+	for ($i = 0; $i < $num_results; $i++) {
 		$row = $myBdd->FetchArray($result);	 
 		$lstMatchs .= ','.$row[0];
 	}

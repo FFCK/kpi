@@ -16,14 +16,14 @@ class GestionGroupe extends MyPageSecure
 		$myBdd = new MyBdd();
 		$arrayGroupes = array();
 		
-		$sql  = "Select * ";
-		$sql .= "From gickp_Competitions_Groupes ";
-		$sql .= "Order By section, ordre ";	 
-	
+		$sql = "SELECT * 
+			FROM gickp_Competitions_Groupes 
+			ORDER BY section, ordre ";	 
 		$arrayGroupes = array();
-        $result = $myBdd->Query($sql);
-        while ($row = $myBdd->FetchArray($result)){ 
-			if($idGroupe == $row['id']) {
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute();
+		while ($row = $result->fetch()) {
+			if ($idGroupe == $row['id']) {
                 $row['selected'] = 'selected';
                 $groupe = $row;
             } else {
@@ -46,19 +46,13 @@ class GestionGroupe extends MyPageSecure
 		
 		$myBdd = new MyBdd();
 
-		$sql  = "INSERT INTO gickp_Competitions_Groupes set Libelle = '";
-		$sql .= $myBdd->RealEscapeString($libelle);
-		$sql .= "', section = '";
-		$sql .= $myBdd->RealEscapeString($section);
-		$sql .= "', ordre = '";
-		$sql .= $myBdd->RealEscapeString($ordre);
-		$sql .= "', Code_niveau = '";
-		$sql .= $myBdd->RealEscapeString($Code_niveau);
-		$sql .= "', Groupe = '";
-		$sql .= $myBdd->RealEscapeString($Groupe);
-		$sql .= "'";
+		$sql = "INSERT INTO gickp_Competitions_Groupes 
+			SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			$libelle, $section, $ordre, $Code_niveau, $Groupe
+		));
 		
-		$myBdd->Query($sql);
 		$this->Raz();
 		$myBdd->utyJournal('Ahout Groupe', '', '', $Groupe);
         return "Ajout effectué.";
@@ -67,24 +61,26 @@ class GestionGroupe extends MyPageSecure
 	function Remove($idGroupe)
 	{
         $myBdd = new MyBdd();
-        $sql  = "SELECT c.Code_saison, c.Code "
-                . "FROM gickp_Competitions c, gickp_Competitions_Groupes g "
-                . "WHERE c.Code_ref = g.Groupe "
-                . "AND g.id = $idGroupe ";
-        $result = $myBdd->Query($sql);
-        $num_results = $myBdd->NumRows($result);
+		$sql = "SELECT c.Code_saison, c.Code 
+			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			WHERE c.Code_ref = g.Groupe 
+			AND g.id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idGroupe));
+        $num_results = $result->rowCount();
         
-        if($num_results > 0) {
+        if ($num_results > 0) {
             $conflict = '';
-            while ($row = $myBdd->FetchArray($result)){ 
+            while ($row = $result->fetch()){ 
                 $conflict .= ' ' . $row['Code_saison'] . '-' . $row['Code'];
             }
             return "Il existe des compétitions dans ce groupe :$conflict. Suppression impossible !";
         }
         
-        $sql  = "DELETE FROM gickp_Competitions_Groupes "
-                . "WHERE id = $idGroupe ";
-        $result = $myBdd->Query($sql);
+		$sql = "DELETE FROM gickp_Competitions_Groupes 
+			WHERE id = $idGroupe ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idGroupe));
         return "Suppression effectuée.";
     }
 	
@@ -109,20 +105,14 @@ class GestionGroupe extends MyPageSecure
 		
 		$myBdd = new MyBdd();
 
-		$sql  = "Update gickp_Competitions_Groupes set Libelle = '";
-		$sql .= $myBdd->RealEscapeString($libelle);
-		$sql .= "', section = '";
-		$sql .= $myBdd->RealEscapeString($section);
-		$sql .= "', ordre = '";
-		$sql .= $myBdd->RealEscapeString($ordre);
-		$sql .= "', Code_niveau = '";
-		$sql .= $myBdd->RealEscapeString($Code_niveau);
-		$sql .= "', Groupe = '";
-		$sql .= $myBdd->RealEscapeString($Groupe);
-		$sql .= "' Where id = ";
-		$sql .= $idGroupe;
-		
-		$result = $myBdd->Query($sql);
+		$sql = "UPDATE gickp_Competitions_Groupes 
+			SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array(
+			$libelle, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
+		));
+
 		$this->Raz();
 		$myBdd->utyJournal('Modif Groupe', '', '', $idGroupe);
         return "Mise à jour effectuée.";

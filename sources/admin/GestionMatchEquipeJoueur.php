@@ -29,99 +29,99 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 		
 		// Chargement des Joueurs provenant de la Recherche ...
-		if (isset($_SESSION['Signature']))
-		{
-				$sql  = "Replace Into gickp_Matchs_Joueurs (Id_match, Matric, Equipe) ";
-				$sql .= "Select $idMatch, a.Matric, '$codeEquipe' ";
-				$sql .= "From gickp_Liste_Coureur a, gickp_Recherche_Licence b ";
-				$sql .= "Where a.Matric = b.Matric ";
-				$sql .= "And b.Signature = '";
-				$sql .= $_SESSION['Signature'];
-				$sql .= "' And b.Validation = 'O' ";
-				
-				$myBdd->Query($sql);
+		if (isset($_SESSION['Signature'])) {
+			$sql = "REPLACE INTO gickp_Matchs_Joueurs (Id_match, Matric, Equipe) 
+				SELECT ?, a.Matric, ? 
+				FROM gickp_Liste_Coureur a, gickp_Recherche_Licence b 
+				WHERE a.Matric = b.Matric 
+				AND b.Signature = ? 
+				AND b.Validation = 'O' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $codeEquipe, $_SESSION['Signature'] ));
+			// $result->debugDumpParams();
 
-				// Vidage gickp_Recherche_Licence ...				
-				$sql = "Delete From gickp_Recherche_Licence Where Signature = '";
-				$sql .= $_SESSION['Signature'];
-				$sql .= "'";
-				$myBdd->Query($sql);
-				
-				unset($_SESSION['Signature']);
+
+			// Vidage gickp_Recherche_Licence ...				
+			$sql = "DELETE FROM gickp_Recherche_Licence 
+				WHERE `Signature` = ?  ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($_SESSION['Signature']));
+			
+			unset($_SESSION['Signature']);
 		}
 
 		$clefEntraineur = '';
 		
-		if ($idMatch > 0)
-		{
+		if ($idMatch > 0) {
 			// Prise des Informations sur le Match ...
-			$sql  = "Select Date_match, Heure_match, Libelle, Terrain, Numero_ordre, Validation, Id_journee ";
-			$sql .= "From gickp_Matchs ";
-			$sql .= "Where Id = ";
-			$sql .= $idMatch;
-			
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) == 1)
-			{
-					$row = $myBdd->FetchArray($result);	 
+			$sql = "SELECT Date_match, Heure_match, Libelle, Terrain, Numero_ordre, 
+				`Validation`, Id_journee 
+				FROM gickp_Matchs 
+				WHERE Id =  ?";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
+			if ($result->rowCount() == 1) {
+					$row = $result->fetch();	 
 					$Numero_ordre = $row['Numero_ordre'];
-						// Titre ...
+					// Titre ...
 					$this->m_tpl->assign('headerTitle', '(Saison '.utyGetSaison().') Match n°'.$row['Numero_ordre'].' du '.utyDateUsToFr($row['Date_match']).' à '.$row['Heure_match'].' Terrain '.$row['Terrain'].' ('.$idMatch.')');	
 					$this->m_tpl->assign('idJournee', $row['Id_journee']);
 					$this->m_tpl->assign('Validation', $row['Validation']);
 			}
 			
 			// Prise des Informations sur l'Equipe ...
-			$sql  = "Select a.Id, a.Code_compet, a.Code_saison, a.Libelle, a.Code_club ";
-			$sql .= "From gickp_Competitions_Equipes a,	gickp_Matchs b ";
-			if ($codeEquipe == 'A')
-				$sql .= "Where a.Id  = b.Id_EquipeA ";
-			else
-				$sql .= "Where a.Id  = b.Id_EquipeB ";
-			$sql .= "And b.Id = ";
-			$sql .= $idMatch;
-				
-			$result = $myBdd->Query($sql);
-			if ($myBdd->NumRows($result) == 1)
-			{
-					$row = $myBdd->FetchArray($result);	 
-					$idEquipe = $row['Id'];
+			if ($codeEquipe == 'A') {
+				$sql = "SELECT a.Id, a.Code_compet, a.Code_saison, a.Libelle, a.Code_club 
+					FROM gickp_Competitions_Equipes a,	gickp_Matchs b 
+					WHERE a.Id  = b.Id_EquipeA 
+					AND b.Id = ? ";
+			} else {
+				$sql = "SELECT a.Id, a.Code_compet, a.Code_saison, a.Libelle, a.Code_club 
+					FROM gickp_Competitions_Equipes a,	gickp_Matchs b 
+					WHERE a.Id  = b.Id_EquipeB 
+					AND b.Id = ? ";
+			}
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch));
+			if ($result->rowCount() == 1) {
+				$row = $result->fetch();	 
+				$idEquipe = $row['Id'];
 			
-					$infoEquipe = $row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
-					$_SESSION['idEquipe'] = $idEquipe;
-					$_SESSION['infoEquipe'] = $infoEquipe;
-					$_SESSION['codeClub'] = $row['Code_club'];
-					
-					// Sous-Titre ...
-					$this->m_tpl->assign('headerSubTitle', 'Joueurs Equipe '.$codeEquipe.' : '.$infoEquipe);
+				$infoEquipe = $row['Libelle'].' ('.$row['Code_compet'].'-'.$row['Code_saison'].')';
+				$_SESSION['idEquipe'] = $idEquipe;
+				$_SESSION['infoEquipe'] = $infoEquipe;
+				$_SESSION['codeClub'] = $row['Code_club'];
+				
+				// Sous-Titre ...
+				$this->m_tpl->assign('headerSubTitle', 'Joueurs Equipe '.$codeEquipe.' : '.$infoEquipe);
 			}
 			
 			// Chargement des Joueurs de l'Equipe déja inscrit ...
 			$arrayJoueur = array();
 			
-			$sql  = "Select a.Matric, a.Numero, a.Capitaine, b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
-                    . "b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, "
-                    . "b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, b.Reserve icf, c.Arb, c.niveau "
-                    . "From gickp_Matchs_Joueurs a Left Outer Join gickp_Arbitre c On (a.Matric = c.Matric), "
-                    . "gickp_Liste_Coureur b "
-                    . "Where a.Matric = b.Matric "
-                    . "And a.Id_match = ";
-			$sql .= $idMatch;
-			$sql .= " And a.Equipe = '";
-			$sql .= $codeEquipe;
-			$sql .= "' Order By Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), Numero, Nom, Prenom ";	 
-		
-			$result = $myBdd->Query($sql);
-            while($row = $myBdd->FetchArray($result)) {
-				if($row['niveau'] != '')
+			$sql = "SELECT a.Matric, a.Numero, a.Capitaine, b.Matric, b.Nom, b.Prenom, 
+				b.Sexe, b.Naissance, b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, 
+				b.Pagaie_MER, b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, 
+				b.Reserve icf, c.Arb, c.niveau 
+				FROM gickp_Liste_Coureur b, gickp_Matchs_Joueurs a 
+				LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
+				WHERE a.Matric = b.Matric 
+				AND a.Id_match = ? 
+				AND a.Equipe = ? 
+				ORDER BY Field(IF(a.Capitaine='C','-',
+					IF(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), 
+				Numero, Nom, Prenom ";	 
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $codeEquipe));
+            while ($row = $result->fetch()) {
+				if ($row['niveau'] != '')
 					$row['Arb'] .= '-'.$row['niveau'];
 				
 				$numero = $row['Numero'];
 				if (strlen($numero) == 0)
 					$numero = 0;
 				
-				Switch ($row['Pagaie_ECA'])
-				{
+				switch ($row['Pagaie_ECA']) {
 					case 'PAGR' :
 						$pagaie = 'Rouge';
 						break;
@@ -148,27 +148,19 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				if (strlen($capitaine) == 0)
 					$capitaine = '-';
 					
-/*				// Pour décaler l'entraineur à la fin de la liste
-				if ($capitaine == 'E' or $capitaine == 'A')
-					$clefEntraineur = $i;
-*/						
-				array_push($arrayJoueur, array( 'Matric' => $row['Matric'], 'Numero' => $numero, 'Capitaine' => $capitaine,
-                    'Nom' => ucwords(strtolower($row['Nom'])), 'Prenom' => ucwords(strtolower($row['Prenom'])),  
-                    'Pagaie' => $pagaie, 'CertifCK' => $row['CertifCK'],  'CertifAPS' => $row['CertifAPS'], 
-                    'Sexe' => $row['Sexe'], 'Categ' => utyCodeCategorie2($row['Naissance']), 'Pagaie_ECA' => $row['Pagaie_ECA'], 
-                    'Pagaie_EVI' => $row['Pagaie_EVI'] ,  'Pagaie_MER' => $row['Pagaie_MER'], 'Arbitre' => $row['Arb'], 
-                    'Saison' => $row['Origine'], 'Numero_club' => $row['Numero_club'], 'icf' => $row['icf']) );
+				array_push($arrayJoueur, array( 'Matric' => $row['Matric'], 'Numero' => $numero, 
+					'Capitaine' => $capitaine, 'Nom' => ucwords(strtolower($row['Nom'])), 
+					'Prenom' => ucwords(strtolower($row['Prenom'])), 'Pagaie' => $pagaie, 
+					'CertifCK' => $row['CertifCK'], 'CertifAPS' => $row['CertifAPS'], 
+					'Sexe' => $row['Sexe'], 'Categ' => utyCodeCategorie2($row['Naissance']), 
+					'Pagaie_ECA' => $row['Pagaie_ECA'], 'Pagaie_EVI' => $row['Pagaie_EVI'] , 
+					'Pagaie_MER' => $row['Pagaie_MER'], 'Arbitre' => $row['Arb'], 
+					'Saison' => $row['Origine'], 'Numero_club' => $row['Numero_club'], 
+					'icf' => $row['icf']
+				));
 			}
 		}	
 		
-/*		if($clefEntraineur != '')
-		{
-			// Prélève l'entraineur de la liste
-			$decaleEntraineur = array_splice($arrayJoueur, $clefEntraineur, 1);
-			// Replace l'entraine à la fin
-			array_splice($arrayJoueur, 9, 0, $decaleEntraineur);
-		}
-*/		
 		$this->m_tpl->assign('arrayJoueur', $arrayJoueur);
 		$this->m_tpl->assign('idMatch', $idMatch);
 		$this->m_tpl->assign('sSaison', utyGetSaison());
@@ -185,19 +177,23 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 
 		// Contrôle verrouillage Match ...
-		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = $myBdd->Query($sql);
-		$row = $myBdd->FetchArray($result);
+		$sql = "SELECT `Validation` 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$row = $result->fetch();
 		if ($row['Validation'] == 'O')
 			return;
 
-		$sql  = "Replace Into gickp_Matchs_Joueurs ";
-		$sql .= "Select $idMatch, Matric, Numero, '$codeEquipe', Capitaine From gickp_Competitions_Equipes_Joueurs ";
-		$sql .= "Where Id_equipe = $idEquipe ";
-		$sql .= "AND Capitaine <> 'X' ";
-		$sql .= "AND Capitaine <> 'A' ";
-	
-		$myBdd->Query($sql, $myBdd->m_link) or die ("Erreur Replace");
+		$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+			SELECT ?, Matric, Numero, ?, Capitaine 
+			FROM gickp_Competitions_Equipes_Joueurs 
+			WHERE Id_equipe = ? 
+			AND Capitaine <> 'X' 
+			AND Capitaine <> 'A' ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idMatch, $codeEquipe, $idEquipe));
 
 		$myBdd->utyJournal('Ajout titulaires match', '', '', '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
@@ -211,9 +207,12 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 
 		// Contrôle verrouillage Match ...
-		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = $myBdd->Query($sql);
-		$row = $myBdd->FetchArray($result);
+		$sql = "SELECT `Validation` 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$row = $result->fetch();
 		if ($row['Validation'] == 'O')
 			return;
 
@@ -221,26 +220,18 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$capitaineJoueur = utyGetPost('capitaineJoueur2', '-');
 		$numeroJoueur = utyGetPost('numeroJoueur2', '');
 		
-		if (strlen($idEquipe) > 0)
-		{
-			$myBdd = new MyBdd();
+		if (strlen($idEquipe) > 0) {
 			// $categJoueur = utyCodeCategorie2($naissanceJoueur);
 			if (strlen($matricJoueur) == 0)
 				$matricJoueur = $myBdd->GetNextMatricLicence();
 			//$idMatch, Matric, Numero, '$codeEquipe', Capitaine
-			$sql  = "Replace Into gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) Values (";
-			$sql .= $idMatch;
-			$sql .= ",";
-			$sql .= $myBdd->RealEscapeString($matricJoueur);
-			$sql .= ",'";
-			$sql .= $myBdd->RealEscapeString($numeroJoueur);
-			$sql .= "','";
-			$sql .= $codeEquipe;
-			$sql .= "','";
-			$sql .= $myBdd->RealEscapeString($capitaineJoueur);
-			$sql .= "') ";
-			$myBdd->Query($sql);
-			
+			$sql = "REPLACE INTO gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) 
+				VALUES (?, ?, ?, ?, ?) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$idMatch, $matricJoueur, $numeroJoueur, $codeEquipe, $capitaineJoueur
+			));
+				
 			$myBdd->utyJournal('Ajout joueur', '', '', 'NULL', 'NULL', 'NULL', 'Match:'.$idMatch.' - Equipe:'.$codeEquipe.' - Joueur:'.$matricJoueur);
 		}
 	}
@@ -254,17 +245,20 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 
 		// Contrôle verrouillage Match ...
-		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = $myBdd->Query($sql);
-		$row = $myBdd->FetchArray($result);
+		$sql = "SELECT `Validation` 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$row = $result->fetch();
 		if ($row['Validation'] == 'O')
 			return;
 
-		$sql  = "Delete From gickp_Matchs_Joueurs ";
-		$sql .= "Where Id_match = $idMatch ";
-		$sql .= "And Equipe = '$codeEquipe' ";
-	
-		$myBdd->Query($sql);
+		$sql = "DELETE FROM gickp_Matchs_Joueurs 
+			WHERE Id_match = ? 
+			AND Equipe = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idMatch, $codeEquipe));
 
 		$myBdd->utyJournal('Suppression joueurs match', '', '', '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
@@ -280,51 +274,44 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 			
 		//Sélection des matchs de destination
-		$sql  = "Select Id, Id_equipeA, Id_equipeB ";
-		$sql .= "From gickp_Matchs ";
-		$sql .= "Where Id_journee = ";
-		$sql .= $idJournee;
-		$sql .= " And Validation !=  'O' ";
-		$sql .= " And Id !=  $idMatch ";
-		$sql .= "And (Id_equipeA =  '";
-		$sql .= $idEquipe;
-		$sql .= "' or Id_equipeB =  '";
-		$sql .= $idEquipe;
-		$sql .= "') ";
-		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
+			FROM gickp_Matchs 
+			WHERE Id_journee = ? 
+			AND `Validation` != 'O' 
+			AND Id != ? 
+			AND (Id_equipeA = ? 
+				OR Id_equipeB = ?) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee, $idMatch, $idEquipe, $idEquipe));
+
+		$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
+			WHERE Id_match = ? 
+			AND Equipe = ? ";
+		$result2 = $myBdd->pdo->prepare($sql2);
+
+		$sql3 = "SELECT Matric, Numero, Capitaine 
+			FROM gickp_Matchs_Joueurs 
+			WHERE Id_match = ? 
+			AND Equipe = ? ";
+		$result3 = $myBdd->pdo->prepare($sql3);
+
+		$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
+			(Id_match, Matric, Numero, Equipe, Capitaine) 
+			VALUES (?, ?, ?, ?, ?) ";
+		$result4 = $myBdd->pdo->prepare($sql4);
+
+		while ($row = $result->fetch()) {
 			($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
 			// Vidage
-			$sql2  = "Delete From gickp_Matchs_Joueurs Where Id_match = ";
-			$sql2 .= $row['Id'];
-			$sql2 .= " And Equipe = '$AB' ";
-			
-			$myBdd->Query($sql2);
+			$result2->execute(array($row['Id'], $AB));
 			
 			//Selection de la compo à copier
-			$sql3  = "Select Matric, Numero, Capitaine From gickp_Matchs_Joueurs ";
-			$sql3 .= "Where Id_match = ";
-			$sql3 .= $idMatch;
-			$sql3 .= " And Equipe = '";
-			$sql3 .= $codeEquipe;
-			$sql3 .= "' ";
-			$result3 = $myBdd->Query($sql3);
-			while($row3 = $myBdd->FetchArray($result3)) {
+			$result3->execute(array($idMatch, $codeEquipe));
+			while ($row3 = $result3->fetch()) {
 				//Insertion ligne par ligne compo à copier
-				$sql4  = "Insert Into gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) Values (";
-				$sql4 .= $row['Id'];
-				$sql4 .= ", ";
-				$sql4 .= $row3['Matric'];
-				$sql4 .= ", '";
-				$sql4 .= $row3['Numero'];
-				$sql4 .= "', '";
-				$sql4 .= $AB;
-				$sql4 .= "', '";
-				$sql4 .= $row3['Capitaine'];
-				$sql4 .= "') ";
-
-				$myBdd->Query($sql4);
+				$result4->execute(array(
+					$row['Id'], $row3['Matric'], $row3['Numero'], $AB, $row3['Capitaine']
+				));
 			}
 		}
 
@@ -338,71 +325,62 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$idMatch = utyGetSession('idMatch',-1);
 			
 		$idJournee = utyGetPost('ParamCmd');
-		$list = '';
+		$arrayJournees = [];
 
 		$myBdd = new MyBdd();
 		//Sélection de la compétition et des journées concernées
-		$sql  = "SELECT Id ";
-		$sql .= "FROM gickp_Journees ";
-		$sql .= "WHERE Code_competition = ( ";
-		$sql .= "SELECT Code_competition ";
-		$sql .= "FROM gickp_Journees ";
-		$sql .= "WHERE Id = ";
-		$sql .= $idJournee;
-		$sql .= ") ";
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
-			if($list != '')
-				$list .= ',';
-			$list .= $row['Id'];
+		$sql = "SELECT Id 
+			FROM gickp_Journees 
+			WHERE Code_competition = ( 
+				SELECT Code_competition 
+				FROM gickp_Journees 
+				WHERE Id = $idJournee) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idJournee));
+		while ($row = $result->fetch()) {
+			$arrayJournees[] = $row['Id'];
 		}
 		
 		//Sélection des matchs de destination
-		$sql  = "Select Id, Id_equipeA, Id_equipeB ";
-		$sql .= "From gickp_Matchs ";
-		$sql .= "Where Id_journee In (";
-		$sql .= $list;
-		$sql .= ") And Validation !=  'O' ";
-		$sql .= " And Id !=  $idMatch ";
-		$sql .= "And (Id_equipeA =  '";
-		$sql .= $idEquipe;
-		$sql .= "' or Id_equipeB =  '";
-		$sql .= $idEquipe;
-		$sql .= "') ";
-		
-		$result = $myBdd->Query($sql);
-		while($row = $myBdd->FetchArray($result)) {
+		$in  = str_repeat('?,', count($arrayJournees) - 1) . '?';
+		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
+			FROM gickp_Matchs 
+			WHERE Id_journee IN ($in) 
+			AND `Validation` !=  'O' 
+			AND Id != ?  
+			AND (Id_equipeA = ? 
+				OR Id_equipeB = ?) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array_merge($arrayJournees, [$idMatch], [$idEquipe], [$idEquipe]));
+
+		$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
+			WHERE Id_match = ? 
+			AND Equipe = ? ";
+		$result2 = $myBdd->pdo->prepare($sql2);
+
+		$sql3 = "SELECT Matric, Numero, Capitaine 
+			FROM gickp_Matchs_Joueurs 
+			WHERE Id_match = ? 
+			AND Equipe = ? ";
+		$result3 = $myBdd->pdo->prepare($sql3);
+
+		$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
+			(Id_match, Matric, Numero, Equipe, Capitaine) 
+			VALUES (?, ?, ?, ?, ?) ";
+		$result4 = $myBdd->pdo->prepare($sql4);
+
+		while ($row = $result->fetch()) {
 			($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
 			// Vidage
-			$sql2  = "Delete From gickp_Matchs_Joueurs Where Id_match = ";
-			$sql2 .= $row['Id'];
-			$sql2 .= " And Equipe = '$AB' ";
-			
-			$myBdd->Query($sql2);
+			$result2->execute(array($row['Id'], $AB));
 			
 			//Selection de la compo à copier
-			$sql3  = "Select Matric, Numero, Capitaine From gickp_Matchs_Joueurs ";
-			$sql3 .= "Where Id_match = ";
-			$sql3 .= $idMatch;
-			$sql3 .= " And Equipe = '";
-			$sql3 .= $codeEquipe;
-			$sql3 .= "' ";
-			$result3 = $myBdd->Query($sql3);
-			while($row3 = $myBdd->FetchArray($result3)) {
+			$result3->execute(array($idMatch, $codeEquipe));
+			while ($row3 = $result3->fetch()) {
 				//Insertion ligne par ligne compo à copier
-				$sql4  = "Insert Into gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) Values (";
-				$sql4 .= $row['Id'];
-				$sql4 .= ", ";
-				$sql4 .= $row3['Matric'];
-				$sql4 .= ", '";
-				$sql4 .= $row3['Numero'];
-				$sql4 .= "', '";
-				$sql4 .= $AB;
-				$sql4 .= "', '";
-				$sql4 .= $row3['Capitaine'];
-				$sql4 .= "') ";
-
-				$myBdd->Query($sql4);
+				$result4->execute(array(
+					$row['Id'], $row3['Matric'], $row3['Numero'], $AB, $row3['Capitaine']
+				));
 			}
 		}
 				
@@ -420,23 +398,21 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		$myBdd = new MyBdd();
 		// Contrôle verrouillage Match ...
-		$sql  = "Select Validation From gickp_Matchs Where Id = ".$idMatch;
-		$result = $myBdd->Query($sql);
-		$row = $myBdd->FetchArray($result);
+		$sql = "SELECT `Validation` 
+			FROM gickp_Matchs 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idMatch));
+		$row = $result->fetch();
 		if ($row['Validation'] == 'O')
 			return;
 			
-		$sql = "Delete From gickp_Matchs_Joueurs Where Id_match = $idMatch And Matric In (";
-		for ($i=0;$i<count($arrayParam);$i++)
-		{
-			if ($i > 0)
-				$sql .= ",";
-			
-			$sql .= $arrayParam[$i];
-		}
-		$sql .= ")";
-	
-		$myBdd->Query($sql);
+		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
+		$sql = "DELETE FROM gickp_Matchs_Joueurs 
+			WHERE Id_match = ? 
+			AND Matric IN ($in) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array_merge([$idMatch], $arrayParam));	
 		
 		$myBdd->utyJournal('Suppression joueurs match', '', '', '', '', $idMatch, 'joueurs : '.$ParamCmd);
 	}
@@ -465,8 +441,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$Cmd = utyGetPost('Cmd','');
 		$ParamCmd = utyGetPost('ParamCmd','');
 
-		if (strlen($Cmd) > 0)
-		{
+		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'AddJoueurTitulaire')
 				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $this->AddJoueurTitulaire() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
