@@ -315,7 +315,7 @@ class GestionAthlete extends MyPageSecure
         $result = $myBdd->pdo->prepare($sql);
         $result->execute(array($numFusionSource));
 
-		$myBdd->utyJournal('Fusion Joueurs', utyGetSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numFusionSource.' => '.$numFusionCible);
+		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numFusionSource.' => '.$numFusionCible);
 		return('Joueurs fusionnés : ');
 	}
 	

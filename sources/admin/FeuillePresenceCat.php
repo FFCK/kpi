@@ -31,7 +31,7 @@ class FeuillePresenceCat extends MyPage {
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet');
-        $codeSaison = utyGetSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
 
         // Chargement des équipes ...
         $arrayEquipe = array();

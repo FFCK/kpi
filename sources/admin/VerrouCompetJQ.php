@@ -26,7 +26,7 @@ if (strlen($verrouCompet) > 0 && $_SESSION['profile'] <= 4) {
     $result = $myBdd->pdo->prepare($sql);
     $result->execute(array($Verrou, $saison, $verrouCompet));
 	
-	$myBdd->utyJournal('Verrou Compet', utyGetSaison(), $verrouCompet);
+	$myBdd->utyJournal('Verrou Compet', $myBdd->GetActiveSaison(), $verrouCompet);
 	
 	echo $Verrou;
 } else {

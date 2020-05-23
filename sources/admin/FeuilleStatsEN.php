@@ -29,7 +29,7 @@ class FeuilleStats extends MyPage {
         $myBdd = new MyBdd();
 
         //Saison
-        $codeSaison = utyGetSession('codeSaison', utyGetSaison());
+        $codeSaison = utyGetSession('codeSaison', $myBdd->GetActiveSaison());
 
         //CompetitionS selectionnées
         $Compets = utyGetSession('Compets', '');

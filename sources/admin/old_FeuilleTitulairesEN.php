@@ -33,7 +33,7 @@ class FeuillePresenceEquipe extends MyPage
 		
 		$codeEquipe = utyGetGet('equipe');
 		$codeCompet = utyGetSession('codeCompet');
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 
 		// Chargement des équipes ...
 		$arrayEquipe = array();
