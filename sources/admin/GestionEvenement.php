@@ -110,7 +110,7 @@ class GestionEvenement extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($changePub, $idEvt));
 		
-		$myBdd->utyJournal('Publication evenement', utyGetSaison(), '', $idEvt, 'NULL', 'NULL', $changePub);
+		$myBdd->utyJournal('Publication evenement', $myBdd->GetActiveSaison(), '', $idEvt, 'NULL', 'NULL', $changePub);
 	}
 	
 	function RazEvt()

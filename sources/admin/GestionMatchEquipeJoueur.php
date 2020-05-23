@@ -64,7 +64,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 					$row = $result->fetch();	 
 					$Numero_ordre = $row['Numero_ordre'];
 					// Titre ...
-					$this->m_tpl->assign('headerTitle', '(Saison '.utyGetSaison().') Match n°'.$row['Numero_ordre'].' du '.utyDateUsToFr($row['Date_match']).' à '.$row['Heure_match'].' Terrain '.$row['Terrain'].' ('.$idMatch.')');	
+					$this->m_tpl->assign('headerTitle', '(Saison '.$myBdd->GetActiveSaison().') Match n°'.$row['Numero_ordre'].' du '.utyDateUsToFr($row['Date_match']).' à '.$row['Heure_match'].' Terrain '.$row['Terrain'].' ('.$idMatch.')');	
 					$this->m_tpl->assign('idJournee', $row['Id_journee']);
 					$this->m_tpl->assign('Validation', $row['Validation']);
 			}
@@ -163,7 +163,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		
 		$this->m_tpl->assign('arrayJoueur', $arrayJoueur);
 		$this->m_tpl->assign('idMatch', $idMatch);
-		$this->m_tpl->assign('sSaison', utyGetSaison());
+		$this->m_tpl->assign('sSaison', $myBdd->GetActiveSaison());
 		$this->m_tpl->assign('Numero_ordre', $Numero_ordre);
 		$this->m_tpl->assign('infoEquipe', $infoEquipe);
 	}
@@ -315,7 +315,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			}
 		}
 
-		$myBdd->utyJournal('Copie Compo sur Journée', utyGetSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
+		$myBdd->utyJournal('Copie Compo sur Journée', $myBdd->GetActiveSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
 
 	function copieCompoEquipeCompet()
@@ -384,7 +384,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			}
 		}
 				
-		$myBdd->utyJournal('Copie Compo sur Compet', utyGetSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
+		$myBdd->utyJournal('Copie Compo sur Compet', $myBdd->GetActiveSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
 	}
 
 	function Remove()

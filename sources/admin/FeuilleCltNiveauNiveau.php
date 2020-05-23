@@ -31,7 +31,7 @@ class FeuilleCltNiveauNiveau extends MyPage
 		$codeCompet = utyGetSession('codeCompet', '');
 		//Saison
         $codeSaison = $myBdd->GetActiveSaison();
-        $titreDate = "Saison ".utyGetSaison();
+        $titreDate = "Saison ".$myBdd->GetActiveSaison();
         
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
         if ($arrayCompetition['BandeauLink'] != '' && strpos($arrayCompetition['BandeauLink'], 'http') === FALSE ){

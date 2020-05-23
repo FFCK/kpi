@@ -249,7 +249,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		}
 		$this->m_tpl->assign('arrayJoueur', $arrayJoueur);
 		$this->m_tpl->assign('idEquipe', $idEquipe);
-		$this->m_tpl->assign('sSaison', utyGetSaison());
+		$this->m_tpl->assign('sSaison', $myBdd->GetActiveSaison());
 	}
 	
 	function Add()
@@ -267,7 +267,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		$arbitreJoueur = trim(utyGetPost('arbitreJoueur', ''));
 		$niveauJoueur = trim(utyGetPost('niveauJoueur', ''));
         $numicfJoueur = (int) trim(utyGetPost('numicfJoueur', ''));
-        $saisonJoueur = utyGetSaison();
+        $saisonJoueur = $myBdd->GetActiveSaison();
 
 		if (strlen($idEquipe) > 0) {
 			$categJoueur = utyCodeCategorie2($naissanceJoueur);
