@@ -54,11 +54,7 @@ class GestionClassement extends MyPageSecure
 		$resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
 		foreach ($resultarray as $key => $row) {
 			array_push($arraySaison, array('Code' => $row['Code'], 
-				'Etat' => $row['Etat'], 
-				'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 
-				'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-				'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 
-				'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+				'Etat' => $row['Etat'] ));
 		}
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
@@ -174,6 +170,12 @@ class GestionClassement extends MyPageSecure
 			}
 				
 			$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+			if ($_SESSION['lang'] == 'fr') {
+				$recordCompetition['Date_calcul'] = strftime('%d/%m/%Y à %R', strtotime($recordCompetition['Date_calcul']));
+				$recordCompetition['Date_publication'] = strftime('%d/%m/%Y à %R', strtotime($recordCompetition['Date_publication']));
+				$recordCompetition['Date_publication_calcul'] = strftime('%d/%m/%Y à %R', strtotime($recordCompetition['Date_publication_calcul']));
+			}
+	
 			$this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
 			$this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
 

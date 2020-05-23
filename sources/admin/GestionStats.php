@@ -178,12 +178,15 @@ class GestionStats extends MyPageSecure
 				if ($AfficheJournee == $row['Id']){
 					$StdOrSelected = 'Selected';
                 }
+                if ($_SESSION['lang'] == 'fr') {
+                    $row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+                }
                 array_push($arrayJournees, array( 'Id' => $row['Id'], 
                     'Code_competition' => $row['Code_competition'], 
                     'StdOrSelected' => $StdOrSelected,
                     'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
                     'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
-                    'Date_debut' => utyDateUsToFr($row['Date_debut']) 
+                    'Date_debut' => $row['Date_debut'] 
                 ));
 			}
 			$this->m_tpl->assign('arrayJournees', $arrayJournees);
@@ -687,6 +690,10 @@ class GestionStats extends MyPageSecure
                 $result->execute(array_merge($Compets, [$codeSaison]));
                 $num_results = $result->rowCount();
                 while ($row = $result->fetch()) {
+                    if ($_SESSION['lang'] == 'fr') {
+                        $row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+                        $row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
+                    }
 					array_push($arrayStats, $row);
 					if($row['Delegue'] != '' or $row['ChefArbitre'] != '')
 					{
@@ -716,6 +723,9 @@ class GestionStats extends MyPageSecure
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge($Compets, [$codeSaison]));
                 while ($row = $result->fetch()) {
+                    if ($_SESSION['lang'] == 'fr') {
+                        $row['Date_match'] = utyDateUsToFr($row['Date_match']);
+                    }
 					array_push($arrayStats, $row);
 				}
 				$this->m_tpl->assign('arrayOfficielsMatchs', $arrayStats);

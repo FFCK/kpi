@@ -28,28 +28,29 @@ if ($and != '' && $key2 != '') {
 } else {
 	$andText = '';
 }
-if (!in_array(
-	$tableName, 
+if (!in_array($tableName, 
 	['gickp_Journees', 'gickp_Competitions_Equipes', 'gickp_Competitions_Equipes_Init', 
 	'gickp_Competitions_Equipes_Joueurs', 'gickp_Matchs', 'gickp_Matchs_Joueurs']
 	)) {
 		error_log("Erreur 400a : UPDATE $tableName SET $typeValeur = $valeur $where $key $andText", 0);
 		die ('Error 400');
 	}
-if (!in_array(
-	$where, 
+if (!in_array($where, 
 	['Where Id =', 'Where Matric =']
 	)) {
 		error_log("Erreur 400b : UPDATE $tableName SET $typeValeur = $valeur $where $key $andText", 0);
 		die ('Error 400');
 	}
-if ($and != '' && !in_array(
-	$and, 
+if ($and != '' && !in_array($and, 
 	['And Id_journee =', 'And Id_equipe =', 'And Id_match =']
 	)) {
 		error_log("Erreur 400c : UPDATE $tableName SET $typeValeur = $valeur $where $key $andText", 0);
 		die ('Error 400');
 	}
+
+if (in_array($typeValeur, ['Date_debut', 'Date_fin', 'Date_match'])) {
+	$valeur = utyDateFrToUs($valeur);
+}
 
 if ($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key != '') {
 		$sql = "UPDATE $tableName 
@@ -61,10 +62,15 @@ if ($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key
 		}
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayQuery);
-		$myBdd->utyJournal('Modification '.$tableName, $codeSaison, '', 'NULL', 'NULL', 'NULL', $key.'-'.$typeValeur.'->'.$valeur, $user);
-		echo 'OK!';
+		if ($result->rowCount() == 1) {
+			$myBdd->utyJournal('Modification '.$tableName, $codeSaison, '', 'NULL', 'NULL', 'NULL', $key.'-'.$typeValeur.'->'.$valeur, $user);
+			echo 'OK!';
+		} else {
+			trigger_error("Aucune ligne modifiée : " . $sql . ',' . $valeur . ',' . $key, E_USER_ERROR);
+			echo 'Error 400';
+		}
 } else {
-	error_log("Erreur 400d : " . $sql, 0);
-echo 'Error 400';
+	trigger_error("Requête incorrecte : " . $sql, E_USER_ERROR);
+	echo 'Error 400';
 }
 

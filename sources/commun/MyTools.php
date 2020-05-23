@@ -265,7 +265,7 @@ function utyDateUsToFr($dateUs, $separaror = '-')
 
 function utyDateFrToUs($dateFr, $separaror = '/')
 {
-	$data = explode($separaror,$dateFr);
+	$data = explode($separaror, $dateFr);
 	if (count($data) == 3)
 		return $data[2].'-'.$data[1].'-'.$data[0];
 		

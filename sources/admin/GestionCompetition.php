@@ -64,12 +64,20 @@ class GestionCompetition extends MyPageSecure
 		foreach ($myBdd->pdo->query($sql) as $row) {
 			if ($row['Etat'] == 'A') {
                 $saisonActive = $row['Code'];
-            }
-            array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-			'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 
-			'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-			'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 
-			'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+			}
+			if($lang == 'en') {
+				$row['Nat_debut'] = utyDateUsToFr($row['Nat_debut']);
+				$row['Nat_fin'] = utyDateUsToFr($row['Nat_fin']);
+				$row['Inter_debut'] = utyDateUsToFr($row['Inter_debut']);
+				$row['Inter_fin'] = utyDateUsToFr($row['Inter_fin']);
+			}
+			array_push($arraySaison, 
+				array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
+				'Nat_debut' => $row['Nat_debut'], 
+				'Nat_fin' => $row['Nat_fin'], 
+				'Inter_debut' => $row['Inter_debut'], 
+				'Inter_fin' => $row['Inter_fin'] 
+			));
 	}
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);

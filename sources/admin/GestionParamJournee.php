@@ -30,7 +30,11 @@ class GestionParamJournee extends MyPageSecure
 			$result->execute(array($idJournee));
 			if ($result->rowCount() == 1) {
 				$ListJournees = array();
-				$row = $result->fetch();	  
+				$row = $result->fetch();
+				if ($_SESSION['lang'] == 'fr') {
+					$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+					$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
+				}
 				
 				$this->m_tpl->assign('Num_Journee', $row['Id']);
 				$this->m_tpl->assign('J_saison', $row['Code_saison']);
@@ -40,8 +44,8 @@ class GestionParamJournee extends MyPageSecure
 				$this->m_tpl->assign('Niveau', $row['Niveau']);
 				$this->m_tpl->assign('Etape', $row['Etape']);
 				$this->m_tpl->assign('Nbequipes', $row['Nbequipes']);
-				$this->m_tpl->assign('Date_debut', utyDateUsToFr($row['Date_debut']));
-				$this->m_tpl->assign('Date_fin', utyDateUsToFr($row['Date_fin']));
+				$this->m_tpl->assign('Date_debut', $row['Date_debut']);
+				$this->m_tpl->assign('Date_fin', $row['Date_fin']);
 				$this->m_tpl->assign('Nom', $row['Nom']);
 				$this->m_tpl->assign('Libelle', $row['Libelle']);
 				$this->m_tpl->assign('Lieu', $row['Lieu']);
