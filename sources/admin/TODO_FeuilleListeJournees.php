@@ -34,7 +34,7 @@ class FeuilleListeJournees extends MyPage
 		// Chargement des Matchs des journées ...
 		$myBdd = new MyBdd();
 		$lstJournee = utyGetSession('lstJournee', 0);
-		$codeSaison = utyGetSaison();
+		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetGet('S', $codeSaison);
 		$laCompet = utyGetSession('codeCompet', 0);
 		$laCompet = utyGetGet('Compet', $laCompet);

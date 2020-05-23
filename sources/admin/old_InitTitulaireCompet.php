@@ -7,7 +7,7 @@ session_start();
 
 $codeCompet = utyGetPost('codeCompet', '');
 
-$codeSaison = utyGetSaison();
+$codeSaison = $myBdd->GetActiveSaison();
 $idMatch = utyGetSession('idMatch', -1);
 $lstJournee = utyGetSession('lstJournee', -1);
 
