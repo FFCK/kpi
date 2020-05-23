@@ -187,11 +187,14 @@ class GestionJournee extends MyPageSecure
 		$i = 0;
 		$lstJournee = '';
 		while ($row = $result->fetch()) {
+			if ($_SESSION['lang'] == 'fr') {
+				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+			}
 			array_push($arrayJournees, array( 'Id' => $row['Id'], 
 				'Code_competition' => $row['Code_competition'], 'Code_typeclt' => $row['Code_typeclt'], 
 				'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'], 
 				'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'], 
-				'Date_debut' => utyDateUsToFr($row['Date_debut']) ));
+				'Date_debut' => $row['Date_debut'] ));
 			if ($i > 0) {
 				$lstJournee .= ',';
 			}
@@ -204,7 +207,7 @@ class GestionJournee extends MyPageSecure
 					'Code_competition' => $row['Code_competition'], 'Lieu' => $row['Lieu'], 
 					'Code_typeclt' => $row['Code_typeclt'], 'Type' => $row['Type'], 
 					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 
-					'Date_debut' => utyDateUsToFr($row['Date_debut']) ));
+					'Date_debut' => $row['Date_debut'] ));
 			}
 			$i ++;
 		}
@@ -471,6 +474,7 @@ class GestionJournee extends MyPageSecure
 				$jour = $row['Date_match'];
                 if (utyGetSession('lang') == 'fr') {
     				$listeJours[$jour] = utyDateUsToFr($jour);
+					$row['Date_match'] = utyDateUsToFr($row['Date_match']);
                 } else {
     				$listeJours[$jour] = $jour;
                 }
@@ -516,7 +520,7 @@ class GestionJournee extends MyPageSecure
 					array_push($arrayMatchs, array( 'Id' => $row['Id'], 'Id_journee' => $row['Id_journee'], 'Numero_ordre' => $row['Numero_ordre'],
 						'ScoreDetailA' => $row['ScoreDetailA'], 'ScoreDetailB' => $row['ScoreDetailB'], 
 						'Statut' => $row['Statut'], 'Periode' => $row['Periode'], 'Type' => $row['Type'],
-						'Date_match' => utyDateUsToFr($row['Date_match']), 'Heure_match' => $row['Heure_match'],
+						'Date_match' => $row['Date_match'], 'Heure_match' => $row['Heure_match'],
 						'Libelle' => $row['Libelle'], 'Terrain' => $row['Terrain'], 
 						'EquipeA' => $row['EquipeA'], 'EquipeB' => $row['EquipeB'],
 						'Id_equipeA' => $row['Id_equipeA'], 'Id_equipeB' => $row['Id_equipeB'], 
@@ -545,18 +549,18 @@ class GestionJournee extends MyPageSecure
 						$PhaseLibelle = 1;
 																					
 					if ($i == 0) {
-						$dateDebut = utyDateUsToFr($row['Date_match']);
-						$dateFin = utyDateUsToFr($row['Date_match']);
+						$dateDebut = $row['Date_match'];
+						$dateFin = $row['Date_match'];
 					} else {
-						if (utyDateCmpFr($dateDebut, utyDateUsToFr($row['Date_match'])) > 0)
-							$dateDebut = utyDateUsToFr($row['Date_match']);
+						if (utyDateCmpFr($dateDebut, $row['Date_match']) > 0)
+							$dateDebut = $row['Date_match'];
 							
-						if (utyDateCmpFr($dateFin, utyDateUsToFr($row['Date_match'])) < 0)
-							$dateFin = utyDateUsToFr($row['Date_match']);
+						if (utyDateCmpFr($dateFin, $row['Date_match']) < 0)
+							$dateFin = $row['Date_match'];
 					}
 					
 					if ($jourmatch != $row['Date_match'])
-						array_push($arrayJours, utyDateUsToFr($row['Date_match']));
+						array_push($arrayJours, $row['Date_match']);
 					$jourmatch = $row['Date_match'];
 				}
 			}
@@ -733,7 +737,11 @@ class GestionJournee extends MyPageSecure
 			$lastType = $row['Type'];
 		}
 		if ($result->rowCount() > 0) {
-			$_SESSION['Date_match'] = utyDateUsToFr($lastDate);
+			if ($_SESSION['lang'] == 'fr') {
+				$_SESSION['Date_match'] = utyDateUsToFr($lastDate);
+			} else {
+				$_SESSION['Date_match'] = $lastDate;
+			}
 			$_SESSION['Heure_match'] = utyTimeInterval($lastHeure, utyGetSession('Intervalle_match'));
 			$_SESSION['Num_match'] = $lastNumOrdre+1;
 			$_SESSION['Terrain'] = $lastTerrain;
@@ -881,8 +889,7 @@ class GestionJournee extends MyPageSecure
             $coeffB = 1.0;
         }
 
-        if ($idJournee != 0)
-		{
+        if ($idJournee != 0) {
 			if (strlen($numMatch) == 0) {
                 $numMatch = $this->LastNumeroOrdre($idJournee) + 1;
             }
@@ -1007,7 +1014,10 @@ class GestionJournee extends MyPageSecure
 			$row = $result->fetch();			
 			$_SESSION['idJournee'] = $row['Id_journee'];
 			$_SESSION['Num_match'] = $row['Numero_ordre'];
-			$_SESSION['Date_match'] = utyDateUsToFr($row['Date_match']);
+			if ($_SESSION['lang'] == 'fr') {
+				$row['Date_match'] = utyDateUsToFr($row['Date_match']);
+			}
+			$_SESSION['Date_match'] = $row['Date_match'];
 			$_SESSION['Heure_match'] = $row['Heure_match'];
 			$_SESSION['Libelle'] = $row['Libelle'];
 			$_SESSION['Terrain'] = $row['Terrain'];
@@ -1631,7 +1641,11 @@ class GestionJournee extends MyPageSecure
 		
 		$this->m_tpl->assign('Intervalle_match', utyGetSession('Intervalle_match', '40'));
 		$this->m_tpl->assign('Num_match', utyGetSession('Num_match', ''));
-		$this->m_tpl->assign('Date_match', utyGetSession('Date_match', ''));
+		if ($_SESSION['lang'] == 'fr') {
+			$this->m_tpl->assign('Date_match', utyDateUsToFr(utyGetSession('Date_match', '')));
+		} else {
+			$this->m_tpl->assign('Date_match', utyDateFrToUs(utyGetSession('Date_match', '')));
+		}
 		$this->m_tpl->assign('Heure_match', utyGetSession('Heure_match', ''));
 		$this->m_tpl->assign('Libelle', utyGetSession('Libelle', ''));
 		$this->m_tpl->assign('Terrain', utyGetSession('Terrain', ''));

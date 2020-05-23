@@ -430,7 +430,11 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 	
 	// Maskedinput
 	jq(".champsHeure").mask("99:99");
-	jq('.date').mask("99/99/9999");
+	if (lang == 'en') {
+		jq('.date').mask("9999-99-99");
+	} else {
+		jq('.date').mask("99/99/9999");
+	}
 
 	//Recherches arbitres
 	jq('#iframeRechercheLicenceIndi2').hide();
@@ -528,34 +532,24 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		var valeur = jq(this).text();
 		var tabindexVal = jq(this).attr('tabindex');
 		jq(this).attr('tabindex',tabindexVal+1000);
-		if(jq(this).hasClass('text'))
-		{
+		if (jq(this).hasClass('text')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="12" value="'+valeur+'">');
-		}
-		else if(jq(this).hasClass('numMatch'))
-		{
+		} else if (jq(this).hasClass('numMatch')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="1" value="'+valeur+'">');
-		}
-		else if(jq(this).hasClass('date'))
-		{
+		} else if (jq(this).hasClass('date')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="8" value="'+valeur+'">');
 			jq('#inputZone').mask("99/99/9999");
-		}
-		else if(jq(this).hasClass('heure'))
-		{
+		} else if (jq(this).hasClass('dateEN')) {
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="8" value="'+valeur+'">');
+			jq('#inputZone').mask("9999-99-99");
+		} else if (jq(this).hasClass('heure')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="4" value="'+valeur+'">');
 			jq('#inputZone').mask("99:99");
-		}
-		else if(jq(this).hasClass('terrain'))
-		{
+		} else if (jq(this).hasClass('terrain')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-		}
-		else if(jq(this).hasClass('score'))
-		{
+		} else if (jq(this).hasClass('score')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
-		}
-		else if(jq(this).hasClass('equipe'))
-		{
+		} else if (jq(this).hasClass('equipe')) {
 			jq(this).before('<select id="selectZone" class="directInputSpan" tabindex="'+tabindexVal+'"></select>');
 			jq(this).before('<br /><input type="button" id="selectZoneAnnul" value="' + langue['Annuler'] + '">');
 			datamatch = jq(this).attr('data-match');
@@ -790,10 +784,6 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		var formatValeur = identifiant2[2];
 		if(valeur != nouvelleValeur){
 			valeurTransmise = nouvelleValeur;
-			if(formatValeur == 'date'){
-				valeurTransmise2 = valeurTransmise.split('/');
-				valeurTransmise = valeurTransmise2[2]+'-'+valeurTransmise2[1]+'-'+valeurTransmise2[0];
-			}
 			var AjaxWhere = jq('#AjaxWhere').val();
 			var AjaxTableName = jq('#AjaxTableName').val();
 			var AjaxAnd = '';

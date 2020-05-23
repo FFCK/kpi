@@ -85,6 +85,7 @@
             <script>
                 masquer = {$masquer};
                 lang = '{$lang}';
+				var languageCode = lang;	// dhtmlgoodies_calendar. Possible values: 	en,ge,no,nl,es,pt-br,fr
             </script>
 			<script src="../js/dhtmlgoodies_calendar.js?random=20060118"></script>
 			<script src="../js/jquery-1.5.2.min.js"></script>
@@ -97,7 +98,6 @@
 			{if is_file($temp)}
 				<script src="../js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
 			{/if}
-            
             {literal}
             <!-- Piwik -->
             <script type="text/javascript">

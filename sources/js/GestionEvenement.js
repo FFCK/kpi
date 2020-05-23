@@ -28,9 +28,9 @@ function addEvt()
 		return;
 
 	document.forms['formEvenement'].elements['Cmd'].value = 'Add';
-document.forms['formEvenement'].elements['ParamCmd'].value = '';
+	document.forms['formEvenement'].elements['ParamCmd'].value = '';
 
-document.forms['formEvenement'].submit();
+	document.forms['formEvenement'].submit();
 }
 		
 function publiEvt(idEvt, pub)
@@ -88,7 +88,11 @@ jq(document).ready(function() {
 	// Maskedinput
 	//jq.mask.definitions['h'] = "[A-O]";
 	jq('.dpt').mask("?***");
-	jq('.date').mask("99/99/9999");
+	if (lang == 'en') {
+		jq('.date').mask("9999-99-99");
+	} else {
+		jq('.date').mask("99/99/9999");
+	}
 	//jq("#inputZone").mask("9");
 
 });

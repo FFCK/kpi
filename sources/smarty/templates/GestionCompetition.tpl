@@ -395,11 +395,11 @@
 								<tr class='ajoutCalendrier'>
 									<td colspan=2>
 										<label for="Date_debut">{#Date_debut#}</label>
-										<input type="text" class='date' name="Date_debut" id="Date_debut" value="{$Date_debut}" onfocus="displayCalendar(document.forms[0].Date_debut,'dd/mm/yyyy',this)" >
+										<input type="text" class='date' name="Date_debut" id="Date_debut" value="{$Date_debut}" onfocus="displayCalendar(document.forms[0].Date_debut,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 									</td>
 									<td colspan=2>
 										<label for="Date_fin">{#Date_fin#}</label>
-										<input type="text" class='date' name="Date_fin" id="Date_fin" value="{$Date_fin}" onfocus="displayCalendar(document.forms[0].Date_fin,'dd/mm/yyyy',this)" >
+										<input type="text" class='date' name="Date_fin" id="Date_fin" value="{$Date_fin}" onfocus="displayCalendar(document.forms[0].Date_fin,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 									</td>
 								</tr>
 								<tr class='ajoutCalendrier'>
@@ -571,21 +571,21 @@
 						<tr>
 							<td>
 								<label for="newSaison">Debut National</label>
-								<input type="text" class='date' name="newSaisonDN" onfocus="displayCalendar(document.forms[0].newSaisonDN,'dd/mm/yyyy',this)" >
+								<input type="text" class='date' name="newSaisonDN" onfocus="displayCalendar(document.forms[0].newSaisonDN,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 							</td>
 							<td>
 								<label for="newSaisonFN">Fin National</label>
-								<input type="text" class='date' name="newSaisonFN" onfocus="displayCalendar(document.forms[0].newSaisonFN,'dd/mm/yyyy',this)" >
+								<input type="text" class='date' name="newSaisonFN" onfocus="displayCalendar(document.forms[0].newSaisonFN,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<label for="newSaisonDI">Debut International</label>
-								<input type="text" class='date' name="newSaisonDI" onfocus="displayCalendar(document.forms[0].newSaisonDI,'dd/mm/yyyy',this)" >
+								<input type="text" class='date' name="newSaisonDI" onfocus="displayCalendar(document.forms[0].newSaisonDI,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 							</td>
 							<td>
 								<label for="newSaisonFI">Fin International</label>
-								<input type="text" class='date' name="newSaisonFI" onfocus="displayCalendar(document.forms[0].newSaisonFI,'dd/mm/yyyy',this)" >
+								<input type="text" class='date' name="newSaisonFI" onfocus="displayCalendar(document.forms[0].newSaisonFI,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 							</td>
 						</tr>
 						<tr>

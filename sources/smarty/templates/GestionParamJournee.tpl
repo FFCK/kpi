@@ -234,12 +234,12 @@
 						<tr>
 							<td class="vert">
 								<label for="Date_debut"><b>{#Date_debut#}</b></label>
-								<input type="text" class='date' name="Date_debut" value="{$Date_debut}" onfocus="displayCalendar(document.forms[0].Date_debut,'dd/mm/yyyy',this)" >
+								<input type="text" class='date' name="Date_debut" value="{$Date_debut}" onfocus="displayCalendar(document.forms[0].Date_debut,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 								<input type="hidden" name="Date_origine" value="{$Date_debut}" >
 							</td>
 							<td colspan=3 class="vert">
                                 <label for="Date_fin"><b>{#Date_fin#}</b></label>
-                                <input type="text" class='date' name="Date_fin" value="{$Date_fin}" onfocus="displayCalendar(document.forms[0].Date_fin,'dd/mm/yyyy',this)" >
+                                <input type="text" class='date' name="Date_fin" value="{$Date_fin}" onfocus="displayCalendar(document.forms[0].Date_fin,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
                             </td>
 						</tr>
 						<tr>

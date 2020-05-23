@@ -50,8 +50,10 @@ var turnOffYearSpan = false;     // true = Only show This Year and Next, false =
 var weekStartsOnSunday = false;  // true = Start the week on Sunday, false = start the week on Monday
 var showWeekNumber = false;  // true = show week number,  false = do not show week number
 
-var languageCode = 'fr';	// Possible values: 	en,ge,no,nl,es,pt-br,fr
+if (languageCode === undefined) {
+	var languageCode = 'fr';	// Possible values: 	en,ge,no,nl,es,pt-br,fr
 							// en = english, ge = german, no = norwegian,nl = dutch, es = spanish, pt-br = portuguese, fr = french, da = danish, hu = hungarian(Use UTF-8 doctype for hungarian)
+}
 
 var calendar_display_time = true;
 

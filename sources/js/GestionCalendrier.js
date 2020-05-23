@@ -124,7 +124,7 @@ jq(document).ready(function() {
 		event.preventDefault();
         var valeur = jq(this).text();
         var typeChamps = jq(this).attr('data-type');
-        switch(typeChamps) {
+        switch (typeChamps) {
             case 'text':
                 jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="7" data-anciennevaleur="'+valeur+'" value="'+valeur+'">');
                 break;
@@ -135,6 +135,10 @@ jq(document).ready(function() {
                 jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" size="1" data-anciennevaleur="'+valeur+'" value="'+valeur+'">');
                 break;
             case 'date':
+                jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="8" value="'+valeur+'" >');
+                jq('#inputZone').mask("99/99/9999");
+                break;
+            case 'dateEN':
                 jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="8" value="'+valeur+'" >');
                 jq('#inputZone').mask("9999-99-99");
                 break;

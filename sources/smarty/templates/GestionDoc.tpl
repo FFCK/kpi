@@ -12,7 +12,9 @@
 					<label for="saisonTravail">{#Saison#} :</label>
 					<select name="saisonTravail" onChange="submit()">
 						{section name=i loop=$arraySaison} 
-							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} ({#Travail#}){/if}</Option>
+							<Option Value="{$arraySaison[i].Code}" {if $arraySaison[i].Code eq $sessionSaison}selected{/if}>
+								{$arraySaison[i].Code}{if $arraySaison[i].Code eq $sessionSaison} ({#Travail#}){/if}
+							</Option>
 						{/section}
 					</select>
 					<br />
@@ -481,13 +483,13 @@
 						</tr>
 						<tr>
 							<td align='center' colspan=3>
-								<i>{if $detailsCompet.Date_calcul != '00/00/00 à 00h00'}calculé le {$detailsCompet.Date_calcul}{/if}</i>
+								<i>{if $detailsCompet.Date_calcul != '00/00/00 à 00h00'}{#Calcul#} {$detailsCompet.Date_calcul}{/if}</i>
 							</td>
 							<td align='center'>&nbsp;</td>
 						</tr>
 						<tr>
 							<td align='center' colspan=3>
-								<i>{if $detailsCompet.Date_publication != '00/00/00 à 00h00'}{#Publie#} {$detailsCompet.Date_publication}
+								<i>{if $detailsCompet.Date_publication != '00/00/00 à 00h00'}{#Publication#} {$detailsCompet.Date_publication}
 									{else}{#Prive#}{/if}</i>
 							</td>
 							<td align='center'>{if $detailsCompet.Date_publication != '00/00/00 à 00h00'}<img width="15" height="15" src="../img/oeil2O.gif" />

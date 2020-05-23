@@ -354,7 +354,7 @@
 							{section name=i loop=$arrayOfficielsJournees}
 								<tr class='{cycle values="impair,pair"}'>
 									<td>{$arrayOfficielsJournees[i].Code_competition}</td>
-									<td>{$arrayOfficielsJournees[i].Date_debut|date_format:"%d/%m/%Y"}<br />{$arrayOfficielsJournees[i].Date_fin|date_format:"%d/%m/%Y"}</td>
+									<td>{$arrayOfficielsJournees[i].Date_debut}<br />{$arrayOfficielsJournees[i].Date_fin}</td>
 									<td>{$arrayOfficielsJournees[i].Lieu} ({$arrayOfficielsJournees[i].Departement})</td>
 									<td>{$arrayOfficielsJournees[i].Responsable_insc}</td>
 									<td>{$arrayOfficielsJournees[i].Responsable_R1}</td>
@@ -370,7 +370,7 @@
 							{section name=i loop=$arrayOfficielsMatchs}
 								<tr class='{cycle values="impair,pair"}'>
 									<td>{$arrayOfficielsMatchs[i].Code_competition} - {$arrayOfficielsMatchs[i].Lieu} ({$arrayOfficielsMatchs[i].Departement})</td>
-									<td>{$arrayOfficielsMatchs[i].Date_match|date_format:"%d/%m/%Y"}<br />n°{$arrayOfficielsMatchs[i].Numero_ordre} - {$arrayOfficielsMatchs[i].Heure_match}
+									<td>{$arrayOfficielsMatchs[i].Date_match}<br />n°{$arrayOfficielsMatchs[i].Numero_ordre} - {$arrayOfficielsMatchs[i].Heure_match}
                                                                             {if $profile <= 6}
                                                                                 <a href="FeuilleMatchMulti.php?listMatch={$arrayOfficielsMatchs[i].Id}" target="_blank"><img width="10" src="../img/b_plus.png" alt="Détails" title="{$arrayOfficielsMatchs[i].equipeA} / {$arrayOfficielsMatchs[i].equipeB}" /></a>
                                                                             {/if}
