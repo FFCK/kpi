@@ -184,7 +184,7 @@
 										{section name=i loop=$Arbitrages}
 											<tr>
 {*												<td>{$Arbitrages[i].Code_saison}</td>*}
-												<td>{$Arbitrages[i].Date_match|date_format:"%d/%m"}</td>
+												<td>{$Arbitrages[i].Date_match}</td>
 												<td>{$Arbitrages[i].Heure_match}</td>
 												<td>{$Arbitrages[i].Code_competition}</td>
 												<td>{$Arbitrages[i].Numero_ordre}
@@ -226,7 +226,7 @@
 										{section name=i loop=$OTM}
 											<tr>
 {*												<td>{$Arbitrages[i].Code_saison}</td>*}
-												<td>{$OTM[i].Date_match|date_format:"%d/%m"}</td>
+												<td>{$OTM[i].Date_match}</td>
 												<td>{$OTM[i].Heure_match}</td>
 												<td>{$OTM[i].Code_competition}</td>
 												<td>{$OTM[i].Numero_ordre}
@@ -278,7 +278,7 @@
 										{section name=i loop=$Joueur}
                                             {if $Joueur[i].ScoreOK == 'O'}
                                                 <tr>
-                                                    <td>{$Joueur[i].Date_match|date_format:"%d/%m"}</td>
+                                                    <td>{$Joueur[i].Date_match}</td>
                                                     <td>{$Joueur[i].Code_competition}</td>
                                                     <td>
                                                         {$Joueur[i].Numero_ordre}

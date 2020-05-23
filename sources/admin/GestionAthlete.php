@@ -52,7 +52,9 @@ class GestionAthlete extends MyPageSecure
                 return;
             }
             $row = $result->fetch();
-            $row['date_surclassement'] = utyDateUsToFr($row['date_surclassement']);
+            if ($_SESSION['lang'] == 'fr') {
+                $row['date_surclassement'] = utyDateUsToFr($row['date_surclassement']);
+            }
 			$this->m_tpl->assign('Courreur', $row);
 			$this->m_tpl->assign('Athlete_id', $row['Nom'].' '.$row['Prenom']);
 			// Arbitre
@@ -119,6 +121,11 @@ class GestionAthlete extends MyPageSecure
                 } else {
                     $row['ScoreOK'] = 'N';
                 }
+                if ($_SESSION['lang'] == 'fr') {
+                    $row['Date_match'] = substr(utyDateUsToFr($row['Date_match']), 0, 5);
+                } else {
+                    $row['Date_match'] = substr($row['Date_match'], 5, 5);
+                }
                 array_push($Arbitrages, $row);
 			}
 			$this->m_tpl->assign('Arbitrages', $Arbitrages);
@@ -146,6 +153,11 @@ class GestionAthlete extends MyPageSecure
                     $row['ScoreOK'] = 'O';
                 } else {
                     $row['ScoreOK'] = 'N';
+                }
+                if ($_SESSION['lang'] == 'fr') {
+                    $row['Date_match'] = substr(utyDateUsToFr($row['Date_match']), 0, 5);
+                } else {
+                    $row['Date_match'] = substr($row['Date_match'], 5, 5);
                 }
                 array_push($OTM, $row);
 			}
@@ -180,6 +192,11 @@ class GestionAthlete extends MyPageSecure
                     $row['ScoreOK'] = 'O';
                 } else {
                     $row['ScoreOK'] = 'N';
+                }
+                if ($_SESSION['lang'] == 'fr') {
+                    $row['Date_match'] = substr(utyDateUsToFr($row['Date_match']), 0, 5);
+                } else {
+                    $row['Date_match'] = substr($row['Date_match'], 5, 5);
                 }
                 array_push($Joueur, $row);
 			}

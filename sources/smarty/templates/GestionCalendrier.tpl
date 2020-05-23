@@ -191,7 +191,7 @@
 											<td class="color{$arrayJournees[i].Publication|default:'N'}2">
 												<img class="publiJournee" data-valeur="{$arrayJournees[i].Publication}" data-id="{$arrayJournees[i].Id}" height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" title="{if $arrayJournees[i].Publication == 'O'}{#Public#}{else}{#Prive#}{/if}" />
 											</td>
-											<td align="left">{$arrayJournees[i].Id}</td> 
+											<td>{$arrayJournees[i].Id}</td> 
 											<td width=70>
 												<a href="#" onclick="ParamJournee({$arrayJournees[i].Id});"><img height="16" src="../img/glyphicons-31-pencil.png" alt="{#Editer#}" title="{#Editer#}" ></a>
 												<a href="#" onclick="duplicate({$arrayJournees[i].Id});"><img height="20" src="../img/glyphicons-511-duplicate.png" alt="{#Dupliquer#}" title="{#Duppliquer#}" ></a>
@@ -215,20 +215,21 @@
                                             <td>
                                                 <span class='directInput' data-type="text" data-target="Nom" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Nom}">{$arrayJournees[i].Nom}</span>
                                             </td>
-                                            <td>{$arrayJournees[i].Date_debut} - {$arrayJournees[i].Date_fin}</td>
-{*                                            <td>
-                                                <span class='directInput' data-type="date" data-target="Date_debut" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Date_debut}">{$arrayJournees[i].Date_debut}</span>
-                                                -
-                                                <span class='directInput' data-type="date" data-target="Date_fin" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Date_fin}">{$arrayJournees[i].Date_fin}</span>
-                                            </td>
-*}                                            <td>
+                                            <td>
+												<span class='directInput' data-type="date{if $lang=='en'}EN{/if}" data-target="Date_debut" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Date_debut}">{$arrayJournees[i].Date_debut}</span>
+												-
+												<span class='directInput' data-type="date{if $lang=='en'}EN{/if}" data-target="Date_fin" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Date_fin}">{$arrayJournees[i].Date_fin}</span>
+												{* {$arrayJournees[i].Date_debut} - {$arrayJournees[i].Date_fin} *}
+											</td>
+	                                    	<td>
                                                 <span class='directInput' data-type="text" data-target="Lieu" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Lieu}">{$arrayJournees[i].Lieu}</span>
                                             </td>
                                             <td>
                                                 <span class='directInput' data-type="smalltext" data-target="Departement" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Departement}">{$arrayJournees[i].Departement}</span>
                                             </td>
-                                            <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="{#Officiels#}"><img height="18" src="../img/glyphicons-28-search.png" alt="{#Officiels#}"></a>
-                                            <td>
+                                            <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="{#Officiels#}">
+												<img height="18" src="../img/glyphicons-social-63-buffer.png" alt="{#Officiels#}"></a>
+                                            <td style="text-align:left">
                                                 {if $arrayJournees[i].Responsable_insc != ''}{#RC#}: {$arrayJournees[i].Responsable_insc}<br />{/if}
                                                 {if $arrayJournees[i].Responsable_R1 != ''}{#R1#}: {$arrayJournees[i].Responsable_R1}<br />{/if}
                                                 {if $arrayJournees[i].Delegue != ''}{#Delegue#}: {$arrayJournees[i].Delegue}<br />{/if}
@@ -242,8 +243,8 @@
 											<td class="color{$arrayJournees[i].Publication|default:'N'}2">
 												<img height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" title="{if $arrayJournees[i].Publication == 'O'}{#Public#}{else}{#Prive#}{/if}" >
 											</td>
-											<td align="left">{$arrayJournees[i].Id}</td> 
-											<td align="left">
+											<td>{$arrayJournees[i].Id}</td> 
+											<td style="text-align:left">
 												<a href='GestionJournee.php?idJournee={$arrayJournees[i].Id}'>
 													<img align="absbottom" height="20" src="../img/b_match.png" alt="{#Matchs#}" title="{#Matchs#}">
 												</a> 
@@ -262,8 +263,8 @@
                                             <td>{$arrayJournees[i].Date_debut} - {$arrayJournees[i].Date_fin}</td>
                                             <td>{$arrayJournees[i].Lieu}</td>
                                             <td>{$arrayJournees[i].Departement}</td>
-                                            <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="{#Officiels#}"><img height="18" src="../img/glyphicons-28-search.png" alt="{#Officiels#}"></a>
-                                            <td>
+                                            <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="{#Officiels#}"><img height="18" src="../img/glyphicons-social-63-buffer.png" alt="{#Officiels#}"></a>
+                                            <td style="text-align:left">
                                                 {if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
                                                 {if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
                                                 {if $arrayJournees[i].Delegue != ''}Délégué: {$arrayJournees[i].Delegue}<br />{/if}
@@ -278,7 +279,7 @@
 										<td class="color{$arrayJournees[i].Publication|default:'N'}2">
 											<img height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" title="{if $arrayJournees[i].Publication == 'O'}{#Public#}{else}{#Prive#}{/if}" >
 										</td>
-										<td align="left">{$arrayJournees[i].Id}</td> 
+										<td>{$arrayJournees[i].Id}</td> 
 										<td class="rouge">
 											<input type="checkbox" class="checkassoc2" data-id="{$arrayJournees[i].Id}" {$arrayJournees[i].Checked} />
 										</td>
@@ -297,7 +298,7 @@
                                         <td>{$arrayJournees[i].Lieu}</td>
                                         <td>{$arrayJournees[i].Departement}</td>
                                         <td>&nbsp;</td>
-                                        <td>
+                                        <td style="text-align:left">
                                             {if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
                                             {if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
                                             {if $arrayJournees[i].Delegue != ''}Délégué: {$arrayJournees[i].Delegue}<br />{/if}
@@ -311,7 +312,7 @@
 										<td class="color{$arrayJournees[i].Publication|default:'N'}2">
 											<img height="25" src="../img/oeil2{$arrayJournees[i].Publication|default:'N'}.gif" title="{if $arrayJournees[i].Publication == 'O'}{#Public#}{else}{#Prive#}{/if}">
 										</td>
-										<td align="left">{$arrayJournees[i].Id}</td> 
+										<td>{$arrayJournees[i].Id}</td> 
 										<td class="rouge">&nbsp;</td>
 
                                         
@@ -331,7 +332,7 @@
                                         <td>{$arrayJournees[i].Lieu}</td>
                                         <td>{$arrayJournees[i].Departement}</td>
                                         <td>&nbsp;</td>
-                                        <td>
+                                        <td style="text-align:left">
                                             {if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
                                             {if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
                                             {if $arrayJournees[i].Delegue != ''}Délégué: {$arrayJournees[i].Delegue}<br />{/if}

@@ -87,7 +87,11 @@ jq(document).ready(function() {
 	//jq.mask.definitions['h'] = "[A-O]";
 	//jq('#Departement').mask("999");
 	jq('.dpt').mask("?***");
-	jq('.date').mask("99/99/9999");
+	if (lang == 'en') {
+		jq('.date').mask("9999-99-99");
+	} else {
+		jq('.date').mask("99/99/9999");
+	}
 
 	jq("#Lieu").autocomplete('Autocompl_ville.php', {
 		width: 420,

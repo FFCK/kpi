@@ -284,6 +284,10 @@ class GestionCalendrier extends MyPageSecure
 					}
 				}
 			}
+			if (utyGetSession('lang') == 'fr') {
+				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
+			}
 			$bAutorisation = utyIsAutorisationJournee($row['Id']);
 			array_push($arrayJournees, array( 'Id' => $row['Id'], 
 				'Autorisation' => $bAutorisation,	
@@ -292,8 +296,8 @@ class GestionCalendrier extends MyPageSecure
 				'Niveau' => $row['Niveau'],
 				'Etape' => $row['Etape'],
 				'Nbequipes' => $row['Nbequipes'],
-				'Date_debut' => utyDateUsToFr($row['Date_debut']), 
-				'Date_fin' => utyDateUsToFr($row['Date_fin']), 
+				'Date_debut' => $row['Date_debut'], 
+				'Date_fin' => $row['Date_fin'], 
 				'Nom' => $row['Nom'], 
 				'Libelle' => $row['Libelle'], 
 				'Type' => $row['Type'], 

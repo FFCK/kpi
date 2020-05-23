@@ -1394,9 +1394,9 @@ class MyBdd
 	function GetCompetition($codeCompet, $codeSaison)
 	{
 		$sql  = "SELECT *, 
-			DATE_FORMAT(Date_calcul,'%d/%m/%y à %Hh%i') Date_calcul, 
-			DATE_FORMAT(Date_publication, '%d/%m/%y à %Hh%i') Date_publication, 
-			DATE_FORMAT(Date_publication_calcul, '%d/%m/%y à %Hh%i') Date_publication_calcul, 
+			Date_calcul, 
+			Date_publication, 
+			Date_publication_calcul, 
 			Code_uti_calcul, Code_uti_publication, Mode_calcul, Mode_publication_calcul 
 			FROM gickp_Competitions 
 			WHERE Code = :Code_competition 
@@ -1414,7 +1414,8 @@ class MyBdd
                                 'Age_min' => '', 'Age_max' => '', 'Sexe' => '',
 							  	'Code_tour' => '', 'Qualifies' => '', 'Elimines' => '',
 							  	'Date_calcul' => '', 'Date_publication' => '', 'Date_publication_calcul' => '',
-							  	'Code_uti_calcul' => '', 'Code_uti_publication' => '', 'Mode_calcul' => '', 'Mode_publication_calcul' => ''
+								'Code_uti_calcul' => '', 'Code_uti_publication' => '', 
+								'Mode_calcul' => '', 'Mode_publication_calcul' => ''
 								);							  	
     }
     

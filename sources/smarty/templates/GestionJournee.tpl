@@ -197,13 +197,13 @@
 									{/section}
 								</select>
 							</td>
-							<td align="left">
+							<td>
 								<table>
 									<tr>
 										<td>
 											<label for="Date_match">Date</label>
 											<br>
-											<input type="text" size="10" class='date' name="Date_match" value="{$Date_match}" tabindex="3" onfocus="displayCalendar(document.forms[0].Date_match,'dd/mm/yyyy',this)" >
+											<input type="text" size="10" class='date' name="Date_match" value="{$Date_match}" tabindex="3" onfocus="displayCalendar(document.forms[0].Date_match,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)" >
 										</td>
 										<td>
 											<label for="Heure_match">{#Heure#}</label>
@@ -218,7 +218,7 @@
 									</tr>
 								</table>
 							</td>
-							<td align="left">
+							<td>
 								<label for="equipeB">{#Equipe#} B</label>
 								<a href="#" id="InitTitulaireEquipeB" title="{#InitTitulaireEquipe#}"><img height="22" src="../img/b_update.png" ></a>
 								<br>
@@ -231,7 +231,7 @@
 								<label for="coeffB">Coef.</label>
 								<input size="1" type="text" name="coeffB" value="{$coeffB|default:'1'}" tabindex="11" />
 							</td>
-							<td align="left">
+							<td>
 								<label for="arbitre2">{#Arbitre#}</label>
 								<input type="text" size="30" name="arbitre2" id="arbitre2" placeholder="{#ref_placeholder#}" value="{$arbitre2}" tabindex="14"/>
 								<input type="text" size="5" name="arbitre2_matric" readonly id="arbitre2_matric" value="{$arbitre2_matric}"/>
@@ -254,7 +254,7 @@
 *}							</td>
 						</tr>
 						<tr class="hideTr">
-							<td align="left" id='clickup' style="color:#555555" colspan="2">
+							<td id='clickup' style="color:#555555" colspan="2">
 								<i><u>{#Masquer_le_formulaire#}</u></i>
 							</td>
 							<td align="center" colspan=2>
@@ -378,7 +378,7 @@
 													<br />
 													<a href="#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="20" src="../img/glyphicons-163-ipad.png" title="{#Feuille_marque_en_ligne#}" border="0"></a>
 												</td>
-												<td><span class='directInput date' Id="Date_match-{$arrayMatchs[i].Id}-date" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
+												<td><span class='directInput date{if $lang=='en'}EN{/if}' Id="Date_match-{$arrayMatchs[i].Id}-date{if $lang=='en'}EN{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
 													<span class='directInput heure' Id="Heure_match-{$arrayMatchs[i].Id}-time" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span></td>
 												<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
 												{if $PhaseLibelle == 1}
@@ -435,7 +435,7 @@
 													<br />
 													<a href="#" onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;" ><img height="20" src="../img/glyphicons-163-ipad.png" title="{#Feuille_marque_en_ligne#}" border="0"></a>
 												</td>
-												<td><span class='directInputOff date' Id="Date_match-{$arrayMatchs[i].Id}-date" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
+												<td><span class='directInputOff date{if $lang=='en'}EN{/if}' Id="Date_match-{$arrayMatchs[i].Id}-date{if $lang=='en'}EN{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
 													<span class='directInputOff heure' Id="Heure_match-{$arrayMatchs[i].Id}-time" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span></td>
 												<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
 												{if $PhaseLibelle == 1}

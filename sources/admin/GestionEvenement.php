@@ -37,12 +37,17 @@ class GestionEvenement extends MyPageSecure
 			if ($row['Publication'] != 'O')
 				$Publication = 'N';
 			
+			if ($_SESSION['lang'] == 'fr') {
+				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
+			}
+			
 			array_push($arrayEvenement, array( 
 				'Id' => $row['Id'], 
 				'Libelle' => $row['Libelle'],  
 				'Lieu' => $row['Lieu'],  
-				'Date_debut' => utyDateUsToFr($row['Date_debut']), 
-				'Date_fin' => utyDateUsToFr($row['Date_fin']),
+				'Date_debut' => $row['Date_debut'], 
+				'Date_fin' => $row['Date_fin'],
 				'StdOrSelected' => $StdOrSelected,
 				'Publication' => $Publication 
 			));
@@ -133,8 +138,12 @@ class GestionEvenement extends MyPageSecure
 			$_SESSION['idEvenement'] = $idEvenement;
 			$_SESSION['Libelle'] = $row['Libelle'];
 			$_SESSION['Lieu'] = $row['Lieu'];
-			$_SESSION['Date_debut'] = utyDateUsToFr($row['Date_debut']);
-			$_SESSION['Date_fin'] = utyDateUsToFr($row['Date_fin']);
+			if ($_SESSION['lang'] == 'fr') {
+				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
+			}
+			$_SESSION['Date_debut'] = $row['Date_debut'];
+			$_SESSION['Date_fin'] = $row['Date_fin'];
 		}
 	}
 

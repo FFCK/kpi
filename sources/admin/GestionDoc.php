@@ -35,9 +35,7 @@ class GestionDoc extends MyPageSecure
 			ORDER BY Code DESC ";	 
 		$arraySaison = array();
         foreach ($myBdd->pdo->query($sql) as $row) { 
-			array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat'], 
-				'Nat_debut' => utyDateUsToFr($row['Nat_debut']), 'Nat_fin' => utyDateUsToFr($row['Nat_fin']), 
-				'Inter_debut' => utyDateUsToFr($row['Inter_debut']), 'Inter_fin' => utyDateUsToFr($row['Inter_fin']) ));
+			array_push($arraySaison, array('Code' => $row['Code'], 'Etat' => $row['Etat']));
 		}
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
@@ -131,14 +129,19 @@ class GestionDoc extends MyPageSecure
 		$this->m_tpl->assign('codeCompet', $codeCompet);
 		
 		//Détails Compet
-        $detailsCompet = $myBdd->GetCompetition($codeCompet, $codeSaison);
-        if( $detailsCompet['BandeauLink'] != '' && strpos($detailsCompet['BandeauLink'], 'http') === FALSE ) {
+		$detailsCompet = $myBdd->GetCompetition($codeCompet, $codeSaison);
+		if ($_SESSION['lang'] == 'fr') {
+			$detailsCompet['Date_calcul'] = strftime('%d/%m/%Y à %R', strtotime($detailsCompet['Date_calcul']));
+			$detailsCompet['Date_publication'] = strftime('%d/%m/%Y à %R', strtotime($detailsCompet['Date_publication']));
+		}
+
+		if ($detailsCompet['BandeauLink'] != '' && strpos($detailsCompet['BandeauLink'], 'http') === FALSE ) {
             $detailsCompet['BandeauLink'] = '../img/logo/' . $detailsCompet['BandeauLink'];
         }
-        if( $detailsCompet['LogoLink'] != '' && strpos($detailsCompet['LogoLink'], 'http') === FALSE ) {
+        if ($detailsCompet['LogoLink'] != '' && strpos($detailsCompet['LogoLink'], 'http') === FALSE ) {
             $detailsCompet['LogoLink'] = '../img/logo/' . $detailsCompet['LogoLink'];
         }
-        if( $detailsCompet['SponsorLink'] != '' && strpos($detailsCompet['SponsorLink'], 'http') === FALSE ) {
+        if ($detailsCompet['SponsorLink'] != '' && strpos($detailsCompet['SponsorLink'], 'http') === FALSE ) {
             $detailsCompet['SponsorLink'] = '../img/logo/' . $detailsCompet['SponsorLink'];
         }
 		$this->m_tpl->assign('detailsCompet', $detailsCompet);
@@ -177,9 +180,13 @@ class GestionDoc extends MyPageSecure
 			if($listJournees != '')
 				$listJournees .= ',';
 			$listJournees .= $row['Id'];
-			$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
-			$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
-			array_push($arrayJournees, array( 'Niveau' => $row['Niveau'], 'Phase' => $row['Phase'], 'Date_debut' => $row['Date_debut'], 'Date_fin' => $row['Date_fin'], 'Lieu' => $row['Lieu'] ));
+			if ($_SESSION['lang'] == 'fr') {
+				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
+				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
+			}
+			array_push($arrayJournees, array( 'Niveau' => $row['Niveau'], 'Phase' => $row['Phase'], 
+				'Date_debut' => $row['Date_debut'], 'Date_fin' => $row['Date_fin'], 'Lieu' => $row['Lieu'] 
+			));
 			$num_results ++;
 		}
 		$this->m_tpl->assign('nbJournees', $num_results);
