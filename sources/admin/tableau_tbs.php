@@ -24,8 +24,8 @@ if (!file_exists($template)) exit("File does not exist.");
 // Prepare some data for the sheet
 		session_start(); 
 		$myBdd = new MyBdd();
-		//	echo $_SESSION['listMatch'];
 		$listMatch = utyGetSession('listMatch',0);
+		$listMatch = explode(',', $listMatch);
 		
 		$arrayMatchs = array();
 		$in = str_repeat('?,', count($listMatch) - 1) . '?';
