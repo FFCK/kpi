@@ -12,32 +12,8 @@ class PDF extends FPDF {
     var $x0;
 }
 
-class FeuilleMatch extends MyPage {
-
-    function InitTitulaireEquipe($numEquipe, $idMatch, $idEquipe, $bdd) {
-        $myBdd = new MyBdd();
-        $sql = "SELECT Count(*) Nb 
-            FROM gickp_Matchs_Joueurs 
-            WHERE Id_match = ? 
-            AND Equipe = ? ";
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($idMatch, $numEquipe));
-
-        $row = $result->fetch();
-        if ((int) $row['Nb'] > 0) {
-            return;
-        }
-
-        $sql = "REPLACE INTO gickp_Matchs_Joueurs 
-            SELECT ?, Matric, Numero, ?, Capitaine 
-            FROM gickp_Competitions_Equipes_Joueurs 
-            WHERE Id_equipe = ? 
-            AND Capitaine <> 'X' 
-            AND Capitaine <> 'A' ";
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($idMatch, $numEquipe, $idEquipe));
-    }
-
+class FeuilleMatch extends MyPage 
+{
     function __construct() {
         MyPage::MyPage();
         $myBdd = new MyBdd();
@@ -277,7 +253,7 @@ class FeuilleMatch extends MyPage {
             }
 
             if ($row['Id_equipeA'] >= 1) {
-                $this->InitTitulaireEquipe('A', $idMatch, $idEquipeA, $myBdd);
+                $myBdd->InitTitulaireEquipe('A', $idMatch, $idEquipeA);
             }
 
             $sql3 = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, 
@@ -338,7 +314,7 @@ class FeuilleMatch extends MyPage {
             }
 
             if ($row['Id_equipeB'] >= 1) {
-                $this->InitTitulaireEquipe('B', $idMatch, $idEquipeB, $myBdd);
+                $myBdd->InitTitulaireEquipe('B', $idMatch, $idEquipeB);
             }
 
             $result3->execute(array($idEquipeB, $idMatch, 'B'));
