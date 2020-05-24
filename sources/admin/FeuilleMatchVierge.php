@@ -29,7 +29,7 @@ class FeuilleMatch extends MyPage
 		
 		// Langue
 		$langue = parse_ini_file("../commun/MyLang.ini", true);
-		if($_GET['lang'] == 'en') {
+		if (utyGetGet('lang') == 'en') {
 			$lang = $langue['en'];
 			$date = '';
 			$dateprint = date('Y-m-d');
