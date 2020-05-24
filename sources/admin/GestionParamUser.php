@@ -114,7 +114,7 @@ class GestionParamUser extends MyPageSecure
 			exit;	
 		}
 
-		$this->SetTemplate("Mes_parametres", "Utilisateurs", false);
+		$this->SetTemplate("Mes_parametres", "Utilisateur", false);
 		$this->Load();
 		$this->DisplayTemplate('GestionParamUser');
 	}
