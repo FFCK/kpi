@@ -89,8 +89,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => strtoupper($row['Nom']),  
+								'Prenom' => strtoupper($row['Prenom']),  
 								'Sexe' => $row['Sexe'],  
 								'Numero' => $row['Numero'],  
 								'Equipe' => $row['Equipe'],  
@@ -168,8 +168,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => strtoupper($row['Nom']),  
+								'Prenom' => strtoupper($row['Prenom']),  
 								'Sexe' => $row['Sexe'],  
 								'Numero' => $row['Numero'],  
 								'Equipe' => $row['Equipe'],  
@@ -259,8 +259,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => strtoupper($row['Nom']),  
+								'Prenom' => strtoupper($row['Prenom']),  
 								'Sexe' => $row['Sexe'],  
 								'Numero' => $row['Numero'],  
 								'Equipe' => $row['Equipe'],  
@@ -317,8 +317,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => strtoupper($row['Nom']),  
+								'Prenom' => strtoupper($row['Prenom']),  
 								'Sexe' => $row['Sexe'],  
 								'Principal' => $row['principal'],  
 								'Secondaire' => $row['secondaire'],  
@@ -373,8 +373,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Matric' => $row['Matric'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => strtoupper($row['Nom']),  
+								'Prenom' => strtoupper($row['Prenom']),  
 								'Numero_club' => $row['Numero_club'],  
 								'Nom_club' => $row['Nom_club'],  
 								'Nb_matchs' => $row['Nb_matchs']));
@@ -402,8 +402,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Matric' => $row['Matric'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => strtoupper($row['Nom']),  
+								'Prenom' => strtoupper($row['Prenom']),  
 								'nomEquipe' => $row['nomEquipe'],  
 								'Nb_matchs' => $row['Nb_matchs']));
 				}
@@ -479,8 +479,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Matric' => $row['Matric'],  
-                                'Nom' => $row['Nom'],  
-                                'Prenom' => $row['Prenom'],  
+                                'Nom' => strtoupper($row['Nom']),  
+                                'Prenom' => strtoupper($row['Prenom']),  
                                 'nomEquipe' => $row['nomEquipe'],  
                                 'Nb_matchs' => $row['Nb_matchs']));
                 }
@@ -507,8 +507,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Matric' => $row['Matric'],  
-                                'Nom' => $row['Nom'],  
-                                'Prenom' => $row['Prenom'],  
+                                'Nom' => strtoupper($row['Nom']),  
+                                'Prenom' => strtoupper($row['Prenom']),  
                                 'nomEquipe' => $row['nomEquipe'],  
                                 'Nb_matchs' => $row['Nb_matchs']));
                 }

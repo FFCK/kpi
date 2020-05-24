@@ -180,11 +180,11 @@
 									<td>{$smarty.section.i.iteration}</td>
 									<td>{$arrayButeurs[i].Competition}</td>
 									<td>{$arrayButeurs[i].Numero}</td>
-									<td>{$arrayButeurs[i].Nom}
-										{if $profile <= 6}
-												<a href="GestionAthlete.php?Athlete={$arrayButeurs[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
-										{/if}</td>
-									<td>{$arrayButeurs[i].Prenom}</td>
+									<td>{$arrayButeurs[i].Nom|upper}
+									{if $profile <= 6}
+											<a href="GestionAthlete.php?Athlete={$arrayButeurs[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+									{/if}</td>
+									<td>{$arrayButeurs[i].Prenom|upper}</td>
 									<td>{$arrayButeurs[i].Sexe}</td>
 									<td>{$arrayButeurs[i].Equipe}</td>
 									<td>{$arrayButeurs[i].Buts}</td>
@@ -214,11 +214,11 @@
 									<td>{$smarty.section.i.iteration}</td>
 									<td>{$arrayCartons[i].Competition}</td>
 									<td>{$arrayCartons[i].Numero}</td>
-									<td>{$arrayCartons[i].Nom}
-										{if $profile <= 6}
-											<a href="GestionAthlete.php?Athlete={$arrayCartons[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
-										{/if}</td>
-									<td>{$arrayCartons[i].Prenom}</td>
+									<td>{$arrayCartons[i].Nom|upper}
+									{if $profile <= 6}
+										<a href="GestionAthlete.php?Athlete={$arrayCartons[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+									{/if}</td>
+									<td>{$arrayCartons[i].Prenom|upper}</td>
 									<td>{$arrayCartons[i].Sexe}</td>
 									<td>{$arrayCartons[i].Equipe}</td>
 									<td>{$arrayCartons[i].Vert}</td>
@@ -254,11 +254,11 @@
 									<td>{$smarty.section.i.iteration}</td>
 									<td>{$arrayFairplay[i].Competition}</td>
 									<td>{$arrayFairplay[i].Numero}</td>
-									<td>{$arrayFairplay[i].Nom}
-										{if $profile <= 6}
-												<a href="GestionAthlete.php?Athlete={$arrayFairplay[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
-										{/if}</td>
-									<td>{$arrayFairplay[i].Prenom}</td>
+									<td>{$arrayFairplay[i].Nom|upper}
+									{if $profile <= 6}
+											<a href="GestionAthlete.php?Athlete={$arrayFairplay[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+									{/if}</td>
+									<td>{$arrayFairplay[i].Prenom|upper}</td>
 									<td>{$arrayFairplay[i].Sexe}</td>
 									<td>{$arrayFairplay[i].Equipe}</td>
 									<td>{$arrayFairplay[i].Fairplay}</td>
@@ -279,11 +279,11 @@
 									<td>{$smarty.section.i.iteration}</td>
 									<td>{$arrayArbitrage[i].Competition}</td>
 									<td>{$arrayArbitrage[i].Licence}</td>
-									<td>{$arrayArbitrage[i].Nom}
-										{if $profile <= 6}
-												<a href="GestionAthlete.php?Athlete={$arrayArbitrage[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
-										{/if}</td>
-									<td>{$arrayArbitrage[i].Prenom}</td>
+									<td>{$arrayArbitrage[i].Nom|upper}
+									{if $profile <= 6}
+											<a href="GestionAthlete.php?Athlete={$arrayArbitrage[i].Licence}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+									{/if}</td>
+									<td>{$arrayArbitrage[i].Prenom|upper}</td>
 									<td>{$arrayArbitrage[i].Sexe}</td>
 									<td>{$arrayArbitrage[i].Principal}</td>
 									<td>{$arrayArbitrage[i].Secondaire}</td>
@@ -307,11 +307,11 @@
 									<td>{$smarty.section.i.iteration}</td>
 									<td>{$arrayCJouees[i].Matric}</td>
 									{assign var='MatricTemp' value=$arrayCJouees[i].Matric}
-									<td>{$arrayCJouees[i].Nom}
-										{if $profile <= 6}
-												<a href="GestionAthlete.php?Athlete={$arrayCJouees[i].Matric}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
-										{/if}</td>
-									<td>{$arrayCJouees[i].Prenom}</td>
+									<td>{$arrayCJouees[i].Nom|upper}
+									{if $profile <= 6}
+											<a href="GestionAthlete.php?Athlete={$arrayCJouees[i].Matric}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+									{/if}</td>
+									<td>{$arrayCJouees[i].Prenom|upper}</td>
 									<td>{$arrayCJouees[i].Numero_club}</td>
 									<td>{$arrayCJouees[i].Competition}</td>
 									<td>{$arrayCJouees[i].Nb_matchs}</td>
@@ -324,11 +324,11 @@
 									<td>{$arrayCJouees2[i].Matric}</td>
 									{assign var='MatricTemp' value=$arrayCJouees2[i].Matric}
 									{assign var='EquipeTemp' value=$arrayCJouees2[i].nomEquipe}
-									<td>{$arrayCJouees2[i].Nom}
-										{if $profile <= 6}
-												<a href="GestionAthlete.php?Athlete={$arrayCJouees2[i].Matric}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
-										{/if}</td>
-									<td>{$arrayCJouees2[i].Prenom}</td>
+									<td>{$arrayCJouees2[i].Nom|upper}
+									{if $profile <= 6}
+											<a href="GestionAthlete.php?Athlete={$arrayCJouees2[i].Matric}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+									{/if}</td>
+									<td>{$arrayCJouees2[i].Prenom|upper}</td>
 									<td>{$arrayCJouees2[i].nomEquipe}</td>
 									<td>{$arrayCJouees2[i].Competition}</td>
 									<td>{$arrayCJouees2[i].Nb_matchs}</td>
@@ -340,11 +340,11 @@
 									<td>{$smarty.section.i.iteration}</td>
 									<td>{$arrayCJouees3[i].Matric}</td>
 									{assign var='MatricTemp' value=$arrayCJouees3[i].Matric}
-									<td>{$arrayCJouees3[i].Nom}
-										{if $profile <= 6}
-												<a href="GestionAthlete.php?Athlete={$arrayCJouees3[i].Matric}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
-										{/if}</td>
-									<td>{$arrayCJouees3[i].Prenom}</td>
+									<td>{$arrayCJouees3[i].Nom|upper}
+									{if $profile <= 6}
+											<a href="GestionAthlete.php?Athlete={$arrayCJouees3[i].Matric}"><img width="10" src="../img/b_plus.png" alt="Détails" title="Détails" /></a>
+									{/if}</td>
+									<td>{$arrayCJouees3[i].Prenom|upper}</td>
 									<td>{$arrayCJouees3[i].nomEquipe}</td>
 									<td>{$arrayCJouees3[i].Competition}</td>
 									<td>{$arrayCJouees3[i].Irreg}</td>
@@ -371,10 +371,10 @@
 								<tr class='{cycle values="impair,pair"}'>
 									<td>{$arrayOfficielsMatchs[i].Code_competition} - {$arrayOfficielsMatchs[i].Lieu} ({$arrayOfficielsMatchs[i].Departement})</td>
 									<td>{$arrayOfficielsMatchs[i].Date_match}<br />n°{$arrayOfficielsMatchs[i].Numero_ordre} - {$arrayOfficielsMatchs[i].Heure_match}
-                                                                            {if $profile <= 6}
-                                                                                <a href="FeuilleMatchMulti.php?listMatch={$arrayOfficielsMatchs[i].Id}" target="_blank"><img width="10" src="../img/b_plus.png" alt="Détails" title="{$arrayOfficielsMatchs[i].equipeA} / {$arrayOfficielsMatchs[i].equipeB}" /></a>
-                                                                            {/if}
-                                                                        </td>
+									{if $profile <= 6}
+										<a href="FeuilleMatchMulti.php?listMatch={$arrayOfficielsMatchs[i].Id}" target="_blank"><img width="10" src="../img/b_plus.png" alt="Détails" title="{$arrayOfficielsMatchs[i].equipeA} / {$arrayOfficielsMatchs[i].equipeB}" /></a>
+									{/if}
+									</td>
 									<td>{$arrayOfficielsMatchs[i].Arbitre_principal}<br />{$arrayOfficielsMatchs[i].Arbitre_secondaire}</td>
 									<td>{$arrayOfficielsMatchs[i].Ligne1}<br />{$arrayOfficielsMatchs[i].Ligne2}</td>
 									<td>Sec:{$arrayOfficielsMatchs[i].Secretaire}<br />Chr:{$arrayOfficielsMatchs[i].Chronometre}<br />TS:{$arrayOfficielsMatchs[i].Timeshoot}</td>
@@ -383,8 +383,8 @@
 						{elseif $AfficheStat == 'ListeArbitres'}
 							{section name=i loop=$arrayListeArbitres}
 								<tr class='{cycle values="impair,pair"}'>
-                                                                        <td>{$smarty.section.i.iteration}</td>
-                                                                        <td class="cliquableNomEquipe"><a href="GestionAthlete.php?Athlete={$arrayListeArbitres[i].Matric}">{$arrayListeArbitres[i].Nom} {$arrayListeArbitres[i].Prenom} ({$arrayListeArbitres[i].Matric})</a></td>
+									<td>{$smarty.section.i.iteration}</td>
+									<td class="cliquableNomEquipe"><a href="GestionAthlete.php?Athlete={$arrayListeArbitres[i].Matric}">{$arrayListeArbitres[i].Nom} {$arrayListeArbitres[i].Prenom} ({$arrayListeArbitres[i].Matric})</a></td>
 									<td>{$arrayListeArbitres[i].Club}</td>
 									<td>{$arrayListeArbitres[i].Arb} {$arrayListeArbitres[i].niveau}</td>
 									<td>{$arrayListeArbitres[i].saison}</td>
