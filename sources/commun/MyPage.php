@@ -164,13 +164,6 @@ class MyPage
 			$this->DisplayTemplateGlobal('page');
 	}
 
-	// DisplayTemplateAdm
-	function DisplayTemplateAdm($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageAdm');
-	}
-
 	// DisplayTemplateJquery
 	function DisplayTemplateJquery($tplName)
 	{
