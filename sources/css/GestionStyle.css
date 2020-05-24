@@ -6,12 +6,27 @@ html, body {margin: 0; padding: 0;
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 9.0pt; color: #123;}
 
-#banniere {height: 100px; color: #333; 
-	background: #E3DEDA url('../img/logoKPI.png') 0% 0% no-repeat;}
+body {
+	background-image: url('../img/logo_CNA.png');
+	background-size: 100px;
+	background-repeat: no-repeat;
+	background-position-x: right;
+	background-position-y: 12px;
+}
+
+#banniere {
+	/* height: 100px;  */
+	color: #333; 
+	/* background: #E3DEDA url('../img/logoKPI.png') 0% 0% no-repeat; */
+}
 #banniere img {float: right;}
-.connexion {float: right;
+.connexion {
+	float: right;
 	font: bold italic small-caps 11px Arial, sans-serif;
-	}
+	text-decoration: none;
+	padding-right: 5px;
+}
+
 
 .footer {
 	clear: left;

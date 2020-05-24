@@ -18,6 +18,12 @@
 		{else}
 			<li {if $lang == 'en'} class="current"{/if}><a href="?lang=en"><img width="22" src="../img/Pays/GBR.png" alt="en" title="en" /></a></li>
 			<li {if $lang == 'fr'} class="current"{/if}><a href="?lang=fr"><img width="22" src="../img/Pays/FRA.png" alt="fr" title="fr" /></a></li>
+            {if $currentmenu == 'Utilisateur'}
+				<li class="current"><a href="GestionParamUser.php"><img src="../img/compte.png" height="16" alt="{#Mes_parametres#}" title="{#Mes_parametres#}" ></a></li>
+            {else}
+				<li><a href="GestionParamUser.php"><img src="../img/compte.png" height="16" alt="{#Mes_parametres#}" title="{#Mes_parametres#}" ></a></li>
+            {/if}
+			<li><a href="Unlogin.php"><img src="../img/logout.png" height="16" alt="{#Deconnexion#}" title="{#Deconnexion#}" ></a></li>
             {if $currentmenu == 'Matchs'}
                 <li class="hideall"><a href=""><img src="../img/hideall2.png" height="14" alt="Masquer tout" title="Masquer tout" ></a></li>
             {/if}

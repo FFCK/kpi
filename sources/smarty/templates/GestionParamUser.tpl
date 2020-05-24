@@ -40,6 +40,14 @@
                             </tr>
                         {/if}
 						<tr>
+							<td colspan=4><hr></td>
+						</tr>
+						<tr>
+							<td width=25%><b>{#Profil#} :</b> {$profile}</td>
+							<td colspan=3><b>{#Limite#} :</b> {$Limit_Clubs|default:$smarty.config.Aucune}</td>
+						</tr>
+
+						<tr>
 							<th class='titreForm' colspan=4 width='100%'>
 								<label>{#Changer_parametres#}</label>
 							</th>
