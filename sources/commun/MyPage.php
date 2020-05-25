@@ -81,8 +81,8 @@ class MyPage
 				array_push($arrayMenu, array('name' => 'Classements', 'href' => 'GestionClassement.php'));
 			if (isset($profile) && $profile<=9)
 				array_push($arrayMenu, array('name' => 'Stats', 'href' => 'GestionStats.php'));
-			if (isset($profile) && $profile<=3)
-				array_push($arrayMenu, array('name' => 'Import', 'href' => 'ImportPCE.php'));
+			// if (isset($profile) && $profile<=3)
+			// 	array_push($arrayMenu, array('name' => 'Import', 'href' => 'ImportPCE.php'));
 			if (isset($profile) && $profile<=3 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Utilisateurs', 'href' => 'GestionUtilisateur.php'));
 		}
@@ -162,13 +162,6 @@ class MyPage
 	{
 			$this->m_tpl->assign('contenutemplate', $tplName);	
 			$this->DisplayTemplateGlobal('page');
-	}
-
-	// DisplayTemplateAdm
-	function DisplayTemplateAdm($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageAdm');
 	}
 
 	// DisplayTemplateJquery
