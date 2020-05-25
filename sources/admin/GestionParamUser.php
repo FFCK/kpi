@@ -43,7 +43,7 @@ class GestionParamUser extends MyPageSecure
 			$this->m_tpl->assign('UFiltre_competition', $row['Filtre_competition']);
 			$this->m_tpl->assign('UFiltre_saison', $row['Filtre_saison']);
 			$this->m_tpl->assign('UFiltre_journee', $row['Filtre_journee']);
-			$this->m_tpl->assign('UFiltre_equipe', $row['Filtre_equipe']);
+			$this->m_tpl->assign('UFiltre_equipe', $row['Limitation_equipe_club']);
 		}
 	}
 	

@@ -7,7 +7,7 @@
 {elseif $bProd}
 	<div id="banniere">
 		<div>
-			<a class="connexion" href="GestionParamUser.php" title="{#Mes_parametres#}">{$userName} ({$profile})</a>
+			{* <a class="connexion" href="GestionParamUser.php" title="{#Mes_parametres#}">{$userName} ({$profile})</a> *}
 			{if $bMirror == 1}
 				<br>
 				<span class='vert'>Base Mirror</span>
