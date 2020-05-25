@@ -6,12 +6,27 @@ html, body {margin: 0; padding: 0;
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 9.0pt; color: #123;}
 
-#banniere {height: 100px; color: #333; 
-	background: #E3DEDA url('../img/logoKPI.png') 0% 0% no-repeat;}
+body {
+	background-image: url('../img/KPICNA_small.png');
+	background-size: 160px;
+	background-repeat: no-repeat;
+	background-position-x: right;
+	background-position-y: top;
+}
+
+#banniere {
+	/* height: 100px;  */
+	color: #333; 
+	/* background: #E3DEDA url('../img/logoKPI.png') 0% 0% no-repeat; */
+}
 #banniere img {float: right;}
-.connexion {float: right;
+.connexion {
+	float: right;
 	font: bold italic small-caps 11px Arial, sans-serif;
-	}
+	text-decoration: none;
+	padding-right: 5px;
+}
+
 
 .footer {
 	clear: left;
@@ -24,13 +39,24 @@ html, body {margin: 0; padding: 0;
 	border-bottom: 3px groove #CCCCCC;
 }
 
+.breadcrumb {
+	clear: both;
+	margin-right: 160px; 
+
+}
 /* Menus Eric Meyer*/
-#nav {margin: 0; padding: 0; margin-left: 5px; width:100%; clear: left; height: 25px;}
+#nav {
+	margin: 0; padding: 0; 
+	margin-left: 5px; 
+	margin-right: 160px; 
+	/* width:100%;  */
+	clear: left; height: 25px;
+}
 #nav li {list-style: none; float: left;
-	margin-left: 1px; padding-left: 12px;
-	font-size: 10px; line-height: 20px; white-space: nowrap;
+	margin-left: 1px; padding-left: 8px;
+	font-size: 10px; line-height: 22px; white-space: nowrap;
 	background: #BBB url(tabs2-big.gif) 0 100% no-repeat;}
-#nav a {display: block; float: left; padding: 0 12px 0 0;
+#nav a {display: block; float: left; padding: 0 8px 0 0;
 	text-decoration: none; font-weight: bold;
 	background: #334F64 url(tabs2-big.gif) 100% 100% no-repeat;
 	color: #BCD;

@@ -6,7 +6,7 @@ include_once('../commun/MyTools.php');
 
 // Deconnexion
 
-class UnLogin extends MyPage 
+class Logout extends MyPage 
 {	
 	function __construct()
 	{
@@ -22,4 +22,4 @@ class UnLogin extends MyPage
 	}		
 }		  	
 
-$page = new UnLogin();
+$page = new Logout();
