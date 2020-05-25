@@ -44,7 +44,7 @@
 						</tr>
 						<tr>
 							<td width=25%><b>{#Profil#} :</b> {$profile}</td>
-							<td colspan=3><b>{#Limite#} :</b> {$Limit_Clubs|default:$smarty.config.Aucune}</td>
+							<td colspan=3><b>{#Limite#} :</b> {$UFiltre_equipe|default:$smarty.config.Aucune}</td>
 						</tr>
 
 						<tr>
