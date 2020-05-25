@@ -23,7 +23,7 @@
             {else}
 				<li><a href="GestionParamUser.php"><img src="../img/compte.png" height="16" alt="{#Mes_parametres#}" title="{#Mes_parametres#}" > {$userName}</a></li>
             {/if}
-			<li><a href="../Unlogin.php"><img src="../img/logout.png" height="16" alt="{#Deconnexion#}" title="{#Deconnexion#}" ></a></li>
+			<li><a href="Logout.php"><img src="../img/logout.png" height="16" alt="{#Deconnexion#}" title="{#Deconnexion#}" ></a></li>
             {if $currentmenu == 'Matchs'}
                 <li class="hideall"><a href=""><img src="../img/hideall2.png" height="14" alt="Masquer tout" title="Masquer tout" ></a></li>
             {/if}
