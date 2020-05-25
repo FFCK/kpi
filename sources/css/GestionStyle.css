@@ -41,9 +41,12 @@ body {
 
 .breadcrumb {
 	clear: both;
-	margin-right: 160px; 
-
 }
+
+.breadcrumb + a {
+	font-size: 8.0pt; font-weight: bold; color: #334F64;
+}
+
 /* Menus Eric Meyer*/
 #nav {
 	margin: 0; padding: 0; 
@@ -69,9 +72,12 @@ html>body #nav a {width: auto;}    /* fixes IE6 hack */
 #nav .current, #nav .current a {color: #FDB; 
 	background-image: url(tabs2-big-ct.gif);}
 
-/* Jquery directInput directSelect */
+.saison {font-size: 8.0pt; font-weight: bold; background: #334F64; color: #BCD; margin-left: 5px; padding: 2px;	border: 2px groove #BCD;}
+.repere {font-size: 8.0pt; font-weight: bold; color: #334F64; padding-left: 5px;}
+
+/* Jquery directInput directSelect */	
 .directInput {
-color: #182F6B; 
+color: #182F6B; 	
 border-top: 1px dotted #6993B1;
 border-left: 1px dotted #6993B1;
 padding: 3px;
@@ -89,7 +95,7 @@ display: inline-block;
 	background-color: #BBB;
 	padding: 3px;
 	border: 3px groove black;
-}
+}	
 
 /* GestionJournée */
 #formMatch {font-size:9.0pt; width:100%; margin: auto;}
@@ -102,16 +108,13 @@ display: inline-block;
 /* iframes */
 #iframeRechercheLicenceIndi {visibility:hidden; 	position:absolute;}
 #iframeScore {
-visibility:hidden; 
+visibility:hidden; 	
 position:absolute;
 }
 #iframeRechercheLicenceIndi2 {position:absolute;}
 
 #SelectionOuiNon {visibility:hidden; position:absolute;}
 #SelectionCapitaineJoueur {visibility:hidden; position:absolute;}
-
-.saison {font-size: 8.0pt; font-weight: bold; background: #334F64; color: #BCD; margin-left: 5px; padding: 2px;	border: 2px groove #BCD;}
-.repere {font-size: 8.0pt; font-weight: bold; color: #334F64; padding-left: 5px;}
 
 .main {font-size: small;
 	color: #111;
