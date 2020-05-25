@@ -19,18 +19,18 @@
 			<li {if $lang == 'en'} class="current"{/if}><a href="?lang=en"><img width="22" src="../img/Pays/GBR.png" alt="en" title="en" /></a></li>
 			<li {if $lang == 'fr'} class="current"{/if}><a href="?lang=fr"><img width="22" src="../img/Pays/FRA.png" alt="fr" title="fr" /></a></li>
             {if $currentmenu == 'Utilisateur'}
-				<li class="current"><a href="GestionParamUser.php"><img src="../img/compte.png" height="14" alt="{#Mes_parametres#}" title="{#Mes_parametres#}" > {$userName}</a></li>
+				<li class="current"><a href="GestionParamUser.php"><img src="../img/compte.png" height="15" alt="{#Mes_parametres#}" title="{#Mes_parametres#}" > {$userName}</a></li>
             {else}
-				<li><a href="GestionParamUser.php"><img src="../img/compte.png" height="14" alt="{#Mes_parametres#}" title="{#Mes_parametres#}" > {$userName}</a></li>
+				<li><a href="GestionParamUser.php"><img src="../img/compte.png" height="15" alt="{#Mes_parametres#}" title="{#Mes_parametres#}" > {$userName}</a></li>
             {/if}
-			<li><a href="Logout.php"><img src="../img/logout.png" height="14" alt="{#Deconnexion#}" title="{#Deconnexion#}" ></a></li>
+			<li><a href="Logout.php"><img src="../img/logout.png" height="15" alt="{#Deconnexion#}" title="{#Deconnexion#}" ></a></li>
             {if $currentmenu == 'Matchs'}
-                <li class="hideall"><a href=""><img src="../img/hideall2.png" height="14" alt="Masquer tout" title="Masquer tout" ></a></li>
+                <li class="hideall"><a href=""><img src="../img/hideall2.png" height="15" alt="Masquer tout" title="Masquer tout" ></a></li>
             {/if}
 		{/if}
 	</ul>
 	{if $currentmenu != 'Accueil'}
-		<div class="breadcrumb">
+		<span class="breadcrumb">
 			{assign var="headerTitle0" value=$headerTitle|replace:' ':'_'}
 			<span class='saison'>{$smarty.config.Saison|default:'Saison'} {$Saison}</span>
 			<span class='repere'>{$smarty.config.$headerTitle0|default:$headerTitle}</span>
@@ -39,5 +39,5 @@
 				<span class='repere'>></span>
 				<span class='repere'>{$smarty.config.$headerSubTitle0|default:$headerSubTitle}</span>
 			{/if}
-		</div>
+		</span>
 	{/if}
