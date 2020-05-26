@@ -498,3 +498,10 @@ div.blocRight input.bigbutton {
     font-size: 1.2em;
     font-weight: bold;
 }
+
+.hidden {
+	display: none;
+}
+.directStatutMatch {
+	cursor: pointer;
+}
