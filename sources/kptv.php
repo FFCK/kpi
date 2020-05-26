@@ -200,6 +200,7 @@ class Tv extends MyPageSecure
         $this->m_tpl->assign('saison', $saison);
         if(is_array($arrayCompet)) {
             $arrayCompet = array_keys(array_flip($arrayCompet));
+            sort($arrayCompet);
             $arrayJours = array_keys(array_flip($arrayJours));
             $this->m_tpl->assign('arrayCompet', $arrayCompet);
             $this->m_tpl->assign('arrayJours', $arrayJours);
