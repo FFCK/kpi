@@ -403,13 +403,14 @@
 														<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" title="{#Verrouiller#}" border="0">
 													{/if}
 													{if $arrayMatchs[i].Statut == 'ON'}
-														<span class="statutMatchOn" title="{#Periode#} {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode}</span>
+														<span class="directStatutMatch statutMatchOn" data-statut="ON" data-id="{$arrayMatchs[i].Id}" data-periode="{$arrayMatchs[i].Periode}" title="{#Periode#} {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode|default:$arrayMatchs[i].Statut}</span>
 														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
 													{elseif $arrayMatchs[i].Statut == 'END'}
-														<span class="statutMatchOn" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
+														<span class="directStatutMatch statutMatchOn" data-statut="END" data-id="{$arrayMatchs[i].Id}" data-periode="{$arrayMatchs[i].Periode}" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
 														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
 													{else}
-														<span class="scoreProvisoire" title="{#Match_en_attente#}">{$arrayMatchs[i].Statut}</span>
+														<span class="directStatutMatch scoreProvisoire" data-statut="ATT" data-id="{$arrayMatchs[i].Id}" data-periode="{$arrayMatchs[i].Periode}" title="{#Match_en_attente#}">{$arrayMatchs[i].Statut}</span>
+														<span class="scoreProvisoire hidden" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
 													{/if}
 												</td>
 												<td><span class='directInput score' tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" Id="ScoreB-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].ScoreB}</span></td>
@@ -460,13 +461,14 @@
 														<img height="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif" title="{#Verrouiller#}" border="0">
 													{/if}
 													{if $arrayMatchs[i].Statut == 'ON'}
-														<span class="statutMatchOn" title="{#Periode#} {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode}</span>
+														<span class="directStatutMatchOff statutMatchOn" data-statut="ON" data-id="{$arrayMatchs[i].Id}" data-periode="{$arrayMatchs[i].Periode}" title="{#Periode#} {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode|default:$arrayMatchs[i].Statut}</span>
 														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
 													{elseif $arrayMatchs[i].Statut == 'END'}
-														<span class="statutMatchOn" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
+														<span class="directStatutMatchOff statutMatchOn" data-statut="END" data-id="{$arrayMatchs[i].Id}" data-periode="{$arrayMatchs[i].Periode}" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
 														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
 													{else}
-														<span class="scoreProvisoire" title="{#Match_en_attente#}">{$arrayMatchs[i].Statut}</span>
+														<span class="directStatutMatchOff scoreProvisoire" data-statut="ATT" data-id="{$arrayMatchs[i].Id}" data-periode="{$arrayMatchs[i].Periode}" title="{#Match_en_attente#}">{$arrayMatchs[i].Statut}</span>
+														<span class="scoreProvisoire hidden" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
 													{/if}
 												</td>
 												<td><span class='directInputOff score' tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" Id="ScoreB-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].ScoreB}</span></td>

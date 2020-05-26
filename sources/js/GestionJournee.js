@@ -1042,10 +1042,12 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 						leMatch.attr('title', textType);
 						if(changeType == 'O'){
 							leMatch.parent().parent().find('.directInput').addClass('directInputOff').removeClass('directInput');
+							leMatch.parent().parent().parent().find('.directStatutMatch').addClass('directStatutMatchOff').removeClass('directStatutMatch');
 							leMatch.parent().parent().find('.showOn').addClass('showOff').removeClass('showOn');
 							leMatch.parent().parent().find('.typeMatch').addClass('typeMatchOff').removeClass('typeMatch');
 						}else{
 							leMatch.parent().parent().find('.directInputOff').addClass('directInput').removeClass('directInputOff');
+							leMatch.parent().parent().parent().find('.directStatutMatchOff').addClass('directStatutMatch').removeClass('directStatutMatchOff');
 							leMatch.parent().parent().find('.showOff').addClass('showOn').removeClass('showOff');
 							leMatch.parent().parent().find('.typeMatchOff').addClass('typeMatch').removeClass('typeMatchOff');
 						}
@@ -1060,7 +1062,54 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 			);
 		//}
 	});
-	
+
+	jq("body").delegate(".directStatutMatch", "click", function(){
+		if (confirm('Confirmez-vous le changement de statut ?')) {
+			leMatch = jq(this);
+			statut = leMatch.attr('data-statut');
+			periode = leMatch.attr('data-periode');
+			leMatch.html('<img src="v2/images/indicator.gif" height="23">');
+			if (statut == '0' || statut == 'ATT'){
+				changeType = 'ON';
+			} else if (statut == 'ON') {
+				changeType = 'END';
+			} else {
+				changeType = 'ATT';
+			}
+			jq.post(
+				'v2/StatutPeriode.php', // Le fichier cible côté serveur.
+				{ // variables
+					Id_Match : leMatch.attr('data-id'),
+					Valeur : changeType,
+					TypeUpdate : 'Statut'
+				},
+				function(data){ // callback
+					if (data == 'OK') {
+						leMatch.attr('data-statut', changeType);
+						leMatch.attr('title', '');
+						if (changeType == 'ON'){
+							leMatch.html(changeType)
+								.addClass('statutMatchOn')
+								.removeClass('scoreProvisoire');
+							leMatch.next().removeClass('hidden');
+						} else if (changeType == 'END'){
+							leMatch.html(changeType);
+						} else {
+							leMatch.html(changeType)
+								.addClass('scoreProvisoire')
+								.removeClass('statutMatchOn');
+							leMatch.next().addClass('hidden');
+						}
+					} else {
+						alert(langue['MAJ_impossible']);
+						leMatch.html(changeType);
+					}
+				},
+				'text' // Format des données reçues.
+			);
+		}
+	});	
+
 	if(arrayCheck != '') {
         arrayCheck = arrayCheck.split(',').forEach(function(item){
             console.log(item);
