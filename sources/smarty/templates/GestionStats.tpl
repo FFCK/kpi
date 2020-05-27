@@ -1,10 +1,9 @@
-    &nbsp;(<a href="GestionCompetition.php">{#Retour#}</a>)
 	<div class="main">
 		<form method="POST" action="GestionStats.php" name="formStats" enctype="multipart/form-data">
 			<input type='hidden' name='Cmd' Value=''/>
 			<input type='hidden' name='ParamCmd' Value=''/>
 			<div class='blocLeft'>
-				<div class='titrePage'>{#Statistiques#} {$codeSaison} (beta)</div>
+				<div class='titrePage'>{#Statistiques#} {$codeSaison}</div>
 				{if $AfficheStat eq 'Buteurs'}
 					<div class='titrePage'>{#Meilleur_buteur#}</div>
 				{elseif $AfficheStat == 'Attaque'}
