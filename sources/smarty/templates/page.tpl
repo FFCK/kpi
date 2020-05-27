@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="Author" Content="LG" />
-		<link rel="image_src" href="https://www.kayak-polo.info/img/KPI.png" />
+		<link rel="image_src" href="https://www.kayak-polo.info/img/CNAKPI_small.png" />
 		<meta name="description" content="Commission Nationale d&#039;Activité Kayak-Polo"/>
 		<meta name="robots" content="index, follow"/>
 		<link rel="canonical" href="https://www.kayak-polo.info" />

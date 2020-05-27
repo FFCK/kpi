@@ -612,12 +612,12 @@ class FeuilleStats extends MyPage {
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI + Logo    
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('../img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+            $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 210, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('../img/logoKPI-small.jpg', 84, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+            $pdf->Image('../img/CNAKPI_small.jpg', 84, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             // Logo
         } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 210, 10, 20, 'C');
@@ -931,6 +931,7 @@ class FeuilleStats extends MyPage {
                 $pdf->Cell(12, 7, 'Nb', 'B', 1, 'C');
                 $pdf->SetFont('Arial', '', 8);
                 $k = 0;
+                $matric = 0;
                 for ($i = 0; $i < count($arrayStats); $i++) {
                     $h = $i - 1;
                     $j = $i + 1;

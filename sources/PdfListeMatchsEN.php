@@ -124,11 +124,11 @@ class PdfListeMatchs extends MyPage
 			$lstCompet = [];
             $sql = "SELECT c.Code, g.Libelle 
                 FROM gickp_Competitions c, gickp_Competitions_Groupes g 
-                WHERE c.Code_saison = '" . $codeSaison . "' 
-                AND c.Code_ref = '" . $Group . "' 
+                WHERE c.Code_saison = ? 
+                AND c.Code_ref = ? 
                 AND c.Code_ref = g.Groupe ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute($merge);
+            $result->execute(array($codeSaison, $Group));
             while ($row = $result->fetch()) {
                 $lstCompet[] = $row['Code'];
                 $laCompet = $row['Code'];
@@ -224,14 +224,14 @@ class PdfListeMatchs extends MyPage
             }
         // KPI + Logo    
         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('img/logoKPI-small.jpg', 40, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+            $pdf->Image('img/CNAKPI_small.jpg', 40, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             if (is_file($visuels['logo'])) {
                 $img = redimImage($visuels['logo'], 262, 10, 20, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
         // KPI
         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+            $pdf->Image('img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
         // Logo
         } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
             if (is_file($visuels['logo'])) {
@@ -324,14 +324,14 @@ class PdfListeMatchs extends MyPage
                             }
                         // KPI + Logo    
                         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-                            $pdf->Image('img/logoKPI-small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+                            $pdf->Image('img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                             if (is_file($visuels['logo'])) {
                                 $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
                                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                             }
                         // KPI
                         } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-                            $pdf->Image('img/logoKPI-small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+                            $pdf->Image('img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                         // Logo
                         } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
                             if (is_file($visuels['logo'])) {

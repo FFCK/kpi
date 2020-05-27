@@ -369,7 +369,7 @@
 						</tr>
 						<tr>
 							<td align='center' colspan=4>
-									{if $detailsCompet.Kpi_ffck_actif == 'O'}<img src='../img/logoKPI-small.jpg' width='70'>{/if}
+									{if $detailsCompet.Kpi_ffck_actif == 'O'}<img src='../img/CNAKPI_small.jpg' width='70'>{/if}
 									{if $detailsCompet.Bandeau_actif == 'O'}<br><img src='{$detailsCompet.BandeauLink}' width=200>{/if}
 									{if $detailsCompet.Logo_actif == 'O'}<br><img src='{$detailsCompet.LogoLink}' width=100>{/if}
 									{if $detailsCompet.Titre_actif == 'O'}<br><b>{$detailsCompet.Libelle}</b>{else}<br><b>{$detailsCompet.Soustitre}</b>{/if}
