@@ -5,7 +5,7 @@
     <div class="container-fluid hidden-xs">
         <div class="row">
             <div class="col-xs-12 banner">
-                <img class="site-banner" width="1300" alt="FFCK" src="img/bandeau_ffck3.png" />
+                <img class="site-banner" width="1300" alt="FFCK" src="img/bandeau_ffck.png" />
             </div>
             <!-- /.col-xs-12 -->
         </div>

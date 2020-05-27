@@ -105,7 +105,7 @@ class FeuilleInstances extends MyPage
 
         // logo
 		if($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-			$pdf->Image('../img/logoKPI-small.jpg',84,10,0,20,'jpg',"http://www.ffck.org");
+			$pdf->Image('../img/CNAKPI_small.jpg',84,10,0,20,'jpg',"http://www.ffck.org");
 		}
 
 		if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)) {

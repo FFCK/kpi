@@ -57,7 +57,7 @@ class FeuilleMatch extends MyPage
 		$pdf->SetY(9);
 
 		// Logos
-        $pdf->Image('../img/logoKPI-small.jpg',65,10,0,11,'jpg',"http://www.ffck.org");
+        $pdf->Image('../img/CNAKPI_small.jpg',65,10,0,11,'jpg',"http://www.ffck.org");
 
 		$pdf->Ln(11);
 
