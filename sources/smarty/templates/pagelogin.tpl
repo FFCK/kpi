@@ -4,8 +4,8 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="Author" Content="LG" />
-		<meta property="og:image" content="http://kayak-polo.info/img/KPI.png" />
-		<link rel="image_src" href="http://kayak-polo.info/img/KPI.png" />
+		<meta property="og:image" content="http://kayak-polo.info/img/CNAKPI_small.png" />
+		<link rel="image_src" href="http://kayak-polo.info/img/CNAKPI_small.png" />
 		<meta property="og:type" content="article" />
 		<meta property="og:site_name" content="KAYAK-POLO.INFO" />
 

@@ -1,10 +1,6 @@
 {* Header.tpl Smarty *}
 
-{if $bPublic}
-	<div id="banniere">
-		<img src="img/FFCK1.gif" height=99 alt="FFCK" title="FFCK" />
-	</div>
-{elseif $bProd}
+{if $bProd}
 	<div id="banniere">
 		<div>
 			{* <a class="connexion" href="GestionParamUser.php" title="{#Mes_parametres#}">{$userName} ({$profile})</a> *}
