@@ -1,5 +1,3 @@
-	&nbsp;(<a href="GestionCompetition.php">{#Retour#}</a>)
-	
 	<div class="main">
 		<form method="POST" action="GestionCalendrier.php" name="formCalendrier" id="formCalendrier" enctype="multipart/form-data">
 			<input type='hidden' name='Cmd' Value=''/>

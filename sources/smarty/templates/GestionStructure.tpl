@@ -1,6 +1,4 @@
-		&nbsp;(<a href="GestionEquipe.php">{#Retour#}</a>)
 		<div class="main">
-	
 			<div class='blocLeft Left2'>
 				<div class='titrePage'>{#Structures_pratiquant_le_kayakpolo#}</div>
 				<br>

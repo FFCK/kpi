@@ -1,7 +1,4 @@
- 	 	&nbsp;(<a href="GestionClassement.php">{#Retour#}</a>)
-	
 		<div class="main">
-					
 			<form method="POST" action="GestionClassementInit.php" name="formClassementInit" id="formClassementInit" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value=''/>
 				<input type='hidden' name='ParamCmd'  id='ParamCmd' Value=''/>

@@ -39,5 +39,6 @@
 				<span class='repere'>></span>
 				<span class='repere'>{$smarty.config.$headerSubTitle0|default:$headerSubTitle}</span>
 			{/if}
+			<span class='repere'>(<a href="javascript:history.back()">{#Retour#}</a>)</span>
 		</span>
 	{/if}

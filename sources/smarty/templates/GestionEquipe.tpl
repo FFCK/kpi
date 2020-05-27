@@ -1,7 +1,4 @@
-		&nbsp;(<a href="GestionCompetition.php">{#Retour#}</a>)
-	
 		<div class="main">
-					
 			<form method="POST" action="GestionEquipe.php" name="formEquipe" id="formEquipe" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value='' />
 				<input type='hidden' name='ParamCmd' id='ParamCmd' Value='' />

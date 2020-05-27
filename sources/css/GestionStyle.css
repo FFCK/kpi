@@ -15,9 +15,7 @@ body {
 }
 
 #banniere {
-	/* height: 100px;  */
 	color: #333; 
-	/* background: #E3DEDA url('../img/logoKPI.png') 0% 0% no-repeat; */
 }
 #banniere img {float: right;}
 .connexion {
@@ -40,10 +38,11 @@ body {
 }
 
 .breadcrumb {
-	clear: both;
+	clear: left;
+	display: block;
 }
 
-.breadcrumb + a {
+.breadcrumb a {
 	font-size: 8.0pt; font-weight: bold; color: #334F64;
 }
 
@@ -67,12 +66,15 @@ body {
 html>body #nav a {width: auto;}    /* fixes IE6 hack */
 /* Commented Backslash Hack hides rule from IE5-Mac \*/
 #nav a {float: none;}            /* End IE5-Mac hack */
-#nav .forum a {color: #F60;}
-#nav a:hover {color: rgb(62%,35%,22%);}
-#nav .current, #nav .current a {color: #FDB; 
+#nav .forum a {color: #F15A2A;}
+#nav a:hover {color: #F15A2A;}
+#nav .current, #nav .current a {color: #FFF; 
 	background-image: url(tabs2-big-ct.gif);}
+/* #nav img {
+	padding-top: 2px;
+}  */
 
-.saison {font-size: 8.0pt; font-weight: bold; background: #334F64; color: #BCD; margin-left: 5px; padding: 2px;	border: 2px groove #BCD;}
+.saison {font-size: 8.0pt; font-weight: bold; background: #F15A2A; color: #000; margin-left: 5px; padding: 2px 5px;	border: 2px groove #BCD;}
 .repere {font-size: 8.0pt; font-weight: bold; color: #334F64; padding-left: 5px;}
 
 /* Jquery directInput directSelect */	
@@ -85,8 +87,8 @@ border-radius: 5px;
 display: inline-block;
 }
 .directInput:hover {border: 1px dotted #334F64; color: #334F64}
-.showOn { }
-.directInputOff { }
+/* .showOn { } */
+/* .directInputOff { } */
 .showOff {display: none; }
 
 .directSelect {color: red;}
@@ -157,7 +159,7 @@ position:absolute;
 	width: 100%; margin-left : auto; margin-right : auto;}
 .tableau thead {background: #334F64 url(titre_bg.gif) 0 0 repeat-x;}
 .tableau thead tr th{font-size: 8.0pt; color: #DDD; padding: 4px; border: none;}
-.tableau tr {}
+/* .tableau tr {} */
 .tableau td {margin: 0; padding: 2px 3px; text-align: center;}
 .tableau tr.Selected {background: #FFFF00;}
 .tableau tr.Selected2 {background: #FFDF71;}
@@ -172,7 +174,7 @@ position:absolute;
 	width: 100%; margin-left : auto; margin-right : auto;}
 .blocTable thead {background: #334F64 url(titre_bg.gif) 0 0 repeat-x;}
 .blocTable thead tr th{font-size: 8.0pt; color: #DDD; padding: 4px; border: none;}
-.blocTable tr {}
+/* .blocTable tr {} */
 .blocTable td {margin: 0; padding: 2px 3px; text-align: center;}
 .blocTable tr.Selected {background: #FFFF00;}
 /* */

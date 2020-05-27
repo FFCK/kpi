@@ -1,6 +1,6 @@
 <div class="container">
     <div class="col-md-6 col-md-offset-3">
-        <h2 class="form-signin-heading text-center"><img src="../img/KPI.png" alt="KPI" height="60"> {#Connexion#}</h2>
+        <h2 class="form-signin-heading text-center"><img src="../img/CNAKPI_small.png" alt="KPI" height="60"></h2>
     </div>
     <div class="col-md-4 col-md-offset-4">
         <form class="form-signin2" method="POST" action="Login.php" name="formLogin" id="formLogin" enctype="multipart/form-data">
