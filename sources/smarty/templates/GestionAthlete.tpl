@@ -1,5 +1,3 @@
-		&nbsp;(<a href="javascript:history.back()">{#Retour#}</a>)
-		<br>
 		<iframe name="iframeRechercheLicenceIndi2" id="iframeRechercheLicenceIndi2" SRC="RechercheLicenceIndi2.php" scrolling="auto" width="950" height="450" FRAMEBORDER="yes"></iframe>
 		<div class="main">
 			<form method="POST" action="GestionAthlete.php" name="formAthlete" id="formAthlete" enctype="multipart/form-data">
