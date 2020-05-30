@@ -289,15 +289,15 @@
 							<tr>
 								<td colspan=4 title='{#Points_pour_chaque_match#}'>
 									<label for="points">Points : </label>
-									<input type="radio" name="points" value='4-2-1-0' {if $points == '4-2-1-0'}checked{/if}><label>4-2-1-0</label>
-									<input type="radio" name="points" value='3-1-0-0' {if $points == '3-1-0-0'}checked{/if}><label>3-1-0-0</label>
+									<input type="radio" id="points" name="points" value='4-2-1-0' {if $points == '4-2-1-0'}checked{/if}><label>4-2-1-0</label>
+									<input type="radio" id="points" name="points" value='3-1-0-0' {if $points == '3-1-0-0'}checked{/if}><label>3-1-0-0</label>
 								</td>
 							</tr>
 							<tr>
 								<td colspan=4 title='{#Goal_average#}'>
 									<label for="goalaverage">{#Goal_average#} : </label>
-									<input type="radio" name="goalaverage" value='gen' {if $goalaverage == 'gen'}checked{/if}><label>{#General#}</label>
-									<input type="radio" name="goalaverage" value='part' {if $goalaverage == 'part'}checked{/if}><label>{#Particulier#}</label>
+									<input type="radio" id="goalaverage" name="goalaverage" value='gen' {if $goalaverage == 'gen'}checked{/if}><label>{#General#}</label>
+									<input type="radio" id="goalaverage" name="goalaverage" value='part' {if $goalaverage == 'part'}checked{/if}><label>{#Particulier#}</label>
 								</td>
 							</tr>
 							<tr>

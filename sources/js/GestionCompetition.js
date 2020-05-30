@@ -206,8 +206,9 @@ jq(document).ready(function() {
 	
 	jq("#choixCompet").autocomplete('Autocompl_compet.php', {
 		width: 350,
-		max: 50,
+		max: 20,
 		mustMatch: true,
+		minLength: 2
 		//multiple: true,
 		//matchContains: true,
 		//formatItem: formatItem,
@@ -224,7 +225,7 @@ jq(document).ready(function() {
 			jq("#etape").val(data[6]);
 			jq("#qualifies").val(data[7]);
 			jq("#elimines").val(data[8]);
-			jq("#points").val(data[9]);
+			jq('#points[value="'+data[9]+'"]').attr('checked', 'checked');
 			jq("#soustitre").val(data[10]);
 			jq("#web").val(data[11]);
 			jq("#logoLink").val(data[12]);
@@ -233,13 +234,38 @@ jq(document).ready(function() {
 			jq("#touteSaisons").val(data[15]);
 			jq("#groupOrder").val(data[16]);
 			jq("#soustitre2").val(data[17]);
-			jq("#titre_actif").val(data[18]);
-			jq("#logo_actif").val(data[19]);
-			jq("#sponsor_actif").val(data[20]);
-			jq("#kpi_ffck_actif").val(data[21]);
-			jq("#en_actif").val(data[22]);
+			if (data[18] == 'O') {
+				jq("#checktitre").attr('checked', 'checked');
+			} else {
+				jq("#checktitre").attr('checked', '');
+			}
+			if (data[19] == 'O') {
+				jq("#checklogo").attr('checked', 'checked');
+			} else {
+				jq("#checklogo").attr('checked', '');
+			}
+			if (data[20] == 'O') {
+				jq("#checksponsor").attr('checked', 'checked');
+			} else {
+				jq("#checksponsor").attr('checked', '');
+			}
+			if (data[21] == 'O') {
+				jq("#checkkpiffck").attr('checked', 'checked');
+			} else {
+				jq("#checkkpiffck").attr('checked', '');
+			}
+			if (data[22] == 'O') {
+				jq("#checken").attr('checked', 'checked');
+			} else {
+				jq("#checken").attr('checked', '');
+			}
+			if (data[23] == 'O') {
+				jq("#checkbandeau").attr('checked', 'checked');
+			} else {
+				jq("#checkbandeau").attr('checked', '');
+			}
 			jq("#bandeauLink").val(data[23]);
-			jq("#bandeau_actif").val(data[24]);
+			jq("#goalaverage[value='"+data[25]+"']").attr('checked', 'checked');
 		}
 	});
 	jq("#bandeauLink").blur(function(){
