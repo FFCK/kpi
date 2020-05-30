@@ -18,7 +18,7 @@ $sql = "SELECT *
 	FROM gickp_Competitions 
 	WHERE Code LIKE ? 
 	OR Libelle LIKE ? 
-	GROUP BY Code, Libelle 
+	GROUP BY Code 
 	ORDER BY Code_saison DESC, Code, Libelle 
 	LIMIT 20 ";
 $result = $myBdd->pdo->prepare($sql);
