@@ -19,7 +19,8 @@ $sql = "SELECT *
 	WHERE Code LIKE ? 
 	OR Libelle LIKE ? 
 	GROUP BY Code, Libelle 
-	ORDER BY Code_saison DESC, Code, Libelle ";
+	ORDER BY Code_saison DESC, Code, Libelle 
+	LIMIT 20 ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array('%'.$q.'%', '%'.$q.'%'));
 $resultGlobal = '';
@@ -49,7 +50,8 @@ while ($row = $result->fetch()) {
 	$Sponsor_actif = $row['Sponsor_actif'];
 	$Kpi_ffck_actif = $row['Kpi_ffck_actif'];
 	$En_actif = $row['En_actif'];
-	$resultGlobal .= "$code - $libelle|$code|$libelle|$Code_niveau|$Code_ref|$Code_typeclt|$Code_tour|$Qualifies|$Elimines|$Points|$Soustitre|$Web|$LogoLink|$SponsorLink|$ToutGroup|$TouteSaisons|$GroupOrder|$Soustitre2|$Titre_actif|$Logo_actif|$Sponsor_actif|$Kpi_ffck_actif|$En_actif|$BandeauLink|$Bandeau_actif\n";
+	$goalaverage = $row['goalaverage'];
+	$resultGlobal .= "$code - $libelle|$code|$libelle|$Code_niveau|$Code_ref|$Code_typeclt|$Code_tour|$Qualifies|$Elimines|$Points|$Soustitre|$Web|$LogoLink|$SponsorLink|$ToutGroup|$TouteSaisons|$GroupOrder|$Soustitre2|$Titre_actif|$Logo_actif|$Sponsor_actif|$Kpi_ffck_actif|$En_actif|$BandeauLink|$Bandeau_actif|$goalaverage\n";
 }
 
 echo $resultGlobal;
