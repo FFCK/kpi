@@ -26,8 +26,8 @@
 
         <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
         <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        {* <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+        {* <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
         <link rel="stylesheet" href="css/jquery-ui.css?v={$NUM_VERSION}">
         <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
         <link rel="stylesheet" type="text/css" href="js/leaflet/leaflet.css" />
@@ -60,10 +60,10 @@
             version = '{$NUM_VERSION}';
         </script>
 
-        <script type='text/javascript' src='js/jquery-1.11.2.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='js/jquery-ui-1.11.4.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
+        {* <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script> *}
+        {* <script type='text/javascript' src='js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script> *}
         <script type='text/javascript' src='js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
         <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
         <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}"></script>
