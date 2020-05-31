@@ -46,9 +46,9 @@
             version = '{$NUM_VERSION}';
         </script>
 
-        <script type='text/javascript' src='js/jquery-1.11.2.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='js/jquery-ui-1.11.4.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='js/jquery.dataTables-1.10.21.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
         <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
