@@ -59,48 +59,45 @@ class Historique extends MyPage
         $saison = 0;
 		$existMatch = 0;
 		$typeClt = array();
-		$filtreCompetition = utyGetFiltreCompetition('c.');
 		$sql = "SELECT c.*, g.Groupe 
 			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
 			WHERE c.Publication='O' 
-			$filtreCompetition 
 			AND c.Code_tour = 10 
 			AND c.Statut = 'END' 
 			AND c.Code_ref = g.Groupe 
-			AND c.Code_ref Like ? 
+			AND c.Code_ref LIKE ? 
 			ORDER BY c.Code_saison DESC, c.Code_niveau, g.Id, COALESCE(c.Code_ref, 'z'), 
 				c.GroupOrder, c.Code_tour, c.Code";
-			if ($codeCompetGroup[0] == 'N') {
-				$bindparam = 'N%';
-			} elseif ($codeCompetGroup[0] == 'C' && $codeCompetGroup[1] == 'F') {
-				$bindparam = 'CF%';
-			} else {
-				$bindparam = $codeCompetGroup;
+		if ($codeCompetGroup[0] == 'N') {
+			$bindparam = 'N%';
+		} elseif ($codeCompetGroup[0] == 'C' && $codeCompetGroup[1] == 'F') {
+			$bindparam = 'CF%';
+		} else {
+			$bindparam = $codeCompetGroup;
+		}
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($bindparam));
+		while ($row = $result->fetch()) {
+			if ($saison != $row['Code_saison']) {
+				array_push($arraySaisons, array('saison' => $row['Code_saison']));
 			}
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($bindparam));
-			while ($row = $result->fetch()) {
-				if($saison != $row['Code_saison']) {
-                array_push($arraySaisons, array('saison' => $row['Code_saison']));
-            }
 			$saison = $row['Code_saison'];
-            if($row['LogoLink'] != '' && strpos($row['LogoLink'], 'http') === FALSE ){
-                $row['LogoLink'] = 'img/logo/' . $row['LogoLink'];
-                if(!is_file($row['LogoLink'])) {
-                    $row['LogoLink'] = '';
-                }
-            }
-            $arrayCompets[$saison][] = array('code' => $row["Code"], 'libelle' => $row["Libelle"], 
+			if ($row['LogoLink'] != '' && strpos($row['LogoLink'], 'http') === FALSE ) {
+				$row['LogoLink'] = 'img/logo/' . $row['LogoLink'];
+				if (!is_file($row['LogoLink'])) {
+					$row['LogoLink'] = '';
+				}
+			}
+			$arrayCompets[$saison][] = array('code' => $row["Code"], 'libelle' => $row["Libelle"], 
 				'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"], 
 				'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'],
-				'Titre_actif' => $row["Titre_actif"], 'selected' => 'SELECTED' ) ;
+				'Titre_actif' => $row["Titre_actif"], 'selected' => 'SELECTED' );
 
 			array_push($arrayCompetition, array($row["Code"], $row["Libelle"], "SELECTED" ) );
 			$codeCompet1 = $row['Code'];
 			$codeGroupe = $row['Groupe'];
 			$typeClt = $row['Code_typeclt'];
-			if ($row['ToutGroup'] == 'O' && $row['TouteSaisons'] == 'O' && ($row['Web'] != '' || $row['LogoLink'] != ''))
-			{
+			if ($row['ToutGroup'] == 'O' && $row['TouteSaisons'] == 'O' && ($row['Web'] != '' || $row['LogoLink'] != '')) {
 				$recordCompetition[] = array( 'ToutGroup' => $row['ToutGroup'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'] );
 			}
 			//Existence de matchs
@@ -112,10 +109,10 @@ class Historique extends MyPage
 				AND j.Code_competition = ? 
 				AND j.Code_saison = ? ";
 			$result2 = $myBdd->pdo->prepare($sql2);
-			$result2->execute(array($codeCompet1, $codeSaison));
+			$result2->execute(array($codeCompet1, $saison));
 			if ($result2->rowCount() > 0) {
-                $existMatch = 1;
-            }
+				$existMatch = 1;
+			}
 		
 			// Classement public				
 			$sql2 = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, ce.Clt_publi, ce.Pts_publi, 
@@ -131,21 +128,21 @@ class Historique extends MyPage
 					$sql2 .= "ORDER BY Clt_publi Asc, Diff_publi Desc ";
 				}
 			$result2 = $myBdd->pdo->prepare($sql2);
-			$result2->execute(array($codeCompet1, $codeSaison));
+			$result2->execute(array($codeCompet1, $saison));
 			while ($row2 = $result2->fetch()) {
-                //Logos
-                $logo = '';
-                $club = $row2['Code_club'];
-                if(is_file('img/KIP/logo/'.$club.'-logo.png')){
-                    $logo = 'img/KIP/logo/'.$club.'-logo.png';
-                }elseif(is_file('img/Nations/'.substr($club, 0, 3).'.png')){
-                    $club = substr($club, 0, 3);
-                    $logo = 'img/Nations/'.$club.'.png';
-                }
+				//Logos
+				$logo = '';
+				$club = $row2['Code_club'];
+				if (is_file('img/KIP/logo/'.$club.'-logo.png')) {
+					$logo = 'img/KIP/logo/'.$club.'-logo.png';
+				} elseif (is_file('img/Nations/'.substr($club, 0, 3).'.png')) {
+					$club = substr($club, 0, 3);
+					$logo = 'img/Nations/'.$club.'.png';
+				}
 				if (strlen($row2['Code_comite_dep']) > 3) {
-                    $row2['Code_comite_dep'] = 'FRA';
-                }
-                if ($row2['Clt_publi'] != 0 || $row2['CltNiveau_publi']) {
+					$row2['Code_comite_dep'] = 'FRA';
+				}
+				if ($row2['Clt_publi'] != 0 || $row2['CltNiveau_publi'] != 0) {
 					$arrayEquipe_publi[] = array( 'CodeGroupe' => $codeGroupe, 'CodeCompet' => $row['Code'], 'CodeSaison' => $row['Code_saison'], 'LibelleCompet' => $row['Libelle'], 'Code_typeclt' => $row['Code_typeclt'],
 						'Code_tour' => $row['Code_tour'], 'Qualifies' => $row['Qualifies'], 'Elimines' => $row['Elimines'], 'Nb_equipes' => $row['Nb_equipes'],
 						'Code_niveau' => $row['Code_niveau'], 'Titre_actif' => $row['Titre_actif'], 'Soustitre' => $row['Soustitre'], 'Soustitre2' => $row['Soustitre2'], 'Web' => $row['Web'], 'LogoLink' => $row['LogoLink'], 'ToutGroup' => $row['ToutGroup'], /*'LogoOK' => $row['LogoOK'],*/
@@ -166,7 +163,7 @@ class Historique extends MyPage
 						'Moins' => $row2['Moins_publi'], 'Diff' => $row2['Diff_publi'],
 						'PtsNiveau' => $row2['PtsNiveau_publi'], 'CltNiveau' => $row2['CltNiveau_publi'], 
 						'logo' => $logo, 'club' => $club);
-                    
+					
 				}
 			}
 		
@@ -178,6 +175,7 @@ class Historique extends MyPage
 		$this->m_tpl->assign('arraySaisons', $arraySaisons);
 		$this->m_tpl->assign('arrayCompets', $arrayCompets);
 		$this->m_tpl->assign('arrayClts', $arrayClts);
+		// debug($arrayClts);
 
 	}
 	
