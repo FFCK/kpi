@@ -683,6 +683,7 @@ class GestionJournee extends MyPageSecure
                     $arb .= '-' . $row2['niveau'];
                 }
                 $row2['Libelle'] = substr($row2['Libelle'],0,3);
+				$row2['Libelle'] = str_replace('Poo', 'Pool', $row2['Libelle']);
 				array_push($arrayArbitre, array('Matric' => $row2['Matric'], 'Identite' => ucwords(strtolower($row2['Nom'])).' '.ucwords(strtolower($row2['Prenom'])).' ('.$row2['Libelle'].')'.$arb));
 			}
 			

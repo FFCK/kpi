@@ -111,6 +111,7 @@ if ($j == '' && $m == '') {
 	while ($row = $result->fetch()) {
 		//$libelle = 'Pool Arbitres 1';
 		$libelle = substr($row['Libelle'],0,3);
+		$libelle = str_replace('Poo', 'Pool', $libelle);
 		$arb = strtoupper($row['Arb']);
 		if($row['niveau'] != '')
 			$arb .= '-'.$row['niveau'];
