@@ -113,6 +113,9 @@
 								&nbsp;
 								<a href="#" onclick="RemoveCheckboxes('formCalendrier', 'checkJournee')" title="{#Supprimer#}"><img height="25" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" border="0"></a>
 							</td>
+							<td>
+								<span class="colorPublic">{#Parametres_calendrier_public#} <img src="../img/down.gif"></span>
+							</td>
 						</tr>
 					</table>
 				</div>
@@ -169,10 +172,10 @@
                                         ></th>
                                 {/if}
 								<th>Type</th>
-								<th>{#Nom#}</th>
-								<th>{#Date#}</th>
-								<th>{#Lieu#}</th>
-								<th>{#Dpt_Pays#}</th>
+								<th class="colorPublic">{#Nom#}</th>
+								<th class="colorPublic">{#Date#}</th>
+								<th class="colorPublic">{#Lieu#}</th>
+								<th class="colorPublic">{#Dpt_Pays#}</th>
 								<th colspan="2">{#Officiels#}</th>
 								<th>&nbsp;</th>
 							</tr>
