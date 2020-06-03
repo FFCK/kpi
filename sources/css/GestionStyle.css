@@ -221,6 +221,17 @@ td.colorCapC {background: #BFB;} /*vert*/
 .color2O {background: #BFB;}
 .color2N {background: #FF0;}
 
+.colorPublic {
+	color: #DDD;
+	background: rgb(51,100,52) !important;
+	background: linear-gradient(180deg, rgba(51,100,52,1) 0%, rgba(92,212,97,1) 100%) !important;
+	padding: 4px;
+	font-weight: bold;
+}
+.colorPublic img {
+	vertical-align: top;
+}
+
 .titreForm {background: #334F64 url(titre_bg.gif) 0 0 repeat-x; font-size: 8.0pt; color: #DDD; border: none; text-align: center; padding: 4px;}
 
 .blocLeft {
