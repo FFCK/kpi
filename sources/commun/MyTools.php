@@ -435,6 +435,18 @@ function utyGetPrenom($array, $param, $default = '')
 }
 
 /**
+ * Supprime numéro de licence entre parenthèse
+ *
+ * @param [string] $string
+ * @return void
+ */
+function utyGetNomPrenom($string)
+{
+	$result = explode(' (', $string);
+    return $result[0];
+}
+
+/**
  * ucfirst incluant tiret et apostrophe
  * @param $string
  * @return $string
