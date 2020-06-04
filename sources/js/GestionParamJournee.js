@@ -135,7 +135,7 @@ jq(document).ready(function() {
 			jq("#Organisateur").val(nom);
 		}
 	});
-	jq("#Responsable_R1").autocomplete('Autocompl_joueur.php', {
+	jq("#Responsable_R1").autocomplete('Autocompl_joueur3.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -145,11 +145,11 @@ jq(document).ready(function() {
 	});
 	jq("#Responsable_R1").result(function(event, data, formatted) {
 		if (data) {
-			var nom = data[7]+' '+data[6];
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
 			jq("#Responsable_R1").val(nom);
 		}
 	});
-	jq("#Responsable_insc").autocomplete('Autocompl_joueur.php', {
+	jq("#Responsable_insc").autocomplete('Autocompl_joueur3.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -159,11 +159,11 @@ jq(document).ready(function() {
 	});
 	jq("#Responsable_insc").result(function(event, data, formatted) {
 		if (data) {
-			var nom = data[7]+' '+data[6];
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
 			jq("#Responsable_insc").val(nom);
 		}
 	});
-	jq("#Delegue").autocomplete('Autocompl_joueur.php', {
+	jq("#Delegue").autocomplete('Autocompl_joueur3.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -173,11 +173,11 @@ jq(document).ready(function() {
 	});
 	jq("#Delegue").result(function(event, data, formatted) {
 		if (data) {
-			var nom = data[7]+' '+data[6];
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
 			jq("#Delegue").val(nom);
 		}
 	});
-	jq("#ChefArbitre").autocomplete('Autocompl_joueur.php', {
+	jq("#ChefArbitre").autocomplete('Autocompl_joueur3.php', {
 		width: 420,
 		max: 80,
 		mustMatch: false,
@@ -187,7 +187,7 @@ jq(document).ready(function() {
 	});
 	jq("#ChefArbitre").result(function(event, data, formatted) {
 		if (data) {
-			var nom = data[7]+' '+data[6];
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
 			jq("#ChefArbitre").val(nom);
 		}
 	});

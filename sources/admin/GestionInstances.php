@@ -26,6 +26,10 @@ class GestionInstances extends MyPageSecure
 		$result->execute(array($idJournee));
 		$row = $result->fetch();
 		$this->m_tpl->assign('arrayJournee', $row);
+		
+		$bAutorisation = utyIsAutorisationJournee($idJournee);
+		$this->m_tpl->assign('bAutorisation', $bAutorisation);
+
 	}
 	
 
