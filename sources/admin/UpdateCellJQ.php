@@ -52,9 +52,9 @@ if (in_array($typeValeur, ['Date_debut', 'Date_fin', 'Date_match'])) {
 	$valeur = utyDateFrToUs($valeur);
 }
 
+$sql = "UPDATE $tableName 
+	SET $typeValeur = ? $where ? ";
 if ($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key != '') {
-		$sql = "UPDATE $tableName 
-			SET $typeValeur = ? $where ? ";
 		$arrayQuery = array($valeur, $key);
 		if ($and != '' && $key2 != '') {
 			$sql .= $and."?";
@@ -70,7 +70,7 @@ if ($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key
 			echo 'Error 400';
 		}
 } else {
-	trigger_error("Requête incorrecte : " . $sql, E_USER_ERROR);
+	trigger_error("Requete incorrecte : " . $sql, E_USER_ERROR);
 	echo 'Error 400';
 }
 

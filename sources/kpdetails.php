@@ -129,6 +129,10 @@ class Details extends MyPage
             while ($row = $result->fetch()) {
                 if ($row['Code_competition'] == $codeCompet) {
                     $row['Selected'] == true;
+                    $row['Responsable_insc'] = utyGetNomPrenom($row['Responsable_insc']);
+                    $row['Responsable_R1'] = utyGetNomPrenom($row['Responsable_R1']);
+                    $row['Delegue'] = utyGetNomPrenom($row['Delegue']);
+                    $row['ChefArbitre'] = utyGetNomPrenom($row['ChefArbitre']);
                     $journee[] = $row;
                 } else {
                     $row['Selected'] == false;
@@ -219,6 +223,10 @@ class Details extends MyPage
             while ($row = $result->fetch()) {
                 if($row['Id_journee'] == $idSelJournee || $idSelJournee == '*'){
                     $row['Selected'] = true;
+                    $row['Responsable_insc'] = utyGetNomPrenom($row['Responsable_insc']);
+                    $row['Responsable_R1'] = utyGetNomPrenom($row['Responsable_R1']);
+                    $row['Delegue'] = utyGetNomPrenom($row['Delegue']);
+                    $row['ChefArbitre'] = utyGetNomPrenom($row['ChefArbitre']);
                     $journee[] = $row;
                 }else{
                     $row['Selected'] = false;
@@ -286,6 +294,10 @@ class Details extends MyPage
             while ($row = $result->fetch()) {
                 if($row['Code_competition'] == $codeCompet){
                     $row['Selected'] = true;
+                    $row['Responsable_insc'] = utyGetNomPrenom($row['Responsable_insc']);
+                    $row['Responsable_R1'] = utyGetNomPrenom($row['Responsable_R1']);
+                    $row['Delegue'] = utyGetNomPrenom($row['Delegue']);
+                    $row['ChefArbitre'] = utyGetNomPrenom($row['ChefArbitre']);
                     $journee[] = $row;
                 }else{
                     $row['Selected'] = false;

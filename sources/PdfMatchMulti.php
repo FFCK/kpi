@@ -172,20 +172,20 @@ class FeuilleMatch extends MyPage
 
             $organisateur = html_entity_decode($row['Organisateur']);
             if ($row['Responsable_R1'] || $arrayCompetition['En_actif'] == 'O') {
-                $responsable = substr(html_entity_decode($row['Responsable_R1']), 0, 25);
+                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_R1'])), 0, 25);
                 $responsableT = $lang['R1'] . ': ';
             } else {
-                $responsable = substr(html_entity_decode($row['Responsable_insc']), 0, 25);
+                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_insc'])), 0, 25);
                 $responsableT = 'Resp: ';
             }
             if ($arrayCompetition['En_actif'] == 'O') {
-                $delegue = html_entity_decode($row['Delegue']);
+                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']));
                 $delegueT = $lang['Delegue'] . ': ';
             } elseif ($row['Delegue']) {
-                $delegue = html_entity_decode($row['Delegue']);
+                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']));
                 $delegueT = 'Délégué CNA: ';
             } elseif ($row['ChefArbitre']) {
-                $delegue = html_entity_decode($row['ChefArbitre']);
+                $delegue = html_entity_decode(utyGetNomPrenom($row['ChefArbitre']));
                 $delegueT = 'Chef des arbitres: ';
             } else {
                 $delegue = '';

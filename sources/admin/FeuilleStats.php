@@ -985,10 +985,10 @@ class FeuilleStats extends MyPage {
                     $pdf->Cell(10, 7, $arrayStats[$i]['Code_competition'], 'B', 0, 'C');
                     $pdf->Cell(20, 7, $arrayStats[$i]['Date_debut'], 'B', 0, 'C');
                     $pdf->Cell(30, 7, $arrayStats[$i]['Lieu'], 'B', 0, 'C');
-                    $pdf->Cell(30, 7, $arrayStats[$i]['Responsable_insc'], 'B', 0, 'C');
-                    $pdf->Cell(30, 7, $arrayStats[$i]['Responsable_R1'], 'B', 0, 'C');
-                    $pdf->Cell(30, 7, $arrayStats[$i]['Delegue'], 'B', 0, 'C');
-                    $pdf->Cell(30, 7, $arrayStats[$i]['ChefArbitre'], 'B', 1, 'C');
+                    $pdf->Cell(30, 7, utyGetNomPrenom($arrayStats[$i]['Responsable_insc']), 'B', 0, 'C');
+                    $pdf->Cell(30, 7, utyGetNomPrenom($arrayStats[$i]['Responsable_R1']), 'B', 0, 'C');
+                    $pdf->Cell(30, 7, utyGetNomPrenom($arrayStats[$i]['Delegue']), 'B', 0, 'C');
+                    $pdf->Cell(30, 7, utyGetNomPrenom($arrayStats[$i]['ChefArbitre']), 'B', 1, 'C');
                 }
                 break;
             case 'OfficielsMatchs' :
