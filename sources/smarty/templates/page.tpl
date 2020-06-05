@@ -92,7 +92,7 @@
 			<script src="../js/jquery.autocomplete.min.js"></script>
 			<script src="../js/jquery.tooltip.min.js"></script>
 			<script src="../js/jquery.maskedinput.min.js"></script>
-			<script src="../js/jquery.fixedheadertable.min.js"></script>
+			<!--<script src="../js/jquery.fixedheadertable.min.js"></script>-->
 			<script src="../js/formTools.js?v={$NUM_VERSION}"></script>
 			{assign var=temp value="../js/$contenutemplate.js"} 
 			{if is_file($temp)}
