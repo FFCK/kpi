@@ -191,5 +191,89 @@ jq(document).ready(function() {
 			jq("#ChefArbitre").val(nom);
 		}
 	});
+	jq("#Rep_athletes").autocomplete('Autocompl_joueur3.php', {
+		width: 420,
+		max: 80,
+		mustMatch: false,
+		minChars: 2,
+		cacheLength: 0,
+		scrollHeight: 320,
+	});
+	jq("#Rep_athletes").result(function(event, data, formatted) {
+		if (data) {
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
+			jq("#Rep_athletes").val(nom);
+		}
+	});
+	jq("#Arb_nj1").autocomplete('Autocompl_joueur3.php', {
+		width: 420,
+		max: 80,
+		mustMatch: false,
+		minChars: 2,
+		cacheLength: 0,
+		scrollHeight: 320,
+	});
+	jq("#Arb_nj1").result(function(event, data, formatted) {
+		if (data) {
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
+			jq("#Arb_nj1").val(nom);
+		}
+	});
+	jq("#Arb_nj2").autocomplete('Autocompl_joueur3.php', {
+		width: 420,
+		max: 80,
+		mustMatch: false,
+		minChars: 2,
+		cacheLength: 0,
+		scrollHeight: 320,
+	});
+	jq("#Arb_nj2").result(function(event, data, formatted) {
+		if (data) {
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
+			jq("#Arb_nj2").val(nom);
+		}
+	});
+	jq("#Arb_nj3").autocomplete('Autocompl_joueur3.php', {
+		width: 420,
+		max: 80,
+		mustMatch: false,
+		minChars: 2,
+		cacheLength: 0,
+		scrollHeight: 320,
+	});
+	jq("#Arb_nj3").result(function(event, data, formatted) {
+		if (data) {
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
+			jq("#Arb_nj3").val(nom);
+		}
+	});
+	jq("#Arb_nj4").autocomplete('Autocompl_joueur3.php', {
+		width: 420,
+		max: 80,
+		mustMatch: false,
+		minChars: 2,
+		cacheLength: 0,
+		scrollHeight: 320,
+	});
+	jq("#Arb_nj4").result(function(event, data, formatted) {
+		if (data) {
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
+			jq("#Arb_nj4").val(nom);
+		}
+	});
+	jq("#Arb_nj5").autocomplete('Autocompl_joueur3.php', {
+		width: 420,
+		max: 80,
+		mustMatch: false,
+		minChars: 2,
+		cacheLength: 0,
+		scrollHeight: 320,
+	});
+	jq("#Arb_nj5").result(function(event, data, formatted) {
+		if (data) {
+			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
+			jq("#Arb_nj5").val(nom);
+		}
+	});
 	
 });

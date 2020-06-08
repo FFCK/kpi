@@ -20,8 +20,9 @@ class GestionParamJournee extends MyPageSecure
 			// Liste ...
 			$sql = "SELECT j.Id, j.Code_competition, j.Code_saison, j.Phase, j.Niveau, 
 				j.Etape, j.Nbequipes, j.Date_debut, j.Date_fin, j.Nom, j.Libelle, j.Lieu, 
-				j.Type, j.Plan_eau, j.Departement, j.Responsable_insc, j.Responsable_R1, 
-				j.Organisateur, j.Delegue, j.ChefArbitre, c.Code_typeclt 
+				j.Type, j.Plan_eau, j.Departement, c.Code_typeclt, j.Responsable_insc, 
+				j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, 
+				j.Rep_athletes, j.Arb_nj1, j.Arb_nj2, j.Arb_nj3, j.Arb_nj4, j.Arb_nj5 
 				FROM gickp_Journees j, gickp_Competitions c 
 				WHERE j.Id = ? 
 				AND j.Code_competition = c.Code 
@@ -56,18 +57,25 @@ class GestionParamJournee extends MyPageSecure
 				$this->m_tpl->assign('Organisateur', $row['Organisateur']);
 				$this->m_tpl->assign('Delegue', $row['Delegue']);
 				$this->m_tpl->assign('ChefArbitre', $row['ChefArbitre']);
+				$this->m_tpl->assign('Rep_athletes', $row['Rep_athletes']);
+				$this->m_tpl->assign('Arb_nj1', $row['Arb_nj1']);
+				$this->m_tpl->assign('Arb_nj2', $row['Arb_nj2']);
+				$this->m_tpl->assign('Arb_nj3', $row['Arb_nj3']);
+				$this->m_tpl->assign('Arb_nj4', $row['Arb_nj4']);
+				$this->m_tpl->assign('Arb_nj5', $row['Arb_nj5']);
 				$this->m_tpl->assign('Code_typeclt', $row['Code_typeclt']);
 				
 				if ($row['Code_typeclt'] = 'CP') {
 					$sql2 = "SELECT Id, Code_competition, Code_saison, Phase, Niveau, Etape, 
 						Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, 
-						Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre
+						Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+						Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
 						FROM gickp_Journees 
-						WHERE Code_competition = '".$row['Code_competition']."' 
-						AND Code_saison = '".$row['Code_saison']."' 
+						WHERE Code_competition = ? 
+						AND Code_saison = ? 
 						ORDER BY Niveau, Phase ";
 					$result2 = $myBdd->pdo->prepare($sql2);
-					$result2->execute(array($idJournee));
+					$result2->execute(array($row['Code_competition'], $row['Code_saison']));
 					while($row2 = $result2->fetch()) {
 						array_push($ListJournees, $row2);
 					}
@@ -146,6 +154,12 @@ class GestionParamJournee extends MyPageSecure
 		$Organisateur = trim(utyGetPost('Organisateur'));
 		$Delegue = trim(utyGetPost('Delegue'));
 		$ChefArbitre = trim(utyGetPost('ChefArbitre'));
+		$Rep_athletes = trim(utyGetPost('Rep_athletes'));
+		$Arb_nj1 = trim(utyGetPost('Arb_nj1'));
+		$Arb_nj2 = trim(utyGetPost('Arb_nj2'));
+		$Arb_nj3 = trim(utyGetPost('Arb_nj3'));
+		$Arb_nj4 = trim(utyGetPost('Arb_nj4'));
+		$Arb_nj5 = trim(utyGetPost('Arb_nj5'));
 
 		$AvecMatchs = trim(utyGetPost('AvecMatchs'));
 		$CodMatchs = trim(utyGetPost('CodMatchs'));
@@ -168,13 +182,16 @@ class GestionParamJournee extends MyPageSecure
 				Lieu = ?, Plan_eau = ?, Departement = ?, 
 				Responsable_insc = ?, Responsable_R1 = ?, 
 				Organisateur = ?, Delegue = ?, 
-				ChefArbitre = ? 
+				ChefArbitre = ?, Rep_athletes = ?, Arb_nj1 = ?, Arb_nj2 = ?,
+				Arb_nj3 = ?, Arb_nj4 = ?, Arb_nj5 = ?
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(
 				$J_competition, $J_saison, $Type, $Phase, $Niveau, $Etape, $Nbequipes, $Date_debut, 
 				$Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
-				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, $idJournee
+				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, 
+				$Rep_athletes, $Arb_nj1, $Arb_nj2,
+				$Arb_nj3, $Arb_nj4, $Arb_nj5, $idJournee
 			));
 				
             $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
@@ -185,13 +202,15 @@ class GestionParamJournee extends MyPageSecure
     		$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
 				`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
 				Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, 
-				Delegue, ChefArbitre) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+				Delegue, ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
+				Arb_nj3, Arb_nj4, Arb_nj5) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(
 				$nextIdJournee, $J_competition, $J_saison, $Phase, $Type, $Niveau, $Etape, $Nbequipes, 
 				$Date_debut, $Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
-				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre
+				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, $Rep_athletes, $Arb_nj1, $Arb_nj2,
+				$Arb_nj3, $Arb_nj4, $Arb_nj5
 			));
 			
 			//Copie des matchs
@@ -266,20 +285,29 @@ class GestionParamJournee extends MyPageSecure
 		$Organisateur = trim(utyGetPost('Organisateur'));
 		$Delegue = trim(utyGetPost('Delegue'));
 		$ChefArbitre = trim(utyGetPost('ChefArbitre'));
+		$Rep_athletes = trim(utyGetPost('Rep_athletes'));
+		$Arb_nj1 = trim(utyGetPost('Arb_nj1'));
+		$Arb_nj2 = trim(utyGetPost('Arb_nj2'));
+		$Arb_nj3 = trim(utyGetPost('Arb_nj3'));
+		$Arb_nj4 = trim(utyGetPost('Arb_nj4'));
+		$Arb_nj5 = trim(utyGetPost('Arb_nj5'));
 		$listJournees = explode (",", trim(utyGetPost('ParamCmd')));
-        
+
 		foreach ($listJournees as $Journee) {
 			// Modification ...
 			$sql = "UPDATE gickp_Journees 
 				SET Date_debut = ?, Date_fin = ?, Nom = ?, 
 				Libelle = ?, Lieu = ?, Plan_eau = ?, 
 				Responsable_R1 = ?, Organisateur = ?, 
-				Delegue = ?, ChefArbitre = ? 
+				Delegue = ?, ChefArbitre = ?, Rep_athletes = ?, Arb_nj1 = ?, Arb_nj2 = ?,
+				Arb_nj3 = ?, Arb_nj4 = ?, Arb_nj5 = ? 
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(
 				$Date_debut, $Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Responsable_R1, 
-				$Organisateur, $Delegue, $ChefArbitre, $Journee
+				$Organisateur, $Delegue, $ChefArbitre, 
+				$Rep_athletes, $Arb_nj1, $Arb_nj2,
+				$Arb_nj3, $Arb_nj4, $Arb_nj5, $Journee
 			));
 		
 			$myBdd->utyJournal('Modification journee', '', '', '', $Journee);
@@ -334,10 +362,12 @@ class GestionParamJournee extends MyPageSecure
 			$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
 				`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
 				Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, 
-				ChefArbitre) 
+				ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
+				Arb_nj3, Arb_nj4, Arb_nj5) 
 				SELECT ?, Code_competition, code_saison, Phase, `Type`, Niveau, 
 				Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, 
-				Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre 
+				Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+				Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
 				FROM gickp_Journees 
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);

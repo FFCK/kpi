@@ -229,12 +229,18 @@
                                                 <span class='directInput' data-type="smalltext" data-target="Departement" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Departement}">{$arrayJournees[i].Departement}</span>
                                             </td>
                                             <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="{#Officiels#}">
-												<img height="18" src="../img/glyphicons-social-63-buffer.png" alt="{#Officiels#}"></a>
+												<img height="18" src="../img/orga.png" alt="{#Officiels#}"></a>
                                             <td style="text-align:left">
                                                 {if $arrayJournees[i].Responsable_insc != ''}{#RC#}: {$arrayJournees[i].Responsable_insc}<br />{/if}
                                                 {if $arrayJournees[i].Responsable_R1 != ''}{#R1#}: {$arrayJournees[i].Responsable_R1}<br />{/if}
                                                 {if $arrayJournees[i].Delegue != ''}{#Delegue#}: {$arrayJournees[i].Delegue}<br />{/if}
-                                                {if $arrayJournees[i].ChefArbitre != ''}{#Chef_arbitres#}: {$arrayJournees[i].ChefArbitre}{/if}
+                                                {if $arrayJournees[i].ChefArbitre != ''}{#Chef_arbitres#}: {$arrayJournees[i].ChefArbitre}<br />{/if}
+                                                {if $arrayJournees[i].Rep_athletes != ''}{#Rep_athletes#}: {$arrayJournees[i].Rep_athletes}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj1 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj1}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj2 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj2}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj3 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj3}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj4 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj4}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj5 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj5}<br />{/if}
                                             </td>
                                             <td><a href="#" onclick="RemoveCheckbox('formCalendrier', '{$arrayJournees[i].Id}');return false;"><img height="20" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" title="{#Supprimer#}"></a></td>
 										{else}
@@ -266,10 +272,16 @@
                                             <td>{$arrayJournees[i].Departement}</td>
                                             <td><a href="GestionInstances.php?idJournee={$arrayJournees[i].Id}" title="{#Officiels#}"><img height="18" src="../img/glyphicons-social-63-buffer.png" alt="{#Officiels#}"></a>
                                             <td style="text-align:left">
-                                                {if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
-                                                {if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
-                                                {if $arrayJournees[i].Delegue != ''}Délégué: {$arrayJournees[i].Delegue}<br />{/if}
-                                                {if $arrayJournees[i].ChefArbitre != ''}Chef arbitres: {$arrayJournees[i].ChefArbitre}{/if}
+                                                {if $arrayJournees[i].Responsable_insc != ''}{#RC#}: {$arrayJournees[i].Responsable_insc}<br />{/if}
+                                                {if $arrayJournees[i].Responsable_R1 != ''}{#R1#}: {$arrayJournees[i].Responsable_R1}<br />{/if}
+                                                {if $arrayJournees[i].Delegue != ''}{#Delegue#}: {$arrayJournees[i].Delegue}<br />{/if}
+                                                {if $arrayJournees[i].ChefArbitre != ''}{#Chef_arbitres#}: {$arrayJournees[i].ChefArbitre}<br />{/if}
+                                                {if $arrayJournees[i].Rep_athletes != ''}{#Rep_athletes#}: {$arrayJournees[i].Rep_athletes}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj1 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj1}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj2 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj2}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj3 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj3}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj4 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj4}<br />{/if}
+                                                {if $arrayJournees[i].Arb_nj5 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj5}<br />{/if}
                                             </td>
                                             <td>&nbsp;</td>
 										{/if}
@@ -300,10 +312,16 @@
                                         <td>{$arrayJournees[i].Departement}</td>
                                         <td>&nbsp;</td>
                                         <td style="text-align:left">
-                                            {if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
-                                            {if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
-                                            {if $arrayJournees[i].Delegue != ''}Délégué: {$arrayJournees[i].Delegue}<br />{/if}
-                                            {if $arrayJournees[i].ChefArbitre != ''}Chef arbitres: {$arrayJournees[i].ChefArbitre}{/if}
+											{if $arrayJournees[i].Responsable_insc != ''}{#RC#}: {$arrayJournees[i].Responsable_insc}<br />{/if}
+											{if $arrayJournees[i].Responsable_R1 != ''}{#R1#}: {$arrayJournees[i].Responsable_R1}<br />{/if}
+											{if $arrayJournees[i].Delegue != ''}{#Delegue#}: {$arrayJournees[i].Delegue}<br />{/if}
+											{if $arrayJournees[i].ChefArbitre != ''}{#Chef_arbitres#}: {$arrayJournees[i].ChefArbitre}<br />{/if}
+											{if $arrayJournees[i].Rep_athletes != ''}{#Rep_athletes#}: {$arrayJournees[i].Rep_athletes}<br />{/if}
+											{if $arrayJournees[i].Arb_nj1 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj1}<br />{/if}
+											{if $arrayJournees[i].Arb_nj2 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj2}<br />{/if}
+											{if $arrayJournees[i].Arb_nj3 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj3}<br />{/if}
+											{if $arrayJournees[i].Arb_nj4 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj4}<br />{/if}
+											{if $arrayJournees[i].Arb_nj5 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj5}<br />{/if}
                                         </td>
                                         <td>&nbsp;</td>
                                     {else}
@@ -334,10 +352,16 @@
                                         <td>{$arrayJournees[i].Departement}</td>
                                         <td>&nbsp;</td>
                                         <td style="text-align:left">
-                                            {if $arrayJournees[i].Responsable_insc != ''}RC: {$arrayJournees[i].Responsable_insc}<br />{/if}
-                                            {if $arrayJournees[i].Responsable_R1 != ''}R1: {$arrayJournees[i].Responsable_R1}<br />{/if}
-                                            {if $arrayJournees[i].Delegue != ''}Délégué: {$arrayJournees[i].Delegue}<br />{/if}
-                                            {if $arrayJournees[i].ChefArbitre != ''}Chef arbitres: {$arrayJournees[i].ChefArbitre}{/if}
+											{if $arrayJournees[i].Responsable_insc != ''}{#RC#}: {$arrayJournees[i].Responsable_insc}<br />{/if}
+											{if $arrayJournees[i].Responsable_R1 != ''}{#R1#}: {$arrayJournees[i].Responsable_R1}<br />{/if}
+											{if $arrayJournees[i].Delegue != ''}{#Delegue#}: {$arrayJournees[i].Delegue}<br />{/if}
+											{if $arrayJournees[i].ChefArbitre != ''}{#Chef_arbitres#}: {$arrayJournees[i].ChefArbitre}<br />{/if}
+											{if $arrayJournees[i].Rep_athletes != ''}{#Rep_athletes#}: {$arrayJournees[i].Rep_athletes}<br />{/if}
+											{if $arrayJournees[i].Arb_nj1 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj1}<br />{/if}
+											{if $arrayJournees[i].Arb_nj2 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj2}<br />{/if}
+											{if $arrayJournees[i].Arb_nj3 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj3}<br />{/if}
+											{if $arrayJournees[i].Arb_nj4 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj4}<br />{/if}
+											{if $arrayJournees[i].Arb_nj5 != ''}{#Arb_nj#}: {$arrayJournees[i].Arb_nj5}<br />{/if}
                                         </td>
                                         <td>&nbsp;</td>
                                     {/if}
