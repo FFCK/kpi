@@ -79,12 +79,15 @@ html>body #nav a {width: auto;}    /* fixes IE6 hack */
 
 /* Jquery directInput directSelect */	
 .directInput {
-color: #182F6B; 	
-border-top: 1px dotted #6993B1;
-border-left: 1px dotted #6993B1;
-padding: 3px;
-border-radius: 5px;
-display: inline-block;
+	color: #182F6B;
+	background-color: rgb(208, 214, 219);
+	border-top: 1px dotted #6993B1;
+	border-left: 1px dotted #6993B1;
+	padding: 3px;
+	border-radius: 5px;
+	display: inline-block;
+	min-width: 15px;
+	min-height: 6px;
 }
 .directInput:hover {border: 1px dotted #334F64; color: #334F64}
 /* .showOn { } */

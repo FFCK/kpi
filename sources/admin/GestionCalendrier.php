@@ -238,7 +238,8 @@ class GestionCalendrier extends MyPageSecure
 		$in = str_repeat('?,', count($arrayCompets) - 1) . '?';
 		$sql = "SELECT Id, Code_competition, `Type`, Phase, Niveau, Etape, Nbequipes, 
 			Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, 
-			Responsable_R1, Organisateur, Delegue, ChefArbitre, Publication 
+			Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+			Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5, Publication 
 			FROM gickp_Journees 
 			WHERE Code_competition IS NOT NULL 
 			AND Code_Competition IN ($in) 
@@ -308,6 +309,12 @@ class GestionCalendrier extends MyPageSecure
 				'Responsable_R1' => utyGetNomPrenom($row['Responsable_R1']), 
 				'Delegue' => utyGetNomPrenom($row['Delegue']), 
 				'ChefArbitre' => utyGetNomPrenom($row['ChefArbitre']), 
+				'Rep_athletes' => utyGetNomPrenom($row['Rep_athletes']), 
+				'Arb_nj1' => utyGetNomPrenom($row['Arb_nj1']), 
+				'Arb_nj2' => utyGetNomPrenom($row['Arb_nj2']), 
+				'Arb_nj3' => utyGetNomPrenom($row['Arb_nj3']), 
+				'Arb_nj4' => utyGetNomPrenom($row['Arb_nj4']), 
+				'Arb_nj5' => utyGetNomPrenom($row['Arb_nj5']), 
 				'Organisateur' => $row['Organisateur'],
 				'Publication' => $row['Publication'],
 				'Checked' => $Checked ) );
@@ -356,10 +363,12 @@ class GestionCalendrier extends MyPageSecure
 			$sql = "INSERT INTO gickp_Journees 
 				(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, 
 				Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, Departement, 
-				Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre) 
+				Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+				Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5) 
 				SELECT ?, Code_competition, code_saison, Phase, Niveau, Etape, 
 				Nbequipes, Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, 
-				Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre 
+				Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+				Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
 				FROM gickp_Journees 
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);

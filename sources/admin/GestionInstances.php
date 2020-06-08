@@ -17,11 +17,10 @@ class GestionInstances extends MyPageSecure
 		//Chargement infos journées
 		$sql = "SELECT j.Id, j.Code_competition, j.Type, j.Phase, j.Niveau, j.Date_debut, 
 			j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Plan_eau, j.Departement, j.Responsable_insc, 
-			j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, j.Publication
+			j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, 
+			j.Rep_athletes, j.Arb_nj1, j.Arb_nj2, j.Arb_nj3, j.Arb_nj4, j.Arb_nj5, j.Publication
 			FROM gickp_Journees j
 			WHERE Id = ? ";
-				// TODO: Ajouter le représentant des chefs d'équipes, entraîneurs et compétiteurs
-				// TODO: Ajouter le représentant du président de la CNA (président du Jury d'appel) ?
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idJournee));
 		$row = $result->fetch();

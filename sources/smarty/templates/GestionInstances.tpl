@@ -85,10 +85,10 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>{#Representant_des_competiteurs#}</th>
+                        <th>{#Rep_athletes#}</th>
                         <td>
                             <br />
-                            <input type="text" name="Representant" id="Representant" size="60" placeholder="{#Nom#} {#Prenom#} {#Licence#}" class="ac_input" />
+                            <span class='{$directInput} arbitre' data-type="text" data-target="Rep_athletes" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Rep_athletes}">{$arrayJournee.Rep_athletes}</span>
                             <br />
                         </td>
                     </tr>
@@ -96,6 +96,21 @@
 			</div>
 			<div class='blocBottom centre'>
                 <a href="FeuilleInstances.php?idJournee={$arrayJournee.Id}" title="pdf" target="_blank"><img src="../img/pdf.gif" alt="pdf"></a>
+            </div>
+            <br>
+            <br>
+            <div class="centre">
+                <label><b>{#Arb_nj#}</b></label>
+                <br>
+                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj1" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj1}">{$arrayJournee.Arb_nj1}</span>
+                <br>
+                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj2" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj2}">{$arrayJournee.Arb_nj2}</span>
+                <br>
+                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj3" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj3}">{$arrayJournee.Arb_nj3}</span>
+                <br>
+                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj4" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj4}">{$arrayJournee.Arb_nj4}</span>
+                <br>
+                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj5" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj5}">{$arrayJournee.Arb_nj5}</span>
             </div>
 		</form>			
 				

@@ -126,7 +126,7 @@ jq(document).ready(function() {
 	}); 
     
     jq('#inputZone').live('blur', function(){
-        var thisSpan = jq('#inputZone + span');
+        var thisSpan = jq('#inputZone + span:first');
         var nouvelleValeur = jq(this).val();
         var typeChamps = jq(this).attr('type');
         var valeurEntier = nouvelleValeur | 0;
@@ -202,8 +202,8 @@ jq(document).ready(function() {
 			if (data != 'OK!') {
 				alert(langue['MAJ_impossible'] + ' : ' + data);
 			} else {
-				jq('#inputZone2vid ~ span').html(lavaleur);
-				jq('#inputZone2vid ~ span').show();
+				jq('#inputZone2vid ~ span:first').html(lavaleur);
+				jq('#inputZone2vid ~ span:first').show();
 				jq('#inputZone2 + br').remove();
 				jq('#inputZone2').remove();
 				jq('#inputZone2valid').remove();
@@ -242,8 +242,8 @@ jq(document).ready(function() {
 			if (data != 'OK!') {
 				alert(langue['MAJ_impossible'] + ' : ' + data);
 			} else {
-				jq('#inputZone2vid ~ span').html(lavaleur);
-				jq('#inputZone2vid ~ span').show();
+				jq('#inputZone2vid ~ span:first').html(lavaleur);
+				jq('#inputZone2vid ~ span:first').show();
 				jq('#inputZone2 + br').remove();
 				jq('#inputZone2').remove();
 				jq('#inputZone2valid').remove();
