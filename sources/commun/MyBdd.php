@@ -1054,22 +1054,19 @@ class MyBdd
         $card_colors = ['V' => 'Vert', 'J' => 'Jaune', 'R' => 'Rouge'];
         $saison = $this->GetActiveSaison();
         $headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
-       	$destinataires = CARD_ALERT_RECIPIENTS;
-        $msg1 = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n"
-                            . "Bonjour, \r\n\r\n";
         $msg2 = "";
         $msg3 = "\r\ncf. Article RP KAP 16 du règlement sportif.\r\n\r\nCordialement\r\nKayak-polo.info\r\n";
 		$sql = "SELECT lc.Nom, lc.Prenom, lc.Numero_club Club, md.Id_evt_match card,  
 			COUNT(md.Id_evt_match) nb_total, 
 			SUM(IF(j.Code_competition LIKE 'N%', 1, 0)) nb_champ, 
 			SUM(IF(j.Code_competition LIKE 'CF%', 1, 0)) nb_coupe, 
+			-- SUM(IF(j.Code_competition LIKE 'M%', 1, 0)) nb_modele, 
 			SUM(IF(m.Id_journee = ( 
-				SELECT Id_journee FROM gickp_Matchs WHERE Id = $idMatch 
+				SELECT Id_journee FROM gickp_Matchs WHERE Id = ?  
 				), 1, 0)) nb_journee, 
 				(SELECT Code_competition FROM gickp_Journees 
 				INNER JOIN gickp_Matchs ON (gickp_Journees.Id = gickp_Matchs.Id_journee) 
-				WHERE gickp_Matchs.Id = ? ) AS compet 
-				-- , SUM(IF(j.Code_competition LIKE 'M%', 1, 0)) nb_modele 
+				WHERE gickp_Matchs.Id = ? ) AS compet  
 			FROM gickp_Matchs_Detail md  
 			INNER JOIN gickp_Matchs m ON (md.Id_match = m.Id) 
 			INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id) 
@@ -1085,7 +1082,10 @@ class MyBdd
 			GROUP BY Id_evt_match 
 			ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R')";
         $result = $this->pdo->prepare($sql);
-        $result->execute(array($idMatch, $idMatch, $saison));
+		$result->execute(array($idMatch, $idMatch, $matric, $saison));
+		if ($result->rowCount() == 0) {
+			return;
+		}
         while($row = $result->fetch()) {
             $prenom = $row['Prenom'];
             $nom = $row['Nom'];
@@ -1106,7 +1106,25 @@ class MyBdd
 //                        . "Tests = " . $row['nb_modele'] . "\r\n"
                     ;
             $array[$row['card']] = $row;
-        }
+		}
+
+		// Destinataires
+		$destinataires = [];
+		$sql2 = "SELECT u.Mail 
+			FROM gickp_Rc rc 
+            LEFT OUTER JOIN gickp_Utilisateur u ON (rc.Matric = u.Code) 
+			WHERE rc.Code_saison = ? 
+			AND (rc.Code_competition = ? OR rc.Code_competition = '- CNA -') ";
+        $result2 = $this->pdo->prepare($sql2);
+        $result2->execute(array($saison, $compet));
+        while($row2 = $result2->fetch()) {
+			$destinataires[] = $row2['Mail'];
+		}
+		$destinataires = implode(',', $destinataires);
+        $msg1 = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n"
+			. "Bonjour, vous recevez ce message car vous êtes responsable de compétition $compet ou membre du bureau CNA. \r\n\r\n";
+
+		// Envoi
         switch ($card) {
             case 'V':
                 if(isset($array['V']['nb_total']) && $array['V']['nb_total'] >= 6) {
@@ -1119,7 +1137,7 @@ class MyBdd
                     fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
                     fclose($fp);
                     // Envoi du mail
-                    mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
+                    mail($destinataires, "[KPI] Alerte carton vert $compet", $msg, $headers);
                 }
                 break;
             case 'J':
@@ -1133,7 +1151,7 @@ class MyBdd
                     fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
                     fclose($fp);
                     // Envoi du mail
-                    mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
+                    mail($destinataires, "[KPI] Alerte carton jaune $compet", $msg, $headers);
                 }
                 break;
             case 'R':
@@ -1147,7 +1165,7 @@ class MyBdd
                     fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
                     fclose($fp);
                     // Envoi du mail
-                    mail($destinataires, '[KPI - Alerte cartons]', $msg, $headers);
+                    mail($destinataires, "[KPI] Alerte carton rouge $compet", $msg, $headers);
                 }
                 break;
             default:
