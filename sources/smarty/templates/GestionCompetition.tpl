@@ -47,7 +47,7 @@
 									<th width=63 title="Code">Code</th>
 									<th title="{#Modifier#}">&nbsp;</th>
 									<th title="{#Niveau#}">{#Niv#}</th>
-									<th>{#Nom#}</th>
+									<th colspan=2>{#Nom#}</th>
 									<th width=63>{#Groupe#}</th>
 									<th title="{#Tour#}/Phase">{#Tour#}</th>
 									<th>Type</th>
@@ -68,7 +68,7 @@
                                     {if $arrayCompet[i].section != $j}
                                         {assign var='sectionLabel' value=$arrayCompet[i].sectionLabel}
                                         <tr class="gris2">
-                                            <th colspan="13">{$smarty.config.$sectionLabel|default:$sectionLabel}</th>
+                                            <th colspan="14">{$smarty.config.$sectionLabel|default:$sectionLabel}</th>
                                         </tr>
                                     {/if}
                                     {assign var='j' value=$arrayCompet[i].section}
@@ -89,6 +89,11 @@
 											<td><a href="#" Id="Param{$arrayCompet[i].Code}" onclick="paramCompet('{$arrayCompet[i].Code}')"><img hspace="2" width="18" height="18" src="../img/glyphicons-31-pencil.png" title="{#Editer#}" border="0"></a></td>
 										{else}<td>&nbsp;</td>{/if}
 										<td>{$arrayCompet[i].Code_niveau|default:'&nbsp;'}</td>
+										<td>
+											<a href="GestionRc.php?Compet={$arrayCompet[i].Code}" title="{#RC#}">
+												<img src="../img/orga.png" alt="RC" height="18">
+											</a>
+										</td>
 										<td	class="cliquableNomEquipe"
 											title="<center>
 											{if $arrayCompet[i].checktitre == 'O'}{$arrayCompet[i].Libelle}<br>{else}{$arrayCompet[i].Soustitre}<br>{/if}

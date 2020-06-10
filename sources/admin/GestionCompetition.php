@@ -78,7 +78,7 @@ class GestionCompetition extends MyPageSecure
 				'Inter_debut' => $row['Inter_debut'], 
 				'Inter_fin' => $row['Inter_fin'] 
 			));
-	}
+		}
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		$this->m_tpl->assign('sessionSaison', $codeSaison);
