@@ -91,7 +91,7 @@
 										<td>{$arrayCompet[i].Code_niveau|default:'&nbsp;'}</td>
 										<td>
 											<a href="GestionRc.php?Compet={$arrayCompet[i].Code}" title="{#RC#}">
-												<img src="../img/orga.png" alt="RC" height="18">
+												<img src="../img/orga{$arrayCompet[i].rcs}.png" alt="RC" height="18">
 											</a>
 										</td>
 										<td	class="cliquableNomEquipe"

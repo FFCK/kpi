@@ -104,13 +104,16 @@ class GestionCompetition extends MyPageSecure
 			$sqlAfficheCompet = " AND g.section = ? ";
 			$arrayAfficheCompet = [$AfficheCompet];
 		}
-		$sql = "SELECT c.*, g.section, g.ordre, g.id 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+		$sql = "SELECT c.*, g.section, g.ordre, g.id, GROUP_CONCAT(rc.Matric) rcs 
+			FROM gickp_Competitions_Groupes g, gickp_Competitions c  
+			LEFT OUTER JOIN gickp_Rc rc ON 
+				(c.Code_saison = rc.Code_saison AND c.Code = rc.Code_competition) 
 			WHERE c.Code_saison = ?  
 			$sqlFiltreCompetition 
 			AND c.Code_niveau LIKE ? 
 			AND c.Code_ref = g.Groupe 
 			$sqlAfficheCompet 
+			GROUP BY c.Code 
 			ORDER BY c.Code_saison, g.section, g.ordre, 
 				COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
 		$result = $myBdd->pdo->prepare($sql);
@@ -150,6 +153,11 @@ class GestionCompetition extends MyPageSecure
 				':Code_saison' => $codeSaison
 			));
 			$nbMatchs = $result2->fetchColumn();
+			if ($row['rcs'] != '') {
+				$rcs = 1;
+			} else {
+				$rcs = 0;
+			}
 
 			array_push($arrayCompet, array( 'Code' => $row["Code"], 'Code_niveau' => $row["Code_niveau"], 
 				'Libelle' => $row["Libelle"], 'Soustitre' => $row["Soustitre"], 'Soustitre2' => $row["Soustitre2"],
@@ -163,7 +171,7 @@ class GestionCompetition extends MyPageSecure
 				'Code_tour' => $row["Code_tour"], 'Nb_equipes' => $row["Nb_equipes"], 'Verrou' => $row["Verrou"], 
 				'Qualifies' => $row["Qualifies"], 'Elimines' => $row["Elimines"],
 				'Publication' => $Publication, 'commentairesCompet' => $row["commentairesCompet"], 'nbMatchs' => $nbMatchs,
-				'section' => $row['section'], 'sectionLabel' => $row['sectionLabel']));
+				'section' => $row['section'], 'sectionLabel' => $row['sectionLabel'], 'rcs' => $rcs));
 		}
 		$this->m_tpl->assign('arrayCompet', $arrayCompet);
 		$this->m_tpl->assign('sectionLabels', $label);
