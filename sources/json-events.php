@@ -1,5 +1,5 @@
 <?php
-include_once('commun/MyPage.php');
+// include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 

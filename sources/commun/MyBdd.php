@@ -1411,14 +1411,12 @@ class MyBdd
 	// GetCompetition 	
 	function GetCompetition($codeCompet, $codeSaison)
 	{
-		$sql  = "SELECT *, 
-			Date_calcul, 
-			Date_publication, 
-			Date_publication_calcul, 
-			Code_uti_calcul, Code_uti_publication, Mode_calcul, Mode_publication_calcul 
-			FROM gickp_Competitions 
-			WHERE Code = :Code_competition 
-			AND Code_saison = :Code_saison "; 		
+		$sql  = "SELECT c.*, cg.Calendar 
+			FROM gickp_Competitions c 
+			LEFT JOIN gickp_Competitions_Groupes cg
+				ON c.Code_ref = cg.Groupe
+			WHERE c.Code = :Code_competition 
+			AND c.Code_saison = :Code_saison "; 		
 		$result = $this->pdo->prepare($sql);
 		$result->execute(array(
 			':Code_competition' => $codeCompet,
@@ -1433,7 +1431,8 @@ class MyBdd
 							  	'Code_tour' => '', 'Qualifies' => '', 'Elimines' => '',
 							  	'Date_calcul' => '', 'Date_publication' => '', 'Date_publication_calcul' => '',
 								'Code_uti_calcul' => '', 'Code_uti_publication' => '', 
-								'Mode_calcul' => '', 'Mode_publication_calcul' => ''
+								'Mode_calcul' => '', 'Mode_publication_calcul' => '',
+								'Calendar' => null
 								);							  	
     }
     
