@@ -20,7 +20,7 @@
 								{/section}
 						    </select>
 						</td>
-						<td colspan=3>
+						<td colspan=4>
 							<label for="competition">{#Competition#} :</label>
 							<select name="competition" id="competition" onChange="changeCompetition();">
                                 {section name=i loop=$arrayCompetition}
@@ -94,6 +94,18 @@
                                 <img align="absbottom" height="20" src="../img/typeE.png" title="{#Schema#}">
                                 {#Schema#}
                             </a>
+						</td>
+						<td>
+							{if $profile == 1}
+								<a href="../upload_ics.php">
+									<img align="absbottom" height="20" src="../img/b_sbrowse.png" title="iCalendar">
+									ICS
+								</a>
+								&nbsp;
+								<a target="_blank" href="https://www.google.com/calendar/render?action=TEMPLATE&text=rendez%20vous&dates=20200729T060000Z/20200731T160000Z&ctz=Europe/Paris&details=https%3A%2F%2Fwww.kayak-polo.info%2Fkpdetails.php&location=paris,%20france">
+									<img border="0" src="https://www.google.com/calendar/images/ext/gc_button1_fr.gif">
+								</a>
+							{/if}
 						</td>
 					</tr>
 				</table>
