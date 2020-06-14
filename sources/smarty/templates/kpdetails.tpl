@@ -41,6 +41,15 @@
                 <div class="page-header">
                     <h3 class="text-info">{#Autres_categories#}</h3>
                 </div>
+                {if $Calendar != ''}
+                    <div class="text-center">
+                        <a class="btn btn-success" target="_blank" title="{#Abonnement_Google_Agenda#}" href="{$Calendar}">
+                            <img width="40" src="../img/gcal.png">
+                            {#Abonnement_Google_Agenda#}
+                        </a>
+                    </div>
+                    <br>
+                {/if}
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
                         <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}btn-primary{else}btn-default{/if}" 
@@ -50,6 +59,9 @@
                             {else}
                                 {$arrayListJournees[i].Libelle} - {$arrayListJournees[i].Soustitre2}
                             {/if}
+                        </a>
+                        <a title="{#Telecharger_fichier_ics#}" href="upload_ics.php?Saison={$arrayListJournees[i].Code_saison}&Compet={$arrayListJournees[i].Code_competition}">
+                            <img width="30" src="../img/ics.png">
                         </a>
                     </p>
                 {sectionelse}
@@ -130,11 +142,30 @@
                 <div class="page-header">
                     <h3 class="text-info">{#Autres_journees#}</h3>
                 </div>
+                <div>
+                    {if $Calendar != ''}
+                        <a class="btn btn-success pull-left" target="_blank" title="{#Abonnement_Google_Agenda#}" href="{$Calendar}">
+                            <img width="40" src="../img/gcal.png">
+                            {#Abonnement_Google_Agenda#}
+                        </a>
+                    {/if}
+                    <a class="btn btn-success pull-right" title="{#Telecharger_fichier_ics#}" href="upload_ics.php?Saison={$arrayListJournees[i].Code_saison}&Compet={$arrayListJournees[i].Code_competition}">
+                        <img width="40" src="../img/ics.png"> {#Telecharger_fichier_ics#}
+                    </a>
+                </div>
+                <br>
+                <br>
+                <br>
+                <br>
+
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
                         <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}btn-primary{else}btn-default{/if}" 
                            href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}&Css={$Css}" role="button">
                             {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} à {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
+                        </a>
+                        <a title="{#Telecharger_fichier_ics#}" href="upload_ics.php?J={$arrayListJournees[i].Id_journee}">
+                            <img width="30" src="../img/ics.png">
                         </a>
                     </p>
                 {sectionelse}

@@ -88,8 +88,8 @@ class Details extends MyPage
         
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
+		$this->m_tpl->assign('Calendar', $recordCompetition['Calendar']);
 		$this->m_tpl->assign('recordCompetition', $recordCompetition);
-        
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
 
 		// Chargement des Evénements
