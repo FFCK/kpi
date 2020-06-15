@@ -276,7 +276,14 @@
 							<td colspan=3><br><label for="Plan_eau">{#Plan_eau#}</label><input type="text" name="Plan_eau" value="{$Plan_eau}"/></td>
 						</tr>
 						<tr>
-							<td><label for="Responsable_insc">{#RC#}</label><input type="text" id="Responsable_insc" name="Responsable_insc" value="{$Responsable_insc}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
+							<td>
+								<label for="Responsable_insc">{#RC#} 
+									{section name=i loop=$arrayRC}
+										<a class="rcpick badge pull-right" title="{$arrayRC[i].Prenom|upper} {$arrayRC[i].Nom|upper} ({$arrayRC[i].Matric})">{$arrayRC[i].Ordre}</a>&nbsp;
+									{/section}
+								</label>
+								<input type="text" id="Responsable_insc" name="Responsable_insc" value="{$Responsable_insc}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" />
+							</td>
 							<td colspan=3><label for="Responsable_R1">{#R1#}</label><input type="text" id="Responsable_R1" name="Responsable_R1" value="{$Responsable_R1}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
