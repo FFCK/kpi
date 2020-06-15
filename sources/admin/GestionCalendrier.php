@@ -274,7 +274,7 @@ class GestionCalendrier extends MyPageSecure
 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayQuery);
-		while($row = $result->fetch()) {
+		while ($row = $result->fetch()) {
 			$Checked = '';
 			if ($modeEvenement == '2') {
 				// Mode Association ...
@@ -285,6 +285,8 @@ class GestionCalendrier extends MyPageSecure
 					}
 				}
 			}
+			$row['Date_debut_gcal'] = date("Ymd", strtotime($row['Date_debut']));
+			$row['Date_fin_gcal'] = date("Ymd", strtotime($row['Date_fin']));
 			if (utyGetSession('lang') == 'fr') {
 				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
 				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
@@ -299,6 +301,8 @@ class GestionCalendrier extends MyPageSecure
 				'Nbequipes' => $row['Nbequipes'],
 				'Date_debut' => $row['Date_debut'], 
 				'Date_fin' => $row['Date_fin'], 
+				'Date_debut_gcal' => $row['Date_debut_gcal'], 
+				'Date_fin_gcal' => $row['Date_fin_gcal'], 
 				'Nom' => $row['Nom'], 
 				'Libelle' => $row['Libelle'], 
 				'Type' => $row['Type'], 
