@@ -13,6 +13,7 @@ class GestionInstances extends MyPageSecure
 		$myBdd = new MyBdd();
 		$idJournee = utyGetGet('idJournee', 0);
 		$idJournee = utyGetPost('idJournee', $idJournee);
+		$codeSaison = $myBdd->GetActiveSaison();
 				
 		//Chargement infos journées
 		$sql = "SELECT j.Id, j.Code_competition, j.Type, j.Phase, j.Niveau, j.Date_debut, 
@@ -25,9 +26,24 @@ class GestionInstances extends MyPageSecure
 		$result->execute(array($idJournee));
 		$row = $result->fetch();
 		$this->m_tpl->assign('arrayJournee', $row);
-		
+		$codecompet = $row['Code_competition'];
+
 		$bAutorisation = utyIsAutorisationJournee($idJournee);
 		$this->m_tpl->assign('bAutorisation', $bAutorisation);
+
+		// RC disponibles
+		$arrayRC = array();
+		$sql = "SELECT rc.Matric, rc.Ordre, lc.Nom, lc.Prenom 
+			FROM gickp_Rc rc 
+			LEFT OUTER JOIN gickp_Liste_Coureur lc 
+				ON (rc.Matric = lc.Matric) 
+			WHERE rc.Code_Competition = ?
+			AND rc.Code_saison = ? 
+			ORDER BY rc.Ordre";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($codecompet, $codeSaison));
+		$arrayRC = $result->fetchAll(PDO::FETCH_ASSOC);
+		$this->m_tpl->assign('arrayRC', $arrayRC);
 
 	}
 	

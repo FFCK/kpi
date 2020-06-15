@@ -275,5 +275,10 @@ jq(document).ready(function() {
 			jq("#Arb_nj5").val(nom);
 		}
 	});
+
+	jq('.rcpick').click(function(){
+		var rc = jq(this).attr('title');
+		jq("#Responsable_insc").val(rc);
+	});
 	
 });
