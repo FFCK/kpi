@@ -98,12 +98,8 @@
 						<td>
 							{if $profile == 1}
 								<a href="../upload_ics.php">
-									<img align="absbottom" height="20" src="../img/b_sbrowse.png" title="iCalendar">
+									<img align="absbottom" height="20" src="../img/ics.png" title="iCalendar">
 									ICS
-								</a>
-								&nbsp;
-								<a target="_blank" href="https://www.google.com/calendar/render?action=TEMPLATE&text=rendez%20vous&dates=20200729T060000Z/20200731T160000Z&ctz=Europe/Paris&details=https%3A%2F%2Fwww.kayak-polo.info%2Fkpdetails.php&location=paris,%20france">
-									<img border="0" src="https://www.google.com/calendar/images/ext/gc_button1_fr.gif">
 								</a>
 							{/if}
 						</td>
@@ -209,6 +205,12 @@
 												<a href="#" onclick="ParamJournee({$arrayJournees[i].Id});"><img height="16" src="../img/glyphicons-31-pencil.png" alt="{#Editer#}" title="{#Editer#}" ></a>
 												<a href="#" onclick="duplicate({$arrayJournees[i].Id});"><img height="20" src="../img/glyphicons-511-duplicate.png" alt="{#Dupliquer#}" title="{#Duppliquer#}" ></a>
 												<a href='GestionJournee.php?idJournee={$arrayJournees[i].Id}'><img height="20" src="../img/b_match.png" alt="{#Matchs#}" title="{#Matchs#}" ></a>
+												{if $profile == 1}
+													<a target="_blank" title="Gcal event"
+														href="https://www.google.com/calendar/render?action=TEMPLATE&text={$arrayJournees[i].Nom}+({$arrayJournees[i].Lieu}+-+{$arrayJournees[i].Departement})&dates={$arrayJournees[i].Date_debut_gcal}T060000Z/{$arrayJournees[i].Date_fin_gcal}T170000Z&ctz=Europe/Paris&details=https%3A%2F%2Fwww.kayak-polo.info%2Fkpdetails.php%3FJ%3D{$arrayJournees[i].Id}&location=paris,%20france">
+														<img height="20" src="../img/gcal.png">
+													</a>
+												{/if}
 											</td>
                                             <td>{$arrayJournees[i].Code_competition} - 
                                                 <span class='directInput' data-type="text" data-target="Phase" data-id="{$arrayJournees[i].Id}" data-value="{$arrayJournees[i].Phase}">{$arrayJournees[i].Phase}</span>

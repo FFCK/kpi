@@ -17,6 +17,7 @@ if ($journee > 0) {
         FROM gickp_Journees j, gickp_Competitions c 
         WHERE j.Code_competition = c.Code 
         AND j.Code_saison = c.Code_saison 
+        AND j.Publication = 'O' 
         AND j.Id = ? ";
     $result = $myBdd->pdo->prepare($sql);
     $result->execute(array($journee));
@@ -52,8 +53,8 @@ if ($journee > 0) {
     $ics .= "VERSION:2.0\n";
     $ics .= "PRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
     $ics .= "BEGIN:VEVENT\n";
-    $ics .= "DTSTART;VALUE=DATE:".date('Ymd',strtotime($datedebut))."T060000Z\n";
-    $ics .= "DTEND;VALUE=DATE:".date('Ymd',strtotime($datefin))."T170000Z\n";
+    $ics .= "DTSTART:".date('Ymd',strtotime($datedebut))."\n";
+    $ics .= "DTEND:".date('Ymd',strtotime($datefin))."T170000Z\n";
     $ics .= "SUMMARY:".$title."\n";
     $ics .= "LOCATION:".$place."\n";
     $ics .= "DESCRIPTION:".$url."\n";
@@ -71,6 +72,7 @@ if ($journee > 0) {
         fputs($fp, $ics);
         die();
     }
+
 } elseif ($Compet != '' && $Saison > 0) {
     $myBdd = new MyBdd();
     $sql = "SELECT j.Code_competition, j.Code_saison, j.Id, j.Nom, j.Date_debut, 
@@ -78,6 +80,7 @@ if ($journee > 0) {
         FROM gickp_Journees j, gickp_Competitions c 
         WHERE j.Code_competition = c.Code 
         AND j.Code_saison = c.Code_saison 
+        AND j.Publication = 'O' 
         AND j.Code_competition = ? 
         AND j.Code_saison = ? ";
     $result = $myBdd->pdo->prepare($sql);
@@ -116,8 +119,8 @@ if ($journee > 0) {
 
         //Evenèment au format ICS
         $ics .= "BEGIN:VEVENT\n";
-        $ics .= "DTSTART;VALUE=DATE:".date('Ymd',strtotime($datedebut))."T060000Z\n";
-        $ics .= "DTEND;VALUE=DATE:".date('Ymd',strtotime($datefin))."T170000Z\n";
+        $ics .= "DTSTART:".date('Ymd',strtotime($datedebut))."\n";
+        $ics .= "DTEND:".date('Ymd',strtotime($datefin))."T170000Z\n";
         $ics .= "SUMMARY:".$title."\n";
         $ics .= "LOCATION:".$place."\n";
         $ics .= "DESCRIPTION:".$url."\n";
