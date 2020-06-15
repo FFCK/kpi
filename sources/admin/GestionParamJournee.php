@@ -12,9 +12,11 @@ class GestionParamJournee extends MyPageSecure
 
 	function Load() 
 	{
+		$myBdd = $this->myBdd;
 		$idJournee = utyGetSession('idJournee', 0);
 		$this->m_tpl->assign('idJournee', $idJournee);
-		$myBdd = $this->myBdd;
+		$codecompet = utyGetSession('Code_competition', '');
+		$codeSaison = $myBdd->GetActiveSaison();
 
 		if ($idJournee != 0) {		
 			// Liste ...
@@ -36,6 +38,8 @@ class GestionParamJournee extends MyPageSecure
 					$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
 					$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
 				}
+				$codecompet = $row['Code_competition'];
+				$codeSaison = $row['Code_saison'];
 				
 				$this->m_tpl->assign('Num_Journee', $row['Id']);
 				$this->m_tpl->assign('J_saison', $row['Code_saison']);
@@ -88,15 +92,21 @@ class GestionParamJournee extends MyPageSecure
 			$this->m_tpl->assign('J_competition', utyGetSession('codeCompet'));
 		}
 		
-		//Liste des codes compétition
-		$arrayCompetition = array();
-		$sql = "SELECT c.*, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
-			WHERE c.Code_ref = g.Groupe 
-			GROUP BY c.Code 
-			ORDER BY g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
+		// RC disponibles
+		$arrayRC = array();
+		$sql = "SELECT rc.Matric, rc.Ordre, lc.Nom, lc.Prenom 
+			FROM gickp_Rc rc 
+			LEFT OUTER JOIN gickp_Liste_Coureur lc 
+				ON (rc.Matric = lc.Matric) 
+			WHERE rc.Code_Competition = ?
+			AND rc.Code_saison = ? 
+			ORDER BY rc.Ordre DESC";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($idJournee));
+		$result->execute(array($codecompet, $codeSaison));
+		$arrayRC = $result->fetchAll(PDO::FETCH_ASSOC);
+		$this->m_tpl->assign('arrayRC', $arrayRC);
+		
+		//Liste des codes compétition
         $i = -1;
         $j = '';
         $label = $myBdd->getSections();

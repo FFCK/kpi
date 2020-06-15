@@ -259,5 +259,22 @@ jq(document).ready(function() {
 		});
 
 	});
+
+	jq('.rcpick').click(function(){
+		var rc = jq(this).attr('title');
+		jq('#inputZone2 + br').remove();
+		jq('#inputZone2').remove();
+		jq('#inputZone2valid').remove();
+		jq('#inputZone2annul').remove();
+		jq('#inputZone2vid').remove();
+
+		jq('span[data-target="Responsable_insc"]').click();
+		jq("#inputZone2valid").attr('data-id', dataid);
+		jq("#inputZone2valid").attr('data-target', jq('span[data-target="Responsable_insc"]').attr('data-target'));
+		jq("#inputZone2valid").attr('data-value', rc);
+		jq("#inputZone2").val(rc);
+	});
+	
+
 });
 

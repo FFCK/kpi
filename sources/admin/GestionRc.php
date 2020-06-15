@@ -20,8 +20,9 @@ class GestionRc extends MyPageSecure
         } else {
             $lang = $langue['fr'];
         }
-        
-		$filtreCompet = utyGetGet('Compet', '');
+		
+		$filtreCompet = utyGetPost('Code_competition', '');
+		$filtreCompet = utyGetGet('Compet', $filtreCompet);
 		$filtreCompet == '' ? $codeCompet = utyGetSession('codeCompet', -1) : $codeCompet = $filtreCompet;
 		$codeSaison = $myBdd->GetActiveSaison();
         

@@ -29,8 +29,13 @@
             {/if}
 
 			<div class='blocMiddle centre'>
-                {#RC#} : 
+                <b>{#RC#}</b> : 
                     <span class='{$directInput} arbitre' data-type="text" data-target="Responsable_insc" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Responsable_insc}">{$arrayJournee.Responsable_insc}</span>
+                    <br>
+                    {section name=i loop=$arrayRC}
+                        <a class="rcpick badge" title="{$arrayRC[i].Prenom|upper} {$arrayRC[i].Nom|upper} ({$arrayRC[i].Matric})">{$arrayRC[i].Ordre}</a>&nbsp;
+                    {/section}
+
                 <br />
                 <br />
                 <table class="tableau tableau60">
