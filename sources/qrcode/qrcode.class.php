@@ -2,9 +2,9 @@
 /*
  * Generateur de QRCode
  * (QR Code is registered trademark of DENSO WAVE INCORPORATED | http://www.denso-wave.com/qrcode/)
- * Fortement inspiré de "QRcode image PHP scripts version 0.50g (C)2000-2005,Y.Swetake"
+ * Fortement inspirï¿½ de "QRcode image PHP scripts version 0.50g (C)2000-2005,Y.Swetake"
  * 
- * Distribué sous la licence LGPL. 
+ * Distribuï¿½ sous la licence LGPL. 
  *
  * @author		Laurent MINGUET <webmaster@spipu.net>
  * @version		0.99
@@ -16,8 +16,8 @@ if (!defined('__CLASS_QRCODE__'))
 	
 	class QRcode
 	{
-		private $version_mx	= 40;		// numero de version maximal autorisé
-		private $type		= 'bin';	// type de donnée
+		private $version_mx	= 40;		// numero de version maximal autorisï¿½
+		private $type		= 'bin';	// type de donnï¿½e
 		private $level		= 'L';		// ECC
 		private $value		= '';		// valeur a encoder
 		private $length		= 0;		// taille de la valeur
@@ -26,8 +26,8 @@ if (!defined('__CLASS_QRCODE__'))
 		private $qr_size	= 0;		// dimension du QRcode
 		
 		private $data_bit 	= array();	// nb de bit de chacune des valeurs
-		private $data_val 	= array();	// liste des valeurs de bit différents
-		private $data_word 	= array();	// liste des valeurs tout ramené à 8bit
+		private $data_val 	= array();	// liste des valeurs de bit diffï¿½rents
+		private $data_word 	= array();	// liste des valeurs tout ramenï¿½ ï¿½ 8bit
 		private $data_cur 	= 0;		// position courante
 		private $data_num 	= 0;		// position de la dimension
 		private $data_bits	= 0;		// nom de bit au total
@@ -84,7 +84,7 @@ if (!defined('__CLASS_QRCODE__'))
 		}
 			
 		/**
-		 * permet de recuperer la taille du QRcode (le nombre de case de côté)
+		 * permet de recuperer la taille du QRcode (le nombre de case de cï¿½tï¿½)
 		 *
 		 * @return	int	size of qrcode
 		 */
@@ -144,7 +144,7 @@ if (!defined('__CLASS_QRCODE__'))
 		}
 		
 		/**
-		 * permet d'afficher le QRcode au format HTML, à utiliser avec un style CSS
+		 * permet d'afficher le QRcode au format HTML, ï¿½ utiliser avec un style CSS
 		 *
 		 * @return	boolean true;
 		 */
@@ -176,13 +176,13 @@ if (!defined('__CLASS_QRCODE__'))
 		}
 		
 		/*
-		 * permet d'obtenir une image PNG
+		 * permet d'afficher une image PNG
 		 *
 		 * @param	float	taille du qrcode
 		 * @param	array	couleur du background (R,V,B)
 		 * @param	array	couleur des cases et du border (R,V,B)
 		 * @param	string	nom du fichier de sortie. si null : sortie directe
-		 * @param	integer	qualité de 0 (aucune compression) a 9
+		 * @param	integer	qualitï¿½ de 0 (aucune compression) a 9
 		 * @return	boolean	true;
 		 */
 		public function displayPNG($w=100, $background=array(255,255,255), $color=array(0,0,0), $filename = null, $quality = 0)
@@ -222,6 +222,74 @@ if (!defined('__CLASS_QRCODE__'))
 			}
 			imagedestroy($im);
 			return true;
+		}
+		
+		/*
+		 * permet d'obtenir une image PNG sans l'afficher
+		 *
+		 * @param	float	taille du qrcode
+		 * @param	array	couleur du background (R,V,B)
+		 * @param	array	couleur des cases et du border (R,V,B)
+		 * @param	string	nom du fichier de sortie. si null : sortie directe
+		 * @param	integer	qualitï¿½ de 0 (aucune compression) a 9
+		 * @return	boolean	true;
+		 */
+		public function createPNG($w=100, $background=array(255,255,255), $color=array(0,0,0), $filename = null, $quality = 0)
+		{
+			if ($this->disable_border)
+			{
+				$s_min = 4;
+				$s_max = $this->qr_size-4;
+			}
+			else
+			{
+				$s_min = 0;
+				$s_max = $this->qr_size;
+			}
+			$size = $w;
+			$s = $size/($s_max-$s_min);
+			 
+			// rectangle de fond
+			$im = imagecreatetruecolor($size,$size);
+			$c_case = imagecolorallocate($im,$color[0],$color[1],$color[2]);
+			$c_back = imagecolorallocate($im,$background[0],$background[1],$background[2]);
+			imagefilledrectangle($im,0,0,$size,$size,$c_back);
+		 
+			for($j=$s_min; $j<$s_max; $j++)
+				for($i=$s_min; $i<$s_max; $i++)
+					if ($this->final[$i + $j*$this->qr_size+1])
+						imagefilledrectangle($im,($i-$s_min)*$s,($j-$s_min)*$s,($i-$s_min+1)*$s-1,($j-$s_min+1)*$s-1,$c_case);
+		 
+			return $im;
+		}
+
+		public function addLogo($QR, $logo = FALSE, $rate = .33)
+		{
+			if ($logo !== FALSE){
+				$logo = imagecreatefromstring(file_get_contents($logo));
+	
+				$QR_width = imagesx($QR);
+				$QR_height = imagesy($QR);
+				
+				$logo_width = imagesx($logo);
+				$logo_height = imagesy($logo);
+				
+				// Scale logo to fit in the QR Code
+				$logo_qr_width = $QR_width * $rate;
+				$scale = $logo_width/$logo_qr_width;
+				$logo_qr_height = $logo_height/$scale;
+				$logo_x = ($QR_width - $logo_qr_width) / 2;
+				$logo_y = ($QR_height - $logo_qr_height) / 2;
+				
+				// $logo_qr_width = $QR_width/3;
+				// $scale = $logo_width/$logo_qr_width;
+				// $logo_qr_height = $logo_height/$scale;
+				// $logo_y = ($QR_height - $logo_qr_height) /2;
+				
+				imagecopyresampled($QR, $logo, $logo_x, $logo_y, 0, 0, $logo_qr_width, $logo_qr_height, $logo_width, $logo_height);
+			}
+
+			return $QR;
 		}
 		
 		private function ERROR($msg)

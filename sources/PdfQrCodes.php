@@ -162,19 +162,23 @@ class PdfQrCodes extends MyPage {
         $pdf->Cell(273, 6, "Liens - Links", 0, 1, 'C');
         $pdf->Ln(20);
 
-        $pdf->Text(75, 85, 'Matchs - Games');
+        $pdf->Text(75, 80, 'Matchs - Games');
         // QRCode Matchs
-        $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison . '&lang=en', 'L'); // error level : L, M, Q, H
+        $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
         //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-        $qrcode->displayFPDF($pdf, 75, 90, 40);
-
-
-        $pdf->Text(170, 85, 'Classement - Standing');
+        $qrcode->displayFPDF($pdf, 70, 85, 50);
+        $pdf->Image('img/CNAKPI_small.jpg', 83, 105, 0, 9, 'jpg', "https://www.kayak-polo.info");
+        
+        
+        $pdf->Text(170, 80, 'Progression - Progress');
         // QRCode Classements
-        $qrcode2 = new QRcode('https://www.kayak-polo.info/kpclassements.php?Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison . '&lang=en', 'L'); // error level : L, M, Q, H
+        $qrcode2 = new QRcode('https://www.kayak-polo.info/kpchart.php?Group=' . $arrayCompetition['Code_ref'] . '&Compet=' . $arrayCompetition['Code'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
         //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-        $qrcode2->displayFPDF($pdf, 175, 90, 40);
+        $qrcode2->displayFPDF($pdf, 170, 85, 50);
+        $pdf->Image('img/CNAKPI_small.jpg', 183, 105, 0, 9, 'jpg', "https://www.kayak-polo.info");
 
+        // $qrcode2->displayHTML();
+        // die();
         $pdf->Output('Links.pdf', 'I');
     }
 
