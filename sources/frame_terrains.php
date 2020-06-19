@@ -145,7 +145,7 @@ class Matchs extends MyPage
                 FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
                 WHERE ej.Id_journee = j.Id 
                 AND ej.Id_evenement = ?
-                AND j.Code_competition In ($listCompet) 
+                AND j.Code_competition IN ($listCompet) 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
@@ -156,7 +156,7 @@ class Matchs extends MyPage
         } else {
             $sql = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
                 FROM gickp_Journees j, gickp_Competitions c 
-                AND j.Code_competition In ($listCompet) 
+                WHERE j.Code_competition IN ($listCompet) 
                 AND j.Code_saison = ?  
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
