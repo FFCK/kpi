@@ -29,7 +29,6 @@ class Classement extends MyPage
 			$this->m_tpl->assign('group', $group);
         }
 
-        
         $Round = utyGetGet('Round', '*');
 		$this->m_tpl->assign('Round', $Round);
 
@@ -39,11 +38,11 @@ class Classement extends MyPage
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
         
         //Logo
-		if($codeCompet != -1)
-		{
+		if ($codeCompet != -1) {
 			$logo = "img/logo/".$codeSaison.'-'.$codeCompet.'.jpg';
-			if(file_exists($logo))
+			if (file_exists($logo)) {
 				$this->m_tpl->assign('logo', $logo);
+			}
 		}
 
 		// Chargement des Equipes ...

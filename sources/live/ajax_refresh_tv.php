@@ -1,7 +1,7 @@
 <?php
 include_once('../commun/MyBdd.php');
 
-$voie = (int) $_GET['voie'];
+$voie = (int) $_POST['voie'];
 
 $myBdd = new MyBdd();
 

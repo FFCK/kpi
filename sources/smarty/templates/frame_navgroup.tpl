@@ -40,6 +40,10 @@
                 href="frame_stats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
                     {#Stats#}
             </a>
+            <a class="btn {if $page == 'Qr'}btn-primary{else}btn-default actif{/if}"
+                href="frame_qr.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">
+                    <i class="fa fa-qrcode"></i>
+            </a>
             <div class="pull-right">
                 {if $page == 'Matchs'}
                     {if $next}

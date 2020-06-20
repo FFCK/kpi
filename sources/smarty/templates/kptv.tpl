@@ -159,6 +159,7 @@
                             <option value="frame_team" {if $filtrePres == 'frame_team'}selected{/if}>Team details</option>
                             <option value="frame_stats" {if $filtrePres == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres == 'frame_classement'}selected{/if}>Ranking</option>
+                            <option value="frame_qr" {if $filtrePres == 'frame_qr'}selected{/if}>QrCodes</option>
                         </optgroup>
                         <optgroup label="Website / Smartphone">
                             <option value="frame_matchs" {if $filtrePres == 'frame_matchs'}selected{/if}>Games</option>
@@ -381,6 +382,7 @@
                             <option value="frame_team" {if $filtrePres2 == 'frame_team'}selected{/if}>Team details</option>
                             <option value="frame_stats" {if $filtrePres2 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres2 == 'frame_classement'}selected{/if}>Ranking</option>
+                            <option value="frame_qr" {if $filtrePres2 == 'frame_qr'}selected{/if}>QrCodes</option>
                         </optgroup>
 
                             <option value="force_cache_match" {if $filtrePres2 == 'force_cache_match'}selected{/if}>Force cache match</option>
@@ -562,6 +564,7 @@
                             <option value="frame_team" {if $filtrePres3 == 'frame_team'}selected{/if}>Team details</option>
                           <option value="frame_stats" {if $filtrePres3 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres3 == 'frame_classement'}selected{/if}>Ranking</option>
+                            <option value="frame_qr" {if $filtrePres3 == 'frame_qr'}selected{/if}>QrCodes</option>
                         </optgroup>
 
                             <option value="force_cache_match" {if $filtrePres3 == 'force_cache_match'}selected{/if}>Force cache match</option>
@@ -743,6 +746,7 @@
                             <option value="frame_team" {if $filtrePres4 == 'frame_team'}selected{/if}>Team details</option>
                             <option value="frame_stats" {if $filtrePres4 == 'frame_stats'}selected{/if}>Stats</option>
                             <option value="frame_classement" {if $filtrePres4 == 'frame_classement'}selected{/if}>Ranking</option>
+                            <option value="frame_qr" {if $filtrePres4 == 'frame_qr'}selected{/if}>QrCodes</option>
                         </optgroup>
 
                             <option value="force_cache_match" {if $filtrePres4 == 'force_cache_match'}selected{/if}>Force cache match</option>

@@ -247,6 +247,13 @@ jq(document).ready(function(){
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
+            case 'frame_qr':
+                url = 'frame_qr.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val()  
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
             case 'frame_matchs':
                 url = 'frame_matchs.php?event=' + jq('#codeEvt').val()
                         + '&lang=en&Saison=' + jq('#saison').val() 
@@ -503,7 +510,14 @@ jq(document).ready(function(){
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel2').val(), url, showUrl);
                 break;
-                
+            case 'frame_qr':
+                url = 'frame_qr.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val()  
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+                    
             case 'force_cache_match':
                 url = 'live/force_cache_match.php?match=' + jq('#match2').val();
                 Go_ajax(url);
@@ -736,7 +750,14 @@ jq(document).ready(function(){
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel3').val(), url, showUrl);
                 break;
-                
+            case 'frame_qr':
+                url = 'frame_qr.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val()  
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+                    
             case 'force_cache_match':
                 url = 'live/force_cache_match.php?match=' + jq('#match3').val();
                 Go_ajax(url);
@@ -969,7 +990,14 @@ jq(document).ready(function(){
                         + '&Css=' + css;
                 ChangeVoie(jq('#channel4').val(), url, showUrl);
                 break;
-                
+            case 'frame_qr':
+                url = 'frame_qr.php?event=' + jq('#codeEvt').val()
+                        + '&lang=en&Saison=' + jq('#saison').val()  
+                        + '&Compet=' + jq('#competition').val() 
+                        + '&Css=' + css;
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+                    
             case 'force_cache_match':
                 url = 'live/force_cache_match.php?match=' + jq('#match4').val();
                 Go_ajax(url);

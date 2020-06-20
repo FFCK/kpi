@@ -21,7 +21,7 @@ var theCurrentVoieUrl = '';
 	{
 		var param;
 		param = "voie="+theCurrentVoie;
-		$.ajax({ type: "GET", url: "ajax_refresh_voie.php", dataType: "html", data: param, cache: false, 
+		$.ajax({ type: "POST", url: "ajax_refresh_voie.php", dataType: "html", data: param, cache: false, 
 			success: function(urlCurrent) {
 				if (urlCurrent.length <= 0) return;
 				if (theCurrentVoieUrl.lastIndexOf(urlCurrent) == -1)
@@ -40,7 +40,7 @@ var theCurrentVoieUrl = '';
 		
 	function RefreshScene(voie, intervalle)
 	{
-		$.get(
+		$.post(
 			"ajax_refresh_scene.php",
 			{ voie: voie },
 			function(data) {
@@ -74,7 +74,7 @@ var theCurrentVoieUrl = '';
 		if(showUrl > 0){
 			$('#showUrl' + showUrl).val(url + "&voie="+voie);
 		} else {
-			$.ajax({ type: "GET", url: "ajax_change_voie.php", dataType: "html", data: param, cache: false, 
+			$.ajax({ type: "POST", url: "ajax_change_voie.php", dataType: "html", data: param, cache: false, 
 						success: function(htmlData) {
 								alerte(htmlData);
 						}
