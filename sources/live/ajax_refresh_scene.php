@@ -18,7 +18,7 @@ $sql = "SELECT *
     LIMIT 1 ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($voie, $voie_max));
-$rTV = $result->fetch();
+$rTV = $result->fetch(PDO::FETCH_ASSOC);
 
 if (!isset($rTV['Url']) || $rTV['Url'] == '') {
     $sql = "SELECT * 
@@ -28,7 +28,7 @@ if (!isset($rTV['Url']) || $rTV['Url'] == '') {
         LIMIT 1 ";
     $result = $myBdd->pdo->prepare($sql);
     $result->execute(array($voie_min));
-    $rTV = $result->fetch();
+    $rTV = $result->fetch(PDO::FETCH_ASSOC);
 }
 
 header('Content-Type: application/json');

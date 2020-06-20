@@ -263,6 +263,14 @@ if (!defined('__CLASS_QRCODE__'))
 			return $im;
 		}
 
+		/**
+		 * Add logo inside QRCode
+		 *
+		 * @param [type] $QR
+		 * @param boolean $logo
+		 * @param float $rate
+		 * @return void
+		 */
 		public function addLogo($QR, $logo = FALSE, $rate = .33)
 		{
 			if ($logo !== FALSE){
@@ -291,6 +299,30 @@ if (!defined('__CLASS_QRCODE__'))
 
 			return $QR;
 		}
+		
+		/**
+		 * get Base64 encoded image url
+		 *
+		 * @param [type] $QR
+		 * @return void
+		 */
+		public function getBase64Url($QR)
+		{
+			// header('Content-type: image/png');
+			$fileType = 'image/png';
+			//capture de l'image
+			ob_start();
+				imagepng($QR);
+				$image_data = ob_get_contents();
+			ob_end_clean();
+			//encodage base64
+			$data64 = base64_encode($image_data);
+			//url
+			$dataUrl = 'data:' . $fileType . ';base64,' . $data64;
+
+			return $dataUrl;
+		}
+
 		
 		private function ERROR($msg)
 		{

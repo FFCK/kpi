@@ -129,25 +129,34 @@ class PdfQrCodes extends MyPage {
             $pdf->SetAutoPageBreak(true, 15);
         }
         // Affichage
-        // Bandeau
         if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+            // Bandeau
             $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
+            if ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+                $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
+                $logo = $img['image'];
+            } else {
+                $logo = 'img/CNAKPI_small.jpg';
+            }
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            // KPI + Logo    
             $pdf->Image('img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI
+            $logo = $img['image'];
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+            // KPI
             $pdf->Image('img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-            // Logo
+            $logo = 'img/CNAKPI_small.jpg';
         } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            // Logo
             $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+            $logo = $img['image'];
         }
-        // Sponsor
         if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+            // Sponsor
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
         }
@@ -165,20 +174,17 @@ class PdfQrCodes extends MyPage {
         $pdf->Text(75, 80, 'Matchs - Games');
         // QRCode Matchs
         $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
-        //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
+        // $qrcode = $qrcode->addLogo($qrcode, $logo, .3);
         $qrcode->displayFPDF($pdf, 70, 85, 50);
-        $pdf->Image('img/CNAKPI_small.jpg', 83, 105, 0, 9, 'jpg', "https://www.kayak-polo.info");
+        $pdf->Image($logo, 83, 105, 0, 9, 'jpg', "https://www.kayak-polo.info");
         
         
         $pdf->Text(170, 80, 'Progression - Progress');
-        // QRCode Classements
+        // QRCode Progression
         $qrcode2 = new QRcode('https://www.kayak-polo.info/kpchart.php?Group=' . $arrayCompetition['Code_ref'] . '&Compet=' . $arrayCompetition['Code'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
-        //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
         $qrcode2->displayFPDF($pdf, 170, 85, 50);
-        $pdf->Image('img/CNAKPI_small.jpg', 183, 105, 0, 9, 'jpg', "https://www.kayak-polo.info");
+        $pdf->Image($logo, 183, 105, 0, 9, 'jpg', "https://www.kayak-polo.info");
 
-        // $qrcode2->displayHTML();
-        // die();
         $pdf->Output('Links.pdf', 'I');
     }
 
