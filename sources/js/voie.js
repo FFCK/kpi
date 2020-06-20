@@ -23,7 +23,7 @@ var theCurrentVoieUrl = '';
 		var param;
 		param = "voie="+theCurrentVoie;
 		$.ajax({ 
-			type: "GET", 
+			type: "POST", 
 			url: "./live/ajax_refresh_voie.php", 
 			dataType: "html", 
 			data: param, 
@@ -81,7 +81,7 @@ var theCurrentVoieUrl = '';
 			$('#showUrl' + showUrl).val(url + "&voie="+voie);
 		} else {
 			$.ajax({ 
-				type: "GET", 
+				type: "POST", 
 				url: "./live/ajax_change_voie.php", 
 				dataType: "html", 
 				data: param, 

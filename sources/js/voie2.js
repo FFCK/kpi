@@ -18,7 +18,7 @@ function RefreshVoie()
 	var param;
 	param = "voie="+theCurrentVoie;
 //	alert("./live/ajax_refresh_voie.php?"+param+" -- "+theCurrentVoieUrl);
-	$.ajax({ type: "GET", url: "./live/ajax_refresh_voie.php", dataType: "html", data: param, cache: false, 
+	$.ajax({ type: "POST", url: "./live/ajax_refresh_voie.php", dataType: "html", data: param, cache: false, 
                 success: function(urlCurrent) {
 					if (urlCurrent.length <= 0) return;
 					if (theCurrentVoieUrl.lastIndexOf(urlCurrent) == -1)
@@ -52,7 +52,7 @@ function ChangeVoie(voie, url, showUrl=0)
     if(showUrl > 0){
         $('#showUrl' + showUrl).val(url + "&voie="+voie);
     } else {
-        $.ajax({ type: "GET", url: "./live/ajax_change_voie.php", dataType: "html", data: param, cache: false, 
+        $.ajax({ type: "POST", url: "./live/ajax_change_voie.php", dataType: "html", data: param, cache: false, 
                     success: function(htmlData) {
                             alerte(htmlData);
                     }

@@ -110,7 +110,7 @@ function Go_raz()
 function Go(param)
 {
 //    alert("ajax_change_tv.php?"+param);
-    $.ajax({ type: "GET", url: "ajax_change_tv.php", dataType: "html", data: param, cache: false, 
+    $.ajax({ type: "POST", url: "ajax_change_tv.php", dataType: "html", data: param, cache: false, 
                 success: function(htmlData) {
 						alert(htmlData);
 				}
