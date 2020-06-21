@@ -1,4 +1,4 @@
-// jq = jQuery.noConflict();
+jq = jQuery.noConflict();
 var listVal;
 jq(document).ready(function(){
     table = jq('#tableMatchs_fr').DataTable( {
