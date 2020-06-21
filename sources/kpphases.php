@@ -41,7 +41,7 @@ class Phases extends MyPage
         $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
 		$this->m_tpl->assign('group', $group);
         
-		if ($event > 0 && $codeCompet == '*') {
+		if ($codeCompet == '*') {
             $codeCompet = $arrayNavGroup[0]['Code'];
             $_SESSION['codeCompet'] = $codeCompet;
             $this->m_tpl->assign('codeCompet', $codeCompet);
