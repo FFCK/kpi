@@ -36,6 +36,12 @@ class Phases extends MyPage
         $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
 		$this->m_tpl->assign('group', $group);
         
+		if ($codeCompet == '*') {
+            $codeCompet = $arrayNavGroup[0]['Code'];
+            $_SESSION['codeCompet'] = $codeCompet;
+            $this->m_tpl->assign('codeCompet', $codeCompet);
+        }
+
         $Round = utyGetGet('Round', '*');
 		$this->m_tpl->assign('Round', $Round);
         $Round = str_replace('*', '%', $Round);

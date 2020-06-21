@@ -104,19 +104,53 @@
             </div>
             <br>
             <br>
-            <div class="centre">
-                <label><b>{#Arb_nj#}</b></label>
-                <br>
-                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj1" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj1}">{$arrayJournee.Arb_nj1}</span>
-                <br>
-                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj2" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj2}">{$arrayJournee.Arb_nj2}</span>
-                <br>
-                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj3" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj3}">{$arrayJournee.Arb_nj3}</span>
-                <br>
-                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj4" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj4}">{$arrayJournee.Arb_nj4}</span>
-                <br>
-                <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj5" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj5}">{$arrayJournee.Arb_nj5}</span>
-            </div>
+            <table class="tableau tableau60">
+                <thead>
+                    <tr>
+                        <th colspan="2">{#Arb_nj#}</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <th>{#Arb_nj#}</th>
+                    <td>
+                        <br />
+                        <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj1" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj1}">{$arrayJournee.Arb_nj1}</span>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <th>{#Arb_nj#}</th>
+                    <td>
+                        <br />
+                        <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj2" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj2}">{$arrayJournee.Arb_nj2}</span>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <th>{#Arb_nj#}</th>
+                    <td>
+                        <br />
+                        <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj3" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj3}">{$arrayJournee.Arb_nj3}</span>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <th>{#Arb_nj#}</th>
+                    <td>
+                        <br />
+                        <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj4" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj4}">{$arrayJournee.Arb_nj4}</span>
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <th>{#Arb_nj#}</th>
+                    <td>
+                        <br />
+                        <span class='{$directInput} arbitre' data-type="text" data-target="Arb_nj5" data-id="{$arrayJournee.Id}" data-value="{$arrayJournee.Arb_nj5}">{$arrayJournee.Arb_nj5}</span>
+                        <br />
+                    </td>
+                </tr>
+            </table>
 		</form>			
 				
 	</div>	  	   
