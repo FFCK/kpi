@@ -69,9 +69,12 @@ class Chart extends MyPage
         $arrayJournee = array();
         $arrayMatchs = array();
 
-		// Par défaut type Championnat et compétition non internationale...
-		$typeClt = $recordCompetition['Code_typeclt'];
-        
+		// Si type Championnat => frame_phases
+        $typeClt = $recordCompetition['Code_typeclt'];
+        if ($typeClt == 'CHPT') {
+            header('location: kpphases.php?' . $_SERVER['QUERY_STRING']);
+        }
+
         $journee = 0;
 		
 		if (strlen($codeCompet) > 0) {
