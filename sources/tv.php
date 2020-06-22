@@ -100,7 +100,7 @@ class TV
     {
         // parent::Script();
 		$voie = $this->GetParamInt('voie', 0);
-		$intervalle = $this->GetParamInt('intervalle', 3000);
+		$intervalle = $this->GetParamInt('intervalle', 2000);
 
         ?>
 		<script src="js/jquery-3.5.1.min.js"></script>
