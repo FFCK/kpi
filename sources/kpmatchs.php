@@ -9,7 +9,7 @@ class Matchs extends MyPage
 {	
 	function Load()
 	{
-		$myBdd = new MyBdd();
+        $myBdd = new MyBdd();
 		$codeCompetGroup = utyGetSession('codeCompetGroup', 'N1H');
 		$codeCompetGroup = utyGetPost('Group', $codeCompetGroup);
 		$codeCompetGroup = utyGetGet('Group', $codeCompetGroup);
@@ -65,7 +65,7 @@ class Matchs extends MyPage
 		$event = utyGetPost('event', $event);
         $event = utyGetGet('event', $event);
 		$this->m_tpl->assign('event', $event);
-        if ($event != $_SESSION['event']) {
+        if (!isset($_SESSION['event']) || $event != $_SESSION['event']) {
             $codeCompet = '*';
             $_SESSION['idSelCompet'] = $codeCompet;
             $this->m_tpl->assign('codeCompet', $codeCompet);
