@@ -405,16 +405,26 @@ class MyBdd
 	{
 		$debutTraitement = time();
 		$section = "";
-		$nbLicenciés = 0;
+		$nbLicencies = 0;
 		$nbArbitres = 0;
-        $nbSurclassements = 0;
+		$nbSurclassements = 0;
+		$count_licencies = 0;
+		$array_licencies = array();
+		$count_arbitres = 0;
+		$array_arbitres = array();
+		$count_surclassements = 0;
+		$array_surclassements = array();
+		$nbReq1 = 0;
+		$nbReq2 = 0;
+		$nbReq3 = 0;
+
 		$url = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce?saison=" . date('Y');
         $newfile = "pce1.pce";
         
         if (!$header = get_web_page($url)) {
             array_push($this->m_arrayinfo, "Ouverture impossible du fichier distant");
         }
-        if(!file_put_contents($newfile, $header['content'])) {
+        if (!file_put_contents($newfile, $header['content'])) {
             array_push($this->m_arrayinfo, "Ecriture impossible du fichier local");
         }
                 
@@ -426,20 +436,7 @@ class MyBdd
 		}	  
 		
 		array_push($this->m_arrayinfo, "Importation du fichier PCE");
-
-		$sql_licencies = "REPLACE INTO gickp_Liste_Coureur VALUES (
-			?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
-		$result_licencies = $this->pdo->prepare($sql_licencies);
 	
-		$sql_juges = "REPLACE INTO gickp_Arbitre VALUES (
-			?,?,?,?,?,?,?,?,?)";
-		$result_juges = $this->pdo->prepare($sql_juges);
-				   
-		$sql_surclassements = "REPLACE INTO gickp_Surclassements VALUES (
-			?,?,?,?)";
-		$result_surclassements = $this->pdo->prepare($sql_surclassements);
-		
-
 		while (!feof($fp)) {
 			$buffer = trim( fgets($fp, BUFFER_LENGTH) );	
 			if (strlen($buffer) == 0)
@@ -457,28 +454,70 @@ class MyBdd
 			}							
 					
 			if (strcasecmp($section, "licencies") == 0) {
-				$this->ImportPCE_Licencies($buffer, $result_licencies);
-				$nbLicenciés++;
+				$temp = $this->ImportPCE_Licencies($buffer);
+				$nbLicencies ++;
+				$count_licencies ++;
+				$array_licencies = array_merge($array_licencies, $temp);
+
+				if ($count_licencies == 300) { // une requête pour 300 MAJ
+					$this->ImportPCE_Query_Licencies($count_licencies, $array_licencies);
+					$nbReq1 ++;
+					$array_licencies = [];
+					$count_licencies = 0;
+				}
 				continue;
 			}
 			
 			if (strcasecmp($section, "juges_kap") == 0) {
-				$this->ImportPCE_Juges($buffer, $result_juges);
-				$nbArbitres++;
+				$temp = $this->ImportPCE_Juges($buffer);
+				$nbArbitres ++;
+				$count_arbitres ++;
+				$array_arbitres = array_merge($array_arbitres, $temp);
+				if ($count_arbitres == 300) { // une requête pour 300 MAJ
+					$this->ImportPCE_Query_Juges($count_arbitres, $array_arbitres);
+					$nbReq2 ++;
+					$array_arbitres = [];
+					$count_arbitres = 0;
+				}
 				continue;
 			}
 
             if (strcasecmp($section, "surclassements") == 0) {
-				$this->ImportPCE_Surclassements($buffer, $result_surclassements);
+				$temp = $this->ImportPCE_Surclassements($buffer);
 				$nbSurclassements++;
+				if ($temp) {
+					$count_surclassements ++;
+					$array_surclassements = array_merge($array_surclassements, $temp);
+				}
+				if ($count_surclassements == 100) { // une requête pour 100 MAJ
+					$this->ImportPCE_Query_Surclassements($count_surclassements, $array_surclassements);
+					$nbReq3 ++;
+					$array_surclassements = [];
+					$count_surclassements = 0;
+				}
 				continue;
 			}
-		}	
+		}
+
+		// une requête pour les dernières MAJ
+		if ($count_licencies > 0) {
+			$this->ImportPCE_Query_Licencies($count_licencies, $array_licencies);
+			$nbReq1 ++;
+		}
+		if ($count_arbitres > 0) {
+			$this->ImportPCE_Query_Juges($count_arbitres, $array_arbitres);
+			$nbReq2 ++;
+		}
+		if ($count_surclassements > 0) {
+			$this->ImportPCE_Query_Surclassements($count_surclassements, $array_surclassements);
+			$nbReq3 ++;
+		}
+
 
 		fclose($fp);  			   
-		array_push($this->m_arrayinfo, "MAJ ".$nbLicenciés." licenciés..." );
-		array_push($this->m_arrayinfo, "MAJ ".$nbArbitres." arbitres..." );
-		array_push($this->m_arrayinfo, "MAJ ".$nbSurclassements." surclassements..." );
+		array_push($this->m_arrayinfo, "MAJ ".$nbLicencies." licenciés (".$nbReq1." req.)..." );
+		array_push($this->m_arrayinfo, "MAJ ".$nbArbitres." arbitres (".$nbReq2." req.)..." );
+		array_push($this->m_arrayinfo, "MAJ ".$nbSurclassements." surclassements (".$nbReq3." req.)..." );
 		// Lancement des mises à jour ...
 		$this->ImportPCE_MajClub();	 
 		$this->ImportPCE_MajComiteReg();
@@ -501,7 +540,7 @@ class MyBdd
 	}
 	
 	// Importation de la section [licencies] du fichier PCE 
-	function ImportPCE_Licencies($buffer, $result_licencies)				
+	function ImportPCE_Licencies($buffer)				
 	{	
         $replace_search = array('CANOE KAYAK', 'CANOE-KAYAK', 'C.K.');
 		$arrayToken = explode(";", $buffer);   
@@ -533,21 +572,45 @@ class MyBdd
 		$pagaie_eca = $arrayToken[14];
 		$etat_certificat_aps = $arrayToken[15];
 		$etat_certificat_ck = $arrayToken[16];
-							 
-		$return = $result_licencies->execute(array(
+		
+		return array(
 			$matric, $origine, $nom, $prenom, $sexe, $naissance, $club, $num_club,
 			$comite_dept, $num_comite_dept, $comite_reg, $num_comite_reg, $etat, 
-			$pagaie_evi, $pagaie_mer, $pagaie_eca, 'null', 'null', 'null', 
+			$pagaie_evi, $pagaie_mer, $pagaie_eca, null, null, null, 
 			$etat_certificat_aps, $etat_certificat_ck
-		));
+		);
+	}
 
+	function ImportPCE_Query_Licencies($count_licencies, $array_licencies)
+	{
+		$placeholders = '';
+		for ($i = 0; $i < $count_licencies; $i++) {
+			if ($placeholders != '') {
+				$placeholders .= ',';
+			}
+			$placeholders .= '(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+		}
+		$sql_licencies = "INSERT INTO gickp_Liste_Coureur 
+			VALUES $placeholders 
+			ON DUPLICATE KEY UPDATE 
+				Matric = VALUES(Matric), Origine = VALUES(Origine), Nom = VALUES(Nom), 
+				Prenom = VALUES(Prenom), Sexe = VALUES(Sexe), Naissance = VALUES(Naissance), 
+				Club = VALUES(Club), Numero_club = VALUES(Numero_club), Comite_dept = VALUES(Comite_dept), 
+				Numero_comite_dept = VALUES(Numero_comite_dept), Comite_reg = VALUES(Comite_reg), Numero_comite_reg = VALUES(Numero_comite_reg), 
+				Etat = VALUES(Etat), Pagaie_EVI = VALUES(Pagaie_EVI), Pagaie_MER = VALUES(Pagaie_MER), 
+				Pagaie_ECA = VALUES(Pagaie_ECA), Date_certificat_CK = VALUES(Date_certificat_CK), Date_certificat_APS = VALUES(Date_certificat_APS), 
+				Reserve = VALUES(Reserve), Etat_certificat_CK = VALUES(Etat_certificat_CK), Etat_certificat_APS = VALUES(Etat_certificat_APS) 
+				";
+		$result_licencies = $this->pdo->prepare($sql_licencies);
+		$return = $result_licencies->execute($array_licencies);
 		if (!$return) {
 			array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
 		}
-	}	 
+	}
+
 	
 	// Importation de la section [juges_pol] du fichier PCE 
-	function ImportPCE_Juges($buffer, $result_juges)				
+	function ImportPCE_Juges($buffer)				
 	{	
 		$arrayToken = explode(";", $buffer);   
 		$nbToken = count($arrayToken);
@@ -559,8 +622,6 @@ class MyBdd
 		}
 		
 		$matric =  $arrayToken[0];
-		$nom = $arrayToken[1];
-		$prenom = $arrayToken[2];
 		$livret = $arrayToken[7];
 		$niveau = substr($livret, -1);
 		$saisonJuge = $this->m_saisonPCE;
@@ -610,48 +671,86 @@ class MyBdd
 			$Arb = "JO";
 		}
 
-		$return = $result_juges->execute(array(
+		return array(
 			$matric, $regional, $interregional, $national, 
 			$international, $Arb, $livret, $niveau, $saisonJuge
-		));
-
-		if (!$return) {
-            array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
-        }
+		);
 	}	 
 
+	function ImportPCE_Query_Juges($count_arbitres, $array_arbitres)
+	{
+		$placeholders = '';
+		for ($i = 0; $i < $count_arbitres; $i++) {
+			if ($placeholders != '') {
+				$placeholders .= ',';
+			}
+			$placeholders .= '(?,?,?,?,?,?,?,?,?)';
+		}
+				   
+		$sql_juges = "INSERT INTO gickp_Arbitre 
+			VALUES $placeholders 
+			ON DUPLICATE KEY UPDATE 
+				Matric = VALUES(Matric), Regional = VALUES(Regional), InterRegional = VALUES(InterRegional), 
+				National = VALUES(National), International = VALUES(International), Arb = VALUES(Arb), 
+				Livret = VALUES(Livret), niveau = VALUES(niveau), saison = VALUES(saison)
+				";
+		$result_juges = $this->pdo->prepare($sql_juges);
+		$return = $result_juges->execute($array_arbitres);
+		if (!$return) {
+			array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
+		}
+	}
+
     // Importation de la section [surclassements] du fichier PCE 
-	function ImportPCE_Surclassements($buffer, $result_surclassements)				
+	function ImportPCE_Surclassements($buffer)				
 	{	
 		$arrayToken = explode(";", $buffer);   
 		$nbToken = count($arrayToken);
-		if ($nbToken != 6)
-		{												  
+		if ($nbToken != 6) {												  
 			array_push($this->m_arrayinfo, "Erreur [surclassements] : ".$buffer);
 			return;
 		}
 		
-		$matric =  $arrayToken[0];
-		$nom = $arrayToken[1];
-		$prenom = $arrayToken[2];
 		$discipline = $arrayToken[3];
-		$categorie = $arrayToken[4];
-        $dateSurclassement = $arrayToken[5];
-        $dateSurclassement = explode('/',$dateSurclassement);
-        $dateSurclassement = implode('-',$dateSurclassement);
-		$saisonSurclassement = $this->m_saisonPCE;
-
         if ($discipline == 'KAP') {
-			$return = $result_surclassements->execute(array(
+			$matric =  $arrayToken[0];
+			$categorie = substr($arrayToken[4], -1);
+			$dateSurclassement = $arrayToken[5];
+			$dateSurclassement = explode('/',$dateSurclassement);
+			$dateSurclassement = implode('-',$dateSurclassement);
+			$saisonSurclassement = $this->m_saisonPCE;
+
+			return array(
 				$matric, $saisonSurclassement, $categorie, $dateSurclassement
-			));
-	
-			if (!$return) {
-                array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
-            }
-        }
+			);	
+        } else {
+			return false;
+		}
 	}	 
 			 
+	function ImportPCE_Query_Surclassements($count_surclassements, $array_surclassements)
+	{
+		$placeholders = '';
+		for ($i = 0; $i < $count_surclassements; $i++) {
+			if ($placeholders != '') {
+				$placeholders .= ',';
+			}
+			$placeholders .= '(?,?,?,?)';
+		}		
+   
+		$sql_surclassements = "INSERT INTO gickp_Surclassements 
+			VALUES $placeholders 
+			ON DUPLICATE KEY UPDATE 
+				Matric = VALUES(Matric), Saison = VALUES(Saison), Cat = VALUES(Cat), 
+				`Date` = VALUES(`Date`)
+				";
+		$result_surclassements = $this->pdo->prepare($sql_surclassements);
+		$return = $result_surclassements->execute($array_surclassements);
+		if (!$return) {
+			array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
+		}
+	}
+
 	// Mise à Jour des Clubs à partir de la table gickp_Liste_Coureur ...
 	function ImportPCE_MajClub()				
 	{ 				  
