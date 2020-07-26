@@ -78,6 +78,7 @@ jq(document).ready(function() {
         var valeur = jq(this).text();
         var typeChamps = jq(this).attr('data-target');
 		if (jq(this).hasClass('arbitre')) {
+			jq('#inputZone2annul').click();
 			jq(this).before('<input type="text" id="inputZone2" class="directInputSpan" size="22" value="'+valeur+'">');
 			jq(this).before('<br>\n\
 							<input type="button" id="inputZone2valid" value="' + langue['Valider'] + '">\n\
