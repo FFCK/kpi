@@ -98,7 +98,7 @@ class Login extends MyPage
                     
 					//Journées autorisées (+ journées de l'évènement autorisé)
 					$Filtre_Journee = $row["Filtre_journee"];
-/*							$Filtre_Evenement = $row['Id_Evenement'];
+					/*							$Filtre_Evenement = $row['Id_Evenement'];
 					if($Filtre_Evenement != '')
 					{
 						$sql2  = "Select Id_journee ";
@@ -114,14 +114,15 @@ class Login extends MyPage
 						{
 							$row2 = mysql_fetch_array($result2);
 							if($Filtre_Journee != '')
-								$Filtre_Journee .= ',';
+							$Filtre_Journee .= ',';
 							$Filtre_Journee .= $row2['Id_journee'];
 						}
 					}
-*/					$_SESSION['Filtre_Journee'] = $Filtre_Journee;
+*/
+					$_SESSION['Filtre_Journee'] = $Filtre_Journee;
 					$_SESSION['Evt_Date_debut'] =  $row['Date_debut'];
 					$_SESSION['Evt_Date_fin'] =  $row['Date_fin'];
-					
+
 					// Chargement de la première Compétitions
 					$Saison = $myBdd->GetActiveSaison();
 					$sqlFiltreCompetition = utyGetFiltreCompetition('');
@@ -133,11 +134,12 @@ class Login extends MyPage
 						LIMIT 1 ";
 					$result3 = $myBdd->pdo->prepare($sql3);
 					$result3->execute(array($Saison));
-
+					
 					$row3 = $result3->fetch();	
 					$_SESSION['codeCompet'] = $row3['Code'];
 					
-					$myBdd->utyJournal('Connexion', '', '', '', '', NULL, $row['Prenom'].' '.$row['Nom'] );
+					echo 'OK: ' . $_SERVER['HTTP_HOST'].$_SESSION['loginTarget'];
+					$myBdd->utyJournal('Connexion', '', '', null, null, null, $row['Prenom'].' '.$row['Nom'] );
 					header("Location: http://".$_SERVER['HTTP_HOST'].$_SESSION['loginTarget']);	
 					exit;	
 				}

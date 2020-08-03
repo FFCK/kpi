@@ -215,7 +215,7 @@ class GestionParamJournee extends MyPageSecure
 				$Arb_nj3, $Arb_nj4, $Arb_nj5, $idJournee
 			));
 				
-            $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, '', $idJournee);
+            $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, null, $idJournee);
 		} else {
 			// Création ...
 			$nextIdJournee = $myBdd->GetNextIdJournee();
@@ -281,7 +281,7 @@ class GestionParamJournee extends MyPageSecure
 				$myBdd->pdo->exec($sql4);
 			}
 		
-			$myBdd->utyJournal('Ajout journee', $J_saison, $J_competition, '', $nextIdJournee);
+			$myBdd->utyJournal('Ajout journee', $J_saison, $J_competition, null, $nextIdJournee);
 		}			
 		
 		if (isset($_SESSION['ParentUrl'])) {
@@ -331,7 +331,7 @@ class GestionParamJournee extends MyPageSecure
 				$Arb_nj3, $Arb_nj4, $Arb_nj5, $Journee
 			));
 		
-			$myBdd->utyJournal('Modification journee', '', '', '', $Journee);
+			$myBdd->utyJournal('Modification journee', '', '', null, $Journee);
 		}
 		
 		if (isset($_SESSION['ParentUrl'])) {
@@ -401,7 +401,7 @@ class GestionParamJournee extends MyPageSecure
 			exit;	
 		}
 
-		$myBdd->utyJournal('Dupplication journee', '', '', '', $nextIdJournee); // A compléter (saison, compétition, options)
+		$myBdd->utyJournal('Dupplication journee', '', '', null, $nextIdJournee); // A compléter (saison, compétition, options)
 	}
 	
 	function __construct()

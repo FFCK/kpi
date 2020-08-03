@@ -141,7 +141,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				$result->execute(array($idEquipe, $codeSaison, $_SESSION['Signature']));
 						
                 // TODO : Journal d'insertion ! 
-                // $myBdd->utyJournal($action, $saison='', $competition='', $evenement='NULL', $journee='NULL', $match='NULL', $journal='', $user='')
+                // $myBdd->utyJournal($action, $saison='', $competition='', $evenement=null, $journee=null, $match=null, $journal='', $user='')
                 
                 
 				// Vidage gickp_Recherche_Licence ...				
@@ -320,7 +320,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				$result->execute($arrayParam);
 			}
 			
-			$myBdd->utyJournal('Ajout titulaire', '', '', 'NULL', 'NULL', 'NULL', 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
+			$myBdd->utyJournal('Ajout titulaire', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
 		}
 	}
 	
@@ -350,7 +350,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				$sexeJoueur, $categJoueur, $numeroJoueur, $capitaineJoueur
 			));
 			
-			$myBdd->utyJournal('Ajout titulaire', '', '', 'NULL', 'NULL', 'NULL', 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
+			$myBdd->utyJournal('Ajout titulaire', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
 		}
 	}
 	
@@ -376,7 +376,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idEquipe, $Categ, $Matric));
 			
-			$myBdd->utyJournal('Ajout coureur', '', '', 'NULL', 'NULL', 'NULL', 'Equipe : '.$idEquipe.' - Joueur : '.$Matric);
+			$myBdd->utyJournal('Ajout coureur', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$Matric);
 		}
 	}
 	
@@ -398,7 +398,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		$result->execute(array_merge([$idEquipe], $arrayParam));
 
 		for ($i=0;$i<count($arrayParam);$i++) {
-			$myBdd->utyJournal('Suppression titulaire', '', '', 'NULL', 'NULL', 'NULL', 'Equipe : '.$idEquipe.' - Joueur : '.$arrayParam[$i]);
+			$myBdd->utyJournal('Suppression titulaire', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$arrayParam[$i]);
 		}
 	}
 	

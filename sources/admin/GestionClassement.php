@@ -381,7 +381,7 @@ class GestionClassement extends MyPageSecure
 		$result->execute(array(date('Y-m-d H:i:s'), utyGetSession('User'), $tousLesMatchs, $codeCompet, $codeSaison));
 
 		($tousLesMatchs == 'tous') ? $lesMatchs = 'Inclu matchs non verrouillés' : $lesMatchs = 'Uniquement matchs verrouillés';
-		$myBdd->utyJournal('Calcul Classement', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $lesMatchs);
+		$myBdd->utyJournal('Calcul Classement', $codeSaison, $codeCompet, null, null, null, $lesMatchs);
         
         if ($egalites > 1 && $typeClt == 'CHPT') {
             return "Attention : $egalites équipes ou plus sont à égalité. Vérifiez si nécessaire la différence de but particulière !";
@@ -1569,7 +1569,7 @@ class GestionClassement extends MyPageSecure
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array_merge($arrayEquipes, [$codeCompet], [$codeSaison], [$codeSaisonTransfert]));
 
-				$myBdd->utyJournal('Transfert Equipes', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', 'Equipes '.$lstEquipe.' vers '.$codeCompetTransfert.'-'.$codeSaisonTransfert);
+				$myBdd->utyJournal('Transfert Equipes', $codeSaison, $codeCompet, null, null, null, 'Equipes '.$lstEquipe.' vers '.$codeCompetTransfert.'-'.$codeSaisonTransfert);
 			} else {
 				die ("Transfert impossible dans la même compétition !");
 			}

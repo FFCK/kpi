@@ -334,7 +334,7 @@ class GestionCopieCompetition extends MyPageSecure
 			$result4 = $myBdd->pdo->prepare($sql4);
 			$result4->execute(array($nextIdJournee, $diffdate, $row['Id']));
 		
-			$myBdd->utyJournal('Ajout journee', $codeSaison, $competDestination, '', $nextIdJournee);
+			$myBdd->utyJournal('Ajout journee', $codeSaison, $competDestination, null, $nextIdJournee);
 		}
 
 			

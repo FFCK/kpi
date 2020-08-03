@@ -435,7 +435,7 @@ class GestionUtilisateur extends MyPageSecure
 				$action = "Modification ";
 			}
 			
-			$myBdd->utyJournal('Ajout Modif Utilisateur', '', '', 'NULL', 'NULL', 'NULL', $guser);
+			$myBdd->utyJournal('Ajout Modif Utilisateur', '', '', null, null, null, $guser);
 			
 			//MAIL 
 			$sujet = $action.'de votre accès à kayak-polo.info (KPI)';
@@ -543,7 +543,7 @@ class GestionUtilisateur extends MyPageSecure
 		$result->execute($arrayParam);
 
 		for ($i=0;$i<count($arrayParam);$i++) {
-			$myBdd->utyJournal('Suppression utilisateur', '', '', 'NULL', 'NULL', 'NULL', $arrayParam[$i]);
+			$myBdd->utyJournal('Suppression utilisateur', '', '', null, null, null, $arrayParam[$i]);
 		}
 		$sql .= "')";
 				
