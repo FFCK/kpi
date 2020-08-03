@@ -63,7 +63,7 @@ if ($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayQuery);
 		if ($result->rowCount() == 1) {
-			$myBdd->utyJournal('Modification '.$tableName, $codeSaison, '', 'NULL', 'NULL', 'NULL', $key.'-'.$typeValeur.'->'.$valeur, $user);
+			$myBdd->utyJournal('Modification '.$tableName, $codeSaison, '', null, null, null, $key.'-'.$typeValeur.'->'.$valeur, $user);
 			echo 'OK!';
 		} else {
 			trigger_error("Aucune ligne modifiée : " . $sql . ',' . $valeur . ',' . $key, E_USER_ERROR);

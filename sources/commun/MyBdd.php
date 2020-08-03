@@ -194,7 +194,7 @@ class MyBdd
     function IsNullSQL($value)
     {
         $typeValue = gettype($value);
-        if ($typeValue == 'NULL') return true;
+        if ($typeValue == null) return true;
         if (($typeValue == 'string') && ($value == '')) return true;
 
         return false;
@@ -1765,7 +1765,7 @@ class MyBdd
 	}
 	
 	// Journal des manipulations
-	function utyJournal($action, $saison='', $competition='', $evenement='NULL', $journee='NULL', $match='NULL', $journal='', $user='')
+	function utyJournal($action, $saison='', $competition='', $evenement=null, $journee=null, $match=null, $journal='', $user='')
 	{
 		if($saison == '')
 			$saison = $this->GetActiveSaison();

@@ -78,7 +78,7 @@ class GestionEvenement extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($libelle, $lieu, utyDateFrToUs($datedebut), utyDateFrToUs($datefin)));
 		
-		$myBdd->utyJournal('Ajout Evenement', '', '', 'NULL', 'NULL', 'NULL', $libelle);
+		$myBdd->utyJournal('Ajout Evenement', '', '', null, null, null, $libelle);
 	}
 	
 	function Remove()
@@ -110,7 +110,7 @@ class GestionEvenement extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($changePub, $idEvt));
 		
-		$myBdd->utyJournal('Publication evenement', $myBdd->GetActiveSaison(), '', $idEvt, 'NULL', 'NULL', $changePub);
+		$myBdd->utyJournal('Publication evenement', $myBdd->GetActiveSaison(), '', $idEvt, null, null, $changePub);
 	}
 	
 	function RazEvt()

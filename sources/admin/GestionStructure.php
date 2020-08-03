@@ -138,7 +138,7 @@ class GestionStructure extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCD, $libelleCD, $comiteReg));
 			
-		$myBdd->utyJournal('Ajout CD', '', '', 'NULL', 'NULL', 'NULL', $codeCD);
+		$myBdd->utyJournal('Ajout CD', '', '', null, null, null, $codeCD);
 	}
 	
 	function AddClub()
@@ -162,7 +162,7 @@ class GestionStructure extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeClub, $libelleClub, $comiteDep, $coord2, $postal2, $www2, $email2));
 		
-		$myBdd->utyJournal('Ajout Club', '', '', 'NULL', 'NULL', 'NULL', $codeClub);
+		$myBdd->utyJournal('Ajout Club', '', '', null, null, null, $codeClub);
 		
 		if ($libelleEquipe2 != '') {
 			$sql = "INSERT INTO gickp_Equipe (Code_club, Libelle) 
@@ -171,7 +171,7 @@ class GestionStructure extends MyPageSecure
 			$result->execute(array($codeClub, $libelleEquipe2));
 			$selectValue = $myBdd->pdo->lastInsertId();
 
-			$myBdd->utyJournal('Ajout Equipe', '', '', 'NULL', 'NULL', 'NULL', $libelleEquipe2);
+			$myBdd->utyJournal('Ajout Equipe', '', '', null, null, null, $libelleEquipe2);
 			
 			if ($affectEquipe != '') {
 				if ((int) $selectValue == 0)
@@ -206,7 +206,7 @@ class GestionStructure extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($coord, $coord2, $postal, $www, $email, $club));
 			
-		$myBdd->utyJournal('Modification Club', '', '', 'NULL', 'NULL', 'NULL', $club);
+		$myBdd->utyJournal('Modification Club', '', '', null, null, null, $club);
 	}
 
 	function __construct()

@@ -354,7 +354,7 @@ class GestionCalendrier extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
 		for ($i=0;$i<count($arrayParam);$i++) {
-			$myBdd->utyJournal('Suppression journee', '', '', 'NULL', 'NULL', $arrayParam[$i]);
+			$myBdd->utyJournal('Suppression journee', '', '', null, null, $arrayParam[$i]);
 		}
 	}
 
@@ -385,7 +385,7 @@ class GestionCalendrier extends MyPageSecure
 			exit;	
 		}
 
-		$myBdd->utyJournal('Dupplication journee', $myBdd->GetActiveSaison(), '', '', $nextIdJournee); // A compléter (saison, compétition, options)
+		$myBdd->utyJournal('Dupplication journee', $myBdd->GetActiveSaison(), '', null, $nextIdJournee); // A compléter (saison, compétition, options)
 	}
 	
 	function ParamJournee()
@@ -413,7 +413,7 @@ class GestionCalendrier extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idEvenement, $idJournee));
 	
-		$myBdd->utyJournal('Evenement +journee', '', '', 'NULL', $idEvenement, $idJournee);
+		$myBdd->utyJournal('Evenement +journee', '', '', null, $idEvenement, $idJournee);
 	}
 	
 	function RemoveEvenementJournee()
@@ -431,7 +431,7 @@ class GestionCalendrier extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idEvenement, $idJournee));
 		
-		$myBdd->utyJournal('Evenement -journee', '', '', 'NULL', $idEvenement, $idJournee);
+		$myBdd->utyJournal('Evenement -journee', '', '', null, $idEvenement, $idJournee);
 	}
 	
 	function PubliJournee()
@@ -446,7 +446,7 @@ class GestionCalendrier extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($changePub, $idJournee));
 		
-		$myBdd->utyJournal('Publication journee', '', '', 'NULL', 'NULL', $idJournee, $changePub);
+		$myBdd->utyJournal('Publication journee', '', '', null, null, $idJournee, $changePub);
 	}
 
 	function PubliMultiJournees()
@@ -469,7 +469,7 @@ class GestionCalendrier extends MyPageSecure
 		$result->execute($arrayParam);
 		// Change Publication	
 		for ($i=0;$i<count($arrayParam);$i++) {
-			$myBdd->utyJournal('Publication journee', $myBdd->GetActiveSaison(), '', 'NULL', 'NULL', $arrayParam[$i], '-');
+			$myBdd->utyJournal('Publication journee', $myBdd->GetActiveSaison(), '', null, null, $arrayParam[$i], '-');
 		}
 	}
 	

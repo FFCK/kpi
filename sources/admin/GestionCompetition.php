@@ -614,7 +614,7 @@ class GestionCompetition extends MyPageSecure
 			':saison' => $saison
 		));
 		
-		$myBdd->utyJournal('Publication competition', $saison, $idCompet, 'NULL', 'NULL', 'NULL', $changePub);
+		$myBdd->utyJournal('Publication competition', $saison, $idCompet, null, null, null, $changePub);
 	}
 
 	function UploadLogo()
@@ -651,7 +651,7 @@ class GestionCompetition extends MyPageSecure
 					AND Code_saison = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($logo, $codeCompet, $codeSaison));
-				$myBdd->utyJournal('Insertion Logo', $myBdd->GetActiveSaison(), $codeCompet, 'NULL', 'NULL', 'NULL', '');
+				$myBdd->utyJournal('Insertion Logo', $myBdd->GetActiveSaison(), $codeCompet, null, null, null, '');
 			} else { //Sinon (la fonction renvoie FALSE).
 				$erreur .= "Echec de l\'upload ! ".$texte;
 			}
@@ -670,7 +670,7 @@ class GestionCompetition extends MyPageSecure
 		$fichier = $codeSaison.'-'.$codeCompet.'.jpg';
 		$fichier2 = 'ex-'.$codeSaison.'-'.$codeCompet.'.jpg';
 		rename($dossier.$fichier, $dossier.$fichier2);
-		$myBdd->utyJournal('Suppression Logo', $myBdd->GetActiveSaison(), $codeCompet, 'NULL', 'NULL', 'NULL', '');
+		$myBdd->utyJournal('Suppression Logo', $myBdd->GetActiveSaison(), $codeCompet, null, null, null, '');
 		return('Logo supprimé');
 	}
 
@@ -775,7 +775,7 @@ class GestionCompetition extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($numFusionSource));
 
-		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numFusionSource.' => '.$numFusionCible);
+		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numFusionSource.' => '.$numFusionCible);
 
         return('Joueurs fusionnés');
 	}
@@ -803,7 +803,7 @@ class GestionCompetition extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($numFusionEquipeSource));
 
-		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $FusionEquipeSource.' => '.$FusionEquipeCible);
+		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $FusionEquipeSource.' => '.$FusionEquipeCible);
 		return;
     }
 
@@ -829,7 +829,7 @@ class GestionCompetition extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
 		
-		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $numDeplaceEquipeSource.' => '.$numDeplaceEquipeCible);
+		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numDeplaceEquipeSource.' => '.$numDeplaceEquipeCible);
 
 		return $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible;
     }
@@ -853,7 +853,7 @@ class GestionCompetition extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($RenomCible, $numRenomSource));
 
-		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), 'NULL', 'NULL', 'NULL', $RenomSource.' => '.$RenomCible);
+		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $RenomSource.' => '.$RenomCible);
 		return('Joueurs fusionnés');
 	}
 
