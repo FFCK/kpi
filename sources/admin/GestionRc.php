@@ -150,7 +150,7 @@ class GestionRc extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($Code_saison, $Code_competition, $Matric, $Ordre));
 		
-		$myBdd->utyJournal('Ajout Rc', '', '', 'NULL', 'NULL', 'NULL', $Matric);
+		$myBdd->utyJournal('Ajout Rc', '', '', null, null, null, $Matric);
 	}
 	
 	function Remove()

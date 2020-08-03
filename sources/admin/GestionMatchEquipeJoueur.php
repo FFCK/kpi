@@ -195,7 +195,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch, $codeEquipe, $idEquipe));
 
-		$myBdd->utyJournal('Ajout titulaires match', '', '', '', '', $idMatch, 'Equipe : '.$idEquipe);
+		$myBdd->utyJournal('Ajout titulaires match', '', '', null, null, $idMatch, 'Equipe : '.$idEquipe);
 	}
 	
 	function Add2()
@@ -232,7 +232,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				$idMatch, $matricJoueur, $numeroJoueur, $codeEquipe, $capitaineJoueur
 			));
 				
-			$myBdd->utyJournal('Ajout joueur', '', '', 'NULL', 'NULL', 'NULL', 'Match:'.$idMatch.' - Equipe:'.$codeEquipe.' - Joueur:'.$matricJoueur);
+			$myBdd->utyJournal('Ajout joueur', '', '', null, null, null, 'Match:'.$idMatch.' - Equipe:'.$codeEquipe.' - Joueur:'.$matricJoueur);
 		}
 	}
 	
@@ -260,7 +260,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch, $codeEquipe));
 
-		$myBdd->utyJournal('Suppression joueurs match', '', '', '', '', $idMatch, 'Equipe : '.$idEquipe);
+		$myBdd->utyJournal('Suppression joueurs match', '', '', null, null, $idMatch, 'Equipe : '.$idEquipe);
 	}
 	
 	function copieCompoEquipeJournee()
@@ -315,7 +315,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			}
 		}
 
-		$myBdd->utyJournal('Copie Compo sur Journée', $myBdd->GetActiveSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
+		$myBdd->utyJournal('Copie Compo sur Journée', $myBdd->GetActiveSaison(), utyGetSession('Compet'), null, null, $idMatch, 'Equipe : '.$idEquipe);
 	}
 
 	function copieCompoEquipeCompet()
@@ -384,7 +384,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			}
 		}
 				
-		$myBdd->utyJournal('Copie Compo sur Compet', $myBdd->GetActiveSaison(), utyGetSession('Compet'), '', '', $idMatch, 'Equipe : '.$idEquipe);
+		$myBdd->utyJournal('Copie Compo sur Compet', $myBdd->GetActiveSaison(), utyGetSession('Compet'), null, null, $idMatch, 'Equipe : '.$idEquipe);
 	}
 
 	function Remove()
@@ -414,7 +414,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array_merge([$idMatch], $arrayParam));	
 		
-		$myBdd->utyJournal('Suppression joueurs match', '', '', '', '', $idMatch, 'joueurs : '.$ParamCmd);
+		$myBdd->utyJournal('Suppression joueurs match', '', '', null, null, $idMatch, 'joueurs : '.$ParamCmd);
 	}
 	
 	function FindLicence()

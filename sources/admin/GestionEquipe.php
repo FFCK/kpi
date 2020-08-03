@@ -429,7 +429,7 @@ class GestionEquipe extends MyPageSecure
 		$_SESSION['codeComiteDep'] = utyGetPost('comiteDep');
 		$_SESSION['codeClub'] = $codeClub;
 
-		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $insertValue);
+		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, null, null, null, $insertValue);
 	}
 	
 	function Add2()
@@ -492,7 +492,7 @@ class GestionEquipe extends MyPageSecure
 		}
 		
 		
-		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $EquipeNom);
+		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, null, null, null, $EquipeNom);
 	}
 	
 	function Tirage()
@@ -519,7 +519,7 @@ class GestionEquipe extends MyPageSecure
 			':equipeTirage' => $equipeTirage
 		));
 
-		$myBdd->utyJournal('Tirage au sort', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', $equipeTirage.' -> '.$ordreTirage);
+		$myBdd->utyJournal('Tirage au sort', $codeSaison, $codeCompet, null, null, null, $equipeTirage.' -> '.$ordreTirage);
 	}
 
 	function Remove()
@@ -548,7 +548,7 @@ class GestionEquipe extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
 
-		$myBdd->utyJournal('Suppression  equipes', $codeSaison, utyGetPost('codeCompet'), 'NULL', 'NULL', 'NULL', $ParamCmd);
+		$myBdd->utyJournal('Suppression  equipes', $codeSaison, utyGetPost('codeCompet'), null, null, null, $ParamCmd);
 	}
 	
 	function Duplicate($bDelete)
@@ -602,7 +602,7 @@ class GestionEquipe extends MyPageSecure
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($codeCompetRef, $codeSaison));
 
-			$myBdd->utyJournal('Duplication  equipes', $codeSaison, $codeCompet, 'NULL', 'NULL', 'NULL', 'Depuis '.$codeCompetRef);
+			$myBdd->utyJournal('Duplication  equipes', $codeSaison, $codeCompet, null, null, null, 'Depuis '.$codeCompetRef);
 		}
 	}
 	

@@ -850,7 +850,7 @@ class GestionJournee extends MyPageSecure
 			
 		}
 		
-		$myBdd->utyJournal('Modification match', '', '', 'NULL', $idJournee, $idMatch);
+		$myBdd->utyJournal('Modification match', '', '', null, $idJournee, $idMatch);
 	}
 			
 	function Add()
@@ -911,7 +911,7 @@ class GestionJournee extends MyPageSecure
 		if (isset($_POST['Intervalle_match']))
 			$_SESSION['Intervalle_match'] = $_POST['Intervalle_match'];
 		
-		$myBdd->utyJournal('Ajout match', '', '', 'NULL', $idJournee, $numMatch, $dateMatch.' '.$heureMatch);
+		$myBdd->utyJournal('Ajout match', '', '', null, $idJournee, $numMatch, $dateMatch.' '.$heureMatch);
 		
 		$_SESSION['idJournee'] = $idJournee;
 		$this->Raz();		
@@ -955,7 +955,7 @@ class GestionJournee extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
 
-		$myBdd->utyJournal('Suppression matchs', '', '', 'NULL', 'NULL', $ParamCmd);
+		$myBdd->utyJournal('Suppression matchs', '', '', null, null, $ParamCmd);
 		return;
 	}
 	
@@ -1089,7 +1089,7 @@ class GestionJournee extends MyPageSecure
 			$result->execute(array($idMatch, $idEquipeB));
 		}
 		
-		$myBdd->utyJournal('Initialisation titulaires', '', '', 'NULL', $idJournee);
+		$myBdd->utyJournal('Initialisation titulaires', '', '', null, $idJournee);
 	}
 	
 	function PubliMatch()
@@ -1105,7 +1105,7 @@ class GestionJournee extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($changePub, $idMatch));
 		
-		$myBdd->utyJournal('Publication match', $codeSaison, '', 'NULL', 'NULL', $idMatch, $changePub);
+		$myBdd->utyJournal('Publication match', $codeSaison, '', null, null, $idMatch, $changePub);
 	}
 	
 	function PubliMultiMatchs()
@@ -1139,7 +1139,7 @@ class GestionJournee extends MyPageSecure
 			$row = $result->fetch();
 			($row['Publication']=='O') ? $changePub = 'N' : $changePub = 'O';
 			$result2->execute(array($changePub, $arrayParam[$i]));
-			$myBdd->utyJournal('Publication match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], $changePub);
+			$myBdd->utyJournal('Publication match', $codeSaison, '', null, null, $arrayParam[$i], $changePub);
 		}
 	}
 	
@@ -1164,7 +1164,7 @@ class GestionJournee extends MyPageSecure
 		$result->execute($arrayParam);
 		// Change Publication	
 		for ($i=0;$i<count($arrayParam);$i++) {
-			$myBdd->utyJournal('Verrou-Publi match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], 'O');
+			$myBdd->utyJournal('Verrou-Publi match', $codeSaison, '', null, null, $arrayParam[$i], 'O');
 		}
 	}
 	
@@ -1182,7 +1182,7 @@ class GestionJournee extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($changeVerrou, $idMatch));
 		
-		$myBdd->utyJournal('Verrouillage match', $codeSaison, '', 'NULL', 'NULL', $idMatch, $changeVerrou);
+		$myBdd->utyJournal('Verrouillage match', $codeSaison, '', null, null, $idMatch, $changeVerrou);
 	}
 	
 	
@@ -1217,7 +1217,7 @@ class GestionJournee extends MyPageSecure
 			$row = $result->fetch();	
 			($row['Validation']=='O') ? $changeVerrou = 'N' : $changeVerrou = 'O';
 			$result2->execute(array($changeVerrou, $arrayParam[$i]));
-			$myBdd->utyJournal('Verrouillage match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], $changeVerrou);
+			$myBdd->utyJournal('Verrouillage match', $codeSaison, '', null, null, $arrayParam[$i], $changeVerrou);
 		}
 	}
 	
@@ -1469,7 +1469,7 @@ class GestionJournee extends MyPageSecure
 				$result->execute(array($id));
 			}
 			//Journal
-			$myBdd->utyJournal('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], 'NULL', $row['Id_journee'], $id, '');
+			$myBdd->utyJournal('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
 		}
         return implode(',', $arrayParam);
 	}
@@ -1521,7 +1521,7 @@ class GestionJournee extends MyPageSecure
 
 			$result2->execute(array($id));
 		
-			$myBdd->utyJournal('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], 'NULL', $row['Id_journee'], $id, '');
+			$myBdd->utyJournal('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
 			//Suppression des joueurs existants
 			$result3->execute(array($id));
 		}
@@ -1552,7 +1552,7 @@ class GestionJournee extends MyPageSecure
 		// Change Journee	
 		for ($i=0;$i<count($arrayParam);$i++) {
 			$result->execute(array($idJournee, $arrayParam[$i]));
-			$myBdd->utyJournal('Change Journee match', $codeSaison, '', 'NULL', 'NULL', $arrayParam[$i], $idJournee);
+			$myBdd->utyJournal('Change Journee match', $codeSaison, '', null, null, $arrayParam[$i], $idJournee);
 		}
 	}
 	

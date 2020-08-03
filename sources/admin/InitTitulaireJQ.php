@@ -71,7 +71,7 @@ class initTitulaires
 			$this->initMatch($idMatch, $idEquipeA, $idEquipeB);
 		}
 
-		$myBdd->utyJournal('MAJ titulaires compétition', $codeSaison, utyGetSession('codeCompet', ''), '', '', '', $num_results.' m.', utyGetSession('User') );
+		$myBdd->utyJournal('MAJ titulaires compétition', $codeSaison, utyGetSession('codeCompet', ''), null, null, null, $num_results.' m.', utyGetSession('User') );
 		if ($_SESSION['lang'] == 'en') {
 			$resultGlobal = "Team rosters reassignment done for this competition, $num_results game(s) updated.";
 		} else {
@@ -101,7 +101,7 @@ class initTitulaires
 
 			$this->initMatch($idMatch, $idEquipeA, $idEquipeB);
 		}
-		$myBdd->utyJournal('MAJ titulaires journée', $codeSaison, utyGetSession('codeCompet', ''), '', $idJournee, '', $num_results.' m.', utyGetSession('User') );
+		$myBdd->utyJournal('MAJ titulaires journée', $codeSaison, utyGetSession('codeCompet', ''), null, $idJournee, null, $num_results.' m.', utyGetSession('User') );
 		if ($_SESSION['lang'] == 'en') {
 			$resultGlobal = "Team rosters reassignment done for this gameday, $num_results game(s) updated.";
 		} else {
@@ -148,7 +148,7 @@ class initTitulaires
 			
 			$this->initMatch($idMatch, $idEquipeA, $idEquipeB, $idEquipe);
 		}
-		$myBdd->utyJournal('MAJ titulaires équipe', $codeSaison, utyGetSession('codeCompet', ''), '', '', '', 'J: '.$lstJournee.' - Eq: '.$idEquipe.' - '.$num_results.' m.', utyGetSession('User') );
+		$myBdd->utyJournal('MAJ titulaires équipe', $codeSaison, utyGetSession('codeCompet', ''), null, null, null, 'J: '.$lstJournee.' - Eq: '.$idEquipe.' - '.$num_results.' m.', utyGetSession('User') );
 		if ($_SESSION['lang'] == 'en') {
 			$resultGlobal = "Team rosters reassignment done for this team, $num_results game(s) updated.";
 		} else {
