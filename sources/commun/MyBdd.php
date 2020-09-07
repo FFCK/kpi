@@ -61,7 +61,9 @@ class MyBdd
 		try {
 			$this->pdo = new PDO('mysql:host='.$this->m_server.';dbname='.$this->m_database, $this->m_login, $this->m_password);
 			$this->pdo->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION);
-			$this->pdo->exec("SET NAMES utf8");
+			$this->pdo->exec("SET NAMES utf8;");
+			$this->pdo->exec("SET @@SESSION.sql_mode='';");
+			// $this->pdo->exec("SET @@SESSION.sql_mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';");
 			// error_log("Connexion PDO", 0);
 		} catch (PDOException $e) {
 			die ('Une erreur MySQL est arrivée: ' . $e->getMessage());
