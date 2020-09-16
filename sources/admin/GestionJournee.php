@@ -872,13 +872,13 @@ class GestionJournee extends MyPageSecure
 		if (strlen($arbitre1) == 0) {
             $arbitre1 = trim(utyGetPost('comboarbitre1', ''));
         }
-        $arbitre1_matric = trim(utyGetPost('arbitre1_matric', ''));
+        $arbitre1_matric = (int) utyGetPost('arbitre1_matric', -1);
 					
 		$arbitre2 = trim(utyGetPost('arbitre2', ''));
 		if (strlen($arbitre2) == 0) {
             $arbitre2 = trim(utyGetPost('comboarbitre2', ''));
         }
-        $arbitre2_matric = trim(utyGetPost('arbitre2_matric', ''));
+        $arbitre2_matric = (int) utyGetPost('arbitre2_matric', -1);
 		
 		$coeffA = (float) utyGetPost('coeffA', 1);
 		if (strlen($coeffA) == 0) {
@@ -1291,7 +1291,7 @@ class GestionJournee extends MyPageSecure
 				OR j.Phase LIKE CONCAT('%poule ', :codePoule, '%') 
 				OR j.Phase LIKE CONCAT('%Poule ', :codePoule, '%') 
 				OR j.Phase LIKE CONCAT('%Groupe ', :codePoule, '%') 
-				OR j.Phase LIKE CONCAT('%Group ', :codePoule, '%') 
+				OR j.Phase LIKE CONCAT('%Group ', :codePoule, '%') )
 			AND j.Code_competition = :codeCompetition 
 			AND j.Code_saison = :codeSaison ";
 		$result5 = $myBdd->pdo->prepare($sql5);
