@@ -463,7 +463,7 @@ class GestionCalendrier extends MyPageSecure
 		
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
 		$sql = "UPDATE gickp_Journees 
-			SET Publication = IF(Publication = 'O'; 'N'; 'O')
+			SET Publication = IF(Publication = 'O', 'N', 'O')
 			WHERE Id IN ($in) ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
