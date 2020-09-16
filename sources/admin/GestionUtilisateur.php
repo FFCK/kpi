@@ -383,6 +383,8 @@ class GestionUtilisateur extends MyPageSecure
 		$comboEvenement = utyGetPost('comboEvenement');
 		$Date_debut = utyDateFrToUs(utyGetPost('Date_debut'));
 		$Date_fin = utyDateFrToUs(utyGetPost('Date_fin'));
+		$Date_debut = ($Date_debut != '') ? $Date_debut : null;
+		$Date_fin = ($Date_fin != '') ? $Date_fin : null;
 								
 		$plusmail = utyGetPost('plusmail');
 		$plusPJ = utyGetPost('plusPJ');
