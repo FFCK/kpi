@@ -1,23 +1,31 @@
 <?php
 header ('Content-type:text/html; charset=utf-8');
-ini_set("display_errors", 0);
 // Maintenance
 //die ('<h1>Site en cours de maintenance.<br />Merci de patienter quelques instants...</h1>');
 
 include_once('MyConfig.php');	 
 include_once('MySmarty.php');
-include_once('MyTools.php'); 
+include_once('MyTools.php');
+
+session_start();
+if (utyGetGet('debug') == 1) {
+	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	ini_set("display_errors", 1);
+	// echo "<pre>";
+} else {
+	ini_set("display_errors", 0);
+}
 
 // Classe de Base pour toutes les Pages ...
 class MyPage 		
 {		 			 							  
 	var $m_arrayMenu;	
 	var $m_tpl;
-
+	
 	// Constructeur ...
 	function MyPage()
 	{
-			session_start();
+		session_start();
 	}
 
 	// Affichage de la Page ...
