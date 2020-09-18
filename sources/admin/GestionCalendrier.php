@@ -112,12 +112,10 @@ class GestionCalendrier extends MyPageSecure
 			$arrayAfficheCompet = array_merge($arrayAfficheCompet, [$idEvenement]);
 		}
 		$sql = "SELECT DISTINCT c.*, g.section, g.ordre, g.id 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g,
-			gickp_Journees j 
+			FROM gickp_Competitions_Groupes g, gickp_Competitions c 
+			LEFT OUTER JOIN gickp_Journees j ON (c.Code_saison = j.Code_saison AND c.Code = j.Code_competition)
 			LEFT OUTER JOIN gickp_Evenement_Journees ej ON (j.Id = ej.Id_journee) 
-			WHERE c.Code_saison = j.Code_saison
-			AND c.Code = j.Code_competition
-			AND c.Code_saison = ?  
+			WHERE c.Code_saison = ?  
 			$sqlFiltreCompetition 
 			AND c.Code_niveau LIKE ? 
 			AND c.Code_ref = g.Groupe 
