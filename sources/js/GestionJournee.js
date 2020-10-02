@@ -312,6 +312,10 @@ jq("body").delegate('#numMultiMatchsStart input:button:first', 'click', function
 
 jq(document).ready(function() { //Jquery + NoConflict='J'
 
+	jq("*").tooltip({
+		showURL: false
+	});
+
 	//sessionJournee
 	//ajax
 	var journ = jq('#comboJournee').val();
@@ -609,6 +613,53 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 							}
 						},
 						'text' // Format des données reçues.
+					);
+				}else{
+					jq('#selectZone ~ span').show();
+					jq('#selectZone + br').remove();
+					jq('#selectZoneAnnul').remove();
+					jq('#selectZone').remove();
+				}
+			});
+		} else if (jq(this).hasClass('phase')) {
+			jq(this).before('<select id="selectZone" class="directInputSpan" tabindex="'+tabindexVal+'"></select>');
+			jq(this).before('<br /><input type="button" id="selectZoneAnnul" value="' + langue['Annuler'] + '">');
+			datamatch = jq(this).attr('data-match');
+			dataphase = jq(this).attr('data-phase');
+			dataidPhase = jq(this).attr('data-idphase');
+			jq('#comboJournee option:not(:first)').each(function(){
+				jq('#selectZone').append('<option value="'+jq(this).val()+'" selected="selected">'+jq(this).attr('data-phase')+'</option>');
+			});
+			jq('#selectZone').val(jq(this).attr('data-idphase'));
+			jq('#selectZone').change(function(){
+				jq('#selectZoneAnnul').remove();
+			});
+			jq('#selectZoneAnnul').click(function(){
+				jq('#selectZone ~ span').show();
+				jq('#selectZone + br').remove();
+				jq('#selectZoneAnnul').remove();
+				jq('#selectZone').remove();
+			});
+			jq('#selectZone').blur(function(){
+				newIdPhase = jq(this).val();
+				newPhase = jq('#selectZone option:selected').text();
+				if(newPhase != dataidPhase){
+					jq.post(
+						'v2/setPhaseMatch.php',
+						{
+							idMatch : datamatch,
+							idPhase : newIdPhase,
+						},
+						function(data){
+							if(data){
+								jq('#selectZone ~ span').attr('data-idphase', newIdPhase).text(newPhase).show();
+								jq('#selectZone ~ span').attr('title',langue['Cliquez_pour_modifier']);
+								jq('#selectZone + br').remove();
+								jq('#selectZoneAnnul').remove();
+								jq('#selectZone').remove();
+							}
+						},
+						'text'
 					);
 				}else{
 					jq('#selectZone ~ span').show();
