@@ -123,7 +123,7 @@
 								<table>
 									<tr>
 										<td>
-											<label for="Libelle">{#Intitule_codage#}</label>
+											<label for="Libelle">{#Intitule_codage#}</label> <img src="../img/information.gif" width="14" title="<img src='../img/codage.png' width='250'>">
 											<br>
 											<input type="text" size="18" name="Libelle" placeholder="{#Code_Exemple#}" value="{$Libelle}" maxlength=30" tabindex="7"/>
 										</td>
@@ -181,15 +181,15 @@
 									{section name=i loop=$arrayJourneesAutorisees}
 										{if $idCurrentJournee eq $arrayJourneesAutorisees[i].Id}
 											{if $arrayJourneesAutorisees[i].Code_typeclt == 'CP'}
-												<option Value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}" Selected>{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Phase|string_format:"%s"} {$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}</option>
+												<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}" data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}" Selected>{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Phase|string_format:"%s"} {$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}</option>
 											{else}
-												<option Value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}" Selected>{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Date_debut|string_format:"%s"} {$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}</option>
+												<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}" data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}" Selected>{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Date_debut|string_format:"%s"} {$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}</option>
 											{/if}
 										{else}
 											{if $arrayJourneesAutorisees[i].Code_typeclt == 'CP'}
-												<option Value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}">{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Phase|string_format:"%s"} {$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}</option>
+												<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}" data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}">{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Phase|string_format:"%s"} {$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}</option>
 											{else}
-												<option Value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}">{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Date_debut|string_format:"%s"} {$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}</option>
+												<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}" data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}">{$arrayJourneesAutorisees[i].Code_competition} - {$arrayJourneesAutorisees[i].Date_debut|string_format:"%s"} {$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}</option>
 											{/if}
 										{/if}
 									{/section}
@@ -380,7 +380,7 @@
 													<span class='directInput heure' Id="Heure_match-{$arrayMatchs[i].Id}-time" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span></td>
 												<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
 												{if $PhaseLibelle == 1}
-													<td><span class="phase">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
+													<td><span class="directInput phase" tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}6' data-match="{$arrayMatchs[i].Id}" data-idphase="{$arrayMatchs[i].Id_journee}" data-phase="{$arrayMatchs[i].Phase}">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
 													<td><span class='directInput text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
 												{else}
 													<td><span class='directInput text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
@@ -438,7 +438,7 @@
 													<span class='directInputOff heure' Id="Heure_match-{$arrayMatchs[i].Id}-time" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span></td>
 												<td title="{$arrayMatchs[i].Code_competition}"><span class="compet">{if $arrayMatchs[i].Soustitre2 != ''}{$arrayMatchs[i].Soustitre2}{else}{$arrayMatchs[i].Code_competition}{/if}</span></td>
 												{if $PhaseLibelle == 1}
-													<td><span class="phase">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
+													<td><span class="directInputOff phase" tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}6' data-match="{$arrayMatchs[i].Id}" data-idphase="{$arrayMatchs[i].Id_journee}" data-phase="{$arrayMatchs[i].Phase}">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></td>
 													<td><span class='directInputOff text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
 												{else}
 													<td><span class='directInputOff text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3' Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span></td>
