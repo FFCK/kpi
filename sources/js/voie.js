@@ -81,7 +81,7 @@ var theCurrentVoieUrl = '';
 			$('#showUrl' + showUrl).val(url + "&voie="+voie);
 		} else {
 			$.ajax({ 
-				type: "POST", 
+				type: "GET", 
 				url: "./live/ajax_change_voie.php", 
 				dataType: "html", 
 				data: param, 
