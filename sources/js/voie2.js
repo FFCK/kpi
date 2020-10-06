@@ -52,10 +52,15 @@ function ChangeVoie(voie, url, showUrl=0)
     if(showUrl > 0){
         $('#showUrl' + showUrl).val(url + "&voie="+voie);
     } else {
-        $.ajax({ type: "POST", url: "./live/ajax_change_voie.php", dataType: "html", data: param, cache: false, 
-                    success: function(htmlData) {
-                            alerte(htmlData);
-                    }
+		$.ajax({ 
+			type: "GET", 
+			url: "./live/ajax_change_voie.php", 
+			dataType: "html", 
+			data: param, 
+			cache: false, 
+			success: function(htmlData) {
+				alerte(htmlData);
+			}
         });
     }
 }

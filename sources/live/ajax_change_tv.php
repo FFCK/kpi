@@ -4,16 +4,16 @@ include_once('../commun/MyParams.php');
 include_once('../commun/MyTools.php');
 include_once('../commun/MyBdd.php');
 
-$voie = utyGetInt($_POST, 'voie', 1);
-$show = utyGetString($_POST, 'show');
+$voie = utyGetInt($_GET, 'voie', 1);
+$show = utyGetString($_GET, 'show');
 
-$competition = utyGetString($_POST, 'competition');
-$saison = utyGetString($_POST, 'saison');
-$match = utyGetString($_POST, 'match');
-$team = utyGetString($_POST, 'team');
-$number = utyGetString($_POST, 'number');
-$start = utyGetString($_POST, 'start');
-$medal = utyGetString($_POST, 'medal');
+$competition = utyGetString($_GET, 'competition');
+$saison = utyGetString($_GET, 'saison');
+$match = utyGetString($_GET, 'match');
+$team = utyGetString($_GET, 'team');
+$number = utyGetString($_GET, 'number');
+$start = utyGetString($_GET, 'start');
+$medal = utyGetString($_GET, 'medal');
 
 $myBdd = new MyBdd();
 
