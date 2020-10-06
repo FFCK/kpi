@@ -1090,7 +1090,7 @@ function Go_team_medal(channel, match, team, medal, showUrl=0)
 
 function Go_match(channel, match, showUrl=0)
 {
-	var param;
+    var param;
 	param  = "show=match";
 	param += "&voie=" + channel;
 	param += "&match=" + match;
@@ -1099,7 +1099,7 @@ function Go_match(channel, match, showUrl=0)
 
 function Go_match_score(channel, match, showUrl=0)
 {
-	var param;
+    var param;
 	param  = "show=match_score";
 	param += "&voie=" + channel;
 	param += "&match=" + match;
