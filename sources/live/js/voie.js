@@ -7,6 +7,7 @@ var theCurrentVoieUrl = '';
 	{
 		theCurrentVoie = voie;
 		theCurrentVoieUrl = window.location.href;
+		if (intervalle < 500) {intervalle = 500;}
 		if (voie > 0 && voie < 100)
 		{
 			setInterval(RefreshVoie, intervalle);
