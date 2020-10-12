@@ -884,7 +884,7 @@ class TV extends MyPage
     {
         parent::Script();
 		$voie = $this->GetParamInt('voie', 0);
-		$intervalle = $this->GetParamInt('intervalle', 0);
+		$intervalle = $this->GetParamInt('intervalle', 3000);
 
 		$show = $this->GetParam('show');
 		if ($show == 'command') {
