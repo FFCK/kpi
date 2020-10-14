@@ -142,6 +142,7 @@
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres == 'score'}selected{/if}>Live score</option>
                             <option value="score2" {if $filtrePres == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
@@ -366,6 +367,7 @@
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres2 == 'score'}selected{/if}>Live score</option>
                             <option value="score2" {if $filtrePres2 == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres2 == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres2 == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
@@ -549,6 +551,7 @@
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres3 == 'score'}selected{/if}>Live score</option>
                             <option value="score2" {if $filtrePres3 == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres3 == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres3 == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
@@ -732,6 +735,7 @@
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres4 == 'score'}selected{/if}>Live score</option>
                             <option value="score2" {if $filtrePres4 == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres4 == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres4 == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
