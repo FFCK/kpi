@@ -85,7 +85,7 @@
                                 <tr>
                                     <td class="cliquableNomEquipe">
                                         {if $arrayEquipe[$poule][j].logo != ''}
-                                            <img class="img2 pull-left" width="28" src="{$arrayEquipe[$poule][j].logo}" alt="{$arrayEquipe[$poule][j].club}" />
+                                            <img class="img2 pull-left" width="28" src="{$arrayEquipe[$poule][j].logo}?v={$NUM_VERSION}" alt="{$arrayEquipe[$poule][j].club}" />
                                         {/if}
                                         <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayEquipe[$poule][j].Numero}&Compet={$codeCompet}&Css={$Css}' title='{#Palmares#}'>{$arrayEquipe[$poule][j].Libelle}</a>
                                     </td>
