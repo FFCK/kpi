@@ -381,9 +381,7 @@ class Details extends MyPage
 		
 		$alertMessage = '';
 		
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
 		if (strlen($Cmd) > 0)
 		{

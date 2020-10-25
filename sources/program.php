@@ -37,5 +37,5 @@ while ($row = $result->fetch()) {
 header("Content-type: application/json; charset=utf-8");
 //header('Access-Control-Allow-Origin: *');
 //header('Access-Control-Allow-Methods: GET, POST');
-echo $_GET['callback'] . '(' . json_encode($a_json) . ')';
+echo utyGetGet('callback') . '(' . json_encode($a_json) . ')';
 exit();

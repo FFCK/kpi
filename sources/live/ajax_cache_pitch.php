@@ -2,14 +2,14 @@
 include_once('../commun/MyBdd.php');
 include_once('create_cache_match.php');
 
-$event = $_GET['event'];
-$match = $_GET['match'];
-$pitch = $_GET['pitch'];
+$event = utyGetGet('event', false);
+$match = utyGetGet('match', false);
+$pitch = utyGetGet('pitch', false);
 
 $db = new MyBdd();
 
-$_GET['cache'] = 1;
-$cache = new CacheMatch($_GET);
+$array['cache'] = 1;
+$cache = new CacheMatch($array);
 $cache->Pitch($event, $pitch, $match);
 $cache->Match($db, $match);
 

@@ -32,12 +32,12 @@ function load( & $arrayJson, $sql,  & $bdd)
 
 // Parsing des paramètres ...
 $lstEvenement = '-1';
-if (isset($_GET['lst']))
-	$lstEvenement = $_GET['lst'];
+if (utyGetGet('lst', false))
+	$lstEvenement = utyGetGet('lst', false);
 	
 $userpwd = '';
-if (isset($_GET['session']))
-	$userpwd = $_GET['session'];
+if (utyGetGet('session', false))
+	$userpwd = utyGetGet('session', false);
 
 // Connexion BDD
 $myBdd = new MyBdd();
@@ -78,8 +78,8 @@ if (PRODUCTION) {
 
 	
 	if ($bKo) {
-		if (isset($_GET['callback'])) {
-			$callback = $_GET['callback'];
+		if (utyGetGet('callback', false)) {
+			$callback = utyGetGet('callback', false);
 			if ($bUserPwd)
 				echo $callback."('ERREUR Evènement ou date expirée...');";
 			else
@@ -301,16 +301,13 @@ $arrayJson = array(
 //$jsondata = htmlspecialchars_decode(stripcslashes(json_encode($arrayJson)));
 //$jsondata = str_replace("\'","'",$jsondata);
 $jsondata = json_encode($arrayJson);
-if (isset($_GET['callback'])) 
-{
+if (utyGetGet('callback', false)) {
 	//Fonction EvtExport
 	if (PRODUCTION)
 		$myBdd->EvtExport($UserCode, $lstEvenement, 'Export', $UserIdentite, '');
-	$callback = $_GET['callback'];
+	$callback = utyGetGet('callback', false);
 	echo $callback.'('.$jsondata.');';
-} 
-else 
-{
+} else {
 	//Fonction EvtExport
 	if (PRODUCTION)
 		$myBdd->EvtExport($UserCode, $lstEvenement, '?', $UserIdentite, '');

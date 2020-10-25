@@ -70,19 +70,19 @@ class RechercheLicenceIndi2 extends MyPageSecure
 				$sql .= " AND a.Numero_club = ? ";
                 $arrayQuery = array_merge($arrayQuery, [$codeClub]);
 			}
-			if (isset($_POST['CheckJugeInter'])) {
+			if (utyGetPost('CheckJugeInter', false)) {
                 $sql .= " AND b.Arb = 'Int' ";
 			}
-			if (isset($_POST['CheckJugeNational'])) {
+			if (utyGetPost('CheckJugeNational', false)) {
                 $sql .= " AND b.Arb = 'Nat' ";
 			}
-			if (isset($_POST['CheckJugeReg'])) {
+			if (utyGetPost('CheckJugeReg', false)) {
                 $sql .= " AND b.Arb = 'Reg' ";
 			}
-			if (isset($_POST['CheckJugeOTM'])) {
+			if (utyGetPost('CheckJugeOTM', false)) {
                 $sql .= " AND b.Arb = 'OTM' ";
 			}
-			if (isset($_POST['CheckJugeJO'])) {
+			if (utyGetPost('CheckJugeJO', false)) {
                 $sql .= " AND b.Arb = 'JO' ";
 			}
 			$sql .= " ORDER BY a.Nom, a.Prenom, a.Matric ";
@@ -283,22 +283,22 @@ class RechercheLicenceIndi2 extends MyPageSecure
             return true;
         }
 
-        if (isset($_POST['CheckJugeInter'])) {
+        if (utyGetPost('CheckJugeInter', false)) {
             return true;
         }
-        if (isset($_POST['CheckJugeNational'])) {
+        if (utyGetPost('CheckJugeNational', false)) {
             return true;
         }
-        if (isset($_POST['CheckJugeInterReg'])) {
+        if (utyGetPost('CheckJugeInterReg', false)) {
             return true;
         }
-        if (isset($_POST['CheckJugeReg'])) {
+        if (utyGetPost('CheckJugeReg', false)) {
             return true;
         }
-        if (isset($_POST['CheckJugeOTM'])) {
+        if (utyGetPost('CheckJugeOTM', false)) {
             return true;
         }
-        if (isset($_POST['CheckJugeJO'])) {
+        if (utyGetPost('CheckJugeJO', false)) {
             return true;
         }
 
@@ -312,39 +312,39 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		$this->SetTemplate("Recherche Licenciés", "", false);
 		$this->Load();
 		
-		if (isset($_POST['matricJoueur'])) {
-            $this->m_tpl->assign('matricJoueur', $_POST['matricJoueur']);
+		if (utyGetPost('matricJoueur', false)) {
+            $this->m_tpl->assign('matricJoueur', utyGetPost('matricJoueur', false));
         }
 
-        if (isset($_POST['nomJoueur'])) {
-            $this->m_tpl->assign('nomJoueur', $_POST['nomJoueur']);
+        if (utyGetPost('nomJoueur', false)) {
+            $this->m_tpl->assign('nomJoueur', utyGetPost('nomJoueur', false));
         }
 
-        if (isset($_POST['prenomJoueur'])) {
-            $this->m_tpl->assign('prenomJoueur', $_POST['prenomJoueur']);
+        if (utyGetPost('prenomJoueur', false)) {
+            $this->m_tpl->assign('prenomJoueur', utyGetPost('prenomJoueur', false));
         }
 
-        if (isset($_POST['sexeJoueur'])) {
-            $this->m_tpl->assign('sexeJoueur', $_POST['sexeJoueur']);
+        if (utyGetPost('sexeJoueur', false)) {
+            $this->m_tpl->assign('sexeJoueur', utyGetPost('sexeJoueur', false));
         }
 
-        if (utyGetPost('CheckJugeInter', false) == true) {
+        if (utyGetPost('CheckJugeInter', false)) {
             $this->m_tpl->assign('CheckJugeInter', 'checked');
         }
 
-        if (utyGetPost('CheckJugeNational', false) == true) {
+        if (utyGetPost('CheckJugeNational', false)) {
             $this->m_tpl->assign('CheckJugeNational', 'checked');
         }
 
-        if (utyGetPost('CheckJugeReg', false) == true) {
+        if (utyGetPost('CheckJugeReg', false)) {
             $this->m_tpl->assign('CheckJugeReg', 'checked');
         }
 
-        if (utyGetPost('CheckJugeOTM', false) == true) {
+        if (utyGetPost('CheckJugeOTM', false)) {
             $this->m_tpl->assign('CheckJugeOTM', 'checked');
         }
 
-        if (utyGetPost('CheckJugeJO', false) == true) {
+        if (utyGetPost('CheckJugeJO', false)) {
             $this->m_tpl->assign('CheckJugeJO', 'checked');
         }
 

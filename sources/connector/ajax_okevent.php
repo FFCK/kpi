@@ -7,8 +7,8 @@ session_start();
 $user = $_SESSION['User'];
 
 $lstEvenement = '-1';
-if (isset($_GET['lst']))
-	$lstEvenement = $_GET['lst'];
+if (utyGetGet('lst', false))
+	$lstEvenement = utyGetGet('lst', false);
 
 // Connexion BDD
 $myBdd = new MyBdd();

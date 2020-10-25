@@ -2,9 +2,7 @@
 include_once('../commun/MyConfig.php');
 include_once('replace_evenement.php');
 
-$jsondata = '';
-if (isset($_POST['json_data']))
-	$jsondata = stripcslashes($_POST['json_data']);
+$jsondata = stripcslashes(utyGetPost('json_data', ''));
 ?>
 
 <!doctype html>

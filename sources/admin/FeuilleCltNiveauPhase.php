@@ -28,9 +28,10 @@ class FeuilleCltNiveauPhase extends MyPage
 
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
-        if (isset($_GET['lang']) && $_GET['lang'] == 'en') {
+        $getlang = utyGetGet('lang', false);
+		if ($getlang  == 'en') {
             $arrayCompetition['En_actif'] = 'O';
-        } elseif (isset($_GET['lang']) && $_GET['lang'] == 'fr') {
+        } elseif ($getlang  == 'fr') {
             $arrayCompetition['En_actif'] = '';
         }
 
