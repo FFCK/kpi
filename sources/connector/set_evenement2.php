@@ -1,19 +1,17 @@
 <?php
 include_once($_SERVER['DOCUMENT_ROOT'].'/commun/MyBdd.php');
 
-if (isset($_GET['json']))
-{
-	$json = $_GET['json'];
+if (utyGetGet('json', false)) {
+	$json = utyGetGet('json', false);
 	
 	$user = '';
 	$pwd = '';
-	if (isset($_GET['user'])) $user = $_GET['user'];
-	if (isset($_GET['pwd'])) $pwd = $_GET['pwd'];
+	if (utyGetGet('user', false)) $user = utyGetGet('user', false);
+	if (utyGetGet('pwd', false)) $user = utyGetGet('pwd', false);
 
-	$sql  = "Select Pwd From gickp_Utilisateur ";
-	$sql .= "Where Code = '";
-	$sql .= $user;
-	$sql .= "' ";
+	$sql  = "SELECT Pwd 
+		FROM gickp_Utilisateur 
+		WHERE Code = '" . $user . "' ";
 		
 	$myBdd = new MyBdd(true);	// Connexion sur le site Mirroir (poloweb5)
 

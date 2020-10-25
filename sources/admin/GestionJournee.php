@@ -90,7 +90,7 @@ class GestionJournee extends MyPageSecure
 		$codeCompet = utyGetSession('codeCompet', '*');
 		$codeCompet = utyGetPost('comboCompet', $codeCompet);
 		$codeCompet = utyGetGet('Compet', $codeCompet);
-		if ($codeCompet != $_SESSION['codeCompet'] || isset($_GET['Compet'])) {
+		if ($codeCompet != $_SESSION['codeCompet'] || utyGetGet('Compet', false)) {
 			$this->Raz();
 			$idSelJournee = '*';
 			$idMatch = -1;
@@ -362,7 +362,7 @@ class GestionJournee extends MyPageSecure
 		}
 
 		// Initialisation Date du match ...
-		if (!isset($_POST['Date_match'])) {
+		if (utyGetPost('Date_match', false)) {
             if (strlen(utyGetSession('Date_match')) == 0) {
                 if (count($arrayJournees) >= 1) {
                     $_SESSION['Date_match'] = $arrayJournees[0]['Date_debut'];
@@ -718,9 +718,7 @@ class GestionJournee extends MyPageSecure
 		$idJournee = utyGetSession('idJournee', '*');
 		//$idJournee = utyGetPost('idJournee', $idJournee);
 		
-		$_SESSION['Intervalle_match'] = utyGetSession('Intervalle_match',40);
-		if (isset($_POST['Intervalle_match']))
-			$_SESSION['Intervalle_match'] = $_POST['Intervalle_match'];
+		$_SESSION['Intervalle_match'] = utyGetPost('Intervalle_match', utyGetSession('Intervalle_match', 40));
 		
 		$myBdd = $this->myBdd;
 		// Chargement des Matchs des journées ...
@@ -765,9 +763,7 @@ class GestionJournee extends MyPageSecure
         
         $idMatch = utyGetSession('idMatch', 0);
 		
-		$_SESSION['Intervalle_match'] = utyGetSession('Intervalle_match','40');
-		if (isset($_POST['Intervalle_match']))
-			$_SESSION['Intervalle_match'] = $_POST['Intervalle_match'];
+		$_SESSION['Intervalle_match'] = utyGetPost('Intervalle_match', utyGetSession('Intervalle_match', 40));
 		
 		$idJournee = (int) utyGetPost('comboJournee', 0);
 
@@ -907,9 +903,7 @@ class GestionJournee extends MyPageSecure
 			));
 		}
 		
-		$_SESSION['Intervalle_match'] = utyGetSession('Intervalle_match','40');
-		if (isset($_POST['Intervalle_match']))
-			$_SESSION['Intervalle_match'] = $_POST['Intervalle_match'];
+		$_SESSION['Intervalle_match'] = utyGetPost('Intervalle_match', utyGetSession('Intervalle_match', 40));
 		
 		$myBdd->utyJournal('Ajout match', '', '', null, $idJournee, $numMatch, $dateMatch.' '.$heureMatch);
 		
@@ -919,9 +913,7 @@ class GestionJournee extends MyPageSecure
 	
 	function Remove()
 	{
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
@@ -1110,9 +1102,7 @@ class GestionJournee extends MyPageSecure
 	
 	function PubliMultiMatchs()
 	{
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
@@ -1145,9 +1135,7 @@ class GestionJournee extends MyPageSecure
 	
 	function VerrouPubliMultiMatchs()
 	{
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
@@ -1188,9 +1176,7 @@ class GestionJournee extends MyPageSecure
 	
 	function VerrouMultiMatchs()
 	{
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
@@ -1224,9 +1210,7 @@ class GestionJournee extends MyPageSecure
 	function AffectMultiMatchs() // Affect. Auto
 	{
 		// Affectation auto des équipes	dans les matchs
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
@@ -1234,7 +1218,7 @@ class GestionJournee extends MyPageSecure
 
 		$myBdd = $this->myBdd;
 
-		$texte = '';
+		// $texte = '';
 		
 		$sql1 = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
 			m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
@@ -1314,7 +1298,7 @@ class GestionJournee extends MyPageSecure
 			$libelle = preg_split("/[\]]/",$libelle[1]);
 			if($libelle[0] == "")
 				die("Placez votre code AffectAuto entre crochets [ ]. (<a href='javascript:history.back()'>Retour</a>)");
-			$texte .= '<br>'.$libelle[0].'<br>';
+			// $texte .= '<br>'.$libelle[0].'<br>';
 			// On sépare par tiret, slash, étoile, virgule ou point-virgule.
 			$libelle = preg_split("/[\-\/*,;]/",$libelle[0]);
 			// On analyse le contenu
@@ -1334,31 +1318,33 @@ class GestionJournee extends MyPageSecure
 				$codeVainqueur = '';
 				$codePerdant = '';
 				$codePoule = '';
-				preg_match("/([A-Z]+)/",$libelle[$j],$codeLettres); // lettre
-				preg_match("/([0-9]+)/",$libelle[$j],$codeNumero); // numero... de match ou classement de poule ou tirage
-				$posNumero = strpos($libelle[$j], $codeNumero[1]);
-				$posLettres = strpos($libelle[$j], $codeLettres[1]);
-				if ($posNumero > $posLettres) { // tirage ou match
-					switch ($codeLettres[1]) {
-						case 'T' : // tirage
-						case 'D' : // draw
-							$codeTirage = $codeLettres[1];
-							break;
-						case 'V' : // vainqueur
-						case 'G' : // gagnant
-						case 'W' : // winner
-							$codeVainqueur = $codeLettres[1];
-							break;
-						case 'P' : // Perdant
-						case 'L' : // Loser
-							$codePerdant = $codeLettres[1];
-							break;
-						default :
-							die("Code incorrect sur le match ".$id.". (<a href='javascript:history.back()'>Retour</a>)");
-							break;
+				if (isset($libelle[$j])) {
+					preg_match("/([A-Z]+)/",$libelle[$j],$codeLettres); // lettre
+					preg_match("/([0-9]+)/",$libelle[$j],$codeNumero); // numero... de match ou classement de poule ou tirage
+					$posNumero = strpos($libelle[$j], $codeNumero[1]);
+					$posLettres = strpos($libelle[$j], $codeLettres[1]);
+					if ($posNumero > $posLettres) { // tirage ou match
+						switch ($codeLettres[1]) {
+							case 'T' : // tirage
+							case 'D' : // draw
+								$codeTirage = $codeLettres[1];
+								break;
+							case 'V' : // vainqueur
+							case 'G' : // gagnant
+							case 'W' : // winner
+								$codeVainqueur = $codeLettres[1];
+								break;
+							case 'P' : // Perdant
+							case 'L' : // Loser
+								$codePerdant = $codeLettres[1];
+								break;
+							default :
+								die("Code incorrect sur le match ".$id.". (<a href='javascript:history.back()'>Retour</a>)");
+								break;
+						}
+					} else { // poule
+						$codePoule = $codeLettres[1];
 					}
-				} else { // poule
-					$codePoule = $codeLettres[1];
 				}
 				if ($codeTirage != '') { // Tirage
 					$result2->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
@@ -1372,7 +1358,7 @@ class GestionJournee extends MyPageSecure
 						$selectNom[$j] = addslashes($row2['Nom_equipe']);
 						$clst = $row2['Nom_equipe'];
 					}
-					$texte .= $codeNumero[1].'e poule '.$codePoule[1].' : '.$clst.'<br>';
+					// $texte .= $codeNumero[1].'e poule '.$codePoule[1].' : '.$clst.'<br>';
 				} elseif($codeVainqueur != '') {
 					$result3->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
 					if ($result3->rowCount() != 1)	{
@@ -1392,7 +1378,7 @@ class GestionJournee extends MyPageSecure
 							$vainqueur = $row3['Nom_equipeB'];
 						}
 					}
-					$texte .= 'Vainqueur match '.$codeNumero[1].' : '.$vainqueur.'<br>';
+					// $texte .= 'Vainqueur match '.$codeNumero[1].' : '.$vainqueur.'<br>';
 				} elseif($codePerdant != '') {
 					$result4->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
 					if ($result4->rowCount() != 1) {
@@ -1412,7 +1398,7 @@ class GestionJournee extends MyPageSecure
 							$perdant = $row4['Nom_equipeB'];
 						}
 					}
-					$texte .= 'Perdant match '.$codeNumero[1].' : '.$perdant.'<br>';
+					// $texte .= 'Perdant match '.$codeNumero[1].' : '.$perdant.'<br>';
 				} elseif($codePoule != '') {
 					$result5->execute(array(
 						':codeNumero' => $codeNumero[1],
@@ -1430,7 +1416,7 @@ class GestionJournee extends MyPageSecure
 						$selectNom[$j] = addslashes($row5['Nom_equipe']);
 						$clst = $row5['Nom_equipe'];
 					}
-					$texte .= $codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
+					// $texte .= $codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
 				} else {
 					$selectNum[$j]=0;
 					$selectNom[$j]='';
@@ -1478,9 +1464,7 @@ class GestionJournee extends MyPageSecure
 	function AnnulMultiMatchs() // Annul. Auto
 	{
 		// Annulation des affectations d'équipes dans les matchs
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
@@ -1488,7 +1472,7 @@ class GestionJournee extends MyPageSecure
 
 		$myBdd = $this->myBdd;
 
-		$texte = '';
+		// $texte = '';
 		
 		$sql1 = "SELECT m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison 
 			FROM gickp_Matchs m, gickp_Journees j 
@@ -1530,9 +1514,7 @@ class GestionJournee extends MyPageSecure
 
 	function ChangeMultiMatchs()
 	{
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)
@@ -1564,13 +1546,9 @@ class GestionJournee extends MyPageSecure
 
 		$alertMessage = '';
 	  		
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
         
        	$arrayCheck = '';
 

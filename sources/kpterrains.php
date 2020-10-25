@@ -478,13 +478,13 @@ class Matchs extends MyPage
 		$this->Load();
         
 		// COSANDCO : Gestion Param Voie ...
-		if (isset($_GET['voie'])) {
-			$voie = (int) $_GET['voie'];
+		if (utyGetGet('voie', false)) {
+			$voie = (int) utyGetGet('voie', 0);
 			if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
             }
             
-			$intervalle = (int) $_GET['intervalle'];
+			$intervalle = (int) utyGetGet('intervalle', 0);
 			if ($intervalle > 0) {
                 $this->m_tpl->assign('intervalle', $intervalle);
 			}

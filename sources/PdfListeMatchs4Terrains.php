@@ -43,13 +43,13 @@ class PdfListeMatchs extends MyPage
 		$lstJournee = utyGetSession('lstJournee', 0);
         $idEvenement = utyGetSession('idEvenement', -1);
 		$idEvenement = utyGetGet('idEvenement', $idEvenement);
-		if (isset($_GET['idEvenement'])) {
+		if (utyGetGet('idEvenement', 0) > 0) {
 			$lstJournee = [];
 			$sql = "SELECT Id_journee 
                 FROM gickp_Evenement_Journees 
                 WHERE Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array($_GET['idEvenement']));
+            $result->execute(array($idEvenement));
             while ($row = $result->fetch()) {
                 $lstJournee[] = $row['Id_journee'];
 			}

@@ -14,29 +14,29 @@ class GestionUtilisateur extends MyPageSecure
                 return 'SELECTED';
             }
         }
-   	 return '';
+   	 	return '';
 	}
 
 	function IsSaisonSelectedPost($code)
 	{
-		if (isset($_POST['comboSaison']) && !empty($_POST['comboSaison'])) {
-			return $this->IsSelected($code, $_POST['comboSaison']);
+		if (utyGetPost('comboSaison', false)) {
+			return $this->IsSelected($code, utyGetPost('comboSaison', false));
 		}
 		return '';
 	}
 
 	function IsCompetitionSelectedPost($code)
 	{
-		if (isset($_POST['comboCompetition']) && !empty($_POST['comboCompetition'])) {
-			return $this->IsSelected($code, $_POST['comboCompetition']);
+		if (utyGetPost('comboCompetition', false)) {
+			return $this->IsSelected($code, utyGetPost('comboCompetition', false));
 		}
 		return '';
 	}
 	
 	function IsEvenementSelectedPost($code)
 	{
-		if (isset($_POST['comboEvenement']) && !empty($_POST['comboEvenement'])) {
-			return $this->IsSelected($code, $_POST['comboEvenement']);
+		if (utyGetPost('comboEvenement', false)) {
+			return $this->IsSelected($code, utyGetPost('comboEvenement', false));
 		}
 		return '';
 	}
@@ -52,8 +52,8 @@ class GestionUtilisateur extends MyPageSecure
 
 	function GetFiltreSaison()
 	{
-		if (isset($_POST['comboSaison']) && !empty($_POST['comboSaison'])) {
-			return $this->SetFiltreSaison($_POST['comboSaison']);
+		if (utyGetPost('comboSaison', false)) {
+			return $this->SetFiltreSaison(utyGetPost('comboSaison', false));
 		}
 		return '';
 	}
@@ -78,8 +78,8 @@ class GestionUtilisateur extends MyPageSecure
 	
 	function GetFiltreCompetition()
 	{
-		if (isset($_POST['comboCompetition']) && !empty($_POST['comboCompetition'])) {
-			return $this->SetFiltreCompetition($_POST['comboCompetition']);
+		if (utyGetPost('comboCompetition', false)) {
+			return $this->SetFiltreCompetition(utyGetPost('comboCompetition', false));
 		}
 		return '';
 	}
@@ -104,8 +104,8 @@ class GestionUtilisateur extends MyPageSecure
 		
 	function GetFiltreEvenement()
 	{
-		if (isset($_POST['comboEvenement']) && !empty($_POST['comboEvenement'])) {
-			return $this->SetFiltreEvenement($_POST['comboEvenement']);
+		if (utyGetPost('comboEvenement', false)) {
+			return $this->SetFiltreEvenement(utyGetPost('comboEvenement', false));
 		}
 		return '';
 	}

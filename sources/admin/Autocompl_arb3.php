@@ -18,7 +18,7 @@ $term = trim(utyGetGet('term'));
 $term = preg_replace('/\s+/', ' ', $term);
 // supprime les 0 devant les numéros de licence
 $term = preg_replace('`^[0]*`','',$term);
-$idMatch = (int)trim($_GET['idMatch']);
+$idMatch = (int) trim(utyGetGet('idMatch'));
 $term1 = '%' . $term . '%';
 
 $jRow = array();
