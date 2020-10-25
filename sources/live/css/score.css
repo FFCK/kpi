@@ -163,6 +163,15 @@ div#categorie {
     display: none;
 }
 
+.ban_goal_card2 {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_goal_card_2.png');
+    display: none;
+}
+
 #banner_goal_card {
     width: 1180px;
     height: 138px;

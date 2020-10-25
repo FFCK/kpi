@@ -112,10 +112,10 @@ function ParseCacheScore(jsonTxt)
 			var line;
 			if (jsonData.event[0].Equipe_A_B == 'A') {
 				line = ImgNation48(theContext.Match.GetEquipe1(rowMatch));
-                line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch);
+                // line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch).substring(0, 3);
             } else {
 				line = ImgNation48(theContext.Match.GetEquipe2(rowMatch));
-                line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3);
+                // line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3);
             }
 			line += "&nbsp;<span>";
 //			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
