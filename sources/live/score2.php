@@ -80,7 +80,7 @@ class Score extends MyPage
         ?>
         <div id="categorie"></div>
         
-        <div id="bandeau_goal" class="ban_goal_card">
+        <div id="bandeau_goal" class="ban_goal_card2">
             <div id="goal_card"></div>
             <div id="banner_goal_card" class="text-left">
                 <div id="match_event_line2" class="banner_line text-left"></div>
