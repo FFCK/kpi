@@ -14,7 +14,7 @@ include_once('../../commun/MyTools.php');
 session_start();
 
 $myBdd = new MyBdd();
-$idMatch = (int) $_POST['idMatch'];
+$idMatch = (int) utyGetPost('idMatch', 0);
 $sql = "SELECT * 
 	FROM gickp_Chrono 
 	WHERE IdMatch = ? ";

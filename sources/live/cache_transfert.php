@@ -1,6 +1,6 @@
 <?php
 
-$data = $_GET['json_data'];
+$data = utyGetGet('json_data');
 $data = urldecode($data);
 
 $fileName = "test.txt";

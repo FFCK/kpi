@@ -1,7 +1,21 @@
 <?php
+// MyTools.php
+
 include_once('MyBdd.php'); 
 
-// MyTools.php
+// htmlpurifier
+if (is_file('htmlpurifier/HTMLPurifier.auto.php')) {
+	require_once 'htmlpurifier/HTMLPurifier.auto.php';
+} elseif (is_file('../htmlpurifier/HTMLPurifier.auto.php')) {
+	require_once '../htmlpurifier/HTMLPurifier.auto.php';
+} else {
+	require_once '../../htmlpurifier/HTMLPurifier.auto.php';
+}
+$config = HTMLPurifier_Config::createDefault();
+$config->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+$config->set('HTML.Doctype', 'XHTML 1.0 Transitional'); // replace with your doctype
+$purifier = new HTMLPurifier($config);
+
 
 function debug($variable, $die = false) {
 	echo '<pre>';
@@ -321,8 +335,8 @@ function utyCodeCategorie($dateNaissance)
 	return $code;
 }
 */
-// utyCodeCategorie 2 (sans requête)
 
+// utyCodeCategorie 2 (sans requête)
 function utyCodeCategorie2($dateNaissance, $saison = '')
 {
 	if($saison == '')
@@ -355,7 +369,6 @@ function utyCodeCategorie2($dateNaissance, $saison = '')
 }
 
 // utyTimeInterval
-
 function utyTimeInterval($time, $interval)
 {
 	$data = explode(':',$time);
@@ -376,33 +389,50 @@ function utyTimeInterval($time, $interval)
 }
 
 // utyGetSession
-
 function utyGetSession($param, $default = '')
 {
-		if (isset($_SESSION[$param]))
-			return $_SESSION[$param];
-			
-		return $default;
+	if (isset($_SESSION[$param]))
+		return $_SESSION[$param];
+		
+	return $default;
 }
 
 // utyGetPost
 
 function utyGetPost($param, $default = '')
 {
-		if (isset($_POST[$param]))
-			return $_POST[$param];
-			
-		return $default;
+	if (isset($_POST[$param])) {
+		// return $_POST[$param];
+		
+		global $purifier;
+		
+		if (is_array($_POST[$param])) {
+			foreach ($_POST[$param] as $element) {
+				$pure_html[] = $purifier->purify($element);
+			}
+			return $pure_html;
+		}
+
+		$pure_html = $purifier->purify($_POST[$param]);
+		return htmlspecialchars($pure_html);
+	}
+		
+	return $default;
 }
 
 // utyGetGet
-
 function utyGetGet($param, $default = '')
 {
-		if (isset($_GET[$param]))
-			return $_GET[$param];
-			
-		return $default;
+	if (isset($_GET[$param])) {
+		// return $_GET[$param];
+
+		global $purifier;
+		$pure_html = $purifier->purify($_GET[$param]);
+
+		return htmlspecialchars($pure_html);
+	}
+		
+	return $default;
 }
 
 // utyGetInt
@@ -418,8 +448,13 @@ function utyGetInt($array, $param, $default = 1)
 function utyGetString($array, $param, $default = 1)
 {
     if (isset($array[$param])) {
-//        return addslashes( $array[$param] );
-        return $array[$param] ;
+		// return $array[$param] ;
+
+		global $purifier;
+		$pure_html = $purifier->purify($array[$param]);
+
+		return htmlspecialchars($pure_html);
+
     }
     return $default;
 }
@@ -428,7 +463,9 @@ function utyGetString($array, $param, $default = 1)
 function utyGetPrenom($array, $param, $default = '')
 {
     if (isset($array[$param])) {
-        $prenom = utyUcName( $array[$param] ); 
+		global $purifier;
+		$pure_html = $purifier->purify($array[$param]);
+        $prenom = utyUcName( $pure_html ); 
         return $prenom;
     }
     return $default;

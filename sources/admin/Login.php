@@ -13,8 +13,8 @@ class Login extends MyPage
 		session_start();
         $myBdd = new MyBdd();
         
-		if (isset($_GET['Src'])) {
-            $loginTarget = $myBdd->RealEscapeString($_GET['Src']);
+		if (utyGetGet('Src', false)) {
+            $loginTarget = $myBdd->RealEscapeString(utyGetGet('Src', false));
             $_SESSION['loginTarget'] = $loginTarget;
             $target = str_replace('&lang=en', '', $loginTarget);
             $target = str_replace('&lang=fr', '', $loginTarget);
@@ -24,8 +24,8 @@ class Login extends MyPage
         //if ($_SESSION['loginTarget'] == 'index.php' || $_SESSION['loginTarget'] == 'Login.php' || $_SESSION['loginTarget'] == '')
 		//	$_SESSION['loginTarget'] = '/Index2.php';
 			
-		if ( (isset($_POST['User'])) && (isset($_POST['Mel']))  && ($_POST['Mode'] == 'Regeneration') ) {
-			$user = preg_replace('`^[0]*`', '', trim($_POST['User']));
+		if ( (utyGetPost('User', false) && utyGetPost('Mel', false))  && (utyGetPost('Mode', false) == 'Regeneration') ) {
+			$user = preg_replace('`^[0]*`', '', trim(utyGetPost('User', false)));
             $mel = trim(utyGetPost('Mel'));
             
 			$sql = "SELECT u.* 
@@ -72,10 +72,10 @@ class Login extends MyPage
 				$message .= 'Content-Transfer-Encoding: 8bit'."\n\n"; 
 				//ENVOI
 				$messageComplet = $message.$message_texte;
-				mail($_POST['Mel'],$sujet,$messageComplet,$headers);
+				mail($mel, $sujet, $messageComplet, $headers);
 			}
-		} elseif (isset($_POST['User']) && isset($_POST['Pwd'])  && $_POST['Mode'] == 'Connexion') {
-			$user = preg_replace( '`^[0]*`', '', $myBdd->RealEscapeString( trim( $_POST['User'] ) ) );
+		} elseif (utyGetPost('User', false) && utyGetPost('Pwd', false) && utyGetPost('Mode', false) == 'Connexion') {
+			$user = preg_replace( '`^[0]*`', '', $myBdd->RealEscapeString( trim( utyGetPost('User', false) ) ) );
 			$sql = "SELECT u.*, c.Nom, c.Prenom, c.Numero_club 
 				FROM gickp_Utilisateur u, gickp_Liste_Coureur c 
 				WHERE u.Code = ? 
@@ -84,7 +84,7 @@ class Login extends MyPage
 			$result->execute(array($user));
 			if ($result->rowCount() == 1) {
 				$row = $result->fetch();	  
-				if ($row["Pwd"] === md5($_POST['Pwd'])) {
+				if ($row["Pwd"] === md5(utyGetPost('Pwd', false))) {
 					$_SESSION['User'] = $user;
 					$_SESSION['Profile'] = $row["Niveau"];
 					$_SESSION['ProfileOrigine'] = $row["Niveau"];
@@ -94,7 +94,7 @@ class Login extends MyPage
 					$_SESSION['Club'] = $row['Numero_club'];
                     
                     // Timezone Offset in minutes - server timezone offset
-					$_SESSION['tzOffset'] = ((int) $myBdd->RealEscapeString( $_POST['tzOffset'] ) - 120) . ' minutes';
+					$_SESSION['tzOffset'] = ((int) $myBdd->RealEscapeString( utyGetPost('tzOffset', false) ) - 120) . ' minutes';
                     
 					//Journées autorisées (+ journées de l'évènement autorisé)
 					$Filtre_Journee = $row["Filtre_journee"];

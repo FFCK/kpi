@@ -14,10 +14,10 @@ class Logos extends MyPage
 	{
         $myBdd = new MyBdd();
         
-        $data = isset($_GET['data']) ? $_GET['data'] : 'https://www.kayak-polo.info/kpchart.php?Group=T-BREIZH&Compet=T-BREIZH&Saison=2019&lang=en';
-        $size = isset($_GET['size']) ? $_GET['size'] : '500';
-        $level = isset($_GET['level']) ? $_GET['level'] : 'H'; // error level : L, M, Q, H
-        $logo = isset($_GET['logo']) ? $_GET['logo'] : 'img/CNAKPI_small.jpg';
+        $data = utyGetGet('data', 'https://www.kayak-polo.info/kpchart.php?Group=T-BREIZH&Compet=T-BREIZH&Saison=2019&lang=en');
+        $size = utyGetGet('size', '500');
+        $level = utyGetGet('level', 'H'); // error level : L, M, Q, H
+        $logo = utyGetGet('logo', 'img/CNAKPI_small.jpg');
 
         $qrcode = new QRcode($data, $level);
         $QR = $qrcode->createPNG($size);

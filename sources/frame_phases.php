@@ -411,8 +411,8 @@ class Phases extends MyPage
 		$this->Load();
         
 		// COSANDCO : Gestion Param Voie ...
-		if (isset($_GET['voie'])) {
-			$voie = (int) $_GET['voie'];
+		if (utyGetGet('voie', false)) {
+			$voie = (int) utyGetGet('voie', 0);
 			if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
             }

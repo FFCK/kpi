@@ -1,13 +1,12 @@
 <?php
 
-if (isset($_GET['json']))
-{
-	$json = $_GET['json'];
+if (utyGetGet('json', false)) {
+	$json = utyGetGet('json', false);
 	
 	$user = '';
 	$pwd = '';
-	if (isset($_GET['user'])) $user = $_GET['user'];
-	if (isset($_GET['pwd'])) $pwd = $_GET['pwd'];
+	if (utyGetGet('user', false)) $user = utyGetGet('user', false);
+	if (utyGetGet('pwd', false)) $user = utyGetGet('pwd', false);
 	
 //	echo 'json in write_evenement = '.$json;
 	

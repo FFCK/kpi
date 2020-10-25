@@ -15,9 +15,9 @@ include_once('../../live/create_cache_match.php');
 session_start();
 
 $myBdd = new MyBdd();
-$idMatch = (int)$_POST['idMatch'];
-$start_time = trim($_POST['start_time']);
-$run_time = trim($_POST['run_time']);
+$idMatch = (int) utiGetPost('idMatch');
+$start_time = trim(utiGetPost('start_time'));
+$run_time = trim(utiGetPost('run_time'));
 
 if ($action == 'RAZ'){
 	$sql = "DELETE FROM gickp_Chrono 

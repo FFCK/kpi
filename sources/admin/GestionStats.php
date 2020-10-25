@@ -17,17 +17,12 @@ class GestionStats extends MyPageSecure
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetPost('codeSaison', $codeSaison);
-		if (isset($_POST['codeSaison'])) {
-            $codeSaison = $_POST['codeSaison'];
-        }
         $this->m_tpl->assign('codeSaison', $codeSaison);
 		$_SESSION['codeSaison'] = $codeSaison;
 
 		//Competition
 		$codeCompet = utyGetSession('codeCompet', '');
-		if (isset($_POST['codeCompet'])) {
-            $codeCompet = $_POST['codeCompet'];
-        }
+		$codeCompet = utyGetPost('codeCompet', $codeCompet);
         $this->m_tpl->assign('codeCompet', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
 		
@@ -761,13 +756,7 @@ class GestionStats extends MyPageSecure
 		
 		$alertMessage = '';
 		
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
-
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
 		if (strlen($Cmd) > 0)
 		{
