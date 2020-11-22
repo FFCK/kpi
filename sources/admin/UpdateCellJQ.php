@@ -30,7 +30,7 @@ if ($and != '' && $key2 != '') {
 }
 if (!in_array($tableName, 
 	['gickp_Journees', 'gickp_Competitions_Equipes', 'gickp_Competitions_Equipes_Init', 
-	'gickp_Competitions_Equipes_Joueurs', 'gickp_Matchs', 'gickp_Matchs_Joueurs']
+	'gickp_Competitions_Equipes_Joueurs', 'gickp_Matchs', 'gickp_Matchs_Joueurs', 'gickp_Competitions_Equipes_Journee']
 	)) {
 		error_log("Erreur 400a : UPDATE $tableName SET $typeValeur = $valeur $where $key $andText", 0);
 		die ('Error 400');
