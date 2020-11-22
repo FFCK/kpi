@@ -28,9 +28,8 @@ class FeuilleListeMatchs extends MyPage
 
     function __construct() 
     {
-        MyPage::MyPage();
-        $myBdd = new MyBdd();
-
+        MyPage::MyPage();       
+        // Chargement des Matchs des journées ...
         $filtreJour = utyGetSession('filtreJour', '');
         $filtreJour = utyGetPost('filtreJour', $filtreJour);
         $filtreJour = utyGetGet('filtreJour', $filtreJour);
@@ -39,7 +38,7 @@ class FeuilleListeMatchs extends MyPage
         $filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
         $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
-        // Chargement des Matchs des journées ...
+        $myBdd = new MyBdd();
         $lstJournee = utyGetSession('lstJournee', 0);
         $arrayJournees = explode(',', $lstJournee);
         $idEvenement = utyGetSession('idEvenement', -1);
