@@ -956,3 +956,79 @@ function utyMM_To_HHMM($time)
     return sprintf("%02d:%02d", $hour, $min);
 }
 
+
+function controle_pagaie($ECA, $EVI, $MER) {
+	$PagaieValide = 0;
+				
+	switch ($ECA) {
+		case 'PAGR' :
+			$pagaie = 'Rouge';
+			$PagaieValide = 1;
+			break;
+		case 'PAGN' :
+			$pagaie = 'Noire';
+			$PagaieValide = 1;
+			break;
+		case 'PAGBL' :
+			$pagaie = 'Bleue';
+			$PagaieValide = 1;
+			break;
+		case 'PAGV' :
+			$pagaie = 'Verte';
+			$PagaieValide = 1;
+			break;
+		case 'PAGJ' :
+			$pagaie = 'Jaune';
+			break;
+		case 'PAGB' :
+			$pagaie = 'Blanche';
+			break;
+		default :
+			$pagaie = '';
+	}
+	if ($PagaieValide == 0) {
+		switch ($EVI) {
+			case 'PAGR' :
+				$pagaie = 'Rouge';
+				$PagaieValide = 2;
+				break;
+			case 'PAGN' :
+				$pagaie = 'Noire';
+				$PagaieValide = 2;
+				break;
+			case 'PAGBL' :
+				$pagaie = 'Bleue';
+				$PagaieValide = 2;
+				break;
+			case 'PAGV' :
+				$pagaie = 'Verte';
+				$PagaieValide = 2;
+				break;
+		}
+		switch ($MER) {
+			case 'PAGR' :
+				$pagaie = 'Rouge';
+				$PagaieValide = 3;
+				break;
+			case 'PAGN' :
+				$pagaie = 'Noire';
+				$PagaieValide = 3;
+				break;
+			case 'PAGBL' :
+				$pagaie = 'Bleue';
+				$PagaieValide = 3;
+				break;
+			case 'PAGV' :
+				$pagaie = 'Verte';
+				$PagaieValide = 3;
+				break;
+		}
+	}
+
+	return [
+		'pagaie' => $pagaie,
+		'PagaieValide' => $PagaieValide
+	];
+}
+
+

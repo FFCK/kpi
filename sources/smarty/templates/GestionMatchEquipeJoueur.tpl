@@ -83,10 +83,14 @@
 									</td>
 									<td>{$arrayJoueur[i].Numero_club}</td>
 									<td>{$arrayJoueur[i].Categ} - {$arrayJoueur[i].Sexe}</td>
-									<td {if $arrayJoueur[i].Pagaie_ECA == '' or $arrayJoueur[i].Pagaie_ECA == 'PAGB' or $arrayJoueur[i].Pagaie_ECA == 'PAGJ'} class='highlight2'{/if}>
-										<img width="16" src="../img/EC-{$arrayJoueur[i].Pagaie_ECA}.gif" alt="Pagaie Eau Calme" title="Pagaie Eau Calme" />
-										<!--<img hspace="1" width="16" height="16" src="../img/EV-{$arrayJoueur[i].Pagaie_EVI}.gif" alt="Pagaie Eau Vive" title="Pagaie Eau Vive" border="0">
-										<img hspace="1" width="16" height="16" src="../img/ME-{$arrayJoueur[i].Pagaie_MER}.gif" alt="Pagaie Mer" title="Pagaie Mer" border="0">-->
+									<td {if $arrayJoueur[i].PagaieValide == 0} class='highlight2'{/if}>
+										{if $arrayJoueur[i].PagaieValide == 2}
+											<img width="16" src="../img/EV-{$arrayJoueur[i].Pagaie_EVI}.gif" title="{#Pagaie_eau_vive#}" />
+										{/if}
+										<img width="16" src="../img/EC-{$arrayJoueur[i].Pagaie_ECA}.gif" title="{#Pagaie_eau_calme#}" />
+										{if $arrayJoueur[i].PagaieValide == 3}
+											<img width="16" src="../img/ME-{$arrayJoueur[i].Pagaie_MER}.gif" title="{#Pagaie_mer#}" />
+										{/if}
 									</td>
 									<td><!--<span title='Loisir'>{$arrayJoueur[i].CertifAPS}</span>/-->{if $arrayJoueur[i].CertifCK != 'OUI'}<span class='highlight2' title='Compétition'>NON</span>{else}<span title='Compétition'>OUI</span>{/if}</td>
 									<td>{$arrayJoueur[i].Arbitre}</td>
