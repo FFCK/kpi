@@ -176,30 +176,11 @@ class GestionEquipeJoueur extends MyPageSecure
 				$numero = $row['Numero'];
 				if (strlen($numero) == 0)
 					$numero = 0;
-				
-				switch ($row['Pagaie_ECA']) {
-					case 'PAGR' :
-						$pagaie = 'Rouge';
-						break;
-					case 'PAGN' :
-						$pagaie = 'Noire';
-						break;
-					case 'PAGBL' :
-						$pagaie = 'Bleue';
-						break;
-					case 'PAGB' :
-						$pagaie = 'Blanche';
-						break;
-					case 'PAGJ' :
-						$pagaie = 'Jaune';
-						break;
-					case 'PAGV' :
-						$pagaie = 'Verte';
-						break;
-					default :
-						$pagaie = '';
-				}
-					
+
+				$controlePagaie = controle_pagaie($row['Pagaie_ECA'], $row['Pagaie_EVI'], $row['Pagaie_MER']);
+				$pagaie = $controlePagaie['pagaie'];
+				$PagaieValide = $controlePagaie['PagaieValide'];
+	
 				$capitaine = $row['Capitaine'];
 				if (strlen($capitaine) == 0)
 					$capitaine = '-';
@@ -215,6 +196,7 @@ class GestionEquipeJoueur extends MyPageSecure
 					'CertifCK' => $row['CertifCK'], 'CertifAPS' => $row['CertifAPS'], 
 					'Numero' => $numero, 'Capitaine' => $capitaine, 'Pagaie_ECA' => $row['Pagaie_ECA'], 
 					'Pagaie_EVI' => $row['Pagaie_EVI'] ,  'Pagaie_MER' => $row['Pagaie_MER'], 
+					'PagaieValide' => $PagaieValide, 
 					'Arbitre' => $row['Arb'], 'Saison' => $row['Origine'], 
 					'Numero_club' => $row['Numero_club'],
 					'date_surclassement' => $row['date_surclassement'], 'icf' => $row['icf'] 
