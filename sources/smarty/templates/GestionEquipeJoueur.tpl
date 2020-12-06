@@ -45,7 +45,7 @@
 									<th>&nbsp;</th>
 									<th>#</th>
 									<th>{#Capt#}.</th>
-									<th>{#Nom#}</th>
+									<th>{#Nom_de_famille#}</th>
 									<th>{#Prenom#}</th>
 									<th>{#Licence#}</th>
 									<th>{#Club#}</th>
@@ -179,7 +179,7 @@
 							</tr>
 							<tr>
 								<td colspan=2>
-									<label class="rouge">{#Chercher#} ({#Nom#}, {#Prenom#}, {#Licence#})</label>
+									<label class="rouge">{#Chercher#} ({#Nom_de_famille#}, {#Prenom#}, {#Licence#})</label>
 									<input type="text" name="choixJoueur" id="choixJoueur"/>
 									<hr>
 								</td>
@@ -192,7 +192,7 @@
 							</tr>
 							<tr>
 								<td colspan=2>
-									<label for="nomJoueur2">{#Nom#} :</label>
+									<label for="nomJoueur2">{#Nom_de_famille#} :</label>
 									<input type="text" name="nomJoueur2" readonly maxlength=30 id="nomJoueur2"/>
 								</td>
 							</tr>
@@ -316,7 +316,7 @@
 							</tr>
 -->							<tr>
 								<td colspan=2>
-									<label for="nomJoueur">{#Nom#} :</label>
+									<label for="nomJoueur">{#Nom_de_famille#} :</label>
 									<input type="text" name="nomJoueur" maxlength=30 id="nomJoueur"/>
 								</td>
 							</tr>

@@ -96,7 +96,7 @@
 						<tr>
 							<td colspan=4>
 								<label for="Nom">{#Chercher#} :</label>
-								<input type="text" name="Nom" value="" maxlength=40 id="Nom" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}">
+								<input type="text" name="Nom" value="" maxlength=40 id="Nom" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}">
 								<br>
 								<b id="NomSelectionne">{$Identite}</b>
 							</td>

@@ -8,7 +8,7 @@
 				<div class='titrePage'>{#Statistiques#} {#athlete#}</div>
 				<div class='blocTop'>
 								<label>{#Chercher#}</label>
-                                <input type="text" name="choixJoueur" id="choixJoueur" size="30" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" />
+                                <input type="text" name="choixJoueur" id="choixJoueur" size="30" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" />
 								<input type="submit" name="maj" id="maj" value="{#MAJ#}" />
                                 {if $profile <= 6}
                                     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -86,7 +86,7 @@
                         <div class='blocTop'>
                             <b>{#Modifier#} : </b>
                             <input type="hidden" name="update_matric" id="update_matric" value="{$Courreur.Matric}">
-                            {#Nom#}:<input type="text" name="update_nom" id="update_nom" value="{$Courreur.Nom}">
+                            {#Nom_de_famille#}:<input type="text" name="update_nom" id="update_nom" value="{$Courreur.Nom}">
                             {#Prenom#}:<input type="text" name="update_prenom" id="update_prenom" value="{$Courreur.Prenom}">
                             {#Sexe#}:<select id="update_sexe" name="update_sexe">
                                 <option value="M" {if $Courreur.Sexe == 'M'}selected{/if}>M</option>
