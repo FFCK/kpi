@@ -10,7 +10,7 @@
 							</th>
 						</tr>
 						<tr>
-							<td width=25%><b>{#Nom#} :</b></td>
+							<td width=25%><b>{#Nom_de_famille#} :</b></td>
 							<td width=25%>{$UNom}</td>
 							<td width=25%><b>{#Prenom#} :</b></td>
 							<td width=25%>{$UPrenom}</td>

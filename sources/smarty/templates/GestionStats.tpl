@@ -53,7 +53,7 @@
 										<th>#</th>
 										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>{#Nom#}</th>
+										<th>{#Nom_de_famille#}</th>
 										<th>{#Prenom#}</th>
 										<th>{#Sexe#}</th>
 										<th>{#Equipe#}</th>
@@ -72,7 +72,7 @@
 										<th>#</th>
 										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>{#Nom#}</th>
+										<th>{#Nom_de_famille#}</th>
 										<th>{#Prenom#}</th>
 										<th>{#Sexe#}</th>
 										<th>{#Equipe#}</th>
@@ -97,7 +97,7 @@
 										<th>#</th>
 										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>{#Nom#}</th>
+										<th>{#Nom_de_famille#}</th>
 										<th>{#Prenom#}</th>
 										<th>{#Sexe#}</th>
 										<th>{#Equipe#}</th>
@@ -111,7 +111,7 @@
 										<th>#</th>
 										<th>{#Comp#}.</th>
 										<th>N°</th>
-										<th>{#Nom#}</th>
+										<th>{#Nom_de_famille#}</th>
 										<th>{#Prenom#}</th>
 										<th>{#Sexe#}</th>
 										<th>{#Principal#}</th>
@@ -127,7 +127,7 @@
 									{elseif $AfficheStat == 'CJouees'}
 										<th>#</th>
 										<th>N°</th>
-										<th>{#Nom#}</th>
+										<th>{#Nom_de_famille#}</th>
 										<th>{#Prenom#}</th>
 										<th>Club</th>
 										<th>{#Competition#}</th>
@@ -135,7 +135,7 @@
 									{elseif $AfficheStat == 'CJouees2'}
 										<th>#</th>
 										<th>N°</th>
-										<th>{#Nom#}</th>
+										<th>{#Nom_de_famille#}</th>
 										<th>{#Prenom#}</th>
 										<th>{#Equipe#}</th>
 										<th>{#Competition#}</th>
@@ -143,7 +143,7 @@
 									{elseif $AfficheStat == 'CJouees3'}
 										<th>#</th>
 										<th>N°</th>
-										<th>{#Nom#}</th>
+										<th>{#Nom_de_famille#}</th>
 										<th>{#Prenom#}</th>
 										<th>{#Equipe#}</th>
 										<th>{#Competition#}</th>

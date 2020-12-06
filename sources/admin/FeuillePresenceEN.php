@@ -97,8 +97,9 @@ class FeuillePresence extends MyPage {
                             $row2['Origine'] = '';
                         }
 
-                        array_push($arrayJoueur[$idEquipe], array('Matric' => $row2['Matric'], 'Nom' => ucwords(strtolower($row2['Nom'])),
-                            'Prenom' => ucwords(strtolower($row2['Prenom'])), 'Sexe' => $row2['Sexe'], 'Categ' => $row2['Categ'],
+                        array_push($arrayJoueur[$idEquipe], array('Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 
+                            'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"), 
+                            'Sexe' => $row2['Sexe'], 'Categ' => $row2['Categ'],
                             'CertifCK' => $row2['CertifCK'], 'CertifAPS' => $row2['CertifAPS'],
                             'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['Arb'], 'Saison' => $row2['Origine'],
                             'Naissance' => $row2['Naissance'], 'Reserve' => $row2['Reserve'],
@@ -179,7 +180,7 @@ class FeuillePresence extends MyPage {
             $pdf->Cell(16, 8, '', '', 0, 'C');
             $pdf->Cell(22, 8, '#', 'B', 0, 'C');
             $pdf->Cell(22, 8, 'Cap.', 'B', 0, 'C');
-            $pdf->Cell(55, 8, 'Name', 'B', 0, 'C');
+            $pdf->Cell(55, 8, 'Family name', 'B', 0, 'C');
             $pdf->Cell(55, 8, 'First name', 'B', 0, 'C');
 //            $pdf->Cell(35, 8, 'Birth date', 'B', 0, 'C');
 //            $pdf->Cell(18, 8, 'Cat.', 'B', 0, 'C');
@@ -206,8 +207,8 @@ class FeuillePresence extends MyPage {
                     }
                     $pdf->Cell(22, 8, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
                     $pdf->Cell(22, 8, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
-                    $pdf->Cell(55, 8, strtoupper($arrayJoueur[$idEquipe][$j]['Nom']), 'B', 0, 'C');
-                    $pdf->Cell(55, 8, utyUcWordNomCompose($arrayJoueur[$idEquipe][$j]['Prenom']), 'B', 0, 'C');
+                    $pdf->Cell(55, 8, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
+                    $pdf->Cell(55, 8, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
 //                    $pdf->Cell(35, 8, $arrayJoueur[$idEquipe][$j]['Naissance'], 'B', 0, 'C');
 //                    $pdf->Cell(18, 8, $arrayJoueur[$idEquipe][$j]['Categ'], 'B', 0, 'C');
                     $pdf->Cell(38, 8, rtrim($arrayJoueur[$idEquipe][$j]['Numero_club'], '00'), 'B', 0, 'C');
