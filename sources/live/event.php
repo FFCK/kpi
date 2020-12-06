@@ -82,14 +82,14 @@ class Event extends MyPage
 		<br>
 
 		<label for='date_event'>Date</label>
-		<input type='date' id='date_event' name='date_event' Value='<?= date('Y-m-d') ?>'>
+		<input type='date' id='date_event' name='date_event' Value='<?= date('Y-m-d') ?>' required>
 		<br>
 
 		<label for='hour_event'>Time</label>
-		<input type='time' id='hour_event' name='hour_event' Value='<?= date('H:i') ?>'>
+		<input type='time' id='hour_event' name='hour_event' Value='<?= date('H:i') ?>' required>
 		<br>
 		
-		<label for='hour_event'>Warm-up</label>
+		<label for='offset_event'>Warm-up</label>
         <input type='text' id='offset_event' name='offset_event' Value='10' size="2"> minutes
 		<br>
 
@@ -102,10 +102,8 @@ class Event extends MyPage
 		<br>
 		
 		<button id='btn_go'>Generate cache</button>
-		<br>
-		<br>
 
-		<h3 id='info_titre'></h3>
+		<h1 id='info_titre'></h1>
 		<div id='info'></div>
 
 		</form>
