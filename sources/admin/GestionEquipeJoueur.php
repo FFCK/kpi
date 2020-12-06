@@ -190,8 +190,9 @@ class GestionEquipeJoueur extends MyPageSecure
 					$clefEntraineur = $i;
                 
 				array_push($arrayJoueur, array( 
-					'Matric' => $row['Matric'], 'Nom' => ucwords(strtolower($row['Nom'])), 
-					'Prenom' => ucwords(strtolower($row['Prenom'])), 
+					'Matric' => $row['Matric'], 
+					'Nom' => mb_strtoupper($row['Nom']), 
+					'Prenom' => mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8"), 
 					'Sexe' => $row['Sexe'], 'Categ' => $row['Categ'], 'Pagaie' => $pagaie, 
 					'CertifCK' => $row['CertifCK'], 'CertifAPS' => $row['CertifAPS'], 
 					'Numero' => $numero, 'Capitaine' => $capitaine, 'Pagaie_ECA' => $row['Pagaie_ECA'], 

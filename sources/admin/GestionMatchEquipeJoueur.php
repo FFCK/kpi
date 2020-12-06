@@ -133,8 +133,10 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 					$capitaine = '-';
 					
 				array_push($arrayJoueur, array( 'Matric' => $row['Matric'], 'Numero' => $numero, 
-					'Capitaine' => $capitaine, 'Nom' => ucwords(strtolower($row['Nom'])), 
-					'Prenom' => ucwords(strtolower($row['Prenom'])), 'Pagaie' => $pagaie, 
+					'Capitaine' => $capitaine, 
+					'Nom' => mb_strtoupper($row['Nom']), 
+					'Prenom' => mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8"), 
+					'Pagaie' => $pagaie, 
 					'CertifCK' => $row['CertifCK'], 'CertifAPS' => $row['CertifAPS'], 
 					'Sexe' => $row['Sexe'], 'Categ' => utyCodeCategorie2($row['Naissance']), 
 					'Pagaie_ECA' => $row['Pagaie_ECA'], 'Pagaie_EVI' => $row['Pagaie_EVI'] , 
