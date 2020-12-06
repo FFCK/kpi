@@ -29,25 +29,23 @@ $jRow = array();
 
 $matric = (int) $term;
 if ($matric > 0) {
-	$sql = "SELECT lc.*, c.Libelle, s.Date date_surclassement 
-	FROM gickp_Club c, gickp_Liste_Coureur lc 
-	LEFT OUTER JOIN gickp_Surclassements s 
-		ON (lc.Matric = s.Matric AND s.Saison = ?) 
+	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
+	FROM gickp_Club c, gickp_Liste_Coureur lc  
+	LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric)
 	WHERE (lc.Matric = ? 
 		OR lc.Reserve = ? ) 
 		AND lc.Numero_club = c.Code 
 		ORDER BY lc.Nom, lc.Prenom ";
-	$arrayQuery = array($codeSaison, $matric, $matric);
+	$arrayQuery = array($matric, $matric);
 } else {
-	$sql = "SELECT lc.*, c.Libelle, s.Date date_surclassement 
-		FROM gickp_Club c, gickp_Liste_Coureur lc 
-		LEFT OUTER JOIN gickp_Surclassements s 
-			ON (lc.Matric = s.Matric AND s.Saison = ?) 
+	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
+	FROM gickp_Club c, gickp_Liste_Coureur lc  
+	LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric) 
 		WHERE (UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(?) 
 			OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(?) ) 
 		AND lc.Numero_club = c.Code 
 		ORDER BY lc.Nom, lc.Prenom ";
-	$arrayQuery = array($codeSaison, $term.'%', $term.'%');
+	$arrayQuery = array($term.'%', $term.'%');
 }
 $result = $myBdd->pdo->prepare($sql);
 $result->execute($arrayQuery);
