@@ -747,23 +747,18 @@ function utyStringQuote($string)
 	return $newstring;
 }
 
-function utyUcWordNomCompose($nom)
-{
-    if ($nom != '') {
-        $nom = str_replace ('-', 'µ ', strtolower( $nom )); 
-        $nom = str_replace ("'", '£ ', strtolower( $nom )); 
-        $nom = ucwords ($nom);
-        $nom = str_replace ('£ ', "'", $nom);
-        $nom = str_replace ('µ ', '-', $nom);
-        return $nom;
-    }
-    
-    return $nom;
-}
-
 function utyNomPrenomCourt($nom, $prenom) {
-    $reponse = ucwords(strtolower(substr($nom, 0, 3))) . '. ' 
-            . ucwords(strtolower(substr($prenom, 0, 1))) . '.';
+	$reponse = mb_strtoupper(substr($nom, 0, 3)) . '. ';
+	$prenom = explode('-', $prenom);
+	$i = 0;
+	foreach ($prenom as $part) {
+		if ($i > 0) {
+			$reponse .= '-';
+		}
+		$reponse .= mb_strtoupper(substr($part, 0, 1));
+		$i ++;
+	}
+    $reponse .= '.';
     return $reponse;
 }
 

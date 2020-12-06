@@ -105,7 +105,7 @@ class FeuillePresenceCat extends MyPage {
                         $row2['Origine'] = '';
                     }
 
-                    array_push($arrayJoueur, array('Matric' => $row2['Matric'], 'Nom' => ucwords(strtolower($row2['Nom'])), 'Prenom' => ucwords(strtolower($row2['Prenom'])),
+                    array_push($arrayJoueur, array('Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
                         'Sexe' => $row2['Sexe'], 'Categ' => $row2['Categ'], 'Pagaie' => $pagaie, 'CertifCK' => $row2['CertifCK'],
                         'CertifAPS' => $row2['CertifAPS'], 'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['Arb'],
                         'Saison' => $row2['Origine'], 'Numero_club' => $row2['Numero_club'],

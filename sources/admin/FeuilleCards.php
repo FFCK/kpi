@@ -162,7 +162,7 @@ class FeuilleCards extends MyPage
             if ($row['Rouge'] == 0) { $row['Rouge'] = ''; }
             $pdf->SetFont('Arial','I',8);
             $pdf->Cell(8, 4, $row['Statut'], 1, 0, 'C');
-            $pdf->Cell(70, 4, $row['Numero'] . ' - ' . $row['Nom'] . ' ' . $row['Prenom'], 1, 0, 'L');
+            $pdf->Cell(70, 4, $row['Numero'] . ' - ' . mb_strtoupper($row['Nom']) . ' ' . mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"), 1, 0, 'L');
             $pdf->SetFillColor(170, 255, 170);
             $pdf->Cell(8, 4, $row['Vert'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 255, 170);
