@@ -52,6 +52,8 @@ class GestionAthlete extends MyPageSecure
                 return;
             }
             $row = $result->fetch();
+            $row['Nom'] = mb_strtoupper($row['Nom']);
+            $row['Prenom'] = mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8");        
             if ($_SESSION['lang'] == 'fr') {
                 $row['date_surclassement'] = utyDateUsToFr($row['date_surclassement']);
             }
