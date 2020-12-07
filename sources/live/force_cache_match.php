@@ -1,5 +1,6 @@
 <?php
 include_once('../commun/MyBdd.php');
+include_once('../commun/MyTools.php');
 include_once('create_cache_match.php');
 
 // Exemple 
