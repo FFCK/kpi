@@ -2,6 +2,7 @@
 include_once('base.php');
 include_once('create_cache_match.php');
 include_once('page.php');
+include_once('../commun/MyTools.php');
 
 session_start();
 
@@ -43,42 +44,67 @@ class Event extends MyPage
 		$db = new MyBdd();
 		
 		// Chargement Evenements  
-		$sql = "SELECT e.* "
-                . "FROM gickp_Evenement e "
-                . "WHERE e.Publication = 'O' "
-                . "ORDER BY e.Date_debut DESC ";
-
+        $sql = "SELECT e.* 
+            FROM gickp_Evenement e 
+            WHERE e.Publication = 'O' 
+            ORDER BY e.Date_debut DESC ";
 		$rEvents = null;
         $result = $db->pdo->query($sql);
         $rEvents = $result->fetchAll(PDO::FETCH_ASSOC);
         $retour = '';
         foreach ($rEvents as $key => $event) {
-            if (utyGetInt($event, 'Id', 0) == $evt) {
+            if ($event['Id'] == $evt) {
                 $selected = 'selected';
             } else {
                 $selected = '';
             }
-            $retour .= '<option value="' . utyGetInt($event, 'Id', 0) . '" ' . $selected . '>' 
-                    . utyGetInt($event, 'Id', 0) . ' - ' . utyGetString($event, 'Libelle', '???') . ' (' . utyGetString($event, 'Lieu', '???') . ')';
+            $retour .= '<option value="' . $event['Id'] . '" ' . $selected . '>' 
+                    . $event['Id'] . ' - ' . $event['Libelle'] . ' (' . $event['Lieu'] . ')';
             $retour .= '
                 ';
         }
+
+        return $retour;
+    }
+
+    function Btn_Events($evt)
+    {
+		$db = new MyBdd();
+
+        $sql2 = "SELECT DISTINCT m.Date_match, m.Heure_match 
+            FROM gickp_Matchs m
+            LEFT JOIN gickp_Journees j ON (m.Id_journee = j.Id) 
+            LEFT JOIN gickp_Evenement_Journees ej ON (j.Id = ej.Id_journee)
+            WHERE ej.Id_evenement = ? 
+            GROUP BY m.Date_match
+            ORDER BY m.Date_match, m.Heure_match ";
+        $rDates = null;
+        $result2 = $db->pdo->prepare($sql2);
+        $result2->execute([$evt]);
+        $rDates = $result2->fetchAll(PDO::FETCH_ASSOC);
+        $retour = '';
+        foreach ($rDates as $key => $date_evt) {
+            $retour .= '<button class="btn_date_evt" data-date="'.$date_evt['Date_match'].'" data-heure="'.$date_evt['Heure_match'].'">
+                ' . $date_evt['Date_match'] . ' ' . $date_evt['Heure_match'] . '</button>&nbsp;';
+        }
+
         return $retour;
 	}
     
 	function Content()
 	{
-        // echo '<pre>';
-        // var_dump($_SESSION);
-        // echo '</pre>';
+        $evt = utyGetInt($_GET, 'evt', utyGetSession('codeEvt'));
         ?>
 		<form method='GET' action='#' name='event_form' id='event_form' enctype='multipart/form-data'> 
 		
-		<label for='id_event'>Event:</label>
-		<!--<input type='text' id='id_event' name='id_event' Value='85'>-->
-        <select id='id_event' name='id_event'>
-            <?= $this->Content_Events($_SESSION['codeEvt']); ?>
+		<label for='idevent'>Event:</label>
+        <select id='idevent' name='idevent'>
+            <?= $this->Content_Events($evt); ?>
         </select>
+        <input type="hidden" id='id_event' name='id_event' value="<?= $evt ?>">
+		<br>
+        <?= $this->Btn_Events($evt); ?>
+		<br>
 		<br>
 
 		<label for='date_event'>Date</label>

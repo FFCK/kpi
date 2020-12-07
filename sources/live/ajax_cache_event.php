@@ -10,6 +10,14 @@ $idEvent = utyGetGet('id_event', false);
 $dateEvent = utyGetGet('date_event', false);
 $hourEvent = utyGetGet('hour_event', false);
 $offset_event = utyGetGet('offset_event', false);
+$pitch_event = utyGetGet('pitch_event', false);
+$arrayPitchs = [];
+
+if ($pitch_event > 0) {
+    for ($i=1; $i <= $pitch_event; $i++) { 
+        $arrayPitchs[] = $i;
+    }
+}
 
 // Ajuster selon le fuseau horaire
 if ($hourEvent == '') {
@@ -22,6 +30,6 @@ $hourEventWork = utyMM_To_HHMM($time);
 
 $db = new MyBdd();
 $cache = new CacheMatch($_GET);
-$cache->Event($db, $idEvent, $dateEvent, $hourEventWork);
+$cache->Event($db, $idEvent, $dateEvent, $hourEventWork, $arrayPitchs);
 		
 echo "Time = $hourEvent, Working time = $hourEventWork";
