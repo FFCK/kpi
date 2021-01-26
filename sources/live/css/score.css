@@ -27,21 +27,37 @@ div {
     background-size: 100%;
 }
 
+.ban_score_club {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../img/score_club.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.ban_live_teams {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../img/live_teams.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
 div#bandeau_score
 {
     position: absolute;
     /*margin-left: 50vw;*/
     top: 32px;
     /*transform: translateX(-53%);*/
-    left: 680px;
-    width: 555px;
+    left: 280px;
+    width: 1355px;
     height: 124px;
 }
 
 #match_horloge
 {
     position: absolute;
-    left: 159px;
+    left: 559px;
     top: 102px;
     font-size:35px;
     width: 123px;
@@ -51,7 +67,7 @@ div#bandeau_score
 #match_periode
 {
     position: absolute;
-    right: 159px;
+    right: 559px;
     top: 102px;
     font-size: 35px;
     color: red;
@@ -62,14 +78,14 @@ div#bandeau_score
 div#nation1
 {	
     position: absolute;
-    left: 176px;
+    left: 576px;
     top: 50px;
 }
 
 div#nation2
 {	
     position: absolute;
-    right: 176px;
+    right: 576px;
     top: 50px;
 }
 
@@ -79,8 +95,9 @@ div#equipe1
     left: 62px;
     top: 48px;
     font-size: 35px;
-    width: 165px;
+    width: 500px;
     color: #4b97cb;
+    text-align: right;
 }
 
 div#equipe2
@@ -89,15 +106,16 @@ div#equipe2
     right: 62px;
     top: 48px;
     font-size: 35px;
-    width: 165px;
+    width: 500px;
     color: #4b97cb;
+    text-align: left;
 }
 
 div#score1
 {	
     position: absolute;
     top: 47px;
-    left: 220px;
+    left: 620px;
     font-size: 35px;
     width: 62px;
     color: #144263;
@@ -107,7 +125,7 @@ div#score2
 {	
     position: absolute;
     top: 47px;
-    right: 220px;
+    right: 620px;
     font-size: 35px;
     width: 62px;
     color: #144263;
@@ -116,7 +134,7 @@ div#score2
 div#score_separation {	
     position: absolute;
     top: 47px;
-    left: 271px;
+    left: 671px;
     font-size: 35px;
     color: #144263;
 }
@@ -142,6 +160,15 @@ div#categorie {
     position: absolute;
     bottom: 0;
     background-image: url('../img/banner_goal_card.png');
+    display: none;
+}
+
+.ban_goal_card2 {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    bottom: 0;
+    background-image: url('../img/banner_goal_card_2.png');
     display: none;
 }
 

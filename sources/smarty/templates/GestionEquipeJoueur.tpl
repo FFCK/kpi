@@ -45,7 +45,7 @@
 									<th>&nbsp;</th>
 									<th>#</th>
 									<th>{#Capt#}.</th>
-									<th>{#Nom#}</th>
+									<th>{#Nom_de_famille#}</th>
 									<th>{#Prenom#}</th>
 									<th>{#Licence#}</th>
 									<th>{#Club#}</th>
@@ -104,8 +104,14 @@
 										<td>{$arrayJoueur[i].Categ}
                                             {if $arrayJoueur[i].date_surclassement != ''}<span class="vert" title="Surclassement au {$arrayJoueur[i].date_surclassement}">#S</span>{/if}
                                              - {$arrayJoueur[i].Sexe}</td>
-										<td {if $arrayJoueur[i].Pagaie_ECA == '' or $arrayJoueur[i].Pagaie_ECA == 'PAGB' or $arrayJoueur[i].Pagaie_ECA == 'PAGJ'} class='highlight2'{/if}>
+										<td {if $arrayJoueur[i].PagaieValide == 0} class='highlight2'{/if}>
+											{if $arrayJoueur[i].PagaieValide == 2}
+												<img width="16" src="../img/EV-{$arrayJoueur[i].Pagaie_EVI}.gif" title="{#Pagaie_eau_vive#}" />
+											{/if}
 											<img width="16" src="../img/EC-{$arrayJoueur[i].Pagaie_ECA}.gif" title="{#Pagaie_eau_calme#}" />
+											{if $arrayJoueur[i].PagaieValide == 3}
+												<img width="16" src="../img/ME-{$arrayJoueur[i].Pagaie_MER}.gif" title="{#Pagaie_mer#}" />
+											{/if}
 										</td>
 										<td>{if $arrayJoueur[i].CertifCK != 'OUI'}<span class='highlight2' title='{#Competition#}'>{#NON#}</span>{else}<span title='{#Competition#}'>{#OUI#}</span>{/if}</td>
 										<td>{$arrayJoueur[i].Arbitre}</td>
@@ -173,7 +179,7 @@
 							</tr>
 							<tr>
 								<td colspan=2>
-									<label class="rouge">{#Chercher#} ({#Nom#}, {#Prenom#}, {#Licence#})</label>
+									<label class="rouge">{#Chercher#} ({#Nom_de_famille#}, {#Prenom#}, {#Licence#})</label>
 									<input type="text" name="choixJoueur" id="choixJoueur"/>
 									<hr>
 								</td>
@@ -186,7 +192,7 @@
 							</tr>
 							<tr>
 								<td colspan=2>
-									<label for="nomJoueur2">{#Nom#} :</label>
+									<label for="nomJoueur2">{#Nom_de_famille#} :</label>
 									<input type="text" name="nomJoueur2" readonly maxlength=30 id="nomJoueur2"/>
 								</td>
 							</tr>
@@ -310,7 +316,7 @@
 							</tr>
 -->							<tr>
 								<td colspan=2>
-									<label for="nomJoueur">{#Nom#} :</label>
+									<label for="nomJoueur">{#Nom_de_famille#} :</label>
 									<input type="text" name="nomJoueur" maxlength=30 id="nomJoueur"/>
 								</td>
 							</tr>

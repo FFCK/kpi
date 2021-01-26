@@ -1,10 +1,13 @@
 <?php
 session_start();
-if (isset($_GET['mirror']))
+include_once('commun/MyTools.php');
+
+if (utyGetGet('mirror', false))
 {
-	if ($_GET['mirror'] == '1')
+	$mirror = utyGetGet('mirror', 0);
+	if ($mirror == '1')
 		$_SESSION['mirror'] = '1';
-	if ($_GET['mirror'] == '0')
+	else
 		$_SESSION['mirror'] = '0';
 }
 /**

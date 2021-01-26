@@ -1,7 +1,21 @@
 <?php
+// MyTools.php
+
 include_once('MyBdd.php'); 
 
-// MyTools.php
+// htmlpurifier
+if (is_file('htmlpurifier/HTMLPurifier.auto.php')) {
+	require_once 'htmlpurifier/HTMLPurifier.auto.php';
+} elseif (is_file('../htmlpurifier/HTMLPurifier.auto.php')) {
+	require_once '../htmlpurifier/HTMLPurifier.auto.php';
+} else {
+	require_once '../../htmlpurifier/HTMLPurifier.auto.php';
+}
+$config = HTMLPurifier_Config::createDefault();
+$config->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+$config->set('HTML.Doctype', 'XHTML 1.0 Transitional'); // replace with your doctype
+$purifier = new HTMLPurifier($config);
+
 
 function debug($variable, $die = false) {
 	echo '<pre>';
@@ -321,8 +335,8 @@ function utyCodeCategorie($dateNaissance)
 	return $code;
 }
 */
-// utyCodeCategorie 2 (sans requête)
 
+// utyCodeCategorie 2 (sans requête)
 function utyCodeCategorie2($dateNaissance, $saison = '')
 {
 	if($saison == '')
@@ -355,7 +369,6 @@ function utyCodeCategorie2($dateNaissance, $saison = '')
 }
 
 // utyTimeInterval
-
 function utyTimeInterval($time, $interval)
 {
 	$data = explode(':',$time);
@@ -376,33 +389,50 @@ function utyTimeInterval($time, $interval)
 }
 
 // utyGetSession
-
 function utyGetSession($param, $default = '')
 {
-		if (isset($_SESSION[$param]))
-			return $_SESSION[$param];
-			
-		return $default;
+	if (isset($_SESSION[$param]))
+		return $_SESSION[$param];
+		
+	return $default;
 }
 
 // utyGetPost
 
 function utyGetPost($param, $default = '')
 {
-		if (isset($_POST[$param]))
-			return $_POST[$param];
-			
-		return $default;
+	if (isset($_POST[$param])) {
+		// return $_POST[$param];
+		
+		global $purifier;
+		
+		if (is_array($_POST[$param])) {
+			foreach ($_POST[$param] as $element) {
+				$pure_html[] = $purifier->purify($element);
+			}
+			return $pure_html;
+		}
+
+		$pure_html = $purifier->purify($_POST[$param]);
+		return htmlspecialchars($pure_html);
+	}
+		
+	return $default;
 }
 
 // utyGetGet
-
 function utyGetGet($param, $default = '')
 {
-		if (isset($_GET[$param]))
-			return $_GET[$param];
-			
-		return $default;
+	if (isset($_GET[$param])) {
+		// return $_GET[$param];
+
+		global $purifier;
+		$pure_html = $purifier->purify($_GET[$param]);
+
+		return htmlspecialchars($pure_html);
+	}
+		
+	return $default;
 }
 
 // utyGetInt
@@ -418,8 +448,13 @@ function utyGetInt($array, $param, $default = 1)
 function utyGetString($array, $param, $default = 1)
 {
     if (isset($array[$param])) {
-//        return addslashes( $array[$param] );
-        return $array[$param] ;
+		// return $array[$param] ;
+
+		global $purifier;
+		$pure_html = $purifier->purify($array[$param]);
+
+		return htmlspecialchars($pure_html);
+
     }
     return $default;
 }
@@ -428,7 +463,9 @@ function utyGetString($array, $param, $default = 1)
 function utyGetPrenom($array, $param, $default = '')
 {
     if (isset($array[$param])) {
-        $prenom = utyUcName( $array[$param] ); 
+		global $purifier;
+		$pure_html = $purifier->purify($array[$param]);
+        $prenom = utyUcName( $pure_html ); 
         return $prenom;
     }
     return $default;
@@ -710,23 +747,18 @@ function utyStringQuote($string)
 	return $newstring;
 }
 
-function utyUcWordNomCompose($nom)
-{
-    if ($nom != '') {
-        $nom = str_replace ('-', 'µ ', strtolower( $nom )); 
-        $nom = str_replace ("'", '£ ', strtolower( $nom )); 
-        $nom = ucwords ($nom);
-        $nom = str_replace ('£ ', "'", $nom);
-        $nom = str_replace ('µ ', '-', $nom);
-        return $nom;
-    }
-    
-    return $nom;
-}
-
 function utyNomPrenomCourt($nom, $prenom) {
-    $reponse = ucwords(strtolower(substr($nom, 0, 3))) . '. ' 
-            . ucwords(strtolower(substr($prenom, 0, 1))) . '.';
+	$reponse = mb_strtoupper(substr($nom, 0, 3)) . '. ';
+	$prenom = explode('-', $prenom);
+	$i = 0;
+	foreach ($prenom as $part) {
+		if ($i > 0) {
+			$reponse .= '-';
+		}
+		$reponse .= mb_strtoupper(substr($part, 0, 1));
+		$i ++;
+	}
+    $reponse .= '.';
     return $reponse;
 }
 
@@ -918,4 +950,80 @@ function utyMM_To_HHMM($time)
 	$min = $time - 60*$hour;
     return sprintf("%02d:%02d", $hour, $min);
 }
+
+
+function controle_pagaie($ECA, $EVI, $MER) {
+	$PagaieValide = 0;
+				
+	switch ($ECA) {
+		case 'PAGR' :
+			$pagaie = 'Rouge';
+			$PagaieValide = 1;
+			break;
+		case 'PAGN' :
+			$pagaie = 'Noire';
+			$PagaieValide = 1;
+			break;
+		case 'PAGBL' :
+			$pagaie = 'Bleue';
+			$PagaieValide = 1;
+			break;
+		case 'PAGV' :
+			$pagaie = 'Verte';
+			$PagaieValide = 1;
+			break;
+		case 'PAGJ' :
+			$pagaie = 'Jaune';
+			break;
+		case 'PAGB' :
+			$pagaie = 'Blanche';
+			break;
+		default :
+			$pagaie = '';
+	}
+	if ($PagaieValide == 0) {
+		switch ($EVI) {
+			case 'PAGR' :
+				$pagaie = 'Rouge';
+				$PagaieValide = 2;
+				break;
+			case 'PAGN' :
+				$pagaie = 'Noire';
+				$PagaieValide = 2;
+				break;
+			case 'PAGBL' :
+				$pagaie = 'Bleue';
+				$PagaieValide = 2;
+				break;
+			case 'PAGV' :
+				$pagaie = 'Verte';
+				$PagaieValide = 2;
+				break;
+		}
+		switch ($MER) {
+			case 'PAGR' :
+				$pagaie = 'Rouge';
+				$PagaieValide = 3;
+				break;
+			case 'PAGN' :
+				$pagaie = 'Noire';
+				$PagaieValide = 3;
+				break;
+			case 'PAGBL' :
+				$pagaie = 'Bleue';
+				$PagaieValide = 3;
+				break;
+			case 'PAGV' :
+				$pagaie = 'Verte';
+				$PagaieValide = 3;
+				break;
+		}
+	}
+
+	return [
+		'pagaie' => $pagaie,
+		'PagaieValide' => $PagaieValide
+	];
+}
+
 

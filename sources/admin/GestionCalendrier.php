@@ -23,11 +23,7 @@ class GestionCalendrier extends MyPageSecure
         }
         
         //Filtre mois
-		if (isset($_POST['filtreMois'])) {
-            $_SESSION['filtreMois'] = $_POST['filtreMois'];
-        } else {
-            $_SESSION['filtreMois'] = '';
-        }
+        $_SESSION['filtreMois'] = utyGetPost('filtreMois', '');
         $filtreMois = $_SESSION['filtreMois'];
 		$this->m_tpl->assign('filtreMois', $_SESSION['filtreMois']);
 
@@ -84,7 +80,7 @@ class GestionCalendrier extends MyPageSecure
 		// Chargement des Compétitions ...
 		$codeCompet = utyGetSession('codeCompet', '*');
 		// si changement de compétition, RAZ journée sélectionnée
-		if (isset($_POST['codeCompet'])) {	// @COSANDCO_WAMPSER
+		if (utyGetPost('codeCompet', false)) {	// @COSANDCO_WAMPSER
 			if ($codeCompet != utyGetPost('codeCompet')) {
                 $_SESSION['idSelJournee'] = '*';
             }
@@ -449,9 +445,7 @@ class GestionCalendrier extends MyPageSecure
 
 	function PubliMultiJournees()
 	{
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)

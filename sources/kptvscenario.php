@@ -61,10 +61,9 @@ class Scenario extends MyPageSecure
     {
         MyPageSecure::MyPageSecure(1);
 		
-        if (isset($_POST['update']))
+        if (utyGetPost('update', false) == 'Update')
 		{
-			if ($_POST['update'] == 'Update')
-				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 								
 			if ($alertMessage == '')
 			{

@@ -121,27 +121,11 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				if (strlen($numero) == 0)
 					$numero = 0;
 				
-				switch ($row['Pagaie_ECA']) {
-					case 'PAGR' :
-						$pagaie = 'Rouge';
-						break;
-					case 'PAGN' :
-						$pagaie = 'Noire';
-						break;
-					case 'PAGBL' :
-						$pagaie = 'Bleue';
-						break;
-					case 'PAGB' :
-						$pagaie = 'Blanche';
-						break;
-					case 'PAGJ' :
-						$pagaie = 'Jaune';
-						break;
-					case 'PAGV' :
-						$pagaie = 'Verte';
-						break;
-					default :
-						$pagaie = '';
+				$controlePagaie = controle_pagaie($row['Pagaie_ECA'], $row['Pagaie_EVI'], $row['Pagaie_MER']);
+				$pagaie = $controlePagaie['pagaie'];
+				$PagaieValide = $controlePagaie['PagaieValide'];
+				if ($PagaieValide > 1) {
+					$pagaie = '(' . $pagaie . ')';
 				}
 					
 				$capitaine = $row['Capitaine'];
@@ -149,12 +133,15 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 					$capitaine = '-';
 					
 				array_push($arrayJoueur, array( 'Matric' => $row['Matric'], 'Numero' => $numero, 
-					'Capitaine' => $capitaine, 'Nom' => ucwords(strtolower($row['Nom'])), 
-					'Prenom' => ucwords(strtolower($row['Prenom'])), 'Pagaie' => $pagaie, 
+					'Capitaine' => $capitaine, 
+					'Nom' => mb_strtoupper($row['Nom']), 
+					'Prenom' => mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8"), 
+					'Pagaie' => $pagaie, 
 					'CertifCK' => $row['CertifCK'], 'CertifAPS' => $row['CertifAPS'], 
 					'Sexe' => $row['Sexe'], 'Categ' => utyCodeCategorie2($row['Naissance']), 
 					'Pagaie_ECA' => $row['Pagaie_ECA'], 'Pagaie_EVI' => $row['Pagaie_EVI'] , 
 					'Pagaie_MER' => $row['Pagaie_MER'], 'Arbitre' => $row['Arb'], 
+					'PagaieValide' => $PagaieValide, 
 					'Saison' => $row['Origine'], 'Numero_club' => $row['Numero_club'], 
 					'icf' => $row['icf']
 				));

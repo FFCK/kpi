@@ -7,12 +7,12 @@ SELECT ce.Code_club, c.Libelle, COUNT(ce.Code_club) AS '7.1.1', ce.Code_compet, 
 FROM `gickp_Competitions_Equipes` ce, gickp_Club c
 WHERE 1=1
 AND ce.Code_club = c.Code
-AND (ce.Code_compet LIKE 'N1F'
-    OR ce.Code_compet LIKE 'N_15%' -- compte plusieurs fois les qualifiés
-    OR ce.Code_compet LIKE 'N_18%' -- compte plusieurs fois les qualifiés
+AND (ce.Code_compet LIKE 'N1F%'
+    OR ce.Code_compet LIKE 'N15%' -- compte plusieurs fois les qualifiés
+    OR ce.Code_compet LIKE 'N18%' -- compte plusieurs fois les qualifiés
     OR ce.Code_compet LIKE 'CFF'
     OR ce.Code_compet LIKE 'CF15%') -- compte plusieurs fois les qualifiés
-AND ce.Code_saison LIKE '2018'
+AND ce.Code_saison LIKE '2020'
 AND ce.Code_club NOT LIKE '%CD'
 AND ce.Code_club NOT LIKE 'CR%'
 GROUP BY ce.Code_club, ce.Libelle, ce.Code_compet
@@ -25,12 +25,12 @@ AND ce.Id = cej.Id_equipe
 AND cej.Matric = lc.Matric
 AND lc.Numero_club = c.Code
 AND ce.Code_club != lc.Numero_club
-AND (ce.Code_compet LIKE 'N1F'
-    OR ce.Code_compet LIKE 'N_15%' -- compte plusieurs fois les qualifiés
-    OR ce.Code_compet LIKE 'N_18%' -- compte plusieurs fois les qualifiés
+AND (ce.Code_compet LIKE 'N1F%'
+    OR ce.Code_compet LIKE 'N15%' -- compte plusieurs fois les qualifiés
+    OR ce.Code_compet LIKE 'N18%' -- compte plusieurs fois les qualifiés
     OR ce.Code_compet LIKE 'CFF'
     OR ce.Code_compet LIKE 'CF15%') -- compte plusieurs fois les qualifiés
-AND ce.Code_saison LIKE '2018'
+AND ce.Code_saison LIKE '2020'
 GROUP BY lc.Numero_club, ce.Libelle, ce.Code_compet
 
 -- 7.1.3 Clubs N1H...
@@ -38,12 +38,12 @@ SELECT ce.Code_club, ce.Libelle, COUNT(ce.Code_club) AS '7.1.3', ce.Code_compet
 FROM `gickp_Competitions_Equipes` ce, gickp_Club c
 WHERE 1=1
 AND ce.Code_club = c.Code
-AND (ce.Code_compet LIKE 'N1H'
-    OR ce.Code_compet LIKE 'N2H'
-    OR ce.Code_compet LIKE 'N3'
-    OR ce.Code_compet LIKE 'N4'
+AND (ce.Code_compet LIKE 'N1H%'
+    OR ce.Code_compet LIKE 'N2H%'
+    OR ce.Code_compet LIKE 'N3%'
+    OR ce.Code_compet LIKE 'N4%'
     OR ce.Code_compet LIKE 'CFH%') -- compte plusieurs fois les équipes qualifiés
-AND ce.Code_saison LIKE '2018'
+AND ce.Code_saison LIKE '2020'
 AND ce.Code_club NOT LIKE '%CD'
 AND ce.Code_club NOT LIKE 'CR%'
 GROUP BY ce.Libelle, ce.Code_compet
@@ -60,7 +60,7 @@ ON (
     OR CONCAT(lc.Nom, ' ', lc.Prenom) = UPPER(j.ChefArbitre)
     OR CONCAT(lc.Prenom, ' ', lc.Nom) = UPPER(j.ChefArbitre)
 )
-WHERE j.Code_saison = 2018
+WHERE j.Code_saison = 2020
 AND (j.Code_competition LIKE 'N%'
      OR j.Code_competition LIKE 'CF%')
 GROUP BY lc.Matric

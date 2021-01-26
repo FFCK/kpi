@@ -23,37 +23,45 @@ if (strlen($term) < 2){
     echo 'Trop court...';
     return;
 }
-$term1 = '%' . $term . '%';
 
 $a_json = array();
 $jRow = array();
 
-$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
-    FROM gickp_Club c, gickp_Liste_Coureur lc 
-    LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric) 
-    WHERE (lc.Matric LIKE :term1 
-        OR lc.Reserve = :term 
-        OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(:term1) 
-        OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(:term1) 
-    ) 
-    AND lc.Numero_club = c.Code 
-    ORDER BY lc.Nom, lc.Prenom 
-    LIMIT 0, 40 ";
+$matric = (int) $term;
+if ($matric > 0) {
+	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
+	FROM gickp_Club c, gickp_Liste_Coureur lc  
+	LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric)
+	WHERE (lc.Matric = ? 
+		OR lc.Reserve = ? ) 
+		AND lc.Numero_club = c.Code 
+		ORDER BY lc.Nom, lc.Prenom ";
+	$arrayQuery = array($matric, $matric);
+} else {
+	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
+	FROM gickp_Club c, gickp_Liste_Coureur lc  
+	LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric) 
+		WHERE (UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(?) 
+			OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(?) ) 
+		AND lc.Numero_club = c.Code 
+		ORDER BY lc.Nom, lc.Prenom ";
+	$arrayQuery = array($term.'%', $term.'%');
+}
 $result = $myBdd->pdo->prepare($sql);
-$result->execute(array(':term' => $term, ':term1' => $term1));
+$result->execute($arrayQuery);
 while ($row = $result->fetch()) {
     $jRow["club"] = $row['Numero_club'];
     $jRow["libelle"] = $row['Libelle'];
     $jRow["matric"] = $row['Matric'];
-    $jRow["nom"] = $row['Nom'];
-    $jRow["prenom"] = $row['Prenom'];
+	$jRow["nom"] = mb_strtoupper($row['Nom']);
+	$jRow["prenom"] = mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8");
     if (strlen($row['Arb']) > 1) {
         $jRow["arb"] = ' ' . $row['Arb'] . '-' . $row['niveau'];
     } else {
         $jRow["arb"] = '';
     }
-    $jRow["nom2"] = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
-    $jRow["prenom2"] = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
+	$jRow["nom2"] = mb_strtoupper($row['Nom']);
+	$jRow["prenom2"] = mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8");
     $jRow["naissance"] = $row['Naissance'];
     $jRow["sexe"] = $row['Sexe'];
     $jRow["label"] = $jRow["matric"] . ' - ' . $jRow["nom2"] . ' ' . $jRow["prenom2"] . ' (' . $jRow["club"] . '-' . $jRow["libelle"] . ')' . $jRow["arb"];

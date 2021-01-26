@@ -86,7 +86,7 @@ if ($j == '' && $m == '') {
 			$arb .= '-' . $row['niveau'];
 		}
 		$matric = $row['Matric'];
-		$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
+		$nom = mb_strtoupper($row['Nom']);
 		$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 		$resultGlobal .= "($libelle) $nom $prenom $arb|$matric|$nom|$prenom|$libelle|$arb\n";
 	}
@@ -116,7 +116,7 @@ if ($j == '' && $m == '') {
 		if($row['niveau'] != '')
 			$arb .= '-'.$row['niveau'];
 		$matric = $row['Matric'];
-		$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
+		$nom = mb_strtoupper($row['Nom']);
 		$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 		if(isset($row['Naissance'])) {
 			$naissance = $row['Naissance'];
@@ -149,7 +149,7 @@ if ($j == '' && $m == '') {
 			$arb .= '-' . $row['niveau'];
 		}
 		$matric = $row['Matric'];
-		$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
+		$nom = mb_strtoupper($row['Nom']);
 		$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 		$naissance = $row['Naissance'];
 		$sexe = $row['Sexe'];

@@ -175,9 +175,7 @@ class RechercheLicence extends MyPageSecure
 	
 	function Remove()
 	{
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-		$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 		
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0)

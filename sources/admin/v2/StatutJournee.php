@@ -14,9 +14,9 @@ include_once('../../commun/MyTools.php');
 session_start();
 
 $myBdd = new MyBdd();
-$idJournee = (int)$_POST['Id_Journee'];
-$Valeur = $myBdd->RealEscapeString(trim($_POST['Valeur']));
-$TypeUpdate = $myBdd->RealEscapeString(trim($_POST['TypeUpdate']));
+$idJournee = (int) utyGetPost('Id_Journee', 0);
+$Valeur = $myBdd->RealEscapeString(trim(utyGetPost('Valeur')));
+$TypeUpdate = $myBdd->RealEscapeString(trim(utyGetPost('TypeUpdate')));
 if (!in_array($TypeUpdate, ['Publication', 'Type'])) {
 	header('HTTP/1.0 401 Unauthorized');
 	die('Action non autorisée !');

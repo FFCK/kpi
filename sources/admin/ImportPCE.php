@@ -20,7 +20,7 @@ class ImportPCE extends MyPageSecure
 		$myBdd = new MyBdd();
 		
 		$jsondata = '';
-		if (isset($_POST['json_data']))
+		if (utyGetPost('json_data', false))
 			$jsondata = stripcslashes($_POST['json_data']);
 		
 		$this->SetTemplate("MAJ Licenciés / Mode Local", "Import", false);

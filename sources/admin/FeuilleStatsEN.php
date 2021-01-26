@@ -90,8 +90,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Licence' => $row['Licence'],  
-                                'Nom' => strtoupper($row['Nom']),  
-                                'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
                                 'Sexe' => $row['Sexe'],  
                                 'Numero' => $row['Numero'],  
                                 'Equipe' => $row['Equipe'],  
@@ -172,8 +172,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Licence' => $row['Licence'],  
-                                'Nom' => strtoupper($row['Nom']),  
-                                'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
                                 'Sexe' => $row['Sexe'],  
                                 'Numero' => $row['Numero'],  
                                 'Equipe' => $row['Equipe'],  
@@ -266,8 +266,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => strtoupper($row['Nom']),  
-								'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Sexe' => $row['Sexe'],  
 								'Numero' => $row['Numero'],  
 								'Equipe' => $row['Equipe'],  
@@ -326,8 +326,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => strtoupper($row['Nom']),  
-								'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Sexe' => $row['Sexe'],  
 								'Principal' => $row['principal'],  
 								'Secondaire' => $row['secondaire'],  
@@ -384,8 +384,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Matric' => $row['Matric'],  
-								'Nom' => strtoupper($row['Nom']),  
-								'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Numero_club' => $row['Numero_club'],  
 								'Nom_club' => $row['Nom_club'],  
 								'Nb_matchs' => $row['Nb_matchs']));
@@ -414,8 +414,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Matric' => $row['Matric'],  
-								'Nom' => strtoupper($row['Nom']),  
-								'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'nomEquipe' => $row['nomEquipe'],  
 								'Nb_matchs' => $row['Nb_matchs']));
 				}
@@ -493,8 +493,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Matric' => $row['Matric'],  
-                                'Nom' => strtoupper($row['Nom']),  
-                                'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
                                 'nomEquipe' => $row['nomEquipe'],  
                                 'Nb_matchs' => $row['Nb_matchs']));
                 }
@@ -522,8 +522,8 @@ class FeuilleStats extends MyPage {
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Matric' => $row['Matric'],  
-                                'Nom' => strtoupper($row['Nom']),  
-                                'Prenom' => strtoupper($row['Prenom']),  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
                                 'nomEquipe' => $row['nomEquipe'],  
                                 'Nb_matchs' => $row['Nb_matchs']));
                 }
@@ -586,6 +586,8 @@ class FeuilleStats extends MyPage {
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute();
                 while ($row = $result->fetch()) {
+                    $row['Nom'] = mb_strtoupper($row['Nom']);
+                    $row['Prenom'] =  mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
                     array_push($arrayStats, $row);
 				}
                 break;
@@ -651,7 +653,7 @@ class FeuilleStats extends MyPage {
                 $pdf->Cell(10, 7, 'Rank', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Cat.', 'B', 0, 'C');
                 $pdf->Cell(8, 7, '#', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'Name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(62, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(12, 7, 'Goals', 'B', 1, 'C');
@@ -706,8 +708,8 @@ class FeuilleStats extends MyPage {
                 $pdf->Cell(10, 7, 'Rank', 'B', 0, 'C');
                 $pdf->Cell(19, 7, 'Cat.', 'B', 0, 'C');
                 $pdf->Cell(8, 7, '#', 'B', 0, 'C');
-                $pdf->Cell(37, 7, 'Name', 'B', 0, 'C');
-                $pdf->Cell(37, 7, 'First Name', 'B', 0, 'C');
+                $pdf->Cell(37, 7, 'Family name', 'B', 0, 'C');
+                $pdf->Cell(37, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(52, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(9, 7, 'G', 'B', 0, 'C');
                 $pdf->Cell(9, 7, 'Y', 'B', 0, 'C');
@@ -750,8 +752,8 @@ class FeuilleStats extends MyPage {
                 $pdf->Cell(10, 7, 'Rank', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Cat.', 'B', 0, 'C');
                 $pdf->Cell(8, 7, '#', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'Name', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'First Name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Family name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(62, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(12, 7, 'Pts', 'B', 1, 'C');
                 $pdf->SetFont('Arial', '', 8);
@@ -788,7 +790,7 @@ class FeuilleStats extends MyPage {
                 $pdf->Cell(21, 7, '', '', 0, 'C');
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Cat.', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'Name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'First name', 'B', 0, 'C');
 //				$pdf->Cell(51,7,'Equipe','B',0,'C');
                 $pdf->Cell(13, 7, '1st', 'B', 0, 'C');
@@ -833,7 +835,7 @@ class FeuilleStats extends MyPage {
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Cat.', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'Name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(70, 7, 'Club', 'B', 0, 'C');
                 $pdf->Cell(12, 7, 'Nb', 'B', 1, 'C');
@@ -852,7 +854,7 @@ class FeuilleStats extends MyPage {
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Cat.', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'Name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(70, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(12, 7, 'Nb', 'B', 1, 'C');
@@ -871,7 +873,7 @@ class FeuilleStats extends MyPage {
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(8, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(15, 7, 'Cat.', 'B', 0, 'C');
-                $pdf->Cell(35, 7, 'Name', 'B', 0, 'C');
+                $pdf->Cell(35, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(35, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(60, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(35, 7, 'Problem', 'B', 1, 'C');
@@ -890,7 +892,7 @@ class FeuilleStats extends MyPage {
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Cat', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'Name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(70, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(12, 7, 'Nb', 'B', 1, 'C');
@@ -925,7 +927,7 @@ class FeuilleStats extends MyPage {
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Cat', 'B', 0, 'C');
-                $pdf->Cell(40, 7, 'Name', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'First name', 'B', 0, 'C');
                 $pdf->Cell(70, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(12, 7, 'Nb', 'B', 1, 'C');

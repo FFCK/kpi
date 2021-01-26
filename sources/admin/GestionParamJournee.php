@@ -412,9 +412,7 @@ class GestionParamJournee extends MyPageSecure
 		
 		$alertMessage = '';
 	  
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
 		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Ok') {
