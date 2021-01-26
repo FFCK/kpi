@@ -44,13 +44,13 @@ class FeuilleListeMatchs extends MyPage
         $arrayJournees = explode(',', $lstJournee);
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
-        if (isset($_GET['idEvenement'])) {
+		if (utyGetGet('idEvenement', 0) > 0) {
             $arrayJournees = [];
             $sql = "SELECT Id_journee 
                 FROM gickp_Evenement_Journees 
                 WHERE Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array($_GET['idEvenement']));
+            $result->execute(array($idEvenement));
             while ($row = $result->fetch()){
                 $arrayJournees[] = $row['Id_journee'];
             }
@@ -311,11 +311,11 @@ class FeuilleListeMatchs extends MyPage
                         $pdf->Cell(150, 5, date_format($rupture2, 'l jS F, Y') . ' - ' . html_entity_decode($row['Lieu']), 'LTBR', '1', 'C');
                         $pdf->Cell(8, 5, '#', 'LTRB', '0', 'R');
                         $pdf->Cell(10, 5, 'Time', 'TRB', '0', 'C');
-                        $pdf->Cell(17, 5, 'Cat.', 'TRB', '0', 'C');
+                        $pdf->Cell(22, 5, 'Cat.', 'TRB', '0', 'C');
                         if ($PhaseLibelle == 1) {
-                            $pdf->Cell(50, 5, 'Phase | Game', 'TRB', '0', 'C');
+                            $pdf->Cell(45, 5, 'Phase | Game', 'TRB', '0', 'C');
                         } else {
-                            $pdf->Cell(50, 5, 'Place', 'TRB', '0', 'C');
+                            $pdf->Cell(45, 5, 'Place', 'TRB', '0', 'C');
                         }
                         $pdf->Cell(12, 5, 'Pitch', 'TRB', '0', 'C');
                         $pdf->Cell(35, 5, 'Team A', 'TRB', '0', 'C');
@@ -420,11 +420,11 @@ class FeuilleListeMatchs extends MyPage
                     $pdf->SetFont('Arial', '', 8);
                     $pdf->Cell(8, 5, $row['Numero_ordre'], 'LR' . $ltbr, '0', 'C');
                     $pdf->Cell(10, 5, $row['Heure_match'], 'R' . $ltbr, '0', 'C');
-                    $pdf->Cell(17, 5, $row['Code_competition'], 'R' . $ltbr, '0', 'C');
+                    $pdf->Cell(22, 5, $row['Code_competition'], 'R' . $ltbr, '0', 'C');
                     if ($PhaseLibelle == 1) {
-                        $pdf->Cell(50, 5, $phase_match, 'R' . $ltbr, '0', 'C');
+                        $pdf->Cell(45, 5, $phase_match, 'R' . $ltbr, '0', 'C');
                     } else {
-                        $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'R' . $ltbr, '0', 'C');
+                        $pdf->Cell(45, 5, html_entity_decode($row['Lieu']), 'R' . $ltbr, '0', 'C');
                     }
                     $pdf->Cell(12, 5, $row['Terrain'], 'R' . $ltbr, '0', 'C');
                     $pdf->Cell(35, 5, $row['EquipeA'], 'R' . $ltbr, '0', 'C');

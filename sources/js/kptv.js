@@ -75,6 +75,12 @@ jq(document).ready(function(){
             case 'score':
                 jq('#match-col, #speaker-col').show();
                 break;
+            case 'score2':
+                jq('#match-col, #speaker-col').show();
+                break;
+            case 'liveteams':
+                jq('#match-col, #speaker-col').show();
+                break;
             case 'multi_score':
                 jq('#speaker-col, #count-col').show();
                 break;
@@ -167,6 +173,16 @@ jq(document).ready(function(){
                 break;
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                        + '&speaker=' + jq('#speaker').val();
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'score2':
+                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                        + '&speaker=' + jq('#speaker').val();
+                ChangeVoie(jq('#channel').val(), url, showUrl);
+                break;
+            case 'liveteams':
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
                         + '&speaker=' + jq('#speaker').val();
                 ChangeVoie(jq('#channel').val(), url, showUrl);
                 break;
@@ -353,6 +369,12 @@ jq(document).ready(function(){
             case 'score':
                 jq('#match-col2, #game_report2, #speaker-col2').show();
                 break;
+            case 'score2':
+                jq('#match-col2, #game_report2, #speaker-col2').show();
+                break;
+            case 'liveteams':
+                jq('#match-col2, #game_report2, #speaker-col2').show();
+                break;
             case 'multi_score':
                 jq('#speaker-col2, #count-col2').show();
                 break;
@@ -431,6 +453,16 @@ jq(document).ready(function(){
                 break;
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val() 
+                        + '&speaker=' + jq('#speaker2').val();
+                ChangeVoie(jq('#channel2').val(), url, showUrl);
+                break;
+            case 'score2':
+                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val() 
+                        + '&speaker=' + jq('#speaker2').val();
+                ChangeVoie(jq('#channel2').val(), url, showUrl);
+                break;
+            case 'liveteams':
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val() 
                         + '&speaker=' + jq('#speaker2').val();
                 ChangeVoie(jq('#channel2').val(), url, showUrl);
                 break;
@@ -593,6 +625,12 @@ jq(document).ready(function(){
             case 'score':
                 jq('#match-col3, #game_report3, #speaker-col3').show();
                 break;
+            case 'score2':
+                jq('#match-col3, #game_report3, #speaker-col3').show();
+                break;
+            case 'liveteams':
+                jq('#match-col3, #game_report3, #speaker-col3').show();
+                break;
             case 'multi_score':
                 jq('#speaker-col3, #count-col3').show();
                 break;
@@ -671,6 +709,16 @@ jq(document).ready(function(){
                 break;
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val() 
+                        + '&speaker=' + jq('#speaker3').val();
+                ChangeVoie(jq('#channel3').val(), url, showUrl);
+                break;
+            case 'score2':
+                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val() 
+                        + '&speaker=' + jq('#speaker3').val();
+                ChangeVoie(jq('#channel3').val(), url, showUrl);
+                break;
+            case 'liveteams':
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val() 
                         + '&speaker=' + jq('#speaker3').val();
                 ChangeVoie(jq('#channel3').val(), url, showUrl);
                 break;
@@ -833,6 +881,12 @@ jq(document).ready(function(){
             case 'score':
                 jq('#match-col4, #game_report4, #speaker-col4').show();
                 break;
+            case 'score2':
+                jq('#match-col4, #game_report4, #speaker-col4').show();
+                break;
+            case 'liveteams':
+                jq('#match-col4, #game_report4, #speaker-col4').show();
+                break;
             case 'multi_score':
                 jq('#speaker-col4, #count-col4').show();
                 break;
@@ -911,6 +965,16 @@ jq(document).ready(function(){
                 break;
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val() 
+                        + '&speaker=' + jq('#speaker4').val();
+                ChangeVoie(jq('#channel4').val(), url, showUrl);
+                break;
+            case 'score2':
+                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val() 
+                        + '&speaker=' + jq('#speaker4').val();
+                ChangeVoie(jq('#channel4').val(), url, showUrl);
+                break;
+            case 'liveteams':
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val() 
                         + '&speaker=' + jq('#speaker4').val();
                 ChangeVoie(jq('#channel4').val(), url, showUrl);
                 break;

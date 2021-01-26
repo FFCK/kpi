@@ -260,17 +260,17 @@ class FeuilleMatch extends MyPage
                 $j++;
                 if ($row3["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
-                    $noma[$j] = strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
+                    $noma[$j] = mb_strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $na[$j] = 'C';
                 } elseif ($row3["Capitaine"] == 'C') {
-                    $noma[$j] = strtoupper($row3['Nom']) . ' (Cap)';
+                    $noma[$j] = mb_strtoupper($row3['Nom']) . ' (Cap)';
                     $na[$j] = $row3['Numero'];
                 } elseif ($row3["Capitaine"] != 'E') {
-                    $noma[$j] = strtoupper($row3['Nom']);
+                    $noma[$j] = mb_strtoupper($row3['Nom']);
                     $na[$j] = $row3['Numero'];
                 }
 
-                $prenoma[$j] = utyUcWordNomCompose($row3['Prenom']);
+                $prenoma[$j] = mb_convert_case($row3['Prenom'], MB_CASE_TITLE, "UTF-8");
                 if ($arrayCompetition['Code_niveau'] == 'INT' && $row3['icf'] != NULL && $row3['icf'] != 0) {
                     $licencea[$j] = 'Icf-' . $row3['icf'];
                 } elseif ($row3['Matric'] < 2000000) {
@@ -311,17 +311,17 @@ class FeuilleMatch extends MyPage
 
                 if ($row4["Capitaine"] == 'E' && $j <= 10) {
 //                                    $j=10;
-                    $nomb[$j] = strtoupper($row4['Nom']) . ' (' . $lang['Entraineur'] . ')';
+                    $nomb[$j] = mb_strtoupper($row4['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $nb[$j] = 'C';
                 } elseif ($row4["Capitaine"] == 'C') {
-                    $nomb[$j] = strtoupper($row4['Nom']) . ' (Cap)';
+                    $nomb[$j] = mb_strtoupper($row4['Nom']) . ' (Cap)';
                     $nb[$j] = $row4['Numero'];
                 } elseif ($row4["Capitaine"] != 'E') {
-                    $nomb[$j] = strtoupper($row4['Nom']);
+                    $nomb[$j] = mb_strtoupper($row4['Nom']);
                     $nb[$j] = $row4['Numero'];
                 }
 
-                $prenomb[$j] = utyUcWordNomCompose($row4['Prenom']);
+                $prenomb[$j] = mb_convert_case($row4['Prenom'], MB_CASE_TITLE, "UTF-8");
                 if ($arrayCompetition['Code_niveau'] == 'INT' && $row4['icf'] != NULL && $row4['icf'] != 0) {
                     $licenceb[$j] = $row4['icf'];
                 } elseif ($row4['Matric'] < 2000000) {
@@ -508,11 +508,11 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(24, 4, $categorie, 'R', '1', 'R');
             }
 
-            $pdf->Cell(111, 4, $lang['Organisateur'] . ": " . ucwords(strtolower($organisateur)), 'L', '0', 'L');
+            $pdf->Cell(111, 4, $lang['Organisateur'] . ": " . $organisateur, 'L', '0', 'L');
             $pdf->Cell(24, 4, $lang['Saison'] . ": " . $saison, 'R', '1', 'L');
 
-            $pdf->Cell(68, 4, $responsableT . ucwords(strtolower($responsable)), 'L', '0', 'L');
-            $pdf->Cell(67, 4, $delegueT . ucwords(strtolower($delegue)), 'R', '1', 'L');
+            $pdf->Cell(68, 4, $responsableT . $responsable, 'L', '0', 'L');
+            $pdf->Cell(67, 4, $delegueT . $delegue, 'R', '1', 'L');
 
             $pdf->Cell(135, 1, "", 'LR', '1', 'C');
             $pdf->Cell(135, 1, "", 'LTR', '1', 'C', 1);
@@ -835,11 +835,11 @@ class FeuilleMatch extends MyPage
                     $pdf->Cell(24, 4, $categorie, 'RT', '1', 'R');
                 }
 
-                $pdf->Cell(111, 4, $lang['Organisateur'] . ": " . ucwords(strtolower($organisateur)), 'L', '0', 'L');
+                $pdf->Cell(111, 4, $lang['Organisateur'] . ": " . $organisateur, 'L', '0', 'L');
                 $pdf->Cell(24, 4, $lang['Saison'] . ": " . $saison, 'R', '1', 'L');
 
-                $pdf->Cell(68, 4, $responsableT . ucwords(strtolower($responsable)), 'L', '0', 'L');
-                $pdf->Cell(67, 4, $delegueT . ucwords(strtolower($delegue)), 'R', '1', 'L');
+                $pdf->Cell(68, 4, $responsableT . $responsable, 'L', '0', 'L');
+                $pdf->Cell(67, 4, $delegueT . $delegue, 'R', '1', 'L');
 
                 $pdf->Cell(135, 1, "", 'LR', '1', 'C');
                 $pdf->Cell(135, 1, "", 'LTR', '1', 'C', 1);

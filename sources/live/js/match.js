@@ -372,6 +372,18 @@ function SecToMMSS(temps)
 	return str;
 }
 
+
+function ImgClub48(club)
+{
+	var c = club.substr(0,1);
+	if ((c >= '0' && c <= '9') || club.substr(0,2) == 'CR') {
+		return "<img class='centre' src='../img/KIP/logo/"+club+"-logo.png' height='48' alt='' />";
+	} else {
+		nation = VerifNation(club);
+		return "<img class='centre' src='../img/Nations/"+nation+".png' height='48' alt='' />";
+	}
+}
+
 function VerifNation(nation)
 {
 	if (nation.length > 3) nation = nation.substr(0,3);
@@ -389,7 +401,7 @@ function ImgNation(nation)
 {
 	nation = VerifNation(nation);
     if(nation.length > 0) {
-        return "<img class='centre' src='../img/Nations/"+nation+".png' height='32' />";
+        return "<img class='centre' src='../img/Nations/"+nation+".png' height='32' alt='' />";
     } else {
         return "";
     }
@@ -398,13 +410,13 @@ function ImgNation(nation)
 function ImgNation48(nation)
 {
 	nation = VerifNation(nation);
-	return "<img class='centre' src='../img/Nations/"+nation+".png' height='48' />";
+	return "<img class='centre' src='../img/Nations/"+nation+".png' height='48' alt='' />";
 }
 
 function ImgNation64(nation)
 {
 	nation = VerifNation(nation);
-	return "<img class='centre' src='../img/Nations/"+nation+".png' height='64' width='64' />";
+	return "<img class='centre' src='../img/Nations/"+nation+".png' height='64' alt='' />";
 }
 
 function GetLabelPeriode(periode)

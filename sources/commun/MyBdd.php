@@ -669,6 +669,9 @@ class MyBdd
 		if (strrpos($livret, "OTM") !== false) { 
 			$Arb = "OTM";
 		}
+		if (strrpos($livret, "OTMS") !== false) { 
+			$niveau = 'S';
+		}
 		if (strrpos($livret, "JO") !== false) { 
 			$Arb = "JO";
 		}

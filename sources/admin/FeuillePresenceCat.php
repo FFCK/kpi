@@ -60,7 +60,7 @@ class FeuillePresenceCat extends MyPage {
             if (count($arrayEquipe) > 0) {
                 $in = str_repeat('?,', count($arrayEquipe) - 1) . '?';
                 $sql2 = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, 
-                    ce.Libelle NomEquipe, b.Origine, b.Numero_club, b.Pagaie_ECA, 
+                    ce.Libelle NomEquipe, b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, 
                     b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau 
                     FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Joueurs a 
                     LEFT OUTER JOIN gickp_Liste_Coureur b ON (a.Matric = b.Matric) 
@@ -83,27 +83,11 @@ class FeuillePresenceCat extends MyPage {
                         $row2['Arb'] .= '-' . $row2['niveau'];
                     }
 
-                    switch ($row2['Pagaie_ECA']) {
-                        case 'PAGR' :
-                            $pagaie = 'Rouge';
-                            break;
-                        case 'PAGN' :
-                            $pagaie = 'Noire';
-                            break;
-                        case 'PAGBL' :
-                            $pagaie = 'Bleue';
-                            break;
-                        case 'PAGB' :
-                            $pagaie = 'Blanche';
-                            break;
-                        case 'PAGJ' :
-                            $pagaie = 'Jaune';
-                            break;
-                        case 'PAGV' :
-                            $pagaie = 'Verte';
-                            break;
-                        default :
-                            $pagaie = '';
+                    $controlePagaie = controle_pagaie($row2['Pagaie_ECA'], $row2['Pagaie_EVI'], $row2['Pagaie_MER']);
+                    $pagaie = $controlePagaie['pagaie'];
+                    $PagaieValide = $controlePagaie['PagaieValide'];
+                    if ($PagaieValide > 1) {
+                        $pagaie = '(' . $pagaie . ')';
                     }
 
                     $capitaine = $row2['Capitaine'];
@@ -121,7 +105,7 @@ class FeuillePresenceCat extends MyPage {
                         $row2['Origine'] = '';
                     }
 
-                    array_push($arrayJoueur, array('Matric' => $row2['Matric'], 'Nom' => ucwords(strtolower($row2['Nom'])), 'Prenom' => ucwords(strtolower($row2['Prenom'])),
+                    array_push($arrayJoueur, array('Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
                         'Sexe' => $row2['Sexe'], 'Categ' => $row2['Categ'], 'Pagaie' => $pagaie, 'CertifCK' => $row2['CertifCK'],
                         'CertifAPS' => $row2['CertifAPS'], 'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['Arb'],
                         'Saison' => $row2['Origine'], 'Numero_club' => $row2['Numero_club'],

@@ -17,17 +17,12 @@ class GestionStats extends MyPageSecure
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetPost('codeSaison', $codeSaison);
-		if (isset($_POST['codeSaison'])) {
-            $codeSaison = $_POST['codeSaison'];
-        }
         $this->m_tpl->assign('codeSaison', $codeSaison);
 		$_SESSION['codeSaison'] = $codeSaison;
 
 		//Competition
 		$codeCompet = utyGetSession('codeCompet', '');
-		if (isset($_POST['codeCompet'])) {
-            $codeCompet = $_POST['codeCompet'];
-        }
+		$codeCompet = utyGetPost('codeCompet', $codeCompet);
         $this->m_tpl->assign('codeCompet', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
 		
@@ -221,8 +216,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Sexe' => $row['Sexe'],  
 								'Numero' => $row['Numero'],  
 								'Equipe' => $row['Equipe'],  
@@ -306,8 +301,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Sexe' => $row['Sexe'],  
 								'Numero' => $row['Numero'],  
 								'Equipe' => $row['Equipe'],  
@@ -403,8 +398,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Sexe' => $row['Sexe'],  
 								'Numero' => $row['Numero'],  
 								'Equipe' => $row['Equipe'],  
@@ -466,8 +461,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Licence' => $row['Licence'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Sexe' => $row['Sexe'],  
 								'Principal' => $row['principal'],  
 								'Secondaire' => $row['secondaire'],  
@@ -526,8 +521,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Matric' => $row['Matric'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'Numero_club' => $row['Numero_club'],  
 								'Nom_club' => $row['Nom_club'],  
 								'Nb_matchs' => $row['Nb_matchs']));
@@ -557,8 +552,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
 					array_push($arrayStats, array( 'Competition' => $row['Competition'], 
 								'Matric' => $row['Matric'],  
-								'Nom' => $row['Nom'],  
-								'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
 								'nomEquipe' => $row['nomEquipe'],  
 								'Nb_matchs' => $row['Nb_matchs']));
 				}
@@ -610,7 +605,10 @@ class GestionStats extends MyPageSecure
                             $row['Irreg'] .= '<br>';
                         }
                         $row['Irreg'] .= 'Certif CK';
-					}
+                    }
+                    $row['Nom'] =  mb_strtoupper($row['Nom']);
+                    $row['Prenom'] =  mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
+
 					array_push($arrayStats, $row);
 				}
 				$this->m_tpl->assign('arrayCJouees3', $arrayStats);
@@ -638,8 +636,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Matric' => $row['Matric'],  
-                                'Nom' => $row['Nom'],  
-                                'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
                                 'nomEquipe' => $row['nomEquipe'],  
                                 'Nb_matchs' => $row['Nb_matchs']));
                 }
@@ -668,8 +666,8 @@ class GestionStats extends MyPageSecure
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array( 'Competition' => $row['Competition'], 
                                 'Matric' => $row['Matric'],  
-                                'Nom' => $row['Nom'],  
-                                'Prenom' => $row['Prenom'],  
+								'Nom' => mb_strtoupper($row['Nom']),  
+								'Prenom' => mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"),  
                                 'nomEquipe' => $row['nomEquipe'],  
                                 'Nb_matchs' => $row['Nb_matchs']));
                 }
@@ -745,6 +743,8 @@ class GestionStats extends MyPageSecure
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute();
                 while ($row = $result->fetch()) {
+                    $row['Nom'] =  mb_strtoupper($row['Nom']);
+                    $row['Prenom'] =  mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
                     array_push($arrayStats, $row);
 				}
 				$this->m_tpl->assign('arrayListeArbitres', $arrayStats);
@@ -761,13 +761,7 @@ class GestionStats extends MyPageSecure
 		
 		$alertMessage = '';
 		
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
-
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
 		if (strlen($Cmd) > 0)
 		{

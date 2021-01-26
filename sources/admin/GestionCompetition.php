@@ -276,7 +276,6 @@ class GestionCompetition extends MyPageSecure
         $myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 		$codeCompet = utyGetPost('codeCompet');
-		// echo '<pre>'; print_r($_POST); echo '</pre>'; die(); //TODO
 		$bandeauLink = utyGetPost('bandeauLink');
 		if($bandeauLink2 = captureImg($bandeauLink, 'B', $codeCompet, $saison)) {
             $bandeauLink = $bandeauLink2;
@@ -349,9 +348,7 @@ class GestionCompetition extends MyPageSecure
 		$myBdd = $this->myBdd;
 		$saison = $myBdd->GetActiveSaison();
 
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 			
 		$arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0) {

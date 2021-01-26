@@ -25,7 +25,7 @@ class MyPage
 	// Constructeur ...
 	function MyPage()
 	{
-		session_start();
+		// session_start();
 	}
 
 	// Affichage de la Page ...
@@ -145,8 +145,8 @@ class MyPage
 		$this->m_tpl->assign('Club', utyGetSession('Club'));
 		
 			// Chargement css supplémentaire
-		if (isset($_GET['Css'])){
-			$css_sup = htmlspecialchars($_GET['Css'], ENT_QUOTES);
+		if (utyGetGet('Css', false)){
+			$css_sup = htmlspecialchars(utyGetGet('Css', false), ENT_QUOTES);
 			$this->m_tpl->assign('css_supp', $css_sup);
 		}
 			

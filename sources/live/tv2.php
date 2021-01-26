@@ -212,7 +212,7 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_list">
-                <div class="logo_sm"></div>
+                <div class="logo_sm2"></div>
                 <div id="banner_list">
                     <div id="banner_line1" class="h2 text-right">
                         <span>
@@ -279,7 +279,7 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_list">
-                <div class="logo_sm"></div>
+                <div class="logo_sm2"></div>
                 <div id="banner_list">
                     <div id="banner_line1" class="h2 text-right">
                         <span>
@@ -375,7 +375,7 @@ class TV extends MyPage
         
         echo '
             <div class="container-fluid ban_list">
-                <div class="logo_sm"></div>
+                <div class="logo_sm2"></div>
                 <div id="banner_list" class="final_ranking">
                     <div id="banner_line1" class="h2 text-center">
                         FINAL RANKING<br>
@@ -579,7 +579,7 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_info_2_lines">
                 <div id="ban_info_2_lines" class="text-center">
-                    <div class="logo_sm"></div>
+                    <div class="logo_sm2"></div>
                     <div id="banner_line1" class="h2 text-right">REFEREES</div>
                     <div id="banner_line2" class="h2 text-right">
                         <span>CANOE POLO</span>
@@ -669,7 +669,7 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_info_1_lines">
                 <div id="ban_info_1_lines" class="text-center">
-                    <div class="logo_sm"></div>
+                    <div class="logo_sm2"></div>
                     <div id="banner_line1" class="h2 text-right">
                         ' . utyGetString($rMatch, 'Phase', '???') . '
                     <!--     - Pitch
@@ -884,7 +884,7 @@ class TV extends MyPage
     {
         parent::Script();
 		$voie = $this->GetParamInt('voie', 0);
-		$intervalle = $this->GetParamInt('intervalle', 0);
+		$intervalle = $this->GetParamInt('intervalle', 3000);
 
 		$show = $this->GetParam('show');
 		if ($show == 'command') {

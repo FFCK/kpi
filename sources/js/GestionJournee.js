@@ -554,6 +554,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		} else if (jq(this).hasClass('score')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
 		} else if (jq(this).hasClass('equipe')) {
+			jq('#selectZoneAnnul').click();
 			jq(this).before('<select id="selectZone" class="directInputSpan" tabindex="'+tabindexVal+'"></select>');
 			jq(this).before('<br /><input type="button" id="selectZoneAnnul" value="' + langue['Annuler'] + '">');
 			datamatch = jq(this).attr('data-match');
@@ -622,6 +623,7 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 				}
 			});
 		} else if (jq(this).hasClass('phase')) {
+			jq('#selectZoneAnnul').click();
 			jq(this).before('<select id="selectZone" class="directInputSpan" tabindex="'+tabindexVal+'"></select>');
 			jq(this).before('<br /><input type="button" id="selectZoneAnnul" value="' + langue['Annuler'] + '">');
 			datamatch = jq(this).attr('data-match');

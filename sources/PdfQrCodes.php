@@ -33,13 +33,13 @@ class PdfQrCodes extends MyPage {
         $lstJournee = utyGetSession('lstJournee', 0);
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('Evt', $idEvenement);
-        if (isset($_GET['Evt'])) {
+		if (utyGetGet('Evt', 0) > 0) {
 			$lstJournee = [];
             $sql = "SELECT Id_journee 
                 FROM gickp_Evenement_Journees 
                 WHERE Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array($_GET['Evt']));
+            $result->execute(array($idEvenement));
             while ($row = $result->fetch()) {
                 $lstJournee[] = $row['Id_journee'];
             }

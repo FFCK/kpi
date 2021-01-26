@@ -18,7 +18,7 @@ $term = trim(utyGetGet('term'));
 $term = preg_replace('/\s+/', ' ', $term);
 // supprime les 0 devant les numéros de licence
 $term = preg_replace('`^[0]*`','',$term);
-$idMatch = (int)trim($_GET['idMatch']);
+$idMatch = (int) trim(utyGetGet('idMatch'));
 $term1 = '%' . $term . '%';
 
 $jRow = array();
@@ -69,7 +69,7 @@ $result = $myBdd->pdo->prepare($sql);
 $result->execute(array_merge($idEquipes, [$term1], [$term1], [$term1], [$term1]));
 while ($row = $result->fetch()) {
 	$arb = strtoupper($row['Arb']);
-	$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
+	$nom = mb_strtoupper($row['Nom']);
 	$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 	$jRow["label"] = $row["Libelle"].' - '.$nom.' '.$prenom.' ('.$arb.' '.$row["niveau"].')';
 	$jRow["value"] = $nom.' '.$prenom.' ('.$row["Libelle"].') | '.$row["Matric"];
@@ -99,7 +99,7 @@ while ($row = $result->fetch()) {
 		$arb .= '-'.$row['niveau'];
 	}
 	$matric = $row['Matric'];
-	$nom = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
+	$nom = mb_strtoupper($row['Nom']);
 	$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 	$jRow["label"] = $nom.' '.$prenom.' ('.$libelle.') - '.$arb;
 	$jRow["value"] = $nom.' '.$prenom.' ('.$libelle.') | '.$row["Matric"];
@@ -125,7 +125,7 @@ while ($row = $result->fetch()) {
 	if($row['niveau'] != '') {
 		$arb .= '-'.$row['niveau'];
 	}
-	$nom  = mb_convert_case(strtolower($row['Nom']), MB_CASE_TITLE, "UTF-8");
+	$nom  = mb_strtoupper($row['Nom']);
 	$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 	$jRow["label"] = $nom .' '.$prenom.' ('.$arb.') - '.$libelle;
 	$jRow["value"] = $nom .' '.$prenom.' ('.$arb.') | '.$row["Matric"];
