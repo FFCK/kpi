@@ -282,8 +282,8 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp  = '<tr>';
 										$joueur_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'">'.$row3["Numero"].'</td>';
 										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
-										$joueur_temp .= '<td>'.strtoupper($row3["Nom"]).'</td>';
-										$joueur_temp .= '<td>'.utyUcWordNomCompose($row3["Prenom"]).'</td>';
+										$joueur_temp .= '<td>'.mb_strtoupper($row3["Nom"]).'</td>';
+										$joueur_temp .= '<td>'.mb_convert_case($row3["Prenom"], MB_CASE_TITLE, "UTF-8").'</td>';
 										$joueur_temp .= '<td>';
 										if ($row3["Matric"] < 2000000) {
 											$joueur_temp .= $row3["Matric"];
@@ -297,8 +297,8 @@ class GestionMatchDetail extends MyPageSecure
 										$entr_temp  = '<tr class="entraineur">';
 										$entr_temp .= '<td class="editNo" id="No-'.$row3["Matric"].'"></td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row3["Matric"].'">'.$row3["Capitaine"].'</td>';
-										$entr_temp .= '<td>'.strtoupper($row3["Nom"]).'</td>';
-										$entr_temp .= '<td>'.utyUcWordNomCompose($row3["Prenom"]).'</td>';
+										$entr_temp .= '<td>'.mb_strtoupper($row3["Nom"]).'</td>';
+										$entr_temp .= '<td>'.mb_convert_case($row3["Prenom"], MB_CASE_TITLE, "UTF-8").'</td>';
 										$entr_temp .= '<td>';
 										if ($row3["Matric"] < 2000000) {
 											$entr_temp .= $row3["Matric"];
@@ -343,8 +343,8 @@ class GestionMatchDetail extends MyPageSecure
 										$joueur_temp  = '<tr>';
 										$joueur_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'">'.$row4["Numero"].'</td>';
 										$joueur_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
-										$joueur_temp .= '<td>'.strtoupper($row4["Nom"]).'</td>';
-										$joueur_temp .= '<td>'.utyUcWordNomCompose($row4["Prenom"]).'</td>';
+										$joueur_temp .= '<td>'.mb_strtoupper($row4["Nom"]).'</td>';
+										$joueur_temp .= '<td>'.mb_convert_case($row4["Prenom"], MB_CASE_TITLE, "UTF-8").'</td>';
 										$joueur_temp .= '<td>';
 										if ($row4["Matric"] < 2000000) {
                                             $joueur_temp .= $row4["Matric"];
@@ -358,8 +358,8 @@ class GestionMatchDetail extends MyPageSecure
 										$entr_temp  = '<tr class="entraineur">';
 										$entr_temp .= '<td class="editNo" id="No-'.$row4["Matric"].'"></td>';
 										$entr_temp .= '<td class="editStatut" id="Statut-'.$row4["Matric"].'">'.$row4["Capitaine"].'</td>';
-										$entr_temp .= '<td>'.strtoupper($row4["Nom"]).'</td>';
-										$entr_temp .= '<td>'.utyUcWordNomCompose($row4["Prenom"]).'</td>';
+										$entr_temp .= '<td>'.mb_strtoupper($row4["Nom"]).'</td>';
+										$entr_temp .= '<td>'.mb_convert_case($row4["Prenom"], MB_CASE_TITLE, "UTF-8").'</td>';
 										$entr_temp .= '<td>';
 										if ($row4["Matric"] < 2000000) {
                                             $entr_temp .= $row4["Matric"];
@@ -419,14 +419,14 @@ stop_time: <span id="stop_time_display"></span><br />
 								$entr_temp = '';
 								foreach ($resultarray3 as $key => $row3) {
 									if ($row3["Capitaine"] != 'E') {
-										$joueur_temp  = '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
-										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'.<span class="StatutJoueur">';
+										$joueur_temp  = '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.mb_strtoupper($row3["Nom"]).' '.mb_convert_case($row3["Prenom"][0], MB_CASE_TITLE, "UTF-8").'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs">';
+										$joueur_temp .= '<span class="NumJoueur">'.$row3["Numero"].'</span> - '.mb_strtoupper($row3["Nom"]).' '.mb_convert_case($row3["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.<span class="StatutJoueur">';
 										if($row3["Capitaine"] == 'C')
 											$joueur_temp .= ' (Cap.)';
 										$joueur_temp .= '</span><span class="c_evt"></span></a>';
 									} else {
-										$entr_temp .= '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs coach">';
-										$entr_temp .= utyUcWordNomCompose($row3["Nom"]).' '.$row3["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
+										$entr_temp .= '<a id="A'.$row3["Matric"].'" data-equipe="A" data-player="'.mb_strtoupper($row3["Nom"]).' '.mb_convert_case($row3["Prenom"][0], MB_CASE_TITLE, "UTF-8").'." data-id="'.$row3["Matric"].'" data-nb="'.$row3["Numero"].'" class="fm_bouton joueurs coach">';
+										$entr_temp .= mb_strtoupper($row3["Nom"]).' '.mb_convert_case($row3["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.<span class="StatutJoueur"> (Coach)</span>';
 										$entr_temp .= '<span class="c_evt"></span></a>';
 										$joueur_temp = '';
 									}
@@ -493,14 +493,14 @@ stop_time: <span id="stop_time_display"></span><br />
 								$entr_temp = '';
 								foreach ($resultarray4 as $key => $row4) {
 									if ($row4["Capitaine"] != 'E') {
-										$joueur_temp  = '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
-										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'.<span class="StatutJoueur">';
+										$joueur_temp  = '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.mb_strtoupper($row4["Nom"]).' '.mb_convert_case($row4["Prenom"][0], MB_CASE_TITLE, "UTF-8").'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs">';
+										$joueur_temp .= '<span class="NumJoueur">'.$row4["Numero"].'</span> - '.mb_strtoupper($row4["Nom"]).' '.mb_convert_case($row4["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.<span class="StatutJoueur">';
 										if($row4["Capitaine"] == 'C')
 											$joueur_temp .= ' (Cap.)';
 										$joueur_temp .= '</span><span class="c_evt"></span></a>';
 									} else {
-										$entr_temp .= '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs coach">';
-										$entr_temp .= utyUcWordNomCompose($row4["Nom"]).' '.$row4["Prenom"][0].'.<span class="StatutJoueur"> (Coach)</span>';
+										$entr_temp .= '<a id="B'.$row4["Matric"].'" data-equipe="B" data-player="'.mb_strtoupper($row4["Nom"]).' '.mb_convert_case($row4["Prenom"][0], MB_CASE_TITLE, "UTF-8").'." data-id="'.$row4["Matric"].'" data-nb="'.$row4["Numero"].'" class="fm_bouton joueurs coach">';
+										$entr_temp .= mb_strtoupper($row4["Nom"]).' '.mb_convert_case($row4["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.<span class="StatutJoueur"> (Coach)</span>';
 										$entr_temp .= '<span class="c_evt"></span></a>';
 										$joueur_temp = '';
 									}
@@ -569,8 +569,8 @@ stop_time: <span id="stop_time_display"></span><br />
                                                 $evt_temp .= '<img src="v2/carton_rouge.png">';
                                             $evt_temp .= '</td>';
                                             $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
-                                                    .utyUcWordNomCompose($row5["Nom"]).' '
-                                                    .$row5["Prenom"][0].'.'
+                                                    .mb_strtoupper($row5["Nom"]).' '
+                                                    .mb_convert_case($row5["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.'
                                                     .$row5['motif_texte'];
     //										if($row5["Id_evt_match"] == 'A')
     //											$evt_temp .= ' (arrêt)';
@@ -591,9 +591,9 @@ stop_time: <span id="stop_time_display"></span><br />
                                                 $evt_temp .= '<img src="v2/but1.png">';
                                             $evt_temp .= '</td>';
                                             $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
-                                                    .utyUcWordNomCompose($row5["Nom"]).' '
-                                                    .$row5["Prenom"][0].'.'
-                                                    .$row5['motif_texte'];
+												.mb_strtoupper($row5["Nom"]).' '
+												.mb_convert_case($row5["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.'
+												.$row5['motif_texte'];
     //										if($row5["Id_evt_match"] == 'A')
     //											$evt_temp .= ' (arrêt)';
     //										if($row5["Id_evt_match"] == 'T')

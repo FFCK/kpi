@@ -331,7 +331,6 @@ class CacheMatch
 			$result->execute(array($idEvent, $dateMatch));
 		}
 		$tMatchs = $result->fetchAll(PDO::FETCH_ASSOC);	
-		
 		// Prise des Terrains ...
 		$arrayPitch = array();
 		foreach ($tMatchs as $tMatch)

@@ -8,21 +8,33 @@ define("VERSION", NUM_VERSION);
 class MyPage 		
 {		 			 		
     var $m_arrayParams;		// Tableau des Paramètres
+    var $purifier;
     
     // Constructeur ...
     function __construct(&$arrayParams)
     {
-        $this->m_arrayParams = &$arrayParams;
-		$this->Display();
+      // htmlpurifier
+      if (is_file('htmlpurifier/HTMLPurifier.auto.php')) {
+        require_once 'htmlpurifier/HTMLPurifier.auto.php';
+      } else {
+        require_once '../htmlpurifier/HTMLPurifier.auto.php';
+      }
+      $config = HTMLPurifier_Config::createDefault();
+      $config->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+      $config->set('HTML.Doctype', 'XHTML 1.0 Transitional'); // replace with your doctype
+      $this->purifier = new HTMLPurifier($config);
+
+      $this->m_arrayParams = &$arrayParams;
+		  $this->Display();
     }
 
     // GetParam ...
     function GetParam($key, $defaultValue='')
     {
-		if (isset($this->m_arrayParams[$key]))
-			return $this->m_arrayParams[$key];
-		else
-			return $defaultValue;
+      if (isset($this->m_arrayParams[$key]))
+        return $this->purifier->purify($this->m_arrayParams[$key]);
+      else
+        return $defaultValue;
     }
 
     function GetParamBool($key, $defaultValue=false)

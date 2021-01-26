@@ -14,7 +14,7 @@ include_once('../../commun/MyTools.php');
 session_start();
 
 $myBdd = new MyBdd();
-$idMatch = (int)$_POST['idMatch'];
+$idMatch = (int) utyGetPost('idMatch', 0);
 $value = trim(utyGetPost('value'));
 $id = utyGetPost('id');
 if (!in_array($id, ['Secretaire', 'Chronometre', 'Timeshoot', 'Ligne1', 'Ligne2'])) {

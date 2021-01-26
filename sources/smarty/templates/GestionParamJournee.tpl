@@ -282,25 +282,25 @@
 										<a class="rcpick badge pull-right" title="{$arrayRC[i].Prenom|upper} {$arrayRC[i].Nom|upper} ({$arrayRC[i].Matric})">{$arrayRC[i].Ordre}</a>&nbsp;
 									{/section}
 								</label>
-								<input type="text" id="Responsable_insc" name="Responsable_insc" value="{$Responsable_insc}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" />
+								<input type="text" id="Responsable_insc" name="Responsable_insc" value="{$Responsable_insc}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" />
 							</td>
-							<td colspan=3><label for="Responsable_R1">{#R1#}</label><input type="text" id="Responsable_R1" name="Responsable_R1" value="{$Responsable_R1}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
+							<td colspan=3><label for="Responsable_R1">{#R1#}</label><input type="text" id="Responsable_R1" name="Responsable_R1" value="{$Responsable_R1}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
-							<td><label for="Delegue">{#Delegue_federal#}</label><input type="text" id="Delegue" name="Delegue" value="{$Delegue}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
-							<td colspan=3><label for="ChefArbitre">{#Chef_arbitres#}</label><input type="text" id="ChefArbitre" name="ChefArbitre" value="{$ChefArbitre}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
+							<td><label for="Delegue">{#Delegue_federal#}</label><input type="text" id="Delegue" name="Delegue" value="{$Delegue}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+							<td colspan=3><label for="ChefArbitre">{#Chef_arbitres#}</label><input type="text" id="ChefArbitre" name="ChefArbitre" value="{$ChefArbitre}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
-							<td><label for="Rep_athletes">{#Rep_athletes#}</label><input type="text" id="Rep_athletes" name="Rep_athletes" value="{$Rep_athletes}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
-							<td colspan=3><label for="Arb_nj1">{#Arb_nj#}</label><input type="text" id="Arb_nj1" name="Arb_nj1" value="{$Arb_nj1}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
+							<td><label for="Rep_athletes">{#Rep_athletes#}</label><input type="text" id="Rep_athletes" name="Rep_athletes" value="{$Rep_athletes}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+							<td colspan=3><label for="Arb_nj1">{#Arb_nj#}</label><input type="text" id="Arb_nj1" name="Arb_nj1" value="{$Arb_nj1}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
-							<td><label for="Arb_nj2">{#Arb_nj#}</label><input type="text" id="Arb_nj2" name="Arb_nj2" value="{$Arb_nj2}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
-							<td colspan=3><label for="Arb_nj3">{#Arb_nj#}</label><input type="text" id="Arb_nj3" name="Arb_nj3" value="{$Arb_nj3}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
+							<td><label for="Arb_nj2">{#Arb_nj#}</label><input type="text" id="Arb_nj2" name="Arb_nj2" value="{$Arb_nj2}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+							<td colspan=3><label for="Arb_nj3">{#Arb_nj#}</label><input type="text" id="Arb_nj3" name="Arb_nj3" value="{$Arb_nj3}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
-							<td><label for="Arb_nj4">{#Arb_nj#}</label><input type="text" id="Arb_nj4" name="Arb_nj4" value="{$Arb_nj4}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
-							<td colspan=3><label for="Arb_nj5">{#Arb_nj#}</label><input type="text" id="Arb_nj5" name="Arb_nj5" value="{$Arb_nj5}" placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" /></td>
+							<td><label for="Arb_nj4">{#Arb_nj#}</label><input type="text" id="Arb_nj4" name="Arb_nj4" value="{$Arb_nj4}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+							<td colspan=3><label for="Arb_nj5">{#Arb_nj#}</label><input type="text" id="Arb_nj5" name="Arb_nj5" value="{$Arb_nj5}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
 							{if $Num_Journee == 0}

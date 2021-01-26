@@ -141,6 +141,8 @@
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres == 'score'}selected{/if}>Live score</option>
+                            <option value="score2" {if $filtrePres == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
@@ -318,11 +320,11 @@
                 </a>
                 <a id="game_report" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl" name="getUrl" class="btn btn-success col-sm-1" data-showurl="1">
-                    <label>Url</label>
+                    Url
                 </button>
                 <input type='text' readonly="readonly" id='showUrl1' name='showUrl1' class="col-sm-7">
                 <button id="confirm" name="confirm" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
-                    <label>{#Activer#}</label>
+                    {#Activer#}
                 </button>
             </div>
         </div>
@@ -364,6 +366,8 @@
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres2 == 'score'}selected{/if}>Live score</option>
+                            <option value="score2" {if $filtrePres2 == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres2 == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres2 == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
@@ -500,11 +504,11 @@
                 </a>
                 <a id="game_report2" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl2" name="getUrl2" class="btn btn-success col-sm-1" data-showurl="2">
-                    <label>Url</label>
+                    Url
                 </button>
                 <input type='text' readonly="readonly" id='showUrl2' name='showUrl2' class="col-sm-7">
                 <button id="confirm2" name="confirm2" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
-                    <label>{#Activer#}</label>
+                    {#Activer#}
                 </button>
             </div>
         </div>
@@ -546,6 +550,8 @@
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres3 == 'score'}selected{/if}>Live score</option>
+                            <option value="score2" {if $filtrePres3 == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres3 == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres3 == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
@@ -682,11 +688,11 @@
                 </a>
                 <a id="game_report3" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl3" name="getUrl3" class="btn btn-success col-sm-1" data-showurl="3">
-                    <label>Url</label>
+                    Url
                 </button>
                 <input type='text' readonly="readonly" id='showUrl3' name='showUrl3' class="col-sm-7">
                 <button id="confirm3" name="confirm3" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
-                    <label>{#Activer#}</label>
+                    {#Activer#}
                 </button>
             </div>
         </div>
@@ -728,6 +734,8 @@
                         </optgroup>
                         <optgroup label="Running game inlays">
                             <option value="score" {if $filtrePres4 == 'score'}selected{/if}>Live score</option>
+                            <option value="score2" {if $filtrePres4 == 'score2'}selected{/if}>Live score (clubs)</option>
+                            <option value="liveteams" {if $filtrePres4 == 'liveteams'}selected{/if}>Live teams</option>
                             <option value="match_score" {if $filtrePres4 == 'match_score'}selected{/if}>Game & score</option>
                         </optgroup>
                         <optgroup label="After game inlays">
@@ -864,11 +872,11 @@
                 </a>
                 <a id="game_report4" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
                 <button id="getUrl4" name="getUrl4" class="btn btn-success col-sm-1" data-showurl="4">
-                    <label>Url</label>
+                    Url
                 </button>
                 <input type='text' readonly="readonly" id='showUrl4' name='showUrl4' class="col-sm-7">
                 <button id="confirm4" name="confirm4" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
-                    <label>{#Activer#}</label>
+                    {#Activer#}
                 </button>
             </div>
         </div>

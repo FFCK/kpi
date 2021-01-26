@@ -46,6 +46,12 @@ class GestionGroupe extends MyPageSecure
 		
 		$myBdd = new MyBdd();
 
+		$sql = "UPDATE gickp_Competitions_Groupes 
+			SET ordre = ordre + 1 
+			WHERE ordre >= ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($ordre));
+
 		$sql = "INSERT INTO gickp_Competitions_Groupes 
 			SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -54,7 +60,7 @@ class GestionGroupe extends MyPageSecure
 		));
 		
 		$this->Raz();
-		$myBdd->utyJournal('Ahout Groupe', '', '', $Groupe);
+		$myBdd->utyJournal('Ajout Groupe', '', '', $Groupe);
         return "Ajout effectué.";
 	}
 	
@@ -76,11 +82,24 @@ class GestionGroupe extends MyPageSecure
             }
             return "Il existe des compétitions dans ce groupe :$conflict. Suppression impossible !";
         }
-        
+
+		$sql = "SELECT ordre FROM gickp_Competitions_Groupes 
+			WHERE id = $idGroupe ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($idGroupe));
+		$row = $result->fetch();
+		
 		$sql = "DELETE FROM gickp_Competitions_Groupes 
 			WHERE id = $idGroupe ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idGroupe));
+
+		$sql = "UPDATE gickp_Competitions_Groupes 
+			SET ordre = ordre - 1 
+			WHERE ordre > ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($row['ordre']));
+
         return "Suppression effectuée.";
     }
 	
@@ -124,13 +143,9 @@ class GestionGroupe extends MyPageSecure
 		
 		$alertMessage = '';
 		
-		$Cmd = '';
-		if (isset($_POST['Cmd']))
-			$Cmd = $_POST['Cmd'];
+		$Cmd = utyGetPost('Cmd', '');
 
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd']))
-			$ParamCmd = $_POST['ParamCmd'];
+		$ParamCmd = utyGetPost('ParamCmd', '');
 
 		if (strlen($Cmd) > 0)
 		{

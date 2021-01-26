@@ -4,7 +4,7 @@ include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
 // Display this code source is asked.
-if (isset($_GET['source'])) exit(highlight_file(__FILE__,true));
+// if (utyGetGet('source', false)) exit(highlight_file(__FILE__,true));
 
 // load the TinyButStrong libraries
 include_once('../opentbs/tbs_class-3.11.0.php'); 

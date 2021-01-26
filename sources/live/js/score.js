@@ -26,7 +26,7 @@ function RefreshHorloge()
 			var now = new Date();
 			var temps_actuel = now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
 			
-			var temps_match = theContext.Match.GetTempsEcoule(i) + temps_actuel - theContext.temps_offset;
+			// var temps_match = theContext.Match.GetTempsEcoule(i) + temps_actuel - theContext.temps_offset;
 			var temps_running = temps_actuel - theContext.Match.GetTempsReprise(i) - theContext.temps_offset;
 /*
 			alert('temps_REPRISE2='+ theContext.Match.GetTempsReprise(i));
@@ -112,7 +112,7 @@ function ParseCacheScore(jsonTxt)
 			var line;
 			if (jsonData.event[0].Equipe_A_B == 'A') {
 				line = ImgNation48(theContext.Match.GetEquipe1(rowMatch));
-                line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch).substring(0, 3);
+                line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch);
             } else {
 				line = ImgNation48(theContext.Match.GetEquipe2(rowMatch));
                 line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3);

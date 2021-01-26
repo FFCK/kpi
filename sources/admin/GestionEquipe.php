@@ -205,15 +205,16 @@ class GestionEquipe extends MyPageSecure
             $codeClub = '*';
         }
 
-        if (isset($_POST['ParamCmd']))	// @COSANDCO_WAMPSER
+		$ParamCmd = utyGetPost('ParamCmd', false);
+        if ($ParamCmd)	// @COSANDCO_WAMPSER
 		{
-			if ($codeComiteReg == '*' && $_POST['ParamCmd'] == 'changeComiteReg')
+			if ($codeComiteReg == '*' && $ParamCmd == 'changeComiteReg')
 			{
 				$codeComiteDep = '*';
 				$codeClub = '*';
 			}
 			
-			if ($codeComiteDep == '*' && $_POST['ParamCmd'] == 'changeComiteDep')
+			if ($codeComiteDep == '*' && $ParamCmd == 'changeComiteDep')
 			{
 				$codeClub = '*';
 			}
@@ -394,36 +395,38 @@ class GestionEquipe extends MyPageSecure
 		$codeClub = utyGetPost('club');
 		$insertValue = '';
 
-		foreach($histoEquipe as $selectValue) {
-			if ($codeCompet == '' or $codeCompet == '*') {
-				$alertMessage .= 'Aucune competition sélectionnée';
-				return;
-			}
-            
-			if ((int) $selectValue == 0) {
-				// Inscription Manuelle ...
-				if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) ) {
-					$sql  = "INSERT INTO gickp_Equipe (Libelle, Code_club) 
-						VALUES (?, ?) ";
-					$result = $myBdd->pdo->prepare($sql);
-					$result->execute(array($libelleEquipe, $codeClub));
-					$selectValue = $myBdd->pdo->lastInsertId();
+		if (is_array($histoEquipe)) {
+			foreach($histoEquipe as $selectValue) {
+				if ($codeCompet == '' or $codeCompet == '*') {
+					$alertMessage .= 'Aucune competition sélectionnée';
+					return;
 				}
+				
+				if ((int) $selectValue == 0) {
+					// Inscription Manuelle ...
+					if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) ) {
+						$sql  = "INSERT INTO gickp_Equipe (Libelle, Code_club) 
+							VALUES (?, ?) ";
+						$result = $myBdd->pdo->prepare($sql);
+						$result->execute(array($libelleEquipe, $codeClub));
+						$selectValue = $myBdd->pdo->lastInsertId();
+					}
+				}
+
+				$sql = "INSERT INTO gickp_Competitions_Equipes 
+					(Code_compet, Code_saison, Libelle, Code_club, Numero) 
+					SELECT ?, ?, Libelle, Code_club, Numero 
+					FROM gickp_Equipe 
+					WHERE Numero = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($codeCompet, $codeSaison, $selectValue));
+
+				if ($insertValue != '') {
+					$insertValue .= ',';
+				}
+				$insertValue .= $selectValue;
 			}
-
-            $sql = "INSERT INTO gickp_Competitions_Equipes 
-				(Code_compet, Code_saison, Libelle, Code_club, Numero) 
-				SELECT ?, ?, Libelle, Code_club, Numero 
-				FROM gickp_Equipe 
-				WHERE Numero = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($codeCompet, $codeSaison, $selectValue));
-
-			if ($insertValue != '') {
-                $insertValue .= ',';
-            }
-            $insertValue .= $selectValue;
-		}	
+		}
 		$_SESSION['codeCompet'] = $codeCompet;
 		$_SESSION['codeComiteReg'] = utyGetPost('comiteReg');
 		$_SESSION['codeComiteDep'] = utyGetPost('comiteDep');
@@ -527,10 +530,7 @@ class GestionEquipe extends MyPageSecure
 		$myBdd = $this->myBdd;
 		$codeSaison = $myBdd->GetActiveSaison();
 
-		$ParamCmd = '';
-		if (isset($_POST['ParamCmd'])) {
-            $ParamCmd = $_POST['ParamCmd'];
-        }
+		$ParamCmd = utyGetPost('ParamCmd', '');
 
         $arrayParam = explode(',', $ParamCmd);		
 		if (count($arrayParam) == 0) {
@@ -614,10 +614,7 @@ class GestionEquipe extends MyPageSecure
 
 		$alertMessage = '';
 		
-		$Cmd = '';
-		if (isset($_POST['Cmd'])) {
-            $Cmd = $_POST['Cmd'];
-        }
+		$Cmd = utyGetPost('Cmd', '');
 
         if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Add') {
