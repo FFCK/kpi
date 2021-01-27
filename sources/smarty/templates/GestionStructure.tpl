@@ -206,6 +206,18 @@
 							</td>
 						</tr>
 					</table>
+					<table width=100%>
+						<tr>
+							<th colspan=2 class='titreForm'>
+								<label>Mise à jour des clubs</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<a target="_blank" href="../json-clubs.php">Mise à jour</a>
+							</td>
+						</tr>
+					</table>
 					{/if}		
 					<br>
 				</div>
