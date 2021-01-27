@@ -16,7 +16,7 @@ jq(document).ready(function() {
     var thisStartZoom = 5;
     var thisStartLat = 46.85;
     var thisStartLon = 1.73;
-    var thisPlotsAPIUrl = 'clubs.json';
+    var thisPlotsAPIUrl = 'clubs.json?' + version;
 //    var geocodApiUrl = 'https://api-adresse.data.gouv.fr/search/';  // France
     var geocodApiUrl = ' https://nominatim.openstreetmap.org/search';  // International
 
@@ -58,8 +58,8 @@ jq(document).ready(function() {
         map = new L.Map('carte');
 
         // create the tile layer with correct attribution
-        var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+        var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
         var osm = new L.TileLayer(osmUrl, {minZoom: thisMinZoom, maxZoom: thisMaxZoom, attribution: osmAttrib});
 
         // start the map in South-East England
