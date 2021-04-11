@@ -45,8 +45,11 @@ AND m.Id_journee = j.Id
 AND a.Matric = lc.Matric
 AND lc.Numero_club = c.Code
 AND lc.Numero_comite_reg != 98
+
 AND (j.Code_competition LIKE 'N%' 
        OR j.Code_competition LIKE 'CF%')
+-- AND j.Code_competition NOT LIKE 'M%'
+
 AND j.Code_saison = 2020
 AND (a.Matric = m.Matric_arbitre_principal
 	OR a.Matric = m.Matric_arbitre_secondaire)
@@ -72,8 +75,11 @@ AND m.Id_journee = j.Id
 AND a.Matric = lc.Matric
 AND lc.Numero_club = c.Code
 AND lc.Numero_comite_reg != 98
+
 AND (j.Code_competition LIKE 'N%' 
        OR j.Code_competition LIKE 'CF%')
+-- AND j.Code_competition NOT LIKE 'M%'
+
 AND j.Code_saison = 2020
 AND (a.Matric = m.Matric_arbitre_principal
 	OR a.Matric = m.Matric_arbitre_secondaire)
