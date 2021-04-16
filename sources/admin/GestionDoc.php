@@ -32,6 +32,7 @@ class GestionDoc extends MyPageSecure
 		// Chargement des Saisons ...
 		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
 			FROM gickp_Saison 
+            WHERE Code > '1900' 
 			ORDER BY Code DESC ";	 
 		$arraySaison = array();
         foreach ($myBdd->pdo->query($sql) as $row) { 
