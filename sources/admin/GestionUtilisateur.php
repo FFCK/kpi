@@ -240,6 +240,7 @@ class GestionUtilisateur extends MyPageSecure
 		// Chargement des Saisons ...
 		$sql = "SELECT Code 
 			FROM gickp_Saison 
+            WHERE Code > '1900' 
 			ORDER BY Code DESC ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
