@@ -145,8 +145,8 @@ class Equipes extends MyPage
                     AND m.Publication = 'O'
                     GROUP BY cej.Matric
                     ORDER BY Field(if(cej.Capitaine='C','-',if(cej.Capitaine='','-',cej.Capitaine)), '-', 'E', 'A', 'X'), cej.Numero, cej.Nom, cej.Prenom ";
-                $result = $myBdd->pdo->prepare($sql, $codeCompet, $codeSaison);
-                $result->execute(array($Equipe));
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array($Equipe, $codeCompet, $codeSaison));
                 while ($row = $result->fetch()) {
                     $arrayCompo[] = $row;
                 }

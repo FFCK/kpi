@@ -31,6 +31,7 @@ class GestionRc extends MyPageSecure
 		// Chargement des Saisons ...
 		$sql  = "SELECT Code 
 			FROM gickp_Saison 
+            WHERE Code > '1900' 
 			ORDER BY Code DESC ";	 
 		$arraySaison = array();
 		foreach ($myBdd->pdo->query($sql) as $row) {

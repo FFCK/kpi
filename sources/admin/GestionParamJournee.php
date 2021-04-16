@@ -125,6 +125,7 @@ class GestionParamJournee extends MyPageSecure
 		$arraySaisons = array();
 		$sql  = "SELECT DISTINCT Code 
 			FROM gickp_Saison 
+            WHERE Code > '1900' 
 			ORDER BY Code ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();

@@ -49,6 +49,7 @@ class GestionClassement extends MyPageSecure
 		$arraySaison = array();
 		$sql = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
 			FROM gickp_Saison 
+            WHERE Code > '1900' 
 			ORDER BY Code DESC ";
 		$result = $myBdd->pdo->query($sql);
 		$resultarray = $result->fetchAll(PDO::FETCH_ASSOC);

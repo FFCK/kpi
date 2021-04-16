@@ -26,6 +26,7 @@ class GestionAthlete extends MyPageSecure
         $arraySaison = array();
         $sql = "SELECT Code 
             FROM gickp_Saison 
+            WHERE Code > '1900' 
             ORDER BY Code DESC ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
