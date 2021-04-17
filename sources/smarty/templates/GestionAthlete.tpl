@@ -19,19 +19,6 @@
 								<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete}" />
 								
 				</div>
-                {if $profile <= 2}
-                    <div class="blocTop">
-                        <b>{#Fusionner_des_licencies#} : </b>
-                        <label for="FusionSource">Source ({#supprime#})</label>
-                        <input type="hidden" name="numFusionSource" id="numFusionSource">
-                        <input type="text" name="FusionSource" size=40 id="FusionSource">
-                        <label for="FusionCible">{#Cible#} ({#conserve#})</label>
-                        <input type="hidden" name="numFusionCible" id="numFusionCible">
-                        <input type="text" name="FusionCible" size=40 id="FusionCible">
-                        <input type="button" name="FusionJoueurs" id="FusionJoueurs" value="{#Fusionner#}">
-                    </div>
-
-                {/if}
 				{if $Courreur.Matric != ''}
 				<div class='blocMiddle'>
 					<table class='tableau'>

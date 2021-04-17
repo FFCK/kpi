@@ -810,43 +810,55 @@ class GestionJournee extends MyPageSecure
 			// if (isset($row[0]["Id_equipeB"]))
 				$anciene_equipeB = $row["Id_equipeB"];
 
-			$sql = "UPDATE gickp_Matchs 
-				SET Id_journee = ?, Numero_ordre = ?, 
-				Date_match = ?, Heure_match = ?, 
-				Libelle = ?, Terrain = ?, `Type` = ?, 
-				Id_equipeA = ?, Id_equipeB = ?, Arbitre_principal = ?, 
-				Arbitre_secondaire = ?, Matric_arbitre_principal = ?, 
-				Matric_arbitre_secondaire = ?, CoeffA = ?, CoeffB = ? 
-				WHERE Id = ? 
-				AND `Validation` != 'O' ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$idJournee, $numMatch, utyDateFrToUs($dateMatch), $heureMatch, $Libelle, $Terrain, 
-				$Type, $idEquipeA, $idEquipeB, $arbitre1, $arbitre2, $arbitre1_matric, 
-				$arbitre2_matric, $coeffA, $coeffB, $idMatch
-			));
-			
-			//Vidage des joueurs si l'équipe est vide ou modifiée
-			if ($idEquipeA == -1 or $idEquipeA != $anciene_equipeA) {
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = ? 
-					AND Equipe = 'A' ";
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+	
+				$sql = "UPDATE gickp_Matchs 
+					SET Id_journee = ?, Numero_ordre = ?, 
+					Date_match = ?, Heure_match = ?, 
+					Libelle = ?, Terrain = ?, `Type` = ?, 
+					Id_equipeA = ?, Id_equipeB = ?, Arbitre_principal = ?, 
+					Arbitre_secondaire = ?, Matric_arbitre_principal = ?, 
+					Matric_arbitre_secondaire = ?, CoeffA = ?, CoeffB = ? 
+					WHERE Id = ? 
+					AND `Validation` != 'O' ";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($idMatch));
+				$result->execute(array(
+					$idJournee, $numMatch, utyDateFrToUs($dateMatch), $heureMatch, $Libelle, $Terrain, 
+					$Type, $idEquipeA, $idEquipeB, $arbitre1, $arbitre2, $arbitre1_matric, 
+					$arbitre2_matric, $coeffA, $coeffB, $idMatch
+				));
+				
+				//Vidage des joueurs si l'équipe est vide ou modifiée
+				if ($idEquipeA == -1 or $idEquipeA != $anciene_equipeA) {
+					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+						WHERE Id_match = ? 
+						AND Equipe = 'A' ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($idMatch));
+				}
+				if ($idEquipeB == -1 or $idEquipeB != $anciene_equipeB) {
+					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+						WHERE Id_match = ? 
+						AND Equipe = 'B' ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($idMatch));
+				}
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Modification match, $idJournee, $idMatch" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 			}
-			if ($idEquipeB == -1 or $idEquipeB != $anciene_equipeB) {
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = ? 
-					AND Equipe = 'B' ";
-				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($idMatch));
-			}
-			
+	
 			$this->Raz();
-			
 		}
 		
 		$myBdd->utyJournal('Modification match', '', '', null, $idJournee, $idMatch);
+		return;
 	}
 			
 	function Add()
@@ -891,16 +903,28 @@ class GestionJournee extends MyPageSecure
                 $numMatch = $this->LastNumeroOrdre($idJournee) + 1;
             }
 
-			$sql = "INSERT INTO gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, 
-				Libelle, Terrain, `Type`, Id_equipeA, Id_equipeB, Arbitre_principal, 
-				Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$idJournee, $numMatch, utyDateFrToUs($dateMatch), $heureMatch, $Libelle, $Terrain, 
-				$Type, $idEquipeA, $idEquipeB, $arbitre1, $arbitre2, $arbitre1_matric, 
-				$arbitre2_matric, $coeffA, $coeffB
-			));
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+
+				$sql = "INSERT INTO gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, 
+					Libelle, Terrain, `Type`, Id_equipeA, Id_equipeB, Arbitre_principal, 
+					Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(
+					$idJournee, $numMatch, utyDateFrToUs($dateMatch), $heureMatch, $Libelle, $Terrain, 
+					$Type, $idEquipeA, $idEquipeB, $arbitre1, $arbitre2, $arbitre1_matric, 
+					$arbitre2_matric, $coeffA, $coeffB
+				));
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Ajout match, $idJournee, $numMatch, $dateMatch $heureMatch" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
 		}
 		
 		$_SESSION['Intervalle_match'] = utyGetPost('Intervalle_match', utyGetSession('Intervalle_match', 40));
@@ -908,7 +932,8 @@ class GestionJournee extends MyPageSecure
 		$myBdd->utyJournal('Ajout match', '', '', null, $idJournee, $numMatch, $dateMatch.' '.$heureMatch);
 		
 		$_SESSION['idJournee'] = $idJournee;
-		$this->Raz();		
+		$this->Raz();
+		return;	
 	}
 	
 	function Remove()
@@ -930,22 +955,34 @@ class GestionJournee extends MyPageSecure
 		$result->execute($arrayParam);
 		if ($result->rowCount() > 0)
 			return "Il reste des évènements dans ces matchs ! Suppression impossible ";
-		
-		//Vidage des joueurs du match
-		$sql = "DELETE FROM gickp_Matchs_Joueurs 
-			USING gickp_Matchs_Joueurs, gickp_Matchs 
-			WHERE gickp_Matchs_Joueurs.Id_match = gickp_Matchs.Id 
-			AND gickp_Matchs_Joueurs.Id_match IN ($in) 
-			AND gickp_Matchs.Validation != 'O'; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
-        
-		// Suppression
-		$sql  = "DELETE FROM gickp_Matchs 
-			WHERE Id IN ($in) 
-			AND `Validation` != 'O' ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			//Vidage des joueurs du match
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				USING gickp_Matchs_Joueurs, gickp_Matchs 
+				WHERE gickp_Matchs_Joueurs.Id_match = gickp_Matchs.Id 
+				AND gickp_Matchs_Joueurs.Id_match IN ($in) 
+				AND gickp_Matchs.Validation != 'O'; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+			
+			// Suppression
+			$sql  = "DELETE FROM gickp_Matchs 
+				WHERE Id IN ($in) 
+				AND `Validation` != 'O' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression matchs, $ParamCmd" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$myBdd->utyJournal('Suppression matchs', '', '', null, null, $ParamCmd);
 		return;
@@ -1049,36 +1086,49 @@ class GestionJournee extends MyPageSecure
 			$idMatch = $row['Id'];
 			$idEquipeA = $row['Id_equipeA'];
 			$idEquipeB = $row['Id_equipeB'];
-	
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				WHERE Id_match = ? 
-				AND Equipe = 'A'";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch));
-					
-			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
-				SELECT ?, Matric, Numero, 'A', Capitaine 
-				FROM gickp_Competitions_Equipes_Joueurs 
-				WHERE Id_equipe = ? 
-				AND Capitaine <> 'X' 
-				AND Capitaine <> 'A' ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch, $idEquipeA));
+
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+			
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
+					AND Equipe = 'A'";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch));
 						
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				WHERE Id_match = ? 
-				AND Equipe = 'B'";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch));
-					
-			$sql  = "REPLACE INTO gickp_Matchs_Joueurs 
-				SELECT ?, Matric, Numero, 'B', Capitaine 
-				FROM gickp_Competitions_Equipes_Joueurs 
-				WHERE Id_equipe = ? 
-				AND Capitaine <> 'X' 
-				AND Capitaine <> 'A' ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch, $idEquipeB));
+				$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+					SELECT ?, Matric, Numero, 'A', Capitaine 
+					FROM gickp_Competitions_Equipes_Joueurs 
+					WHERE Id_equipe = ? 
+					AND Capitaine <> 'X' 
+					AND Capitaine <> 'A' ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch, $idEquipeA));
+							
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
+					AND Equipe = 'B'";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch));
+						
+				$sql  = "REPLACE INTO gickp_Matchs_Joueurs 
+					SELECT ?, Matric, Numero, 'B', Capitaine 
+					FROM gickp_Competitions_Equipes_Joueurs 
+					WHERE Id_equipe = ? 
+					AND Capitaine <> 'X' 
+					AND Capitaine <> 'A' ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch, $idEquipeB));
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Initialisation titulaires, $idJournee" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+	
 		}
 		
 		$myBdd->utyJournal('Initialisation titulaires', '', '', null, $idJournee);
@@ -1423,37 +1473,50 @@ class GestionJournee extends MyPageSecure
 				}
 			}
 
-			// Affectation
-			$sql = "UPDATE gickp_Matchs 
-				SET Id_equipeA = ?, Id_equipeB = ? ";
-			$arrayQuery = array($selectNum[0], $selectNum[1]);
-			if ($selectNom[2] != '') {
-				$sql .= ", Arbitre_principal = ? ";
-				$arrayQuery = array_merge($arrayQuery, [$selectNom[2]]);
-			}
-			if ($selectNom[3] != '') {
-				$sql .= ", Arbitre_secondaire = ? ";
-				$arrayQuery = array_merge($arrayQuery, [$selectNom[3]]);
-			}
-			$sql .= " WHERE Id = ? ";
-			$arrayQuery = array_merge($arrayQuery, [$id]);
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute($arrayQuery);
-			//Suppression des joueurs existants si changements d'équipes
-			if ($selectNum[0] != $anciene_equipeA) {
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = ? 
-					AND Equipe = 'A' ";
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+	
+				// Affectation
+				$sql = "UPDATE gickp_Matchs 
+					SET Id_equipeA = ?, Id_equipeB = ? ";
+				$arrayQuery = array($selectNum[0], $selectNum[1]);
+				if ($selectNom[2] != '') {
+					$sql .= ", Arbitre_principal = ? ";
+					$arrayQuery = array_merge($arrayQuery, [$selectNom[2]]);
+				}
+				if ($selectNom[3] != '') {
+					$sql .= ", Arbitre_secondaire = ? ";
+					$arrayQuery = array_merge($arrayQuery, [$selectNom[3]]);
+				}
+				$sql .= " WHERE Id = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$id]);
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($id));
+				$result->execute($arrayQuery);
+				//Suppression des joueurs existants si changements d'équipes
+				if ($selectNum[0] != $anciene_equipeA) {
+					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+						WHERE Id_match = ? 
+						AND Equipe = 'A' ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($id));
+				}
+				if ($selectNum[1] != $anciene_equipeB) {
+					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+						WHERE Id_match = ? 
+						AND Equipe = 'B' ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($id));
+				}
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Affect auto équipes, $id" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 			}
-			if ($selectNum[1] != $anciene_equipeB) {
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
-					WHERE Id_match = ? 
-					AND Equipe = 'B' ";
-				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($id));
-			}
+
 			//Journal
 			$myBdd->utyJournal('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
 		}
@@ -1494,22 +1557,32 @@ class GestionJournee extends MyPageSecure
 		WHERE Id_match = ? ";
 		$result3 = $myBdd->pdo->prepare($sql3);
 
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
 
-		// pour chaque match coché
-		for ($i=0;$i<count($arrayParam);$i++) {
-			$id = $arrayParam[$i];
-			$result1->execute(array($id));
-			if ($result1->rowCount() != 1)
-				die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
-			$row = $result1->fetch();
+			// pour chaque match coché
+			for ($i=0;$i<count($arrayParam);$i++) {
+				$id = $arrayParam[$i];
+				$result1->execute(array($id));
+				if ($result1->rowCount() != 1)
+					die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
+				$row = $result1->fetch();
 
-			$result2->execute(array($id));
-		
-			$myBdd->utyJournal('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
-			//Suppression des joueurs existants
-			$result3->execute(array($id));
+				$result2->execute(array($id));
+			
+				$myBdd->utyJournal('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
+				//Suppression des joueurs existants
+				$result3->execute(array($id));
+			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Annul auto équipes, $id" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
-		
 	}
 
 	function ChangeMultiMatchs()
@@ -1524,18 +1597,31 @@ class GestionJournee extends MyPageSecure
 
 		$myBdd = $this->myBdd;
 		$codeSaison = $myBdd->GetActiveSaison();
-		
-		$sql = "UPDATE gickp_Matchs 
-			SET Id_journee = ? 
-			WHERE Id = ? 
-			AND Validation != 'O' ";
-		$result = $myBdd->pdo->prepare($sql);
 
-		// Change Journee	
-		for ($i=0;$i<count($arrayParam);$i++) {
-			$result->execute(array($idJournee, $arrayParam[$i]));
-			$myBdd->utyJournal('Change Journee match', $codeSaison, '', null, null, $arrayParam[$i], $idJournee);
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "UPDATE gickp_Matchs 
+				SET Id_journee = ? 
+				WHERE Id = ? 
+				AND Validation != 'O' ";
+			$result = $myBdd->pdo->prepare($sql);
+
+			// Change Journee	
+			for ($i=0;$i<count($arrayParam);$i++) {
+				$result->execute(array($idJournee, $arrayParam[$i]));
+				$myBdd->utyJournal('Change Journee match', $codeSaison, '', null, null, $arrayParam[$i], $idJournee);
+			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Change Journee match, $arrayParam[$i], $idJournee" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
+		return;
 	}
 	
 	function __construct()
@@ -1554,10 +1640,10 @@ class GestionJournee extends MyPageSecure
 
 		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 6) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Update')
-				($_SESSION['Profile'] <= 6) ? $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Raz')
 				($_SESSION['Profile'] <= 6) ? $this->Raz() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
@@ -1569,7 +1655,7 @@ class GestionJournee extends MyPageSecure
 				($_SESSION['Profile'] <= 6) ? $this->ParamMatch() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'InitTitulaire')
-				($_SESSION['Profile'] <= 6) ? $this->InitTitulaire() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->InitTitulaire() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'PubliMatch')
 				($_SESSION['Profile'] <= 6) ? $this->PubliMatch() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
@@ -1596,10 +1682,10 @@ class GestionJournee extends MyPageSecure
             }
 
 			if ($Cmd == 'AnnulMultiMatchs')
-				($_SESSION['Profile'] <= 6) ? $this->AnnulMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->AnnulMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'ChangeMultiMatchs')
-				($_SESSION['Profile'] <= 6) ? $this->ChangeMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->ChangeMultiMatchs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
             
 			if ($alertMessage == '') {

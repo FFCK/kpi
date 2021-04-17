@@ -226,101 +226,83 @@ class GestionAthlete extends MyPageSecure
         $update_cd = trim(utyGetPost('update_cd'));
         $update_cr = trim(utyGetPost('update_cr'));
         
-        $sql = "UPDATE gickp_Liste_Coureur 
-            SET Origine = ?, Nom = ?, 
-            Prenom = ?, Sexe = ?, 
-            Naissance = ? ";
-        $arrayQuery = array($update_saison, $update_nom, $update_prenom, 
-            $update_sexe, $update_naissance);
+        
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
 
-        if ($update_icf > 0) {
-            $sql .= ", Reserve = ? ";
-            $arrayQuery = array_merge($arrayQuery, [$update_icf]);
-        } else {
-            $sql .= ", Reserve = NULL ";
-        }
-        if ($update_club != '') {
-            $sql .= ", Numero_club = ?, 
-            Numero_comite_dept = ?, 
-            Numero_comite_reg = ? ";
-            $arrayQuery = array_merge($arrayQuery, [$update_club], [$update_cd], [$update_cr]);
-        }
-        $sql .= "WHERE Matric = ? ";
-        $arrayQuery = array_merge($arrayQuery, [$update_matric]);
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute($arrayQuery);
-    
-        $sql = "UPDATE gickp_Competitions_Equipes_Joueurs 
-            SET Nom = ?, Prenom = ?, 
-            Sexe = ? 
-            WHERE Matric = ? ";
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($update_nom, $update_prenom, $update_sexe, $update_matric));
+            $sql = "UPDATE gickp_Liste_Coureur 
+                SET Origine = ?, Nom = ?, 
+                Prenom = ?, Sexe = ?, 
+                Naissance = ? ";
+            $arrayQuery = array($update_saison, $update_nom, $update_prenom, 
+                $update_sexe, $update_naissance);
+
+            if ($update_icf > 0) {
+                $sql .= ", Reserve = ? ";
+                $arrayQuery = array_merge($arrayQuery, [$update_icf]);
+            } else {
+                $sql .= ", Reserve = NULL ";
+            }
+            if ($update_club != '') {
+                $sql .= ", Numero_club = ?, 
+                Numero_comite_dept = ?, 
+                Numero_comite_reg = ? ";
+                $arrayQuery = array_merge($arrayQuery, [$update_club], [$update_cd], [$update_cr]);
+            }
+            $sql .= "WHERE Matric = ? ";
+            $arrayQuery = array_merge($arrayQuery, [$update_matric]);
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute($arrayQuery);
         
-        $sql = "REPLACE INTO gickp_Arbitre VALUES (?, ";
-        switch ($update_arb) {
-            case 'Reg' :
-                $sql .= "'O','N','N','N','Reg','',?,?) ";
-                break;
-            case 'IR' :
-                $sql .= "'N','O','N','N','IR','',?,?) ";
-                break;
-            case 'Nat' :
-                $sql .= "'N','N','O','N','Nat','',?,?) ";
-                break;
-            case 'Int' :
-                $sql .= "'N','N','O','O','Int','',?,?) ";
-                break;
-            case 'OTM' :
-                $sql .= "'N','N','O','N','OTM','',?,?) ";
-                break;
-            case 'JO' :
-                $sql .= "'N','N','O','N','JO','',?,?) ";
-                break;
-            default :
-                $sql .= "'N','N','N','N','','',?,?) ";
-                $update_niveau = '';
-                $update_saison = '';
-                break;
-        }
-        
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($update_matric, $update_niveau, $update_saison));
+            $sql = "UPDATE gickp_Competitions_Equipes_Joueurs 
+                SET Nom = ?, Prenom = ?, 
+                Sexe = ? 
+                WHERE Matric = ? ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($update_nom, $update_prenom, $update_sexe, $update_matric));
+            
+            $sql = "REPLACE INTO gickp_Arbitre VALUES (?, ";
+            switch ($update_arb) {
+                case 'Reg' :
+                    $sql .= "'O','N','N','N','Reg','',?,?) ";
+                    break;
+                case 'IR' :
+                    $sql .= "'N','O','N','N','IR','',?,?) ";
+                    break;
+                case 'Nat' :
+                    $sql .= "'N','N','O','N','Nat','',?,?) ";
+                    break;
+                case 'Int' :
+                    $sql .= "'N','N','O','O','Int','',?,?) ";
+                    break;
+                case 'OTM' :
+                    $sql .= "'N','N','O','N','OTM','',?,?) ";
+                    break;
+                case 'JO' :
+                    $sql .= "'N','N','O','N','JO','',?,?) ";
+                    break;
+                default :
+                    $sql .= "'N','N','N','N','','',?,?) ";
+                    $update_niveau = '';
+                    $update_saison = '';
+                    break;
+            }
+            
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute(array($update_matric, $update_niveau, $update_saison));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", 'Modification Joueur' . '\r\n' . $e->getMessage());
+
+			return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
         return "Modification effectuée !";
 	}
 	
-	function FusionJoueurs()
-	{
-		$myBdd = new MyBdd();
-		$numFusionSource = utyGetPost('numFusionSource', 0);
-		$numFusionCible = utyGetPost('numFusionCible', 0);
-        $sql = "UPDATE gickp_Matchs_Detail 
-            SET Competiteur = ? 
-            WHERE Competiteur = ? ";
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($numFusionCible, $numFusionSource));
-
-        $sql = "UPDATE gickp_Matchs_Joueurs 
-            SET Matric = ? 
-            WHERE Matric = ? ";
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($numFusionCible, $numFusionSource));
-
-		$sql = "UPDATE gickp_Competitions_Equipes_Joueurs 
-            SET Matric = ? 
-            WHERE Matric = ? ";
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($numFusionCible, $numFusionSource));
-
-        $sql = "DELETE FROM gickp_Liste_Coureur 
-            WHERE Matric = ? ";
-        $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($numFusionSource));
-
-		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numFusionSource.' => '.$numFusionCible);
-		return('Joueurs fusionnés : ');
-	}
 	
 	function __construct()
 	{			
@@ -335,10 +317,6 @@ class GestionAthlete extends MyPageSecure
 		{
 			if ($Cmd == 'Update') {
                 ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-            }
-
-			if ($Cmd == 'FusionJoueurs') {
-                ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($alertMessage == '')

@@ -376,13 +376,25 @@ class GestionCompetition extends MyPageSecure
 		}
 
 		// Suppression	
-		$sql = "DELETE FROM gickp_Competitions 
-			WHERE Code IN ($in) 
-			AND Code_saison = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array_merge($arrayParam, [$saison]));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
 
-		$myBdd->utyJournal('Suppression Compet', $myBdd->GetActiveSaison(), $arrayParam[$i]);
+			$sql = "DELETE FROM gickp_Competitions 
+				WHERE Code IN ($in) 
+				AND Code_saison = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array_merge($arrayParam, [$saison]));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression Compet, $saison, $in" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Suppression Compet', $saison, $arrayParam[$i]);
 
 	}
 	
@@ -492,28 +504,40 @@ class GestionCompetition extends MyPageSecure
             $codeRef = 'AUTRES';
         }
 		
-		$sql  = "UPDATE gickp_Competitions 
-			SET Code_niveau = ?, Libelle = ?, Soustitre = ?, 
-			Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?, 
-			En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?, 
-			Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?, 
-			Code_typeclt = ?, Code_tour = ?, Qualifies = ?, Elimines = ?, 
-			Points = ?, goalaverage = ?, Statut = ?, Publication = ?, commentairesCompet = ?
-			WHERE Code = ? 
-			AND Code_saison = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'), 
-			utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '', 
-			utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'), 
-			utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
-			utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
-			utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
-			$codeCompet, $saison 
-		));
-        
-        
-		$this->RazCompet();
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "UPDATE gickp_Competitions 
+				SET Code_niveau = ?, Libelle = ?, Soustitre = ?, 
+				Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?, 
+				En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?, 
+				Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?, 
+				Code_typeclt = ?, Code_tour = ?, Qualifies = ?, Elimines = ?, 
+				Points = ?, goalaverage = ?, Statut = ?, Publication = ?, commentairesCompet = ?
+				WHERE Code = ? 
+				AND Code_saison = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'), 
+				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '', 
+				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'), 
+				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
+				utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'), 
+				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
+				$codeCompet, $saison 
+			));
+			
+			$this->RazCompet();
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Modif Competition, $saison, $codeCompet" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
 		$myBdd->utyJournal('Modif Competition', $saison, $codeCompet);
 	}
 
@@ -677,101 +701,118 @@ class GestionCompetition extends MyPageSecure
 		$myBdd = $this->myBdd;
 		$numFusionSource = utyGetPost('numFusionSource', 0);
 		$numFusionCible = utyGetPost('numFusionCible', 0);
-        // buts et cartons
-		$sql  = "UPDATE gickp_Matchs_Detail 
-			SET Competiteur = ? 
-			WHERE Competiteur = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionCible, $numFusionSource));
 
-        // compos matchs
-		$sql  = "UPDATE gickp_Matchs_Joueurs 
-			SET Matric = ? 
-			WHERE Matric = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionCible, $numFusionSource));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
 
-        // feuilles de présence
-		$sql  = "UPDATE gickp_Competitions_Equipes_Joueurs 
-			SET Matric = ? 
-			WHERE Matric = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionCible, $numFusionSource));
+			// buts et cartons
+			$sql  = "UPDATE gickp_Matchs_Detail 
+				SET Competiteur = ? 
+				WHERE Competiteur = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numFusionCible, $numFusionSource));
 
-        // arbitre principal
-		$sql  = "UPDATE gickp_Matchs 
-			SET Matric_arbitre_principal = ? 
-			WHERE Matric_arbitre_principal = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionCible, $numFusionSource));
+			// compos matchs
+			$sql  = "UPDATE gickp_Matchs_Joueurs 
+				SET Matric = ? 
+				WHERE Matric = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numFusionCible, $numFusionSource));
 
-        // arbitre secondaire
-		$sql  = "UPDATE gickp_Matchs 
-			SET Matric_arbitre_secondaire = ? 
-			WHERE Matric_arbitre_secondaire = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionCible, $numFusionSource));
-        
-        // Secretaire
-		$sql  = "UPDATE gickp_Matchs 
-			SET Secretaire = REPLACE(Secretaire, :source, :cible) 
-			WHERE Secretaire LIKE :source2 ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			':cible' => '('.$numFusionCible.')', 
-			':source' => '('.$numFusionSource.')',
-			':source2' => '%('.$numFusionSource.')%'
-		));
-        
-        // Chronometre
-		$sql  = "UPDATE gickp_Matchs 
-			SET Chronometre = REPLACE(Chronometre, :source, :cible) 
-			WHERE Chronometre LIKE :source2 ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			':cible' => '('.$numFusionCible.')', 
-			':source' => '('.$numFusionSource.')',
-			':source2' => '%('.$numFusionSource.')%'
-		));
-        
-        // Timeshoot
-		$sql  = "UPDATE gickp_Matchs 
-			SET Timeshoot = REPLACE(Timeshoot, :source, :cible) 
-			WHERE Timeshoot LIKE :source2 ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			':cible' => '('.$numFusionCible.')', 
-			':source' => '('.$numFusionSource.')',
-			':source2' => '%('.$numFusionSource.')%'
-		));
-        
-        // Ligne1
-		$sql  = "UPDATE gickp_Matchs 
-			SET Ligne1 = REPLACE(Ligne1, :source, :cible) 
-			WHERE Ligne1 LIKE :source2 ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			':cible' => '('.$numFusionCible.')', 
-			':source' => '('.$numFusionSource.')',
-			':source2' => '%('.$numFusionSource.')%'
-		));
-        
-        // Ligne2
-		$sql  = "UPDATE gickp_Matchs 
-			SET Ligne2 = REPLACE(Ligne2, :source, :cible) 
-			WHERE Ligne2 LIKE :source2 ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			':cible' => '('.$numFusionCible.')', 
-			':source' => '('.$numFusionSource.')',
-			':source2' => '%('.$numFusionSource.')%'
-		));
-        
-        // suppression
-		$sql  = "DELETE FROM gickp_Liste_Coureur 
-			WHERE Matric = ?; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionSource));
+			// feuilles de présence
+            $sql = "UPDATE gickp_Competitions_Equipes_Joueurs cej,
+                gickp_Liste_Coureur lc
+                SET cej.Matric = :cible, cej.Nom = lc.Nom, 
+                    cej.Prenom = lc.Prenom, cej.Sexe = lc.Sexe
+                WHERE cej.Matric = :source 
+                AND lc.Matric = :cible ";
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute([':cible' => $numFusionCible, ':source' => $numFusionSource]);
+
+			// arbitre principal
+			$sql  = "UPDATE gickp_Matchs 
+				SET Matric_arbitre_principal = ? 
+				WHERE Matric_arbitre_principal = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numFusionCible, $numFusionSource));
+
+			// arbitre secondaire
+			$sql  = "UPDATE gickp_Matchs 
+				SET Matric_arbitre_secondaire = ? 
+				WHERE Matric_arbitre_secondaire = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numFusionCible, $numFusionSource));
+			
+			// Secretaire
+			$sql  = "UPDATE gickp_Matchs 
+				SET Secretaire = REPLACE(Secretaire, :source, :cible) 
+				WHERE Secretaire LIKE :source2 ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				':cible' => '('.$numFusionCible.')', 
+				':source' => '('.$numFusionSource.')',
+				':source2' => '%('.$numFusionSource.')%'
+			));
+			
+			// Chronometre
+			$sql  = "UPDATE gickp_Matchs 
+				SET Chronometre = REPLACE(Chronometre, :source, :cible) 
+				WHERE Chronometre LIKE :source2 ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				':cible' => '('.$numFusionCible.')', 
+				':source' => '('.$numFusionSource.')',
+				':source2' => '%('.$numFusionSource.')%'
+			));
+			
+			// Timeshoot
+			$sql  = "UPDATE gickp_Matchs 
+				SET Timeshoot = REPLACE(Timeshoot, :source, :cible) 
+				WHERE Timeshoot LIKE :source2 ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				':cible' => '('.$numFusionCible.')', 
+				':source' => '('.$numFusionSource.')',
+				':source2' => '%('.$numFusionSource.')%'
+			));
+			
+			// Ligne1
+			$sql  = "UPDATE gickp_Matchs 
+				SET Ligne1 = REPLACE(Ligne1, :source, :cible) 
+				WHERE Ligne1 LIKE :source2 ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				':cible' => '('.$numFusionCible.')', 
+				':source' => '('.$numFusionSource.')',
+				':source2' => '%('.$numFusionSource.')%'
+			));
+			
+			// Ligne2
+			$sql  = "UPDATE gickp_Matchs 
+				SET Ligne2 = REPLACE(Ligne2, :source, :cible) 
+				WHERE Ligne2 LIKE :source2 ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				':cible' => '('.$numFusionCible.')', 
+				':source' => '('.$numFusionSource.')',
+				':source2' => '%('.$numFusionSource.')%'
+			));
+			
+			// TODO: changer noms (et matric) des lignes, arbitres, officiels...
+			// suppression
+			$sql  = "DELETE FROM gickp_Liste_Coureur 
+				WHERE Matric = ?; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numFusionSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Fusion Joueurs" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numFusionSource.' => '.$numFusionCible);
 
@@ -788,18 +829,31 @@ class GestionCompetition extends MyPageSecure
 		if ($numFusionEquipeSource == 0 or $numFusionEquipeCible == 0 or $FusionEquipeSource == '' or $FusionEquipeCible == '') {
             return;
         }
-		$sql = "UPDATE gickp_Competitions_Equipes 
-			SET `Numero` = ?, 
-			Libelle = ?  
-			WHERE Numero = ?; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionEquipeCible, $FusionEquipeCible, $numFusionEquipeSource));
-		
-		
-		$sql = "DELETE FROM gickp_Equipe 
-			WHERE Numero = ?; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numFusionEquipeSource));
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "UPDATE gickp_Competitions_Equipes 
+				SET `Numero` = ?, 
+				Libelle = ?  
+				WHERE Numero = ?; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numFusionEquipeCible, $FusionEquipeCible, $numFusionEquipeSource));
+			
+			
+			$sql = "DELETE FROM gickp_Equipe 
+				WHERE Numero = ?; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numFusionEquipeSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Fusion Equipes, $FusionEquipeSource => $FusionEquipeCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $FusionEquipeSource.' => '.$FusionEquipeCible);
 		return;
@@ -815,17 +869,30 @@ class GestionCompetition extends MyPageSecure
         } elseif ($numDeplaceEquipeCible === 0) {
             return "Club cible vide : $numDeplaceEquipeCible";
         }
-		$sql  = "UPDATE gickp_Competitions_Equipes 
-			SET Code_club = ?  
-			WHERE Numero = ?; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
-				
-		$sql  = "UPDATE gickp_Equipe 
-			SET Code_club = ?  
-			WHERE Numero = ?; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "UPDATE gickp_Competitions_Equipes 
+				SET Code_club = ?  
+				WHERE Numero = ?; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+					
+			$sql  = "UPDATE gickp_Equipe 
+				SET Code_club = ?  
+				WHERE Numero = ?; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Déplacement Equipe, $numDeplaceEquipeSource => $numDeplaceEquipeCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 		
 		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numDeplaceEquipeSource.' => '.$numDeplaceEquipeCible);
 
@@ -839,17 +906,29 @@ class GestionCompetition extends MyPageSecure
 		$RenomSource = utyGetPost('RenomSource', 0);
 		$RenomCible = utyGetPost('RenomCible', 0);
 
-		$sql  = "UPDATE gickp_Equipe 
-			SET Libelle = ?  
-			WHERE Numero = ?; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($RenomCible, $numRenomSource));
-		
-		$sql  = "UPDATE gickp_Competitions_Equipes 
-			SET Libelle = ?  
-			WHERE Numero = ?; ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($RenomCible, $numRenomSource));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "UPDATE gickp_Equipe 
+				SET Libelle = ?  
+				WHERE Numero = ?; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($RenomCible, $numRenomSource));
+			
+			$sql  = "UPDATE gickp_Competitions_Equipes 
+				SET Libelle = ?  
+				WHERE Numero = ?; ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($RenomCible, $numRenomSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Rename Equipe, $RenomSource => $RenomCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $RenomSource.' => '.$RenomCible);
 		return('Joueurs fusionnés');
@@ -883,7 +962,7 @@ class GestionCompetition extends MyPageSecure
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 3) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'UploadLogo')
 				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->UploadLogo() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
@@ -892,13 +971,13 @@ class GestionCompetition extends MyPageSecure
 				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->DropLogo() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 2) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'ParamCompet')
 				($_SESSION['Profile'] <= 3) ? $this->ParamCompet() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'UpdateCompet')
-				($_SESSION['Profile'] <= 3) ? $this->UpdateCompet() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->UpdateCompet() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'RazCompet')
 				($_SESSION['Profile'] <= 3) ? $this->RazCompet() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
@@ -919,13 +998,13 @@ class GestionCompetition extends MyPageSecure
 				($_SESSION['Profile'] <= 2) ? $this->AddSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'FusionJoueurs')
-				($_SESSION['Profile'] == 1) ? $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'RenomEquipe')
-				($_SESSION['Profile'] == 1) ? $this->RenomEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] == 1) ? $alertMessage = $this->RenomEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'FusionEquipes')
-				($_SESSION['Profile'] == 1) ? $this->FusionEquipes() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionEquipes() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'DeplaceEquipe')
 				($_SESSION['Profile'] == 1) ? $alertMessage = $this->DeplaceEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';

@@ -90,10 +90,23 @@ class GestionEvenement extends MyPageSecure
 		
 		$myBdd = $this->myBdd;
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "DELETE FROM gickp_Evenement 
-			WHERE Id IN ($in) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "DELETE FROM gickp_Evenement 
+				WHERE Id IN ($in) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression Evenements, $ParamCmd" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 		
 		$myBdd->utyJournal('Suppression Evenements', '', '', $ParamCmd);
 	}
@@ -183,7 +196,7 @@ class GestionEvenement extends MyPageSecure
 				($_SESSION['Profile'] <= 2) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 1) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'PubliEvt')
 				($_SESSION['Profile'] <= 2) ? $this->PubliEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';

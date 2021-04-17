@@ -259,51 +259,64 @@ class GestionEquipeJoueur extends MyPageSecure
                 $matricJoueur = $myBdd->GetNextMatricLicence();
             }
 
-            $codeClub = $myBdd->GetCodeClubEquipe($idEquipe);
-			$myBdd->InsertIfNotExistLicence($matricJoueur, $nomJoueur, $prenomJoueur, $sexeJoueur, $naissanceJoueur, $codeClub, $numicfJoueur);
-			
-			$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
-				(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$idEquipe, $matricJoueur, $nomJoueur, $prenomJoueur, 
-				$sexeJoueur, $categJoueur, $numeroJoueur, $capitaineJoueur
-			));
-			
-			if (($matricJoueur >= 2000000) && ($arbitreJoueur != '')) {
-				$sql = "INSERT INTO gickp_Arbitre 
-					(Matric, Regional, InterRegional, National, International, Arb, Livret, niveau, saison) 
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-				$sql .= $matricJoueur;
-				switch ($arbitreJoueur) {
-                    case 'REG' :
-                        $arrayParam = [$matricJoueur,'O','N','N','N','Reg','',$niveauJoueur,$saisonJoueur];
-                        break;
-                    case 'IR' :
-                        $arrayParam = [$matricJoueur,'N','O','N','N','IR','',$niveauJoueur,$saisonJoueur];
-						break;
-                    case 'NAT' :
-						$arrayParam = [$matricJoueur,'N','N','O','N','Nat','',$niveauJoueur,$saisonJoueur];
-						break;
-                    case 'INT' :
-						$arrayParam = [$matricJoueur,'N','N','O','O','Int','',$niveauJoueur,$saisonJoueur];
-						break;
-                    case 'OTM' :
-						$arrayParam = [$matricJoueur,'N','N','O','N','OTM','',$niveauJoueur,$saisonJoueur];
-						break;
-                    case 'JO' :
-						$arrayParam = [$matricJoueur,'N','N','O','N','JO','',$niveauJoueur,$saisonJoueur];
-						break;
-                    default :
-						$arrayParam = [$matricJoueur,'N','N','N','N','','','',''];
-                        break;
-				}
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+		
+				$codeClub = $myBdd->GetCodeClubEquipe($idEquipe);
+				$myBdd->InsertIfNotExistLicence($matricJoueur, $nomJoueur, $prenomJoueur, $sexeJoueur, $naissanceJoueur, $codeClub, $numicfJoueur);
+				
+				$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute($arrayParam);
+				$result->execute(array(
+					$idEquipe, $matricJoueur, $nomJoueur, $prenomJoueur, 
+					$sexeJoueur, $categJoueur, $numeroJoueur, $capitaineJoueur
+				));
+				
+				if (($matricJoueur >= 2000000) && ($arbitreJoueur != '')) {
+					$sql = "INSERT INTO gickp_Arbitre 
+						(Matric, Regional, InterRegional, National, International, Arb, Livret, niveau, saison) 
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+					$sql .= $matricJoueur;
+					switch ($arbitreJoueur) {
+						case 'REG' :
+							$arrayParam = [$matricJoueur,'O','N','N','N','Reg','',$niveauJoueur,$saisonJoueur];
+							break;
+						case 'IR' :
+							$arrayParam = [$matricJoueur,'N','O','N','N','IR','',$niveauJoueur,$saisonJoueur];
+							break;
+						case 'NAT' :
+							$arrayParam = [$matricJoueur,'N','N','O','N','Nat','',$niveauJoueur,$saisonJoueur];
+							break;
+						case 'INT' :
+							$arrayParam = [$matricJoueur,'N','N','O','O','Int','',$niveauJoueur,$saisonJoueur];
+							break;
+						case 'OTM' :
+							$arrayParam = [$matricJoueur,'N','N','O','N','OTM','',$niveauJoueur,$saisonJoueur];
+							break;
+						case 'JO' :
+							$arrayParam = [$matricJoueur,'N','N','O','N','JO','',$niveauJoueur,$saisonJoueur];
+							break;
+						default :
+							$arrayParam = [$matricJoueur,'N','N','N','N','','','',''];
+							break;
+					}
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute($arrayParam);
+				}
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Ajout titulaire, $idEquipe, $matricJoueur" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 			}
-			
+
 			$myBdd->utyJournal('Ajout titulaire', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
+			return;
 		}
 	}
 	
@@ -324,44 +337,57 @@ class GestionEquipeJoueur extends MyPageSecure
 			if (strlen($matricJoueur) == 0)
 				$matricJoueur = $myBdd->GetNextMatricLicence();
 
-			$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
-				(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$idEquipe, $matricJoueur, $nomJoueur, $prenomJoueur, 
-				$sexeJoueur, $categJoueur, $numeroJoueur, $capitaineJoueur
-			));
-			
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+		
+				$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(
+					$idEquipe, $matricJoueur, $nomJoueur, $prenomJoueur, 
+					$sexeJoueur, $categJoueur, $numeroJoueur, $capitaineJoueur
+				));
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Ajout titulaire, $idEquipe, $matricJoueur" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+
 			$myBdd->utyJournal('Ajout titulaire', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$matricJoueur);
+			return;
 		}
 	}
 	
 	/* AddCoureur :  Fct Obsolète */
-	function AddCoureur()
-	{
-		$idEquipe = utyGetPost('idEquipe', '');
+	// function AddCoureur()
+	// {
+	// 	$idEquipe = utyGetPost('idEquipe', '');
 			
-		$ParamCmd = utyGetPost('ParamCmd', '');
+	// 	$ParamCmd = utyGetPost('ParamCmd', '');
 	
-		if (strlen($idEquipe) > 0) {
-			$data = explode('|',$ParamCmd);
-			$Matric = $data[0];
-			$Categ = $data[1];
+	// 	if (strlen($idEquipe) > 0) {
+	// 		$data = explode('|',$ParamCmd);
+	// 		$Matric = $data[0];
+	// 		$Categ = $data[1];
 			
-			$myBdd = $this->myBdd;
+	// 		$myBdd = $this->myBdd;
 
-			$sql = "REPLACE INTO gickp_Competitions_Equipes_Joueurs 
-				(Id_equipe, Matric, Nom, Prenom, Sexe, Categ) 
-				SELECT ?, Matric, Nom, Prenom, Sexe, ? 
-				FROM gickp_Liste_Coureur 
-				WHERE Matric = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idEquipe, $Categ, $Matric));
+	// 		$sql = "REPLACE INTO gickp_Competitions_Equipes_Joueurs 
+	// 			(Id_equipe, Matric, Nom, Prenom, Sexe, Categ) 
+	// 			SELECT ?, Matric, Nom, Prenom, Sexe, ? 
+	// 			FROM gickp_Liste_Coureur 
+	// 			WHERE Matric = ? ";
+	// 		$result = $myBdd->pdo->prepare($sql);
+	// 		$result->execute(array($idEquipe, $Categ, $Matric));
 			
-			$myBdd->utyJournal('Ajout coureur', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$Matric);
-		}
-	}
+	// 		$myBdd->utyJournal('Ajout coureur', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$Matric);
+	// 	}
+	// }
 	
 	function Remove()
 	{
@@ -374,15 +400,29 @@ class GestionEquipeJoueur extends MyPageSecure
 			
 		$myBdd = $this->myBdd;
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
-			WHERE Id_Equipe = ? 
-			AND Matric IN ($in) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array_merge([$idEquipe], $arrayParam));
 
-		for ($i=0;$i<count($arrayParam);$i++) {
-			$myBdd->utyJournal('Suppression titulaire', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$arrayParam[$i]);
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+	
+			$sql = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
+				WHERE Id_Equipe = ? 
+				AND Matric IN ($in) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array_merge([$idEquipe], $arrayParam));
+
+			for ($i=0;$i<count($arrayParam);$i++) {
+				$myBdd->utyJournal('Suppression titulaire', '', '', null, null, null, 'Equipe : '.$idEquipe.' - Joueur : '.$arrayParam[$i]);
+			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression titulaire, $idEquipe, $ParamCmd" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
+
 	}
 	
 	function Find()
@@ -413,16 +453,16 @@ class GestionEquipeJoueur extends MyPageSecure
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 4) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Add2')
-				($_SESSION['Profile'] <= 8) ? $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 8) ? $alertMessage = $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
-			if ($Cmd == 'AddCoureur') // Obsolète ...
-				($_SESSION['Profile'] <= 4) ? $this->AddCoureur() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			// if ($Cmd == 'AddCoureur') // Obsolète ...
+			// 	($_SESSION['Profile'] <= 4) ? $this->AddCoureur() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 8) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 8) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Find')
 				($_SESSION['Profile'] <= 8) ? $this->Find() : $alertMessage = 'Vous n avez pas les droits pour cette action.';

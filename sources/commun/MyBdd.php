@@ -80,6 +80,7 @@ class MyBdd
 	// Query 		$result = $myBdd->Query($sql);
     function Query($sql)
     {
+		$result = '';
 		if(isset($_SESSION) && $_SESSION['Profile'] == 1) {
 			$result = mysqli_query($this->m_link, $sql) or die ("Error Query : " . $sql);
 		} else {

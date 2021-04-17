@@ -16,12 +16,13 @@ session_start();
 $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch', 0);
 // M1-00:00-V-A-186002-5
-$ligne = trim(utyGetPost('ligne'));
-$ligne = explode(';', $ligne);
+// $data = trim(utyGetPost('ligne'));
+$data = json_decode(html_entity_decode(utyGetPost('ligne')));
 $type = trim(utyGetPost('type'));
 $idLigne = trim(utyGetPost('idLigne'));
 $idLigne = explode('_', $idLigne);
-
+// $data->number == '' ? $data->number = null : true;
+// var_dump($data);
 // Contrôle autorisation journée
 $myBdd->AutorisationMatch($idMatch);
 
@@ -31,12 +32,13 @@ if ($type == 'insert') {
 		Competiteur = ?, Numero = ?, Equipe_A_B = ?, motif = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array(
-		$idMatch, $ligne[0], '00:'.$ligne[1], $ligne[2], 
-		$ligne[4], $ligne[5], $ligne[3], $ligne[6]
+		$idMatch, $data->period, '00:'.$data->time, $data->evt, 
+		$data->player, $data->number, $data->team, $data->cause
 	));
 	$last = $myBdd->pdo->lastInsertId();
-	$myBdd->CheckCardCumulation ($ligne[4], $idMatch, $ligne[2], $ligne[6]);
+	$myBdd->CheckCardCumulation($data->player, $idMatch, $data->evt, $data->cause);
 	echo $last;
+
 } elseif ($type == 'update') {
 	$sql = "UPDATE gickp_Matchs_Detail 
 		SET Id_match = ?, Periode = ?, 
@@ -45,11 +47,12 @@ if ($type == 'insert') {
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array(
-		$idMatch, $ligne[0], '00:'.$ligne[1], $ligne[2], 
-		$ligne[4], $ligne[5], $ligne[3], $ligne[6], $idLigne[1]
+		$idMatch, $data->period, '00:'.$data->time, $data->evt, 
+		$data->player, $data->number, $data->team, $data->cause, $idLigne[1]
 	));
-	$myBdd->CheckCardCumulation ($ligne[4], $idMatch, $ligne[2], $ligne[6]);
+	$myBdd->CheckCardCumulation($data->player, $idMatch, $data->evt, $data->cause);
 	echo 'OK';
+
 } elseif($type == 'delete') {
 	$sql = "DELETE FROM gickp_Matchs_Detail 
 		WHERE Id = ? ";

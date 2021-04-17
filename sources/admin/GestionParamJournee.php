@@ -195,93 +195,117 @@ class GestionParamJournee extends MyPageSecure
                 die("Vous n'avez pas l'autorisation de modifier cette journée ! (<a href='javascript:history.back()'>Retour</a>)");
             }
 
-            // Modification ...
-			$sql = "UPDATE gickp_Journees 
-				SET Code_competition = ?, Code_saison = ?, 
-				`Type` = ?, Phase = ?, Niveau = ?, 
-				Etape = ?, Nbequipes = ?, Date_debut = ?, 
-				Date_fin = ?, Nom = ?, Libelle = ?, 
-				Lieu = ?, Plan_eau = ?, Departement = ?, 
-				Responsable_insc = ?, Responsable_R1 = ?, 
-				Organisateur = ?, Delegue = ?, 
-				ChefArbitre = ?, Rep_athletes = ?, Arb_nj1 = ?, Arb_nj2 = ?,
-				Arb_nj3 = ?, Arb_nj4 = ?, Arb_nj5 = ?
-				WHERE Id = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$J_competition, $J_saison, $Type, $Phase, $Niveau, $Etape, $Nbequipes, $Date_debut, 
-				$Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
-				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, 
-				$Rep_athletes, $Arb_nj1, $Arb_nj2,
-				$Arb_nj3, $Arb_nj4, $Arb_nj5, $idJournee
-			));
-				
-            $myBdd->utyJournal('Modification journee', $J_saison, $J_competition, null, $idJournee);
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+		
+				// Modification ...
+				$sql = "UPDATE gickp_Journees 
+					SET Code_competition = ?, Code_saison = ?, 
+					`Type` = ?, Phase = ?, Niveau = ?, 
+					Etape = ?, Nbequipes = ?, Date_debut = ?, 
+					Date_fin = ?, Nom = ?, Libelle = ?, 
+					Lieu = ?, Plan_eau = ?, Departement = ?, 
+					Responsable_insc = ?, Responsable_R1 = ?, 
+					Organisateur = ?, Delegue = ?, 
+					ChefArbitre = ?, Rep_athletes = ?, Arb_nj1 = ?, Arb_nj2 = ?,
+					Arb_nj3 = ?, Arb_nj4 = ?, Arb_nj5 = ?
+					WHERE Id = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(
+					$J_competition, $J_saison, $Type, $Phase, $Niveau, $Etape, $Nbequipes, $Date_debut, 
+					$Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
+					$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, 
+					$Rep_athletes, $Arb_nj1, $Arb_nj2,
+					$Arb_nj3, $Arb_nj4, $Arb_nj5, $idJournee
+				));
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Modification journee, $J_saison, $J_competition, $idJournee" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+			
+			$myBdd->utyJournal('Modification journee', $J_saison, $J_competition, null, $idJournee);
 		} else {
 			// Création ...
 			$nextIdJournee = $myBdd->GetNextIdJournee();
-			
-    		$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
-				`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
-				Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, 
-				Delegue, ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
-				Arb_nj3, Arb_nj4, Arb_nj5) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$nextIdJournee, $J_competition, $J_saison, $Phase, $Type, $Niveau, $Etape, $Nbequipes, 
-				$Date_debut, $Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
-				$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, $Rep_athletes, $Arb_nj1, $Arb_nj2,
-				$Arb_nj3, $Arb_nj4, $Arb_nj5
-			));
-			
-			//Copie des matchs
-			if ($AvecMatchs == 'oui') {
-				$sql2a = "CREATE TEMPORARY TABLE gickp_Tmp 
-					(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-				$myBdd->pdo->exec($sql2a);
-				$sql2 = "INSERT INTO gickp_Tmp (Num) 
-					SELECT DISTINCT ce.Id 
-					FROM gickp_Competitions_Equipes ce, gickp_Journees j 
-					WHERE ce.Code_compet = j.Code_competition 
-					AND ce.Code_saison = j.Code_saison 
-					AND j.Id = $idJournee 
-					ORDER BY ce.Tirage; ";
-				$myBdd->pdo->exec($sql2);
 
-				$sql3a = "CREATE TEMPORARY TABLE gickp_Tmp2 
-					(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
-				$myBdd->pdo->exec($sql3a);
-				$sql3 = "INSERT INTO gickp_Tmp2 (Num) 
-					SELECT DISTINCT ce.Id 
-					FROM gickp_Competitions_Equipes ce, gickp_Journees j 
-					WHERE ce.Code_compet = j.Code_competition 
-					AND ce.Code_saison = j.Code_saison 
-					AND j.Id = $idJournee 
-					ORDER BY ce.Tirage; ";
-				$myBdd->pdo->exec($sql3);
-
-				if ($Niveau <= 1 && $CodMatchs == 'oui') {
-					$sql4 = "INSERT INTO gickp_Matchs 
-						(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
-						SELECT $nextIdJournee, CONCAT(m.Libelle, ' [T', ta.Id, '/T', tb.Id, ']'), 
-						DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, 
-						m.Numero_ordre, m.Validation 
-						FROM gickp_Matchs m, gickp_Tmp ta, gickp_Tmp2 tb 
-						WHERE m.Id_journee = $idJournee 
-						AND ta.Num=m.Id_equipeA 
-						AND tb.Num=m.Id_equipeB ";
-				} else {
-					$sql4 = "INSERT INTO gickp_Matchs 
-						(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
-						SELECT $nextIdJournee, m.Libelle, DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), 
-						m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation 
-						FROM gickp_Matchs m 
-						WHERE m.Id_journee = $idJournee ";
-				}
-				$myBdd->pdo->exec($sql4);
-			}
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
 		
+				$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
+					`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
+					Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, 
+					Delegue, ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
+					Arb_nj3, Arb_nj4, Arb_nj5) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(
+					$nextIdJournee, $J_competition, $J_saison, $Phase, $Type, $Niveau, $Etape, $Nbequipes, 
+					$Date_debut, $Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
+					$Responsable_R1, $Organisateur, $Delegue, $ChefArbitre, $Rep_athletes, $Arb_nj1, $Arb_nj2,
+					$Arb_nj3, $Arb_nj4, $Arb_nj5
+				));
+				
+				//Copie des matchs
+				if ($AvecMatchs == 'oui') {
+					$sql2a = "CREATE TEMPORARY TABLE gickp_Tmp 
+						(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+					$myBdd->pdo->exec($sql2a);
+					$sql2 = "INSERT INTO gickp_Tmp (Num) 
+						SELECT DISTINCT ce.Id 
+						FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+						WHERE ce.Code_compet = j.Code_competition 
+						AND ce.Code_saison = j.Code_saison 
+						AND j.Id = $idJournee 
+						ORDER BY ce.Tirage; ";
+					$myBdd->pdo->exec($sql2);
+
+					$sql3a = "CREATE TEMPORARY TABLE gickp_Tmp2 
+						(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+					$myBdd->pdo->exec($sql3a);
+					$sql3 = "INSERT INTO gickp_Tmp2 (Num) 
+						SELECT DISTINCT ce.Id 
+						FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+						WHERE ce.Code_compet = j.Code_competition 
+						AND ce.Code_saison = j.Code_saison 
+						AND j.Id = $idJournee 
+						ORDER BY ce.Tirage; ";
+					$myBdd->pdo->exec($sql3);
+
+					if ($Niveau <= 1 && $CodMatchs == 'oui') {
+						$sql4 = "INSERT INTO gickp_Matchs 
+							(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
+							SELECT $nextIdJournee, CONCAT(m.Libelle, ' [T', ta.Id, '/T', tb.Id, ']'), 
+							DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, 
+							m.Numero_ordre, m.Validation 
+							FROM gickp_Matchs m, gickp_Tmp ta, gickp_Tmp2 tb 
+							WHERE m.Id_journee = $idJournee 
+							AND ta.Num=m.Id_equipeA 
+							AND tb.Num=m.Id_equipeB ";
+					} else {
+						$sql4 = "INSERT INTO gickp_Matchs 
+							(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
+							SELECT $nextIdJournee, m.Libelle, DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), 
+							m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation 
+							FROM gickp_Matchs m 
+							WHERE m.Id_journee = $idJournee ";
+					}
+					$myBdd->pdo->exec($sql4);
+				}
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Ajout journee, $J_saison, $J_competition, $idJournee" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+			
 			$myBdd->utyJournal('Ajout journee', $J_saison, $J_competition, null, $nextIdJournee);
 		}			
 		
@@ -290,6 +314,7 @@ class GestionParamJournee extends MyPageSecure
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
+		return;
 	}
 	
 	function DuppliListJournees() 
@@ -315,31 +340,45 @@ class GestionParamJournee extends MyPageSecure
 		$Arb_nj5 = trim(utyGetPost('Arb_nj5'));
 		$listJournees = explode (",", trim(utyGetPost('ParamCmd')));
 
-		foreach ($listJournees as $Journee) {
-			// Modification ...
-			$sql = "UPDATE gickp_Journees 
-				SET Date_debut = ?, Date_fin = ?, Nom = ?, 
-				Libelle = ?, Lieu = ?, Plan_eau = ?, 
-				Responsable_R1 = ?, Organisateur = ?, 
-				Delegue = ?, ChefArbitre = ?, Rep_athletes = ?, Arb_nj1 = ?, Arb_nj2 = ?,
-				Arb_nj3 = ?, Arb_nj4 = ?, Arb_nj5 = ? 
-				WHERE Id = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$Date_debut, $Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Responsable_R1, 
-				$Organisateur, $Delegue, $ChefArbitre, 
-				$Rep_athletes, $Arb_nj1, $Arb_nj2,
-				$Arb_nj3, $Arb_nj4, $Arb_nj5, $Journee
-			));
-		
-			$myBdd->utyJournal('Modification journee', '', '', null, $Journee);
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			foreach ($listJournees as $Journee) {
+				// Modification ...
+				$sql = "UPDATE gickp_Journees 
+					SET Date_debut = ?, Date_fin = ?, Nom = ?, 
+					Libelle = ?, Lieu = ?, Departement = ?, Plan_eau = ?, 
+					Responsable_R1 = ?, Responsable_insc = ?, Organisateur = ?, 
+					Delegue = ?, ChefArbitre = ?, Rep_athletes = ?, Arb_nj1 = ?, Arb_nj2 = ?,
+					Arb_nj3 = ?, Arb_nj4 = ?, Arb_nj5 = ? 
+					WHERE Id = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(
+					$Date_debut, $Date_fin, $Nom,
+					$Libelle, $Lieu, $Departement, $Plan_eau, 
+					$Responsable_R1, $Responsable_insc, $Organisateur,
+					$Delegue, $ChefArbitre, $Rep_athletes, $Arb_nj1, $Arb_nj2,
+					$Arb_nj3, $Arb_nj4, $Arb_nj5, $Journee
+				));
+			
+				$myBdd->utyJournal('Modification journee', '', '', null, $Journee);
+			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Modification journee, $Journee" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
-		
+
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
+		return;
 	}
 	
 	function AjustDates() 
@@ -380,20 +419,33 @@ class GestionParamJournee extends MyPageSecure
         $idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
 		if ($idJournee != 0) {
 			$nextIdJournee = $myBdd->GetNextIdJournee();
+
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
 	
-			$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
-				`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
-				Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, 
-				ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
-				Arb_nj3, Arb_nj4, Arb_nj5) 
-				SELECT ?, Code_competition, code_saison, Phase, `Type`, Niveau, 
-				Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, 
-				Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
-				Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
-				FROM gickp_Journees 
-				WHERE Id = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($nextIdJournee, $idJournee));
+				$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
+					`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
+					Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, 
+					ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
+					Arb_nj3, Arb_nj4, Arb_nj5) 
+					SELECT ?, Code_competition, code_saison, Phase, `Type`, Niveau, 
+					Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, 
+					Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+					Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
+					FROM gickp_Journees 
+					WHERE Id = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($nextIdJournee, $idJournee));
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Dupplication journee, $idJournee" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+	
 		}			
 		
 		if (isset($_SESSION['ParentUrl'])) {
@@ -403,6 +455,7 @@ class GestionParamJournee extends MyPageSecure
 		}
 
 		$myBdd->utyJournal('Dupplication journee', '', '', null, $nextIdJournee); // A compléter (saison, compétition, options)
+		return;
 	}
 	
 	function __construct()
@@ -417,11 +470,11 @@ class GestionParamJournee extends MyPageSecure
 
 		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Ok') {
-                ($_SESSION['Profile'] <= 4) ? $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'DuppliListJournees') {
-                ($_SESSION['Profile'] <= 4) ? $this->DuppliListJournees() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->DuppliListJournees() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'AjustDates') {
@@ -433,7 +486,7 @@ class GestionParamJournee extends MyPageSecure
             }
 
             if ($Cmd == 'Duplicate') {
-                ($_SESSION['Profile'] <= 4) ? $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($alertMessage == '') {

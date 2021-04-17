@@ -409,7 +409,7 @@ stop_time: <span id="stop_time_display"></span><br />
 					</tr>
 					<tr>
 						<td id="selectionA">
-							<a class="fm_bouton equipes" data-equipe="A" data-player="<?= $lang['Equipe']; ?> A"><?= $lang['Equipe']; ?> A<br />
+							<a class="fm_bouton equipes" data-equipe="A"><?= $lang['Equipe']; ?> A<br />
 								<img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>
 								<span class="score" id="scoreA">0</span>
 							</a>
@@ -484,7 +484,7 @@ stop_time: <span id="stop_time_display"></span><br />
 							</div>
 						</td>
 						<td id="selectionB">
-							<a class="fm_bouton equipes" data-equipe="B" data-player="<?= $lang['Equipe']; ?> B">
+							<a class="fm_bouton equipes" data-equipe="B">
 								<span class="score" id="scoreB">0</span><?= $lang['Equipe']; ?> B<br />
 								<img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>
 							</a>
@@ -554,9 +554,23 @@ stop_time: <span id="stop_time_display"></span><br />
                                         } else {
                                             $row5["Separatif"] = ' - ';
                                         }
-                                        $evt_temp  = '<tr id="ligne_'.$row5["Id"].'" data-code="'.$row5["Periode"].';'
-                                                .substr($row5["Temps"],-5).';'.$row5["Id_evt_match"].';'.$evtEquipe.';'
-                                                .$row5["Competiteur"].';'.$row5["Numero"].';'.$row5["motif"].'">';
+										// code_ligne.period = $('.periode[class*="actif"]').attr('id');
+										// code_ligne.time = $('#time_evt').val();
+										// code_ligne.evt = $('.evtButton[class*="actif"]').attr('data-code');
+										// code_ligne.team = ligne_equipe;
+										// code_ligne.player = ligne_id_joueur;
+										// code_ligne.number = ligne_nb;
+										// code_ligne.cause = ligne_motif;
+										$json_temp = (object)[];
+										$json_temp->period = $row5["Periode"];
+										$json_temp->time = $row5["Temps"];
+										$json_temp->evt = $row5["Id_evt_match"];
+										$json_temp->team = $evtEquipe;
+										$json_temp->player = $row5["Competiteur"];
+										$json_temp->number = $row5["Numero"];
+										$json_temp->cause = $row5["motif"];
+
+                                        $evt_temp  = "<tr id='ligne_".$row5["Id"]."' data-code='".json_encode($json_temp)."'>";
                                         if ($evtEquipe == 'A') {
                                             $evt_temp .= '<td class="list_evt">';
                                             if($row5["Id_evt_match"] == 'V')
@@ -568,10 +582,15 @@ stop_time: <span id="stop_time_display"></span><br />
                                             if($row5["Id_evt_match"] == 'R')
                                                 $evt_temp .= '<img src="v2/carton_rouge.png">';
                                             $evt_temp .= '</td>';
-                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
-                                                    .mb_strtoupper($row5["Nom"]).' '
-                                                    .mb_convert_case($row5["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.'
-                                                    .$row5['motif_texte'];
+											if ($row5["Competiteur"]) {
+												$evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
+														.mb_strtoupper($row5["Nom"]).' '
+														.mb_convert_case($row5["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.'
+														.$row5['motif_texte'];
+											} else{
+												$evt_temp .= '<td class="list_nom">'.$lang['Equipe'].' '.$evtEquipe.' '
+														.$row5['motif_texte'];
+											}
     //										if($row5["Id_evt_match"] == 'A')
     //											$evt_temp .= ' (arrêt)';
     //										if($row5["Id_evt_match"] == 'T')
@@ -590,10 +609,15 @@ stop_time: <span id="stop_time_display"></span><br />
                                             if($row5["Id_evt_match"] == 'B')
                                                 $evt_temp .= '<img src="v2/but1.png">';
                                             $evt_temp .= '</td>';
-                                            $evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
-												.mb_strtoupper($row5["Nom"]).' '
-												.mb_convert_case($row5["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.'
-												.$row5['motif_texte'];
+											if ($row5["Competiteur"]) {
+												$evt_temp .= '<td class="list_nom">'.$row5["Numero"].$row5["Separatif"]
+														.mb_strtoupper($row5["Nom"]).' '
+														.mb_convert_case($row5["Prenom"][0], MB_CASE_TITLE, "UTF-8").'.'
+														.$row5['motif_texte'];
+											} else{
+												$evt_temp .= '<td class="list_nom">'.$lang['Equipe'].' '.$evtEquipe.' '
+														.$row5['motif_texte'];
+											}
     //										if($row5["Id_evt_match"] == 'A')
     //											$evt_temp .= ' (arrêt)';
     //										if($row5["Id_evt_match"] == 'T')

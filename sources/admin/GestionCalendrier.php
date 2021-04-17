@@ -342,14 +342,28 @@ class GestionCalendrier extends MyPageSecure
 			die ("Il reste des matchs dans cette journée ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
 		}
 
-		// Suppression	
-		$sql = "DELETE FROM gickp_Journees 
-			WHERE Id IN ($in) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			// Suppression	
+			$sql = "DELETE FROM gickp_Journees 
+				WHERE Id IN ($in) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression journee, $in" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
 		for ($i=0;$i<count($arrayParam);$i++) {
 			$myBdd->utyJournal('Suppression journee', '', '', null, null, $arrayParam[$i]);
 		}
+		return;
 	}
 
 	function Duplicate()
@@ -358,19 +372,32 @@ class GestionCalendrier extends MyPageSecure
 		if ($idJournee != 0) {
 			$myBdd = $this->myBdd;
 			$nextIdJournee = $myBdd->GetNextIdJournee();
-			$sql = "INSERT INTO gickp_Journees 
-				(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, 
-				Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, Departement, 
-				Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
-				Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5) 
-				SELECT ?, Code_competition, code_saison, Phase, Niveau, Etape, 
-				Nbequipes, Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, 
-				Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
-				Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
-				FROM gickp_Journees 
-				WHERE Id = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($nextIdJournee, $idJournee));
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+	
+				$sql = "INSERT INTO gickp_Journees 
+					(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, 
+					Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, Departement, 
+					Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+					Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5) 
+					SELECT ?, Code_competition, code_saison, Phase, Niveau, Etape, 
+					Nbequipes, Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, 
+					Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
+					Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
+					FROM gickp_Journees 
+					WHERE Id = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($nextIdJournee, $idJournee));
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Dupplication journee, $idJournee" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+	
 		}			
 		
 		if (isset($_SESSION['ParentUrl'])) {
@@ -380,6 +407,7 @@ class GestionCalendrier extends MyPageSecure
 		}
 
 		$myBdd->utyJournal('Dupplication journee', $myBdd->GetActiveSaison(), '', null, $nextIdJournee); // A compléter (saison, compétition, options)
+		return;
 	}
 	
 	function ParamJournee()
@@ -402,12 +430,25 @@ class GestionCalendrier extends MyPageSecure
 			return;
 		$myBdd = $this->myBdd;
 		
-		$sql = "REPLACE INTO gickp_Evenement_Journees (Id_Evenement, Id_Journee) 
-			VALUES (?, ?)";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($idEvenement, $idJournee));
-	
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "REPLACE INTO gickp_Evenement_Journees (Id_Evenement, Id_Journee) 
+				VALUES (?, ?)";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idEvenement, $idJournee));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Evenement +journee, $idEvenement, $idJournee" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
 		$myBdd->utyJournal('Evenement +journee', '', '', null, $idEvenement, $idJournee);
+		return;
 	}
 	
 	function RemoveEvenementJournee()
@@ -419,13 +460,27 @@ class GestionCalendrier extends MyPageSecure
 			return;
 		
 		$myBdd = $this->myBdd;
-		$sql = "DELETE FROM gickp_Evenement_Journees 
-			WHERE Id_Evenement = ? 
-			AND Id_Journee = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($idEvenement, $idJournee));
+		
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "DELETE FROM gickp_Evenement_Journees 
+				WHERE Id_Evenement = ? 
+				AND Id_Journee = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idEvenement, $idJournee));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Evenement -journee, $idEvenement, $idJournee" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 		
 		$myBdd->utyJournal('Evenement -journee', '', '', null, $idEvenement, $idJournee);
+		return;
 	}
 	
 	function PubliJournee()
@@ -478,19 +533,19 @@ class GestionCalendrier extends MyPageSecure
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'Duplicate')
-				($_SESSION['Profile'] <= 4) ? $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 4) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'ParamJournee')
 				($_SESSION['Profile'] <= 10) ? $this->ParamJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'AddEvenementJournee')
-				($_SESSION['Profile'] <= 3) ? $this->AddEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->AddEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'RemoveEvenementJournee')
-				($_SESSION['Profile'] <= 3) ? $this->RemoveEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->RemoveEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'PubliJournee')
 				($_SESSION['Profile'] <= 4) ? $this->PubliJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
