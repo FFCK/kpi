@@ -173,16 +173,29 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		if ($row['Validation'] == 'O')
 			return;
 
-		$sql = "REPLACE INTO gickp_Matchs_Joueurs 
-			SELECT ?, Matric, Numero, ?, Capitaine 
-			FROM gickp_Competitions_Equipes_Joueurs 
-			WHERE Id_equipe = ? 
-			AND Capitaine <> 'X' 
-			AND Capitaine <> 'A' ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($idMatch, $codeEquipe, $idEquipe));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+	
+			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+				SELECT ?, Matric, Numero, ?, Capitaine 
+				FROM gickp_Competitions_Equipes_Joueurs 
+				WHERE Id_equipe = ? 
+				AND Capitaine <> 'X' 
+				AND Capitaine <> 'A' ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $codeEquipe, $idEquipe));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Ajout titulaires match, $idMatch, $idEquipe" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$myBdd->utyJournal('Ajout titulaires match', '', '', null, null, $idMatch, 'Equipe : '.$idEquipe);
+		return;
 	}
 	
 	function Add2()
@@ -212,14 +225,28 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			if (strlen($matricJoueur) == 0)
 				$matricJoueur = $myBdd->GetNextMatricLicence();
 			//$idMatch, Matric, Numero, '$codeEquipe', Capitaine
-			$sql = "REPLACE INTO gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) 
-				VALUES (?, ?, ?, ?, ?) ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array(
-				$idMatch, $matricJoueur, $numeroJoueur, $codeEquipe, $capitaineJoueur
-			));
+
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+		
+				$sql = "REPLACE INTO gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) 
+					VALUES (?, ?, ?, ?, ?) ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array(
+					$idMatch, $matricJoueur, $numeroJoueur, $codeEquipe, $capitaineJoueur
+				));
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Ajout joueur, $idMatch, Equipe: $codeEquipe - Joueur: $matricJoueur" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
 				
 			$myBdd->utyJournal('Ajout joueur', '', '', null, null, null, 'Match:'.$idMatch.' - Equipe:'.$codeEquipe.' - Joueur:'.$matricJoueur);
+			return;
 		}
 	}
 	
@@ -241,13 +268,26 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		if ($row['Validation'] == 'O')
 			return;
 
-		$sql = "DELETE FROM gickp_Matchs_Joueurs 
-			WHERE Id_match = ? 
-			AND Equipe = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($idMatch, $codeEquipe));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+	
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Equipe = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idMatch, $codeEquipe));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression joueurs match, $idMatch, Equipe: $idEquipe" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$myBdd->utyJournal('Suppression joueurs match', '', '', null, null, $idMatch, 'Equipe : '.$idEquipe);
+		return;
 	}
 	
 	function copieCompoEquipeJournee()
@@ -271,38 +311,51 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idJournee, $idMatch, $idEquipe, $idEquipe));
 
-		$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
-			WHERE Id_match = ? 
-			AND Equipe = ? ";
-		$result2 = $myBdd->pdo->prepare($sql2);
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+	
+			$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Equipe = ? ";
+			$result2 = $myBdd->pdo->prepare($sql2);
 
-		$sql3 = "SELECT Matric, Numero, Capitaine 
-			FROM gickp_Matchs_Joueurs 
-			WHERE Id_match = ? 
-			AND Equipe = ? ";
-		$result3 = $myBdd->pdo->prepare($sql3);
+			$sql3 = "SELECT Matric, Numero, Capitaine 
+				FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Equipe = ? ";
+			$result3 = $myBdd->pdo->prepare($sql3);
 
-		$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
-			(Id_match, Matric, Numero, Equipe, Capitaine) 
-			VALUES (?, ?, ?, ?, ?) ";
-		$result4 = $myBdd->pdo->prepare($sql4);
+			$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
+				(Id_match, Matric, Numero, Equipe, Capitaine) 
+				VALUES (?, ?, ?, ?, ?) ";
+			$result4 = $myBdd->pdo->prepare($sql4);
 
-		while ($row = $result->fetch()) {
-			($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
-			// Vidage
-			$result2->execute(array($row['Id'], $AB));
-			
-			//Selection de la compo à copier
-			$result3->execute(array($idMatch, $codeEquipe));
-			while ($row3 = $result3->fetch()) {
-				//Insertion ligne par ligne compo à copier
-				$result4->execute(array(
-					$row['Id'], $row3['Matric'], $row3['Numero'], $AB, $row3['Capitaine']
-				));
+			while ($row = $result->fetch()) {
+				($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
+				// Vidage
+				$result2->execute(array($row['Id'], $AB));
+				
+				//Selection de la compo à copier
+				$result3->execute(array($idMatch, $codeEquipe));
+				while ($row3 = $result3->fetch()) {
+					//Insertion ligne par ligne compo à copier
+					$result4->execute(array(
+						$row['Id'], $row3['Matric'], $row3['Numero'], $AB, $row3['Capitaine']
+					));
+				}
 			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Copie Compo sur Journée, $idMatch, $idEquipe" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
 
 		$myBdd->utyJournal('Copie Compo sur Journée', $myBdd->GetActiveSaison(), utyGetSession('Compet'), null, null, $idMatch, 'Equipe : '.$idEquipe);
+		return;
 	}
 
 	function copieCompoEquipeCompet()
@@ -340,38 +393,51 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array_merge($arrayJournees, [$idMatch], [$idEquipe], [$idEquipe]));
 
-		$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
-			WHERE Id_match = ? 
-			AND Equipe = ? ";
-		$result2 = $myBdd->pdo->prepare($sql2);
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+	
+			$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Equipe = ? ";
+			$result2 = $myBdd->pdo->prepare($sql2);
 
-		$sql3 = "SELECT Matric, Numero, Capitaine 
-			FROM gickp_Matchs_Joueurs 
-			WHERE Id_match = ? 
-			AND Equipe = ? ";
-		$result3 = $myBdd->pdo->prepare($sql3);
+			$sql3 = "SELECT Matric, Numero, Capitaine 
+				FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Equipe = ? ";
+			$result3 = $myBdd->pdo->prepare($sql3);
 
-		$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
-			(Id_match, Matric, Numero, Equipe, Capitaine) 
-			VALUES (?, ?, ?, ?, ?) ";
-		$result4 = $myBdd->pdo->prepare($sql4);
+			$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
+				(Id_match, Matric, Numero, Equipe, Capitaine) 
+				VALUES (?, ?, ?, ?, ?) ";
+			$result4 = $myBdd->pdo->prepare($sql4);
 
-		while ($row = $result->fetch()) {
-			($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
-			// Vidage
-			$result2->execute(array($row['Id'], $AB));
-			
-			//Selection de la compo à copier
-			$result3->execute(array($idMatch, $codeEquipe));
-			while ($row3 = $result3->fetch()) {
-				//Insertion ligne par ligne compo à copier
-				$result4->execute(array(
-					$row['Id'], $row3['Matric'], $row3['Numero'], $AB, $row3['Capitaine']
-				));
+			while ($row = $result->fetch()) {
+				($row['Id_equipeA'] == $idEquipe) ? $AB = 'A' : $AB = 'B';
+				// Vidage
+				$result2->execute(array($row['Id'], $AB));
+				
+				//Selection de la compo à copier
+				$result3->execute(array($idMatch, $codeEquipe));
+				while ($row3 = $result3->fetch()) {
+					//Insertion ligne par ligne compo à copier
+					$result4->execute(array(
+						$row['Id'], $row3['Matric'], $row3['Numero'], $AB, $row3['Capitaine']
+					));
+				}
 			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Copie Compo sur Compet, $idMatch, $idEquipe" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
 				
 		$myBdd->utyJournal('Copie Compo sur Compet', $myBdd->GetActiveSaison(), utyGetSession('Compet'), null, null, $idMatch, 'Equipe : '.$idEquipe);
+		return;
 	}
 
 	function Remove()
@@ -393,15 +459,28 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$row = $result->fetch();
 		if ($row['Validation'] == 'O')
 			return;
-			
-		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "DELETE FROM gickp_Matchs_Joueurs 
-			WHERE Id_match = ? 
-			AND Matric IN ($in) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array_merge([$idMatch], $arrayParam));	
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+	
+			$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
+			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				WHERE Id_match = ? 
+				AND Matric IN ($in) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array_merge([$idMatch], $arrayParam));	
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression joueurs match, $idMatch, $ParamCmd" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 		
 		$myBdd->utyJournal('Suppression joueurs match', '', '', null, null, $idMatch, 'joueurs : '.$ParamCmd);
+		return;
 	}
 	
 	function FindLicence()
@@ -430,25 +509,25 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'AddJoueurTitulaire')
-				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $this->AddJoueurTitulaire() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $alertMessage = $this->AddJoueurTitulaire() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Add2')
-				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $alertMessage = $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'DelJoueurs')
-				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $this->DelJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $alertMessage = $this->DelJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'FindLicence')
 				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $this->FindLicence() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 			
 			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6 || $_SESSION['Profile'] == 9) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'copieCompoEquipeJournee')
-				($_SESSION['Profile'] <= 6) ? $this->copieCompoEquipeJournee($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 6) ? $alertMessage = $this->copieCompoEquipeJournee($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'copieCompoEquipeCompet')
-				($_SESSION['Profile'] <= 4) ? $this->copieCompoEquipeCompet($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->copieCompoEquipeCompet($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($alertMessage == '')
 			{

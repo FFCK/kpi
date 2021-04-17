@@ -30,10 +30,11 @@ function debug($variable, $die = false) {
 /**
  * Redimentionne image pour PDF
  * 
- * @param type $image
- * @param type $hauteur hauteur de l'image redimentionnée
- * @param type $largeurPage
- * @param type $position (L, C, R)
+ * @param Object $image
+ * @param Int $largeurPage
+ * @param Int $marge
+ * @param Int $newHauteur hauteur de l'image redimentionnée
+ * @param String $position (L, C, R)
  */
 function redimImage($image, $largeurPage, $marge, $newHauteur, $position='C') {
     $size = getimagesize($image);
@@ -1026,4 +1027,12 @@ function controle_pagaie($ECA, $EVI, $MER) {
 	];
 }
 
+function utySendMail($title, $content) {
+	$headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
+	$destinataires = 'kayak-polo.info <contact@kayak-polo.info>';
+	$content = utyGetSession('User') . ' : ' . $content;
 
+	// error_log("$title, $content");
+	mail($destinataires, $title, $content, $headers);
+	return;
+}

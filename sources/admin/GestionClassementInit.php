@@ -39,7 +39,7 @@ class GestionClassementInit extends MyPageSecure
 				$result3 = $myBdd->pdo->prepare($sql3);
 				$result3->execute(array($row['Id']));
 			}
-	  }
+	  	}
 	  
 	 	// Chargement des Equipes avec leurs valeurs initiales ...
 		$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Clt, b.Pts, b.J, b.G, b.N, 
