@@ -438,20 +438,22 @@ $(function() {
             ligne_nom = $('.equipes[class*="actif"]').attr('data-player');
             ligne_equipe = $('.equipes[class*="actif"]').attr('data-equipe');
             ligne_num = '';
-            ligne_id_joueur = '';
-            if(ligne_nom === undefined) {
+            ligne_id_joueur = undefined;
+            if(ligne_equipe === undefined) {
                 custom_alert(lang.Selectionnez_equipe_joueur);
                 theInEvent = false;
                 return;
             }
         }
-        var code_ligne = $('.periode[class*="actif"]').attr('id');
-        code_ligne += ';' + $('#time_evt').val();
-        code_ligne += ';' + $('.evtButton[class*="actif"]').attr('data-code');
-        code_ligne += ';' + ligne_equipe;
-        code_ligne += ';' + ligne_id_joueur;
-        code_ligne += ';' + ligne_nb;
-        code_ligne += ';' + ligne_motif;
+        const code_ligne = {};
+        code_ligne.period = $('.periode[class*="actif"]').attr('id');
+        code_ligne.time = $('#time_evt').val();
+        code_ligne.evt = $('.evtButton[class*="actif"]').attr('data-code');
+        code_ligne.team = ligne_equipe;
+        code_ligne.player = ligne_id_joueur;
+        code_ligne.number = ligne_nb;
+        code_ligne.cause = ligne_motif;
+
         texte  = $('#time_evt').val() + ' ' + ligne_evt;
         texte += ' éq.' + ligne_equipe + ' ' + ligne_num + ligne_nom;
         /* BUT = TEMPS MORT OPTIONNEL ?  */
@@ -478,7 +480,7 @@ $(function() {
             'v2/evt_match.php', // Le fichier cible côté serveur.
             { // variables
                 idMatch : idMatch,
-                ligne : code_ligne,
+                ligne : JSON.stringify(code_ligne),
                 idLigne : 0,
                 type : 'insert'
             },
@@ -495,7 +497,7 @@ $(function() {
                         $('.evtButton, .joueurs, .equipes').removeClass('actif');
                         $('#valid_evt').addClass('inactif');
                     } else {
-//                                    texteNom += ' (' + lang.Tir + ')';
+                        // texteNom += ' (' + lang.Tir + ')';
                         texteTR = '<tr id="ligne_' + data + '">';
                         texteChrono = '<td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td>';
                         texteBut = '<td class="list_evt">';
@@ -504,9 +506,11 @@ $(function() {
                             $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />');
                         }
                         texteBut += '</td>';
-                        texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte;
-
-                        texteNom += '</td>';
+                        if (ligne_nom) {
+                            texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte + '</td>';
+                        } else {
+                            texteNom = '<td class="list_nom">' + lang.Equipe + ' ' + ligne_equipe + ligne_motif_texte + '</td>';
+                        }
                         texteVert = '<td class="list_evt">';
                         if(ligne_evt == 'Carton vert') {
                             texteVert += '<img src="v2/carton_vert.png" />';
@@ -524,11 +528,11 @@ $(function() {
                             // Carton d'équipe
                         /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
                                 $('.joueurs[data-equipe="A"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                                code_ligne += '-teamCard';
+                                code_ligne.cause += '-teamCard';
                             }
                             if(carton_equipe == 1 && ligne_equipe == 'B' && confirm('Carton d\'équipe pour l\'équipe B ?')) {
                                 $('.joueurs[data-equipe="B"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                                code_ligne += '-teamCard';
+                                code_ligne.cause += '-teamCard';
                             }
                         */
                         }
@@ -550,7 +554,7 @@ $(function() {
                             $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge.png" />');
                         }
                         texteRouge += '</td>';
-                        texteVide = '<td colspan="5"></td>';
+                        texteVide = '<td colspan="5" class="list_evt_vide"></td>';
                         texteTR2 = '</tr>';
                         $('.evtButton, .joueurs, .equipes').removeClass('actif');
                         $('#valid_evt').addClass('inactif');
@@ -571,7 +575,7 @@ $(function() {
                                 $('#list').append(texteTR + texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge + texteTR2);
                             }
                         }
-                        $('tr[id="ligne_' + data + '"]').attr('data-code', code_ligne);
+                        $('tr[id="ligne_' + data + '"]').attr('data-code', JSON.stringify(code_ligne));
                         $.post(
                             'v2/StatutPeriode.php', // Le fichier cible côté serveur.
                             { // variables
@@ -623,22 +627,21 @@ $(function() {
         //periode_en_cours = $('.periode[class*="actif"]').attr('id');
         $('.periode').removeClass('actif');
         $(this).addClass('actif'); //Efface la ligne !
-        code_ligne = $(this).attr('data-code');
+        code_ligne = JSON.parse($(this).attr('data-code'));
         id_ligne = $(this).attr('id');
+        ancienne_ligne = code_ligne;
         $('#zoneTemps a').addClass('actif2');
         $('#update_evt').show().attr('data-code',code_ligne).attr('data-id',id_ligne);
         $('#delete_evt').show();
         //$('#reset_evt').addClass('evtButton3');
         $('#valid_evt').hide();
-        code_split = code_ligne.split(';');
-        ancienne_ligne = code_ligne;
-        $('a[id="' + code_split[0] + '"]').addClass('actif');
-        $('#time_evt').val(code_split[1]);
-        $('a[data-code="' + code_split[2] + '"]').addClass('actif');
-        if(code_split[4] != '' && code_split[4] != 0) {
-            $('a[data-id="' + code_split[4] + '"]').addClass('actif');
+        $('a[id="' + code_ligne.period + '"]').addClass('actif');
+        $('#time_evt').val(code_ligne.time);
+        $('a[data-code="' + code_ligne.evt + '"]').addClass('actif');
+        if(code_ligne.player != null) {
+            $('a[data-id="' + code_ligne.player + '"]').addClass('actif');
         }else{
-            $('a[data-player="Equipe ' + code_split[3] + '"], a[data-player="Team ' + code_split[3] + '"]').addClass('actif');
+            $('a.equipes[data-equipe="' + code_ligne.team + '"]').addClass('actif');
         }
         $('#zoneChrono').focus();
     });
@@ -664,53 +667,59 @@ $(function() {
             ligne_nom = $('.equipes[class*="actif"]').attr('data-player');
             ligne_equipe = $('.equipes[class*="actif"]').attr('data-equipe');
             ligne_num = '';
-            ligne_id_joueur = '';
-            if(ligne_nom === undefined) {
+            ligne_id_joueur = undefined;
+            if(ligne_equipe === undefined) {
                 custom_alert(lang.Selectionnez_equipe_joueur);
                 return;
             }
         }
-        var code_ligne = $('.periode[class*="actif"]').attr('id');
-        code_ligne += ';' + $('#time_evt').val();
-        code_ligne += ';' + $('.evtButton[class*="actif"]').attr('data-code');
-        code_ligne += ';' + ligne_equipe;
-        code_ligne += ';' + ligne_id_joueur;
-        code_ligne += ';' + ligne_nb;
-        code_ligne += ';' + ligne_motif;
+
+        ancienne_ligne = JSON.parse($('#list tr.actif').attr('data-code'));
+        const code_ligne = {};
+        code_ligne.period = $('.periode[class*="actif"]').attr('id');
+        code_ligne.time = $('#time_evt').val();
+        code_ligne.evt = $('.evtButton[class*="actif"]').attr('data-code');
+        code_ligne.team = ligne_equipe;
+        code_ligne.player = ligne_id_joueur;
+        code_ligne.number = ligne_nb;
+        code_ligne.cause = ligne_motif;
+        console.log(code_ligne);
+
         texte  = $('#time_evt').val() + ' ' + ligne_evt;
         texte += ' éq.' + ligne_equipe + ' ' + ligne_num + ligne_nom;
         $.post(
             'v2/evt_match.php', // Le fichier cible côté serveur.
             { // variables
                 idMatch : idMatch,
-                ligne : code_ligne,
-                ancienneLigne : ancienne_ligne,
+                ligne : JSON.stringify(code_ligne),
+                ancienneLigne : JSON.stringify(ancienne_ligne),
                 idLigne : id_ligne,
                 type : 'update'
             },
             function(data){ // callback
                 if(data == 'OK'){
                     // suppression anciens éléments
-                    if(code_split[2] == 'B'){
-                        $('#score'+code_split[3]+', #score'+code_split[3]+'2, #score'+code_split[3]+'3').text(parseInt($('#score'+code_split[3]).text()) - 1);
-                        $('a[data-id="'+code_split[4]+'"] img[class="c_but"]').first().remove();
+                    if(ancienne_ligne.evt == 'B'){
+                        $('#score'+ancienne_ligne.team+', #score'+ancienne_ligne.team+'2, #score'+ancienne_ligne.team+'3').text(parseInt($('#score'+ancienne_ligne.team).text()) - 1);
+                        $('a[data-id="'+ancienne_ligne.player+'"] img[class="c_but"]').first().remove();
                     }
-                    if(code_split[2] == 'V'){
-                        $('a[data-id="'+code_split[4]+'"] img[src="v2/carton_vert.png"]').first().remove();
-                        if(code_split[5] == 'teamCard') {
+                    if(ancienne_ligne.evt == 'V'){
+                        $('a[data-id="'+ancienne_ligne.player+'"] img[src="v2/carton_vert.png"]').first().remove();
+                        if(ancienne_ligne.number == 'teamCard') {
                             // PREMIER CARTON VERT DE CHAQUE JOUEUR !
-                            $('.joueurs[data-equipe="'+code_split[3]+'"]').each(function(){
+                            $('.joueurs[data-equipe="'+ancienne_ligne.team+'"]').each(function(){
                                 $(this).find('img[src="v2/carton_vert.png"]').first().remove();
                             });
                         }
                     }
-                    if(code_split[2] == 'J'){
-                        $('a[data-id="'+code_split[4]+'"] img[src="v2/carton_jaune.png"]').first().remove();
+                    if(ancienne_ligne.evt == 'J'){
+                        $('a[data-id="'+ancienne_ligne.player+'"] img[src="v2/carton_jaune.png"]').first().remove();
                     }
-                    if(code_split[2] == 'R'){
-                        $('a[data-id="'+code_split[4]+'"] img[src="v2/carton_rouge.png"]').first().remove();
+                    if(ancienne_ligne.evt == 'R'){
+                        $('a[data-id="'+ancienne_ligne.player+'"] img[src="v2/carton_rouge.png"]').first().remove();
                     }
                     $('tr[id="'+id_ligne+'"] td').remove();
+
                     // insertion nouveaux éléments
                     avertissement(texte);
                     texteTR = '<tr id="ligne_' + data + '">';
@@ -721,12 +730,16 @@ $(function() {
                         $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />');
                     }
                     texteBut += '</td>';
-                    texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte ;
-                    if(ligne_evt == 'Arret')
-                        texteNom += ' (' + lang.Tir_contre + ')';
-                    if(ligne_evt == 'Tir')
-                        texteNom += ' (' + lang.Tir + ')';
-                    texteNom += '</td>';
+                    if (ligne_nom) {
+                        texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte + '</td>';
+                    } else {
+                        texteNom = '<td class="list_nom">' + lang.Equipe + ' ' + ligne_equipe + ligne_motif_texte + '</td>';
+                    }
+                // if(ligne_evt == 'Arret')
+                //         texteNom += ' (' + lang.Tir_contre + ')';
+                //     if(ligne_evt == 'Tir')
+                //         texteNom += ' (' + lang.Tir + ')';
+                    // texteNom += '</td>';
                     texteVert = '<td class="list_evt">'
                     if(ligne_evt == 'Carton vert') {
                         texteVert += '<img src="v2/carton_vert.png" />';
@@ -769,7 +782,7 @@ $(function() {
                         $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge.png" />');
                     }
                     texteRouge += '</td>';
-                    texteVide = '<td colspan="5"></td>';
+                    texteVide = '<td colspan="5" class="list_evt_vide"></td>';
                     texteTR2 = '</tr>';
                     $('.evtButton, .joueurs, .equipes').removeClass('actif');
                     $('#valid_evt').addClass('inactif');
@@ -784,7 +797,7 @@ $(function() {
                     }
 
 
-                    $('tr[id="'+id_ligne+'"]').attr('data-code', code_ligne).append(texte2);
+                    $('tr[id="'+id_ligne+'"]').attr('data-code', JSON.stringify(code_ligne)).append(texte2);
                     $('#reset_evt').click();
                     $.post(
                         'v2/StatutPeriode.php', // Le fichier cible côté serveur.
@@ -812,37 +825,38 @@ $(function() {
     // DELETE
     $('#delete_evt').click(function( event ) {
         event.preventDefault();
+        code_ligne = JSON.parse($('#list tr.actif').attr('data-code'));
 
         $.post(
             'v2/evt_match.php', // Le fichier cible côté serveur.
             { // variables
                 idMatch : idMatch,
-                ligne : code_ligne,
-                ancienneLigne : ancienne_ligne,
+                ligne : JSON.stringify(code_ligne),
+                ancienneLigne : JSON.stringify(code_ligne),
                 idLigne : id_ligne,
                 type : 'delete',
             },
             function(data){ // callback
                 if(data == 'OK'){
                     // suppression éléments
-                    if(code_split[2] == 'B'){
-                        $('#score'+code_split[3]+', #score'+code_split[3]+'2, #score'+code_split[3]+'3').text(parseInt($('#score'+code_split[3]).text()) - 1);
-                        $('a[data-id="'+code_split[4]+'"] img[class="c_but"]').first().remove();
+                    if(code_ligne.evt == 'B'){
+                        $('#score'+code_ligne.team+', #score'+code_ligne.team+'2, #score'+code_ligne.team+'3').text(parseInt($('#score'+code_ligne.team).text()) - 1);
+                        $('a[data-id="'+code_ligne.player+'"] img[class="c_but"]').first().remove();
                     }
-                    if(code_split[2] == 'V'){
-                        $('a[data-id="'+code_split[4]+'"] img[src="v2/carton_vert.png"]').first().remove();
-                        if(code_split[5] == 'teamCard') {
+                    if(code_ligne.evt == 'V'){
+                        $('a[data-id="'+code_ligne.player+'"] img[src="v2/carton_vert.png"]').first().remove();
+                        if(code_ligne.number == 'teamCard') {
                             // PREMIER CARTON VERT DE CHAQUE JOUEUR !
-                            $('.joueurs[data-equipe="'+code_split[3]+'"]').each(function(){
+                            $('.joueurs[data-equipe="'+code_ligne.team+'"]').each(function(){
                                 $(this).find('img[src="v2/carton_vert.png"]').first().remove();
                             });
                         }
                     }
-                    if(code_split[2] == 'J'){
-                        $('a[data-id="'+code_split[4]+'"] img[src="v2/carton_jaune.png"]').first().remove();
+                    if(code_ligne.evt == 'J'){
+                        $('a[data-id="'+code_ligne.player+'"] img[src="v2/carton_jaune.png"]').first().remove();
                     }
-                    if(code_split[2] == 'R'){
-                        $('a[data-id="'+code_split[4]+'"] img[src="v2/carton_rouge.png"]').first().remove();
+                    if(code_ligne.evt == 'R'){
+                        $('a[data-id="'+code_ligne.player+'"] img[src="v2/carton_rouge.png"]').first().remove();
                     }
                     $('tr[id="'+id_ligne+'"]').hide();
                     $('#reset_evt').click();

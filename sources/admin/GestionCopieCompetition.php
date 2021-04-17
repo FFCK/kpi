@@ -286,64 +286,77 @@ class GestionCopieCompetition extends MyPageSecure
 		$result3 = $myBdd->pdo->prepare($sql3);
 		$result3->execute(array($competOrigine, $saisonOrigine));
 
-		while ($row = $result->fetch()) {
-			if ($Date_debut == '%') $Date_debut = $row['Date_debut'];
-			if ($Date_fin == '%') $Date_fin = $row['Date_fin'];
-			if ($Nom == '%') $Nom = $row['Nom'];
-			if ($Libelle == '%') $Libelle = $row['Libelle'];
-			if ($Lieu == '%') $Lieu = $row['Lieu'];
-			if ($Plan_eau == '%') $Plan_eau = $row['Plan_eau'];
-			if ($Departement == '%') $Departement = $row['Departement'];
-			if ($Responsable_insc == '%') $Responsable_insc = $row['Responsable_insc'];
-			if ($Responsable_R1 == '%') $Responsable_R1 = $row['Responsable_R1'];
-			if ($Organisateur == '%') $Organisateur = $row['Organisateur'];
-			if ($Delegue == '%') $Delegue = $row['Delegue'];
 
-			$nextIdJournee = $myBdd->GetNextIdJournee();
-			$sql1 = "INSERT INTO gickp_Journees 
-				(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, `Type`, 
-				Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, 
-				Responsable_R1, Organisateur, Delegue) 
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-			$result1 = $myBdd->pdo->prepare($sql1);
-			$result1->execute(array(
-				$nextIdJournee, $competDestination, $saisonDestination, $row['Phase'], 
-				$row['Niveau'], $row['Etape'], $row['Nbequipes'], $row['Type'], $Date_debut,
-				$Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
-				$Responsable_R1, $Organisateur, $Delegue
-			));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			while ($row = $result->fetch()) {
+				if ($Date_debut == '%') $Date_debut = $row['Date_debut'];
+				if ($Date_fin == '%') $Date_fin = $row['Date_fin'];
+				if ($Nom == '%') $Nom = $row['Nom'];
+				if ($Libelle == '%') $Libelle = $row['Libelle'];
+				if ($Lieu == '%') $Lieu = $row['Lieu'];
+				if ($Plan_eau == '%') $Plan_eau = $row['Plan_eau'];
+				if ($Departement == '%') $Departement = $row['Departement'];
+				if ($Responsable_insc == '%') $Responsable_insc = $row['Responsable_insc'];
+				if ($Responsable_R1 == '%') $Responsable_R1 = $row['Responsable_R1'];
+				if ($Organisateur == '%') $Organisateur = $row['Organisateur'];
+				if ($Delegue == '%') $Delegue = $row['Delegue'];
+
+				$nextIdJournee = $myBdd->GetNextIdJournee();
+				$sql1 = "INSERT INTO gickp_Journees 
+					(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, `Type`, 
+					Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, 
+					Responsable_R1, Organisateur, Delegue) 
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+				$result1 = $myBdd->pdo->prepare($sql1);
+				$result1->execute(array(
+					$nextIdJournee, $competDestination, $saisonDestination, $row['Phase'], 
+					$row['Niveau'], $row['Etape'], $row['Nbequipes'], $row['Type'], $Date_debut,
+					$Date_fin, $Nom, $Libelle, $Lieu, $Plan_eau, $Departement, $Responsable_insc, 
+					$Responsable_R1, $Organisateur, $Delegue
+				));
+				
+				$sql4 = "INSERT INTO gickp_Matchs 
+					(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Type`) 
+					SELECT ?, ";
+				if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
+					$sql4 .= "CONCAT('[T', ta.Id, '/T', tb.Id, ']'), ";
+				} else {
+					$sql4 .= "m.Libelle, ";
+				}
+				$sql4 .= "DATE_ADD(m.Date_match, INTERVAL + ? DAY), m.Heure_match, 
+					m.Terrain, m.Numero_ordre, m.Type 
+					FROM gickp_Matchs m ";
+				if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
+					$sql4 .= ", gickp_Tmp ta, gickp_Tmp2 tb ";
+				}
+				$sql4 .= "WHERE m.Id_journee = ? ";
+				if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
+					$sql4 .= "AND ta.Num=m.Id_equipeA 
+						AND tb.Num=m.Id_equipeB ";
+				}
+				$result4 = $myBdd->pdo->prepare($sql4);
+				$result4->execute(array($nextIdJournee, $diffdate, $row['Id']));
 			
-			$sql4 = "INSERT INTO gickp_Matchs 
-				(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Type`) 
-				SELECT ?, ";
-			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
-                $sql4 .= "CONCAT('[T', ta.Id, '/T', tb.Id, ']'), ";
-            } else {
-                $sql4 .= "m.Libelle, ";
-            }
-			$sql4 .= "DATE_ADD(m.Date_match, INTERVAL + ? DAY), m.Heure_match, 
-				m.Terrain, m.Numero_ordre, m.Type 
-				FROM gickp_Matchs m ";
-			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
-                $sql4 .= ", gickp_Tmp ta, gickp_Tmp2 tb ";
-            }
-            $sql4 .= "WHERE m.Id_journee = ? ";
-			if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
-				$sql4 .= "AND ta.Num=m.Id_equipeA 
-					AND tb.Num=m.Id_equipeB ";
+				$myBdd->utyJournal('Ajout journee', $codeSaison, $competDestination, null, $nextIdJournee);
 			}
-			$result4 = $myBdd->pdo->prepare($sql4);
-			$result4->execute(array($nextIdJournee, $diffdate, $row['Id']));
-		
-			$myBdd->utyJournal('Ajout journee', $codeSaison, $competDestination, null, $nextIdJournee);
-		}
 
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Ajout journee, $codeSaison, $competDestination, $nextIdJournee" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 			
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
 			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
+		return;
 	}
 	
 	function Cancel()
@@ -367,7 +380,7 @@ class GestionCopieCompetition extends MyPageSecure
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'Ok') {
-                ($_SESSION['Profile'] <= 4) ? $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'Cancel') {

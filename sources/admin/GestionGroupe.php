@@ -89,16 +89,28 @@ class GestionGroupe extends MyPageSecure
 		$result->execute(array($idGroupe));
 		$row = $result->fetch();
 		
-		$sql = "DELETE FROM gickp_Competitions_Groupes 
-			WHERE id = $idGroupe ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($idGroupe));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
 
-		$sql = "UPDATE gickp_Competitions_Groupes 
-			SET ordre = ordre - 1 
-			WHERE ordre > ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($row['ordre']));
+			$sql = "DELETE FROM gickp_Competitions_Groupes 
+				WHERE id = $idGroupe ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($idGroupe));
+
+			$sql = "UPDATE gickp_Competitions_Groupes 
+				SET ordre = ordre - 1 
+				WHERE ordre > ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($row['ordre']));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression groupe, $idGroupe" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
         return "Suppression effectuée.";
     }
@@ -123,14 +135,26 @@ class GestionGroupe extends MyPageSecure
 		$Groupe = utyGetPost('Groupe');
 		
 		$myBdd = new MyBdd();
+		
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
 
-		$sql = "UPDATE gickp_Competitions_Groupes 
-			SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? 
-			WHERE Id = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			$libelle, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
-		));
+			$sql = "UPDATE gickp_Competitions_Groupes 
+				SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? 
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				$libelle, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
+			));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Modif Groupe, $libelle" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$this->Raz();
 		$myBdd->utyJournal('Modif Groupe', '', '', $idGroupe);

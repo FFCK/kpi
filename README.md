@@ -43,3 +43,12 @@ ___CRON___
 ___IFRAMES___
 
 - https://github.com/FFCK/kpi/wiki/Iframes
+
+
+___DOCKER___
+
+créer le fichier ./docker/error7.log
+cd docker
+docker-compose up
+
+alimenter la base de donnée my_database

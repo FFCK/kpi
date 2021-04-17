@@ -126,11 +126,11 @@
 			#delete_evt img, #update_evt img {height: 15px; }
 			#list {border: 0px solid #79B7E7; border-spacing : 0; border-collapse : collapse; cursor: pointer;}
 			#list {float: center;}
-			#list td {}
 			#list img, #listB img {height: 15px;}
 			#list tr:hover { border: 1px solid #5795C5; background-color: white; color: black;}
 			#list_header {border: 0px solid #79B7E7; border-spacing : 0; border-collapse : collapse; cursor: pointer;}
-			.list_evt_vide {width: 38%; }
+			.list_evt_vide {width: 38%;}
+			#list tr:hover .list_evt_vide {background-color: black;}
 			.list_evt_b {width: 2%; text-align: center; border: 1px solid #79B7E7; background-color: white;}
 			.list_evt_v {width: 2%; text-align: center; border: 1px solid #79B7E7; background-color: #AAFFAA;}
 			.list_evt_j {width: 2%; text-align: center; border: 1px solid #79B7E7; background-color: #FFFFAA;}

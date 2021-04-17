@@ -398,41 +398,53 @@ class GestionEquipe extends MyPageSecure
 		if (is_array($histoEquipe)) {
 			foreach($histoEquipe as $selectValue) {
 				if ($codeCompet == '' or $codeCompet == '*') {
-					$alertMessage .= 'Aucune competition sélectionnée';
-					return;
+					return 'Aucune competition sélectionnée';
 				}
 				
-				if ((int) $selectValue == 0) {
-					// Inscription Manuelle ...
-					if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) ) {
-						$sql  = "INSERT INTO gickp_Equipe (Libelle, Code_club) 
-							VALUES (?, ?) ";
-						$result = $myBdd->pdo->prepare($sql);
-						$result->execute(array($libelleEquipe, $codeClub));
-						$selectValue = $myBdd->pdo->lastInsertId();
+				try {  
+					$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+					$myBdd->pdo->beginTransaction();
+					
+					if ((int) $selectValue == 0) {
+						// Inscription Manuelle ...
+						if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) ) {
+							$sql  = "INSERT INTO gickp_Equipe (Libelle, Code_club) 
+								VALUES (?, ?) ";
+							$result = $myBdd->pdo->prepare($sql);
+							$result->execute(array($libelleEquipe, $codeClub));
+							$selectValue = $myBdd->pdo->lastInsertId();
+						}
 					}
-				}
 
-				$sql = "INSERT INTO gickp_Competitions_Equipes 
-					(Code_compet, Code_saison, Libelle, Code_club, Numero) 
-					SELECT ?, ?, Libelle, Code_club, Numero 
-					FROM gickp_Equipe 
-					WHERE Numero = ? ";
-				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($codeCompet, $codeSaison, $selectValue));
+					$sql = "INSERT INTO gickp_Competitions_Equipes 
+						(Code_compet, Code_saison, Libelle, Code_club, Numero) 
+						SELECT ?, ?, Libelle, Code_club, Numero 
+						FROM gickp_Equipe 
+						WHERE Numero = ? ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($codeCompet, $codeSaison, $selectValue));
 
-				if ($insertValue != '') {
-					$insertValue .= ',';
+					if ($insertValue != '') {
+						$insertValue .= ',';
+					}
+					$insertValue .= $selectValue;
+
+					$myBdd->pdo->commit();
+				} catch (Exception $e) {
+					$myBdd->pdo->rollBack();
+					utySendMail("[KPI] Erreur SQL", "Ajout equipe $codeSaison, $codeCompet, $insertValue" . '\r\n' . $e->getMessage());
+					
+					return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
 				}
-				$insertValue .= $selectValue;
+				$_SESSION['codeCompet'] = $codeCompet;
+				$_SESSION['codeComiteReg'] = utyGetPost('comiteReg');
+				$_SESSION['codeComiteDep'] = utyGetPost('comiteDep');
+				$_SESSION['codeClub'] = $codeClub;
 			}
 		}
-		$_SESSION['codeCompet'] = $codeCompet;
-		$_SESSION['codeComiteReg'] = utyGetPost('comiteReg');
-		$_SESSION['codeComiteDep'] = utyGetPost('comiteDep');
-		$_SESSION['codeClub'] = $codeClub;
 
 		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, null, null, null, $insertValue);
+		return;
 	}
 	
 	function Add2()
@@ -453,49 +465,60 @@ class GestionEquipe extends MyPageSecure
 		{
 			if ($codeCompet == '' or $codeCompet == '*')
 			{
-				$alertMessage .= 'Aucune competition sélectionnée';
-				return;
+				return 'Aucune competition sélectionnée';
 			}
 		
-			$sql  = "INSERT INTO gickp_Competitions_Equipes 
-				(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau)
-				SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ? 
-				FROM gickp_Equipe 
-				WHERE Numero = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(
-				array($codeCompet, $codeSaison, $plEquipe, $tirEquipe, 
-					$cltChEquipe, $cltCpEquipe, $EquipeNum
-			));
-			$EquipeId = $myBdd->pdo->lastInsertId();
-
-			if ($checkCompo != '') {
-				$checkCompo = explode('-', $checkCompo);
-				// Insertion des Joueurs Equipes ...
-				$sql  = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
-					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
-					SELECT :EquipeId, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine 
-					FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, 
-					gickp_Competitions_Equipes c, gickp_Categorie d, gickp_Liste_Coureur e 
-					WHERE a.Id_equipe = b.Id 
-					AND a.Matric = e.Matric 
-					AND a.Id_equipe = c.Id 
-					AND b.Numero = :EquipeNum 
-					AND b.Code_compet = :checkCompo1 
-					AND b.Code_saison = :checkCompo0 
-					AND :checkCompo0 - Year(e.Naissance) BETWEEN d.Age_min AND d.Age_max ";
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+				
+				$sql  = "INSERT INTO gickp_Competitions_Equipes 
+					(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau)
+					SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ? 
+					FROM gickp_Equipe 
+					WHERE Numero = ? ";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array(
-					':EquipeId' => $EquipeId, 
-					':EquipeNum' => $EquipeNum, 
-					':checkCompo1' => $checkCompo[1], 
-					':checkCompo0' => $checkCompo[0]
+				$result->execute(
+					array($codeCompet, $codeSaison, $plEquipe, $tirEquipe, 
+						$cltChEquipe, $cltCpEquipe, $EquipeNum
 				));
+				$EquipeId = $myBdd->pdo->lastInsertId();
+
+				if ($checkCompo != '') {
+					$checkCompo = explode('-', $checkCompo);
+					// Insertion des Joueurs Equipes ...
+					$sql  = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+						(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
+						SELECT :EquipeId, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine 
+						FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, 
+						gickp_Competitions_Equipes c, gickp_Categorie d, gickp_Liste_Coureur e 
+						WHERE a.Id_equipe = b.Id 
+						AND a.Matric = e.Matric 
+						AND a.Id_equipe = c.Id 
+						AND b.Numero = :EquipeNum 
+						AND b.Code_compet = :checkCompo1 
+						AND b.Code_saison = :checkCompo0 
+						AND :checkCompo0 - Year(e.Naissance) BETWEEN d.Age_min AND d.Age_max ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array(
+						':EquipeId' => $EquipeId, 
+						':EquipeNum' => $EquipeNum, 
+						':checkCompo1' => $checkCompo[1], 
+						':checkCompo0' => $checkCompo[0]
+					));
+				}
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Ajout equipe $codeSaison, $codeCompet, $EquipeNom" . '\r\n' . $e->getMessage());
+	
+				return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
 			}
 		}
 		
-		
 		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, null, null, null, $EquipeNom);
+		return;
 	}
 	
 	function Tirage()
@@ -523,6 +546,7 @@ class GestionEquipe extends MyPageSecure
 		));
 
 		$myBdd->utyJournal('Tirage au sort', $codeSaison, $codeCompet, null, null, null, $equipeTirage.' -> '.$ordreTirage);
+		return;
 	}
 
 	function Remove()
@@ -536,19 +560,33 @@ class GestionEquipe extends MyPageSecure
 		if (count($arrayParam) == 0) {
             return;
         } // Rien à Detruire ...
-		
-		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "DELETE FROM gickp_Competitions_Equipes 
-			WHERE Id IN ($in)";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
 
-		$sql = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
-			WHERE Id_equipe IN ($in)";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
+		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+			
+			$sql = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
+				WHERE Id_equipe IN ($in)";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+
+			$sql = "DELETE FROM gickp_Competitions_Equipes 
+				WHERE Id IN ($in)";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", 'Suppression  equipe' . '\r\n' . $e->getMessage());
+
+			return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$myBdd->utyJournal('Suppression  equipes', $codeSaison, utyGetPost('codeCompet'), null, null, null, $ParamCmd);
+		return 'Suppression effectuée';
 	}
 	
 	function Duplicate($bDelete)
@@ -561,48 +599,61 @@ class GestionEquipe extends MyPageSecure
 		if ( (strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0) ) {
 			$myBdd = $this->myBdd;
 			
-			if ($bDelete) {
-				// Suppression des Joueurs Equipes 
-				$sql  = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
-					WHERE Id_equipe IN (
-						SELECT a.Id 
-						FROM gickp_Competitions_Equipes a 
-						WHERE a.Code_compet = ? 
-						AND a.Code_saison = ? )";
-				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($codeCompet, $codeSaison));
-		
-				// Suppression des Equipes 
-				$sql = "DELETE FROM gickp_Competitions_Equipes 
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+				
+				if ($bDelete) {
+					// Suppression des Joueurs Equipes 
+					$sql  = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
+						WHERE Id_equipe IN (
+							SELECT a.Id 
+							FROM gickp_Competitions_Equipes a 
+							WHERE a.Code_compet = ? 
+							AND a.Code_saison = ? )";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($codeCompet, $codeSaison));
+			
+					// Suppression des Equipes 
+					$sql = "DELETE FROM gickp_Competitions_Equipes 
+						WHERE Code_compet = ? 
+						AND Code_saison = ? ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($codeCompet, $codeSaison));
+				}
+				
+				// Insertion des Equipes ...
+				$sql  = "INSERT INTO gickp_Competitions_Equipes 
+					(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) 
+					SELECT ?, Code_saison, Libelle, Code_club, Numero, Id 
+					FROM gickp_Competitions_Equipes 
 					WHERE Code_compet = ? 
 					AND Code_saison = ? ";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($codeCompet, $codeSaison));
-			}
-			
-			// Insertion des Equipes ...
-			$sql  = "INSERT INTO gickp_Competitions_Equipes 
-				(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) 
-				SELECT ?, Code_saison, Libelle, Code_club, Numero, Id 
-				FROM gickp_Competitions_Equipes 
-				WHERE Code_compet = ? 
-				AND Code_saison = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($codeCompet, $codeCompetRef, $codeSaison));
-			
-			// Insertion des Joueurs Equipes ...
-			$sql  = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
-				(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
-				SELECT b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine 
-				FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, gickp_Competitions_Equipes c 
-				WHERE a.Id_equipe = b.Id_dupli 
-				AND a.Id_equipe = c.Id 
-				AND c.Code_compet = ? 
-				AND c.Code_saison = ? ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($codeCompetRef, $codeSaison));
+				$result->execute(array($codeCompet, $codeCompetRef, $codeSaison));
+				
+				// Insertion des Joueurs Equipes ...
+				$sql  = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
+					SELECT b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine 
+					FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, gickp_Competitions_Equipes c 
+					WHERE a.Id_equipe = b.Id_dupli 
+					AND a.Id_equipe = c.Id 
+					AND c.Code_compet = ? 
+					AND c.Code_saison = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($codeCompetRef, $codeSaison));
 
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Duplication  equipes, $codeSaison, $codeCompet, Depuis $codeCompetRef" . '\r\n' . $e->getMessage());
+	
+				return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
+			}
+	
 			$myBdd->utyJournal('Duplication  equipes', $codeSaison, $codeCompet, null, null, null, 'Depuis '.$codeCompetRef);
+			return 'Duplication effectuée';
 		}
 	}
 	
@@ -618,27 +669,27 @@ class GestionEquipe extends MyPageSecure
 
         if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Add') {
-                ($_SESSION['Profile'] <= 3) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'Add2') {
-                ($_SESSION['Profile'] <= 3) ? $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'Tirage') {
-                ($_SESSION['Profile'] <= 4) ? $this->Tirage() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Tirage() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'Remove') {
-                ($_SESSION['Profile'] <= 3) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'Duplicate') {
-                ($_SESSION['Profile'] <= 3) ? $this->Duplicate(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Duplicate(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'RemoveAndDuplicate') {
-                ($_SESSION['Profile'] <= 3) ? $this->Duplicate(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Duplicate(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($alertMessage == '') {
