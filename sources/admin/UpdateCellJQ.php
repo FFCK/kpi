@@ -60,8 +60,22 @@ if ($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key
 			$sql .= $and."?";
 			$arrayQuery = array_merge($arrayQuery, [$key2]);
 		}
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayQuery);
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayQuery);
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Modif Rc, $idRc" . '\r\n' . $e->getMessage());
+
+			echo 'Error 400';
+		}
+
 		if ($result->rowCount() == 1) {
 			$myBdd->utyJournal('Modification '.$tableName, $codeSaison, '', null, null, null, $key.'-'.$typeValeur.'->'.$valeur, $user);
 			echo 'OK!';

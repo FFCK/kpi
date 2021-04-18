@@ -161,38 +161,51 @@ class initTitulaires
 	{
 		$myBdd = $this->myBdd;
 
-		if (($idEquipe == 0 && $idEquipeA != '') || ($idEquipeA == $idEquipe)) {
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				WHERE Id_match = ? 
-				AND Equipe = 'A' ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch));
-					
-			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
-				SELECT ?, Matric, Numero, 'A', Capitaine 
-				FROM gickp_Competitions_Equipes_Joueurs 
-				WHERE Id_equipe = ? 
-				AND Capitaine <> 'X' 
-				AND Capitaine <> 'A' ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch, $idEquipeA));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			if (($idEquipe == 0 && $idEquipeA != '') || ($idEquipeA == $idEquipe)) {
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
+					AND Equipe = 'A' ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch));
+						
+				$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+					SELECT ?, Matric, Numero, 'A', Capitaine 
+					FROM gickp_Competitions_Equipes_Joueurs 
+					WHERE Id_equipe = ? 
+					AND Capitaine <> 'X' 
+					AND Capitaine <> 'A' ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch, $idEquipeA));
+			}
+			if (($idEquipe == 0 && $idEquipeB != '') || ($idEquipeB == $idEquipe)) {
+				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					WHERE Id_match = ? 
+					AND Equipe = 'B' ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch));
+						
+				$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+					SELECT ?, Matric, Numero, 'B', Capitaine 
+					FROM gickp_Competitions_Equipes_Joueurs 
+					WHERE Id_equipe = ? 
+					AND Capitaine <> 'X' 
+					AND Capitaine <> 'A' ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($idMatch, $idEquipeB));
+			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Init titulaires, $idMatch" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
-		if (($idEquipe == 0 && $idEquipeB != '') || ($idEquipeB == $idEquipe)) {
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				WHERE Id_match = ? 
-				AND Equipe = 'B' ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch));
-					
-			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
-				SELECT ?, Matric, Numero, 'B', Capitaine 
-				FROM gickp_Competitions_Equipes_Joueurs 
-				WHERE Id_equipe = ? 
-				AND Capitaine <> 'X' 
-				AND Capitaine <> 'A' ";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($idMatch, $idEquipeB));
-		}
+
 	}
 
 }
