@@ -1028,7 +1028,7 @@ function controle_pagaie($ECA, $EVI, $MER) {
 }
 
 function utySendMail($title, $content) {
-	$headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
+	$headers = 'From: KPI <contact@kayak-polo.info>' . "\r\n";
 	$destinataires = 'kayak-polo.info <contact@kayak-polo.info>';
 	$content = utyGetSession('User') . ' : ' . $content;
 
