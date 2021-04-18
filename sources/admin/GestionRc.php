@@ -146,12 +146,25 @@ class GestionRc extends MyPageSecure
 
 		$myBdd = $this->myBdd;
 
-		$sql  = "INSERT INTO gickp_Rc (Code_saison, Code_competition, Matric, Ordre) 
-			VALUES (?,?,?,?) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($Code_saison, $Code_competition, $Matric, $Ordre));
-		
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "INSERT INTO gickp_Rc (Code_saison, Code_competition, Matric, Ordre) 
+				VALUES (?,?,?,?) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($Code_saison, $Code_competition, $Matric, $Ordre));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Ajout Rc, $Matric" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
 		$myBdd->utyJournal('Ajout Rc', '', '', null, null, null, $Matric);
+		return;
 	}
 	
 	function Remove()
@@ -163,11 +176,24 @@ class GestionRc extends MyPageSecure
 		
 		$myBdd = $this->myBdd;
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "DELETE FROM gickp_Rc 
-			WHERE Id IN ($in) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
-		
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "DELETE FROM gickp_Rc 
+				WHERE Id IN ($in) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression Rc, $ParamCmd" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
 		$myBdd->utyJournal('Suppression Rc', '', '', $ParamCmd);
 	}
 		
@@ -211,11 +237,23 @@ class GestionRc extends MyPageSecure
 		
 		$myBdd = $this->myBdd;
 
-		$sql = "UPDATE gickp_Rc 
-			SET Code_saison = ?, Code_competition = ?, Matric = ?, Ordre = ?
-			WHERE Id = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($Code_saison, $Code_competition, $Matric, $Ordre, $idRc));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "UPDATE gickp_Rc 
+				SET Code_saison = ?, Code_competition = ?, Matric = ?, Ordre = ?
+				WHERE Id = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($Code_saison, $Code_competition, $Matric, $Ordre, $idRc));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Modif Rc, $idRc" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		$this->RazRc();
 		$myBdd->utyJournal('Modif Rc', '', '', $idRc);
@@ -234,16 +272,16 @@ class GestionRc extends MyPageSecure
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 2) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 1) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'ParamRc')
 				($_SESSION['Profile'] <= 2) ? $this->ParamRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'UpdateRc')
-				($_SESSION['Profile'] <= 2) ? $this->UpdateRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->UpdateRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'RazRc')
 				($_SESSION['Profile'] <= 2) ? $this->RazRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';

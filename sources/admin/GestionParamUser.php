@@ -50,19 +50,35 @@ class GestionParamUser extends MyPageSecure
 	
 	function UpdateParamUser()
 	{
+		$user = utyGetSession('User');
 		$myBdd = new MyBdd();
 
-		// Mise à jour des infos Utilisateur
-		$sql = "UPDATE gickp_Utilisateur 
-			SET Mail = ?, 
-			Fonction = ?, 
-			Tel = ? 
-			WHERE Code = ? ";	 
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array(
-			utyGetPost('Mail1'), utyGetPost('Fonction'), 
-			utyGetPost('Tel'), utyGetSession('User')
-		));
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			// Mise à jour des infos Utilisateur
+			$sql = "UPDATE gickp_Utilisateur 
+				SET Mail = ?, 
+				Fonction = ?, 
+				Tel = ? 
+				WHERE Code = ? ";	 
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array(
+				utyGetPost('Mail1'), utyGetPost('Fonction'), 
+				utyGetPost('Tel'), $user
+			));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Modification utilisateur, $user" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Modification utilisateur', '', '', null, $user);
+		return 'Utilisateur mis à jour.';
 	}
 	
 	function UpdatePassword()
@@ -101,11 +117,12 @@ class GestionParamUser extends MyPageSecure
 	  	MyPageSecure::MyPageSecure(100);
 		
 		$Cmd = utyGetPost('Cmd', '');
+		$alertMessage = '';
 
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'UpdateParamUser')
-				$this->UpdateParamUser();
+				$alertMessage = $this->UpdateParamUser();
 					
 			if ($Cmd == 'UpdatePassword')
 				$this->UpdatePassword();
@@ -116,6 +133,7 @@ class GestionParamUser extends MyPageSecure
 
 		$this->SetTemplate("Mes_parametres", "Utilisateur", false);
 		$this->Load();
+		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionParamUser');
 	}
 }		  	

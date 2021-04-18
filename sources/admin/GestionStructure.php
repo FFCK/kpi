@@ -132,13 +132,26 @@ class GestionStructure extends MyPageSecure
 		$libelleCD = utyGetPost('libelleCD');
 
 		$myBdd = $this->myBdd;
-			
-		$sql = "INSERT INTO gickp_Comite_dep (Code, Libelle, Code_comite_reg) 
-			VALUES (?, ?, ?) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($codeCD, $libelleCD, $comiteReg));
-			
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "INSERT INTO gickp_Comite_dep (Code, Libelle, Code_comite_reg) 
+				VALUES (?, ?, ?) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($codeCD, $libelleCD, $comiteReg));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Ajout CD, $codeCD" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
 		$myBdd->utyJournal('Ajout CD', '', '', null, null, null, $codeCD);
+		return;
 	}
 	
 	function AddClub()
@@ -155,37 +168,49 @@ class GestionStructure extends MyPageSecure
 		$libelleEquipe2 = utyGetPost('libelleEquipe2');
 		$affectEquipe = utyGetPost('affectEquipe');
 		$codeSaison = $myBdd->GetActiveSaison();
-			
-		$sql = "INSERT INTO gickp_Club 
-			(Code, Libelle, Code_comite_dep, Coord, Postal, www, email) 
-			VALUES (?, ?, ?, ?, ?, ?, ?) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($codeClub, $libelleClub, $comiteDep, $coord2, $postal2, $www2, $email2));
-		
-		$myBdd->utyJournal('Ajout Club', '', '', null, null, null, $codeClub);
-		
-		if ($libelleEquipe2 != '') {
-			$sql = "INSERT INTO gickp_Equipe (Code_club, Libelle) 
-				VALUES ('".$codeClub."', '".$libelleEquipe2."')";
-			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($codeClub, $libelleEquipe2));
-			$selectValue = $myBdd->pdo->lastInsertId();
 
-			$myBdd->utyJournal('Ajout Equipe', '', '', null, null, null, $libelleEquipe2);
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "INSERT INTO gickp_Club 
+				(Code, Libelle, Code_comite_dep, Coord, Postal, www, email) 
+				VALUES (?, ?, ?, ?, ?, ?, ?) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($codeClub, $libelleClub, $comiteDep, $coord2, $postal2, $www2, $email2));
 			
-			if ($affectEquipe != '') {
-				if ((int) $selectValue == 0)
-					return;
-				$sql = "INSERT INTO gickp_Competitions_Equipes 
-					(Code_compet, Code_saison, Libelle, Code_club, Numero) 
-					SELECT ?, ?, Libelle, Code_club, Numero 
-					FROM gickp_Equipe 
-					WHERE Numero = ? ";
+			if ($libelleEquipe2 != '') {
+				$sql = "INSERT INTO gickp_Equipe (Code_club, Libelle) 
+					VALUES ('".$codeClub."', '".$libelleEquipe2."')";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($affectEquipe, $codeSaison, $selectValue));
+				$result->execute(array($codeClub, $libelleEquipe2));
+				$selectValue = $myBdd->pdo->lastInsertId();
+
+				$myBdd->utyJournal('Ajout Equipe', '', '', null, null, null, $libelleEquipe2);
+				
+				if ($affectEquipe != '') {
+					if ((int) $selectValue == 0)
+						return;
+					$sql = "INSERT INTO gickp_Competitions_Equipes 
+						(Code_compet, Code_saison, Libelle, Code_club, Numero) 
+						SELECT ?, ?, Libelle, Code_club, Numero 
+						FROM gickp_Equipe 
+						WHERE Numero = ? ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array($affectEquipe, $codeSaison, $selectValue));
+				}
 			}
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Ajout Club, $codeClub" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
-			
+
+		$myBdd->utyJournal('Ajout Club', '', '', null, null, null, $codeClub);
+		return;
 	}
 	
 	function UpdateClub()
@@ -198,14 +223,26 @@ class GestionStructure extends MyPageSecure
 		$postal = utyGetPost('postal');
 
 		$myBdd = $this->myBdd;
-			
-		$sql = "UPDATE gickp_Club 
-			SET Coord = ?, Coord2 = ?, Postal = ?, 
-			www = ?, email = ? 
-			WHERE Code = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($coord, $coord2, $postal, $www, $email, $club));
-			
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "UPDATE gickp_Club 
+				SET Coord = ?, Coord2 = ?, Postal = ?, 
+				www = ?, email = ? 
+				WHERE Code = ? ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute(array($coord, $coord2, $postal, $www, $email, $club));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Modification Club, $club" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
 		$myBdd->utyJournal('Modification Club', '', '', null, null, null, $club);
 	}
 
@@ -222,13 +259,13 @@ class GestionStructure extends MyPageSecure
 		if (strlen($Cmd) > 0)
 		{
 			if ($Cmd == 'AddCD')
-				($_SESSION['Profile'] <= 2) ? $this->AddCD() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->AddCD() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'AddClub')
-				($_SESSION['Profile'] <= 2) ? $this->AddClub() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->AddClub() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($Cmd == 'UpdateClub')
-				($_SESSION['Profile'] <= 3 or $_SESSION['User'] == '229824' or $_SESSION['User'] == '115989') ? $this->UpdateClub() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 3 or $_SESSION['User'] == '229824' or $_SESSION['User'] == '115989') ? $alertMessage = $this->UpdateClub() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($alertMessage == '')
 			{
