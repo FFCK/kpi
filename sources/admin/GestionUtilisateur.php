@@ -393,51 +393,63 @@ class GestionUtilisateur extends MyPageSecure
 		if (strlen($guser) > 0) {
 			$myBdd = new MyBdd();
 
-			if ($bNew) {
-                $sql = "SELECT Code 
-					FROM gickp_Utilisateur 
-					WHERE Code = ? ";
-				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($guser));
-                if ($result->rowCount() == 1) {
-                    return "Utilisateur déjà existant !";
-                } else {
-                    $sql = "INSERT INTO gickp_Utilisateur 
-						(Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, Type_filtre_competition, 
-						Filtre_competition, Filtre_saison, Filtre_competition_sql, Filtre_journee, 
-						Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) 
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+			try {  
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+	
+				if ($bNew) {
+					$sql = "SELECT Code 
+						FROM gickp_Utilisateur 
+						WHERE Code = ? ";
 					$result = $myBdd->pdo->prepare($sql);
-					$result->execute(array(
-						$guser, $gidentite, $gmail, $gtel, $gfonction, $gniveau, md5($gpwd),
+					$result->execute(array($guser));
+					if ($result->rowCount() == 1) {
+						return "Utilisateur déjà existant !";
+					} else {
+						$sql = "INSERT INTO gickp_Utilisateur 
+							(Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, Type_filtre_competition, 
+							Filtre_competition, Filtre_saison, Filtre_competition_sql, Filtre_journee, 
+							Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) 
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+						$result = $myBdd->pdo->prepare($sql);
+						$result->execute(array(
+							$guser, $gidentite, $gmail, $gtel, $gfonction, $gniveau, md5($gpwd),
+							$typeFiltreCompetition, $filtreCompetition, $filtreSaison, 
+							$filtreCompetitionSql, $filtreJournee, $limitclub, $filtreEvenement,
+							$Date_debut, $Date_fin
+						));
+						$action = "Création ";
+					}
+				} else {
+					$arrayQuery = array(
+						$gidentite, $gmail, $gtel, $gfonction, $gniveau, 
 						$typeFiltreCompetition, $filtreCompetition, $filtreSaison, 
-						$filtreCompetitionSql, $filtreJournee, $limitclub, $filtreEvenement,
-						$Date_debut, $Date_fin
-					));
-                    $action = "Création ";
-                }
-			} else {
-				$arrayQuery = array(
-					$gidentite, $gmail, $gtel, $gfonction, $gniveau, 
-					$typeFiltreCompetition, $filtreCompetition, $filtreSaison, 
-					$filtreCompetitionSql, $filtreJournee, $limitclub, 
-					$filtreEvenement, $Date_debut, $Date_fin
-				);
-				$sql = "UPDATE gickp_Utilisateur 
-					SET Identite = ?, Mail = ?, Tel = ?, Fonction = ?, Niveau = ?,  
-					Type_filtre_competition = ?, Filtre_competition = ?, Filtre_saison = ?, 
-					Filtre_competition_sql = ?, Filtre_journee = ?, Limitation_equipe_club = ?, 
-					Id_Evenement = ?, Date_debut = ?, Date_fin = ? ";
-				if( $gpwd != '' ) {
-					$sql .= ", Pwd = ? ";
-					$arrayQuery = array_merge($arrayQuery, [md5($gpwd)]);
+						$filtreCompetitionSql, $filtreJournee, $limitclub, 
+						$filtreEvenement, $Date_debut, $Date_fin
+					);
+					$sql = "UPDATE gickp_Utilisateur 
+						SET Identite = ?, Mail = ?, Tel = ?, Fonction = ?, Niveau = ?,  
+						Type_filtre_competition = ?, Filtre_competition = ?, Filtre_saison = ?, 
+						Filtre_competition_sql = ?, Filtre_journee = ?, Limitation_equipe_club = ?, 
+						Id_Evenement = ?, Date_debut = ?, Date_fin = ? ";
+					if( $gpwd != '' ) {
+						$sql .= ", Pwd = ? ";
+						$arrayQuery = array_merge($arrayQuery, [md5($gpwd)]);
+					}
+					$sql .= "WHERE Code = ? ";
+					$result = $myBdd->pdo->prepare($sql);
+					$result->execute(array_merge($arrayQuery, [$guser]));
+					$action = "Modification ";
 				}
-				$sql .= "WHERE Code = ? ";
-				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array_merge($arrayQuery, [$guser]));
-				$action = "Modification ";
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Ajout Modif Utilisateur, $guser" . '\r\n' . $e->getMessage());
+	
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 			}
-			
+	
 			$myBdd->utyJournal('Ajout Modif Utilisateur', '', '', null, null, null, $guser);
 			
 			//MAIL 
@@ -539,11 +551,24 @@ class GestionUtilisateur extends MyPageSecure
         } // Rien à Detruire ...
 			
 		$myBdd = new MyBdd();
-		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "DELETE FROM gickp_Utilisateur 
-			WHERE Code IN ($in) ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute($arrayParam);
+
+		try {  
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$in = str_repeat('?,', count($arrayParam) - 1) . '?';
+			$sql = "DELETE FROM gickp_Utilisateur 
+				WHERE Code IN ($in) ";
+			$result = $myBdd->pdo->prepare($sql);
+			$result->execute($arrayParam);
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Suppression utilisateur, $ParamCmd" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
 
 		for ($i=0;$i<count($arrayParam);$i++) {
 			$myBdd->utyJournal('Suppression utilisateur', '', '', null, null, null, $arrayParam[$i]);
@@ -573,11 +598,11 @@ class GestionUtilisateur extends MyPageSecure
             }
 
             if ($Cmd == 'Update') {
-                ($_SESSION['Profile'] <= 3) ? $this->Replace(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Replace(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($Cmd == 'Remove') {
-                ($_SESSION['Profile'] <= 2) ? $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+                ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
             if ($alertMessage == '') {
