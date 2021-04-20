@@ -74,7 +74,7 @@ class ImportPCE extends MyPageSecure
 		
 		$arrayGroupes = array();
 		$sql = "SELECT * 
-			FROM gickp_Competitions_Groupes 
+			FROM kp_groupe 
 			ORDER BY id ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();

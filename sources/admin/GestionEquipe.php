@@ -20,7 +20,7 @@ class GestionEquipe extends MyPageSecure
             $lang = $langue['fr'];
         }
         
-        $_SESSION['updatecell_tableName'] = 'gickp_Competitions_Equipes';
+        $_SESSION['updatecell_tableName'] = 'kp_competition_equipe';
 		$_SESSION['updatecell_where'] = 'Where Id = ';
 		$_SESSION['updatecell_document'] = 'formEquipe';
 		
@@ -58,7 +58,7 @@ class GestionEquipe extends MyPageSecure
 			$arrayAfficheCompet = [$AfficheCompet];
 		}
 		$sql = "SELECT c.*, g.section, g.ordre, g.id 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_saison = ?  
 			$sqlFiltreCompetition 
 			AND c.Code_niveau LIKE ? 
@@ -121,7 +121,7 @@ class GestionEquipe extends MyPageSecure
 			if ($codeCompet != 'POOL') {
 				$sql  = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, 
 					c.Code_comite_dep, c.Libelle Club  
-					FROM gickp_Competitions_Equipes ce, gickp_Club c 
+					FROM kp_competition_equipe ce, kp_club c 
 					WHERE ce.Code_compet = ? 
 					AND ce.Code_saison = ?
 					AND ce.Code_club = c.Code 
@@ -131,7 +131,7 @@ class GestionEquipe extends MyPageSecure
 			} else {
 				$sql  = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, 
 					c.Code_comite_dep, c.Libelle Club 
-					FROM gickp_Competitions_Equipes ce, gickp_Club c 
+					FROM kp_competition_equipe ce, kp_club c 
 					WHERE ce.Code_compet = ? 
 					AND ce.Code_club = c.Code 
 					ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
@@ -144,7 +144,7 @@ class GestionEquipe extends MyPageSecure
 				$num_results ++;
                 $nbMatchs = 0;
 				$sql2  = "SELECT count(ce.Id) nbMatchs 
-					FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Journees j 
+					FROM kp_competition_equipe ce, kp_match m, kp_journee j 
 					WHERE ce.Code_compet = :codeCompet 
 					AND ce.Code_saison = :codeSaison 
 					AND j.Code_competition = :codeCompet 
@@ -179,7 +179,7 @@ class GestionEquipe extends MyPageSecure
 		$this->m_tpl->assign('arrayEquipe', $arrayEquipe);
 
 		//Mise à jour du nombre d'équipe de la compétition
-		$sql  = "UPDATE gickp_Competitions 
+		$sql  = "UPDATE kp_competition 
 			SET Nb_equipes = ?  
 			WHERE Code = ?  
 			AND Code_saison = ? ";
@@ -226,7 +226,7 @@ class GestionEquipe extends MyPageSecure
 
 		// Chargement des Comites Régionaux ...
 		$sql  = "SELECT Code, Libelle 
-			FROM gickp_Comite_reg 
+			FROM kp_cr 
 			ORDER BY Code ";	 
 		$arrayComiteReg = array();
 
@@ -257,14 +257,14 @@ class GestionEquipe extends MyPageSecure
 
 		if ($codeComiteReg != '*') {
 			$sql = "SELECT Code, Libelle 
-				FROM gickp_Comite_dep 
+				FROM kp_cd 
 				WHERE Code_comite_reg = ?
 				ORDER BY Code ";	 
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($codeComiteReg));
 		} else {
 			$sql = "SELECT Code, Libelle 
-				FROM gickp_Comite_dep 
+				FROM kp_cd 
 				ORDER BY Code ";	 
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute();
@@ -290,7 +290,7 @@ class GestionEquipe extends MyPageSecure
 
 		$arrayM = [];
 		$sql = "SELECT c.Code, c.Libelle 
-			FROM gickp_Club c, gickp_Comite_dep cd 
+			FROM kp_club c, kp_cd cd 
 			WHERE c.Code_comite_dep = cd.Code ";
 			if ($codeComiteReg != '*') {
 				$sql .= "AND cd.Code_comite_reg = ? ";
@@ -323,7 +323,7 @@ class GestionEquipe extends MyPageSecure
 		if ($codeComiteReg != '98')
 		{
 			$sql = "SELECT e.Numero, e.Libelle, e.Code_club 
-				FROM gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd 
+				FROM kp_equipe e, kp_club c, kp_cd cd 
 				WHERE e.Code_club = c.Code 
 				AND c.Code_comite_dep = cd.Code 
 				AND cd.Code_comite_reg != '98' ";
@@ -355,7 +355,7 @@ class GestionEquipe extends MyPageSecure
 		if ($codeComiteReg == '98' or $codeComiteReg == '*')
 		{
 			$sql = "SELECT e.Numero, e.Libelle, e.Code_club 
-				FROM gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd 
+				FROM kp_equipe e, kp_club c, kp_cd cd 
 				WHERE e.Code_club = c.Code 
 				AND c.Code_comite_dep = cd.Code 
 				AND cd.Code_comite_reg = '98' ";
@@ -408,7 +408,7 @@ class GestionEquipe extends MyPageSecure
 					if ((int) $selectValue == 0) {
 						// Inscription Manuelle ...
 						if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) ) {
-							$sql  = "INSERT INTO gickp_Equipe (Libelle, Code_club) 
+							$sql  = "INSERT INTO kp_equipe (Libelle, Code_club) 
 								VALUES (?, ?) ";
 							$result = $myBdd->pdo->prepare($sql);
 							$result->execute(array($libelleEquipe, $codeClub));
@@ -416,10 +416,10 @@ class GestionEquipe extends MyPageSecure
 						}
 					}
 
-					$sql = "INSERT INTO gickp_Competitions_Equipes 
+					$sql = "INSERT INTO kp_competition_equipe 
 						(Code_compet, Code_saison, Libelle, Code_club, Numero) 
 						SELECT ?, ?, Libelle, Code_club, Numero 
-						FROM gickp_Equipe 
+						FROM kp_equipe 
 						WHERE Numero = ? ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($codeCompet, $codeSaison, $selectValue));
@@ -472,10 +472,10 @@ class GestionEquipe extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 				
-				$sql  = "INSERT INTO gickp_Competitions_Equipes 
+				$sql  = "INSERT INTO kp_competition_equipe 
 					(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau)
 					SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ? 
-					FROM gickp_Equipe 
+					FROM kp_equipe 
 					WHERE Numero = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(
@@ -487,11 +487,11 @@ class GestionEquipe extends MyPageSecure
 				if ($checkCompo != '') {
 					$checkCompo = explode('-', $checkCompo);
 					// Insertion des Joueurs Equipes ...
-					$sql  = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+					$sql  = "INSERT INTO kp_competition_equipe_joueur 
 						(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
 						SELECT :EquipeId, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine 
-						FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, 
-						gickp_Competitions_Equipes c, gickp_Categorie d, gickp_Liste_Coureur e 
+						FROM kp_competition_equipe_joueur a, kp_competition_equipe b, 
+						kp_competition_equipe c, kp_categorie d, kp_licence e 
 						WHERE a.Id_equipe = b.Id 
 						AND a.Matric = e.Matric 
 						AND a.Id_equipe = c.Id 
@@ -531,7 +531,7 @@ class GestionEquipe extends MyPageSecure
 		$pouleTirage = utyGetPost('pouleTirage');
 		$ordreTirage = utyGetPost('ordreTirage');
 		
-		$sql = "UPDATE gickp_Competitions_Equipes 
+		$sql = "UPDATE kp_competition_equipe 
 			SET Tirage = :ordreTirage, Poule = :pouleTirage 
 			WHERE Code_compet = :codeCompet 
 			AND Code_saison = :codeSaison 
@@ -567,12 +567,12 @@ class GestionEquipe extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 			
-			$sql = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
+			$sql = "DELETE FROM kp_competition_equipe_joueur 
 				WHERE Id_equipe IN ($in)";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayParam);
 
-			$sql = "DELETE FROM gickp_Competitions_Equipes 
+			$sql = "DELETE FROM kp_competition_equipe 
 				WHERE Id IN ($in)";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayParam);
@@ -605,17 +605,17 @@ class GestionEquipe extends MyPageSecure
 				
 				if ($bDelete) {
 					// Suppression des Joueurs Equipes 
-					$sql  = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
+					$sql  = "DELETE FROM kp_competition_equipe_joueur 
 						WHERE Id_equipe IN (
 							SELECT a.Id 
-							FROM gickp_Competitions_Equipes a 
+							FROM kp_competition_equipe a 
 							WHERE a.Code_compet = ? 
 							AND a.Code_saison = ? )";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($codeCompet, $codeSaison));
 			
 					// Suppression des Equipes 
-					$sql = "DELETE FROM gickp_Competitions_Equipes 
+					$sql = "DELETE FROM kp_competition_equipe 
 						WHERE Code_compet = ? 
 						AND Code_saison = ? ";
 					$result = $myBdd->pdo->prepare($sql);
@@ -623,20 +623,20 @@ class GestionEquipe extends MyPageSecure
 				}
 				
 				// Insertion des Equipes ...
-				$sql  = "INSERT INTO gickp_Competitions_Equipes 
+				$sql  = "INSERT INTO kp_competition_equipe 
 					(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) 
 					SELECT ?, Code_saison, Libelle, Code_club, Numero, Id 
-					FROM gickp_Competitions_Equipes 
+					FROM kp_competition_equipe 
 					WHERE Code_compet = ? 
 					AND Code_saison = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeCompet, $codeCompetRef, $codeSaison));
 				
 				// Insertion des Joueurs Equipes ...
-				$sql  = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+				$sql  = "INSERT INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
 					SELECT b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine 
-					FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, gickp_Competitions_Equipes c 
+					FROM kp_competition_equipe_joueur a, kp_competition_equipe b, kp_competition_equipe c 
 					WHERE a.Id_equipe = b.Id_dupli 
 					AND a.Id_equipe = c.Id 
 					AND c.Code_compet = ? 

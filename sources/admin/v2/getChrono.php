@@ -16,7 +16,7 @@ session_start();
 $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch', 0);
 $sql = "SELECT * 
-	FROM gickp_Chrono 
+	FROM kp_chrono 
 	WHERE IdMatch = ? ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($idMatch));

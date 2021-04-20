@@ -22,7 +22,7 @@ $term = preg_replace('/\s+/', ' ', $term);
 $term2 = preg_replace('/\s/', '-', $term);
 $sql = "SELECT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email, 
         GROUP_CONCAT(CONCAT_WS(',', e.Numero, e.Libelle) ORDER BY e.Libelle ASC SEPARATOR ';') 
-        FROM gickp_Club c LEFT OUTER JOIN gickp_Equipe e ON (c.Code = e.Code_club) 
+        FROM kp_club c LEFT OUTER JOIN kp_equipe e ON (c.Code = e.Code_club) 
         WHERE 1=1 
         AND (c.Code LIKE :term 
         OR c.Libelle LIKE :term1 

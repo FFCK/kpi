@@ -38,8 +38,8 @@ class GestionClassement extends MyPageSecure
         $_SESSION['AfficheCompet'] = $AfficheCompet;
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
 
-		$_SESSION['updatecell_tableName'] = 'gickp_Competitions_Equipes';
-		$_SESSION['updatecell_tableName2'] = 'gickp_Competitions_Equipes_Journee';
+		$_SESSION['updatecell_tableName'] = 'kp_competition_equipe';
+		$_SESSION['updatecell_tableName2'] = 'kp_competition_equipe_journee';
 		$_SESSION['updatecell_where'] = 'Where Id = ';
 		$_SESSION['updatecell_where2'] = 'Where Id = ';
 		$_SESSION['updatecell_and'] = 'And Id_journee = ';
@@ -48,7 +48,7 @@ class GestionClassement extends MyPageSecure
 		// Chargement des Saisons ...
 		$arraySaison = array();
 		$sql = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code DESC ";
 		$result = $myBdd->pdo->query($sql);
@@ -76,7 +76,7 @@ class GestionClassement extends MyPageSecure
 		}
 		$sql = "SELECT c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, 
 			c.Soustitre2, c.Titre_actif, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_saison = ? 
 			$sqlFiltreCompetition 
 			$sqlAfficheCompet 
@@ -126,7 +126,7 @@ class GestionClassement extends MyPageSecure
 		// Chargement des Compétitions pour Transferts...
 		$sqlFiltreCompetition = utyGetFiltreCompetition('');
 		$sql = "SELECT Code, Libelle 
-			FROM gickp_Competitions 
+			FROM kp_competition 
 			WHERE Code_saison = ? 
 			$sqlFiltreCompetition 
 			ORDER BY Code ";	 
@@ -195,7 +195,7 @@ class GestionClassement extends MyPageSecure
 			$sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Clt, ce.Pts, 
 				ce.J, ce.G, ce.N, ce.P, ce.F, ce.Plus, ce.Moins, ce.Diff, ce.PtsNiveau, 
 				ce.CltNiveau, c.Code_comite_dep 
-				FROM gickp_Competitions_Equipes ce, gickp_Club c 
+				FROM kp_competition_equipe ce, kp_club c 
 				WHERE ce.Code_compet = ? 
 				AND ce.Code_saison = ? 
 				AND ce.Code_club = c.Code ";	 
@@ -218,7 +218,7 @@ class GestionClassement extends MyPageSecure
 				ce.J_publi, ce.G_publi, ce.N_publi, ce.P_publi, ce.F_publi, ce.Plus_publi, 
 				ce.Moins_publi, ce.Diff_publi, ce.PtsNiveau_publi, ce.CltNiveau_publi, 
 				c.Code_comite_dep 
-				FROM gickp_Competitions_Equipes ce, gickp_Club c 
+				FROM kp_competition_equipe ce, kp_club c 
 				WHERE ce.Code_compet = ? 
 				AND ce.Code_saison = ? 
 				AND ce.Code_club = c.Code ";	 
@@ -246,8 +246,8 @@ class GestionClassement extends MyPageSecure
 				$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt, b.Pts, 
 					b.J, b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau, 
 					c.Phase, c.Niveau, c.Lieu, c.Type 
-					FROM gickp_Competitions_Equipes a, gickp_Competitions_Equipes_Journee b 
-					JOIN gickp_Journees c ON (b.Id_journee = c.Id) 
+					FROM kp_competition_equipe a, kp_competition_equipe_journee b 
+					JOIN kp_journee c ON (b.Id_journee = c.Id) 
 					WHERE a.Id = b.Id 
 					AND c.Code_competition = ? 
 					AND c.Code_saison = ? 
@@ -263,8 +263,8 @@ class GestionClassement extends MyPageSecure
 					b.Pts_publi, b.J_publi, b.G_publi, b.N_publi, b.P_publi, b.F_publi, 
 					b.Plus_publi, b.Moins_publi, b.Diff_publi, b.PtsNiveau_publi, 
 					b.CltNiveau_publi, c.Phase, c.Niveau, c.Lieu, c.Type 
-					FROM gickp_Competitions_Equipes a, gickp_Competitions_Equipes_Journee b 
-					JOIN gickp_Journees c ON (b.Id_journee = c.Id) 
+					FROM kp_competition_equipe a, kp_competition_equipe_journee b 
+					JOIN kp_journee c ON (b.Id_journee = c.Id) 
 					WHERE a.Id = b.Id 
 					AND c.Code_competition = ? 
 					AND c.Code_saison = ? 
@@ -343,7 +343,7 @@ class GestionClassement extends MyPageSecure
 		$goalaverage = '';
 		
 		$sql = "SELECT Code_typeclt, goalaverage 
-			FROM gickp_Competitions 
+			FROM kp_competition 
 			WHERE Code = ? 
 			AND Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
@@ -372,7 +372,7 @@ class GestionClassement extends MyPageSecure
 		$this->FinalisationClassementJourneeChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs);
 		$this->FinalisationClassementJourneeNiveau($codeCompet, $codeSaison);
 	
-		$sql = "UPDATE gickp_Competitions 
+		$sql = "UPDATE kp_competition 
 			SET Date_calcul = ?, 
 			Code_uti_calcul = ?, 
 			Mode_calcul = ? 
@@ -407,7 +407,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		$sql = "UPDATE gickp_Competitions_Equipes 
+		$sql = "UPDATE kp_competition_equipe 
 			SET Clt=1, Pts=0, J=0, G=0, N=0, P=0, F=0, Plus=0, Moins=0, Diff=0, 
 			CltNiveau = 1, PtsNiveau = 0 
 			WHERE Code_compet = ? 
@@ -420,7 +420,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		$sql = "UPDATE gickp_Competitions_Equipes a, gickp_Competitions_Equipes_Init b 
+		$sql = "UPDATE kp_competition_equipe a, kp_competition_equipe_init b 
 			SET a.Clt=b.Clt, a.Pts=b.Pts*100, a.J=b.J, a.G=b.G, a.N=b.N, a.P=b.P, a.F=b.F, 
 			a.Plus=b.plus, a.Moins=b.Moins, a.Diff=b.Diff 
 			WHERE a.Id = b.Id 
@@ -434,7 +434,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		$sql = "UPDATE gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+		$sql = "UPDATE kp_competition_equipe_niveau a, kp_competition_equipe b 
 			SET a.Clt=1, a.Pts=0, a.J=0, a.G=0, a.N=0, a.P=0, a.F=0, 
 			a.Plus=0, a.Moins=0, a.Diff=0, a.PtsNiveau=0, a.CltNiveau=0 
 			WHERE a.Id = b.Id 
@@ -448,8 +448,8 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 		
-		$sql = "UPDATE gickp_Competitions_Equipes_Journee a 
-			RIGHT OUTER JOIN gickp_Journees b ON a.Id_journee = b.Id 
+		$sql = "UPDATE kp_competition_equipe_journee a 
+			RIGHT OUTER JOIN kp_journee b ON a.Id_journee = b.Id 
 			SET a.Clt=0, a.Pts=0, a.J=0, a.G=0, a.N=0, a.P=0, a.F=0, 
 			a.Plus=0, a.Moins=0, a.Diff=0, a.PtsNiveau=0, a.CltNiveau=0 
 			WHERE b.Code_competition = ? 
@@ -475,7 +475,7 @@ class GestionClassement extends MyPageSecure
 		}
 		$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
 				a.CoeffB, a.Id, a.Id_journee, b.Niveau, c.Points 
-				FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions c 
+				FROM kp_match a, kp_journee b, kp_competition c 
 				WHERE a.Id_journee = b.Id 
 				AND b.Code_competition = ? 
 				AND b.Code_competition = c.Code 
@@ -530,13 +530,13 @@ class GestionClassement extends MyPageSecure
 			
 			$this->SetArrayClt($scoreA, $scoreB, $niveau, $arrayCltA, $arrayCltB, $coeffA, $coeffB, $Points);
 			
-			// Incrementation gickp_Competitions_Equipes ...
+			// Incrementation kp_competition_equipe ...
 			$this->StepClassementCompetitionEquipe($idEquipeA, $arrayCltA, $idEquipeB, $arrayCltB);
 
-			// Incrementation gickp_Competitions_Equipes_Niveau ...
+			// Incrementation kp_competition_equipe_niveau ...
 			$this->StepClassementCompetitionEquipeNiveau($idEquipeA, $arrayCltA, $idEquipeB, $arrayCltB, $niveau);
 			
-			// Incrementation gickp_Competitions_Equipes_Journee ...
+			// Incrementation kp_competition_equipe_journee ...
 			$this->StepClassementCompetitionEquipeJournee($idEquipeA, $arrayCltA, $idEquipeB, $arrayCltB, $idJournee);
 		}			
 	}
@@ -682,7 +682,7 @@ class GestionClassement extends MyPageSecure
 		$myBdd = $this->myBdd;
 	
 		$sql = "SELECT COUNT(*) Nb 
-			FROM gickp_Competitions_Equipes_Niveau 
+			FROM kp_competition_equipe_niveau 
 			WHERE Id = ? 
 			AND Niveau = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -695,7 +695,7 @@ class GestionClassement extends MyPageSecure
 			}
 		}
 
-		$sql = "INSERT INTO gickp_Competitions_Equipes_Niveau 
+		$sql = "INSERT INTO kp_competition_equipe_niveau 
 			(Id, Niveau, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) 
 			VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -708,7 +708,7 @@ class GestionClassement extends MyPageSecure
 		$myBdd = $this->myBdd;
 		
 		$sql = "SELECT COUNT(*) Nb 
-			FROM gickp_Competitions_Equipes_Journee 
+			FROM kp_competition_equipe_journee 
 			WHERE Id = ? 
 			AND Id_journee = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -720,7 +720,7 @@ class GestionClassement extends MyPageSecure
 				return; // Le record existe ...
 		}
 
-		$sql = "INSERT INTO gickp_Competitions_Equipes_Journee 
+		$sql = "INSERT INTO kp_competition_equipe_journee 
 			(Id, Id_journee, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff, PtsNiveau, CltNiveau) 
 			VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0) ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -732,7 +732,7 @@ class GestionClassement extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
 
-		$sql = "UPDATE gickp_Competitions_Equipes 
+		$sql = "UPDATE kp_competition_equipe 
 			SET Pts = Pts + ?, 
 			J = J + ?, 
 			G = G + ?, 
@@ -770,7 +770,7 @@ class GestionClassement extends MyPageSecure
 		$this->ExistCompetitionEquipeNiveau($idEquipeA, $niveau);
 		$this->ExistCompetitionEquipeNiveau($idEquipeB, $niveau);
 				
-		$sql = "UPDATE gickp_Competitions_Equipes_Niveau 
+		$sql = "UPDATE kp_competition_equipe_niveau 
 			SET Pts = Pts + ?, 
 			J = J + ?, 
 			G = G + ?, 
@@ -809,7 +809,7 @@ class GestionClassement extends MyPageSecure
 		$this->ExistCompetitionEquipeJournee($idEquipeA, $idJournee);
 		$this->ExistCompetitionEquipeJournee($idEquipeB, $idJournee);
 				
-		$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+		$sql = "UPDATE kp_competition_equipe_journee 
 			SET Pts = Pts + ?, 
 			J = J + ?, 
 			G = G + ?, 
@@ -853,7 +853,7 @@ class GestionClassement extends MyPageSecure
 		
 		// Chargement des Equipes par ordre de Pts, Diff & Plus
 		$sql = "SELECT Id, Clt, Pts, J, G, N, P, F, Plus, Moins, Diff 
-				FROM gickp_Competitions_Equipes 
+				FROM kp_competition_equipe 
 				WHERE Code_compet = ? 
 				AND Code_saison = ? 
 				ORDER BY Pts DESC, Diff DESC, Plus DESC ";	 
@@ -880,7 +880,7 @@ class GestionClassement extends MyPageSecure
 			$oldId =$row['Id'];
 			$oldPts = $row['Pts'];
 
-            $sql = "UPDATE gickp_Competitions_Equipes 
+            $sql = "UPDATE kp_competition_equipe 
 				SET Clt = ?
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -911,7 +911,7 @@ class GestionClassement extends MyPageSecure
 			}
 			$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
 				a.CoeffB, a.Id Idmatch, a.Id_journee, b.Niveau, c.Points 
-				FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions c 
+				FROM kp_match a, kp_journee b, kp_competition c 
 				WHERE a.Id_journee = b.Id 
 				AND b.Code_competition = c.Code 
 				AND b.Code_saison = c.Code_saison 
@@ -1006,7 +1006,7 @@ class GestionClassement extends MyPageSecure
 			);
 			print_r($arrayCltGlobal[$clt]);
 
-			$sql = "UPDATE gickp_Competitions_Equipes 
+			$sql = "UPDATE kp_competition_equipe 
 				SET Clt = ?
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -1045,7 +1045,7 @@ class GestionClassement extends MyPageSecure
 				}
 				$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
 					a.CoeffB, a.Id Idmatch, a.Id_journee, b.Niveau, c.Points 
-					FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions c 
+					FROM kp_match a, kp_journee b, kp_competition c 
 					WHERE a.Id_journee = b.Id 
 					AND b.Code_competition = c.Code 
 					AND b.Code_saison = c.Code_saison 
@@ -1139,7 +1139,7 @@ class GestionClassement extends MyPageSecure
 				);
 				print_r($arrayCltGlobal[$clt]);
 	
-				$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+				$sql = "UPDATE kp_competition_equipe_journee 
 					SET Clt = ? 
 					WHERE Id = ? 
 					AND Id_journee = ? ";
@@ -1168,7 +1168,7 @@ class GestionClassement extends MyPageSecure
 		$oldDiff = 9999;
 		$i = 0;
 		
-		$sql = "UPDATE gickp_Competitions_Equipes 
+		$sql = "UPDATE kp_competition_equipe 
 		SET CltNiveau = ?
 		WHERE Id = ? ";
 		$result1 = $myBdd->pdo->prepare($sql);
@@ -1176,7 +1176,7 @@ class GestionClassement extends MyPageSecure
 
 		// Chargement des Equipes par ordre de Pts ...
 		$sql = "SELECT Id, PtsNiveau, Diff 
-			FROM gickp_Competitions_Equipes 
+			FROM kp_competition_equipe 
 			WHERE Code_compet = ? 
 			AND Code_saison = ? 
 			ORDER BY PtsNiveau DESC, Diff DESC ";	 
@@ -1207,7 +1207,7 @@ class GestionClassement extends MyPageSecure
 		$oldNiveau = -1;
 		$j = 0;
 
-		$sql = "UPDATE gickp_Competitions_Equipes_Niveau 
+		$sql = "UPDATE kp_competition_equipe_niveau 
 			SET Clt = ? 
 			WHERE Id = ? 
 			AND Niveau = ? ";
@@ -1217,7 +1217,7 @@ class GestionClassement extends MyPageSecure
 		// Chargement des Equipes par ordre de Pts ...
 		$sql = "SELECT a.Id, a.Niveau, a.Clt, a.Pts, a.J, a.G, a.N, a.P, a.F, 
 			a.Plus, a.Moins, a.Diff 
-			FROM gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+			FROM kp_competition_equipe_niveau a, kp_competition_equipe b 
 			WHERE a.Id = b.Id 
 			AND b.Code_compet = ? 
 			AND b.Code_saison = ? 
@@ -1256,7 +1256,7 @@ class GestionClassement extends MyPageSecure
 		$oldNiveau = -1;
 		$j = 0;
 		
-		$sql = "UPDATE gickp_Competitions_Equipes_Niveau 
+		$sql = "UPDATE kp_competition_equipe_niveau 
 			SET CltNiveau = ?  
 			WHERE Id = ? 
 			AND Niveau = ? ";
@@ -1264,7 +1264,7 @@ class GestionClassement extends MyPageSecure
 	
 		// Chargement des Equipes par ordre de Pts ...
 		$sql = "SELECT a.Id, a.Niveau, a.PtsNiveau, a.Diff 
-			FROM gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+			FROM kp_competition_equipe_niveau a, kp_competition_equipe b 
 			WHERE a.Id = b.Id 
 			AND b.Code_compet = ? 
 			AND b.Code_saison = ? 
@@ -1308,7 +1308,7 @@ class GestionClassement extends MyPageSecure
 		$i = 0;
 		$aEgalites = [];
 
-		$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+		$sql = "UPDATE kp_competition_equipe_journee 
 			SET Clt = ? 
 			WHERE Id = ? 
 			AND Id_journee = ? ";
@@ -1318,8 +1318,8 @@ class GestionClassement extends MyPageSecure
 		// Chargement des Equipes par ordre de Pts ...
 		$sql = "SELECT a.Id, a.Id_journee, a.Clt, a.Pts, a.J, a.G, a.N, a.P, 
 			a.F, a.Plus, a.Moins, a.Diff, j.Type 
-			FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Journee a
-			LEFT OUTER JOIN gickp_Journees j ON a.Id_journee = j.Id
+			FROM kp_competition_equipe b, kp_competition_equipe_journee a
+			LEFT OUTER JOIN kp_journee j ON a.Id_journee = j.Id
 			WHERE a.Id = b.Id 
 			AND b.Code_compet = ? 
 			AND b.Code_saison = ? 
@@ -1373,7 +1373,7 @@ class GestionClassement extends MyPageSecure
 		$oldIdJournee = 0;
 		$j = 0;
 
-		$sql = "UPDATE gickp_Competitions_Equipes_Journee 
+		$sql = "UPDATE kp_competition_equipe_journee 
 			SET CltNiveau = ? 
 			WHERE Id = ? 
 			AND Id_journee = ? ";
@@ -1382,7 +1382,7 @@ class GestionClassement extends MyPageSecure
 		
 		// Chargement des Equipes par ordre de Pts ...
 		$sql = "SELECT a.Id, a.Id_journee, a.PtsNiveau, a.Diff 
-			FROM gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b 
+			FROM kp_competition_equipe_journee a, kp_competition_equipe b 
 			WHERE a.Id = b.Id 
 			AND b.Code_compet = ? 
 			AND b.Code_saison = ? 
@@ -1423,7 +1423,7 @@ class GestionClassement extends MyPageSecure
 		$_SESSION['codeCompet'] = $codeCompet;
 		
 		//Update date publication
-		$sql = "UPDATE gickp_Competitions 
+		$sql = "UPDATE kp_competition 
 			SET Date_publication = NOW(), 
 			Date_publication_calcul = Date_calcul, 
 			Code_uti_publication = ?, 
@@ -1434,7 +1434,7 @@ class GestionClassement extends MyPageSecure
 		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
 		//Update Classement
-		$sql = "UPDATE gickp_Competitions_Equipes 
+		$sql = "UPDATE kp_competition_equipe 
 			SET Pts_publi = Pts, Clt_publi = Clt, J_publi = J, G_publi = G, 
 			N_publi = N, P_publi = P, F_publi = F, Plus_publi = Plus, 
 			Moins_publi = Moins, Diff_publi = Diff, PtsNiveau_publi = PtsNiveau, 
@@ -1445,7 +1445,7 @@ class GestionClassement extends MyPageSecure
 		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement journées/phases
-		$sql = "UPDATE gickp_Competitions_Equipes_Journee a, gickp_Competitions_Equipes b, gickp_Journees c  
+		$sql = "UPDATE kp_competition_equipe_journee a, kp_competition_equipe b, kp_journee c  
 			SET a.Pts_publi = a.Pts, a.Clt_publi = a.Clt, a.J_publi = a.J, a.G_publi = a.G, 
 			a.N_publi = a.N, a.P_publi = a.P, a.F_publi = a.F, a.Plus_publi = a.Plus, a.Moins_publi = a.Moins, 
 			a.Diff_publi = a.Diff, a.PtsNiveau_publi = a.PtsNiveau, a.CltNiveau_publi = a.CltNiveau 
@@ -1457,7 +1457,7 @@ class GestionClassement extends MyPageSecure
 		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement niveau
-		$sql = "UPDATE gickp_Competitions_Equipes_Niveau a, gickp_Competitions_Equipes b 
+		$sql = "UPDATE kp_competition_equipe_niveau a, kp_competition_equipe b 
 			SET a.Pts_publi = a.Pts, a.Clt_publi = a.Clt, a.J_publi = a.J, a.G_publi = a.G, 
 			a.N_publi = a.N, a.P_publi = a.P, a.F_publi = a.F, a.Plus_publi = a.Plus, 
 			a.Moins_publi = a.Moins, a.Diff_publi = a.Diff, a.PtsNiveau_publi = a.PtsNiveau, 
@@ -1481,7 +1481,7 @@ class GestionClassement extends MyPageSecure
 		$_SESSION['codeCompet'] = $codeCompet;
 		
 		//Update date publication
-		$sql = "UPDATE gickp_Competitions 
+		$sql = "UPDATE kp_competition 
 			SET Date_publication = NOW(), 
 			Date_publication_calcul = Date_calcul, 
 			Code_uti_publication = ?, 
@@ -1492,7 +1492,7 @@ class GestionClassement extends MyPageSecure
 		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
 		//Update Classement
-		$sql = "UPDATE gickp_Competitions_Equipes 
+		$sql = "UPDATE kp_competition_equipe 
 			SET Clt_publi = 0, CltNiveau_publi = 0 
 			WHERE Code_compet = ? 
 			AND Code_saison = ? ";	 
@@ -1500,16 +1500,16 @@ class GestionClassement extends MyPageSecure
 		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement journées/phases
-		$sql = "DELETE cej FROM gickp_Competitions_Equipes_Journee cej 
-			LEFT JOIN gickp_Journees j ON (j.Id = cej.Id_journee)
+		$sql = "DELETE cej FROM kp_competition_equipe_journee cej 
+			LEFT JOIN kp_journee j ON (j.Id = cej.Id_journee)
 			WHERE j.Code_competition = ? 
 			AND j.Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		
 		//Update Classement niveau
-		$sql = "DELETE cen FROM gickp_Competitions_Equipes_Niveau cen 
-			LEFT JOIN gickp_Competitions_Equipes ce ON (cen.Id = ce.Id) 
+		$sql = "DELETE cen FROM kp_competition_equipe_niveau cen 
+			LEFT JOIN kp_competition_equipe ce ON (cen.Id = ce.Id) 
 			WHERE ce.Code_compet = ? 
 			AND ce.Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -1539,27 +1539,27 @@ class GestionClassement extends MyPageSecure
 				$in = str_repeat('?,', count($arrayEquipes) - 1) . '?';
 
 				// Raz Id_dupli ... 
-				$sql = "UPDATE gickp_Competitions_Equipes 
+				$sql = "UPDATE kp_competition_equipe 
 					SET Id_dupli = null 
 					WHERE Id_dupli IN ($in)";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute($arrayEquipes);
 									
 				// Insertion des Equipes ...
-				$sql = "INSERT INTO gickp_Competitions_Equipes 
+				$sql = "INSERT INTO kp_competition_equipe 
 					(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) 
 					SELECT ?, ?, Libelle, Code_club, Numero, Id 
-					FROM gickp_Competitions_Equipes 
+					FROM kp_competition_equipe 
 					WHERE Id IN ($in) ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array_merge([$codeCompetTransfert], [$codeSaisonTransfert], $arrayEquipes));
 				
 				// Insertion des Joueurs Equipes ...
-				$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+				$sql = "INSERT INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
 					SELECT b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine 
-					FROM gickp_Competitions_Equipes_Joueurs a, gickp_Competitions_Equipes b, 
-					gickp_Competitions_Equipes c, gickp_Categorie d, gickp_Liste_Coureur e 
+					FROM kp_competition_equipe_joueur a, kp_competition_equipe b, 
+					kp_competition_equipe c, kp_categorie d, kp_licence e 
 					WHERE a.Id_equipe = b.Id_dupli 
 					AND a.Matric = e.Matric 
 					AND a.Id_equipe = c.Id 
@@ -1589,7 +1589,7 @@ class GestionClassement extends MyPageSecure
         $myBdd = $this->myBdd;
 
         // Suppression ... 
-		$sql = "DELETE FROM gickp_Competitions_Equipes_Journee 
+		$sql = "DELETE FROM kp_competition_equipe_journee 
 			WHERE Id_journee = ? 
 			AND Id = ? 
 			AND J = 0 ";

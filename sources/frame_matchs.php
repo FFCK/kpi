@@ -106,7 +106,7 @@ class Matchs extends MyPage
         
 		// Chargement des Saisons ...
         $sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
-            FROM gickp_Saison 
+            FROM kp_saison 
             WHERE Code > '1900' 
             ORDER BY Code DESC";
 		$arraySaison = array();
@@ -140,7 +140,7 @@ class Matchs extends MyPage
 		$arrayCompetition = array();
         if ($event > 0) {
             $sql = "SELECT c.* 
-                FROM `gickp_Competitions` c, `gickp_Journees` j, `gickp_Evenement_Journees` ej 
+                FROM `kp_competition` c, `kp_journee` j, `kp_evenement_journee` ej 
                 WHERE ej.Id_journee = j.Id 
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
@@ -152,7 +152,7 @@ class Matchs extends MyPage
                 ORDER BY c.Code_niveau, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code ";
         } else {
             $sql = "SELECT c.* 
-                FROM gickp_Competitions c 
+                FROM kp_competition c 
                 WHERE c.Code_saison = $codeSaison ";
             if(!$private) {
                 $sql .= "AND c.Publication='O' ";
@@ -195,7 +195,7 @@ class Matchs extends MyPage
         
         // Chargement des journées
         $sql = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
-            FROM gickp_Journees j, gickp_Competitions c 
+            FROM kp_journee j, kp_competition c 
             WHERE j.Code_competition IN ($listCompet) 
             AND j.Code_saison = $codeSaison 
             AND j.Code_competition = c.Code 
@@ -225,7 +225,7 @@ class Matchs extends MyPage
 		// Chargement des Informations relatives aux Journées ...
 		if ($idSelJournee != '*' && $selJournee) {
             $sql  = "SELECT j.*, c.* 
-                FROM gickp_Journees j, gickp_Competitions c 
+                FROM kp_journee j, kp_competition c 
                 WHERE j.Id = ? ";
             if(!$private) {
                 $sql .= "AND j.Publication='O' ";
@@ -234,7 +234,7 @@ class Matchs extends MyPage
             $result->execute(array($idSelJournee));
         } elseif ($event > 0) {
             $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
-                FROM gickp_Journees j, gickp_Evenement_Journees ej 
+                FROM kp_journee j, kp_evenement_journee ej 
                 WHERE ej.Id_evenement = ? 
                 AND j.Id = ej.Id_journee 
                 AND j.Code_competition IN ($listCompet) ";
@@ -246,7 +246,7 @@ class Matchs extends MyPage
             $result->execute(array($event));
         } else {
             $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
-                FROM gickp_Journees j, gickp_Competitions c 
+                FROM kp_journee j, kp_competition c 
                 WHERE j.Code_competition In ($listCompet) 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
@@ -286,13 +286,13 @@ class Matchs extends MyPage
                 m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, 
                 j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut, c.Soustitre2, 
                 lcp.Nom Nom_arb_prin, lcp.Prenom Prenom_arb_prin, lcs.Nom Nom_arb_sec, lcs.Prenom Prenom_arb_sec 
-                FROM gickp_Matchs m 
-                LEFT OUTER JOIN gickp_Competitions_Equipes cea ON (m.Id_equipeA = cea.Id) 
-                LEFT OUTER JOIN gickp_Competitions_Equipes ceb ON (m.Id_equipeB = ceb.Id) 
-                LEFT OUTER JOIN gickp_Liste_Coureur lcp ON (m.Matric_arbitre_principal = lcp.Matric) 
-                LEFT OUTER JOIN gickp_Liste_Coureur lcs ON (m.Matric_arbitre_secondaire = lcs.Matric) 
-                INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id) 
-                INNER JOIN gickp_Competitions c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison) 
+                FROM kp_match m 
+                LEFT OUTER JOIN kp_competition_equipe cea ON (m.Id_equipeA = cea.Id) 
+                LEFT OUTER JOIN kp_competition_equipe ceb ON (m.Id_equipeB = ceb.Id) 
+                LEFT OUTER JOIN kp_licence lcp ON (m.Matric_arbitre_principal = lcp.Matric) 
+                LEFT OUTER JOIN kp_licence lcs ON (m.Matric_arbitre_secondaire = lcs.Matric) 
+                INNER JOIN kp_journee j ON (m.Id_journee = j.Id) 
+                INNER JOIN kp_competition c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison) 
                 WHERE m.Id_journee IN ($lstJournee) ";
             if(!$private) {
                 $sql .= "AND m.Publication='O' ";

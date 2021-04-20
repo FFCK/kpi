@@ -150,15 +150,22 @@ class TV extends MyPage
 		$equipe = $this->GetParam('team', 'A');
 			
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$db->LoadRecord("SELECT * 
+			FROM kp_match 
+			WHERE Id = $idMatch", $rMatch);
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$db->LoadRecord("SELECT * 
+			FROM kp_journee 
+			WHERE Id = ".$rMatch['Id_journee'], $rJournee);
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '".$rJournee['Code_competition']."' 
+			AND Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
 		if ($equipe == 'A')
 			$idEquipe =  $rMatch['Id_equipeA'];
@@ -167,16 +174,18 @@ class TV extends MyPage
 		
 		// Chargement Equipe 
 		$rEquipe = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipe", $rEquipe);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipe", $rEquipe);
 
 		// Chargement Joueurs  
-		$cmd  = "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = '$equipe' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "And (a.Capitaine Is Null Or a.Capitaine != 'E') ";
-		$cmd .= "Order By a.Numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+			FROM kp_match_joueur a, kp_licence b 
+			WHERE a.Id_match = $idMatch 
+			AND a.Equipe = '$equipe' 
+			AND a.Matric = b.matric 
+			AND (a.Capitaine IS NULL OR a.Capitaine != 'E') 
+			ORDER BY a.Numero ";
 
 		$tJoueurs = null;
 		$db->LoadTable($cmd, $tJoueurs);
@@ -205,13 +214,13 @@ class TV extends MyPage
 		echo "<div id='list_team_player10' class='list_team_player'>".$this->GetPlayer($tJoueurs,9)."</div>\n";
 		
 		// Chargement Entraineur  
-		$cmd  = "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = '$equipe' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "And (a.Capitaine Is Not Null And a.Capitaine = 'E') ";
-		$cmd .= "Order By a.Numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+			FROM kp_match_joueur a, kp_licence b 
+			WHERE a.Id_match = $idMatch 
+			AND a.Equipe = '$equipe' 
+			AND a.Matric = b.matric 
+			AND (a.Capitaine IS NOT NULL OR a.Capitaine = 'E') 
+			ORDER BY a.Numero ";
 
 		$tJoueurs = null;
 		$db->LoadTable($cmd, $tJoueurs);
@@ -227,15 +236,21 @@ class TV extends MyPage
 		$db = new MyBdd();
 		
 		$competition = $this->GetParam('competition');
+		$saison = utyGetSaison();
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$competition."' And Code_saison = " . utyGetSaison(), $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '$competition' 
+			AND Code_saison = $saison ", $rCompetition);
 
 		// Chargement des Equipes Classées ...
-		$cmd  = "Select * FROM gickp_Competitions_Equipes ";
-		$cmd .= "Where Code_compet = '".$competition."' And Code_saison = " . utyGetSaison() . " ";
-		$cmd .= "Order By CltNiveau_publi ";
+		$cmd  = "SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Code_compet = '$competition' 
+			AND Code_saison = $saison 
+			ORDER BY CltNiveau_publi ";
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
@@ -280,15 +295,22 @@ class TV extends MyPage
 		$numero = $this->GetParam('number', '1');
 			
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$db->LoadRecord("SELECT * 
+			FROM kp_match 
+			WHERE Id = $idMatch", $rMatch);
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$db->LoadRecord("SELECT * 
+			FROM kp_journee 
+			WHERE Id = ".$rMatch['Id_journee'], $rJournee);
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '".$rJournee['Code_competition']."' 
+			AND Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
 		if ($equipe == 'A')
 			$idEquipe =  $rMatch['Id_equipeA'];
@@ -297,15 +319,17 @@ class TV extends MyPage
 		
 		// Chargement Equipe 
 		$rEquipe = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipe", $rEquipe);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipe", $rEquipe);
 
 		// Chargement Joueurs  
-		$cmd  = "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = '$equipe' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "And a.Numero = $numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+			FROM kp_match_joueur a, kp_licence b 
+			WHERE a.Id_match = $idMatch 
+			AND a.Equipe = '$equipe' 
+			AND a.Matric = b.matric 
+			AND a.Numero = $numero ";
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
@@ -337,15 +361,22 @@ class TV extends MyPage
 		$medaille = $this->GetParam('medal');
 		
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$db->LoadRecord("SELECT * 
+			FROM kp_match 
+			WHERE Id = $idMatch", $rMatch);
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$db->LoadRecord("SELECT * 
+			FROM kp_journee 
+			WHERE Id = ".$rMatch['Id_journee'], $rJournee);
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '".$rJournee['Code_competition']."' 
+			AND Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
 		if ($equipe == 'A')
 			$idEquipe =  $rMatch['Id_equipeA'];
@@ -354,15 +385,17 @@ class TV extends MyPage
 		
 		// Chargement Equipe 
 		$rEquipe = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipe", $rEquipe);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipe", $rEquipe);
 
 		// Chargement Joueurs  
-		$cmd  = "Select a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance ";
-		$cmd .= "From gickp_Matchs_Joueurs a, gickp_Liste_Coureur b ";
-		$cmd .= "Where a.Id_match = $idMatch ";
-		$cmd .= "And a.Equipe = '$equipe' ";
-		$cmd .= "And a.Matric = b.matric ";
-		$cmd .= "And a.Numero = $numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+			FROM kp_match_joueur a, kp_licence b 
+			WHERE a.Id_match = $idMatch 
+			AND a.Equipe = '$equipe' 
+			AND a.Matric = b.matric 
+			AND a.Numero = $numero ";
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
@@ -393,11 +426,11 @@ class TV extends MyPage
 		$idMatch = $this->GetParamInt('match',-1);
 		
 		$rMatch = null;
-        $sql = "SELECT m.*, lc1.Numero_comite_dept nation1, lc2.Numero_comite_dept nation2 "
-                . "FROM gickp_Matchs m "
-                . "LEFT OUTER JOIN gickp_Liste_Coureur lc1 ON (m.Matric_arbitre_principal = lc1.Matric) "
-                . "LEFT OUTER JOIN gickp_Liste_Coureur lc2 ON (m.Matric_arbitre_secondaire = lc2.Matric) "
-                . "WHERE Id = $idMatch";
+        $sql = "SELECT m.*, lc1.Numero_comite_dept nation1, lc2.Numero_comite_dept nation2 
+			FROM kp_match m 
+			LEFT OUTER JOIN kp_licence lc1 ON (m.Matric_arbitre_principal = lc1.Matric) 
+			LEFT OUTER JOIN kp_licence lc2 ON (m.Matric_arbitre_secondaire = lc2.Matric) 
+			WHERE Id = $idMatch";
 		$db->LoadRecord($sql, $rMatch);
 		
 		echo "<div id='banner_referee'></div>\n";
@@ -420,26 +453,37 @@ class TV extends MyPage
 		$idMatch = $this->GetParamInt('match',-1);
 			
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$db->LoadRecord("SELECT * 
+			FROM kp_match 
+			WHERE Id = $idMatch", $rMatch);
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$db->LoadRecord("SELECT * 
+			FROM kp_journee 
+			WHERE Id = ".$rMatch['Id_journee'], $rJournee);
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '".$rJournee['Code_competition']."' 
+			AND Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
 		$idEquipeA = $rMatch['Id_equipeA'];
 		$idEquipeB = $rMatch['Id_equipeB'];
 
 		// Chargement Equipe A
 		$rEquipeA = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeA", $rEquipeA);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipeA", $rEquipeA);
 
 		// Chargement Equipe B
 		$rEquipeB = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeB", $rEquipeB);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipeB", $rEquipeB);
 
 		echo "<div id='banner_presentation'></div>\n";
 		
@@ -467,26 +511,37 @@ class TV extends MyPage
 		$idMatch = $this->GetParamInt('match',-1);
 			
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$db->LoadRecord("SELECT * 
+			FROM kp_match 
+			WHERE Id = $idMatch", $rMatch);
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$db->LoadRecord("SELECT * 
+			FROM kp_journee 
+			WHERE Id = ".$rMatch['Id_journee'], $rJournee);
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '".$rJournee['Code_competition']."' 
+			AND Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
 		$idEquipeA = $rMatch['Id_equipeA'];
 		$idEquipeB = $rMatch['Id_equipeB'];
 
 		// Chargement Equipe A
 		$rEquipeA = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeA", $rEquipeA);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipeA", $rEquipeA);
 
 		// Chargement Equipe B
 		$rEquipeB = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipeB", $rEquipeB);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipeB", $rEquipeB);
 
 		echo "<div id='banner_presentation'></div>\n";
 		
@@ -519,15 +574,22 @@ class TV extends MyPage
 		$equipe = $this->GetParam('team', 'A');
 			
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$db->LoadRecord("SELECT * 
+			FROM kp_match 
+			WHERE Id = $idMatch", $rMatch);
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$db->LoadRecord("SELECT * 
+			FROM kp_journee 
+			WHERE Id = ".$rMatch['Id_journee'], $rJournee);
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '".$rJournee['Code_competition']."' 
+			AND Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
 		$idEquipeA = $rMatch['Id_equipeA'];
 		$idEquipeB = $rMatch['Id_equipeB'];
@@ -539,7 +601,9 @@ class TV extends MyPage
 		
 		// Chargement Equipe 
 		$rEquipe = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipe", $rEquipe);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipe", $rEquipe);
 
 		echo "<div id='banner_single'></div>\n";
 		
@@ -559,15 +623,22 @@ class TV extends MyPage
 		$medaille = $this->GetParam('medal');
 			
 		$rMatch = null;
-		$db->LoadRecord("Select * from gickp_Matchs Where Id = $idMatch", $rMatch);
+		$db->LoadRecord("SELECT * 
+			FROM kp_match 
+			WHERE Id = $idMatch", $rMatch);
 
 		// Chargement Record Journée ...
 		$rJournee = null;
-		$db->LoadRecord("Select * from gickp_Journees Where Id = ".$rMatch['Id_journee'], $rJournee);
+		$db->LoadRecord("SELECT * 
+			FROM kp_journee 
+			WHERE Id = ".$rMatch['Id_journee'], $rJournee);
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
-		$db->LoadRecord("Select * from gickp_Competitions Where Code = '".$rJournee['Code_competition']."' And Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition 
+			WHERE Code = '".$rJournee['Code_competition']."' 
+			AND Code_saison = '".$rJournee['Code_saison']."'", $rCompetition);
 		
 		$idEquipeA = $rMatch['Id_equipeA'];
 		$idEquipeB = $rMatch['Id_equipeB'];
@@ -579,7 +650,9 @@ class TV extends MyPage
 		
 		// Chargement Equipe 
 		$rEquipe = null;
-		$db->LoadRecord("Select * from gickp_Competitions_Equipes Where Id = $idEquipe", $rEquipe);
+		$db->LoadRecord("SELECT * 
+			FROM kp_competition_equipe 
+			WHERE Id = $idEquipe", $rEquipe);
 
 		echo "<div id='banner_single'></div>\n";
 		

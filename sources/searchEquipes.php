@@ -21,7 +21,7 @@ $term = trim(utyGetGet('term'));
 $term = preg_replace('/\s+/', ' ', $term);
 $term2 = preg_replace('/\s/', '-', $term);
 $sql = "SELECT * 
-    FROM gickp_Equipe 
+    FROM kp_equipe 
     WHERE Code_club LIKE ? 
     OR Libelle LIKE ? 
     OR Libelle LIKE ? 

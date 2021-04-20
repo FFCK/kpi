@@ -2,7 +2,7 @@
 		<form method="POST" action="FeuilleInstances.php" name="formInstances" id="formInstances" enctype="multipart/form-data">
 			<input type='hidden' name='Cmd' Value=''/>
 			<input type='hidden' name='ParamCmd' Value=''/>
-            <input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Journees'/>
+            <input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='kp_journee'/>
             <input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = '/>
             <input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
 

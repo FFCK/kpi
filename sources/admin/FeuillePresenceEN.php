@@ -39,7 +39,7 @@ class FeuillePresence extends MyPage {
 
         if (strlen($codeCompet) > 0) {
             $sql = "SELECT Id, Libelle, Code_club, Numero 
-                FROM gickp_Competitions_Equipes 
+                FROM kp_competition_equipe 
                 WHERE Code_compet = ? 
                 AND Code_saison = ? 
                 ORDER BY Libelle, Id ";
@@ -55,9 +55,9 @@ class FeuillePresence extends MyPage {
                 a.Capitaine, b.Origine, b.Numero_club, 
                 b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, 
                 b.Naissance, b.Reserve, c.Arb, c.niveau 
-                FROM gickp_Competitions_Equipes_Joueurs a 
-                LEFT OUTER JOIN gickp_Liste_Coureur b ON (a.Matric = b.Matric) 
-                LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
+                FROM kp_competition_equipe_joueur a 
+                LEFT OUTER JOIN kp_licence b ON (a.Matric = b.Matric) 
+                LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
                 WHERE Id_Equipe = ? 
                 ORDER BY Field(IF(a.Capitaine='C', '-', IF(a.Capitaine='', '-', a.Capitaine)), '-', 'E', 'A', 'X'), 
                 Numero, Nom, Prenom ";

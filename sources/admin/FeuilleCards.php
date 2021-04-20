@@ -97,11 +97,11 @@ class FeuilleCards extends MyPage
                 SUM(IF(md.Id_evt_match='V', 1, 0)) Vert, 
                 SUM(IF(md.Id_evt_match='J', 1, 0)) Jaune, 
                 SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge 
-            FROM gickp_Competitions_Equipes_Joueurs cej
-            JOIN gickp_Competitions_Equipes ce ON (ce.Id = cej.Id_equipe)
-            JOIN gickp_Matchs m ON (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)
-            JOIN gickp_Journees j ON (m.Id_journee = j.Id)
-            LEFT OUTER JOIN gickp_Matchs_Detail md ON (m.Id = md.Id_match AND cej.Matric = md.Competiteur)
+            FROM kp_competition_equipe_joueur cej
+            JOIN kp_competition_equipe ce ON (ce.Id = cej.Id_equipe)
+            JOIN kp_match m ON (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)
+            JOIN kp_journee j ON (m.Id_journee = j.Id)
+            LEFT OUTER JOIN kp_match_detail md ON (m.Id = md.Id_match AND cej.Matric = md.Competiteur)
             WHERE j.Code_saison = ? 
             AND j.Code_competition = ? 
             GROUP BY ce.Libelle, cej.Matric

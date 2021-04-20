@@ -19,7 +19,7 @@ if (strlen($verrouCompet) > 0 && $_SESSION['profile'] <= 4) {
 	$myBdd = new MyBdd();
 	$saison = $myBdd->GetActiveSaison();
 
-	$sql = "UPDATE gickp_Competitions 
+	$sql = "UPDATE kp_competition 
 		SET Verrou = ? 
 		WHERE Code_saison = ? 
 		AND Code = ? ";

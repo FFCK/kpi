@@ -27,7 +27,7 @@ $idEquipes = [];
 //Equipes
 $sql = "SELECT j.Id, j.Code_saison, j.Code_competition, ce.Libelle, 
 	ce.Poule, ce.Tirage, ce.Id idEquipe 
-	FROM gickp_Journees j, gickp_Matchs m, gickp_Competitions_Equipes ce 
+	FROM kp_journee j, kp_match m, kp_competition_equipe ce 
 	WHERE m.Id_journee = j.Id 
 	AND m.Id = ? 
 	AND j.Code_saison = ce.Code_saison 
@@ -54,8 +54,8 @@ while ($row = $result->fetch()) {
 $in  = str_repeat('?,', count($idEquipes) - 1) . '?';
 $sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, 
 	(c.Arb IS NULL) AS sortCol 
-	FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Joueurs a 
-	LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric 
+	FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
+	LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 	WHERE a.Id_equipe = b.Id 
 	AND a.Capitaine <> 'X' 
 	AND b.Id IN ($in) 
@@ -79,8 +79,8 @@ while ($row = $result->fetch()) {
 }
 //Pool
 $sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau 
-	FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Joueurs a 
-	LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric 
+	FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
+	LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 	WHERE a.Id_equipe = b.Id 
 	AND b.Code_compet = 'POOL' 
 	AND (a.Matric LIKE :term1 
@@ -109,7 +109,7 @@ while ($row = $result->fetch()) {
 }
 //Autres arbitres
 $sql = "SELECT lc.*, c.Libelle, b.Arb, b.niveau 
-	FROM gickp_Liste_Coureur lc, gickp_Arbitre b, gickp_Club c 
+	FROM kp_licence lc, kp_arbitre b, kp_club c 
 	WHERE lc.Matric = b.Matric 
 	AND (lc.Matric LIKE :term1 
 		OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(:term1) 
