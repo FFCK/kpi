@@ -29,7 +29,7 @@ if (substr($codeCompet, 0, 1) != 'N' && substr($codeCompet, 0, 2) != 'CF') {
     $q = (int) trim(utyGetGet('q'));
 
     $sql = "SELECT ce.Code_saison, ce.Code_compet 
-        FROM `gickp_Competitions_Equipes` ce, `gickp_Competitions_Equipes_Joueurs` cej 
+        FROM `kp_competition_equipe` ce, `kp_competition_equipe_joueur` cej 
         WHERE ce.Id = cej.Id_equipe 
         AND (ce.Code_saison = ? OR ce.Code_saison = ?) 
         AND ce.Numero = ? 

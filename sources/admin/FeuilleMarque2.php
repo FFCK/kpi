@@ -37,9 +37,9 @@ class GestionMatchDetail extends MyPageSecure
 			m.Heure_fin, j.*, j.Code_saison saison, c.*, m.Type Type_match, m.Validation Valid_match, 
 			m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, 
 			ce2.Code_club clubB 
-			FROM gickp_Journees j, gickp_Competitions c, gickp_Matchs m 
-			LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (ce1.Id = m.Id_equipeA) 
-			LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (ce2.Id = m.Id_equipeB) 
+			FROM kp_journee j, kp_competition c, kp_match m 
+			LEFT OUTER JOIN kp_competition_equipe ce1 ON (ce1.Id = m.Id_equipeA) 
+			LEFT OUTER JOIN kp_competition_equipe ce2 ON (ce2.Id = m.Id_equipeB) 
 			WHERE m.Id = ? 
 			AND m.Id_journee = j.Id 
 			AND j.Code_competition = c.Code 
@@ -89,8 +89,8 @@ class GestionMatchDetail extends MyPageSecure
 			}
 			$sql3 = "SELECT a.Matric, a.Numero, a.Capitaine, IF(a.Capitaine = 'E', 1, 0) Entraineur, 
 				b.Matric, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Origine, c.Matric Matric_titulaire 
-				FROM gickp_Liste_Coureur b, gickp_Matchs_Joueurs a 
-				LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c 
+				FROM kp_licence b, kp_match_joueur a 
+				LEFT OUTER JOIN kp_competition_equipe_joueur c 
 					ON (c.Id_equipe = ? AND c.Matric = a.Matric) 
 				WHERE a.Matric = b.Matric 
 				AND a.Id_match = ? 
@@ -110,8 +110,8 @@ class GestionMatchDetail extends MyPageSecure
 		// Evts
 			$sql5 = "SELECT d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.motif, 
 				d.Competiteur, d.Numero, d.Equipe_A_B, c.Nom, c.Prenom 
-				FROM gickp_Matchs_Detail d 
-				LEFT OUTER JOIN gickp_Liste_Coureur c ON d.Competiteur = c.Matric 
+				FROM kp_match_detail d 
+				LEFT OUTER JOIN kp_licence c ON d.Competiteur = c.Matric 
 				WHERE d.Id_match = ? 
 				ORDER BY d.Periode DESC, d.Temps ASC, d.Id_evt_match DESC, d.Id ";
 			$result5 = $myBdd->pdo->prepare($sql5);

@@ -38,7 +38,7 @@ class GestionCopieCompetition extends MyPageSecure
 		// Liste des saisons
 		$arraySaisons = array();
 		$sql = "SELECT DISTINCT Code 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -53,7 +53,7 @@ class GestionCopieCompetition extends MyPageSecure
 		$arrayCompetitionOrigine = array();
 		$sql = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, 
 			c.Soustitre, c.Soustitre2, c.commentairesCompet, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_saison = ? 
 			AND c.Code_ref = g.Groupe 
 			ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
@@ -92,7 +92,7 @@ class GestionCopieCompetition extends MyPageSecure
 		$sqlFiltreCompetition = utyGetFiltreCompetition('');
 		$sql = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Nb_equipes, c.Qualifies, c.Elimines, 
 			c.Soustitre, c.Soustitre2, c.commentairesCompet, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_saison = ? 
 			AND c.Code_ref = g.Groupe 
             $sqlFiltreCompetition
@@ -130,7 +130,7 @@ class GestionCopieCompetition extends MyPageSecure
 		$sql = "SELECT Id, Code_competition, Code_saison, Phase, Niveau, Date_debut, Date_fin, 
 			Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, 
 			Organisateur, Delegue 
-			FROM gickp_Journees 
+			FROM kp_journee 
 			WHERE Code_competition = ? 
 			AND Code_saison = ? 
 			ORDER By Niveau, Phase, Lieu ";
@@ -143,7 +143,7 @@ class GestionCopieCompetition extends MyPageSecure
 		if (count($listJournees) > 0) {
 			$in = str_repeat('?,', count($listJournees) - 1) . '?';
 			$sql2 = "SELECT COUNT(Id) nbMatchs 
-				FROM gickp_Matchs 
+				FROM kp_match 
 				WHERE Id_journee IN ($in) ";
 			$result2 = $myBdd->pdo->prepare($sql2);
 			$result2->execute($listJournees);
@@ -174,7 +174,7 @@ class GestionCopieCompetition extends MyPageSecure
         if ($recherche_nb_equipes != 0) {
             $arraySchemas = array();
             $sql = "SELECT c.*, g.id 
-				FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+				FROM kp_competition c, kp_groupe g 
 				WHERE 1=1 
 				AND c.Code_typeclt = 'CP' 
 				AND c.Nb_equipes > 0 
@@ -186,7 +186,7 @@ class GestionCopieCompetition extends MyPageSecure
 			$result->execute(array($recherche_nb_equipes));
 			while ($row = $result->fetch()) {
 	            $sql2 = "SELECT COUNT(m.Id) nbMatchs 
-					FROM gickp_Matchs m, gickp_Journees j 
+					FROM kp_match m, kp_journee j 
 					WHERE j.Id = m.Id_journee 
 					AND j.Code_competition = ? 
 					AND j.Code_saison = ? ";
@@ -256,30 +256,30 @@ class GestionCopieCompetition extends MyPageSecure
 		$sql = "SELECT Id, Code_competition, Code_saison, Phase, Niveau, Etape, Nbequipes, 
 			Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, Departement, 
 			Responsable_insc, Responsable_R1, Organisateur, Delegue 
-			FROM gickp_Journees 
+			FROM kp_journee 
 			WHERE Code_competition = ? 
 			AND Code_saison = ? 
 			ORDER BY Id ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($competOrigine, $saisonOrigine));
 	
-		$sql2a = "CREATE TEMPORARY TABLE gickp_Tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+		$sql2a = "CREATE TEMPORARY TABLE kp_tmp (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
 		$myBdd->pdo->query($sql2a);
-		$sql3a = "CREATE TEMPORARY TABLE gickp_Tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
+		$sql3a = "CREATE TEMPORARY TABLE kp_tmp2 (Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
 		$myBdd->pdo->query($sql3a);
 
-		$sql2 = "INSERT INTO gickp_Tmp (Num) 
+		$sql2 = "INSERT INTO kp_tmp (Num) 
 			SELECT DISTINCT Id 
-			FROM gickp_Competitions_Equipes 
+			FROM kp_competition_equipe 
 			WHERE Code_compet = ? 
 			AND Code_saison = ? 
 			ORDER BY Poule, Tirage, Libelle; ";
 		$result2 = $myBdd->pdo->prepare($sql2);
 		$result2->execute(array($competOrigine, $saisonOrigine));
 
-		$sql3 = "INSERT INTO gickp_Tmp2 (Num) 
+		$sql3 = "INSERT INTO kp_tmp2 (Num) 
 			SELECT DISTINCT Id 
-			FROM gickp_Competitions_Equipes 
+			FROM kp_competition_equipe 
 			WHERE Code_compet = ? 
 			AND Code_saison = ? 
 			ORDER BY Poule, Tirage, Libelle; ";
@@ -305,7 +305,7 @@ class GestionCopieCompetition extends MyPageSecure
 				if ($Delegue == '%') $Delegue = $row['Delegue'];
 
 				$nextIdJournee = $myBdd->GetNextIdJournee();
-				$sql1 = "INSERT INTO gickp_Journees 
+				$sql1 = "INSERT INTO kp_journee 
 					(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, `Type`, 
 					Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, 
 					Responsable_R1, Organisateur, Delegue) 
@@ -318,7 +318,7 @@ class GestionCopieCompetition extends MyPageSecure
 					$Responsable_R1, $Organisateur, $Delegue
 				));
 				
-				$sql4 = "INSERT INTO gickp_Matchs 
+				$sql4 = "INSERT INTO kp_match 
 					(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Type`) 
 					SELECT ?, ";
 				if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
@@ -328,9 +328,9 @@ class GestionCopieCompetition extends MyPageSecure
 				}
 				$sql4 .= "DATE_ADD(m.Date_match, INTERVAL + ? DAY), m.Heure_match, 
 					m.Terrain, m.Numero_ordre, m.Type 
-					FROM gickp_Matchs m ";
+					FROM kp_match m ";
 				if ($row['Niveau'] <= 1 && $init1erTour == 'init') {
-					$sql4 .= ", gickp_Tmp ta, gickp_Tmp2 tb ";
+					$sql4 .= ", kp_tmp ta, kp_tmp2 tb ";
 				}
 				$sql4 .= "WHERE m.Id_journee = ? ";
 				if ($row['Niveau'] <= 1 && $init1erTour == 'init') {

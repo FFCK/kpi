@@ -57,21 +57,21 @@ class Matchs extends MyPage
 
 	function LoadMatch(&$db, &$tMatch, $terrain, $heureMatch)
 	{
-		$cmd  = "SELECT a.Id, a.Terrain, a.Heure_match, a.Heure_fin, a.Statut, b.Code_competition, ";
-		$cmd .= "a.Id_EquipeA, a.Id_EquipeB, c.Libelle LibelleA, d.Libelle LibelleB, c.Code_club NationA, d.Code_club NationB ";
-		$cmd .= "FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions_Equipes c, gickp_Competitions_Equipes d ";
-		$cmd .= "WHERE a.Id_journee = b.Id ";
-		$cmd .= "And a.Id_EquipeA = c.Id ";
-		$cmd .= "And a.Id_EquipeB = d.Id ";
+		$cmd  = "SELECT a.Id, a.Terrain, a.Heure_match, a.Heure_fin, a.Statut, b.Code_competition, 
+			a.Id_EquipeA, a.Id_EquipeB, c.Libelle LibelleA, d.Libelle LibelleB, c.Code_club NationA, d.Code_club NationB 
+			FROM kp_match a, kp_journee b, kp_competition_equipe c, kp_competition_equipe d 
+			WHERE a.Id_journee = b.Id 
+			AND a.Id_EquipeA = c.Id 
+			AND a.Id_EquipeB = d.Id 
+			AND b.Code_competition IN ('CECF', 'CECH') 
+			AND a.Heure_fin = '00:00:00' 
+			AND a.Statut IN ('ATT', 'ON') 
+			AND a.Heure_match > '$heureMatch' 
+			AND a.Terrain = $terrain 
+			ORDER BY a.Heure_match 
+			LIMIT 1 ";
 		//$cmd .= "AND a.Date_match = '2014-09-25' ";
 		/* TODO: Code_competition dynamique */
-		$cmd .= "And b.Code_competition In ('CECF', 'CECH') ";
-		$cmd .= "And a.Heure_fin = '00:00:00' ";
-		$cmd .= "And a.Statut In ('ATT', 'ON') ";
-		$cmd .= "And a.Heure_match > '$heureMatch' ";
-		$cmd .= "And a.Terrain = $terrain ";
-		$cmd .= "Order By a.Heure_match ";
-		$cmd .= "Limit 1 ";
 
 		$db->LoadTable($cmd, $tMatch);
 	
@@ -95,14 +95,14 @@ class Matchs extends MyPage
     {
 		$db = new MyBdd();
 	
-		$cmd  = "SELECT max(a.Heure_match) Heure_match ";
-		$cmd .= "FROM gickp_Matchs a, gickp_Journees b ";
-		$cmd .= "WHERE a.Id_journee = b.Id ";
+		$cmd  = "SELECT max(a.Heure_match) Heure_match 
+			FROM kp_match a, kp_journee b 
+			WHERE a.Id_journee = b.Id 
+			AND b.Code_competition In ('CECF', 'CECH') 
+			AND a.Heure_fin != '00:00:00' 
+			AND a.Statut In ('END') ";
 		//$cmd .= "AND a.Date_match = '2014-09-25' ";
 		/* TODO: Code_competition dynamique */
-		$cmd .= "And b.Code_competition In ('CECF', 'CECH') ";
-		$cmd .= "And a.Heure_fin != '00:00:00' ";
-		$cmd .= "And a.Statut In ('END') ";
 	
 		$rMax = null;
 		$db->LoadRecord($cmd, $rMax);

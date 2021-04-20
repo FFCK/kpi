@@ -143,7 +143,7 @@ class GestionUtilisateur extends MyPageSecure
 		
 		// Chargement des Utilisateurs ...
 		$sql = "SELECT u.* 
-			FROM gickp_Utilisateur u 
+			FROM kp_user u 
 			WHERE u.Niveau >= ? 
 			AND u.Niveau LIKE ? 
 			ORDER BY u.Niveau, u.Identite, u.Fonction ";
@@ -239,7 +239,7 @@ class GestionUtilisateur extends MyPageSecure
 		
 		// Chargement des Saisons ...
 		$sql = "SELECT Code 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code DESC ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -266,7 +266,7 @@ class GestionUtilisateur extends MyPageSecure
 		
 		// Chargement des Compétitions ...
 		$sql = "SELECT DISTINCT c.Code, c.Libelle, c.Code_niveau, g.id, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_ref = g.Groupe 
 			GROUP BY c.Code 
 			ORDER BY g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code ";
@@ -304,7 +304,7 @@ class GestionUtilisateur extends MyPageSecure
 		
 		// Chargement des évènements
 		$sql = "SELECT * 
-			FROM gickp_Evenement 
+			FROM kp_evenement 
 			ORDER BY Id DESC ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
@@ -399,14 +399,14 @@ class GestionUtilisateur extends MyPageSecure
 	
 				if ($bNew) {
 					$sql = "SELECT Code 
-						FROM gickp_Utilisateur 
+						FROM kp_user 
 						WHERE Code = ? ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($guser));
 					if ($result->rowCount() == 1) {
 						return "Utilisateur déjà existant !";
 					} else {
-						$sql = "INSERT INTO gickp_Utilisateur 
+						$sql = "INSERT INTO kp_user 
 							(Code, Identite, Mail, Tel, Fonction, Niveau, Pwd, Type_filtre_competition, 
 							Filtre_competition, Filtre_saison, Filtre_competition_sql, Filtre_journee, 
 							Limitation_equipe_club, Id_Evenement, Date_debut, Date_fin) 
@@ -427,7 +427,7 @@ class GestionUtilisateur extends MyPageSecure
 						$filtreCompetitionSql, $filtreJournee, $limitclub, 
 						$filtreEvenement, $Date_debut, $Date_fin
 					);
-					$sql = "UPDATE gickp_Utilisateur 
+					$sql = "UPDATE kp_user 
 						SET Identite = ?, Mail = ?, Tel = ?, Fonction = ?, Niveau = ?,  
 						Type_filtre_competition = ?, Filtre_competition = ?, Filtre_saison = ?, 
 						Filtre_competition_sql = ?, Filtre_journee = ?, Limitation_equipe_club = ?, 
@@ -557,7 +557,7 @@ class GestionUtilisateur extends MyPageSecure
 			$myBdd->pdo->beginTransaction();
 
 			$in = str_repeat('?,', count($arrayParam) - 1) . '?';
-			$sql = "DELETE FROM gickp_Utilisateur 
+			$sql = "DELETE FROM kp_user 
 				WHERE Code IN ($in) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayParam);

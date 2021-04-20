@@ -27,7 +27,7 @@ if (!utyIsAutorisationJournee($idJournee)) {
 	die("Vous n'avez pas l'autorisation de modifier les matchs de cette journée !");
 }
 
-$sql = "UPDATE gickp_Journees 
+$sql = "UPDATE kp_journee 
 	SET $TypeUpdate = ? 
 	WHERE Id = ? ";
 $result = $myBdd->pdo->prepare($sql);

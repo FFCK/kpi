@@ -27,7 +27,7 @@ $idLigne = explode('_', $idLigne);
 $myBdd->AutorisationMatch($idMatch);
 
 if ($type == 'insert') {
-	$sql = "INSERT INTO gickp_Matchs_Detail 
+	$sql = "INSERT INTO kp_match_detail 
 		SET Id_match = ?, Periode = ?, Temps = ?, Id_evt_match = ?, 
 		Competiteur = ?, Numero = ?, Equipe_A_B = ?, motif = ? ";
 	$result = $myBdd->pdo->prepare($sql);
@@ -40,7 +40,7 @@ if ($type == 'insert') {
 	echo $last;
 
 } elseif ($type == 'update') {
-	$sql = "UPDATE gickp_Matchs_Detail 
+	$sql = "UPDATE kp_match_detail 
 		SET Id_match = ?, Periode = ?, 
 		Temps = ?, Id_evt_match = ?, Competiteur = ?, 
 		Numero = ?, Equipe_A_B = ?, motif = ? 
@@ -54,7 +54,7 @@ if ($type == 'insert') {
 	echo 'OK';
 
 } elseif($type == 'delete') {
-	$sql = "DELETE FROM gickp_Matchs_Detail 
+	$sql = "DELETE FROM kp_match_detail 
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($idLigne[1]));

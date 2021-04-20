@@ -15,18 +15,18 @@ include_once('../../live/create_cache_match.php');
 session_start();
 
 $myBdd = new MyBdd();
-$idMatch = (int) utiGetPost('idMatch');
-$start_time = trim(utiGetPost('start_time'));
-$run_time = trim(utiGetPost('run_time'));
+$idMatch = (int) utyGetPost('idMatch');
+$start_time = trim(utyGetPost('start_time'));
+$run_time = trim(utyGetPost('run_time'));
 
 if ($action == 'RAZ'){
-	$sql = "DELETE FROM gickp_Chrono 
+	$sql = "DELETE FROM kp_chrono 
 		WHERE IdMatch = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($idMatch));
 } else {
 	$start_time_server = time()%86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
-	$sql = "UPDATE gickp_Chrono 
+	$sql = "UPDATE kp_chrono 
 		SET start_time = ?, 
 		start_time_server = ?, 
 		run_time = ? 

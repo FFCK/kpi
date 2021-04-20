@@ -25,7 +25,7 @@ class GestionParamJournee extends MyPageSecure
 				j.Type, j.Plan_eau, j.Departement, c.Code_typeclt, j.Responsable_insc, 
 				j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, 
 				j.Rep_athletes, j.Arb_nj1, j.Arb_nj2, j.Arb_nj3, j.Arb_nj4, j.Arb_nj5 
-				FROM gickp_Journees j, gickp_Competitions c 
+				FROM kp_journee j, kp_competition c 
 				WHERE j.Id = ? 
 				AND j.Code_competition = c.Code 
 				AND j.Code_saison = c.Code_saison ";
@@ -74,7 +74,7 @@ class GestionParamJournee extends MyPageSecure
 						Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, 
 						Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
 						Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
-						FROM gickp_Journees 
+						FROM kp_journee 
 						WHERE Code_competition = ? 
 						AND Code_saison = ? 
 						ORDER BY Niveau, Phase ";
@@ -100,7 +100,7 @@ class GestionParamJournee extends MyPageSecure
 		//Liste des codes compétition
 		$arrayCompetition = array();
 		$sql = "SELECT c.*, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_ref = g.Groupe 
 			GROUP BY c.Code 
 			ORDER BY g.section, g.ordre, COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";	 
@@ -124,7 +124,7 @@ class GestionParamJournee extends MyPageSecure
 		// Liste des saisons
 		$arraySaisons = array();
 		$sql  = "SELECT DISTINCT Code 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -137,8 +137,8 @@ class GestionParamJournee extends MyPageSecure
 		// RC disponibles
 		$arrayRC = array();
 		$sql = "SELECT rc.Matric, rc.Ordre, lc.Nom, lc.Prenom 
-			FROM gickp_Rc rc 
-			LEFT OUTER JOIN gickp_Liste_Coureur lc 
+			FROM kp_rc rc 
+			LEFT OUTER JOIN kp_licence lc 
 				ON (rc.Matric = lc.Matric) 
 			WHERE rc.Code_Competition = ?
 			AND rc.Code_saison = ? 
@@ -200,7 +200,7 @@ class GestionParamJournee extends MyPageSecure
 				$myBdd->pdo->beginTransaction();
 		
 				// Modification ...
-				$sql = "UPDATE gickp_Journees 
+				$sql = "UPDATE kp_journee 
 					SET Code_competition = ?, Code_saison = ?, 
 					`Type` = ?, Phase = ?, Niveau = ?, 
 					Etape = ?, Nbequipes = ?, Date_debut = ?, 
@@ -237,7 +237,7 @@ class GestionParamJournee extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 		
-				$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
+				$sql = "INSERT INTO kp_journee (Id, Code_competition, code_saison, Phase, 
 					`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
 					Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, 
 					Delegue, ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
@@ -253,24 +253,24 @@ class GestionParamJournee extends MyPageSecure
 				
 				//Copie des matchs
 				if ($AvecMatchs == 'oui') {
-					$sql2a = "CREATE TEMPORARY TABLE gickp_Tmp 
+					$sql2a = "CREATE TEMPORARY TABLE kp_tmp 
 						(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
 					$myBdd->pdo->exec($sql2a);
-					$sql2 = "INSERT INTO gickp_Tmp (Num) 
+					$sql2 = "INSERT INTO kp_tmp (Num) 
 						SELECT DISTINCT ce.Id 
-						FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+						FROM kp_competition_equipe ce, kp_journee j 
 						WHERE ce.Code_compet = j.Code_competition 
 						AND ce.Code_saison = j.Code_saison 
 						AND j.Id = $idJournee 
 						ORDER BY ce.Tirage; ";
 					$myBdd->pdo->exec($sql2);
 
-					$sql3a = "CREATE TEMPORARY TABLE gickp_Tmp2 
+					$sql3a = "CREATE TEMPORARY TABLE kp_tmp2 
 						(Id int(11) AUTO_INCREMENT, Num int(11) default NULL, PRIMARY KEY  (`Id`)); ";
 					$myBdd->pdo->exec($sql3a);
-					$sql3 = "INSERT INTO gickp_Tmp2 (Num) 
+					$sql3 = "INSERT INTO kp_tmp2 (Num) 
 						SELECT DISTINCT ce.Id 
-						FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+						FROM kp_competition_equipe ce, kp_journee j 
 						WHERE ce.Code_compet = j.Code_competition 
 						AND ce.Code_saison = j.Code_saison 
 						AND j.Id = $idJournee 
@@ -278,21 +278,21 @@ class GestionParamJournee extends MyPageSecure
 					$myBdd->pdo->exec($sql3);
 
 					if ($Niveau <= 1 && $CodMatchs == 'oui') {
-						$sql4 = "INSERT INTO gickp_Matchs 
+						$sql4 = "INSERT INTO kp_match 
 							(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
 							SELECT $nextIdJournee, CONCAT(m.Libelle, ' [T', ta.Id, '/T', tb.Id, ']'), 
 							DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), m.Heure_match, m.Terrain, 
 							m.Numero_ordre, m.Validation 
-							FROM gickp_Matchs m, gickp_Tmp ta, gickp_Tmp2 tb 
+							FROM kp_match m, kp_tmp ta, kp_tmp2 tb 
 							WHERE m.Id_journee = $idJournee 
 							AND ta.Num=m.Id_equipeA 
 							AND tb.Num=m.Id_equipeB ";
 					} else {
-						$sql4 = "INSERT INTO gickp_Matchs 
+						$sql4 = "INSERT INTO kp_match 
 							(Id_journee, Libelle, Date_match, Heure_match, Terrain, Numero_ordre, `Validation`) 
 							SELECT $nextIdJournee, m.Libelle, DATE_ADD(m.Date_match,INTERVAL +'$diffdate' DAY), 
 							m.Heure_match, m.Terrain, m.Numero_ordre, m.Validation 
-							FROM gickp_Matchs m 
+							FROM kp_match m 
 							WHERE m.Id_journee = $idJournee ";
 					}
 					$myBdd->pdo->exec($sql4);
@@ -346,7 +346,7 @@ class GestionParamJournee extends MyPageSecure
 
 			foreach ($listJournees as $Journee) {
 				// Modification ...
-				$sql = "UPDATE gickp_Journees 
+				$sql = "UPDATE kp_journee 
 					SET Date_debut = ?, Date_fin = ?, Nom = ?, 
 					Libelle = ?, Lieu = ?, Departement = ?, Plan_eau = ?, 
 					Responsable_R1 = ?, Responsable_insc = ?, Organisateur = ?, 
@@ -389,14 +389,14 @@ class GestionParamJournee extends MyPageSecure
 			$myBdd = $this->myBdd;
 	
 			$sql = "SELECT Date_debut, Date_fin 
-				FROM gickp_Journees 
+				FROM kp_journee 
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idJournee));
 			$row = $result->fetch();
 			$Date_debut = $row[0];
 			
-			$sql = "UPDATE gickp_Matchs 
+			$sql = "UPDATE kp_match 
 				SET Date_match = ? 
 				WHERE Id_journee = ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -424,7 +424,7 @@ class GestionParamJournee extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 	
-				$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, 
+				$sql = "INSERT INTO kp_journee (Id, Code_competition, code_saison, Phase, 
 					`Type`, Niveau, Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, 
 					Plan_eau, Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, 
 					ChefArbitre, Rep_athletes, Arb_nj1, Arb_nj2,
@@ -433,7 +433,7 @@ class GestionParamJournee extends MyPageSecure
 					Etape, Nbequipes, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, 
 					Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
 					Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
-					FROM gickp_Journees 
+					FROM kp_journee 
 					WHERE Id = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($nextIdJournee, $idJournee));

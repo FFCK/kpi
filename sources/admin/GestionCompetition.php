@@ -47,7 +47,7 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
 
 		// Informations pour SelectionOuiNon ...
-		$_SESSION['tableOuiNon'] = 'gickp_Competitions';
+		$_SESSION['tableOuiNon'] = 'kp_competition';
 	
 		$where = "Where Code_saison = '";
 		$where .= $codeSaison;
@@ -57,7 +57,7 @@ class GestionCompetition extends MyPageSecure
 		
 		// Chargement des Saisons ...
 		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code DESC ";	 
 		
@@ -106,8 +106,8 @@ class GestionCompetition extends MyPageSecure
 			$arrayAfficheCompet = [$AfficheCompet];
 		}
 		$sql = "SELECT c.*, g.section, g.ordre, g.id, GROUP_CONCAT(rc.Matric) rcs 
-			FROM gickp_Competitions_Groupes g, gickp_Competitions c  
-			LEFT OUTER JOIN gickp_Rc rc ON 
+			FROM kp_groupe g, kp_competition c  
+			LEFT OUTER JOIN kp_rc rc ON 
 				(c.Code_saison = rc.Code_saison AND c.Code = rc.Code_competition) 
 			WHERE c.Code_saison = ?  
 			$sqlFiltreCompetition 
@@ -144,7 +144,7 @@ class GestionCompetition extends MyPageSecure
             }
 
             $sql2 = "SELECT COUNT(m.Id) nbMatchs 
-				FROM gickp_Matchs m, gickp_Journees j 
+				FROM kp_match m, kp_journee j 
 				WHERE j.Id = m.Id_journee 
 				AND j.Code_competition = :Code_competition
 				AND j.Code_saison = :Code_saison ";
@@ -191,7 +191,7 @@ class GestionCompetition extends MyPageSecure
 		// Chargement des Codes Compétitions existants
 		$arrayCompetExist = array();
 		$sql  = "SELECT Code, Code_niveau, Libelle, Code_ref 
-			FROM gickp_Competitions 
+			FROM kp_competition 
 			GROUP BY Code, Libelle 
 			ORDER BY Code_ref, Code ";	 
     	foreach ($myBdd->pdo->query($sql) as $row) {
@@ -303,7 +303,7 @@ class GestionCompetition extends MyPageSecure
         
 
 		if (strlen($codeCompet) > 0) {
-			$sql = "INSERT INTO gickp_Competitions 
+			$sql = "INSERT INTO kp_competition 
 				(Code, Code_saison, Code_niveau, Libelle, Soustitre, 
 				Soustitre2, Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons, 
 				En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
@@ -326,7 +326,7 @@ class GestionCompetition extends MyPageSecure
 				if($TitreJournee == '') {
 					$TitreJournee = utyGetPost('labelCompet');
 				}
-				$sql = "INSERT INTO gickp_Journees (Id, Code_competition, code_saison, Phase, Niveau, Date_debut, 
+				$sql = "INSERT INTO kp_journee (Id, Code_competition, code_saison, Phase, Niveau, Date_debut, 
 					Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, Responsable_R1, 
 					Organisateur, Delegue, Publication) 
 					VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -366,7 +366,7 @@ class GestionCompetition extends MyPageSecure
 		//Contrôle suppression possible
 		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
 		$sql = "SELECT Id 
-			FROM gickp_Journees 
+			FROM kp_journee 
 			WHERE Code_competition IN ($in) 
 			AND Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -380,7 +380,7 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "DELETE FROM gickp_Competitions 
+			$sql = "DELETE FROM kp_competition 
 				WHERE Code IN ($in) 
 				AND Code_saison = ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -442,7 +442,7 @@ class GestionCompetition extends MyPageSecure
 			SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
 			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, Code_tour, Qualifies, 
 			Elimines, Points, goalaverage, Statut, commentairesCompet, Publication 
-			FROM gickp_Competitions 
+			FROM kp_competition 
 			WHERE Code_saison = ? 
 			AND Code = ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -508,7 +508,7 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql  = "UPDATE gickp_Competitions 
+			$sql  = "UPDATE kp_competition 
 				SET Code_niveau = ?, Libelle = ?, Soustitre = ?, 
 				Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?, 
 				En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?, 
@@ -552,7 +552,7 @@ class GestionCompetition extends MyPageSecure
 			$myBdd = $this->myBdd;
 			$saison = $myBdd->GetActiveSaison();
 
-			$sql  = "UPDATE gickp_Competitions 
+			$sql  = "UPDATE kp_competition 
 				SET Verrou = ?
 				WHERE Code_saison = ?
 				AND Code = ? ";
@@ -580,12 +580,12 @@ class GestionCompetition extends MyPageSecure
 
 		$myBdd = $this->myBdd;
 
-		$sql  = "UPDATE gickp_Saison 
+		$sql  = "UPDATE kp_saison 
 			SET Etat = 'I' 
 			WHERE Etat = 'A' ";
 		$myBdd->pdo->exec($sql);
 
-		$sql = "UPDATE gickp_Saison 
+		$sql = "UPDATE kp_saison 
 			SET Etat = 'A' 
 			WHERE Code = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -607,7 +607,7 @@ class GestionCompetition extends MyPageSecure
 
 		$myBdd = $this->myBdd;
 
-		$sql  = "INSERT INTO gickp_Saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin) 
+		$sql  = "INSERT INTO kp_saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin) 
 			VALUES (?, ?, ?, ?, ?, ?) ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(
@@ -625,7 +625,7 @@ class GestionCompetition extends MyPageSecure
 		$saison = $myBdd->GetActiveSaison();
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
-		$sql = "UPDATE gickp_Competitions 
+		$sql = "UPDATE kp_competition 
 			SET Publication = :changePub 
 			WHERE Code = :idCompet 
 			AND Code_saison = :saison ";
@@ -667,7 +667,7 @@ class GestionCompetition extends MyPageSecure
 			if(move_uploaded_file($_FILES['logo1']['tmp_name'], $dossier . $fichier)) {
 				$erreur .= 'Upload effectué avec succès !';
 				$logo = "../img/logo/".$fichier;
-				$sql = "UPDATE gickp_Competitions 
+				$sql = "UPDATE kp_competition 
 					SET LogoLink = ? 
 					WHERE Code = ? 
 					AND Code_saison = ? ";
@@ -707,22 +707,22 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->beginTransaction();
 
 			// buts et cartons
-			$sql  = "UPDATE gickp_Matchs_Detail 
+			$sql  = "UPDATE kp_match_detail 
 				SET Competiteur = ? 
 				WHERE Competiteur = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($numFusionCible, $numFusionSource));
 
 			// compos matchs
-			$sql  = "UPDATE gickp_Matchs_Joueurs 
+			$sql  = "UPDATE kp_match_joueur 
 				SET Matric = ? 
 				WHERE Matric = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($numFusionCible, $numFusionSource));
 
 			// feuilles de présence
-            $sql = "UPDATE gickp_Competitions_Equipes_Joueurs cej,
-                gickp_Liste_Coureur lc
+            $sql = "UPDATE kp_competition_equipe_joueur cej,
+                kp_licence lc
                 SET cej.Matric = :cible, cej.Nom = lc.Nom, 
                     cej.Prenom = lc.Prenom, cej.Sexe = lc.Sexe
                 WHERE cej.Matric = :source 
@@ -731,21 +731,21 @@ class GestionCompetition extends MyPageSecure
             $result->execute([':cible' => $numFusionCible, ':source' => $numFusionSource]);
 
 			// arbitre principal
-			$sql  = "UPDATE gickp_Matchs 
+			$sql  = "UPDATE kp_match 
 				SET Matric_arbitre_principal = ? 
 				WHERE Matric_arbitre_principal = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($numFusionCible, $numFusionSource));
 
 			// arbitre secondaire
-			$sql  = "UPDATE gickp_Matchs 
+			$sql  = "UPDATE kp_match 
 				SET Matric_arbitre_secondaire = ? 
 				WHERE Matric_arbitre_secondaire = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($numFusionCible, $numFusionSource));
 			
 			// Secretaire
-			$sql  = "UPDATE gickp_Matchs 
+			$sql  = "UPDATE kp_match 
 				SET Secretaire = REPLACE(Secretaire, :source, :cible) 
 				WHERE Secretaire LIKE :source2 ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -756,7 +756,7 @@ class GestionCompetition extends MyPageSecure
 			));
 			
 			// Chronometre
-			$sql  = "UPDATE gickp_Matchs 
+			$sql  = "UPDATE kp_match 
 				SET Chronometre = REPLACE(Chronometre, :source, :cible) 
 				WHERE Chronometre LIKE :source2 ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -767,7 +767,7 @@ class GestionCompetition extends MyPageSecure
 			));
 			
 			// Timeshoot
-			$sql  = "UPDATE gickp_Matchs 
+			$sql  = "UPDATE kp_match 
 				SET Timeshoot = REPLACE(Timeshoot, :source, :cible) 
 				WHERE Timeshoot LIKE :source2 ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -778,7 +778,7 @@ class GestionCompetition extends MyPageSecure
 			));
 			
 			// Ligne1
-			$sql  = "UPDATE gickp_Matchs 
+			$sql  = "UPDATE kp_match 
 				SET Ligne1 = REPLACE(Ligne1, :source, :cible) 
 				WHERE Ligne1 LIKE :source2 ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -789,7 +789,7 @@ class GestionCompetition extends MyPageSecure
 			));
 			
 			// Ligne2
-			$sql  = "UPDATE gickp_Matchs 
+			$sql  = "UPDATE kp_match 
 				SET Ligne2 = REPLACE(Ligne2, :source, :cible) 
 				WHERE Ligne2 LIKE :source2 ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -801,7 +801,7 @@ class GestionCompetition extends MyPageSecure
 			
 			// TODO: changer noms (et matric) des lignes, arbitres, officiels...
 			// suppression
-			$sql  = "DELETE FROM gickp_Liste_Coureur 
+			$sql  = "DELETE FROM kp_licence 
 				WHERE Matric = ?; ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($numFusionSource));
@@ -834,7 +834,7 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "UPDATE gickp_Competitions_Equipes 
+			$sql = "UPDATE kp_competition_equipe 
 				SET `Numero` = ?, 
 				Libelle = ?  
 				WHERE Numero = ?; ";
@@ -842,7 +842,7 @@ class GestionCompetition extends MyPageSecure
 			$result->execute(array($numFusionEquipeCible, $FusionEquipeCible, $numFusionEquipeSource));
 			
 			
-			$sql = "DELETE FROM gickp_Equipe 
+			$sql = "DELETE FROM kp_equipe 
 				WHERE Numero = ?; ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($numFusionEquipeSource));
@@ -874,13 +874,13 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql  = "UPDATE gickp_Competitions_Equipes 
+			$sql  = "UPDATE kp_competition_equipe 
 				SET Code_club = ?  
 				WHERE Numero = ?; ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
 					
-			$sql  = "UPDATE gickp_Equipe 
+			$sql  = "UPDATE kp_equipe 
 				SET Code_club = ?  
 				WHERE Numero = ?; ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -910,13 +910,13 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql  = "UPDATE gickp_Equipe 
+			$sql  = "UPDATE kp_equipe 
 				SET Libelle = ?  
 				WHERE Numero = ?; ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($RenomCible, $numRenomSource));
 			
-			$sql  = "UPDATE gickp_Competitions_Equipes 
+			$sql  = "UPDATE kp_competition_equipe 
 				SET Libelle = ?  
 				WHERE Numero = ?; ";
 			$result = $myBdd->pdo->prepare($sql);

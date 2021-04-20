@@ -30,7 +30,7 @@ class GestionRc extends MyPageSecure
 		
 		// Chargement des Saisons ...
 		$sql  = "SELECT Code 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code DESC ";	 
 		$arraySaison = array();
@@ -71,7 +71,7 @@ class GestionRc extends MyPageSecure
 			$arrayAfficheCompet = [$AfficheCompet];
 		}
 		$sql = "SELECT c.Code 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_saison = ?  
 			AND c.Code_niveau LIKE ? 
 			AND c.Code_ref = g.Groupe 
@@ -95,9 +95,9 @@ class GestionRc extends MyPageSecure
 		$Identite = '';
 		$sql = "SELECT rc.Id, rc.Code_competition, rc.Code_saison, rc.Ordre, rc.Matric, 
             lc.Nom, lc.Prenom, lc.Numero_club, u.Mail  
-			FROM gickp_Rc rc 
-            LEFT OUTER JOIN gickp_Liste_Coureur lc ON (rc.Matric = lc.Matric) 
-            LEFT OUTER JOIN gickp_Utilisateur u ON (rc.Matric = u.Code) 
+			FROM kp_rc rc 
+            LEFT OUTER JOIN kp_licence lc ON (rc.Matric = lc.Matric) 
+            LEFT OUTER JOIN kp_user u ON (rc.Matric = u.Code) 
             WHERE rc.Code_saison = $codeSaison 
 			ORDER BY rc.Code_saison DESC, rc.Code_competition, rc.Ordre ";
 		foreach ($myBdd->pdo->query($sql) as $row) {
@@ -150,7 +150,7 @@ class GestionRc extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql  = "INSERT INTO gickp_Rc (Code_saison, Code_competition, Matric, Ordre) 
+			$sql  = "INSERT INTO kp_rc (Code_saison, Code_competition, Matric, Ordre) 
 				VALUES (?,?,?,?) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($Code_saison, $Code_competition, $Matric, $Ordre));
@@ -181,7 +181,7 @@ class GestionRc extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "DELETE FROM gickp_Rc 
+			$sql = "DELETE FROM kp_rc 
 				WHERE Id IN ($in) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayParam);
@@ -214,7 +214,7 @@ class GestionRc extends MyPageSecure
 		$myBdd = $this->myBdd;
 
 		$sql  = "SELECT * 
-			FROM gickp_Rc 
+			FROM kp_rc 
 			WHERE Id = ? ";		
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idRc));
@@ -241,7 +241,7 @@ class GestionRc extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "UPDATE gickp_Rc 
+			$sql = "UPDATE kp_rc 
 				SET Code_saison = ?, Code_competition = ?, Matric = ?, Ordre = ?
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);

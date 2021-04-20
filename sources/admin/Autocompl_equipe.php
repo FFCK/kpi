@@ -17,10 +17,10 @@ $resultGlobal = '';
 $q = trim(utyGetGet('q'));
 $query = '%'.strtoupper($q).'%';
 $sql = "SELECT e.Numero, e.Libelle, e.Code_club, c.Libelle nomClub 
-	FROM gickp_Equipe e, gickp_Club c 
+	FROM kp_equipe e, kp_club c 
 	WHERE (UPPER(e.Libelle) LIKE :query 
-	OR UPPER(e.Code_club) LIKE :query 
-	OR UPPER(c.Libelle) LIKE :query )
+		OR UPPER(e.Code_club) LIKE :query 
+		OR UPPER(c.Libelle) LIKE :query )
 	AND e.Code_club = c.Code 
 	ORDER BY e.Libelle ";
 $result = $myBdd->pdo->prepare($sql);

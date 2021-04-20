@@ -110,7 +110,7 @@ class FeuilleGroups extends MyPage {
         //données
 
         $sql = "SELECT Id, Libelle, Code_club, Poule, Tirage 
-            FROM gickp_Competitions_Equipes 
+            FROM kp_competition_equipe 
             WHERE Code_compet = ? 
             AND Code_saison = ? 
             ORDER BY Poule, Tirage, Libelle ";

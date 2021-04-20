@@ -104,7 +104,7 @@ class Tv extends MyPageSecure
         
         // Evts
         $sql  = "SELECT * 
-            FROM gickp_Evenement 
+            FROM kp_evenement 
             WHERE Publication = 'O' 
             ORDER BY Date_debut DESC ";
         $arrayEvts = array();
@@ -124,9 +124,9 @@ class Tv extends MyPageSecure
         $sql  = "SELECT m.*, j.Code_competition, j.Code_saison, j.Phase, 
             m.Id_equipeA, m.Id_equipeB,
             ce1.Libelle equipeA, ce2.Libelle equipeB 
-            FROM gickp_Evenement_Journees evt, gickp_Journees j, gickp_Matchs m 
-            LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON m.Id_equipeA = ce1.Id 
-            LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON m.Id_equipeB = ce2.Id 
+            FROM kp_evenement_journee evt, kp_journee j, kp_match m 
+            LEFT OUTER JOIN kp_competition_equipe ce1 ON m.Id_equipeA = ce1.Id 
+            LEFT OUTER JOIN kp_competition_equipe ce2 ON m.Id_equipeB = ce2.Id 
             WHERE evt.Id_evenement = ? 
             AND evt.Id_journee = m.Id_journee 
             AND j.Id = m.Id_journee 

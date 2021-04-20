@@ -77,7 +77,7 @@ class GestionStats extends MyPageSecure
 
 		// Chargement des Saisons ...
         $sql  = "SELECT Code 
-            FROM gickp_Saison 
+            FROM kp_saison 
             WHERE Code > '1900' 
             ORDER BY Code DESC ";	 
         $sql_total .= '<br><br>'.$sql;
@@ -105,7 +105,7 @@ class GestionStats extends MyPageSecure
 		}
 		$sql = "SELECT c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, c.Soustitre, 
 			c.Soustitre2, c.Titre_actif, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_saison = ? 
 			$sqlFiltreCompetition 
 			$sqlAfficheCompet 
@@ -161,7 +161,7 @@ class GestionStats extends MyPageSecure
 		// Chargement des journées
 		if ($codeCompet != '' && $codeCompet != '*') {
             $sql = "SELECT Id, Code_competition, Phase, Niveau, Libelle, Lieu, Date_debut 
-                FROM gickp_Journees 
+                FROM kp_journee 
                 WHERE Code_competition = ? 
                 AND Code_saison = ? 
                 ORDER BY Code_competition, Date_debut, Id ";
@@ -197,8 +197,8 @@ class GestionStats extends MyPageSecure
 			default :
                 $sql  = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, a.Prenom, 
                     a.Sexe, b.Numero, f.Libelle Equipe, COUNT(*) Buts 
-                    FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, 
-                    gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_licence a, kp_match_detail b, kp_match c, 
+                    kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
                     AND b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
@@ -228,8 +228,8 @@ class GestionStats extends MyPageSecure
 				break;
 			case 'Attaque' :
                 $sql  = "SELECT d.Code_competition Competition, f.Libelle Equipe, COUNT(*) Buts 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -253,8 +253,8 @@ class GestionStats extends MyPageSecure
 				break;
 			case 'Defense' :
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, COUNT(*) Buts 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -282,8 +282,8 @@ class GestionStats extends MyPageSecure
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
                     SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
-                    FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, 
-                    gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_licence a, kp_match_detail b, kp_match c, 
+                    kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
                     AND b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
@@ -318,8 +318,8 @@ class GestionStats extends MyPageSecure
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
                     SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -349,8 +349,8 @@ class GestionStats extends MyPageSecure
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
                     SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -379,8 +379,8 @@ class GestionStats extends MyPageSecure
                     a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
                         IF(b.Id_evt_match='R',4,0)))) Fairplay 
-                    FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, 
-                    gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_licence a, kp_match_detail b, 
+                    kp_match c, kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
                     AND b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
@@ -412,8 +412,8 @@ class GestionStats extends MyPageSecure
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
                         IF(b.Id_evt_match='R',4,0)))) Fairplay 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -443,8 +443,8 @@ class GestionStats extends MyPageSecure
                     SUM(IF(m.Matric_arbitre_principal=a.Matric,1,0)) principal, 
                     SUM(IF(m.Matric_arbitre_secondaire=a.Matric,1,0)) secondaire, 
                     COUNT(*) Total 
-                    FROM gickp_Liste_Coureur lc, gickp_Arbitre a, gickp_Club c, 
-                    gickp_Matchs m, gickp_Journees j 
+                    FROM kp_licence lc, kp_arbitre a, kp_club c, 
+                    kp_match m, kp_journee j 
                     WHERE 1 
                     AND a.Matric = lc.Matric 
                     AND c.Code = lc.Numero_club 
@@ -477,7 +477,7 @@ class GestionStats extends MyPageSecure
                         OR (c.Arbitre_principal LIKE CONCAT('%',f.Libelle,')%')),1,0)) principal, 
                     SUM(IF((c.Arbitre_secondaire=f.Libelle) 
                         OR (c.Arbitre_secondaire LIKE CONCAT('%',f.Libelle,')%')),1,0)) secondaire 
-                    FROM gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_match c, kp_journee d, kp_competition_equipe f 
                     WHERE c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
                     AND d.Code_saison = f.Code_saison 
@@ -502,8 +502,8 @@ class GestionStats extends MyPageSecure
 			case 'CJouees' : // Compétitions jouées dans la saison en cours (par clubs)
 				$sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Numero_club, clubs.Libelle Nom_club, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Club clubs 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_club clubs 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND lc.Numero_club = clubs.Code 
@@ -533,8 +533,8 @@ class GestionStats extends MyPageSecure
 			case 'CJouees2' : // Compétitions jouées dans la saison en cours (par équipe)
 				$sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -564,8 +564,8 @@ class GestionStats extends MyPageSecure
 				$sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs, 
                     lc.Origine, lc.Pagaie_ECA, lc.Etat_certificat_CK, lc.Etat_certificat_APS 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -617,8 +617,8 @@ class GestionStats extends MyPageSecure
             case 'CJoueesN' : // Compétitions jouées dans la saison en cours (par équipe)
                 $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -647,8 +647,8 @@ class GestionStats extends MyPageSecure
             case 'CJoueesCF' : // Compétitions jouées dans la saison en cours (par équipe)
                 $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -676,7 +676,7 @@ class GestionStats extends MyPageSecure
                 break;
 			case 'OfficielsJournees' : // OfficielsJournees
                 $sql = "SELECT j.* 
-                    FROM gickp_Journees j 
+                    FROM kp_journee j 
                     WHERE 1 
                     AND j.Code_competition IN ($in) 
                     AND j.Code_saison = ? 
@@ -708,8 +708,8 @@ class GestionStats extends MyPageSecure
                     m.Date_match, m.Heure_match, a.Libelle equipeA, b.Libelle equipeB, 
                     m.Arbitre_principal, m.Arbitre_secondaire, m.Ligne1, m.Ligne2, m.Secretaire, 
                     m.Chronometre, m.Timeshoot 
-                    FROM gickp_Journees j, gickp_Matchs m, gickp_Competitions_Equipes a, 
-                    gickp_Competitions_Equipes b 
+                    FROM kp_journee j, kp_match m, kp_competition_equipe a, 
+                    kp_competition_equipe b 
                     WHERE 1 
                     AND j.Code_competition IN ($in) 
                     AND j.Code_saison = ? 
@@ -732,7 +732,7 @@ class GestionStats extends MyPageSecure
 			case 'ListeArbitres' : // ListeArbitres
 				$sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Sexe, c.Code Code_club, 
                     c.Libelle Club, a.Arb, a.niveau, a.saison, a.Livret 
-                    FROM gickp_Arbitre a, gickp_Liste_Coureur lc, gickp_Club c 
+                    FROM kp_arbitre a, kp_licence lc, kp_club c 
                     WHERE 1 
                     AND a.Matric = lc.Matric 
                     AND c.Code = lc.Numero_club 

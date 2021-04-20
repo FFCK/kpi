@@ -34,7 +34,7 @@ class FeuilleInstances extends MyPage
 			j.Date_debut, j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Plan_eau, j.Departement, 
 			j.Responsable_insc, j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, 
 			j.Publication 
-			FROM gickp_Journees j
+			FROM kp_journee j
 			WHERE Id = ? ";
         $result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idJournee));

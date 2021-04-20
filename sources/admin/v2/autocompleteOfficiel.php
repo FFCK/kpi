@@ -9,10 +9,10 @@ $q = trim(utyGetGet('term'));
 $q1 = '%'.$q.'%';
 $q2 = $q.'%';
 $sql = "SELECT Nom, Prenom, Matric 
-	FROM gickp_Liste_Coureur 
-	WHERE Nom like :q1 
-	OR Prenom like :q1 
-	OR Matric like :q2 ";
+	FROM kp_licence 
+	WHERE Nom LIKE :q1 
+	OR Prenom LIKE :q1 
+	OR Matric LIKE :q2 ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array(':q1' => $q1, ':q2' => $q2));
 $json = array();
