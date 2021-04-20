@@ -27,7 +27,7 @@ $url .= "&number=$number";
 $url .= "&start=$start";
 $url .= "&medal=$medal";
 
-$sql = "UPDATE gickp_Tv 
+$sql = "UPDATE kp_tv 
     SET `Url` = ? 
     WHERE Voie = ? ";
 $result = $myBdd->pdo->prepare($sql);

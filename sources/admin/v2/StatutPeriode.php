@@ -30,7 +30,7 @@ $myBdd->AutorisationMatch($idMatch, true);
 
 if ($TypeUpdate == 'ValidScore') {
 	$Valeur = explode('-', $Valeur);
-	$sql = "UPDATE gickp_Matchs 
+	$sql = "UPDATE kp_match 
 		SET ScoreA = ?, ScoreB = ? 
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);
@@ -38,7 +38,7 @@ if ($TypeUpdate == 'ValidScore') {
 	echo 'OK';
 } elseif ($TypeUpdate == 'ValidScoreDetail') {
 	$Valeur = explode('-', $Valeur);
-	$sql = "UPDATE gickp_Matchs 
+	$sql = "UPDATE kp_match 
 		SET ScoreDetailA = :Valeur0, ScoreDetailB = :Valeur1, 
 		ScoreA = :Valeur0, ScoreB = :Valeur1 
 		WHERE Id = :idMatch ";
@@ -50,7 +50,7 @@ if ($TypeUpdate == 'ValidScore') {
 	));
 	echo 'OK';
 } else {
-	$sql = "UPDATE gickp_Matchs 
+	$sql = "UPDATE kp_match 
 		SET $TypeUpdate = ? 
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);

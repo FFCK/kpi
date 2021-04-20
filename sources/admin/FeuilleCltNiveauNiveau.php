@@ -120,7 +120,7 @@ class FeuilleCltNiveauNiveau extends MyPage
 		
 		$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Niveau, b.Clt, b.Pts, b.J, b.G, 
 			b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau 
-			FROM gickp_Competitions_Equipes a, gickp_Competitions_Equipes_Niveau b 
+			FROM kp_competition_equipe a, kp_competition_equipe_niveau b 
 			WHERE a.Id = b.Id 
 			AND a.Code_compet = ? 
 			AND a.Code_saison = ? 

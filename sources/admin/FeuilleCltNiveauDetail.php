@@ -93,7 +93,7 @@ class FeuilleCltNiveau extends MyPage {
         //données
         $sql = "SELECT Id, Libelle, Code_club, Clt, Pts, J, G, N, P, F, Plus, Moins, 
             Diff, PtsNiveau, CltNiveau 
-            FROM gickp_Competitions_Equipes 
+            FROM kp_competition_equipe 
             WHERE Code_compet = ? 
             AND Code_saison = ? 
             ORDER BY CltNiveau, Diff DESC ";
@@ -129,9 +129,9 @@ class FeuilleCltNiveau extends MyPage {
             $sql2 = "SELECT a.Id_equipeA, a.ScoreA, c.Libelle LibelleA, 
                 a.Id_equipeB, a.ScoreB, d.Libelle LibelleB, 
                 a.Id, a.Id_journee, b.Niveau, b.Phase 
-                FROM gickp_Journees b, gickp_Matchs a 
-                LEFT OUTER JOIN gickp_Competitions_Equipes c ON (c.Id = a.Id_equipeA) 
-                LEFT OUTER JOIN gickp_Competitions_Equipes d ON (d.Id = a.Id_equipeB) 
+                FROM kp_journee b, kp_match a 
+                LEFT OUTER JOIN kp_competition_equipe c ON (c.Id = a.Id_equipeA) 
+                LEFT OUTER JOIN kp_competition_equipe d ON (d.Id = a.Id_equipeB) 
                 WHERE a.Id_journee = b.Id 
                 AND b.Code_competition = ? 
                 AND b.Code_saison = ? 

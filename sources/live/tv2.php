@@ -188,23 +188,23 @@ class TV extends MyPage
 		$equipe = $this->GetParam('team', 'A');
 		
 		// Chargement Equipe  
-		$cmd  = "SELECT c.Libelle, c.Code_club "
-                . "FROM gickp_Competitions_Equipes c "
-                . "LEFT OUTER JOIN gickp_Matchs m ON (c.Id = m.Id_equipe" . $equipe . ") "
-                . "WHERE m.Id = $idMatch";
+		$cmd  = "SELECT c.Libelle, c.Code_club 
+            FROM kp_competition_equipe c 
+            LEFT OUTER JOIN kp_match m ON (c.Id = m.Id_equipe" . $equipe . ") 
+            WHERE m.Id = $idMatch";
 
 		$rEquipe = null;
 		$db->LoadRecord($cmd, $rEquipe);
         
         // Chargement Joueurs  
-		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
-                . "CASE WHEN a.Capitaine = 'E' THEN 1 ELSE 0 END joueur "
-                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
-                . "WHERE a.Id_match = $idMatch "
-                . "AND a.Equipe = '$equipe' "
-                . "AND a.Matric = b.matric "
-//                . "AND (a.Capitaine Is Null OR a.Capitaine != 'E') "
-                . "ORDER BY joueur, a.Numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, 
+            CASE WHEN a.Capitaine = 'E' THEN 1 ELSE 0 END joueur 
+            FROM kp_match_joueur a, kp_licence b 
+            WHERE a.Id_match = $idMatch 
+            AND a.Equipe = '$equipe' 
+            AND a.Matric = b.matric 
+            ORDER BY joueur, a.Numero ";
+            //  . "AND (a.Capitaine Is Null OR a.Capitaine != 'E') "
 
 		$tJoueurs = null;
         $coach = false;
@@ -255,23 +255,23 @@ class TV extends MyPage
 		$equipe = $this->GetParam('team', 'A');
 		
 		// Chargement Equipe  
-		$cmd  = "SELECT c.Libelle, c.Code_club "
-                . "FROM gickp_Competitions_Equipes c "
-                . "LEFT OUTER JOIN gickp_Matchs m ON (c.Id = m.Id_equipe" . $equipe . ") "
-                . "WHERE m.Id = $idMatch";
+		$cmd  = "SELECT c.Libelle, c.Code_club 
+            FROM kp_competition_equipe c 
+            LEFT OUTER JOIN kp_match m ON (c.Id = m.Id_equipe" . $equipe . ") 
+            WHERE m.Id = $idMatch";
 
 		$rEquipe = null;
 		$db->LoadRecord($cmd, $rEquipe);
         
         // Chargement Joueurs  
-		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, "
-                . "CASE WHEN a.Capitaine = 'E' THEN 1 ELSE 0 END joueur "
-                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
-                . "WHERE a.Id_match = $idMatch "
-                . "AND a.Equipe = '$equipe' "
-                . "AND a.Matric = b.matric "
-//                . "AND (a.Capitaine Is Null OR a.Capitaine != 'E') "
-                . "ORDER BY joueur, a.Numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, 
+            CASE WHEN a.Capitaine = 'E' THEN 1 ELSE 0 END joueur 
+            FROM kp_match_joueur a, kp_licence b 
+            WHERE a.Id_match = $idMatch 
+            AND a.Equipe = '$equipe' 
+            AND a.Matric = b.matric 
+            ORDER BY joueur, a.Numero ";
+            // . "AND (a.Capitaine Is Null OR a.Capitaine != 'E') "
 
 		$tJoueurs = null;
         $coach = false;
@@ -317,14 +317,14 @@ class TV extends MyPage
 		$saison = $this->GetParam('saison', utyGetSaison());
 
 		// Chargement des Equipes Classées ...
-		$cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi, c.Soustitre2 "
-                . "FROM gickp_Competitions c, gickp_Competitions_Equipes ce "
-                . "WHERE ce.Code_compet = '".$competition."' "
-                . "AND ce.Code_saison = " . $saison . " "
-                . "AND c.Code = ce.Code_compet "
-                . "AND c.Code_saison = ce.Code_saison "
-                . "ORDER BY CltNiveau_publi "
-                . "LIMIT 0, 3 ";
+		$cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi, c.Soustitre2 
+            FROM kp_competition c, kp_competition_equipe ce 
+            WHERE ce.Code_compet = '$competition' 
+            AND ce.Code_saison = $saison 
+            AND c.Code = ce.Code_compet 
+            AND c.Code_saison = ce.Code_saison 
+            ORDER BY CltNiveau_publi 
+            LIMIT 0, 3 ";
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
@@ -361,14 +361,14 @@ class TV extends MyPage
 		$start = $this->GetParam('start', 0);
         
 		// Chargement des Equipes Classées ...
-		$cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi rank, c.Soustitre2 "
-                . "FROM gickp_Competitions c, gickp_Competitions_Equipes ce "
-                . "WHERE ce.Code_compet = '".$competition."' "
-                . "AND ce.Code_saison = " . $saison . " "
-                . "AND c.Code = ce.Code_compet "
-                . "AND c.Code_saison = ce.Code_saison "
-                . "ORDER BY CltNiveau_publi "
-                . "LIMIT $start, 10 ";
+		$cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi rank, c.Soustitre2 
+            FROM kp_competition c, kp_competition_equipe ce 
+            WHERE ce.Code_compet = '$competition' 
+            AND ce.Code_saison = $saison 
+            AND c.Code = ce.Code_compet 
+            AND c.Code_saison = ce.Code_saison 
+            ORDER BY CltNiveau_publi 
+            LIMIT $start, 10 ";
 		
 		$tEquipes = null;
 		$db->LoadTable($cmd, $tEquipes);
@@ -411,13 +411,14 @@ class TV extends MyPage
 		$numero = $this->GetParam('number', '1');
 		
 		// Chargement Joueurs  
-		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Numero_comite_dept "
-                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
-                . "WHERE a.Id_match = $idMatch "
-                . "AND a.Equipe = '$equipe' "
-                . "AND a.Matric = b.matric "
-                . "AND a.Capitaine != 'E' "
-                . "AND a.Numero = $numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, 
+            b.Naissance, b.Numero_comite_dept 
+            FROM kp_match_joueur a, kp_licence b 
+            WHERE a.Id_match = $idMatch 
+            AND a.Equipe = '$equipe' 
+            AND a.Matric = b.matric 
+            AND a.Capitaine != 'E' 
+            AND a.Numero = $numero ";
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
@@ -460,13 +461,14 @@ class TV extends MyPage
 		$numero = $this->GetParam('number', '1');
 		
 		// Chargement Joueurs  
-		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Numero_comite_dept "
-                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
-                . "WHERE a.Id_match = $idMatch "
-                . "AND a.Equipe = '$equipe' "
-                . "AND a.Matric = b.matric "
-                . "AND a.Capitaine = 'E' "
-                . "AND a.Numero = $numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, 
+            b.Naissance, b.Numero_comite_dept 
+            FROM kp_match_joueur a, kp_licence b 
+            WHERE a.Id_match = $idMatch 
+            AND a.Equipe = '$equipe' 
+            AND a.Matric = b.matric 
+            AND a.Capitaine = 'E' 
+            AND a.Numero = $numero ";
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
@@ -510,12 +512,13 @@ class TV extends MyPage
 		$medaille = $this->GetParam('medal');
 		
 		// Chargement Joueurs  
-		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, b.Numero_comite_dept "
-                . "FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b "
-                . "WHERE a.Id_match = $idMatch "
-                . "AND a.Equipe = '$equipe' "
-                . "AND a.Matric = b.matric "
-                . "AND a.Numero = $numero ";
+		$cmd  = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, 
+            b.Naissance, b.Numero_comite_dept 
+            FROM kp_match_joueur a, kp_licence b 
+            WHERE a.Id_match = $idMatch 
+            AND a.Equipe = '$equipe' 
+            AND a.Matric = b.matric 
+            AND a.Numero = $numero ";
 
 		$rJoueur = null;
 		$db->LoadRecord($cmd, $rJoueur);
@@ -555,13 +558,13 @@ class TV extends MyPage
 		$idMatch = $this->GetParamInt('match',-1);
 		
 		$rMatch = null;
-        $sql = "SELECT m.*, "
-                . "lc1.Numero_comite_dept nation1, lc1.Nom nom_arb1, lc1.Prenom prenom_arb1, "
-                . "lc2.Numero_comite_dept nation2, lc2.Nom nom_arb2, lc2.Prenom prenom_arb2 "
-                . "FROM gickp_Matchs m "
-                . "LEFT OUTER JOIN gickp_Liste_Coureur lc1 ON (m.Matric_arbitre_principal = lc1.Matric) "
-                . "LEFT OUTER JOIN gickp_Liste_Coureur lc2 ON (m.Matric_arbitre_secondaire = lc2.Matric) "
-                . "WHERE Id = $idMatch";
+        $sql = "SELECT m.*, 
+            lc1.Numero_comite_dept nation1, lc1.Nom nom_arb1, lc1.Prenom prenom_arb1, 
+            lc2.Numero_comite_dept nation2, lc2.Nom nom_arb2, lc2.Prenom prenom_arb2 
+            FROM kp_match m 
+            LEFT OUTER JOIN kp_licence lc1 ON (m.Matric_arbitre_principal = lc1.Matric) 
+            LEFT OUTER JOIN kp_licence lc2 ON (m.Matric_arbitre_secondaire = lc2.Matric) 
+            WHERE Id = $idMatch";
 		$db->LoadRecord($sql, $rMatch);
 		
 //		$arbitre1  = $this->CutReferee($rMatch['Arbitre_principal']);
@@ -603,16 +606,16 @@ class TV extends MyPage
 		$idMatch = $this->GetParamInt('match',-1);
 		
 		// Chargement Match
-		$cmd  = "SELECT ce1.Libelle LibelleA, ce2.Libelle LibelleB, "
-                . "ce1.Code_club ClubA, ce2.Code_club ClubB, "
-                . "m.Terrain, j.Phase, c.Soustitre2 categorie "
-                . "FROM gickp_Journees j, gickp_Competitions c, gickp_Matchs m "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (ce1.Id = m.Id_equipeA) "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (ce2.Id = m.Id_equipeB) "
-                . "WHERE m.Id = $idMatch "
-                . "AND m.Id_journee = j.Id "
-                . "AND j.Code_competition = c.Code "
-                . "AND j.Code_saison = c.Code_saison ";
+		$cmd  = "SELECT ce1.Libelle LibelleA, ce2.Libelle LibelleB, 
+            ce1.Code_club ClubA, ce2.Code_club ClubB, 
+            m.Terrain, j.Phase, c.Soustitre2 categorie 
+            FROM kp_journee j, kp_competition c, kp_match m 
+            LEFT OUTER JOIN kp_competition_equipe ce1 ON (ce1.Id = m.Id_equipeA) 
+            LEFT OUTER JOIN kp_competition_equipe ce2 ON (ce2.Id = m.Id_equipeB) 
+            WHERE m.Id = $idMatch 
+            AND m.Id_journee = j.Id 
+            AND j.Code_competition = c.Code 
+            AND j.Code_saison = c.Code_saison ";
 
 		$rMatch = null;
 		$db->LoadRecord($cmd, $rMatch);
@@ -652,16 +655,16 @@ class TV extends MyPage
 		$idMatch = $this->GetParamInt('match',-1);
 		
 		// Chargement Match
-		$cmd  = "SELECT ce1.Libelle LibelleA, ce2.Libelle LibelleB, "
-                . "ce1.Code_club ClubA, ce2.Code_club ClubB, "
-                . "m.Terrain, m.ScoreDetailA, m.ScoreDetailB, j.Phase, c.Soustitre2 categorie "
-                . "FROM gickp_Journees j, gickp_Competitions c, gickp_Matchs m "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (ce1.Id = m.Id_equipeA) "
-                . "LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (ce2.Id = m.Id_equipeB) "
-                . "WHERE m.Id = $idMatch "
-                . "AND m.Id_journee = j.Id "
-                . "AND j.Code_competition = c.Code "
-                . "AND j.Code_saison = c.Code_saison ";
+		$cmd  = "SELECT ce1.Libelle LibelleA, ce2.Libelle LibelleB, 
+            ce1.Code_club ClubA, ce2.Code_club ClubB, 
+            m.Terrain, m.ScoreDetailA, m.ScoreDetailB, j.Phase, c.Soustitre2 categorie 
+            FROM kp_journee j, kp_competition c, kp_match m 
+            LEFT OUTER JOIN kp_competition_equipe ce1 ON (ce1.Id = m.Id_equipeA) 
+            LEFT OUTER JOIN kp_competition_equipe ce2 ON (ce2.Id = m.Id_equipeB) 
+            WHERE m.Id = $idMatch 
+            AND m.Id_journee = j.Id 
+            AND j.Code_competition = c.Code 
+            AND j.Code_saison = c.Code_saison ";
 
 		$rMatch = null;
 		$db->LoadRecord($cmd, $rMatch);
@@ -708,10 +711,10 @@ class TV extends MyPage
 		$equipe = $this->GetParam('team', 'A');
 		
 		// Chargement Equipe  
-		$cmd  = "SELECT c.Libelle, c.Code_club "
-                . "FROM gickp_Competitions_Equipes c "
-                . "LEFT OUTER JOIN gickp_Matchs m ON (c.Id = m.Id_equipe" . $equipe . ") "
-                . "WHERE m.Id = $idMatch";
+		$cmd  = "SELECT c.Libelle, c.Code_club 
+            FROM kp_competition_equipe c 
+            LEFT OUTER JOIN kp_match m ON (c.Id = m.Id_equipe" . $equipe . ") 
+            WHERE m.Id = $idMatch";
 
 		$rEquipe = null;
 		$db->LoadRecord($cmd, $rEquipe);
@@ -739,10 +742,10 @@ class TV extends MyPage
 		$medaille = $this->GetParam('medal');
 			
         // Chargement Equipe  
-		$cmd  = "SELECT c.Libelle, c.Code_club "
-                . "FROM gickp_Competitions_Equipes c "
-                . "LEFT OUTER JOIN gickp_Matchs m ON (c.Id = m.Id_equipe" . $equipe . ") "
-                . "WHERE m.Id = $idMatch";
+		$cmd  = "SELECT c.Libelle, c.Code_club 
+            FROM kp_competition_equipe c 
+            LEFT OUTER JOIN kp_match m ON (c.Id = m.Id_equipe" . $equipe . ") 
+            WHERE m.Id = $idMatch";
 
 		$rEquipe = null;
 		$db->LoadRecord($cmd, $rEquipe);

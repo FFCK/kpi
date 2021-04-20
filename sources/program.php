@@ -21,7 +21,7 @@ $compet = trim(utyGetGet('compet'));
 // Saisons ...
 $a_json = array();
 $sql = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
-    FROM gickp_Saison 
+    FROM kp_saison 
     WHERE Code > '1900' 
     ORDER BY Code DESC ";
 $result = $myBdd->pdo->prepare($sql);

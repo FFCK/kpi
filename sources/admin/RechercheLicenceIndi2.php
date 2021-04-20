@@ -39,8 +39,8 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		if ($this->OkRecherche()) {
 			$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, 
                 a.Club, b.Arb 
-                FROM gickp_Liste_Coureur a 
-                LEFT OUTER JOIN gickp_Arbitre b ON (a.Matric = b.Matric) 
+                FROM kp_licence a 
+                LEFT OUTER JOIN kp_arbitre b ON (a.Matric = b.Matric) 
                 WHERE a.Matric IS NOT NULL ";
 			if (strlen($matricJoueur) > 0) {
                 $sql .= " AND a.Matric = ? ";
@@ -133,7 +133,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
 				
 		// Chargement des Comites Régionnaux ...
         $sql = "SELECT Code, Libelle 
-            FROM gickp_Comite_reg 
+            FROM kp_cr 
             ORDER BY Code ";	 
         $result = $myBdd->pdo->prepare($sql);
         $result->execute();
@@ -169,14 +169,14 @@ class RechercheLicenceIndi2 extends MyPageSecure
 
 		if ('*' != $codeComiteReg) {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Comite_dep 
+                FROM kp_cd 
                 WHERE Code_comite_reg = ? 
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeComiteReg));
         } else {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Comite_dep 
+                FROM kp_cd 
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute();
@@ -213,14 +213,14 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		
 		if ('*' != $codeComiteDep) {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Club 
+                FROM kp_club 
                 WHERE Code_comite_dep = ?
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeComiteDep));
 		} else {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Club 
+                FROM kp_club 
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute();

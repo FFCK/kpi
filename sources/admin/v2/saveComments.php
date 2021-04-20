@@ -22,14 +22,14 @@ $myBdd->AutorisationMatch($idMatch);
 
 if ($heure_fin_match != '') {
 	$heure_fin_match = '00:'.substr($heure_fin_match,-5,2).':'.substr($heure_fin_match,-2);
-	$sql = "UPDATE gickp_Matchs 
+	$sql = "UPDATE kp_match 
 		SET Commentaires_officiels = ?, 
 		Heure_fin = ? 
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($value, $heure_fin_match, $idMatch));
 } else {
-	$sql = "UPDATE gickp_Matchs 
+	$sql = "UPDATE kp_match 
 		SET Commentaires_officiels = ?, 
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);

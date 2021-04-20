@@ -46,7 +46,7 @@ class FeuilleListeMatchs extends MyPage
 		if (utyGetGet('idEvenement', 0) > 0) {
             $arrayJournees = [];
             $sql = "SELECT Id_journee 
-                FROM gickp_Evenement_Journees 
+                FROM kp_evenement_journee 
                 WHERE Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($idEvenement));
@@ -72,11 +72,11 @@ class FeuilleListeMatchs extends MyPage
             d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
             e.Nom Nom_arb_prin, e.Prenom Prenom_arb_prin, f.Nom Nom_arb_sec, 
             f.Prenom Prenom_arb_sec, cp.Soustitre2  
-            FROM gickp_Competitions cp, gickp_Journees d, gickp_Matchs a 
-            LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
-            LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
-            LEFT OUTER JOIN gickp_Liste_Coureur e ON (a.Matric_arbitre_principal = e.Matric) 
-            LEFT OUTER JOIN gickp_Liste_Coureur f ON (a.Matric_arbitre_secondaire = f.Matric) 
+            FROM kp_competition cp, kp_journee d, kp_match a 
+            LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
+            LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
+            LEFT OUTER JOIN kp_licence e ON (a.Matric_arbitre_principal = e.Matric) 
+            LEFT OUTER JOIN kp_licence f ON (a.Matric_arbitre_secondaire = f.Matric) 
             WHERE a.Id_journee = d.Id 
             AND d.Code_competition = cp.Code 
             AND d.Code_saison = cp.Code_saison ";

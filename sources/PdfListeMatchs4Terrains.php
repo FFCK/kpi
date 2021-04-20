@@ -46,7 +46,7 @@ class PdfListeMatchs extends MyPage
 		if (utyGetGet('idEvenement', 0) > 0) {
 			$lstJournee = [];
 			$sql = "SELECT Id_journee 
-                FROM gickp_Evenement_Journees 
+                FROM kp_evenement_journee 
                 WHERE Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($idEvenement));
@@ -74,9 +74,9 @@ class PdfListeMatchs extends MyPage
                 a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
                 a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
                 cp.Soustitre2 
-                FROM gickp_Competitions cp, gickp_Journees d, gickp_Matchs a 
-                LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
-                LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+                FROM kp_competition cp, kp_journee d, kp_match a 
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
                 WHERE a.Id_journee = d.Id 
                 AND d.Code_competition = cp.Code 
                 AND d.Code_saison = cp.Code_saison 
@@ -100,9 +100,9 @@ class PdfListeMatchs extends MyPage
                 a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
                 a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
                 cp.Soustitre2 
-                FROM gickp_Competitions cp, gickp_Journees d, gickp_Matchs a 
-                LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
-                LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+                FROM kp_competition cp, kp_journee d, kp_match a 
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
                 WHERE a.Id_journee = d.Id 
                 AND d.Code_competition = cp.Code 
                 AND d.Code_saison = cp.Code_saison 

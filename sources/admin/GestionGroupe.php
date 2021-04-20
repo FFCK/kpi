@@ -17,7 +17,7 @@ class GestionGroupe extends MyPageSecure
 		$arrayGroupes = array();
 		
 		$sql = "SELECT * 
-			FROM gickp_Competitions_Groupes 
+			FROM kp_groupe 
 			ORDER BY section, ordre ";	 
 		$arrayGroupes = array();
 		$result = $myBdd->pdo->prepare($sql);
@@ -46,13 +46,13 @@ class GestionGroupe extends MyPageSecure
 		
 		$myBdd = new MyBdd();
 
-		$sql = "UPDATE gickp_Competitions_Groupes 
+		$sql = "UPDATE kp_groupe 
 			SET ordre = ordre + 1 
 			WHERE ordre >= ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($ordre));
 
-		$sql = "INSERT INTO gickp_Competitions_Groupes 
+		$sql = "INSERT INTO kp_groupe 
 			SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(
@@ -68,7 +68,7 @@ class GestionGroupe extends MyPageSecure
 	{
         $myBdd = new MyBdd();
 		$sql = "SELECT c.Code_saison, c.Code 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_ref = g.Groupe 
 			AND g.id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -83,7 +83,7 @@ class GestionGroupe extends MyPageSecure
             return "Il existe des compétitions dans ce groupe :$conflict. Suppression impossible !";
         }
 
-		$sql = "SELECT ordre FROM gickp_Competitions_Groupes 
+		$sql = "SELECT ordre FROM kp_groupe 
 			WHERE id = $idGroupe ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idGroupe));
@@ -93,12 +93,12 @@ class GestionGroupe extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "DELETE FROM gickp_Competitions_Groupes 
+			$sql = "DELETE FROM kp_groupe 
 				WHERE id = $idGroupe ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idGroupe));
 
-			$sql = "UPDATE gickp_Competitions_Groupes 
+			$sql = "UPDATE kp_groupe 
 				SET ordre = ordre - 1 
 				WHERE ordre > ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -140,7 +140,7 @@ class GestionGroupe extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "UPDATE gickp_Competitions_Groupes 
+			$sql = "UPDATE kp_groupe 
 				SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? 
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);

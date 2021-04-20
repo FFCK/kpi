@@ -40,7 +40,7 @@ class FeuillePresenceU21 extends MyPage {
 
         if (strlen($codeCompet) > 0) {
             $sql = "SELECT Id, Libelle, Code_club, Numero 
-                FROM gickp_Competitions_Equipes 
+                FROM kp_competition_equipe 
                 WHERE Code_compet = ? 
                 AND Code_saison = ? 
                 ORDER BY Libelle, Id ";
@@ -62,9 +62,9 @@ class FeuillePresenceU21 extends MyPage {
                 $sql2 = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, 
                     ce.Libelle NomEquipe, b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, b.Naissance, 
                     b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau 
-                    FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Joueurs a 
-                    LEFT OUTER JOIN gickp_Liste_Coureur b ON (a.Matric = b.Matric) 
-                    LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
+                    FROM kp_competition_equipe ce, kp_competition_equipe_joueur a 
+                    LEFT OUTER JOIN kp_licence b ON (a.Matric = b.Matric) 
+                    LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
                     WHERE a.Id_Equipe IN ($in) 
                     AND ce.Id = a.Id_Equipe 
                     AND LEFT(b.Naissance, 4) > ($codeSaison - 22)

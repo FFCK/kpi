@@ -32,7 +32,7 @@ if ($j == '' && $m == '') {
 	$resultGlobal .= "---------- " . $lang['Equipes'] . " ----------|XXX\n";
 	$arrayQuery = [];
 	$sql = "SELECT a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet 
-		FROM gickp_Competitions_Equipes a, gickp_Journees b 
+		FROM kp_competition_equipe a, kp_journee b 
 		WHERE a.Code_compet = b.Code_competition 
 		AND a.Code_saison = b.Code_saison ";
 	if ($j != '') {
@@ -57,9 +57,9 @@ if ($j == '' && $m == '') {
 	$arrayQuery = [];
 	$sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, 
 		(c.Arb IS NULL) AS sortCol 
-		FROM gickp_Competitions_Equipes b, gickp_Journees d, gickp_Matchs e, 
-		gickp_Competitions_Equipes_Joueurs a 
-		LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric 
+		FROM kp_competition_equipe b, kp_journee d, kp_match e, 
+		kp_competition_equipe_joueur a 
+		LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 		WHERE a.Id_equipe = b.Id 
 		AND b.Code_compet = d.Code_competition 
 		AND b.Code_saison = d.Code_saison 
@@ -97,8 +97,8 @@ if ($j == '' && $m == '') {
 	$resultGlobal .= "|XXX\n";
 	$resultGlobal .= "---------- " . $lang['Pool_Arbitres'] . " ----------|XXX\n";
 	$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau 
-		FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Joueurs a 
-		LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric  
+		FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
+		LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric  
 		WHERE a.Id_equipe = b.Id 
 		AND b.Code_compet = 'POOL' 
 		AND (a.Matric LIKE :query 
@@ -132,7 +132,7 @@ if ($j == '' && $m == '') {
 	$resultGlobal .= "|XXX\n";
 	$resultGlobal .= "---------- " . $lang['Autres_Arbitres'] . " ----------|XXX\n";
 	$sql = "SELECT lc.*, c.Libelle, b.Arb, b.niveau 
-		FROM gickp_Liste_Coureur lc, gickp_Arbitre b, gickp_Club c 
+		FROM kp_licence lc, kp_arbitre b, kp_club c 
 		WHERE lc.Matric = b.Matric 
 		AND (lc.Matric LIKE :query 
 			OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(:query) 

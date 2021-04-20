@@ -31,9 +31,9 @@ if (!file_exists($template)) exit("File does not exist.");
 		$in = str_repeat('?,', count($listMatch) - 1) . '?';
 		$sql = "SELECT a.*, b.Libelle EquipeA, c.Libelle EquipeB, d.Code_competition, 
 			d.Phase, d.Niveau, d.Lieu, d.Nom LibelleJournee 
-			FROM gickp_Journees d, gickp_Matchs a 
-			LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
-			LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+			FROM kp_journee d, kp_match a 
+			LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
+			LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
 			WHERE a.Id IN ($in) 
 			AND a.Id_journee = d.Id ";
 		$result = $myBdd->pdo->prepare($sql);

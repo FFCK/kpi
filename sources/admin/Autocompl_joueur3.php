@@ -24,17 +24,17 @@ $Limit_Clubs_2 = explode(',', $Limit_Clubs);
 $matric = (int) $q;
 if ($matric > 0) {
 	$sql = "SELECT lc.*, c.Libelle, s.Date date_surclassement 
-	FROM gickp_Club c, gickp_Liste_Coureur lc 
-	LEFT OUTER JOIN gickp_Surclassements s 
-		ON (lc.Matric = s.Matric AND s.Saison = ?) 
-	WHERE (lc.Matric = ? 
-		OR lc.Reserve = ? ) 
-	AND lc.Numero_club = c.Code ";
+		FROM kp_club c, kp_licence lc 
+		LEFT OUTER JOIN kp_surclassement s 
+			ON (lc.Matric = s.Matric AND s.Saison = ?) 
+		WHERE (lc.Matric = ? 
+			OR lc.Reserve = ? ) 
+		AND lc.Numero_club = c.Code ";
 	$arrayQuery = array($codeSaison, $matric, $matric);
 } else {
 	$sql = "SELECT lc.*, c.Libelle, s.Date date_surclassement 
-		FROM gickp_Club c, gickp_Liste_Coureur lc 
-		LEFT OUTER JOIN gickp_Surclassements s 
+		FROM kp_club c, kp_licence lc 
+		LEFT OUTER JOIN kp_surclassement s 
 			ON (lc.Matric = s.Matric AND s.Saison = ?) 
 		WHERE (UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(?) 
 			OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(?) ) 

@@ -25,7 +25,7 @@ class GestionAthlete extends MyPageSecure
         // Saisons	
         $arraySaison = array();
         $sql = "SELECT Code 
-            FROM gickp_Saison 
+            FROM kp_saison 
             WHERE Code > '1900' 
             ORDER BY Code DESC ";	 
 		$result = $myBdd->pdo->prepare($sql);
@@ -40,8 +40,8 @@ class GestionAthlete extends MyPageSecure
 			// Données générales
 			$sql = "SELECT c.*, cl.Libelle nomclub, dep.Libelle nomcd, reg.Libelle nomcr, 
                 s.Date date_surclassement 
-                FROM gickp_Club cl, gickp_Comite_dep dep, gickp_Comite_reg reg, gickp_Liste_Coureur c 
-                LEFT OUTER JOIN gickp_Surclassements s 
+                FROM kp_club cl, kp_cd dep, kp_cr reg, kp_licence c 
+                LEFT OUTER JOIN kp_surclassement s 
                     ON (c.Matric = s.Matric AND s.Saison = ?) 
                 WHERE c.Numero_club = cl.Code 
                 AND c.Numero_comite_dept = dep.Code 
@@ -61,7 +61,7 @@ class GestionAthlete extends MyPageSecure
 			$this->m_tpl->assign('Courreur', $row);
 			$this->m_tpl->assign('Athlete_id', $row['Nom'].' '.$row['Prenom']);
 			// Arbitre
-            $sql = "SELECT * FROM gickp_Arbitre 
+            $sql = "SELECT * FROM kp_arbitre 
                 WHERE Matric = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($Athlete));
@@ -92,7 +92,7 @@ class GestionAthlete extends MyPageSecure
 			// Titulaire
 			$Titulaire = array();
 			$sql = "SELECT cej.*, ce.*, cej.Numero Num 
-                FROM gickp_Competitions_Equipes_Joueurs cej, gickp_Competitions_Equipes ce 
+                FROM kp_competition_equipe_joueur cej, kp_competition_equipe ce 
                 WHERE cej.Matric = ? 
                 AND cej.Id_equipe = ce.Id 
                 AND ce.Code_compet != 'POOL' 
@@ -110,7 +110,7 @@ class GestionAthlete extends MyPageSecure
 			$sql = "SELECT m.*, j.*, m.id Identifiant, 
                 IF(m.Matric_arbitre_principal = :Athlete,'Prin','') Prin, 
                 IF(m.Matric_arbitre_secondaire = :Athlete,'Sec','') Sec 
-                FROM gickp_Matchs m, gickp_Journees j 
+                FROM kp_match m, kp_journee j 
                 WHERE (m.Matric_arbitre_principal = :Athlete 
                     OR m.Matric_arbitre_secondaire = :Athlete) 
                 AND m.Id_journee = j.Id 
@@ -140,7 +140,7 @@ class GestionAthlete extends MyPageSecure
                 IF(m.Chronometre LIKE :Athlete,'Chrono','') Chrono, 
                 IF(m.Timeshoot LIKE :Athlete,'TS','') TS, 
                 IF(m.Ligne1 LIKE :Athlete OR m.Ligne2 LIKE :Athlete,'Ligne','') Ligne 
-                FROM gickp_Matchs m, gickp_Journees j 
+                FROM kp_match m, kp_journee j 
                 WHERE (m.Secretaire LIKE :Athlete 
                     OR m.Chronometre LIKE :Athlete 
                     OR m.Timeshoot LIKE :Athlete 
@@ -176,9 +176,9 @@ class GestionAthlete extends MyPageSecure
                 SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
                 SUM(IF(b.Id_evt_match='T',1,0)) Tir, 
                 SUM(IF(b.Id_evt_match='A',1,0)) Arret 
-                FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ceA, 
-                    gickp_Competitions_Equipes ceB, gickp_Matchs_Joueurs mj 
-                LEFT OUTER JOIN gickp_Matchs_Detail b 
+                FROM kp_match m, kp_journee j, kp_competition_equipe ceA, 
+                    kp_competition_equipe ceB, kp_match_joueur mj 
+                LEFT OUTER JOIN kp_match_detail b 
                     ON (mj.Matric = b.Competiteur AND mj.Id_match = b.Id_match) 
                 WHERE mj.Matric = :Athlete 
                 AND mj.Id_match = m.Id 
@@ -231,7 +231,7 @@ class GestionAthlete extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-            $sql = "UPDATE gickp_Liste_Coureur 
+            $sql = "UPDATE kp_licence 
                 SET Origine = ?, Nom = ?, 
                 Prenom = ?, Sexe = ?, 
                 Naissance = ? ";
@@ -255,14 +255,14 @@ class GestionAthlete extends MyPageSecure
             $result = $myBdd->pdo->prepare($sql);
             $result->execute($arrayQuery);
         
-            $sql = "UPDATE gickp_Competitions_Equipes_Joueurs 
+            $sql = "UPDATE kp_competition_equipe_joueur 
                 SET Nom = ?, Prenom = ?, 
                 Sexe = ? 
                 WHERE Matric = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($update_nom, $update_prenom, $update_sexe, $update_matric));
             
-            $sql = "REPLACE INTO gickp_Arbitre VALUES (?, ";
+            $sql = "REPLACE INTO kp_arbitre VALUES (?, ";
             switch ($update_arb) {
                 case 'Reg' :
                     $sql .= "'O','N','N','N','Reg','',?,?) ";

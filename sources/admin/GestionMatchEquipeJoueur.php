@@ -20,7 +20,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		
 		$_SESSION['parentUrl'] = $_SERVER['PHP_SELF'];
 		
-		$_SESSION['updatecell_tableName'] = 'gickp_Matchs_Joueurs';
+		$_SESSION['updatecell_tableName'] = 'kp_match_joueur';
 		$_SESSION['updatecell_where'] = "Where Id_match = $idMatch And Matric = ";
 		$_SESSION['updatecell_document'] = 'formMatchEquipeJoueur';
 				
@@ -30,9 +30,9 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		
 		// Chargement des Joueurs provenant de la Recherche ...
 		if (isset($_SESSION['Signature'])) {
-			$sql = "REPLACE INTO gickp_Matchs_Joueurs (Id_match, Matric, Equipe) 
+			$sql = "REPLACE INTO kp_match_joueur (Id_match, Matric, Equipe) 
 				SELECT ?, a.Matric, ? 
-				FROM gickp_Liste_Coureur a, gickp_Recherche_Licence b 
+				FROM kp_licence a, kp_recherche_licence b 
 				WHERE a.Matric = b.Matric 
 				AND b.Signature = ? 
 				AND b.Validation = 'O' ";
@@ -41,8 +41,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			// $result->debugDumpParams();
 
 
-			// Vidage gickp_Recherche_Licence ...				
-			$sql = "DELETE FROM gickp_Recherche_Licence 
+			// Vidage kp_recherche_licence ...				
+			$sql = "DELETE FROM kp_recherche_licence 
 				WHERE `Signature` = ?  ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($_SESSION['Signature']));
@@ -56,7 +56,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			// Prise des Informations sur le Match ...
 			$sql = "SELECT Date_match, Heure_match, Libelle, Terrain, Numero_ordre, 
 				`Validation`, Id_journee 
-				FROM gickp_Matchs 
+				FROM kp_match 
 				WHERE Id =  ?";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idMatch));
@@ -72,12 +72,12 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			// Prise des Informations sur l'Equipe ...
 			if ($codeEquipe == 'A') {
 				$sql = "SELECT a.Id, a.Code_compet, a.Code_saison, a.Libelle, a.Code_club 
-					FROM gickp_Competitions_Equipes a,	gickp_Matchs b 
+					FROM kp_competition_equipe a,	kp_match b 
 					WHERE a.Id  = b.Id_EquipeA 
 					AND b.Id = ? ";
 			} else {
 				$sql = "SELECT a.Id, a.Code_compet, a.Code_saison, a.Libelle, a.Code_club 
-					FROM gickp_Competitions_Equipes a,	gickp_Matchs b 
+					FROM kp_competition_equipe a,	kp_match b 
 					WHERE a.Id  = b.Id_EquipeB 
 					AND b.Id = ? ";
 			}
@@ -103,8 +103,8 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				b.Sexe, b.Naissance, b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, 
 				b.Pagaie_MER, b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, 
 				b.Reserve icf, c.Arb, c.niveau 
-				FROM gickp_Liste_Coureur b, gickp_Matchs_Joueurs a 
-				LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
+				FROM kp_licence b, kp_match_joueur a 
+				LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
 				WHERE a.Matric = b.Matric 
 				AND a.Id_match = ? 
 				AND a.Equipe = ? 
@@ -165,7 +165,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		// Contrôle verrouillage Match ...
 		$sql = "SELECT `Validation` 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch));
@@ -177,9 +177,9 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 	
-			$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+			$sql = "REPLACE INTO kp_match_joueur 
 				SELECT ?, Matric, Numero, ?, Capitaine 
-				FROM gickp_Competitions_Equipes_Joueurs 
+				FROM kp_competition_equipe_joueur 
 				WHERE Id_equipe = ? 
 				AND Capitaine <> 'X' 
 				AND Capitaine <> 'A' ";
@@ -208,7 +208,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		// Contrôle verrouillage Match ...
 		$sql = "SELECT `Validation` 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch));
@@ -230,7 +230,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 		
-				$sql = "REPLACE INTO gickp_Matchs_Joueurs (Id_match, Matric, Numero, Equipe, Capitaine) 
+				$sql = "REPLACE INTO kp_match_joueur (Id_match, Matric, Numero, Equipe, Capitaine) 
 					VALUES (?, ?, ?, ?, ?) ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array(
@@ -260,7 +260,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 
 		// Contrôle verrouillage Match ...
 		$sql = "SELECT `Validation` 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch));
@@ -272,7 +272,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 	
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+			$sql = "DELETE FROM kp_match_joueur 
 				WHERE Id_match = ? 
 				AND Equipe = ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -302,7 +302,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			
 		//Sélection des matchs de destination
 		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id_journee = ? 
 			AND `Validation` != 'O' 
 			AND Id != ? 
@@ -315,18 +315,18 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 	
-			$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
+			$sql2 = "DELETE FROM kp_match_joueur 
 				WHERE Id_match = ? 
 				AND Equipe = ? ";
 			$result2 = $myBdd->pdo->prepare($sql2);
 
 			$sql3 = "SELECT Matric, Numero, Capitaine 
-				FROM gickp_Matchs_Joueurs 
+				FROM kp_match_joueur 
 				WHERE Id_match = ? 
 				AND Equipe = ? ";
 			$result3 = $myBdd->pdo->prepare($sql3);
 
-			$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
+			$sql4 = "INSERT INTO kp_match_joueur 
 				(Id_match, Matric, Numero, Equipe, Capitaine) 
 				VALUES (?, ?, ?, ?, ?) ";
 			$result4 = $myBdd->pdo->prepare($sql4);
@@ -370,10 +370,10 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 		//Sélection de la compétition et des journées concernées
 		$sql = "SELECT Id 
-			FROM gickp_Journees 
+			FROM kp_journee 
 			WHERE Code_competition = ( 
 				SELECT Code_competition 
-				FROM gickp_Journees 
+				FROM kp_journee 
 				WHERE Id = $idJournee) ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idJournee));
@@ -384,7 +384,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		//Sélection des matchs de destination
 		$in  = str_repeat('?,', count($arrayJournees) - 1) . '?';
 		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id_journee IN ($in) 
 			AND `Validation` !=  'O' 
 			AND Id != ?  
@@ -397,18 +397,18 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 	
-			$sql2 = "DELETE FROM gickp_Matchs_Joueurs 
+			$sql2 = "DELETE FROM kp_match_joueur 
 				WHERE Id_match = ? 
 				AND Equipe = ? ";
 			$result2 = $myBdd->pdo->prepare($sql2);
 
 			$sql3 = "SELECT Matric, Numero, Capitaine 
-				FROM gickp_Matchs_Joueurs 
+				FROM kp_match_joueur 
 				WHERE Id_match = ? 
 				AND Equipe = ? ";
 			$result3 = $myBdd->pdo->prepare($sql3);
 
-			$sql4 = "INSERT INTO gickp_Matchs_Joueurs 
+			$sql4 = "INSERT INTO kp_match_joueur 
 				(Id_match, Matric, Numero, Equipe, Capitaine) 
 				VALUES (?, ?, ?, ?, ?) ";
 			$result4 = $myBdd->pdo->prepare($sql4);
@@ -452,7 +452,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 		$myBdd = new MyBdd();
 		// Contrôle verrouillage Match ...
 		$sql = "SELECT `Validation` 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch));
@@ -465,7 +465,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$myBdd->pdo->beginTransaction();
 	
 			$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
+			$sql = "DELETE FROM kp_match_joueur 
 				WHERE Id_match = ? 
 				AND Matric IN ($in) ";
 			$result = $myBdd->pdo->prepare($sql);

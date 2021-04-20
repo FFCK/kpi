@@ -1032,7 +1032,7 @@ function utySendMail($title, $content) {
 	$destinataires = 'kayak-polo.info <contact@kayak-polo.info>';
 	$content = utyGetSession('User') . ' : ' . $content;
 
-	// error_log("$title, $content");
-	mail($destinataires, $title, $content, $headers);
+	error_log("$title, $content");
+	// mail($destinataires, $title, $content, $headers);
 	return;
 }

@@ -18,7 +18,7 @@ $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch');
 $action = trim(utyGetPost('action'));
 if ($action == 'RAZ') {
-	$sql = "DELETE FROM gickp_Chrono 
+	$sql = "DELETE FROM kp_chrono 
 		WHERE IdMatch = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($idMatch));
@@ -27,7 +27,7 @@ if ($action == 'RAZ') {
 	$run_time = utyGetPost('run_time');
 	$max_time = utyGetPost('max_time');
 	$start_time_server = time()%86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
-	$sql = "REPLACE gickp_Chrono 
+	$sql = "REPLACE kp_chrono 
 		SET IdMatch = ?, 
 		`action` = ?, 
 		start_time = ?, 

@@ -17,7 +17,7 @@ $myBdd = new MyBdd();
 $idJournee = (int) utyGetPost('idJournee');
 $data[] = array('Id' => 0, 'Libelle' => '( indéterminé )');
 $sql = "SELECT ce.Id, ce.Libelle 
-	FROM gickp_Competitions_Equipes ce, gickp_Journees j 
+	FROM kp_competition_equipe ce, kp_journee j 
 	WHERE ce.Code_compet = j.Code_competition 
 	AND ce.Code_saison = j.Code_saison 
 	AND j.Id = ? ";

@@ -31,7 +31,7 @@ class GestionDoc extends MyPageSecure
 
 		// Chargement des Saisons ...
 		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code DESC ";	 
 		$arraySaison = array();
@@ -53,7 +53,7 @@ class GestionDoc extends MyPageSecure
 		}
 
 		$sql = "SELECT Id, Libelle, Date_debut, Publication 
-			FROM gickp_Evenement 
+			FROM kp_evenement 
 			ORDER BY Date_debut DESC, Libelle ";
 		foreach ($myBdd->pdo->query($sql) as $row) { 
 			if ($row["Id"] == $idEvenement) {
@@ -84,7 +84,7 @@ class GestionDoc extends MyPageSecure
 		}
 		$sql = "SELECT c.Code_niveau, c.Code_ref, c.Code_tour, c.Code, c.Libelle, 
 			c.Soustitre, c.Soustitre2, c.Titre_actif, g.section, g.ordre 
-			FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_saison = ?  
 			$sqlFiltreCompetition 
 			AND c.Code_niveau LIKE ? 
@@ -150,7 +150,7 @@ class GestionDoc extends MyPageSecure
 		//Equipes
 		$nbEquipes = 'X';
 		$sql = "SELECT COUNT(Id) nbEquipes 
-			FROM gickp_Competitions_Equipes 
+			FROM kp_competition_equipe 
 			WHERE Code_saison = ? 
 			AND Code_compet = ? "; 
 		$result = $myBdd->pdo->prepare($sql);
@@ -166,7 +166,7 @@ class GestionDoc extends MyPageSecure
 		$num_results = 0;
 		$arrayJournees = array();
 		$sql = "SELECT j.* 
-			FROM gickp_Journees j 
+			FROM kp_journee j 
 			WHERE j.Code_saison = :Code_saison 
 			AND j.Code_competition = :Code_competition 
 			ORDER BY j.Niveau, j.Phase, j.Date_debut, j.Lieu ";
@@ -201,7 +201,7 @@ class GestionDoc extends MyPageSecure
 		$nbMatchsValid = 0;
 		$nbMatchsPubli = 0;
 		$sql = "SELECT m.Id, m.Numero_ordre, m.Validation, m.Publication 
-			FROM gickp_Journees j, gickp_Matchs m 
+			FROM kp_journee j, kp_match m 
 			WHERE j.Code_saison = '".$codeSaison."' 
 			AND j.Code_competition = '".$codeCompet."' 
 			AND j.Id = m.Id_journee 

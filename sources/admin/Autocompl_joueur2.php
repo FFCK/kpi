@@ -30,17 +30,17 @@ $jRow = array();
 $matric = (int) $term;
 if ($matric > 0) {
 	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
-	FROM gickp_Club c, gickp_Liste_Coureur lc  
-	LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric)
-	WHERE (lc.Matric = ? 
-		OR lc.Reserve = ? ) 
+		FROM kp_club c, kp_licence lc  
+		LEFT OUTER JOIN kp_arbitre a ON (lc.Matric = a.Matric)
+		WHERE (lc.Matric = ? 
+			OR lc.Reserve = ? ) 
 		AND lc.Numero_club = c.Code 
 		ORDER BY lc.Nom, lc.Prenom ";
 	$arrayQuery = array($matric, $matric);
 } else {
 	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
-	FROM gickp_Club c, gickp_Liste_Coureur lc  
-	LEFT OUTER JOIN gickp_Arbitre a ON (lc.Matric = a.Matric) 
+		FROM kp_club c, kp_licence lc  
+		LEFT OUTER JOIN kp_arbitre a ON (lc.Matric = a.Matric) 
 		WHERE (UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(?) 
 			OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(?) ) 
 		AND lc.Numero_club = c.Code 

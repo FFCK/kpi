@@ -21,7 +21,7 @@ $resultGlobal = '';
 
 // Clubs
 $sql = "SELECT * 
-	FROM gickp_Club 
+	FROM kp_club 
 	WHERE (UPPER(Libelle) LIKE UPPER(?) 
 		OR UPPER(Code) LIKE UPPER(?)) 
 	ORDER BY Code ";	 

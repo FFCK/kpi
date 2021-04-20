@@ -6,7 +6,7 @@ $voie = utyGetInt($_POST, 'voie', 1);
 $myBdd = new MyBdd();
 
 $sql = "SELECT `Url` 
-	FROM gickp_Tv 
+	FROM kp_tv 
 	WHERE Voie = ? ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($voie));

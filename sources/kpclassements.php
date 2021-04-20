@@ -31,7 +31,7 @@ class Classements extends MyPage
 
 		// Chargement des Saisons ...
 		$sql = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin 
-			FROM gickp_Saison 
+			FROM kp_saison 
             WHERE Code > '1900' 
 			ORDER BY Code DESC ";
 		$arraySaison = array();
@@ -56,7 +56,7 @@ class Classements extends MyPage
 		$typeClt = array();
 		$filtreCompetition = utyGetFiltreCompetition('');
 		$sql = "SELECT * 
-			FROM gickp_Competitions 
+			FROM kp_competition 
 			WHERE Code_saison = ? 
 			$filtreCompetition 
 			AND Publication='O' 
@@ -91,7 +91,7 @@ class Classements extends MyPage
 			}
 			//Existence de matchs
 			$sql2 = "SELECT m.Id 
-				FROM gickp_Matchs m, gickp_Journees j 
+				FROM kp_match m, kp_journee j 
 				WHERE m.Id_journee = j.Id 
 				AND m.Publication = 'O' 
 				AND j.Publication = 'O' 
@@ -107,7 +107,7 @@ class Classements extends MyPage
 			$sql2 = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, ce.Clt_publi, ce.Pts_publi, 
 				ce.J_publi, ce.G_publi, ce.N_publi, ce.P_publi, ce.F_publi, ce.Plus_publi, 
 				ce.Moins_publi, ce.Diff_publi, ce.PtsNiveau_publi, ce.CltNiveau_publi, c.Code_comite_dep 
-				FROM gickp_Competitions_Equipes ce, gickp_Club c 
+				FROM kp_competition_equipe ce, kp_club c 
 				WHERE ce.Code_compet = ? 
 				AND ce.Code_saison = ? 
 				AND ce.Code_club = c.Code ";	 
