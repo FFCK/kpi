@@ -130,10 +130,10 @@ class GestionEquipeJoueur extends MyPageSecure
 			if (isset($_SESSION['Signature'])) {
 				$sql = "REPLACE INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ) 
-					SELECT ?, a.Matric, a.Nom, a.Prenom, a.Sexe, c.Code 
+					SELECT ?, a.Matric, a.Nom, a.Prenom, a.Sexe, c.id 
 					FROM kp_recherche_licence b, kp_licence a 
 					LEFT OUTER JOIN kp_categorie c 
-						ON (? - Year(a.Naissance) BETWEEN c.Age_min AND c.Age_max) 
+						ON (? - Year(a.Naissance) BETWEEN c.age_min AND c.age_max) 
 					WHERE a.Matric = b.Matric 
 					AND b.Signature = ? 
 					AND b.Validation = 'O' ";
