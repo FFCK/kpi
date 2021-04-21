@@ -65,3 +65,9 @@ ALTER TABLE `kp_arbitre` CHANGE `Livret` `livret` VARCHAR(25) CHARACTER SET utf8
 -- ALTER TABLE `kp_arbitre` CHANGE `arbitre` `Arb` CHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
 -- ALTER TABLE `kp_arbitre` CHANGE `livret` `Livret` VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''; 
 
+ALTER TABLE `kp_categorie` CHANGE `Code` `id` VARCHAR(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''; 
+ALTER TABLE `kp_categorie` CHANGE `Libelle` `libelle` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''; 
+ALTER TABLE `kp_categorie` CHANGE `Age_min` `age_min` INT(10) UNSIGNED NOT NULL DEFAULT '0'; 
+ALTER TABLE `kp_categorie` CHANGE `Age_max` `age_max` INT(10) UNSIGNED NOT NULL DEFAULT '0'; 
+ALTER TABLE `kp_categorie` CHANGE `Sexe` `sexe` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''; 
+

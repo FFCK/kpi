@@ -489,7 +489,7 @@ class GestionEquipe extends MyPageSecure
 					// Insertion des Joueurs Equipes ...
 					$sql  = "INSERT INTO kp_competition_equipe_joueur 
 						(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
-						SELECT :EquipeId, a.Matric, a.Nom, a.Prenom, a.Sexe, d.Code, a.Numero, a.Capitaine 
+						SELECT :EquipeId, a.Matric, a.Nom, a.Prenom, a.Sexe, d.id, a.Numero, a.Capitaine 
 						FROM kp_competition_equipe_joueur a, kp_competition_equipe b, 
 						kp_competition_equipe c, kp_categorie d, kp_licence e 
 						WHERE a.Id_equipe = b.Id 
@@ -498,7 +498,7 @@ class GestionEquipe extends MyPageSecure
 						AND b.Numero = :EquipeNum 
 						AND b.Code_compet = :checkCompo1 
 						AND b.Code_saison = :checkCompo0 
-						AND :checkCompo0 - Year(e.Naissance) BETWEEN d.Age_min AND d.Age_max ";
+						AND :checkCompo0 - Year(e.Naissance) BETWEEN d.age_min AND d.age_max ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array(
 						':EquipeId' => $EquipeId, 

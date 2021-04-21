@@ -1286,14 +1286,14 @@ class MyBdd
 	// GetCategorie
 	function GetCategorie($age, &$code, &$libelle)
 	{
-		$sql = "SELECT Code, Libelle 
+		$sql = "SELECT id, libelle 
 			FROM kp_categorie 
-			WHERE Age_min <= :age AND Age_max >= :age ";
+			WHERE age_min <= :age AND age_max >= :age ";
         $result = $this->pdo->prepare($sql);
         $result->execute(array(':age' => $age));
 		if ($row = $result->fetch()) {
 			$code = $row['Code'];
-			$libelle = $row['Libelle'];
+			$libelle = $row['libelle'];
 			return true;
 		}
 	
