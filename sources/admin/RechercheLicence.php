@@ -24,7 +24,7 @@ class RechercheLicence extends MyPageSecure
 			$signature = $_SESSION['Signature'];
 		
 		$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, 
-			a.Club, a.Origine, c.International, c.National, c.InterRegional, c.Regional 
+			a.Club, a.Origine, c.international, c.national, c.interregional, c.regional 
 			FROM kp_recherche_licence b, kp_licence a 
 			LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
 			WHERE a.Matric = b.Matric 
@@ -42,10 +42,10 @@ class RechercheLicence extends MyPageSecure
 				'Naissance' => utyDateUsToFr($row['Naissance']) , 
 				'Categ' => utyCodeCategorie2($row['Naissance']) ,
 				'Saison' => $row['Origine'] , 
-				'International' => $row['International'] ,
-				'National' =>  $row['National'] , 
-				'InterRegional' =>  $row['InterRegional'] , 
-				'Regional' =>  $row['Regional'] ));
+				'International' => $row['international'] ,
+				'National' =>  $row['national'] , 
+				'InterRegional' =>  $row['interregional'] , 
+				'Regional' =>  $row['regional'] ));
 		}
 		$this->m_tpl->assign('arrayCoureur', $arrayCoureur);
 		
@@ -258,25 +258,25 @@ class RechercheLicence extends MyPageSecure
 
 		$CheckJugeInter = utyGetPost('CheckJugeInter', '');
 		if (strlen($CheckJugeInter) > 0) {
-			$sql .= "AND a.International = 'O' ";
+			$sql .= "AND a.international = 'O' ";
 			$_SESSION['CheckJugeInter'] = true;
 		}
 		
 		$CheckJugeNational = utyGetPost('CheckJugeNational', '');
 		if (strlen($CheckJugeNational) > 0) {
-			$sql .= "AND a.National = 'O' ";
+			$sql .= "AND a.national = 'O' ";
 			$_SESSION['CheckJugeNational'] = true;
 		}
 		
 		$CheckJugeInterReg = utyGetPost('CheckJugeInterReg', '');
 		if (strlen($CheckJugeInterReg) > 0) {
-			$sql .= "AND a.InterRegional = 'O' ";
+			$sql .= "AND a.interregional = 'O' ";
 			$_SESSION['CheckJugeInterReg'] = true;
 		}
 		
 		$CheckJugeReg = utyGetPost('CheckJugeReg', '');
 		if (strlen($CheckJugeReg) > 0) {
-			$sql .= "AND a.Regional = 'O' ";
+			$sql .= "AND a.regional = 'O' ";
 			$_SESSION['CheckJugeReg'] = true;
 		}
 		

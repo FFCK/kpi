@@ -55,8 +55,8 @@ if ($j == '' && $m == '') {
 	$resultGlobal .= "|XXX\n";
 	$resultGlobal .= "---------- " . $lang['Joueurs'] . " ----------|XXX\n";
 	$arrayQuery = [];
-	$sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, 
-		(c.Arb IS NULL) AS sortCol 
+	$sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau, 
+		(c.arbitre IS NULL) AS sortCol 
 		FROM kp_competition_equipe b, kp_journee d, kp_match e, 
 		kp_competition_equipe_joueur a 
 		LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
@@ -76,12 +76,12 @@ if ($j == '' && $m == '') {
 			OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER(?) 
 			OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER(?) 
 			OR UPPER(b.Libelle) LIKE UPPER(?) ) 
-		ORDER BY b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
+		ORDER BY b.Libelle, sortCol, c.arbitre, a.Nom, a.Prenom ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array_merge($arrayQuery, ['%'.$q.'%'], ['%'.$q.'%'], ['%'.$q.'%'], ['%'.$q.'%']));
 	while ($row = $result->fetch()) {
 		$libelle = $row['Libelle'];
-		$arb = strtoupper($row['Arb']);
+		$arb = strtoupper($row['arbitre']);
 		if ($row['niveau'] != '') {
 			$arb .= '-' . $row['niveau'];
 		}
@@ -96,7 +96,7 @@ if ($j == '' && $m == '') {
 	$resultGlobal .= "|XXX\n";
 	$resultGlobal .= "|XXX\n";
 	$resultGlobal .= "---------- " . $lang['Pool_Arbitres'] . " ----------|XXX\n";
-	$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau 
+	$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau 
 		FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
 		LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric  
 		WHERE a.Id_equipe = b.Id 
@@ -112,7 +112,7 @@ if ($j == '' && $m == '') {
 		//$libelle = 'Pool Arbitres 1';
 		$libelle = substr($row['Libelle'],0,3);
 		$libelle = str_replace('Poo', 'Pool', $libelle);
-		$arb = strtoupper($row['Arb']);
+		$arb = strtoupper($row['arbitre']);
 		if($row['niveau'] != '')
 			$arb .= '-'.$row['niveau'];
 		$matric = $row['Matric'];
@@ -131,7 +131,7 @@ if ($j == '' && $m == '') {
 	$resultGlobal .= "|XXX\n";
 	$resultGlobal .= "|XXX\n";
 	$resultGlobal .= "---------- " . $lang['Autres_Arbitres'] . " ----------|XXX\n";
-	$sql = "SELECT lc.*, c.Libelle, b.Arb, b.niveau 
+	$sql = "SELECT lc.*, c.Libelle, b.arbitre, b.niveau 
 		FROM kp_licence lc, kp_arbitre b, kp_club c 
 		WHERE lc.Matric = b.Matric 
 		AND (lc.Matric LIKE :query 
@@ -144,7 +144,7 @@ if ($j == '' && $m == '') {
 	while ($row = $result->fetch()) {
 		$club = $row['Numero_club'];
 		$libelle = mb_convert_case(strtolower($row['Libelle']), MB_CASE_TITLE, "UTF-8");
-		$arb = strtoupper($row['Arb']);
+		$arb = strtoupper($row['arbitre']);
 		if ($row['niveau'] != '') {
 			$arb .= '-' . $row['niveau'];
 		}

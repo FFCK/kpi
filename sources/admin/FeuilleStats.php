@@ -294,8 +294,8 @@ class FeuilleStats extends MyPage {
 				break;
             case 'Arbitrage' :
 				$sql = "SELECT j.Code_competition Competition, a.Matric Licence, lc.Nom, 
-                    lc.Prenom, lc.Sexe, c.Code Code_club, c.Libelle Club, a.Arb, a.niveau, 
-                    a.saison, a.Livret, 
+                    lc.Prenom, lc.Sexe, c.Code Code_club, c.Libelle Club, a.arbitre, a.niveau, 
+                    a.saison, a.livret, 
                     SUM(IF(m.Matric_arbitre_principal=a.Matric,1,0)) principal, 
                     SUM(IF(m.Matric_arbitre_secondaire=a.Matric,1,0)) secondaire, 
                     COUNT(*) Total 
@@ -559,14 +559,14 @@ class FeuilleStats extends MyPage {
 				break;
 			case 'ListeArbitres' : // ListeArbitres
 				$sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Sexe, c.Code Code_club, 
-                    c.Libelle Club, a.Arb, a.niveau, a.saison, a.Livret 
+                    c.Libelle Club, a.arbitre, a.niveau, a.saison, a.livret 
                     FROM kp_arbitre a, kp_licence lc, kp_club c 
                     WHERE 1 
                     AND a.Matric = lc.Matric 
                     AND c.Code = lc.Numero_club 
                     AND a.Matric < 2000000 
-                    AND a.Arb != '' 
-                    ORDER BY a.Arb, a.Niveau, a.Saison, lc.Nom, lc.Prenom 
+                    AND a.arbitre != '' 
+                    ORDER BY a.arbitre, a.niveau, a.saison, lc.Nom, lc.Prenom 
                     LIMIT 0,$nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute();
@@ -1020,6 +1020,25 @@ class FeuilleStats extends MyPage {
                     $pdf->Cell(40, 4, $arrayStats[$i]['Ligne2'], 'B', 0, 'C');
                     $pdf->Cell(38, 4, '', 'B', 0, 'C');
                     $pdf->Cell(37, 4, $arrayStats[$i]['Timeshoot'], 'B', 1, 'C');
+                }
+                break;
+            case 'ListeArbitres' :
+                $pdf->Cell(190, 12, "Stats : Arbitres", 0, 1, 'C');
+                $pdf->Ln(3);
+                $pdf->SetFont('Arial', 'BI', 10);
+                $pdf->Cell(60, 7, 'Arbitre', 'B', 0, 'C');
+                $pdf->Cell(60, 7, 'Club', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'Niveau', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'Saison', 'B', 0, 'C');
+                $pdf->Cell(30, 7, 'Livret', 'B', 1, 'C');
+                $pdf->SetFont('Arial', '', 6);
+                $k = 0;
+                for ($i = 0; $i < count($arrayStats); $i++) {
+                    $pdf->Cell(60, 4, $arrayStats[$i]['Nom'] . ' ' . $arrayStats[$i]['Prenom'] . ' (' . $arrayStats[$i]['Matric'] . ')', 0, 0, 'C');
+                    $pdf->Cell(60, 4, $arrayStats[$i]['Club'], 0, 0, 'C');
+                    $pdf->Cell(20, 4, $arrayStats[$i]['arbitre'] . ' ' . $arrayStats[$i]['niveau'], 0, 0, 'C');
+                    $pdf->Cell(20, 4, $arrayStats[$i]['saison'], 0, 0, 'C');
+                    $pdf->Cell(30, 4, $arrayStats[$i]['livret'], 0, 1, 'C');
                 }
                 break;
         }

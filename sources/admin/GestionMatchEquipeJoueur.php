@@ -102,7 +102,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$sql = "SELECT a.Matric, a.Numero, a.Capitaine, b.Matric, b.Nom, b.Prenom, 
 				b.Sexe, b.Naissance, b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, 
 				b.Pagaie_MER, b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, 
-				b.Reserve icf, c.Arb, c.niveau 
+				b.Reserve icf, c.arbitre, c.niveau 
 				FROM kp_licence b, kp_match_joueur a 
 				LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
 				WHERE a.Matric = b.Matric 
@@ -115,7 +115,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 			$result->execute(array($idMatch, $codeEquipe));
             while ($row = $result->fetch()) {
 				if ($row['niveau'] != '')
-					$row['Arb'] .= '-'.$row['niveau'];
+					$row['arbitre'] .= '-'.$row['niveau'];
 				
 				$numero = $row['Numero'];
 				if (strlen($numero) == 0)
@@ -140,7 +140,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 					'CertifCK' => $row['CertifCK'], 'CertifAPS' => $row['CertifAPS'], 
 					'Sexe' => $row['Sexe'], 'Categ' => utyCodeCategorie2($row['Naissance']), 
 					'Pagaie_ECA' => $row['Pagaie_ECA'], 'Pagaie_EVI' => $row['Pagaie_EVI'] , 
-					'Pagaie_MER' => $row['Pagaie_MER'], 'Arbitre' => $row['Arb'], 
+					'Pagaie_MER' => $row['Pagaie_MER'], 'Arbitre' => $row['arbitre'], 
 					'PagaieValide' => $PagaieValide, 
 					'Saison' => $row['Origine'], 'Numero_club' => $row['Numero_club'], 
 					'icf' => $row['icf']
