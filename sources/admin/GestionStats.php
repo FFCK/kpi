@@ -438,8 +438,8 @@ class GestionStats extends MyPageSecure
                 
             case 'Arbitrage' :
 				$sql = "SELECT j.Code_competition Competition, a.Matric Licence, lc.Nom, 
-                    lc.Prenom, lc.Sexe, c.Code Code_club, c.Libelle Club, a.Arb, a.niveau, 
-                    a.saison, a.Livret, 
+                    lc.Prenom, lc.Sexe, c.Code Code_club, c.Libelle Club, a.arbitre, a.niveau, 
+                    a.saison, a.livret, 
                     SUM(IF(m.Matric_arbitre_principal=a.Matric,1,0)) principal, 
                     SUM(IF(m.Matric_arbitre_secondaire=a.Matric,1,0)) secondaire, 
                     COUNT(*) Total 
@@ -731,14 +731,14 @@ class GestionStats extends MyPageSecure
 				break;
 			case 'ListeArbitres' : // ListeArbitres
 				$sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Sexe, c.Code Code_club, 
-                    c.Libelle Club, a.Arb, a.niveau, a.saison, a.Livret 
+                    c.Libelle Club, a.arbitre, a.niveau, a.saison, a.livret 
                     FROM kp_arbitre a, kp_licence lc, kp_club c 
                     WHERE 1 
                     AND a.Matric = lc.Matric 
                     AND c.Code = lc.Numero_club 
                     AND a.Matric < 2000000 
-                    AND a.Arb != '' 
-                    ORDER BY a.Arb, a.Niveau, a.Saison, lc.Nom, lc.Prenom 
+                    AND a.arbitre != '' 
+                    ORDER BY a.arbitre, a.niveau, a.saison, lc.Nom, lc.Prenom 
                     LIMIT 0,$nbLignes ";
                 $sql_total .= '<br><br>'.$sql;
                 $result = $myBdd->pdo->prepare($sql);

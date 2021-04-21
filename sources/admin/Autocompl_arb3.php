@@ -52,8 +52,8 @@ while ($row = $result->fetch()) {
 }
 //Joueurs
 $in  = str_repeat('?,', count($idEquipes) - 1) . '?';
-$sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, 
-	(c.Arb IS NULL) AS sortCol 
+$sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau, 
+	(c.arbitre IS NULL) AS sortCol 
 	FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
 	LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 	WHERE a.Id_equipe = b.Id 
@@ -64,11 +64,11 @@ $sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau,
 		OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER(?) 
 		OR UPPER(b.Libelle) LIKE UPPER(?) 
 	) 
-	ORDER BY b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
+	ORDER BY b.Libelle, sortCol, c.arbitre, a.Nom, a.Prenom ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array_merge($idEquipes, [$term1], [$term1], [$term1], [$term1]));
 while ($row = $result->fetch()) {
-	$arb = strtoupper($row['Arb']);
+	$arb = strtoupper($row['arbitre']);
 	$nom = mb_strtoupper($row['Nom']);
 	$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
 	$jRow["label"] = $row["Libelle"].' - '.$nom.' '.$prenom.' ('.$arb.' '.$row["niveau"].')';
@@ -78,7 +78,7 @@ while ($row = $result->fetch()) {
 	array_push($a_json, $jRow);
 }
 //Pool
-$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau 
+$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau 
 	FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
 	LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 	WHERE a.Id_equipe = b.Id 
@@ -94,7 +94,7 @@ $result->execute(array(':term1' => $term1));
 while ($row = $result->fetch()) {
 	$libelle = substr($row['Libelle'],0,3);
 	$libelle = str_replace('Poo', 'Pool', $libelle);
-	$arb = strtoupper($row['Arb']);
+	$arb = strtoupper($row['arbitre']);
 	if ($row['niveau'] != '') {
 		$arb .= '-'.$row['niveau'];
 	}
@@ -108,7 +108,7 @@ while ($row = $result->fetch()) {
 	array_push($a_json, $jRow);
 }
 //Autres arbitres
-$sql = "SELECT lc.*, c.Libelle, b.Arb, b.niveau 
+$sql = "SELECT lc.*, c.Libelle, b.arbitre, b.niveau 
 	FROM kp_licence lc, kp_arbitre b, kp_club c 
 	WHERE lc.Matric = b.Matric 
 	AND (lc.Matric LIKE :term1 
@@ -121,7 +121,7 @@ $result = $myBdd->pdo->prepare($sql);
 $result->execute(array(':term1' => $term1));
 while ($row = $result->fetch()) {
 	$libelle = mb_convert_case(strtolower($row['Libelle']), MB_CASE_TITLE, "UTF-8");
-	$arb = strtoupper($row['Arb']);
+	$arb = strtoupper($row['arbitre']);
 	if($row['niveau'] != '') {
 		$arb .= '-'.$row['niveau'];
 	}

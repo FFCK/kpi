@@ -38,7 +38,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
 	
 		if ($this->OkRecherche()) {
 			$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, 
-                a.Club, b.Arb 
+                a.Club, b.arbitre 
                 FROM kp_licence a 
                 LEFT OUTER JOIN kp_arbitre b ON (a.Matric = b.Matric) 
                 WHERE a.Matric IS NOT NULL ";
@@ -71,19 +71,19 @@ class RechercheLicenceIndi2 extends MyPageSecure
                 $arrayQuery = array_merge($arrayQuery, [$codeClub]);
 			}
 			if (utyGetPost('CheckJugeInter', false)) {
-                $sql .= " AND b.Arb = 'Int' ";
+                $sql .= " AND b.arbitre = 'Int' ";
 			}
 			if (utyGetPost('CheckJugeNational', false)) {
-                $sql .= " AND b.Arb = 'Nat' ";
+                $sql .= " AND b.arbitre = 'Nat' ";
 			}
 			if (utyGetPost('CheckJugeReg', false)) {
-                $sql .= " AND b.Arb = 'Reg' ";
+                $sql .= " AND b.arbitre = 'Reg' ";
 			}
 			if (utyGetPost('CheckJugeOTM', false)) {
-                $sql .= " AND b.Arb = 'OTM' ";
+                $sql .= " AND b.arbitre = 'OTM' ";
 			}
 			if (utyGetPost('CheckJugeJO', false)) {
-                $sql .= " AND b.Arb = 'JO' ";
+                $sql .= " AND b.arbitre = 'JO' ";
 			}
 			$sql .= " ORDER BY a.Nom, a.Prenom, a.Matric ";
 		
@@ -96,7 +96,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
                 $reg = 'N';
                 $otm = 'N';
                 $jo = 'N';
-                switch ($row['Arb']) {
+                switch ($row['arbitre']) {
                     case 'Int' :
                         $int = 'O';
                         break;
@@ -124,7 +124,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
                     'Regional' =>  $reg ,
                     'OTM' =>  $otm ,
                     'JO' =>  $jo ,
-                    'Arbitre' => $row['Arb'] ));
+                    'Arbitre' => $row['arbitre'] ));
 																				 
 			}
 		}

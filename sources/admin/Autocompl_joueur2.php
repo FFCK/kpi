@@ -29,7 +29,7 @@ $jRow = array();
 
 $matric = (int) $term;
 if ($matric > 0) {
-	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
+	$sql = "SELECT lc.*, c.Libelle, a.arbitre, a.niveau 
 		FROM kp_club c, kp_licence lc  
 		LEFT OUTER JOIN kp_arbitre a ON (lc.Matric = a.Matric)
 		WHERE (lc.Matric = ? 
@@ -38,7 +38,7 @@ if ($matric > 0) {
 		ORDER BY lc.Nom, lc.Prenom ";
 	$arrayQuery = array($matric, $matric);
 } else {
-	$sql = "SELECT lc.*, c.Libelle, a.Arb, a.niveau 
+	$sql = "SELECT lc.*, c.Libelle, a.arbitre, a.niveau 
 		FROM kp_club c, kp_licence lc  
 		LEFT OUTER JOIN kp_arbitre a ON (lc.Matric = a.Matric) 
 		WHERE (UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(?) 
@@ -55,8 +55,8 @@ while ($row = $result->fetch()) {
     $jRow["matric"] = $row['Matric'];
 	$jRow["nom"] = mb_strtoupper($row['Nom']);
 	$jRow["prenom"] = mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8");
-    if (strlen($row['Arb']) > 1) {
-        $jRow["arb"] = ' ' . $row['Arb'] . '-' . $row['niveau'];
+    if (strlen($row['arbitre']) > 1) {
+        $jRow["arb"] = ' ' . $row['arbitre'] . '-' . $row['niveau'];
     } else {
         $jRow["arb"] = '';
     }
