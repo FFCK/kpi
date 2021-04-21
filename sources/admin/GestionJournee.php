@@ -635,14 +635,14 @@ class GestionJournee extends MyPageSecure
 			// Les arbitres potentiels peuvent aussi être les joueurs des Equipes ...
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Joueurs'] . ' ----------'));
 			$in  = str_repeat('?,', count($arrayEquipes) - 1) . '?';
-			$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, 
-				(c.Arb IS NULL) AS sortCol 
+			$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau, 
+				(c.arbitre IS NULL) AS sortCol 
 				FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
 				LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 				WHERE a.Id_equipe = b.Id 
 				AND b.Id IN ($in) 
 				AND a.Capitaine <> 'X' 
-				ORDER BY b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
+				ORDER BY b.Libelle, sortCol, c.arbitre, a.Nom, a.Prenom ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayEquipes);
 			
@@ -652,8 +652,8 @@ class GestionJournee extends MyPageSecure
 					array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---'));
 					$libelleTemp = $row['Libelle'];
 				}
-				if (strlen($row['Arb'])>0)
-					$arb = ' '.strtoupper($row['Arb']);
+				if (strlen($row['arbitre'])>0)
+					$arb = ' '.strtoupper($row['arbitre']);
 				else
 					$arb = '';
 				if($row['niveau'] != '')
@@ -664,7 +664,7 @@ class GestionJournee extends MyPageSecure
 			// Les arbitres potentiels font partie du Pool ...
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => ''));
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Pool_Arbitres'] . ' ----------'));
-			$sql2 = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau 
+			$sql2 = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau 
 				FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
 				LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 				WHERE a.Id_equipe = b.Id 
@@ -674,8 +674,8 @@ class GestionJournee extends MyPageSecure
 			$result2 = $myBdd->pdo->prepare($sql2);
 			$result2->execute();
             while ($row2 = $result2->fetch()) {
-				if (strlen($row2['Arb']) > 0) {
-                    $arb = ' ' . strtoupper($row2['Arb']);
+				if (strlen($row2['arbitre']) > 0) {
+                    $arb = ' ' . strtoupper($row2['arbitre']);
                 } else {
                     $arb = '';
                 }

@@ -157,7 +157,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, 
 				b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, 
 				b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, 
-				b.Reserve icf, c.Arb, c.niveau, s.Date date_surclassement 
+				b.Reserve icf, c.arbitre, c.niveau, s.Date date_surclassement 
 				FROM kp_competition_equipe_joueur a 
 				LEFT OUTER JOIN kp_licence b ON (a.Matric = b.Matric) 
 				LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
@@ -171,7 +171,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			$i = 0;
 			while ($row = $result->fetch()) {
 				if($row['niveau'] != '')
-					$row['Arb'] .= '-'.$row['niveau'];
+					$row['arbitre'] .= '-'.$row['niveau'];
 				
 				$numero = $row['Numero'];
 				if (strlen($numero) == 0)
@@ -198,7 +198,7 @@ class GestionEquipeJoueur extends MyPageSecure
 					'Numero' => $numero, 'Capitaine' => $capitaine, 'Pagaie_ECA' => $row['Pagaie_ECA'], 
 					'Pagaie_EVI' => $row['Pagaie_EVI'] ,  'Pagaie_MER' => $row['Pagaie_MER'], 
 					'PagaieValide' => $PagaieValide, 
-					'Arbitre' => $row['Arb'], 'Saison' => $row['Origine'], 
+					'Arbitre' => $row['arbitre'], 'Saison' => $row['Origine'], 
 					'Numero_club' => $row['Numero_club'],
 					'date_surclassement' => $row['date_surclassement'], 'icf' => $row['icf'] 
 				));
@@ -277,7 +277,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				
 				if (($matricJoueur >= 2000000) && ($arbitreJoueur != '')) {
 					$sql = "INSERT INTO kp_arbitre 
-						(Matric, Regional, InterRegional, National, International, Arb, Livret, niveau, saison) 
+						(Matric, regional, interregional, national, international, arbitre, livret, niveau, saison) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 					$sql .= $matricJoueur;
 					switch ($arbitreJoueur) {

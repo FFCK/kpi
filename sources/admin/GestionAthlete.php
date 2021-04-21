@@ -67,24 +67,24 @@ class GestionAthlete extends MyPageSecure
             $result->execute(array($Athlete));
 			if ($result->rowCount() == 1) {
                 $row = $result->fetch();
-				switch ($row['Arb']) {
+				switch ($row['arbitre']) {
 					case 'Int':
-						$row['Arb']='INTERNATIONAL';
+						$row['arbitre']='INTERNATIONAL';
 						break;
 					case 'Nat':
-						$row['Arb']='NATIONAL';
+						$row['arbitre']='NATIONAL';
 						break;
 					case 'Reg':
-						$row['Arb']='REGIONAL';
+						$row['arbitre']='REGIONAL';
 						break;
 					case 'OTM':
-						$_SESSION['lang'] == 'en' ? $row['Arb'] = 'Game official' : $row['Arb'] = 'Officiel table de marque';
+						$_SESSION['lang'] == 'en' ? $row['arbitre'] = 'Game official' : $row['arbitre'] = 'Officiel table de marque';
 						break;
 					case 'JO':
-						$_SESSION['lang']== 'en' ? $row['Arb'] = 'Young official' : $row['Arb'] = 'Jeune officiel';
+						$_SESSION['lang']== 'en' ? $row['arbitre'] = 'Young official' : $row['arbitre'] = 'Jeune officiel';
 						break;
 					default :
-						$row['Arb']='-';
+						$row['arbitre']='-';
 						break;
 				}
 				$this->m_tpl->assign('Arbitre', $row);

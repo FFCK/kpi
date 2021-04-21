@@ -51,12 +51,12 @@ ALTER TABLE `kp_tv` CHANGE `Url` `Url` VARCHAR(1024) CHARACTER SET utf8 COLLATE 
 -- MyBDD => import_calendrier, importCalendrier_competitions, duppliJournees, GetEvenementJournees
 
 
--- ALTER TABLE `kp_arbitre` CHANGE `Regional` `regional` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
--- ALTER TABLE `kp_arbitre` CHANGE `InterRegional` `inter_regional` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
--- ALTER TABLE `kp_arbitre` CHANGE `National` `national` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
--- ALTER TABLE `kp_arbitre` CHANGE `International` `international` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
--- ALTER TABLE `kp_arbitre` CHANGE `Arb` `arbitre` CHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
--- ALTER TABLE `kp_arbitre` CHANGE `Livret` `livret` VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''; 
+ALTER TABLE `kp_arbitre` CHANGE `Regional` `regional` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
+ALTER TABLE `kp_arbitre` CHANGE `InterRegional` `interregional` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
+ALTER TABLE `kp_arbitre` CHANGE `National` `national` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
+ALTER TABLE `kp_arbitre` CHANGE `International` `international` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
+ALTER TABLE `kp_arbitre` CHANGE `Arb` `arbitre` CHAR(3) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
+ALTER TABLE `kp_arbitre` CHANGE `Livret` `livret` VARCHAR(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''; 
 
 -- ALTER TABLE `kp_arbitre` CHANGE `regional` `Regional` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 
 -- ALTER TABLE `kp_arbitre` CHANGE `inter_regional` `InterRegional` CHAR(1) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL; 

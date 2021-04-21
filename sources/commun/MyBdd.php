@@ -696,9 +696,9 @@ class MyBdd
 		$sql_juges = "INSERT INTO kp_arbitre 
 			VALUES $placeholders 
 			ON DUPLICATE KEY UPDATE 
-				Matric = VALUES(Matric), Regional = VALUES(Regional), InterRegional = VALUES(InterRegional), 
-				National = VALUES(National), International = VALUES(International), Arb = VALUES(Arb), 
-				Livret = VALUES(Livret), niveau = VALUES(niveau), saison = VALUES(saison)
+				Matric = VALUES(Matric), regional = VALUES(regional), interregional = VALUES(interregional), 
+				national = VALUES(national), international = VALUES(international), arbitre = VALUES(arbitre), 
+				livret = VALUES(livret), niveau = VALUES(niveau), saison = VALUES(saison)
 				";
 		$result_juges = $this->pdo->prepare($sql_juges);
 		$return = $result_juges->execute($array_arbitres);
