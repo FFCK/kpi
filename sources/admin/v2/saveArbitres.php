@@ -33,12 +33,12 @@ $myBdd->AutorisationMatch($idMatch);
 
 
 if ($id == 'Arbitre_principal') {
-$sql = "UPDATE gickp_Matchs 
+$sql = "UPDATE kp_match 
 	SET Arbitre_principal = ?,
 	Matric_arbitre_principal = ? 
 	WHERE Id = ? ";
 } else {
-	$sql = "UPDATE gickp_Matchs 
+	$sql = "UPDATE kp_match 
 	SET Arbitre_secondaire = ?,
 	Matric_arbitre_secondaire = ? 
 	WHERE Id = ? ";

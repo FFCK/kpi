@@ -33,7 +33,7 @@ class GestionEquipeJoueur extends MyPageSecure
 		
 		$_SESSION['parentUrl'] = $_SERVER['PHP_SELF'];
 		
-		$_SESSION['updatecell_tableName'] = 'gickp_Competitions_Equipes_Joueurs';
+		$_SESSION['updatecell_tableName'] = 'kp_competition_equipe_joueur';
 		$_SESSION['updatecell_where'] = 'Where Matric = ';
 		$_SESSION['updatecell_document'] = 'formEquipeJoueur';
 		
@@ -45,7 +45,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			if ($codeCompet != 'POOL') {
 				$sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
 					ce.Tirage, c.Code_comite_dep  
-					FROM gickp_Competitions_Equipes ce, gickp_Club c 
+					FROM kp_competition_equipe ce, kp_club c 
 					WHERE ce.Code_compet = ? 
 					AND ce.Code_saison = ? 
 					AND ce.Code_club = c.Code 
@@ -55,7 +55,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			} else {
 				$sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
 					ce.Tirage, c.Code_comite_dep 
-					FROM gickp_Competitions_Equipes ce, gickp_Club c 
+					FROM kp_competition_equipe ce, kp_club c 
 					WHERE ce.Code_compet = ? 
 					AND ce.Code_club = c.Code 
 					ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
@@ -82,7 +82,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			// Nom de l'Equipe et de la Compétition ...
 			$sql = "SELECT eq.Code_compet, eq.Code_club, eq.Code_saison, eq.Libelle, 
 				cp.Verrou, cp.Statut, cp.Code_niveau 
-				FROM gickp_Competitions_Equipes eq, gickp_Competitions cp 
+				FROM kp_competition_equipe eq, kp_competition cp 
 				WHERE eq.Code_compet = cp.Code 
 				AND cp.Code_saison = ? 
 				AND eq.Id = ? ";
@@ -128,12 +128,12 @@ class GestionEquipeJoueur extends MyPageSecure
 			
 			// Intégrer les coureurs de la recherche Licence ...
 			if (isset($_SESSION['Signature'])) {
-				$sql = "REPLACE INTO gickp_Competitions_Equipes_Joueurs 
+				$sql = "REPLACE INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ) 
-					SELECT ?, a.Matric, a.Nom, a.Prenom, a.Sexe, c.Code 
-					FROM gickp_Recherche_Licence b, gickp_Liste_Coureur a 
-					LEFT OUTER JOIN gickp_Categorie c 
-						ON (? - Year(a.Naissance) BETWEEN c.Age_min AND c.Age_max) 
+					SELECT ?, a.Matric, a.Nom, a.Prenom, a.Sexe, c.id 
+					FROM kp_recherche_licence b, kp_licence a 
+					LEFT OUTER JOIN kp_categorie c 
+						ON (? - Year(a.Naissance) BETWEEN c.age_min AND c.age_max) 
 					WHERE a.Matric = b.Matric 
 					AND b.Signature = ? 
 					AND b.Validation = 'O' ";
@@ -144,8 +144,8 @@ class GestionEquipeJoueur extends MyPageSecure
                 // $myBdd->utyJournal($action, $saison='', $competition='', $evenement=null, $journee=null, $match=null, $journal='', $user='')
                 
                 
-				// Vidage gickp_Recherche_Licence ...				
-				$sql = "DELETE FROM gickp_Recherche_Licence 
+				// Vidage kp_recherche_licence ...				
+				$sql = "DELETE FROM kp_recherche_licence 
 					WHERE Signature = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($_SESSION['Signature']));
@@ -157,11 +157,11 @@ class GestionEquipeJoueur extends MyPageSecure
 			$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, 
 				b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, 
 				b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, 
-				b.Reserve icf, c.Arb, c.niveau, s.Date date_surclassement 
-				FROM gickp_Competitions_Equipes_Joueurs a 
-				LEFT OUTER JOIN gickp_Liste_Coureur b ON (a.Matric = b.Matric) 
-				LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
-				LEFT OUTER JOIN gickp_Surclassements s 
+				b.Reserve icf, c.arbitre, c.niveau, s.Date date_surclassement 
+				FROM kp_competition_equipe_joueur a 
+				LEFT OUTER JOIN kp_licence b ON (a.Matric = b.Matric) 
+				LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
+				LEFT OUTER JOIN kp_surclassement s 
 					ON (a.Matric = s.Matric AND s.Saison = ?) 
 				WHERE Id_Equipe = ? 
 				ORDER BY Field(if(a.Capitaine='C','-',if(a.Capitaine='','-',a.Capitaine)), '-', 'E', 'A', 'X'), 
@@ -171,7 +171,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			$i = 0;
 			while ($row = $result->fetch()) {
 				if($row['niveau'] != '')
-					$row['Arb'] .= '-'.$row['niveau'];
+					$row['arbitre'] .= '-'.$row['niveau'];
 				
 				$numero = $row['Numero'];
 				if (strlen($numero) == 0)
@@ -198,7 +198,7 @@ class GestionEquipeJoueur extends MyPageSecure
 					'Numero' => $numero, 'Capitaine' => $capitaine, 'Pagaie_ECA' => $row['Pagaie_ECA'], 
 					'Pagaie_EVI' => $row['Pagaie_EVI'] ,  'Pagaie_MER' => $row['Pagaie_MER'], 
 					'PagaieValide' => $PagaieValide, 
-					'Arbitre' => $row['Arb'], 'Saison' => $row['Origine'], 
+					'Arbitre' => $row['arbitre'], 'Saison' => $row['Origine'], 
 					'Numero_club' => $row['Numero_club'],
 					'date_surclassement' => $row['date_surclassement'], 'icf' => $row['icf'] 
 				));
@@ -215,11 +215,11 @@ class GestionEquipeJoueur extends MyPageSecure
 */		
         // Affichage dernière modification
 		$sql = "SELECT j.Dates, j.Users, j.Journal, u.Identite 
-			FROM gickp_Journal j, gickp_Utilisateur u 
+			FROM kp_journal j, kp_user u 
 			WHERE j.Users = u.Code 
 			AND ( j.Actions = 'Ajout titulaire' 
 				OR j.Actions = 'Suppression titulaire' 
-				OR j.Actions = 'Modification gickp_Competitions_Equipes_' ) 
+				OR j.Actions = 'Modification kp_competition_equipe_' ) 
 			AND j.Journal LIKE ? 
 			ORDER BY j.Dates DESC 
 			LIMIT 1 ";
@@ -266,7 +266,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				$codeClub = $myBdd->GetCodeClubEquipe($idEquipe);
 				$myBdd->InsertIfNotExistLicence($matricJoueur, $nomJoueur, $prenomJoueur, $sexeJoueur, $naissanceJoueur, $codeClub, $numicfJoueur);
 				
-				$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+				$sql = "INSERT INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 				$result = $myBdd->pdo->prepare($sql);
@@ -276,8 +276,8 @@ class GestionEquipeJoueur extends MyPageSecure
 				));
 				
 				if (($matricJoueur >= 2000000) && ($arbitreJoueur != '')) {
-					$sql = "INSERT INTO gickp_Arbitre 
-						(Matric, Regional, InterRegional, National, International, Arb, Livret, niveau, saison) 
+					$sql = "INSERT INTO kp_arbitre 
+						(Matric, regional, interregional, national, international, arbitre, livret, niveau, saison) 
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 					$sql .= $matricJoueur;
 					switch ($arbitreJoueur) {
@@ -341,7 +341,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 		
-				$sql = "INSERT INTO gickp_Competitions_Equipes_Joueurs 
+				$sql = "INSERT INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 				$result = $myBdd->pdo->prepare($sql);
@@ -377,10 +377,10 @@ class GestionEquipeJoueur extends MyPageSecure
 			
 	// 		$myBdd = $this->myBdd;
 
-	// 		$sql = "REPLACE INTO gickp_Competitions_Equipes_Joueurs 
+	// 		$sql = "REPLACE INTO kp_competition_equipe_joueur 
 	// 			(Id_equipe, Matric, Nom, Prenom, Sexe, Categ) 
 	// 			SELECT ?, Matric, Nom, Prenom, Sexe, ? 
-	// 			FROM gickp_Liste_Coureur 
+	// 			FROM kp_licence 
 	// 			WHERE Matric = ? ";
 	// 		$result = $myBdd->pdo->prepare($sql);
 	// 		$result->execute(array($idEquipe, $Categ, $Matric));
@@ -405,7 +405,7 @@ class GestionEquipeJoueur extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 	
-			$sql = "DELETE FROM gickp_Competitions_Equipes_Joueurs 
+			$sql = "DELETE FROM kp_competition_equipe_joueur 
 				WHERE Id_Equipe = ? 
 				AND Matric IN ($in) ";
 			$result = $myBdd->pdo->prepare($sql);

@@ -43,10 +43,10 @@ class FeuilleMatch extends MyPage
                 a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, 
                 b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, 
                 b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison 
-                FROM gickp_Matchs a
-                LEFT JOIN gickp_Journees b ON a.Id_journee = b.Id 
-                LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON a.Id_equipeA = ce1.Id
-                LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON a.Id_equipeB = ce2.Id
+                FROM kp_match a
+                LEFT JOIN kp_journee b ON a.Id_journee = b.Id 
+                LEFT OUTER JOIN kp_competition_equipe ce1 ON a.Id_equipeA = ce1.Id
+                LEFT OUTER JOIN kp_competition_equipe ce2 ON a.Id_equipeB = ce2.Id
                 WHERE a.Id = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($matchcourant));
@@ -245,8 +245,8 @@ class FeuilleMatch extends MyPage
             $sql3 = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, 
                 b.Origine, b.Reserve icf, c.Matric Matric_titulaire, 
                 IF (a.Capitaine='E', 1, 0) flagEntraineur 
-                FROM gickp_Liste_Coureur b, gickp_Matchs_Joueurs a 
-                LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs c ON (c.Id_equipe = ? AND c.Matric = a.Matric) 
+                FROM kp_licence b, kp_match_joueur a 
+                LEFT OUTER JOIN kp_competition_equipe_joueur c ON (c.Id_equipe = ? AND c.Matric = a.Matric) 
                 WHERE a.Matric = b.Matric 
                 AND a.Id_match = ? 
                 AND a.Capitaine <> 'A' 
@@ -347,8 +347,8 @@ class FeuilleMatch extends MyPage
 
             $sql5 = "SELECT d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.Competiteur, d.Numero, 
                 d.Equipe_A_B, d.motif, c.Nom, c.Prenom 
-                FROM gickp_Matchs_Detail d 
-                LEFT OUTER JOIN gickp_Liste_Coureur c ON d.Competiteur = c.Matric 
+                FROM kp_match_detail d 
+                LEFT OUTER JOIN kp_licence c ON d.Competiteur = c.Matric 
                 WHERE d.Id_match = ? 
                 AND d.Id_evt_match != 'T' 
                 AND d.Id_evt_match != 'A' 

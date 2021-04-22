@@ -51,7 +51,7 @@ class Matchs extends MyPage
 		
         if($event > 0) {
             $sql = "SELECT DISTINCT(j.Code_competition), j.Code_saison 
-                FROM gickp_Journees j, gickp_Evenement_Journees ej 
+                FROM kp_journee j, kp_evenement_journee ej 
                 WHERE j.Id = ej.Id_journee 
                 AND ej.Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
@@ -137,7 +137,7 @@ class Matchs extends MyPage
 		$arrayCompetition = array();
         if($Compets == '' && count($arrayCompets) == 0) {
             $sql  = "SELECT * 
-                FROM gickp_Competitions 
+                FROM kp_competition 
                 WHERE Code_saison = ? 
                 AND (Publication='O' OR Code_ref = 'M') 
                 AND Code_ref = ? 
@@ -147,7 +147,7 @@ class Matchs extends MyPage
         } else {
             $in  = str_repeat('?,', count($arrayCompets) - 1) . '?';
             $sql  = "SELECT * 
-                FROM gickp_Competitions 
+                FROM kp_competition 
                 WHERE Code_saison = ? 
                 AND (Publication='O' OR Code_ref = 'M') 
                 AND Code IN ($in) 
@@ -175,7 +175,7 @@ class Matchs extends MyPage
         $in  = str_repeat('?,', count($listCompet) - 1) . '?';
         if ($event > 0) {
             $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
-                FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
+                FROM kp_journee j, kp_competition c, kp_evenement_journee ej 
                 WHERE ej.Id_journee = j.Id 
                 AND ej.Id_evenement = ? 
                 AND j.Code_competition IN ($in) 
@@ -188,7 +188,7 @@ class Matchs extends MyPage
             $result->execute(array_merge([$event], $listCompet, [$codeSaison]));
         } else {
             $sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
-                FROM gickp_Journees j, gickp_Competitions c 
+                FROM kp_journee j, kp_competition c 
                 WHERE j.Code_competition IN ($in) 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
@@ -212,7 +212,7 @@ class Matchs extends MyPage
 		// Chargement des Informations relatives aux Journées ...
 		if ($idSelJournee != '*') {
             $sql  = "SELECT j.*, c.* 
-                FROM gickp_Journees j, gickp_Competitions c 
+                FROM kp_journee j, kp_competition c 
                 WHERE j.Id = ? 
                 AND j.Publication = 'O' ";
             $result = $myBdd->pdo->prepare($sql);
@@ -220,7 +220,7 @@ class Matchs extends MyPage
         } elseif ($event > 0) {
 			$sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, 
                 j.Lieu, j.Date_debut 
-                FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
+                FROM kp_journee j, kp_competition c, kp_evenement_journee ej 
                 WHERE ej.Id_journee = j.Id 
                 AND ej.Id_evenement = ? 
                 AND j.Code_competition IN ($in) 
@@ -234,7 +234,7 @@ class Matchs extends MyPage
         } else {
 			$sql  = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, 
                 j.Lieu, j.Date_debut 
-                FROM gickp_Journees j, gickp_Competitions c 
+                FROM kp_journee j, kp_competition c 
                 WHERE j.Code_competition IN ($in) 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
@@ -274,13 +274,13 @@ class Matchs extends MyPage
                 m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, 
                 j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut, c.Soustitre2, 
                 lcp.Nom Nom_arb_prin, lcp.Prenom Prenom_arb_prin, lcs.Nom Nom_arb_sec, lcs.Prenom Prenom_arb_sec 
-                FROM gickp_Matchs m 
-                LEFT OUTER JOIN gickp_Competitions_Equipes cea ON (m.Id_equipeA = cea.Id) 
-                LEFT OUTER JOIN gickp_Competitions_Equipes ceb ON (m.Id_equipeB = ceb.Id) 
-                LEFT OUTER JOIN gickp_Liste_Coureur lcp ON (m.Matric_arbitre_principal = lcp.Matric) 
-                LEFT OUTER JOIN gickp_Liste_Coureur lcs ON (m.Matric_arbitre_secondaire = lcs.Matric) 
-                INNER JOIN gickp_Journees j ON (m.Id_journee = j.Id) 
-                INNER JOIN gickp_Competitions c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison) 
+                FROM kp_match m 
+                LEFT OUTER JOIN kp_competition_equipe cea ON (m.Id_equipeA = cea.Id) 
+                LEFT OUTER JOIN kp_competition_equipe ceb ON (m.Id_equipeB = ceb.Id) 
+                LEFT OUTER JOIN kp_licence lcp ON (m.Matric_arbitre_principal = lcp.Matric) 
+                LEFT OUTER JOIN kp_licence lcs ON (m.Matric_arbitre_secondaire = lcs.Matric) 
+                INNER JOIN kp_journee j ON (m.Id_journee = j.Id) 
+                INNER JOIN kp_competition c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison) 
                 WHERE m.Id_journee IN ($in) 
                 AND m.Publication = 'O' ";
             if ($terrains != '') {

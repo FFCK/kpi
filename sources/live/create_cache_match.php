@@ -115,7 +115,7 @@ class CacheMatch
 		// Chargement Record Match ...
 		$rMatch = null;
 		$sql = "SELECT * 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
@@ -124,7 +124,7 @@ class CacheMatch
 		// Chargement Record Journée ...
 		$rJournee = null;
 		$sql = "SELECT * 
-			FROM gickp_Journees 
+			FROM kp_journee 
 			WHERE Id = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($rMatch['Id_journee']));
@@ -133,7 +133,7 @@ class CacheMatch
 		// Chargement Record Compétition ...
 		$rCompetition = null;
 		$sql = "SELECT * 
-			FROM gickp_Competitions 
+			FROM kp_competition 
 			WHERE Code = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($rJournee['Code_competition']));
@@ -150,7 +150,7 @@ class CacheMatch
 		if($idEquipeA > 0) {
             // Chargement Equipe A 
 			$sql = "SELECT * 
-				FROM gickp_Competitions_Equipes 
+				FROM kp_competition_equipe 
 				WHERE Id = ? ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idEquipeA));
@@ -158,7 +158,7 @@ class CacheMatch
 
             // Chargement Joueurs Equipe A 
 			$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
-				FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b 
+				FROM kp_match_joueur a, kp_licence b 
 				WHERE a.Id_match = ? 
 				AND a.Equipe = ? 
 				AND a.Matric = b.matric 
@@ -171,7 +171,7 @@ class CacheMatch
 		if($idEquipeB > 0) {
             // Chargement Equipe B 
 			$sql = "SELECT * 
-				FROM gickp_Competitions_Equipes 
+				FROM kp_competition_equipe 
 				WHERE Id = ? ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idEquipeB));
@@ -179,7 +179,7 @@ class CacheMatch
 
             // Chargement Joueurs Equipe B 
 			$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
-				FROM gickp_Matchs_Joueurs a, gickp_Liste_Coureur b 
+				FROM kp_match_joueur a, kp_licence b 
 				WHERE a.Id_match = ? 
 				AND a.Equipe = ? 
 				AND a.Matric = b.matric 
@@ -225,18 +225,18 @@ class CacheMatch
 		// Chargement Record Match ...
 		$rMatch = null;
 		$sql = "SELECT * 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
 		$rMatch = $result->fetch();
 		
-		// Chargement gickp_Matchs_Detail 
+		// Chargement kp_match_detail 
 		$tMatchDetails = null;
 		$sql = "SELECT a.*, b.Nom, b.Prenom, c.Capitaine 
-			FROM gickp_Matchs_Detail a 
-			LEFT OUTER JOIN gickp_Liste_Coureur b On (a.Competiteur = b.Matric) 
-			LEFT OUTER JOIN gickp_Matchs_Joueurs c ON (a.Competiteur = c.Matric) 
+			FROM kp_match_detail a 
+			LEFT OUTER JOIN kp_licence b On (a.Competiteur = b.Matric) 
+			LEFT OUTER JOIN kp_match_joueur c ON (a.Competiteur = c.Matric) 
 			WHERE a.Id_match = ? 
 			ORDER BY a.Id Desc 
 			LIMIT 5 ";
@@ -266,7 +266,7 @@ class CacheMatch
 		
 		$rChrono = null;
 		$sql = "SELECT * 
-			FROM gickp_Chrono 
+			FROM kp_chrono 
 			WHERE IdMatch = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
@@ -308,7 +308,7 @@ class CacheMatch
 		if ($arrayPitchs != null && count($arrayPitchs) > 0) {
 			$in  = str_repeat('?,', count($arrayPitchs) - 1) . '?';
 			$sql = "SELECT a.* 
-				FROM gickp_Matchs a, gickp_Journees b, gickp_Evenement_Journees c 
+				FROM kp_match a, kp_journee b, kp_evenement_journee c 
 				WHERE a.Id_journee = b.Id 
 				AND b.Id = c.Id_journee 
 				AND c.Id_evenement = ? 
@@ -320,7 +320,7 @@ class CacheMatch
 			$result->execute(array_merge([$idEvent], [$dateMatch], $arrayPitchs));
 		} else {
 			$sql = "SELECT a.* 
-				FROM gickp_Matchs a, gickp_Journees b, gickp_Evenement_Journees c 
+				FROM kp_match a, kp_journee b, kp_evenement_journee c 
 				WHERE a.Id_journee = b.Id 
 				AND b.Id = c.Id_journee 
 				AND c.Id_evenement = ? 

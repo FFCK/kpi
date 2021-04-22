@@ -5,7 +5,8 @@ session_start();
 function GetOffset($tableName, &$bdd)
 {
 	$myBdd = new MyBdd();
-	$sql = "SELECT MAX(Id) maxId FROM gickp_".$tableName;
+	$sql = "SELECT MAX(Id) maxId 
+		FROM kp_".$tableName;
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute();
 	$num_results = $result->rowCount();
@@ -37,7 +38,7 @@ function Replace_Table($tableName, &$jsonArray, &$bdd, $indexCol1=-1, $offset1=0
 		if ($indexCol2 >= 0) $recTable[$indexCol2] = ((int) $recTable[$indexCol2])+$offset2;
 		if ($indexCol3 >= 0) $recTable[$indexCol3] = ((int) $recTable[$indexCol3])+$offset3;
 				
-		$sql = "REPLACE INTO gickp_".$tableName;
+		$sql = "REPLACE INTO kp_".$tableName;
 		$sql .= " VALUES (";
 		for ($j=0;$j<count($recTable);$j++) {
 			if ($j > 0) 
@@ -130,7 +131,7 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	
 	// Prise des Id Journees ...
 	$sql = "Select a.Id ";
-	$sql.= "From gickp_Journees a, gickp_Evenement_Journees b ";
+	$sql.= "From kp_journee a, kp_evenement_journee b ";
 	$sql.= "Where b.Id_evenement In ($lstEvenement) ";
 	$sql.= "And a.Id = b.Id_journee ";
 	
@@ -145,7 +146,7 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	
 	// Prise des Id Match ..
 	$sql = "Select Id ";
-	$sql.= "From gickp_Matchs ";
+	$sql.= "From kp_match ";
 	$sql.= "Where Id_journee In ($lstJournees) ";
 	$result = $myBdd->Query($sql);
 	$num_results = $myBdd->NumRows($result);
@@ -157,32 +158,32 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	}
 
 	// Suppression Matchs_Detail ...
-	$sql = "Delete From gickp_Matchs_Detail ";
+	$sql = "Delete From kp_match_detail ";
 	$sql.= "Where Id_match In ($lstMatchs) ";
 	$myBdd->Query($sql);
 
 	// Suppression Matchs_Joueurs ...
-	$sql = "Delete From gickp_Matchs_Joueurs ";
+	$sql = "Delete From kp_match_joueur ";
 	$sql.= "Where Id_match In ($lstMatchs) ";
 	$myBdd->Query($sql);
 	
 	// Suppression Matchs ...
-	$sql = "Delete From gickp_Matchs ";
+	$sql = "Delete From kp_match ";
 	$sql.= "Where Id In ($lstMatchs) ";
 	$myBdd->Query($sql);
 	
 	// Suppression Journees ...
-	$sql = "Delete From gickp_Journees ";
+	$sql = "Delete From kp_journee ";
 	$sql.= "Where Id In ($lstJournees) ";
 	$myBdd->Query($sql);
 	
 	// Suppression Evenement_Journees ...
-	$sql = "Delete From gickp_Evenement_Journees ";
+	$sql = "Delete From kp_evenement_journee ";
 	$sql.= "Where Id_evenement In ($lstEvenement) ";
 	$myBdd->Query($sql);
 	
 	// Suppression Evenement ...
-	$sql = "Delete From gickp_Evenement ";
+	$sql = "Delete From kp_evenement ";
 	$sql.= "Where Id In ($lstEvenement) ";
 	$myBdd->Query($sql);
 }

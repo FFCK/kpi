@@ -48,7 +48,7 @@ class initTitulaires
 
 		// Chargement des Matchs en jeux ...
 		$sql  = "SELECT a.Id, a.Id_equipeA, a.Id_equipeB 
-			FROM gickp_Matchs a, gickp_Journees b 
+			FROM kp_match a, kp_journee b 
 			WHERE 1 
 			AND a.Validation != 'O' 
 			AND a.Id_journee = b.Id 
@@ -88,7 +88,7 @@ class initTitulaires
 
 		// Chargement des Matchs de la journée ...
 		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id_journee = ? 
 			AND Validation != 'O' ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -124,7 +124,7 @@ class initTitulaires
 
 		// Chargement des Matchs en jeux ...
 		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE 1 
 			AND (Id_equipeA = ? OR Id_equipeB = ?) 
 			AND `Validation` != 'O' ";
@@ -166,15 +166,15 @@ class initTitulaires
 			$myBdd->pdo->beginTransaction();
 
 			if (($idEquipe == 0 && $idEquipeA != '') || ($idEquipeA == $idEquipe)) {
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				$sql = "DELETE FROM kp_match_joueur 
 					WHERE Id_match = ? 
 					AND Equipe = 'A' ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch));
 						
-				$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+				$sql = "REPLACE INTO kp_match_joueur 
 					SELECT ?, Matric, Numero, 'A', Capitaine 
-					FROM gickp_Competitions_Equipes_Joueurs 
+					FROM kp_competition_equipe_joueur 
 					WHERE Id_equipe = ? 
 					AND Capitaine <> 'X' 
 					AND Capitaine <> 'A' ";
@@ -182,15 +182,15 @@ class initTitulaires
 				$result->execute(array($idMatch, $idEquipeA));
 			}
 			if (($idEquipe == 0 && $idEquipeB != '') || ($idEquipeB == $idEquipe)) {
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				$sql = "DELETE FROM kp_match_joueur 
 					WHERE Id_match = ? 
 					AND Equipe = 'B' ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch));
 						
-				$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+				$sql = "REPLACE INTO kp_match_joueur 
 					SELECT ?, Matric, Numero, 'B', Capitaine 
-					FROM gickp_Competitions_Equipes_Joueurs 
+					FROM kp_competition_equipe_joueur 
 					WHERE Id_equipe = ? 
 					AND Capitaine <> 'X' 
 					AND Capitaine <> 'A' ";

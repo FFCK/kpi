@@ -102,8 +102,8 @@ class FeuilleCltNiveauJournee extends MyPage {
         $sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt, b.Pts, b.J, 
             b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau, 
             c.Date_debut, c.Lieu 
-            FROM gickp_Competitions_Equipes a, gickp_Competitions_Equipes_Journee b 
-            JOIN gickp_Journees c ON (b.Id_journee = c.Id) 
+            FROM kp_competition_equipe a, kp_competition_equipe_journee b 
+            JOIN kp_journee c ON (b.Id_journee = c.Id) 
             WHERE a.Id = b.Id 
             AND c.Code_competition = ? 
             AND c.Code_saison = ? 

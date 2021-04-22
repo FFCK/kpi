@@ -72,11 +72,11 @@ class Stats extends MyPage
         $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ, cej.Numero, cej.Capitaine,
                     ce.Libelle Equipe, ce.Numero NumEquipe, ce.Id Id_equipe, 
                     SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts
-                FROM gickp_Competitions_Equipes ce
-                LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs cej ON ce.Id = cej.Id_equipe
-                LEFT OUTER JOIN gickp_Journees j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
-                LEFT OUTER JOIN gickp_Matchs m ON j.Id = m.Id_journee
-                LEFT OUTER JOIN gickp_Matchs_Detail md ON m.Id = md.Id_match
+                FROM kp_competition_equipe ce
+                LEFT OUTER JOIN kp_competition_equipe_joueur cej ON ce.Id = cej.Id_equipe
+                LEFT OUTER JOIN kp_journee j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
+                LEFT OUTER JOIN kp_match m ON j.Id = m.Id_journee
+                LEFT OUTER JOIN kp_match_detail md ON m.Id = md.Id_match
                 WHERE md.Competiteur = cej.Matric
                 AND md.Id_evt_match = 'B'
                 AND ce.Code_compet = ? 

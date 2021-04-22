@@ -104,7 +104,7 @@ class FeuilleCltNiveau extends MyPage {
         //données
         $sql = "SELECT Id, Libelle, Code_club, Clt, Pts, J, G, N, P, F, Plus, 
             Moins, Diff, PtsNiveau, CltNiveau 
-            FROM gickp_Competitions_Equipes 
+            FROM kp_competition_equipe 
             WHERE Code_compet = ? 
             AND Code_saison = ? 
             ORDER BY Clt, Diff DESC ";

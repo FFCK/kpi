@@ -2,7 +2,7 @@
 			<form method="POST" action="GestionEquipe.php" name="formEquipe" id="formEquipe" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value='' />
 				<input type='hidden' name='ParamCmd' id='ParamCmd' Value='' />
-				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Competitions_Equipes' />
+				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='kp_competition_equipe' />
 				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = ' />
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}' />
 				<input type='hidden' name='Saison' id='Saison' Value='{$codeSaison}' />

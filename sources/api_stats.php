@@ -23,7 +23,7 @@ if($saison > 2000 && $competitions != '') {
                 SUM(IF(b.Id_evt_match = 'R', 1, 0)) Rouge,
                 SUM(IF(b.Id_evt_match = 'T', 1, 0)) Tirs,
                 SUM(IF(b.Id_evt_match = 'A', 1, 0)) Arrets
-                FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f 
+                FROM kp_licence a, kp_match_detail b, kp_match c, kp_journee d, kp_competition_equipe f 
                 WHERE a.Matric = b.Competiteur 
                 AND b.Id_match = c.Id AND c.Id_journee = d.Id 
                 AND d.Code_competition = f.Code_compet 
@@ -47,9 +47,9 @@ if($saison > 2000 && $competitions != '') {
                 SUM(IF(b.Id_evt_match = 'R', 1, 0)) Rouge,
                 SUM(IF(b.Id_evt_match = 'T', 1, 0)) Tirs,
                 SUM(IF(b.Id_evt_match = 'A', 1, 0)) Arrets
-                FROM gickp_Competitions_Equipes_Joueurs j LEFT OUTER JOIN gickp_Liste_Coureur a ON j.Matric = a.Matric 
-                    LEFT OUTER JOIN gickp_Matchs_Detail b ON j.Matric = b.Competiteur, 
-                    gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f 
+                FROM kp_competition_equipe_joueur j LEFT OUTER JOIN kp_licence a ON j.Matric = a.Matric 
+                    LEFT OUTER JOIN kp_match_detail b ON j.Matric = b.Competiteur, 
+                    kp_match c, kp_journee d, kp_competition_equipe f 
                 WHERE 1 = 1 
                 AND b.Id_match = c.Id 
                 AND c.Id_journee = d.Id 
@@ -69,8 +69,8 @@ if($saison > 2000 && $competitions != '') {
         case 2: // Tous les joueurs, sans les stats
             $sql = "SELECT f.Code_compet Competition, f.Libelle Equipe, j.Numero, j.Capitaine, a.Nom, 
                 a.Prenom, a.Naissance, a.Sexe, a.Matric Licence, a.Reserve Licence_ICF
-                FROM gickp_Competitions_Equipes_Joueurs j LEFT OUTER JOIN gickp_Liste_Coureur a ON j.Matric = a.Matric, 
-                    gickp_Competitions_Equipes f 
+                FROM kp_competition_equipe_joueur j LEFT OUTER JOIN kp_licence a ON j.Matric = a.Matric, 
+                    kp_competition_equipe f 
                 WHERE 1 = 1 
                 AND f.Id = j.Id_equipe
                 AND f.Code_compet IN ($in) 

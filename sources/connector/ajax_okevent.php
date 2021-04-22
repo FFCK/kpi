@@ -14,7 +14,7 @@ if (utyGetGet('lst', false))
 $myBdd = new MyBdd();
 
 $sql = "SELECT * 
-	FROM gickp_Utilisateur 
+	FROM kp_user 
 	WHERE code = ? ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($user));

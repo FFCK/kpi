@@ -33,7 +33,7 @@ class Equipes extends MyPage
 
             // Equipe
             $sql = "SELECT e.Libelle Equipe, e.Code_club, cl.Libelle Club 
-                FROM gickp_Equipe e, gickp_Club cl 
+                FROM kp_equipe e, kp_club cl 
                 WHERE e.Numero = ? 
                 AND cl.Code = e.Code_club";
             $result = $myBdd->pdo->prepare($sql);
@@ -50,8 +50,8 @@ class Equipes extends MyPage
             $sql  = "SELECT g.id, c.Libelle Competitions, c.Code, c.Code_ref, c.Code_tour, 
                     c.Code_saison Saison, 
                     IF(c.Code_typeclt = 'CHPT', e.Clt_publi, e.CltNiveau_publi) Classt 
-                FROM gickp_Competitions_Equipes e, gickp_Competitions c, 
-                    gickp_Competitions_Groupes g, gickp_Club cl 
+                FROM kp_competition_equipe e, kp_competition c, 
+                    kp_groupe g, kp_club cl 
                 WHERE c.Code = e.Code_compet 
                 AND c.Code_ref = g.Groupe 
                 AND e.Code_club = cl.Code 
@@ -130,11 +130,11 @@ class Equipes extends MyPage
                         SUM(IF(md.Id_evt_match = 'V', 1, 0)) verts,
                         SUM(IF(md.Id_evt_match = 'J', 1, 0)) jaunes,
                         SUM(IF(md.Id_evt_match = 'R', 1, 0)) rouges
-                    FROM gickp_Competitions_Equipes ce
-                    LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs cej ON ce.Id = cej.Id_equipe
-                    LEFT OUTER JOIN gickp_Journees j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
-                    LEFT OUTER JOIN gickp_Matchs m ON j.Id = m.Id_journee
-                    LEFT OUTER JOIN gickp_Matchs_Detail md ON m.Id = md.Id_match
+                    FROM kp_competition_equipe ce
+                    LEFT OUTER JOIN kp_competition_equipe_joueur cej ON ce.Id = cej.Id_equipe
+                    LEFT OUTER JOIN kp_journee j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
+                    LEFT OUTER JOIN kp_match m ON j.Id = m.Id_journee
+                    LEFT OUTER JOIN kp_match_detail md ON m.Id = md.Id_match
                     WHERE md.Competiteur = cej.Matric
                     AND ce.Numero = ? 
                     AND ce.Code_compet = ? 

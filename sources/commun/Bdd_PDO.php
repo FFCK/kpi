@@ -25,7 +25,7 @@
 
     // Exemple complet
     $sql  = "SELECT COUNT(m.Id) nbMatchs 
-        FROM gickp_Matchs m, gickp_Journees j 
+        FROM kp_match m, kp_journee j 
         WHERE j.Id = m.Id_journee 
         AND j.Code_competition = :Code_competition
         AND j.Code_saison = :Code_saison ";

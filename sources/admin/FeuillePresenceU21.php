@@ -40,7 +40,7 @@ class FeuillePresenceU21 extends MyPage {
 
         if (strlen($codeCompet) > 0) {
             $sql = "SELECT Id, Libelle, Code_club, Numero 
-                FROM gickp_Competitions_Equipes 
+                FROM kp_competition_equipe 
                 WHERE Code_compet = ? 
                 AND Code_saison = ? 
                 ORDER BY Libelle, Id ";
@@ -61,10 +61,10 @@ class FeuillePresenceU21 extends MyPage {
                 $in = str_repeat('?,', count($arrayEquipe) - 1) . '?';
                 $sql2 = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Categ, a.Numero, a.Capitaine, 
                     ce.Libelle NomEquipe, b.Origine, b.Numero_club, b.Pagaie_ECA, b.Pagaie_EVI, b.Pagaie_MER, b.Naissance, 
-                    b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.Arb, c.niveau 
-                    FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Joueurs a 
-                    LEFT OUTER JOIN gickp_Liste_Coureur b ON (a.Matric = b.Matric) 
-                    LEFT OUTER JOIN gickp_Arbitre c ON (a.Matric = c.Matric) 
+                    b.Etat_certificat_CK CertifCK, b.Etat_certificat_APS CertifAPS, c.arbitre, c.niveau 
+                    FROM kp_competition_equipe ce, kp_competition_equipe_joueur a 
+                    LEFT OUTER JOIN kp_licence b ON (a.Matric = b.Matric) 
+                    LEFT OUTER JOIN kp_arbitre c ON (a.Matric = c.Matric) 
                     WHERE a.Id_Equipe IN ($in) 
                     AND ce.Id = a.Id_Equipe 
                     AND LEFT(b.Naissance, 4) > ($codeSaison - 22)
@@ -81,7 +81,7 @@ class FeuillePresenceU21 extends MyPage {
                         $numero = 0;
                     }
                     if ($row2['niveau'] != '') {
-                        $row2['Arb'] .= '-' . $row2['niveau'];
+                        $row2['arbitre'] .= '-' . $row2['niveau'];
                     }
 
                     $controlePagaie = controle_pagaie($row2['Pagaie_ECA'], $row2['Pagaie_EVI'], $row2['Pagaie_MER']);
@@ -96,8 +96,8 @@ class FeuillePresenceU21 extends MyPage {
                         $capitaine = '-';
                     }
 
-                    if (is_null($row2['Arb'])) {
-                        $row2['Arb'] = '';
+                    if (is_null($row2['arbitre'])) {
+                        $row2['arbitre'] = '';
                     }
 
                     if ($row2['Origine'] != $codeSaison) {
@@ -108,7 +108,7 @@ class FeuillePresenceU21 extends MyPage {
 
                     array_push($arrayJoueur, array('Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
                         'Sexe' => $row2['Sexe'], 'Naissance' => $row2['Naissance'], 'Pagaie' => $pagaie, 'CertifCK' => $row2['CertifCK'],
-                        'CertifAPS' => $row2['CertifAPS'], 'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['Arb'],
+                        'CertifAPS' => $row2['CertifAPS'], 'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['arbitre'],
                         'Saison' => $row2['Origine'], 'Numero_club' => $row2['Numero_club'],
                         'nbJoueurs' => $num_results2, 'NomEquipe' => $row2['NomEquipe']));
                 }

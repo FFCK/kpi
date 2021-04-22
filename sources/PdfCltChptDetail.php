@@ -97,7 +97,7 @@ class FeuilleCltNiveau extends MyPage
 		$sql = "SELECT Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, 
 			G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, Diff_publi, 
 			PtsNiveau_publi, CltNiveau_publi 
-			FROM gickp_Competitions_Equipes 
+			FROM kp_competition_equipe 
 			WHERE Code_compet = ? 
 			AND Code_saison = ? 
 			AND CltNiveau_publi != 0 
@@ -131,9 +131,9 @@ class FeuilleCltNiveau extends MyPage
 			$sql2 = "SELECT a.Id_equipeA, a.ScoreA, c.Libelle LibelleA, 
 				a.Id_equipeB, a.ScoreB, d.Libelle LibelleB, a.Id, a.Id_journee, 
 				a.Validation, b.Date_debut, b.Lieu 
-				FROM gickp_Journees b, gickp_Matchs a 
-				LEFT OUTER JOIN gickp_Competitions_Equipes c ON (c.Id = a.Id_equipeA) 
-				LEFT OUTER JOIN gickp_Competitions_Equipes d ON (d.Id = a.Id_equipeB) 
+				FROM kp_journee b, kp_match a 
+				LEFT OUTER JOIN kp_competition_equipe c ON (c.Id = a.Id_equipeA) 
+				LEFT OUTER JOIN kp_competition_equipe d ON (d.Id = a.Id_equipeB) 
 				WHERE a.Id_journee = b.Id 
 				AND b.Code_competition = :codeCompet 
 				AND b.Code_saison = :codeSaison 

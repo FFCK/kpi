@@ -13,7 +13,7 @@ $resultGlobal = '';
 
 // Referentiel Journees
 $sql = "SELECT * 
-	FROM gickp_Ref_Journee 
+	FROM kp_journee_ref 
 	WHERE UPPER(nom) LIKE UPPER(?) 
 	ORDER BY nom ";	 
 $result = $myBdd->pdo->prepare($sql);

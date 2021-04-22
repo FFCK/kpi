@@ -4,7 +4,7 @@
 			<input type='hidden' name='ParamCmd' Value=''/>
 			<input type='hidden' name='Pub' Value=''/>
 			<input type='hidden' name='idEvenement' Value='{$idEvenement}'/>
-            <input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Journees'/>
+            <input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='kp_journee'/>
             <input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = '/>
             <input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
                 

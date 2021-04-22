@@ -18,7 +18,7 @@ $idMatch = (int) utyGetPost('idMatch');
 $idEquipe = (int) utyGetPost('idEquipe');
 $Equipe = trim(utyGetPost('equipe')); // A / B
 $EquipeAB = 'Id_equipe' . $Equipe;
-$sql = "UPDATE gickp_Matchs 
+$sql = "UPDATE kp_match 
 	SET $EquipeAB = ? 
 	WHERE Id = ? 
 	AND Validation != 'O' ";
@@ -26,7 +26,7 @@ $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($idEquipe, $idMatch));
 	
 // Vidage compo
-$sql = "DELETE FROM gickp_Matchs_Joueurs 
+$sql = "DELETE FROM kp_match_joueur 
 	WHERE Equipe = ? 
 	AND Id_match = ? ";
 $result = $myBdd->pdo->prepare($sql);

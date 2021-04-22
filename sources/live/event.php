@@ -45,7 +45,7 @@ class Event extends MyPage
 		
 		// Chargement Evenements  
         $sql = "SELECT e.* 
-            FROM gickp_Evenement e 
+            FROM kp_evenement e 
             WHERE e.Publication = 'O' 
             ORDER BY e.Date_debut DESC ";
 		$rEvents = null;
@@ -72,9 +72,9 @@ class Event extends MyPage
 		$db = new MyBdd();
 
         $sql2 = "SELECT DISTINCT m.Date_match, m.Heure_match 
-            FROM gickp_Matchs m
-            LEFT JOIN gickp_Journees j ON (m.Id_journee = j.Id) 
-            LEFT JOIN gickp_Evenement_Journees ej ON (j.Id = ej.Id_journee)
+            FROM kp_match m
+            LEFT JOIN kp_journee j ON (m.Id_journee = j.Id) 
+            LEFT JOIN kp_evenement_journee ej ON (j.Id = ej.Id_journee)
             WHERE ej.Id_evenement = ? 
             GROUP BY m.Date_match
             ORDER BY m.Date_match, m.Heure_match ";

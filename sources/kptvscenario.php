@@ -19,7 +19,7 @@ class Scenario extends MyPageSecure
 
 		// Matchs
         $sql  = "SELECT * 
-            FROM gickp_Tv 
+            FROM kp_tv 
             WHERE Voie > :scenario 
             AND Voie < :scenario + 100 
             ORDER BY Voie ";
@@ -42,7 +42,7 @@ class Scenario extends MyPageSecure
             $intervalle = utyGetPost('intervalle-' . $i, '');
             $Voie = utyGetPost('Voie-' . $i, '');
 
-            $sql = "UPDATE gickp_Tv
+            $sql = "UPDATE kp_tv
                 SET `Url` = :Url, 
                 intervalle = :intervalle 
                 WHERE Voie = :Voie ";
