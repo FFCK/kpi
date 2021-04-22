@@ -385,9 +385,9 @@
 									<td>{$smarty.section.i.iteration}</td>
 									<td class="cliquableNomEquipe"><a href="GestionAthlete.php?Athlete={$arrayListeArbitres[i].Matric}">{$arrayListeArbitres[i].Nom} {$arrayListeArbitres[i].Prenom} ({$arrayListeArbitres[i].Matric})</a></td>
 									<td>{$arrayListeArbitres[i].Club}</td>
-									<td>{$arrayListeArbitres[i].Arb} {$arrayListeArbitres[i].niveau}</td>
+									<td>{$arrayListeArbitres[i].arbitre} {$arrayListeArbitres[i].niveau}</td>
 									<td>{$arrayListeArbitres[i].saison}</td>
-									<td>{$arrayListeArbitres[i].Livret}</td>
+									<td>{$arrayListeArbitres[i].livret}</td>
 								</tr>
 							{/section}
 						{/if}

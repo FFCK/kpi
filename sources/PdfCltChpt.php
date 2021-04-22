@@ -111,7 +111,7 @@ class FeuilleCltNiveau extends MyPage {
         $sql = "SELECT Id, Libelle, Code_club, Clt_publi, Pts_publi, J_publi, 
             G_publi, N_publi, P_publi, F_publi, Plus_publi, Moins_publi, Diff_publi, 
             PtsNiveau_publi, CltNiveau_publi 
-            FROM gickp_Competitions_Equipes 
+            FROM kp_competition_equipe 
             WHERE Code_compet = ? 
             AND Code_saison = ? 
             AND Clt_publi != 0 

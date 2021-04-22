@@ -10,7 +10,7 @@ if (utyGetGet('json', false)) {
 	if (utyGetGet('pwd', false)) $user = utyGetGet('pwd', false);
 
 	$sql  = "SELECT Pwd 
-		FROM gickp_Utilisateur 
+		FROM kp_user 
 		WHERE Code = '" . $user . "' ";
 		
 	$myBdd = new MyBdd(true);	// Connexion sur le site Mirroir (poloweb5)
@@ -44,7 +44,7 @@ if (utyGetGet('json', false)) {
 //					echo 'count recEvenement = '.count($recEvenement). '!';
 					if (count($recEvenement) == 5)
 					{
-						$sql  = "Replace Into gickp_Evenement (Id, Libelle, Lieu, Date_debut, Date_fin) ";
+						$sql  = "Replace Into kp_evenement (Id, Libelle, Lieu, Date_debut, Date_fin) ";
 						$sql .= "Values (";
 						$sql .= $recEvenement[0];
 						$sql .= ",'";

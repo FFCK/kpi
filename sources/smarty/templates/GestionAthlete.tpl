@@ -65,7 +65,7 @@
 								{$Arbitre.Arb}<br>
 								{#Niveau#} : {$Arbitre.niveau}<br>
 								{#Saison#} : {$Arbitre.saison}<br>
-								{#Livret#} : {$Arbitre.Livret}<br>
+								{#Livret#} : {$Arbitre.livret}<br>
 							</td>
 						</tr>
 					</table>

@@ -20,7 +20,7 @@ class GestionInstances extends MyPageSecure
 			j.Date_fin, j.Nom, j.Libelle, j.Lieu, j.Plan_eau, j.Departement, j.Responsable_insc, 
 			j.Responsable_R1, j.Organisateur, j.Delegue, j.ChefArbitre, 
 			j.Rep_athletes, j.Arb_nj1, j.Arb_nj2, j.Arb_nj3, j.Arb_nj4, j.Arb_nj5, j.Publication
-			FROM gickp_Journees j
+			FROM kp_journee j
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idJournee));
@@ -34,8 +34,8 @@ class GestionInstances extends MyPageSecure
 		// RC disponibles
 		$arrayRC = array();
 		$sql = "SELECT rc.Matric, rc.Ordre, lc.Nom, lc.Prenom 
-			FROM gickp_Rc rc 
-			LEFT OUTER JOIN gickp_Liste_Coureur lc 
+			FROM kp_rc rc 
+			LEFT OUTER JOIN kp_licence lc 
 				ON (rc.Matric = lc.Matric) 
 			WHERE rc.Code_Competition = ?
 			AND rc.Code_saison = ? 

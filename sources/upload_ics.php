@@ -14,7 +14,7 @@ if ($journee > 0) {
     $myBdd = new MyBdd();
     $sql = "SELECT j.Code_competition, j.Code_saison, j.Id, j.Nom, j.Date_debut, 
         j.Date_fin, j.Lieu, j.Departement, c.Code_typeclt, c.Code_ref 
-        FROM gickp_Journees j, gickp_Competitions c 
+        FROM kp_journee j, kp_competition c 
         WHERE j.Code_competition = c.Code 
         AND j.Code_saison = c.Code_saison 
         AND j.Publication = 'O' 
@@ -77,7 +77,7 @@ if ($journee > 0) {
     $myBdd = new MyBdd();
     $sql = "SELECT j.Code_competition, j.Code_saison, j.Id, j.Nom, j.Date_debut, 
         j.Date_fin, j.Lieu, j.Departement, c.Code_typeclt, c.Code_ref 
-        FROM gickp_Journees j, gickp_Competitions c 
+        FROM kp_journee j, kp_competition c 
         WHERE j.Code_competition = c.Code 
         AND j.Code_saison = c.Code_saison 
         AND j.Publication = 'O' 

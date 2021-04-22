@@ -43,7 +43,7 @@ class GestionCalendrier extends MyPageSecure
 		$this->m_tpl->assign('idEvenement', $idEvenement);
 		
 		$sql = "SELECT Id, Libelle, Date_debut 
-			FROM gickp_Evenement 
+			FROM kp_evenement 
 			ORDER BY Date_debut DESC, Libelle ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
@@ -108,9 +108,9 @@ class GestionCalendrier extends MyPageSecure
 			$arrayAfficheCompet = array_merge($arrayAfficheCompet, [$idEvenement]);
 		}
 		$sql = "SELECT DISTINCT c.*, g.section, g.ordre, g.id 
-			FROM gickp_Competitions_Groupes g, gickp_Competitions c 
-			LEFT OUTER JOIN gickp_Journees j ON (c.Code_saison = j.Code_saison AND c.Code = j.Code_competition)
-			LEFT OUTER JOIN gickp_Evenement_Journees ej ON (j.Id = ej.Id_journee) 
+			FROM kp_groupe g, kp_competition c 
+			LEFT OUTER JOIN kp_journee j ON (c.Code_saison = j.Code_saison AND c.Code = j.Code_competition)
+			LEFT OUTER JOIN kp_evenement_journee ej ON (j.Id = ej.Id_journee) 
 			WHERE c.Code_saison = ?  
 			$sqlFiltreCompetition 
 			AND c.Code_niveau LIKE ? 
@@ -218,7 +218,7 @@ class GestionCalendrier extends MyPageSecure
 		if ($modeEvenement == '2' && $idEvenement != -1) {
 			// Mode Association ... => Chargement des Journées de l'Evenement ...
 			$sql = "SELECT Id_journee 
-				FROM gickp_Evenement_Journees 
+				FROM kp_evenement_journee 
 				WHERE Id_evenement = ? "; 
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idEvenement));
@@ -234,7 +234,7 @@ class GestionCalendrier extends MyPageSecure
 			Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, 
 			Responsable_R1, Organisateur, Delegue, ChefArbitre, 
 			Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5, Publication 
-			FROM gickp_Journees 
+			FROM kp_journee 
 			WHERE Code_competition IS NOT NULL 
 			AND Code_Competition IN ($in) 
 			AND Code_saison = ? ";
@@ -252,7 +252,7 @@ class GestionCalendrier extends MyPageSecure
 		if ($idEvenement != -1 && $modeEvenement == '1') {
 			$sql .= "AND Id IN 
 				(SELECT Id_Journee 
-				FROM gickp_Evenement_Journees 
+				FROM kp_evenement_journee 
 				WHERE Id_evenement = ?) ";
 			$arrayQuery = array_merge($arrayQuery, [$idEvenement]);
 		}
@@ -334,7 +334,7 @@ class GestionCalendrier extends MyPageSecure
 		//Contrôle suppression possible
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
 		$sql = "SELECT Id 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id_journee IN ($in) ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
@@ -347,7 +347,7 @@ class GestionCalendrier extends MyPageSecure
 			$myBdd->pdo->beginTransaction();
 
 			// Suppression	
-			$sql = "DELETE FROM gickp_Journees 
+			$sql = "DELETE FROM kp_journee 
 				WHERE Id IN ($in) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayParam);
@@ -376,7 +376,7 @@ class GestionCalendrier extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 	
-				$sql = "INSERT INTO gickp_Journees 
+				$sql = "INSERT INTO kp_journee 
 					(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, 
 					Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, Departement, 
 					Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
@@ -385,7 +385,7 @@ class GestionCalendrier extends MyPageSecure
 					Nbequipes, Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, 
 					Departement, Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre, 
 					Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5 
-					FROM gickp_Journees 
+					FROM kp_journee 
 					WHERE Id = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($nextIdJournee, $idJournee));
@@ -434,7 +434,7 @@ class GestionCalendrier extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "REPLACE INTO gickp_Evenement_Journees (Id_Evenement, Id_Journee) 
+			$sql = "REPLACE INTO kp_evenement_journee (Id_Evenement, Id_Journee) 
 				VALUES (?, ?)";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idEvenement, $idJournee));
@@ -465,7 +465,7 @@ class GestionCalendrier extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "DELETE FROM gickp_Evenement_Journees 
+			$sql = "DELETE FROM kp_evenement_journee 
 				WHERE Id_Evenement = ? 
 				AND Id_Journee = ? ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -489,7 +489,7 @@ class GestionCalendrier extends MyPageSecure
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
 		$myBdd = $this->myBdd;
-		$sql = "UPDATE gickp_Journees 
+		$sql = "UPDATE kp_journee 
 			SET Publication = ? 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -509,7 +509,7 @@ class GestionCalendrier extends MyPageSecure
 		$myBdd = $this->myBdd;
 		
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "UPDATE gickp_Journees 
+		$sql = "UPDATE kp_journee 
 			SET Publication = IF(Publication = 'O', 'N', 'O')
 			WHERE Id IN ($in) ";
 		$result = $myBdd->pdo->prepare($sql);

@@ -20,7 +20,7 @@ $Equipe = trim(utyGetPost('Equipe'));
 // Contrôle autorisation journée
 $myBdd->AutorisationMatch($idMatch);
 
-$sql = "DELETE FROM gickp_Matchs_Joueurs 
+$sql = "DELETE FROM kp_match_joueur 
 	WHERE Id_match = ? 
 	AND Matric = ? 
 	AND Equipe = ? ";

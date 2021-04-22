@@ -39,7 +39,7 @@ class GestionJournal extends MyPageSecure
         $myBdd = new MyBdd();
         $sql = "SELECT j.Id, j.Dates, j.Users, j.Actions, j.Saisons, j.Competitions, 
             j.Evenements, j.Journees, j.Matchs, j.Journal, u.Identite, u.Fonction 
-            FROM gickp_Journal j, gickp_Utilisateur u 
+            FROM kp_journal j, kp_user u 
             WHERE u.Code = j.Users 
             AND j.Users LIKE ? 
             AND j.Actions LIKE ? 
@@ -67,7 +67,7 @@ class GestionJournal extends MyPageSecure
 
         // Chargement des Utilisateurs
         $sql = "SELECT DISTINCT j.Users, u.Identite, u.Fonction 
-            FROM gickp_Journal j, gickp_Utilisateur u 
+            FROM kp_journal j, kp_user u 
             WHERE u.Code = j.Users 
             ORDER BY u.Identite ";	 
         $arrayUsers = array();
@@ -84,7 +84,7 @@ class GestionJournal extends MyPageSecure
 
         // Chargement des actions
         $sql = "SELECT DISTINCT j.Actions 
-            FROM gickp_Journal j 
+            FROM kp_journal j 
             ORDER BY j.Actions ";	 
         $arrayActions = array();
 		$result = $myBdd->pdo->prepare($sql);

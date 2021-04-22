@@ -45,7 +45,7 @@ $myBdd = new MyBdd();
 if (PRODUCTION) {
 	// Vérification user - pwd ...
 	$sql = "SELECT * 
-		FROM gickp_Utilisateur 
+		FROM kp_user 
 		WHERE md5(concat(code,pwd)) = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($userpwd));
@@ -93,7 +93,7 @@ if (PRODUCTION) {
 
 // Table Evenement ...
 $sql = "Select * ";
-$sql.= "From gickp_Evenement ";
+$sql.= "From kp_evenement ";
 $sql.= "Where Id In ($lstEvenement) ";
 
 $arrayEvenement = array();
@@ -101,7 +101,7 @@ load($arrayEvenement, $sql, $myBdd);
 
 // Table Evenement_Journees ...
 $sql = "Select * ";
-$sql.= "From gickp_Evenement_Journees ";
+$sql.= "From kp_evenement_journee ";
 $sql.= "Where Id_evenement In ($lstEvenement) ";
 
 $arrayEvenementJournees = array();
@@ -109,7 +109,7 @@ load($arrayEvenementJournees, $sql, $myBdd);
 
 // Table Journees ...
 $sql = "Select a.* ";
-$sql.= "From gickp_Journees a, gickp_Evenement_Journees b ";
+$sql.= "From kp_journee a, kp_evenement_journee b ";
 $sql.= "Where b.Id_evenement In ($lstEvenement) ";
 $sql.= "And a.Id = b.Id_journee ";
 
@@ -121,7 +121,7 @@ $lstSaison = "'null'";
 $rowsJournees = $arrayJournees['rows'];
 
 $arrayColumnsJournees = array();
-$myBdd->ShowColumnsSQL('gickp_Journees', $arrayColumnsJournees);
+$myBdd->ShowColumnsSQL('kp_journee', $arrayColumnsJournees);
 
 for ($i = 0; $i < count($rowsJournees); $i++) {
 	$lstCompetition.= ",'".$rowsJournees[$i][$myBdd->GetIndexColumnByArray('Code_competition', $arrayColumnsJournees)]."'"; // => Code_competition
@@ -130,14 +130,14 @@ for ($i = 0; $i < count($rowsJournees); $i++) {
 
 // Table Saison ... 
 $sql = "Select * ";
-$sql.= "From gickp_Saison ";
+$sql.= "From kp_saison ";
 $sql.= "Where Code In ($lstSaison) Or Etat = 'A' ";
 $arraySaison = array();
 load($arraySaison, $sql, $myBdd);
 
 // Table Competitions ...
 $sql = "Select * ";
-$sql.= "From gickp_Competitions ";
+$sql.= "From kp_competition ";
 $sql.= "Where Code In ($lstCompetition) And Code_saison In ($lstSaison)";
 $arrayCompetitions = array();
 load($arrayCompetitions, $sql, $myBdd);
@@ -146,20 +146,20 @@ $lstCodeRef = "'null'";
 $rowsCompetitions = $arrayCompetitions['rows'];
 for ($i = 0; $i < count($rowsCompetitions); $i++) 
 {
-	$lstCodeRef.= ",'".$rowsCompetitions[$i][$myBdd->GetIndexColumn('gickp_Competitions', 'Code_ref')]."'"; // => Code_ref
+	$lstCodeRef.= ",'".$rowsCompetitions[$i][$myBdd->GetIndexColumn('kp_competition', 'Code_ref')]."'"; // => Code_ref
 }
 
 
 // Table Competitions_Groupes ...
 $sql = "Select * ";
-$sql.= "From gickp_Competitions_Groupes ";
+$sql.= "From kp_groupe ";
 $sql.= "Where Groupe In ($lstCodeRef) ";
 $arrayCompetitionsGroupes = array();
 $lstCompetitionsGroupes = load($arrayCompetitionsGroupes, $sql, $myBdd);
 
 // Table Competitions_Equipes ...
 $sql = "Select * ";
-$sql.= "From gickp_Competitions_Equipes ";
+$sql.= "From kp_competition_equipe ";
 $sql.= "Where Code_compet In ($lstCompetition) And Code_saison In ($lstSaison)";
 $arrayCompetitionsEquipes = array();
 $lstCompetitionsEquipes = load($arrayCompetitionsEquipes, $sql, $myBdd);
@@ -169,61 +169,61 @@ $lstEquipe = '-1';
 $rowsCompetitionsEquipes = $arrayCompetitionsEquipes['rows'];
 for ($i = 0; $i < count($rowsCompetitionsEquipes); $i++)
 {
-	$lstEquipe .= ','.$rowsCompetitionsEquipes[$i][$myBdd->GetIndexColumn('gickp_Competitions_Equipes', 'Numero')]; // => Numero
+	$lstEquipe .= ','.$rowsCompetitionsEquipes[$i][$myBdd->GetIndexColumn('kp_competition_equipe', 'Numero')]; // => Numero
 }
 
 // Table Competitions_Equipes_Init ...
 $sql = "Select * ";
-$sql.= "From gickp_Competitions_Equipes_Init ";
+$sql.= "From kp_competition_equipe_init ";
 $sql.= "Where Id In ($lstCompetitionsEquipes) ";
 $arrayCompetitionsEquipesInit = array();
 load($arrayCompetitionsEquipesInit, $sql, $myBdd);
 
 // Table Competitions_Equipes_Joueurs ...
 $sql = "Select * ";
-$sql.= "From gickp_Competitions_Equipes_Joueurs ";
+$sql.= "From kp_competition_equipe_joueur ";
 $sql.= "Where Id_equipe In ($lstCompetitionsEquipes) ";
 $arrayCompetitionsEquipesJoueurs = array();
 load($arrayCompetitionsEquipesJoueurs, $sql, $myBdd);
 
 // Table Competitions_Equipes_Journee ...
 $sql = "Select * ";
-$sql.= "From gickp_Competitions_Equipes_Journee ";
+$sql.= "From kp_competition_equipe_journee ";
 $sql.= "Where Id In ($lstCompetitionsEquipes) And Id_journee In ($lstJournees) ";
 $arrayCompetitionsEquipesJournee = array();
 load($arrayCompetitionsEquipesJournee, $sql, $myBdd);
 
 // Table Competitions_Equipes_Niveau ...
 $sql = "Select * ";
-$sql.= "From gickp_Competitions_Equipes_Niveau ";
+$sql.= "From kp_competition_equipe_niveau ";
 $sql.= "Where Id In ($lstCompetitionsEquipes) ";
 $arrayCompetitionsEquipesNiveau = array();
 load($arrayCompetitionsEquipesNiveau, $sql, $myBdd);
 
 // Table Matchs ...
 $sql = "Select * ";
-$sql.= "From gickp_Matchs ";
+$sql.= "From kp_match ";
 $sql.= "Where Id_journee In ($lstJournees) ";
 $arrayMatchs = array();
 $lstMatchs = load($arrayMatchs, $sql, $myBdd);
 
 // Table Matchs_Detail ...
 $sql = "Select * ";
-$sql.= "From gickp_Matchs_Detail ";
+$sql.= "From kp_match_detail ";
 $sql.= "Where Id_match In ($lstMatchs) ";
 $arrayMatchsDetail = array();
 load($arrayMatchsDetail, $sql, $myBdd);
 
 // Table Matchs_Joueurs ...
 $sql = "Select * ";
-$sql.= "From gickp_Matchs_Joueurs ";
+$sql.= "From kp_match_joueur ";
 $sql.= "Where Id_match In ($lstMatchs) ";
 $arrayMatchsJoueurs = array();
 load($arrayMatchsJoueurs, $sql, $myBdd);
 
 // Table Equipe ...
 $sql = "Select * ";
-$sql.= "From gickp_Equipe ";
+$sql.= "From kp_equipe ";
 $sql.= "Where Numero In ($lstEquipe) ";
 $arrayEquipe = array();
 load($arrayEquipe, $sql, $myBdd);
@@ -232,27 +232,27 @@ $lstClub = "'null'";
 $rowsEquipes = $arrayEquipe['rows'];
 for ($i = 0; $i < count($rowsEquipes); $i++)
 {
-	$lstClub .= ','.$rowsEquipes[$i][$myBdd->GetIndexColumn('gickp_Equipe', 'Code_club')]; // => Code_club
+	$lstClub .= ','.$rowsEquipes[$i][$myBdd->GetIndexColumn('kp_equipe', 'Code_club')]; // => Code_club
 }
 
 // Table Club ...
 $sql = "Select distinct * ";
-$sql.= "From gickp_Club ";
+$sql.= "From kp_club ";
 $sql.= "Where Code In ($lstClub) ";
 $arrayClub = array();
 load($arrayClub, $sql, $myBdd);
 
-// Table gickp_comite_dep
+// Table kp_cd
 $sql = "Select distinct a.* ";
-$sql.= "From gickp_Comite_dep a, gickp_Club b ";
+$sql.= "From kp_cd a, kp_club b ";
 $sql.= "Where a.Code = b.Code_comite_dep ";
 $sql.= "And b.Code In ($lstClub) ";
 $arrayComiteDep = array();
 load($arrayComiteDep, $sql, $myBdd);
 
-// Table gickp_comite_reg
+// Table kp_cr
 $sql = "Select distinct a.* ";
-$sql.= "From gickp_Comite_reg a, gickp_Comite_dep b, gickp_Club c ";
+$sql.= "From kp_cr a, kp_cd b, kp_club c ";
 $sql.= "Where a.Code = b.Code_comite_reg ";
 $sql.= "And b.Code = c.Code_comite_dep ";
 $sql.= "And c.Code In ($lstClub) ";
@@ -265,7 +265,7 @@ $lstCD = "'null'";
 $rowsEquipes = $arrayEquipe['rows'];
 for ($i = 0; $i < count($rowsEquipes); $i++)
 {
-	$lstClub .= ','.$rowsEquipes[$i][$myBdd->GetIndexColumn('gickp_Equipe', 'Code_club')]; // => Code_club
+	$lstClub .= ','.$rowsEquipes[$i][$myBdd->GetIndexColumn('kp_equipe', 'Code_club')]; // => Code_club
 }
 */
 // JSON Final ...

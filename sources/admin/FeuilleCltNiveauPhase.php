@@ -107,8 +107,8 @@ class FeuilleCltNiveauPhase extends MyPage
             cej.Pts, cej.J, cej.G, cej.N, cej.P, cej.F, cej.Plus, cej.Moins, cej.Diff, 
             cej.PtsNiveau, cej.CltNiveau, j.Phase, j.Niveau, j.Lieu, j.Type, 
             IF(LEFT(j.Phase, 5) = 'Group' OR LEFT(j.Phase, 5) = 'Poule', j.Phase, 'Z') typePhase 
-            FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Journee cej 
-            JOIN gickp_Journees j ON (cej.Id_journee = j.Id) 
+            FROM kp_competition_equipe ce, kp_competition_equipe_journee cej 
+            JOIN kp_journee j ON (cej.Id_journee = j.Id) 
             WHERE ce.Id = cej.Id 
             AND j.Code_competition = ? 
             AND j.Code_saison = ? 
@@ -133,9 +133,9 @@ class FeuilleCltNiveauPhase extends MyPage
                     $pdf->Cell(190, 5, $row['Phase'], 0, 1, 'C');
                     $pdf->SetFont('Arial', 'B', 9);
                     $sql2 = "SELECT m.ScoreA, m.ScoreB, ce1.Libelle EquipeA, ce2.Libelle EquipeB 
-                        FROM gickp_Matchs m 
-                        LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) 
-                        LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) 
+                        FROM kp_match m 
+                        LEFT OUTER JOIN kp_competition_equipe ce1 ON (m.Id_equipeA = ce1.Id) 
+                        LEFT OUTER JOIN kp_competition_equipe ce2 ON (m.Id_equipeB = ce2.Id) 
                         WHERE m.Id_journee = ? ";
                     $result2 = $myBdd->pdo->prepare($sql2);
                     $result2->execute(array($row['Id_journee']));

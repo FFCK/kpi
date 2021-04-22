@@ -9,7 +9,7 @@ $end = utyGetGet('end');
 
 //groupe les journées à date  et lieu identiques (format coupe)
 $sql = "SELECT j.*, c.* 
-    FROM gickp_Journees j, gickp_Competitions c 
+    FROM kp_journee j, kp_competition c 
     WHERE j.Code_competition = c.Code 
     AND j.Code_saison = c.Code_saison 
     AND c.Publication = 'O' 

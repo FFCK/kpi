@@ -38,9 +38,9 @@ class RechercheLicenceIndi2 extends MyPageSecure
 	
 		if ($this->OkRecherche()) {
 			$sql = "SELECT a.Matric, a.Nom, a.Prenom, a.Sexe, a.Naissance, a.Numero_club, 
-                a.Club, b.Arb 
-                FROM gickp_Liste_Coureur a 
-                LEFT OUTER JOIN gickp_Arbitre b ON (a.Matric = b.Matric) 
+                a.Club, b.arbitre 
+                FROM kp_licence a 
+                LEFT OUTER JOIN kp_arbitre b ON (a.Matric = b.Matric) 
                 WHERE a.Matric IS NOT NULL ";
 			if (strlen($matricJoueur) > 0) {
                 $sql .= " AND a.Matric = ? ";
@@ -71,19 +71,19 @@ class RechercheLicenceIndi2 extends MyPageSecure
                 $arrayQuery = array_merge($arrayQuery, [$codeClub]);
 			}
 			if (utyGetPost('CheckJugeInter', false)) {
-                $sql .= " AND b.Arb = 'Int' ";
+                $sql .= " AND b.arbitre = 'Int' ";
 			}
 			if (utyGetPost('CheckJugeNational', false)) {
-                $sql .= " AND b.Arb = 'Nat' ";
+                $sql .= " AND b.arbitre = 'Nat' ";
 			}
 			if (utyGetPost('CheckJugeReg', false)) {
-                $sql .= " AND b.Arb = 'Reg' ";
+                $sql .= " AND b.arbitre = 'Reg' ";
 			}
 			if (utyGetPost('CheckJugeOTM', false)) {
-                $sql .= " AND b.Arb = 'OTM' ";
+                $sql .= " AND b.arbitre = 'OTM' ";
 			}
 			if (utyGetPost('CheckJugeJO', false)) {
-                $sql .= " AND b.Arb = 'JO' ";
+                $sql .= " AND b.arbitre = 'JO' ";
 			}
 			$sql .= " ORDER BY a.Nom, a.Prenom, a.Matric ";
 		
@@ -96,7 +96,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
                 $reg = 'N';
                 $otm = 'N';
                 $jo = 'N';
-                switch ($row['Arb']) {
+                switch ($row['arbitre']) {
                     case 'Int' :
                         $int = 'O';
                         break;
@@ -124,7 +124,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
                     'Regional' =>  $reg ,
                     'OTM' =>  $otm ,
                     'JO' =>  $jo ,
-                    'Arbitre' => $row['Arb'] ));
+                    'Arbitre' => $row['arbitre'] ));
 																				 
 			}
 		}
@@ -133,7 +133,7 @@ class RechercheLicenceIndi2 extends MyPageSecure
 				
 		// Chargement des Comites Régionnaux ...
         $sql = "SELECT Code, Libelle 
-            FROM gickp_Comite_reg 
+            FROM kp_cr 
             ORDER BY Code ";	 
         $result = $myBdd->pdo->prepare($sql);
         $result->execute();
@@ -169,14 +169,14 @@ class RechercheLicenceIndi2 extends MyPageSecure
 
 		if ('*' != $codeComiteReg) {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Comite_dep 
+                FROM kp_cd 
                 WHERE Code_comite_reg = ? 
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeComiteReg));
         } else {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Comite_dep 
+                FROM kp_cd 
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute();
@@ -213,14 +213,14 @@ class RechercheLicenceIndi2 extends MyPageSecure
 		
 		if ('*' != $codeComiteDep) {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Club 
+                FROM kp_club 
                 WHERE Code_comite_dep = ?
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeComiteDep));
 		} else {
             $sql = "SELECT Code, Libelle 
-                FROM gickp_Club 
+                FROM kp_club 
                 ORDER BY Code ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute();

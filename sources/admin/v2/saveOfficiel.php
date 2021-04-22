@@ -25,7 +25,7 @@ if (!in_array($id, ['Secretaire', 'Chronometre', 'Timeshoot', 'Ligne1', 'Ligne2'
 // Contrôle autorisation journée
 $myBdd->AutorisationMatch($idMatch);
 
-$sql = "UPDATE gickp_Matchs 
+$sql = "UPDATE kp_match 
 	SET $id = ? 
 	WHERE Id = ? ";
 $result = $myBdd->pdo->prepare($sql);

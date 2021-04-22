@@ -31,7 +31,7 @@ class GestionJournee extends MyPageSecure
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
 
         // Informations pour SelectionOuiNon ...
-		$_SESSION['tableOuiNon'] = 'gickp_Matchs';
+		$_SESSION['tableOuiNon'] = 'kp_match';
 		$_SESSION['columnOuiNon'] = 'Publication';
 		$_SESSION['columnOuiNon2'] = 'Validation';
 		$_SESSION['whereOuiNon'] = 'Where Id = ';
@@ -57,7 +57,7 @@ class GestionJournee extends MyPageSecure
 		$this->m_tpl->assign('idEvenement', $idEvenement);
 		
 		$sql = "SELECT Id, Libelle, Date_debut, Publication 
-			FROM gickp_Evenement 
+			FROM kp_evenement 
 			ORDER BY Date_debut DESC, Libelle ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
@@ -121,7 +121,7 @@ class GestionJournee extends MyPageSecure
 		if ($idSelJournee != '*') {
 			$sql = "SELECT DISTINCT b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, 
 				b.Lieu, b.Date_debut, b.Type, a.Code_typeclt 
-				FROM gickp_Journees b, gickp_Competitions a 
+				FROM kp_journee b, kp_competition a 
 				WHERE b.Id = ? 
 				AND a.Code = b.Code_competition ";
 			$sql .= utyGetFiltreCompetition('a.');			
@@ -132,7 +132,7 @@ class GestionJournee extends MyPageSecure
 			if ($idEvenement != -1) {
 				$sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Libelle, 
 					a.Lieu, a.Date_debut, a.Type, c.Code_typeclt 
-					FROM gickp_Journees a, gickp_Evenement_Journees b, gickp_Competitions c 
+					FROM kp_journee a, kp_evenement_journee b, kp_competition c 
 					WHERE a.Id = b.Id_journee 
 					AND a.Code_competition = c.Code 
 					AND a.Code_saison = c.Code_saison 
@@ -149,7 +149,7 @@ class GestionJournee extends MyPageSecure
 				$arrayQuery = [$codeSaison];
                 $sql = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, 
 					j.Lieu, j.Date_debut, j.Type, c.Code_typeclt 
-					FROM gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g 
+					FROM kp_journee j, kp_competition c, kp_groupe g 
 					WHERE j.Code_saison = ? ";
                 if ($codeCompet != '*') {
                     $sql .= "AND j.Code_competition = ? ";
@@ -219,7 +219,7 @@ class GestionJournee extends MyPageSecure
 		if ($idEvenement2 != -1) {
             $sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Lieu, 
 				a.Date_debut, c.Code_typeclt 
-				FROM gickp_Journees a, gickp_Evenement_Journees b, gickp_Competitions c 
+				FROM kp_journee a, kp_evenement_journee b, kp_competition c 
 				WHERE a.Id = b.Id_journee 
 				AND a.Code_competition = c.Code 
 				AND a.Code_saison = c.Code_saison 
@@ -235,7 +235,7 @@ class GestionJournee extends MyPageSecure
 		} else {
             $sql  = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Lieu, 
 				j.Date_debut, c.Code_typeclt 
-				FROM gickp_Journees j, gickp_Competitions c, gickp_Competitions_Groupes g 
+				FROM kp_journee j, kp_competition c, kp_groupe g 
 				WHERE j.Code_saison = ? ";
 			$arrayQuery = [$codeSaison];
             if ($codeCompet != '*') {
@@ -295,8 +295,8 @@ class GestionJournee extends MyPageSecure
 			$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
 			$sql = "SELECT DISTINCT c.GroupOrder, c.Code, c.Libelle, c.Soustitre, c.Soustitre2, 
 				c.Titre_actif, g.id, g.section, g.ordre 
-				FROM gickp_Evenement_Journees a, gickp_Journees b, gickp_Competitions c, 
-				gickp_Competitions_Groupes g 
+				FROM kp_evenement_journee a, kp_journee b, kp_competition c, 
+				kp_groupe g 
 				WHERE a.Id_evenement = ? 
 				AND a.Id_journee = b.Id 
 				$sqlFiltreCompetition 
@@ -313,7 +313,7 @@ class GestionJournee extends MyPageSecure
 			$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
 			$sql = "SELECT DISTINCT c.GroupOrder, c.Code, c.Libelle, c.Code_niveau, c.Code_ref, 
 				c.Code_tour, c.Soustitre, c.Soustitre2, c.Titre_actif, g.id, g.section, g.ordre 
-				FROM gickp_Competitions c, gickp_Competitions_Groupes g 
+				FROM kp_competition c, kp_groupe g 
 				WHERE 1 = 1 
 				AND c.Code_saison = ? 
 				$sqlFiltreCompetition 
@@ -381,7 +381,7 @@ class GestionJournee extends MyPageSecure
 		} else {
 			// Chargement Evenement ...
 			$sql = "SELECT Libelle, Lieu, Date_debut, Date_fin 
-				FROM gickp_Evenement 
+				FROM kp_evenement 
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idEvenement));
@@ -448,9 +448,9 @@ class GestionJournee extends MyPageSecure
 				a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, 
 				a.Matric_arbitre_secondaire, d.Code_competition, d.Phase, d.Niveau, d.Lieu, 
 				d.Libelle LibelleJournee, e.Soustitre2 
-				FROM gickp_Journees d, gickp_Competitions e, gickp_Matchs a 
-				LEFT OUTER JOIN gickp_Competitions_Equipes b ON (a.Id_equipeA = b.Id) 
-				LEFT OUTER JOIN gickp_Competitions_Equipes c ON (a.Id_equipeB = c.Id) 
+				FROM kp_journee d, kp_competition e, kp_match a 
+				LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
+				LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
 				WHERE a.Id_journee IN ($in) 
 				AND a.Id_journee = d.Id 
 				AND d.Code_competition = e.Code 
@@ -580,7 +580,7 @@ class GestionJournee extends MyPageSecure
 		if ($idMatch < 0 && $lstJournee != '') {
 			$in  = str_repeat('?,', count($arrayListJournees) - 1) . '?';
 			$sql = "SELECT DISTINCT a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet 
-				FROM gickp_Competitions_Equipes a, gickp_Journees b 
+				FROM kp_competition_equipe a, kp_journee b 
 				WHERE a.Code_compet = b.Code_competition 
 				AND a.Code_saison = b.Code_saison 
 				AND b.Id IN ($in) 
@@ -589,7 +589,7 @@ class GestionJournee extends MyPageSecure
 			$result->execute($arrayListJournees);
 		} elseif ($idMatch >= 0) {
 			$sql = "SELECT a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet 
-				FROM gickp_Competitions_Equipes a, gickp_Journees b, gickp_Matchs c 
+				FROM kp_competition_equipe a, kp_journee b, kp_match c 
 				WHERE a.Code_compet = b.Code_competition 
 				AND a.Code_saison = b.Code_saison 
 				AND b.Id = c.Id_journee 
@@ -635,14 +635,14 @@ class GestionJournee extends MyPageSecure
 			// Les arbitres potentiels peuvent aussi être les joueurs des Equipes ...
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Joueurs'] . ' ----------'));
 			$in  = str_repeat('?,', count($arrayEquipes) - 1) . '?';
-			$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau, 
-				(c.Arb IS NULL) AS sortCol 
-				FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Joueurs a 
-				LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric 
+			$sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau, 
+				(c.arbitre IS NULL) AS sortCol 
+				FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
+				LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 				WHERE a.Id_equipe = b.Id 
 				AND b.Id IN ($in) 
 				AND a.Capitaine <> 'X' 
-				ORDER BY b.Libelle, sortCol, c.Arb, a.Nom, a.Prenom ";
+				ORDER BY b.Libelle, sortCol, c.arbitre, a.Nom, a.Prenom ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayEquipes);
 			
@@ -652,8 +652,8 @@ class GestionJournee extends MyPageSecure
 					array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---'));
 					$libelleTemp = $row['Libelle'];
 				}
-				if (strlen($row['Arb'])>0)
-					$arb = ' '.strtoupper($row['Arb']);
+				if (strlen($row['arbitre'])>0)
+					$arb = ' '.strtoupper($row['arbitre']);
 				else
 					$arb = '';
 				if($row['niveau'] != '')
@@ -664,9 +664,9 @@ class GestionJournee extends MyPageSecure
 			// Les arbitres potentiels font partie du Pool ...
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => ''));
 			array_push($arrayArbitre, array('Matric' => '-1', 'Identite' => '---------- ' . $lang['Pool_Arbitres'] . ' ----------'));
-			$sql2 = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.Arb, c.niveau 
-				FROM gickp_Competitions_Equipes b, gickp_Competitions_Equipes_Joueurs a 
-				LEFT OUTER JOIN gickp_Arbitre c ON a.Matric = c.Matric 
+			$sql2 = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau 
+				FROM kp_competition_equipe b, kp_competition_equipe_joueur a 
+				LEFT OUTER JOIN kp_arbitre c ON a.Matric = c.Matric 
 				WHERE a.Id_equipe = b.Id 
 				AND a.Capitaine = 'A' 
 				AND b.Code_compet = 'POOL' 
@@ -674,8 +674,8 @@ class GestionJournee extends MyPageSecure
 			$result2 = $myBdd->pdo->prepare($sql2);
 			$result2->execute();
             while ($row2 = $result2->fetch()) {
-				if (strlen($row2['Arb']) > 0) {
-                    $arb = ' ' . strtoupper($row2['Arb']);
+				if (strlen($row2['arbitre']) > 0) {
+                    $arb = ' ' . strtoupper($row2['arbitre']);
                 } else {
                     $arb = '';
                 }
@@ -723,7 +723,7 @@ class GestionJournee extends MyPageSecure
 		$myBdd = $this->myBdd;
 		// Chargement des Matchs des journées ...
 		$sql = "SELECT Numero_ordre, Date_match, Heure_match, Terrain, `Type` 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id_journee = ? 
 			ORDER BY Date_match, Heure_match, Numero_ordre ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -800,7 +800,7 @@ class GestionJournee extends MyPageSecure
 				$numMatch = $this->LastNumeroOrdre($idJournee) + 1;
 			
 			$sql = "SELECT Id_equipeA, Id_equipeB 
-				FROM gickp_Matchs 
+				FROM kp_match 
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idMatch));
@@ -814,7 +814,7 @@ class GestionJournee extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 	
-				$sql = "UPDATE gickp_Matchs 
+				$sql = "UPDATE kp_match 
 					SET Id_journee = ?, Numero_ordre = ?, 
 					Date_match = ?, Heure_match = ?, 
 					Libelle = ?, Terrain = ?, `Type` = ?, 
@@ -832,14 +832,14 @@ class GestionJournee extends MyPageSecure
 				
 				//Vidage des joueurs si l'équipe est vide ou modifiée
 				if ($idEquipeA == -1 or $idEquipeA != $anciene_equipeA) {
-					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					$sql = "DELETE FROM kp_match_joueur 
 						WHERE Id_match = ? 
 						AND Equipe = 'A' ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($idMatch));
 				}
 				if ($idEquipeB == -1 or $idEquipeB != $anciene_equipeB) {
-					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					$sql = "DELETE FROM kp_match_joueur 
 						WHERE Id_match = ? 
 						AND Equipe = 'B' ";
 					$result = $myBdd->pdo->prepare($sql);
@@ -907,7 +907,7 @@ class GestionJournee extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 
-				$sql = "INSERT INTO gickp_Matchs (Id_journee, Numero_ordre, Date_match, Heure_match, 
+				$sql = "INSERT INTO kp_match (Id_journee, Numero_ordre, Date_match, Heure_match, 
 					Libelle, Terrain, `Type`, Id_equipeA, Id_equipeB, Arbitre_principal, 
 					Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB) 
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
@@ -949,7 +949,7 @@ class GestionJournee extends MyPageSecure
 		//Contrôle suppression possible
 		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
 		$sql = "SELECT Id 
-			FROM gickp_Matchs_Detail 
+			FROM kp_match_detail 
 			WHERE Id_match IN ($in) ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
@@ -961,16 +961,16 @@ class GestionJournee extends MyPageSecure
 			$myBdd->pdo->beginTransaction();
 
 			//Vidage des joueurs du match
-			$sql = "DELETE FROM gickp_Matchs_Joueurs 
-				USING gickp_Matchs_Joueurs, gickp_Matchs 
-				WHERE gickp_Matchs_Joueurs.Id_match = gickp_Matchs.Id 
-				AND gickp_Matchs_Joueurs.Id_match IN ($in) 
-				AND gickp_Matchs.Validation != 'O'; ";
+			$sql = "DELETE FROM kp_match_joueur 
+				USING kp_match_joueur, kp_match 
+				WHERE kp_match_joueur.Id_match = kp_match.Id 
+				AND kp_match_joueur.Id_match IN ($in) 
+				AND kp_match.Validation != 'O'; ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayParam);
 			
 			// Suppression
-			$sql  = "DELETE FROM gickp_Matchs 
+			$sql  = "DELETE FROM kp_match 
 				WHERE Id IN ($in) 
 				AND `Validation` != 'O' ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -993,7 +993,7 @@ class GestionJournee extends MyPageSecure
 		$myBdd = $this->myBdd;
 		
 		$sql = "SELECT Code_competition, Code_saison, Date_debut 
-			FROM gickp_Journees 
+			FROM kp_journee 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idJournee));
@@ -1006,10 +1006,10 @@ class GestionJournee extends MyPageSecure
 		}
 		
 		$sql = "SELECT MAX(Numero_ordre) MaxNumeroOrdre 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id_journee IN (
 				SELECT Id 
-				FROM gickp_Journees 
+				FROM kp_journee 
 				WHERE Code_competition = ? 
 				AND Code_saison = ? 
 				AND Date_debut <= ? 
@@ -1036,7 +1036,7 @@ class GestionJournee extends MyPageSecure
 		$sql = "SELECT Id_journee, Numero_ordre, Date_match, Heure_match, Libelle, 
 			Terrain, `Type`, Id_equipeA, Id_equipeB, Arbitre_principal, Arbitre_secondaire, 
 			Matric_arbitre_principal, Matric_arbitre_secondaire, CoeffA, CoeffB 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch));
@@ -1077,7 +1077,7 @@ class GestionJournee extends MyPageSecure
 		
   		// Chargement des Matchs de la journée ...
 		$sql = "SELECT Id, Id_equipeA, Id_equipeB 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id_journee = ?
 			AND `Validation` <> 'O' ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -1091,30 +1091,30 @@ class GestionJournee extends MyPageSecure
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
 			
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				$sql = "DELETE FROM kp_match_joueur 
 					WHERE Id_match = ? 
 					AND Equipe = 'A'";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch));
 						
-				$sql = "REPLACE INTO gickp_Matchs_Joueurs 
+				$sql = "REPLACE INTO kp_match_joueur 
 					SELECT ?, Matric, Numero, 'A', Capitaine 
-					FROM gickp_Competitions_Equipes_Joueurs 
+					FROM kp_competition_equipe_joueur 
 					WHERE Id_equipe = ? 
 					AND Capitaine <> 'X' 
 					AND Capitaine <> 'A' ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch, $idEquipeA));
 							
-				$sql = "DELETE FROM gickp_Matchs_Joueurs 
+				$sql = "DELETE FROM kp_match_joueur 
 					WHERE Id_match = ? 
 					AND Equipe = 'B'";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch));
 						
-				$sql  = "REPLACE INTO gickp_Matchs_Joueurs 
+				$sql  = "REPLACE INTO kp_match_joueur 
 					SELECT ?, Matric, Numero, 'B', Capitaine 
-					FROM gickp_Competitions_Equipes_Joueurs 
+					FROM kp_competition_equipe_joueur 
 					WHERE Id_equipe = ? 
 					AND Capitaine <> 'X' 
 					AND Capitaine <> 'A' ";
@@ -1141,7 +1141,7 @@ class GestionJournee extends MyPageSecure
 		$idMatch = (int) utyGetPost('ParamCmd', 0);
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
-		$sql = "UPDATE gickp_Matchs 
+		$sql = "UPDATE kp_match 
 			SET Publication = ? 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -1162,11 +1162,11 @@ class GestionJournee extends MyPageSecure
 		$codeSaison = $myBdd->GetActiveSaison();
 		
 		$sql = "SELECT Publication 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 
-		$sql2 = "UPDATE gickp_Matchs 
+		$sql2 = "UPDATE kp_match 
 			SET Publication = ? 
 			WHERE Id = ? ";
 		$result2 = $myBdd->pdo->prepare($sql2);
@@ -1195,7 +1195,7 @@ class GestionJournee extends MyPageSecure
 		$codeSaison = $myBdd->GetActiveSaison();
 		
 		$in  = str_repeat('?,', count($arrayParam) - 1) . '?';
-		$sql = "UPDATE gickp_Matchs 
+		$sql = "UPDATE kp_match 
 			SET Publication = 'O', Validation = 'O' 
 			WHERE Id IN ($in) ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -1214,7 +1214,7 @@ class GestionJournee extends MyPageSecure
 		$myBdd = $this->myBdd;
 		$codeSaison = $myBdd->GetActiveSaison();
 
-		$sql = "UPDATE gickp_Matchs 
+		$sql = "UPDATE kp_match 
 			SET Validation = ? 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -1236,11 +1236,11 @@ class GestionJournee extends MyPageSecure
 		$codeSaison = $myBdd->GetActiveSaison();
 		
 		$sql = "SELECT `Validation` 
-			FROM gickp_Matchs 
+			FROM kp_match 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 
-		$sql2 = "UPDATE gickp_Matchs 
+		$sql2 = "UPDATE kp_match 
 			SET `Validation` = ? 
 			WHERE Id = ? ";
 		$result2 = $myBdd->pdo->prepare($sql2);
@@ -1273,7 +1273,7 @@ class GestionJournee extends MyPageSecure
 		$sql1 = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
 			m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
 			j.Code_saison 
-			FROM gickp_Matchs m, gickp_Journees j 
+			FROM kp_match m, kp_journee j 
 			WHERE m.Id = ? 
 			AND m.Id_journee = j.Id 
 			AND m.Validation <> 'O' 
@@ -1283,7 +1283,7 @@ class GestionJournee extends MyPageSecure
 		$result1 = $myBdd->pdo->prepare($sql1);
 
 		$sql2 = "SELECT ce.Id, ce.Libelle Nom_equipe 
-			FROM gickp_Competitions_Equipes ce 
+			FROM kp_competition_equipe ce 
 			WHERE ce.Tirage = ? 
 			AND ce.Code_compet = ? 
 			AND ce.Code_saison = ? ";
@@ -1291,8 +1291,8 @@ class GestionJournee extends MyPageSecure
 
 		$sql3 = "SELECT m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, 
 			ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
-			FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
-			gickp_Competitions_Equipes ce2 
+			FROM kp_match m, kp_journee j, kp_competition_equipe ce, 
+			kp_competition_equipe ce2 
 			WHERE m.Numero_ordre = ? 
 			AND m.Id_journee = j.Id 
 			AND m.Id_equipeA = ce.Id 
@@ -1304,8 +1304,8 @@ class GestionJournee extends MyPageSecure
 
 		$sql4 = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
 			ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB, m.ScoreA, m.ScoreB 
-			FROM gickp_Matchs m, gickp_Journees j, gickp_Competitions_Equipes ce, 
-			gickp_Competitions_Equipes ce2 
+			FROM kp_match m, kp_journee j, kp_competition_equipe ce, 
+			kp_competition_equipe ce2 
 			WHERE m.Numero_ordre = ? 
 			AND m.Id_journee = j.Id 
 			AND m.Id_equipeA = ce.Id 
@@ -1316,8 +1316,8 @@ class GestionJournee extends MyPageSecure
 		$result4 = $myBdd->pdo->prepare($sql4);
 
 		$sql5  = "SELECT cej.Id, ce.Libelle Nom_equipe 
-			FROM gickp_Competitions_Equipes_Journee cej, gickp_Journees j, 
-			gickp_Competitions_Equipes ce 
+			FROM kp_competition_equipe_journee cej, kp_journee j, 
+			kp_competition_equipe ce 
 			WHERE cej.Clt = :codeNumero
 			AND cej.Id_journee = j.Id 
 			AND cej.Id = ce.Id 
@@ -1478,7 +1478,7 @@ class GestionJournee extends MyPageSecure
 				$myBdd->pdo->beginTransaction();
 	
 				// Affectation
-				$sql = "UPDATE gickp_Matchs 
+				$sql = "UPDATE kp_match 
 					SET Id_equipeA = ?, Id_equipeB = ? ";
 				$arrayQuery = array($selectNum[0], $selectNum[1]);
 				if ($selectNom[2] != '') {
@@ -1495,14 +1495,14 @@ class GestionJournee extends MyPageSecure
 				$result->execute($arrayQuery);
 				//Suppression des joueurs existants si changements d'équipes
 				if ($selectNum[0] != $anciene_equipeA) {
-					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					$sql = "DELETE FROM kp_match_joueur 
 						WHERE Id_match = ? 
 						AND Equipe = 'A' ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($id));
 				}
 				if ($selectNum[1] != $anciene_equipeB) {
-					$sql = "DELETE FROM gickp_Matchs_Joueurs 
+					$sql = "DELETE FROM kp_match_joueur 
 						WHERE Id_match = ? 
 						AND Equipe = 'B' ";
 					$result = $myBdd->pdo->prepare($sql);
@@ -1538,7 +1538,7 @@ class GestionJournee extends MyPageSecure
 		// $texte = '';
 		
 		$sql1 = "SELECT m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison 
-			FROM gickp_Matchs m, gickp_Journees j 
+			FROM kp_match m, kp_journee j 
 			WHERE m.Id = ? 
 			AND m.Id_journee = j.Id 
 			AND m.Validation <> 'O' 
@@ -1547,13 +1547,13 @@ class GestionJournee extends MyPageSecure
 				OR m.ScoreA IS NULL) "; 
 		$result1 = $myBdd->pdo->prepare($sql1);
 
-		$sql2 = "UPDATE gickp_Matchs 
+		$sql2 = "UPDATE kp_match 
 			SET Id_equipeA = 0, Id_equipeB = 0, 
 			Arbitre_principal = -1, Arbitre_secondaire = -1 
 			WHERE Id = ? ";
 		$result2 = $myBdd->pdo->prepare($sql2);
 
-		$sql3 = "DELETE FROM gickp_Matchs_Joueurs 
+		$sql3 = "DELETE FROM kp_match_joueur 
 		WHERE Id_match = ? ";
 		$result3 = $myBdd->pdo->prepare($sql3);
 
@@ -1602,7 +1602,7 @@ class GestionJournee extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "UPDATE gickp_Matchs 
+			$sql = "UPDATE kp_match 
 				SET Id_journee = ? 
 				WHERE Id = ? 
 				AND Validation != 'O' ";

@@ -71,8 +71,8 @@ class FeuilleStats extends MyPage {
                 $NomStat = 'Top scorers';
                 $sql  = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, a.Prenom, 
                     a.Sexe, b.Numero, f.Libelle Equipe, COUNT(*) Buts 
-                    FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, 
-                    gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_licence a, kp_match_detail b, kp_match c, 
+                    kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
                     AND b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
@@ -101,8 +101,8 @@ class FeuilleStats extends MyPage {
             case 'Attaque' :
                 $NomStat = 'Best attack';
                 $sql  = "SELECT d.Code_competition Competition, f.Libelle Equipe, COUNT(*) Buts 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -125,8 +125,8 @@ class FeuilleStats extends MyPage {
             case 'Defense' :
                 $NomStat = 'Best defense';
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, COUNT(*) Buts 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -153,8 +153,8 @@ class FeuilleStats extends MyPage {
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
                     SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
-                    FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, gickp_Matchs c, 
-                    gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_licence a, kp_match_detail b, kp_match c, 
+                    kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
                     AND b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
@@ -188,8 +188,8 @@ class FeuilleStats extends MyPage {
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
                     SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -218,8 +218,8 @@ class FeuilleStats extends MyPage {
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
                     SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -247,8 +247,8 @@ class FeuilleStats extends MyPage {
                     a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
                         IF(b.Id_evt_match='R',4,0)))) Fairplay 
-                    FROM gickp_Liste_Coureur a, gickp_Matchs_Detail b, 
-                    gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_licence a, kp_match_detail b, 
+                    kp_match c, kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
                     AND b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
@@ -279,8 +279,8 @@ class FeuilleStats extends MyPage {
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
                         IF(b.Id_evt_match='R',4,0)))) Fairplay 
-                    FROM gickp_Matchs_Detail b, gickp_Matchs c, gickp_Journees d, 
-                    gickp_Competitions_Equipes f 
+                    FROM kp_match_detail b, kp_match c, kp_journee d, 
+                    kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
                     AND c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
@@ -303,13 +303,13 @@ class FeuilleStats extends MyPage {
             case 'Arbitrage' :
                 $NomStat = 'Referees stats';
 				$sql = "SELECT j.Code_competition Competition, a.Matric Licence, lc.Nom, 
-                    lc.Prenom, lc.Sexe, c.Code Code_club, c.Libelle Club, a.Arb, a.niveau, 
-                    a.saison, a.Livret, 
+                    lc.Prenom, lc.Sexe, c.Code Code_club, c.Libelle Club, a.arbitre, a.niveau, 
+                    a.saison, a.livret, 
                     SUM(IF(m.Matric_arbitre_principal=a.Matric,1,0)) principal, 
                     SUM(IF(m.Matric_arbitre_secondaire=a.Matric,1,0)) secondaire, 
                     COUNT(*) Total 
-                    FROM gickp_Liste_Coureur lc, gickp_Arbitre a, gickp_Club c, 
-                    gickp_Matchs m, gickp_Journees j 
+                    FROM kp_licence lc, kp_arbitre a, kp_club c, 
+                    kp_match m, kp_journee j 
                     WHERE 1 
                     AND a.Matric = lc.Matric 
                     AND c.Code = lc.Numero_club 
@@ -341,7 +341,7 @@ class FeuilleStats extends MyPage {
                         OR (c.Arbitre_principal LIKE CONCAT('%',f.Libelle,')%')),1,0)) principal, 
                     SUM(IF((c.Arbitre_secondaire=f.Libelle) 
                         OR (c.Arbitre_secondaire LIKE CONCAT('%',f.Libelle,')%')),1,0)) secondaire 
-                    FROM gickp_Matchs c, gickp_Journees d, gickp_Competitions_Equipes f 
+                    FROM kp_match c, kp_journee d, kp_competition_equipe f 
                     WHERE c.Id_journee = d.Id 
                     AND d.Code_competition = f.Code_compet 
                     AND d.Code_saison = f.Code_saison 
@@ -365,8 +365,8 @@ class FeuilleStats extends MyPage {
                 $NomStat = 'Competitions played in the season';
 				$sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Numero_club, clubs.Libelle Nom_club, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Club clubs 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_club clubs 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND lc.Numero_club = clubs.Code 
@@ -395,8 +395,8 @@ class FeuilleStats extends MyPage {
                 $NomStat = 'Games played by team';
 				$sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -425,8 +425,8 @@ class FeuilleStats extends MyPage {
                     $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs, 
                     lc.Origine, lc.Pagaie_ECA, lc.Etat_certificat_CK, lc.Etat_certificat_APS 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -474,8 +474,8 @@ class FeuilleStats extends MyPage {
                 $NomStat = 'Games played in French championship';
                 $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -503,8 +503,8 @@ class FeuilleStats extends MyPage {
                 $NomStat = 'Games played in French cup';
                 $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
-                    FROM gickp_Matchs_Joueurs mj, gickp_Matchs m, gickp_Journees j, 
-                    gickp_Liste_Coureur lc, gickp_Competitions_Equipes ce 
+                    FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+                    kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
                     AND mj.Capitaine NOT IN ('E','A','X') 
                     AND mj.Id_match = m.Id 
@@ -531,7 +531,7 @@ class FeuilleStats extends MyPage {
             case 'OfficielsJournees' : // OfficielsJournees
                 $NomStat = 'Officials';
                 $sql = "SELECT j.* 
-                    FROM gickp_Journees j 
+                    FROM kp_journee j 
                     WHERE 1 
                     AND j.Code_competition IN ($in) 
                     AND j.Code_saison = ? 
@@ -555,8 +555,8 @@ class FeuilleStats extends MyPage {
                     m.Date_match, m.Heure_match, a.Libelle equipeA, b.Libelle equipeB, 
                     m.Arbitre_principal, m.Arbitre_secondaire, m.Ligne1, m.Ligne2, m.Secretaire, 
                     m.Chronometre, m.Timeshoot 
-                    FROM gickp_Journees j, gickp_Matchs m, gickp_Competitions_Equipes a, 
-                    gickp_Competitions_Equipes b 
+                    FROM kp_journee j, kp_match m, kp_competition_equipe a, 
+                    kp_competition_equipe b 
                     WHERE 1 
                     AND j.Code_competition IN ($in) 
                     AND j.Code_saison = ? 
@@ -574,14 +574,14 @@ class FeuilleStats extends MyPage {
 			case 'ListeArbitres' : // ListeArbitres
                 $NomStat = 'Referee list';
 				$sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Sexe, c.Code Code_club, 
-                    c.Libelle Club, a.Arb, a.niveau, a.saison, a.Livret 
-                    FROM gickp_Arbitre a, gickp_Liste_Coureur lc, gickp_Club c 
+                    c.Libelle Club, a.arbitre, a.niveau, a.saison, a.livret 
+                    FROM kp_arbitre a, kp_licence lc, kp_club c 
                     WHERE 1 
                     AND a.Matric = lc.Matric 
                     AND c.Code = lc.Numero_club 
                     AND a.Matric < 2000000 
-                    AND a.Arb != '' 
-                    ORDER BY a.Arb, a.Niveau, a.Saison, lc.Nom, lc.Prenom 
+                    AND a.arbitre != '' 
+                    ORDER BY a.arbitre, a.Niveau, a.Saison, lc.Nom, lc.Prenom 
                     LIMIT 0,$nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute();
@@ -1004,7 +1004,26 @@ class FeuilleStats extends MyPage {
                     $pdf->Cell(37, 4, $arrayStats[$i]['Timeshoot'], 'B', 1, 'C');
                 }
                 break;
-            }
+                case 'ListeArbitres' :
+                    $pdf->Cell(190, 12, "Stats : Referees", 0, 1, 'C');
+                    $pdf->Ln(3);
+                    $pdf->SetFont('Arial', 'BI', 10);
+                    $pdf->Cell(65, 7, 'Ref.', 'B', 0, 'C');
+                    $pdf->Cell(65, 7, 'Club', 'B', 0, 'C');
+                    $pdf->Cell(18, 7, 'Level', 'B', 0, 'C');
+                    $pdf->Cell(17, 7, 'Season', 'B', 0, 'C');
+                    $pdf->Cell(25, 7, 'Book', 'B', 1, 'C');
+                    $pdf->SetFont('Arial', '', 6);
+                    $k = 0;
+                    for ($i = 0; $i < count($arrayStats); $i++) {
+                        $pdf->Cell(65, 4, $arrayStats[$i]['Nom'] . ' ' . $arrayStats[$i]['Prenom'] . ' (' . $arrayStats[$i]['Matric'] . ')', 0, 0, 'C');
+                        $pdf->Cell(65, 4, $arrayStats[$i]['Club'], 0, 0, 'C');
+                        $pdf->Cell(18, 4, $arrayStats[$i]['arbitre'] . ' ' . $arrayStats[$i]['niveau'], 0, 0, 'C');
+                        $pdf->Cell(17, 4, $arrayStats[$i]['saison'], 0, 0, 'C');
+                        $pdf->Cell(25, 4, $arrayStats[$i]['livret'], 0, 1, 'C');
+                    }
+                    break;
+                }
 
 
         $pdf->Output('Statistics_' . $AfficheStat . '.pdf', 'I');

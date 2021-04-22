@@ -15,7 +15,7 @@ $myBdd = new MyBdd();
 // Chargement
 $q = trim(utyGetGet('q'));
 $sql = "SELECT * 
-	FROM gickp_Competitions 
+	FROM kp_competition 
 	WHERE Code LIKE ? 
 	OR Libelle LIKE ? 
 	GROUP BY Code 

@@ -11,7 +11,7 @@ $voie_max = $voie_min + 9;
 
 $rTV = null;
 $sql = "SELECT * 
-    FROM gickp_Tv 
+    FROM kp_tv 
     WHERE Voie > ? AND Voie <= ?
     AND Url != ''
     ORDER BY Voie
@@ -22,7 +22,7 @@ $rTV = $result->fetch(PDO::FETCH_ASSOC);
 
 if (!isset($rTV['Url']) || $rTV['Url'] == '') {
     $sql = "SELECT * 
-        FROM gickp_Tv 
+        FROM kp_tv 
         WHERE Voie = ?
         ORDER BY Voie DESC
         LIMIT 1 ";

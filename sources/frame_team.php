@@ -34,8 +34,8 @@ class Team extends MyPage
         if ($Team > 0) {
             // Team
             $sql = "SELECT ce.Numero Equipe, ce.Libelle nomEquipe, ce.Code_club, cl.Libelle Club 
-                FROM gickp_Competitions_Equipes ce 
-                LEFT OUTER JOIN gickp_Club cl ON ce.Code_club = cl.Code 
+                FROM kp_competition_equipe ce 
+                LEFT OUTER JOIN kp_club cl ON ce.Code_club = cl.Code 
                 WHERE ce.Id = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($Team));
@@ -104,11 +104,11 @@ class Team extends MyPage
                         SUM(IF(md.Id_evt_match = 'V', 1, 0)) verts,
                         SUM(IF(md.Id_evt_match = 'J', 1, 0)) jaunes,
                         SUM(IF(md.Id_evt_match = 'R', 1, 0)) rouges
-                    FROM gickp_Competitions_Equipes ce
-                    LEFT OUTER JOIN gickp_Competitions_Equipes_Joueurs cej ON ce.Id = cej.Id_equipe
-                    LEFT OUTER JOIN gickp_Journees j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
-                    LEFT OUTER JOIN gickp_Matchs m ON j.Id = m.Id_journee
-                    LEFT OUTER JOIN gickp_Matchs_Detail md ON m.Id = md.Id_match
+                    FROM kp_competition_equipe ce
+                    LEFT OUTER JOIN kp_competition_equipe_joueur cej ON ce.Id = cej.Id_equipe
+                    LEFT OUTER JOIN kp_journee j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
+                    LEFT OUTER JOIN kp_match m ON j.Id = m.Id_journee
+                    LEFT OUTER JOIN kp_match_detail md ON m.Id = md.Id_match
                     WHERE md.Competiteur = cej.Matric
                     AND ce.Numero = ? 
                     AND ce.Code_compet = ? 

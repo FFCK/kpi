@@ -77,7 +77,7 @@ class Classement extends MyPage
 		if (strlen($codeCompet) > 0) {
 			// Classement public				
 			$sql = "SELECT ce.*, c.Code_comite_dep 
-				FROM gickp_Competitions_Equipes ce, gickp_Club c 
+				FROM kp_competition_equipe ce, kp_club c 
 				WHERE ce.Code_compet = ? 
 				AND ce.Code_saison = ? 
 				AND ce.Code_club = c.Code ";

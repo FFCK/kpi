@@ -21,7 +21,7 @@ $value = trim(utyGetPost('value'));
 // Contrôle autorisation journée
 $myBdd->AutorisationMatch($idMatch);
 
-$sql = "UPDATE gickp_Matchs_Joueurs 
+$sql = "UPDATE kp_match_joueur 
 	SET Numero = ? 
 	WHERE Id_match = ? 
 	AND Matric = ? ";

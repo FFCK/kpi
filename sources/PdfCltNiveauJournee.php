@@ -104,9 +104,9 @@ class FeuilleCltNiveauJournee extends MyPage {
             b.Pts_publi, b.J_publi, b.G_publi, b.N_publi, b.P_publi, b.F_publi, 
             b.Plus_publi, b.Moins_publi, b.Diff_publi, b.PtsNiveau_publi, 
             b.CltNiveau_publi, c.Date_debut, c.Lieu 
-            FROM gickp_Competitions_Equipes a, 
-            gickp_Competitions_Equipes_Journee b 
-            JOIN gickp_Journees c ON (b.Id_journee = c.Id) 
+            FROM kp_competition_equipe a, 
+            kp_competition_equipe_journee b 
+            JOIN kp_journee c ON (b.Id_journee = c.Id) 
             WHERE a.Id = b.Id 
             AND c.Code_competition = ? 
             AND c.Code_saison = ? 

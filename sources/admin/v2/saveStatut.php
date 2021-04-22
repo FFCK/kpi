@@ -22,7 +22,7 @@ $matric = (int) $id[1];
 // Contrôle autorisation journée
 $myBdd->AutorisationMatch($idMatch);
 
-$sql  = "UPDATE gickp_Matchs_Joueurs 
+$sql  = "UPDATE kp_match_joueur 
 	SET Capitaine = ? 
 	WHERE Id_match = ? 
 	AND Matric = ? ";

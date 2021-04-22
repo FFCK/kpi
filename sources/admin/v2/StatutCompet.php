@@ -23,7 +23,7 @@ if (!in_array($TypeUpdate, ['Statut', 'Verrou', 'Publication'])) {
 	die('Action non autorisée !');
 }
 
-$sql = "UPDATE gickp_Competitions 
+$sql = "UPDATE kp_competition 
 	SET $TypeUpdate = ? 
 	WHERE Code = ? 
 	AND Code_saison = ? ";
