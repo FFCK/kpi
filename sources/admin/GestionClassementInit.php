@@ -15,26 +15,26 @@ class GestionClassementInit extends MyPageSecure
 		
 		$codeSaison = $myBdd->GetActiveSaison();
 
-		$_SESSION['updatecell_tableName'] = 'gickp_Competitions_Equipes_Init';
+		$_SESSION['updatecell_tableName'] = 'kp_competition_equipe_init';
 		$_SESSION['updatecell_where'] = 'Where Id = ';
 		$_SESSION['updatecell_document'] = 'formClassementInit';
 		
 		
 		$sql = "SELECT Id 
-			FROM gickp_Competitions_Equipes 
+			FROM kp_competition_equipe 
 			WHERE Code_compet = ? 
 			AND Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		while ($row = $result->fetch()) {
 			$sql2 = "SELECT Id 
-				FROM gickp_Competitions_Equipes_Init 
+				FROM kp_competition_equipe_init 
 				WHERE Id = ? ";
 			$result2 = $myBdd->pdo->prepare($sql2);
 			$result2->execute(array($row['Id']));
 			if ($result2->rowCount() == 0) {
 				// Insertion
-				$sql3 = "INSERT INTO gickp_Competitions_Equipes_Init (Id,Clt,Pts,J,G,N,P,F,Plus,Moins,Diff) 
+				$sql3 = "INSERT INTO kp_competition_equipe_init (Id,Clt,Pts,J,G,N,P,F,Plus,Moins,Diff) 
 					VALUES (?, 0,0,0,0,0,0,0,0,0,0) ";
 				$result3 = $myBdd->pdo->prepare($sql3);
 				$result3->execute(array($row['Id']));
@@ -44,7 +44,7 @@ class GestionClassementInit extends MyPageSecure
 	 	// Chargement des Equipes avec leurs valeurs initiales ...
 		$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Clt, b.Pts, b.J, b.G, b.N, 
 			b.P, b.F, b.Plus, b.Moins, b.Diff 
-			FROM gickp_Competitions_Equipes a, gickp_Competitions_Equipes_Init b 
+			FROM kp_competition_equipe a, kp_competition_equipe_init b 
 			WHERE a.Id = b.Id 
 			AND a.Code_compet = ? 
 			AND a.Code_saison = ? 

@@ -14,7 +14,7 @@ $a_json = array();
 $jRow = array();
 
 $sql = "SELECT e.Numero, e.Libelle, e.Code_club, c.Libelle nomClub 
-    FROM gickp_Equipe e, gickp_Club c, gickp_Comite_dep cd 
+    FROM kp_equipe e, kp_club c, kp_cd cd 
     WHERE (UPPER(e.Libelle) LIKE UPPER(:term) 
     OR UPPER(e.Code_club) LIKE UPPER(:term) 
     OR UPPER(c.Libelle) LIKE UPPER(:term)) 

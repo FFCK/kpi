@@ -29,7 +29,7 @@ class Login extends MyPage
             $mel = trim(utyGetPost('Mel'));
             
 			$sql = "SELECT u.* 
-				FROM gickp_Utilisateur u, gickp_Liste_Coureur c 
+				FROM kp_user u, kp_licence c 
 				WHERE u.Code = ? 
 				AND u.Mail = ? 
 				AND u.Code = c.Matric ";
@@ -39,7 +39,7 @@ class Login extends MyPage
 				$row = $result->fetch();
 				$gpwd = Genere_Password(10);
 				//Mise à jour mot de passe
-				$sql = "UPDATE gickp_Utilisateur 
+				$sql = "UPDATE kp_user 
 					SET Pwd = ? 
 					WHERE Code = ? ";
 				$result = $myBdd->pdo->prepare($sql);
@@ -77,7 +77,7 @@ class Login extends MyPage
 		} elseif (utyGetPost('User', false) && utyGetPost('Pwd', false) && utyGetPost('Mode', false) == 'Connexion') {
 			$user = preg_replace( '`^[0]*`', '', $myBdd->RealEscapeString( trim( utyGetPost('User', false) ) ) );
 			$sql = "SELECT u.*, c.Nom, c.Prenom, c.Numero_club 
-				FROM gickp_Utilisateur u, gickp_Liste_Coureur c 
+				FROM kp_user u, kp_licence c 
 				WHERE u.Code = ? 
 				AND u.Code = c.Matric ";
 			$result = $myBdd->pdo->prepare($sql);
@@ -102,7 +102,7 @@ class Login extends MyPage
 					if($Filtre_Evenement != '')
 					{
 						$sql2  = "Select Id_journee ";
-						$sql2 .= "From gickp_Evenement_Journees ";
+						$sql2 .= "From kp_evenement_journee ";
 						$sql2 .= "Where Id_evenement = ";
 						$sql2 .= $Filtre_Evenement;
 						
@@ -127,7 +127,7 @@ class Login extends MyPage
 					$Saison = $myBdd->GetActiveSaison();
 					$sqlFiltreCompetition = utyGetFiltreCompetition('');
 					$sql3 = "SELECT Code 
-						FROM gickp_Competitions 
+						FROM kp_competition 
 						WHERE Code_saison = ? 
 						$sqlFiltreCompetition
 						ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), Code_tour, Code 

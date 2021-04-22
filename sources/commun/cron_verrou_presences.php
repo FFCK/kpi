@@ -7,7 +7,7 @@ include_once('../commun/MyBdd.php');
 $myBdd = new MyBdd();
 $saison = $myBdd->GetActiveSaison();
 $sql = "SELECT DISTINCT(Code_competition) 
-    FROM `gickp_Journees` 
+    FROM `kp_journee` 
     WHERE 1 
     AND Code_saison = ? 
     AND Date_debut > CURDATE() 
@@ -23,7 +23,7 @@ while ($row = $result->fetch()) {
     $codeCompet .= '"' . $row['Code_competition'] . '"';
 }
 if (isset($codeCompet)) {
-    $sql = "UPDATE gickp_Competitions 
+    $sql = "UPDATE kp_competition 
         SET Verrou = 'O' 
         WHERE Code_saison = $saison 
         AND Code IN ($codeCompet) ";
@@ -32,7 +32,7 @@ if (isset($codeCompet)) {
 }
 
 $sql = "SELECT DISTINCT(Code_competition) 
-    FROM `gickp_Journees` 
+    FROM `kp_journee` 
     WHERE 1 
     AND Code_saison = $saison 
     AND Date_fin < CURDATE() 
@@ -48,7 +48,7 @@ while ($row = $result->fetch()) {
     $codeCompet2 .= '"' . $row['Code_competition'] . '"';
 }
 if (isset($codeCompet2)) {
-    $sql = "UPDATE gickp_Competitions 
+    $sql = "UPDATE kp_competition 
         SET Verrou = 'N' 
         WHERE Code_saison = $saison 
         AND Code IN ($codeCompet2) ";

@@ -11,8 +11,8 @@ $sql  = "SELECT DISTINCT c.Code, c.Libelle, c.Coord, c.Postal, c.www, c.email,
     cd.Libelle comitedep, cr.Libelle comitereg, 
     GROUP_CONCAT(CONCAT_WS('|', e.Numero, e.Libelle) 
         ORDER BY e.Libelle ASC SEPARATOR ';') Equipes 
-    FROM gickp_Club c, gickp_Equipe e, 
-    gickp_Comite_dep cd, gickp_Comite_reg cr 
+    FROM kp_club c, kp_equipe e, 
+    kp_cd cd, kp_cr cr 
     WHERE c.Code = e.Code_club 
     AND c.Code_comite_dep = cd.Code 
     AND cd.Code_comite_reg = cr.Code 

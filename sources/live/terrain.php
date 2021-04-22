@@ -43,15 +43,16 @@ class Terrain extends MyPage
 		
 		echo "<h1>Terrain n°$pitch</h1>\n";
 	
-		$cmd  = "SELECT a.Id, a.Terrain, a.Heure_match, a.Heure_fin, a.Statut, b.Code_competition, a.Id_EquipeA, a.Id_EquipeB, c.Libelle LibelleA, d.Libelle LibelleB ";
-		$cmd .= "FROM gickp_Matchs a, gickp_Journees b, gickp_Competitions_Equipes c, gickp_Competitions_Equipes d ";
-		$cmd .= "WHERE a.Id_journee = b.Id ";
-		$cmd .= "And a.Id_EquipeA = c.Id ";
-		$cmd .= "And a.Id_EquipeB = d.Id ";
-		$cmd .= "AND a.Date_match = '2018-04-04' ";
-		$cmd .= "And a.Terrain = $pitch ";
-		$cmd .= "And b.Code_competition In ('CMH', 'CMF', 'CMH21', 'CMF21', 'MCP', 'MCP2') ";
-		$cmd .= "Order By a.Heure_match ";
+		$cmd  = "SELECT a.Id, a.Terrain, a.Heure_match, a.Heure_fin, a.Statut, b.Code_competition, 
+			a.Id_EquipeA, a.Id_EquipeB, c.Libelle LibelleA, d.Libelle LibelleB 
+			FROM kp_match a, kp_journee b, kp_competition_equipe c, kp_competition_equipe d 
+			WHERE a.Id_journee = b.Id 
+			AND a.Id_EquipeA = c.Id 
+			AND a.Id_EquipeB = d.Id 
+			AND a.Date_match = '2018-04-04' 
+			AND a.Terrain = $pitch 
+			AND b.Code_competition IN ('CMH', 'CMF', 'CMH21', 'CMF21', 'MCP', 'MCP2') 
+			ORDER BY a.Heure_match ";
 
 		$tMatch = null;
 		$db->LoadTable($cmd, $tMatch);

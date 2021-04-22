@@ -16,7 +16,7 @@ session_start();
 $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch');
 $idPhase = (int) utyGetPost('idPhase');
-$sql = "UPDATE gickp_Matchs 
+$sql = "UPDATE kp_match 
 	SET Id_journee = ? 
 	WHERE Id = ? 
 	AND Validation != 'O' ";

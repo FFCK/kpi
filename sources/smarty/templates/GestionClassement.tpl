@@ -2,8 +2,8 @@
 			<form method="POST" action="GestionClassement.php" name="formClassement" id="formClassement" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value=''/>
 				<input type='hidden' name='ParamCmd' id='ParamCmd' Value=''/>
-				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Competitions_Equipes'/>
-				<input type='hidden' name='AjaxTableName2' id='AjaxTableName2' Value='gickp_Competitions_Equipes_Journee'/>
+				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='kp_competition_equipe'/>
+				<input type='hidden' name='AjaxTableName2' id='AjaxTableName2' Value='kp_competition_equipe_journee'/>
 				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = '/>
 				<input type='hidden' name='AjaxAnd' id='AjaxAnd' Value='And Id_journee = '/>
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>

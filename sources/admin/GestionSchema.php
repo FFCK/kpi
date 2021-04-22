@@ -85,7 +85,7 @@ class Schema extends MyPageSecure
 		if (strlen($codeCompet) > 0) {
 			// Classement public				
             $sql = "SELECT ce.*, c.Code_comite_dep 
-                FROM gickp_Competitions_Equipes ce, gickp_Club c 
+                FROM kp_competition_equipe ce, kp_club c 
                 WHERE ce.Code_compet = ? 
                 AND ce.Code_saison = ? 
                 AND ce.Code_club = c.Code ";
@@ -129,7 +129,7 @@ class Schema extends MyPageSecure
             if ($event > 0) {
                 $sql = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, 
                     j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement 
-                    FROM gickp_Journees j, gickp_Evenement_Journees ej 
+                    FROM kp_journee j, kp_evenement_journee ej 
                     WHERE ej.Id_journee = j.Id 
                     AND ej.Id_evenement = ? 
                     AND j.Code_competition = ? 
@@ -142,7 +142,7 @@ class Schema extends MyPageSecure
                 $arrayQuery = [];
                 $sql = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, 
                     j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement 
-                    FROM gickp_Journees j 
+                    FROM kp_journee j 
                     WHERE j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? ";
@@ -171,8 +171,8 @@ class Schema extends MyPageSecure
                     cej.PtsNiveau_publi, cej.CltNiveau_publi, j.Phase, j.Etape, j.Nbequipes, 
                     j.Niveau, j.Type, c.Code_comite_dep, j.Date_debut, j.Date_fin, j.Lieu, 
                     j.Departement 
-                    FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Journee cej, 
-                    gickp_Journees j, gickp_Evenement_Journees ej, gickp_Club c 
+                    FROM kp_competition_equipe ce, kp_competition_equipe_journee cej, 
+                    kp_journee j, kp_evenement_journee ej, kp_club c 
                     WHERE ej.Id_journee = j.Id 
                     AND ce.Id = cej.Id 
                     AND cej.Id_journee = j.Id 
@@ -193,8 +193,8 @@ class Schema extends MyPageSecure
                     cej.PtsNiveau_publi, cej.CltNiveau_publi, j.Phase, j.Etape, j.Nbequipes, 
                     j.Niveau, j.Type, c.Code_comite_dep, j.Date_debut, j.Date_fin, j.Lieu, 
                     j.Departement 
-                    FROM gickp_Competitions_Equipes ce, gickp_Competitions_Equipes_Journee cej, 
-                    gickp_Journees j, gickp_Club c 
+                    FROM kp_competition_equipe ce, kp_competition_equipe_journee cej, 
+                    kp_journee j, kp_club c 
                     WHERE ce.Id = cej.Id 
                     AND cej.Id_journee = j.Id 
                     AND ce.Code_club = c.Code 
@@ -242,9 +242,9 @@ class Schema extends MyPageSecure
                     m.ScoreB, m.CoeffA, m.CoeffB, m.Arbitre_principal, m.Arbitre_secondaire, 
                     m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
                     j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut 
-                    FROM gickp_Journees j, gickp_Evenement_Journees ej, gickp_Matchs m 
-                    LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) 
-                    LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) 
+                    FROM kp_journee j, kp_evenement_journee ej, kp_match m 
+                    LEFT OUTER JOIN kp_competition_equipe ce1 ON (m.Id_equipeA = ce1.Id) 
+                    LEFT OUTER JOIN kp_competition_equipe ce2 ON (m.Id_equipeB = ce2.Id) 
                     WHERE ej.Id_journee = j.Id 
                     AND m.Id_journee = j.Id 
                     AND ej.Id_evenement = ? 
@@ -262,9 +262,9 @@ class Schema extends MyPageSecure
                     m.ScoreB, m.CoeffA, m.CoeffB, m.Arbitre_principal, m.Arbitre_secondaire, 
                     m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
                     j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut 
-                    FROM gickp_Journees j, gickp_Matchs m 
-                    LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) 
-                    LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) 
+                    FROM kp_journee j, kp_match m 
+                    LEFT OUTER JOIN kp_competition_equipe ce1 ON (m.Id_equipeA = ce1.Id) 
+                    LEFT OUTER JOIN kp_competition_equipe ce2 ON (m.Id_equipeB = ce2.Id) 
                     WHERE m.Id_journee = j.Id 
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
@@ -299,9 +299,9 @@ class Schema extends MyPageSecure
             $sql = "SELECT j.Id, m.Id_equipeA, m.Id_equipeB, m.Libelle, ce1.Libelle EquipeA, 
                 ce2.Libelle EquipeB, ce1.Numero NumA, ce2.Numero NumB, 
                 ce1.Tirage TirageA, ce2.Tirage TirageB 
-                FROM gickp_Journees j, gickp_Matchs m 
-                LEFT OUTER JOIN gickp_Competitions_Equipes ce1 ON (m.Id_equipeA = ce1.Id) 
-                LEFT OUTER JOIN gickp_Competitions_Equipes ce2 ON (m.Id_equipeB = ce2.Id) 
+                FROM kp_journee j, kp_match m 
+                LEFT OUTER JOIN kp_competition_equipe ce1 ON (m.Id_equipeA = ce1.Id) 
+                LEFT OUTER JOIN kp_competition_equipe ce2 ON (m.Id_equipeB = ce2.Id) 
                 WHERE m.Id_journee = j.Id 
                 AND j.Type = 'C' 
                 AND j.Code_competition = ? 

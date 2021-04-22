@@ -112,7 +112,7 @@ class Details extends MyPage
             // Chargement des Compétitions de l'événement
             $sql = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, 
                 c.Libelle Libelle_compet, c.*, 0 Selected 
-                FROM gickp_Journees j, gickp_Competitions c, gickp_Evenement_Journees ej 
+                FROM kp_journee j, kp_competition c, kp_evenement_journee ej 
                 WHERE 1 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
@@ -149,7 +149,7 @@ class Details extends MyPage
             if (strlen($codeCompet) > 0 && $codeCompet != '*') { 
                 $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
                     ce.Tirage, c.Code_comite_dep  
-                    FROM gickp_Competitions_Equipes ce, gickp_Club c 
+                    FROM kp_competition_equipe ce, kp_club c 
                     WHERE ce.Code_compet = ? 
                     AND ce.Code_saison = ? 
                     AND ce.Code_club = c.Code 
@@ -208,7 +208,7 @@ class Details extends MyPage
             // Chargement des journées
             $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, 
                 c.Libelle Libelle_compet, c.* 
-                FROM gickp_Journees j, gickp_Competitions c 
+                FROM kp_journee j, kp_competition c 
                 WHERE j.Code_competition = ? 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
@@ -238,7 +238,7 @@ class Details extends MyPage
             
             if($idSelJournee != '*') {
                 $sql = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep 
-                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c 
+                    FROM kp_competition_equipe ce, kp_match m, kp_club c 
                     WHERE m.Id_journee = ? 
                     AND ce.Code_club = c.Code 
                     AND (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB) ";
@@ -246,7 +246,7 @@ class Details extends MyPage
                 $result->execute(array($idSelJournee));
             } else {
                 $sql = "SELECT DISTINCT ce.Libelle, ce.Code_club, Numero, c.Code_comite_dep 
-                    FROM gickp_Competitions_Equipes ce, gickp_Matchs m, gickp_Club c 
+                    FROM kp_competition_equipe ce, kp_match m, kp_club c 
                     WHERE ce.Code_compet = ? 
                     AND ce.Code_saison = ? 
                     AND ce.Code_club = c.Code
@@ -278,7 +278,7 @@ class Details extends MyPage
             // Chargement des Compétitions ...
             $sql  = "SELECT j.Id Id_journee, j.Libelle Libelle_journee, j.*, 
                 c.Libelle Libelle_compet, c.* 
-                FROM gickp_Journees j, gickp_Competitions c 
+                FROM kp_journee j, kp_competition c 
                 WHERE 1 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
@@ -315,7 +315,7 @@ class Details extends MyPage
             { 
                 $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
                     ce.Tirage, c.Code_comite_dep  
-                    FROM gickp_Competitions_Equipes ce, gickp_Club c 
+                    FROM kp_competition_equipe ce, kp_club c 
                     WHERE ce.Code_compet = ? 
                     AND ce.Code_saison = ? 
                     AND ce.Code_club = c.Code 

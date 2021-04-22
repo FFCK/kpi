@@ -17,14 +17,14 @@ class GestionEvenement extends MyPageSecure
 		$idEvenement = (int) utyGetSession('idEvenement', -1);
 		
 		// Informations pour SelectionOuiNon ...
-		$_SESSION['tableOuiNon'] = 'gickp_Evenement';
+		$_SESSION['tableOuiNon'] = 'kp_evenement';
 		$_SESSION['whereOuiNon'] = "Where Id = ";
 
 		// Chargement des Evenements
 		$arrayEvenement = array();
 		
 		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication 
-			FROM gickp_Evenement 
+			FROM kp_evenement 
 			ORDER BY Date_debut DESC, Libelle DESC ";	 
 	
 		$arrayEvenement = array();
@@ -73,7 +73,7 @@ class GestionEvenement extends MyPageSecure
 
 		$myBdd = $this->myBdd;
 
-		$sql  = "INSERT INTO gickp_Evenement (Libelle, Lieu, Date_debut, Date_fin) 
+		$sql  = "INSERT INTO kp_evenement (Libelle, Lieu, Date_debut, Date_fin) 
 			VALUES (?,?,?,?) ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($libelle, $lieu, utyDateFrToUs($datedebut), utyDateFrToUs($datefin)));
@@ -95,7 +95,7 @@ class GestionEvenement extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "DELETE FROM gickp_Evenement 
+			$sql = "DELETE FROM kp_evenement 
 				WHERE Id IN ($in) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayParam);
@@ -117,7 +117,7 @@ class GestionEvenement extends MyPageSecure
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
 		
 		$myBdd = $this->myBdd;
-		$sql = "UPDATE gickp_Evenement 
+		$sql = "UPDATE kp_evenement 
 			SET Publication = ? 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -143,7 +143,7 @@ class GestionEvenement extends MyPageSecure
 		$myBdd = $this->myBdd;
 
 		$sql  = "SELECT Libelle, Lieu, Date_debut, Date_fin, Publication 
-			FROM gickp_Evenement 
+			FROM kp_evenement 
 			WHERE Id = ? ";		
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idEvenement));
@@ -170,7 +170,7 @@ class GestionEvenement extends MyPageSecure
 		
 		$myBdd = $this->myBdd;
 
-		$sql = "UPDATE gickp_Evenement 
+		$sql = "UPDATE kp_evenement 
 			SET Libelle = ?, Lieu = ?, Date_debut = ?, Date_fin = ?
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);

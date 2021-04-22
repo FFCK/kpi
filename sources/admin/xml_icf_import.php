@@ -109,7 +109,7 @@ $listIcf = [];
 $nomsIcf = [];
 $matricIcf = [];
 $sql = "SELECT DISTINCT(Reserve), Nom, Prenom, Naissance, Matric 
-    FROM gickp_Liste_Coureur 
+    FROM kp_licence 
     WHERE Reserve != '0' 
     AND Reserve IS NOT NULL 
     AND Matric > 2000000 ";
@@ -134,7 +134,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
 
             // Le compétiteur existe déjà
             if (in_array($participant['Code'], $listIcf)) {
-                $sql = "UPDATE gickp_Liste_Coureur 
+                $sql = "UPDATE kp_licence 
                     SET Origine = ?, 
                     Nom = ?, Prenom = ?, Sexe = ?, Naissance = ?, Numero_club = ?, 
                     Numero_comite_dept = ?, Numero_comite_reg = '98' 
@@ -147,7 +147,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                     $participant['Organisation'], $participant['Code']
                 ));
 
-                $sql = "UPDATE gickp_Competitions_Equipes_Joueurs 
+                $sql = "UPDATE kp_competition_equipe_joueur 
                     SET Nom = ?, Prenom = ?, Sexe = ? 
                     WHERE Matric = ? ";
                 $result = $myBdd->pdo->prepare($sql);
@@ -160,7 +160,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
             // Le compétiteur n'existe pas encore
             } else {
                 $matricJoueur = $myBdd->GetNextMatricLicence();
-                $sql = "INSERT INTO gickp_Liste_Coureur 
+                $sql = "INSERT INTO kp_licence 
                     (Matric, Origine, Nom, Prenom, Sexe, Naissance, Numero_club, 
                     Numero_comite_dept, Numero_comite_reg, Reserve) 
                     VALUES(?, ?, ?, ?, ?, ?, ?, ?, '98', ?) ";

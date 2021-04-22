@@ -6,7 +6,7 @@
 				<input type='hidden' name='idEquipeB' id='idEquipeB' Value=''/>
 				<input type='hidden' name='Pub' id='Pub' Value=''/>
 				<input type='hidden' name='Verrou' id='Verrou' Value=''/>
-				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Matchs'/>
+				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='kp_match'/>
 				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = '/>
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>
 				

@@ -29,8 +29,8 @@ if ($and != '' && $key2 != '') {
 	$andText = '';
 }
 if (!in_array($tableName, 
-	['gickp_Journees', 'gickp_Competitions_Equipes', 'gickp_Competitions_Equipes_Init', 
-	'gickp_Competitions_Equipes_Joueurs', 'gickp_Matchs', 'gickp_Matchs_Joueurs', 'gickp_Competitions_Equipes_Journee']
+	['kp_journee', 'kp_competition_equipe', 'kp_competition_equipe_init', 
+	'kp_competition_equipe_joueur', 'kp_match', 'kp_match_joueur', 'kp_competition_equipe_journee']
 	)) {
 		error_log("Erreur 400a : UPDATE $tableName SET $typeValeur = $valeur $where $key $andText", 0);
 		die ('Error 400');

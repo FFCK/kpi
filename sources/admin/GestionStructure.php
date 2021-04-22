@@ -24,7 +24,7 @@ class GestionStructure extends MyPageSecure
 		$arrayComiteReg = array();
 
 		$sql = "SELECT Code, Libelle 
-			FROM gickp_Comite_reg 
+			FROM kp_cr 
 			ORDER BY Code ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
@@ -38,7 +38,7 @@ class GestionStructure extends MyPageSecure
 		$arrayComiteDep = array();
 
 		$sql = "SELECT Code, Libelle 
-			FROM gickp_Comite_dep 
+			FROM kp_cd 
 			ORDER BY Code ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
@@ -53,7 +53,7 @@ class GestionStructure extends MyPageSecure
 		$mapParam2 = '';
 
 		$sql = "SELECT DISTINCT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email 
-			FROM gickp_Club c, gickp_Equipe e 
+			FROM kp_club c, kp_equipe e 
 			WHERE c.Code = e.Code_club 
 			ORDER BY c.Code ";	 
 		$result = $myBdd->pdo->prepare($sql);
@@ -111,7 +111,7 @@ class GestionStructure extends MyPageSecure
 		$arrayClubInt = array();
 
 		$sql = "SELECT DISTINCT c.Code, c.Libelle 
-			FROM gickp_Club c, gickp_Comite_dep cd 
+			FROM kp_club c, kp_cd cd 
 			WHERE c.Code_comite_dep = cd.Code 
 			AND cd.Code_comite_reg = '98' 
 			ORDER BY c.Code_comite_dep, c.Code ";	 
@@ -137,7 +137,7 @@ class GestionStructure extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "INSERT INTO gickp_Comite_dep (Code, Libelle, Code_comite_reg) 
+			$sql = "INSERT INTO kp_cd (Code, Libelle, Code_comite_reg) 
 				VALUES (?, ?, ?) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($codeCD, $libelleCD, $comiteReg));
@@ -173,14 +173,14 @@ class GestionStructure extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "INSERT INTO gickp_Club 
+			$sql = "INSERT INTO kp_club 
 				(Code, Libelle, Code_comite_dep, Coord, Postal, www, email) 
 				VALUES (?, ?, ?, ?, ?, ?, ?) ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($codeClub, $libelleClub, $comiteDep, $coord2, $postal2, $www2, $email2));
 			
 			if ($libelleEquipe2 != '') {
-				$sql = "INSERT INTO gickp_Equipe (Code_club, Libelle) 
+				$sql = "INSERT INTO kp_equipe (Code_club, Libelle) 
 					VALUES ('".$codeClub."', '".$libelleEquipe2."')";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeClub, $libelleEquipe2));
@@ -191,10 +191,10 @@ class GestionStructure extends MyPageSecure
 				if ($affectEquipe != '') {
 					if ((int) $selectValue == 0)
 						return;
-					$sql = "INSERT INTO gickp_Competitions_Equipes 
+					$sql = "INSERT INTO kp_competition_equipe 
 						(Code_compet, Code_saison, Libelle, Code_club, Numero) 
 						SELECT ?, ?, Libelle, Code_club, Numero 
-						FROM gickp_Equipe 
+						FROM kp_equipe 
 						WHERE Numero = ? ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($affectEquipe, $codeSaison, $selectValue));
@@ -228,7 +228,7 @@ class GestionStructure extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "UPDATE gickp_Club 
+			$sql = "UPDATE kp_club 
 				SET Coord = ?, Coord2 = ?, Postal = ?, 
 				www = ?, email = ? 
 				WHERE Code = ? ";

@@ -3,7 +3,7 @@
 			<form method="POST" action="GestionMatchEquipeJoueur.php" name="formMatchEquipeJoueur" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' Value=''/>
 				<input type='hidden' name='ParamCmd' Value=''/>
-				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='gickp_Matchs_Joueurs'/>
+				<input type='hidden' name='AjaxTableName' id='AjaxTableName' Value='kp_match_joueur'/>
 				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Matric = '/>
 				<input type='hidden' name='AjaxAnd' id='AjaxAnd' Value='And Id_match = '/>
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}'/>

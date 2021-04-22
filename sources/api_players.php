@@ -14,7 +14,7 @@ if($saison > 2000 && $competitions != '') {
     $result_array = [];
     $sql = "SELECT lc.Matric Licence, lc.Nom 'Name', lc.Prenom 'First name', 
         j.Code_competition Compet, m.Numero_ordre Game, m.Date_match 'Date', m.Heure_match 'Time' 
-        FROM `gickp_Matchs_Joueurs` mj, gickp_Matchs m, gickp_Journees j, gickp_Liste_Coureur lc
+        FROM `kp_match_joueur` mj, kp_match m, kp_journee j, kp_licence lc
         WHERE mj.Matric = lc.Matric
         AND mj.Id_match = m.Id
         AND m.Id_journee = j.Id

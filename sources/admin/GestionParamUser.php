@@ -14,8 +14,8 @@ class GestionParamUser extends MyPageSecure
 		
 		// Chargement des infos Utilisateur
 		$sql = "SELECT u.*, l.*, c.Libelle Nom_club 
-			FROM gickp_Utilisateur u, gickp_Liste_Coureur l 
-			LEFT JOIN gickp_Club c ON (l.Numero_club = c.Code) 
+			FROM kp_user u, kp_licence l 
+			LEFT JOIN kp_club c ON (l.Numero_club = c.Code) 
 			WHERE u.Code = l.Matric 
 			AND l.Matric = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -58,7 +58,7 @@ class GestionParamUser extends MyPageSecure
 			$myBdd->pdo->beginTransaction();
 
 			// Mise à jour des infos Utilisateur
-			$sql = "UPDATE gickp_Utilisateur 
+			$sql = "UPDATE kp_user 
 				SET Mail = ?, 
 				Fonction = ?, 
 				Tel = ? 
@@ -91,7 +91,7 @@ class GestionParamUser extends MyPageSecure
 			$myBdd = new MyBdd();
 			
 			$sql = "SELECT Pwd 
-				FROM gickp_Utilisateur 
+				FROM kp_user 
 				WHERE Code = ? ";	 
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(utyGetSession('User')));
@@ -101,7 +101,7 @@ class GestionParamUser extends MyPageSecure
 			
 			if (md5($pass1) == $real_pass) {
 				// Mise à jour du mot de passe
-				$sql = "UPDATE gickp_Utilisateur 
+				$sql = "UPDATE kp_user 
 					SET Pwd = ? 
 					WHERE Code = ? ";	 
 				$result = $myBdd->pdo->prepare($sql);
