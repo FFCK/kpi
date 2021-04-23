@@ -47,3 +47,16 @@ services:
         ports:
             - 1025:1025
             - 1080:1080
+    node:
+        image: node:latest
+        build:
+          context: ../
+          dockerfile: ./docker/node/Dockerfile
+        ports:
+          - "8000:8000"
+          - "9000:8080"
+        volumes:
+          - ../sources:/app
+        links:
+          - webphp7
+    

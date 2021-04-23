@@ -52,3 +52,12 @@ cd docker
 docker-compose up
 
 alimenter la base de donnée my_database
+
+___NODE___
+
+docker exec -it docker_node_1 bash
+
+npm install
+
+npm run watch
+http://localhost:8087/dist/
