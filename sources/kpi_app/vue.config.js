@@ -7,9 +7,7 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map',
   },
-
   publicPath: '',
-
   pwa: {
     theme_color: "#f15a2a",
     background_color: "#4a4a4a",
