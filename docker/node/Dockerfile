@@ -16,7 +16,7 @@ EXPOSE 8000
 EXPOSE 8080
 
 # copie 'package.json' et 'package-lock.json' (si disponible)
-COPY sources/package.json ./
+COPY sources/kpi_app/package.json ./
 
 # lance le serveur
 CMD [ "npm", "run", "http-server"]
