@@ -56,7 +56,7 @@ services:
           - "8000:8000"
           - "9000:8080"
         volumes:
-          - ../sources:/app
+          - ../sources/kpi_app:/app
         user: "${UID}:${GID}"
         links:
           - webphp7
