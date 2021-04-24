@@ -57,6 +57,7 @@ services:
           - "9000:8080"
         volumes:
           - ../sources:/app
+        user: "${UID}:${GID}"
         links:
           - webphp7
     
