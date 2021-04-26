@@ -29,16 +29,21 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/about">
-                            About
+                        <router-link class="nav-link" to="/game">
+                            Game
                         </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/link">
-                            Link
+                        <router-link class="nav-link" to="/stats">
+                            Stats
                         </router-link>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="/scrutineering">
+                            Scrutineering
+                        </router-link>
+                    </li>
+                    <!-- <li class="nav-item dropdown">
                         <a
                             class="nav-link dropdown-toggle"
                             href="#"
@@ -68,7 +73,7 @@
                                 >
                             </li>
                         </ul>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </nav>
@@ -93,7 +98,7 @@
     color: #2c3e50;
 }
 
-.navbar a.router-link-exact-active {
+.navbar a.nav-link.router-link-active {
     color: #ffffff;
 }
 </style>
