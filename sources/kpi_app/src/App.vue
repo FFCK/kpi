@@ -3,7 +3,9 @@
         <Nav />
 
         <br class="mt-4 mb-3" />
-        <router-view />
+        <transition name="fade">
+          <router-view />
+        </transition>
     </div>
 </template>
 
@@ -30,5 +32,16 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 </style>
