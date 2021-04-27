@@ -1,0 +1,9 @@
+{
+    "message": "salut i18n !!",
+    "nav": {
+        "Games": "Matchs",
+        "Game_report": "Feuille de marque",
+        "Stats": "Stats",
+        "Scrutineering": "Vérifications"
+    }
+}

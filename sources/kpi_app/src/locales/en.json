@@ -1,0 +1,9 @@
+{
+  "message": "hello i18n !!",
+  "nav": {
+      "Games": "Games",
+      "Game_report": "Game report",
+      "Stats": "Stats",
+      "Scrutineering": "Scrutineering"
+  }
+}
