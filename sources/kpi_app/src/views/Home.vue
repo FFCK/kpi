@@ -1,13 +1,14 @@
 <template>
   <div class="container-sm">
+    <div class="locale-switcher">🌐 {{$i18n.locale}}</div>
     <div class="row">
       <div class="col-md-4">
         <div class="card mb-2">
           <div class="card-body">
             <h5 class="card-title">
-              Games
+              {{ $t("nav.Games") }}
             </h5>
-            <p class="card-text">Game report</p>
+            <p class="card-text">{{ $t("nav.Game_report") }}</p>
             <button class="btn btn-primary" @click="changePage('Game')">
               Go
             </button>
