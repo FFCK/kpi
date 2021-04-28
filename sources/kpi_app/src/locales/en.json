@@ -1,9 +1,12 @@
 {
-  "message": "hello i18n !!",
+  "message": "Welcome on KPI-App !",
   "nav": {
-      "Games": "Games",
-      "Game_report": "Game report",
-      "Stats": "Stats",
-      "Scrutineering": "Scrutineering"
+    "Home": "Home",
+    "Games": "Games",
+    "Game_report": "Game report",
+    "Stats": "Stats",
+    "Stats_report": "Stats report",
+    "Scrutineering": "Scrutineering",
+    "Scrut_report": "Equipment scrutineering"
   }
 }
