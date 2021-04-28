@@ -1,7 +1,7 @@
 <template>
   <div class="container-sm">
-    <h1>Game</h1>
-    <HelloWorld msg="Bonjour à toutes !"/>
+    <h1>{{ $t('nav.Games') }}</h1>
+    <HelloWorld :msg="$t('message')" />
   </div>
 </template>
 

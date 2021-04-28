@@ -2,9 +2,8 @@
     <div>
         <Navbar />
 
-        <br class="mt-4 mb-3" />
-        <router-view v-slot="{ Component }">
-          <transition name="fade">
+        <router-view class="mt-5" v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
             <component :is="Component" />
           </transition>
         </router-view>
