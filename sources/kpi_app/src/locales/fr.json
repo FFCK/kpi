@@ -1,9 +1,12 @@
 {
-    "message": "salut i18n !!",
+    "message": "Bienvenue sur KPI-App !",
     "nav": {
+        "Home": "Accueil",
         "Games": "Matchs",
         "Game_report": "Feuille de marque",
         "Stats": "Stats",
-        "Scrutineering": "Vérifications"
+        "Stats_report": "Stats du match",
+        "Scrutineering": "Vérifications",
+        "Scrut_report": "Vérifications techniques des équipements"
     }
 }

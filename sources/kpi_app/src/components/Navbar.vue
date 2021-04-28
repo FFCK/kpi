@@ -19,22 +19,22 @@
             <ul class="navbar-nav mr-auto my-2 my-lg-0 navbar-nav-scroll">
                 <li class="nav-item">
                     <router-link class="nav-link" to="/">
-                        Home<span class="sr-only">(current)</span>
+                        {{ $t("nav.Home") }}<span class="sr-only">(current)</span>
                     </router-link>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link" to="/game">
-                        Game
+                        {{ $t("nav.Games") }}
                     </router-link>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link" to="/stats">
-                        Stats
+                        {{ $t("nav.Stats") }}
                     </router-link>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link" to="/scrutineering">
-                        Scrutineering
+                        {{ $t("nav.Scrutineering") }}
                     </router-link>
                 </li>
                 <!-- <li class="nav-item dropdown">
@@ -48,23 +48,16 @@
                         >
                             Link
                         </a>
-                        <ul
-                            class="dropdown-menu"
-                            aria-labelledby="navbarScrollingDropdown"
-                        >
+                        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                             <li>
                                 <a class="dropdown-item" href="#">Action</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#"
-                                    >Another action</a
-                                >
+                                <a class="dropdown-item" href="#">Another action</a>
                             </li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
-                                <a class="dropdown-item" href="#"
-                                    >Something else here</a
-                                >
+                                <a class="dropdown-item" href="#">Something else here</a>
                             </li>
                         </ul>
                     </li> -->
@@ -80,7 +73,7 @@
 import LocaleSwitcher from '@/components/LocaleSwitcher'
 
 export default {
-  name: 'Nav',
+  name: 'Navbar',
   components: { LocaleSwitcher }
 }
 </script>

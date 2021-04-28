@@ -1,6 +1,6 @@
 <template>
   <div class="container-sm">
-    <div class="locale-switcher">🌐 {{$i18n.locale}}</div>
+    {{ $t("message") }}
     <div class="row">
       <div class="col-md-4">
         <div class="card mb-2">
@@ -19,9 +19,9 @@
         <div class="card mb-2">
           <div class="card-body">
             <h5 class="card-title">
-              Stats
+              {{ $t("nav.Stats") }}
             </h5>
-            <p class="card-text">Stats report</p>
+            <p class="card-text">{{ $t("nav.Stats_report") }}</p>
             <button class="btn btn-primary" @click="changePage('Stats')">
               Go
             </button>
@@ -32,9 +32,9 @@
         <div class="card mb-2">
           <div class="card-body">
             <h5 class="card-title">
-              Scrutineering
+              {{ $t("nav.Scrutineering") }}
             </h5>
-            <p class="card-text">Game report</p>
+            <p class="card-text">{{ $t("nav.Scrut_report") }}</p>
             <button class="btn btn-primary" @click="changePage('Scrutineering')">
               Go
             </button>
