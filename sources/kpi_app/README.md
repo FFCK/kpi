@@ -1,24 +1,21 @@
-# monprojet
+__KPI APP (NODE)__
 
-## Project setup
-```
+UID=${UID} GID=${GID} docker-compose up
+
+docker exec --user $UID -it docker_node_1 sh
+
+cd kpi_app
+
 npm install
-```
 
-### Compiles and hot-reloads for development
-```
+### DEV
 npm run serve
-```
+http://localhost:9000/#/
 
-### Compiles and minifies for production
-```
+### UI
+vue ui --headless --port 8000 --host 0.0.0.0
+http://0.0.0.0:8000
+
+### PROD
 npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+http://localhost:8087/kpi_app/dist/#/
