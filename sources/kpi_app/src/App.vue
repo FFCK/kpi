@@ -1,20 +1,22 @@
 <template>
     <div>
-        <Nav />
+        <Navbar />
 
         <br class="mt-4 mb-3" />
-        <transition name="fade">
-          <router-view />
-        </transition>
+        <router-view v-slot="{ Component }">
+          <transition name="fade">
+            <component :is="Component" />
+          </transition>
+        </router-view>
     </div>
 </template>
 
 <script>
-import Nav from '@/components/Nav'
+import Navbar from '@/components/Navbar'
 
 export default {
   components: {
-    Nav
+    Navbar
   }
 }
 </script>
