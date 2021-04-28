@@ -2,7 +2,7 @@
     <div>
         <Navbar />
 
-        <router-view class="mt-5" v-slot="{ Component }">
+        <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
             <component :is="Component" />
           </transition>
@@ -26,6 +26,10 @@ export default {
 @import "~@fortawesome/fontawesome-free/css/all.css";
 
 @import "./assets/styles/app.scss";
+
+body {
+    padding-top: 60px;
+}
 
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
