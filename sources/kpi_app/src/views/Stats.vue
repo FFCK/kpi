@@ -1,6 +1,6 @@
 <template>
   <div class="container-sm">
-    <h1>Stats</h1>
+    <h1>{{ $t('nav.Stats') }}</h1>
     <span class="fas fa-chart-bar"></span>
   </div>
 </template>

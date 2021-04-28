@@ -1,6 +1,6 @@
 <template>
   <div class="container-sm">
-    <h1>Scrutineering</h1>
+    <h1>{{ $t('nav.Scrutineering') }}</h1>
   </div>
 </template>
 

@@ -37,6 +37,11 @@
                         {{ $t("nav.Scrutineering") }}
                     </router-link>
                 </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/about">
+                        {{ $t("nav.About") }}
+                    </router-link>
+                </li>
                 <!-- <li class="nav-item dropdown">
                         <a
                             class="nav-link dropdown-toggle"
