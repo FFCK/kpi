@@ -43,21 +43,28 @@
       </div>
     </div>
 
-    <div class="mt-1">
+    <div class="my-1">
       <img alt="Vue logo" src="../assets/logo.png" width="100" height="100">
     </div>
+
+    <button class="btn btn-warning" @click="testDB">Test Idb</button>
 
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import { demo16 } from '@/services/idb'
 
 export default {
   name: 'Home',
   methods: {
     changePage (pageName) {
       this.$router.push({ name: pageName })
+    },
+    testDB () {
+      demo16()
+      console.log('OK')
     }
   }
 }
