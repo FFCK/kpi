@@ -18,17 +18,17 @@
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav mr-auto my-2 my-lg-0 navbar-nav-scroll">
                 <li class="nav-item">
-                    <router-link class="nav-link" to="/">
+                    <router-link class="nav-link" to="/" @click="collapse">
                         {{ $t("nav.Home") }}<span class="sr-only">(current)</span>
                     </router-link>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link" to="/game">
+                    <router-link class="nav-link" to="/game" @click="collapse">
                         {{ $t("nav.Games") }}
                     </router-link>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link" to="/stats">
+                    <router-link class="nav-link" to="/stats" @click="collapse">
                         {{ $t("nav.Stats") }}
                     </router-link>
                 </li>
@@ -76,15 +76,23 @@
 
 <script>
 import LocaleSwitcher from '@/components/LocaleSwitcher'
+import $ from 'jquery'
 
 export default {
   name: 'Navbar',
-  components: { LocaleSwitcher }
+  components: { LocaleSwitcher },
+  methods: {
+    collapse () {
+      $('.collapse').collapse('toggle')
+    }
+  }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "@/assets/styles/custom.scss";
+
 .navbar a.nav-link.router-link-active {
-    color: #ffffff;
+    color: $orange;
 }
 </style>
