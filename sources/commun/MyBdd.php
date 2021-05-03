@@ -476,6 +476,9 @@ class MyBdd
 				$nbArbitres ++;
 				$count_arbitres ++;
 				$array_arbitres = array_merge($array_arbitres, $temp);
+				if ($nbArbitres == 1 && $nbReq2 == 0) {
+					$this->ImportPCE_Truncate_Juges();
+				}
 				if ($count_arbitres == 300) { // une requête pour 300 MAJ
 					$this->ImportPCE_Query_Juges($count_arbitres, $array_arbitres);
 					$nbReq2 ++;
@@ -683,6 +686,16 @@ class MyBdd
 		);
 	}	 
 
+	function ImportPCE_Truncate_Juges()
+	{
+		$sql_truncate_juges = "DELETE FROM kp_arbitre
+			WHERE Matric < 2000000 ";
+		$return = $this->pdo->query($sql_truncate_juges);
+		if (!$return) {
+			array_push($this->m_arrayinfo, "Erreur SQL ".$this->Error());
+		}
+	}
+
 	function ImportPCE_Query_Juges($count_arbitres, $array_arbitres)
 	{
 		$placeholders = '';
@@ -692,7 +705,7 @@ class MyBdd
 			}
 			$placeholders .= '(?,?,?,?,?,?,?,?,?)';
 		}
-				   
+
 		$sql_juges = "INSERT INTO kp_arbitre 
 			VALUES $placeholders 
 			ON DUPLICATE KEY UPDATE 
