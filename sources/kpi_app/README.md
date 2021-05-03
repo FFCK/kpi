@@ -19,3 +19,6 @@ http://0.0.0.0:8000
 ### PROD
 npm run build
 http://localhost:8087/kpi_app/dist/#/
+
+
+PWA : après le build, dans service-worker.js, première ligne, supprimer le lien Workbox vers le CDN Google !
