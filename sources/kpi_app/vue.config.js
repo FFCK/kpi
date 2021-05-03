@@ -24,7 +24,16 @@ module.exports = {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
       // swSrc is required in InjectManifest mode.
-      swSrc: 'src/service-worker.js',
+      swSrc: 'src/service-worker.js'
+    },
+    manifestOptions: {
+      "name": "KPI Application",
+      "short_name": "KPI_APP",
+      "theme_color": "#f15a2a",
+      "background_color": "#4a4a4a",
+      "display": "standalone",
+      "start_url": ".",
+      "description": "KPI Application for games, stats and scrutineering",
     }
   }
 }
