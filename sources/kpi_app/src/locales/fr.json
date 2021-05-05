@@ -9,5 +9,10 @@
         "Scrutineering": "Vérifications",
         "Scrut_report": "Vérifications techniques des équipements",
         "About": "A propos"
+    },
+    "AddToHomeScreen": {
+      "message": "Ajouter au bureau / à l'écran d'accueil.",
+      "Dismiss": "Refuser",
+      "Install": "Installer"
     }
 }
