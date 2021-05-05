@@ -5,25 +5,23 @@ workbox.setConfig({
   debug: true // Dev / Prod !!
 })
 
-// importScripts('../third_party/workbox/workbox-routing.dev.js')
+console.log('Hello from service-worker.js')
 
-console.log('Hello from service-worker.js');
-
-workbox.core.setCacheNameDetails({prefix: "kpi_app"});
+workbox.core.setCacheNameDetails({ prefix: 'kpi_app' })
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+    self.skipWaiting()
   }
-});
+})
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to
  * requests for URLs in the manifest.
  * See https://goo.gl/S9QRab
  */
-self.__precacheManifest = [].concat(self.__precacheManifest || []);
-workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+self.__precacheManifest = [].concat(self.__precacheManifest || [])
+workbox.precaching.precacheAndRoute(self.__precacheManifest, {})
 
 // Cache js requests with a Network First strategy
 workbox.routing.registerRoute(
@@ -36,11 +34,11 @@ workbox.routing.registerRoute(
     plugins: [
       // Ensure that only requests that result in a 200 status are cached
       new workbox.cacheableResponse.Plugin({
-        statuses: [200],
-      }),
-    ],
-  }),
-);
+        statuses: [200]
+      })
+    ]
+  })
+)
 
 // Cache CSS requests with a Stale While Revalidate strategy
 workbox.routing.registerRoute(
@@ -53,11 +51,11 @@ workbox.routing.registerRoute(
     plugins: [
       // Ensure that only requests that result in a 200 status are cached
       new workbox.cacheableResponse.Plugin({
-        statuses: [200],
-      }),
-    ],
-  }),
-);
+        statuses: [200]
+      })
+    ]
+  })
+)
 
 // Cache images with a Cache First strategy
 workbox.routing.registerRoute(
@@ -70,13 +68,13 @@ workbox.routing.registerRoute(
     plugins: [
       // Ensure that only requests that result in a 200 status are cached
       new workbox.cacheableResponse.Plugin({
-        statuses: [200],
+        statuses: [200]
       }),
       // Don't cache more than 50 items, and expire them after 30 days
       new workbox.expiration.Plugin({
         maxEntries: 50,
-        maxAgeSeconds: 60 * 60 * 24 * 30, // 30 Days
-      }),
-    ],
-  }),
-);
+        maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days
+      })
+    ]
+  })
+)
