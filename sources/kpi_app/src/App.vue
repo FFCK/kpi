@@ -28,7 +28,7 @@ export default {
 <style lang="scss">
 @import "./assets/styles/custom.scss";
 @import "~bootstrap";
-@import "~@fortawesome/fontawesome-free/css/all.css";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
 
 @import "./assets/styles/app.scss";
 
