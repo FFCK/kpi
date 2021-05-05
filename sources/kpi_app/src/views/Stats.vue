@@ -1,7 +1,8 @@
 <template>
   <div class="container-sm">
     <h1>{{ $t('nav.Stats') }}</h1>
-    <span class="fas fa-chart-bar"></span>
+    <span class="bi bi-bar-chart-line h1 text-primary"></span>
+
   </div>
 </template>
 

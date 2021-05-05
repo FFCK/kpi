@@ -1,10 +1,18 @@
 <template>
     <nav class="navbar fixed-bottom navbar-light bg-light" v-if="deferredPrompt">
-        <span class="navbar-text">{{ $t("AddToHomeScreen.message") }}</span>
+        <span class="navbar-text">
+          {{ $t("AddToHomeScreen.message") }}
+        </span>
 
         <form class="form-inline">
-            <button class="btn btn-sm btn-outline-secondary mx-2 my-sm-0" @click="dismiss">{{ $t("AddToHomeScreen.Dismiss") }}</button>
-            <button class="btn btn-sm btn-outline-primary mx-2 my-sm-0" @click="install">{{ $t("AddToHomeScreen.Install") }}</button>
+            <button class="btn btn-sm btn-outline-secondary mx-2 my-sm-0" @click="dismiss">
+              <span class="bi bi-x text-primary"></span>
+              {{ $t("AddToHomeScreen.Dismiss") }}
+            </button>
+            <button class="btn btn-sm btn-outline-primary mx-2 my-sm-0" @click="install">
+              <span class="bi bi-house-fill text-primary"></span>
+              {{ $t("AddToHomeScreen.Install") }}
+            </button>
         </form>
     </nav>
 </template>
