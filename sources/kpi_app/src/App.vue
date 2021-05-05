@@ -7,15 +7,20 @@
             <component :is="Component" />
           </transition>
         </router-view>
+
+        <AddToHomeScreen />
+
     </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
+import AddToHomeScreen from '@/components/AddToHomeScreen.vue'
 
 export default {
   components: {
-    Navbar
+    Navbar,
+    AddToHomeScreen
   }
 }
 </script>

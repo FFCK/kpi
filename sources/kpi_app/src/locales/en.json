@@ -9,5 +9,10 @@
     "Scrutineering": "Scrutineering",
     "Scrut_report": "Equipment scrutineering",
     "About": "About"
+  },
+  "AddToHomeScreen": {
+    "message": "Add to desktop/home screen.",
+    "Dismiss": "Dismiss",
+    "Install": "Install"
   }
 }
