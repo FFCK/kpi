@@ -17,7 +17,6 @@
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.3",
     "@intlify/vue-i18n-loader": "^2.1.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
@@ -30,6 +29,7 @@
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "bootstrap": "^4.6.0",
+    "bootstrap-icons": "^1.4.1",
     "css-loader": "^5.2.4",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
