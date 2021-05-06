@@ -1,14 +1,18 @@
 import { createStore } from 'vuex'
-import user from './modules/user'
+import VuexORM from '@vuex-orm/core'
+import database from '@/store/database'
 
 export default createStore({
   modules: {
-    user
   },
+  // hook rattaché à chaque mutation
+  plugins: [VuexORM.install(database)],
   state: {
   },
-  mutations: {
+  getters: {
   },
   actions: {
+  },
+  mutations: {
   }
 })
