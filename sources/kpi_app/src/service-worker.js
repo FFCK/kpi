@@ -1,3 +1,4 @@
+/* eslint-disable */
 // src/service-worker.js
 importScripts('../third_party/workbox/workbox-sw.js')
 workbox.setConfig({
@@ -7,7 +8,7 @@ workbox.setConfig({
 
 console.log('Hello from service-worker.js')
 
-workbox.core.setCacheNameDetails({ prefix: 'kpi_app' })
+workbox.core.setCacheNameDetails({ prefix: 'kpi_cache' })
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
