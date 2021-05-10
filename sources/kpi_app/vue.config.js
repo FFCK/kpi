@@ -23,8 +23,8 @@ module.exports = {
   pwa: {
     workboxPluginMode: 'InjectManifest',
     workboxOptions: {
-      // swSrc is required in InjectManifest mode.
-      swSrc: 'src/service-worker.js'
+      swSrc: 'src/service-worker.js',
+      importWorkboxFrom: 'disabled'
     },
     manifestOptions: {
       name: 'KPI Application',

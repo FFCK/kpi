@@ -1,33 +1,45 @@
 <template>
-    <div class="container-fluid">
-        <h1>Photos</h1>
+  <div class="container-fluid">
+    Connectivité : <span id="offlineNotification" class="bi bi-reception-4 text-success"></span>
 
-        <div class="row">
-          <button class="col-md-3" @click="getPhotos">getPhotos</button>
-          <button class="col-md-3" @click="hydrate">hydrate</button>
-          <button class="col-md-3" @click="addPhoto">addPhoto</button>
-          <button class="col-md-3" @click="fetchIDB">fetchIDB</button>
-        </div>
+    <h1>Photos</h1>
 
-        <div class="row">
-            <div v-for="photo in Photos" :key="photo.id" class="col-md-4 col-sm-3 col-xs-6 mb-2">
-                <div class="card">
-                    <img :src="photo.thumbnailUrl" class="card-img-top" :alt="photo.thumbnailUrl" />
-                    <div class="card-body">
-                        <h5 class="card-title">Album : {{ photo.albumId }}</h5>
-                        <p class="card-text">
-                            {{ photo.title }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="row">
+      <button class="col-sm-3" @click="getPhotos">getPhotos</button>
+      <button class="col-sm-3" @click="hydrate">hydrate</button>
+      <button class="col-sm-3" @click="addPhoto">addPhoto</button>
+      <button class="col-sm-3" @click="fetchIDB">fetchIDB</button>
+      <button class="col-sm-3" @click="postTest">post</button>
     </div>
+
+    <div class="row">
+      <div
+        v-for="photo in Photos"
+        :key="photo.id"
+        class="col-md-3 col-sm-4 col-xs-6 mb-2"
+      >
+        <div class="card">
+          <img
+            :src="photo.thumbnailUrl"
+            class="card-img-top"
+            :alt="photo.thumbnailUrl"
+          />
+          <div class="card-body">
+            <h5 class="card-title">Album : {{ photo.albumId }}</h5>
+            <p class="card-text">
+              {{ photo.title }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import Photo from '@/store/models/Photo'
 import idbs from '@/services/idbStorage'
+import axios from 'axios'
 
 export default {
   name: 'PhotoList',
@@ -42,16 +54,43 @@ export default {
       Photo.insertOrUpdate({
         data: result
       })
-      console.log('Photos récupérées depuis IndexedDB et insérées dans le store')
+      console.log(
+        'Photos récupérées depuis IndexedDB et insérées dans le store'
+      )
+    },
+    async postTest () {
+      await axios(
+        'https://jsonplaceholder.typicode.com/photos',
+        {
+          method: 'POST',
+          body: {
+            userId: 1,
+            id: 1500,
+            title: 'toto',
+            body: 'toto post'
+          },
+          headers: {
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+          }
+        }
+      ).then(function (res) {
+        console.log('Données transmises', res)
+      }).catch(function (error) {
+        console.log('Erreur lors de l\'envoi des données', error)
+      })
     },
     async getPhotos () {
       try {
-        const result = await Photo.api().get('https://jsonplaceholder.typicode.com/albums/1/photos')
-        console.log('Photos récupérées depuis l\'API et insérées dans le store')
+        const result = await Photo.api().get(
+          'https://jsonplaceholder.typicode.com/albums/1/photos'
+        )
+        console.log("Photos récupérées depuis l'API et insérées dans le store")
         console.log(result)
         result.response.data.forEach(element => {
           idbs.dbPut('Photo', element)
-          console.log('MAJ IndexedDB depuis les résultats de l\'API')
+          console.log("MAJ IndexedDB depuis les résultats de l'API")
         })
       } catch (error) {
         console.error('Erreur: ' + error)
@@ -106,6 +145,17 @@ export default {
   },
   created () {
     this.getPhotosFromIdb()
+
+    navigator.serviceWorker.addEventListener('message', event => {
+      switch (event.data) {
+        case 'OFFLINE':
+          document.querySelector('#offlineNotification').className = 'bi bi-reception-0 text-danger'
+          break
+        case 'ONLINE':
+          document.querySelector('#offlineNotification').className = 'bi bi-reception-4 text-success'
+          break
+      }
+    })
   }
 }
 </script>
