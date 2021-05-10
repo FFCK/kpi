@@ -8,10 +8,14 @@
 import PhotoList from '@/components/PhotoList'
 
 export default {
-  components: { PhotoList },
+  components: {
+    PhotoList
+  },
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  methods: {
   }
 }
 </script>
