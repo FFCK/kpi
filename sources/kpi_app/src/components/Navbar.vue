@@ -33,12 +33,12 @@
                     </router-link>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link" to="/scrutineering">
+                    <router-link class="nav-link" to="/scrutineering" @click="collapse">
                         {{ $t("nav.Scrutineering") }}
                     </router-link>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link" to="/about">
+                    <router-link class="nav-link" to="/about" @click="collapse">
                         {{ $t("nav.About") }}
                     </router-link>
                 </li>
