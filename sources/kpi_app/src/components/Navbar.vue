@@ -70,6 +70,7 @@
             <span class="navbar-nav">
                 <LocaleSwitcher />
             </span>
+            <span class="navbar-text"> {{ version }}</span>
         </div>
     </nav>
 </template>
@@ -81,6 +82,12 @@ import $ from 'jquery'
 export default {
   name: 'Navbar',
   components: { LocaleSwitcher },
+  computed: {
+    version () {
+      return 'v' + process.env.VUE_APP_VERSION
+    }
+  },
+
   methods: {
     collapse () {
       $('.collapse').collapse('toggle')
