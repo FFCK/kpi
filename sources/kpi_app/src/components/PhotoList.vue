@@ -39,7 +39,7 @@
 <script>
 import Photo from '@/store/models/Photo'
 import idbs from '@/services/idbStorage'
-import axios from 'axios'
+import { axiosInstance } from '@/services/axiosInstance'
 
 export default {
   name: 'PhotoList',
@@ -59,21 +59,12 @@ export default {
       )
     },
     async postTest () {
-      await axios(
-        'https://jsonplaceholder.typicode.com/photos',
+      await axiosInstance.post('/photos',
         {
-          method: 'POST',
-          body: {
-            userId: 1,
-            id: 1500,
-            title: 'toto',
-            body: 'toto post'
-          },
-          headers: {
-            Accept: 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json'
-          }
+          userId: 1,
+          id: 1500,
+          title: 'toto',
+          body: 'toto post'
         }
       ).then(function (res) {
         console.log('Données transmises', res)
@@ -83,9 +74,7 @@ export default {
     },
     async getPhotos () {
       try {
-        const result = await Photo.api().get(
-          'https://jsonplaceholder.typicode.com/albums/1/photos'
-        )
+        const result = await Photo.api().get('/albums/1/photos')
         console.log("Photos récupérées depuis l'API et insérées dans le store")
         console.log(result)
         result.response.data.forEach(element => {
@@ -93,7 +82,7 @@ export default {
           console.log("MAJ IndexedDB depuis les résultats de l'API")
         })
       } catch (error) {
-        console.error('Erreur: ' + error)
+        console.log('Erreur: ' + error)
       }
     },
     hydrate () {
