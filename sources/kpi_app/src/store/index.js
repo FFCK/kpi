@@ -5,7 +5,6 @@ import database from '@/store/database'
 export default createStore({
   modules: {
   },
-  // hook rattaché à chaque mutation
   plugins: [VuexORM.install(database)],
   state: {
   },
