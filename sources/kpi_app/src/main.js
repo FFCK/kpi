@@ -5,6 +5,6 @@ import router from './router'
 import store from './store'
 import 'jquery/src/jquery.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
-import i18n from './i18n'
+import i18n from './services/i18n'
 
 createApp(App).use(store).use(router).use(i18n).mount('#app')
