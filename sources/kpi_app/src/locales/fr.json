@@ -14,5 +14,17 @@
       "message": "Ajouter au bureau / à l'écran d'accueil.",
       "Dismiss": "Refuser",
       "Install": "Installer"
+    },
+    "Login": {
+      "Authentication": "Authentification",
+      "Login": "Identifiant",
+      "LoginHelp": "Entrez votre numéro de licence",
+      "Password": "Mot de passe",
+      "Submit": "Connexion",
+      "EmptyMsg": "Identifiant et mot de passe sont requis !",
+      "UnauthorizedMsg": "Connexion refusée !",
+      "ErrorMsg": "Erreur durant l'authentification !",
+      "Welcome": "Bienvenue",
+      "Logout": "Déconnexion"
     }
 }

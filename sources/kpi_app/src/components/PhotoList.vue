@@ -39,7 +39,7 @@
 <script>
 import Photo from '@/store/models/Photo'
 import idbs from '@/services/idbStorage'
-import { axiosInstance } from '@/services/axiosInstance'
+import { api } from '@/services/api'
 
 export default {
   name: 'PhotoList',
@@ -59,7 +59,7 @@ export default {
       )
     },
     async postTest () {
-      await axiosInstance.post('/photos',
+      await api.post('/photos',
         {
           userId: 1,
           id: 1500,
