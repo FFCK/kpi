@@ -1,7 +1,9 @@
 <template>
   <div class="container-sm">
-    {{ $t("message") }}
-    <div class="row">
+
+    <login />
+
+    <div class="row" v-if="user">
       <div class="col-md-4">
         <div class="card mb-2">
           <div class="card-body">
@@ -47,24 +49,26 @@
       <img alt="Vue logo" src="../assets/logo.png" width="100" height="100">
     </div>
 
-    <button class="btn btn-warning" @click="testDB">Test Idb</button>
-
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import { demo16 } from '@/services/idb'
+import Login from '@/components/Login'
+import User from '@/store/models/User'
 
 export default {
   name: 'Home',
+  components: {
+    Login
+  },
+  computed: {
+    user () {
+      return User.query().first()
+    }
+  },
   methods: {
     changePage (pageName) {
       this.$router.push({ name: pageName })
-    },
-    testDB () {
-      demo16()
-      console.log('OK')
     }
   }
 }
