@@ -18,7 +18,7 @@
       </button>
     </div>
 
-    <div v-if="showLoginForm">
+    <div v-if="!user">
       <title-component
         :text="$t('Login.Authentication')"
       />
@@ -62,9 +62,11 @@ import axios from 'axios'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
 import TitleComponent from '@/components/Title'
+import { mixin } from '@/services/mixins'
 
 export default {
   name: 'Login',
+  mixins: [mixin],
   components: {
     TitleComponent
   },
@@ -80,8 +82,7 @@ export default {
         login: '',
         password: ''
       },
-      message: '',
-      showLoginForm: false
+      message: ''
     }
   },
   methods: {
@@ -89,7 +90,7 @@ export default {
       // User absent du store ?
       if (User.query().count() === 0) {
         // Chargement de user depuis IndexedDB
-        const result = await idbs.dbFindAll('user')
+        const result = await idbs.dbGetAll('user')
         // Un seul résultat ?
         if (result.length === 1) {
           // Ajout dans le store
@@ -99,18 +100,12 @@ export default {
         } else {
           // Formulaire de login
           this.logOut()
+          this.input.login = ''
+          this.input.password = ''
         }
       } else {
         // User déjà présent dans le store
       }
-    },
-    async logOut () {
-      // Suppression d'IndexedDB
-      await idbs.dbDelete('user', this.user.id)
-      // Suppression du store
-      User.deleteAll()
-      // Affichage du formulaire
-      this.showLoginForm = true
     },
     async formSubmit () {
       this.message = ''
@@ -136,6 +131,11 @@ export default {
             idbs.dbPut('user', response.data.user)
             // Masquage du formulaire
             this.showLoginForm = false
+            // Enregistrement cookie
+            const date = new Date()
+            date.setTime(date.getTime() + (10 * 24 * 60 * 60 * 1000))
+            const expires = 'expires=' + date.toUTCString()
+            document.cookie = 'kpi_app=' + response.data.user.token + '; ' + expires + '; path=/'
           }).catch((error) => {
             // Erreur dans la réponse ?
             if (error.response) {

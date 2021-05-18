@@ -1,5 +1,4 @@
 /* eslint-disable */
-// src/service-worker.js
 importScripts('../third_party/workbox-v6.1.5/workbox-sw.js')
 workbox.setConfig({
   modulePathPrefix: '../third_party/workbox-v6.1.5',

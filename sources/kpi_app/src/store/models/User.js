@@ -8,7 +8,8 @@ export default class User extends Model {
       id: this.number(0),
       name: this.string(''),
       firstname: this.string(''),
-      profile: this.number('')
+      profile: this.number(''),
+      token: this.string('')
     }
   }
 }
