@@ -43,21 +43,28 @@
           </div>
         </div>
       </div>
+
+      <div class="my-2 mx-auto">
+        <button class="btn btn-secondary" @click="ajaxTest">Test API</button>
+        <div>{{ content }}</div>
+      </div>
     </div>
 
     <div class="my-1">
       <img alt="Vue logo" src="../assets/logo.png" width="100" height="100">
     </div>
-
   </div>
 </template>
 
 <script>
 import Login from '@/components/Login'
 import User from '@/store/models/User'
+import { api } from '@/services/api'
+import { mixin } from '@/services/mixins'
 
 export default {
   name: 'Home',
+  mixins: [mixin],
   components: {
     Login
   },
@@ -66,9 +73,23 @@ export default {
       return User.query().first()
     }
   },
+  data () {
+    return {
+      content: ''
+    }
+  },
   methods: {
     changePage (pageName) {
       this.$router.push({ name: pageName })
+    },
+    async ajaxTest () {
+      await api.get('/index.php')
+        .then((response) => {
+          this.content = response.data
+          if (response.data === 'KO') {
+            this.logOut()
+          }
+        })
     }
   }
 }

@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     async getPhotosFromIdb () {
-      const result = await idbs.dbFindAll('Photo')
+      const result = await idbs.dbGetAll('Photo')
       Photo.insertOrUpdate({
         data: result
       })
@@ -120,9 +120,9 @@ export default {
     },
     async fetchIDB () {
       console.log('Manupulations IndexedDB :')
-      const result = await idbs.dbFindAll('Photo')
+      const result = await idbs.dbGetAll('Photo')
       console.log('FindAll : ', result)
-      const result1 = await idbs.dbFind('Photo', 48)
+      const result1 = await idbs.dbGet('Photo', 48)
       console.log('Find id=48 : ', result1)
       const result2 = await idbs.dbCount('Photo')
       console.log('Count : ' + result2)

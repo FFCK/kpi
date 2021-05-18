@@ -41,7 +41,7 @@ const dbCount = async (storeName) => {
   }
 }
 
-const dbFind = async (storeName, id) => {
+const dbGet = async (storeName, id) => {
   try {
     const db = await dbPromise()
     return db.get(storeName, id)
@@ -50,7 +50,7 @@ const dbFind = async (storeName, id) => {
   }
 }
 
-const dbFindAll = async storeName => {
+const dbGetAll = async storeName => {
   try {
     const db = await dbPromise()
     return db.getAll(storeName)
@@ -83,10 +83,23 @@ const dbDelete = async (storeName, id) => {
   }
 }
 
+const dbClear = async (storeName) => {
+  try {
+    const db = await dbPromise()
+    const tx = db.transaction(storeName, 'readwrite')
+    const store = tx.objectStore(storeName)
+    store.clear()
+    return tx.done
+  } catch (error) {
+    return error
+  }
+}
+
 export default {
   dbCount,
-  dbFind,
-  dbFindAll,
+  dbGet,
+  dbGetAll,
   dbPut,
-  dbDelete
+  dbDelete,
+  dbClear
 }
