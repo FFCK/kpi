@@ -27,7 +27,10 @@ export default {
         .then(result => {
           this.$i18n.locale = result.locale
         }).catch(_ => {
-          this.$i18n.locale = navigator.language.substring(0, 2)
+          const navLanguage = navigator.language.substring(0, 2)
+          if (this.$i18n.availableLocales.includes(navLanguage)) {
+            this.$i18n.locale = navLanguage
+          }
         })
     }
   },
