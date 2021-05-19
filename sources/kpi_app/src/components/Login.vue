@@ -113,7 +113,7 @@ export default {
         // Création du token d'authentification
         const authToken = Buffer.from(`${this.input.login}:${this.input.password}`, 'utf8').toString('base64')
         // Requête API
-        await axios.get('/login.php', {
+        await axios.post('/login', {}, {
           baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8087/api',
           headers: {
             Accept: 'application/json',
