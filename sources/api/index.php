@@ -25,7 +25,6 @@ if ($route[0] === 'staff') {
 	switch ($route[0]) {
 		case 'login':
 			methods(['POST']);
-			include_once('login.php');
 			login($method, $route);
 			break;
 		default:
@@ -35,6 +34,6 @@ if ($route[0] === 'staff') {
 }
 
 function staff_test ($method, $route) {
-	return_200(['Result' => 'OK']);
+	return_200(['result' => 'OK']);
 }
 
