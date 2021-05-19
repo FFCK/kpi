@@ -1,6 +1,6 @@
 <?php
 
-function set_headers() {
+function set_headers ($method) {
 	$origin = $_SERVER['HTTP_ORIGIN'];
 
 	if ($origin === "https://kayak-polo.info" || 
@@ -14,30 +14,15 @@ function set_headers() {
 	header('Access-Control-Allow-Credentials: true');
 	header('Access-Control-Max-Age: 1000');
 	header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, X-Requested-With, Authorization');
-}
 
-function token_verification() {
-	if (isset($_COOKIE["kpi_app"])) {
-		$token = $_COOKIE["kpi_app"];
-		$myBdd = new MyBdd();
-		$sql = "SELECT generated_at
-			FROM kp_user_token 
-			WHERE token = ? ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($token));
-		if ($result->rowCount() == 1) {
-			$row = $result->fetch();
-            $date = date_create($row["generated_at"]);
-            date_add($date, date_interval_create_from_date_string('10 days'));
-			if ($date >= date_create()) {
-				return true;
-			}
-		}
+	if ($method === 'OPTIONS') {
+		http_response_code(200);
+		exit;
 	}
-	return false;
 }
 
-function user_authentication($purifier) {
+function user_authentication () {
+	global $purifier;
 	if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 		$user = preg_replace( '`^[0]*`', '', $purifier->purify( trim( $_SERVER["PHP_AUTH_USER"] ) ) );
 		$myBdd = new MyBdd();
@@ -60,7 +45,6 @@ function user_authentication($purifier) {
 					'token' => $token
 				];
 
-
 				$sql2 = "INSERT INTO kp_user_token (user, token, generated_at)
 					VALUES (:user, :token, NOW()) 
 					ON DUPLICATE KEY UPDATE token = VALUES(token), generated_at = NOW() ";
@@ -70,7 +54,7 @@ function user_authentication($purifier) {
 					':token' => $token
 				]);
 				if (!$return2) {
-					return false;
+					return_401 ();
 				}
 
 				return [
@@ -79,5 +63,63 @@ function user_authentication($purifier) {
 			}
 		}
 	}
-	return false;
+	return_401 ();
+}
+
+function login ($method, $route) {
+	$authentication_result = user_authentication();
+	return_200($authentication_result);
+}
+
+function token_verification () {
+	if (isset($_COOKIE["kpi_app"])) {
+		$token = $_COOKIE["kpi_app"];
+		$myBdd = new MyBdd();
+		$sql = "SELECT generated_at
+			FROM kp_user_token 
+			WHERE token = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($token));
+		if ($result->rowCount() == 1) {
+			$row = $result->fetch();
+            $date = date_create($row["generated_at"]);
+            date_add($date, date_interval_create_from_date_string('10 days'));
+			if ($date >= date_create()) {
+				return true;
+			}
+		}
+	}
+	return_401 ();
+}
+
+function methods ($methods_array) {
+	if (!in_array($_SERVER['REQUEST_METHOD'], $methods_array)) {
+		return_405();
+		exit;
+	}
+	return;
+}
+
+function return_401 () {
+	header('HTTP/1.0 401 Unauthorized');
+	echo json_encode('Unauthorized');
+	exit;
+}
+
+function return_404 () {
+	header('HTTP/1.0 404 Not Found');
+	echo json_encode('Not Found');
+	exit;
+}
+
+function return_405 () {
+	header('HTTP/1.0 405 Method Not Allowed');
+	echo json_encode('Method Not Allowed');
+	exit;
+}
+
+function return_200 ($result) {
+	http_response_code(200);
+	echo json_encode($result);
+	exit;
 }

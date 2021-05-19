@@ -83,11 +83,23 @@ export default {
       this.$router.push({ name: pageName })
     },
     async ajaxTest () {
-      await api.get('/index.php')
+      await api.get('/staff/test')
         .then((response) => {
-          this.content = response.data
+          console.log(response.data)
           if (response.data === 'KO') {
             this.logOut()
+          }
+        }).catch((error) => {
+          // Erreur dans la réponse ?
+          if (error.response) {
+            if (error.response.status === 401) {
+              this.message = this.$t('Login.UnauthorizedMsg')
+              console.log('Unauthorized')
+            }
+          // Erreur dans la requête ?
+          } else if (error.request) {
+            this.message = this.$t('Login.ErrorMsg')
+            console.log('ErrorMsg')
           }
         })
     }
