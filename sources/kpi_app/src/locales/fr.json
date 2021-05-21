@@ -1,30 +1,34 @@
 {
-    "message": "Bienvenue sur KPI-App !",
-    "nav": {
-        "Home": "Accueil",
-        "Games": "Matchs",
-        "Game_report": "Feuille de marque",
-        "Stats": "Stats",
-        "Stats_report": "Stats du match",
-        "Scrutineering": "Vérifications",
-        "Scrut_report": "Vérifications techniques des équipements",
-        "About": "A propos"
-    },
-    "AddToHomeScreen": {
-      "message": "Ajouter au bureau / à l'écran d'accueil.",
-      "Dismiss": "Refuser",
-      "Install": "Installer"
-    },
-    "Login": {
-      "Authentication": "Authentification",
-      "Login": "Identifiant",
-      "LoginHelp": "Entrez votre numéro de licence",
-      "Password": "Mot de passe",
-      "Submit": "Connexion",
-      "EmptyMsg": "Identifiant et mot de passe sont requis !",
-      "UnauthorizedMsg": "Connexion refusée !",
-      "ErrorMsg": "Erreur durant l'authentification !",
-      "Welcome": "Bienvenue",
-      "Logout": "Déconnexion"
-    }
+  "message": "Bienvenue sur KPI-App !",
+  "nav": {
+    "Home": "Accueil",
+    "Login": "Connexion",
+    "MyAccount": "Mon compte",
+    "Staff": "Staff",
+    "Games": "Matchs",
+    "Ranking": "Classement",
+    "GameReport": "Feuille de marque",
+    "Stats": "Stats",
+    "StatReport": "Stats du match",
+    "Scrutineering": "Vérifications",
+    "ScrutReport": "Vérifications techniques des équipements",
+    "About": "A propos"
+  },
+  "AddToHomeScreen": {
+    "message": "Ajouter au bureau / à l'écran d'accueil.",
+    "Dismiss": "Refuser",
+    "Install": "Installer"
+  },
+  "Login": {
+    "Authentication": "Authentification",
+    "Login": "Identifiant",
+    "LoginHelp": "Entrez votre numéro de licence",
+    "Password": "Mot de passe",
+    "Submit": "Connexion",
+    "EmptyMsg": "Identifiant et mot de passe sont requis !",
+    "UnauthorizedMsg": "Connexion refusée !",
+    "ErrorMsg": "Erreur durant l'authentification !",
+    "Welcome": "Bienvenue",
+    "Logout": "Déconnexion"
+  }
 }

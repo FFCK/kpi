@@ -2,12 +2,16 @@
   "message": "Welcome on KPI-App !",
   "nav": {
     "Home": "Home",
+    "Login": "Login",
+    "MyAccount": "My account",
+    "Staff": "Staff",
     "Games": "Games",
-    "Game_report": "Game report",
+    "Ranking": "Ranking",
+    "GameReport": "Game report",
     "Stats": "Stats",
-    "Stats_report": "Stats report",
+    "StatReport": "Stat report",
     "Scrutineering": "Scrutineering",
-    "Scrut_report": "Equipment scrutineering",
+    "ScrutReport": "Equipment scrutineering",
     "About": "About"
   },
   "AddToHomeScreen": {

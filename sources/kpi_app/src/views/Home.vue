@@ -1,7 +1,12 @@
 <template>
   <div class="container-sm">
 
-    <login />
+    <!-- <div v-if="prefs">
+      {{ prefs.event }}
+      <div v-if="prefs.event > 0">{{ prefs }}</div>
+      <div v-else>Event selector</div>
+    </div>
+    <div v-else>Sinon</div> -->
 
     <div class="row" v-if="user">
       <div class="col-md-4">
@@ -10,7 +15,7 @@
             <h5 class="card-title">
               {{ $t("nav.Games") }}
             </h5>
-            <p class="card-text">{{ $t("nav.Game_report") }}</p>
+            <p class="card-text">{{ $t("nav.GameReport") }}</p>
             <button class="btn btn-primary" @click="changePage('Game')">
               Go
             </button>
@@ -23,7 +28,7 @@
             <h5 class="card-title">
               {{ $t("nav.Stats") }}
             </h5>
-            <p class="card-text">{{ $t("nav.Stats_report") }}</p>
+            <p class="card-text">{{ $t("nav.StatReport") }}</p>
             <button class="btn btn-primary" @click="changePage('Stats')">
               Go
             </button>
@@ -36,7 +41,7 @@
             <h5 class="card-title">
               {{ $t("nav.Scrutineering") }}
             </h5>
-            <p class="card-text">{{ $t("nav.Scrut_report") }}</p>
+            <p class="card-text">{{ $t("nav.ScrutReport") }}</p>
             <button class="btn btn-primary" @click="changePage('Scrutineering')">
               Go
             </button>
@@ -57,22 +62,13 @@
 </template>
 
 <script>
-import Login from '@/components/Login'
-import User from '@/store/models/User'
 import { api } from '@/services/api'
-import { mixin } from '@/services/mixins'
+import { logoutMixin, prefsMixin, userMixin } from '@/services/mixins'
 
 export default {
   name: 'Home',
-  mixins: [mixin],
-  components: {
-    Login
-  },
-  computed: {
-    user () {
-      return User.query().first()
-    }
-  },
+  mixins: [logoutMixin, prefsMixin, userMixin],
+  components: {},
   data () {
     return {
       content: ''
@@ -82,6 +78,7 @@ export default {
     changePage (pageName) {
       this.$router.push({ name: pageName })
     },
+
     async ajaxTest () {
       await api.get('/staff/test')
         .then((response) => {
