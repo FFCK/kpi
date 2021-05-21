@@ -1,7 +1,7 @@
 <template>
   <div class="container-sm">
     <title-component
-      :text="$t('nav.Scrutineering')"
+      :text="$t('nav.Ranking')"
     />
   </div>
 </template>
@@ -10,7 +10,7 @@
 import TitleComponent from '@/components/design/Title'
 
 export default {
-  name: 'Scrutineering',
+  name: 'Ranking',
   components: {
     TitleComponent
   }

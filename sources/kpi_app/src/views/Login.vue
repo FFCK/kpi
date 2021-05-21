@@ -61,18 +61,17 @@
 import axios from 'axios'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
-import TitleComponent from '@/components/Title'
-import { mixin } from '@/services/mixins'
+import TitleComponent from '@/components/design/Title'
+import { logoutMixin } from '@/services/mixins'
 
 export default {
   name: 'Login',
-  mixins: [mixin],
+  mixins: [logoutMixin],
   components: {
     TitleComponent
   },
   computed: {
     user () {
-      // Récupération depuis le store
       return User.query().first()
     }
   },
