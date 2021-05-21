@@ -1,8 +1,10 @@
 <template>
   <div class="container-sm">
     <title-component
-      :text="$t('nav.Scrutineering')"
+      :text="$t('nav.StatReport')"
     />
+    <span class="bi bi-bar-chart-line h1 text-primary"></span>
+
   </div>
 </template>
 
@@ -10,7 +12,7 @@
 import TitleComponent from '@/components/design/Title'
 
 export default {
-  name: 'Scrutineering',
+  name: 'StatReport',
   components: {
     TitleComponent
   }

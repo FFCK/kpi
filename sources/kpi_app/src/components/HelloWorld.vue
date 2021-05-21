@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+    {{ msg }}
     <photo-list />
   </div>
 </template>
