@@ -30,5 +30,11 @@
     "ErrorMsg": "Authentication failed!",
     "Welcome": "Welcome",
     "Logout": "Logout"
+  },
+  "Event": {
+    "SelectEvent": "Select event",
+    "PleaseSelectOne": "Please select one",
+    "Change": "Change",
+    "Cancel": "Cancel"
   }
 }

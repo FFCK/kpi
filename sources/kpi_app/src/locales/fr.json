@@ -30,5 +30,11 @@
     "ErrorMsg": "Erreur durant l'authentification !",
     "Welcome": "Bienvenue",
     "Logout": "Déconnexion"
+  },
+  "Event": {
+    "SelectEvent": "Sélectionnez un événement",
+    "PleaseSelectOne": "Sélectionnez un événement",
+    "Change": "Changer",
+    "Cancel": "Annuler"
   }
 }

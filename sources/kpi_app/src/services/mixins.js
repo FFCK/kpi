@@ -10,13 +10,9 @@ const logoutMixin = {
   },
   methods: {
     async logOut () {
-      // Suppression d'IndexedDB
       await idbs.dbClear('user')
-      // Suppression du store
       User.deleteAll()
-      // Suppression du cookie
       document.cookie = 'kpi_app=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      // Affichage du formulaire
       this.showLoginForm = true
     }
   }
@@ -25,11 +21,9 @@ const logoutMixin = {
 const prefsMixin = {
   computed: {
     prefs () {
-      // Récupération depuis le store
       return Preferences.query().first()
     }
   },
-
   methods: {
     async getPrefs () {
       if (Preferences.query().count() === 0) {
@@ -49,7 +43,6 @@ const prefsMixin = {
       }
     }
   },
-
   created () {
     this.getPrefs()
   }
