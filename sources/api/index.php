@@ -1,7 +1,8 @@
 <?php
-include_once('headers.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
+include_once('headers.php');
+include_once('controllers.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = trim($_GET['url'], '/');
@@ -15,7 +16,7 @@ if ($route[0] === 'staff') {
 	switch ($route[1]) {
 		case 'test':
 			methods(['GET']);
-			staff_test($method, $route);
+			StaffTestController($method, $route);
 			break;
 		default:
 			return_404();
@@ -27,13 +28,12 @@ if ($route[0] === 'staff') {
 			methods(['POST']);
 			login($method, $route);
 			break;
+		case 'events':
+			methods(['GET']);
+			EventController($method, $route);
+			break;
 		default:
 			return_404();
 			exit;
 	}
 }
-
-function staff_test ($method, $route) {
-	return_200(['result' => 'OK']);
-}
-
