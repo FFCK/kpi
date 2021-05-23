@@ -22,12 +22,12 @@
             {{ $t("nav.Home") }}<span class="sr-only">(current)</span>
           </router-link>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="prefs && prefs.event > 0">
           <router-link class="nav-link" to="/games" @click="collapse">
             {{ $t("nav.Games") }}
           </router-link>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="prefs && prefs.event > 0">
           <router-link class="nav-link" to="/ranking" @click="collapse">
             {{ $t("nav.Ranking") }}
           </router-link>
@@ -84,12 +84,12 @@
 
 <script>
 import LocaleSwitcher from '@/components/LocaleSwitcher'
-import { userMixin } from '@/services/mixins'
+import { userMixin, prefsMixin } from '@/services/mixins'
 import $ from 'jquery'
 
 export default {
   name: 'Navbar',
-  mixins: [userMixin],
+  mixins: [userMixin, prefsMixin],
   components: { LocaleSwitcher },
   computed: {
     version () {
