@@ -14,8 +14,8 @@
 
     <form class="form-inline" v-if="showSelector">
       <select class="form-control col-8" v-model="eventSelected" @change="changeButton = true">
-        <option disabled value="0">{{ $t('Event.PleaseSelectOne') }}</option>
-        <option :value="event.id" v-for="event in events" :key="event.id">{{ event.libelle }} ({{ event.place }})</option>
+        <option disabled value="0">▼ {{ $t('Event.PleaseSelectOne') }} ▼</option>
+        <option :value="event.id" v-for="event in events" :key="event.id">{{ event.libelle }} - {{ event.place }}</option>
       </select>
       <button class="btn btn-primary col-2" @click.prevent="changeEvent" v-if="changeButton">{{ $t('Event.Change') }}</button>
       <button class="btn btn-secondary col-2" @click.prevent="cancelEvent">{{ $t('Event.Cancel') }}</button>
@@ -34,7 +34,7 @@ export default {
   mixins: [prefsMixin],
   computed: {
     events () {
-      return Events.all()
+      return Events.query().orderBy('id', 'desc').get()
     }
   },
   data () {
