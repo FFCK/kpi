@@ -26,8 +26,10 @@
 <script>
 import { prefsMixin } from '@/services/mixins'
 import idbs from '@/services/idbStorage'
+import { api } from '@/services/api'
 import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
+import Games from '@/store/models/Games'
 
 export default {
   name: 'EventSelector',
@@ -46,8 +48,12 @@ export default {
   },
   methods: {
     async loadEvents () {
-      await Events.api().get('/events')
-        .then(_ => {
+      await api.get('/events')
+        .then(result => {
+          Events.deleteAll()
+          Events.insertOrUpdate({
+            data: result.data
+          })
           this.eventSelected = this.prefs.event
           this.showSelector = true
         }).catch(error => {
@@ -65,6 +71,8 @@ export default {
         }
       })
       idbs.dbPut('preferences', Preferences.find(1))
+      Games.deleteAll()
+      idbs.dbClear('games')
       this.showSelector = false
       this.changeButton = false
     },

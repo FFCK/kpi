@@ -39,3 +39,4 @@ sources/commun/log_cron.txt
 
 sources/node_modules
 
+sources/api/files/*.json
