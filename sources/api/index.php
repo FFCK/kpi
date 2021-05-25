@@ -10,6 +10,9 @@ $route = explode('/', $url);
 
 set_headers($method);
 
+/**
+ * Staff routes
+ */
 if ($route[0] === 'staff') {
 	token_verification();
 	
@@ -22,6 +25,9 @@ if ($route[0] === 'staff') {
 			return_404();
 			exit;
 		}
+/**
+ * Public routes
+ */
 } else {
 	switch ($route[0]) {
 		case 'login':
@@ -31,6 +37,10 @@ if ($route[0] === 'staff') {
 		case 'events':
 			methods(['GET']);
 			EventController($method, $route);
+			break;
+		case 'games':
+			methods(['GET']);
+			GamesController($method, $route);
 			break;
 		default:
 			return_404();
