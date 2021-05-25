@@ -3,8 +3,9 @@ import VuexORM from '@vuex-orm/core'
 import VuexORMAxios from '@vuex-orm/plugin-axios'
 import Photo from '@/store/models/Photo'
 import User from '@/store/models/User'
-import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
+import Events from '@/store/models/Events'
+import Games from '@/store/models/Games'
 
 VuexORM.use(VuexORMAxios, {
   axios,
@@ -23,5 +24,6 @@ database.register(Photo)
 database.register(User)
 database.register(Preferences)
 database.register(Events)
+database.register(Games)
 
 export default database
