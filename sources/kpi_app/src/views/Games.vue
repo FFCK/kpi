@@ -69,6 +69,8 @@
         </tr>
       </tbody>
     </table>
+
+    <button class="btn btn-sm btn-light my-3 float-right" @click="scrollTop"><i class="bi bi-caret-up-square"></i></button>
   </div>
 </template>
 
