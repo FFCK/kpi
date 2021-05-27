@@ -36,5 +36,17 @@
     "PleaseSelectOne": "Sélectionnez un événement",
     "Change": "Changer",
     "Cancel": "Annuler"
+  },
+  "Games": {
+    "Categories": "Catégories",
+    "Teams": "Equipes",
+    "Refs": "Arbitres",
+    "Dates": "Dates",
+    "All": "Toutes",
+    "Today": "Aujourd'hui",
+    "Tomorow": "Demain",
+    "Prev": "Précédents matchs",
+    "Next": "Prochains matchs",
+    "games": "matchs"
   }
 }

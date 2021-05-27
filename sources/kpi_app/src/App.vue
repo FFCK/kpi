@@ -29,6 +29,7 @@ export default {
 @import "./assets/styles/custom.scss";
 @import "~bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons.css";
+@import "~bootstrap-select/dist/css/bootstrap-select.min.css";
 
 @import "./assets/styles/app.scss";
 

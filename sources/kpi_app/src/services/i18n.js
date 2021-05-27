@@ -19,8 +19,56 @@ function loadLocaleMessages () {
   return messages
 }
 
+const datetimeFormats = {
+  'en-US': {
+    short: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    },
+    long: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long'
+    },
+    longdatetime: {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    }
+  },
+  'fr-FR': {
+    short: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    },
+    long: {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    },
+    longdatetime: {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false
+    }
+  }
+}
+
 export default createI18n({
-  locale: process.env.VUE_APP_I18N_LOCALE || 'en',
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-  messages: loadLocaleMessages()
+  locale: process.env.VUE_APP_I18N_LOCALE || 'en-US',
+  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en-US',
+  messages: loadLocaleMessages(),
+  datetimeFormats: datetimeFormats
 })

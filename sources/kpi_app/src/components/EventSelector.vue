@@ -67,7 +67,12 @@ export default {
         data: {
           event: e.id,
           event_name: e.libelle,
-          event_place: e.place
+          event_place: e.place,
+          fav_categories: '[]',
+          fav_teams: '[]',
+          fav_refs: '[]',
+          fav_dates: ''
+
         }
       })
       idbs.dbPut('preferences', Preferences.find(1))

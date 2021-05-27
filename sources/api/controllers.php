@@ -38,8 +38,8 @@ function GamesController ($method, $route) {
     cea.Code_club t_a_club, ceb.Code_club t_b_club, 
     m.Arbitre_principal r_1, m.Arbitre_secondaire r_2, 
     m.Matric_arbitre_principal r_1_id, m.Matric_arbitre_secondaire r_2_id, 
-    lcp.Nom r_1_name, lcp.Prenom r_1_firstname, 
-    lcs.Nom r_2_name, lcs.Prenom r_2_firstname 
+    CONCAT(lcp.Nom, ' ', lcp.Prenom) r_1_name, 
+    CONCAT(lcs.Nom, ' ', lcs.Prenom) r_2_name
     FROM kp_match m 
     LEFT OUTER JOIN kp_competition_equipe cea ON (m.Id_equipeA = cea.Id) 
     LEFT OUTER JOIN kp_competition_equipe ceb ON (m.Id_equipeB = ceb.Id) 
