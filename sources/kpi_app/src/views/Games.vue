@@ -116,12 +116,10 @@ export default {
       this.categories = [...new Set(allGames.map(x => x.c_code))].sort()
       this.game_dates = [...new Set(allGames.map(x => x.g_date))].sort()
       this.teams = [...new Set(
-        allGames.map(x => x.t_a_label),
-        allGames.map(x => x.t_b_label)
+        allGames.map(x => x.t_a_label).concat(allGames.map(x => x.t_b_label))
       )].sort()
       this.refs = [...new Set(
-        allGames.map(x => x.r_1_name),
-        allGames.map(x => x.r_2_name)
+        allGames.map(x => x.r_1_name).concat(allGames.map(x => x.r_2_name))
       )].sort()
     },
     async getFav () {
