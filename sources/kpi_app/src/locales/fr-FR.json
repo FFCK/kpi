@@ -47,6 +47,14 @@
     "Tomorow": "Demain",
     "Prev": "Précédents matchs",
     "Next": "Prochains matchs",
-    "games": "matchs"
+    "games": "matchs",
+    "Pitch": "Terr.",
+    "Date": "Date",
+    "Cat": "Cat.",
+    "Group": "Poule",
+    "Team": "Equipe",
+    "Score": "Score",
+    "Ref": "Arb.",
+    "GameReport": "Feuille de marque"
   }
 }
