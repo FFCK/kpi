@@ -36,5 +36,17 @@
     "PleaseSelectOne": "Please select one",
     "Change": "Change",
     "Cancel": "Cancel"
+  },
+  "Games": {
+    "Categories": "Categories",
+    "Teams": "Teams",
+    "Refs": "Refs",
+    "Dates": "Dates",
+    "All": "All",
+    "Today": "Today",
+    "Tomorow": "Tomorow",
+    "Prev": "Previous games",
+    "Next": "Next games",
+    "games": "games"
   }
 }
