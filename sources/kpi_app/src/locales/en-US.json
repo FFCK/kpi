@@ -47,6 +47,14 @@
     "Tomorow": "Tomorow",
     "Prev": "Previous games",
     "Next": "Next games",
-    "games": "games"
+    "games": "games",
+    "Pitch": "Pitch",
+    "Date": "Date",
+    "Cat": "Cat.",
+    "Group": "Group",
+    "Team": "Team",
+    "Score": "Score",
+    "Ref": "Ref.",
+    "GameReport": "Game report"
   }
 }

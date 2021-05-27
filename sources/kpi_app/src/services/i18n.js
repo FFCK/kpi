@@ -21,6 +21,11 @@ function loadLocaleMessages () {
 
 const datetimeFormats = {
   'en-US': {
+    shorter: {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    },
     short: {
       year: 'numeric',
       month: 'short',
@@ -43,6 +48,11 @@ const datetimeFormats = {
     }
   },
   'fr-FR': {
+    shorter: {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    },
     short: {
       year: 'numeric',
       month: 'short',

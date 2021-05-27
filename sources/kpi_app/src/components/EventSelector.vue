@@ -1,7 +1,7 @@
 <template>
   <div v-if="prefs" class="my-2">
     <div v-if="prefs.event > 0">
-      {{ prefs.event_name }} ({{ prefs.event_place }})
+      {{ prefs.event_name }} - {{ prefs.event_place }}
       <button class="btn btn-secondary btn-sm" @click="loadEvents" v-if="!showSelector">
         <i class="bi bi-arrow-left-right"></i>
       </button>
