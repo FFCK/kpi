@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>
+    <h1 class="shadow-sm">
       <i>{{ text }}</i>
     </h1>
   </div>
