@@ -211,7 +211,6 @@ export default {
     return {
       games: [],
       filteredGamesCount: 0,
-      filteredGamesDates: [],
       categories: null,
       game_dates: null,
       teams: null,
@@ -304,9 +303,9 @@ export default {
 
       this.filteredGamesCount = filteredGames.length
 
-      this.filteredGamesDates = [...new Set(filteredGames.map(x => x.g_date))]
+      const filteredGamesDates = [...new Set(filteredGames.map(x => x.g_date))]
       this.games = []
-      this.filteredGamesDates.forEach(goupDate => {
+      filteredGamesDates.forEach(goupDate => {
         const filtered = filteredGames.filter(value => value.g_date === goupDate)
         this.games.push({
           goupDate: goupDate,
