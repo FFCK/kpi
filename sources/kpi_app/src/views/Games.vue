@@ -289,6 +289,18 @@ export default {
       if (this.fav_categories.length > 0) {
         filteredGames = filteredGames.filter(value => this.fav_categories.includes(value.c_code))
       }
+      // highlight
+      filteredGames = filteredGames.map(value => {
+        value.t_a_label = (this.fav_teams.includes(value.t_a_label)) ? '<mark>' + value.t_a_label + '</mark>' : value.t_a_label
+        value.t_b_label = (this.fav_teams.includes(value.t_b_label)) ? '<mark>' + value.t_b_label + '</mark>' : value.t_b_label
+        value.r_1 = (this.fav_teams.includes(value.r_1.split(' (')[0])) ? value.r_1.replace(value.r_1.split(' (')[0], '<mark>' + value.r_1.split(' (')[0] + '</mark>') : value.r_1
+        value.r_2 = (this.fav_teams.includes(value.r_2.split(' (')[0])) ? value.r_2.replace(value.r_2.split(' (')[0], '<mark>' + value.r_2.split(' (')[0] + '</mark>') : value.r_2
+        value.r_1 = (this.fav_teams.includes(value.r_1.split('(').pop().split(')')[0])) ? value.r_1.replace(value.r_1.split('(').pop().split(')')[0], '<mark>' + value.r_1.split('(').pop().split(')')[0] + '</mark>') : value.r_1
+        value.r_2 = (this.fav_teams.includes(value.r_2.split('(').pop().split(')')[0])) ? value.r_2.replace(value.r_2.split('(').pop().split(')')[0], '<mark>' + value.r_2.split('(').pop().split(')')[0] + '</mark>') : value.r_2
+        value.r_1 = (this.fav_teams.includes(value.r_1_name)) ? value.r_1.replace(value.r_1.split(' (')[0], '<mark>' + value.r_1.split(' (')[0] + '</mark>') : value.r_1
+        value.r_2 = (this.fav_teams.includes(value.r_2_name)) ? value.r_2.replace(value.r_2.split(' (')[0], '<mark>' + value.r_2.split(' (')[0] + '</mark>') : value.r_2
+        return value
+      })
 
       this.filteredGamesCount = filteredGames.length
 
