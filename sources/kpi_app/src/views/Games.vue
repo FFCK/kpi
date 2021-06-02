@@ -42,139 +42,146 @@
       </div>
     </form>
 
-    <div v-if="games" class="mt-2">
-      <div class="content-table d-none d-sm-block">
-        <table class="table table-sm table-striped">
-          <caption>{{ filteredGamesCount }}/{{ gamesCount }} {{ $t('Games.games') }}</caption>
-          <thead class="thead-light">
-            <tr>
-              <th>#</th>
-              <th>{{ $t('Games.Date') }}</th>
-              <th>{{ $t('Games.Cat') }}</th>
-              <th>{{ $t('Games.Group') }}</th>
-              <th>{{ $t('Games.Pitch') }}</th>
-              <th class="cliquableNomEquipe">{{ $t('Games.Team') }} A</th>
-              <th class="cliquableScore">{{ $t('Games.Score') }}</th>
-              <th class="cliquableNomEquipe">{{ $t('Games.Team') }} B</th>
-              <th class="arb1" v-if="showRefs">{{ $t('Games.Ref') }} 1</th>
-              <th class="arb2" v-if="showRefs">{{ $t('Games.Ref') }} 2</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="game in games" :key="game.g_id">
-              <td class="align-middle">
-                <span class="text-center badge">
-                  {{ game.g_number }}
-                </span>
-              </td>
-              <td>
-                <span class="float-left badge badge-secondary">{{ $d(new Date(game.g_date), 'shorter') }}</span>
-                <br>
-                <span class="float-right badge badge-light">{{ game.g_time }}</span>
-              </td>
-              <td class="align-middle">
-                <span class="text-center badge">
-                  {{ game.c_code }}
-                </span>
-              </td>
-              <td class="align-middle">
-                <span class="text-center badge">
-                  {{ game.d_phase }}
-                </span>
-              </td>
-              <td class="align-middle">
-                <span class="text-center badge badge-secondary">{{ game.g_pitch }}</span>
-              </td>
-              <td class="text-center align-middle">
-                <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
-                  <span class="team">{{ game.t_a_label }}</span>
-                </a>
-              </td>
-              <td class="text-center">
-                <img
-                  class="img2 float-left d-none d-lg-block img-responsive"
-                  :src="'/img/KIP/logo/'+game.t_a_club+'-logo.png'"
-                  :alt="game.t_a_club"
-                  onerror="this.onerror=null; this.src='../assets/logo.png'"
-                  width="30">
-                <img
-                  class="img2 float-right d-none d-lg-block img-responsive"
-                  :src="'/img/KIP/logo/'+game.t_b_club+'-logo.png'"
-                  :alt="game.t_b_club"
-                  onerror="this.onerror=null; this.src='../assets/logo.png'"
-                  width="30">
-                <span class="btn btn-sm btn-outline-dark ">{{ game.g_score_a }} - {{ game.g_score_b }}</span>
-                <br>
-                <a class="statutMatch badge badge-success report">
-                  {{ $t('Games.GameReport') }}
-                </a>
-              </td>
-              <td class="text-center align-middle">
-                <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
-                  <span class="team">{{ game.t_b_label }}</span>
-                </a>
-              </td>
-              <td class="arb1" v-if="showRefs"><small>{{ game.r_1 }}</small></td>
-              <td class="arb2" v-if="showRefs"><small>{{ game.r_2 }}</small></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="content-table d-block d-sm-none">
-        <table class="table table-sm table-striped" style="table-layout: auto; width: 100%">
-          <tbody>
-            <tr v-for="game in games" :key="game.g_id">
-              <td class="text-center">
-                <div class="col-xs-6">
-                  <span class="float-left badge badge-pill badge-secondary">
-                    {{ $d(new Date(game.g_date), 'shorter') }}
+    <div class="mt-2">
+      <div>
+        <div class="content-table d-none d-sm-block">
+          <table class="table table-sm table-striped">
+            <caption>{{ filteredGamesCount }}/{{ gamesCount }} {{ $t('Games.games') }}</caption>
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>{{ $t('Games.Date') }}</th>
+                <th>{{ $t('Games.Cat') }}</th>
+                <th>{{ $t('Games.Group') }}</th>
+                <th>{{ $t('Games.Pitch') }}</th>
+                <th class="cliquableNomEquipe">{{ $t('Games.Team') }} A</th>
+                <th class="cliquableScore">{{ $t('Games.Score') }}</th>
+                <th class="cliquableNomEquipe">{{ $t('Games.Team') }} B</th>
+                <th v-if="showRefs">{{ $t('Games.Referee') }}</th>
+              </tr>
+            </thead>
+            <tbody v-for="(game_group, index) in games" :key="index">
+              <tr class="thead-light">
+                <th colspan="8" class="text-left">{{ $d(new Date(game_group.goupDate), 'short') }}</th>
+                <th class="text-right">
+                  <button class="btn btn-sm btn-light" @click="scrollTop">
+                    <i class="bi bi-caret-up-square"></i>
+                  </button>
+                </th>
+              </tr>
+              <tr v-for="game in game_group.filtered" :key="game.g_id">
+                <td class="align-middle">
+                  <span class="text-center badge">
+                    {{ game.g_number }}
                   </span>
-                  <span class="float-left badge badge-pill badge-secondary mx-1">
-                    {{ game.g_time }}
-                  </span>
-                  <span class="float-left badge badge-pill badge-secondary">
-                    {{ $t('Games.Pitch') }} {{ game.g_pitch }}
-                  </span>
-                </div>
-                <div class="col-xs-6">
-                  <span class="float-right badge badge-pill badge-light mx-1">
+                </td>
+                <td>
+                  <span class="float-right badge badge-light">{{ game.g_time }}</span>
+                </td>
+                <td class="align-middle">
+                  <span class="text-center badge">
                     {{ game.c_code }}
                   </span>
-                  <span class="float-right badge badge-pill">
+                </td>
+                <td class="align-middle">
+                  <span class="text-center badge">
                     {{ game.d_phase }}
                   </span>
-                </div>
-                <div class="col-12">
-                  <div class="btn-group btn-block row" role="group">
-                    <a class="col-5 text-right btn btn-sm">
-                      <b><span class="team">{{ game.t_a_label }}</span></b>
-                    </a>
-                    <span class="col-2 btn btn-sm btn-success">
-                      {{ game.g_score_a }} - {{ game.g_score_b }}
-                    </span>
-                    <a class="col-5 text-left btn btn-sm">
-                      <b><span class="team">{{ game.t_b_label }}</span></b>
-                    </a>
+                </td>
+                <td class="align-middle">
+                  <span class="text-center badge badge-secondary">{{ game.g_pitch }}</span>
+                </td>
+                <td class="text-center align-middle">
+                  <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
+                    <span class="team" v-html="game.t_a_label"></span>
+                  </a>
+                </td>
+                <td>
+                  <div class="row text-center">
+                    <img
+                      class="img2 col d-none d-lg-block img-responsive"
+                      :src="'/img/KIP/logo/'+game.t_a_club+'-logo.png'"
+                      :alt="game.t_a_club"
+                      onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
+                      width="30">
+                    <span class="col btn btn-sm btn-outline-dark text-nowrap">{{ game.g_score_a }} - {{ game.g_score_b }}</span>
+                    <img
+                      class="img2 col d-none d-lg-block img-responsive"
+                      :src="'/img/KIP/logo/'+game.t_b_club+'-logo.png'"
+                      :alt="game.t_b_club"
+                      onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
+                      width="30">
                   </div>
-                </div>
-                <div v-if="showRefs" class="row">
-                  <div class="col text-left">
-                    <small><em>{{ game.r_1 }}</em></small>
+                </td>
+                <td class="text-center align-middle">
+                  <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
+                    <span class="team" v-html="game.t_b_label"></span>
+                  </a>
+                </td>
+                <td v-if="showRefs">
+                  <div>
+                    <small v-html="game.r_1"></small>
                   </div>
-                  <div class="col text-right">
-                    <small><em>{{ game.r_2 }}</em></small>
+                  <div>
+                    <small v-html="game.r_2"></small>
                   </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
+        <div class="content-table d-block d-sm-none">
+          <table class="table table-sm table-striped" style="table-layout: auto; width: 100%">
+            <tbody>
+              <tr v-for="game in games" :key="game.g_id">
+                <td class="text-center">
+                  <div class="col-xs-6">
+                    <span class="float-left badge badge-pill badge-secondary mx-1">
+                      {{ game.g_time }}
+                    </span>
+                    <span class="float-left badge badge-pill badge-secondary">
+                      {{ $t('Games.Pitch') }} {{ game.g_pitch }}
+                    </span>
+                  </div>
+                  <div class="col-xs-6">
+                    <span class="float-right badge badge-pill badge-light mx-1">
+                      {{ game.c_code }}
+                    </span>
+                    <span class="float-right badge badge-pill">
+                      {{ game.d_phase }}
+                    </span>
+                  </div>
+                  <div class="col-12">
+                    <div class="btn-group btn-block row" role="group">
+                      <a class="col-5 text-right btn btn-sm">
+                        <b><span class="team" v-html="game.t_a_label"></span></b>
+                      </a>
+                      <span class="col-2 btn btn-sm btn-success">
+                        {{ game.g_score_a }} - {{ game.g_score_b }}
+                      </span>
+                      <a class="col-5 text-left btn btn-sm">
+                        <b><span class="team" v-html="game.t_b_label"></span></b>
+                      </a>
+                    </div>
+                  </div>
+                  <div v-if="showRefs" class="row">
+                    <div class="col text-left">
+                      <small><em v-html="game.r_1"></em></small>
+                    </div>
+                    <div class="col text-right">
+                      <small><em v-html="game.r_2"></em></small>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
     </div>
 
-    <button class="btn btn-sm btn-light my-3 float-right" @click="scrollTop"><i class="bi bi-caret-up-square"></i></button>
   </div>
 </template>
 
@@ -202,8 +209,9 @@ export default {
   },
   data () {
     return {
-      games: null,
+      games: [],
       filteredGamesCount: 0,
+      filteredGamesDates: [],
       categories: null,
       game_dates: null,
       teams: null,
@@ -282,8 +290,17 @@ export default {
         filteredGames = filteredGames.filter(value => this.fav_categories.includes(value.c_code))
       }
 
-      this.games = filteredGames
-      this.filteredGamesCount = this.games.length
+      this.filteredGamesCount = filteredGames.length
+
+      this.filteredGamesDates = [...new Set(filteredGames.map(x => x.g_date))]
+      this.games = []
+      this.filteredGamesDates.forEach(goupDate => {
+        const filtered = filteredGames.filter(value => value.g_date === goupDate)
+        this.games.push({
+          goupDate: goupDate,
+          filtered: filtered
+        })
+      })
     },
     async getGames () {
       if (Games.query().count() === 0) {
@@ -342,4 +359,5 @@ table {
   table-layout: auto;
   width: 100%;
 }
+
 </style>
