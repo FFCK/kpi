@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div>
     <title-component :text="$t('nav.Games')" />
 
     <form>

@@ -1,8 +1,7 @@
 <template>
-  <div class="container-sm">
-    <title-component
-      :text="$t('nav.StatReport')"
-    />
+  <div>
+    <title-component :text="$t('nav.StatReport')" />
+
     <span class="bi bi-bar-chart-line h1 text-primary"></span>
 
   </div>

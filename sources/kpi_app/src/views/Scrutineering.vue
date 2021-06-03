@@ -1,5 +1,5 @@
 <template>
-  <div class="container-sm">
+  <div>
     <title-component
       :text="$t('nav.Scrutineering')"
     />

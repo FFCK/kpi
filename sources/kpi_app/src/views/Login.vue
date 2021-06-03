@@ -1,5 +1,7 @@
 <template>
-  <div class="container">
+  <div>
+    <title-component :text="$t('nav.Login')" />
+
     <div v-if="user">
       {{ $t("Login.Welcome") }} {{ user.firstname }} {{ user.name }}
       <button class="btn btn-sm btn-btn-warning" @click="logOut" :title="$t('Login.Logout')">
