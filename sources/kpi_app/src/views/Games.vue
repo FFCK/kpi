@@ -2,185 +2,187 @@
   <div>
     <title-component :text="$t('nav.Games')" />
 
-    <form>
-      <div class="form-row align-items-center">
-        <div class="col-2">
-          <select v-model="fav_categories" class="form-control selectpicker" multiple :data-header="$t('Games.Categories')" :title="$t('Games.Categories')" @change="changeFav">
-            <option v-for="(categorie, index) in categories" :key="index">{{ categorie }}</option>
-          </select>
-        </div>
-        <div class="col-5">
-          <select v-model="fav_teams" class="form-control selectpicker" multiple
-            data-live-search="true"
-            :data-header="$t('Games.Teams') + ' & ' + $t('Games.Refs')"
-            :title="$t('Games.Teams') + ' & ' + $t('Games.Refs')"
+    <el-main>
+
+      <el-row :gutter="4">
+        <el-col :span="4">
+          <el-select v-model="fav_categories" multiple collapse-tags
+            :placeholder="$t('Games.Categories')" @change="changeFav">
+            <el-option v-for="(categorie, index) in categories" :key="index" :label="categorie" :value="categorie" />
+          </el-select>
+        </el-col>
+        <el-col :span="10">
+          <el-select v-model="fav_teams" multiple filterable collapse-tags
+            :placeholder="$t('Games.Teams') + ' & ' + $t('Games.Refs')"
             @change="changeFav">
-            <optgroup :label="$t('Games.Teams')">
-              <option v-for="(team, index) in teams" :key="index">{{ team }}</option>
-            </optgroup>
-            <optgroup :label="$t('Games.Refs')">
-              <option v-for="(ref, index) in refs" :key="index">{{ ref }}</option>
-            </optgroup>
-          </select>
-        </div>
-        <div class="col-3">
-          <select v-model="fav_dates" class="form-control selectpicker" :data-header="$t('Games.Dates')" :title="$t('Games.Dates')" @change="changeFav">
-            <option :data-content="$t('Games.All')"></option>
-            <option data-divider="true"></option>
-            <option v-for="(game_date, index) in game_dates" :key="index" :data-content="$d(new Date(game_date), 'short')">{{ game_date }}</option>
-            <option data-divider="true"></option>
-            <option :data-content="$t('Games.Today')">Today</option>
-            <option :data-content="$t('Games.Tomorow')">Tomorow</option>
-            <option :data-content="$t('Games.Prev')">Prev</option>
-            <option :data-content="$t('Games.Next')">Next</option>
-          </select>
-        </div>
-        <div class="col-1">
-          Refs <input type="checkbox" @click="showRefs = !showRefs" checked>
-        </div>
-        <button class="btn btn-primary btn-sm col-1" @click="loadGames"><i class="bi bi-arrow-clockwise"></i></button>
-      </div>
-    </form>
+            <el-option-group :label="$t('Games.Teams')">
+              <el-option v-for="(team, index) in teams" :key="index" :value="team" />
+            </el-option-group>
+            <el-option-group :label="$t('Games.Refs')">
+              <el-option v-for="(ref, index) in refs" :key="index" :value="ref" />
+            </el-option-group>
+          </el-select>
+        </el-col>
+        <el-col :span="5">
+          <el-select v-model="fav_dates" collapse-tags :placeholder="$t('Games.Dates')" @change="changeFav">
+            <el-option :label="$t('Games.All')" value="" />
+            <el-divider></el-divider>
+            <el-option v-for="(game_date, index) in game_dates" :key="index" :label="$d(new Date(game_date), 'short')" :value="game_date" />
+            <el-divider></el-divider>
+            <el-option :label="$t('Games.Today')" value="Today" />
+            <el-option :label="$t('Games.Tomorow')" value="Tomorow" />
+            <el-option :label="$t('Games.Prev')" value="Prev" />
+            <el-option :label="$t('Games.Next')" value="Next" />
+          </el-select>
+        </el-col>
+        <el-col :span="3">
+          Refs <el-switch v-model="showRefs" />
+        </el-col>
+        <el-col :span="2">
+          <el-button icon="el-icon-refresh-right" plain @click="loadGames"></el-button>
+        </el-col>
+      </el-row>
 
-    <div class="mt-2">
-      <div>
-        <div class="content-table d-none d-sm-block">
-          <table class="table table-sm table-striped">
-            <caption>{{ filteredGamesCount }}/{{ gamesCount }} {{ $t('Games.games') }}</caption>
-            <thead class="thead-light">
-              <tr>
-                <th>#</th>
-                <th>{{ $t('Games.Date') }}</th>
-                <th>{{ $t('Games.Cat') }}</th>
-                <th>{{ $t('Games.Group') }}</th>
-                <th>{{ $t('Games.Pitch') }}</th>
-                <th class="cliquableNomEquipe">{{ $t('Games.Team') }} A</th>
-                <th class="cliquableScore">{{ $t('Games.Score') }}</th>
-                <th class="cliquableNomEquipe">{{ $t('Games.Team') }} B</th>
-                <th v-if="showRefs">{{ $t('Games.Referee') }}</th>
-              </tr>
-            </thead>
-            <tbody v-for="(game_group, index) in games" :key="index">
-              <tr class="thead-light">
-                <th colspan="8" class="text-left">{{ $d(new Date(game_group.goupDate), 'short') }}</th>
-                <th class="text-right">
-                  <button class="btn btn-sm btn-light" @click="scrollTop">
-                    <i class="bi bi-caret-up-square"></i>
-                  </button>
-                </th>
-              </tr>
-              <tr v-for="game in game_group.filtered" :key="game.g_id">
-                <td class="align-middle">
-                  <span class="text-center badge">
-                    {{ game.g_number }}
-                  </span>
-                </td>
-                <td>
-                  <span class="float-right badge badge-light">{{ game.g_time }}</span>
-                </td>
-                <td class="align-middle">
-                  <span class="text-center badge">
-                    {{ game.c_code }}
-                  </span>
-                </td>
-                <td class="align-middle">
-                  <span class="text-center badge">
-                    {{ game.d_phase }}
-                  </span>
-                </td>
-                <td class="align-middle">
-                  <span class="text-center badge badge-secondary">{{ game.g_pitch }}</span>
-                </td>
-                <td class="text-center align-middle">
-                  <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
-                    <span class="team" v-html="game.t_a_label"></span>
-                  </a>
-                </td>
-                <td>
-                  <div class="row text-center">
-                    <img
-                      class="img2 col d-none d-lg-block img-responsive"
-                      :src="'/img/KIP/logo/'+game.t_a_club+'-logo.png'"
-                      :alt="game.t_a_club"
-                      onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
-                      width="30">
-                    <span class="col btn btn-sm btn-outline-dark text-nowrap">{{ game.g_score_a }} - {{ game.g_score_b }}</span>
-                    <img
-                      class="img2 col d-none d-lg-block img-responsive"
-                      :src="'/img/KIP/logo/'+game.t_b_club+'-logo.png'"
-                      :alt="game.t_b_club"
-                      onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
-                      width="30">
-                  </div>
-                </td>
-                <td class="text-center align-middle">
-                  <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
-                    <span class="team" v-html="game.t_b_label"></span>
-                  </a>
-                </td>
-                <td v-if="showRefs">
-                  <div>
-                    <small v-html="game.r_1"></small>
-                  </div>
-                  <div>
-                    <small v-html="game.r_2"></small>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="content-table d-block d-sm-none">
-          <table class="table table-sm table-striped" style="table-layout: auto; width: 100%">
-            <tbody>
-              <tr v-for="game in games" :key="game.g_id">
-                <td class="text-center">
-                  <div class="col-xs-6">
-                    <span class="float-left badge badge-pill badge-secondary mx-1">
-                      {{ game.g_time }}
+      <div class="mt-2">
+        <div>
+          <div class="content-table d-none d-sm-block">
+            <table class="table table-sm table-striped">
+              <caption>{{ filteredGamesCount }}/{{ gamesCount }} {{ $t('Games.games') }}</caption>
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>{{ $t('Games.Date') }}</th>
+                  <th>{{ $t('Games.Cat') }}</th>
+                  <th>{{ $t('Games.Group') }}</th>
+                  <th>{{ $t('Games.Pitch') }}</th>
+                  <th class="cliquableNomEquipe">{{ $t('Games.Team') }} A</th>
+                  <th class="cliquableScore">{{ $t('Games.Score') }}</th>
+                  <th class="cliquableNomEquipe">{{ $t('Games.Team') }} B</th>
+                  <th v-if="showRefs">{{ $t('Games.Referee') }}</th>
+                </tr>
+              </thead>
+              <tbody v-for="(game_group, index) in games" :key="index">
+                <tr class="thead-light">
+                  <th colspan="8" class="text-left">{{ $d(new Date(game_group.goupDate), 'short') }}</th>
+                  <th class="text-right">
+                    <button class="btn btn-sm btn-light" @click="scrollTop">
+                      <i class="bi bi-caret-up-square"></i>
+                    </button>
+                  </th>
+                </tr>
+                <tr v-for="game in game_group.filtered" :key="game.g_id">
+                  <td class="align-middle">
+                    <span class="text-center badge">
+                      {{ game.g_number }}
                     </span>
-                    <span class="float-left badge badge-pill badge-secondary">
-                      {{ $t('Games.Pitch') }} {{ game.g_pitch }}
-                    </span>
-                  </div>
-                  <div class="col-xs-6">
-                    <span class="float-right badge badge-pill badge-light mx-1">
+                  </td>
+                  <td>
+                    <span class="float-right badge badge-light">{{ game.g_time }}</span>
+                  </td>
+                  <td class="align-middle">
+                    <span class="text-center badge">
                       {{ game.c_code }}
                     </span>
-                    <span class="float-right badge badge-pill">
+                  </td>
+                  <td class="align-middle">
+                    <span class="text-center badge">
                       {{ game.d_phase }}
                     </span>
-                  </div>
-                  <div class="col-12">
-                    <div class="btn-group btn-block row" role="group">
-                      <a class="col-5 text-right btn btn-sm">
-                        <b><span class="team" v-html="game.t_a_label"></span></b>
-                      </a>
-                      <span class="col-2 btn btn-sm btn-success">
-                        {{ game.g_score_a }} - {{ game.g_score_b }}
-                      </span>
-                      <a class="col-5 text-left btn btn-sm">
-                        <b><span class="team" v-html="game.t_b_label"></span></b>
-                      </a>
+                  </td>
+                  <td class="align-middle">
+                    <span class="text-center badge badge-secondary">{{ game.g_pitch }}</span>
+                  </td>
+                  <td class="text-center align-middle">
+                    <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
+                      <span class="team" v-html="game.t_a_label"></span>
+                    </a>
+                  </td>
+                  <td>
+                    <div class="row text-center">
+                      <img
+                        class="img2 col d-none d-lg-block img-responsive"
+                        :src="'/img/KIP/logo/'+game.t_a_club+'-logo.png'"
+                        :alt="game.t_a_club"
+                        onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
+                        width="30">
+                      <span class="col btn btn-sm btn-outline-dark text-nowrap">{{ game.g_score_a }} - {{ game.g_score_b }}</span>
+                      <img
+                        class="img2 col d-none d-lg-block img-responsive"
+                        :src="'/img/KIP/logo/'+game.t_b_club+'-logo.png'"
+                        :alt="game.t_b_club"
+                        onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
+                        width="30">
                     </div>
-                  </div>
-                  <div v-if="showRefs" class="row">
-                    <div class="col text-left">
-                      <small><em v-html="game.r_1"></em></small>
+                  </td>
+                  <td class="text-center align-middle">
+                    <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
+                      <span class="team" v-html="game.t_b_label"></span>
+                    </a>
+                  </td>
+                  <td v-if="showRefs">
+                    <div>
+                      <small v-html="game.r_1"></small>
                     </div>
-                    <div class="col text-right">
-                      <small><em v-html="game.r_2"></em></small>
+                    <div>
+                      <small v-html="game.r_2"></small>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
+          <div class="content-table d-block d-sm-none">
+            <table class="table table-sm table-striped" style="table-layout: auto; width: 100%">
+              <tbody>
+                <tr v-for="game in games" :key="game.g_id">
+                  <td class="text-center">
+                    <div class="col-xs-6">
+                      <span class="float-left badge badge-pill badge-secondary mx-1">
+                        {{ game.g_time }}
+                      </span>
+                      <span class="float-left badge badge-pill badge-secondary">
+                        {{ $t('Games.Pitch') }} {{ game.g_pitch }}
+                      </span>
+                    </div>
+                    <div class="col-xs-6">
+                      <span class="float-right badge badge-pill badge-light mx-1">
+                        {{ game.c_code }}
+                      </span>
+                      <span class="float-right badge badge-pill">
+                        {{ game.d_phase }}
+                      </span>
+                    </div>
+                    <div class="col-12">
+                      <div class="btn-group btn-block row" role="group">
+                        <a class="col-5 text-right btn btn-sm">
+                          <b><span class="team" v-html="game.t_a_label"></span></b>
+                        </a>
+                        <span class="col-2 btn btn-sm btn-success">
+                          {{ game.g_score_a }} - {{ game.g_score_b }}
+                        </span>
+                        <a class="col-5 text-left btn btn-sm">
+                          <b><span class="team" v-html="game.t_b_label"></span></b>
+                        </a>
+                      </div>
+                    </div>
+                    <div v-if="showRefs" class="row">
+                      <div class="col text-left">
+                        <small><em v-html="game.r_1"></em></small>
+                      </div>
+                      <div class="col text-right">
+                        <small><em v-html="game.r_2"></em></small>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
       </div>
-    </div>
+    </el-main>
 
   </div>
 </template>
