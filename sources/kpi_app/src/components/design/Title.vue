@@ -1,9 +1,14 @@
 <template>
-  <div>
-    <h1 class="shadow-sm">
-      <i>{{ text }}</i>
-    </h1>
-  </div>
+  <el-affix target="body" :offset="0">
+    <div class="header">
+      <el-page-header
+        icon="el-icon-arrow-left"
+        :title="$t('nav.Back')"
+        :content="text"
+        @back="goBack"
+      />
+    </div>
+  </el-affix>
 </template>
 
 <script>
@@ -14,12 +19,21 @@ export default {
       type: String,
       required: true
     }
+  },
+  methods: {
+    goBack () {
+      this.$router.go(-1)
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-h1 {
+.header {
   font-size: 1.7rem;
+  height: 56px;
+  padding-top: 15px;
+  margin: 0 66px 5px 100px;
+  background-color: white;
 }
 </style>

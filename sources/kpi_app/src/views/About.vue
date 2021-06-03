@@ -1,6 +1,6 @@
 <template>
-  <div class="about">
-    <h1>{{ $t('nav.About') }}</h1>
+  <div>
+    <title-component :text="$t('nav.About')" />
 
     <HelloWorld :msg="$t('message')" />
 
@@ -18,12 +18,14 @@
 import { api } from '@/services/api'
 import HelloWorld from '@/components/HelloWorld.vue'
 import { userMixin } from '@/services/mixins'
+import TitleComponent from '@/components/design/Title'
 
 export default {
   name: 'About',
   mixins: [userMixin],
   components: {
-    HelloWorld
+    HelloWorld,
+    TitleComponent
   },
   methods: {
     async ajaxTest () {

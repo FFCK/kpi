@@ -1,16 +1,16 @@
 <template>
-    <div>
-        <Navbar />
+  <div>
+    <Navbar />
 
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
 
-        <AddToHomeScreen />
+    <AddToHomeScreen />
 
-    </div>
+  </div>
 </template>
 
 <script>
@@ -30,12 +30,13 @@ export default {
 @import "~bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 @import "~bootstrap-select/dist/css/bootstrap-select.min.css";
+@import "~element-plus/lib/theme-chalk/index.css";
 
 @import "./assets/styles/app.scss";
 
-body {
-    padding-top: 60px;
-}
+// body {
+//     padding-top: 60px;
+// }
 
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;

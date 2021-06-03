@@ -1,105 +1,121 @@
 <template>
-  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">
-      <img src="../assets/logo.png" width="30" height="30" alt="logo" />
-    </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbar"
-      aria-controls="navbar"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+  <div>
 
-    <div class="collapse navbar-collapse" id="navbar">
-      <ul class="navbar-nav mr-auto my-2 my-lg-0 navbar-nav-scroll">
-        <li class="nav-item">
-          <router-link class="nav-link" to="/" @click="collapse">
-            {{ $t("nav.Home") }}<span class="sr-only">(current)</span>
-          </router-link>
-        </li>
-        <li class="nav-item" v-if="prefs && prefs.event > 0">
-          <router-link class="nav-link" to="/games" @click="collapse">
-            {{ $t("nav.Games") }}
-          </router-link>
-        </li>
-        <li class="nav-item" v-if="prefs && prefs.event > 0">
-          <router-link class="nav-link" to="/ranking" @click="collapse">
-            {{ $t("nav.Ranking") }}
-          </router-link>
-        </li>
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarScrollingDropdown"
-            role="button"
-            data-toggle="dropdown"
-            aria-expanded="false"
-          >
-            {{ $t("nav.Staff") }}
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-            <li class="nav-item">
-              <router-link class="dropdown-item" to="/login" @click="collapse">
+    <el-affix target="body" :offset="0" id="logo">
+      <el-menu collapse>
+        <el-menu-item>
+          <img src="../assets/logo.png" width="30" height="30" alt="logo" />
+          <template #title>KPI Application</template>
+        </el-menu-item>
+      </el-menu>
+    </el-affix>
+
+    <el-affix target="body" :offset="0">
+      <el-menu>
+        <el-menu-item>
+          <i class="el-icon-menu" v-if="!isVisible" @click="isVisible = !isVisible"></i>
+          <i class="el-icon-caret-top" v-if="isVisible" @click="isVisible = !isVisible"></i>
+          <i class="el-icon-caret-bottom" v-if="!isVisible" @click="isVisible = !isVisible"></i>
+          <i class="el-icon-caret-left" v-if="!isCollapse && isVisible" @click="isCollapse = true"></i>
+          <i class="el-icon-caret-right" v-if="isCollapse && isVisible" @click="isCollapse = false"></i>
+        </el-menu-item>
+      </el-menu>
+    </el-affix>
+
+    <transition name="el-zoom-in-top">
+      <el-affix target="body" :offset="56" v-show="isVisible" class="transition-box">
+        <el-menu default-active="/" @open="handleOpen" @close="handleClose" :collapse="isCollapse" router>
+          <el-menu-item index="/">
+            <i class="el-icon-house"></i>
+            <template #title>{{ $t("nav.Home") }}</template>
+          </el-menu-item>
+          <el-menu-item index="/games">
+            <i class="el-icon-date"></i>
+            <template #title>{{ $t("nav.Games") }}</template>
+          </el-menu-item>
+          <el-menu-item index="/ranking">
+            <i class="el-icon-medal"></i>
+            <template #title>{{ $t("nav.Ranking") }}</template>
+          </el-menu-item>
+          <el-divider></el-divider>
+          <el-submenu index="1">
+            <template #title>
+              <i class="el-icon-service"></i>
+              <span>{{ $t("nav.Staff") }}</span>
+            </template>
+            <el-menu-item index="/login">
+              <i class="el-icon-user-solid"></i>
+              <template #title>
                 <span v-if="user">{{ $t("nav.MyAccount") }}</span>
                 <span v-else>{{ $t("nav.Login") }}</span>
-              </router-link>
-            </li>
-            <li v-if="user"><hr class="dropdown-divider" /></li>
-            <li class="nav-item" v-if="user">
-              <router-link class="dropdown-item" to="/game_report" @click="collapse">
+              </template>
+            </el-menu-item>
+            <el-menu-item-group v-if="user">
+              <template #title><span>{{ $t("nav.Staff") }}</span></template>
+              <el-menu-item index="/game_report">
+                <i class="el-icon-s-order"></i>
                 {{ $t("nav.GameReport") }}
-              </router-link>
-            </li>
-            <li class="nav-item" v-if="user">
-              <router-link class="dropdown-item" to="/stat_report" @click="collapse">
+              </el-menu-item>
+              <el-menu-item index="/stat_report">
+                <i class="el-icon-s-data"></i>
                 {{ $t("nav.StatReport") }}
-              </router-link>
-            </li>
-            <li class="nav-item" v-if="user">
-              <router-link class="dropdown-item" to="/scrutineering" @click="collapse">
+              </el-menu-item>
+              <el-menu-item index="/scrutineering">
+                <i class="el-icon-s-claim"></i>
                 {{ $t("nav.Scrutineering") }}
-              </router-link>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/about" @click="collapse">
-            {{ $t("nav.About") }}
-          </router-link>
-        </li>
-      </ul>
-      <span class="navbar-nav">
-        <LocaleSwitcher />
-      </span>
-      <span class="navbar-text"> {{ version }}</span>
-    </div>
-  </nav>
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+          <el-submenu>
+            <template #title>
+              <i class="el-icon-chat-line-round"></i>
+              <span>{{ $t("nav.Lang") }}</span>
+            </template>
+            <el-menu-item>
+              <locale-switcher />
+            </el-menu-item>
+          </el-submenu>
+          <el-menu-item index="/about">
+            <i class="el-icon-info"></i>
+            <template #title>{{ $t("nav.About") }}</template>
+          </el-menu-item>
+          <el-menu-item index="/about" disabled>
+            {{ version }}
+          </el-menu-item>
+        </el-menu>
+      </el-affix>
+    </transition>
+
+  </div>
 </template>
 
 <script>
 import LocaleSwitcher from '@/components/LocaleSwitcher'
 import { userMixin, prefsMixin } from '@/services/mixins'
-import $ from 'jquery'
 
 export default {
   name: 'Navbar',
   mixins: [userMixin, prefsMixin],
-  components: { LocaleSwitcher },
+  components: {
+    LocaleSwitcher
+  },
   computed: {
     version () {
       return 'v' + process.env.VUE_APP_VERSION
     }
   },
-
+  data () {
+    return {
+      isCollapse: true,
+      isVisible: false
+    }
+  },
   methods: {
-    collapse () {
-      $('.collapse').collapse('toggle')
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      console.log(key, keyPath)
     }
   }
 }
@@ -110,5 +126,23 @@ export default {
 
 .navbar a.nav-link.router-link-active {
   color: $orange;
+}
+
+.el-menu {
+  position: fixed;
+  z-index: 999;
+}
+
+transition {
+    z-index: 999;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+
+#logo .el-menu {
+  right: 0;
 }
 </style>

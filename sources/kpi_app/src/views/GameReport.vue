@@ -1,8 +1,6 @@
 <template>
-  <div class="container-sm">
-    <title-component
-      :text="$t('nav.GameReport')"
-    />
+  <div>
+    <title-component :text="$t('nav.GameReport')" />
   </div>
 </template>
 

@@ -1,15 +1,13 @@
 <template>
-    <div class="locale-switcher nav-link">
-        🌐
-        <select v-model="$i18n.locale" @change="changeLocale">
-            <option value="en-US">English</option>
-            <option value="fr-FR">Français</option>
-        </select>
-    </div>
+  <div>
+    <el-select v-model="$i18n.locale" @change="changeLocale">
+      <el-option value="en-US" label="English"></el-option>
+      <el-option value="fr-FR" label="Français"></el-option>
+    </el-select>
+  </div>
 </template>
 
 <script>
-import $ from 'jquery'
 import idbs from '@/services/idbStorage'
 import Preferences from '@/store/models/Preferences'
 
@@ -17,7 +15,6 @@ export default {
   name: 'LocaleSwitcher',
   methods: {
     changeLocale () {
-      $('.collapse').collapse('toggle')
       Preferences.update({
         where: 1,
         data: {
