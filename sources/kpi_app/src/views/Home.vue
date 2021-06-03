@@ -1,5 +1,6 @@
 <template>
-  <div class="container-sm">
+  <div>
+    <title-component text="KPI APPLICATION" />
 
     <event-selector />
 
@@ -35,11 +36,13 @@
 <script>
 import { logoutMixin, prefsMixin, userMixin } from '@/services/mixins'
 import EventSelector from '@/components/EventSelector.vue'
+import TitleComponent from '@/components/design/Title'
 
 export default {
   name: 'Home',
   mixins: [logoutMixin, prefsMixin, userMixin],
   components: {
+    TitleComponent,
     EventSelector
   },
   data () {

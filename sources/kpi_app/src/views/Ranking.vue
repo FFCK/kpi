@@ -1,8 +1,51 @@
 <template>
-  <div class="container-sm">
-    <title-component
-      :text="$t('nav.Ranking')"
-    />
+  <div>
+    <title-component :text="$t('nav.Ranking')" />
+
+    <el-button type="primary" icon="el-icon-edit" round></el-button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <el-button type="primary" icon="el-icon-edit" round></el-button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <el-button type="primary" icon="el-icon-edit" round></el-button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <el-button type="primary" icon="el-icon-edit" round></el-button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <el-button type="primary" icon="el-icon-edit" round></el-button>
   </div>
 </template>
 

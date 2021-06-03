@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * @param {Array} arr (array to distribute)
  * @param {String} property (field)
  * @returns {Array}
@@ -11,5 +11,6 @@ const groupBy = (arr, property) => {
     return memo
   }, {})
 }
-
+const globalArray = []
 const distributedArray = groupBy(globalArray, 'field')
+console.log(distributedArray)
