@@ -66,7 +66,7 @@
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu>
+          <el-submenu index="2">
             <template #title>
               <i class="el-icon-chat-line-round"></i>
               <span>{{ $t("nav.Lang") }}</span>
