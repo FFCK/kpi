@@ -14,7 +14,9 @@
         <el-col :span="10">
           <el-select v-model="fav_teams" multiple filterable collapse-tags
             :placeholder="$t('Games.Teams') + ' & ' + $t('Games.Refs')"
-            @change="changeFav">
+            @change="changeFav"
+            :key="favTeamsSelectKey"
+            >
             <el-option-group :label="$t('Games.Teams')">
               <el-option v-for="(team, index) in teams" :key="index" :value="team" />
             </el-option-group>
@@ -26,7 +28,6 @@
         <el-col :span="5">
           <el-select v-model="fav_dates" collapse-tags :placeholder="$t('Games.Dates')" @change="changeFav">
             <el-option :label="$t('Games.All')" value="" />
-            <el-divider></el-divider>
             <el-option v-for="(game_date, index) in game_dates" :key="index" :label="$d(new Date(game_date), 'short')" :value="game_date" />
             <el-divider></el-divider>
             <el-option :label="$t('Games.Today')" value="Today" />
@@ -194,7 +195,6 @@ import { api } from '@/services/api'
 import idbs from '@/services/idbStorage'
 import Games from '@/store/models/Games'
 import Preferences from '@/store/models/Preferences'
-import $ from 'jquery'
 import 'bootstrap-select/dist/js/bootstrap-select.min.js'
 import dayjs from 'dayjs'
 
@@ -220,6 +220,7 @@ export default {
       showRefs: true,
       fav_categories: [],
       fav_teams: [],
+      favTeamsSelectKey: 0,
       fav_refs: [],
       fav_dates: ''
     }
@@ -234,7 +235,8 @@ export default {
       )].sort()
       this.refs = [...new Set(
         allGames.map(x => x.r_1_name).concat(allGames.map(x => x.r_2_name))
-      )].sort()
+      )].filter(value => value !== 'null').sort()
+      this.favTeamsSelectKey++
     },
     async getFav () {
       await this.prefs
@@ -355,7 +357,6 @@ export default {
     this.loadGames()
   },
   updated () {
-    $('.selectpicker').selectpicker('refresh')
   }
 }
 </script>
