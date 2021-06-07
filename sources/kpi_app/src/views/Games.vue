@@ -2,8 +2,7 @@
   <div>
     <title-component :text="$t('nav.Games')" />
 
-    <el-main>
-
+    <div class="fixed-top filters">
       <el-row :gutter="4">
         <el-col :span="4">
           <el-select v-model="fav_categories" multiple collapse-tags
@@ -37,153 +36,19 @@
           </el-select>
         </el-col>
         <el-col :span="3">
-          Refs <el-switch v-model="showRefs" />
+          <el-button plain size="small">
+            Refs <el-switch v-model="showRefs" />
+          </el-button>
         </el-col>
         <el-col :span="2">
           <el-button icon="el-icon-refresh-right" plain @click="loadGames"></el-button>
         </el-col>
       </el-row>
+    </div>
 
-      <div class="mt-2">
-        <div>
-          <div class="content-table d-none d-sm-block">
-            <table class="table table-sm table-striped">
-              <caption>{{ filteredGamesCount }}/{{ gamesCount }} {{ $t('Games.games') }}</caption>
-              <thead class="thead-light">
-                <tr>
-                  <th>#</th>
-                  <th>{{ $t('Games.Date') }}</th>
-                  <th>{{ $t('Games.Cat') }}</th>
-                  <th>{{ $t('Games.Group') }}</th>
-                  <th>{{ $t('Games.Pitch') }}</th>
-                  <th class="cliquableNomEquipe">{{ $t('Games.Team') }} A</th>
-                  <th class="cliquableScore">{{ $t('Games.Score') }}</th>
-                  <th class="cliquableNomEquipe">{{ $t('Games.Team') }} B</th>
-                  <th v-if="showRefs">{{ $t('Games.Referee') }}</th>
-                </tr>
-              </thead>
-              <tbody v-for="(game_group, index) in games" :key="index">
-                <tr class="thead-light">
-                  <th colspan="8" class="text-left">{{ $d(new Date(game_group.goupDate), 'short') }}</th>
-                  <th class="text-right">
-                    <button class="btn btn-sm btn-light" @click="scrollTop">
-                      <i class="bi bi-caret-up-square"></i>
-                    </button>
-                  </th>
-                </tr>
-                <tr v-for="game in game_group.filtered" :key="game.g_id">
-                  <td class="align-middle">
-                    <span class="text-center badge">
-                      {{ game.g_number }}
-                    </span>
-                  </td>
-                  <td>
-                    <span class="float-right badge badge-light">{{ game.g_time }}</span>
-                  </td>
-                  <td class="align-middle">
-                    <span class="text-center badge">
-                      {{ game.c_code }}
-                    </span>
-                  </td>
-                  <td class="align-middle">
-                    <span class="text-center badge">
-                      {{ game.d_phase }}
-                    </span>
-                  </td>
-                  <td class="align-middle">
-                    <span class="text-center badge badge-secondary">{{ game.g_pitch }}</span>
-                  </td>
-                  <td class="text-center align-middle">
-                    <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
-                      <span class="team" v-html="game.t_a_label"></span>
-                    </a>
-                  </td>
-                  <td>
-                    <div class="row text-center">
-                      <img
-                        class="img2 col d-none d-lg-block img-responsive"
-                        :src="'/img/KIP/logo/'+game.t_a_club+'-logo.png'"
-                        :alt="game.t_a_club"
-                        onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
-                        width="30">
-                      <span class="col btn btn-sm btn-outline-dark text-nowrap">{{ game.g_score_a }} - {{ game.g_score_b }}</span>
-                      <img
-                        class="img2 col d-none d-lg-block img-responsive"
-                        :src="'/img/KIP/logo/'+game.t_b_club+'-logo.png'"
-                        :alt="game.t_b_club"
-                        onerror="this.onerror=null; this.src='/kpi_app/assets/logo.png'"
-                        width="30">
-                    </div>
-                  </td>
-                  <td class="text-center align-middle">
-                    <a href="" class="btn btn-sm btn-outline-dark text-nowrap">
-                      <span class="team" v-html="game.t_b_label"></span>
-                    </a>
-                  </td>
-                  <td v-if="showRefs">
-                    <div>
-                      <small v-html="game.r_1"></small>
-                    </div>
-                    <div>
-                      <small v-html="game.r_2"></small>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <game-list :games="games" :showRefs="showRefs" :gamesCount="gamesCount" :filteredGamesCount="filteredGamesCount" />
 
-          <div class="content-table d-block d-sm-none">
-            <table class="table table-sm table-striped" style="table-layout: auto; width: 100%">
-              <tbody>
-                <tr v-for="game in games" :key="game.g_id">
-                  <td class="text-center">
-                    <div class="col-xs-6">
-                      <span class="float-left badge badge-pill badge-secondary mx-1">
-                        {{ game.g_time }}
-                      </span>
-                      <span class="float-left badge badge-pill badge-secondary">
-                        {{ $t('Games.Pitch') }} {{ game.g_pitch }}
-                      </span>
-                    </div>
-                    <div class="col-xs-6">
-                      <span class="float-right badge badge-pill badge-light mx-1">
-                        {{ game.c_code }}
-                      </span>
-                      <span class="float-right badge badge-pill">
-                        {{ game.d_phase }}
-                      </span>
-                    </div>
-                    <div class="col-12">
-                      <div class="btn-group btn-block row" role="group">
-                        <a class="col-5 text-right btn btn-sm">
-                          <b><span class="team" v-html="game.t_a_label"></span></b>
-                        </a>
-                        <span class="col-2 btn btn-sm btn-success">
-                          {{ game.g_score_a }} - {{ game.g_score_b }}
-                        </span>
-                        <a class="col-5 text-left btn btn-sm">
-                          <b><span class="team" v-html="game.t_b_label"></span></b>
-                        </a>
-                      </div>
-                    </div>
-                    <div v-if="showRefs" class="row">
-                      <div class="col text-left">
-                        <small><em v-html="game.r_1"></em></small>
-                      </div>
-                      <div class="col text-right">
-                        <small><em v-html="game.r_2"></em></small>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-        </div>
-      </div>
-    </el-main>
+    <el-backtop></el-backtop>
 
   </div>
 </template>
@@ -197,12 +62,14 @@ import Games from '@/store/models/Games'
 import Preferences from '@/store/models/Preferences'
 import 'bootstrap-select/dist/js/bootstrap-select.min.js'
 import dayjs from 'dayjs'
+import GameList from '@/components/GameList.vue'
 
 export default {
   name: 'Games',
   mixins: [prefsMixin],
   components: {
-    TitleComponent
+    TitleComponent,
+    GameList
   },
   computed: {
     gamesCount () {
@@ -227,7 +94,8 @@ export default {
   },
   methods: {
     async loadCategories () {
-      const allGames = await Games.all()
+      let allGames = await Games.all()
+      allGames = [...new Set(allGames)]
       this.categories = [...new Set(allGames.map(x => x.c_code))].sort()
       this.game_dates = [...new Set(allGames.map(x => x.g_date))].sort()
       this.teams = [...new Set(
@@ -308,14 +176,15 @@ export default {
       this.filteredGamesCount = filteredGames.length
 
       const filteredGamesDates = [...new Set(filteredGames.map(x => x.g_date))]
-      this.games = []
+      const games = []
       filteredGamesDates.forEach(goupDate => {
         const filtered = filteredGames.filter(value => value.g_date === goupDate)
-        this.games.push({
+        games.push({
           goupDate: goupDate,
           filtered: filtered
         })
       })
+      this.games = games
     },
     async getGames () {
       if (Games.query().count() === 0) {
@@ -362,16 +231,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-div.content-table {
-  margin-left: -14px;
-  margin-right: -14px;
+.filters {
+  margin-top: 62px;
+  margin-left: 10px;
 }
-
-table {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  table-layout: auto;
-  width: 100%;
-}
-
 </style>
