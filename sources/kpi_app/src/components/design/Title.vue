@@ -33,7 +33,8 @@ export default {
   font-size: 1.7rem;
   height: 56px;
   padding-top: 15px;
-  margin: 0 66px 0 100px;
+  padding-left: 10px;
+  margin: 0 66px 0 71px;
   background-color: white;
 }
 </style>
