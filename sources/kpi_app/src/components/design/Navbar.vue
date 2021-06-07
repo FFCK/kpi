@@ -4,7 +4,7 @@
     <el-affix target="body" :offset="0" id="logo">
       <el-menu collapse>
         <el-menu-item>
-          <img src="../assets/logo.png" width="30" height="30" alt="logo" />
+          <img src="@/assets/logo.png" width="30" height="30" alt="logo" />
           <template #title>KPI Application</template>
         </el-menu-item>
       </el-menu>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import LocaleSwitcher from '@/components/LocaleSwitcher'
+import LocaleSwitcher from '@/components/design/LocaleSwitcher'
 import { userMixin, prefsMixin } from '@/services/mixins'
 
 export default {
@@ -128,13 +128,8 @@ export default {
   color: $orange;
 }
 
-.el-menu {
-  position: fixed;
-  z-index: 999;
-}
-
 transition {
-    z-index: 999;
+    z-index: 2000;
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {

@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import Navbar from '@/components/Navbar'
-import AddToHomeScreen from '@/components/AddToHomeScreen.vue'
+import Navbar from '@/components/design/Navbar'
+import AddToHomeScreen from '@/components/design/AddToHomeScreen.vue'
 
 export default {
   components: {
@@ -31,12 +31,9 @@ export default {
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 @import "~bootstrap-select/dist/css/bootstrap-select.min.css";
 @import "~element-plus/lib/theme-chalk/index.css";
+@import '~element-plus/lib/theme-chalk/display.css';
 
 @import "./assets/styles/app.scss";
-
-// body {
-//     padding-top: 60px;
-// }
 
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -55,5 +52,12 @@ export default {
 .fade-leave-to {
   transform: translateX(20px);
   opacity: 0;
+}
+.filters {
+  z-index: 99;
+}
+.el-menu {
+  position: fixed;
+  z-index: 1100;
 }
 </style>
