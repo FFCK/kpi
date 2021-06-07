@@ -15,16 +15,13 @@
         <el-menu-item>
           <i class="el-icon-menu" v-if="!isVisible" @click="isVisible = !isVisible"></i>
           <i class="el-icon-caret-top" v-if="isVisible" @click="isVisible = !isVisible"></i>
-          <i class="el-icon-caret-bottom" v-if="!isVisible" @click="isVisible = !isVisible"></i>
-          <i class="el-icon-caret-left" v-if="!isCollapse && isVisible" @click="isCollapse = true"></i>
-          <i class="el-icon-caret-right" v-if="isCollapse && isVisible" @click="isCollapse = false"></i>
         </el-menu-item>
       </el-menu>
     </el-affix>
 
     <transition name="el-zoom-in-top">
       <el-affix target="body" :offset="56" v-show="isVisible" class="transition-box">
-        <el-menu default-active="/" @open="handleOpen" @close="handleClose" :collapse="isCollapse" router>
+        <el-menu default-active="/" @open="handleOpen" @close="handleClose" router>
           <el-menu-item index="/">
             <i class="el-icon-house"></i>
             <template #title>{{ $t("nav.Home") }}</template>
