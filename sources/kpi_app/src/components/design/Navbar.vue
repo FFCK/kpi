@@ -4,24 +4,26 @@
     <el-affix target="body" :offset="0" id="logo">
       <el-menu collapse>
         <el-menu-item>
-          <img src="@/assets/logo.png" width="30" height="30" alt="logo" />
-          <template #title>KPI Application</template>
+          <router-link to="/about">
+            <img src="@/assets/logo.png" width="30" height="30" alt="logo" />
+            <template #title>KPI Application</template>
+          </router-link>
         </el-menu-item>
       </el-menu>
     </el-affix>
 
     <el-affix target="body" :offset="0">
       <el-menu>
-        <el-menu-item>
-          <i class="el-icon-menu" v-if="!isVisible" @click="isVisible = !isVisible"></i>
-          <i class="el-icon-caret-top" v-if="isVisible" @click="isVisible = !isVisible"></i>
+        <el-menu-item @click="isVisible = !isVisible">
+          <i class="el-icon-menu" v-if="!isVisible"></i>
+          <i class="el-icon-caret-top" v-if="isVisible"></i>
         </el-menu-item>
       </el-menu>
     </el-affix>
 
     <transition name="el-zoom-in-top">
       <el-affix target="body" :offset="56" v-show="isVisible" class="transition-box">
-        <el-menu default-active="/" @open="handleOpen" @close="handleClose" router>
+        <el-menu default-active="/" @open="handleOpen" @close="handleClose" router @select="handleSelect">
           <el-menu-item index="/">
             <i class="el-icon-house"></i>
             <template #title>{{ $t("nav.Home") }}</template>
@@ -108,11 +110,16 @@ export default {
     }
   },
   methods: {
-    handleOpen (key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose (key, keyPath) {
-      console.log(key, keyPath)
+    // handleOpen (key, keyPath) {
+    //   console.log(key, keyPath)
+    // },
+    // handleClose (key, keyPath) {
+    //   console.log(key, keyPath)
+    // },
+    handleSelect (key, keyPath) {
+      console.log('key: ' + key)
+      console.log('keyPath: ' + keyPath)
+      this.isVisible = false
     }
   }
 }

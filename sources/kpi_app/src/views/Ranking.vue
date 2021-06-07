@@ -2,60 +2,20 @@
   <div>
     <title-component :text="$t('nav.Ranking')" />
 
-    <el-button type="primary" icon="el-icon-edit" round></el-button>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <el-button type="primary" icon="el-icon-edit" round></el-button>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <el-button type="primary" icon="el-icon-edit" round></el-button>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <el-button type="primary" icon="el-icon-edit" round></el-button>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <el-button type="primary" icon="el-icon-edit" round></el-button>
+    <coming-soon />
+
   </div>
 </template>
 
 <script>
 import TitleComponent from '@/components/design/Title'
+import ComingSoon from '@/components/design/ComingSoon.vue'
 
 export default {
   name: 'Ranking',
   components: {
-    TitleComponent
+    TitleComponent,
+    ComingSoon
   }
 }
 </script>

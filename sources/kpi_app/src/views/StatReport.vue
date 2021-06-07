@@ -4,16 +4,20 @@
 
     <span class="bi bi-bar-chart-line h1 text-primary"></span>
 
+    <coming-soon />
+
   </div>
 </template>
 
 <script>
 import TitleComponent from '@/components/design/Title'
+import ComingSoon from '@/components/design/ComingSoon.vue'
 
 export default {
   name: 'StatReport',
   components: {
-    TitleComponent
+    TitleComponent,
+    ComingSoon
   }
 }
 </script>
