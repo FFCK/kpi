@@ -29,7 +29,6 @@ export default {
 @import "./assets/styles/custom.scss";
 @import "~bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons.css";
-@import "~bootstrap-select/dist/css/bootstrap-select.min.css";
 @import "~element-plus/lib/theme-chalk/index.css";
 @import '~element-plus/lib/theme-chalk/display.css';
 

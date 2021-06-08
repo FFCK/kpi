@@ -60,7 +60,6 @@ import { api } from '@/services/api'
 import idbs from '@/services/idbStorage'
 import Games from '@/store/models/Games'
 import Preferences from '@/store/models/Preferences'
-import 'bootstrap-select/dist/js/bootstrap-select.min.js'
 import dayjs from 'dayjs'
 import GameList from '@/components/GameList.vue'
 

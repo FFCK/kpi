@@ -1,6 +1,6 @@
 <template>
-  <div v-if="prefs" class="my-2">
-    <div v-if="prefs.event > 0">
+  <div v-if="prefs" class="container mt-3">
+    <div v-if="prefs.event > 0" class="h5">
       {{ prefs.event_name }} - {{ prefs.event_place }}
       <button class="btn btn-secondary btn-sm" @click="loadEvents" v-if="!showSelector">
         <i class="bi bi-arrow-left-right"></i>
@@ -12,13 +12,19 @@
       </button>
     </div>
 
-    <form class="form-inline" v-if="showSelector">
-      <select class="form-control col-8" v-model="eventSelected" @change="changeButton = true">
-        <option disabled value="0">▼ {{ $t('Event.PleaseSelectOne') }} ▼</option>
-        <option :value="event.id" v-for="event in events" :key="event.id">{{ event.libelle }} - {{ event.place }}</option>
-      </select>
-      <button class="btn btn-primary col-2" @click.prevent="changeEvent" v-if="changeButton">{{ $t('Event.Change') }}</button>
-      <button class="btn btn-secondary col-2" @click.prevent="cancelEvent">{{ $t('Event.Cancel') }}</button>
+    <form class="row align-items-center" v-if="showSelector">
+      <div class="col-8">
+        <select class="form-control" v-model="eventSelected" @change="changeButton = true">
+          <option disabled value="0">▼ {{ $t('Event.PleaseSelectOne') }} ▼</option>
+          <option :value="event.id" v-for="event in events" :key="event.id">{{ event.libelle }} - {{ event.place }}</option>
+        </select>
+      </div>
+      <div class="col-2">
+        <button class="btn btn-secondary" @click.prevent="cancelEvent">{{ $t('Event.Cancel') }}</button>
+      </div>
+      <div class="col-2">
+        <button class="btn btn-primary" @click.prevent="changeEvent" v-if="changeButton">{{ $t('Event.Change') }}</button>
+      </div>
     </form>
   </div>
 </template>
