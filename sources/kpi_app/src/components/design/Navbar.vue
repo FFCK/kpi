@@ -23,7 +23,7 @@
 
     <transition name="el-zoom-in-top">
       <el-affix target="body" :offset="56" v-show="isVisible" class="transition-box">
-        <el-menu default-active="/" @open="handleOpen" @close="handleClose" router @select="handleSelect">
+        <el-menu default-active="/" router @select="handleSelect">
           <el-menu-item index="/">
             <i class="el-icon-house"></i>
             <template #title>{{ $t("nav.Home") }}</template>
@@ -110,15 +110,7 @@ export default {
     }
   },
   methods: {
-    // handleOpen (key, keyPath) {
-    //   console.log(key, keyPath)
-    // },
-    // handleClose (key, keyPath) {
-    //   console.log(key, keyPath)
-    // },
     handleSelect (key, keyPath) {
-      console.log('key: ' + key)
-      console.log('keyPath: ' + keyPath)
       this.isVisible = false
     }
   }

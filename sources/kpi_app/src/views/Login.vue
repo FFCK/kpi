@@ -1,6 +1,6 @@
 <template>
   <div>
-    <title-component :text="$t('nav.Login')" />
+    <title-component :text="user ? $t('nav.MyAccount') : $t('Login.Authentication')" />
 
     <div v-if="user">
       {{ $t("Login.Welcome") }} {{ user.firstname }} {{ user.name }}
@@ -20,42 +20,37 @@
       </button>
     </div>
 
-    <div v-if="!user">
-      <title-component
-        :text="$t('Login.Authentication')"
-      />
-
-      <div class="row justify-content-center mb-4">
-        <form class="col-6" @submit.prevent="formSubmit">
-          <div class="form-group">
-            <label>{{ $t("Login.Login") }}</label>
-            <input
-              type="tel"
-              class="form-control"
-              v-model.number="input.login"
-              aria-describedby="loginHelp"
-            />
-            <small id="loginHelp" class="form-text text-muted">{{
-              $t("Login.LoginHelp")
-            }}</small>
-          </div>
-          <div class="form-group">
-            <label>{{ $t("Login.Password") }}</label>
-            <input
-              type="password"
-              class="form-control"
-              v-model="input.password"
-            />
-          </div>
-          <button
-            type="submit"
-            class="btn btn-primary"
-          >
-            {{ $t("Login.Submit") }}
-          </button>
-        </form>
-      </div>
+    <div class="row justify-content-center mb-4" v-if="!user">
+      <form class="col-6" @submit.prevent="formSubmit">
+        <div class="form-group">
+          <label>{{ $t("Login.Login") }}</label>
+          <input
+            type="tel"
+            class="form-control"
+            v-model.number="input.login"
+            aria-describedby="loginHelp"
+          />
+          <small id="loginHelp" class="form-text text-muted">{{
+            $t("Login.LoginHelp")
+          }}</small>
+        </div>
+        <div class="form-group">
+          <label>{{ $t("Login.Password") }}</label>
+          <input
+            type="password"
+            class="form-control"
+            v-model="input.password"
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary"
+        >
+          {{ $t("Login.Submit") }}
+        </button>
+      </form>
     </div>
+
   </div>
 </template>
 
