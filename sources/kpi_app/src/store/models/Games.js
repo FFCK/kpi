@@ -37,10 +37,12 @@ export default class Games extends Model {
       t_a_number: this.number(0),
       t_a_label: this.string(''),
       t_a_club: this.string(''),
+      t_a_logo: this.string(''),
       t_b_id: this.number(0),
       t_b_number: this.number(0),
       t_b_label: this.string(''),
-      t_b_club: this.string('')
+      t_b_club: this.string(''),
+      t_b_logo: this.string('')
     }
   }
 }

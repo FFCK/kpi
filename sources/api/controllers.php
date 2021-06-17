@@ -36,6 +36,7 @@ function GamesController ($method, $route) {
     m.Id_equipeA t_a_id, m.Id_equipeB t_b_id,
     cea.Libelle t_a_label, ceb.Libelle t_b_label, cea.Numero t_a_number, ceb.Numero t_b_number,
     cea.Code_club t_a_club, ceb.Code_club t_b_club, 
+    cea.logo t_a_logo, ceb.logo t_b_logo,
     m.Arbitre_principal r_1, m.Arbitre_secondaire r_2, 
     m.Matric_arbitre_principal r_1_id, m.Matric_arbitre_secondaire r_2_id, 
     CONCAT(lcp.Nom, ' ', lcp.Prenom) r_1_name, 

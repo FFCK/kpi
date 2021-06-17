@@ -3,7 +3,7 @@
     <div class="content-table">
       <table class="table table-sm table-striped mt-2">
         <caption>{{ filteredGamesCount }}/{{ gamesCount }} {{ $t('Games.games') }}</caption>
-        <thead class="thead-light">
+        <thead class="table-light">
           <tr>
             <th class="align-middle small d-none d-lg-table-cell"><b>#</b></th>
             <th class="align-middle text-start text-nowrap d-none d-lg-table-cell"><b>{{ $t('Games.Cat') }} | {{ $t('Games.Group') }}</b></th>
@@ -11,15 +11,15 @@
               <span class="badge bg-light text-dark me-1">{{ $t('Games.Time') }}</span>
               <span class="badge bg-secondary">{{ $t('Games.Pitch') }}</span>
             </th>
-            <th class="cliquableNomEquipe">{{ $t('Games.Team') }} A</th>
+            <th class="cliquableNomEquipe text-end pe-5">{{ $t('Games.Team') }} A</th>
             <th class="cliquableScore">{{ $t('Games.Score') }}</th>
-            <th class="cliquableNomEquipe">{{ $t('Games.Team') }} B</th>
+            <th class="cliquableNomEquipe text-start ps-5">{{ $t('Games.Team') }} B</th>
             <th class="d-none d-lg-table-cell" v-if="showRefs">{{ $t('Games.Referee') }}</th>
           </tr>
         </thead>
 
         <tbody v-for="game_group in games" :key="game_group.goupDate">
-          <tr class="thead-dark">
+          <tr class="table-dark">
             <th colspan="100%" class="align-middle text-start pl-3">{{ $d(new Date(game_group.goupDate), 'short') }}</th>
           </tr>
 
@@ -45,12 +45,12 @@
                 </span>
               </div>
               <div :class="{ btn: true, 'btn-sm': true, 'text-nowrap': true, team_name: true, winner: game.g_score_a > game.g_score_b }" v-html="game.t_a_label"></div>
-              <img class="team_logo d-none d-lg-block float-end mt-2" src="//medias.lequipe.fr/img-flags-default/AUT/140">
+              <img class="team_logo float-end" :src="'http://localhost:8087/img/'+game.t_a_logo">
               <div class="d-md-block d-lg-none text-start" v-if="showRefs">
                 <small v-html="game.r_1"></small>
               </div>
             </td>
-            <td class="text-secondary small align-middle text-center">
+            <td class="text-secondary small text-center">
               <div class="d-md-block d-lg-none text-center">
                 <i>#{{ game.g_number }}</i>
               </div>
@@ -67,7 +67,7 @@
                 <span class="badge bg-secondary">{{ $t('Games.Pitch') }} {{ game.g_pitch }}</span>
               </div>
               <div :class="{ btn: true, 'btn-sm': true, 'text-nowrap': true, team_name: true, winner: game.g_score_b > game.g_score_a }" v-html="game.t_b_label"></div>
-              <img class="team_logo d-none d-lg-block float-start mt-2" src="//medias.lequipe.fr/img-flags-default/AUT/140">
+              <img class="team_logo float-start" :src="'http://localhost:8087/img/'+game.t_b_logo">
               <div class="d-md-block d-lg-none text-end" v-if="showRefs">
                 <small v-html="game.r_2"></small>
               </div>
@@ -131,7 +131,7 @@ export default {
 }
 
 .team_logo {
-  width: 20px;
+  width: 30px;
 }
 
 </style>
