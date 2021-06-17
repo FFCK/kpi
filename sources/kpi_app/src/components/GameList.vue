@@ -45,7 +45,7 @@
                 </span>
               </div>
               <div :class="{ btn: true, 'btn-sm': true, 'text-nowrap': true, team_name: true, winner: game.g_score_a > game.g_score_b }" v-html="game.t_a_label"></div>
-              <img class="team_logo float-end" :src="'http://localhost:8087/img/'+game.t_a_logo">
+              <img class="team_logo float-end" :src="'http://localhost:8087/img/' + game.t_a_logo">
               <div class="d-md-block d-lg-none text-start" v-if="showRefs">
                 <small v-html="game.r_1"></small>
               </div>
@@ -67,7 +67,7 @@
                 <span class="badge bg-secondary">{{ $t('Games.Pitch') }} {{ game.g_pitch }}</span>
               </div>
               <div :class="{ btn: true, 'btn-sm': true, 'text-nowrap': true, team_name: true, winner: game.g_score_b > game.g_score_a }" v-html="game.t_b_label"></div>
-              <img class="team_logo float-start" :src="'http://localhost:8087/img/'+game.t_b_logo">
+              <img class="team_logo float-start" :src="'http://localhost:8087/img/' + game.t_b_logo">
               <div class="d-md-block d-lg-none text-end" v-if="showRefs">
                 <small v-html="game.r_2"></small>
               </div>
