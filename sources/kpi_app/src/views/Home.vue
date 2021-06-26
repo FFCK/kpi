@@ -5,14 +5,19 @@
     <event-selector />
 
     <div v-if="prefs">
-      <div v-if="prefs.event > 0" class="row justify-content-around my-5">
-        <button class="btn btn-primary btn-lg col-5" @click="changePage('Games')">
+      <XyzTransitionGroup
+        appear
+        v-if="prefs.event > 0"
+        class="row justify-content-around my-5"
+        xyz="fade flip-up"
+        >
+        <button class="btn btn-primary btn-lg col-5" @click="changePage('Games')" key="Game">
           {{ $t("nav.Games") }}
         </button>
-        <button class="btn btn-primary btn-lg col-5" @click="changePage('Ranking')">
+        <button class="btn btn-primary btn-lg col-5" @click="changePage('Ranking')" key="Ranking">
           {{ $t("nav.Ranking") }}
         </button>
-      </div>
+      </XyzTransitionGroup>
     </div>
 
     <div class="row justify-content-around my-5" v-if="user">
