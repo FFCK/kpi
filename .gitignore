@@ -39,3 +39,5 @@ sources/commun/log_cron.txt
 sources/kpi_app/dist/*
 sources/kpi_app/node_modules/*
 sources/kpi_app/.env
+sources/api/files/*
+!sources/api/files/.gitkeep
