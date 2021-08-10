@@ -34,6 +34,16 @@ export default {
 
 @import "./assets/styles/app.scss";
 
+@font-face {
+  font-family: "LCD";
+  src: url(./assets/fonts/7segments/7segments.ttf);
+}
+.lcd {
+  font-family: "LCD", Helvetica, Arial;
+  font-weight: bolder;
+  min-width: 26px;
+}
+
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
