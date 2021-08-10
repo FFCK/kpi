@@ -202,12 +202,18 @@ export default {
       await this.prefs
       await api.get('/games/' + this.prefs.event)
         .then(async result => {
+          const gamelist = await result.data.map(game => {
+            game.r_1 = game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')')
+            game.r_2 = game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')')
+            console.log(game)
+            return game
+          })
           await Games.deleteAll()
           await Games.insertOrUpdate({
-            data: result.data
+            data: gamelist
           })
           idbs.dbClear('games')
-          result.data.forEach(element => {
+          gamelist.forEach(element => {
             idbs.dbPut('games', element)
           })
           this.loadCategories()

@@ -54,10 +54,15 @@
               <div class="d-md-block d-lg-none text-center">
                 <i>#{{ game.g_number }}</i>
               </div>
-              <div class="btn btn-sm btn-dark text-nowrap">
-                <span :class="{ winner: game.g_score_a > game.g_score_b }">{{ game.g_score_a }}</span>
-                <span> - </span>
-                <span :class="{ winner: game.g_score_b > game.g_score_a }">{{ game.g_score_b }}</span>
+              <div>
+                <span :class="{
+                  btn: true, 'btn-sm': true, 'btn-dark': true,
+                  'text-nowrap': true, 'score': true, lcd: true,
+                  winner: game.g_score_a > game.g_score_b }">{{ game.g_score_a }}</span>
+                <span :class="{
+                  btn: true, 'btn-sm': true, 'btn-dark': true,
+                  'text-nowrap': true, 'score': true, lcd: true,
+                  winner: game.g_score_b > game.g_score_a }">{{ game.g_score_b }}</span>
               </div>
               <div class="d-md-block d-lg-none text-center" v-if="showRefs">&nbsp;</div>
             </td>
@@ -116,6 +121,10 @@ export default {
 </script>
 
 <style scoped>
+.score {
+  margin-left: 1px;
+  margin-right: 1px;
+}
 .content-table {
   margin-top: 52px;
 }

@@ -1,8 +1,8 @@
 <template>
   <div v-if="prefs" class="container mt-3">
-    <div v-if="prefs.event > 0" class="h5">
+    <div v-if="prefs.event > 0" role="button" class="h5" @click="loadEvents">
       {{ prefs.event_name }} - {{ prefs.event_place }}
-      <button class="btn btn-secondary btn-sm" @click="loadEvents" v-if="!showSelector">
+      <button class="btn btn-secondary btn-sm" v-if="!showSelector">
         <i class="bi bi-arrow-left-right"></i>
       </button>
     </div>
