@@ -5,30 +5,62 @@
     <div class="fixed-top filters">
       <el-row :gutter="4">
         <el-col :span="4">
-          <el-select v-model="fav_categories" multiple collapse-tags
-            :placeholder="$t('Games.Categories')" @change="changeFav">
-            <el-option v-for="(categorie, index) in categories" :key="index" :label="categorie" :value="categorie" />
+          <el-select
+            v-model="fav_categories"
+            multiple
+            collapse-tags
+            :placeholder="$t('Games.Categories')"
+            @change="changeFav"
+          >
+            <el-option
+              v-for="(categorie, index) in categories"
+              :key="index"
+              :label="categorie"
+              :value="categorie"
+            />
           </el-select>
         </el-col>
         <el-col :span="10">
-          <el-select v-model="fav_teams" multiple filterable collapse-tags
+          <el-select
+            :key="favTeamsSelectKey"
+            v-model="fav_teams"
+            multiple
+            filterable
+            collapse-tags
             :placeholder="$t('Games.Teams') + ' & ' + $t('Games.Refs')"
             @change="changeFav"
-            :key="favTeamsSelectKey"
-            >
+          >
             <el-option-group :label="$t('Games.Teams')">
-              <el-option v-for="(team, index) in teams" :key="index" :value="team" />
+              <el-option
+                v-for="(team, index) in teams"
+                :key="index"
+                :value="team"
+              />
             </el-option-group>
             <el-option-group :label="$t('Games.Refs')">
-              <el-option v-for="(ref, index) in refs" :key="index" :value="ref" />
+              <el-option
+                v-for="(ref, index) in refs"
+                :key="index"
+                :value="ref"
+              />
             </el-option-group>
           </el-select>
         </el-col>
         <el-col :span="5">
-          <el-select v-model="fav_dates" collapse-tags :placeholder="$t('Games.Dates')" @change="changeFav">
+          <el-select
+            v-model="fav_dates"
+            collapse-tags
+            :placeholder="$t('Games.Dates')"
+            @change="changeFav"
+          >
             <el-option :label="$t('Games.All')" value="" />
-            <el-option v-for="(game_date, index) in game_dates" :key="index" :label="$d(new Date(game_date), 'short')" :value="game_date" />
-            <el-divider></el-divider>
+            <el-option
+              v-for="(game_date, index) in game_dates"
+              :key="index"
+              :label="$d(new Date(game_date), 'short')"
+              :value="game_date"
+            />
+            <el-divider />
             <el-option :label="$t('Games.Today')" value="Today" />
             <el-option :label="$t('Games.Tomorow')" value="Tomorow" />
             <el-option :label="$t('Games.Prev')" value="Prev" />
@@ -41,21 +73,25 @@
           </el-button>
         </el-col>
         <el-col :span="2">
-          <el-button icon="el-icon-refresh-right" plain @click="loadGames"></el-button>
+          <el-button icon="el-icon-refresh-right" plain @click="loadGames" />
         </el-col>
       </el-row>
     </div>
 
-    <game-list :games="games" :showRefs="showRefs" :gamesCount="gamesCount" :filteredGamesCount="filteredGamesCount" />
+    <game-list
+      :games="games"
+      :show-refs="showRefs"
+      :games-count="gamesCount"
+      :filtered-games-count="filteredGamesCount"
+    />
 
-    <el-backtop></el-backtop>
-
+    <el-backtop />
   </div>
 </template>
 
 <script>
 import TitleComponent from '@/components/design/Title'
-import { prefsMixin } from '@/services/mixins'
+import { prefsMixin, gamesMixin } from '@/services/mixins'
 import { api } from '@/services/api'
 import idbs from '@/services/idbStorage'
 import Games from '@/store/models/Games'
@@ -65,16 +101,11 @@ import GameList from '@/components/GameList.vue'
 
 export default {
   name: 'Games',
-  mixins: [prefsMixin],
   components: {
     TitleComponent,
     GameList
   },
-  computed: {
-    gamesCount () {
-      return Games.query().count()
-    }
-  },
+  mixins: [prefsMixin, gamesMixin],
   data () {
     return {
       games: [],
@@ -91,6 +122,20 @@ export default {
       fav_dates: ''
     }
   },
+  computed: {
+    gamesCount () {
+      return Games.query().count()
+    }
+  },
+  created () {
+    this.getGames()
+    this.getFav()
+  },
+  mounted () {
+    this.loadGames()
+  },
+  updated () {
+  },
   methods: {
     async loadCategories () {
       let allGames = await Games.all()
@@ -99,13 +144,14 @@ export default {
       this.game_dates = [...new Set(allGames.map(x => x.g_date))].sort()
       this.teams = [...new Set(
         allGames.map(x => x.t_a_label).concat(allGames.map(x => x.t_b_label))
-      )].sort()
+      )].filter(value => value !== null).sort()
       this.refs = [...new Set(
         allGames.map(x => x.r_1_name).concat(allGames.map(x => x.r_2_name))
-      )].filter(value => value !== 'null').sort()
+      )].filter(value => value !== null).sort()
       this.favTeamsSelectKey++
     },
     async getFav () {
+      await this.getPrefs()
       await this.prefs
       this.fav_categories = JSON.parse(this.prefs.fav_categories)
       this.fav_teams = JSON.parse(this.prefs.fav_teams)
@@ -163,12 +209,16 @@ export default {
       filteredGames = filteredGames.map(value => {
         value.t_a_label = (this.fav_teams.includes(value.t_a_label)) ? '<mark>' + value.t_a_label + '</mark>' : value.t_a_label
         value.t_b_label = (this.fav_teams.includes(value.t_b_label)) ? '<mark>' + value.t_b_label + '</mark>' : value.t_b_label
-        value.r_1 = (this.fav_teams.includes(value.r_1.split(' (')[0])) ? value.r_1.replace(value.r_1.split(' (')[0], '<mark>' + value.r_1.split(' (')[0] + '</mark>') : value.r_1
-        value.r_2 = (this.fav_teams.includes(value.r_2.split(' (')[0])) ? value.r_2.replace(value.r_2.split(' (')[0], '<mark>' + value.r_2.split(' (')[0] + '</mark>') : value.r_2
-        value.r_1 = (this.fav_teams.includes(value.r_1.split('(').pop().split(')')[0])) ? value.r_1.replace(value.r_1.split('(').pop().split(')')[0], '<mark>' + value.r_1.split('(').pop().split(')')[0] + '</mark>') : value.r_1
-        value.r_2 = (this.fav_teams.includes(value.r_2.split('(').pop().split(')')[0])) ? value.r_2.replace(value.r_2.split('(').pop().split(')')[0], '<mark>' + value.r_2.split('(').pop().split(')')[0] + '</mark>') : value.r_2
-        value.r_1 = (this.fav_teams.includes(value.r_1_name)) ? value.r_1.replace(value.r_1.split(' (')[0], '<mark>' + value.r_1.split(' (')[0] + '</mark>') : value.r_1
-        value.r_2 = (this.fav_teams.includes(value.r_2_name)) ? value.r_2.replace(value.r_2.split(' (')[0], '<mark>' + value.r_2.split(' (')[0] + '</mark>') : value.r_2
+        if (value.r_1) {
+          value.r_1 = (this.fav_teams.includes(value.r_1.split(' (')[0])) ? value.r_1.replace(value.r_1.split(' (')[0], '<mark>' + value.r_1.split(' (')[0] + '</mark>') : value.r_1
+          value.r_1 = (this.fav_teams.includes(value.r_1.split('(').pop().split(')')[0])) ? value.r_1.replace(value.r_1.split('(').pop().split(')')[0], '<mark>' + value.r_1.split('(').pop().split(')')[0] + '</mark>') : value.r_1
+          value.r_1 = (this.fav_teams.includes(value.r_1_name)) ? value.r_1.replace(value.r_1.split(' (')[0], '<mark>' + value.r_1.split(' (')[0] + '</mark>') : value.r_1
+        }
+        if (value.r_2) {
+          value.r_2 = (this.fav_teams.includes(value.r_2.split(' (')[0])) ? value.r_2.replace(value.r_2.split(' (')[0], '<mark>' + value.r_2.split(' (')[0] + '</mark>') : value.r_2
+          value.r_2 = (this.fav_teams.includes(value.r_2.split('(').pop().split(')')[0])) ? value.r_2.replace(value.r_2.split('(').pop().split(')')[0], '<mark>' + value.r_2.split('(').pop().split(')')[0] + '</mark>') : value.r_2
+          value.r_2 = (this.fav_teams.includes(value.r_2_name)) ? value.r_2.replace(value.r_2.split(' (')[0], '<mark>' + value.r_2.split(' (')[0] + '</mark>') : value.r_2
+        }
         return value
       })
 
@@ -199,13 +249,17 @@ export default {
       }
     },
     async loadGames () {
+      await this.getPrefs()
       await this.prefs
-      await api.get('/games/' + this.prefs.event)
+      await api.get('/games/' + this.prefs.event + '/force')
         .then(async result => {
           const gamelist = await result.data.map(game => {
-            game.r_1 = game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')')
-            game.r_2 = game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')')
-            console.log(game)
+            game.r_1 = game.r_1 ? game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+            game.r_2 = game.r_2 ? game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+            game.t_a_label ??= this.gameEncode(game.g_code, 1)
+            game.t_b_label ??= this.gameEncode(game.g_code, 2)
+            game.r_1 ??= this.gameEncode(game.g_code, 3)
+            game.r_2 ??= this.gameEncode(game.g_code, 4)
             return game
           })
           await Games.deleteAll()
@@ -222,15 +276,6 @@ export default {
           console.log('Erreur:', error)
         })
     }
-  },
-  created () {
-    this.getGames()
-    this.getFav()
-  },
-  mounted () {
-    this.loadGames()
-  },
-  updated () {
   }
 }
 </script>
