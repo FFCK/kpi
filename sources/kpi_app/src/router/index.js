@@ -3,9 +3,7 @@ import Home from '../views/Home.vue'
 import Games from '../views/Games.vue'
 import Ranking from '../views/Ranking.vue'
 import Login from '../views/Login.vue'
-import GameReport from '../views/GameReport.vue'
-import StatReport from '../views/StatReport.vue'
-import Scrutineering from '../views/Scrutineering.vue'
+import About from '../views/About.vue'
 
 const routes = [
   {
@@ -31,22 +29,22 @@ const routes = [
   {
     path: '/game_report',
     name: 'GameReport',
-    component: GameReport
+    component: () => import(/* webpackChunkName: "GameReport" */ '../views/GameReport.vue')
   },
   {
     path: '/stat_report',
     name: 'StatReport',
-    component: StatReport
+    component: () => import(/* webpackChunkName: "StatReport" */ '../views/StatReport.vue')
   },
   {
     path: '/scrutineering',
     name: 'Scrutineering',
-    component: Scrutineering
+    component: () => import(/* webpackChunkName: "Scrutineering" */ '../views/Scrutineering.vue')
   },
   {
     path: '/about',
     name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: About
   }
 ]
 
