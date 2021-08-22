@@ -62,6 +62,40 @@
     "Score": "Score",
     "Ref": "Arb.",
     "Referee": "Arbitrage",
-    "GameReport": "Feuille de marque"
+    "GameReport": "Feuille de marque",
+    "Status": {
+      "ATT": "En attente",
+      "ON": "En cours",
+      "END": "Terminé"
+    },
+    "Period": {
+      "M1": "1ère période",
+      "M2": "2nde période",
+      "P1": "1ère prolong.",
+      "P2": "Prolongation",
+      "TB": "Tirs au but"
+    },
+    "Code": {
+      "Group": "Groupe ",
+      "Team": "Equipe ",
+      "Winner": "Vainqueur #",
+      "Looser": "Perdant #"
+    },
+    "Numbers": {
+      "first": "er ",
+      "second": "nd ",
+      "third": "e ",
+      "eleven": "e ",
+      "twelve": "e ",
+      "thirteen": "e ",
+      "twentyone": "e ",
+      "twentytwo": "e ",
+      "twentythree": "e ",
+      "th": "e "
+    }
+  },
+  "Charts": {
+    "Pts": "Pts",
+    "Pld": "J"
   }
 }

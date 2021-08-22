@@ -6,7 +6,7 @@ export default class Preferences extends Model {
   static fields () {
     return {
       id: this.number(0),
-      locale: this.string(navigator.language),
+      locale: this.string(navigator.language.substr(0, 2)),
       event: this.number(0),
       event_name: this.string(''),
       event_place: this.string(''),
