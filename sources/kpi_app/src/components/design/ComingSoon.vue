@@ -7,8 +7,8 @@
       effect="dark"
       :closable="false"
       center
-      show-icon>
-    </el-alert>
+      show-icon
+    />
   </div>
 </template>
 

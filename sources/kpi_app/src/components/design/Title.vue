@@ -1,5 +1,8 @@
 <template>
-  <el-affix target="body" :offset="0">
+  <el-affix
+    target="body"
+    :offset="0"
+  >
     <div class="header">
       <el-page-header
         icon="el-icon-arrow-left"
