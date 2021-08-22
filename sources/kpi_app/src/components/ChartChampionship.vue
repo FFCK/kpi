@@ -36,8 +36,7 @@
                 game.g_status !== 'END' || game.g_score_a <= game.g_score_b,
               'text-danger': game.g_validation !== 'O'
             }"
-            >{{ game.g_score_a || "&nbsp;" }}</span
-          >
+          >{{ game.g_score_a || "&nbsp;" }}</span>
           <span
             v-if="game.g_status !== 'ATT'"
             :class="{
@@ -52,8 +51,7 @@
                 game.g_status !== 'END' || game.g_score_b <= game.g_score_a,
               'text-danger': game.g_validation !== 'O'
             }"
-            >{{ game.g_score_b || "&nbsp;" }}</span
-          >
+          >{{ game.g_score_b || "&nbsp;" }}</span>
         </div>
         <div class="text-start col-5">
           <div
