@@ -1,8 +1,17 @@
 <template>
   <div>
-    <el-select v-model="$i18n.locale" @change="changeLocale">
-      <el-option value="en-US" label="English"></el-option>
-      <el-option value="fr-FR" label="Français"></el-option>
+    <el-select
+      v-model="$i18n.locale"
+      @change="changeLocale"
+    >
+      <el-option
+        value="en"
+        label="English"
+      />
+      <el-option
+        value="fr"
+        label="Français"
+      />
     </el-select>
   </div>
 </template>
@@ -13,6 +22,9 @@ import Preferences from '@/store/models/Preferences'
 
 export default {
   name: 'LocaleSwitcher',
+  created () {
+    this.getLocale()
+  },
   methods: {
     changeLocale () {
       Preferences.update({
@@ -28,15 +40,12 @@ export default {
         .then(result => {
           this.$i18n.locale = result.locale
         }).catch(_ => {
-          const navLanguage = navigator.language
+          const navLanguage = navigator.language.substr(0, 2)
           if (this.$i18n.availableLocales.includes(navLanguage)) {
             this.$i18n.locale = navLanguage
           }
         })
     }
-  },
-  created () {
-    this.getLocale()
   }
 }
 </script>
