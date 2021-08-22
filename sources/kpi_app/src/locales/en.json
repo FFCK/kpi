@@ -62,6 +62,40 @@
     "Score": "Score",
     "Ref": "Ref.",
     "Referee": "Referee",
-    "GameReport": "Game report"
+    "GameReport": "Game report",
+    "Status": {
+      "ATT": "Pending",
+      "ON": "In progress",
+      "END": "Completed"
+    },
+    "Period": {
+      "M1": "1st period",
+      "M2": "2nd period",
+      "P1": "1st extra time",
+      "P2": "Extra time",
+      "TB": "Penalty kicks"
+    },
+    "Code": {
+      "Group": "Group ",
+      "Team": "Team ",
+      "Winner": "Winner #",
+      "Looser": "Looser #"
+    },
+    "Numbers": {
+      "first": "st ",
+      "second": "nd ",
+      "third": "rd ",
+      "eleven": "th ",
+      "twelve": "th ",
+      "thirteen": "th ",
+      "twentyone": "st ",
+      "twentytwo": "nd ",
+      "twentythree": "rd ",
+      "th": "th "
+    }
+  },
+  "Charts": {
+    "Pts": "Pts",
+    "Pld": "Pld"
   }
 }
