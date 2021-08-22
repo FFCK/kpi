@@ -9,7 +9,6 @@
     </router-view>
 
     <AddToHomeScreen />
-
   </div>
 </template>
 
@@ -30,7 +29,7 @@ export default {
 @import "~bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 @import "~element-plus/lib/theme-chalk/index.css";
-@import '~element-plus/lib/theme-chalk/display.css';
+@import "~element-plus/lib/theme-chalk/display.css";
 
 @import "./assets/styles/app.scss";
 
@@ -38,18 +37,13 @@ export default {
   font-family: "LCD";
   src: url(./assets/fonts/7segments/7segments.ttf);
 }
-.lcd {
-  font-family: "LCD", Helvetica, Arial;
-  font-weight: bolder;
-  min-width: 26px;
-}
 
 #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
 }
 
 .fade-enter-active,
@@ -68,5 +62,43 @@ export default {
 .el-menu {
   position: fixed;
   z-index: 1100;
+}
+
+.num_match {
+  font-style: italic;
+  color: #666;
+}
+
+.lcd {
+  font-family: "LCD", Helvetica, Arial;
+  min-width: 26px;
+}
+
+.score {
+  font-size: 13px;
+  margin-left: 1px;
+  margin-right: 1px;
+  padding: 0;
+}
+
+.team_name {
+  font-size: 13px;
+  padding: 0 5px;
+}
+
+.winner {
+  color: #fff;
+  background-color: #212529;
+  border-color: #212529;
+}
+
+.looser {
+  color: #000;
+  background-color: #ddd;
+  border-color: #aaa;
+}
+
+.team_logo {
+  width: 30px;
 }
 </style>
