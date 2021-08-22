@@ -13,15 +13,15 @@
 								<th>Id</th>
 								<th>{#Editer#}</th>
 								<th>Section</th>
-								<th>{#Ordre#}</th>
 								<th>{#Niveau#}</th>
+								<th>{#Ordre#}</th>
 								<th>{#Groupe#}</th>
 								<th>{#Nom#}</th>
 								<th>{#Supprimer#}</th>
 							</tr>
 						</thead>
 						<tbody>
-							{section name=i loop=$arrayGroupes}
+							{section name=i loop=$arrayGroupes}{assign name=lastOrder value=$arrayGroupes[i].ordre}
 								<tr class='{cycle values="impair,pair"} {$arrayGroupes[i].selected}'>
 									<td>{$arrayGroupes[i].id}</td>
 									<td>
@@ -30,8 +30,8 @@
                                         </a>
                                     </td>
 									<td>{$arrayGroupes[i].section}</td>
-									<td>{$arrayGroupes[i].ordre}</td>
 									<td>{$arrayGroupes[i].Code_niveau}</td>
+									<td>{$arrayGroupes[i].ordre}</td>
 									<td>{$arrayGroupes[i].Groupe}</td>
 									<td>{$arrayGroupes[i].Libelle}</td>
 									<td>
@@ -55,21 +55,28 @@
 					<tr>
 						<td>
 							<label for="section">Section :</label>
-							<input type="text" size="3" pattern="{literal}[0-9]{1,3}{/literal}" name="section" value="{$groupe.section}" maxlength=3 id="section" required />
+							<select name="section" id="section">
+							<option value="1" {if $groupe.section == 1}selected{/if}>ICF / ECA</option>
+								<option value="2" {if $groupe.section == 2}selected{/if}>National</option>
+								<option value="3" {if $groupe.section == 3}selected{/if}>Régional</option>
+								<option value="4" {if $groupe.section == 4}selected{/if}>Tournoi</option>
+								<option value="5" {if $groupe.section == 5}selected{/if}>Étranger</option>
+								<option value="100" {if $groupe.section == 100}selected{/if}>Autres</option>
+							</select>
 						</td>
 						<td>
-							<label for="ordre">{#Ordre#} :</label>
-							<input type="text" size="5" pattern="{literal}[0-9]{1,5}{/literal}" name="ordre" value="{$groupe.ordre}" maxlength=5 id="ordre" required />
+							<label for="Libelle">{#Niveau#} :</label>
+							<select id="Code_niveau" name="Code_niveau">
+								<option value="REG" {if $groupe.Code_niveau == "REG"}selected{/if}>REG</option>
+								<option value="NAT" {if $groupe.Code_niveau == "NAT"}selected{/if}>NAT</option>
+								<option value="INT" {if $groupe.Code_niveau == "INT"}selected{/if}>INT</option>
+							</select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<label for="Libelle">{#Niveau#} :</label>
-                            <select id="Code_niveau" name="Code_niveau">
-                                <option value="REG" {if $groupe.Code_niveau == "REG"}selected{/if}>REG</option>
-                                <option value="NAT" {if $groupe.Code_niveau == "NAT"}selected{/if}>NAT</option>
-                                <option value="INT" {if $groupe.Code_niveau == "INT"}selected{/if}>INT</option>
-                            </select>
+							<label for="ordre">{#Ordre#} :</label>
+							<input type="text" size="5" pattern="{literal}[0-9]{1,5}{/literal}" name="ordre" value="{$groupe.ordre|default:$lastOrder}" maxlength=5 id="ordre" required />
 						</td>
 						<td>
 							<label for="Groupe">{#Groupe#} :</label>

@@ -472,21 +472,23 @@ class GestionJournee extends MyPageSecure
 			
 			while ($row = $result->fetch()) {				
 				$jour = $row['Date_match'];
-                if (utyGetSession('lang') == 'fr') {
-    				$listeJours[$jour] = utyDateUsToFr($jour);
+				if (utyGetSession('lang') == 'fr') {
+					$listeJours[$jour] = utyDateUsToFr($jour);
 					$row['Date_match'] = utyDateUsToFr($row['Date_match']);
-                } else {
-    				$listeJours[$jour] = $jour;
-                }
+				} else {
+					$listeJours[$jour] = $jour;
+				}
+				$EquipesAffectAuto = [];
 				if ($filtreJour == '' || $jour == $filtreJour) {
-                    if ($row['Libelle'] != '') {
-                        if (utyGetSession('lang') == 'en') {
-                            $EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
-                        } else {
-                            $EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
-                        }
+					if ($row['Libelle'] != '') {
+						if (utyGetSession('lang') == 'en') {
+							$EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
+						} else {
+							$EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
+						}
 					}
-
+					// if ($row['EquipeA'] == null) { $row['EquipeA'] = ''; }
+					// if ($row['EquipeB'] == null) { $row['EquipeB'] = ''; }
 					if (($row['EquipeA'] == '') && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '')
 						$row['EquipeA'] = $EquipesAffectAuto[0];
 					if ($row['EquipeB'] == '' && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '')
@@ -761,7 +763,7 @@ class GestionJournee extends MyPageSecure
 	{
 		$myBdd = $this->myBdd;
         
-        $idMatch = utyGetSession('idMatch', 0);
+		$idMatch = utyGetSession('idMatch', 0);
 		
 		$_SESSION['Intervalle_match'] = utyGetPost('Intervalle_match', utyGetSession('Intervalle_match', 40));
 		
@@ -776,6 +778,13 @@ class GestionJournee extends MyPageSecure
 		
 		$idEquipeA = (int) utyGetPost('idEquipeA', -1);
 		$idEquipeB = (int) utyGetPost('idEquipeB', -1);
+		
+		if ($idEquipeA < 1) {
+			$idEquipeA = null;
+		}
+		if ($idEquipeB < 1) {
+			$idEquipeB = null;
+		}
 	
 		$arbitre1 = trim(utyGetPost('arbitre1', ''));
 		if (strlen($arbitre1) == 0)
@@ -876,32 +885,38 @@ class GestionJournee extends MyPageSecure
 		$idEquipeA = (int) utyGetPost('idEquipeA', -1);
 		$idEquipeB = (int) utyGetPost('idEquipeB', -1);
 		
+		if ($idEquipeA < 1) {
+			$idEquipeA = null;
+		}
+		if ($idEquipeB < 1) {
+			$idEquipeB = null;
+		}
 		$arbitre1 = trim(utyGetPost('arbitre1', ''));
 		if (strlen($arbitre1) == 0) {
-            $arbitre1 = trim(utyGetPost('comboarbitre1', ''));
-        }
-        $arbitre1_matric = (int) utyGetPost('arbitre1_matric', -1);
+			$arbitre1 = trim(utyGetPost('comboarbitre1', ''));
+		}
+		$arbitre1_matric = (int) utyGetPost('arbitre1_matric', -1);
 					
 		$arbitre2 = trim(utyGetPost('arbitre2', ''));
 		if (strlen($arbitre2) == 0) {
-            $arbitre2 = trim(utyGetPost('comboarbitre2', ''));
-        }
-        $arbitre2_matric = (int) utyGetPost('arbitre2_matric', -1);
+			$arbitre2 = trim(utyGetPost('comboarbitre2', ''));
+		}
+		$arbitre2_matric = (int) utyGetPost('arbitre2_matric', -1);
 		
 		$coeffA = (float) utyGetPost('coeffA', 1);
 		if (strlen($coeffA) == 0) {
-            $coeffA = 1.0;
-        }
+			$coeffA = 1.0;
+		}
 
-        $coeffB = (float) utyGetPost('coeffB', 1);
+		$coeffB = (float) utyGetPost('coeffB', 1);
 		if (strlen($coeffB) == 0) {
-            $coeffB = 1.0;
-        }
+			$coeffB = 1.0;
+		}
 
-        if ($idJournee != 0) {
+		if ($idJournee != 0) {
 			if (strlen($numMatch) == 0) {
-                $numMatch = $this->LastNumeroOrdre($idJournee) + 1;
-            }
+				$numMatch = $this->LastNumeroOrdre($idJournee) + 1;
+			}
 
 			try {  
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -1354,17 +1369,17 @@ class GestionJournee extends MyPageSecure
 			// On analyse le contenu
 			for ($j=0; $j<4; $j++) {
 				// déjà un arbitre principal désigné nominativement
-                if ($j == 2 && $row['Matric_arbitre_principal'] != 0) {
-                    $selectNom[2] = '';
-                    continue;
-                }
+				if ($j == 2 && $row['Matric_arbitre_principal'] != 0) {
+						$selectNom[2] = '';
+						continue;
+				}
 				// déjà un arbitre secondaire désigné nominativement
-                if($j == 3 && $row['Matric_arbitre_secondaire'] != 0) {
-                    $selectNom[3] = '';
-                    continue;
-                }
-                
-                $codeTirage = '';
+				if($j == 3 && $row['Matric_arbitre_secondaire'] != 0) {
+						$selectNom[3] = '';
+						continue;
+				}
+				
+				$codeTirage = '';
 				$codeVainqueur = '';
 				$codePerdant = '';
 				$codePoule = '';
@@ -1399,7 +1414,7 @@ class GestionJournee extends MyPageSecure
 				if ($codeTirage != '') { // Tirage
 					$result2->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
 					if ($result2->rowCount() != 1) {
-						$selectNum[$j] = 0;
+						$selectNum[$j] = null;
 						$selectNom[$j] = '';
 						$clst = 'erreur10';
 					} else {
@@ -1412,7 +1427,7 @@ class GestionJournee extends MyPageSecure
 				} elseif($codeVainqueur != '') {
 					$result3->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
 					if ($result3->rowCount() != 1)	{
-						$selectNum[$j] = 0;
+						$selectNum[$j] = null;
 						$selectNom[$j] = '';
 						$vainqueur = 'erreur11';
 					} else {
@@ -1432,7 +1447,7 @@ class GestionJournee extends MyPageSecure
 				} elseif($codePerdant != '') {
 					$result4->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
 					if ($result4->rowCount() != 1) {
-						$selectNum[$j] = 0;
+						$selectNum[$j] = null;
 						$selectNom[$j] = '';
 						$perdant = 'erreur12';
 					} else {
@@ -1457,7 +1472,7 @@ class GestionJournee extends MyPageSecure
 						':codeSaison' => $row['Code_saison']
 					));
 					if ($result5->rowCount() != 1) {
-						$selectNum[$j] = 0;
+						$selectNum[$j] = null;
 						$selectNom[$j] = '';
 						$clst = 'erreur13';
 					} else {
@@ -1548,7 +1563,7 @@ class GestionJournee extends MyPageSecure
 		$result1 = $myBdd->pdo->prepare($sql1);
 
 		$sql2 = "UPDATE kp_match 
-			SET Id_equipeA = 0, Id_equipeB = 0, 
+			SET Id_equipeA = null, Id_equipeB = null, 
 			Arbitre_principal = -1, Arbitre_secondaire = -1 
 			WHERE Id = ? ";
 		$result2 = $myBdd->pdo->prepare($sql2);

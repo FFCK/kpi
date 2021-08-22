@@ -14,7 +14,7 @@
 					<tr>
 						<td>
 							<label for="evenement">{#Evenement#} :</label>
-							<select name="evenement" id="evenement" onChange="changeEvenement();">
+							<select name="evenement" id="evenement">
 								{section name=i loop=$arrayEvenement} 
 									<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection}>{$arrayEvenement[i].Libelle}</Option>
 								{/section}
@@ -38,8 +38,8 @@
 						<td align="right" rowspan=2>
 							{if $profile <= 3 && $AuthModif == 'O'}
 								{if $modeEvenement eq '1'}
-							    	{#Mode_normal#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="1" Checked>
-							    	<br>{#Association_evts#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="2">		
+							    	{#Mode_normal#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" name="choixModeEvenement" value="1" Checked>
+							    	<br>{#Association_evts#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="2">
 							    {else}
 							    	{#Mode_normal#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="1">
 							    	<br><font color="FF0000">{#Association_evts#}</font><input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="2" Checked>		
@@ -47,6 +47,7 @@
 							{else}
 								&nbsp;
 							{/if}
+							<input type="hidden" id="modeEvenement" value="{$modeEvenement}">
 						</td>
 					</tr>
 					<tr>

@@ -356,7 +356,7 @@ class Schema extends MyPageSecure
 		$this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
 		$this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
 		$this->m_tpl->assign('etapes', $etapes);
-        $this->m_tpl->assign('largeur', 12/$etapes);
+        $this->m_tpl->assign('largeur', round(12/$etapes));
 		$this->m_tpl->assign('page', 'chart');
 		$this->m_tpl->assign('skipheader', true);
 		$this->m_tpl->assign('skipfooter', true);

@@ -7,6 +7,7 @@ if(lang == 'en')  {
     langue['Certif'] = '(Med. Certificat)';
     langue['Cliquez_pour_modifier'] = 'Click to edit';
     langue['Joueur_vide'] = 'Player is empty. unable to add !';
+    langue['Joueur_existant'] = 'Player is already selected. unable to add !';
     langue['MAJ_impossible'] = 'Unable to update';
     langue['Pagaie_couleur'] = '(Paddle level)';
     langue['Prenom_vide'] = 'Player first name is empty. unable to add !';
@@ -17,6 +18,7 @@ if(lang == 'en')  {
     langue['Certif'] = '(Certificat CK)';
     langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier';
     langue['Joueur_vide'] = 'Joueur vide, ajout impossible !';
+    langue['Joueur_existant'] = 'Joueur déjà sélectionné, ajout impossible !';
     langue['MAJ_impossible'] = 'Mise à jour impossible';
     langue['Pagaie_couleur'] = '(Pagaie couleur)';
     langue['Prenom_vide'] = 'Prénom joueur vide, ajout impossible!';
@@ -27,6 +29,15 @@ if(lang == 'en')  {
 
 function validJoueur()
 {
+		var matricJoueur = jq('#matricJoueur2').val();
+		var existJoueurs = jq('#tableMatchs input[value="'+matricJoueur+'"]');
+		console.log(existJoueurs);
+		return false;
+		if (existJoueurs.length > 0) {
+			alert(langue['Joueur_existant']);
+			return false;
+		}
+
 		var nomJoueur = jq('#nomJoueur').val();
 		if (nomJoueur.length == 0)
 		{
@@ -44,7 +55,14 @@ function validJoueur()
 
 function validJoueur2()
 {
-		var nomJoueur2 = jq('#nomJoueur2').val();
+	var matricJoueur = jq('#matricJoueur2').val();
+	var existJoueurs = jq('#tableMatchs input[value="'+matricJoueur+'"]');
+	if (existJoueurs.length > 0) {
+		alert(langue['Joueur_existant']);
+		return false;
+	}
+
+	var nomJoueur2 = jq('#nomJoueur2').val();
 		if (nomJoueur2.length == 0)
 		{
 			alert(langue['Prenom_vide']);

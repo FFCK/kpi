@@ -16,6 +16,9 @@ session_start();
 $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch');
 $idEquipe = (int) utyGetPost('idEquipe');
+if ($idEquipe < 1) {
+	$idEquipe = null;
+}
 $Equipe = trim(utyGetPost('equipe')); // A / B
 $EquipeAB = 'Id_equipe' . $Equipe;
 $sql = "UPDATE kp_match 
