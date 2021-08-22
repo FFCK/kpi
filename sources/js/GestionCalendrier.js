@@ -21,7 +21,9 @@ if(lang == 'en')  {
 
 jq(document).ready(function() {
 	jq("#evenement").change(function(){
-		jq("#competition").val('*');
+		if (jq("#modeEvenement").val() != "2" && jq("#evenement").val() != "-1") {
+			jq("#competition").val('*');
+		}
 		jq("#formCalendrier").submit();
 	});
     
@@ -206,10 +208,6 @@ function changeCompetition()
 function changeCompetitionOrder()
 {
 	document.forms['formCalendrier'].submit();
-}
-
-function changeEvenement()
-{
 }
 
 function changeModeEvenement()

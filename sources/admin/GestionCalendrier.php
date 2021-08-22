@@ -6,25 +6,25 @@ include_once('../commun/MyTools.php');
 
 // Gestion du Calendrier
 
-class GestionCalendrier extends MyPageSecure	 
-{	
+class GestionCalendrier extends MyPageSecure
+{
 	var $myBdd;
 
 	function Load()
 	{
 		$myBdd = $this->myBdd;
-		
-        // Langue
-        $langue = parse_ini_file("../commun/MyLang.ini", true);
-        if (utyGetSession('lang') == 'en') {
-            $lang = $langue['en'];
-        } else {
-            $lang = $langue['fr'];
-        }
-        
-        //Filtre mois
-        $_SESSION['filtreMois'] = utyGetPost('filtreMois', '');
-        $filtreMois = $_SESSION['filtreMois'];
+
+		// Langue
+		$langue = parse_ini_file("../commun/MyLang.ini", true);
+		if (utyGetSession('lang') == 'en') {
+			$lang = $langue['en'];
+		} else {
+			$lang = $langue['fr'];
+		}
+
+		//Filtre mois
+		$_SESSION['filtreMois'] = utyGetPost('filtreMois', '');
+		$filtreMois = $_SESSION['filtreMois'];
 		$this->m_tpl->assign('filtreMois', $_SESSION['filtreMois']);
 
 		$codeSaison = $myBdd->GetActiveSaison();
@@ -34,41 +34,41 @@ class GestionCalendrier extends MyPageSecure
 		$idEvenement = utyGetPost('evenement', $idEvenement);
 
 		//Filtre affichage type compet
-		$AfficheCompet = utyGetSession('AfficheCompet','');
+		$AfficheCompet = utyGetSession('AfficheCompet', '');
 		$AfficheCompet = utyGetPost('AfficheCompet', $AfficheCompet);
-        $_SESSION['AfficheCompet'] = $AfficheCompet;
+		$_SESSION['AfficheCompet'] = $AfficheCompet;
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
 
-        $_SESSION['idEvenement'] = $idEvenement;
+		$_SESSION['idEvenement'] = $idEvenement;
 		$this->m_tpl->assign('idEvenement', $idEvenement);
-		
+
 		$sql = "SELECT Id, Libelle, Date_debut 
 			FROM kp_evenement 
-			ORDER BY Date_debut DESC, Libelle ";	 
+			ORDER BY Date_debut DESC, Libelle ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
 
 		$arrayEvenement = array();
 		if (-1 == $idEvenement) {
-            $selected1 = 'SELECTED';
-        } else {
-            $selected1 = '';
-        }
-        if (utyGetSession('lang') == 'en') {
-            array_push($arrayEvenement, array('Id' => -1, 'Libelle' => '* - All events', 'Selection' => $selected1));
-        } else {
-            array_push($arrayEvenement, array('Id' => -1, 'Libelle' => '* - Tous les événements', 'Selection' => ''));
-        }
+			$selected1 = 'SELECTED';
+		} else {
+			$selected1 = '';
+		}
+		if (utyGetSession('lang') == 'en') {
+			array_push($arrayEvenement, array('Id' => -1, 'Libelle' => '* - All events', 'Selection' => $selected1));
+		} else {
+			array_push($arrayEvenement, array('Id' => -1, 'Libelle' => '* - Tous les événements', 'Selection' => ''));
+		}
 
 		while ($row = $result->fetch()) {
-            $PublicEvt = '';
+			$PublicEvt = '';
 
-            if ($row["Id"] == $idEvenement) {
-                array_push($arrayEvenement, array('Id' => $row['Id'], 'Libelle' => $row['Id'] . ' - ' . $row['Libelle'] . $PublicEvt, 'Selection' => 'SELECTED'));
-            } else {
-                array_push($arrayEvenement, array('Id' => $row['Id'], 'Libelle' => $row['Id'] . ' - ' . $row['Libelle'] . $PublicEvt, 'Selection' => ''));
-            }
-        }
+			if ($row["Id"] == $idEvenement) {
+				array_push($arrayEvenement, array('Id' => $row['Id'], 'Libelle' => $row['Id'] . ' - ' . $row['Libelle'] . $PublicEvt, 'Selection' => 'SELECTED'));
+			} else {
+				array_push($arrayEvenement, array('Id' => $row['Id'], 'Libelle' => $row['Id'] . ' - ' . $row['Libelle'] . $PublicEvt, 'Selection' => ''));
+			}
+		}
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 
 		// Mode Evenement 
@@ -76,19 +76,19 @@ class GestionCalendrier extends MyPageSecure
 		$modeEvenement = utyGetPost('choixModeEvenement', $modeEvenement);
 		$_SESSION['modeEvenement'] = $modeEvenement;
 		$this->m_tpl->assign('modeEvenement', $modeEvenement);
-				
+
 		// Chargement des Compétitions ...
 		$codeCompet = utyGetSession('codeCompet', '*');
 		// si changement de compétition, RAZ journée sélectionnée
 		if (utyGetPost('codeCompet', false)) {	// @COSANDCO_WAMPSER
 			if ($codeCompet != utyGetPost('codeCompet')) {
-                $_SESSION['idSelJournee'] = '*';
-            }
-        }
+				$_SESSION['idSelJournee'] = '*';
+			}
+		}
 		$codeCompet = utyGetPost('competition', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
-		
-		
+
+
 		$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
 		$sqlAfficheCompet = '';
 		$arrayAfficheCompet = [];
@@ -103,7 +103,7 @@ class GestionCalendrier extends MyPageSecure
 			$arrayAfficheCompet = array_merge($arrayAfficheCompet, [$AfficheCompet]);
 		}
 		// Mode Filtrage => La Combo Competition est chargée avec uniquement les compétitions de l'Evenement ...
-		if ( ($modeEvenement == 1) && ($idEvenement != -1) ) {
+		if (($modeEvenement == 1) && ($idEvenement != -1)) {
 			$sqlAfficheCompet = " AND ej.Id_evenement  = ? ";
 			$arrayAfficheCompet = array_merge($arrayAfficheCompet, [$idEvenement]);
 		}
@@ -120,36 +120,36 @@ class GestionCalendrier extends MyPageSecure
 				COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array_merge(
-			[$codeSaison], 
-			[utyGetSession('AfficheNiveau').'%'], 
+			[$codeSaison],
+			[utyGetSession('AfficheNiveau') . '%'],
 			$arrayAfficheCompet
 		));
-		
+
 		$arrayCompetition = array();
-        
+
 		if (-1 != $idEvenement) {
-			if('*' == $codeCompet) {
+			if ('*' == $codeCompet) {
 				$selected = 'selected';
-            } else {
+			} else {
 				$selected = '';
-            }
-            if (utyGetSession('lang') == 'en') {
+			}
+			if (utyGetSession('lang') == 'en') {
 				$arrayCompetition[0]['label'] = "All competitions";
-                $arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'All competitions', 'selected' => $selected );
-            } else {
+				$arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'All competitions', 'selected' => $selected);
+			} else {
 				$arrayCompetition[0]['label'] = "Toutes les compétitions";
-                $arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'Toutes les compétitions', 'selected' => $selected );
-            }
-			
-            $i = 0;
-        } else {
+				$arrayCompetition[0]['options'][] = array('Code' => '*', 'Libelle' => 'Toutes les compétitions', 'selected' => $selected);
+			}
+
+			$i = 0;
+		} else {
 			$i = -1;
-        }
-        
+		}
+
 		$listeCompet = "('";
 		$arrayCompets = [];
-        $j = '';
-        $label = $myBdd->getSections();
+		$j = '';
+		$label = $myBdd->getSections();
 		while ($row = $result->fetch()) {
 			// Titre
 			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
@@ -158,75 +158,75 @@ class GestionCalendrier extends MyPageSecure
 				$Libelle = $row["Libelle"];
 			}
 			if ($row["Soustitre2"] != '') {
-				$Libelle .= ' - '.$row["Soustitre2"];
+				$Libelle .= ' - ' . $row["Soustitre2"];
 			}
 
-			$listeCompet .= $row["Code"]."','";
+			$listeCompet .= $row["Code"] . "','";
 			$arrayCompets[] = $row["Code"];
-			
-            if($j != $row['section']) {
-                $i ++;
-                $arrayCompetition[$i]['label'] = $label[$row['section']];
-            }
-            if($row["Code"] == $codeCompet) {
-                $row['selected'] = 'selected';
-            } else {
-                $row['selected'] = '';
-            }
-            $j = $row['section'];
-            $arrayCompetition[$i]['options'][] = $row;
+
+			if ($j != $row['section']) {
+				$i++;
+				$arrayCompetition[$i]['label'] = $label[$row['section']];
+			}
+			if ($row["Code"] == $codeCompet) {
+				$row['selected'] = 'selected';
+			} else {
+				$row['selected'] = '';
+			}
+			$j = $row['section'];
+			$arrayCompetition[$i]['options'][] = $row;
 		}
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
-		
+
 		$listeCompet .= "')";
 
 		// Les différents tris de compétition ...
 		$orderCompet = utyGetSession('orderCompet', 'Date_debut, Niveau, Phase, Lieu, Libelle, Id');
 		$orderCompet = utyGetPost('competitionOrder', $orderCompet);
 		$_SESSION['orderCompet'] = $orderCompet;
-			
+
 		$arrayCompetitionOrder = array();
 		if ("Date_debut, Niveau, Phase, Lieu, Libelle" == $orderCompet)
-			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut, Niveau, Phase, Lieu, Libelle, Id', 'Libelle' => $lang['Par_date_croissante'], 'Selection' => 'SELECTED' ) );
+			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut, Niveau, Phase, Lieu, Libelle, Id', 'Libelle' => $lang['Par_date_croissante'], 'Selection' => 'SELECTED'));
 		else
-			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut, Niveau, Phase, Lieu, Libelle, Id', 'Libelle' => $lang['Par_date_croissante'], 'Selection' => '' ) );
-			
+			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut, Niveau, Phase, Lieu, Libelle, Id', 'Libelle' => $lang['Par_date_croissante'], 'Selection' => ''));
+
 		if ("Date_debut Desc, Niveau, Phase, Lieu, Libelle" == $orderCompet)
-			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut Desc, Niveau, Phase, Lieu, Libelle', 'Libelle' => $lang['Par_date_decroissante'], 'Selection' => 'SELECTED' ) );
+			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut Desc, Niveau, Phase, Lieu, Libelle', 'Libelle' => $lang['Par_date_decroissante'], 'Selection' => 'SELECTED'));
 		else
-			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut Desc, Niveau, Phase, Lieu, Libelle', 'Libelle' => $lang['Par_date_decroissante'], 'Selection' => '' ) );
-			
+			array_push($arrayCompetitionOrder, array('Code' => 'Date_debut Desc, Niveau, Phase, Lieu, Libelle', 'Libelle' => $lang['Par_date_decroissante'], 'Selection' => ''));
+
 		if ("Libelle, Niveau, Phase" == $orderCompet)
-			array_push($arrayCompetitionOrder, array('Code' => 'Libelle, Niveau, Phase', 'Libelle' => $lang['Par_Nom'], 'Selection' => 'SELECTED' ) );
+			array_push($arrayCompetitionOrder, array('Code' => 'Libelle, Niveau, Phase', 'Libelle' => $lang['Par_Nom'], 'Selection' => 'SELECTED'));
 		else
-			array_push($arrayCompetitionOrder, array('Code' => 'Libelle, Niveau, Phase', 'Libelle' => $lang['Par_Nom'], 'Selection' => '' ) );
-			
+			array_push($arrayCompetitionOrder, array('Code' => 'Libelle, Niveau, Phase', 'Libelle' => $lang['Par_Nom'], 'Selection' => ''));
+
 		if ("Id, Niveau, Phase" == $orderCompet)
-			array_push($arrayCompetitionOrder, array('Code' => 'Id, Niveau, Phase', 'Libelle' => $lang['Par_Numero'], 'Selection' => 'SELECTED' ) );
+			array_push($arrayCompetitionOrder, array('Code' => 'Id, Niveau, Phase', 'Libelle' => $lang['Par_Numero'], 'Selection' => 'SELECTED'));
 		else
-			array_push($arrayCompetitionOrder, array('Code' => 'Id, Niveau, Phase', 'Libelle' => $lang['Par_Numero'], 'Selection' => '' ) );
-			
+			array_push($arrayCompetitionOrder, array('Code' => 'Id, Niveau, Phase', 'Libelle' => $lang['Par_Numero'], 'Selection' => ''));
+
 		if ("Niveau, Phase, Date_debut" == $orderCompet)
-			array_push($arrayCompetitionOrder, array('Code' => 'Niveau, Phase, Date_debut', 'Libelle' => $lang['Par_Niveau'], 'Selection' => 'SELECTED' ) );
+			array_push($arrayCompetitionOrder, array('Code' => 'Niveau, Phase, Date_debut', 'Libelle' => $lang['Par_Niveau'], 'Selection' => 'SELECTED'));
 		else
-			array_push($arrayCompetitionOrder, array('Code' => 'Niveau, Phase, Date_debut', 'Libelle' => $lang['Par_Niveau'], 'Selection' => '' ) );
+			array_push($arrayCompetitionOrder, array('Code' => 'Niveau, Phase, Date_debut', 'Libelle' => $lang['Par_Niveau'], 'Selection' => ''));
 
 		$this->m_tpl->assign('arrayCompetitionOrder', $arrayCompetitionOrder);
-		
-	
+
+
 		$arrayEvenementJournees = array();
 		if ($modeEvenement == '2' && $idEvenement != -1) {
 			// Mode Association ... => Chargement des Journées de l'Evenement ...
 			$sql = "SELECT Id_journee 
 				FROM kp_evenement_journee 
-				WHERE Id_evenement = ? "; 
+				WHERE Id_evenement = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idEvenement));
-            while($row = $result->fetch()) {
+			while ($row = $result->fetch()) {
 				array_push($arrayEvenementJournees, $row['Id_journee']);
 			}
 		}
-	
+
 		// Chargement des Journees ...
 		$arrayJournees = array();
 		$in = str_repeat('?,', count($arrayCompets) - 1) . '?';
@@ -242,8 +242,8 @@ class GestionCalendrier extends MyPageSecure
 		if ($codeCompet != "*") {
 			$sql .= "AND Code_competition = ? ";
 			$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
-            $competition = $myBdd->GetCompetition($codeCompet, $myBdd->GetActiveSaison());
-            $this->m_tpl->assign('competition', $competition);
+			$competition = $myBdd->GetCompetition($codeCompet, $myBdd->GetActiveSaison());
+			$this->m_tpl->assign('competition', $competition);
 		}
 		if ($filtreMois > 0) {
 			$sql .= "AND (MONTH(Date_debut) = ? OR MONTH(Date_fin) = ?) ";
@@ -260,7 +260,6 @@ class GestionCalendrier extends MyPageSecure
 		if ($idEvenement == -1 && $codeCompet == '*') {
 			$sql .= "AND Code_competition != 'POUBELLE' 
 				AND (Date_fin - Date_debut) < 20 ";
-			
 		}
 		if (strlen($orderCompet) > 0) {
 			$sql .= "ORDER BY $orderCompet";
@@ -272,7 +271,7 @@ class GestionCalendrier extends MyPageSecure
 			$Checked = '';
 			if ($modeEvenement == '2') {
 				// Mode Association ...
-				for ($j=0;$j<Count($arrayEvenementJournees);$j++) {
+				for ($j = 0; $j < Count($arrayEvenementJournees); $j++) {
 					if ($row['Id'] == $arrayEvenementJournees[$j]) {
 						$Checked = 'checked';
 						break;
@@ -286,49 +285,51 @@ class GestionCalendrier extends MyPageSecure
 				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
 			}
 			$bAutorisation = utyIsAutorisationJournee($row['Id']);
-			array_push($arrayJournees, array( 'Id' => $row['Id'], 
-				'Autorisation' => $bAutorisation,	
+			array_push($arrayJournees, array(
+				'Id' => $row['Id'],
+				'Autorisation' => $bAutorisation,
 				'Code_competition' => $row['Code_competition'],
 				'Phase' => $row['Phase'],
 				'Niveau' => $row['Niveau'],
 				'Etape' => $row['Etape'],
 				'Nbequipes' => $row['Nbequipes'],
-				'Date_debut' => $row['Date_debut'], 
-				'Date_fin' => $row['Date_fin'], 
-				'Date_debut_gcal' => $row['Date_debut_gcal'], 
-				'Date_fin_gcal' => $row['Date_fin_gcal'], 
-				'Nom' => $row['Nom'], 
-				'Libelle' => $row['Libelle'], 
-				'Type' => $row['Type'], 
-				'Lieu' => $row['Lieu'], 
-				'Plan_eau' => $row['Plan_eau'], 
-				'Departement' => $row['Departement'], 
-				'Responsable_insc' => utyGetNomPrenom($row['Responsable_insc']), 
-				'Responsable_R1' => utyGetNomPrenom($row['Responsable_R1']), 
-				'Delegue' => utyGetNomPrenom($row['Delegue']), 
-				'ChefArbitre' => utyGetNomPrenom($row['ChefArbitre']), 
-				'Rep_athletes' => utyGetNomPrenom($row['Rep_athletes']), 
-				'Arb_nj1' => utyGetNomPrenom($row['Arb_nj1']), 
-				'Arb_nj2' => utyGetNomPrenom($row['Arb_nj2']), 
-				'Arb_nj3' => utyGetNomPrenom($row['Arb_nj3']), 
-				'Arb_nj4' => utyGetNomPrenom($row['Arb_nj4']), 
-				'Arb_nj5' => utyGetNomPrenom($row['Arb_nj5']), 
+				'Date_debut' => $row['Date_debut'],
+				'Date_fin' => $row['Date_fin'],
+				'Date_debut_gcal' => $row['Date_debut_gcal'],
+				'Date_fin_gcal' => $row['Date_fin_gcal'],
+				'Nom' => $row['Nom'],
+				'Libelle' => $row['Libelle'],
+				'Type' => $row['Type'],
+				'Lieu' => $row['Lieu'],
+				'Plan_eau' => $row['Plan_eau'],
+				'Departement' => $row['Departement'],
+				'Responsable_insc' => utyGetNomPrenom($row['Responsable_insc']),
+				'Responsable_R1' => utyGetNomPrenom($row['Responsable_R1']),
+				'Delegue' => utyGetNomPrenom($row['Delegue']),
+				'ChefArbitre' => utyGetNomPrenom($row['ChefArbitre']),
+				'Rep_athletes' => utyGetNomPrenom($row['Rep_athletes']),
+				'Arb_nj1' => utyGetNomPrenom($row['Arb_nj1']),
+				'Arb_nj2' => utyGetNomPrenom($row['Arb_nj2']),
+				'Arb_nj3' => utyGetNomPrenom($row['Arb_nj3']),
+				'Arb_nj4' => utyGetNomPrenom($row['Arb_nj4']),
+				'Arb_nj5' => utyGetNomPrenom($row['Arb_nj5']),
 				'Organisateur' => $row['Organisateur'],
 				'Publication' => $row['Publication'],
-				'Checked' => $Checked ) );
+				'Checked' => $Checked
+			));
 		}
-				
+
 		$this->m_tpl->assign('arrayJournees', $arrayJournees);
 	}
-	
+
 	function Remove()
 	{
 		$ParamCmd = utyGetPost('ParamCmd');
-			
-		$arrayParam = explode(',', $ParamCmd);		
+
+		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
-			
+
 		$myBdd = $this->myBdd;
 
 		//Contrôle suppression possible
@@ -339,10 +340,19 @@ class GestionCalendrier extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
 		if ($result->rowCount() > 0) {
-			die ("Il reste des matchs dans cette journée ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
+			die("Il reste des matchs dans ces journées ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
 		}
 
-		try {  
+		$sql = "SELECT Id_evenement 
+			FROM kp_evenement_journee 
+			WHERE Id_journee IN ($in) ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute($arrayParam);
+		if ($result->rowCount() > 0) {
+			die("Des journées restent associées à un événement ! Suppression impossible (<a href='javascript:history.back()'>Retour</a>)");
+		}
+
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
@@ -360,7 +370,7 @@ class GestionCalendrier extends MyPageSecure
 			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
 
-		for ($i=0;$i<count($arrayParam);$i++) {
+		for ($i = 0; $i < count($arrayParam); $i++) {
 			$myBdd->utyJournal('Suppression journee', '', '', null, null, $arrayParam[$i]);
 		}
 		return;
@@ -372,10 +382,10 @@ class GestionCalendrier extends MyPageSecure
 		if ($idJournee != 0) {
 			$myBdd = $this->myBdd;
 			$nextIdJournee = $myBdd->GetNextIdJournee();
-			try {  
+			try {
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
-	
+
 				$sql = "INSERT INTO kp_journee 
 					(Id, Code_competition, code_saison, Phase, Niveau, Etape, Nbequipes, 
 					Date_debut, Date_fin, Nom, Libelle, `Type`, Lieu, Plan_eau, Departement, 
@@ -394,43 +404,42 @@ class GestionCalendrier extends MyPageSecure
 			} catch (Exception $e) {
 				$myBdd->pdo->rollBack();
 				utySendMail("[KPI] Erreur SQL", "Dupplication journee, $idJournee" . '\r\n' . $e->getMessage());
-	
+
 				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 			}
-	
-		}			
-		
+		}
+
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
-			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
-			exit;	
+			header("Location: http://" . $_SERVER['HTTP_HOST'] . $target);
+			exit;
 		}
 
 		$myBdd->utyJournal('Dupplication journee', $myBdd->GetActiveSaison(), '', null, $nextIdJournee); // A compléter (saison, compétition, options)
 		return;
 	}
-	
+
 	function ParamJournee()
 	{
 		$_SESSION['ParentUrl'] = $_SERVER['PHP_SELF'];
 
 		$idJournee = (int) utyGetPost('ParamCmd', 0);
 		$_SESSION['idJournee'] = $idJournee;
-		
-		header("Location: GestionParamJournee.php");	
-		exit;	
-	}	
-	
+
+		header("Location: GestionParamJournee.php");
+		exit;
+	}
+
 	function AddEvenementJournee()
 	{
 		$idJournee = (int) utyGetPost('ParamCmd', 0);
-		
+
 		$idEvenement = (int) utyGetPost('idEvenement', -1);
 		if ($idEvenement == -1)
 			return;
 		$myBdd = $this->myBdd;
-		
-		try {  
+
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
@@ -450,18 +459,18 @@ class GestionCalendrier extends MyPageSecure
 		$myBdd->utyJournal('Evenement +journee', '', '', null, $idEvenement, $idJournee);
 		return;
 	}
-	
+
 	function RemoveEvenementJournee()
 	{
 		$idJournee = (int) utyGetPost('ParamCmd', 0);
-		
+
 		$idEvenement = (int) utyGetSession('idEvenement', -1);
 		if ($idEvenement == -1)
 			return;
-		
+
 		$myBdd = $this->myBdd;
-		
-		try {  
+
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
@@ -478,36 +487,36 @@ class GestionCalendrier extends MyPageSecure
 
 			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
-		
+
 		$myBdd->utyJournal('Evenement -journee', '', '', null, $idEvenement, $idJournee);
 		return;
 	}
-	
+
 	function PubliJournee()
 	{
 		$idJournee = (int) utyGetPost('ParamCmd', 0);
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
-		
+
 		$myBdd = $this->myBdd;
 		$sql = "UPDATE kp_journee 
 			SET Publication = ? 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($changePub, $idJournee));
-		
+
 		$myBdd->utyJournal('Publication journee', '', '', null, null, $idJournee, $changePub);
 	}
 
 	function PubliMultiJournees()
 	{
 		$ParamCmd = utyGetPost('ParamCmd', '');
-			
-		$arrayParam = explode(',', $ParamCmd);		
+
+		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
 			return; // Rien à changer ...
 
 		$myBdd = $this->myBdd;
-		
+
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
 		$sql = "UPDATE kp_journee 
 			SET Publication = IF(Publication = 'O', 'N', 'O')
@@ -515,56 +524,47 @@ class GestionCalendrier extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayParam);
 		// Change Publication	
-		for ($i=0;$i<count($arrayParam);$i++) {
+		for ($i = 0; $i < count($arrayParam); $i++) {
 			$myBdd->utyJournal('Publication journee', $myBdd->GetActiveSaison(), '', null, null, $arrayParam[$i], '-');
 		}
 	}
-	
+
 	function __construct()
-	{			
-	  	MyPageSecure::MyPageSecure(10);
-		
+	{
+		MyPageSecure::MyPageSecure(10);
+
 		$this->myBdd = new MyBdd();
-		
+
 		$alertMessage = '';
-	  
+
 		$Cmd = utyGetPost('Cmd');
-		
-		if (strlen($Cmd) > 0)
-		{
-			if ($Cmd == 'Duplicate')
-				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'ParamJournee')
-				($_SESSION['Profile'] <= 10) ? $this->ParamJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'AddEvenementJournee')
-				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->AddEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'RemoveEvenementJournee')
-				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->RemoveEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'PubliJournee')
-				($_SESSION['Profile'] <= 4) ? $this->PubliJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'PubliMultiJournees')
-				($_SESSION['Profile'] <= 4) ? $this->PubliMultiJournees() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($alertMessage == '')
-			{
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+
+		if (strlen($Cmd) > 0) {
+			if ($Cmd == 'Duplicate') ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Duplicate() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'Remove') ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'ParamJournee') ($_SESSION['Profile'] <= 10) ? $this->ParamJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'AddEvenementJournee') ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->AddEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'RemoveEvenementJournee') ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->RemoveEvenementJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'PubliJournee') ($_SESSION['Profile'] <= 4) ? $this->PubliJournee() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'PubliMultiJournees') ($_SESSION['Profile'] <= 4) ? $this->PubliMultiJournees() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($alertMessage == '') {
+				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
-		
+
 		$this->SetTemplate("Gestion_journees_phases_poules", "Journees_phases", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionCalendrier');
 	}
-}		  	
+}
 
 $page = new GestionCalendrier();
