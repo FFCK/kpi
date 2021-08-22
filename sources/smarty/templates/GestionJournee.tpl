@@ -389,7 +389,15 @@
 												<td><img class="typeMatch" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}" src="../img/type{$arrayMatchs[i].Type}.png" title="{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}{else}{#Match_eliminatoire#}{/if}" height="23"></td>
 												<td><span class='directInput terrain' tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}4" Id="Terrain-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 												<td>
-													<span class="directInput equipe{if $arrayMatchs[i].Id_equipeA < 1} undefTeam{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9" Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}" data-equipe="A">{$arrayMatchs[i].EquipeA}</span>
+													<span class="directInput equipe{if $arrayMatchs[i].Id_equipeA < 1} undefTeam{/if}"
+														tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
+														Id="EquipeA-{$arrayMatchs[i].Id}-text"
+														data-match="{$arrayMatchs[i].Id}"
+														data-journee="{$arrayMatchs[i].Id_journee}"
+														data-idequipe="{$arrayMatchs[i].Id_equipeA}"
+														data-equipe="A">
+															{$arrayMatchs[i].EquipeA}
+													</span>
 													<br />
 													<a href="GestionMatchEquipeJoueur.php?idMatch={$arrayMatchs[i].Id}&codeEquipe=A" title="{#Composition_equipe#} A"><img height="20" src="../img/b_compo_match.png"></a>
 												</td>
