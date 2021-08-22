@@ -6,9 +6,11 @@ include_once('../commun/MyTools.php');
 require_once('../fpdf/fpdf.php');
 
 // Pieds de page
-class PDF extends FPDF {
+class PDF extends FPDF
+{
 
-    function Footer() {
+    function Footer()
+    {
         //Positionnement à 1,5 cm du bas
         $this->SetY(-15);
         //Police Arial italique 8
@@ -18,13 +20,14 @@ class PDF extends FPDF {
         //Date à droite
         $this->Cell(135, 10, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'])), 0, 0, 'R');
     }
-
 }
 
 // liste des présents par équipe
-class FeuillePresence extends MyPage {
+class FeuillePresence extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
 
         $myBdd = new MyBdd();
@@ -62,7 +65,7 @@ class FeuillePresence extends MyPage {
                 ORDER BY Field(IF(a.Capitaine='C', '-', IF(a.Capitaine='', '-', a.Capitaine)), '-', 'E', 'A', 'X'), 
                 Numero, Nom, Prenom ";
             $result2 = $myBdd->pdo->prepare($sql2);
-            
+
             foreach ($resultarray as $key => $row) {
                 $idEquipe = $row['Id'];
 
@@ -72,7 +75,7 @@ class FeuillePresence extends MyPage {
                     $num_results2 = $result2->rowCount();
                     $arrayJoueur[$idEquipe] = array();
 
-                    while ($row2 = $result2->fetch()){
+                    while ($row2 = $result2->fetch()) {
                         $numero = $row2['Numero'];
                         if (strlen($numero) == 0) {
                             $numero = 0;
@@ -103,15 +106,19 @@ class FeuillePresence extends MyPage {
                             $row2['Origine'] = '';
                         }
 
-                        array_push($arrayJoueur[$idEquipe], array('Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
+                        array_push($arrayJoueur[$idEquipe], array(
+                            'Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
                             'Sexe' => $row2['Sexe'], 'Categ' => $row2['Categ'], 'Pagaie' => $pagaie, 'CertifCK' => $row2['CertifCK'],
                             'CertifAPS' => $row2['CertifAPS'], 'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['arbitre'],
                             'Saison' => $row2['Origine'], 'Numero_club' => $row2['Numero_club'],
                             'Naissance' => $row2['Naissance'], 'Reserve' => $row2['Reserve'],
-                            'nbJoueurs' => $num_results2));
+                            'nbJoueurs' => $num_results2
+                        ));
                     }
-                    array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'],
-                        'Code_club' => $row['Code_club'], 'Numero' => $row['Numero']));
+                    array_push($arrayEquipe, array(
+                        'Id' => $row['Id'], 'Libelle' => $row['Libelle'],
+                        'Code_club' => $row['Code_club'], 'Numero' => $row['Numero']
+                    ));
                 }
             }
         } else {
@@ -182,17 +189,17 @@ class FeuillePresence extends MyPage {
             $idEquipe = $row['Id'];
 
             $pdf->SetFont('Arial', 'BI', 10);
-            $pdf->Cell(25, 7, '', '', 0, 'C');
-            $pdf->Cell(16, 7, 'Num', 'B', 0, 'C');
-            $pdf->Cell(8, 7, 'Cap', 'B', 0, 'C');
-            $pdf->Cell(25, 7, 'Licence', 'B', 0, 'C');
-            $pdf->Cell(45, 7, 'Nom', 'B', 0, 'C');
-            $pdf->Cell(45, 7, 'Prenom', 'B', 0, 'C');
-            $pdf->Cell(16, 7, 'Categ', 'B', 0, 'C');
-            $pdf->Cell(16, 7, 'Pag. EC', 'B', 0, 'C');
-            $pdf->Cell(23, 7, 'Certif. comp.', 'B', 0, 'C');
-            $pdf->Cell(16, 7, 'Club', 'B', 0, 'C');
-            $pdf->Cell(16, 7, 'Arb', 'B', 1, 'C');
+            $pdf->Cell(25, 10, '', '', 0, 'C');
+            $pdf->Cell(16, 10, 'Num', 'B', 0, 'C');
+            $pdf->Cell(8, 10, 'Cap', 'B', 0, 'C');
+            $pdf->Cell(25, 10, 'Licence', 'B', 0, 'C');
+            $pdf->Cell(45, 10, 'Nom', 'B', 0, 'C');
+            $pdf->Cell(45, 10, 'Prenom', 'B', 0, 'C');
+            $pdf->Cell(16, 10, 'Categ', 'B', 0, 'C');
+            $pdf->Cell(16, 10, 'Pag. EC', 'B', 0, 'C');
+            $pdf->Cell(23, 10, 'Certif. comp.', 'B', 0, 'C');
+            $pdf->Cell(16, 10, 'Club', 'B', 0, 'C');
+            $pdf->Cell(16, 10, 'Arb', 'B', 1, 'C');
             $pdf->SetFont('Arial', '', 10);
 
             // Mini 12 lignes par équipe
@@ -204,30 +211,29 @@ class FeuillePresence extends MyPage {
 
             for ($j = 0; $j < $nbJoueurs; $j++) {
                 if (isset($arrayJoueur[$idEquipe][$j]['Matric']) && $arrayJoueur[$idEquipe][$j]['Matric'] != '') {
-                    if($arrayJoueur[$idEquipe][$j]['Matric'] >= 2000000) {
+                    if ($arrayJoueur[$idEquipe][$j]['Matric'] >= 2000000) {
                         if ($arrayJoueur[$idEquipe][$j]['Reserve'] == '0') {
                             $arrayJoueur[$idEquipe][$j]['Matric'] = '';
                         } else {
                             $arrayJoueur[$idEquipe][$j]['Matric'] = $arrayJoueur[$idEquipe][$j]['Reserve'];
                         }
                     }
-                    $pdf->Cell(25, 7, '', '', 0, 'C');
-                    $pdf->Cell(16, 7, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
-                    $pdf->Cell(8, 7, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
-                    $pdf->Cell(25, 7, $arrayJoueur[$idEquipe][$j]['Matric'] . $arrayJoueur[$idEquipe][$j]['Saison'], 'B', 0, 'C');
-                    $pdf->Cell(45, 7, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
-                    $pdf->Cell(45, 7, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
-                    $pdf->Cell(16, 7, $arrayJoueur[$idEquipe][$j]['Categ'], 'B', 0, 'C');
-                    $pdf->Cell(16, 7, $arrayJoueur[$idEquipe][$j]['Pagaie'], 'B', 0, 'C');
-                    $pdf->Cell(23, 7, $arrayJoueur[$idEquipe][$j]['CertifCK'], 'B', 0, 'C');
-                    $pdf->Cell(16, 7, $arrayJoueur[$idEquipe][$j]['Numero_club'], 'B', 0, 'C');
-                    $pdf->Cell(16, 7, $arrayJoueur[$idEquipe][$j]['Arbitre'], 'B', 1, 'C');
+                    $pdf->Cell(25, 10, '', '', 0, 'C');
+                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
+                    $pdf->Cell(8, 10, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
+                    $pdf->Cell(25, 10, $arrayJoueur[$idEquipe][$j]['Matric'] . $arrayJoueur[$idEquipe][$j]['Saison'], 'B', 0, 'C');
+                    $pdf->Cell(45, 10, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
+                    $pdf->Cell(45, 10, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
+                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Categ'], 'B', 0, 'C');
+                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Pagaie'], 'B', 0, 'C');
+                    $pdf->Cell(23, 10, $arrayJoueur[$idEquipe][$j]['CertifCK'], 'B', 0, 'C');
+                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Numero_club'], 'B', 0, 'C');
+                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Arbitre'], 'B', 1, 'C');
                 }
             }
         }
         $pdf->Output('Feuilles de presence' . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuillePresence();
