@@ -12,7 +12,10 @@
       />
     </h1>
 
-    <charts :key="chartIndex" :chart-data="chartData" />
+    <charts
+      :key="chartIndex"
+      :chart-data="chartData"
+    />
 
     <el-backtop />
   </div>
