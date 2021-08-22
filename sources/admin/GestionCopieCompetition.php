@@ -150,23 +150,25 @@ class GestionCopieCompetition extends MyPageSecure
 			$row2 = $result2->fetch();
 			
 			$this->m_tpl->assign('nbMatchs', $row2['nbMatchs']);
-			$this->m_tpl->assign('Date_debut', utyDateUsToFr($row['Date_debut']));
-			$this->m_tpl->assign('Date_fin', utyDateUsToFr($row['Date_fin']));
-			$this->m_tpl->assign('Nom', $row['Nom']);
-			$this->m_tpl->assign('Libelle', $row['Libelle']);
-			$this->m_tpl->assign('Lieu', $row['Lieu']);
-			$this->m_tpl->assign('Plan_eau', $row['Plan_eau']);
-			$this->m_tpl->assign('Departement', $row['Departement']);
-			$this->m_tpl->assign('Responsable_insc', $row['Responsable_insc']);
-			$this->m_tpl->assign('Responsable_R1', $row['Responsable_R1']);
-			$this->m_tpl->assign('Organisateur', $row['Organisateur']);
-			$this->m_tpl->assign('Delegue', $row['Delegue']);
+			if (isset($row['Date_debut'])) {
+				$this->m_tpl->assign('Date_debut', utyDateUsToFr($row['Date_debut'] ?: null));
+				$this->m_tpl->assign('Date_fin', utyDateUsToFr($row['Date_fin']));
+				$this->m_tpl->assign('Nom', $row['Nom']);
+				$this->m_tpl->assign('Libelle', $row['Libelle']);
+				$this->m_tpl->assign('Lieu', $row['Lieu']);
+				$this->m_tpl->assign('Plan_eau', $row['Plan_eau']);
+				$this->m_tpl->assign('Departement', $row['Departement']);
+				$this->m_tpl->assign('Responsable_insc', $row['Responsable_insc']);
+				$this->m_tpl->assign('Responsable_R1', $row['Responsable_R1']);
+				$this->m_tpl->assign('Organisateur', $row['Organisateur']);
+				$this->m_tpl->assign('Delegue', $row['Delegue']);
+			}
 		}
 		$this->m_tpl->assign('arrayJournees', $arrayJournees);
         
         
-        // Chargement des schémas
-        $recherche_nb_equipes = utyGetSession('recherche_nb_equipes', 0);
+		// Chargement des schémas
+		$recherche_nb_equipes = utyGetSession('recherche_nb_equipes', 0);
 		$recherche_nb_equipes = (int) utyGetPost('recherche_nb_equipes',$recherche_nb_equipes);
 		$_SESSION['recherche_nb_equipes'] = $recherche_nb_equipes;
 		$this->m_tpl->assign('recherche_nb_equipes', $recherche_nb_equipes);
