@@ -11,4 +11,5 @@ RUN chmod 777 /var/log/msmtp.log
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install php-mbstring mailutils msmtp -y \
     && a2enmod headers \
     && a2enmod expires \
+    && a2enmod rewrite \
     && service apache2 restart
