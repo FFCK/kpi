@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Games from '../views/Games.vue'
-import Ranking from '../views/Ranking.vue'
+import Chart from '../views/Chart.vue'
 import Login from '../views/Login.vue'
 import About from '../views/About.vue'
 
@@ -17,9 +17,9 @@ const routes = [
     component: Games
   },
   {
-    path: '/ranking',
-    name: 'Ranking',
-    component: Ranking
+    path: '/chart',
+    name: 'Chart',
+    component: Chart
   },
   {
     path: '/login',

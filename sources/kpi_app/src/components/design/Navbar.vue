@@ -1,19 +1,10 @@
 <template>
   <div>
-    <el-affix
-      id="logo"
-      target="body"
-      :offset="0"
-    >
+    <el-affix id="logo" target="body" :offset="0">
       <el-menu collapse>
         <el-menu-item>
           <router-link to="/about">
-            <img
-              src="@/assets/logo.png"
-              width="30"
-              height="30"
-              alt="logo"
-            >
+            <img src="@/assets/logo.png" width="30" height="30" alt="logo" />
             <template #title>
               KPI Application
             </template>
@@ -22,20 +13,11 @@
       </el-menu>
     </el-affix>
 
-    <el-affix
-      target="body"
-      :offset="0"
-    >
+    <el-affix target="body" :offset="0">
       <el-menu>
         <el-menu-item @click="isVisible = !isVisible">
-          <i
-            v-if="!isVisible"
-            class="el-icon-menu"
-          />
-          <i
-            v-if="isVisible"
-            class="el-icon-caret-top"
-          />
+          <i v-if="!isVisible" class="el-icon-menu" />
+          <i v-if="isVisible" class="el-icon-caret-top" />
         </el-menu-item>
       </el-menu>
     </el-affix>
@@ -47,11 +29,7 @@
         :offset="56"
         class="transition-box"
       >
-        <el-menu
-          default-active="/"
-          router
-          @select="handleSelect"
-        >
+        <el-menu default-active="/" router @select="handleSelect">
           <el-menu-item index="/">
             <i class="el-icon-house" />
             <template #title>
@@ -67,7 +45,7 @@
           <el-menu-item index="/ranking">
             <i class="el-icon-medal" />
             <template #title>
-              {{ $t("nav.Ranking") }}
+              {{ $t("nav.Chart") }}
             </template>
           </el-menu-item>
           <el-divider />
@@ -116,10 +94,7 @@
               {{ $t("nav.About") }}
             </template>
           </el-menu-item>
-          <el-menu-item
-            index="/about"
-            disabled
-          >
+          <el-menu-item index="/about" disabled>
             {{ version }}
           </el-menu-item>
         </el-menu>
@@ -165,7 +140,7 @@ export default {
 }
 
 transition {
-    z-index: 2000;
+  z-index: 2000;
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
