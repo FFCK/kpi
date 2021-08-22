@@ -4,43 +4,62 @@
 
     <div v-if="user">
       {{ $t("Login.Welcome") }} {{ user.firstname }} {{ user.name }}
-      <button class="btn btn-sm btn-btn-warning" @click="logOut" :title="$t('Login.Logout')">
-        <span class="bi bi-box-arrow-right"></span>
+      <button
+        class="btn btn-sm btn-btn-warning"
+        :title="$t('Login.Logout')"
+        @click="logOut"
+      >
+        <span class="bi bi-box-arrow-right" />
       </button>
     </div>
 
     <div
+      v-if="message"
       class="alert alert-danger alert-dismissible fade show"
       role="alert"
-      v-if="message"
     >
       {{ message }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="dataDismiss">
+      <button
+        type="button"
+        class="close"
+        data-dismiss="alert"
+        aria-label="Close"
+        @click="dataDismiss"
+      >
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
 
-    <div class="row justify-content-center mb-4" v-if="!user">
-      <form class="col-6" @submit.prevent="formSubmit">
+    <div
+      v-if="!user"
+      class="row justify-content-center mb-4"
+    >
+      <form
+        class="col-6"
+        @submit.prevent="formSubmit"
+      >
         <div class="form-group">
           <label>{{ $t("Login.Login") }}</label>
           <input
+            v-model.number="input.login"
             type="tel"
             class="form-control"
-            v-model.number="input.login"
             aria-describedby="loginHelp"
-          />
-          <small id="loginHelp" class="form-text text-muted">{{
+          >
+          <small
+            id="loginHelp"
+            class="form-text text-muted"
+          >{{
             $t("Login.LoginHelp")
           }}</small>
         </div>
         <div class="form-group">
           <label>{{ $t("Login.Password") }}</label>
           <input
+            v-model="input.password"
             type="password"
             class="form-control"
-            v-model="input.password"
-          />
+          >
         </div>
         <button
           type="submit"
@@ -50,7 +69,6 @@
         </button>
       </form>
     </div>
-
   </div>
 </template>
 
@@ -63,15 +81,10 @@ import { logoutMixin } from '@/services/mixins'
 
 export default {
   name: 'Login',
-  mixins: [logoutMixin],
   components: {
     TitleComponent
   },
-  computed: {
-    user () {
-      return User.query().first()
-    }
-  },
+  mixins: [logoutMixin],
   data () {
     return {
       input: {
@@ -80,6 +93,14 @@ export default {
       },
       message: ''
     }
+  },
+  computed: {
+    user () {
+      return User.query().first()
+    }
+  },
+  created () {
+    this.getUser()
   },
   methods: {
     async getUser () {
@@ -151,9 +172,6 @@ export default {
     dataDismiss () {
       this.message = ''
     }
-  },
-  created () {
-    this.getUser()
   }
 }
 </script>

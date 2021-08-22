@@ -2,10 +2,9 @@
   <div>
     <title-component :text="$t('nav.StatReport')" />
 
-    <span class="bi bi-bar-chart-line h1 text-primary"></span>
+    <span class="bi bi-bar-chart-line h1 text-primary" />
 
     <coming-soon />
-
   </div>
 </template>
 
