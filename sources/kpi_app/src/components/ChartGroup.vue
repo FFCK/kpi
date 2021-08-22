@@ -3,33 +3,47 @@
     <table class="table table-striped table-sm">
       <thead>
         <tr>
-          <th class="text-center">#</th>
+          <th class="text-center">
+            #
+          </th>
           <th>{{ $t("Games.Teams") }}</th>
-          <th class="text-center">{{ $t("Charts.Pts") }}</th>
-          <th class="text-center">{{ $t("Charts.Pld") }}</th>
-          <th class="text-center">+/-</th>
+          <th class="text-center">
+            {{ $t("Charts.Pts") }}
+          </th>
+          <th class="text-center">
+            {{ $t("Charts.Pld") }}
+          </th>
+          <th class="text-center">
+            +/-
+          </th>
         </tr>
       </thead>
       <tbody v-if="anonymousGroup">
-        <tr v-for="(team, index) in anonymousTeams" :key="index">
-          <td></td>
+        <tr
+          v-for="(team, index) in anonymousTeams"
+          :key="index"
+        >
+          <td />
           <td>
-            <span class="team_name btn btn-sm looser text-nowrap"
-              ><i>{{ showCode(team) || "" }}</i></span
-            >
+            <span
+              class="team_name btn btn-sm looser text-nowrap"
+            ><i>{{ showCode(team) || "" }}</i></span>
           </td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td />
+          <td />
+          <td />
         </tr>
       </tbody>
       <tbody v-else>
-        <tr v-for="(team, index) in chartTeams" :key="index">
+        <tr
+          v-for="(team, index) in chartTeams"
+          :key="index"
+        >
           <td>{{ team.t_cltlv || "*" }}</td>
           <td>
-            <span class="team_name btn btn-sm looser text-nowrap"
-              ><i>{{ team.t_label || "*" }}</i></span
-            >
+            <span
+              class="team_name btn btn-sm looser text-nowrap"
+            ><i>{{ team.t_label || "*" }}</i></span>
           </td>
           <td>{{ team.t_pts / 100 || "*" }}</td>
           <td>{{ team.t_pld || "*" }}</td>
@@ -65,6 +79,9 @@ export default {
       anonymousGroup: false
     }
   },
+  mounted () {
+    this.checkRealTeams()
+  },
   methods: {
     checkRealTeams () {
       if (this.chartTeams.length < this.chartTeamCount) {
@@ -77,9 +94,6 @@ export default {
         this.anonymousGroup = true
       }
     }
-  },
-  mounted () {
-    this.checkRealTeams()
   }
 }
 </script>

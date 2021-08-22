@@ -39,20 +39,32 @@
             <th class="cliquableNomEquipe text-start ps-5">
               {{ $t("Games.Team") }} B
             </th>
-            <th v-if="showRefs" class="d-none d-lg-table-cell">
+            <th
+              v-if="showRefs"
+              class="d-none d-lg-table-cell"
+            >
               {{ $t("Games.Referee") }}
             </th>
           </tr>
         </thead>
 
-        <tbody v-for="game_group in games" :key="game_group.goupDate">
+        <tbody
+          v-for="game_group in games"
+          :key="game_group.goupDate"
+        >
           <tr class="table-dark">
-            <th colspan="100%" class="align-middle text-start pl-3">
+            <th
+              colspan="100%"
+              class="align-middle text-start pl-3"
+            >
               {{ $d(new Date(game_group.goupDate), "short") }}
             </th>
           </tr>
 
-          <tr v-for="game in game_group.filtered" :key="game.g_id">
+          <tr
+            v-for="game in game_group.filtered"
+            :key="game.g_id"
+          >
             <td
               class="align-middle text-secondary small text-center d-none d-lg-table-cell"
             >
@@ -72,7 +84,10 @@
               <span class="badge bg-light text-dark me-1">{{
                 game.g_time
               }}</span>
-              <span v-if="game.g_pitch > 0" class="badge bg-secondary">{{
+              <span
+                v-if="game.g_pitch > 0"
+                class="badge bg-secondary"
+              >{{
                 game.g_pitch
               }}</span>
             </td>
@@ -101,8 +116,11 @@
               <img
                 class="team_logo float-end"
                 :src="'http://localhost:8087/img/' + game.t_a_logo"
-              />
-              <div v-if="showRefs" class="d-md-block d-lg-none text-start">
+              >
+              <div
+                v-if="showRefs"
+                class="d-md-block d-lg-none text-start"
+              >
                 <small v-html="showCode(game.r_1)" />
               </div>
             </td>
@@ -128,8 +146,7 @@
                       game.g_score_a <= game.g_score_b,
                     'text-danger': game.g_validation !== 'O'
                   }"
-                  >{{ game.g_score_a || "&nbsp;" }}</span
-                >
+                >{{ game.g_score_a || "&nbsp;" }}</span>
                 <span
                   v-if="game.g_status !== 'ATT'"
                   :class="{
@@ -147,9 +164,8 @@
                       game.g_score_b <= game.g_score_a,
                     'text-danger': game.g_validation !== 'O'
                   }"
-                  >{{ game.g_score_b || "&nbsp;" }}</span
-                >
-                <br />
+                >{{ game.g_score_b || "&nbsp;" }}</span>
+                <br>
                 <span
                   :class="{
                     badge: true,
@@ -157,14 +173,16 @@
                     'bg-primary': game.g_status === 'ON',
                     'bg-success': game.g_status === 'END'
                   }"
-                  >{{
-                    game.g_status !== "ON"
-                      ? $t("Games.Status." + game.g_status)
-                      : $t("Games.Period." + game.g_period)
-                  }}</span
-                >
+                >{{
+                  game.g_status !== "ON"
+                    ? $t("Games.Status." + game.g_status)
+                    : $t("Games.Period." + game.g_period)
+                }}</span>
               </div>
-              <div v-if="showRefs" class="d-md-block d-lg-none text-center">
+              <div
+                v-if="showRefs"
+                class="d-md-block d-lg-none text-center"
+              >
                 &nbsp;
               </div>
             </td>
@@ -173,9 +191,9 @@
                 <span class="badge bg-light text-dark me-1">{{
                   game.g_time
                 }}</span>
-                <span class="badge bg-secondary"
-                  >{{ $t("Games.Pitch") }} {{ game.g_pitch }}</span
-                >
+                <span
+                  class="badge bg-secondary"
+                >{{ $t("Games.Pitch") }} {{ game.g_pitch }}</span>
               </div>
               <div
                 :class="{
@@ -193,12 +211,18 @@
               <img
                 class="team_logo float-start"
                 :src="'http://localhost:8087/img/' + game.t_b_logo"
-              />
-              <div v-if="showRefs" class="d-md-block d-lg-none text-end">
+              >
+              <div
+                v-if="showRefs"
+                class="d-md-block d-lg-none text-end"
+              >
                 <small v-html="showCode(game.r_2)" />
               </div>
             </td>
-            <td v-if="showRefs" class="d-none d-lg-table-cell">
+            <td
+              v-if="showRefs"
+              class="d-none d-lg-table-cell"
+            >
               <div>
                 <small v-html="showCode(game.r_1)" />
               </div>

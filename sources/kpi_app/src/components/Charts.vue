@@ -1,6 +1,9 @@
 <template>
   <div class="mb-5">
-    <div v-for="category in chartData" :key="category[0]">
+    <div
+      v-for="category in chartData"
+      :key="category[0]"
+    >
       <div class="bg-dark text-light">
         {{ category.libelle || category.code }}
       </div>
@@ -21,24 +24,24 @@
             }"
           >
             <div
-              class="m-1"
               v-for="(phase, index2) in round.phases"
               :key="index2"
+              class="m-1"
             >
               <h6>{{ phase.libelle }}</h6>
               <chart-championship
                 v-if="category.type === 'CHPT' && phase.type === 'C'"
-                :chartGames="phase.games"
+                :chart-games="phase.games"
               />
               <chart-group
                 v-if="category.type === 'CP' && phase.type === 'C'"
-                :chartTeams="phase.teams"
-                :chartTeamCount="+phase.t_count"
-                :chartGames="phase.games"
+                :chart-teams="phase.teams"
+                :chart-team-count="+phase.t_count"
+                :chart-games="phase.games"
               />
               <chart-game
                 v-if="category.type === 'CP' && phase.type === 'E'"
-                :chartGames="phase.games"
+                :chart-games="phase.games"
               />
             </div>
           </article>
