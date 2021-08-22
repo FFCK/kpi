@@ -5,42 +5,45 @@ include_once('headers.php');
 include_once('controllers.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
-$url = trim($_GET['url'], '/');
-$route = explode('/', $url);
+$url = $_GET['url']; // After htaccess url rewrite
+$path = explode('/', trim($url, '/'));
 
-set_headers($method);
+set_response_headers($method);
 
 /**
- * Staff routes
+ * Routing
  */
-if ($route[0] === 'staff') {
+if ($path[0] === 'staff') {
+	// Staff routes
 	token_verification();
-	
-	switch ($route[1]) {
+
+	switch ($path[1]) {
 		case 'test':
 			methods(['GET']);
-			StaffTestController($method, $route);
+			StaffTestController($path);
 			break;
 		default:
 			return_404();
 			exit;
-		}
-/**
- * Public routes
- */
+	}
 } else {
-	switch ($route[0]) {
+	// Public routes
+	switch ($path[0]) {
 		case 'login':
 			methods(['POST']);
-			login($method, $route);
+			login($path);
 			break;
 		case 'events':
 			methods(['GET']);
-			EventController($method, $route);
+			EventsController($path);
 			break;
 		case 'games':
 			methods(['GET']);
-			GamesController($method, $route);
+			GamesController($path);
+			break;
+		case 'charts':
+			methods(['GET']);
+			ChartsController($path);
 			break;
 		default:
 			return_404();
