@@ -1,6 +1,6 @@
 <template>
   <div>
-    <title-component :text="$t('nav.Ranking')" />
+    <title-component :text="$t('nav.Chart')" />
 
     <h1>
       Charts
@@ -12,7 +12,7 @@
       />
     </h1>
 
-    <charts :chart-data="chartData" :key="chartIndex" />
+    <charts :key="chartIndex" :chart-data="chartData" />
 
     <el-backtop />
   </div>
@@ -25,7 +25,7 @@ import { prefsMixin, gamesMixin } from '@/services/mixins'
 import { api } from '@/services/api'
 
 export default {
-  name: 'Ranking',
+  name: 'Chart',
   components: {
     TitleComponent,
     Charts

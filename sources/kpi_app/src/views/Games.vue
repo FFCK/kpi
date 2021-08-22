@@ -53,7 +53,10 @@
             :placeholder="$t('Games.Dates')"
             @change="changeFav"
           >
-            <el-option :label="$t('Games.All')" value="" />
+            <el-option
+              :label="$t('Games.All')"
+              value=""
+            />
             <el-option
               v-for="(game_date, index) in game_dates"
               :key="index"
@@ -61,19 +64,38 @@
               :value="game_date"
             />
             <el-divider />
-            <el-option :label="$t('Games.Today')" value="Today" />
-            <el-option :label="$t('Games.Tomorow')" value="Tomorow" />
-            <el-option :label="$t('Games.Prev')" value="Prev" />
-            <el-option :label="$t('Games.Next')" value="Next" />
+            <el-option
+              :label="$t('Games.Today')"
+              value="Today"
+            />
+            <el-option
+              :label="$t('Games.Tomorow')"
+              value="Tomorow"
+            />
+            <el-option
+              :label="$t('Games.Prev')"
+              value="Prev"
+            />
+            <el-option
+              :label="$t('Games.Next')"
+              value="Next"
+            />
           </el-select>
         </el-col>
         <el-col :span="3">
-          <el-button plain size="small">
+          <el-button
+            plain
+            size="small"
+          >
             Refs <el-switch v-model="showRefs" />
           </el-button>
         </el-col>
         <el-col :span="2">
-          <el-button icon="el-icon-refresh-right" plain @click="loadGames" />
+          <el-button
+            icon="el-icon-refresh-right"
+            plain
+            @click="loadGames"
+          />
         </el-col>
       </el-row>
     </div>
