@@ -1,19 +1,15 @@
 <template>
-  <div>
-    <el-select
+  <form>
+    <select
       v-model="$i18n.locale"
       @change="changeLocale"
+      class="form-select form-select-sm"
+      aria-label="Locale"
     >
-      <el-option
-        value="en"
-        label="English"
-      />
-      <el-option
-        value="fr"
-        label="Français"
-      />
-    </el-select>
-  </div>
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+    </select>
+  </form>
 </template>
 
 <script>

@@ -2,6 +2,8 @@
   <div>
     <title-component :text="$t('nav.About')" />
 
+    {{ version }}
+
     <coming-soon />
   </div>
 </template>
@@ -15,6 +17,11 @@ export default {
   components: {
     TitleComponent,
     ComingSoon
+  },
+  computed: {
+    version () {
+      return 'v' + process.env.VUE_APP_VERSION
+    }
   }
 }
 </script>
