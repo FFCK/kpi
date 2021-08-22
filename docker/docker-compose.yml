@@ -53,8 +53,8 @@ services:
           context: ../
           dockerfile: ./docker/node/Dockerfile
         ports:
-          - "8000:8000"
-          - "9000:8080"
+          - "8000:8000" # vue ui
+          - "9000:8080" # Vue-cli HMR
         volumes:
           - ../sources/kpi_app:/app
         user: "${UID}:${GID}"
