@@ -47,3 +47,17 @@ services:
         ports:
             - 1025:1025
             - 1080:1080
+    node:
+        image: node:latest
+        build:
+          context: ../
+          dockerfile: ./docker/node/Dockerfile
+        ports:
+          - "8000:8000" # vue ui
+          - "9000:8080" # Vue-cli HMR
+        volumes:
+          - ../sources/kpi_app:/app
+        user: "${UID}:${GID}"
+        links:
+          - webphp7
+    
