@@ -50,8 +50,8 @@ const prefsMixin = {
       document.documentElement.scrollTop = 0 // For Chrome, Firefox, IE and Opera
     }
   },
-  created () {
-    this.getPrefs()
+  async mounted () {
+    await this.getPrefs()
   }
 }
 
@@ -78,8 +78,101 @@ const userMixin = {
   }
 }
 
+const gamesMixin = {
+  methods: {
+    gameEncode (gameCode, codeNumber) {
+      const readCode = gameCode ? gameCode.split(/[[\]]/)[1].split(/[-/*,;]/g)[codeNumber - 1] : null
+      if (!readCode) {
+        return null
+      }
+      const resultLetter = readCode.match(/([A-Z]+)/)[0]
+      const resultNumberArray = readCode.match(/([0-9]+)/)
+      const resultNumber = resultNumberArray[0]
+      const resultNumberIndex = resultNumberArray.index
+      if (resultNumberIndex === 0) {
+        return '¤|' + resultNumber + '|Group|' + resultLetter
+      }
+
+      let result
+      switch (resultLetter) {
+        case 'W': // Winner
+        case 'V': // Vainqueur
+        case 'G': // Gagnant
+          result = '¤||Winner|' + resultNumber
+          break
+        case 'L': // Looser
+        case 'P': // Perdant
+          result = '¤||Looser|' + resultNumber
+          break
+        case 'D': // Draw
+        case 'T': // Tirage
+          result = '¤||Team|' + resultNumber
+          break
+        default:
+          result = null
+          break
+      }
+      return result
+    }
+  }
+}
+
+const gamesDisplayMixin = {
+  methods: {
+    showCode (val) {
+      if (val && val[0] === '¤') {
+        const resultArray = val.split('|')
+        const result = this.ordinalNumber(resultArray[1]) + this.$t('Games.Code.' + resultArray[2]) + resultArray[3]
+        return result
+      }
+      return val
+    },
+    ordinalNumber (val) {
+      const test = ('' + val).slice(-1)
+      if (test === '') {
+        return val
+      }
+      let result
+      switch (val) {
+        case '1':
+          result = val + this.$t('Games.Numbers.first')
+          break
+        case '2':
+          result = val + this.$t('Games.Numbers.second')
+          break
+        case '3':
+          result = val + this.$t('Games.Numbers.third')
+          break
+        case '11':
+          result = val + this.$t('Games.Numbers.eleven')
+          break
+        case '12':
+          result = val + this.$t('Games.Numbers.twelve')
+          break
+        case '13':
+          result = val + this.$t('Games.Numbers.thirteen')
+          break
+        case test === '1':
+          result = val + this.$t('Games.Numbers.twentyone')
+          break
+        case test === '2':
+          result = val + this.$t('Games.Numbers.twentytwo')
+          break
+        case test === '3':
+          result = val + this.$t('Games.Numbers.twentythree')
+          break
+        default:
+          result = val + this.$t('Games.Numbers.th')
+      }
+      return result
+    }
+  }
+}
+
 export {
   logoutMixin,
   prefsMixin,
-  userMixin
+  userMixin,
+  gamesMixin,
+  gamesDisplayMixin
 }
