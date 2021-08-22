@@ -28,7 +28,10 @@
       </XyzTransitionGroup>
     </div>
 
-    <div v-if="user" class="row justify-content-around my-5">
+    <div
+      v-if="user"
+      class="row justify-content-around my-5"
+    >
       <button
         class="btn btn-primary btn-lg col-3"
         @click="changePage('GameReport')"
@@ -50,7 +53,12 @@
     </div>
 
     <div class="my-1">
-      <img alt="Vue logo" src="../assets/logo.png" width="100" height="100" />
+      <img
+        alt="Vue logo"
+        src="../assets/logo.png"
+        width="100"
+        height="100"
+      >
     </div>
   </div>
 </template>

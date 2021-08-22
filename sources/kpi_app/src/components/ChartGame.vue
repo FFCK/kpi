@@ -1,10 +1,6 @@
 <template>
   <div class="row">
-    <div
-      v-for="game in games"
-      :key="game.g_id"
-      class="col mb-3"
-    >
+    <div v-for="game in games" :key="game.g_id" class="col mb-3">
       <div>
         <table class="table-sm float-end">
           <tbody>
@@ -42,11 +38,13 @@
                     looser: game.g_status === 'ON',
                     'text-danger': game.g_validation !== 'O'
                   }"
-                >{{
-                  game.g_score_a > game.g_score_b
-                    ? game.g_score_a
-                    : game.g_score_b || "&nbsp;"
-                }}</span>
+                >
+                  {{
+                    game.g_score_a > game.g_score_b
+                      ? game.g_score_a
+                      : game.g_score_b || "&nbsp;"
+                  }}
+                </span>
               </td>
             </tr>
             <tr>
@@ -78,11 +76,13 @@
                     looser: true,
                     'text-danger': game.g_validation !== 'O'
                   }"
-                >{{
-                  game.g_score_b > game.g_score_a
-                    ? game.g_score_a
-                    : game.g_score_b || "&nbsp;"
-                }}</span>
+                >
+                  {{
+                    game.g_score_b > game.g_score_a
+                      ? game.g_score_a
+                      : game.g_score_b || "&nbsp;"
+                  }}
+                </span>
               </td>
             </tr>
           </tbody>
