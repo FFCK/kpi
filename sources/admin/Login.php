@@ -10,8 +10,11 @@ class Login extends MyPage
 {	
 	function __construct()
 	{
-		session_start();
-        $myBdd = new MyBdd();
+		if(!isset($_SESSION)){
+			session_start();
+		}
+    
+		$myBdd = new MyBdd();
         
 		if (utyGetGet('Src', false)) {
             $loginTarget = $myBdd->RealEscapeString(utyGetGet('Src', false));
