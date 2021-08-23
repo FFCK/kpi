@@ -1,16 +1,6 @@
 <template>
-  <el-affix
-    target="body"
-    :offset="0"
-  >
-    <div class="header">
-      <el-page-header
-        icon="el-icon-arrow-left"
-        :title="$t('nav.Back')"
-        :content="text"
-        @back="goBack"
-      />
-    </div>
+  <el-affix target="body" :offset="0">
+    <div class="header"></div>
   </el-affix>
 </template>
 
@@ -21,11 +11,6 @@ export default {
     text: {
       type: String,
       required: true
-    }
-  },
-  methods: {
-    goBack () {
-      this.$router.go(-1)
     }
   }
 }

@@ -1,10 +1,7 @@
 <template>
-  <div class="mb-5">
-    <div
-      v-for="category in chartData"
-      :key="category[0]"
-    >
-      <div class="bg-dark text-light ps-3">
+  <div class="my-5">
+    <div v-for="category in chartData" :key="category[0]">
+      <div class="bg-secondary text-light ps-3">
         {{ category.libelle || category.code }}
       </div>
       <div class="container-fluid flex">
