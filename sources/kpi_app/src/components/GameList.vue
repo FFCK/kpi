@@ -33,7 +33,7 @@
             <th class="cliquableNomEquipe text-end pe-5">
               {{ $t("Games.Team") }} A
             </th>
-            <th class="cliquableScore">
+            <th class="cliquableScore text-center">
               {{ $t("Games.Score") }}
             </th>
             <th class="cliquableNomEquipe text-start ps-5">
@@ -100,7 +100,8 @@
               />
               <img
                 class="team_logo float-end"
-                :src="'http://localhost:8087/img/' + game.t_a_logo"
+                :src="`${baseUrl}/img/${game.t_a_logo}`"
+                alt=""
               />
               <div v-if="showRefs" class="d-md-block d-lg-none text-start">
                 <small v-html="showCode(game.r_1)" />
@@ -192,7 +193,8 @@
               />
               <img
                 class="team_logo float-start"
-                :src="'http://localhost:8087/img/' + game.t_b_logo"
+                :src="`${baseUrl}/img/${game.t_b_logo}`"
+                alt=""
               />
               <div v-if="showRefs" class="d-md-block d-lg-none text-end">
                 <small v-html="showCode(game.r_2)" />
@@ -236,6 +238,11 @@ export default {
     gamesCount: {
       type: Number,
       default: 0
+    }
+  },
+  data () {
+    return {
+      baseUrl: process.env.VUE_APP_BASE_URL
     }
   },
   mounted () {
