@@ -2,12 +2,16 @@
   <form>
     <select
       v-model="$i18n.locale"
-      @change="changeLocale"
       class="form-select form-select-sm"
       aria-label="Locale"
+      @change="changeLocale"
     >
-      <option value="en">English</option>
-      <option value="fr">Français</option>
+      <option value="en">
+        English
+      </option>
+      <option value="fr">
+        Français
+      </option>
     </select>
   </form>
 </template>

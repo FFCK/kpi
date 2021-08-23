@@ -1,6 +1,10 @@
 <template>
   <div class="row">
-    <div v-for="game in games" :key="game.g_id" class="col mb-3">
+    <div
+      v-for="game in games"
+      :key="game.g_id"
+      class="col mb-3"
+    >
       <div>
         <table class="table-sm float-end">
           <tbody>
