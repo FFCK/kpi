@@ -53,10 +53,7 @@
             :placeholder="$t('Games.Dates')"
             @change="changeFav"
           >
-            <el-option
-              :label="$t('Games.All')"
-              value=""
-            />
+            <el-option :label="$t('Games.All')" value="" />
             <el-option
               v-for="(game_date, index) in game_dates"
               :key="index"
@@ -64,38 +61,19 @@
               :value="game_date"
             />
             <el-divider />
-            <el-option
-              :label="$t('Games.Today')"
-              value="Today"
-            />
-            <el-option
-              :label="$t('Games.Tomorow')"
-              value="Tomorow"
-            />
-            <el-option
-              :label="$t('Games.Prev')"
-              value="Prev"
-            />
-            <el-option
-              :label="$t('Games.Next')"
-              value="Next"
-            />
+            <el-option :label="$t('Games.Today')" value="Today" />
+            <el-option :label="$t('Games.Tomorow')" value="Tomorow" />
+            <el-option :label="$t('Games.Prev')" value="Prev" />
+            <el-option :label="$t('Games.Next')" value="Next" />
           </el-select>
         </el-col>
         <el-col :span="3">
-          <el-button
-            plain
-            size="small"
-          >
+          <el-button plain size="small">
             Refs <el-switch v-model="showRefs" />
           </el-button>
         </el-col>
         <el-col :span="2">
-          <el-button
-            icon="el-icon-refresh-right"
-            plain
-            @click="loadGames"
-          />
+          <el-button icon="el-icon-refresh-right" plain @click="loadGames" />
         </el-col>
       </el-row>
     </div>
@@ -194,13 +172,14 @@ export default {
     },
     filterGames () {
       let filteredGames = Games.query()
+      console.log(filteredGames)
       if (this.fav_teams.length > 0) {
         filteredGames.where('t_a_label', (value) => this.fav_teams.includes(value))
         filteredGames.orWhere('t_b_label', (value) => this.fav_teams.includes(value))
-        filteredGames.orWhere('r_1', (value) => this.fav_teams.includes(value.split(' (')[0]))
-        filteredGames.orWhere('r_2', (value) => this.fav_teams.includes(value.split(' (')[0]))
-        filteredGames.orWhere('r_1', (value) => this.fav_teams.includes(value.split('(').pop().split(')')[0]))
-        filteredGames.orWhere('r_2', (value) => this.fav_teams.includes(value.split('(').pop().split(')')[0]))
+        filteredGames.orWhere('r_1', (value) => value ? this.fav_teams.includes(value.split(' (')[0]) : false)
+        filteredGames.orWhere('r_2', (value) => value ? this.fav_teams.includes(value.split(' (')[0]) : false)
+        filteredGames.orWhere('r_1', (value) => value ? this.fav_teams.includes(value.split('(').pop().split(')')[0]) : false)
+        filteredGames.orWhere('r_2', (value) => value ? this.fav_teams.includes(value.split('(').pop().split(')')[0]) : false)
         filteredGames.orWhere('r_1_name', (value) => this.fav_teams.includes(value))
         filteredGames.orWhere('r_2_name', (value) => this.fav_teams.includes(value))
       }
