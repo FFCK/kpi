@@ -4,7 +4,7 @@
       v-for="category in chartData"
       :key="category[0]"
     >
-      <div class="bg-dark text-light">
+      <div class="bg-dark text-light ps-3">
         {{ category.libelle || category.code }}
       </div>
       <div class="container-fluid flex">
