@@ -2,20 +2,16 @@
   <div>
     <title-component :text="$t('nav.Chart')" />
 
-    <h1 class="ps-3">
-      Charts
+    <div class="fixed-top filters">
       <el-button
         class="float-end"
         icon="el-icon-refresh-right"
         plain
         @click="loadCharts"
       />
-    </h1>
+    </div>
 
-    <charts
-      :key="chartIndex"
-      :chart-data="chartData"
-    />
+    <charts :key="chartIndex" :chart-data="chartData" />
 
     <el-backtop />
   </div>
@@ -58,3 +54,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.filters {
+  margin-top: 62px;
+  margin-left: 10px;
+}
+</style>
