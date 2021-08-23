@@ -1,63 +1,40 @@
 <template>
-  <div
-    v-if="prefs"
-    class="container mt-3"
-  >
+  <div v-if="prefs" class="container mt-3">
     <div
       v-if="prefs.event > 0"
       role="button"
-      class="h5"
+      class="h5 text-center"
       @click="loadEvents"
     >
       {{ prefs.event_name }} - {{ prefs.event_place }}
-      <button
-        v-if="!showSelector"
-        class="btn btn-secondary btn-sm"
-      >
+      <button v-if="!showSelector" class="btn btn-secondary btn-sm">
         <i class="bi bi-arrow-left-right" />
       </button>
     </div>
     <div v-else>
-      <button
-        v-if="!showSelector"
-        class="btn btn-primary"
-        @click="loadEvents"
-      >
-        {{ $t('Event.SelectEvent') }}
+      <button v-if="!showSelector" class="btn btn-primary" @click="loadEvents">
+        {{ $t("Event.SelectEvent") }}
       </button>
     </div>
 
-    <form
-      v-if="showSelector"
-      class="row align-items-center"
-    >
+    <form v-if="showSelector" class="row align-items-center">
       <div class="col-8">
         <select
           v-model="eventSelected"
           class="form-control"
           @change="changeButton = true"
         >
-          <option
-            disabled
-            value="0"
-          >
-            ▼ {{ $t('Event.PleaseSelectOne') }} ▼
+          <option disabled value="0">
+            ▼ {{ $t("Event.PleaseSelectOne") }} ▼
           </option>
-          <option
-            v-for="event in events"
-            :key="event.id"
-            :value="event.id"
-          >
+          <option v-for="event in events" :key="event.id" :value="event.id">
             {{ event.id }} | {{ event.libelle }} - {{ event.place }}
           </option>
         </select>
       </div>
       <div class="col-2">
-        <button
-          class="btn btn-secondary"
-          @click.prevent="cancelEvent"
-        >
-          {{ $t('Event.Cancel') }}
+        <button class="btn btn-secondary" @click.prevent="cancelEvent">
+          {{ $t("Event.Cancel") }}
         </button>
       </div>
       <div class="col-2">
@@ -66,7 +43,7 @@
           class="btn btn-primary"
           @click.prevent="changeEvent"
         >
-          {{ $t('Event.Change') }}
+          {{ $t("Event.Change") }}
         </button>
       </div>
     </form>

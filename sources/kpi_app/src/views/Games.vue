@@ -172,7 +172,6 @@ export default {
     },
     filterGames () {
       let filteredGames = Games.query()
-      console.log(filteredGames)
       if (this.fav_teams.length > 0) {
         filteredGames.where('t_a_label', (value) => this.fav_teams.includes(value))
         filteredGames.orWhere('t_b_label', (value) => this.fav_teams.includes(value))
