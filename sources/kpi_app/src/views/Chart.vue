@@ -2,7 +2,7 @@
   <div>
     <title-component :text="$t('nav.Chart')" />
 
-    <h1>
+    <h1 class="ps-3">
       Charts
       <el-button
         class="float-end"
