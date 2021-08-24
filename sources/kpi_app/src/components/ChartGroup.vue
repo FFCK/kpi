@@ -22,9 +22,13 @@
         <tr v-for="(team, index) in anonymousTeams" :key="index">
           <td />
           <td>
-            <span class="team_name btn btn-sm looser text-nowrap"
-              ><i>{{ showCode(team) || "" }}</i></span
+            <span
+              class="team_name btn btn-sm looser text-nowrap anonymous"
+              @mouseenter="teamHover"
+              @mouseleave="teamOut"
             >
+              {{ showCode(team) || "" }}
+            </span>
           </td>
           <td />
           <td />
@@ -35,9 +39,13 @@
         <tr v-for="(team, index) in chartTeams" :key="index">
           <td>{{ team.t_cltlv }}</td>
           <td>
-            <span class="team_name btn btn-sm looser text-nowrap"
-              ><i>{{ team.t_label }}</i></span
+            <span
+              class="team_name btn btn-sm looser text-nowrap"
+              @mouseenter="teamHover"
+              @mouseleave="teamOut"
             >
+              {{ team.t_label }}
+            </span>
           </td>
           <td>{{ team.t_pts / 100 }}</td>
           <td>{{ team.t_pld }}</td>

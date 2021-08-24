@@ -18,6 +18,8 @@
               looser:
                 game.g_status !== 'END' || game.g_score_a <= game.g_score_b
             }"
+            @mouseenter="teamHover"
+            @mouseleave="teamOut"
             v-html="showCode(game.t_a_label)"
           />
         </div>
@@ -69,6 +71,8 @@
               looser:
                 game.g_status !== 'END' || game.g_score_a >= game.g_score_b
             }"
+            @mouseenter="teamHover"
+            @mouseleave="teamOut"
             v-html="showCode(game.t_b_label)"
           />
         </div>

@@ -3,10 +3,7 @@
     <Navbar />
 
     <router-view v-slot="{ Component }">
-      <transition
-        name="fade"
-        mode="out-in"
-      >
+      <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
@@ -98,6 +95,10 @@ export default {
   color: #000;
   background-color: #ddd;
   border-color: #aaa;
+}
+
+.anonymous {
+  font-style: italic;
 }
 
 .team_logo {
