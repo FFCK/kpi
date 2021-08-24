@@ -2,16 +2,20 @@
   <div>
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
       <div class="container-fluid">
-        <router-link to="/" class="navbar-brand">
-          <img
-            src="@/assets/logo.png"
-            width="30"
-            height="30"
-            alt="logo"
-            class="d-inline-block align-middle"
-          />
-          KPI App
-        </router-link>
+        <div>
+          <router-link to="/" class="navbar-brand">
+            <img
+              src="@/assets/logo.png"
+              width="30"
+              height="30"
+              alt="logo"
+              class="d-inline-block align-middle"
+            />
+            KPI App
+
+            <offline />
+          </router-link>
+        </div>
         <button
           class="navbar-toggler"
           type="button"
@@ -109,11 +113,13 @@
 <script>
 import LocaleSwitcher from '@/components/design/LocaleSwitcher'
 import { userMixin, prefsMixin } from '@/services/mixins'
+import Offline from '@/components/design/Offline.vue'
 
 export default {
   name: 'Navbar',
   components: {
-    LocaleSwitcher
+    LocaleSwitcher,
+    Offline
   },
   mixins: [userMixin, prefsMixin],
   data () {
