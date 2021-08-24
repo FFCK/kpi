@@ -287,7 +287,9 @@ export default {
           this.loadCategories()
           this.filterGames()
         }).catch(error => {
-          console.log('Erreur:', error)
+          if (error.message === 'Network Error') {
+            console.log('Offline !')
+          }
         })
     }
   }
