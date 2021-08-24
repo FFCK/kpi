@@ -165,6 +165,21 @@ const gamesDisplayMixin = {
           result = val + this.$t('Games.Numbers.th')
       }
       return result
+    },
+    teamHover (event) {
+      const SelectedTeamName = event.target.innerText
+      var elems = document.querySelectorAll('.team_name')
+      elems.forEach((el) => {
+        if (el.textContent === SelectedTeamName) {
+          el.classList.add('bg-warning', 'text-dark')
+        }
+      })
+    },
+    teamOut (event) {
+      var elems = document.querySelectorAll('.team_name.bg-warning.text-dark')
+      elems.forEach((el) => {
+        el.classList.remove('bg-warning', 'text-dark')
+      })
     }
   }
 }
