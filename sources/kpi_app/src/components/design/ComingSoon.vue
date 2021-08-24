@@ -13,7 +13,14 @@
 </template>
 
 <script>
+import {
+  ElAlert
+} from 'element-plus'
+
 export default {
-  name: 'CommingSoon'
+  name: 'CommingSoon',
+  components: {
+    ElAlert
+  }
 }
 </script>

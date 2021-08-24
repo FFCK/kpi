@@ -98,12 +98,26 @@ import Games from '@/store/models/Games'
 import Preferences from '@/store/models/Preferences'
 import dayjs from 'dayjs'
 import GameList from '@/components/GameList.vue'
+import {
+  ElBacktop, ElButton, ElRow, ElCol,
+  ElSelect, ElOption, ElSwitch, ElDivider,
+  ElOptionGroup
+} from 'element-plus'
 
 export default {
   name: 'Games',
   components: {
     TitleComponent,
-    GameList
+    GameList,
+    ElBacktop,
+    ElButton,
+    ElRow,
+    ElCol,
+    ElSelect,
+    ElOption,
+    ElSwitch,
+    ElDivider,
+    ElOptionGroup
   },
   mixins: [prefsMixin, gamesMixin],
   data () {
