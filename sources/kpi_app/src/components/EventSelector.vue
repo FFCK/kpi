@@ -57,6 +57,7 @@ import { api } from '@/services/api'
 import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
 import Games from '@/store/models/Games'
+import Errors from '@/store/models/Errors'
 
 export default {
   name: 'EventSelector',
@@ -65,7 +66,8 @@ export default {
     return {
       showSelector: false,
       eventSelected: 0,
-      changeButton: false
+      changeButton: false,
+      errors: {}
     }
   },
   computed: {
@@ -75,42 +77,54 @@ export default {
   },
   methods: {
     async loadEvents () {
-      await api.get('/events')
-        .then(result => {
-          const eventsResult = result.data.map(event => {
-            event.id = parseInt(event.id)
-            return event
+      this.errors = await Errors.find(1)
+      if (this.errors.offline) {
+        console.log('Offline process...')
+      } else {
+        await api.get('/events')
+          .then(result => {
+            const eventsResult = result.data.map(event => {
+              event.id = parseInt(event.id)
+              return event
+            })
+            Events.deleteAll()
+            Events.insertOrUpdate({
+              data: eventsResult
+            })
+            this.eventSelected = this.prefs.event
+            this.showSelector = true
+          }).catch(error => {
+            if (error.message === 'Network Error') {
+              console.log('Offline !')
+            }
           })
-          Events.deleteAll()
-          Events.insertOrUpdate({
-            data: eventsResult
-          })
-          this.eventSelected = this.prefs.event
-          this.showSelector = true
-        }).catch(error => {
-          console.log('Erreur:', error)
-        })
+      }
     },
-    changeEvent () {
-      const e = Events.find(this.eventSelected)
-      Preferences.update({
-        where: 1,
-        data: {
-          event: e.id,
-          event_name: e.libelle,
-          event_place: e.place,
-          fav_categories: '[]',
-          fav_teams: '[]',
-          fav_refs: '[]',
-          fav_dates: ''
+    async changeEvent () {
+      this.errors = await Errors.find(1)
+      if (this.errors.offline) {
+        console.log('Offline process...')
+      } else {
+        const e = Events.find(this.eventSelected)
+        Preferences.update({
+          where: 1,
+          data: {
+            event: e.id,
+            event_name: e.libelle,
+            event_place: e.place,
+            fav_categories: '[]',
+            fav_teams: '[]',
+            fav_refs: '[]',
+            fav_dates: ''
 
-        }
-      })
-      idbs.dbPut('preferences', Preferences.find(1))
-      Games.deleteAll()
-      idbs.dbClear('games')
-      this.showSelector = false
-      this.changeButton = false
+          }
+        })
+        idbs.dbPut('preferences', Preferences.find(1))
+        Games.deleteAll()
+        idbs.dbClear('games')
+        this.showSelector = false
+        this.changeButton = false
+      }
     },
     cancelEvent () {
       this.showSelector = false
