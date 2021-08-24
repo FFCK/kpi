@@ -103,6 +103,7 @@ import {
   ElSelect, ElOption, ElSwitch, ElDivider,
   ElOptionGroup
 } from 'element-plus'
+import Errors from '@/store/models/Errors'
 
 export default {
   name: 'Games',
@@ -133,7 +134,8 @@ export default {
       fav_teams: [],
       favTeamsSelectKey: 0,
       fav_refs: [],
-      fav_dates: ''
+      fav_dates: '',
+      errors: {}
     }
   },
   computed: {
@@ -265,32 +267,37 @@ export default {
     async loadGames () {
       await this.getPrefs()
       await this.prefs
-      await api.get('/games/' + this.prefs.event + '/force')
-        .then(async result => {
-          const gamelist = await result.data.map(game => {
-            game.r_1 = game.r_1 ? game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
-            game.r_2 = game.r_2 ? game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
-            game.t_a_label ??= this.gameEncode(game.g_code, 1)
-            game.t_b_label ??= this.gameEncode(game.g_code, 2)
-            game.r_1 ??= this.gameEncode(game.g_code, 3)
-            game.r_2 ??= this.gameEncode(game.g_code, 4)
-            return game
+      this.errors = await Errors.find(1)
+      if (this.errors.offline) {
+        console.log('Offline process...')
+      } else {
+        await api.get('/games/' + this.prefs.event + '/force')
+          .then(async result => {
+            const gamelist = await result.data.map(game => {
+              game.r_1 = game.r_1 ? game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+              game.r_2 = game.r_2 ? game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+              game.t_a_label ??= this.gameEncode(game.g_code, 1)
+              game.t_b_label ??= this.gameEncode(game.g_code, 2)
+              game.r_1 ??= this.gameEncode(game.g_code, 3)
+              game.r_2 ??= this.gameEncode(game.g_code, 4)
+              return game
+            })
+            await Games.deleteAll()
+            await Games.insertOrUpdate({
+              data: gamelist
+            })
+            idbs.dbClear('games')
+            gamelist.forEach(element => {
+              idbs.dbPut('games', element)
+            })
+            this.loadCategories()
+            this.filterGames()
+          }).catch(error => {
+            if (error.message === 'Network Error') {
+              console.log('Offline !')
+            }
           })
-          await Games.deleteAll()
-          await Games.insertOrUpdate({
-            data: gamelist
-          })
-          idbs.dbClear('games')
-          gamelist.forEach(element => {
-            idbs.dbPut('games', element)
-          })
-          this.loadCategories()
-          this.filterGames()
-        }).catch(error => {
-          if (error.message === 'Network Error') {
-            console.log('Offline !')
-          }
-        })
+      }
     }
   }
 }

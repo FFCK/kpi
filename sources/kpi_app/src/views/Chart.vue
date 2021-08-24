@@ -26,6 +26,7 @@ import idbs from '@/services/idbStorage'
 import {
   ElBacktop, ElButton
 } from 'element-plus'
+import Errors from '@/store/models/Errors'
 
 export default {
   name: 'Chart',
@@ -39,7 +40,8 @@ export default {
   data () {
     return {
       chartData: null,
-      chartIndex: 0
+      chartIndex: 0,
+      errors: {}
     }
   },
   mounted () {
@@ -49,36 +51,41 @@ export default {
     async loadCharts () {
       await this.getPrefs()
       await this.prefs
-      await api.get('/charts/' + this.prefs.event + '/force')
-        .then(async result => {
-          this.chartData = result.data
-          this.chartIndex++
-          idbs.dbClear('charts')
-          this.chartData.forEach(element => {
-            idbs.dbPut('charts', JSON.parse(JSON.stringify(element)))
+      this.errors = await Errors.find(1)
+      if (this.errors.offline) {
+        console.log('Offline process...')
+        await idbs.dbGetAll('charts')
+          .then(result => {
+            this.chartData = result
+            this.chartIndex++
           })
-        }).catch(async error => {
-          if (error.message === 'Network Error') {
-            console.log('Offline !')
-            await idbs.dbGetAll('charts')
-              .then(result => {
-                this.chartData = result
-                this.chartIndex++
-              })
-          }
-          // if (error.response) {
-          //   // Request made and server responded
-          //   console.log(error.response.data)
-          //   console.log(error.response.status)
-          //   console.log(error.response.headers)
-          // } else if (error.request) {
-          //   // The request was made but no response was received
-          //   console.log(error.request, error.message)
-          // } else {
-          //   // Something happened in setting up the request that triggered an Error
-          //   console.log('Error', error.message)
-          // }
-        })
+      } else {
+        await api.get('/charts/' + this.prefs.event + '/force')
+          .then(async result => {
+            Errors.update({
+              data: [{ id: 1, offline: false }]
+            })
+            this.chartData = result.data
+            this.chartIndex++
+            idbs.dbClear('charts')
+            this.chartData.forEach(element => {
+              idbs.dbPut('charts', JSON.parse(JSON.stringify(element)))
+            })
+          }).catch(async error => {
+            if (error.response) {
+              console.log(error.response.data)
+              console.log(error.response.status)
+              console.log(error.response.headers)
+            } else if (error.request) {
+              console.log(error.request, error.message)
+            } else {
+              console.log('Error', error.message)
+              if (error.message === 'Network Error') {
+                console.log('Offline !')
+              }
+            }
+          })
+      }
     }
   }
 }
