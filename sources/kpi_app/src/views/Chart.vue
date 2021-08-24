@@ -22,6 +22,7 @@ import TitleComponent from '@/components/design/Title'
 import Charts from '@/components/Charts.vue'
 import { prefsMixin, gamesMixin } from '@/services/mixins'
 import { api } from '@/services/api'
+import idbs from '@/services/idbStorage'
 import {
   ElBacktop, ElButton
 } from 'element-plus'
@@ -52,8 +53,31 @@ export default {
         .then(async result => {
           this.chartData = result.data
           this.chartIndex++
-        }).catch(error => {
-          console.log('Erreur:', error)
+          idbs.dbClear('charts')
+          this.chartData.forEach(element => {
+            idbs.dbPut('charts', JSON.parse(JSON.stringify(element)))
+          })
+        }).catch(async error => {
+          if (error.message === 'Network Error') {
+            console.log('Offline !')
+            await idbs.dbGetAll('charts')
+              .then(result => {
+                this.chartData = result
+                this.chartIndex++
+              })
+          }
+          // if (error.response) {
+          //   // Request made and server responded
+          //   console.log(error.response.data)
+          //   console.log(error.response.status)
+          //   console.log(error.response.headers)
+          // } else if (error.request) {
+          //   // The request was made but no response was received
+          //   console.log(error.request, error.message)
+          // } else {
+          //   // Something happened in setting up the request that triggered an Error
+          //   console.log('Error', error.message)
+          // }
         })
     }
   }

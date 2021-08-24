@@ -143,6 +143,8 @@ function ChartsController($route)
     $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$row['d_id']]['games'] = $games[$row['d_id']];
   }
 
+  $charts = array_values($charts);
+
   json_cache_write('charts', $event, $charts);
 
   return_200($charts);
