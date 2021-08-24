@@ -5,8 +5,13 @@
 </template>
 
 <script>
+import { ElAffix } from 'element-plus'
+
 export default {
   name: 'Title',
+  components: {
+    ElAffix
+  },
   props: {
     text: {
       type: String,

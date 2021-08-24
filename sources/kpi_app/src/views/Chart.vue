@@ -22,10 +22,15 @@ import TitleComponent from '@/components/design/Title'
 import Charts from '@/components/Charts.vue'
 import { prefsMixin, gamesMixin } from '@/services/mixins'
 import { api } from '@/services/api'
+import {
+  ElBacktop, ElButton
+} from 'element-plus'
 
 export default {
   name: 'Chart',
   components: {
+    ElBacktop,
+    ElButton,
     TitleComponent,
     Charts
   },
