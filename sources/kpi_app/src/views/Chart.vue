@@ -26,7 +26,7 @@ import idbs from '@/services/idbStorage'
 import {
   ElBacktop, ElButton
 } from 'element-plus'
-import Errors from '@/store/models/Errors'
+import Status from '@/store/models/Status'
 
 export default {
   name: 'Chart',
@@ -41,7 +41,7 @@ export default {
     return {
       chartData: null,
       chartIndex: 0,
-      errors: {}
+      status: {}
     }
   },
   mounted () {
@@ -51,8 +51,8 @@ export default {
     async loadCharts () {
       await this.getPrefs()
       await this.prefs
-      this.errors = await Errors.find(1)
-      if (this.errors.offline) {
+      this.status = await Status.find(1)
+      if (!this.status.online) {
         console.log('Offline process...')
         await idbs.dbGetAll('charts')
           .then(result => {
@@ -60,11 +60,8 @@ export default {
             this.chartIndex++
           })
       } else {
-        await api.get('/charts/' + this.prefs.event + '/force')
+        await api.get('/charts/' + this.prefs.event)
           .then(async result => {
-            Errors.update({
-              data: [{ id: 1, offline: false }]
-            })
             this.chartData = result.data
             this.chartIndex++
             idbs.dbClear('charts')

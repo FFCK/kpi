@@ -13,7 +13,7 @@
             />
             KPI App
 
-            <offline />
+            <online />
           </router-link>
         </div>
         <button
@@ -113,13 +113,13 @@
 <script>
 import LocaleSwitcher from '@/components/design/LocaleSwitcher'
 import { userMixin, prefsMixin } from '@/services/mixins'
-import Offline from '@/components/design/Offline.vue'
+import Online from '@/components/design/Online.vue'
 
 export default {
   name: 'Navbar',
   components: {
     LocaleSwitcher,
-    Offline
+    Online
   },
   mixins: [userMixin, prefsMixin],
   data () {
