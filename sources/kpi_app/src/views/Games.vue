@@ -92,7 +92,7 @@
 <script>
 import TitleComponent from '@/components/design/Title'
 import { prefsMixin, gamesMixin } from '@/services/mixins'
-import { api } from '@/services/api'
+import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
 import Games from '@/store/models/Games'
 import Preferences from '@/store/models/Preferences'
@@ -271,7 +271,7 @@ export default {
       if (!this.status.online) {
         console.log('Offline process...')
       } else {
-        await api.get('/games/' + this.prefs.event)
+        await publicApi.getGames(this.prefs.event)
           .then(async result => {
             const gamelist = await result.data.map(game => {
               game.r_1 = game.r_1 && game.r_1 !== '-1' ? game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null

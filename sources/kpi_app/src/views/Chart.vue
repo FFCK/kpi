@@ -21,7 +21,7 @@
 import TitleComponent from '@/components/design/Title'
 import Charts from '@/components/Charts.vue'
 import { prefsMixin, gamesMixin } from '@/services/mixins'
-import { api } from '@/services/api'
+import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
 import {
   ElBacktop, ElButton
@@ -60,7 +60,7 @@ export default {
             this.chartIndex++
           })
       } else {
-        await api.get('/charts/' + this.prefs.event)
+        await publicApi.getCharts(this.prefs.event)
           .then(async result => {
             this.chartData = result.data
             this.chartIndex++
