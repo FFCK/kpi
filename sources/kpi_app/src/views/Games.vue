@@ -103,7 +103,7 @@ import {
   ElSelect, ElOption, ElSwitch, ElDivider,
   ElOptionGroup
 } from 'element-plus'
-import Errors from '@/store/models/Errors'
+import Status from '@/store/models/Status'
 
 export default {
   name: 'Games',
@@ -135,7 +135,7 @@ export default {
       favTeamsSelectKey: 0,
       fav_refs: [],
       fav_dates: '',
-      errors: {}
+      status: {}
     }
   },
   computed: {
@@ -267,15 +267,15 @@ export default {
     async loadGames () {
       await this.getPrefs()
       await this.prefs
-      this.errors = await Errors.find(1)
-      if (this.errors.offline) {
+      this.status = await Status.find(1)
+      if (!this.status.online) {
         console.log('Offline process...')
       } else {
-        await api.get('/games/' + this.prefs.event + '/force')
+        await api.get('/games/' + this.prefs.event)
           .then(async result => {
             const gamelist = await result.data.map(game => {
-              game.r_1 = game.r_1 ? game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
-              game.r_2 = game.r_2 ? game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+              game.r_1 = game.r_1 && game.r_1 !== '-1' ? game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+              game.r_2 = game.r_2 && game.r_2 !== '-1' ? game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
               game.t_a_label ??= this.gameEncode(game.g_code, 1)
               game.t_b_label ??= this.gameEncode(game.g_code, 2)
               game.r_1 ??= this.gameEncode(game.g_code, 3)

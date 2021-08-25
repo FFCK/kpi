@@ -1,12 +1,12 @@
 import { Model } from '@vuex-orm/core'
 
-export default class Errors extends Model {
-  static entity = 'errors'
+export default class Status extends Model {
+  static entity = 'status'
 
   static fields () {
     return {
       id: this.number(1),
-      offline: this.boolean(false),
+      online: this.boolean(true),
       errorMessage: this.string('')
     }
   }

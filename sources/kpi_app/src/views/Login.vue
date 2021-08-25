@@ -68,7 +68,7 @@ import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
 import TitleComponent from '@/components/design/Title'
 import { logoutMixin } from '@/services/mixins'
-import Errors from '@/store/models/Errors'
+import Status from '@/store/models/Status'
 
 export default {
   name: 'Login',
@@ -83,7 +83,7 @@ export default {
         password: ''
       },
       message: '',
-      errors: {}
+      status: {}
     }
   },
   computed: {
@@ -117,15 +117,14 @@ export default {
       }
     },
     async formSubmit () {
-      this.errors = await Errors.find(1)
-      if (this.errors.offline) {
+      this.status = await Status.find(1)
+      if (!this.status.online) {
         console.log('Offline process...')
       } else {
         this.message = ''
         if (this.input.login !== '' && this.input.password !== '') {
           // Création du token d'authentification
           const authToken = Buffer.from(`${this.input.login}:${this.input.password}`, 'utf8').toString('base64')
-          this.errors = await Errors.find(1)
           // Requête API
           await axios.post('/login', {}, {
             baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8087/api',
