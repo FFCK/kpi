@@ -53,7 +53,7 @@
 <script>
 import { prefsMixin } from '@/services/mixins'
 import idbs from '@/services/idbStorage'
-import { api } from '@/services/api'
+import publicApi from '@/network/publicApi'
 import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
 import Games from '@/store/models/Games'
@@ -81,7 +81,7 @@ export default {
       if (!this.status.online) {
         console.log('Offline process...')
       } else {
-        await api.get('/events')
+        await publicApi.getEvents()
           .then(result => {
             const eventsResult = result.data.map(event => {
               event.id = parseInt(event.id)

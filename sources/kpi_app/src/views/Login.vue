@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import privateApi from '@/network/privateApi'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
 import TitleComponent from '@/components/design/Title'
@@ -126,14 +126,7 @@ export default {
           // Création du token d'authentification
           const authToken = Buffer.from(`${this.input.login}:${this.input.password}`, 'utf8').toString('base64')
           // Requête API
-          await axios.post('/login', {}, {
-            baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8087/api',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              Authorization: `Basic ${authToken}`
-            }
-          })
+          await privateApi.getToken(authToken)
             .then((response) => {
               this.message = ''
               // Insertion dans le store
