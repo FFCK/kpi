@@ -57,7 +57,7 @@ import { api } from '@/services/api'
 import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
 import Games from '@/store/models/Games'
-import Errors from '@/store/models/Errors'
+import Status from '@/store/models/Status'
 
 export default {
   name: 'EventSelector',
@@ -67,7 +67,7 @@ export default {
       showSelector: false,
       eventSelected: 0,
       changeButton: false,
-      errors: {}
+      status: {}
     }
   },
   computed: {
@@ -77,8 +77,8 @@ export default {
   },
   methods: {
     async loadEvents () {
-      this.errors = await Errors.find(1)
-      if (this.errors.offline) {
+      this.status = await Status.find(1)
+      if (!this.status.online) {
         console.log('Offline process...')
       } else {
         await api.get('/events')
@@ -101,8 +101,8 @@ export default {
       }
     },
     async changeEvent () {
-      this.errors = await Errors.find(1)
-      if (this.errors.offline) {
+      this.status = await Status.find(1)
+      if (!this.status.online) {
         console.log('Offline process...')
       } else {
         const e = Events.find(this.eventSelected)

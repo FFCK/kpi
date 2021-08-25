@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Errors from '@/store/models/Errors'
+import Status from '@/store/models/Status'
 
 export default {
   name: 'Offline',
@@ -16,8 +16,8 @@ export default {
     }
   },
   created () {
-    if (Errors.find(1) === null) {
-      Errors.insert({ data: [{ id: 1 }] })
+    if (Status.find(1) === null) {
+      Status.insert({ data: [{ id: 1 }] })
     }
   },
   mounted () {
@@ -32,15 +32,9 @@ export default {
   methods: {
     onchange () {
       this.online = navigator.onLine
-      if (this.online) {
-        Errors.update({
-          data: [{ id: 1, offline: false }]
-        })
-      } else {
-        Errors.update({
-          data: [{ id: 1, offline: true }]
-        })
-      }
+      Status.update({
+        data: [{ id: 1, online: this.online }]
+      })
       this.$emit(this.online ? 'online' : 'offline')
     }
   }
