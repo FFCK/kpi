@@ -37,7 +37,7 @@
       </tbody>
       <tbody v-else>
         <tr v-for="(team, index) in chartTeams" :key="index">
-          <td>{{ team.t_cltlv }}</td>
+          <td class="text-center">{{ team.t_cltlv }}</td>
           <td>
             <span
               class="team_name btn btn-sm looser text-nowrap"
@@ -47,9 +47,9 @@
               {{ team.t_label }}
             </span>
           </td>
-          <td>{{ team.t_pts / 100 }}</td>
-          <td>{{ team.t_pld }}</td>
-          <td>{{ team.t_diff }}</td>
+          <td class="text-center">{{ team.t_pts / 100 }}</td>
+          <td class="text-center">{{ team.t_pld }}</td>
+          <td class="text-center">{{ team.t_diff }}</td>
         </tr>
       </tbody>
     </table>

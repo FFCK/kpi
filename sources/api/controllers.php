@@ -131,16 +131,17 @@ function ChartsController($route)
   $result = $myBdd->pdo->prepare($sql);
   $result->execute(array($event));
   while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+    $phaseOrder = (100 - $row['d_level']) . '-' . $row['d_phase'];
     $charts[$row['c_code']]['type'] = $row['c_type'];
     $charts[$row['c_code']]['code'] = $row['c_code'];
     $charts[$row['c_code']]['libelle'] = $row['c_category'];
     $charts[$row['c_code']]['rounds'][$row['d_round']]['type'] = $row['d_type'];
-    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$row['d_id']]['teams'][] = $row;
-    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$row['d_id']]['type'] = $row['d_type'];
-    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$row['d_id']]['libelle'] = $row['d_phase'];
-    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$row['d_id']]['level'] = $row['d_level'];
-    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$row['d_id']]['t_count'] = $row['t_count'];
-    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$row['d_id']]['games'] = $games[$row['d_id']];
+    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['teams'][] = $row;
+    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['type'] = $row['d_type'];
+    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['libelle'] = $row['d_phase'];
+    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['level'] = $row['d_level'];
+    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['t_count'] = $row['t_count'];
+    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['games'] = $games[$row['d_id']];
   }
 
   $charts = array_values($charts);
