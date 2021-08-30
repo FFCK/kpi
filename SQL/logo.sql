@@ -23,3 +23,4 @@ UPDATE `kp_competition_equipe` SET logo = null WHERE `Code_club` LIKE '0506';
 UPDATE `kp_competition_equipe` SET logo = null WHERE `Code_club` LIKE '59CD';
 UPDATE `kp_competition_equipe` SET logo = null WHERE `Code_club` LIKE '5410';
 UPDATE `kp_competition_equipe` SET logo = null WHERE `Code_club` LIKE '62CD';
+UPDATE `kp_competition_equipe` SET logo = null WHERE `Code_club` LIKE '0162';
