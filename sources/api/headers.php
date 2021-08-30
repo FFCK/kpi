@@ -15,7 +15,7 @@ function set_response_headers($method)
 	header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 	header('Access-Control-Allow-Credentials: true');
 	header('Access-Control-Max-Age: 1000');
-	header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, X-Requested-With, Authorization');
+	header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, X-Requested-With, Authorization, Cache-Control, Pragma, Expires');
 	header('Content-Type: application/json');
 
 	if ($method === 'OPTIONS') {
