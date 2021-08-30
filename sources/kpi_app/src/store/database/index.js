@@ -1,5 +1,4 @@
 import VuexORM from '@vuex-orm/core'
-import Photo from '@/store/models/Photo'
 import User from '@/store/models/User'
 import Preferences from '@/store/models/Preferences'
 import Events from '@/store/models/Events'
@@ -8,7 +7,6 @@ import Status from '@/store/models/Status'
 
 const database = new VuexORM.Database()
 
-database.register(Photo)
 database.register(User)
 database.register(Preferences)
 database.register(Events)
