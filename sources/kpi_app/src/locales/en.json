@@ -17,7 +17,8 @@
     "Back": "Back",
     "CommingSoon": "Comming soon...",
     "CommingSoonDescription": "Be patient!",
-    "About": "About"
+    "About": "About",
+    "Filters": "Filters"
   },
   "AddToHomeScreen": {
     "message": "Add to desktop/home screen.",
@@ -46,7 +47,9 @@
     "Categories": "Categories",
     "Teams": "Teams",
     "Refs": "Refs",
+    "ShowRefs": "Show refs",
     "Dates": "Dates",
+    "AllDates": "All dates",
     "All": "All",
     "Today": "Today",
     "Tomorow": "Tomorow",

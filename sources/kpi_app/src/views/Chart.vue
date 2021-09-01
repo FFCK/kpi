@@ -2,8 +2,9 @@
   <div>
     <title-component :text="$t('nav.Chart')" />
 
-    <div class="fixed-top filters">
+    <div class="fixed-top filters container-fluid">
       <el-button
+        v-show="visibleButton"
         class="float-end"
         icon="el-icon-refresh-right"
         plain
@@ -41,7 +42,8 @@ export default {
     return {
       chartData: null,
       chartIndex: 0,
-      status: {}
+      status: {},
+      visibleButton: true
     }
   },
   mounted () {
@@ -52,14 +54,18 @@ export default {
       await this.getPrefs()
       await this.prefs
       this.status = await Status.find(1)
+      await idbs.dbGetAll('charts')
+        .then(result => {
+          this.chartData = result
+          this.chartIndex++
+        })
       if (!this.status.online) {
         console.log('Offline process...')
-        await idbs.dbGetAll('charts')
-          .then(result => {
-            this.chartData = result
-            this.chartIndex++
-          })
       } else {
+        this.visibleButton = false
+        setTimeout(() => {
+          this.visibleButton = true
+        }, 3000)
         await publicApi.getCharts(this.prefs.event)
           .then(async result => {
             this.chartData = result.data

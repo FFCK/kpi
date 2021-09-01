@@ -3,7 +3,16 @@ body {
 }
 
 mark {
-    background-color: #ffff00 !important;
-    border-radius: 3px;
+    // background-color: #ffff00 !important;
+    background-color: transparent;
+    color: inherit;
+    border-bottom: 2px solid #ffff00;
+    // border-radius: 3px;
     padding: 2px;
-  }
+}
+
+.refs mark {
+    // background-color: #ff9900 !important;
+    background-color: transparent;
+    border-bottom: 2px solid #ffbb00;
+}
