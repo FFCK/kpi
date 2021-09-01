@@ -61,7 +61,7 @@
               <i>#{{ game.g_number }}</i>
             </td>
             <td
-              class="align-middle text-start text-nowrap d-none d-lg-table-cell fitcontent"
+              class="align-middle text-start text-nowrap d-none d-lg-table-cell mincontent"
             >
               <span>
                 {{ game.c_code }}
@@ -69,7 +69,7 @@
               </span>
             </td>
             <td
-              class="align-middle text-center text-nowrap d-none d-lg-table-cell fitcontent"
+              class="align-middle text-center text-nowrap d-none d-lg-table-cell mincontent"
             >
               <span class="btn btn-light team_name me-1">{{
                 game.g_time
@@ -116,7 +116,7 @@
                 <small v-html="showCode(game.r_1)" />
               </div>
             </td>
-            <td class="text-secondary small text-center align-top fitcontent">
+            <td class="text-secondary small text-center align-top mincontent">
               <div class="d-md-block d-lg-none text-center num_match">
                 <i>#{{ game.g_number }}</i>
               </div>
@@ -139,7 +139,7 @@
                         game.g_score_a <= game.g_score_b,
                       'text-danger': game.g_validation !== 'O'
                     }"
-                    >{{ game.g_score_a || "&nbsp;" }}</span
+                    >{{ game.g_score_a }}</span
                   >
                   <span
                     v-if="game.g_status !== 'ATT'"
@@ -158,7 +158,7 @@
                         game.g_score_b <= game.g_score_a,
                       'text-danger': game.g_validation !== 'O'
                     }"
-                    >{{ game.g_score_b || "&nbsp;" }}</span
+                    >{{ game.g_score_b }}</span
                   >
                 </div>
                 <div
@@ -294,7 +294,7 @@ export default {
   width: 30px;
 }
 
-.fitcontent {
-  width: fit-content;
+.mincontent {
+  width: 5px;
 }
 </style>
