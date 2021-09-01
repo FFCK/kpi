@@ -1,15 +1,59 @@
 <template>
-  <div>
-    <title-component :text="$t('nav.Games')" />
-
-    <div class="fixed-top filters">
-      <el-row :gutter="4">
-        <el-col :span="4">
+  <div class="container-fluid">
+    <div class="filters">
+      <div class="row">
+        <div class="col">
+          <button
+            class="btn btn-secondary"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseFilters"
+            aria-expanded="false"
+            aria-controls="collapseFilters"
+          >
+            {{ $t("nav.Filters") }} <i class="bi bi-filter"></i>
+          </button>
+        </div>
+        <div class="col text-center">
           <el-select
+            v-model="fav_dates"
+            collapse-tags
+            :placeholder="$t('Games.Dates')"
+            @change="changeFav"
+          >
+            <el-option :label="$t('Games.AllDates')" value="" />
+            <el-option
+              v-for="(game_date, index) in game_dates"
+              :key="index"
+              :label="$d(new Date(game_date), 'short')"
+              :value="game_date"
+            />
+            <el-divider />
+            <el-option :label="$t('Games.Today')" value="Today" />
+            <el-option :label="$t('Games.Tomorow')" value="Tomorow" />
+            <el-option :label="$t('Games.Prev')" value="Prev" />
+            <el-option :label="$t('Games.Next')" value="Next" />
+          </el-select>
+        </div>
+        <div class="col text-end">
+          <el-button
+            v-show="visibleButton"
+            icon="el-icon-refresh-right"
+            plain
+            @click="loadGames"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row collapse container-fluid mt-1" id="collapseFilters">
+      <div class="col-md-9 col-lg-6">
+        <div class="card card-body bg-secondary text-light">
+          {{ $t("Games.Categories") }}
+          <el-select
+            class="mb-2"
             v-model="fav_categories"
             multiple
-            collapse-tags
-            :placeholder="$t('Games.Categories')"
             @change="changeFav"
           >
             <el-option
@@ -19,15 +63,13 @@
               :value="categorie"
             />
           </el-select>
-        </el-col>
-        <el-col :span="10">
+          {{ $t("Games.Teams") }} & {{ $t("Games.Refs") }}
           <el-select
+            class="mb-2"
             :key="favTeamsSelectKey"
             v-model="fav_teams"
             multiple
             filterable
-            collapse-tags
-            :placeholder="$t('Games.Teams') + ' & ' + $t('Games.Refs')"
             @change="changeFav"
           >
             <el-option-group :label="$t('Games.Teams')">
@@ -45,37 +87,10 @@
               />
             </el-option-group>
           </el-select>
-        </el-col>
-        <el-col :span="5">
-          <el-select
-            v-model="fav_dates"
-            collapse-tags
-            :placeholder="$t('Games.Dates')"
-            @change="changeFav"
-          >
-            <el-option :label="$t('Games.All')" value="" />
-            <el-option
-              v-for="(game_date, index) in game_dates"
-              :key="index"
-              :label="$d(new Date(game_date), 'short')"
-              :value="game_date"
-            />
-            <el-divider />
-            <el-option :label="$t('Games.Today')" value="Today" />
-            <el-option :label="$t('Games.Tomorow')" value="Tomorow" />
-            <el-option :label="$t('Games.Prev')" value="Prev" />
-            <el-option :label="$t('Games.Next')" value="Next" />
-          </el-select>
-        </el-col>
-        <el-col :span="3">
-          <el-button plain size="small">
-            Refs <el-switch v-model="showRefs" />
-          </el-button>
-        </el-col>
-        <el-col :span="2">
-          <el-button icon="el-icon-refresh-right" plain @click="loadGames" />
-        </el-col>
-      </el-row>
+
+          <div>{{ $t("Games.ShowRefs") }} <el-switch v-model="showRefs" /></div>
+        </div>
+      </div>
     </div>
 
     <game-list
@@ -90,7 +105,6 @@
 </template>
 
 <script>
-import TitleComponent from '@/components/design/Title'
 import { prefsMixin, gamesMixin } from '@/services/mixins'
 import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
@@ -99,8 +113,8 @@ import Preferences from '@/store/models/Preferences'
 import dayjs from 'dayjs'
 import GameList from '@/components/GameList.vue'
 import {
-  ElBacktop, ElButton, ElRow, ElCol,
-  ElSelect, ElOption, ElSwitch, ElDivider,
+  ElBacktop, ElButton, ElSwitch,
+  ElSelect, ElOption, ElDivider,
   ElOptionGroup
 } from 'element-plus'
 import Status from '@/store/models/Status'
@@ -108,12 +122,9 @@ import Status from '@/store/models/Status'
 export default {
   name: 'Games',
   components: {
-    TitleComponent,
     GameList,
     ElBacktop,
     ElButton,
-    ElRow,
-    ElCol,
     ElSelect,
     ElOption,
     ElSwitch,
@@ -135,7 +146,8 @@ export default {
       favTeamsSelectKey: 0,
       fav_refs: [],
       fav_dates: '',
-      status: {}
+      status: {},
+      visibleButton: true
     }
   },
   computed: {
@@ -271,11 +283,15 @@ export default {
       if (!this.status.online) {
         console.log('Offline process...')
       } else {
+        this.visibleButton = false
+        setTimeout(() => {
+          this.visibleButton = true
+        }, 3000)
         await publicApi.getGames(this.prefs.event)
           .then(async result => {
             const gamelist = await result.data.map(game => {
-              game.r_1 = game.r_1 && game.r_1 !== '-1' ? game.r_1.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
-              game.r_2 = game.r_2 && game.r_2 !== '-1' ? game.r_2.replace(/\) (INT-|NAT-|REG-|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+              game.r_1 = game.r_1 && game.r_1 !== '-1' ? game.r_1.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+              game.r_2 = game.r_2 && game.r_2 !== '-1' ? game.r_2.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
               game.t_a_label ??= this.gameEncode(game.g_code, 1)
               game.t_b_label ??= this.gameEncode(game.g_code, 2)
               game.r_1 ??= this.gameEncode(game.g_code, 3)

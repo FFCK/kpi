@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="top-margin">
     <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark">
       <div class="container-fluid">
         <div>
@@ -138,6 +138,10 @@ export default {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/custom.scss";
+
+.top-margin {
+  margin-top: 62px;
+}
 
 .navbar a.nav-link.router-link-active {
   color: $orange;

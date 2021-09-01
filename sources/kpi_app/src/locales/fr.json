@@ -17,7 +17,8 @@
     "Back": "Retour",
     "CommingSoon": "Prochainement...",
     "CommingSoonDescription": "Soyez patient !",
-    "About": "A propos"
+    "About": "A propos",
+    "Filters": "Filtres"
   },
   "AddToHomeScreen": {
     "message": "Ajouter au bureau / à l'écran d'accueil.",
@@ -46,9 +47,11 @@
     "Categories": "Catégories",
     "Teams": "Equipes",
     "Refs": "Arbitres",
+    "ShowRefs": "Voir les arbitres",
     "Dates": "Dates",
     "Time": "Heure",
     "All": "Toutes",
+    "AllDates": "Toutes dates",
     "Today": "Aujourd'hui",
     "Tomorow": "Demain",
     "Prev": "Précédents matchs",

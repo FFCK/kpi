@@ -17,34 +17,38 @@
       </button>
     </div>
 
-    <form v-if="showSelector" class="row align-items-center">
-      <div class="col-8">
-        <select
-          v-model="eventSelected"
-          class="form-control"
-          @change="changeButton = true"
-        >
-          <option disabled value="0">
-            ▼ {{ $t("Event.PleaseSelectOne") }} ▼
-          </option>
-          <option v-for="event in events" :key="event.id" :value="event.id">
-            {{ event.id }} | {{ event.libelle }} - {{ event.place }}
-          </option>
-        </select>
+    <form v-if="showSelector" class="align-items-center">
+      <div class="row mb-2">
+        <div class="col-8 offset-2 text-center">
+          <select
+            v-model="eventSelected"
+            class="form-control"
+            @change="changeButton = true"
+          >
+            <option disabled value="0">
+              ▼ {{ $t("Event.PleaseSelectOne") }} ▼
+            </option>
+            <option v-for="event in events" :key="event.id" :value="event.id">
+              {{ event.id }} | {{ event.libelle }} - {{ event.place }}
+            </option>
+          </select>
+        </div>
       </div>
-      <div class="col-2">
-        <button class="btn btn-secondary" @click.prevent="cancelEvent">
-          {{ $t("Event.Cancel") }}
-        </button>
-      </div>
-      <div class="col-2">
-        <button
-          v-if="changeButton"
-          class="btn btn-primary"
-          @click.prevent="changeEvent"
-        >
-          {{ $t("Event.Change") }}
-        </button>
+      <div class="row">
+        <div class="col-3 offset-3 text-center">
+          <button class="btn btn-secondary" @click.prevent="cancelEvent">
+            {{ $t("Event.Cancel") }}
+          </button>
+        </div>
+        <div class="col-3 text-center">
+          <button
+            v-if="changeButton"
+            class="btn btn-primary"
+            @click.prevent="changeEvent"
+          >
+            {{ $t("Event.Change") }}
+          </button>
+        </div>
       </div>
     </form>
   </div>
