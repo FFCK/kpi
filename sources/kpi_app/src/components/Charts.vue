@@ -12,7 +12,7 @@
             class="col-md d-flex flex-column justify-content-center align-items-stretch bg-light m-1"
           >
             <div
-              v-for="(phase, index2) in phasesSort(round.phases)"
+              v-for="(phase, index2) in objectReorder(round.phases)"
               :key="index2"
               class="m-1"
             >
@@ -59,14 +59,12 @@ export default {
     }
   },
   methods: {
-    phasesSort (phases) {
-      console.log(JSON.parse(JSON.stringify(phases)), typeof phases)
+    objectReorder (object) {
       const ordered = []
       let key = ''
-      for (key in phases) {
-        ordered[ordered.length] = phases[key]
+      for (key in object) {
+        ordered[ordered.length] = object[key]
       }
-      console.log(JSON.parse(JSON.stringify(ordered)), typeof ordered)
       return ordered
     }
   }
