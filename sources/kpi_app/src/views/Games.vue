@@ -290,6 +290,10 @@ export default {
         await publicApi.getGames(this.prefs.event)
           .then(async result => {
             const gamelist = await result.data.map(game => {
+              game.g_score_a = parseInt(game.g_score_a) || 0
+              game.g_score_b = parseInt(game.g_score_b) || 0
+              game.g_score_detail_a = parseInt(game.g_score_detail_a) || 0
+              game.g_score_detail_b = parseInt(game.g_score_detail_b) || 0
               game.r_1 = game.r_1 && game.r_1 !== '-1' ? game.r_1.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
               game.r_2 = game.r_2 && game.r_2 !== '-1' ? game.r_2.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
               game.t_a_label ??= this.gameEncode(game.g_code, 1)
