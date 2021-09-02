@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-    <title-component :text="$t('nav.About')" />
-
     <div class="text-center my-3">
       <span class="btn btn-secondary">{{ version }}</span>
     </div>
@@ -38,13 +36,9 @@
 </template>
 
 <script>
-import TitleComponent from '@/components/design/Title'
 
 export default {
   name: 'About',
-  components: {
-    TitleComponent
-  },
   computed: {
     version () {
       return 'v' + process.env.VUE_APP_VERSION

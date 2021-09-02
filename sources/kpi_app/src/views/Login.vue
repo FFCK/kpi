@@ -1,18 +1,40 @@
 <template>
   <div>
-    <title-component
-      :text="user ? $t('nav.MyAccount') : $t('Login.Authentication')"
-    />
-
     <div v-if="user">
-      {{ $t("Login.Welcome") }} {{ user.firstname }} {{ user.name }}
-      <button
-        class="btn btn-sm btn-btn-warning"
-        :title="$t('Login.Logout')"
-        @click="logOut"
-      >
-        <span class="bi bi-box-arrow-right" />
-      </button>
+      <div class="text-center my-3">
+        <span class="btn btn-secondary"
+          >{{ user.firstname }} {{ user.name }}</span
+        >
+
+        <button
+          class="btn btn-sm btn-btn-warning"
+          :title="$t('Login.Logout')"
+          @click="logOut"
+        >
+          <span class="bi bi-box-arrow-right" />
+        </button>
+      </div>
+
+      <div class="row justify-content-around my-5">
+        <button
+          class="btn btn-outline-dark btn-lg col-3"
+          @click="changePage('GameReport')"
+        >
+          {{ $t("nav.GameReport") }}
+        </button>
+        <button
+          class="btn btn-outline-dark btn-lg col-3"
+          @click="changePage('StatReport')"
+        >
+          {{ $t("nav.StatReport") }}
+        </button>
+        <button
+          class="btn btn-outline-dark btn-lg col-3"
+          @click="changePage('Scrutineering')"
+        >
+          {{ $t("nav.Scrutineering") }}
+        </button>
+      </div>
     </div>
 
     <div
@@ -66,15 +88,11 @@
 import privateApi from '@/network/privateApi'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
-import TitleComponent from '@/components/design/Title'
 import { logoutMixin } from '@/services/mixins'
 import Status from '@/store/models/Status'
 
 export default {
   name: 'Login',
-  components: {
-    TitleComponent
-  },
   mixins: [logoutMixin],
   data () {
     return {
@@ -164,6 +182,9 @@ export default {
     },
     dataDismiss () {
       this.message = ''
+    },
+    changePage (pageName) {
+      this.$router.push({ name: pageName })
     }
   }
 }
