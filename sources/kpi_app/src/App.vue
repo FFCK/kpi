@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navbar />
+    <Navbar :key="$route.path" />
 
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">
