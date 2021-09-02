@@ -7,16 +7,28 @@
     </div>
 
     <div class="text-center">
-      Cette application vous plait ?<br />
-      Je la développe sur mon temps libre.<br />
-      Vous pouvez m'encourager à continuer et me soutenir sur Tipeee :
+      {{ $t("About.DoYouLike") }}<br />
+      {{ $t("About.IDevelopIt") }}<br />
+      {{ $t("About.SupportMeOnTipeee") }}
     </div>
 
     <div class="my-1 text-center">
-      <a href="https://fr.tipeee.com/lga" target="blank">
+      <a
+        href="https://fr.tipeee.com/lga"
+        target="blank"
+        v-if="$i18n.locale === 'fr'"
+      >
         <img
           alt="Vue logo"
           src="../assets/bocal_tipeee.gif"
+          width="250"
+          height="250"
+        />
+      </a>
+      <a href="https://en.tipeee.com/lga" target="blank" v-else>
+        <img
+          alt="Vue logo"
+          src="../assets/jar_tipeee.gif"
           width="250"
           height="250"
         />
