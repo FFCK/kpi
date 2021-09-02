@@ -8,7 +8,7 @@
     >
       {{ prefs.event_name }} - {{ prefs.event_place }}
       <button v-if="!showSelector" class="btn btn-secondary btn-sm">
-        <i class="bi bi-arrow-left-right" />
+        <i class="bi bi-arrow-left-right" /> {{ $t("Event.Change") }}
       </button>
     </div>
     <div v-else>
@@ -19,34 +19,39 @@
 
     <form v-if="showSelector" class="align-items-center">
       <div class="row mb-2">
-        <div class="col-8 offset-2 text-center">
-          <select
-            v-model="eventSelected"
-            class="form-control"
-            @change="changeButton = true"
-          >
-            <option disabled value="0">
-              ▼ {{ $t("Event.PleaseSelectOne") }} ▼
-            </option>
-            <option v-for="event in events" :key="event.id" :value="event.id">
-              {{ event.id }} | {{ event.libelle }} - {{ event.place }}
-            </option>
-          </select>
+        <div class="col-8 offset-2 row">
+          <div class="col-auto">
+            <label class="col-form-label">{{ $t("Event.Event") }}</label>
+          </div>
+          <div class="col-auto text-center">
+            <select
+              v-model="eventSelected"
+              class="form-select"
+              @change="changeButton = true"
+            >
+              <option disabled value="0">
+                ▼ {{ $t("Event.PleaseSelectOne") }} ▼
+              </option>
+              <option v-for="event in events" :key="event.id" :value="event.id">
+                {{ event.id }} | {{ event.libelle }} - {{ event.place }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="row">
         <div class="col-3 offset-3 text-center">
-          <button class="btn btn-secondary" @click.prevent="cancelEvent">
+          <button class="btn btn-secondary btn-sm" @click.prevent="cancelEvent">
             {{ $t("Event.Cancel") }}
           </button>
         </div>
         <div class="col-3 text-center">
           <button
             v-if="changeButton"
-            class="btn btn-primary"
+            class="btn btn-primary btn-sm"
             @click.prevent="changeEvent"
           >
-            {{ $t("Event.Change") }}
+            {{ $t("Event.Confirm") }}
           </button>
         </div>
       </div>
