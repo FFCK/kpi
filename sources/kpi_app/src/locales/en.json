@@ -40,7 +40,9 @@
   "Event": {
     "SelectEvent": "Select event",
     "PleaseSelectOne": "Please select one",
+    "Event": "Event",
     "Change": "Change",
+    "Confirm": "Confirm",
     "Cancel": "Cancel"
   },
   "Games": {
