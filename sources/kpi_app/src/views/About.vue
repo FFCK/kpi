@@ -7,29 +7,23 @@
     <div class="text-center">
       {{ $t("About.DoYouLike") }}<br />
       {{ $t("About.IDevelopIt") }}<br />
-      {{ $t("About.SupportMeOnTipeee") }}
+      {{ $t("About.SupportMeOnUtip") }}
     </div>
 
-    <div class="my-1 text-center">
+    <div class="text-center">
       <a
-        href="https://fr.tipeee.com/lga"
+        href="https://utip.io/kayakpoloinfo"
         target="blank"
         v-if="$i18n.locale === 'fr'"
       >
-        <img
-          alt="Vue logo"
-          src="../assets/bocal_tipeee.gif"
-          width="250"
-          height="250"
-        />
+        <img alt="logo uTip" src="../assets/logo-utip.png" height="90" />
+        <br />
+        <img alt="Dablicorne" src="../assets/dablicorne-utip.png" width="150" />
       </a>
-      <a href="https://en.tipeee.com/lga" target="blank" v-else>
-        <img
-          alt="Vue logo"
-          src="../assets/jar_tipeee.gif"
-          width="250"
-          height="250"
-        />
+      <a href="https://utip.io/kayakpoloinfo" target="blank" v-else>
+        <img alt="logo uTip" src="../assets/logo-utip.png" height="90" />
+        <br />
+        <img alt="Dablicorne" src="../assets/dablicorne-utip.png" width="150" />
       </a>
     </div>
   </div>
