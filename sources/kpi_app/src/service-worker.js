@@ -1,11 +1,10 @@
 /* eslint-disable */
+const version = '0.1.4'
 importScripts('../third_party/workbox-v6.1.5/workbox-sw.js')
 workbox.setConfig({
   modulePathPrefix: '../third_party/workbox-v6.1.5',
   debug: true // Dev / Prod !!
 })
-
-console.log('Hello from service-worker.js')
 
 workbox.core.setCacheNameDetails({ prefix: 'kpi_cache' })
 
@@ -26,10 +25,10 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {})
 
 // Broadcast d'un message à l'application (à toutes les fenêtres ouvertes)
 const broadcast = async (message) => {
-  const windows = await self.clients.matchAll({ type: 'window' });
-    for (const win of windows) {
-      win.postMessage(message);
-    }
+  const windows = await self.clients.matchAll({ type: 'window' })
+  for (const win of windows) {
+    win.postMessage(message)
+  }
 }
 
 // Création de la file d'attente
@@ -40,18 +39,24 @@ self.addEventListener('fetch', (event) => {
   const promiseChain = fetch(event.request.clone()).catch((err) => {
     // Absence de connectivité
     broadcast('OFFLINE')
-    return queue.pushRequest({request: event.request});
-  });
+    return queue.pushRequest({ request: event.request })
+  })
 
-  event.waitUntil(promiseChain);
-});
+  event.waitUntil(promiseChain)
+})
 
 self.addEventListener('sync', () => {
   // Retour de la connectivité
   broadcast('ONLINE')
 })
 
-// const networkOnly = new workbox.strategies.NetworkOnly();
+// No cache for api routes
+workbox.routing.registerRoute(
+  ({url}) => url.pathname.startsWith('/api/'),
+  new workbox.strategies.NetworkOnly()
+);
+
+
 // const navigationHandler = async (params) => {
 //   try {
 //     // Attempt a network request.
