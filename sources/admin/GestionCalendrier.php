@@ -1,5 +1,4 @@
 <?php
-
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
@@ -87,7 +86,6 @@ class GestionCalendrier extends MyPageSecure
 		}
 		$codeCompet = utyGetPost('competition', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
-
 
 		$sqlFiltreCompetition = utyGetFiltreCompetition('c.');
 		$sqlAfficheCompet = '';
@@ -213,7 +211,6 @@ class GestionCalendrier extends MyPageSecure
 
 		$this->m_tpl->assign('arrayCompetitionOrder', $arrayCompetitionOrder);
 
-
 		$arrayEvenementJournees = array();
 		if ($modeEvenement == '2' && $idEvenement != -1) {
 			// Mode Association ... => Chargement des Journées de l'Evenement ...
@@ -229,16 +226,19 @@ class GestionCalendrier extends MyPageSecure
 
 		// Chargement des Journees ...
 		$arrayJournees = array();
-		$in = str_repeat('?,', count($arrayCompets) - 1) . '?';
+		$arrayQuery = array();
 		$sql = "SELECT Id, Code_competition, `Type`, Phase, Niveau, Etape, Nbequipes, 
 			Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, Departement, Responsable_insc, 
 			Responsable_R1, Organisateur, Delegue, ChefArbitre, 
 			Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5, Publication 
 			FROM kp_journee 
-			WHERE Code_competition IS NOT NULL 
-			AND Code_Competition IN ($in) 
-			AND Code_saison = ? ";
-		$arrayQuery = array_merge($arrayCompets, [$codeSaison]);
+			WHERE Code_competition IS NOT NULL ";
+		if (count($arrayCompets) > 0) {
+			$in = str_repeat('?,', count($arrayCompets) - 1) . '?';
+			$sql .= "AND Code_Competition IN ($in) 
+				AND Code_saison = ? ";
+			$arrayQuery = array_merge($arrayCompets, [$codeSaison]);
+		}
 		if ($codeCompet != "*") {
 			$sql .= "AND Code_competition = ? ";
 			$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
@@ -265,6 +265,7 @@ class GestionCalendrier extends MyPageSecure
 			$sql .= "ORDER BY $orderCompet";
 		}
 
+		// var_dump($sql, $arrayQuery);
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayQuery);
 		while ($row = $result->fetch()) {
@@ -284,6 +285,7 @@ class GestionCalendrier extends MyPageSecure
 				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
 				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
 			}
+
 			$bAutorisation = utyIsAutorisationJournee($row['Id']);
 			array_push($arrayJournees, array(
 				'Id' => $row['Id'],
