@@ -6,8 +6,8 @@ include_once('../commun/MyTools.php');
 
 // Gestion des Evenements
 
-class GestionEvenement extends MyPageSecure	 
-{	
+class GestionEvenement extends MyPageSecure
+{
 	var $myBdd;
 
 	function Load()
@@ -15,18 +15,18 @@ class GestionEvenement extends MyPageSecure
 		$myBdd = $this->myBdd;
 
 		$idEvenement = (int) utyGetSession('idEvenement', -1);
-		
+
 		// Informations pour SelectionOuiNon ...
 		$_SESSION['tableOuiNon'] = 'kp_evenement';
 		$_SESSION['whereOuiNon'] = "Where Id = ";
 
 		// Chargement des Evenements
 		$arrayEvenement = array();
-		
-		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication 
+
+		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication, app 
 			FROM kp_evenement 
-			ORDER BY Date_debut DESC, Libelle DESC ";	 
-	
+			ORDER BY Date_debut DESC, Libelle DESC ";
+
 		$arrayEvenement = array();
 		foreach ($myBdd->pdo->query($sql) as $row) {
 			$StdOrSelected = 'Std';
@@ -36,26 +36,27 @@ class GestionEvenement extends MyPageSecure
 			$Publication = 'O';
 			if ($row['Publication'] != 'O')
 				$Publication = 'N';
-			
+
 			if ($_SESSION['lang'] == 'fr') {
 				$row['Date_debut'] = utyDateUsToFr($row['Date_debut']);
 				$row['Date_fin'] = utyDateUsToFr($row['Date_fin']);
 			}
-			
-			array_push($arrayEvenement, array( 
-				'Id' => $row['Id'], 
-				'Libelle' => $row['Libelle'],  
-				'Lieu' => $row['Lieu'],  
-				'Date_debut' => $row['Date_debut'], 
+
+			array_push($arrayEvenement, array(
+				'Id' => $row['Id'],
+				'Libelle' => $row['Libelle'],
+				'Lieu' => $row['Lieu'],
+				'Date_debut' => $row['Date_debut'],
 				'Date_fin' => $row['Date_fin'],
 				'StdOrSelected' => $StdOrSelected,
-				'Publication' => $Publication 
+				'Publication' => $Publication,
+				'app' => $row['app']
 			));
 		}
-		$_SESSION['Libelle'] = utyGetSession('Libelle','');
-		$_SESSION['Lieu'] = utyGetSession('Lieu','');
-		$_SESSION['Date_debut'] = utyGetSession('Date_debut','');
-		$_SESSION['Date_fin'] = utyGetSession('Date_fin','');
+		$_SESSION['Libelle'] = utyGetSession('Libelle', '');
+		$_SESSION['Lieu'] = utyGetSession('Lieu', '');
+		$_SESSION['Date_debut'] = utyGetSession('Date_debut', '');
+		$_SESSION['Date_fin'] = utyGetSession('Date_fin', '');
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 		$this->m_tpl->assign('idEvenement', $idEvenement);
 		$this->m_tpl->assign('Libelle', $_SESSION['Libelle']);
@@ -63,7 +64,7 @@ class GestionEvenement extends MyPageSecure
 		$this->m_tpl->assign('Date_debut', $_SESSION['Date_debut']);
 		$this->m_tpl->assign('Date_fin', $_SESSION['Date_fin']);
 	}
-	
+
 	function Add()
 	{
 		$libelle = utyGetPost('Libelle');
@@ -77,21 +78,21 @@ class GestionEvenement extends MyPageSecure
 			VALUES (?,?,?,?) ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($libelle, $lieu, utyDateFrToUs($datedebut), utyDateFrToUs($datefin)));
-		
+
 		$myBdd->utyJournal('Ajout Evenement', '', '', null, null, null, $libelle);
 	}
-	
+
 	function Remove()
 	{
 		$ParamCmd = utyGetPost('ParamCmd');
 		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0)
 			return; // Rien à Detruire ...
-		
+
 		$myBdd = $this->myBdd;
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
 
-		try {  
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
@@ -107,44 +108,60 @@ class GestionEvenement extends MyPageSecure
 
 			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
-		
+
 		$myBdd->utyJournal('Suppression Evenements', '', '', $ParamCmd);
 	}
-	
+
 	function PubliEvt()
 	{
 		$idEvt = (int) utyGetPost('ParamCmd', -1);
 		(utyGetPost('Pub', '') != 'O') ? $changePub = 'O' : $changePub = 'N';
-		
+
 		$myBdd = $this->myBdd;
 		$sql = "UPDATE kp_evenement 
 			SET Publication = ? 
 			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($changePub, $idEvt));
-		
+
 		$myBdd->utyJournal('Publication evenement', $myBdd->GetActiveSaison(), '', $idEvt, null, null, $changePub);
 	}
-	
+
+	function AppEvt()
+	{
+		$idEvt = (int) utyGetPost('ParamCmd', -1);
+		(utyGetPost('App', '') != 'N') ? $changeApp = 'N' : $changeApp = 'O';
+		// var_dump($idEvt, utyGetPost('App', ''), $changeApp);
+		// die();
+		$myBdd = $this->myBdd;
+		$sql = "UPDATE kp_evenement 
+			SET app = ? 
+			WHERE Id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($changeApp, $idEvt));
+
+		$myBdd->utyJournal('App evenement', $myBdd->GetActiveSaison(), '', $idEvt, null, null, $changeApp);
+	}
+
 	function RazEvt()
 	{
-			$_SESSION['idEvenement'] = -1;
-			$_SESSION['Libelle'] = '';
-			$_SESSION['Lieu'] = '';
-			$_SESSION['Date_debut'] = '';
-			$_SESSION['Date_fin'] = '';
+		$_SESSION['idEvenement'] = -1;
+		$_SESSION['Libelle'] = '';
+		$_SESSION['Lieu'] = '';
+		$_SESSION['Date_debut'] = '';
+		$_SESSION['Date_fin'] = '';
 	}
 
 	function ParamEvt()
 	{
 		$idEvenement = utyGetPost('ParamCmd', -1);
 		$_SESSION['idEvenement'] = $idEvenement;
-		
+
 		$myBdd = $this->myBdd;
 
 		$sql  = "SELECT Libelle, Lieu, Date_debut, Date_fin, Publication 
 			FROM kp_evenement 
-			WHERE Id = ? ";		
+			WHERE Id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idEvenement));
 		if ($row = $result->fetch()) {
@@ -167,7 +184,7 @@ class GestionEvenement extends MyPageSecure
 		$lieu = utyGetPost('Lieu');
 		$datedebut = utyGetPost('Date_debut');
 		$datefin = utyGetPost('Date_fin');
-		
+
 		$myBdd = $this->myBdd;
 
 		$sql = "UPDATE kp_evenement 
@@ -182,37 +199,31 @@ class GestionEvenement extends MyPageSecure
 
 	function __construct()
 	{
-	  	MyPageSecure::MyPageSecure(2);
-		
+		MyPageSecure::MyPageSecure(2);
+
 		$this->myBdd = new MyBdd();
 
 		$alertMessage = '';
-		
+
 		$Cmd = utyGetPost('Cmd', '');
 
-		if (strlen($Cmd) > 0)
-		{
-			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 2) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'PubliEvt')
-				($_SESSION['Profile'] <= 2) ? $this->PubliEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'ParamEvt')
-				($_SESSION['Profile'] <= 2) ? $this->ParamEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'UpdateEvt')
-				($_SESSION['Profile'] <= 2) ? $this->UpdateEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'RazEvt')
-				($_SESSION['Profile'] <= 2) ? $this->RazEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+		if (strlen($Cmd) > 0) {
+			if ($Cmd == 'Add') ($_SESSION['Profile'] <= 2) ? $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
-				if ($alertMessage == '')
-			{
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+			if ($Cmd == 'Remove') ($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'PubliEvt') ($_SESSION['Profile'] <= 2) ? $this->PubliEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'AppEvt') ($_SESSION['Profile'] <= 1) ? $this->AppEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'ParamEvt') ($_SESSION['Profile'] <= 2) ? $this->ParamEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'UpdateEvt') ($_SESSION['Profile'] <= 2) ? $this->UpdateEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'RazEvt') ($_SESSION['Profile'] <= 2) ? $this->RazEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($alertMessage == '') {
+				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
@@ -222,6 +233,6 @@ class GestionEvenement extends MyPageSecure
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionEvenement');
 	}
-}		  	
+}
 
 $page = new GestionEvenement();

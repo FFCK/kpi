@@ -8,15 +8,23 @@ function StaffTestController($route)
 
 function EventsController($route)
 {
+  $force = $route[1] ?? false;
+  $array = ($force !== 'force') ? json_cache_read('events', 0, 5) : false;
+  if ($array) {
+    return_200($array);
+  }
+
   $myBdd = new MyBdd();
   $sql = "SELECT Id id, Libelle libelle, Lieu place
     FROM kp_evenement
-    WHERE Publication = 'O'
+    WHERE app = 'O'
     ORDER BY Id DESC ";
   $result = $myBdd->pdo->query($sql);
-  $row = $result->fetchAll();
+  $array = $result->fetchAll();
 
-  return_200($row);
+  json_cache_write('events', 0, $array);
+
+  return_200($array);
 }
 
 function GamesController($route)
