@@ -8,6 +8,12 @@
       {{ $t("About.DoYouLike") }}<br />
       {{ $t("About.IDevelopIt") }}<br />
       {{ $t("About.SupportMeOnUtip") }}
+      <a
+        class="btn btn-danger btn-sm"
+        href="https://utip.io/kayakpoloinfo"
+        target="blank"
+        >uTip</a
+      >
     </div>
 
     <div class="text-center">
