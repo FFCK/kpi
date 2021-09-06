@@ -41,7 +41,7 @@ export default {
           this.$i18n.locale = result.locale
         }).catch(_ => {
           const navLanguage = navigator.language.substr(0, 2)
-          if (this.$i18n.availableLocales.includes(navLanguage)) {
+          if (this.$i18n?.availableLocales.includes(navLanguage)) {
             this.$i18n.locale = navLanguage
           }
         })
