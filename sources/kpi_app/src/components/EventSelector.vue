@@ -11,7 +11,7 @@
         <i class="bi bi-arrow-left-right" /> {{ $t("Event.Change") }}
       </button>
     </div>
-    <div v-else>
+    <div v-else class="text-center">
       <button v-if="!showSelector" class="btn btn-primary" @click="loadEvents">
         {{ $t("Event.SelectEvent") }}
       </button>
@@ -20,9 +20,6 @@
     <form v-if="showSelector" class="align-items-center">
       <div class="row mb-2">
         <div class="col-8 offset-2 row">
-          <div class="col-auto">
-            <label class="col-form-label">{{ $t("Event.Event") }}</label>
-          </div>
           <div class="col-auto text-center">
             <select
               v-model="eventSelected"

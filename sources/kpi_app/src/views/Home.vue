@@ -49,7 +49,7 @@
       </button>
     </div>
 
-    <div class="my-1 text-center">
+    <div class="my-3 text-center">
       <img alt="Vue logo" src="../assets/logo.png" width="100" height="100" />
     </div>
   </div>
