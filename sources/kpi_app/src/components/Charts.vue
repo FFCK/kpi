@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { gamesDisplayMixin } from '@/services/mixins'
+import { gamesDisplayMixin } from '@/mixins/mixins'
 import ChartChampionship from './ChartChampionship.vue'
 import ChartGroup from './ChartGroup.vue'
 import ChartGame from './ChartGame.vue'

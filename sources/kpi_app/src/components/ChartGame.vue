@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { gamesMixin, gamesDisplayMixin } from '@/services/mixins'
+import { gamesMixin, gamesDisplayMixin } from '@/mixins/mixins'
 export default {
   name: 'ChartGame',
   mixins: [gamesMixin, gamesDisplayMixin],

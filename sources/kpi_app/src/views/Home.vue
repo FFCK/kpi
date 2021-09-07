@@ -52,11 +52,14 @@
     <div class="my-3 text-center">
       <img alt="Vue logo" src="../assets/logo.png" width="100" height="100" />
     </div>
+    <div class="text-center my-3">
+      <span class="btn btn-secondary">{{ version }}</span>
+    </div>
   </div>
 </template>
 
 <script>
-import { logoutMixin, prefsMixin, userMixin } from '@/services/mixins'
+import { logoutMixin, prefsMixin, userMixin } from '@/mixins/mixins'
 import EventSelector from '@/components/EventSelector.vue'
 import TitleComponent from '@/components/design/Title'
 
@@ -65,6 +68,11 @@ export default {
   components: {
     TitleComponent,
     EventSelector
+  },
+  computed: {
+    version () {
+      return 'v' + process.env.VUE_APP_VERSION
+    }
   },
   mixins: [logoutMixin, prefsMixin, userMixin],
   data () {

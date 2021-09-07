@@ -112,7 +112,7 @@
 
 <script>
 import LocaleSwitcher from '@/components/design/LocaleSwitcher'
-import { userMixin, prefsMixin } from '@/services/mixins'
+import { userMixin, prefsMixin } from '@/mixins/mixins'
 import Online from '@/components/design/Online.vue'
 
 export default {
