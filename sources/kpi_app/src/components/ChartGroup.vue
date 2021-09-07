@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { gamesMixin, gamesDisplayMixin } from '@/services/mixins'
+import { gamesMixin, gamesDisplayMixin } from '@/mixins/mixins'
 export default {
   name: 'ChartGroup',
   mixins: [gamesMixin, gamesDisplayMixin],

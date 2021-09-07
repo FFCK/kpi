@@ -8,6 +8,8 @@
       </transition>
     </router-view>
 
+    <Update />
+
     <AddToHomeScreen />
   </div>
 </template>
@@ -15,11 +17,13 @@
 <script>
 import Navbar from '@/components/design/Navbar'
 import AddToHomeScreen from '@/components/design/AddToHomeScreen.vue'
+import Update from '@/components/design/Update.vue'
 
 export default {
   components: {
     Navbar,
-    AddToHomeScreen
+    AddToHomeScreen,
+    Update
   }
 }
 </script>
