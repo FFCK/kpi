@@ -21,7 +21,7 @@
 <script>
 import TitleComponent from '@/components/design/Title'
 import Charts from '@/components/Charts.vue'
-import { prefsMixin, gamesMixin } from '@/services/mixins'
+import { prefsMixin, gamesMixin } from '@/mixins/mixins'
 import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
 import {

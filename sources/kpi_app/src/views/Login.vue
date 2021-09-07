@@ -88,7 +88,7 @@
 import privateApi from '@/network/privateApi'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
-import { logoutMixin } from '@/services/mixins'
+import { logoutMixin } from '@/mixins/mixins'
 import Status from '@/store/models/Status'
 
 export default {

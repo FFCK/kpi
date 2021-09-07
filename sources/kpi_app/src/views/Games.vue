@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import { prefsMixin, gamesMixin } from '@/services/mixins'
+import { prefsMixin, gamesMixin } from '@/mixins/mixins'
 import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
 import Games from '@/store/models/Games'

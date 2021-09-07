@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { prefsMixin } from '@/services/mixins'
+import { prefsMixin } from '@/mixins/mixins'
 import idbs from '@/services/idbStorage'
 import publicApi from '@/network/publicApi'
 import Events from '@/store/models/Events'

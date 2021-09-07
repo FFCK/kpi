@@ -235,7 +235,7 @@
 </template>
 
 <script>
-import { gamesDisplayMixin } from '@/services/mixins'
+import { gamesDisplayMixin } from '@/mixins/mixins'
 export default {
   name: 'GameList',
   components: {
