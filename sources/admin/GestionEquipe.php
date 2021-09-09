@@ -4,26 +4,26 @@ include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
 // Gestion des Equipes
-class GestionEquipe extends MyPageSecure	 
-{	
+class GestionEquipe extends MyPageSecure
+{
 	var $myBdd;
 
 	function Load()
 	{
-        $myBdd = $this->myBdd;
+		$myBdd = $this->myBdd;
 
 		// Langue
-        $langue = parse_ini_file("../commun/MyLang.ini", true);
-        if (utyGetSession('lang') == 'en') {
-            $lang = $langue['en'];
-        } else {
-            $lang = $langue['fr'];
-        }
-        
-        $_SESSION['updatecell_tableName'] = 'kp_competition_equipe';
+		$langue = parse_ini_file("../commun/MyLang.ini", true);
+		if (utyGetSession('lang') == 'en') {
+			$lang = $langue['en'];
+		} else {
+			$lang = $langue['fr'];
+		}
+
+		$_SESSION['updatecell_tableName'] = 'kp_competition_equipe';
 		$_SESSION['updatecell_where'] = 'Where Id = ';
 		$_SESSION['updatecell_document'] = 'formEquipe';
-		
+
 		$codeSaison = $myBdd->GetActiveSaison();
 		$this->m_tpl->assign('codeSaison', $codeSaison);
 
@@ -32,15 +32,15 @@ class GestionEquipe extends MyPageSecure
 		$_SESSION['codeCompet'] = $codeCompet;
 
 		if ($codeCompet == '*') {
-            $codeCompet = '';
-        }
+			$codeCompet = '';
+		}
 
-        //Filtre affichage type compet
-		$AfficheCompet = utyGetSession('AfficheCompet','');
+		//Filtre affichage type compet
+		$AfficheCompet = utyGetSession('AfficheCompet', '');
 		$AfficheCompet = utyGetPost('AfficheCompet', $AfficheCompet);
-        $_SESSION['AfficheCompet'] = $AfficheCompet;
+		$_SESSION['AfficheCompet'] = $AfficheCompet;
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
-		
+
 		// Chargement des Compétitions ...
 		$label = $myBdd->getSections();
 		$arrayCompetition = array();
@@ -68,56 +68,56 @@ class GestionEquipe extends MyPageSecure
 				COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array_merge(
-			[$codeSaison], 
-			[utyGetSession('AfficheNiveau').'%'], 
+			[$codeSaison],
+			[utyGetSession('AfficheNiveau') . '%'],
 			$arrayAfficheCompet
 		));
-        $i = -1;
-        $j = '';
+		$i = -1;
+		$j = '';
 		while ($row = $result->fetch()) {
 			// Titre
 			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
-                $Libelle = $row["Soustitre"];
-            } else {
-                $Libelle = $row["Libelle"];
-            }
-            if ($row["Soustitre2"] != '') {
-                $Libelle .= ' - ' . $row["Soustitre2"];
-            }
+				$Libelle = $row["Soustitre"];
+			} else {
+				$Libelle = $row["Libelle"];
+			}
+			if ($row["Soustitre2"] != '') {
+				$Libelle .= ' - ' . $row["Soustitre2"];
+			}
 
-            // Si $codeCompet Vide on prend le premier de la liste ...
+			// Si $codeCompet Vide on prend le premier de la liste ...
 			if ((strlen($codeCompet) == 0) && ($i == 0)) {
-                $codeCompet = $row["Code"];
-            }
+				$codeCompet = $row["Code"];
+			}
 
-            if ($j != $row['section']) {
-                $i ++;
-                $arrayCompetition[$i]['label'] = $label[$row['section']];
-            }
-            if ($row["Code"] == $codeCompet) {
-                $row['selected'] = 'selected';
-                $this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
-                $this->m_tpl->assign('Statut', $row["Statut"]);
-                if ($row["Verrou"] == 'O') {
-                    $Verrou = 'O';
-                } else {
-                    $Verrou = 'N';
-                }
-                $this->m_tpl->assign('Verrou', $Verrou);
-            } else {
-                $row['selected'] = '';
-            }
-            $j = $row['section'];
-            $arrayCompetition[$i]['options'][] = $row;
-        }
+			if ($j != $row['section']) {
+				$i++;
+				$arrayCompetition[$i]['label'] = $label[$row['section']];
+			}
+			if ($row["Code"] == $codeCompet) {
+				$row['selected'] = 'selected';
+				$this->m_tpl->assign('Code_niveau', $row["Code_niveau"]);
+				$this->m_tpl->assign('Statut', $row["Statut"]);
+				if ($row["Verrou"] == 'O') {
+					$Verrou = 'O';
+				} else {
+					$Verrou = 'N';
+				}
+				$this->m_tpl->assign('Verrou', $Verrou);
+			} else {
+				$row['selected'] = '';
+			}
+			$j = $row['section'];
+			$arrayCompetition[$i]['options'][] = $row;
+		}
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
 		$this->m_tpl->assign('codeCompet', $codeCompet);
-						
-		
+
+
 		// Chargement des Equipes ...
 		$arrayEquipe = array();
-		
-		if (strlen($codeCompet) > 0) { 
+
+		if (strlen($codeCompet) > 0) {
 			if ($codeCompet != 'POOL') {
 				$sql  = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, 
 					c.Code_comite_dep, c.Libelle Club  
@@ -138,11 +138,11 @@ class GestionEquipe extends MyPageSecure
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeCompet));
 			}
-			
-            $num_results = 0;
+
+			$num_results = 0;
 			while ($row = $result->fetch()) {
-				$num_results ++;
-                $nbMatchs = 0;
+				$num_results++;
+				$nbMatchs = 0;
 				$sql2  = "SELECT count(ce.Id) nbMatchs 
 					FROM kp_competition_equipe ce, kp_match m, kp_journee j 
 					WHERE ce.Code_compet = :codeCompet 
@@ -161,21 +161,23 @@ class GestionEquipe extends MyPageSecure
 				));
 
 				$row2 = $result2->fetch();
-                $nbMatchs = $row2['nbMatchs'];
-                
-				if (strlen($row['Code_comite_dep']) > 3) {
-                    $row['Code_comite_dep'] = 'FRA';
-                }
-                if ($row['Tirage'] != 0 or $row['Poule'] != '') {
-                    $this->m_tpl->assign('Tirage', 'ok');
-                }
+				$nbMatchs = $row2['nbMatchs'];
 
-                array_push($arrayEquipe, array('Id' => $row['Id'], 'Libelle' => $row['Libelle'], 
-                    'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Club' => $row['Club'], 
-                    'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'nbMatchs' => $nbMatchs, 
-                    'Code_comite_dep' => $row['Code_comite_dep'] ));
+				if (strlen($row['Code_comite_dep']) > 3) {
+					$row['Code_comite_dep'] = 'FRA';
+				}
+				if ($row['Tirage'] != 0 or $row['Poule'] != '') {
+					$this->m_tpl->assign('Tirage', 'ok');
+				}
+
+				array_push($arrayEquipe, array(
+					'Id' => $row['Id'], 'Libelle' => $row['Libelle'],
+					'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Club' => $row['Club'],
+					'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'nbMatchs' => $nbMatchs,
+					'Code_comite_dep' => $row['Code_comite_dep']
+				));
 			}
-		}	
+		}
 		$this->m_tpl->assign('arrayEquipe', $arrayEquipe);
 
 		//Mise à jour du nombre d'équipe de la compétition
@@ -190,36 +192,34 @@ class GestionEquipe extends MyPageSecure
 		$codeComiteReg = utyGetSession('codeComiteReg', '*');
 		$codeComiteReg = utyGetPost('comiteReg', $codeComiteReg);
 		if (strlen($codeComiteReg) == 0) {
-            $codeComiteReg = '*';
-        }
+			$codeComiteReg = '*';
+		}
 
-        $codeComiteDep = utyGetSession('codeComiteDep', '*');
+		$codeComiteDep = utyGetSession('codeComiteDep', '*');
 		$codeComiteDep = utyGetPost('comiteDep', $codeComiteDep);
 		if (strlen($codeComiteDep) == 0) {
-            $codeComiteDep = '*';
-        }
+			$codeComiteDep = '*';
+		}
 
-        $codeClub = utyGetSession('codeClub', '*');
+		$codeClub = utyGetSession('codeClub', '*');
 		$codeClub = utyGetPost('club', $codeClub);
 		if (strlen($codeClub) == 0) {
-            $codeClub = '*';
-        }
+			$codeClub = '*';
+		}
 
 		$ParamCmd = utyGetPost('ParamCmd', false);
-        if ($ParamCmd)	// @COSANDCO_WAMPSER
+		if ($ParamCmd)	// @COSANDCO_WAMPSER
 		{
-			if ($codeComiteReg == '*' && $ParamCmd == 'changeComiteReg')
-			{
+			if ($codeComiteReg == '*' && $ParamCmd == 'changeComiteReg') {
 				$codeComiteDep = '*';
 				$codeClub = '*';
 			}
-			
-			if ($codeComiteDep == '*' && $ParamCmd == 'changeComiteDep')
-			{
+
+			if ($codeComiteDep == '*' && $ParamCmd == 'changeComiteDep') {
 				$codeClub = '*';
 			}
 		}
-			
+
 		$_SESSION['codeComiteReg'] = $codeComiteReg;
 		$_SESSION['codeComiteDep'] = $codeComiteDep;
 		$_SESSION['codeClub'] = $codeClub;
@@ -227,101 +227,100 @@ class GestionEquipe extends MyPageSecure
 		// Chargement des Comites Régionaux ...
 		$sql  = "SELECT Code, Libelle 
 			FROM kp_cr 
-			ORDER BY Code ";	 
+			ORDER BY Code ";
 		$arrayComiteReg = array();
 
 		if ('*' == $codeComiteReg) {
-            array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
-        } else {
-            array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
-        }
+			array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
+		} else {
+			array_push($arrayComiteReg, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
+		}
 
 		foreach ($myBdd->pdo->query($sql) as $row) {
 			if ($row["Code"] == $codeComiteReg) {
-                array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"] . " - " . $row["Libelle"], 'Selected' => 'SELECTED'));
-            } else {
-                array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"] . " - " . $row["Libelle"], 'Selected' => ''));
-            }
-        }
-		
+				array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"] . " - " . $row["Libelle"], 'Selected' => 'SELECTED'));
+			} else {
+				array_push($arrayComiteReg, array('Code' => $row["Code"], 'Libelle' => $row["Code"] . " - " . $row["Libelle"], 'Selected' => ''));
+			}
+		}
+
 		$this->m_tpl->assign('arrayComiteReg', $arrayComiteReg);
-		
+
 		// Chargement des Comites Departementaux ...
 		$arrayComiteDep = array();
 		if ('*' == $codeComiteDep) {
-            array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
-            // $bSelectCombo = true;
-        } else {
-            array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
-        }
+			array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
+			// $bSelectCombo = true;
+		} else {
+			array_push($arrayComiteDep, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
+		}
 
 		if ($codeComiteReg != '*') {
 			$sql = "SELECT Code, Libelle 
 				FROM kp_cd 
 				WHERE Code_comite_reg = ?
-				ORDER BY Code ";	 
+				ORDER BY Code ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($codeComiteReg));
 		} else {
 			$sql = "SELECT Code, Libelle 
 				FROM kp_cd 
-				ORDER BY Code ";	 
+				ORDER BY Code ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute();
 		}
 
-		while($row = $result->fetch()) {
+		while ($row = $result->fetch()) {
 			if ($row["Code"] == $codeComiteDep) {
-                array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . " - " . $row['Libelle'], 'Selected' => 'SELECTED'));
-            } else {
-                array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . " - " . $row['Libelle'], 'Selected' => ''));
-            }
-        }
-			
+				array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . " - " . $row['Libelle'], 'Selected' => 'SELECTED'));
+			} else {
+				array_push($arrayComiteDep, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . " - " . $row['Libelle'], 'Selected' => ''));
+			}
+		}
+
 		$this->m_tpl->assign('arrayComiteDep', $arrayComiteDep);
-		
+
 		// Chargement des Clubs ...
 		$arrayClub = array();
 		if ('*' == $codeClub) {
-            array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
-        } else {
-            array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
-        }
+			array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => 'SELECTED'));
+		} else {
+			array_push($arrayClub, array('Code' => '*', 'Libelle' => '* - ' . $lang['Tous'], 'Selected' => ''));
+		}
 
 		$arrayM = [];
 		$sql = "SELECT c.Code, c.Libelle 
 			FROM kp_club c, kp_cd cd 
 			WHERE c.Code_comite_dep = cd.Code ";
-			if ($codeComiteReg != '*') {
-				$sql .= "AND cd.Code_comite_reg = ? ";
-				$arrayM = array_merge($arrayM, [$codeComiteReg]);
-			}
-			if ($codeComiteDep != '*') {
-				$sql .= "AND c.Code_comite_dep = ? ";
-				$arrayM = array_merge($arrayM, [$codeComiteDep]);
-			}
-			$sql .= "ORDER BY c.Code ";	 
-			
+		if ($codeComiteReg != '*') {
+			$sql .= "AND cd.Code_comite_reg = ? ";
+			$arrayM = array_merge($arrayM, [$codeComiteReg]);
+		}
+		if ($codeComiteDep != '*') {
+			$sql .= "AND c.Code_comite_dep = ? ";
+			$arrayM = array_merge($arrayM, [$codeComiteDep]);
+		}
+		$sql .= "ORDER BY c.Code ";
+
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayM);
 		while ($row = $result->fetch()) {
 			if ($row["Code"] == $codeClub) {
-                array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . ' - ' . $row['Libelle'], 'Selected' => 'SELECTED'));
-            } else {
-                array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . ' - ' . $row['Libelle'], 'Selected' => ''));
-            }
-        }
-			
+				array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . ' - ' . $row['Libelle'], 'Selected' => 'SELECTED'));
+			} else {
+				array_push($arrayClub, array('Code' => $row['Code'], 'Libelle' => $row['Code'] . ' - ' . $row['Libelle'], 'Selected' => ''));
+			}
+		}
+
 		$this->m_tpl->assign('arrayClub', $arrayClub);
-		
+
 		// Chargement des Equipes Historique ...
 		$arrayHistoEquipe = array();
 		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => '=> ' . $lang['NOUVELLE_EQUIPE'] . '...'));
 		array_push($arrayHistoEquipe, array('Numero' => '', 'Libelle' => ''));
-		
+
 		$arrayM = [];
-		if ($codeComiteReg != '98')
-		{
+		if ($codeComiteReg != '98') {
 			$sql = "SELECT e.Numero, e.Libelle, e.Code_club 
 				FROM kp_equipe e, kp_club c, kp_cd cd 
 				WHERE e.Code_club = c.Code 
@@ -340,7 +339,7 @@ class GestionEquipe extends MyPageSecure
 				$arrayM = array_merge($arrayM, [$codeClub]);
 			}
 			$sql .= "ORDER BY e.Libelle ";
-			
+
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayM);
 			$num_results = $result->rowCount();
@@ -352,8 +351,7 @@ class GestionEquipe extends MyPageSecure
 		}
 
 		$arrayM = [];
-		if ($codeComiteReg == '98' or $codeComiteReg == '*')
-		{
+		if ($codeComiteReg == '98' or $codeComiteReg == '*') {
 			$sql = "SELECT e.Numero, e.Libelle, e.Code_club 
 				FROM kp_equipe e, kp_club c, kp_cd cd 
 				WHERE e.Code_club = c.Code 
@@ -371,8 +369,8 @@ class GestionEquipe extends MyPageSecure
 				$sql .= "AND e.Code_club = ? ";
 				$arrayM = array_merge($arrayM, [$codeClub]);
 			}
-			$sql .= "ORDER BY e.Libelle ";	 
-			
+			$sql .= "ORDER BY e.Libelle ";
+
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayM);
 			$num_results = $result->rowCount();
@@ -383,31 +381,31 @@ class GestionEquipe extends MyPageSecure
 		}
 		$this->m_tpl->assign('arrayHistoEquipe', $arrayHistoEquipe);
 	}
-	
+
 	function Add()
 	{
 		$myBdd = $this->myBdd;
-		
+
 		$codeCompet = utyGetPost('competition');
-		$codeSaison = $myBdd->GetActiveSaison();
+		$codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
 		$libelleEquipe = utyGetPost('libelleEquipe');
 		$histoEquipe = utyGetPost('histoEquipe');
 		$codeClub = utyGetPost('club');
 		$insertValue = '';
 
 		if (is_array($histoEquipe)) {
-			foreach($histoEquipe as $selectValue) {
+			foreach ($histoEquipe as $selectValue) {
 				if ($codeCompet == '' or $codeCompet == '*') {
 					return 'Aucune competition sélectionnée';
 				}
-				
-				try {  
+
+				try {
 					$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					$myBdd->pdo->beginTransaction();
-					
+
 					if ((int) $selectValue == 0) {
 						// Inscription Manuelle ...
-						if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0) ) {
+						if ((strlen($libelleEquipe) > 0) && (strlen($codeClub) > 0)) {
 							$sql  = "INSERT INTO kp_equipe (Libelle, Code_club) 
 								VALUES (?, ?) ";
 							$result = $myBdd->pdo->prepare($sql);
@@ -432,8 +430,9 @@ class GestionEquipe extends MyPageSecure
 					$myBdd->pdo->commit();
 				} catch (Exception $e) {
 					$myBdd->pdo->rollBack();
-					utySendMail("[KPI] Erreur SQL", "Ajout equipe $codeSaison, $codeCompet, $insertValue" . '\r\n' . $e->getMessage());
-					
+					utySendMail("[KPI] Erreur SQL", "Ajout equipe $codeSaison, $codeCompet, $insertValue, "
+						. '\r\n' . $e->getMessage());
+
 					return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
 				}
 				$_SESSION['codeCompet'] = $codeCompet;
@@ -446,13 +445,13 @@ class GestionEquipe extends MyPageSecure
 		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, null, null, null, $insertValue);
 		return;
 	}
-	
+
 	function Add2()
 	{
 		$myBdd = $this->myBdd;
-		
+
 		$codeCompet = utyGetPost('competition');
-		$codeSaison = $myBdd->GetActiveSaison();
+		$codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
 		$EquipeNum = utyGetPost('EquipeNum');
 		$EquipeNom = utyGetPost('EquipeNom');
 		$checkCompo = utyGetPost('checkCompo');
@@ -460,18 +459,16 @@ class GestionEquipe extends MyPageSecure
 		$tirEquipe = utyGetPost('tirEquipe', 0);
 		$cltChEquipe = utyGetPost('cltChEquipe', 0);
 		$cltCpEquipe = utyGetPost('cltCpEquipe', 0);
-		
-		if ($EquipeNum != '')
-		{
-			if ($codeCompet == '' or $codeCompet == '*')
-			{
+
+		if ($EquipeNum != '') {
+			if ($codeCompet == '' or $codeCompet == '*') {
 				return 'Aucune competition sélectionnée';
 			}
-		
-			try {  
+
+			try {
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
-				
+
 				$sql  = "INSERT INTO kp_competition_equipe 
 					(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau)
 					SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ? 
@@ -479,9 +476,11 @@ class GestionEquipe extends MyPageSecure
 					WHERE Numero = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(
-					array($codeCompet, $codeSaison, $plEquipe, $tirEquipe, 
+					array(
+						$codeCompet, $codeSaison, $plEquipe, $tirEquipe,
 						$cltChEquipe, $cltCpEquipe, $EquipeNum
-				));
+					)
+				);
 				$EquipeId = $myBdd->pdo->lastInsertId();
 
 				if ($checkCompo != '') {
@@ -501,9 +500,9 @@ class GestionEquipe extends MyPageSecure
 						AND :checkCompo0 - Year(e.Naissance) BETWEEN d.age_min AND d.age_max ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array(
-						':EquipeId' => $EquipeId, 
-						':EquipeNum' => $EquipeNum, 
-						':checkCompo1' => $checkCompo[1], 
+						':EquipeId' => $EquipeId,
+						':EquipeNum' => $EquipeNum,
+						':checkCompo1' => $checkCompo[1],
 						':checkCompo0' => $checkCompo[0]
 					));
 				}
@@ -512,40 +511,40 @@ class GestionEquipe extends MyPageSecure
 			} catch (Exception $e) {
 				$myBdd->pdo->rollBack();
 				utySendMail("[KPI] Erreur SQL", "Ajout equipe $codeSaison, $codeCompet, $EquipeNom" . '\r\n' . $e->getMessage());
-	
+
 				return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
 			}
 		}
-		
+
 		$myBdd->utyJournal('Ajout equipe', $codeSaison, $codeCompet, null, null, null, $EquipeNom);
 		return;
 	}
-	
+
 	function Tirage()
 	{
 		$myBdd = $this->myBdd;
-		
+
 		$codeCompet = utyGetPost('competition');
-		$codeSaison = $myBdd->GetActiveSaison();
+		$codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
 		$equipeTirage = utyGetPost('equipeTirage');
 		$pouleTirage = utyGetPost('pouleTirage');
 		$ordreTirage = utyGetPost('ordreTirage');
-		
+
 		$sql = "UPDATE kp_competition_equipe 
 			SET Tirage = :ordreTirage, Poule = :pouleTirage 
 			WHERE Code_compet = :codeCompet 
 			AND Code_saison = :codeSaison 
-			AND Id = :equipeTirage ";	 
+			AND Id = :equipeTirage ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(
-			':ordreTirage' => $ordreTirage, 
-			':pouleTirage' => $pouleTirage, 
-			':codeCompet' => $codeCompet, 
+			':ordreTirage' => $ordreTirage,
+			':pouleTirage' => $pouleTirage,
+			':codeCompet' => $codeCompet,
 			':codeSaison' => $codeSaison,
 			':equipeTirage' => $equipeTirage
 		));
 
-		$myBdd->utyJournal('Tirage au sort', $codeSaison, $codeCompet, null, null, null, $equipeTirage.' -> '.$ordreTirage);
+		$myBdd->utyJournal('Tirage au sort', $codeSaison, $codeCompet, null, null, null, $equipeTirage . ' -> ' . $ordreTirage);
 		return;
 	}
 
@@ -556,17 +555,17 @@ class GestionEquipe extends MyPageSecure
 
 		$ParamCmd = utyGetPost('ParamCmd', '');
 
-        $arrayParam = explode(',', $ParamCmd);		
+		$arrayParam = explode(',', $ParamCmd);
 		if (count($arrayParam) == 0) {
-            return;
-        } // Rien à Detruire ...
+			return;
+		} // Rien à Detruire ...
 
 		$in = str_repeat('?,', count($arrayParam) - 1) . '?';
 
-		try {  
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
-			
+
 			$sql = "DELETE FROM kp_competition_equipe_joueur 
 				WHERE Id_equipe IN ($in)";
 			$result = $myBdd->pdo->prepare($sql);
@@ -588,7 +587,7 @@ class GestionEquipe extends MyPageSecure
 		$myBdd->utyJournal('Suppression  equipes', $codeSaison, utyGetPost('codeCompet'), null, null, null, $ParamCmd);
 		return 'Suppression effectuée';
 	}
-	
+
 	function Duplicate($bDelete)
 	{
 		$myBdd = $this->myBdd;
@@ -596,13 +595,13 @@ class GestionEquipe extends MyPageSecure
 		$codeCompetRef = utyGetPost('competitionRef');
 		$codeSaison = $myBdd->GetActiveSaison();
 
-		if ( (strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0) ) {
+		if ((strlen($codeCompet) > 0) && (strlen($codeCompetRef) > 0)) {
 			$myBdd = $this->myBdd;
-			
-			try {  
+
+			try {
 				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$myBdd->pdo->beginTransaction();
-				
+
 				if ($bDelete) {
 					// Suppression des Joueurs Equipes 
 					$sql  = "DELETE FROM kp_competition_equipe_joueur 
@@ -613,7 +612,7 @@ class GestionEquipe extends MyPageSecure
 							AND a.Code_saison = ? )";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($codeCompet, $codeSaison));
-			
+
 					// Suppression des Equipes 
 					$sql = "DELETE FROM kp_competition_equipe 
 						WHERE Code_compet = ? 
@@ -621,7 +620,7 @@ class GestionEquipe extends MyPageSecure
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($codeCompet, $codeSaison));
 				}
-				
+
 				// Insertion des Equipes ...
 				$sql  = "INSERT INTO kp_competition_equipe 
 					(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) 
@@ -631,7 +630,7 @@ class GestionEquipe extends MyPageSecure
 					AND Code_saison = ? ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeCompet, $codeCompetRef, $codeSaison));
-				
+
 				// Insertion des Joueurs Equipes ...
 				$sql  = "INSERT INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
@@ -648,52 +647,52 @@ class GestionEquipe extends MyPageSecure
 			} catch (Exception $e) {
 				$myBdd->pdo->rollBack();
 				utySendMail("[KPI] Erreur SQL", "Duplication  equipes, $codeSaison, $codeCompet, Depuis $codeCompetRef" . '\r\n' . $e->getMessage());
-	
+
 				return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
 			}
-	
-			$myBdd->utyJournal('Duplication  equipes', $codeSaison, $codeCompet, null, null, null, 'Depuis '.$codeCompetRef);
+
+			$myBdd->utyJournal('Duplication  equipes', $codeSaison, $codeCompet, null, null, null, 'Depuis ' . $codeCompetRef);
 			return 'Duplication effectuée';
 		}
 	}
-	
+
 	function __construct()
 	{
-	  	MyPageSecure::MyPageSecure(10);
-		
+		MyPageSecure::MyPageSecure(10);
+
 		$this->myBdd = new MyBdd();
 
 		$alertMessage = '';
-		
+
 		$Cmd = utyGetPost('Cmd', '');
 
-        if (strlen($Cmd) > 0) {
+		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Add') {
-                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-            }
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			}
 
-            if ($Cmd == 'Add2') {
-                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-            }
+			if ($Cmd == 'Add2') {
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Add2() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			}
 
-            if ($Cmd == 'Tirage') {
-                ($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Tirage() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-            }
+			if ($Cmd == 'Tirage') {
+				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Tirage() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			}
 
-            if ($Cmd == 'Remove') {
-                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-            }
+			if ($Cmd == 'Remove') {
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Remove() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			}
 
-            if ($Cmd == 'Duplicate') {
-                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Duplicate(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-            }
+			if ($Cmd == 'Duplicate') {
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Duplicate(false) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			}
 
-            if ($Cmd == 'RemoveAndDuplicate') {
-                ($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Duplicate(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-            }
+			if ($Cmd == 'RemoveAndDuplicate') {
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Duplicate(true) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			}
 
-            if ($alertMessage == '') {
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+			if ($alertMessage == '') {
+				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
@@ -703,6 +702,6 @@ class GestionEquipe extends MyPageSecure
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionEquipe');
 	}
-}		  	
+}
 
 $page = new GestionEquipe();
