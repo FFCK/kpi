@@ -1,0 +1,117 @@
+{
+  "message": "Welcome on KPI-App !",
+  "nav": {
+    "Home": "Home",
+    "Login": "Login",
+    "MyAccount": "My account",
+    "Staff": "Staff",
+    "Games": "Games",
+    "Ranking": "Ranking",
+    "Chart": "Chart",
+    "GameReport": "Game report",
+    "Stats": "Stats",
+    "StatReport": "Stat report",
+    "Scrutineering": "Scrutineering",
+    "ScrutReport": "Equipment scrutineering",
+    "Lang": "Language",
+    "Back": "Back",
+    "CommingSoon": "Comming soon...",
+    "CommingSoonDescription": "Be patient!",
+    "About": "About",
+    "Filters": "Filters"
+  },
+  "AddToHomeScreen": {
+    "message": "Add to desktop/home screen.",
+    "Dismiss": "Dismiss",
+    "Install": "Install"
+  },
+  "Login": {
+    "Authentication": "Authentication",
+    "Login": "Login",
+    "LoginHelp": "Enter your login",
+    "Password": "Password",
+    "Submit": "Submit",
+    "EmptyMsg": "Login & Password must be filled!",
+    "UnauthorizedMsg": "Unauthorized login!",
+    "ErrorMsg": "Authentication failed!",
+    "Welcome": "Welcome",
+    "Logout": "Logout"
+  },
+  "Event": {
+    "SelectEvent": "Select event",
+    "PleaseSelectOne": "Please select one",
+    "Event": "Event",
+    "Change": "Change",
+    "Confirm": "Confirm",
+    "Cancel": "Cancel"
+  },
+  "Games": {
+    "Categories": "Categories",
+    "Teams": "Teams",
+    "Refs": "Refs",
+    "ShowRefs": "Show refs",
+    "Dates": "Dates",
+    "AllDates": "All dates",
+    "All": "All",
+    "Today": "Today",
+    "Tomorow": "Tomorow",
+    "Prev": "Previous games",
+    "Next": "Next games",
+    "games": "games",
+    "Game": "Game",
+    "Pitch": "Pitch",
+    "Date": "Date",
+    "Time": "Time",
+    "Cat": "Cat.",
+    "Group": "Group",
+    "Team": "Team",
+    "Score": "Score",
+    "Ref": "Ref.",
+    "Referee": "Referee",
+    "GameReport": "Game report",
+    "Status": {
+      "ATT": "Pending",
+      "ON": "In progress",
+      "END": "Completed"
+    },
+    "Period": {
+      "M1": "1st period",
+      "M2": "2nd period",
+      "P1": "1st extra time",
+      "P2": "Extra time",
+      "TB": "Penalty kicks"
+    },
+    "Code": {
+      "Group": "Group ",
+      "Team": "Team ",
+      "Winner": "Winner #",
+      "Looser": "Looser #"
+    },
+    "Numbers": {
+      "first": "st ",
+      "second": "nd ",
+      "third": "rd ",
+      "eleven": "th ",
+      "twelve": "th ",
+      "thirteen": "th ",
+      "twentyone": "st ",
+      "twentytwo": "nd ",
+      "twentythree": "rd ",
+      "th": "th "
+    }
+  },
+  "Charts": {
+    "Pts": "Pts",
+    "Pld": "Pld"
+  },
+  "About": {
+    "DoYouLike": "Do you like this application?",
+    "IDevelopIt": "I develop it in my spare time.",
+    "FeedbackOnTwitter": "You can give your feedback on",
+    "SupportMeOnUtip": "You can encourage me to continue and support me on"
+  },
+  "Update": {
+    "Message": "An update is available",
+    "Button": "Update now!"
+  }
+}
