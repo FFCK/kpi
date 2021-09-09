@@ -5,7 +5,11 @@
     v-if="updateExists"
   >
     <strong>{{ $t("Update.Message") }} </strong>
-    <button type="button" class="btn btn-sm btn-warning" @click="refreshApp">
+    <button
+      type="button"
+      class="btn btn-sm btn-warning ms-2"
+      @click="refreshApp"
+    >
       {{ $t("Update.Button") }}
     </button>
     <button
