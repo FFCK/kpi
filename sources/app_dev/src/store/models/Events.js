@@ -10,7 +10,8 @@ export default class Events extends Model {
     return {
       id: this.uid(null),
       libelle: this.string(''),
-      place: this.string('')
+      place: this.string(''),
+      logo: this.string(null).nullable()
     }
   }
 }

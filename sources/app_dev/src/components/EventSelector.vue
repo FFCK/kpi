@@ -6,6 +6,14 @@
       class="h5 text-center"
       @click="loadEvents"
     >
+      <img
+        class="mb-2"
+        :src="`${baseUrl}/img/${prefs.event_logo}`"
+        alt="Logo"
+        height="50"
+        v-if="prefs.event_logo"
+      />
+      <br />
       {{ prefs.event_name }} - {{ prefs.event_place }}
       <button v-if="!showSelector" class="btn btn-secondary btn-sm">
         <i class="bi bi-arrow-left-right" /> {{ $t("Event.Change") }}
@@ -70,6 +78,7 @@ export default {
   mixins: [prefsMixin],
   data () {
     return {
+      baseUrl: process.env.VUE_APP_BASE_URL,
       showSelector: false,
       eventSelected: 0,
       changeButton: false,
@@ -118,6 +127,7 @@ export default {
             event: e.id,
             event_name: e.libelle,
             event_place: e.place,
+            event_logo: e.logo,
             fav_categories: '[]',
             fav_teams: '[]',
             fav_refs: '[]',

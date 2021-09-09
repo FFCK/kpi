@@ -131,8 +131,6 @@ class GestionEvenement extends MyPageSecure
 	{
 		$idEvt = (int) utyGetPost('ParamCmd', -1);
 		(utyGetPost('App', '') != 'N') ? $changeApp = 'N' : $changeApp = 'O';
-		// var_dump($idEvt, utyGetPost('App', ''), $changeApp);
-		// die();
 		$myBdd = $this->myBdd;
 		$sql = "UPDATE kp_evenement 
 			SET app = ? 

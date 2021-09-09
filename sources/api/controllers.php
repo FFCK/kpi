@@ -15,7 +15,7 @@ function EventsController($route)
   }
 
   $myBdd = new MyBdd();
-  $sql = "SELECT Id id, Libelle libelle, Lieu place
+  $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
     FROM kp_evenement
     WHERE app = 'O'
     ORDER BY Id DESC ";
