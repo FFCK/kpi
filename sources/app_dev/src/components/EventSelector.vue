@@ -19,8 +19,8 @@
 
     <form v-if="showSelector" class="align-items-center">
       <div class="row mb-2">
-        <div class="col-8 offset-2 row">
-          <div class="col-auto text-center">
+        <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 row">
+          <div class="text-center">
             <select
               v-model="eventSelected"
               class="form-select"
