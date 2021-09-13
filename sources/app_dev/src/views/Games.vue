@@ -171,7 +171,8 @@ export default {
       this.categories = [...new Set(allGames.map(x => x.c_code))].sort()
       this.game_dates = [...new Set(allGames.map(x => x.g_date))].sort()
       this.teams = [...new Set(
-        allGames.map(x => x.t_a_label).concat(allGames.map(x => x.t_b_label))
+        allGames.map(x => (x.t_a_label && x.t_a_label[0] !== '¤') ? x.t_a_label : null)
+          .concat(allGames.map(x => (x.t_b_label && x.t_b_label[0] !== '¤') ? x.t_b_label : null))
       )].filter(value => value !== null).sort()
       this.refs = [...new Set(
         allGames.map(x => x.r_1_name).concat(allGames.map(x => x.r_2_name))
