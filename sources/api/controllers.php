@@ -9,7 +9,7 @@ function StaffTestController($route)
 function EventsController($route)
 {
   $force = $route[1] ?? false;
-  $array = ($force !== 'force') ? json_cache_read('events', 0, 5) : false;
+  $array = ($force !== 'force') ? json_cache_read('events', 0, 10) : false;
   if ($array) {
     return_200($array);
   }
@@ -31,7 +31,7 @@ function GamesController($route)
 {
   $event = (int) $route[1];
   $force = $route[2] ?? false;
-  $array = ($force !== 'force') ? json_cache_read('games', $event, 5) : false;
+  $array = ($force !== 'force') ? json_cache_read('games', $event, 3) : false;
   if ($array) {
     return_200($array);
   }
