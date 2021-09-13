@@ -90,11 +90,6 @@
                 </span>
               </div>
               <div class="text-nowrap">
-                <img
-                  class="team_logo d-none d-sm-inline me-1"
-                  :src="`${baseUrl}/img/${game.t_a_logo}`"
-                  alt=""
-                />
                 <span
                   :class="{
                     'align-top': true,
@@ -110,6 +105,11 @@
                       game.g_score_a <= game.g_score_b
                   }"
                   v-html="showCode(game.t_a_label)"
+                />
+                <img
+                  class="team_logo d-none d-sm-inline ms-1 mt-n1"
+                  :src="`${baseUrl}/img/${game.t_a_logo}`"
+                  alt=""
                 />
               </div>
               <div v-if="showRefs" class="d-md-block d-lg-none text-start refs">
@@ -193,6 +193,11 @@
                 >
               </div>
               <div class="text-nowrap">
+                <img
+                  class="team_logo d-none d-sm-inline me-1 mt-n1"
+                  :src="`${baseUrl}/img/${game.t_b_logo}`"
+                  alt=""
+                />
                 <span
                   :class="{
                     'align-top': true,
@@ -208,11 +213,6 @@
                       game.g_score_b <= game.g_score_a
                   }"
                   v-html="showCode(game.t_b_label)"
-                />
-                <img
-                  class="team_logo d-none d-sm-inline ms-1"
-                  :src="`${baseUrl}/img/${game.t_b_logo}`"
-                  alt=""
                 />
               </div>
               <div v-if="showRefs" class="d-md-block d-lg-none text-end refs">
