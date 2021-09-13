@@ -2,7 +2,7 @@
   <div
     class="alert alert-warning alert-dismissible fade show"
     role="alert"
-    v-if="!updateExists"
+    v-if="updateExists"
   >
     <strong>{{ $t("Update.Message") }} </strong>
     <button
@@ -12,12 +12,6 @@
     >
       {{ $t("Update.Button") }}
     </button>
-    <!-- <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button> -->
   </div>
 </template>
 
