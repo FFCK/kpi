@@ -7,10 +7,9 @@
       @click="loadEvents"
     >
       <img
-        class="mb-2"
+        class="mb-2 event_logo"
         :src="`${baseUrl}/img/${prefs.event_logo}`"
         alt="Logo"
-        height="50"
         v-if="prefs.event_logo"
       />
       <br />
@@ -149,3 +148,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.event_logo {
+  max-height: 55px;
+  max-width: 100%;
+}
+</style>
