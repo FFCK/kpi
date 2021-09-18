@@ -15,12 +15,14 @@
                     'btn-sm': true,
                     'text-nowrap': true,
                     team_name: true,
-                    winner: game.g_status === 'END',
-                    looser: game.g_status !== 'END'
+                    winner:
+                      game.g_status === 'END' && game.g_validation === 'O',
+                    looser: game.g_status !== 'END' || game.g_validation !== 'O'
                   }"
                   v-html="
                     showCode(
-                      game.g_score_a >= game.g_score_b
+                      game.g_score_b === 'F' ||
+                        parseInt(game.g_score_a) >= parseInt(game.g_score_b)
                         ? game.t_a_label
                         : game.t_b_label
                     )
@@ -36,13 +38,15 @@
                     'text-nowrap': true,
                     score: true,
                     lcd: true,
-                    winner: game.g_status === 'END',
-                    looser: game.g_status === 'ON',
+                    winner:
+                      game.g_status === 'END' && game.g_validation === 'O',
+                    looser: game.g_status === 'ON' || game.g_validation !== 'O',
                     'text-danger': game.g_validation !== 'O'
                   }"
                 >
                   {{
-                    game.g_score_a > game.g_score_b
+                    game.g_score_b === "F" ||
+                    parseInt(game.g_score_a) >= parseInt(game.g_score_b)
                       ? game.g_score_a
                       : game.g_score_b || "&nbsp;"
                   }}
@@ -61,7 +65,8 @@
                   }"
                   v-html="
                     showCode(
-                      game.g_score_b > game.g_score_a
+                      game.g_score_a === 'F' ||
+                        parseInt(game.g_score_b) >= parseInt(game.g_score_a)
                         ? game.t_a_label
                         : game.t_b_label
                     )
@@ -82,7 +87,8 @@
                   }"
                 >
                   {{
-                    game.g_score_b > game.g_score_a
+                    game.g_score_a === "F" ||
+                    parseInt(game.g_score_b) >= parseInt(game.g_score_a)
                       ? game.g_score_a
                       : game.g_score_b || "&nbsp;"
                   }}
