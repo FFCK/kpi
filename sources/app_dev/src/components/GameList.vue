@@ -99,10 +99,14 @@
                     team_name: true,
                     winner:
                       game.g_status === 'END' &&
-                      game.g_score_a > game.g_score_b,
+                      game.g_validation === 'O' &&
+                      (game.g_score_b === 'F' ||
+                        parseInt(game.g_score_a) > parseInt(game.g_score_b)),
                     looser:
                       game.g_status !== 'END' ||
-                      game.g_score_a <= game.g_score_b
+                      game.g_validation !== 'O' ||
+                      game.g_score_a === 'F' ||
+                      parseInt(game.g_score_a) <= parseInt(game.g_score_b)
                   }"
                   v-html="showCode(game.t_a_label)"
                 />
@@ -127,16 +131,19 @@
                     :class="{
                       btn: true,
                       'btn-sm': true,
-                      'btn-dark': game.g_status !== 'ATT',
                       'text-nowrap': true,
                       score: true,
                       lcd: true,
                       winner:
                         game.g_status === 'END' &&
-                        game.g_score_a > game.g_score_b,
+                        game.g_validation === 'O' &&
+                        (game.g_score_b === 'F' ||
+                          parseInt(game.g_score_a) > parseInt(game.g_score_b)),
                       looser:
                         game.g_status !== 'END' ||
-                        game.g_score_a <= game.g_score_b,
+                        game.g_validation !== 'O' ||
+                        game.g_score_a === 'F' ||
+                        parseInt(game.g_score_a) <= parseInt(game.g_score_b),
                       'text-danger': game.g_validation !== 'O'
                     }"
                     >{{ game.g_score_a }}</span
@@ -146,16 +153,19 @@
                     :class="{
                       btn: true,
                       'btn-sm': true,
-                      'btn-dark': game.g_status !== 'ATT',
                       'text-nowrap': true,
                       score: true,
                       lcd: true,
                       winner:
                         game.g_status === 'END' &&
-                        game.g_score_b > game.g_score_a,
+                        game.g_validation === 'O' &&
+                        (game.g_score_a === 'F' ||
+                          parseInt(game.g_score_b) > parseInt(game.g_score_a)),
                       looser:
                         game.g_status !== 'END' ||
-                        game.g_score_b <= game.g_score_a,
+                        game.g_validation !== 'O' ||
+                        game.g_score_b === 'F' ||
+                        parseInt(game.g_score_b) <= parseInt(game.g_score_a),
                       'text-danger': game.g_validation !== 'O'
                     }"
                     >{{ game.g_score_b }}</span
@@ -207,10 +217,14 @@
                     team_name: true,
                     winner:
                       game.g_status === 'END' &&
-                      game.g_score_b > game.g_score_a,
+                      game.g_validation === 'O' &&
+                      (game.g_score_a === 'F' ||
+                        parseInt(game.g_score_b) > parseInt(game.g_score_a)),
                     looser:
                       game.g_status !== 'END' ||
-                      game.g_score_b <= game.g_score_a
+                      game.g_validation !== 'O' ||
+                      game.g_score_b === 'F' ||
+                      parseInt(game.g_score_b) <= parseInt(game.g_score_a)
                   }"
                   v-html="showCode(game.t_b_label)"
                 />

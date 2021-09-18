@@ -14,9 +14,15 @@
               'text-nowrap': true,
               team_name: true,
               winner:
-                game.g_status === 'END' && game.g_score_a > game.g_score_b,
+                game.g_status === 'END' &&
+                game.g_validation === 'O' &&
+                (game.g_score_b === 'F' ||
+                  parseInt(game.g_score_a) > parseInt(game.g_score_b)),
               looser:
-                game.g_status !== 'END' || game.g_score_a <= game.g_score_b
+                game.g_status !== 'END' ||
+                game.g_validation !== 'O' ||
+                game.g_score_a === 'F' ||
+                parseInt(game.g_score_a) <= parseInt(game.g_score_b)
             }"
             @mouseenter="teamHover"
             @mouseleave="teamOut"
@@ -33,13 +39,19 @@
               score: true,
               lcd: true,
               winner:
-                game.g_status === 'END' && game.g_score_a > game.g_score_b,
+                game.g_status === 'END' &&
+                game.g_validation === 'O' &&
+                (game.g_score_b === 'F' ||
+                  parseInt(game.g_score_a) > parseInt(game.g_score_b)),
               looser:
-                game.g_status !== 'END' || game.g_score_a <= game.g_score_b,
+                game.g_status !== 'END' ||
+                game.g_validation !== 'O' ||
+                game.g_score_a === 'F' ||
+                parseInt(game.g_score_a) <= parseInt(game.g_score_b),
               'text-danger': game.g_validation !== 'O'
             }"
           >
-            {{ game.g_score_a || "&nbsp;" }}
+            {{ game.g_score_a.replace("?", "") || "&nbsp;" }}
           </span>
           <span
             v-if="game.g_status !== 'ATT'"
@@ -50,13 +62,19 @@
               score: true,
               lcd: true,
               winner:
-                game.g_status === 'END' && game.g_score_b > game.g_score_a,
+                game.g_status === 'END' &&
+                game.g_validation === 'O' &&
+                (game.g_score_a === 'F' ||
+                  parseInt(game.g_score_b) > parseInt(game.g_score_a)),
               looser:
-                game.g_status !== 'END' || game.g_score_b <= game.g_score_a,
+                game.g_status !== 'END' ||
+                game.g_validation !== 'O' ||
+                game.g_score_b === 'F' ||
+                parseInt(game.g_score_b) <= parseInt(game.g_score_a),
               'text-danger': game.g_validation !== 'O'
             }"
           >
-            {{ game.g_score_b || "&nbsp;" }}
+            {{ game.g_score_b.replace("?", "") || "&nbsp;" }}
           </span>
         </div>
         <div class="text-start col-5">
@@ -67,9 +85,15 @@
               'text-nowrap': true,
               team_name: true,
               winner:
-                game.g_status === 'END' && game.g_score_a < game.g_score_b,
+                game.g_status === 'END' &&
+                game.g_validation === 'O' &&
+                (game.g_score_a === 'F' ||
+                  parseInt(game.g_score_b) > parseInt(game.g_score_a)),
               looser:
-                game.g_status !== 'END' || game.g_score_a >= game.g_score_b
+                game.g_status !== 'END' ||
+                game.g_validation !== 'O' ||
+                game.g_score_b === 'F' ||
+                parseInt(game.g_score_b) <= parseInt(game.g_score_a)
             }"
             @mouseenter="teamHover"
             @mouseleave="teamOut"
