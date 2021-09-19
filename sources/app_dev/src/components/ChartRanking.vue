@@ -32,6 +32,7 @@
           <td class="text-nowrap">
             <img
               class="team_logo d-none d-sm-inline me-1 img-fluid"
+              v-if="showFlags"
               :src="`${baseUrl}/img/${rank.t_logo}`"
               alt=""
             />
@@ -71,6 +72,10 @@ export default {
     chartStatus: {
       type: String,
       default: null
+    },
+    showFlags: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

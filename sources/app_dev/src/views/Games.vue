@@ -89,6 +89,10 @@
           </el-select>
 
           <div>{{ $t("Games.ShowRefs") }} <el-switch v-model="showRefs" /></div>
+          <div>
+            {{ $t("Games.ShowFlags") }}
+            <el-switch v-model="showFlags" @change="changeFav" />
+          </div>
         </div>
       </div>
     </div>
@@ -96,6 +100,7 @@
     <game-list
       :games="games"
       :show-refs="showRefs"
+      :show-flags="showFlags"
       :games-count="gamesCount"
       :filtered-games-count="filteredGamesCount"
     />
@@ -141,6 +146,7 @@ export default {
       teams: null,
       refs: null,
       showRefs: true,
+      showFlags: true,
       fav_categories: [],
       fav_teams: [],
       favTeamsSelectKey: 0,
@@ -185,6 +191,7 @@ export default {
       this.fav_categories = JSON.parse(this.prefs.fav_categories)
       this.fav_teams = JSON.parse(this.prefs.fav_teams)
       this.fav_dates = this.prefs.fav_dates
+      this.showFlags = this.prefs.show_flags
       this.filterGames()
     },
     async changeFav () {
@@ -193,7 +200,8 @@ export default {
         data: {
           fav_categories: JSON.stringify(this.fav_categories),
           fav_teams: JSON.stringify(this.fav_teams),
-          fav_dates: this.fav_dates
+          fav_dates: this.fav_dates,
+          show_flags: this.showFlags
         }
       })
       idbs.dbPut('preferences', Preferences.find(1))

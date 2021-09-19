@@ -11,6 +11,7 @@
         <chart-ranking
           :chart-ranking="category.ranking"
           :chart-status="category.status"
+          :show-flags="showFlags"
         />
       </div>
       <div v-else>
@@ -63,6 +64,10 @@ export default {
     chartData: {
       type: Object,
       default: null
+    },
+    showFlags: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {

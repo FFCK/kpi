@@ -1,9 +1,9 @@
 /* eslint-disable */
-const version = '1.0.1'
+const version = '1.1.0'
 importScripts('../third_party/workbox-v6.1.5/workbox-sw.js')
 workbox.setConfig({
   modulePathPrefix: '../third_party/workbox-v6.1.5',
-  debug: true // Dev / Prod !!
+  debug: false // Dev / Prod !!
 })
 
 workbox.core.setCacheNameDetails({ prefix: 'kpi_cache' })
