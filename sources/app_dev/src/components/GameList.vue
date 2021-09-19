@@ -112,6 +112,7 @@
                 />
                 <img
                   class="team_logo d-none d-sm-inline ms-1 mt-n1"
+                  v-if="showFlags"
                   :src="`${baseUrl}/img/${game.t_a_logo}`"
                   alt=""
                 />
@@ -205,6 +206,7 @@
               <div class="text-nowrap">
                 <img
                   class="team_logo d-none d-sm-inline me-1 mt-n1"
+                  v-if="showFlags"
                   :src="`${baseUrl}/img/${game.t_b_logo}`"
                   alt=""
                 />
@@ -264,6 +266,10 @@ export default {
       type: Boolean,
       default: true
     },
+    showFlags: {
+      type: Boolean,
+      default: true
+    },
     filteredGamesCount: {
       type: Number,
       default: 0
@@ -302,10 +308,6 @@ export default {
 
 .winner {
   font-weight: bold;
-}
-
-.team_logo {
-  width: 30px;
 }
 
 .mincontent {

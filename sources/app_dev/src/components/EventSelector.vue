@@ -130,8 +130,8 @@ export default {
             fav_categories: '[]',
             fav_teams: '[]',
             fav_refs: '[]',
-            fav_dates: ''
-
+            fav_dates: '',
+            fav_flags: true
           }
         })
         idbs.dbPut('preferences', Preferences.find(1))
