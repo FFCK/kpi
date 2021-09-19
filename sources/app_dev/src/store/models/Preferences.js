@@ -16,7 +16,8 @@ export default class Preferences extends Model {
       pitch: this.string(''),
       fav_categories: this.string('[]'),
       fav_teams: this.string('[]'),
-      fav_dates: this.string('')
+      fav_dates: this.string(''),
+      show_flags: this.boolean(true)
     }
   }
 }

@@ -12,7 +12,7 @@
       />
     </div>
 
-    <charts :key="chartIndex" :chart-data="chartData" />
+    <charts :key="chartIndex" :chart-data="chartData" :show-flags="showFlags" />
 
     <el-backtop />
   </div>
@@ -43,7 +43,8 @@ export default {
       chartData: null,
       chartIndex: 0,
       status: {},
-      visibleButton: true
+      visibleButton: true,
+      showFlags: true
     }
   },
   mounted () {
@@ -53,6 +54,7 @@ export default {
     async loadCharts () {
       await this.getPrefs()
       await this.prefs
+      this.showFlags = this.prefs.show_flags
       this.status = await Status.find(1)
       await idbs.dbGetAll('charts')
         .then(result => {

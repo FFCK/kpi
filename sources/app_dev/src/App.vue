@@ -106,6 +106,6 @@ export default {
 }
 
 .team_logo {
-  width: 30px;
+  width: 28px;
 }
 </style>
