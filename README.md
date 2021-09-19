@@ -59,8 +59,6 @@ UID=${UID} GID=${GID} docker-compose up
 
 docker exec --user $UID -it docker_node_1 sh
 
-cd kpi_app
-
 npm install
 
 ### DEV
@@ -73,4 +71,7 @@ http://0.0.0.0:8000
 
 ### PROD
 npm run build
-http://localhost:8087/kpi_app/dist/#/
+
+vider le dossier /app puis déplacer le contenu de /app_dev/dist dans /app et uploader
+
+http://localhost:8087/app/
