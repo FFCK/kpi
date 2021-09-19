@@ -1,7 +1,6 @@
 import api from '@/network/api'
 
-// const force = '/force'
-const force = ''
+const force = process.env.NODE_ENV === 'development' ? '/force' : ''
 
 export default {
   getEvents () {

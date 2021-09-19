@@ -101,8 +101,19 @@
     }
   },
   "Charts": {
+    "Ranking": "#",
+    "Team": "Equipe",
     "Pts": "Pts",
-    "Pld": "J"
+    "Pld": "J",
+    "W": "G",
+    "D": "N",
+    "L": "P",
+    "F": "F",
+    "GF": "+",
+    "GA": "-",
+    "GD": "+/-",
+    "FinalRanking": "Classement final",
+    "ProvisionalRanking": "Classement provisoire"
   },
   "About": {
     "DoYouLike": "Cette application vous plait ?",
