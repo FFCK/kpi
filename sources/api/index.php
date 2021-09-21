@@ -37,6 +37,10 @@ if ($path[0] === 'staff') {
 			methods(['GET']);
 			EventsController($path);
 			break;
+		case 'event':
+			methods(['GET']);
+			EventController($path);
+			break;
 		case 'games':
 			methods(['GET']);
 			GamesController($path);

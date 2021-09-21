@@ -20,9 +20,35 @@ function EventsController($route)
     WHERE app = 'O'
     ORDER BY Id DESC ";
   $result = $myBdd->pdo->query($sql);
-  $array = $result->fetchAll();
+  $array = $result->fetchAll(PDO::FETCH_ASSOC);
 
   json_cache_write('events', 0, $array);
+
+  return_200($array);
+}
+
+function EventController($route)
+{
+  $event_id = $route[1] ?? return_405();
+  $force = $route[2] ?? false;
+  $array = ($force !== 'force') ? json_cache_read('event', $event_id, 10) : false;
+  if ($array) {
+    return_200($array);
+  }
+
+  $myBdd = new MyBdd();
+  $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
+    FROM kp_evenement
+    WHERE app = 'O'
+    AND Id = ?
+    ORDER BY Id DESC ";
+  $result = $myBdd->pdo->prepare($sql);
+  $result->execute([$event_id]);
+  $array = $result->fetchAll(PDO::FETCH_ASSOC);
+
+  if (count($array) > 0) {
+    json_cache_write('event', $event_id, $array);
+  }
 
   return_200($array);
 }
