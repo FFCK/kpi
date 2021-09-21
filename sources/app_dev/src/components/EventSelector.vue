@@ -137,6 +137,7 @@ export default {
         idbs.dbPut('preferences', Preferences.find(1))
         Games.deleteAll()
         idbs.dbClear('games')
+        idbs.dbClear('charts')
         this.showSelector = false
         this.changeButton = false
       }
