@@ -8,7 +8,7 @@
         class="container-fluid"
         v-if="category.type === 'CHPT' && category.status !== 'ATT'"
       >
-        <chart-ranking
+        <chart-chpt-ranking
           :chart-ranking="category.ranking"
           :chart-status="category.status"
           :show-flags="showFlags"
@@ -16,6 +16,16 @@
       </div>
       <div v-else>
         <div class="container-fluid flex">
+          <div
+            class="container"
+            v-if="category.type === 'CP' && category.status === 'END'"
+          >
+            <chart-cp-ranking
+              :chart-ranking="category.ranking"
+              :chart-status="category.status"
+              :show-flags="showFlags"
+            />
+          </div>
           <div class="row">
             <article
               v-for="(round, index) in category.rounds"
@@ -51,13 +61,15 @@
 import { gamesDisplayMixin } from '@/mixins/mixins'
 import ChartGroup from './ChartGroup.vue'
 import ChartGame from './ChartGame.vue'
-import ChartRanking from './ChartRanking.vue'
+import ChartChptRanking from './ChartChptRanking.vue'
+import ChartCpRanking from './ChartCpRanking.vue'
 export default {
   name: 'Charts',
   components: {
     ChartGroup,
     ChartGame,
-    ChartRanking
+    ChartChptRanking,
+    ChartCpRanking
   },
   mixins: [gamesDisplayMixin],
   props: {
