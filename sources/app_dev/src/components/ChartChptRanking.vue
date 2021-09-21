@@ -1,9 +1,9 @@
 <template>
-  <div class="my-1">
-    <div v-if="chartStatus === 'END'" class="badge bg-success text-light">
+  <div class="my-1 bg-light">
+    <div v-if="chartStatus === 'END'" class="badge bg-success text-light ms-1">
       {{ $t("Charts.FinalRanking") }}
     </div>
-    <div v-else class="badge bg-warning text-dark">
+    <div v-else class="badge bg-warning text-dark ms-1">
       {{ $t("Charts.ProvisionalRanking") }}
     </div>
     <table class="table table-sm table-responsive table-striped">
@@ -62,7 +62,7 @@
 <script>
 import { gamesDisplayMixin } from '@/mixins/mixins'
 export default {
-  name: 'ChartRanking',
+  name: 'ChartChptRanking',
   mixins: [gamesDisplayMixin],
   props: {
     chartRanking: {
