@@ -145,7 +145,7 @@ function ChartsController($route)
     }
   }
 
-  $sql = "SELECT j.Code_saison c_season, j.Code_competition c_code, c.Code_typeclt c_type,
+  $sql = "SELECT j.Code_saison c_season, j.Code_competition c_code, c.Code_typeclt c_type, c.GroupOrder c_order,
     c.Soustitre2 c_category, c.Statut c_status,
     ej.Id_journee d_id, j.Phase d_phase, j.Etape d_round, j.Nbequipes t_count,
     j.Niveau d_level, j.Type d_type, j.Date_debut d_start, j.Date_fin d_end,
@@ -161,7 +161,7 @@ function ChartsController($route)
     LEFT OUTER JOIN kp_competition_equipe_journee cej ON cej.Id_journee = j.Id
     LEFT OUTER JOIN kp_competition_equipe ce ON ce.Id = cej.Id
     WHERE ej.Id_evenement = ? 
-    ORDER BY c_season, c_code, d_round, d_level DESC, d_phase, d_start DESC, 
+    ORDER BY c_season, c_order, c_code, d_round, d_level DESC, d_phase, d_start DESC, 
     t_clt ASC, t_diff DESC, t_plus ASC ";
   $result = $myBdd->pdo->prepare($sql);
   $result->execute(array($event));
@@ -173,8 +173,14 @@ function ChartsController($route)
     $charts[$row['c_code']]['libelle'] = $row['c_category'];
     $charts[$row['c_code']]['status'] = $row['c_status'];
     $charts[$row['c_code']]['season'] = $row['c_season'];
-    if ($row['c_type'] === 'CHPT' && $row['c_status'] !== 'ATT') {
-      $array_chpt[$row['c_code']] = [$row['c_code'], $row['c_season']];
+    if (($row['c_type'] === 'CHPT' && $row['c_status'] !== 'ATT')
+      || ($row['c_type'] === 'CP' && $row['c_status'] === 'END')
+    ) {
+      $array_chpt[$row['c_code']] = [
+        'code' => $row['c_code'],
+        'season' => $row['c_season'],
+        'type' => $row['c_type']
+      ];
     }
     $charts[$row['c_code']]['rounds'][$row['d_round']]['type'] = $row['d_type'];
     $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['teams'][] = $row;
@@ -186,19 +192,30 @@ function ChartsController($route)
   }
 
   foreach ($array_chpt as $compet) {
-    $sql2 = "SELECT ce.Id t_id, ce.Numero t_number, ce.Libelle t_label, ce.Code_club t_club,
-      ce.Clt_publi t_clt, ROUND(ce.Pts_publi / 100, 0) t_pts, ce.J_publi t_pld, ce.G_publi t_won,
-      ce.N_publi t_draw, ce.P_publi t_lost, ce.F_publi t_f, ce.Plus_publi t_plus, ce.Moins_publi t_minus, 
-      ce.Diff_publi t_diff,
-      CASE WHEN ce.logo IS NULL THEN 'KIP/logo/empty-logo.png' ELSE ce.logo END t_logo
-      FROM kp_competition_equipe ce
-      WHERE ce.Code_compet = ? 
-      AND ce.Code_saison = ? 
-      AND Clt_publi > 0 
-      ORDER BY Clt_publi ASC, Diff_publi DESC ";
+    if ($compet['type'] === 'CHPT') {
+      $sql2 = "SELECT ce.Id t_id, ce.Numero t_number, ce.Libelle t_label, ce.Code_club t_club,
+        ce.Clt_publi t_clt, ROUND(ce.Pts_publi / 100, 0) t_pts, ce.J_publi t_pld, ce.G_publi t_won,
+        ce.N_publi t_draw, ce.P_publi t_lost, ce.F_publi t_f, ce.Plus_publi t_plus, ce.Moins_publi t_minus, 
+        ce.Diff_publi t_diff, ce.CltNiveau_publi t_clt_cp,
+        CASE WHEN ce.logo IS NULL THEN 'KIP/logo/empty-logo.png' ELSE ce.logo END t_logo
+        FROM kp_competition_equipe ce
+        WHERE ce.Code_compet = ? 
+        AND ce.Code_saison = ? 
+        AND Clt_publi > 0 
+        ORDER BY Clt_publi ASC, Diff_publi DESC ";
+    } else {
+      $sql2 = "SELECT ce.Id t_id, ce.Numero t_number, ce.Libelle t_label, ce.Code_club t_club,
+        ce.CltNiveau_publi t_clt_cp,
+        CASE WHEN ce.logo IS NULL THEN 'KIP/logo/empty-logo.png' ELSE ce.logo END t_logo
+        FROM kp_competition_equipe ce
+        WHERE ce.Code_compet = ? 
+        AND ce.Code_saison = ? 
+        AND Clt_publi > 0 
+        ORDER BY CltNiveau_publi ASC ";
+    }
     $result2 = $myBdd->pdo->prepare($sql2);
-    $result2->execute($compet);
-    $charts[$compet[0]]['ranking'] = $result2->fetchAll(PDO::FETCH_ASSOC);
+    $result2->execute([$compet['code'], $compet['season']]);
+    $charts[$compet['code']]['ranking'] = $result2->fetchAll(PDO::FETCH_ASSOC);
   }
 
   $charts = array_values($charts);
