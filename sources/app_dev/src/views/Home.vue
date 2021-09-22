@@ -52,8 +52,9 @@
     <div class="my-3 text-center">
       <img alt="Vue logo" src="../assets/logo.png" width="100" height="100" />
     </div>
-    <div class="text-center my-3">
-      <span class="btn btn-secondary">{{ version }}</span>
+    <div class="text-center my-3" @click="changePage('About')">
+      <span class="btn btn-secondary me-1">{{ version }}</span>
+      <i class="star bi bi-star" :title="$t('Rating.RateThisApp')"></i>
     </div>
   </div>
 </template>
@@ -87,3 +88,16 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.star {
+  display: inline-block;
+  font-size: 25px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  color: #6c757d;
+  &:hover {
+    color: #ffe100;
+  }
+}
+</style>

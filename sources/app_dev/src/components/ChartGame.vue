@@ -122,7 +122,6 @@ export default {
     this.chartGames.map(game => {
       game.t_a_label ??= this.gameEncode(game.g_code, 1)
       game.t_b_label ??= this.gameEncode(game.g_code, 2)
-      // console.log(game.g_status, game.t_a_label, game.g_score_a, game.g_score_b, game.t_b_label)
       return game
     })
     this.games = this.chartGames

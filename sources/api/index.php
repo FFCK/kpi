@@ -49,6 +49,10 @@ if ($path[0] === 'staff') {
 			methods(['GET']);
 			ChartsController($path);
 			break;
+		case 'stars':
+			methods(['POST']);
+			StarsController($path);
+			break;
 		default:
 			return_404();
 			exit;
