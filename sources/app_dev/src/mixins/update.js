@@ -18,7 +18,6 @@ export default {
   },
   methods: {
     updateAvailable (event) {
-      console.log(event)
       this.registration = event.detail
       this.updateExists = true
     },
