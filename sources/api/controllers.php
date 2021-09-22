@@ -224,3 +224,20 @@ function ChartsController($route)
 
   return_200($charts);
 }
+
+function StarsController($route)
+{
+  $data = json_decode(file_get_contents('php://input'));
+
+  if (strlen($data->uid) !== 36 || $data->stars < 0 || $data->stars > 5) {
+    return_405();
+  }
+
+  $myBdd = new MyBdd();
+  $sql = "INSERT INTO kp_app_rating (`uid`, `stars`)
+    VALUES (?, ?) ";
+  $result = $myBdd->pdo->prepare($sql);
+  $result->execute([$data->uid, $data->stars]);
+
+  return_200(true);
+}

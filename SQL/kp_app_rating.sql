@@ -1,0 +1,7 @@
+CREATE TABLE `kp_app_rating` ( 
+  `id` INT NOT NULL AUTO_INCREMENT , 
+  `rating_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
+  `uid` VARCHAR(36) NOT NULL , 
+  `stars` TINYINT NOT NULL , 
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4;

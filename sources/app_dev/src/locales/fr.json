@@ -119,8 +119,13 @@
   "About": {
     "DoYouLike": "Cette application vous plait ?",
     "IDevelopIt": "Je la développe sur mon temps libre.",
-    "FeedbackOnTwitter": "Vous pouvez donner vos retours sur",
-    "SupportMeOnUtip": "Vous pouvez également m'encourager à continuer et me soutenir sur"
+    "Rating": "Vous pouvez évaluer cette application :",
+    "FeedbackOnTwitter": "Vous pouvez aussi donner vos retours sur",
+    "SupportMeOnUtip": "Et m'encourager à continuer en me soutenant sur"
+  },
+  "Rating": {
+    "RateThisApp": "Noter cette application...",
+    "Thanks": "Merci !"
   },
   "Update": {
     "Message": "Une mise à jour est disponible",
