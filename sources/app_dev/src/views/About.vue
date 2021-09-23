@@ -75,7 +75,7 @@ export default {
   },
   data () {
     return {
-      stars: 2,
+      stars: 0,
       thanks: false,
       key: 0,
       status: {}
@@ -84,16 +84,16 @@ export default {
 
   methods: {
     async rated (stars) {
-      this.status = await Status.find(1)
+      this.thanks = true
       this.stars = stars
+      this.key++
+      this.status = await Status.find(1)
       if (!this.status.online) {
         console.log('Offline process...')
       } else {
         await publicApi.postRating(this.prefs.uid, this.stars)
           .then(async result => {
             if (result.data === true) {
-              this.thanks = true
-              this.key++
               await Preferences.update({
                 where: 1,
                 data: {
