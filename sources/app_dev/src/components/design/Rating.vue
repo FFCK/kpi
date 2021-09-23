@@ -52,14 +52,10 @@ export default {
   methods: {
     rate (star) {
       if (!this.thanks && typeof star === 'number' && star <= this.maxStars && star >= 0) {
-        this.stars = this.stars === star ? star - 1 : star
+        this.stars = star
         this.$emit('rated', this.stars)
-        this.readOnly = true
       }
     }
-  },
-  mounted () {
-    this.stars = this.grade
   }
 }
 </script>
