@@ -1,5 +1,5 @@
 /* eslint-disable */
-const version = '1.4.0'
+const version = '1.4.2'
 importScripts('../third_party/workbox-v6.1.5/workbox-sw.js')
 workbox.setConfig({
   modulePathPrefix: '../third_party/workbox-v6.1.5',
@@ -31,30 +31,30 @@ const broadcast = async (message) => {
   }
 }
 
-// Création de la file d'attente
-const queue = new workbox.backgroundSync.Queue('ApiQueue')
-
-self.addEventListener('fetch', (event) => {
-  // Clone la requête pour être sûr de la lire lors de l'ajout à la file d'attente.
-  const promiseChain = fetch(event.request.clone()).catch((err) => {
-    // Absence de connectivité
-    broadcast('OFFLINE')
-    return queue.pushRequest({ request: event.request })
-  })
-
-  event.waitUntil(promiseChain)
-})
-
-self.addEventListener('sync', () => {
-  // Retour de la connectivité
-  broadcast('ONLINE')
-})
-
 // No cache for api routes
 workbox.routing.registerRoute(
   ({ url }) => url.pathname.startsWith('/api/'),
   new workbox.strategies.NetworkOnly()
 )
+
+// Création de la file d'attente
+// const queue = new workbox.backgroundSync.Queue('ApiQueue')
+
+// self.addEventListener('fetch', (event) => {
+//   // Clone la requête pour être sûr de la lire lors de l'ajout à la file d'attente.
+//   const promiseChain = fetch(event.request.clone()).catch((err) => {
+//     // Absence de connectivité
+//     broadcast('OFFLINE')
+//     return queue.pushRequest({ request: event.request })
+//   })
+
+//   event.waitUntil(promiseChain)
+// })
+
+self.addEventListener('sync', () => {
+  // Retour de la connectivité
+  broadcast('ONLINE')
+})
 
 
 // const navigationHandler = async (params) => {
