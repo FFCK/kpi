@@ -2,7 +2,7 @@
   <div>
     <title-component text="KPI APPLICATION" />
 
-    <event-selector />
+    <event-selector @changeEvent="checkAuthorized" />
 
     <div v-if="prefs">
       <XyzTransitionGroup
@@ -28,24 +28,12 @@
       </XyzTransitionGroup>
     </div>
 
-    <div v-if="user" class="row justify-content-around my-5">
+    <div v-if="user && authorized" class="row container my-5">
       <button
-        class="btn btn-outline-dark btn-lg col-3"
-        @click="changePage('GameReport')"
+        class="btn btn-outline-dark btn-lg col-12"
+        @click="changePage('Login')"
       >
-        {{ $t("nav.GameReport") }}
-      </button>
-      <button
-        class="btn btn-outline-dark btn-lg col-3"
-        @click="changePage('StatReport')"
-      >
-        {{ $t("nav.StatReport") }}
-      </button>
-      <button
-        class="btn btn-outline-dark btn-lg col-3"
-        @click="changePage('Scrutineering')"
-      >
-        {{ $t("nav.Scrutineering") }}
+        {{ $t("nav.StaffJobs") }}
       </button>
     </div>
 
@@ -70,12 +58,12 @@ export default {
     TitleComponent,
     EventSelector
   },
+  mixins: [logoutMixin, prefsMixin, userMixin],
   computed: {
     version () {
       return 'v' + process.env.VUE_APP_VERSION
     }
   },
-  mixins: [logoutMixin, prefsMixin, userMixin],
   data () {
     return {
       content: ''
@@ -85,6 +73,9 @@ export default {
     changePage (pageName) {
       this.$router.push({ name: pageName })
     }
+  },
+  mounted () {
+    this.checkAuthorized()
   }
 }
 </script>

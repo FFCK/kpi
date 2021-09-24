@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { prefsMixin } from '@/mixins/mixins'
+import { prefsMixin, userMixin } from '@/mixins/mixins'
 import idbs from '@/services/idbStorage'
 import publicApi from '@/network/publicApi'
 import Events from '@/store/models/Events'
@@ -74,7 +74,7 @@ import Status from '@/store/models/Status'
 
 export default {
   name: 'EventSelector',
-  mixins: [prefsMixin],
+  mixins: [prefsMixin, userMixin],
   data () {
     return {
       baseUrl: process.env.VUE_APP_BASE_URL,
@@ -140,6 +140,7 @@ export default {
         idbs.dbClear('charts')
         this.showSelector = false
         this.changeButton = false
+        this.$emit('changeEvent')
       }
     },
     cancelEvent () {
