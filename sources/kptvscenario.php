@@ -5,19 +5,19 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 // Scenario
-	
-class Scenario extends MyPageSecure	 
-{	
-	function Load()
-	{
-		$myBdd = new MyBdd();
-		
-		$scenario = utyGetSession('scenario', 100);
-		$scenario = utyGetGet('scenario', $scenario);
+
+class Scenario extends MyPageSecure
+{
+    function Load()
+    {
+        $myBdd = new MyBdd();
+
+        $scenario = utyGetSession('scenario', 100);
+        $scenario = utyGetGet('scenario', $scenario);
         $_SESSION['scenario'] = $scenario;
         $this->m_tpl->assign('scenario', $scenario);
 
-		// Matchs
+        // Matchs
         $sql  = "SELECT * 
             FROM kp_tv 
             WHERE Voie > :scenario 
@@ -31,14 +31,14 @@ class Scenario extends MyPageSecure
             $arrayScenes[] = $row;
         }
         $this->m_tpl->assign('arrayScenes', $arrayScenes);
-	}
-	
-	function Update()
-	{
+    }
+
+    function Update()
+    {
         $myBdd = new MyBdd();
-        
-		for ($i = 1; $i < 10; $i++) {
-            $Url = utyGetPost('Url-' . $i, '');
+
+        for ($i = 1; $i < 10; $i++) {
+            $Url = $_POST['Url-' . $i];
             $intervalle = utyGetPost('intervalle-' . $i, '');
             $Voie = utyGetPost('Voie-' . $i, '');
 
@@ -53,30 +53,28 @@ class Scenario extends MyPageSecure
                 ':Voie' => $Voie
             ));
         }
-		return "Scenario " . utyGetPost('scenario', 'Unknown') . " updated";	
-	}    
+        return "Scenario " . utyGetPost('scenario', 'Unknown') . " updated";
+    }
 
-	// Scenario 		
-	function __construct()
+    // Scenario 		
+    function __construct()
     {
-        MyPageSecure::MyPageSecure(1);
-		
-        if (utyGetPost('update', false) == 'Update')
-		{
-			($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-								
-			if ($alertMessage == '')
-			{
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
-				exit;
-			}
-		}
+        MyPageSecure::MyPageSecure(2);
+
+        if (utyGetPost('update', false) == 'Update') {
+            ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+            if ($alertMessage == '') {
+                header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+                exit;
+            }
+        }
 
         $this->SetTemplate("KPI Scenario control", "Matchs", true);
-		$this->Load();
-		$this->m_tpl->assign('AlertMessage', $alertMessage);
-		$this->DisplayTemplateNewWide('kptvscenario');
-	}
-}		  	
+        $this->Load();
+        $this->m_tpl->assign('AlertMessage', $alertMessage);
+        $this->DisplayTemplateNewWide('kptvscenario');
+    }
+}
 
 $page = new Scenario();
