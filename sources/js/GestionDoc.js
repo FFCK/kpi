@@ -1,22 +1,22 @@
-jq = jQuery.noConflict();
+jq = jQuery.noConflict()
 
-jq(document).ready(function() {
+jq(document).ready(function () {
 	jq("*").tooltip({
 		showURL: false
-	});
-    
-    jq('#evenement').change(function(){
-		theTarget = jq(this).val();
-		Saison = jq('#laSaison').val();
-		jq('#linkEvt1').attr('href','FeuilleListeMatchs.php?idEvenement=' + theTarget);
-		jq('#linkEvt2').attr('href','../PdfListeMatchs.php?idEvenement=' + theTarget);
-		jq('#linkEvt3').attr('href','FeuilleListeMatchsEN.php?idEvenement=' + theTarget);
-		jq('#linkEvt4').attr('href','../PdfListeMatchsEN.php?idEvenement=' + theTarget);
-		jq('#linkEvt5').attr('href','../PdfQrCodes.php?Evt=' + theTarget + '&S=' + Saison);
-		jq('#linkEvt6').attr('href','../PdfQrCodes.php?idEvt=' + theTarget + '&saison=' + Saison);
-	});
-	
+	})
 
-});
+	jq('#evenement').change(function () {
+		theTarget = jq(this).val()
+		Saison = jq('#laSaison').val()
+		jq('#linkEvt1').attr('href', 'FeuilleListeMatchs.php?idEvenement=' + theTarget)
+		jq('#linkEvt2').attr('href', '../PdfListeMatchs.php?idEvenement=' + theTarget)
+		jq('#linkEvt3').attr('href', 'FeuilleListeMatchsEN.php?idEvenement=' + theTarget)
+		jq('#linkEvt4').attr('href', '../PdfListeMatchsEN.php?idEvenement=' + theTarget)
+		jq('#linkEvt5').attr('href', '../PdfQrCodes.php?Evt=' + theTarget + '&S=' + Saison)
+		jq('#linkEvt6').attr('href', '../PdfQrCodeApp.php?Evt=' + theTarget)
+	})
+
+
+})
 
 
