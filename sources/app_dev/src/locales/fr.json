@@ -4,7 +4,7 @@
     "Home": "Accueil",
     "Login": "Connexion",
     "MyAccount": "Mon compte",
-    "Staff": "Staff",
+    "Staff": "Organisation",
     "Games": "Matchs",
     "Ranking": "Classement",
     "Chart": "Progression",
@@ -18,7 +18,9 @@
     "CommingSoon": "Prochainement...",
     "CommingSoonDescription": "Soyez patient !",
     "About": "A propos",
-    "Filters": "Filtres"
+    "Filters": "Filtres",
+    "ChangeEvent": "Changez d'événement SVP",
+    "StaffJobs": "Missions organisation"
   },
   "AddToHomeScreen": {
     "message": "Ajouter au bureau / à l'écran d'accueil.",

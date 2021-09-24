@@ -5,36 +5,45 @@
         <span class="btn btn-secondary"
           >{{ user.firstname }} {{ user.name }}</span
         >
-
+        <br />
         <button
-          class="btn btn-sm btn-btn-warning"
+          class="btn btn-sm btn-warning mt-1"
           :title="$t('Login.Logout')"
           @click="logOut"
         >
-          <span class="bi bi-box-arrow-right" />
+          {{ $t("Login.Logout") }} <span class="bi bi-box-arrow-right" />
         </button>
       </div>
+    </div>
 
-      <div class="row justify-content-around my-5">
+    <div v-if="user && authorized">
+      <div class="row container my-5">
         <button
-          class="btn btn-outline-dark btn-lg col-3"
+          class="btn btn-outline-dark btn-lg col-12 my-1"
+          @click="changePage('Scrutineering')"
+        >
+          {{ $t("nav.Scrutineering") }}
+        </button>
+        <button
+          class="btn btn-outline-dark btn-lg col-12 my-1"
           @click="changePage('GameReport')"
         >
           {{ $t("nav.GameReport") }}
         </button>
         <button
-          class="btn btn-outline-dark btn-lg col-3"
+          class="btn btn-outline-dark btn-lg col-12 my-1"
           @click="changePage('StatReport')"
         >
           {{ $t("nav.StatReport") }}
         </button>
-        <button
-          class="btn btn-outline-dark btn-lg col-3"
-          @click="changePage('Scrutineering')"
-        >
-          {{ $t("nav.Scrutineering") }}
-        </button>
       </div>
+    </div>
+
+    <div v-if="user && !authorized" class="text-center">
+      <button class="btn btn-outline-dark btn-lg" @click="changePage('Home')">
+        <span class="bi bi-box-arrow-left" />
+        {{ $t("nav.ChangeEvent") }}
+      </button>
     </div>
 
     <div
@@ -88,12 +97,12 @@
 import privateApi from '@/network/privateApi'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
-import { logoutMixin } from '@/mixins/mixins'
+import { prefsMixin, userMixin, logoutMixin } from '@/mixins/mixins'
 import Status from '@/store/models/Status'
 
 export default {
   name: 'Login',
-  mixins: [logoutMixin],
+  mixins: [prefsMixin, userMixin, logoutMixin],
   data () {
     return {
       input: {
@@ -111,6 +120,9 @@ export default {
   },
   created () {
     this.getUser()
+  },
+  mounted () {
+    this.checkAuthorized()
   },
   methods: {
     async getUser () {
@@ -132,6 +144,7 @@ export default {
         }
       } else {
         // User déjà présent dans le store
+        this.authorized = true
       }
     },
     async formSubmit () {
@@ -160,6 +173,7 @@ export default {
               date.setTime(date.getTime() + (10 * 24 * 60 * 60 * 1000))
               const expires = 'expires=' + date.toUTCString()
               document.cookie = 'kpi_app=' + response.data.user.token + '; ' + expires + '; path=/'
+              this.checkAuthorized()
             }).catch((error) => {
               // Erreur dans la réponse ?
               if (error.response) {

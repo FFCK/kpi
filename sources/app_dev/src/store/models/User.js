@@ -9,6 +9,7 @@ export default class User extends Model {
       name: this.string(''),
       firstname: this.string(''),
       profile: this.number(''),
+      events: this.string(''),
       token: this.string('')
     }
   }

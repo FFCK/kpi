@@ -61,6 +61,11 @@ const userMixin = {
       return User.query().first()
     }
   },
+  data () {
+    return {
+      authorized: false
+    }
+  },
   methods: {
     async getUser () {
       if (User.query().count() === 0) {
@@ -70,6 +75,15 @@ const userMixin = {
             data: result
           })
         }
+      }
+    },
+    async checkAuthorized () {
+      await this.getUser()
+      if (this.user) {
+        const userEvents = this.user.events.split('|').map(e => { return parseInt(e) })
+        this.authorized = userEvents.includes(this.prefs.event)
+      } else {
+        this.authorized = false
       }
     }
   },
