@@ -65,10 +65,10 @@
                   }"
                   v-html="
                     showCode(
-                      game.g_score_a === 'F' ||
-                        parseInt(game.g_score_b) >= parseInt(game.g_score_a)
-                        ? game.t_a_label
-                        : game.t_b_label
+                      game.g_score_a !== 'F' &&
+                        parseInt(game.g_score_a) >= parseInt(game.g_score_b)
+                        ? game.t_b_label
+                        : game.t_a_label
                     )
                   "
                   @mouseenter="teamHover"
