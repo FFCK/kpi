@@ -113,7 +113,7 @@
   		              <td><a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a>
   		              </td>
   		            </tr>
-  		            {if $user == '42054'}
+  		            {if $profile <= 2}
     		            <tr>
     		              <th>&nbsp;</th>
     		              <th><i>{#CP_type#}</i></th>
@@ -170,7 +170,7 @@
   		              <td><a href="../PdfCltNiveauDetail.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a>
   		              </td>
   		            </tr>
-  		            {if $user == '42054'}
+  		            {if $profile <= 2}
     		            <tr>
     		              <th>&nbsp;</th>
     		              <th><i>{#CHPT_type#}</i></th>
@@ -212,7 +212,7 @@
 										<td></td>
 									</tr>*}
 		            {/if}
-		            {if $user == '42054'}
+		            {if $profile <= 2}
   		            <thead>
   		              <tr>
   		                <th>&nbsp;</th>
@@ -257,12 +257,13 @@
   		                    src="../img/pdf.png" /></a></td>
   		              <td></td>
   		            </tr>
-  		            {*<tr class='{cycle values="impair,pair"}'>
-											<td>Live</td>
-											<td>En direct des terrains</td>
-											<td><a id="linkEvt6" href="../DirectPitchs.php" Target="_blank"><img height="22" src="../img/web.png" /></a></td>
-											<td></td>
-										</tr>*}
+  		            <tr class='{cycle values="impair,pair"}'>
+  		              <td>{#Liens#}</td>
+  		              <td>{#ApplicationLink#}</td>
+  		              <td><a id="linkEvt6" href="../PdfQrCodes.php?" Target="_blank"><img height="22"
+  		                    src="../img/pdf.png" /></a></td>
+  		              <td></td>
+  		            </tr>
 		            {/if}
 		            <thead>
 		              <tr>
@@ -464,8 +465,8 @@
 		          </td>
 		          <td align='center'>
 		            {if $detailsCompet.Verrou == 'O'}<img width="15" height="15" src="../img/verrou2O.gif" />
-		            {else}<img
-		              width="15" height="15" src="../img/verrou2N.gif" />{/if}
+		            {else}<img width="15" height="15" src="../img/verrou2N.gif" />
+		            {/if}
 		          </td>
 		        </tr>
 		        <tr>
