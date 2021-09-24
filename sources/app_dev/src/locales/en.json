@@ -4,7 +4,7 @@
     "Home": "Home",
     "Login": "Login",
     "MyAccount": "My account",
-    "Staff": "Staff",
+    "Staff": "Organization",
     "Games": "Games",
     "Ranking": "Ranking",
     "Chart": "Chart",
@@ -18,7 +18,9 @@
     "CommingSoon": "Comming soon...",
     "CommingSoonDescription": "Be patient!",
     "About": "About",
-    "Filters": "Filters"
+    "Filters": "Filters",
+    "ChangeEvent": "Please change event",
+    "StaffJobs": "Organization task"
   },
   "AddToHomeScreen": {
     "message": "Add to desktop/home screen.",

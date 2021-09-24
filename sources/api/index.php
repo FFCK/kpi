@@ -2,6 +2,7 @@
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 include_once('headers.php');
+include_once('authentication.php');
 include_once('controllers.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
