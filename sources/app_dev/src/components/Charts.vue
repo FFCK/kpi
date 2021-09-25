@@ -40,9 +40,12 @@
                 <h6 class="text-center">{{ phase.libelle }}</h6>
                 <chart-group
                   v-if="category.type === 'CP' && phase.type === 'C'"
+                  :chart-round="index"
+                  :chart-team-list="category.ranking"
                   :chart-teams="phase.teams"
                   :chart-team-count="+phase.t_count"
                   :chart-games="phase.games"
+                  :chart-group="phase.libelle"
                 />
                 <chart-game
                   v-if="category.type === 'CP' && phase.type === 'E'"
