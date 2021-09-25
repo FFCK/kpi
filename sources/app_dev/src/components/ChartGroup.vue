@@ -58,10 +58,23 @@
 
 <script>
 import { gamesMixin, gamesDisplayMixin } from '@/mixins/mixins'
+
 export default {
   name: 'ChartGroup',
   mixins: [gamesMixin, gamesDisplayMixin],
   props: {
+    chartRound: {
+      type: String,
+      default: null
+    },
+    chartGroup: {
+      type: String,
+      default: null
+    },
+    chartTeamList: {
+      type: Object,
+      default: null
+    },
     chartTeams: {
       type: Object,
       default: null
@@ -87,11 +100,25 @@ export default {
   methods: {
     checkRealTeams () {
       if (this.chartTeams.length < this.chartTeamCount) {
-        const teams = []
-        this.chartGames.forEach(element => {
-          teams.push(this.gameEncode(element, 1))
-          teams.push(this.gameEncode(element, 2))
-        })
+        var teams = []
+        if (this.chartRound === '1') {
+          const group = this.chartGroup.replace(/Group |Poule /, '')
+          teams = this.chartTeamList
+            .filter(value => value.t_group === group)
+            .map(value => { return value.t_label })
+        }
+        if (teams.length === 0) {
+          if (this.chartGames) {
+            this.chartGames.forEach(element => {
+              teams.push(this.gameEncode(element, 1))
+              teams.push(this.gameEncode(element, 2))
+            })
+          } else {
+            for (let i = 1; i <= this.chartTeamCount; i++) {
+              teams.push(this.gameEncode('[T' + i + ']', 1))
+            }
+          }
+        }
         this.anonymousTeams = [...new Set(teams)].filter(value => value !== null).sort()
         this.anonymousGroup = true
       }

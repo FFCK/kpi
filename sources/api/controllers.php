@@ -174,7 +174,7 @@ function ChartsController($route)
     $charts[$row['c_code']]['status'] = $row['c_status'];
     $charts[$row['c_code']]['season'] = $row['c_season'];
     if (($row['c_type'] === 'CHPT' && $row['c_status'] !== 'ATT')
-      || ($row['c_type'] === 'CP' && $row['c_status'] === 'END')
+      || ($row['c_type'] === 'CP')
     ) {
       $array_chpt[$row['c_code']] = [
         'code' => $row['c_code'],
@@ -205,13 +205,12 @@ function ChartsController($route)
         ORDER BY Clt_publi ASC, Diff_publi DESC ";
     } else {
       $sql2 = "SELECT ce.Id t_id, ce.Numero t_number, ce.Libelle t_label, ce.Code_club t_club,
-        ce.CltNiveau_publi t_clt_cp,
+        ce.CltNiveau_publi t_clt_cp, ce.Poule t_group, ce.Tirage t_order,
         CASE WHEN ce.logo IS NULL THEN 'KIP/logo/empty-logo.png' ELSE ce.logo END t_logo
         FROM kp_competition_equipe ce
         WHERE ce.Code_compet = ? 
         AND ce.Code_saison = ? 
-        AND Clt_publi > 0 
-        ORDER BY CltNiveau_publi ASC ";
+        ORDER BY CltNiveau_publi ASC, t_group, t_order";
     }
     $result2 = $myBdd->pdo->prepare($sql2);
     $result2->execute([$compet['code'], $compet['season']]);
