@@ -3,16 +3,23 @@
     <div class="filters">
       <div class="row">
         <div class="col">
-          <button
-            class="btn btn-secondary"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#collapseFilters"
-            aria-expanded="false"
-            aria-controls="collapseFilters"
-          >
-            {{ $t("nav.Filters") }} <i class="bi bi-filter"></i>
-          </button>
+          <div class="text-nowrap">
+            <i
+              role="button"
+              class="float-start bi bi-arrow-left-square me-2"
+              @click="changePage('Home')"
+            />
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseFilters"
+              aria-expanded="false"
+              aria-controls="collapseFilters"
+            >
+              {{ $t("nav.Filters") }} <i class="bi bi-filter"></i>
+            </button>
+          </div>
         </div>
         <div class="col text-center">
           <el-select
@@ -36,12 +43,19 @@
           </el-select>
         </div>
         <div class="col text-end">
-          <el-button
-            v-show="visibleButton"
-            icon="el-icon-refresh-right"
-            plain
-            @click="loadGames"
-          />
+          <div class="text-nowrap">
+            <el-button
+              v-show="visibleButton"
+              icon="el-icon-refresh-right"
+              plain
+              @click="loadGames"
+            />
+            <i
+              role="button"
+              class="float-end bi bi-arrow-right-square ms-2"
+              @click="changePage('Chart')"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -171,6 +185,9 @@ export default {
   updated () {
   },
   methods: {
+    changePage (pageName) {
+      this.$router.push({ name: pageName })
+    },
     async loadCategories () {
       let allGames = await Games.all()
       allGames = [...new Set(allGames)]
