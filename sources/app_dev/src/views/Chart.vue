@@ -1,15 +1,24 @@
 <template>
-  <div>
-    <title-component :text="$t('nav.Chart')" />
-
-    <div class="fixed-top filters container-fluid">
-      <el-button
-        v-show="visibleButton"
-        class="float-end"
-        icon="el-icon-refresh-right"
-        plain
-        @click="loadCharts"
-      />
+  <div class="container-fluid">
+    <div class="filters">
+      <div class="row">
+        <div class="col">
+          <i
+            role="button"
+            class="bi bi-arrow-left-square me-2"
+            @click="changePage('Games')"
+          />
+        </div>
+        <div class="col text-end">
+          <el-button
+            v-show="visibleButton"
+            class="m-1"
+            icon="el-icon-refresh-right"
+            plain
+            @click="loadCharts"
+          />
+        </div>
+      </div>
     </div>
 
     <charts :key="chartIndex" :chart-data="chartData" :show-flags="showFlags" />
@@ -19,7 +28,7 @@
 </template>
 
 <script>
-import TitleComponent from '@/components/design/Title'
+// import TitleComponent from '@/components/design/Title'
 import Charts from '@/components/Charts.vue'
 import { prefsMixin, gamesMixin } from '@/mixins/mixins'
 import publicApi from '@/network/publicApi'
@@ -34,7 +43,7 @@ export default {
   components: {
     ElBacktop,
     ElButton,
-    TitleComponent,
+    // TitleComponent,
     Charts
   },
   mixins: [prefsMixin, gamesMixin],
@@ -51,6 +60,9 @@ export default {
     this.loadCharts()
   },
   methods: {
+    changePage (pageName) {
+      this.$router.push({ name: pageName })
+    },
     async loadCharts () {
       await this.getPrefs()
       await this.prefs
