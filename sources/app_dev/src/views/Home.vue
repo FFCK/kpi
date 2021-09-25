@@ -28,13 +28,15 @@
       </XyzTransitionGroup>
     </div>
 
-    <div v-if="user && authorized" class="row container my-5">
-      <button
-        class="btn btn-outline-dark btn-lg col-12"
-        @click="changePage('Login')"
-      >
-        {{ $t("nav.StaffJobs") }}
-      </button>
+    <div v-if="user && authorized" class="container my-5">
+      <div class="row">
+        <button
+          class="btn btn-outline-dark btn-lg"
+          @click="changePage('Login')"
+        >
+          {{ $t("nav.StaffJobs") }}
+        </button>
+      </div>
     </div>
 
     <div class="my-3 text-center">
