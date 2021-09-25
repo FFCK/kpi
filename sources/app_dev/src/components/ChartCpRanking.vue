@@ -14,7 +14,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="rank in chartRanking" :key="rank.t_id">
+        <tr v-for="rank in ranking" :key="rank.t_id">
           <th class="text-center">{{ rank.t_clt_cp }}</th>
           <td class="text-nowrap">
             <img
@@ -52,7 +52,13 @@ export default {
   },
   data () {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL
+      baseUrl: process.env.VUE_APP_BASE_URL,
+      ranking: this.remastering(this.chartRanking)
+    }
+  },
+  methods: {
+    remastering (inputRanking) {
+      return inputRanking.filter(value => parseInt(value.t_clt_cp) > 0)
     }
   }
 }
