@@ -44,7 +44,7 @@
     </div>
     <div class="text-center my-3" @click="changePage('About')">
       <span class="btn btn-secondary me-1">{{ version }}</span>
-      <i class="star bi bi-star" :title="$t('Rating.RateThisApp')"></i>
+      <i class="star bi bi-info-circle" :title="$t('Rating.AboutThisApp')"></i>
     </div>
   </div>
 </template>
@@ -90,7 +90,7 @@ export default {
   cursor: pointer;
   color: #6c757d;
   &:hover {
-    color: #ffe100;
+    color: #000000;
   }
 }
 </style>

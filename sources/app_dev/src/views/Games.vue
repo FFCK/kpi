@@ -6,7 +6,7 @@
           <div class="text-nowrap">
             <i
               role="button"
-              class="float-start bi bi-arrow-left-square me-2"
+              class="float-start bi bi-caret-left-square-fill me-2"
               @click="changePage('Home')"
             />
             <button
@@ -52,7 +52,7 @@
             />
             <i
               role="button"
-              class="float-end bi bi-arrow-right-square ms-2"
+              class="float-end bi bi-caret-right-square-fill ms-2"
               @click="changePage('Chart')"
             />
           </div>
@@ -348,10 +348,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.filters {
-  margin-top: 62px;
-  margin-left: 10px;
-}
-</style>

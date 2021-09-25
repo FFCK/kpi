@@ -59,9 +59,13 @@ export default {
   transform: translateX(20px);
   opacity: 0;
 }
+
 .filters {
+  margin-top: 62px;
+  margin-left: 10px;
   z-index: 99;
 }
+
 .el-menu {
   position: fixed;
   z-index: 1100;

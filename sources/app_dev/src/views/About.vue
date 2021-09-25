@@ -1,5 +1,16 @@
 <template>
   <div class="container">
+    <div class="filters">
+      <div class="row">
+        <div class="col">
+          <i
+            role="button"
+            class="bi bi-caret-left-square-fill me-2"
+            @click="changePage('Chart')"
+          />
+        </div>
+      </div>
+    </div>
     <div class="text-center my-3">
       <span class="btn btn-secondary">{{ version }}</span>
     </div>
@@ -81,8 +92,10 @@ export default {
       status: {}
     }
   },
-
   methods: {
+    changePage (pageName) {
+      this.$router.push({ name: pageName })
+    },
     async rated (stars) {
       this.thanks = true
       this.stars = stars
