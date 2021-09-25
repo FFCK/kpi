@@ -5,18 +5,25 @@
         <div class="col">
           <i
             role="button"
-            class="bi bi-arrow-left-square me-2"
+            class="bi bi-caret-left-square-fill me-2"
             @click="changePage('Games')"
           />
         </div>
         <div class="col text-end">
-          <el-button
-            v-show="visibleButton"
-            class="m-1"
-            icon="el-icon-refresh-right"
-            plain
-            @click="loadCharts"
-          />
+          <div class="text-nowrap">
+            <el-button
+              v-show="visibleButton"
+              class="m-1"
+              icon="el-icon-refresh-right"
+              plain
+              @click="loadCharts"
+            />
+            <i
+              role="button"
+              class="float-end bi bi-caret-right-square-fill ms-2"
+              @click="changePage('About')"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -107,10 +114,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.filters {
-  margin-top: 62px;
-  margin-left: 10px;
-}
-</style>
