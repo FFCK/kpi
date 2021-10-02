@@ -47,6 +47,14 @@
     "Confirm": "Confirmer",
     "Cancel": "Annuler"
   },
+  "Teams": {
+    "SelectTeam": "Sélectionner une équipe",
+    "PleaseSelectOne": "Sélectionner une équipe",
+    "Team": "Equipe",
+    "Change": "Changer",
+    "Confirm": "Confirmer",
+    "Cancel": "Annuler"
+  },
   "Games": {
     "Categories": "Catégories",
     "Teams": "Equipes",
@@ -132,5 +140,20 @@
   "Update": {
     "Message": "Une mise à jour est disponible",
     "Button": "Appliquer maintenant !"
+  },
+  "Scrutineering": {
+    "ChangeEvent": "Vous n'avez pas les droits suffisants pour cet événement ! ",
+    "Scrutineering": "Vérifications équipement",
+    "Player": "Joueur",
+    "Helmet": "Casque",
+    "Vest": "Gilet",
+    "Kayak": "Kayak",
+    "Paddles": "Pagaies",
+    "Coach": "Coach",
+    "PrintAll": "Imprimer tout",
+    "Cosmetic": "Cosmétique",
+    "Safety": "Sécurité",
+    "Technical": "Techn.",
+    "Issues": "Problèmes"
   }
 }

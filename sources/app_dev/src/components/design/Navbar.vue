@@ -76,9 +76,9 @@
                   </router-link>
                 </li>
                 <li v-if="user" class="nav-item">
-                  <router-link to="/game_report" class="nav-link text-nowrap">
-                    <i class="bi bi-clipboard" />
-                    {{ $t("nav.GameReport") }}
+                  <router-link to="/scrutineering" class="nav-link text-nowrap">
+                    <i class="bi bi-clipboard-check" />
+                    {{ $t("nav.Scrutineering") }}
                   </router-link>
                 </li>
                 <li v-if="user" class="nav-item">
@@ -88,9 +88,9 @@
                   </router-link>
                 </li>
                 <li v-if="user" class="nav-item">
-                  <router-link to="/scrutineering" class="nav-link text-nowrap">
-                    <i class="bi bi-clipboard-check" />
-                    {{ $t("nav.Scrutineering") }}
+                  <router-link to="/game_report" class="nav-link text-nowrap">
+                    <i class="bi bi-clipboard" />
+                    {{ $t("nav.GameReport") }}
                   </router-link>
                 </li>
               </ul>
