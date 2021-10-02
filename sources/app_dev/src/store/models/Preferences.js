@@ -19,7 +19,11 @@ export default class Preferences extends Model {
       fav_teams: this.string('[]'),
       fav_dates: this.string(''),
       show_flags: this.boolean(true),
-      stars: this.number(null).nullable()
+      stars: this.number(null).nullable(),
+      scr_team_id: this.number(null).nullable(),
+      scr_team_label: this.string(null).nullable(),
+      scr_team_club: this.string(null).nullable(),
+      scr_team_logo: this.string(null).nullable()
     }
   }
 }
