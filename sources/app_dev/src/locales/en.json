@@ -47,6 +47,14 @@
     "Confirm": "Confirm",
     "Cancel": "Cancel"
   },
+  "Teams": {
+    "SelectTeam": "Select team",
+    "PleaseSelectOne": "Please select one",
+    "Team": "Team",
+    "Change": "Change",
+    "Confirm": "Confirm",
+    "Cancel": "Cancel"
+  },
   "Games": {
     "Categories": "Categories",
     "Teams": "Teams",
@@ -132,5 +140,20 @@
   "Update": {
     "Message": "An update is available",
     "Button": "Update now!"
+  },
+  "Scrutineering": {
+    "ChangeEvent": "You don't have sufficient rights for this event! ",
+    "Scrutineering": "Scrutineering",
+    "Player": "Player",
+    "Helmet": "Helmet",
+    "Vest": "Vest",
+    "Kayak": "Kayak",
+    "Paddles": "Paddles",
+    "Coach": "Coach",
+    "PrintAll": "Print all",
+    "Cosmetic": "Cosmetic",
+    "Safety": "Safety",
+    "Technical": "Techn.",
+    "Issues": "Issues"
   }
 }

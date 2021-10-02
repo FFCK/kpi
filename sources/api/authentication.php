@@ -54,12 +54,12 @@ function login($route)
 	return_200($authentication_result);
 }
 
-function token_verification()
+function token_check()
 {
 	if (isset($_COOKIE["kpi_app"])) {
 		$token = $_COOKIE["kpi_app"];
 		$myBdd = new MyBdd();
-		$sql = "SELECT generated_at
+		$sql = "SELECT user, generated_at
 			FROM kp_user_token 
 			WHERE token = ? ";
 		$result = $myBdd->pdo->prepare($sql);
@@ -69,7 +69,7 @@ function token_verification()
 			$date = date_create($row["generated_at"]);
 			date_add($date, date_interval_create_from_date_string('10 days'));
 			if ($date >= date_create()) {
-				return true;
+				return $row["user"];
 			}
 		}
 	}
