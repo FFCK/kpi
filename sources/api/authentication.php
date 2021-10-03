@@ -54,23 +54,29 @@ function login($route)
 	return_200($authentication_result);
 }
 
-function token_check()
+function token_check($event)
 {
 	if (isset($_COOKIE["kpi_app"])) {
 		$token = $_COOKIE["kpi_app"];
 		$myBdd = new MyBdd();
-		$sql = "SELECT user, generated_at
-			FROM kp_user_token 
-			WHERE token = ? ";
+		$sql = "SELECT ut.user, ut.generated_at, u.Id_Evenement
+			FROM kp_user_token ut
+			INNER JOIN kp_user u ON (ut.user = u.Code)
+			WHERE ut.token = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($token));
 		if ($result->rowCount() == 1) {
 			$row = $result->fetch();
-			$date = date_create($row["generated_at"]);
-			date_add($date, date_interval_create_from_date_string('10 days'));
-			if ($date >= date_create()) {
-				return $row["user"];
+			$generated_at = date_create($row["generated_at"]);
+			date_add($generated_at, date_interval_create_from_date_string('10 days'));
+			if (!$generated_at >= date_create()) {
+				return_401();
 			}
+			$grantedEvents = explode('|', trim($row["Id_Evenement"], '|'));
+			if (!in_array($event, $grantedEvents)) {
+				return_401();
+			}
+			return $row["user"];
 		}
 	}
 	return_401();
