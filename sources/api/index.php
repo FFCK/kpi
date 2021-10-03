@@ -17,7 +17,7 @@ set_response_headers($method);
  */
 if ($path[0] === 'staff') {
 	// Staff routes
-	$user = token_check();
+	$user = token_check($path[1]);
 
 	// Event verifications...
 	// $path[1]
