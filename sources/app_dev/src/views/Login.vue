@@ -25,16 +25,16 @@
           {{ $t("nav.Scrutineering") }}
         </button>
         <button
-          class="btn btn-outline-dark btn-lg col-12 my-1"
-          @click="changePage('GameReport')"
-        >
-          {{ $t("nav.GameReport") }}
-        </button>
-        <button
-          class="btn btn-outline-dark btn-lg col-12 my-1"
+          class="btn btn-outline-dark btn-lg col-12 my-1 disabled"
           @click="changePage('StatReport')"
         >
           {{ $t("nav.StatReport") }}
+        </button>
+        <button
+          class="btn btn-outline-dark btn-lg col-12 my-1 disabled"
+          @click="changePage('GameReport')"
+        >
+          {{ $t("nav.GameReport") }}
         </button>
       </div>
     </div>

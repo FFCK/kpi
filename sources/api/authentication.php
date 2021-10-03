@@ -6,17 +6,23 @@ function user_authentication()
 	if (isset($_SERVER["PHP_AUTH_USER"]) && isset($_SERVER["PHP_AUTH_PW"])) {
 		$user = preg_replace('`^[0]*`', '', $purifier->purify(trim($_SERVER["PHP_AUTH_USER"])));
 		$myBdd = new MyBdd();
-		$sql = "SELECT u.Code, u.Pwd, u.Niveau, u.Id_Evenement, c.Nom, c.Prenom, c.Numero_club 
-			FROM kp_user u, kp_licence c 
-			WHERE u.Code = ? 
-			AND u.Code = c.Matric ";
+		$sql = "SELECT u.Code, u.Pwd, u.Niveau, u.Id_Evenement, 
+			c.Nom, c.Prenom, c.Numero_club, ut.token, ut.generated_at
+			FROM kp_user u
+			JOIN kp_licence c ON (u.Code = c.Matric)
+			LEFT OUTER JOIN kp_user_token ut ON (u.Code = ut.user)
+			WHERE u.Code = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($user));
 		if ($result->rowCount() == 1) {
 			$row = $result->fetch();
 			$events = trim($row['Id_Evenement'], '|');
 			if ($row["Pwd"] === md5($_SERVER["PHP_AUTH_PW"]) && strlen($events) > 0) {
-				$token = bin2hex(openssl_random_pseudo_bytes(16));
+				if ($row["token"] !== null) {
+					$token = $row["token"];
+				} else {
+					$token = bin2hex(openssl_random_pseudo_bytes(16));
+				}
 
 				$user = [
 					'id' => $row["Code"],
