@@ -1,5 +1,10 @@
 <template>
-  <div>
+  <div class="container-fluid mb-5">
+    <i
+      role="button"
+      class="float-start bi bi-caret-left-square-fill me-2"
+      @click="$router.push({ name: 'Home' })"
+    />
     <div v-if="user">
       <div class="text-center my-3">
         <span class="btn btn-secondary"
