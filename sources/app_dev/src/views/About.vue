@@ -9,20 +9,31 @@
             @click="changePage('Chart')"
           />
         </div>
+        <div class="col text-end">
+          <span class="btn btn-sm btn-secondary disabled">{{ version }}</span>
+        </div>
       </div>
     </div>
-    <div class="text-center my-3">
-      <span class="btn btn-secondary">{{ version }}</span>
-    </div>
 
-    <div class="text-center">
-      <div>{{ $t("About.DoYouLike") }}</div>
-      <div class="mb-1">{{ $t("About.IDevelopIt") }}</div>
-      <div class="mt-2">{{ $t("About.Rating") }}</div>
+    <div>
+      <p>
+        {{ $t("About.DoYouLike") }}
+        <br />
+        {{ $t("About.IDevelopIt") }}
+      </p>
 
-      <rating :thanks="thanks" :grade="stars" @rated="rated" :key="key" />
+      <p>
+        {{ $t("About.Rating") }}
+        <rating
+          :thanks="thanks"
+          :grade="stars"
+          @rated="rated"
+          :key="key"
+          class="text-center"
+        />
+      </p>
 
-      <div class="mt-2">
+      <p>
         {{ $t("About.FeedbackOnTwitter") }}
         <a
           class="btn btn-primary btn-sm"
@@ -31,37 +42,47 @@
         >
           <i class="bi bi-twitter" /> Twitter
         </a>
-      </div>
-      <div class="mt-2">
+      </p>
+      <p>
         {{ $t("About.SupportMeOnUtip") }}
         <a
-          class="btn btn-danger btn-sm"
           href="https://utip.io/kayakpoloinfo"
           target="blank"
+          class="btn btn-light"
+          v-if="$i18n.locale === 'fr'"
         >
-          <i class="bi bi-piggy-bank" /> uTip
+          <img alt="logo uTip" src="../assets/logo-utip.png" height="50" />
+          <img
+            alt="Dablicorne"
+            src="../assets/dablicorne-utip.png"
+            height="50"
+          />
         </a>
-      </div>
+        <a
+          href="https://utip.io/kayakpoloinfo"
+          target="blank"
+          v-else
+          class="btn btn-light"
+        >
+          <img alt="logo uTip" src="../assets/logo-utip.png" height="50" />
+          <img
+            alt="Dablicorne"
+            src="../assets/dablicorne-utip.png"
+            height="50"
+          />
+        </a>
+      </p>
     </div>
-
-    <div class="text-center">
-      <a
-        href="https://utip.io/kayakpoloinfo"
-        target="blank"
-        v-if="$i18n.locale === 'fr'"
-      >
-        <img alt="logo uTip" src="../assets/logo-utip.png" height="90" />
-        <img alt="Dablicorne" src="../assets/dablicorne-utip.png" height="90" />
-      </a>
-      <a href="https://utip.io/kayakpoloinfo" target="blank" v-else>
-        <img alt="logo uTip" src="../assets/logo-utip.png" height="90" />
-        <img alt="Dablicorne" src="../assets/dablicorne-utip.png" height="90" />
-      </a>
-    </div>
-
-    <div class="text-end mt-4 me-5">
+    <hr />
+    <p>
+      {{ $t("About.OwnCompetition") }}
+      <br />
+      {{ $t("About.ContactMe") }}
+      <a href="mailto:contact@kayak-polo.info">contact@kayak-polo.info</a>
+    </p>
+    <p class="text-end mt-4 me-5">
       Laurent.
-    </div>
+    </p>
   </div>
 </template>
 
