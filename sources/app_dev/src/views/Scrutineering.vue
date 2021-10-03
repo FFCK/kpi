@@ -6,9 +6,14 @@
     />
 
     <div v-if="user">
-      <div v-if="authorized && user.profile <= 3">
+      <div v-if="authorized && user.profile <= 3" class="container-fluid mb-5">
+        <i
+          role="button"
+          class="float-start bi bi-caret-left-square-fill me-2"
+          @click="$router.push({ name: 'Login' })"
+        />
         <team-selector @changeTeam="loadPlayers" />
-        <div v-if="prefs.scr_team_id" class="container-fluid mb-5">
+        <div v-if="prefs.scr_team_id">
           <table class="table table-sm">
             <thead>
               <tr>
