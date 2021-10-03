@@ -129,9 +129,11 @@
   "About": {
     "DoYouLike": "Do you like this application?",
     "IDevelopIt": "I develop it in my spare time.",
-    "Rating": "You can rate this app:",
-    "FeedbackOnTwitter": "You can also give your feedback on",
-    "SupportMeOnUtip": "And encourage me to continue by supporting me on"
+    "Rating": "Rate this app:",
+    "FeedbackOnTwitter": "Give your feedback on",
+    "SupportMeOnUtip": "Support me on",
+    "OwnCompetition": "You would like to use this app for your own competition, in another language ?",
+    "ContactMe": "Please contact me:"
   },
   "Rating": {
     "AboutThisApp": "About this app...",
