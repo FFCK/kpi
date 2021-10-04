@@ -29,15 +29,15 @@ if ($path[0] === 'staff') {
 			break;
 		case 'teams':
 			methods(['GET']);
-			StaffTeamsController($path);
+			GetTeamsController($path);
 			break;
 		case 'players':
 			methods(['GET']);
-			StaffPlayersController($path);
+			GetPlayersController($path);
 			break;
 		case 'player':
 			methods(['PUT']);
-			StaffPlayerController($path);
+			PutPlayerController($path);
 			break;
 		default:
 			return_404();
@@ -52,23 +52,23 @@ if ($path[0] === 'staff') {
 			break;
 		case 'events':
 			methods(['GET']);
-			EventsController($path);
+			GetEventsController($path);
 			break;
 		case 'event':
 			methods(['GET']);
-			EventController($path);
+			GetEventController($path);
 			break;
 		case 'games':
 			methods(['GET']);
-			GamesController($path);
+			GetGamesController($path);
 			break;
 		case 'charts':
 			methods(['GET']);
-			ChartsController($path);
+			GetChartsController($path);
 			break;
 		case 'stars':
 			methods(['POST']);
-			StarsController($path);
+			PostStarsController($path);
 			break;
 		default:
 			return_404();
