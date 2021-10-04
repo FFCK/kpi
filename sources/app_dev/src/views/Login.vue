@@ -59,13 +59,10 @@
       {{ message }}
       <button
         type="button"
-        class="close"
-        data-dismiss="alert"
+        class="btn-close"
+        data-bs-dismiss="alert"
         aria-label="Close"
-        @click="dataDismiss"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
+      ></button>
     </div>
 
     <div v-if="!user" class="row justify-content-center mb-4">
