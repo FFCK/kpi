@@ -29,7 +29,7 @@ function StaffTeamsController($route)
 
   json_cache_write('teams', 0, $resultArray);
 
-  return_200($resultArray);
+  return_201($resultArray);
 }
 
 function StaffPlayersController($route)
