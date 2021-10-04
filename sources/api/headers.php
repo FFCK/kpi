@@ -33,30 +33,52 @@ function methods($methods_array)
 	return;
 }
 
-function return_401()
+function return_400($msg = 'Bad Request')
+{
+	header('HTTP/1.0 400 Bad Request');
+	echo json_encode($msg);
+	exit;
+}
+
+function return_401($msg = 'Unauthorized')
 {
 	header('HTTP/1.0 401 Unauthorized');
-	echo json_encode('Unauthorized');
+	echo json_encode($msg);
 	exit;
 }
 
-function return_404()
+function return_403($msg = 'Forbiden')
+{
+	header('HTTP/1.0 401 Forbiden');
+	echo json_encode($msg);
+	exit;
+}
+
+function return_404($msg = 'Not Found')
 {
 	header('HTTP/1.0 404 Not Found');
-	echo json_encode('Not Found');
+	echo json_encode($msg);
 	exit;
 }
 
-function return_405()
+function return_405($msg = 'Method Not Allowed')
 {
 	header('HTTP/1.0 405 Method Not Allowed');
-	echo json_encode('Method Not Allowed');
+	echo json_encode($msg);
 	exit;
 }
 
-function return_200($result, $convert_to_json = true)
+function return_200($result = 'OK', $convert_to_json = true)
 {
 	http_response_code(200);
+	$result = ($convert_to_json) ? json_encode($result) : $result;
+	echo $result;
+	exit;
+}
+
+function return_201($result = 'Created', $convert_to_json = true)
+{
+	http_response_code(201);
 	$result = ($convert_to_json) ? json_encode($result) : $result;
 	echo $result;
 	exit;

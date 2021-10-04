@@ -1,4 +1,7 @@
 Options +FollowSymlinks
-RewriteEngine on 
+RewriteEngine on
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
