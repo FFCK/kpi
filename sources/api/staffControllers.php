@@ -6,7 +6,7 @@ function StaffTestController($route)
   return_200(['result' => 'OK']);
 }
 
-function StaffTeamsController($route)
+function GetTeamsController($route)
 {
   $event_id = (int) $route[1] ?? return_405();
   $force = $route[3] ?? false;
@@ -32,7 +32,7 @@ function StaffTeamsController($route)
   return_201($resultArray);
 }
 
-function StaffPlayersController($route)
+function GetPlayersController($route)
 {
   // $event_id = (int) $route[1] ?? return_405();
   $team_id = (int) $route[3] ?? return_405();
@@ -62,7 +62,7 @@ function StaffPlayersController($route)
   return_200($resultArray);
 }
 
-function StaffPlayerController($route)
+function PutPlayerController($route)
 {
   // $event_id = (int) $route[1] ?? return_405();
   $player_id = (int) $route[3] ?? return_405();
