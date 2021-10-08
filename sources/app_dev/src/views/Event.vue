@@ -37,9 +37,11 @@ export default {
               Events.insertOrUpdate({
                 data: eventResult
               })
+              const eventMode = eventResult.id < 3000 ? 'std' : 'champ'
               Preferences.update({
                 where: 1,
                 data: {
+                  events: eventMode,
                   event: eventResult.id,
                   event_name: eventResult.libelle,
                   event_place: eventResult.place,

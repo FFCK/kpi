@@ -3,21 +3,42 @@ include_once('headers.php');
 
 function GetEventsController($route)
 {
-  $force = $route[1] ?? false;
-  $array = ($force !== 'force') ? json_cache_read('events', 0, 10) : false;
+  $event_mode = $route[1];
+  if (!in_array($event_mode, ['std', 'champ'])) {
+    return_403();
+  }
+  $force = $route[2] ?? false;
+  $array = ($force !== 'force') ? json_cache_read('events', $event_mode, 10) : false;
   if ($array) {
     return_200($array);
   }
 
   $myBdd = new MyBdd();
-  $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
-    FROM kp_evenement
-    WHERE app = 'O'
-    ORDER BY Id DESC ";
+  if ($event_mode === 'std') {
+    $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
+      FROM kp_evenement
+      WHERE app = 'O'
+      ORDER BY Id DESC ";
+  } elseif ($event_mode === 'champ') {
+    $sql = "SELECT j.Id id, j.Nom libelle, j.Lieu place,
+      CASE
+        WHEN (c.BandeauLink != '' AND c.Bandeau_actif = 'O') THEN CONCAT('logo/', c.BandeauLink)
+        WHEN (c.LogoLink != '' AND c.Logo_actif = 'O') THEN CONCAT('logo/', c.LogoLink)
+        ELSE NULL
+        END logo
+      FROM kp_journee j
+      JOIN kp_competition c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison)
+      JOIN kp_groupe g ON (c.Code_ref = g.Groupe)
+      WHERE c.Code_typeclt = 'CHPT'
+      AND c.Publication = 'O'
+      AND j.Publication = 'O'
+      AND c.Code_saison = YEAR(NOW())
+      ORDER BY g.section, g.ordre, c.Code, j.Date_debut, j.Id ";
+  }
   $result = $myBdd->pdo->query($sql);
   $array = $result->fetchAll(PDO::FETCH_ASSOC);
 
-  json_cache_write('events', 0, $array);
+  json_cache_write('events', $event_mode, $array);
 
   return_200($array);
 }
