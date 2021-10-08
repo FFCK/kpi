@@ -42,10 +42,12 @@
   "Event": {
     "SelectEvent": "Sélectionnez un événement",
     "PleaseSelectOne": "Sélectionnez un événement",
-    "Event": "Evénement",
+    "Event": "Événement",
     "Change": "Changer",
     "Confirm": "Confirmer",
-    "Cancel": "Annuler"
+    "Cancel": "Annuler",
+    "StdEvents": "Événements standards",
+    "LocalChamp": "Championnats locaux"
   },
   "Teams": {
     "SelectTeam": "Sélectionner une équipe",

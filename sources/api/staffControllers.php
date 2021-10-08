@@ -10,7 +10,7 @@ function GetTeamsController($route)
 {
   $event_id = (int) $route[1] ?? return_405();
   $force = $route[3] ?? false;
-  $cacheArray = ($force !== 'force') ? json_cache_read('teams', 0, 10) : false;
+  $cacheArray = ($force !== 'force') ? json_cache_read('teams', false, 10) : false;
   if ($cacheArray) {
     return_200($cacheArray);
   }

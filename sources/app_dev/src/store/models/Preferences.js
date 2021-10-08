@@ -8,6 +8,7 @@ export default class Preferences extends Model {
       id: this.number(0),
       uid: this.uid(() => uuid()),
       locale: this.string(navigator.language.substr(0, 2)),
+      events: this.string('std'),
       event: this.number(0),
       event_name: this.string(''),
       event_place: this.string(''),
