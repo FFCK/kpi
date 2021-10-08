@@ -25,6 +25,36 @@
     </div>
 
     <form v-if="showSelector" class="align-items-center">
+      <div class="text-center mb-1">
+        <div class="btn-group" role="group" aria-label="Event mode">
+          <button
+            type="button"
+            :class="{
+              btn: true,
+              'btn-sm': true,
+              'btn-primary': eventMode === 'std',
+              active: eventMode === 'std',
+              'btn-outline-primary': eventMode !== 'std'
+            }"
+            @click="changeEventMode('std')"
+          >
+            {{ $t("Event.StdEvents") }}
+          </button>
+          <button
+            type="button"
+            :class="{
+              btn: true,
+              'btn-sm': true,
+              'btn-primary': eventMode === 'champ',
+              active: eventMode === 'champ',
+              'btn-outline-primary': eventMode !== 'champ'
+            }"
+            @click="changeEventMode('champ')"
+          >
+            {{ $t("Event.LocalChamp") }}
+          </button>
+        </div>
+      </div>
       <div class="row mb-2">
         <div class="col-xs-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 row">
           <div class="text-center">
@@ -85,17 +115,36 @@ export default {
     }
   },
   computed: {
+    eventMode () {
+      return Preferences.find(1).events
+    },
     events () {
-      return Events.query().orderBy('id', 'desc').get()
+      if (this.eventMode === 'std') {
+        return Events.query().orderBy('id', 'desc').get()
+      } else {
+        return Events.query().get()
+      }
     }
   },
   methods: {
+    changeEventMode (mode) {
+      if (mode !== this.eventMode) {
+        Preferences.update({
+          where: 1,
+          data: {
+            events: mode
+          }
+        })
+        idbs.dbPut('preferences', Preferences.find(1))
+        this.loadEvents()
+      }
+    },
     async loadEvents () {
       this.status = await Status.find(1)
       if (!this.status.online) {
         console.log('Offline process...')
       } else {
-        await publicApi.getEvents()
+        await publicApi.getEvents(this.eventMode)
           .then(result => {
             const eventsResult = result.data.map(event => {
               event.id = parseInt(event.id)

@@ -3,8 +3,8 @@ import api from '@/network/api'
 const force = process.env.NODE_ENV === 'development' ? '/force' : ''
 
 export default {
-  getEvents () {
-    return api.get('/events' + force)
+  getEvents (mode = 'std') {
+    return api.get('/events/' + mode + force)
   },
   checkEvent (eventId) {
     return api.get('/event/' + eventId + force)
