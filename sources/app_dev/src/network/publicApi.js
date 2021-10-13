@@ -15,8 +15,11 @@ export default {
   getCharts (eventId) {
     return api.get('/charts/' + eventId + force)
   },
+  getStars () {
+    return api.get('/stars' + force)
+  },
   postRating (uid, stars) {
-    return api.post('/stars', {
+    return api.post('/rating', {
       uid: uid,
       stars: stars
     })

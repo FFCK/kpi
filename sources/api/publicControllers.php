@@ -35,8 +35,8 @@ function GetEventsController($route)
       AND c.Code_saison = YEAR(NOW())
       ORDER BY g.section, g.ordre, c.Code, j.Date_debut, j.Id ";
   }
-  $result = $myBdd->pdo->query($sql);
-  $array = $result->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $myBdd->pdo->query($sql);
+  $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   json_cache_write('events', $event_mode, $array);
 
@@ -74,9 +74,9 @@ function GetEventController($route)
       AND j.Id = ?
       ORDER BY j.Id DESC ";
   }
-  $result = $myBdd->pdo->prepare($sql);
-  $result->execute([$event_id]);
-  $array = $result->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute([$event_id]);
+  $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   if (count($array) > 0) {
     json_cache_write('event', $event_id, $array);
@@ -155,9 +155,9 @@ function GetGamesController($route)
       AND m.Publication = 'O'
       ORDER BY m.Date_match, m.Heure_match, m.Terrain";
   }
-  $result = $myBdd->pdo->prepare($sql);
-  $result->execute(array($event_id));
-  $array = $result->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute(array($event_id));
+  $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   json_cache_write('games', $event_id, $array);
 
@@ -224,9 +224,9 @@ function GetChartsController($route)
       AND m.Publication = 'O'
       ORDER BY m.Id_journee, m.Date_match, m.Heure_match, m.Terrain";
   }
-  $result = $myBdd->pdo->prepare($sql);
-  $result->execute(array($event_id));
-  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute(array($event_id));
+  while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     if ($row['d_type'] === 'E' || $row['c_type'] === 'CHPT') {
       $games[$row['d_id']][] = $row;
     } elseif ($row['d_type'] === 'C' && $row['c_type'] === 'CP') {
@@ -272,10 +272,10 @@ function GetChartsController($route)
       ORDER BY c_season, c_order, c_code, d_round, d_level DESC, d_phase, d_start DESC, 
       t_clt ASC, t_diff DESC, t_plus ASC ";
   }
-  $result = $myBdd->pdo->prepare($sql);
-  $result->execute(array($event_id));
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute(array($event_id));
   $array_chpt = [];
-  while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+  while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $phaseOrder = (100 - $row['d_level']) . '-' . $row['d_phase'];
     $charts[$row['c_code']]['type'] = $row['c_type'];
     $charts[$row['c_code']]['code'] = $row['c_code'];
@@ -321,9 +321,9 @@ function GetChartsController($route)
         AND ce.Code_saison = ? 
         ORDER BY CltNiveau_publi ASC, t_group, t_order";
     }
-    $result2 = $myBdd->pdo->prepare($sql2);
-    $result2->execute([$compet['code'], $compet['season']]);
-    $charts[$compet['code']]['ranking'] = $result2->fetchAll(PDO::FETCH_ASSOC);
+    $stmt2 = $myBdd->pdo->prepare($sql2);
+    $stmt2->execute([$compet['code'], $compet['season']]);
+    $charts[$compet['code']]['ranking'] = $stmt2->fetchAll(PDO::FETCH_ASSOC);
   }
 
   $charts = array_values($charts);
@@ -333,7 +333,26 @@ function GetChartsController($route)
   return_200($charts);
 }
 
-function PostStarsController($route)
+function GetStarsController($route)
+{
+  $force = $route[1] ?? false;
+  $stars = ($force !== 'force') ? json_cache_read('stars', false, 5) : false;
+  if ($stars) {
+    return_200($stars);
+  }
+
+  $myBdd = new MyBdd();
+  $sql = "SELECT AVG(stars) average, COUNT(id) count
+    FROM kp_app_rating";
+  $stmt = $myBdd->pdo->query($sql);
+  $stars = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  json_cache_write('stars', false, $stars);
+
+  return_200($stars);
+}
+
+function PostRatingController($route)
 {
   $data = json_decode(file_get_contents('php://input'));
 
@@ -344,8 +363,8 @@ function PostStarsController($route)
   $myBdd = new MyBdd();
   $sql = "INSERT INTO kp_app_rating (`uid`, `stars`)
     VALUES (?, ?) ";
-  $result = $myBdd->pdo->prepare($sql);
-  $result->execute([$data->uid, $data->stars]);
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute([$data->uid, $data->stars]);
 
   return_200(true);
 }
