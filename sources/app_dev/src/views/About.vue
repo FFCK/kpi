@@ -22,7 +22,7 @@
         {{ $t("About.IDevelopIt") }}
       </p>
 
-      <p>
+      <div class="mb-2">
         {{ $t("About.Rating") }}
         <rating
           :thanks="thanks"
@@ -31,7 +31,15 @@
           :key="key"
           class="text-center"
         />
-      </p>
+        <div v-if="currentRating" class="text-center fst-italic small">
+          <i
+            >{{ $t("About.Average") }} {{ currentRating }}/5 ({{
+              currentVoters
+            }}
+            {{ $t("About.voters") }})</i
+          >
+        </div>
+      </div>
 
       <p>
         {{ $t("About.FeedbackOnTwitter") }}
@@ -112,12 +120,36 @@ export default {
       stars: 0,
       thanks: false,
       key: 0,
-      status: {}
+      status: {},
+      currentRating: null,
+      currentVoters: null
     }
   },
   methods: {
     changePage (pageName) {
       this.$router.push({ name: pageName })
+    },
+    async getUserStars () {
+      await this.getPrefs()
+      await this.prefs
+      this.stars = this.prefs.stars
+      this.key++
+    },
+    async getCurrentRating () {
+      this.status = await Status.find(1)
+      if (!this.status.online) {
+        console.log('Offline process...')
+      } else {
+        await publicApi.getStars()
+          .then(async result => {
+            this.currentRating = parseFloat(result.data.average).toFixed(2)
+            this.currentVoters = result.data.count
+          }).catch(error => {
+            if (error.message === 'Network Error') {
+              console.log('Offline !')
+            }
+          })
+      }
     },
     async rated (stars) {
       this.thanks = true
@@ -146,11 +178,9 @@ export default {
       }
     }
   },
-  async mounted () {
-    await this.getPrefs()
-    await this.prefs
-    this.stars = this.prefs.stars
-    this.key++
+  mounted () {
+    this.getUserStars()
+    this.getCurrentRating()
   }
 }
 </script>
