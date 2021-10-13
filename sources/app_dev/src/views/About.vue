@@ -77,6 +77,8 @@
     <p>
       {{ $t("About.OwnCompetition") }}
       <br />
+      {{ $t("About.HelpMe") }}
+      <br />
       {{ $t("About.ContactMe") }}
       <a href="mailto:contact@kayak-polo.info">contact@kayak-polo.info</a>
     </p>
