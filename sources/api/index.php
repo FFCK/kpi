@@ -67,8 +67,12 @@ if ($path[0] === 'staff') {
 			GetChartsController($path);
 			break;
 		case 'stars':
+			methods(['GET']);
+			GetStarsController($path);
+			break;
+		case 'rating':
 			methods(['POST']);
-			PostStarsController($path);
+			PostRatingController($path);
 			break;
 		default:
 			return_404();
