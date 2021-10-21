@@ -3,13 +3,13 @@
 </template>
 
 <script>
-import { prefsMixin } from '@/mixins/mixins'
+import prefsMixin from '@/mixins/prefsMixin'
+import statusMixin from '@/mixins/statusMixin'
 import idbs from '@/services/idbStorage'
 import publicApi from '@/network/publicApi'
 import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
 import Games from '@/store/models/Games'
-import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'Event',

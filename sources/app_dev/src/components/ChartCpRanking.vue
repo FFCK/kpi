@@ -32,10 +32,11 @@
 </template>
 
 <script>
-import { gamesDisplayMixin } from '@/mixins/mixins'
+import gameDisplayMixin from '@/mixins/gameDisplayMixin'
+
 export default {
   name: 'ChartCpRanking',
-  mixins: [gamesDisplayMixin],
+  mixins: [gameDisplayMixin],
   props: {
     chartRanking: {
       type: Object,

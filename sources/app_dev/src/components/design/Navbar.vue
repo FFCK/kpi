@@ -117,8 +117,9 @@
 </template>
 
 <script>
+import prefsMixin from '@/mixins/prefsMixin'
+import userMixin from '@/mixins/userMixin'
 import LocaleSwitcher from '@/components/design/LocaleSwitcher'
-import { userMixin, prefsMixin } from '@/mixins/mixins'
 import Online from '@/components/design/Online.vue'
 
 export default {
@@ -127,7 +128,7 @@ export default {
     LocaleSwitcher,
     Online
   },
-  mixins: [userMixin, prefsMixin],
+  mixins: [prefsMixin, userMixin],
   data () {
     return {
       isCollapse: true,

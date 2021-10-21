@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { logoutMixin } from '@/mixins/mixins'
+import logoutMixin from '@/mixins/logoutMixin'
 
 export default {
   name: 'Logout',

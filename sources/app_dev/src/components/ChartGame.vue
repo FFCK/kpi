@@ -103,10 +103,12 @@
 </template>
 
 <script>
-import { gamesMixin, gamesDisplayMixin } from '@/mixins/mixins'
+import gamesMixin from '@/mixins/gamesMixin'
+import gameDisplayMixin from '@/mixins/gameDisplayMixin'
+
 export default {
   name: 'ChartGame',
-  mixins: [gamesMixin, gamesDisplayMixin],
+  mixins: [gamesMixin, gameDisplayMixin],
   props: {
     chartGames: {
       type: Object,

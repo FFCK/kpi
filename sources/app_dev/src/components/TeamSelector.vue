@@ -67,12 +67,13 @@
 </template>
 
 <script>
-import { prefsMixin, userMixin } from '@/mixins/mixins'
+import prefsMixin from '@/mixins/prefsMixin'
+import userMixin from '@/mixins/userMixin'
+import statusMixin from '@/mixins/statusMixin'
 import idbs from '@/services/idbStorage'
 import privateApi from '@/network/privateApi'
 import Teams from '@/store/models/Teams'
 import Preferences from '@/store/models/Preferences'
-import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'TeamSelector',
