@@ -16,10 +16,10 @@
 </template>
 
 <script>
-import update from '@/mixins/update'
+import updateMixin from '@/mixins/updateMixin'
 
 export default {
   name: 'Update',
-  mixins: [update]
+  mixins: [updateMixin]
 }
 </script>

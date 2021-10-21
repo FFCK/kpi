@@ -50,7 +50,9 @@
 </template>
 
 <script>
-import { logoutMixin, prefsMixin, userMixin } from '@/mixins/mixins'
+import logoutMixin from '@/mixins/logoutMixin'
+import prefsMixin from '@/mixins/prefsMixin'
+import userMixin from '@/mixins/userMixin'
 import EventSelector from '@/components/EventSelector.vue'
 import TitleComponent from '@/components/design/Title'
 

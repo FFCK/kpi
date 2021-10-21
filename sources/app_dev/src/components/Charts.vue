@@ -61,11 +61,12 @@
 </template>
 
 <script>
-import { gamesDisplayMixin } from '@/mixins/mixins'
+import gameDisplayMixin from '@/mixins/gameDisplayMixin'
 import ChartGroup from './ChartGroup.vue'
 import ChartGame from './ChartGame.vue'
 import ChartChptRanking from './ChartChptRanking.vue'
 import ChartCpRanking from './ChartCpRanking.vue'
+
 export default {
   name: 'Charts',
   components: {
@@ -74,7 +75,7 @@ export default {
     ChartChptRanking,
     ChartCpRanking
   },
-  mixins: [gamesDisplayMixin],
+  mixins: [gameDisplayMixin],
   props: {
     chartData: {
       type: Object,

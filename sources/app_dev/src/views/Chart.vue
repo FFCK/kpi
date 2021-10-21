@@ -35,20 +35,21 @@
 </template>
 
 <script>
+import prefsMixin from '@/mixins/prefsMixin'
+import gamesMixin from '@/mixins/gamesMixin'
+import statusMixin from '@/mixins/statusMixin'
 import Charts from '@/components/Charts.vue'
-import { prefsMixin, gamesMixin } from '@/mixins/mixins'
 import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
 import { ElBacktop } from 'element-plus'
-import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'Chart',
+  mixins: [prefsMixin, gamesMixin, statusMixin],
   components: {
     ElBacktop,
     Charts
   },
-  mixins: [prefsMixin, gamesMixin, statusMixin],
   data () {
     return {
       chartData: null,

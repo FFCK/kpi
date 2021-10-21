@@ -94,13 +94,14 @@
 </template>
 
 <script>
-import { prefsMixin, userMixin } from '@/mixins/mixins'
+import prefsMixin from '@/mixins/prefsMixin'
+import userMixin from '@/mixins/userMixin'
+import statusMixin from '@/mixins/statusMixin'
 import idbs from '@/services/idbStorage'
 import publicApi from '@/network/publicApi'
 import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
 import Games from '@/store/models/Games'
-import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'EventSelector',

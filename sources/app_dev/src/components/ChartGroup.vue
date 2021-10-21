@@ -57,11 +57,12 @@
 </template>
 
 <script>
-import { gamesMixin, gamesDisplayMixin } from '@/mixins/mixins'
+import gamesMixin from '@/mixins/gamesMixin'
+import gameDisplayMixin from '@/mixins/gameDisplayMixin'
 
 export default {
   name: 'ChartGroup',
-  mixins: [gamesMixin, gamesDisplayMixin],
+  mixins: [gamesMixin, gameDisplayMixin],
   props: {
     chartRound: {
       type: String,
@@ -105,7 +106,9 @@ export default {
           const group = this.chartGroup.replace(/Group |Poule /, '')
           teams = this.chartTeamList
             .filter(value => value.t_group === group)
-            .map(value => { return value.t_label })
+            .map(value => {
+              return value.t_label
+            })
         }
         if (teams.length === 0) {
           if (this.chartGames) {
@@ -119,7 +122,9 @@ export default {
             }
           }
         }
-        this.anonymousTeams = [...new Set(teams)].filter(value => value !== null).sort()
+        this.anonymousTeams = [...new Set(teams)]
+          .filter(value => value !== null)
+          .sort()
         this.anonymousGroup = true
       }
     }

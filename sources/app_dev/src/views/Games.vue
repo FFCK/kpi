@@ -125,7 +125,9 @@
 </template>
 
 <script>
-import { prefsMixin, gamesMixin } from '@/mixins/mixins'
+import prefsMixin from '@/mixins/prefsMixin'
+import gamesMixin from '@/mixins/gamesMixin'
+import statusMixin from '@/mixins/statusMixin'
 import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
 import Games from '@/store/models/Games'
@@ -140,7 +142,6 @@ import {
   ElDivider,
   ElOptionGroup
 } from 'element-plus'
-import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'Games',

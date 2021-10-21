@@ -23,6 +23,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   name: 'Rating',
@@ -51,7 +52,12 @@ export default {
   },
   methods: {
     rate (star) {
-      if (!this.thanks && typeof star === 'number' && star <= this.maxStars && star >= 0) {
+      if (
+        !this.thanks &&
+        typeof star === 'number' &&
+        star <= this.maxStars &&
+        star >= 0
+      ) {
         this.stars = star
         this.$emit('rated', this.stars)
       }
@@ -60,7 +66,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .rating {
   align-items: center;
