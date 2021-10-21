@@ -14,7 +14,7 @@
 	            <tr class='header'>
 	              <th width=18><img width="19" src="../img/oeil2.gif" alt="{#Publier#} ?" title="{#Publier#} ?" /></th>
 	              <th>Id</th>
-	              {if $profile <= 1}
+	              {if $profile <= 2}
   	              <th width=18><img width="19" src="../img/appO.png" alt="{#App#} ?" title="{#App#} ?" /></th>
 	              {/if}
 	              <th>&nbsp;</th>
@@ -39,7 +39,7 @@
   	                </a>
   	              </td>
   	              <td>{$arrayEvenement[i].Id}</td>
-  	              {if $profile <= 1}
+  	              {if $profile <= 2}
     	              <td class='color{$arrayEvenement[i].app}2'>
     	                <a href="#" Id="App{$arrayEvenement[i].Id}"
     	                  onclick="appEvt({$arrayEvenement[i].Id},'{$arrayEvenement[i].app}')">

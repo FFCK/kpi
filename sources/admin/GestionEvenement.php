@@ -212,7 +212,7 @@ class GestionEvenement extends MyPageSecure
 
 			if ($Cmd == 'PubliEvt') ($_SESSION['Profile'] <= 2) ? $this->PubliEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
-			if ($Cmd == 'AppEvt') ($_SESSION['Profile'] <= 1) ? $this->AppEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			if ($Cmd == 'AppEvt') ($_SESSION['Profile'] <= 2) ? $this->AppEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'ParamEvt') ($_SESSION['Profile'] <= 2) ? $this->ParamEvt() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
