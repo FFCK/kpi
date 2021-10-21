@@ -13,7 +13,7 @@
           <div class="text-nowrap">
             <button
               v-show="visibleButton"
-              class="btn btn-light m-1"
+              class="btn btn-secondary m-1"
               @click="loadCharts"
             >
               <i class="bi bi-arrow-clockwise"></i>

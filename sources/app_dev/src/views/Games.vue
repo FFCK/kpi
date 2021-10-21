@@ -46,7 +46,7 @@
           <div class="text-nowrap">
             <button
               v-show="visibleButton"
-              class="btn btn-light"
+              class="btn btn-secondary"
               @click="loadGames"
             >
               <i class="bi bi-arrow-clockwise"></i>

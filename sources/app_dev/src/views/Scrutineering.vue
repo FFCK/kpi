@@ -25,13 +25,13 @@
                   {{ $t("Scrutineering.Player") }}
                 </th>
                 <th class="text-center">
-                  {{ $t("Scrutineering.Helmet") }}
+                  {{ $t("Scrutineering.Kayak") }}
                 </th>
                 <th class="text-center">
                   {{ $t("Scrutineering.Vest") }}
                 </th>
                 <th class="text-center">
-                  {{ $t("Scrutineering.Kayak") }}
+                  {{ $t("Scrutineering.Helmet") }}
                 </th>
                 <th class="text-center">
                   {{ $t("Scrutineering.Paddles") }}
@@ -39,10 +39,10 @@
                 <th class="text-center">
                   <button
                     type="button"
-                    class="btn btn-secondary"
+                    class="btn btn-sm btn-secondary"
                     @click="loadPlayers"
                   >
-                    <i class="bi bi-arrow-repeat" />
+                    <i class="bi bi-arrow-clockwise" />
                   </button>
                 </th>
               </tr>
@@ -64,69 +64,12 @@
                     C
                   </span>
                 </td>
-                <td v-if="player.cap !== 'E'" class="text-center">
+                <td v-if="player.cap !== 'E'" class="text-center border-end">
                   <button
                     type="button"
                     :class="{
                       btn: true,
-                      'btn-success': player.helmet_status === 1,
-                      'btn-danger': player.helmet_status > 1
-                    }"
-                    @click="
-                      updatePlayer(
-                        player.id,
-                        player.player_id,
-                        'helmet_status',
-                        player.helmet_status
-                      )
-                    "
-                  >
-                    <i
-                      :class="{
-                        bi: true,
-                        'bi-square': player.helmet_status < 1,
-                        'bi-check-square': player.helmet_status === 1,
-                        'bi-exclamation-circle': player.helmet_status === 2,
-                        'bi-exclamation-triangle': player.helmet_status === 3,
-                        'bi-exclamation-diamond': player.helmet_status === 4
-                      }"
-                    />
-                  </button>
-                </td>
-                <td v-if="player.cap !== 'E'" class="text-center">
-                  <button
-                    type="button"
-                    :class="{
-                      btn: true,
-                      'btn-success': player.vest_status === 1,
-                      'btn-danger': player.vest_status > 1
-                    }"
-                    @click="
-                      updatePlayer(
-                        player.id,
-                        player.player_id,
-                        'vest_status',
-                        player.vest_status
-                      )
-                    "
-                  >
-                    <i
-                      :class="{
-                        bi: true,
-                        'bi-square': player.vest_status < 1,
-                        'bi-check-square': player.vest_status === 1,
-                        'bi-exclamation-circle': player.vest_status === 2,
-                        'bi-exclamation-triangle': player.vest_status === 3,
-                        'bi-exclamation-diamond': player.vest_status === 4
-                      }"
-                    />
-                  </button>
-                </td>
-                <td v-if="player.cap !== 'E'" class="text-center">
-                  <button
-                    type="button"
-                    :class="{
-                      btn: true,
+                      'btn-sm': true,
                       'btn-success': player.kayak_status === 1,
                       'btn-danger': player.kayak_status > 1
                     }"
@@ -156,6 +99,67 @@
                     type="button"
                     :class="{
                       btn: true,
+                      'btn-sm': true,
+                      'btn-success': player.vest_status === 1,
+                      'btn-danger': player.vest_status > 1
+                    }"
+                    @click="
+                      updatePlayer(
+                        player.id,
+                        player.player_id,
+                        'vest_status',
+                        player.vest_status
+                      )
+                    "
+                  >
+                    <i
+                      :class="{
+                        bi: true,
+                        'bi-square': player.vest_status < 1,
+                        'bi-check-square': player.vest_status === 1,
+                        'bi-exclamation-circle': player.vest_status === 2,
+                        'bi-exclamation-triangle': player.vest_status === 3,
+                        'bi-exclamation-diamond': player.vest_status === 4
+                      }"
+                    />
+                  </button>
+                </td>
+                <td v-if="player.cap !== 'E'" class="text-center">
+                  <button
+                    type="button"
+                    :class="{
+                      btn: true,
+                      'btn-sm': true,
+                      'btn-success': player.helmet_status === 1,
+                      'btn-danger': player.helmet_status > 1
+                    }"
+                    @click="
+                      updatePlayer(
+                        player.id,
+                        player.player_id,
+                        'helmet_status',
+                        player.helmet_status
+                      )
+                    "
+                  >
+                    <i
+                      :class="{
+                        bi: true,
+                        'bi-square': player.helmet_status < 1,
+                        'bi-check-square': player.helmet_status === 1,
+                        'bi-exclamation-circle': player.helmet_status === 2,
+                        'bi-exclamation-triangle': player.helmet_status === 3,
+                        'bi-exclamation-diamond': player.helmet_status === 4
+                      }"
+                    />
+                  </button>
+                </td>
+                <td v-if="player.cap !== 'E'" class="text-center">
+                  <button
+                    type="button"
+                    :class="{
+                      btn: true,
+                      'btn-sm': true,
                       'btn-success': player.paddle_count > 0,
                       'text-light': player.paddle_count > 0,
                       'btn-light': player.paddle_count <= 0
@@ -175,7 +179,7 @@
                   </button>
                 </td>
                 <td v-if="player.cap !== 'E'" class="text-center">
-                  <button type="button" class="btn btn-primary">
+                  <button type="button" class="btn btn-sm btn-primary">
                     <i class="bi bi-printer" />
                   </button>
                 </td>
@@ -184,7 +188,7 @@
             </tbody>
           </table>
           <div class="float-end">
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-sm btn-primary">
               <i class="bi bi-printer" />
               {{ $t("Scrutineering.PrintAll") }}
             </button>
