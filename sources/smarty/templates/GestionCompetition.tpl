@@ -210,7 +210,7 @@
     		    <tr>
     		      <td width=55% colspan=2>
     		        <label for="codeCompet">Code :</label>
-    		        <input type="text" name="codeCompet" maxlength=12 id="codeCompet" {if $profile == 1}class='gris'
+    		        <input type="text" name="codeCompet" maxlength=12 id="codeCompet" {if $profile <= 2}class='gris'
       		          {else}readonly{/if} {if $editCompet != ''}value="{$codeCompet}" {/if} />
       		      </td>
       		      <td colspan=2>
@@ -242,7 +242,7 @@
     		      <td colspan=4>
     		        <label for="labelCompet">Label : </label>
     		        <input type="text" name="labelCompet" value="{$labelCompet}" maxlength=50 id="labelCompet"
-    		          {if $profile == 1}class='gris' {else}readonly{/if} />
+    		          {if $profile <= 2}class='gris' {else}readonly{/if} />
     		      </td>
     		    </tr>
     		    <tr>
@@ -822,9 +822,8 @@
     		    </tr>
     		  </table>
   		  {/if}
-  		  {if $user == '42054' or $user == '63155' or $user == '252982'}
+  		  {if $profile <= 2}
     		  <hr>
-    		  <div align='center' class='rouge'><i>User Laurent/Eric/Matthieu</i></div>
     		  <table width="100%">
     		    <tr>
     		      <th class='titreForm' colspan=2>
