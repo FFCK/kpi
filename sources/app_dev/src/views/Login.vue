@@ -100,19 +100,18 @@ import privateApi from '@/network/privateApi'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
 import { prefsMixin, userMixin, logoutMixin } from '@/mixins/mixins'
-import Status from '@/store/models/Status'
+import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'Login',
-  mixins: [prefsMixin, userMixin, logoutMixin],
+  mixins: [prefsMixin, userMixin, logoutMixin, statusMixin],
   data () {
     return {
       input: {
         login: '',
         password: ''
       },
-      message: '',
-      status: {}
+      message: ''
     }
   },
   computed: {
@@ -150,50 +149,58 @@ export default {
       }
     },
     async formSubmit () {
-      this.status = await Status.find(1)
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        this.message = ''
-        if (this.input.login !== '' && this.input.password !== '') {
-          // Création du token d'authentification
-          const authToken = Buffer.from(`${this.input.login}:${this.input.password}`, 'utf8').toString('base64')
-          // Requête API
-          await privateApi.getToken(authToken)
-            .then((response) => {
-              this.message = ''
-              // Insertion dans le store
-              User.insertOrUpdate({
-                data: response.data.user
-              })
-              // Insertion dans IndexedDB
-              idbs.dbPut('user', response.data.user)
-              // Masquage du formulaire
-              this.showLoginForm = false
-              // Enregistrement cookie
-              const date = new Date()
-              date.setTime(date.getTime() + (10 * 24 * 60 * 60 * 1000))
-              const expires = 'expires=' + date.toUTCString()
-              document.cookie = 'kpi_app=' + response.data.user.token + '; ' + expires + '; path=/'
-              this.checkAuthorized()
-            }).catch((error) => {
-              // Erreur dans la réponse ?
-              if (error.response) {
-                if (error.response.status === 401) {
-                  this.message = this.$t('Login.UnauthorizedMsg')
-                }
-              // Erreur dans la requête ?
-              } else if (error.request) {
-                this.message = this.$t('Login.ErrorMsg')
-                console.log('Offline !')
-              } else if (error.message === 'Network Error') {
-                console.log('Offline !')
-              }
+      if (!(await this.checkOnline())) {
+        return
+      }
+      this.message = ''
+      if (this.input.login !== '' && this.input.password !== '') {
+        // Création du token d'authentification
+        const authToken = Buffer.from(
+          `${this.input.login}:${this.input.password}`,
+          'utf8'
+        ).toString('base64')
+        // Requête API
+        await privateApi
+          .getToken(authToken)
+          .then(response => {
+            this.message = ''
+            // Insertion dans le store
+            User.insertOrUpdate({
+              data: response.data.user
             })
-        } else {
-          // Formulaire vide
-          this.message = this.$t('Login.EmptyMsg')
-        }
+            // Insertion dans IndexedDB
+            idbs.dbPut('user', response.data.user)
+            // Masquage du formulaire
+            this.showLoginForm = false
+            // Enregistrement cookie
+            const date = new Date()
+            date.setTime(date.getTime() + 10 * 24 * 60 * 60 * 1000)
+            const expires = 'expires=' + date.toUTCString()
+            document.cookie =
+              'kpi_app=' +
+              response.data.user.token +
+              '; ' +
+              expires +
+              '; path=/'
+            this.checkAuthorized()
+          })
+          .catch(error => {
+            // Erreur dans la réponse ?
+            if (error.response) {
+              if (error.response.status === 401) {
+                this.message = this.$t('Login.UnauthorizedMsg')
+              }
+              // Erreur dans la requête ?
+            } else if (error.request) {
+              this.message = this.$t('Login.ErrorMsg')
+              console.log('Offline !')
+            } else if (error.message === 'Network Error') {
+              console.log('Offline !')
+            }
+          })
+      } else {
+        // Formulaire vide
+        this.message = this.$t('Login.EmptyMsg')
       }
     },
     dataDismiss () {

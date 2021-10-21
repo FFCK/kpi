@@ -100,18 +100,17 @@ import publicApi from '@/network/publicApi'
 import Events from '@/store/models/Events'
 import Preferences from '@/store/models/Preferences'
 import Games from '@/store/models/Games'
-import Status from '@/store/models/Status'
+import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'EventSelector',
-  mixins: [prefsMixin, userMixin],
+  mixins: [prefsMixin, userMixin, statusMixin],
   data () {
     return {
       baseUrl: process.env.VUE_APP_BASE_URL,
       showSelector: false,
       eventSelected: 0,
-      changeButton: false,
-      status: {}
+      changeButton: false
     }
   },
   computed: {
@@ -120,7 +119,9 @@ export default {
     },
     events () {
       if (this.eventMode === 'std') {
-        return Events.query().orderBy('id', 'desc').get()
+        return Events.query()
+          .orderBy('id', 'desc')
+          .get()
       } else {
         return Events.query().get()
       }
@@ -140,57 +141,55 @@ export default {
       }
     },
     async loadEvents () {
-      this.status = await Status.find(1)
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        await publicApi.getEvents(this.eventMode)
-          .then(result => {
-            const eventsResult = result.data.map(event => {
-              event.id = parseInt(event.id)
-              return event
-            })
-            Events.deleteAll()
-            Events.insertOrUpdate({
-              data: eventsResult
-            })
-            this.eventSelected = this.prefs.event
-            this.showSelector = true
-          }).catch(error => {
-            if (error.message === 'Network Error') {
-              console.log('Offline !')
-            }
-          })
+      if (!(await this.checkOnline())) {
+        return
       }
-    },
-    async changeEvent () {
-      this.status = await Status.find(1)
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        const e = Events.find(this.eventSelected)
-        Preferences.update({
-          where: 1,
-          data: {
-            event: e.id,
-            event_name: e.libelle,
-            event_place: e.place,
-            event_logo: e.logo,
-            fav_categories: '[]',
-            fav_teams: '[]',
-            fav_refs: '[]',
-            fav_dates: '',
-            fav_flags: true
+      await publicApi
+        .getEvents(this.eventMode)
+        .then(result => {
+          const eventsResult = result.data.map(event => {
+            event.id = parseInt(event.id)
+            return event
+          })
+          Events.deleteAll()
+          Events.insertOrUpdate({
+            data: eventsResult
+          })
+          this.eventSelected = this.prefs.event
+          this.showSelector = true
+        })
+        .catch(error => {
+          if (error.message === 'Network Error') {
+            console.log('Offline !')
           }
         })
-        idbs.dbPut('preferences', Preferences.find(1))
-        Games.deleteAll()
-        idbs.dbClear('games')
-        idbs.dbClear('charts')
-        this.showSelector = false
-        this.changeButton = false
-        this.$emit('changeEvent')
+    },
+    async changeEvent () {
+      if (!(await this.checkOnline())) {
+        return
       }
+      const e = Events.find(this.eventSelected)
+      Preferences.update({
+        where: 1,
+        data: {
+          event: e.id,
+          event_name: e.libelle,
+          event_place: e.place,
+          event_logo: e.logo,
+          fav_categories: '[]',
+          fav_teams: '[]',
+          fav_refs: '[]',
+          fav_dates: '',
+          fav_flags: true
+        }
+      })
+      idbs.dbPut('preferences', Preferences.find(1))
+      Games.deleteAll()
+      idbs.dbClear('games')
+      idbs.dbClear('charts')
+      this.showSelector = false
+      this.changeButton = false
+      this.$emit('changeEvent')
     },
     cancelEvent () {
       this.showSelector = false

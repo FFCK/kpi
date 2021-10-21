@@ -7,7 +7,8 @@ export default class Status extends Model {
     return {
       id: this.number(1),
       online: this.boolean(true),
-      errorMessage: this.string('')
+      messageText: this.string(''),
+      messageClass: this.string('alert-info')
     }
   }
 }

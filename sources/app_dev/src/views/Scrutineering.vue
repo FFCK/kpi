@@ -13,6 +13,10 @@
           @click="$router.push({ name: 'Login' })"
         />
         <team-selector @changeTeam="loadPlayers" />
+        <!-- <i
+          role="button"
+          class="if-portrait float-end bi bi-phone-landscape ms-2"
+        /> -->
         <div v-if="prefs.scr_team_id">
           <table class="table table-sm">
             <thead>
@@ -189,6 +193,7 @@
             <label class="form-label me-1"
               ><i>{{ $t("Scrutineering.Issues") }}:</i></label
             >
+            <br />
             <button class="btn btn-danger btn-sm" disabled>
               <i class="bi-exclamation-circle"
                 >&nbsp; {{ $t("Scrutineering.Cosmetic") }}</i
@@ -231,23 +236,18 @@
 <script>
 import { prefsMixin, userMixin } from '@/mixins/mixins'
 import TeamSelector from '@/components/TeamSelector.vue'
-import Status from '@/store/models/Status'
 import Players from '@/store/models/Players'
 import privateApi from '@/network/privateApi'
 import Title from '@/components/design/Title.vue'
+import statusMixin from '@/mixins/statusMixin'
 
 export default {
   components: { TeamSelector, Title },
   name: 'Scrutineering',
-  mixins: [prefsMixin, userMixin],
+  mixins: [prefsMixin, userMixin, statusMixin],
   computed: {
     players () {
       return Players.query().all()
-    }
-  },
-  data () {
-    return {
-      status: {}
     }
   },
   async mounted () {
@@ -265,59 +265,68 @@ export default {
   },
   methods: {
     async loadPlayers () {
-      this.status = await Status.find(1)
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        await privateApi.getPlayers(this.prefs.event, this.prefs.scr_team_id)
-          .then(result => {
-            Players.deleteAll()
-            Players.insertOrUpdate({
-              data: result.data
-            })
-          }).catch(error => {
-            if (error.message === 'Network Error') {
-              console.log('Offline !')
-            }
-          })
+      if (!(await this.checkOnline())) {
+        return
       }
+      await privateApi
+        .getPlayers(this.prefs.event, this.prefs.scr_team_id)
+        .then(result => {
+          Players.deleteAll()
+          Players.insertOrUpdate({
+            data: result.data
+          })
+        })
     },
     async updatePlayer (id, player, equipt, val) {
-      var max = (equipt === 'paddle_count') ? 6 : 4
-      val = (val >= max) ? 0 : val + 1
+      var max = equipt === 'paddle_count' ? 6 : 4
+      val = val >= max ? 0 : val + 1
 
-      this.status = await Status.find(1)
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        await privateApi.putPlayer(this.prefs.event, this.prefs.scr_team_id, player, equipt, val)
-          .then(result => {
-            var updateObject = {}
-            switch (equipt) {
-              case 'kayak_status':
-                updateObject = { kayak_status: result.data }
-                break
-              case 'vest_status':
-                updateObject = { vest_status: result.data }
-                break
-              case 'helmet_status':
-                updateObject = { helmet_status: result.data }
-                break
-              case 'paddle_count':
-                updateObject = { paddle_count: result.data }
-                break
-            }
-            Players.update({
-              where: id,
-              data: updateObject
-            })
-          }).catch(error => {
-            if (error.message === 'Network Error') {
-              console.log('Offline !')
-            }
-          })
+      if (!(await this.checkOnline())) {
+        return
       }
+      await privateApi
+        .putPlayer(
+          this.prefs.event,
+          this.prefs.scr_team_id,
+          player,
+          equipt,
+          val
+        )
+        .then(result => {
+          var updateObject = {}
+          switch (equipt) {
+            case 'kayak_status':
+              updateObject = { kayak_status: result.data }
+              break
+            case 'vest_status':
+              updateObject = { vest_status: result.data }
+              break
+            case 'helmet_status':
+              updateObject = { helmet_status: result.data }
+              break
+            case 'paddle_count':
+              updateObject = { paddle_count: result.data }
+              break
+          }
+          Players.update({
+            where: id,
+            data: updateObject
+          })
+        })
+        .catch(error => {
+          if (error.message === 'Network Error') {
+            console.log('Offline !')
+          }
+        })
     }
   }
 }
 </script>
+
+<style scoped>
+@media screen and (orientation: landscape) {
+  .if-portrait {
+    display: none;
+  }
+}
+</style>
