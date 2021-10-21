@@ -11,13 +11,13 @@
         </div>
         <div class="col text-end">
           <div class="text-nowrap">
-            <el-button
+            <button
               v-show="visibleButton"
-              class="m-1"
-              icon="el-icon-refresh-right"
-              plain
+              class="btn btn-light m-1"
               @click="loadCharts"
-            />
+            >
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
             <i
               role="button"
               class="float-end bi bi-caret-right-square-fill ms-2"
@@ -35,25 +35,20 @@
 </template>
 
 <script>
-// import TitleComponent from '@/components/design/Title'
 import Charts from '@/components/Charts.vue'
 import { prefsMixin, gamesMixin } from '@/mixins/mixins'
 import publicApi from '@/network/publicApi'
 import idbs from '@/services/idbStorage'
-import {
-  ElBacktop, ElButton
-} from 'element-plus'
-import Status from '@/store/models/Status'
+import { ElBacktop } from 'element-plus'
+import statusMixin from '@/mixins/statusMixin'
 
 export default {
   name: 'Chart',
   components: {
     ElBacktop,
-    ElButton,
-    // TitleComponent,
     Charts
   },
-  mixins: [prefsMixin, gamesMixin],
+  mixins: [prefsMixin, gamesMixin, statusMixin],
   data () {
     return {
       chartData: null,
@@ -74,42 +69,41 @@ export default {
       await this.getPrefs()
       await this.prefs
       this.showFlags = this.prefs.show_flags
-      this.status = await Status.find(1)
-      await idbs.dbGetAll('charts')
-        .then(result => {
-          this.chartData = result
-          this.chartIndex++
-        })
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        this.visibleButton = false
-        setTimeout(() => {
-          this.visibleButton = true
-        }, 3000)
-        await publicApi.getCharts(this.prefs.event)
-          .then(async result => {
-            this.chartData = result.data
-            this.chartIndex++
-            idbs.dbClear('charts')
-            this.chartData.forEach(element => {
-              idbs.dbPut('charts', JSON.parse(JSON.stringify(element)))
-            })
-          }).catch(async error => {
-            if (error.response) {
-              console.log(error.response.data)
-              console.log(error.response.status)
-              console.log(error.response.headers)
-            } else if (error.request) {
-              console.log(error.request, error.message)
-            } else {
-              console.log('Error', error.message)
-              if (error.message === 'Network Error') {
-                console.log('Offline !')
-              }
-            }
-          })
+      await idbs.dbGetAll('charts').then(result => {
+        this.chartData = result
+        this.chartIndex++
+      })
+      if (!(await this.checkOnline())) {
+        return
       }
+      this.visibleButton = false
+      setTimeout(() => {
+        this.visibleButton = true
+      }, 3000)
+      await publicApi
+        .getCharts(this.prefs.event)
+        .then(async result => {
+          this.chartData = result.data
+          this.chartIndex++
+          idbs.dbClear('charts')
+          this.chartData.forEach(element => {
+            idbs.dbPut('charts', JSON.parse(JSON.stringify(element)))
+          })
+        })
+        .catch(async error => {
+          if (error.response) {
+            console.log(error.response.data)
+            console.log(error.response.status)
+            console.log(error.response.headers)
+          } else if (error.request) {
+            console.log(error.request, error.message)
+          } else {
+            console.log('Error', error.message)
+            if (error.message === 'Network Error') {
+              console.log('Offline !')
+            }
+          }
+        })
     }
   }
 }

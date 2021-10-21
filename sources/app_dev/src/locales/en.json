@@ -1,5 +1,8 @@
 {
   "message": "Welcome on KPI-App !",
+  "status": {
+    "Offline": "You are offline!"
+  },
   "nav": {
     "Home": "Home",
     "Login": "Login",

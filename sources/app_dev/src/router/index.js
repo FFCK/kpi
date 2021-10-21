@@ -1,10 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import Event from '../views/Event.vue'
-import Games from '../views/Games.vue'
-import Chart from '../views/Chart.vue'
-import Login from '../views/Login.vue'
-import About from '../views/About.vue'
+import Home from '@/views/Home'
+import Event from '@/views/Event'
+import Games from '@/views/Games'
+import Chart from '@/views/Chart'
+import Login from '@/views/Login'
+import Logout from '@/views/Logout'
+import About from '@/views/About'
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: Logout
   },
   {
     path: '/game_report',
