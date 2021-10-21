@@ -75,12 +75,12 @@ function token_check($event)
 			$row = $result->fetch();
 			$generated_at = date_create($row["generated_at"]);
 			date_add($generated_at, date_interval_create_from_date_string('10 days'));
-			if (!$generated_at >= date_create()) {
-				return_401();
+			if ($generated_at < date_create()) {
+				return_401('Token Expired');
 			}
 			$grantedEvents = explode('|', trim($row["Id_Evenement"], '|'));
 			if (!in_array($event, $grantedEvents)) {
-				return_403();
+				return_403('Unauthorized event');
 			}
 			return $row["user"];
 		}

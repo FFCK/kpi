@@ -4,6 +4,8 @@
 
     <Update />
 
+    <Message />
+
     <router-view v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
@@ -16,14 +18,16 @@
 
 <script>
 import Navbar from '@/components/design/Navbar'
-import AddToHomeScreen from '@/components/design/AddToHomeScreen.vue'
-import Update from '@/components/design/Update.vue'
+import AddToHomeScreen from '@/components/design/AddToHomeScreen'
+import Update from '@/components/design/Update'
+import Message from '@/components/design/Message'
 
 export default {
   components: {
     Navbar,
     AddToHomeScreen,
-    Update
+    Update,
+    Message
   }
 }
 </script>

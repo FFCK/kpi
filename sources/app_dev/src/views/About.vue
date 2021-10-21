@@ -101,12 +101,12 @@ import Rating from '@/components/design/Rating.vue'
 import Preferences from '@/store/models/Preferences'
 import { prefsMixin } from '@/mixins/mixins'
 import idbs from '@/services/idbStorage'
-import Status from '@/store/models/Status'
+import statusMixin from '@/mixins/statusMixin'
 import publicApi from '@/network/publicApi'
 
 export default {
   name: 'About',
-  mixins: [prefsMixin],
+  mixins: [prefsMixin, statusMixin],
   components: {
     Rating
   },
@@ -120,7 +120,6 @@ export default {
       stars: 0,
       thanks: false,
       key: 0,
-      status: {},
       currentRating: null,
       currentVoters: null
     }
@@ -136,46 +135,46 @@ export default {
       this.key++
     },
     async getCurrentRating () {
-      this.status = await Status.find(1)
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        await publicApi.getStars()
-          .then(async result => {
-            this.currentRating = parseFloat(result.data.average).toFixed(2)
-            this.currentVoters = result.data.count
-          }).catch(error => {
-            if (error.message === 'Network Error') {
-              console.log('Offline !')
-            }
-          })
+      if (!(await this.checkOnline())) {
+        return
       }
+      await publicApi
+        .getStars()
+        .then(async result => {
+          this.currentRating = parseFloat(result.data.average).toFixed(2)
+          this.currentVoters = result.data.count
+        })
+        .catch(error => {
+          if (error.message === 'Network Error') {
+            console.log('Offline !')
+          }
+        })
     },
     async rated (stars) {
+      if (!(await this.checkOnline())) {
+        return
+      }
       this.thanks = true
       this.stars = stars
       this.key++
-      this.status = await Status.find(1)
-      if (!this.status.online) {
-        console.log('Offline process...')
-      } else {
-        await publicApi.postRating(this.prefs.uid, this.stars)
-          .then(async result => {
-            if (result.data === true) {
-              await Preferences.update({
-                where: 1,
-                data: {
-                  stars: stars
-                }
-              })
-              idbs.dbPut('preferences', Preferences.find(1))
-            }
-          }).catch(error => {
-            if (error.message === 'Network Error') {
-              console.log('Offline !')
-            }
-          })
-      }
+      await publicApi
+        .postRating(this.prefs.uid, this.stars)
+        .then(async result => {
+          if (result.data === true) {
+            await Preferences.update({
+              where: 1,
+              data: {
+                stars: stars
+              }
+            })
+            idbs.dbPut('preferences', Preferences.find(1))
+          }
+        })
+        .catch(error => {
+          if (error.message === 'Network Error') {
+            console.log('Offline !')
+          }
+        })
     }
   },
   mounted () {
