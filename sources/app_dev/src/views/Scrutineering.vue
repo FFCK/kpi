@@ -234,12 +234,13 @@
 </template>
 
 <script>
-import { prefsMixin, userMixin } from '@/mixins/mixins'
+import prefsMixin from '@/mixins/prefsMixin'
+import userMixin from '@/mixins/userMixin'
+import statusMixin from '@/mixins/statusMixin'
 import TeamSelector from '@/components/TeamSelector.vue'
 import Players from '@/store/models/Players'
 import privateApi from '@/network/privateApi'
 import Title from '@/components/design/Title.vue'
-import statusMixin from '@/mixins/statusMixin'
 
 export default {
   components: { TeamSelector, Title },

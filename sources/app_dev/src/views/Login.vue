@@ -99,7 +99,9 @@
 import privateApi from '@/network/privateApi'
 import idbs from '@/services/idbStorage'
 import User from '@/store/models/User'
-import { prefsMixin, userMixin, logoutMixin } from '@/mixins/mixins'
+import prefsMixin from '@/mixins/prefsMixin'
+import userMixin from '@/mixins/userMixin'
+import logoutMixin from '@/mixins/logoutMixin'
 import statusMixin from '@/mixins/statusMixin'
 
 export default {

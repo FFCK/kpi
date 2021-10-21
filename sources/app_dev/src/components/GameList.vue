@@ -251,12 +251,12 @@
 </template>
 
 <script>
-import { gamesDisplayMixin } from '@/mixins/mixins'
+import gameDisplayMixin from '@/mixins/gameDisplayMixin'
+
 export default {
   name: 'GameList',
-  components: {
-  },
-  mixins: [gamesDisplayMixin],
+  components: {},
+  mixins: [gameDisplayMixin],
   props: {
     games: {
       type: Object,
@@ -284,8 +284,7 @@ export default {
       baseUrl: process.env.VUE_APP_BASE_URL
     }
   },
-  mounted () {
-  }
+  mounted () {}
 }
 </script>
 

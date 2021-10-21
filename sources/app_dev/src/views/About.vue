@@ -97,11 +97,11 @@
 </template>
 
 <script>
+import prefsMixin from '@/mixins/prefsMixin'
+import statusMixin from '@/mixins/statusMixin'
 import Rating from '@/components/design/Rating.vue'
 import Preferences from '@/store/models/Preferences'
-import { prefsMixin } from '@/mixins/mixins'
 import idbs from '@/services/idbStorage'
-import statusMixin from '@/mixins/statusMixin'
 import publicApi from '@/network/publicApi'
 
 export default {
