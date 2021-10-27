@@ -89,7 +89,7 @@ function GetGamesController($route)
 {
   $event_id = (int) $route[1];
   $force = $route[2] ?? false;
-  $array = ($force !== 'force') ? json_cache_read('games', $event_id, 3) : false;
+  $array = ($force !== 'force') ? json_cache_read('games', $event_id, 2) : false;
   if ($array) {
     return_200($array);
   }
@@ -168,7 +168,7 @@ function GetChartsController($route)
 {
   $event_id = (int) $route[1];
   $force = $route[2] ?? false;
-  $charts = ($force !== 'force') ? json_cache_read('charts', $event_id, 5) : false;
+  $charts = ($force !== 'force') ? json_cache_read('charts', $event_id, 2) : false;
   if ($charts) {
     return_200($charts);
   }
