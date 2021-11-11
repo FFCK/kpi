@@ -6,27 +6,27 @@ class CacheMatch
 	var $m_bCache;
 	var $m_bFTP;
 	var $m_idFTP;
-    
-    // Constructeur ...
-    function __construct(&$arrayParams)
-    {
-        $this->m_arrayParams = &$arrayParams;
+
+	// Constructeur ...
+	function __construct(&$arrayParams)
+	{
+		$this->m_arrayParams = &$arrayParams;
 		if ($this->GetParam('cache') == '0')
 			$this->m_bCache = false;
 		else
 			$this->m_bCache = true;
-			
+
 		$this->m_bFTP = false; // fopen !
 		if ($this->m_bFTP)
 			$this->InitFTP();
-    }
-	
-	function __destruct ()
+	}
+
+	function __destruct()
 	{
 		if ($this->m_bFTP)
 			ftp_close($this->m_idFTP);
 	}
-	
+
 	function InitFTP()
 	{
 		$ftp_server = FTP_SERVER;
@@ -38,25 +38,25 @@ class CacheMatch
 
 		// login with username and password
 		$login_result = ftp_login($this->m_idFTP, $ftp_user_name, $ftp_user_pass);
-			
+
 		// Vérification de la connexion
 		if ((!$this->m_idFTP) || (!$login_result)) {
-				die("Echec de la connexion FTP !");
+			die("Echec de la connexion FTP !");
 		}
-			
+
 		ftp_chdir($this->m_idFTP, "live/cache");
-//		echo "Dossier courant : " . ftp_pwd($this->m_idFTP) . "\n";
+		//		echo "Dossier courant : " . ftp_pwd($this->m_idFTP) . "\n";
 	}
-	
-    function GetParam($key, $defaultValue='')
-    {
+
+	function GetParam($key, $defaultValue = '')
+	{
 		if (isset($this->m_arrayParams[$key]))
 			return $this->m_arrayParams[$key];
 		else
 			return $defaultValue;
-    }
+	}
 
-    function StartCache()
+	function StartCache()
 	{
 		if ($this->m_bCache)
 			ob_start();
@@ -64,40 +64,39 @@ class CacheMatch
 
 	function EndCache($fileName)
 	{
-		if ($this->m_bCache)
-		{
-			$in = array("è", "é", "ê", "ç", "ô", "î", "â", "à","È", "É", "Ê", "Ç", "Ô", "Î", "Â", "À", "Ï", "Ä", "Ë", "Ö", "Ü");  
-			$out = array("&egrave;","&eacute;","&ecric;","&ccedil;","&ocirc;","&icirc;","&acirc;","&agrave;","&Egrave;","&Eacute;","&Ecric;","&Ccedil;","&Ocirc;","&Icirc;","&Acirc;","&Agrave;","&Iuml;","&Auml;","&Euml;", "&Ouml;", "&Uuml;");
+		if ($this->m_bCache) {
+			$in = array("è", "é", "ê", "ç", "ô", "î", "â", "à", "È", "É", "Ê", "Ç", "Ô", "Î", "Â", "À", "Ï", "Ä", "Ë", "Ö", "Ü");
+			$out = array("&egrave;", "&eacute;", "&ecric;", "&ccedil;", "&ocirc;", "&icirc;", "&acirc;", "&agrave;", "&Egrave;", "&Eacute;", "&Ecric;", "&Ccedil;", "&Ocirc;", "&Icirc;", "&Acirc;", "&Agrave;", "&Iuml;", "&Auml;", "&Euml;", "&Ouml;", "&Uuml;");
 			$content = str_replace($in, $out, ob_get_contents() . "@@END@@");
-            if($this->m_bFTP) {
-                // C'est pas du FTP !!!
-                file_put_contents($_SERVER['DOCUMENT_ROOT']."/live/cache/$fileName", $content);
-            } else {
-                if(!file_put_contents(dirname(__FILE__) . "/cache/$fileName", $content)) {
-                    $error = "Ecriture échouée :";
-                }
-            }
-            
+			if ($this->m_bFTP) {
+				// C'est pas du FTP !!!
+				file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/live/cache/$fileName", $content);
+			} else {
+				if (!file_put_contents(dirname(__FILE__) . "/cache/$fileName", $content)) {
+					$error = "Ecriture échouée :";
+				}
+			}
+
 			ob_end_clean();
-            if(isset($error)) {
-                echo $error;
-            }
+			if (isset($error)) {
+				echo $error;
+			}
 		}
 	}
-	
+
 	function Pitch($idEvent, $pitch, $idMatch)
 	{
 		$arrayCache = array('id_match' => $idMatch, 'pitch' => $pitch);
-        
-        //Nouveau format
+
+		//Nouveau format
 		$this->StartCache();
 		echo json_encode($arrayCache);
-		$this->EndCache('event'.$idEvent.'_pitch'.$pitch.'.json');
-        
-        // Ancien format
-		$this->StartCache();
-		echo json_encode($arrayCache);
-		$this->EndCache($pitch.'_terrain.json');
+		$this->EndCache('event' . $idEvent . '_pitch' . $pitch . '.json');
+
+		// Ancien format
+		// $this->StartCache();
+		// echo json_encode($arrayCache);
+		// $this->EndCache($pitch.'_terrain.json');
 	}
 
 	function Match(&$db, $idMatch)
@@ -105,13 +104,13 @@ class CacheMatch
 		$this->MatchGlobal($db, $idMatch);
 		$this->MatchScore($db, $idMatch);
 		$this->MatchChrono($db, $idMatch);
-        return true;
+		return true;
 	}
-	
+
 	function MatchGlobal(&$db, $idMatch)
 	{
 		$this->StartCache();
-		
+
 		// Chargement Record Match ...
 		$rMatch = null;
 		$sql = "SELECT * 
@@ -119,7 +118,7 @@ class CacheMatch
 			WHERE Id = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
-		$rMatch = $result->fetch();		
+		$rMatch = $result->fetch();
 
 		// Chargement Record Journée ...
 		$rJournee = null;
@@ -128,7 +127,7 @@ class CacheMatch
 			WHERE Id = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($rMatch['Id_journee']));
-		$rJournee = $result->fetch();		
+		$rJournee = $result->fetch();
 
 		// Chargement Record Compétition ...
 		$rCompetition = null;
@@ -137,26 +136,26 @@ class CacheMatch
 			WHERE Code = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($rJournee['Code_competition']));
-		$rCompetition = $result->fetch();		
-		
+		$rCompetition = $result->fetch();
+
 		$idEquipeA =  $rMatch['Id_equipeA'];
 		$idEquipeB =  $rMatch['Id_equipeB'];
-		
-        $rEquipeA = null;
+
+		$rEquipeA = null;
 		$rEquipeB = null;
 		$tJoueursA = null;
 		$tJoueursB = null;
-        
-		if($idEquipeA > 0) {
-            // Chargement Equipe A 
+
+		if ($idEquipeA > 0) {
+			// Chargement Equipe A 
 			$sql = "SELECT * 
 				FROM kp_competition_equipe 
 				WHERE Id = ? ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idEquipeA));
-			$rEquipeA = $result->fetch();		
+			$rEquipeA = $result->fetch();
 
-            // Chargement Joueurs Equipe A 
+			// Chargement Joueurs Equipe A 
 			$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
 				FROM kp_match_joueur a, kp_licence b 
 				WHERE a.Id_match = ? 
@@ -165,19 +164,19 @@ class CacheMatch
 				ORDER BY a.Numero ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idMatch, 'A'));
-			$tJoueursA = $result->fetchAll(PDO::FETCH_ASSOC);	
-        }
-		
-		if($idEquipeB > 0) {
-            // Chargement Equipe B 
+			$tJoueursA = $result->fetchAll(PDO::FETCH_ASSOC);
+		}
+
+		if ($idEquipeB > 0) {
+			// Chargement Equipe B 
 			$sql = "SELECT * 
 				FROM kp_competition_equipe 
 				WHERE Id = ? ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idEquipeB));
-			$rEquipeB = $result->fetch();		
+			$rEquipeB = $result->fetch();
 
-            // Chargement Joueurs Equipe B 
+			// Chargement Joueurs Equipe B 
 			$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
 				FROM kp_match_joueur a, kp_licence b 
 				WHERE a.Id_match = ? 
@@ -186,13 +185,13 @@ class CacheMatch
 				ORDER BY a.Numero ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idMatch, 'B'));
-			$tJoueursB = $result->fetchAll(PDO::FETCH_ASSOC);	
-        }
+			$tJoueursB = $result->fetchAll(PDO::FETCH_ASSOC);
+		}
 
 		// json ...
 		$arrayCache = array(
 			'id_match' => $idMatch,
-			'tick' => uniqid(), 
+			'tick' => uniqid(),
 			'categ' => $rCompetition['Soustitre2'],
 			'journee' => $rJournee['Nom'],
 			'phase' => $rJournee['Phase'],
@@ -203,25 +202,25 @@ class CacheMatch
 			'statut' => $rMatch['Statut'],
 			'arbitre' => $rMatch['Arbitre_principal'],
 			'arbitre_secondaire' => $rMatch['Arbitre_secondaire'],
-			'equipe1' => array( 
-				'id' => $idEquipeA, 'nom' => $rEquipeA['Libelle'], 
+			'equipe1' => array(
+				'id' => $idEquipeA, 'nom' => $rEquipeA['Libelle'],
 				'club' => $rEquipeA['Code_club'], 'joueurs' => $tJoueursA
 			),
-			'equipe2' => array( 
-				'id' => $idEquipeB, 'nom' => $rEquipeB['Libelle'], 
+			'equipe2' => array(
+				'id' => $idEquipeB, 'nom' => $rEquipeB['Libelle'],
 				'club' => $rEquipeB['Code_club'], 'joueurs' => $tJoueursB
 			)
 		);
-		
+
 		echo json_encode($arrayCache);
-		$this->EndCache($idMatch.'_match_global.json');
+		$this->EndCache($idMatch . '_match_global.json');
 	}
-	
+
 	// Score , Cartons ...
 	function MatchScore(&$db, $idMatch)
 	{
 		$this->StartCache();
-		
+
 		// Chargement Record Match ...
 		$rMatch = null;
 		$sql = "SELECT * 
@@ -230,7 +229,7 @@ class CacheMatch
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
 		$rMatch = $result->fetch();
-		
+
 		// Chargement kp_match_detail 
 		$tMatchDetails = null;
 		$sql = "SELECT a.*, b.Nom, b.Prenom, c.Capitaine 
@@ -242,28 +241,28 @@ class CacheMatch
 			LIMIT 5 ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
-		$tMatchDetails = $result->fetchAll(PDO::FETCH_ASSOC);	
-		
+		$tMatchDetails = $result->fetchAll(PDO::FETCH_ASSOC);
+
 		// json ...
 		$arrayCache = array(
 			'id_match' => $idMatch,
-			'tick' => uniqid(), 
+			'tick' => uniqid(),
 			'periode' => $rMatch['Periode'],
 			'score1' => $rMatch['ScoreDetailA'],
 			'score2' => $rMatch['ScoreDetailB'],
 			'event' => $tMatchDetails
 		);
-		
+
 		echo json_encode($arrayCache);
-		
-		$this->EndCache($idMatch.'_match_score.json');
+
+		$this->EndCache($idMatch . '_match_score.json');
 	}
 
 	// Gestion du Temps et de l'Etat du Match ...
 	function MatchChrono(&$db, $idMatch)
 	{
 		$this->StartCache();
-		
+
 		$rChrono = null;
 		$sql = "SELECT * 
 			FROM kp_chrono 
@@ -271,9 +270,8 @@ class CacheMatch
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
 		$rChrono = $result->fetch();
-		
-		if (!isset($rChrono['IdMatch']))
-		{
+
+		if (!isset($rChrono['IdMatch'])) {
 			$rChrono['IdMatch'] = $idMatch;
 			$rChrono['action'] = 'stop';
 			$rChrono['run_time'] = 600000;
@@ -283,25 +281,25 @@ class CacheMatch
 		}
 
 		$rChrono['tick'] = uniqid();
-		
+
 		// json ...
 		echo json_encode($rChrono);
-	
-		$this->EndCache($idMatch.'_match_chrono.json');
+
+		$this->EndCache($idMatch . '_match_chrono.json');
 	}
-	
+
 	// Liste des Matchs actifs ...
 	function Matchs($list)
 	{
 		$this->StartCache();
-	
+
 		// json ...
 		echo json_encode($list);
-	
+
 		$this->EndCache('matchs.json');
 	}
-	
-	function Event(&$db, $idEvent, $dateMatch, $hourMatch, $arrayPitchs=null)
+
+	function Event(&$db, $idEvent, $dateMatch, $hourMatch, $arrayPitchs = null)
 	{
 		// Chargement de tous les Matchs de l'évenement pour la date indiquée et les terrains concernés ...
 		$tMatchs = null;
@@ -315,7 +313,7 @@ class CacheMatch
 				AND a.Date_match = ? 
 				AND a.Statut != 'ATT' 
 				AND a.Terrain IN ($in) 
-				ORDER BY a.Heure_match, a.Terrain ";		
+				ORDER BY a.Heure_match, a.Terrain ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array_merge([$idEvent], [$dateMatch], $arrayPitchs));
 		} else {
@@ -326,64 +324,55 @@ class CacheMatch
 				AND c.Id_evenement = ? 
 				AND a.Date_match = ? 
 				AND a.Statut != 'ATT' 
-				ORDER BY a.Heure_match, a.Terrain ";		
+				ORDER BY a.Heure_match, a.Terrain ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idEvent, $dateMatch));
 		}
-		$tMatchs = $result->fetchAll(PDO::FETCH_ASSOC);	
+		$tMatchs = $result->fetchAll(PDO::FETCH_ASSOC);
 		// Prise des Terrains ...
 		$arrayPitch = array();
-		foreach ($tMatchs as $tMatch)
-		{
+		foreach ($tMatchs as $tMatch) {
 			$pitch = $tMatch['Terrain'];
-            array_push($arrayPitch, $pitch);
+			array_push($arrayPitch, $pitch);
 		}
-        $arrayPitch = array_unique($arrayPitch);		
-		
+		$arrayPitch = array_unique($arrayPitch);
+
 		// Génération des fichiers 
 		$time = utyHHMM_To_MM($hourMatch);
-		foreach ($arrayPitch as $pitch)
-		{
+		foreach ($arrayPitch as $pitch) {
 			$idMatch = $this->GetBestMatch($tMatchs, $pitch, $time);
-			if ($idMatch >= 0)
-			{
+			if ($idMatch >= 0) {
 				$this->Pitch($idEvent, $pitch, $idMatch);
-                echo 'Terrain ' . $pitch . ' - Match ' . $idMatch . '<br>';
+				echo 'Terrain ' . $pitch . ' - Match ' . $idMatch . '<br>';
 			}
 		}
 	}
-	
+
 	function GetBestMatch(&$tMatchs, $pitch, $time)
 	{
 		$timeBest = 0;
 		$idBest = -1;
-		for ($i=0;$i<count($tMatchs);$i++)
-		{
-			if ($tMatchs[$i]['Terrain'] != $pitch) 
+		for ($i = 0; $i < count($tMatchs); $i++) {
+			if ($tMatchs[$i]['Terrain'] != $pitch)
 				continue;
-			
+
 			$timeMatch = utyHHMM_To_MM($tMatchs[$i]['Heure_match']);
-			if ($timeMatch <= $time)
-			{
-				if ($idBest == -1)
-				{
+			if ($timeMatch <= $time) {
+				if ($idBest == -1) {
 					$idBest = $i;
 					$timeBest = $timeMatch;
-				}
-				else
-				{
-					if ($timeBest < $timeMatch)
-					{
+				} else {
+					if ($timeBest < $timeMatch) {
 						$idBest = $i;
 						$timeBest = $timeMatch;
 					}
 				}
 			}
 		}
-		
+
 		if ($idBest == -1)
 			return -1;
 		else
 			return $tMatchs[$idBest]['Id'];
 	}
-}	
+}
