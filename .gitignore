@@ -42,3 +42,4 @@ sources/app_dev/node_modules/*
 sources/app_dev/.env
 sources/api/files/*
 !sources/api/files/.gitkeep
+docker/logs/*
