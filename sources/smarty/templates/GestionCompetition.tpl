@@ -756,6 +756,31 @@
     		      </td>
     		    </tr>
     		  </table>
+    		  <table width=100%>
+    		    <tr>
+    		      <th class='titreForm' colspan=2>
+    		        <label>Changer un code compétition</label>
+    		      </th>
+    		    </tr>
+    		    <tr>
+    		      <td>
+    		        <label for="changeCodeSource">Code source</label>
+    		        <input type="text" name="ChangeCodeRecherche" size=40 id="ChangeCodeRecherche" placeholder="Chercher">
+    		        <input type="text" name="changeCodeSource" id="changeCodeSource" readonly>
+    		      </td>
+    		    </tr>
+    		    <tr>
+    		      <td>
+    		        <label for="changeCodeCible">Code cible</label>
+    		        <input type="text" name="changeCodeCible" size=40 id="changeCodeCible">
+    		      </td>
+    		    </tr>
+    		    <tr>
+    		      <td>
+    		        <input type="button" name="ChangeCodeBtn" id="ChangeCodeBtn" value="Changer">
+    		      </td>
+    		    </tr>
+    		  </table>
   		  {/if}
   		  {if $profile <= 4}
     		  <table width="100%">
