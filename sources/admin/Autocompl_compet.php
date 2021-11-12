@@ -1,10 +1,10 @@
 <?php
 // prevent direct access *****************************************************
-$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
-strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-if(!$isAjax) {
-  $user_error = 'Access denied - not an AJAX request...';
-  trigger_error($user_error, E_USER_ERROR);
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) and
+	strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if (!$isAjax) {
+	$user_error = 'Access denied - not an AJAX request...';
+	trigger_error($user_error, E_USER_ERROR);
 }
 // ***************************************************************************
 include_once('../commun/MyBdd.php');
@@ -14,15 +14,24 @@ $myBdd = new MyBdd();
 
 // Chargement
 $q = trim(utyGetGet('q'));
-$sql = "SELECT * 
-	FROM kp_competition 
-	WHERE Code LIKE ? 
-	OR Libelle LIKE ? 
-	GROUP BY Code 
-	ORDER BY Code_saison DESC, Code, Libelle 
-	LIMIT 20 ";
+$sql = "SELECT p1.* 
+	FROM kp_competition p1
+	INNER JOIN
+	(
+			SELECT MAX(Code_saison) maxCodeSaison, Code
+			FROM kp_competition
+			WHERE Code LIKE :code
+			OR Libelle LIKE :code
+			GROUP BY Code
+	) p2
+		ON p1.Code = p2.Code
+		AND p1.Code_saison = p2.maxCodeSaison
+	WHERE p1.Code LIKE :code
+			OR p1.Libelle LIKE :code
+	ORDER BY p1.Code_saison desc
+	LIMIT 30 ";
 $result = $myBdd->pdo->prepare($sql);
-$result->execute(array('%'.$q.'%', '%'.$q.'%'));
+$result->execute(array(':code' => '%' . $q . '%'));
 $resultGlobal = '';
 
 while ($row = $result->fetch()) {
