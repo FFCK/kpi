@@ -408,6 +408,29 @@ jq(document).ready(function () {
 		jq('#formCompet').submit()
 	})
 
+	//Changement code competition
+	jq("#ChangeCodeRecherche").autocomplete('Autocompl_compet.php', {
+		width: 550,
+		max: 30,
+		mustMatch: true,
+		minLength: 2,
+		cacheLength: 0
+	})
+	jq("#ChangeCodeRecherche").result(function (event, data, formatted) {
+		if (data) {
+			jq("#changeCodeSource").val(data[1])
+		}
+	})
+	jq("#ChangeCodeBtn").click(function () {
+		var changeCodeSource = jq("#changeCodeSource").val()
+		var changeCodeCible = jq("#changeCodeCible").val()
+		if (!confirm('Confirmez-vous le changement de code pour la saison : ' + changeCodeSource + ' => ' + changeCodeCible + ' ?')) {
+			return false
+		}
+		jq('#Cmd').val('ChangeCode')
+		jq('#formCompet').submit()
+	})
+
 	//TitreJournee labelCompet
 	jq("#TitreJournee").focus(function () {
 		var TitreJournee = jq("#labelCompet").val()
