@@ -1,7 +1,7 @@
 import { Model } from '@vuex-orm/core'
 
 export default class Games extends Model {
-  static entity = 'gaes'
+  static entity = 'games'
 
   static fields () {
     return {
