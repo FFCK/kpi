@@ -1142,7 +1142,7 @@ class FeuilleStats extends MyPage
                 for ($i = 0; $i < count($arrayStats); $i++) {
                     $pdf->Cell(70, 4, $arrayStats[$i]['equipe'], 0, 0, 'C');
                     $pdf->Cell(20, 4, $arrayStats[$i]['club'], 0, 0, 'C');
-                    $pdf->Cell(20, 4, $arrayStats[$i]['cd'] . ' ' . $arrayStats[$i]['niveau'], 0, 0, 'C');
+                    $pdf->Cell(20, 4, $arrayStats[$i]['cd'], 0, 0, 'C');
                     $pdf->Cell(20, 4, $arrayStats[$i]['cr'], 0, 0, 'C');
                     $pdf->Cell(60, 4, $arrayStats[$i]['Club_actuel_joueurs'], 0, 1, 'C');
                 }

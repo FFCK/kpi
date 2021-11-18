@@ -620,6 +620,7 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'ListeEquipes': // ListeEquipes
+                $NomStat = 'Team list';
                 $sql = "SELECT ce.Libelle equipe, ce.Code_club club, c.Code_comite_dep cd, 
                     kp_cd.Code_comite_reg cr, GROUP_CONCAT(DISTINCT l.Numero_club) Club_actuel_joueurs
                     FROM kp_competition_equipe ce
@@ -641,6 +642,7 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'ListeJoueurs': // ListeJoueurs
+                $NomStat = 'Player list';
                 $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance, l.Numero_club Club_actuel, cej.Categ Categorie, ce.Code_club Club
                     FROM kp_competition_equipe_joueur cej
                     LEFT JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
@@ -660,6 +662,7 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'ListeJoueurs2': // ListeJoueurs&Coachs
+                $NomStat = 'Player & coach list';
                 $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance, l.Numero_club Club_actuel, cej.Categ Categorie, ce.Code_club Club
                     FROM kp_competition_equipe_joueur cej
                     LEFT JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
@@ -1091,8 +1094,6 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'ListeArbitres':
-                $pdf->Cell(190, 12, "Stats : Referees", 0, 1, 'C');
-                $pdf->Ln(3);
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(65, 7, 'Ref.', 'B', 0, 'C');
                 $pdf->Cell(65, 7, 'Club', 'B', 0, 'C');
@@ -1110,8 +1111,6 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'ListeEquipes':
-                $pdf->Cell(190, 12, "Stats : Equipes", 0, 1, 'C');
-                $pdf->Ln(3);
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(70, 7, 'Team', 'B', 0, 'C');
                 $pdf->Cell(20, 7, 'Club', 'B', 0, 'C');
@@ -1123,14 +1122,12 @@ class FeuilleStats extends MyPage
                 for ($i = 0; $i < count($arrayStats); $i++) {
                     $pdf->Cell(70, 4, $arrayStats[$i]['equipe'], 0, 0, 'C');
                     $pdf->Cell(20, 4, $arrayStats[$i]['club'], 0, 0, 'C');
-                    $pdf->Cell(20, 4, $arrayStats[$i]['cd'] . ' ' . $arrayStats[$i]['niveau'], 0, 0, 'C');
+                    $pdf->Cell(20, 4, $arrayStats[$i]['cd'], 0, 0, 'C');
                     $pdf->Cell(20, 4, $arrayStats[$i]['cr'], 0, 0, 'C');
                     $pdf->Cell(60, 4, $arrayStats[$i]['Club_actuel_joueurs'], 0, 1, 'C');
                 }
                 break;
             case 'ListeJoueurs':
-                $pdf->Cell(190, 12, "Stats : Players", 0, 1, 'C');
-                $pdf->Ln(3);
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(70, 7, 'Name', 'B', 0, 'L');
                 $pdf->Cell(10, 7, 'Gender', 'B', 0, 'C');
@@ -1150,8 +1147,6 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'ListeJoueurs2':
-                $pdf->Cell(190, 12, "Stats : Players & Coachs", 0, 1, 'C');
-                $pdf->Ln(3);
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(70, 7, 'Name', 'B', 0, 'L');
                 $pdf->Cell(10, 7, 'Gender', 'B', 0, 'C');
