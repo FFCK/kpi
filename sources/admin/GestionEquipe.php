@@ -119,7 +119,7 @@ class GestionEquipe extends MyPageSecure
 
 		if (strlen($codeCompet) > 0) {
 			$sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, 
-				c.Code_comite_dep, c.Libelle Club, ce.logo
+				c.Code_comite_dep, c.Libelle Club, ce.logo, ce.color1, ce.color2
 				FROM kp_competition_equipe ce, kp_club c 
 				WHERE ce.Code_compet = ? 
 				AND ce.Code_saison = ?
@@ -163,7 +163,8 @@ class GestionEquipe extends MyPageSecure
 					'Id' => $row['Id'], 'Libelle' => $row['Libelle'],
 					'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Club' => $row['Club'],
 					'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'nbMatchs' => $nbMatchs,
-					'Code_comite_dep' => $row['Code_comite_dep'], 'logo' => $row['logo']
+					'Code_comite_dep' => $row['Code_comite_dep'], 'logo' => $row['logo'],
+					'color1' => $row['color1'], 'color2' => $row['color2']
 				));
 			}
 		}
@@ -403,33 +404,27 @@ class GestionEquipe extends MyPageSecure
 						}
 					}
 
-					if (strlen($codeClub) === 0 || $codeClub === '*') {
-						$sql = "SELECT Code_club
-						FROM kp_equipe 
-						WHERE Numero = ? ";
-						$result = $myBdd->pdo->prepare($sql);
-						$result->execute(array($selectValue));
-						$row = $result->fetch();
-						$club = $row['Code_club'];
-					} else {
-						$club = $codeClub;
-					}
+					// if (strlen($codeClub) === 0 || $codeClub === '*') {
+					// 	$sql = "SELECT Code_club
+					// 	FROM kp_equipe 
+					// 	WHERE Numero = ? ";
+					// 	$result = $myBdd->pdo->prepare($sql);
+					// 	$result->execute(array($selectValue));
+					// 	$row = $result->fetch();
+					// 	$club = $row['Code_club'];
+					// } else {
+					// 	$club = $codeClub;
+					// }
 
-					if (strlen($club) === 4 && is_file('../img/KIP/logo/' . $club . '-logo.png')) {
-						$logo = 'KIP/logo/' . $club . '-logo.png';
-					} elseif (strlen($club) !== 4 && is_file('../img/Nations/' . substr($club, 0, 3) . '.png')) {
-						$logo = 'Nations/' . substr($club, 0, 3) . '.png';
-					} else {
-						$logo = null;
-					}
+					// $logo = utySearchLogoFile($club);
 
 					$sql = "INSERT INTO kp_competition_equipe 
-						(Code_compet, Code_saison, Libelle, Code_club, Numero, logo) 
-						SELECT ?, ?, Libelle, Code_club, Numero, ?
+						(Code_compet, Code_saison, Libelle, Code_club, Numero, logo, color1, color2) 
+						SELECT ?, ?, Libelle, Code_club, Numero, logo, color1, color2
 						FROM kp_equipe 
 						WHERE Numero = ? ";
 					$result = $myBdd->pdo->prepare($sql);
-					$result->execute(array($codeCompet, $codeSaison, $logo, $selectValue));
+					$result->execute(array($codeCompet, $codeSaison, $selectValue));
 
 					if ($insertValue != '') {
 						$insertValue .= ',';
@@ -489,6 +484,12 @@ class GestionEquipe extends MyPageSecure
 					WHERE Numero = ? ";
 				$result2 = $myBdd->pdo->prepare($sql2);
 				$result2->execute(array($logo, $row['Numero']));
+
+				$sql2 = "UPDATE kp_equipe 
+					SET logo = ?
+					WHERE Numero = ? ";
+				$result2 = $myBdd->pdo->prepare($sql2);
+				$result2->execute(array($logo, $row['Numero']));
 			}
 
 			$myBdd->pdo->commit();
@@ -528,8 +529,8 @@ class GestionEquipe extends MyPageSecure
 				$myBdd->pdo->beginTransaction();
 
 				$sql  = "INSERT INTO kp_competition_equipe 
-					(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau)
-					SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ? 
+					(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau, logo, color1, color2)
+					SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ?, logo, color1, color2 
 					FROM kp_equipe 
 					WHERE Numero = ? ";
 				$result = $myBdd->pdo->prepare($sql);

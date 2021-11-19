@@ -74,10 +74,14 @@
 		          <thead>
 		            <tr>
 		              <th>&nbsp;</th>
+		              {if $profile <= 2 && $AuthModif == 'O'}
+  		              <th>&nbsp;</th>
+		              {/if}
 		              <th>{#Poule#}</th>
 		              <th># {#Tirage#}</th>
-		              <th>&nbsp;</th>
+		              <th>{#Logo#}</th>
 		              <th>{#Equipe#}</th>
+		              <th>{#Couleurs#}</th>
 		              <th>{#Presents#}</th>
 		              <th>Club</th>
 		              <th>{#Nb_matchs#}</th>
@@ -88,13 +92,30 @@
 		            {section name=i loop=$arrayEquipe}
   		            {if $PouleX != $arrayEquipe[i].Poule && $arrayEquipe[i].Poule != ''}
     		            <tr class='colorO'>
-    		              <th colspan=9><b>{#Poule#} {$arrayEquipe[i].Poule}</b></th>
+    		              <th colspan={if $profile <= 2 && $AuthModif == 'O'}11{else}10{/if}>
+    		                <b>
+    		                  {#Poule#}
+    		                  {$arrayEquipe[i].Poule}
+    		                </b>
+    		              </th>
     		            </tr>
   		            {/if}
   		            <tr class='{cycle values="impair,pair"}'>
   		              {assign var='PouleX' value=$arrayEquipe[i].Poule}
-  		              <td><input type="checkbox" name="checkEquipe" value="{$arrayEquipe[i].Id}"
-  		                  id="checkDelete{$smarty.section.i.iteration}" /></td>
+  		              <td>
+  		                <input type="checkbox" name="checkEquipe" value="{$arrayEquipe[i].Id}"
+  		                  id="checkDelete{$smarty.section.i.iteration}" />
+  		              </td>
+  		              {if $profile <= 2 && $AuthModif == 'O'}
+    		              <td>
+    		                <a href="#" class="editEquipe" data-equipe="{$arrayEquipe[i].Id}"
+    		                  data-label="{$arrayEquipe[i].Libelle}" data-color1="{$arrayEquipe[i].color1}"
+    		                  data-color2="{$arrayEquipe[i].color2}" data-logo="{$arrayEquipe[i].logo}"
+    		                  data-numero="{$arrayEquipe[i].Numero}">
+    		                  <img src="../img/glyphicons-31-pencil.png" alt="" height="20">
+    		                </a>
+    		              </td>
+  		              {/if}
   		              <td><span {if $profile <=6 && $AuthModif == 'O'}class='directInput textPoule'
   		                  {/if}tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}0'
   		                  Id="Poule-{$arrayEquipe[i].Id}-text">{$arrayEquipe[i].Poule}</span></td>
@@ -103,11 +124,18 @@
   		                  Id="Tirage-{$arrayEquipe[i].Id}-text">{if $arrayEquipe[i].Tirage == '0'}{else}{$arrayEquipe[i].Tirage}{/if}</span>
   		              </td>
   		              <td>
-  		                {if $arrayEquipe[i].logo}<img src="/img/{$arrayEquipe[i].logo}" width="20" />{/if}
+  		                {if $arrayEquipe[i].logo}<img src="/img/{$arrayEquipe[i].logo}" width="25" />{/if}
   		              </td>
   		              <td class="cliquableNomEquipe">
   		                <a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}"
   		                  title="{#Feuille_de_presence#}">{$arrayEquipe[i].Libelle}</a>
+  		              </td>
+  		              <td class="centre">
+  		                {if $arrayEquipe[i].color1}
+    		                <span class="team_colors"
+    		                  style="background: linear-gradient(to bottom right, {$arrayEquipe[i].color1} 50%, {$arrayEquipe[i].color2|default:$arrayEquipe[i].color1} 50%);">
+    		                </span>
+  		                {/if}
   		              </td>
   		              <td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}"
   		                  title="{#Feuille_de_presence#}"><img height="25" src="../img/b_sbrowse.png" /></A></td>
@@ -124,6 +152,54 @@
 		        </table>
 		      </div>
 		      <b>TOTAL = {$smarty.section.i.iteration-1|replace:-1:0} {#Equipes#}</b>
+
+		      {if $profile <= 2 && $AuthModif == 'O'}
+  		      <br>
+  		      <br>
+  		      <table width=100% id="editTeam" class='tableau'>
+  		        <tr>
+  		          <th class='titreForm' colspan=2>
+  		            <label>Update team</label>
+  		          </th>
+  		        </tr>
+  		        <tr class="pair">
+  		          <td>
+  		            <b id="editTeamLabel"></b>
+  		            <input type="hidden" name="editTeamId" id="editTeamId">
+  		          </td>
+  		          <td>
+  		            {#Logo#}:<br>
+  		            img/<input type="text" name="editTeamLogo" id="editTeamLogo">
+  		          </td>
+  		        </tr>
+  		        <tr class="impair">
+  		          <td>
+  		            {#Couleurs#}:
+  		            <input type="color" name="editTeamColor1" id="editTeamColor1">
+  		            <input type="color" name="editTeamColor2" id="editTeamColor2">
+  		          </td>
+  		          <td>
+  		            <input type="checkbox" name="editTeamColorChangeNext" id="editTeamColorChangeNext">
+  		            {#Changer_pour_les_prochaines_competitions#}<br>
+  		            <input type="checkbox" name="editTeamColorChangeLast" id="editTeamColorChangeLast">
+  		            {#Changer_pour_les_precedentes_competitions#}<br>
+  		            <input type="checkbox" name="editTeamColorChangeClub" id="editTeamColorChangeClub">
+  		            <b class="rouge">{#Changer_pour_tout_le_club#}</b>
+  		          </td>
+  		        </tr>
+  		        <tr class="pair">
+  		          <td colspan="2">
+  		            <input type="button" name="resetTeam" id="resetTeam" value="{#Annuler#}" />
+  		            <input type="button" name="updateTeam" id="updateTeam" value="{#Valider#}" />
+  		          </td>
+  		        </tr>
+  		        <tr class="impair">
+  		          <td colspan="2">
+  		            <img id="editTeamImg" src="" alt="" width="300">
+  		          </td>
+  		        </tr>
+  		      </table>
+		      {/if}
 		    </div>
 
 		    {if $profile <=3 && $AuthModif == 'O' && $bProd}
@@ -298,7 +374,7 @@
   		        </tr>
   		      </table>
 		      {/if}
-		      {if $profile == 1 && $AuthModif == 'O'}
+		      {if $profile <= 2 && $AuthModif == 'O'}
   		      <br>
   		      <table width=100%>
   		        <tr>
