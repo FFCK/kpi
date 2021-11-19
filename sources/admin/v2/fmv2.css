@@ -244,3 +244,23 @@
 table.dataTable tbody tr.entraineur {
     background-color: #EBEBBE;
 }
+
+.team_colors {
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	border-top-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	border: 1px solid grey;
+	box-shadow:2px 2px 5px #999999;
+}
+
+.team_colors.left {
+	float: left;
+	margin-left: 5px;
+}
+
+.team_colors.right {
+	float: right;
+	margin-right: 5px;
+}

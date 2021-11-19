@@ -235,6 +235,21 @@ td.colorCapC {background: #BFB;} /*vert*/
 	vertical-align: top;
 }
 
+.team_colors {
+	display: inline-block;
+	width: 23px;
+	height: 23px;
+	border-top-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+	border: 1px solid grey;
+	box-shadow:2px 2px 5px #999999;
+}
+
+#editTeam {
+	display: none;
+}
+
+
 .titreForm {background: #334F64 url(titre_bg.gif) 0 0 repeat-x; font-size: 8.0pt; color: #DDD; border: none; text-align: center; padding: 4px;}
 
 .blocLeft {

@@ -1,0 +1,10 @@
+ALTER TABLE `kp_equipe` ADD `logo` VARCHAR(50) NULL DEFAULT NULL AFTER `Code_club`;
+
+ALTER TABLE `kp_equipe` 
+ADD `color1` VARCHAR(30) NULL DEFAULT NULL AFTER `Code_club`, 
+ADD `color2` VARCHAR(30) NULL DEFAULT NULL AFTER `color1`;
+
+ALTER TABLE `kp_competition_equipe` 
+ADD `color1` VARCHAR(30) NULL DEFAULT NULL AFTER `logo`, 
+ADD `color2` VARCHAR(30) NULL DEFAULT NULL AFTER `color1`; 
+
