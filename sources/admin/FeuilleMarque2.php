@@ -36,6 +36,7 @@ class GestionMatchDetail extends MyPageSecure
 		$sql = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, 
 			m.Heure_fin, j.*, j.Code_saison saison, c.*, m.Type Type_match, m.Validation Valid_match, 
 			m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, 
+			ce1.color1 color1A, ce1.color2 color2A, ce2.color1 color1B, ce2.color2 color2B,
 			ce2.Code_club clubB 
 			FROM kp_journee j, kp_competition c, kp_match m 
 			LEFT OUTER JOIN kp_competition_equipe ce1 ON (ce1.Id = m.Id_equipeA) 
@@ -423,8 +424,13 @@ stop_time: <span id="stop_time_display"></span><br />
 						</tr>
 						<tr>
 							<td id="selectionA">
-								<a class="fm_bouton equipes" data-equipe="A"><?= $lang['Equipe']; ?> A<br />
-									<img src="../img/Pays/<?= $paysA; ?>.png" width="25" height="16" /> <?= $row['equipeA']; ?>
+								<a class="fm_bouton equipes" data-equipe="A">
+									<?php if ($row['color1A']) { ?>
+										<span class="team_colors left" style="background: linear-gradient(to bottom right, <?= $row['color1A'] ?> 50%, <?= $row['color2A'] ?> 50%);">
+										</span>
+									<?php } ?>
+									<?= $lang['Equipe']; ?> A<br />
+									<?= $row['equipeA']; ?>
 									<span class="score" id="scoreA">0</span>
 								</a>
 
@@ -500,8 +506,13 @@ stop_time: <span id="stop_time_display"></span><br />
 							</td>
 							<td id="selectionB">
 								<a class="fm_bouton equipes" data-equipe="B">
-									<span class="score" id="scoreB">0</span><?= $lang['Equipe']; ?> B<br />
-									<img src="../img/Pays/<?= $paysB; ?>.png" width="25" height="16" /> <?= $row['equipeB']; ?>
+									<span class="score" id="scoreB">0</span>
+									<?php if ($row['color1B']) { ?>
+										<span class="team_colors right" style="background: linear-gradient(to bottom right, <?= $row['color1B'] ?> 50%, <?= $row['color2B'] ?> 50%);">
+										</span>
+									<?php } ?>
+									<?= $lang['Equipe']; ?> B<br />
+									<?= $row['equipeB']; ?>
 								</a>
 								<?php
 								$joueur_temp = '';

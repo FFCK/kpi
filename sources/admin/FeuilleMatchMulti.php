@@ -8,23 +8,25 @@ require('../fpdf/fpdf.php');
 require_once('../qrcode/qrcode.class.php');
 
 // Gestion de la Feuille de Match
-class PDF extends FPDF {
+class PDF extends FPDF
+{
     var $x0;
 }
 
-class FeuilleMatch extends MyPage 
+class FeuilleMatch extends MyPage
 {
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
         $myBdd = new MyBdd();
 
         $listMatch = utyGetGet('listMatch', -1);
-        if($listMatch == -1 || $listMatch == '') {
+        if ($listMatch == -1 || $listMatch == '') {
             die('Aucun match à afficher !');
         }
         $chaqueMatch = explode(',', $listMatch);
         $arrayCompetition['En_actif'] = '';
-        
+
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
         if (utyGetGet('lang') == 'en') {
@@ -55,7 +57,8 @@ class FeuilleMatch extends MyPage
                 a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Ligne1, a.Ligne2, a.Type, 
                 a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, 
                 ce1.Code_club codeclubA, ce1.Libelle LibelleA, ce2.Code_club codeclubB, ce2.Libelle LibelleB, 
-                a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, 
+                a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels,
+                ce1.color1 color1A, ce1.color2 color2A, ce2.color1 color1B, ce2.color2 color2B,
                 b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, 
                 b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison 
                 FROM kp_match a
@@ -76,9 +79,9 @@ class FeuilleMatch extends MyPage
 
             // Données compétition
             $arrayCompetition = $myBdd->GetCompetition($categorie, $saison);
-            
+
             $visuels = utyGetVisuels($arrayCompetition, TRUE);
-            
+
             $idEquipeA = $row['Id_equipeA'];
             $idEquipeB = $row['Id_equipeB'];
             if ($idEquipeA == '') {
@@ -223,6 +226,15 @@ class FeuilleMatch extends MyPage
             $no = $row['Numero_ordre'];
             $colorA = $row['ColorA'];
             $colorB = $row['ColorB'];
+            if ($row['color1A']) {
+                $color1A = sscanf($row['color1A'], "#%02x%02x%02x");
+                $color2A = sscanf($row['color2A'], "#%02x%02x%02x");
+            }
+            if ($row['color1B']) {
+                $color1B = sscanf($row['color1B'], "#%02x%02x%02x");
+                $color2B = sscanf($row['color2B'], "#%02x%02x%02x");
+            }
+
             if ($row['ScoreA'] != '?' && $row['ScoreA'] != '') {
                 $ScoreA = $row['ScoreA'];
             } else {
@@ -268,12 +280,12 @@ class FeuilleMatch extends MyPage
                 ORDER BY flagEntraineur, Numero, Nom, Prenom ";
             $result3 = $myBdd->pdo->prepare($sql3);
             $result3->execute(array($idEquipeA, $idMatch, 'A'));
-            
+
             $j = 0;
-            while($row3 = $result3->fetch()) {
+            while ($row3 = $result3->fetch()) {
                 $j++;
                 if ($row3["Capitaine"] == 'E' && $j <= 10) {
-//                                    $j=10;
+                    //                                    $j=10;
                     $noma[$j] = mb_strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $na[$j] = 'C';
                 } elseif ($row3["Capitaine"] == 'C') {
@@ -324,7 +336,7 @@ class FeuilleMatch extends MyPage
                 $j++;
 
                 if ($row4["Capitaine"] == 'E' && $j <= 10) {
-//                                    $j=10;
+                    //                                    $j=10;
                     $nomb[$j] = mb_strtoupper($row4['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $nb[$j] = 'C';
                 } elseif ($row4["Capitaine"] == 'C') {
@@ -369,7 +381,7 @@ class FeuilleMatch extends MyPage
                 ORDER BY d.Periode ASC, d.Temps DESC, d.Id ";
             $result5 = $myBdd->pdo->prepare($sql5);
             $result5->execute(array($idMatch));
-            
+
             $j = 0;
             $scoreMitempsA = '';
             $scoreMitempsB = '';
@@ -381,7 +393,7 @@ class FeuilleMatch extends MyPage
                 }
                 if ($row5['Id']) {
                     if ($row5['motif'] != null) {
-                        $row5['motif'] = ' (' . $lang[$row5['motif']] . ')'; 
+                        $row5['motif'] = ' (' . $lang[$row5['motif']] . ')';
                     }
                     if ($row5['Equipe_A_B'] == 'A') {
                         if ($row5['Nom'] != '') {
@@ -394,7 +406,7 @@ class FeuilleMatch extends MyPage
                                 $d[5] = 'X';
                                 $scoreDetailA++;
                                 if ($row5['Periode'] == 'M1') {
-                                    $scoreMitempsA ++;
+                                    $scoreMitempsA++;
                                 }
                                 break;
                             case 'V':
@@ -418,7 +430,7 @@ class FeuilleMatch extends MyPage
                                 $d[7] = 'X';
                                 $scoreDetailB++;
                                 if ($row5['Periode'] == 'M1') {
-                                    $scoreMitempsB ++;
+                                    $scoreMitempsB++;
                                 }
                                 break;
                             case 'V':
@@ -438,11 +450,15 @@ class FeuilleMatch extends MyPage
                     }
                 }
                 if ($i <= 26) {
-                    array_push($detail, array('d1' => $d[1], 'd2' => $d[2], 'd3' => $d[3], 'd4' => $d[4], 'd5' => $d[5], 'd6' => $d[6],
-                        'd7' => $d[7], 'd8' => $d[8], 'd9' => $d[9], 'd10' => $d[10], 'd11' => $d[11]));
+                    array_push($detail, array(
+                        'd1' => $d[1], 'd2' => $d[2], 'd3' => $d[3], 'd4' => $d[4], 'd5' => $d[5], 'd6' => $d[6],
+                        'd7' => $d[7], 'd8' => $d[8], 'd9' => $d[9], 'd10' => $d[10], 'd11' => $d[11]
+                    ));
                 } else {
-                    array_push($detail2, array('d1' => $d[1], 'd2' => $d[2], 'd3' => $d[3], 'd4' => $d[4], 'd5' => $d[5], 'd6' => $d[6],
-                        'd7' => $d[7], 'd8' => $d[8], 'd9' => $d[9], 'd10' => $d[10], 'd11' => $d[11]));
+                    array_push($detail2, array(
+                        'd1' => $d[1], 'd2' => $d[2], 'd3' => $d[3], 'd4' => $d[4], 'd5' => $d[5], 'd6' => $d[6],
+                        'd7' => $d[7], 'd8' => $d[8], 'd9' => $d[9], 'd10' => $d[10], 'd11' => $d[11]
+                    ));
                     $nblignes = $i;
                 }
             }
@@ -477,37 +493,37 @@ class FeuilleMatch extends MyPage
             $pdf->SetY(9);
 
             // Bandeau
-            if($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])){
+            if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
                 $img = redimImage($visuels['bandeau'], 153, 10, 11, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
-            } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+                // KPI + Logo    
+            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                 $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI
-            } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+                // KPI
+            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
                 $pdf->Image('../img/CNAKPI_small.jpg', 65, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
-            // Logo
-            } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
+                // Logo
+            } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
             // Sponsor
-            if($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])){
+            if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
                 $img = redimImage($visuels['sponsor'], 297, 10, 11, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 190, 0, $img['newHauteur']);
             }
-            
+
             $pdf->Ln(11);
 
             $pdf->SetFillColor(200, 200, 200);
             $pdf->SetFont('Arial', 'B', 14);
-//    		$pdf->Cell(135,6,$lang['FEUILLE_DE_MARQUE'],'B','1','C');
+            //    		$pdf->Cell(135,6,$lang['FEUILLE_DE_MARQUE'],'B','1','C');
             $pdf->Cell(135, 2, '', 'B', '1', 'C');
 
             $pdf->SetFont('Arial', 'I', 7);
-//			$pdf->Cell(135,4,$lang['A_remplir'],'LR','1','C');
+            //			$pdf->Cell(135,4,$lang['A_remplir'],'LR','1','C');
             $pdf->Cell(135, 1, "", 'LR', '1', 'C');
 
             $pdf->SetFont('Arial', '', 10);
@@ -721,12 +737,32 @@ class FeuilleMatch extends MyPage
 
             $pdf->SetFont('Arial', 'I', 8);
             $pdf->Cell(15, 3, '', 'LB', 0, 'C', 1);
-            $pdf->Cell(42, 3, $colorA, 'RB', 0, 'C', 1);
+            if (is_array($color1A)) {
+                $pdf->Cell(10, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color1A[0], $color1A[1], $color1A[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color2A[0], $color2A[1], $color2A[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor(200, 200, 200);
+                $pdf->Cell(10, 3, '', 'RB', 0, 'C', 1);
+            } else {
+                $pdf->Cell(42, 3, $colorA, 'RB', 0, 'C', 1);
+            }
             $pdf->Cell(1, 3, "", 0, 0, 'C');
             $pdf->Cell(19, 3, $lang['Periode'], 'LR', 0, 'C');
             $pdf->Cell(1, 3, "", 0, 0, 'C');
             $pdf->Cell(15, 3, '', 'LB', 0, 'C', 1);
-            $pdf->Cell(42, 3, $colorB, 'RB', 1, 'C', 1);
+            if (is_array($color1B)) {
+                $pdf->Cell(10, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color1B[0], $color1B[1], $color1B[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color2B[0], $color2B[1], $color2B[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor(200, 200, 200);
+                $pdf->Cell(10, 3, '', 'RB', 1, 'C', 1);
+            } else {
+                $pdf->Cell(42, 3, $colorB, 'RB', 1, 'C', 1);
+            }
 
             $pdf->SetFont('Arial', '', 8);
             $pdf->SetFillColor(170, 255, 170);
@@ -750,7 +786,7 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(5, 5, $lang['R'], 1, 1, 'C', 1);
 
             for ($i = 0; $i < 26; $i++) {
-//			for($i=0;$i<23;$i++)	// @COSANDCO_WAMPSER
+                //			for($i=0;$i<23;$i++)	// @COSANDCO_WAMPSER
                 $pdf->SetFillColor(170, 255, 170);
                 $pdf->Cell(5, 4, isset($detail[$i]['d2']) ? $detail[$i]['d2'] : '', 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 255, 170);
@@ -984,10 +1020,7 @@ class FeuilleMatch extends MyPage
 
         $pdf->Output('Match(s) ' . $listMatch . '.pdf', 'I');
     }
-
 }
 
 //Création des feuilles
 $page = new FeuilleMatch();
-
-

@@ -332,6 +332,38 @@ jq(document).ready(function () {
 		jq('#cltCpEquipe').val('')
 	})
 
+	// Edit equipe
+	jq('.editEquipe').click(function () {
+		jq('#editTeamLabel').text(jq(this).data('label'))
+		jq('#editTeamId').val(jq(this).data('equipe'))
+		jq('#editTeamLogo').val(jq(this).data('logo'))
+		jq('#editTeamColor1').val(jq(this).data('color1'))
+		jq('#editTeamColor2').val(jq(this).data('color2'))
+		jq('#editTeamImg').attr('src', '../img/KIP/colors/' + jq(this).data('numero') + '-colors.png')
+		jq('#editTeam').show()
+		jq('#resetTeam').focus()
+	})
+
+	jq('#resetTeam').click(function () {
+		jq('#editTeam').hide()
+	})
+
+	jq('#updateTeam').click(function () {
+		jq.post(
+			"ajax_update_team.php",
+			{
+				equipe: jq('#editTeamId').val(),
+				logo: jq('#editTeamLogo').val(),
+				colorChangeNext: jq('#editTeamColorChangeNext').attr('checked'),
+				colorChangeLast: jq('#editTeamColorChangeLast').attr('checked'),
+				colorChangeClub: jq('#editTeamColorChangeClub').attr('checked'),
+				color1: jq('#editTeamColor1').val(),
+				color2: jq('#editTeamColor2').val()
+			})
+			.done(function () {
+				jq('#formEquipe').submit()
+			})
+	})
 
 })
 
