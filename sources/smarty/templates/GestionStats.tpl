@@ -175,7 +175,9 @@
 	              {elseif $AfficheStat == 'ListeArbitres'}
   	              <th>#</th>
   	              <th>{#Arbitre#}</th>
-  	              <th>Club</th>
+  	              <th colspan="2">Club</th>
+  	              <th>CD</th>
+  	              <th>CR</th>
   	              <th>{#Niveau#}</th>
   	              <th>{#Saison#}</th>
   	              <th>{#Livret#}</th>
@@ -447,6 +449,9 @@
     	                  href="GestionAthlete.php?Athlete={$arrayListeArbitres[i].Matric}">{$arrayListeArbitres[i].Nom}
     	                  {$arrayListeArbitres[i].Prenom} ({$arrayListeArbitres[i].Matric})</a></td>
     	              <td>{$arrayListeArbitres[i].Club}</td>
+    	              <td>{$arrayListeArbitres[i].Code_club}</td>
+    	              <td>{$arrayListeArbitres[i].Code_cd}</td>
+    	              <td>{$arrayListeArbitres[i].Code_cr}</td>
     	              <td>{$arrayListeArbitres[i].arbitre} {$arrayListeArbitres[i].niveau}</td>
     	              <td>{$arrayListeArbitres[i].saison}</td>
     	              <td>{$arrayListeArbitres[i].livret}</td>
