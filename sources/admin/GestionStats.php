@@ -756,8 +756,10 @@ class GestionStats extends MyPageSecure
                 break;
             case 'ListeArbitres': // ListeArbitres
                 $sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Sexe, c.Code Code_club, 
-                    c.Libelle Club, a.arbitre, a.niveau, a.saison, a.livret 
-                    FROM kp_arbitre a, kp_licence lc, kp_club c 
+                        c.Libelle Club, c.Code_comite_dep Code_cd, cd.Code_comite_reg Code_cr,
+                        a.arbitre, a.niveau, a.saison, a.livret 
+                    FROM kp_arbitre a, kp_licence lc, kp_club c
+                    LEFT JOIN kp_cd cd ON c.Code_comite_dep = cd.Code
                     WHERE 1 
                     AND a.Matric = lc.Matric 
                     AND c.Code = lc.Numero_club 
