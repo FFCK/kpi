@@ -11,7 +11,7 @@ function RefreshCacheGlobal () {
 		$.ajax({
 			url: './cache/' + theContext.Match.GetId(i) + '_match_global.json',
 			type: 'GET',
-			dataType: 'text',
+			dataType: 'json',
 			cache: false,
 			async: false,
 			success: ParseCacheGlobal
@@ -25,7 +25,7 @@ function RefreshCacheScore () {
 		$.ajax({
 			url: './cache/' + theContext.Match.GetId(i) + '_match_score.json',
 			type: 'GET',
-			dataType: 'text',
+			dataType: 'json',
 			cache: false,
 			async: false,
 			success: ParseCacheScore
@@ -39,7 +39,7 @@ function RefreshCacheChrono () {
 		$.ajax({
 			url: './cache/' + theContext.Match.GetId(i) + '_match_chrono.json',
 			type: 'GET',
-			dataType: 'text',
+			dataType: 'json',
 			cache: false,
 			async: false,
 			success: ParseCacheChrono

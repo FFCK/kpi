@@ -230,7 +230,7 @@ function RefreshCacheMultiPitch () {
 		$.ajax({
 			url: './cache/event' + theContext.Event + '_pitch' + i + '.json',
 			type: 'GET',
-			dataType: 'text',
+			dataType: 'json',
 			cache: false,
 			async: false,
 			success: ParseCacheMultiPitch
