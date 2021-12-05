@@ -67,7 +67,8 @@ class CacheMatch
 		if ($this->m_bCache) {
 			$in = array("è", "é", "ê", "ç", "ô", "î", "â", "à", "È", "É", "Ê", "Ç", "Ô", "Î", "Â", "À", "Ï", "Ä", "Ë", "Ö", "Ü");
 			$out = array("&egrave;", "&eacute;", "&ecric;", "&ccedil;", "&ocirc;", "&icirc;", "&acirc;", "&agrave;", "&Egrave;", "&Eacute;", "&Ecric;", "&Ccedil;", "&Ocirc;", "&Icirc;", "&Acirc;", "&Agrave;", "&Iuml;", "&Auml;", "&Euml;", "&Ouml;", "&Uuml;");
-			$content = str_replace($in, $out, ob_get_contents() . "@@END@@");
+			// $content = str_replace($in, $out, ob_get_contents() . "@@END@@");
+			$content = str_replace($in, $out, ob_get_contents());
 			if ($this->m_bFTP) {
 				// C'est pas du FTP !!!
 				file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/live/cache/$fileName", $content);
@@ -232,13 +233,13 @@ class CacheMatch
 
 		// Chargement kp_match_detail 
 		$tMatchDetails = null;
-		$sql = "SELECT a.*, b.Nom, b.Prenom, c.Capitaine 
-			FROM kp_match_detail a 
-			LEFT OUTER JOIN kp_licence b On (a.Competiteur = b.Matric) 
-			LEFT OUTER JOIN kp_match_joueur c ON (a.Competiteur = c.Matric) 
-			WHERE a.Id_match = ? 
-			ORDER BY a.Id Desc 
-			LIMIT 5 ";
+		$sql = "SELECT md.*, l.Nom, l.Prenom, mj.Capitaine 
+			FROM kp_match_detail md 
+			LEFT OUTER JOIN kp_licence l ON (md.Competiteur = l.Matric) 
+			LEFT OUTER JOIN kp_match_joueur mj
+				ON (md.Competiteur = mj.Matric AND md.Id_match = mj.Id_match) 
+			WHERE md.Id_match = ? 
+			ORDER BY md.Id DESC ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
 		$tMatchDetails = $result->fetchAll(PDO::FETCH_ASSOC);

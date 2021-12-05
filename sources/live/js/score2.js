@@ -76,12 +76,8 @@ function RefreshHorloge () {
 	RefreshCacheScore()
 }
 
-function ParseCacheScore (jsonTxt) {
-	var iFind = jsonTxt.lastIndexOf("@@END@@")
-	if (iFind == -1) return // Aucune précence de @@END@@ => le fichier cache n'est pas complet ... => On sort
+function ParseCacheScore (jsonData) {
 
-	jsonTxt = jsonTxt.substring(0, iFind)
-	jsonData = JSON && JSON.parse(jsonTxt) || $.parseJSON(jsonTxt)
 
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
@@ -117,7 +113,6 @@ function ParseCacheScore (jsonTxt) {
 			//			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
 			$('#match_event_line1').html(line)
 
-			// console.log(jsonData.event[0].Numero);
 			if (jsonData.event[0].Numero == 'undefi') {
 				if (jsonData.event[0].Equipe_A_B == 'A')
 					line = "Team " + theContext.Match.GetEquipe1(rowMatch).substring(0, 3)
@@ -161,13 +156,8 @@ function ParseCacheScore (jsonTxt) {
 	$('#score2').html(score2)
 }
 
-function ParseCacheChrono (jsonTxt) {
-	var iFind = jsonTxt.lastIndexOf("@@END@@")
-	if (iFind == -1) return // Aucune précence de @@END@@ => le fichier cache n'est pas complet ... => On sort
+function ParseCacheChrono (jsonData) {
 
-	jsonTxt = jsonTxt.substring(0, iFind)
-
-	var jsonData = JSON && JSON.parse(jsonTxt) || $.parseJSON(jsonTxt)
 
 	if (typeof (jsonData.IdMatch) == 'undefined')
 		return	// Data JSON non correcte ...
@@ -206,13 +196,8 @@ function ParseCacheChrono (jsonTxt) {
 	theContext.Match.SetTempsReprise(rowMatch, temps_reprise)
 }
 
-function ParseCacheGlobal (jsonTxt) {
-	var iFind = jsonTxt.lastIndexOf("@@END@@")
-	if (iFind == -1) return // Aucune précence de @@END@@ => le fichier cache n'est pas complet ... => On sort
+function ParseCacheGlobal (jsonData) {
 
-	jsonTxt = jsonTxt.substring(0, iFind)
-	jsonData = JSON && JSON.parse(jsonTxt) || $.parseJSON(jsonTxt)
-	// console.log(jsonData);
 
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
