@@ -1,0 +1,1 @@
+sed -i_old 's/@@END@@//' ./live/cache/*.json
