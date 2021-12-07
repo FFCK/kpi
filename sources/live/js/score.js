@@ -34,7 +34,7 @@ function RefreshHorloge () {
 			if (temps_restant < 0) temps_restant = 0
 
 			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
 			/*			
 						if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
 						{
@@ -54,7 +54,7 @@ function RefreshHorloge () {
 				temps_restant = 0
 
 			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
 
 			/*			
 						if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
@@ -98,7 +98,21 @@ function ParseCacheScore (jsonData) {
 	var nbEvents = jsonData.event.length
 	if (nbEvents > 0) {
 		var lastId = jsonData.event[0].Id
+		// Evenement déjà pris en compte
 		if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && (theContext.Match.GetIdEvent(rowMatch) >= 0)) {
+			// Evenement déjà affiché précédemment (suite à suppression)
+			if ((theContext.Match.GetIdPrevEvent(rowMatch) == lastId) && (theContext.Match.GetIdPrevEvent(rowMatch) >= 0)) {
+				if (nbEvents > 1) {
+					// Mémorisation de l'événement précédent
+					theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
+				}
+				return
+			}
+			if (nbEvents > 1) {
+				// Mémorisation de l'événement précédent
+				theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
+			}
+
 			var line
 			if (jsonData.event[0].Equipe_A_B == 'A') {
 				line = ImgNation48(theContext.Match.GetEquipe1(rowMatch))
@@ -226,13 +240,6 @@ function ParseCacheGlobal (jsonData) {
 	theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
 	theContext.Match.SetStatut(rowMatch, jsonData.statut)
 
-	/*	
-		if (jsonData.statut == 'END')
-		{
-			window.location.href = "./presentation.php?terrain="+theContext.Terrain+"&speaker="+theContext.Speaker;
-			return;
-		}
-	*/
 
 	$('#match_nom').html(jsonData.competition)
 
@@ -261,31 +268,6 @@ function ParseCacheGlobal (jsonData) {
 		+ '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>')
 	$('#terrain').html('Pitch ' + jsonData.terrain)
 
-	/* Joueurs 
-		var htmlData = '';
-		for (i=0;i<jsonData.equipe1.joueurs.length;i++)
-		{
-			htmlData += '<p class="text-left">'+
-						jsonData.equipe1.joueurs[i].Numero+' : '+
-						jsonData.equipe1.joueurs[i].Nom+' '+
-						jsonData.equipe1.joueurs[i].Prenom+' ('+
-						jsonData.equipe1.joueurs[i].Capitaine+')'+
-						'</p>';
-		}
-		$('#competiteurs1').html(htmlData);
-	
-		htmlData = '';
-		for (i=0;i<jsonData.equipe2.joueurs.length;i++)
-		{
-			htmlData += '<p class="text-left">'+
-						jsonData.equipe2.joueurs[i].Numero+' : '+
-						jsonData.equipe2.joueurs[i].Nom+' '+
-						jsonData.equipe2.joueurs[i].Prenom+' ('+
-						jsonData.equipe2.joueurs[i].Capitaine+')'+
-						'</p>';
-		}
-		$('#competiteurs2').html(htmlData);
-	*/
 }
 
 function Init (event, terrain, speaker, voie) {
