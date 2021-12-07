@@ -34,7 +34,7 @@ function RefreshHorloge () {
       if (temps_restant < 0) temps_restant = 0
 
       $('#match_horloge').html(SecToMMSS(temps_restant))
-      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
       /*			
             if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
             {
@@ -54,7 +54,7 @@ function RefreshHorloge () {
         temps_restant = 0
 
       $('#match_horloge').html(SecToMMSS(temps_restant))
-      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
 
       /*			
             if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
@@ -95,56 +95,6 @@ function ParseCacheScore (jsonData) {
 
   theContext.Match.SetTickScore(rowMatch, jsonData.tick)
   theContext.Match.SetPeriode(rowMatch, jsonData.periode)
-
-  console.log(theContext.Match.GetIdEvent(rowMatch))
-  // var nbEvents = jsonData.event.length
-  // if (nbEvents > 0) {
-  //   var lastId = jsonData.event[0].Id
-  //   if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && (theContext.Match.GetIdEvent(rowMatch) >= 0)) {
-  //     var line
-  //     if (jsonData.event[0].Equipe_A_B == 'A') {
-  //       line = ImgNation48(theContext.Match.GetEquipe1(rowMatch))
-  //       line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch)
-  //     } else {
-  //       line = ImgNation48(theContext.Match.GetEquipe2(rowMatch))
-  //       line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3)
-  //     }
-  //     line += "&nbsp;<span>"
-  //     //			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
-  //     //			line += "&nbsp;";
-  //     //			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
-  //     $('#match_event_line1').html(line)
-
-  //     if (jsonData.event[0].Numero == 'undefi') {
-  //       if (jsonData.event[0].Equipe_A_B == 'A')
-  //         line = "Team " + theContext.Match.GetEquipe1(rowMatch).substring(0, 3)
-  //       else
-  //         line = "Team " + theContext.Match.GetEquipe2(rowMatch).substring(0, 3)
-  //     } else {
-  //       if (jsonData.event[0].Capitaine != 'E') {
-  //         line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;'
-  //       }
-  //       line += ' '
-  //       line += jsonData.event[0].Nom
-  //       line += ' '
-  //       line += jsonData.event[0].Prenom
-
-  //       if (jsonData.event[0].Capitaine == 'C') {
-  //         line += ' <span class="label label-warning capitaine">C</span>'
-  //       } else if (jsonData.event[0].Capitaine == 'E') {
-  //         line += ' (Coach)'
-  //       }
-  //     }
-  //     line += "</span>"
-  //     $('#match_event_line2').html(line)
-
-  //     $('#goal_card').html(GetImgEvtMatch(jsonData.event[0].Id_evt_match))
-
-  //     $('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900)
-  //   }
-
-  //   theContext.Match.SetIdEvent(rowMatch, lastId)
-  // }
 
   var score1 = jsonData.score1
   if (((score1 == '') || (score1 == null)) && (jsonData.periode != 'ATT'))
