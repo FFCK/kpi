@@ -17,6 +17,7 @@ function recordMatch (id) {
 	this.m_equipe1 = ''
 	this.m_equipe2 = ''
 	this.m_id_event = 0
+	this.m_id_prev_event = 0
 
 	this.m_score1 = 0
 	this.m_score2 = 0
@@ -41,6 +42,7 @@ recordMatch.prototype.GetTempsMax = function () { return this.m_temps_max }
 recordMatch.prototype.GetEquipe1 = function () { return this.m_equipe1 }
 recordMatch.prototype.GetEquipe2 = function () { return this.m_equipe2 }
 recordMatch.prototype.GetIdEvent = function () { return this.m_id_event }
+recordMatch.prototype.GetIdPrevEvent = function () { return this.m_id_prev_event }
 
 recordMatch.prototype.SetId = function (id) { this.m_id = id }
 recordMatch.prototype.SetTickGlobal = function (tick) { this.m_tick_global = tick }
@@ -58,6 +60,7 @@ recordMatch.prototype.SetTempsMax = function (temps_max) { this.m_temps_max = te
 recordMatch.prototype.SetEquipe1 = function (equipe1) { this.m_equipe1 = equipe1 }
 recordMatch.prototype.SetEquipe2 = function (equipe2) { this.m_equipe2 = equipe2 }
 recordMatch.prototype.SetIdEvent = function (id_event) { this.m_id_event = id_event }
+recordMatch.prototype.SetIdPrevEvent = function (id_prev_event) { this.m_id_prev_event = id_prev_event }
 
 recordMatch.prototype.SetScore1 = function (score1) { this.m_score1 = score1 }
 recordMatch.prototype.SetScore2 = function (score2) { this.m_score2 = score2 }
@@ -187,6 +190,13 @@ tableMatch.prototype.GetIdEvent = function (row) {
 	return this.m_array[row].GetIdEvent()
 }
 
+tableMatch.prototype.GetIdPrevEvent = function (row) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return ''
+
+	return this.m_array[row].GetIdPrevEvent()
+}
+
 tableMatch.prototype.SetId = function (row, id) {
 	var nbRows = this.m_array.length
 	if ((row < 0) || (row >= nbRows)) return ''
@@ -290,6 +300,13 @@ tableMatch.prototype.SetIdEvent = function (row, id_event) {
 	if ((row < 0) || (row >= nbRows)) return
 
 	this.m_array[row].SetIdEvent(id_event)
+}
+
+tableMatch.prototype.SetIdPrevEvent = function (row, id_prev_event) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return
+
+	this.m_array[row].SetIdPrevEvent(id_prev_event)
 }
 
 tableMatch.prototype.GetRow = function (id) {
@@ -526,7 +543,6 @@ function ParseCacheTerrain (jsonData) {
 	//  if(theContext.Match.GetId(0) == -1)
 	//      return; // Pas de match sélectionné
 
-	console.log(jsonData)
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 

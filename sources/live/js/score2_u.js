@@ -34,7 +34,7 @@ function RefreshHorloge () {
       if (temps_restant < 0) temps_restant = 0
 
       $('#match_horloge').html(SecToMMSS(temps_restant))
-      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
       /*			
             if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
             {
@@ -54,7 +54,7 @@ function RefreshHorloge () {
         temps_restant = 0
 
       $('#match_horloge').html(SecToMMSS(temps_restant))
-      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
 
       /*			
             if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
@@ -77,8 +77,6 @@ function RefreshHorloge () {
 }
 
 function ParseCacheScore (jsonData) {
-
-
 
   if (typeof (jsonData.id_match) == 'undefined')
     return	// Data JSON non correcte ...
@@ -109,8 +107,6 @@ function ParseCacheScore (jsonData) {
 }
 
 function ParseCacheChrono (jsonData) {
-
-
 
   if (typeof (jsonData.IdMatch) == 'undefined')
     return	// Data JSON non correcte ...

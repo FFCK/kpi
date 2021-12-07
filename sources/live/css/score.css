@@ -8,8 +8,8 @@ html, body
 {
 	width: 100%;
     height: 100%;
-    /* Fond rose */
-    /* background-color:rgba(255, 0, 255, 0); */
+    /* Fond vert */
+    /* background-color:rgba(0, 255, 0); */
     background: none;
 }
 
@@ -36,29 +36,21 @@ div {
     background-size: 100%;
 }
 
-.ban_live_teams {
-    height: 100vh;
-    width: 100vw;
-    background-image: url('../img/live_teams.png');
-    background-repeat: no-repeat;
-    background-size: 100%;
-}
-
 div#bandeau_score
 {
     position: absolute;
     /*margin-left: 50vw;*/
     top: 32px;
     /*transform: translateX(-53%);*/
-    left: 280px;
-    width: 1355px;
+    left: 340px;
+    width: 1240px;
     height: 124px;
 }
 
 #match_horloge
 {
     position: absolute;
-    left: 559px;
+    left: 502px;
     top: 102px;
     font-size:35px;
     width: 123px;
@@ -68,7 +60,7 @@ div#bandeau_score
 #match_periode
 {
     position: absolute;
-    right: 559px;
+    right: 502px;
     top: 102px;
     font-size: 35px;
     color: red;
@@ -79,22 +71,22 @@ div#bandeau_score
 div#nation1
 {	
     position: absolute;
-    left: 576px;
-    top: 50px;
+    left: 522px;
+    top: 47px;
 }
 
 div#nation2
 {	
     position: absolute;
-    right: 576px;
-    top: 50px;
+    right: 522px;
+    top: 47px;
 }
 
 div#equipe1
 {	
     position: absolute;
-    left: 62px;
-    top: 48px;
+    left: 12px;
+    top: 45px;
     font-size: 35px;
     width: 500px;
     color: #4b97cb;
@@ -104,8 +96,8 @@ div#equipe1
 div#equipe2
 {	
     position: absolute;
-    right: 62px;
-    top: 48px;
+    right: 12px;
+    top: 45px;
     font-size: 35px;
     width: 500px;
     color: #4b97cb;
@@ -135,7 +127,7 @@ div#score2
 div#score_separation {	
     position: absolute;
     top: 47px;
-    left: 671px;
+    left: 613px;
     font-size: 35px;
     color: #144263;
 }
@@ -164,7 +156,7 @@ div#categorie {
     display: none;
 }
 
-.ban_goal_card2 {
+.ban_goal_card_2 {
     height: 100vh;
     width: 100vw;
     position: absolute;
@@ -219,3 +211,30 @@ span.numero {
     color: #4b97cb;
 }
 
+.ban_live_teams {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('../img/live_teams.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+
+.ban_live_teams #equipe1 {
+    left: 60px;
+    text-align: left;
+}
+
+.ban_live_teams #equipe2 {
+    right: 60px;
+    text-align: right;
+}
+
+
+.ban_live_teams #nation1 {	
+    left: 6px;
+}
+
+.ban_live_teams #nation2 {	
+    right: 6px;
+}

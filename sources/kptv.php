@@ -12,6 +12,8 @@ class Tv extends MyPageSecure
     {
         $myBdd = new MyBdd();
 
+        $saison = utyGetSaison();
+
         $codeEvt = utyGetSession('codeEvt', 0);
         $codeEvt = utyGetPost('codeEvt', $codeEvt);
         $_SESSION['codeEvt'] = $codeEvt;

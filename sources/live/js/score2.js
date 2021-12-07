@@ -34,7 +34,7 @@ function RefreshHorloge () {
 			if (temps_restant < 0) temps_restant = 0
 
 			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
 			/*			
 						if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
 						{
@@ -54,7 +54,7 @@ function RefreshHorloge () {
 				temps_restant = 0
 
 			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1st').replace('M2', '2nd')))
+			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
 
 			/*			
 						if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
@@ -78,7 +78,6 @@ function RefreshHorloge () {
 
 function ParseCacheScore (jsonData) {
 
-
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -98,7 +97,21 @@ function ParseCacheScore (jsonData) {
 	var nbEvents = jsonData.event.length
 	if (nbEvents > 0) {
 		var lastId = jsonData.event[0].Id
+		// Evenement déjà pris en compte
 		if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && (theContext.Match.GetIdEvent(rowMatch) >= 0)) {
+			// Evenement déjà affiché précédemment (suite à suppression)
+			if ((theContext.Match.GetIdPrevEvent(rowMatch) == lastId) && (theContext.Match.GetIdPrevEvent(rowMatch) >= 0)) {
+				if (nbEvents > 1) {
+					// Mémorisation de l'événement précédent
+					theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
+				}
+				return
+			}
+			if (nbEvents > 1) {
+				// Mémorisation de l'événement précédent
+				theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
+			}
+
 			var line
 			if (jsonData.event[0].Equipe_A_B == 'A') {
 				line = ImgClub48(theContext.Match.GetEquipe1(rowMatch))
@@ -197,7 +210,6 @@ function ParseCacheChrono (jsonData) {
 }
 
 function ParseCacheGlobal (jsonData) {
-
 
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
