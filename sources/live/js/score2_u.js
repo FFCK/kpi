@@ -24,26 +24,11 @@ function RefreshHorloge () {
 
       // var temps_match = theContext.Match.GetTempsEcoule(i) + temps_actuel - theContext.temps_offset;
       var temps_running = temps_actuel - theContext.Match.GetTempsReprise(i) - theContext.temps_offset
-      /*
-            alert('temps_REPRISE2='+ theContext.Match.GetTempsReprise(i));
-            alert('temps_ACTUEL2='+ temps_actuel);
-            alert('temps_OFFSET2='+theContext.temps_offset);
-            alert('temps_RUNNING='+(temps_running).toString());
-      */
       var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i) - temps_running
       if (temps_restant < 0) temps_restant = 0
 
       $('#match_horloge').html(SecToMMSS(temps_restant))
       $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
-      /*			
-            if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
-            {
-              var periode = theContext.Match.GetPeriode(i);
-              var htmlNext = "<img src='./img/flag-green.png' height='32' width='32' />&nbsp;<span class='etat_start'>"+periode+"</span>";
-              $('#match_horloge_etat').html(htmlNext);
-              theContext.Match.SetEtat(i, theContext.Match.GetEtat(i));
-            }
-      */
     }
     else {
       var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i)
@@ -56,15 +41,6 @@ function RefreshHorloge () {
       $('#match_horloge').html(SecToMMSS(temps_restant))
       $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
 
-      /*			
-            if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
-            {
-              var periodeEtat = theContext.Match.GetPeriode(i)+" : Arrêt ";
-              var htmlNext = "<img src='./img/stop.png' height='32' width='32' />&nbsp;<span class='etat_stop'>"+periodeEtat+"</span>";
-              $('#match_horloge_etat').html(htmlNext);
-              theContext.Match.SetEtat(i, theContext.Match.GetEtat(i));
-            }
-      */
     }
   }
 
@@ -133,14 +109,6 @@ function ParseCacheChrono (jsonData) {
   var temps_ecoule = temps_max - parseInt(parseInt(jsonData.run_time) / 1000)
   var temps_reprise = parseInt(jsonData.start_time_server)
 
-  /*
-    alert("Etat = "+jsonData.action);
-    alert("Temps_max = "+temps_max);
-    alert("Run_time = "+jsonData.run_time);
-    alert("Temps_ecoule="+temps_ecoule);
-    alert("Temps_reprise="+temps_reprise);
-  */
-
   theContext.Match.SetTempsEcoule(rowMatch, temps_ecoule)
   theContext.Match.SetTempsReprise(rowMatch, temps_reprise)
 }
@@ -165,14 +133,6 @@ function ParseCacheGlobal (jsonData) {
   // Mise à jour des données ...
   theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
   theContext.Match.SetStatut(rowMatch, jsonData.statut)
-
-  /*	
-    if (jsonData.statut == 'END')
-    {
-      window.location.href = "./presentation.php?terrain="+theContext.Terrain+"&speaker="+theContext.Speaker;
-      return;
-    }
-  */
 
   $('#match_nom').html(jsonData.competition)
 
@@ -201,31 +161,6 @@ function ParseCacheGlobal (jsonData) {
     + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>')
   $('#terrain').html('Pitch ' + jsonData.terrain)
 
-  /* Joueurs 
-    var htmlData = '';
-    for (i=0;i<jsonData.equipe1.joueurs.length;i++)
-    {
-      htmlData += '<p class="text-left">'+
-            jsonData.equipe1.joueurs[i].Numero+' : '+
-            jsonData.equipe1.joueurs[i].Nom+' '+
-            jsonData.equipe1.joueurs[i].Prenom+' ('+
-            jsonData.equipe1.joueurs[i].Capitaine+')'+
-            '</p>';
-    }
-    $('#competiteurs1').html(htmlData);
-	
-    htmlData = '';
-    for (i=0;i<jsonData.equipe2.joueurs.length;i++)
-    {
-      htmlData += '<p class="text-left">'+
-            jsonData.equipe2.joueurs[i].Numero+' : '+
-            jsonData.equipe2.joueurs[i].Nom+' '+
-            jsonData.equipe2.joueurs[i].Prenom+' ('+
-            jsonData.equipe2.joueurs[i].Capitaine+')'+
-            '</p>';
-    }
-    $('#competiteurs2').html(htmlData);
-  */
 }
 
 function Init (event, terrain, speaker, voie) {
