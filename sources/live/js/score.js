@@ -126,7 +126,15 @@ function ParseCacheScore (jsonData) {
 
 			document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
 
-			$('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900)
+			// $('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900)
+			const bandeau_goal = document.querySelector('#bandeau_goal')
+			bandeau_goal.style.display = 'block'
+			bandeau_goal.classList.remove('animate__fadeOutLeft')
+			bandeau_goal.classList.add('animate__fadeInLeft')
+			setTimeout(function () {
+				bandeau_goal.classList.remove('animate__fadeInLeft')
+				bandeau_goal.classList.add('animate__fadeOutLeft')
+			}, 5000)
 
 		}
 
