@@ -1,18 +1,21 @@
 function RefreshHorloge () {
 	if (typeof (theContext.temps_offset) == 'undefined') {
 		// Prise de l'Offset entre le temps du serveur et le temps de la machine cliente ...
-		$.ajax({
+		axios({
+			method: 'post',
 			url: './get_sec.php',
-			type: 'GET',
-			dataType: 'text',
-			cache: false,
-			async: false,
-			success: function (flux) {
+			params: {},
+			responseType: 'text'
+		})
+			.then(function (response) {
 				var now = new Date()
 				var temps_actuel = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
-				theContext.temps_offset = temps_actuel - parseInt(flux)
-			}
-		})
+				theContext.temps_offset = temps_actuel - parseInt(response.data)
+			})
+			.catch(function (error) {
+				console.log(error)
+				return
+			})
 		return
 	}
 
@@ -24,48 +27,20 @@ function RefreshHorloge () {
 
 			// var temps_match = theContext.Match.GetTempsEcoule(i) + temps_actuel - theContext.temps_offset;
 			var temps_running = temps_actuel - theContext.Match.GetTempsReprise(i) - theContext.temps_offset
-			/*
-						alert('temps_REPRISE2='+ theContext.Match.GetTempsReprise(i));
-						alert('temps_ACTUEL2='+ temps_actuel);
-						alert('temps_OFFSET2='+theContext.temps_offset);
-						alert('temps_RUNNING='+(temps_running).toString());
-			*/
 			var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i) - temps_running
 			if (temps_restant < 0) temps_restant = 0
 
-			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
-			/*			
-						if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
-						{
-							var periode = theContext.Match.GetPeriode(i);
-							var htmlNext = "<img src='./img/flag-green.png' height='32' width='32' />&nbsp;<span class='etat_start'>"+periode+"</span>";
-							$('#match_horloge_etat').html(htmlNext);
-							theContext.Match.SetEtat(i, theContext.Match.GetEtat(i));
-						}
-			*/
-		}
-		else {
+		} else {
 			var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i)
 			if (temps_restant < 0) temps_restant = 0
 
 			// Evolution Chrono ...
 			if (theContext.Match.GetStatut(i) == 'END')
 				temps_restant = 0
-
-			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
-
-			/*			
-						if (theContext.Match.GetEtat(i) != theContext.Match.GetEtatPrev(i))
-						{
-							var periodeEtat = theContext.Match.GetPeriode(i)+" : Arrêt ";
-							var htmlNext = "<img src='./img/stop.png' height='32' width='32' />&nbsp;<span class='etat_stop'>"+periodeEtat+"</span>";
-							$('#match_horloge_etat').html(htmlNext);
-							theContext.Match.SetEtat(i, theContext.Match.GetEtat(i));
-						}
-			*/
 		}
+
+		document.querySelector('#match_horloge').innerHTML = SecToMMSS(temps_restant)
+		document.querySelector('#match_periode').innerHTML = GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2'))
 	}
 
 	++theContext.CountTimer
@@ -73,11 +48,10 @@ function RefreshHorloge () {
 	RefreshCacheChrono()
 
 	//	if (theContext.CountTimer % 2 == 0)
-	RefreshCacheScore()
+	// RefreshCacheScore()
 }
 
 function ParseCacheScore (jsonData) {
-
 
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
@@ -125,7 +99,7 @@ function ParseCacheScore (jsonData) {
 			//			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
 			//			line += "&nbsp;";
 			//			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
-			$('#match_event_line1').html(line)
+			document.querySelector('#match_event_line1').innerHTML = line
 
 			if (jsonData.event[0].Numero == 'undefi') {
 				if (jsonData.event[0].Equipe_A_B == 'A')
@@ -148,11 +122,12 @@ function ParseCacheScore (jsonData) {
 				}
 			}
 			line += "</span>"
-			$('#match_event_line2').html(line)
+			document.querySelector('#match_event_line2').innerHTML = line
 
-			$('#goal_card').html(GetImgEvtMatch(jsonData.event[0].Id_evt_match))
+			document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
 
 			$('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900)
+
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId)
@@ -166,16 +141,11 @@ function ParseCacheScore (jsonData) {
 	if (((score2 == '') || (score2 == null)) && (jsonData.periode != 'ATT'))
 		score2 = '0'
 
-	$('#score1').html(score1)
-	$('#score2').html(score2)
+	document.querySelector('#score1').innerHTML = score1
+	document.querySelector('#score2').innerHTML = score2
 }
 
 function ParseCacheChrono (jsonData) {
-	// var iFind = jsonTxt.lastIndexOf("@@END@@")
-	// if (iFind == -1) return // Aucune précence de @@END@@ => le fichier cache n'est pas complet ... => On sort
-	// jsonTxt = jsonTxt.substring(0, iFind)
-	// var jsonData = JSON && JSON.parse(jsonData) || $.parseJSON(jsonData)
-
 
 	if (typeof (jsonData.IdMatch) == 'undefined')
 		return	// Data JSON non correcte ...
@@ -202,26 +172,11 @@ function ParseCacheChrono (jsonData) {
 	var temps_ecoule = temps_max - parseInt(parseInt(jsonData.run_time) / 1000)
 	var temps_reprise = parseInt(jsonData.start_time_server)
 
-	/*
-		alert("Etat = "+jsonData.action);
-		alert("Temps_max = "+temps_max);
-		alert("Run_time = "+jsonData.run_time);
-		alert("Temps_ecoule="+temps_ecoule);
-		alert("Temps_reprise="+temps_reprise);
-	*/
-
 	theContext.Match.SetTempsEcoule(rowMatch, temps_ecoule)
 	theContext.Match.SetTempsReprise(rowMatch, temps_reprise)
 }
 
 function ParseCacheGlobal (jsonData) {
-
-	// try {
-	// 	const jsonData = JSON.parse(jsonData)
-	// } catch (e) {
-	// 	console.log('JSON non valide!')
-	// 	return
-	// }
 
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
@@ -240,33 +195,33 @@ function ParseCacheGlobal (jsonData) {
 	theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
 	theContext.Match.SetStatut(rowMatch, jsonData.statut)
 
-
-	$('#match_nom').html(jsonData.competition)
+	if (document.querySelector('#match_nom'))
+		document.querySelector('#match_nom').innerHTML = jsonData.competition
 
 	var equipe1 = jsonData.equipe1.nom
-	equipe1 = equipe1.replace(" Women", " W.")
+	// equipe1 = equipe1.replace(" Women", " W.")
 	//	equipe1 = equipe1.replace(" Men", " M.");
-	equipe1 = equipe1.substr(0, 3)
-	$('#equipe1').html(equipe1)
+	equipe1 = equipe1.substr(0, 3).toUpperCase()
+	document.querySelector('#equipe1').innerHTML = equipe1
 
 	var equipe2 = jsonData.equipe2.nom
 	equipe2 = equipe2.replace(" Women", " W.")
 	//	equipe2 = equipe2.replace(" Men", " M.");
-	equipe2 = equipe2.substr(0, 3)
-	$('#equipe2').html(equipe2)
+	equipe2 = equipe2.substr(0, 3).toUpperCase()
+	document.querySelector('#equipe2').innerHTML = equipe2
 
 	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club)
 	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club)
 
-	$('#nation1').html(ImgNation48(jsonData.equipe1.club))
-	$('#nation2').html(ImgNation48(jsonData.equipe2.club))
+	document.querySelector('#nation1').innerHTML = ImgNation48(jsonData.equipe1.club)
+	document.querySelector('#nation2').innerHTML = ImgNation48(jsonData.equipe2.club)
 
-	$('#categorie').html(jsonData.categ + ' - ' + jsonData.phase)
+	document.querySelector('#categorie').innerHTML = jsonData.categ + ' - ' + jsonData.phase
 
-	$('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch='
-		+ jsonData.id_match
-		+ '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>')
-	$('#terrain').html('Pitch ' + jsonData.terrain)
+	if (document.querySelector('#lien_pdf'))
+		document.querySelector('#lien_pdf').innerHTML = '<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>'
+	if (document.querySelector('#terrain'))
+		document.querySelector('#terrain').innerHTML = 'Pitch ' + jsonData.terrain
 
 }
 
@@ -287,11 +242,11 @@ function Init (event, terrain, speaker, voie) {
 	// Refresh du cache Global toute les 30 secondes ...
 	setInterval(RefreshCacheGlobal, 30000)
 
-	// Refresh du cache Score toute les 5 secondes ...
-	//	setInterval(RefreshCacheScore, 5500);
+	// Refresh du cache Score toute les 3 secondes ...
+	setInterval(RefreshCacheScore, 3000)
 
 	// Refresh Chrono toutes les 2 secondes  ...
-	//	setInterval(RefreshCacheChrono, 2500);
+	// setInterval(RefreshCacheChrono, 2500);
 
 	// Refresh Horloge toutes les secondes  ...
 	setInterval(RefreshHorloge, 1000)

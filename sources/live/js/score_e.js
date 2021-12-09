@@ -104,14 +104,6 @@ function ParseCacheGlobal (jsonData) {
   theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
   theContext.Match.SetStatut(rowMatch, jsonData.statut)
 
-  /*	
-    if (jsonData.statut == 'END')
-    {
-      window.location.href = "./presentation.php?terrain="+theContext.Terrain+"&speaker="+theContext.Speaker;
-      return;
-    }
-  */
-
   $('#match_nom').html(jsonData.competition)
 
   var equipe1 = jsonData.equipe1.nom

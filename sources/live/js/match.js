@@ -479,57 +479,79 @@ function GetLabelEvtMatch (evt_match) {
 
 function RefreshCacheGlobal () {
 	var nb = theContext.Match.GetCount()
-	//	alert("nb Match = "+nb);
-
 	for (var i = 0; i < nb; i++) {
-		$.ajax({
-			url: './cache/' + theContext.Match.GetId(i) + '_match_global.json',
-			type: 'GET',
-			dataType: 'json',
-			cache: false,
-			async: false,
-			success: ParseCacheGlobal
-		})
+		if (theContext.Match.GetId(i) > 0) {
+			axios({
+				method: 'post',
+				url: './cache/' + theContext.Match.GetId(i) + '_match_global.json',
+				params: {},
+				responseType: 'json'
+			})
+				.then(function (response) {
+					ParseCacheGlobal(response.data)
+				})
+				.catch(function (error) {
+					console.log(error)
+				})
+		}
 	}
 }
 
 function RefreshCacheScore () {
 	var nb = theContext.Match.GetCount()
 	for (var i = 0; i < nb; i++) {
-		$.ajax({
-			url: './cache/' + theContext.Match.GetId(i) + '_match_score.json',
-			type: 'GET',
-			dataType: 'json',
-			cache: false,
-			async: false,
-			success: ParseCacheScore
-		})
+		if (theContext.Match.GetId(i) > 0) {
+			axios({
+				method: 'post',
+				url: './cache/' + theContext.Match.GetId(i) + '_match_score.json',
+				params: {},
+				responseType: 'json'
+			})
+				.then(function (response) {
+					ParseCacheScore(response.data)
+				})
+				.catch(function (error) {
+					console.log(error)
+				})
+		}
 	}
 }
 
 function RefreshCacheChrono () {
 	var nb = theContext.Match.GetCount()
 	for (var i = 0; i < nb; i++) {
-		$.ajax({
-			url: './cache/' + theContext.Match.GetId(i) + '_match_chrono.json',
-			type: 'GET',
-			dataType: 'json',
-			cache: false,
-			async: false,
-			success: ParseCacheChrono
-		})
+		if (theContext.Match.GetId(i) > 0) {
+			axios({
+				method: 'post',
+				url: './cache/' + theContext.Match.GetId(i) + '_match_chrono.json',
+				params: {},
+				responseType: 'json'
+			})
+				.then(function (response) {
+					ParseCacheChrono(response.data)
+				})
+				.catch(function (error) {
+					console.log(error)
+				})
+		}
 	}
 }
 
 function RefreshCacheTerrain () {
-	$.ajax({
-		url: './cache/event' + theContext.Event + '_pitch' + theContext.Terrain + '.json',
-		type: 'GET',
-		dataType: 'json',
-		cache: false,
-		async: false,
-		success: ParseCacheTerrain
-	})
+	if (theContext.Event > 0) {
+		axios({
+			method: 'post',
+			url: './cache/event' + theContext.Event + '_pitch' + theContext.Terrain + '.json',
+			params: {},
+			responseType: 'json'
+		})
+			.then(function (response) {
+				ParseCacheTerrain(response.data)
+			})
+			.catch(function (error) {
+				console.log(error)
+			})
+	}
 }
 
 var theContext = new Object()
