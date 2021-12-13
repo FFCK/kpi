@@ -16,8 +16,10 @@ function recordMatch (id) {
 
 	this.m_equipe1 = ''
 	this.m_equipe2 = ''
+	this.m_club1 = ''
+	this.m_club2 = ''
 	this.m_id_event = 0
-	this.m_id_prev_event = 0
+	this.m_id_prev_event = -1
 
 	this.m_score1 = 0
 	this.m_score2 = 0
@@ -41,6 +43,8 @@ recordMatch.prototype.GetTempsMax = function () { return this.m_temps_max }
 
 recordMatch.prototype.GetEquipe1 = function () { return this.m_equipe1 }
 recordMatch.prototype.GetEquipe2 = function () { return this.m_equipe2 }
+recordMatch.prototype.GetClub1 = function () { return this.m_club1 }
+recordMatch.prototype.GetClub2 = function () { return this.m_club2 }
 recordMatch.prototype.GetIdEvent = function () { return this.m_id_event }
 recordMatch.prototype.GetIdPrevEvent = function () { return this.m_id_prev_event }
 
@@ -59,6 +63,8 @@ recordMatch.prototype.SetTempsMax = function (temps_max) { this.m_temps_max = te
 
 recordMatch.prototype.SetEquipe1 = function (equipe1) { this.m_equipe1 = equipe1 }
 recordMatch.prototype.SetEquipe2 = function (equipe2) { this.m_equipe2 = equipe2 }
+recordMatch.prototype.SetClub1 = function (club1) { this.m_club1 = club1 }
+recordMatch.prototype.SetClub2 = function (club2) { this.m_club2 = club2 }
 recordMatch.prototype.SetIdEvent = function (id_event) { this.m_id_event = id_event }
 recordMatch.prototype.SetIdPrevEvent = function (id_prev_event) { this.m_id_prev_event = id_prev_event }
 
@@ -183,6 +189,20 @@ tableMatch.prototype.GetEquipe2 = function (row) {
 	return this.m_array[row].GetEquipe2()
 }
 
+tableMatch.prototype.GetClub1 = function (row) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return ''
+
+	return this.m_array[row].GetClub1()
+}
+
+tableMatch.prototype.GetClub2 = function (row) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return ''
+
+	return this.m_array[row].GetClub2()
+}
+
 tableMatch.prototype.GetIdEvent = function (row) {
 	var nbRows = this.m_array.length
 	if ((row < 0) || (row >= nbRows)) return ''
@@ -293,6 +313,20 @@ tableMatch.prototype.SetEquipe2 = function (row, equipe2) {
 	if ((row < 0) || (row >= nbRows)) return
 
 	this.m_array[row].SetEquipe2(equipe2)
+}
+
+tableMatch.prototype.SetClub1 = function (row, club1) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return
+
+	this.m_array[row].SetClub1(club1)
+}
+
+tableMatch.prototype.SetClub2 = function (row, club2) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return
+
+	this.m_array[row].SetClub2(club2)
 }
 
 tableMatch.prototype.SetIdEvent = function (row, id_event) {

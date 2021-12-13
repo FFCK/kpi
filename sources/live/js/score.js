@@ -52,7 +52,6 @@ function RefreshHorloge () {
 }
 
 function ParseCacheScore (jsonData) {
-
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -69,6 +68,19 @@ function ParseCacheScore (jsonData) {
 	theContext.Match.SetTickScore(rowMatch, jsonData.tick)
 	theContext.Match.SetPeriode(rowMatch, jsonData.periode)
 
+	// SCORE
+	var score1 = jsonData.score1
+	if (((score1 == '') || (score1 == null)) && (jsonData.periode != 'ATT'))
+		score1 = '0'
+
+	var score2 = jsonData.score2
+	if (((score2 == '') || (score2 == null)) && (jsonData.periode != 'ATT'))
+		score2 = '0'
+
+	document.querySelector('#score1').innerHTML = score1
+	document.querySelector('#score2').innerHTML = score2
+
+	// EVENT
 	var nbEvents = jsonData.event.length
 	if (nbEvents > 0) {
 		var lastId = jsonData.event[0].Id
@@ -81,6 +93,10 @@ function ParseCacheScore (jsonData) {
 					theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
 				}
 				return
+				// Le tout premier détecté n'est pas affiché
+			} else if (theContext.Match.GetIdPrevEvent(rowMatch) == -1) {
+				theContext.Match.SetIdPrevEvent(rowMatch, 0)
+				return
 			}
 			if (nbEvents > 1) {
 				// Mémorisation de l'événement précédent
@@ -89,11 +105,11 @@ function ParseCacheScore (jsonData) {
 
 			var line
 			if (jsonData.event[0].Equipe_A_B == 'A') {
-				line = ImgNation48(theContext.Match.GetEquipe1(rowMatch))
-				line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch)
+				line = ImgNation48(theContext.Match.GetClub1(rowMatch))
+				line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch).substring(0, 3).toUpperCase()
 			} else {
-				line = ImgNation48(theContext.Match.GetEquipe2(rowMatch))
-				line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3)
+				line = ImgNation48(theContext.Match.GetClub2(rowMatch))
+				line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3).toUpperCase()
 			}
 			line += "&nbsp;<span>"
 			//			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
@@ -103,9 +119,9 @@ function ParseCacheScore (jsonData) {
 
 			if (jsonData.event[0].Numero == 'undefi') {
 				if (jsonData.event[0].Equipe_A_B == 'A')
-					line = "Team " + theContext.Match.GetEquipe1(rowMatch).substring(0, 3)
+					line = "Team " + theContext.Match.GetEquipe1(rowMatch).substring(0, 3).toUpperCase()
 				else
-					line = "Team " + theContext.Match.GetEquipe2(rowMatch).substring(0, 3)
+					line = "Team " + theContext.Match.GetEquipe2(rowMatch).substring(0, 3).toUpperCase()
 			} else {
 				if (jsonData.event[0].Capitaine != 'E') {
 					line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;'
@@ -116,7 +132,7 @@ function ParseCacheScore (jsonData) {
 				line += jsonData.event[0].Prenom
 
 				if (jsonData.event[0].Capitaine == 'C') {
-					line += ' <span class="label label-warning capitaine">C</span>'
+					line += ' <span class="badge bg-warning capitaine">C</span>'
 				} else if (jsonData.event[0].Capitaine == 'E') {
 					line += ' (Coach)'
 				}
@@ -126,35 +142,33 @@ function ParseCacheScore (jsonData) {
 
 			document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
 
-			// $('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900)
 			const bandeau_goal = document.querySelector('#bandeau_goal')
+			const ban_score = document.querySelector('#ban_score')
+			const categorie = document.querySelector('#categorie')
+
+			ban_score.classList.remove('animate__fadeInDown')
+			ban_score.classList.add('animate__fadeOutUp')
+			categorie.classList.remove('animate__fadeInUp')
+			categorie.classList.add('animate__fadeOutDown')
 			bandeau_goal.style.display = 'block'
 			bandeau_goal.classList.remove('animate__fadeOutLeft')
 			bandeau_goal.classList.add('animate__fadeInLeft')
 			setTimeout(function () {
 				bandeau_goal.classList.remove('animate__fadeInLeft')
 				bandeau_goal.classList.add('animate__fadeOutLeft')
-			}, 5000)
+				ban_score.classList.remove('animate__fadeOutUp')
+				ban_score.classList.add('animate__fadeInDown')
+				categorie.classList.remove('animate__fadeOutDown')
+				categorie.classList.add('animate__fadeInUp')
+			}, 6000)
 
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId)
 	}
-
-	var score1 = jsonData.score1
-	if (((score1 == '') || (score1 == null)) && (jsonData.periode != 'ATT'))
-		score1 = '0'
-
-	var score2 = jsonData.score2
-	if (((score2 == '') || (score2 == null)) && (jsonData.periode != 'ATT'))
-		score2 = '0'
-
-	document.querySelector('#score1').innerHTML = score1
-	document.querySelector('#score2').innerHTML = score2
 }
 
 function ParseCacheChrono (jsonData) {
-
 	if (typeof (jsonData.IdMatch) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -185,7 +199,6 @@ function ParseCacheChrono (jsonData) {
 }
 
 function ParseCacheGlobal (jsonData) {
-
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -207,7 +220,7 @@ function ParseCacheGlobal (jsonData) {
 		document.querySelector('#match_nom').innerHTML = jsonData.competition
 
 	var equipe1 = jsonData.equipe1.nom
-	// equipe1 = equipe1.replace(" Women", " W.")
+	equipe1 = equipe1.replace(" Women", " W.")
 	//	equipe1 = equipe1.replace(" Men", " M.");
 	equipe1 = equipe1.substr(0, 3).toUpperCase()
 	document.querySelector('#equipe1').innerHTML = equipe1
@@ -218,8 +231,10 @@ function ParseCacheGlobal (jsonData) {
 	equipe2 = equipe2.substr(0, 3).toUpperCase()
 	document.querySelector('#equipe2').innerHTML = equipe2
 
-	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club)
-	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club)
+	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.nom)
+	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.nom)
+	theContext.Match.SetClub1(rowMatch, jsonData.equipe1.club)
+	theContext.Match.SetClub2(rowMatch, jsonData.equipe2.club)
 
 	document.querySelector('#nation1').innerHTML = ImgNation48(jsonData.equipe1.club)
 	document.querySelector('#nation2').innerHTML = ImgNation48(jsonData.equipe2.club)
@@ -227,7 +242,7 @@ function ParseCacheGlobal (jsonData) {
 	document.querySelector('#categorie').innerHTML = jsonData.categ + ' - ' + jsonData.phase
 
 	if (document.querySelector('#lien_pdf'))
-		document.querySelector('#lien_pdf').innerHTML = '<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>'
+		document.querySelector('#lien_pdf').innerHTML = '<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Report <span class="badge bg-dark">' + jsonData.numero_ordre + '</span></a>'
 	if (document.querySelector('#terrain'))
 		document.querySelector('#terrain').innerHTML = 'Pitch ' + jsonData.terrain
 
@@ -261,4 +276,3 @@ function Init (event, terrain, speaker, voie) {
 
 	SetVoie(voie)
 }
-

@@ -50,7 +50,7 @@ div {
     text-align: center;
 }
 
-.ban_score {
+#ban_score {
     height: 50vh;
     width: 50vw;
     background-image: url('../img/score.png');

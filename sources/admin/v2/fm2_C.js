@@ -81,7 +81,6 @@ $(function () {
         submit: 'OK',
         callback: function (value, settings) {
             idjoueur = $(this).attr('id').split('-')
-            console.log(idjoueur[1])
             if (value == 'C')
                 attrSatut = ' (Cap.)'
             else if (value == 'E')
@@ -100,7 +99,6 @@ $(function () {
         type: 'spinner',
         callback: function (value, settings) {
             idjoueur = $(this).attr('id').split('-')
-            console.log(idjoueur[1])
             $('.joueurs[data-id=' + idjoueur[1] + ']').attr('data-nb', value).find('.NumJoueur').text(value)
         }
     })
@@ -685,7 +683,6 @@ $(function () {
         code_ligne.player = ligne_id_joueur
         code_ligne.number = ligne_nb
         code_ligne.cause = ligne_motif
-        console.log(code_ligne)
 
         texte = $('#time_evt').val() + ' ' + ligne_evt
         texte += ' éq.' + ligne_equipe + ' ' + ligne_num + ligne_nom
