@@ -20,7 +20,7 @@ div {
     text-align: center;
 }
 
-.ban_score {
+#ban_score {
     height: 100vh;
     width: 100vw;
     background-image: url('../img/score.png');
@@ -28,7 +28,7 @@ div {
     background-size: 100%;
 }
 
-.ban_score_club {
+#ban_score_club {
     height: 100vh;
     width: 100vw;
     background-image: url('../img/score_club.png');
@@ -163,6 +163,7 @@ div#categorie {
     bottom: 0;
     background-image: url('../img/banner_goal_card_2.png');
     display: none;
+    margin: none;
 }
 
 #banner_goal_card {

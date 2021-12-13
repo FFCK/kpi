@@ -1,18 +1,21 @@
 function RefreshHorloge () {
 	if (typeof (theContext.temps_offset) == 'undefined') {
 		// Prise de l'Offset entre le temps du serveur et le temps de la machine cliente ...
-		$.ajax({
+		axios({
+			method: 'post',
 			url: './get_sec.php',
-			type: 'GET',
-			dataType: 'text',
-			cache: false,
-			async: false,
-			success: function (flux) {
+			params: {},
+			responseType: 'text'
+		})
+			.then(function (response) {
 				var now = new Date()
 				var temps_actuel = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
-				theContext.temps_offset = temps_actuel - parseInt(flux)
-			}
-		})
+				theContext.temps_offset = temps_actuel - parseInt(response.data)
+			})
+			.catch(function (error) {
+				console.log(error)
+				return
+			})
 		return
 	}
 
@@ -27,21 +30,17 @@ function RefreshHorloge () {
 			var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i) - temps_running
 			if (temps_restant < 0) temps_restant = 0
 
-			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
-		}
-		else {
+		} else {
 			var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i)
 			if (temps_restant < 0) temps_restant = 0
 
 			// Evolution Chrono ...
 			if (theContext.Match.GetStatut(i) == 'END')
 				temps_restant = 0
-
-			$('#match_horloge').html(SecToMMSS(temps_restant))
-			$('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
-
 		}
+
+		document.querySelector('#match_horloge').innerHTML = SecToMMSS(temps_restant)
+		document.querySelector('#match_periode').innerHTML = GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2'))
 	}
 
 	++theContext.CountTimer
@@ -49,7 +48,7 @@ function RefreshHorloge () {
 	RefreshCacheChrono()
 
 	//	if (theContext.CountTimer % 2 == 0)
-	RefreshCacheScore()
+	// RefreshCacheScore()
 }
 
 function ParseCacheScore (jsonData) {
@@ -70,6 +69,19 @@ function ParseCacheScore (jsonData) {
 	theContext.Match.SetTickScore(rowMatch, jsonData.tick)
 	theContext.Match.SetPeriode(rowMatch, jsonData.periode)
 
+	// SCORE
+	var score1 = jsonData.score1
+	if (((score1 == '') || (score1 == null)) && (jsonData.periode != 'ATT'))
+		score1 = '0'
+
+	var score2 = jsonData.score2
+	if (((score2 == '') || (score2 == null)) && (jsonData.periode != 'ATT'))
+		score2 = '0'
+
+	document.querySelector('#score1').innerHTML = score1
+	document.querySelector('#score2').innerHTML = score2
+
+	// EVENT
 	var nbEvents = jsonData.event.length
 	if (nbEvents > 0) {
 		var lastId = jsonData.event[0].Id
@@ -82,6 +94,10 @@ function ParseCacheScore (jsonData) {
 					theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
 				}
 				return
+				// Le tout premier détecté n'est pas affiché
+			} else if (theContext.Match.GetIdPrevEvent(rowMatch) == -1) {
+				theContext.Match.SetIdPrevEvent(rowMatch, 0)
+				return
 			}
 			if (nbEvents > 1) {
 				// Mémorisation de l'événement précédent
@@ -90,23 +106,23 @@ function ParseCacheScore (jsonData) {
 
 			var line
 			if (jsonData.event[0].Equipe_A_B == 'A') {
-				line = ImgClub48(theContext.Match.GetEquipe1(rowMatch))
-				// line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch).substring(0, 3);
+				line = ImgClub48(theContext.Match.GetClub1(rowMatch))
+				line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch)
 			} else {
-				line = ImgClub48(theContext.Match.GetEquipe2(rowMatch))
-				// line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3);
+				line = ImgClub48(theContext.Match.GetClub2(rowMatch))
+				line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch)
 			}
 			line += "&nbsp;<span>"
 			//			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
 			//			line += "&nbsp;";
 			//			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
-			$('#match_event_line1').html(line)
+			document.querySelector('#match_event_line1').innerHTML = line
 
 			if (jsonData.event[0].Numero == 'undefi') {
 				if (jsonData.event[0].Equipe_A_B == 'A')
-					line = "Team " + theContext.Match.GetEquipe1(rowMatch).substring(0, 3)
+					line = "Team " + theContext.Match.GetEquipe1(rowMatch)
 				else
-					line = "Team " + theContext.Match.GetEquipe2(rowMatch).substring(0, 3)
+					line = "Team " + theContext.Match.GetEquipe2(rowMatch)
 			} else {
 				if (jsonData.event[0].Capitaine != 'E') {
 					line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;'
@@ -117,37 +133,43 @@ function ParseCacheScore (jsonData) {
 				line += jsonData.event[0].Prenom
 
 				if (jsonData.event[0].Capitaine == 'C') {
-					line += ' <span class="label label-warning capitaine">C</span>'
+					line += ' <span class="badge bg-warning capitaine">C</span>'
 				} else if (jsonData.event[0].Capitaine == 'E') {
 					line += ' (Coach)'
 				}
 			}
 			line += "</span>"
-			$('#match_event_line2').html(line)
+			document.querySelector('#match_event_line2').innerHTML = line
 
-			$('#goal_card').html(GetImgEvtMatch(jsonData.event[0].Id_evt_match))
+			document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
 
-			$('#bandeau_goal').fadeIn(600).delay(6000).fadeOut(900)
+			const bandeau_goal = document.querySelector('#bandeau_goal')
+			const ban_score_club = document.querySelector('#ban_score_club')
+			const categorie = document.querySelector('#categorie')
+
+			ban_score_club.classList.remove('animate__fadeInDown')
+			ban_score_club.classList.add('animate__fadeOutUp')
+			categorie.classList.remove('animate__fadeInUp')
+			categorie.classList.add('animate__fadeOutDown')
+			bandeau_goal.style.display = 'block'
+			bandeau_goal.classList.remove('animate__fadeOutLeft')
+			bandeau_goal.classList.add('animate__fadeInLeft')
+			setTimeout(function () {
+				bandeau_goal.classList.remove('animate__fadeInLeft')
+				bandeau_goal.classList.add('animate__fadeOutLeft')
+				ban_score_club.classList.remove('animate__fadeOutUp')
+				ban_score_club.classList.add('animate__fadeInDown')
+				categorie.classList.remove('animate__fadeOutDown')
+				categorie.classList.add('animate__fadeInUp')
+			}, 6000)
+
 		}
 
 		theContext.Match.SetIdEvent(rowMatch, lastId)
 	}
-
-	var score1 = jsonData.score1
-	if (((score1 == '') || (score1 == null)) && (jsonData.periode != 'ATT'))
-		score1 = '0'
-
-	var score2 = jsonData.score2
-	if (((score2 == '') || (score2 == null)) && (jsonData.periode != 'ATT'))
-		score2 = '0'
-
-	$('#score1').html(score1)
-	$('#score2').html(score2)
 }
 
 function ParseCacheChrono (jsonData) {
-
-
 	if (typeof (jsonData.IdMatch) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -178,7 +200,6 @@ function ParseCacheChrono (jsonData) {
 }
 
 function ParseCacheGlobal (jsonData) {
-
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -196,33 +217,35 @@ function ParseCacheGlobal (jsonData) {
 	theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
 	theContext.Match.SetStatut(rowMatch, jsonData.statut)
 
-	$('#match_nom').html(jsonData.competition)
+	if (document.querySelector('#match_nom'))
+		document.querySelector('#match_nom').innerHTML = jsonData.competition
 
 	var equipe1 = jsonData.equipe1.nom
 	equipe1 = equipe1.replace(" Women", " W.")
 	//	equipe1 = equipe1.replace(" Men", " M.");
 	equipe1 = equipe1
-	$('#equipe1').html(equipe1)
+	document.querySelector('#equipe1').innerHTML = equipe1
 
 	var equipe2 = jsonData.equipe2.nom
 	equipe2 = equipe2.replace(" Women", " W.")
 	//	equipe2 = equipe2.replace(" Men", " M.");
 	equipe2 = equipe2
-	$('#equipe2').html(equipe2)
+	document.querySelector('#equipe2').innerHTML = equipe2
 
-	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club)
-	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club)
+	theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.nom)
+	theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.nom)
+	theContext.Match.SetClub1(rowMatch, jsonData.equipe1.club)
+	theContext.Match.SetClub2(rowMatch, jsonData.equipe2.club)
 
-	$('#nation1').html(ImgClub48(jsonData.equipe1.club))
-	$('#nation2').html(ImgClub48(jsonData.equipe2.club))
+	document.querySelector('#nation1').innerHTML = ImgClub48(jsonData.equipe1.club)
+	document.querySelector('#nation2').innerHTML = ImgClub48(jsonData.equipe2.club)
 
-	$('#categorie').html(jsonData.categ + ' - ' + jsonData.phase)
+	document.querySelector('#categorie').innerHTML = jsonData.categ + ' - ' + jsonData.phase
 
-	$('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch='
-		+ jsonData.id_match
-		+ '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>')
-	$('#terrain').html('Pitch ' + jsonData.terrain)
-
+	if (document.querySelector('#lien_pdf'))
+		document.querySelector('#lien_pdf').innerHTML = '<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Report <span class="badge bg-dark">' + jsonData.numero_ordre + '</span></a>'
+	if (document.querySelector('#terrain'))
+		document.querySelector('#terrain').innerHTML = 'Pitch ' + jsonData.terrain
 
 }
 
@@ -243,8 +266,8 @@ function Init (event, terrain, speaker, voie) {
 	// Refresh du cache Global toute les 30 secondes ...
 	setInterval(RefreshCacheGlobal, 30000)
 
-	// Refresh du cache Score toute les 5 secondes ...
-	//	setInterval(RefreshCacheScore, 5500);
+	// Refresh du cache Score toute les 3 secondes ...
+	setInterval(RefreshCacheScore, 3000)
 
 	// Refresh Chrono toutes les 2 secondes  ...
 	//	setInterval(RefreshCacheChrono, 2500);
