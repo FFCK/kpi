@@ -78,7 +78,8 @@ var theCurrentVoieUrl = '';
 		param += "&url="+url2;
 
 		if(showUrl > 0){
-			$('#showUrl' + showUrl).val(url + "&voie="+voie);
+			const baseurl = window.location.origin + '/'
+			document.querySelector('#showUrl' + showUrl).value = baseurl + url + "&voie=" + voie
 		} else {
 			$.ajax({ 
 				type: "GET", 

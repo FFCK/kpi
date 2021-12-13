@@ -1,9 +1,5 @@
-function ParseCacheChrono (jsonData) {
-  return
-}
 
 function ParseCacheScore (jsonData) {
-
   if (typeof (jsonData.id_match) == 'undefined')
     return	// Data JSON non correcte ...
 
@@ -19,6 +15,7 @@ function ParseCacheScore (jsonData) {
 
   theContext.Match.SetTickScore(rowMatch, jsonData.tick)
 
+  // EVENT
   var nbEvents = jsonData.event.length
   if (nbEvents > 0) {
     var lastId = jsonData.event[0].Id
@@ -31,6 +28,10 @@ function ParseCacheScore (jsonData) {
           theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
         }
         return
+        // Le tout premier détecté n'est pas affiché
+      } else if (theContext.Match.GetIdPrevEvent(rowMatch) == -1) {
+        theContext.Match.SetIdPrevEvent(rowMatch, 0)
+        return
       }
       if (nbEvents > 1) {
         // Mémorisation de l'événement précédent
@@ -39,23 +40,23 @@ function ParseCacheScore (jsonData) {
 
       var line
       if (jsonData.event[0].Equipe_A_B == 'A') {
-        line = ImgNation48(theContext.Match.GetEquipe1(rowMatch))
-        line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch)
+        line = ImgNation48(theContext.Match.GetClub1(rowMatch))
+        line += '&nbsp;' + theContext.Match.GetEquipe1(rowMatch).substring(0, 3).toUpperCase()
       } else {
-        line = ImgNation48(theContext.Match.GetEquipe2(rowMatch))
-        line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3)
+        line = ImgNation48(theContext.Match.GetClub2(rowMatch))
+        line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch).substring(0, 3).toUpperCase()
       }
       line += "&nbsp;<span>"
       //			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
       //			line += "&nbsp;";
       //			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
-      $('#match_event_line1').html(line)
+      document.querySelector('#match_event_line1').innerHTML = line
 
       if (jsonData.event[0].Numero == 'undefi') {
         if (jsonData.event[0].Equipe_A_B == 'A')
-          line = "Team " + theContext.Match.GetEquipe1(rowMatch).substring(0, 3)
+          line = "Team " + theContext.Match.GetEquipe1(rowMatch).substring(0, 3).toUpperCase()
         else
-          line = "Team " + theContext.Match.GetEquipe2(rowMatch).substring(0, 3)
+          line = "Team " + theContext.Match.GetEquipe2(rowMatch).substring(0, 3).toUpperCase()
       } else {
         if (jsonData.event[0].Capitaine != 'E') {
           line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;'
@@ -66,17 +67,24 @@ function ParseCacheScore (jsonData) {
         line += jsonData.event[0].Prenom
 
         if (jsonData.event[0].Capitaine == 'C') {
-          line += ' <span class="label label-warning capitaine">C</span>'
+          line += ' <span class="badge bg-warning capitaine">C</span>'
         } else if (jsonData.event[0].Capitaine == 'E') {
           line += ' (Coach)'
         }
       }
       line += "</span>"
-      $('#match_event_line2').html(line)
+      document.querySelector('#match_event_line2').innerHTML = line
 
-      $('#goal_card').html(GetImgEvtMatch(jsonData.event[0].Id_evt_match))
+      document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
 
-      $('#bandeau_goal').fadeIn(600).delay(10000).fadeOut(900)
+      const bandeau_goal = document.querySelector('#bandeau_goal')
+      bandeau_goal.style.display = 'block'
+      bandeau_goal.classList.remove('animate__fadeOutLeft')
+      bandeau_goal.classList.add('animate__fadeInLeft')
+      setTimeout(function () {
+        bandeau_goal.classList.remove('animate__fadeInLeft')
+        bandeau_goal.classList.add('animate__fadeOutLeft')
+      }, 10000)
     }
 
     theContext.Match.SetIdEvent(rowMatch, lastId)
@@ -84,9 +92,11 @@ function ParseCacheScore (jsonData) {
 
 }
 
+function ParseCacheChrono (jsonData) {
+  return
+}
 
 function ParseCacheGlobal (jsonData) {
-
   if (typeof (jsonData.id_match) == 'undefined')
     return	// Data JSON non correcte ...
 
@@ -104,32 +114,18 @@ function ParseCacheGlobal (jsonData) {
   theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
   theContext.Match.SetStatut(rowMatch, jsonData.statut)
 
-  $('#match_nom').html(jsonData.competition)
+  if (document.querySelector('#match_nom'))
+    document.querySelector('#match_nom').innerHTML = jsonData.competition
 
-  var equipe1 = jsonData.equipe1.nom
-  equipe1 = equipe1.replace(" Women", " W.")
-  //	equipe1 = equipe1.replace(" Men", " M.");
-  equipe1 = equipe1.substr(0, 3)
-  $('#equipe1').html(equipe1)
+  theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.nom)
+  theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.nom)
+  theContext.Match.SetClub1(rowMatch, jsonData.equipe1.club)
+  theContext.Match.SetClub2(rowMatch, jsonData.equipe2.club)
 
-  var equipe2 = jsonData.equipe2.nom
-  equipe2 = equipe2.replace(" Women", " W.")
-  //	equipe2 = equipe2.replace(" Men", " M.");
-  equipe2 = equipe2.substr(0, 3)
-  $('#equipe2').html(equipe2)
-
-  theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club)
-  theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club)
-
-  $('#nation1').html(ImgNation48(jsonData.equipe1.club))
-  $('#nation2').html(ImgNation48(jsonData.equipe2.club))
-
-  $('#categorie').html(jsonData.categ + ' - ' + jsonData.phase)
-
-  $('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch='
-    + jsonData.id_match
-    + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>')
-  $('#terrain').html('Pitch ' + jsonData.terrain)
+  if (document.querySelector('#lien_pdf'))
+    document.querySelector('#lien_pdf').innerHTML = '<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Report <span class="badge bg-dark">' + jsonData.numero_ordre + '</span></a>'
+  if (document.querySelector('#terrain'))
+    document.querySelector('#terrain').innerHTML = 'Pitch ' + jsonData.terrain
 
 }
 
@@ -142,7 +138,8 @@ function Init (event, terrain, speaker, voie) {
   RefreshCacheTerrain()
 
   RefreshCacheGlobal()
-  setInterval(RefreshCacheScore, 1500)
+  RefreshCacheChrono()
+  setInterval(RefreshCacheScore, 1000)
 
   // Refresh du cache Terrain toute les 10 secondes ...
   setInterval(RefreshCacheTerrain, 10000)

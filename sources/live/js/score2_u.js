@@ -1,18 +1,21 @@
 function RefreshHorloge () {
   if (typeof (theContext.temps_offset) == 'undefined') {
     // Prise de l'Offset entre le temps du serveur et le temps de la machine cliente ...
-    $.ajax({
+    axios({
+      method: 'post',
       url: './get_sec.php',
-      type: 'GET',
-      dataType: 'text',
-      cache: false,
-      async: false,
-      success: function (flux) {
+      params: {},
+      responseType: 'text'
+    })
+      .then(function (response) {
         var now = new Date()
         var temps_actuel = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds()
-        theContext.temps_offset = temps_actuel - parseInt(flux)
-      }
-    })
+        theContext.temps_offset = temps_actuel - parseInt(response.data)
+      })
+      .catch(function (error) {
+        console.log(error)
+        return
+      })
     return
   }
 
@@ -27,21 +30,17 @@ function RefreshHorloge () {
       var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i) - temps_running
       if (temps_restant < 0) temps_restant = 0
 
-      $('#match_horloge').html(SecToMMSS(temps_restant))
-      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
-    }
-    else {
+    } else {
       var temps_restant = theContext.Match.GetTempsMax(i) - theContext.Match.GetTempsEcoule(i)
       if (temps_restant < 0) temps_restant = 0
 
       // Evolution Chrono ...
       if (theContext.Match.GetStatut(i) == 'END')
         temps_restant = 0
-
-      $('#match_horloge').html(SecToMMSS(temps_restant))
-      $('#match_periode').html(GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2')))
-
     }
+
+    document.querySelector('#match_horloge').innerHTML = SecToMMSS(temps_restant)
+    document.querySelector('#match_periode').innerHTML = GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2'))
   }
 
   ++theContext.CountTimer
@@ -49,11 +48,10 @@ function RefreshHorloge () {
   RefreshCacheChrono()
 
   //	if (theContext.CountTimer % 2 == 0)
-  RefreshCacheScore()
+  // RefreshCacheScore()
 }
 
 function ParseCacheScore (jsonData) {
-
   if (typeof (jsonData.id_match) == 'undefined')
     return	// Data JSON non correcte ...
 
@@ -70,6 +68,7 @@ function ParseCacheScore (jsonData) {
   theContext.Match.SetTickScore(rowMatch, jsonData.tick)
   theContext.Match.SetPeriode(rowMatch, jsonData.periode)
 
+  // SCORE
   var score1 = jsonData.score1
   if (((score1 == '') || (score1 == null)) && (jsonData.periode != 'ATT'))
     score1 = '0'
@@ -78,12 +77,11 @@ function ParseCacheScore (jsonData) {
   if (((score2 == '') || (score2 == null)) && (jsonData.periode != 'ATT'))
     score2 = '0'
 
-  $('#score1').html(score1)
-  $('#score2').html(score2)
+  document.querySelector('#score1').innerHTML = score1
+  document.querySelector('#score2').innerHTML = score2
 }
 
 function ParseCacheChrono (jsonData) {
-
   if (typeof (jsonData.IdMatch) == 'undefined')
     return	// Data JSON non correcte ...
 
@@ -114,9 +112,6 @@ function ParseCacheChrono (jsonData) {
 }
 
 function ParseCacheGlobal (jsonData) {
-
-
-
   if (typeof (jsonData.id_match) == 'undefined')
     return	// Data JSON non correcte ...
 
@@ -134,32 +129,35 @@ function ParseCacheGlobal (jsonData) {
   theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
   theContext.Match.SetStatut(rowMatch, jsonData.statut)
 
-  $('#match_nom').html(jsonData.competition)
+  if (document.querySelector('#match_nom'))
+    document.querySelector('#match_nom').innerHTML = jsonData.competition
 
   var equipe1 = jsonData.equipe1.nom
   equipe1 = equipe1.replace(" Women", " W.")
   //	equipe1 = equipe1.replace(" Men", " M.");
   equipe1 = equipe1
-  $('#equipe1').html(equipe1)
+  document.querySelector('#equipe1').innerHTML = equipe1
 
   var equipe2 = jsonData.equipe2.nom
   equipe2 = equipe2.replace(" Women", " W.")
   //	equipe2 = equipe2.replace(" Men", " M.");
   equipe2 = equipe2
-  $('#equipe2').html(equipe2)
+  document.querySelector('#equipe2').innerHTML = equipe2
 
-  theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.club)
-  theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.club)
+  theContext.Match.SetEquipe1(rowMatch, jsonData.equipe1.nom)
+  theContext.Match.SetEquipe2(rowMatch, jsonData.equipe2.nom)
+  theContext.Match.SetClub1(rowMatch, jsonData.equipe1.club)
+  theContext.Match.SetClub2(rowMatch, jsonData.equipe2.club)
 
-  $('#nation1').html(ImgClub48(jsonData.equipe1.club))
-  $('#nation2').html(ImgClub48(jsonData.equipe2.club))
+  document.querySelector('#nation1').innerHTML = ImgClub48(jsonData.equipe1.club)
+  document.querySelector('#nation2').innerHTML = ImgClub48(jsonData.equipe2.club)
 
-  $('#categorie').html(jsonData.categ + ' - ' + jsonData.phase)
+  document.querySelector('#categorie').innerHTML = jsonData.categ + ' - ' + jsonData.phase
 
-  $('#lien_pdf').html('<a href="../PdfMatchMulti.php?listMatch='
-    + jsonData.id_match
-    + '" target="_blank" class="btn btn-primary">Report <span class="badge">' + jsonData.numero_ordre + '</span></a>')
-  $('#terrain').html('Pitch ' + jsonData.terrain)
+  if (document.querySelector('#lien_pdf'))
+    document.querySelector('#lien_pdf').innerHTML = '<a href="../PdfMatchMulti.php?listMatch=' + jsonData.id_match + '" target="_blank" class="btn btn-primary">Report <span class="badge bg-dark">' + jsonData.numero_ordre + '</span></a>'
+  if (document.querySelector('#terrain'))
+    document.querySelector('#terrain').innerHTML = 'Pitch ' + jsonData.terrain
 
 }
 
@@ -180,8 +178,8 @@ function Init (event, terrain, speaker, voie) {
   // Refresh du cache Global toute les 30 secondes ...
   setInterval(RefreshCacheGlobal, 30000)
 
-  // Refresh du cache Score toute les 5 secondes ...
-  //	setInterval(RefreshCacheScore, 5500);
+  // Refresh du cache Score toute les 3 secondes ...
+  setInterval(RefreshCacheScore, 3000)
 
   // Refresh Chrono toutes les 2 secondes  ...
   //	setInterval(RefreshCacheChrono, 2500);
@@ -191,4 +189,3 @@ function Init (event, terrain, speaker, voie) {
 
   SetVoie(voie)
 }
-
