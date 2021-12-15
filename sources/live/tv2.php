@@ -87,6 +87,23 @@ class TV extends MyPage
         return "<img class='align-top' src='../img/Nations/" . $nation . ".png' height='64' width='64' />";
     }
 
+    function ImgNation200($nation, $logo = null, $anime = 0)
+    {
+        if ($anime > 0) {
+            $classAnime = " class='align-middle animate__animated animate__slower animate__infinite animate__pulse' ";
+        } else {
+            $classAnime = " class='align-middle' ";
+        }
+        if ($logo) {
+            return "<img $classAnime src='../img/" . $logo . "' height='200' width='200' />";
+        }
+        $nation = $this->VerifNation($nation);
+        if (strlen($nation) != 3) {
+            return '';
+        }
+        return "<img $classAnime src='../img/Nations/" . $nation . ".png' height='200' width='200' />";
+    }
+
     function ImgNationFull($nation, $logo = null)
     {
         if ($logo) {
@@ -439,6 +456,45 @@ class TV extends MyPage
             </div>';
     }
 
+    function Content_Podium()
+    {
+        $db = new MyBdd();
+
+        $competition = $this->GetParam('competition');
+        $saison = $this->GetParam('saison', utyGetSaison());
+        $anime = $this->GetParam('anime', 0);
+
+        // Chargement des 3 premières équipes ...
+        $cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi ranking, 
+                c.Soustitre2, ce.logo 
+            FROM kp_competition c, kp_competition_equipe ce 
+            WHERE ce.Code_compet = '$competition' 
+            AND ce.Code_saison = $saison 
+            AND c.Code = ce.Code_compet 
+            AND c.Code_saison = ce.Code_saison 
+            ORDER BY CltNiveau_publi 
+            LIMIT 0, 3 ";
+
+        $tEquipes = null;
+        $db->LoadTable($cmd, $tEquipes);
+
+        echo '
+            <div id="banner_podium" class="podium">
+                <div id="podium_line1" class="podium_team h2 text-center">
+                    ' . $this->ImgNation200(utyGetString($tEquipes[1], 'Code_club', 999), $tEquipes[1]['logo'], $anime) . '<br>
+                    <span>' . utyGetString($tEquipes[1], 'Libelle', '') . '</span>
+                </div>
+                <div id="podium_line2" class="podium_team h2 text-center">
+                    ' . $this->ImgNation200(utyGetString($tEquipes[1], 'Code_club', 999), $tEquipes[0]['logo'], $anime) . '<br>
+                    <span>' . utyGetString($tEquipes[0], 'Libelle', '') . '</span>
+                </div>
+                <div id="podium_line3" class="podium_team h2 text-center">
+                    ' . $this->ImgNation200(utyGetString($tEquipes[1], 'Code_club', 999), $tEquipes[2]['logo'], $anime) . '<br>
+                    <span>' . utyGetString($tEquipes[2], 'Libelle', '') . '</span>
+                </div>
+            </div>';
+    }
+
     function Content_Player()
     {
         $db = new MyBdd();
@@ -681,6 +737,12 @@ class TV extends MyPage
         $db = new MyBdd();
 
         $idMatch = $this->GetParamInt('match', -1);
+        $anime = $this->GetParamInt('anime', 0);
+        if ($anime > 0) {
+            $classAnime = " class='container-fluid ban_info_1_lines animate__animated animate__slower animate__infinite animate__pulse' ";
+        } else {
+            $classAnime = " class='container-fluid ban_info_1_lines' ";
+        }
 
         // Chargement Match
         $cmd  = "SELECT ce1.Libelle LibelleA, ce2.Libelle LibelleB, 
@@ -699,7 +761,7 @@ class TV extends MyPage
         $db->LoadRecord($cmd, $rMatch);
 
         echo '
-            <div class="container-fluid ban_info_1_lines animate__animated animate__slower animate__infinite animate__pulse">
+            <div ' . $classAnime . '>
                 <div id="ban_info_1_lines" class="text-center">
                     <div class="logo_sm2"></div>
                     <div id="banner_line1" class="h2 text-end">
@@ -902,6 +964,10 @@ class TV extends MyPage
                 break;
             case 'final_ranking':
                 $this->Content_Final_Ranking();
+                return;
+                break;
+            case 'podium':
+                $this->Content_Podium();
                 return;
                 break;
             default:
