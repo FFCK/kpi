@@ -156,6 +156,7 @@
                 <option value="team_medal" {if $filtrePres == 'team_medal'}selected{/if}>Team medal</option>
               *}
               <option value="final_ranking" {if $filtrePres == 'final_ranking'}selected{/if}>Final ranking</option>
+              <option value="podium" {if $filtrePres == 'podium'}selected{/if}>Podium</option>
             </optgroup>
             <optgroup label="Screen display">
               <option value="multi_score" {if $filtrePres == 'multi_score'}selected{/if}>Multi score</option>
@@ -270,6 +271,13 @@
             <option value="10">11-20</option>
             <option value="20">21-30</option>
             <option value="30">31-40</option>
+          </select>
+        </div>
+        <div class='col-sm-1 params' id='anime-col'>
+          <label>Animate</label>
+          <select id="anime" name="anime">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
           </select>
         </div>
         <div class='col-sm-1 params' id='speaker-col'>
@@ -389,6 +397,7 @@
                 <option value="team_medal" {if $filtrePres2 == 'team_medal'}selected{/if}>Team medal</option>
               *}
               <option value="final_ranking" {if $filtrePres2 == 'final_ranking'}selected{/if}>Final ranking</option>
+              <option value="podium" {if $filtrePres2 == 'podium'}selected{/if}>Podium</option>
             </optgroup>
             <optgroup label="Screen display">
               <option value="multi_score" {if $filtrePres2 == 'multi_score'}selected{/if}>Multi score</option>
@@ -497,6 +506,13 @@
             <option value="30">31-40</option>
           </select>
         </div>
+        <div class='col-sm-1 params' id='anime-col2'>
+          <label>Animate</label>
+          <select id="anime2" name="anime2">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
         <div class='col-sm-1 params2' id='speaker-col2'>
           <label>Speaker</label>
           <select id="speaker2" name="speaker2">
@@ -581,6 +597,7 @@
                 <option value="team_medal" {if $filtrePres3 == 'team_medal'}selected{/if}>Team medal</option>
               *}
               <option value="final_ranking" {if $filtrePres3 == 'final_ranking'}selected{/if}>Final ranking</option>
+              <option value="podium" {if $filtrePres3 == 'podium'}selected{/if}>Podium</option>
             </optgroup>
             <optgroup label="Screen display">
               <option value="multi_score" {if $filtrePres3 == 'multi_score'}selected{/if}>Multi score</option>
@@ -689,6 +706,13 @@
             <option value="30">31-40</option>
           </select>
         </div>
+        <div class='col-sm-1 params' id='anime-col3'>
+          <label>Animate</label>
+          <select id="anime3" name="anime3">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+          </select>
+        </div>
         <div class='col-sm-1 params3' id='speaker-col3'>
           <label>Speaker</label>
           <select id="speaker3" name="speaker3">
@@ -773,6 +797,7 @@
                 <option value="team_medal" {if $filtrePres4 == 'team_medal'}selected{/if}>Team medal</option>
               *}
               <option value="final_ranking" {if $filtrePres4 == 'final_ranking'}selected{/if}>Final ranking</option>
+              <option value="podium" {if $filtrePres4 == 'podium'}selected{/if}>Podium</option>
             </optgroup>
             <optgroup label="Screen display">
               <option value="multi_score" {if $filtrePres4 == 'multi_score'}selected{/if}>Multi score</option>
@@ -879,6 +904,13 @@
             <option value="10">11-20</option>
             <option value="20">21-30</option>
             <option value="30">31-40</option>
+          </select>
+        </div>
+        <div class='col-sm-1 params' id='anime-col4'>
+          <label>Animate</label>
+          <select id="anime4" name="anime4">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
           </select>
         </div>
         <div class='col-sm-1 params4' id='speaker-col4'>

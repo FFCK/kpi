@@ -61,7 +61,7 @@ jq(document).ready(function () {
                 jq('#match-col, #game_report').show()
                 break
             case 'match_score':
-                jq('#match-col, #game_report').show()
+                jq('#match-col, #game_report, #anime-col').show()
                 break
             case 'list_team':
                 jq('#match-col, #game_report, #team-col').show()
@@ -71,6 +71,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 jq('#start-col').show()
+                break
+            case 'podium':
+                jq('#anime-col').show()
                 break
             case 'score':
             case 'score_u':
@@ -164,7 +167,7 @@ jq(document).ready(function () {
                 Go_match(jq('#channel').val(), jq('#match').val(), showUrl)
                 break
             case 'match_score':
-                Go_match_score(jq('#channel').val(), jq('#match').val(), showUrl)
+                Go_match_score(jq('#channel').val(), jq('#match').val(), jq('#anime').val(), showUrl)
                 break
             case 'list_team':
                 Go_list_team(jq('#channel').val(), jq('#match').val(), jq('#team').val(), showUrl)
@@ -174,6 +177,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 Go_final_ranking(jq('#channel').val(), jq('#saison').val(), jq('#competition').val(), jq('#start').val(), showUrl)
+                break
+            case 'podium':
+                Go_podium(jq('#channel').val(), jq('#saison').val(), jq('#competition').val(), jq('#anime').val(), showUrl)
                 break
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
@@ -379,7 +385,7 @@ jq(document).ready(function () {
                 jq('#match-col2, #game_report2').show()
                 break
             case 'match_score':
-                jq('#match-col2, #game_report2').show()
+                jq('#match-col2, #game_report2, #anime-col2').show()
                 break
             case 'list_team':
                 jq('#match-col2, #game_report2, #team-col2').show()
@@ -389,6 +395,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 jq('#start-col2').show()
+                break
+            case 'podium':
+                jq('#anime-col2').show()
                 break
             case 'score':
                 jq('#match-col2, #game_report2, #speaker-col2').show()
@@ -464,7 +473,7 @@ jq(document).ready(function () {
                 Go_match(jq('#channel2').val(), jq('#match2').val(), showUrl)
                 break
             case 'match_score':
-                Go_match_score(jq('#channel2').val(), jq('#match2').val(), showUrl)
+                Go_match_score(jq('#channel2').val(), jq('#match2').val(), jq('#anime2').val(), showUrl)
                 break
             case 'list_team':
                 Go_list_team(jq('#channel2').val(), jq('#match2').val(), jq('#team2').val(), showUrl)
@@ -474,6 +483,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 Go_final_ranking(jq('#channel2').val(), jq('#saison').val(), jq('#competition2').val(), jq('#start2').val(), showUrl)
+                break
+            case 'podium':
+                Go_podium(jq('#channel2').val(), jq('#saison').val(), jq('#competition2').val(), jq('#anime2').val(), showUrl)
                 break
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
@@ -635,7 +647,7 @@ jq(document).ready(function () {
                 jq('#match-col3, #game_report3').show()
                 break
             case 'match_score':
-                jq('#match-col3, #game_report3').show()
+                jq('#match-col3, #game_report3, #anime-col3').show()
                 break
             case 'list_team':
                 jq('#match-col3, #game_report3, #team-col3').show()
@@ -645,6 +657,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 jq('#start-col3').show()
+                break
+            case 'podium':
+                jq('#anime-col3').show()
                 break
             case 'score':
                 jq('#match-col3, #game_report3, #speaker-col3').show()
@@ -720,7 +735,7 @@ jq(document).ready(function () {
                 Go_match(jq('#channel3').val(), jq('#match3').val(), showUrl)
                 break
             case 'match_score':
-                Go_match_score(jq('#channel3').val(), jq('#match3').val(), showUrl)
+                Go_match_score(jq('#channel3').val(), jq('#match3').val(), jq('#anime3').val(), showUrl)
                 break
             case 'list_team':
                 Go_list_team(jq('#channel3').val(), jq('#match3').val(), jq('#team3').val(), showUrl)
@@ -730,6 +745,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 Go_final_ranking(jq('#channel3').val(), jq('#saison').val(), jq('#competition3').val(), jq('#start3').val(), showUrl)
+                break
+            case 'podium':
+                Go_podium(jq('#channel3').val(), jq('#saison').val(), jq('#competition3').val(), jq('#anime3').val(), showUrl)
                 break
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
@@ -891,7 +909,7 @@ jq(document).ready(function () {
                 jq('#match-col4, #game_report4').show()
                 break
             case 'match_score':
-                jq('#match-col4, #game_report4').show()
+                jq('#match-col4, #game_report4, #anime-col4').show()
                 break
             case 'list_team':
                 jq('#match-col4, #game_report4, #team-col4').show()
@@ -901,6 +919,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 jq('#start-col4').show()
+                break
+            case 'podium':
+                jq('#anime-col4').show()
                 break
             case 'score':
                 jq('#match-col4, #game_report4, #speaker-col4').show()
@@ -976,7 +997,7 @@ jq(document).ready(function () {
                 Go_match(jq('#channel4').val(), jq('#match4').val(), showUrl)
                 break
             case 'match_score':
-                Go_match_score(jq('#channel4').val(), jq('#match4').val(), showUrl)
+                Go_match_score(jq('#channel4').val(), jq('#match4').val(), jq('#anime4').val(), showUrl)
                 break
             case 'list_team':
                 Go_list_team(jq('#channel4').val(), jq('#match4').val(), jq('#team4').val(), showUrl)
@@ -986,6 +1007,9 @@ jq(document).ready(function () {
                 break
             case 'final_ranking':
                 Go_final_ranking(jq('#channel4').val(), jq('#saison').val(), jq('#competition4').val(), jq('#start4').val(), showUrl)
+                break
+            case 'podium':
+                Go_podium(jq('#channel4').val(), jq('#saison').val(), jq('#competition4').val(), jq('#anime4').val(), showUrl)
                 break
             case 'score':
                 url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
@@ -1177,11 +1201,12 @@ function Go_match (channel, match, showUrl = 0) {
     Go(param, showUrl)
 }
 
-function Go_match_score (channel, match, showUrl = 0) {
+function Go_match_score (channel, match, anime, showUrl = 0) {
     var param
     param = "show=match_score"
     param += "&voie=" + channel
     param += "&match=" + match
+    param += "&anime=" + anime
     Go(param, showUrl)
 }
 
@@ -1210,6 +1235,16 @@ function Go_final_ranking (channel, saison, competition, start, showUrl = 0) {
     param += "&saison=" + saison
     param += "&competition=" + competition
     param += "&start=" + start
+    Go(param, showUrl)
+}
+
+function Go_podium (channel, saison, competition, anime, showUrl = 0) {
+    var param
+    param = "show=podium"
+    param += "&voie=" + channel
+    param += "&saison=" + saison
+    param += "&competition=" + competition
+    param += "&anime=" + anime
     Go(param, showUrl)
 }
 
