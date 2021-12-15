@@ -375,23 +375,26 @@ span.numero {
     font-style: italic;
 }
 #podium_line1 {
-    width: 420px;
     position: absolute;
-    bottom: 150px;
-    margin-left: 50%;
-    transform: translateX(-50%);
+    width: 420px;
+    bottom: 220px;
+    left: 365px;
 }
 #podium_line2 {
     width: 410px;
     position: absolute;
-    bottom: 120px;
-    left: 2px;
+    bottom: 250px;
+    left: 753px;
 }
 #podium_line3 {
     width: 410px;
     position: absolute;
-    bottom: 90px;
-    right: 0px;
+    bottom: 190px;
+    left: 1152px;
+}
+
+.podium_team span {
+    text-shadow: 2px 2px 3px #fff;
 }
 
 .ban_goal_card {

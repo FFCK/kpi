@@ -14,6 +14,7 @@ $team = utyGetString($_GET, 'team');
 $number = utyGetString($_GET, 'number');
 $start = utyGetString($_GET, 'start');
 $medal = utyGetString($_GET, 'medal');
+$anime = utyGetInt($_GET, 'anime');
 
 $myBdd = new MyBdd();
 
@@ -26,6 +27,7 @@ $url .= "&team=$team";
 $url .= "&number=$number";
 $url .= "&start=$start";
 $url .= "&medal=$medal";
+$url .= "&anime=$anime";
 
 $sql = "UPDATE kp_tv 
     SET `Url` = ? 
@@ -33,4 +35,4 @@ $sql = "UPDATE kp_tv
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($url, $voie));
 
-echo "OK Voie $voie : ".$url;
+echo "OK Voie $voie : " . $url;
