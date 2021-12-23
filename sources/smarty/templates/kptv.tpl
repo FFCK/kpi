@@ -1,8 +1,8 @@
 <div class="container-fluid" id="selector">
   <article id="titre">
     <form id="filtre_evt" name="filtre_evt" method="post" action="">
-      <h1 class='col-sm-5'>{#Controle_tv#}</h1>
-      <div class='col-sm-4'>
+      <h1 class='col-sm-3'>{#Controle_tv#}</h1>
+      <div class='col-sm-3'>
         <label>{#Evenement#}</label>
         <select id="codeEvt" name="codeEvt">
           <option value="0">{#Selectionnez#}</option>
@@ -38,9 +38,29 @@
         <input type="hidden" id="filtreChannel4" name="filtreChannel4" value="{$filtreChannel4}">
         <input type="hidden" id="filtreMatch4" name="filtreMatch4" value="{$filtreMatch4}">
       </div>
-      <div>
-        <br>
-        <input type="submit" value="Save" </div>
+      <div class="col-sm-2">
+        <label>Style</label>
+        <select id="style" name="style">
+          <option value="saintomer2022" {if $style == 'saintomer2022'}selected{/if}>SaintOmer 2022</option>
+          <option value="welland2018" {if $style == 'welland2018'}selected{/if}>Welland 2018</option>
+          <option value="saintomer2017" {if $style == 'saintomer2017'}selected{/if}>SaintOmer 2017</option>
+          <option value="thury2014" {if $style == 'thury2014'}selected{/if}>Thury 2014</option>
+          <option value="usnational" {if $style == 'usnational'}selected{/if}>US National</option>
+          <option value="cna" {if $style == 'cna'}selected{/if}>CNA KP</option>
+          <option value="simply" {if $style == 'simply'}selected{/if}>Simple</option>
+        </select>
+      </div>
+      <div class="col-sm-1">
+        <label>Lang</label>
+        <select id="lang" name="lang">
+          <option value="en" {if $lang == 'en'}selected{/if}>EN</option>
+          <option value="fr" {if $lang == 'fr'}selected{/if}>FR</option>
+        </select>
+      </div>
+      <div class="col-sm-1">
+        <label>&nbsp;</label>
+        <input type="submit" value="Save" class="btn btn-primary">
+      </div>
     </form>
   </article>
   <!-- Article 1 -->

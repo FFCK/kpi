@@ -14,6 +14,16 @@ class Tv extends MyPageSecure
 
         $saison = utyGetSaison();
 
+        $lang = utyGetSession('lang', 'en');
+        $lang = utyGetPost('lang', $lang);
+        $_SESSION['lang'] = $lang;
+        $this->m_tpl->assign('lang', $lang);
+
+        $style = utyGetSession('style', 'simply');
+        $style = utyGetPost('style', $style);
+        $_SESSION['style'] = $style;
+        $this->m_tpl->assign('style', $style);
+
         $codeEvt = utyGetSession('codeEvt', 0);
         $codeEvt = utyGetPost('codeEvt', $codeEvt);
         $_SESSION['codeEvt'] = $codeEvt;

@@ -105,6 +105,7 @@ class MyPage
       <!-- CSS styles -->
       <link href="./css/bootstrap.min.css" rel="stylesheet">
       <link href="./css/global.css" rel="stylesheet">
+      <?= $this->CheckCss ?>
 
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
@@ -114,6 +115,24 @@ class MyPage
 
     </head>
   <?php
+  }
+
+
+  function CheckCss()
+  {
+    $css = $this->GetParam('css', '');
+    if (in_array($css, [
+      'simply',
+      'cna',
+      'usnational',
+      'thury2014',
+      'saintomer2017',
+      'welland2018',
+      'saintomer2022'
+    ])) {
+      return '<link href="../css/' . $css . '.css?v=' . NUM_VERSION . '" rel="stylesheet">';
+    }
+    return;
   }
 
   static function IsNavigatorIE()

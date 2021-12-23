@@ -1,6 +1,10 @@
 //jq = jQuery.noConflict();
 jq(document).ready(function () {
-    var css = 'welland2018'
+    let css = jq('#style').val()
+
+    jq('#style').change(function () {
+        let css = jq('#style').val()
+    })
 
     jq('#codeEvt, #jour').change(function () {
         jq('#filtre_evt').submit()

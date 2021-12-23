@@ -1,0 +1,43 @@
+
+#banniere {
+	display: none;
+	}
+.footer {
+	display: none;
+	}
+
+/* Menus Eric Meyer*/
+#nav {
+	display: none;
+	}
+.repere {
+	display: none;
+	}
+
+.titrePage {
+	display: none;
+}
+.soustitrePage {
+	display: none;
+}
+.lienExterne {
+	display: inline;
+}
+
+.blocLeft {
+	width: 100%;	
+}
+.Left2 {
+	width: 100%;	
+}
+
+.blocRight {
+	display: none;
+	}
+.Right2 {
+	display: none;
+	}
+.Right3 {
+	display: none;
+	}
+
