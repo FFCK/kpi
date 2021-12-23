@@ -31,7 +31,7 @@ function debug($variable, $die = false)
 /**
  * Redimentionne image pour PDF
  * 
- * @param Object $image
+ * @param String $image
  * @param Int $largeurPage
  * @param Int $marge
  * @param Int $newHauteur hauteur de l'image redimentionnée
@@ -95,10 +95,10 @@ function get_web_page($url)
 /**
  * captureImg Rappatrie une image jpg distante sur le serveur
  * 
- * @param type $url
- * @param type $type B|L|S (Bandeau, Logo, Sponsor)
- * @param type $code Code compétition
- * @param type $saison
+ * @param String $url
+ * @param String $type B|L|S (Bandeau, Logo, Sponsor)
+ * @param String $code Code compétition
+ * @param Integer $saison
  */
 function captureImg($url, $type, $code, $saison, $folder = "../img/logo/")
 {
