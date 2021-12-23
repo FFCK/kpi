@@ -1,9 +1,11 @@
 <?php
-//include_once('base.php');
+session_start();
 include_once('../commun/MyParams.php');
 include_once('../commun/MyTools.php');
 include_once('../commun/MyBdd.php');
 
+$lang = utyGetSession('lang', 'en');
+$style = utyGetSession('style', '');
 $voie = utyGetInt($_GET, 'voie', 1);
 $show = utyGetString($_GET, 'show');
 
@@ -28,6 +30,8 @@ $url .= "&number=$number";
 $url .= "&start=$start";
 $url .= "&medal=$medal";
 $url .= "&anime=$anime";
+$url .= "&lang=$lang";
+$url .= "&css=$style";
 
 $sql = "UPDATE kp_tv 
     SET `Url` = ? 

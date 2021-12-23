@@ -34,6 +34,7 @@ class TV extends MyPage
             <link href="../lib/bootstrap-5.1.3-dist/css/bootstrap.min.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
             <link href="../css/animate/animate.4.1.1.css?v=<?= NUM_VERSION ?>" rel="stylesheet" />
             <link href="./css/tv2.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
+            <?= $this->CheckCss() ?>
 
         </head>
     <?php
