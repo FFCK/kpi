@@ -271,7 +271,7 @@ class TV extends MyPage
 
         echo '
             <div class="container-fluid ban_list">
-                <div class="logo_sm2"></div>
+                <div class="logo_sm"></div>
                 <div id="banner_list">
                     <div id="banner_line1" class="h2 text-end">
                         <span>
@@ -280,7 +280,7 @@ class TV extends MyPage
                         ' . $this->ImgNation64(utyGetString($rEquipe, 'Code_club', 'FRA'), $rEquipe['logo']) . '&nbsp;
                     </div>
                     <div id="banner_line2" class="h2 text-center">
-                        <span>KAYAK-POLO</span>
+                        <span>' . $this->Lang('KAYAK-POLO') . '</span>
                     </div>
                 <div id="banner_lines">
             ';
@@ -335,7 +335,7 @@ class TV extends MyPage
 
         echo '
             <div class="container-fluid ban_list">
-                <div class="logo_sm2"></div>
+                <div class="logo_sm"></div>
                 <div id="banner_list">
                     <div id="banner_line1" class="h2 text-end">
                         <span>
@@ -344,7 +344,7 @@ class TV extends MyPage
                         ' . $this->ImgNation64(utyGetString($rEquipe, 'Code_club', 'FRA'), $rEquipe['logo']) . '&nbsp;
                     </div>
                     <div id="banner_line2" class="h2 text-center">
-                        <span>KAYAK-POLO</span>
+                        <span>' . $this->Lang('KAYAK-POLO') . '</span>
                     </div>
                 <div id="banner_lines">
             ';
@@ -431,10 +431,10 @@ class TV extends MyPage
 
         echo '
             <div class="container-fluid ban_list">
-                <div class="logo_sm2"></div>
+                <div class="logo_sm"></div>
                 <div id="banner_list" class="final_ranking">
                     <div id="banner_line1" class="h2 text-center">
-                        CLASSEMENT FINAL<br>
+                    ' . $this->Lang('CLASSEMENT FINAL') . '<br>
                         <span class="categorie">
                         ' . ' ' . utyGetString($tEquipes[0], 'Soustitre2', '???') . '
                         </span>
@@ -528,6 +528,7 @@ class TV extends MyPage
 
         echo '
         <div class="container-fluid ban_single">
+            <div class="logo_xs"></div>
             <div id="banner_single" class="text-center">
                 <div class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept'], $rJoueur['logo']) . '&nbsp;
                     <span>' . $num
@@ -575,6 +576,7 @@ class TV extends MyPage
 
         echo '
         <div class="container-fluid ban_single">
+            <div class="logo_xs"></div>
             <div id="banner_single" class="text-center">
                 <div class="banner_line">' . $this->ImgNation48($rJoueur['Numero_comite_dept'], $rJoueur['logo']) . '&nbsp;
                     <span>' . $num
@@ -667,10 +669,10 @@ class TV extends MyPage
         echo '
             <div class="container-fluid ban_info_2_lines">
                 <div id="ban_info_2_lines" class="text-center">
-                    <div class="logo_sm2"></div>
-                    <div id="banner_line1" class="h2 text-end">ARBITRES</div>
+                    <div class="logo_sm"></div>
+                    <div id="banner_line1" class="h2 text-end">' . $this->Lang('ARBITRES') . '</div>
                     <div id="banner_line2" class="h2 text-end">
-                        <span>KAYAK-POLO</span>
+                        <span>' . $this->Lang('KAYAK-POLO') . '</span>
                     </div>
                     <div class="banner_line row">
                         <div class="col-md-3 text-end clair"><!--' . $this->ImgNation48($nation1) . ' ' . $nation1 . '--></div>
@@ -764,7 +766,7 @@ class TV extends MyPage
         echo '
             <div ' . $classAnime . '>
                 <div id="ban_info_1_lines" class="text-center">
-                    <div class="logo_sm2"></div>
+                    <div class="logo_sm"></div>
                     <div id="banner_line1" class="h2 text-end">
                         ' . utyGetString($rMatch, 'Phase', '???') . '
                     <!--     - Pitch
@@ -813,6 +815,7 @@ class TV extends MyPage
 
         echo '
             <div class="container-fluid ban_single">
+                <div class="logo_xs"></div>
                 <div id="banner_single" class="text-center">
                     <div class="banner_line">
                         <span>

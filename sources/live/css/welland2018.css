@@ -1,0 +1,45 @@
+/* Live */
+.ban_presentation {
+	background-image: url('../img_welland2018/banner_presentation.png');
+}
+
+.ban_presentation .logo_lg {
+	background-image: url('../img_welland2018/logo_lg.png');
+}
+
+.ban_list {
+  background-image: url('../img_welland2018/banner_list.png');
+}
+.ban_list .logo_sm {
+  background-image: url('../img_welland2018/logo_sm.png');
+}
+
+.ban_single {
+  background-image: url('../img_welland2018/banner_single.png');
+}
+.ban_single .logo_xs {
+  background-image: url('../img_welland2018/logo_sm.png');
+}
+
+.ban_info_2_lines {
+  background-image: url('../img_welland2018/banner_info_2_lines.png');
+-repeat: no-repeat;
+}
+.ban_info_2_lines .logo_sm {
+  background-image: url('../img_welland2018/logo_sm.png');
+}
+
+.ban_info_1_lines {
+  background-image: url('../img_welland2018/banner_info_1_lines.png');
+}
+.ban_info_1_lines .logo_sm {
+  background-image: url('../img_welland2018/logo_sm.png');
+}
+
+.ban_list {
+  background-image: url('../img_welland2018/banner_list.png');
+}
+.ban_list .logo_sm {
+  background-image: url('../img_welland2018/logo_sm.png');
+}
+
