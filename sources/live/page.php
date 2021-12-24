@@ -10,6 +10,8 @@ class MyPage
   var $m_arrayParams;    // Tableau des Paramètres
   var $purifier;
 
+  var $translate;
+
   // Constructeur ...
   function __construct(&$arrayParams)
   {
@@ -23,6 +25,19 @@ class MyPage
     $config->set('Core.Encoding', 'UTF-8'); // replace with your encoding
     $config->set('HTML.Doctype', 'XHTML 1.0 Transitional'); // replace with your doctype
     $this->purifier = new HTMLPurifier($config);
+
+    // Translation
+    $this->translate['en'] = [
+      'ARBITRES' => 'REFEREES',
+      'CLASSEMENT FINAL' => 'FINAL RANKING',
+      'KAYAK-POLO' => 'CANOE POLO'
+    ];
+    $this->translate['fr'] = [
+      'ARBITRES' => 'ARBITRES',
+      'CLASSEMENT FINAL' => 'CLASSEMENT FINAL',
+      'KAYAK-POLO' => 'KAYAK-POLO'
+    ];
+
 
     $this->m_arrayParams = &$arrayParams;
     $this->Display();
@@ -130,9 +145,24 @@ class MyPage
       'welland2018',
       'saintomer2022'
     ])) {
-      return '<link href="../css/' . $css . '.css?v=' . NUM_VERSION . '" rel="stylesheet">';
+      return '<link href="./css/' . $css . '.css?v=' . NUM_VERSION . '" rel="stylesheet">';
     }
     return;
+  }
+
+  function Lang($text)
+  {
+    $lang = $this->GetParam('lang', 'en');
+    if (!in_array($lang, [
+      'en',
+      'fr'
+    ])) {
+      $lang = 'en';
+    }
+    if (isset($this->translate[$lang][$text])) {
+      return $this->translate[$lang][$text];
+    };
+    return $text;
   }
 
   static function IsNavigatorIE()

@@ -171,6 +171,7 @@ body.black {
     left: 553px;
     top: 830px;
     background-image: url('../img/logo_xs.png');
+    background-size: contain;
 	background-repeat: no-repeat;
 }
 
