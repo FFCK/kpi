@@ -974,18 +974,18 @@ class TV extends MyPage
 
     function Script()
     {
-        parent::Script();
-		$voie = $this->GetParamInt('voie',0);
+			parent::Script();
+			$voie = $this->GetParamInt('voie',0);
 
-		$show = $this->GetParam('show');
-		if ($show == 'command')
-			$voie = 0;
+			$show = $this->GetParam('show');
+			if ($show == 'command')
+				$voie = 0;
 
-        ?>
-		<script type="text/javascript" src="./js/voie.js" ></script>
- 		<script type="text/javascript" src="./js/tv.js" ></script>
-        <script type="text/javascript"> $(document).ready(function(){ Init(<?php echo $voie;?>); }); </script>	
-        <?php
+			?>
+				<script type="text/javascript" src="./js/voie.js" ></script>
+				<script type="text/javascript" src="./js/tv.js" ></script>
+				<script type="text/javascript"> $(document).ready(function(){ Init(<?php echo $voie;?>); }); </script>	
+			<?php
     }
 }
 
