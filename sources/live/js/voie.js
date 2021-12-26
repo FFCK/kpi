@@ -3,61 +3,83 @@ var theCurrentVoieUrl = '';
 
 // jq(document).ready(function() {
 
-	function SetVoie(voie, intervalle=3000)
-	{
-		theCurrentVoie = voie;
-		theCurrentVoieUrl = window.location.href;
-		if (intervalle < 500) {intervalle = 500;}
-		if (voie > 0 && voie < 100)
-		{
-			setInterval(RefreshVoie, intervalle);
+	async function SetVoie (voie, intervalle = 3000) {
+		theCurrentVoie = voie
+		theCurrentVoieUrl = window.location.href
+		if (intervalle < 500) {
+			intervalle = 500
 		}
-		else if (voie >= 100)
-		{
-			RefreshScene(voie, intervalle);
+		if (voie > 0 && voie < 100) {
+			setInterval(RefreshVoie, intervalle)
+		} else if (voie >= 100) {
+			const scene = voie % 100
+			const voie_min = voie - scene + 1
+			const voie_max = voie_min + 9
+			if (voie === voie_max) {
+				voie = voie_min
+			} else {
+				voie++
+			}
+	
+			try {
+				const resultat = await axios({
+					method: 'post',
+					url: './cache/voie_' + voie + '.json',
+					responseType: 'json'
+				})
+				if (resultat.data.url === '') {
+					const resultat2 = await axios({
+						method: 'post',
+						url: './cache/voie_' + voie_min + '.json',
+						responseType: 'json'
+					})
+					RefreshScene(resultat2.data, intervalle)
+				} else {
+					RefreshScene(resultat.data, intervalle)
+				}
+			} catch (error) {
+				console.error(error)
+			}
 		}
 	}
 
+	function RefreshScene (result, intervalle) {
+		const responseUrl = decodeURIComponent(result.url)
+		const responseVoie = decodeURIComponent(result.voie)
+		const responseIntervalle = decodeURIComponent(result.intervalle)
+		if (responseUrl.lastIndexOf("?") == -1) {
+			newUrl = '/' + responseUrl + '?voie=' + responseVoie + '&intervalle=' + responseIntervalle
+		} else {
+			newUrl = '/' + responseUrl + '&voie=' + responseVoie + '&intervalle=' + responseIntervalle
+		}
+		setTimeout(function () { window.location.href = newUrl }, intervalle)
+	}
+	
 	function RefreshVoie()
 	{
-		var param;
-		param = "voie="+theCurrentVoie;
-		$.ajax({ type: "POST", url: "ajax_refresh_voie.php", dataType: "html", data: param, cache: false, 
-			success: function(urlCurrent) {
-				if (urlCurrent.length <= 0) return;
-				if (theCurrentVoieUrl.lastIndexOf(urlCurrent) == -1)
-				{
-					theCurrentVoieUrl = urlCurrent+'?voie='+theCurrentVoie; 
-
-					if (urlCurrent.lastIndexOf("?") == -1) {
-						window.location.href = '/'+urlCurrent+'?voie='+theCurrentVoie;
+		$.ajax({
+			type: "POST",
+			url: './cache/voie_' + theCurrentVoie + '.json', 
+			dataType: "json",
+			cache: false, 
+			success: function(response) {
+				if (response.length <= 0) return
+				const responseUrl = decodeURIComponent(response.url)
+				if (theCurrentVoieUrl.lastIndexOf(responseUrl) == -1) {
+					theCurrentVoieUrl = responseUrl+'?voie='+theCurrentVoie; 
+					if (responseUrl.lastIndexOf("?") == -1) {
+						window.location.href = '/'+responseUrl+'?voie='+theCurrentVoie;
 					} else {
-						window.location.href = '/'+urlCurrent+'&voie='+theCurrentVoie;
+						window.location.href = '/'+responseUrl+'&voie='+theCurrentVoie;
 					}
 				}
+			},
+			error: function(error) {
+				console.log(error)
 			}
 		});
 	}
-		
-	function RefreshScene(voie, intervalle)
-	{
-		$.post(
-			"ajax_refresh_scene.php",
-			{ voie: voie },
-			function(data) {
-				if (data.Url.length <= 0) return;
-				if (data.Url.lastIndexOf("?") == -1) {
-					newUrl = '/'+data.Url+'?voie='+data.Voie+'&intervalle='+data.intervalle;
-				} else {
-					newUrl = '/'+data.Url+'&voie='+data.Voie+'&intervalle='+data.intervalle;
-				}
-				setTimeout(function(){window.location.href = newUrl}, intervalle);
-			},
-			'json'
-		);
-		
-	}
-		
+				
 	function ChangeVoie(voie, url, showUrl=0)
 	{
 		url2 = url.replace("?", "|QU|");

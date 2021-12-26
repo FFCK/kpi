@@ -39,4 +39,13 @@ $sql = "UPDATE kp_tv
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($url, $voie));
 
+$filename = $_SERVER['DOCUMENT_ROOT'] . "/live/cache/voie_$voie.json";
+$content = json_encode([
+    'voie' => $voie,
+    'url' => urlencode($url),
+    'intervalle' => 10000,
+    'timestamp' => date('Ymdhis')
+]);
+file_put_contents($filename, $content);
+
 echo "OK Voie $voie : " . $url;

@@ -52,6 +52,15 @@ class Scenario extends MyPageSecure
                 ':intervalle' => $intervalle,
                 ':Voie' => $Voie
             ));
+
+            $filename = $_SERVER['DOCUMENT_ROOT'] . "/live/cache/voie_$Voie.json";
+            $content = json_encode([
+                'voie' => $Voie,
+                'url' => urlencode($Url),
+                'intervalle' => $intervalle,
+                'timestamp' => date('Ymdhis')
+            ]);
+            file_put_contents($filename, $content);
         }
         return "Scenario " . utyGetPost('scenario', 'Unknown') . " updated";
     }
@@ -60,6 +69,7 @@ class Scenario extends MyPageSecure
     function __construct()
     {
         MyPageSecure::MyPageSecure(2);
+        $alertMessage = '';
 
         if (utyGetPost('update', false) == 'Update') {
             ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';

@@ -1,7 +1,8 @@
 <?php
 include_once('base.php');
 
-$voie = utyGetInt($_POST, 'voie', 1);
+$voie = utyGetInt($_GET, 'voie', 1);
+$voie = utyGetInt($_POST, 'voie', $voie);
 
 $myBdd = new MyBdd();
 
@@ -33,7 +34,7 @@ if (!isset($rTV['Url']) || $rTV['Url'] == '') {
 
 header('Content-Type: application/json');
 if (isset($rTV['Url'])) {
-	echo json_encode($rTV);
+    echo json_encode($rTV);
 } else {
-	echo '';
+    echo '';
 }
