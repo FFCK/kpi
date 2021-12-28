@@ -54,12 +54,6 @@ function user_authentication()
 	return_401();
 }
 
-function login($route)
-{
-	$authentication_result = user_authentication();
-	return_200($authentication_result);
-}
-
 function get_user($event)
 {
 	if (isset($_COOKIE["kpi_app"])) {
