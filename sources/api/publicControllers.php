@@ -1,7 +1,7 @@
 <?php
 include_once('headers.php');
 
-function GetEventsController($route)
+function GetEventsController($route, $params)
 {
   $event_mode = $route[1];
   if (!in_array($event_mode, ['std', 'champ'])) {
@@ -43,7 +43,7 @@ function GetEventsController($route)
   return_200($array);
 }
 
-function GetEventController($route)
+function GetEventController($route, $params)
 {
   $event_id = (int) $route[1] ?? return_405();
   $force = $route[2] ?? false;
@@ -85,7 +85,7 @@ function GetEventController($route)
   return_200($array);
 }
 
-function GetGamesController($route)
+function GetGamesController($route, $params)
 {
   $event_id = (int) $route[1];
   $force = $route[2] ?? false;
@@ -164,7 +164,7 @@ function GetGamesController($route)
   return_200($array);
 }
 
-function GetChartsController($route)
+function GetChartsController($route, $params)
 {
   $event_id = (int) $route[1];
   $force = $route[2] ?? false;
@@ -333,7 +333,7 @@ function GetChartsController($route)
   return_200($charts);
 }
 
-function GetStarsController($route)
+function GetStarsController($route, $params)
 {
   $force = $route[1] ?? false;
   $stars = ($force !== 'force') ? json_cache_read('stars', false, 5) : false;
@@ -352,7 +352,7 @@ function GetStarsController($route)
   return_200($stars);
 }
 
-function PostRatingController($route)
+function PostRatingController($route, $params)
 {
   $data = json_decode(file_get_contents('php://input'));
 

@@ -1,12 +1,12 @@
 <?php
 include_once('headers.php');
 
-function StaffTestController($route)
+function StaffTestController($route, $params)
 {
   return_200(['result' => 'OK']);
 }
 
-function GetTeamsController($route)
+function GetTeamsController($route, $params)
 {
   $event_id = (int) $route[1] ?? return_405();
   $force = $route[3] ?? false;
@@ -32,7 +32,7 @@ function GetTeamsController($route)
   return_201($resultArray);
 }
 
-function GetPlayersController($route)
+function GetPlayersController($route, $params)
 {
   // $event_id = (int) $route[1] ?? return_405();
   $team_id = (int) $route[3] ?? return_405();
@@ -62,7 +62,7 @@ function GetPlayersController($route)
   return_200($resultArray);
 }
 
-function PutPlayerController($route)
+function PutPlayerController($route, $params)
 {
   // $event_id = (int) $route[1] ?? return_405();
   $player_id = (int) $route[3] ?? return_405();
@@ -85,7 +85,7 @@ function PutPlayerController($route)
     ON DUPLICATE KEY UPDATE $parameter = ? ";
   $stmt = $myBdd->pdo->prepare($sql);
   if ($stmt->execute([$team_id, $player_id, $value, $value])) {
-    // if ($stmt->rowCount() === 1) {
+    // TODO: log user action
     return_200($value);
   }
   return_401();

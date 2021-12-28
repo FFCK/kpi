@@ -18,7 +18,7 @@ function set_response_headers($method)
 	header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, X-Requested-With, Authorization, Cache-Control, Pragma, Expires');
 	header('Content-Type: application/json');
 
-	if ($method === 'OPTIONS') {
+	if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 		http_response_code(200);
 		exit;
 	}
@@ -31,6 +31,51 @@ function methods($methods_array)
 		exit;
 	}
 	return;
+}
+
+function routing($path)
+{
+	$params = [];
+	$routes = [
+		'staff' => [
+			'test' => ['GET', 'StaffTestController'],
+			'teams' => ['GET', 'GetTeamsController'],
+			'players' => ['GET', 'GetPlayersController'],
+			'player' => ['PUT', 'PutPlayerController']
+		],
+		'public' => [
+			'login' => ['POST', 'login'],
+			'events' => ['GET', 'GetEventsController'],
+			'event' => ['GET', 'GetEventController'],
+			'games' => ['GET', 'GetGamesController'],
+			'charts' => ['GET', 'GetChartsController'],
+			'stars' => ['GET', 'GetStarsController'],
+			'rating' => ['POST', 'PostRatingController']
+		]
+	];
+
+	if ($path[0] === 'staff') {
+		$params['user'] = get_user($path[1]);
+		$route = $routes['staff'];
+		$path_name = $path[2];
+		include_once('staffControllers.php');
+	} else {
+		$route = $routes['public'];
+		$path_name = $path[0];
+		include_once('publicControllers.php');
+	}
+
+	if (array_key_exists($path_name, $route)) {
+		methods([$route[$path_name][0]]);
+		$controller = $route[$path_name][1];
+		if (function_exists($controller)) {
+			$controller($path, $params);
+		} else {
+			return_404();
+		}
+	} else {
+		return_404();
+	}
 }
 
 /**
