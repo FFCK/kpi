@@ -183,7 +183,8 @@ export default {
               response.data.user.token +
               '; ' +
               expires +
-              '; path=/'
+              '; path=/;' +
+              ' SameSite=Strict;'
             this.checkAuthorized()
           })
           .catch(error => {
