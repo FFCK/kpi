@@ -1,6 +1,13 @@
 <?php
 include_once('config/cache.php');
 
+function login($route)
+{
+  include_once('config/authentication.php');
+  $authentication_result = user_authentication();
+  return_200($authentication_result);
+}
+
 function GetEventsController($route, $params)
 {
   $event_mode = $route[1];

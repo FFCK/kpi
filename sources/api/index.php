@@ -3,7 +3,6 @@ include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 include_once('config/headers.php');
 include_once('config/router.php');
-include_once('config/authentication.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
 $url = $_GET['url']; // After htaccess url rewrite
