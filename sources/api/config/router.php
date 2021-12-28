@@ -22,6 +22,7 @@ function routing($path)
   ];
 
   if (in_array($path[0], ['staff'])) {
+    include_once('config/authentication.php');
     include_once('controllers/staffControllers.php');
     $params['user'] = get_user($path[1]);
     $route = $routes[$path[0]];
