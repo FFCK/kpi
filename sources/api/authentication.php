@@ -60,7 +60,7 @@ function login($route)
 	return_200($authentication_result);
 }
 
-function token_check($event)
+function get_user($event)
 {
 	if (isset($_COOKIE["kpi_app"])) {
 		$token = $_COOKIE["kpi_app"];
