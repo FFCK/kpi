@@ -1082,6 +1082,15 @@ function controle_pagaie($ECA, $EVI, $MER)
 }
 
 /* HTTP ERRORS */
+function methods($methods_array)
+{
+	if (!in_array($_SERVER['REQUEST_METHOD'], $methods_array)) {
+		return_405();
+		exit;
+	}
+	return;
+}
+
 function return_400($msg = 'Bad Request')
 {
 	header('HTTP/1.0 400 Bad Request');

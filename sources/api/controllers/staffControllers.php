@@ -1,5 +1,5 @@
 <?php
-include_once('headers.php');
+include_once('config/cache.php');
 
 function StaffTestController($route, $params)
 {
