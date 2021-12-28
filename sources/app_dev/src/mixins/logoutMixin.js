@@ -24,7 +24,7 @@ export default {
           scr_team_logo: null
         }
       })
-      document.cookie = 'kpi_app=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+      document.cookie = 'kpi_app=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict;'
       this.showLoginForm = true
     }
   }
