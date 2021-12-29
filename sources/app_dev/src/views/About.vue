@@ -5,7 +5,7 @@
         <div class="col">
           <i
             role="button"
-            class="bi bi-caret-left-square-fill me-2"
+            class="bi bi-caret-left-square-fill me-2 btn btn-secondary"
             @click="changePage('Chart')"
           />
         </div>

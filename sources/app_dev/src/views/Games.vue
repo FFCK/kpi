@@ -1,16 +1,20 @@
 <template>
   <div class="container-fluid">
     <div class="filters">
-      <div class="row">
-        <div class="col">
+      <div class="row justify-content-between">
+        <div class="col-auto">
           <div class="text-nowrap">
             <i
               role="button"
-              class="float-start bi bi-caret-left-square-fill me-2"
+              class="float-start bi bi-caret-left-square-fill me-2 btn btn-secondary"
               @click="changePage('Home')"
             />
+          </div>
+        </div>
+        <div class="col text-center">
+          <div class="btn-group" role="group">
             <button
-              class="btn btn-secondary"
+              class="btn btn-secondary text-nowrap"
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#collapseFilters"
@@ -19,31 +23,26 @@
             >
               {{ $t("nav.Filters") }} <i class="bi bi-filter"></i>
             </button>
-          </div>
-        </div>
-        <div class="col text-center">
-          <el-select
-            v-model="fav_dates"
-            collapse-tags
-            :placeholder="$t('Games.Dates')"
-            @change="changeFav"
-          >
-            <el-option :label="$t('Games.AllDates')" value="" />
-            <el-option
-              v-for="(game_date, index) in game_dates"
-              :key="index"
-              :label="$d(new Date(game_date), 'short')"
-              :value="game_date"
-            />
-            <el-divider />
-            <el-option :label="$t('Games.Today')" value="Today" />
-            <el-option :label="$t('Games.Tomorow')" value="Tomorow" />
-            <el-option :label="$t('Games.Prev')" value="Prev" />
-            <el-option :label="$t('Games.Next')" value="Next" />
-          </el-select>
-        </div>
-        <div class="col text-end">
-          <div class="text-nowrap">
+            <select
+              class="form-select"
+              aria-label="Date select"
+              v-model="fav_dates"
+              :placeholder="$t('Games.Dates')"
+              @change="changeFav"
+            >
+              <option value="">{{ $t("Games.AllDates") }}</option>
+              <option
+                v-for="(game_date, index) in game_dates"
+                :key="index"
+                :value="game_date"
+                >{{ $d(new Date(game_date), "short") }}</option
+              >
+              <option disabled>──────</option>
+              <option value="Today">{{ $t("Games.Today") }}</option>
+              <option value="Tomorow">{{ $t("Games.Tomorow") }}</option>
+              <option value="Prev">{{ $t("Games.Prev") }}</option>
+              <option value="Next">{{ $t("Games.Next") }}</option>
+            </select>
             <button
               v-show="visibleButton"
               class="btn btn-secondary"
@@ -51,9 +50,13 @@
             >
               <i class="bi bi-arrow-clockwise"></i>
             </button>
+          </div>
+        </div>
+        <div class="col-auto text-end">
+          <div class="text-nowrap">
             <i
               role="button"
-              class="float-end bi bi-caret-right-square-fill ms-2"
+              class="float-end bi bi-caret-right-square-fill ms-2 btn btn-secondary"
               @click="changePage('Chart')"
             />
           </div>
@@ -139,7 +142,6 @@ import {
   ElSwitch,
   ElSelect,
   ElOption,
-  ElDivider,
   ElOptionGroup
 } from 'element-plus'
 
@@ -151,7 +153,6 @@ export default {
     ElSelect,
     ElOption,
     ElSwitch,
-    ElDivider,
     ElOptionGroup
   },
   mixins: [prefsMixin, gamesMixin, statusMixin],

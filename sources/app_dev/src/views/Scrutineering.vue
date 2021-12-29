@@ -9,7 +9,7 @@
       <div v-if="authorized && user.profile <= 3" class="container-fluid mb-5">
         <i
           role="button"
-          class="float-start bi bi-caret-left-square-fill me-2"
+          class="float-start bi bi-caret-left-square-fill me-1 btn btn-secondary"
           @click="$router.push({ name: 'Login' })"
         />
         <team-selector @changeTeam="loadPlayers" />
