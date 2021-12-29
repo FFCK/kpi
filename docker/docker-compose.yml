@@ -1,7 +1,7 @@
 version: '2'
 services:
     webphp7:
-        build: 
+        build:
             context: ./web7
             dockerfile: Dockerfile
         ports:
@@ -19,7 +19,7 @@ services:
             - db
             - mailcatcher
     db:
-        build: 
+        build:
             context: ./db
             dockerfile: Dockerfile
         image: mysql:latest
@@ -50,15 +50,14 @@ services:
     node:
         image: node:latest
         build:
-          context: ../
-          dockerfile: ./docker/node/Dockerfile
+            context: ../
+            dockerfile: ./docker/node/Dockerfile
         ports:
-          - "8000:8000" # vue ui
-          - "9000:8080" # Vue-cli HMR
+            - "8000:8000" # vue ui
+            - "9000:8080" # Vue-cli HMR
         volumes:
-          - ../sources/app_dev:/app
+            - ../sources/app_dev:/app
         #   - ../sources/app:/app/dist
         user: "1000:33"
         links:
-          - webphp7
-    
+            - webphp7

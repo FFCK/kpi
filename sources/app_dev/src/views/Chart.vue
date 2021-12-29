@@ -1,26 +1,24 @@
 <template>
   <div class="container-fluid">
     <div class="filters">
-      <div class="row">
+      <div class="row mb-1">
         <div class="col">
           <i
             role="button"
-            class="bi bi-caret-left-square-fill me-2"
+            class="bi bi-caret-left-square-fill me-2 btn btn-secondary"
             @click="changePage('Games')"
           />
         </div>
         <div class="col text-end">
           <div class="text-nowrap">
-            <button
+            <i
               v-show="visibleButton"
-              class="btn btn-secondary m-1"
+              class="btn btn-secondary bi bi-arrow-clockwise"
               @click="loadCharts"
-            >
-              <i class="bi bi-arrow-clockwise"></i>
-            </button>
+            />
             <i
               role="button"
-              class="float-end bi bi-caret-right-square-fill ms-2"
+              class="float-end bi bi-caret-right-square-fill ms-2 btn btn-secondary"
               @click="changePage('About')"
             />
           </div>
