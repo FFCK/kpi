@@ -4,7 +4,7 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
 // Gestion de la Feuille de Classement par Journee
 class FeuilleCltNiveauPhase extends MyPage
@@ -29,7 +29,7 @@ class FeuilleCltNiveauPhase extends MyPage
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
         $getlang = utyGetGet('lang', false);
-		if ($getlang  == 'en') {
+        if ($getlang  == 'en') {
             $arrayCompetition['En_actif'] = 'O';
         } elseif ($getlang  == 'fr') {
             $arrayCompetition['En_actif'] = '';
@@ -80,17 +80,17 @@ class FeuilleCltNiveauPhase extends MyPage
 
         // titre
         $pdf->Ln(22);
-        $pdf->SetFont('Arial','B',14);
+        $pdf->SetFont('Arial', 'B', 14);
         if ($arrayCompetition['Titre_actif'] == 'O') {
-            $pdf->Cell(190,5,$arrayCompetition['Libelle'],0,1,'C');
+            $pdf->Cell(190, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
         } else {
-            $pdf->Cell(190,5,$arrayCompetition['Soustitre'],0,1,'C');
+            $pdf->Cell(190, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
         }
 
 
-//		$pdf->Ln(4);
+        //		$pdf->Ln(4);
         if ($arrayCompetition['Soustitre2'] != '') {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'],0,1,'C');
+            $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
 
         $pdf->Ln(4);
@@ -119,10 +119,10 @@ class FeuilleCltNiveauPhase extends MyPage
 
         $idJournee = 0;
         $niveau = 1;
-        while ($row = $result->fetch()){
+        while ($row = $result->fetch()) {
             if ($niveau != $row['Niveau']) {
-                $pdf->Cell(85,4,"",0,0);
-                $pdf->Cell(20,4,"","B",1);
+                $pdf->Cell(85, 4, "", 0, 0);
+                $pdf->Cell(20, 4, "", "B", 1);
             }
             $niveau = $row['Niveau'];
             if ($row['Type'] == 'E') {
@@ -139,7 +139,7 @@ class FeuilleCltNiveauPhase extends MyPage
                         WHERE m.Id_journee = ? ";
                     $result2 = $myBdd->pdo->prepare($sql2);
                     $result2->execute(array($row['Id_journee']));
-                    while($row2 = $result2->fetch()) {
+                    while ($row2 = $result2->fetch()) {
                         if ($row2['ScoreA'] > $row2['ScoreB']) {
                             $pdf->SetFont('Arial', 'B', 9);
                         } else {
@@ -230,7 +230,6 @@ class FeuilleCltNiveauPhase extends MyPage
         }
         $pdf->Output('Classement par phase ' . $codeCompet . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleCltNiveauPhase();

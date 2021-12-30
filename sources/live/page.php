@@ -16,10 +16,10 @@ class MyPage
   function __construct(&$arrayParams)
   {
     // htmlpurifier
-    if (is_file('htmlpurifier/HTMLPurifier.auto.php')) {
-      require_once 'htmlpurifier/HTMLPurifier.auto.php';
+    if (is_file('lib/htmlpurifier/HTMLPurifier.auto.php')) {
+      require_once 'lib/htmlpurifier/HTMLPurifier.auto.php';
     } else {
-      require_once '../htmlpurifier/HTMLPurifier.auto.php';
+      require_once '../lib/htmlpurifier/HTMLPurifier.auto.php';
     }
     $config = HTMLPurifier_Config::createDefault();
     $config->set('Core.Encoding', 'UTF-8'); // replace with your encoding

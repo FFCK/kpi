@@ -3,7 +3,7 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require_once('../fpdf/fpdf.php');
+require_once('../lib/fpdf/fpdf.php');
 
 // Pieds de page
 class PDF extends FPDF
