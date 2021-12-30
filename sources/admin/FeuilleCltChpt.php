@@ -4,13 +4,15 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
 // Gestion de la Feuille de Classement
 
-class FeuilleCltNiveau extends MyPage {
+class FeuilleCltNiveau extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
 
         $myBdd = new MyBdd();
@@ -132,7 +134,7 @@ class FeuilleCltNiveau extends MyPage {
         $pdf->Cell(20, 5, '+/-', 'B', 1, 'C');
 
         $i = 0;
-        while ($row = $result->fetch()){
+        while ($row = $result->fetch()) {
             $separation = 0;
             //Séparation qualifiés
             if (($i + 1) > $qualif && $qualif != 0) {
@@ -192,7 +194,6 @@ class FeuilleCltNiveau extends MyPage {
         }
         $pdf->Output('Classement ' . $codeCompet . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleCltNiveau();

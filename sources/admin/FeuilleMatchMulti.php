@@ -3,9 +3,9 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
-require_once('../qrcode/qrcode.class.php');
+require_once('../lib/qrcode/qrcode.class.php');
 
 // Gestion de la Feuille de Match
 class PDF extends FPDF

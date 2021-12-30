@@ -4,12 +4,14 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
 // Pieds de page
-class PDF extends FPDF {
+class PDF extends FPDF
+{
 
-    function Footer() {
+    function Footer()
+    {
         //Positionnement à 1,5 cm du bas
         $this->SetY(-15);
         //Police Arial italique 8
@@ -17,13 +19,14 @@ class PDF extends FPDF {
         //Numéro de page centré
         $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
     }
-
 }
 
 // Gestion de la Feuille de Classement
-class FeuilleGroups extends MyPage {
+class FeuilleGroups extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
 
         $myBdd = new MyBdd();
@@ -97,16 +100,16 @@ class FeuilleGroups extends MyPage {
         } else {
             $pdf->Cell(186, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
         }
-//		$pdf->Ln(4);
+        //		$pdf->Ln(4);
         if ($arrayCompetition['Soustitre2'] != '') {
             $pdf->Cell(186, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         } else {
             $pdf->Cell(186, 5, '(' . $codeCompet . ')', 0, 1, 'C');
         }
         $pdf->Ln(4);
-//		$pdf->SetFont('Arial','BI',10);
-//		$pdf->Cell(186,5,$lang['POULES'],0,0,'C');
-//		$pdf->Ln(10);
+        //		$pdf->SetFont('Arial','BI',10);
+        //		$pdf->Cell(186,5,$lang['POULES'],0,0,'C');
+        //		$pdf->Ln(10);
         //données
 
         $sql = "SELECT Id, Libelle, Code_club, Poule, Tirage 
@@ -133,7 +136,7 @@ class FeuilleGroups extends MyPage {
         $pdf->SetY(50);
         $i = 0;
 
-        while ($row = $result->fetch()){
+        while ($row = $result->fetch()) {
             if ($poule != $row['Poule']) {
                 if ($i >= $demi && $demi != 0 && $num_results > 20) {
                     //Colonne 2
@@ -169,12 +172,11 @@ class FeuilleGroups extends MyPage {
                 $pdf->Cell(10, 6, '', 0, 0, 'C');
             }
             $pdf->Cell(65, 6, $row['Libelle'], 0, 1, 'L');
-            $i ++;
+            $i++;
         }
 
         $pdf->Output($lang['Poules'] . ' ' . $codeCompet . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleGroups();

@@ -3,14 +3,16 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require_once('../fpdf/fpdf.php');
+require_once('../lib/fpdf/fpdf.php');
 
-require_once('../qrcode/qrcode.class.php');
+require_once('../lib/qrcode/qrcode.class.php');
 
 // Pieds de page
-class PDF extends FPDF {
+class PDF extends FPDF
+{
 
-    function Footer() {
+    function Footer()
+    {
         //Positionnement à 1,5 cm du bas
         $this->SetY(-15);
         //Police Arial italique 8
@@ -19,16 +21,15 @@ class PDF extends FPDF {
         $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
         $this->Cell(136, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 1, 'R');
     }
-
 }
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
-class FeuilleListeMatchs extends MyPage 
+class FeuilleListeMatchs extends MyPage
 {
 
-    function __construct() 
+    function __construct()
     {
-        MyPage::MyPage();       
+        MyPage::MyPage();
         // Chargement des Matchs des journées ...
         $filtreJour = utyGetSession('filtreJour', '');
         $filtreJour = utyGetPost('filtreJour', $filtreJour);
@@ -43,14 +44,14 @@ class FeuilleListeMatchs extends MyPage
         $arrayJournees = explode(',', $lstJournee);
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
-		if (utyGetGet('idEvenement', 0) > 0) {
+        if (utyGetGet('idEvenement', 0) > 0) {
             $arrayJournees = [];
             $sql = "SELECT Id_journee 
                 FROM kp_evenement_journee 
                 WHERE Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($idEvenement));
-            while ($row = $result->fetch()){
+            while ($row = $result->fetch()) {
                 $arrayJournees[] = $row['Id_journee'];
             }
         }
@@ -155,15 +156,15 @@ class FeuilleListeMatchs extends MyPage
         if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-        // KPI + Logo    
+            // KPI + Logo    
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-        // KPI
+            // KPI
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
             $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-        // Logo
+            // Logo
         } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
@@ -210,17 +211,25 @@ class FeuilleListeMatchs extends MyPage
 
             if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
                 $row['Arbitre_principal'] = utyArbSansNiveau(
-                    utyInitialesPrenomArbitre( 
-                            $row['Arbitre_principal'], $row['Nom_arb_prin'], 
-                            $row['Prenom_arb_prin'], $row['Matric_arbitre_principal']));
+                    utyInitialesPrenomArbitre(
+                        $row['Arbitre_principal'],
+                        $row['Nom_arb_prin'],
+                        $row['Prenom_arb_prin'],
+                        $row['Matric_arbitre_principal']
+                    )
+                );
             } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
                 $row['Arbitre_principal'] = $EquipesAffectAuto[2];
             }
             if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
                 $row['Arbitre_secondaire'] = utyArbSansNiveau(
-                    utyInitialesPrenomArbitre( 
-                            $row['Arbitre_secondaire'], $row['Nom_arb_sec'], 
-                            $row['Prenom_arb_sec'], $row['Matric_arbitre_secondaire']));
+                    utyInitialesPrenomArbitre(
+                        $row['Arbitre_secondaire'],
+                        $row['Nom_arb_sec'],
+                        $row['Prenom_arb_sec'],
+                        $row['Matric_arbitre_secondaire']
+                    )
+                );
             } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
                 $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
             }
@@ -236,36 +245,35 @@ class FeuilleListeMatchs extends MyPage
                 if ($Oldrupture != '') {
                     $pdf->Cell(273, 3, '', 'T', '1', 'C');
                     $pdf->AddPage();
-                    
+
                     // Bandeau
-                    if($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])){
+                    if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
                         $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
                         $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                    // KPI + Logo    
-                    } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+                        // KPI + Logo    
+                    } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                         $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                         $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
                         $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                    // KPI
-                    } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+                        // KPI
+                    } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
                         $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-                    // Logo
-                    } elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
+                        // Logo
+                    } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                         $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
                         $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                     }
                     // Sponsor
-                    if($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])){
+                    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
                         $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
                         $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
                     }
-
                 }
                 $Oldrupture = $rupture;
 
                 $pdf->Cell(60, 5, '', '', '0', 'L');
                 switch ($orderMatchsKey1) {
-                    case "Code_competition" :
+                    case "Code_competition":
                         $pdf->SetFont('Arial', 'B', 9);
                         $pdf->Cell(150, 5, utyGetLabelCompetition($rupture) . " (" . $rupture . ")", 'LTBR', '1', 'C');
                         $pdf->Cell(8, 5, 'N°', 'LTRB', '0', 'R');
@@ -284,7 +292,7 @@ class FeuilleListeMatchs extends MyPage
                         $pdf->Cell(45, 5, 'Arbitre secondaire', 'TRB', '1', 'C');
                         $pdf->SetFont('Arial', '', 8);
                         break;
-                    case "Terrain" :
+                    case "Terrain":
                         $pdf->SetFont('Arial', 'B', 9);
                         $pdf->Cell(150, 5, "Terrain : " . $rupture, 'LTBR', '1', 'C');
                         $pdf->Cell(8, 5, 'N°', 'LTRB', '0', 'R');
@@ -303,7 +311,7 @@ class FeuilleListeMatchs extends MyPage
                         $pdf->Cell(45, 5, 'Arbitre secondaire', 'TRB', '1', 'C');
                         $pdf->SetFont('Arial', '', 8);
                         break;
-                    default :
+                    default:
                         $pdf->SetFont('Arial', 'B', 9);
 
                         $pdf->Cell(150, 5, utyDateUsToFrLong($rupture) . ' - ' . html_entity_decode($row['Lieu']), 'LTBR', '1', 'C');
@@ -326,7 +334,7 @@ class FeuilleListeMatchs extends MyPage
             }
 
             switch ($orderMatchsKey1) {
-                case "Code_competition" :
+                case "Code_competition":
                     $pdf->SetFont('Arial', '', 8);
                     $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
                     $pdf->Cell(16, 5, utyDateUsToFr($row['Date_match']), 'TBR', '0', 'C');
@@ -367,7 +375,7 @@ class FeuilleListeMatchs extends MyPage
                     }
 
                     break;
-                case "Terrain" :
+                case "Terrain":
                     $pdf->SetFont('Arial', '', 8);
                     $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
                     $pdf->Cell(16, 5, utyDateUsToFr($row['Date_match']), 'TBR', '0', 'C');
@@ -407,7 +415,7 @@ class FeuilleListeMatchs extends MyPage
                         $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
                     }
                     break;
-                default :
+                default:
                     $heure2 = $row['Heure_match'];
                     if ($heure1 == $heure2) {
                         $ltbr = '';
@@ -461,7 +469,6 @@ class FeuilleListeMatchs extends MyPage
 
         $pdf->Output('Liste matchs.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleListeMatchs();

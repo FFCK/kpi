@@ -4,12 +4,14 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
 // Gestion de la Feuille de Classement
-class FeuilleCltNiveau extends MyPage {
+class FeuilleCltNiveau extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
         $myBdd = new MyBdd();
 
@@ -140,7 +142,7 @@ class FeuilleCltNiveau extends MyPage {
             $result2 = $myBdd->pdo->prepare($sql2);
             $result2->execute(array($codeCompet, $codeSaison, $idEquipe, $idEquipe));
             $num_results2 = $result2->rowCount();
-    
+
             $oldNiveauPhase = '';
             $pdf->SetFont('Arial', 'B', 10);
 
@@ -182,7 +184,6 @@ class FeuilleCltNiveau extends MyPage {
 
         $pdf->Output('Détail par équipe ' . $codeCompet . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleCltNiveau();

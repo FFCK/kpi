@@ -4,12 +4,14 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
 // Gestion de la Feuille de Classement
-class FeuilleCltNiveau extends MyPage {
+class FeuilleCltNiveau extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
         $myBdd = new MyBdd();
 
@@ -21,9 +23,9 @@ class FeuilleCltNiveau extends MyPage {
         $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';
         $qualif = $arrayCompetition['Qualifies'];
         $elim = $arrayCompetition['Elimines'];
-        
+
         $visuels = utyGetVisuels($arrayCompetition, TRUE);
-        
+
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
         if (utyGetGet('lang') == 'en') {
@@ -53,27 +55,27 @@ class FeuilleCltNiveau extends MyPage {
         }
 
         // Bandeau
-		if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 210, 10, 16, 'C');
-			$pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-        // KPI + Logo    
-        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-			$pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
-			$img = redimImage($visuels['logo'], 210, 10, 16, 'R');
-			$pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-        // KPI
-        } elseif($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-			$pdf->Image('../img/CNAKPI_small.jpg', 84, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
-        // Logo
-		} elseif($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])){
-			$img = redimImage($visuels['logo'], 210, 10, 16, 'C');
-			$pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-		}
+            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+            // KPI + Logo    
+        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
+            $img = redimImage($visuels['logo'], 210, 10, 16, 'R');
+            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+            // KPI
+        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+            $pdf->Image('../img/CNAKPI_small.jpg', 84, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
+            // Logo
+        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            $img = redimImage($visuels['logo'], 210, 10, 16, 'C');
+            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+        }
         // Sponsor
-		if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-			$img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
-			$pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
-		}
+        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+            $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+            $pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
+        }
 
         // titre
         $pdf->Ln(22);
@@ -83,7 +85,7 @@ class FeuilleCltNiveau extends MyPage {
         } else {
             $pdf->Cell(190, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
         }
-//		$pdf->Ln(4);
+        //		$pdf->Ln(4);
         if ($arrayCompetition['Soustitre2'] != '') {
             $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
@@ -151,7 +153,6 @@ class FeuilleCltNiveau extends MyPage {
 
         $pdf->Output('Classement ' . $codeCompet . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleCltNiveau();
