@@ -4,14 +4,16 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('fpdf/fpdf.php');
+require('lib/fpdf/fpdf.php');
 
-require_once('qrcode/qrcode.class.php');
+require_once('lib/qrcode/qrcode.class.php');
 
 // Pieds de page
-class PDF extends FPDF {
+class PDF extends FPDF
+{
 
-    function Footer() {
+    function Footer()
+    {
         //Positionnement à 1,5 cm du bas
         $this->SetY(-15);
         //Police Arial italique 8
@@ -20,21 +22,22 @@ class PDF extends FPDF {
         $this->Cell(137, 10, '', 0, 0, 'L');
         $this->Cell(136, 5, '', 0, 1, 'R');
     }
-
 }
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
-class PdfQrCodes extends MyPage {
+class PdfQrCodes extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
         // Chargement des titre ...
         $myBdd = new MyBdd();
         $lstJournee = utyGetSession('lstJournee', 0);
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('Evt', $idEvenement);
-		if (utyGetGet('Evt', 0) > 0) {
-			$lstJournee = [];
+        if (utyGetGet('Evt', 0) > 0) {
+            $lstJournee = [];
             $sql = "SELECT Id_journee 
                 FROM kp_evenement_journee 
                 WHERE Id_evenement = ? ";
@@ -46,7 +49,7 @@ class PdfQrCodes extends MyPage {
         } else {
             $lstJournee = explode(',', $lstJournee);
         }
-		$codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
         $orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $laCompet = utyGetSession('codeCompet', 0);
@@ -90,7 +93,7 @@ class PdfQrCodes extends MyPage {
             $result->execute(array($codeCompet, $codeSaison));
         }
 
-        while($row1 = $result->fetch()) {
+        while ($row1 = $result->fetch()) {
             $lastCompetEvt = $row1['Code_competition'];
         }
         // Chargement des infos de l'évènement ou de la compétition
@@ -174,16 +177,16 @@ class PdfQrCodes extends MyPage {
         $logo1 = imagecreatefromstring(file_get_contents($logo));
         $logo_width = imagesx($logo1);
         $logo_height = imagesy($logo1);
-        $height = ($logo_height/$logo_width*16);
-        $y = (50-$height)/2;
+        $height = ($logo_height / $logo_width * 16);
+        $y = (50 - $height) / 2;
 
         // QRCode Matchs
         $pdf->Text(75, 80, 'Matchs - Games');
         $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
         $qrcode->displayFPDF($pdf, 70, 85, 50);
         $pdf->Image($logo, 87, $y + 85, 16, $height, 'jpg', "https://www.kayak-polo.info");
-        
-        
+
+
         // QRCode Progression
         $pdf->Text(170, 80, 'Progression - Progress');
         $qrcode2 = new QRcode('https://www.kayak-polo.info/kpchart.php?Group=' . $arrayCompetition['Code_ref'] . '&Compet=' . $arrayCompetition['Code'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
@@ -192,7 +195,6 @@ class PdfQrCodes extends MyPage {
 
         $pdf->Output('Links.pdf', 'I');
     }
-
 }
 
 $page = new PdfQrCodes();

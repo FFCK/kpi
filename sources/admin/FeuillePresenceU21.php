@@ -4,12 +4,14 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
 // Pieds de page
-class PDF extends FPDF {
+class PDF extends FPDF
+{
 
-    function Footer() {
+    function Footer()
+    {
         //Positionnement à 1,5 cm du bas
         $this->SetY(-15);
         //Police Arial italique 8
@@ -19,13 +21,14 @@ class PDF extends FPDF {
         //Date à droite
         $this->Cell(135, 10, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'])), 0, 0, 'R');
     }
-
 }
 
 // Liste des présents par catégorie 
-class FeuillePresenceU21 extends MyPage {
+class FeuillePresenceU21 extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
 
         $myBdd = new MyBdd();
@@ -75,7 +78,7 @@ class FeuillePresenceU21 extends MyPage {
                 $num_results2 = $result2->rowCount();
                 $arrayJoueur = array();
 
-                while ($row2 = $result2->fetch()){
+                while ($row2 = $result2->fetch()) {
                     $numero = $row2['Numero'];
                     if (strlen($numero) == 0) {
                         $numero = 0;
@@ -106,11 +109,13 @@ class FeuillePresenceU21 extends MyPage {
                         $row2['Origine'] = '';
                     }
 
-                    array_push($arrayJoueur, array('Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
+                    array_push($arrayJoueur, array(
+                        'Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
                         'Sexe' => $row2['Sexe'], 'Naissance' => $row2['Naissance'], 'Pagaie' => $pagaie, 'CertifCK' => $row2['CertifCK'],
                         'CertifAPS' => $row2['CertifAPS'], 'Numero' => $numero, 'Capitaine' => $capitaine, 'Arbitre' => $row2['arbitre'],
                         'Saison' => $row2['Origine'], 'Numero_club' => $row2['Numero_club'],
-                        'nbJoueurs' => $num_results2, 'NomEquipe' => $row2['NomEquipe']));
+                        'nbJoueurs' => $num_results2, 'NomEquipe' => $row2['NomEquipe']
+                    ));
                 }
             } else {
                 die('Aucune équipe');
@@ -168,7 +173,7 @@ class FeuillePresenceU21 extends MyPage {
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
         }
-        
+
         // titre
         $pdf->Ln(20);
         $pdf->SetFont('Arial', 'BI', 12);
@@ -178,9 +183,9 @@ class FeuillePresenceU21 extends MyPage {
         // $pdf->Cell(273, 8, "Feuille de présence U21 - " .  $arrayJoueur[$i]['NomEquipe'], 0, 1, 'C');
         $pdf->Cell(273, 8, "Feuille de présence U21", 0, 1, 'C');
         $pdf->Ln(10);
-        
+
         // $lastEquipe = $arrayJoueur[$i]['NomEquipe'];
-        
+
         $pdf->SetFont('Arial', 'BI', 10);
         $pdf->Cell(13, 7, 'Num', 'B', 0, 'C');
         $pdf->Cell(9, 7, 'Cap', 'B', 0, 'C');
@@ -209,7 +214,6 @@ class FeuillePresenceU21 extends MyPage {
         }
         $pdf->Output('Présences U21' . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuillePresenceU21();

@@ -4,20 +4,22 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('fpdf/fpdf.php');
+require('lib/fpdf/fpdf.php');
 
-require_once('qrcode/qrcode.class.php');
+require_once('lib/qrcode/qrcode.class.php');
 
 // Gestion de la Feuille de Classement
-class FeuilleCltNiveau extends MyPage {
+class FeuilleCltNiveau extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
         //Saison
-		$codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -105,7 +107,7 @@ class FeuilleCltNiveau extends MyPage {
             ORDER BY Libelle ";
         $result = $myBdd->pdo->prepare($sql);
         $result->execute(array($codeCompet, $codeSaison));
-		
+
         while ($row = $result->fetch()) {
             $idEquipe = $row['Id'];
             $pdf->SetFont('Arial', 'B', 12);
@@ -142,9 +144,9 @@ class FeuilleCltNiveau extends MyPage {
                 ORDER BY b.Niveau, b.Phase ";
             $result2 = $myBdd->pdo->prepare($sql2);
             $result2->execute(array(
-                ':codeCompet' => $codeCompet, 
-                ':codeSaison' => $codeSaison, 
-                ':idEquipe' => $idEquipe, 
+                ':codeCompet' => $codeCompet,
+                ':codeSaison' => $codeSaison,
+                ':idEquipe' => $idEquipe,
             ));
 
             $oldNiveauPhase = '';
@@ -196,7 +198,6 @@ class FeuilleCltNiveau extends MyPage {
 
         $pdf->Output('Detail par equipe ' . $codeCompet . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleCltNiveau();

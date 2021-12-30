@@ -4,12 +4,14 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../fpdf/fpdf.php');
+require('../lib/fpdf/fpdf.php');
 
 // Gestion de la Feuille de Classement par Journee
-class FeuilleCltNiveauJournee extends MyPage {
+class FeuilleCltNiveauJournee extends MyPage
+{
 
-    function __construct() {
+    function __construct()
+    {
         MyPage::MyPage();
         $myBdd = new MyBdd();
 
@@ -112,7 +114,7 @@ class FeuilleCltNiveauJournee extends MyPage {
         $result->execute(array($codeCompet, $codeSaison));
 
         $idJournee = 0;
-        while ($row = $result->fetch()){
+        while ($row = $result->fetch()) {
             $idEquipe = $row['Id'];
             if ($row['Id_journee'] != $idJournee) {
                 $idJournee = $row['Id_journee'];
@@ -159,7 +161,6 @@ class FeuilleCltNiveauJournee extends MyPage {
 
         $pdf->Output('Classement par journee ' . $codeCompet . '.pdf', 'I');
     }
-
 }
 
 $page = new FeuilleCltNiveauJournee();
