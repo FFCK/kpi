@@ -134,9 +134,10 @@ class CacheMatch
 		$rCompetition = null;
 		$sql = "SELECT * 
 			FROM kp_competition 
-			WHERE Code = ? ";
+			WHERE Code = ? 
+			AND Code_saison = ? ";
 		$result = $db->pdo->prepare($sql);
-		$result->execute(array($rJournee['Code_competition']));
+		$result->execute(array($rJournee['Code_competition'], $rJournee['Code_saison']));
 		$rCompetition = $result->fetch();
 
 		$idEquipeA =  $rMatch['Id_equipeA'];
