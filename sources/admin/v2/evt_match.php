@@ -1,13 +1,13 @@
-<?php 
+<?php
 // prevent direct access *****************************************************
-$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
-strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-if(!$isAjax) {
-  $user_error = 'Access denied - not an AJAX request...';
-  trigger_error($user_error, E_USER_ERROR);
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) and
+	strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if (!$isAjax) {
+	$user_error = 'Access denied - not an AJAX request...';
+	trigger_error($user_error, E_USER_ERROR);
 }
 // ***************************************************************************
-	
+
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
 
@@ -27,18 +27,18 @@ $idLigne = explode('_', $idLigne);
 $myBdd->AutorisationMatch($idMatch);
 
 if ($type == 'insert') {
+	$inserted_id = gen_uuid();
 	$sql = "INSERT INTO kp_match_detail 
-		SET Id_match = ?, Periode = ?, Temps = ?, Id_evt_match = ?, 
+		SET Id = ?, Id_match = ?, Periode = ?, Temps = ?, Id_evt_match = ?, 
 		Competiteur = ?, Numero = ?, Equipe_A_B = ?, motif = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array(
-		$idMatch, $data->period, '00:'.$data->time, $data->evt, 
+		$inserted_id, $idMatch, $data->period, '00:' . $data->time, $data->evt,
 		$data->player, $data->number, $data->team, $data->cause
 	));
-	$last = $myBdd->pdo->lastInsertId();
 	$myBdd->CheckCardCumulation($data->player, $idMatch, $data->evt, $data->cause);
-	echo $last;
-
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode(['id' => $inserted_id]);
 } elseif ($type == 'update') {
 	$sql = "UPDATE kp_match_detail 
 		SET Id_match = ?, Periode = ?, 
@@ -47,13 +47,12 @@ if ($type == 'insert') {
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array(
-		$idMatch, $data->period, '00:'.$data->time, $data->evt, 
+		$idMatch, $data->period, '00:' . $data->time, $data->evt,
 		$data->player, $data->number, $data->team, $data->cause, $idLigne[1]
 	));
 	$myBdd->CheckCardCumulation($data->player, $idMatch, $data->evt, $data->cause);
 	echo 'OK';
-
-} elseif($type == 'delete') {
+} elseif ($type == 'delete') {
 	$sql = "DELETE FROM kp_match_detail 
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);
