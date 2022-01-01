@@ -485,8 +485,7 @@ $(function () {
                 type: 'insert'
             },
             function (data) { // callback
-                //			$('#valid_evt').html('Valider');
-                if ($.isNumeric(data)) {
+                try {
                     avertissement(texte)
                     if (ligne_evt == 'Tir') {
                         $('#nb_tirs_' + ligne_equipe).text(parseInt($('#nb_tirs_' + ligne_equipe).text()) + 1)
@@ -498,7 +497,7 @@ $(function () {
                         $('#valid_evt').addClass('inactif')
                     } else {
                         // texteNom += ' (' + lang.Tir + ')';
-                        texteTR = '<tr id="ligne_' + data + '">'
+                        texteTR = '<tr id="ligne_' + data.id + '">'
                         texteChrono = '<td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td>'
                         texteBut = '<td class="list_evt">'
                         if (ligne_evt == 'But') {
@@ -575,7 +574,7 @@ $(function () {
                                 $('#list').append(texteTR + texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge + texteTR2)
                             }
                         }
-                        $('tr[id="ligne_' + data + '"]').attr('data-code', JSON.stringify(code_ligne))
+                        $('tr[id="ligne_' + data.id + '"]').attr('data-code', JSON.stringify(code_ligne))
                         $.post(
                             'v2/StatutPeriode.php', // Le fichier cible côté serveur.
                             { // variables
@@ -591,13 +590,13 @@ $(function () {
                             scrollTop: $("#tabs-2").offset().top
                         }, 200)
                     }
-                } else {
-                    custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention)
+                } catch (e) {
+                    custom_alert(lang.Action_impossible + '<br />' + e, lang.Attention)
                 }
                 theInEvent = false
 
             },
-            'text' // Format des données reçues.
+            'json' // Format des données reçues.
         )
 
     })
