@@ -32,7 +32,7 @@ if (!isset($data->number)) {
 $myBdd->AutorisationMatch($idMatch);
 
 if ($type == 'insert') {
-	$inserted_id = gen_uuid();
+	$inserted_id = str_replace('-', '', gen_uuid());
 	$sql = "INSERT INTO kp_match_detail 
 		SET Id = ?, Id_match = ?, Periode = ?, Temps = ?, Id_evt_match = ?, 
 		Competiteur = ?, Numero = ?, Equipe_A_B = ?, motif = ? ";
