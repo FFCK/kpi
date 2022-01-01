@@ -15,12 +15,17 @@ session_start();
 
 $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch', 0);
-// M1-00:00-V-A-186002-5
-// $data = trim(utyGetPost('ligne'));
-$data = json_decode(html_entity_decode(utyGetPost('ligne')));
 $type = trim(utyGetPost('type'));
 $idLigne = trim(utyGetPost('idLigne'));
 $idLigne = explode('_', $idLigne);
+// M1-00:00-V-A-186002-5
+$data = json_decode(html_entity_decode(utyGetPost('ligne')));
+if (!isset($data->player)) {
+	$data->player = null;
+}
+if (!isset($data->number)) {
+	$data->number = null;
+}
 // $data->number == '' ? $data->number = null : true;
 // var_dump($data);
 // Contrôle autorisation journée
