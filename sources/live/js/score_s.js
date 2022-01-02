@@ -19,21 +19,8 @@ function ParseCacheScore (jsonData) {
   var nbEvents = jsonData.event.length
   if (nbEvents > 0) {
     var lastId = jsonData.event[0].Id
-    // Evenement pas encore pris en compte et pas le tout premier existant au chargement de la page
-    if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && theContext.Match.GetIdEvent(rowMatch) != '-1') {
-      // Evenement déjà affiché précédemment (suite à suppression)
-      if ((theContext.Match.GetIdPrevEvent(rowMatch) == lastId)) {
-        if (nbEvents > 1) {
-          // Mémorisation de l'événement précédent
-          theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
-        }
-        return
-      }
-      if (nbEvents > 1) {
-        // Mémorisation de l'événement précédent
-        theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
-      }
-
+    // Evenement pas encore pris en compte
+    if ((theContext.Match.GetIdEvent(rowMatch) != lastId)) {
       var line
       if (jsonData.event[0].Equipe_A_B == 'A') {
         line = ImgNation48(theContext.Match.GetClub1(rowMatch))
@@ -71,22 +58,13 @@ function ParseCacheScore (jsonData) {
       document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
 
       const bandeau_goal = document.querySelector('#bandeau_goal')
+      bandeau_goal.style.display = 'none'
       bandeau_goal.style.display = 'block'
-      bandeau_goal.classList.remove('animate__fadeOutLeft')
       bandeau_goal.classList.add('animate__fadeInLeft')
-      setTimeout(function () {
-        bandeau_goal.classList.remove('animate__fadeInLeft')
-        bandeau_goal.classList.add('animate__fadeOutLeft')
-      }, 10000)
     }
     theContext.Match.SetIdEvent(rowMatch, lastId)
   }
-  // Réinitialisation du tout premier existant au chargement de la page
-  if (theContext.Match.GetIdEvent(rowMatch) === '-1') {
-    theContext.Match.SetIdEvent(rowMatch, '')
-  }
 }
-
 
 function ParseCacheChrono (jsonData) {
   return
