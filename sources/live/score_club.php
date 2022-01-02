@@ -110,7 +110,7 @@ class Score extends MyPage
         ?>
         <script type="text/javascript" src="./js/match.js?v=<?= NUM_VERSION ?>"></script>
         <script type="text/javascript" src="./js/voie_ax.js?v=<?= NUM_VERSION ?>"></script>
-        <script type="text/javascript" src="./js/score2.js?v=<?= NUM_VERSION ?>"></script>
+        <script type="text/javascript" src="./js/score_club.js?v=<?= NUM_VERSION ?>"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 Init(<?php echo "$event, $terrain, $speaker, $voie"; ?>)
