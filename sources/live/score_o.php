@@ -1,9 +1,6 @@
 <?php
 include_once('page.php');
 
-/**
- * Equipes de club
- */
 class Score extends MyPage
 {
   function Header()
@@ -18,7 +15,7 @@ class Score extends MyPage
 ?>
 
     <head>
-      <title>Score only (clubs)</title>
+      <title>Score only (nations)</title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="author" content="F.F.C.K.">
@@ -56,7 +53,7 @@ class Score extends MyPage
   ?>
     <!--<div id="match_horloge_etat"></div>-->
 
-    <div id="ban_score_club" class="container-fluid animate__animated animate__fadeInDown">
+    <div id="ban_score" class="container-fluid animate__animated animate__fadeInDown">
       <div id="bandeau_score">
         <div id="match_horloge"></div>
         <div id="match_periode"></div>
@@ -102,7 +99,7 @@ class Score extends MyPage
     ?>
     <script type="text/javascript" src="./js/match.js?v=<?= NUM_VERSION ?>"></script>
     <script type="text/javascript" src="./js/voie_ax.js?v=<?= NUM_VERSION ?>"></script>
-    <script type="text/javascript" src="./js/score2_u.js?v=<?= NUM_VERSION ?>"></script>
+    <script type="text/javascript" src="./js/score_o.js?v=<?= NUM_VERSION ?>"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function() {
         Init(<?php echo "$event, $terrain, $speaker, $voie"; ?>)

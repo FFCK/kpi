@@ -52,7 +52,6 @@ function RefreshHorloge () {
 }
 
 function ParseCacheScore (jsonData) {
-
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -85,18 +84,14 @@ function ParseCacheScore (jsonData) {
 	var nbEvents = jsonData.event.length
 	if (nbEvents > 0) {
 		var lastId = jsonData.event[0].Id
-		// Evenement déjà pris en compte
-		if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && (theContext.Match.GetIdEvent(rowMatch) >= 0)) {
+		// Evenement pas encore pris en compte et pas le tout premier existant au chargement de la page
+		if ((theContext.Match.GetIdEvent(rowMatch) != lastId) && theContext.Match.GetIdEvent(rowMatch) != '-1') {
 			// Evenement déjà affiché précédemment (suite à suppression)
-			if ((theContext.Match.GetIdPrevEvent(rowMatch) == lastId) && (theContext.Match.GetIdPrevEvent(rowMatch) >= 0)) {
+			if ((theContext.Match.GetIdPrevEvent(rowMatch) == lastId)) {
 				if (nbEvents > 1) {
 					// Mémorisation de l'événement précédent
 					theContext.Match.SetIdPrevEvent(rowMatch, jsonData.event[1].Id)
 				}
-				return
-				// Le tout premier détecté n'est pas affiché
-			} else if (theContext.Match.GetIdPrevEvent(rowMatch) == -1) {
-				theContext.Match.SetIdPrevEvent(rowMatch, 0)
 				return
 			}
 			if (nbEvents > 1) {
@@ -113,9 +108,6 @@ function ParseCacheScore (jsonData) {
 				line += '&nbsp;' + theContext.Match.GetEquipe2(rowMatch)
 			}
 			line += "&nbsp;<span>"
-			//			line  = GetImgEvtMatch(jsonData.event[0].Id_evt_match);
-			//			line += "&nbsp;";
-			//			line += GetLabelEvtMatch(jsonData.event[0].Id_evt_match);
 			document.querySelector('#match_event_line1').innerHTML = line
 
 			if (jsonData.event[0].Numero == 'undefi') {
@@ -162,10 +154,12 @@ function ParseCacheScore (jsonData) {
 				categorie.classList.remove('animate__fadeOutDown')
 				categorie.classList.add('animate__fadeInUp')
 			}, 6000)
-
 		}
-
 		theContext.Match.SetIdEvent(rowMatch, lastId)
+	}
+	// Réinitialisation du tout premier existant au chargement de la page
+	if (theContext.Match.GetIdEvent(rowMatch) === '-1') {
+		theContext.Match.SetIdEvent(rowMatch, '')
 	}
 }
 

@@ -80,17 +80,19 @@ jq(document).ready(function () {
                 jq('#anime-col').show()
                 break
             case 'score':
-            case 'score_u':
+            case 'score_o':
             case 'score_e':
-                jq('#match-col, #speaker-col').show()
+            case 'score_s':
+                jq('#match-col, #game_report, #speaker-col').show()
                 break
-            case 'score2':
-            case 'score2_u':
-            case 'score2_e':
-                jq('#match-col, #speaker-col').show()
+            case 'score_club':
+            case 'score_club_o':
+            case 'score_club_e':
+            case 'score_club_s':
+                jq('#match-col, #game_report, #speaker-col').show()
                 break
             case 'liveteams':
-                jq('#match-col, #speaker-col').show()
+                jq('#match-col, #game_report, #speaker-col').show()
                 break
             case 'multi_score':
                 jq('#speaker-col, #count-col').show()
@@ -190,8 +192,8 @@ jq(document).ready(function () {
                     + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
-            case 'score_u':
-                url = 'live/score_u.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+            case 'score_o':
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
                     + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
@@ -200,18 +202,28 @@ jq(document).ready(function () {
                     + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
-            case 'score2':
-                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+            case 'score_s':
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
                     + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
-            case 'score2_u':
-                url = 'live/score2_u.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+            case 'score_club':
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
                     + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
-            case 'score2_e':
-                url = 'live/score2_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+            case 'score_club_o':
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                    + '&speaker=' + jq('#speaker').val()
+                ChangeVoie(jq('#channel').val(), url, showUrl)
+                break
+            case 'score_club_e':
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                    + '&speaker=' + jq('#speaker').val()
+                ChangeVoie(jq('#channel').val(), url, showUrl)
+                break
+            case 'score_club_s':
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
                     + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
@@ -404,9 +416,15 @@ jq(document).ready(function () {
                 jq('#anime-col2').show()
                 break
             case 'score':
+            case 'score_o':
+            case 'score_e':
+            case 'score_s':
                 jq('#match-col2, #game_report2, #speaker-col2').show()
                 break
-            case 'score2':
+            case 'score_club':
+            case 'score_club_o':
+            case 'score_club_e':
+            case 'score_club_s':
                 jq('#match-col2, #game_report2, #speaker-col2').show()
                 break
             case 'liveteams':
@@ -496,8 +514,38 @@ jq(document).ready(function () {
                     + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
-            case 'score2':
-                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+            case 'score_o':
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&speaker=' + jq('#speaker2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'score_e':
+                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&speaker=' + jq('#speaker2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'score_s':
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&speaker=' + jq('#speaker2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'score_club':
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&speaker=' + jq('#speaker2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'score_club_o':
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&speaker=' + jq('#speaker2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'score_club_e':
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&speaker=' + jq('#speaker2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'score_club_s':
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
                     + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
@@ -666,9 +714,15 @@ jq(document).ready(function () {
                 jq('#anime-col3').show()
                 break
             case 'score':
+            case 'score_o':
+            case 'score_e':
+            case 'score_s':
                 jq('#match-col3, #game_report3, #speaker-col3').show()
                 break
-            case 'score2':
+            case 'score_club':
+            case 'score_club_o':
+            case 'score_club_e':
+            case 'score_club_s':
                 jq('#match-col3, #game_report3, #speaker-col3').show()
                 break
             case 'liveteams':
@@ -758,8 +812,38 @@ jq(document).ready(function () {
                     + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
-            case 'score2':
-                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+            case 'score_o':
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&speaker=' + jq('#speaker3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'score_e':
+                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&speaker=' + jq('#speaker3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'score_s':
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&speaker=' + jq('#speaker3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'score_club':
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&speaker=' + jq('#speaker3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'score_club_o':
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&speaker=' + jq('#speaker3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'score_club_e':
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&speaker=' + jq('#speaker3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'score_club_s':
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
                     + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
@@ -928,9 +1012,15 @@ jq(document).ready(function () {
                 jq('#anime-col4').show()
                 break
             case 'score':
+            case 'score_o':
+            case 'score_e':
+            case 'score_s':
                 jq('#match-col4, #game_report4, #speaker-col4').show()
                 break
-            case 'score2':
+            case 'score_club':
+            case 'score_club_o':
+            case 'score_club_e':
+            case 'score_club_s':
                 jq('#match-col4, #game_report4, #speaker-col4').show()
                 break
             case 'liveteams':
@@ -1020,8 +1110,38 @@ jq(document).ready(function () {
                     + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
-            case 'score2':
-                url = 'live/score2.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+            case 'score_o':
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&speaker=' + jq('#speaker4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'score_e':
+                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&speaker=' + jq('#speaker4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'score_s':
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&speaker=' + jq('#speaker4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'score_club':
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&speaker=' + jq('#speaker4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'score_club_o':
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&speaker=' + jq('#speaker4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'score_club_e':
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&speaker=' + jq('#speaker4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'score_club_s':
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
                     + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break

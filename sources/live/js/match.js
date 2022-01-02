@@ -18,8 +18,8 @@ function recordMatch (id) {
 	this.m_equipe2 = ''
 	this.m_club1 = ''
 	this.m_club2 = ''
-	this.m_id_event = 0
-	this.m_id_prev_event = -1
+	this.m_id_event = '-1'
+	this.m_id_prev_event = ''
 
 	this.m_score1 = 0
 	this.m_score2 = 0

@@ -15,7 +15,7 @@ class Score extends MyPage
 ?>
 
     <head>
-      <title>Score only (nations)</title>
+      <title>Game event (nations)</title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="author" content="F.F.C.K.">
@@ -51,35 +51,14 @@ class Score extends MyPage
   function Content()
   {
   ?>
-    <!--<div id="match_horloge_etat"></div>-->
 
-    <div id="ban_score" class="container-fluid animate__animated animate__fadeInDown">
-      <div id="bandeau_score">
-        <div id="match_horloge"></div>
-        <div id="match_periode"></div>
-
-        <div id="equipe1"></div>
-        <div id="equipe2"></div>
-
-        <div id="nation1"></div>
-        <div id="nation2"></div>
-
-        <div id="score1"></div>
-        <div id="score_separation">-</div>
-        <div id="score2"></div>
-
+    <div id="bandeau_goal" class="ban_goal_card_2 animate__animated">
+      <div id="goal_card"></div>
+      <div id="banner_goal_card" class="text-start">
+        <div id="match_event_line2" class="banner_line text-start"></div>
+        <div id="match_event_line1" class="banner_line text-start"></div>
       </div>
     </div>
-
-    <?php
-    if ($this->GetParam('speaker') == '1') {
-    ?>
-      <div id="lien_pdf"></div>
-      <div id="terrain" class="btn btn-secondary disabled"></div>
-    <?php
-    }
-    ?>
-    <div id="categorie" class="animate__animated animate__fadeInUp"></div>
 
   <?php
   }
@@ -99,7 +78,7 @@ class Score extends MyPage
     ?>
     <script type="text/javascript" src="./js/match.js?v=<?= NUM_VERSION ?>"></script>
     <script type="text/javascript" src="./js/voie_ax.js?v=<?= NUM_VERSION ?>"></script>
-    <script type="text/javascript" src="./js/score_u.js?v=<?= NUM_VERSION ?>"></script>
+    <script type="text/javascript" src="./js/score_s.js?v=<?= NUM_VERSION ?>"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function() {
         Init(<?php echo "$event, $terrain, $speaker, $voie"; ?>)
