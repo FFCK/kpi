@@ -1,0 +1,1 @@
+ALTER TABLE `kp_saison` ADD INDEX(`Etat`);
