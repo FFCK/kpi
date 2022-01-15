@@ -36,10 +36,11 @@ function GetEventsController($route, $params)
       FROM kp_journee j
       JOIN kp_competition c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison)
       JOIN kp_groupe g ON (c.Code_ref = g.Groupe)
+      JOIN kp_saison s ON (c.Code_saison = s.Code)
       WHERE c.Code_typeclt = 'CHPT'
       AND c.Publication = 'O'
       AND j.Publication = 'O'
-      AND c.Code_saison = YEAR(NOW())
+      AND s.Etat = 'A'
       ORDER BY g.section, g.ordre, c.Code, j.Date_debut, j.Id ";
   }
   $stmt = $myBdd->pdo->query($sql);
