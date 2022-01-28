@@ -1,16 +1,18 @@
 <template>
   <div class="container">
-    <div class="filters">
-      <div class="row">
-        <div class="col">
-          <i
-            role="button"
-            class="bi bi-caret-left-square-fill me-2 btn btn-secondary"
-            @click="changePage('Chart')"
-          />
+    <div class="filters mb-1">
+      <div class="input-group input-group-sm">
+        <div class="btn btn-outline-secondary" @click="changePage('Chart')">
+          <i class="bi bi-caret-left-square-fill" />
         </div>
-        <div class="col text-end">
-          <span class="btn btn-sm btn-secondary disabled">{{ version }}</span>
+        <input
+          type="text"
+          class="form-control text-center"
+          readonly
+          :value="$t('nav.About')"
+        />
+        <div class="btn btn-secondary disabled">
+          {{ version }}
         </div>
       </div>
     </div>

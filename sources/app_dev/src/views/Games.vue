@@ -1,65 +1,49 @@
 <template>
   <div class="container-fluid">
     <div class="filters">
-      <div class="row justify-content-between">
-        <div class="col-auto">
-          <div class="text-nowrap">
-            <i
-              role="button"
-              class="float-start bi bi-caret-left-square-fill me-2 btn btn-secondary"
-              @click="changePage('Home')"
-            />
-          </div>
+      <div class="input-group input-group-sm">
+        <div class="btn btn-outline-secondary" @click="changePage('Home')">
+          <i class="bi bi-caret-left-square-fill" />
         </div>
-        <div class="col text-center">
-          <div class="btn-group" role="group">
-            <button
-              class="btn btn-secondary text-nowrap"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#collapseFilters"
-              aria-expanded="false"
-              aria-controls="collapseFilters"
-            >
-              {{ $t("nav.Filters") }} <i class="bi bi-filter"></i>
-            </button>
-            <select
-              class="form-select"
-              aria-label="Date select"
-              v-model="fav_dates"
-              :placeholder="$t('Games.Dates')"
-              @change="changeFav"
-            >
-              <option value="">{{ $t("Games.AllDates") }}</option>
-              <option
-                v-for="(game_date, index) in game_dates"
-                :key="index"
-                :value="game_date"
-                >{{ $d(new Date(game_date), "short") }}</option
-              >
-              <option disabled>──────</option>
-              <option value="Today">{{ $t("Games.Today") }}</option>
-              <option value="Tomorow">{{ $t("Games.Tomorow") }}</option>
-              <option value="Prev">{{ $t("Games.Prev") }}</option>
-              <option value="Next">{{ $t("Games.Next") }}</option>
-            </select>
-            <button
-              v-show="visibleButton"
-              class="btn btn-secondary"
-              @click="loadGames"
-            >
-              <i class="bi bi-arrow-clockwise"></i>
-            </button>
-          </div>
-        </div>
-        <div class="col-auto text-end">
-          <div class="text-nowrap">
-            <i
-              role="button"
-              class="float-end bi bi-caret-right-square-fill ms-2 btn btn-secondary"
-              @click="changePage('Chart')"
-            />
-          </div>
+        <button
+          class="btn btn-secondary text-nowrap"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseFilters"
+          aria-expanded="false"
+          aria-controls="collapseFilters"
+        >
+          {{ $t("nav.Filters") }} <i class="bi bi-filter"></i>
+        </button>
+        <select
+          class="form-select"
+          aria-label="Date select"
+          v-model="fav_dates"
+          :placeholder="$t('Games.Dates')"
+          @change="changeFav"
+        >
+          <option value="">{{ $t("Games.AllDates") }}</option>
+          <option
+            v-for="(game_date, index) in game_dates"
+            :key="index"
+            :value="game_date"
+            >{{ $d(new Date(game_date), "short") }}</option
+          >
+          <option disabled>──────</option>
+          <option value="Today">{{ $t("Games.Today") }}</option>
+          <option value="Tomorow">{{ $t("Games.Tomorow") }}</option>
+          <option value="Prev">{{ $t("Games.Prev") }}</option>
+          <option value="Next">{{ $t("Games.Next") }}</option>
+        </select>
+        <button
+          :disabled="!visibleButton"
+          class="btn btn-secondary"
+          @click="loadGames"
+        >
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <div class="btn btn-outline-secondary" @click="changePage('Chart')">
+          <i class="bi bi-caret-right-square-fill" />
         </div>
       </div>
     </div>
@@ -429,6 +413,9 @@ export default {
       }
     },
     async loadGames () {
+      if (!this.visibleButton) {
+        return
+      }
       await this.getPrefs()
       await this.prefs
       if (!(await this.checkOnline())) {

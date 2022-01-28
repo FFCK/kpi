@@ -66,7 +66,6 @@ export default {
 
 .filters {
   margin-top: 62px;
-  margin-left: 10px;
   z-index: 99;
 }
 
