@@ -1,27 +1,25 @@
 <template>
   <div class="container-fluid">
-    <div class="filters">
-      <div class="row mb-1">
-        <div class="col">
-          <i
-            role="button"
-            class="bi bi-caret-left-square-fill me-2 btn btn-secondary"
-            @click="changePage('Games')"
-          />
+    <div class="filters mb-1">
+      <div class="input-group input-group-sm">
+        <div class="btn btn-outline-secondary" @click="changePage('Games')">
+          <i class="bi bi-caret-left-square-fill" />
         </div>
-        <div class="col text-end">
-          <div class="text-nowrap">
-            <i
-              v-show="visibleButton"
-              class="btn btn-secondary bi bi-arrow-clockwise"
-              @click="loadCharts"
-            />
-            <i
-              role="button"
-              class="float-end bi bi-caret-right-square-fill ms-2 btn btn-secondary"
-              @click="changePage('About')"
-            />
-          </div>
+        <input
+          type="text"
+          class="form-control text-center"
+          readonly
+          :value="$t('nav.Chart')"
+        />
+        <button
+          :disabled="!visibleButton"
+          class="btn btn-secondary"
+          @click="loadCharts"
+        >
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <div class="btn btn-outline-secondary" @click="changePage('About')">
+          <i class="bi bi-caret-right-square-fill" />
         </div>
       </div>
     </div>
