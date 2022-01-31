@@ -5,7 +5,7 @@ const dbPromise = _ => {
     throw new Error('Browser does not support IndexedDB')
   }
 
-  return openDB('kpi', 5, {
+  return openDB('kpi', 6, {
     // mise à jour de la structure de base en fonction de la version
     upgrade: (db, oldVersion, newVersion, transaction) => {
       switch (oldVersion) {
@@ -16,6 +16,10 @@ const dbPromise = _ => {
         case 4:
           upgradeDBfromV0toV4()
           upgradeDBfromV4toV5()
+          upgradeDBfromV5toV6()
+          break
+        case 5:
+          upgradeDBfromV5toV6()
           break
         default:
           console.error('unknown db version')
@@ -44,6 +48,10 @@ const dbPromise = _ => {
         db.createObjectStore('user', { keyPath: 'id' })
         db.createObjectStore('games', { keyPath: 'g_id' })
         db.createObjectStore('charts', { keyPath: 'code' })
+      }
+
+      function upgradeDBfromV5toV6 () {
+        db.createObjectStore('reports', { keyPath: 'g_id' })
       }
     }
   })

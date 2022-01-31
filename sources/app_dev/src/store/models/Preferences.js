@@ -24,7 +24,8 @@ export default class Preferences extends Model {
       scr_team_id: this.number(null).nullable(),
       scr_team_label: this.string(null).nullable(),
       scr_team_club: this.string(null).nullable(),
-      scr_team_logo: this.string(null).nullable()
+      scr_team_logo: this.string(null).nullable(),
+      current_game_id: this.number(null).nullable()
     }
   }
 }

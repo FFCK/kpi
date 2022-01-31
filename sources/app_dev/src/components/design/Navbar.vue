@@ -82,21 +82,18 @@
                   </router-link>
                 </li>
                 <li v-if="user" class="nav-item">
+                  <router-link to="/game_reports" class="nav-link text-nowrap">
+                    <i class="bi bi-clipboard" />
+                    {{ $t("nav.GameReports") }}
+                  </router-link>
+                </li>
+                <li v-if="user" class="nav-item">
                   <router-link
                     to="/stat_report"
                     class="nav-link text-nowrap disabled"
                   >
                     <i class="bi bi-clipboard-data" />
                     {{ $t("nav.StatReport") }}
-                  </router-link>
-                </li>
-                <li v-if="user" class="nav-item">
-                  <router-link
-                    to="/game_report"
-                    class="nav-link text-nowrap disabled"
-                  >
-                    <i class="bi bi-clipboard" />
-                    {{ $t("nav.GameReport") }}
                   </router-link>
                 </li>
               </ul>
