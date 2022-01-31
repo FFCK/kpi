@@ -21,13 +21,20 @@
       </div>
     </div>
 
-    <div v-if="user && authorized">
-      <div class="row container my-5">
+    <div class="container" v-if="user">
+      <div class="row my-5">
         <button
           class="btn btn-outline-dark btn-lg col-12 my-1"
           @click="changePage('Scrutineering')"
+          v-if="authorized"
         >
           {{ $t("nav.Scrutineering") }}
+        </button>
+        <button
+          class="btn btn-outline-dark btn-lg col-12 my-1"
+          @click="changePage('GameReports')"
+        >
+          {{ $t("nav.GameReports") }}
         </button>
         <button
           class="btn btn-outline-dark btn-lg col-12 my-1 disabled"
@@ -35,21 +42,15 @@
         >
           {{ $t("nav.StatReport") }}
         </button>
-        <button
-          class="btn btn-outline-dark btn-lg col-12 my-1 disabled"
-          @click="changePage('GameReport')"
-        >
-          {{ $t("nav.GameReport") }}
-        </button>
       </div>
     </div>
 
-    <div v-if="user && !authorized" class="text-center">
+    <!-- <div v-if="user && !authorized" class="text-center">
       <button class="btn btn-outline-dark btn-lg" @click="changePage('Home')">
         <span class="bi bi-box-arrow-left" />
         {{ $t("nav.ChangeEvent") }}
       </button>
-    </div>
+    </div> -->
 
     <div
       v-if="message"

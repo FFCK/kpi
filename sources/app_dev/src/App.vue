@@ -82,6 +82,7 @@ export default {
 .lcd {
   font-family: "LCD", Helvetica, Arial;
   min-width: 26px;
+  letter-spacing: 0.2rem;
 }
 
 .score {

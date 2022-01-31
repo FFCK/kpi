@@ -11,7 +11,7 @@
     "Games": "Matchs",
     "Ranking": "Classement",
     "Chart": "Progression",
-    "GameReport": "Feuille de marque",
+    "GameReports": "Feuilles de marque",
     "Stats": "Stats",
     "StatReport": "Stats du match",
     "Scrutineering": "Vérifications",
@@ -165,5 +165,16 @@
     "Safety": "Sécurité",
     "Technical": "Techn.",
     "Issues": "Problèmes"
+  },
+  "GameReports": {
+    "NewGame": "Nouveau match (hors ligne)",
+    "LoadGames": "Charger des matchs",
+    "ContinueGame": "Continuer un match",
+    "LoadGame": "Charger un match",
+    "GameId": "Identifiant du match",
+    "Load": "Charger",
+    "IncorrectId": "Numéro incorrect",
+    "Back": "Retour",
+    "BackToGame": "Retour au match"
   }
 }

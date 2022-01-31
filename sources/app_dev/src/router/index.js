@@ -39,9 +39,9 @@ const routes = [
     component: Logout
   },
   {
-    path: '/game_report',
-    name: 'GameReport',
-    component: () => import(/* webpackChunkName: "GameReport" */ '../views/GameReport.vue')
+    path: '/game_reports',
+    name: 'GameReports',
+    component: () => import(/* webpackChunkName: "GameReports" */ '../views/GameReports.vue')
   },
   {
     path: '/stat_report',
