@@ -9,7 +9,7 @@ $myBdd = new MyBdd();
 $equipe = (int) utyGetPost('equipe', 0);
 
 if (
-  utyGetSession('Profile', false) !== '1' ||
+  utyGetSession('Profile', false) > 2 ||
   utyGetSession('AuthModif', false) !== 'O' ||
   $equipe <= 0
 ) {
