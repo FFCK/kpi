@@ -147,8 +147,9 @@
                 margin: 1px 0;
             }
 			.chronoButton, .evtButton, .evtButton2 {width: 45%;}
-            #start_button, #run_button, #stop_button { width: 65%}
-            #raz_button { width: 25%}
+			.evtButton4 {width: 21%;}
+			#start_button, #run_button, #stop_button { width: 65%}
+			#raz_button { width: 25%}
 			
 			#raz_button {margin-left: 15px; }
 			.evtButton3 {width: 95%;}
