@@ -484,7 +484,8 @@ stop_time: <span id="stop_time_display"></span><br />
 									<!--<a id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?= $lang['Tir_non_cadre'] ?>"><?= $lang['Tir'] ?></a>-->
 									<a id="evt_jaune" data-evt="Carton jaune" data-code="J" class="fm_bouton evtButton"><img src="v2/carton_jaune.png" /></a>
 									<!--<a id="evt_arr" data-evt="Arret" data-code="A" class="fm_bouton evtButton" title="<?= $lang['Tir_contre_gardien'] ?>"><?= $lang['Tir_contre'] ?></a>-->
-									<a id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton"><img src="v2/carton_rouge.png" /></a>
+									<a id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton evtButton4"><img src="v2/carton_jaune_rouge.png" /></a>
+									<a id="evt_rouge2" data-evt="Carton rouge D" data-code="D" class="fm_bouton evtButton evtButton4"><img src="v2/carton_rouge_<?= $lang['D'] ?>.png" /></a>
 								</div>
 								<div id="zoneTemps">
 									<img id="time_moins60" class="plusmoins" src="../img/moins60.png">
@@ -606,7 +607,9 @@ stop_time: <span id="stop_time_display"></span><br />
 													$evt_temp .= '<img src="v2/carton_jaune.png">';
 												$evt_temp .= '</td><td class="list_evt">';
 												if ($row5["Id_evt_match"] == 'R')
-													$evt_temp .= '<img src="v2/carton_rouge.png">';
+													$evt_temp .= '<img src="v2/carton_jaune_rouge.png">';
+												if ($row5["Id_evt_match"] == 'D')
+													$evt_temp .= '<img src="v2/carton_rouge_' . $lang['D'] . '.png">';
 												$evt_temp .= '</td>';
 												if ($row5["Competiteur"]) {
 													$evt_temp .= '<td class="list_nom">' . $row5["Numero"] . $row5["Separatif"]
@@ -657,7 +660,9 @@ stop_time: <span id="stop_time_display"></span><br />
 													$evt_temp .= '<img src="v2/carton_jaune.png">';
 												$evt_temp .= '</td><td class="list_evt">';
 												if ($row5["Id_evt_match"] == 'R')
-													$evt_temp .= '<img src="v2/carton_rouge.png">';
+													$evt_temp .= '<img src="v2/carton_jaune_rouge.png">';
+												if ($row5["Id_evt_match"] == 'D')
+													$evt_temp .= '<img src="v2/carton_rouge_' . $lang['D'] . '.png">';
 												$evt_temp .= '</td>';
 											} else {
 												$evt_temp .= '<td colspan="5" class="list_evt_vide"></td>';
@@ -856,7 +861,11 @@ stop_time: <span id="stop_time_display"></span><br />
 							';
 								break;
 							case 'R':
-								$evt_temp_js = '$("#' . $evtEquipe . $row5['Competiteur'] . ' .c_evt").append("<img class=\'c_carton\' src=\'v2/carton_rouge.png\' />");
+								$evt_temp_js = '$("#' . $evtEquipe . $row5['Competiteur'] . ' .c_evt").append("<img class=\'c_carton\' src=\'v2/carton_jaune_rouge.png\' />");
+							';
+								break;
+							case 'D':
+								$evt_temp_js = '$("#' . $evtEquipe . $row5['Competiteur'] . ' .c_evt").append("<img class=\'c_carton\' src=\'v2/carton_rouge_' . $lang['D'] . '.png\' />");
 							';
 								break;
 							case 'T':

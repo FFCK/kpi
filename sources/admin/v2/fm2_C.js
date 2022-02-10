@@ -358,7 +358,11 @@ $(function () {
         $('.joueurs, .equipes').removeClass('actif')
         $(this).addClass('actif')
         if ($('.evtButton[class*="actif"]').attr('data-evt') !== undefined) {
-            if ($('.evtButton[class*="actif"]').data('code') == 'V' || $('.evtButton[class*="actif"]').data('code') == 'J' || $('.evtButton[class*="actif"]').data('code') == 'R') {
+            if ($('.evtButton[class*="actif"]').data('code') == 'V'
+                || $('.evtButton[class*="actif"]').data('code') == 'J'
+                || $('.evtButton[class*="actif"]').data('code') == 'R'
+                || $('.evtButton[class*="actif"]').data('code') == 'D'
+            ) {
                 $("#dialog_motif").dialog("open")
             } else {
                 $('#motif').val('')
@@ -378,7 +382,11 @@ $(function () {
         }
         $('#valid_evt').removeClass('inactif')
         if ($('.joueurs[class*="actif"]').attr('data-player') !== undefined || $('.equipes[class*="actif"]').attr('data-player') !== undefined) {
-            if ($(this).data('code') == 'V' || $(this).data('code') == 'J' || $(this).data('code') == 'R') {
+            if ($(this).data('code') == 'V'
+                || $(this).data('code') == 'J'
+                || $(this).data('code') == 'R'
+                || $(this).data('code') == 'D'
+            ) {
                 $("#dialog_motif").dialog("open")
             } else {
                 $('#motif').val('')
@@ -549,8 +557,20 @@ $(function () {
                         texteJaune += '</td>'
                         texteRouge = '<td class="list_evt">'
                         if (ligne_evt == 'Carton rouge') {
-                            texteRouge += '<img src="v2/carton_rouge.png" />'
-                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge.png" />')
+                            texteRouge += '<img src="v2/carton_jaune_rouge.png" />'
+                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune_rouge.png" />')
+                            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune_rouge.png"]').length
+                            if (nb_cartons >= 2) {
+                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune_rouge.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
+                            }
+                        }
+                        if (ligne_evt == 'Carton rouge D') {
+                            texteRouge += '<img src="v2/carton_rouge_' + lang.D + '.png" />'
+                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" />')
+                            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_rouge_' + lang.D + '.png"]').length
+                            if (nb_cartons >= 2) {
+                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
+                            }
                         }
                         texteRouge += '</td>'
                         texteVide = '<td colspan="5" class="list_evt_vide"></td>'
@@ -627,6 +647,7 @@ $(function () {
         $('.periode').removeClass('actif')
         $(this).addClass('actif') //Efface la ligne !
         code_ligne = JSON.parse($(this).attr('data-code'))
+        console.log(code_ligne)
         id_ligne = $(this).attr('id')
         ancienne_ligne = code_ligne
         $('#zoneTemps a').addClass('actif2')
@@ -714,7 +735,10 @@ $(function () {
                         $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_jaune.png"]').first().remove()
                     }
                     if (ancienne_ligne.evt == 'R') {
-                        $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_rouge.png"]').first().remove()
+                        $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_jaune_rouge.png"]').first().remove()
+                    }
+                    if (ancienne_ligne.evt == 'D') {
+                        $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_rouge_' + lang.D + '.png"]').first().remove()
                     }
                     $('tr[id="' + id_ligne + '"] td').remove()
 
@@ -776,8 +800,20 @@ $(function () {
                     texteJaune += '</td>'
                     texteRouge = '<td class="list_evt">'
                     if (ligne_evt == 'Carton rouge') {
-                        texteRouge += '<img src="v2/carton_rouge.png" />'
-                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge.png" />')
+                        texteRouge += '<img src="v2/carton_jaune_rouge.png" />'
+                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune_rouge.png" />')
+                        var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune_rouge.png"]').length
+                        if (nb_cartons >= 2) {
+                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune_rouge.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+                        }
+                    }
+                    if (ligne_evt == 'Carton rouge D') {
+                        texteRouge += '<img src="v2/carton_rouge_' + lang.D + '.png" />'
+                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" />')
+                        var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_rouge_' + lang.D + '.png"]').length
+                        if (nb_cartons >= 2) {
+                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+                        }
                     }
                     texteRouge += '</td>'
                     texteVide = '<td colspan="5" class="list_evt_vide"></td>'
@@ -854,7 +890,10 @@ $(function () {
                         $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_jaune.png"]').first().remove()
                     }
                     if (code_ligne.evt == 'R') {
-                        $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_rouge.png"]').first().remove()
+                        $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_jaune_rouge.png"]').first().remove()
+                    }
+                    if (code_ligne.evt == 'D') {
+                        $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_rouge_' + lang.D + '.png"]').first().remove()
                     }
                     $('tr[id="' + id_ligne + '"]').hide()
                     $('#reset_evt').click()

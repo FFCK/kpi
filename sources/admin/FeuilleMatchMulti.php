@@ -403,20 +403,23 @@ class FeuilleMatch extends MyPage
                         }
                         switch ($row5['Id_evt_match']) {
                             case 'B':
-                                $d[5] = 'X';
+                                $d[5] = 'x';
                                 $scoreDetailA++;
                                 if ($row5['Periode'] == 'M1') {
                                     $scoreMitempsA++;
                                 }
                                 break;
                             case 'V':
-                                $d[2] = 'X';
+                                $d[2] = 'x';
                                 break;
                             case 'J':
-                                $d[3] = 'X';
+                                $d[3] = 'x';
                                 break;
                             case 'R':
-                                $d[4] = 'X';
+                                $d[4] = 'x';
+                                break;
+                            case 'D':
+                                $d[4] = $lang['D'];
                                 break;
                         }
                     } else {
@@ -427,20 +430,23 @@ class FeuilleMatch extends MyPage
                         }
                         switch ($row5['Id_evt_match']) {
                             case 'B':
-                                $d[7] = 'X';
+                                $d[7] = 'x';
                                 $scoreDetailB++;
                                 if ($row5['Periode'] == 'M1') {
                                     $scoreMitempsB++;
                                 }
                                 break;
                             case 'V':
-                                $d[8] = 'X';
+                                $d[8] = 'x';
                                 break;
                             case 'J':
-                                $d[9] = 'X';
+                                $d[9] = 'x';
                                 break;
                             case 'R':
-                                $d[10] = 'X';
+                                $d[10] = 'x';
+                                break;
+                            case 'D':
+                                $d[10] = $lang['D'];
                                 break;
                         }
                     }
