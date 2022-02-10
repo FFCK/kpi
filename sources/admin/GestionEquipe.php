@@ -751,7 +751,7 @@ class GestionEquipe extends MyPageSecure
 			}
 
 			if ($Cmd == 'updateLogos') {
-				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->UpdateLogos() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->UpdateLogos() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 			}
 
 			if ($alertMessage == '') {
