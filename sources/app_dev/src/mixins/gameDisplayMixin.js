@@ -51,7 +51,7 @@ export default {
       const SelectedTeamName = event.target.innerText
       var elems = document.querySelectorAll('.team_name')
       elems.forEach((el) => {
-        if (el.textContent === SelectedTeamName) {
+        if (el.innerText === SelectedTeamName) {
           el.classList.add('bg-warning', 'text-dark')
         }
       })
@@ -61,6 +61,14 @@ export default {
       elems.forEach((el) => {
         el.classList.remove('bg-warning', 'text-dark')
       })
+    },
+    teamNameResize (name) {
+      if (name && name.length >= 20) {
+        return (
+          name.substring(0, 12) + name.substring(12).replace(/\s|-|_/, '<br>')
+        )
+      }
+      return name
     }
   }
 }

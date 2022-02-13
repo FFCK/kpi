@@ -108,7 +108,7 @@
                       game.g_score_a === 'F' ||
                       parseInt(game.g_score_a) <= parseInt(game.g_score_b)
                   }"
-                  v-html="showCode(game.t_a_label)"
+                  v-html="teamNameResize(showCode(game.t_a_label))"
                 />
                 <img
                   class="team_logo d-none d-sm-inline ms-1 mt-n1"
@@ -228,7 +228,7 @@
                       game.g_score_b === 'F' ||
                       parseInt(game.g_score_b) <= parseInt(game.g_score_a)
                   }"
-                  v-html="showCode(game.t_b_label)"
+                  v-html="teamNameResize(showCode(game.t_b_label))"
                 />
               </div>
               <div v-if="showRefs" class="d-md-block d-lg-none text-end refs">

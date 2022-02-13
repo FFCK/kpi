@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="container-fluid" v-if="showGame">
-      <div class="text-center">
+      <!-- <div class="text-center">
         <button class="btn btn-outline-dark my-1" @click="showGame = false">
           {{ $t("GameReports.Back") }}
         </button>
-      </div>
+      </div> -->
 
-      <game-report :current-game="currentGame" v-if="currentGame" />
+      <game-report
+        :current-game="currentGame"
+        v-if="currentGame"
+        @hide="showGame = false"
+      />
     </div>
     <div v-else>
       <title-component :text="$t('nav.GameReports')" />
@@ -160,9 +164,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-input:invalid {
-  border: red solid 3px;
-}
-</style>

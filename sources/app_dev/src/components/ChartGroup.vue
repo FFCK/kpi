@@ -44,7 +44,7 @@
               @mouseenter="teamHover"
               @mouseleave="teamOut"
             >
-              {{ team.t_label }}
+              <span v-html="teamNameResize(team.t_label)" />
             </span>
           </td>
           <td class="text-center">{{ team.t_pts / 100 }}</td>
