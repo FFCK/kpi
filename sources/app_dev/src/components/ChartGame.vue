@@ -20,11 +20,13 @@
                     looser: game.g_status !== 'END' || game.g_validation !== 'O'
                   }"
                   v-html="
-                    showCode(
-                      game.g_score_b === 'F' ||
-                        parseInt(game.g_score_a) >= parseInt(game.g_score_b)
-                        ? game.t_a_label
-                        : game.t_b_label
+                    teamNameResize(
+                      showCode(
+                        game.g_score_b === 'F' ||
+                          parseInt(game.g_score_a) >= parseInt(game.g_score_b)
+                          ? game.t_a_label
+                          : game.t_b_label
+                      )
                     )
                   "
                   @mouseenter="teamHover"
@@ -64,11 +66,13 @@
                     looser: true
                   }"
                   v-html="
-                    showCode(
-                      game.g_score_a !== 'F' &&
-                        parseInt(game.g_score_a) >= parseInt(game.g_score_b)
-                        ? game.t_b_label
-                        : game.t_a_label
+                    teamNameResize(
+                      showCode(
+                        game.g_score_a !== 'F' &&
+                          parseInt(game.g_score_a) >= parseInt(game.g_score_b)
+                          ? game.t_b_label
+                          : game.t_a_label
+                      )
                     )
                   "
                   @mouseenter="teamHover"

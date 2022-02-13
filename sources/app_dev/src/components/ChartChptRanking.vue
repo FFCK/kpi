@@ -36,7 +36,7 @@
               :src="`${baseUrl}/img/${rank.t_logo}`"
               alt=""
             />
-            {{ rank.t_label }}
+            <span v-html="teamNameResize(rank.t_label)" />
           </td>
           <td class="text-center">{{ rank.t_pts }}</td>
           <td class="text-center">{{ rank.t_pld }}</td>
