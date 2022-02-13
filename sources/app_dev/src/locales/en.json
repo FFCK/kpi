@@ -175,6 +175,8 @@
     "Load": "Load",
     "IncorrectId": "Incorrect Id",
     "Back": "Back",
-    "BackToGame": "Back to game"
+    "BackToGame": "Back to game",
+    "GameReport": "Game report",
+    "Game": "Game"
   }
 }

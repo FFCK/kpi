@@ -175,6 +175,8 @@
     "Load": "Charger",
     "IncorrectId": "Numéro incorrect",
     "Back": "Retour",
-    "BackToGame": "Retour au match"
+    "BackToGame": "Retour au match",
+    "GameReport": "Feuille de marque",
+    "Game": "Match"
   }
 }

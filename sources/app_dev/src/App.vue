@@ -53,6 +53,10 @@ export default {
   color: #2c3e50;
 }
 
+input:invalid {
+  border: red solid 3px;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.3s ease-out;

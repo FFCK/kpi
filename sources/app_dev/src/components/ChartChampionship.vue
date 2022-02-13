@@ -26,7 +26,7 @@
             }"
             @mouseenter="teamHover"
             @mouseleave="teamOut"
-            v-html="showCode(game.t_a_label)"
+            v-html="teamNameResize(showCode(game.t_a_label))"
           />
         </div>
         <div class="col-2 text-center text-nowrap">
@@ -97,7 +97,7 @@
             }"
             @mouseenter="teamHover"
             @mouseleave="teamOut"
-            v-html="showCode(game.t_b_label)"
+            v-html="teamNameResize(showCode(game.t_b_label))"
           />
         </div>
       </div>
