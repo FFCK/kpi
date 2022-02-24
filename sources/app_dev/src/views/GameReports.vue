@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import TitleComponent from '@/components/design/Title'
+import TitleComponent from '@/components/design/Title.vue'
 import GameReportList from '@/components/GameReportList.vue'
 import Games from '@/store/models/Games'
 import Status from '@/store/models/Status'

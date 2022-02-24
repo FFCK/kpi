@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import TitleComponent from '@/components/design/Title'
+import TitleComponent from '@/components/design/Title.vue'
 import ComingSoon from '@/components/design/ComingSoon.vue'
 
 export default {

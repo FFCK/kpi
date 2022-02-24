@@ -17,12 +17,13 @@
 </template>
 
 <script>
-import Navbar from '@/components/design/Navbar'
-import AddToHomeScreen from '@/components/design/AddToHomeScreen'
-import Update from '@/components/design/Update'
-import Message from '@/components/design/Message'
+import Navbar from '@/components/design/Navbar.vue'
+import AddToHomeScreen from '@/components/design/AddToHomeScreen.vue'
+import Update from '@/components/design/Update.vue'
+import Message from '@/components/design/Message.vue'
 
 export default {
+  name: 'App',
   components: {
     Navbar,
     AddToHomeScreen,
@@ -34,10 +35,10 @@ export default {
 
 <style lang="scss">
 @import "./assets/styles/custom.scss";
-@import "~bootstrap";
-@import "~bootstrap-icons/font/bootstrap-icons.css";
-@import "~element-plus/lib/theme-chalk/index.css";
-@import "~element-plus/lib/theme-chalk/display.css";
+@import "../node_modules/bootstrap";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+@import "../node_modules/element-plus/theme-chalk/index.css";
+@import "../node_modules/element-plus/theme-chalk/display.css";
 
 @import "./assets/styles/app.scss";
 

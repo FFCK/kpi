@@ -1,5 +1,5 @@
 // vue.config.js
-process.env.VUE_APP_VERSION = require('./package.json').version
+import.meta.env.VITE_VERSION = require('./package.json').version
 
 /**
  * @type {import('@vue/cli-service').ProjectOptions}

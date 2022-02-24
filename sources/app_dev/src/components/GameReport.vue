@@ -39,7 +39,7 @@
       >
         <span
           class="badge bg-light text-dark text-nowrap lcd border border-dark"
-          style="opacity: .8"
+          style="opacity: 0.8"
           >5</span
         >
       </div>
@@ -52,7 +52,7 @@
       >
         <span
           class="badge bg-light text-dark text-nowrap lcd border border-dark"
-          style="opacity: .8"
+          style="opacity: 0.8"
           >2</span
         >
       </div>
@@ -69,7 +69,13 @@
           aria-controls="offcanvasTeamA"
         >
           <span
-            class="position-absolute top-50 start-0 translate-middle-y bi bi-caret-right-fill"
+            class="
+              position-absolute
+              top-50
+              start-0
+              translate-middle-y
+              bi bi-caret-right-fill
+            "
           />
           <span v-html="teamNameResize(currentGame.t_a_label)" />
         </div>
@@ -84,7 +90,13 @@
         >
           <span v-html="teamNameResize(currentGame.t_b_label)" />
           <span
-            class="position-absolute top-50 end-0 translate-middle-y bi bi-caret-left-fill"
+            class="
+              position-absolute
+              top-50
+              end-0
+              translate-middle-y
+              bi bi-caret-left-fill
+            "
           />
         </div>
       </div>
@@ -141,11 +153,17 @@
           <div class="badge d-block position-relative" :style="colorA">
             <div
               class="badge bg-light text-dark text-nowrap border border-dark"
-              style="opacity: .8"
+              style="opacity: 0.8"
               v-html="teamNameResize(currentGame.t_a_label)"
             />
             <span
-              class="position-absolute top-50 end-0 translate-middle-y bi bi-caret-left-fill"
+              class="
+                position-absolute
+                top-50
+                end-0
+                translate-middle-y
+                bi bi-caret-left-fill
+              "
             />
           </div>
         </h1>
@@ -181,11 +199,17 @@
           <div class="badge d-block position-relative" :style="colorB">
             <div
               class="badge bg-light text-dark text-nowrap border border-dark"
-              style="opacity: .8"
+              style="opacity: 0.8"
               v-html="teamNameResize(currentGame.t_b_label)"
             />
             <span
-              class="position-absolute top-50 start-0 translate-middle-y bi bi-caret-right-fill"
+              class="
+                position-absolute
+                top-50
+                start-0
+                translate-middle-y
+                bi bi-caret-right-fill
+              "
             />
           </div>
         </h1>
@@ -275,11 +299,17 @@
           <div class="badge d-block position-relative" :style="colorB">
             <div
               class="badge bg-light text-dark text-nowrap border border-dark"
-              style="opacity: .8"
+              style="opacity: 0.8"
               v-html="teamNameResize(currentGame.t_b_label)"
             />
             <span
-              class="position-absolute top-50 start-0 translate-middle-y bi bi-caret-right-fill"
+              class="
+                position-absolute
+                top-50
+                start-0
+                translate-middle-y
+                bi bi-caret-right-fill
+              "
             />
           </div>
         </h1>
@@ -306,7 +336,7 @@
 </template>
 
 <script>
-import ReportTimer from '@/components/ReportTimer'
+import ReportTimer from '@/components/ReportTimer.vue'
 import gameDisplayMixin from '@/mixins/gameDisplayMixin'
 
 export default {

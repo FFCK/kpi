@@ -1,11 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Home from '@/views/Home'
-import Event from '@/views/Event'
-import Games from '@/views/Games'
-import Chart from '@/views/Chart'
-import Login from '@/views/Login'
-import Logout from '@/views/Logout'
-import About from '@/views/About'
+import Home from '@/views/Home.vue'
+import Event from '@/views/Event.vue'
+import Games from '@/views/Games.vue'
+import Chart from '@/views/Chart.vue'
+import Login from '@/views/Login.vue'
+import Logout from '@/views/Logout.vue'
+import About from '@/views/About.vue'
 
 const routes = [
   {
@@ -41,17 +41,17 @@ const routes = [
   {
     path: '/game_reports',
     name: 'GameReports',
-    component: () => import(/* webpackChunkName: "GameReports" */ '../views/GameReports.vue')
+    component: () => import('../views/GameReports.vue')
   },
   {
     path: '/stat_report',
     name: 'StatReport',
-    component: () => import(/* webpackChunkName: "StatReport" */ '../views/StatReport.vue')
+    component: () => import('../views/StatReport.vue')
   },
   {
     path: '/scrutineering',
     name: 'Scrutineering',
-    component: () => import(/* webpackChunkName: "Scrutineering" */ '../views/Scrutineering.vue')
+    component: () => import('../views/Scrutineering.vue')
   },
   {
     path: '/about',

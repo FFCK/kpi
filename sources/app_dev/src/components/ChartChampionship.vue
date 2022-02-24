@@ -22,7 +22,7 @@
                 game.g_status !== 'END' ||
                 game.g_validation !== 'O' ||
                 game.g_score_a === 'F' ||
-                parseInt(game.g_score_a) <= parseInt(game.g_score_b)
+                parseInt(game.g_score_a) <= parseInt(game.g_score_b),
             }"
             @mouseenter="teamHover"
             @mouseleave="teamOut"
@@ -48,7 +48,7 @@
                 game.g_validation !== 'O' ||
                 game.g_score_a === 'F' ||
                 parseInt(game.g_score_a) <= parseInt(game.g_score_b),
-              'text-danger': game.g_validation !== 'O'
+              'text-danger': game.g_validation !== 'O',
             }"
           >
             {{ game.g_score_a.replace("?", "") || "&nbsp;" }}
@@ -71,7 +71,7 @@
                 game.g_validation !== 'O' ||
                 game.g_score_b === 'F' ||
                 parseInt(game.g_score_b) <= parseInt(game.g_score_a),
-              'text-danger': game.g_validation !== 'O'
+              'text-danger': game.g_validation !== 'O',
             }"
           >
             {{ game.g_score_b.replace("?", "") || "&nbsp;" }}
@@ -93,7 +93,7 @@
                 game.g_status !== 'END' ||
                 game.g_validation !== 'O' ||
                 game.g_score_b === 'F' ||
-                parseInt(game.g_score_b) <= parseInt(game.g_score_a)
+                parseInt(game.g_score_b) <= parseInt(game.g_score_a),
             }"
             @mouseenter="teamHover"
             @mouseleave="teamOut"

@@ -54,7 +54,7 @@ import logoutMixin from '@/mixins/logoutMixin'
 import prefsMixin from '@/mixins/prefsMixin'
 import userMixin from '@/mixins/userMixin'
 import EventSelector from '@/components/EventSelector.vue'
-import TitleComponent from '@/components/design/Title'
+import TitleComponent from '@/components/design/Title.vue'
 
 export default {
   name: 'Home',
@@ -65,7 +65,7 @@ export default {
   mixins: [logoutMixin, prefsMixin, userMixin],
   computed: {
     version () {
-      return 'v' + process.env.VUE_APP_VERSION
+      return 'v' + import.meta.env.VITE_VERSION
     }
   },
   data () {

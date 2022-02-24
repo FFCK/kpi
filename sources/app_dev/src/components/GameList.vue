@@ -23,7 +23,11 @@
               <b>{{ $t("Games.Cat") }} | {{ $t("Games.Group") }}</b>
             </th>
             <th
-              class="align-middle text-center text-nowrap d-none d-lg-table-cell"
+              class="
+                align-middle
+                text-center text-nowrap
+                d-none d-lg-table-cell
+              "
             >
               <span class="btn btn-sm btn-light team_name me-1">{{
                 $t("Games.Time")
@@ -56,12 +60,23 @@
 
           <tr v-for="game in game_group.filtered" :key="game.g_id">
             <td
-              class="align-middle text-secondary small ps-1 d-none d-lg-table-cell"
+              class="
+                align-middle
+                text-secondary
+                small
+                ps-1
+                d-none d-lg-table-cell
+              "
             >
               <i>#{{ game.g_number }}</i>
             </td>
             <td
-              class="align-middle text-start text-nowrap d-none d-lg-table-cell mincontent"
+              class="
+                align-middle
+                text-start text-nowrap
+                d-none d-lg-table-cell
+                mincontent
+              "
             >
               <span>
                 {{ game.c_code }}
@@ -69,7 +84,12 @@
               </span>
             </td>
             <td
-              class="align-middle text-center text-nowrap d-none d-lg-table-cell mincontent"
+              class="
+                align-middle
+                text-center text-nowrap
+                d-none d-lg-table-cell
+                mincontent
+              "
             >
               <span class="btn btn-light team_name me-1">{{
                 game.g_time
@@ -82,7 +102,13 @@
             </td>
             <td class="text-end align-top">
               <div
-                class="d-md-block d-lg-none text-start align-top text-nowrap cat_group"
+                class="
+                  d-md-block d-lg-none
+                  text-start
+                  align-top
+                  text-nowrap
+                  cat_group
+                "
               >
                 <span>
                   {{ game.c_code }}
@@ -106,7 +132,7 @@
                       game.g_status !== 'END' ||
                       game.g_validation !== 'O' ||
                       game.g_score_a === 'F' ||
-                      parseInt(game.g_score_a) <= parseInt(game.g_score_b)
+                      parseInt(game.g_score_a) <= parseInt(game.g_score_b),
                   }"
                   v-html="teamNameResize(showCode(game.t_a_label))"
                 />
@@ -145,7 +171,7 @@
                         game.g_validation !== 'O' ||
                         game.g_score_a === 'F' ||
                         parseInt(game.g_score_a) <= parseInt(game.g_score_b),
-                      'text-danger': game.g_validation !== 'O'
+                      'text-danger': game.g_validation !== 'O',
                     }"
                     >{{ game.g_score_a }}</span
                   >
@@ -167,7 +193,7 @@
                         game.g_validation !== 'O' ||
                         game.g_score_b === 'F' ||
                         parseInt(game.g_score_b) <= parseInt(game.g_score_a),
-                      'text-danger': game.g_validation !== 'O'
+                      'text-danger': game.g_validation !== 'O',
                     }"
                     >{{ game.g_score_b }}</span
                   >
@@ -177,7 +203,7 @@
                     badge: true,
                     'bg-secondary': game.g_status === 'ATT',
                     'bg-primary': game.g_status === 'ON',
-                    'bg-success': game.g_status === 'END'
+                    'bg-success': game.g_status === 'END',
                   }"
                 >
                   {{
@@ -226,7 +252,7 @@
                       game.g_status !== 'END' ||
                       game.g_validation !== 'O' ||
                       game.g_score_b === 'F' ||
-                      parseInt(game.g_score_b) <= parseInt(game.g_score_a)
+                      parseInt(game.g_score_b) <= parseInt(game.g_score_a),
                   }"
                   v-html="teamNameResize(showCode(game.t_b_label))"
                 />
@@ -281,7 +307,7 @@ export default {
   },
   data () {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL
+      baseUrl: import.meta.env.VITE_BASE_URL
     }
   },
   mounted () {}

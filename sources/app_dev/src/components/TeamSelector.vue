@@ -80,7 +80,7 @@ export default {
   mixins: [prefsMixin, userMixin, statusMixin],
   data () {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
+      baseUrl: import.meta.env.VITE_BASE_URL,
       showSelector: false,
       teamSelected: 0,
       changeButton: false

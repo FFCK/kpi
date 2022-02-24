@@ -92,9 +92,7 @@
       {{ $t("About.ContactMe") }}
       <a href="mailto:contact@kayak-polo.info">contact@kayak-polo.info</a>
     </p>
-    <p class="text-end mt-4 me-5">
-      Laurent.
-    </p>
+    <p class="text-end mt-4 me-5">Laurent.</p>
   </div>
 </template>
 
@@ -114,7 +112,7 @@ export default {
   },
   computed: {
     version () {
-      return 'v' + process.env.VUE_APP_VERSION
+      return 'v' + import.meta.env.VITE_VERSION
     }
   },
   data () {

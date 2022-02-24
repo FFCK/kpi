@@ -2,7 +2,7 @@ LCD FONT FAMILY
 
 Version 1.1
 
-Copyright © 1977, 1999 by Samuel Reynolds. All rights reserved.
+Copyright ï¿½ 1977, 1999 by Samuel Reynolds. All rights reserved.
 Revised 30 October 1999
 
 Samuel Reynolds can be contacted at <reynol@primenet.com>.

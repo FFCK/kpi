@@ -34,7 +34,7 @@
               'btn-sm': true,
               'btn-primary': eventMode === 'std',
               active: eventMode === 'std',
-              'btn-outline-primary': eventMode !== 'std'
+              'btn-outline-primary': eventMode !== 'std',
             }"
             @click="changeEventMode('std')"
           >
@@ -47,7 +47,7 @@
               'btn-sm': true,
               'btn-primary': eventMode === 'champ',
               active: eventMode === 'champ',
-              'btn-outline-primary': eventMode !== 'champ'
+              'btn-outline-primary': eventMode !== 'champ',
             }"
             @click="changeEventMode('champ')"
           >
@@ -108,7 +108,7 @@ export default {
   mixins: [prefsMixin, userMixin, statusMixin],
   data () {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
+      baseUrl: import.meta.env.VITE_BASE_URL,
       showSelector: false,
       eventSelected: 0,
       changeButton: false

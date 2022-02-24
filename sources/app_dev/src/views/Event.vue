@@ -16,7 +16,7 @@ export default {
   mixins: [prefsMixin, statusMixin],
   data () {
     return {
-      baseUrl: process.env.VUE_APP_BASE_URL,
+      baseUrl: import.meta.env.VITE_BASE_URL,
       eventSelected: 0
     }
   },

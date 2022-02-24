@@ -3,7 +3,7 @@ import Status from '@/store/models/Status'
 import router from '@/router/index.js'
 
 const api = axios.create({
-  baseURL: process.env.VUE_APP_API_BASE_URL || 'http://localhost:8087/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8087/api',
   withCredentials: true,
   headers: {
     Accept: 'application/json',
