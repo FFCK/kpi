@@ -11,9 +11,9 @@ $saison = (int) $myBdd->RealEscapeString(trim(utyGetGet('saison')));
 $competitions = explode(",", $myBdd->RealEscapeString(trim(utyGetGet('competitions'))));
 $in  = str_repeat('?,', count($competitions) - 1) . '?';
 $all = (int) $myBdd->RealEscapeString(trim(utyGetGet('all', 2)));
-if($saison > 2000 && $competitions != '') {
+if ($saison > 2000 && $competitions != '') {
     $arrayStats = [];
-    switch($all){
+    switch ($all) {
         case 0: // seulement les joueurs avec des stats
             $sql = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, 
                 a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
@@ -21,6 +21,7 @@ if($saison > 2000 && $competitions != '') {
                 SUM(IF(b.Id_evt_match = 'V', 1, 0)) Vert,
                 SUM(IF(b.Id_evt_match = 'J', 1, 0)) Jaune,
                 SUM(IF(b.Id_evt_match = 'R', 1, 0)) Rouge,
+                SUM(IF(b.Id_evt_match = 'D', 1, 0)) Rouge_definitif,
                 SUM(IF(b.Id_evt_match = 'T', 1, 0)) Tirs,
                 SUM(IF(b.Id_evt_match = 'A', 1, 0)) Arrets
                 FROM kp_licence a, kp_match_detail b, kp_match c, kp_journee d, kp_competition_equipe f 
@@ -33,8 +34,10 @@ if($saison > 2000 && $competitions != '') {
                 AND d.Code_saison = ?
                 GROUP BY a.Matric 
                 ORDER BY Buts DESC, a.Nom ";
-            $entete = array('Competition', 'Licence', 'Name', 'First name', 'Gender', 'Number', 'Team', 
-            'Goals', 'GC', 'YC', 'RC', 'Shots', 'Stops');
+            $entete = array(
+                'Competition', 'Licence', 'Name', 'First name', 'Gender', 'Number', 'Team',
+                'Goals', 'GC', 'YC', 'RC', 'Shots', 'Stops'
+            );
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array_merge($competitions, [$saison]));
             break;
@@ -45,6 +48,7 @@ if($saison > 2000 && $competitions != '') {
                 SUM(IF(b.Id_evt_match = 'V', 1, 0)) Vert,
                 SUM(IF(b.Id_evt_match = 'J', 1, 0)) Jaune,
                 SUM(IF(b.Id_evt_match = 'R', 1, 0)) Rouge,
+                SUM(IF(b.Id_evt_match = 'D', 1, 0)) Rouge_definitif,
                 SUM(IF(b.Id_evt_match = 'T', 1, 0)) Tirs,
                 SUM(IF(b.Id_evt_match = 'A', 1, 0)) Arrets
                 FROM kp_competition_equipe_joueur j LEFT OUTER JOIN kp_licence a ON j.Matric = a.Matric 
@@ -61,8 +65,10 @@ if($saison > 2000 && $competitions != '') {
                 AND d.Code_saison = ?
                 GROUP BY a.Matric 
                 ORDER BY Buts DESC, a.Nom ";
-            $entete = array('Competition', 'Licence', 'Name', 'First name', 'Gender', 'Number', 'Team', 
-            'Goals', 'GC', 'YC', 'RC', 'Shots', 'Stops');
+            $entete = array(
+                'Competition', 'Licence', 'Name', 'First name', 'Gender', 'Number', 'Team',
+                'Goals', 'GC', 'YC', 'RC', 'Shots', 'Stops'
+            );
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array_merge($competitions, [$saison]));
             break;
@@ -77,8 +83,10 @@ if($saison > 2000 && $competitions != '') {
                 AND f.Code_saison = ?
                 GROUP BY a.Matric 
                 ORDER BY Equipe ASC, j.Numero, a.Nom, a.Prenom ";
-            $entete = array('Competition', 'Team', 'Number', 'Captain', 'Name', 'First name', 
-                'Birthdate', 'Gender', 'Licence', 'ICF#');
+            $entete = array(
+                'Competition', 'Team', 'Number', 'Captain', 'Name', 'First name',
+                'Birthdate', 'Gender', 'Licence', 'ICF#'
+            );
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array_merge($competitions, [$saison]));
             break;
@@ -86,7 +94,7 @@ if($saison > 2000 && $competitions != '') {
             echo "Incorrect parameters (example: api_stats.php?saison=20xx&competitions=CODE1,CODE2&all=0&format=json )";
             die();
     }
-    
+
     $arrayStats = $result->fetchAll(PDO::FETCH_ASSOC);
 
     if ($format == 'json') {
@@ -101,7 +109,6 @@ if($saison > 2000 && $competitions != '') {
         }
         fclose($out);
     }
-
 } else {
     echo "Incorrect parameters (example: api_stats.php?saison=20xx&competitions=CODE1,CODE2&all=0 )";
 }
