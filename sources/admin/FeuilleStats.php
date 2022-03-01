@@ -171,7 +171,7 @@ class FeuilleStats extends MyPage
                     AND d.Code_saison = ? 
                     AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY a.Matric 
-                    ORDER BY Rouge DESC, Jaune DESC, Vert DESC, Equipe, a.Nom 
+                    ORDER BY Rouge_definitif DESC, Rouge DESC, Jaune DESC, Vert DESC, Equipe, a.Nom 
                     LIMIT 0,$nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge($Compets, [$codeSaison]));
@@ -208,7 +208,7 @@ class FeuilleStats extends MyPage
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
                     AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY Equipe 
-                    ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Equipe 
+                    ORDER BY Rouge_definitif DESC, Rouge Desc, Jaune Desc, Vert Desc, Equipe 
                     LIMIT 0,$nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge($Compets, [$codeSaison]));
@@ -241,7 +241,7 @@ class FeuilleStats extends MyPage
                     AND f.Id = IF(b.Equipe_A_B='A', c.Id_equipeA, c.Id_equipeB) 
                     AND b.Id_evt_match IN ('B','V','J','R','D') 
                     GROUP BY Code_competition 
-                    ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Code_competition 
+                    ORDER BY Rouge_definitif DESC, Rouge Desc, Jaune Desc, Vert Desc, Code_competition 
                     LIMIT 0,$nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge($Compets, [$codeSaison]));

@@ -89,6 +89,7 @@
   	              <th>{#Vert#}</th>
   	              <th>{#Jaune#}</th>
   	              <th>{#Rouge#}</th>
+  	              <th>{#Rouge_definitif#}</th>
 	              {elseif $AfficheStat == 'CartonsEquipe'}
   	              <th>#</th>
   	              <th>{#Comp#}.</th>
@@ -96,6 +97,7 @@
   	              <th>{#Vert#}</th>
   	              <th>{#Jaune#}</th>
   	              <th>{#Rouge#}</th>
+  	              <th>{#Rouge_definitif#}</th>
 	              {elseif $AfficheStat == 'CartonsCompetition'}
   	              <th>#</th>
   	              <th>{#Comp#}.</th>
@@ -103,6 +105,7 @@
   	              <th>{#Vert#}</th>
   	              <th>{#Jaune#}</th>
   	              <th>{#Rouge#}</th>
+  	              <th>{#Rouge_definitif#}</th>
 	              {elseif $AfficheStat == 'Fairplay'}
   	              <th>#</th>
   	              <th>{#Comp#}.</th>
@@ -266,6 +269,7 @@
     	              <td>{$arrayCartons[i].Vert}</td>
     	              <td>{$arrayCartons[i].Jaune}</td>
     	              <td>{$arrayCartons[i].Rouge}</td>
+    	              <td>{$arrayCartons[i].Rouge_definitif}</td>
     	            </tr>
   	            {/section}
 	            {elseif $AfficheStat == 'CartonsEquipe'}
@@ -277,6 +281,7 @@
     	              <td>{$arrayCartonsEquipe[i].Vert}</td>
     	              <td>{$arrayCartonsEquipe[i].Jaune}</td>
     	              <td>{$arrayCartonsEquipe[i].Rouge}</td>
+    	              <td>{$arrayCartonsEquipe[i].Rouge_definitif}</td>
     	            </tr>
   	            {/section}
 	            {elseif $AfficheStat == 'CartonsCompetition'}
@@ -288,6 +293,7 @@
     	              <td>{$arrayCartonsCompetition[i].Vert}</td>
     	              <td>{$arrayCartonsCompetition[i].Jaune}</td>
     	              <td>{$arrayCartonsCompetition[i].Rouge}</td>
+    	              <td>{$arrayCartonsCompetition[i].Rouge_definitif}</td>
     	            </tr>
   	            {/section}
 	            {elseif $AfficheStat == 'Fairplay'}
