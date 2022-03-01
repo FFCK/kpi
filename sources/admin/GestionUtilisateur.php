@@ -470,8 +470,7 @@ class GestionUtilisateur extends MyPageSecure
 				$message_texte .= "\n\n" . $message_complementaire;
 			}
 			$message_texte .= "\n\n" . 'A bientôt.';
-			$message_texte .= "\n\n" . 'Laurent,';
-			$message_texte .= "\n" . 'Administrateur.';
+			$message_texte .= "\n\n" . 'L\'équipe KPI.';
 			$message_texte .= "\n" . '---------------------------------------';
 
 			//GENERE LA FRONTIERE DU MAIL ENTRE TEXTE ET HTML 
@@ -528,8 +527,7 @@ class GestionUtilisateur extends MyPageSecure
 			$message_texte .= "\n" . 'Envoi pièce jointe : ' . $plusPJ;
 			$message_texte .= "\n\n" . 'Modification effectuée par : ' . ucwords(strtolower(utyGetSession('userName')));
 			$message_texte .= "\n\n" . 'A bientôt.';
-			$message_texte .= "\n\n" . 'Laurent,';
-			$message_texte .= "\n" . 'Administrateur.';
+			$message_texte .= "\n\n" . 'L\'équipe KPI.';
 			$message_texte .= "\n" . '---------------------------------------';
 			$email_admin = 'contact@kayak-polo.info';
 			//ENVOI
