@@ -1142,11 +1142,11 @@ class MyBdd
 	// Si vert ou jaune : calculer les cumuls 
 	function CheckCardCumulation($matric, $idMatch, $card, $motif)
 	{
-		$cards = ['V', 'J', 'R'];
+		$cards = ['V', 'J', 'R', 'D'];
 		if (!in_array($card, $cards) || $matric == '') {
 			return;
 		}
-		$card_colors = ['V' => 'Vert', 'J' => 'Jaune', 'R' => 'Rouge'];
+		$card_colors = ['V' => 'Vert', 'J' => 'Jaune', 'R' => 'Rouge', 'D' => 'Rouge_definitif'];
 		$saison = $this->GetActiveSaison();
 		$headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
 		$msg2 = "";
@@ -1168,14 +1168,14 @@ class MyBdd
 			INNER JOIN kp_licence lc ON (md.Competiteur = lc.Matric) 
 			WHERE md.Competiteur = ? 
 			AND j.Code_saison = ? 
-			AND md.Id_evt_match IN ('V','J','R')  
+			AND md.Id_evt_match IN ('V','J','R','D')  
 			AND (
 				j.Code_competition LIKE 'N%' 
 				OR j.Code_competition LIKE 'CF%' 
 				-- OR j.Code_competition LIKE 'M%' 
 				)
 			GROUP BY Id_evt_match 
-			ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R')";
+			ORDER BY FIELD(Id_evt_match, 'V', 'J', 'R', 'D')";
 		$result = $this->pdo->prepare($sql);
 		$result->execute(array($idMatch, $idMatch, $matric, $saison));
 		if ($result->rowCount() == 0) {
@@ -1255,6 +1255,20 @@ class MyBdd
 					$msg = $msg1
 						. $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric . ")\r\n"
 						. "   vient de faire l'objet d'un carton rouge sur le match $idMatch (" . $array['R']['compet'] . "),\r\n"
+						. "   et cumule les cartons suivants en $saison :"
+						. $msg2 . $msg3;
+					$fp = fopen("../../commun/log_cards.txt", "a");
+					fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
+					fclose($fp);
+					// Envoi du mail
+					mail($destinataires, "[KPI] Alerte carton rouge $compet", $msg, $headers);
+				}
+				break;
+			case 'D':
+				if (isset($array['D']['nb_total']) && $array['D']['nb_total'] >= 1) {
+					$msg = $msg1
+						. $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric . ")\r\n"
+						. "   vient de faire l'objet d'un carton rouge définitif sur le match $idMatch (" . $array['R']['compet'] . "),\r\n"
 						. "   et cumule les cartons suivants en $saison :"
 						. $msg2 . $msg3;
 					$fp = fopen("../../commun/log_cards.txt", "a");

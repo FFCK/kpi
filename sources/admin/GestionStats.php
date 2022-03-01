@@ -287,7 +287,8 @@ class GestionStats extends MyPageSecure
                     a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
-                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
+                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
+                    SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif 
                     FROM kp_licence a, kp_match_detail b, kp_match c, 
                     kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
@@ -298,9 +299,9 @@ class GestionStats extends MyPageSecure
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY a.Matric 
-                    ORDER BY Rouge DESC, Jaune DESC, Vert DESC, Equipe, a.Nom 
+                    ORDER BY Rouge_definitif DESC, Rouge DESC, Jaune DESC, Vert DESC, Equipe, a.Nom 
                     LIMIT 0,$nbLignes ";
                 $sql_total .= '<br><br>' . $sql;
                 $result = $myBdd->pdo->prepare($sql);
@@ -316,7 +317,8 @@ class GestionStats extends MyPageSecure
                         'Equipe' => $row['Equipe'],
                         'Vert' => $row['Vert'],
                         'Jaune' => $row['Jaune'],
-                        'Rouge' => $row['Rouge']
+                        'Rouge' => $row['Rouge'],
+                        'Rouge_definitif' => $row['Rouge_definitif']
                     ));
                 }
                 $this->m_tpl->assign('arrayCartons', $arrayStats);
@@ -325,7 +327,8 @@ class GestionStats extends MyPageSecure
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
-                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
+                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
+                    SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif 
                     FROM kp_match_detail b, kp_match c, kp_journee d, 
                     kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
@@ -335,9 +338,9 @@ class GestionStats extends MyPageSecure
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY Equipe 
-                    ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Equipe 
+                    ORDER BY Rouge_definitif DESC, Rouge Desc, Jaune Desc, Vert Desc, Equipe 
                     LIMIT 0,$nbLignes ";
                 $sql_total .= '<br><br>' . $sql;
                 $result = $myBdd->pdo->prepare($sql);
@@ -348,7 +351,8 @@ class GestionStats extends MyPageSecure
                         'Equipe' => $row['Equipe'],
                         'Vert' => $row['Vert'],
                         'Jaune' => $row['Jaune'],
-                        'Rouge' => $row['Rouge']
+                        'Rouge' => $row['Rouge'],
+                        'Rouge_definitif' => $row['Rouge_definitif']
                     ));
                 }
                 $this->m_tpl->assign('arrayCartonsEquipe', $arrayStats);
@@ -358,7 +362,8 @@ class GestionStats extends MyPageSecure
                     SUM(IF(b.Id_evt_match='B',1,0)) Buts, 
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
-                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
+                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
+                    SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif 
                     FROM kp_match_detail b, kp_match c, kp_journee d, 
                     kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
@@ -368,9 +373,9 @@ class GestionStats extends MyPageSecure
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A', c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('B','V','J','R') 
+                    AND b.Id_evt_match IN ('B','V','J','R','D') 
                     GROUP BY Code_competition 
-                    ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Code_competition 
+                    ORDER BY Rouge_definitif DESC, Rouge Desc, Jaune Desc, Vert Desc, Code_competition 
                     LIMIT 0,$nbLignes ";
                 $sql_total .= '<br><br>' . $sql;
                 $result = $myBdd->pdo->prepare($sql);
@@ -381,7 +386,8 @@ class GestionStats extends MyPageSecure
                         'Buts' => $row['Buts'],
                         'Vert' => $row['Vert'],
                         'Jaune' => $row['Jaune'],
-                        'Rouge' => $row['Rouge']
+                        'Rouge' => $row['Rouge'],
+                        'Rouge_definitif' => $row['Rouge_definitif']
                     ));
                 }
                 $this->m_tpl->assign('arrayCartonsCompetition', $arrayStats);
@@ -390,7 +396,7 @@ class GestionStats extends MyPageSecure
                 $sql = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, 
                     a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
-                        IF(b.Id_evt_match='R',4,0)))) Fairplay 
+                        IF(b.Id_evt_match='R' OR b.Id_evt_match='D',4,0)))) Fairplay 
                     FROM kp_licence a, kp_match_detail b, 
                     kp_match c, kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
@@ -401,7 +407,7 @@ class GestionStats extends MyPageSecure
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY a.Matric 
                     ORDER BY Fairplay Desc, a.Nom 
                     LIMIT 0,$nbLignes ";
@@ -425,7 +431,7 @@ class GestionStats extends MyPageSecure
             case 'FairplayEquipe':
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
-                        IF(b.Id_evt_match='R',4,0)))) Fairplay 
+                        IF(b.Id_evt_match='R' OR b.Id_evt_match='D',4,0)))) Fairplay 
                     FROM kp_match_detail b, kp_match c, kp_journee d, 
                     kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
@@ -435,7 +441,7 @@ class GestionStats extends MyPageSecure
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY Equipe 
                     ORDER BY Fairplay Desc, Equipe 
                     LIMIT 0,$nbLignes ";
