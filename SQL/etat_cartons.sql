@@ -18,7 +18,8 @@ ORDER BY ce.Libelle, FIELD(cej.Capitaine, 'E', 'A', 'X'), cej.Numero, cej.Nom, c
 SELECT ce.Libelle, cej.Capitaine Statut, cej.Matric, cej.Numero, cej.Nom, cej.Prenom,
     SUM(IF(md.Id_evt_match='V', 1, 0)) Vert, 
     SUM(IF(md.Id_evt_match='J', 1, 0)) Jaune, 
-    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge 
+    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge, 
+    SUM(IF(md.Id_evt_match='D', 1, 0)) Rouge_definitif 
 FROM gickp_Competitions_Equipes_Joueurs cej
 JOIN gickp_Competitions_Equipes ce ON (ce.Id = cej.Id_equipe)
 JOIN gickp_Matchs m ON (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)
@@ -31,7 +32,8 @@ ORDER BY ce.Libelle, FIELD(cej.Capitaine, 'E', 'A', 'X'), cej.Numero, cej.Nom, c
 SELECT ce.Libelle, cej.Capitaine Statut, cej.Matric, cej.Numero, cej.Nom, cej.Prenom,
     SUM(IF(md.Id_evt_match='V', 1, 0)) Vert, 
     SUM(IF(md.Id_evt_match='J', 1, 0)) Jaune, 
-    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge 
+    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge, 
+    SUM(IF(md.Id_evt_match='D', 1, 0)) Rouge_definitif 
 FROM gickp_Competitions_Equipes_Joueurs cej
 JOIN gickp_Competitions_Equipes ce ON (ce.Id = cej.Id_equipe)
 JOIN gickp_Matchs m ON (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)
