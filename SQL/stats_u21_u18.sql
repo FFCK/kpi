@@ -5,7 +5,8 @@ SELECT lc.Naissance, mj.Matric Licence, lc.Sexe, lc.Nom, lc.Prenom, c.Libelle Cl
     SUM(IF(md.Id_evt_match='B', 1, 0)) Buts, 
     SUM(IF(md.Id_evt_match='V', 1, 0)) Vert, 
     SUM(IF(md.Id_evt_match='J', 1, 0)) Jaune, 
-    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge 
+    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge, 
+    SUM(IF(md.Id_evt_match='D', 1, 0)) Rouge_definitif 
 FROM gickp_Matchs_Joueurs mj
 JOIN gickp_Liste_Coureur lc ON (mj.Matric = lc.Matric)
 JOIN gickp_Club c ON (lc.Numero_club = c.Code)
@@ -33,7 +34,8 @@ SELECT lc.Naissance, mj.Matric Licence, lc.Sexe, lc.Nom, lc.Prenom, c.Libelle Cl
     SUM(IF(md.Id_evt_match='B', 1, 0)) Buts, 
     SUM(IF(md.Id_evt_match='V', 1, 0)) Vert, 
     SUM(IF(md.Id_evt_match='J', 1, 0)) Jaune, 
-    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge 
+    SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge, 
+    SUM(IF(md.Id_evt_match='D', 1, 0)) Rouge_definitif 
 FROM gickp_Matchs_Joueurs mj
 JOIN gickp_Liste_Coureur lc ON (mj.Matric = lc.Matric)
 JOIN gickp_Club c ON (lc.Numero_club = c.Code)
