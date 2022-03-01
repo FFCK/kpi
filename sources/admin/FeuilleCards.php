@@ -96,7 +96,8 @@ class FeuilleCards extends MyPage
         $sql = "SELECT ce.Libelle, cej.Capitaine Statut, cej.Matric, cej.Numero, cej.Nom, cej.Prenom,
                 SUM(IF(md.Id_evt_match='V', 1, 0)) Vert, 
                 SUM(IF(md.Id_evt_match='J', 1, 0)) Jaune, 
-                SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge 
+                SUM(IF(md.Id_evt_match='R', 1, 0)) Rouge, 
+                SUM(IF(md.Id_evt_match='D', 1, 0)) Rouge_definitif 
             FROM kp_competition_equipe_joueur cej
             JOIN kp_competition_equipe ce ON (ce.Id = cej.Id_equipe)
             JOIN kp_match m ON (ce.Id = m.Id_equipeA OR ce.Id = m.Id_equipeB)
@@ -115,46 +116,50 @@ class FeuilleCards extends MyPage
         $pdf->Cell(90, 5, $lang['Situation_au'] . $dateprint, 0, 1, 'R');
 
 
-        $pdf->Cell(78, 5, '', 1, 0, 'C');
-        $pdf->Cell(24, 5, $lang['Cumul_saison'], 1, 0, 'C');
-        $pdf->Cell(20, 5, '', 'TBL', 0, 'C');
+        $pdf->Cell(74, 5, '', 1, 0, 'C');
+        $pdf->Cell(32, 5, $lang['Cumul_saison'], 1, 0, 'C');
+        $pdf->Cell(16, 5, '', 'TBL', 0, 'C');
         $pdf->Cell(68, 5, $lang['Journee'] . ' :', 'TBR', 1, 'L');
 
         $pdf->SetFont('Arial', 'I', 6);
         $pdf->Cell(8, 4, '-', 1, 0, 'C');
-        $pdf->Cell(70, 4, $lang['Exemple'], 1, 0, 'C');
+        $pdf->Cell(66, 4, $lang['Exemple'], 1, 0, 'C');
         $pdf->SetFillColor(170, 255, 170);
         $pdf->Cell(8, 4, '2', 1, 0, 'C', 1);
         $pdf->SetFillColor(255, 255, 170);
         $pdf->Cell(8, 4, '1', 1, 0, 'C', 1);
         $pdf->SetFillColor(255, 170, 170);
         $pdf->Cell(8, 4, '', 1, 0, 'C', 1);
-        $pdf->Cell(40, 4, '', 1, 0, 'L');
+        $pdf->Cell(8, 4, '', 1, 0, 'C', 1);
+        $pdf->Cell(36, 4, '', 1, 0, 'L');
         $pdf->SetFillColor(170, 255, 170);
-        $pdf->Cell(16, 4, 'I I I', 1, 0, 'L', 1);
+        $pdf->Cell(12, 4, 'I I I', 1, 0, 'L', 1);
         $pdf->SetFillColor(255, 255, 170);
-        $pdf->Cell(16, 4, 'I', 1, 0, 'L', 1);
+        $pdf->Cell(12, 4, 'I', 1, 0, 'L', 1);
         $pdf->SetFillColor(255, 170, 170);
-        $pdf->Cell(16, 4, '', 1, 1, 'L', 1);
+        $pdf->Cell(12, 4, '', 1, 0, 'L', 1);
+        $pdf->Cell(12, 4, '', 1, 1, 'L', 1);
 
         while ($row = $result->fetch()) {
             if ($equipe != $row['Libelle']) {
                 $pdf->Ln(6);
                 $pdf->SetFont('Arial', 'B', 10);
-                $pdf->Cell(78, 5, $row['Libelle'], 1, 0, 'C');
+                $pdf->Cell(74, 5, $row['Libelle'], 1, 0, 'C');
                 $pdf->SetFillColor(170, 255, 170);
                 $pdf->Cell(8, 5, $lang['V'], 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 255, 170);
                 $pdf->Cell(8, 5, $lang['J'], 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 170, 170);
                 $pdf->Cell(8, 5, $lang['R'], 1, 0, 'C', 1);
-                $pdf->Cell(40, 5, 'Notes', 1, 0, 'C');
+                $pdf->Cell(8, 5, $lang['RD'], 1, 0, 'C', 1);
+                $pdf->Cell(36, 5, 'Notes', 1, 0, 'C');
                 $pdf->SetFillColor(170, 255, 170);
-                $pdf->Cell(16, 5, $lang['V'], 1, 0, 'C', 1);
+                $pdf->Cell(12, 5, $lang['V'], 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 255, 170);
-                $pdf->Cell(16, 5, $lang['J'], 1, 0, 'C', 1);
+                $pdf->Cell(12, 5, $lang['J'], 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 170, 170);
-                $pdf->Cell(16, 5, $lang['R'], 1, 1, 'C', 1);
+                $pdf->Cell(12, 5, $lang['R'], 1, 0, 'C', 1);
+                $pdf->Cell(12, 5, $lang['RD'], 1, 1, 'C', 1);
             }
 
             if ($row['Vert'] == 0) {
@@ -168,20 +173,22 @@ class FeuilleCards extends MyPage
             }
             $pdf->SetFont('Arial', 'I', 8);
             $pdf->Cell(8, 4, $row['Statut'], 1, 0, 'C');
-            $pdf->Cell(70, 4, $row['Numero'] . ' - ' . mb_strtoupper($row['Nom']) . ' ' . mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"), 1, 0, 'L');
+            $pdf->Cell(66, 4, $row['Numero'] . ' - ' . mb_strtoupper($row['Nom']) . ' ' . mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8"), 1, 0, 'L');
             $pdf->SetFillColor(170, 255, 170);
             $pdf->Cell(8, 4, $row['Vert'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 255, 170);
             $pdf->Cell(8, 4, $row['Jaune'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 170, 170);
             $pdf->Cell(8, 4, $row['Rouge'], 1, 0, 'C', 1);
-            $pdf->Cell(40, 4, '', 1, 0, 'L');
+            $pdf->Cell(8, 4, $row['Rouge_definitif'], 1, 0, 'C', 1);
+            $pdf->Cell(36, 4, '', 1, 0, 'L');
             $pdf->SetFillColor(170, 255, 170);
-            $pdf->Cell(16, 4, '', 1, 0, 'L', 1);
+            $pdf->Cell(12, 4, '', 1, 0, 'L', 1);
             $pdf->SetFillColor(255, 255, 170);
-            $pdf->Cell(16, 4, '', 1, 0, 'L', 1);
+            $pdf->Cell(12, 4, '', 1, 0, 'L', 1);
             $pdf->SetFillColor(255, 170, 170);
-            $pdf->Cell(16, 4, '', 1, 1, 'L', 1);
+            $pdf->Cell(12, 4, '', 1, 0, 'L', 1);
+            $pdf->Cell(12, 4, '', 1, 1, 'L', 1);
 
             $equipe = $row['Libelle'];
         }

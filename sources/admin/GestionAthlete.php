@@ -6,39 +6,39 @@ include_once('../commun/MyTools.php');
 
 // Gestion Athlete
 
-class GestionAthlete extends MyPageSecure	 
-{	
-	function Load()
-	{
-		$myBdd = new MyBdd();
-		
-		$Athlete = utyGetSession('Athlete', '');
-		$Athlete = utyGetPost('Athlete', $Athlete);
-		$Athlete = utyGetGet('Athlete', $Athlete);
-		$this->m_tpl->assign('Athlete', $Athlete);
-                
-		$codeSaison = $myBdd->GetActiveSaison();
+class GestionAthlete extends MyPageSecure
+{
+    function Load()
+    {
+        $myBdd = new MyBdd();
+
+        $Athlete = utyGetSession('Athlete', '');
+        $Athlete = utyGetPost('Athlete', $Athlete);
+        $Athlete = utyGetGet('Athlete', $Athlete);
+        $this->m_tpl->assign('Athlete', $Athlete);
+
+        $codeSaison = $myBdd->GetActiveSaison();
         $SaisonAthlete = utyGetSession('SaisonAthlete', $codeSaison);
         $SaisonAthlete = utyGetPost('SaisonAthlete', $SaisonAthlete);
-		$this->m_tpl->assign('SaisonAthlete', $SaisonAthlete);
+        $this->m_tpl->assign('SaisonAthlete', $SaisonAthlete);
 
         // Saisons	
         $arraySaison = array();
         $sql = "SELECT Code 
             FROM kp_saison 
             WHERE Code > '1900' 
-            ORDER BY Code DESC ";	 
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute();
-		while ($row = $result->fetch()) {
-			array_push($arraySaison, $row);
-		}
-		$this->m_tpl->assign('arraySaison', $arraySaison);
+            ORDER BY Code DESC ";
+        $result = $myBdd->pdo->prepare($sql);
+        $result->execute();
+        while ($row = $result->fetch()) {
+            array_push($arraySaison, $row);
+        }
+        $this->m_tpl->assign('arraySaison', $arraySaison);
 
-		// Chargement des Informations relatives à l'athlète
-		if ($Athlete != '') {
-			// Données générales
-			$sql = "SELECT c.*, cl.Libelle nomclub, dep.Libelle nomcd, reg.Libelle nomcr, 
+        // Chargement des Informations relatives à l'athlète
+        if ($Athlete != '') {
+            // Données générales
+            $sql = "SELECT c.*, cl.Libelle nomclub, dep.Libelle nomcd, reg.Libelle nomcr, 
                 s.Date date_surclassement 
                 FROM kp_club cl, kp_cd dep, kp_cr reg, kp_licence c 
                 LEFT OUTER JOIN kp_surclassement s 
@@ -49,49 +49,49 @@ class GestionAthlete extends MyPageSecure
                 AND c.Matric = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($SaisonAthlete, $Athlete));
-			if ($result->rowCount() != 1) {
+            if ($result->rowCount() != 1) {
                 return;
             }
             $row = $result->fetch();
             $row['Nom'] = mb_strtoupper($row['Nom']);
-            $row['Prenom'] = mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8");        
+            $row['Prenom'] = mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8");
             if ($_SESSION['lang'] == 'fr') {
                 $row['date_surclassement'] = utyDateUsToFr($row['date_surclassement']);
             }
-			$this->m_tpl->assign('Courreur', $row);
-			$this->m_tpl->assign('Athlete_id', $row['Nom'].' '.$row['Prenom']);
-			// Arbitre
+            $this->m_tpl->assign('Courreur', $row);
+            $this->m_tpl->assign('Athlete_id', $row['Nom'] . ' ' . $row['Prenom']);
+            // Arbitre
             $sql = "SELECT * FROM kp_arbitre 
                 WHERE Matric = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($Athlete));
-			if ($result->rowCount() == 1) {
+            if ($result->rowCount() == 1) {
                 $row = $result->fetch();
-				switch ($row['arbitre']) {
-					case 'Int':
-						$row['arbitre']='INTERNATIONAL';
-						break;
-					case 'Nat':
-						$row['arbitre']='NATIONAL';
-						break;
-					case 'Reg':
-						$row['arbitre']='REGIONAL';
-						break;
-					case 'OTM':
-						$_SESSION['lang'] == 'en' ? $row['arbitre'] = 'Game official' : $row['arbitre'] = 'Officiel table de marque';
-						break;
-					case 'JO':
-						$_SESSION['lang']== 'en' ? $row['arbitre'] = 'Young official' : $row['arbitre'] = 'Jeune officiel';
-						break;
-					default :
-						$row['arbitre']='-';
-						break;
-				}
-				$this->m_tpl->assign('Arbitre', $row);
-			}
-			// Titulaire
-			$Titulaire = array();
-			$sql = "SELECT cej.*, ce.*, cej.Numero Num 
+                switch ($row['arbitre']) {
+                    case 'Int':
+                        $row['arbitre'] = 'INTERNATIONAL';
+                        break;
+                    case 'Nat':
+                        $row['arbitre'] = 'NATIONAL';
+                        break;
+                    case 'Reg':
+                        $row['arbitre'] = 'REGIONAL';
+                        break;
+                    case 'OTM':
+                        $_SESSION['lang'] == 'en' ? $row['arbitre'] = 'Game official' : $row['arbitre'] = 'Officiel table de marque';
+                        break;
+                    case 'JO':
+                        $_SESSION['lang'] == 'en' ? $row['arbitre'] = 'Young official' : $row['arbitre'] = 'Jeune officiel';
+                        break;
+                    default:
+                        $row['arbitre'] = '-';
+                        break;
+                }
+                $this->m_tpl->assign('Arbitre', $row);
+            }
+            // Titulaire
+            $Titulaire = array();
+            $sql = "SELECT cej.*, ce.*, cej.Numero Num 
                 FROM kp_competition_equipe_joueur cej, kp_competition_equipe ce 
                 WHERE cej.Matric = ? 
                 AND cej.Id_equipe = ce.Id 
@@ -100,14 +100,14 @@ class GestionAthlete extends MyPageSecure
                 ORDER BY ce.Code_compet ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($Athlete, $SaisonAthlete));
-			while ($row = $result->fetch()) {
-				array_push($Titulaire, $row);
-			}
-			$this->m_tpl->assign('Titulaire', $Titulaire);
+            while ($row = $result->fetch()) {
+                array_push($Titulaire, $row);
+            }
+            $this->m_tpl->assign('Titulaire', $Titulaire);
 
-			// Arbitrages
-			$Arbitrages = array();
-			$sql = "SELECT m.*, j.*, m.id Identifiant, 
+            // Arbitrages
+            $Arbitrages = array();
+            $sql = "SELECT m.*, j.*, m.id Identifiant, 
                 IF(m.Matric_arbitre_principal = :Athlete,'Prin','') Prin, 
                 IF(m.Matric_arbitre_secondaire = :Athlete,'Sec','') Sec 
                 FROM kp_match m, kp_journee j 
@@ -118,7 +118,7 @@ class GestionAthlete extends MyPageSecure
                 ORDER BY m.Date_match DESC, m.Heure_match DESC ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array(':Athlete' => $Athlete, ':SaisonAthlete' => $SaisonAthlete));
-			while ($row = $result->fetch()) {
+            while ($row = $result->fetch()) {
                 if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
                 } else {
@@ -130,11 +130,11 @@ class GestionAthlete extends MyPageSecure
                     $row['Date_match'] = substr($row['Date_match'], 5, 5);
                 }
                 array_push($Arbitrages, $row);
-			}
-			$this->m_tpl->assign('Arbitrages', $Arbitrages);
+            }
+            $this->m_tpl->assign('Arbitrages', $Arbitrages);
 
-			// Table de marque
-			$OTM = array();
+            // Table de marque
+            $OTM = array();
             $sql = "SELECT m.*, j.*, m.id Identifiant, 
                 IF(m.Secretaire LIKE :Athlete,'Sec','') Sec, 
                 IF(m.Chronometre LIKE :Athlete,'Chrono','') Chrono, 
@@ -150,9 +150,9 @@ class GestionAthlete extends MyPageSecure
                 AND j.Code_saison = :SaisonAthlete 
                 ORDER BY m.Date_match DESC, m.Heure_match DESC ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array(':Athlete' => '%('.$Athlete.')%', ':SaisonAthlete' => $SaisonAthlete));
-			while ($row = $result->fetch()) {
-				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
+            $result->execute(array(':Athlete' => '%(' . $Athlete . ')%', ':SaisonAthlete' => $SaisonAthlete));
+            while ($row = $result->fetch()) {
+                if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
                 } else {
                     $row['ScoreOK'] = 'N';
@@ -163,17 +163,18 @@ class GestionAthlete extends MyPageSecure
                     $row['Date_match'] = substr($row['Date_match'], 5, 5);
                 }
                 array_push($OTM, $row);
-			}
-			$this->m_tpl->assign('OTM', $OTM);
+            }
+            $this->m_tpl->assign('OTM', $OTM);
 
-			// Joueur
-			$Joueur = array();
-			$sql = "SELECT mj.*, m.*, m.id Identifiant, j.*, mj.Numero Num, ceA.Libelle eqA, 
+            // Joueur
+            $Joueur = array();
+            $sql = "SELECT mj.*, m.*, m.id Identifiant, j.*, mj.Numero Num, ceA.Libelle eqA, 
                 ceB.Libelle eqB, 
                 SUM(IF(b.Id_evt_match='B',1,0)) But, 
                 SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                 SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
                 SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
+                SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif, 
                 SUM(IF(b.Id_evt_match='T',1,0)) Tir, 
                 SUM(IF(b.Id_evt_match='A',1,0)) Arret 
                 FROM kp_match m, kp_journee j, kp_competition_equipe ceA, 
@@ -190,8 +191,8 @@ class GestionAthlete extends MyPageSecure
                 ORDER BY m.Date_match DESC, m.Heure_match DESC ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array(':Athlete' => $Athlete, ':SaisonAthlete' => $SaisonAthlete));
-			while ($row = $result->fetch()) {
-				if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
+            while ($row = $result->fetch()) {
+                if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
                 } else {
                     $row['ScoreOK'] = 'N';
@@ -202,13 +203,13 @@ class GestionAthlete extends MyPageSecure
                     $row['Date_match'] = substr($row['Date_match'], 5, 5);
                 }
                 array_push($Joueur, $row);
-			}
-			$this->m_tpl->assign('Joueur', $Joueur);
-		}
-	}
-	
-	function Update()
-	{
+            }
+            $this->m_tpl->assign('Joueur', $Joueur);
+        }
+    }
+
+    function Update()
+    {
         $myBdd = new MyBdd();
         $update_matric = utyGetPost('update_matric');
         if ($update_matric < 2000000) {
@@ -225,18 +226,20 @@ class GestionAthlete extends MyPageSecure
         $update_club = trim(utyGetPost('update_club'));
         $update_cd = trim(utyGetPost('update_cd'));
         $update_cr = trim(utyGetPost('update_cr'));
-        
-        
-		try {  
-			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$myBdd->pdo->beginTransaction();
+
+
+        try {
+            $myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $myBdd->pdo->beginTransaction();
 
             $sql = "UPDATE kp_licence 
                 SET Origine = ?, Nom = ?, 
                 Prenom = ?, Sexe = ?, 
                 Naissance = ? ";
-            $arrayQuery = array($update_saison, $update_nom, $update_prenom, 
-                $update_sexe, $update_naissance);
+            $arrayQuery = array(
+                $update_saison, $update_nom, $update_prenom,
+                $update_sexe, $update_naissance
+            );
 
             if ($update_icf > 0) {
                 $sql .= ", Reserve = ? ";
@@ -254,84 +257,82 @@ class GestionAthlete extends MyPageSecure
             $arrayQuery = array_merge($arrayQuery, [$update_matric]);
             $result = $myBdd->pdo->prepare($sql);
             $result->execute($arrayQuery);
-        
+
             $sql = "UPDATE kp_competition_equipe_joueur 
                 SET Nom = ?, Prenom = ?, 
                 Sexe = ? 
                 WHERE Matric = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($update_nom, $update_prenom, $update_sexe, $update_matric));
-            
+
             $sql = "REPLACE INTO kp_arbitre VALUES (?, ";
             switch ($update_arb) {
-                case 'Reg' :
+                case 'Reg':
                     $sql .= "'O','N','N','N','Reg','',?,?) ";
                     break;
-                case 'IR' :
+                case 'IR':
                     $sql .= "'N','O','N','N','IR','',?,?) ";
                     break;
-                case 'Nat' :
+                case 'Nat':
                     $sql .= "'N','N','O','N','Nat','',?,?) ";
                     break;
-                case 'Int' :
+                case 'Int':
                     $sql .= "'N','N','O','O','Int','',?,?) ";
                     break;
-                case 'OTM' :
+                case 'OTM':
                     $sql .= "'N','N','O','N','OTM','',?,?) ";
                     break;
-                case 'JO' :
+                case 'JO':
                     $sql .= "'N','N','O','N','JO','',?,?) ";
                     break;
-                default :
+                default:
                     $sql .= "'N','N','N','N','','',?,?) ";
                     $update_niveau = '';
                     $update_saison = '';
                     break;
             }
-            
+
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($update_matric, $update_niveau, $update_saison));
 
-			$myBdd->pdo->commit();
-		} catch (Exception $e) {
-			$myBdd->pdo->rollBack();
-			utySendMail("[KPI] Erreur SQL", 'Modification Joueur' . '\r\n' . $e->getMessage());
+            $myBdd->pdo->commit();
+        } catch (Exception $e) {
+            $myBdd->pdo->rollBack();
+            utySendMail("[KPI] Erreur SQL", 'Modification Joueur' . '\r\n' . $e->getMessage());
 
-			return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
-		}
+            return "La requête SQL ne peut pas être exécutée !\\nCannot execute query!";
+        }
 
         return "Modification effectuée !";
-	}
-	
-	
-	function __construct()
-	{			
-        MyPageSecure::MyPageSecure(7);
-        
-		$alertMessage = '';
-	  
-		$Cmd = utyGetPost('Cmd', '');
-		$ParamCmd = utyGetPost('ParamCmd', '');
+    }
 
-		if (strlen($Cmd) > 0)
-		{
-			if ($Cmd == 'Update') {
+
+    function __construct()
+    {
+        MyPageSecure::MyPageSecure(7);
+
+        $alertMessage = '';
+
+        $Cmd = utyGetPost('Cmd', '');
+        $ParamCmd = utyGetPost('ParamCmd', '');
+
+        if (strlen($Cmd) > 0) {
+            if ($Cmd == 'Update') {
                 ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
             }
 
-            if ($alertMessage == '')
-			{
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
-				exit;
-			}
-		}
-	
-		$this->SetTemplate("Statistiques_athlete", "Athletes", false);
-		$this->Load();
-		$this->m_tpl->assign('AlertMessage', $alertMessage);
-		
-		$this->DisplayTemplate('GestionAthlete');
-	}
-}		  	
+            if ($alertMessage == '') {
+                header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+                exit;
+            }
+        }
+
+        $this->SetTemplate("Statistiques_athlete", "Athletes", false);
+        $this->Load();
+        $this->m_tpl->assign('AlertMessage', $alertMessage);
+
+        $this->DisplayTemplate('GestionAthlete');
+    }
+}
 
 $page = new GestionAthlete();

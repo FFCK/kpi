@@ -50,6 +50,7 @@
               <th class="bg-success text-center">{#C_V#}</th>
               <th class="bg-warning text-center">{#C_J#}</th>
               <th class="bg-danger text-center">{#C_R#}</th>
+              <th class="bg-danger text-center">{#C_D#}</th>
             </tr>
           </thead>
           <tbody>
@@ -86,6 +87,11 @@
                 <td class="text-center">
                   {if $arrayCompo[i].rouges > 0}
                     <span class="label label-danger">{$arrayCompo[i].rouges}</span>
+                  {/if}
+                </td>
+                <td class="text-center">
+                  {if $arrayCompo[i].rouges_definitif > 0}
+                    <span class="label label-danger">{$arrayCompo[i].rouges_definitif}</span>
                   {/if}
                 </td>
               </tr>

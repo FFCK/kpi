@@ -4,33 +4,33 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 // Team
-class Team extends MyPage	 
-{	
-	function Load()
-	{
-		$myBdd = new MyBdd();
+class Team extends MyPage
+{
+    function Load()
+    {
+        $myBdd = new MyBdd();
         $nomEquipe = '';
         $Code_club = 0;
         $Club =  '';
 
-		$Team = utyGetSession('Team', 1);
-		$Team = utyGetPost('Team', $Team);
-		$Team = (int) utyGetGet('Team', $Team);
-		$this->m_tpl->assign('Team', $Team);
-		$_SESSION['Team'] = $Team;
-        
+        $Team = utyGetSession('Team', 1);
+        $Team = utyGetPost('Team', $Team);
+        $Team = (int) utyGetGet('Team', $Team);
+        $this->m_tpl->assign('Team', $Team);
+        $_SESSION['Team'] = $Team;
+
         $Saison = $myBdd->GetActiveSaison();
         $codeSaison = (int) utyGetGet('Saison', $Saison);
-        
+
         $codeCompet = utyGetGet('Compet', '');
         $this->m_tpl->assign('codeCompet', $codeCompet);
-        
+
         if (utyGetGet('navGroup', false)) {
             $this->m_tpl->assign('navGroup', 1);
         }
 
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
-            
+
         if ($Team > 0) {
             // Team
             $sql = "SELECT ce.Numero Equipe, ce.Libelle nomEquipe, ce.Code_club, cl.Libelle Club 
@@ -53,42 +53,42 @@ class Team extends MyPage
             //Images
             $eSeason = $Saison;
             $eSeason2 = $Saison;
-            $eLink = $Equipe.'-'.$eSeason;
-            $eTeam = 'img/KIP/teams/'.$eLink.'-team.jpg';
-            if(is_file('img/KIP/colors/'.$Equipe.'-'.date('Y').'-colors.png')){
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.date('Y').'-colors.png');
+            $eLink = $Equipe . '-' . $eSeason;
+            $eTeam = 'img/KIP/teams/' . $eLink . '-team.jpg';
+            if (is_file('img/KIP/colors/' . $Equipe . '-' . date('Y') . '-colors.png')) {
+                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . date('Y') . '-colors.png');
                 $eSeason = date('Y');
-            }elseif(is_file('img/KIP/colors/'.$Equipe.'-'.(date('Y')-1).'-colors.png')){
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.(date('Y')-1).'-colors.png');
-                $eSeason = date('Y')-1;
-            }elseif(is_file('img/KIP/colors/'.$Equipe.'-'.(date('Y')-2).'-colors.png')){
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.(date('Y')-2).'-colors.png');
-                $eSeason = date('Y')-2;
-            }elseif(is_file('img/KIP/colors/'.$Equipe.'-'.(date('Y')-3).'-colors.png')){
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-'.(date('Y')-3).'-colors.png');
-                $eSeason = date('Y')-3;
-            }elseif(is_file('img/KIP/colors/'.$Equipe.'-colors.png')){
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/'.$Equipe.'-colors.png');
+            } elseif (is_file('img/KIP/colors/' . $Equipe . '-' . (date('Y') - 1) . '-colors.png')) {
+                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 1) . '-colors.png');
+                $eSeason = date('Y') - 1;
+            } elseif (is_file('img/KIP/colors/' . $Equipe . '-' . (date('Y') - 2) . '-colors.png')) {
+                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 2) . '-colors.png');
+                $eSeason = date('Y') - 2;
+            } elseif (is_file('img/KIP/colors/' . $Equipe . '-' . (date('Y') - 3) . '-colors.png')) {
+                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 3) . '-colors.png');
+                $eSeason = date('Y') - 3;
+            } elseif (is_file('img/KIP/colors/' . $Equipe . '-colors.png')) {
+                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-colors.png');
                 $eSeason = '';
-            }elseif(is_file('img/KIP/logo/'.$Code_club.'-logo.png')){
-                $this->m_tpl->assign('eLogo', 'img/KIP/logo/'.$Code_club.'-logo.png');
-            }elseif(is_file('img/Nations/'.substr($Code_club, 0, 3).'.png')){
-                $this->m_tpl->assign('eLogo', 'img/Nations/'.substr($Code_club, 0, 3).'.png');
+            } elseif (is_file('img/KIP/logo/' . $Code_club . '-logo.png')) {
+                $this->m_tpl->assign('eLogo', 'img/KIP/logo/' . $Code_club . '-logo.png');
+            } elseif (is_file('img/Nations/' . substr($Code_club, 0, 3) . '.png')) {
+                $this->m_tpl->assign('eLogo', 'img/Nations/' . substr($Code_club, 0, 3) . '.png');
             }
             $this->m_tpl->assign('eSeason', $eSeason);
 
-            if(is_file('img/KIP/teams/'.$Equipe.'-'.date('Y').'-team.jpg')){
-                $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.date('Y').'-team.jpg');
+            if (is_file('img/KIP/teams/' . $Equipe . '-' . date('Y') . '-team.jpg')) {
+                $this->m_tpl->assign('eTeam', 'img/KIP/teams/' . $Equipe . '-' . date('Y') . '-team.jpg');
                 $eSeason2 = date('Y');
-            }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-1).'-team.jpg')){
-                $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-1).'-team.jpg');
-                $eSeason2 = date('Y')-1;
-            }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-2).'-team.jpg')){
-                $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-2).'-team.jpg');
-                $eSeason2 = date('Y')-2;
-            }elseif(is_file('img/KIP/teams/'.$Equipe.'-'.(date('Y')-3).'-team.jpg')){
-                $this->m_tpl->assign('eTeam', 'img/KIP/teams/'.$Equipe.'-'.(date('Y')-3).'-team.jpg');
-                $eSeason2 = date('Y')-3;
+            } elseif (is_file('img/KIP/teams/' . $Equipe . '-' . (date('Y') - 1) . '-team.jpg')) {
+                $this->m_tpl->assign('eTeam', 'img/KIP/teams/' . $Equipe . '-' . (date('Y') - 1) . '-team.jpg');
+                $eSeason2 = date('Y') - 1;
+            } elseif (is_file('img/KIP/teams/' . $Equipe . '-' . (date('Y') - 2) . '-team.jpg')) {
+                $this->m_tpl->assign('eTeam', 'img/KIP/teams/' . $Equipe . '-' . (date('Y') - 2) . '-team.jpg');
+                $eSeason2 = date('Y') - 2;
+            } elseif (is_file('img/KIP/teams/' . $Equipe . '-' . (date('Y') - 3) . '-team.jpg')) {
+                $this->m_tpl->assign('eTeam', 'img/KIP/teams/' . $Equipe . '-' . (date('Y') - 3) . '-team.jpg');
+                $eSeason2 = date('Y') - 3;
             }
             $this->m_tpl->assign('eSeason2', $eSeason2);
 
@@ -103,7 +103,8 @@ class Team extends MyPage
                         SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts,
                         SUM(IF(md.Id_evt_match = 'V', 1, 0)) verts,
                         SUM(IF(md.Id_evt_match = 'J', 1, 0)) jaunes,
-                        SUM(IF(md.Id_evt_match = 'R', 1, 0)) rouges
+                        SUM(IF(md.Id_evt_match = 'R', 1, 0)) rouges,
+                        SUM(IF(md.Id_evt_match = 'D', 1, 0)) rouges_definitif
                     FROM kp_competition_equipe ce
                     LEFT OUTER JOIN kp_competition_equipe_joueur cej ON ce.Id = cej.Id_equipe
                     LEFT OUTER JOIN kp_journee j ON (ce.Code_compet = j.Code_competition AND ce.Code_saison = j.Code_saison)
@@ -127,31 +128,30 @@ class Team extends MyPage
                 $this->m_tpl->assign('arrayCompo', $arrayCompo);
             }
         }
-	}
-	
+    }
 
-	function __construct()
-	{			
+
+    function __construct()
+    {
         MyPage::MyPage();
-		
-		$this->SetTemplate("Equipes", "Equipes", true);
-		$this->Load();
-		// COSANDCO : Gestion Param Voie ...
-		if (utyGetGet('voie', false)) {
-			$voie = (int) utyGetGet('voie', 0);
-			if ($voie > 0) {
+
+        $this->SetTemplate("Equipes", "Equipes", true);
+        $this->Load();
+        // COSANDCO : Gestion Param Voie ...
+        if (utyGetGet('voie', false)) {
+            $voie = (int) utyGetGet('voie', 0);
+            if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
             }
-            
-			$intervalle = (int) utyGetGet('intervalle', 0);
-			if ($intervalle > 0) {
-                $this->m_tpl->assign('intervalle', $intervalle);
-			}
-		}        
 
-		$this->DisplayTemplateFrame('frame_team');
-	}
-}		  	
+            $intervalle = (int) utyGetGet('intervalle', 0);
+            if ($intervalle > 0) {
+                $this->m_tpl->assign('intervalle', $intervalle);
+            }
+        }
+
+        $this->DisplayTemplateFrame('frame_team');
+    }
+}
 
 $page = new Team();
-

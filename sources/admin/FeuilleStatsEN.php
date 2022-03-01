@@ -161,7 +161,8 @@ class FeuilleStats extends MyPage
                     a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
-                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
+                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
+                    SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif 
                     FROM kp_licence a, kp_match_detail b, kp_match c, 
                     kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
@@ -172,7 +173,7 @@ class FeuilleStats extends MyPage
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY a.Matric 
                     ORDER BY Rouge DESC, Jaune DESC, Vert DESC, Equipe, a.Nom 
                     LIMIT 0,$nbLignes ";
@@ -189,7 +190,8 @@ class FeuilleStats extends MyPage
                         'Equipe' => $row['Equipe'],
                         'Vert' => $row['Vert'],
                         'Jaune' => $row['Jaune'],
-                        'Rouge' => $row['Rouge']
+                        'Rouge' => $row['Rouge'],
+                        'Rouge_definitif' => $row['Rouge_definitif']
                     ));
                 }
                 break;
@@ -198,7 +200,8 @@ class FeuilleStats extends MyPage
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
-                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
+                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
+                    SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif 
                     FROM kp_match_detail b, kp_match c, kp_journee d, 
                     kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
@@ -208,7 +211,7 @@ class FeuilleStats extends MyPage
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY Equipe 
                     ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Equipe 
                     LIMIT 0,$nbLignes ";
@@ -220,7 +223,8 @@ class FeuilleStats extends MyPage
                         'Equipe' => $row['Equipe'],
                         'Vert' => $row['Vert'],
                         'Jaune' => $row['Jaune'],
-                        'Rouge' => $row['Rouge']
+                        'Rouge' => $row['Rouge'],
+                        'Rouge_definitif' => $row['Rouge_definitif']
                     ));
                 }
                 break;
@@ -230,7 +234,8 @@ class FeuilleStats extends MyPage
                     SUM(IF(b.Id_evt_match='B',1,0)) Buts, 
                     SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
                     SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
-                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge 
+                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
+                    SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif 
                     FROM kp_match_detail b, kp_match c, kp_journee d, 
                     kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
@@ -240,7 +245,7 @@ class FeuilleStats extends MyPage
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A', c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('B','V','J','R') 
+                    AND b.Id_evt_match IN ('B','V','J','R','D') 
                     GROUP BY Code_competition 
                     ORDER BY Rouge Desc, Jaune Desc, Vert Desc, Code_competition 
                     LIMIT 0,$nbLignes ";
@@ -252,7 +257,8 @@ class FeuilleStats extends MyPage
                         'Buts' => $row['Buts'],
                         'Vert' => $row['Vert'],
                         'Jaune' => $row['Jaune'],
-                        'Rouge' => $row['Rouge']
+                        'Rouge' => $row['Rouge'],
+                        'Rouge_definitif' => $row['Rouge_definitif']
                     ));
                 }
                 break;
@@ -261,7 +267,7 @@ class FeuilleStats extends MyPage
                 $sql = "SELECT d.Code_competition Competition, a.Matric Licence, a.Nom, 
                     a.Prenom, a.Sexe, b.Numero, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
-                        IF(b.Id_evt_match='R',4,0)))) Fairplay 
+                        IF(b.Id_evt_match='R' OR b.Id_evt_match='D',4,0)))) Fairplay 
                     FROM kp_licence a, kp_match_detail b, 
                     kp_match c, kp_journee d, kp_competition_equipe f 
                     WHERE a.Matric = b.Competiteur 
@@ -272,7 +278,7 @@ class FeuilleStats extends MyPage
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R' OR b.Id_evt_match='D') 
                     GROUP BY a.Matric 
                     ORDER BY Fairplay Desc, a.Nom 
                     LIMIT 0,$nbLignes ";
@@ -295,7 +301,7 @@ class FeuilleStats extends MyPage
                 $NomStat = 'Team disciplinary classification (red=4, yellow=2, green=1)';
                 $sql = "SELECT d.Code_competition Competition, f.Libelle Equipe, 
                     SUM(IF(b.Id_evt_match='V',1, IF(b.Id_evt_match='J',2, 
-                        IF(b.Id_evt_match='R',4,0)))) Fairplay 
+                        IF(b.Id_evt_match='R' OR b.Id_evt_match='D',4,0)))) Fairplay 
                     FROM kp_match_detail b, kp_match c, kp_journee d, 
                     kp_competition_equipe f 
                     WHERE b.Id_match = c.Id 
@@ -305,7 +311,7 @@ class FeuilleStats extends MyPage
                     AND d.Code_competition IN ($in) 
                     AND d.Code_saison = ? 
                     AND f.Id = IF(b.Equipe_A_B='A',c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('V','J','R') 
+                    AND b.Id_evt_match IN ('V','J','R','D') 
                     GROUP BY Equipe 
                     ORDER BY Fairplay Desc, Equipe 
                     LIMIT 0,$nbLignes ";
@@ -492,6 +498,8 @@ class FeuilleStats extends MyPage
                         }
                         $row['Irreg'] .= 'Certif CK';
                     }
+                    $row['Nom'] = mb_strtoupper($row['Nom']);
+                    $row['Prenom'] =  mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
                     array_push($arrayStats, $row);
                 }
                 break;
@@ -609,7 +617,7 @@ class FeuilleStats extends MyPage
                     AND c.Code = lc.Numero_club 
                     AND a.Matric < 2000000 
                     AND a.arbitre != '' 
-                    ORDER BY a.arbitre, a.Niveau, a.Saison, lc.Nom, lc.Prenom 
+                    ORDER BY a.arbitre, a.niveau, a.saison, lc.Nom, lc.Prenom 
                     LIMIT 0,$nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute();
@@ -797,10 +805,11 @@ class FeuilleStats extends MyPage
                 $pdf->Cell(8, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(37, 7, 'Family name', 'B', 0, 'C');
                 $pdf->Cell(37, 7, 'First name', 'B', 0, 'C');
-                $pdf->Cell(52, 7, 'Team', 'B', 0, 'C');
-                $pdf->Cell(9, 7, 'G', 'B', 0, 'C');
-                $pdf->Cell(9, 7, 'Y', 'B', 0, 'C');
-                $pdf->Cell(9, 7, 'R', 'B', 1, 'C');
+                $pdf->Cell(51, 7, 'Team', 'B', 0, 'C');
+                $pdf->Cell(7, 7, 'G', 'B', 0, 'C');
+                $pdf->Cell(7, 7, 'Y', 'B', 0, 'C');
+                $pdf->Cell(7, 7, 'R', 'B', 0, 'C');
+                $pdf->Cell(7, 7, 'ER', 'B', 1, 'C');
                 $pdf->SetFont('Arial', '', 8);
 
                 for ($i = 0; $i < count($arrayStats); $i++) {
@@ -809,29 +818,32 @@ class FeuilleStats extends MyPage
                     $pdf->Cell(8, 7, $arrayStats[$i]['Numero'], 'B', 0, 'C');
                     $pdf->Cell(37, 7, $arrayStats[$i]['Nom'], 'B', 0, 'C');
                     $pdf->Cell(37, 7, $arrayStats[$i]['Prenom'], 'B', 0, 'C');
-                    $pdf->Cell(52, 7, $arrayStats[$i]['Equipe'], 'B', 0, 'C');
-                    $pdf->Cell(9, 7, $arrayStats[$i]['Vert'], 'B', 0, 'C');
-                    $pdf->Cell(9, 7, $arrayStats[$i]['Jaune'], 'B', 0, 'C');
-                    $pdf->Cell(9, 7, $arrayStats[$i]['Rouge'], 'B', 1, 'C');
+                    $pdf->Cell(51, 7, $arrayStats[$i]['Equipe'], 'B', 0, 'C');
+                    $pdf->Cell(7, 7, $arrayStats[$i]['Vert'], 'B', 0, 'C');
+                    $pdf->Cell(7, 7, $arrayStats[$i]['Jaune'], 'B', 0, 'C');
+                    $pdf->Cell(7, 7, $arrayStats[$i]['Rouge'], 'B', 0, 'C');
+                    $pdf->Cell(7, 7, $arrayStats[$i]['Rouge_definitif'], 'B', 1, 'C');
                 }
                 break;
             case 'CartonsEquipe':
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(15, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(28, 7, 'Cat.', 'B', 0, 'C');
-                $pdf->Cell(90, 7, 'Team', 'B', 0, 'C');
-                $pdf->Cell(19, 7, 'G', 'B', 0, 'C');
-                $pdf->Cell(19, 7, 'Y', 'B', 0, 'C');
-                $pdf->Cell(19, 7, 'R', 'B', 1, 'C');
+                $pdf->Cell(91, 7, 'Team', 'B', 0, 'C');
+                $pdf->Cell(14, 7, 'G', 'B', 0, 'C');
+                $pdf->Cell(14, 7, 'Y', 'B', 0, 'C');
+                $pdf->Cell(14, 7, 'R', 'B', 0, 'C');
+                $pdf->Cell(14, 7, 'ER', 'B', 1, 'C');
                 $pdf->SetFont('Arial', '', 8);
 
                 for ($i = 0; $i < count($arrayStats); $i++) {
                     $pdf->Cell(15, 7, $i + 1, 'B', 0, 'C');
                     $pdf->Cell(28, 7, $arrayStats[$i]['Competition'], 'B', 0, 'C');
-                    $pdf->Cell(90, 7, $arrayStats[$i]['Equipe'], 'B', 0, 'C');
-                    $pdf->Cell(19, 7, $arrayStats[$i]['Vert'], 'B', 0, 'C');
-                    $pdf->Cell(19, 7, $arrayStats[$i]['Jaune'], 'B', 0, 'C');
-                    $pdf->Cell(19, 7, $arrayStats[$i]['Rouge'], 'B', 1, 'C');
+                    $pdf->Cell(91, 7, $arrayStats[$i]['Equipe'], 'B', 0, 'C');
+                    $pdf->Cell(14, 7, $arrayStats[$i]['Vert'], 'B', 0, 'C');
+                    $pdf->Cell(14, 7, $arrayStats[$i]['Jaune'], 'B', 0, 'C');
+                    $pdf->Cell(14, 7, $arrayStats[$i]['Rouge'], 'B', 0, 'C');
+                    $pdf->Cell(14, 7, $arrayStats[$i]['Rouge_definitif'], 'B', 1, 'C');
                 }
                 break;
             case 'Fairplay':
