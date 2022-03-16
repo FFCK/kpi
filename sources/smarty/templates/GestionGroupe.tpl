@@ -25,20 +25,24 @@
 								<tr class='{cycle values="impair,pair"} {$arrayGroupes[i].selected}'>
 									<td>{$arrayGroupes[i].id}</td>
 									<td>
-                                        <a href="#" Id="Param{$arrayGroupes[i].id}" onclick="editGroupe({$arrayGroupes[i].id})">
-                                            <img height="18" src="../img/glyphicons-31-pencil.png" alt="{#Editer#}" title="{#Editer#}" />
-                                        </a>
-                                    </td>
-									<td>{$arrayGroupes[i].section}</td>
+										<a href="#" Id="Param{$arrayGroupes[i].id}" onclick="editGroupe({$arrayGroupes[i].id})">
+											<img height="18" src="../img/glyphicons-31-pencil.png" alt="{#Editer#}" title="{#Editer#}" />
+										</a>
+									</td>
+									<td>{$arrayGroupes[i].section_name}</td>
 									<td>{$arrayGroupes[i].Code_niveau}</td>
-									<td>{$arrayGroupes[i].ordre}</td>
+									<td>
+										{$arrayGroupes[i].ordre}
+										<img src="../img/up.png" class="ordre_up" data-id="{$arrayGroupes[i].id}"
+											data-order="{$arrayGroupes[i].ordre}" style="cursor: pointer" />
+									</td>
 									<td>{$arrayGroupes[i].Groupe}</td>
 									<td>{$arrayGroupes[i].Libelle}</td>
 									<td>
-                                        <a href="#" Id="Delete{$arrayGroupes[i].id}" onclick="removeGroupe({$arrayGroupes[i].id})">
-                                            <img height="18" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" title="{#Supprimer#}" />
-                                        </a>
-                                    </td>
+										<a href="#" Id="Delete{$arrayGroupes[i].id}" onclick="removeGroupe({$arrayGroupes[i].id})">
+											<img height="18" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" title="{#Supprimer#}" />
+										</a>
+									</td>
 								</tr>
 							{/section}
 						</tbody>
@@ -56,7 +60,7 @@
 						<td>
 							<label for="section">Section :</label>
 							<select name="section" id="section">
-							<option value="1" {if $groupe.section == 1}selected{/if}>ICF / ECA</option>
+								<option value="1" {if $groupe.section == 1}selected{/if}>ICF / ECA</option>
 								<option value="2" {if $groupe.section == 2}selected{/if}>National</option>
 								<option value="3" {if $groupe.section == 3}selected{/if}>Régional</option>
 								<option value="4" {if $groupe.section == 4}selected{/if}>Tournoi</option>
@@ -76,7 +80,8 @@
 					<tr>
 						<td>
 							<label for="ordre">{#Ordre#} :</label>
-							<input type="text" size="5" pattern="{literal}[0-9]{1,5}{/literal}" name="ordre" value="{$groupe.ordre|default:$lastOrder}" maxlength=5 id="ordre" required />
+							<input type="text" size="5" pattern="{literal}[0-9]{1,5}{/literal}" name="ordre"
+								value="{$groupe.ordre|default:$lastOrder}" maxlength=5 id="ordre" required />
 						</td>
 						<td>
 							<label for="Groupe">{#Groupe#} :</label>
@@ -112,5 +117,4 @@
 				</table>
 			</div>
 		</form>
-	</div>
-	
+</div>
