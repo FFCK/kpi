@@ -23,7 +23,11 @@
 						<tbody>
 							{section name=i loop=$arrayGroupes}{assign name=lastOrder value=$arrayGroupes[i].ordre}
 								<tr class='{cycle values="impair,pair"} {$arrayGroupes[i].selected}'>
-									<td>{$arrayGroupes[i].id}</td>
+									<td>
+										{$arrayGroupes[i].id}
+										<img src="../img/up.png" class="ordre_up" data-id="{$arrayGroupes[i].id}"
+											data-order="{$arrayGroupes[i].ordre}" style="cursor: pointer" />
+									</td>
 									<td>
 										<a href="#" Id="Param{$arrayGroupes[i].id}" onclick="editGroupe({$arrayGroupes[i].id})">
 											<img height="18" src="../img/glyphicons-31-pencil.png" alt="{#Editer#}" title="{#Editer#}" />
@@ -31,11 +35,7 @@
 									</td>
 									<td>{$arrayGroupes[i].section_name}</td>
 									<td>{$arrayGroupes[i].Code_niveau}</td>
-									<td>
-										{$arrayGroupes[i].ordre}
-										<img src="../img/up.png" class="ordre_up" data-id="{$arrayGroupes[i].id}"
-											data-order="{$arrayGroupes[i].ordre}" style="cursor: pointer" />
-									</td>
+									<td>{$arrayGroupes[i].ordre}</td>
 									<td>{$arrayGroupes[i].Groupe}</td>
 									<td>{$arrayGroupes[i].Libelle}</td>
 									<td>
