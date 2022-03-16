@@ -6,36 +6,45 @@ include_once('../commun/MyTools.php');
 
 // Gestion des Evenements
 
-class GestionGroupe extends MyPageSecure	 
-{	
+class GestionGroupe extends MyPageSecure
+{
 	function Load()
 	{
 		$idGroupe = (int) utyGetSession('idGroupe', -1);
-		
+
 		// Chargement des Groupes
 		$myBdd = new MyBdd();
 		$arrayGroupes = array();
-		
+		$arraySectionNames = [
+			1 => 'ICF/ECA',
+			2 => 'National',
+			3 => 'Regional',
+			4 => 'Tournoi',
+			5 => 'Etranger',
+			100 => 'Divers'
+		];
+
 		$sql = "SELECT * 
 			FROM kp_groupe 
-			ORDER BY section, ordre ";	 
+			ORDER BY section, ordre ";
 		$arrayGroupes = array();
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
 		while ($row = $result->fetch()) {
 			if ($idGroupe == $row['id']) {
-                $row['selected'] = 'selected';
-                $groupe = $row;
-            } else {
-                $row['selected'] = '';
-            }
+				$row['selected'] = 'selected';
+				$groupe = $row;
+			} else {
+				$row['selected'] = '';
+			}
+			$row['section_name'] = $arraySectionNames[$row['section']];
 			array_push($arrayGroupes, $row);
 		}
-		
+
 		$this->m_tpl->assign('groupe', $groupe);
 		$this->m_tpl->assign('arrayGroupes', $arrayGroupes);
 	}
-	
+
 	function Add()
 	{
 		$libelle = utyGetPost('Libelle');
@@ -43,7 +52,7 @@ class GestionGroupe extends MyPageSecure
 		$ordre = utyGetPost('ordre');
 		$Code_niveau = utyGetPost('Code_niveau');
 		$Groupe = utyGetPost('Groupe');
-		
+
 		$myBdd = new MyBdd();
 
 		$sql = "UPDATE kp_groupe 
@@ -58,38 +67,62 @@ class GestionGroupe extends MyPageSecure
 		$result->execute(array(
 			$libelle, $section, $ordre, $Code_niveau, $Groupe
 		));
-		
+
 		$this->Raz();
 		$myBdd->utyJournal('Ajout Groupe', '', '', $Groupe);
-        return "Ajout effectué.";
+		return "Ajout effectué.";
 	}
-	
+
+	function UpOrder($idGroupe, $ParamCmd)
+	{
+		$id = (int) $idGroupe;
+		$ordre = (int) $ParamCmd;
+		$ordre_up = $ordre - 1;
+
+		$myBdd = new MyBdd();
+
+		$sql = "UPDATE kp_groupe 
+			SET ordre = ? 
+			WHERE ordre = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($ordre, $ordre_up));
+
+		$sql = "UPDATE kp_groupe 
+			SET ordre = ? 
+			WHERE id = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($ordre_up, $id));
+
+		$myBdd->utyJournal('Ordre Groupe Up', '', '', $id);
+		return;
+	}
+
 	function Remove($idGroupe)
 	{
-        $myBdd = new MyBdd();
+		$myBdd = new MyBdd();
 		$sql = "SELECT c.Code_saison, c.Code 
 			FROM kp_competition c, kp_groupe g 
 			WHERE c.Code_ref = g.Groupe 
 			AND g.id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idGroupe));
-        $num_results = $result->rowCount();
-        
-        if ($num_results > 0) {
-            $conflict = '';
-            while ($row = $result->fetch()){ 
-                $conflict .= ' ' . $row['Code_saison'] . '-' . $row['Code'];
-            }
-            return "Il existe des compétitions dans ce groupe :$conflict. Suppression impossible !";
-        }
+		$num_results = $result->rowCount();
+
+		if ($num_results > 0) {
+			$conflict = '';
+			while ($row = $result->fetch()) {
+				$conflict .= ' ' . $row['Code_saison'] . '-' . $row['Code'];
+			}
+			return "Il existe des compétitions dans ce groupe :$conflict. Suppression impossible !";
+		}
 
 		$sql = "SELECT ordre FROM kp_groupe 
 			WHERE id = $idGroupe ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idGroupe));
 		$row = $result->fetch();
-		
-		try {  
+
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
@@ -112,17 +145,17 @@ class GestionGroupe extends MyPageSecure
 			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
 
-        return "Suppression effectuée.";
-    }
-	
+		return "Suppression effectuée.";
+	}
+
 	function Edit($idGroupe)
 	{
-        $_SESSION['idGroupe'] = $idGroupe;
+		$_SESSION['idGroupe'] = $idGroupe;
 	}
 
 	function Raz()
 	{
-        $_SESSION['idGroupe'] = -1;
+		$_SESSION['idGroupe'] = -1;
 	}
 
 	function Update()
@@ -133,10 +166,10 @@ class GestionGroupe extends MyPageSecure
 		$ordre = utyGetPost('ordre');
 		$Code_niveau = utyGetPost('Code_niveau');
 		$Groupe = utyGetPost('Groupe');
-		
+
 		$myBdd = new MyBdd();
-		
-		try {  
+
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
@@ -158,39 +191,34 @@ class GestionGroupe extends MyPageSecure
 
 		$this->Raz();
 		$myBdd->utyJournal('Modif Groupe', '', '', $idGroupe);
-        return "Mise à jour effectuée.";
+		return "Mise à jour effectuée.";
 	}
 
 	function __construct()
-	{			
-        MyPageSecure::MyPageSecure(1);
-		
+	{
+		MyPageSecure::MyPageSecure(1);
+
 		$alertMessage = '';
-		
+
 		$Cmd = utyGetPost('Cmd', '');
+		$ParamCmd = utyGetPost('ParamCmd', 0);
+		$idGroupe = utyGetPost('idGroupe', 0);
 
-		$ParamCmd = utyGetPost('ParamCmd', '');
+		if (strlen($Cmd) > 0) {
+			if ($Cmd == 'Add') ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
-		if (strlen($Cmd) > 0)
-		{
-			if ($Cmd == 'Add')
-				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Add() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Remove')
-				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Remove($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Edit')
-				($_SESSION['Profile'] <= 2) ? $this->Edit($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Update')
-				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($Cmd == 'Raz')
-				($_SESSION['Profile'] <= 2) ? $this->Raz() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
-			if ($alertMessage == '')
-			{
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+			if ($Cmd == 'Remove') ($_SESSION['Profile'] <= 1) ? $alertMessage = $this->Remove($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'Edit') ($_SESSION['Profile'] <= 2) ? $this->Edit($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'Update') ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->Update() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'Raz') ($_SESSION['Profile'] <= 2) ? $this->Raz() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'UpOrder') ($_SESSION['Profile'] <= 2) ? $this->UpOrder($idGroupe, $ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($alertMessage == '') {
+				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
@@ -200,6 +228,6 @@ class GestionGroupe extends MyPageSecure
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionGroupe');
 	}
-}		  	
+}
 
 $page = new GestionGroupe();
