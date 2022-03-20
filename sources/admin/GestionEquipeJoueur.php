@@ -241,8 +241,8 @@ class GestionEquipeJoueur extends MyPageSecure
 		$idEquipe = utyGetPost('idEquipe', '');
 
 		$matricJoueur = utyGetPost('matricJoueur', '');
-		$nomJoueur = strtoupper(trim(utyGetPost('nomJoueur', '')));
-		$prenomJoueur = strtoupper(trim(utyGetPost('prenomJoueur', '')));
+		$nomJoueur = mb_strtoupper(trim(utyGetPost('nomJoueur', '')), 'UTF-8');
+		$prenomJoueur = mb_strtoupper(trim(utyGetPost('prenomJoueur', '')), 'UTF-8');
 		$sexeJoueur = strtoupper(trim(utyGetPost('sexeJoueur', '')));
 		$naissanceJoueur = utyDateFrToUs(utyGetPost('naissanceJoueur', ''));
 		$capitaineJoueur = trim(utyGetPost('capitaineJoueur', '-'));

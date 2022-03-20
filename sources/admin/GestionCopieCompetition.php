@@ -394,7 +394,7 @@ class GestionCopieCompetition extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(4);
+		MyPageSecure::MyPageSecure(3);
 
 		$alertMessage = '';
 
@@ -402,7 +402,7 @@ class GestionCopieCompetition extends MyPageSecure
 
 		if (strlen($Cmd) > 0) {
 			if ($Cmd == 'Ok') {
-				($_SESSION['Profile'] <= 4) ? $alertMessage = $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+				($_SESSION['Profile'] <= 3) ? $alertMessage = $this->Ok() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 			}
 
 			if ($Cmd == 'Cancel') {
