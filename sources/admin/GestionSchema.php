@@ -134,6 +134,7 @@ class Schema extends MyPageSecure
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
+                    AND j.Nbequipes > 1
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
@@ -144,7 +145,8 @@ class Schema extends MyPageSecure
                     FROM kp_journee j 
                     WHERE j.Code_competition = ? 
                     AND j.Code_saison = ? 
-                    AND j.Etape LIKE ? ";
+                    AND j.Etape LIKE ?
+                    AND j.Nbequipes > 1 ";
                 if ($idSelJournee > 0) {
                     $sql .= "AND j.Id = ? ";
                     $arrayQuery = [$idSelJournee];
