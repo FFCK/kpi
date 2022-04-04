@@ -82,3 +82,52 @@ AND gickp_Liste_Coureur.Matric = gickp_Matchs_Joueurs.Matric
 -- AND gickp_Liste_Coureur.Sexe = "F"
 GROUP BY gickp_Liste_Coureur.Numero_comite_dept
 ORDER BY gickp_Liste_Coureur.Numero_comite_dept
+
+
+/**
+ * Nombre compétiteurs FFCK engagés dans des compétitions nationales
+ * par compétition et par sexe sur une saison, jusqu'à la date du jour
+ *
+ * Author:  Laurent
+ * Created: 2 avril 2022
+ */
+ SELECT j.Code_competition, lc.Sexe, COUNT(DISTINCT mj.Matric)
+      FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+      kp_licence lc 
+      WHERE lc.Matric = mj.Matric 
+      AND mj.Capitaine NOT IN ('E','A','X') 
+      AND mj.Id_match = m.Id 
+      AND m.Id_journee = j.Id 
+      AND (
+            j.Code_competition LIKE 'N%'
+--          OR j.Code_competition LIKE 'OPEN%'
+      )
+      AND j.Code_saison = 2022
+      AND m.Date_match <= CURDATE() 
+      AND m.Validation = 'O' 
+      GROUP BY j.Code_competition, lc.Sexe 
+      ORDER BY j.Code_competition, lc.Sexe;
+
+/**
+ * Nombre compétiteurs FFCK engagés dans des compétitions
+ * par sexe sur une saison, jusqu'à la date du jour
+ *
+ * Author:  Laurent
+ * Created: 2 avril 2022
+ */
+SELECT lc.Sexe, COUNT(DISTINCT mj.Matric)
+      FROM kp_match_joueur mj, kp_match m, kp_journee j, 
+      kp_licence lc 
+      WHERE lc.Matric = mj.Matric 
+      AND mj.Capitaine NOT IN ('E','A','X') 
+      AND mj.Id_match = m.Id 
+      AND m.Id_journee = j.Id 
+      -- AND (
+      --    j.Code_competition LIKE 'T%'
+      --    OR j.Code_competition LIKE 'OPEN%'
+      -- )
+      AND j.Code_saison = 2022
+      AND m.Date_match <= CURDATE() 
+      AND m.Validation = 'O' 
+      GROUP BY lc.Sexe 
+      ORDER BY lc.Sexe;
