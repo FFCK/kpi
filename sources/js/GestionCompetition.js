@@ -173,12 +173,7 @@ jq(document).ready(function () {
 	}
 	//jq("#inputZone").mask("9");
 
-	//	jq("*").tooltip({
-	//		//bodyHandler: function() {
-	//		//	return jq(jq(this).attr("href")).html();
-	//		//},
-	//		showURL: false
-	//	});
+	// jq("*").tooltip()
 
 	jq("#choixCompet").autocomplete('Autocompl_compet.php', {
 		width: 350,

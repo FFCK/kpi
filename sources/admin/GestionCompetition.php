@@ -857,7 +857,7 @@ class GestionCompetition extends MyPageSecure
 		}
 
 		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $FusionEquipeSource . ' => ' . $FusionEquipeCible);
-		return;
+		return ('Equipes fusionnées');
 	}
 
 	function DeplaceEquipe()
@@ -932,7 +932,7 @@ class GestionCompetition extends MyPageSecure
 		}
 
 		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $RenomSource . ' => ' . $RenomCible);
-		return ('Joueurs fusionnés');
+		return ('Equipe renommée !');
 	}
 
 	function ChangeCode()

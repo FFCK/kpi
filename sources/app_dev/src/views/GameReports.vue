@@ -24,9 +24,11 @@
             @click="showGame = true"
           >
             {{ $t("GameReports.BackToGame") }}
+            <i class="bi bi-play-fill" />
           </button>
           <button class="btn btn-outline-dark btn-lg col-12 my-1">
             {{ $t("GameReports.NewGame") }}
+            <i class="bi bi-plus-square-fill" />
           </button>
           <button
             class="btn btn-outline-dark btn-lg col-12 my-1"
