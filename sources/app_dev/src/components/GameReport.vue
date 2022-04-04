@@ -91,7 +91,7 @@
 
       <!-- Actions -->
       <div class="col-3 d-grid gap-1">
-        <div class="btn btn-lg btn-success">Goal</div>
+        <div class="btn btn-lg btn-primary">Goal</div>
       </div>
       <div class="col-3 d-grid gap-1">
         <div class="btn btn-lg btn-warning">Fault</div>
@@ -100,7 +100,7 @@
         <div class="btn btn-lg btn-warning">Fault</div>
       </div>
       <div class="col-3 d-grid gap-1">
-        <div class="btn btn-lg btn-success">Goal</div>
+        <div class="btn btn-lg btn-primary">Goal</div>
       </div>
 
       <div class="col-3 d-grid gap-1">
@@ -118,13 +118,15 @@
 
       <div class="col-12 d-grid gap-1">
         <div
-          class="btn btn-secondary"
+          class="btn btn-secondary fixed-bottom"
           data-bs-toggle="offcanvas"
           href="#offcanvasEvents"
           role="button"
           aria-controls="offcanvasEvents"
         >
+          <span class="bi bi-caret-up-fill float-start" />
           Events
+          <span class="bi bi-caret-up-fill float-end" />
         </div>
       </div>
     </div>
@@ -153,17 +155,50 @@
       <div class="offcanvas-body" data-bs-dismiss="offcanvas">
         <div>
           <ul class="list-group">
-            <li class="list-group-item">An item</li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
-            <li class="list-group-item">A fourth item</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">2</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <i class="bi bi-circle-fill" />
+                <i class="bi bi-circle-fill" />
+                <span class="badge bg-success">&nbsp;</span>
+                <i class="bi bi-circle-fill" />
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">3</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <span class="badge bg-warning">&nbsp;</span>
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">4</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <i class="bi bi-circle-fill" />
+                <i class="bi bi-circle-fill" />
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">5</span>
+              <span>Player N.</span>
+              <span class="float-end"> </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">7</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <i class="bi bi-circle-fill" />
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">8</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <span class="badge bg-danger">E</span>
+              </span>
+            </li>
           </ul>
         </div>
       </div>
@@ -193,17 +228,50 @@
       <div class="offcanvas-body" data-bs-dismiss="offcanvas">
         <div>
           <ul class="list-group">
-            <li class="list-group-item">An item</li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
-            <li class="list-group-item">A fourth item</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">2</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <i class="bi bi-circle-fill" />
+                <i class="bi bi-circle-fill" />
+                <span class="badge bg-success">&nbsp;</span>
+                <i class="bi bi-circle-fill" />
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">3</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <span class="badge bg-warning">&nbsp;</span>
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">4</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <i class="bi bi-circle-fill" />
+                <i class="bi bi-circle-fill" />
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">5</span>
+              <span>Player N.</span>
+              <span class="float-end"> </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">7</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <i class="bi bi-circle-fill" />
+              </span>
+            </li>
+            <li class="list-group-item">
+              <span class="badge rounded-pill bg-primary me-1">8</span>
+              <span>Player N.</span>
+              <span class="float-end">
+                <span class="badge bg-danger">E</span>
+              </span>
+            </li>
           </ul>
         </div>
       </div>
@@ -270,36 +338,96 @@
       id="offcanvasEvents"
       aria-labelledby="offcanvasEventsLabel"
     >
-      <div class="offcanvas-header" data-bs-dismiss="offcanvas">
-        <h1 class="h-200b">
-          <div class="badge d-block position-relative" :style="colorB">
-            <div
-              class="badge bg-light text-dark text-nowrap border border-dark"
-              style="opacity: .8"
-              v-html="teamNameResize(currentGame.t_b_label)"
-            />
-            <span
-              class="position-absolute top-50 start-0 translate-middle-y bi bi-caret-right-fill"
-            />
-          </div>
-        </h1>
-      </div>
-      <div class="offcanvas-body" data-bs-dismiss="offcanvas">
-        <div>
-          <ul class="list-group">
-            <li class="list-group-item">An item</li>
-            <li class="list-group-item">A second item</li>
-            <li class="list-group-item">A third item</li>
-            <li class="list-group-item">A fourth item</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-            <li class="list-group-item">And a fifth one</li>
-          </ul>
-        </div>
+      <div class="offcanvas-body">
+        <button
+          type="button"
+          class="btn btn-dark btn-close text-reset position-absolute top-0 end-0 m-2"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+        <table class="events table table-striped table-sm table-hover small">
+          <thead class="table-light">
+            <tr class="fw-bold">
+              <th>
+                <span class="btn btn-sm text-nowrap">
+                  <span class="fw-bold me-1">Time</span>
+                  <i class="bi bi-arrow-down-up" />
+                </span>
+              </th>
+              <th class="text-center">Team A</th>
+              <th class="text-center">Player</th>
+              <th class="text-center">Team B</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-nowrap">
+                <span class="badge bg-secondary me-1">10:00</span>
+                <div class="badge bg-dark">1</div>
+              </td>
+              <td class="text-center">
+                <i class="bi bi-circle-fill"></i>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+              </td>
+              <td class="text-nowrap">
+                <span class="badge rounded-pill bg-primary me-1">2</span>
+                <span>Player N.</span>
+              </td>
+              <td class="text-center">
+                <span class="badge rounded-pill bg-light">&nbsp;</span>
+                <span class="badge bg-success">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-nowrap">
+                <span class="badge bg-secondary me-1">09:55</span>
+                <div class="badge bg-dark">1</div>
+              </td>
+              <td class="text-center">
+                <span class="badge rounded-pill bg-light">&nbsp;</span>
+                <span class="badge bg-warning">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+              </td>
+              <td class="text-end text-nowrap">
+                <span>Player N.</span>
+                <span class="badge rounded-pill bg-primary ms-1">5</span>
+              </td>
+              <td class="text-center">
+                <span class="badge rounded-pill bg-light">&nbsp;</span>
+                <span class="badge bg-danger">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-nowrap">
+                <span class="badge bg-secondary me-1">09:35</span>
+                <div class="badge bg-dark">2</div>
+              </td>
+              <td class="text-center">
+                <span class="badge rounded-pill bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="bi bi-person-circle text-secondary">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+              </td>
+              <td class="text-nowrap">
+                <span class="badge rounded-pill bg-primary me-1">8</span>
+                <span>Player N.</span>
+              </td>
+              <td class="text-center">
+                <span class="badge rounded-pill bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="badge bg-light">&nbsp;</span>
+                <span class="bi bi-circle-square text-secondary"></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -347,5 +475,13 @@ export default {
 <style>
 .team-label {
   font-size: 3.5vw;
+}
+
+.table-hover > tbody > tr:hover {
+  cursor: pointer;
+}
+
+.events tr > *:nth-child(1) {
+  width: 10%;
 }
 </style>
