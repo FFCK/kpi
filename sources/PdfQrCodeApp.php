@@ -35,10 +35,8 @@ class PdfQrCodeApp extends MyPage
     $myBdd = new MyBdd();
     $idEvenement = utyGetSession('idEvenement', -1);
     $idEvenement = utyGetGet('Evt', $idEvenement);
-    if (utyGetGet('Evt', 0) > 0) {
-      $libelleEvenement = $myBdd->GetEvenementLibelle($idEvenement);
-      $titreEvenementCompet = 'Evénement (Event) : ' . $libelleEvenement;
-    }
+    $libelleEvenement = $myBdd->GetEvenementLibelle($idEvenement);
+    $titreEvenementCompet = 'Evénement (Event) : ' . $libelleEvenement;
     $codeSaison = $myBdd->GetActiveSaison();
 
     // Entête PDF ...	  
