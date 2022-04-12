@@ -353,7 +353,11 @@ class PdfListeMatchs extends MyPage
                 case "Code_competition":
                     $pdf->SetFont('Arial', '', 8);
                     //$pdf->Cell(22,5, '',0,0,'C');
-                    $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
+                    if ($phase_match === 'Break') {
+                        $pdf->Cell(8, 5, '', 'LTBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
+                    }
                     $pdf->Cell(16, 5, utyDateUsToFr($row['Date_match']), 'TBR', '0', 'C');
                     $pdf->Cell(10, 5, $row['Heure_match'], 'TBR', '0', 'C');
                     if ($PhaseLibelle == 1) {
@@ -389,10 +393,17 @@ class PdfListeMatchs extends MyPage
                 case "Terrain":
                     $pdf->SetFont('Arial', '', 8);
                     //$pdf->Cell(22,5, '',0,0,'C');
-                    $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
-                    $pdf->Cell(16, 5, utyDateUsToFr($row['Date_match']), 'TBR', '0', 'C');
-                    $pdf->Cell(10, 5, $row['Heure_match'], 'TBR', '0', 'C');
-                    $pdf->Cell(17, 5, $row['Code_competition'], 'TBR', '0', 'C');
+                    if ($phase_match === 'Break') {
+                        $pdf->Cell(8, 5, '', 'LTBR', '0', 'C');
+                        $pdf->Cell(16, 5, utyDateUsToFr($row['Date_match']), 'TBR', '0', 'C');
+                        $pdf->Cell(10, 5, $row['Heure_match'], 'TBR', '0', 'C');
+                        $pdf->Cell(17, 5, '', 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
+                        $pdf->Cell(16, 5, utyDateUsToFr($row['Date_match']), 'TBR', '0', 'C');
+                        $pdf->Cell(10, 5, $row['Heure_match'], 'TBR', '0', 'C');
+                        $pdf->Cell(17, 5, $row['Code_competition'], 'TBR', '0', 'C');
+                    }
                     if ($PhaseLibelle == 1) {
                         $pdf->Cell(50, 5, $phase_match, 'TBR', '0', 'C');
                     } else {
@@ -433,9 +444,15 @@ class PdfListeMatchs extends MyPage
                     $heure1 = $heure2;
                     $pdf->SetFont('Arial', '', 8);
                     //$pdf->Cell(22,5, '',0,0,'C');
-                    $pdf->Cell(8, 5, $row['Numero_ordre'], 'LR' . $ltbr, '0', 'C');
-                    $pdf->Cell(10, 5, $row['Heure_match'], 'R' . $ltbr, '0', 'C');
-                    $pdf->Cell(22, 5, $row['Code_competition'], 'R' . $ltbr, '0', 'C');
+                    if ($phase_match === 'Break') {
+                        $pdf->Cell(8, 5, '', 'LR' . $ltbr, '0', 'C');
+                        $pdf->Cell(10, 5, $row['Heure_match'], 'R' . $ltbr, '0', 'C');
+                        $pdf->Cell(22, 5, '', 'R' . $ltbr, '0', 'C');
+                    } else {
+                        $pdf->Cell(8, 5, $row['Numero_ordre'], 'LR' . $ltbr, '0', 'C');
+                        $pdf->Cell(10, 5, $row['Heure_match'], 'R' . $ltbr, '0', 'C');
+                        $pdf->Cell(22, 5, $row['Code_competition'], 'R' . $ltbr, '0', 'C');
+                    }
                     if ($PhaseLibelle == 1) {
                         $pdf->Cell(45, 5, $phase_match, 'R' . $ltbr, '0', 'C');
                     } else {

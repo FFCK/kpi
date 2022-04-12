@@ -5,77 +5,77 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 // Chart
-	
-class Chart extends MyPage	 
-{	
-	function Load()
-	{
-		$myBdd = new MyBdd();
-		
-		$codeCompet = utyGetSession('codeCompet', 'N1H');
-		$codeCompet = utyGetPost('codeCompet', $codeCompet);
-		$codeCompet = utyGetGet('Compet', $codeCompet);
-		$_SESSION['codeCompet'] = $codeCompet;
-		$this->m_tpl->assign('codeCompet', $codeCompet);
-			
-		$codeSaison = $myBdd->GetActiveSaison();
-		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
-		$codeSaison = utyGetGet('Saison', $codeSaison);
-		$_SESSION['Saison'] = $codeSaison;
-		$this->m_tpl->assign('Saison', $codeSaison);
-        
+
+class Chart extends MyPage
+{
+    function Load()
+    {
+        $myBdd = new MyBdd();
+
+        $codeCompet = utyGetSession('codeCompet', 'N1H');
+        $codeCompet = utyGetPost('codeCompet', $codeCompet);
+        $codeCompet = utyGetGet('Compet', $codeCompet);
+        $_SESSION['codeCompet'] = $codeCompet;
+        $this->m_tpl->assign('codeCompet', $codeCompet);
+
+        $codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = utyGetPost('saisonTravail', $codeSaison);
+        $codeSaison = utyGetGet('Saison', $codeSaison);
+        $_SESSION['Saison'] = $codeSaison;
+        $this->m_tpl->assign('Saison', $codeSaison);
+
         $event = utyGetGet('event', '0');
-		$this->m_tpl->assign('event', $event);
-        
+        $this->m_tpl->assign('event', $event);
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
             $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
             $this->m_tpl->assign('navGroup', 1);
-			$group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
-			$this->m_tpl->assign('group', $group);
+            $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+            $this->m_tpl->assign('group', $group);
         }
-        
-		if ($codeCompet == '*') {
+
+        if ($codeCompet == '*') {
             $codeCompet = $arrayNavGroup[0]['Code'];
             $_SESSION['codeCompet'] = $codeCompet;
             $this->m_tpl->assign('codeCompet', $codeCompet);
         }
 
         $Round = utyGetGet('Round', '*');
-		$this->m_tpl->assign('Round', $Round);
+        $this->m_tpl->assign('Round', $Round);
         $Round = str_replace('*', '%', $Round);
-        
+
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
 
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
-        
+        $this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
+
         //Logo
-		if($codeCompet != -1) {
-			$logo = "img/logo/".$codeSaison.'-'.$codeCompet.'.jpg';
-			if (file_exists($logo)) {
+        if ($codeCompet != -1) {
+            $logo = "img/logo/" . $codeSaison . '-' . $codeCompet . '.jpg';
+            if (file_exists($logo)) {
                 $this->m_tpl->assign('logo', $logo);
             }
         }
 
-		// Chargement des Equipes ...
-		$arrayEquipe = array();
-		$arrayEquipe_journee = array();
-		$arrayEquipe_journee_publi = array();
-		$arrayEquipe_publi = array();
+        // Chargement des Equipes ...
+        $arrayEquipe = array();
+        $arrayEquipe_journee = array();
+        $arrayEquipe_journee_publi = array();
+        $arrayEquipe_publi = array();
         $arrayJournee = array();
         $arrayMatchs = array();
 
-		// Si type Championnat => frame_phases
+        // Si type Championnat => frame_phases
         $typeClt = $recordCompetition['Code_typeclt'];
         if ($typeClt == 'CHPT') {
             header('location: frame_phases.php?' . $_SERVER['QUERY_STRING']);
         }
-        
+
         $journee = 0;
-		
-		if (strlen($codeCompet) > 0) {
-			// Classement public				
+
+        if (strlen($codeCompet) > 0) {
+            // Classement public				
             $sql  = "SELECT ce.*, c.Code_comite_dep 
                 FROM kp_competition_equipe ce, kp_club c 
                 WHERE ce.Code_compet = ? 
@@ -93,31 +93,33 @@ class Chart extends MyPage
                 //Logos
                 $logo = '';
                 $club = $row['Code_club'];
-                if (is_file('img/KIP/logo/'.$club.'-logo.png')) {
-                    $logo = 'img/KIP/logo/'.$club.'-logo.png';
-                } elseif (is_file('img/Nations/'.substr($club, 0, 3).'.png')) {
+                if (is_file('img/KIP/logo/' . $club . '-logo.png')) {
+                    $logo = 'img/KIP/logo/' . $club . '-logo.png';
+                } elseif (is_file('img/Nations/' . substr($club, 0, 3) . '.png')) {
                     $club = substr($club, 0, 3);
-                    $logo = 'img/Nations/'.$club.'.png';
+                    $logo = 'img/Nations/' . $club . '.png';
                 }
-				if (strlen($row['Code_comite_dep']) > 3) {
+                if (strlen($row['Code_comite_dep']) > 3) {
                     $row['Code_comite_dep'] = 'FRA';
                 }
-                array_push($arrayEquipe_publi, array( 'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 
+                array_push($arrayEquipe_publi, array(
+                    'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'],
                     'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
-                    'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'], 
-                    'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'], 
-                    'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'], 
+                    'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'],
+                    'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'],
+                    'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'],
                     'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
-                    'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'], 
-                                                                        'logo' => $logo, 'club' => $club ));
-				if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0)) {
-					$recordCompetition['Qualifies']	= 0;
-					$recordCompetition['Elimines'] = 0;
-				}
-			}
+                    'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'],
+                    'logo' => $logo, 'club' => $club
+                ));
+                if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0)) {
+                    $recordCompetition['Qualifies']    = 0;
+                    $recordCompetition['Elimines'] = 0;
+                }
+            }
             $this->m_tpl->assign('arrayEquipe_publi', $arrayEquipe_publi);
-            
-			// Journées
+
+            // Journées
             $etapes = 0;
             if ($event > 0) {
                 $sql  = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, 
@@ -128,7 +130,8 @@ class Chart extends MyPage
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
-                    AND j.Publication = 'O' 
+                    AND j.Publication = 'O'
+                    AND j.Nbequipes > 1
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
@@ -139,7 +142,8 @@ class Chart extends MyPage
                     WHERE j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
-                    AND j.Publication = 'O' 
+                    AND j.Publication = 'O'
+                    AND j.Nbequipes > 1
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round));
@@ -152,7 +156,7 @@ class Chart extends MyPage
                     $etapes = $row['Etape'];
                 }
             }
-            
+
             // Classement public par journée/phase
             if ($event > 0) {
                 $sql  = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, 
@@ -201,23 +205,27 @@ class Chart extends MyPage
                     $row['Code_comite_dep'] = 'FRA';
                 }
                 if ($journee != $row['Id_journee']) {
-                    $arrayJournee[] = array('Id_journee' => $row['Id_journee'], 'Phase' => $row['Phase'], 'Etape' => $row['Etape'], 
-                                                'Nbequipes' => $row['Nbequipes'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'],
-                                                'Date_debut' => $row['Date_debut'], 'Date_fin' => $row['Date_fin'],
-                                                'Lieu' => $row['Lieu'], 'Departement' => $row['Departement'] );
+                    $arrayJournee[] = array(
+                        'Id_journee' => $row['Id_journee'], 'Phase' => $row['Phase'], 'Etape' => $row['Etape'],
+                        'Nbequipes' => $row['Nbequipes'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'],
+                        'Date_debut' => $row['Date_debut'], 'Date_fin' => $row['Date_fin'],
+                        'Lieu' => $row['Lieu'], 'Departement' => $row['Departement']
+                    );
                     $journee = $row['Id_journee'];
                 }
-                $arrayEquipe_journee_publi[$journee][] = array( 'Id' => $row['Id'], 'Numero' => $row['Numero'], 
-                    'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Id_journee' => $row['Id_journee'], 
-                    'Phase' => $row['Phase'], 'Etape' => $row['Etape'], 'Nbequipes' => $row['Nbequipes'], 'Niveau' => $row['Niveau'], 
-                    'Type' => $row['Type'], 'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'], 
-                    'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'], 
-                    'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'], 
+                $arrayEquipe_journee_publi[$journee][] = array(
+                    'Id' => $row['Id'], 'Numero' => $row['Numero'],
+                    'Libelle' => $row['Libelle'], 'Code_club' => $row['Code_club'], 'Id_journee' => $row['Id_journee'],
+                    'Phase' => $row['Phase'], 'Etape' => $row['Etape'], 'Nbequipes' => $row['Nbequipes'], 'Niveau' => $row['Niveau'],
+                    'Type' => $row['Type'], 'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'],
+                    'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'],
+                    'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'],
                     'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
                     'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'],
-                    'Code_comite_dep' => $row['Code_comite_dep']  );
+                    'Code_comite_dep' => $row['Code_comite_dep']
+                );
             }
-            
+
             // Matchs publics par journée / phase
             if ($event > 0) {
                 $sql = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, 
@@ -265,7 +273,7 @@ class Chart extends MyPage
                     $row['ScoreB'] = '';
                 }
                 if ($row['Id_equipeA'] <= 1 || $row['Id_equipeB'] <= 1) {
-                    if ($_SESSION['lang'] == 'en' ) {
+                    if ($_SESSION['lang'] == 'en') {
                         $intitule = utyEquipesAffectAuto($row['Libelle']);
                     } else {
                         $intitule = utyEquipesAffectAutoFR($row['Libelle']);
@@ -277,9 +285,9 @@ class Chart extends MyPage
                 if ($row['Id_equipeB'] <= 1) {
                     $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
                 }
-                $arrayMatchs[$journee][] = $row ;
+                $arrayMatchs[$journee][] = $row;
             }
-            
+
             // Equipes par poules
             $sql = "SELECT j.Id, m.Id_equipeA, m.Id_equipeB, m.Libelle, 
                 ce1.Libelle EquipeA, ce2.Libelle EquipeB, ce1.Numero NumA, ce2.Numero NumB, 
@@ -299,7 +307,7 @@ class Chart extends MyPage
             while ($row = $result->fetch()) {
                 $journee = $row['Id'];
                 if ($row['Id_equipeA'] <= 1 || $row['Id_equipeB'] <= 1) {
-                    if ($_SESSION['lang'] == 'en' ) {
+                    if ($_SESSION['lang'] == 'en') {
                         $intitule = utyEquipesAffectAuto($row['Libelle']);
                     } else {
                         $intitule = utyEquipesAffectAutoFR($row['Libelle']);
@@ -307,47 +315,47 @@ class Chart extends MyPage
                 }
                 if ($row['Id_equipeA'] > 1) {
                     $arrayEquipes[$journee][$row['EquipeA']] = array(
-                            'Tirage' => $row['TirageA'], 'Id' => $row['Id_equipeA'], 
-                            'Libelle' => $row['EquipeA'], 'Num' => $row['NumA']
-                        );
+                        'Tirage' => $row['TirageA'], 'Id' => $row['Id_equipeA'],
+                        'Libelle' => $row['EquipeA'], 'Num' => $row['NumA']
+                    );
                 } else {
                     $row['EquipeA'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[0]));
                     $arrayEquipes[$journee][$row['EquipeA']] = array(
-                            'Tirage' => $row['TirageA'], 'Id' => $row['Id_equipeA'], 
-                            'Libelle' => $row['EquipeA'], 'Num' => $row['NumA']
-                        );
+                        'Tirage' => $row['TirageA'], 'Id' => $row['Id_equipeA'],
+                        'Libelle' => $row['EquipeA'], 'Num' => $row['NumA']
+                    );
                 }
                 if ($row['Id_equipeB'] > 1) {
                     $arrayEquipes[$journee][$row['EquipeB']] = array(
-                            'Tirage' => $row['TirageB'], 'Id' => $row['Id_equipeB'], 
-                            'Libelle' => $row['EquipeB'], 'Num' => $row['NumB']
-                        );
+                        'Tirage' => $row['TirageB'], 'Id' => $row['Id_equipeB'],
+                        'Libelle' => $row['EquipeB'], 'Num' => $row['NumB']
+                    );
                 } else {
                     $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
                     $arrayEquipes[$journee][$row['EquipeB']] = array(
-                            'Tirage' => $row['TirageB'], 'Id' => $row['Id_equipeB'], 
-                            'Libelle' => $row['EquipeB'], 'Num' => $row['NumB']
-                        );
+                        'Tirage' => $row['TirageB'], 'Id' => $row['Id_equipeB'],
+                        'Libelle' => $row['EquipeB'], 'Num' => $row['NumB']
+                    );
                 }
             }
-		}
-        
-		$this->m_tpl->assign('arrayEquipe_journee_publi', $arrayEquipe_journee_publi);
+        }
+
+        $this->m_tpl->assign('arrayEquipe_journee_publi', $arrayEquipe_journee_publi);
         $this->m_tpl->assign('arrayJournees', $arrayJournees);
         $this->m_tpl->assign('arrayJournee', $arrayJournee);
         $this->m_tpl->assign('arrayListJournees', $arrayListJournees);
         $this->m_tpl->assign('arrayEquipes', $arrayEquipes);
         $this->m_tpl->assign('arrayMatchs', $arrayMatchs);
         $this->m_tpl->assign('recordCompetition', $recordCompetition);
-		$this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
-		$this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
-		$this->m_tpl->assign('etapes', $etapes);
-        $this->m_tpl->assign('largeur', round(12/$etapes));
-		$this->m_tpl->assign('page', 'Deroulement');
+        $this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
+        $this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
+        $this->m_tpl->assign('etapes', $etapes);
+        $this->m_tpl->assign('largeur', round(12 / $etapes));
+        $this->m_tpl->assign('page', 'Deroulement');
 
-		// Combo "CHPT" - "CP"		
-		$arrayOrderCompetition = array();
-		if ('CHPT' == $typeClt) {
+        // Combo "CHPT" - "CP"		
+        $arrayOrderCompetition = array();
+        if ('CHPT' == $typeClt) {
             array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED'));
         } else {
             array_push($arrayOrderCompetition, array('CHPT', 'Championnat', ''));
@@ -359,32 +367,32 @@ class Chart extends MyPage
             array_push($arrayOrderCompetition, array('CP', 'Coupe', ''));
         }
         $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
-	}
-	
+    }
 
-	// Chart 		
-	function __construct()
-	{			
+
+    // Chart 		
+    function __construct()
+    {
         MyPage::MyPage();
 
-		$this->SetTemplate("Deroulement", "Classements", true);
-		$this->Load();
-        
-		// COSANDCO : Gestion Param Voie ...
-		if (utyGetGet('voie', false)) {
-			$voie = (int) utyGetGet('voie', 0);
-			if ($voie > 0) {
+        $this->SetTemplate("Deroulement", "Classements", true);
+        $this->Load();
+
+        // COSANDCO : Gestion Param Voie ...
+        if (utyGetGet('voie', false)) {
+            $voie = (int) utyGetGet('voie', 0);
+            if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
             }
-            
-			$intervalle = (int) utyGetGet('intervalle', 0);
-			if ($intervalle > 0) {
+
+            $intervalle = (int) utyGetGet('intervalle', 0);
+            if ($intervalle > 0) {
                 $this->m_tpl->assign('intervalle', $intervalle);
-			}
-		}        
+            }
+        }
 
         $this->DisplayTemplateFrame('frame_chart');
-	}
-}		  	
+    }
+}
 
 $page = new Chart();
