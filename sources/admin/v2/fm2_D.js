@@ -163,5 +163,33 @@ $(function () {
 		event.preventDefault()
 		window.open('FeuilleMarque2stats.php?idMatch=' + idMatch)
 	})
+
+	// Match suivant
+	$('#nextGame').click(function () {
+		$.post(
+			'v2/getNextGame.php',
+			{
+				idMatch: idMatch
+			},
+			function (data) {
+				if (Number.isInteger(data?.idMatch) && data.equipeA != null && data.equipeB != null) {
+					console.log(data)
+					$('#nextGameDetail').html(
+						'Next: Game #' + data.Numero_ordre + ' - Pitch ' + data.Terrain
+						+ '<br>' + data.Date_match + ' ' + data.Heure_match
+						+ '<br>' + data.equipeA + ' | ' + data.equipeB
+					)
+					$('#idFeuille').val(data.idMatch)
+					$('#nextGame').hide()
+				} else {
+					custom_alert(lang.Action_impossible, lang.Attention)
+				}
+			},
+			'json'
+		)
+			.fail(function (xhr, status, error) {
+				custom_alert(lang.Action_impossible + '<br>' + error, lang.Attention)
+			})
+	})
 })
 

@@ -1,6 +1,6 @@
 /* 
  * Feuille de marque en ligne
- * Javascript partie C
+ * Javascript partie C : Match non verrouillé
  */
 
 $(function () {
