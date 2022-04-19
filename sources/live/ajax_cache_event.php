@@ -14,7 +14,7 @@ $pitch_event = utyGetGet('pitch_event', false);
 $arrayPitchs = [];
 
 if ($pitch_event > 0) {
-    for ($i=1; $i <= $pitch_event; $i++) { 
+    for ($i = 1; $i <= $pitch_event; $i++) {
         $arrayPitchs[] = $i;
     }
 }
@@ -30,6 +30,9 @@ $hourEventWork = utyMM_To_HHMM($time);
 
 $db = new MyBdd();
 $cache = new CacheMatch($_GET);
-$cache->Event($db, $idEvent, $dateEvent, $hourEventWork, $arrayPitchs);
-		
-echo "Time = $hourEvent, Working time = $hourEventWork";
+$arrayResult['pitches'] = $cache->Event($db, $idEvent, $dateEvent, $hourEventWork, $arrayPitchs);
+$arrayResult['time'] = [
+    'currentTime' => $hourEvent,
+    'workingTime' => $hourEventWork
+];
+return_200($arrayResult);
