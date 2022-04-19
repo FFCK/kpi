@@ -341,13 +341,18 @@ class CacheMatch
 
 		// Génération des fichiers 
 		$time = utyHHMM_To_MM($hourMatch);
+		$arrayResult = [];
 		foreach ($arrayPitch as $pitch) {
 			$idMatch = $this->GetBestMatch($tMatchs, $pitch, $time);
 			if ($idMatch >= 0) {
 				$this->Pitch($idEvent, $pitch, $idMatch);
-				echo 'Terrain ' . $pitch . ' - Match ' . $idMatch . '<br>';
+				$arrayResult[] = [
+					'pitch' => $pitch,
+					'game' => $idMatch
+				];
 			}
 		}
+		return $arrayResult;
 	}
 
 	function GetBestMatch(&$tMatchs, $pitch, $time)
