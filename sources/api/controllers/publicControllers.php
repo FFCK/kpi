@@ -162,7 +162,6 @@ function GetGamesController($route, $params)
       AND c.Publication = 'O'
       AND j.Publication = 'O'
       AND m.Publication = 'O'
-      AND j.Nbequipes > 1
       ORDER BY m.Date_match, m.Heure_match, m.Terrain";
   }
   $stmt = $myBdd->pdo->prepare($sql);
@@ -233,7 +232,6 @@ function GetChartsController($route, $params)
       AND c.Statut != 'ATT'
       AND j.Publication = 'O'
       AND m.Publication = 'O'
-      AND j.Nbequipes > 1
       ORDER BY m.Id_journee, m.Date_match, m.Heure_match, m.Terrain";
   }
   $stmt = $myBdd->pdo->prepare($sql);
@@ -282,7 +280,6 @@ function GetChartsController($route, $params)
       LEFT OUTER JOIN kp_competition_equipe_journee cej ON cej.Id_journee = j.Id
       LEFT OUTER JOIN kp_competition_equipe ce ON ce.Id = cej.Id
       WHERE j.Id = ? 
-      AND j.Nbequipes > 1
       ORDER BY c_season, c_order, c_code, d_round, d_level DESC, d_phase, d_start DESC, 
       t_clt ASC, t_diff DESC, t_plus ASC ";
   }

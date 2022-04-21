@@ -171,7 +171,6 @@ class Matchs extends MyPage
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O'
-                AND j.Nbequipes > 1
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeSaison));
@@ -218,7 +217,6 @@ class Matchs extends MyPage
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O'
-                AND j.Nbequipes > 1
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeSaison));
@@ -300,7 +298,9 @@ class Matchs extends MyPage
                         if ($row['EquipeB'] == '' && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
                             $row['EquipeB'] = $EquipesAffectAuto[1];
                         }
-                        if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
+                        if ($row['Arbitre_principal'] == '-1') {
+                            $row['Arbitre_principal'] = '';
+                        } elseif ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
                             $row['Arbitre_principal'] = utyArbSansNiveau(
                                 utyInitialesPrenomArbitre(
                                     $row['Arbitre_principal'],
@@ -312,7 +312,9 @@ class Matchs extends MyPage
                         } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
                             $row['Arbitre_principal'] = $EquipesAffectAuto[2];
                         }
-                        if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
+                        if ($row['Arbitre_secondaire'] == '-1') {
+                            $row['Arbitre_secondaire'] = '';
+                        } elseif ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
                             $row['Arbitre_secondaire'] = utyArbSansNiveau(
                                 utyInitialesPrenomArbitre(
                                     $row['Arbitre_secondaire'],
@@ -362,7 +364,7 @@ class Matchs extends MyPage
                     }
 
                     if ($date_match != $row['Date_match']) {
-                        $arrayDates[] = ['date' => $row['Date_match']];
+                        $arrayDates[] = ['date' => $row['Date_match'], 'date_fr' => utyDateUsToFr($row['Date_match'])];
                     }
                     $date_match = $row['Date_match'];
 
@@ -372,7 +374,6 @@ class Matchs extends MyPage
                     $heure_match = $row['Heure_match'];
 
                     $numCategorie[$row['Categorie']] = $row['Categorie'];
-                    $categorie_match = $row['Categorie'];
 
                     $arrayMatchs[] = array(
                         'Id' => $row['Id'], 'Id_journee' => $row['Id_journee'], 'Numero_ordre' => $row['Numero_ordre'],
@@ -436,6 +437,7 @@ class Matchs extends MyPage
             sort($numCategorie);
 
             $nbCategories = count($numCategorie);
+            $this->m_tpl->assign('lang', $_SESSION['lang']);
             $this->m_tpl->assign('nbCategories', $nbCategories);
             $this->m_tpl->assign('numCategorie', $numCategorie);
             $this->m_tpl->assign('lstCategoriesArray', $lstCategoriesArray);
