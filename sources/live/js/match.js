@@ -571,7 +571,7 @@ function RefreshCacheChrono () {
 	}
 }
 
-function RefreshCacheTerrain () {
+function RefreshCacheTerrain (chrono = true) {
 	if (theContext.Event > 0) {
 		axios({
 			method: 'post',
@@ -580,7 +580,7 @@ function RefreshCacheTerrain () {
 			responseType: 'json'
 		})
 			.then(function (response) {
-				ParseCacheTerrain(response.data)
+				ParseCacheTerrain(response.data, chrono)
 			})
 			.catch(function (error) {
 				console.log(error)
@@ -595,7 +595,7 @@ theContext.CountTimer = 0
 theContext.Speaker = 0
 theContext.Event = 0
 
-function ParseCacheTerrain (jsonData) {
+function ParseCacheTerrain (jsonData, chrono = true) {
 	//  if(theContext.Match.GetId(0) == -1)
 	//      return; // Pas de match sélectionné
 
@@ -607,7 +607,9 @@ function ParseCacheTerrain (jsonData) {
 		theContext.Match.SetId(0, jsonData.id_match)
 
 		RefreshCacheGlobal()
-		RefreshCacheChrono()
+		if (chrono) {
+			RefreshCacheChrono()
+		}
 		// On laisse le temps de charger les infos du match pour récupérer le drapeau pays du dernier événement
 		setTimeout(RefreshCacheScore(), 800)
 
