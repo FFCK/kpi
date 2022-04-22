@@ -571,7 +571,7 @@ function RefreshCacheChrono () {
 	}
 }
 
-function RefreshCacheTerrain (chrono = true) {
+function RefreshCacheTerrain (chrono = true, next = false) {
 	if (theContext.Event > 0) {
 		axios({
 			method: 'post',
@@ -580,7 +580,7 @@ function RefreshCacheTerrain (chrono = true) {
 			responseType: 'json'
 		})
 			.then(function (response) {
-				ParseCacheTerrain(response.data, chrono)
+				ParseCacheTerrain(response.data, chrono, next)
 			})
 			.catch(function (error) {
 				console.log(error)
@@ -595,16 +595,18 @@ theContext.CountTimer = 0
 theContext.Speaker = 0
 theContext.Event = 0
 
-function ParseCacheTerrain (jsonData, chrono = true) {
+function ParseCacheTerrain (jsonData, chrono = true, next = false) {
 	//  if(theContext.Match.GetId(0) == -1)
 	//      return; // Pas de match sélectionné
 
-	if (typeof (jsonData.id_match) == 'undefined')
+	id_match = next ? jsonData.id_next : jsonData.id_match
+
+	if (typeof (id_match) == 'undefined' || id_match == -1)
 		return	// Data JSON non correcte ...
 
-	if (theContext.Match.GetId(0) != jsonData.id_match) {
+	if (theContext.Match.GetId(0) != id_match) {
 
-		theContext.Match.SetId(0, jsonData.id_match)
+		theContext.Match.SetId(0, id_match)
 
 		RefreshCacheGlobal()
 		if (chrono) {

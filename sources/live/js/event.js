@@ -27,7 +27,11 @@ function RefreshCache () {
 			++theCount
 			texte = "<b>Refresh Count = " + theCount + "</b><br>"
 			data.pitches.forEach((item) => {
-				texte += 'Pitch ' + item.pitch + ' - game : ' + item.game + '<br>'
+				texte += 'Pitch ' + item.pitch + ' - game : ' + item.game
+				if (item.next != -1) {
+					texte += ' (next: ' + item.next + ')'
+				}
+				texte += '<br>'
 			})
 			texte += '<br>Current Time : ' + data.time.currentTime + ' - Working time : ' + data.time.workingTime
 			$('#info').html(texte)

@@ -93,6 +93,8 @@ jq(document).ready(function () {
                 break
             case 'teams':
             case 'teams_club':
+            case 'next_game':
+            case 'next_game_club':
                 jq('#match-col, #game_report, #anime-col').show()
                 break
             case 'liveteams':
@@ -238,6 +240,16 @@ jq(document).ready(function () {
                 break
             case 'teams_club':
                 url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                    + '&css=' + css + '&anime=' + jq('#anime').val()
+                ChangeVoie(jq('#channel').val(), url, showUrl)
+                break
+            case 'next_game':
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                    + '&css=' + css + '&anime=' + jq('#anime').val()
+                ChangeVoie(jq('#channel').val(), url, showUrl)
+                break
+            case 'next_game_club':
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
                     + '&css=' + css + '&anime=' + jq('#anime').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
@@ -443,6 +455,8 @@ jq(document).ready(function () {
                 break
             case 'teams':
             case 'teams_club':
+            case 'next_game':
+            case 'next_game_club':
                 jq('#match-col2, #game_report2, #anime-col2').show()
                 break
             case 'liveteams':
@@ -574,6 +588,16 @@ jq(document).ready(function () {
                 break
             case 'teams_club':
                 url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&css=' + css + '&anime=' + jq('#anime2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'next_game':
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                    + '&css=' + css + '&anime=' + jq('#anime2').val()
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'next_game_club':
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
                     + '&css=' + css + '&anime=' + jq('#anime2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
@@ -755,6 +779,8 @@ jq(document).ready(function () {
                 break
             case 'teams':
             case 'teams_club':
+            case 'next_game':
+            case 'next_game_club':
                 jq('#match-col3, #game_report3, #anime-col3').show()
                 break
             case 'liveteams':
@@ -886,6 +912,16 @@ jq(document).ready(function () {
                 break
             case 'teams_club':
                 url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&css=' + css + '&anime=' + jq('#anime3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'next_game':
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                    + '&css=' + css + '&anime=' + jq('#anime3').val()
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'next_game_club':
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
                     + '&css=' + css + '&anime=' + jq('#anime3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
@@ -1067,6 +1103,8 @@ jq(document).ready(function () {
                 break
             case 'teams':
             case 'teams_club':
+            case 'next_game':
+            case 'next_game_club':
                 jq('#match-col4, #game_report4, #anime-col4').show()
                 break
             case 'liveteams':
@@ -1198,6 +1236,16 @@ jq(document).ready(function () {
                 break
             case 'teams_club':
                 url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&css=' + css + '&anime=' + jq('#anime4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'next_game':
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                    + '&css=' + css + '&anime=' + jq('#anime4').val()
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'next_game_club':
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
                     + '&css=' + css + '&anime=' + jq('#anime4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
