@@ -85,9 +85,9 @@ class CacheMatch
 		}
 	}
 
-	function Pitch($idEvent, $pitch, $idMatch)
+	function Pitch($idEvent, $pitch, $idMatch, $idNext = -1)
 	{
-		$arrayCache = array('id_match' => $idMatch, 'pitch' => $pitch);
+		$arrayCache = array('id_match' => $idMatch, 'pitch' => $pitch, 'id_next' => $idNext);
 
 		//Nouveau format
 		$this->StartCache();
@@ -199,6 +199,7 @@ class CacheMatch
 			'phase' => $rJournee['Phase'],
 			'terrain' => $rMatch['Terrain'],
 			'date' => $rMatch['Date_match'],
+			'heure' => $rMatch['Heure_match'],
 			'numero_ordre' => $rMatch['Numero_ordre'],
 			'validation' => $rMatch['Validation'],
 			'statut' => $rMatch['Statut'],
@@ -313,7 +314,7 @@ class CacheMatch
 				AND b.Id = c.Id_journee 
 				AND c.Id_evenement = ? 
 				AND a.Date_match = ? 
-				AND a.Statut != 'ATT' 
+				AND a.Publication = 'O' 
 				AND a.Terrain IN ($in) 
 				ORDER BY a.Heure_match, a.Terrain ";
 			$result = $db->pdo->prepare($sql);
@@ -325,7 +326,7 @@ class CacheMatch
 				AND b.Id = c.Id_journee 
 				AND c.Id_evenement = ? 
 				AND a.Date_match = ? 
-				AND a.Statut != 'ATT' 
+				AND a.Publication = 'O' 
 				ORDER BY a.Heure_match, a.Terrain ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idEvent, $dateMatch));
@@ -343,12 +344,14 @@ class CacheMatch
 		$time = utyHHMM_To_MM($hourMatch);
 		$arrayResult = [];
 		foreach ($arrayPitch as $pitch) {
-			$idMatch = $this->GetBestMatch($tMatchs, $pitch, $time);
-			if ($idMatch >= 0) {
-				$this->Pitch($idEvent, $pitch, $idMatch);
+			$match = $this->GetBestMatch($tMatchs, $pitch, $time);
+			if ($match['id'] >= 0) {
+				$next = $this->GetNextMatch($tMatchs, $pitch, $match['time']);
+				$this->Pitch($idEvent, $pitch, $match['id'], $next);
 				$arrayResult[] = [
 					'pitch' => $pitch,
-					'game' => $idMatch
+					'game' => $match['id'],
+					'next' => $next
 				];
 			}
 		}
@@ -360,7 +363,7 @@ class CacheMatch
 		$timeBest = 0;
 		$idBest = -1;
 		for ($i = 0; $i < count($tMatchs); $i++) {
-			if ($tMatchs[$i]['Terrain'] != $pitch)
+			if ($tMatchs[$i]['Terrain'] != $pitch || $tMatchs[$i]['Statut'] === 'ATT')
 				continue;
 
 			$timeMatch = utyHHMM_To_MM($tMatchs[$i]['Heure_match']);
@@ -380,6 +383,25 @@ class CacheMatch
 		if ($idBest == -1)
 			return -1;
 		else
-			return $tMatchs[$idBest]['Id'];
+			return ['id' => $tMatchs[$idBest]['Id'], 'time' => $tMatchs[$idBest]['Heure_match']];
+	}
+
+	function GetNextMatch(&$tMatchs, $pitch, $time)
+	{
+		$idNext = -1;
+		for ($i = 0; $i < count($tMatchs); $i++) {
+			if ($tMatchs[$i]['Terrain'] != $pitch || $tMatchs[$i]['Statut'] != 'ATT')
+				continue;
+
+			$timeMatch = utyHHMM_To_MM($tMatchs[$i]['Heure_match']);
+			if ($idNext == -1 && $timeMatch > $time) {
+				$idNext = $i;
+			}
+		}
+
+		if ($idNext == -1)
+			return -1;
+		else
+			return $tMatchs[$idNext]['Id'];
 	}
 }

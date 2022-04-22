@@ -165,6 +165,7 @@
               <option value="score_e" {if $filtrePres == 'score_e'}selected{/if}>Events only (nations)</option>
               <option value="score_s" {if $filtrePres == 'score_s'}selected{/if}>Static events (nations)</option>
               <option value="teams" {if $filtrePres == 'teams'}selected{/if}>Game & score (nations)</option>
+              <option value="next_game" {if $filtrePres == 'next_game'}selected{/if}>Next game (nations)</option>
             </optgroup>
             <optgroup label="Running game (clubs)">
               <option value="score_club" {if $filtrePres == 'score_club'}selected{/if}>Live score (clubs)</option>
@@ -173,6 +174,8 @@
               <option value="score_club_s" {if $filtrePres == 'score_club_s'}selected{/if}>Static events (clubs)
               </option>
               <option value="teams_club" {if $filtrePres == 'teams_club'}selected{/if}>Game & score (clubs)</option>
+              <option value="next_game_club" {if $filtrePres == 'next_game_club'}selected{/if}>Next game (clubs)
+              </option>
               <option value="liveteams" {if $filtrePres == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
@@ -415,6 +418,7 @@
               <option value="score_e" {if $filtrePres2 == 'score_e'}selected{/if}>Events only (nations)</option>
               <option value="score_s" {if $filtrePres2 == 'score_s'}selected{/if}>Static events (nations)</option>
               <option value="teams" {if $filtrePres2 == 'teams'}selected{/if}>Game & score (nations)</option>
+              <option value="next_game" {if $filtrePres2 == 'next_game'}selected{/if}>Next game (nations)</option>
             </optgroup>
             <optgroup label="Running game (clubs)">
               <option value="score_club" {if $filtrePres2 == 'score_club'}selected{/if}>Live score (clubs)</option>
@@ -423,6 +427,8 @@
               <option value="score_club_s" {if $filtrePres2 == 'score_club_s'}selected{/if}>Static events (clubs)
               </option>
               <option value="teams_club" {if $filtrePres2 == 'teams_club'}selected{/if}>Game & score (clubs)</option>
+              <option value="next_game_club" {if $filtrePres2 == 'next_game_club'}selected{/if}>Next game (clubs)
+              </option>
               <option value="liveteams" {if $filtrePres2 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
@@ -624,6 +630,7 @@
               <option value="score_e" {if $filtrePres3 == 'score_e'}selected{/if}>Events only (nations)</option>
               <option value="score_s" {if $filtrePres3 == 'score_s'}selected{/if}>Static events (nations)</option>
               <option value="teams" {if $filtrePres3 == 'teams'}selected{/if}>Game & score (nations)</option>
+              <option value="next_game" {if $filtrePres3 == 'next_game'}selected{/if}>Next game (nations)</option>
             </optgroup>
             <optgroup label="Running game (clubs)">
               <option value="score_club" {if $filtrePres3 == 'score_club'}selected{/if}>Live score (clubs)</option>
@@ -632,6 +639,8 @@
               <option value="score_club_s" {if $filtrePres3 == 'score_club_s'}selected{/if}>Static events (clubs)
               </option>
               <option value="teams_club" {if $filtrePres3 == 'teams_club'}selected{/if}>Game & score (clubs)</option>
+              <option value="next_game_club" {if $filtrePres3 == 'next_game_club'}selected{/if}>Next game (clubs)
+              </option>
               <option value="liveteams" {if $filtrePres3 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
@@ -833,6 +842,7 @@
               <option value="score_e" {if $filtrePres4 == 'score_e'}selected{/if}>Events only (nations)</option>
               <option value="score_s" {if $filtrePres4 == 'score_s'}selected{/if}>Static events (nations)</option>
               <option value="teams" {if $filtrePres4 == 'teams'}selected{/if}>Game & score (nations)</option>
+              <option value="next_game" {if $filtrePres4 == 'next_game'}selected{/if}>Next game (nations)</option>
             </optgroup>
             <optgroup label="Running game (clubs)">
               <option value="score_club" {if $filtrePres4 == 'score_club'}selected{/if}>Live score (clubs)</option>
@@ -841,6 +851,8 @@
               <option value="score_club_s" {if $filtrePres4 == 'score_club_s'}selected{/if}>Static events (clubs)
               </option>
               <option value="teams_club" {if $filtrePres4 == 'teams_club'}selected{/if}>Game & score (clubs)</option>
+              <option value="next_game_club" {if $filtrePres4 == 'next_game_club'}selected{/if}>Next game (clubs)
+              </option>
               <option value="liveteams" {if $filtrePres4 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
