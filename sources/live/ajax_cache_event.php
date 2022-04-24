@@ -30,7 +30,7 @@ $hourEventWork = utyMM_To_HHMM($time);
 
 $db = new MyBdd();
 $cache = new CacheMatch($_GET);
-$arrayResult['pitches'] = $cache->Event($db, $idEvent, $dateEvent, $hourEventWork, $arrayPitchs);
+$arrayResult['pitches'] = $cache->Event($db, $idEvent, $dateEvent, $hourEventWork, $hourEvent, $arrayPitchs);
 $arrayResult['time'] = [
     'currentTime' => $hourEvent,
     'workingTime' => $hourEventWork

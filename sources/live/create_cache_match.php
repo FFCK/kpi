@@ -302,7 +302,7 @@ class CacheMatch
 		$this->EndCache('matchs.json');
 	}
 
-	function Event(&$db, $idEvent, $dateMatch, $hourMatch, $arrayPitchs = null)
+	function Event(&$db, $idEvent, $dateMatch, $hourMatch, $realTime, $arrayPitchs = null)
 	{
 		// Chargement de tous les Matchs de l'évenement pour la date indiquée et les terrains concernés ...
 		$tMatchs = null;
@@ -342,18 +342,19 @@ class CacheMatch
 
 		// Génération des fichiers 
 		$time = utyHHMM_To_MM($hourMatch);
+		$realTime = utyHHMM_To_MM($realTime);
 		$arrayResult = [];
 		foreach ($arrayPitch as $pitch) {
 			$match = $this->GetBestMatch($tMatchs, $pitch, $time);
-			if ($match['id'] >= 0) {
-				$next = $this->GetNextMatch($tMatchs, $pitch, $match['time']);
-				$this->Pitch($idEvent, $pitch, $match['id'], $next);
-				$arrayResult[] = [
-					'pitch' => $pitch,
-					'game' => $match['id'],
-					'next' => $next
-				];
-			}
+			$nextTime = $match['id'] > 0 ? utyHHMM_To_MM($match['time']) : $realTime;
+			$next = $this->GetNextMatch($db, $tMatchs, $pitch, $nextTime);
+			$this->Pitch($idEvent, $pitch, $match['id'], $next);
+			$arrayResult[] = [
+				'pitch' => $pitch,
+				'game' => $match['id'],
+				'next' => $next
+			];
+			// }
 		}
 		return $arrayResult;
 	}
@@ -381,12 +382,12 @@ class CacheMatch
 		}
 
 		if ($idBest == -1)
-			return -1;
+			return ['id' => null, 'time' => null];
 		else
 			return ['id' => $tMatchs[$idBest]['Id'], 'time' => $tMatchs[$idBest]['Heure_match']];
 	}
 
-	function GetNextMatch(&$tMatchs, $pitch, $time)
+	function GetNextMatch(&$db, &$tMatchs, $pitch, $time)
 	{
 		$idNext = -1;
 		for ($i = 0; $i < count($tMatchs); $i++) {
@@ -399,9 +400,13 @@ class CacheMatch
 			}
 		}
 
-		if ($idNext == -1)
-			return -1;
-		else
+		if ($idNext == -1) {
+			return ['id' => null, 'time' => null];
+		} else {
+			if (!is_file(dirname(__FILE__) . '/cache/' . $tMatchs[$idNext]['Id'] . '_match_global.json')) {
+				$this->MatchGlobal($db, $tMatchs[$idNext]['Id']);
+			}
 			return $tMatchs[$idNext]['Id'];
+		}
 	}
 }
