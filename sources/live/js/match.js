@@ -599,7 +599,7 @@ function ParseCacheTerrain (jsonData, chrono = true, next = false) {
 	//  if(theContext.Match.GetId(0) == -1)
 	//      return; // Pas de match sélectionné
 
-	id_match = next ? jsonData.id_next : jsonData.id_match
+	id_match = next ? jsonData.id_next.id : jsonData.id_match
 
 	if (typeof (id_match) == 'undefined' || id_match == -1)
 		return	// Data JSON non correcte ...

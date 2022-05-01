@@ -352,6 +352,7 @@ class CacheMatch
 			$arrayResult[] = [
 				'pitch' => $pitch,
 				'game' => $match['id'],
+				'num' => $match['num'],
 				'next' => $next
 			];
 			// }
@@ -382,9 +383,13 @@ class CacheMatch
 		}
 
 		if ($idBest == -1)
-			return ['id' => null, 'time' => null];
+			return ['id' => null, 'time' => null, 'num' => null];
 		else
-			return ['id' => $tMatchs[$idBest]['Id'], 'time' => $tMatchs[$idBest]['Heure_match']];
+			return [
+				'id' => $tMatchs[$idBest]['Id'],
+				'time' => $tMatchs[$idBest]['Heure_match'],
+				'num' => $tMatchs[$idBest]['Numero_ordre']
+			];
 	}
 
 	function GetNextMatch(&$db, &$tMatchs, $pitch, $time)
@@ -401,12 +406,16 @@ class CacheMatch
 		}
 
 		if ($idNext == -1) {
-			return ['id' => null, 'time' => null];
+			return ['id' => null, 'time' => null, 'num' => null];
 		} else {
 			if (!is_file(dirname(__FILE__) . '/cache/' . $tMatchs[$idNext]['Id'] . '_match_global.json')) {
 				$this->MatchGlobal($db, $tMatchs[$idNext]['Id']);
 			}
-			return $tMatchs[$idNext]['Id'];
+			return [
+				'id' => $tMatchs[$idNext]['Id'],
+				'time' => $tMatchs[$idNext]['Heure_match'],
+				'num' => $tMatchs[$idNext]['Numero_ordre']
+			];
 		}
 	}
 }

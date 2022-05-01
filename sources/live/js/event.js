@@ -27,9 +27,11 @@ function RefreshCache () {
 			++theCount
 			texte = "<b>Refresh Count = " + theCount + "</b><br>"
 			data.pitches.forEach((item) => {
-				texte += 'Pitch ' + item.pitch + ' - game : ' + item.game
-				if (item.next != -1) {
-					texte += ' (next: ' + item.next + ')'
+				texte += 'Pitch ' + item.pitch + ' - game : ' + item.game + ' #' + item.num
+				if (item.next.id != null) {
+					texte += ' (next: ' + item.next.time + ' - ' + item.next.id + ' #' + item.next.num + ')'
+				} else {
+					texte += ' (next: none)'
 				}
 				texte += '<br>'
 			})
