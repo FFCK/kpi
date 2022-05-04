@@ -148,7 +148,7 @@ class Classement extends MyPage
 	{
 		MyPage::MyPage();
 
-		$this->SetTemplate("Phases", "Classements", true);
+		$this->SetTemplate("Classement", "Classements", true);
 		$this->Load();
 		//		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplateNew('kpclassement');
