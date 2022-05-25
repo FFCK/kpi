@@ -339,6 +339,7 @@ jq(document).ready(function () {
 		jq('#editTeamLogo').val(jq(this).data('logo'))
 		jq('#editTeamColor1').val(jq(this).data('color1'))
 		jq('#editTeamColor2').val(jq(this).data('color2'))
+		jq('#editTeamColortext').val(jq(this).data('colortext'))
 		jq('#editTeamImg').attr('src', '../img/KIP/colors/' + jq(this).data('numero') + '-colors.png')
 		jq('#editTeam').show()
 		jq('#resetTeam').focus()
@@ -358,7 +359,8 @@ jq(document).ready(function () {
 				colorChangeLast: jq('#editTeamColorChangeLast').attr('checked'),
 				colorChangeClub: jq('#editTeamColorChangeClub').attr('checked'),
 				color1: jq('#editTeamColor1').val(),
-				color2: jq('#editTeamColor2').val()
+				color2: jq('#editTeamColor2').val(),
+				colortext: jq('#editTeamColortext').val()
 			})
 			.done(function () {
 				jq('#formEquipe').submit()

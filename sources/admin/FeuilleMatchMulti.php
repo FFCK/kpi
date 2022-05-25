@@ -58,7 +58,8 @@ class FeuilleMatch extends MyPage
                 a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, 
                 ce1.Code_club codeclubA, ce1.Libelle LibelleA, ce2.Code_club codeclubB, ce2.Libelle LibelleB, 
                 a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels,
-                ce1.color1 color1A, ce1.color2 color2A, ce2.color1 color1B, ce2.color2 color2B,
+                ce1.color1 color1A, ce1.color2 color2A, ce1.colortext colortextA, 
+                ce2.color1 color1B, ce2.color2 color2B, ce1.colortext colortextB,
                 b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, 
                 b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison 
                 FROM kp_match a
@@ -229,10 +230,12 @@ class FeuilleMatch extends MyPage
             if ($row['color1A']) {
                 $color1A = sscanf($row['color1A'], "#%02x%02x%02x");
                 $color2A = sscanf($row['color2A'], "#%02x%02x%02x");
+                $colortextA = sscanf($row['colortextA'], "#%02x%02x%02x");
             }
             if ($row['color1B']) {
                 $color1B = sscanf($row['color1B'], "#%02x%02x%02x");
                 $color2B = sscanf($row['color2B'], "#%02x%02x%02x");
+                $colortextB = sscanf($row['colortextB'], "#%02x%02x%02x");
             }
 
             if ($row['ScoreA'] != '?' && $row['ScoreA'] != '') {

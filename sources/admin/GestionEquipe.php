@@ -119,7 +119,7 @@ class GestionEquipe extends MyPageSecure
 
 		if (strlen($codeCompet) > 0) {
 			$sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, ce.Tirage, 
-				c.Code_comite_dep, c.Libelle Club, ce.logo, ce.color1, ce.color2
+				c.Code_comite_dep, c.Libelle Club, ce.logo, ce.color1, ce.color2, ce.colortext
 				FROM kp_competition_equipe ce, kp_club c 
 				WHERE ce.Code_compet = ? 
 				AND ce.Code_saison = ?
@@ -164,7 +164,7 @@ class GestionEquipe extends MyPageSecure
 					'Code_club' => $row['Code_club'], 'Numero' => $row['Numero'], 'Club' => $row['Club'],
 					'Poule' => $row['Poule'], 'Tirage' => $row['Tirage'], 'nbMatchs' => $nbMatchs,
 					'Code_comite_dep' => $row['Code_comite_dep'], 'logo' => $row['logo'],
-					'color1' => $row['color1'], 'color2' => $row['color2']
+					'color1' => $row['color1'], 'color2' => $row['color2'], 'colortext' => $row['colortext']
 				));
 			}
 		}
@@ -419,8 +419,8 @@ class GestionEquipe extends MyPageSecure
 					// $logo = utySearchLogoFile($club);
 
 					$sql = "INSERT INTO kp_competition_equipe 
-						(Code_compet, Code_saison, Libelle, Code_club, Numero, logo, color1, color2) 
-						SELECT ?, ?, Libelle, Code_club, Numero, logo, color1, color2
+						(Code_compet, Code_saison, Libelle, Code_club, Numero, logo, color1, color2, colortext) 
+						SELECT ?, ?, Libelle, Code_club, Numero, logo, color1, color2, colortext
 						FROM kp_equipe 
 						WHERE Numero = ? ";
 					$result = $myBdd->pdo->prepare($sql);
@@ -529,8 +529,8 @@ class GestionEquipe extends MyPageSecure
 				$myBdd->pdo->beginTransaction();
 
 				$sql  = "INSERT INTO kp_competition_equipe 
-					(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau, logo, color1, color2)
-					SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ?, logo, color1, color2 
+					(Code_compet, Code_saison, Libelle, Code_club, Numero, Poule, Tirage, Clt, CltNiveau, logo, color1, color2, colortext)
+					SELECT ?, ?, Libelle, Code_club, Numero, ?, ?, ?, ?, logo, color1, color2, colortext 
 					FROM kp_equipe 
 					WHERE Numero = ? ";
 				$result = $myBdd->pdo->prepare($sql);
