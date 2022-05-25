@@ -57,7 +57,32 @@ services:
             - "9000:8080" # Vue-cli HMR
         volumes:
             - ../sources/app_dev:/app
-        #   - ../sources/app:/app/dist
+        user: "1000:33"
+        links:
+            - webphp7
+    node_live:
+        image: node:latest
+        build:
+            context: ../
+            dockerfile: ./docker/node/Dockerfile_live
+        ports:
+            - "8001:8000" # vue ui
+            - "9001:8080" # Vue-cli HMR
+        volumes:
+            - ../sources/app_live_dev:/app
+        user: "1000:33"
+        links:
+            - webphp7
+    node_wsm:
+        image: node:latest
+        build:
+            context: ../
+            dockerfile: ./docker/node/Dockerfile_wsm
+        ports:
+            - "8002:8000" # vue ui
+            - "9002:8080" # Vue-cli HMR
+        volumes:
+            - ../sources/app_wsm_dev:/app
         user: "1000:33"
         links:
             - webphp7
