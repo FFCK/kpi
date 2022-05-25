@@ -32,6 +32,7 @@ if (strlen($logo) <= 4) {
 
 $color1 = utyGetPost('color1', null);
 $color2 = utyGetPost('color2', $color1);
+$colortext = utyGetPost('colortext', 'black');
 $colorChangeNext = filter_var(utyGetPost('colorChangeNext', false), FILTER_VALIDATE_BOOLEAN);
 $colorChangeLast = filter_var(utyGetPost('colorChangeLast', false), FILTER_VALIDATE_BOOLEAN);
 $colorChangeClub = filter_var(utyGetPost('colorChangeClub', false), FILTER_VALIDATE_BOOLEAN);
@@ -40,13 +41,15 @@ if ($color1 && $color2) {
   $sql = "UPDATE kp_competition_equipe
     SET logo = :logo,
       color1 = :color1, 
-      color2 = :color2
+      color2 = :color2,
+      colortext = :colortext
     WHERE Id = :equipe ";
   $stmt = $myBdd->pdo->prepare($sql);
   $stmt->execute(array(
     ':logo' => $logo,
     ':color1' => $color1,
     ':color2' => $color2,
+    ':colortext' => $colortext,
     ':equipe' => $equipe,
   ));
 
@@ -54,12 +57,14 @@ if ($color1 && $color2) {
     $sql = "UPDATE kp_equipe e
       LEFT JOIN kp_competition_equipe ce ON e.Numero = ce.Numero
       SET e.color1 = :color1, 
-        e.color2 = :color2
+        e.color2 = :color2,
+        e.colortext = :colortext
       WHERE ce.Numero = :numero ";
     $stmt = $myBdd->pdo->prepare($sql);
     $stmt->execute(array(
       ':color1' => $color1,
       ':color2' => $color2,
+      ':colortext' => $colortext,
       ':numero' => $numero,
     ));
   }
@@ -67,12 +72,14 @@ if ($color1 && $color2) {
   if ($colorChangeLast) {
     $sql = "UPDATE kp_competition_equipe
       SET color1 = :color1, 
-        color2 = :color2
+        color2 = :color2,
+        colortext = :colortext
       WHERE Numero = :numero ";
     $stmt = $myBdd->pdo->prepare($sql);
     $stmt->execute(array(
       ':color1' => $color1,
       ':color2' => $color2,
+      ':colortext' => $colortext,
       ':numero' => $numero,
     ));
   }
@@ -80,22 +87,26 @@ if ($color1 && $color2) {
   if ($colorChangeClub) {
     $sql = "UPDATE kp_competition_equipe
       SET color1 = :color1, 
-        color2 = :color2
+        color2 = :color2,
+        colortext = :colortext
       WHERE Code_club = :club ";
     $stmt = $myBdd->pdo->prepare($sql);
     $stmt->execute(array(
       ':color1' => $color1,
       ':color2' => $color2,
+      ':colortext' => $colortext,
       ':club' => $club,
     ));
     $sql = "UPDATE kp_equipe
       SET color1 = :color1, 
-        color2 = :color2
+        color2 = :color2,
+        colortext = :colortext
       WHERE Code_club = :club ";
     $stmt = $myBdd->pdo->prepare($sql);
     $stmt->execute(array(
       ':color1' => $color1,
       ':color2' => $color2,
+      ':colortext' => $colortext,
       ':club' => $club,
     ));
   }
