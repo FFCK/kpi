@@ -36,7 +36,8 @@ class GestionMatchDetail extends MyPageSecure
 		$sql = "SELECT m.*, m.Statut statutMatch, m.Periode periodeMatch, m.Type typeMatch, 
 			m.Heure_fin, j.*, j.Code_saison saison, c.*, m.Type Type_match, m.Validation Valid_match, 
 			m.Publication PubliMatch, ce1.Libelle equipeA, ce1.Code_club clubA, ce2.Libelle equipeB, 
-			ce1.color1 color1A, ce1.color2 color2A, ce2.color1 color1B, ce2.color2 color2B,
+			ce1.color1 color1A, ce1.color2 color2A, ce1.colortext colortextA, 
+			ce2.color1 color1B, ce2.color2 color2B, ce2.colortext colortextB,
 			ce2.Code_club clubB 
 			FROM kp_journee j, kp_competition c, kp_match m 
 			LEFT OUTER JOIN kp_competition_equipe ce1 ON (ce1.Id = m.Id_equipeA) 
@@ -432,8 +433,8 @@ stop_time: <span id="stop_time_display"></span><br />
 							<td id="selectionA">
 								<a class="fm_bouton equipes" data-equipe="A">
 									<?php if ($row['color1A']) { ?>
-										<span class="team_colors left" style="background: linear-gradient(to bottom right, <?= $row['color1A'] ?> 50%, <?= $row['color2A'] ?> 50%);">
-										</span>
+										<b class="team_colors left" style="background-color: <?= $row['color1A'] ?>; border: 3px solid <?= $row['color2A'] ?>; color: <?= $row['colortextA'] ?>;">A
+										</b>
 									<?php } ?>
 									<?= $lang['Equipe']; ?> A<br />
 									<?= $row['equipeA']; ?>
@@ -515,8 +516,8 @@ stop_time: <span id="stop_time_display"></span><br />
 								<a class="fm_bouton equipes" data-equipe="B">
 									<span class="score" id="scoreB">0</span>
 									<?php if ($row['color1B']) { ?>
-										<span class="team_colors right" style="background: linear-gradient(to bottom right, <?= $row['color1B'] ?> 50%, <?= $row['color2B'] ?> 50%);">
-										</span>
+										<b class="team_colors right" style="background-color: <?= $row['color1B'] ?>; border: 3px solid <?= $row['color2B'] ?>; color: <?= $row['colortextB'] ?>;">B
+										</b>
 									<?php } ?>
 									<?= $lang['Equipe']; ?> B<br />
 									<?= $row['equipeB']; ?>

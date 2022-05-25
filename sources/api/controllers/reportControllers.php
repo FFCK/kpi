@@ -24,7 +24,8 @@ function GetGameController($route, $params)
     m.Id_equipeA t_a_id, m.Id_equipeB t_b_id,
     cea.Libelle t_a_label, ceb.Libelle t_b_label, cea.Numero t_a_number, ceb.Numero t_b_number,
     cea.Code_club t_a_club, ceb.Code_club t_b_club, 
-    cea.color1 t_a_color1, cea.color2 t_a_color2, ceb.color1 t_b_color1, ceb.color2 t_b_color2, 
+    cea.color1 t_a_color1, cea.color2 t_a_color2, cea.colortext t_a_colortext, 
+    ceb.color1 t_b_color1, ceb.color2 t_b_color2, ceb.colortext t_b_colortext, 
     CASE WHEN cea.logo IS NULL THEN 'KIP/logo/empty-logo.png' ELSE cea.logo END t_a_logo,
     CASE WHEN ceb.logo IS NULL THEN 'KIP/logo/empty-logo.png' ELSE ceb.logo END t_b_logo
     FROM kp_match m 

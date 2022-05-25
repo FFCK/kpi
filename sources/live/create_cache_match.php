@@ -207,11 +207,21 @@ class CacheMatch
 			'arbitre_secondaire' => $rMatch['Arbitre_secondaire'],
 			'equipe1' => array(
 				'id' => $idEquipeA, 'nom' => $rEquipeA['Libelle'],
-				'club' => $rEquipeA['Code_club'], 'joueurs' => $tJoueursA
+				'club' => $rEquipeA['Code_club'],
+				'logo' => $rEquipeA['logo'],
+				'color1' => $rEquipeA['color1'],
+				'color2' => $rEquipeA['color2'],
+				'colortext' => $rEquipeA['colortext'],
+				'joueurs' => $tJoueursA
 			),
 			'equipe2' => array(
 				'id' => $idEquipeB, 'nom' => $rEquipeB['Libelle'],
-				'club' => $rEquipeB['Code_club'], 'joueurs' => $tJoueursB
+				'club' => $rEquipeB['Code_club'],
+				'logo' => $rEquipeB['logo'],
+				'color1' => $rEquipeB['color1'],
+				'color2' => $rEquipeB['color2'],
+				'colortext' => $rEquipeB['colortext'],
+				'joueurs' => $tJoueursB
 			)
 		);
 
