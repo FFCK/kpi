@@ -570,13 +570,22 @@ table.dataTable tbody tr.entraineur {
 }
 
 .team_colors {
-	display: inline-block;
+	/* display: inline-block;
 	width: 25px;
 	height: 25px;
 	border-top-left-radius: 8px;
 	border-bottom-right-radius: 8px;
 	border: 1px solid grey;
+	box-shadow: 2px 2px 5px #999999; */
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border-top-left-radius: 8px;
+	border-bottom-right-radius: 8px;
 	box-shadow: 2px 2px 5px #999999;
+	vertical-align: middle;
+	font-size: large;
+	font-family: system-ui;
 }
 
 .team_colors.left {
