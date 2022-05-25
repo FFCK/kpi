@@ -11,7 +11,7 @@ function login($route)
 function GetEventsController($route, $params)
 {
   $event_mode = $route[1];
-  if (!in_array($event_mode, ['std', 'champ'])) {
+  if (!in_array($event_mode, ['std', 'champ', 'all'])) {
     return_403();
   }
   $force = $route[2] ?? false;
@@ -21,7 +21,12 @@ function GetEventsController($route, $params)
   }
 
   $myBdd = new MyBdd();
-  if ($event_mode === 'std') {
+  if ($event_mode === 'all') {
+    $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
+      FROM kp_evenement
+      WHERE Publication = 'O'
+      ORDER BY Id DESC ";
+  } elseif ($event_mode === 'std') {
     $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
       FROM kp_evenement
       WHERE app = 'O'

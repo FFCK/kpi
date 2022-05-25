@@ -1,0 +1,188 @@
+{
+  "message": "Welcome on KPI-App !",
+  "test": {
+    "You_work_on_event": "You work on event",
+    "pitch": "Pitch",
+    "Working_game": "Working game"
+  },
+  "Team": "Team",
+  "status": {
+    "Offline": "You are offline!"
+  },
+  "nav": {
+    "Home": "Home",
+    "Login": "Login",
+    "MyAccount": "My account",
+    "Staff": "Organization",
+    "Games": "Games",
+    "Ranking": "Ranking",
+    "Chart": "Chart",
+    "GameReports": "Game reports",
+    "Stats": "Stats",
+    "StatReport": "Stat report",
+    "Scrutineering": "Scrutineering",
+    "ScrutReport": "Equipment scrutineering",
+    "Lang": "Language",
+    "Back": "Back",
+    "CommingSoon": "Comming soon...",
+    "CommingSoonDescription": "Be patient!",
+    "About": "About",
+    "Filters": "Filters",
+    "ChangeEvent": "Please change event",
+    "StaffJobs": "Organization task"
+  },
+  "AddToHomeScreen": {
+    "message": "Add to desktop/home screen.",
+    "Dismiss": "Dismiss",
+    "Install": "Install"
+  },
+  "Login": {
+    "Authentication": "Authentication",
+    "Login": "Login",
+    "LoginHelp": "Enter your login",
+    "Password": "Password",
+    "Submit": "Submit",
+    "EmptyMsg": "Login & Password must be filled!",
+    "UnauthorizedMsg": "Unauthorized login!",
+    "ErrorMsg": "Authentication failed!",
+    "Welcome": "Welcome",
+    "Logout": "Logout"
+  },
+  "Event": {
+    "SelectEvent": "Select event",
+    "PleaseSelectOne": "Please select one",
+    "Event": "Event",
+    "Change": "Change",
+    "Confirm": "Confirm",
+    "Cancel": "Cancel",
+    "StdEvents": "Events",
+    "LocalChamp": "Local Championships"
+  },
+  "Teams": {
+    "SelectTeam": "Select team",
+    "PleaseSelectOne": "Please select one",
+    "Team": "Team",
+    "Change": "Change",
+    "Confirm": "Confirm",
+    "Cancel": "Cancel"
+  },
+  "Games": {
+    "Categories": "Categories",
+    "Teams": "Teams",
+    "Refs": "Refs",
+    "ShowRefs": "Show refs",
+    "ShowFlags": "Show flags",
+    "Dates": "Dates",
+    "AllDates": "All dates",
+    "All": "All",
+    "Today": "Today",
+    "Tomorow": "Tomorow",
+    "Prev": "Previous games",
+    "Next": "Next games",
+    "games": "games",
+    "Game": "Game",
+    "Pitch": "Pitch",
+    "Date": "Date",
+    "Time": "Time",
+    "Cat": "Cat.",
+    "Group": "Group",
+    "Team": "Team",
+    "Score": "Score",
+    "Ref": "Ref.",
+    "Referee": "Referee",
+    "GameReport": "Game report",
+    "Status": {
+      "ATT": "Pending",
+      "ON": "In progress",
+      "END": "Completed"
+    },
+    "Period": {
+      "M1": "1st period",
+      "M2": "2nd period",
+      "P1": "1st extra time",
+      "P2": "Extra time",
+      "TB": "Penalty kicks"
+    },
+    "Code": {
+      "Group": "Group ",
+      "Team": "Team ",
+      "Winner": "Winner #",
+      "Looser": "Looser #"
+    },
+    "Numbers": {
+      "first": "st ",
+      "second": "nd ",
+      "third": "rd ",
+      "eleven": "th ",
+      "twelve": "th ",
+      "thirteen": "th ",
+      "twentyone": "st ",
+      "twentytwo": "nd ",
+      "twentythree": "rd ",
+      "th": "th "
+    }
+  },
+  "Charts": {
+    "Ranking": "#",
+    "Team": "Team",
+    "Pts": "Pts",
+    "Pld": "Pld",
+    "W": "W",
+    "D": "D",
+    "L": "L",
+    "F": "F",
+    "GF": "GF",
+    "GA": "GA",
+    "GD": "GD",
+    "FinalRanking": "Final ranking",
+    "ProvisionalRanking": "Provisional ranking"
+  },
+  "About": {
+    "DoYouLike": "Do you like this application?",
+    "IDevelopIt": "I develop it in my spare time.",
+    "Rating": "Rate this app:",
+    "Average": "Average rating",
+    "voters": "voters",
+    "FeedbackOnTwitter": "Give your feedback on",
+    "SupportMeOnUtip": "Support me on",
+    "OwnCompetition": "You would like to use this app for your own competition, in another language?",
+    "HelpMe": "You master javascript, php, webdesign and want to help me?",
+    "ContactMe": "Please contact me:"
+  },
+  "Rating": {
+    "AboutThisApp": "About this app...",
+    "Thanks": "Thank you!"
+  },
+  "Update": {
+    "Message": "An update is available",
+    "Button": "Update now!"
+  },
+  "Scrutineering": {
+    "ChangeEvent": "You don't have sufficient rights for this event! ",
+    "Scrutineering": "Scrutineering",
+    "Player": "Player",
+    "Helmet": "Helmet",
+    "Vest": "Vest",
+    "Kayak": "Kayak",
+    "Paddles": "Paddles",
+    "Coach": "Coach",
+    "PrintAll": "Print all",
+    "Cosmetic": "Cosmetic",
+    "Safety": "Safety",
+    "Technical": "Techn.",
+    "Issues": "Issues"
+  },
+  "GameReports": {
+    "NewGame": "New game (offline)",
+    "LoadGames": "Load games",
+    "ContinueGame": "Continue game",
+    "LoadGame": "Load game",
+    "GameId": "Game Id",
+    "Load": "Load",
+    "IncorrectId": "Incorrect Id",
+    "Back": "Back",
+    "BackToGame": "Back to game",
+    "GameReport": "Game report",
+    "Game": "Game"
+  }
+}
