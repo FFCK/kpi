@@ -11,7 +11,7 @@
               alt="logo"
               class="d-inline-block align-middle"
             />
-            KPI App
+            WSM
 
             <online />
           </router-link>
@@ -36,72 +36,9 @@
               </router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/games" class="nav-link text-nowrap">
+              <router-link to="/manager" class="nav-link text-nowrap">
                 <i class="bi bi-list-ol" />
-                {{ $t("nav.Games") }}
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/chart" class="nav-link text-nowrap">
-                <i class="bi bi-diagram-2" />
-                {{ $t("nav.Chart") }}
-              </router-link>
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                id="navbarDropdown"
-                class="nav-link text-nowrap dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="el-icon-service" />
-                {{ $t("nav.Staff") }}
-              </a>
-              <ul
-                class="dropdown-menu bg-dark"
-                aria-labelledby="navbarDropdown"
-              >
-                <li v-if="user" class="nav-item">
-                  <router-link to="/login" class="nav-link text-nowrap">
-                    <i class="bi bi-person-circle" />
-                    {{ $t("nav.MyAccount") }}
-                  </router-link>
-                </li>
-                <li v-else class="nav-item">
-                  <router-link to="/login" class="nav-link text-nowrap">
-                    <i class="bi bi-person-circle" />
-                    {{ $t("nav.Login") }}
-                  </router-link>
-                </li>
-                <li v-if="user" class="nav-item">
-                  <router-link to="/scrutineering" class="nav-link text-nowrap">
-                    <i class="bi bi-clipboard-check" />
-                    {{ $t("nav.Scrutineering") }}
-                  </router-link>
-                </li>
-                <li v-if="user" class="nav-item">
-                  <router-link to="/game_reports" class="nav-link text-nowrap">
-                    <i class="bi bi-clipboard" />
-                    {{ $t("nav.GameReports") }}
-                  </router-link>
-                </li>
-                <li v-if="user" class="nav-item">
-                  <router-link
-                    to="/stat_report"
-                    class="nav-link text-nowrap disabled"
-                  >
-                    <i class="bi bi-clipboard-data" />
-                    {{ $t("nav.StatReport") }}
-                  </router-link>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <router-link to="/about" class="nav-link text-nowrap">
-                <i class="el-icon-info" />
-                {{ $t("nav.About") }}
+                {{ $t("nav.Manager") }}
               </router-link>
             </li>
           </ul>
@@ -114,8 +51,8 @@
 </template>
 
 <script>
-import prefsMixin from '@/mixins/prefsMixin'
-import userMixin from '@/mixins/userMixin'
+// import prefsMixin from '@/mixins/prefsMixin'
+// import userMixin from '@/mixins/userMixin'
 import LocaleSwitcher from '@/components/design/LocaleSwitcher'
 import Online from '@/components/design/Online.vue'
 
@@ -125,7 +62,7 @@ export default {
     LocaleSwitcher,
     Online
   },
-  mixins: [prefsMixin, userMixin],
+  // mixins: [prefsMixin, userMixin],
   data () {
     return {
       isCollapse: true,

@@ -18,12 +18,14 @@
 import AddToHomeScreen from '@/components/design/AddToHomeScreen'
 import Update from '@/components/design/Update'
 import Message from '@/components/design/Message'
+import Navbar from '@/components/design/Navbar'
 
 export default {
   components: {
     AddToHomeScreen,
     Update,
-    Message
+    Message,
+    Navbar
   }
 }
 </script>
