@@ -30,10 +30,7 @@ function PutGameParamController($route, $params)
   $data = json_decode(file_get_contents('php://input'));
   if (!in_array(
     $data->param,
-    [
-      // 'ValidScore', 'ValidScoreDetail', 'ScoreA', 'ScoreB',
-      'Statut', 'Periode', 'ScoreDetailA', 'ScoreDetailB'
-    ]
+    ['Statut', 'Periode', 'ScoreA', 'ScoreB', 'ScoreDetailA', 'ScoreDetailB']
   )) {
     return_401();
   }
