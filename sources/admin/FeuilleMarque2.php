@@ -115,7 +115,7 @@ class GestionMatchDetail extends MyPageSecure
 				FROM kp_match_detail d 
 				LEFT OUTER JOIN kp_licence c ON d.Competiteur = c.Matric 
 				WHERE d.Id_match = ? 
-				ORDER BY d.Periode DESC, d.Temps ASC, d.Id_evt_match DESC, d.Id ";
+				ORDER BY d.date_insert DESC, d.Periode DESC, d.Temps ASC, d.Id_evt_match DESC, d.Id ";
 		$result5 = $myBdd->pdo->prepare($sql5);
 		$result5->execute(array($idMatch));
 		$num_results5 = $result5->rowCount();
