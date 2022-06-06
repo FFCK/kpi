@@ -1,6 +1,6 @@
 {
   "name": "kpi_wsm",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service lint && vue-cli-service serve",
@@ -46,6 +46,7 @@
     "idb": "^6.0.0",
     "jquery": "^3.6.0",
     "js-cookie": "^2.2.1",
+    "lodash.debounce": "^4.0.8",
     "popper.js": "^1.16.1",
     "register-service-worker": "^1.7.2",
     "sass": "^1.49.8",

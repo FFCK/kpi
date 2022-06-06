@@ -1,12 +1,12 @@
 <template>
   <div
     class="alert alert-dismissible fade show"
-    :class="[status.messageClass]"
+    :class="[status?.messageClass]"
     role="button"
-    v-if="status.messageText"
+    v-if="status?.messageText"
     @click="closeAlert"
   >
-    <strong>{{ status.messageText }}</strong>
+    <strong>{{ status?.messageText }}</strong>
     <button type="button" class="btn-close"></button>
   </div>
 </template>

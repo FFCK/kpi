@@ -23,7 +23,14 @@ export default {
           })
           idbs.dbPut('preferences', Preferences.query().first())
         }
+        this.pitches = this.prefs.pitches
       }
+    },
+    savePrefs () {
+      Preferences.insertOrUpdate({
+        data: this.prefs
+      })
+      idbs.dbPut('preferences', Preferences.query().first())
     },
     scrollTop () {
       document.body.scrollTop = 0 // For Safari

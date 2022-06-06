@@ -16,8 +16,7 @@ export default {
       game: null,
       gameEventId: -1,
       gamePrevEventId: 0,
-      events: null,
-      selectedEvent: null
+      events: null
     }
   },
   methods: {
@@ -339,14 +338,50 @@ export default {
       }
       return nation
     },
-    msToMMSS (ms) {
-      return ~~(ms / 60000) + ':' + ~~((ms / 1000) % 60)
+    msToMMSS (ms, up = false, tenth = false) {
+      if (isNaN(ms)) {
+        return null
+      }
+      // Math.round()
+      // Math.floor()
+      // Math.ceil()
+      let timer = 0
+      if (up) {
+        ms = Math.ceil(ms / 1000) * 1000
+        if (Math.ceil((ms / 1000) % 60) < 10) {
+          timer = Math.floor(ms / 60000) + ':0' + Math.ceil((ms / 1000) % 60)
+        } else {
+          timer = Math.floor(ms / 60000) + ':' + Math.ceil((ms / 1000) % 60)
+        }
+      } else if (tenth) {
+        ms = Math.ceil(ms / 100) * 100
+        if (Math.round((ms / 1000) % 60) < 10) {
+          timer = Math.floor(ms / 60000) + ':0' + Math.floor((ms / 1000) % 60) + '.' + Math.ceil((ms % 1000) / 100)
+        } else {
+          timer = Math.floor(ms / 60000) + ':' + Math.floor((ms / 1000) % 60) + '.' + Math.ceil((ms % 1000) / 100)
+        }
+      } else {
+        if (Math.round((ms / 1000) % 60) < 10) {
+          timer = Math.floor(ms / 60000) + ':0' + Math.round((ms / 1000) % 60)
+        } else {
+          timer = Math.floor(ms / 60000) + ':' + Math.round((ms / 1000) % 60)
+        }
+      }
+      return (ms < 600000) ? '0' + timer : timer
     },
-    msToSS (ms) {
-      return ~~(ms / 1000)
-    },
-    msToMMSSD (ms) {
-      return ~~(ms / 60000) + ':' + ~~((ms / 1000) % 60) + '.' + ~~((ms % 1000) / 100)
+    msToSS (ms, up = true, tenth = false) {
+      if (isNaN(ms)) {
+        return null
+      }
+      let timer = 0
+      if (up) {
+        timer = Math.ceil(ms / 1000)
+      } else if (tenth) {
+        timer = Math.floor(ms / 1000) + '.' + Math.ceil((ms % 1000) / 100)
+      } else {
+        timer = Math.round(ms / 1000)
+      }
+      return timer
     },
     imgUrlToBase64 (url) {
       fetch(url)
@@ -355,11 +390,10 @@ export default {
           const reader = new FileReader()
           reader.onloadend = () => {
             const base64 = reader.result.replace('data:', '').replace(/^.+,/, '')
-            console.log('base64', base64)
+            return base64
           }
           reader.readAsDataURL(blob)
         })
-      return 'ok'
     }
   },
   created () {
