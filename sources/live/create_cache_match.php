@@ -251,7 +251,7 @@ class CacheMatch
 			LEFT OUTER JOIN kp_match_joueur mj
 				ON (md.Competiteur = mj.Matric AND md.Id_match = mj.Id_match) 
 			WHERE md.Id_match = ? 
-			ORDER BY md.Periode DESC, md.Temps ASC, md.Id_evt_match DESC ";
+			ORDER BY md.date_insert DESC, md.Periode DESC, md.Temps ASC, md.Id_evt_match DESC ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
 		$tMatchDetails = $result->fetchAll(PDO::FETCH_ASSOC);

@@ -54,7 +54,7 @@ function GetGameController($route, $params)
     LEFT OUTER JOIN kp_match_joueur mj
       ON (md.Competiteur = mj.Matric AND md.Id_match = mj.Id_match) 
     WHERE md.Id_match = ? 
-    ORDER BY md.Periode DESC, md.Temps ASC, md.Id_evt_match DESC ";
+    ORDER BY md.date_insert DESC, md.Periode DESC, md.Temps ASC, md.Id_evt_match DESC ";
   $stmt = $myBdd->pdo->prepare($sql);
   $stmt->execute([$game_id]);
   $result['g_events'] = $stmt->fetchAll(PDO::FETCH_ASSOC);

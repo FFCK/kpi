@@ -381,7 +381,7 @@ class FeuilleMatch extends MyPage
                 WHERE d.Id_match = ? 
                 AND d.Id_evt_match != 'T' 
                 AND d.Id_evt_match != 'A' 
-                ORDER BY d.Periode ASC, d.Temps DESC, d.Id ";
+                ORDER BY d.date_insert DESC, d.Periode ASC, d.Temps DESC, d.Id ";
             $result5 = $myBdd->pdo->prepare($sql5);
             $result5->execute(array($idMatch));
 
