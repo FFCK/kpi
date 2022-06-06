@@ -19,9 +19,11 @@
 <script>
 import idbs from '@/services/idbStorage'
 import Preferences from '@/store/models/Preferences'
+import prefsMixin from '@/mixins/prefsMixin'
 
 export default {
   name: 'LocaleSwitcher',
+  mixins: [prefsMixin],
   created () {
     this.getLocale()
   },
@@ -33,7 +35,7 @@ export default {
           locale: this.$i18n.locale
         }
       })
-      idbs.dbPut('preferences', Preferences.find(1))
+      idbs.dbPut('preferences', Preferences.query().first())
     },
     getLocale () {
       idbs.dbGet('preferences', 1)

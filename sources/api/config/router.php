@@ -21,6 +21,12 @@ function routing($path)
     ],
     'report' => [
       'game' => ['GET', 'GetGameController']
+    ],
+    'wsm' => [
+      'eventNetwork' => ['PUT', 'PutEventNetworkController'],
+      'gameParam' => ['PUT', 'PutGameParamController'],
+      'gameEvent' => ['PUT', 'PutGameEventController'],
+      'gameTimer' => ['PUT', 'PutGameTimerController']
     ]
   ];
 
@@ -36,6 +42,12 @@ function routing($path)
     $params['user'] = get_user($path[1]);
     $route = $routes[$path[0]];
     $path_name = $path[2];
+  } elseif (in_array($path[0], ['wsm'])) {
+    include_once('controllers/wsmControllers.php');
+    // include_once('config/authentication.php');
+    // $params['user'] = get_user($path[1]);
+    $route = $routes[$path[0]];
+    $path_name = $path[1];
   } else {
     include_once('controllers/publicControllers.php');
     $route = $routes['public'];

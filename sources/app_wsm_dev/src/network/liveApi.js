@@ -17,5 +17,26 @@ export default {
   },
   getTimer (gameId) {
     return api.get('/live/cache/' + gameId + '_match_chrono.json')
+  },
+  setEventNetwork (event, network) {
+    return api.put('/api/wsm/eventNetwork/' + event, {
+      network: network
+    })
+  },
+  setGameParams (gameId, param, value) {
+    return api.put('/api/wsm/gameParam/' + gameId, {
+      param: param,
+      value: value
+    })
+  },
+  setGameEvent (gameId, params) {
+    return api.put('/api/wsm/gameEvent/' + gameId, {
+      params: params
+    })
+  },
+  setGameTimer (gameId, params) {
+    return api.put('/api/wsm/gameTimer/' + gameId, {
+      params: params
+    })
   }
 }
