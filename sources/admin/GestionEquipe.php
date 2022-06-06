@@ -136,8 +136,8 @@ class GestionEquipe extends MyPageSecure
 					FROM kp_competition_equipe ce, kp_match m, kp_journee j 
 					WHERE ce.Code_compet = :codeCompet 
 					AND ce.Code_saison = :codeSaison 
-					AND j.Code_competition = :codeCompet 
-					AND j.Code_saison = :codeSaison 
+					AND j.Code_competition = ce.Code_compet 
+					AND j.Code_saison = ce.Code_saison 
 					AND j.Id = m.Id_journee 
 					AND ce.Id = :idEquipe 
 					AND (ce.Id = m.Id_equipeA 
@@ -146,7 +146,7 @@ class GestionEquipe extends MyPageSecure
 				$result2->execute(array(
 					':codeCompet' => $codeCompet,
 					':codeSaison' => $codeSaison,
-					':idEquipe' => $row['Id'],
+					':idEquipe' => $row['Id']
 				));
 
 				$row2 = $result2->fetch();
