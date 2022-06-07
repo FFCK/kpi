@@ -11,6 +11,10 @@
     "Dismiss": "Dismiss",
     "Install": "Install"
   },
+  "Update": {
+    "Message": "An update is available",
+    "Button": "Update now!"
+  },
   "Event": "Event",
   "Pitches": "Pitches",
   "Pitch": "Pitch"
