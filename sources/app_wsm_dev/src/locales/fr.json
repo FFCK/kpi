@@ -11,6 +11,10 @@
     "Dismiss": "Refuser",
     "Install": "Installer"
   },
+  "Update": {
+    "Message": "Une mise à jour est disponible",
+    "Button": "Appliquer maintenant !"
+  },
   "Event": "Événement",
   "Pitches": "Terrains",
   "Pitch": "Terrain"

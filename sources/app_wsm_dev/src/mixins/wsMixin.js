@@ -367,10 +367,10 @@ export default {
             let player = {}
             if (playerInfo.type === 'HOME') {
               team = { code: 'A', libelle: this.game[id].equipe1.nom }
-              player = { matric: this.game[id].equipe1.joueurs[playerInfo.idPlayer].matric, numero: this.game[id].equipe1.joueurs[playerInfo.idPlayer].Numero }
+              player = { matric: this.game[id].equipe1.joueurs[playerInfo.idPlayer - 1].matric, numero: this.game[id].equipe1.joueurs[playerInfo.idPlayer - 1].Numero }
             } else {
               team = { code: 'B', libelle: this.game[id].equipe2.nom }
-              player = { matric: this.game[id].equipe2.joueurs[playerInfo.idPlayer].matric, numero: this.game[id].equipe2.joueurs[playerInfo.idPlayer].Numero }
+              player = { matric: this.game[id].equipe2.joueurs[playerInfo.idPlayer - 1].matric, numero: this.game[id].equipe2.joueurs[playerInfo.idPlayer - 1].Numero }
             }
             if (evt.code !== '') {
               this.syncGameEvt(this.game[id].id_match, this.period[id], this.tpsJeuFormated[id], evt.code, player.matric, player.numero, team.code, null)
@@ -395,7 +395,6 @@ export default {
       }
     },
     syncTimer (idMatch, tpsJeu, initValue, action) {
-      // this.debounce(() => {
       const maxTime = this.msToMMSS(initValue, true, false)
       const startTime = new Date()
       startTime.setTime(startTime.getTime() + tpsJeu - initValue)
@@ -416,7 +415,6 @@ export default {
       } else {
         console.log('DBSync: false')
       }
-      // }, 100)
     },
     sync (idMatch, param, value) {
       // this.debounce(() => {
@@ -431,14 +429,12 @@ export default {
       } else {
         console.log('DBSync: false')
       }
-      // }, 100)
     },
     syncGameEvt (idMatch, period, tpsJeuFormated, code, player, number, team, reason = null, uid = null) {
-      // this.debounce(() => {
       if (this.prefs.databaseSync && code !== '') {
         const params = {
           period: period,
-          tpsJeu: tpsJeuFormated?.split('.')[0] || '10:00',
+          tpsJeu: '00:' + tpsJeuFormated?.split('.')[0] || '00:10:00',
           code: code,
           player: player,
           number: number,
@@ -456,7 +452,6 @@ export default {
       } else {
         console.log('DBSync: false')
       }
-      // }, 100)
     },
     gameEvent (score, card) {
       if (parseInt(score, 10) > 0) {
@@ -480,7 +475,6 @@ export default {
       this.printLog(id, '-Sync request OK')
     },
     async setTeams (id) {
-      // this.debounce(async () => {
       const game = await this.fetchGame(null, this.prefs.selectedEvent, id, true)
       if (game) {
         this.game[id] = game
@@ -492,11 +486,10 @@ export default {
         //   console.log('logo1:', logo1)
         // }
         for (const [key, value] of Object.entries(game.equipe1.joueurs)) {
-          // const key2 = (key === 0) ? key + 100 : key
-          // const kekey + 100y2 = key + 100
+          const key2 = parseInt(key) + 1
           if (value.Capitaine === 'E') {
             coach1.push({
-              id: key + 100,
+              id: key2,
               name: value.Nom + ' ' + value.Prenom
             })
           } else {
@@ -504,7 +497,7 @@ export default {
               value.Prenom += ' (C)'
             }
             players1.push({
-              id: key,
+              id: key2,
               name: value.Nom + ' ' + value.Prenom,
               shirtNumber: value.Numero
             })
@@ -518,10 +511,10 @@ export default {
         //   console.log('logo2:', logo2)
         // }
         for (const [key, value] of Object.entries(game.equipe2.joueurs)) {
-          // const key2 = key + 100
+          const key2 = parseInt(key) + 1
           if (value.Capitaine === 'E') {
             coach2.push({
-              id: key + 100,
+              id: key2,
               name: value.Nom + ' ' + value.Prenom
             })
           } else {
@@ -529,7 +522,7 @@ export default {
               value.Prenom += ' (C)'
             }
             players2.push({
-              id: key,
+              id: key2,
               name: value.Nom + ' ' + value.Prenom,
               shirtNumber: value.Numero
             })
@@ -569,7 +562,6 @@ export default {
         this.printLog(id, '-No game to load')
         return false
       }
-      // }, 100)
     }
   },
   created () {

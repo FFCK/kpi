@@ -4,7 +4,7 @@
     <div class="row text-center" v-if="events">
       <div>
         {{ $t("Event") }}
-        <select v-model="prefs.selectedEvent" :disabled="startedCount > 0">
+        <select v-model="selectedEvent" :disabled="startedCount > 0" @change="changeEvent">
             <option v-for="event in events" :value="event.id" :key="event.id">{{ event.id }} - {{ event.libelle }}</option>
         </select>
       </div>
@@ -326,10 +326,15 @@ export default {
   mixins: [routeMixin, gameMixin, wsMixin, prefsMixin],
   data () {
     return {
-      pitches: 4
+      pitches: 4,
+      selectedEvent: 0
     }
   },
   methods: {
+    changeEvent () {
+      this.prefs.selectedEvent = this.selectedEvent
+      this.savePrefs()
+    },
     changePitches () {
       this.prefs.pitches = this.pitches
       this.savePrefs()
