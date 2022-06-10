@@ -154,12 +154,11 @@ class Matchs extends MyPage
                 FROM kp_journee j, kp_competition c, kp_evenement_journee ej 
                 WHERE ej.Id_journee = j.Id 
                 AND ej.Id_evenement = ?
-                AND j.Code_competition IN ($listCompet) 
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O'
-                AND j.Nbequipes > 1
+                AND j.Phase != 'Break'
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($event, $codeSaison));
@@ -200,12 +199,11 @@ class Matchs extends MyPage
                 FROM kp_journee j, kp_competition c, kp_evenement_journee ej 
                 WHERE ej.Id_journee = j.Id 
                 AND ej.Id_evenement = ? 
-                AND j.Code_competition IN ($listCompet) 
                 AND j.Code_saison = ?  
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O'
-                AND j.Nbequipes > 1
+                AND j.Phase != 'Break'
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($event, $codeSaison));
