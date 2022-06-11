@@ -166,6 +166,27 @@ class CacheMatch
 				ORDER BY a.Numero ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idMatch, 'A'));
+
+			if ($result->rowCount() === 0) {
+				// Chargement titulaires A
+				$sql = "REPLACE INTO kp_match_joueur 
+					SELECT ?, Matric, Numero, ?, Capitaine 
+					FROM kp_competition_equipe_joueur 
+					WHERE Id_equipe = ? 
+					AND Capitaine <> 'X' 
+					AND Capitaine <> 'A' ";
+				$result = $db->pdo->prepare($sql);
+				$result->execute(array($idMatch, 'A', $rMatch['Id_equipeA']));
+				// Chargement Joueurs Equipe A 
+				$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+				FROM kp_match_joueur a, kp_licence b 
+				WHERE a.Id_match = ? 
+				AND a.Equipe = ? 
+				AND a.Matric = b.matric 
+				ORDER BY a.Numero ";
+				$result = $db->pdo->prepare($sql);
+				$result->execute(array($idMatch, 'A'));
+			}
 			$tJoueursA = $result->fetchAll(PDO::FETCH_ASSOC);
 		}
 
@@ -187,6 +208,27 @@ class CacheMatch
 				ORDER BY a.Numero ";
 			$result = $db->pdo->prepare($sql);
 			$result->execute(array($idMatch, 'B'));
+
+			if ($result->rowCount() === 0) {
+				// Chargement titulaires B
+				$sql = "REPLACE INTO kp_match_joueur 
+					SELECT ?, Matric, Numero, ?, Capitaine 
+					FROM kp_competition_equipe_joueur 
+					WHERE Id_equipe = ? 
+					AND Capitaine <> 'X' 
+					AND Capitaine <> 'A' ";
+				$result = $db->pdo->prepare($sql);
+				$result->execute(array($idMatch, 'B', $rMatch['Id_equipeB']));
+				// Chargement Joueurs Equipe B 
+				$sql = "SELECT a.matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance 
+				FROM kp_match_joueur a, kp_licence b 
+				WHERE a.Id_match = ? 
+				AND a.Equipe = ? 
+				AND a.Matric = b.matric 
+				ORDER BY a.Numero ";
+				$result = $db->pdo->prepare($sql);
+				$result->execute(array($idMatch, 'B'));
+			}
 			$tJoueursB = $result->fetchAll(PDO::FETCH_ASSOC);
 		}
 
