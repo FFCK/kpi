@@ -398,13 +398,14 @@ class CacheMatch
 		$arrayResult = [];
 		foreach ($arrayPitch as $pitch) {
 			$match = $this->GetBestMatch($tMatchs, $pitch, $time);
-			$nextTime = $match['id'] > 0 ? utyHHMM_To_MM($match['time']) : $realTime;
-			$next = $this->GetNextMatch($db, $tMatchs, $pitch, $nextTime);
+			// $nextTime = $match['id'] > 0 ? utyHHMM_To_MM($match['time']) : $time;
+			$next = $this->GetNextMatch($db, $tMatchs, $pitch, $time);
 			$this->Pitch($idEvent, $pitch, $match['id'], $next);
 			$arrayResult[] = [
 				'pitch' => $pitch,
 				'game' => $match['id'],
 				'num' => $match['num'],
+				'time' => $match['time'],
 				'next' => $next
 			];
 			// }
@@ -452,7 +453,7 @@ class CacheMatch
 				continue;
 
 			$timeMatch = utyHHMM_To_MM($tMatchs[$i]['Heure_match']);
-			if ($idNext == -1 && $timeMatch > $time) {
+			if ($idNext == -1 && $timeMatch <= $time) {
 				$idNext = $i;
 			}
 		}
