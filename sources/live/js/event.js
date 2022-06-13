@@ -26,8 +26,14 @@ function RefreshCache () {
 		success: function (data) {
 			++theCount
 			texte = "<b>Refresh Count = " + theCount + "</b><br>"
+			// texte += "<table><thead><tr><th></th></tr></thead></tr>"
 			data.pitches.forEach((item) => {
-				texte += 'Pitch ' + item.pitch + ' - game : ' + item.game + ' #' + item.num
+				texte += 'Pitch ' + item.pitch + ' - '
+				if (item.game) {
+					texte += 'game : ' + item.time + ' - ' + item.game + ' #' + item.num
+				} else {
+					texte += 'no game'
+				}
 				if (item.next.id != null) {
 					texte += ' (next: ' + item.next.time + ' - ' + item.next.id + ' #' + item.next.num + ')'
 				} else {
