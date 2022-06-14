@@ -25,23 +25,26 @@ function RefreshCache () {
 		cache: false,
 		success: function (data) {
 			++theCount
-			texte = "<b>Refresh Count = " + theCount + "</b><br>"
-			// texte += "<table><thead><tr><th></th></tr></thead></tr>"
+			texte = '<b>Refresh Count = ' + theCount + '</b>'
+			texte += '<br>Current Time : ' + data.time.currentTime + ' - Working time : ' + data.time.workingTime + '<br></br>'
+			texte += '<table class="table table-bordered table-condensed"><thead>'
+			texte += '<tr><th></th><th colspan="3">Current game</th><th colspan="3">Next game</th></tr>'
+			texte += '<tr><th>Pitch</th><th>Time</th><th>Num</th><th>Id</th><th>Time</th><th>Num</th><th>Id</th></tr>'
+			texte += '</thead><tbody>'
 			data.pitches.forEach((item) => {
-				texte += 'Pitch ' + item.pitch + ' - '
+				texte += '<tr><td>' + item.pitch + '</td>'
 				if (item.game) {
-					texte += 'game : ' + item.time + ' - ' + item.game + ' #' + item.num
+					texte += '<td>' + item.time + '</td><td>#' + item.num + '</td><td>' + item.game + '</td>'
 				} else {
-					texte += 'no game'
+					texte += '<td colspan="3">Waiting...</td>'
 				}
 				if (item.next.id != null) {
-					texte += ' (next: ' + item.next.time + ' - ' + item.next.id + ' #' + item.next.num + ')'
+					texte += '<td>' + item.next.time + '</td><td>#' + item.next.num + '</td><td>' + item.next.id + '</td>'
 				} else {
-					texte += ' (next: none)'
+					texte += '<td colspan="3">Waiting...</td>'
 				}
-				texte += '<br>'
+				texte += '</tr></tbody></table>'
 			})
-			texte += '<br>Current Time : ' + data.time.currentTime + ' - Working time : ' + data.time.workingTime
 			$('#info').html(texte)
 		}
 	})
