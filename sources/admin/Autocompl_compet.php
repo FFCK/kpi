@@ -20,18 +20,23 @@ $sql = "SELECT p1.*
 	(
 			SELECT MAX(Code_saison) maxCodeSaison, Code
 			FROM kp_competition
-			WHERE Code LIKE :code
-			OR Libelle LIKE :code
+			WHERE Code LIKE :code1
+			OR Libelle LIKE :code2
 			GROUP BY Code
 	) p2
 		ON p1.Code = p2.Code
 		AND p1.Code_saison = p2.maxCodeSaison
-	WHERE p1.Code LIKE :code
-			OR p1.Libelle LIKE :code
+	WHERE p1.Code LIKE :code3
+			OR p1.Libelle LIKE :code4
 	ORDER BY p1.Code_saison desc
 	LIMIT 30 ";
 $result = $myBdd->pdo->prepare($sql);
-$result->execute(array(':code' => '%' . $q . '%'));
+$result->execute([
+	':code1' => '%' . $q . '%',
+	':code2' => '%' . $q . '%',
+	':code3' => '%' . $q . '%',
+	':code4' => '%' . $q . '%'
+]);
 $resultGlobal = '';
 
 while ($row = $result->fetch()) {
