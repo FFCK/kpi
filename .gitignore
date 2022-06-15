@@ -29,6 +29,8 @@ sources/wordpress/sitemap.xml.gz
 /sources/clubs.json
 /sources/clubs.json
 /sources/admin/pce1.pce
+sources/admin/uploads/*
+!sources/admin/uploads/.gitkeep
 /sources/commun/log_cards.txt
 SQL/sql9830.phpnet.org.poloweb4.jour1(2).sql.gz
 sources/kpi3/application/views/facebook_iframe.html.twig
