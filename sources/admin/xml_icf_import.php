@@ -116,6 +116,8 @@ $resultArray = [];
 $updateDB = utyGetPost('updateDB', 0);
 $inserted = 0;
 $updated = 0;
+$teamInserted = 0;
+$teamUpdated = 0;
 
 /**
  * Traitement fichier
@@ -130,67 +132,68 @@ $xml = simplexml_load_file($fileName);
 
 $xmlDocumentType =  $xml['DocumentType']; // DT_PARTIC_TEAMS, DT_PARTIC
 
-$myBdd = new MyBdd();
-$listIcf = [];
-$matricIcf = [];
-$sql = "SELECT DISTINCT(Reserve), Nom, Prenom, Naissance, Matric 
-    FROM kp_licence 
-    WHERE Reserve != '0' 
-    AND Reserve IS NOT NULL ";
-$stmt = $myBdd->pdo->prepare($sql);
-$stmt->execute();
-while ($row = $stmt->fetch()) {
-    $listIcf[] = $row['Reserve'];
-    $matricIcf[$row['Reserve']] = $row['Matric'];
-}
-$teams = [];
-$sql = "SELECT Code_compet, Id, Code_club 
-    FROM kp_competition_equipe 
-    WHERE Code_saison =  ? 
-    AND Code_compet IN ('CMH', 'CMF', 'CMH21', 'CMF21') ";
-$stmt = $myBdd->pdo->prepare($sql);
-$stmt->execute([SAISON]);
-while ($row = $stmt->fetch()) {
-    $teams[$row['Code_compet']][$row['Code_club']] = $row['Id'];
-}
-
-
-$sql_insert = "INSERT INTO kp_licence (Matric, Origine, Nom, Prenom, 
-    Sexe, Naissance, Numero_club, Numero_comite_dept, Numero_comite_reg, Reserve)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, '98', ?) ";
-$stmt_insert = $myBdd->pdo->prepare($sql_insert);
-
-$sql_update = "UPDATE kp_licence 
-    SET Origine = ?, Nom = ?, Prenom = ?, 
-    Sexe = ?, Naissance = ?, Numero_club = ?, Numero_comite_dept = ?, Numero_comite_reg = '98'
-    WHERE Reserve = ? 
-    AND Matric > 2000000 ";
-$stmt_update = $myBdd->pdo->prepare($sql_update);
-
-$sql_insert_team = "INSERT INTO kp_competition_equipe_joueur 
-    (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero)
-    VALUES (?, ?, ?, ?, ?, ?, ?) 
-    ON DUPLICATE KEY UPDATE 
-        Id_equipe = VALUES(Id_equipe), Matric = VALUES(Matric), 
-        Nom = VALUES(Nom), Prenom = VALUES(Prenom), 
-        Sexe = VALUES(Sexe), Categ = VALUES(Categ), 
-        Numero = VALUES(Numero) 
-    ";
-$stmt_insert_team = $myBdd->pdo->prepare($sql_insert_team);
-
-$sql_update_team = "INSERT INTO kp_competition_equipe_joueur 
-    (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero)
-    VALUES (?, ?, ?, ?, ?, ?, ?) 
-    ON DUPLICATE KEY UPDATE 
-        Id_equipe = VALUES(Id_equipe), Matric = VALUES(Matric), 
-        Nom = VALUES(Nom), Prenom = VALUES(Prenom), 
-        Sexe = VALUES(Sexe), Categ = VALUES(Categ), 
-        Numero = VALUES(Numero) 
-    ";
-$stmt_update_team = $myBdd->pdo->prepare($sql_update_team);
-
 // Compétiteurs
 if ($xmlDocumentType == 'DT_PARTIC') {
+
+    $myBdd = new MyBdd();
+    $listIcf = [];
+    $matricIcf = [];
+    $sql = "SELECT DISTINCT(Reserve), Nom, Prenom, Naissance, Matric 
+        FROM kp_licence 
+        WHERE Reserve != '0' 
+        AND Reserve IS NOT NULL ";
+    $stmt = $myBdd->pdo->prepare($sql);
+    $stmt->execute();
+    while ($row = $stmt->fetch()) {
+        $listIcf[] = $row['Reserve'];
+        $matricIcf[$row['Reserve']] = $row['Matric'];
+    }
+    $teams = [];
+    $sql = "SELECT Code_compet, Id, Code_club 
+        FROM kp_competition_equipe 
+        WHERE Code_saison =  ? 
+        AND Code_compet IN ('CMH', 'CMF', 'CMH21', 'CMF21') ";
+    $stmt = $myBdd->pdo->prepare($sql);
+    $stmt->execute([SAISON]);
+    while ($row = $stmt->fetch()) {
+        $teams[$row['Code_compet']][$row['Code_club']] = $row['Id'];
+    }
+
+
+    $sql_insert = "INSERT INTO kp_licence (Matric, Origine, Nom, Prenom, 
+        Sexe, Naissance, Numero_club, Numero_comite_dept, Numero_comite_reg, Reserve)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, '98', ?) ";
+    $stmt_insert = $myBdd->pdo->prepare($sql_insert);
+
+    $sql_update = "UPDATE kp_licence 
+        SET Origine = ?, Nom = ?, Prenom = ?, 
+        Sexe = ?, Naissance = ?, Numero_club = ?, Numero_comite_dept = ?, Numero_comite_reg = '98'
+        WHERE Reserve = ? 
+        AND Matric > 2000000 ";
+    $stmt_update = $myBdd->pdo->prepare($sql_update);
+
+    $sql_insert_team = "INSERT INTO kp_competition_equipe_joueur 
+        (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero)
+        VALUES (?, ?, ?, ?, ?, ?, ?) 
+        ON DUPLICATE KEY UPDATE 
+            Id_equipe = VALUES(Id_equipe), Matric = VALUES(Matric), 
+            Nom = VALUES(Nom), Prenom = VALUES(Prenom), 
+            Sexe = VALUES(Sexe), Categ = VALUES(Categ), 
+            Numero = VALUES(Numero) 
+        ";
+    $stmt_insert_team = $myBdd->pdo->prepare($sql_insert_team);
+
+    $sql_update_team = "INSERT INTO kp_competition_equipe_joueur 
+        (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero)
+        VALUES (?, ?, ?, ?, ?, ?, ?) 
+        ON DUPLICATE KEY UPDATE 
+            Id_equipe = VALUES(Id_equipe), Matric = VALUES(Matric), 
+            Nom = VALUES(Nom), Prenom = VALUES(Prenom), 
+            Sexe = VALUES(Sexe), Categ = VALUES(Categ), 
+            Numero = VALUES(Numero) 
+        ";
+    $stmt_update_team = $myBdd->pdo->prepare($sql_update_team);
+
     $xmlSaison = (int) substr($xml['Date'], 0, 4);
     echo "Import saison " . $xmlSaison . "<br>";
     echo "Mise à jour BDD ? ";
@@ -283,6 +286,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                                 $arrayPlayer['num']
                             ]);
                             echo ';' . 'Updated';
+                            $teamUpdated++;
                         } else {
                             echo ';' . 'No team';
                         }
@@ -308,6 +312,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                                 $arrayPlayer['num']
                             ]);
                             echo ';' . 'Inserted';
+                            $teamInserted++;
                         } else {
                             echo ';' . 'No team';
                         }
@@ -322,9 +327,11 @@ if ($xmlDocumentType == 'DT_PARTIC') {
         }
     }
 
-    echo '<br>';
-    echo 'Inserted : ' . $inserted . '<br>';
-    echo 'Updated : ' . $updated . '<br>';
+    echo '<hr>';
+    echo 'Licences ajoutées : ' . $inserted . '<br>';
+    echo 'Licences mises à jour : ' . $updated . '<br>';
+    echo 'Titulaires ajoutés : ' . $inserted . '<br>';
+    echo 'Titulaires mis à jour : ' . $updated . '<br>';
     // echo '<hr><pre>';
     // print_r($resultArray);
     // echo '</pre>';
