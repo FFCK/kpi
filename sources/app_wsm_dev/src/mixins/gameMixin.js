@@ -377,7 +377,7 @@ export default {
       if (up) {
         timer = Math.ceil(ms / 1000)
       } else if (tenth) {
-        timer = Math.floor(ms / 1000) + '.' + Math.ceil((ms % 1000) / 100)
+        timer = Math.floor(ms / 1000) + '.' + Math.floor((ms % 1000) / 100)
       } else {
         timer = Math.round(ms / 1000)
       }
