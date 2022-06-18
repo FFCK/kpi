@@ -26,6 +26,7 @@ function routing($path)
       'eventNetwork' => ['PUT', 'PutEventNetworkController'],
       'gameParam' => ['PUT', 'PutGameParamController'],
       'gameEvent' => ['PUT', 'PutGameEventController'],
+      'playerStatus' => ['PUT', 'PutPlayerStatusController'],
       'gameTimer' => ['PUT', 'PutGameTimerController']
     ]
   ];

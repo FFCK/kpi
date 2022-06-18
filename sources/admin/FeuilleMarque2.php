@@ -95,6 +95,7 @@ class GestionMatchDetail extends MyPageSecure
 				LEFT OUTER JOIN kp_competition_equipe_joueur c 
 					ON (c.Id_equipe = ? AND c.Matric = a.Matric) 
 				WHERE a.Matric = b.Matric 
+				AND a.Capitaine != 'X'
 				AND a.Id_match = ? 
 				AND a.Equipe = ? 
 				ORDER BY Entraineur, Numero, Nom, Prenom ";

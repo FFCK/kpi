@@ -108,16 +108,22 @@ class GestionAthlete extends MyPageSecure
             // Arbitrages
             $Arbitrages = array();
             $sql = "SELECT m.*, j.*, m.id Identifiant, 
-                IF(m.Matric_arbitre_principal = :Athlete,'Prin','') Prin, 
-                IF(m.Matric_arbitre_secondaire = :Athlete,'Sec','') Sec 
+                IF(m.Matric_arbitre_principal = :Athlete1,'Prin','') Prin, 
+                IF(m.Matric_arbitre_secondaire = :Athlete2,'Sec','') Sec 
                 FROM kp_match m, kp_journee j 
-                WHERE (m.Matric_arbitre_principal = :Athlete 
-                    OR m.Matric_arbitre_secondaire = :Athlete) 
+                WHERE (m.Matric_arbitre_principal = :Athlete3 
+                    OR m.Matric_arbitre_secondaire = :Athlete4) 
                 AND m.Id_journee = j.Id 
                 AND j.Code_saison = :SaisonAthlete 
                 ORDER BY m.Date_match DESC, m.Heure_match DESC ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array(':Athlete' => $Athlete, ':SaisonAthlete' => $SaisonAthlete));
+            $result->execute([
+                ':Athlete1' => $Athlete,
+                ':Athlete2' => $Athlete,
+                ':Athlete3' => $Athlete,
+                ':Athlete4' => $Athlete,
+                ':SaisonAthlete' => $SaisonAthlete
+            ]);
             while ($row = $result->fetch()) {
                 if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
@@ -136,21 +142,33 @@ class GestionAthlete extends MyPageSecure
             // Table de marque
             $OTM = array();
             $sql = "SELECT m.*, j.*, m.id Identifiant, 
-                IF(m.Secretaire LIKE :Athlete,'Sec','') Sec, 
-                IF(m.Chronometre LIKE :Athlete,'Chrono','') Chrono, 
-                IF(m.Timeshoot LIKE :Athlete,'TS','') TS, 
-                IF(m.Ligne1 LIKE :Athlete OR m.Ligne2 LIKE :Athlete,'Ligne','') Ligne 
+                IF(m.Secretaire LIKE :Athlete1,'Sec','') Sec, 
+                IF(m.Chronometre LIKE :Athlete2,'Chrono','') Chrono, 
+                IF(m.Timeshoot LIKE :Athlete3,'TS','') TS, 
+                IF(m.Ligne1 LIKE :Athlete4 OR m.Ligne2 LIKE :Athlete5,'Ligne','') Ligne 
                 FROM kp_match m, kp_journee j 
-                WHERE (m.Secretaire LIKE :Athlete 
-                    OR m.Chronometre LIKE :Athlete 
-                    OR m.Timeshoot LIKE :Athlete 
-                    OR m.Ligne1 LIKE :Athlete 
-                    OR m.Ligne2 LIKE :Athlete ) 
+                WHERE (m.Secretaire LIKE :Athlete6 
+                    OR m.Chronometre LIKE :Athlete7 
+                    OR m.Timeshoot LIKE :Athlete8 
+                    OR m.Ligne1 LIKE :Athlete9
+                    OR m.Ligne2 LIKE :Athlete10 ) 
                 AND m.Id_journee = j.Id 
                 AND j.Code_saison = :SaisonAthlete 
                 ORDER BY m.Date_match DESC, m.Heure_match DESC ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array(':Athlete' => '%(' . $Athlete . ')%', ':SaisonAthlete' => $SaisonAthlete));
+            $result->execute([
+                ':Athlete1' => '%(' . $Athlete . ')%',
+                ':Athlete2' => '%(' . $Athlete . ')%',
+                ':Athlete3' => '%(' . $Athlete . ')%',
+                ':Athlete4' => '%(' . $Athlete . ')%',
+                ':Athlete5' => '%(' . $Athlete . ')%',
+                ':Athlete6' => '%(' . $Athlete . ')%',
+                ':Athlete7' => '%(' . $Athlete . ')%',
+                ':Athlete8' => '%(' . $Athlete . ')%',
+                ':Athlete9' => '%(' . $Athlete . ')%',
+                ':Athlete10' => '%(' . $Athlete . ')%',
+                ':SaisonAthlete' => $SaisonAthlete
+            ]);
             while ($row = $result->fetch()) {
                 if ($row['ScoreA'] != '?' && $row['ScoreA'] != '' && $row['ScoreB'] != '?' && $row['ScoreB'] != '') {
                     $row['ScoreOK'] = 'O';
@@ -182,11 +200,12 @@ class GestionAthlete extends MyPageSecure
                 LEFT OUTER JOIN kp_match_detail b 
                     ON (mj.Matric = b.Competiteur AND mj.Id_match = b.Id_match) 
                 WHERE mj.Matric = :Athlete 
+                AND j.Code_saison = :SaisonAthlete 
                 AND mj.Id_match = m.Id 
                 AND m.Id_journee = j.Id 
                 AND m.Id_equipeA = ceA.Id 
                 AND m.Id_equipeB = ceB.Id 
-                AND j.Code_saison = :SaisonAthlete 
+                AND mj.Capitaine != 'X'
                 GROUP BY m.Id 
                 ORDER BY m.Date_match DESC, m.Heure_match DESC ";
             $result = $myBdd->pdo->prepare($sql);

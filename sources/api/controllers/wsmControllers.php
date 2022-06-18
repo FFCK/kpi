@@ -62,23 +62,65 @@ function PutGameEventController($route, $params)
   $idMatch = (int) $route[2];
   $data = json_decode(file_get_contents('php://input'));
 
-  if (!$data->params->uid) {
-    $data->params->uid = str_replace('-', '', gen_uuid());
-  }
+  if ($data->params->action === 'add') {
+    if (!$data->params->uid) {
+      $data->params->uid = str_replace('-', '', gen_uuid());
+    }
 
-  $myBdd = new MyBdd();
-  $sql = "INSERT INTO kp_match_detail (Id, Id_match, Periode, Temps, Id_evt_match,
-    Competiteur, Numero, Equipe_A_B, motif)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-  $stmt = $myBdd->pdo->prepare($sql);
-  $result = $stmt->execute([
-    $data->params->uid, $idMatch, $data->params->period, $data->params->tpsJeu, $data->params->code,
-    $data->params->player, $data->params->number, $data->params->team, $data->params->reason
-  ]);
+    $myBdd = new MyBdd();
+    $sql = "INSERT INTO kp_match_detail (Id, Id_match, Periode, Temps, Id_evt_match,
+      Competiteur, Numero, Equipe_A_B, motif)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+    $stmt = $myBdd->pdo->prepare($sql);
+    $result = $stmt->execute([
+      $data->params->uid, $idMatch, $data->params->period, $data->params->tpsJeu, $data->params->code,
+      $data->params->player, $data->params->number, $data->params->team, $data->params->reason
+    ]);
+  } elseif ($data->params->action === 'remove') {
+    $myBdd = new MyBdd();
+    $sql = "DELETE FROM kp_match_detail 
+      WHERE Id_match = ?
+      AND Periode = ?
+      AND Competiteur = ?
+      AND Id_evt_match = ?
+      ORDER BY date_insert DESC
+      LIMIT 1 ";
+    $stmt = $myBdd->pdo->prepare($sql);
+    $result = $stmt->execute([
+      $idMatch, $data->params->period, $data->params->player, $data->params->code
+    ]);
+  }
   if ($result) {
     // Creation du Cache...
     $cMatch = new CacheMatch($_GET);
     $cMatch->MatchScore($myBdd, $idMatch);
+    return_200();
+  } else {
+    return_400();
+  }
+}
+
+function PutPlayerStatusController($route, $params)
+{
+  $idMatch = (int) $route[2];
+  $data = json_decode(file_get_contents('php://input'));
+
+  if ($data->params->team && $data->params->player && $data->params->status) {
+    $myBdd = new MyBdd();
+    $sql = "UPDATE kp_match_joueur
+      SET Capitaine = ?
+      WHERE Id_match = ?
+      AND Equipe = ?
+      AND Matric = ? ";
+    $stmt = $myBdd->pdo->prepare($sql);
+    $result = $stmt->execute([
+      $data->params->status, $idMatch, $data->params->team, $data->params->player
+    ]);
+  }
+  if (isset($result) && $result) {
+    // Creation du Cache...
+    $cMatch = new CacheMatch($_GET);
+    $cMatch->MatchGlobal($myBdd, $idMatch);
     return_200();
   } else {
     return_400();

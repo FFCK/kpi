@@ -273,12 +273,13 @@ class FeuilleMatch extends MyPage
 
             $sql3 = "SELECT a.Matric, a.Numero, a.Capitaine, b.Nom, b.Prenom, b.Sexe, b.Naissance, 
                 b.Origine, b.Reserve icf, c.Matric Matric_titulaire, 
-                IF (a.Capitaine='E', 1, 0) flagEntraineur 
+                IF (a.Capitaine = 'E', 1, 0) flagEntraineur 
                 FROM kp_licence b, kp_match_joueur a 
                 LEFT OUTER JOIN kp_competition_equipe_joueur c ON (c.Id_equipe = ? AND c.Matric = a.Matric) 
                 WHERE a.Matric = b.Matric 
                 AND a.Id_match = ? 
-                AND a.Capitaine <> 'A' 
+                AND a.Capitaine != 'A' 
+                AND a.Capitaine != 'X' 
                 AND a.Equipe = ? 
                 ORDER BY flagEntraineur, Numero, Nom, Prenom ";
             $result3 = $myBdd->pdo->prepare($sql3);
