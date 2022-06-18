@@ -1,6 +1,7 @@
 sources/smarty/templates_c/*
 !sources/smarty/templates_c/.gitkeep
 sources/live/cache/*.json
+sources/live/cache/logos/*.json
 sources/commun/MyParams.php
 sources/admin/temp_ajust.php
 sources/archives/
