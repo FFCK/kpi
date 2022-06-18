@@ -457,10 +457,9 @@ class GestionEquipe extends MyPageSecure
 		$codeCompet = utyGetPost('competition');
 		$codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
 
-		$sql = "SELECT Numero, Code_club
+		$sql = "SELECT Id, Numero, Code_club, logo
 			FROM kp_competition_equipe 
-			WHERE logo IS NULL
-			AND Code_compet = ?
+			WHERE Code_compet = ?
 			AND Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
@@ -471,25 +470,38 @@ class GestionEquipe extends MyPageSecure
 
 			while ($row = $result->fetch()) {
 
-				if (strlen($row['Code_club']) === 4 && is_file('../img/KIP/logo/' . $row['Code_club'] . '-logo.png')) {
-					$logo = 'KIP/logo/' . $row['Code_club'] . '-logo.png';
-				} elseif (strlen($row['Code_club']) !== 4 && is_file('../img/Nations/' . substr($row['Code_club'], 0, 3) . '.png')) {
-					$logo = 'Nations/' . substr($row['Code_club'], 0, 3) . '.png';
+				if ($row['logo'] === null) {
+
+					if (strlen($row['Code_club']) === 4 && is_file('../img/KIP/logo/' . $row['Code_club'] . '-logo.png')) {
+						$logo = 'KIP/logo/' . $row['Code_club'] . '-logo.png';
+					} elseif (strlen($row['Code_club']) !== 4 && is_file('../img/Nations/' . substr($row['Code_club'], 0, 3) . '.png')) {
+						$logo = 'Nations/' . substr($row['Code_club'], 0, 3) . '.png';
+					} else {
+						continue;
+					}
+
+					$sql2 = "UPDATE kp_competition_equipe 
+						SET logo = ?
+						WHERE Id = ? ";
+					$result2 = $myBdd->pdo->prepare($sql2);
+					$result2->execute(array($logo, $row['Id']));
+
+					$sql2 = "UPDATE kp_equipe 
+						SET logo = ?
+						WHERE Numero = ? ";
+					$result2 = $myBdd->pdo->prepare($sql2);
+					$result2->execute(array($logo, $row['Numero']));
 				} else {
-					continue;
+					$logo = $row['logo'];
 				}
 
-				$sql2 = "UPDATE kp_competition_equipe 
-					SET logo = ?
-					WHERE Numero = ? ";
-				$result2 = $myBdd->pdo->prepare($sql2);
-				$result2->execute(array($logo, $row['Numero']));
-
-				$sql2 = "UPDATE kp_equipe 
-					SET logo = ?
-					WHERE Numero = ? ";
-				$result2 = $myBdd->pdo->prepare($sql2);
-				$result2->execute(array($logo, $row['Numero']));
+				$data = file_get_contents('../img/' . $logo);
+				$jsonBase64 = json_encode([
+					'team' => $row['Numero'],
+					'club' => $row['Code_club'],
+					'logo' => base64_encode($data)
+				], JSON_UNESCAPED_SLASHES);
+				file_put_contents('../live/cache/logos/logo_' . $row['Id'] . '.json', $jsonBase64);
 			}
 
 			$myBdd->pdo->commit();
