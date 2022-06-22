@@ -118,6 +118,7 @@ $inserted = 0;
 $updated = 0;
 $teamInserted = 0;
 $teamUpdated = 0;
+$orphans = 0;
 
 /**
  * Traitement fichier
@@ -289,6 +290,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                             $teamUpdated++;
                         } else {
                             echo ';' . 'No team';
+                            $orphans++;
                         }
                     } else {
                         echo ';' . 'To update';
@@ -315,6 +317,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                             $teamInserted++;
                         } else {
                             echo ';' . 'No team';
+                            $orphans++;
                         }
                     } else {
                         echo ';' . 'To insert';
@@ -330,8 +333,9 @@ if ($xmlDocumentType == 'DT_PARTIC') {
     echo '<hr>';
     echo 'Licences ajoutées : ' . $inserted . '<br>';
     echo 'Licences mises à jour : ' . $updated . '<br>';
-    echo 'Titulaires ajoutés : ' . $inserted . '<br>';
-    echo 'Titulaires mis à jour : ' . $updated . '<br>';
+    echo 'Titulaires ajoutés : ' . $teamInserted . '<br>';
+    echo 'Titulaires mis à jour : ' . $teamUpdated . '<br>';
+    echo 'Orphelins : ' . $orphans . '<br>';
     // echo '<hr><pre>';
     // print_r($resultArray);
     // echo '</pre>';
