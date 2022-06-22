@@ -43,8 +43,9 @@ function RefreshCache () {
 				} else {
 					texte += '<td colspan="3">Waiting...</td>'
 				}
-				texte += '</tr></tbody></table>'
+				texte += '</tr>'
 			})
+			texte += '</tbody></table>'
 			$('#info').html(texte)
 		}
 	})
