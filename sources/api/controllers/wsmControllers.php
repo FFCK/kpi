@@ -62,12 +62,24 @@ function PutGameEventController($route, $params)
   $idMatch = (int) $route[2];
   $data = json_decode(file_get_contents('php://input'));
 
+  $myBdd = new MyBdd();
+  $sql = "SELECT COUNT(Id)
+    FROM kp_match 
+    WHERE Id = ? 
+    AND Validation != 'O' ";
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute([$idMatch]);
+  $result = $stmt->fetchColumn();
+  if ($result != 1) {
+    return_400('Game locked : ' . $result);
+  }
+
   if ($data->params->action === 'add') {
+
     if (!$data->params->uid) {
       $data->params->uid = str_replace('-', '', gen_uuid());
     }
 
-    $myBdd = new MyBdd();
     $sql = "INSERT INTO kp_match_detail (Id, Id_match, Periode, Temps, Id_evt_match,
       Competiteur, Numero, Equipe_A_B, motif)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
@@ -105,8 +117,19 @@ function PutPlayerStatusController($route, $params)
   $idMatch = (int) $route[2];
   $data = json_decode(file_get_contents('php://input'));
 
+  $myBdd = new MyBdd();
+  $sql = "SELECT COUNT(Id)
+    FROM kp_match 
+    WHERE Id = ? 
+    AND Validation != 'O' ";
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute([$idMatch]);
+  $result = $stmt->fetchColumn();
+  if ($result != 1) {
+    return_400('Game locked : ' . $result);
+  }
+
   if ($data->params->team && $data->params->player && $data->params->status) {
-    $myBdd = new MyBdd();
     $sql = "UPDATE kp_match_joueur
       SET Capitaine = ?
       WHERE Id_match = ?
@@ -137,6 +160,17 @@ function PutGameTimerController($route, $params)
   }
 
   $myBdd = new MyBdd();
+  $sql = "SELECT COUNT(Id)
+    FROM kp_match 
+    WHERE Id = ? 
+    AND Validation != 'O' ";
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute([$idMatch]);
+  $result = $stmt->fetchColumn();
+  if ($result != 1) {
+    return_400('Game locked : ' . $result);
+  }
+
   if ($data->params->action === 'RAZ') {
     $sql = "DELETE FROM kp_chrono 
       WHERE IdMatch = ? ";
