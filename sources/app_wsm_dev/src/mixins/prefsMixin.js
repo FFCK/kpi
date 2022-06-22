@@ -24,6 +24,7 @@ export default {
           idbs.dbPut('preferences', Preferences.query().first())
         }
         this.pitches = this.prefs.pitches
+        this.selectedEvent = this.prefs.selectedEvent
       }
     },
     savePrefs () {

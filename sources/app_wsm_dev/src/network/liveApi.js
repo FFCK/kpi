@@ -12,6 +12,9 @@ export default {
   getGame (gameId) {
     return api.get('/live/cache/' + gameId + '_match_global.json')
   },
+  getLogo (numero) {
+    return api.get('/live/cache/logos/logo_' + numero + '.json')
+  },
   getScore (gameId) {
     return api.get('/live/cache/' + gameId + '_match_score.json')
   },
@@ -31,6 +34,11 @@ export default {
   },
   setGameEvent (gameId, params) {
     return api.put('/api/wsm/gameEvent/' + gameId, {
+      params: params
+    })
+  },
+  setPlayerStatus (gameId, params) {
+    return api.put('/api/wsm/playerStatus/' + gameId, {
       params: params
     })
   },

@@ -120,6 +120,19 @@ export default {
         return null
       }
     },
+    async fetchLogo (numero) {
+      try {
+        const resultLogo = await liveApi.getLogo(numero)
+        return resultLogo.data
+      } catch (error) {
+        if (error.message === 'Network Error') {
+          console.log('Offline !')
+        } else {
+          console.log('Error')
+        }
+        return null
+      }
+    },
     async updateGame () {
       const game = await this.fetchGame(this.forcedGameId, this.event, this.pitch, this.options.includes('next'), this.gameId)
       if (game) {
