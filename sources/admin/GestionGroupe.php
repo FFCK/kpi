@@ -196,7 +196,7 @@ class GestionGroupe extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(1);
+		MyPageSecure::MyPageSecure(2);
 
 		$alertMessage = '';
 
