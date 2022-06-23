@@ -112,6 +112,7 @@ const COMPETITION_LABEL = "Championnats du monde 2022"; // WC 2022
 // Event 3 = Senior M
 // Event 4 = Senior W
 $eventArray = ['001' => 'CMH21', '002' => 'CMF21', '003' => 'CMH', '004' => 'CMF'];
+$catArray = ['CMH21' => 'U21 MEN', 'CMF21' => 'U21 WOMEN', 'CMH' => 'SENIOR MEN', 'CMF' => 'SENIOR WOMEN'];
 $resultArray = [];
 $updateDB = utyGetPost('updateDB', 0);
 $inserted = 0;
@@ -252,13 +253,14 @@ if ($xmlDocumentType == 'DT_PARTIC') {
         }
     }
 
-    echo 'Cat;Team;TeamId;Id;LicenceIcf;Nom;Prenom;Sexe;Naissance;Taille;Poids;Gilet;BDD Licence;BDD Compo';
+    echo 'Country;KPICat;Cat;KPITeamId;KPIId;IcfId;FamilyName;FirstName;Gender;Birthdate;Height;Weigth;Number;KPILicenceDB;KPIRosterDB';
     echo '<br>';
     foreach ($resultArray as $cat => $arrayCat) {
         foreach ($arrayCat as $team => $arrayTeam) {
             foreach ($arrayTeam as $key3 => $arrayPlayer) {
-                echo $cat;
-                echo ';' . $team;
+                echo $team;
+                echo ';' . $cat;
+                echo ';' . $catArray[$cat];
                 echo ';' . $arrayPlayer['teamId'];
                 echo ';' . $arrayPlayer['matric'];
                 echo ';' . $arrayPlayer['icf'];
