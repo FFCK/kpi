@@ -253,7 +253,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
         }
     }
 
-    echo 'Country;KPICat;Cat;KPITeamId;KPIId;IcfId;FamilyName;FirstName;Gender;Birthdate;Height;Weigth;Number;KPILicenceDB;KPIRosterDB';
+    echo 'Country;KPICat;Cat;KPITeamId;KPIId;IcfId;FamilyName;FirstName;Gender;Birthdate;Height;Weigth;Number;KPILicenceDB;KPIRosterDB;Fonction';
     echo '<br>';
     foreach ($resultArray as $cat => $arrayCat) {
         foreach ($arrayCat as $team => $arrayTeam) {
@@ -326,7 +326,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                         echo ';' . 'To insert';
                     }
                 }
-
+                echo ';Athlete';
                 echo '<br>';
             }
         }
