@@ -380,7 +380,7 @@ export default {
           timer = Math.floor(ms / 60000) + ':' + Math.round((ms / 1000) % 60)
         }
       }
-      return (ms < 600000) ? '0' + timer : timer
+      return timer
     },
     msToSS (ms, up = true, tenth = false) {
       if (isNaN(ms)) {
