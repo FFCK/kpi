@@ -11,6 +11,7 @@ export default {
       faker: false,
       broker: false,
       url: [],
+      urlsub: '',
       topic: [],
       stomp: [],
       login: [],
@@ -74,13 +75,13 @@ export default {
         await this.socket[id].deactivate()
         this.socket[id] = null
 
-        this.printControlMessage(id, 'Stomp disconnected')
+        this.printLog(id, 'Stomp disconnected')
         this.startedUrl[id] = false
         this.startedCount--
         this.saveConnection(id)
       } else {
         this.socket[id].close()
-        this.printControlMessage(id, 'Websocket closed.')
+        this.printLog(id, 'Websocket closed.')
         this.socket[id] = null
       }
     },
@@ -93,17 +94,17 @@ export default {
       }
       this.toSend[id] = ''
     },
-    broadcast (pitch, topic, message, id = 0) {
+    broadcast (pitch, topic, value, id = 0) {
       // console.log(pitch, topic, message, id)
       if (this.startedUrl[id]) {
         if (this.stomp[id]) {
           const dest = '/pitch' + pitch + topic
-          this.socket[id].publish({ destination: dest, body: message })
+          this.socket[id].publish({ destination: dest, body: value })
         } else {
           const obj = {
             p: pitch,
             t: topic.substr(1),
-            m: message
+            v: value
           }
           this.socket[id].send(JSON.stringify(obj))
         }
@@ -148,6 +149,9 @@ export default {
       if (connections.length >= 1) {
         connections.forEach(connection => {
           this.url[connection.id] = connection.url
+          if (connection.id === 0) {
+            this.urlsub = connection.urlsub || ''
+          }
           this.topic[connection.id] = connection.topic
           this.stomp[connection.id] = connection.stomp
           this.login[connection.id] = connection.login
@@ -195,6 +199,9 @@ export default {
         game: game,
         startedUrl: this.startedUrl[id]
       }
+      if (id === 0) {
+        connexion.urlsub = this.urlsub
+      }
       idbs.dbPut('connections', connexion)
       // console.log('Connection ' + id + ' saved')
     },
@@ -205,7 +212,7 @@ export default {
           {
             global: {
               stomp: this.stomp[0],
-              url: this.url[0],
+              url: this.urlsub,
               login: this.login[0],
               password: window.btoa(this.password[0]),
               topic: this.topic[0]
@@ -226,7 +233,7 @@ export default {
       this.socket[id] = new WebSocket(this.url[id], topic)
 
       this.socket[id].onopen = (e) => {
-        this.printControlMessage(id, 'Websocket Open.')
+        this.printLog(id, 'Websocket Open.')
         this.startedUrl[id] = true
         this.startedCount++
         this.saveConnection(id)
@@ -234,14 +241,13 @@ export default {
 
       this.socket[id].onmessage = (event) => {
         this.printLog(id, event.data)
-        console.log(id, event.data)
       }
 
       this.socket[id].onclose = (event) => {
         if (event.wasClean) {
-          this.printControlMessage(id, 'Websocket Close.')
+          this.printLog(id, 'Websocket Close.')
         } else {
-          this.printControlMessage(id, 'Websocket Died.')
+          this.printLog(id, 'Websocket Died.')
         }
         this.startedUrl[id] = false
         this.startedCount--
@@ -251,7 +257,7 @@ export default {
 
       this.socket[id].onerror = (error) => {
         console.log(error)
-        this.printControlMessage(id, error.message || 'Error')
+        this.printLog('WebSocket Error')
       }
     },
     stompCreate (id) {
@@ -270,7 +276,7 @@ export default {
         heartbeatOutgoing: 0
       })
       this.socket[id].onConnect = (frame) => {
-        this.printControlMessage(id, 'Stomp Connected')
+        this.printLog(id, 'Stomp Connected')
         this.startedUrl[id] = true
         this.startedCount++
         this.saveConnection(id)
@@ -338,8 +344,8 @@ export default {
               this.period[id] = currentPeriod
               this.sync(this.game[id].id_match, 'Periode', this.period[id])
               this.printLog(id, '-Period => ' + this.period[id])
-              this.broadcast(id, '/period', currentPeriod)
             }
+            this.broadcast(id, '/period', currentPeriod)
           }
         })
         // Chrono
@@ -350,30 +356,27 @@ export default {
             if (chrono.value >= 10000 && (!this.tpsJeu[id] || Math.abs(this.tpsJeu[id] - Math.ceil(chrono.value / 1000) * 1000) >= 1000)) {
               this.tpsJeu[id] = chrono.value
               this.tpsJeuFormated[id] = this.msToMMSS(chrono.value, true, false)
-              this.broadcast(id, '/chrono', this.tpsJeuFormated[id])
             } else if (chrono.value < 10000 && (!this.tpsJeu[id] || Math.abs(this.tpsJeu[id] - Math.ceil(chrono.value / 100) * 100) >= 100)) {
               this.tpsJeu[id] = chrono.value
               this.tpsJeuFormated[id] = this.msToMMSS(chrono.value, false, true)
-              this.broadcast(id, '/chrono', this.tpsJeuFormated[id])
             }
 
-            if (chrono.value !== this.statutChrono[id]) {
-              this.statutChrono[id] = chrono.value
+            if (chrono.started !== this.statutChrono[id]) {
+              this.statutChrono[id] = chrono.started
               const action = chrono.started ? 'run' : 'stop'
               this.printLog(id, '-Chrono ' + action)
               this.syncTimer(this.game[id].id_match, this.tpsJeu[id], chrono.initValue, action)
-              // console.log('syncTimer', this.game[id].id_match, this.tpsJeu[id], chrono.initValue, action)
             }
+            this.broadcast(id, '/chrono', { time: this.tpsJeuFormated[id], run: this.statutChrono[id] })
           } else if (chrono.chronoName === 'POSSES' && this.game[id]) {
             if (chrono.value >= 10000 && (!this.posses[id] || Math.abs(this.posses[id] - chrono.value) > 100)) {
               this.posses[id] = chrono.value
               this.possesFormated[id] = this.msToSS(chrono.value, true, false)
-              this.broadcast(id, '/posses', this.possesFormated[id])
             } else if (chrono.value < 10000 && (!this.posses[id] || Math.abs(this.posses[id] - chrono.value) > 100)) {
               this.posses[id] = chrono.value
               this.possesFormated[id] = this.msToSS(chrono.value, false, true)
-              this.broadcast(id, '/posses', this.possesFormated[id])
             }
+            this.broadcast(id, '/posses', this.possesFormated[id])
           } // PEN_H1, PEN_H2, PEN_G1, PEN_G2
         })
         // Score
@@ -385,19 +388,19 @@ export default {
                 this.scoreA[id] = dataGame.score
                 this.sync(this.game[id].id_match, 'ScoreDetailA', this.scoreA[id])
                 this.printLog(id, '-Score A => ' + this.scoreA[id])
-                this.broadcast(id, '/scoreA', this.scoreA[id])
               }
               this.penA[id] = dataGame.nbPenalities
-              this.broadcast(id, '/penA', this.penA[id])
+              this.broadcast(id, '/scoreA', dataGame.score)
+              this.broadcast(id, '/penA', dataGame.nbPenalities)
             } else {
               if (dataGame.score !== this.scoreB[id]) {
                 this.scoreB[id] = dataGame.score
                 this.sync(this.game[id].id_match, 'ScoreDetailB', this.scoreB[id])
                 this.printLog(id, '-Score B => ' + this.scoreB[id])
-                this.broadcast(id, '/scoreB', this.scoreB[id])
               }
               this.penB[id] = dataGame.nbPenalities
-              this.broadcast(id, '/penB', this.penB[id])
+              this.broadcast(id, '/scoreB', dataGame.score)
+              this.broadcast(id, '/penB', dataGame.nbPenalities)
             }
           }
         })
@@ -498,21 +501,6 @@ export default {
         this.printLog(id, 'Hello KPI Broker, I\'m ready!')
       } else if (id === 20) { // Faker
         this.printLog(id, 'Hello Faker, I\'m ready!')
-        this.socket[id].subscribe('/pitch1/period', (message) => {
-          console.log('Pitch1-period', message.body)
-        })
-        this.socket[id].subscribe('/pitch1/chrono', (message) => {
-          console.log('Pitch1-chrono', message.body)
-        })
-        this.socket[id].subscribe('/pitch1/possession', (message) => {
-          console.log('Pitch1-possession', message.body)
-        })
-        this.socket[id].subscribe('/pitch1/scoreA', (message) => {
-          console.log('Pitch1-scoreA', message.body)
-        })
-        this.socket[id].subscribe('/pitch1/scoreB', (message) => {
-          console.log('Pitch1-scoreB', message.body)
-        })
       }
     },
     syncPlayerSelected (idMatch, team, player, selected, capitaine) {
@@ -587,7 +575,7 @@ export default {
           .setGameEvent(idMatch, params)
           .then(result => {
             if (result.data) {
-              console.log('DB Updated')
+              // console.log('DB Updated')
             }
           })
       } else {
@@ -683,13 +671,54 @@ export default {
             logoBase64: logo2?.logo || ''
           }
         }
-        console.log('setTeams', setTeams)
+        // console.log('setTeams', setTeams)
         this.sendMessage(id, JSON.stringify(setTeams), '/api/game/set-teams')
         this.printLog(id, '-setTeams : ' + game.equipe1.nom + ' / ' + game.equipe2.nom)
         this.saveConnection(id)
         return true
       } else {
         this.printLog(id, '-No game to load')
+        const players1 = []
+        const players2 = []
+        for (let i = 1; i <= 10; i++) {
+          players1.push({
+            id: i,
+            name: 'Player ' + i,
+            shirtNumber: i
+          })
+          players2.push({
+            id: i,
+            name: 'Player ' + i,
+            shirtNumber: i
+          })
+        }
+
+        const setTeams = {
+          teamHome: {
+            name: 'TEAM A',
+            displayName: 'TEAM A',
+            trigramName: '',
+            textColor: '#FFFFFF',
+            shirtColor: '#0055A4',
+            strokeColor: '#EF4135',
+            coach: [],
+            players: players1,
+            logoBase64: ''
+          },
+          teamGuest: {
+            name: 'TEAM B',
+            displayName: 'TEAM B',
+            trigramName: '',
+            textColor: '#FF4444',
+            shirtColor: '#000000',
+            strokeColor: '#FFCE00',
+            coach: [],
+            players: players2,
+            logoBase64: ''
+          }
+        }
+        this.sendMessage(id, JSON.stringify(setTeams), '/api/game/set-teams')
+        this.printLog(id, '-setTeams : TEAM A / TEAM B')
         return false
       }
     }

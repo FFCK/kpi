@@ -20,182 +20,174 @@
           <label class="form-check-label">Database sync</label>
           <input class="form-check-input" type="checkbox" role="button" :checked="prefs.databaseSync" @change="changeDatabaseSync">
         </div>
-        <!-- <div>
-          <div class="btn btn-sm btn-secondary" @click="savePrefs">
-            <i class="bi bi-save2" title="Save"></i> Prefs
-          </div>
-        </div> -->
+        <div>
+            <button class="btn btn-sm btn-outline-primary" @click="lightView = !lightView"><i class="bi bi-view-list"></i></button>
+        </div>
       </div>
       <hr>
 
-      <div class="my-3" v-show="!broker && !startedUrl[0]">
-        <button class="btn btn-sm btn-outline-dark" @click="broker = !broker">KPI Broker <i class="bi bi-caret-down-fill"></i></button>
-      </div>
-      <div class="row my-3" v-show="broker || startedUrl[0]">
-        <div class="card text-white bg-secondary col-md-6">
-          <div class="card-body">
-            <h5 class="card-title">
-              <button class="btn btn-sm btn-outline-dark" v-if="!startedUrl[0]" @click="broker = !broker">KPI Broker <i class="bi bi-caret-up-fill"></i></button>
-              <button class="btn btn-sm btn-outline-dark" v-else>KPI Broker</button>
-              <button class="btn btn-sm btn-dark float-end m-1" v-if="startedUrl[0]" @click="generateJson()" title="Generate Json"><i class="bi bi-filetype-json"></i></button>
-              <button class="btn btn-sm btn-dark float-end m-1" v-if="validUrl[0]" @click="saveConnection(0)"><i class="bi bi-save2" title="Save"></i></button>
-            </h5>
-            <div class="card-text">
+      <div class="row my-1">
+        <div class="col-md-6">
+          <div class="my-3" v-show="!broker">
+            <button class="btn btn-sm btn-outline-dark" @click="broker = !broker">KPI Broker <i class="bi bi-caret-down-fill"></i></button>
+            <button class="btn btn-sm btn-success m-1" v-if="startedUrl[0]">Running...</button>
+          </div>
+          <div class="card text-white bg-secondary" v-show="broker">
+            <div class="card-header">
+              <h5 class="card-title">
+                <button class="btn btn-sm btn-outline-dark" @click="broker = !broker">KPI Broker <i class="bi bi-caret-up-fill"></i></button>
+                <button class="btn btn-sm btn-primary m-1" :disabled="!validUrl[0]" v-if="!startedUrl[0]" @click="startUrl(0)"><i class="bi bi-play-fill"></i></button>
+                <button class="btn btn-sm btn-danger m-1" v-if="validUrl[0] && startedUrl[0]" @click="stopUrl(0)"><i class="bi bi-stop-fill"></i></button>
+                <span class="bg-light text-secondary fst-italic fade show p-1 small" role="alert" v-if="message[0]">
+                  {{ message[0] }}
+                  <button type="button" class="btn-close btn-sm" aria-label="Close" @click="message[0] = ''"></button>
+                </span>
+                <button class="btn btn-sm btn-dark float-end m-1" v-if="startedUrl[0]" @click="generateJson()" title="Generate sub json"><i class="bi bi-filetype-json"></i></button>
+                <button class="btn btn-sm btn-dark float-end m-1" v-if="validUrl[0]" @click="saveConnection(0)"><i class="bi bi-save2" title="Save"></i></button>
+              </h5>
+              <div class="card-text">
+                <div class="row g-2 align-items-center">
+                  <div class="col-md-auto">
+                    <label class="col-form-label">Publisher </label>
+                  </div>
+                  <div class="col-md-7">
+                    <input class="form-control form-control-sm" type="text" placeholder="ws://192.168.0.1:2000" :disabled="startedUrl[0]" v-model.trim="url[0]" @change="changeUrl(0)">
+                  </div>
+                  <div class="col-md-auto">
+                    <input class="form-check-input" type="checkbox" :disabled="startedUrl[0]" v-model.trim="stomp[0]">
+                    <label class="form-check-label ms-1">Stomp</label>
+                  </div>
+                </div>
+                <div class="row g-2 align-items-center">
+                  <div class="col-md-auto">
+                    <label class="col-form-label">Subscriber </label>
+                  </div>
+                  <div class="col-md-7">
+                    <input class="form-control form-control-sm" type="text" placeholder="ws://192.168.0.1:2000" :disabled="startedUrl[0]" v-model.trim="urlsub">
+                  </div>
+                </div>
+                <div class="row g-2 align-items-center" v-if="stomp[0]">
+                  <div class="col-md-6">
+                    <input class="form-control form-control-sm" type="text" placeholder="login" :disabled="startedUrl[0]" v-model.trim="login[0]">
+                  </div>
+                  <div class="col-md-6">
+                    <input class="form-control form-control-sm" type="password" placeholder="password" :disabled="startedUrl[0]" v-model.trim="password[0]">
+                  </div>
+                </div>
+                <div class="row g-2 align-items-center">
+                  <div class="col-md-auto">
+                    <label class="col-form-label">Topic</label>
+                  </div>
+                  <div class="col-md-auto">
+                    <input type="text" class="form-control form-control-sm" placeholder="lws-minimal" v-model.trim="topic[0]">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <p :id="'flow-' + 0" class="small text-white" style="max-height: 120px; overflow-y: auto;"></p>
+            </div>
+            <div class="card-footer">
               <div class="row g-2 align-items-center">
-                <div class="col-md-auto">
-                  <label class="col-form-label">Url </label>
-                </div>
-                <div class="col-md-7">
-                  <input class="form-control form-control-sm" type="text" placeholder="ws://192.168.0.1:2000" :disabled="startedUrl[0]" v-model.trim="url[0]" @change="changeUrl(0)">
-                </div>
-                <div class="col-md-auto">
-                  <input class="form-check-input" type="checkbox" :disabled="startedUrl[0]" v-model.trim="stomp[0]">
-                  <label class="form-check-label ms-1">Stomp</label>
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" placeholder="To send..." v-if="startedUrl[0]" v-model.trim="toSend[0]">
+                    <button class="btn btn-sm btn-success" v-if="validUrl[0] && startedUrl[0]" @click="sendMessage(0)">Send</button>
+                  </div>
                 </div>
               </div>
-              <div class="row g-2 align-items-center" v-if="stomp[0]">
-                <div class="col-md-6">
-                  <input class="form-control form-control-sm" type="text" placeholder="login" :disabled="startedUrl[0]" v-model.trim="login[0]">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="my-3" v-show="!faker && !startedUrl[20]">
+            <button class="btn btn-sm btn-outline-secondary" @click="faker = !faker">Faker <i class="bi bi-caret-down-fill"></i></button>
+          </div>
+          <div class="card text-white bg-dark" v-show="faker || startedUrl[20]">
+            <div class="card-header">
+              <h5 class="card-title">
+                <button class="btn btn-sm btn-outline-secondary" v-if="!startedUrl[20]" @click="faker = !faker">Faker <i class="bi bi-caret-up-fill"></i></button>
+                <button class="btn btn-sm btn-outline-secondary" v-else>Faker</button>
+                <button class="btn btn-sm btn-primary m-1" :disabled="!validUrl[20]" v-if="!startedUrl[20]" @click="startUrl(20)"><i class="bi bi-play-fill"></i></button>
+                <button class="btn btn-sm btn-danger m-1" v-if="validUrl[20] && startedUrl[20]" @click="stopUrl(20)"><i class="bi bi-stop-fill"></i></button>
+                <span class="bg-light text-secondary fst-italic fade show p-1 small" role="alert" v-if="message[20]">
+                  {{ message[20] }}
+                  <button type="button" class="btn-close btn-sm" aria-label="Close" @click="message[20] = ''"></button>
+                </span>
+                <button class="btn btn-sm btn-secondary float-end" v-if="validUrl[20]" @click="saveConnection(20)"><i class="bi bi-save2" title="Save"></i></button>
+              </h5>
+              <div class="card-text">
+                <div class="row g-2 align-items-center">
+                  <div class="col-md-auto">
+                    <label class="col-form-label">Url </label>
+                  </div>
+                  <div class="col-md-7">
+                    <input class="form-control form-control-sm" type="text" placeholder="ws://192.168.0.1:2000" :disabled="startedUrl[20]" v-model.trim="url[20]" @change="changeUrl(20)">
+                  </div>
+                  <div class="col-md-auto">
+                    <input class="form-check-input" type="checkbox" :disabled="startedUrl[20]" v-model.trim="stomp[20]">
+                    <label class="form-check-label ms-1">Stomp</label>
+                  </div>
                 </div>
-                <div class="col-md-6">
-                  <input class="form-control form-control-sm" type="password" placeholder="password" :disabled="startedUrl[0]" v-model.trim="password[0]">
+                <div class="row g-2 align-items-center" v-if="stomp[20]">
+                  <div class="col-md-6">
+                    <input class="form-control form-control-sm" type="text" placeholder="login" :disabled="startedUrl[20]" v-model.trim="login[20]">
+                  </div>
+                  <div class="col-md-6">
+                    <input class="form-control form-control-sm" type="password" placeholder="password" :disabled="startedUrl[20]" v-model.trim="password[20]">
+                  </div>
                 </div>
               </div>
+            </div>
+            <div class="card-header">
+              <p :id="'flow-' + 20" class="small text-muted" style="max-height: 120px; overflow-y: auto;"></p>
+            </div>
+            <div class="card-body">
+              <button class="badge bg-secondary m-1" @click="fake(1)">Ready</button>
+              <button class="badge bg-secondary m-1" @click="fake(2)">Success</button>
+              <button class="badge bg-secondary m-1" @click="fake(3)">Running</button>
+              <button class="badge bg-secondary m-1" @click="fake(4)">Quit</button>
+              <button class="badge bg-secondary m-1" @click="fake(41)">Desactivate players</button>
+              <button class="badge bg-secondary m-1" @click="fake(42)">Reactivate players</button>
+              <button class="badge bg-secondary m-1" @click="fake(5)">M1</button>
+              <button class="badge bg-secondary m-1" @click="fake(6)">M2</button>
+              <button class="badge bg-secondary m-1" @click="fake(7)">P1</button>
+              <button class="badge bg-secondary m-1" @click="fake(8)">P2</button>
+              <button class="badge bg-secondary m-1" @click="fake(9)">09:41.71 On</button>
+              <button class="badge bg-secondary m-1" @click="fake(10)">08:07.66 Off</button>
+              <button class="badge bg-secondary m-1" @click="fake(101)">00:08.66 On</button>
+              <button class="badge bg-secondary m-1" @click="fake(102)">10:00.00 On</button>
+              <button class="badge bg-secondary m-1" @click="fake(103)">09:59.99 On</button>
+              <button class="badge bg-secondary m-1" @click="fake(111)">Poss 60.00</button>
+              <button class="badge bg-secondary m-1" @click="fake(11)">Poss 12.41</button>
+              <button class="badge bg-secondary m-1" @click="fake(12)">Poss 6.71</button>
+              <button class="badge bg-secondary m-1" @click="fake(121)">Poss 0.00</button>
+              <button class="badge bg-secondary m-1" @click="fake(13)">A2</button>
+              <button class="badge bg-secondary m-1" @click="fake(14)">B4</button>
+              <button class="badge bg-secondary m-1" @click="fake(15)">A3 pen 2</button>
+              <button class="badge bg-secondary m-1" @click="fake(151)">B5 pen 1</button>
+              <button class="badge bg-secondary m-1" @click="fake(16)">Goal #2A</button>
+              <button class="badge bg-secondary m-1" @click="fake(161)">2d Goal #2A</button>
+              <button class="badge bg-secondary m-1" @click="fake(17)">Yellow #7B</button>
+              <button class="badge bg-secondary m-1" @click="fake(171)">Red #7B</button>
+              <button class="badge bg-secondary m-1" @click="fake(172)">-Red #7B</button>
+            </div>
+            <div class="card-footer" v-if="validUrl[20] && startedUrl[20]">
               <div class="row g-2 align-items-center">
                 <div class="col-md-auto">
                   <label class="col-form-label">Topic</label>
                 </div>
                 <div class="col-md-auto">
-                  <input type="text" class="form-control form-control-sm" placeholder="lws-minimal" v-model.trim="topic[0]">
+                  <input type="text" class="form-control form-control-sm" placeholder="/topic/name" v-model.trim="topic[20]">
                 </div>
               </div>
-              <div class="row g-2 align-items-center mt-1">
-                <div class="col-md-auto">
-                  <button class="btn btn-sm btn-primary" :disabled="!validUrl[0]" v-if="!startedUrl[0]" @click="startUrl(0)"><i class="bi bi-play-fill"></i></button>
-                  <button class="btn btn-sm btn-danger" v-if="validUrl[0] && startedUrl[0]" @click="stopUrl(0)"><i class="bi bi-stop-fill"></i></button>
-                </div>
-                <div class="col-md">
-                  <div class="bg-light text-secondary fade show p-1 small" role="alert" v-if="message[0]">
-                    {{ message[0] }}
-                    <button type="button" class="btn-close float-end" aria-label="Close" @click="message[0] = ''"></button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card text-white bg-secondary col-md-6">
-          <div class="card-body">
-            <p :id="'flow-' + 0" class="small text-white" style="max-height: 120px; overflow-y: auto;"></p>
-          </div>
-          <div class="card-footer">
-            <div class="row g-2 align-items-center">
-              <div class="col-md-12">
-                <div class="input-group">
-                  <input type="text" class="form-control form-control-sm" placeholder="To send..." v-if="startedUrl[0]" v-model.trim="toSend[0]">
-                  <button class="btn btn-sm btn-success" v-if="validUrl[0] && startedUrl[0]" @click="sendMessage(0)">Send</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="my-3" v-show="!faker && !startedUrl[20]">
-        <button class="btn btn-sm btn-outline-secondary" @click="faker = !faker">Faker <i class="bi bi-caret-down-fill"></i></button>
-      </div>
-      <div class="row my-3" v-show="faker || startedUrl[20]">
-        <div class="card text-white bg-dark col-md-6">
-          <div class="card-body">
-            <h5 class="card-title">
-              <button class="btn btn-sm btn-outline-secondary" v-if="!startedUrl[20]" @click="faker = !faker">Faker <i class="bi bi-caret-up-fill"></i></button>
-              <button class="btn btn-sm btn-outline-secondary" v-else>Faker</button>
-              <button class="btn btn-sm btn-secondary float-end" v-if="validUrl[20]" @click="saveConnection(20)"><i class="bi bi-save2" title="Save"></i></button>
-            </h5>
-            <div class="card-text">
               <div class="row g-2 align-items-center">
-                <div class="col-md-auto">
-                  <label class="col-form-label">Url </label>
-                </div>
-                <div class="col-md-7">
-                  <input class="form-control form-control-sm" type="text" placeholder="ws://192.168.0.1:2000" :disabled="startedUrl[20]" v-model.trim="url[20]" @change="changeUrl(20)">
-                </div>
-                <div class="col-md-auto">
-                  <input class="form-check-input" type="checkbox" :disabled="startedUrl[20]" v-model.trim="stomp[20]">
-                  <label class="form-check-label ms-1">Stomp</label>
-                </div>
-              </div>
-              <div class="row g-2 align-items-center" v-if="stomp[20]">
-                <div class="col-md-6">
-                  <input class="form-control form-control-sm" type="text" placeholder="login" :disabled="startedUrl[20]" v-model.trim="login[20]">
-                </div>
-                <div class="col-md-6">
-                  <input class="form-control form-control-sm" type="password" placeholder="password" :disabled="startedUrl[20]" v-model.trim="password[20]">
-                </div>
-              </div>
-              <div class="row g-2 align-items-center mt-1">
-                <div class="col-md-auto">
-                  <button class="btn btn-sm btn-primary" :disabled="!validUrl[20]" v-if="!startedUrl[20]" @click="startUrl(20)"><i class="bi bi-play-fill"></i></button>
-                  <button class="btn btn-sm btn-danger" v-if="validUrl[20] && startedUrl[20]" @click="stopUrl(20)"><i class="bi bi-stop-fill"></i></button>
-                </div>
-                <div class="col-md">
-                  <div class="bg-light text-secondary fade show p-1 small" role="alert" v-if="message[20]">
-                    {{ message[20] }}
-                    <button type="button" class="btn-close float-end" aria-label="Close" @click="message[20] = ''"></button>
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" placeholder="To send..." v-model.trim="toSend[20]">
+                    <button class="btn btn-sm btn-success" @click="sendMessage(20)">Send</button>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card text-white bg-dark col-md-6">
-          <div class="card-header">
-            <p :id="'flow-' + 20" class="small text-muted" style="max-height: 120px; overflow-y: auto;"></p>
-          </div>
-          <div class="card-body">
-            <button class="badge bg-secondary m-1" @click="fake(1)">Ready</button>
-            <button class="badge bg-secondary m-1" @click="fake(2)">Success</button>
-            <button class="badge bg-secondary m-1" @click="fake(3)">Running</button>
-            <button class="badge bg-secondary m-1" @click="fake(4)">Quit</button>
-            <button class="badge bg-secondary m-1" @click="fake(41)">Desactivate players</button>
-            <button class="badge bg-secondary m-1" @click="fake(42)">Reactivate players</button>
-            <button class="badge bg-secondary m-1" @click="fake(5)">M1</button>
-            <button class="badge bg-secondary m-1" @click="fake(6)">M2</button>
-            <button class="badge bg-secondary m-1" @click="fake(7)">P1</button>
-            <button class="badge bg-secondary m-1" @click="fake(8)">P2</button>
-            <button class="badge bg-secondary m-1" @click="fake(9)">09:41.71 On</button>
-            <button class="badge bg-secondary m-1" @click="fake(10)">08:07.66 Off</button>
-            <button class="badge bg-secondary m-1" @click="fake(101)">00:08.66 On</button>
-            <button class="badge bg-secondary m-1" @click="fake(102)">10:00.00 On</button>
-            <button class="badge bg-secondary m-1" @click="fake(103)">09:59.99 On</button>
-            <button class="badge bg-secondary m-1" @click="fake(111)">Poss 60.00</button>
-            <button class="badge bg-secondary m-1" @click="fake(11)">Poss 12.41</button>
-            <button class="badge bg-secondary m-1" @click="fake(12)">Poss 6.71</button>
-            <button class="badge bg-secondary m-1" @click="fake(121)">Poss 0.00</button>
-            <button class="badge bg-secondary m-1" @click="fake(13)">A2</button>
-            <button class="badge bg-secondary m-1" @click="fake(14)">B4</button>
-            <button class="badge bg-secondary m-1" @click="fake(15)">A3 pen 2</button>
-            <button class="badge bg-secondary m-1" @click="fake(151)">B5 pen 1</button>
-            <button class="badge bg-secondary m-1" @click="fake(16)">Goal #2A</button>
-            <button class="badge bg-secondary m-1" @click="fake(161)">2d Goal #2A</button>
-            <button class="badge bg-secondary m-1" @click="fake(17)">Yellow #7B</button>
-            <button class="badge bg-secondary m-1" @click="fake(171)">Red #7B</button>
-            <button class="badge bg-secondary m-1" @click="fake(172)">-Red #7B</button>
-          </div>
-          <div class="card-footer">
-            <div class="row g-2 align-items-center">
-              <div class="col-md-auto">
-                <label class="col-form-label">Topic</label>
-              </div>
-              <div class="col-md-auto">
-                <input type="text" class="form-control form-control-sm" placeholder="/topic/name" v-model.trim="topic[20]">
-              </div>
-            </div>
-            <div class="row g-2 align-items-center">
-              <div class="col-md-12">
-                <div class="input-group">
-                  <input type="text" class="form-control form-control-sm" placeholder="To send..." v-if="startedUrl[20]" v-model.trim="toSend[20]">
-                  <button class="btn btn-sm btn-success" v-if="validUrl[20] && startedUrl[20]" @click="sendMessage(20)">Send</button>
                 </div>
               </div>
             </div>
@@ -203,14 +195,20 @@
         </div>
       </div>
 
-      <div class="row mb-1" v-for="(n, index) in pitches" :key="index">
-        <div class="card col-md-6">
-          <div class="card-body">
+      <div class="row">
+        <div class="card col-md-6 mb-1" v-for="(n, index) in pitches" :key="index">
+          <div class="card-header">
             <h5 class="card-title">
               {{ $t("Pitch") }} {{ n }}
+              <button class="btn btn-sm btn-primary" :disabled="!validUrl[n]" v-if="!startedUrl[n]" @click="startUrl(n)" title="Connect"><i class="bi bi-play-fill"></i></button>
+              <button class="btn btn-sm btn-danger" v-if="validUrl[n]" @click="stopUrl(n)" title="Disconnect"><i class="bi bi-stop-fill"></i></button>
+              <span class="bg-secondary text-light fst-italic fade show p-1 small" role="alert" v-if="message[n]">
+                {{ message[n] }}
+                <button type="button" class="btn-close btn-close-white btn-sm" aria-label="Close" @click="message[n] = ''"></button>
+              </span>
               <button class="btn btn-sm btn-dark float-end" v-if="validUrl[n]" @click="saveConnection(n)"><i class="bi bi-save2" title="Save"></i></button>
             </h5>
-            <div class="card-text">
+            <div class="card-text" v-show="!lightView">
               <div class="row g-2 align-items-center">
                 <div class="col-md-auto">
                   <label class="col-form-label">Url </label>
@@ -241,20 +239,14 @@
               </div>
               <div class="row g-2 align-items-center">
                 <div class="col-md-auto">
-                  <button class="btn btn-sm btn-primary" :disabled="!validUrl[n]" v-if="!startedUrl[n]" @click="startUrl(n)"><i class="bi bi-play-fill"></i></button>
-                  <button class="btn btn-sm btn-danger" v-if="validUrl[n]" @click="stopUrl(n)"><i class="bi bi-stop-fill"></i></button>
+
                 </div>
                 <div class="col-md">
-                  <div class="bg-secondary text-light fade show p-1 small" role="alert" v-if="message[n]">
-                    {{ message[n] }}
-                    <button type="button" class="btn-close btn-close-white float-end" aria-label="Close" @click="message[n] = ''"></button>
-                  </div>
+
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="card col-md-6">
           <div class="card-header">
             <div class="row text-center mb-1">
               <div class="col text-end">
@@ -295,7 +287,7 @@
             <p :id="'flow-' + n" class="small text-muted" style="max-height: 120px; overflow-y: auto;"></p>
           </div>
           <div class="card-footer row g-1 align-items-center">
-            <div class="col-md-7">
+            <div class="col-md-7" v-show="!lightView">
               <div class="input-group">
                 <input type="text" class="form-control form-control-sm" placeholder="To send..." v-if="startedUrl[n]" v-model.trim="toSend[n]">
                 <button class="btn btn-sm btn-success" v-if="validUrl[n] && startedUrl[n]" @click="sendMessage(n)">Send</button>
@@ -310,13 +302,13 @@
           </div>
         </div>
       </div>
-      <p class="text-muted">
+      <!-- <p class="text-muted">
         <i>wss://javascript.info/article/websocket/demo/hello</i>
         <br>
         <i>ws://localhost:7681 lws-minimal</i>
         <br>
         <i>ws://localhost:61614</i>
-      </p>
+      </p> -->
     </div>
   </div>
 </template>
@@ -333,7 +325,8 @@ export default {
   data () {
     return {
       pitches: 4,
-      selectedEvent: 0
+      selectedEvent: 0,
+      lightView: false
     }
   },
   methods: {
