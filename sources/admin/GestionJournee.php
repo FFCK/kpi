@@ -1431,7 +1431,7 @@ class GestionJournee extends MyPageSecure
 					} else {
 						$row2 = $result2->fetch();
 						$selectNum[$j] = $row2['Id'];
-						$selectNom[$j] = addslashes($row2['Nom_equipe']);
+						$selectNom[$j] = $row2['Nom_equipe'];
 						$clst = $row2['Nom_equipe'];
 					}
 					// $texte .= $codeNumero[1].'e poule '.$codePoule[1].' : '.$clst.'<br>';
@@ -1447,11 +1447,11 @@ class GestionJournee extends MyPageSecure
 							|| $row3['ScoreB'] == 'F'
 						) {
 							$selectNum[$j] = $row3['Id_equipeA'];
-							$selectNom[$j] = addslashes($row3['Nom_equipeA']);
+							$selectNom[$j] = $row3['Nom_equipeA'];
 							$vainqueur = $row3['Nom_equipeA'];
 						} else {
 							$selectNum[$j] = $row3['Id_equipeB'];
-							$selectNom[$j] = addslashes($row3['Nom_equipeB']);
+							$selectNom[$j] = $row3['Nom_equipeB'];
 							$vainqueur = $row3['Nom_equipeB'];
 						}
 					}
@@ -1468,11 +1468,11 @@ class GestionJournee extends MyPageSecure
 							|| $row4['ScoreA'] == 'F'
 						) {
 							$selectNum[$j] = $row4['Id_equipeA'];
-							$selectNom[$j] = addslashes($row4['Nom_equipeA']);
+							$selectNom[$j] = $row4['Nom_equipeA'];
 							$perdant = $row4['Nom_equipeA'];
 						} else {
 							$selectNum[$j] = $row4['Id_equipeB'];
-							$selectNom[$j] = addslashes($row4['Nom_equipeB']);
+							$selectNom[$j] = $row4['Nom_equipeB'];
 							$perdant = $row4['Nom_equipeB'];
 						}
 					}
@@ -1491,7 +1491,7 @@ class GestionJournee extends MyPageSecure
 					} else {
 						$row5 = $result5->fetch();
 						$selectNum[$j] = $row5['Id'];
-						$selectNom[$j] = addslashes($row5['Nom_equipe']);
+						$selectNom[$j] = $row5['Nom_equipe'];
 						$clst = $row5['Nom_equipe'];
 					}
 					// $texte .= $codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
