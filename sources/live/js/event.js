@@ -3,17 +3,21 @@ var time_event = new Date()
 var time_event_str
 var delay
 var interval
+let dateDifference = 0
+let timeDifference = 0
+let offset = 0
 
 function InitCache () {
 	delay = $('#delay_event').val()
 	$('#info_titre').html("Don't close this page/tab !").after('<i>(let it run in background)</i><br><br>')
-	$('#info').html("<b>Cache will refresh every " + delay + " seconds ... </b><br>")
+	// $('#info').html("<b>Cache will refresh every " + delay + " seconds ... </b><br>")
 	RefreshCache()
 	interval = setInterval(RefreshCache, delay * 1000)
 }
 
 function RefreshCache () {
-	time_event.setSeconds(time_event.getSeconds() + parseInt(delay, 10))
+	const now = new Date()
+	time_event.setTime(now.getTime() - timeDifference + offset * 60000)
 	$('#hour_event').val(time_event.toISOString().split('T')[1].substring(0, 5))
 
 	var param = $('#event_form').serialize()
@@ -25,8 +29,9 @@ function RefreshCache () {
 		cache: false,
 		success: function (data) {
 			++theCount
+			const theCurrentTime = time_event.toISOString().replace('T', ' ').split('.')[0]
 			texte = '<b>Refresh Count = ' + theCount + '</b>'
-			texte += '<br>Current Time : ' + data.time.currentTime + ' - Working time : ' + data.time.workingTime + '<br></br>'
+			texte += '<br>Current Time : ' + theCurrentTime + ' - Working time : ' + data.time.workingTime + '<br></br>'
 			texte += '<table class="table table-bordered table-condensed"><thead>'
 			texte += '<tr><th></th><th colspan="3">Current game</th><th colspan="3">Next game</th></tr>'
 			texte += '<tr><th>Pitch</th><th>Time</th><th>Num</th><th>Id</th><th>Time</th><th>Num</th><th>Id</th></tr>'
@@ -72,6 +77,10 @@ function Init () {
 		$('select, button').prop('disabled', true)
 		clearInterval(interval)
 		time_event = new Date($('#date_event').val() + 'T' + $('#hour_event').val() + ':00Z')
+		offset = time_event.getTimezoneOffset()
+		const now = new Date()
+		time_event.setSeconds(now.getSeconds())
+		timeDifference = now.getTime() - time_event.getTime() + (offset * 60000)
 		$('#hour_event').after(' <i>(Started at ' + time_event.toISOString().split('T')[1].substring(0, 5) + ')</i>')
 		InitCache()
 		return false
