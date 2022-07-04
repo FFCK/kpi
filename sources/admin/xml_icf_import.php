@@ -120,6 +120,7 @@ $updated = 0;
 $teamInserted = 0;
 $teamUpdated = 0;
 $orphans = 0;
+$toFile = '';
 
 /**
  * Traitement fichier
@@ -253,32 +254,35 @@ if ($xmlDocumentType == 'DT_PARTIC') {
         }
     }
 
-    echo 'Country;KPICat;Cat;KPITeamId;KPIId;IcfId;FamilyName;FirstName;Gender;Birthdate;Height;Weigth;Number;KPILicenceDB;KPIRosterDB;Fonction';
-    echo '<br>';
+    $fp = fopen('./uploads/import_' . date('Ymd_His') . '.csv', 'w');
+    fputcsv($fp, array(
+        'Country',
+        'KPICat',
+        'Cat',
+        'KPITeamId',
+        'KPIId',
+        'IcfId',
+        'FamilyName',
+        'FirstName',
+        'Gender',
+        'Birthdate',
+        'Height',
+        'Weigth',
+        'Number',
+        'KPILicenceDB',
+        'KPIRosterDB',
+        'Fonction'
+    ), ';');
     foreach ($resultArray as $cat => $arrayCat) {
         foreach ($arrayCat as $team => $arrayTeam) {
             foreach ($arrayTeam as $key3 => $arrayPlayer) {
-                echo $team;
-                echo ';' . $cat;
-                echo ';' . $catArray[$cat];
-                echo ';' . $arrayPlayer['teamId'];
-                echo ';' . $arrayPlayer['matric'];
-                echo ';' . $arrayPlayer['icf'];
-                echo ';' . $arrayPlayer['nom'];
-                echo ';' . $arrayPlayer['prenom'];
-                echo ';' . $arrayPlayer['sexe'];
-                echo ';' . $arrayPlayer['naissance'];
-                echo ';' . $arrayPlayer['taille'];
-                echo ';' . $arrayPlayer['poids'];
-                echo ';' . $arrayPlayer['num'];
-
                 if ($arrayPlayer['exists']) {
                     if ($updateDB) {
                         $stmt_update->execute([
                             SAISON, $arrayPlayer['nom'], $arrayPlayer['prenom'], $arrayPlayer['sexe'],
                             $arrayPlayer['naissance'], $team . '00', $team, $arrayPlayer['icf']
                         ]);
-                        echo ';' . 'Updated';
+                        $thisUpdated = 'Updated';
                         $updated++;
                         if ($arrayPlayer['teamId'] > 0) {
                             $categorie = utyCodeCategorie2($arrayPlayer['naissance'], SAISON);
@@ -288,15 +292,15 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                                 $arrayPlayer['sexe'], $categorie,
                                 $arrayPlayer['num']
                             ]);
-                            echo ';' . 'Updated';
+                            $thisTeamUpdated = 'Updated';
                             $teamUpdated++;
                         } else {
-                            echo ';' . 'No team';
+                            $thisTeamUpdated = 'No team';
                             $orphans++;
                         }
                     } else {
-                        echo ';' . 'To update';
-                        echo ';' . 'To update';
+                        $thisUpdated = 'To update';
+                        $thisTeamUpdated = 'To update';
                     }
                 } else {
                     if ($updateDB) {
@@ -305,7 +309,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                             $nextMatric, SAISON, $arrayPlayer['nom'], $arrayPlayer['prenom'], $arrayPlayer['sexe'],
                             $arrayPlayer['naissance'], $team . '00', $team, $arrayPlayer['icf']
                         ]);
-                        echo ';' . 'Inserted';
+                        $thisUpdated = 'Inserted';
                         $inserted++;
                         if ($arrayPlayer['teamId'] > 0) {
                             $categorie = utyCodeCategorie2($arrayPlayer['naissance'], SAISON);
@@ -315,37 +319,49 @@ if ($xmlDocumentType == 'DT_PARTIC') {
                                 $arrayPlayer['sexe'], $categorie,
                                 $arrayPlayer['num']
                             ]);
-                            echo ';' . 'Inserted';
+                            $thisTeamUpdated = 'Inserted';
                             $teamInserted++;
                         } else {
-                            echo ';' . 'No team';
+                            $thisTeamUpdated = 'No team';
                             $orphans++;
                         }
                     } else {
-                        echo ';' . 'To insert';
-                        echo ';' . 'To insert';
+                        $thisUpdated = 'To insert';
+                        $thisTeamUpdated = 'To insert';
                     }
                 }
-                echo ';Athlete';
-                echo '<br>';
+
+                fputcsv($fp, array(
+                    $team,
+                    $cat,
+                    $catArray[$cat],
+                    $arrayPlayer['teamId'],
+                    $arrayPlayer['matric'],
+                    $arrayPlayer['icf'],
+                    $arrayPlayer['nom'],
+                    $arrayPlayer['prenom'],
+                    $arrayPlayer['sexe'],
+                    $arrayPlayer['naissance'],
+                    $arrayPlayer['taille'],
+                    $arrayPlayer['poids'],
+                    $arrayPlayer['num'],
+                    $thisUpdated,
+                    $thisTeamUpdated,
+                    'Athlete'
+                ), ';');
             }
         }
     }
-
+    echo 'Fichier csv : ';
+    echo '<a href="./uploads/import_' . date('Ymd_His') . '.csv">Import</a>';
+    echo '<br><br>';
     echo '<hr>';
     echo 'Licences ajoutées : ' . $inserted . '<br>';
     echo 'Licences mises à jour : ' . $updated . '<br>';
     echo 'Titulaires ajoutés : ' . $teamInserted . '<br>';
     echo 'Titulaires mis à jour : ' . $teamUpdated . '<br>';
     echo 'Orphelins : ' . $orphans . '<br>';
-    // echo '<hr><pre>';
-    // print_r($resultArray);
-    // echo '</pre>';
 }
-
-// echo '<hr><pre>';
-// print_r($xml);
-// echo '</pre>';
 
 echo '<hr><pre>'
     . '<a href="">Back</a>';
