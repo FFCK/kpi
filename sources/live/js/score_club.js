@@ -40,7 +40,7 @@ function RefreshHorloge () {
 		}
 
 		document.querySelector('#match_horloge').innerHTML = SecToMMSS(temps_restant)
-		document.querySelector('#match_periode').innerHTML = GetLabelPeriode(theContext.Match.GetPeriode(i).replace('M1', '1').replace('M2', '2'))
+		document.querySelector('#match_periode').innerHTML = GetLabelPeriode(theContext.Match.GetPeriode(i)?.replace('M1', '1')?.replace('M2', '2')) || '1'
 	}
 
 	++theContext.CountTimer
@@ -51,7 +51,7 @@ function RefreshHorloge () {
 	// RefreshCacheScore()
 }
 
-function ParseCacheScore (jsonData) {
+async function ParseCacheScore (jsonData) {
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -117,12 +117,13 @@ function ParseCacheScore (jsonData) {
 					line = "Team " + theContext.Match.GetEquipe2(rowMatch)
 			} else {
 				if (jsonData.event[0].Capitaine != 'E') {
-					line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;'
+					line = '<span class="clair numero">' + jsonData.event[0].Numero + '</span>&nbsp;'
 				}
-				line += ' '
-				line += jsonData.event[0].Nom
-				line += ' '
-				line += jsonData.event[0].Prenom
+				line += '<span class="nom">'
+				line += truncateStr(jsonData.event[0].Nom, 16)
+				line += '</span> <span class="prenom">'
+				line += truncateStr(jsonData.event[0].Prenom, 16)
+				line += '</span>'
 
 				if (jsonData.event[0].Capitaine == 'C') {
 					line += ' <span class="badge bg-warning capitaine">C</span>'
@@ -133,7 +134,11 @@ function ParseCacheScore (jsonData) {
 			line += "</span>"
 			document.querySelector('#match_event_line2').innerHTML = line
 
-			document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
+			const goalCardImg = document.querySelector('#goal_card_img')
+			goalCardImg.src = GetSrcEvtMatch(jsonData.event[0].Id_evt_match)
+
+			const b = jsonData.event[0].Id_evt_match === 'B' ? '_b' : ''
+			document.querySelector('#match_player img').src = '/img/KIP/players/' + jsonData.event[0].Competiteur + b + '.png'
 
 			const bandeau_goal = document.querySelector('#bandeau_goal')
 			const ban_score_club = document.querySelector('#ban_score_club')
@@ -263,8 +268,8 @@ function Init (event, terrain, speaker, voie) {
 	// Refresh du cache Score toute les 3 secondes ...
 	setInterval(RefreshCacheScore, 3000)
 
-	// Refresh Chrono toutes les 2 secondes  ...
-	//	setInterval(RefreshCacheChrono, 2500);
+	// Refresh Chrono toutes les 500 ms  ...
+	// setInterval(RefreshCacheChrono, 500)
 
 	// Refresh Horloge toutes les secondes  ...
 	setInterval(RefreshHorloge, 1000)
