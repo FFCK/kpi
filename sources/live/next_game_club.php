@@ -50,22 +50,23 @@ class Teams extends MyPage
     <div class="container-fluid ban_info_1_lines<?= $anime_css ?>">
       <div id="ban_info_1_lines" class="text-center">
         <div class="logo_sm"></div>
+        <div class="logo2_sm"></div>
         <div id="banner_line1" class="h2 text-end"></div>
         <div id="banner_line2" class="h2 text-end"></div>
 
         <div class="row banner_line row">
-          <div class="col-md-5 text-start">
+          <div class="col-md-5 text-center">
             <span id="nation1"></span>
             &nbsp;
             <span id="equipe1"></span>
           </div>
-          <div class="col-md-2 text-center">
-            <span class="badge bg-primary">
-              <img src="../img/time_white.png" width="25" style="vertical-align: baseline">
+          <div class="col-md-2 text-center time">
+            <span>
+              <img src="../img/time_white.png" style="vertical-align: baseline">
               <span id="heure"></span>
             </span>
           </div>
-          <div class="col-md-5 text-end">
+          <div class="col-md-5 text-center">
             <span id="equipe2"></span>
             &nbsp;
             <span id="nation2"></span>

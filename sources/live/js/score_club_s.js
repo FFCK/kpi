@@ -39,12 +39,13 @@ function ParseCacheScore (jsonData) {
           line = "Team " + theContext.Match.GetEquipe2(rowMatch)
       } else {
         if (jsonData.event[0].Capitaine != 'E') {
-          line = '<span class="clair">' + jsonData.event[0].Numero + '</span>&nbsp;'
+          line = '<span class="clair numero">' + jsonData.event[0].Numero + '</span>&nbsp;'
         }
-        line += ' '
-        line += jsonData.event[0].Nom
-        line += ' '
-        line += jsonData.event[0].Prenom
+        line += '<span class="nom">'
+        line += truncateStr(jsonData.event[0].Nom, 16)
+        line += '</span> <span class="prenom">'
+        line += truncateStr(jsonData.event[0].Prenom, 16)
+        line += '</span>'
 
         if (jsonData.event[0].Capitaine == 'C') {
           line += ' <span class="badge bg-warning capitaine">C</span>'
@@ -56,6 +57,9 @@ function ParseCacheScore (jsonData) {
       document.querySelector('#match_event_line2').innerHTML = line
 
       document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
+
+      const b = jsonData.event[0].Id_evt_match === 'B' ? '_b' : ''
+      document.querySelector('#match_player img').src = '/img/KIP/players/' + jsonData.event[0].Competiteur + b + '.png'
 
       const bandeau_goal = document.querySelector('#bandeau_goal')
       bandeau_goal.style.display = 'none'

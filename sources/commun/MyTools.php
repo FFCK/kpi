@@ -595,6 +595,20 @@ function utyInitialesPrenomArbitre($refText, $refNom, $refPrenom, $refId = 0)
 	return $result;
 }
 
+/**
+ * Raccourcis un string et ajoute un . si trop long
+ * @param string $str chaîne à raccourcir
+ * @param int $num nombre de caractères maxi
+ * 
+ * @return string chaîne raccourcie
+ */
+function utyTruncateString($str, $num = 15)
+{
+	if (mb_strlen($str, "UTF-8") <= $num) {
+		return $str;
+	}
+	return mb_substr($str, 0, $num, "UTF-8") . '.';
+}
 
 /**
  * arbitres sans niveau

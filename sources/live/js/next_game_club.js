@@ -46,8 +46,8 @@ function ParseCacheGlobal (jsonData) {
   theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
   theContext.Match.SetStatut(rowMatch, jsonData.statut)
 
-  document.querySelector('#banner_line1').innerHTML = jsonData.phase
-  document.querySelector('#banner_line2').innerHTML = jsonData.categ
+  document.querySelector('#banner_line1').innerHTML = jsonData.categ
+  document.querySelector('#banner_line2').innerHTML = jsonData.phase
 
   var equipe1 = jsonData.equipe1.nom
   equipe1 = equipe1.replace(" Women", " W.")
@@ -66,8 +66,8 @@ function ParseCacheGlobal (jsonData) {
   theContext.Match.SetClub1(rowMatch, jsonData.equipe1.club)
   theContext.Match.SetClub2(rowMatch, jsonData.equipe2.club)
 
-  document.querySelector('#nation1').innerHTML = ImgClub48(jsonData.equipe1.club)
-  document.querySelector('#nation2').innerHTML = ImgClub48(jsonData.equipe2.club)
+  document.querySelector('#nation1').innerHTML = ImgClub80(jsonData.equipe1.club)
+  document.querySelector('#nation2').innerHTML = ImgClub80(jsonData.equipe2.club)
 
   document.querySelector('#heure').innerHTML = jsonData.heure
 }
