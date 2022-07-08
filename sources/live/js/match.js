@@ -395,6 +395,26 @@ function ImgClub48 (club) {
 	}
 }
 
+function ImgClub64 (club) {
+	var c = club.substr(0, 1)
+	if ((c >= '0' && c <= '9') || club.substr(0, 2) == 'CR') {
+		return "<img class='centre' src='../img/KIP/logo/" + club + "-logo.png' height='64' alt='' />"
+	} else {
+		nation = VerifNation(club)
+		return "<img class='centre' src='../img/Nations/" + nation + ".png' height='64' alt='' />"
+	}
+}
+
+function ImgClub80 (club) {
+	var c = club.substr(0, 1)
+	if ((c >= '0' && c <= '9') || club.substr(0, 2) == 'CR') {
+		return "<img class='centre' src='../img/KIP/logo/" + club + "-logo.png' height='80' alt='' />"
+	} else {
+		nation = VerifNation(club)
+		return "<img class='centre' src='../img/Nations/" + nation + ".png' height='80' alt='' />"
+	}
+}
+
 function VerifNation (nation) {
 	if (nation.length > 3) nation = nation.substr(0, 3)
 
@@ -474,7 +494,35 @@ function GetImgEvtMatch (evt_match) {
 			break
 
 		case 'R':
+		case 'D':
 			return "<img class='evt centre' src='img/redcard.png' />"
+			break
+
+		default:
+			break
+	}
+
+	return ""
+}
+
+function GetSrcEvtMatch (evt_match) {
+	switch (evt_match) {
+		case 'B':
+		case 'T':
+			return "img/ball.png"
+			break
+
+		case 'V':
+			return "img/greencard.png"
+			break
+
+		case 'J':
+			return "img/yellowcard.png"
+			break
+
+		case 'R':
+		case 'D':
+			return "img/redcard.png"
 			break
 
 		default:
@@ -509,6 +557,13 @@ function GetLabelEvtMatch (evt_match) {
 	}
 
 	return evt_match
+}
+
+function truncateStr (str, num = 12) {
+	if (str.length <= num) {
+		return str
+	}
+	return str.slice(0, num) + '.'
 }
 
 function RefreshCacheGlobal () {

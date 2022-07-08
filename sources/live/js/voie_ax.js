@@ -22,13 +22,13 @@ async function SetVoie (voie, intervalle = 3000) {
     try {
       const resultat = await axios({
         method: 'post',
-        url: 'cache/voie_' + voie + '.json',
+        url: '/live/cache/voie_' + voie + '.json',
         responseType: 'json'
       })
       if (resultat.data.url === '') {
         const resultat2 = await axios({
           method: 'post',
-          url: 'cache/voie_' + voie_min + '.json',
+          url: '/live/cache/voie_' + voie_min + '.json',
           responseType: 'json'
         })
         RefreshScene(resultat2.data, intervalle)
@@ -56,7 +56,7 @@ function RefreshScene (result, intervalle) {
 function RefreshVoie () {
   axios({
     method: 'post',
-    url: 'cache/voie_' + theCurrentVoie + '.json',
+    url: '/live/cache/voie_' + theCurrentVoie + '.json',
     responseType: 'json'
   })
     .then(function (response) {

@@ -30,6 +30,7 @@ class Score extends MyPage
       <link href="../lib/bootstrap-5.1.3-dist/css/bootstrap.min.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
       <link href="../css/animate/animate.4.1.1.css?v=<?= NUM_VERSION ?>" rel="stylesheet" />
       <link href="./css/score.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
+      <?= $this->CheckCss() ?>
       <?php
       if ($this->GetParam('speaker') == '1') {
       ?>
@@ -57,6 +58,7 @@ class Score extends MyPage
       <div id="banner_goal_card" class="text-start">
         <div id="match_event_line2" class="banner_line text-start"></div>
         <div id="match_event_line1" class="banner_line text-start"></div>
+        <div id="match_player"><img src="/img/KIP/players/none.png" alt=""></div>
       </div>
     </div>
 
