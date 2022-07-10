@@ -1,8 +1,8 @@
 const allowedDisplays = ['main', 'match', 'score']
-const allowedStyles = ['default', 'thury2014', 'saintomer2017', 'welland2018']
+const allowedStyles = ['default', 'thury2014', 'saintomer2017', 'welland2018', 'saintomer2022']
 const allowedLangs = ['en', 'fr']
 const allowedZones = ['club', 'inter']
-// score : events, only, static, -
+const allowedModes = ['full', 'only', 'events', 'static']
 // match : next, -
 
 export default {
@@ -14,6 +14,7 @@ export default {
       options: this.$route.params.options || [],
       css: 'default',
       display: 'main',
+      mode: 'full',
       zone: 'inter'
     }
   },
@@ -41,6 +42,10 @@ export default {
         // zone
         if (allowedZones.includes(option) && option !== this.zone) {
           this.zone = option
+        }
+        // mode
+        if (allowedModes.includes(option) && option !== this.mode) {
+          this.mode = option
         }
       })
       // console.log('Options : ', this.options)
