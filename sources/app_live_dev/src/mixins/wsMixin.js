@@ -155,8 +155,11 @@ export default {
       if (this.urlUsed(id)) {
         return
       }
-      const topic = this.topic[id] !== '' ? this.topic[id] : false
-      this.socket[id] = new WebSocket(this.url[id], topic)
+      if (this.topic[id] !== '') {
+        this.socket[id] = new WebSocket(this.url[id], this.topic[id])
+      } else {
+        this.socket[id] = new WebSocket(this.url[id])
+      }
 
       this.socket[id].onopen = (e) => {
         this.printControlMessage(id, 'Websocket Open.')

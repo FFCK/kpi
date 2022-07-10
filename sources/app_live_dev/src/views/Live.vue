@@ -1,5 +1,5 @@
 <template>
-  <component :is="display" v-if="game" :gameData="game" :zone="zone" :key="game.id_match"></component>
+  <component :is="display" v-if="game" :gameData="game" :zone="zone" :mode="mode" :key="game.id_match"></component>
 </template>
 
 <script>

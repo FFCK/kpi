@@ -9,11 +9,6 @@ const routes = [
     component: Home
   },
   {
-    path: '/manager',
-    name: 'Manager',
-    component: () => import(/* webpackChunkName: "Manager" */ '../views/Manager.vue')
-  },
-  {
     path: '/:event(\\d+)/:pitch(\\d+)/:options*',
     name: 'Live',
     component: Live

@@ -18,6 +18,16 @@
   </noscript>
   <div id="app"></div>
   <!-- built files will be auto injected -->
+
+  <script type="text/javascript"
+    src="<%= process.env.VUE_APP_BASE_URL %>/js/axios/axios.min.js?<%= process.env.VUE_APP_VERSION %>"></script>
+  <script type="text/javascript"
+    src="<%= process.env.VUE_APP_BASE_URL %>/live/js/voie_ax.js?<%= process.env.VUE_APP_VERSION %>"></script>
+  <script type="text/javascript">
+    SetVoie(parseInt(window.location.href.split('?voie=')[1], 10))
+  </script>
+
+
 </body>
 
 </html>
