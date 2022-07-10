@@ -435,6 +435,25 @@ div#bandeau_score div {
   color: #FFFFFF;
 }
 
+.live_ws #match_horloge {
+  left: 478px;
+}
+
+.live_ws #match_periode {
+  left: 602px;
+  top: 104px;
+  font-size: 38px;
+}
+
+.live_ws #match_possession {
+  /* border: 1px solid red; */
+  border-radius: unset;
+  background: none;
+  right: 488px;
+  top: 110px;
+  color: #FFFFFF;
+}
+
 #ban_score #equipe1,
 #ban_score_club #equipe1 {
   top: 22px;
@@ -504,6 +523,19 @@ div#categorie {
   border-bottom-right-radius: 15px;
   padding: 5px 15px;
   box-shadow: 1px 1px 12px #CCCCCC;
+}
+
+#ban_score.static,
+#ban_score_club.static {
+  display: none;
+}
+
+#categorie.static {
+  display: none;
+}
+
+.ban_goal_card_2.static {
+  display: block;
 }
 
 .ban_goal_card_2 {

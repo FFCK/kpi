@@ -111,28 +111,28 @@ div#equipe2 {
 
 div#pen1 {
     position: absolute;
-    right: 810px;
-    top: 43px;
+    left: 365px;
+    top: 80px;
     font-size: 40px;
 }
 
 div#pen1.club {
-    left: 15px;
-    top: 105px;
-    text-align: left;
+    left: 365px;
+    top: 80px;
+    /* text-align: left; */
 }
 
 div#pen2 {
     position: absolute;
-    left: 810px;
-    top: 43px;
+    right: 365px;
+    top: 80px;
     font-size: 40px;
 }
 
 div#pen2.club {
-    right: 15px;
-    top: 105px;
-    text-align: right;
+    right: 365px;
+    top: 80px;
+    /* text-align: right; */
 }
 
 div#score1 {

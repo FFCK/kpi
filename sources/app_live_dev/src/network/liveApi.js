@@ -6,6 +6,9 @@ export default {
   getEvents () {
     return api.get('/api/events/all')
   },
+  getEventNetwork (event) {
+    return api.get('/live/cache/event' + event + '_network.json')
+  },
   getGameId (event, pitch) {
     return api.get('/live/cache/event' + event + '_pitch' + pitch + '.json')
   },
