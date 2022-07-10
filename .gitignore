@@ -65,3 +65,5 @@ sources/commun/ably_api_key.js
 sources/ws_kp
 sources/live/css/.htaccess
 sources/live/cache/.htaccess
+sources/img/KIP/players/*.png
+!sources/img/KIP/players/none.png

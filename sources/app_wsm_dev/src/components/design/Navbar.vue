@@ -41,6 +41,12 @@
                 {{ $t("nav.Manager") }}
               </router-link>
             </li>
+            <li class="nav-item">
+              <router-link to="/faker" class="nav-link text-nowrap">
+                <i class="bi bi-list-ol" />
+                {{ $t("nav.Faker") }}
+              </router-link>
+            </li>
           </ul>
 
           <locale-switcher />
