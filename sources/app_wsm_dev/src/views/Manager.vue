@@ -305,8 +305,10 @@
       <!-- <p class="text-muted">
         <i>wss://javascript.info/article/websocket/demo/hello</i>
         <br>
+        <label>LibWebsocket</label>
         <i>ws://localhost:7681 lws-minimal</i>
         <br>
+        <label>ActiveMQ (stomp, admin, admin)</label>
         <i>ws://localhost:61614</i>
       </p> -->
     </div>
@@ -439,9 +441,14 @@ export default {
   },
   mounted () {
     this.loadConnections()
+    // this.fetchForcedGame()
   },
   created () {
     this.fetchEvents()
+    // this.$watch(() => this.$route.fullPath, (tofullPath, previousfullPath) => {
+    //   this.options = this.$route.params.options
+    //   this.fetchForcedGame()
+    // })
   }
 }
 </script>

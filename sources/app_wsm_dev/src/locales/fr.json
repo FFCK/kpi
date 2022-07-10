@@ -4,7 +4,8 @@
   },
   "nav": {
     "Home": "Accueil",
-    "Manager": "Manager"
+    "Manager": "Manager",
+    "Faker": "Faker"
   },
   "AddToHomeScreen": {
     "message": "Ajouter au bureau / à l'écran d'accueil.",

@@ -410,12 +410,7 @@ export default {
     }
   },
   created () {
-    this.$watch(() => this.$route.fullPath, (tofullPath, previousfullPath) => {
-      this.options = this.$route.params.options
-      this.fetchForcedGame()
-    })
   },
   mounted () {
-    this.fetchForcedGame()
   }
 }
