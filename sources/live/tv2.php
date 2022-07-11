@@ -285,7 +285,7 @@ class TV extends MyPage
             <div class="container-fluid ban_list">
                 <div class="logo_sm"></div>
                 <div id="banner_list">
-                    <div id="banner_line1" class="h2 text-end">
+                    <div id="banner_line1" class="h2 text-center">
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '') . '
                         </span>
@@ -353,7 +353,7 @@ class TV extends MyPage
             <div class="container-fluid ban_list">
                 <div class="logo_sm"></div>
                 <div id="banner_list">
-                    <div id="banner_line1" class="h2 text-end">
+                    <div id="banner_line1" class="h2 text-center">
                         <span>
                         ' . ' ' . utyGetString($rEquipe, 'Libelle', '') . '
                         </span>
@@ -453,7 +453,7 @@ class TV extends MyPage
                 <div class="logo_sm"></div>
                 <div class="logo2_sm"></div>
                 <div id="banner_list" class="final_ranking">
-                    <div id="banner_line1" class="h2 text-center">
+                    <div id="banner_line1" class="h2">
                     ' . $this->Lang('CLASSEMENT FINAL') . '<br>
                         <span class="categorie">
                         ' . ' ' . utyGetString($tEquipes[0], 'Soustitre2', '') . '

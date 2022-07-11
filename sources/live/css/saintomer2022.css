@@ -81,7 +81,7 @@ div {
   right: 10px;
   top: 50px;
   font-size: 45px;
-  text-align: center !important;
+  /* text-align: center !important; */
 }
 
 #banner_list #banner_line1 span {
@@ -90,6 +90,10 @@ div {
   left: 0px;
   display: block;
   width: 100%;
+}
+
+#banner_list.final_ranking #banner_line1 span {
+  top: 43px;
 }
 
 #banner_list #banner_line2 {
@@ -338,11 +342,11 @@ span.capitaine {
 }
 
 #banner_list.final_ranking #banner_line1 {
-  width: 330px;
-  height: 220px;
+  width: 500px;
+  /* height: 220px; */
   position: absolute;
-  top: -65px;
-  left: 10px;
+  top: -76px;
+  left: 20px;
   color: #FFFFFF;
 }
 
