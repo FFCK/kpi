@@ -200,3 +200,38 @@ function PutGameTimerController($route, $params)
     return_400();
   }
 }
+
+function PutStatsController($route, $params)
+{
+  $data = json_decode(file_get_contents('php://input'));
+
+  if (!in_array($data->action, ['pass', 'kickoff', 'kickoff-ko', 'shot-in', 'shot-out'])) {
+    return_401();
+  }
+
+  $myBdd = new MyBdd();
+  $sql = "SELECT COUNT(Id)
+  FROM kp_match 
+  WHERE Id = ? 
+  AND Validation != 'O' ";
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute([$data->game]);
+  $result = $stmt->fetchColumn();
+  if ($result != 1) {
+    return_400('Game locked : ' . $result);
+  }
+
+  $sql = "INSERT INTO kp_stats 
+    SET user = ?, 
+    game = ?,
+    team = ?,
+    player = ?,
+    `action` = ?, 
+    timer = ? ";
+  $stmt = $myBdd->pdo->prepare($sql);
+  $result = $stmt->execute([
+    $data->user, $data->game, $data->team, $data->player,
+    $data->action, $data->timer
+  ]);
+  return_200();
+}
