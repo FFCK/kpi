@@ -16,23 +16,27 @@
     <div v-if="socketFaker">
       <div class="row mt-4">
         <div class="col text-center" v-for="(n, index) in 4" :key="index">
-          Pitch {{ n }}
+          {{ $t("Pitch") }} {{ n }}
           <button class="btn btn-success" @click="fake(n)" v-if="!faker[n]">
             <i class="bi bi-play-fill"></i>
           </button>
           <button class="btn btn-danger" @click="stop(n)" v-if="faker[n]">
             <i class="bi bi-stop-fill"></i>
           </button>
-          <button class="btn btn-primary" @click="goal(n)" v-if="faker[n]">
+          <br>
+          <button class="btn btn-sm btn-primary m-1" @click="goal(n)" v-if="faker[n]">
             Goal
           </button>
-          <button class="btn btn-primary" @click="green(n)" v-if="faker[n]">
+          <br>
+          <button class="btn btn-sm btn-primary m-1" @click="green(n)" v-if="faker[n]">
             Green
           </button>
-          <button class="btn btn-primary" @click="yellow(n)" v-if="faker[n]">
+          <br>
+          <button class="btn btn-sm btn-primary m-1" @click="yellow(n)" v-if="faker[n]">
             Yellow
           </button>
-          <button class="btn btn-primary" @click="red(n)" v-if="faker[n]">
+          <br>
+          <button class="btn btn-sm btn-primary m-1" @click="red(n)" v-if="faker[n]">
             Red
           </button>
         </div>

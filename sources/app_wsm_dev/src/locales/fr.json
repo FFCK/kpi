@@ -5,7 +5,8 @@
   "nav": {
     "Home": "Accueil",
     "Manager": "Manager",
-    "Faker": "Faker"
+    "Faker": "Faker",
+    "Stats": "Stats"
   },
   "AddToHomeScreen": {
     "message": "Ajouter au bureau / à l'écran d'accueil.",
@@ -18,5 +19,16 @@
   },
   "Event": "Événement",
   "Pitches": "Terrains",
-  "Pitch": "Terrain"
+  "Pitch": "Terrain",
+  "Team": "Equipe",
+  "Pass": "Passe",
+  "Shot": "Tir",
+  "Neutral": "Neutre",
+  "Kickoff": "Engag.",
+  "Kickoff_won": "Engagement gagné",
+  "Kickoff_lost": "Engagement perdu",
+  "Shot_on": "Tir cadré",
+  "Shot_off": "Tir non cadré",
+  "Pass_possession": "Passe / Possession",
+  "Neutral_ball": "Balle neutre"
 }
