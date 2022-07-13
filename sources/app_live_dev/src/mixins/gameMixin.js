@@ -8,6 +8,7 @@ export default {
   data () {
     return {
       baseUrl: process.env.VUE_APP_BASE_URL,
+      version: process.env.VUE_APP_VERSION,
       options: this.$route.params.options || [],
       intervalGame: null,
       event: parseInt(this.$route.params.event) || 0,
@@ -177,7 +178,7 @@ export default {
       }
       document.querySelector('#match_event_line2').innerHTML = line2
 
-      document.querySelector('#match_player img').src = this.baseUrl + '/img/KIP/players/' + obj.matric + '.png'
+      document.querySelector('#match_player img').src = this.baseUrl + '/img/KIP/players/' + obj.matric + '.png?' + this.version
 
       const banScore = document.querySelector('#ban_score, #ban_score_club')
       const categorie = document.querySelector('#categorie')
@@ -211,14 +212,14 @@ export default {
     getSrcEvtMatch (evtMatch) {
       switch (evtMatch) {
         case 'B':
-          return this.baseUrl + '/live/img/ball.png'
+          return this.baseUrl + '/live/img/ball.png?' + this.version
         case 'V':
-          return this.baseUrl + '/live/img/greencard.png'
+          return this.baseUrl + '/live/img/greencard.png?' + this.version
         case 'J':
-          return this.baseUrl + '/live/img/yellowcard.png'
+          return this.baseUrl + '/live/img/yellowcard.png?' + this.version
         case 'R':
         case 'D':
-          return this.baseUrl + '/live/img/redcard.png'
+          return this.baseUrl + '/live/img/redcard.png?' + this.version
         default:
           break
       }
@@ -500,7 +501,7 @@ export default {
           return 'Finished'
         case 'ATT':
         case null:
-          return 'Waiting'
+          return ''
         case 'ON':
           return ''
         case 'M1':
@@ -522,14 +523,14 @@ export default {
     imgEvtMatch (evtMatch) {
       switch (evtMatch) {
         case 'B':
-          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/ball.png" />'
+          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/ball.png?' + this.version + '" />'
         case 'V':
-          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/greencard.png" />'
+          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/greencard.png?' + this.version + '" />'
         case 'J':
-          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/yellowcard.png" />'
+          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/yellowcard.png?' + this.version + '" />'
         case 'R':
         case 'D':
-          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/redcard.png" />'
+          return '<img class="evt centre" src="' + this.baseUrl + '/live/img/redcard.png?' + this.version + '" />'
         default:
           break
       }
@@ -539,9 +540,9 @@ export default {
     logo48 (structure) {
       if (this.zone === 'inter') {
         structure = this.verifNation(structure)
-        return '<img class="centre" src="' + this.baseUrl + '/img/Nations/' + structure + '.png" height="48" alt="" />'
+        return '<img class="centre" src="' + this.baseUrl + '/img/Nations/' + structure + '.png?' + this.version + '" height="48" alt="" />'
       } else {
-        return '<img class="centre" src="' + this.baseUrl + '/img/KIP/logo/' + structure + '-logo.png" height="48" alt="" />'
+        return '<img class="centre" src="' + this.baseUrl + '/img/KIP/logo/' + structure + '-logo.png?' + this.version + '" height="48" alt="" />'
       }
     },
     teamName (name) {
