@@ -7,6 +7,7 @@ const api = axios.create({
     'X-Requested-With': 'XMLHttpRequest',
     'Content-Type': 'application/json',
     'Cache-Control': 'no-cache',
+    // 'Access-Control-Allow-Origin': '*',
     Pragma: 'no-cache',
     Expires: '0'
   }

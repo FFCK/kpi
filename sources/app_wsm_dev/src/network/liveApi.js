@@ -49,5 +49,8 @@ export default {
     return api.put('/api/wsm/gameTimer/' + gameId, {
       params: params
     })
+  },
+  setStat (statsObj) {
+    return api.put('/api/wsm/stats/', statsObj)
   }
 }

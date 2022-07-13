@@ -5,7 +5,8 @@
   "nav": {
     "Home": "Home",
     "Manager": "Manager",
-    "Faker": "Faker"
+    "Faker": "Faker",
+    "Stats": "Stats"
   },
   "AddToHomeScreen": {
     "message": "Add to desktop/home screen.",
@@ -18,5 +19,16 @@
   },
   "Event": "Event",
   "Pitches": "Pitches",
-  "Pitch": "Pitch"
+  "Pitch": "Pitch",
+  "Team": "Team",
+  "Pass": "Pass",
+  "Shot": "Shot",
+  "Neutral": "Neutral",
+  "Kickoff": "Kick off",
+  "Kickoff_won": "Won Kick off",
+  "Kickoff_lost": "Lost Kick off",
+  "Shot_on": "On target shot",
+  "Shot_off": "Off target shot",
+  "Pass_possession": "Pass / Possession",
+  "Neutral_ball": "Neutral ball"
 }
