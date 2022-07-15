@@ -516,6 +516,7 @@ export default {
           team: team,
           player: player,
           action: action,
+          period: this.matchPeriod,
           timer: this.matchHorloge.substr(0, 5)
         }
         liveApi

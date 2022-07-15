@@ -227,11 +227,12 @@ function PutStatsController($route, $params)
     team = ?,
     player = ?,
     `action` = ?, 
+    `period` = ?, 
     timer = ? ";
   $stmt = $myBdd->pdo->prepare($sql);
   $result = $stmt->execute([
     $data->user, $data->game, $data->team, $data->player,
-    $data->action, $data->timer
+    $data->action, $data->period, $data->timer
   ]);
   return_200();
 }

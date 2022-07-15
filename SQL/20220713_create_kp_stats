@@ -10,6 +10,7 @@ CREATE TABLE `kp_stats` (
   `team` int(10) UNSIGNED NOT NULL,
   `player` int(11) UNSIGNED NOT NULL,
   `action` varchar(30) CHARACTER SET utf8 NOT NULL,
+  `period` varchar(5) CHARACTER SET utf8 NOT NULL,
   `timer` varchar(5) CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -25,6 +26,8 @@ ALTER TABLE `kp_stats`
   ADD KEY `game_index` (`game`),
   ADD KEY `team_index` (`team`),
   ADD KEY `player_index` (`player`),
-  ADD KEY `action_index` (`action`);
+  ADD KEY `action_index` (`action`),
+  ADD KEY `period_index` (`period`),
+  ADD KEY `timer_index` (`timer`);
 
 --
