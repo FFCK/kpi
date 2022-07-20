@@ -62,6 +62,12 @@
 								</tr>
 								<tr class='{cycle values="impair,pair"}'>
 									<td>{#Equipes#}</td>
+									<td>{#Feuilles_de_presence_photo#} EN</td>
+									<td><a href="FeuillePresencePhoto.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+									<td>&nbsp;</td>
+								</tr>
+								<tr class='{cycle values="impair,pair"}'>
+									<td>{#Equipes#}</td>
 									<td>{#Feuilles_de_presence#} EN</td>
 									<td><a href="FeuillePresenceEN.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
 									<td>&nbsp;</td>
