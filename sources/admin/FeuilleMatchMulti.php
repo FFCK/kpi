@@ -713,7 +713,12 @@ class FeuilleMatch extends MyPage
                 $pdf->SetFont('Arial', 'BI', 14);
                 $pdf->SetFillColor(200, 200, 200);
             } else {
-                $pdf->Cell(135, 6, $lang['FEUILLE_DE_MARQUE'], 0, 1, 'C');
+                $pdf->Cell(70, 6, $lang['FEUILLE_DE_MARQUE'], 0, 0, 'C');
+                $pdf->SetFont('Arial', 'I', 12);
+                $pdf->Cell(58, 6, '(' . $lang['Pas_de_prolongation'] . ')', 1, 1, 'C');
+                $pdf->SetFont('Arial', 'BI', 14);
+                $pdf->SetFillColor(200, 200, 200);
+                // $pdf->Cell(135, 6, $lang['FEUILLE_DE_MARQUE'], 0, 1, 'C');
             }
 
             // Type de match
