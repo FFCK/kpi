@@ -105,18 +105,15 @@ const FILE_NAME = 'Insertion_kpi_2022';
 const SAISON = 2022;
 const COMPETITION_CODE = 1507; // WC 2022
 const COMPETITION_LABEL = "Championnats du monde 2022"; // WC 2022
-// Event 1 = U21 M
-// Event 2 = U21 W
-// Event 3 = Senior M
-// Event 4 = Senior W
 $eventArray = ['001' => 'CMH21', '002' => 'CMF21', '003' => 'CMH', '004' => 'CMF'];
 $catArray = ['CMH21' => 'U21 MEN', 'CMF21' => 'U21 WOMEN', 'CMH' => 'SENIOR MEN', 'CMF' => 'SENIOR WOMEN'];
 $resultArray = [];
 $updateDB = utyGetPost('updateDB', 0);
 $inserted = 0;
 $updated = 0;
-$existing = '|';
+$teamInserted = 0;
 $toFile = '';
+$matric = [];
 
 /**
  * Traitement fichier
@@ -155,7 +152,6 @@ if (substr($_FILES['userfile']['name'], 0, 18) === FILE_NAME) {
 
     $myBdd = new MyBdd();
     $listIcf = [];
-    $matricIcf = [];
     $sql = "SELECT DISTINCT(Reserve), Nom, Prenom, Naissance, Matric 
         FROM kp_licence 
         WHERE Reserve != '0' 
@@ -164,8 +160,24 @@ if (substr($_FILES['userfile']['name'], 0, 18) === FILE_NAME) {
     $stmt->execute();
     while ($row = $stmt->fetch()) {
         $listIcf[] = $row['Reserve'];
-        $matricIcf[$row['Reserve']] = $row['Matric'];
+        $matric[$row['Reserve']] = $row['Matric'];
     }
+
+    $listIcfTeam = [];
+    $sql = "SELECT DISTINCT(l.Reserve)
+        FROM kp_licence l
+        LEFT OUTER JOIN kp_competition_equipe_joueur cej ON l.Matric = cej.Matric
+        LEFT OUTER JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
+        WHERE ce.Code_saison = ?
+        AND ce.Code_compet IN ('CMH', 'CMF', 'CMH21', 'CMF21') 
+        AND l.Reserve != '0' 
+        AND l.Reserve IS NOT NULL ";
+    $stmt = $myBdd->pdo->prepare($sql);
+    $stmt->execute([SAISON]);
+    while ($row = $stmt->fetch()) {
+        $listIcfTeam[] = $row['Reserve'];
+    }
+
     $teams = [];
     $sql = "SELECT Code_compet, Id, Code_club 
         FROM kp_competition_equipe 
@@ -224,9 +236,24 @@ if (substr($_FILES['userfile']['name'], 0, 18) === FILE_NAME) {
                     SAISON, $staffMember[6], $staffMember[7], $staffMember[8],
                     utyDateFrToUs($staffMember[9]), $staffMember[0] . '00', $staffMember[0], $staffMember[5]
                 ]);
+
+                if (!in_array($staffMember[5], $listIcfTeam)) {
+                    $stmt_select_teams->execute([SAISON, $staffMember[0] . '00']);
+                    while ($row = $stmt_select_teams->fetch()) {
+                        $stmt_select_player_num->execute([$row['Id']]);
+                        $row2 = $stmt_select_player_num->fetch();
+                        $numero = $row2['num'] > 10 ? $row2['num'] + 1 : 11;
+                        $categorie = utyCodeCategorie2(utyDateFrToUs($staffMember[9]), SAISON);
+                        $stmt_insert_team->execute([
+                            $row['Id'], $matric[$staffMember[5]],
+                            $staffMember[6], $staffMember[7], $staffMember[8],
+                            $categorie, $numero, 'E'
+                        ]);
+                    }
+                    $teamInserted++;
+                }
             }
             $updated++;
-            $existing .= $staffMember[5] . '|';
         } else {
             if ($updateDB) {
                 $nextMatric = $myBdd->GetNextMatricLicence();
@@ -234,6 +261,7 @@ if (substr($_FILES['userfile']['name'], 0, 18) === FILE_NAME) {
                     $nextMatric, SAISON, $staffMember[6], $staffMember[7], $staffMember[8],
                     utyDateFrToUs($staffMember[9]), $staffMember[0] . '00', $staffMember[0], $staffMember[5]
                 ]);
+                $inserted++;
 
                 $stmt_select_teams->execute([SAISON, $staffMember[0] . '00']);
                 while ($row = $stmt_select_teams->fetch()) {
@@ -247,15 +275,15 @@ if (substr($_FILES['userfile']['name'], 0, 18) === FILE_NAME) {
                         $categorie, $numero, 'E'
                     ]);
                 }
+                $teamInserted++;
             }
-            $inserted++;
         }
     }
 
     echo '<hr>';
     echo 'Staff members ajoutés : ' . $inserted . '<br>';
     echo 'Staff members mis à jour : ' . $updated . '<br>';
-    echo 'Staff members existants (icf) : ' . $existing . '<br>';
+    echo 'Staff members inscrits dans les compos : ' . $teamInserted . '<br>';
 }
 
 echo '<hr><pre>'
