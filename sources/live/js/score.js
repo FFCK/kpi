@@ -136,7 +136,8 @@ function ParseCacheScore (jsonData) {
 
 			document.querySelector('#goal_card').innerHTML = GetImgEvtMatch(jsonData.event[0].Id_evt_match)
 
-			const b = jsonData.event[0].Id_evt_match === 'B' ? '_b' : ''
+			// const b = jsonData.event[0].Id_evt_match === 'B' ? '_b' : ''
+			const b = ''
 			document.querySelector('#match_player img').src = '/img/KIP/players/' + jsonData.event[0].Competiteur + b + '.png'
 
 			const bandeau_goal = document.querySelector('#bandeau_goal')
