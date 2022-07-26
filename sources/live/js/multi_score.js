@@ -50,11 +50,11 @@ function RefreshHorloge () {
 	}
 
 	++theContext.CountTimer
-	if (theContext.CountTimer % 2 == 0)
-		RefreshCacheChrono()
+	// if (theContext.CountTimer % 2 == 0)
+	RefreshCacheChrono()
 
-	if (theContext.CountTimer % 4 == 0)
-		RefreshCacheScore()
+	// if (theContext.CountTimer % 4 == 0)
+	RefreshCacheScore()
 }
 
 function ParseCacheScore (jsonData) {
@@ -278,8 +278,8 @@ function Init (event, count, voie) {
 	// Refresh Chrono toutes les 2 secondes  ...
 	//	setInterval(RefreshCacheChrono, 2500);
 
-	// Refresh Horloge toutes les secondes  ...
-	setInterval(RefreshHorloge, 1000)
+	// Refresh Horloge toutes les 10 secondes  ...
+	setInterval(RefreshHorloge, 10000)
 
 	SetVoie(voie)
 }
