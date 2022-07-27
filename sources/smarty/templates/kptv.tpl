@@ -72,7 +72,7 @@
           <select id="channel" name="channel">
             <optgroup label="Channels">
               <option value='1'>{#Selectionnez#}</option>
-              {section name=i start=1 loop=41}
+              {section name=i start=1 loop=51}
                 <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                   {$smarty.section.i.index}
                 </option>
@@ -152,6 +152,7 @@
             <option value="empty" {if $filtrePres == 'empty'}selected{/if}>Empty page</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres == 'match'}selected{/if}>Game (Category & teams)</option>
+              <option value="match2" {if $filtrePres == 'match2'}selected{/if}>Game (Team colors)</option>
               <option value="list_team" {if $filtrePres == 'list_team'}selected{/if}>Players list</option>
               <option value="list_coachs" {if $filtrePres == 'list_coachs'}selected{/if}>Coaches list</option>
               <option value="team" {if $filtrePres == 'team'}selected{/if}>Team name</option>
@@ -177,6 +178,9 @@
               <option value="next_game_club" {if $filtrePres == 'next_game_club'}selected{/if}>Next game (clubs)
               </option>
               <option value="liveteams" {if $filtrePres == 'liveteams'}selected{/if}>Teams only (clubs)</option>
+            </optgroup>
+            <optgroup label="Live game (WS)">
+              <option value="live" {if $filtrePres == 'live'}selected{/if}>Live score</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
@@ -215,7 +219,7 @@
             </optgroup>
           </select>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-sm-2 params' id='competition-col'>
           <label>{#Competition#}</label>
           <select id="competition" name="competition">
             <option value="" {if '' == $filtreCompet}selected{/if}>{#Selectionnez#}</option>
@@ -281,6 +285,35 @@
         <div class='col-sm-1 params' id='pitchs-col'>
           <label>Pitchs</label>
           <input class="form-control" type="text" id="pitchs" name="pitchs" value="1,2,3,4">
+        </div>
+        <div class='col-sm-1 params' id='pitch-col'>
+          <label>Pitch</label>
+          <select id="pitch" name="pitch">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params' id='zone-col'>
+          <label>Zone</label>
+          <select id="zone" name="zone">
+            <option value="inter">Inter</option>
+            <option value="club">Club</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params' id='mode-col'>
+          <label>Mode</label>
+          <select id="mode" name="mode">
+            <option value="full">Full</option>
+            <option value="only">Only</option>
+            <option value="event">Event</option>
+            <option value="static">Static</option>
+          </select>
         </div>
         <div class='col-sm-1 params' id='round-col'>
           <label>Round</label>
@@ -389,7 +422,7 @@
           <label>Channel</label>
           <select id="channel2" name="channel2">
             <option value='1'>{#Selectionnez#}</option>
-            {section name=i start=1 loop=41}
+            {section name=i start=1 loop=51}
               <option value="{$smarty.section.i.index}" {if $filtreChannel2 == $smarty.section.i.index}selected{/if}>
                 {$smarty.section.i.index}
               </option>
@@ -405,6 +438,7 @@
             <option value="empty" {if $filtrePres2 == 'empty'}selected{/if}>Empty page</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres2 == 'match'}selected{/if}>Game (Category & teams)</option>
+              <option value="match2" {if $filtrePres2 == 'match2'}selected{/if}>Game (Team colors)</option>
               <option value="list_team" {if $filtrePres2 == 'list_team'}selected{/if}>Players list</option>
               <option value="list_coachs" {if $filtrePres2 == 'list_coachs'}selected{/if}>Coaches list</option>
               <option value="team" {if $filtrePres2 == 'team'}selected{/if}>Team name</option>
@@ -430,6 +464,9 @@
               <option value="next_game_club" {if $filtrePres2 == 'next_game_club'}selected{/if}>Next game (clubs)
               </option>
               <option value="liveteams" {if $filtrePres2 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
+            </optgroup>
+            <optgroup label="Live game (WS)">
+              <option value="live" {if $filtrePres2 == 'live'}selected{/if}>Live score</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres2 == 'match_score'}selected{/if}>Game & score</option>
@@ -460,7 +497,7 @@
             </option>
           </select>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-sm-2 params2' id='competition-col2'>
           <label>{#Competition#}</label>
           <select id="competition2" name="competition2">
             <option value="" {if '' == $filtreCompet2}selected{/if}>{#Selectionnez#}</option>
@@ -526,6 +563,35 @@
         <div class='col-sm-1 params2' id='pitchs-col2'>
           <label>Pitchs</label>
           <input type="text" id="pitchs2" name="pitchs2" value="1,2,3,4">
+        </div>
+        <div class='col-sm-1 params2' id='pitch-col2'>
+          <label>Pitch</label>
+          <select id="pitch2" name="pitch2">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params2' id='zone-col2'>
+          <label>Zone</label>
+          <select id="zone2" name="zone2">
+            <option value="inter">Inter</option>
+            <option value="club">Club</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params2' id='mode-col2'>
+          <label>Mode</label>
+          <select id="mode2" name="mode2">
+            <option value="full">Full</option>
+            <option value="only">Only</option>
+            <option value="event">Event</option>
+            <option value="static">Static</option>
+          </select>
         </div>
         <div class='col-sm-1 params2' id='round-col2'>
           <label>Round</label>
@@ -601,7 +667,7 @@
           <label>Channel</label>
           <select id="channel3" name="channel3">
             <option value='1'>{#Selectionnez#}</option>
-            {section name=i start=1 loop=41}
+            {section name=i start=1 loop=51}
               <option value="{$smarty.section.i.index}" {if $filtreChannel3 == $smarty.section.i.index}selected{/if}>
                 {$smarty.section.i.index}
               </option>
@@ -617,6 +683,7 @@
             <option value="empty" {if $filtrePres3 == 'empty'}selected{/if}>Empty page</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres3 == 'match'}selected{/if}>Game (Category & teams)</option>
+              <option value="match2" {if $filtrePres3 == 'match2'}selected{/if}>Game (Team colors)</option>
               <option value="list_team" {if $filtrePres3 == 'list_team'}selected{/if}>Players list</option>
               <option value="list_coachs" {if $filtrePres3 == 'list_coachs'}selected{/if}>Coaches list</option>
               <option value="team" {if $filtrePres3 == 'team'}selected{/if}>Team name</option>
@@ -642,6 +709,9 @@
               <option value="next_game_club" {if $filtrePres3 == 'next_game_club'}selected{/if}>Next game (clubs)
               </option>
               <option value="liveteams" {if $filtrePres3 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
+            </optgroup>
+            <optgroup label="Live game (WS)">
+              <option value="live" {if $filtrePres3 == 'live'}selected{/if}>Live score</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres3 == 'match_score'}selected{/if}>Game & score</option>
@@ -672,7 +742,7 @@
             </option>
           </select>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-sm-2 params3' id='competition-col3'>
           <label>{#Competition#}</label>
           <select id="competition3" name="competition3">
             <option value="" {if '' == $filtreCompet3}selected{/if}>{#Selectionnez#}</option>
@@ -738,6 +808,35 @@
         <div class='col-sm-1 params3' id='pitchs-col3'>
           <label>Pitchs</label>
           <input type="text" id="pitchs3" name="pitchs3" value="1,2,3,4">
+        </div>
+        <div class='col-sm-1 params3' id='pitch-col3'>
+          <label>Pitch</label>
+          <select id="pitch3" name="pitch3">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params3' id='zone-col3'>
+          <label>Zone</label>
+          <select id="zone3" name="zone3">
+            <option value="inter">Inter</option>
+            <option value="club">Club</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params3' id='mode-col3'>
+          <label>Mode</label>
+          <select id="mode3" name="mode3">
+            <option value="full">Full</option>
+            <option value="only">Only</option>
+            <option value="event">Event</option>
+            <option value="static">Static</option>
+          </select>
         </div>
         <div class='col-sm-1 params3' id='round-col3'>
           <label>Round</label>
@@ -813,7 +912,7 @@
           <label>Channel</label>
           <select id="channel4" name="channel4">
             <option value='1'>{#Selectionnez#}</option>
-            {section name=i start=1 loop=41}
+            {section name=i start=1 loop=51}
               <option value="{$smarty.section.i.index}" {if $filtreChannel4 == $smarty.section.i.index}selected{/if}>
                 {$smarty.section.i.index}
               </option>
@@ -829,6 +928,7 @@
             <option value="empty" {if $filtrePres4 == 'empty'}selected{/if}>Empty page</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres4 == 'match'}selected{/if}>Game (Category & teams)</option>
+              <option value="match2" {if $filtrePres4 == 'match2'}selected{/if}>Game (Team colors)</option>
               <option value="list_team" {if $filtrePres4 == 'list_team'}selected{/if}>Players list</option>
               <option value="list_coachs" {if $filtrePres4 == 'list_coachs'}selected{/if}>Coaches list</option>
               <option value="team" {if $filtrePres4 == 'team'}selected{/if}>Team name</option>
@@ -854,6 +954,9 @@
               <option value="next_game_club" {if $filtrePres4 == 'next_game_club'}selected{/if}>Next game (clubs)
               </option>
               <option value="liveteams" {if $filtrePres4 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
+            </optgroup>
+            <optgroup label="Live game (WS)">
+              <option value="live" {if $filtrePres4 == 'live'}selected{/if}>Live score</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres4 == 'match_score'}selected{/if}>Game & score</option>
@@ -884,7 +987,7 @@
             </option>
           </select>
         </div>
-        <div class='col-sm-2'>
+        <div class='col-sm-2 params4' id='competition-col4'>
           <label>{#Competition#}</label>
           <select id="competition4" name="competition4">
             <option value="" {if '' == $filtreCompet4}selected{/if}>{#Selectionnez#}</option>
@@ -950,6 +1053,35 @@
         <div class='col-sm-1 params4' id='pitchs-col4'>
           <label>Pitchs</label>
           <input type="text" id="pitchs4" name="pitchs4" value="1,2,3,4">
+        </div>
+        <div class='col-sm-1 params4' id='pitch-col4'>
+          <label>Pitch</label>
+          <select id="pitch4" name="pitch4">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params4' id='zone-col4'>
+          <label>Zone</label>
+          <select id="zone4" name="zone4">
+            <option value="inter">Inter</option>
+            <option value="club">Club</option>
+          </select>
+        </div>
+        <div class='col-sm-2 params4' id='mode-col4'>
+          <label>Mode</label>
+          <select id="mode4" name="mode4">
+            <option value="full">Full</option>
+            <option value="only">Only</option>
+            <option value="event">Event</option>
+            <option value="static">Static</option>
+          </select>
         </div>
         <div class='col-sm-1 params4' id='round-col4'>
           <label>Round</label>

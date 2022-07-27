@@ -30,6 +30,39 @@ div {
   background-image: url('../img_saintomer2022/logo_lg.png');
 }
 
+.ban_presentation_color {
+  background-image: url('../img_saintomer2022/banner_presentation_color.png');
+  height: 100vh;
+}
+
+.ban_presentation_color #banner_presentation {
+  width: 1425px;
+  height: 230px;
+  left: 250px;
+  top: 818px;
+}
+
+.ban_presentation_color .logo_lg {
+  position: fixed;
+  width: 280px;
+  height: 280px;
+  left: 300px;
+  top: 0px;
+  background-image: url('../img_saintomer2022/logo_lg.png');
+  background-size: cover;
+}
+
+.ban_presentation_color .logo2_lg {
+  position: fixed;
+  width: 280px;
+  height: 165px;
+  left: 10px;
+  top: 66px;
+  background-image: url('../img_saintomer2022/logo_icf_500.png');
+  background-size: cover;
+}
+
+
 .banner_line.line1 {
   color: #FFFFFF;
 }
@@ -43,10 +76,84 @@ div {
   font-size: 30px;
 }
 
+.ban_presentation_color .badge_score {
+  position: absolute;
+  width: 205px;
+  height: 116px;
+  top: -60px;
+  left: 625px;
+  background-image: url('../img_saintomer2022/badge_score.png');
+  background-size: cover;
+  font-size: 62px;
+  padding-top: 30px;
+}
+
+.ban_presentation_color .banner_line.line1 span:nth-child(1) {
+  display: none;
+}
+
+.ban_presentation_color .banner_line.line1 span:nth-child(2) {
+  font-size: 40px;
+  position: relative;
+  top: 72px;
+  left: 10px;
+}
+
 .banner_line.line2 {
   text-align: center;
   color: #FFFFFF;
   margin-top: 25px;
+}
+
+.ban_presentation_color .banner_line.line2 {
+  position: relative;
+  top: 5px;
+}
+
+.ban_presentation_color .banner_line.line2 img {
+  vertical-align: bottom;
+}
+
+.ban_presentation_color .boat_a img {
+  position: fixed;
+  height: 600px;
+  top: 310px;
+  left: 270px;
+}
+
+.ban_presentation_color .boat_b img {
+  position: fixed;
+  height: 600px;
+  top: 310px;
+  right: 270px;
+}
+
+.ban_presentation_color .vest_a img {
+  position: fixed;
+  height: 200px;
+  top: 610px;
+  left: 410px;
+}
+
+.ban_presentation_color .vest_b img {
+  position: fixed;
+  height: 200px;
+  top: 610px;
+  right: 410px;
+}
+
+.ban_presentation_color .helmet_a img {
+  position: fixed;
+  height: 120px;
+  top: 480px;
+  left: 430px;
+}
+
+.ban_presentation_color .helmet_b img {
+  position: fixed;
+  height: 120px;
+  top: 480px;
+  right: 430px;
 }
 
 #banner_list {
