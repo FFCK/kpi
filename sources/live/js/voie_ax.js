@@ -81,6 +81,7 @@ function ChangeVoie (voie, url, showUrl = 0) {
   url2 = url.replace("?", "|QU|")
   for (; ;) {
     var url3 = url2.replace("&", "|AM|")
+    url3 = url3.replace('#', '|HA|')
     if (url3 == url2) break
     url2 = url3
   }
