@@ -782,6 +782,77 @@ class TV extends MyPage
             </div>';
     }
 
+    function Content_Match2()
+    {
+        $db = new MyBdd();
+
+        $idMatch = $this->GetParamInt('match', -1);
+
+        // Chargement Match
+        $cmd  = "SELECT ce1.Libelle LibelleA, ce2.Libelle LibelleB, 
+            ce1.Code_club ClubA, ce2.Code_club ClubB, ce1.logo logoA, ce2.logo logoB,
+            m.Terrain, m.Statut, m.Heure_match, m.ScoreDetailA, m.ScoreDetailB, 
+            j.Phase, c.Soustitre2 categorie 
+            FROM kp_journee j, kp_competition c, kp_match m 
+            LEFT OUTER JOIN kp_competition_equipe ce1 ON (ce1.Id = m.Id_equipeA) 
+            LEFT OUTER JOIN kp_competition_equipe ce2 ON (ce2.Id = m.Id_equipeB) 
+            WHERE m.Id = $idMatch 
+            AND m.Id_journee = j.Id 
+            AND j.Code_competition = c.Code 
+            AND j.Code_saison = c.Code_saison ";
+
+        $rMatch = null;
+        $db->LoadRecord($cmd, $rMatch);
+
+        // if ($rMatch['Statut'] === 'ATT') {
+        //     $score = '<span class="badge bg-primary"><img src="img/time.png" width="25" style="vertical-align: baseline">&nbsp;' . $rMatch['Heure_match'] . '</span>';
+        // }
+        if ($rMatch['Statut'] === 'ATT') {
+            // $score = '<div class="badge_score"><span><img src="../img/time_white.png" style="vertical-align: baseline">&nbsp;' . $rMatch['Heure_match'] . '</span></div>';
+            $score = '<div class="badge_score"><span>' . $rMatch['Heure_match'] . '</span></div>';
+        } else {
+            $score = '<div class="badge_score"><span>' . $rMatch['ScoreDetailA'] . '</span>
+                             -
+                            <span>' . $rMatch['ScoreDetailB'] . '</span></div>';
+        }
+
+        echo '
+            <div class="container-fluid ban_presentation_color">
+                <div class="logo_lg"></div>
+                <div class="logo2_lg"></div>
+                <div class="boat_a"><img src="../img/KIP/boats/' . $rMatch['ClubA'] . '-boat.png" alt=""></div>
+                <div class="boat_b"><img src="../img/KIP/boats/' . $rMatch['ClubB'] . '-boat.png" alt=""></div>
+                <div class="vest_a"><img src="../img/KIP/vests/' . $rMatch['ClubA'] . '-vest.png" alt=""></div>
+                <div class="vest_b"><img src="../img/KIP/vests/' . $rMatch['ClubB'] . '-vest.png" alt=""></div>
+                <div class="helmet_a"><img src="../img/KIP/helmets/' . $rMatch['ClubA'] . '-helmet.png" alt=""></div>
+                <div class="helmet_b"><img src="../img/KIP/helmets/' . $rMatch['ClubB'] . '-helmet.png" alt=""></div>
+                <div id="banner_presentation" class="text-center">
+                    <div class="row banner_line line2">
+                        <div class="col-md-5 text-end">
+                            <span>
+                            ' . utyGetString($rMatch, 'LibelleA', '') . '
+                            </span>
+                            &nbsp;' . $this->ImgNation64($rMatch['ClubA'], $rMatch['logoA']) . '
+                        </div>
+                        <div class="col-md-2"></div>
+                        ' . $score . '
+                        <div class="col-md-5 text-start">
+                            ' . $this->ImgNation64($rMatch['ClubB'], $rMatch['logoB']) . '&nbsp;
+                            <span>
+                            ' . utyGetString($rMatch, 'LibelleB', '') . '
+                            </span>
+                        </div>
+                    </div>
+                    <div class="banner_line line1">
+                        <span>' . utyGetString($rMatch, 'categorie', '') . '</span>
+                        <span>' . utyGetString($rMatch, 'Phase', '') . '
+                         - Pitch
+                        ' . utyGetString($rMatch, 'Terrain', '') . '</span>
+                    </div>
+                </div>
+            </div>';
+    }
+
     function Content_Match_Score()
     {
         $db = new MyBdd();
@@ -1008,6 +1079,10 @@ class TV extends MyPage
                 break;
             case 'match':
                 $this->Content_Match();
+                return;
+                break;
+            case 'match2':
+                $this->Content_Match2();
                 return;
                 break;
             case 'match_score':

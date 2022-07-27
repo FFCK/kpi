@@ -42,93 +42,98 @@ jq(document).ready(function () {
         jq('.params').hide()
         switch (presentation) {
             case 'list_medals':
+                jq('#competition-col').show()
                 break
             case 'referee':
-                jq('#match-col, #game_report').show()
+                jq('#competition-col, #match-col, #game_report').show()
                 break
             case 'player':
-                jq('#match-col, #game_report, #team-col, #number-col, #number-btn-col').show()
+                jq('#competition-col, #match-col, #game_report, #team-col, #number-col, #number-btn-col').show()
                 break
             case 'coach':
-                jq('#match-col, #game_report, #team-col, #number-col, #number-btn-col').show()
+                jq('#competition-col, #match-col, #game_report, #team-col, #number-col, #number-btn-col').show()
                 break
             case 'player_medal':
-                jq('#match-col, #game_report, #team-col, #number-col, #number-btn-col, #medal-col').show()
+                jq('#competition-col, #match-col, #game_report, #team-col, #number-col, #number-btn-col, #medal-col').show()
                 break
             case 'team':
-                jq('#match-col, #game_report, #team-col').show()
+                jq('#competition-col, #match-col, #game_report, #team-col').show()
                 break
             case 'team_medal':
-                jq('#match-col, #game_report, #team-col, #medal-col').show()
+                jq('#competition-col, #match-col, #game_report, #team-col, #medal-col').show()
                 break
             case 'match':
-                jq('#match-col, #game_report').show()
+                jq('#competition-col, #match-col, #game_report').show()
                 break
             case 'match_score':
-                jq('#match-col, #game_report, #anime-col').show()
+                jq('#competition-col, #match-col, #game_report, #anime-col').show()
                 break
             case 'list_team':
-                jq('#match-col, #game_report, #team-col').show()
+                jq('#competition-col, #match-col, #game_report, #team-col').show()
                 break
             case 'list_coachs':
-                jq('#match-col, #game_report, #team-col').show()
+                jq('#competition-col, #match-col, #game_report, #team-col').show()
                 break
             case 'final_ranking':
-                jq('#start-col').show()
+                jq('#competition-col, #start-col').show()
                 break
             case 'podium':
-                jq('#anime-col').show()
+                jq('#competition-col, #anime-col').show()
                 break
             case 'score':
             case 'score_o':
             case 'score_e':
             case 'score_s':
-                jq('#match-col, #game_report, #speaker-col').show()
+                jq('#pitch-col, #game_report').show()
                 break
             case 'score_club':
             case 'score_club_o':
             case 'score_club_e':
             case 'score_club_s':
-                jq('#match-col, #game_report, #speaker-col').show()
+                jq('#pitch-col, #game_report').show()
+                break
+            case 'live':
+                jq('#pitch-col, #game_report, #zone-col, #mode-col').show()
                 break
             case 'teams':
             case 'teams_club':
             case 'next_game':
             case 'next_game_club':
-                jq('#match-col, #game_report, #anime-col').show()
+                jq('#pitch-col, #game_report').show()
                 break
             case 'liveteams':
-                jq('#match-col, #game_report, #speaker-col').show()
+                jq('#pitch-col, #game_report').show()
                 break
             case 'multi_score':
                 jq('#speaker-col, #count-col').show()
                 break
             case 'force_cache_match':
-                jq('#match-col, #game_report').show()
+                jq('#competition-col, #match-col, #game_report').show()
                 break
             case 'frame_terrains':
-                jq('#pitchs-col').show()
+                jq('#competition-col, #pitchs-col').show()
                 break
             case 'frame_phases':
-                jq('#round-col').show()
+                jq('#competition-col, #round-col').show()
                 break
             case 'frame_categories':
-                jq('#lnstart-col, #lnlen-col').show()
+                jq('#competition-col, #lnstart-col, #lnlen-col').show()
                 break
             case 'frame_chart':
-                jq('#round-col').show()
+                jq('#competition-col, #round-col').show()
                 break
             case 'frame_details':
+                jq('#competition-col').show()
                 break
             case 'frame_team':
-                jq('#teamselect-col').show()
+                jq('#competition-col, #teamselect-col').show()
                 break
             case 'frame_matchs':
-                jq('#navgroup-col').show()
+                jq('#competition-col, #navgroup-col').show()
                 break
             case 'api_players':
             case 'api_stats':
-                jq('#competlist-col, #format-col, #option-col').show()
+                jq('#competition-col, #competlist-col, #format-col, #option-col').show()
                 break
             default:
                 break
@@ -178,6 +183,9 @@ jq(document).ready(function () {
             case 'match':
                 Go_match(jq('#channel').val(), jq('#match').val(), showUrl)
                 break
+            case 'match2':
+                Go_match2(jq('#channel').val(), jq('#match').val(), showUrl)
+                break
             case 'match_score':
                 Go_match_score(jq('#channel').val(), jq('#match').val(), jq('#anime').val(), showUrl)
                 break
@@ -194,67 +202,71 @@ jq(document).ready(function () {
                 Go_podium(jq('#channel').val(), jq('#saison').val(), jq('#competition').val(), jq('#anime').val(), showUrl)
                 break
             case 'score':
-                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'score_o':
-                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'score_e':
-                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'score_s':
-                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'score_club':
-                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'score_club_o':
-                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'score_club_e':
-                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'score_club_s':
-                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
+            case 'live':
+                url = 'app_live/#/' + jq('#codeEvt').val() + '/' + jq('#pitch').val() + '/score/' + jq('#zone').val() + '/' + jq('#mode').val() + '/' + css + '/en/'
+                ChangeVoie(jq('#channel').val(), url, showUrl)
+                break
             case 'teams':
-                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&anime=' + jq('#anime').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'teams_club':
-                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&anime=' + jq('#anime').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'next_game':
-                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&anime=' + jq('#anime').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'next_game_club':
-                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&css=' + css + '&anime=' + jq('#anime').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'liveteams':
-                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain').val()
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch').val()
                     + '&speaker=' + jq('#speaker').val()
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
@@ -404,86 +416,92 @@ jq(document).ready(function () {
         jq('.params2').hide()
         switch (presentation2) {
             case 'list_medals':
+                jq('#competition-col2').show()
                 break
             case 'referee':
-                jq('#match-col2, #game_report2').show()
+                jq('#competition-col2, #match-col2, #game_report2').show()
                 break
             case 'player':
-                jq('#match-col2, #game_report2, #team-col2, #number-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #team-col2, #number-col2').show()
                 break
             case 'coach':
-                jq('#match-col2, #game_report2, #team-col2, #number-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #team-col2, #number-col2').show()
                 break
             case 'player_medal':
-                jq('#match-col2, #game_report2, #team-col2, #number-col2, #medal-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #team-col2, #number-col2, #medal-col2').show()
                 break
             case 'team':
-                jq('#match-col2, #game_report2, #team-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #team-col2').show()
                 break
             case 'team_medal':
-                jq('#match-col2, #game_report2, #team-col2, #medal-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #team-col2, #medal-col2').show()
                 break
             case 'match':
-                jq('#match-col2, #game_report2').show()
+            case 'match2':
+                jq('#competition-col2, #match-col2, #game_report2').show()
                 break
             case 'match_score':
-                jq('#match-col2, #game_report2, #anime-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #anime-col2').show()
                 break
             case 'list_team':
-                jq('#match-col2, #game_report2, #team-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #team-col2').show()
                 break
             case 'list_coachs':
-                jq('#match-col2, #game_report2, #team-col2').show()
+                jq('#competition-col2, #match-col2, #game_report2, #team-col2').show()
                 break
             case 'final_ranking':
-                jq('#start-col2').show()
+                jq('#competition-col2, #start-col2').show()
                 break
             case 'podium':
-                jq('#anime-col2').show()
+                jq('#competition-col2, #anime-col2').show()
                 break
             case 'score':
             case 'score_o':
             case 'score_e':
             case 'score_s':
-                jq('#match-col2, #game_report2, #speaker-col2').show()
+                jq('#pitch-col2, #game_report2').show()
                 break
             case 'score_club':
             case 'score_club_o':
             case 'score_club_e':
             case 'score_club_s':
-                jq('#match-col2, #game_report2, #speaker-col2').show()
+                jq('#pitch-col2, #game_report2').show()
+                break
+            case 'live':
+                jq('#pitch-col2, #game_report2, #zone-col2, #mode-col2').show()
                 break
             case 'teams':
             case 'teams_club':
             case 'next_game':
             case 'next_game_club':
-                jq('#match-col2, #game_report2, #anime-col2').show()
+                jq('#pitch-col2, #game_report2').show()
                 break
             case 'liveteams':
-                jq('#match-col2, #game_report2, #speaker-col2').show()
+                jq('#pitch-col2, #game_report2').show()
                 break
             case 'multi_score':
                 jq('#speaker-col2, #count-col2').show()
                 break
             case 'force_cache_match':
-                jq('#match-col2, #game_report2').show()
+                jq('#competition-col2, #match-col2, #game_report2').show()
                 break
             case 'frame_terrains':
-                jq('#pitchs-col2').show()
+                jq('#competition-col2, #pitchs-col2').show()
                 break
             case 'frame_phases':
-                jq('#round-col2').show()
+                jq('#competition-col2, #round-col2').show()
                 break
             case 'frame_categories':
-                jq('#lnstart-col2, #lnlen-col2').show()
+                jq('#competition-col2, #lnstart-col2, #lnlen-col2').show()
                 break
             case 'frame_chart':
-                jq('#round-col2').show()
+                jq('#competition-col2, #round-col2').show()
                 break
             case 'frame_details':
+                jq('#competition-col2').show()
                 break
             case 'frame_team':
-                jq('#teamselect-col2').show()
+                jq('#competition-col2, #teamselect-col2').show()
                 break
             default:
                 break
@@ -526,6 +544,9 @@ jq(document).ready(function () {
             case 'match':
                 Go_match(jq('#channel2').val(), jq('#match2').val(), showUrl)
                 break
+            case 'match2':
+                Go_match2(jq('#channel2').val(), jq('#match2').val(), showUrl)
+                break
             case 'match_score':
                 Go_match_score(jq('#channel2').val(), jq('#match2').val(), jq('#anime2').val(), showUrl)
                 break
@@ -542,67 +563,71 @@ jq(document).ready(function () {
                 Go_podium(jq('#channel2').val(), jq('#saison').val(), jq('#competition2').val(), jq('#anime2').val(), showUrl)
                 break
             case 'score':
-                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'score_o':
-                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'score_e':
-                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'score_s':
-                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'score_club':
-                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'score_club_o':
-                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'score_club_e':
-                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'score_club_s':
-                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
+            case 'live':
+                url = 'app_live/#/' + jq('#codeEvt').val() + '/' + jq('#pitch2').val() + '/score/' + jq('#zone2').val() + '/' + jq('#mode2').val() + '/' + css + '/en/'
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
             case 'teams':
-                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&anime=' + jq('#anime2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'teams_club':
-                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&anime=' + jq('#anime2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'next_game':
-                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&anime=' + jq('#anime2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'next_game_club':
-                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&css=' + css + '&anime=' + jq('#anime2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'liveteams':
-                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain2').val()
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch2').val()
                     + '&speaker=' + jq('#speaker2').val()
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
@@ -728,86 +753,92 @@ jq(document).ready(function () {
         jq('.params3').hide()
         switch (presentation3) {
             case 'list_medals':
+                jq('#competition-col3').show()
                 break
             case 'referee':
-                jq('#match-col3, #game_report3').show()
+                jq('#competition-col3, #match-col3, #game_report3').show()
                 break
             case 'player':
-                jq('#match-col3, #game_report3, #team-col3, #number-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #team-col3, #number-col3').show()
                 break
             case 'coach':
-                jq('#match-col3, #game_report3, #team-col3, #number-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #team-col3, #number-col3').show()
                 break
             case 'player_medal':
-                jq('#match-col3, #game_report3, #team-col3, #number-col3, #medal-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #team-col3, #number-col3, #medal-col3').show()
                 break
             case 'team':
-                jq('#match-col3, #game_report3, #team-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #team-col3').show()
                 break
             case 'team_medal':
-                jq('#match-col3, #game_report3, #team-col3, #medal-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #team-col3, #medal-col3').show()
                 break
             case 'match':
-                jq('#match-col3, #game_report3').show()
+            case 'match2':
+                jq('#competition-col3, #match-col3, #game_report3').show()
                 break
             case 'match_score':
-                jq('#match-col3, #game_report3, #anime-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #anime-col3').show()
                 break
             case 'list_team':
-                jq('#match-col3, #game_report3, #team-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #team-col3').show()
                 break
             case 'list_coachs':
-                jq('#match-col3, #game_report3, #team-col3').show()
+                jq('#competition-col3, #match-col3, #game_report3, #team-col3').show()
                 break
             case 'final_ranking':
-                jq('#start-col3').show()
+                jq('#competition-col3, #start-col3').show()
                 break
             case 'podium':
-                jq('#anime-col3').show()
+                jq('#competition-col3, #anime-col3').show()
                 break
             case 'score':
             case 'score_o':
             case 'score_e':
             case 'score_s':
-                jq('#match-col3, #game_report3, #speaker-col3').show()
+                jq('#pitch-col3, #game_report3').show()
                 break
             case 'score_club':
             case 'score_club_o':
             case 'score_club_e':
             case 'score_club_s':
-                jq('#match-col3, #game_report3, #speaker-col3').show()
+                jq('#pitch-col3, #game_report3').show()
+                break
+            case 'live':
+                jq('#pitch-col3, #game_report3, #zone-col3, #mode-col3').show()
                 break
             case 'teams':
             case 'teams_club':
             case 'next_game':
             case 'next_game_club':
-                jq('#match-col3, #game_report3, #anime-col3').show()
+                jq('#pitch-col3, #game_report3').show()
                 break
             case 'liveteams':
-                jq('#match-col3, #game_report3, #speaker-col3').show()
+                jq('#pitch-col3, #game_report3').show()
                 break
             case 'multi_score':
                 jq('#speaker-col3, #count-col3').show()
                 break
             case 'force_cache_match':
-                jq('#match-col3, #game_report3').show()
+                jq('#competition-col3, #match-col3, #game_report3').show()
                 break
             case 'frame_terrains':
-                jq('#pitchs-col3').show()
+                jq('#competition-col3, #pitchs-col3').show()
                 break
             case 'frame_phases':
-                jq('#round-col3').show()
+                jq('#competition-col3, #round-col3').show()
                 break
             case 'frame_categories':
-                jq('#lnstart-col3, #lnlen-col3').show()
+                jq('#competition-col3, #lnstart-col3, #lnlen-col3').show()
                 break
             case 'frame_chart':
-                jq('#round-col3').show()
+                jq('#competition-col3, #round-col3').show()
                 break
             case 'frame_details':
+                jq('#competition-col3').show()
                 break
             case 'frame_team':
-                jq('#teamselect-col3').show()
+                jq('#competition-col3, #teamselect-col3').show()
                 break
             default:
                 break
@@ -850,6 +881,9 @@ jq(document).ready(function () {
             case 'match':
                 Go_match(jq('#channel3').val(), jq('#match3').val(), showUrl)
                 break
+            case 'match2':
+                Go_match2(jq('#channel3').val(), jq('#match3').val(), showUrl)
+                break
             case 'match_score':
                 Go_match_score(jq('#channel3').val(), jq('#match3').val(), jq('#anime3').val(), showUrl)
                 break
@@ -866,67 +900,71 @@ jq(document).ready(function () {
                 Go_podium(jq('#channel3').val(), jq('#saison').val(), jq('#competition3').val(), jq('#anime3').val(), showUrl)
                 break
             case 'score':
-                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'score_o':
-                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'score_e':
-                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'score_s':
-                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'score_club':
-                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'score_club_o':
-                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'score_club_e':
-                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'score_club_s':
-                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
+            case 'live':
+                url = 'app_live/#/' + jq('#codeEvt').val() + '/' + jq('#pitch3').val() + '/score/' + jq('#zone3').val() + '/' + jq('#mode3').val() + '/' + css + '/en/'
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
             case 'teams':
-                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&anime=' + jq('#anime3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'teams_club':
-                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&anime=' + jq('#anime3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'next_game':
-                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&anime=' + jq('#anime3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'next_game_club':
-                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&css=' + css + '&anime=' + jq('#anime3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'liveteams':
-                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain3').val()
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch3').val()
                     + '&speaker=' + jq('#speaker3').val()
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
@@ -1052,86 +1090,92 @@ jq(document).ready(function () {
         jq('.params4').hide()
         switch (presentation4) {
             case 'list_medals':
+                jq('#competition-col4').show()
                 break
             case 'referee':
-                jq('#match-col4, #game_report4').show()
+                jq('#competition-col4, #match-col4, #game_report4').show()
                 break
             case 'player':
-                jq('#match-col4, #game_report4, #team-col4, #number-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #team-col4, #number-col4').show()
                 break
             case 'coach':
-                jq('#match-col4, #game_report4, #team-col4, #number-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #team-col4, #number-col4').show()
                 break
             case 'player_medal':
-                jq('#match-col4, #game_report4, #team-col4, #number-col4, #medal-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #team-col4, #number-col4, #medal-col4').show()
                 break
             case 'team':
-                jq('#match-col4, #game_report4, #team-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #team-col4').show()
                 break
             case 'team_medal':
-                jq('#match-col4, #game_report4, #team-col4, #medal-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #team-col4, #medal-col4').show()
                 break
             case 'match':
-                jq('#match-col4, #game_report4').show()
+            case 'match2':
+                jq('#competition-col4, #match-col4, #game_report4').show()
                 break
             case 'match_score':
-                jq('#match-col4, #game_report4, #anime-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #anime-col4').show()
                 break
             case 'list_team':
-                jq('#match-col4, #game_report4, #team-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #team-col4').show()
                 break
             case 'list_coachs':
-                jq('#match-col4, #game_report4, #team-col4').show()
+                jq('#competition-col4, #match-col4, #game_report4, #team-col4').show()
                 break
             case 'final_ranking':
-                jq('#start-col4').show()
+                jq('#competition-col4, #start-col4').show()
                 break
             case 'podium':
-                jq('#anime-col4').show()
+                jq('#competition-col4, #anime-col4').show()
                 break
             case 'score':
             case 'score_o':
             case 'score_e':
             case 'score_s':
-                jq('#match-col4, #game_report4, #speaker-col4').show()
+                jq('#pitch-col4, #game_report4').show()
                 break
             case 'score_club':
             case 'score_club_o':
             case 'score_club_e':
             case 'score_club_s':
-                jq('#match-col4, #game_report4, #speaker-col4').show()
+                jq('#pitch-col4, #game_report4').show()
+                break
+            case 'live':
+                jq('#pitch-col4, #game_report4, #zone-col4, #mode-col4').show()
                 break
             case 'teams':
             case 'teams_club':
             case 'next_game':
             case 'next_game_club':
-                jq('#match-col4, #game_report4, #anime-col4').show()
+                jq('#pitch-col4, #game_report4').show()
                 break
             case 'liveteams':
-                jq('#match-col4, #game_report4, #speaker-col4').show()
+                jq('#pitch-col4, #game_report4').show()
                 break
             case 'multi_score':
                 jq('#speaker-col4, #count-col4').show()
                 break
             case 'force_cache_match':
-                jq('#match-col4, #game_report4').show()
+                jq('#competition-col4, #match-col4, #game_report4').show()
                 break
             case 'frame_terrains':
-                jq('#pitchs-col4').show()
+                jq('#competition-col4, #pitchs-col4').show()
                 break
             case 'frame_phases':
-                jq('#round-col4').show()
+                jq('#competition-col4, #round-col4').show()
                 break
             case 'frame_categories':
-                jq('#lnstart-col4, #lnlen-col4').show()
+                jq('#competition-col4, #lnstart-col4, #lnlen-col4').show()
                 break
             case 'frame_chart':
-                jq('#round-col4').show()
+                jq('#competition-col4, #round-col4').show()
                 break
             case 'frame_details':
+                jq('#competition-col4').show()
                 break
             case 'frame_team':
-                jq('#teamselect-col4').show()
+                jq('#competition-col4, #teamselect-col4').show()
                 break
             default:
                 break
@@ -1174,6 +1218,9 @@ jq(document).ready(function () {
             case 'match':
                 Go_match(jq('#channel4').val(), jq('#match4').val(), showUrl)
                 break
+            case 'match2':
+                Go_match2(jq('#channel4').val(), jq('#match4').val(), showUrl)
+                break
             case 'match_score':
                 Go_match_score(jq('#channel4').val(), jq('#match4').val(), jq('#anime4').val(), showUrl)
                 break
@@ -1190,67 +1237,71 @@ jq(document).ready(function () {
                 Go_podium(jq('#channel4').val(), jq('#saison').val(), jq('#competition4').val(), jq('#anime4').val(), showUrl)
                 break
             case 'score':
-                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'score_o':
-                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'score_e':
-                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'score_s':
-                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'score_club':
-                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'score_club_o':
-                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score_club_o.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'score_club_e':
-                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score_club_e.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'score_club_s':
-                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/score_club_s.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
+            case 'live':
+                url = 'app_live/#/' + jq('#codeEvt').val() + '/' + jq('#pitch4').val() + '/score/' + jq('#zone4').val() + '/' + jq('#mode4').val() + '/' + css + '/en/'
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
             case 'teams':
-                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/teams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&anime=' + jq('#anime4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'teams_club':
-                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/teams_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&anime=' + jq('#anime4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'next_game':
-                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/next_game.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&anime=' + jq('#anime4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'next_game_club':
-                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/next_game_club.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&css=' + css + '&anime=' + jq('#anime4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'liveteams':
-                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#terrain4').val()
+                url = 'live/liveteams.php?event=' + jq('#codeEvt').val() + '&terrain=' + jq('#pitch4').val()
                     + '&speaker=' + jq('#speaker4').val()
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
@@ -1424,6 +1475,14 @@ function Go_team_medal (channel, match, team, medal, showUrl = 0) {
 function Go_match (channel, match, showUrl = 0) {
     var param
     param = "show=match"
+    param += "&voie=" + channel
+    param += "&match=" + match
+    Go(param, showUrl)
+}
+
+function Go_match2 (channel, match, showUrl = 0) {
+    var param
+    param = "show=match2"
     param += "&voie=" + channel
     param += "&match=" + match
     Go(param, showUrl)

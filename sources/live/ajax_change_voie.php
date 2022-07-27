@@ -7,6 +7,7 @@ $url = utyGetString($_GET, 'url');
 
 $url = str_replace("|QU|", "?", $url);
 $url = str_replace("|AM|", "&", $url);
+$url = str_replace("|HA|", "#", $url);
 
 $myBdd = new MyBdd();
 
