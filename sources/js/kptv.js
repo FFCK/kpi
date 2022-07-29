@@ -63,6 +63,7 @@ jq(document).ready(function () {
                 jq('#competition-col, #match-col, #game_report, #team-col, #medal-col').show()
                 break
             case 'match':
+            case 'match2':
                 jq('#competition-col, #match-col, #game_report').show()
                 break
             case 'match_score':
