@@ -15,7 +15,7 @@ $sql = "SELECT j.*, c.*
     AND c.Publication = 'O' 
     AND j.Publication = 'O' 
     AND ((j.Date_debut >= :start AND j.Date_debut <= :end) 
-    OR (j.Date_fin >= :start AND j.Date_fin <= :end)) 
+    OR (j.Date_fin >= :start2 AND j.Date_fin <= :end2)) 
     GROUP BY j.Code_saison, j.Code_competition, j.Date_debut, j.Date_fin, j.Lieu 
     ORDER BY j.Date_debut, c.Code_niveau, c.GroupOrder, c.Code_tour, j.Nom ";
 
@@ -23,34 +23,36 @@ $arrayCalendrier = array();
 //Couleurs selon le type de compétition (championnat, coupe, tournoi, compétition internationale, régionale)
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array(
-    ':start' => $start, 
-    ':end' => $end
+    ':start' => $start,
+    ':end' => $end,
+    ':start2' => $start,
+    ':end2' => $end
 ));
-while ($row = $result->fetch()) { 
-$title = html_entity_decode($row['Nom'].' ('.$row['Lieu'].'-'.$row['Departement'].')');
+while ($row = $result->fetch()) {
+    $title = html_entity_decode($row['Nom'] . ' (' . $row['Lieu'] . '-' . $row['Departement'] . ')');
     $compet = $row['Code_competition'];
     $class = "bg-blue2";
-    if($row['Code_niveau'] == 'INT'){
+    if ($row['Code_niveau'] == 'INT') {
         $class = 'bg-brown';
-    }elseif($row['Code_niveau'] == 'REG'){
+    } elseif ($row['Code_niveau'] == 'REG') {
         $class = 'bg-green';
-    }elseif($compet[0] == 'N'){
+    } elseif ($compet[0] == 'N') {
         $class = "bg-blue";
     }
     //Si c'est un mode championnat, on dirige vers la journée demandée, sinon toute la compétition
-    ($row['Code_typeclt'] == 'CHPT') ? $typ = '&J='.$row['Id'] : $typ = '&typ=CP';
+    ($row['Code_typeclt'] == 'CHPT') ? $typ = '&J=' . $row['Id'] : $typ = '&typ=CP';
     //Si la compétition est passée, on dirige vers le classement, sinon les matchs
     $ts = strtotime($row['Date_fin']) + 86400;
     $datefin = date('Y-m-d', $ts);
-    
+
     $Code_competition = $row['Code_competition'];
     $Group = $row['Code_ref'];
     $Saison = $row['Code_saison'];
-    
-    
+
+
     $url = "kpdetails.php?Compet=$Code_competition&Group=$Group&Saison=$Saison$typ";
-        
-    array_push($arrayCalendrier, array(	
+
+    array_push($arrayCalendrier, array(
         'id' => $row['Id'],
         'title' => $title,
         'start' => $row['Date_debut'],

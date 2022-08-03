@@ -1,23 +1,23 @@
 <?php
 // prevent direct access *****************************************************
-$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
-strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-if(!$isAjax) {
-  $user_error = 'Access denied - not an AJAX request...';
-  trigger_error($user_error, E_USER_ERROR);
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) and
+	strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if (!$isAjax) {
+	$user_error = 'Access denied - not an AJAX request...';
+	trigger_error($user_error, E_USER_ERROR);
 }
 // ***************************************************************************
-	
+
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-$myBdd = new MyBdd();	
+$myBdd = new MyBdd();
 // Chargement
 $term = trim(utyGetGet('term'));
 // replace multiple spaces with one
 $term = preg_replace('/\s+/', ' ', $term);
 // supprime les 0 devant les numéros de licence
-$term = preg_replace('`^[0]*`','',$term);
+$term = preg_replace('`^[0]*`', '', $term);
 $idMatch = (int) trim(utyGetGet('idMatch'));
 $term1 = '%' . $term . '%';
 
@@ -33,7 +33,7 @@ $sql = "SELECT j.Id, j.Code_saison, j.Code_competition, ce.Libelle,
 	AND j.Code_saison = ce.Code_saison 
 	AND j.Code_competition = ce.Code_compet 
 	GROUP BY ce.Libelle 
-	ORDER BY ce.Poule, ce.Tirage, ce.Libelle ";	 
+	ORDER BY ce.Poule, ce.Tirage, ce.Libelle ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($idMatch));
 while ($row = $result->fetch()) {
@@ -41,7 +41,7 @@ while ($row = $result->fetch()) {
 	$codeSaison = $row['Code_saison'];
 	$codeJournee = $row['Id'];
 	$pos = stripos(strtoupper($row["Libelle"]), strtoupper($term));
-	if($pos !== false) {
+	if ($pos !== false) {
 		$jRow["label"] = $row["Libelle"];
 		$jRow["value"] = $row["Libelle"];
 		$jRow["category"] = 'Equipes';
@@ -71,8 +71,8 @@ while ($row = $result->fetch()) {
 	$arb = strtoupper($row['arbitre']);
 	$nom = mb_strtoupper($row['Nom']);
 	$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
-	$jRow["label"] = $row["Libelle"].' - '.$nom.' '.$prenom.' ('.$arb.' '.$row["niveau"].')';
-	$jRow["value"] = $nom.' '.$prenom.' ('.$row["Libelle"].') | '.$row["Matric"];
+	$jRow["label"] = $row["Libelle"] . ' - ' . $nom . ' ' . $prenom . ' (' . $arb . ' ' . $row["niveau"] . ')';
+	$jRow["value"] = $nom . ' ' . $prenom . ' (' . $row["Libelle"] . ') | ' . $row["Matric"];
 	$jRow["matric"] = $row["Matric"];
 	$jRow["category"] = 'Joueurs';
 	array_push($a_json, $jRow);
@@ -84,25 +84,30 @@ $sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau
 	WHERE a.Id_equipe = b.Id 
 	AND b.Code_compet = 'POOL' 
 	AND (a.Matric LIKE :term1 
-		OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER(:term1) 
-		OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER(:term1) 
-		OR UPPER(b.Libelle) LIKE UPPER(:term1) 
+		OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER(:term2) 
+		OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER(:term3) 
+		OR UPPER(b.Libelle) LIKE UPPER(:term4) 
 	) 
 	ORDER BY a.Nom, a.Prenom ";
 $result = $myBdd->pdo->prepare($sql);
-$result->execute(array(':term1' => $term1));
+$result->execute(array(
+	':term1' => $term1,
+	':term2' => $term1,
+	':term3' => $term1,
+	':term4' => $term1
+));
 while ($row = $result->fetch()) {
-	$libelle = substr($row['Libelle'],0,3);
+	$libelle = substr($row['Libelle'], 0, 3);
 	$libelle = str_replace('Poo', 'Pool', $libelle);
 	$arb = strtoupper($row['arbitre']);
 	if ($row['niveau'] != '') {
-		$arb .= '-'.$row['niveau'];
+		$arb .= '-' . $row['niveau'];
 	}
 	$matric = $row['Matric'];
 	$nom = mb_strtoupper($row['Nom']);
 	$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
-	$jRow["label"] = $nom.' '.$prenom.' ('.$libelle.') - '.$arb;
-	$jRow["value"] = $nom.' '.$prenom.' ('.$libelle.') | '.$row["Matric"];
+	$jRow["label"] = $nom . ' ' . $prenom . ' (' . $libelle . ') - ' . $arb;
+	$jRow["value"] = $nom . ' ' . $prenom . ' (' . $libelle . ') | ' . $row["Matric"];
 	$jRow["matric"] = $row["Matric"];
 	$jRow["category"] = 'Pool arbitres';
 	array_push($a_json, $jRow);
@@ -112,23 +117,27 @@ $sql = "SELECT lc.*, c.Libelle, b.arbitre, b.niveau
 	FROM kp_licence lc, kp_arbitre b, kp_club c 
 	WHERE lc.Matric = b.Matric 
 	AND (lc.Matric LIKE :term1 
-		OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(:term1) 
-		OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(:term1) 
+		OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(:term2) 
+		OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(:term3) 
 	) 
 	AND lc.Numero_club = c.Code 
 	ORDER BY lc.Nom, lc.Prenom ";
 $result = $myBdd->pdo->prepare($sql);
-$result->execute(array(':term1' => $term1));
+$result->execute(array(
+	':term1' => $term1,
+	':term2' => $term1,
+	':term3' => $term1,
+));
 while ($row = $result->fetch()) {
 	$libelle = mb_convert_case(strtolower($row['Libelle']), MB_CASE_TITLE, "UTF-8");
 	$arb = strtoupper($row['arbitre']);
-	if($row['niveau'] != '') {
-		$arb .= '-'.$row['niveau'];
+	if ($row['niveau'] != '') {
+		$arb .= '-' . $row['niveau'];
 	}
 	$nom  = mb_strtoupper($row['Nom']);
 	$prenom = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
-	$jRow["label"] = $nom .' '.$prenom.' ('.$arb.') - '.$libelle;
-	$jRow["value"] = $nom .' '.$prenom.' ('.$arb.') | '.$row["Matric"];
+	$jRow["label"] = $nom . ' ' . $prenom . ' (' . $arb . ') - ' . $libelle;
+	$jRow["value"] = $nom . ' ' . $prenom . ' (' . $arb . ') | ' . $row["Matric"];
 	$jRow["matric"] = $row["Matric"];
 	$jRow["category"] = 'Autres arbitres';
 	array_push($a_json, $jRow);
