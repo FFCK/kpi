@@ -1289,9 +1289,9 @@ class MyBdd
 	{
 		$sql = "SELECT id, libelle 
 			FROM kp_categorie 
-			WHERE age_min <= :age AND age_max >= :age ";
+			WHERE age_min <= :age AND age_max >= :age2 ";
 		$result = $this->pdo->prepare($sql);
-		$result->execute(array(':age' => $age));
+		$result->execute(array(':age' => $age, ':age2' => $age));
 		if ($row = $result->fetch()) {
 			$code = $row['Code'];
 			$libelle = $row['libelle'];
@@ -1493,10 +1493,10 @@ class MyBdd
 	{
 		$sql = "SELECT Code 
 			FROM kp_saison 
-			WHERE Nat_debut <= :date 
-			AND Nat_fin >= :date ";
+			WHERE Nat_debut <= :date1 
+			AND Nat_fin >= :date2 ";
 		$result = $this->pdo->prepare($sql);
-		$result->execute(array(':date' => $date));
+		$result->execute(array(':date1' => $date, ':date2' => $date));
 		if ($row = $result->fetch()) {
 			return $row['Code'];
 		}
@@ -1509,10 +1509,10 @@ class MyBdd
 	{
 		$sql = "SELECT Code 
 			FROM kp_saison 
-			WHERE Inter_debut <= :date 
-			AND Inter_fin >= :date ";
+			WHERE Inter_debut <= :date1
+			AND Inter_fin >= :date2 ";
 		$result = $this->pdo->prepare($sql);
-		$result->execute(array(':date' => $date));
+		$result->execute(array(':date1' => $date, ':date2' => $date));
 		if ($row = $result->fetch()) {
 			return $row['Code'];
 		}
@@ -1608,7 +1608,7 @@ class MyBdd
                     SELECT Code_ref 
 					FROM `kp_competition` 
 					WHERE Code = :codeCompet 
-					AND Code_saison = :codeSaison
+					AND Code_saison = :codeSaison2
 				) ";
 			if ($public) {
 				$sql .= "AND Publication = 'O' ";
@@ -1617,6 +1617,7 @@ class MyBdd
 			$result = $this->pdo->prepare($sql);
 			$result->execute(array(
 				':codeSaison' => $codeSaison,
+				':codeSaison2' => $codeSaison,
 				':codeCompet' => $codeCompet
 			));
 		}
