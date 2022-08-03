@@ -1347,11 +1347,11 @@ class GestionJournee extends MyPageSecure
 			WHERE cej.Clt = :codeNumero
 			AND cej.Id_journee = j.Id 
 			AND cej.Id = ce.Id 
-			AND (j.Phase LIKE :codePoule 
-				OR j.Phase LIKE CONCAT('%poule ', :codePoule, '%') 
-				OR j.Phase LIKE CONCAT('%Poule ', :codePoule, '%') 
-				OR j.Phase LIKE CONCAT('%Groupe ', :codePoule, '%') 
-				OR j.Phase LIKE CONCAT('%Group ', :codePoule, '%') )
+			AND (j.Phase LIKE :codePoule1 
+				OR j.Phase LIKE CONCAT('%poule ', :codePoule2, '%') 
+				OR j.Phase LIKE CONCAT('%Poule ', :codePoule3, '%') 
+				OR j.Phase LIKE CONCAT('%Groupe ', :codePoule4, '%') 
+				OR j.Phase LIKE CONCAT('%Group ', :codePoule5, '%') )
 			AND j.Code_competition = :codeCompetition 
 			AND j.Code_saison = :codeSaison ";
 		$result5 = $myBdd->pdo->prepare($sql5);
@@ -1480,7 +1480,11 @@ class GestionJournee extends MyPageSecure
 				} elseif ($codePoule != '') {
 					$result5->execute(array(
 						':codeNumero' => $codeNumero[1],
-						':codePoule' => $codePoule,
+						':codePoule1' => $codePoule,
+						':codePoule2' => $codePoule,
+						':codePoule3' => $codePoule,
+						':codePoule4' => $codePoule,
+						':codePoule5' => $codePoule,
 						':codeCompetition' => $row['Code_competition'],
 						':codeSaison' => $row['Code_saison']
 					));
