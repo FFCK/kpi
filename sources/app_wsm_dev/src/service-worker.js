@@ -1,5 +1,5 @@
 /* eslint-disable */
-const version = '1.3.1'
+const version = '1.4.2'
 importScripts('../third_party/workbox-v6.1.5/workbox-sw.js')
 workbox.setConfig({
   modulePathPrefix: '../third_party/workbox-v6.1.5',

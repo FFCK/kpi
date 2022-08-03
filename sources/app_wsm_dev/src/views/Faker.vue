@@ -63,7 +63,8 @@ export default {
       periods: {
         0: 'M1',
         1: 'M2',
-        2: 'P1'
+        2: 'P1',
+        3: 'P2'
       }
     }
   },
@@ -188,9 +189,9 @@ export default {
       this.faker[n].penB = 0
       this.faker[n].ivPenB = setInterval(this.incrementTopic, 6600, 'penB', n, 2)
       this.faker[n].period = 0
-      this.faker[n].ivPeriod = setInterval(this.incrementPeriod, 8000, 'period', n, 2)
-      this.faker[n].chrono = 30000
-      this.faker[n].ivChrono = setInterval(this.decrementTimer, 100, 'chrono', n, 30000)
+      this.faker[n].ivPeriod = setInterval(this.incrementPeriod, 180000, 'period', n, 3)
+      this.faker[n].chrono = 180000
+      this.faker[n].ivChrono = setInterval(this.decrementTimer, 100, 'chrono', n, 180000)
       this.faker[n].posses = 20000
       this.faker[n].ivPosses = setInterval(this.decrementPosses, 100, 'posses', n, 20000)
       this.faker[n].ivGreen = setInterval(this.green, 60000, n)
