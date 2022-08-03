@@ -23,12 +23,14 @@
   "Team": "Team",
   "Pass": "Pass",
   "Shot": "Shot",
+  "Stop": "Stop",
   "Neutral": "Neutral",
   "Kickoff": "Kick off",
   "Kickoff_won": "Won Kick off",
   "Kickoff_lost": "Lost Kick off",
   "Shot_on": "On target shot",
   "Shot_off": "Off target shot",
+  "Shot_stop": "Shot stop",
   "Pass_possession": "Pass / Possession",
   "Neutral_ball": "Neutral ball"
 }

@@ -23,12 +23,14 @@
   "Team": "Equipe",
   "Pass": "Passe",
   "Shot": "Tir",
+  "Stop": "Arrêt",
   "Neutral": "Neutre",
   "Kickoff": "Engag.",
   "Kickoff_won": "Engagement gagné",
   "Kickoff_lost": "Engagement perdu",
   "Shot_on": "Tir cadré",
   "Shot_off": "Tir non cadré",
+  "Shot_stop": "Arrêt",
   "Pass_possession": "Passe / Possession",
   "Neutral_ball": "Balle neutre"
 }
