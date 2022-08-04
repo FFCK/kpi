@@ -9,7 +9,8 @@ export default {
   },
   data () {
     return {
-      authorized: false
+      authorized: false,
+      userEvents: []
     }
   },
   methods: {
@@ -26,10 +27,10 @@ export default {
     async checkAuthorized () {
       await this.getUser()
       if (this.user) {
-        const userEvents = this.user.events.split('|').map(e => { return parseInt(e) })
-        this.authorized = userEvents.includes(this.prefs.event)
+        this.userEvents = this.user.events.split('|').map(e => { return parseInt(e) })
+        // console.log(this.userEvents)
       } else {
-        this.authorized = false
+        this.$router.push({ name: 'Login' })
       }
     }
   },

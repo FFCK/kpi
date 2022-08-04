@@ -27,7 +27,7 @@
         <div class="col text-center">
           <div id="equipe1" class="p-2" :style="'color: ' + game.equipe1.colortext + '; background-color: ' + game.equipe1.color1 +';'">
             <b>{{ game.equipe1.nom }}</b>
-            <span id="score1" class="badge bg-dark text-light float-end score p-2">{{ score1 }}</span>
+            <span id="score1" class="badge bg-dark text-light float-end score p-2">{{ score1 || '0' }}</span>
           </div>
         </div>
         <div class="col-3 text-center">
@@ -45,7 +45,7 @@
         </div>
         <div class="col text-center">
           <div id="equipe2" class="p-2" :style="'color: ' + game.equipe2.colortext + '; background-color: ' + game.equipe2.color1 +';'">
-            <span id="score2" class="badge bg-dark text-light float-start score p-2">{{ score2 }}</span>
+            <span id="score2" class="badge bg-dark text-light float-start score p-2">{{ score2 || '0' }}</span>
             <b >{{ game.equipe2.nom }}</b>
           </div>
         </div>
@@ -304,6 +304,7 @@
 </template>
 
 <script>
+import User from '@/store/models/User'
 import routeMixin from '@/mixins/routeMixin'
 import gameMixin from '@/mixins/gameMixin'
 import wsMixin from '@/mixins/wsMixin'
@@ -312,6 +313,11 @@ import liveApi from '@/network/liveApi'
 export default {
   name: 'Stats',
   mixins: [routeMixin, gameMixin, wsMixin],
+  computed: {
+    user () {
+      return User.query().first()
+    }
+  },
   data () {
     return {
       statsEvent: 0,
@@ -328,8 +334,7 @@ export default {
       game: null,
       team1: {},
       team2: {},
-      btnMode: 0,
-      user: 1
+      btnMode: 0
     }
   },
   methods: {
@@ -513,7 +518,7 @@ export default {
     },
     submit (team, player, action) {
       const obj = {
-        user: this.user,
+        user: this.user.id,
         game: this.game.id_match,
         team: team,
         player: player,

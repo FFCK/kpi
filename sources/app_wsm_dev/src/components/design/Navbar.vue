@@ -35,22 +35,27 @@
                 {{ $t("nav.Home") }}
               </router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="user && user?.profile <= 2">
               <router-link to="/manager" class="nav-link text-nowrap">
                 <i class="bi bi-list-ol" />
                 {{ $t("nav.Manager") }}
               </router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="user && user?.profile <= 2">
               <router-link to="/faker" class="nav-link text-nowrap">
-                <i class="bi bi-list-ol" />
+                <i class="bi bi-radioactive" />
                 {{ $t("nav.Faker") }}
               </router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="user">
               <router-link to="/stats" class="nav-link text-nowrap">
-                <i class="bi bi-list-ol" />
+                <i class="bi bi-graph-up" />
                 {{ $t("nav.Stats") }}
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/login" class="nav-link text-nowrap">
+                <i class="bi bi-person-square" />
               </router-link>
             </li>
           </ul>
@@ -67,6 +72,7 @@
 // import userMixin from '@/mixins/userMixin'
 import LocaleSwitcher from '@/components/design/LocaleSwitcher'
 import Online from '@/components/design/Online.vue'
+import User from '@/store/models/User'
 
 export default {
   name: 'Navbar',
@@ -75,6 +81,11 @@ export default {
     Online
   },
   // mixins: [prefsMixin, userMixin],
+  computed: {
+    user () {
+      return User.query().first()
+    }
+  },
   data () {
     return {
       isCollapse: true,

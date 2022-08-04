@@ -1,8 +1,13 @@
 import liveApi from '@/network/liveApi'
 import { WsCloseAll } from '@/network/wsGames'
+import User from '@/store/models/User'
+import idbs from '@/services/idbStorage'
 
 export default {
   computed: {
+    user () {
+      return User.query().first()
+    }
   },
   data () {
     return {
@@ -20,12 +25,25 @@ export default {
     }
   },
   methods: {
+    async getUser () {
+      if (User.query().count() === 0) {
+        const result = await idbs.dbGetAll('user')
+        if (result.length === 1) {
+          User.insertOrUpdate({
+            data: result
+          })
+        }
+      }
+    },
     async fetchEvents () {
+      await this.getUser()
       await liveApi
         .getEvents()
         .then(async resultEvents => {
           if (resultEvents.data) {
-            this.events = resultEvents.data
+            const tempEvents = resultEvents.data
+            const userEvents = this.user?.events.split('|').map(e => { return parseInt(e) })
+            this.events = tempEvents.filter(event => userEvents.includes(event.id))
           } else if (!resultEvents.data) {
             console.log('No result')
           }
