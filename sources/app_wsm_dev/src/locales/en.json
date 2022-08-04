@@ -8,6 +8,18 @@
     "Faker": "Faker",
     "Stats": "Stats"
   },
+  "Login": {
+    "Authentication": "Authentication",
+    "Login": "Login",
+    "LoginHelp": "Enter your login",
+    "Password": "Password",
+    "Submit": "Submit",
+    "EmptyMsg": "Login & Password must be filled!",
+    "UnauthorizedMsg": "Unauthorized login!",
+    "ErrorMsg": "Authentication failed!",
+    "Welcome": "Welcome",
+    "Logout": "Logout"
+  },
   "AddToHomeScreen": {
     "message": "Add to desktop/home screen.",
     "Dismiss": "Dismiss",
