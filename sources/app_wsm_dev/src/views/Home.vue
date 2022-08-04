@@ -1,17 +1,17 @@
 <template>
   <div class="container-fluid">
     <p><i>Version: {{ version }}</i></p>
-    <p><a href="./#/manager">WebSocket Manager</a></p>
   </div>
 </template>
 
 <script>
 import routeMixin from '@/mixins/routeMixin'
+import userMixin from '@/mixins/userMixin'
 import { WsInit, WsBroadcastClose, WsFlowClose } from '@/network/wsGames'
 
 export default {
   name: 'Home',
-  mixins: [routeMixin],
+  mixins: [routeMixin, userMixin],
   data () {
     return {
       wsLaunched: false
