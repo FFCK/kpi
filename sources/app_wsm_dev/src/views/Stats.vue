@@ -334,7 +334,7 @@ export default {
       game: null,
       team1: {},
       team2: {},
-      btnMode: 0
+      btnMode: 1
     }
   },
   methods: {
@@ -412,6 +412,7 @@ export default {
       this.score2 = score.score2
       this.matchPeriod = score.periode
       this.matchPeriodFormated = (score.periode.substring(0, 1) !== 'M') ? 'OVT' + score.periode.substring(1) : score.periode.substring(1)
+      this.btnMode = 1
     },
     async fetchNetwork () {
       if (this.statsEvent > 0) {
@@ -554,5 +555,29 @@ div {
 
 #match_periode {
   width: 40px
+}
+
+.btn-warning {
+    background-color: #e26700;
+    border-color: #e26700;
+}
+.btn-warning:hover {
+    background-color: #e26700;
+    border-color: #e26700;
+}
+.btn-outline-warning {
+    color: #e26700;
+    border-color: #e26700;
+}
+.btn-outline-warning:hover {
+    background-color: #e26700;
+    border-color: #e26700;
+}
+.btn-outline-warning:disabled, .btn-outline-warning.disabled {
+    color: #e26700;
+}
+.btn-check:focus + .btn-warning, .btn-warning:focus {
+    background-color: #e26700;
+    border-color: #e26700;
 }
 </style>
