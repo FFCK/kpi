@@ -6,7 +6,8 @@
     "Home": "Home",
     "Manager": "Manager",
     "Faker": "Faker",
-    "Stats": "Stats"
+    "Stats": "Stats",
+    "Account": "Account"
   },
   "Login": {
     "Authentication": "Authentication",

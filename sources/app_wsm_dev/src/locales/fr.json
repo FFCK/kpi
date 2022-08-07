@@ -6,7 +6,8 @@
     "Home": "Accueil",
     "Manager": "Manager",
     "Faker": "Faker",
-    "Stats": "Stats"
+    "Stats": "Stats",
+    "Account": "Compte"
   },
   "Login": {
     "Authentication": "Authentification",
