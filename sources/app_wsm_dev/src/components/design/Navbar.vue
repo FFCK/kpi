@@ -29,10 +29,16 @@
         </button>
         <div id="navbarToggler" class="collapse navbar-collapse">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link to="/" class="nav-link text-nowrap active">
                 <i class="bi bi-house" />
                 {{ $t("nav.Home") }}
+              </router-link>
+            </li> -->
+            <li class="nav-item">
+              <router-link to="/login" class="nav-link text-nowrap">
+                <i class="bi bi-person-square" />
+                {{ $t("nav.Account") }}
               </router-link>
             </li>
             <li class="nav-item" v-if="user && user?.profile <= 2">
@@ -51,11 +57,6 @@
               <router-link to="/stats" class="nav-link text-nowrap">
                 <i class="bi bi-graph-up" />
                 {{ $t("nav.Stats") }}
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/login" class="nav-link text-nowrap">
-                <i class="bi bi-person-square" />
               </router-link>
             </li>
           </ul>

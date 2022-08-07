@@ -1,5 +1,6 @@
 <template>
   <div class="container-fluid mb-5">
+    <p><i>Version: {{ version }}</i></p>
     <div v-if="user">
       <div class="text-center my-3">
         <span class="btn btn-secondary"
@@ -84,6 +85,11 @@ import statusMixin from '@/mixins/statusMixin'
 export default {
   name: 'Login',
   mixins: [userMixin, logoutMixin, statusMixin],
+  computed: {
+    version () {
+      return 'v' + process.env.VUE_APP_VERSION
+    }
+  },
   data () {
     return {
       input: {

@@ -205,7 +205,7 @@ function PutStatsController($route, $params)
 {
   $data = json_decode(file_get_contents('php://input'));
 
-  if (!in_array($data->action, ['pass', 'kickoff', 'kickoff-ko', 'shot-in', 'shot-out'])) {
+  if (!in_array($data->action, ['pass', 'kickoff', 'kickoff-ko', 'shot-in', 'shot-out', 'shot-stop'])) {
     return_401();
   }
 
@@ -232,7 +232,7 @@ function PutStatsController($route, $params)
   $stmt = $myBdd->pdo->prepare($sql);
   $result = $stmt->execute([
     $data->user, $data->game, $data->team, $data->player,
-    $data->action, $data->period, $data->timer
+    $data->action, $data->period, rtrim($data->timer, '.')
   ]);
   return_200();
 }
