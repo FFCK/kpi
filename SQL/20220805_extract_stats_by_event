@@ -1,0 +1,17 @@
+SELECT CONCAT(l.Nom, ' ', l.Prenom) 'user_name', s.`date_stat`,
+	ce.Code_saison season, ce.Code_compet compet,
+    j.Phase 'phase',
+    s.game, m.Numero_ordre num_game, 
+	ce.Code_club club, ce.Libelle 'team_name', 
+    CONCAT(l2.Nom, ' ', l2.Prenom) 'player_name',
+    s.period, s.timer, s.action
+FROM `kp_stats` s
+	LEFT JOIN kp_licence l ON s.user = l.Matric
+	LEFT JOIN kp_licence l2 ON s.player = l2.Matric
+	LEFT JOIN kp_competition_equipe ce ON s.team = ce.Id
+    LEFT JOIN kp_match m ON s.game = m.Id
+    LEFT JOiN kp_journee j ON m.Id_journee = j.Id
+    LEFT JOIN kp_evenement_journee ej ON j.Id = ej.Id_journee
+WHERE ej.Id_evenement = ?
+ORDER BY s.`date_stat` DESC
+

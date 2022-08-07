@@ -37,6 +37,9 @@ export default {
       WsFlowClose()
       this.wsLaunched = false
     }
+  },
+  mounted () {
+    this.$router.push({ name: 'Login' })
   }
 }
 </script>
