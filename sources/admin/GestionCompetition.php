@@ -727,9 +727,13 @@ class GestionCompetition extends MyPageSecure
                 SET cej.Matric = :cible, cej.Nom = lc.Nom, 
                     cej.Prenom = lc.Prenom, cej.Sexe = lc.Sexe
                 WHERE cej.Matric = :source 
-                AND lc.Matric = :cible ";
+                AND lc.Matric = :cible2 ";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute([':cible' => $numFusionCible, ':source' => $numFusionSource]);
+			$stmt->execute([
+				':cible' => $numFusionCible,
+				':cible2' => $numFusionCible,
+				':source' => $numFusionSource
+			]);
 
 			// arbitre principal
 			$sql  = "UPDATE kp_match 
