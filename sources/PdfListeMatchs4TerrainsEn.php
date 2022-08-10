@@ -20,7 +20,7 @@ class PDF extends FPDF
         $this->SetFont('Arial', 'I', 8);
         //Numéro de page centré
         $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-        $this->Cell(136, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i"), 0, 1, 'R');
+        $this->Cell(136, 5, "Print: " . date("Y-m-d H:i"), 0, 1, 'R');
     }
 }
 
@@ -179,10 +179,10 @@ class PdfListeMatchs extends MyPage
             $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
         }
         // QRCode
-        $qrcode = new QRcode('https://www.kayak-polo.info/Journee.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L'); // error level : L, M, Q, H
+        // $qrcode = new QRcode('https://www.kayak-polo.info/Journee.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L'); // error level : L, M, Q, H
         //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-        $qr_x = 265;
-        $qrcode->displayFPDF($pdf, $qr_x, 9, 21);
+        // $qr_x = 265;
+        // $qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
         $titreDate = "Season " . $codeSaison;
         // titre
@@ -261,7 +261,7 @@ class PdfListeMatchs extends MyPage
             $pdf->SetFillColor(220, 220, 220);
             $pdf->SetFont('Arial', 'B', 7);
             $date = date_create($date);
-            $date = date_format($date, 'l d/m/Y');
+            $date = date_format($date, 'l Y-m-d');
             $pdf->Cell(30, 5, $date, 0, 1, 'L');
 
             $pdf->Cell(10, 5, '', 0, 0, 'L');
@@ -339,7 +339,7 @@ class PdfListeMatchs extends MyPage
 
 
         $pdf->Cell(271, 3, '', 'T', '1', 'C');
-        $pdf->Output('Game list' . '.pdf', 'I');
+        $pdf->Output('GameList' . '.pdf', 'I');
     }
 }
 
