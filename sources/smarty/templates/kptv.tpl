@@ -42,6 +42,7 @@
         <label>Style</label>
         <select id="style" name="style">
           <option value="saintomer2022" {if $style == 'saintomer2022'}selected{/if}>SaintOmer 2022</option>
+          <option value="saintomer2022b" {if $style == 'saintomer2022b'}selected{/if}>SaintOmer 2022 Magenta</option>
           <option value="welland2018" {if $style == 'welland2018'}selected{/if}>Welland 2018</option>
           <option value="saintomer2017" {if $style == 'saintomer2017'}selected{/if}>SaintOmer 2017</option>
           <option value="thury2014" {if $style == 'thury2014'}selected{/if}>Thury 2014</option>
