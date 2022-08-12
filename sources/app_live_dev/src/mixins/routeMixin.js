@@ -1,5 +1,5 @@
 const allowedDisplays = ['main', 'match', 'score']
-const allowedStyles = ['default', 'thury2014', 'saintomer2017', 'welland2018', 'saintomer2022']
+const allowedStyles = ['default', 'thury2014', 'saintomer2017', 'welland2018', 'saintomer2022', 'saintomer2022b']
 const allowedLangs = ['en', 'fr']
 const allowedZones = ['club', 'inter']
 const allowedModes = ['full', 'only', 'events', 'static']
