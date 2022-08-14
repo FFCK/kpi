@@ -12,6 +12,9 @@
       <option value="fr">
         Français
       </option>
+      <option value="es">
+        Español
+      </option>
     </select>
   </form>
 </template>
