@@ -9,8 +9,8 @@
                     <thead>
                         <tr class="text-center">
                             <th colspan="9" class="text-center bg-primary text-white" width="100%">
-                                {if $lang == 'fr'}{$arrayDates[i].date_fr}{else}{$arrayDates[i].date}{/if} -
-                                {$categorie}{if $Pg} - Page {$Pg}{/if}</th>
+                                {if $lang == 'fr'}{$arrayDates[i].date_fr}{else}{$arrayDates[i].date}{/if}
+                                {if $codeCompet != ''} - {$categorie}{/if}{if $Pg} - Page {$Pg}{/if}</th>
                         </tr>
                         <tr>
                             <th>#</th>
@@ -27,8 +27,8 @@
                     <tbody>
                         {section name=j loop=$arrayMatchs}
                             {if $smarty.section.j.iteration >= $start
-                                                                                        && ($len <= 0 or $smarty.section.j.iteration <= $len)
-                                                                                        && $arrayMatchs[j].Date_EN == $arrayDates[i].date}
+                                                                                                                        && ($len <= 0 or $smarty.section.j.iteration <= $len)
+                                                                                                                        && $arrayMatchs[j].Date_EN == $arrayDates[i].date}
                             {assign var='Heure' value=$arrayMatchs[j].Heure_match}
                             {assign var='Match1' value=$arrayMatchs[j]}
                             {assign var='validation1' value=$Match1.Validation}
