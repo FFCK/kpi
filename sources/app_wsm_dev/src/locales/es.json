@@ -1,0 +1,49 @@
+{
+  "status": {
+    "Offline": "No está usted conectado !"
+  },
+  "nav": {
+    "Home": "Acogida",
+    "Manager": "Administrador",
+    "Faker": "Faker",
+    "Stats": "Stats",
+    "Account": "Cuenta"
+  },
+  "Login": {
+    "Authentication": "Autentificación",
+    "Login": "Identificador",
+    "LoginHelp": "Introduzca el número de licencia",
+    "Password": "Contraseña",
+    "Submit": "Conexión",
+    "EmptyMsg": "Identificador y contraseña requeridos !",
+    "UnauthorizedMsg": "Conexión denegada !",
+    "ErrorMsg": "Error durante la autentificación !",
+    "Welcome": "Bienvenida",
+    "Logout": "Desconexión"
+  },
+  "AddToHomeScreen": {
+    "message": "Añadir al escritorio en la pantalla de acogida.",
+    "Dismiss": "Denegar",
+    "Install": "Instalar"
+  },
+  "Update": {
+    "Message": "Actualización disponible",
+    "Button": "Aplicar ahira !"
+  },
+  "Event": "Acontecimiento",
+  "Pitches": "Terrenos",
+  "Pitch": "Terreno",
+  "Team": "Equipo",
+  "Pass": "Pase",
+  "Shot": "Tiro",
+  "Stop": "Parada",
+  "Neutral": "Neutro",
+  "Kickoff": "Comprom.",
+  "Kickoff_won": "Compromiso ganado",
+  "Kickoff_lost": "Compromiso perdido",
+  "Shot_on": "Tiro cuadrado",
+  "Shot_off": "Tiro no cuadrado",
+  "Shot_stop": "Parada",
+  "Pass_possession": "Pase / Posesión",
+  "Neutral_ball": "Pelota neutral"
+}
