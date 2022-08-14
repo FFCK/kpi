@@ -193,6 +193,7 @@ class PdfListeMatchs extends MyPage
         $pdf->Cell(273, 6, "Game list", 0, 1, 'C');
         $pdf->Ln(3);
         foreach ($resultarray as $key => $row) {
+            $EquipesAffectAuto = ['', '', '', ''];
             if ($row['Soustitre2'] != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
             }
@@ -308,7 +309,7 @@ class PdfListeMatchs extends MyPage
                         $findeligne = 0;
                     }
                     //                    echo '<pre>' . var_dump($tab_terrain) . '</pre>';
-                    if (isset($tab_terrain[$i])) {
+                    if (isset($tab_terrain[$i]) && $tab_terrain[$i][0]['Phase'] !== 'Break') {
                         $pdf->Cell(7, 5, $tab_terrain[$i][0]['Numero_ordre'], 1, 0, 'C', 1);
                         $pdf->Cell(14, 5, $tab_terrain[$i][0]['Code_competition'], 1, 0, 'C');
 
@@ -339,7 +340,7 @@ class PdfListeMatchs extends MyPage
 
 
         $pdf->Cell(271, 3, '', 'T', '1', 'C');
-        $pdf->Output('GameList' . '.pdf', 'I');
+        $pdf->Output('GameList.pdf', 'I');
     }
 }
 

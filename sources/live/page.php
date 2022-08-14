@@ -143,7 +143,8 @@ class MyPage
       'thury2014',
       'saintomer2017',
       'welland2018',
-      'saintomer2022'
+      'saintomer2022',
+      'saintomer2022b'
     ])) {
       return '<link href="./css/' . $css . '.css?v=' . NUM_VERSION . '" rel="stylesheet">';
     }
