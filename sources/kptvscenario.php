@@ -21,11 +21,12 @@ class Scenario extends MyPageSecure
         $sql  = "SELECT * 
             FROM kp_tv 
             WHERE Voie > :scenario 
-            AND Voie < :scenario + 100 
+            AND Voie < :scenario2 + 100 
             ORDER BY Voie ";
         $result = $myBdd->pdo->prepare($sql);
         $result->execute(array(
-            ':scenario' => $scenario
+            ':scenario' => $scenario,
+            ':scenario2' => $scenario
         ));
         while ($row = $result->fetch()) {
             $arrayScenes[] = $row;
