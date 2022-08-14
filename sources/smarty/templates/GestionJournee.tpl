@@ -171,10 +171,16 @@
 												<Option Value="{$arrayEquipeA[i].Id}" {$arrayEquipeA[i].Selection}>
 													{$arrayEquipeA[i].Libelle}
 
+
+
 															{if $arrayEquipeA[i].Poule != ''}{$arrayEquipeA[i].Poule|string_format:" (%s)"|default:""}
+
+
 
 															{/if}
 												</Option>
+
+
 
 
 														{/section}
@@ -196,8 +202,12 @@
 											<Option Value="-1"></Option>
 
 
+
+
 														{section name=i loop=$arrayArbitre}
 												<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
+
+
 
 
 														{/section}
@@ -207,8 +217,12 @@
 											<Option Value="-1"></Option>
 
 
+
+
 														{section name=i loop=$arrayArbitreEquipes}
 												<Option Value="{$arrayArbitreEquipes[i].Matric}">{$arrayArbitreEquipes[i].Identite}</Option>
+
+
 
 
 														{/section}
@@ -227,18 +241,26 @@
 											<option Value="*" Selected>--- {#Selectionnez#} --- ({#OBLIGATOIRE#})</Option>
 
 
+
+
 														{section name=i loop=$arrayJourneesAutorisees}
+
+
 
 
 															{if $idCurrentJournee eq $arrayJourneesAutorisees[i].Id}
 
 
+
+
 																{if $arrayJourneesAutorisees[i].Code_typeclt == 'CP'}
 														<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
 															data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}" Selected>
 															{$arrayJourneesAutorisees[i].Code_competition} -
 															{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
 															{$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}</option>
+
+
 
 
 																{else}
@@ -249,18 +271,26 @@
 															{$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}</option>
 
 
+
+
 																{/if}
+
+
 
 
 															{else}
 
 
+
+
 																{if $arrayJourneesAutorisees[i].Code_typeclt == 'CP'}
 														<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
 															data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}">
 															{$arrayJourneesAutorisees[i].Code_competition} -
 															{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
 															{$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}</option>
+
+
 
 
 																{else}
@@ -271,10 +301,16 @@
 															{$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}</option>
 
 
+
+
 																{/if}
 
 
+
+
 															{/if}
+
+
 
 
 														{/section}
@@ -288,9 +324,9 @@
 													<br>
 													<input type="text" size="10" class='date' name="Date_match" value="{$Date_match}" tabindex="3"
 														onfocus="displayCalendar(document.forms[0].Date_match,
-																{if $lang=='en'}'yyyy-mm-dd'
-																{else}'dd/mm/yyyy'
-																	{/if},this)">
+																				{if $lang=='en'}'yyyy-mm-dd'
+																				{else}'dd/mm/yyyy'
+																							{/if},this)">
 														</td>
 														<td>
 															<label for="Heure_match">{#Heure#}</label>
@@ -315,17 +351,25 @@
 													<Option Value="-1">---</Option>
 
 
-																		{section name=i loop=$arrayEquipeB}
+
+
+																								{section name=i loop=$arrayEquipeB}
 														<Option Value="{$arrayEquipeB[i].Id}" {$arrayEquipeB[i].Selection}>
 															{$arrayEquipeB[i].Libelle}
 
-																			{if $arrayEquipeB[i].Poule != ''}{$arrayEquipeB[i].Poule|string_format:" (%s)"|default:""}
 
-																			{/if}
+
+																									{if $arrayEquipeB[i].Poule != ''}{$arrayEquipeB[i].Poule|string_format:" (%s)"|default:""}
+
+
+
+																									{/if}
 														</Option>
 
 
-																		{/section}
+
+
+																								{/section}
 												</select>
 												<label for="coeffB">Coef.</label>
 												<input size="1" type="text" name="coeffB" value="{$coeffB|default:'1'}" tabindex="11" />
@@ -344,25 +388,33 @@
 													<Option Value="-1"></Option>
 
 
-																		{section name=i loop=$arrayArbitre}
+
+
+																								{section name=i loop=$arrayArbitre}
 														<Option Value="{$arrayArbitre[i].Matric}">{$arrayArbitre[i].Identite}</Option>
 
 
-																		{/section}
+
+
+																								{/section}
 												</select>
 												<label for="comboarbitre2b">{#Equipe#}</label>
 												<select class="combolong" name="comboarbitre2b" id="comboarbitre2b" tabindex="13">
 													<Option Value="-1"></Option>
 
 
-																		{section name=i loop=$arrayArbitreEquipes}
+
+
+																								{section name=i loop=$arrayArbitreEquipes}
 														<Option Value="{$arrayArbitreEquipes[i].Matric}">{$arrayArbitreEquipes[i].Identite}</Option>
 
 
-																		{/section}
+
+
+																								{/section}
 												</select>
 												{*								<a href="#" id='rechercheArbitre2'><img height="16" src="../img/glyphicons-28-search.png" alt="Recherche Licencié" title="Recherche Licencié" align=absmiddle /></a>
-						*}
+														*}
 											</td>
 										</tr>
 										<tr class="hideTr">
@@ -372,8 +424,8 @@
 											<td align="center" colspan=2>
 												<input type="button" onclick="Add();" id="addMatch" name="addMatch" value="{#Ajouter#}" tabindex="16">
 												<input type="button" 
-																		{if $idMatch eq '-1'} disabled 
-																		{/if} onclick="Update();" id="updateMatch"
+																								{if $idMatch eq '-1'} disabled 
+																								{/if} onclick="Update();" id="updateMatch"
 													name="updateMatch" value="{#Modifier#}" tabindex="17">
 												<input type="button" onclick="Raz();" id="razMatch" name="razMatch" value="{#Annuler#}" tabindex="18">
 											</td>
@@ -388,7 +440,9 @@
 								</div>
 
 
-																	{/if}
+
+
+																							{/if}
 							<div class='blocMiddle'>
 								<table width=100%>
 									<tr>
@@ -404,7 +458,9 @@
 														src="../img/glyphicons-155-more-windows.png" title="{#Aucun#}" /></a>
 
 
-																	{if $profile <= 6 && $AuthModif == 'O'}
+
+
+																							{if $profile <= 6 && $AuthModif == 'O'}
 													<a href="#" {$TropDeMatchs} onclick="RemoveCheckboxes('formJournee', 'checkMatch')"
 														title="{#Supprimer#} {$TropDeMatchsMsg}"><img height="25" src="../img/glyphicons-17-bin.png" /></a>
 													<a href="#" {$TropDeMatchs}
@@ -412,7 +468,9 @@
 														title="{#Publier#} {$TropDeMatchsMsg}"><img height="25" src="../img/oeil2.gif" /></a>
 
 
-																		{if $profile <= 4 && $AuthModif == 'O'}
+
+
+																								{if $profile <= 4 && $AuthModif == 'O'}
 														<a href="#" {$TropDeMatchs}
 															onclick="SelectedCheckboxes('formJournee', 'checkMatch');verrouPubliMultiMatchs();"
 															title="{#Verrouiller_Publier#} {$TropDeMatchsMsg}"><img height="25"
@@ -422,7 +480,9 @@
 															title="{#Verrouiller#} {$TropDeMatchsMsg}"><img height="25" src="../img/verrou2.gif" /></a>
 
 
-																		{/if}
+
+
+																								{/if}
 													<a href="#" {$TropDeMatchs}
 														onclick="SelectedCheckboxes('formJournee', 'checkMatch');affectMultiMatchs();"
 														title="{#Affectation_auto#} {$TropDeMatchsMsg}"><img height="25" src="../img/AffectAuto.gif" /></a>
@@ -436,20 +496,26 @@
 															border="0"></a>
 
 
-																	{/if}
+
+
+																							{/if}
 												<a href="#" {$TropDeMatchs}
 													onclick="SelectedCheckboxes('formJournee', 'checkMatch'); this.href='FeuilleMatchMulti.php?listMatch='+document.formJournee.ParamCmd.value;"
 													Target="_blank" title="{#Feuilles_marque#} {$TropDeMatchsMsg}"><img height="25"
 														src="../img/pdf2.png" /></a>
 
 
-																	{if $profile <= 2 && $AuthModif == 'O'}
+
+
+																							{if $profile <= 2 && $AuthModif == 'O'}
 													<a id="numMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="numMultiMatchs();"
 														title="{#Renumeroter_les_matchs#} {$TropDeMatchsMsg}"><img height="25" src="../img/numMatchs.png"
 															border="0"></a>
 
 
-																	{/if}
+
+
+																							{/if}
 											</fieldset>
 										</td>
 										<td width=520>
@@ -474,16 +540,24 @@
 													title="Public Game list (EN) {$TropDeMatchsMsg}"><img height="25" src="../img/ListeEN.gif" /></a>
 
 
-																	{if $profile <= 2}
+
+
+																							{if $profile <= 2}
 													&nbsp;
 													<a href="../PdfListeMatchs4TerrainsEn.php" {$TropDeMatchs} Target="_blank"
-														title="All games in one table (EN) {$TropDeMatchsMsg}"><img height="25" src="../img/Liste.gif" /></a>
+														title="All games in one table (Teams) {$TropDeMatchsMsg}">
+														<img height="25" src="../img/Liste.gif" />
+													</a>
 													&nbsp;
-													<a href="../fpmatchs.php" {$TropDeMatchs} Target="_blank" title="FullPage {$TropDeMatchsMsg}"><img
-															height="25" src="../img/Liste.gif" /></a>
+													<a href="../PdfListeMatchs4TerrainsEn2.php" {$TropDeMatchs} Target="_blank"
+														title="All games in one table (Phases) {$TropDeMatchsMsg}">
+														<img height="25" src="../img/Liste.gif" />
+													</a>
 
 
-																	{/if}
+
+
+																							{/if}
 											</fieldset>
 										</td>
 										<td>
@@ -491,11 +565,15 @@
 											<span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach' size='5'>
 
 
-																	{if $profile <= 2}
+
+
+																							{if $profile <= 2}
 												<span id='reachspan2'><i>{#Surligner#}:</i></span><input type=text name='reach2' id='reach2' size='5'>
 
 
-																	{/if}
+
+
+																							{/if}
 										</td>
 									</tr>
 								</table>
@@ -513,17 +591,23 @@
 												<th>Cat.</th>
 
 
-																	{if $PhaseLibelle == 1}
+
+
+																							{if $PhaseLibelle == 1}
 													<th>{#Phase#}</th>
 													<th>{#Code#}</th>
 
 
-																	{else}
+
+
+																							{else}
 													<th>{#Code#}</th>
 													<th>{#Lieu#}</th>
 
 
-																	{/if}
+
+
+																							{/if}
 												<th>{#Type#}</th>
 												<th>{#Terr#}</th>
 												<th>{#Equipe#} A</th>
@@ -540,21 +624,27 @@
 										<tbody>
 
 
-																	{section name=i loop=$arrayMatchs}
+
+
+																							{section name=i loop=$arrayMatchs}
 												<tr class='
 
-																		{cycle values="impair,pair"} {$arrayMatchs[i].StdOrSelected}'>
+
+
+																								{cycle values="impair,pair"} {$arrayMatchs[i].StdOrSelected}'>
 													<td><input type="checkbox" name="checkMatch" value="{$arrayMatchs[i].Id}"
 															id="checkDelete{$smarty.section.i.iteration}"></td>
 
 
-																		{if $arrayMatchs[i].MatchAutorisation == 'O' && $profile <= 6 && $AuthModif == 'O'}
+
+
+																								{if $arrayMatchs[i].MatchAutorisation == 'O' && $profile <= 6 && $AuthModif == 'O'}
 														<td class='color{$arrayMatchs[i].Publication}2'>
 															<img class="publiMatch" data-valeur="{$arrayMatchs[i].Publication}" data-id="{$arrayMatchs[i].Id}"
 																height="25" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" title="
-																				{if $arrayMatchs[i].Publication == 'O'}{#Public#}
-																				{else}{#Prive#}
-																					{/if}" />
+																														{if $arrayMatchs[i].Publication == 'O'}{#Public#}
+																														{else}{#Prive#}
+																																	{/if}" />
 									</td>
 
 									{if $arrayMatchs[i].Validation != 'O'}
@@ -575,8 +665,8 @@
 									<td><span class='directInput date
 																{if $lang=='en'}EN
 																{/if}' Id="Date_match-{$arrayMatchs[i].Id}-date
-																						{if $lang=='en'}EN
-																							{/if}"
+																																		{if $lang=='en'}EN
+																																					{/if}"
 											tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
 										<span class='directInput heure' Id="Heure_match-{$arrayMatchs[i].Id}-time"
 											tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span>
@@ -602,15 +692,15 @@
 									{/if}
 									<td><img class="typeMatch" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}"
 											src="../img/type{$arrayMatchs[i].Type}.png" title="
-																							{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
-																							{else}{#Match_eliminatoire#}
-																							{/if}" height="23"></td>
+																																					{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
+																																					{else}{#Match_eliminatoire#}
+																																					{/if}" height="23"></td>
 									<td><span class='directInput terrain' tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}4"
 											Id="Terrain-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 									<td>
 										<span class="directInput equipe
-																							{if $arrayMatchs[i].Id_equipeA < 1} undefTeam
-																								{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
+																																					{if $arrayMatchs[i].Id_equipeA < 1} undefTeam
+																																								{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
 											Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}"
 											data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}"
 											data-equipe="A">
@@ -627,9 +717,9 @@
 										{if $profile <= 6 && $AuthModif == 'O'}
 										<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}"
 											height="25" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="
-																									{if $arrayMatchs[i].Validation == 'O'}{#Verrouille#}
-																									{else}{#Deverrouille#}
-																										{/if}" />
+																																									{if $arrayMatchs[i].Validation == 'O'}{#Verrouille#}
+																																									{else}{#Deverrouille#}
+																																												{/if}" />
 
 										{else}
 										<img height="25" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif"
@@ -663,8 +753,8 @@
 											Id="ScoreB-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].ScoreB}</span></td>
 									<td>
 										<span class="directInput equipe
-																									{if $arrayMatchs[i].Id_equipeB < 1} undefTeam
-																									{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
+																																											{if $arrayMatchs[i].Id_equipeB < 1} undefTeam
+																																											{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
 											Id="EquipeB-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}"
 											data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeB}"
 											data-equipe="B">{$arrayMatchs[i].EquipeB}</span>
@@ -674,16 +764,18 @@
 									</td>
 									<td>
 										<span class="directInput arbitre
-																									{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb
-																									{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_principal"
-											data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}"
+																																											{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb
+																																											{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6"
+											data-id="Arbitre_principal" data-match="{$arrayMatchs[i].Id}"
+											data-journee="{$arrayMatchs[i].Id_journee}"
 											Id="Arbitre_principal-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_principal|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 									</td>
 									<td>
 										<span class="directInput arbitre
-																									{if $arrayMatchs[i].Arbitre_secondaire != '-1' && $arrayMatchs[i].Matric_arbitre_secondaire == 0} pbArb
-																										{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_secondaire"
-											data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}"
+																																											{if $arrayMatchs[i].Arbitre_secondaire != '-1' && $arrayMatchs[i].Matric_arbitre_secondaire == 0} pbArb
+																																														{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6"
+											data-id="Arbitre_secondaire" data-match="{$arrayMatchs[i].Id}"
+											data-journee="{$arrayMatchs[i].Id_journee}"
 											Id="Arbitre_secondaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_secondaire|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 									</td>
 									<td>
@@ -714,8 +806,8 @@
 									<td><span class='directInputOff date
 																{if $lang=='en'}EN
 																{/if}' Id="Date_match-{$arrayMatchs[i].Id}-date
-																										{if $lang=='en'}EN
-																											{/if}"
+																																														{if $lang=='en'}EN
+																																																	{/if}"
 											tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">{$arrayMatchs[i].Date_match}</span><br>
 										<span class='directInputOff heure' Id="Heure_match-{$arrayMatchs[i].Id}-time"
 											tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}2">{$arrayMatchs[i].Heure_match}</span>
@@ -741,15 +833,15 @@
 									{/if}
 									<td><img class="typeMatchOff" data-valeur="{$arrayMatchs[i].Type}" data-id="{$arrayMatchs[i].Id}"
 											src="../img/type{$arrayMatchs[i].Type}.png" title="
-																											{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
-																											{else}{#Match_eliminatoire#}
-																											{/if}" height="23"></td>
+																																																	{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
+																																																	{else}{#Match_eliminatoire#}
+																																																	{/if}" height="23"></td>
 									<td><span class='directInputOff terrain' tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}4"
 											Id="Terrain-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Terrain|default:'&nbsp;'}</span></td>
 									<td>
 										<span class="directInputOff equipe
-																											{if $arrayMatchs[i].Id_equipeA < 1} undefTeam
-																												{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
+																																																	{if $arrayMatchs[i].Id_equipeA < 1} undefTeam
+																																																				{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
 											Id="EquipeA-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}"
 											data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeA}"
 											data-equipe="A">{$arrayMatchs[i].EquipeA}</span>
@@ -764,9 +856,9 @@
 										{if $profile <= 6 && $AuthModif == 'O'}
 										<img class="verrouMatch" data-valeur="{$arrayMatchs[i].Validation}" data-id="{$arrayMatchs[i].Id}"
 											height="25" src="../img/verrou2{$arrayMatchs[i].Validation}.gif" title="
-																													{if $arrayMatchs[i].Validation == 'O'}{#Verrouille#}
-																													{else}{#Deverrouille#}
-																														{/if}" />
+																																																					{if $arrayMatchs[i].Validation == 'O'}{#Verrouille#}
+																																																					{else}{#Deverrouille#}
+																																																								{/if}" />
 
 										{else}
 										<img height="24" src="../img/verrou2{$arrayMatchs[i].Validation|default:'N'}.gif"
@@ -800,8 +892,8 @@
 											Id="ScoreB-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].ScoreB}</span></td>
 									<td>
 										<span class="directInputOff equipe
-																													{if $arrayMatchs[i].Id_equipeB < 1} undefTeam
-																													{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
+																																																							{if $arrayMatchs[i].Id_equipeB < 1} undefTeam
+																																																							{/if}" tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}9"
 											Id="EquipeB-{$arrayMatchs[i].Id}-text" data-match="{$arrayMatchs[i].Id}"
 											data-journee="{$arrayMatchs[i].Id_journee}" data-idequipe="{$arrayMatchs[i].Id_equipeB}"
 											data-equipe="B">{$arrayMatchs[i].EquipeB}</span>
@@ -811,16 +903,18 @@
 									</td>
 									<td>
 										<span class="directInputOff arbitre
-																													{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb
-																													{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_principal"
-											data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}"
+																																																							{if $arrayMatchs[i].Arbitre_principal != '-1' && $arrayMatchs[i].Matric_arbitre_principal == 0} pbArb
+																																																							{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6"
+											data-id="Arbitre_principal" data-match="{$arrayMatchs[i].Id}"
+											data-journee="{$arrayMatchs[i].Id_journee}"
 											Id="Arbitre_principal-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_principal|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 									</td>
 									<td>
 										<span class="directInputOff arbitre
-																													{if $arrayMatchs[i].Arbitre_secondaire != '-1' && $arrayMatchs[i].Matric_arbitre_secondaire == 0} pbArb
-																														{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6" data-id="Arbitre_secondaire"
-											data-match="{$arrayMatchs[i].Id}" data-journee="{$arrayMatchs[i].Id_journee}"
+																																																							{if $arrayMatchs[i].Arbitre_secondaire != '-1' && $arrayMatchs[i].Matric_arbitre_secondaire == 0} pbArb
+																																																										{/if}" tabindex="2{$smarty.section.i.iteration|string_format:'%02d'}6"
+											data-id="Arbitre_secondaire" data-match="{$arrayMatchs[i].Id}"
+											data-journee="{$arrayMatchs[i].Id_journee}"
 											Id="Arbitre_secondaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_secondaire|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 									</td>
 									<td>
@@ -838,9 +932,9 @@
 									{elseif $arrayMatchs[i].MatchAutorisation == 'O' && $profile == 9 && $AuthModif == 'O'}
 									<td>
 										<img height="24" src="../img/oeil2{$arrayMatchs[i].Publication|default:'N'}.gif" title="
-																													{if $arrayMatchs[i].Publication == 'O'}{#Public#}
-																													{else}{#Prive#}
-																														{/if}" border="0">
+																																																									{if $arrayMatchs[i].Publication == 'O'}{#Public#}
+																																																									{else}{#Prive#}
+																																																												{/if}" border="0">
 									</td>
 
 									{if $arrayMatchs[i].Validation != 'O'}
@@ -871,9 +965,9 @@
 
 									{/if}
 									<td><img src="../img/type{$arrayMatchs[i].Type}.png" title="
-																															{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
-																															{else}{#Match_eliminatoire#}
-																																{/if}" />
+																																																													{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
+																																																													{else}{#Match_eliminatoire#}
+																																																																{/if}" />
 									</td>
 									<td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
 									<td>
@@ -953,9 +1047,9 @@
 
 									{/if}
 									<td><img src="../img/type{$arrayMatchs[i].Type}.png" title="
-																																{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
-																																{else}{#Match_eliminatoire#}
-																																	{/if}" />
+																																																																{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
+																																																																{else}{#Match_eliminatoire#}
+																																																																			{/if}" />
 									</td>
 									<td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
 									<td>
@@ -1025,9 +1119,9 @@
 
 									{/if}
 									<td><img src="../img/type{$arrayMatchs[i].Type}.png" title="
-																																{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
-																																{else}{#Match_eliminatoire#}
-																																{/if}" />
+																																																																		{if $arrayMatchs[i].Type == 'C'}{#Match_de_classement#}
+																																																																		{else}{#Match_eliminatoire#}
+																																																																		{/if}" />
 									</td>
 									<td>{$arrayMatchs[i].Terrain|default:'&nbsp;'}</td>
 									<td>
