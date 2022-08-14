@@ -61,7 +61,8 @@
                   btn: true,
                   'btn-sm': true,
                   'text-light': true,
-                  'btn-secondary': [0, 3, 6, 7].includes(btnMode),
+                  'btn-secondary': [0, 3, 6, 7, 8].includes(btnMode),
+                  'btn-outline-secondary': btnMode === 9,
                   'btn-success': btnMode === 1,
                   'btn-danger': btnMode === 2,
                   'btn-primary': btnMode === 4,
@@ -83,7 +84,8 @@
                   'btn-sm': true,
                   'text-light': true,
                   'm-1': true,
-                  'btn-secondary': [0, 3, 6, 7].includes(btnMode),
+                  'btn-secondary': [0, 3, 6, 7, 8].includes(btnMode),
+                  'btn-outline-secondary': btnMode === 9,
                   'btn-success': btnMode === 1,
                   'btn-danger': btnMode === 2,
                   'btn-primary': btnMode === 4,
@@ -104,7 +106,8 @@
                   btn: true,
                   'btn-sm': true,
                   'text-light': true,
-                  'btn-secondary': [0, 2, 4, 5].includes(btnMode),
+                  'btn-secondary': [0, 2, 4, 5, 9].includes(btnMode),
+                  'btn-outline-secondary': btnMode === 8,
                   'btn-success': btnMode === 1,
                   'btn-danger': btnMode === 3,
                   'btn-primary': btnMode === 6,
@@ -126,7 +129,8 @@
                   'btn-sm': true,
                   'text-light': true,
                   'm-1': true,
-                  'btn-secondary': [0, 2, 4, 5].includes(btnMode),
+                  'btn-secondary': [0, 2, 4, 5, 9].includes(btnMode),
+                  'btn-outline-secondary': btnMode === 8,
                   'btn-success': btnMode === 1,
                   'btn-danger': btnMode === 3,
                   'btn-primary': btnMode === 6,
@@ -142,62 +146,6 @@
       </div>
 
       <div class="row mt-1 g-1">
-        <div class="d-grid col-3">
-          <button
-            :title="$t('Kickoff_won')"
-            :class="{
-              btn: true,
-              'btn-sm': true,
-              'btn-outline-success': btnMode !== 1,
-              'btn-success': btnMode === 1
-            }"
-            :disabled="btnMode >= 4 && btnMode <= 7"
-            @click="btnMode = 1">
-            {{ $t("Kickoff") }} <i class="bi bi-emoji-sunglasses"></i>
-          </button>
-        </div>
-        <div class="d-grid col-3">
-          <button
-            :title="$t('Kickoff_lost')"
-            :class="{
-              btn: true,
-              'btn-sm': true,
-              'btn-outline-danger': btnMode !== 2,
-              'btn-danger': btnMode === 2
-            }"
-            :disabled="btnMode !== 2"
-            @click="btnMode = 2">
-            {{ $t("Kickoff") }} <i class="bi bi-emoji-frown"></i>
-          </button>
-        </div>
-        <div class="d-grid col-3">
-          <button
-            :title="$t('Kickoff_lost')"
-            :class="{
-              btn: true,
-              'btn-sm': true,
-              'btn-outline-danger': btnMode !== 3,
-              'btn-danger': btnMode === 3
-            }"
-            :disabled="btnMode !== 3"
-            @click="btnMode = 3">
-            {{ $t("Kickoff") }} <i class="bi bi-emoji-frown"></i>
-          </button>
-        </div>
-        <div class="d-grid col-3">
-          <button
-            :title="$t('Kickoff_won')"
-            :class="{
-              btn: true,
-              'btn-sm': true,
-              'btn-outline-success': btnMode !== 1,
-              'btn-success': btnMode === 1
-            }"
-            :disabled="btnMode >= 4 && btnMode <= 7"
-            @click="btnMode = 1">
-            {{ $t("Kickoff") }} <i class="bi bi-emoji-sunglasses"></i>
-          </button>
-        </div>
 
         <div class="d-grid col-3">
           <button
@@ -262,12 +210,12 @@
             :class="{
               btn: true,
               'btn-sm': true,
-              'btn-outline-secondary': btnMode > 0,
-              'btn-secondary': btnMode === 0
+              'btn-outline-secondary': btnMode > 0 && btnMode !== 8,
+              'btn-secondary': btnMode === 0 || btnMode === 8
             }"
             :disabled="btnMode > 0 && btnMode < 4"
             @click="btnMode = 0">
-            {{ $t("Pass") }}
+            {{ $t("Pass_possession") }}
           </button>
         </div>
         <div class="d-grid col-2">
@@ -284,12 +232,69 @@
             :class="{
               btn: true,
               'btn-sm': true,
-              'btn-outline-secondary': btnMode > 0,
-              'btn-secondary': btnMode === 0
+              'btn-outline-secondary': btnMode > 0 && btnMode !== 9,
+              'btn-secondary': btnMode === 0 || btnMode === 9
             }"
             :disabled="btnMode > 0 && btnMode < 4"
             @click="btnMode = 0">
-            {{ $t("Pass") }}
+            {{ $t("Pass_possession") }}
+          </button>
+        </div>
+
+        <div class="d-grid col-3">
+          <button
+            :title="$t('Kickoff_won')"
+            :class="{
+              btn: true,
+              'btn-sm': true,
+              'btn-outline-success': btnMode !== 1,
+              'btn-success': btnMode === 1
+            }"
+            :disabled="btnMode >= 4 && btnMode <= 7"
+            @click="btnMode = 1">
+            {{ $t("Kickoff") }} <i class="bi bi-emoji-sunglasses"></i>
+          </button>
+        </div>
+        <div class="d-grid col-3">
+          <button
+            :title="$t('Kickoff_lost')"
+            :class="{
+              btn: true,
+              'btn-sm': true,
+              'btn-outline-danger': btnMode !== 2,
+              'btn-danger': btnMode === 2
+            }"
+            :disabled="btnMode !== 2"
+            @click="btnMode = 2">
+            {{ $t("Kickoff") }} <i class="bi bi-emoji-frown"></i>
+          </button>
+        </div>
+        <div class="d-grid col-3">
+          <button
+            :title="$t('Kickoff_lost')"
+            :class="{
+              btn: true,
+              'btn-sm': true,
+              'btn-outline-danger': btnMode !== 3,
+              'btn-danger': btnMode === 3
+            }"
+            :disabled="btnMode !== 3"
+            @click="btnMode = 3">
+            {{ $t("Kickoff") }} <i class="bi bi-emoji-frown"></i>
+          </button>
+        </div>
+        <div class="d-grid col-3">
+          <button
+            :title="$t('Kickoff_won')"
+            :class="{
+              btn: true,
+              'btn-sm': true,
+              'btn-outline-success': btnMode !== 1,
+              'btn-success': btnMode === 1
+            }"
+            :disabled="btnMode >= 4 && btnMode <= 7"
+            @click="btnMode = 1">
+            {{ $t("Kickoff") }} <i class="bi bi-emoji-sunglasses"></i>
           </button>
         </div>
       </div>
@@ -494,7 +499,10 @@ export default {
     action (team, player) {
       switch (this.btnMode) {
         case 0:
-          this.submit(this.game['equipe' + team].id, player, 'pass')
+        case 8:
+        case 9:
+          this.submit(this.game['equipe' + team].id, player, 'possession')
+          this.btnMode = (team === 1) ? 8 : 9
           break
         case 1:
           this.submit(this.game['equipe' + team].id, player, 'kickoff')

@@ -205,7 +205,7 @@ function PutStatsController($route, $params)
 {
   $data = json_decode(file_get_contents('php://input'));
 
-  if (!in_array($data->action, ['pass', 'kickoff', 'kickoff-ko', 'shot-in', 'shot-out', 'shot-stop'])) {
+  if (!in_array($data->action, ['pass', 'possession', 'kickoff', 'kickoff-ko', 'shot-in', 'shot-out', 'shot-stop'])) {
     return_401();
   }
 
