@@ -242,7 +242,7 @@ class Matchs extends MyPage
         if ($lstJournee != '') {
             $selected = '';
             // Ordre des Matchs 
-            $orderMatchs = 'ORDER BY j.Code_competition, m.Date_match, m.Heure_match, m.Terrain';
+            $orderMatchs = 'ORDER BY m.Date_match, m.Heure_match, m.Terrain';
 
             // Chargement des Matchs des journées ...
             $sql  = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, m.Terrain, 
