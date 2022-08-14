@@ -11,7 +11,7 @@ class Matchs extends MyPage
     {
         $myBdd = new MyBdd();
 
-        $codeCompetGroup = utyGetGet('Group', 'N1H');
+        $codeCompetGroup = utyGetGet('Group', '');
         $Compets = utyGetGet('Compets', '');
         $event = utyGetGet('event', 0);
         $this->m_tpl->assign('group', $codeCompetGroup);
@@ -34,9 +34,10 @@ class Matchs extends MyPage
             $sql = "SELECT DISTINCT(j.Code_competition), j.Code_saison 
                 FROM kp_journee j, kp_evenement_journee ej 
                 WHERE j.Id = ej.Id_journee 
-                AND ej.Id_evenement = ? ";
+                AND ej.Id_evenement = ? 
+                AND j.Code_competition LIKE ? ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array($event));
+            $result->execute(array($event, '%' . $codeCompet));
             while ($row = $result->fetch()) {
                 if ($Compets != '') {
                     $Compets .= ',';
@@ -119,10 +120,12 @@ class Matchs extends MyPage
             FROM kp_competition 
             WHERE Code_saison = $codeSaison 
             AND (Publication='O' OR Code_ref = 'M') ";
-        if ($Compets == '') {
+        if ($Compets == '' & $codeCompetGroup != '') {
             $sql .= "AND Code_ref = '$codeCompetGroup' ";
-        } else {
+        } elseif ($Compets != '') {
             $sql .= "AND Code IN ($Compets) ";
+        } else {
+            $sql .= "AND Code = '$codeCompet' ";
         }
         $sql .= "ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code ";
         $listCompet = '';
@@ -199,14 +202,15 @@ class Matchs extends MyPage
                 FROM kp_journee j, kp_competition c, kp_evenement_journee ej 
                 WHERE ej.Id_journee = j.Id 
                 AND ej.Id_evenement = ? 
-                AND j.Code_saison = ?  
+                AND j.Code_saison = ?
+                AND c.Code LIKE ?
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O'
                 AND j.Phase != 'Break'
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array($event, $codeSaison));
+            $result->execute(array($event, $codeSaison, '%' . $codeCompet));
         } else {
             $sql = "SELECT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, j.Lieu, j.Date_debut 
                 FROM kp_journee j, kp_competition c 
