@@ -124,6 +124,8 @@ jq(document).ready(function () {
                 jq('#competition-col, #round-col').show()
                 break
             case 'frame_details':
+            case 'frame_stats':
+            case 'frame_classement':
                 jq('#competition-col').show()
                 break
             case 'frame_team':
@@ -499,6 +501,8 @@ jq(document).ready(function () {
                 jq('#competition-col2, #round-col2').show()
                 break
             case 'frame_details':
+            case 'frame_stats':
+            case 'frame_classement':
                 jq('#competition-col2').show()
                 break
             case 'frame_team':
@@ -836,6 +840,8 @@ jq(document).ready(function () {
                 jq('#competition-col3, #round-col3').show()
                 break
             case 'frame_details':
+            case 'frame_stats':
+            case 'frame_classement':
                 jq('#competition-col3').show()
                 break
             case 'frame_team':
@@ -1173,6 +1179,8 @@ jq(document).ready(function () {
                 jq('#competition-col4, #round-col4').show()
                 break
             case 'frame_details':
+            case 'frame_stats':
+            case 'frame_classement':
                 jq('#competition-col4').show()
                 break
             case 'frame_team':
