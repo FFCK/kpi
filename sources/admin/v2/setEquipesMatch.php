@@ -1,15 +1,16 @@
-<?php 
+<?php
 // prevent direct access *****************************************************
-$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
-strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-if(!$isAjax) {
-  $user_error = 'Access denied - not an AJAX request...';
-  trigger_error($user_error, E_USER_ERROR);
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) and
+	strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if (!$isAjax) {
+	$user_error = 'Access denied - not an AJAX request...';
+	trigger_error($user_error, E_USER_ERROR);
 }
 // ***************************************************************************
-	
+
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
+include_once('../../live/create_cache_match.php');
 
 session_start();
 
@@ -27,7 +28,7 @@ $sql = "UPDATE kp_match
 	AND Validation != 'O' ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($idEquipe, $idMatch));
-	
+
 // Vidage compo
 $sql = "DELETE FROM kp_match_joueur 
 	WHERE Equipe = ? 
@@ -35,4 +36,7 @@ $sql = "DELETE FROM kp_match_joueur
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($Equipe, $idMatch));
 
-echo "OK"; 
+$cMatch = new CacheMatch($_GET);
+$cMatch->MatchGlobal($myBdd, $idMatch);
+
+echo "OK";

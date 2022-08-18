@@ -1,6 +1,7 @@
 <?php
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
+include_once('../live/create_cache_match.php');
 session_start();
 
 class initTitulaires
@@ -17,13 +18,13 @@ class initTitulaires
 			return;
 		}
 		if ($valeur == '*' ||  $valeur == '-1') {
-			echo 'Selectionnez une '.$champs;
+			echo 'Selectionnez une ' . $champs;
 			return;
 		}
 
 		$this->myBdd = new MyBdd();
 
-		switch($champs) {
+		switch ($champs) {
 			case 'Compet':
 				$this->initCompet($valeur);
 				break;
@@ -38,9 +39,10 @@ class initTitulaires
 				break;
 		}
 	}
-	
-			
-	function initCompet($valeur) {
+
+
+	function initCompet($valeur)
+	{
 		$myBdd = $this->myBdd;
 		$codeCompet = $valeur;
 		$codeSaison = $myBdd->GetActiveSaison();
@@ -54,7 +56,7 @@ class initTitulaires
 			AND a.Id_journee = b.Id 
 			AND b.Code_competition = ? 
 			AND b.Code_saison = ? ";
-			$arrayQuery = array($codeCompet, $codeSaison);
+		$arrayQuery = array($codeCompet, $codeSaison);
 		if ($lstJournee != -1) {
 			$arrayJournees = explode(',', $lstJournee);
 			$in = str_repeat('?,', count($arrayJournees) - 1) . '?';
@@ -64,14 +66,14 @@ class initTitulaires
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayQuery);
 		$num_results = $result->rowCount();
-		while ($row = $result->fetch()) {	
+		while ($row = $result->fetch()) {
 			$idMatch = $row['Id'];
 			$idEquipeA = $row['Id_equipeA'];
 			$idEquipeB = $row['Id_equipeB'];
 			$this->initMatch($idMatch, $idEquipeA, $idEquipeB);
 		}
 
-		$myBdd->utyJournal('MAJ titulaires compétition', $codeSaison, utyGetSession('codeCompet', ''), null, null, null, $num_results.' m.', utyGetSession('User') );
+		$myBdd->utyJournal('MAJ titulaires compétition', $codeSaison, utyGetSession('codeCompet', ''), null, null, null, $num_results . ' m.', utyGetSession('User'));
 		if ($_SESSION['lang'] == 'en') {
 			$resultGlobal = "Team rosters reassignment done for this competition, $num_results game(s) updated.";
 		} else {
@@ -94,14 +96,14 @@ class initTitulaires
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idJournee));
 		$num_results = $result->rowCount();
-		while ($row = $result->fetch()) {		
+		while ($row = $result->fetch()) {
 			$idMatch = $row['Id'];
 			$idEquipeA = $row['Id_equipeA'];
 			$idEquipeB = $row['Id_equipeB'];
 
 			$this->initMatch($idMatch, $idEquipeA, $idEquipeB);
 		}
-		$myBdd->utyJournal('MAJ titulaires journée', $codeSaison, utyGetSession('codeCompet', ''), null, $idJournee, null, $num_results.' m.', utyGetSession('User') );
+		$myBdd->utyJournal('MAJ titulaires journée', $codeSaison, utyGetSession('codeCompet', ''), null, $idJournee, null, $num_results . ' m.', utyGetSession('User'));
 		if ($_SESSION['lang'] == 'en') {
 			$resultGlobal = "Team rosters reassignment done for this gameday, $num_results game(s) updated.";
 		} else {
@@ -141,14 +143,14 @@ class initTitulaires
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute($arrayQuery);
 		$num_results = $result->rowCount();
-		while ($row = $result->fetch()) {		
+		while ($row = $result->fetch()) {
 			$idMatch = $row['Id'];
 			$idEquipeA = $row['Id_equipeA'];
 			$idEquipeB = $row['Id_equipeB'];
-			
+
 			$this->initMatch($idMatch, $idEquipeA, $idEquipeB, $idEquipe);
 		}
-		$myBdd->utyJournal('MAJ titulaires équipe', $codeSaison, utyGetSession('codeCompet', ''), null, null, null, 'J: '.$lstJournee.' - Eq: '.$idEquipe.' - '.$num_results.' m.', utyGetSession('User') );
+		$myBdd->utyJournal('MAJ titulaires équipe', $codeSaison, utyGetSession('codeCompet', ''), null, null, null, 'J: ' . $lstJournee . ' - Eq: ' . $idEquipe . ' - ' . $num_results . ' m.', utyGetSession('User'));
 		if ($_SESSION['lang'] == 'en') {
 			$resultGlobal = "Team rosters reassignment done for this team, $num_results game(s) updated.";
 		} else {
@@ -161,7 +163,7 @@ class initTitulaires
 	{
 		$myBdd = $this->myBdd;
 
-		try {  
+		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
@@ -171,7 +173,7 @@ class initTitulaires
 					AND Equipe = 'A' ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch));
-						
+
 				$sql = "REPLACE INTO kp_match_joueur 
 					SELECT ?, Matric, Numero, 'A', Capitaine 
 					FROM kp_competition_equipe_joueur 
@@ -187,7 +189,7 @@ class initTitulaires
 					AND Equipe = 'B' ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch));
-						
+
 				$sql = "REPLACE INTO kp_match_joueur 
 					SELECT ?, Matric, Numero, 'B', Capitaine 
 					FROM kp_competition_equipe_joueur 
@@ -198,6 +200,9 @@ class initTitulaires
 				$result->execute(array($idMatch, $idEquipeB));
 			}
 
+			$cMatch = new CacheMatch($_GET);
+			$cMatch->MatchGlobal($myBdd, $idMatch);
+
 			$myBdd->pdo->commit();
 		} catch (Exception $e) {
 			$myBdd->pdo->rollBack();
@@ -205,9 +210,7 @@ class initTitulaires
 
 			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 		}
-
 	}
-
 }
 
 $initTitulaires = new initTitulaires();
