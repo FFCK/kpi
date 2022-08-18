@@ -568,12 +568,13 @@ class GestionEquipe extends MyPageSecure
 						AND b.Numero = :EquipeNum 
 						AND b.Code_compet = :checkCompo1 
 						AND b.Code_saison = :checkCompo0 
-						AND :checkCompo0 - Year(e.Naissance) BETWEEN d.age_min AND d.age_max ";
+						AND :checkCompo2 - Year(e.Naissance) BETWEEN d.age_min AND d.age_max ";
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array(
 						':EquipeId' => $EquipeId,
 						':EquipeNum' => $EquipeNum,
 						':checkCompo1' => $checkCompo[1],
+						':checkCompo2' => $checkCompo[0],
 						':checkCompo0' => $checkCompo[0]
 					));
 				}

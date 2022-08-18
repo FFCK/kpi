@@ -1096,6 +1096,7 @@ class GestionJournee extends MyPageSecure
 
 	function InitTitulaire()
 	{
+		include_once('../live/create_cache_match.php');
 		$myBdd = $this->myBdd;
 
 		$idJournee = (int)utyGetPost('comboJournee', 0);
@@ -1147,6 +1148,9 @@ class GestionJournee extends MyPageSecure
 					AND Capitaine <> 'A' ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($idMatch, $idEquipeB));
+
+				$cMatch = new CacheMatch($_GET);
+				$cMatch->MatchGlobal($myBdd, $idMatch);
 
 				$myBdd->pdo->commit();
 			} catch (Exception $e) {
@@ -1285,6 +1289,7 @@ class GestionJournee extends MyPageSecure
 
 	function AffectMultiMatchs() // Affect. Auto
 	{
+		include_once('../live/create_cache_match.php');
 		// Affectation auto des équipes	dans les matchs
 		$ParamCmd = utyGetPost('ParamCmd', '');
 
@@ -1540,6 +1545,9 @@ class GestionJournee extends MyPageSecure
 					$result = $myBdd->pdo->prepare($sql);
 					$result->execute(array($id));
 				}
+
+				$cMatch = new CacheMatch($_GET);
+				$cMatch->MatchGlobal($myBdd, $id);
 
 				$myBdd->pdo->commit();
 			} catch (Exception $e) {
