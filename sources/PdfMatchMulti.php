@@ -354,7 +354,7 @@ class FeuilleMatch extends MyPage
                 WHERE d.Id_match = ? 
                 AND d.Id_evt_match != 'T' 
                 AND d.Id_evt_match != 'A' 
-                ORDER BY d.date_insert DESC, d.Periode ASC, d.Temps DESC, d.Id ";
+                ORDER BY d.Periode ASC, d.Temps DESC, d.date_insert DESC, d.Id ";
             $result5 = $myBdd->pdo->prepare($sql5);
             $result5->execute(array($idMatch));
 
@@ -394,6 +394,9 @@ class FeuilleMatch extends MyPage
                             case 'R':
                                 $d[4] = 'X';
                                 break;
+                            case 'D':
+                                $d[4] = $lang['D'];
+                                break;
                         }
                     } else {
                         if ($row5['Nom'] != '') {
@@ -417,6 +420,9 @@ class FeuilleMatch extends MyPage
                                 break;
                             case 'R':
                                 $d[10] = 'X';
+                                break;
+                            case 'D':
+                                $d[10] = $lang['D'];
                                 break;
                         }
                     }
