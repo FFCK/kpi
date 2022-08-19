@@ -54,7 +54,7 @@ class Score extends MyPage
     ?>
         <!--<div id="match_horloge_etat"></div>-->
 
-        <div id="ban_score" class="container-fluid animate__animated animate__fadeInDown">
+        <div id="ban_score" class="container-fluid animate__fadeInDown">
             <div id="bandeau_score">
                 <div id="match_horloge"></div>
                 <div id="match_periode"></div>
@@ -80,9 +80,9 @@ class Score extends MyPage
         <?php
         }
         ?>
-        <div id="categorie" class="animate__animated animate__fadeInUp"></div>
+        <div id="categorie" class="animate__fadeInUp"></div>
 
-        <div id="bandeau_goal" class="ban_goal_card_2 animate__animated">
+        <div id="bandeau_goal" class="ban_goal_card_2">
             <div id="goal_card"></div>
             <div id="banner_goal_card" class="text-start">
                 <div id="match_event_line2" class="banner_line text-start"></div>
