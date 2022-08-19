@@ -193,13 +193,13 @@ export default {
       }
       if (['full', 'events', 'static'].includes(this.mode)) {
         bandeauGoal.style.display = 'block'
-        bandeauGoal.classList.remove('animate__fadeOutLeft')
-        bandeauGoal.classList.add('animate__fadeInLeft')
+        bandeauGoal.classList.remove('animate__fadeOutRight')
+        bandeauGoal.classList.add('animate__fadeInRight')
       }
       if (['full', 'events'].includes(this.mode)) {
         setTimeout(() => {
-          bandeauGoal.classList.remove('animate__fadeInLeft')
-          bandeauGoal.classList.add('animate__fadeOutLeft')
+          bandeauGoal.classList.remove('animate__fadeInRight')
+          bandeauGoal.classList.add('animate__fadeOutRight')
           if (['full'].includes(this.mode)) {
             banScore.classList.remove('animate__fadeOutUp')
             banScore.classList.add('animate__fadeInDown')
@@ -367,7 +367,7 @@ export default {
           } else if (this.options.includes('static')) {
             banScore.classList.add('d-none')
             categorie.classList.add('d-none')
-            bandeauGoal.classList.remove('animate__fadeOutLeft')
+            bandeauGoal.classList.remove('animate__fadeOutRight')
             bandeauGoal.classList.add('d-block')
           }
           if (!this.options.includes('only')) {
@@ -448,17 +448,17 @@ export default {
 
       if (this.options.includes('events')) {
         console.log('on affiche l\'event')
-        bandeauGoal.classList.remove('animate__fadeOutLeft')
+        bandeauGoal.classList.remove('animate__fadeOutRight')
         bandeauGoal.classList.add('d-block')
-        bandeauGoal.classList.add('animate__fadeInLeft')
+        bandeauGoal.classList.add('animate__fadeInRight')
         setTimeout(function () {
-          bandeauGoal.classList.remove('animate__fadeInLeft')
-          bandeauGoal.classList.add('animate__fadeOutLeft')
+          bandeauGoal.classList.remove('animate__fadeInRight')
+          bandeauGoal.classList.add('animate__fadeOutRight')
         }, process.env.VUE_APP_INTERVAL_GAMEEVENTSHOW || 8000)
       } else if (this.options.includes('static')) {
         banScore.classList.add('d-none')
         categorie.classList.add('d-none')
-        bandeauGoal.classList.remove('animate__fadeOutLeft')
+        bandeauGoal.classList.remove('animate__fadeOutRight')
         bandeauGoal.classList.add('d-block')
       } else {
         banScore.classList.remove('animate__fadeInDown')
@@ -466,11 +466,11 @@ export default {
         categorie.classList.remove('animate__fadeInUp')
         categorie.classList.add('animate__fadeOutDown')
         bandeauGoal.style.display = 'block'
-        bandeauGoal.classList.remove('animate__fadeOutLeft')
-        bandeauGoal.classList.add('animate__fadeInLeft')
+        bandeauGoal.classList.remove('animate__fadeOutRight')
+        bandeauGoal.classList.add('animate__fadeInRight')
         setTimeout(function () {
-          bandeauGoal.classList.remove('animate__fadeInLeft')
-          bandeauGoal.classList.add('animate__fadeOutLeft')
+          bandeauGoal.classList.remove('animate__fadeInRight')
+          bandeauGoal.classList.add('animate__fadeOutRight')
           banScore.classList.remove('animate__fadeOutUp')
           banScore.classList.add('animate__fadeInDown')
           categorie.classList.remove('animate__fadeOutDown')
