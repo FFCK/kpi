@@ -149,8 +149,9 @@
           <label>{#Presentation#}</label>
           <select id="presentation" name="presentation">
             <option value="" {if $filtrePres == ''}selected{/if}>{#Selectionnez#}</option>
-            <option value="voie" {if $filtrePres == 'voie'}selected{/if}>Channel</option>
             <option value="empty" {if $filtrePres == 'empty'}selected{/if}>Empty page</option>
+            <option value="voie" {if $filtrePres == 'voie'}selected{/if}>Channel</option>
+            <option value="logo" {if $filtrePres == 'logo'}selected{/if}>Logo</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres == 'match'}selected{/if}>Game (Category & teams)</option>
               <option value="match2" {if $filtrePres == 'match2'}selected{/if}>Game (Team colors)</option>
@@ -209,6 +210,9 @@
             </optgroup>
             <optgroup label="Website / Smartphone">
               <option value="frame_matchs" {if $filtrePres == 'frame_matchs'}selected{/if}>Games</option>
+            </optgroup>
+            <optgroup label="Debug">
+              <option value="player_pictures" {if $filtrePres == 'player_pictures'}selected{/if}>PlayerPictures</option>
             </optgroup>
             <optgroup label="API">
               <option value="api_players" {if $filtrePres == 'api_players'}selected{/if}>Players</option>
@@ -405,7 +409,10 @@
           Url
         </button>
         <input type='text' readonly="readonly" id='showUrl1' name='showUrl1' class="col-sm-7">
-        <button id="confirm" name="confirm" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
+        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty()">
+          Blank
+        </button>
+        <button id="confirm" name="confirm" class="btn btn-primary pull-right col-sm-1" data-pres="" data-showurl="0">
           {#Activer#}
         </button>
       </div>
@@ -435,8 +442,9 @@
           <label>{#Presentation#}</label>
           <select id="presentation2" name="presentation2">
             <option value="" {if $filtrePres2 == ''}selected{/if}>{#Selectionnez#}</option>
-            <option value="voie" {if $filtrePres2 == 'voie'}selected{/if}>Channel</option>
             <option value="empty" {if $filtrePres2 == 'empty'}selected{/if}>Empty page</option>
+            <option value="voie" {if $filtrePres2 == 'voie'}selected{/if}>Channel</option>
+            <option value="logo" {if $filtrePres2 == 'logo'}selected{/if}>Logo</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres2 == 'match'}selected{/if}>Game (Category & teams)</option>
               <option value="match2" {if $filtrePres2 == 'match2'}selected{/if}>Game (Team colors)</option>
@@ -492,6 +500,10 @@
               <option value="frame_stats" {if $filtrePres2 == 'frame_stats'}selected{/if}>Stats</option>
               <option value="frame_classement" {if $filtrePres2 == 'frame_classement'}selected{/if}>Ranking</option>
               <option value="frame_qr" {if $filtrePres2 == 'frame_qr'}selected{/if}>QrCodes</option>
+            </optgroup>
+            <optgroup label="Debug">
+              <option value="player_pictures" {if $filtrePres2 == 'player_pictures'}selected{/if}>PlayerPictures
+              </option>
             </optgroup>
 
             <option value="force_cache_match" {if $filtrePres2 == 'force_cache_match'}selected{/if}>Force cache match
@@ -650,7 +662,10 @@
           Url
         </button>
         <input type='text' readonly="readonly" id='showUrl2' name='showUrl2' class="col-sm-7">
-        <button id="confirm2" name="confirm2" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
+        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('2')">
+          Blank
+        </button>
+        <button id="confirm2" name="confirm2" class="btn btn-primary pull-right col-sm-1" data-pres="" data-showurl="0">
           {#Activer#}
         </button>
       </div>
@@ -680,8 +695,9 @@
           <label>{#Presentation#}</label>
           <select id="presentation3" name="presentation3">
             <option value="" {if $filtrePres3 == ''}selected{/if}>{#Selectionnez#}</option>
-            <option value="voie" {if $filtrePres3 == 'voie'}selected{/if}>Channel</option>
             <option value="empty" {if $filtrePres3 == 'empty'}selected{/if}>Empty page</option>
+            <option value="voie" {if $filtrePres3 == 'voie'}selected{/if}>Channel</option>
+            <option value="logo" {if $filtrePres3 == 'logo'}selected{/if}>Logo</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres3 == 'match'}selected{/if}>Game (Category & teams)</option>
               <option value="match2" {if $filtrePres3 == 'match2'}selected{/if}>Game (Team colors)</option>
@@ -737,6 +753,10 @@
               <option value="frame_stats" {if $filtrePres3 == 'frame_stats'}selected{/if}>Stats</option>
               <option value="frame_classement" {if $filtrePres3 == 'frame_classement'}selected{/if}>Ranking</option>
               <option value="frame_qr" {if $filtrePres3 == 'frame_qr'}selected{/if}>QrCodes</option>
+            </optgroup>
+            <optgroup label="Debug">
+              <option value="player_pictures" {if $filtrePres3 == 'player_pictures'}selected{/if}>PlayerPictures
+              </option>
             </optgroup>
 
             <option value="force_cache_match" {if $filtrePres3 == 'force_cache_match'}selected{/if}>Force cache match
@@ -891,11 +911,14 @@
           {#Controle#}
         </a>
         <a id="game_report3" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
-        <button id="getUrl3" name="getUrl3" class="btn btn-success col-sm-1" data-showurl="3">
+        <button id="getUrl3" name="getUrl3" class="btn btn-success col-sm-1" data-showurl="3" onclick="Go_empty('3')">
           Url
         </button>
         <input type='text' readonly="readonly" id='showUrl3' name='showUrl3' class="col-sm-7">
-        <button id="confirm3" name="confirm3" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
+        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('3')">
+          Blank
+        </button>
+        <button id="confirm3" name="confirm3" class="btn btn-primary pull-right col-sm-1" data-pres="" data-showurl="0">
           {#Activer#}
         </button>
       </div>
@@ -924,9 +947,9 @@
         <div class='col-sm-2'>
           <label>{#Presentation#}</label>
           <select id="presentation4" name="presentation4">
-            <option value="" {if $filtrePres4 == ''}selected{/if}>{#Selectionnez#}</option>
-            <option value="voie" {if $filtrePres4 == 'voie'}selected{/if}>Channel</option>
             <option value="empty" {if $filtrePres4 == 'empty'}selected{/if}>Empty page</option>
+            <option value="voie" {if $filtrePres4 == 'voie'}selected{/if}>Channel</option>
+            <option value="logo" {if $filtrePres4 == 'logo'}selected{/if}>Logo</option>
             <optgroup label="Before game inlays">
               <option value="match" {if $filtrePres4 == 'match'}selected{/if}>Game (Category & teams)</option>
               <option value="match2" {if $filtrePres4 == 'match2'}selected{/if}>Game (Team colors)</option>
@@ -982,6 +1005,10 @@
               <option value="frame_stats" {if $filtrePres4 == 'frame_stats'}selected{/if}>Stats</option>
               <option value="frame_classement" {if $filtrePres4 == 'frame_classement'}selected{/if}>Ranking</option>
               <option value="frame_qr" {if $filtrePres4 == 'frame_qr'}selected{/if}>QrCodes</option>
+            </optgroup>
+            <optgroup label="Debug">
+              <option value="player_pictures" {if $filtrePres4 == 'player_pictures'}selected{/if}>PlayerPictures
+              </option>
             </optgroup>
 
             <option value="force_cache_match" {if $filtrePres4 == 'force_cache_match'}selected{/if}>Force cache match
@@ -1136,11 +1163,14 @@
           {#Controle#}
         </a>
         <a id="game_report4" class="params btn btn-info col-sm-1" href="" target="_blank">Report</a>
-        <button id="getUrl4" name="getUrl4" class="btn btn-success col-sm-1" data-showurl="4">
+        <button id="getUrl4" name="getUrl4" class="btn btn-success col-sm-1" data-showurl="4" onclick="Go_empty('4')">
           Url
         </button>
         <input type='text' readonly="readonly" id='showUrl4' name='showUrl4' class="col-sm-7">
-        <button id="confirm4" name="confirm4" class="btn btn-primary pull-right col-sm-2" data-pres="" data-showurl="0">
+        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('4')">
+          Blank
+        </button>
+        <button id="confirm4" name="confirm4" class="btn btn-primary pull-right col-sm-1" data-pres="" data-showurl="0">
           {#Activer#}
         </button>
       </div>

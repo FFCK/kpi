@@ -54,50 +54,50 @@ class TV extends MyPage
     function ImgNation($nation, $logo = null)
     {
         if ($logo) {
-            return "<img src='../img/" . $logo . "' height='32' />";
+            return "<img src='../img/" . $logo . "?v=" . NUM_VERSION . "' height='32' />";
         }
         $nation = $this->VerifNation($nation, $logo = null);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img src='../img/Nations/" . $nation . ".png' height='32' />";
+        return "<img src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "' height='32' />";
     }
 
     function ImgNation48($nation, $logo = null)
     {
         if ($logo) {
-            return "<img src='../img/" . $logo . "' height='48' />";
+            return "<img src='../img/" . $logo . "?v=" . NUM_VERSION . "' height='48' />";
         }
         $nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img src='../img/Nations/" . $nation . ".png' height='48' />";
+        return "<img src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "' height='48' />";
     }
 
 
     function ImgNation64($nation, $logo = null)
     {
         if ($logo) {
-            return "<img src='../img/" . $logo . "' height='64' />";
+            return "<img src='../img/" . $logo . "?v=" . NUM_VERSION . "' height='64' />";
         }
         $nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img src='../img/Nations/" . $nation . ".png' height='64' />";
+        return "<img src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "' height='64' />";
     }
 
     function ImgNation80($nation, $logo = null)
     {
         if ($logo) {
-            return "<img src='../img/" . $logo . "' height='80' />";
+            return "<img src='../img/" . $logo . "?v=" . NUM_VERSION . "' height='80' />";
         }
         $nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img src='../img/Nations/" . $nation . ".png' height='80' />";
+        return "<img src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "' height='80' />";
     }
 
     function ImgNation200($nation, $logo = null, $anime = 0)
@@ -108,49 +108,49 @@ class TV extends MyPage
             $classAnime = " class='align-middle' ";
         }
         if ($logo) {
-            return "<img $classAnime src='../img/" . $logo . "' height='200' width='200' />";
+            return "<img $classAnime src='../img/" . $logo . "?v=" . NUM_VERSION . "' height='200' width='200' />";
         }
         $nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img $classAnime src='../img/Nations/" . $nation . ".png' height='200' width='200' />";
+        return "<img $classAnime src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "' height='200' width='200' />";
     }
 
     function ImgNationFull($nation, $logo = null)
     {
         if ($logo) {
-            return "<img class='align-top' src='../img/" . $logo . "' />";
+            return "<img class='align-top' src='../img/" . $logo . "?v=" . NUM_VERSION . "' />";
         }
         $nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img class='align-top' src='../img/Nations/" . $nation . ".png' />";
+        return "<img class='align-top' src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "' />";
     }
 
     function ImgNationCss($nation, $logo = null)
     {
         if ($logo) {
-            return "<img class='img_nation' src='../img/" . $logo . "' />";
+            return "<img class='img_nation' src='../img/" . $logo . "?v=" . NUM_VERSION . "' />";
         }
         $nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img class='img_nation' src='../img/Nations/" . $nation . ".png'>";
+        return "<img class='img_nation' src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "'>";
     }
 
     function ImgNationCss2($nation, $logo = null)
     {
         if ($logo) {
-            return "<img class='img_nation2' src='../img/" . $logo . "' />";
+            return "<img class='img_nation2' src='../img/" . $logo . "?v=" . NUM_VERSION . "' />";
         }
         $nation = $this->VerifNation($nation);
         if (strlen($nation) != 3) {
             return '';
         }
-        return "<img class='img_nation2' src='../img/Nations/" . $nation . ".png'>";
+        return "<img class='img_nation2' src='../img/Nations/" . $nation . ".png?v=" . NUM_VERSION . "'>";
     }
 
     function ImgMedal($medal)
@@ -158,7 +158,7 @@ class TV extends MyPage
         if ($medal != 'GOLD' && $medal != 'SILVER' && $medal != 'BRONZE') {
             return '';
         }
-        return "<img src='../img/" . $medal . ".png' height='32' width='32' class='medal' />";
+        return "<img src='../img/" . $medal . ".png?v=" . NUM_VERSION . "' height='32' width='32' class='medal' />";
     }
 
     function ImgMedal48($medal)
@@ -166,7 +166,7 @@ class TV extends MyPage
         if ($medal != 'GOLD' && $medal != 'SILVER' && $medal != 'BRONZE') {
             return '';
         }
-        return "<img src='../img/" . $medal . ".png' height='48' width='48' class='medal' />";
+        return "<img src='../img/" . $medal . ".png?v=" . NUM_VERSION . "' height='48' width='48' class='medal' />";
     }
 
     function ImgMedal64($medal)
@@ -174,7 +174,7 @@ class TV extends MyPage
         if ($medal != 'GOLD' && $medal != 'SILVER' && $medal != 'BRONZE') {
             return '';
         }
-        return "<img src='../img/" . $medal . ".png' height='64' width='64' class='medal' />";
+        return "<img src='../img/" . $medal . ".png?v=' . NUM_VERSION . '' height='64' width='64' class='medal' />";
     }
 
     function LabelMedal($medal)
@@ -566,7 +566,7 @@ class TV extends MyPage
                     </span>
                 </div>
                 <div id="pres_player">
-                    <img src="/img/KIP/players/' . utyGetInt($rJoueur, 'Matric', 'none') . '.png" alt="">
+                    <img src="/img/KIP/players/' . utyGetInt($rJoueur, 'Matric', 'none') . '.png?v=' . NUM_VERSION . '" alt="">
                 </div>
             </div>
         </div>';
@@ -720,10 +720,10 @@ class TV extends MyPage
                         </div>
                     </div>
                     <div id="pres_ref2">
-                        <img src="/img/KIP/players/' . utyGetInt($rMatch, 'matric2', 'none') . '.png" alt="">
+                        <img src="/img/KIP/players/' . utyGetInt($rMatch, 'matric2', 'none') . '.png?v=' . NUM_VERSION . '" alt="">
                     </div>
                     <div id="pres_ref1">
-                        <img src="/img/KIP/players/' . utyGetInt($rMatch, 'matric1', 'none') . '.png" alt="">
+                        <img src="/img/KIP/players/' . utyGetInt($rMatch, 'matric1', 'none') . '.png?v=' . NUM_VERSION . '" alt="">
                     </div>
                 </div>
             </div>';
@@ -820,12 +820,12 @@ class TV extends MyPage
             <div class="container-fluid ban_presentation_color">
                 <div class="logo_lg"></div>
                 <div class="logo2_lg"></div>
-                <div class="boat_a"><img src="../img/KIP/boats/' . $rMatch['ClubA'] . '-boat.png" alt=""></div>
-                <div class="boat_b"><img src="../img/KIP/boats/' . $rMatch['ClubB'] . '-boat.png" alt=""></div>
-                <div class="vest_a"><img src="../img/KIP/vests/' . $rMatch['ClubA'] . '-vest.png" alt=""></div>
-                <div class="vest_b"><img src="../img/KIP/vests/' . $rMatch['ClubB'] . '-vest.png" alt=""></div>
-                <div class="helmet_a"><img src="../img/KIP/helmets/' . $rMatch['ClubA'] . '-helmet.png" alt=""></div>
-                <div class="helmet_b"><img src="../img/KIP/helmets/' . $rMatch['ClubB'] . '-helmet.png" alt=""></div>
+                <div class="boat_a"><img src="../img/KIP/boats/' . $rMatch['ClubA'] . '-boat.png?v=' . NUM_VERSION . '" alt=""></div>
+                <div class="boat_b"><img src="../img/KIP/boats/' . $rMatch['ClubB'] . '-boat.png?v=' . NUM_VERSION . '" alt=""></div>
+                <div class="vest_a"><img src="../img/KIP/vests/' . $rMatch['ClubA'] . '-vest.png?v=' . NUM_VERSION . '" alt=""></div>
+                <div class="vest_b"><img src="../img/KIP/vests/' . $rMatch['ClubB'] . '-vest.png?v=' . NUM_VERSION . '" alt=""></div>
+                <div class="helmet_a"><img src="../img/KIP/helmets/' . $rMatch['ClubA'] . '-helmet.png?v=' . NUM_VERSION . '" alt=""></div>
+                <div class="helmet_b"><img src="../img/KIP/helmets/' . $rMatch['ClubB'] . '-helmet.png?v=' . NUM_VERSION . '" alt=""></div>
                 <div id="banner_presentation" class="text-center">
                     <div class="row banner_line line2">
                         <div class="col-md-5 text-end">
@@ -999,6 +999,37 @@ class TV extends MyPage
             </div>';
     }
 
+    function Content_Logo()
+    {
+        $voie = $this->GetParamInt('voie', 0);
+        echo '
+            <div class="container-fluid logo_pleine_page">
+            </div>';
+    }
+
+    function Content_Player_Pictures()
+    {
+        echo '
+            <div class="container-fluid">';
+
+        $i = 0;
+        $dir    = '../img/KIP/players';
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            $i++;
+            echo '<img src="../img/KIP/players/' . $file . '?v=' . NUM_VERSION . '" alt="" height="60px">';
+        }
+        echo '<span class="badge bg-dark">' . $i . '</span>';
+        echo '</div>';
+    }
+
+    function Content_Empty()
+    {
+        echo '
+            <div class="container-fluid">
+            </div>';
+    }
+
 
 
     function Content_Command_Url($url)
@@ -1053,6 +1084,10 @@ class TV extends MyPage
                 $this->Content_Voie();
                 return;
                 break;
+            case 'logo':
+                $this->Content_Logo();
+                return;
+                break;
             case 'list_coachs':
                 $this->Content_List_Coachs();
                 return;
@@ -1105,7 +1140,13 @@ class TV extends MyPage
                 $this->Content_Podium();
                 return;
                 break;
+            case 'player_pictures':
+                $this->Content_Player_Pictures();
+                return;
+                break;
+            case 'empty':
             default:
+                $this->Content_Empty();
                 return;
                 break;
         }
