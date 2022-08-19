@@ -27,8 +27,8 @@
                     <tbody>
                         {section name=j loop=$arrayMatchs}
                             {if $smarty.section.j.iteration >= $start
-                                                                                                                        && ($len <= 0 or $smarty.section.j.iteration <= $len)
-                                                                                                                        && $arrayMatchs[j].Date_EN == $arrayDates[i].date}
+                                                                                                                                                        && ($len <= 0 or $smarty.section.j.iteration <= $len)
+                                                                                                                                                        && $arrayMatchs[j].Date_EN == $arrayDates[i].date}
                             {assign var='Heure' value=$arrayMatchs[j].Heure_match}
                             {assign var='Match1' value=$arrayMatchs[j]}
                             {assign var='validation1' value=$Match1.Validation}
@@ -58,21 +58,24 @@
                                                     {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
                                                 </a>
                                             {elseif $statut1 == 'ON' && $validation1 != 'O'}
-                                                <button type="button" class="btn btn-warning btn-xs scoreProvisoire"
+                                                <a class="btn btn-warning btn-xs scoreProvisoire"
+                                                    href="PdfMatchMulti.php?listMatch={$Match1.Id}" target="_blank"
                                                     title="{#scoreProvisoire#}">
-                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} -
-                                                    {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                </button>
+                                                    {$Match1.ScoreDetailA|replace:'?':'&nbsp;'|default:'&nbsp;'} -
+                                                    {$Match1.ScoreDetailB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                </a>
                                             {elseif $statut1 == 'END' && $validation1 != 'O'}
-                                                <button type="button" class="btn btn-warning btn-xs scoreProvisoire"
+                                                <a class="btn btn-warning btn-xs scoreProvisoire"
+                                                    href="PdfMatchMulti.php?listMatch={$Match1.Id}" target="_blank"
                                                     title="{#scoreProvisoire#}">
-                                                    {$Match1.ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} -
-                                                    {$Match1.ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                                </button>
+                                                    {$Match1.ScoreDetailA|replace:'?':'&nbsp;'|default:'&nbsp;'} -
+                                                    {$Match1.ScoreDetailB|replace:'?':'&nbsp;'|default:'&nbsp;'}
+                                                </a>
                                             {else}
-                                                <button type="button" class="btn btn-default btn-xs" title="{#ATT#}">
+                                                <a class="btn btn-default btn-xs" href="PdfMatchMulti.php?listMatch={$Match1.Id}"
+                                                    target="_blank" title="{#ATT#}">
                                                     {#ATT#}
-                                                </button>
+                                                </a>
                                             {/if}
                                         </span>
                                     </td>
