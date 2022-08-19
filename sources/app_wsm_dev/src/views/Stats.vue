@@ -152,7 +152,6 @@
             :title="$t('Shot_on')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-primary': btnMode !== 4,
               'btn-primary': btnMode === 4
             }"
@@ -166,7 +165,6 @@
             :title="$t('Shot_stop')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-warning': btnMode !== 5,
               'btn-warning': btnMode === 5
             }"
@@ -180,7 +178,6 @@
             :title="$t('Shot_stop')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-warning': btnMode !== 7,
               'btn-warning': btnMode === 7
             }"
@@ -194,7 +191,6 @@
             :title="$t('Shot_on')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-primary': btnMode !== 6,
               'btn-primary': btnMode === 6
             }"
@@ -209,7 +205,6 @@
             :title="$t('Pass_possession')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-secondary': btnMode > 0 && btnMode !== 8,
               'btn-secondary': btnMode === 0 || btnMode === 8
             }"
@@ -231,7 +226,6 @@
             :title="$t('Pass_possession')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-secondary': btnMode > 0 && btnMode !== 9,
               'btn-secondary': btnMode === 0 || btnMode === 9
             }"
@@ -246,7 +240,6 @@
             :title="$t('Kickoff_won')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-success': btnMode !== 1,
               'btn-success': btnMode === 1
             }"
@@ -260,7 +253,6 @@
             :title="$t('Kickoff_lost')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-danger': btnMode !== 2,
               'btn-danger': btnMode === 2
             }"
@@ -274,7 +266,6 @@
             :title="$t('Kickoff_lost')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-danger': btnMode !== 3,
               'btn-danger': btnMode === 3
             }"
@@ -288,7 +279,6 @@
             :title="$t('Kickoff_won')"
             :class="{
               btn: true,
-              'btn-sm': true,
               'btn-outline-success': btnMode !== 1,
               'btn-success': btnMode === 1
             }"

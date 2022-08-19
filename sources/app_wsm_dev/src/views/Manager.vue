@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid" v-if="prefs">
-    <h1>KPI WebSocket Manager (WSM)</h1>
+    <h1 class="top-margin">KPI WebSocket Manager (WSM)</h1>
     <div class="row text-center" v-if="events">
       <div>
         {{ $t("Event") }}
@@ -21,10 +21,9 @@
           <input class="form-check-input" type="checkbox" role="button" :checked="prefs.databaseSync" @change="changeDatabaseSync">
         </div>
         <div>
-            <button class="btn btn-sm btn-outline-primary" @click="lightView = !lightView"><i class="bi bi-view-list"></i></button>
+            <button class="btn btn-sm btn-outline-primary" @click="viewLighter()"><i class="bi bi-view-list"></i></button>
         </div>
       </div>
-      <hr>
 
       <div class="row my-1">
         <div class="col-md-6">
@@ -206,7 +205,10 @@
                 {{ message[n] }}
                 <button type="button" class="btn-close btn-close-white btn-sm" aria-label="Close" @click="message[n] = ''"></button>
               </span>
-              <button class="btn btn-sm btn-dark float-end" v-if="validUrl[n]" @click="saveConnection(n)"><i class="bi bi-save2" title="Save"></i></button>
+                <button class="btn btn-sm btn-dark ms-3 float-end" v-if="validUrl[n]" @click="saveConnection(n)"><i class="bi bi-save2" title="Save"></i></button>
+                <button class="btn btn-sm btn-dark ms-1 float-end" v-if="validUrl[n] && startedUrl[n]" @click="setTeams(n)">Set Teams (Next)</button>
+                <button class="btn btn-sm btn-dark ms-3 float-end" v-if="validUrl[n] && startedUrl[n]" @click="setTeams(n, false)">Set Teams (Current)</button>
+                <button class="btn btn-sm btn-dark float-end" v-if="validUrl[n] && startedUrl[n]" @click="syncRequest(n)">Sync</button>
             </h5>
             <div class="card-text" v-show="!lightView">
               <div class="row g-2 align-items-center">
@@ -249,24 +251,24 @@
           </div>
           <div class="card-header">
             <div class="row text-center mb-1">
-              <div class="col text-end">
+              <div class="col text-end fs-4">
                 <i v-for="i in penA[n] || 0" :key="i" class="bi bi-circle-fill text-warning" />
                 {{ game[n]?.equipe1.nom }}
                 <i class="badge bg-secondary">{{ scoreA[n] }}</i>
               </div>
-              <div class="col text-start">
+              <div class="col text-start fs-4">
                 <i class="badge bg-secondary">{{ scoreB[n] }}</i>
                 {{ game[n]?.equipe2.nom }}
                 <i v-for="i in penB[n] || 0" :key="i" class="bi bi-circle-fill text-warning" />
               </div>
             </div>
             <div class="text-center">
-              <div class="badge bg-secondary" v-if="startedUrl[n]">{{ period[n] }}</div>
+              <div class="badge bg-secondary fs-6 me-1" v-if="startedUrl[n]">{{ period[n] }}</div>
               <div
-                :class="{badge: true, 'fw-bold': true, 'bg-success': statutChrono[n], 'bg-warning': !statutChrono[n]}"
+                :class="{badge: true, 'fw-bold': true, 'bg-success': statutChrono[n], 'bg-danger': !statutChrono[n], 'fs-4': true}"
                 v-if="startedUrl[n]"
                 >{{ tpsJeuFormated[n] }}</div>
-              <div class="badge rounded-pill bg-info text-dark ms-1" v-if="startedUrl[n]">{{ possesFormated[n] }}</div>
+              <div class="badge rounded-pill bg-info text-dark ms-1 fs-6" v-if="startedUrl[n]">{{ possesFormated[n] }}</div>
             </div>
             <div class="text-center">
               <div class="float-start badge bg-secondary">{{ game[n]?.heure }}</div>
@@ -284,7 +286,7 @@
             </div>
           </div>
           <div class="card-body">
-            <p :id="'flow-' + n" class="small text-muted" style="max-height: 120px; overflow-y: auto;"></p>
+            <p :id="'flow-' + n" class="small text-muted" style="max-height: 90px; overflow-y: auto;"></p>
           </div>
           <div class="card-footer row g-1 align-items-center">
             <div class="col-md-7" v-show="!lightView">
@@ -292,12 +294,6 @@
                 <input type="text" class="form-control form-control-sm" placeholder="To send..." v-if="startedUrl[n]" v-model.trim="toSend[n]">
                 <button class="btn btn-sm btn-success" v-if="validUrl[n] && startedUrl[n]" @click="sendMessage(n)">Send</button>
               </div>
-            </div>
-            <div class="col-md-auto">
-              <button class="btn btn-sm btn-dark" v-if="validUrl[n] && startedUrl[n]" @click="setTeams(n)">Set Teams</button>
-            </div>
-            <div class="col-md-auto">
-              <button class="btn btn-sm btn-dark" v-if="validUrl[n] && startedUrl[n]" @click="syncRequest(n)">Sync</button>
             </div>
           </div>
         </div>
@@ -332,6 +328,19 @@ export default {
     }
   },
   methods: {
+    viewLighter () {
+      if (this.lightView) {
+        this.lightView = false
+        document.querySelectorAll('.top-margin').forEach(el => {
+          el.style.display = 'block'
+        })
+      } else {
+        this.lightView = true
+        document.querySelectorAll('.top-margin').forEach(el => {
+          el.style.display = 'none'
+        })
+      }
+    },
     changeEvent () {
       this.prefs.selectedEvent = this.selectedEvent
       this.savePrefs()
