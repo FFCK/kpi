@@ -143,7 +143,8 @@ class FeuillePresencePhoto extends MyPage
     }
 
     // Chargement des infos de la compétition
-    $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+
+    $arrayCompetition = $myBdd->GetCompetition($codeCompet === 'POOL' ? 'CMH' : $codeCompet, $codeSaison);
     if ($arrayCompetition['Titre_actif'] == 'O') {
       $titreCompet = $arrayCompetition['Libelle'];
     } else {
@@ -158,7 +159,7 @@ class FeuillePresencePhoto extends MyPage
     // Entête PDF ...	  
     $pdf = new PDF('L');
     $pdf->Open();
-    $pdf->SetTitle("Team Roster");
+    $pdf->SetTitle($codeCompet === 'POOL' ? "Referees" : "Team Roster");
 
     $pdf->SetAuthor("Kayak-polo.info");
     $pdf->SetCreator("Kayak-polo.info avec FPDF");
@@ -197,10 +198,17 @@ class FeuillePresencePhoto extends MyPage
       // titre
       $pdf->Ln(20);
       $pdf->SetFont('Arial', 'BI', 12);
-      $pdf->Cell(137, 8, $titreCompet, 0, 0, 'L');
-      $pdf->Cell(136, 8, $codeSaison, 0, 1, 'R');
-      $pdf->SetFont('Arial', 'B', 14);
-      $pdf->Cell(273, 8, "Team roster - " . $row['Libelle'], 0, 1, 'C');
+      if ($codeSaison === 1000) {
+        $pdf->Cell(137, 8, 'Referees', 0, 0, 'L');
+        $pdf->Cell(136, 8, '', 0, 1, 'R');
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(273, 8, $row['Libelle'], 0, 1, 'C');
+      } else {
+        $pdf->Cell(137, 8, $titreCompet, 0, 0, 'L');
+        $pdf->Cell(136, 8, $codeSaison, 0, 1, 'R');
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(273, 8, "Team roster - " . $row['Libelle'], 0, 1, 'C');
+      }
       $pdf->Ln(5);
 
       $idEquipe = $row['Id'];
@@ -208,8 +216,12 @@ class FeuillePresencePhoto extends MyPage
       $h = 8;
 
       $pdf->SetFont('Arial', 'BI', 10);
-      $pdf->Cell(16, $h, '#', 'B', 0, 'C');
-      $pdf->Cell(8, $h, 'Cap', 'B', 0, 'C');
+      if ($codeSaison === 1000) {
+        $pdf->Cell(24, $h, '', 'B', 0, 'C');
+      } else {
+        $pdf->Cell(16, $h, '#', 'B', 0, 'C');
+        $pdf->Cell(8, $h, 'Cap', 'B', 0, 'C');
+      }
       $pdf->Cell(60, $h, 'Family name', 'B', 0, 'C');
       $pdf->Cell(60, $h, 'Given name', 'B', 0, 'C');
       $pdf->Cell(25, $h, 'Birthdate', 'B', 0, 'C');
@@ -229,15 +241,12 @@ class FeuillePresencePhoto extends MyPage
 
       for ($j = 0; $j < $nbJoueurs; $j++) {
         if (isset($arrayJoueur[$idEquipe][$j]['Matric']) && $arrayJoueur[$idEquipe][$j]['Matric'] != '') {
-          // if ($arrayJoueur[$idEquipe][$j]['Matric'] >= 2000000) {
-          //   if ($arrayJoueur[$idEquipe][$j]['Reserve'] == '0') {
-          //     $arrayJoueur[$idEquipe][$j]['Matric'] = '';
-          //   } else {
-          //     $arrayJoueur[$idEquipe][$j]['Matric'] = $arrayJoueur[$idEquipe][$j]['Reserve'];
-          //   }
-          // }
-          $pdf->Cell(16, $h, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
-          $pdf->Cell(8, $h, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
+          if ($codeSaison === 1000) {
+            $pdf->Cell(24, $h, '', 'B', 0, 'C');
+          } else {
+            $pdf->Cell(16, $h, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
+            $pdf->Cell(8, $h, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
+          }
           $pdf->Cell(60, $h, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
           $pdf->Cell(60, $h, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
           $pdf->Cell(23, $h, $arrayJoueur[$idEquipe][$j]['Naissance'], 'B', 0, 'C');
