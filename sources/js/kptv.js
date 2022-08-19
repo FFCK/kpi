@@ -154,11 +154,19 @@ jq(document).ready(function () {
         showUrl = jq(this).data('showurl')
         switch (jq('#confirm').attr('data-pres')) {
             case 'empty':
-                url = 'live/tv2.php?show=empty'
+                url = 'live/tv2.php?show=empty&css=' + css
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'voie':
-                url = 'live/tv2.php?show=voie'
+                url = 'live/tv2.php?show=voie&css=' + css
+                ChangeVoie(jq('#channel').val(), url, showUrl)
+                break
+            case 'logo':
+                url = 'live/tv2.php?show=logo&css=' + css
+                ChangeVoie(jq('#channel').val(), url, showUrl)
+                break
+            case 'player_pictures':
+                url = 'live/tv2.php?show=player_pictures&css=' + css
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
             case 'list_medals':
@@ -517,11 +525,19 @@ jq(document).ready(function () {
         showUrl = jq(this).data('showurl')
         switch (jq('#confirm2').attr('data-pres')) {
             case 'empty':
-                url = 'live/tv2.php?show=empty'
+                url = 'live/tv2.php?show=empty&css=' + css
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'voie':
-                url = 'live/tv2.php?show=voie'
+                url = 'live/tv2.php?show=voie&css=' + css
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'logo':
+                url = 'live/tv2.php?show=logo&css=' + css
+                ChangeVoie(jq('#channel2').val(), url, showUrl)
+                break
+            case 'player_pictures':
+                url = 'live/tv2.php?show=player_pictures&css=' + css
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
             case 'list_medals':
@@ -736,7 +752,7 @@ jq(document).ready(function () {
     })
 
     jq('#channel3').change(function () {
-        jq('#control3').attr('href', 'live/tv3.php?voie=' + jq(this).val())
+        jq('#control3').attr('href', 'live/tv.php?voie=' + jq(this).val())
         jq('#filtreChannel3').val(jq(this).val())
     })
 
@@ -856,11 +872,19 @@ jq(document).ready(function () {
         showUrl = jq(this).data('showurl')
         switch (jq('#confirm3').attr('data-pres')) {
             case 'empty':
-                url = 'live/tv2.php?show=empty'
+                url = 'live/tv2.php?show=empty&css=' + css
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'voie':
-                url = 'live/tv2.php?show=voie'
+                url = 'live/tv2.php?show=voie&css=' + css
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'logo':
+                url = 'live/tv2.php?show=logo&css=' + css
+                ChangeVoie(jq('#channel3').val(), url, showUrl)
+                break
+            case 'player_pictures':
+                url = 'live/tv2.php?show=player_pictures&css=' + css
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
             case 'list_medals':
@@ -1195,11 +1219,19 @@ jq(document).ready(function () {
         showUrl = jq(this).data('showurl')
         switch (jq('#confirm4').attr('data-pres')) {
             case 'empty':
-                url = 'live/tv2.php?show=empty'
+                url = 'live/tv2.php?show=empty&css=' + css
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'voie':
-                url = 'live/tv2.php?show=voie'
+                url = 'live/tv2.php?show=voie&css=' + css
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'logo':
+                url = 'live/tv2.php?show=logo&css=' + css
+                ChangeVoie(jq('#channel4').val(), url, showUrl)
+                break
+            case 'player_pictures':
+                url = 'live/tv2.php?show=player_pictures&css=' + css
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
             case 'list_medals':
@@ -1548,6 +1580,11 @@ function Go_raz () {
     var param
     param = "show=reset"
     param += "&voie=" + jq('#list_team_channel').val()
+    Go(param)
+}
+
+function Go_empty (section = '') {
+    param = 'show=empty&voie=' + jq('#channel' + section).val() + '&css=' + jq('#style').val()
     Go(param)
 }
 
