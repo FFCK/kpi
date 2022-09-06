@@ -56,8 +56,15 @@
 											src="../img/pdfEN.png" /></a>
 									<a href="FeuillePresenceCat.php" target="_blank" title="{#Feuilles_de_presence_par_categorie#}"><img
 											height="25" src="../img/pdf2.png" />Cat</a>
-									<a href="FeuillePresencePhoto.php" target="_blank" title="{#Feuilles_de_presence_photo#}"><img
-											height="25" src="../img/pdf2.png" />Photo</a>
+									{if $codeCompet == 'POOL'}
+										<a href="FeuillePresencePhotoRef.php" target="_blank" title="{#Feuilles_de_presence_photo#}"><img
+												height="25" src="../img/pdf2.png" />Photo</a>
+									{else}
+										<a href="FeuillePresencePhoto.php" target="_blank" title="{#Feuilles_de_presence_photo#}"><img
+												height="25" src="../img/pdf2.png" />Photo</a>
+										<a href="FeuillePresencePhoto2.php" target="_blank" title="{#Feuilles_de_presence_photo#}"><img
+												height="25" src="../img/pdf2.png" />Photo</a>
+									{/if}
 									<img class="cliquable" id="actuButton" title="{#Recharger#}" height="25"
 										src="../img/glyphicons-82-refresh.png">
 									{if $profile <= 4 && $Statut == 'ON'}
