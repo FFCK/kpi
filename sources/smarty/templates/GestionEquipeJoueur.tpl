@@ -35,7 +35,9 @@
 						<a href="FeuillePresenceEN.php?equipe={$idEquipe}" target="_blank"
 							title="{#Feuille_de_presence#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" /></a>
 						<a href="FeuillePresencePhoto.php?equipe={$idEquipe}" target="_blank"
-							title="{#Feuille_de_presence_photo#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" /></a>
+							title="{#Feuille_de_presence_photo#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" />Photo</a>
+						<a href="FeuillePresencePhoto2.php?equipe={$idEquipe}" target="_blank"
+							title="{#Feuille_de_presence_photo#} (PDF) (EN)"><img height="25" src="../img/pdfEN.png" />Photo2</a>
 						<select name='changeEquipe' id='changeEquipe'>
 							{if $idEquipe <= 0}
 								<Option Value="" selected>{#Selectionner#}...</option>
