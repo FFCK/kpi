@@ -224,30 +224,36 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'CartonsCompetition':
-                $sql = "SELECT d.Code_competition Competition, 
-                    SUM(IF(b.Id_evt_match='B',1,0)) Buts, 
-                    SUM(IF(b.Id_evt_match='V',1,0)) Vert, 
-                    SUM(IF(b.Id_evt_match='J',1,0)) Jaune, 
-                    SUM(IF(b.Id_evt_match='R',1,0)) Rouge, 
-                    SUM(IF(b.Id_evt_match='D',1,0)) Rouge_definitif 
-                    FROM kp_match_detail b, kp_match c, kp_journee d, 
-                    kp_competition_equipe f 
-                    WHERE b.Id_match = c.Id 
-                    AND c.Id_journee = d.Id 
-                    AND d.Code_competition = f.Code_compet 
-                    AND d.Code_saison = f.Code_saison 
-                    AND d.Code_competition IN ($in) 
-                    AND d.Code_saison = ? 
-                    AND f.Id = IF(b.Equipe_A_B='A', c.Id_equipeA, c.Id_equipeB) 
-                    AND b.Id_evt_match IN ('B','V','J','R','D') 
-                    GROUP BY Code_competition 
+                $NomStat = 'Cards by category';
+                $sql = "SELECT c.Soustitre2 Competition,
+                    COUNT(DISTINCT(m.Id)) Matchs,
+                    SUM(IF(md.Id_evt_match='B',1,0)) Buts, 
+                    SUM(IF(md.Id_evt_match='V',1,0)) Vert, 
+                    SUM(IF(md.Id_evt_match='J',1,0)) Jaune, 
+                    SUM(IF(md.Id_evt_match='R',1,0)) Rouge, 
+                    SUM(IF(md.Id_evt_match='D',1,0)) Rouge_definitif 
+                    FROM kp_journee j, kp_competition c,
+                    kp_match m 
+                    LEFT OUTER JOIN kp_match_detail md 
+                        ON (m.Id = md.Id_match
+                        AND md.Id_evt_match IN ('B','V','J','R','D'))
+                    WHERE m.Id_journee = j.Id 
+                    AND j.Code_competition = c.Code 
+                    AND j.Code_saison = c.Code_saison 
+                    AND j.Code_competition IN ($in) 
+                    AND j.Code_saison = ? 
+                    AND j.Phase != 'Break'
+                    AND m.Statut = 'END'
+                    AND m.Validation = 'O'
+                    GROUP BY j.Code_competition
                     ORDER BY Rouge_definitif DESC, Rouge Desc, Jaune Desc, Vert Desc, Code_competition 
-                    LIMIT 0,$nbLignes ";
+                    LIMIT 0, $nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge($Compets, [$codeSaison]));
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, array(
                         'Competition' => $row['Competition'],
+                        'Matchs' => $row['Matchs'],
                         'Buts' => $row['Buts'],
                         'Vert' => $row['Vert'],
                         'Jaune' => $row['Jaune'],
@@ -832,6 +838,27 @@ class FeuilleStats extends MyPage
                     $pdf->Cell(14, 7, $arrayStats[$i]['Jaune'], 'B', 0, 'C');
                     $pdf->Cell(14, 7, $arrayStats[$i]['Rouge'], 'B', 0, 'C');
                     $pdf->Cell(14, 7, $arrayStats[$i]['Rouge_definitif'], 'B', 1, 'C');
+                }
+                break;
+            case 'CartonsCompetition':
+                $pdf->SetFont('Arial', 'BI', 10);
+                $pdf->Cell(28, 7, 'Cat.', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Matchs', 'B', 0, 'C');
+                $pdf->Cell(40, 7, 'Buts', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'V', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'J', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'R', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'RD', 'B', 1, 'C');
+                $pdf->SetFont('Arial', '', 8);
+
+                for ($i = 0; $i < count($arrayStats); $i++) {
+                    $pdf->Cell(28, 7, $arrayStats[$i]['Competition'], 'B', 0, 'C');
+                    $pdf->Cell(40, 7, $arrayStats[$i]['Matchs'], 'B', 0, 'C');
+                    $pdf->Cell(40, 7, $arrayStats[$i]['Buts'], 'B', 0, 'C');
+                    $pdf->Cell(20, 7, $arrayStats[$i]['Vert'], 'B', 0, 'C');
+                    $pdf->Cell(20, 7, $arrayStats[$i]['Jaune'], 'B', 0, 'C');
+                    $pdf->Cell(20, 7, $arrayStats[$i]['Rouge'], 'B', 0, 'C');
+                    $pdf->Cell(20, 7, $arrayStats[$i]['Rouge_definitif'], 'B', 1, 'C');
                 }
                 break;
             case 'Fairplay':
