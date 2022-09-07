@@ -123,6 +123,14 @@
         })();
       </script>
       <!-- End Piwik Code -->
+
+      <!-- Maintien connexion -->
+      <script type="text/javascript">
+        setInterval(() => {
+          fetch('../check.php?' + new Date().getTime())
+        }, 300000);
+      </script>
+      <!-- End Maintien connexion -->
     {/literal}
 
   {/if}
