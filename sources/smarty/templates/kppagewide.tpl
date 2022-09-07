@@ -70,6 +70,15 @@
   <script type="text/javascript" src="js/axios/axios.min.js?v={$NUM_VERSION}"></script>
   <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" defer></script>
 
+  {literal}
+    <!-- Maintien connexion -->
+    <script type="text/javascript">
+      setInterval(() => {
+        fetch('../check.php?' + new Date().getTime())
+      }, 300000);
+    </script>
+    <!-- End Maintien connexion -->
+  {/literal}
 </body>
 
 </html>
