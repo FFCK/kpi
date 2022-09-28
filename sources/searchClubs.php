@@ -1,8 +1,8 @@
 <?php
 // prevent direct access *****************************************************
-$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
-strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
-if(!$isAjax) {
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) and
+    strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+if (!$isAjax) {
     $user_error = 'Access denied !';
     die($user_error);
     //trigger_error($user_error, E_USER_ERROR);
@@ -26,21 +26,23 @@ $sql = "SELECT c.Code, c.Libelle, c.Coord, c.Postal, c.Coord2, c.www, c.email,
         WHERE 1=1 
         AND (c.Code LIKE :term 
         OR c.Libelle LIKE :term1 
-        OR e.Libelle LIKE :term1 
         OR c.Libelle LIKE :term2 
-        OR e.Libelle LIKE :term2) 
+        OR e.Libelle LIKE :term3 
+        OR e.Libelle LIKE :term4) 
         GROUP BY c.Code 
         ORDER BY c.Officiel DESC, c.Code, c.Libelle ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array(
-        ':term' => $term.'%', 
-        ':term1' => '%'.$term.'%', 
-        ':term2' => '%'.$term2.'%'
+    ':term' => $term . '%',
+    ':term1' => '%' . $term . '%',
+    ':term2' => '%' . $term2 . '%',
+    ':term3' => '%' . $term . '%',
+    ':term4' => '%' . $term2 . '%'
 ));
-while ($row = $result->fetch()) { 
+while ($row = $result->fetch()) {
     $jRow["value"] = $row['Libelle'];
     $jRow["idClub"] = $row['Code'];
-    $jRow["label"] = $row['Code'].' - '.$row['Libelle'];
+    $jRow["label"] = $row['Code'] . ' - ' . $row['Libelle'];
     $jRow["www"] = $row['www'];
     $jRow["email"] = $row['email'];
     $jRow["postal"] = $row['Postal'];
