@@ -232,7 +232,7 @@
 										<input type="hidden" name="EquipeNumero" id="EquipeNumero">
 										<input type="text" name="EquipeNom" id="EquipeNom" style="width:100%" readonly>
 										<label title="A - ZZZ">{#Poule#}:</label>
-										<input type="text" name="plEquipe" title="A - ZZZ" id="plEquipe" style="width:8%" size=2>
+										<input type="text" name="plEquipe" title="A - ZZZ_Z" id="plEquipe" style="width:12%" size=4>
 										<label title="1 - 99">{#Tirage#}:</label>
 										<input type="text" name="tirEquipe" id="tirEquipe" title="1 - 99" style="width:8%" size=2>
 										{if $user =='42054'}
