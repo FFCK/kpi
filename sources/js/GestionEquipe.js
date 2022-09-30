@@ -214,7 +214,7 @@ jq(document).ready(function () {
 
 
 	// Maskedinput
-	jq.mask.definitions['h'] = "[A-Z]"
+	// jq.mask.definitions['h'] = "[A-Za-z_]"
 	//jq("#inputZone").mask("9");
 
 
@@ -230,6 +230,7 @@ jq(document).ready(function () {
 	})
 	// blur d'une input => validation de la donnée
 	jq('#inputZone').live('blur', function () {
+		jq('#inputZone').val(jq('#inputZone').val().toUpperCase())
 		var Classe = jq(this).attr('class')
 		validationDonnee(Classe)
 	})
@@ -240,12 +241,16 @@ jq(document).ready(function () {
 		var tabindexVal = jq(this).attr('tabindex')
 		jq(this).attr('tabindex', tabindexVal + 1000)
 		if (jq(this).hasClass('textPoule')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" value="' + valeur + '">')
-			jq('#inputZone').mask("h?h", { placeholder: " " }).select()
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" maxlength="6" value="' + valeur + '">')
+			jq('#inputZone').select().keyup(() => {
+				jq('#inputZone').val(jq('#inputZone').val().toUpperCase().match(/[A-Z_]{0,5}/)[0])
+			})
 		}
 		else if (jq(this).hasClass('textTirage')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" value="' + valeur + '">')
-			jq('#inputZone').mask("9?9", { placeholder: " " }).select()
+			jq('#inputZone').select().keyup(() => {
+				jq('#inputZone').val(jq('#inputZone').val().match(/[0-9]{0,2}/)[0])
+			})
 		}
 		jq(this).hide()
 	})
@@ -301,10 +306,19 @@ jq(document).ready(function () {
 	}
 
 	//Autocomplete recherche equipe
-	jq('#plEquipe').mask("h?h", { placeholder: " " })
-	jq('#tirEquipe').mask("9?9", { placeholder: " " })
-	jq('#cltChEquipe').mask("9?9", { placeholder: " " })
-	jq('#cltCpEquipe').mask("9?9", { placeholder: " " })
+	// jq('#plEquipe').mask("h?h?h?h?h")
+	jq('#plEquipe').select().keyup(() => {
+		jq('#plEquipe').val(jq('#plEquipe').val().toUpperCase().match(/[A-Z_]{0,5}/)[0])
+	})
+	jq('#tirEquipe').select().keyup(() => {
+		jq('#tirEquipe').val(jq('#tirEquipe').val().match(/[0-9]{0,2}/)[0])
+	})
+	jq('#cltChEquipe').select().keyup(() => {
+		jq('#cltChEquipe').val(jq('#cltChEquipe').val().match(/[0-9]{0,2}/)[0])
+	})
+	jq('#cltCpEquipe').select().keyup(() => {
+		jq('#cltCpEquipe').val(jq('#cltCpEquipe').val().match(/[0-9]{0,2}/)[0])
+	})
 	jq('#ShowCompo').hide()
 	jq("#choixEquipe").autocomplete('Autocompl_equipe.php', {
 		width: 550,

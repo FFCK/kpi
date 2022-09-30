@@ -853,7 +853,7 @@ function utyEquipesAffectAuto($intitule)
 			$codeVainqueur = '';
 			$codePerdant = '';
 			$codePoule = '';
-			preg_match("/([A-Z]+)/", $intitule[$j], $codeLettres); // lettre
+			preg_match("/([A-Z_]+)/", $intitule[$j], $codeLettres); // lettre
 			preg_match("/([0-9]+)/", $intitule[$j], $codeNumero); // numero de match ou classement de poule
 			if (isset($codeNumero[1])) {
 				$posNumero = strpos($intitule[$j], $codeNumero[1]);
@@ -918,7 +918,7 @@ function utyEquipesAffectAutoFR($intitule)
 			$codeVainqueur = '';
 			$codePerdant = '';
 			$codePoule = '';
-			preg_match("/([A-Z]+)/", $intitule[$j], $codeLettres); // lettre
+			preg_match("/([A-Z_]+)/", $intitule[$j], $codeLettres); // lettre
 			preg_match("/([0-9]+)/", $intitule[$j], $codeNumero); // numero de match ou classement de poule
 			if (isset($codeNumero[1])) {
 				$posNumero = strpos($intitule[$j], $codeNumero[1]);
