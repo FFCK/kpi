@@ -1400,7 +1400,7 @@ class GestionJournee extends MyPageSecure
 				$codePerdant = '';
 				$codePoule = '';
 				if (isset($libelle[$j])) {
-					preg_match("/([A-Z]+)/", $libelle[$j], $codeLettres); // lettre
+					preg_match("/([A-Z_]+)/", $libelle[$j], $codeLettres); // lettres majuscules ou _
 					preg_match("/([0-9]+)/", $libelle[$j], $codeNumero); // numero... de match ou classement de poule ou tirage
 					$posNumero = strpos($libelle[$j], $codeNumero[1]);
 					$posLettres = strpos($libelle[$j], $codeLettres[1]);
