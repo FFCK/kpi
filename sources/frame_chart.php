@@ -132,6 +132,7 @@ class Chart extends MyPage
                     AND j.Etape LIKE ? 
                     AND j.Publication = 'O'
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
@@ -144,6 +145,7 @@ class Chart extends MyPage
                     AND j.Etape LIKE ? 
                     AND j.Publication = 'O'
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round));

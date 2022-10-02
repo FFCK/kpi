@@ -120,7 +120,7 @@ class Matchs extends MyPage
             FROM kp_competition 
             WHERE Code_saison = $codeSaison 
             AND (Publication='O' OR Code_ref = 'M') ";
-        if ($Compets == '' & $codeCompetGroup != '') {
+        if ($Compets == '' && $codeCompetGroup != '') {
             $sql .= "AND Code_ref = '$codeCompetGroup' ";
         } elseif ($Compets != '') {
             $sql .= "AND Code IN ($Compets) ";
@@ -162,6 +162,7 @@ class Matchs extends MyPage
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O'
                 AND j.Phase != 'Break'
+                AND j.Phase != 'Pause'
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($event, $codeSaison));
@@ -208,6 +209,7 @@ class Matchs extends MyPage
                 AND j.Code_saison = c.Code_saison 
                 AND j.Publication = 'O'
                 AND j.Phase != 'Break'
+                AND j.Phase != 'Pause'
                 ORDER BY j.Code_competition, j.Date_debut, j.Lieu ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($event, $codeSaison, '%' . $codeCompet));

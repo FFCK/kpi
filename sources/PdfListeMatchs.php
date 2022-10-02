@@ -353,7 +353,7 @@ class PdfListeMatchs extends MyPage
                 case "Code_competition":
                     $pdf->SetFont('Arial', '', 8);
                     //$pdf->Cell(22,5, '',0,0,'C');
-                    if ($phase_match === 'Break') {
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(8, 5, '', 'LTBR', '0', 'C');
                     } else {
                         $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
@@ -393,7 +393,7 @@ class PdfListeMatchs extends MyPage
                 case "Terrain":
                     $pdf->SetFont('Arial', '', 8);
                     //$pdf->Cell(22,5, '',0,0,'C');
-                    if ($phase_match === 'Break') {
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(8, 5, '', 'LTBR', '0', 'C');
                         $pdf->Cell(16, 5, utyDateUsToFr($row['Date_match']), 'TBR', '0', 'C');
                         $pdf->Cell(10, 5, $row['Heure_match'], 'TBR', '0', 'C');
@@ -444,7 +444,7 @@ class PdfListeMatchs extends MyPage
                     $heure1 = $heure2;
                     $pdf->SetFont('Arial', '', 8);
                     //$pdf->Cell(22,5, '',0,0,'C');
-                    if ($phase_match === 'Break') {
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(8, 5, '', 'LR' . $ltbr, '0', 'C');
                         $pdf->Cell(10, 5, $row['Heure_match'], 'R' . $ltbr, '0', 'C');
                         $pdf->Cell(22, 5, '', 'R' . $ltbr, '0', 'C');
