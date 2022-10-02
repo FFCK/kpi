@@ -134,6 +134,7 @@ class Chart extends MyPage
                     AND j.Etape LIKE ? 
                     AND j.Publication = 'O'
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
@@ -147,6 +148,7 @@ class Chart extends MyPage
                     AND j.Publication = 'O' 
                     AND j.Id = ?
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round, $idSelJournee));
@@ -159,6 +161,7 @@ class Chart extends MyPage
                     AND j.Etape LIKE ? 
                     AND j.Publication = 'O'
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round));
@@ -190,6 +193,7 @@ class Chart extends MyPage
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase, 
                     cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
                 $result = $myBdd->pdo->prepare($sql);
@@ -228,6 +232,7 @@ class Chart extends MyPage
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase, 
                     cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
                 $result = $myBdd->pdo->prepare($sql);

@@ -376,6 +376,7 @@ class GestionStats extends MyPageSecure
                     AND j.Code_competition IN ($in) 
                     AND j.Code_saison = ? 
                     AND j.Phase != 'Break'
+                    AND j.Phase != 'Pause'
                     AND m.Statut = 'END'
                     AND m.Validation = 'O'
                     GROUP BY j.Code_competition

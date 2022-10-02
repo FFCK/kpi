@@ -309,7 +309,7 @@ class PdfListeMatchs extends MyPage
                         $findeligne = 0;
                     }
                     //                    echo '<pre>' . var_dump($tab_terrain) . '</pre>';
-                    if (isset($tab_terrain[$i]) && $tab_terrain[$i][0]['Phase'] !== 'Break') {
+                    if (isset($tab_terrain[$i]) && $tab_terrain[$i][0]['Phase'] !== 'Break' && $tab_terrain[$i][0]['Phase'] !== 'Pause') {
                         $pdf->Cell(7, 5, $tab_terrain[$i][0]['Numero_ordre'], 1, 0, 'C', 1);
                         $pdf->Cell(14, 5, $tab_terrain[$i][0]['Code_competition'], 1, 0, 'C');
 
