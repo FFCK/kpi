@@ -528,16 +528,12 @@
 													</td>
 													<td>
 														<span class='directInput text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3'
-															Id="Libelle-{$arrayMatchs[i].Id}-text">
-															{$arrayMatchs[i].Libelle|default:'&nbsp;'}
-														</span>
+															Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span>
 													</td>
 												{else}
 													<td>
 														<span class='directInput text eq' tabindex='1{$smarty.section.i.iteration|string_format:"%02d"}3'
-															Id="Libelle-{$arrayMatchs[i].Id}-text">
-															{$arrayMatchs[i].Libelle|default:'&nbsp;'}
-														</span>
+															Id="Libelle-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Libelle|default:'&nbsp;'}</span>
 													</td>
 													<td>
 														<span class="lieu">
