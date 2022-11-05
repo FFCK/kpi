@@ -144,7 +144,8 @@ class MyPage
       'saintomer2017',
       'welland2018',
       'saintomer2022',
-      'saintomer2022b'
+      'saintomer2022b',
+      'cna2022'
     ])) {
       return '<link href="./css/' . $css . '.css?v=' . NUM_VERSION . '" rel="stylesheet">';
     }
