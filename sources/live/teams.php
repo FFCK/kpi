@@ -51,8 +51,8 @@ class Teams extends MyPage
       <div id="ban_info_1_lines" class="text-center">
         <div class="logo_sm"></div>
         <div class="logo2_sm"></div>
-        <div id="banner_line1" class="h2 text-end"></div>
-        <div id="banner_line2" class="h2 text-end"></div>
+        <div id="banner_line1" class="h2 text-end text-nowrap"></div>
+        <div id="banner_line2" class="h2 text-end text-nowrap"></div>
 
         <div class="row banner_line row">
           <div class="col-md-5 text-center">
