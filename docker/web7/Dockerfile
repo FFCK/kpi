@@ -1,4 +1,4 @@
-FROM newdeveloper/apache-php
+FROM newdeveloper/apache-php:24-04-2020
 
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
