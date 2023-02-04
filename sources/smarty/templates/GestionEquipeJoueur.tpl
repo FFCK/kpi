@@ -313,7 +313,7 @@
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
-								<label>{#Recherche_avancee#}</label>
+								<label>{#Recherche_avancee#} ({#Profil#} 1/2)</label>
 							</th>
 						</tr>
 						<tr>
