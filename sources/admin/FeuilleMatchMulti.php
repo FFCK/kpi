@@ -752,7 +752,7 @@ class FeuilleMatch extends MyPage
 
             $pdf->SetFont('Arial', 'I', 8);
             $pdf->Cell(15, 3, '', 'LB', 0, 'C', 1);
-            if ($color1A && is_array($color1A)) {
+            if (isset($color1A) && is_array($color1A)) {
                 $pdf->Cell(10, 3, '', 'B', 0, 'C', 1);
                 $pdf->SetFillColor($color1A[0], $color1A[1], $color1A[2]);
                 $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
@@ -767,7 +767,7 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(19, 3, $lang['Periode'], 'LR', 0, 'C');
             $pdf->Cell(1, 3, "", 0, 0, 'C');
             $pdf->Cell(15, 3, '', 'LB', 0, 'C', 1);
-            if ($color1B && is_array($color1B)) {
+            if (isset($color1B) && is_array($color1B)) {
                 $pdf->Cell(10, 3, '', 'B', 0, 'C', 1);
                 $pdf->SetFillColor($color1B[0], $color1B[1], $color1B[2]);
                 $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
