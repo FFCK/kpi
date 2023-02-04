@@ -110,7 +110,7 @@ class GestionEquipeJoueur extends MyPageSecure
 				else
 					$typeCompet = '';
 				$surcl_necess = 0;
-				$array_surcl_neccessaire = array('N1D', 'N1F', 'N1H', 'N2H', 'N3H', 'N4H', 'NQH', 'CFF', 'CFH', 'MCP');
+				$array_surcl_neccessaire = array('N1D', 'N1F', 'N1H', 'N2', 'N2H', 'N3H', 'N4H', 'NQH', 'CFF', 'CFH', 'MCP');
 				$array_surcl_neccessaire2 = array('N3', 'N4');
 				$codeCompetReduit = substr($row['Code_compet'], 0, 3);
 				$codeCompetReduit2 = substr($row['Code_compet'], 0, 2);
