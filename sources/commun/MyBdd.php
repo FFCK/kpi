@@ -1143,7 +1143,9 @@ class MyBdd
 	// Si vert ou jaune : calculer les cumuls 
 	function CheckCardCumulation($matric, $idMatch, $card, $motif)
 	{
+		$limit = ['V' => 12, 'J' => 3, 'R' => 1, 'D' => 1];
 		$cards = ['V', 'J', 'R', 'D'];
+
 		if (!in_array($card, $cards) || $matric == '') {
 			return;
 		}
@@ -1151,7 +1153,7 @@ class MyBdd
 		$saison = $this->GetActiveSaison();
 		$headers = 'From: kayak-polo.info <contact@kayak-polo.info>' . "\r\n";
 		$msg2 = "";
-		$msg3 = "\r\ncf. Article RP KAP 16 du règlement sportif.\r\n\r\nCordialement\r\nKayak-polo.info\r\n";
+		$msg3 = "\r\ncf. Article RP KAP 57 du règlement sportif.\r\n\r\nCordialement\r\nKayak-polo.info\r\n";
 		$sql = "SELECT lc.Nom, lc.Prenom, lc.Numero_club Club, md.Id_evt_match card,  
 			COUNT(md.Id_evt_match) nb_total, 
 			SUM(IF(j.Code_competition LIKE 'N%', 1, 0)) nb_champ, 
@@ -1205,26 +1207,15 @@ class MyBdd
 			$array[$row['card']] = $row;
 		}
 
-		// Destinataires
-		$destinataires = [];
-		$sql2 = "SELECT u.Mail 
-			FROM kp_rc rc 
-            LEFT OUTER JOIN kp_user u ON (rc.Matric = u.Code) 
-			WHERE rc.Code_saison = ? 
-			AND (rc.Code_competition = ? OR rc.Code_competition = '- CNA -') ";
-		$result2 = $this->pdo->prepare($sql2);
-		$result2->execute(array($saison, $compet));
-		while ($row2 = $result2->fetch()) {
-			$destinataires[] = $row2['Mail'];
-		}
-		$destinataires = implode(',', $destinataires);
 		$msg1 = "### MESSAGE AUTOMATIQUE, NE PAS REPONDRE ###\r\n"
 			. "Bonjour, vous recevez ce message car vous êtes responsable de compétition $compet ou membre du bureau CNA. \r\n\r\n";
 
-		// Envoi
+		// Check
+		$mail = false;
+		$titre = '';
 		switch ($card) {
 			case 'V':
-				if (isset($array['V']['nb_total']) && $array['V']['nb_total'] >= 6) {
+				if (isset($array['V']['nb_total']) && $array['V']['nb_total'] >= $limit['V']) {
 					$msg = $msg1
 						. $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric . ")\r\n"
 						. "   vient de faire l'objet d'un carton vert sur le match $idMatch (" . $array['V']['compet'] . "),\r\n"
@@ -1234,11 +1225,12 @@ class MyBdd
 					fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
 					fclose($fp);
 					// Envoi du mail
-					mail($destinataires, "[KPI] Alerte carton vert $compet", $msg, $headers);
+					$titre = "[KPI] Alerte carton vert $compet";
+					$mail = true;
 				}
 				break;
 			case 'J':
-				if (isset($array['J']['nb_total']) && $array['J']['nb_total'] >= 3) {
+				if (isset($array['J']['nb_total']) && $array['J']['nb_total'] >= $limit['J']) {
 					$msg = $msg1
 						. $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric . ")\r\n"
 						. "   vient de faire l'objet d'un carton jaune sur le match $idMatch (" . $array['J']['compet'] . "),\r\n"
@@ -1248,11 +1240,12 @@ class MyBdd
 					fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
 					fclose($fp);
 					// Envoi du mail
-					mail($destinataires, "[KPI] Alerte carton jaune $compet", $msg, $headers);
+					$titre = "[KPI] Alerte carton jaune $compet";
+					$mail = true;
 				}
 				break;
 			case 'R':
-				if (isset($array['R']['nb_total']) && $array['R']['nb_total'] >= 1) {
+				if (isset($array['R']['nb_total']) && $array['R']['nb_total'] >= $limit['R']) {
 					$msg = $msg1
 						. $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric . ")\r\n"
 						. "   vient de faire l'objet d'un carton rouge sur le match $idMatch (" . $array['R']['compet'] . "),\r\n"
@@ -1262,11 +1255,12 @@ class MyBdd
 					fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
 					fclose($fp);
 					// Envoi du mail
-					mail($destinataires, "[KPI] Alerte carton rouge $compet", $msg, $headers);
+					$titre = "[KPI] Alerte carton rouge $compet";
+					$mail = true;
 				}
 				break;
 			case 'D':
-				if (isset($array['D']['nb_total']) && $array['D']['nb_total'] >= 1) {
+				if (isset($array['D']['nb_total']) && $array['D']['nb_total'] >= $limit['D']) {
 					$msg = $msg1
 						. $prenom . ' ' . $nom . ', club ' . $club . ' (licence ' . $matric . ")\r\n"
 						. "   vient de faire l'objet d'un carton rouge définitif sur le match $idMatch (" . $array['R']['compet'] . "),\r\n"
@@ -1276,11 +1270,30 @@ class MyBdd
 					fputs($fp, $msg . "\r\n"); // on ecrit et on va a la ligne
 					fclose($fp);
 					// Envoi du mail
-					mail($destinataires, "[KPI] Alerte carton rouge $compet", $msg, $headers);
+					$titre = "[KPI] Alerte carton rouge $compet";
+					$mail = true;
 				}
 				break;
 			default:
 				break;
+		}
+		// envoi
+		if ($mail) {
+			// Destinataires
+			$destinataires = [];
+			$sql2 = "SELECT u.Mail 
+				FROM kp_rc rc 
+				LEFT OUTER JOIN kp_user u ON (rc.Matric = u.Code) 
+				WHERE rc.Code_saison = ? 
+				AND (rc.Code_competition = ? OR rc.Code_competition = '- CNA -') ";
+			$result2 = $this->pdo->prepare($sql2);
+			$result2->execute(array($saison, $compet));
+			while ($row2 = $result2->fetch()) {
+				$destinataires[] = $row2['Mail'];
+			}
+			$destinataires = implode(',', $destinataires);
+
+			mail($destinataires, $titre, $msg, $headers);
 		}
 	}
 
