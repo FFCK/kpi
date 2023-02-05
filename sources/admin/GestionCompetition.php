@@ -1037,7 +1037,7 @@ class GestionCompetition extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(10);
+		parent::__construct(10);
 
 		if ($_SESSION['Profile'] == 9) {
 			header("Location: SelectFeuille.php");

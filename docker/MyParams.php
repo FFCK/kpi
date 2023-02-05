@@ -30,4 +30,4 @@ define('FTP_USER_PASS', '');
 define('PATH_ABS', '/var/www/html/');		// Chemin Absolu	 
 define('PATH_REL', './');									// Chemin Relatif 	
 define('MAIN_DIRECTORY', '');
-
+define('SMARTY_DIR', '/var/www/html/Smarty-Lib/');

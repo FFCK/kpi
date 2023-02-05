@@ -23,7 +23,7 @@ class MyPage
 	var $m_tpl;
 	
 	// Constructeur ...
-	function MyPage()
+	function __construct()
 	{
 		// session_start();
 	}
@@ -266,7 +266,7 @@ class MyPage
 	// DisplayTemplate
 	function DisplayTemplateGlobal($tplName)
 	{
-		$tplFullName  = $this->m_tpl->template_dir;
+		$tplFullName  = $this->m_tpl->getTemplateDir();
 		$tplFullName .= '/';
 		$tplFullName .= $tplName;
 		$tplFullName .= $this->GetTemplateExtension();
@@ -293,9 +293,10 @@ class MyPage
 
 class MyPageSecure extends MyPage
 {
-	function MyPageSecure($profile)
+	function __construct($profile)
 	{
-        if (session_status() == PHP_SESSION_NONE) {
+		parent::__construct();
+		if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
         

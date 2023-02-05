@@ -101,7 +101,7 @@
     {if is_file($temp)}
       <script src="../js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
     {/if}
-    {literal}
+    
       <!-- Piwik -->
       <script type="text/javascript">
         var _paq = _paq || [];
@@ -131,7 +131,7 @@
         }, 300000);
       </script>
       <!-- End Maintien connexion -->
-    {/literal}
+    
 
   {/if}
   {include file='footer.tpl'}
