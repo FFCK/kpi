@@ -172,9 +172,9 @@ class GestionClassement extends MyPageSecure
 				
 			$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 			if ($_SESSION['lang'] == 'fr') {
-				$recordCompetition['Date_calcul'] = strftime('%d/%m/%Y à %R', strtotime($recordCompetition['Date_calcul']));
-				$recordCompetition['Date_publication'] = strftime('%d/%m/%Y à %R', strtotime($recordCompetition['Date_publication']));
-				$recordCompetition['Date_publication_calcul'] = strftime('%d/%m/%Y à %R', strtotime($recordCompetition['Date_publication_calcul']));
+				$recordCompetition['Date_calcul'] = date('d/m/Y \à H:i', strtotime($recordCompetition['Date_calcul']));
+				$recordCompetition['Date_publication'] = date('d/m/Y \à H:i', strtotime($recordCompetition['Date_publication']));
+				$recordCompetition['Date_publication_calcul'] = date('d/m/Y \à H:i', strtotime($recordCompetition['Date_publication_calcul']));
 			}
 	
 			$this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
