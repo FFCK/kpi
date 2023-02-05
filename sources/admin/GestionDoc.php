@@ -132,8 +132,8 @@ class GestionDoc extends MyPageSecure
 		//Détails Compet
 		$detailsCompet = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		if ($_SESSION['lang'] == 'fr') {
-			$detailsCompet['Date_calcul'] = strftime('%d/%m/%Y à %R', strtotime($detailsCompet['Date_calcul']));
-			$detailsCompet['Date_publication'] = strftime('%d/%m/%Y à %R', strtotime($detailsCompet['Date_publication']));
+			$detailsCompet['Date_calcul'] = date('d/m/Y \à H:i', strtotime($detailsCompet['Date_calcul']));
+			$detailsCompet['Date_publication'] = date('d/m/Y \à H:i', strtotime($detailsCompet['Date_publication']));
 		}
 
 		if ($detailsCompet['BandeauLink'] != '' && strpos($detailsCompet['BandeauLink'], 'http') === FALSE ) {

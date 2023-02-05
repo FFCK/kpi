@@ -427,8 +427,8 @@ class FeuilleMatch extends MyPage
                         }
                     }
                     $d[6] = $row5['Periode'] . ' - ';
-                    if (strftime("%M:%S", strtotime($row5['Temps'])) != '00:00') {
-                        $d[6] .= strftime("%M:%S", strtotime($row5['Temps']));
+                    if (date("i:s", strtotime($row5['Temps'])) != '00:00') {
+                        $d[6] .= date("i:s", strtotime($row5['Temps']));
                     }
                 }
                 if ($i <= 26) {
