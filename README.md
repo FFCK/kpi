@@ -48,7 +48,9 @@ ___IFRAMES___
 ___DOCKER___
 
 créer le fichier ./docker/error7.log
+
 cd docker
+
 docker-compose up
 
 alimenter la base de donnée my_database
