@@ -125,10 +125,12 @@ class Schema extends MyPageSecure
 
             // Journées
             $etapes = 0;
+            $matchs = 0;
             if ($event > 0) {
                 $sql = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, 
-                    j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement 
-                    FROM kp_journee j, kp_evenement_journee ej 
+                    j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement, COUNT(m.id) nb_matchs
+                    FROM kp_evenement_journee ej, kp_journee j
+                    LEFT JOIN kp_match m ON j.id = m.id_journee
                     WHERE ej.Id_journee = j.Id 
                     AND ej.Id_evenement = ? 
                     AND j.Code_competition = ? 
@@ -136,14 +138,16 @@ class Schema extends MyPageSecure
                     AND j.Etape LIKE ? 
                     AND j.Phase != 'Break'
                     AND j.Phase != 'Pause'
+                    GROUP BY Id_journee
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
             } else {
                 $arrayQuery = [];
                 $sql = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, 
-                    j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement 
-                    FROM kp_journee j 
+                    j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement, COUNT(m.id) nb_matchs
+                    FROM kp_journee j
+                    LEFT JOIN kp_match m ON j.id = m.id_journee
                     WHERE j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ?
@@ -153,7 +157,9 @@ class Schema extends MyPageSecure
                     $sql .= "AND j.Id = ? ";
                     $arrayQuery = [$idSelJournee];
                 }
-                $sql .= "ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
+                $sql .= "
+                    GROUP BY Id_journee
+                    ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge([$codeCompet], [$codeSaison], [$Round], $arrayQuery));
             }
@@ -164,6 +170,7 @@ class Schema extends MyPageSecure
                 if ($row['Etape'] > $etapes) {
                     $etapes = $row['Etape'];
                 }
+                $matchs += $row['nb_matchs'];
             }
 
             // Classement public par journée/phase
@@ -368,6 +375,7 @@ class Schema extends MyPageSecure
         } else {
             $this->m_tpl->assign('largeur', 12);
         }
+        $this->m_tpl->assign('matchs', $matchs);
         $this->m_tpl->assign('page', 'chart');
         $this->m_tpl->assign('skipheader', true);
         $this->m_tpl->assign('skipfooter', true);
