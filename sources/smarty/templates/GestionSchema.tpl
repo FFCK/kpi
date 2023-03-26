@@ -12,6 +12,7 @@
       {else}
         <span>{$recordCompetition.Libelle}{$recordCompetition.Soustitre2|indent:1:" - "}</span>
       {/if}
+    <small class="bg-info">{$matchs} {#Match#}{if $matchs>1}s{/if}</small>
     </h2>
   </div>
 </div>
@@ -29,7 +30,7 @@
         {assign var='Etape' value=$arrayJournees[$idJournee].Etape}
         {if $arrayJournees[$idJournee].Type == 'C'}
           <div class="padBottom table-responsive col-md-12 tablePhase">
-            <h4 class="row text-center">{$arrayJournees[$idJournee].Phase}</h4>
+            <h4 class="row text-center">{$arrayJournees[$idJournee].Phase} <small>({$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if})</small></h4>
             <table class='table table-striped table-condensed table-hover'>
               <thead>
                 <tr>
@@ -90,7 +91,7 @@
           </div>
         {elseif $arrayMatchs[$idJournee]|@count > 0}
           <div class="padBottom table-responsive col-md-12 tableMatch">
-            <h4 class="row text-center">{$arrayJournees[$idJournee].Phase}</h4>
+        <h4 class="row text-center">{$arrayJournees[$idJournee].Phase} <small>({$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if})</small></h4>
             {section name=j loop=$arrayMatchs[$idJournee]}
               <div class="row cliquableNomEquipe {if !$smarty.section.j.last}padBottom{/if}">
                 {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
