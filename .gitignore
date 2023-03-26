@@ -70,3 +70,5 @@ sources/img/KIP/players/*.png
 sources/img/KIP/boats/*.png
 sources/img/KIP/vests/*.png
 sources/img/KIP/helmets/*.png
+/docker/db/mysql/*
+!/docker/db/mysql/.gitkeep
