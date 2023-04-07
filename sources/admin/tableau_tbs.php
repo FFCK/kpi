@@ -22,7 +22,9 @@ $template = 'matchs.ods';
 if (!file_exists($template)) exit("File does not exist.");
 
 // Prepare some data for the sheet
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 $myBdd = new MyBdd();
 $listMatch = utyGetSession('listMatch', 0);
 $listMatch = explode(',', $listMatch);
@@ -50,11 +52,11 @@ while ($aRow = $result->fetch()) {
 		$aRow['EquipeB'] = $EquipesAffectAuto[1];
 	if ($aRow['Arbitre_principal'] != '' && $aRow['Arbitre_principal'] != '-1')
 		$aRow['Arbitre_principal'] = utyArbSansNiveau($aRow['Arbitre_principal']);
-	elseif ($EquipesAffectAuto[2] != '')
+	elseif (count($EquipesAffectAuto) > 2 && $EquipesAffectAuto[2] != '')
 		$aRow['Arbitre_principal'] = $EquipesAffectAuto[2];
 	if ($aRow['Arbitre_secondaire'] != '' && $aRow['Arbitre_secondaire'] != '-1')
 		$aRow['Arbitre_secondaire'] = utyArbSansNiveau($aRow['Arbitre_secondaire']);
-	elseif ($EquipesAffectAuto[3] != '')
+	elseif (count($EquipesAffectAuto) > 3 && $EquipesAffectAuto[3] != '')
 		$aRow['Arbitre_secondaire'] = $EquipesAffectAuto[3];
 
 	array_push($arrayMatchs, $aRow);
