@@ -117,10 +117,10 @@ class MyBdd
 	// }
 
 	// NumRows			$num_results = $myBdd->NumRows($result);
-	function NumRows($result)
-	{
-		return mysqli_num_rows($result);
-	}
+	// function NumRows($result)
+	// {
+	// 	return mysqli_num_rows($result);
+	// }
 
 	// NumFields			$num_fields = $myBdd->NumFields($result);
 	// function NumFields($result)
@@ -135,10 +135,10 @@ class MyBdd
 	// }
 
 	// FetchArray		$row = $myBdd->FetchArray($result);
-	function FetchArray($result, $resulttype = MYSQLI_ASSOC)
-	{
-		return mysqli_fetch_array($result, $resulttype);
-	}
+	// function FetchArray($result, $resulttype = MYSQLI_ASSOC)
+	// {
+	// 	return mysqli_fetch_array($result, $resulttype);
+	// }
 
 	// FetchAssoc		$row = $myBdd->FetchAssoc($result);
 	// function FetchAssoc($result)
@@ -1394,11 +1394,8 @@ class MyBdd
 		$sql = "SELECT Id_journee 
 			FROM kp_evenement_journee 
 			WHERE Id_evenement = $idEvenement ";
-		$result = $this->pdo->query($sql) or die("Erreur Load");
-		$num_results = $this->NumRows($result);
-
-		for ($i = 0; $i < $num_results; $i++) {
-			$row = $this->FetchArray($result);
+		$stmt = $this->pdo->query($sql) or die("Erreur Load");
+		while ($row = $stmt->fetch()) {
 
 			$lstJournee .= ',';
 			$lstJournee .= $row['Id_journee'];
