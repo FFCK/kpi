@@ -80,7 +80,7 @@ class Schema extends MyPageSecure
         $journee = 0;
 
         if (strlen($codeCompet) > 0) {
-            // Classement public				
+            // Classement
             $sql = "SELECT ce.*, c.Code_comite_dep 
                 FROM kp_competition_equipe ce, kp_club c 
                 WHERE ce.Code_compet = ? 
@@ -173,7 +173,7 @@ class Schema extends MyPageSecure
                 $matchs += $row['nb_matchs'];
             }
 
-            // Classement public par journée/phase
+            // Classement par journée/phase
             if ($event > 0) {
                 $sql = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, cej.Id_journee, 
                     cej.Clt_publi, cej.Pts_publi, cej.J_publi, cej.G_publi, cej.N_publi, 
@@ -247,7 +247,7 @@ class Schema extends MyPageSecure
                 );
             }
 
-            // Matchs publics par journée / phase
+            // Matchs par journée / phase
             if ($event > 0) {
                 $sql = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, 
                     m.Libelle, m.Terrain, m.Publication, m.Validation, m.Statut, m.Periode, 
@@ -265,7 +265,7 @@ class Schema extends MyPageSecure
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
-                    ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
+                    ORDER BY j.Etape, j.Niveau DESC, m.Date_match, m.Heure_match ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
             } else {
@@ -283,7 +283,7 @@ class Schema extends MyPageSecure
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
-                    ORDER BY j.Etape, j.Niveau DESC, j.Id ASC ";
+                    ORDER BY j.Etape, j.Niveau DESC, m.Date_match, m.Heure_match ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round));
             }
@@ -306,6 +306,15 @@ class Schema extends MyPageSecure
                 if (isset($intitule[1]) && $row['Id_equipeB'] <= 1) {
                     $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
                 }
+                // Heure début et fin de la phase
+                if (!isset($arrayJournees[$row['Id_journee']]['start_time'])) {
+                    $arrayJournees[$row['Id_journee']]['start_time'] = $row['Heure_match'];
+                }
+                // if (!isset($arrayJournees[$row['Id_journee']]['end_time'])
+                //     || $arrayJournees[$row['Id_journee']]['end_time'] !== $arrayJournees[$row['Id_journee']]['start_time']) {
+                    $arrayJournees[$row['Id_journee']]['end_time'] = $row['Heure_match'];
+                // }
+
                 $arrayMatchs[$journee][] = $row;
             }
 

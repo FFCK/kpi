@@ -30,7 +30,14 @@
         {assign var='Etape' value=$arrayJournees[$idJournee].Etape}
         {if $arrayJournees[$idJournee].Type == 'C'}
           <div class="padBottom table-responsive col-md-12 tablePhase">
-            <h4 class="row text-center">{$arrayJournees[$idJournee].Phase} <small>({$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if})</small></h4>
+            <h4 class="row text-center">
+              {$arrayJournees[$idJournee].Phase} 
+              <small class="bg-info">{$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if}</small>
+              <small>
+                {$arrayJournees[$idJournee].start_time}
+                {if $arrayJournees[$idJournee].end_time!=$arrayJournees[$idJournee].start_time}-{$arrayJournees[$idJournee].end_time}{/if}
+              </small>
+            </h4>
             <table class='table table-striped table-condensed table-hover'>
               <thead>
                 <tr>
@@ -91,7 +98,14 @@
           </div>
         {elseif $arrayMatchs[$idJournee]|@count > 0}
           <div class="padBottom table-responsive col-md-12 tableMatch">
-        <h4 class="row text-center">{$arrayJournees[$idJournee].Phase} <small>({$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if})</small></h4>
+        <h4 class="row text-center">
+          {$arrayJournees[$idJournee].Phase}
+          {* <small class="bg-info">{$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if}</small> *}
+          <small>
+            {$arrayJournees[$idJournee].start_time}
+            {if $arrayJournees[$idJournee].end_time!=$arrayJournees[$idJournee].start_time}-{$arrayJournees[$idJournee].end_time}{/if}
+          </small>
+        </h4>
             {section name=j loop=$arrayMatchs[$idJournee]}
               <div class="row cliquableNomEquipe {if !$smarty.section.j.last}padBottom{/if}">
                 {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
