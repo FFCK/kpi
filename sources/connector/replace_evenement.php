@@ -137,12 +137,10 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	$sql.= "Where b.Id_evenement In ($lstEvenement) ";
 	$sql.= "And a.Id = b.Id_journee ";
 	
-	$result = $myBdd->pdo->query($sql);
-	$num_results = $myBdd->NumRows($result);
+	$stmt = $myBdd->pdo->query($sql);
 	
 	$lstJournees = '-1';
-	for ($i = 0; $i < $num_results; $i++) {
-		$row = $myBdd->FetchArray($result);	 
+	while ($row = $stmt->fetch()) {
 		$lstJournees .= ','.$row[0];
 	}
 	
@@ -150,12 +148,10 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	$sql = "Select Id ";
 	$sql.= "From kp_match ";
 	$sql.= "Where Id_journee In ($lstJournees) ";
-	$result = $myBdd->pdo->query($sql);
-	$num_results = $myBdd->NumRows($result);
+	$stmt = $myBdd->pdo->query($sql);
 	
 	$lstMatchs = '-1';
-	for ($i = 0; $i < $num_results; $i++) {
-		$row = $myBdd->FetchArray($result);	 
+	while ($row = $stmt->fetch()) {
 		$lstMatchs .= ','.$row[0];
 	}
 

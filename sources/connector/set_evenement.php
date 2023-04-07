@@ -19,9 +19,10 @@ if (utyGetGet('json', false)) {
 	$myBdd = new MyBdd(true);	// Connexion sur le site Mirroir (poloweb5)
 
 	$result = $myBdd->pdo->query($sql);
-	if ($myBdd->NumRows($result) == 1)
+	if ($result->rowCount() == 1)
 	{
-		$row = $myBdd->FetchArray($result);  
+		$row = $result->fetch();
+
 		if ( ($row["Pwd"] === md5($pwd)) )
 		{
 			// Ici on peut intégrer les données ...
