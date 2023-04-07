@@ -226,7 +226,7 @@ class Tv extends MyPageSecure
     // Tv 		
     function __construct()
     {
-        MyPageSecure::MyPageSecure(2);
+        parent::__construct(2);
 
         $this->SetTemplate("KPI Tv control", "Matchs", true);
         $this->Load();

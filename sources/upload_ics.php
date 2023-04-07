@@ -1,7 +1,9 @@
 <?php
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 $journee = (int) utyGetGet('J', 0);
 $Compet = utyGetSession('codeCompet', '');

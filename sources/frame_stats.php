@@ -109,7 +109,7 @@ class Stats extends MyPage
 	// Stats 		
 	function __construct()
 	{			
-        MyPage::MyPage();
+        parent::__construct();
 		
 		$this->SetTemplate("Stats", "Classements", true);
 		$this->Load();

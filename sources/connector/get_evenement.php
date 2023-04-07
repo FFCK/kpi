@@ -10,7 +10,7 @@ function load( & $arrayJson, $sql,  & $bdd)
 {
 	$lstId = '-1';
 	$table = array();
-	$result = $bdd->Query($sql);
+	$result = $bdd->pdo->query($sql);
 	while ($row = $bdd->FetchArray($result)){ 
 		
 		$record = array();

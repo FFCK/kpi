@@ -500,7 +500,7 @@ class GestionMatchEquipeJoueur extends MyPageSecure
 	
 	function __construct()
 	{			
-	  	MyPageSecure::MyPageSecure(9);
+	  	parent::__construct(9);
 		
 		$alertMessage = '';
 		

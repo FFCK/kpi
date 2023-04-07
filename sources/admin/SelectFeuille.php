@@ -12,7 +12,7 @@ class SelectFeuille extends MyPageSecure
 
     function __construct()
     {			
-        MyPageSecure::MyPageSecure(10);
+        parent::__construct(10);
         
         $target = utyGetGet('target', 'FeuilleMarque2.php');
         switch ($target) {

@@ -1,6 +1,8 @@
 <?php
 include_once('../commun/MyBdd.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 function GetOffset($tableName, &$bdd)
 {
@@ -44,12 +46,12 @@ function Replace_Table($tableName, &$jsonArray, &$bdd, $indexCol1=-1, $offset1=0
 			if ($j > 0) 
 				$sql .= ',';
 			$sql .= "'";
-			$sql .= $myBdd->RealEscapeString($recTable[$j]);
+			$sql .= $recTable[$j];
 			$sql .= "'";
 		}
 		$sql .= ')';
 		
-		$myBdd->Query($sql);
+		$myBdd->pdo->query($sql);
 	}
 
 	return 'Table '.$tableName.' = '.$nbRows.' <br>';
@@ -135,7 +137,7 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	$sql.= "Where b.Id_evenement In ($lstEvenement) ";
 	$sql.= "And a.Id = b.Id_journee ";
 	
-	$result = $myBdd->Query($sql);
+	$result = $myBdd->pdo->query($sql);
 	$num_results = $myBdd->NumRows($result);
 	
 	$lstJournees = '-1';
@@ -148,7 +150,7 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	$sql = "Select Id ";
 	$sql.= "From kp_match ";
 	$sql.= "Where Id_journee In ($lstJournees) ";
-	$result = $myBdd->Query($sql);
+	$result = $myBdd->pdo->query($sql);
 	$num_results = $myBdd->NumRows($result);
 	
 	$lstMatchs = '-1';
@@ -160,30 +162,30 @@ function Delete_Evenement(&$jsonArray, &$bdd)
 	// Suppression Matchs_Detail ...
 	$sql = "Delete From kp_match_detail ";
 	$sql.= "Where Id_match In ($lstMatchs) ";
-	$myBdd->Query($sql);
+	$myBdd->pdo->query($sql);
 
 	// Suppression Matchs_Joueurs ...
 	$sql = "Delete From kp_match_joueur ";
 	$sql.= "Where Id_match In ($lstMatchs) ";
-	$myBdd->Query($sql);
+	$myBdd->pdo->query($sql);
 	
 	// Suppression Matchs ...
 	$sql = "Delete From kp_match ";
 	$sql.= "Where Id In ($lstMatchs) ";
-	$myBdd->Query($sql);
+	$myBdd->pdo->query($sql);
 	
 	// Suppression Journees ...
 	$sql = "Delete From kp_journee ";
 	$sql.= "Where Id In ($lstJournees) ";
-	$myBdd->Query($sql);
+	$myBdd->pdo->query($sql);
 	
 	// Suppression Evenement_Journees ...
 	$sql = "Delete From kp_evenement_journee ";
 	$sql.= "Where Id_evenement In ($lstEvenement) ";
-	$myBdd->Query($sql);
+	$myBdd->pdo->query($sql);
 	
 	// Suppression Evenement ...
 	$sql = "Delete From kp_evenement ";
 	$sql.= "Where Id In ($lstEvenement) ";
-	$myBdd->Query($sql);
+	$myBdd->pdo->query($sql);
 }

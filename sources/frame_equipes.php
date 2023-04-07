@@ -161,7 +161,7 @@ class Equipes extends MyPage
 
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
 
         $this->SetTemplate("Equipes", "Equipes", true);
         $this->Load();

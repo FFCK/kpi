@@ -30,7 +30,7 @@ class PdfQrCodeApp extends MyPage
 
   function __construct()
   {
-    MyPage::MyPage();
+    parent::__construct();
     // Chargement des titre ...
     $myBdd = new MyBdd();
     $idEvenement = utyGetSession('idEvenement', -1);

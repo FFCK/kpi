@@ -405,7 +405,7 @@ class Phases extends MyPage
 	// Phases 		
 	function __construct()
 	{			
-        MyPage::MyPage();
+        parent::__construct();
 
 		$this->SetTemplate("Phases", "Classements", true);
 		$this->Load();

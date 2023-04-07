@@ -7,7 +7,9 @@ if(!$isAjax) {
   trigger_error($user_error, E_USER_ERROR);
 }
 // ***************************************************************************
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 

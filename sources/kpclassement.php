@@ -146,7 +146,7 @@ class Classement extends MyPage
 	// Classement 		
 	function __construct()
 	{
-		MyPage::MyPage();
+		parent::__construct();
 
 		$this->SetTemplate("Classement", "Classements", true);
 		$this->Load();

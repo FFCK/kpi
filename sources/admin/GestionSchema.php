@@ -408,7 +408,7 @@ class Schema extends MyPageSecure
     // GestionClassement 		
     function __construct()
     {
-        MyPageSecure::MyPageSecure(10);
+        parent::__construct(10);
 
         $this->SetTemplate("Schema", "Journees_phases", false);
         $this->Load();

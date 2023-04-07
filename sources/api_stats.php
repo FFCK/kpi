@@ -4,13 +4,15 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 $myBdd = new MyBdd();
-$format = $myBdd->RealEscapeString(trim(utyGetGet('format', 'csv')));
-$saison = (int) $myBdd->RealEscapeString(trim(utyGetGet('saison')));
-$competitions = explode(",", $myBdd->RealEscapeString(trim(utyGetGet('competitions'))));
+$format = trim(utyGetGet('format', 'csv'));
+$saison = (int) trim(utyGetGet('saison'));
+$competitions = explode(",", trim(utyGetGet('competitions')));
 $in  = str_repeat('?,', count($competitions) - 1) . '?';
-$all = (int) $myBdd->RealEscapeString(trim(utyGetGet('all', 2)));
+$all = (int) trim(utyGetGet('all', 2));
 if ($saison > 2000 && $competitions != '') {
     $arrayStats = [];
     switch ($all) {

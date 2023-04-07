@@ -8,7 +8,9 @@ class PDF extends FPDF
 var $x0;
 }
 
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 $pdf=new PDF('L');
 $pdf->Open();

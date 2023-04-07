@@ -69,7 +69,7 @@ class Scenario extends MyPageSecure
     // Scenario 		
     function __construct()
     {
-        MyPageSecure::MyPageSecure(2);
+        parent::__construct(2);
         $alertMessage = '';
 
         if (utyGetPost('update', false) == 'Update') {

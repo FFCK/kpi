@@ -1,6 +1,8 @@
 <?php
 include_once('../commun/MyTools.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 switch(utyGetPost('masquer', false)) {
     case 1:
         $_SESSION['masquer'] = 1;

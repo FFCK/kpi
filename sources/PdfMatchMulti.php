@@ -16,7 +16,7 @@ class FeuilleMatch extends MyPage
 {
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
 
         $listMatch = utyGetGet('listMatch', -1);
         if ($listMatch == -1 || $listMatch == '') {

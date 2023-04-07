@@ -375,7 +375,7 @@ class Chart extends MyPage
     // Chart 		
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
 
         $this->SetTemplate("Deroulement", "Classements", true);
         $this->Load();

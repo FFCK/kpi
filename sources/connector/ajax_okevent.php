@@ -2,7 +2,9 @@
 
 include_once($_SERVER['DOCUMENT_ROOT'].'/commun/MyConfig.php');
 include_once($_SERVER['DOCUMENT_ROOT'].'/commun/MyBdd.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 $user = $_SESSION['User'];
 

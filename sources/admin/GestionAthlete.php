@@ -328,7 +328,7 @@ class GestionAthlete extends MyPageSecure
 
     function __construct()
     {
-        MyPageSecure::MyPageSecure(7);
+        parent::__construct(7);
 
         $alertMessage = '';
 

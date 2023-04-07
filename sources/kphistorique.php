@@ -184,7 +184,7 @@ class Historique extends MyPage
 	// Historique		
 	function __construct()
 	{			
-		MyPage::MyPage();
+		parent::__construct();
 		
 		$this->SetTemplate("Historique", "Historique", true);
 		$this->Load();
