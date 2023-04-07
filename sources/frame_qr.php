@@ -81,7 +81,7 @@ class Qr extends MyPage
     // Classement 		
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
 
         $this->SetTemplate("QrCodes", "Matchs", true);
         $this->Load();

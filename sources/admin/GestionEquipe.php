@@ -730,7 +730,7 @@ class GestionEquipe extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(10);
+		parent::__construct(10);
 
 		$this->myBdd = new MyBdd();
 

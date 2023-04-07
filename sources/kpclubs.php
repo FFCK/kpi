@@ -21,7 +21,7 @@ class Clubs extends MyPage
 
 	function __construct()
 	{			
-	  	MyPage::MyPage();
+	  	parent::__construct();
 		
 		$alertMessage = '';
 		

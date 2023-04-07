@@ -30,7 +30,7 @@ class PdfQrCodes extends MyPage
 
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
         // Chargement des titre ...
         $myBdd = new MyBdd();
         $lstJournee = utyGetSession('lstJournee', 0);

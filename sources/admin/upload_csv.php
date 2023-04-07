@@ -1,6 +1,8 @@
 <?php
 include_once('../commun/MyTools.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 // Export to CSV
 if (utyGetGet('action') == 'export') {

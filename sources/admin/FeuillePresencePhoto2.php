@@ -40,7 +40,7 @@ class FeuillePresencePhoto extends MyPage
   {
     define('FPDF_FONTPATH', 'font/');
 
-    MyPage::MyPage();
+    parent::__construct();
 
     $myBdd = new MyBdd();
 

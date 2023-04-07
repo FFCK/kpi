@@ -2,13 +2,15 @@
 // $begin_time = array_sum(explode(' ', microtime()));
 
 include_once('../commun/MyTools.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 $myBdd = new MyBdd();
 
 $codeSaison = $myBdd->GetActiveSaison();
 // Chargement
-$q = $myBdd->RealEscapeString(utyGetGet('q'));
+$q = utyGetGet('q');
 $q = preg_replace('`^[0]*`','',$q);
 
 if (strlen($q) < 2){

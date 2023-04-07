@@ -16,7 +16,7 @@ class ImportPCE extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(6);
+		parent::__construct(6);
 		$myBdd = new MyBdd();
 
 		$jsondata = '';

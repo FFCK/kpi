@@ -8,12 +8,11 @@ $smarty = new Smarty();
 
 class MySmarty extends Smarty 
 {
-	function MySmarty()
+	function __construct()
 	{
 		// Constructeur de la classe.
 		// Appelé automatiquement à l'instanciation de la classe.
-		
-		$this->Smarty();
+		parent::__construct();
 							   
         $this->template_dir = PATH_ABS . 'smarty/templates';
         $this->compile_dir =  PATH_ABS . 'smarty/templates_c';

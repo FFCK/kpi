@@ -463,7 +463,7 @@ class Matchs extends MyPage
     function __construct()
     {
         // $debut = microtime(true);
-        MyPage::MyPage();
+        parent::__construct();
 
         $this->SetTemplate("Matchs", "Matchs", true);
         $this->Load();

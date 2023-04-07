@@ -575,7 +575,7 @@ class GestionUtilisateur extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(3);
+		parent::__construct(3);
 
 		$alertMessage = '';
 

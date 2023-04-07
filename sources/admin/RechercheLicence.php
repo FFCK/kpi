@@ -340,7 +340,7 @@ class RechercheLicence extends MyPageSecure
 	
 	function __construct()
 	{			
-	  	MyPageSecure::MyPageSecure(10);
+	  	parent::__construct(10);
 		
 		$Cmd = utyGetPost('Cmd');
 		$ParamCmd = utyGetPost('ParamCmd');

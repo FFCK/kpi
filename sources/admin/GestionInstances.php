@@ -56,7 +56,7 @@ class GestionInstances extends MyPageSecure
 	
 	function __construct()
 	{			
-		MyPageSecure::MyPageSecure(8);
+		parent::__construct(8);
 		
 		$alertMessage = '';
 

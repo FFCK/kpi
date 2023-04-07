@@ -1,4 +1,7 @@
 <?php
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 header ('Content-type:text/html; charset=utf-8');
 // Maintenance
 //die ('<h1>Site en cours de maintenance.<br />Merci de patienter quelques instants...</h1>');
@@ -7,7 +10,6 @@ include_once('MyConfig.php');
 include_once('MySmarty.php');
 include_once('MyTools.php');
 
-session_start();
 if (utyGetGet('debug') == 1) {
 	error_reporting(E_ERROR | E_WARNING | E_PARSE);
 	ini_set("display_errors", 1);
@@ -23,7 +25,7 @@ class MyPage
 	var $m_tpl;
 	
 	// Constructeur ...
-	function MyPage()
+	function __construct()
 	{
 		// session_start();
 	}
@@ -293,7 +295,7 @@ class MyPage
 
 class MyPageSecure extends MyPage
 {
-	function MyPageSecure($profile)
+	function __construct($profile)
 	{
         if (session_status() == PHP_SESSION_NONE) {
             session_start();

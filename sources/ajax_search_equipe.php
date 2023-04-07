@@ -4,7 +4,7 @@ include_once('commun/MyTools.php');
 
 $myBdd = new MyBdd();
 // Chargement
-$term = $myBdd->RealEscapeString(trim(utyGetGet('q', '')));
+$term = trim(utyGetGet('q', ''));
 // replace multiple spaces with one
 $term = preg_replace('/\s+/', ' ', $term);
 // supprime les 0 devant les numéros

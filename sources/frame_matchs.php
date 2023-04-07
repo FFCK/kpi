@@ -473,7 +473,7 @@ class Matchs extends MyPage
 
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
 
         $this->SetTemplate("Matchs", "Matchs", true);
         $this->Load();

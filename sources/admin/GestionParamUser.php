@@ -114,7 +114,7 @@ class GestionParamUser extends MyPageSecure
 	
 	function __construct()
 	{			
-	  	MyPageSecure::MyPageSecure(100);
+	  	parent::__construct(100);
 		
 		$Cmd = utyGetPost('Cmd', '');
 		$alertMessage = '';

@@ -4,7 +4,9 @@ include_once('create_cache_match.php');
 include_once('page.php');
 include_once('../commun/MyTools.php');
 
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 class Event extends MyPage
 {

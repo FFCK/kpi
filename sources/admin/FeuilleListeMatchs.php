@@ -29,7 +29,7 @@ class FeuilleListeMatchs extends MyPage
 
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
         // Chargement des Matchs des journées ...
         $filtreJour = utyGetSession('filtreJour', '');
         $filtreJour = utyGetPost('filtreJour', $filtreJour);

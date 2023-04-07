@@ -25,7 +25,7 @@ class FeuilleCltNiveauNiveau extends MyPage
 {
 	function FeuilleCltNiveauNiveau()
 	{
-		MyPage::MyPage();
+		parent::__construct();
 
 		$myBdd = new MyBdd();
 		$codeCompet = utyGetSession('codeCompet', '');

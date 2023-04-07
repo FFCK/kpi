@@ -11,12 +11,14 @@ if(!$isAjax) {
 include_once('../../commun/MyBdd.php');
 include_once('../../commun/MyTools.php');
 
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 $myBdd = new MyBdd();
 $idJournee = (int) utyGetPost('Id_Journee', 0);
-$Valeur = $myBdd->RealEscapeString(trim(utyGetPost('Valeur')));
-$TypeUpdate = $myBdd->RealEscapeString(trim(utyGetPost('TypeUpdate')));
+$Valeur = trim(utyGetPost('Valeur'));
+$TypeUpdate = trim(utyGetPost('TypeUpdate'));
 if (!in_array($TypeUpdate, ['Publication', 'Type'])) {
 	header('HTTP/1.0 401 Unauthorized');
 	die('Action non autorisée !');
