@@ -5,6 +5,7 @@ services:
             context: ./web7
             dockerfile: Dockerfile-php7.4
         ports:
+            - 8800:8000
             - 8087:80
             - 447:443
         volumes:
@@ -15,6 +16,8 @@ services:
             - ./mail.log:/var/log/msmtp.log
         environment:
             - ALLOW_OVERRIDE=true
+        extra_hosts:
+            - host.docker.internal:host-gateway
     db:
         container_name: kpi_db
         image: mariadb:10.4.28
@@ -54,8 +57,6 @@ services:
         volumes:
             - ../sources/app_dev:/app
         user: "1000:33"
-        links:
-            - webphp7
     node_live:
         container_name: kpi_node_live
         image: node:latest
@@ -68,8 +69,6 @@ services:
         volumes:
             - ../sources/app_live_dev:/app
         user: "1000:33"
-        links:
-            - webphp7
     node_wsm:
         container_name: kpi_node_wsm
         image: node:latest
@@ -82,5 +81,3 @@ services:
         volumes:
             - ../sources/app_wsm_dev:/app
         user: "1000:33"
-        links:
-            - webphp7
