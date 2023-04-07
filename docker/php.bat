@@ -1,0 +1,1 @@
+docker exec -i kpi_webphp7 php %*
