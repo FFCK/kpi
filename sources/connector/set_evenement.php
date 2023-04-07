@@ -18,7 +18,7 @@ if (utyGetGet('json', false)) {
 		
 	$myBdd = new MyBdd(true);	// Connexion sur le site Mirroir (poloweb5)
 
-	$result = $myBdd->Query($sql);
+	$result = $myBdd->pdo->query($sql);
 	if ($myBdd->NumRows($result) == 1)
 	{
 		$row = $myBdd->FetchArray($result);  
@@ -50,16 +50,16 @@ if (utyGetGet('json', false)) {
 						$sql .= "Values (";
 						$sql .= $recEvenement[0];
 						$sql .= ",'";
-						$sql .= $myBdd->RealEscapeString($recEvenement[1]);
+						$sql .= $recEvenement[1];
 						$sql .= "','";
-						$sql .= $myBdd->RealEscapeString($recEvenement[2]);
+						$sql .= $recEvenement[2];
 						$sql .= "','";
 						$sql .= $recEvenement[3];
 						$sql .= "','";
 						$sql .= $recEvenement[4];
 						$sql .= "')";
 						
-						$myBdd->Query($sql);
+						$myBdd->pdo->query($sql);
 					}
 				}
 				

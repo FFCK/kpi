@@ -6,22 +6,25 @@
     /**
      * Requêtes préparées
      */
-    $result = $myBdd->pdo->prepare($sql);
-    $result->execute();
+    $stmt = $myBdd->pdo->prepare($sql);
+    $stmt->execute();
 
     // SELECT avec plusieurs résultats
-    while ($row = $result->fetch()) {
+    while ($row = $stmt->fetch()) {
         //...
     }
     // ou  (permet de boucler plusieurs fois sur le même résultat)
-    $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
+    $resultarray = $stmt->fetchAll(PDO::FETCH_ASSOC);
     foreach ($resultarray as $key => $row) {
         //...
     }
 
+    $num_results = $stmt->rowCount(); // nombre de lignes sélectionnées
+    // nombre de lignes modifiées pour un UPDATE, DELETE, 
+    // nombre de lignes modifiées pour un REPLACE (x2 si Update effectif)
 
     // SELECT avec un seul résultat
-    $row = $result->fetch($sql);
+    $row = $stmt->fetch($sql);
 
     // Exemple complet
     $sql  = "SELECT COUNT(m.Id) nbMatchs 
@@ -29,18 +32,15 @@
         WHERE j.Id = m.Id_journee 
         AND j.Code_competition = :Code_competition
         AND j.Code_saison = :Code_saison ";
-    $result = $myBdd->pdo->prepare($sql);
-    $result->execute(array(
+    $stmt = $myBdd->pdo->prepare($sql);
+    $stmt->execute(array(
         ':Code_competition' => $codeCompetition,
         ':Code_saison' => $codeSaison
     ));
-    $num_results = $result->rowCount(); // nombre de lignes sélectionnées
-    // nombre de lignes modifiées pour un UPDATE, DELETE, 
-    // nombre de lignes modifiées pour un REPLACE (x2 si Update effectif)
 
-    while ($row = $result->fetch()) {}
+    while ($row = $stmt->fetch()) {}
     // ou
-    $nbMatchs = $result->fetchColumn();
+    $nbMatchs = $stmt->fetchColumn();
 
     $codeSaison = $myBdd->GetActiveSaison();
 
@@ -68,9 +68,9 @@
     $count = $myBdd->pdo->exec("DELETE FROM ...");
 
     // Action seulement si une réponse
-    $result = $myBdd->pdo->prepare($sql);
-    $result->execute();
-    if ($row = $result->fetch()) {
+    $stmt = $myBdd->pdo->prepare($sql);
+    $stmt->execute();
+    if ($row = $stmt->fetch()) {
     // ...
     }
 
@@ -86,9 +86,9 @@
     */
     $in = str_repeat('?,', count($in_array) - 1) . '?';
     $sql = "SELECT * FROM my_table WHERE my_value IN ($in)";
-    $result = $myBdd->pdo->prepare($sql);
-    $result->execute($in_array);
-    $data = $result->fetchAll();
+    $stmt = $myBdd->pdo->prepare($sql);
+    $stmt->execute($in_array);
+    $data = $stmt->fetchAll();
 
     // In case there are other placeholders in the query, you could use the following approach (the code is taken from my PDO tutorial):
 
@@ -97,10 +97,10 @@
     $arr = [1,2,3];
     $in = str_repeat('?,', count($arr) - 1) . '?';
     $sql = "SELECT * FROM table WHERE foo=? AND column IN ($in) AND bar=? AND baz=?";
-    $stm = $db->prepare($sql);
+    $stmt = $db->prepare($sql);
     $params = array_merge([$foo], $arr, [$bar, $baz]);
-    $stm->execute($params);
-    $data = $stm->fetchAll();
+    $stmt->execute($params);
+    $data = $stmt->fetchAll();
 
     // In case you are using named placeholders, the code would be a little more complex, as you have to create a sequence of the named placeholders, e.g. :id0,:id1,:id2. So the code would be:
 
@@ -118,11 +118,11 @@
     $in = rtrim($in,","); // :id0,:id1,:id2
 
     $sql = "SELECT * FROM table WHERE foo=:foo AND id IN ($in) AND bar=:bar";
-    $stm = $db->prepare($sql);
-    $stm->execute(array_merge($params,$in_params)); // just merge two arrays
-    $data = $stm->fetchAll();
+    $stmt = $db->prepare($sql);
+    $stmt->execute(array_merge($params,$in_params)); // just merge two arrays
+    $data = $stmt->fetchAll();
 
     $myBdd->pdo->lastInsertId();
 
     // DEBUG
-    $result->debugDumpParams();
+    $stmt->debugDumpParams();

@@ -384,7 +384,7 @@ class GestionParamJournee extends MyPageSecure
 	function AjustDates() 
 	{
 		$myBdd = $this->myBdd;
-		$idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
+		$idJournee = trim(utyGetPost('idJournee', -1));
 		if ($idJournee != 0) {
 			$myBdd = $this->myBdd;
 	
@@ -416,7 +416,7 @@ class GestionParamJournee extends MyPageSecure
 	function Duplicate() 
 	{
 		$myBdd = $this->myBdd;
-        $idJournee = $myBdd->RealEscapeString(trim(utyGetPost('idJournee', -1)));
+        $idJournee = trim(utyGetPost('idJournee', -1));
 		if ($idJournee != 0) {
 			$nextIdJournee = $myBdd->GetNextIdJournee();
 
@@ -460,7 +460,7 @@ class GestionParamJournee extends MyPageSecure
 	
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(10);
+		parent::__construct(10);
 		
 		$this->myBdd = new MyBdd();
 		

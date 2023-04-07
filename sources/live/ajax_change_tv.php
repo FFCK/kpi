@@ -1,5 +1,7 @@
 <?php
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 include_once('../commun/MyParams.php');
 include_once('../commun/MyTools.php');
 include_once('../commun/MyBdd.php');

@@ -8,7 +8,9 @@ if(!$isAjax) {
 }
 // ***************************************************************************
 include_once('../commun/MyTools.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 // Chargement
 $j = trim(utyGetGet('j',''));

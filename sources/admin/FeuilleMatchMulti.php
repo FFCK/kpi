@@ -17,7 +17,7 @@ class FeuilleMatch extends MyPage
 {
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
         $myBdd = new MyBdd();
 
         $listMatch = utyGetGet('listMatch', -1);

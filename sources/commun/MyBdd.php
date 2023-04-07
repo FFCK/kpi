@@ -52,7 +52,7 @@ class MyBdd
 		$this->m_arrayinfo = array();
 		$this->PDO();
 
-		$this->Connect();
+		// $this->Connect();
 	}
 
 	/**
@@ -73,48 +73,48 @@ class MyBdd
 		}
 	}
 
-	function Connect()
-	{
-		$this->m_link = mysqli_connect($this->m_server, $this->m_login, $this->m_password, $this->m_database)
-			or die('Unable to connect!');
-		$this->Query("SET NAMES 'UTF8'");
-		// error_log("Connexion MySQLi", 0);
-	}
+	// function Connect()
+	// {
+	// 	$this->m_link = mysqli_connect($this->m_server, $this->m_login, $this->m_password, $this->m_database)
+	// 		or die('Unable to connect!');
+	// 	$this->Query("SET NAMES 'UTF8'");
+	// 	// error_log("Connexion MySQLi", 0);
+	// }
 
 	// Query 		$result = $myBdd->Query($sql);
-	function Query($sql)
-	{
-		$result = '';
-		if (isset($_SESSION) && isset($_SESSION['Profile']) && $_SESSION['Profile'] == 1) {
-			$result = mysqli_query($this->m_link, $sql) or die("Error Query : " . $sql);
-		} else {
-			$result = mysqli_query($this->m_link, $sql) or die("Error Query. Please contact admin");
-		}
-		// trigger_error("Query MySQLi : " . $sql);
-		return $result;
-	}
+	// function Query($sql)
+	// {
+	// 	$result = '';
+	// 	if (isset($_SESSION) && isset($_SESSION['Profile']) && $_SESSION['Profile'] == 1) {
+	// 		$result = mysqli_query($this->m_link, $sql) or die("Error Query : " . $sql);
+	// 	} else {
+	// 		$result = mysqli_query($this->m_link, $sql) or die("Error Query. Please contact admin");
+	// 	}
+	// 	// trigger_error("Query MySQLi : " . $sql);
+	// 	return $result;
+	// }
 
 	// Error 		$result = $myBdd->Error();
-	function Error()
-	{
-		$result = '';
-		if (mysqli_errno($this->m_link)) {
-			$result = mysqli_error($this->m_link) or die("Error Error");
-		}
-		return $result;
-	}
+	// function Error()
+	// {
+	// 	$result = '';
+	// 	if (mysqli_errno($this->m_link)) {
+	// 		$result = mysqli_error($this->m_link) or die("Error Error");
+	// 	}
+	// 	return $result;
+	// }
 
 	// AffectedRows			$affected_results = $myBdd->AffectedRows($result);
-	function AffectedRows()
-	{
-		return mysqli_affected_rows($this->m_link);
-	}
+	// function AffectedRows()
+	// {
+	// 	return mysqli_affected_rows($this->m_link);
+	// }
 
-	// AffectedRows			$affected_results = $myBdd->AffectedRows($result);
-	function InsertId()
-	{
-		return mysqli_insert_id($this->m_link);
-	}
+	// InsertId			$affected_results = $myBdd->InsertId($result);
+	// function InsertId()
+	// {
+	// 	return mysqli_insert_id($this->m_link);
+	// }
 
 	// NumRows			$num_results = $myBdd->NumRows($result);
 	function NumRows($result)
@@ -123,16 +123,16 @@ class MyBdd
 	}
 
 	// NumFields			$num_fields = $myBdd->NumFields($result);
-	function NumFields($result)
-	{
-		return mysqli_num_fields($result);
-	}
+	// function NumFields($result)
+	// {
+	// 	return mysqli_num_fields($result);
+	// }
 
 	// FieldName			$field_name = $myBdd->FieldName($result);
-	function FieldName($result, $field)
-	{
-		return mysqli_fetch_field_direct($result, $field);
-	}
+	// function FieldName($result, $field)
+	// {
+	// 	return mysqli_fetch_field_direct($result, $field);
+	// }
 
 	// FetchArray		$row = $myBdd->FetchArray($result);
 	function FetchArray($result, $resulttype = MYSQLI_ASSOC)
@@ -141,28 +141,28 @@ class MyBdd
 	}
 
 	// FetchAssoc		$row = $myBdd->FetchAssoc($result);
-	function FetchAssoc($result)
-	{
-		return mysqli_fetch_assoc($result);
-	}
+	// function FetchAssoc($result)
+	// {
+	// 	return mysqli_fetch_assoc($result);
+	// }
 
 	// FetchRow			$row = $myBdd->FetchRow($result);
-	function FetchRow($result)
-	{
-		return mysqli_fetch_row($result);
-	}
+	// function FetchRow($result)
+	// {
+	// 	return mysqli_fetch_row($result);
+	// }
 
 	// DataSeek			$row = $myBdd->DataSeek($result, $cursor);
-	function DataSeek($result, $cursor)
-	{
-		return mysqli_data_seek($result, $cursor);
-	}
+	// function DataSeek($result, $cursor)
+	// {
+	// 	return mysqli_data_seek($result, $cursor);
+	// }
 
-	// RealEscapeString			$myBdd->RealEscapeString($codeCompet);
-	function RealEscapeString($txt)
-	{
-		return mysqli_real_escape_string($this->m_link, $txt);
-	}
+	// pdo->quote			$myBdd->pdo->quote($codeCompet);
+	// function pdo->quote($txt)
+	// {
+	// 	return mysqli_real_escape_string($this->m_link, $txt);
+	// }
 
 	// ShowColumnsSQL
 	function ShowColumnsSQL($tableName, &$arrayColumns)
@@ -170,12 +170,14 @@ class MyBdd
 		if ($arrayColumns == null) {
 			$arrayColumns = array();
 		}
-		$result = $this->Query("SHOW COLUMNS FROM $tableName");
-		$num_results = $this->NumRows($result);
-		for ($i = 0; $i < $num_results; $i++) {
-			array_push($arrayColumns, $this->FetchArray($result));
+		$sql = "SHOW COLUMNS FROM ? ";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($tableName));
+	
+		while ($row = $stmt->fetch()) {
+			array_push($arrayColumns, $row);
 		}
-		return $num_results;
+		return $stmt->rowCount();
 	}
 
 	// GetIndexColumn
@@ -357,21 +359,22 @@ class MyBdd
 	// LoadTable
 	function LoadTable($sql, &$arrayLoad)
 	{
-		$result = $this->Query($sql);
-		$num_results = $this->NumRows($result);
-
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute();
+		
 		$arrayLoad = array();
-		for ($i = 0; $i < $num_results; $i++) {
-			array_push($arrayLoad, $this->FetchArray($result));
+		while ($row = $stmt->fetch()) {
+			array_push($arrayLoad, $row);
 		}
 	}
 
 	// LoadRecord
 	function LoadRecord($sql, &$record)
 	{
-		$result = $this->Query($sql);
-		if ($this->NumRows($result) >= 1) {
-			$record = $this->FetchArray($result);
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute();
+		if ($stmt->rowCount() >= 1) {
+			$record = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} else {
 			$record = array();
 		}
@@ -592,12 +595,9 @@ class MyBdd
 				Pagaie_ECA = VALUES(Pagaie_ECA), Date_certificat_CK = VALUES(Date_certificat_CK), Date_certificat_APS = VALUES(Date_certificat_APS), 
 				Reserve = VALUES(Reserve), Etat_certificat_CK = VALUES(Etat_certificat_CK), Etat_certificat_APS = VALUES(Etat_certificat_APS) 
 				";
-		$result_licencies = $this->pdo->prepare($sql_licencies);
-		$return = $result_licencies->execute($array_licencies);
-		if (!$return) {
-			array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
-		}
-	}
+		$stmt = $this->pdo->prepare($sql_licencies);
+		$stmt->execute($array_licencies) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
+}
 
 
 	// Importation de la section [juges_pol] du fichier PCE 
@@ -674,10 +674,8 @@ class MyBdd
 	{
 		$sql_truncate_juges = "DELETE FROM kp_arbitre
 			WHERE Matric < 2000000 ";
-		$return = $this->pdo->query($sql_truncate_juges);
-		if (!$return) {
-			array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
-		}
+		$stmt = $this->pdo->prepare($sql_truncate_juges);
+		$stmt->execute() or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
 
 	function ImportPCE_Query_Juges($count_arbitres, $array_arbitres)
@@ -697,11 +695,8 @@ class MyBdd
 				national = VALUES(national), international = VALUES(international), arbitre = VALUES(arbitre), 
 				livret = VALUES(livret), niveau = VALUES(niveau), saison = VALUES(saison)
 				";
-		$result_juges = $this->pdo->prepare($sql_juges);
-		$return = $result_juges->execute($array_arbitres);
-		if (!$return) {
-			array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
-		}
+		$stmt = $this->pdo->prepare($sql_juges);
+		$stmt->execute($array_arbitres) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
 
 	// Importation de la section [surclassements] du fichier PCE 
@@ -747,11 +742,8 @@ class MyBdd
 				Matric = VALUES(Matric), Saison = VALUES(Saison), Cat = VALUES(Cat), 
 				`Date` = VALUES(`Date`)
 				";
-		$result_surclassements = $this->pdo->prepare($sql_surclassements);
-		$return = $result_surclassements->execute($array_surclassements);
-		if (!$return) {
-			array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
-		}
+		$stmt = $this->pdo->prepare($sql_surclassements);
+		$stmt->execute($array_surclassements) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
 
 	// Mise à Jour des Clubs à partir de la table kp_licence ...
@@ -771,12 +763,8 @@ class MyBdd
 			ON DUPLICATE KEY UPDATE 
 				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
 				Reserve = VALUES(Reserve), Code_comite_dep = VALUES(Code_comite_dep) ";
-		$result = $this->pdo->prepare($sql);
-		$return = $result->execute(array($this->m_saisonPCE));
-		if (!$return) {
-			array_push($this->m_arrayinfo, "Erreur SQL : " . $sql . " : " . $this->Error());
-			return;
-		}
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($this->m_saisonPCE)) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
 
 	// Mise à Jour des Comités Départementaux à partir de la table kp_licence ...
@@ -796,12 +784,8 @@ class MyBdd
 			ON DUPLICATE KEY UPDATE 
 				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
 				Reserve = VALUES(Reserve), Code_comite_reg = VALUES(Code_comite_reg) ";
-		$result = $this->pdo->prepare($sql);
-		$return = $result->execute(array($this->m_saisonPCE));
-		if (!$return) {
-			array_push($this->m_arrayinfo, "Erreur SQL : " . $sql . " : " . $this->Error());
-			return;
-		}
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($this->m_saisonPCE)) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
 
 	// Mise à Jour des Comités Régionaux à partir de la table kp_licence ...
@@ -820,12 +804,8 @@ class MyBdd
 			ON DUPLICATE KEY UPDATE 
 				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
 				Reserve = VALUES(Reserve) ";
-		$result = $this->pdo->prepare($sql);
-		$return = $result->execute(array($this->m_saisonPCE));
-		if (!$return) {
-			array_push($this->m_arrayinfo, "Erreur SQL : " . $sql . " : " . $this->Error());
-			return;
-		}
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($this->m_saisonPCE)) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
 
 	// Mise à Jour globale de certaines colonnes de la table kp_licence ...
@@ -939,58 +919,40 @@ class MyBdd
 
 			$query  = "SELECT Id 
 				FROM kp_journee 
-				WHERE Id = $id ";
-			$res = $this->Query($query) or die("Erreur Select ImportCalendrier() ");
-			if ($this->NumRows($res) != 1) {
+				WHERE Id = ? ";
+			$result = $this->pdo->prepare($query);
+			$result->execute([$id]);
+			if ($result->rowCount() != 1) {
 				// Cette journée n'existe pas ...
 				$query  = "INSERT INTO kp_journee (Id, Code_competition, Code_saison, Date_debut, 
 					Date_fin, Nom, Libelle, Lieu, Departement, Plan_eau, Responsable_insc, 
 					Responsable_insc_adr, Responsable_insc_cp, Responsable_insc_ville, Responsable_R1,
 					Etat, Code_organisateur, Organisateur, Organisateur_adr, Organisateur_cp, 
-					Organisateur_ville) VALUES (";
-				$query .= $id;
-				$query .= ",'";
-				$query .= $code_compet;
-				$query .= "','";
-				$query .= $code_saison;
-				$query .= "','";
-				$query .= $date_debut;
-				$query .= "','";
-				$query .= $date_fin;
-				$query .= "','";
-				$query .= $this->RealEscapeString($nom);
-				$query .= "','";
-				$query .= $this->RealEscapeString($libelle);
-				$query .= "','";
-				$query .= $this->RealEscapeString($lieu);
-				$query .= "','";
-				$query .= $this->RealEscapeString($dept);
-				$query .= "','";
-				$query .= $this->RealEscapeString($plan_eau);
-				$query .= "','";
-				$query .= $this->RealEscapeString($responsable_insc);
-				$query .= "','";
-				$query .= $this->RealEscapeString($responsable_insc_adr);
-				$query .= "','";
-				$query .= $this->RealEscapeString($responsable_insc_cp);
-				$query .= "','";
-				$query .= $this->RealEscapeString($responsable_insc_ville);
-				$query .= "','";
-				$query .= $this->RealEscapeString($responsable_r1);
-				$query .= "','";
-				$query .= $this->RealEscapeString($etat);
-				$query .= "','";
-				$query .= $this->RealEscapeString($code_organisateur);
-				$query .= "','";
-				$query .= $this->RealEscapeString($organisateur);
-				$query .= "','";
-				$query .= $this->RealEscapeString($organisateur_adr);
-				$query .= "','";
-				$query .= $this->RealEscapeString($organisateur_cp);
-				$query .= "','";
-				$query .= $this->RealEscapeString($organisateur_ville);
-				$query .= "')";
-
+					Organisateur_ville) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				$result = $this->pdo->prepare($query);
+				$result->execute([
+					$id,
+					$code_compet,
+					$code_saison,
+					$date_debut,
+					$date_fin,
+					$nom,
+					$libelle,
+					$lieu,
+					$dept,
+					$plan_eau,
+					$responsable_insc,
+					$responsable_insc_adr,
+					$responsable_insc_cp,
+					$responsable_insc_ville,
+					$responsable_r1,
+					$etat,
+					$code_organisateur,
+					$organisateur,
+					$organisateur_adr,
+					$organisateur_cp,
+					$organisateur_ville
+				]);
 				$nbAdd++;
 			} else {
 				/*	// 
@@ -998,33 +960,29 @@ class MyBdd
 				$query  = "UPDATE kp_journee ";
 				$query .= "SET Date_debut = '".$date_debut;
 				$query .= "', Date_fin = '".$date_fin;
-				$query .= "', Nom = '".$this->RealEscapeString($nom);
-				$query .= "', Libelle = '".$this->RealEscapeString($libelle);
-				$query .= "', Lieu = '".$this->RealEscapeString($lieu);
-				$query .= "', Departement = '".$this->RealEscapeString($dept);
-				$query .= "', Plan_eau = '".$this->RealEscapeString($plan_eau);
-				$query .= "', Responsable_insc = '".$this->RealEscapeString($responsable_insc);
-				$query .= "', Responsable_insc_adr = '".$this->RealEscapeString($responsable_insc_adr);
-				$query .= "', Responsable_insc_cp = '".$this->RealEscapeString($responsable_insc_cp);
-				$query .= "', Responsable_insc_ville = '".$this->RealEscapeString($responsable_insc_ville);
-				$query .= "', Responsable_R1 = '".$this->RealEscapeString($responsable_r1);
-				$query .= "', Etat = '".$this->RealEscapeString($etat);
-				$query .= "', Code_organisateur = '".$this->RealEscapeString($code_organisateur);
-				$query .= "', Organisateur = '".$this->RealEscapeString($organisateur);
-				$query .= "', Organisateur_adr = '".$this->RealEscapeString($organisateur_adr);
-				$query .= "', Organisateur_cp = '".$this->RealEscapeString($organisateur_cp);
-				$query .= "', Organisateur_ville = '".$this->RealEscapeString($organisateur_ville);
+				$query .= "', Nom = '".$this->pdo->quote($nom);
+				$query .= "', Libelle = '".$this->pdo->quote($libelle);
+				$query .= "', Lieu = '".$this->pdo->quote($lieu);
+				$query .= "', Departement = '".$this->pdo->quote($dept);
+				$query .= "', Plan_eau = '".$this->pdo->quote($plan_eau);
+				$query .= "', Responsable_insc = '".$this->pdo->quote($responsable_insc);
+				$query .= "', Responsable_insc_adr = '".$this->pdo->quote($responsable_insc_adr);
+				$query .= "', Responsable_insc_cp = '".$this->pdo->quote($responsable_insc_cp);
+				$query .= "', Responsable_insc_ville = '".$this->pdo->quote($responsable_insc_ville);
+				$query .= "', Responsable_R1 = '".$this->pdo->quote($responsable_r1);
+				$query .= "', Etat = '".$this->pdo->quote($etat);
+				$query .= "', Code_organisateur = '".$this->pdo->quote($code_organisateur);
+				$query .= "', Organisateur = '".$this->pdo->quote($organisateur);
+				$query .= "', Organisateur_adr = '".$this->pdo->quote($organisateur_adr);
+				$query .= "', Organisateur_cp = '".$this->pdo->quote($organisateur_cp);
+				$query .= "', Organisateur_ville = '".$this->pdo->quote($organisateur_ville);
 				$query .= "' WHERE ";
 				$query .= "Id = '".$id;
 				$query .= "' ";
 				
 				$nbUpdate++;
+				$res = $this->Query($query);
 			*/
-			}
-
-			$res = $this->Query($query);
-			if (!$res) {
-				array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
 			}
 
 			$this->ImportCalendrier_Competition($code_compet, $code_saison, $code_niveau, $nom);
@@ -1041,40 +999,31 @@ class MyBdd
 		$query  = "SELECT Code, Libelle 
 			FROM kp_competition 
 			ORDER BY Code_saison";
-		$result = $this->Query($query) or die("Erreur Select ImportCalendrier_Competition");
-		$num_results = $this->NumRows($result);
+		$result = $this->pdo->prepare($query);
+		$result->execute();
+		$num_results = $result->rowCount();
 		$arrayLibelles = array();
-		for ($i = 0; $i < $num_results; $i++) {
-			$row = $this->FetchArray($result);
+		while ($row = $result->fetch()) {
 			$arrayLibelles[$row['Code']] = $row['Libelle'];
 		}
 
 		$query  = "SELECT Code 
 			FROM kp_competition 
-			WHERE Code = '$code_compet' 
-			AND Code_saison = $code_saison ";
+			WHERE Code = ? 
+			AND Code_saison = ? ";
+		$result = $this->pdo->prepare($query);
+		$result->execute(array($code_compet, $code_saison));
 
-		$result = $this->Query($query) or die("Erreur Select ImportCalendrier_Competition");
-		$num_results = $this->NumRows($result);
+		$num_results = $result->rowCount();
 		if (isset($arrayLibelles[$code_compet]))
 			$libelle = $arrayLibelles[$code_compet];
 
 
 		if ($num_results == 0) {
-			$query  = "INSERT INTO kp_competition (Code, Code_saison, Code_niveau, Libelle) 
-				VALUES ('";
-			$query .= $code_compet;
-			$query .= "','";
-			$query .= $code_saison;
-			$query .= "','";
-			$query .= $code_niveau;
-			$query .= "','";
-			$query .= $this->RealEscapeString($libelle);
-			$query .= "')";
-
-			$result = $this->Query($query);
-			if (!$result)
-				array_push($this->m_arrayinfo, "Erreur SQL " . $this->Error());
+			$sql  = "INSERT INTO kp_competition (Code, Code_saison, Code_niveau, Libelle) 
+				VALUES (?, ?, ?, ?)";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute(array($code_compet, $code_saison, $code_niveau, $libelle)) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 		}
 	}
 
@@ -1361,13 +1310,13 @@ class MyBdd
 				FROM kp_journee 
 				WHERE Code_competition = '$codeCompet' 
 				AND Code_saison = '$codeSaison' )";
-		$this->Query($sql) or die("Erreur Delete1");
+		$this->pdo->query($sql) or die("Erreur Delete1");
 
 		// Suppression des Journées
 		$sql = "DELETE FROM kp_journee 
 			WHERE Code_competition = '$codeCompet' 
 			AND Code_saison = '$codeSaison' ";
-		$this->Query($sql) or die("Erreur Delete2");
+		$this->pdo->query($sql) or die("Erreur Delete2");
 
 		// Insertion des Journées ...
 		$nextIdJournee = $this->GetNextIdJournee();
@@ -1382,7 +1331,7 @@ class MyBdd
 			WHERE Code_competition = '$codeCompetRef' 
 			AND Code_saison = '$codeSaison' ";
 
-		$this->Query($sql) or die("Erreur Insert1");
+		$this->pdo->query($sql) or die("Erreur Insert1");
 
 		// Insertion des Matchs ...
 		$sql  = "INSERT INTO kp_match (Id_journee, Numero_ordre, Date_match, Heure_match, 
@@ -1395,7 +1344,7 @@ class MyBdd
 			AND b.Code_competition = '$codeCompetRef' 
 			AND b.Code_saison = '$codeSaison' 
 			AND a.Id_journee = c.Id_dupli";
-		$this->Query($sql) or die("Erreur Insert 2");
+		$this->pdo->query($sql) or die("Erreur Insert 2");
 
 		// Modification des Id_Equipes ...
 		$sql  = "UPDATE kp_match a, kp_competition_equipe b 
@@ -1408,7 +1357,7 @@ class MyBdd
 				FROM kp_journee 
 				WHERE Code_competition = '$codeCompet' 
 				AND Code_saison = '$codeSaison') ";
-		$this->Query($sql) or die("Erreur Update A");
+		$this->pdo->query($sql) or die("Erreur Update A");
 
 		// Modification des Id_Equipes ...
 		$sql  = "UPDATE kp_match a, kp_competition_equipe b 
@@ -1421,7 +1370,7 @@ class MyBdd
 				FROM kp_journee 
 				WHERE Code_competition = '$codeCompet' 
 				AND Code_saison = '$codeSaison') ";
-		$this->Query($sql) or die("Erreur Update B");
+		$this->pdo->query($sql) or die("Erreur Update B");
 	}
 
 	// GetNextIdJournee 	
@@ -1445,7 +1394,7 @@ class MyBdd
 		$sql = "SELECT Id_journee 
 			FROM kp_evenement_journee 
 			WHERE Id_evenement = $idEvenement ";
-		$result = $this->Query($sql) or die("Erreur Load");
+		$result = $this->pdo->query($sql) or die("Erreur Load");
 		$num_results = $this->NumRows($result);
 
 		for ($i = 0; $i < $num_results; $i++) {

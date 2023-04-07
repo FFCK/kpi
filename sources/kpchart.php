@@ -414,7 +414,7 @@ class Chart extends MyPage
     // GestionClassement 		
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
 
         $this->SetTemplate("Deroulement", "Matchs", true);
         $this->Load();

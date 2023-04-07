@@ -17,7 +17,7 @@ class FeuilleMatch extends MyPage
 
 	function FeuilleMatch()
 	{
-		MyPage::MyPage();
+		parent::__construct();
 
 		//Création du PDF de base
 		$pdf = new PDF('L');

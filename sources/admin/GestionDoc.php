@@ -239,7 +239,7 @@ class GestionDoc extends MyPageSecure
 	// GestionDoc 		
 	function __construct()
 	{
-	  	MyPageSecure::MyPageSecure(10);
+		parent::__construct(10);
 		
 		$alertMessage = '';
 

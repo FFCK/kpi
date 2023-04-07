@@ -256,15 +256,15 @@ class GestionCopieCompetition extends MyPageSecure
 		(utyGetPost('Date_debut') != '%') ? $Date_debut = utyDateFrToUs(utyGetPost('Date_debut')) : $Date_debut = '%';
 		(utyGetPost('Date_fin') != '%') ? $Date_fin = utyDateFrToUs(utyGetPost('Date_fin')) : $Date_fin = '%';
 		(utyGetPost('Date_origine') != '%') ? $Date_origine = utyDateFrToUs(utyGetPost('Date_origine')) : $Date_origine = '%';
-		$Nom = $myBdd->RealEscapeString(utyGetPost('Nom'));
-		$Libelle = $myBdd->RealEscapeString(utyGetPost('Libelle'));
-		$Lieu = $myBdd->RealEscapeString(utyGetPost('Lieu'));
-		$Plan_eau = $myBdd->RealEscapeString(utyGetPost('Plan_eau'));
+		$Nom = utyGetPost('Nom');
+		$Libelle = utyGetPost('Libelle');
+		$Lieu = utyGetPost('Lieu');
+		$Plan_eau = utyGetPost('Plan_eau');
 		$Departement = utyGetPost('Departement');
 		$Responsable_insc = utyGetPost('Responsable_insc');
 		$Responsable_R1 = utyGetPost('Responsable_R1');
-		$Organisateur = $myBdd->RealEscapeString(utyGetPost('Organisateur'));
-		$Delegue = $myBdd->RealEscapeString(utyGetPost('Delegue'));
+		$Organisateur = utyGetPost('Organisateur');
+		$Delegue = utyGetPost('Delegue');
 
 		$init1erTour = utyGetPost('init1erTour');
 
@@ -394,7 +394,7 @@ class GestionCopieCompetition extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(3);
+		parent::__construct(3);
 
 		$alertMessage = '';
 

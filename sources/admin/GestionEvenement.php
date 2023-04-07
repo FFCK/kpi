@@ -197,7 +197,7 @@ class GestionEvenement extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(2);
+		parent::__construct(2);
 
 		$this->myBdd = new MyBdd();
 

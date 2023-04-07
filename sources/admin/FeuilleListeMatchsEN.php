@@ -29,7 +29,7 @@ class FeuilleListeMatchs extends MyPage
 
     function __construct()
     {
-        MyPage::MyPage();
+        parent::__construct();
         $myBdd = new MyBdd();
 
         $filtreJour = utyGetSession('filtreJour', '');

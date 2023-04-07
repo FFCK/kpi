@@ -98,7 +98,7 @@ class GestionJournal extends MyPageSecure
 	
 	function __construct()
 	{			
-        MyPageSecure::MyPageSecure(2);
+        parent::__construct(2);
 		
 		$alertMessage = '';
 		

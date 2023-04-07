@@ -261,7 +261,7 @@ class GestionRc extends MyPageSecure
 
 	function __construct()
 	{
-	  	MyPageSecure::MyPageSecure(4);
+	  	parent::__construct(4);
 		
 		$this->myBdd = new MyBdd();
 

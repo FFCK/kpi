@@ -9,7 +9,9 @@ if(!$isAjax) {
 // ***************************************************************************
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
-session_start();
+if(!isset($_SESSION)) {
+	session_start(); 
+}
 
 $verrouCompet = utyGetPost('compet');
 $Verrou = utyGetPost('verrou');

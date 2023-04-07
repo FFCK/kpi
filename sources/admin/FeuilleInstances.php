@@ -25,7 +25,7 @@ class FeuilleInstances extends MyPage
 {
 	function __construct()
 	{
-		MyPage::MyPage();
+		parent::__construct();
 		$myBdd = new MyBdd();
 		$idJournee = utyGetGet('idJournee', 0);
 		$idJournee = utyGetPost('idJournee', $idJournee);

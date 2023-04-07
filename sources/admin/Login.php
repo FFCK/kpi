@@ -17,7 +17,7 @@ class Login extends MyPage
 		$myBdd = new MyBdd();
 
 		if (utyGetGet('Src', false)) {
-			$loginTarget = $myBdd->RealEscapeString(utyGetGet('Src', false));
+			$loginTarget = utyGetGet('Src', false);
 			$_SESSION['loginTarget'] = $loginTarget;
 			$target = str_replace('&lang=en', '', $loginTarget);
 			$target = str_replace('&lang=fr', '', $loginTarget);
@@ -77,7 +77,7 @@ class Login extends MyPage
 				mail($mel, $sujet, $messageComplet, $headers);
 			}
 		} elseif (utyGetPost('User', false) && utyGetPost('Pwd', false) && utyGetPost('Mode', false) == 'Connexion') {
-			$user = preg_replace('`^[0]*`', '', $myBdd->RealEscapeString(trim(utyGetPost('User', false))));
+			$user = preg_replace('`^[0]*`', '', trim(utyGetPost('User', false)));
 			$sql = "SELECT u.*, c.Nom, c.Prenom, c.Numero_club 
 				FROM kp_user u, kp_licence c 
 				WHERE u.Code = ? 
@@ -96,7 +96,7 @@ class Login extends MyPage
 					$_SESSION['Club'] = $row['Numero_club'];
 
 					// Timezone Offset in minutes - server timezone offset
-					$_SESSION['tzOffset'] = ((int) $myBdd->RealEscapeString(utyGetPost('tzOffset', false)) - 120) . ' minutes';
+					$_SESSION['tzOffset'] = ((int) utyGetPost('tzOffset', false)) - 120 . ' minutes';
 
 					//Journées autorisées (+ journées de l'évènement autorisé)
 					$Filtre_Journee = $row["Filtre_journee"];
@@ -140,7 +140,7 @@ class Login extends MyPage
 					$row3 = $result3->fetch();
 					$_SESSION['codeCompet'] = $row3['Code'];
 
-					echo 'OK: ' . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget'];
+					// echo 'OK: ' . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget'] . '<br>';
 					$myBdd->utyJournal('Connexion', '', '', null, null, null, $row['Prenom'] . ' ' . $row['Nom']);
 					header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget']);
 					exit;

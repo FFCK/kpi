@@ -30,7 +30,7 @@ class Logos extends MyPage
 
 	function __construct()
 	{			
-        MyPage::MyPage();
+        parent::__construct();
 		
 		$this->SetTemplate("Logos", "Clubs", true);
 		$this->Load();

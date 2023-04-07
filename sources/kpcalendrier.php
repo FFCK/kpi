@@ -4,7 +4,7 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-class Calendrier extends MyPage	 
+class Calendrier extends MyPage
 {	
 	function Load()
 	{
@@ -15,7 +15,7 @@ class Calendrier extends MyPage
 	
 	function __construct()
 	{			
-		MyPage::MyPage();
+		parent::__construct();
 		
 		$this->SetTemplate("Calendrier", "Calendrier", true);
 		$this->Load();

@@ -8,9 +8,9 @@ include_once('commun/MyTools.php');
 
 class Accueil extends MyPage 
 {	
-	function Accueil()
+	function __construct()
 	{			
-		MyPage::MyPage();
+		parent::__construct();
 		$this->SetTemplate("Accueil", "Accueil", true);
 		$this->DisplayTemplateNew('Accueil');
 	}

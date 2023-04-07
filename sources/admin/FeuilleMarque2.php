@@ -908,7 +908,7 @@ stop_time: <span id="stop_time_display"></span><br />
 
 	function __construct()
 	{
-		MyPageSecure::MyPageSecure(10);
+		parent::__construct(10);
 		$this->Load();
 	}
 }
