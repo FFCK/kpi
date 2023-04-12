@@ -34,7 +34,7 @@
     "bootstrap-icons": "^1.8.1",
     "css-loader": "^5.2.4",
     "dayjs": "^1.10.5",
-    "element-plus": "^1.0.2-beta.45",
+    "element-plus": "^2.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
