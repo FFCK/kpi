@@ -34,8 +34,7 @@
               {$arrayJournees[$idJournee].Phase} 
               <small class="bg-info">{$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if}</small>
               <small>
-                {$arrayJournees[$idJournee].start_time}
-                {if $arrayJournees[$idJournee].end_time!=$arrayJournees[$idJournee].start_time}-{$arrayJournees[$idJournee].end_time}{/if}
+                {$arrayJournees[$idJournee].start_time}-{$arrayJournees[$idJournee].end_time}
               </small>
             </h4>
             <table class='table table-striped table-condensed table-hover'>
