@@ -34,6 +34,7 @@ class FeuillePresence extends MyPage
 
         $codeCompet = utyGetSession('codeCompet');
         $codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
+        $equipe = utyGetGet('equipe', '%');
 
         // Chargement des équipes ...
         $arrayEquipe = array();
@@ -45,9 +46,10 @@ class FeuillePresence extends MyPage
                 FROM kp_competition_equipe 
                 WHERE Code_compet = ? 
                 AND Code_saison = ? 
+                AND Id LIKE ?
                 ORDER BY Libelle, Id ";
             $result = $myBdd->pdo->prepare($sql);
-            $result->execute(array($codeCompet, $codeSaison));
+            $result->execute(array($codeCompet, $codeSaison, $equipe));
             $num_results = $result->rowCount();
             if ($num_results == 0) {
                 die('Aucune équipe dans cette compétition');
