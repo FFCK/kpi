@@ -195,6 +195,7 @@ class PdfListeMatchs extends MyPage
         $pdf->Cell(273, 6, "Liste des Matchs", 0, 1, 'C');
         $pdf->Ln(3);
         $heure1 = '';
+
         foreach ($resultarray as $key => $row) {
             if ($row['Soustitre2'] != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
@@ -366,7 +367,11 @@ class PdfListeMatchs extends MyPage
                         $pdf->Cell(52, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
                     }
                     $pdf->Cell(11, 5, $row['Terrain'], 'TBR', '0', 'C');
-                    $pdf->Cell(35, 5, $row['EquipeA'], 'TBR', '0', 'C');
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
+                        $pdf->Cell(35, 5, '', 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(35, 5, $row['EquipeA'], 'TBR', '0', 'C');
+                    }
                     if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
                         $pdf->Cell(7, 5, $row['ScoreA'], 'TBR', '0', 'C');
                     } else {
@@ -377,14 +382,18 @@ class PdfListeMatchs extends MyPage
                     } else {
                         $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
                     }
-                    $pdf->Cell(35, 5, $row['EquipeB'], 'TBR', 0, 'C');
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
+                        $pdf->Cell(35, 5, '', 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(35, 5, $row['EquipeB'], 'TBR', 0, 'C');
+                    }
                     $pdf->SetFont('Arial', 'I', 6);
-                    if ($row['Arbitre_principal'] == '-1') {
+                    if ($row['Arbitre_principal'] == '-1' || $phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(45, 5, '', 'TBR', 0, 'C');
                     } else {
                         $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', '0', 'C');
                     }
-                    if ($row['Arbitre_secondaire'] == '-1') {
+                    if ($row['Arbitre_secondaire'] == '-1' || $phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(45, 5, '', 'TBR', 1, 'C');
                     } else {
                         $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
@@ -409,7 +418,11 @@ class PdfListeMatchs extends MyPage
                     } else {
                         $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
                     }
-                    $pdf->Cell(35, 5, $row['EquipeA'], 'TBR', '0', 'C');
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
+                        $pdf->Cell(35, 5, '', 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(35, 5, $row['EquipeA'], 'TBR', '0', 'C');
+                    }
 
                     if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
                         $pdf->Cell(7, 5, $row['ScoreA'], 'TBR', '0', 'C');
@@ -421,14 +434,18 @@ class PdfListeMatchs extends MyPage
                     } else {
                         $pdf->Cell(7, 5, "", 'TBR', '0', 'C');
                     }
-                    $pdf->Cell(35, 5, $row['EquipeB'], 'TBR', 0, 'C');
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
+                        $pdf->Cell(35, 5, '', 'TBR', '0', 'C');
+                    } else {
+                        $pdf->Cell(35, 5, $row['EquipeB'], 'TBR', '0', 'C');
+                    }
                     $pdf->SetFont('Arial', 'I', 6);
-                    if ($row['Arbitre_principal'] == '-1') {
+                    if ($row['Arbitre_principal'] == '-1' || $phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(45, 5, '', 'TBR', 0, 'C');
                     } else {
                         $pdf->Cell(45, 5, $row['Arbitre_principal'], 'TBR', 0, 'C');
                     }
-                    if ($row['Arbitre_secondaire'] == '-1') {
+                    if ($row['Arbitre_secondaire'] == '-1' || $phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(45, 5, '', 'TBR', 1, 'C');
                     } else {
                         $pdf->Cell(45, 5, $row['Arbitre_secondaire'], 'TBR', 1, 'C');
@@ -459,7 +476,11 @@ class PdfListeMatchs extends MyPage
                         $pdf->Cell(45, 5, html_entity_decode($row['Lieu']), 'R' . $ltbr, '0', 'C');
                     }
                     $pdf->Cell(12, 5, $row['Terrain'], 'R' . $ltbr, '0', 'C');
-                    $pdf->Cell(35, 5, $row['EquipeA'], 'R' . $ltbr, '0', 'C');
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
+                        $pdf->Cell(35, 5, '', 'R' . $ltbr, '0', 'C');
+                    } else {
+                        $pdf->Cell(35, 5, $row['EquipeA'], 'R' . $ltbr, '0', 'C');
+                    }
                     if ($row['ScoreA'] != '?' && $row['Validation'] == 'O') {
                         $pdf->Cell(7, 5, $row['ScoreA'], 'R' . $ltbr, '0', 'C');
                     } else {
@@ -470,14 +491,18 @@ class PdfListeMatchs extends MyPage
                     } else {
                         $pdf->Cell(7, 5, "", 'R' . $ltbr, '0', 'C');
                     }
-                    $pdf->Cell(35, 5, $row['EquipeB'], 'R' . $ltbr, 0, 'C');
+                    if ($phase_match === 'Break' || $phase_match === 'Pause') {
+                        $pdf->Cell(35, 5, '', 'R' . $ltbr, '0', 'C');
+                    } else {
+                        $pdf->Cell(35, 5, $row['EquipeB'], 'R' . $ltbr, '0', 'C');
+                    }
                     $pdf->SetFont('Arial', 'I', 6);
-                    if ($row['Arbitre_principal'] == '-1') {
+                    if ($row['Arbitre_principal'] == '-1' || $phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(46, 5, '', 'R' . $ltbr, 0, 'C');
                     } else {
                         $pdf->Cell(46, 5, $row['Arbitre_principal'], 'R' . $ltbr, 0, 'C');
                     }
-                    if ($row['Arbitre_secondaire'] == '-1') {
+                    if ($row['Arbitre_secondaire'] == '-1' || $phase_match === 'Break' || $phase_match === 'Pause') {
                         $pdf->Cell(46, 5, '', 'R' . $ltbr, 1, 'C');
                     } else {
                         $pdf->Cell(46, 5, $row['Arbitre_secondaire'], 'R' . $ltbr, 1, 'C');
