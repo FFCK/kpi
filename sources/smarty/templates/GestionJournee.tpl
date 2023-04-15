@@ -392,7 +392,7 @@
 									{/if}
 								</fieldset>
 							</td>
-							<td width=520>
+							<td width=640>
 								<fieldset>
 									<label>{#Tous_les_matchs#}:</label>
 									&nbsp;
@@ -415,13 +415,20 @@
 									{if $profile <= 2}
 										&nbsp;
 										<a href="../PdfListeMatchs4TerrainsEn.php" {$TropDeMatchs} Target="_blank"
-											title="All games in one table (Teams) {$TropDeMatchsMsg}">
+											title="Pitches 1-4 in one table (Teams) {$TropDeMatchsMsg}">
+											<img height="25" src="../img/Liste.gif" /></a>
+										&nbsp;
+										<a href="../PdfListeMatchs4TerrainsEn3.php" {$TropDeMatchs} Target="_blank"
+											title="Pitches 5-8 in one table (Teams) {$TropDeMatchsMsg}">
 											<img height="25" src="../img/Liste.gif" /></a>
 										&nbsp;
 										<a href="../PdfListeMatchs4TerrainsEn2.php" {$TropDeMatchs} Target="_blank"
-											title="All games in one table (Phases) {$TropDeMatchsMsg}">
-											<img height="25" src="../img/Liste.gif" />
-										</a>
+											title="Pitches 1-4 in one table (Phases) {$TropDeMatchsMsg}">
+											<img height="25" src="../img/Liste.gif" /></a>
+										&nbsp;
+										<a href="../PdfListeMatchs4TerrainsEn4.php" {$TropDeMatchs} Target="_blank"
+											title="Pitches 5-8 in one table (Phases) {$TropDeMatchsMsg}">
+											<img height="25" src="../img/Liste.gif" /></a>
 									{/if}
 								</fieldset>
 							</td>
