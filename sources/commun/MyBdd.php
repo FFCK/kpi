@@ -374,7 +374,7 @@ class MyBdd
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute();
 		if ($stmt->rowCount() >= 1) {
-			$record = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$record = $stmt->fetch(PDO::FETCH_ASSOC);
 		} else {
 			$record = array();
 		}
