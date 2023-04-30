@@ -117,7 +117,7 @@ class GestionGroupe extends MyPageSecure
 		}
 
 		$sql = "SELECT ordre FROM kp_groupe 
-			WHERE id = $idGroupe ";
+			WHERE id = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idGroupe));
 		$row = $result->fetch();
@@ -127,7 +127,7 @@ class GestionGroupe extends MyPageSecure
 			$myBdd->pdo->beginTransaction();
 
 			$sql = "DELETE FROM kp_groupe 
-				WHERE id = $idGroupe ";
+				WHERE id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idGroupe));
 
