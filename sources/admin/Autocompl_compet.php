@@ -14,6 +14,7 @@ $myBdd = new MyBdd();
 
 // Chargement
 $q = trim(utyGetGet('q'));
+$saison = utyGetGet('saison', '%');
 $sql = "SELECT p1.* 
 	FROM kp_competition p1
 	INNER JOIN
@@ -26,8 +27,9 @@ $sql = "SELECT p1.*
 	) p2
 		ON p1.Code = p2.Code
 		AND p1.Code_saison = p2.maxCodeSaison
-	WHERE p1.Code LIKE :code3
-			OR p1.Libelle LIKE :code4
+	WHERE (p1.Code LIKE :code3
+		OR p1.Libelle LIKE :code4)
+	AND p1.Code_saison LIKE :saison
 	ORDER BY p1.Code_saison desc
 	LIMIT 30 ";
 $result = $myBdd->pdo->prepare($sql);
@@ -35,7 +37,8 @@ $result->execute([
 	':code1' => '%' . $q . '%',
 	':code2' => '%' . $q . '%',
 	':code3' => '%' . $q . '%',
-	':code4' => '%' . $q . '%'
+	':code4' => '%' . $q . '%',
+	':saison' => $saison
 ]);
 $resultGlobal = '';
 

@@ -404,7 +404,7 @@ jq(document).ready(function () {
 	})
 
 	//Changement code competition
-	jq("#ChangeCodeRecherche").autocomplete('Autocompl_compet.php', {
+	jq("#ChangeCodeRecherche").autocomplete('Autocompl_compet.php?saison=' + jq('#saisonTravail').val(), {
 		width: 550,
 		max: 30,
 		mustMatch: true,
