@@ -53,12 +53,15 @@
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
                         <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}btn-primary{else}btn-default{/if}" 
-                            href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*&Css={$Css}" role="button">
-                            {if $arrayListJournees[i].Titre_actif != 'O' && $arrayListJournees[i].Soustitre2 != ''}
+                            href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}&Css={$Css}" role="button">
+                            {* {if $arrayListJournees[i].Titre_actif != 'O' && $arrayListJournees[i].Soustitre2 != ''}
                                 {$arrayListJournees[i].Soustitre} - {$arrayListJournees[i].Soustitre2}
                             {else}
                                 {$arrayListJournees[i].Libelle} - {$arrayListJournees[i].Soustitre2}
-                            {/if}
+                            {/if} *}
+                            {$arrayListJournees[i].Nom} - {$arrayListJournees[i].Soustitre2}
+                            <br>
+                            {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
                         </a>
                         <a title="{#Telecharger_fichier_ics#}" href="upload_ics.php?Saison={$arrayListJournees[i].Code_saison}&Compet={$arrayListJournees[i].Code_competition}">
                             <img width="30" src="../img/ics.png">

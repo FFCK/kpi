@@ -286,13 +286,13 @@ class Details extends MyPage
                 AND j.Publication = 'O' 
                 AND c.Publication = 'O' 
                 AND c.Code_ref = ? 
-                GROUP BY c.Code 
-                ORDER BY c.Code_niveau, COALESCE(c.Code_ref, 'z'), c.GroupOrder, c.Code_tour, c.Code ";	 
+                GROUP BY c.Code, j.Date_debut, j.Date_fin, j.Lieu
+                ORDER BY COALESCE(c.Code_ref, 'z'), c.GroupOrder, j.Date_debut, c.Code_niveau, c.Code_tour, j.Phase ";	 
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeSaison, $codeCompetGroup));
             $arrayListJournees = array();
             while ($row = $result->fetch()) {
-                if($row['Code_competition'] == $codeCompet){
+                if($row['Id_journee'] == $idSelJournee){
                     $row['Selected'] = true;
                     $row['Responsable_insc'] = utyGetNomPrenom($row['Responsable_insc']);
                     $row['Responsable_R1'] = utyGetNomPrenom($row['Responsable_R1']);
