@@ -118,16 +118,18 @@ class Details extends MyPage
                 AND j.Code_competition = c.Code 
                 AND j.Id = ej.Id_journee 
                 AND j.Code_saison = c.Code_saison 
+                AND j.Phase != 'Break'
+                AND j.Phase != 'Pause'
                 AND j.Publication = 'O' 
                 AND c.Publication = 'O' 
                 AND ej.Id_evenement = ? 
-                GROUP BY c.Code 
-                ORDER BY c.GroupOrder ";	 
+                GROUP BY c.Code, j.Nom, j.Date_debut, j.Date_fin, j.Lieu
+                ORDER BY c.GroupOrder, j.Date_debut, c.Code_niveau, c.Code_tour, j.Phase ";	 
             $arrayListJournees = array();
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeSaison, $event));
             while ($row = $result->fetch()) {
-                if ($row['Code_competition'] == $codeCompet) {
+                if($row['Id_journee'] == $idSelJournee || $idSelJournee == '*') {
                     $row['Selected'] == true;
                     $row['Responsable_insc'] = utyGetNomPrenom($row['Responsable_insc']);
                     $row['Responsable_R1'] = utyGetNomPrenom($row['Responsable_R1']);
@@ -221,7 +223,7 @@ class Details extends MyPage
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeCompet, $codeSaison));
             while ($row = $result->fetch()) {
-                if($row['Id_journee'] == $idSelJournee || $idSelJournee == '*'){
+                if($row['Id_journee'] == $idSelJournee || $idSelJournee == '*') {
                     $row['Selected'] = true;
                     $row['Responsable_insc'] = utyGetNomPrenom($row['Responsable_insc']);
                     $row['Responsable_R1'] = utyGetNomPrenom($row['Responsable_R1']);
@@ -272,7 +274,6 @@ class Details extends MyPage
                 array_push($arrayEquipe, $row);
             }
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
-                
 
         } else {
             // Chargement des Compétitions ...
@@ -283,10 +284,12 @@ class Details extends MyPage
                 AND j.Code_saison = ? 
                 AND j.Code_competition = c.Code 
                 AND j.Code_saison = c.Code_saison 
-                AND j.Publication = 'O' 
-                AND c.Publication = 'O' 
+                AND j.Phase != 'Break'
+                AND j.Phase != 'Pause'
+                AND j.Publication = 'O'
+                AND c.Publication = 'O'
                 AND c.Code_ref = ? 
-                GROUP BY c.Code, j.Date_debut, j.Date_fin, j.Lieu
+                GROUP BY c.Code, j.Nom, j.Date_debut, j.Date_fin, j.Lieu
                 ORDER BY COALESCE(c.Code_ref, 'z'), c.GroupOrder, j.Date_debut, c.Code_niveau, c.Code_tour, j.Phase ";	 
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeSaison, $codeCompetGroup));
@@ -306,7 +309,7 @@ class Details extends MyPage
             }
             $this->m_tpl->assign('journee', $journee);
             $this->m_tpl->assign('arrayListJournees', $arrayListJournees);
-            
+
             // Chargement des Equipes ...
             $arrayEquipe = array();
             $arrayPoule = array();
@@ -346,7 +349,7 @@ class Details extends MyPage
                         $arrayPoule[] = $row['Poule'];
                     }
                     $poule = $row['Poule'];
-                    
+
                     $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
                         'Libelle' => $row['Libelle'], 
                         'Code_club' => $row['Code_club'],
@@ -359,7 +362,7 @@ class Details extends MyPage
                         'Code_comite_dep' => $row['Code_comite_dep'] 
                     );
                 }
-            }	
+            }
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
             $this->m_tpl->assign('arrayPoule', $arrayPoule);
             if (count($arrayPoule) % 2 == 0) {

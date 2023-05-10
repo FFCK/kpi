@@ -4,7 +4,7 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 $myBdd = new MyBdd();
-$start = utyGetGet('start');
+$start = utyGetGet('start'); // $_GET['start'] // json-events.php?start=2023-08-11
 $end = utyGetGet('end');
 
 //groupe les journées à date  et lieu identiques (format coupe)
@@ -12,11 +12,13 @@ $sql = "SELECT j.*, c.*
     FROM kp_journee j, kp_competition c 
     WHERE j.Code_competition = c.Code 
     AND j.Code_saison = c.Code_saison 
+    AND j.Phase != 'Break'
+    AND j.Phase != 'Pause'
     AND c.Publication = 'O' 
     AND j.Publication = 'O' 
-    AND ((j.Date_debut >= :start AND j.Date_debut <= :end) 
-    OR (j.Date_fin >= :start2 AND j.Date_fin <= :end2)) 
-    GROUP BY j.Code_saison, j.Code_competition, j.Date_debut, j.Date_fin, j.Lieu 
+    AND ((j.Date_debut >= :start AND j.Date_debut <= :end)
+    OR (j.Date_fin >= :start2 AND j.Date_fin <= :end2))
+    GROUP BY j.Code_saison, j.Code_competition, j.Nom, j.Date_debut, j.Date_fin, j.Lieu 
     ORDER BY j.Date_debut, c.Code_niveau, c.GroupOrder, c.Code_tour, j.Nom ";
 
 $arrayCalendrier = array();
@@ -48,12 +50,12 @@ while ($row = $result->fetch()) {
     $Code_competition = $row['Code_competition'];
     $Group = $row['Code_ref'];
     $Saison = $row['Code_saison'];
+    $Journee = $row['Id'];
 
-
-    $url = "kpdetails.php?Compet=$Code_competition&Group=$Group&Saison=$Saison$typ";
+    $url = "kpdetails.php?Compet=$Code_competition&Group=$Group&Saison=$Saison$typ&J=$Journee";
 
     array_push($arrayCalendrier, array(
-        'id' => $row['Id'],
+        'id' => $Journee,
         'title' => $title,
         'start' => $row['Date_debut'],
         'end' => $datefin,
