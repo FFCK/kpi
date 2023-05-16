@@ -138,7 +138,7 @@ class Schema extends MyPageSecure
                     AND j.Etape LIKE ? 
                     AND j.Phase != 'Break'
                     AND j.Phase != 'Pause'
-                    GROUP BY Id_journee
+                    GROUP BY Phase
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
@@ -158,15 +158,15 @@ class Schema extends MyPageSecure
                     $arrayQuery = [$idSelJournee];
                 }
                 $sql .= "
-                    GROUP BY Id_journee
+                    GROUP BY Phase
                     ORDER BY j.Etape, j.Niveau DESC, j.Date_debut DESC, j.Phase ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge([$codeCompet], [$codeSaison], [$Round], $arrayQuery));
             }
             while ($row = $result->fetch()) {
-                $arrayJournees[$row['Id_journee']] = $row;
-                $arrayJournees[$row['Id_journee']]['Actif'] = 0;
-                $arrayListJournees[] = $row['Id_journee'];
+                $arrayJournees[$row['Phase']] = $row;
+                $arrayJournees[$row['Phase']]['Actif'] = 0;
+                $arrayListJournees[] = $row['Phase'];
                 if ($row['Etape'] > $etapes) {
                     $etapes = $row['Etape'];
                 }
@@ -221,18 +221,18 @@ class Schema extends MyPageSecure
                 $result->execute(array_merge([$codeCompet], [$codeSaison], [$Round], $arrayQuery));
             }
             while ($row = $result->fetch()) {
-                $arrayJournees[$row['Id_journee']]['Actif'] = 1;
+                $arrayJournees[$row['Phase']]['Actif'] = 1;
                 if (strlen($row['Code_comite_dep']) > 3) {
                     $row['Code_comite_dep'] = 'FRA';
                 }
-                if ($journee != $row['Id_journee']) {
+                if ($journee != $row['Phase']) {
                     $arrayJournee[] = array(
                         'Id_journee' => $row['Id_journee'], 'Phase' => $row['Phase'], 'Etape' => $row['Etape'],
                         'Nbequipes' => $row['Nbequipes'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'],
                         'Date_debut' => $row['Date_debut'], 'Date_fin' => $row['Date_fin'],
                         'Lieu' => $row['Lieu'], 'Departement' => $row['Departement']
                     );
-                    $journee = $row['Id_journee'];
+                    $journee = $row['Phase'];
                 }
                 $arrayEquipe_journee_publi[$journee][] = array(
                     'Id' => $row['Id'], 'Numero' => $row['Numero'],
@@ -288,7 +288,7 @@ class Schema extends MyPageSecure
                 $result->execute(array($codeCompet, $codeSaison, $Round));
             }
             while ($row = $result->fetch()) {
-                $journee = $row['Id_journee'];
+                $journee = $row['Phase'];
                 if ($row['Validation'] != 'O') {
                     $row['ScoreA'] = '';
                     $row['ScoreB'] = '';
@@ -307,19 +307,19 @@ class Schema extends MyPageSecure
                     $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
                 }
                 // Heure début et fin de la phase
-                if (!isset($arrayJournees[$row['Id_journee']]['start_time'])) {
-                    $arrayJournees[$row['Id_journee']]['start_time'] = $row['Heure_match'];
+                if (!isset($arrayJournees[$row['Phase']]['start_time'])) {
+                    $arrayJournees[$row['Phase']]['start_time'] = $row['Heure_match'];
                 }
                 // if (!isset($arrayJournees[$row['Id_journee']]['end_time'])
                 //     || $arrayJournees[$row['Id_journee']]['end_time'] !== $arrayJournees[$row['Id_journee']]['start_time']) {
-                    $arrayJournees[$row['Id_journee']]['end_time'] = $row['Heure_match'];
+                    $arrayJournees[$row['Phase']]['end_time'] = $row['Heure_match'];
                 // }
 
                 $arrayMatchs[$journee][] = $row;
             }
 
             // Equipes par poules
-            $sql = "SELECT j.Id, m.Id_equipeA, m.Id_equipeB, m.Libelle, ce1.Libelle EquipeA, 
+            $sql = "SELECT j.Id, j.Phase, m.Id_equipeA, m.Id_equipeB, m.Libelle, ce1.Libelle EquipeA, 
                 ce2.Libelle EquipeB, ce1.Numero NumA, ce2.Numero NumB, 
                 ce1.Tirage TirageA, ce2.Tirage TirageB 
                 FROM kp_journee j, kp_match m 
@@ -334,7 +334,7 @@ class Schema extends MyPageSecure
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeCompet, $codeSaison, $Round));
             while ($row = $result->fetch()) {
-                $journee = $row['Id'];
+                $journee = $row['Phase'];
                 if ($row['Id_equipeA'] <= 1 || $row['Id_equipeB'] <= 1) {
                     if ($_SESSION['lang'] == 'en') {
                         $intitule = utyEquipesAffectAuto($row['Libelle']);
