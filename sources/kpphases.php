@@ -5,42 +5,42 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 // Phases
-	
+
 class Phases extends MyPage	 
-{	
+{
 	function Load()
 	{
 		$myBdd = new MyBdd();
-		
+
 		$codeCompet = utyGetSession('codeCompet', 'N1H');
 		$codeCompet = utyGetPost('codeCompet', $codeCompet);
 		$codeCompet = utyGetGet('Compet', $codeCompet);
 		$_SESSION['codeCompet'] = $codeCompet;
 		$this->m_tpl->assign('codeCompet', $codeCompet);
-			
+
 		$codeSaison = $myBdd->GetActiveSaison();
 		$codeSaison = utyGetPost('saisonTravail', $codeSaison);
 		$codeSaison = utyGetGet('Saison', $codeSaison);
 		$_SESSION['Saison'] = $codeSaison;
 		$this->m_tpl->assign('Saison', $codeSaison);
-	
+
 		$idSelJournee = utyGetGet('J', 0);
 		$this->m_tpl->assign('idSelJournee', $idSelJournee);
-	
+
         $event = utyGetGet('event', '0');
 		$this->m_tpl->assign('event', $event);
         if ($event > 0) {
             $eventTitle = $myBdd->GetEvenementLibelle($event);
             $this->m_tpl->assign('eventTitle', $eventTitle);
         }
-        
+
         $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
         $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
         $this->m_tpl->assign('navGroup', 1);
 
         $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
 		$this->m_tpl->assign('group', $group);
-        
+
 		if ($codeCompet == '*') {
             $codeCompet = $arrayNavGroup[0]['Code'];
             $_SESSION['codeCompet'] = $codeCompet;
@@ -55,7 +55,7 @@ class Phases extends MyPage
 
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
-        
+
         //Logos
 		if($codeCompet != -1) {
             $this->m_tpl->assign('visuels', utyGetVisuels($recordCompetition));
@@ -71,9 +71,9 @@ class Phases extends MyPage
 
 		// Par défaut type Championnat et compétition non internationale...
 		$typeClt = $recordCompetition['Code_typeclt'];
-        
+
         $journee = 0;
-		
+
 		if (strlen($codeCompet) > 0) {
 			// Classement public				
             $sql = "SELECT ce.*, c.Code_comite_dep 
@@ -115,7 +115,7 @@ class Phases extends MyPage
 				}
 			}
             $this->m_tpl->assign('arrayEquipe_publi', $arrayEquipe_publi);
-			
+
 			// Journées
             $etapes = 0;
             if ($event > 0) {
@@ -163,7 +163,7 @@ class Phases extends MyPage
                     $etapes = $row['Etape'];
                 }
             }
-            
+
             // Classement public par journée/phase
             if ($event > 0) {
                 $sql  = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, cej.Id_journee, 
@@ -207,6 +207,11 @@ class Phases extends MyPage
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round, $idSelJournee));
             } else {
+                if ($typeClt == 'CP') {
+                    $order = "ORDER BY j.Niveau DESC, j.Date_debut DESC, j.Phase, cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";	 
+                } else {
+                    $order = "ORDER BY j.Date_debut DESC, j.Id, cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
+                }
                 $sql = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, cej.Id_journee, 
                     cej.Clt_publi, cej.Pts_publi, cej.J_publi, cej.G_publi, cej.N_publi, cej.P_publi, 
                     cej.F_publi, cej.Plus_publi, cej.Moins_publi, cej.Diff_publi, cej.PtsNiveau_publi, 
@@ -222,8 +227,7 @@ class Phases extends MyPage
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
-                    ORDER BY j.Niveau DESC, j.Date_debut DESC, j.Phase, 
-                    cej.Clt_publi ASC, cej.Diff_publi DESC, cej.Plus_publi ASC ";
+                    $order ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round));
             }
@@ -249,7 +253,7 @@ class Phases extends MyPage
                     'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'],
                     'Code_comite_dep' => $row['Code_comite_dep']  );
             }
-            
+
 			// Matchs publics par journée / phase
             if ($event > 0) {
                 $sql = "SELECT m.Id, m.Id_journee, m.Numero_ordre, m.Date_match, m.Heure_match, m.Libelle, 
@@ -310,8 +314,8 @@ class Phases extends MyPage
                     $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
                 }
                 $arrayMatchs[$journee][] = $row ;
-		}	
-                
+		}
+
             // Equipes par poules
             $sql = "SELECT j.Id, m.Id_equipeA, m.Id_equipeB, m.Libelle, 
                 ce1.Libelle EquipeA, ce2.Libelle EquipeB, ce1.Numero NumA, ce2.Numero NumB, 
