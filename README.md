@@ -51,13 +51,13 @@ créer le fichier ./docker/error7.log
 
 cd docker
 
-docker-compose up
+docker compose up -d
 
 alimenter la base de donnée my_database
 
 __KPI APP (NODE)__
 
-UID=${UID} GID=${GID} docker-compose up
+UID=${UID} GID=${GID} docker compose up
 
 docker exec --user $UID -it docker_node_1 sh
 
