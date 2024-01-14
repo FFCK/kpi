@@ -13,7 +13,7 @@
   </div>
   <div class="container header-contents">
     <div class="row">
-      <div class="col-xs-9 sitelogo">
+      <div class="col-xs-9">
         <div class="site-logo">
           <a rel="home" href="http://www.ffck.org/kpi/">
             Kayak-polo.info

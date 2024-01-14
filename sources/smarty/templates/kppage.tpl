@@ -32,13 +32,15 @@
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux" href="http://kayak-polo.info/?feed=rss2" />
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux des commentaires" href="http://kayak-polo.info/?feed=comments-rss2" />
 
-        <link rel='stylesheet' href='{$adm}css/fullcalendar.min.css' type='text/css' media='all' />
-        <link rel='stylesheet' id='material-custom-css' href='{$adm}css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        <link rel='stylesheet' id='material-main-css' href='{$adm}css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        <link rel='stylesheet' id='my_style-css' href='{$adm}css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        <link rel='stylesheet' href='{$adm}css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        <link rel="stylesheet" href="{$adm}css/jquery-ui.css?v={$NUM_VERSION}">
-        <link rel="stylesheet" href="{$adm}css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
+        {* <link rel='stylesheet' href='{$adm}css/fullcalendar.min.css' type='text/css' media='all' /> *}
+        {* <link rel='stylesheet' id='material-custom-css' href='{$adm}css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+        {* <link rel='stylesheet' id='material-main-css' href='{$adm}css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+        {* <link rel='stylesheet' id='my_style-css' href='{$adm}css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+        {* <link rel='stylesheet' href='{$adm}css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+        {* <link rel="stylesheet" href="{$adm}css/jquery-ui.css?v={$NUM_VERSION}"> *}
+        {* <link rel="stylesheet" href="{$adm}css/fontawesome/font-awesome.css?v={$NUM_VERSION}"> *}
+        <link rel="stylesheet" href="{$adm}js/bootstrap-5.3.2/css/bootstrap.min.css?v={$NUM_VERSION}">
+        <link rel="stylesheet" href="{$adm}css/newstyle.css?v={$NUM_VERSION}">
         
         {assign var=temp value="$adm./css/$contenutemplate.css"} 
         {if is_file($temp)}
@@ -70,10 +72,10 @@
 
         <script type='text/javascript' src='{$adm}js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='{$adm}js/jquery.dataTables-1.10.21.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='{$adm}js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='{$adm}js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
-        <script type="text/javascript" src="{$adm}js/wordpress_material_javascripts_main.js"></script>
+        {* <script type='text/javascript' src='{$adm}js/jquery.dataTables-1.10.21.min.js?v={$NUM_VERSION}'></script> *}
+        {* <script type='text/javascript' src='{$adm}js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script> *}
+        <script type='text/javascript' src='{$adm}js/bootstrap-5.3.2/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
+        {* <script type="text/javascript" src="{$adm}js/wordpress_material_javascripts_main.js"></script> *}
         <script type="text/javascript" src="{$adm}js/formTools.js?v={$NUM_VERSION}" defer></script>
         {assign var=temp value="$adm./js/$contenutemplate.js"} 
         {if is_file($temp)}

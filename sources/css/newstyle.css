@@ -1,0 +1,53 @@
+/* debug */
+div {
+    /* border: 1px dotted red; */
+}
+
+/* Variables */
+:root {
+    --bigblue: #2670b3;
+    --darkgrey: #626262;
+    --navwhite: white;
+}
+
+body {
+    background-color: var(--bigblue);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: var(--darkgrey);
+}
+
+/* Banner */
+.banner {
+    height: 150px;
+    background-color: var(--bigblue);
+    margin-bottom: -100px;
+    overflow: hidden;
+    padding: 0;
+    text-align: center;
+}
+.site-logo {
+    font-size: 36px;
+    margin-bottom: 20px;
+    margin-left: 70px;
+}
+.site-logo > a {
+    color: var(--navwhite);
+    text-decoration: none;
+}
+.tagline {
+    font-size: 14px;
+    color: var(--navwhite);
+    font-weight: lighter;
+}
+
+/* Navbar */
+nav.navbar {
+    background-color: white;
+    color: var(--darkgrey);
+}
+nav.navbar .nav-link.active {
+    background-color: var(--bigblue);
+    color: var(--navwhite);
+}
