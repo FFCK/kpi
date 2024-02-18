@@ -49,21 +49,25 @@
 								</td>
 								<td>
 									<a href="FeuilleGroups.php" target="_blank" title="{#Poules#}"><img height="25"
-											src="../img/pdf.png" /></a>
+											src="../img/pdf.png" /><br>{#Poules#}</a>
 									<a href="FeuillePresence.php" target="_blank" title="{#Feuilles_de_presence#} (FR)"><img height="25"
-											src="../img/pdf2.png" /></a>
+											src="../img/pdf2.png" /><br>FR</a>
 									<a href="FeuillePresenceEN.php" target="_blank" title="{#Feuilles_de_presence#} (EN)"><img height="25"
-											src="../img/pdfEN.png" /></a>
+											src="../img/pdfEN.png" /><br>EN</a>
 									<a href="FeuillePresenceCat.php" target="_blank" title="{#Feuilles_de_presence_par_categorie#}"><img
-											height="25" src="../img/pdf2.png" />Cat</a>
+											height="25" src="../img/pdf2.png" /><br>Cat</a>
 									{if $codeCompet == 'POOL'}
 										<a href="FeuillePresencePhotoRef.php" target="_blank" title="{#Feuilles_de_presence_photo#}"><img
-												height="25" src="../img/pdf2.png" />Photo</a>
+												height="25" src="../img/pdf2.png" /><br>Photo</a>
 									{else}
 										<a href="FeuillePresencePhoto.php" target="_blank" title="{#Feuilles_de_presence_photo#}"><img
-												height="25" src="../img/pdf2.png" />Photo</a>
+												height="25" src="../img/pdf2.png" /><br>Photo</a>
 										<a href="FeuillePresencePhoto2.php" target="_blank" title="{#Feuilles_de_presence_photo#}"><img
-												height="25" src="../img/pdf2.png" />Photo</a>
+												height="25" src="../img/pdf2.png" /><br>Photo</a>
+									{/if}
+									{if $profile <= 2}
+										<a href="FeuilleControle.php" target="_blank" title="{#Controle#}"><img height="25"
+											src="../img/pdf.png" /><br>{#Controle#}</a>
 									{/if}
 									<img class="cliquable" id="actuButton" title="{#Recharger#}" height="25"
 										src="../img/glyphicons-82-refresh.png">
@@ -94,6 +98,9 @@
 									<th>{#Presents#}</th>
 									<th>Club</th>
 									<th>{#Nb_matchs#}</th>
+									{if $profile <= 2}
+										<th>{#Controle#}</th>
+									{/if}
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -150,9 +157,18 @@
 												title="{#Feuille_de_presence#}"><img height="25" src="../img/b_sbrowse.png" /></A></td>
 										<td title="{$arrayEquipe[i].Club}">{$arrayEquipe[i].Code_club}</td>
 										<td>{$arrayEquipe[i].nbMatchs}</td>
+										{if $profile <= 2}
+											<td>
+												<a href="FeuilleControle.php?equipe={$arrayEquipe[i].Id}" target="_blank" title="{#Controle#}"><img height="25"
+													src="../img/pdf.png" /></a>
+											</td>
+										{/if}
 										{if $profile <= 3 && $AuthModif == 'O' && $bProd}
-											<td><a href="#" onclick="RemoveCheckbox('formEquipe', '{$arrayEquipe[i].Id}');return false;"><img
-														height="20" src="../img/glyphicons-17-bin.png" title="{#Supprimer#}" /></a></td>
+											<td>
+												
+												<a href="#" onclick="RemoveCheckbox('formEquipe', '{$arrayEquipe[i].Id}');return false;"><img
+													height="20" src="../img/glyphicons-17-bin.png" title="{#Supprimer#}" /></a>
+											</td>
 										{else}<td>&nbsp;</td>
 										{/if}
 									</tr>
