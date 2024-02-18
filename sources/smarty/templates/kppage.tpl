@@ -74,6 +74,7 @@
         <script type='text/javascript' src='{$adm}js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
         {* <script type='text/javascript' src='{$adm}js/jquery.dataTables-1.10.21.min.js?v={$NUM_VERSION}'></script> *}
         {* <script type='text/javascript' src='{$adm}js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script> *}
+        <script type='text/javascript' src='{$adm}js/popperjs/popperjs.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}js/bootstrap-5.3.2/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
         {* <script type="text/javascript" src="{$adm}js/wordpress_material_javascripts_main.js"></script> *}
         <script type="text/javascript" src="{$adm}js/formTools.js?v={$NUM_VERSION}" defer></script>

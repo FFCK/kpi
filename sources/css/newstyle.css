@@ -1,13 +1,30 @@
 /* debug */
-div {
-    /* border: 1px dotted red; */
-}
+/* .selects {
+    border: 1px dotted red;
+} */
 
 /* Variables */
 :root {
     --bigblue: #2670b3;
     --darkgrey: #626262;
     --navwhite: white;
+    --lightgrey: #ececec;
+}
+
+.d-contents {
+    display: contents;
+}
+
+.btn-primary {
+    background-color: var(--bigblue);
+}
+
+.btn-sm {
+    font-size: 0.755rem;
+}
+
+.bg-light-grey {
+    background-color: var(--lightgrey);
 }
 
 body {

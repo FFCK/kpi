@@ -25,23 +25,43 @@ jq(document).ready(function(){
         jq('#share_link').remove();
     });
 
-    jq('html, body').animate({
-        scrollTop: jq("#navGroup").prev().offset().top
+    $('html, body').animate({
+        scrollTop: $("#navGroup").prev().offset().top
       }, 1000)
 
     // equipe rouge au survol
-    $('a.equipe').mouseenter(function(){
-        var team = $(this).text();
-        $('a.btn:contains('+team+')').each(function(){
-            if ($(this).text() == team) {
-                $(this).addClass('btn-danger');
-            }
-        });
-    }).mouseleave(function(){
-        $('a.btn-danger').removeClass('btn-danger');
-    });
+    // $('a.equipe').mouseenter(function(){
+    //     var team = $(this).text();
+    //     $('a.btn:contains('+team+')').each(function(){
+    //         if ($(this).text() == team) {
+    //             $(this).addClass('btn-danger');
+    //         }
+    //     });
+    // }).mouseleave(function(){
+    //     $('a.btn-danger').removeClass('btn-danger');
+    // });
 
 
 });
 
 
+document.querySelectorAll(".btn.equipe").forEach((e0) => {
+    e0.addEventListener("mouseenter", () => {
+        const team = e0.innerText;
+        Array.from(document.querySelectorAll(".btn.equipe"))
+            .map(element => {
+                if (element.textContent === team) {
+                    element.classList.add('border')
+                    element.classList.add('border-3')
+                    element.classList.add('border-danger')
+                }
+            })
+    });
+    e0.addEventListener("mouseleave", () => {
+        document.querySelectorAll(".equipe.border-danger").forEach((e2) => {
+            e2.classList.remove('border')
+            e2.classList.remove('border-3')
+            e2.classList.remove('border-danger');
+        });
+    });
+});
