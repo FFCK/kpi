@@ -1303,7 +1303,7 @@ class GestionJournee extends MyPageSecure
 
 		$sql1 = "SELECT m.Libelle, m.Id_journee, m.Id_equipeA, m.Id_equipeB, 
 			m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, j.Code_competition, 
-			j.Code_saison 
+			j.Code_saison, j.Phase
 			FROM kp_match m, kp_journee j 
 			WHERE m.Id = ? 
 			AND m.Id_journee = j.Id 
@@ -1368,197 +1368,199 @@ class GestionJournee extends MyPageSecure
 			if ($result1->rowCount() != 1)
 				die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
 			$row = $result1->fetch();
-			$anciene_equipeA = $row['Id_equipeA'];
-			$anciene_equipeB = $row['Id_equipeB'];
+			if ($row['Phase'] !== 'Break' && $row['Phase'] !== 'Pause') {
+				$anciene_equipeA = $row['Id_equipeA'];
+				$anciene_equipeB = $row['Id_equipeB'];
 
-			$libelle = preg_replace("/\s/", "", $row['Libelle']);
-			// On contrôle qu'il y a un crochet ouvrant et un fermant, et on prend le contenu.
-			$libelle = preg_split("/[\[]/", $libelle);
-			if ($libelle[1] == "")
-				die("Placez votre code AffectAuto entre crochets [ ]. (<a href='javascript:history.back()'>Retour</a>)");
-			$libelle = preg_split("/[\]]/", $libelle[1]);
-			if ($libelle[0] == "")
-				die("Placez votre code AffectAuto entre crochets [ ]. (<a href='javascript:history.back()'>Retour</a>)");
-			// $texte .= '<br>'.$libelle[0].'<br>';
-			// On sépare par tiret, slash, étoile, virgule ou point-virgule.
-			$libelle = preg_split("/[\-\/*,;]/", $libelle[0]);
-			// On analyse le contenu
-			for ($j = 0; $j < 4; $j++) {
-				// déjà un arbitre principal désigné nominativement
-				if ($j == 2 && $row['Matric_arbitre_principal'] != 0) {
-					$selectNom[2] = '';
-					continue;
-				}
-				// déjà un arbitre secondaire désigné nominativement
-				if ($j == 3 && $row['Matric_arbitre_secondaire'] != 0) {
-					$selectNom[3] = '';
-					continue;
-				}
+				$libelle = preg_replace("/\s/", "", $row['Libelle']);
+				// On contrôle qu'il y a un crochet ouvrant et un fermant, et on prend le contenu.
+				$libelle = preg_split("/[\[]/", $libelle);
+				if ($libelle[1] == "")
+					die("Placez votre code AffectAuto entre crochets [ ]. (<a href='javascript:history.back()'>Retour</a>)");
+				$libelle = preg_split("/[\]]/", $libelle[1]);
+				if ($libelle[0] == "")
+					die("Placez votre code AffectAuto entre crochets [ ]. (<a href='javascript:history.back()'>Retour</a>)");
+				// $texte .= '<br>'.$libelle[0].'<br>';
+				// On sépare par tiret, slash, étoile, virgule ou point-virgule.
+				$libelle = preg_split("/[\-\/*,;]/", $libelle[0]);
+				// On analyse le contenu
+				for ($j = 0; $j < 4; $j++) {
+					// déjà un arbitre principal désigné nominativement
+					if ($j == 2 && $row['Matric_arbitre_principal'] != 0) {
+						$selectNom[2] = '';
+						continue;
+					}
+					// déjà un arbitre secondaire désigné nominativement
+					if ($j == 3 && $row['Matric_arbitre_secondaire'] != 0) {
+						$selectNom[3] = '';
+						continue;
+					}
 
-				$codeTirage = '';
-				$codeVainqueur = '';
-				$codePerdant = '';
-				$codePoule = '';
-				if (isset($libelle[$j])) {
-					preg_match("/([A-Z_]+)/", $libelle[$j], $codeLettres); // lettres majuscules ou _
-					preg_match("/([0-9]+)/", $libelle[$j], $codeNumero); // numero... de match ou classement de poule ou tirage
-					$posNumero = strpos($libelle[$j], $codeNumero[1]);
-					$posLettres = strpos($libelle[$j], $codeLettres[1]);
-					if ($posNumero > $posLettres) { // tirage ou match
-						switch ($codeLettres[1]) {
-							case 'T': // tirage
-							case 'D': // draw
-								$codeTirage = $codeLettres[1];
-								break;
-							case 'V': // vainqueur
-							case 'G': // gagnant
-							case 'W': // winner
-								$codeVainqueur = $codeLettres[1];
-								break;
-							case 'P': // Perdant
-							case 'L': // Loser
-								$codePerdant = $codeLettres[1];
-								break;
-							default:
-								die("Code incorrect sur le match " . $id . ". (<a href='javascript:history.back()'>Retour</a>)");
-								break;
+					$codeTirage = '';
+					$codeVainqueur = '';
+					$codePerdant = '';
+					$codePoule = '';
+					if (isset($libelle[$j])) {
+						preg_match("/([A-Z_]+)/", $libelle[$j], $codeLettres); // lettres majuscules ou _
+						preg_match("/([0-9]+)/", $libelle[$j], $codeNumero); // numero... de match ou classement de poule ou tirage
+						$posNumero = strpos($libelle[$j], $codeNumero[1]);
+						$posLettres = strpos($libelle[$j], $codeLettres[1]);
+						if ($posNumero > $posLettres) { // tirage ou match
+							switch ($codeLettres[1]) {
+								case 'T': // tirage
+								case 'D': // draw
+									$codeTirage = $codeLettres[1];
+									break;
+								case 'V': // vainqueur
+								case 'G': // gagnant
+								case 'W': // winner
+									$codeVainqueur = $codeLettres[1];
+									break;
+								case 'P': // Perdant
+								case 'L': // Loser
+									$codePerdant = $codeLettres[1];
+									break;
+								default:
+									die("Code incorrect sur le match " . $id . ". (<a href='javascript:history.back()'>Retour</a>)");
+									break;
+							}
+						} else { // poule
+							$codePoule = $codeLettres[1];
 						}
-					} else { // poule
-						$codePoule = $codeLettres[1];
 					}
-				}
-				if ($codeTirage != '') { // Tirage
-					$result2->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
-					if ($result2->rowCount() != 1) {
-						$selectNum[$j] = null;
-						$selectNom[$j] = '';
-						$clst = 'erreur10';
-					} else {
-						$row2 = $result2->fetch();
-						$selectNum[$j] = $row2['Id'];
-						$selectNom[$j] = $row2['Nom_equipe'];
-						$clst = $row2['Nom_equipe'];
-					}
-					// $texte .= $codeNumero[1].'e poule '.$codePoule[1].' : '.$clst.'<br>';
-				} elseif ($codeVainqueur != '') {
-					$result3->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
-					if ($result3->rowCount() != 1) {
-						$selectNum[$j] = null;
-						$selectNom[$j] = '';
-						$vainqueur = 'erreur11';
-					} else {
-						$row3 = $result3->fetch();
-						if (($row3['ScoreA'] > $row3['ScoreB'] && $row3['ScoreA'] != 'F')
-							|| $row3['ScoreB'] == 'F'
-						) {
-							$selectNum[$j] = $row3['Id_equipeA'];
-							$selectNom[$j] = $row3['Nom_equipeA'];
-							$vainqueur = $row3['Nom_equipeA'];
+					if ($codeTirage != '') { // Tirage
+						$result2->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
+						if ($result2->rowCount() != 1) {
+							$selectNum[$j] = null;
+							$selectNom[$j] = '';
+							$clst = 'erreur10';
 						} else {
-							$selectNum[$j] = $row3['Id_equipeB'];
-							$selectNom[$j] = $row3['Nom_equipeB'];
-							$vainqueur = $row3['Nom_equipeB'];
+							$row2 = $result2->fetch();
+							$selectNum[$j] = $row2['Id'];
+							$selectNom[$j] = $row2['Nom_equipe'];
+							$clst = $row2['Nom_equipe'];
 						}
-					}
-					// $texte .= 'Vainqueur match '.$codeNumero[1].' : '.$vainqueur.'<br>';
-				} elseif ($codePerdant != '') {
-					$result4->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
-					if ($result4->rowCount() != 1) {
-						$selectNum[$j] = null;
-						$selectNom[$j] = '';
-						$perdant = 'erreur12';
-					} else {
-						$row4 = $result4->fetch();
-						if (($row4['ScoreA'] < $row4['ScoreB'] && $row4['ScoreB'] != 'F')
-							|| $row4['ScoreA'] == 'F'
-						) {
-							$selectNum[$j] = $row4['Id_equipeA'];
-							$selectNom[$j] = $row4['Nom_equipeA'];
-							$perdant = $row4['Nom_equipeA'];
+						// $texte .= $codeNumero[1].'e poule '.$codePoule[1].' : '.$clst.'<br>';
+					} elseif ($codeVainqueur != '') {
+						$result3->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
+						if ($result3->rowCount() != 1) {
+							$selectNum[$j] = null;
+							$selectNom[$j] = '';
+							$vainqueur = 'erreur11';
 						} else {
-							$selectNum[$j] = $row4['Id_equipeB'];
-							$selectNom[$j] = $row4['Nom_equipeB'];
-							$perdant = $row4['Nom_equipeB'];
+							$row3 = $result3->fetch();
+							if (($row3['ScoreA'] > $row3['ScoreB'] && $row3['ScoreA'] != 'F')
+								|| $row3['ScoreB'] == 'F'
+							) {
+								$selectNum[$j] = $row3['Id_equipeA'];
+								$selectNom[$j] = $row3['Nom_equipeA'];
+								$vainqueur = $row3['Nom_equipeA'];
+							} else {
+								$selectNum[$j] = $row3['Id_equipeB'];
+								$selectNom[$j] = $row3['Nom_equipeB'];
+								$vainqueur = $row3['Nom_equipeB'];
+							}
 						}
-					}
-					// $texte .= 'Perdant match '.$codeNumero[1].' : '.$perdant.'<br>';
-				} elseif ($codePoule != '') {
-					$result5->execute(array(
-						':codeNumero' => $codeNumero[1],
-						':codePoule1' => $codePoule,
-						':codePoule2' => $codePoule,
-						':codePoule3' => $codePoule,
-						':codePoule4' => $codePoule,
-						':codePoule5' => $codePoule,
-						':codeCompetition' => $row['Code_competition'],
-						':codeSaison' => $row['Code_saison']
-					));
-					if ($result5->rowCount() != 1) {
-						$selectNum[$j] = null;
-						$selectNom[$j] = '';
-						$clst = 'erreur13';
+						// $texte .= 'Vainqueur match '.$codeNumero[1].' : '.$vainqueur.'<br>';
+					} elseif ($codePerdant != '') {
+						$result4->execute(array($codeNumero[1], $row['Code_competition'], $row['Code_saison']));
+						if ($result4->rowCount() != 1) {
+							$selectNum[$j] = null;
+							$selectNom[$j] = '';
+							$perdant = 'erreur12';
+						} else {
+							$row4 = $result4->fetch();
+							if (($row4['ScoreA'] < $row4['ScoreB'] && $row4['ScoreB'] != 'F')
+								|| $row4['ScoreA'] == 'F'
+							) {
+								$selectNum[$j] = $row4['Id_equipeA'];
+								$selectNom[$j] = $row4['Nom_equipeA'];
+								$perdant = $row4['Nom_equipeA'];
+							} else {
+								$selectNum[$j] = $row4['Id_equipeB'];
+								$selectNom[$j] = $row4['Nom_equipeB'];
+								$perdant = $row4['Nom_equipeB'];
+							}
+						}
+						// $texte .= 'Perdant match '.$codeNumero[1].' : '.$perdant.'<br>';
+					} elseif ($codePoule != '') {
+						$result5->execute(array(
+							':codeNumero' => $codeNumero[1],
+							':codePoule1' => $codePoule,
+							':codePoule2' => $codePoule,
+							':codePoule3' => $codePoule,
+							':codePoule4' => $codePoule,
+							':codePoule5' => $codePoule,
+							':codeCompetition' => $row['Code_competition'],
+							':codeSaison' => $row['Code_saison']
+						));
+						if ($result5->rowCount() != 1) {
+							$selectNum[$j] = null;
+							$selectNom[$j] = '';
+							$clst = 'erreur13';
+						} else {
+							$row5 = $result5->fetch();
+							$selectNum[$j] = $row5['Id'];
+							$selectNom[$j] = $row5['Nom_equipe'];
+							$clst = $row5['Nom_equipe'];
+						}
+						// $texte .= $codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
 					} else {
-						$row5 = $result5->fetch();
-						$selectNum[$j] = $row5['Id'];
-						$selectNom[$j] = $row5['Nom_equipe'];
-						$clst = $row5['Nom_equipe'];
+						$selectNum[$j] = 0;
+						$selectNom[$j] = '';
 					}
-					// $texte .= $codeNumero[1].'e poule '.$codePoule.' : '.$clst.'<br>';
-				} else {
-					$selectNum[$j] = 0;
-					$selectNom[$j] = '';
 				}
-			}
 
-			try {
-				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				$myBdd->pdo->beginTransaction();
+				try {
+					$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+					$myBdd->pdo->beginTransaction();
 
-				// Affectation
-				$sql = "UPDATE kp_match 
-					SET Id_equipeA = ?, Id_equipeB = ? ";
-				$arrayQuery = array($selectNum[0], $selectNum[1]);
-				if ($selectNom[2] != '') {
-					$sql .= ", Arbitre_principal = ? ";
-					$arrayQuery = array_merge($arrayQuery, [$selectNom[2]]);
-				}
-				if ($selectNom[3] != '') {
-					$sql .= ", Arbitre_secondaire = ? ";
-					$arrayQuery = array_merge($arrayQuery, [$selectNom[3]]);
-				}
-				$sql .= " WHERE Id = ? ";
-				$arrayQuery = array_merge($arrayQuery, [$id]);
-				$result = $myBdd->pdo->prepare($sql);
-				$result->execute($arrayQuery);
-				//Suppression des joueurs existants si changements d'équipes
-				if ($selectNum[0] != $anciene_equipeA) {
-					$sql = "DELETE FROM kp_match_joueur 
-						WHERE Id_match = ? 
-						AND Equipe = 'A' ";
+					// Affectation
+					$sql = "UPDATE kp_match 
+						SET Id_equipeA = ?, Id_equipeB = ? ";
+					$arrayQuery = array($selectNum[0], $selectNum[1]);
+					if ($selectNom[2] != '') {
+						$sql .= ", Arbitre_principal = ? ";
+						$arrayQuery = array_merge($arrayQuery, [$selectNom[2]]);
+					}
+					if ($selectNom[3] != '') {
+						$sql .= ", Arbitre_secondaire = ? ";
+						$arrayQuery = array_merge($arrayQuery, [$selectNom[3]]);
+					}
+					$sql .= " WHERE Id = ? ";
+					$arrayQuery = array_merge($arrayQuery, [$id]);
 					$result = $myBdd->pdo->prepare($sql);
-					$result->execute(array($id));
+					$result->execute($arrayQuery);
+					//Suppression des joueurs existants si changements d'équipes
+					if ($selectNum[0] != $anciene_equipeA) {
+						$sql = "DELETE FROM kp_match_joueur 
+							WHERE Id_match = ? 
+							AND Equipe = 'A' ";
+						$result = $myBdd->pdo->prepare($sql);
+						$result->execute(array($id));
+					}
+					if ($selectNum[1] != $anciene_equipeB) {
+						$sql = "DELETE FROM kp_match_joueur 
+							WHERE Id_match = ? 
+							AND Equipe = 'B' ";
+						$result = $myBdd->pdo->prepare($sql);
+						$result->execute(array($id));
+					}
+
+					$cMatch = new CacheMatch($_GET);
+					$cMatch->MatchGlobal($myBdd, $id);
+
+					$myBdd->pdo->commit();
+				} catch (Exception $e) {
+					$myBdd->pdo->rollBack();
+					utySendMail("[KPI] Erreur SQL", "Affect auto équipes, $id" . '\r\n' . $e->getMessage());
+
+					return "La requête ne peut pas être exécutée !\\nCannot execute query!";
 				}
-				if ($selectNum[1] != $anciene_equipeB) {
-					$sql = "DELETE FROM kp_match_joueur 
-						WHERE Id_match = ? 
-						AND Equipe = 'B' ";
-					$result = $myBdd->pdo->prepare($sql);
-					$result->execute(array($id));
-				}
 
-				$cMatch = new CacheMatch($_GET);
-				$cMatch->MatchGlobal($myBdd, $id);
-
-				$myBdd->pdo->commit();
-			} catch (Exception $e) {
-				$myBdd->pdo->rollBack();
-				utySendMail("[KPI] Erreur SQL", "Affect auto équipes, $id" . '\r\n' . $e->getMessage());
-
-				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+				//Journal
+				$myBdd->utyJournal('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
 			}
-
-			//Journal
-			$myBdd->utyJournal('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
 		}
 		return implode(',', $arrayParam);
 	}
@@ -1577,7 +1579,7 @@ class GestionJournee extends MyPageSecure
 
 		// $texte = '';
 
-		$sql1 = "SELECT m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison 
+		$sql1 = "SELECT m.Libelle, m.Id_journee, j.Code_competition, j.Code_saison, j.Phase
 			FROM kp_match m, kp_journee j 
 			WHERE m.Id = ? 
 			AND m.Id_journee = j.Id 
@@ -1609,7 +1611,9 @@ class GestionJournee extends MyPageSecure
 					die("Erreur : L\'un des matchs a déjà un score ou est verrouillé !  (<a href='javascript:history.back()'>Retour</a>)");
 				$row = $result1->fetch();
 
-				$result2->execute(array($id));
+				if ($row['Phase'] !== 'Break' && $row['Phase'] !== 'Pause') {
+					$result2->execute(array($id));
+				}
 
 				$myBdd->utyJournal('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], null, $row['Id_journee'], $id, '');
 				//Suppression des joueurs existants
