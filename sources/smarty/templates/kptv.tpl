@@ -246,7 +246,7 @@
               </option>
             {/section}
           </select>
-          <input type="hidden" id="terrain" name="terrain" value="">
+          <input class="form-control" type="hidden" id="terrain" name="terrain" value="">
         </div>
         <div class='col-sm-1 params' id='team-col'>
           <label>{#Equipe#}</label>
@@ -361,15 +361,15 @@
         </div>
         <div class='col-sm-1 params' id='lnstart-col'>
           <label>Start</label>
-          <input type="text" id="lnstart" name="lnstart" value="1" size="2">
+          <input class="form-control" type="text" id="lnstart" name="lnstart" value="1" size="2">
         </div>
         <div class='col-sm-1 params' id='lnlen-col'>
           <label>Length</label>
-          <input type="text" id="lnlen" name="lnlen" value="0" size="2">
+          <input class="form-control" type="text" id="lnlen" name="lnlen" value="0" size="2">
         </div>
         <div class='col-sm-2 params' id='competlist-col'>
           <label>Competitions</label>
-          <input type="text" id="competlist" name="competlist" placeholder="CMH,CMF" value="{$filtreCompet}">
+          <input class="form-control" type="text" id="competlist" name="competlist" placeholder="CMH,CMF" value="{$filtreCompet}">
         </div>
         <div class='col-sm-2 params' id='option-col'>
           <label>option</label>
@@ -409,7 +409,9 @@
         <button id="getUrl" name="getUrl" class="btn btn-success col-sm-1" data-showurl="1">
           Url
         </button>
-        <input type='text' readonly="readonly" id='showUrl1' name='showUrl1' class="col-sm-7">
+        <div class="col-sm-8">
+          <input type='text' readonly="readonly" id='showUrl1' name='showUrl1' class="form-control">
+        </div>
         <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty()">
           Blank
         </button>
@@ -532,7 +534,7 @@
               </option>
             {/section}
           </select>
-          <input type="hidden" id="terrain2" name="terrain2" value="">
+          <input class="form-control" type="hidden" id="terrain2" name="terrain2" value="">
         </div>
         <div class='col-sm-1 params2' id='team-col2'>
           <label>{#Equipe#}</label>
@@ -576,7 +578,7 @@
         </div>
         <div class='col-sm-1 params2' id='pitchs-col2'>
           <label>Pitchs</label>
-          <input type="text" id="pitchs2" name="pitchs2" value="1,2,3,4">
+          <input class="form-control" type="text" id="pitchs2" name="pitchs2" value="1,2,3,4">
         </div>
         <div class='col-sm-1 params2' id='pitch-col2'>
           <label>Pitch</label>
@@ -647,11 +649,11 @@
         </div>
         <div class='col-sm-1 params2' id='lnstart-col2'>
           <label>Start</label>
-          <input type="text" id="lnstart2" name="lnstart2" value="1" size="2">
+          <input class="form-control" type="text" id="lnstart2" name="lnstart2" value="1" size="2">
         </div>
         <div class='col-sm-1 params2' id='lnlen-col2'>
           <label>Length</label>
-          <input type="text" id="lnlen2" name="lnlen2" value="0" size="2">
+          <input class="form-control" type="text" id="lnlen2" name="lnlen2" value="0" size="2">
         </div>
       </div>
       <div class="row">
@@ -662,8 +664,9 @@
         <button id="getUrl2" name="getUrl2" class="btn btn-success col-sm-1" data-showurl="2">
           Url
         </button>
-        <input type='text' readonly="readonly" id='showUrl2' name='showUrl2' class="col-sm-7">
-        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('2')">
+        <div class="col-sm-8">
+          <input type='text' readonly="readonly" id='showUrl2' name='showUrl2' class="form-control">
+        </div>        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('2')">
           Blank
         </button>
         <button id="confirm2" name="confirm2" class="btn btn-primary pull-right col-sm-1" data-pres="" data-showurl="0">
@@ -785,7 +788,7 @@
               </option>
             {/section}
           </select>
-          <input type="hidden" id="terrain3" name="terrain3" value="">
+          <input class="form-control" type="hidden" id="terrain3" name="terrain3" value="">
         </div>
         <div class='col-sm-1 params3' id='team-col3'>
           <label>{#Equipe#}</label>
@@ -829,7 +832,7 @@
         </div>
         <div class='col-sm-1 params3' id='pitchs-col3'>
           <label>Pitchs</label>
-          <input type="text" id="pitchs3" name="pitchs3" value="1,2,3,4">
+          <input class="form-control" type="text" id="pitchs3" name="pitchs3" value="1,2,3,4">
         </div>
         <div class='col-sm-1 params3' id='pitch-col3'>
           <label>Pitch</label>
@@ -900,11 +903,11 @@
         </div>
         <div class='col-sm-1 params3' id='lnstart-col3'>
           <label>Start</label>
-          <input type="text" id="lnstart3" name="lnstart3" value="1" size="2">
+          <input class="form-control" type="text" id="lnstart3" name="lnstart3" value="1" size="2">
         </div>
         <div class='col-sm-1 params3' id='lnlen-col3'>
           <label>Length</label>
-          <input type="text" id="lnlen3" name="lnlen3" value="0" size="2">
+          <input class="form-control" type="text" id="lnlen3" name="lnlen3" value="0" size="2">
         </div>
       </div>
       <div class="row">
@@ -915,7 +918,9 @@
         <button id="getUrl3" name="getUrl3" class="btn btn-success col-sm-1" data-showurl="3" onclick="Go_empty('3')">
           Url
         </button>
-        <input type='text' readonly="readonly" id='showUrl3' name='showUrl3' class="col-sm-7">
+        <div class="col-sm-8">
+          <input type='text' readonly="readonly" id='showUrl3' name='showUrl3' class="form-control">
+        </div>
         <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('3')">
           Blank
         </button>
@@ -1037,7 +1042,7 @@
               </option>
             {/section}
           </select>
-          <input type="hidden" id="terrain4" name="terrain4" value="">
+          <input class="form-control" type="hidden" id="terrain4" name="terrain4" value="">
         </div>
         <div class='col-sm-1 params4' id='team-col4'>
           <label>{#Equipe#}</label>
@@ -1081,7 +1086,7 @@
         </div>
         <div class='col-sm-1 params4' id='pitchs-col4'>
           <label>Pitchs</label>
-          <input type="text" id="pitchs4" name="pitchs4" value="1,2,3,4">
+          <input class="form-control" type="text" id="pitchs4" name="pitchs4" value="1,2,3,4">
         </div>
         <div class='col-sm-1 params4' id='pitch-col4'>
           <label>Pitch</label>
@@ -1152,11 +1157,11 @@
         </div>
         <div class='col-sm-1 params4' id='lnstart-col4'>
           <label>Start</label>
-          <input type="text" id="lnstart4" name="lnstart4" value="1" size="2">
+          <input class="form-control" type="text" id="lnstart4" name="lnstart4" value="1" size="2">
         </div>
         <div class='col-sm-1 params4' id='lnlen-col4'>
           <label>Length</label>
-          <input type="text" id="lnlen4" name="lnlen4" value="0" size="2">
+          <input class="form-control" type="text" id="lnlen4" name="lnlen4" value="0" size="2">
         </div>
       </div>
       <div class="row">
@@ -1167,8 +1172,9 @@
         <button id="getUrl4" name="getUrl4" class="btn btn-success col-sm-1" data-showurl="4" onclick="Go_empty('4')">
           Url
         </button>
-        <input type='text' readonly="readonly" id='showUrl4' name='showUrl4' class="col-sm-7">
-        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('4')">
+        <div class="col-sm-8">
+          <input type='text' readonly="readonly" id='showUrl4' name='showUrl4' class="form-control">
+        </div>        <button class="btn btn-secondary pull-right col-sm-1" data-pres="" data-showurl="0" onclick="Go_empty('4')">
           Blank
         </button>
         <button id="confirm4" name="confirm4" class="btn btn-primary pull-right col-sm-1" data-pres="" data-showurl="0">

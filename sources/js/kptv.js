@@ -118,7 +118,7 @@ jq(document).ready(function () {
                 jq('#competition-col, #round-col').show()
                 break
             case 'frame_categories':
-                jq('#competition-col, #lnstart-col, #lnlen-col').show()
+                jq('#competition-col, #pitchs-col, #lnstart-col, #lnlen-col').show()
                 break
             case 'frame_chart':
                 jq('#competition-col, #round-col').show()
@@ -503,7 +503,7 @@ jq(document).ready(function () {
                 jq('#competition-col2, #round-col2').show()
                 break
             case 'frame_categories':
-                jq('#competition-col2, #lnstart-col2, #lnlen-col2').show()
+                jq('#competition-col2, #pitchs-col2, #lnstart-col2, #lnlen-col2').show()
                 break
             case 'frame_chart':
                 jq('#competition-col2, #round-col2').show()
@@ -850,7 +850,7 @@ jq(document).ready(function () {
                 jq('#competition-col3, #round-col3').show()
                 break
             case 'frame_categories':
-                jq('#competition-col3, #lnstart-col3, #lnlen-col3').show()
+                jq('#competition-col3, #pitchs-col3, #lnstart-col3, #lnlen-col3').show()
                 break
             case 'frame_chart':
                 jq('#competition-col3, #round-col3').show()
@@ -1197,7 +1197,7 @@ jq(document).ready(function () {
                 jq('#competition-col4, #round-col4').show()
                 break
             case 'frame_categories':
-                jq('#competition-col4, #lnstart-col4, #lnlen-col4').show()
+                jq('#competition-col4, #pitchs-col4, #lnstart-col4, #lnlen-col4').show()
                 break
             case 'frame_chart':
                 jq('#competition-col4, #round-col4').show()
