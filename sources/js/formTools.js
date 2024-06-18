@@ -111,7 +111,10 @@ function setCheckboxes(formName, checkName, do_check)
 	{
 		for (var i = 0; i < elts_count; i++) 
 		{
-			elts[i].checked = do_check;
+			console.log(elts[i].style)
+			if (elts[i].style.display != 'none') {
+				elts[i].checked = do_check;
+			}
 		} 
 	} 
 	else 

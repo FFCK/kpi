@@ -944,6 +944,21 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		}
 	})
 
+	// 
+	jq('#filterAtt').bind('change', function (ev) {
+		if (document.getElementById("filterAtt").checked) {
+			console.log('ON')
+			jq(".verrouMatch[data-valeur!='N']").each(function() {
+				jq(this).parent().parent().hide()
+			})
+		} else {
+			console.log('OFF')
+			jq(".verrouMatch[data-valeur!='N']").each(function() {
+				jq(this).parent().parent().show()
+			})
+		}
+	})
+
 	jq("body").delegate(".typeMatch", "click", function () {
 		//jq("body").on("click", ".typeMatch", function(){
 		//if(confirm('Confirmez-vous le changement de statut ?')){
