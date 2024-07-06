@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Test de Performance</title>
+</head>
+<body>
+    <h1>Test de Performance</h1>
+    <button onclick="testLatency()">Tester la Latence</button>
+    <button onclick="testSpeed()">Tester le Débit</button>
+    <div id="results"></div>
+    <div id="targetDivId"></div>
+
+    <script>
+        // Insérez ici les fonctions testLatency et testSpeed
+        function testLatency() {
+            const start = performance.now();
+            fetch('/ping')
+                .then(() => {
+                    const end = performance.now();
+                    const latency = end - start;
+                    console.log(`Latence: ${latency.toFixed(2)} ms`);
+                })
+                .catch(error => console.error('Erreur de test de latence:', error));
+        }
+
+        function testSpeed() {
+            const fileSize = 4.03 * 1024 * 1024; // 4 MB
+            const start = performance.now();
+            fetch('dequing.png')
+                .then(response => {
+                    // Vérifiez si la réponse est ok
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP! statut: ${response.status}`);
+                    }
+                    // Convertissez la réponse en blob
+                    return response.blob();
+                })
+                .then(blob => {
+                    const end = performance.now()
+                    const durationInSeconds = (end - start) / 1000
+                    const speedMbps = (fileSize * 8 / durationInSeconds / 1000000).toFixed(2)
+                    updateResults(`Débit: ${speedMbps} Mbps`)
+
+                    // Créez une URL d'objet à partir du blob
+                    const objectURL = URL.createObjectURL(blob)
+                    // Créez un élément image
+                    const imgElement = document.createElement('img')
+                    // Définissez la source de l'image
+                    imgElement.src = objectURL
+                    // Obtenez la div cible
+                    const targetDiv = document.getElementById(targetDivId)
+                    // Ajoutez l'image à la div
+                    targetDiv.appendChild(imgElement)
+                })
+                .catch(error => updateResults('Erreur de test de débit:', error))
+        }
+
+        function updateResults(message) {
+            document.getElementById('results').innerHTML += `<p>${message}</p>`;
+        }
+    </script>
+</body>
+</html>
