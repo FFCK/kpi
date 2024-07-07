@@ -72,3 +72,4 @@ sources/img/KIP/vests/*.png
 sources/img/KIP/helmets/*.png
 /docker/db/mysql/*
 !/docker/db/mysql/.gitkeep
+sources/test/performance_log.txt

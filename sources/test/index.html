@@ -2,63 +2,218 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Test de Performance</title>
+    <title>Performance test</title>
+    <style type="text/css">
+        div {
+            /* border: 1px dotted red; */
+        }
+        .buttons {
+            width: fit-content;
+            height: 30px;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 5px;
+        }
+
+        .column {
+            flex: 1;
+            padding: 10px;
+        }
+
+        #results {
+            height: 350px;
+            overflow: scroll;
+            border: 1px solid grey;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: small;
+        }
+
+        .spinner {
+            float:inline-end;
+            margin-left: 5px;
+            width: 20px;
+            height: 20px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            visibility: hidden;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #webSocketTestId {
+            visibility: visible;
+        }
+    </style>
 </head>
 <body>
-    <h1>Test de Performance</h1>
-    <button onclick="testLatency()">Tester la Latence</button>
-    <button onclick="testSpeed()">Tester le Débit</button>
-    <div id="results"></div>
-    <div id="targetDivId"></div>
+    <h1>Performance test to join KPI host</h1>
+    <div class="buttons">
+        <input type="text" id="firstNameId" placeholder="Your firstname">
+        <button id="latencyTestButton" onclick="testLatency()">Latency test</button>
+        <button id="speedTestButton" onclick="testSpeed()">Speed test</button>
+        <button id="webSocketTestButton" onclick="webSocketTest()">WebSocket connection</button>
+        <div id="spinner" class="spinner"></div>
+    </div>
+    <div class="container">
+        <div class="column" id="results"></div>
+        <div class="column" id="targetDivId"></div>
+    </div>
+    <button onclick="clearDiv()">Clear</button>
 
     <script>
-        // Insérez ici les fonctions testLatency et testSpeed
+        const latencyTestButton = document.getElementById('latencyTestButton')
+        const speedTestButton = document.getElementById('speedTestButton')
+        const webSocketTestButton = document.getElementById('webSocketTestButton')
+        const spinner = document.getElementById('spinner')
+
+        function clearDiv() {
+            document.getElementById('results').innerHTML = ``
+        }
         function testLatency() {
-            const start = performance.now();
-            fetch('/ping')
+            const start = performance.now()
+            latencyTestButton.style.visibility = 'hidden'
+            spinner.style.visibility = 'visible'
+            const timestamp = new Date().getTime()
+            fetch(`ping.php?${timestamp}`)
                 .then(() => {
-                    const end = performance.now();
-                    const latency = end - start;
-                    console.log(`Latence: ${latency.toFixed(2)} ms`);
+                    const end = performance.now()
+                    const latency = end - start
+                    updateResults(`Latency: ${latency.toFixed(2)} ms`)
+                    sendResults(`Latency: ${latency.toFixed(2)} ms`)
+                    latencyTestButton.style.visibility = 'visible'
+                    spinner.style.visibility = 'hidden'
                 })
-                .catch(error => console.error('Erreur de test de latence:', error));
+                .catch(error => {
+                    updateResults('Error on latency test')
+                    sendResults('Error on latency test')
+                    latencyTestButton.style.visibility = 'visible'
+                    spinner.style.visibility = 'hidden'
+                })
         }
 
         function testSpeed() {
-            const fileSize = 4.03 * 1024 * 1024; // 4 MB
-            const start = performance.now();
-            fetch('dequing.png')
+            const fileSize = 4.03 * 1024 * 1024 // 4 MB
+            const start = performance.now()
+            speedTestButton.style.visibility = 'hidden'
+            spinner.style.visibility = 'visible'
+            const timestamp = new Date().getTime()
+            fetch(`dequing.png?${timestamp}`)
                 .then(response => {
-                    // Vérifiez si la réponse est ok
                     if (!response.ok) {
-                        throw new Error(`Erreur HTTP! statut: ${response.status}`);
+                        throw new Error(`HTTP Error! status: ${response.status}`)
                     }
-                    // Convertissez la réponse en blob
-                    return response.blob();
+                    return response.blob()
                 })
                 .then(blob => {
                     const end = performance.now()
                     const durationInSeconds = (end - start) / 1000
                     const speedMbps = (fileSize * 8 / durationInSeconds / 1000000).toFixed(2)
-                    updateResults(`Débit: ${speedMbps} Mbps`)
+                    updateResults(`Speed: ${speedMbps} Mbps`)
+                    sendResults(`Speed: ${speedMbps} Mbps`)
 
-                    // Créez une URL d'objet à partir du blob
                     const objectURL = URL.createObjectURL(blob)
-                    // Créez un élément image
                     const imgElement = document.createElement('img')
-                    // Définissez la source de l'image
                     imgElement.src = objectURL
-                    // Obtenez la div cible
-                    const targetDiv = document.getElementById(targetDivId)
-                    // Ajoutez l'image à la div
+                    imgElement.width = 200
+                    const targetDiv = document.getElementById('targetDivId')
                     targetDiv.appendChild(imgElement)
+                    speedTestButton.style.visibility = 'visible'
+                    spinner.style.visibility = 'hidden'
                 })
-                .catch(error => updateResults('Erreur de test de débit:', error))
+                .catch(error => {
+                    updateResults('Speed test error:', error)
+                    sendResults('Speed test error:', error)
+                    speedTestButton.style.visibility = 'visible'
+                    spinner.style.visibility = 'hidden'
+                })
         }
 
         function updateResults(message) {
-            document.getElementById('results').innerHTML += `<p>${message}</p>`;
+            document.getElementById('results').innerHTML += `${message}<br>`
+            document.getElementById('results').scrollTop = document.getElementById('results').scrollHeight;
         }
+
+        function sendResults(message) {
+            let firstname = document.getElementById('firstNameId')
+            name = firstname.value.length > 0 ? ' (' + firstname.value + ')' : ' (anonymous)'
+            fetch('collect-results.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: message + name
+            })
+            .then(response => response.json())
+            .then(data => updateResults('Sending result: ' + JSON.stringify(data) + '<br>Thank you ' + firstname.value + '<br>'))
+            .catch(error => updateResults(`Error sending result: ` + error))
+        }
+
+        let socket
+        let socketMessage
+        function webSocketTest() {
+            const start = performance.now()
+            socket = new WebSocket('wss://kp.agilsport.fr:443')
+
+            socket.onopen = function(event) {
+                const end = performance.now()
+                const connectionDuration = end - start
+                document.getElementById('webSocketTestButton').style.visibility = 'hidden'
+                spinner.style.visibility = 'visible'
+                socketMessage = 'WebSocket connection established in ' + connectionDuration + ' ms'
+                updateResults(socketMessage)
+                let compteur = 0
+                const intervalle = setInterval(() => {
+                    webSocketSend(compteur)
+                    compteur++
+                    if (compteur >= 5) {
+                        clearInterval(intervalle)
+                        if (socket.readyState === WebSocket.OPEN) {
+                            socket.close()
+                        }
+                    }
+                }, 1000)
+            }
+
+            socket.onmessage = function(event) {
+                updateResults('Message received from server:', event.data);
+            }
+
+            socket.onerror = function(error) {
+                const end = performance.now()
+                const connectionDuration = end - start
+                document.getElementById('webSocketTestButton').style.visibility = 'visible'
+                spinner.style.visibility = 'hidden'
+                updateResults('WebSocket error in ' + connectionDuration + ' ms')
+                sendResults('WebSocket error in ' + connectionDuration + ' ms')
+                console.log(error)
+            }
+
+            socket.onclose = function(event) {
+                document.getElementById('webSocketTestButton').style.visibility = 'visible'
+                spinner.style.visibility = 'hidden'
+                updateResults('WebSocket connection closed')
+                if (socketMessage !== undefined) {
+                    sendResults(socketMessage)
+                }
+            }
+        }
+
+        function webSocketSend(message) {
+            socket.send('Test message ' + message)
+            updateResults('Test message ' + message)
+        }
+
     </script>
 </body>
 </html>

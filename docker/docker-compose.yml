@@ -59,7 +59,7 @@ services:
         user: "1000:33"
     node_live:
         container_name: kpi_node_live
-        image: node:latest
+        image: node:20.14.0-alpine
         build:
             context: ../
             dockerfile: ./docker/node/Dockerfile_live
