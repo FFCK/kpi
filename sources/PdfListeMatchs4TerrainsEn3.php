@@ -206,14 +206,10 @@ class PdfListeMatchs extends MyPage
                 //Codes équipes	
                 $EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
             }
-            if ($row['Id_equipeA'] >= 1) {
-                $myBdd->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA'], $myBdd);
-            } elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
+            if ($row['Id_equipeA'] < 1 && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
                 $row['EquipeA'] = $EquipesAffectAuto[0];
             }
-            if ($row['Id_equipeB'] >= 1) {
-                $myBdd->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB'], $myBdd);
-            } elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
+            if ($row['Id_equipeB'] < 1 && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
                 $row['EquipeB'] = $EquipesAffectAuto[1];
             }
             if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
