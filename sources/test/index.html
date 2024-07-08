@@ -172,9 +172,10 @@
                 spinner.style.visibility = 'visible'
                 socketMessage = 'WebSocket connection established in ' + connectionDuration + ' ms'
                 updateResults(socketMessage)
+                socket.send(JSON.stringify({"p":"194_1","connect":"writer"}))
                 let compteur = 0
                 const intervalle = setInterval(() => {
-                    webSocketSend(compteur)
+                    webSocketSend('Test message ' + compteur)
                     compteur++
                     if (compteur >= 5) {
                         clearInterval(intervalle)
@@ -210,7 +211,16 @@
         }
 
         function webSocketSend(message) {
-            socket.send('Test message ' + message)
+            // socket.send('Test message ' + message)
+            const obj = {
+                p: '194_1',
+                t: 'scoreA',
+                v: message
+                // v: { time: '10:00', run: 'waiting' }
+            }
+            const obj2 = {"prolongation":false,"currentPeriod":2,"nbPeriodInGame":4}
+            // console.log(JSON.stringify(obj), JSON.stringify(obj2))
+            socket.send(JSON.stringify(obj))
             updateResults('Test message ' + message)
         }
 
