@@ -254,7 +254,10 @@ function ParseCacheMultiPitch (jsonData) {
 	}
 }
 
-function Init (event, count, voie) {
+function Init (event, count, voie, refresh) {
+	const refresh_frequency = parseInt(refresh, 10) * 1000 || 10000
+	$('#refresh_frequency').text('refresh: ' + (refresh_frequency / 1000) + 's')
+
 	theContext.Event = event
 	//	alert("Event = "+theContext.Event);
 
@@ -279,7 +282,7 @@ function Init (event, count, voie) {
 	//	setInterval(RefreshCacheChrono, 2500);
 
 	// Refresh Horloge toutes les 10 secondes  ...
-	setInterval(RefreshHorloge, 10000)
+	setInterval(RefreshHorloge, refresh_frequency)
 
 	SetVoie(voie)
 }
