@@ -264,3 +264,13 @@ span.numero {
     color: #4b97cb;
 }
 
+#refresh_frequency {
+    top: 50vh;
+    left: 50vw;
+    position: fixed;
+    transform: translate(-50%, -65%);
+    font-style: italic;
+    background-color: white;
+    padding: 5px;
+    /* border: 1px solid red;   */
+}
