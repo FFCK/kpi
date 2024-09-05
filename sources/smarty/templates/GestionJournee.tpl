@@ -346,7 +346,7 @@
 				<div class='blocMiddle'>
 					<table width=100%>
 						<tr>
-							<td width=480>
+							<td width=460>
 								<fieldset>
 									<label>{#Selection#}:</label>
 									&nbsp;
@@ -392,7 +392,7 @@
 									{/if}
 								</fieldset>
 							</td>
-							<td width=640>
+							<td width=600>
 								<fieldset>
 									<label>{#Tous_les_matchs#}:</label>
 									&nbsp;
@@ -434,9 +434,10 @@
 							</td>
 							<td>
 								&nbsp;&nbsp;
-								<span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach' size='5'>
+								<span id='reachspan'><i>{#Surligner#}:</i></span><input type='text' name='reach' id='reach' size='5'>
 								{if $profile <= 2}
-									<span id='reachspan2'><i>{#Surligner#}:</i></span><input type=text name='reach2' id='reach2' size='5'>
+									<span id='reachspan2'><i>{#Surligner#}:</i></span><input type='text' name='reach2' id='reach2' size='5'>
+									<span id='filterAttspan'><i>?:</i></span><input type='checkbox' name='filterAtt' id='filterAtt' value='on'>
 								{/if}
 							</td>
 						</tr>
