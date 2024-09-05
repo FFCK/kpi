@@ -111,8 +111,8 @@ function setCheckboxes(formName, checkName, do_check)
 	{
 		for (var i = 0; i < elts_count; i++) 
 		{
-			console.log(elts[i].style)
-			if (elts[i].style.display != 'none') {
+			const elt_display = window.getComputedStyle(elts[i].parentElement.parentElement, null).display
+			if (elt_display != 'none') {
 				elts[i].checked = do_check;
 			}
 		} 

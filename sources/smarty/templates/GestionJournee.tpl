@@ -123,6 +123,13 @@
 								{/section}
 							</select>
 						</td>
+						{if $profile <= 2}
+						<td style="text-align: center">
+							<label for="filterAttspan">Unlocked games only</label>
+							<br>
+							<input type='checkbox' name='filterAtt' id='filterAtt' value='on'>
+						</td>
+						{/if}
 					</tr>
 				</table>
 				{if $profile <= 6 && $AuthModif == 'O'}
@@ -437,7 +444,6 @@
 								<span id='reachspan'><i>{#Surligner#}:</i></span><input type='text' name='reach' id='reach' size='5'>
 								{if $profile <= 2}
 									<span id='reachspan2'><i>{#Surligner#}:</i></span><input type='text' name='reach2' id='reach2' size='5'>
-									<span id='filterAttspan'><i>?:</i></span><input type='checkbox' name='filterAtt' id='filterAtt' value='on'>
 								{/if}
 							</td>
 						</tr>
