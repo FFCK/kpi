@@ -123,13 +123,11 @@
 								{/section}
 							</select>
 						</td>
-						{if $profile <= 2}
 						<td style="text-align: center">
-							<label for="filterAttspan">Unlocked games only</label>
+							<label for="filterAttspan">{#Matchs_non_verrouilles#}</label>
 							<br>
 							<input type='checkbox' name='filterAtt' id='filterAtt' value='on'>
 						</td>
-						{/if}
 					</tr>
 				</table>
 				{if $profile <= 6 && $AuthModif == 'O'}
