@@ -396,7 +396,7 @@
 			<th title="Code">Code</th>
 			<th title="Niveau">Niv.</th>
 			<th title="Titre de la compétition">Libelle</th>
-			{* <th title="Compétition de référence">Groupe</th> *}
+			<th title="Basculer">Basculer</th>
 			<th title="Tour/Phase">Tour</th>
 			<th title="Nombre d'équipes affectées">Equipes</th>
 			<th title="Nombre de matchs">Matchs</th>
@@ -417,12 +417,13 @@
 					{else}
 						{$arraySchemas[i].Libelle}
 					{/if}
-					&nbsp;
-					<a href='GestionDoc.php?Compet={$arraySchemas[i].Code}&Saison={$arraySchemas[i].Code_saison}'>
-						<img height="20" src="../img/basculer.png" align="middle" title="Basculer vers cette saison/compétition">
-					</a>
-				  {if $arraySchemas[i].Soustitre2 != ''}<br />{$arraySchemas[i].Soustitre2}{/if}</td>
-			  {* <td>{$arraySchemas[i].Code_ref|default:'&nbsp;'}</td> *}
+				  {if $arraySchemas[i].Soustitre2 != ''}<br />{$arraySchemas[i].Soustitre2}{/if}
+			  </td>
+			  <td>
+			  	<a href='GestionDoc.php?Compet={$arraySchemas[i].Code}&Saison={$arraySchemas[i].Code_saison}'>
+					<img height="20" src="../img/basculer.png" align="middle" title="Basculer vers cette saison/compétition">
+				</a>
+			  </td>
 			  <td>{if $arraySchemas[i].Code_tour == '10'}F{else}{$arraySchemas[i].Code_tour|default:'&nbsp;'}{/if}</td>
 			  <td>{$arraySchemas[i].Nb_equipes|default:'&nbsp;'}</td>
 			  <td>{$arraySchemas[i].nbMatchs|default:'&nbsp;'}</td>
@@ -436,7 +437,7 @@
 			</tr>
 			{sectionelse}
 			<tr>
-			  <td colspan="7">Aucun résultat.</td>
+			  <td colspan="8">Aucun résultat.</td>
 			</tr>
 
 		  {/section}
