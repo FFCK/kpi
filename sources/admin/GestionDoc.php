@@ -41,6 +41,7 @@ class GestionDoc extends MyPageSecure
 		
 		$this->m_tpl->assign('arraySaison', $arraySaison);
 		$this->m_tpl->assign('sessionSaison', $codeSaison);
+		$this->m_tpl->assign('Saison', $codeSaison);
 
 		// Chargement des Evenements ...
 		$idEvenement = utyGetSession('idEvenement', -1);
