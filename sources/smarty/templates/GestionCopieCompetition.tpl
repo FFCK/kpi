@@ -45,7 +45,7 @@
 		<td colspan=2 align=center>{$Soustitre2}</td>
 	  </tr>
 	  <tr>
-		<td colspan=2 align=center>{$commentairesCompet}</td>
+		<td colspan=2 align=center><small><i>{$commentairesCompet}</i></small></td>
 	  </tr>
 	  <tr>
 		<td>Classement :</td>
