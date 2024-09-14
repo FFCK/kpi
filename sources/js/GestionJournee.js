@@ -901,6 +901,12 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		jq('td>span.compet').addClass('highlight3')
 		jq('#comboCompet').addClass('highlight3')
 	}
+	//Surligne le tour filtré
+	if (jq('#filtreTour').val() != '') {
+		jq('td>span.phase').addClass('highlight3')
+		jq('td>span.lieu').addClass('highlight3')
+		jq('#filtreTour').addClass('highlight3')
+	}
 	//Surligne la phase, le lieu filtrés
 	if (jq('#comboJournee2').val() != '*') {
 		jq('td>span.phase').addClass('highlight3')
