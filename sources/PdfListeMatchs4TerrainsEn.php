@@ -151,7 +151,7 @@ class PdfListeMatchs extends MyPage
         // Entête PDF ...	  
         $pdf = new PDF('L');
         $pdf->Open();
-        $pdf->SetTitle("Game list");
+        $pdf->SetTitle("Game table");
         $pdf->SetAuthor("Kayak-polo.info");
         $pdf->SetCreator("Kayak-polo.info with FPDF");
         $pdf->SetTopMargin(30);
@@ -336,7 +336,7 @@ class PdfListeMatchs extends MyPage
 
 
         $pdf->Cell(271, 3, '', 'T', '1', 'C');
-        $pdf->Output('GameList.pdf', 'I');
+        $pdf->Output('GameTable.pdf', 'I');
     }
 }
 
