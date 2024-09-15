@@ -361,7 +361,7 @@
 				<div class='blocMiddle'>
 					<table width=100%>
 						<tr>
-							<td width=460>
+							<td width="460">
 								<fieldset>
 									<label>{#Selection#}:</label>
 									&nbsp;
@@ -407,7 +407,7 @@
 									{/if}
 								</fieldset>
 							</td>
-							<td width=600>
+							<td width="620">
 								<fieldset>
 									<label>{#Tous_les_matchs#}:</label>
 									&nbsp;
