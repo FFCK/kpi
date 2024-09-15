@@ -47,6 +47,12 @@ class GestionJournee extends MyPageSecure
 		$_SESSION['filtreJour'] = $filtreJour;
 		$this->m_tpl->assign('filtreJour', $filtreJour);
 
+		$filtreTour = utyGetSession('filtreTour', '');
+		$filtreTour = utyGetPost('filtreTour', $filtreTour);
+		$filtreTour = utyGetGet('filtreTour', $filtreTour);
+		$_SESSION['filtreTour'] = $filtreTour;
+		$this->m_tpl->assign('filtreTour', $filtreTour);
+
 		$filtreTerrain = utyGetSession('filtreTerrain', '');
 		$filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
 		$filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
@@ -118,18 +124,19 @@ class GestionJournee extends MyPageSecure
 
 		// Chargement des Informations relatives aux Journées ...
 		if ($idSelJournee != '*') {
-			$sql = "SELECT DISTINCT b.Id, b.Code_competition, b.Phase, b.Niveau, b.Libelle, 
+			$sql = "SELECT DISTINCT b.Id, b.Code_competition, b.Phase, b.Niveau, b.Etape, b.Libelle, 
 				b.Lieu, b.Date_debut, b.Type, a.Code_typeclt 
 				FROM kp_journee b, kp_competition a 
 				WHERE b.Id = ? 
-				AND a.Code = b.Code_competition ";
+				AND a.Code = b.Code_competition 
+				ORDER BY b.Code_competition, b.Date_debut, b.Etape, b.Niveau, b.Phase, b.Id ";
 			$sql .= utyGetFiltreCompetition('a.');
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idSelJournee));
 			$idEvenement = -1;
 		} else {
 			if ($idEvenement != -1) {
-				$sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Libelle, 
+				$sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Etape, a.Libelle, 
 					a.Lieu, a.Date_debut, a.Type, c.Code_typeclt 
 					FROM kp_journee a, kp_evenement_journee b, kp_competition c 
 					WHERE a.Id = b.Id_journee 
@@ -141,12 +148,12 @@ class GestionJournee extends MyPageSecure
 					$sql .= "AND a.Code_competition = ? ";
 					$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
 				}
-				$sql .= "ORDER BY a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
+				$sql .= "ORDER BY a.Code_competition, a.Date_debut, a.Etape, a.Niveau, a.Phase, a.Id ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute($arrayQuery);
 			} else {
 				$arrayQuery = [$codeSaison];
-				$sql = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Libelle, 
+				$sql = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Etape, j.Libelle, 
 					j.Lieu, j.Date_debut, j.Type, c.Code_typeclt 
 					FROM kp_journee j, kp_competition c, kp_groupe g 
 					WHERE j.Code_saison = ? ";
@@ -175,7 +182,7 @@ class GestionJournee extends MyPageSecure
 					$sql .= "AND g.section = ? ";
 					$arrayQuery = array_merge($arrayQuery, [$AfficheCompet]);
 				}
-				$sql .= " ORDER BY j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
+				$sql .= " ORDER BY j.Code_competition, j.Date_debut, j.Etape, j.Niveau, j.Phase, j.Id ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute($arrayQuery);
 			}
@@ -192,7 +199,7 @@ class GestionJournee extends MyPageSecure
 			array_push($arrayJournees, array(
 				'Id' => $row['Id'],
 				'Code_competition' => $row['Code_competition'], 'Code_typeclt' => $row['Code_typeclt'],
-				'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Type' => $row['Type'],
+				'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Etape' => $row['Etape'], 'Type' => $row['Type'],
 				'Libelle' => $row['Libelle'], 'Lieu' => $row['Lieu'],
 				'Date_debut' => $row['Date_debut']
 			));
@@ -207,7 +214,7 @@ class GestionJournee extends MyPageSecure
 					'Id' => $row['Id'],
 					'Code_competition' => $row['Code_competition'], 'Lieu' => $row['Lieu'],
 					'Code_typeclt' => $row['Code_typeclt'], 'Type' => $row['Type'],
-					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'],
+					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Etape' => $row['Etape'], 
 					'Date_debut' => $row['Date_debut']
 				));
 			}
@@ -219,7 +226,7 @@ class GestionJournee extends MyPageSecure
 
 		// Chargement des Informations relatives aux Journées pour le filtre...
 		if ($idEvenement2 != -1) {
-			$sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Lieu, 
+			$sql = "SELECT DISTINCT a.Id, a.Code_competition, a.Phase, a.Niveau, a.Etape, a.Lieu, 
 				a.Date_debut, c.Code_typeclt 
 				FROM kp_journee a, kp_evenement_journee b, kp_competition c 
 				WHERE a.Id = b.Id_journee 
@@ -231,11 +238,15 @@ class GestionJournee extends MyPageSecure
 				$sql .= "AND a.Code_competition = ? ";
 				$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
 			}
-			$sql .= "ORDER BY a.Code_competition, a.Date_debut, a.Niveau, a.Id ";
+			if ($filtreTour != '') {
+				$sql .= "AND a.Etape = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$filtreTour]);
+			}
+			$sql .= "ORDER BY a.Code_competition, a.Date_debut, a.Etape, a.Niveau, a.Phase, a.Id ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayQuery);
 		} else {
-			$sql  = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Lieu, 
+			$sql  = "SELECT DISTINCT j.Id, j.Code_competition, j.Phase, j.Niveau, j.Etape, j.Lieu, 
 				j.Date_debut, c.Code_typeclt 
 				FROM kp_journee j, kp_competition c, kp_groupe g 
 				WHERE j.Code_saison = ? ";
@@ -243,6 +254,10 @@ class GestionJournee extends MyPageSecure
 			if ($codeCompet != '*') {
 				$sql .= "AND j.Code_competition = ? ";
 				$arrayQuery = array_merge($arrayQuery, [$codeCompet]);
+			}
+			if ($filtreTour != '') {
+				$sql .= "AND j.Etape = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$filtreTour]);
 			}
 			if ($filtreMois > 0) {
 				$sql .= "AND (MONTH(j.Date_debut) = $filtreMois 
@@ -265,7 +280,7 @@ class GestionJournee extends MyPageSecure
 				$sql .= " AND g.section = ? ";
 				$arrayQuery = array_merge($arrayQuery, [$AfficheCompet]);
 			}
-			$sql .= "ORDER BY j.Code_competition, j.Date_debut, j.Niveau, j.Id ";
+			$sql .= "ORDER BY j.Code_competition, j.Date_debut, j.Etape, j.Niveau, j.Phase, j.Id ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayQuery);
 		}
@@ -284,7 +299,7 @@ class GestionJournee extends MyPageSecure
 			if (utyIsAutorisationJournee($row['Id'])) {
 				array_push($arrayJourneesAutoriseesFiltre, array(
 					'Id' => $row['Id'], 'Code_competition' => $row['Code_competition'], 'Lieu' => $row['Lieu'], 'Code_typeclt' => $row['Code_typeclt'],
-					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Date_debut' => $row['Date_debut']
+					'Phase' => $row['Phase'], 'Niveau' => $row['Niveau'], 'Etape' => $row['Etape'], 'Date_debut' => $row['Date_debut']
 				));
 			}
 		}
@@ -379,7 +394,7 @@ class GestionJournee extends MyPageSecure
 		if ((count($arrayJournees) == 1)) {
 			$headerSubTitle = $arrayJournees[0]['Code_competition'];
 			if (strlen($arrayJournees[0]['Phase']) > 0) {
-				$headerSubTitle .= '/' . $arrayJournees[0]['Phase'] . ' (Niveau ' . $arrayJournees[0]['Niveau'] . ')';
+				$headerSubTitle .= '/' . $arrayJournees[0]['Phase'];
 			}
 			$headerSubTitle .= ' - ' . $arrayJournees[0]['Libelle'] . ' - ' . $arrayJournees[0]['Date_debut'];
 		} else {
@@ -450,7 +465,7 @@ class GestionJournee extends MyPageSecure
 				a.ScoreDetailA, a.ScoreDetailB, b.Libelle EquipeA, c.Libelle EquipeB, 
 				a.Id_equipeA, a.Id_equipeB, a.Terrain, a.ScoreA, a.ScoreB, a.CoeffA, a.CoeffB, 
 				a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, 
-				a.Matric_arbitre_secondaire, d.Code_competition, d.Phase, d.Niveau, d.Lieu, 
+				a.Matric_arbitre_secondaire, d.Code_competition, d.Phase, d.Niveau, d.Etape, d.Lieu, 
 				d.Libelle LibelleJournee, e.Soustitre2 
 				FROM kp_journee d, kp_competition e, kp_match a 
 				LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
@@ -462,6 +477,10 @@ class GestionJournee extends MyPageSecure
 			if ($filtreTerrain != '') {
 				$sql .= "AND a.Terrain = ? ";
 				$arrayQuery = array_merge($arrayQuery, [$filtreTerrain]);
+			}
+			if ($filtreTour != '') {
+				$sql .= "AND d.Etape = ? ";
+				$arrayQuery = array_merge($arrayQuery, [$filtreTour]);
 			}
 			$sql .= $orderMatchs;
 
@@ -541,6 +560,7 @@ class GestionJournee extends MyPageSecure
 						'Soustitre2' => $row['Soustitre2'],
 						'Phase' => $row['Phase'],
 						'Niveau' => $row['Niveau'],
+						'Etape' => $row['Etape'],
 						'Lieu' => $row['Lieu'],
 						'LibelleJournee' => $row['LibelleJournee'],
 						'StdOrSelected' => $StdOrSelected,

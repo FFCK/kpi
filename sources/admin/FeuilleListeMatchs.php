@@ -198,14 +198,10 @@ class FeuilleListeMatchs extends MyPage
                 $EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
             }
 
-            if ($row['Id_equipeA'] >= 1) {
-                $myBdd->InitTitulaireEquipe('A', $row['Id'], $row['Id_equipeA']);
-            } elseif (isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
+            if ($row['Id_equipeA'] < 1 && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
                 $row['EquipeA'] = $EquipesAffectAuto[0];
             }
-            if ($row['Id_equipeB'] >= 1) {
-                $myBdd->InitTitulaireEquipe('B', $row['Id'], $row['Id_equipeB']);
-            } elseif (isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
+            if ($row['Id_equipeB'] < 1 && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
                 $row['EquipeB'] = $EquipesAffectAuto[1];
             }
 
