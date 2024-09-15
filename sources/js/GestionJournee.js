@@ -901,6 +901,12 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		jq('td>span.compet').addClass('highlight3')
 		jq('#comboCompet').addClass('highlight3')
 	}
+	//Surligne le tour filtré
+	if (jq('#filtreTour').val() != '') {
+		jq('td>span.phase').addClass('highlight3')
+		jq('td>span.lieu').addClass('highlight3')
+		jq('#filtreTour').addClass('highlight3')
+	}
 	//Surligne la phase, le lieu filtrés
 	if (jq('#comboJournee2').val() != '*') {
 		jq('td>span.phase').addClass('highlight3')
@@ -941,6 +947,21 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		if (searchTerm) {
 			// highlight the new term
 			jq('.tableau').highlight2(searchTerm)
+		}
+	})
+
+	// 
+	jq('#filterAtt').bind('change', function (ev) {
+		if (document.getElementById("filterAtt").checked) {
+			console.log('ON')
+			jq(".verrouMatch[data-valeur!='N']").each(function() {
+				jq(this).parent().parent().hide()
+			})
+		} else {
+			console.log('OFF')
+			jq(".verrouMatch[data-valeur!='N']").each(function() {
+				jq(this).parent().parent().show()
+			})
 		}
 	})
 
