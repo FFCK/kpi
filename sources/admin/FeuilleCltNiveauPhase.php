@@ -103,17 +103,19 @@ class FeuilleCltNiveauPhase extends MyPage
         // données
         $myBdd = new MyBdd();
 
-        $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, cej.Id_journee, cej.Clt, 
-            cej.Pts, cej.J, cej.G, cej.N, cej.P, cej.F, cej.Plus, cej.Moins, cej.Diff, 
+        $sql = "SELECT c.Mode_calcul, ce.Id, ce.Libelle, ce.Code_club, cej.Id_journee,
+            cej.Clt, cej.Pts, cej.J, cej.G, cej.N,
+            cej.P, cej.F, cej.Plus, cej.Moins, cej.Diff, 
             cej.PtsNiveau, cej.CltNiveau, j.Phase, j.Niveau, j.Lieu, j.Type, 
             IF(LEFT(j.Phase, 5) = 'Group' OR LEFT(j.Phase, 5) = 'Poule', j.Phase, 'Z') typePhase 
-            FROM kp_competition_equipe ce, kp_competition_equipe_journee cej 
-            JOIN kp_journee j ON (cej.Id_journee = j.Id) 
-            WHERE ce.Id = cej.Id 
-            AND j.Code_competition = ? 
+            FROM kp_competition c
+            JOIN kp_competition_equipe ce ON c.Code = ce.Code_compet AND c.Code_saison = ce.Code_saison
+            JOIN kp_competition_equipe_journee cej ON ce.Id = cej.Id
+            JOIN kp_journee j ON cej.Id_journee = j.Id
+            WHERE j.Code_competition = ? 
             AND j.Code_saison = ? 
-            ORDER BY typePhase, j.Niveau, j.Phase, j.Date_debut, 
-                j.Lieu, cej.Clt, cej.Diff DESC, cej.Plus DESC ";
+            ORDER BY typePhase, j.Niveau, j.Phase, j.Date_debut, j.Lieu, 
+                cej.Clt, cej.Diff DESC, cej.Plus DESC ";
         $result = $myBdd->pdo->prepare($sql);
         $result->execute(array($codeCompet, $codeSaison));
 
@@ -213,6 +215,25 @@ class FeuilleCltNiveauPhase extends MyPage
                     $pdf->Cell(8, 4, $row['Plus'], 'B', 0, 'C');
                     $pdf->Cell(8, 4, $row['Moins'], 'B', 0, 'C');
                     $pdf->Cell(8, 4, $row['Diff'], 'B', 1, 'C');
+                } else {
+                    $pdf->SetFont('Arial', '', 9);
+                    if ($arrayCompetition['Points'] == '4-2-1-0') {
+                        $pdf->Cell(26, 4, '', 0, 0, 'C');
+                    } else {
+                        $pdf->Cell(30, 4, '', 0, 0, 'C');
+                    }
+                    $pdf->Cell(61, 4, $row['Libelle'], 'B', 0, 'L');
+                    $pdf->Cell(8, 4, '', 'B', 0, 'C');
+                    $pdf->Cell(7, 4, '', 'B', 0, 'C');
+                    $pdf->Cell(7, 4, '', 'B', 0, 'C');
+                    $pdf->Cell(7, 4, '', 'B', 0, 'C');
+                    $pdf->Cell(7, 4, '', 'B', 0, 'C');
+                    if ($arrayCompetition['Points'] == '4-2-1-0') {
+                        $pdf->Cell(7, 4, '', 'B', 0, 'C');
+                    }
+                    $pdf->Cell(8, 4, '', 'B', 0, 'C');
+                    $pdf->Cell(8, 4, '', 'B', 0, 'C');
+                    $pdf->Cell(8, 4, '', 'B', 1, 'C');
                 }
             }
         }
