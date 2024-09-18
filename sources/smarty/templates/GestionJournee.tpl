@@ -51,6 +51,16 @@
 							</select>
 						</td>
 						<td style="text-align: center">
+							<label for="filtreTour">{#Filtre_tour#}</label>
+							<br>
+							<select name="filtreTour" id="filtreTour" onChange="submit();">
+								<Option Value="" {if $filtreTour == ''}selected{/if}>---{#Tous#}---</Option>
+								{section name=foo start=1 loop=6}
+									<Option Value="{$smarty.section.foo.index}" {if $filtreTour == $smarty.section.foo.index}selected{/if}>{#Tour#} {$smarty.section.foo.index}</Option>
+								{/section}
+							</select>
+						</td>
+						<td style="text-align: center">
 							<label for="comboJournee2">{#Filtre_journee_phase_poule#}</label>
 							<br>
 							<select id="comboJournee2" name="comboJournee2" onChange="changeCompet();" tabindex="2">
@@ -61,7 +71,7 @@
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>
 												{$arrayJourneesAutoriseesFiltre[i].Code_competition}
 												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} -
-												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Niveau|string_format:"(%s)"}
+												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Etape|string_format:" (%s)"}
 											</Option>
 										{else}
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>
@@ -75,7 +85,7 @@
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">
 												{$arrayJourneesAutoriseesFiltre[i].Code_competition}
 												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} -
-												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Niveau|string_format:"(%s)"}
+												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Etape|string_format:" (%s)"}
 											</Option>
 										{else}
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">
@@ -122,6 +132,11 @@
 									{/if}
 								{/section}
 							</select>
+						</td>
+						<td style="text-align: center">
+							<label for="filterAttspan">{#Matchs_non_verrouilles#}</label>
+							<br>
+							<input type='checkbox' name='filterAtt' id='filterAtt' value='on'>
 						</td>
 					</tr>
 				</table>
@@ -222,7 +237,7 @@
 														data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}" Selected>
 														{$arrayJourneesAutorisees[i].Code_competition} -
 														{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
-														{$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}
+														{$arrayJourneesAutorisees[i].Etape|string_format:" (%s)"}
 													</option>
 												{else}
 													<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
@@ -238,7 +253,7 @@
 														data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}">
 														{$arrayJourneesAutorisees[i].Code_competition} -
 														{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
-														{$arrayJourneesAutorisees[i].Niveau|string_format:"(%s)"}
+														{$arrayJourneesAutorisees[i].Etape|string_format:" (%s)"}
 													</option>
 												{else}
 													<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
@@ -346,7 +361,7 @@
 				<div class='blocMiddle'>
 					<table width=100%>
 						<tr>
-							<td width=480>
+							<td width="460">
 								<fieldset>
 									<label>{#Selection#}:</label>
 									&nbsp;
@@ -392,7 +407,7 @@
 									{/if}
 								</fieldset>
 							</td>
-							<td width=640>
+							<td width="620">
 								<fieldset>
 									<label>{#Tous_les_matchs#}:</label>
 									&nbsp;
@@ -434,9 +449,9 @@
 							</td>
 							<td>
 								&nbsp;&nbsp;
-								<span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach' size='5'>
+								<span id='reachspan'><i>{#Surligner#}:</i></span><input type='text' name='reach' id='reach' size='5'>
 								{if $profile <= 2}
-									<span id='reachspan2'><i>{#Surligner#}:</i></span><input type=text name='reach2' id='reach2' size='5'>
+									<span id='reachspan2'><i>{#Surligner#}:</i></span><input type='text' name='reach2' id='reach2' size='5'>
 								{/if}
 							</td>
 						</tr>

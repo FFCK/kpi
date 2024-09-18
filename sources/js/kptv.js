@@ -283,7 +283,7 @@ jq(document).ready(function () {
                 break
             case 'multi_score':
                 url = 'live/multi_score.php?event=' + jq('#codeEvt').val() + '&count=' + jq('#count').val()
-                    + '&speaker=' + jq('#speaker').val()
+                    + '&speaker=' + jq('#speaker').val() + '&refresh=10'
                 ChangeVoie(jq('#channel').val(), url, showUrl)
                 break
 
@@ -654,7 +654,7 @@ jq(document).ready(function () {
                 break
             case 'multi_score':
                 url = 'live/multi_score.php?event=' + jq('#codeEvt').val() + '&count=' + jq('#count2').val()
-                    + '&speaker=' + jq('#speaker2').val()
+                    + '&speaker=' + jq('#speaker2').val() + '&refresh=10'
                 ChangeVoie(jq('#channel2').val(), url, showUrl)
                 break
 
@@ -1001,7 +1001,7 @@ jq(document).ready(function () {
                 break
             case 'multi_score':
                 url = 'live/multi_score.php?event=' + jq('#codeEvt').val() + '&count=' + jq('#count3').val()
-                    + '&speaker=' + jq('#speaker3').val()
+                    + '&speaker=' + jq('#speaker3').val() + '&refresh=10'
                 ChangeVoie(jq('#channel3').val(), url, showUrl)
                 break
 
@@ -1348,7 +1348,7 @@ jq(document).ready(function () {
                 break
             case 'multi_score':
                 url = 'live/multi_score.php?event=' + jq('#codeEvt').val() + '&count=' + jq('#count4').val()
-                    + '&speaker=' + jq('#speaker4').val()
+                    + '&speaker=' + jq('#speaker4').val() + '&refresh=10'
                 ChangeVoie(jq('#channel4').val(), url, showUrl)
                 break
 

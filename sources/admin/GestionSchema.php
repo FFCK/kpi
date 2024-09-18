@@ -164,11 +164,14 @@ class Schema extends MyPageSecure
                 $result->execute(array_merge([$codeCompet], [$codeSaison], [$Round], $arrayQuery));
             }
             while ($row = $result->fetch()) {
-                $arrayJournees[$row['Id_journee']] = $row;
-                $arrayJournees[$row['Id_journee']]['Actif'] = 0;
-                $arrayListJournees[] = $row['Id_journee'];
-                if ($row['Etape'] > $etapes) {
-                    $etapes = $row['Etape'];
+                if ($row['nb_matchs'] > 0) {
+                    $arrayJournees[$row['Id_journee']] = $row;
+                
+                    $arrayJournees[$row['Id_journee']]['Actif'] = 0;
+                    $arrayListJournees[] = $row['Id_journee'];
+                    if ($row['Etape'] > $etapes) {
+                        $etapes = $row['Etape'];
+                    }
                 }
                 $matchs += $row['nb_matchs'];
             }

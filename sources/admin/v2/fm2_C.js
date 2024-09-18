@@ -14,23 +14,11 @@ $(function () {
     $('#validScore').click(function (event) {
         event.preventDefault()
         if (confirm(lang.Valider_score + ' ' + $('#scoreA').text() + '-' + $('#scoreB').text() + ' ?')) {
-            $.post(
-                'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                { // variables
-                    Id_Match: idMatch,
-                    Valeur: $('#scoreA').text() + '-' + $('#scoreB').text(),
-                    TypeUpdate: 'ValidScore'
-                },
-                function (data) { // callback
-                    if (data == 'OK') {
-                        window.location = 'FeuilleMarque2.php?idMatch=' + idMatch
-                    }
-                    else {
-                        custom_alert(lang.Action_impossible, lang.Attention)
-                    }
-                },
-                'text' // Format des données reçues.
-            )
+
+            $('#scoreA4').text($('#scoreA').text())
+            $('#scoreB4').text($('#scoreB').text())
+
+            serverUpdate('StatutPeriode', {idMatch: idMatch, type: 'Score'})
         }
     })
     /*****************************************************/
@@ -143,6 +131,7 @@ $(function () {
     })
     // Réinitialisation des présents
     $('#initA').click(function () {
+        queueAlert()
         $.post(
             'v2/initPresents.php', // Le fichier cible côté serveur.
             {
@@ -161,6 +150,7 @@ $(function () {
         )
     })
     $('#initB').click(function () {
+        queueAlert()
         $.post(
             'v2/initPresents.php', // Le fichier cible côté serveur.
             {
@@ -193,76 +183,45 @@ $(function () {
     /* TYPE MATCH */
     $('#typeMatchElimination').click(function () {
         if (confirm(lang.Vainqueur_obligatoire_confirmez)) {
-            $.post(
-                'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                { // variables
-                    Id_Match: idMatch,
-                    Valeur: 'E',
-                    TypeUpdate: 'Type'
-                },
-                function (data) { // callback
-                    if (data == 'OK') {
-                        typeMatch = 'E'
-                        $('#P1, #P2, #TB').show()
-                        $('#typeMatchImg').attr('src', '../img/typeE.png')
-                    }
-                    else {
-                        custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention)
-                    }
-                },
-                'text' // Format des données reçues.
-            )
+            typeMatch = 'E'
+            $('#P1, #P2, #TB').show()
+            $('#typeMatchImg').attr('src', '../img/typeE.png')
+
+            serverUpdate('StatutPeriode', {idMatch: idMatch, valeur: 'E', type: 'Type'})
+
         }
     })
     $('#typeMatchClassement').click(function () {
         if (confirm(lang.Egalite_possible)) {
-            $.post(
-                'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                { // variables
-                    Id_Match: idMatch,
-                    Valeur: 'C',
-                    TypeUpdate: 'Type'
-                },
-                function (data) { // callback
-                    if (data == 'OK') {
-                        typeMatch = 'C'
-                        $('#P1, #P2, #TB').hide()
-                        $('#typeMatchImg').attr('src', '../img/typeC.png')
-                    }
-                    else {
-                        custom_alert(lang.Action_impossible + '<br>' + data, lang.Attention)
-                    }
-                },
-                'text' // Format des données reçues.
-            )
+            typeMatch = 'C'
+            $('#P1, #P2, #TB').hide()
+            $('#typeMatchImg').attr('src', '../img/typeC.png')
+            
+            serverUpdate('StatutPeriode', {idMatch: idMatch, valeur: 'C', type: 'Type'})
         }
     })
     /* STATUT */
     $('.statut').click(function (event) {
         event.preventDefault()
+        if (!$(this).hasClass('ouvert')) {
+            return
+        }
         valeur = $(this).attr('id')
-        $.post(
-            'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-            { // variables
-                Id_Match: idMatch,
-                Valeur: valeur,
-                TypeUpdate: 'Statut'
-            },
-            function (data) {  // callback
-                if (data == 'OK') {
-                    $('.statut').removeClass('actif')
-                    $('#' + valeur).addClass('actif')
-                    statutActive(valeur, 'O')
-                    $('#reset_evt').click()
-                    //		valeur2 = $('.periode[class*="actif"]').attr('id');
-                    if (valeur == 'ON')// && valeur2 == ''
-                        $('#M1').click()
-                } else {
-                    custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention)
-                }
-            },
-            'text' // Format des données reçues.
-        )
+
+        if (valeur === 'END') {
+            queueAlert()
+        }
+
+        $('.statut').removeClass('actif')
+        $('#' + valeur).addClass('actif')
+        statutActive(valeur, 'O')
+        $('#reset_evt').click()
+
+        serverUpdate('StatutPeriode', {idMatch: idMatch, valeur: valeur, type: 'Statut'})
+
+        if (valeur == 'ON') {// && valeur2 == ''
+            $('#M1').click()
+        }
     })
 
 
@@ -272,65 +231,56 @@ $(function () {
     })
 
     /* PERIODE */
-    $('.periode').click(function (event) {
+    $('.periode.ouvert').click(function (event) {
         event.preventDefault()
+        if (!$(this).hasClass('ouvert')) {
+            return
+        }
         valeur = $(this).attr('id')
         if ($('#update_evt').attr('data-id') == '') {
             periode_en_cours = valeur
-            $.post(
-                'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                { // variables
-                    Id_Match: idMatch,
-                    Valeur: valeur,
-                    TypeUpdate: 'Periode'
-                },
-                function (data) {  // callback
-                    if (data == 'OK') {
-                        $('.statut').removeClass('actif')
-                        $('#ON').addClass('actif')
-                        $('#end_match_time').removeClass('actif').addClass('inactif')
-                        $('.joueurs, .equipes, .evtButton, .chronoButton, .evtButton2').removeClass('inactif')
-                        $('.periode').removeClass('actif')
-                        $('#' + valeur).addClass('actif')
-                        switch (valeur) {
-                            case 'P1':
-                                texte = lang.period_P1 + ' : 5 minutes'
-                                minut_max = duree_prolongations
-                                second_max = '00'
-                                break
-                            case 'P2':
-                                texte = lang.period_P2 + ' : 5 minutes'
-                                minut_max = duree_prolongations
-                                second_max = '00'
-                                break
-                            case 'TB':
-                                texte = lang.period_TB
-                                minut_max = '01'
-                                second_max = '00'
-                                break
-                            case 'M2':
-                                texte = lang.period_M2 + ' : 10 minutes'
-                                minut_max = '10'
-                                second_max = '00'
-                                break
-                            default:
-                                texte = lang.period_M1 + ' : 10 minutes'
-                                minut_max = '10'
-                                second_max = '00'
-                                break
-                        }
-                        avertissement(texte)
-                        //									$('#chrono_ajust').val($('#heure').val());
-                        $('#periode_ajust, #chrono_ajust').val(minut_max + ':' + second_max)
-                        $('#dialog_ajust_periode').html($('.periode[class*="actif"]').html())
-                        $("#dialog_ajust").dialog("open")
-                        $("#dialog_ajust").parent().find(".ui-dialog-buttonset").first().find("button").first().focus()
-                    } else {
-                        custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention)
-                    }
-                },
-                'text' // Format des données reçues.
-            )
+            $('.statut').removeClass('actif')
+            $('#ON').addClass('actif')
+            $('#end_match_time').removeClass('actif').addClass('inactif')
+            $('.joueurs, .equipes, .evtButton, .chronoButton, .evtButton2').removeClass('inactif')
+            $('.periode').removeClass('actif')
+            $('#' + valeur).addClass('actif')
+            switch (valeur) {
+                case 'P1':
+                    texte = lang.period_P1 + ' : 5 minutes'
+                    minut_max = duree_prolongations
+                    second_max = '00'
+                    break
+                case 'P2':
+                    texte = lang.period_P2 + ' : 5 minutes'
+                    minut_max = duree_prolongations
+                    second_max = '00'
+                    break
+                case 'TB':
+                    texte = lang.period_TB
+                    minut_max = '01'
+                    second_max = '00'
+                    break
+                case 'M2':
+                    texte = lang.period_M2 + ' : 10 minutes'
+                    minut_max = '10'
+                    second_max = '00'
+                    break
+                default:
+                    texte = lang.period_M1 + ' : 10 minutes'
+                    minut_max = '10'
+                    second_max = '00'
+                    break
+            }
+            // avertissement(texte)
+            // $('#chrono_ajust').val($('#heure').val());
+            $('#periode_ajust, #chrono_ajust').val(minut_max + ':' + second_max)
+            $('#dialog_ajust_periode').html($('.periode[class*="actif"]').html())
+            $("#dialog_ajust").dialog("open")
+            $("#dialog_ajust").parent().find(".ui-dialog-buttonset").first().find("button").first().focus()
+
+            serverUpdate('StatutPeriode', {idMatch: idMatch, valeur: valeur, type: 'Periode'})
+            
         } else {
             $('.periode').removeClass('actif')
             $('#' + valeur).addClass('actif')
@@ -373,6 +323,9 @@ $(function () {
     })
     $('.evtButton').click(function (event) {
         event.preventDefault()
+        if (!$(this).hasClass('ouvert')) {
+            return
+        }
         $('.evtButton').removeClass('actif')
         $(this).addClass('actif')
         if ($('#update_evt').attr('data-id') == '') {
@@ -414,16 +367,13 @@ $(function () {
         }
     })
 
-    //var id_tr = 0;
-    // INSERT 
+    // INSERT EVENT
     $('#valid_evt').click(function (event) {
         event.preventDefault()
         if (theInEvent)
             return
 
         theInEvent = true
-        //	enregistrement, ajout ligne...
-        //	$('#valid_evt').html('Enregistrement...');
         var texte
         var ligne_nom = $('.joueurs[class*="actif"]').attr('data-player')
         var ligne_nb = $('.joueurs[class*="actif"]').attr('data-nb')
@@ -461,165 +411,124 @@ $(function () {
         code_ligne.player = ligne_id_joueur
         code_ligne.number = ligne_nb
         code_ligne.cause = ligne_motif
+        const id_ligne = 'ligne_' + crypto.randomUUID().replaceAll('-', '')
 
         texte = $('#time_evt').val() + ' ' + ligne_evt
         texte += ' éq.' + ligne_equipe + ' ' + ligne_num + ligne_nom
-        /* BUT = TEMPS MORT OPTIONNEL ?  */
-        /*					if(ligne_evt == 'But') {
-                    $('div.simple_alert').remove();
-                    $("<div></div>").html('Temps mort ?').dialog({
-                        dialogClass:'simple_alert',
-                        title: 'But',
-                        resizable: false,
-                        modal: true,
-                        buttons: {
-                            "Oui": function() {
-                                $( this ).dialog( "close" );
-                                $('#stop_button').click();
-                            },
-                            "Non": function() {
-                                $( this ).dialog( "close" );
-                            },
-                        }
-                    });
-                }
-        */
-        $.post(
-            'v2/evt_match.php', // Le fichier cible côté serveur.
-            { // variables
-                idMatch: idMatch,
-                ligne: JSON.stringify(code_ligne),
-                idLigne: 0,
-                type: 'insert'
-            },
-            function (data) { // callback
-                try {
-                    avertissement(texte)
-                    if (ligne_evt == 'Tir') {
-                        $('#nb_tirs_' + ligne_equipe).text(parseInt($('#nb_tirs_' + ligne_equipe).text()) + 1)
-                        $('.evtButton, .joueurs, .equipes').removeClass('actif')
-                        $('#valid_evt').addClass('inactif')
-                    } else if (ligne_evt == 'Arret') {
-                        $('#nb_arrets_' + ligne_equipe).text(parseInt($('#nb_arrets_' + ligne_equipe).text()) + 1)
-                        $('.evtButton, .joueurs, .equipes').removeClass('actif')
-                        $('#valid_evt').addClass('inactif')
-                    } else {
-                        // texteNom += ' (' + lang.Tir + ')';
-                        texteTR = '<tr id="ligne_' + data.id + '">'
-                        texteChrono = '<td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td>'
-                        texteBut = '<td class="list_evt">'
-                        if (ligne_evt == 'But') {
-                            texteBut += '<img src="v2/but1.png" />'
-                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />')
-                        }
-                        texteBut += '</td>'
-                        if (ligne_nom) {
-                            texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte + '</td>'
-                        } else {
-                            texteNom = '<td class="list_nom">' + lang.Equipe + ' ' + ligne_equipe + ligne_motif_texte + '</td>'
-                        }
-                        texteVert = '<td class="list_evt">'
-                        if (ligne_evt == 'Carton vert') {
-                            texteVert += '<img src="v2/carton_vert.png" />'
-                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />')
-                            // si 2 verts...
-                            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length
-                            if (nb_cartons >= 2) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
-                            }
-                            // si 3 verts dans l'équipe
-                            var nb_cartons = $('.joueurs[data-equipe="' + ligne_equipe + '"] img[src="v2/carton_vert.png"]').length
-                            if (nb_cartons > 3) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_cette_equipe + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
-                            }
-                            // Carton d'équipe
-                            /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
-                                    $('.joueurs[data-equipe="A"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                                    code_ligne.cause += '-teamCard';
-                                }
-                                if(carton_equipe == 1 && ligne_equipe == 'B' && confirm('Carton d\'équipe pour l\'équipe B ?')) {
-                                    $('.joueurs[data-equipe="B"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                                    code_ligne.cause += '-teamCard';
-                                }
-                            */
-                        }
-                        texteVert += '</td>'
-                        texteJaune = '<td class="list_evt">'
-                        if (ligne_evt == 'Carton jaune') {
-                            texteJaune += '<img src="v2/carton_jaune.png" />'
-                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune.png" />')
-                            //si 2 jaunes...
-                            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune.png"]').length
-                            if (nb_cartons >= 2) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
-                            }
-                        }
-                        texteJaune += '</td>'
-                        texteRouge = '<td class="list_evt">'
-                        if (ligne_evt == 'Carton rouge') {
-                            texteRouge += '<img src="v2/carton_jaune_rouge.png" />'
-                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune_rouge.png" />')
-                            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune_rouge.png"]').length
-                            if (nb_cartons >= 2) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune_rouge.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
-                            }
-                        }
-                        if (ligne_evt == 'Carton rouge D') {
-                            texteRouge += '<img src="v2/carton_rouge_' + lang.D + '.png" />'
-                            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" />')
-                            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_rouge_' + lang.D + '.png"]').length
-                            if (nb_cartons >= 2) {
-                                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
-                            }
-                        }
-                        texteRouge += '</td>'
-                        texteVide = '<td colspan="5" class="list_evt_vide"></td>'
-                        texteTR2 = '</tr>'
-                        $('.evtButton, .joueurs, .equipes').removeClass('actif')
-                        $('#valid_evt').addClass('inactif')
-                        if (ligne_equipe == 'A') {
-                            if (ligne_evt == 'But')
-                                $('#scoreA, #scoreA2, #scoreA3').text(parseInt($('#scoreA').text()) + 1)
-                            if (ordre_actuel == 'up') {
-                                $('#list').prepend(texteTR + texteVert + texteJaune + texteRouge + texteNom + texteBut + texteChrono + texteVide + texteTR2)
-                            } else {
-                                $('#list').append(texteTR + texteVert + texteJaune + texteRouge + texteNom + texteBut + texteChrono + texteVide + texteTR2)
-                            }
-                        } else {
-                            if (ligne_evt == 'But')
-                                $('#scoreB, #scoreB2, #scoreB3').text(parseInt($('#scoreB').text()) + 1)
-                            if (ordre_actuel == 'up') {
-                                $('#list').prepend(texteTR + texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge + texteTR2)
-                            } else {
-                                $('#list').append(texteTR + texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge + texteTR2)
-                            }
-                        }
-                        $('tr[id="ligne_' + data.id + '"]').attr('data-code', JSON.stringify(code_ligne))
-                        $.post(
-                            'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                            { // variables
-                                Id_Match: idMatch,
-                                Valeur: $('#scoreA').text() + '-' + $('#scoreB').text(),
-                                TypeUpdate: 'ValidScoreDetail'
-                            },
-                            function (data) { },
-                            'text' // Format des données reçues.
-                        )
-                        // scroll en haut
-                        $('html, body').animate({
-                            scrollTop: $("#tabs-2").offset().top
-                        }, 200)
-                    }
-                } catch (e) {
-                    custom_alert(lang.Action_impossible + '<br />' + e, lang.Attention)
-                }
-                theInEvent = false
 
-            },
-            'json' // Format des données reçues.
-        )
+        if (ligne_evt == 'Tir') {
+            $('#nb_tirs_' + ligne_equipe).text(parseInt($('#nb_tirs_' + ligne_equipe).text()) + 1)
+            $('.evtButton, .joueurs, .equipes').removeClass('actif')
+            $('#valid_evt').addClass('inactif')
+        } else if (ligne_evt == 'Arret') {
+            $('#nb_arrets_' + ligne_equipe).text(parseInt($('#nb_arrets_' + ligne_equipe).text()) + 1)
+            $('.evtButton, .joueurs, .equipes').removeClass('actif')
+            $('#valid_evt').addClass('inactif')
+        } else {
+            // texteNom += ' (' + lang.Tir + ')';
+            texteTR = '<tr id="' + id_ligne + '">'
+            texteChrono = '<td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td>'
+            texteBut = '<td class="list_evt">'
+            if (ligne_evt == 'But') {
+                texteBut += '<img src="v2/but1.png" />'
+                $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />')
+            }
+            texteBut += '</td>'
+            if (ligne_nom) {
+                texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte + '</td>'
+            } else {
+                texteNom = '<td class="list_nom">' + lang.Equipe + ' ' + ligne_equipe + ligne_motif_texte + '</td>'
+            }
+            texteVert = '<td class="list_evt">'
+            if (ligne_evt == 'Carton vert') {
+                texteVert += '<img src="v2/carton_vert.png" />'
+                $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />')
+                // si 2 verts...
+                var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length
+                if (nb_cartons >= 2) {
+                    custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+                }
+                // si 3 verts dans l'équipe
+                var nb_cartons = $('.joueurs[data-equipe="' + ligne_equipe + '"] img[src="v2/carton_vert.png"]').length
+                if (nb_cartons > 3) {
+                    custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_cette_equipe + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+                }
+                // Carton d'équipe
+                /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
+                        $('.joueurs[data-equipe="A"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
+                        code_ligne.cause += '-teamCard';
+                    }
+                    if(carton_equipe == 1 && ligne_equipe == 'B' && confirm('Carton d\'équipe pour l\'équipe B ?')) {
+                        $('.joueurs[data-equipe="B"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
+                        code_ligne.cause += '-teamCard';
+                    }
+                */
+            }
+            texteVert += '</td>'
+            texteJaune = '<td class="list_evt">'
+            if (ligne_evt == 'Carton jaune') {
+                texteJaune += '<img src="v2/carton_jaune.png" />'
+                $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune.png" />')
+                //si 2 jaunes...
+                var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune.png"]').length
+                if (nb_cartons >= 2) {
+                    custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
+                }
+            }
+            texteJaune += '</td>'
+            texteRouge = '<td class="list_evt">'
+            if (ligne_evt == 'Carton rouge') {
+                texteRouge += '<img src="v2/carton_jaune_rouge.png" />'
+                $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune_rouge.png" />')
+                var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune_rouge.png"]').length
+                if (nb_cartons >= 2) {
+                    custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune_rouge.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
+                }
+            }
+            if (ligne_evt == 'Carton rouge D') {
+                texteRouge += '<img src="v2/carton_rouge_' + lang.D + '.png" />'
+                $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" />')
+                var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_rouge_' + lang.D + '.png"]').length
+                if (nb_cartons >= 2) {
+                    custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
+                }
+            }
+            texteRouge += '</td>'
+            texteVide = '<td colspan="5" class="list_evt_vide"></td>'
+            texteTR2 = '</tr>'
+            $('.evtButton, .joueurs, .equipes').removeClass('actif')
+            $('#valid_evt').addClass('inactif')
+            if (ligne_equipe == 'A') {
+                if (ligne_evt == 'But')
+                    $('#scoreA, #scoreA2, #scoreA3').text(parseInt($('#scoreA').text()) + 1)
+                if (ordre_actuel == 'up') {
+                    $('#list').prepend(texteTR + texteVert + texteJaune + texteRouge + texteNom + texteBut + texteChrono + texteVide + texteTR2)
+                } else {
+                    $('#list').append(texteTR + texteVert + texteJaune + texteRouge + texteNom + texteBut + texteChrono + texteVide + texteTR2)
+                }
+            } else {
+                if (ligne_evt == 'But')
+                    $('#scoreB, #scoreB2, #scoreB3').text(parseInt($('#scoreB').text()) + 1)
+                if (ordre_actuel == 'up') {
+                    $('#list').prepend(texteTR + texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge + texteTR2)
+                } else {
+                    $('#list').append(texteTR + texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge + texteTR2)
+                }
+            }
+            $('tr[id="' + id_ligne + '"]').attr('data-code', JSON.stringify(code_ligne))
+
+            serverUpdate('evt_match', {idMatch: idMatch, ligne: JSON.stringify(code_ligne), idLigne: id_ligne, action: 'insert'})
+
+            // scroll en haut
+            $('html, body').animate({
+                scrollTop: $("#description-match").offset().top
+            }, 200)
+        }
+        theInEvent = false
+
 
     })
+
     // RESET
     $('#reset_evt').click(function (event) {
         event.preventDefault()
@@ -637,9 +546,10 @@ $(function () {
         }
         // scroll en haut
         $('html, body').animate({
-            scrollTop: $("#tabs-2").offset().top
+            scrollTop: $("#description-match").offset().top
         }, 200)
     })
+
     // EDIT
     $('#list').on("click", 'tr', function () {
         $('#reset_evt').click()
@@ -647,7 +557,6 @@ $(function () {
         $('.periode').removeClass('actif')
         $(this).addClass('actif') //Efface la ligne !
         code_ligne = JSON.parse($(this).attr('data-code'))
-        console.log(code_ligne)
         id_ligne = $(this).attr('id')
         ancienne_ligne = code_ligne
         $('#zoneTemps a').addClass('actif2')
@@ -706,153 +615,123 @@ $(function () {
 
         texte = $('#time_evt').val() + ' ' + ligne_evt
         texte += ' éq.' + ligne_equipe + ' ' + ligne_num + ligne_nom
-        $.post(
-            'v2/evt_match.php', // Le fichier cible côté serveur.
-            { // variables
-                idMatch: idMatch,
-                ligne: JSON.stringify(code_ligne),
-                ancienneLigne: JSON.stringify(ancienne_ligne),
-                idLigne: id_ligne,
-                type: 'update'
-            },
-            function (data) { // callback
-                if (data == 'OK') {
-                    // suppression anciens éléments
-                    if (ancienne_ligne.evt == 'B') {
-                        $('#score' + ancienne_ligne.team + ', #score' + ancienne_ligne.team + '2, #score' + ancienne_ligne.team + '3').text(parseInt($('#score' + ancienne_ligne.team).text()) - 1)
-                        $('a[data-id="' + ancienne_ligne.player + '"] img[class="c_but"]').first().remove()
-                    }
-                    if (ancienne_ligne.evt == 'V') {
-                        $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_vert.png"]').first().remove()
-                        if (ancienne_ligne.number == 'teamCard') {
-                            // PREMIER CARTON VERT DE CHAQUE JOUEUR !
-                            $('.joueurs[data-equipe="' + ancienne_ligne.team + '"]').each(function () {
-                                $(this).find('img[src="v2/carton_vert.png"]').first().remove()
-                            })
-                        }
-                    }
-                    if (ancienne_ligne.evt == 'J') {
-                        $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_jaune.png"]').first().remove()
-                    }
-                    if (ancienne_ligne.evt == 'R') {
-                        $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_jaune_rouge.png"]').first().remove()
-                    }
-                    if (ancienne_ligne.evt == 'D') {
-                        $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_rouge_' + lang.D + '.png"]').first().remove()
-                    }
-                    $('tr[id="' + id_ligne + '"] td').remove()
 
-                    // insertion nouveaux éléments
-                    avertissement(texte)
-                    texteTR = '<tr id="ligne_' + data + '">'
-                    texteChrono = '<td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td>'
-                    texteBut = '<td class="list_evt">'
-                    if (ligne_evt == 'But') {
-                        texteBut += '<img src="v2/but1.png" />'
-                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />')
-                    }
-                    texteBut += '</td>'
-                    if (ligne_nom) {
-                        texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte + '</td>'
-                    } else {
-                        texteNom = '<td class="list_nom">' + lang.Equipe + ' ' + ligne_equipe + ligne_motif_texte + '</td>'
-                    }
-                    // if(ligne_evt == 'Arret')
-                    //         texteNom += ' (' + lang.Tir_contre + ')';
-                    //     if(ligne_evt == 'Tir')
-                    //         texteNom += ' (' + lang.Tir + ')';
-                    // texteNom += '</td>';
-                    texteVert = '<td class="list_evt">'
-                    if (ligne_evt == 'Carton vert') {
-                        texteVert += '<img src="v2/carton_vert.png" />'
-                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />')
-                        // si 2 verts...
-                        var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length
-                        if (nb_cartons >= 2) {
-                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
-                        }
-                        // si 3 verts dans l'équipe
-                        var nb_cartons = $('.joueurs[data-equipe="' + ligne_equipe + '"] img[src="v2/carton_vert.png"]').length
-                        if (nb_cartons > 3) {
-                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_cette_equipe + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
-                        }
-                        /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
-                                $('.joueurs[data-equipe="A"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                                code_ligne += '-teamCard';
-                            }
-                            if(carton_equipe == 1 && ligne_equipe == 'B' && confirm('Carton d\'équipe pour l\'équipe B ?')) {
-                                $('.joueurs[data-equipe="B"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
-                                code_ligne += '-teamCard';
-                            }
-                        */
-                    }
-                    texteVert += '</td>'
-                    texteJaune = '<td class="list_evt">'
-                    if (ligne_evt == 'Carton jaune') {
-                        texteJaune += '<img src="v2/carton_jaune.png" />'
-                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune.png" />')
-                        //si 2 jaunes...
-                        var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune.png"]').length
-                        if (nb_cartons >= 2) {
-                            custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
-                        }
-                    }
-                    texteJaune += '</td>'
-                    texteRouge = '<td class="list_evt">'
-                    if (ligne_evt == 'Carton rouge') {
-                        texteRouge += '<img src="v2/carton_jaune_rouge.png" />'
-                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune_rouge.png" />')
-                        var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune_rouge.png"]').length
-                        if (nb_cartons >= 2) {
-                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune_rouge.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
-                        }
-                    }
-                    if (ligne_evt == 'Carton rouge D') {
-                        texteRouge += '<img src="v2/carton_rouge_' + lang.D + '.png" />'
-                        $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" />')
-                        var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_rouge_' + lang.D + '.png"]').length
-                        if (nb_cartons >= 2) {
-                            custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
-                        }
-                    }
-                    texteRouge += '</td>'
-                    texteVide = '<td colspan="5" class="list_evt_vide"></td>'
-                    texteTR2 = '</tr>'
-                    $('.evtButton, .joueurs, .equipes').removeClass('actif')
-                    $('#valid_evt').addClass('inactif')
-                    if (ligne_equipe == 'A') {
-                        if (ligne_evt == 'But')
-                            $('#scoreA, #scoreA2, #scoreA3').text(parseInt($('#scoreA').text()) + 1)
-                        texte2 = texteVert + texteJaune + texteRouge + texteNom + texteBut + texteChrono + texteVide
-                    } else {
-                        if (ligne_evt == 'But')
-                            $('#scoreB, #scoreB2, #scoreB3').text(parseInt($('#scoreB').text()) + 1)
-                        texte2 = texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge
-                    }
+        // suppression anciens éléments
+        if (ancienne_ligne.evt == 'B') {
+            $('#score' + ancienne_ligne.team + ', #score' + ancienne_ligne.team + '2, #score' + ancienne_ligne.team + '3').text(parseInt($('#score' + ancienne_ligne.team).text()) - 1)
+            $('a[data-id="' + ancienne_ligne.player + '"] img[class="c_but"]').first().remove()
+        }
+        if (ancienne_ligne.evt == 'V') {
+            $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_vert.png"]').first().remove()
+            if (ancienne_ligne.number == 'teamCard') {
+                // PREMIER CARTON VERT DE CHAQUE JOUEUR !
+                $('.joueurs[data-equipe="' + ancienne_ligne.team + '"]').each(function () {
+                    $(this).find('img[src="v2/carton_vert.png"]').first().remove()
+                })
+            }
+        }
+        if (ancienne_ligne.evt == 'J') {
+            $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_jaune.png"]').first().remove()
+        }
+        if (ancienne_ligne.evt == 'R') {
+            $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_jaune_rouge.png"]').first().remove()
+        }
+        if (ancienne_ligne.evt == 'D') {
+            $('a[data-id="' + ancienne_ligne.player + '"] img[src="v2/carton_rouge_' + lang.D + '.png"]').first().remove()
+        }
+        $('tr[id="' + id_ligne + '"] td').remove()
 
-
-                    $('tr[id="' + id_ligne + '"]').attr('data-code', JSON.stringify(code_ligne)).append(texte2)
-                    $('#reset_evt').click()
-                    $.post(
-                        'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                        { // variables
-                            Id_Match: idMatch,
-                            Valeur: $('#scoreA').text() + '-' + $('#scoreB').text(),
-                            TypeUpdate: 'ValidScoreDetail'
-                        },
-                        function (data) { },
-                        'text' // Format des données reçues.
-                    )
-                    // scroll en haut
-                    $('html, body').animate({
-                        scrollTop: $("#tabs-2").offset().top
-                    }, 200)
-                } else {
-                    custom_alert('Changement impossible<br />' + data, 'suppression')
+        // insertion nouveaux éléments
+        texteTR = '<tr id="' + id_ligne + '">'
+        texteChrono = '<td class="list_chrono">' + $('.periode[class*="actif"]').attr('id') + ' ' + $('#time_evt').val() + '</td>'
+        texteBut = '<td class="list_evt">'
+        if (ligne_evt == 'But') {
+            texteBut += '<img src="v2/but1.png" />'
+            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_but" src="v2/but1.png" />')
+        }
+        texteBut += '</td>'
+        if (ligne_nom) {
+            texteNom = '<td class="list_nom">' + ligne_num + ligne_nom + ligne_motif_texte + '</td>'
+        } else {
+            texteNom = '<td class="list_nom">' + lang.Equipe + ' ' + ligne_equipe + ligne_motif_texte + '</td>'
+        }
+        // if(ligne_evt == 'Arret')
+        //         texteNom += ' (' + lang.Tir_contre + ')';
+        //     if(ligne_evt == 'Tir')
+        //         texteNom += ' (' + lang.Tir + ')';
+        // texteNom += '</td>';
+        texteVert = '<td class="list_evt">'
+        if (ligne_evt == 'Carton vert') {
+            texteVert += '<img src="v2/carton_vert.png" />'
+            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />')
+            // si 2 verts...
+            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_vert.png"]').length
+            if (nb_cartons >= 2) {
+                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+            }
+            // si 3 verts dans l'équipe
+            var nb_cartons = $('.joueurs[data-equipe="' + ligne_equipe + '"] img[src="v2/carton_vert.png"]').length
+            if (nb_cartons > 3) {
+                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_vert.png" /> ' + lang.pour_cette_equipe + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+            }
+            /*	if(carton_equipe == 1 && ligne_equipe == 'A' && confirm('Carton d\'équipe pour l\'équipe A ?')) {
+                    $('.joueurs[data-equipe="A"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
+                    code_ligne += '-teamCard';
                 }
-            },
-            'text' // Format des données reçues.
-        )
+                if(carton_equipe == 1 && ligne_equipe == 'B' && confirm('Carton d\'équipe pour l\'équipe B ?')) {
+                    $('.joueurs[data-equipe="B"]>.c_evt').append('<img class="c_carton" src="v2/carton_vert.png" />');
+                    code_ligne += '-teamCard';
+                }
+            */
+        }
+        texteVert += '</td>'
+        texteJaune = '<td class="list_evt">'
+        if (ligne_evt == 'Carton jaune') {
+            texteJaune += '<img src="v2/carton_jaune.png" />'
+            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune.png" />')
+            //si 2 jaunes...
+            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune.png"]').length
+            if (nb_cartons >= 2) {
+                custom_alert(nb_cartons + 'e <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
+            }
+        }
+        texteJaune += '</td>'
+        texteRouge = '<td class="list_evt">'
+        if (ligne_evt == 'Carton rouge') {
+            texteRouge += '<img src="v2/carton_jaune_rouge.png" />'
+            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_jaune_rouge.png" />')
+            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_jaune_rouge.png"]').length
+            if (nb_cartons >= 2) {
+                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune_rouge.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+            }
+        }
+        if (ligne_evt == 'Carton rouge D') {
+            texteRouge += '<img src="v2/carton_rouge_' + lang.D + '.png" />'
+            $('.joueurs[class*="actif"]>.c_evt').append('<img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" />')
+            var nb_cartons = $('.joueurs[class*="actif"] img[src="v2/carton_rouge_' + lang.D + '.png"]').length
+            if (nb_cartons >= 2) {
+                custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre + '.', lang.Attention)
+            }
+        }
+        texteRouge += '</td>'
+        texteVide = '<td colspan="5" class="list_evt_vide"></td>'
+        texteTR2 = '</tr>'
+        $('.evtButton, .joueurs, .equipes').removeClass('actif')
+        $('#valid_evt').addClass('inactif')
+        if (ligne_equipe == 'A') {
+            if (ligne_evt == 'But')
+                $('#scoreA, #scoreA2, #scoreA3').text(parseInt($('#scoreA').text()) + 1)
+            texte2 = texteVert + texteJaune + texteRouge + texteNom + texteBut + texteChrono + texteVide
+        } else {
+            if (ligne_evt == 'But')
+                $('#scoreB, #scoreB2, #scoreB3').text(parseInt($('#scoreB').text()) + 1)
+            texte2 = texteVide + texteChrono + texteBut + texteNom + texteVert + texteJaune + texteRouge
+        }
+
+        $('tr[id="' + id_ligne + '"]').attr('data-code', JSON.stringify(code_ligne)).append(texte2)
+        $('#reset_evt').click()
+
+        serverUpdate('evt_match', {idMatch: idMatch, ligne: JSON.stringify(code_ligne), idLigne: id_ligne, action: 'update'})
 
     })
 
@@ -861,58 +740,33 @@ $(function () {
         event.preventDefault()
         code_ligne = JSON.parse($('#list tr.actif').attr('data-code'))
 
-        $.post(
-            'v2/evt_match.php', // Le fichier cible côté serveur.
-            { // variables
-                idMatch: idMatch,
-                ligne: JSON.stringify(code_ligne),
-                ancienneLigne: JSON.stringify(code_ligne),
-                idLigne: id_ligne,
-                type: 'delete',
-            },
-            function (data) { // callback
-                if (data == 'OK') {
-                    // suppression éléments
-                    if (code_ligne.evt == 'B') {
-                        $('#score' + code_ligne.team + ', #score' + code_ligne.team + '2, #score' + code_ligne.team + '3').text(parseInt($('#score' + code_ligne.team).text()) - 1)
-                        $('a[data-id="' + code_ligne.player + '"] img[class="c_but"]').first().remove()
-                    }
-                    if (code_ligne.evt == 'V') {
-                        $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_vert.png"]').first().remove()
-                        if (code_ligne.number == 'teamCard') {
-                            // PREMIER CARTON VERT DE CHAQUE JOUEUR !
-                            $('.joueurs[data-equipe="' + code_ligne.team + '"]').each(function () {
-                                $(this).find('img[src="v2/carton_vert.png"]').first().remove()
-                            })
-                        }
-                    }
-                    if (code_ligne.evt == 'J') {
-                        $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_jaune.png"]').first().remove()
-                    }
-                    if (code_ligne.evt == 'R') {
-                        $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_jaune_rouge.png"]').first().remove()
-                    }
-                    if (code_ligne.evt == 'D') {
-                        $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_rouge_' + lang.D + '.png"]').first().remove()
-                    }
-                    $('tr[id="' + id_ligne + '"]').hide()
-                    $('#reset_evt').click()
-                    $.post(
-                        'v2/StatutPeriode.php', // Le fichier cible côté serveur.
-                        { // variables
-                            Id_Match: idMatch,
-                            Valeur: $('#scoreA').text() + '-' + $('#scoreB').text(),
-                            TypeUpdate: 'ValidScoreDetail'
-                        },
-                        function (data) { },
-                        'text' // Format des données reçues.
-                    )
-                } else {
-                    custom_alert(lang.Action_impossible + '<br />' + data, lang.Attention)
-                }
-            },
-            'text' // Format des données reçues.
-        )
+        // suppression éléments
+        if (code_ligne.evt == 'B') {
+            $('#score' + code_ligne.team + ', #score' + code_ligne.team + '2, #score' + code_ligne.team + '3').text(parseInt($('#score' + code_ligne.team).text()) - 1)
+            $('a[data-id="' + code_ligne.player + '"] img[class="c_but"]').first().remove()
+        }
+        if (code_ligne.evt == 'V') {
+            $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_vert.png"]').first().remove()
+            if (code_ligne.number == 'teamCard') {
+                // PREMIER CARTON VERT DE CHAQUE JOUEUR !
+                $('.joueurs[data-equipe="' + code_ligne.team + '"]').each(function () {
+                    $(this).find('img[src="v2/carton_vert.png"]').first().remove()
+                })
+            }
+        }
+        if (code_ligne.evt == 'J') {
+            $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_jaune.png"]').first().remove()
+        }
+        if (code_ligne.evt == 'R') {
+            $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_jaune_rouge.png"]').first().remove()
+        }
+        if (code_ligne.evt == 'D') {
+            $('a[data-id="' + code_ligne.player + '"] img[src="v2/carton_rouge_' + lang.D + '.png"]').first().remove()
+        }
+        $('#reset_evt').click()
+
+        serverUpdate('evt_match', {idMatch: idMatch, ligne: JSON.stringify(code_ligne), idLigne: id_ligne, action: 'delete'})
+
     })
 
     /**************** CHRONO *******************/
@@ -1106,20 +960,9 @@ $(function () {
         $('#time_evt').val(minut_2 + ':' + second_2)
     })
     $('#updateChrono img').click(function () {
-        $.post(
-            'v2/ajax_updateChrono.php',
-            {
-                idMatch: idMatch,
-                start_time: start_time.getTime(),
-                run_time: run_time.getTime(),
-            },
-            function (data) {
-                if (data == 'OK') {
-                    avertissement('Start chrono')
-                }
-            },
-            'text'
-        )
+
+        serverUpdate('updateChrono', {idMatch: idMatch})
+        
         $('#chronoText').show()
         $('#updateChrono img').hide()
     })
@@ -1127,7 +970,7 @@ $(function () {
     $('.chronoButton').click(function () {
         // scroll en haut
         $('html, body').animate({
-            scrollTop: $("#tabs-2").offset().top
+            scrollTop: $("#description-match").offset().top
         }, 200)
     })
     $('#start_button').click(function () {
@@ -1147,22 +990,9 @@ $(function () {
         //	$('#chrono_plus').hide();
         $('#heure').css('background-color', '#009900')
         //alert(run_time.getTime());
-        $.post(
-            'v2/setChrono.php',
-            {
-                idMatch: idMatch,
-                action: 'start',
-                start_time: start_time.getTime(),
-                run_time: run_time.getTime(),
-                max_time: minut_max + ':' + second_max
-            },
-            function (data) {
-                if (data == 'OK') {
-                    avertissement('Start chrono')
-                }
-            },
-            'text'
-        )
+
+        serverUpdate('setChrono', {idMatch: idMatch, action: 'start'})
+
     })
     $('#stop_button').click(function () {
         if (run_time)
@@ -1174,22 +1004,8 @@ $(function () {
         $('#chrono_moins').show()
         $('#chrono_plus').show()
         $('#heure').css('background-color', '#990000')
-        $.post(
-            'v2/setChrono.php',
-            {
-                idMatch: idMatch,
-                action: 'stop',
-                start_time: start_time.getTime(),
-                run_time: run_time.getTime(),
-                max_time: minut_max + ':' + second_max
-            },
-            function (data) {
-                if (data == 'OK') {
-                    avertissement('Stop chrono')
-                }
-            },
-            'text'
-        )
+
+        serverUpdate('setChrono', {idMatch: idMatch, action: 'stop'})
     })
     $('#run_button').click(function () {
         start_time = new Date()
@@ -1207,22 +1023,9 @@ $(function () {
         //	$('#chrono_moins').hide();
         //	$('#chrono_plus').hide();
         $('#heure').css('background-color', '#009900')
-        $.post(
-            'v2/setChrono.php', // : replace table chrono ligne idMatch...
-            {
-                idMatch: idMatch,
-                action: 'run',
-                start_time: start_time.getTime(),
-                run_time: run_time.getTime(),
-                max_time: minut_max + ':' + second_max
-            },
-            function (data) {
-                if (data == 'OK') {
-                    avertissement('Run chrono')
-                }
-            },
-            'text'
-        )
+        
+        serverUpdate('setChrono', {idMatch: idMatch, action: 'run'})
+        
     })
     $('#raz_button').click(function () {
         $('#start_button').show()
@@ -1233,18 +1036,8 @@ $(function () {
         clearInterval(timer)
         Raz()
         $('#heure').css('background-color', '#444444')
-        $.post(
-            'v2/setChrono.php',
-            {
-                idMatch: idMatch,
-                action: 'RAZ',
-            },
-            function (data) {
-                if (data == 'OK') {
-                    avertissement(lang.RAZ + ' ' + lang.chrono)
-                }
-            },
-            'text'
-        )
+
+        serverUpdate('setChrono', {idMatch: idMatch, action: 'RAZ'})
+
     })
 })

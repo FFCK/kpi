@@ -756,10 +756,12 @@
 							</th>
 						</tr>
 						<tr>
-							<td>
-								<div align='center'>(Saison en cours)</div>
-								<label for="changeCodeSource">Code source</label>
+							<td width=50%>
+								<label for="ChangeCodeRecherche">Code recherché</label>
 								<input type="text" name="ChangeCodeRecherche" size=40 id="ChangeCodeRecherche" placeholder="Chercher">
+								</td>
+								<td width=50%>
+								<label for="changeCodeSource">Code à changer</label>
 								<input type="text" name="changeCodeSource" id="changeCodeSource" readonly>
 							</td>
 						</tr>
@@ -768,9 +770,21 @@
 								<label for="changeCodeCible">Code cible</label>
 								<input type="text" name="changeCodeCible" size=40 id="changeCodeCible">
 							</td>
+							<td>
+								<input type='checkbox' name='changeCodeExists' id='changeCodeExists' value='Exists'>
+								Existe déjà !
+							</td>
 						</tr>
 						<tr>
-							<td>
+							<td colspan=2>
+								<div align='center'>
+									<input type='checkbox' name='changeCodeAllSeason' id='changeCodeAllSeason' value='All'>
+									Toutes saisons
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
 								<input type="button" name="ChangeCodeBtn" id="ChangeCodeBtn" value="Changer">
 							</td>
 						</tr>
