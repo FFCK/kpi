@@ -43,9 +43,10 @@ $(function () {
                             },
                             function (data) { // callback
                                 if (data == 'OK') {
-                                    $('.statut, .periode, #zoneTemps, #zoneChrono, .match').hide()
+                                    $('#zoneTemps, #zoneChrono, .match, #validScore').hide()
+                                    $('.statut, .periode, .evtButton').removeClass('ouvert')
                                     $('#reset_evt').click()
-                                    window.location = 'FeuilleMarque2.php?idMatch=' + idMatch
+                                    // window.location = 'FeuilleMarque2.php?idMatch=' + idMatch
                                 } else {
                                     custom_alert(lang.Action_impossible, lang.Attention)
                                 }
@@ -64,6 +65,7 @@ $(function () {
     $('#controleOuvert').click(function (event) {
         event.preventDefault()
         //if(confirm('Déverrouiller la feuille de match ?')){
+        queueAlert()
         $.post(
             'v2/StatutPeriode.php', // Le fichier cible côté serveur.
             { // variables
@@ -73,7 +75,8 @@ $(function () {
             },
             function (data) { // callback
                 if (data == 'OK') {
-                    $('.statut, .periode, #zoneTemps, #zoneChrono, .match').show()
+                    $('#zoneTemps, #zoneChrono, .match, #validScore').show()
+                    $('.statut, .periode, .evtButton').addClass('ouvert')
                     //$('.statut[class*="actif"]').click();
                     $('#reset_evt').click()
                     window.location = 'FeuilleMarque2.php?idMatch=' + idMatch
@@ -91,6 +94,7 @@ $(function () {
     $('#prive').click(function (event) {
         event.preventDefault()
         if (confirm(lang['Depublier_le_match'])) {
+            queueAlert()
             $.post(
                 'v2/StatutPeriode.php', // Le fichier cible côté serveur.
                 { // variables
@@ -115,6 +119,7 @@ $(function () {
     $('#public').click(function (event) {
         event.preventDefault()
         if (confirm(lang.Depublier_le_match)) {
+            queueAlert()
             $.post(
                 'v2/StatutPeriode.php', // Le fichier cible côté serveur.
                 { // variables

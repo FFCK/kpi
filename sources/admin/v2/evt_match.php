@@ -17,7 +17,7 @@ if(!isset($_SESSION)) {
 
 $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch', 0);
-$type = trim(utyGetPost('type'));
+$action = trim(utyGetPost('action'));
 $idLigne = trim(utyGetPost('idLigne'));
 $idLigne = explode('_', $idLigne);
 // M1-00:00-V-A-186002-5
@@ -33,8 +33,8 @@ if (!isset($data->number)) {
 // Contrôle autorisation journée
 $myBdd->AutorisationMatch($idMatch);
 
-if ($type == 'insert') {
-	$inserted_id = str_replace('-', '', gen_uuid());
+if ($action == 'insert') {
+	$inserted_id = $idLigne[1] != '0' ? $idLigne[1] : str_replace('-', '', gen_uuid());
 	$sql = "INSERT INTO kp_match_detail 
 		SET Id = ?, Id_match = ?, Periode = ?, Temps = ?, Id_evt_match = ?, 
 		Competiteur = ?, Numero = ?, Equipe_A_B = ?, motif = ? ";
@@ -46,7 +46,7 @@ if ($type == 'insert') {
 	$myBdd->CheckCardCumulation($data->player, $idMatch, $data->evt, $data->cause);
 	header('Content-Type: application/json; charset=utf-8');
 	echo json_encode(['id' => $inserted_id]);
-} elseif ($type == 'update') {
+} elseif ($action == 'update') {
 	$sql = "UPDATE kp_match_detail 
 		SET Id_match = ?, Periode = ?, 
 		Temps = ?, Id_evt_match = ?, Competiteur = ?, 
@@ -58,11 +58,11 @@ if ($type == 'insert') {
 		$data->player, $data->number, $data->team, $data->cause, $idLigne[1]
 	));
 	$myBdd->CheckCardCumulation($data->player, $idMatch, $data->evt, $data->cause);
-	echo 'OK';
-} elseif ($type == 'delete') {
+	echo json_encode(['id' => $idLigne[1]]);
+} elseif ($action == 'delete') {
 	$sql = "DELETE FROM kp_match_detail 
 		WHERE Id = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($idLigne[1]));
-	echo 'OK';
+	echo json_encode(['id' => $idLigne[1]]);
 }
