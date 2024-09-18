@@ -481,7 +481,7 @@ label {
 }
 
 .avertText {
-	background-color: white;
+	background-color: #62bbe9;
 	border: 1px solid grey;
 	color: black;
 	font-weight: bold;
@@ -491,6 +491,16 @@ label {
 	width: 350px;
 	text-align: center;
 	border-radius: 5px;
+}
+
+.danger {
+	background-color: red;
+	color: white;
+}
+
+.success {
+	background-color: green;
+	color: white;
 }
 
 .fm_tabs {

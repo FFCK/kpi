@@ -22,7 +22,7 @@ $Valeur = trim(utyGetPost('Valeur'));
 $TypeUpdate = trim(utyGetPost('TypeUpdate'));
 if (!in_array(
 	$TypeUpdate,
-	['ValidScore', 'ValidScoreDetail', 'Validation', 'Publication', 'Type', 'Statut', 'Periode']
+	['Score', 'ProvisionnalScore', 'Validation', 'Publication', 'Type', 'Statut', 'Periode']
 )) {
 	header('HTTP/1.0 401 Unauthorized');
 	die('Action non autorisée !');
@@ -31,7 +31,7 @@ if (!in_array(
 // Contrôle autorisation journée
 $myBdd->AutorisationMatch($idMatch, true);
 
-if ($TypeUpdate == 'ValidScore') {
+if ($TypeUpdate == 'Score') {
 	$Valeur = explode('-', $Valeur);
 	$sql = "UPDATE kp_match 
 		SET ScoreA = ?, ScoreB = ? 
@@ -39,7 +39,7 @@ if ($TypeUpdate == 'ValidScore') {
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($Valeur[0], $Valeur[1], $idMatch));
 	echo 'OK';
-} elseif ($TypeUpdate == 'ValidScoreDetail') {
+} elseif ($TypeUpdate == 'ProvisionnalScore') {
 	$Valeur = explode('-', $Valeur);
 	$sql = "UPDATE kp_match 
 		SET ScoreDetailA = :Valeur0, ScoreDetailB = :Valeur1, 

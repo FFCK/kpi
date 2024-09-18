@@ -127,6 +127,7 @@ $(function () {
 	/* Charge nouvelle feuille */
 	$('#chargeFeuille').click(function (event) {
 		event.preventDefault()
+		queueAlert()
 		window.location = 'FeuilleMarque2.php?idMatch=' + $('#idFeuille').val()
 	})
 	$('#idFeuille').keypress(function (e) {
@@ -173,7 +174,6 @@ $(function () {
 			},
 			function (data) {
 				if (Number.isInteger(data?.idMatch) && data.equipeA != null && data.equipeB != null) {
-					console.log(data)
 					$('#nextGameDetail').html(
 						'Next: Game #' + data.Numero_ordre + ' - Pitch ' + data.Terrain
 						+ '<br>' + data.Date_match + ' ' + data.Heure_match

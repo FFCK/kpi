@@ -131,6 +131,13 @@ class GestionMatchDetail extends MyPageSecure
 			<link href="v2/jquery-ui.min.css" rel="stylesheet">
 			<link href="v2/jquery.dataTables.css" rel="stylesheet">
 			<link href="v2/fmv2.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
+
+			<link rel="preload" href="v2/images/ui-bg_highlight-hard_100_f2f5f7_1x100.png" as="image" />
+			<link rel="preload" href="v2/images/ui-icons_3d80b3_256x240.png" as="image" />
+			<link rel="preload" href="v2/images/ui-icons_72a7cf_256x240.png" as="image" />
+			<link rel="preload" href="v2/images/ui-bg_diagonals-thick_90_eeeeee_40x40.png" as="image" />
+			<link rel="preload" href="v2/images/ui-bg_glass_100_e4f1fb_1x400.png" as="image" />
+			
 			<?php if ($verrou != 'O') { ?>
 				<link href="v2/fmv2O.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
 			<?php	}	?>
@@ -141,14 +148,14 @@ class GestionMatchDetail extends MyPageSecure
 				<!--<img src="v2/FFCK.gif" id="logo" />-->
 				<div id="avert"></div>
 				<p id="description-match"><?php
-																	echo $row['Code_competition'];
-																	if ($row['Code_typeclt'] == 'CHPT')
-																		echo ' (' . $row['Lieu'] . ')';
-																	elseif ($row['Soustitre2'] != '')
-																		echo ' (' . $row['Soustitre2'] . ')';
-																	if ($row['Phase'] != '')
-																		echo ' - ' . $row['Phase'];
-																	echo ' - ' . $lang['Match_no'] . $row['Numero_ordre'] . ' - '; ?>
+											echo $row['Code_competition'];
+											if ($row['Code_typeclt'] == 'CHPT')
+												echo ' (' . $row['Lieu'] . ')';
+											elseif ($row['Soustitre2'] != '')
+												echo ' (' . $row['Soustitre2'] . ')';
+											if ($row['Phase'] != '')
+												echo ' - ' . $row['Phase'];
+											echo ' - ' . $lang['Match_no'] . $row['Numero_ordre'] . ' - '; ?>
 					<?php
 					if ($version == 'en') {
 						echo $row['Date_match'];
@@ -187,10 +194,10 @@ class GestionMatchDetail extends MyPageSecure
 									<label for="typeMatchElimination" title="<?= $lang['Vainqueur_obligatoire']; ?>"><?= $lang['Match_elimination']; ?></label>
 								</span>
 								<img id="typeMatchImg" style="vertical-align:middle;" title="<?php if ($row['Type_match'] == 'C') {
-																																								echo $lang['Match_classement'];
-																																							} else {
-																																								echo $lang['Match_elimination'];
-																																							} ?>" alt="<?= $lang['Type_match']; ?>" src="../img/type<?= $row['Type_match']; ?>.png" />
+																									echo $lang['Match_classement'];
+																								} else {
+																									echo $lang['Match_elimination'];
+																								} ?>" alt="<?= $lang['Type_match']; ?>" src="../img/type<?= $row['Type_match']; ?>.png" />
 								<br>
 								<br>
 								<?php if ($readonly != 'O' && $_SESSION['Profile'] > 0 && $_SESSION['Profile'] <= 6) { ?>
@@ -202,10 +209,10 @@ class GestionMatchDetail extends MyPageSecure
 									</span>
 								<?php } ?>
 								<img height="30" style="vertical-align:middle;" title="<?= $lang['Publier']; ?> ?" alt="<?= $lang['Publier']; ?> ?" src="../img/oeil2<?php if ($publiMatch == 'O') {
-																																																																												echo 'O';
-																																																																											} else {
-																																																																												echo 'N';
-																																																																											} ?>.gif" />
+																																											echo 'O';
+																																										} else {
+																																											echo 'N';
+																																										} ?>.gif" />
 								<br />
 								<br />
 								<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="btn_stats" name="btn_stats" value="Stats" />
@@ -251,10 +258,10 @@ class GestionMatchDetail extends MyPageSecure
 									<input type="radio" name="controleMatch" id="controleVerrou" <?php if ($verrou == 'O') echo 'checked="checked"'; ?> /><label for="controleVerrou"><?= $lang['Verrouille']; ?></label>
 								</span>
 								<img height="30" style="vertical-align:middle;" title="<?= $lang['Verrouille']; ?> ?" alt="<?= $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if ($verrou == 'O') {
-																																																																																echo 'O';
-																																																																															} else {
-																																																																																echo 'N';
-																																																																															} ?>.gif" />
+																																													echo 'O';
+																																												} else {
+																																													echo 'N';
+																																												} ?>.gif" />
 							</div>
 						</div>
 						<!--<h3><?= $lang['Officiels']; ?></h3>-->
@@ -409,17 +416,17 @@ class GestionMatchDetail extends MyPageSecure
 							<th colspan="3">
 								<span class="match"></span>
 								<span class="pull-left">
-									<a id="ATT" class="fm_bouton statut<?php if ($statutMatch == 'ATT') echo ' actif'; ?>"><?= $lang['En_attente']; ?></a>
-									<a id="ON" class="fm_bouton statut<?php if ($statutMatch == 'ON') echo ' actif'; ?>"><?= $lang['En_cours']; ?></a>
-									<a id="END" class="fm_bouton statut<?php if ($statutMatch == 'END') echo ' actif'; ?>"><?= $lang['Termine']; ?></a>
+									<a id="ATT" class="fm_bouton statut<?php if ($statutMatch == 'ATT') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['En_attente']; ?></a>
+									<a id="ON" class="fm_bouton statut<?php if ($statutMatch == 'ON') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['En_cours']; ?></a>
+									<a id="END" class="fm_bouton statut<?php if ($statutMatch == 'END') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['Termine']; ?></a>
 									<span class="endmatch"><?= $lang['Fin'] ?> : </span><input type="tel" id="end_match_time" class="fm_input_text endmatch" value="<?= $row['Heure_fin']; ?>" />
 								</span>
 								<span class="pull-right">
-									<a id="M1" class="fm_bouton periode<?php if ($periodeMatch == 'M1') echo ' actif'; ?>"><?= $lang['period_M1']; ?></a>
-									<a id="M2" class="fm_bouton periode<?php if ($periodeMatch == 'M2') echo ' actif'; ?>"><?= $lang['period_M2']; ?></a>
-									<a id="P1" class="fm_bouton periode<?php if ($periodeMatch == 'P1') echo ' actif'; ?>"><?= $lang['period_P1']; ?></a>
-									<a id="P2" class="fm_bouton periode<?php if ($periodeMatch == 'P2') echo ' actif'; ?>"><?= $lang['period_P2']; ?></a>
-									<a id="TB" class="fm_bouton periode<?php if ($periodeMatch == 'TB') echo ' actif'; ?>"><?= $lang['period_TB']; ?></a>
+									<a id="M1" class="fm_bouton periode<?php if ($periodeMatch == 'M1') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['period_M1']; ?></a>
+									<a id="M2" class="fm_bouton periode<?php if ($periodeMatch == 'M2') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['period_M2']; ?></a>
+									<a id="P1" class="fm_bouton periode<?php if ($periodeMatch == 'P1') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['period_P1']; ?></a>
+									<a id="P2" class="fm_bouton periode<?php if ($periodeMatch == 'P2') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['period_P2']; ?></a>
+									<a id="TB" class="fm_bouton periode<?php if ($periodeMatch == 'TB') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['period_TB']; ?></a>
 								</span>
 								<!-- CHRONO DEBUG
 <br />
@@ -487,13 +494,13 @@ stop_time: <span id="stop_time_display"></span><br />
 									<a id="raz_button" class="fm_bouton chronoButton"><?= $lang['RAZ'] ?></a>
 								</div>
 								<div id="zoneEvt">
-									<a id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton"><span class="but"><?= $lang['But'] ?></span></a>
-									<a id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton"><img src="v2/carton_vert.png" /></a>
+									<a id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton<?php if ($verrou != 'O') echo ' ouvert'; ?>"><span class="but"><?= $lang['But'] ?></span></a>
+									<a id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton<?php if ($verrou != 'O') echo ' ouvert'; ?>"><img src="v2/carton_vert.png" /></a>
 									<!--<a id="evt_tir" data-evt="Tir" data-code="T" class="fm_bouton evtButton" title="<?= $lang['Tir_non_cadre'] ?>"><?= $lang['Tir'] ?></a>-->
-									<a id="evt_jaune" data-evt="Carton jaune" data-code="J" class="fm_bouton evtButton"><img src="v2/carton_jaune.png" /></a>
+									<a id="evt_jaune" data-evt="Carton jaune" data-code="J" class="fm_bouton evtButton<?php if ($verrou != 'O') echo ' ouvert'; ?>"><img src="v2/carton_jaune.png" /></a>
 									<!--<a id="evt_arr" data-evt="Arret" data-code="A" class="fm_bouton evtButton" title="<?= $lang['Tir_contre_gardien'] ?>"><?= $lang['Tir_contre'] ?></a>-->
-									<a id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton evtButton4"><img src="v2/carton_jaune_rouge.png" /></a>
-									<a id="evt_rouge2" data-evt="Carton rouge D" data-code="D" class="fm_bouton evtButton evtButton4"><img src="v2/carton_rouge_<?= $lang['D'] ?>.png" /></a>
+									<a id="evt_rouge" data-evt="Carton rouge" data-code="R" class="fm_bouton evtButton evtButton4<?php if ($verrou != 'O') echo ' ouvert'; ?>"><img src="v2/carton_jaune_rouge.png" /></a>
+									<a id="evt_rouge2" data-evt="Carton rouge D" data-code="D" class="fm_bouton evtButton evtButton4<?php if ($verrou != 'O') echo ' ouvert'; ?>"><img src="v2/carton_rouge_<?= $lang['D'] ?>.png" /></a>
 								</div>
 								<div id="zoneTemps">
 									<img id="time_moins60" class="plusmoins" src="../img/moins60.png">
