@@ -945,6 +945,8 @@ class GestionCompetition extends MyPageSecure
 		$changeCodeSource = utyGetPost('changeCodeSource', '');
 		$changeCodeCible = strtoupper(utyGetPost('changeCodeCible', ''));
 		$codeSaison = $myBdd->GetActiveSaison();
+		$changeCodeAllSeason = utyGetPost('changeCodeAllSeason');
+		$changeCodeExists = utyGetPost('changeCodeExists');
 
 		if (
 			strlen($changeCodeSource) < 2 ||
@@ -954,75 +956,175 @@ class GestionCompetition extends MyPageSecure
 			return 'Codes incorrects : ' . $changeCodeSource . ' ' . $changeCodeCible . ' ' . $codeSaison;
 		}
 
-		$sql = "SELECT * FROM kp_competition 
-			WHERE Code = ?
-			AND Code_saison = ?; ";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($changeCodeSource, $codeSaison));
-		if ($stmt->rowCount() != 1) {
-			return 'Code source incorrect !';
-		}
-
-		$sql = "SELECT * FROM kp_competition 
-			WHERE Code = ?
-			AND Code_saison = ?; ";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($changeCodeCible, $codeSaison));
-		if ($stmt->rowCount() == 1) {
-			return 'Code cible incorrect !';
-		}
-
-		try {
-			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$myBdd->pdo->beginTransaction();
-
-			$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=0;");
-
-			$sql = "UPDATE kp_competition
-				SET Code = :cible
-				WHERE Code = :source
-				AND Code_saison = :saison ; ";
+		if ($changeCodeAllSeason === 'All') {
+			$sql = "SELECT * FROM kp_competition 
+				WHERE Code = ?; ";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array(
-				':source' => $changeCodeSource,
-				':cible' => $changeCodeCible,
-				':saison' => $codeSaison
-			));
+			$stmt->execute(array($changeCodeSource));
+			if ($stmt->rowCount() < 1) {
+				return 'Code source incorrect !';
+			}
 
-			$sql = "UPDATE kp_competition_equipe
-				SET Code_compet = :cible
-				WHERE Code_compet = :source
-				AND Code_saison = :saison ; ";
+			if ($changeCodeExists !== 'Exists') {
+				$sql = "SELECT * FROM kp_competition 
+					WHERE Code = ?; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array($changeCodeCible));
+				if ($stmt->rowCount() >= 1) {
+					return 'Code cible incorrect !';
+				}
+			}
+			
+			try {
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=0;");
+
+				$sql = "UPDATE kp_competition
+					SET Code = :cible
+					WHERE Code = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_competition_equipe
+					SET Code_compet = :cible
+					WHERE Code_compet = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_journee
+					SET Code_competition = :cible
+					WHERE Code_competition = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_user
+					SET Filtre_competition = REPLACE(Filtre_competition, :source, :cible),
+						Filtre_competition_sql = REPLACE(Filtre_competition_sql, :source2, :cible2)
+					WHERE Filtre_competition LIKE :source3 ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => '|' . $changeCodeSource . '|',
+					':cible' => '|' . $changeCodeCible . '|',
+					':source2' => "'" . $changeCodeSource . "'",
+					':cible2' => "'" . $changeCodeCible . "'",
+					':source3' => '%|' . $changeCodeSource . '|%',
+				));
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=1;");
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+
+			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, 'All seasons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+			return ('Code changé toutes saisons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+
+		} else {
+
+			$sql = "SELECT * FROM kp_competition 
+				WHERE Code = ?
+				AND Code_saison = ?; ";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array(
-				':source' => $changeCodeSource,
-				':cible' => $changeCodeCible,
-				':saison' => $codeSaison
-			));
+			$stmt->execute(array($changeCodeSource, $codeSaison));
+			if ($stmt->rowCount() != 1) {
+				return 'Code source incorrect !';
+			}
 
-			$sql = "UPDATE kp_journee
-				SET Code_competition = :cible
-				WHERE Code_competition = :source
-				AND Code_saison = :saison ; ";
+			$sql = "SELECT * FROM kp_competition 
+				WHERE Code = ?
+				AND Code_saison = ?; ";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array(
-				':source' => $changeCodeSource,
-				':cible' => $changeCodeCible,
-				':saison' => $codeSaison
-			));
+			$stmt->execute(array($changeCodeCible, $codeSaison));
+			if ($stmt->rowCount() == 1) {
+				return 'Code cible incorrect !';
+			}
 
-			$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=1;");
+			try {
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
 
-			$myBdd->pdo->commit();
-		} catch (Exception $e) {
-			$myBdd->pdo->rollBack();
-			utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=0;");
 
-			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+				$sql = "UPDATE kp_competition
+					SET Code = :cible
+					WHERE Code = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_competition_equipe
+					SET Code_compet = :cible
+					WHERE Code_compet = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_journee
+					SET Code_competition = :cible
+					WHERE Code_competition = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_user
+					SET Filtre_competition = REPLACE(Filtre_competition, :source, :cible),
+						Filtre_competition_sql = REPLACE(Filtre_competition_sql, :source2, :cible2)
+					WHERE Filtre_competition LIKE :source3 
+					AND (
+						Filtre_saison LIKE :saison 
+						OR
+						Filtre_saison = ''
+					) ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => '|' . $changeCodeSource . '|',
+					':cible' => '|' . $changeCodeCible . '|',
+					':source2' => "'" . $changeCodeSource . "'",
+					':cible2' => "'" . $changeCodeCible . "'",
+					':source3' => '%|' . $changeCodeSource . '|%',
+					':saison' => '%|' . $codeSaison . '|%'
+				));
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=1;");
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+
+			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, $changeCodeSource . ' => ' . $changeCodeCible);
+			return ('Code changé saison ' . $codeSaison . ' : ' . $changeCodeSource . ' => ' . $changeCodeCible);
 		}
-
-		$myBdd->utyJournal('Change code', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $changeCodeSource . ' => ' . $changeCodeCible);
-		return ('Code changé : ' . $changeCodeSource . ' => ' . $changeCodeCible);
 	}
 
 	function ChangeAuthSaison()

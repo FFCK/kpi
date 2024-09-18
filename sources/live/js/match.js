@@ -353,11 +353,12 @@ tableMatch.prototype.GetRow = function (id) {
 }
 
 function SecToHHMMSS (temps) {
-	var h = parseInt(temps / 3600)
-	var m = parseInt((temps - h * 3600) / 60)
-	var s = temps - h * 3600 - m * 60
+	const intTemps = parseInt(temps, 10) || 0
+	const h = parseInt(intTemps / 3600, 10)
+	const m = parseInt((intTemps - h * 3600) / 60, 10)
+	const s = parseInt(intTemps - h * 3600 - m * 60, 10)
 
-	var str = ''
+	let str = ''
 	if (h <= 9) str += '0'
 	str += h
 	str += ':'
@@ -371,10 +372,11 @@ function SecToHHMMSS (temps) {
 }
 
 function SecToMMSS (temps) {
-	var m = parseInt(temps / 60)
-	var s = temps - m * 60
+	const intTemps = parseInt(temps, 10) || 0
+	const m = parseInt(intTemps / 60)
+	const s = parseInt(intTemps - m * 60)
 
-	var str = ''
+	let str = ''
 	if (m <= 9) str += '0'
 	str += m
 	str += ':'

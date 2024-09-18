@@ -91,6 +91,9 @@ class MultiScore extends MyPage
             </div>
         <?php
         }
+        ?>
+            <div id="refresh_frequency"></div>
+        <?php
     }
 
     function Script()
@@ -100,6 +103,7 @@ class MultiScore extends MyPage
         $id_event = $this->GetParamInt('event', 85);
         $count = $this->GetParamInt('count', 4);
         $voie = $this->GetParamInt('voie', 0);
+        $refresh = $this->GetParamInt('refresh', 10);
 
         ?>
         <script type="text/javascript" src="./js/match.js"></script>
@@ -107,7 +111,7 @@ class MultiScore extends MyPage
         <script type="text/javascript" src="./js/multi_score.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
-                Init(<?php echo "$id_event,$count,$voie"; ?>);
+                Init(<?php echo "$id_event, $count, $voie, $refresh"; ?>);
             });
         </script>
 <?php

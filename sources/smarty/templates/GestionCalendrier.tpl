@@ -165,11 +165,11 @@
                                             <br>-La finale est toujours au niveau le plus élevé,
                                             <br>-Les demi-finales auront un niveau supérieur au match pour la 5ème place,
                                             <br>même si elles se jouent avant." {/if}></th>
-									<th>{#Tour#} <img width="12" src="../img/b_help.png" {if $lang == "en"} title="Round : stage in the game chart. For example:
-				                                             <br> - The first groups are always at round 1,
-				                                             <br> - The final is always at the last round,
-				                                             <br> - Several different level phases can be at the same round
-				                                             <br> (the final may be at the same round as the 3rd place game)."
+									<th>{#Tour#} <img width="12" src="../img/b_help.png" {if $lang == "en"} title="Stage : step in the game chart. For example:
+				                                             <br> - The first groups are always at stage 1,
+				                                             <br> - The final is always at the last stage,
+				                                             <br> - Several different level phases can be at the same stage
+				                                             <br> (the final may be at the same stage as the 3rd place game)."
 											{else} title="Tour : étape dans le schéma du système de jeu. Par exemple :
                                             <br>-Les premières poules sont toujours au premier tour,
                                             <br>-La finale est toujours au dernier tour,

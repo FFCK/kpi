@@ -404,7 +404,7 @@ jq(document).ready(function () {
 	})
 
 	//Changement code competition
-	jq("#ChangeCodeRecherche").autocomplete('Autocompl_compet.php?saison=' + jq('#saisonTravail').val(), {
+	jq("#ChangeCodeRecherche").autocomplete('Autocompl_compet2.php?saison=' + jq('#saisonTravail').val(), {
 		width: 550,
 		max: 30,
 		mustMatch: true,
@@ -419,7 +419,8 @@ jq(document).ready(function () {
 	jq("#ChangeCodeBtn").click(function () {
 		var changeCodeSource = jq("#changeCodeSource").val()
 		var changeCodeCible = jq("#changeCodeCible").val()
-		if (!confirm('Confirmez-vous le changement de code pour la saison : ' + changeCodeSource + ' => ' + changeCodeCible + ' ?')) {
+		var seasonText = document.getElementById("changeCodeAllSeason").checked ? 'TOUTES LES SAISONS' : 'LA SAISON EN COURS' 
+		if (!confirm(`Confirmez-vous le changement de code pour ${seasonText} : ${changeCodeSource} => ${changeCodeCible}  ?`)) {
 			return false
 		}
 		jq('#Cmd').val('ChangeCode')
