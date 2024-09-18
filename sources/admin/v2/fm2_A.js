@@ -31,12 +31,20 @@ function Horloge () {
         $("#dialog_end").dialog("open")
     }
 }
-//Messages 
-function avertissement (texte) {
-    $('#avert').append('<div class="avertText">' + texte + '</div>')
-    $('.avertText:last').show('blind', {}, 500).text(texte).delay(2000).fadeOut(800)
+// Messages 
+function avertissement (texte, level = 'info') {
+    if (level === 'danger') {
+        $('#avert').append('<div class="avertText danger">' + texte + '</div>')
+        $('.avertText:last').show('blind', {}, 500).text(texte).delay(5000).fadeOut(800)
+    } else if (level === 'success') {
+        $('#avert').append('<div class="avertText success">' + texte + '</div>')
+        $('.avertText:last').show('blind', {}, 500).text(texte).delay(5000).fadeOut(800)
+    } else {
+        $('#avert').append('<div class="avertText">' + texte + '</div>')
+        $('.avertText:last').show('blind', {}, 500).text(texte).delay(2000).fadeOut(800)
+    }
 }
-//Alert
+// Alert
 function custom_alert (output_msg, title_msg) {
     if (output_msg == '')
         output_msg = lang.Aucun_message
@@ -55,6 +63,165 @@ function custom_alert (output_msg, title_msg) {
         }
     })
 }
+
+// Queue Alert
+function queueAlert() {
+    let queue = $('table#list tbody tr.danger')
+    if (queue.length > 0) {
+        custom_alert('Multiple events could not be transmitted to the server (See red lines below)', 'Offline !!!')
+        console.log('queue.length', queue.length)
+        return true
+    }
+    return false
+}
+
+let timeoutSetChrono
+let timeoutUpdateChrono
+
+// Retry
+function serverUpdate(target, object, iteration = 0) {
+    // console.log(target, object, iteration)
+
+    const delay = [0, 5, 10, 15, 30, 60, 60, 60, 60, 60, 60, 60, 60, 60]
+    // const delay = [0, 5, 6, 7, 8, 9]
+    let level = 'info'
+
+    if (iteration > 0) {
+        avertissement(target + ' ' + object.action + ' : ' + lang.Nouvelle_tentative + delay[iteration] + lang.secondes)
+        level = 'success'
+    }
+    if (target === 'evt_match') {
+        if (iteration === 0) {
+            avertissement('Processing')
+        }
+        setTimeout(() => {
+            $.post(
+                'v2/evt_match.php',
+                {
+                    idMatch: object.idMatch,
+                    ligne: object.ligne,
+                    idLigne: object.idLigne,
+                    action: object.action
+                },
+                function (data) {
+                    if (data.id === object.idLigne.replace('ligne_', '')) {
+                        if (iteration > 0) {
+                            avertissement(lang.Transmission_reussie, level)
+                        }
+                        $('tr#' + object.idLigne).removeClass('danger')
+                        if (object.action === 'delete') {
+                            $('tr#' + object.idLigne).hide()
+                        }
+                        // Update score
+                        serverUpdate('StatutPeriode', {idMatch: idMatch, type: 'ProvisionnalScore'})
+                    }
+                },
+                'json'
+            ).fail(function(){
+                $('tr#' + object.idLigne).addClass('danger')
+                iteration++
+                if (iteration < delay.length) {
+                    serverUpdate(target, object, iteration)
+                } else {
+                    avertissement(lang.Transmission_echouee, 'danger')
+                }
+            })
+        }, delay[iteration] * 1000)
+
+    } else if (target === 'updateChrono') {
+        if (typeof(timeoutUpdateChrono) !== 'undefined') {
+            clearTimeout(timeoutUpdateChrono)
+        }
+        timeoutUpdateChrono = setTimeout(() => {
+            $.post(
+                'v2/ajax_updateChrono.php',
+                {
+                    idMatch: object.idMatch,
+                    start_time: start_time.getTime(),
+                    run_time: run_time.getTime(),
+                },
+                function (data) {
+                    if (data == 'OK') {
+                        // avertissement('Update chrono', level)
+                    }
+                },
+                'text'
+            ).fail(function(){
+                iteration++
+                if (iteration < delay.length) {
+                    serverUpdate(target, object, iteration)
+                } else {
+                    avertissement(lang.Transmission_echouee, 'danger')
+                }
+            })
+        }, delay[iteration] * 1000)
+
+    } else if (target === 'setChrono') {
+        if (iteration === 0) {
+            avertissement('Processing')
+        }
+        if (typeof(timeoutSetChrono) !== 'undefined') {
+            clearTimeout(timeoutSetChrono)
+        }
+        timeoutSetChrono = setTimeout(() => {
+            $.post(
+                'v2/setChrono.php',
+                {
+                    idMatch: object.idMatch,
+                    action: object.action,
+                    start_time: start_time.getTime(),
+                    run_time: run_time.getTime(),
+                    max_time: minut_max + ':' + second_max
+                },
+                function (data) {
+                    if (data == 'OK') {
+                        if (iteration > 0) {
+                            avertissement(object.action + ' chrono', level)
+                        }
+                    }
+                },
+                'text'
+            ).fail(function(){
+                iteration++
+                if (iteration < delay.length) {
+                    serverUpdate(target, object, iteration)
+                } else {
+                    avertissement(lang.Transmission_echouee, 'danger')
+                }
+            })
+        }, delay[iteration] * 1000)
+
+    } else if (target === 'StatutPeriode') {
+        // if (iteration === 0) {
+        //     avertissement('Processing')
+        // }
+        $.post(
+            'v2/StatutPeriode.php',
+            {
+                Id_Match: object.idMatch,
+                Valeur: object.valeur || $('#scoreA').text() + '-' + $('#scoreB').text(),
+                TypeUpdate: object.type
+            },
+            function (data) {
+                if (data == 'OK') {
+                    if (iteration > 0) {
+                        avertissement('Update ' +  object.type, level)
+                    }
+                }
+            },
+            'text'
+        ).fail(function(){
+            iteration++
+            if (iteration < delay.length) {
+                serverUpdate(target, object, iteration)
+            } else {
+                avertissement(lang.Transmission_echouee, 'danger')
+            }
+        })
+
+    }
+}
+
 
 function statutActive (leStatut, leClick) {
     if (leStatut == 'ATT') {
