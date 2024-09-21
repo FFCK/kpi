@@ -40,7 +40,7 @@ class GestionCopieCompetition extends MyPageSecure
 		$sql = "SELECT DISTINCT Code 
 			FROM kp_saison 
             WHERE Code > '1900' 
-			ORDER BY Code ";
+			ORDER BY Code DESC";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
 		while ($row = $result->fetch()) {
