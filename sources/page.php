@@ -79,10 +79,9 @@ class MyPage
   // Tag HTML ...
   function Html()
   {
-?>
-    <!DOCTYPE html>
-    <html lang="fr">
-  <?php
+    ?><!DOCTYPE html>
+      <html lang="fr">
+    <?php
   }
 
   // Tag HEAD
