@@ -41,6 +41,7 @@
       <div class="col-sm-2">
         <label>Style</label>
         <select id="style" name="style">
+          <option value="deqing2024" {if $style == 'deqing2024'}selected{/if}>Deqing 2024</option>
           <option value="cna2022" {if $style == 'cna2022'}selected{/if}>CNA 2022</option>
           <option value="saintomer2022" {if $style == 'saintomer2022'}selected{/if}>SaintOmer 2022</option>
           <option value="saintomer2022b" {if $style == 'saintomer2022b'}selected{/if}>SaintOmer 2022 Magenta</option>
