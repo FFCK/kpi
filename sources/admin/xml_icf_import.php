@@ -2,9 +2,34 @@
 /* 
  * Parser un fichier XML
  * 
- */
+ */ 
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
+
+
+/**
+ * Constantes
+ */
+const SAISON = 2024;
+const COMPETITION_CODE = 2324; // WC 2022
+const COMPETITION_LABEL = "2024 ICF World Championships - Deqing"; // WC 2022
+// Event 1 = U21 M
+// Event 2 = U21 W
+// Event 3 = Senior M
+// Event 4 = Senior W
+$eventArray = ['001' => 'WCM', '002' => 'WCW', '003' => 'WCU21M', '004' => 'WCU21W'];
+$catArray = ['WCU21M' => 'U21 MEN', 'WCU21W' => 'U21 WOMEN', 'WCM' => 'SENIOR MEN', 'WCW' => 'SENIOR WOMEN'];
+$catList = "'WCU21M','WCU21W','WCM','WCW'";
+$resultArray = [];
+$updateDB = utyGetPost('updateDB', 0);
+$toInsert = 0;
+$toUpdate = 0;
+$inserted = 0;
+$updated = 0;
+$teamInserted = 0;
+$teamUpdated = 0;
+$orphans = 0;
+$toFile = '';
 
 
 // Formulaire
@@ -12,7 +37,7 @@ if (count($_FILES) === 0) {
     echo '<html>
             <body>
                 <!-- The data encoding type, enctype, MUST be specified as below -->
-                <h1>Import SDP xml file</h1>
+                <h1>Import SDP xml file : DT_PARTIC</h1>
                 <form enctype="multipart/form-data" action="" method="POST">
                     <!-- MAX_FILE_SIZE must precede the file input field -->
                     <input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
@@ -101,26 +126,6 @@ try {
     exit();
 }
 
-/**
- * Constantes
- */
-const SAISON = 2022;
-const COMPETITION_CODE = 1507; // WC 2022
-const COMPETITION_LABEL = "Championnats du monde 2022"; // WC 2022
-// Event 1 = U21 M
-// Event 2 = U21 W
-// Event 3 = Senior M
-// Event 4 = Senior W
-$eventArray = ['001' => 'CMH21', '002' => 'CMF21', '003' => 'CMH', '004' => 'CMF'];
-$catArray = ['CMH21' => 'U21 MEN', 'CMF21' => 'U21 WOMEN', 'CMH' => 'SENIOR MEN', 'CMF' => 'SENIOR WOMEN'];
-$resultArray = [];
-$updateDB = utyGetPost('updateDB', 0);
-$inserted = 0;
-$updated = 0;
-$teamInserted = 0;
-$teamUpdated = 0;
-$orphans = 0;
-$toFile = '';
 
 /**
  * Traitement fichier
@@ -155,7 +160,7 @@ if ($xmlDocumentType == 'DT_PARTIC') {
     $sql = "SELECT Code_compet, Id, Code_club 
         FROM kp_competition_equipe 
         WHERE Code_saison =  ? 
-        AND Code_compet IN ('CMH', 'CMF', 'CMH21', 'CMF21') ";
+        AND Code_compet IN (" . $catList . ") ";
     $stmt = $myBdd->pdo->prepare($sql);
     $stmt->execute([SAISON]);
     while ($row = $stmt->fetch()) {
@@ -227,11 +232,13 @@ if ($xmlDocumentType == 'DT_PARTIC') {
             if (in_array($icf, $listIcf)) {
                 $exists = true;
                 $matric = $matricIcf[$icf];
+                $toUpdate++;
             } else {
                 $exists = false;
                 $matric = 0;
+                $toInsert++;
             }
-            $exists = (in_array($icf, $listIcf)) ? true : false;
+            // $exists = (in_array($icf, $listIcf)) ? true : false;
             if (isset($teams[$event][$team . '00'])) {
                 $teamId = $teams[$event][$team . '00'];
             } else {
@@ -356,6 +363,8 @@ if ($xmlDocumentType == 'DT_PARTIC') {
     echo '<a href="./uploads/import_' . date('Ymd_His') . '.csv">Import</a>';
     echo '<br><br>';
     echo '<hr>';
+    echo 'Licences à ajouter : ' . $toInsert . '<br>';
+    echo 'Licences à mettre à jour : ' . $toUpdate . '<br><br>';
     echo 'Licences ajoutées : ' . $inserted . '<br>';
     echo 'Licences mises à jour : ' . $updated . '<br>';
     echo 'Titulaires ajoutés : ' . $teamInserted . '<br>';
