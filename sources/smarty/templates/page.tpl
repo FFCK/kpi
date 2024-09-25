@@ -1,7 +1,5 @@
-{* page.tpl Smarty *}{config_load file='../../commun/MyLang.conf' section=$lang}
-<!DOCTYPE html>
+{* page.tpl Smarty *}{config_load file='../../commun/MyLang.conf' section=$lang}<!DOCTYPE html>
 <html lang="fr" xmlns:og="http://ogp.me/ns#">
-
 <head>
   <meta charset="utf-8" />
   <meta name="Author" Content="LG" />

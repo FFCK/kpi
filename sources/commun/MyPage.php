@@ -95,6 +95,8 @@ class MyPage
 			// 	array_push($arrayMenu, array('name' => 'Import', 'href' => 'ImportPCE.php'));
 			if (isset($profile) && $profile<=3 && (PRODUCTION || DEV))
 				array_push($arrayMenu, array('name' => 'Utilisateurs', 'href' => 'GestionUtilisateur.php'));
+			if (isset($profile) && $profile==1)
+				array_push($arrayMenu, array('name' => 'Operations', 'href' => 'GestionOperations.php'));
 		}
 		
 		$this->m_arrayMenu = $arrayMenu;
