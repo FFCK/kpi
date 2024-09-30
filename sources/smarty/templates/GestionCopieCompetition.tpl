@@ -31,7 +31,8 @@
 				{section name=j loop=$options}
 				  {assign var='optionLabel' value=$options[j].Code}
 				  <Option Value="{$options[j].Code}" {$options[j].selected}>
-					{$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
+				  	{$options[j].Code}-{$smarty.config.$optionLabel|default:$options[j].Libelle}
+				  </Option>
 				{/section}
 			  </optgroup>
 			{/section}
@@ -75,99 +76,19 @@
 		<tr>
 		  <td colspan=2 align="center">
 			{if $codeTypeCltOrigine == 'CHPT'}
-
-
-
-
-
-
-
 			{section name=i loop=$arrayJournees}
 				{$arrayJournees[i].Lieu}<br>
-
-
-
-
-
-
-
 			{/section}
-
-
-
-
-
-
-
 		  {else}
-
-
-
-
-
-
-
 			{section name=i loop=$arrayJournees}
-
-
-
-
-
-
-
 			  {if !$smarty.section.i.first}
-
-
-
-
-
-
 				{if $arrayJournees[i].Niveau != $niveauTmp}<br>
-
-
-
-
-
-
 				{else} |
-
-
-
-
-
-
 				{/if}
-
-
-
-
-
-
 			  {/if}
 				{$arrayJournees[i].Phase}
-
-
-
-
-
-
-
 			  {assign var='niveauTmp' value=$arrayJournees[i].Niveau}
-
-
-
-
-
-
-
 			{/section}
-
-
-
-
-
-
-
 		  {/if}
 		  </td>
 		</tr>
@@ -179,89 +100,27 @@
 		<tr>
 		  <td><label for="saisonDestination">Saison Destination</label>
 			<select name="saisonDestination" onchange="submit()">
-
-
-
-
-
-
-
 		  {section name=i loop=$arraySaisons}
 				<Option Value="{$arraySaisons[i].Code}" 
 			{if $arraySaisons[i].Code == $saisonDestination}selected 
 			{/if}>
 				  {$arraySaisons[i].Code}</Option>
-
-
-
-
-
-
-
 		  {/section}
 			</select>
 		  </td>
 		  <td><label for="competDestination">Competition Destination</label>
 			<select name="competDestination" onchange="submit()">
-
-
-
-
-
-
-
 		  {section name=i loop=$arrayCompetitionDestination}
-
-
-
-
-
-
-
 			{assign var='options' value=$arrayCompetitionDestination[i].options}
-
-
-
-
-
-
-
 			{assign var='label' value=$arrayCompetitionDestination[i].label}
 				<optgroup label="{$smarty.config.$label|default:$label}">
-
-
-
-
-
-
-
 			{section name=j loop=$options}
-
-
-
-
-
-
-
 			  {assign var='optionLabel' value=$options[j].Code}
 					<Option Value="{$options[j].Code}" {$options[j].selected}>
-					  {$smarty.config.$optionLabel|default:$options[j].Libelle}</Option>
-
-
-
-
-
-
-
+						{$options[j].Code}-{$smarty.config.$optionLabel|default:$options[j].Libelle}
+					</Option>
 			{/section}
 				</optgroup>
-
-
-
-
-
-
-
 		  {/section}
 			</select>
 		  </td>
