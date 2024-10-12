@@ -14,8 +14,8 @@ define('PARAM_MIRROR_DB', 'my_database');
 define('PARAM_MIRROR_SERVER', 'db');
 
 // Local
-define('PARAM_LOCAL_LOGIN', 'my_admin');
-define('PARAM_LOCAL_PASSWORD', 'my_passwd');
+define('PARAM_LOCAL_LOGIN', 'root');
+define('PARAM_LOCAL_PASSWORD', 'root');
 define('PARAM_LOCAL_DB', 'my_database');
 define('PARAM_LOCAL_SERVER', 'db');
 
