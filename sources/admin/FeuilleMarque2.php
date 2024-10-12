@@ -219,6 +219,7 @@ class GestionMatchDetail extends MyPageSecure
 								<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="pdfFeuille" name="pdfFeuille" value="PDF" />
 								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=fr&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
 								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=en&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
+								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=cn&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/CHN.png" height="25" align="bottom"></a>
 								<br />
 								<br />
 								<label><?= $lang['Charger_autre_feuille']; ?></label>

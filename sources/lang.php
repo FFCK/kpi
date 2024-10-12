@@ -14,6 +14,8 @@ if($lang == 'en') {
     $_SESSION['lang'] = 'en';
 } elseif ($lang == 'fr') {
     $_SESSION['lang'] = 'fr';
+} elseif ($lang == 'cn') {
+    $_SESSION['lang'] = 'cn';
 } else {
     $lang = 'fr';
 }
