@@ -49,7 +49,7 @@ class GestionEquipeJoueur extends MyPageSecure
 					WHERE ce.Code_compet = ? 
 					AND ce.Code_saison = ? 
 					AND ce.Code_club = c.Code 
-					ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+					ORDER BY ce.Libelle, ce.Id ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeCompet, $codeSaison));
 			} else {
@@ -58,7 +58,7 @@ class GestionEquipeJoueur extends MyPageSecure
 					FROM kp_competition_equipe ce, kp_club c 
 					WHERE ce.Code_compet = ? 
 					AND ce.Code_club = c.Code 
-					ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+					ORDER BY ce.Libelle, ce.Id ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeCompet));
 			}
