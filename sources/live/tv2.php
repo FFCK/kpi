@@ -392,7 +392,7 @@ class TV extends MyPage
         $saison = $this->GetParam('saison', utyGetSaison());
 
         // Chargement des Equipes Classées ...
-        $cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi, c.Soustitre2, c.logo 
+        $cmd  = "SELECT ce.Libelle, ce.Code_club, ce.CltNiveau_publi, c.Soustitre2, ce.logo 
             FROM kp_competition c, kp_competition_equipe ce 
             WHERE ce.Code_compet = '$competition' 
             AND ce.Code_saison = $saison 
@@ -509,15 +509,15 @@ class TV extends MyPage
                     </span>
                 </div>
                 <div id="podium_line1" class="podium_team h2 text-center">
-                    ' . $this->ImgNation200(utyGetString($tEquipes[1], 'Code_club', 999), $tEquipes[1]['logo'], $anime) . '<br>
+                    ' . $this->ImgNation200(utyGetString($tEquipes[0], 'Code_club', 999), $tEquipes[0]['logo'], $anime) . '<br>
                     <span>' . utyGetString($tEquipes[1], 'Libelle', '') . '</span>
                 </div>
                 <div id="podium_line2" class="podium_team h2 text-center">
-                    ' . $this->ImgNation200(utyGetString($tEquipes[1], 'Code_club', 999), $tEquipes[0]['logo'], $anime) . '<br>
+                    ' . $this->ImgNation200(utyGetString($tEquipes[1], 'Code_club', 999), $tEquipes[1]['logo'], $anime) . '<br>
                     <span>' . utyGetString($tEquipes[0], 'Libelle', '') . '</span>
                 </div>
                 <div id="podium_line3" class="podium_team h2 text-center">
-                    ' . $this->ImgNation200(utyGetString($tEquipes[1], 'Code_club', 999), $tEquipes[2]['logo'], $anime) . '<br>
+                    ' . $this->ImgNation200(utyGetString($tEquipes[2], 'Code_club', 999), $tEquipes[2]['logo'], $anime) . '<br>
                     <span>' . utyGetString($tEquipes[2], 'Libelle', '') . '</span>
                 </div>
             </div>';
