@@ -134,7 +134,7 @@ class FeuilleControle extends MyPage
         // Entête PDF ...	  
         $pdf = new PDF('L');
         $pdf->Open();
-        $pdf->SetTitle("Feuilles de Controle");
+        $pdf->SetTitle("Control sheet");
 
         $pdf->SetAuthor("Kayak-polo.info");
         $pdf->SetCreator("Kayak-polo.info avec FPDF");
@@ -174,9 +174,9 @@ class FeuilleControle extends MyPage
             $pdf->Ln(20);
             $pdf->SetFont('Arial', 'BI', 12);
             $pdf->Cell(137, 8, $titreCompet, 0, 0, 'L');
-            $pdf->Cell(136, 8, 'Saison ' . $codeSaison, 0, 1, 'R');
+            $pdf->Cell(136, 8, $codeSaison, 0, 1, 'R');
             $pdf->SetFont('Arial', 'B', 14);
-            $pdf->Cell(273, 8, "Feuille de contrôle - " . $row['Libelle'], 0, 1, 'C');
+            $pdf->Cell(273, 8, "Control sheet - " . $row['Libelle'], 0, 1, 'C');
             $pdf->Ln(2);
 
             $idEquipe = $row['Id'];
@@ -185,13 +185,13 @@ class FeuilleControle extends MyPage
             $pdf->Cell(15, 9, '', '', 0, 'C');
             $pdf->Cell(16, 9, 'Num', 'B', 0, 'C');
             $pdf->Cell(8, 9, 'Cap', 'B', 0, 'C');
-            $pdf->Cell(25, 9, 'Licence', 'B', 0, 'C');
-            $pdf->Cell(45, 9, 'Nom', 'B', 0, 'C');
-            $pdf->Cell(45, 9, 'Prenom', 'B', 0, 'C');
-            $pdf->Cell(25, 9, 'Kayak', 'B', 0, 'C');
-            $pdf->Cell(25, 9, 'Gilet', 'B', 0, 'C');
-            $pdf->Cell(25, 9, 'Casque', 'B', 0, 'C');
-            $pdf->Cell(32, 9, 'Nb pagaies', 'B', 1, 'C');
+            $pdf->Cell(25, 9, 'ID', 'B', 0, 'C');
+            $pdf->Cell(45, 9, 'Family Name', 'B', 0, 'C');
+            $pdf->Cell(45, 9, 'Given Name', 'B', 0, 'C');
+            $pdf->Cell(25, 9, 'Boat', 'B', 0, 'C');
+            $pdf->Cell(25, 9, 'Vest', 'B', 0, 'C');
+            $pdf->Cell(25, 9, 'Helmet', 'B', 0, 'C');
+            $pdf->Cell(32, 9, 'Paddle count', 'B', 1, 'C');
             $pdf->SetFont('Arial', '', 10);
 
             // Mini 12 lignes par équipe
@@ -223,7 +223,7 @@ class FeuilleControle extends MyPage
                 }
             }
         }
-        $pdf->Output('Feuilles de Controle' . '.pdf', 'I');
+        $pdf->Output('Control_Sheet.pdf', 'I');
     }
 }
 
