@@ -8,7 +8,7 @@
 				<input type='hidden' name='Saison' id='Saison' Value='{$codeSaison}' />
 				<input type='hidden' name='Compet' id='Compet' value='{$codeCompet}' />
 
-				<div class='blocLeft Left2'>
+				<div class='blocLeft'>
 					<div class='titrePage'>{#Equipes_engagees#}</div>
 					<label for="competition">{#Competition#} :</label>
 					<select name='competition' id='competition' onChange="changeCompetition();">
@@ -95,9 +95,9 @@
 									<th>{#Logo#}</th>
 									<th>{#Equipe#}</th>
 									<th>{#Couleurs#}</th>
-									<th>{#Presents#}</th>
+									<th colspan="2">{#Presents#}</th>
 									<th>Club</th>
-									<th>{#Nb_matchs#}</th>
+									<th>{#Matchs#}</th>
 									{if $profile <= 2}
 										<th>{#Controle#}</th>
 									{/if}
@@ -108,7 +108,7 @@
 								{section name=i loop=$arrayEquipe}
 									{if $PouleX != $arrayEquipe[i].Poule && $arrayEquipe[i].Poule != ''}
 										<tr class='colorO'>
-											<th colspan={if $profile <= 2 && $AuthModif == 'O'}11{else}10{/if}>
+											<th colspan={if $profile <= 2 && $AuthModif == 'O'}13{else}12{/if}>
 												<b>
 													{#Poule#}
 													{$arrayEquipe[i].Poule}
@@ -153,14 +153,22 @@
 												</b>
 											{/if}
 										</td>
-										<td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}"
-												title="{#Feuille_de_presence#}"><img height="25" src="../img/b_sbrowse.png" /></A></td>
+										<td><a href="./GestionEquipeJoueur.php?idEquipe={$arrayEquipe[i].Id}" title="{#Feuille_de_presence#}">
+												<img height="25" src="../img/b_sbrowse.png" />
+											</a>
+										</td>
+										<td>
+											<a href="FeuillePresence{#lang_version#}.php?equipe={$arrayEquipe[i].Id}" target="_blank" title="{#Feuille_de_presence#}">
+												<img height="25" src="../img/pdf.png" />
+											</a>
+										</td>
 										<td title="{$arrayEquipe[i].Club}">{$arrayEquipe[i].Code_club}</td>
 										<td>{$arrayEquipe[i].nbMatchs}</td>
 										{if $profile <= 2}
 											<td>
-												<a href="FeuilleControle.php?equipe={$arrayEquipe[i].Id}" target="_blank" title="{#Controle#}"><img height="25"
-													src="../img/pdf.png" /></a>
+												<a href="FeuilleControle{#lang_version#}.php?equipe={$arrayEquipe[i].Id}" target="_blank" title="{#Controle#}">
+													<img height="25" src="../img/pdf.png" />
+												</a>
 											</td>
 										{/if}
 										{if $profile <= 3 && $AuthModif == 'O' && $bProd}
