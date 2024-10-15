@@ -78,16 +78,22 @@ class Event extends MyPage
     {
         $db = new MyBdd();
 
-        $sql2 = "SELECT DISTINCT m.Date_match, m.Heure_match 
-            FROM kp_match m
-            LEFT JOIN kp_journee j ON (m.Id_journee = j.Id) 
-            LEFT JOIN kp_evenement_journee ej ON (j.Id = ej.Id_journee)
+        $sql2 = "SELECT m.Date_match, m.Heure_match
+            FROM kp_match m 
+            LEFT JOIN kp_evenement_journee ej ON (m.Id_journee = ej.Id_journee)
             WHERE ej.Id_evenement = ? 
+            AND m.Heure_match = (
+                SELECT MIN(m2.Heure_match)
+                FROM kp_match m2
+                LEFT JOIN kp_evenement_journee ej2 ON (m2.Id_journee = ej2.Id_journee)
+                WHERE ej2.Id_evenement = ? 
+                AND m2.Date_match = m.Date_match
+            )
             GROUP BY m.Date_match
-            ORDER BY m.Date_match, m.Heure_match ";
+            ORDER BY m.Date_match; ";
         $rDates = null;
         $result2 = $db->pdo->prepare($sql2);
-        $result2->execute([$evt]);
+        $result2->execute([$evt, $evt]);
         $rDates = $result2->fetchAll(PDO::FETCH_ASSOC);
         $retour = '';
         foreach ($rDates as $key => $date_evt) {
@@ -124,7 +130,7 @@ class Event extends MyPage
                 <br>
 
                 <label for='offset_event'>Warm-up</label>
-                <input type='text' id='offset_event' name='offset_event' Value='10' size="2"> minutes
+                <input type='text' id='offset_event' name='offset_event' Value='15' size="2"> minutes
                 <br>
 
                 <label for='pitch_event'>Pitches</label>
@@ -152,7 +158,12 @@ class Event extends MyPage
         <script type="text/javascript" src="./js/event.js?v=<?= NUM_VERSION ?>"></script>
         <script type="text/javascript">
             $(document).ready(function() {
-                Init();
+                Init()
+                
+                const now = new Date()
+                const hours = String(now.getHours()).padStart(2, '0')
+                const minutes = String(now.getMinutes()).padStart(2, '0')
+                document.getElementById('hour_event').value = `${hours}:${minutes}`
             });
         </script>
 <?php
