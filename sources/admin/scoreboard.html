@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>KPI Scoreboard</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../js/bootstrap-5.0.2-dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <style type="text/css">
+            body {
+                font-family: Lucida Grande, Lucida Sans, Arial, sans-serif;
+                
+            }
+            /* h1 {
+                font-weight: 800;
+            } */
+
+            div {
+                /* border: 1px solid red; */
+            }
+
+
+            #scoreA, #scoreB, #teamA, #teamB, #timer, #shotclock, #period {
+                font-weight: 800;
+            }
+            #scoreA, #scoreB {
+                font-size: 1000%;
+            }
+            #timer {
+                font-size: 800%;
+            }
+            #shotclock {
+                font-size: 300%;
+                background-color: #204f7c;
+                border-radius: 15px;
+            }
+            #brand img {
+                background-color: #fff;
+                /* border: 1px solid #f15a2a; */
+
+                /* border-radius: 15px; */
+                /* padding: 2px; */
+            }
+        </style>
+    </head>
+    <body class="bg-dark text-white">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="p-2 text-center">
+                        <img id='nationA' src="../img/Nations/IOC.png" alt="" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-center">
+                        <span id="timer" class="h1">10:00</span>
+                        <span id="timerStatus" class="float-end bg-danger p-2 rounded-circle rounded-1">&nbsp;</span>
+                    </div>
+                    <div class="text-center h1">
+                        <span id="period">Period 1</span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="p-2 text-center">
+                        <img id='nationB' src="../img/Nations/IOC.png" alt="" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center h1">
+                    <span id="teamA">TEAM A</span>
+                </div>
+                <div class="col-4 text-center mb-3">
+                    <span id="brand">
+                        <img src="../img/New_KPI_logo.png" alt="" height="50px">
+                    </span>
+                </div>
+                <div class="col text-center h1">
+                    <span id="teamB">TEAM B</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <span id="scoreA" class="h1">0</span>
+                </div>
+                <div class="col-4 text-center h1 mt-3">
+                    <span id="shotclock" class="px-4 ">60</span>
+                </div>
+                <div class="col text-center">
+                    <span id="scoreB" class="h1">0</span>
+                </div>
+            </div>
+            <!-- <div class="row mt-5">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-1 bg-warning text-center h3">X</div>
+                        <div class="col-2 h3">2:00</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-1 bg-danger text-center h3">X</div>
+                        <div class="col-2 h3">2:00</div>
+                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
+                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row d-flex flex-row-reverse">
+                        <div class="col-1 bg-warning text-center h3">X</div>
+                        <div class="col-2 text-end h3">2:00</div>
+                    </div>
+                    <div class="row d-flex flex-row-reverse">
+                        <div class="col-1 bg-danger text-center h3">X</div>
+                        <div class="col-2 text-end h3">2:00</div>
+                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
+                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="fixed-bottom">
+                    <img src="../img/logo/B-CM-2024.jpg" alt="" width="100%">
+            </div>
+        </div>
+
+        <script src="../js/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="v2/scoreboard.js"></script>
+    </body>
+</html>
