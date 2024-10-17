@@ -1,6 +1,8 @@
 function recordMatch (id) {
 	this.m_id = id
 
+	this.m_heure = 0
+
 	this.m_tick_global = ''
 	this.m_tick_score = ''
 	this.m_tick_chrono = ''
@@ -26,6 +28,7 @@ function recordMatch (id) {
 }
 
 recordMatch.prototype.GetId = function () { return this.m_id }
+recordMatch.prototype.GetHeure = function () { return this.m_heure }
 recordMatch.prototype.GetTickGlobal = function () { return this.m_tick_global }
 recordMatch.prototype.GetTickScore = function () { return this.m_tick_score }
 recordMatch.prototype.GetTickChrono = function () { return this.m_tick_chrono }
@@ -49,6 +52,7 @@ recordMatch.prototype.GetIdEvent = function () { return this.m_id_event }
 recordMatch.prototype.GetIdPrevEvent = function () { return this.m_id_prev_event }
 
 recordMatch.prototype.SetId = function (id) { this.m_id = id }
+recordMatch.prototype.SetHeure = function (heure) { this.m_heure = heure }
 recordMatch.prototype.SetTickGlobal = function (tick) { this.m_tick_global = tick }
 recordMatch.prototype.SetTickScore = function (tick) { this.m_tick_score = tick }
 recordMatch.prototype.SetTickChrono = function (tick) { this.m_tick_chrono = tick }
@@ -89,6 +93,13 @@ tableMatch.prototype.GetId = function (row) {
 	if ((row < 0) || (row >= nbRows)) return ''
 
 	return this.m_array[row].GetId()
+}
+
+tableMatch.prototype.GetHeure = function (row) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return ''
+
+	return this.m_array[row].GetHeure()
 }
 
 tableMatch.prototype.GetTickGlobal = function (row) {
@@ -222,6 +233,13 @@ tableMatch.prototype.SetId = function (row, id) {
 	if ((row < 0) || (row >= nbRows)) return ''
 
 	return this.m_array[row].SetId(id)
+}
+
+tableMatch.prototype.SetHeure = function (row, id) {
+	var nbRows = this.m_array.length
+	if ((row < 0) || (row >= nbRows)) return ''
+
+	return this.m_array[row].SetHeure(id)
 }
 
 tableMatch.prototype.SetTickGlobal = function (row, tick) {
@@ -656,7 +674,7 @@ function ParseCacheTerrain (jsonData, chrono = true, next = false) {
 	//  if(theContext.Match.GetId(0) == -1)
 	//      return; // Pas de match sélectionné
 
-	id_match = next ? jsonData.id_next.id : jsonData.id_match
+	id_match = next ? jsonData.heure.id : jsonData.id_match
 
 	if (typeof (id_match) == 'undefined' || id_match == -1)
 		return	// Data JSON non correcte ...
