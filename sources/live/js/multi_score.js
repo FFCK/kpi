@@ -252,9 +252,9 @@ function ParseCacheNext (idMulti, jsonData) {
 		return	// Data JSON déjà traitée ...
 	}
 	nextTick[idMulti] = jsonData.tick
-	const nextGame = jsonData.heure + ' (' + jsonData.categ + ' - ' + jsonData.phase + ')<br>' + jsonData.equipe1.nom + ' - ' + jsonData.equipe2.nom
+	const nextGame = '#' + jsonData.numero_ordre + ' : '+ jsonData.heure + ' (' + jsonData.categ + ' - ' + jsonData.phase + ')<br>' + jsonData.equipe1.nom + ' - ' + jsonData.equipe2.nom
 	
-	$('#nextgame_' + idMulti).html('Next game : ' + nextGame).show()
+	$('#nextgame_' + idMulti).html('Next game ' + nextGame).show()
 }
 
 function RefreshCacheMultiPitch () {
@@ -294,8 +294,22 @@ function RefreshCountDown (refresh) {
 	if (countDown <= 0) {
 		countDown = refresh
 		RefreshHorloge()
+		showCurrentTime()
 	}
 	$('#refresh_frequency').text('refresh: ' + countDown + 's')
+	
+}
+
+function showCurrentTime() {
+	var date = new Date()
+	var h = date.getHours();
+	var m = date.getMinutes();
+	// var s = date.getSeconds();
+	if( h < 10 ){ h = '0' + h; }
+	if( m < 10 ){ m = '0' + m; }
+	// if( s < 10 ){ s = '0' + s; }
+	var time = h + ':' + m // + ':' + s
+	document.getElementById('horloge').innerHTML = time;
 }
 
 function Init (event, count, voie, refresh) {
@@ -314,6 +328,8 @@ function Init (event, count, voie, refresh) {
 	RefreshCacheGlobal()
 	RefreshCacheScore()
 	RefreshCacheChrono()
+
+	showCurrentTime()
 
 	// Refresh du cache Pitch toute les 10 secondes ...
 	setInterval(RefreshCacheMultiPitch, 10000)
