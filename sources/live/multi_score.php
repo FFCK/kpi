@@ -95,6 +95,7 @@ class MultiScore extends MyPage
         <?php
         }
         ?>
+            <div id="horloge"></div>
             <div id="refresh_frequency"></div>
         <?php
     }

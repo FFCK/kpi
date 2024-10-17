@@ -299,3 +299,13 @@ span.numero {
     padding: 5px;
     /* border: 1px solid red;   */
 }
+#horloge {
+    top: 15vh;
+    left: 50vw;
+    position: fixed;
+    transform: translate(-50%, -65%);
+    font-style: italic;
+    background-color: white;
+    padding: 5px;
+    /* border: 1px solid red;   */
+}
