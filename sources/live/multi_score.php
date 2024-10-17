@@ -55,7 +55,9 @@ class MultiScore extends MyPage
             <div class='col-sm-6 quart'>
                 <div id="ban_score">
                     <div class="terrain btn btn-default disabled" id="terrain_<?= $i ?>">Pitch <?= $i ?></div>
+                    <div class="catgroup btn btn-default disabled" id="catgroup_<?= $i ?>"></div>
 
+                    <div id="heure_<?= $i ?>" class="heure"></div>
                     <div class="bandeau_score" id="bandeau_score_<?= $i ?>">
                         <div class="match_horloge" id="match_horloge_<?= $i ?>"></div>
                         <div class="match_periode" id="match_periode_<?= $i ?>"></div>
@@ -70,7 +72,7 @@ class MultiScore extends MyPage
                         <div class="score_separation" id="score_separation_<?= $i ?>">-</div>
                         <div class="score2" id="score2_<?= $i ?>"></div>
 
-                        <!--<div class="categorie" id="categorie_<?= $i ?>"></div>-->
+
                     </div>
                 </div>
                 <?php
@@ -88,6 +90,7 @@ class MultiScore extends MyPage
                         <div id="match_event_line1_<?= $i ?>" class="banner_line1 text-left clair"></div>
                     </div>
                 </div>
+                <div class="nextgame btn btn-default disabled" id="nextgame_<?= $i ?>"></div>
             </div>
         <?php
         }
@@ -110,9 +113,12 @@ class MultiScore extends MyPage
         <script type="text/javascript" src="./js/voie.js"></script>
         <script type="text/javascript" src="./js/multi_score.js"></script>
         <script type="text/javascript">
+            let speaker = <?php echo $this->GetParamInt('speaker', 0); ?>;
+            const nextTick = []
+            let countDown = 0
             $(document).ready(function() {
-                Init(<?php echo "$id_event, $count, $voie, $refresh"; ?>);
-            });
+                Init(<?php echo "$id_event, $count, $voie, $refresh"; ?>)
+            })
         </script>
 <?php
     }

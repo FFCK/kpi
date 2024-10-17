@@ -183,7 +183,6 @@ function ParseCacheChrono (jsonData) {
 
 function ParseCacheGlobal (jsonData) {
 
-
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -200,6 +199,7 @@ function ParseCacheGlobal (jsonData) {
 	// Mise à jour des données ...
 	theContext.Match.SetTickGlobal(rowMatch, jsonData.tick)
 	theContext.Match.SetStatut(rowMatch, jsonData.statut)
+	theContext.Match.SetHeure(rowMatch, jsonData.heure)
 
 	var idMulti = rowMatch + 1
 
@@ -214,14 +214,47 @@ function ParseCacheGlobal (jsonData) {
 	$('#nation1_' + idMulti).html(ImgNation(jsonData.equipe1.club))
 	$('#nation2_' + idMulti).html(ImgNation(jsonData.equipe2.club))
 
-	$('#categorie_' + idMulti).html(jsonData.categ + ' - ' + jsonData.phase)
-
 	$('#lien_pdf_' + idMulti).html('<a href="../PdfMatchMulti.php?listMatch='
 		+ jsonData.id_match
 		+ '" target="_blank" class="btn btn-primary">Game report <span class="badge">#' + jsonData.numero_ordre + '</span></a>')
-	$('#terrain_' + idMulti).html('Pitch ' + jsonData.terrain)
-	$('#terrain_' + idMulti).append(' - ' + jsonData.categ + ' - ' + jsonData.phase)
+	$('#terrain_' + idMulti).text('Pitch ' + jsonData.terrain)
+	$('#catgroup_' + idMulti).text(jsonData.categ + ' - ' + jsonData.phase).show()
+	$('#heure_' + idMulti).text(jsonData.heure).show()
+	
+}
 
+
+function RefreshCacheNext (idMulti, idNext) {
+	if (idNext > 0) {
+		axios({
+			method: 'post',
+			url: './cache/' + idNext + '_match_global.json',
+			params: {},
+			responseType: 'json'
+		})
+			.then(function (response) {
+				ParseCacheNext(idMulti, response.data)
+			})
+			.catch(function (error) {
+				console.log(error)
+			})
+	}
+}
+
+function ParseCacheNext (idMulti, jsonData) {
+	if (typeof (jsonData.id_match) == 'undefined')
+		return	// Data JSON non correcte ...
+
+	if (typeof (jsonData.tick) == 'undefined')
+		return	// Data JSON non correcte ...
+
+	if (jsonData.tick == nextTick[idMulti]) {
+		return	// Data JSON déjà traitée ...
+	}
+	nextTick[idMulti] = jsonData.tick
+	const nextGame = jsonData.heure + ' (' + jsonData.categ + ' - ' + jsonData.phase + ')<br>' + jsonData.equipe1.nom + ' - ' + jsonData.equipe2.nom
+	
+	$('#nextgame_' + idMulti).html('Next game : ' + nextGame).show()
 }
 
 function RefreshCacheMultiPitch () {
@@ -240,7 +273,6 @@ function RefreshCacheMultiPitch () {
 
 function ParseCacheMultiPitch (jsonData) {
 
-
 	if (typeof (jsonData.id_match) == 'undefined')
 		return	// Data JSON non correcte ...
 
@@ -251,18 +283,32 @@ function ParseCacheMultiPitch (jsonData) {
 	if (jsonData.pitch <= nb) {
 		var rowMatch = jsonData.pitch - 1
 		theContext.Match.SetId(rowMatch, jsonData.id_match)
+		if (speaker > 0) {
+			RefreshCacheNext(jsonData.pitch, jsonData.id_next.id)
+		}
 	}
 }
 
+function RefreshCountDown (refresh) {
+	countDown -= 1
+	if (countDown <= 0) {
+		countDown = refresh
+		RefreshHorloge()
+	}
+	$('#refresh_frequency').text('refresh: ' + countDown + 's')
+}
+
 function Init (event, count, voie, refresh) {
-	const refresh_frequency = parseInt(refresh, 10) * 1000 || 10000
-	$('#refresh_frequency').text('refresh: ' + (refresh_frequency / 1000) + 's')
+	
+	countDown = parseInt(refresh, 10)
+	
 
 	theContext.Event = event
 	//	alert("Event = "+theContext.Event);
-
-	for (var i = 1; i <= count; i++)
+	for (var i = 1; i <= count; i++) {
+		nextTick[i] = 0
 		theContext.Match.Add(-1)
+	}
 	RefreshCacheMultiPitch()
 
 	RefreshCacheGlobal()
@@ -281,8 +327,8 @@ function Init (event, count, voie, refresh) {
 	// Refresh Chrono toutes les 2 secondes  ...
 	//	setInterval(RefreshCacheChrono, 2500);
 
-	// Refresh Horloge toutes les 10 secondes  ...
-	setInterval(RefreshHorloge, refresh_frequency)
+	// Refresh Horloge toutes les X secondes  ...
+	setInterval(RefreshCountDown, 1000, refresh)
 
 	SetVoie(voie)
 }
