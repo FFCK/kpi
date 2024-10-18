@@ -479,10 +479,10 @@ class FeuilleMatch extends MyPage
                 $typeScore = $lang['Final'];
             }
 
-            if ($scoreMitempsA != '' && $scoreMitempsB == '') {
+            if (($scoreMitempsA != '' || $typeScore == $lang['Final']) && $scoreMitempsB == '') {
                 $scoreMitempsB = 0;
             }
-            if ($scoreMitempsB != '' && $scoreMitempsA == '') {
+            if (($scoreMitempsB != '' || $typeScore == $lang['Final']) && $scoreMitempsA == '') {
                 $scoreMitempsA = 0;
             }
 
