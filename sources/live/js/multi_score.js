@@ -238,6 +238,8 @@ function RefreshCacheNext (idMulti, idNext) {
 			.catch(function (error) {
 				console.log(error)
 			})
+	} else {
+		$('#nextgame_' + idMulti).hide()
 	}
 }
 
