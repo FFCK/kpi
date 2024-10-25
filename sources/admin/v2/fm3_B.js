@@ -47,6 +47,7 @@ $(function () {
                                     $('.statut, .periode, .evtButton').removeClass('ouvert')
                                     $('#reset_evt').click()
                                     $('#img_verrou').attr('src', '../img/verrou2O.gif')
+                                    $('#idFeuille').focus()
                                     // window.location = 'FeuilleMarque2.php?idMatch=' + idMatch
                                 } else {
                                     custom_alert(lang.Action_impossible, lang.Attention)
