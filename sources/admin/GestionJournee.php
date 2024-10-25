@@ -612,7 +612,7 @@ class GestionJournee extends MyPageSecure
 				WHERE a.Code_compet = b.Code_competition 
 				AND a.Code_saison = b.Code_saison 
 				AND b.Id IN ($in) 
-				ORDER BY a.Poule, a.Tirage, a.Libelle ";
+				ORDER BY a.Libelle, a.Poule, a.Tirage ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute($arrayListJournees);
 		} elseif ($idMatch >= 0) {
@@ -622,7 +622,7 @@ class GestionJournee extends MyPageSecure
 				AND a.Code_saison = b.Code_saison 
 				AND b.Id = c.Id_journee 
 				AND c.Id = ? 
-				ORDER BY a.Poule, a.Tirage, a.Libelle ";
+				ORDER BY a.Libelle, 	a.Poule, a.Tirage ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($idMatch));
 		}
