@@ -28,7 +28,7 @@ $(function () {
 							$('#run_button').hide()
 							$('.statut').removeClass('actif')
 							$('#END').addClass('actif')
-							$('#zoneTemps, .periode, #zoneChrono').hide()
+							$('#zoneTemps, .periode, #zoneChrono, #zoneScoreboard').hide()
 							$('.endmatch').show()
 							$('#comments').text($('#commentaires').val())
 							$('#tabs-1_link').click()

@@ -295,10 +295,10 @@ function serverUpdate(target, object, iteration = 0) {
 
 function statutActive (leStatut, leClick) {
     if (leStatut == 'ATT') {
-        $('#zoneTemps, .periode, #zoneChrono').hide()
+        $('#zoneTemps, .periode, #zoneChrono, #zoneScoreboard').hide()
         $('.endmatch').hide()
     } else if (leStatut == 'ON') {
-        $('.joueurs, #zoneTemps, #M1, #M2, #zoneChrono').show()
+        $('.joueurs, #zoneTemps, #M1, #M2, #zoneChrono, #zoneScoreboard').show()
         $('.endmatch').hide()
         if (typeMatch == 'E') {
             $('#P1, #P2, #TB').show()
@@ -325,7 +325,7 @@ function statutActive (leStatut, leClick) {
             $('#dialog_end_match').dialog('open')
             $('#reset_evt').click()
         } else {
-            $('#zoneTemps, .periode, #zoneChrono').hide()
+            $('#zoneTemps, .periode, #zoneChrono, #zoneScoreboard').hide()
             $('#end_match_time').removeClass('inactif').addClass('actif')
         }
     }
