@@ -22,7 +22,8 @@ $sql = "SELECT ce.Id, ce.Libelle
 	FROM kp_competition_equipe ce, kp_journee j 
 	WHERE ce.Code_compet = j.Code_competition 
 	AND ce.Code_saison = j.Code_saison 
-	AND j.Id = ? ";
+	AND j.Id = ? 
+	ORDER BY ce.Libelle ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($idJournee));
 while ($row = $result->fetch()) {	
