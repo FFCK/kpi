@@ -43,7 +43,7 @@ $(function () {
                             },
                             function (data) { // callback
                                 if (data == 'OK') {
-                                    $('#zoneTemps, #zoneChrono, .match, #validScore').hide()
+                                    $('#zoneTemps, #zoneChrono, #zoneScoreboard, .match, #validScore').hide()
                                     $('.statut, .periode, .evtButton').removeClass('ouvert')
                                     $('#reset_evt').click()
                                     $('#img_verrou').attr('src', '../img/verrou2O.gif')
@@ -76,7 +76,7 @@ $(function () {
             },
             function (data) { // callback
                 if (data == 'OK') {
-                    $('#zoneTemps, #zoneChrono, .match, #validScore').show()
+                    $('#zoneTemps, #zoneChrono, #zoneScoreboard, .match, #validScore').show()
                     $('.statut, .periode, .evtButton').addClass('ouvert')
                     //$('.statut[class*="actif"]').click();
                     $('#reset_evt').click()

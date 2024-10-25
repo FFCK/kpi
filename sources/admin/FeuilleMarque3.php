@@ -839,10 +839,10 @@ stop_time: <span id="stop_time_display"></span><br />
 					/* PARAMETRES PAR DEFAUT */
 					<?php if ($verrou == 'O') { ?>
 						$('#controleVerrou').attr('checked', 'checked');
-						$('#zoneTemps, #zoneChrono, .match, #initA, #initB, .suppression').hide();
+						$('#zoneTemps, #zoneChrono, #zoneScoreboard, .match, #initA, #initB, .suppression').hide();
 						$('#typeMatch label').not('.ui-state-active').hide(); // masque le type match inactif !!
 					<?php	} else {	?>
-						$('#zoneTemps, #zoneChrono, .match').show();
+						$('#zoneTemps, #zoneChrono, #zoneScoreboard, .match').show();
 						//$('.statut[class*="actif"]').click();
 						$('#reset_evt').click();
 						if (typeMatch == 'C') {
