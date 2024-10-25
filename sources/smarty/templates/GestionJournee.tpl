@@ -69,29 +69,32 @@
 									{if $idSelJournee eq $arrayJourneesAutoriseesFiltre[i].Id}
 										{if $arrayJourneesAutoriseesFiltre[i].Code_typeclt == 'CP'}
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>
+												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} 
 												{$arrayJourneesAutoriseesFiltre[i].Code_competition}
-												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} -
-												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Etape|string_format:" (%s)"}
+												{$arrayJourneesAutoriseesFiltre[i].Etape|string_format:" (%s)"} 
+												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}
 											</Option>
 										{else}
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}" Selected>
+												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"}
 												{$arrayJourneesAutoriseesFiltre[i].Code_competition}
-												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} -
-												{$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" le %s "}{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:"à %s"}
+												{$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" %s "}{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:" %s"}
 											</Option>
 										{/if}
 									{else}
 										{if $arrayJourneesAutoriseesFiltre[i].Code_typeclt == 'CP'}
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">
+												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"}
 												{$arrayJourneesAutoriseesFiltre[i].Code_competition}
-												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} -
-												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}{$arrayJourneesAutoriseesFiltre[i].Etape|string_format:" (%s)"}
+												{$arrayJourneesAutoriseesFiltre[i].Etape|string_format:" (%s)"}
+												{$arrayJourneesAutoriseesFiltre[i].Phase|string_format:"%s"}
 											</Option>
 										{else}
 											<Option Value="{$arrayJourneesAutoriseesFiltre[i].Id}">
+												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"}
 												{$arrayJourneesAutoriseesFiltre[i].Code_competition}
-												{$arrayJourneesAutoriseesFiltre[i].Id|string_format:"[%s]"} -
-												{$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" le %s "}{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:"à %s"}
+												{$arrayJourneesAutoriseesFiltre[i].Date_debut|string_format:" %s "}
+												{$arrayJourneesAutoriseesFiltre[i].Lieu|string_format:" %s"}
 											</Option>
 										{/if}
 									{/if}
@@ -235,32 +238,36 @@
 												{if $arrayJourneesAutorisees[i].Code_typeclt == 'CP'}
 													<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
 														data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}" Selected>
-														{$arrayJourneesAutorisees[i].Code_competition} -
-														{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
+														{$arrayJourneesAutorisees[i].Id|string_format:"[%s]"}
+														{$arrayJourneesAutorisees[i].Code_competition}
 														{$arrayJourneesAutorisees[i].Etape|string_format:" (%s)"}
+														{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
 													</option>
 												{else}
 													<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
 														data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}" Selected>
-														{$arrayJourneesAutorisees[i].Code_competition} -
+														{$arrayJourneesAutorisees[i].Id|string_format:"[%s]"}
+														{$arrayJourneesAutorisees[i].Code_competition}
 														{$arrayJourneesAutorisees[i].Date_debut|string_format:"%s"}
-														{$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}
+														{$arrayJourneesAutorisees[i].Lieu|string_format:" %s"}
 													</option>
 												{/if}
 											{else}
 												{if $arrayJourneesAutorisees[i].Code_typeclt == 'CP'}
 													<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
 														data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}">
-														{$arrayJourneesAutorisees[i].Code_competition} -
-														{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
+														{$arrayJourneesAutorisees[i].Id|string_format:"[%s]"}
+														{$arrayJourneesAutorisees[i].Code_competition}
 														{$arrayJourneesAutorisees[i].Etape|string_format:" (%s)"}
+														{$arrayJourneesAutorisees[i].Phase|string_format:"%s"}
 													</option>
 												{else}
 													<option value="{$arrayJournees[i].Id}" data-type="{$arrayJournees[i].Type}"
 														data-phase="{$arrayJourneesAutorisees[i].Phase|string_format:'%s'}">
-														{$arrayJourneesAutorisees[i].Code_competition} -
+														{$arrayJourneesAutorisees[i].Id|string_format:"[%s]"}
+														{$arrayJourneesAutorisees[i].Code_competition}
 														{$arrayJourneesAutorisees[i].Date_debut|string_format:"%s"}
-														{$arrayJourneesAutorisees[i].Lieu|string_format:"à %s"}
+														{$arrayJourneesAutorisees[i].Lieu|string_format:" %s"}
 													</option>
 												{/if}
 											{/if}
