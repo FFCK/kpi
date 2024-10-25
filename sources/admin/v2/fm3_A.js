@@ -93,7 +93,7 @@ const shotclockUpdate = () => {
     broadcastPost('shotclock')
 
     if (shotclockValue < 1 ) {
-        audio.play();
+        audio.play()
         clearInterval(shotclockInterval)
         shotclockValue = 0
         shotclockStart()
