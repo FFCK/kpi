@@ -496,9 +496,18 @@ stop_time: <span id="stop_time_display"></span><br />
 								</div>
 								<div id="zoneScoreboard">
 									<div id="zoneScoreboardButtons">
-										<a id="open_shotclock_button" class="fm_bouton" href="shotclock.html" target="_blank">Open Shotclock</a>
-										<a id="open_scoreboard_button" class="fm_bouton" href="scoreboard.html" target="_blank">Open Scoreboard</a>
-										<a id="update_scoreboard_button" class="fm_bouton">Sync Scoreboard</a>
+										<a id="test_sound_button" class="fm_bouton">
+											<img src="../img/sound.png" height="40" alt="">
+										</a>
+										<a id="open_shotclock_button" class="fm_bouton" href="shotclock.html" target="_blank">
+											<img src="../img/open_shotclock.png" height="40" alt="">
+										</a>
+										<a id="open_scoreboard_button" class="fm_bouton" href="scoreboard.html" target="_blank">
+											<img src="../img/open_scoreboard.png" height="40" alt="">
+										</a>
+										<a id="update_scoreboard_button" class="fm_bouton">
+											<img src="v2/refresh.png" height="40" alt="">
+										</a>
 									</div>
 									<div>
 										<img id="shotclock_moins10" class="plusmoins" src="../img/moins10.png" alt="" />

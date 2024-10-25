@@ -1148,6 +1148,10 @@ $(function () {
 		event.preventDefault()
 		window.open('shotclock.html', 'shotclock')
 	})
+    $('#test_sound_button').click(function (event) {
+		event.preventDefault()
+		audio.play()
+	})
 
     $('#update_scoreboard_button').click(function () {
         broadcastPost('timer')
