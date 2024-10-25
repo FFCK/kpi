@@ -258,7 +258,7 @@ class GestionMatchDetail extends MyPageSecure
 									<?php } ?>
 									<input type="radio" name="controleMatch" id="controleVerrou" <?php if ($verrou == 'O') echo 'checked="checked"'; ?> /><label for="controleVerrou"><?= $lang['Verrouille']; ?></label>
 								</span>
-								<img height="30" style="vertical-align:middle;" title="<?= $lang['Verrouille']; ?> ?" alt="<?= $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if ($verrou == 'O') {
+								<img id="img_verrou" height="30" style="vertical-align:middle;" title="<?= $lang['Verrouille']; ?> ?" alt="<?= $lang['Verrouille']; ?> ?" src="../img/verrou2<?php if ($verrou == 'O') {
 																																													echo 'O';
 																																												} else {
 																																													echo 'N';
