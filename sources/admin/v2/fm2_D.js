@@ -128,8 +128,35 @@ $(function () {
 	$('#chargeFeuille').click(function (event) {
 		event.preventDefault()
 		queueAlert()
-		window.location = 'FeuilleMarque2.php?idMatch=' + $('#idFeuille').val()
-	})
+
+		/* Numéro court */
+		const numTarget = $('#idFeuille').val()
+		console.log(numTarget.length)
+		if (numTarget.length <= 5) {
+			$.post(
+				'v2/getShortGame.php',
+				{
+					idMatch: idMatch,
+					numTarget: numTarget
+				},
+				function (data) {
+					if (Number.isInteger(data?.Id)) {
+						$('#idFeuille').val(data.Id)
+						window.location = '?idMatch=' + data.Id
+					} else {
+						custom_alert(lang.Action_impossible, lang.Attention)
+					}
+				},
+				'json'
+			)
+			.fail(function (xhr, status, error) {
+				custom_alert(lang.Action_impossible + '<br>' + error, lang.Attention)
+			})
+
+		} else {
+			window.location = '?idMatch=' + $('#idFeuille').val()
+		}
+			})
 	$('#idFeuille').keypress(function (e) {
 		if (e.which == 13 && $(this).val() != '') {
 			$('#chargeFeuille').click()

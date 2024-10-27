@@ -1171,7 +1171,7 @@ $(function () {
             document.querySelector('#time_end_match:focus') != null ||
             document.querySelector('#commentaires:focus') != null
         ) {
-            exit
+            return
         }
         switch (event.key) {
             case '0':
