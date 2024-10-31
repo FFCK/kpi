@@ -1004,7 +1004,6 @@ class GestionClassement extends MyPageSecure
 				array_column($arrayCltGlobal[$clt], 'Plus'), SORT_DESC, 
 				$arrayCltGlobal[$clt]
 			);
-			print_r($arrayCltGlobal[$clt]);
 
 			$sql = "UPDATE kp_competition_equipe 
 				SET Clt = ?
@@ -1137,7 +1136,6 @@ class GestionClassement extends MyPageSecure
 					array_column($arrayCltGlobal[$clt], 'Plus'), SORT_DESC, 
 					$arrayCltGlobal[$clt]
 				);
-				print_r($arrayCltGlobal[$clt]);
 	
 				$sql = "UPDATE kp_competition_equipe_journee 
 					SET Clt = ? 
