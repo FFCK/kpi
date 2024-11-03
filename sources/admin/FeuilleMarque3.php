@@ -224,7 +224,7 @@ class GestionMatchDetail extends MyPageSecure
 								<br />
 								<label><?= $lang['Charger_autre_feuille']; ?></label>
 								<br />
-								ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" pattern="[0-9]{8,9}">
+								ID# <input class="ui-button ui-widget ui-corner-all" type="tel" id="idFeuille" pattern="[0-9]{8,9}" placeholder="Game ID# or number">
 								<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="chargeFeuille" value="<?= $lang['Charger']; ?>" />
 								<br />
 								<p id="nextGameDetail"></p>
