@@ -1,0 +1,5 @@
+ARG BASE_IMAGE_DB
+
+FROM ${BASE_IMAGE_DB}
+
+# ADD bdd.sql /docker-entrypoint-initdb.d/
