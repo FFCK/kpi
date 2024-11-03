@@ -1,0 +1,14 @@
+ARG BASE_IMAGE_PHP
+ARG USER_ID
+ARG GROUP_ID
+
+FROM ${BASE_IMAGE_PHP}
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libonig-dev mailutils msmtp \
+    && docker-php-ext-install pdo pdo_mysql mbstring \
+    && a2enmod headers \
+    && a2enmod expires \
+    && a2enmod rewrite \
+    && service apache2 restart
+
+RUN mv "$PHP_INI_DIR/${PHP_INI_FILE}" "$PHP_INI_DIR/php.ini"
