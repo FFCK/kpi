@@ -11,7 +11,19 @@ ___Prérequis___
 - fonctionnel avec PHP 5.5
 - MySQL 5.5
 
-___Installation___
+___DOCKER___
+
+Créer le fichier .env
+
+`cd docker`
+
+`docker network create network_kpi`
+
+`docker compose -f compose.prod.yaml up -d`
+
+alimenter la base de donnée my_database
+
+___Installation (Legacy)___
 
 - installer la base de donnée
 
@@ -44,16 +56,6 @@ ___IFRAMES___
 
 - https://github.com/FFCK/kpi/wiki/Iframes
 
-
-___DOCKER___
-
-créer le fichier ./docker/error7.log
-
-cd docker
-
-docker compose up -d
-
-alimenter la base de donnée my_database
 
 __KPI APP (NODE)__
 
