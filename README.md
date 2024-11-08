@@ -13,9 +13,9 @@ ___Prérequis___
 
 ___DOCKER___
 
-Créer le fichier .env
-
 `cd docker`
+
+Créer et compléter le fichier .env
 
 `docker network create network_kpi`
 

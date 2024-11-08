@@ -11,4 +11,5 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libonig-
     && a2enmod rewrite \
     && service apache2 restart
 
-RUN mv "$PHP_INI_DIR/${PHP_INI_FILE}" "$PHP_INI_DIR/php.ini"
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+# RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
