@@ -1,0 +1,89 @@
+name: '${APPLICATION_NAME}'
+services:
+    web:
+        container_name: ${PHP_CONTAINER_NAME}
+        build:
+            context: ./web
+            dockerfile: Dockerfile.web
+            args:
+                USER_ID: ${USER_ID}
+                GROUP_ID: ${GROUP_ID}
+                BASE_IMAGE_PHP: ${BASE_IMAGE_PHP}
+        user: ${USER_ID}:${GROUP_ID}
+        ports:
+            - 80${DOCKER_SUFFIXE_PORT}:80
+        volumes:
+            - ../sources:/var/www/html
+            - ./MyParams.php:/var/www/html/commun/MyParams.php
+            - ./MyConfig.php:/var/www/html/commun/MyConfig.php
+            - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
+        networks:
+            - network_kpi
+            - traefiknetwork
+        depends_on:
+            - db
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.kpi.rule=Host(`kpi.local`)"
+            - "traefik.http.routers.kpi.entrypoints=web"
+            # - "traefik.docker.network=network_kpi"
+    db:
+        container_name: ${DB_CONTAINER_NAME}
+        build:
+            context: ./web
+            dockerfile: Dockerfile.db
+            args:
+                BASE_IMAGE_DB: ${BASE_IMAGE_DB}
+        command: mysqld --sql_mode=""
+        volumes:
+            - ${HOST_DB_PATH}:/var/lib/mysql/
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_NAME}
+        ports:
+            - 33${DOCKER_SUFFIXE_PORT}:3306
+        networks:
+            - network_kpi
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+    myadmin:
+        container_name: ${MYADMIN_CONTAINER_NAME}
+        image: phpmyadmin/phpmyadmin:latest
+        environment:
+            UPLOAD_LIMIT: 262144000 # 256 Mo
+        ports:
+            - 81${DOCKER_SUFFIXE_PORT}:80
+        # depends_on:
+            # - db
+        networks:
+            - network_kpi
+            - traefiknetwork
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+        labels:
+            - "traefik.http.routers.myadmin.rule=Host(`myadmin.local`)"
+            - "traefik.http.routers.myadmin.entrypoints=web"
+
+networks:
+    network_kpi:
+        external: true
+        name: network_${APPLICATION_NAME}
+    traefiknetwork:
+        name: traefiknetwork
+        external: true
