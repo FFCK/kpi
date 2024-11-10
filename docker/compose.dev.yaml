@@ -31,7 +31,8 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.kpi.rule=Host(`kpi.local`)"
-            - "traefik.http.routers.kpi.entrypoints=web"
+            - "traefik.http.routers.kpi.entrypoints=websecure"
+            - "traefik.http.routers.kpi.tls=true"
             # - "traefik.docker.network=network_kpi"
     db:
         container_name: ${DB_CONTAINER_NAME}
@@ -77,8 +78,10 @@ services:
                 max-file: 3
         restart: unless-stopped
         labels:
+            - "traefik.enable=true"
             - "traefik.http.routers.myadmin.rule=Host(`myadmin.local`)"
-            - "traefik.http.routers.myadmin.entrypoints=web"
+            - "traefik.http.routers.myadmin.entrypoints=websecure"
+            - "traefik.http.routers.myadmin.tls=true"
 
 networks:
     network_kpi:
