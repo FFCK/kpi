@@ -1,17 +1,17 @@
 name: '${APPLICATION_NAME}'
 services:
-    web:
+    kpi:
         container_name: ${PHP_CONTAINER_NAME}
         build:
-            context: ./web
-            dockerfile: Dockerfile.web
+            context: ./config
+            dockerfile: Dockerfile.dev.web
             args:
                 USER_ID: ${USER_ID}
                 GROUP_ID: ${GROUP_ID}
                 BASE_IMAGE_PHP: ${BASE_IMAGE_PHP}
         user: ${USER_ID}:${GROUP_ID}
-        ports:
-            - 80${DOCKER_SUFFIXE_PORT}:80
+        # ports:
+        #     - 80${DOCKER_SUFFIXE_PORT}:80
         volumes:
             - ../sources:/var/www/html
             - ./MyParams.php:/var/www/html/commun/MyParams.php
@@ -30,14 +30,13 @@ services:
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.kpi.rule=Host(`kpi.local`)"
+            - "traefik.http.routers.kpi.rule=Host(`kpi.local`) && PathPrefix(`/`)"
             - "traefik.http.routers.kpi.entrypoints=websecure"
             - "traefik.http.routers.kpi.tls=true"
-            # - "traefik.docker.network=network_kpi"
     db:
         container_name: ${DB_CONTAINER_NAME}
         build:
-            context: ./web
+            context: ./config
             dockerfile: Dockerfile.db
             args:
                 BASE_IMAGE_DB: ${BASE_IMAGE_DB}
@@ -49,8 +48,8 @@ services:
             MYSQL_USER: ${DB_USER}
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: ${DB_NAME}
-        ports:
-            - 33${DOCKER_SUFFIXE_PORT}:3306
+        # ports:
+        #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
             - network_kpi
         logging:
@@ -63,11 +62,12 @@ services:
         container_name: ${MYADMIN_CONTAINER_NAME}
         image: phpmyadmin/phpmyadmin:latest
         environment:
-            UPLOAD_LIMIT: 262144000 # 256 Mo
-        ports:
-            - 81${DOCKER_SUFFIXE_PORT}:80
-        # depends_on:
-            # - db
+            # 256 Mo
+            UPLOAD_LIMIT: 262144000
+        # ports:
+        #     - 81${DOCKER_SUFFIXE_PORT}:80
+        depends_on:
+            - db
         networks:
             - network_kpi
             - traefiknetwork
@@ -77,9 +77,13 @@ services:
                 max-size: 10m
                 max-file: 3
         restart: unless-stopped
+        volumes:
+            - ./config/config.dev.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.myadmin.rule=Host(`myadmin.local`)"
+            - "traefik.http.routers.myadmin.rule=Host(`kpi.local`) && PathPrefix(`/myadmin`)"
+            - "traefik.http.routers.myadmin.middlewares=strip-myadmin-prefix"
+            - "traefik.http.middlewares.strip-myadmin-prefix.stripprefix.prefixes=/myadmin"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
             - "traefik.http.routers.myadmin.tls=true"
 
