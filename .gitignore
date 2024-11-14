@@ -76,6 +76,7 @@ sources/img/KIP/vests/*.png
 sources/img/KIP/helmets/*.png
 /docker/db/mysql/*
 !/docker/db/mysql/.gitkeep
+docker/.env
 docker/.env*
 !docker/.env*.dist
 docker/apachelogs/*
