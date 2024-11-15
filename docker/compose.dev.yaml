@@ -82,8 +82,10 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.myadmin.rule=Host(`kpi.local`) && PathPrefix(`/myadmin`)"
-            - "traefik.http.routers.myadmin.middlewares=strip-myadmin-prefix"
+            - "traefik.http.routers.myadmin.middlewares=redirect-slash,strip-myadmin-prefix"
             - "traefik.http.middlewares.strip-myadmin-prefix.stripprefix.prefixes=/myadmin"
+            - "traefik.http.middlewares.redirect-slash.redirectregex.regex=^(https?://[^/]+/[^/]+)$$"
+            - "traefik.http.middlewares.redirect-slash.redirectregex.replacement=$${1}/"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
             - "traefik.http.routers.myadmin.tls=true"
 
