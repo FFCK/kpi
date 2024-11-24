@@ -81,3 +81,4 @@ docker/.env*
 !docker/.env*.dist
 docker/apachelogs/*
 !docker/apachelogs/.gitkeep
+docker/config/config.dev.inc.php
