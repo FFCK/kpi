@@ -30,7 +30,7 @@ services:
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.kpi.rule=Host(`kpi.local`) && PathPrefix(`/`)"
+            - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`)"
             - "traefik.http.routers.kpi.entrypoints=websecure"
             - "traefik.http.routers.kpi.tls=true"
     db:
@@ -77,15 +77,17 @@ services:
                 max-size: 10m
                 max-file: 3
         restart: unless-stopped
-        volumes:
-            - ./config/config.dev.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
+        # volumes:
+        #     - ./config/config.dev.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.myadmin.rule=Host(`kpi.local`) && PathPrefix(`/myadmin`)"
-            - "traefik.http.routers.myadmin.middlewares=redirect-slash,strip-myadmin-prefix"
-            - "traefik.http.middlewares.strip-myadmin-prefix.stripprefix.prefixes=/myadmin"
-            - "traefik.http.middlewares.redirect-slash.redirectregex.regex=^(https?://[^/]+/[^/]+)$$"
-            - "traefik.http.middlewares.redirect-slash.redirectregex.replacement=$${1}/"
+            - "traefik.http.routers.myadmin.rule=Host(`${MYADMIN_DOMAIN_NAME}`)"
+            # - "traefik.http.routers.myadmin.middlewares=redirect-slash,strip-myadmin-prefix"
+            # - "traefik.http.middlewares.strip-myadmin-prefix.stripprefix.prefixes=/myadmin"
+            # - "traefik.http.middlewares.redirect-slash.redirectregex.regex=^(https?://[^/]+/[^/]+)$$"
+            # - "traefik.http.middlewares.redirect-slash.redirectregex.replacement=$${1}/"
+            - "traefik.http.routers.myadmin.middlewares=auth"
+            - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
             - "traefik.http.routers.myadmin.tls=true"
 

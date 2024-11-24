@@ -1,2 +1,2 @@
 <?php
-$cfg['PmaAbsoluteUri'] = 'https://kpi.local/myadmin/';
+// $cfg['PmaAbsoluteUri'] = 'https://kpi.local/myadmin/';

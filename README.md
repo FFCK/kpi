@@ -25,7 +25,7 @@ alimenter la base de donnée my_database
 
 ___TRAEFIK___
 
-`echo  "127.0.0.1 kpi.local myadmin.local" | sudo tee -a /etc/hosts`
+`echo  "127.0.0.1 kpi.local kpi_myadmin.local" | sudo tee -a /etc/hosts`
 
 ___Installation (Legacy)___
 
