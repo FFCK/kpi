@@ -9,19 +9,21 @@ define('DECALAGE_MINUTES', '-395 minutes');
 
 require_once('MyParams.php');
 
-if (
-    strstr($_SERVER['DOCUMENT_ROOT'], 'wamp') == false 
-    && strstr($_SERVER['HTTP_HOST'], '192.168.') == false
-    && strstr($_SERVER['HTTP_HOST'], '172.') == false
-) {
-	define("PRODUCTION", TRUE); // TRUE => Site de Production ...
-} else {
-	define("PRODUCTION", FALSE); // FALSE => localhost
-    if (strstr($_SERVER['HTTP_HOST'], '192.168') == true) {
-        define("DEV", TRUE); // => Développement
-    }
-}
+// if (
+//     strstr($_SERVER['DOCUMENT_ROOT'], 'wamp') == false 
+//     && strstr($_SERVER['HTTP_HOST'], '192.168.') == false
+//     && strstr($_SERVER['HTTP_HOST'], '172.') == false
+// ) {
+// 	define("PRODUCTION", TRUE); // TRUE => Site de Production ...
+// } else {
+// 	define("PRODUCTION", FALSE); // FALSE => localhost
+//     if (strstr($_SERVER['HTTP_HOST'], '192.168') == true) {
+//         define("DEV", TRUE); // => Développement
+//     }
+// }
 
-//define("PRODUCTION", FALSE);
+
+//define("PRODUCTION", TRUE);
+define("DEV", TRUE);
 
 define('FPDF_FONTPATH', 'font/');
