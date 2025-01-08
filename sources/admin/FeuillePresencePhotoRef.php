@@ -120,7 +120,7 @@ class FeuillePresencePhoto extends MyPage
 
     // Chargement des infos de la compétition
 
-    $arrayCompetition = $myBdd->GetCompetition($codeCompet === 'POOL' ? 'CMH' : $codeCompet, $codeSaison === 1000 ? 2022 : $codeSaison);
+    $arrayCompetition = $myBdd->GetCompetition($codeCompet === 'POOL' ? 'WCM' : $codeCompet, $codeSaison === 1000 ? 2024 : $codeSaison);
     if ($arrayCompetition['Titre_actif'] == 'O') {
       $titreCompet = $arrayCompetition['Libelle'];
     } else {

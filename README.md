@@ -27,6 +27,13 @@ ___TRAEFIK___
 
 `echo  "127.0.0.1 kpi.local kpi_myadmin.local" | sudo tee -a /etc/hosts`
 
+___WORDPRESS___
+
+- Changer valeurs bdd dans wordpress/wp-config.php
+- Changer valeurs 1-siteurl, 37-home dans la table wp_options
+
+
+
 ___Installation (Legacy)___
 
 - installer la base de donnée
@@ -63,9 +70,7 @@ ___IFRAMES___
 
 __KPI APP (NODE)__
 
-UID=${UID} GID=${GID} docker compose up
-
-docker exec --user $UID -it docker_node_1 sh
+docker exec -itu $UID kpi_node sh
 
 npm install
 
