@@ -10,8 +10,8 @@ services:
                 GROUP_ID: ${GROUP_ID}
                 BASE_IMAGE_PHP: ${BASE_IMAGE_PHP}
         user: ${USER_ID}:${GROUP_ID}
-        # ports:
-        #     - 80${DOCKER_SUFFIXE_PORT}:80
+        ports:
+            - 80${DOCKER_SUFFIXE_PORT}:80
         volumes:
             - ../sources:/var/www/html
             - ./MyParams.php:/var/www/html/commun/MyParams.php
@@ -58,16 +58,42 @@ services:
                 max-size: 10m
                 max-file: 3
         restart: unless-stopped
+    dbwp:
+        container_name: ${DBWP_CONTAINER_NAME}
+        build:
+            context: ./config
+            dockerfile: Dockerfile.db
+            args:
+                BASE_IMAGE_DB: ${BASE_IMAGE_DB}
+        volumes:
+            - ${HOST_DBWP_PATH}:/var/lib/mysql/
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DBWP_ROOT_PASSWORD}
+            MYSQL_USER: ${DBWP_USER}
+            MYSQL_PASSWORD: ${DBWP_PASSWORD}
+            MYSQL_DATABASE: ${DBWP_NAME}
+        # ports:
+        #     - 33${DOCKER_SUFFIXE_PORT}:3306
+        networks:
+            - network_kpi
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
     myadmin:
         container_name: ${MYADMIN_CONTAINER_NAME}
         image: phpmyadmin/phpmyadmin:latest
         environment:
             # 256 Mo
             UPLOAD_LIMIT: 262144000
+            PMA_HOSTS: db,dbwp
         # ports:
         #     - 81${DOCKER_SUFFIXE_PORT}:80
         depends_on:
             - db
+            - dbwp
         networks:
             - network_kpi
             - traefiknetwork
@@ -90,6 +116,45 @@ services:
             - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
             - "traefik.http.routers.myadmin.tls=true"
+        
+    
+    node:
+        container_name: kpi_node
+        # image: node:latest
+        build:
+            context: ../
+            dockerfile: ./docker/node/Dockerfile
+        ports:
+            - "8000:8000" # vue ui
+            - "9000:8080" # Vue-cli HMR
+        volumes:
+            - ../sources/app_dev:/app
+        user: "1000:33"
+    node_live:
+        container_name: kpi_node_live
+        # image: node:latest
+        build:
+            context: ../
+            dockerfile: ./docker/node/Dockerfile_live
+        ports:
+            - "8001:8000" # vue ui
+            - "9001:8080" # Vue-cli HMR
+        volumes:
+            - ../sources/app_live_dev:/app
+        user: "1000:33"
+    node_wsm:
+        container_name: kpi_node_wsm
+        # image: node:latest
+        build:
+            context: ../
+            dockerfile: ./docker/node/Dockerfile_wsm
+        ports:
+            - "8002:8000" # vue ui
+            - "9002:8080" # Vue-cli HMR
+        volumes:
+            - ../sources/app_wsm_dev:/app
+        user: "1000:33"
+
 
 networks:
     network_kpi:
