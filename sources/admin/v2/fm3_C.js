@@ -996,6 +996,8 @@ $(function () {
         
         $('#chronoText').show()
         $('#updateChrono img').hide()
+        broadcastPost('timer')
+
     })
 
     $('.chronoButton').click(function () {
