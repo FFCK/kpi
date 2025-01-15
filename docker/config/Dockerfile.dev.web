@@ -14,3 +14,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libonig-
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 # RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Remove Apache PID file if it exists
+RUN rm -f /var/run/apache2/apache2.pid

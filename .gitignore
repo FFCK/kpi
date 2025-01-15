@@ -87,3 +87,7 @@ docker/config/config.dev.inc.php
 
 sources/wordpress
 !sources/wordpress/.gitkeep
+
+docker/apachelogs_8/*
+!docker/apachelogs_8/.gitkeep
+
