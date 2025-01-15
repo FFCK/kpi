@@ -23,7 +23,7 @@ require_once('MyParams.php');
 // }
 
 
-//define("PRODUCTION", TRUE);
+define("PRODUCTION", FALSE);
 define("DEV", TRUE);
 
 define('FPDF_FONTPATH', 'font/');
