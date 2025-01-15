@@ -16,7 +16,7 @@ body.rtl .press-this a.wp-switch-editor {
 .rtl h5,
 .rtl h6 {
 	font-family: Arial, sans-serif;
-	font-weight: bold;
+	font-weight: 600;
 }
 
 /* he_IL: Remove Tahoma from the font stack. Arial is best for Hebrew. */
@@ -28,7 +28,7 @@ body.locale-he-il .press-this a.wp-switch-editor {
 /* he_IL: Have <em> be bold rather than italic. */
 .locale-he-il em {
 	font-style: normal;
-	font-weight: bold;
+	font-weight: 600;
 }
 
 /* zh_CN: Remove italic properties. */
@@ -65,6 +65,14 @@ body.locale-he-il .press-this a.wp-switch-editor {
 .locale-de-de #customize-header-actions .spinner,
 .locale-de-de-formal #customize-header-actions .spinner {
 	margin: 16px 3px 0; /* default 16px 4px 0 5px */
+}
+body[class*="locale-de-"] .inline-edit-row fieldset label span.title,
+body[class*="locale-de-"] .inline-edit-row fieldset.inline-edit-date legend {
+	width: 7em; /* default 6em */
+}
+body[class*="locale-de-"] .inline-edit-row fieldset label span.input-text-wrap,
+body[class*="locale-de-"] .inline-edit-row fieldset .timestamp-wrap {
+	margin-left: 7em; /* default 6em */
 }
 
 /* ru_RU: Text needs more room to breathe. */
@@ -110,7 +118,16 @@ body.locale-he-il .press-this a.wp-switch-editor {
 	margin-left: 8em; /* default 6em */
 }
 
+/* Fix overridden width for adjusted locales */
+body[class*="locale-de-"] .quick-edit-row-post fieldset.inline-edit-col-right label span.title,
+.locale-ru-ru .quick-edit-row-post fieldset.inline-edit-col-right label span.title,
+.locale-lt-lt .quick-edit-row-post fieldset.inline-edit-col-right label span.title {
+	width: auto;
+}
+
 @media screen and (max-width: 782px) {
+	body[class*="locale-de-"] .inline-edit-row fieldset label span.input-text-wrap,
+	body[class*="locale-de-"] .inline-edit-row fieldset .timestamp-wrap,
 	.locale-ru-ru .inline-edit-row fieldset label span.input-text-wrap,
 	.locale-ru-ru .inline-edit-row fieldset .timestamp-wrap,
 	.locale-lt-lt .inline-edit-row fieldset label span.input-text-wrap,

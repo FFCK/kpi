@@ -8,11 +8,11 @@
  * @subpackage Administration
  */
 
-wp_reset_vars( array( 'action' ) );
+$action = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
 
 if ( isset( $_GET['updated'] ) && isset( $_GET['page'] ) ) {
-	// For backwards compat with plugins that don't use the Settings API and just set updated=1 in the redirect
-	add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
+	// For back-compat with plugins that don't use the Settings API and just set updated=1 in the redirect.
+	add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'success' );
 }
 
 settings_errors();
