@@ -33,6 +33,39 @@ services:
             - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`)"
             - "traefik.http.routers.kpi.entrypoints=websecure"
             - "traefik.http.routers.kpi.tls=true"
+    kpi8:
+        container_name: ${PHP_CONTAINER_NAME}8
+        build:
+            context: ./config
+            dockerfile: Dockerfile.dev.web
+            args:
+                USER_ID: ${USER_ID}
+                GROUP_ID: ${GROUP_ID}
+                BASE_IMAGE_PHP: ${BASE_IMAGE_PHP_8}
+        user: ${USER_ID}:${GROUP_ID}
+        ports:
+            - 88${DOCKER_SUFFIXE_PORT}:80
+        volumes:
+            - ../sources:/var/www/html
+            - ./MyParams.php:/var/www/html/commun/MyParams.php
+            - ./MyConfig.php:/var/www/html/commun/MyConfig.php
+            - ${HOST_APACHE2_LOG_PATH_8}:/var/log/apache2/
+        networks:
+            - network_kpi
+            - traefiknetwork
+        depends_on:
+            - db
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.kpi8.rule=Host(`${KPI_DOMAIN_NAME_8}`)"
+            - "traefik.http.routers.kpi8.entrypoints=websecure"
+            - "traefik.http.routers.kpi8.tls=true"
     db:
         container_name: ${DB_CONTAINER_NAME}
         build:
@@ -118,42 +151,42 @@ services:
             - "traefik.http.routers.myadmin.tls=true"
         
     
-    node:
-        container_name: kpi_node
-        # image: node:latest
-        build:
-            context: ../
-            dockerfile: ./docker/node/Dockerfile
-        ports:
-            - "8000:8000" # vue ui
-            - "9000:8080" # Vue-cli HMR
-        volumes:
-            - ../sources/app_dev:/app
-        user: "1000:33"
-    node_live:
-        container_name: kpi_node_live
-        # image: node:latest
-        build:
-            context: ../
-            dockerfile: ./docker/node/Dockerfile_live
-        ports:
-            - "8001:8000" # vue ui
-            - "9001:8080" # Vue-cli HMR
-        volumes:
-            - ../sources/app_live_dev:/app
-        user: "1000:33"
-    node_wsm:
-        container_name: kpi_node_wsm
-        # image: node:latest
-        build:
-            context: ../
-            dockerfile: ./docker/node/Dockerfile_wsm
-        ports:
-            - "8002:8000" # vue ui
-            - "9002:8080" # Vue-cli HMR
-        volumes:
-            - ../sources/app_wsm_dev:/app
-        user: "1000:33"
+    # node:
+    #     container_name: kpi_node
+    #     # image: node:latest
+    #     build:
+    #         context: ../
+    #         dockerfile: ./docker/node/Dockerfile
+    #     ports:
+    #         - "8000:8000" # vue ui
+    #         - "9000:8080" # Vue-cli HMR
+    #     volumes:
+    #         - ../sources/app_dev:/app
+    #     user: "1000:33"
+    # node_live:
+    #     container_name: kpi_node_live
+    #     # image: node:latest
+    #     build:
+    #         context: ../
+    #         dockerfile: ./docker/node/Dockerfile_live
+    #     ports:
+    #         - "8001:8000" # vue ui
+    #         - "9001:8080" # Vue-cli HMR
+    #     volumes:
+    #         - ../sources/app_live_dev:/app
+    #     user: "1000:33"
+    # node_wsm:
+    #     container_name: kpi_node_wsm
+    #     # image: node:latest
+    #     build:
+    #         context: ../
+    #         dockerfile: ./docker/node/Dockerfile_wsm
+    #     ports:
+    #         - "8002:8000" # vue ui
+    #         - "9002:8080" # Vue-cli HMR
+    #     volumes:
+    #         - ../sources/app_wsm_dev:/app
+    #     user: "1000:33"
 
 
 networks:
