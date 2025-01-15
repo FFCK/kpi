@@ -18,7 +18,7 @@ class GestionMatchDetail extends MyPageSecure
 		$lang = $langue[$version];
 
 		if ($idMatch < 1) {
-			header("Location: SelectFeuille.php?target=FeuilleMarque2.php");
+			header("Location: SelectFeuille.php?target=FeuilleMarque3.php");
 			exit;
 		}
 
@@ -499,10 +499,10 @@ stop_time: <span id="stop_time_display"></span><br />
 										<a id="test_sound_button" class="fm_bouton">
 											<img src="../img/sound.png" height="40" alt="">
 										</a>
-										<a id="open_shotclock_button" class="fm_bouton" href="shotclock.html" target="_blank">
+										<a id="open_shotclock_button" class="fm_bouton" href="shotclock.html" target="shotclock">
 											<img src="../img/open_shotclock.png" height="40" alt="">
 										</a>
-										<a id="open_scoreboard_button" class="fm_bouton" href="scoreboard.html" target="_blank">
+										<a id="open_scoreboard_button" class="fm_bouton" href="scoreboard.html" target="scoreboard">
 											<img src="../img/open_scoreboard.png" height="40" alt="">
 										</a>
 										<a id="update_scoreboard_button" class="fm_bouton">
