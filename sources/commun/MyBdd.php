@@ -1781,7 +1781,7 @@ class MyBdd
 	}
 
 	// Journal des exportations
-	function EvtExport($user = '', $evts, $direction, $nomuser, $erreurs = '')
+	function EvtExport($user, $evts, $direction, $nomuser, $erreurs = '')
 	{
 		$sql  = "INSERT INTO kp_evenement_export (Date ,Utilisateur ,Evenement ,Mouvement ,Parametres ,Erreurs) 
 			VALUES (CURRENT_TIMESTAMP, ?,?,?,?,?) ";
