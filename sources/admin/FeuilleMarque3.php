@@ -775,11 +775,13 @@ stop_time: <span id="stop_time_display"></span><br />
 			<script type="text/javascript" src="v2/jquery.jeditable.js"></script>
 			<script type="text/javascript" src="v2/jquery.dataTables.min.js"></script>
 			<script type="text/javascript" src="v2/jquery.maskedinput.min.js"></script>
+			<script type="text/javascript" src="../lib/easytimer-4.6.0/easytimer.custom.js"></script>
 			<script>
 				//paramètres ajustables
 				var duree_prolongations = '05'; // ICF:'05', FFCK:'03'
 				var arret_chrono_sur_but = false;
-				let shotclockDefault = 60
+				const shotclockDefault = 60
+				const shotclockStep = 10
 
 				var ancienne_ligne = 0;
 				var theInEvent = false;
@@ -806,11 +808,32 @@ stop_time: <span id="stop_time_display"></span><br />
 				var start_time = new Date();
 				let nationA = "<?= $paysA ?>"
 				let nationB = "<?= $paysB ?>"
-				let shotclockValue = shotclockDefault
-				let shotclockInterval
-				let shotclockStartTime = new Date()
+				// let shotclockValue = shotclockDefault
+				// let shotclockInterval
+				// let shotclockStartTime = new Date()
+
 				let timerStatus
 				let audio = new Audio('../img/buzzeer-180942.mp3');
+
+				const buzzer = () => {
+					audio.play()
+					document.querySelector('#test_sound_button').classList.add('actif')
+					setTimeout(() => {
+						document.querySelector('#test_sound_button').classList.remove('actif')
+					}, 1500)
+				}
+
+				const shotclockTimer = new easytimer.Timer(
+					{
+						countdown: true,
+						precision: 'secondTenths',
+						startValues: {
+							seconds: shotclockDefault
+						}
+					}
+				)
+				shotclockTimer.pause()
+
 
 			</script>
 			<script type="text/javascript" src="v2/fm3_A.js?v=<?= NUM_VERSION ?>"></script>
