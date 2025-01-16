@@ -465,10 +465,10 @@
        * [stop stops and starts the timer. Dispatch stopped event]
        */
       function reset() {
-        // stopTimerAndResetCounters();
-        // setParamsAndStartTimer(currentParams);
+        stopTimerAndResetCounters();
+        setParamsAndStartTimer(currentParams);
         setParams(currentParams);
-        // resetCounters();
+        resetCounters();
         dispatchEvent('reset', eventData);
       }
   
