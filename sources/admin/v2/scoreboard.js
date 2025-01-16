@@ -27,7 +27,8 @@ mychannel.onmessage = (event) => {
                 shotclockSpan.style.display = 'none'
             } else {
                 shotclockSpan.style.display = 'inline'
-                shotclockSpan.textContent = parseInt(message.value, 10)
+                // shotclockSpan.textContent = parseInt(message.value, 10)
+                shotclockSpan.textContent = message.value
             }
             break;
         case 'period':

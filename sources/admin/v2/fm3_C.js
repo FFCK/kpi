@@ -811,12 +811,12 @@ $(function () {
                 $('#tabs-2_link').click()
 
                 if (run_time.getMinutes() == 0) {
-                    clearInterval(shotclockInterval)
-                    shotclockValue = ''
-                    shotclockStart()
+                    // clearInterval(shotclockInterval)
+                    // shotclockValue = ''
+                    // shotclockStart()
                 } else {
-                    shotclockStart()
-                    shotclockInterval = setInterval(shotclockUpdate, 100)
+                    // shotclockStart()
+                    // shotclockInterval = setInterval(shotclockUpdate, 100)
                 }
             } else if (data.action == 'stop') {
                 temp_time = new Date()
@@ -853,7 +853,7 @@ $(function () {
                 }
 
             }
-            shotclockStart()
+            shotclockDisplay()
             broadcastPost('period')
             broadcastPost('teams')
             broadcastPost('scores')
@@ -1021,6 +1021,10 @@ $(function () {
         $('#stop_button').show()
         //	$('#chrono_moins').hide();
         //	$('#chrono_plus').hide();
+        $('#shotclock_moins').hide()
+        $('#shotclock_plus').hide()
+        $('#shotclock_moins10').hide()
+        $('#shotclock_plus10').hide()
         $('#heure').css('background-color', '#009900')
         //alert(run_time.getTime());
         
@@ -1029,7 +1033,6 @@ $(function () {
         broadcastPost('timer_status', timerStatus)
 
         shotclockStart()
-        shotclockInterval = setInterval(shotclockUpdate, 100)
     })
     $('#stop_button').click(function () {
         if (run_time)
@@ -1040,12 +1043,16 @@ $(function () {
         $('#stop_button').hide()
         $('#chrono_moins').show()
         $('#chrono_plus').show()
+        $('#shotclock_moins').show()
+        $('#shotclock_plus').show()
+        $('#shotclock_moins10').show()
+        $('#shotclock_plus10').show()
         $('#heure').css('background-color', '#990000')
 
         serverUpdate('setChrono', {idMatch: idMatch, action: 'stop'})
         timerStatus = 'stop'
         broadcastPost('timer_status', timerStatus)
-        clearInterval(shotclockInterval)
+        shotclockTimer.pause()
     })
     $('#run_button').click(function () {
         start_time = new Date()
@@ -1060,8 +1067,10 @@ $(function () {
         $('#run_time_display').text(run_time.toLocaleString()) //debug
         $('#run_button').hide()
         $('#stop_button').show()
-        //	$('#chrono_moins').hide();
-        //	$('#chrono_plus').hide();
+        $('#shotclock_moins').hide()
+        $('#shotclock_plus').hide()
+        $('#shotclock_moins10').hide()
+        $('#shotclock_plus10').hide()
         $('#heure').css('background-color', '#009900')
         
         serverUpdate('setChrono', {idMatch: idMatch, action: 'run'})
@@ -1069,17 +1078,7 @@ $(function () {
         timerStatus = 'start'
         broadcastPost('timer_status', timerStatus)
 
-        // shotclockStartTime = new Date()
-        // let shotclockMaxTime = 60000
-        // shotclockStartTime.setTime(shotclockRunTime.getTime() - shotclockMaxTime + shotclockStartTime.getTime())
-        if (run_time.getMinutes() == 0) {
-            clearInterval(shotclockInterval)
-            shotclockValue = ''
-            shotclockStart()
-        } else {
-            shotclockStart()
-            shotclockInterval = setInterval(shotclockUpdate, 100)
-        }
+        shotclockStart()
     })
     $('#raz_button').click(function () {
         $('#start_button').show()
@@ -1087,6 +1086,10 @@ $(function () {
         $('#stop_button').hide()
         $('#chrono_moins').show()
         $('#chrono_plus').show()
+        $('#shotclock_moins').show()
+        $('#shotclock_plus').show()
+        $('#shotclock_moins10').show()
+        $('#shotclock_plus10').show()
         clearInterval(timer)
         Raz()
         $('#heure').css('background-color', '#444444')
@@ -1094,48 +1097,51 @@ $(function () {
         serverUpdate('setChrono', {idMatch: idMatch, action: 'RAZ'})
         timerStatus = 'stop'
         broadcastPost('timer_status', timerStatus)
-        clearInterval(shotclockInterval)
-        shotclockValue = shotclockDefault
-        shotclockStart()
+        shotclockReset()
     })
     $('#reset_shotclock').click(function () {
-        if (run_time.getMinutes() == 0) {
-            clearInterval(shotclockInterval)
-            shotclockValue = ''
-            shotclockStart()
-        } else {
-            shotclockValue = shotclockDefault
-            shotclockStart()
-        }
+        shotclockReset()
     })
     $('#shotclock_moins').click(function () {
         if (timerStatus == 'stop') {
-            shotclockValue = shotclockValue - 1
-            if (shotclockValue < 0) { shotclockValue = 0 }
+            const seconds = shotclockTimer.getTotalTimeValues().seconds
+            if (seconds > 0) {
+                shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: seconds - 1}})
+            }
             shotclockDisplay()
             broadcastPost('shotclock')
         }
     })
     $('#shotclock_plus').click(function () {
         if (timerStatus == 'stop') {
-            shotclockValue = shotclockValue + 1
-            if (shotclockValue > shotclockDefault) { shotclockValue = shotclockDefault }
+            const seconds = shotclockTimer.getTotalTimeValues().seconds
+            if (seconds < shotclockDefault) {
+                shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockTimer.getTotalTimeValues().seconds + 1}})
+            }
             shotclockDisplay()
             broadcastPost('shotclock')
         }
     })
     $('#shotclock_moins10').click(function () {
         if (timerStatus == 'stop') {
-            shotclockValue = shotclockValue - 10
-            if (shotclockValue < 0) { shotclockValue = 0 }
+            const seconds = shotclockTimer.getTotalTimeValues().seconds
+            if (seconds > 10) {
+                shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: seconds - 10}})
+            } else {
+                shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: 0}})
+            }
             shotclockDisplay()
             broadcastPost('shotclock')
         }
     })
     $('#shotclock_plus10').click(function () {
         if (timerStatus == 'stop') {
-            shotclockValue = shotclockValue + 10
-            if (shotclockValue > shotclockDefault) { shotclockValue = shotclockDefault }
+            const seconds = shotclockTimer.getTotalTimeValues().seconds
+            if (seconds < shotclockDefault - 10) {
+                shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockTimer.getTotalTimeValues().seconds + 10}})
+            } else {
+                shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockDefault}})
+            }
             shotclockDisplay()
             broadcastPost('shotclock')
         }
@@ -1152,7 +1158,7 @@ $(function () {
 	})
     $('#test_sound_button').click(function (event) {
 		event.preventDefault()
-		audio.play()
+		buzzer()
 	})
 
     $('#update_scoreboard_button').click(function () {

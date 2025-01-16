@@ -12,7 +12,15 @@ mychannel.onmessage = (event) => {
                 shotclockSpan.style.display = 'none'
             } else {
                 shotclockSpan.style.display = 'block'
-                shotclockSpan.textContent = parseInt(message.value, 10)
+                // shotclockSpan.textContent = parseInt(message.value, 10)
+                shotclockSpan.textContent = message.value
+            }
+            break;
+        case 'timer_status':
+            if (message.value === 'stop') {
+                shotclockSpan.classList.add("text-danger")
+            } else {
+                shotclockSpan.classList.remove("text-danger")
             }
             break;
         default:
