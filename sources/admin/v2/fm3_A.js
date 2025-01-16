@@ -5,7 +5,6 @@
 
 const channel = new BroadcastChannel('my_channel')
 
-
 const broadcastPost = (type, value = null) => {
     switch (type) {
         case 'timer':
@@ -13,7 +12,7 @@ const broadcastPost = (type, value = null) => {
             channel.postMessage({'type': 'timer', 'value': broadcastTimer})
             break;
         case 'shotclock':
-            channel.postMessage({'type': 'shotclock', 'value': shotclockValue})
+            channel.postMessage({'type': 'shotclock', 'value': $('#shotclock').val()})
             break;
         case 'timer_status':
             channel.postMessage({'type': 'timer_status', 'value': value})
@@ -60,7 +59,7 @@ function Horloge () {
     //if(minut_ >= minut_max && second_ >= second_max)
     if (minut_ <= 0 && second_ <= 0) {
         // Temps écoulé
-        audio.play();
+        buzzer();
         clearInterval(timer)
         //$('#periode_end').text(minut_max + ':' + second_max);
         $('#periode_end').text('00:00')
@@ -72,33 +71,36 @@ function Horloge () {
 }
 
 const shotclockStart = () => {
-    let shotclockTempTime = new Date()
-    shotclockStartTime.setTime(shotclockTempTime.getTime() + shotclockValue * 1000)
+    shotclockTimer.start()
     shotclockDisplay()
     broadcastPost('shotclock')
 }
 
 const shotclockDisplay = () => {
-    if (shotclockValue !== '') {
-        $('#shotclock').val(parseInt(shotclockValue, 10))
+    if (shotclockTimer.getTotalTimeValues().seconds < shotclockStep) {
+        $('#shotclock').val(shotclockTimer.getTotalTimeValues().seconds + '.' + shotclockTimer.getTimeValues().secondTenths)
     } else {
-        $('#shotclock').val('')
+        $('#shotclock').val(shotclockTimer.getTotalTimeValues().seconds)
     }
+    broadcastPost('shotclock')
 }
 const shotclockUpdate = () => {
-    let shotclockTempTime = new Date()
-    shotclockValue = (shotclockStartTime.getTime() - shotclockTempTime.getTime()) / 1000
-    // $('#shotclock').val(shotclockValue.toString().substring(0, 4))
     shotclockDisplay()
-    broadcastPost('shotclock')
+}
 
-    if (shotclockValue < 1 ) {
-        audio.play()
-        clearInterval(shotclockInterval)
-        shotclockValue = 0
+const shotclockReset = () => {
+    shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockDefault}})
+    shotclockDisplay()
+    if (timerStatus !== 'stop' && timerStatus !== undefined) {
         shotclockStart()
     }
 }
+
+shotclockTimer.addEventListener('secondTenthsUpdated', shotclockUpdate)
+
+shotclockTimer.addEventListener('targetAchieved', () => {
+    buzzer()
+})
 
 
 // Messages 
