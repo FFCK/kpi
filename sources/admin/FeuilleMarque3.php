@@ -487,7 +487,7 @@ stop_time: <span id="stop_time_display"></span><br />
 									<input type="tel" id="heure" class="fm_input_text" readonly />
 									<img id="chrono_plus" class="plusmoins" src="../img/plus1.png" alt="">
 									<img id="chrono_plus10" class="plusmoins" src="../img/plus10.png" alt="">
-									<div id="updateChrono" class="centre"><img src="v2/valider.gif"></div>
+									<div id="updateChrono" class="centre"><span id="chronoText"></span><img src="v2/valider.gif"></div>
 
 									<a id="start_button" class="fm_bouton chronoButton">Start</a>
 									<a id="run_button" class="fm_bouton chronoButton">Run</a>
@@ -780,6 +780,8 @@ stop_time: <span id="stop_time_display"></span><br />
 				//paramètres ajustables
 				var duree_prolongations = '05'; // ICF:'05', FFCK:'03'
 				var arret_chrono_sur_but = false;
+				let mainTimerDefault = 10
+				const mainTimerStep = 10
 				const shotclockDefault = 60
 				const shotclockStep = 10
 
@@ -803,9 +805,9 @@ stop_time: <span id="stop_time_display"></span><br />
 				}  ?>
 				var timer, chrono, start_time, run_time, minut_max = 10,
 					second_max = '00';
-				var run_time = new Date();
-				var temp_time = new Date();
-				var start_time = new Date();
+				// var run_time = new Date();
+				// var temp_time = new Date();
+				// var start_time = new Date();
 				let nationA = "<?= $paysA ?>"
 				let nationB = "<?= $paysB ?>"
 				// let shotclockValue = shotclockDefault
@@ -813,7 +815,7 @@ stop_time: <span id="stop_time_display"></span><br />
 				// let shotclockStartTime = new Date()
 
 				let timerStatus
-				let audio = new Audio('../img/buzzeer-180942.mp3');
+				const audio = new Audio('../img/buzzeer-180942.mp3');
 
 				const buzzer = () => {
 					audio.play()
@@ -822,6 +824,19 @@ stop_time: <span id="stop_time_display"></span><br />
 						document.querySelector('#test_sound_button').classList.remove('actif')
 					}, 1500)
 				}
+
+				const mainTimer = new easytimer.Timer(
+					{
+						countdown: true,
+						precision: 'secondTenths',
+						startValues: {
+							minutes: minut_max
+						}
+					}
+				)
+				mainTimer.pause()
+
+				let adjustTimer = null
 
 				const shotclockTimer = new easytimer.Timer(
 					{
