@@ -26,7 +26,7 @@ $sql = "SELECT ce.Id, ce.Libelle
 	ORDER BY ce.Libelle ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($idJournee));
-while ($row = $result->fetch()) {	
+while ($row = $result->fetch(PDO::FETCH_ASSOC)) {	
 	$data[] = $row;
 }
 $encode_donnees = json_encode($data);

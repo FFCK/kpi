@@ -22,7 +22,7 @@ $sql = "SELECT *
 	WHERE IdMatch = ? ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array($idMatch));
-$row = $result->fetch();
+$row = $result->fetch(PDO::FETCH_ASSOC);
 $encode_donnees = json_encode($row);
 header('Content-Type: application/json');
 echo $encode_donnees; 
