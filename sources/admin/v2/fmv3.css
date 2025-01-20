@@ -160,6 +160,8 @@ label {
 			#time_plus3, #time_moins3 {width: 25px; float: right; top : 5px; right: 10px; margin-right: 5px;}*/
 #chronoText {
 	width: 50px;
+	padding: 2px;
+	background-color: #a26900;
 }
 
 #updateChrono {
@@ -169,6 +171,8 @@ label {
 
 #updateChrono img {
 	cursor: pointer;
+	vertical-align: middle;
+	margin-left: 5px;
 }
 
 .fm_bouton {
@@ -531,6 +535,11 @@ label {
 
 .danger {
 	background-color: red;
+	color: white;
+}
+
+.warning {
+	background-color: orange;
 	color: white;
 }
 

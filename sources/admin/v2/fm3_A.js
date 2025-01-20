@@ -42,8 +42,14 @@ function Raz () {
     broadcastPost('timer_status', 'stop')
 }
 
+function millisecondsToMinutesAndSeconds(milliseconds) {
+    const minutes = Math.floor(milliseconds / 60000)
+    const seconds = Math.floor((milliseconds % 60000) / 1000)
+    return {'minutes': minutes, 'seconds': seconds}
+}
+
 function Horloge () {
-    var temp_time = new Date()
+    // var temp_time = new Date()
     // chrono
     // run_time.setTime(temp_time.getTime() - start_time.getTime());
     // compte à rebours
@@ -70,10 +76,129 @@ function Horloge () {
     broadcastPost('timer')
 }
 
+/* MainTimer EasyTimer */
+const mainTimerStart = () => {
+    mainTimer.start()
+    mainTimerDisplay()
+    $('#heure').css('background-color', '#009900')
+    adjustTimerStart()
+    shotclockStart()
+}
+
+const mainTimerPause = () => {
+    mainTimer.pause()
+    mainTimerDisplay()
+    $('#heure').css('background-color', '#990000')
+    adjustTimerPause()
+    shotclockPause()
+}
+
+const mainTimerDisplay = () => {
+    if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
+        $('#heure').val(mainTimer.getTimeValues().minutes + ':' + (mainTimer.getTimeValues().seconds < 10 ? "0" + mainTimer.getTimeValues().seconds : mainTimer.getTimeValues().seconds.toString()) + '.' + mainTimer.getTimeValues().secondTenths)
+    } else {
+        $('#heure').val(mainTimer.getTimeValues().minutes + ':' + (mainTimer.getTimeValues().seconds < 10 ? "0" + mainTimer.getTimeValues().seconds : mainTimer.getTimeValues().seconds.toString()))
+    }
+    broadcastPost('timer')
+}
+const mainTimerUpdate = () => {
+    mainTimerDisplay()
+}
+
+const mainTimerReset = () => {
+    mainTimer.setParams({countdown: true, precision: 'seconds', startValues: {minutes: mainTimerDefault}})
+    mainTimerDisplay()
+    adjustTimerReset()
+    shotclockReset()
+}
+
+mainTimer.addEventListener('secondsUpdated', mainTimerUpdate)
+
+mainTimer.addEventListener('targetAchieved', () => {
+    buzzer()
+})
+
+/* Adjust Timer */
+const adjustTimerCheck = () => {
+    if (adjustTimer === null) {
+        adjustTimer = new easytimer.Timer(
+            {
+                countdown: true,
+                precision: 'seconds',
+                startValues: {
+                    minutes: mainTimer.getTimeValues().minutes,
+                    seconds: mainTimer.getTimeValues().seconds
+                }
+            }
+        )
+        timerStatus === 'stop' ? adjustTimer.pause() : adjustTimer.start()
+        adjustTimer.addEventListener('secondsUpdated', adjustTimerDisplay)
+    }
+}
+
+const adjustTimerAdjust = (value) => {
+    adjustTimerCheck()
+    const minutes = adjustTimer.getTimeValues().minutes
+    const seconds = adjustTimer.getTimeValues().seconds
+    adjustTimer.setParams({countdown: true, precision: 'seconds', startValues: {
+        minutes: minutes,
+        seconds: seconds + value
+    }})
+    if (adjustTimer.getTotalTimeValues().seconds < 0) {
+        adjustTimer.setParams({countdown: true, precision: 'seconds', startValues: {
+            minutes: 0,
+            seconds: 0
+        }})
+    } else if (adjustTimer.getTotalTimeValues().seconds > mainTimerDefault * 60) {
+        adjustTimer.setParams({countdown: true, precision: 'seconds', startValues: {
+            minutes: mainTimerDefault,
+            seconds: 0
+        }})
+    }
+    adjustTimerDisplay()
+    $('#updateChrono').show()
+}
+const adjustTimerConfirm = () => {
+    mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {
+        minutes: adjustTimer.getTimeValues().minutes,
+        seconds: adjustTimer.getTimeValues().seconds
+    }})
+    mainTimerDisplay()
+    adjustTimerReset()
+}
+
+const adjustTimerReset = () => {
+    adjustTimer.removeEventListener('secondsUpdated', adjustTimerDisplay)
+    adjustTimer = null
+    $('#updateChrono').hide()
+}
+
+const adjustTimerStart = () => {
+    if (adjustTimer !== null) {
+        adjustTimer.start()
+    }
+}
+
+const adjustTimerPause = () => {
+    if (adjustTimer !== null) {
+        adjustTimer.pause()
+    }
+}
+
+const adjustTimerDisplay = () => {
+    const minutes = adjustTimer.getTimeValues().minutes < 10 ? "0" + adjustTimer.getTimeValues().minutes : adjustTimer.getTimeValues().minutes.toString()
+    const secondes = adjustTimer.getTimeValues().seconds < 10 ? "0" + adjustTimer.getTimeValues().seconds : adjustTimer.getTimeValues().seconds.toString()
+    $('#chronoText').text(minutes + ':' + secondes)
+}
+
+/* ShotclockTimer EasyTimer */
 const shotclockStart = () => {
     shotclockTimer.start()
     shotclockDisplay()
-    broadcastPost('shotclock')
+}
+
+const shotclockPause = () => {
+    shotclockTimer.pause()
 }
 
 const shotclockDisplay = () => {
@@ -94,6 +219,7 @@ const shotclockReset = () => {
     if (timerStatus !== 'stop' && timerStatus !== undefined) {
         shotclockStart()
     }
+    // TODO: vérifier si mainTimer < 1 minute => ne plus afficher shotclock
 }
 
 shotclockTimer.addEventListener('secondTenthsUpdated', shotclockUpdate)
@@ -209,8 +335,8 @@ function serverUpdate(target, object, iteration = 0) {
                 'v2/ajax_updateChrono.php',
                 {
                     idMatch: object.idMatch,
-                    start_time: start_time.getTime(),
-                    run_time: run_time.getTime(),
+                    start_time: Date.now() + mainTimer.getTotalTimeValues().secondTenths * 100 - mainTimerDefault * 60000,
+                    run_time: mainTimer.getTotalTimeValues().secondTenths * 100,
                 },
                 function (data) {
                     if (data == 'OK') {
@@ -241,9 +367,9 @@ function serverUpdate(target, object, iteration = 0) {
                 {
                     idMatch: object.idMatch,
                     action: object.action,
-                    start_time: start_time.getTime(),
-                    run_time: run_time.getTime(),
-                    max_time: minut_max + ':' + second_max
+                    start_time: Date.now() + mainTimer.getTotalTimeValues().secondTenths * 100 - mainTimerDefault * 60000,
+                    run_time: mainTimer.getTotalTimeValues().secondTenths * 100,
+                    max_time: mainTimerDefault < 10 ? "0" + mainTimerDefault : mainTimerDefault.toString() + ':00'
                 },
                 function (data) {
                     if (data == 'OK') {
@@ -309,7 +435,7 @@ function statutActive (leStatut, leClick) {
         if (leClick == 'O') {
             avertissement(lang.Fin_match)
             avertissement(lang.Saisissez_heure_fin)
-            var end_time = new Date()
+            var end_time = Date.now()
             var end_hours = end_time.getHours()
             if (end_hours < 10) {
                 end_hours = '0' + end_hours
@@ -336,7 +462,7 @@ function statutActive (leStatut, leClick) {
 $(function () {
 
 
-    $('#updateChrono img').hide()
+    $('#updateChrono').hide()
     $.editable.addInputType('autocomplete', { //Plugin Autocomplete pour jEditable
         element: $.editable.types.text.element,
         plugin: function (settings, original) {
