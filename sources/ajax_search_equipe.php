@@ -29,7 +29,7 @@ $result->execute([
     ':term2' => '%' . $term . '%',
     ':term3' => '%' . $term . '%'
 ]);
-while ($row = $result->fetch()) {
+while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
     $jRow["id"] = $row["Numero"];
     $jRow["Libelle"] = $row["Libelle"];
     $jRow["Club"] = $row["Code_club"];

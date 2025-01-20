@@ -324,7 +324,7 @@ class CacheMatch
 			WHERE IdMatch = ? ";
 		$result = $db->pdo->prepare($sql);
 		$result->execute(array($idMatch));
-		$rChrono = $result->fetch();
+		$rChrono = $result->fetch(PDO::FETCH_ASSOC);
 
 		if (!isset($rChrono['IdMatch'])) {
 			$rChrono['IdMatch'] = $idMatch;

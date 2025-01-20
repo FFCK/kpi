@@ -19,7 +19,7 @@ $sql  = "SELECT DISTINCT c.Code, c.Libelle, c.Coord, c.Postal, c.www, c.email,
     GROUP BY c.Code 
     ORDER BY c.Officiel DESC, c.Code, c.Libelle ";
 $result = $myBdd->pdo->query($sql);
-while ($row = $result->fetch()){ 
+while ($row = $result->fetch(PDO::FETCH_ASSOC)){ 
     if($row['Coord'] == NULL) {
         $row['lat'] = "";
         $row['lon'] = "";
