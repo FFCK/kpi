@@ -525,6 +525,12 @@
 														onclick="window.open('FeuilleMarque2.php?idMatch={$arrayMatchs[i].Id}','FeuilleV2'); return false;">
 														<img height="20" src="../img/glyphicons-163-ipad.png" title="{#Feuille_marque_en_ligne#}">
 													</a>
+													{if $profile <= 1}
+														<a href="#"
+															onclick="window.open('FeuilleMarque3.php?idMatch={$arrayMatchs[i].Id}&lang=en','FeuilleV3'); return false;">
+															<img height="20" src="../img/ipad-3.png" title="{#Feuille_marque_en_ligne#} (EN)">
+														</a>
+													{/if}
 												</td>
 												<td>
 													<span class='directInput date {if $lang=='en'}EN{/if}'
