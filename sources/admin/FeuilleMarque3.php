@@ -217,9 +217,9 @@ class GestionMatchDetail extends MyPageSecure
 								<br />
 								<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="btn_stats" name="btn_stats" value="Stats" />
 								<input class="ui-button ui-widget ui-corner-all ui-state-default" type="button" id="pdfFeuille" name="pdfFeuille" value="PDF" />
-								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=fr&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
-								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=en&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
-								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=cn&p=fm2&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/CHN.png" height="25" align="bottom"></a>
+								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=fr&p=fm3&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/FRA.png" height="25" align="bottom"></a>
+								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=en&p=fm3&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/GBR.png" height="25" align="bottom"></a>
+								<a class="ui-button ui-widget ui-corner-all" href="../lang.php?lang=cn&p=fm3&idMatch=<?= $idMatch; ?>"><img src="../img/Pays/CHN.png" height="25" align="bottom"></a>
 								<br />
 								<br />
 								<label><?= $lang['Charger_autre_feuille']; ?></label>
@@ -429,13 +429,6 @@ class GestionMatchDetail extends MyPageSecure
 									<a id="P2" class="fm_bouton periode<?php if ($periodeMatch == 'P2') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['period_P2']; ?></a>
 									<a id="TB" class="fm_bouton periode<?php if ($periodeMatch == 'TB') echo ' actif'; ?><?php if ($verrou != 'O') echo ' ouvert'; ?>"><?= $lang['period_TB']; ?></a>
 								</span>
-								<!-- CHRONO DEBUG
-<br />
-start_time: <span id="start_time_display"></span><br />
-run_time: <span id="run_time_display"></span><br />
-stop_time: <span id="stop_time_display"></span><br />
-
--->
 							</th>
 						</tr>
 						<tr>
@@ -784,6 +777,7 @@ stop_time: <span id="stop_time_display"></span><br />
 				const mainTimerStep = 10
 				const shotclockDefault = 60
 				const shotclockStep = 10
+				let shotClockShow = true
 				const allowMainTimerUpdateWhileRunning = true
 				const allowShotclockUpdateWhileRunning = false
 
@@ -805,8 +799,8 @@ stop_time: <span id="stop_time_display"></span><br />
 					echo 'lang.' . $key . ' = "' . $value . '"; 
                         ';
 				}  ?>
-				var timer, chrono, start_time, run_time, minut_max = 10,
-					second_max = '00';
+				let minut_max = 10
+				let second_max = '00'
 				let nationA = "<?= $paysA ?>"
 				let nationB = "<?= $paysB ?>"
 
