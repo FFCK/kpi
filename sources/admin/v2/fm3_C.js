@@ -795,7 +795,8 @@ $(function () {
                 const runTimeObject = millisecondsToMinutesAndSeconds(parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now())
                 mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {
                     minutes: runTimeObject.minutes,
-                    seconds: runTimeObject.seconds
+                    seconds: runTimeObject.seconds,
+                    secondTenths: runTimeObject.secondTenths
                 }})
                 if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
                     mainTimerEventListenerSecondTenths()
@@ -820,9 +821,9 @@ $(function () {
                 const runTimeObject = millisecondsToMinutesAndSeconds(data.run_time)
                 mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {
                     minutes: runTimeObject.minutes,
-                    seconds: runTimeObject.seconds
+                    seconds: runTimeObject.seconds,
+                    secondTenths: runTimeObject.secondTenths
                 }})
-                console.log(mainTimer.getTotalTimeValues(), mainTimerStep)
                 if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
                     mainTimerEventListenerSecondTenths()
                 } else {
@@ -867,7 +868,6 @@ $(function () {
             return response.json();
         })        
         .then(data => {
-            console.log(data.network.global)
             webSocketConnect(data.network.global)
         })
         .catch(error => {

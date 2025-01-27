@@ -13,7 +13,8 @@ const formatTime = (time) => {
 function millisecondsToMinutesAndSeconds(milliseconds) {
     const minutes = Math.floor(milliseconds / 60000)
     const seconds = Math.floor((milliseconds % 60000) / 1000)
-    return {'minutes': minutes, 'seconds': seconds}
+    const secondTenths = Math.floor((milliseconds % 1000) / 100)
+    return {'minutes': minutes, 'seconds': seconds, 'secondTenths': secondTenths}
 }
 
 const channel = new BroadcastChannel('my_channel')
@@ -108,7 +109,7 @@ const mainTimerUpdate = () => {
 
 const mainTimerReset = () => {
     mainTimerPause()
-    mainTimer.setParams({countdown: true, precision: 'seconds', startValues: {minutes: mainTimerDefault}})
+    mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {minutes: mainTimerDefault}})
     mainTimerEventListenerSeconds()
     mainTimerDisplay()
     adjustTimerReset()
