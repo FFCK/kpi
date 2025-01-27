@@ -288,13 +288,23 @@ $(function () {
         }
     })
 
-    $("#dialog_ajust_opener, #heure").click(function () {
-        $('#chrono_ajust').val($('#heure').val())
+    $("#dialog_ajust_opener").click(function () {
+        $('#chrono_ajust').val(formatTime($('#heure').val()))
         $('#periode_ajust').val(minut_max + ':' + second_max)
         $('#dialog_ajust_periode').text($('.periode[class="actif"]').attr('id'))
         $("#dialog_ajust").dialog("open")
         $("#dialog_ajust").parent().find(".ui-dialog-buttonset").first().find("button").first().focus()
     })
+    $("#heure").click(function () {
+        if (timerStatus == 'stop') {
+            $('#chrono_ajust').val(formatTime($('#heure').val()))
+            $('#periode_ajust').val(minut_max + ':' + second_max)
+            $('#dialog_ajust_periode').text($('.periode[class="actif"]').attr('id'))
+            $("#dialog_ajust").dialog("open")
+            $("#dialog_ajust").parent().find(".ui-dialog-buttonset").first().find("button").first().focus()
+        }
+    })
+
     /* BOUTONS MATCH */
     $('.motifCarton').click(function (event) {
         event.preventDefault()
@@ -330,7 +340,7 @@ $(function () {
         $(this).addClass('actif')
         if ($('#update_evt').attr('data-id') == '') {
             if ($('#heure').val() != '10:00' || $('#time_evt').val() == '') {
-                $('#time_evt').val($('#heure').val())
+                $('#time_evt').val(formatTime($('#heure').val()))
             }
         }
         $('#valid_evt').removeClass('inactif')
@@ -349,16 +359,6 @@ $(function () {
         }
     })
 
-    $('#time_evt').keypress(function (e) {
-        if (e.which == 13) {
-            $(this).focus().blur()
-            if ($('#update_evt').attr('data-id') == '') {
-                $('#valid_evt').click()
-            } else {
-                $('#update_evt').click()
-            }
-        }
-    })
 
     /* BUT = TEMPS MORT SYSTEMATIQUE */
     $('#evt_but').click(function (event) {
@@ -900,7 +900,9 @@ $(function () {
         // if (second_ < 10) { second_ = '0' + second_ }
         // $('#heure').val(minut_ + ':' + second_)
         // $('#chronoText').hide()
-        adjustTimerAdjust(-1)
+        if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
+            adjustTimerAdjust(-1)
+        }
     })
     $('#chrono_plus').click(function () {
         // start_time.setTime(start_time.getTime() + 1000)
@@ -912,7 +914,9 @@ $(function () {
         // $('#heure').val(minut_ + ':' + second_)
         // $('#chronoText').hide()
         // $('#updateChrono img').show()
-        adjustTimerAdjust(1)
+        if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
+            adjustTimerAdjust(1)
+        }
     })
     $('#chrono_moins10').click(function () {
         // start_time.setTime(start_time.getTime() - 10000)
@@ -924,8 +928,9 @@ $(function () {
         // $('#heure').val(minut_ + ':' + second_)
         // $('#chronoText').hide()
         // $('#updateChrono img').show()
-        adjustTimerAdjust(-10)
-
+        if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
+            adjustTimerAdjust(-10)
+        }
     })
     $('#chrono_plus10').click(function () {
         // start_time.setTime(start_time.getTime() + 10000)
@@ -937,7 +942,9 @@ $(function () {
         // $('#heure').val(minut_ + ':' + second_)
         // $('#chronoText').hide()
         // $('#updateChrono img').show()
-        adjustTimerAdjust(10)
+        if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
+            adjustTimerAdjust(10)
+        }
     })
     $('#updateChrono img').click(function () {
         serverUpdate('updateChrono', {idMatch: idMatch})
@@ -1047,10 +1054,18 @@ $(function () {
         $('#stop_button').show()
         //	$('#chrono_moins').hide();
         //	$('#chrono_plus').hide();
-        $('#shotclock_moins').hide()
-        $('#shotclock_plus').hide()
-        $('#shotclock_moins10').hide()
-        $('#shotclock_plus10').hide()
+        if (!allowMainTimerUpdateWhileRunning) {
+            $('#chrono_moins').hide()
+            $('#chrono_plus').hide()
+            $('#chrono_moins10').hide()
+            $('#chrono_plus10').hide()
+        }
+        if (!allowShotclockUpdateWhileRunning) {
+            $('#shotclock_moins').hide()
+            $('#shotclock_plus').hide()
+            $('#shotclock_moins10').hide()
+            $('#shotclock_plus10').hide()
+        }
         // $('#heure').css('background-color', '#009900')
         //alert(run_time.getTime());
         
@@ -1092,10 +1107,18 @@ $(function () {
         // $('#run_time_display').text(run_time.toLocaleString()) //debug
         $('#run_button').hide()
         $('#stop_button').show()
-        $('#shotclock_moins').hide()
-        $('#shotclock_plus').hide()
-        $('#shotclock_moins10').hide()
-        $('#shotclock_plus10').hide()
+        if (!allowMainTimerUpdateWhileRunning) {
+            $('#chrono_moins').hide()
+            $('#chrono_plus').hide()
+            $('#chrono_moins10').hide()
+            $('#chrono_plus10').hide()
+        }
+        if (!allowShotclockUpdateWhileRunning) {
+            $('#shotclock_moins').hide()
+            $('#shotclock_plus').hide()
+            $('#shotclock_moins10').hide()
+            $('#shotclock_plus10').hide()
+        }
         // $('#heure').css('background-color', '#009900')
         
         serverUpdate('setChrono', {idMatch: idMatch, action: 'run'})
@@ -1127,7 +1150,7 @@ $(function () {
         shotclockReset()
     })
     $('#shotclock_moins').click(function () {
-        if (timerStatus == 'stop') {
+        if (allowShotclockUpdateWhileRunning || timerStatus == 'stop') {
             const seconds = shotclockTimer.getTotalTimeValues().seconds
             if (seconds > 0) {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: seconds - 1}})
@@ -1136,7 +1159,7 @@ $(function () {
         }
     })
     $('#shotclock_plus').click(function () {
-        if (timerStatus == 'stop') {
+        if (allowShotclockUpdateWhileRunning || timerStatus == 'stop') {
             const seconds = shotclockTimer.getTotalTimeValues().seconds
             if (seconds < shotclockDefault) {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockTimer.getTotalTimeValues().seconds + 1}})
@@ -1145,7 +1168,7 @@ $(function () {
         }
     })
     $('#shotclock_moins10').click(function () {
-        if (timerStatus == 'stop') {
+        if (allowShotclockUpdateWhileRunning || timerStatus == 'stop') {
             const seconds = shotclockTimer.getTotalTimeValues().seconds
             if (seconds > 10) {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: seconds - 10}})
@@ -1156,7 +1179,7 @@ $(function () {
         }
     })
     $('#shotclock_plus10').click(function () {
-        if (timerStatus == 'stop') {
+        if (allowShotclockUpdateWhileRunning || timerStatus == 'stop') {
             const seconds = shotclockTimer.getTotalTimeValues().seconds
             if (seconds < shotclockDefault - 10) {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockTimer.getTotalTimeValues().seconds + 10}})
@@ -1197,6 +1220,7 @@ $(function () {
         }
     })
 
+    /* Clavier */
     addEventListener("keydown", (event) => {
         if (
             document.getElementById('tabs-1_link').style.display == 'none' ||
@@ -1232,5 +1256,17 @@ $(function () {
                 }
                 break
         }
-    });
+    })
+
+    $('#time_evt').keypress(function (e) {
+        if (e.which == 13) {
+            $(this).focus().blur()
+            if ($('#update_evt').attr('data-id') == '') {
+                $('#valid_evt').click()
+            } else {
+                $('#update_evt').click()
+            }
+        }
+    })
+
 })

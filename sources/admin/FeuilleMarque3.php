@@ -784,6 +784,8 @@ stop_time: <span id="stop_time_display"></span><br />
 				const mainTimerStep = 10
 				const shotclockDefault = 60
 				const shotclockStep = 10
+				const allowMainTimerUpdateWhileRunning = true
+				const allowShotclockUpdateWhileRunning = false
 
 				var ancienne_ligne = 0;
 				var theInEvent = false;
@@ -825,16 +827,41 @@ stop_time: <span id="stop_time_display"></span><br />
 					}, 1500)
 				}
 
-				const mainTimer = new easytimer.Timer(
-					{
-						countdown: true,
-						precision: 'secondTenths',
-						startValues: {
-							minutes: minut_max
-						}
+				const mainTimer = new easytimer.Timer({
+					countdown: true,
+					precision: 'secondTenths',
+					startValues: {
+						minutes: mainTimerDefault
 					}
-				)
+				})
 				mainTimer.pause()
+				let mainTimerAttribute
+				const mainTimerEventListenerSecondTenths = () => {
+					mainTimer.removeAllEventListeners('secondsUpdated')
+					mainTimerAttribute = 'secondTenths'
+					mainTimer.addEventListener('secondTenthsUpdated', () => {
+						if (mainTimer.getTotalTimeValues().seconds >= mainTimerStep) {
+							mainTimerEventListenerSeconds()
+						}
+						mainTimerUpdate()
+					})
+				}
+				const mainTimerEventListenerSeconds = () => {
+					mainTimer.removeAllEventListeners('secondTenthsUpdated')
+					mainTimerAttribute = 'seconds'
+					mainTimer.addEventListener('secondsUpdated', 
+						() => {
+							if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
+								mainTimerEventListenerSecondTenths()
+							}
+							mainTimerUpdate()
+						}
+					)
+				}
+				mainTimerEventListenerSeconds()
+				mainTimer.addEventListener('targetAchieved', () => {
+					buzzer()
+				})
 
 				let adjustTimer = null
 

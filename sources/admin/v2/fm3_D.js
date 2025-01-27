@@ -68,16 +68,27 @@ $(function () {
 		buttons: {
 			Ok: function () {
 				$(this).dialog("close")
-				var split_period = $('#periode_ajust').val()
-				split_period = split_period.split(':')
-				minut_max = split_period[0]
-				second_max = split_period[1]
-				var split_chrono = $('#chrono_ajust').val()
-				split_chrono = split_chrono.split(':')
-				run_time.setTime(split_chrono[0] * 60000 + split_chrono[1] * 1000)
+				// var split_period = $('#periode_ajust').val()
+				const split_period = $('#periode_ajust').val().split(':')
+				const split_chrono = $('#chrono_ajust').val().split(':')
+				mainTimerDefault = parseInt(split_period[0])
+				mainTimer.setParams({
+					countdown: true,
+					precision: 'seconds',
+					startValues: {
+						minutes: parseInt(split_chrono[0]),
+						seconds: parseInt(split_chrono[1])
+					}
+				})
+
+				// minut_max = split_period[0]
+				// second_max = split_period[1]
+				// var split_chrono = $('#chrono_ajust').val()
+				// split_chrono = split_chrono.split(':')
+				// run_time.setTime(split_chrono[0] * 60000 + split_chrono[1] * 1000)
 				$('#stop_button').click()
-				$('#run_time_display').text(run_time.toLocaleString()) //debug
-				$('#heure').val($('#chrono_ajust').val())
+				// $('#run_time_display').text(run_time.toLocaleString()) //debug
+				// $('#heure').val($('#chrono_ajust').val())
 				broadcastPost('timer')
 				broadcastPost('period')
 				$('#time_evt').val('')
