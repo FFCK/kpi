@@ -2,6 +2,13 @@
  * Feuille de marque en ligne
  * Javascript partie A
  */
+const formatTime = (time) => {
+    const timeArray = time.split(':')
+    if (timeArray[0] < 10) {
+        timeArray[0] = '0' + timeArray[0]
+    }
+    return timeArray.join(':')
+}
 
 const channel = new BroadcastChannel('my_channel')
 
@@ -106,17 +113,13 @@ const mainTimerUpdate = () => {
 }
 
 const mainTimerReset = () => {
+    mainTimerPause()
     mainTimer.setParams({countdown: true, precision: 'seconds', startValues: {minutes: mainTimerDefault}})
+    mainTimerEventListenerSeconds()
     mainTimerDisplay()
     adjustTimerReset()
     shotclockReset()
 }
-
-mainTimer.addEventListener('secondsUpdated', mainTimerUpdate)
-
-mainTimer.addEventListener('targetAchieved', () => {
-    buzzer()
-})
 
 /* Adjust Timer */
 const adjustTimerCheck = () => {
@@ -168,7 +171,9 @@ const adjustTimerConfirm = () => {
 }
 
 const adjustTimerReset = () => {
-    adjustTimer.removeEventListener('secondsUpdated', adjustTimerDisplay)
+    if (adjustTimer !== null) {
+        adjustTimer.removeEventListener('secondsUpdated', adjustTimerDisplay)
+    }
     adjustTimer = null
     $('#updateChrono').hide()
 }
