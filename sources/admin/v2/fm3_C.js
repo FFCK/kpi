@@ -788,35 +788,10 @@ $(function () {
         },
         function (data) {
             if (data.action == 'start' || data.action == 'run') {
-                // temp_time = new Date()
-                // start_time = new Date()
-                // run_time = new Date()
-                // start_time.setTime(data.start_time)
-                // $('#start_time_display').text(start_time.toLocaleString()) //debug
-                // run_time.setTime(temp_time.getTime() - start_time.getTime())
-                // console.log('run_time', temp_time.getTime() - data.start_time)
-                // max_time = data.max_time
-                // console.log('max_time', data.max_time)
-                // split_period = max_time.split(':')
-                // minut_max = split_period[0]
-                // second_max = split_period[1]
-                // mainTimer.setParams({countdown: true, precision: 'seconds', startValues: {
-                //     minutes: run_time.getMinutes(),
-                //     seconds: run_time.getSeconds()
-                // }})
-
                 $('#start_button').hide()
                 $('#run_button').hide()
                 $('#stop_button').show()
-                //		$('#chrono_moins').hide();
-                //		$('#chrono_plus').hide();
-                
-                // timer = setInterval(Horloge, 500)
                 mainTimerDefault = parseInt(data.max_time.split(':')[0])
-                console.log('data.run_time', data.run_time)
-                console.log('start_time', data.start_time)
-                console.log('Date.now()', Date.now())
-                console.log('data.start_time + mainTimerDefault * 60000 - Date.now()', parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now())
                 const runTimeObject = millisecondsToMinutesAndSeconds(parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now())
                 mainTimer.setParams({countdown: true, precision: 'seconds', startValues: {
                     minutes: runTimeObject.minutes,
@@ -830,27 +805,7 @@ $(function () {
                 avertissement(lang.Chrono + ' ' + lang.en_cours)
                 $('#tabs-2_link').click()
 
-                // if (run_time.getMinutes() == 0) {
-                    // clearInterval(shotclockInterval)
-                    // shotclockValue = ''
-                    // shotclockStart()
-                // } else {
-                    // shotclockStart()
-                    // shotclockInterval = setInterval(shotclockUpdate, 100)
-                // }
             } else if (data.action == 'stop') {
-                // temp_time = new Date()
-                // start_time = new Date()
-                // run_time = new Date()
-                // start_time.setTime(data.start_time)
-                // run_time.setTime(data.run_time)
-                // console.log('run_time', Date.now() - data.start_time)
-                // $('#start_time_display').text(start_time.toLocaleString()) //debug
-                // $('#run_time_display').text(run_time.toLocaleString()) //debug
-                // max_time = data.max_time
-                // split_period = max_time.split(':')
-                // minut_max = split_period[0]
-                // second_max = split_period[1]
                 $('#start_button').hide()
                 $('#run_button').show()
                 $('#stop_button').hide()
@@ -866,12 +821,6 @@ $(function () {
 
                 timerStatus = 'stop'
                 broadcastPost('timer_status', timerStatus)
-                // var minut_ = run_time.getMinutes()
-                // if (minut_ < 10) { minut_ = '0' + minut_ }
-                // var second_ = run_time.getSeconds()
-                // if (second_ < 10) { second_ = '0' + second_ }
-                // $('#heure').val(minut_ + ':' + second_)
-                // broadcastPost('timer')
 
                 avertissement(lang.Chrono + ' ' + lang.arrete)
                 $('#tabs-2_link').click()
@@ -892,56 +841,21 @@ $(function () {
         'json'
     )
     $('#chrono_moins').click(function () {
-        // start_time.setTime(start_time.getTime() - 1000)
-        // run_time.setTime(run_time.getTime() - 1000)
-        // var minut_ = run_time.getMinutes()
-        // if (minut_ < 10) { minut_ = '0' + minut_ }
-        // var second_ = run_time.getSeconds()
-        // if (second_ < 10) { second_ = '0' + second_ }
-        // $('#heure').val(minut_ + ':' + second_)
-        // $('#chronoText').hide()
         if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
             adjustTimerAdjust(-1)
         }
     })
     $('#chrono_plus').click(function () {
-        // start_time.setTime(start_time.getTime() + 1000)
-        // run_time.setTime(run_time.getTime() + 1000)
-        // var minut_ = run_time.getMinutes()
-        // if (minut_ < 10) { minut_ = '0' + minut_ }
-        // var second_ = run_time.getSeconds()
-        // if (second_ < 10) { second_ = '0' + second_ }
-        // $('#heure').val(minut_ + ':' + second_)
-        // $('#chronoText').hide()
-        // $('#updateChrono img').show()
         if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
             adjustTimerAdjust(1)
         }
     })
     $('#chrono_moins10').click(function () {
-        // start_time.setTime(start_time.getTime() - 10000)
-        // run_time.setTime(run_time.getTime() - 10000)
-        // var minut_ = run_time.getMinutes()
-        // if (minut_ < 10) { minut_ = '0' + minut_ }
-        // var second_ = run_time.getSeconds()
-        // if (second_ < 10) { second_ = '0' + second_ }
-        // $('#heure').val(minut_ + ':' + second_)
-        // $('#chronoText').hide()
-        // $('#updateChrono img').show()
         if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
             adjustTimerAdjust(-10)
         }
     })
     $('#chrono_plus10').click(function () {
-        // start_time.setTime(start_time.getTime() + 10000)
-        // run_time.setTime(run_time.getTime() + 10000)
-        // var minut_ = run_time.getMinutes()
-        // if (minut_ < 10) { minut_ = '0' + minut_ }
-        // var second_ = run_time.getSeconds()
-        // if (second_ < 10) { second_ = '0' + second_ }
-        // $('#heure').val(minut_ + ':' + second_)
-        // $('#chronoText').hide()
-        // $('#updateChrono img').show()
         if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
             adjustTimerAdjust(10)
         }
@@ -951,8 +865,6 @@ $(function () {
         adjustTimerConfirm()
         broadcastPost('timer')
     })
-    //$('#time_evt').val('00:00');
-    //alert($('#time_evt').val());
     $('#time_plus60').click(function () {
         var temp_time2 = $('#time_evt').val()
         temp_time2 = temp_time2.split(':')
@@ -1040,20 +952,9 @@ $(function () {
     
 
     $('#start_button').click(function () {
-        // start_time = new Date()
-        // run_time = new Date()
-        // run_time.setTime(0)
-        // run_time2 = new Date()
-        // run_time2.setTime(0)
-        // Horloge()
-        // timer = setInterval(Horloge, 500)
-        // $('#start_time_display').text(start_time.toLocaleString()) //debug
-        // $('#run_time_display').text(run_time.toLocaleString()) //debug
         $('#start_button').hide()
         $('#run_button').hide()
         $('#stop_button').show()
-        //	$('#chrono_moins').hide();
-        //	$('#chrono_plus').hide();
         if (!allowMainTimerUpdateWhileRunning) {
             $('#chrono_moins').hide()
             $('#chrono_plus').hide()
@@ -1066,8 +967,6 @@ $(function () {
             $('#shotclock_moins10').hide()
             $('#shotclock_plus10').hide()
         }
-        // $('#heure').css('background-color', '#009900')
-        //alert(run_time.getTime());
         
         serverUpdate('setChrono', {idMatch: idMatch, action: 'start'})
         timerStatus = 'start'
@@ -1075,9 +974,6 @@ $(function () {
         mainTimerStart()
     })
     $('#stop_button').click(function () {
-        // if (run_time)
-        //     $('#stop_time_display').text(run_time.toLocaleString()) //debug
-        // clearInterval(timer)
         $('#run_button').show()
         $('#start_button').hide()
         $('#stop_button').hide()
@@ -1087,7 +983,6 @@ $(function () {
         $('#shotclock_plus').show()
         $('#shotclock_moins10').show()
         $('#shotclock_plus10').show()
-        // $('#heure').css('background-color', '#990000')
 
         serverUpdate('setChrono', {idMatch: idMatch, action: 'stop'})
         timerStatus = 'stop'
@@ -1095,16 +990,6 @@ $(function () {
         mainTimerPause()
     })
     $('#run_button').click(function () {
-        // start_time = new Date()
-        // chrono
-        // start_time.setTime(start_time.getTime() - run_time.getTime());
-        // compte à rebours
-        // var max_time1 = (minut_max * 60000) + (second_max * 100)
-        // start_time.setTime(run_time.getTime() - max_time1 + start_time.getTime())
-        // Horloge()
-        // timer = setInterval(Horloge, 500)
-        // $('#start_time_display').text(start_time.toLocaleString()) //debug
-        // $('#run_time_display').text(run_time.toLocaleString()) //debug
         $('#run_button').hide()
         $('#stop_button').show()
         if (!allowMainTimerUpdateWhileRunning) {
@@ -1119,7 +1004,6 @@ $(function () {
             $('#shotclock_moins10').hide()
             $('#shotclock_plus10').hide()
         }
-        // $('#heure').css('background-color', '#009900')
         
         serverUpdate('setChrono', {idMatch: idMatch, action: 'run'})
         
@@ -1137,9 +1021,6 @@ $(function () {
         $('#shotclock_plus').show()
         $('#shotclock_moins10').show()
         $('#shotclock_plus10').show()
-        // clearInterval(timer)
-        // Raz()
-        // $('#heure').css('background-color', '#444444')
 
         serverUpdate('setChrono', {idMatch: idMatch, action: 'RAZ'})
         timerStatus = 'stop'

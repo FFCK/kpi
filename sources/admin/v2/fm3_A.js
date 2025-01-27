@@ -1,13 +1,19 @@
 /* 
- * Feuille de marque en ligne
- * Javascript partie A
- */
+* Feuille de marque en ligne
+* Javascript partie A
+*/
 const formatTime = (time) => {
     const timeArray = time.split(':')
     if (timeArray[0] < 10) {
         timeArray[0] = '0' + timeArray[0]
     }
     return timeArray.join(':')
+}
+
+function millisecondsToMinutesAndSeconds(milliseconds) {
+    const minutes = Math.floor(milliseconds / 60000)
+    const seconds = Math.floor((milliseconds % 60000) / 1000)
+    return {'minutes': minutes, 'seconds': seconds}
 }
 
 const channel = new BroadcastChannel('my_channel')
@@ -49,39 +55,6 @@ function Raz () {
     broadcastPost('timer_status', 'stop')
 }
 
-function millisecondsToMinutesAndSeconds(milliseconds) {
-    const minutes = Math.floor(milliseconds / 60000)
-    const seconds = Math.floor((milliseconds % 60000) / 1000)
-    return {'minutes': minutes, 'seconds': seconds}
-}
-
-function Horloge () {
-    // var temp_time = new Date()
-    // chrono
-    // run_time.setTime(temp_time.getTime() - start_time.getTime());
-    // compte à rebours
-    var max_time1 = (minut_max * 60000) + (second_max * 1000)
-    run_time.setTime(start_time.getTime() + max_time1 - temp_time.getTime())
-    $('#run_time_display').text(run_time.toLocaleString()) //debug
-    var minut_ = run_time.getMinutes()
-    if (minut_ < 10) { minut_ = '0' + minut_ }
-    var second_ = run_time.getSeconds()
-    if (second_ < 10) { second_ = '0' + second_ }
-    $('#heure').val(minut_ + ':' + second_)
-    /* Contrôle maxi */
-    //if(minut_ >= minut_max && second_ >= second_max)
-    if (minut_ <= 0 && second_ <= 0) {
-        // Temps écoulé
-        buzzer();
-        clearInterval(timer)
-        //$('#periode_end').text(minut_max + ':' + second_max);
-        $('#periode_end').text('00:00')
-        $('#stop_button').click()
-        $("#dialog_end").dialog("open")
-    }
-
-    broadcastPost('timer')
-}
 
 /* MainTimer EasyTimer */
 const mainTimerStart = () => {
@@ -230,7 +203,7 @@ const shotclockReset = () => {
 shotclockTimer.addEventListener('secondTenthsUpdated', shotclockUpdate)
 
 shotclockTimer.addEventListener('targetAchieved', () => {
-    buzzer()
+    buzzer2()
 })
 
 
