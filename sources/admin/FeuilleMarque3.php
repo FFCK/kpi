@@ -49,7 +49,6 @@ class GestionMatchDetail extends MyPageSecure
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($idMatch));
 		$row = $result->fetch();
-
 		$saison = $row['saison'];
 		$statutMatch = $row['statutMatch'];
 		$publiMatch = $row['PubliMatch'];
@@ -101,14 +100,12 @@ class GestionMatchDetail extends MyPageSecure
 				ORDER BY Entraineur, Numero, Nom, Prenom ";
 		$result3 = $myBdd->pdo->prepare($sql3);
 		$result3->execute(array($row['Id_equipeA'], $idMatch, 'A'));
-		$num_results3 = $result3->rowCount();
 		$resultarray3 = $result3->fetchAll(PDO::FETCH_BOTH);
 		// Compo équipe B
 		if ($row['Id_equipeB'] >= 1) {
 			$myBdd->InitTitulaireEquipe('B', $idMatch, $row['Id_equipeB']);
 		}
 		$result3->execute(array($row['Id_equipeB'], $idMatch, 'B'));
-		$num_results4 = $result3->rowCount();
 		$resultarray4 = $result3->fetchAll(PDO::FETCH_BOTH);
 		// Evts
 		$sql5 = "SELECT d.Id, d.Id_match, d.Periode, d.Temps, d.Id_evt_match, d.motif, 
@@ -119,8 +116,19 @@ class GestionMatchDetail extends MyPageSecure
 				ORDER BY d.Periode DESC, d.Temps ASC, d.date_insert DESC, d.Id_evt_match DESC, d.Id ";
 		$result5 = $myBdd->pdo->prepare($sql5);
 		$result5->execute(array($idMatch));
-		$num_results5 = $result5->rowCount();
 		$resultarray5 = $result5->fetchAll(PDO::FETCH_BOTH);
+
+		$sql6 = "SELECT ej.Id_evenement
+			FROM kp_evenement_journee ej
+			WHERE ej.Id_journee = ? ";
+		$result6 = $myBdd->pdo->prepare($sql6);
+		$result6->execute(array($row['Id_journee']));
+		if ($result6->rowCount() > 0) {
+			$row6 = $result6->fetch();
+			$event = $row6['Id_evenement'];
+		} else {
+			$event = 0;
+		}
 ?>
 		<!doctype html>
 		<html lang="fr">
@@ -473,6 +481,7 @@ class GestionMatchDetail extends MyPageSecure
 							</td>
 							<td id="selectionChrono" class="centre">
 								<div id="zoneChrono">
+									<span class="zone_title"><?= $lang['Chrono'] ?></span>
 									<img id="chrono_moins10" class="plusmoins" src="../img/moins10.png" alt="" />
 									<img id="chrono_moins" class="plusmoins" src="../img/moins1.png" alt="" />
 									<!--<span id="chronoText"><?= $lang['Chrono'] ?> : </span>-->
@@ -488,18 +497,19 @@ class GestionMatchDetail extends MyPageSecure
 									<a id="raz_button" class="fm_bouton chronoButton">Reset</a>
 								</div>
 								<div id="zoneScoreboard">
+									<span class="zone_title"><?= $lang['Time_shoot2'] ?></span>
 									<div id="zoneScoreboardButtons">
-										<a id="test_sound_button" class="fm_bouton">
-											<img src="../img/sound.png" height="40" alt="">
+										<a id="test_sound_button" class="fm_bouton link">
+											<img src="../img/sound.png" height="35" alt="">
 										</a>
-										<a id="open_shotclock_button" class="fm_bouton" href="shotclock.html" target="shotclock">
-											<img src="../img/open_shotclock.png" height="40" alt="">
+										<a id="open_shotclock_button" class="fm_bouton link" href="shotclock.html" target="shotclock">
+											<img src="../img/open_shotclock.png" height="35" alt="">
 										</a>
-										<a id="open_scoreboard_button" class="fm_bouton" href="scoreboard.html" target="scoreboard">
-											<img src="../img/open_scoreboard.png" height="40" alt="">
+										<a id="open_scoreboard_button" class="fm_bouton link" href="scoreboard.html" target="scoreboard">
+											<img src="../img/open_scoreboard.png" height="35" alt="">
 										</a>
-										<a id="update_scoreboard_button" class="fm_bouton">
-											<img src="v2/refresh.png" height="40" alt="">
+										<a id="update_scoreboard_button" class="fm_bouton link">
+											<img src="v2/refresh.png" height="35" alt="">
 										</a>
 									</div>
 									<div>
@@ -780,15 +790,20 @@ class GestionMatchDetail extends MyPageSecure
 				let shotClockShow = true
 				const allowMainTimerUpdateWhileRunning = true
 				const allowShotclockUpdateWhileRunning = false
+				const RECONNECT_INTERVAL = 5000; // 5 secondes
+				let socket = false
 
 				var ancienne_ligne = 0;
 				var theInEvent = false;
 				var ordre_actuel = 'up';
-				var idMatch = <?= $idMatch ?>;
-				var idEquipeA = <?= $row['Id_equipeA'] ?>;
-				var idEquipeB = <?= $row['Id_equipeB'] ?>;
-				var labelEquipeA = "<?= $row['equipeA'] ?>";
-				var labelEquipeB = "<?= $row['equipeB'] ?>";
+				const idMatch = <?= $idMatch ?>;
+				const event = <?= $event ?>;
+				const terrain = "<?= $row['Terrain'] ?>";
+				const socketTarget = event + '_' + terrain;
+				const idEquipeA = <?= $row['Id_equipeA'] ?>;
+				const idEquipeB = <?= $row['Id_equipeB'] ?>;
+				const labelEquipeA = "<?= $row['equipeA'] ?>";
+				const labelEquipeB = "<?= $row['equipeB'] ?>";
 				var typeMatch = "<?= $typeMatch ?>";
 				var statutMatch = "<?= $statutMatch ?>";
 				var publiMatch = "<?= $publiMatch ?>";
@@ -810,17 +825,17 @@ class GestionMatchDetail extends MyPageSecure
 
 				const buzzer = () => {
 					buzzerAudio.play()
-					document.querySelector('#test_sound_button').classList.add('actif')
+					document.querySelector('#test_sound_button').classList.add('danger')
 					setTimeout(() => {
-						document.querySelector('#test_sound_button').classList.remove('actif')
+						document.querySelector('#test_sound_button').classList.remove('danger')
 					}, 1500)
 				}
 
 				const buzzer2 = () => {
 					buzzerAudio2.play()
-					document.querySelector('#test_sound_button').classList.add('actif')
+					document.querySelector('#test_sound_button').classList.add('danger')
 					setTimeout(() => {
-						document.querySelector('#test_sound_button').classList.remove('actif')
+						document.querySelector('#test_sound_button').classList.remove('danger')
 					}, 1500)
 				}
 
@@ -843,19 +858,19 @@ class GestionMatchDetail extends MyPageSecure
 				}
 				const mainTimerEventListenerSeconds = () => {
 					mainTimer.removeAllEventListeners('secondTenthsUpdated')
-					mainTimer.addEventListener('secondsUpdated', 
-						() => {
-							if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
-								mainTimerEventListenerSecondTenths()
-							}
-							mainTimerUpdate()
+					mainTimer.addEventListener('secondsUpdated', () => {
+						if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
+							mainTimerEventListenerSecondTenths()
 						}
-					)
+						mainTimerUpdate()
+					})
 				}
 				mainTimerEventListenerSeconds()
 				mainTimer.addEventListener('targetAchieved', () => {
 					buzzer()
 					mainTimerPause()
+					// $('#run_button').hide()
+					// $('#stop_button').hide()
 				})
 				
 				let adjustTimer = null

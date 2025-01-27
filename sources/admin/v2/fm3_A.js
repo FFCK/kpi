@@ -23,15 +23,30 @@ const broadcastPost = (type, value = null) => {
         case 'timer':
             const broadcastTimer = $('#heure').val()
             channel.postMessage({'type': 'timer', 'value': broadcastTimer})
+            if (socket && socket.isopen) {
+                socket.send(JSON.stringify(
+                    {p: socketTarget, t: 'chrono', v: {time: broadcastTimer, run: timerStatus !== 'stop'}}
+                ))
+            }
             break;
         case 'shotclock':
             channel.postMessage({'type': 'shotclock', 'value': $('#shotclock').val()})
+            if (socket && socket.isopen) {
+                socket.send(JSON.stringify(
+                    {p: socketTarget, t: 'posses', v: $('#shotclock').val()}
+                ))
+            }
             break;
         case 'timer_status':
             channel.postMessage({'type': 'timer_status', 'value': value})
             break;
         case 'period':
             channel.postMessage({'type': 'period', 'value': periode_en_cours})
+            if (socket && socket.isopen) {
+                socket.send(JSON.stringify(
+                    {p: socketTarget, t: 'period', v: periode_en_cours}
+                ))
+            }
             break;
         case 'teams':
             channel.postMessage({'type': 'teams', 'value': {'teamA': labelEquipeA, 'teamB': labelEquipeB, 'nationA': nationA, 'nationB': nationB}})
@@ -40,6 +55,14 @@ const broadcastPost = (type, value = null) => {
             const broadcastScoreA = $('#scoreA').text()
             const broadcastScoreB = $('#scoreB').text()
             channel.postMessage({'type': 'scores', 'value': {'scoreA': broadcastScoreA, 'scoreB': broadcastScoreB}})
+            if (socket && socket.isopen) {
+                socket.send(JSON.stringify(
+                    {p: socketTarget, t: 'scoreA', v: broadcastScoreA}
+                ))
+                socket.send(JSON.stringify(
+                    {p: socketTarget, t: 'scoreB', v: broadcastScoreB}
+                ))
+            }
             break;
         default:
             console.log('Unknown message type:', type);
@@ -180,7 +203,7 @@ const shotclockPause = () => {
 
 const shotclockDisplay = () => {
     if (!shotClockShow) {
-        $('#shotclock').val('-')
+        $('#shotclock').val('--')
     } else if (shotclockTimer.getTotalTimeValues().seconds < shotclockStep) {
         $('#shotclock').val(shotclockTimer.getTotalTimeValues().seconds + '.' + shotclockTimer.getTimeValues().secondTenths)
     } else {

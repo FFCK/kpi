@@ -104,15 +104,24 @@ label {
 	background-color: #CEDEEB;
 }
 
+.zone_title {
+	float: right;
+	color: grey;
+	font-weight: bold;
+	font-style: italic;
+}
+
+
 /* Scoreboard */
 #zoneScoreboard {
 	border: 3px outset #C5DBEC;
 	border-radius: 8px;
-	padding: 10px;
+	padding: 3px;
 	background-color: #ebe2ce;
 	margin-top: 12px;
 	margin-bottom: 12px;
 }
+
 #shotclock {
 	margin-bottom: 5px;
 	font-size: 2em;
@@ -131,7 +140,7 @@ label {
 }
 #zoneScoreboardButtons {
 	text-align: left;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 #update_scoreboard_button, #open_scoreboard_button, #open_shotclock_button, #test_sound_button {
 	width: fit-content;
@@ -194,6 +203,10 @@ label {
 	position: relative;
 	text-align: center;
 	vertical-align: middle;
+}
+
+.fm_bouton.link {
+	padding: 4px 0;
 }
 
 .fm_bouton:hover {
@@ -534,6 +547,7 @@ label {
 }
 
 .danger {
+	background: url();
 	background-color: red;
 	color: white;
 }
