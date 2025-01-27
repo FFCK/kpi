@@ -48,9 +48,7 @@ const broadcastPost = (type, value = null) => {
 }
 
 function Raz () {
-    //$('#heure').val('00:00');
     $('#heure').val(minut_max + ':' + second_max)
-
     broadcastPost('timer')
     broadcastPost('timer_status', 'stop')
 }
@@ -172,6 +170,7 @@ const adjustTimerDisplay = () => {
 /* ShotclockTimer EasyTimer */
 const shotclockStart = () => {
     shotclockTimer.start()
+    shotClockShow = (mainTimer.getTotalTimeValues().seconds >= shotclockDefault)
     shotclockDisplay()
 }
 
@@ -180,7 +179,9 @@ const shotclockPause = () => {
 }
 
 const shotclockDisplay = () => {
-    if (shotclockTimer.getTotalTimeValues().seconds < shotclockStep) {
+    if (!shotClockShow) {
+        $('#shotclock').val('-')
+    } else if (shotclockTimer.getTotalTimeValues().seconds < shotclockStep) {
         $('#shotclock').val(shotclockTimer.getTotalTimeValues().seconds + '.' + shotclockTimer.getTimeValues().secondTenths)
     } else {
         $('#shotclock').val(shotclockTimer.getTotalTimeValues().seconds)
@@ -193,10 +194,12 @@ const shotclockUpdate = () => {
 
 const shotclockReset = () => {
     shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockDefault}})
-    shotclockDisplay()
     if (timerStatus !== 'stop' && timerStatus !== undefined) {
         shotclockStart()
     }
+    shotClockShow = (mainTimer.getTotalTimeValues().seconds >= shotclockDefault)
+    shotclockDisplay()
+
     // TODO: vérifier si mainTimer < 1 minute => ne plus afficher shotclock
 }
 

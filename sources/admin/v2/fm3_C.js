@@ -824,14 +824,6 @@ $(function () {
 
                 avertissement(lang.Chrono + ' ' + lang.arrete)
                 $('#tabs-2_link').click()
-
-                // TODO: don't display shotclock if mainTimer < 1 minute
-                // if (run_time.getMinutes() == 0) {
-                //     shotclockValue = ''
-                // } else {
-                //     shotclockValue = shotclockDefault
-                // }
-
             }
             shotclockDisplay()
             broadcastPost('period')
