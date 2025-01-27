@@ -793,10 +793,15 @@ $(function () {
                 $('#stop_button').show()
                 mainTimerDefault = parseInt(data.max_time.split(':')[0])
                 const runTimeObject = millisecondsToMinutesAndSeconds(parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now())
-                mainTimer.setParams({countdown: true, precision: 'seconds', startValues: {
+                mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {
                     minutes: runTimeObject.minutes,
                     seconds: runTimeObject.seconds
                 }})
+                if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
+                    mainTimerEventListenerSecondTenths()
+                } else {
+                    mainTimerEventListenerSeconds()
+                }
                 mainTimerStart()
 
                 timerStatus = 'start'
@@ -813,10 +818,16 @@ $(function () {
                 $('#chrono_plus').show()
                 mainTimerDefault = parseInt(data.max_time.split(':')[0])
                 const runTimeObject = millisecondsToMinutesAndSeconds(data.run_time)
-                mainTimer.setParams({countdown: true, precision: 'seconds', startValues: {
+                mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {
                     minutes: runTimeObject.minutes,
                     seconds: runTimeObject.seconds
                 }})
+                console.log(mainTimer.getTotalTimeValues(), mainTimerStep)
+                if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
+                    mainTimerEventListenerSecondTenths()
+                } else {
+                    mainTimerEventListenerSeconds()
+                }
                 mainTimerPause()
 
                 timerStatus = 'stop'
@@ -829,9 +840,75 @@ $(function () {
             broadcastPost('period')
             broadcastPost('teams')
             broadcastPost('scores')
+            checkWebSocket()
         },
         'json'
     )
+
+    const checkWebSocket = () => {
+        if (event <= 0) {
+            exit
+        }
+        fetch(`../live/cache/event${event}_network.json`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 404) {
+                    throw new Error('Resource not found (404)')
+                } else {
+                    throw new Error('Network response was not ok')
+                }
+            }
+            return response.json();
+        })        
+        .then(data => {
+            console.log(data.network.global)
+            webSocketConnect(data.network.global)
+        })
+        .catch(error => {
+            console.error('Error:', error)
+        });
+    }
+
+    const webSocketConnect = (params) => {
+        // Créer une nouvelle connexion WebSocket
+        socket = new WebSocket(params.url, params.topic);
+
+        // Gérer l'ouverture de la connexion
+        socket.onopen = function(event) {
+            // Envoyer un message au serveur
+            socket.send('Hello server!')
+            socket.isopen = true
+            broadcastPost('timer')
+            broadcastPost('shotclock')
+            broadcastPost('period')
+            broadcastPost('teams')
+            broadcastPost('scores')
+        };
+
+        // Gérer la réception de messages
+        socket.onmessage = (event) => {
+            // console.log('Message reçu sur mon_topic:', event.data)
+        };
+
+        // Gérer les erreurs
+        socket.onerror = function(error) {
+            console.error('Erreur WebSocket:', error)
+        };
+
+        // Gérer la fermeture de la connexion
+        socket.onclose = function(event) {
+            socket.isopen = false
+            console.log('Connexion WebSocket fermée. Tentative de reconnexion...')
+            setTimeout(webSocketConnect, RECONNECT_INTERVAL, params)
+        };
+    }
+
     $('#chrono_moins').click(function () {
         if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
             adjustTimerAdjust(-1)
