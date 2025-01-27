@@ -492,7 +492,7 @@ stop_time: <span id="stop_time_display"></span><br />
 									<a id="start_button" class="fm_bouton chronoButton">Start</a>
 									<a id="run_button" class="fm_bouton chronoButton">Run</a>
 									<a id="stop_button" class="fm_bouton chronoButton">Stop</a>
-									<a id="raz_button" class="fm_bouton chronoButton"><?= $lang['RAZ'] ?></a>
+									<a id="raz_button" class="fm_bouton chronoButton">Reset</a>
 								</div>
 								<div id="zoneScoreboard">
 									<div id="zoneScoreboardButtons">
@@ -515,7 +515,7 @@ stop_time: <span id="stop_time_display"></span><br />
 										<input type="tel" id="shotclock" class="fm_input_text" readonly value="" />
 										<img id="shotclock_plus" class="plusmoins" src="../img/plus1.png" alt="">
 										<img id="shotclock_plus10" class="plusmoins" src="../img/plus10.png" alt="">
-										<div id="reset_shotclock" class="centre fm_bouton">Reset ShotClock</div>
+										<div id="reset_shotclock" class="centre fm_bouton">Reset</div>
 									</div>
 								</div>
 								<div id="zoneEvt">
@@ -807,20 +807,23 @@ stop_time: <span id="stop_time_display"></span><br />
 				}  ?>
 				var timer, chrono, start_time, run_time, minut_max = 10,
 					second_max = '00';
-				// var run_time = new Date();
-				// var temp_time = new Date();
-				// var start_time = new Date();
 				let nationA = "<?= $paysA ?>"
 				let nationB = "<?= $paysB ?>"
-				// let shotclockValue = shotclockDefault
-				// let shotclockInterval
-				// let shotclockStartTime = new Date()
 
 				let timerStatus
-				const audio = new Audio('../img/buzzeer-180942.mp3');
+				const buzzerAudio = new Audio('../img/buzzeer-180942.mp3')
+				const buzzerAudio2 = new Audio('../img/buzzeer-180942.mp3')
 
 				const buzzer = () => {
-					audio.play()
+					buzzerAudio.play()
+					document.querySelector('#test_sound_button').classList.add('actif')
+					setTimeout(() => {
+						document.querySelector('#test_sound_button').classList.remove('actif')
+					}, 1500)
+				}
+
+				const buzzer2 = () => {
+					buzzerAudio2.play()
 					document.querySelector('#test_sound_button').classList.add('actif')
 					setTimeout(() => {
 						document.querySelector('#test_sound_button').classList.remove('actif')
@@ -835,10 +838,8 @@ stop_time: <span id="stop_time_display"></span><br />
 					}
 				})
 				mainTimer.pause()
-				let mainTimerAttribute
 				const mainTimerEventListenerSecondTenths = () => {
 					mainTimer.removeAllEventListeners('secondsUpdated')
-					mainTimerAttribute = 'secondTenths'
 					mainTimer.addEventListener('secondTenthsUpdated', () => {
 						if (mainTimer.getTotalTimeValues().seconds >= mainTimerStep) {
 							mainTimerEventListenerSeconds()
@@ -848,7 +849,6 @@ stop_time: <span id="stop_time_display"></span><br />
 				}
 				const mainTimerEventListenerSeconds = () => {
 					mainTimer.removeAllEventListeners('secondTenthsUpdated')
-					mainTimerAttribute = 'seconds'
 					mainTimer.addEventListener('secondsUpdated', 
 						() => {
 							if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
@@ -861,10 +861,11 @@ stop_time: <span id="stop_time_display"></span><br />
 				mainTimerEventListenerSeconds()
 				mainTimer.addEventListener('targetAchieved', () => {
 					buzzer()
+					mainTimerPause()
 				})
-
+				
 				let adjustTimer = null
-
+				
 				const shotclockTimer = new easytimer.Timer(
 					{
 						countdown: true,
