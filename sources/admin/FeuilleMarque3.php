@@ -797,9 +797,9 @@ class GestionMatchDetail extends MyPageSecure
 				var theInEvent = false;
 				var ordre_actuel = 'up';
 				const idMatch = <?= $idMatch ?>;
-				const event = <?= $event ?>;
+				const idEvent = <?= $event ?>;
 				const terrain = "<?= $row['Terrain'] ?>";
-				const socketTarget = event + '_' + terrain;
+				const socketTarget = idEvent + '_' + terrain;
 				const idEquipeA = <?= $row['Id_equipeA'] ?>;
 				const idEquipeB = <?= $row['Id_equipeB'] ?>;
 				const labelEquipeA = "<?= $row['equipeA'] ?>";

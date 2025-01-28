@@ -781,12 +781,11 @@ $(function () {
     Raz()
     $('#stop_button').hide()
     $('#run_button').hide()
-    $.post(
-        'v2/getChrono.php',
-        {
-            idMatch: idMatch,
-        },
+    $.get(
+        '../live/cache/' + idMatch + '_match_chrono.json?_=' + Date.now(),
+        {},
         function (data) {
+            console.log(data)
             if (data.action == 'start' || data.action == 'run') {
                 $('#start_button').hide()
                 $('#run_button').hide()
@@ -847,10 +846,10 @@ $(function () {
     )
 
     const checkWebSocket = () => {
-        if (event <= 0) {
+        if (idEvent <= 0) {
             exit
         }
-        fetch(`../live/cache/event${event}_network.json`, {
+        fetch(`../live/cache/event${idEvent}_network.json`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
