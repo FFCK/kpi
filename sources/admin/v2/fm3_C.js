@@ -3,6 +3,72 @@
  * Javascript partie C : Match non verrouillé
  */
 
+/* WebSocket */
+const checkWebSocket = () => {
+    if (idEvent <= 0) {
+        exit
+    }
+    fetch(`../live/cache/event${idEvent}_network.json`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('Resource not found (404)')
+            } else {
+                throw new Error('Network response was not ok')
+            }
+        }
+        return response.json();
+    })        
+    .then(data => {
+        webSocketConnect(data.network.global)
+    })
+    .catch(error => {
+        console.error('Error:', error)
+    });
+}
+
+const webSocketConnect = (params) => {
+    // Créer une nouvelle connexion WebSocket
+    socket = new WebSocket(params.url, params.topic);
+
+    // Gérer l'ouverture de la connexion
+    socket.onopen = function(event) {
+        // Envoyer un message au serveur
+        socket.send('Hello server!')
+        socket.isopen = true
+        avertissement(lang.Connexion_ouverte)
+        broadcastPost('timer')
+        broadcastPost('shotclock')
+        broadcastPost('period')
+        broadcastPost('teams')
+        broadcastPost('scores')
+    };
+
+    // Gérer la réception de messages
+    socket.onmessage = (event) => {
+        // console.log('Message reçu sur mon_topic:', event.data)
+    };
+
+    // Gérer les erreurs
+    socket.onerror = function(error) {
+        console.error('Erreur WebSocket:', error)
+    };
+
+    // Gérer la fermeture de la connexion
+    socket.onclose = function(event) {
+        socket.isopen = false
+        console.log('Connexion WebSocket fermée. Tentative de reconnexion...')
+        setTimeout(webSocketConnect, RECONNECT_INTERVAL, params)
+    };
+}
+
+
 $(function () {
     $('.fm_bouton').click(function (e) {
         e.preventDefault()
@@ -785,7 +851,6 @@ $(function () {
         '../live/cache/' + idMatch + '_match_chrono.json?_=' + Date.now(),
         {},
         function (data) {
-            console.log(data)
             if (data.action == 'start' || data.action == 'run') {
                 $('#start_button').hide()
                 $('#run_button').hide()
@@ -844,69 +909,6 @@ $(function () {
         },
         'json'
     )
-
-    const checkWebSocket = () => {
-        if (idEvent <= 0) {
-            exit
-        }
-        fetch(`../live/cache/event${idEvent}_network.json`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => {
-            if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error('Resource not found (404)')
-                } else {
-                    throw new Error('Network response was not ok')
-                }
-            }
-            return response.json();
-        })        
-        .then(data => {
-            webSocketConnect(data.network.global)
-        })
-        .catch(error => {
-            console.error('Error:', error)
-        });
-    }
-
-    const webSocketConnect = (params) => {
-        // Créer une nouvelle connexion WebSocket
-        socket = new WebSocket(params.url, params.topic);
-
-        // Gérer l'ouverture de la connexion
-        socket.onopen = function(event) {
-            // Envoyer un message au serveur
-            socket.send('Hello server!')
-            socket.isopen = true
-            broadcastPost('timer')
-            broadcastPost('shotclock')
-            broadcastPost('period')
-            broadcastPost('teams')
-            broadcastPost('scores')
-        };
-
-        // Gérer la réception de messages
-        socket.onmessage = (event) => {
-            // console.log('Message reçu sur mon_topic:', event.data)
-        };
-
-        // Gérer les erreurs
-        socket.onerror = function(error) {
-            console.error('Erreur WebSocket:', error)
-        };
-
-        // Gérer la fermeture de la connexion
-        socket.onclose = function(event) {
-            socket.isopen = false
-            console.log('Connexion WebSocket fermée. Tentative de reconnexion...')
-            setTimeout(webSocketConnect, RECONNECT_INTERVAL, params)
-        };
-    }
 
     $('#chrono_moins').click(function () {
         if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
