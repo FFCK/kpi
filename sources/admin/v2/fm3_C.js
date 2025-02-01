@@ -69,10 +69,10 @@ const webSocketConnect = (params) => {
 }
 
 /* Penalites */
-const addPenalite = (type, equipe) => {
-    const newKey = penCount
-    // const newKey = Object.keys(penaliteList).length;
-    penaliteList[newKey] = {type: type, equipe: equipe}
+const addPenalite = (type, equipe, startTime = penDefault) => {
+    const newKey = penId
+    penalites[newKey] = {}
+    penalites[newKey].params = {type: type, equipe: equipe}
     const divElement = document.createElement('div')
     divElement.id = 'pen-' + newKey
     divElement.classList.add('pen')
@@ -80,46 +80,56 @@ const addPenalite = (type, equipe) => {
     divElement.classList.add('pen-' + equipe)
     const spanElement = document.createElement('span')
     spanElement.classList.add('pen-timer')
-    spanElement.textContent = '2:00'
     const buttonElement = document.createElement('button')
     buttonElement.classList.add('pen-delete')
     buttonElement.textContent = 'X'
-    penTimer[newKey] = new easytimer.Timer({
+    penalites[newKey].timer = new easytimer.Timer({
         countdown: true,
         precision: 'secondTenths',
         startValues: {
-            minutes: penDefault
+            seconds: startTime
         }
     })
-    penTimer[newKey].pause()
-    penfunctions['display-' + newKey] = () => {
-        spanElement.textContent = penTimer[newKey].getTimeValues().minutes + ':' + formatPartTime(penTimer[newKey].getTimeValues().seconds)
+    penalites[newKey].start = () => {
+        penalites[newKey].timer.start()
+        penalites[newKey].display()
     }
-    penTimer[newKey].addEventListener('secondsUpdated', penfunctions['display-' + newKey])
+    penalites[newKey].pause = () => {
+        penalites[newKey].timer.pause()
+        penalites[newKey].display()
+    }
+    penalites[newKey].display = () => {
+        spanElement.textContent = penalites[newKey].timer.getTimeValues().minutes + ':' + formatPartTime(penalites[newKey].timer.getTimeValues().seconds)
+    }
+    penalites[newKey].pause()
+    penalites[newKey].timer.addEventListener('secondsUpdated', penalites[newKey].display)
     
-    penTimer[newKey].addEventListener('targetAchieved', () => {
+    penalites[newKey].timer.addEventListener('targetAchieved', () => {
         spanElement.classList.add('pen-achieved')
     })
-    mainTimer.addEventListener('started', penTimer[newKey].start)
-    mainTimer.addEventListener('paused', penTimer[newKey].pause)
+    mainTimer.addEventListener('started', penalites[newKey].start)
+    mainTimer.addEventListener('paused', penalites[newKey].pause)
 
     buttonElement.addEventListener('click', () => {
         divElement.remove()
-        delete penaliteList[newKey]
-        if (Object.keys(penaliteList).length == 0) {
+        mainTimer.removeEventListener('started', penalites[newKey].start)
+        mainTimer.removeEventListener('paused', penalites[newKey].pause)
+        delete penalites[newKey]
+        if (Object.keys(penalites).length == 0) {
             $('#zonePenalites').hide()
         }
-        mainTimer.removeEventListener('started', penTimer[newKey].start)
-        mainTimer.removeEventListener('paused', penTimer[newKey].pause)
-        penTimer[newKey] = null
-        penfunctions['display-' + newKey] = null
     })
-    divElement.appendChild(spanElement)
-    divElement.appendChild(buttonElement)
+    if (equipe === 'A') {
+        divElement.appendChild(buttonElement)
+        divElement.appendChild(spanElement)
+    } else {
+        divElement.appendChild(spanElement)
+        divElement.appendChild(buttonElement)
+    }  
     document.querySelector('#zonePenalites').appendChild(divElement)
     $('#zonePenalites').show()
-    penCount++
-    console.log(penaliteList, newKey, penCount)
+    // console.log(penalites, newKey, penId, Object.keys(penalites).length)
+    penId++
 }
 
 

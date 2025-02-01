@@ -790,16 +790,15 @@ class GestionMatchDetail extends MyPageSecure
 				const mainTimerStep = 10
 				const shotclockDefault = 60
 				const shotclockStep = 10
-				const penDefault = 2
 				let shotClockShow = true
+				const penDefault = 120
+				const penalites = []
+				let penId = 0
 				const allowMainTimerUpdateWhileRunning = true
 				const allowShotclockUpdateWhileRunning = false
+				const allowPenalityUpdateWhileRunning = false
 				const RECONNECT_INTERVAL = 5000; // 5 secondes
 				let socket = false
-				let penaliteList = []
-				let penCount = 0
-				let penTimer = []
-				const penfunctions = {}
 
 				var ancienne_ligne = 0;
 				var theInEvent = false;
