@@ -10,6 +10,11 @@ const formatTime = (time) => {
     return timeArray.join(':')
 }
 
+const formatPartTime = (time) => {
+    return time < 10 ? '0' + time : time.toString()
+}
+
+
 function millisecondsToMinutesAndSeconds(milliseconds) {
     const minutes = Math.floor(milliseconds / 60000)
     const seconds = Math.floor((milliseconds % 60000) / 1000)
