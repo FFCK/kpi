@@ -521,6 +521,9 @@ class GestionMatchDetail extends MyPageSecure
 										<div id="reset_shotclock" class="centre fm_bouton">Reset</div>
 									</div>
 								</div>
+								<div id="zonePenalites">
+									<div class="zone_title"><?= $lang['Penalites'] ?></div>
+								</div>
 								<div id="zoneEvt">
 									<a id="evt_but" data-evt="But" data-code="B" class="fm_bouton evtButton<?php if ($verrou != 'O') echo ' ouvert'; ?>"><span class="but"><?= $lang['But'] ?></span></a>
 									<a id="evt_vert" data-evt="Carton vert" data-code="V" class="fm_bouton evtButton<?php if ($verrou != 'O') echo ' ouvert'; ?>"><img src="v2/carton_vert.png" /></a>
@@ -787,11 +790,16 @@ class GestionMatchDetail extends MyPageSecure
 				const mainTimerStep = 10
 				const shotclockDefault = 60
 				const shotclockStep = 10
+				const penDefault = 2
 				let shotClockShow = true
 				const allowMainTimerUpdateWhileRunning = true
 				const allowShotclockUpdateWhileRunning = false
 				const RECONNECT_INTERVAL = 5000; // 5 secondes
 				let socket = false
+				let penaliteList = []
+				let penCount = 0
+				let penTimer = []
+				const penfunctions = {}
 
 				var ancienne_ligne = 0;
 				var theInEvent = false;
@@ -961,6 +969,7 @@ class GestionMatchDetail extends MyPageSecure
 					}
 					$('#update_evt').hide();
 					$('#delete_evt').hide();
+					$('#zonePenalites').hide();
 
 					/* Evt chargés */
 					<?php

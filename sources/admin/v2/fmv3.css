@@ -113,7 +113,7 @@ label {
 
 
 /* Scoreboard */
-#zoneScoreboard {
+#zoneScoreboard, #zonePenalites {
 	border: 3px outset #C5DBEC;
 	border-radius: 8px;
 	padding: 3px;
@@ -148,6 +148,41 @@ label {
 	padding-right: 5px;
 }
 
+/* Penalites */
+#zonePenalites .zone_title {
+	float: none;
+	text-align: right;
+	margin-bottom: 5px;
+}
+
+div.pen-A {
+	text-align: left;
+}
+div.pen-B {
+	text-align: right;
+}
+div.pen {
+	/* margin-bottom: 2px; */
+}
+div.pen .pen-timer {
+	padding: 2px;
+	margin: 2px;
+}
+	
+div.pen-G .pen-timer {
+	background-color: green;
+}
+div.pen-Y .pen-timer {
+	background-color: yellow;
+	color: black;
+}
+div.pen-R .pen-timer, div.pen-E .pen-timer {
+	background-color: red;
+}
+div.pen .pen-achieved {
+	background-color: black;
+	color: whitesmoke;
+}
 
 #zoneChrono {
 	margin-bottom: 3px;

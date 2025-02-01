@@ -68,6 +68,61 @@ const webSocketConnect = (params) => {
     };
 }
 
+/* Penalites */
+const addPenalite = (type, equipe) => {
+    const newKey = penCount
+    // const newKey = Object.keys(penaliteList).length;
+    penaliteList[newKey] = {type: type, equipe: equipe}
+    const divElement = document.createElement('div')
+    divElement.id = 'pen-' + newKey
+    divElement.classList.add('pen')
+    divElement.classList.add('pen-' + type)
+    divElement.classList.add('pen-' + equipe)
+    const spanElement = document.createElement('span')
+    spanElement.classList.add('pen-timer')
+    spanElement.textContent = '2:00'
+    const buttonElement = document.createElement('button')
+    buttonElement.classList.add('pen-delete')
+    buttonElement.textContent = 'X'
+    penTimer[newKey] = new easytimer.Timer({
+        countdown: true,
+        precision: 'secondTenths',
+        startValues: {
+            minutes: penDefault
+        }
+    })
+    penTimer[newKey].pause()
+    penfunctions['display-' + newKey] = () => {
+        spanElement.textContent = penTimer[newKey].getTimeValues().minutes + ':' + formatPartTime(penTimer[newKey].getTimeValues().seconds)
+    }
+    penTimer[newKey].addEventListener('secondsUpdated', penfunctions['display-' + newKey])
+    
+    penTimer[newKey].addEventListener('targetAchieved', () => {
+        spanElement.classList.add('pen-achieved')
+    })
+    mainTimer.addEventListener('started', penTimer[newKey].start)
+    mainTimer.addEventListener('paused', penTimer[newKey].pause)
+
+    buttonElement.addEventListener('click', () => {
+        divElement.remove()
+        delete penaliteList[newKey]
+        if (Object.keys(penaliteList).length == 0) {
+            $('#zonePenalites').hide()
+        }
+        mainTimer.removeEventListener('started', penTimer[newKey].start)
+        mainTimer.removeEventListener('paused', penTimer[newKey].pause)
+        penTimer[newKey] = null
+        penfunctions['display-' + newKey] = null
+    })
+    divElement.appendChild(spanElement)
+    divElement.appendChild(buttonElement)
+    document.querySelector('#zonePenalites').appendChild(divElement)
+    $('#zonePenalites').show()
+    penCount++
+    console.log(penaliteList, newKey, penCount)
+}
+
+
 
 $(function () {
     $('.fm_bouton').click(function (e) {
@@ -529,6 +584,7 @@ $(function () {
                         code_ligne.cause += '-teamCard';
                     }
                 */
+                addPenalite('G', ligne_equipe)
             }
             texteVert += '</td>'
             texteJaune = '<td class="list_evt">'
@@ -540,6 +596,7 @@ $(function () {
                 if (nb_cartons >= 2) {
                     custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
                 }
+                addPenalite('Y', ligne_equipe)
             }
             texteJaune += '</td>'
             texteRouge = '<td class="list_evt">'
@@ -550,6 +607,7 @@ $(function () {
                 if (nb_cartons >= 2) {
                     custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_jaune_rouge.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
                 }
+                addPenalite('R', ligne_equipe)
             }
             if (ligne_evt == 'Carton rouge D') {
                 texteRouge += '<img src="v2/carton_rouge_' + lang.D + '.png" />'
@@ -558,6 +616,7 @@ $(function () {
                 if (nb_cartons >= 2) {
                     custom_alert(nb_cartons + ' <img class="c_carton" src="v2/carton_rouge_' + lang.D + '.png" /> ' + lang.pour_ce_joueur + ' !<br>' + lang.Avertir_arbitre2 + '.', lang.Attention)
                 }
+                addPenalite('E', ligne_equipe)
             }
             texteRouge += '</td>'
             texteVide = '<td colspan="5" class="list_evt_vide"></td>'
