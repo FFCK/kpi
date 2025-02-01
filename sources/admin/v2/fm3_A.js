@@ -102,9 +102,9 @@ const mainTimerPause = () => {
 
 const mainTimerDisplay = () => {
     if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
-        $('#heure').val(mainTimer.getTimeValues().minutes + ':' + (mainTimer.getTimeValues().seconds < 10 ? "0" + mainTimer.getTimeValues().seconds : mainTimer.getTimeValues().seconds.toString()) + '.' + mainTimer.getTimeValues().secondTenths)
+        $('#heure').val(mainTimer.getTimeValues().minutes + ':' + formatPartTime(mainTimer.getTimeValues().seconds) + '.' + mainTimer.getTimeValues().secondTenths)
     } else {
-        $('#heure').val(mainTimer.getTimeValues().minutes + ':' + (mainTimer.getTimeValues().seconds < 10 ? "0" + mainTimer.getTimeValues().seconds : mainTimer.getTimeValues().seconds.toString()))
+        $('#heure').val(mainTimer.getTimeValues().minutes + ':' + formatPartTime(mainTimer.getTimeValues().seconds))
     }
     broadcastPost('timer')
 }
@@ -191,8 +191,8 @@ const adjustTimerPause = () => {
 }
 
 const adjustTimerDisplay = () => {
-    const minutes = adjustTimer.getTimeValues().minutes < 10 ? "0" + adjustTimer.getTimeValues().minutes : adjustTimer.getTimeValues().minutes.toString()
-    const secondes = adjustTimer.getTimeValues().seconds < 10 ? "0" + adjustTimer.getTimeValues().seconds : adjustTimer.getTimeValues().seconds.toString()
+    const minutes = formatPartTime(adjustTimer.getTimeValues().minutes)
+    const secondes = formatPartTime(adjustTimer.getTimeValues().seconds)
     $('#chronoText').text(minutes + ':' + secondes)
 }
 
@@ -379,7 +379,7 @@ function serverUpdate(target, object, iteration = 0) {
                     action: object.action,
                     start_time: Date.now() + mainTimer.getTotalTimeValues().secondTenths * 100 - mainTimerDefault * 60000,
                     run_time: mainTimer.getTotalTimeValues().secondTenths * 100,
-                    max_time: mainTimerDefault < 10 ? "0" + mainTimerDefault : mainTimerDefault.toString() + ':00'
+                    max_time: formatPartTime(mainTimerDefault) + ':00'
                 },
                 function (data) {
                     if (data == 'OK') {
