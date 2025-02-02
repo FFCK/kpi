@@ -116,7 +116,7 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
         mainTimer.removeEventListener('paused', penalites[newKey].pause)
         delete penalites[newKey]
         if (Object.keys(penalites).length == 0) {
-            $('#zonePenalites').hide()
+            // $('#zonePenalites').hide()
         }
     })
     if (equipe === 'A') {
@@ -127,11 +127,15 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
         divElement.appendChild(buttonElement)
     }  
     document.querySelector('#zonePenalites').appendChild(divElement)
-    $('#zonePenalites').show()
-    // console.log(penalites, newKey, penId, Object.keys(penalites).length)
+    // $('#zonePenalites').show()
     penId++
 }
-
+document.querySelector('#newPenaliteA').addEventListener('click', () => {
+    addPenalite('Custom', 'A')
+})
+document.querySelector('#newPenaliteB').addEventListener('click', () => {
+    addPenalite('Custom', 'B')
+})
 
 
 $(function () {
