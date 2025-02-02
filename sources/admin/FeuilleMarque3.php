@@ -522,6 +522,8 @@ class GestionMatchDetail extends MyPageSecure
 									</div>
 								</div>
 								<div id="zonePenalites">
+									<span id="newPenaliteA" class="plusmoins">+</span>
+									<span id="newPenaliteB" class="plusmoins">+</span>
 									<div class="zone_title"><?= $lang['Penalites'] ?></div>
 								</div>
 								<div id="zoneEvt">
@@ -966,7 +968,7 @@ class GestionMatchDetail extends MyPageSecure
 					}
 					$('#update_evt').hide();
 					$('#delete_evt').hide();
-					$('#zonePenalites').hide();
+					// $('#zonePenalites').hide();
 
 					/* Evt chargés */
 					<?php
