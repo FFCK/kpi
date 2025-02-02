@@ -83,6 +83,36 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
     const buttonElement = document.createElement('button')
     buttonElement.classList.add('pen-delete')
     buttonElement.textContent = 'X'
+    buttonElement.addEventListener('click', (e) => {
+        e.preventDefault()
+        divElement.remove()
+        mainTimer.removeEventListener('started', penalites[newKey].start)
+        mainTimer.removeEventListener('paused', penalites[newKey].pause)
+        delete penalites[newKey]
+        if (Object.keys(penalites).length == 0) {
+            // $('#zonePenalites').hide()
+        }
+    })
+    const buttonPlus = document.createElement('button')
+    buttonPlus.classList.add('pen-plus')
+    buttonPlus.textContent = '+'
+    buttonPlus.addEventListener('click', (e) => {
+        e.preventDefault()
+        penalites[newKey].timer.setParams({countdown: true, precision: 'secondTenths', startValues: {
+            seconds: penalites[newKey].timer.getTotalTimeValues().seconds + 1
+        }})
+        penalites[newKey].display()
+    })
+    const buttonMinus = document.createElement('button')
+    buttonMinus.classList.add('pen-minus')
+    buttonMinus.textContent = '-'
+    buttonMinus.addEventListener('click', (e) => {
+        e.preventDefault()
+        penalites[newKey].timer.setParams({countdown: true, precision: 'secondTenths', startValues: {
+            seconds: penalites[newKey].timer.getTotalTimeValues().seconds - 1
+        }})
+        penalites[newKey].display()
+    })
     penalites[newKey].timer = new easytimer.Timer({
         countdown: true,
         precision: 'secondTenths',
@@ -91,10 +121,14 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
         }
     })
     penalites[newKey].start = () => {
+        buttonPlus.style.display = 'none'
+        buttonMinus.style.display = 'none'
         penalites[newKey].timer.start()
         penalites[newKey].display()
     }
     penalites[newKey].pause = () => {
+        buttonPlus.style.display = 'inline'
+        buttonMinus.style.display = 'inline'
         penalites[newKey].timer.pause()
         penalites[newKey].display()
     }
@@ -110,19 +144,14 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
     mainTimer.addEventListener('started', penalites[newKey].start)
     mainTimer.addEventListener('paused', penalites[newKey].pause)
 
-    buttonElement.addEventListener('click', () => {
-        divElement.remove()
-        mainTimer.removeEventListener('started', penalites[newKey].start)
-        mainTimer.removeEventListener('paused', penalites[newKey].pause)
-        delete penalites[newKey]
-        if (Object.keys(penalites).length == 0) {
-            // $('#zonePenalites').hide()
-        }
-    })
     if (equipe === 'A') {
         divElement.appendChild(buttonElement)
         divElement.appendChild(spanElement)
+        divElement.appendChild(buttonMinus)
+        divElement.appendChild(buttonPlus)
     } else {
+        divElement.appendChild(buttonMinus)
+        divElement.appendChild(buttonPlus)
         divElement.appendChild(spanElement)
         divElement.appendChild(buttonElement)
     }  
