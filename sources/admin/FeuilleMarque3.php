@@ -796,9 +796,11 @@ class GestionMatchDetail extends MyPageSecure
 				const penDefault = 120
 				const penalites = []
 				let penId = 0
+				const pen = []
+				pen['A'] = 0
+				pen['B'] = 0
 				const allowMainTimerUpdateWhileRunning = true
 				const allowShotclockUpdateWhileRunning = false
-				const allowPenalityUpdateWhileRunning = false
 				const RECONNECT_INTERVAL = 5000; // 5 secondes
 				let socket = false
 

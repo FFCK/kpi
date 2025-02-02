@@ -70,6 +70,20 @@ const broadcastPost = (type, value = null) => {
                 ))
             }
             break;
+        case 'penA':
+            if (socket && socket.isopen) {
+                socket.send(JSON.stringify(
+                    {p: socketTarget, t: 'penA', v: pen['A']}
+                ))
+            }                
+            break;
+        case 'penB':
+            if (socket && socket.isopen) {
+                socket.send(JSON.stringify(
+                    {p: socketTarget, t: 'penB', v: pen['B']}
+                ))
+            }
+            break;
         default:
             console.log('Unknown message type:', type);
             break;

@@ -198,7 +198,9 @@ div.pen-Custom .pen-timer, div.pen .pen-achieved {
 	background-color: black;
 	color: whitesmoke;
 }
-
+.pen-minus {
+	margin-right: 5px;
+}
 
 #zoneChrono {
 	margin-bottom: 3px;
