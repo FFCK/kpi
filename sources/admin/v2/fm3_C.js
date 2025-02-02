@@ -70,6 +70,8 @@ const webSocketConnect = (params) => {
 
 /* Penalites */
 const addPenalite = (type, equipe, startTime = penDefault) => {
+    pen[equipe]++
+    broadcastPost('pen' + equipe, pen[equipe])
     const newKey = penId
     penalites[newKey] = {}
     penalites[newKey].params = {type: type, equipe: equipe}
@@ -80,15 +82,19 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
     divElement.classList.add('pen-' + equipe)
     const spanElement = document.createElement('span')
     spanElement.classList.add('pen-timer')
-    const buttonElement = document.createElement('button')
-    buttonElement.classList.add('pen-delete')
-    buttonElement.textContent = 'X'
-    buttonElement.addEventListener('click', (e) => {
+    const buttonRemove = document.createElement('button')
+    buttonRemove.classList.add('pen-delete')
+    buttonRemove.textContent = 'X'
+    buttonRemove.addEventListener('click', (e) => {
         e.preventDefault()
         divElement.remove()
         mainTimer.removeEventListener('started', penalites[newKey].start)
         mainTimer.removeEventListener('paused', penalites[newKey].pause)
-        delete penalites[newKey]
+        if (penalites[newKey].timer.getTotalTimeValues().secondTenths > 0) {
+            delete penalites[newKey]
+            pen[equipe]--
+            broadcastPost('pen' + equipe, pen[equipe])
+        }
         if (Object.keys(penalites).length == 0) {
             // $('#zonePenalites').hide()
         }
@@ -135,17 +141,19 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
     penalites[newKey].display = () => {
         spanElement.textContent = penalites[newKey].timer.getTimeValues().minutes + ':' + formatPartTime(penalites[newKey].timer.getTimeValues().seconds)
     }
-    penalites[newKey].pause()
+    mainTimer.isRunning() ? penalites[newKey].start() : penalites[newKey].pause()
     penalites[newKey].timer.addEventListener('secondsUpdated', penalites[newKey].display)
     
     penalites[newKey].timer.addEventListener('targetAchieved', () => {
         spanElement.classList.add('pen-achieved')
+        pen[equipe]--
+        broadcastPost('pen' + equipe, pen[equipe])
     })
     mainTimer.addEventListener('started', penalites[newKey].start)
     mainTimer.addEventListener('paused', penalites[newKey].pause)
 
     if (equipe === 'A') {
-        divElement.appendChild(buttonElement)
+        divElement.appendChild(buttonRemove)
         divElement.appendChild(spanElement)
         divElement.appendChild(buttonMinus)
         divElement.appendChild(buttonPlus)
@@ -153,7 +161,7 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
         divElement.appendChild(buttonMinus)
         divElement.appendChild(buttonPlus)
         divElement.appendChild(spanElement)
-        divElement.appendChild(buttonElement)
+        divElement.appendChild(buttonRemove)
     }  
     document.querySelector('#zonePenalites').appendChild(divElement)
     // $('#zonePenalites').show()
