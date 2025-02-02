@@ -875,9 +875,7 @@ class GestionMatchDetail extends MyPageSecure
 				mainTimerEventListenerSeconds()
 				mainTimer.addEventListener('targetAchieved', () => {
 					buzzer()
-					mainTimerPause()
-					// $('#run_button').hide()
-					// $('#stop_button').hide()
+					$('#stop_button').click()
 				})
 				
 				let adjustTimer = null
