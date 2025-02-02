@@ -1129,6 +1129,9 @@ $(function () {
         mainTimerPause()
     })
     $('#run_button').click(function () {
+        if (mainTimer.getTotalTimeValues().secondTenths === 0) {
+            return
+        }
         $('#run_button').hide()
         $('#stop_button').show()
         if (!allowMainTimerUpdateWhileRunning) {
