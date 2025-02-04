@@ -71,14 +71,15 @@ const webSocketConnect = (params) => {
 /* Penalites */
 const addPenalite = (type, equipe, startTime = penDefault) => {
     pen[equipe]++
-    broadcastPost('pen' + equipe, pen[equipe])
     const newKey = penId
-    penalites[newKey] = {}
-    penalites[newKey].params = {type: type, equipe: equipe}
+    penalites.detail[newKey] = {}
+    penalites.detail[newKey].params = {type: type, equipe: equipe}
     const divElement = document.createElement('div')
     divElement.id = 'pen-' + newKey
     divElement.classList.add('pen')
     divElement.classList.add('pen-' + type)
+    divElement.setAttribute('data-type', type)
+    divElement.setAttribute('data-id', newKey)
     divElement.classList.add('pen-' + equipe)
     const spanElement = document.createElement('span')
     spanElement.classList.add('pen-timer')
@@ -88,14 +89,15 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
     buttonRemove.addEventListener('click', (e) => {
         e.preventDefault()
         divElement.remove()
-        mainTimer.removeEventListener('started', penalites[newKey].start)
-        mainTimer.removeEventListener('paused', penalites[newKey].pause)
-        if (penalites[newKey].timer.getTotalTimeValues().secondTenths > 0) {
-            delete penalites[newKey]
+        mainTimer.removeEventListener('started', penalites.detail[newKey].start)
+        mainTimer.removeEventListener('paused', penalites.detail[newKey].pause)
+        if (penalites.detail[newKey].timer.getTotalTimeValues().secondTenths > 0) {
+            delete penalites.detail[newKey]
             pen[equipe]--
-            broadcastPost('pen' + equipe, pen[equipe])
+            broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': newKey, 'type': type, 'time': null})
         }
-        if (Object.keys(penalites).length == 0) {
+        if (Object.keys(penalites.detail).length == 0) {
+            console.log('No penalites')
             // $('#zonePenalites').hide()
         }
     })
@@ -104,53 +106,57 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
     buttonPlus.textContent = '+'
     buttonPlus.addEventListener('click', (e) => {
         e.preventDefault()
-        penalites[newKey].timer.setParams({countdown: true, precision: 'secondTenths', startValues: {
-            seconds: penalites[newKey].timer.getTotalTimeValues().seconds + 1
+        penalites.detail[newKey].timer.setParams({countdown: true, precision: 'secondTenths', startValues: {
+            seconds: penalites.detail[newKey].timer.getTotalTimeValues().seconds + 1
         }})
-        penalites[newKey].display()
+        penalites.detail[newKey].display()
     })
     const buttonMinus = document.createElement('button')
     buttonMinus.classList.add('pen-minus')
     buttonMinus.textContent = '-'
     buttonMinus.addEventListener('click', (e) => {
         e.preventDefault()
-        penalites[newKey].timer.setParams({countdown: true, precision: 'secondTenths', startValues: {
-            seconds: penalites[newKey].timer.getTotalTimeValues().seconds - 1
+        penalites.detail[newKey].timer.setParams({countdown: true, precision: 'secondTenths', startValues: {
+            seconds: penalites.detail[newKey].timer.getTotalTimeValues().seconds - 1
         }})
-        penalites[newKey].display()
+        penalites.detail[newKey].display()
     })
-    penalites[newKey].timer = new easytimer.Timer({
+    penalites.detail[newKey].timer = new easytimer.Timer({
         countdown: true,
         precision: 'secondTenths',
         startValues: {
             seconds: startTime
         }
     })
-    penalites[newKey].start = () => {
+    penalites.detail[newKey].start = () => {
         buttonPlus.style.display = 'none'
         buttonMinus.style.display = 'none'
-        penalites[newKey].timer.start()
-        penalites[newKey].display()
+        // Problème
+        penalites.detail[newKey].timer.start()
+        penalites.detail[newKey].display()
     }
-    penalites[newKey].pause = () => {
+    penalites.detail[newKey].pause = () => {
         buttonPlus.style.display = 'inline'
         buttonMinus.style.display = 'inline'
-        penalites[newKey].timer.pause()
-        penalites[newKey].display()
+        penalites.detail[newKey].timer.pause()
+        penalites.detail[newKey].display()
     }
-    penalites[newKey].display = () => {
-        spanElement.textContent = penalites[newKey].timer.getTimeValues().minutes + ':' + formatPartTime(penalites[newKey].timer.getTimeValues().seconds)
+    penalites.detail[newKey].display = () => {
+        // Problème
+        spanElement.textContent = penalites.detail[newKey].timer.getTimeValues().minutes + ':' + formatPartTime(penalites.detail[newKey].timer.getTimeValues().seconds)
+        const broadcastValue = penalites.detail[newKey].timer.getTotalTimeValues().secondTenths > 0 ? spanElement.textContent : null
+        broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': newKey, 'type': type, 'time': broadcastValue})
     }
-    mainTimer.isRunning() ? penalites[newKey].start() : penalites[newKey].pause()
-    penalites[newKey].timer.addEventListener('secondsUpdated', penalites[newKey].display)
+    mainTimer.isRunning() ? penalites.detail[newKey].start() : penalites.detail[newKey].pause()
+    penalites.detail[newKey].timer.addEventListener('secondsUpdated', penalites.detail[newKey].display)
     
-    penalites[newKey].timer.addEventListener('targetAchieved', () => {
+    penalites.detail[newKey].timer.addEventListener('targetAchieved', () => {
         spanElement.classList.add('pen-achieved')
         pen[equipe]--
-        broadcastPost('pen' + equipe, pen[equipe])
+        broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': newKey, 'type': type, 'time': null})
     })
-    mainTimer.addEventListener('started', penalites[newKey].start)
-    mainTimer.addEventListener('paused', penalites[newKey].pause)
+    mainTimer.addEventListener('started', penalites.detail[newKey].start)
+    mainTimer.addEventListener('paused', penalites.detail[newKey].pause)
 
     if (equipe === 'A') {
         divElement.appendChild(buttonRemove)
@@ -957,6 +963,9 @@ $(function () {
     Raz()
     $('#stop_button').hide()
     $('#run_button').hide()
+    broadcastPost('teams')
+    broadcastPost('period')
+    broadcastPost('scores')
     $.get(
         '../live/cache/' + idMatch + '_match_chrono.json?_=' + Date.now(),
         {},
@@ -1012,9 +1021,6 @@ $(function () {
                 $('#tabs-2_link').click()
             }
             shotclockDisplay()
-            broadcastPost('period')
-            broadcastPost('teams')
-            broadcastPost('scores')
             checkWebSocket()
         },
         'json'
@@ -1269,12 +1275,21 @@ $(function () {
 	})
 
     $('#update_scoreboard_button').click(function () {
-        broadcastPost('timer')
-        broadcastPost('shotclock')
-        broadcastPost('period')
         broadcastPost('teams')
+        broadcastPost('period')
         broadcastPost('scores')
         broadcastPost('timer_status', timerStatus)
+        broadcastPost('timer')
+        broadcastPost('shotclock')
+        const divPen = document.querySelectorAll('#zonePenalites div.pen')
+        divPen.forEach((iteration) => {
+            const equipe = iteration.classList.contains('pen-A') ? 'A' : 'B'
+            const id = iteration.getAttribute('data-id')
+            const type = iteration.getAttribute('data-type')
+            const time = iteration.querySelector('.pen-timer').textContent
+            broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': id, 'type': type, 'time': time})
+        })
+
     })
 
     $('.chronoButton').click(function () {

@@ -40,6 +40,29 @@
                 /* border-radius: 15px; */
                 /* padding: 2px; */
             }
+
+            /* Penalty */
+            #penaltyA div, #penaltyB div {
+                margin: 3px;
+            }
+            .pen-timer {
+                margin: 3px;
+                padding: 3px;
+            }
+            div.pen-G .pen-timer {
+                background-color: green;
+            }
+            div.pen-Y .pen-timer {
+                background-color: yellow;
+                color: black;
+            }
+            div.pen-R .pen-timer, div.pen-E .pen-timer {
+                background-color: red;
+            }
+            div.pen-Custom .pen-timer, div.pen .pen-achieved {
+                background-color: black;
+                color: whitesmoke;
+            }
         </style>
     </head>
     <body class="bg-dark text-white">
@@ -89,32 +112,12 @@
                     <span id="scoreB" class="h1">0</span>
                 </div>
             </div>
-            <!-- <div class="row mt-5">
-                <div class="col">
-                    <div class="row">
-                        <div class="col-1 bg-warning text-center h3">X</div>
-                        <div class="col-2 h3">2:00</div>
-                    </div>
-                    <div class="row">
-                        <div class="col-1 bg-danger text-center h3">X</div>
-                        <div class="col-2 h3">2:00</div>
-                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
-                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
-                    </div>
+            <div class="row mt-5">
+                <div class="col" id="penaltyA">
                 </div>
-                <div class="col">
-                    <div class="row d-flex flex-row-reverse">
-                        <div class="col-1 bg-warning text-center h3">X</div>
-                        <div class="col-2 text-end h3">2:00</div>
-                    </div>
-                    <div class="row d-flex flex-row-reverse">
-                        <div class="col-1 bg-danger text-center h3">X</div>
-                        <div class="col-2 text-end h3">2:00</div>
-                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
-                        <div class="col-1 bg-danger text-center mx-1 h3">E</div>
-                    </div>
+                <div class="col text-end" id="penaltyB">
                 </div>
-            </div> -->
+            </div>
             <div class="fixed-bottom">
                     <img src="../img/logo/B-CM-2024.jpg" alt="" width="100%">
             </div>
