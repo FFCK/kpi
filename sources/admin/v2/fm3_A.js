@@ -22,7 +22,18 @@ function millisecondsToMinutesAndSeconds(milliseconds) {
     return {'minutes': minutes, 'seconds': seconds, 'secondTenths': secondTenths}
 }
 
-const channel = new BroadcastChannel('my_channel')
+const channel = new BroadcastChannel('kpi_channel')
+channel.onmessage = (event) => {
+    // console.log(event.data)
+    const message = event.data
+    switch (message.type) {
+        case 'scoreboard':
+            if (message.value === 'ready') {
+                $('#update_scoreboard_button').click()
+            }
+            break;
+    }
+}
 
 const broadcastPost = (type, value = null) => {
     switch (type) {
@@ -71,16 +82,18 @@ const broadcastPost = (type, value = null) => {
             }
             break;
         case 'penA':
+            channel.postMessage({'type': 'penA', 'value': value})
             if (socket && socket.isopen) {
                 socket.send(JSON.stringify(
-                    {p: socketTarget, t: 'penA', v: pen['A']}
+                    {p: socketTarget, t: 'penA', v: value.nb}
                 ))
             }                
             break;
         case 'penB':
+            channel.postMessage({'type': 'penB', 'value': value})
             if (socket && socket.isopen) {
                 socket.send(JSON.stringify(
-                    {p: socketTarget, t: 'penB', v: pen['B']}
+                    {p: socketTarget, t: 'penB', v: value.nb}
                 ))
             }
             break;

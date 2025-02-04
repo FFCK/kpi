@@ -794,7 +794,8 @@ class GestionMatchDetail extends MyPageSecure
 				const shotclockStep = 10
 				let shotClockShow = true
 				const penDefault = 120
-				const penalites = []
+				const penalites = {}
+				penalites.detail = []
 				let penId = 0
 				const pen = []
 				pen['A'] = 0
