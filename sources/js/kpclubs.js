@@ -141,6 +141,9 @@ jq(document).ready(function() {
 
     function afficheClub(clubId) {
         var club = clubList[clubId];
+        if(club == undefined) {
+            return;
+        }
         jq('#clubId').val(clubId);
         jq('#clubLibelle').html(club.Libelle);
         jq('#clubLogo').html('<img class="img2" src="img/KIP/logo/'+clubId+'-logo.png?v='+version+'" height="120" alt="">');
@@ -158,6 +161,9 @@ jq(document).ready(function() {
 
     jq( "#localise" ).click(function(){
         var club = jq('#clubId').val();
+        if(clubList[club] == undefined) {
+            return;
+        }
         afficheClub(club);
         jq( "#localise" ).show();
         var marker = clubList[club].marker;
