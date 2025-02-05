@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<?php 
+    $version = isset($_GET['v']) ? htmlspecialchars($_GET['v'], ENT_QUOTES, 'UTF-8') : 'version';
+?><!DOCTYPE html>
 <html>
     <head>
         <title>KPI Scoreboard</title>
@@ -8,7 +10,7 @@
         <style type="text/css">
             body {
                 font-family: Lucida Grande, Lucida Sans, Arial, sans-serif;
-                
+                background-color: black;
             }
             /* h1 {
                 font-weight: 800;
@@ -65,7 +67,7 @@
             }
         </style>
     </head>
-    <body class="bg-dark text-white">
+    <body class="text-white">
         <div class="container-fluid">
             <div class="row">
                 <div class="col">
@@ -124,6 +126,6 @@
         </div>
 
         <script src="../js/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
-        <script src="v2/scoreboard.js"></script>
+        <script src="v2/scoreboard.js?<?= $version ?>"></script>
     </body>
 </html>

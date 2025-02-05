@@ -12,10 +12,10 @@ class GestionMatchDetail extends MyPageSecure
 		$myBdd = new MyBdd();
 		$idMatch = utyGetGet('idMatch', -1);
 		$langue = parse_ini_file("../commun/MyLang.ini", true);
-		$version = utyGetSession('lang', 'fr');
-		$version = utyGetGet('lang', $version);
-		$_SESSION['lang'] = $version;
-		$lang = $langue[$version];
+		$version_langue = utyGetSession('lang', 'fr');
+		$version_langue = utyGetGet('lang', $version_langue);
+		$_SESSION['lang'] = $version_langue;
+		$lang = $langue[$version_langue];
 
 		if ($idMatch < 1) {
 			header("Location: SelectFeuille.php?target=FeuilleMarque3.php");
@@ -165,7 +165,7 @@ class GestionMatchDetail extends MyPageSecure
 												echo ' - ' . $row['Phase'];
 											echo ' - ' . $lang['Match_no'] . $row['Numero_ordre'] . ' - '; ?>
 					<?php
-					if ($version == 'en') {
+					if ($version_langue == 'en') {
 						echo $row['Date_match'];
 					} else {
 						echo utyDateUsToFr($row['Date_match']);
@@ -502,12 +502,12 @@ class GestionMatchDetail extends MyPageSecure
 										<a id="test_sound_button" class="fm_bouton link">
 											<img src="../img/sound.png" height="35" alt="">
 										</a>
-										<a id="open_shotclock_button" class="fm_bouton link" href="shotclock.html" target="shotclock">
-											<img src="../img/open_shotclock.png" height="35" alt="">
-										</a>
-										<a id="open_scoreboard_button" class="fm_bouton link" href="scoreboard.html" target="scoreboard">
+										<btn id="open_scoreboard_button" class="fm_bouton link">
 											<img src="../img/open_scoreboard.png" height="35" alt="">
-										</a>
+										</btn>
+										<btn id="open_shotclock_button" class="fm_bouton link">
+											<img src="../img/open_shotclock.png" height="35" alt="">
+										</btn>
 										<a id="update_scoreboard_button" class="fm_bouton link">
 											<img src="v2/refresh.png" height="35" alt="">
 										</a>
@@ -820,6 +820,7 @@ class GestionMatchDetail extends MyPageSecure
 				var statutMatch = "<?= $statutMatch ?>";
 				var publiMatch = "<?= $publiMatch ?>";
 				var periode_en_cours = "<?= $periodeMatch ?>";
+				const version = "<?= NUM_VERSION ?>";
 				var lang = {};
 				<?php foreach ($lang as $key => $value) {
 					$key = str_replace('-', '_', $key);

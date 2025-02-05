@@ -1,5 +1,5 @@
 
-const mychannel = new BroadcastChannel('my_channel')
+const mychannel = new BroadcastChannel('kpi_channel')
 
 const shotclockSpan = document.getElementById('shotclock')
 
@@ -29,3 +29,4 @@ mychannel.onmessage = (event) => {
     }
 }
 
+mychannel.postMessage({ type: 'shotclock', value: 'ready' })
