@@ -45,11 +45,13 @@
 
             /* Penalty */
             #penaltyA div, #penaltyB div {
-                margin: 3px;
+                margin: 6px;
             }
             .pen-timer {
-                margin: 3px;
-                padding: 3px;
+                /* margin: 3px; */
+                padding: 5px;
+                font-size: 1.5em;
+                font-weight: bold;
             }
             div.pen-G .pen-timer {
                 background-color: green;
@@ -62,7 +64,7 @@
                 background-color: red;
             }
             div.pen-Custom .pen-timer, div.pen .pen-achieved {
-                background-color: black;
+                background-color: #252525;
                 color: whitesmoke;
             }
         </style>
@@ -114,10 +116,10 @@
                     <span id="scoreB" class="h1">0</span>
                 </div>
             </div>
-            <div class="row mt-5">
-                <div class="col" id="penaltyA">
+            <div class="row gx-5">
+                <div class="col text-center" id="penaltyA">
                 </div>
-                <div class="col text-end" id="penaltyB">
+                <div class="col text-center" id="penaltyB">
                 </div>
             </div>
             <div class="fixed-bottom">
