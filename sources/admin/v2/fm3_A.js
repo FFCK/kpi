@@ -32,6 +32,12 @@ channel.onmessage = (event) => {
                 $('#update_scoreboard_button').click()
             }
             break;
+        case 'shotclock':
+            if (message.value === 'ready') {
+                broadcastPost('timer_status', timerStatus)
+                broadcastPost('shotclock')
+            }
+
     }
 }
 

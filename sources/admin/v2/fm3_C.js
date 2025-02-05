@@ -1262,12 +1262,12 @@ $(function () {
 
     $('#open_scoreboard_button').click(function (event) {
 		event.preventDefault()
-		window.open('scoreboard.html', 'scoreboard')
+		window.open('scoreboard.php?v=' + version, 'scoreboard')
         setTimeout(() => {$('#update_scoreboard_button').click()}, 1000)
 	})
     $('#open_shotclock_button').click(function (event) {
 		event.preventDefault()
-		window.open('shotclock.html', 'shotclock')
+		window.open('shotclock.php?v=' + version, 'shotclock')
 	})
     $('#test_sound_button').click(function (event) {
 		event.preventDefault()
