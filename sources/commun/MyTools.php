@@ -508,6 +508,19 @@ function utyGetString($array, $param, $default = 1)
 	return $default;
 }
 
+// utyGetJsonPost
+function utyGetJsonPost($param, $default = '')
+{
+	if (isset($_POST[$param]) && !empty($_POST[$param])) {
+		json_decode($_POST[$param]);
+		if (json_last_error() === JSON_ERROR_NONE) {
+			return $_POST[$param];
+		}
+	}
+
+	return $default;
+}
+
 // utyGetPrenom
 function utyGetPrenom($array, $param, $default = '')
 {

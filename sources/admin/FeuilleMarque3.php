@@ -738,6 +738,7 @@ class GestionMatchDetail extends MyPageSecure
 				<div id="dialog_ajust" title="<?= $lang['Parametres_chrono'] ?>">
 					<h3 id="dialog_ajust_periode">
 					</h3>
+					<input type="hidden" id="dialog_ajust_selected_period" value="">
 					<p>
 						<?= $lang['Ajuster_chrono'] ?> : <input type="tel" id="chrono_ajust" class="fm_input_text" />
 					</p>

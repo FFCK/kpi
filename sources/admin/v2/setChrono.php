@@ -28,16 +28,22 @@ if ($action == 'RAZ') {
 	$start_time = utyGetPost('start_time');
 	$run_time = utyGetPost('run_time');
 	$max_time = utyGetPost('max_time');
+	$shotclock = trim(utyGetPost('shotclock', null));
+	$penalties = trim(utyGetJsonPost('penalties', null));
 	$start_time_server = time()%86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
+
 	$sql = "REPLACE kp_chrono 
 		SET IdMatch = ?, 
 		`action` = ?, 
 		start_time = ?, 
 		start_time_server = ?, 
 		run_time = ?, 
-		max_time = ? ";
+		max_time = ?,
+		shotclock = ?,
+		penalties = ?
+		 ";
 	$result = $myBdd->pdo->prepare($sql);
-	$result->execute(array($idMatch, $action, $start_time, $start_time_server, $run_time, $max_time));
+	$result->execute(array($idMatch, $action, $start_time, $start_time_server, $run_time, $max_time, $shotclock, $penalties));
 }
 
 // COSANDCO : Creation du Cache ...
