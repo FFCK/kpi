@@ -332,6 +332,8 @@ class CacheMatch
 			$rChrono['run_time'] = 600000;
 			$rChrono['max_time'] = '10:00';
 			$rChrono['start_time_server'] = 0;
+			$rChrono['shotclock'] = '60000';
+			$rChrono['penalties'] = null;
 			$rChrono['raz'] = 1;
 		}
 

@@ -20,15 +20,19 @@ $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch');
 $start_time = trim(utyGetPost('start_time'));
 $run_time = trim(utyGetPost('run_time'));
-
+$shotclock = trim(utyGetPost('shotclock', null));
+$penalties = trim(utyGetJsonPost('penalties', null));
 $start_time_server = time() % 86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
+
 $sql = "UPDATE kp_chrono 
 	SET start_time = ?, 
 	start_time_server = ?, 
-	run_time = ? 
+	run_time = ?,
+	shotclock = ?,
+	penalties = ?
 	WHERE IdMatch = ? ";
 $result = $myBdd->pdo->prepare($sql);
-$result->execute(array($start_time, $start_time_server, $run_time, $idMatch));
+$result->execute(array($start_time, $start_time_server, $run_time, $shotclock, $penalties, $idMatch));
 
 // COSANDCO : Creation du Cache ...
 $cMatch = new CacheMatch($_GET);

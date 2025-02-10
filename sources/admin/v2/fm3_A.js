@@ -109,6 +109,17 @@ const broadcastPost = (type, value = null) => {
     }
 }
 
+function broadcastPens () {
+    const divPen = document.querySelectorAll('#zonePenalites div.pen')
+    divPen.forEach((iteration) => {
+        const equipe = iteration.classList.contains('pen-A') ? 'A' : 'B'
+        const id = iteration.getAttribute('data-id')
+        const type = iteration.getAttribute('data-type')
+        const time = iteration.querySelector('.pen-timer').textContent
+        broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': id, 'type': type, 'time': time})
+    })
+}
+
 function Raz () {
     $('#heure').val(minut_max + ':' + second_max)
     broadcastPost('timer')
@@ -374,12 +385,19 @@ function serverUpdate(target, object, iteration = 0) {
             clearTimeout(timeoutUpdateChrono)
         }
         timeoutUpdateChrono = setTimeout(() => {
+            const penalties = []
+            Object.keys(penalites.detail).forEach((key) => {
+                penalties[key] = penalites.detail[key].params
+                penalties[key].timer = penalites.detail[key].timer.getTotalTimeValues().secondTenths
+            })
             $.post(
                 'v2/ajax_updateChrono.php',
                 {
                     idMatch: object.idMatch,
                     start_time: Date.now() + mainTimer.getTotalTimeValues().secondTenths * 100 - mainTimerDefault * 60000,
                     run_time: mainTimer.getTotalTimeValues().secondTenths * 100,
+                    shotclock: shotclockTimer.getTotalTimeValues().secondTenths * 100,
+                    penalties: penalties.length > 0 ? JSON.stringify(penalties.filter(element => element !== null)) : null
                 },
                 function (data) {
                     if (data == 'OK') {
@@ -405,6 +423,11 @@ function serverUpdate(target, object, iteration = 0) {
             clearTimeout(timeoutSetChrono)
         }
         timeoutSetChrono = setTimeout(() => {
+            const penalties = []
+            Object.keys(penalites.detail).forEach((key) => {
+                penalties[key] = penalites.detail[key].params
+                penalties[key].timer = penalites.detail[key].timer.getTotalTimeValues().secondTenths
+            })
             $.post(
                 'v2/setChrono.php',
                 {
@@ -412,7 +435,9 @@ function serverUpdate(target, object, iteration = 0) {
                     action: object.action,
                     start_time: Date.now() + mainTimer.getTotalTimeValues().secondTenths * 100 - mainTimerDefault * 60000,
                     run_time: mainTimer.getTotalTimeValues().secondTenths * 100,
-                    max_time: formatPartTime(mainTimerDefault) + ':00'
+                    max_time: formatPartTime(mainTimerDefault) + ':00',
+                    shotclock: shotclockTimer.getTotalTimeValues().secondTenths * 100,
+                    penalties: penalties.length > 0 ? JSON.stringify(penalties.filter(element => element !== null && element.timer > 0)) : null
                 },
                 function (data) {
                     if (data == 'OK') {

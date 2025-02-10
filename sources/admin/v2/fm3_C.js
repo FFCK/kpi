@@ -30,6 +30,14 @@ const checkWebSocket = () => {
     })
     .catch(error => {
         console.error('Error:', error)
+        shotclockReset()
+        broadcastPost('teams')
+        broadcastPost('scores')
+        broadcastPost('period')
+        broadcastPost('timer')
+        broadcastPost('shotclock')
+        broadcastPens()
+
     });
 }
 
@@ -43,11 +51,13 @@ const webSocketConnect = (params) => {
         socket.send('Hello server!')
         socket.isopen = true
         avertissement(lang.Connexion_ouverte)
+        console.log('Connexion WebSocket ouverte.')
+        broadcastPost('teams')
+        broadcastPost('scores')
         broadcastPost('timer')
         broadcastPost('shotclock')
         broadcastPost('period')
-        broadcastPost('teams')
-        broadcastPost('scores')
+        broadcastPens()
     };
 
     // Gérer la réception de messages
@@ -69,7 +79,7 @@ const webSocketConnect = (params) => {
 }
 
 /* Penalites */
-const addPenalite = (type, equipe, startTime = penDefault) => {
+const addPenalite = (type, equipe, startTime = penDefault * 10, serverUpdating = true) => {
     pen[equipe]++
     const newKey = penId
     penalites.detail[newKey] = {}
@@ -97,9 +107,10 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
             broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': newKey, 'type': type, 'time': null})
         }
         if (Object.keys(penalites.detail).length == 0) {
-            console.log('No penalites')
+            // console.log('No penalites')
             // $('#zonePenalites').hide()
         }
+        serverUpdate('updateChrono', {idMatch: idMatch})
     })
     const buttonPlus = document.createElement('button')
     buttonPlus.classList.add('pen-plus')
@@ -110,6 +121,7 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
             seconds: penalites.detail[newKey].timer.getTotalTimeValues().seconds + 1
         }})
         penalites.detail[newKey].display()
+        serverUpdate('updateChrono', {idMatch: idMatch})
     })
     const buttonMinus = document.createElement('button')
     buttonMinus.classList.add('pen-minus')
@@ -120,18 +132,18 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
             seconds: penalites.detail[newKey].timer.getTotalTimeValues().seconds - 1
         }})
         penalites.detail[newKey].display()
+        serverUpdate('updateChrono', {idMatch: idMatch})
     })
     penalites.detail[newKey].timer = new easytimer.Timer({
         countdown: true,
         precision: 'secondTenths',
         startValues: {
-            seconds: startTime
+            secondTenths: startTime
         }
     })
     penalites.detail[newKey].start = () => {
         buttonPlus.style.display = 'none'
         buttonMinus.style.display = 'none'
-        // Problème
         penalites.detail[newKey].timer.start()
         penalites.detail[newKey].display()
     }
@@ -142,7 +154,6 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
         penalites.detail[newKey].display()
     }
     penalites.detail[newKey].display = () => {
-        // Problème
         spanElement.textContent = penalites.detail[newKey].timer.getTimeValues().minutes + ':' + formatPartTime(penalites.detail[newKey].timer.getTimeValues().seconds)
         const broadcastValue = penalites.detail[newKey].timer.getTotalTimeValues().secondTenths > 0 ? spanElement.textContent : null
         broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': newKey, 'type': type, 'time': broadcastValue})
@@ -172,6 +183,9 @@ const addPenalite = (type, equipe, startTime = penDefault) => {
     document.querySelector('#zonePenalites').appendChild(divElement)
     // $('#zonePenalites').show()
     penId++
+    if (serverUpdating) {
+        serverUpdate('updateChrono', {idMatch: idMatch})
+    }
 }
 document.querySelector('#newPenaliteA').addEventListener('click', () => {
     addPenalite('Custom', 'A')
@@ -416,13 +430,10 @@ $(function () {
         }
         valeur = $(this).attr('id')
         if ($('#update_evt').attr('data-id') == '') {
-            periode_en_cours = valeur
             $('.statut').removeClass('actif')
             $('#ON').addClass('actif')
             $('#end_match_time').removeClass('actif').addClass('inactif')
             $('.joueurs, .equipes, .evtButton, .chronoButton, .evtButton2').removeClass('inactif')
-            $('.periode').removeClass('actif')
-            $('#' + valeur).addClass('actif')
             switch (valeur) {
                 case 'P1':
                     texte = lang.period_P1 + ' : 5 minutes'
@@ -450,14 +461,12 @@ $(function () {
                     second_max = '00'
                     break
             }
-            // avertissement(texte)
-            // $('#chrono_ajust').val($('#heure').val());
             $('#periode_ajust, #chrono_ajust').val(minut_max + ':' + second_max)
-            $('#dialog_ajust_periode').html($('.periode[class*="actif"]').html())
+            $('#dialog_ajust_periode').html($(this).html())
+            $('#dialog_ajust_selected_period').text($(this).attr('id'))
             $("#dialog_ajust").dialog("open")
             $("#dialog_ajust").parent().find(".ui-dialog-buttonset").first().find("button").first().focus()
 
-            serverUpdate('StatutPeriode', {idMatch: idMatch, valeur: valeur, type: 'Periode'})
             
         } else {
             $('.periode').removeClass('actif')
@@ -963,9 +972,9 @@ $(function () {
     Raz()
     $('#stop_button').hide()
     $('#run_button').hide()
-    broadcastPost('teams')
-    broadcastPost('period')
-    broadcastPost('scores')
+    // broadcastPost('teams')
+    // broadcastPost('period')
+    // broadcastPost('scores')
     $.get(
         '../live/cache/' + idMatch + '_match_chrono.json?_=' + Date.now(),
         {},
@@ -975,21 +984,33 @@ $(function () {
                 $('#run_button').hide()
                 $('#stop_button').show()
                 mainTimerDefault = parseInt(data.max_time.split(':')[0])
-                const runTimeObject = millisecondsToMinutesAndSeconds(parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now())
+                // const runTimeObject = millisecondsToMinutesAndSeconds(parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now())
+                const runTime = (parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now()) / 100
                 mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {
-                    minutes: runTimeObject.minutes,
-                    seconds: runTimeObject.seconds,
-                    secondTenths: runTimeObject.secondTenths
+                    secondTenths: runTime
                 }})
                 if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
                     mainTimerEventListenerSecondTenths()
                 } else {
                     mainTimerEventListenerSeconds()
                 }
+                if (data.shotclock) {
+                    let shotTime = runTime - (data.run_time - data.shotclock) / 100
+                    shotTime = shotTime < 0 ? 0 : shotTime
+                    shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {secondTenths: shotTime}})
+                }
+                if (data.penalties) {
+                    JSON.parse(data.penalties).forEach((item) => {
+                        let penTime = runTime - (data.run_time / 100 - item.timer)
+                        penTime = penTime < 0 ? 0 : penTime
+                        addPenalite (item.type, item.equipe, penTime, false)
+                    })
+                }
                 mainTimerStart()
 
                 timerStatus = 'start'
-                broadcastPost('timer_status', timerStatus)
+                // broadcastPost('timer_status', timerStatus)
+                // broadcastPens()
 
                 avertissement(lang.Chrono + ' ' + lang.en_cours)
                 $('#tabs-2_link').click()
@@ -1001,30 +1022,47 @@ $(function () {
                 $('#chrono_moins').show()
                 $('#chrono_plus').show()
                 mainTimerDefault = parseInt(data.max_time.split(':')[0])
-                const runTimeObject = millisecondsToMinutesAndSeconds(data.run_time)
+                // const runTimeObject = millisecondsToMinutesAndSeconds(data.run_time)
                 mainTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {
-                    minutes: runTimeObject.minutes,
-                    seconds: runTimeObject.seconds,
-                    secondTenths: runTimeObject.secondTenths
+                    secondTenths: data.run_time / 100
                 }})
                 if (mainTimer.getTotalTimeValues().seconds < mainTimerStep) {
                     mainTimerEventListenerSecondTenths()
                 } else {
                     mainTimerEventListenerSeconds()
                 }
+                if (data.shotclock) {
+                    shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {secondTenths: data.shotclock / 100}})
+                }
+                if (data.penalties) {
+                    const runTime = (parseInt(data.start_time) + mainTimerDefault * 60000 - Date.now()) / 100
+                    JSON.parse(data.penalties).forEach((item) => {
+                        addPenalite (item.type, item.equipe, item.timer, false)
+                    })
+                }
+
                 mainTimerPause()
 
                 timerStatus = 'stop'
-                broadcastPost('timer_status', timerStatus)
+                // broadcastPost('timer_status', timerStatus)
+                // broadcastPens()
 
                 avertissement(lang.Chrono + ' ' + lang.arrete)
                 $('#tabs-2_link').click()
             }
             shotclockDisplay()
+            // setTimeout(checkWebSocket, 100)
             checkWebSocket()
         },
         'json'
-    )
+    ).fail(function(xhr, textStatus, errorThrown) {
+        if (xhr.status === 404) {
+          console.log("Erreur 404: Page non trouvée");
+          checkWebSocket()
+        } else {
+          console.log("Une erreur s'est produite: " + textStatus + ", " + errorThrown);
+        }
+    })
 
     $('#chrono_moins').click(function () {
         if (allowMainTimerUpdateWhileRunning || timerStatus == 'stop') {
@@ -1226,6 +1264,7 @@ $(function () {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: seconds - 1}})
             }
             shotclockDisplay()
+            serverUpdate('updateChrono', {idMatch: idMatch})
         }
     })
     $('#shotclock_plus').click(function () {
@@ -1235,6 +1274,7 @@ $(function () {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockTimer.getTotalTimeValues().seconds + 1}})
             }
             shotclockDisplay()
+            serverUpdate('updateChrono', {idMatch: idMatch})
         }
     })
     $('#shotclock_moins10').click(function () {
@@ -1246,6 +1286,7 @@ $(function () {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: 0}})
             }
             shotclockDisplay()
+            serverUpdate('updateChrono', {idMatch: idMatch})
         }
     })
     $('#shotclock_plus10').click(function () {
@@ -1257,6 +1298,7 @@ $(function () {
                 shotclockTimer.setParams({countdown: true, precision: 'secondTenths', startValues: {seconds: shotclockDefault}})
             }
             shotclockDisplay()
+            serverUpdate('updateChrono', {idMatch: idMatch})
         }
     })
 
@@ -1281,15 +1323,7 @@ $(function () {
         broadcastPost('timer_status', timerStatus)
         broadcastPost('timer')
         broadcastPost('shotclock')
-        const divPen = document.querySelectorAll('#zonePenalites div.pen')
-        divPen.forEach((iteration) => {
-            const equipe = iteration.classList.contains('pen-A') ? 'A' : 'B'
-            const id = iteration.getAttribute('data-id')
-            const type = iteration.getAttribute('data-type')
-            const time = iteration.querySelector('.pen-timer').textContent
-            broadcastPost('pen' + equipe, {'nb': pen[equipe], 'id': id, 'type': type, 'time': time})
-        })
-
+        broadcastPens()
     })
 
     $('.chronoButton').click(function () {

@@ -66,20 +66,26 @@ $(function () {
 		modal: true,
 		buttons: {
 			Ok: function () {
+				$('.periode').removeClass('actif')
+				$('#' + $('#dialog_ajust_selected_period').text()).addClass('actif')
+				periode_en_cours = $('#dialog_ajust_selected_period').text()
+
 				$(this).dialog("close")
 				const split_period = $('#periode_ajust').val().split(':')
 				const split_chrono = $('#chrono_ajust').val().split(':')
 				mainTimerDefault = parseInt(split_period[0])
 				mainTimer.setParams({
 					countdown: true,
-					precision: 'seconds',
+					precision: 'secondTenths',
 					startValues: {
 						minutes: parseInt(split_chrono[0]),
 						seconds: parseInt(split_chrono[1])
 					}
 				})
-
+				serverUpdate('StatutPeriode', {idMatch: idMatch, valeur: valeur, type: 'Periode'})
+				
 				$('#stop_button').click()
+				shotclockReset()
 				broadcastPost('timer')
 				broadcastPost('period')
 				$('#time_evt').val('')

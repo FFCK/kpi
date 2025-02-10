@@ -7,7 +7,7 @@ const shotclockSpan = document.getElementById('shotclock')
 timerStatusSpan.style.display = 'none'
 
 mychannel.onmessage = (event) => {
-    // console.log(event.data)
+    console.log(event.data)
     const message = event.data
     switch (message.type) {
         case 'timer':
