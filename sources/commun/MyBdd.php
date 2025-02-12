@@ -411,7 +411,7 @@ class MyBdd
 		$nbReq2 = 0;
 		$nbReq3 = 0;
 
-		$url = "https://ffck-goal.multimediabs.com/reportingExterne/getFichierPce?saison=" . date('Y');
+		$url = "https://extranet.ffck.org/reportingExterne/getFichierPce/" . date('Y');
 		$newfile = "pce1.pce";
 
 		if (!$header = get_web_page($url)) {
@@ -515,9 +515,9 @@ class MyBdd
 		array_push($this->m_arrayinfo, "MAJ " . $nbArbitres . " arbitres (" . $nbReq2 . " req.)...");
 		array_push($this->m_arrayinfo, "MAJ " . $nbSurclassements . " surclassements (" . $nbReq3 . " req.)...");
 		// Lancement des mises à jour ...
-		$this->ImportPCE_MajClub();
 		$this->ImportPCE_MajComiteReg();
 		$this->ImportPCE_MajComiteDept();
+		$this->ImportPCE_MajClub();
 		$this->ImportPCE_MajLicencies();
 		// Fin du traitement
 		array_push($this->m_arrayinfo, "");
