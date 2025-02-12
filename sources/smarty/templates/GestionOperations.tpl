@@ -88,6 +88,20 @@
 							</tr>
 						</tbody>
 					</table>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th class="titreForm">Imports PCE...</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="{$url_base}/admin/ImportPCE.php" target="_blank">Import PCE Extranet FFCK</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 				<br>
 				<br>
