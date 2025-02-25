@@ -36,6 +36,7 @@ channel.onmessage = (event) => {
             if (message.value === 'ready') {
                 broadcastPost('timer_status', timerStatus)
                 broadcastPost('shotclock')
+                broadcastPost('timer')
             }
 
     }

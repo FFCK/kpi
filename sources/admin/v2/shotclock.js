@@ -2,6 +2,8 @@
 const mychannel = new BroadcastChannel('kpi_channel')
 
 const shotclockSpan = document.getElementById('shotclock')
+const timerSpan = document.getElementById('timer')
+const container2 = document.getElementById('container2')
 
 mychannel.onmessage = (event) => {
     console.log(event.data)
@@ -18,10 +20,13 @@ mychannel.onmessage = (event) => {
             break;
         case 'timer_status':
             if (message.value === 'stop') {
-                shotclockSpan.classList.add("text-danger")
+                container2.classList.add("stop")
             } else {
-                shotclockSpan.classList.remove("text-danger")
+                container2.classList.remove("stop")
             }
+            break;
+        case 'timer':
+            timerSpan.textContent = message.value
             break;
         default:
             console.log('Unknown message type:', message.type);
