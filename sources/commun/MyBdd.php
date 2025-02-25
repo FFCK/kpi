@@ -461,22 +461,22 @@ class MyBdd
 				continue;
 			}
 
-			if (strcasecmp($section, "juges_kap") == 0) {
-				$temp = $this->ImportPCE_Juges($buffer);
-				$nbArbitres++;
-				$count_arbitres++;
-				$array_arbitres = array_merge($array_arbitres, $temp);
-				if ($nbArbitres == 1 && $nbReq2 == 0) {
-					$this->ImportPCE_Truncate_Juges();
-				}
-				if ($count_arbitres == 300) { // une requête pour 300 MAJ
-					$this->ImportPCE_Query_Juges($count_arbitres, $array_arbitres);
-					$nbReq2++;
-					$array_arbitres = [];
-					$count_arbitres = 0;
-				}
-				continue;
-			}
+			// if (strcasecmp($section, "juges_kap") == 0) {
+			// 	$temp = $this->ImportPCE_Juges($buffer);
+			// 	$nbArbitres++;
+			// 	$count_arbitres++;
+			// 	$array_arbitres = array_merge($array_arbitres, $temp);
+			// 	if ($nbArbitres == 1 && $nbReq2 == 0) {
+			// 		$this->ImportPCE_Truncate_Juges();
+			// 	}
+			// 	if ($count_arbitres == 300) { // une requête pour 300 MAJ
+			// 		$this->ImportPCE_Query_Juges($count_arbitres, $array_arbitres);
+			// 		$nbReq2++;
+			// 		$array_arbitres = [];
+			// 		$count_arbitres = 0;
+			// 	}
+			// 	continue;
+			// }
 
 			if (strcasecmp($section, "surclassements") == 0) {
 				$temp = $this->ImportPCE_Surclassements($buffer);
@@ -554,9 +554,9 @@ class MyBdd
 		$naissance = $arrayToken[4];
 
 		$club = str_replace($replace_search, 'CK', $arrayToken[5]);
-		$num_club = $arrayToken[6];
+		$num_club = $this->convertirCodeClub($arrayToken[6]);
 		$comite_dept = str_replace($replace_search, 'CK', $arrayToken[7]);
-		$num_comite_dept = $arrayToken[8];
+		$num_comite_dept = $this->convertirDepartement($arrayToken[8]);
 		$comite_reg = str_replace($replace_search, 'CK', $arrayToken[9]);
 		$num_comite_reg = $arrayToken[10];
 
@@ -574,6 +574,70 @@ class MyBdd
 			$etat_certificat_aps, $etat_certificat_ck
 		);
 	}
+
+	function convertirCodeClub($code) {
+		// Extraire les 3 premiers chiffres (département) et les 3 derniers (club)
+		$dept = substr($code, 0, 3);
+		$club = substr($code, 3);
+	
+		// Conversion spéciale pour les DOM-TOM
+		$domTom = [
+			'971' => '9A',
+			'972' => '9B',
+			'973' => '9C',
+			'974' => '9D',
+			'976' => '9F',
+			'988' => '9G'
+		];
+	
+		if (array_key_exists($dept, $domTom)) {
+			return $domTom[$dept] . str_pad(ltrim($club, '0'), 2, '0', STR_PAD_LEFT);
+		}
+	
+		// Pour la Corse
+		if ($dept == '02A' || $dept == '02B') {
+			return substr($dept, 1) . str_pad(ltrim($club, '0'), 2, '0', STR_PAD_LEFT);
+		}
+	
+		// Pour les autres départements
+		$dept = ltrim($dept, '0'); // Supprime les zéros au début
+		if (strlen($dept) == 1) {
+			$dept = '0' . $dept; // Ajoute un zéro si le département n'a qu'un chiffre
+		}
+	
+		return $dept . str_pad(ltrim($club, '0'), 2, '0', STR_PAD_LEFT);
+	}
+
+	function convertirDepartement($code) {
+		$code = substr($code, 2); // Supprime les deux premiers caractères (CD)
+		
+		$conversions = [
+			'971' => '9A00',
+			'972' => '9B00',
+			'973' => '9C00',
+			'974' => '9D00',
+			'988' => '9G00'
+		];
+		
+		if (array_key_exists($code, $conversions)) {
+			return $conversions[$code];
+		}
+
+		$code = substr($code, 1); // Supprime les deux premiers caractères (CD)
+		
+		if (strlen($code) == 2) {
+			if (ctype_digit($code)) {
+				return $code . '00';
+			} elseif (ctype_digit(substr($code, 1, 1))) {
+				return $code . '00';
+			}
+		} elseif (strlen($code) == 1) {
+			return '0' . $code . '00';
+		}
+		
+		return $code . '00';
+	}
+	
 
 	function ImportPCE_Query_Licencies($count_licencies, $array_licencies)
 	{
@@ -652,6 +716,8 @@ class MyBdd
 			$international = substr($arrayToken[6], 0, 1);
 			if ($international == 'O') {
 				$Arb = "Int";
+				// Pas de niveau pour les juges internationaux
+				$niveau = '';
 			}
 		}
 		if (strrpos($livret, "OTM") !== false) {
