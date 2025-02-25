@@ -48,8 +48,8 @@
 							<tr>
 								<td>
 									<b>{$Courreur.Numero_club} - {$Courreur.nomclub}</b><br>
-									{$Courreur.nomcd}<br>
-									{$Courreur.nomcr}<br>
+									{$Courreur.Numero_comite_dept} {$Courreur.nomcd}<br>
+									{$Courreur.Numero_comite_reg} {$Courreur.nomcr}<br>
 									{#Derniere_saison#} : <b>{$Courreur.Origine}</b>
 								</td>
 								<td>
@@ -65,8 +65,7 @@
 									CK ({#Competition#}) : {$Courreur.Etat_certificat_CK}
 								</td>
 								<td>
-									{$Arbitre.Arb}<br>
-									{#Niveau#} : {$Arbitre.niveau}<br>
+									{#Niveau#} : {$Arbitre.arbitre} {$Arbitre.niveau}<br>
 									{#Saison#} : {$Arbitre.saison}<br>
 									{#Livret#} : {$Arbitre.livret}<br>
 								</td>
