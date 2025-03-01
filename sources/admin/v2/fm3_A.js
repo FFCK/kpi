@@ -504,7 +504,8 @@ function statutActive (leStatut, leClick) {
         if (leClick == 'O') {
             avertissement(lang.Fin_match)
             avertissement(lang.Saisissez_heure_fin)
-            var end_time = Date.now()
+            var timestamp = Date.now()
+            var end_time = new Date(timestamp)
             var end_hours = end_time.getHours()
             if (end_hours < 10) {
                 end_hours = '0' + end_hours
