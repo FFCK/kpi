@@ -22,6 +22,10 @@ function millisecondsToMinutesAndSeconds(milliseconds) {
     return {'minutes': minutes, 'seconds': seconds, 'secondTenths': secondTenths}
 }
 
+const cleanStr = (str) => {
+    return str.replace(/\s+/g, '')
+}
+
 const channel = new BroadcastChannel('kpi_channel')
 channel.onmessage = (event) => {
     // console.log(event.data)
@@ -54,10 +58,10 @@ const broadcastPost = (type, value = null) => {
             }
             break;
         case 'shotclock':
-            channel.postMessage({'type': 'shotclock', 'value': $('#shotclock').val()})
+            channel.postMessage({'type': 'shotclock', 'value': cleanStr($('#shotclock').val())})
             if (socket && socket.isopen) {
                 socket.send(JSON.stringify(
-                    {p: socketTarget, t: 'posses', v: $('#shotclock').val()}
+                    {p: socketTarget, t: 'posses', v: cleanStr($('#shotclock').val())}
                 ))
             }
             break;
@@ -76,16 +80,18 @@ const broadcastPost = (type, value = null) => {
             channel.postMessage({'type': 'teams', 'value': {'teamA': labelEquipeA, 'teamB': labelEquipeB, 'nationA': nationA, 'nationB': nationB}})
             break;
         case 'scores':
-            const broadcastScoreA = $('#scoreA').text()
-            const broadcastScoreB = $('#scoreB').text()
+            const broadcastScoreA = cleanStr($('#scoreA').text())
+            const broadcastScoreB = cleanStr($('#scoreB').text())
             channel.postMessage({'type': 'scores', 'value': {'scoreA': broadcastScoreA, 'scoreB': broadcastScoreB}})
             if (socket && socket.isopen) {
                 socket.send(JSON.stringify(
                     {p: socketTarget, t: 'scoreA', v: broadcastScoreA}
                 ))
-                socket.send(JSON.stringify(
-                    {p: socketTarget, t: 'scoreB', v: broadcastScoreB}
-                ))
+                setTimeout(() => {
+                    socket.send(JSON.stringify(
+                        {p: socketTarget, t: 'scoreB', v: broadcastScoreB}
+                    ))
+                }, 50)
             }
             break;
         case 'penA':
