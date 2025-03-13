@@ -461,22 +461,22 @@ class MyBdd
 				continue;
 			}
 
-			// if (strcasecmp($section, "juges_kap") == 0) {
-			// 	$temp = $this->ImportPCE_Juges($buffer);
-			// 	$nbArbitres++;
-			// 	$count_arbitres++;
-			// 	$array_arbitres = array_merge($array_arbitres, $temp);
-			// 	if ($nbArbitres == 1 && $nbReq2 == 0) {
-			// 		$this->ImportPCE_Truncate_Juges();
-			// 	}
-			// 	if ($count_arbitres == 300) { // une requête pour 300 MAJ
-			// 		$this->ImportPCE_Query_Juges($count_arbitres, $array_arbitres);
-			// 		$nbReq2++;
-			// 		$array_arbitres = [];
-			// 		$count_arbitres = 0;
-			// 	}
-			// 	continue;
-			// }
+			if (strcasecmp($section, "juges_kap") == 0) {
+				$temp = $this->ImportPCE_Juges($buffer);
+				$nbArbitres++;
+				$count_arbitres++;
+				$array_arbitres = array_merge($array_arbitres, $temp);
+				if ($nbArbitres == 1 && $nbReq2 == 0) {
+					$this->ImportPCE_Truncate_Juges();
+				}
+				if ($count_arbitres == 300) { // une requête pour 300 MAJ
+					$this->ImportPCE_Query_Juges($count_arbitres, $array_arbitres);
+					$nbReq2++;
+					$array_arbitres = [];
+					$count_arbitres = 0;
+				}
+				continue;
+			}
 
 			if (strcasecmp($section, "surclassements") == 0) {
 				$temp = $this->ImportPCE_Surclassements($buffer);
@@ -778,10 +778,9 @@ class MyBdd
 		$discipline = $arrayToken[3];
 		if ($discipline == 'KAP') {
 			$matric =  $arrayToken[0];
-			$categorie = substr($arrayToken[4], -1);
+			$categorie = $arrayToken[4];
 			$dateSurclassement = $arrayToken[5];
-			$dateSurclassement = explode('/', $dateSurclassement);
-			$dateSurclassement = implode('-', $dateSurclassement);
+			$dateSurclassement = utyDateFrToUs($dateSurclassement);
 			$saisonSurclassement = $this->m_saisonPCE;
 
 			return array(
