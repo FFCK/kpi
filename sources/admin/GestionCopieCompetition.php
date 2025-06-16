@@ -204,6 +204,8 @@ class GestionCopieCompetition extends MyPageSecure
 				$sql2 = "SELECT COUNT(m.Id) nbMatchs 
 					FROM kp_match m, kp_journee j 
 					WHERE j.Id = m.Id_journee 
+					AND j.Phase != 'Break'
+                	AND j.Phase != 'Pause'
 					AND j.Code_competition = ? 
 					AND j.Code_saison = ? ";
 				$result2 = $myBdd->pdo->prepare($sql2);
