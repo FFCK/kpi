@@ -1,7 +1,7 @@
 <div class="container-fluid text-center titre" id="navTitle">
   <div class="col-md-12">
     <h2 class="col-md-12">
-      <a class="btn btn-default pull-left" href="javascript:close();">{#Fermer#}</a>
+      {* <a class="btn btn-default pull-left" href="javascript:close();">{#Fermer#}</a> *}
       <span class="label label-primary pull-right">{$Saison}</span>
       {if $event > 0}
         <span>{$eventTitle}{$recordCompetition.Soustitre2|indent:1:" - "}</span>
