@@ -223,9 +223,21 @@
 												<td width="30">{$arrayEquipe_journee[i].N}</td>
 												<td width="30">{$arrayEquipe_journee[i].P}</td>
 												<td width="30">{$arrayEquipe_journee[i].F}</td>
-												<td width="40">{$arrayEquipe_journee[i].Plus}</td>
-												<td width="40">{$arrayEquipe_journee[i].Moins}</td>
-												<td width="40">{$arrayEquipe_journee[i].Diff}</td>
+												{if $profile <= 4 && $AuthModif == 'O'}
+													<td width="40"><span class='directInput'
+															Id="Plus-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
+															tabindex="2{$smarty.section.i.iteration}7">{$arrayEquipe_journee[i].Plus}</span></td>
+													<td width="40"><span class='directInput'
+															Id="Moins-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
+															tabindex="2{$smarty.section.i.iteration}8">{$arrayEquipe_journee[i].Moins}</span></td>
+													<td width="40"><span class='directInput'
+															Id="Diff-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
+															tabindex="2{$smarty.section.i.iteration}9">{$arrayEquipe_journee[i].Diff}</span></td>
+												{else}
+													<td width="40">{$arrayEquipe_journee[i].Plus}</td>
+													<td width="40">{$arrayEquipe_journee[i].Moins}</td>
+													<td width="40">{$arrayEquipe_journee[i].Diff}</td>
+												{/if}
 											</tr>
 										{/if}
 										{if $arrayEquipe_journee[i].Type == 'E'}
