@@ -729,7 +729,7 @@ class FeuilleStats extends MyPage
         switch ($AfficheStat) {
             case 'Buteurs':
             default:
-                $pdf->Cell(190, 7, "Stats : Meilleur butteur", 0, 1, 'C');
+                $pdf->Cell(190, 7, "Stats : Meilleur buteur", 0, 1, 'C');
                 $pdf->Ln(3);
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
@@ -955,14 +955,14 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'CJouees':
-                $pdf->Cell(190, 7, "Stats : Compétitions jouées", 0, 1, 'C');
+                $pdf->Cell(190, 7, "Stats : Nb matchs joués par joueur (club)", 0, 1, 'C');
                 $pdf->Ln(3);
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
                 $pdf->Cell(18, 7, 'Compet', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'Nom', 'B', 0, 'C');
                 $pdf->Cell(40, 7, 'Prénom', 'B', 0, 'C');
-                $pdf->Cell(70, 7, 'Equipe', 'B', 0, 'C');
+                $pdf->Cell(70, 7, 'Club', 'B', 0, 'C');
                 $pdf->Cell(12, 7, 'Nb', 'B', 1, 'C');
                 $pdf->SetFont('Arial', '', 8);
 
@@ -976,7 +976,7 @@ class FeuilleStats extends MyPage
                 }
                 break;
             case 'CJouees2':
-                $pdf->Cell(190, 7, "Stats : Matchs joués par équipe", 0, 1, 'C');
+                $pdf->Cell(190, 7, "Stats : Nb matchs joués par joueur (équipe)", 0, 1, 'C');
                 $pdf->Ln(3);
                 $pdf->SetFont('Arial', 'BI', 10);
                 $pdf->Cell(10, 7, '#', 'B', 0, 'C');
