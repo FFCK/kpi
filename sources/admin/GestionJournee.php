@@ -59,8 +59,10 @@ class GestionJournee extends MyPageSecure
 		$_SESSION['filtreTerrain'] = $filtreTerrain;
 		$this->m_tpl->assign('filtreTerrain', $filtreTerrain);
 
-		$_SESSION['idEvenement'] = $idEvenement;
-		$this->m_tpl->assign('idEvenement', $idEvenement);
+		$filtreMatchsNonVerrouilles = utyGetSession('filtreMatchsNonVerrouilles', '');
+		$this->m_tpl->assign('filtreMatchsNonVerrouilles', $filtreMatchsNonVerrouilles);
+
+		$filtreJour = utyGetSession('filtreJour', '');
 
 		$sql = "SELECT Id, Libelle, Date_debut, Publication 
 			FROM kp_evenement 
