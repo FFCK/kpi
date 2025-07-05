@@ -222,6 +222,18 @@ function numMultiMatchs () {
                     </span>')
 }
 
+function imprimeMultiMatchs () {
+	if (jq('#tableMatchs tbody input:checkbox:checked').length == 0) {
+		alert('Aucun match sélectionné')
+		return
+	}
+	jq('#tableMatchs tbody input:checkbox:checked').each(function () {
+		jq(this).parent().parent().find('.imprimMatch').click()
+	})
+}
+	
+
+
 // Annuler
 jq("body").delegate('#numMultiMatchsStart input:button:last', 'click', function (e) {
 	e.preventDefault()
@@ -1081,11 +1093,13 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 						leMatch.parent().parent().parent().find('.directStatutMatch').addClass('directStatutMatchOff').removeClass('directStatutMatch')
 						leMatch.parent().parent().find('.showOn').addClass('showOff').removeClass('showOn')
 						leMatch.parent().parent().find('.typeMatch').addClass('typeMatchOff').removeClass('typeMatch')
+						leMatch.parent().parent().find('.imprimMatch').addClass('imprimMatchOff').removeClass('imprimMatch')
 					} else {
 						leMatch.parent().parent().find('.directInputOff').addClass('directInput').removeClass('directInputOff')
 						leMatch.parent().parent().parent().find('.directStatutMatchOff').addClass('directStatutMatch').removeClass('directStatutMatchOff')
 						leMatch.parent().parent().find('.showOff').addClass('showOn').removeClass('showOff')
 						leMatch.parent().parent().find('.typeMatchOff').addClass('typeMatch').removeClass('typeMatchOff')
+						leMatch.parent().parent().find('.imprimMatchOff').addClass('imprimMatch').removeClass('imprimMatchOff')
 					}
 				}
 				else {
@@ -1098,6 +1112,39 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		)
 		//}
 	})
+
+	jq("body").delegate(".imprimMatch", "click", function () {
+		// This handler will work for dynamically added elements and multiple simultaneous clicks
+		var theMatch = jq(this)
+		// theMatch.attr('src', 'v2/images/indicator.gif')
+		var changeType, textType
+		if (theMatch.attr('data-valeur') == 'O') {
+			changeType = 'N'
+			textType = ''
+		} else {
+			changeType = 'O'
+			textType = 'Printed'
+		}
+		jq.post(
+			'v2/StatutPeriode.php', // Le fichier cible côté serveur.
+			{ // variables
+				Id_Match: theMatch.attr('data-id'),
+				Valeur: changeType,
+				TypeUpdate: 'Imprime'
+			},
+			function (data) { // callback
+				if (data == 'OK') {
+					theMatch.attr('src', '../img/imprime' + changeType + '.png')
+					theMatch.attr('data-valeur', changeType)
+					theMatch.attr('title', textType)
+				} else {
+					alert(langue['MAJ_impossible'])
+				}
+			},
+			'text' // Format des données reçues.
+		)
+	})
+
 
 	jq("body").delegate(".directStatutMatch", "click", function () {
 		if (confirm('Confirmez-vous le changement de statut ?')) {

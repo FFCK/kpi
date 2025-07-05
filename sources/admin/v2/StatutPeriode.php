@@ -22,7 +22,7 @@ $Valeur = trim(utyGetPost('Valeur'));
 $TypeUpdate = trim(utyGetPost('TypeUpdate'));
 if (!in_array(
 	$TypeUpdate,
-	['Score', 'ProvisionnalScore', 'Validation', 'Publication', 'Type', 'Statut', 'Periode']
+	['Score', 'ProvisionnalScore', 'Validation', 'Publication', 'Type', 'Statut', 'Periode', 'Imprime']
 )) {
 	header('HTTP/1.0 401 Unauthorized');
 	die('Action non autorisée !');

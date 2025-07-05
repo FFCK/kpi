@@ -462,7 +462,7 @@ class GestionJournee extends MyPageSecure
 			$in  = str_repeat('?,', count($arrayListJournees) - 1) . '?';
 			$sql = "SELECT a.Id, a.Id_journee, a.Numero_ordre, a.Date_match, a.Heure_match, 
 				a.Libelle, a.Terrain, a.Publication, a.Validation, a.Statut, a.Type, a.Periode, 
-				a.ScoreDetailA, a.ScoreDetailB, b.Libelle EquipeA, c.Libelle EquipeB, 
+				a.ScoreDetailA, a.ScoreDetailB, a.Imprime, b.Libelle EquipeA, c.Libelle EquipeB, 
 				a.Id_equipeA, a.Id_equipeB, a.Terrain, a.ScoreA, a.ScoreB, a.CoeffA, a.CoeffB, 
 				a.Arbitre_principal, a.Arbitre_secondaire, a.Matric_arbitre_principal, 
 				a.Matric_arbitre_secondaire, d.Code_competition, d.Phase, d.Niveau, d.Etape, d.Lieu, 
@@ -566,7 +566,8 @@ class GestionJournee extends MyPageSecure
 						'StdOrSelected' => $StdOrSelected,
 						'MatchAutorisation' => $MatchAutorisation,
 						'Publication' => $Publication,
-						'Validation' => $Validation
+						'Validation' => $Validation,
+						'Imprime' => $row['Imprime']
 					));
 
 					if ($listMatch != '')
