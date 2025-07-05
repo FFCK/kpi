@@ -956,7 +956,8 @@ div.blocMiddle input[type=button] {
 .publiCompet,
 .verrouCompet,
 .directInput,
-.statutCompet {
+.statutCompet,
+.imprimMatch {
 	cursor: pointer;
 }
 

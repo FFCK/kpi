@@ -368,7 +368,7 @@
 				<div class='blocMiddle'>
 					<table width=100%>
 						<tr>
-							<td width="460">
+							<td width="470">
 								<fieldset>
 									<label>{#Selection#}:</label>
 									&nbsp;
@@ -408,6 +408,11 @@
 										onclick="SelectedCheckboxes('formJournee', 'checkMatch'); this.href='FeuilleMatchMulti.php?listMatch='+document.formJournee.ParamCmd.value;"
 										Target="_blank" title="{#Feuilles_marque#} {$TropDeMatchsMsg}"><img height="25"
 											src="../img/pdf2.png" /></a>
+									{if $profile <= 6 && $AuthModif == 'O'}
+										<a href="#" {$TropDeMatchs}
+											onclick="SelectedCheckboxes('formJournee', 'checkMatch');imprimeMultiMatchs();"
+											title="{#Imprime#} {$TropDeMatchsMsg}"><img height="25" src="../img/imprimeO.png"></a>
+									{/if}
 									{if $profile <= 2 && $AuthModif == 'O'}
 										<a id="numMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="numMultiMatchs();"
 											title="{#Renumeroter_les_matchs#} {$TropDeMatchsMsg}"><img height="25" src="../img/numMatchs.png"></a>
@@ -491,7 +496,7 @@
 									<th>{#Equipe#} B</th>
 									<th>{#Arbitre#} 1 </th>
 									<th>{#Arbitre#} 2 </th>
-									<th colspan=2>coef.</th>
+									<th>{#Imprime#}</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -664,11 +669,9 @@
 														Id="Arbitre_secondaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_secondaire|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 												</td>
 												<td>
-													{if $arrayMatchs[i].CoeffA != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}</td>
-												<td>
-													{if $arrayMatchs[i].CoeffB != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}</td>
+													<img src="../img/imprime{$arrayMatchs[i].Imprime}.png" class="imprimMatch" height="20" data-valeur="{$arrayMatchs[i].Imprime}" data-id="{$arrayMatchs[i].Id}" title="{if $arrayMatchs[i].Imprime == 'O'}{#Imprime#}{/if}">
+													{if $arrayMatchs[i].CoeffA != 1 || $arrayMatchs[i].CoeffB != 1}<br>{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}
+												</td>
 												<td><a href="#" class="showOn"
 														onclick="RemoveCheckbox('formJournee', '{$arrayMatchs[i].Id}');return false;"><img height="20"
 															src="../img/glyphicons-17-bin.png" title="{#Supprimer#}"></a></td>
@@ -792,11 +795,9 @@
 														Id="Arbitre_secondaire-{$arrayMatchs[i].Id}-text">{$arrayMatchs[i].Arbitre_secondaire|replace:' (':' <br />('|replace:') ':')<br /> '|replace:'-1':''}</span>
 												</td>
 												<td>
-													{if $arrayMatchs[i].CoeffA != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}</td>
-												<td>
-													{if $arrayMatchs[i].CoeffB != 1}{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}</td>
+													<img src="../img/imprime{$arrayMatchs[i].Imprime}.png" class="imprimMatchOff" height="20" data-valeur="{$arrayMatchs[i].Imprime}" data-id="{$arrayMatchs[i].Id}" title="{if $arrayMatchs[i].Imprime == 'O'}{#Imprime#}{/if}">
+													{if $arrayMatchs[i].CoeffA != 1 || $arrayMatchs[i].CoeffB != 1}<br>{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}
+												</td>
 												<td><a href="#" class="showOff"
 														onclick="RemoveCheckbox('formJournee', '{$arrayMatchs[i].Id}');return false;"><img height="20"
 															src="../img/glyphicons-17-bin.png" title="{#Supprimer#}"></a></td>
@@ -885,14 +886,8 @@
 													{/if}
 												</td>
 												<td>
-													{if $arrayMatchs[i].CoeffA != 1}
-														{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}
-												</td>
-												<td>
-													{if $arrayMatchs[i].CoeffB != 1}
-														{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}
+													<img src="../img/imprime{$arrayMatchs[i].Imprime}.png" height="20" title="{if $arrayMatchs[i].Imprime == 'O'}{#Imprime#}{/if}">
+													{if $arrayMatchs[i].CoeffA != 1 || $arrayMatchs[i].CoeffB != 1}<br>{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}
 												</td>
 												<td>&nbsp;</td>
 											{else}
@@ -953,14 +948,8 @@
 													{/if}
 												</td>
 												<td>
-													{if $arrayMatchs[i].CoeffA != 1}
-														{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}
-												</td>
-												<td>
-													{if $arrayMatchs[i].CoeffB != 1}
-														{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}
-													{/if}
+													<img src="../img/imprime{$arrayMatchs[i].Imprime}.png" height="20" title="{if $arrayMatchs[i].Imprime == 'O'}{#Imprime#}{/if}">
+													{if $arrayMatchs[i].CoeffA != 1 || $arrayMatchs[i].CoeffB != 1}<br>{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}
 												</td>
 												<td>&nbsp;</td>
 											{/if}
@@ -1016,8 +1005,10 @@
 											<td>
 												{if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire|replace:'(':'<br>('}{else}&nbsp;{/if}
 											</td>
-											<td>{$arrayMatchs[i].CoeffA}</td>
-											<td>{$arrayMatchs[i].CoeffB}</td>
+											<td>
+												<img src="../img/imprime{$arrayMatchs[i].Imprime}.png" height="20" title="{if $arrayMatchs[i].Imprime == 'O'}{#Imprime#}{/if}">
+												{if $arrayMatchs[i].CoeffA != 1 || $arrayMatchs[i].CoeffB != 1}<br>{$arrayMatchs[i].CoeffA}/{$arrayMatchs[i].CoeffB}{/if}
+											</td>
 											<td>&nbsp;</td>
 										{/if}
 									</tr>
