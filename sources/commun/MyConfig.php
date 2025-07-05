@@ -1,6 +1,6 @@
 <?php
 // Configuration Generale 
-define('NUM_VERSION', '5.37.1');
+define('NUM_VERSION', '5.38.0');
 
 define('URL_SITE', 'https://www.kayak-polo.info');
 

@@ -137,9 +137,9 @@
 							</select>
 						</td>
 						<td style="text-align: center">
-							<label for="filterAttspan">{#Matchs_non_verrouilles#}</label>
+							<label id="filterAttspan">{#Matchs_non_verrouilles#}</label>
 							<br>
-							<input type='checkbox' name='filterAtt' id='filterAtt' value='on'>
+							<input type='checkbox' name='filterAtt' id='filterAtt' value='on' {if $filtreMatchsNonVerrouilles == 'on'}checked{/if}>
 						</td>
 					</tr>
 				</table>
@@ -368,7 +368,7 @@
 				<div class='blocMiddle'>
 					<table width=100%>
 						<tr>
-							<td width="470">
+							<td width="490">
 								<fieldset>
 									<label>{#Selection#}:</label>
 									&nbsp;
@@ -1024,4 +1024,5 @@
 		</div>
 		<script>
 			var arrayCheck = '{$arrayCheck}';
+			const filtreMatchsNonVerrouilles = '{$filtreMatchsNonVerrouilles}';
 </script>

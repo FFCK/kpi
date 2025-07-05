@@ -295,6 +295,13 @@ jq("body").delegate('#numMultiMatchsStart input:button:first', 'click', function
 
 jq(document).ready(function () { //Jquery + NoConflict='J'
 
+	if (filtreMatchsNonVerrouilles == 'on') {
+		jq(".verrouMatch[data-valeur!='N']").each(function() {
+			jq(this).parent().parent().hide()
+		})
+		jq('#filterAttspan').addClass('highlight3')
+	}
+
 	jq("*").tooltip({
 		showURL: false
 	})
@@ -964,17 +971,29 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 
 	// 
 	jq('#filterAtt').bind('change', function (ev) {
-		if (document.getElementById("filterAtt").checked) {
-			console.log('ON')
-			jq(".verrouMatch[data-valeur!='N']").each(function() {
-				jq(this).parent().parent().hide()
-			})
-		} else {
-			console.log('OFF')
-			jq(".verrouMatch[data-valeur!='N']").each(function() {
-				jq(this).parent().parent().show()
-			})
-		}
+		jq.post(
+			'v2/StatutSession.php', // Le fichier cible côté serveur.
+			{ // variables
+				Valeur: document.getElementById("filterAtt").checked ? 'on' : '',
+				TypeUpdate: 'MatchsNonVerrouilles'
+			},
+			function (data) { // callback
+				if (data == 'OK') {
+					if (document.getElementById("filterAtt").checked) {
+						jq(".verrouMatch[data-valeur!='N']").each(function() {
+							jq(this).parent().parent().hide()
+						})
+						jq('#filterAttspan').addClass('highlight3')
+					} else {
+						jq(".verrouMatch[data-valeur!='N']").each(function() {
+							jq(this).parent().parent().show()
+						})
+						jq('#filterAttspan').removeClass('highlight3')	
+					}
+				}
+			},
+			'text' // Format des données reçues.
+		)
 	})
 
 	jq("body").delegate(".typeMatch", "click", function () {
