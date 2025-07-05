@@ -15,7 +15,10 @@
                     <label>Scenario</label>
                     <select id="scenario" name="scenario">
                         {section name=i start=100 loop=1000 step=100}
-                            <option value="{$smarty.section.i.index}" {if $smarty.section.i.index == $scenario}selected{/if}>{$smarty.section.i.index}</option>
+                            <option value="{$smarty.section.i.index}" {if $smarty.section.i.index == $scenario}selected{/if}>
+                                {$smarty.section.i.index}
+                                {if $smarty.section.i.index >= 500 && $smarty.section.i.index <= 800} (TV){/if}
+                            </option>
                         {/section}
                     </select>
                     <br>

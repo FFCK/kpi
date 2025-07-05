@@ -860,12 +860,12 @@
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
-								<label>TV control pannel</label>
+								<label>TV control panel</label>
 							</th>
 						</tr>
 						<tr>
 							<td colspan=2>
-								<a href="../kptv.php" target="_blank">TV control pannel</a>
+								<a href="../kptv.php" target="_blank">TV control panel</a>
 							</td>
 						</tr>
 					</table>
