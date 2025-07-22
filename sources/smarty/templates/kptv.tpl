@@ -78,6 +78,8 @@
               {section name=i start=1 loop=51}
                 <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                   {$smarty.section.i.index}
+                  {if $smarty.section.i.index <= 4} (Pitch {$smarty.section.i.index}){/if}
+                  {if $smarty.section.i.index >= 41 && $smarty.section.i.index <= 50} (Tests){/if}
                 </option>
               {/section}
             </optgroup>
@@ -109,28 +111,28 @@
                 </option>
               {/section}
             </optgroup>
-            <optgroup label="Scenario 5 (Screen 1)">
+            <optgroup label="Scenario 5 (TV 1)">
               {section name=i start=501 loop=510}
                 <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                   {$smarty.section.i.index}
                 </option>
               {/section}
             </optgroup>
-            <optgroup label="Scenario 6 (Screen 2)">
+            <optgroup label="Scenario 6 (TV 2)">
               {section name=i start=601 loop=610}
                 <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                   {$smarty.section.i.index}
                 </option>
               {/section}
             </optgroup>
-            <optgroup label="Scenario 7 (Screen 3)">
+            <optgroup label="Scenario 7 (TV 3)">
               {section name=i start=701 loop=710}
                 <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                   {$smarty.section.i.index}
                 </option>
               {/section}
             </optgroup>
-            <optgroup label="Scenario 8 (Screen 4)">
+            <optgroup label="Scenario 8 (TV 4)">
               {section name=i start=801 loop=810}
                 <option value="{$smarty.section.i.index}" {if $filtreChannel == $smarty.section.i.index}selected{/if}>
                   {$smarty.section.i.index}
@@ -184,7 +186,7 @@
               <option value="liveteams" {if $filtrePres == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Live game (WS)">
-              <option value="live" {if $filtrePres == 'live'}selected{/if}>Live score</option>
+              <option value="live" {if $filtrePres == 'live'}selected{/if}>Live score WebSocket</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres == 'match_score'}selected{/if}>Game & score</option>
@@ -361,11 +363,11 @@
           </select>
         </div>
         <div class='col-sm-1 params' id='lnstart-col'>
-          <label>Start</label>
+          <label>First game</label>
           <input class="form-control" type="text" id="lnstart" name="lnstart" value="1" size="2">
         </div>
         <div class='col-sm-1 params' id='lnlen-col'>
-          <label>Length</label>
+          <label>Game count</label>
           <input class="form-control" type="text" id="lnlen" name="lnlen" value="0" size="2">
         </div>
         <div class='col-sm-2 params' id='competlist-col'>
@@ -479,7 +481,7 @@
               <option value="liveteams" {if $filtrePres2 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Live game (WS)">
-              <option value="live" {if $filtrePres2 == 'live'}selected{/if}>Live score</option>
+              <option value="live" {if $filtrePres2 == 'live'}selected{/if}>Live score WebSocket</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres2 == 'match_score'}selected{/if}>Game & score</option>
@@ -649,11 +651,11 @@
           </select>
         </div>
         <div class='col-sm-1 params2' id='lnstart-col2'>
-          <label>Start</label>
+          <label>First game</label>
           <input class="form-control" type="text" id="lnstart2" name="lnstart2" value="1" size="2">
         </div>
         <div class='col-sm-1 params2' id='lnlen-col2'>
-          <label>Length</label>
+          <label>Game count</label>
           <input class="form-control" type="text" id="lnlen2" name="lnlen2" value="0" size="2">
         </div>
       </div>
@@ -733,7 +735,7 @@
               <option value="liveteams" {if $filtrePres3 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Live game (WS)">
-              <option value="live" {if $filtrePres3 == 'live'}selected{/if}>Live score</option>
+              <option value="live" {if $filtrePres3 == 'live'}selected{/if}>Live score WebSocket</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres3 == 'match_score'}selected{/if}>Game & score</option>
@@ -903,11 +905,11 @@
           </select>
         </div>
         <div class='col-sm-1 params3' id='lnstart-col3'>
-          <label>Start</label>
+          <label>First game</label>
           <input class="form-control" type="text" id="lnstart3" name="lnstart3" value="1" size="2">
         </div>
         <div class='col-sm-1 params3' id='lnlen-col3'>
-          <label>Length</label>
+          <label>Game count</label>
           <input class="form-control" type="text" id="lnlen3" name="lnlen3" value="0" size="2">
         </div>
       </div>
@@ -987,7 +989,7 @@
               <option value="liveteams" {if $filtrePres4 == 'liveteams'}selected{/if}>Teams only (clubs)</option>
             </optgroup>
             <optgroup label="Live game (WS)">
-              <option value="live" {if $filtrePres4 == 'live'}selected{/if}>Live score</option>
+              <option value="live" {if $filtrePres4 == 'live'}selected{/if}>Live score WebSocket</option>
             </optgroup>
             <optgroup label="Game presentation (next game)">
               <option value="match_score" {if $filtrePres4 == 'match_score'}selected{/if}>Game & score</option>
@@ -1157,11 +1159,11 @@
           </select>
         </div>
         <div class='col-sm-1 params4' id='lnstart-col4'>
-          <label>Start</label>
+          <label>First game</label>
           <input class="form-control" type="text" id="lnstart4" name="lnstart4" value="1" size="2">
         </div>
         <div class='col-sm-1 params4' id='lnlen-col4'>
-          <label>Length</label>
+          <label>Game count</label>
           <input class="form-control" type="text" id="lnlen4" name="lnlen4" value="0" size="2">
         </div>
       </div>
