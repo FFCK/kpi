@@ -54,6 +54,9 @@ help: ## cette aide
 dev_up: ## (construit et) lance les containers
 	$(DOCKER_COMPOSE) -f docker/compose.dev.yaml up -d
 
+run_dev: ## lance le serveur Nuxt en mode dev
+	docker exec kpi_node_app2 sh -c "npm run dev"
+
 # stop: ## stoppe les containers
 #	 $(DOCKER_COMPOSE) -f ./compose.yaml stop
 
