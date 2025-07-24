@@ -1,22 +1,20 @@
-FROM node:14-alpine
+FROM node:20-alpine
 
-LABEL maintainer=STI
+ARG GROUP_ID=33
 
-# Dossier de travail par défaut
+RUN apk update && apk upgrade --no-cache
+
+# Crée le groupe si besoin
+RUN getent group $GROUP_ID || addgroup -g $GROUP_ID appgroup
+
+# Ajoute l'utilisateur 'node' au groupe (Alpine syntaxe)
+RUN addgroup node $(getent group $GROUP_ID | cut -d: -f1)
+
 WORKDIR /app
+COPY . .
+EXPOSE 3000
 
-# installe un simple serveur http pour servir un contenu statique, ne va servir ici que pour assurer le lancement du container
-#Installation de vue-vli
-RUN npm install -g http-server 
-RUN npm install -g @vue/cli
-RUN npm install -g @vue/cli-service
+RUN mkdir -p /app/node_modules && chown -R node:node /app /app/node_modules
+USER node
 
-# Ouverture du port
-EXPOSE 8000
-EXPOSE 8080
-
-# copie 'package.json' et 'package-lock.json' (si disponible)
-COPY sources/app_dev/package.json ./
-
-# lance le serveur
-CMD [ "npm", "run", "http-server"]
+CMD ["tail", "-f", "/dev/null"]
