@@ -169,6 +169,7 @@ services:
             - traefiknetwork
         ports:
             - "3002:3000"
+        restart: unless-stopped
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.app2.rule=Host(`${NODE_DOMAIN_NAME}`)"
