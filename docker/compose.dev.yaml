@@ -149,7 +149,32 @@ services:
             - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
             - "traefik.http.routers.myadmin.tls=true"
-        
+    node_app2:
+        container_name: kpi_node_app2
+        build:
+            context: ../sources/app2
+            dockerfile: ../../docker/node/Dockerfile # Crée ce Dockerfile si besoin
+        working_dir: /app
+        user: "${USER_ID}:${GROUP_ID}"
+        # command: "npm run http-server"
+        volumes:
+            - ../sources/app2:/app
+            - /app/node_modules
+        environment:
+            - HOST=0.0.0.0
+            - PORT=3000
+            - NUXT_APP_BASE_URL=/app2
+        networks:
+            - network_kpi
+            - traefiknetwork
+        ports:
+            - "3002:3000"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.app2.rule=Host(`${NODE_DOMAIN_NAME}`)"
+            - "traefik.http.routers.app2.entrypoints=websecure"
+            - "traefik.http.routers.app2.tls=true"
+            - "traefik.http.services.app2.loadbalancer.server.port=3000"
     
     # node:
     #     container_name: kpi_node
