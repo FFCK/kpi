@@ -100,7 +100,7 @@
 							</td>
 						{/if}
 						<td>
-							<a href="GestionSchema.php" target="_blank">
+							<a href="GestionSchema.php?lang={$lang}&gameCount=1&timeIntervals=1" target="_blank">
 								<img align="absbottom" height="20" src="../img/typeE.png" title="{#Schema#}">
 								{#Schema#}
 							</a>
