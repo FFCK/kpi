@@ -146,7 +146,7 @@ class Details extends MyPage
             $arrayEquipe = array();
             $arrayPoule = array();
             $poule = '';
-            if (strlen($codeCompet) > 0 && $codeCompet != '*') { 
+            if (strlen($codeCompet) > 0 && $codeCompet != '*' && $arrayListJournees[0]['Statut'] != 'ATT') {
                 $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
                     ce.Tirage, c.Code_comite_dep  
                     FROM kp_competition_equipe ce, kp_club c 
@@ -311,7 +311,7 @@ class Details extends MyPage
             $arrayEquipe = array();
             $arrayPoule = array();
             $poule = '';
-            if (strlen($codeCompet) > 0 && $codeCompet != '*')
+            if (strlen($codeCompet) > 0 && $codeCompet != '*' && $arrayListJournees[0]['Statut'] != 'ATT')
             { 
                 $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
                     ce.Tirage, c.Code_comite_dep  
