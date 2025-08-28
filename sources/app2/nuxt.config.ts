@@ -2,13 +2,27 @@
 import tailwindcss from "@tailwindcss/vite"
 
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000/api'
+    }
+  },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint'],
-  css: ['~/assets/css/app.css'],
+  devServer: {
+    port: 3000
+  },
+  nitro: {
+    port: parseInt(process.env.NITRO_PORT || '3000')
+  },
+  modules: ['@nuxt/eslint', '@pinia/nuxt'],
+  css: ['@/assets/css/app.css'],
   vite: {
     plugins: [
       tailwindcss(),
     ],
   },
+  plugins: [
+    '@/plugins/dexie.js'
+  ],
 })
