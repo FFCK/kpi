@@ -9,7 +9,8 @@ function set_response_headers()
 		$origin === "https://www.kayak-polo.info" ||
 		$origin === "http://localhost:9000" ||
 		$origin === "http://localhost:9001" ||
-		$origin === "http://localhost:9002"
+		$origin === "http://localhost:9002" ||
+		$origin === "https://kpi_node.local"
 	) {
 		header("Access-Control-Allow-Origin: $origin");
 	}
