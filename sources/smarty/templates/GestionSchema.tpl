@@ -12,7 +12,7 @@
       {else}
         <span>{$recordCompetition.Libelle}{$recordCompetition.Soustitre2|indent:1:" - "}</span>
       {/if}
-    <small class="bg-info">{$matchs} {#Match#}{if $matchs>1}s{/if}</small>
+    {if $gameCount == 1}<small class="bg-info">{$matchs} {#Match#}{if $matchs>1}s{/if}</small>{/if}
     </h2>
   </div>
 </div>
@@ -20,22 +20,30 @@
   {if $recordCompetition.Code_typeclt == 'CP'}
     {assign var='idJournee' value=$arrayListJournees[0]}
     {assign var='Etape' value=$arrayJournees[$idJournee].Etape}
-    <article class="col-md-{$largeur}">
+    {if $etapes == 5}
+      <article style="width: 20%; float: left; padding-left: 7.5px; padding-right: 7.5px;">
+    {else}
+      <article class="col-md-{$largeur}">
+    {/if}
       {section name=i loop=$arrayListJournees}
         {assign var='idJournee' value=$arrayListJournees[i]}
         {if $Etape != $arrayJournees[$idJournee].Etape}
         </article>
-        <article class="col-md-{$largeur}">
+        {if $etapes == 5}
+          <article style="width: 20%; float: left; padding-left: 7.5px; padding-right: 7.5px;">
+        {else}
+          <article class="col-md-{$largeur}">
+        {/if}
         {/if}
         {assign var='Etape' value=$arrayJournees[$idJournee].Etape}
         {if $arrayJournees[$idJournee].Type == 'C'}
           <div class="padBottom table-responsive col-md-12 tablePhase">
             <h4 class="row text-center">
               {$arrayJournees[$idJournee].Phase} 
-              <small class="bg-info">{$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if}</small>
-              <small>
+              {if $gameCount == 1}<small class="bg-info">{$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if}</small>{/if}
+              {if $timeIntervals == 1}<small class="timeinterval">
                 {$arrayJournees[$idJournee].start_time}-{$arrayJournees[$idJournee].end_time}
-              </small>
+              </small>{/if}
             </h4>
             <table class='table table-striped table-condensed table-hover'>
               <thead>
@@ -100,10 +108,10 @@
         <h4 class="row text-center">
           {$arrayJournees[$idJournee].Phase}
           {* <small class="bg-info">{$arrayJournees[$idJournee].nb_matchs} {#Match#}{if $arrayJournees[$idJournee].nb_matchs>1}s{/if}</small> *}
-          <small>
+          {if $timeIntervals == 1}<small class="timeinterval">
             {$arrayJournees[$idJournee].start_time}
             {if $arrayJournees[$idJournee].end_time!=$arrayJournees[$idJournee].start_time}-{$arrayJournees[$idJournee].end_time}{/if}
-          </small>
+            </small>{/if}
         </h4>
             {section name=j loop=$arrayMatchs[$idJournee]}
               <div class="row cliquableNomEquipe {if !$smarty.section.j.last}padBottom{/if}">
