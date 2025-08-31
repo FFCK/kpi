@@ -39,6 +39,8 @@ class GestionJournee extends MyPageSecure
 		// Chargement des Evenements ...
 		$idEvenement = utyGetSession('idEvenement', -1);
 		$idEvenement = utyGetPost('evenement', $idEvenement);
+		$_SESSION['idEvenement'] = $idEvenement;
+		$this->m_tpl->assign('idEvenement', $idEvenement);
 		$idEvenement2 = $idEvenement;
 
 		$filtreJour = utyGetSession('filtreJour', '');
