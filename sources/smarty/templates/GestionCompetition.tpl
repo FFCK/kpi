@@ -336,7 +336,7 @@
 						{if $editCompet == ''}
 							<tr>
 								<td colspan=4>
-									<label for="bandeauLink">{#Lien_image_bandeau#} :</label>
+									<label for="bandeauLink">{#Lien_image_bandeau#} (2480x250px) :</label>
 									<input type="text" id="bandeauLink" name="bandeauLink">
 									<br>
 									<img hspace="2" width="200" src="" border="0" id='bandeauprovisoire'>
@@ -355,7 +355,7 @@
 							{if $profile <= 2 && $AuthModif == 'O'}
 								<tr>
 									<td colspan=4>
-										<label for="sponsorLink">{#Lien_image_sponsor#} :</label>
+										<label for="sponsorLink">{#Lien_image_sponsor#} (2480x250px) :</label>
 										<input type="text" id="sponsorLink" name="sponsorLink">
 										<br>
 										<img hspace="2" width="200" src="" border="0" id='sponsorprovisoire'>
