@@ -134,7 +134,7 @@ class FeuilleControle extends MyPage
         // Entête PDF ...	  
         $pdf = new PDF('L');
         $pdf->Open();
-        $pdf->SetTitle("Control sheet");
+        $pdf->SetTitle("Control Form " . $arrayCompetition['Soustitre2']);
 
         $pdf->SetAuthor("Kayak-polo.info");
         $pdf->SetCreator("Kayak-polo.info avec FPDF");
@@ -176,7 +176,7 @@ class FeuilleControle extends MyPage
             $pdf->Cell(137, 8, $titreCompet, 0, 0, 'L');
             $pdf->Cell(136, 8, $codeSaison, 0, 1, 'R');
             $pdf->SetFont('Arial', 'B', 14);
-            $pdf->Cell(273, 8, "Control sheet - " . $row['Libelle'], 0, 1, 'C');
+            $pdf->Cell(273, 8, "Control Form - " . $row['Libelle'], 0, 1, 'C');
             $pdf->Ln(2);
 
             $idEquipe = $row['Id'];
@@ -210,20 +210,32 @@ class FeuilleControle extends MyPage
                             $arrayJoueur[$idEquipe][$j]['Matric'] = $arrayJoueur[$idEquipe][$j]['Reserve'];
                         }
                     }
+                    if ($arrayJoueur[$idEquipe][$j]['Numero'] == 11) {
+                        $pdf->Cell(15, 9, '', '', 0, 'C');
+                        $pdf->Cell(139, 9, 'Team Staff', 'B', 1, 'L');
+                    }
                     $pdf->Cell(15, 9, '', '', 0, 'C');
-                    $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
-                    $pdf->Cell(8, 9, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
-                    $pdf->Cell(25, 9, $arrayJoueur[$idEquipe][$j]['Matric'] . $arrayJoueur[$idEquipe][$j]['Saison'], 'B', 0, 'C');
-                    $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
-                    $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
-                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Kayak']], 'B', 0, 'C');
-                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Gilet']], 'B', 0, 'C');
-                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Casque']], 'B', 0, 'C');
-                    $pdf->Cell(32, 9, $arrayJoueur[$idEquipe][$j]['Pagaies'], 'B', 1, 'C');
+                    if ($arrayJoueur[$idEquipe][$j]['Capitaine'] == 'E') {
+                        $pdf->Cell(16, 9, '', 'B', 0, 'C');
+                        $pdf->Cell(8, 9, '', 'B', 0, 'C');
+                        $pdf->Cell(25, 9, $arrayJoueur[$idEquipe][$j]['Matric'], 'B', 0, 'C');
+                        $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
+                        $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 1, 'C');
+                    } else {
+                        $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
+                        $pdf->Cell(8, 9, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
+                        $pdf->Cell(25, 9, $arrayJoueur[$idEquipe][$j]['Matric'], 'B', 0, 'C');
+                        $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
+                        $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
+                        $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Kayak']], 'B', 0, 'C');
+                        $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Gilet']], 'B', 0, 'C');
+                        $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Casque']], 'B', 0, 'C');
+                        $pdf->Cell(32, 9, $arrayJoueur[$idEquipe][$j]['Pagaies'], 'B', 1, 'C');
+                    }
                 }
             }
         }
-        $pdf->Output('Control_Sheet.pdf', 'I');
+        $pdf->Output('Control_Form_' . $arrayCompetition['Soustitre2'] . '.pdf', 'I');
     }
 }
 
