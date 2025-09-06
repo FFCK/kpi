@@ -210,6 +210,10 @@ class FeuilleControle extends MyPage
                             $arrayJoueur[$idEquipe][$j]['Matric'] = $arrayJoueur[$idEquipe][$j]['Reserve'];
                         }
                     }
+                    if ($arrayJoueur[$idEquipe][$j]['Numero'] == 11) {
+                        $pdf->Cell(15, 9, '', '', 0, 'C');
+                        $pdf->Cell(246, 9, 'Encadrement', 'B', 1, 'L');
+                    }
                     $pdf->Cell(15, 9, '', '', 0, 'C');
                     $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
                     $pdf->Cell(8, 9, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
