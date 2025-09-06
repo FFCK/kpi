@@ -146,7 +146,8 @@ class MyPage
       'saintomer2022',
       'saintomer2022b',
       'cna2022',
-      'deqing2024'
+      'deqing2024',
+      'avranches2025'
     ])) {
       return '<link href="./css/' . $css . '.css?v=' . NUM_VERSION . '" rel="stylesheet">';
     }
