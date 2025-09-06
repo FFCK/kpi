@@ -146,54 +146,56 @@ class Details extends MyPage
             $arrayEquipe = array();
             $arrayPoule = array();
             $poule = '';
-            if (strlen($codeCompet) > 0 && $codeCompet != '*' && $arrayListJournees[0]['Statut'] != 'ATT') {
-                $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
-                    ce.Tirage, c.Code_comite_dep  
-                    FROM kp_competition_equipe ce, kp_club c 
-                    WHERE ce.Code_compet = ? 
-                    AND ce.Code_saison = ? 
-                    AND ce.Code_club = c.Code 
-                    ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
-                $result = $myBdd->pdo->prepare($sql);
-                $result->execute(array($codeCompet, $codeSaison));
-                while ($row = $result->fetch()) {
-                    //Logos
-                    $logo = '';
-                    $club = $row['Code_club'];
-                    if(is_file('img/KIP/logo/'.$club.'-logo.png')){
-                        $logo = 'img/KIP/logo/'.$club.'-logo.png';
-                    }elseif(is_file('img/Nations/'.substr($club, 0, 3).'.png')){
-                        $club = substr($club, 0, 3);
-                        $logo = 'img/Nations/'.$club.'.png';
-                    }
+            if (in_array($arrayListJournees[0]['Statut'], ['ON', 'END'])) {
+                if (strlen($codeCompet) > 0 && $codeCompet != '*') {
+                    $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
+                        ce.Tirage, c.Code_comite_dep  
+                        FROM kp_competition_equipe ce, kp_club c 
+                        WHERE ce.Code_compet = ? 
+                        AND ce.Code_saison = ? 
+                        AND ce.Code_club = c.Code 
+                        ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+                    $result = $myBdd->pdo->prepare($sql);
+                    $result->execute(array($codeCompet, $codeSaison));
+                    while ($row = $result->fetch()) {
+                        //Logos
+                        $logo = '';
+                        $club = $row['Code_club'];
+                        if(is_file('img/KIP/logo/'.$club.'-logo.png')){
+                            $logo = 'img/KIP/logo/'.$club.'-logo.png';
+                        }elseif(is_file('img/Nations/'.substr($club, 0, 3).'.png')){
+                            $club = substr($club, 0, 3);
+                            $logo = 'img/Nations/'.$club.'.png';
+                        }
 
-                    if (strlen($row['Code_comite_dep']) > 3) {
-                        $row['Code_comite_dep'] = 'FRA';
+                        if (strlen($row['Code_comite_dep']) > 3) {
+                            $row['Code_comite_dep'] = 'FRA';
+                        }
+                        if ($row['Tirage'] != 0 or $row['Poule'] != '') {
+                            $this->m_tpl->assign('Tirage', 'ok');
+                        }
+                        if($row['Poule'] == '') {
+                            $row['Poule'] = '-';
+                        }
+                        if ($row['Poule'] != $poule) {
+                            $arrayPoule[] = $row['Poule'];
+                        }
+                        $poule = $row['Poule'];
+                        
+                        $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
+                            'Libelle' => $row['Libelle'], 
+                            'Code_club' => $row['Code_club'],
+                            'Code_comite_dep' => $row['Code_comite_dep'],
+                            'logo' => $logo,
+                            'club' => $club,
+                            'Numero' => $row['Numero'], 
+                            'Poule' => $row['Poule'], 
+                            'Tirage' => $row['Tirage'], 
+                            'Code_comite_dep' => $row['Code_comite_dep'] 
+                        );
                     }
-                    if ($row['Tirage'] != 0 or $row['Poule'] != '') {
-                        $this->m_tpl->assign('Tirage', 'ok');
-                    }
-                    if($row['Poule'] == '') {
-                        $row['Poule'] = '-';
-                    }
-                    if ($row['Poule'] != $poule) {
-                        $arrayPoule[] = $row['Poule'];
-                    }
-                    $poule = $row['Poule'];
-                    
-                    $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
-                        'Libelle' => $row['Libelle'], 
-                        'Code_club' => $row['Code_club'],
-                        'Code_comite_dep' => $row['Code_comite_dep'],
-                        'logo' => $logo,
-                        'club' => $club,
-                        'Numero' => $row['Numero'], 
-                        'Poule' => $row['Poule'], 
-                        'Tirage' => $row['Tirage'], 
-                        'Code_comite_dep' => $row['Code_comite_dep'] 
-                    );
                 }
-            }	
+            }
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
             $this->m_tpl->assign('arrayPoule', $arrayPoule);
             if (count($arrayPoule) % 2 == 0) {
@@ -311,55 +313,56 @@ class Details extends MyPage
             $arrayEquipe = array();
             $arrayPoule = array();
             $poule = '';
-            if (strlen($codeCompet) > 0 && $codeCompet != '*' && $arrayListJournees[0]['Statut'] != 'ATT')
-            { 
-                $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
-                    ce.Tirage, c.Code_comite_dep  
-                    FROM kp_competition_equipe ce, kp_club c 
-                    WHERE ce.Code_compet = ? 
-                    AND ce.Code_saison = ? 
-                    AND ce.Code_club = c.Code 
-                    ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
-                $result = $myBdd->pdo->prepare($sql);
-                $result->execute(array($codeCompet, $codeSaison));
-                while ($row = $result->fetch()) {
-                    //Logos
-                    $logo = '';
-                    $club = $row['Code_club'];
-                    if(is_file('img/KIP/logo/'.$club.'-logo.png')){
-                        $logo = 'img/KIP/logo/'.$club.'-logo.png';
-                    }elseif(is_file('img/Nations/'.substr($club, 0, 3).'.png')){
-                        $club = substr($club, 0, 3);
-                        $logo = 'img/Nations/'.$club.'.png';
-                    }
+            if (in_array($arrayListJournees[0]['Statut'], ['ON', 'END'])) {
+                if (strlen($codeCompet) > 0 && $codeCompet != '*') { 
+                    $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
+                        ce.Tirage, c.Code_comite_dep  
+                        FROM kp_competition_equipe ce, kp_club c 
+                        WHERE ce.Code_compet = ? 
+                        AND ce.Code_saison = ? 
+                        AND ce.Code_club = c.Code 
+                        ORDER BY ce.Poule, ce.Tirage, ce.Libelle, ce.Id ";
+                    $result = $myBdd->pdo->prepare($sql);
+                    $result->execute(array($codeCompet, $codeSaison));
+                    while ($row = $result->fetch()) {
+                        //Logos
+                        $logo = '';
+                        $club = $row['Code_club'];
+                        if(is_file('img/KIP/logo/'.$club.'-logo.png')){
+                            $logo = 'img/KIP/logo/'.$club.'-logo.png';
+                        }elseif(is_file('img/Nations/'.substr($club, 0, 3).'.png')){
+                            $club = substr($club, 0, 3);
+                            $logo = 'img/Nations/'.$club.'.png';
+                        }
 
-                    if (strlen($row['Code_comite_dep']) > 3) {
-                        $row['Code_comite_dep'] = 'FRA';
+                        if (strlen($row['Code_comite_dep']) > 3) {
+                            $row['Code_comite_dep'] = 'FRA';
+                        }
+                        if ($row['Tirage'] != 0 or $row['Poule'] != '') {
+                            $this->m_tpl->assign('Tirage', 'ok');
+                        }
+                        if($row['Poule'] == '') {
+                            $row['Poule'] = '-';
+                        }
+                        if ($row['Poule'] != $poule) {
+                            $arrayPoule[] = $row['Poule'];
+                        }
+                        $poule = $row['Poule'];
+                        
+                        $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
+                            'Libelle' => $row['Libelle'], 
+                            'Code_club' => $row['Code_club'],
+                            'Code_comite_dep' => $row['Code_comite_dep'],
+                            'logo' => $logo,
+                            'club' => $club,
+                            'Numero' => $row['Numero'], 
+                            'Poule' => $row['Poule'], 
+                            'Tirage' => $row['Tirage'], 
+                            'Code_comite_dep' => $row['Code_comite_dep'] 
+                        );
                     }
-                    if ($row['Tirage'] != 0 or $row['Poule'] != '') {
-                        $this->m_tpl->assign('Tirage', 'ok');
-                    }
-                    if($row['Poule'] == '') {
-                        $row['Poule'] = '-';
-                    }
-                    if ($row['Poule'] != $poule) {
-                        $arrayPoule[] = $row['Poule'];
-                    }
-                    $poule = $row['Poule'];
-                    
-                    $arrayEquipe[$poule][] = array('Id' => $row['Id'], 
-                        'Libelle' => $row['Libelle'], 
-                        'Code_club' => $row['Code_club'],
-                        'Code_comite_dep' => $row['Code_comite_dep'],
-                        'logo' => $logo,
-                        'club' => $club,
-                        'Numero' => $row['Numero'], 
-                        'Poule' => $row['Poule'], 
-                        'Tirage' => $row['Tirage'], 
-                        'Code_comite_dep' => $row['Code_comite_dep'] 
-                    );
                 }
-            }	
+            }
             $this->m_tpl->assign('arrayEquipe', $arrayEquipe);
             $this->m_tpl->assign('arrayPoule', $arrayPoule);
             if (count($arrayPoule) % 2 == 0) {
