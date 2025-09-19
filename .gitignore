@@ -92,3 +92,6 @@ docker/apachelogs_8/*
 !docker/apachelogs_8/.gitkeep
 
 sources/wordpress_archive/*
+
+.gemini/.env
+.gemini/settings.json

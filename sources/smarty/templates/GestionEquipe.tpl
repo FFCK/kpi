@@ -66,7 +66,7 @@
 												height="25" src="../img/pdf2.png" /><br>Photo</a>
 									{/if}
 									{if $profile <= 2}
-										<a href="FeuilleControle.php" target="_blank" title="{#Controle#}"><img height="25"
+										<a href="FeuilleControle{#lang_version#}.php" target="_blank" title="{#Controle#}"><img height="25"
 											src="../img/pdf.png" /><br>{#Controle#}</a>
 									{/if}
 									<img class="cliquable" id="actuButton" title="{#Recharger#}" height="25"

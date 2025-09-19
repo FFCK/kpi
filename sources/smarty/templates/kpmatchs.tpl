@@ -252,29 +252,32 @@
                                             {$arrayMatchs[i].EquipeB} 
                                             {if $arrayMatchs[i].Arbitre_principal != '-1'}{$arrayMatchs[i].Arbitre_principal}{/if} 
                                             {if $arrayMatchs[i].Arbitre_secondaire != '-1'}{$arrayMatchs[i].Arbitre_secondaire}{/if}">
-                                <div class="col-xs-6">
+                                <div class="col-xs-5">
                                     <span class="pull-left badge" title="{if $lang == 'en'}{$arrayMatchs[i].Date_EN}{else}{$arrayMatchs[i].Date_match}{/if}">
                                         {if $lang == 'en'}{$arrayMatchs[i].Date_EN|substr:-5}{else}{$arrayMatchs[i].Date_match|truncate:5:''}{/if}
                                         {$arrayMatchs[i].Heure_match} - {#Terr#} {$arrayMatchs[i].Terrain|default:'&nbsp;'}
                                     </span>
                                 </div>
-                                <div class="col-xs-6">
+                                <div class="col-xs-2">
+                                    <small><em>#{$arrayMatchs[i].Numero_ordre}</em></small>
+                                </div>
+                                <div class="col-xs-5">
                                     {if $arrayCompetition[0].Code_typeclt == 'CP'}
-                                        <small><em><span class="pull-right">{$arrayMatchs[i].Phase|default:'&nbsp;'}</em></span></small>
+                                        <small><em><span class="pull-right">{$arrayMatchs[i].Phase|default:'&nbsp;'}</span></em></small>
                                     {else}
-                                        <small><em><span class="pull-right">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</em></span></small>
+                                        <small><em><span class="pull-right">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</span></em></small>
                                     {/if}
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="btn-group btn-block" role="group">
                                         <a class="col-xs-5 text-right"{if $arrayMatchs[i].NumA > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumA}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
-                                            <b class="">{$arrayMatchs[i].EquipeA|default:'&nbsp;'}</b>
+                                            <b class="btn btn-xs btn-default">{$arrayMatchs[i].EquipeA|default:'&nbsp;'}</b>
                                         </a>
                                         
                                         {if $validation == 'O' && $arrayMatchs[i].ScoreA != '?' && $arrayMatchs[i].ScoreA != '' && $arrayMatchs[i].ScoreB != '?' && $arrayMatchs[i].ScoreB != ''}
-                                            <span type="button" class="col-xs-2 label label-success" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank" title="{#Feuille_marque#}">
+                                            <a type="button" class="col-xs-2 label label-success" href="PdfMatchMulti.php?listMatch={$arrayMatchs[i].Id}" Target="_blank" title="{#Feuille_marque#}">
                                                 {$arrayMatchs[i].ScoreA|replace:'?':'&nbsp;'|default:'&nbsp;'} - {$arrayMatchs[i].ScoreB|replace:'?':'&nbsp;'|default:'&nbsp;'}
-                                            </span>
+                                            </a>
                                         {elseif $statut == 'ON' && $validation != 'O'}
                                             <span type="button" class="col-xs-2 scoreProvisoire label label-warning" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}</span>
                                         {elseif $statut == 'END' && $validation != 'O'}
@@ -284,7 +287,7 @@
                                         {/if}
                                         
                                         <a class="col-xs-5 text-left"{if $arrayMatchs[i].NumB > 0} href="kpequipes.php?Equipe={$arrayMatchs[i].NumB}&Compet={$arrayMatchs[i].Code_competition}&Css={$Css}" title="{#Palmares#}"{/if}>
-                                            <b class="">{$arrayMatchs[i].EquipeB|default:'&nbsp;'}</b>
+                                            <b class="btn btn-xs btn-default">{$arrayMatchs[i].EquipeB|default:'&nbsp;'}</b>
                                         </a>
                                     </div>
                                 </div>
