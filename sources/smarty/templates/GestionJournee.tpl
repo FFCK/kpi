@@ -537,7 +537,7 @@
 													{/if}
 												</td>
 												<td>
-													<span class='directInput date {if $lang=='en'}EN{/if}'
+													<span class='directInput date{if $lang=='en'}EN{/if}'
 														Id="Date_match-{$arrayMatchs[i].Id}-date{if $lang=='en'}EN{/if}"
 														tabindex="1{$smarty.section.i.iteration|string_format:'%02d'}1">
 														{$arrayMatchs[i].Date_match}

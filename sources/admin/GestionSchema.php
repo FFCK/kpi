@@ -58,6 +58,12 @@ class Schema extends MyPageSecure
         $this->m_tpl->assign('Round', $Round);
         $Round = str_replace('*', '%', $Round);
 
+        $gameCount = utyGetGet('gameCount', '1');
+        $this->m_tpl->assign('gameCount', $gameCount);
+
+        $timeIntervals = utyGetGet('timeIntervals', '1');
+        $this->m_tpl->assign('timeIntervals', $timeIntervals);
+
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
         $this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
 
@@ -268,7 +274,7 @@ class Schema extends MyPageSecure
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
-                    ORDER BY j.Etape, j.Niveau DESC, m.Date_match, m.Heure_match ";
+                    ORDER BY j.Etape, j.Niveau DESC, m.Date_match, m.Heure_match, m.Numero_ordre ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($event, $codeCompet, $codeSaison, $Round));
             } else {
@@ -286,7 +292,7 @@ class Schema extends MyPageSecure
                     AND j.Code_competition = ? 
                     AND j.Code_saison = ? 
                     AND j.Etape LIKE ? 
-                    ORDER BY j.Etape, j.Niveau DESC, m.Date_match, m.Heure_match ";
+                    ORDER BY j.Etape, j.Niveau DESC, m.Date_match, m.Heure_match, m.Numero_ordre ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($codeCompet, $codeSaison, $Round));
             }

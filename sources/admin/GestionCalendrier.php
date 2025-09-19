@@ -31,6 +31,8 @@ class GestionCalendrier extends MyPageSecure
 		// Chargement des Evenements ...
 		$idEvenement = utyGetSession('idEvenement', -1);
 		$idEvenement = utyGetPost('evenement', $idEvenement);
+		$_SESSION['idEvenement'] = $idEvenement;
+		$this->m_tpl->assign('idEvenement', $idEvenement);
 
 		//Filtre affichage type compet
 		$AfficheCompet = utyGetSession('AfficheCompet', '');
@@ -38,8 +40,6 @@ class GestionCalendrier extends MyPageSecure
 		$_SESSION['AfficheCompet'] = $AfficheCompet;
 		$this->m_tpl->assign('AfficheCompet', $AfficheCompet);
 
-		$_SESSION['idEvenement'] = $idEvenement;
-		$this->m_tpl->assign('idEvenement', $idEvenement);
 
 		$sql = "SELECT Id, Libelle, Date_debut 
 			FROM kp_evenement 

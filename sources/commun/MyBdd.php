@@ -463,6 +463,7 @@ class MyBdd
 
 			if (strcasecmp($section, "juges_kap") == 0) {
 				$temp = $this->ImportPCE_Juges($buffer);
+				// $temp = $this->ImportPCE_Juges_2($buffer);
 				$nbArbitres++;
 				$count_arbitres++;
 				$array_arbitres = array_merge($array_arbitres, $temp);
@@ -735,6 +736,94 @@ class MyBdd
 			$international, $Arb, $livret, $niveau, $saisonJuge
 		);
 	}
+
+	// Importation de la section [juges_pol] du fichier PCE 
+	function ImportPCE_Juges_2($buffer)
+	{
+		$arrayToken = explode(";", $buffer);
+		$nbToken = count($arrayToken);
+
+		if ($nbToken != 8) {
+			array_push($this->m_arrayinfo, "Erreur [juges_pol] : " . $buffer);
+			return;
+		}
+
+		$matric =  $arrayToken[0];
+		$livret = $arrayToken[7];
+		if (substr($livret, -4) !== 'KAP') {
+			return false; // On ne traite que les juges KAP
+		}
+		$saisonJuge = substr($livret, 4);
+		// on extrait le code du livret entre le tiret et l'underscore (2025-JREGS_KAP donne JREGS)
+		$livret = substr($livret, strpos($livret, '-') + 1, strpos($livret, '_') - strpos($livret, '-') - 1);
+		/*
+			2025-JREGS_KAP
+			2025-JREG_KAP
+			2025-JNATA_KAP
+			2025-JNATB_KAP
+			2025-JNATC_KAP
+			2025-JNATS_KAP
+			2025-JINT_KAP
+			2025-OTM_KAP
+			2025-OTMS_KAP
+			2025-JO_KAP
+		*/
+
+		$regional = substr($arrayToken[3], 0, 1);
+		$interregional = substr($arrayToken[4], 0, 1);
+		$national = substr($arrayToken[5], 0, 1);
+		$international = substr($arrayToken[6], 0, 1);
+		$Arb = '';
+
+		switch ($livret) {
+			case 'JREGS':
+				$niveau = 'S';
+				$Arb = "Reg";
+				break;
+			case 'JREG':
+				$niveau = 'A';
+				$Arb = "Reg";
+				break;
+			case 'JNATA':
+				$niveau = 'A';
+				$Arb = "Nat";
+				break;
+			case 'JNATB':
+				$niveau = 'B';
+				$Arb = "Nat";
+				break;
+			case 'JNATC':
+				$niveau = 'C';
+				$Arb = "Nat";
+				break;
+			case 'JNATS':
+				$niveau = 'S';
+				$Arb = "Nat";
+				break;
+			case 'JINT':
+				$niveau = '';
+				$Arb = "Int";
+				break;
+			case 'OTM':
+				$niveau = '';
+				$Arb = "OTM";
+				break;
+			case 'OTMS':
+				$niveau = 'S';
+				$Arb = "OTM";
+				break;
+			case 'JO':
+				$niveau = '';
+				$Arb = "JO";
+				break;
+		}
+
+		return array(
+			$matric, $regional, $interregional, $national,
+			$international, $Arb, $livret, $niveau, $saisonJuge
+		);
+	}
+
 
 	function ImportPCE_Truncate_Juges()
 	{
