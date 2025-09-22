@@ -6,7 +6,7 @@ const db = createDb('app2', 'preferences')
 export const usePreferenceStore = defineStore('preferenceStore', {
   state: () => ({
     preferences: {
-      selectedEvent: ref(null)
+      lastEvent: null
     }
   }),
   actions: {
@@ -24,15 +24,6 @@ export const usePreferenceStore = defineStore('preferenceStore', {
     async putItem(id, value) {
       await db.preferences.put({ id, value })
       this.fetchItems()
-    },
-    async updatePreferences(data) {
-      try {
-        await db.preferences.bulkPut(data)
-        this.fetchItems()
-      }
-      catch (error) {
-        console.error(error)
-      }
     },
     async getItem(id) {
       return await db.preferences.get(id)
