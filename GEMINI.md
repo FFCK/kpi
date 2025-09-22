@@ -10,3 +10,5 @@
 - un wordpress sert pour la page d'accueil du site, dossier `wordpress/`
 - Les fichiers générés (`vendor/`, `node_modules/`, `dist/`) ne doivent pas être modifiés.
 - Les fichiers `sources/commun/MyParams.php` ne doivent jamais être modifiés ni commités.
+- Toujours utiliser des requêtes préparées et pdo
+- Un dossier `sources/app2` dans lequel je tente de migrer le fontend app_dev vers du nuxt
