@@ -1,80 +1,65 @@
 <template>
-  <div v-if="prefs" class="max-w-2xl mx-auto mt-6">
-    <div
-      v-if="prefs.event > 0"
-      role="button"
-      class="text-xl font-semibold text-center cursor-pointer"
-      @click="loadEvents"
-    >
+  <div v-if="preferenceStore.preferences" class="mt-3">
+    <!-- Display selected event -->
+    <div v-if="preferenceStore.preferences.lastEvent && !showSelector" role="button" class="text-center" @click="loadEvents">
       <img
-        class="mb-2 event_logo mx-auto"
-        :src="`${baseUrl}/img/${prefs.event_logo}`"
+        v-if="preferenceStore.preferences.lastEvent.logo"
+        class="mb-2 mx-auto max-h-14"
+        :src="`/img/${preferenceStore.preferences.lastEvent.logo}`"
         alt="Logo"
-        v-if="prefs.event_logo"
       />
       <br />
-      {{ prefs.event_name }} - {{ prefs.event_place }}
-      <button v-if="!showSelector" class="ml-2 px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition" >
-        <i class="bi bi-arrow-left-right" /> {{ $t("Event.Change") }}
+      <span class="font-semibold">{{ preferenceStore.preferences.lastEvent.libelle }} - {{ preferenceStore.preferences.lastEvent.place }}</span>
+      <button class="ml-2 px-2 py-1 bg-gray-500 text-white text-xs rounded">
+        <i class="bi bi-arrow-left-right" /> Changer
       </button>
     </div>
-    <div v-else class="text-center">
-      <button v-if="!showSelector" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition" @click="loadEvents">
-        {{ $t("Event.SelectEvent") }}
+    <!-- Button to select event if none is selected -->
+    <div v-else-if="!showSelector" class="text-center">
+      <button class="px-4 py-2 bg-blue-600 text-white rounded" @click="loadEvents">
+        Sélectionner un événement
       </button>
     </div>
 
-    <form v-if="showSelector" class="flex flex-col items-center mt-4">
-      <div class="text-center mb-2">
-        <div class="inline-flex rounded shadow overflow-hidden">
-          <button
-            type="button"
-            :class="[
-              'px-4 py-1 text-sm font-medium focus:outline-none transition',
-              eventMode.value === 'std' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border border-blue-600'
-            ]"
-            @click="changeEventMode('std')"
-          >
-            {{ $t("Event.StdEvents") }}
-          </button>
-          <button
-            type="button"
-            :class="[
-              'px-4 py-1 text-sm font-medium focus:outline-none transition',
-              eventMode.value === 'champ' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border border-blue-600'
-            ]"
-            @click="changeEventMode('champ')"
-          >
-            {{ $t("Event.LocalChamp") }}
-          </button>
-        </div>
-      </div>
-      <div class="w-full mb-2">
-        <div class="flex justify-center">
-          <select
-            v-model="eventSelected.value"
-            class="block w-64 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500 text-center"
-            @change="changeButton.value = true"
-          >
-            <option disabled value="0">
-              ▼ {{ $t("Event.PleaseSelectOne") }} ▼
-            </option>
-            <option v-for="event in events.value" :key="event.id" :value="event.id">
-              {{ event.id }} | {{ event.libelle }} - {{ event.place }}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="flex w-full justify-center gap-4 mt-2">
-        <button class="px-4 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition" @click.prevent="cancelEvent">
-          {{ $t("Event.Cancel") }}
+    <!-- Event selection form -->
+    <form v-if="showSelector" class="text-center">
+      <!-- Event mode selector -->
+      <div class="mb-1 inline-flex rounded-md shadow-sm" role="group">
+        <button
+          type="button"
+          @click="changeEventMode('std')"
+          :class="['px-4 py-1 text-sm font-medium rounded-l-lg border border-gray-200', eventMode === 'std' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
+        >
+          Standards
         </button>
         <button
-          v-if="changeButton.value"
-          class="px-4 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition"
-          @click.prevent="changeEvent"
+          type="button"
+          @click="changeEventMode('champ')"
+          :class="['px-4 py-1 text-sm font-medium rounded-r-md border border-gray-200', eventMode === 'champ' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
         >
-          {{ $t("Event.Confirm") }}
+          Championnats Locaux
+        </button>
+      </div>
+      
+      <!-- Event dropdown -->
+      <div class="my-2 max-w-md mx-auto">
+        <select v-model="eventSelectedId" @change="changeButton = true" class="block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500">
+          <option disabled :value="null">
+            ▼ Veuillez sélectionner un événement ▼
+          </option>
+          <option v-for="event in events" :key="event.id" :value="event.id">
+            {{ event.id }} | {{ event.libelle }} - {{ event.place }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="flex justify-center space-x-4">
+        <button @click.prevent="cancelEvent" class="px-4 py-1 bg-gray-500 text-white text-sm rounded">
+          Annuler
+        </button>
+        <button v-if="changeButton" @click.prevent="changeEvent" class="px-4 py-1 bg-blue-600 text-white text-sm rounded">
+          Confirmer
         </button>
       </div>
     </form>
@@ -82,101 +67,93 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { usePrefs } from '@/composables/usePrefs'
-import { useUser } from '@/composables/useUser'
-import { useStatus } from '@/composables/useStatus'
-import idbs from '@/services/idbStorage'
-import useFetchApi from '@/composables/useFetchApi'
-import { useEventStore } from '@/stores/eventStore'
-import { usePreferenceStore } from '@/stores/preferenceStore'
-import { useGameStore } from '@/stores/gameStore'
+import { ref, onMounted, computed, toRaw } from 'vue'
 
-const baseUrl = process.env.VUE_APP_BASE_URL
-const showSelector = ref(false)
-const eventSelected = ref(0)
-const changeButton = ref(false)
-
-const prefs = usePrefs()
-const user = useUser()
-const status = useStatus()
-const fetchApi = useFetchApi()
-const eventStore = useEventStore()
+// Stores & Composables
 const preferenceStore = usePreferenceStore()
-const gameStore = useGameStore()
+const eventStore = useEventStore()
+const { getApi } = useApi()
+const runtimeConfig = useRuntimeConfig()
+const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
-const eventMode = computed(() => preferenceStore.preferences.events ?? 'std')
-const events = computed(() => eventStore.events)
+// State
+const showSelector = ref(false)
+const eventSelectedId = ref(null)
+const changeButton = ref(false)
+const eventMode = ref('std') // Default mode
 
-function changeEventMode(mode) {
+// Computed
+const events = computed(() => {
+  if (eventMode.value === 'std') {
+    // Create a copy and sort it in descending order by id
+    return [...eventStore.events].sort((a, b) => b.id - a.id)
+  }
+  return eventStore.events
+})
+
+// Methods
+const fetchApi = async (url) => {
+  const response = await getApi(url)
+  return await response.json()
+}
+
+const changeEventMode = async (mode) => {
   if (mode !== eventMode.value) {
-    preferenceStore.updatePreferences({ events: mode })
-    idbs.dbPut('preferences', preferenceStore.preferences)
-    loadEvents()
+    eventMode.value = mode
+    // NOTE: The old component saved eventMode to preferences.
+    // This version keeps it as local component state.
+    await loadEvents()
   }
 }
 
-async function loadEvents() {
-  if (!(await status.checkOnline())) {
-    return
-  }
+const loadEvents = async () => {
   eventStore.loading = true
+  showSelector.value = false // Hide selector while loading
   try {
-    const result = await fetchApi.getEvents(eventMode.value)
-    const eventsResult = result.data.map(event => {
-      event.id = parseInt(event.id)
-      return event
-    })
-    eventStore.events = eventsResult
-    eventSelected.value = prefs.value.event
+    const result = await fetchApi(`${apiBaseUrl}/events/${eventMode.value}`)
+    const eventsResult = result.map(event => ({ ...event, id: parseInt(event.id) }))
+    
+    await eventStore.clearAndUpdateEvents(eventsResult)
+    
+    eventSelectedId.value = preferenceStore.preferences.lastEvent?.id || null
     showSelector.value = true
   } catch (error) {
-    if (error.message === 'Network Error') {
-      console.log('Offline !')
-    }
     eventStore.error = error
+    console.error('Failed to load events:', error)
   } finally {
     eventStore.loading = false
   }
 }
 
-async function changeEvent() {
-  if (!(await status.checkOnline())) {
-    return
+const changeEvent = async () => {
+  if (!eventSelectedId.value) return
+
+  const selectedEvent = eventStore.getEventById(eventSelectedId.value)
+  if (!selectedEvent) return
+
+  // NOTE: The old component cleared Games and Charts data here.
+  // This logic can be added back if those stores are migrated to app2.
+  
+  await preferenceStore.putItem('lastEvent', toRaw(selectedEvent))
+  
+  showSelector.value = false
+  changeButton.value = false
+  
+  // NOTE: The old component emitted a 'changeEvent'.
+  // If the parent page needs to react, defineEmits can be used here.
+}
+
+const cancelEvent = () => {
+  showSelector.value = false
+  changeButton.value = false
+}
+
+onMounted(async () => {
+  // Fetch initial preferences when the component is mounted
+  await preferenceStore.fetchItems()
+  // Set initial selected event ID if a preference exists
+  if (preferenceStore.preferences.lastEvent) {
+    eventSelectedId.value = preferenceStore.preferences.lastEvent.id
   }
-  const e = eventStore.events.find(ev => ev.id === eventSelected.value)
-  preferenceStore.updatePreferences({
-    event: e.id,
-    event_name: e.libelle,
-    event_place: e.place,
-    event_logo: e.logo,
-    fav_categories: '[]',
-    fav_teams: '[]',
-    fav_refs: '[]',
-    fav_dates: '',
-    fav_flags: true
-  })
-  idbs.dbPut('preferences', preferenceStore.preferences)
-  Games.deleteAll()
-  idbs.dbClear('games')
-  idbs.dbClear('charts')
-  showSelector.value = false
-  changeButton.value = false
-  // $emit equivalent in <script setup>:
-  // If you need to emit, use defineEmits
-  // const emit = defineEmits(['changeEvent'])
-  // emit('changeEvent')
-}
-
-function cancelEvent() {
-  showSelector.value = false
-  changeButton.value = false
-}
+})
 </script>
-
-<style scoped>
-.event_logo {
-  max-height: 55px;
-  max-width: 100%;
-}
-</style>
