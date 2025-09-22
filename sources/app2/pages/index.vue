@@ -22,8 +22,8 @@
       </div>
 
       <!-- événement sélectionné -->
-      <div v-if="preferenceStore.preferences.selectedEvent" class="ml-2 px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition">
-        {{ preferenceStore.preferences.selectedEvent.id }} | {{ preferenceStore.preferences.selectedEvent.libelle }} - {{ preferenceStore.preferences.selectedEvent.place }}
+      <div v-if="preferenceStore.preferences.lastEvent" class="ml-2 px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition">
+        {{ preferenceStore.preferences.lastEvent.id }} | {{ preferenceStore.preferences.lastEvent.libelle }} - {{ preferenceStore.preferences.lastEvent.place }}
       </div>
       
     </div>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, toRaw } from 'vue'
 const { getApi } = useApi()
 const runtimeConfig = useRuntimeConfig()
 const apiBaseUrl = runtimeConfig.public.apiBaseUrl
@@ -79,17 +79,18 @@ const fetchEvents = async () => {
 const selectEvent = async () => {
   selectedEvent.value = await eventStore.getEventById(selectedEventId.value)
   eventStore.selectedEvent = selectedEvent.value
-  await preferenceStore.putItem('selectedEvent', selectedEvent.value)
-  preferenceStore.updatePreferences({ selectedEvent: selectedEvent.value });
-
+  await preferenceStore.putItem('lastEvent', toRaw(selectedEvent.value))
 }
 
 onMounted(async () => {
   await preferenceStore.fetchItems()
-  if (preferenceStore.preferences.selectedEvent) {
-    selectedEventId.value = preferenceStore.preferences.selectedEvent.id
-    eventStore.selectedEvent = eventStore.getEventById(selectedEventId.value)
-    selectedEvent.value = eventStore.selectedEvent
+  // if (eventStore.events.length === 0) {
+  //   await fetchEvents()
+  // }
+  if (preferenceStore.preferences.lastEvent) {
+    selectedEventId.value = preferenceStore.preferences.lastEvent.id
+    selectedEvent.value = preferenceStore.preferences.lastEvent
+    eventStore.selectedEvent = selectedEvent.value
   }
 })
 </script>
