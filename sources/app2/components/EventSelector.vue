@@ -11,13 +11,13 @@
       <br />
       <span class="font-semibold">{{ preferenceStore.preferences.lastEvent.libelle }} - {{ preferenceStore.preferences.lastEvent.place }}</span>
       <button class="ml-2 px-2 py-1 bg-gray-500 text-white text-xs rounded">
-        <i class="bi bi-arrow-left-right" /> Changer
+        <i class="bi bi-arrow-left-right" /> {{ t('Event.Change') }}
       </button>
     </div>
     <!-- Button to select event if none is selected -->
     <div v-else-if="!showSelector" class="text-center">
       <button class="px-4 py-2 bg-blue-600 text-white rounded" @click="loadEvents">
-        Sélectionner un événement
+        {{ t('Event.SelectEvent') }}
       </button>
     </div>
 
@@ -30,22 +30,22 @@
           @click="changeEventMode('std')"
           :class="['px-4 py-1 text-sm font-medium rounded-l-lg border border-gray-200', eventMode === 'std' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
         >
-          Standards
+          {{ t('Event.StdEvents') }}
         </button>
         <button
           type="button"
           @click="changeEventMode('champ')"
           :class="['px-4 py-1 text-sm font-medium rounded-r-md border border-gray-200', eventMode === 'champ' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
         >
-          Championnats Locaux
+          {{ t('Event.LocalChamp') }}
         </button>
       </div>
       
       <!-- Event dropdown -->
       <div class="my-2 max-w-md mx-auto">
-        <select v-model="eventSelectedId" @change="changeButton = true" class="block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500">
+        <select v-model="eventSelectedId" @change="changeButton = true" class="block w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring focus:border-blue-500">
           <option disabled :value="null">
-            ▼ Veuillez sélectionner un événement ▼
+            ▼ {{ t('Event.PleaseSelectOne') }} ▼
           </option>
           <option v-for="event in events" :key="event.id" :value="event.id">
             {{ event.id }} | {{ event.libelle }} - {{ event.place }}
@@ -56,10 +56,10 @@
       <!-- Action buttons -->
       <div class="flex justify-center space-x-4">
         <button @click.prevent="cancelEvent" class="px-4 py-1 bg-gray-500 text-white text-sm rounded">
-          Annuler
+          {{ t('Event.Cancel') }}
         </button>
         <button v-if="changeButton" @click.prevent="changeEvent" class="px-4 py-1 bg-blue-600 text-white text-sm rounded">
-          Confirmer
+          {{ t('Event.Confirm') }}
         </button>
       </div>
     </form>
@@ -68,6 +68,7 @@
 
 <script setup>
 import { ref, onMounted, computed, toRaw } from 'vue'
+const { t } = useI18n()
 
 // Stores & Composables
 const preferenceStore = usePreferenceStore()
