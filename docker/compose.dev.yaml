@@ -143,8 +143,8 @@ services:
             - "traefik.http.routers.myadmin.rule=Host(`${MYADMIN_DOMAIN_NAME}`)"
             # - "traefik.http.routers.myadmin.middlewares=redirect-slash,strip-myadmin-prefix"
             # - "traefik.http.middlewares.strip-myadmin-prefix.stripprefix.prefixes=/myadmin"
-            # - "traefik.http.middlewares.redirect-slash.redirectregex.regex=^(https?://[^/]+/[^/]+)$$"
-            # - "traefik.http.middlewares.redirect-slash.redirectregex.replacement=$${1}/"
+            # - "traefik.http.middlewares.redirect-slash.redirectregex.regex=^(https?://[^/]+/[^/]+)$"
+            # - "traefik.http.middlewares.redirect-slash.redirectregex.replacement=${1}/"
             - "traefik.http.routers.myadmin.middlewares=auth"
             - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
@@ -159,11 +159,9 @@ services:
         # command: "npm run http-server"
         volumes:
             - ../sources/app2:/app
-            - /app/node_modules
         environment:
             - HOST=0.0.0.0
             - PORT=3000
-            - NUXT_APP_BASE_URL=/app2
         networks:
             - network_kpi
             - traefiknetwork

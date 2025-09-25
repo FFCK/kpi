@@ -57,6 +57,22 @@ dev_up: ## (construit et) lance les containers
 run_dev: ## lance le serveur Nuxt en mode dev
 	docker exec kpi_node_app2 sh -c "npm run dev"
 
+npm_install_app2: ## Installe les dépendances npm pour app2
+	docker exec kpi_node_app2 sh -c "npm install"
+
+npm_ls_app2: ## Liste les modules npm pour app2
+	docker exec kpi_node_app2 sh -c "ls -l node_modules/@nuxtjs"
+
+npm_clean_app2: ## Supprime les node_modules et le package-lock de app2
+	docker exec kpi_node_app2 sh -c "rm -rf node_modules package-lock.json"
+
+npm_update_app2: ## Met à jour les dépendances npm pour app2
+	docker exec kpi_node_app2 sh -c "npm update"
+
+
+
+
+
 # stop: ## stoppe les containers
 #	 $(DOCKER_COMPOSE) -f ./compose.yaml stop
 
