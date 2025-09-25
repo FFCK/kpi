@@ -11,16 +11,24 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.7.1",
+    "@nuxt/eslint": "^1.9.0",
+    "@nuxt/ui": "^4.0.0",
+    "@nuxtjs/i18n": "^10.1.0",
     "@pinia/nuxt": "^0.11.2",
-    "@tailwindcss/vite": "^4.1.11",
-    "dexie": "^4.0.11",
-    "eslint": "^9.31.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.13",
+    "dexie": "^4.2.0",
+    "eslint": "^9.36.0",
     "idb": "^8.0.3",
-    "nuxt": "^4.0.1",
+    "nuxt": "^4.1.2",
     "pinia": "^3.0.3",
-    "tailwindcss": "^4.1.11",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
     "vue": "^3.5.17",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@nuxt/kit": "^4.1.2"
+  },
+  "dependencies": {
   }
 }

@@ -10,9 +10,18 @@
     </div>
 
     <AppAlert>
-      This is an auto-imported component
+      This is an auto-imported component.
+      <br>
+
+      
+
+
     </AppAlert>
-    
+
+    {{ locale }}
+    <h1>{{ t('message') }}</h1>
+    <p>{{ t('status.Offline') }}</p>
+
     <div class="text-center mt-8">
       <img class="w-30 mx-auto" src="/img/logo_kp.png" alt="kayak-polo" />
       <p class="text-xs text-gray-500 mt-2">v0.1.0</p>
@@ -21,5 +30,7 @@
 </template>
 
 <script setup>
-// La logique de sélection de l'événement a été déplacée vers le composant EventSelector.
+const { t, locale } = useI18n()
+
+watch(locale, (l) => console.log(`Current locale: ${l}`))
 </script>

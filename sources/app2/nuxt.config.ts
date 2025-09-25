@@ -1,7 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "@tailwindcss/vite"
 
 export default defineNuxtConfig({
+  app: {
+    baseURL: '/app2'
+  },
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.API_BASE_URL || 'https://kpi.local/api'
@@ -15,11 +17,18 @@ export default defineNuxtConfig({
   nitro: {
     port: parseInt(process.env.NITRO_PORT || '3000')
   },
-  modules: ['@nuxt/eslint', '@pinia/nuxt'],
+  modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/ui'],
+  i18n: {
+    defaultLocale: 'fr',
+    langDir: 'locales',
+    locales: [
+      { code: 'en', file: 'en.json', name: 'English' },
+      { code: 'fr', file: 'fr.json', name: 'Français' },
+    ],
+  },
   css: ['@/assets/css/app.css'],
   vite: {
     plugins: [
-      tailwindcss(),
     ],
   },
   plugins: [

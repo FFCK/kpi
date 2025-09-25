@@ -38,10 +38,7 @@
         </NuxtLink>
       </nav>
       <div class="ml-4">
-        <select class="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1 text-sm">
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-        </select>
+        <LanguageSwitcher />
       </div>
       <!-- Mobile menu button -->
       <button class="md:hidden text-white focus:outline-none" @click="showMenu = !showMenu">
