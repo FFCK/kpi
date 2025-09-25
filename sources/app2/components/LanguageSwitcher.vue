@@ -1,9 +1,10 @@
 <script setup lang="ts">
-const { t, locale, availableLocales } = useI18n()
+import { computed } from 'vue'
+const { locale, locales, setLocale } = useI18n()
 
-function switchLocale(newLocale: string) {
-  locale.value = newLocale
-}
+const availableLocales = computed(() => {
+  return locales.value.filter(i => i.code !== locale.value)
+})
 </script>
 
 <template>
@@ -11,11 +12,11 @@ function switchLocale(newLocale: string) {
     <div class="mt-4 space-x-2">
       <button
         v-for="loc in availableLocales"
-        :key="loc"
-        @click="switchLocale(loc)"
-        class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+        :key="loc.code"
+        @click="setLocale(loc.code)"
+        class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 text-black"
       >
-        {{ loc.toUpperCase() }}
+        {{ loc.name }}
       </button>
     </div>
   </div>
