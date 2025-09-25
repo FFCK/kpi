@@ -34,10 +34,34 @@ export default function useApi() {
         })
     }
 
+    const postApi = (url, data, options = {}) => {
+        return apiFetch(url, {
+            ...options,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers,
+            },
+            body: JSON.stringify(data)
+        });
+    }
+
+    const putApi = (url, data, options = {}) => {
+        return apiFetch(url, {
+            ...options,
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers,
+            },
+            body: JSON.stringify(data)
+        });
+    }
+
     return {
         getApi: (url, options) => apiFetch(url, { ...options, method: 'GET' }),
-        postApi: (url, options) => apiFetch(url, { ...options, method: 'POST' }),
-        putApi: (url, options) => apiFetch(url, { ...options, method: 'PUT' }),
+        postApi: postApi,
+        putApi: putApi,
         deleteApi: (url, options) => apiFetch(url, { ...options, method: 'DELETE' }),
     }
 }

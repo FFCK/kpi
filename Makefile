@@ -69,6 +69,12 @@ npm_clean_app2: ## Supprime les node_modules et le package-lock de app2
 npm_update_app2: ## Met à jour les dépendances npm pour app2
 	docker exec kpi_node_app2 sh -c "npm update"
 
+npm_add_app2: ## Installe un paquet npm specifique pour app2 (ex: make npm_add_app2 package=uuid)
+	docker exec kpi_node_app2 sh -c "npm install $(package)"
+
+npm_add_dev_app2: ## Installe un paquet npm de dev pour app2 (ex: make npm_add_dev_app2 package=uuid)
+	docker exec kpi_node_app2 sh -c "npm install -D $(package)"
+
 
 
 

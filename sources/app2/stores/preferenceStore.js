@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
-import createDb from '../plugins/dexie'
-
-const db = createDb('app2', 'preferences')
+import { v4 as uuidv4 } from 'uuid'
+import db from '~/utils/db'
 
 export const usePreferenceStore = defineStore('preferenceStore', {
   state: () => ({
@@ -16,6 +15,12 @@ export const usePreferenceStore = defineStore('preferenceStore', {
       all.forEach(item => {
         this.preferences[item.id] = item.value
       })
+    },
+    async initUid() {
+      if (!this.preferences.uid) {
+        const newUid = uuidv4();
+        await this.putItem('uid', newUid);
+      }
     },
     async addItem(id, value) {
       await db.preferences.add({ id, value })
