@@ -31,7 +31,4 @@ export default defineNuxtConfig({
     plugins: [
     ],
   },
-  plugins: [
-    '@/plugins/dexie.js'
-  ],
 })
