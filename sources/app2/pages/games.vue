@@ -56,6 +56,7 @@
 import { ref, onMounted } from 'vue'
 import { useGames } from '~/composables/useGames'
 import GameList from '~/components/GameList.vue'
+import { navigateTo } from '#app'
 
 const { t, d } = useI18n()
 const showFilters = ref(false)
