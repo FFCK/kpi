@@ -8,7 +8,7 @@ function json_cache_read($cache_type, $cache_id, $cache_duration = 5)
   $cache_id = $cache_id !== false ? '_' . $cache_id : '';
   $file_name = 'files/' . $cache_type . $cache_id . '.json';
   try {
-    $file_content = json_decode(file_get_contents($file_name), false);
+    $file_content = json_decode(@file_get_contents($file_name), false);
   } catch (Exception $e) {
     return false;
   }
