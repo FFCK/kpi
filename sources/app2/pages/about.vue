@@ -81,6 +81,8 @@ import { ref, onMounted } from 'vue'
 import pkg from '../package.json'
 import logoUtip from '~/public/img/utip/logo-utip.png'
 import dablicorneUtip from '~/public/img/utip/dablicorne-utip.png'
+import { usePreferenceStore } from '~/stores/preferenceStore';
+import { navigateTo } from '#app';
 
 // Assuming Rating component is auto-imported or globally available
 // import Rating from '@/components/design/Rating.vue'
@@ -88,7 +90,6 @@ import dablicorneUtip from '~/public/img/utip/dablicorne-utip.png'
 // Composables & Stores
 const { t } = useI18n()
 const preferenceStore = usePreferenceStore()
-const { checkOnline } = useStatus()
 const { getApi, postApi } = useApi() // Assuming postApi exists in useApi
 const runtimeConfig = useRuntimeConfig()
 const apiBaseUrl = runtimeConfig.public.apiBaseUrl
@@ -103,7 +104,6 @@ const currentVoters = ref(null)
 
 // Methods
 const getCurrentRating = async () => {
-  if (!checkOnline()) return
   try {
     const result = await getApi(`${apiBaseUrl}/stars`)
     const data = await result.json()
@@ -115,8 +115,6 @@ const getCurrentRating = async () => {
 }
 
 const rated = async (newStars) => {
-  if (!checkOnline()) return
-  
   thanks.value = true
   stars.value = newStars
   key.value++
@@ -138,7 +136,6 @@ const rated = async (newStars) => {
     console.error('Failed to post rating:', error)
   }
 }
-
 // Lifecycle Hooks
 onMounted(async () => {
   await preferenceStore.fetchItems()

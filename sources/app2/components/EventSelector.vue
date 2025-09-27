@@ -68,6 +68,8 @@
 
 <script setup>
 import { ref, onMounted, computed, toRaw } from 'vue'
+import { usePreferenceStore } from '~/stores/preferenceStore';
+import { useEventStore } from '~/stores/eventStore';
 const { t } = useI18n()
 
 // Stores & Composables
