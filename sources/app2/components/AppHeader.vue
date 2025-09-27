@@ -4,36 +4,36 @@
       <NuxtLink to="/" class="flex items-center space-x-2">
         <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" />
         <span class="font-bold text-lg">KPI App</span>
-        <span class="ml-2 text-green-400"><i class="bi bi-wifi"></i></span>
+        <span class="ml-2 text-green-400"><UIcon name="i-heroicons-wifi" /></span>
       </NuxtLink>
       <nav class="hidden md:flex space-x-4">
         <NuxtLink to="/" class="hover:text-green-400 flex items-center space-x-1">
-          <i class="bi bi-house"></i>
+          <UIcon name="i-heroicons-home" />
           <span>{{ t('nav.Home') }}</span>
         </NuxtLink>
         <NuxtLink to="/games" class="hover:text-green-400 flex items-center space-x-1">
-          <i class="bi bi-list-ol"></i>
+          <UIcon name="i-heroicons-list-bullet" />
           <span>{{ t('nav.Games') }}</span>
         </NuxtLink>
         <NuxtLink to="/charts" class="hover:text-green-400 flex items-center space-x-1">
-          <i class="bi bi-diagram-2"></i>
+          <UIcon name="i-heroicons-chart-bar" />
           <span>{{ t('nav.Chart') }}</span>
         </NuxtLink>
         <div class="relative group">
           <button class="flex items-center space-x-1 focus:outline-none">
-            <i class="el-icon-service"></i>
+            <UIcon name="i-heroicons-user-group" />
             <span>{{ t('nav.Staff') }}</span>
-            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <UIcon name="i-heroicons-chevron-down" />
           </button>
           <div class="absolute left-0 mt-2 w-40 bg-gray-800 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
             <NuxtLink to="/login" class="block px-4 py-2 hover:bg-gray-700 flex items-center space-x-1">
-              <i class="bi bi-person-circle"></i>
+              <UIcon name="i-heroicons-user-circle" />
               <span>{{ t('nav.Login') }}</span>
             </NuxtLink>
           </div>
         </div>
         <NuxtLink to="/about" class="hover:text-green-400 flex items-center space-x-1">
-          <i class="el-icon-info"></i>
+          <UIcon name="i-heroicons-information-circle" />
           <span>{{ t('nav.About') }}</span>
         </NuxtLink>
       </nav>
@@ -42,10 +42,7 @@
       </div>
       <!-- Mobile menu button -->
       <button class="md:hidden text-white focus:outline-none" @click="showMenu = !showMenu">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        <UIcon name="i-heroicons-bars-3" />
       </button>
     </div>
     <!-- Mobile menu -->
