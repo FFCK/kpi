@@ -11,7 +11,7 @@
       <br />
       <span class="font-semibold">{{ preferenceStore.preferences.lastEvent.libelle }} - {{ preferenceStore.preferences.lastEvent.place }}</span>
       <button class="ml-2 px-2 py-1 bg-gray-500 text-white text-xs rounded">
-        <i class="bi bi-arrow-left-right" /> {{ t('Event.Change') }}
+        <UIcon name="i-heroicons-arrows-right-left" /> {{ t('Event.Change') }}
       </button>
     </div>
     <!-- Button to select event if none is selected -->

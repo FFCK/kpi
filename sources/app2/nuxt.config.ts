@@ -19,6 +19,7 @@ export default defineNuxtConfig({
   },
   modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/ui'],
   i18n: {
+    strategy: 'no_prefix',
     defaultLocale: 'fr',
     langDir: 'locales',
     locales: [

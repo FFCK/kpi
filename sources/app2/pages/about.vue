@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="flex items-center border border-gray-300 rounded mb-1">
       <button @click="navigateTo('/charts')" class="px-3 py-1 hover:bg-gray-100 rounded-l">
-        <i class="bi bi-caret-left-square-fill" />
+        <UIcon name="i-heroicons-arrow-left-on-rectangle" />
       </button>
       <input
         type="text"
@@ -45,7 +45,7 @@
           href="https://twitter.com/kayakpolo_info"
           target="blank"
         >
-          <i class="bi bi-twitter" />
+          <UIcon name="i-bi-twitter" />
           <span>Twitter</span>
         </a>
       </p>
