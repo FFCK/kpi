@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid mb-16">
     <div class="p-4 bg-white border-b border-gray-200">
       <div class="flex items-center">
         <button @click="navigateTo('/')" class="p-2 rounded-md hover:bg-gray-100">
@@ -51,6 +51,9 @@
 
     <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :key="locale" />
 
+    <button @click="scrollToTop" class="fixed bottom-4 right-4 bg-gray-800 hover:bg-gray-700 text-white font-bold p-3 rounded-full">
+      <UIcon name="i-heroicons-arrow-up" class="h-6 w-6" />
+    </button>
   </div>
 </template>
 
@@ -88,4 +91,7 @@ onMounted(() => {
   loadGames()
 })
 
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 </script>
