@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" />
+    <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :key="locale" />
 
   </div>
 </template>
@@ -58,7 +58,7 @@ import { useGames } from '~/composables/useGames'
 import GameList from '~/components/GameList.vue'
 import { navigateTo } from '#app'
 
-const { t, d } = useI18n()
+const { t, d, locale } = useI18n()
 const showFilters = ref(false)
 
 const {
