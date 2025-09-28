@@ -9,7 +9,7 @@
           <tr>
             <th scope="col" class="px-2 py-3">#</th>
             <th scope="col" class="px-2 py-3">{{ t('Games.Cat') }} | {{ t('Games.Group') }}</th>
-            <th scope="col" class="px-1 py-3 text-center">{{ t('Games.Time') }} / {{ t('Games.Pitch') }}</th>
+            <th scope="col" class="px-1 py-3 text-center">{{ t('Games.Time') }} | {{ t('Games.Pitch') }}</th>
             <th scope="col" class="px-6 py-3 text-right">{{ t('Games.Team') }} A</th>
             <th scope="col" class="px-2 py-3 text-center">{{ t('Games.Score') }}</th>
             <th scope="col" class="px-6 py-3">{{ t('Games.Team') }} B</th>

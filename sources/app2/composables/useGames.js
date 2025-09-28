@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { useGameStore } from '~/stores/gameStore'
 import { usePreferenceStore } from '~/stores/preferenceStore'
 import { useApi } from '~/composables/useApi'
+import dayjs from 'dayjs'
 
 export const useGames = () => {
   const gameStore = useGameStore()
@@ -129,7 +130,7 @@ export const useGames = () => {
       case 'Today':
         newFilteredGames = newFilteredGames.filter(value => value.g_date === dayjs().format('YYYY-MM-DD'))
         break
-      case 'Tomorow':
+      case 'Tomorrow':
         newFilteredGames = newFilteredGames.filter(
           value => value.g_date === dayjs().add(1, 'day').format('YYYY-MM-DD')
         )
