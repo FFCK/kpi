@@ -14,7 +14,7 @@ export const useGames = () => {
   const games = computed(() => gameStore.games)
   const gamesCount = computed(() => gameStore.games.length)
   const filteredGames = ref([])
-  const filteredGamesCount = computed(() => filteredGames.value.length)
+  const filteredGamesCount = computed(() => filteredGames.value.reduce((acc, group) => acc + group.filtered.length, 0))
 
   const categories = ref([])
   const game_dates = ref([])
