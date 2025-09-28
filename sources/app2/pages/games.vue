@@ -8,9 +8,11 @@
         <button @click="showFilters = !showFilters" class="ml-4 p-2 rounded-md hover:bg-gray-100">
           {{ t('nav.Filters') }} <UIcon name="i-heroicons-filter" class="h-6 w-6" />
         </button>
-        <select v-model="fav_dates" @change="changeFav" class="ml-4 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+        <select v-model="fav_dates" @change="changeFav" class="ml-4 block w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
           <option value="">{{ t('Games.AllDates') }}</option>
-          <option v-for="(game_date, index) in game_dates" :key="index" :value="game_date">{{ d(new Date(game_date), 'short') }}</option>
+          <option v-for="(game_date, index) in game_dates" :key="index" :value="game_date">
+            <NuxtTime :datetime="game_date" day="numeric" month="long" year="numeric" :locale="locale" />
+          </option>
           <option disabled>──────</option>
           <option value="Today">{{ t('Games.Today') }}</option>
           <option value="Tomorow">{{ t('Games.Tomorow') }}</option>
