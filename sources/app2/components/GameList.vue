@@ -24,7 +24,7 @@
           </tr>
           <tr v-for="(game, game_index) in game_group.filtered" :key="game.g_id" :class="(group_index + game_index) % 2 === 0 ? 'bg-gray-100' : 'bg-white'">
             <td class="px-2 py-2 text-gray-900"><i>#{{ game.g_number }}</i></td>
-            <td class="px-2 py-2 text-gray-900">{{ game.c_code }}<span v-if="game.d_phase"> | {{ game.d_phase }}</span></td>
+            <td class="px-2 py-2 text-gray-900">{{ game.c_label }}<span v-if="game.d_phase"> | {{ game.d_phase }}</span></td>
             <td class="px-1 py-2 text-center text-gray-900">
               <span class="bg-gray-200 px-2 py-1 rounded">{{ game.g_time }}</span>
               <span class="bg-gray-500 text-white px-2 py-1 rounded ml-1">{{ game.g_pitch }}</span>
@@ -68,7 +68,7 @@
         <div v-for="game in game_group.filtered" :key="game.g_id" class="p-2 border-b">
           <div class="grid grid-cols-[1fr_auto_1fr] gap-1 items-center">
             <div class="text-left text-xs text-gray-900 justify-self-start">
-              {{ game.c_code }}<span v-if="game.d_phase"> | {{ game.d_phase }}</span>
+              {{ game.c_label }}<span v-if="game.d_phase"> | {{ game.d_phase }}</span>
             </div>
             <div class="text-center text-xs text-gray-900 justify-self-center">#{{ game.g_number }}</div>
             <div class="text-right text-xs text-gray-900 justify-self-end">

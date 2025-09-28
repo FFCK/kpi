@@ -66,7 +66,7 @@ export const useGames = () => {
 
   const loadCategories = () => {
     const allGames = [...gameStore.games]
-    categories.value = [...new Set(allGames.map(x => x.c_code))].sort()
+    categories.value = [...new Set(allGames.map(x => x.c_label))].sort()
     game_dates.value = [...new Set(allGames.map(x => x.g_date))].sort()
     teams.value = [
       ...new Set(
@@ -141,23 +141,20 @@ export const useGames = () => {
     }
 
     if (fav_categories.value.length > 0) {
-      newFilteredGames = newFilteredGames.filter(value => fav_categories.value.includes(value.c_code))
+      newFilteredGames = newFilteredGames.filter(value => fav_categories.value.includes(value.c_label))
     }
 
     newFilteredGames = newFilteredGames.map(value => {
-      value.t_a_label = fav_teams.value.includes(value.t_a_label) ? `<mark>${value.t_a_label}</mark>` : value.t_a_label
-      value.t_b_label = fav_teams.value.includes(value.t_b_label) ? `<mark>${value.t_b_label}</mark>` : value.t_b_label
+      const newValue = { ...value };
+      newValue.t_a_label = fav_teams.value.includes(value.t_a_label) ? `<mark>${value.t_a_label}</mark>` : value.t_a_label
+      newValue.t_b_label = fav_teams.value.includes(value.t_b_label) ? `<mark>${value.t_b_label}</mark>` : value.t_b_label
       if (value.r_1) {
-        value.r_1 = fav_teams.value.includes(value.r_1.split(' (')[0]) ? value.r_1.replace(value.r_1.split(' (')[0], `<mark>${value.r_1.split(' (')[0]}</mark>`) : value.r_1
-        value.r_1 = fav_teams.value.includes(value.r_1.split('(').pop().split(')')[0]) ? value.r_1.replace(value.r_1.split('(').pop().split(')')[0], `<mark>${value.r_1.split('(').pop().split(')')[0]}</mark>`) : value.r_1
-        value.r_1 = fav_teams.value.includes(value.r_1_name) ? value.r_1.replace(value.r_1.split(' (')[0], `<mark>${value.r_1.split(' (')[0]}</mark>`) : value.r_1
+        newValue.r_1 = fav_teams.value.includes(value.r_1_name) ? value.r_1.replace(value.r_1_name, `<mark>${value.r_1_name}</mark>`) : value.r_1
       }
       if (value.r_2) {
-        value.r_2 = fav_teams.value.includes(value.r_2.split(' (')[0]) ? value.r_2.replace(value.r_2.split(' (')[0], `<mark>${value.r_2.split(' (')[0]}</mark>`) : value.r_2
-        value.r_2 = fav_teams.value.includes(value.r_2.split('(').pop().split(')')[0]) ? value.r_2.replace(value.r_2.split('(').pop().split(')')[0], `<mark>${value.r_2.split('(').pop().split(')')[0]}</mark>`) : value.r_2
-        value.r_2 = fav_teams.value.includes(value.r_2_name) ? value.r_2.replace(value.r_2.split(' (')[0], `<mark>${value.r_2.split(' (')[0]}</mark>`) : value.r_2
+        newValue.r_2 = fav_teams.value.includes(value.r_2_name) ? value.r_2.replace(value.r_2_name, `<mark>${value.r_2_name}</mark>`) : value.r_2
       }
-      return value
+      return newValue
     })
 
     const filteredGamesDates = [...new Set(newFilteredGames.map(x => x.g_date))]

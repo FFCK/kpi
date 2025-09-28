@@ -32,11 +32,16 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ t('Games.Categories') }}</label>
-          <USelectMenu v-model="fav_categories" :options="categories" multiple searchable @change="changeFav" />
+          <select v-model="fav_categories" multiple @change="changeFav">
+            <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+          </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700">{{ t('Games.Teams') }} & {{ t('Games.Refs') }}</label>
-          <USelectMenu v-model="fav_teams" :options="teams.concat(refs)" multiple searchable @change="changeFav" />
+          <select v-model="fav_teams" multiple @change="changeFav">
+            <option v-for="team in teams" :key="team" :value="team">{{ team }}</option>
+            <option v-for="ref in refs" :key="ref" :value="ref">{{ ref }}</option>
+          </select>
         </div>
         <div class="flex items-center">
           <UToggle v-model="showRefs" />
@@ -88,7 +93,11 @@ const {
 
 onMounted(() => {
   getFav()
-  loadGames()
+  loadGames().then(() => {
+    console.log('categories', categories.value)
+    console.log('teams', teams.value)
+    console.log('refs', refs.value)
+  })
 })
 
 const scrollToTop = () => {
