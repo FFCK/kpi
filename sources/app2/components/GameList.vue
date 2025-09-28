@@ -18,8 +18,8 @@
         </thead>
         <tbody v-for="(game_group, group_index) in games" :key="game_group.goupDate">
           <tr class="bg-gray-800 text-white">
-            <th colspan="100%" scope="row" class="px-6 py-2 font-medium whitespace-nowrap">
-              {{ d(new Date(game_group.goupDate), 'short') }}
+            <th :colspan="showRefs ? 7 : 6" scope="row" class="px-6 py-2 font-medium whitespace-nowrap">
+              <NuxtTime :datetime="game_group.goupDate" day="numeric" month="long" year="numeric" :locale="locale" />
             </th>
           </tr>
           <tr v-for="(game, game_index) in game_group.filtered" :key="game.g_id" :class="(group_index + game_index) % 2 === 0 ? 'bg-gray-100' : 'bg-white'">
@@ -64,39 +64,38 @@
     </div>
     <div class="md:hidden">
       <div v-for="game_group in games" :key="game_group.goupDate">
-        <div class="bg-gray-800 text-white p-2">{{ d(new Date(game_group.goupDate), 'short') }}</div>
+        <div class="bg-gray-800 text-white p-2"><NuxtTime :datetime="game_group.goupDate" day="numeric" month="long" year="numeric" :locale="locale" /></div>
         <div v-for="game in game_group.filtered" :key="game.g_id" class="p-2 border-b">
-          <div class="flex justify-between items-center">
-            <div>
-              <i>#{{ game.g_number }}</i> - {{ game.c_code }}<span v-if="game.d_phase"> | {{ game.d_phase }}</span>
+          <div class="grid grid-cols-[1fr_auto_1fr] gap-1 items-center">
+            <div class="text-left text-xs text-gray-900 justify-self-start">
+              {{ game.c_code }}<span v-if="game.d_phase"> | {{ game.d_phase }}</span>
             </div>
-            <div>
-              <span class="bg-gray-200 px-2 py-1 rounded text-xs">{{ game.g_time }}</span>
-              <span class="bg-gray-500 text-white px-2 py-1 rounded text-xs ml-1">{{ game.g_pitch }}</span>
+            <div class="text-center text-xs text-gray-900 justify-self-center">#{{ game.g_number }}</div>
+            <div class="text-right text-xs text-gray-900 justify-self-end">
+              <span class="bg-gray-200 px-2 py-1 rounded">{{ game.g_time }}</span>
+              <span class="bg-gray-500 text-white px-2 py-1 rounded ml-1">{{ game.g_pitch }}</span>
             </div>
-          </div>
-          <div class="flex justify-between items-center mt-2">
-            <div class="text-right w-2/5">
-              <span :class="teamClass(game, 'A')" v-html="teamNameResize(showCode(game.t_a_label))" />
-              <img v-if="showFlags" :src="`${baseUrl}/img/${game.t_a_logo}`" class="h-4 inline-block ml-1" alt="" />
-            </div>
-            <div class="text-center w-1/5">
-              <div class="flex flex-col items-center">
-                <div class="text-nowrap inline-block text-sm">
-                  <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
-                  <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
-                </div>
-                <div :class="statusClass(game)" class="text-xs">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+            <div class="text-right justify-self-end">
+              <div :class="teamBlockClass(game, 'A')" class="inline-block px-2 py-1 rounded">
+                <span :class="teamClass(game, 'A')" v-html="teamNameResize(showCode(game.t_a_label))" />
               </div>
             </div>
-            <div class="text-left w-2/5">
-              <img v-if="showFlags" :src="`${baseUrl}/img/${game.t_b_logo}`" class="h-4 inline-block mr-1" alt="" />
-              <span :class="teamClass(game, 'B')" v-html="teamNameResize(showCode(game.t_b_label))" />
+            <div class="text-center justify-self-center">
+              <div class="text-nowrap inline-block text-sm">
+                <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
+                <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
+              </div>
             </div>
-          </div>
-          <div v-if="showRefs" class="text-center text-xs mt-1">
-            <div v-html="showCode(game.r_1)" />
-            <div v-html="showCode(game.r_2)" />
+            <div class="text-left justify-self-start">
+              <div :class="teamBlockClass(game, 'B')" class="inline-block px-2 py-1 rounded">
+                <span :class="teamClass(game, 'B')" v-html="teamNameResize(showCode(game.t_b_label))" />
+              </div>
+            </div>
+            <div v-if="showRefs" class="text-left text-xs text-gray-900 justify-self-start" v-html="showCode(game.r_1)" />
+            <div class="text-center justify-self-center">
+                <div :class="statusClass(game)" class="text-xs">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+            </div>
+            <div v-if="showRefs" class="text-right text-xs text-gray-900 justify-self-end" v-html="showCode(game.r_2)" />
           </div>
         </div>
       </div>
@@ -107,7 +106,7 @@
 <script setup>
 import { useGameDisplay } from '~/composables/useGameDisplay'
 const { showCode, teamNameResize } = useGameDisplay()
-const { t, d } = useI18n()
+const { t, d, locale } = useI18n()
 
 const props = defineProps({
   games: { type: Array, default: () => [] },

@@ -2,7 +2,6 @@ import { ref, computed } from 'vue'
 import { useGameStore } from '~/stores/gameStore'
 import { usePreferenceStore } from '~/stores/preferenceStore'
 import { useApi } from '~/composables/useApi'
-import dayjs from 'dayjs'
 
 export const useGames = () => {
   const gameStore = useGameStore()

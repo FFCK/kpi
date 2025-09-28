@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@types/node": "^24.5.2",
-    "buffer": "^6.0.3",
-    "dayjs": "^1.11.18"
+    "buffer": "^6.0.3"
   }
 }
