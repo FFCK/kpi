@@ -2,12 +2,14 @@ import { ref, computed } from 'vue'
 import { useGameStore } from '~/stores/gameStore'
 import { usePreferenceStore } from '~/stores/preferenceStore'
 import { useApi } from '~/composables/useApi'
+import { useIndexedDB } from '~/composables/useIndexedDB'
 import dayjs from 'dayjs'
 
 export const useGames = () => {
   const gameStore = useGameStore()
   const preferenceStore = usePreferenceStore()
   const { getApi } = useApi()
+  const { saveGames, loadGames: loadGamesFromDB, clearOldGames } = useIndexedDB()
   const runtimeConfig = useRuntimeConfig()
   const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
@@ -32,36 +34,72 @@ export const useGames = () => {
 
   const loadGames = async () => {
     if (!preferenceStore.preferences.lastEvent) return
+
+    const eventId = preferenceStore.preferences.lastEvent.id
     gameStore.loading = true
     visibleButton.value = false
     setTimeout(() => {
       visibleButton.value = true
     }, 3000)
+
     try {
-      const response = await getApi(`${apiBaseUrl}/games/${preferenceStore.preferences.lastEvent.id}`)
-      const data = await response.json()
-      const gamelist = data.map(game => {
-        game.g_score_a = game.g_score_a?.replace('?', '') || game.g_score_a
-        game.g_score_b = game.g_score_b?.replace('?', '') || game.g_score_b
-        game.g_score_detail_a = parseInt(game.g_score_detail_a) || 0
-        game.g_score_detail_b = parseInt(game.g_score_detail_b) || 0
-        game.r_1 = game.r_1 && game.r_1 !== '-1' ? game.r_1.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
-        game.r_2 = game.r_2 && game.r_2 !== '-1' ? game.r_2.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
-        game.t_a_label ??= gameEncode(game.g_code, 1)
-        game.t_b_label ??= gameEncode(game.g_code, 2)
-        game.r_1 ??= gameEncode(game.g_code, 3)
-        game.r_2 ??= gameEncode(game.g_code, 4)
-        return game
-      })
-      await gameStore.clearAndUpdateGames(gamelist)
-      loadCategories()
-      filterGames()
+      // Essayer de charger depuis IndexedDB d'abord
+      const cachedGames = await loadGamesFromDB(eventId)
+      if (cachedGames && cachedGames.length > 0) {
+        console.log('Loading games from IndexedDB cache')
+        const gamelist = processGameData(cachedGames)
+        await gameStore.clearAndUpdateGames(gamelist)
+        loadCategories()
+        filterGames()
+      }
+
+      // Charger depuis l'API en arrière-plan
+      try {
+        console.log('Loading games from API')
+        const response = await getApi(`${apiBaseUrl}/games/${eventId}`)
+        const data = await response.json()
+        const gamelist = processGameData(data)
+
+        // Sauvegarder dans IndexedDB
+        await saveGames(eventId, data)
+
+        // Mettre à jour l'interface seulement si les données ont changé
+        if (JSON.stringify(gamelist) !== JSON.stringify(gameStore.games)) {
+          await gameStore.clearAndUpdateGames(gamelist)
+          loadCategories()
+          filterGames()
+        }
+      } catch (apiError) {
+        console.error('Failed to load games from API, using cached data:', apiError)
+        if (!cachedGames) {
+          gameStore.error = apiError
+        }
+      }
+
+      // Nettoyer les anciennes données
+      await clearOldGames()
     } catch (error) {
       gameStore.error = error
       console.error('Failed to load games:', error)
     } finally {
       gameStore.loading = false
     }
+  }
+
+  const processGameData = (data) => {
+    return data.map(game => {
+      game.g_score_a = game.g_score_a?.replace('?', '') || game.g_score_a
+      game.g_score_b = game.g_score_b?.replace('?', '') || game.g_score_b
+      game.g_score_detail_a = parseInt(game.g_score_detail_a) || 0
+      game.g_score_detail_b = parseInt(game.g_score_detail_b) || 0
+      game.r_1 = game.r_1 && game.r_1 !== '-1' ? game.r_1.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+      game.r_2 = game.r_2 && game.r_2 !== '-1' ? game.r_2.replace(/\) (INT-|NAT-|REG-|INT|REG|OTM|JO)[ABCS]{0,1}/, ')') : null
+      game.t_a_label ??= gameEncode(game.g_code, 1)
+      game.t_b_label ??= gameEncode(game.g_code, 2)
+      game.r_1 ??= gameEncode(game.g_code, 3)
+      game.r_2 ??= gameEncode(game.g_code, 4)
+      return game
+    })
   }
 
   const loadCategories = () => {

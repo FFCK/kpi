@@ -7,20 +7,21 @@
         </button>
         <button
           @click="showFilters = !showFilters"
-          :class="[
-            'ml-4 p-2 rounded-md border-2 transition-colors',
-            hasActiveFilters ? 'bg-blue-100 border-blue-400 text-blue-800' : 'border-gray-300 hover:bg-gray-100'
-          ]"
+          class="ml-4 px-3 py-2 rounded-md border-2 border-gray-300 transition-colors flex items-center space-x-1 text-base hover:bg-gray-100"
+          :style="hasActiveFilters ? 'background-color: #dbeafe !important; border-color: #60a5fa !important; color: #1e40af !important;' : ''"
         >
-          {{ t('nav.Filters') }} <UIcon name="i-heroicons-filter" class="h-6 w-6" />
+          <span>{{ t('nav.Filters') }}</span>
+          <UIcon name="i-heroicons-filter" class="h-4 w-4" />
+          <UIcon
+            :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+            class="h-4 w-4"
+          />
         </button>
         <select
           v-model="fav_dates"
           @change="changeFav"
-          :class="[
-            'ml-4 block w-auto pl-3 pr-10 py-2 text-base border-2 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md',
-            hasActiveDateFilter ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
-          ]"
+          class="ml-4 block w-auto px-3 py-2 text-base border-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors hover:bg-gray-100"
+          :style="hasActiveDateFilter ? 'background-color: #dbeafe !important; border-color: #60a5fa !important; color: #1e40af !important;' : ''"
         >
           <option value="">{{ t('Games.AllDates') }}</option>
           <option v-for="(game_date, index) in game_dates" :key="index" :value="game_date">
@@ -177,13 +178,9 @@ const {
   resetAllFilters
 } = useGames()
 
-onMounted(() => {
-  getFav()
-  loadGames().then(() => {
-    console.log('categories', categories.value)
-    console.log('teams', teams.value)
-    console.log('refs', refs.value)
-  })
+onMounted(async () => {
+  await getFav()
+  await loadGames()
 })
 
 const scrollToTop = () => {
