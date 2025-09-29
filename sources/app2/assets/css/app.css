@@ -11,3 +11,33 @@ body {
   opacity: 0;
   filter: blur(1rem);
 }
+
+/* Style pour les équipes sélectionnées : bordure jaune */
+.team-highlight {
+  border: 2px solid #fbbf24 !important;
+  border-radius: 4px !important;
+  padding: 2px 4px !important;
+  display: inline-block !important;
+  box-shadow: 0 0 0 1px #fbbf24 !important;
+}
+
+/* Fix pour les USwitch - classes Nuxt UI manquantes */
+[data-state="checked"] {
+  background-color: #3b82f6 !important; /* bg-blue-500 */
+}
+
+[data-state="unchecked"] {
+  background-color: #d1d5db !important; /* bg-gray-300 */
+}
+
+.bg-primary {
+  background-color: #3b82f6 !important; /* bg-blue-500 */
+}
+
+.bg-accented {
+  background-color: #d1d5db !important; /* bg-gray-300 */
+}
+
+.bg-default {
+  background-color: #ffffff !important; /* bg-white */
+}
