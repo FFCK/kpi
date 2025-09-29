@@ -91,11 +91,11 @@
                 <span :class="teamClass(game, 'B')" v-html="teamNameResize(showCode(game.t_b_label))" />
               </div>
             </div>
-            <div v-if="showRefs" class="text-left text-xs text-gray-900 justify-self-start" v-html="showCode(game.r_1)" />
+            <div :class="['text-left text-xs text-gray-900 justify-self-start', { 'invisible': !showRefs }]" v-html="showCode(game.r_1)" />
             <div class="text-center justify-self-center">
                 <div :class="statusClass(game)" class="text-xs">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
             </div>
-            <div v-if="showRefs" class="text-right text-xs text-gray-900 justify-self-end" v-html="showCode(game.r_2)" />
+            <div :class="['text-right text-xs text-gray-900 justify-self-end', { 'invisible': !showRefs }]" v-html="showCode(game.r_2)" />
           </div>
         </div>
       </div>
@@ -135,9 +135,18 @@ const teamClass = (game, team) => {
 }
 
 const teamBlockClass = (game, team) => {
+  const isHighlighted = team === 'A' ? game.t_a_highlighted : game.t_b_highlighted
+  const winner = isWinner(game, team)
+
   return {
-    'bg-gray-800 text-white': isWinner(game, team),
-    'bg-gray-200 text-black': !isWinner(game, team),
+    // Background colors
+    'bg-gray-800': winner, // Toutes les équipes gagnantes (filtrées ou non)
+    'bg-gray-200': !winner && !isHighlighted, // Équipes perdantes non filtrées
+    'bg-yellow-400': isHighlighted && !winner, // Fond jaune pour équipes filtrées perdantes
+    // Text colors
+    'text-white': winner && !isHighlighted, // Équipes gagnantes non filtrées
+    'text-yellow-400': winner && isHighlighted, // Texte jaune pour équipes gagnantes filtrées
+    'text-black': !winner, // Toutes les équipes perdantes
   }
 }
 

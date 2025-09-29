@@ -70,11 +70,13 @@
 import { ref, onMounted, computed, toRaw } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore';
 import { useEventStore } from '~/stores/eventStore';
+import { useGames } from '~/composables/useGames';
 const { t } = useI18n()
 
 // Stores & Composables
 const preferenceStore = usePreferenceStore()
 const eventStore = useEventStore()
+const { resetAllFilters } = useGames()
 const { getApi } = useApi()
 const runtimeConfig = useRuntimeConfig()
 const apiBaseUrl = runtimeConfig.public.apiBaseUrl
@@ -136,12 +138,15 @@ const changeEvent = async () => {
 
   // NOTE: The old component cleared Games and Charts data here.
   // This logic can be added back if those stores are migrated to app2.
-  
+
   await preferenceStore.putItem('lastEvent', toRaw(selectedEvent))
-  
+
+  // Reset all game filters when changing event
+  await resetAllFilters()
+
   showSelector.value = false
   changeButton.value = false
-  
+
   // NOTE: The old component emitted a 'changeEvent'.
   // If the parent page needs to react, defineEmits can be used here.
 }

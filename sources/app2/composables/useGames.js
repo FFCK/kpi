@@ -146,14 +146,95 @@ export const useGames = () => {
 
     newFilteredGames = newFilteredGames.map(value => {
       const newValue = { ...value };
-      newValue.t_a_label = fav_teams.value.includes(value.t_a_label) ? `<mark>${value.t_a_label}</mark>` : value.t_a_label
-      newValue.t_b_label = fav_teams.value.includes(value.t_b_label) ? `<mark>${value.t_b_label}</mark>` : value.t_b_label
+
+      // Équipes : ajouter des propriétés pour le highlighting côté composant
+      newValue.t_a_highlighted = fav_teams.value.includes(value.t_a_label)
+      newValue.t_b_highlighted = fav_teams.value.includes(value.t_b_label)
+
+      // Arbitres : surlignage jaune (mark) - cherche le nom avec plusieurs stratégies (insensible à la casse)
       if (value.r_1) {
-        newValue.r_1 = fav_teams.value.includes(value.r_1_name) ? value.r_1.replace(value.r_1_name, `<mark>${value.r_1_name}</mark>`) : value.r_1
+        // Essayer plusieurs stratégies de correspondance (case-insensitive)
+        const r1Full = value.r_1 || ''
+        const r1Name = value.r_1_name || ''
+        const r1Short = r1Full.split(' (')[0]
+
+        // Trouver la correspondance en comparant toutes les variations possibles
+        let matchingFilterName = null
+        let nameToHighlight = null
+
+        for (const filterName of fav_teams.value) {
+          // Comparaisons insensibles à la casse et aux espaces
+          const filterNameClean = filterName.toLowerCase().replace(/\s+/g, ' ').trim()
+          const r1NameClean = r1Name.toLowerCase().replace(/\s+/g, ' ').trim()
+          const r1ShortClean = r1Short.toLowerCase().replace(/\s+/g, ' ').trim()
+          const r1FullClean = r1Full.toLowerCase().replace(/\s+/g, ' ').trim()
+
+          if (filterNameClean === r1NameClean ||
+              filterNameClean === r1ShortClean ||
+              filterNameClean === r1FullClean) {
+            matchingFilterName = filterName
+            // Utiliser le nom le plus approprié pour le remplacement
+            if (filterNameClean === r1NameClean) {
+              nameToHighlight = r1Name
+            } else if (filterNameClean === r1ShortClean) {
+              nameToHighlight = r1Short
+            } else {
+              nameToHighlight = r1Short // par défaut
+            }
+            break
+          }
+        }
+
+        if (matchingFilterName && nameToHighlight) {
+          // Utiliser une regex insensible à la casse pour le remplacement
+          const regex = new RegExp(nameToHighlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+          newValue.r_1 = r1Full.replace(regex, `<mark>$&</mark>`)
+        } else {
+          newValue.r_1 = r1Full
+        }
       }
       if (value.r_2) {
-        newValue.r_2 = fav_teams.value.includes(value.r_2_name) ? value.r_2.replace(value.r_2_name, `<mark>${value.r_2_name}</mark>`) : value.r_2
+        // Essayer plusieurs stratégies de correspondance (case-insensitive)
+        const r2Full = value.r_2 || ''
+        const r2Name = value.r_2_name || ''
+        const r2Short = r2Full.split(' (')[0]
+
+        // Trouver la correspondance en comparant toutes les variations possibles
+        let matchingFilterName = null
+        let nameToHighlight = null
+
+        for (const filterName of fav_teams.value) {
+          // Comparaisons insensibles à la casse et aux espaces
+          const filterNameClean = filterName.toLowerCase().replace(/\s+/g, ' ').trim()
+          const r2NameClean = r2Name.toLowerCase().replace(/\s+/g, ' ').trim()
+          const r2ShortClean = r2Short.toLowerCase().replace(/\s+/g, ' ').trim()
+          const r2FullClean = r2Full.toLowerCase().replace(/\s+/g, ' ').trim()
+
+          if (filterNameClean === r2NameClean ||
+              filterNameClean === r2ShortClean ||
+              filterNameClean === r2FullClean) {
+            matchingFilterName = filterName
+            // Utiliser le nom le plus approprié pour le remplacement
+            if (filterNameClean === r2NameClean) {
+              nameToHighlight = r2Name
+            } else if (filterNameClean === r2ShortClean) {
+              nameToHighlight = r2Short
+            } else {
+              nameToHighlight = r2Short // par défaut
+            }
+            break
+          }
+        }
+
+        if (matchingFilterName && nameToHighlight) {
+          // Utiliser une regex insensible à la casse pour le remplacement
+          const regex = new RegExp(nameToHighlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+          newValue.r_2 = r2Full.replace(regex, `<mark>$&</mark>`)
+        } else {
+          newValue.r_2 = r2Full
+        }
       }
+
       return newValue
     })
 
@@ -206,6 +287,18 @@ export const useGames = () => {
     return result
   }
 
+  const resetAllFilters = async () => {
+    fav_categories.value = []
+    fav_teams.value = []
+    fav_dates.value = ''
+    showFlags.value = true
+    await preferenceStore.putItem('fav_categories', '[]')
+    await preferenceStore.putItem('fav_teams', '[]')
+    await preferenceStore.putItem('fav_dates', '')
+    await preferenceStore.putItem('show_flags', true)
+    filterGames()
+  }
+
   return {
     games,
     gamesCount,
@@ -223,6 +316,7 @@ export const useGames = () => {
     visibleButton,
     loadGames,
     getFav,
-    changeFav
+    changeFav,
+    resetAllFilters
   }
 }

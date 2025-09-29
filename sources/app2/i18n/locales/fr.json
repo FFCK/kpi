@@ -103,6 +103,10 @@
       "Winner": "Vainqueur #",
       "Looser": "Perdant #"
     },
+    "SelectCategories": "Sélectionner des catégories",
+    "SelectTeamsRefs": "Sélectionner des équipes et arbitres",
+    "Reset": "Réinitialiser",
+    "Search": "Rechercher",
     "Numbers": {
       "first": "er ",
       "second": "nd ",

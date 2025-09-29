@@ -103,6 +103,10 @@
       "Winner": "Winner #",
       "Looser": "Looser #"
     },
+    "SelectCategories": "Select categories",
+    "SelectTeamsRefs": "Select teams and refs",
+    "Reset": "Reset",
+    "Search": "Search",
     "Numbers": {
       "first": "st ",
       "second": "nd ",
