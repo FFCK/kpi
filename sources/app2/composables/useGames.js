@@ -46,7 +46,7 @@ export const useGames = () => {
       // Essayer de charger depuis IndexedDB d'abord
       const cachedGames = await loadGamesFromDB(eventId)
       if (cachedGames && cachedGames.length > 0) {
-        console.log('Loading games from IndexedDB cache')
+        // console.log('Loading games from IndexedDB cache')
         const gamelist = processGameData(cachedGames)
         await gameStore.clearAndUpdateGames(gamelist)
         loadCategories()
@@ -55,7 +55,7 @@ export const useGames = () => {
 
       // Charger depuis l'API en arrière-plan
       try {
-        console.log('Loading games from API')
+        // console.log('Loading games from API')
         const response = await getApi(`${apiBaseUrl}/games/${eventId}`)
         const data = await response.json()
         const gamelist = processGameData(data)

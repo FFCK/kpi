@@ -1,44 +1,48 @@
 <template>
   <div class="container-fluid mb-16">
     <div class="p-4 bg-white border-b border-gray-200">
-      <div class="flex items-center">
-        <button @click="navigateTo('/')" class="p-2 rounded-md hover:bg-gray-100">
-          <UIcon name="i-heroicons-arrow-left" class="h-6 w-6" />
-        </button>
-        <button
-          @click="showFilters = !showFilters"
-          class="ml-4 px-3 py-2 rounded-md border-2 border-gray-300 transition-colors flex items-center space-x-1 text-base hover:bg-gray-100"
-          :style="hasActiveFilters ? 'background-color: #dbeafe !important; border-color: #60a5fa !important; color: #1e40af !important;' : ''"
-        >
-          <span>{{ t('nav.Filters') }}</span>
-          <UIcon name="i-heroicons-filter" class="h-4 w-4" />
-          <UIcon
-            :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
-            class="h-4 w-4"
-          />
-        </button>
-        <select
-          v-model="fav_dates"
-          @change="changeFav"
-          class="ml-4 block w-auto px-3 py-2 text-base border-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors hover:bg-gray-100"
-          :style="hasActiveDateFilter ? 'background-color: #dbeafe !important; border-color: #60a5fa !important; color: #1e40af !important;' : ''"
-        >
-          <option value="">{{ t('Games.AllDates') }}</option>
-          <option v-for="(game_date, index) in game_dates" :key="index" :value="game_date">
-            <NuxtTime :datetime="game_date" day="numeric" month="long" year="numeric" :locale="locale" />
-          </option>
-          <option disabled>──────</option>
-          <option value="Today">{{ t('Games.Today') }}</option>
-          <option value="Tomorow">{{ t('Games.Tomorow') }}</option>
-          <option value="Prev">{{ t('Games.Prev') }}</option>
-          <option value="Next">{{ t('Games.Next') }}</option>
-        </select>
-        <button :disabled="!visibleButton" @click="loadGames" class="ml-4 p-2 rounded-md hover:bg-gray-100">
-          <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
-        </button>
-        <button @click="navigateTo('/charts')" class="ml-4 p-2 rounded-md hover:bg-gray-100">
-          <UIcon name="i-heroicons-arrow-right" class="h-6 w-6" />
-        </button>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <button @click="navigateTo('/')" class="p-2 rounded-md hover:bg-gray-100">
+            <UIcon name="i-heroicons-arrow-left" class="h-6 w-6" />
+          </button>
+          <button
+            @click="showFilters = !showFilters"
+            class="ml-4 px-3 py-2 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100"
+            :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
+          >
+            <span>{{ t('nav.Filters') }}</span>
+            <UIcon name="i-heroicons-filter" class="h-4 w-4" />
+            <UIcon
+              :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+              class="h-4 w-4"
+            />
+          </button>
+          <select
+            v-model="fav_dates"
+            @change="changeFav"
+            class="ml-4 block w-auto px-3 py-2 border-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors hover:bg-gray-100"
+            :style="hasActiveDateFilter ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
+          >
+            <option value="">{{ t('Games.AllDates') }}</option>
+            <option v-for="(game_date, index) in game_dates" :key="index" :value="game_date">
+              <NuxtTime :datetime="game_date" day="numeric" month="long" year="numeric" :locale="locale" />
+            </option>
+            <option disabled>──────</option>
+            <option value="Today">{{ t('Games.Today') }}</option>
+            <option value="Tomorow">{{ t('Games.Tomorow') }}</option>
+            <option value="Prev">{{ t('Games.Prev') }}</option>
+            <option value="Next">{{ t('Games.Next') }}</option>
+          </select>
+        </div>
+        <div class="flex items-center">
+          <button :disabled="!visibleButton" @click="loadGames" class="p-2 rounded-md hover:bg-gray-100">
+            <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
+          </button>
+          <button @click="navigateTo('/charts')" class="ml-4 p-2 rounded-md hover:bg-gray-100">
+            <UIcon name="i-heroicons-arrow-right" class="h-6 w-6" />
+          </button>
+        </div>
       </div>
     </div>
 
