@@ -2,9 +2,15 @@
   <div class="container mx-auto px-4 py-8">
     <div v-if="user" class="text-center">
       <h2 class="text-2xl font-semibold mb-4">{{ t('Login.Welcome') }}, {{ user.firstname }} {{ user.name }}</h2>
-      <button @click="handleLogout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-        {{ t('Login.Logout') }}
-      </button>
+      <div class="flex justify-center gap-4">
+        <NuxtLink to="/scrutineering" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+          <UIcon name="i-heroicons-clipboard-document-check" class="h-5 w-5 mr-2" />
+          {{ t('nav.Scrutineering') }}
+        </NuxtLink>
+        <button @click="handleLogout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          {{ t('Login.Logout') }}
+        </button>
+      </div>
     </div>
     <div v-else>
       <form @submit.prevent="handleLogin" class="max-w-sm mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
