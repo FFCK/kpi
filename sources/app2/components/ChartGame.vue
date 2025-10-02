@@ -13,33 +13,33 @@
 
         <!-- Teams and scores -->
         <div class="flex-1 space-y-2">
-          <!-- Team A -->
+          <!-- First team (winner if there's a winner, otherwise Team A) -->
           <div class="flex items-center gap-1">
             <span
-              :class="teamBlockClass(game, 'A')"
+              :class="teamBlockClass(game, getFirstTeam(game))"
               class="px-2 py-1 rounded text-xs flex-1"
-              v-html="teamNameResize(game.t_a_label || 'Team A')"
+              v-html="teamNameResize(getFirstTeamLabel(game))"
             />
             <div
-              v-if="game.g_score_a !== undefined && game.g_score_a !== ''"
-              :class="[teamBlockClass(game, 'A'), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
+              v-if="getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
+              :class="[teamBlockClass(game, getFirstTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
             >
-              {{ game.g_score_a }}
+              {{ getFirstTeamScore(game) }}
             </div>
           </div>
 
-          <!-- Team B -->
+          <!-- Second team (loser if there's a winner, otherwise Team B) -->
           <div class="flex items-center gap-1">
             <span
-              :class="teamBlockClass(game, 'B')"
+              :class="teamBlockClass(game, getSecondTeam(game))"
               class="px-2 py-1 rounded text-xs flex-1"
-              v-html="teamNameResize(game.t_b_label || 'Team B')"
+              v-html="teamNameResize(getSecondTeamLabel(game))"
             />
             <div
-              v-if="game.g_score_b !== undefined && game.g_score_b !== ''"
-              :class="[teamBlockClass(game, 'B'), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
+              v-if="getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
+              :class="[teamBlockClass(game, getSecondTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
             >
-              {{ game.g_score_b }}
+              {{ getSecondTeamScore(game) }}
             </div>
           </div>
         </div>
@@ -72,16 +72,46 @@ const isWinner = (game, team) => {
   }
 }
 
+const getFirstTeam = (game) => {
+  // If Team A is winner, show A first, otherwise show B first (if B is winner) or A by default
+  if (isWinner(game, 'A')) return 'A'
+  if (isWinner(game, 'B')) return 'B'
+  return 'A'
+}
+
+const getSecondTeam = (game) => {
+  return getFirstTeam(game) === 'A' ? 'B' : 'A'
+}
+
+const getFirstTeamLabel = (game) => {
+  return getFirstTeam(game) === 'A' ? (game.t_a_label || 'Team A') : (game.t_b_label || 'Team B')
+}
+
+const getSecondTeamLabel = (game) => {
+  return getSecondTeam(game) === 'A' ? (game.t_a_label || 'Team A') : (game.t_b_label || 'Team B')
+}
+
+const getFirstTeamScore = (game) => {
+  return getFirstTeam(game) === 'A' ? game.g_score_a : game.g_score_b
+}
+
+const getSecondTeamScore = (game) => {
+  return getSecondTeam(game) === 'A' ? game.g_score_a : game.g_score_b
+}
+
 const teamBlockClass = (game, team) => {
   const winner = isWinner(game, team)
+  const highlighted = team === 'A' ? game.t_a_highlighted : game.t_b_highlighted
 
   return {
-    // Background colors like in GameList.vue
-    'bg-gray-800': winner, // Dark gray for winners
-    'bg-gray-200': !winner, // Light gray for others
+    // Background colors
+    'bg-yellow-400': highlighted, // Yellow for all highlighted teams
+    'bg-gray-800': winner && !highlighted, // Dark gray for winners not highlighted
+    'bg-gray-200': !winner && !highlighted, // Light gray for others
     // Text colors
-    'text-white': winner, // White text for winners
-    'text-black': !winner, // Black text for others
+    'text-black': highlighted, // Black text for all highlighted teams
+    'text-white': winner && !highlighted, // White text for winners not highlighted
+    'font-bold': highlighted // Bold for highlighted teams
   }
 }
 </script>

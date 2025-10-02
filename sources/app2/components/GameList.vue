@@ -140,13 +140,12 @@ const teamBlockClass = (game, team) => {
 
   return {
     // Background colors
-    'bg-gray-800': winner, // Toutes les équipes gagnantes (filtrées ou non)
+    'bg-yellow-400': isHighlighted, // Fond jaune pour toutes les équipes filtrées
+    'bg-gray-800': winner && !isHighlighted, // Équipes gagnantes non filtrées
     'bg-gray-200': !winner && !isHighlighted, // Équipes perdantes non filtrées
-    'bg-yellow-400': isHighlighted && !winner, // Fond jaune pour équipes filtrées perdantes
     // Text colors
+    'text-black': isHighlighted, // Texte noir pour toutes les équipes filtrées
     'text-white': winner && !isHighlighted, // Équipes gagnantes non filtrées
-    'text-yellow-400': winner && isHighlighted, // Texte jaune pour équipes gagnantes filtrées
-    'text-black': !winner, // Toutes les équipes perdantes
   }
 }
 

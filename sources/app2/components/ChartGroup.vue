@@ -20,7 +20,7 @@
               <td class="px-2 py-1 text-xs">{{ team.t_cltlv || (index + 1) }}</td>
               <td class="px-2 py-1 text-xs">
                 <div class="flex items-center">
-                  <span class="bg-gray-200 text-black px-2 py-1 rounded truncate" v-html="teamNameResize(team.t_label || `Team ${index + 1}`)"></span>
+                  <span :class="team.t_highlighted ? 'bg-yellow-400 text-black font-bold' : 'bg-gray-200 text-black'" class="px-2 py-1 rounded truncate" v-html="teamNameResize(team.t_label || `Team ${index + 1}`)"></span>
                 </div>
               </td>
               <td class="px-2 py-1 text-center text-xs font-bold">{{ Math.floor((team.t_pts || 0) / 100) }}</td>

@@ -19,12 +19,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(team, index) in chartRanking" :key="index" class="border-t">
+            <tr v-for="(team, index) in chartRanking" :key="index" class="border-t" :class="team.t_highlighted ? 'bg-yellow-100' : ''">
               <td class="px-3 py-2">{{ index + 1 }}</td>
               <td class="px-3 py-2">
                 <div class="flex items-center">
                   <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-6 w-6 mr-2" alt="" />
-                  {{ team.t_label }}
+                  <span :class="team.t_highlighted ? 'font-bold text-yellow-900' : ''">{{ team.t_label }}</span>
                 </div>
               </td>
               <td class="px-3 py-2 text-center font-bold">{{ team.pts || 0 }}</td>
@@ -48,8 +48,6 @@
 
 <script setup>
 const { t } = useI18n()
-const runtimeConfig = useRuntimeConfig()
-const baseUrl = runtimeConfig.public.apiBaseUrl.replace('/api', '')
 
 const props = defineProps({
   chartRanking: {
@@ -67,6 +65,6 @@ const props = defineProps({
 })
 
 const getTeamLogo = (logo) => {
-  return `${baseUrl}/img/${logo}`
+  return `/img/Nations/${logo}`
 }
 </script>
