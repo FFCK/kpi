@@ -1,34 +1,19 @@
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { usePreferenceStore } from '~/stores/preferenceStore'
 
-export function useUser(prefs) {
-  const authorized = ref(false)
-  const user = computed(() => User.query().first())
+export function useUser() {
+  const preferenceStore = usePreferenceStore()
+
+  const user = computed(() => preferenceStore.preferences.user)
 
   async function getUser() {
-    if (User.query().count() === 0) {
-      const result = await idbs.dbGetAll('user')
-      if (result.length === 1) {
-        User.insertOrUpdate({ data: result })
-      }
-    }
-  }
-
-  async function checkAuthorized() {
-    await getUser()
-    if (user.value && prefs?.event !== undefined) {
-      const userEvents = user.value.events.split('|').map(e => parseInt(e))
-      authorized.value = userEvents.includes(prefs.event)
-    } else {
-      authorized.value = false
-    }
+    await preferenceStore.fetchItems()
   }
 
   onMounted(getUser)
 
   return {
     user,
-    authorized,
-    getUser,
-    checkAuthorized
+    getUser
   }
 }

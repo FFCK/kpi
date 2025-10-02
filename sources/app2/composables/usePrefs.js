@@ -1,17 +1,18 @@
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { usePreferenceStore } from '~/stores/preferenceStore'
 
 export function usePrefs() {
-  const prefs = computed(() => Preferences.query().first())
+  const preferenceStore = usePreferenceStore()
+
+  const prefs = computed(() => preferenceStore.preferences)
 
   async function getPrefs() {
-    if (Preferences.query().count() === 0) {
-      const result = await idbs.dbGetAll('preferences')
-      if (result.length === 1) {
-        Preferences.insertOrUpdate({ data: result })
-      } else {
-        Preferences.insertOrUpdate({ data: { id: 1 } })
-        idbs.dbPut('preferences', Preferences.query().first())
-      }
+    await preferenceStore.fetchItems()
+  }
+
+  async function updatePref(updates) {
+    for (const [key, value] of Object.entries(updates)) {
+      await preferenceStore.putItem(key, value)
     }
   }
 
@@ -25,6 +26,7 @@ export function usePrefs() {
   return {
     prefs,
     getPrefs,
+    updatePref,
     scrollTop
   }
 }

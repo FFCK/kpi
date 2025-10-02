@@ -7,4 +7,11 @@ db.version(1).stores({
   charts: '++id, eventId, timestamp',
 });
 
+db.version(2).stores({
+  preferences: '&id',
+  games: '&eventId, timestamp',
+  charts: '++id, eventId, timestamp',
+  user: '&id',
+});
+
 export default db;

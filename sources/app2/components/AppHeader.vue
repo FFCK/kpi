@@ -30,6 +30,10 @@
               <UIcon name="i-heroicons-user-circle" />
               <span>{{ t('nav.Login') }}</span>
             </NuxtLink>
+            <NuxtLink v-if="isAuthenticated" to="/scrutineering" class="block px-4 py-2 hover:bg-gray-700 flex items-center space-x-1">
+              <UIcon name="i-heroicons-clipboard-document-check" />
+              <span>{{ t('nav.Scrutineering') }}</span>
+            </NuxtLink>
           </div>
         </div>
         <NuxtLink to="/about" class="hover:text-green-400 flex items-center space-x-1">
@@ -57,7 +61,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { usePreferenceStore } from '~/stores/preferenceStore'
+
 const showMenu = ref(false)
 const { t } = useI18n()
+const preferenceStore = usePreferenceStore()
+
+// Check if user is authenticated
+const isAuthenticated = computed(() => {
+  return preferenceStore.preferences.user !== undefined && preferenceStore.preferences.user !== null
+})
+
+onMounted(async () => {
+  await preferenceStore.fetchItems()
+})
 </script>

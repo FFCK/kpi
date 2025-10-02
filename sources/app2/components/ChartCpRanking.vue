@@ -28,7 +28,7 @@
               <td class="px-6 py-3 text-center font-bold text-lg">{{ index + 1 }}</td>
               <td class="px-6 py-3">
                 <div class="flex items-center">
-                  <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-6 w-8 mr-3" alt="" />
+                  <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-6 w-6 mr-3" alt="" />
                   <span class="text-base font-medium">{{ team.t_label }}</span>
                 </div>
               </td>
