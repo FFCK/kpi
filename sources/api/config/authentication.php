@@ -56,8 +56,15 @@ function user_authentication()
 
 function get_user($event)
 {
+	// Check for token in cookie or X-Auth-Token header
+	$token = null;
 	if (isset($_COOKIE["kpi_app"])) {
 		$token = $_COOKIE["kpi_app"];
+	} elseif (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
+		$token = $_SERVER['HTTP_X_AUTH_TOKEN'];
+	}
+
+	if ($token) {
 		$myBdd = new MyBdd();
 		$sql = "SELECT ut.user, ut.generated_at, u.Id_Evenement
 			FROM kp_user_token ut

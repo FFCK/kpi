@@ -2,12 +2,25 @@ export const useApi = () => {
   const runtimeConfig = useRuntimeConfig()
   const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(';').shift()
+    return null
+  }
+
+  const getAuthHeaders = () => {
+    const token = getCookie('kpi_app')
+    return token ? { 'X-Auth-Token': token } : {}
+  }
+
   const getApi = (url) => {
     return fetch(url, {
       headers: {
         'Cache-Control': 'no-cache',
         Pragma: 'no-cache',
-        Expires: '0'
+        Expires: '0',
+        ...getAuthHeaders()
       }
     })
   }
@@ -16,7 +29,8 @@ export const useApi = () => {
     return fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
       },
       body: JSON.stringify(data)
     })
@@ -31,5 +45,5 @@ export const useApi = () => {
     })
   }
 
-  return { getApi, postApi, getToken }
+  return { getApi, postApi, getToken, getCookie, getAuthHeaders }
 }

@@ -16,7 +16,8 @@ export const useAuth = () => {
       const date = new Date()
       date.setTime(date.getTime() + 10 * 24 * 60 * 60 * 1000)
       const expires = 'expires=' + date.toUTCString()
-      document.cookie = `kpi_app=${data.user.token}; ${expires}; path=/; SameSite=Strict;`
+      document.cookie = `kpi_app=${data.user.token}; ${expires}; path=/; SameSite=Lax;`
+      console.log('Cookie set:', document.cookie)
       return true
     } else {
       return false
@@ -25,7 +26,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     await preferenceStore.removeItem('user')
-    document.cookie = 'kpi_app=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict;'
+    document.cookie = 'kpi_app=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax;'
   }
 
   return { user, login, logout }
