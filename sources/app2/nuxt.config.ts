@@ -6,7 +6,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL || 'https://kpi.local/api'
+      apiBaseUrl: process.env.API_BASE_URL || 'https://kpi.local/api',
+      backendBaseUrl: process.env.BACKEND_BASE_URL || 'https://kpi.local'
     }
   },
   compatibilityDate: '2025-07-15',

@@ -13,11 +13,13 @@
           {{ t('Scrutineering.Comment') }}
         </label>
         <textarea
+          ref="textareaRef"
           v-model="localComment"
           :maxlength="255"
           rows="5"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           :placeholder="t('Scrutineering.EnterComment')"
+          @keydown.enter="handleEnterKey"
         />
         <div class="text-xs text-gray-500 text-right mt-1">
           {{ localComment.length }}/255
@@ -51,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 
 const { t } = useI18n()
 
@@ -73,6 +75,8 @@ const props = defineProps({
 const emit = defineEmits(['close', 'save'])
 
 const localComment = ref('')
+const initialComment = ref('')
+const textareaRef = ref(null)
 
 watch(() => props.comment, (newVal) => {
   localComment.value = newVal || ''
@@ -81,6 +85,10 @@ watch(() => props.comment, (newVal) => {
 watch(() => props.isOpen, (newVal) => {
   if (newVal) {
     localComment.value = props.comment || ''
+    initialComment.value = props.comment || ''
+    nextTick(() => {
+      textareaRef.value?.focus()
+    })
   }
 })
 
@@ -89,7 +97,18 @@ const close = () => {
 }
 
 const save = () => {
-  emit('save', localComment.value)
+  if (localComment.value !== initialComment.value) {
+    emit('save', localComment.value)
+  } else {
+    close()
+  }
+}
+
+const handleEnterKey = (event) => {
+  if (!event.shiftKey) {
+    event.preventDefault()
+    save()
+  }
 }
 
 const clearComment = () => {

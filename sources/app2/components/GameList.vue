@@ -117,7 +117,7 @@ const props = defineProps({
 })
 
 const runtimeConfig = useRuntimeConfig()
-const baseUrl = runtimeConfig.public.apiBaseUrl.replace('/api', '')
+const baseUrl = runtimeConfig.public.backendBaseUrl
 
 const isWinner = (game, team) => {
   if (game.g_status !== 'END' || game.g_validation !== 'O') return false

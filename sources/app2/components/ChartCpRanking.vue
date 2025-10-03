@@ -77,7 +77,7 @@ const props = defineProps({
 })
 
 const runtimeConfig = useRuntimeConfig()
-const baseUrl = runtimeConfig.public.apiBaseUrl.replace('/api', '')
+const baseUrl = runtimeConfig.public.backendBaseUrl
 
 const getTeamLogo = (logo) => {
   return `${baseUrl}/img/${logo}`
