@@ -29,34 +29,20 @@
         </div>
       </div>
 
-      <p class="my-3 flex items-center space-x-2">
-        <span>{{ t("About.FeedbackOnTwitter") }}</span>
-        <a
-          class="inline-flex items-center space-x-1 px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
-          href="https://twitter.com/kayakpolo_info"
-          target="blank"
-        >
-          <UIcon name="i-bi-twitter" />
-          <span>Twitter</span>
-        </a>
-      </p>
       <p class="my-3">
-        <span>{{ t("About.SupportMeOnUtip") }}</span>
+        <span>{{ t("About.SupportMeOnKofi") }}</span>
         <a
-          href="https://utip.io/kayakpoloinfo"
+          href="https://ko-fi.com/kayakpoloinfo"
           target="blank"
           class="inline-block align-middle ml-2"
         >
-          <img alt="logo uTip" :src="logoUtip" class="h-12 inline-block" />
-          <img alt="Dablicorne" :src="dablicorneUtip" class="h-12 inline-block" />
+          <img alt="logo Ko-fi" :src="logoKofi" class="h-12 inline-block" />
         </a>
       </p>
     </div>
     <hr class="my-3"/>
     <p class="text-sm">
       {{ t("About.OwnCompetition") }}
-      <br />
-      {{ t("About.HelpMe") }}
       <br />
       {{ t("About.ContactMe") }}
       <a href="mailto:contact@kayak-polo.info" class="text-blue-600 hover:underline">contact@kayak-polo.info</a>
@@ -71,8 +57,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import logoUtip from '~/public/img/utip/logo-utip.png'
-import dablicorneUtip from '~/public/img/utip/dablicorne-utip.png'
+import logoKofi from '~/public/img/kofi/logo-kofi.png'
 import { usePreferenceStore } from '~/stores/preferenceStore'
 
 // Composables & Stores
