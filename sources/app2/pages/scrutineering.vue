@@ -1,29 +1,19 @@
 <template>
-  <div class="container-fluid mb-16">
-    <div class="p-4 bg-white border-b border-gray-200">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <button @click="navigateTo('/')" class="p-2 rounded-md hover:bg-gray-100">
-            <UIcon name="i-heroicons-arrow-left" class="h-6 w-6" />
-          </button>
-          <h1 class="text-2xl font-bold flex items-center">
-            <UIcon name="i-heroicons-clipboard-document-check" class="h-6 w-6 mr-2" />
-            {{ t('Scrutineering.Scrutineering') }}
-          </h1>
-        </div>
-        <div v-if="prefs?.scr_team_id" class="flex items-center space-x-2">
-          <button @click="loadPlayers" class="p-2 rounded-md hover:bg-gray-100">
-            <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
-          </button>
-        </div>
-      </div>
-    </div>
+  <div class="container-fluid">
+    <AppSecondaryNav>
+      <template #left></template>
+      <template #right>
+        <button v-if="prefs?.scr_team_id" @click="loadPlayers" class="p-2 rounded-md hover:bg-gray-100">
+          <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
+        </button>
+      </template>
+    </AppSecondaryNav>
 
     <div v-if="user">
-      <div v-if="authorized && user.profile <= 3" class="p-4">
+      <div v-if="authorized && user.profile <= 3" class="p-2">
         <TeamSelector @change-team="loadPlayers" />
 
-        <div v-if="prefs?.scr_team_id" class="mt-4">
+        <div v-if="prefs?.scr_team_id" class="mt-2">
           <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-300">
               <thead class="bg-gray-50">
@@ -155,11 +145,12 @@
         </div>
       </div>
     </div>
+    <AppFooter />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useScrutineering } from '~/composables/useScrutineering'
 import { useUser } from '~/composables/useUser'
 import { useStatus } from '~/composables/useStatus'

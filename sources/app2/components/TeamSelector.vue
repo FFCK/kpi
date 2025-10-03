@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-2">
+  <div class="container">
     <div v-if="prefs?.scr_team_id && !showSelector" class="flex items-center justify-center gap-4 cursor-pointer" @click="loadTeams">
       <img
         v-if="prefs?.scr_team_logo"

@@ -1,34 +1,26 @@
 <template>
-  <div class="container-fluid mb-16">
-    <div class="p-4 bg-white border-b border-gray-200">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <button @click="navigateTo('/games')" class="p-2 rounded-md hover:bg-gray-100">
-            <UIcon name="i-heroicons-arrow-left" class="h-6 w-6" />
-          </button>
-          <button
-            @click="showFilters = !showFilters"
-            class="ml-4 px-3 py-2 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100"
-            :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
-          >
-            <span>{{ t('nav.Filters') }}</span>
-            <UIcon name="i-heroicons-filter" class="h-4 w-4" />
-            <UIcon
-              :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
-              class="h-4 w-4"
-            />
-          </button>
-        </div>
-        <div class="flex items-center">
-          <button :disabled="!visibleButton" @click="loadCharts" class="p-2 rounded-md hover:bg-gray-100">
-            <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
-          </button>
-          <button @click="navigateTo('/about')" class="ml-4 p-2 rounded-md hover:bg-gray-100">
-            <UIcon name="i-heroicons-arrow-right" class="h-6 w-6" />
-          </button>
-        </div>
-      </div>
-    </div>
+  <div class="container-fluid">
+    <AppSecondaryNav>
+      <template #left>
+        <button
+          @click="showFilters = !showFilters"
+          class="ml-4 px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100"
+          :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
+        >
+          <span>{{ t('nav.Filters') }}</span>
+          <UIcon name="i-heroicons-filter" class="h-4 w-4" />
+          <UIcon
+            :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+            class="h-4 w-4"
+          />
+        </button>
+      </template>
+      <template #right>
+        <button :disabled="!visibleButton" @click="loadCharts" class="p-2 rounded-md hover:bg-gray-100">
+          <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
+        </button>
+      </template>
+    </AppSecondaryNav>
 
     <div v-if="showFilters" class="p-4 bg-gray-50">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -106,9 +98,10 @@
 
     <Charts v-if="chartData" :key="chartIndex" :chart-data="chartData" :show-flags="showFlags" />
 
-    <button @click="scrollToTop" class="fixed bottom-4 right-4 bg-gray-800 hover:bg-gray-700 text-white font-bold p-3 rounded-full">
+    <button @click="scrollToTop" class="fixed bottom-8 right-4 bg-gray-800 hover:bg-gray-700 text-white font-bold p-3 rounded-full">
       <UIcon name="i-heroicons-arrow-up" class="h-6 w-6" />
     </button>
+    <AppFooter />
   </div>
 </template>
 
@@ -116,7 +109,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useCharts } from '~/composables/useCharts'
 import Charts from '~/components/Charts.vue'
-import { navigateTo } from '#app'
 
 const { t } = useI18n()
 const showFilters = ref(false)
