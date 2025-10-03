@@ -43,10 +43,10 @@ function GetPlayersController($route, $params)
   }
 
   $myBdd = new MyBdd();
-  $sql = "SELECT cej.Matric player_id, cej.Nom last_name, cej.Prenom first_name, 
+  $sql = "SELECT cej.Matric player_id, cej.Nom last_name, cej.Prenom first_name,
     cej.Sexe gender, cej.Numero num, cej.Capitaine cap,
     sc.kayak_status, sc.kayak_print, sc.vest_status, sc.vest_print, sc.helmet_status,
-    sc.helmet_print, sc.paddle_count, sc.paddle_print
+    sc.helmet_print, sc.paddle_count, sc.paddle_print, sc.comment
     FROM kp_competition_equipe_joueur cej
     LEFT OUTER JOIN kp_scrutineering sc ON (cej.Id_equipe = sc.id_equipe AND cej.Matric = sc.matric)
     WHERE cej.Id_equipe = ?
@@ -68,6 +68,12 @@ function PutPlayerController($route, $params)
   $player_id = (int) $route[3] ?? return_405();
   $team_id = (int) $route[5] ?? return_405();
   $parameter = $route[6] ?? return_405();
+
+  // Handle comment separately
+  if ($parameter === 'comment') {
+    return PutPlayerCommentController($route, $params);
+  }
+
   if (!in_array($parameter, [
     'kayak_status',
     'vest_status',
@@ -87,6 +93,28 @@ function PutPlayerController($route, $params)
   if ($stmt->execute([$team_id, $player_id, $value, $value])) {
     // TODO: log user action
     return_200($value);
+  }
+  return_401();
+}
+
+function PutPlayerCommentController($route, $params)
+{
+  // $event_id = (int) $route[1] ?? return_405();
+  $player_id = (int) $route[3] ?? return_405();
+  $team_id = (int) $route[5] ?? return_405();
+
+  // Get comment from request body
+  $input = json_decode(file_get_contents('php://input'), true);
+  $comment = isset($input['comment']) ? htmlspecialchars(substr($input['comment'], 0, 255), ENT_QUOTES, 'UTF-8') : '';
+
+  $myBdd = new MyBdd();
+  $sql = "INSERT INTO kp_scrutineering (id_equipe, matric, comment)
+    VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE comment = ? ";
+  $stmt = $myBdd->pdo->prepare($sql);
+  if ($stmt->execute([$team_id, $player_id, $comment, $comment])) {
+    // TODO: log user action
+    return_200(['comment' => $comment]);
   }
   return_401();
 }

@@ -169,7 +169,14 @@
     "Cosmetic": "Cosmetic",
     "Safety": "Safety",
     "Technical": "Techn.",
-    "Issues": "Issues"
+    "Issues": "Issues",
+    "Comments": "Comments",
+    "Comment": "Comment",
+    "EnterComment": "Enter a comment...",
+    "AddComment": "Add comment",
+    "Clear": "Clear",
+    "Cancel": "Cancel",
+    "Save": "Save"
   },
   "GameReports": {
     "NewGame": "New game (offline)",

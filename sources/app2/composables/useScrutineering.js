@@ -90,11 +90,47 @@ export const useScrutineering = () => {
     }
   }
 
+  const updateComment = async (playerId, comment) => {
+    if (!prefStore.preferences?.lastEvent?.id || !prefStore.preferences?.scr_team_id) {
+      console.error('Missing event or team ID')
+      return
+    }
+
+    const token = getCookie('kpi_app')
+    if (!token) {
+      console.error('No authentication token found in cookie')
+      return
+    }
+
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/staff/${prefStore.preferences.lastEvent.id}/player/${playerId}/team/${prefStore.preferences.scr_team_id}/comment`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Auth-Token': token
+          },
+          body: JSON.stringify({ comment })
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to update comment')
+      }
+
+      store.updatePlayerComment(playerId, comment)
+    } catch (error) {
+      console.error('Error updating comment:', error)
+    }
+  }
+
   return {
     players: computed(() => store.players),
     loading: computed(() => store.loading),
     error: computed(() => store.error),
     loadPlayers,
-    updatePlayer
+    updatePlayer,
+    updateComment
   }
 }

@@ -18,23 +18,23 @@
             <table class="min-w-full bg-white border border-gray-300">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">
+                  <th class="px-1 py-2 text-left text-sm font-medium text-gray-700 border-b">
                     {{ t('Scrutineering.Player') }}
                   </th>
-                  <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">
+                  <th class="px-1 py-2 text-center text-sm font-medium text-gray-700 border-b">
                     {{ t('Scrutineering.Kayak') }}
                   </th>
-                  <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">
+                  <th class="px-1 py-2 text-center text-sm font-medium text-gray-700 border-b">
                     {{ t('Scrutineering.Vest') }}
                   </th>
-                  <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">
+                  <th class="px-1 py-2 text-center text-sm font-medium text-gray-700 border-b">
                     {{ t('Scrutineering.Helmet') }}
                   </th>
-                  <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">
+                  <th class="px-1 py-2 text-center text-sm font-medium text-gray-700 border-b">
                     {{ t('Scrutineering.Paddles') }}
                   </th>
-                  <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">
-                    {{ t('Scrutineering.Print') }}
+                  <th class="px-1 py-1 text-center text-sm font-medium text-gray-700 border-b">
+                    {{ t('Scrutineering.Comments') }}
                   </th>
                 </tr>
               </thead>
@@ -52,7 +52,7 @@
                       C
                     </span>
                   </td>
-                  <td v-if="player.cap !== 'E'" class="px-4 py-2 text-center border-r">
+                  <td v-if="player.cap !== 'E'" class="px-1 py-2 text-center border-r">
                     <button
                       type="button"
                       :class="getEquipmentButtonClass(player.kayak_status)"
@@ -61,7 +61,7 @@
                       <UIcon :name="getEquipmentIcon(player.kayak_status)" class="h-5 w-5" />
                     </button>
                   </td>
-                  <td v-if="player.cap !== 'E'" class="px-4 py-2 text-center">
+                  <td v-if="player.cap !== 'E'" class="px-1 py-2 text-center">
                     <button
                       type="button"
                       :class="getEquipmentButtonClass(player.vest_status)"
@@ -70,7 +70,7 @@
                       <UIcon :name="getEquipmentIcon(player.vest_status)" class="h-5 w-5" />
                     </button>
                   </td>
-                  <td v-if="player.cap !== 'E'" class="px-4 py-2 text-center">
+                  <td v-if="player.cap !== 'E'" class="px-1 py-2 text-center">
                     <button
                       type="button"
                       :class="getEquipmentButtonClass(player.helmet_status)"
@@ -79,7 +79,7 @@
                       <UIcon :name="getEquipmentIcon(player.helmet_status)" class="h-5 w-5" />
                     </button>
                   </td>
-                  <td v-if="player.cap !== 'E'" class="px-4 py-2 text-center">
+                  <td v-if="player.cap !== 'E'" class="px-1 py-2 text-center">
                     <button
                       type="button"
                       :class="getPaddleButtonClass(player.paddle_count)"
@@ -88,9 +88,17 @@
                       <b>{{ player.paddle_count || 0 }}</b>
                     </button>
                   </td>
-                  <td v-if="player.cap !== 'E'" class="px-4 py-2 text-center">
-                    <button type="button" class="px-3 py-1 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
-                      <UIcon name="i-heroicons-printer" class="h-4 w-4" />
+                  <td v-if="player.cap !== 'E'" class="px-1 py-1 text-center">
+                    <button
+                      type="button"
+                      @click="openCommentModal(player)"
+                      class="px-2 py-1 text-xs text-left text-gray-700 border border-gray-300 rounded hover:bg-gray-50 w-full min-h-[3rem] max-h-[3rem] overflow-hidden line-clamp-3"
+                      :title="player.comment || t('Scrutineering.AddComment')"
+                    >
+                      <span v-if="player.comment" class="block break-words">
+                        {{ player.comment.substring(0, 20) }}{{ player.comment.length > 20 ? '...' : '' }}
+                      </span>
+                      <span v-else class="text-gray-400 italic">{{ t('Scrutineering.AddComment') }}</span>
                     </button>
                   </td>
                   <td v-if="player.cap === 'E'" colspan="5" class="px-4 py-2"></td>
@@ -99,30 +107,24 @@
             </table>
           </div>
 
-          <div class="flex justify-between items-center mt-4">
-            <div>
-              <label class="text-sm font-medium text-gray-700 mb-2 block">
-                <i>{{ t('Scrutineering.Issues') }}:</i>
-              </label>
-              <div class="flex space-x-2">
-                <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
-                  <UIcon name="i-heroicons-exclamation-circle" class="h-4 w-4 mr-1" />
-                  {{ t('Scrutineering.Cosmetic') }}
-                </button>
-                <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
-                  <UIcon name="i-heroicons-exclamation-triangle" class="h-4 w-4 mr-1" />
-                  {{ t('Scrutineering.Safety') }}
-                </button>
-                <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
-                  <UIcon name="i-heroicons-shield-exclamation" class="h-4 w-4 mr-1" />
-                  {{ t('Scrutineering.Technical') }}
-                </button>
-              </div>
+          <div class="mt-4">
+            <label class="text-sm font-medium text-gray-700 mb-2 block">
+              <i>{{ t('Scrutineering.Issues') }}:</i>
+            </label>
+            <div class="flex space-x-2">
+              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
+                <UIcon name="i-heroicons-exclamation-circle" class="h-4 w-4 mr-1" />
+                {{ t('Scrutineering.Cosmetic') }}
+              </button>
+              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
+                <UIcon name="i-heroicons-exclamation-triangle" class="h-4 w-4 mr-1" />
+                {{ t('Scrutineering.Safety') }}
+              </button>
+              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
+                <UIcon name="i-heroicons-shield-exclamation" class="h-4 w-4 mr-1" />
+                {{ t('Scrutineering.Technical') }}
+              </button>
             </div>
-            <button type="button" class="px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 flex items-center">
-              <UIcon name="i-heroicons-printer" class="h-5 w-5 mr-2" />
-              {{ t('Scrutineering.PrintAll') }}
-            </button>
           </div>
         </div>
       </div>
@@ -145,23 +147,36 @@
         </div>
       </div>
     </div>
+    <CommentModal
+      :is-open="isCommentModalOpen"
+      :title="modalTitle"
+      :comment="selectedComment"
+      @close="closeCommentModal"
+      @save="saveComment"
+    />
     <AppFooter />
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useScrutineering } from '~/composables/useScrutineering'
 import { useUser } from '~/composables/useUser'
 import { useStatus } from '~/composables/useStatus'
 import { usePrefs } from '~/composables/usePrefs'
 import TeamSelector from '~/components/TeamSelector.vue'
+import CommentModal from '~/components/CommentModal.vue'
 
 const { t } = useI18n()
 const { user, getUser } = useUser()
 const { authorized, checkAuthorized } = useStatus()
 const { prefs, getPrefs } = usePrefs()
-const { players, loadPlayers, updatePlayer } = useScrutineering()
+const { players, loadPlayers, updatePlayer, updateComment } = useScrutineering()
+
+const isCommentModalOpen = ref(false)
+const selectedPlayerId = ref(null)
+const selectedComment = ref('')
+const modalTitle = ref('')
 
 onMounted(async () => {
   await getUser()
@@ -196,5 +211,26 @@ const getPaddleButtonClass = (count) => {
   const baseClass = 'inline-flex items-center justify-center px-3 py-1 text-sm rounded'
   if (count > 0) return `${baseClass} text-white bg-green-600 hover:bg-green-700`
   return `${baseClass} text-gray-700 bg-gray-200 hover:bg-gray-300`
+}
+
+const openCommentModal = (player) => {
+  selectedPlayerId.value = player.player_id
+  selectedComment.value = player.comment || ''
+  modalTitle.value = `${player.last_name} ${player.first_name}`
+  isCommentModalOpen.value = true
+}
+
+const closeCommentModal = () => {
+  isCommentModalOpen.value = false
+  selectedPlayerId.value = null
+  selectedComment.value = ''
+  modalTitle.value = ''
+}
+
+const saveComment = async (comment) => {
+  if (selectedPlayerId.value) {
+    await updateComment(selectedPlayerId.value, comment)
+    closeCommentModal()
+  }
 }
 </script>
