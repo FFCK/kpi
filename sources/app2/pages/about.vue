@@ -1,20 +1,11 @@
 <template>
-  <div class="container mx-auto px-4 py-2">
-    <!-- Header -->
-    <div class="flex items-center border border-gray-300 rounded mb-1">
-      <button @click="navigateTo('/charts')" class="px-3 py-1 hover:bg-gray-100 rounded-l">
-        <UIcon name="i-heroicons-arrow-left-on-rectangle" />
-      </button>
-      <input
-        type="text"
-        class="w-full text-center focus:outline-none"
-        readonly
-        :value="t('nav.About')"
-      />
-      <div class="px-3 py-1 bg-gray-200 text-gray-700 rounded-r">
-        v{{ version }}
-      </div>
-    </div>
+  <div class="container-fluid">
+    <AppSecondaryNav>
+      <template #left></template>
+      <template #right></template>
+    </AppSecondaryNav>
+
+    <div class="px-4 py-2">
 
     <!-- Main Content -->
     <div class="text-sm">
@@ -73,29 +64,25 @@
     <p class="text-right mt-4 mr-5 font-serif">
       Laurent.
     </p>
+    </div>
+    <AppFooter />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import pkg from '../package.json'
 import logoUtip from '~/public/img/utip/logo-utip.png'
 import dablicorneUtip from '~/public/img/utip/dablicorne-utip.png'
-import { usePreferenceStore } from '~/stores/preferenceStore';
-import { navigateTo } from '#app';
-
-// Assuming Rating component is auto-imported or globally available
-// import Rating from '@/components/design/Rating.vue'
+import { usePreferenceStore } from '~/stores/preferenceStore'
 
 // Composables & Stores
 const { t } = useI18n()
 const preferenceStore = usePreferenceStore()
-const { getApi, postApi } = useApi() // Assuming postApi exists in useApi
+const { getApi, postApi } = useApi()
 const runtimeConfig = useRuntimeConfig()
 const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
 // State
-const version = ref(pkg.version)
 const stars = ref(0)
 const thanks = ref(false)
 const key = ref(0) // To force re-render of the rating component

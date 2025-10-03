@@ -26,11 +26,11 @@
             <UIcon name="i-heroicons-chevron-down" />
           </button>
           <div class="absolute left-0 mt-2 w-40 bg-gray-800 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
-            <NuxtLink to="/login" :class="isActive('/login') ? 'bg-gray-700 text-green-400' : ''" class="block px-4 py-2 hover:bg-gray-700 flex items-center space-x-1">
+            <NuxtLink to="/login" :class="isActive('/login') ? 'bg-gray-700 text-green-400' : ''" class="flex px-4 py-2 hover:bg-gray-700 items-center space-x-1">
               <UIcon name="i-heroicons-user-circle" />
               <span>{{ t('nav.Login') }}</span>
             </NuxtLink>
-            <NuxtLink v-if="isAuthenticated" to="/scrutineering" :class="isActive('/scrutineering') ? 'bg-gray-700 text-green-400' : ''" class="block px-4 py-2 hover:bg-gray-700 flex items-center space-x-1">
+            <NuxtLink v-if="isAuthenticated" to="/scrutineering" :class="isActive('/scrutineering') ? 'bg-gray-700 text-green-400' : ''" class="flex px-4 py-2 hover:bg-gray-700 items-center space-x-1">
               <UIcon name="i-heroicons-clipboard-document-check" />
               <span>{{ t('nav.Scrutineering') }}</span>
             </NuxtLink>
@@ -41,11 +41,11 @@
           <span>{{ t('nav.About') }}</span>
         </NuxtLink>
       </nav>
-      <div class="ml-4">
-        <LanguageSwitcher />
+      <div class="flex items-center ml-2 md:ml-4">
+        <AppLanguageSwitcher />
       </div>
       <!-- Mobile menu button -->
-      <button class="md:hidden text-white focus:outline-none text-3xl" @click="showMenu = !showMenu">
+      <button class="md:hidden text-white focus:outline-none text-3xl ml-2" @click="showMenu = !showMenu">
         <UIcon name="i-heroicons-bars-3" class="h-8 w-8" />
       </button>
     </div>

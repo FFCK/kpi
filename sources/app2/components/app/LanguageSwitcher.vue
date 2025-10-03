@@ -17,7 +17,7 @@ const changeLanguage = async (code: string) => {
 
 <template>
   <div>
-    <div class="mt-4 space-x-2">
+    <div class="space-x-2">
       <button
         v-for="loc in availableLocales"
         :key="loc.code"
