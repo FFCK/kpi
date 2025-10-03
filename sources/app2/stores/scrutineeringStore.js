@@ -18,6 +18,12 @@ export const useScrutineeringStore = defineStore('scrutineeringStore', {
       if (player) {
         player[field] = value
       }
+    },
+    updatePlayerComment(playerId, comment) {
+      const player = this.players.find(p => p.player_id === playerId)
+      if (player) {
+        player.comment = comment
+      }
     }
   }
 })

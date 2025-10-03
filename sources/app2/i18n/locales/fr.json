@@ -169,7 +169,14 @@
     "Cosmetic": "Cosmétique",
     "Safety": "Sécurité",
     "Technical": "Techn.",
-    "Issues": "Problèmes"
+    "Issues": "Problèmes",
+    "Comments": "Commentaires",
+    "Comment": "Commentaire",
+    "EnterComment": "Saisissez un commentaire...",
+    "AddComment": "Ajouter un commentaire",
+    "Clear": "Effacer",
+    "Cancel": "Annuler",
+    "Save": "Enregistrer"
   },
   "GameReports": {
     "NewGame": "Nouveau match (hors ligne)",
