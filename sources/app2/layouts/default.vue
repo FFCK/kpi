@@ -2,8 +2,10 @@
   <div>
     <AppHeader />
 
-    <NuxtPage />
-    
+    <div class="pb-12">
+      <NuxtPage />
+    </div>
+
     <AppFooter />
   </div>
 </template>

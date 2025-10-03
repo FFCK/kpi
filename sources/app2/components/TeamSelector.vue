@@ -75,7 +75,7 @@ const emit = defineEmits(['changeTeam'])
 const { t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
 const apiBaseUrl = runtimeConfig.public.apiBaseUrl
-const baseUrl = runtimeConfig.public.apiBaseUrl.replace('/api', '')
+const baseUrl = runtimeConfig.public.backendBaseUrl
 
 
 const { prefs, getPrefs, updatePref } = usePrefs()
