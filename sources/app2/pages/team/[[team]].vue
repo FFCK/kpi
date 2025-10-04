@@ -28,8 +28,13 @@
       </template>
     </AppSecondaryNav>
 
-    <div v-if="!selectedTeam" class="p-4 text-center text-gray-500">
-      {{ t('Teams.PleaseSelectOne') }}
+    <div v-if="!selectedTeam || isLoading" class="p-4 text-center text-gray-500">
+      <p v-if="isLoading">Chargement des données de l'équipe...</p>
+      <p v-else>{{ t('Teams.PleaseSelectOne') }}</p>
+    </div>
+
+    <div v-else-if="!teamExists" class="p-4 text-center text-red-500">
+      <p>L'équipe "{{ selectedTeam }}" n'existe pas dans cet événement.</p>
     </div>
 
     <div v-else>
@@ -244,6 +249,7 @@ const runtimeConfig = useRuntimeConfig()
 const baseUrl = runtimeConfig.public.backendBaseUrl
 
 const visibleButton = computed(() => gamesVisibleButton.value && chartsVisibleButton.value)
+const isLoading = computed(() => !visibleButton.value)
 
 // Scroll to top functionality
 const scrollToTop = () => {
@@ -297,20 +303,37 @@ const availableTeams = computed(() => {
   return Array.from(teamsSet).sort()
 })
 
+const teamExists = computed(() => {
+  // We can only make a definitive check once loading is complete.
+  if (isLoading.value) {
+    return true // Assume it exists while loading to prevent premature errors
+  }
+  // After loading, if the list of available teams is not empty, check for inclusion.
+  if (availableTeams.value.length > 0) {
+    return availableTeams.value.includes(selectedTeam.value)
+  }
+  // If there are no teams after loading, it can't exist.
+  return false
+})
+
 // Watch for team parameter in URL
-watch(() => route.query.team, async (newTeam) => {
+watch(() => route.params.team, async (newTeam) => {
   if (newTeam) {
-    selectedTeam.value = newTeam
-    selectedTeamModel.value = newTeam
-    // Save to preferences
-    await preferenceStore.putItem('last_team', newTeam)
+    const decodedTeam = decodeURIComponent(newTeam)
+    selectedTeam.value = decodedTeam
+    selectedTeamModel.value = decodedTeam
+    // Save to preferences (client-side only)
+    if (import.meta.client) {
+      await preferenceStore.putItem('last_team', decodedTeam)
+    }
   }
 }, { immediate: true })
 
 // Handle team selection change
 const onTeamChange = () => {
   if (selectedTeamModel.value) {
-    router.push({ path: '/team', query: { team: selectedTeamModel.value } })
+    const encodedTeam = encodeURIComponent(selectedTeamModel.value)
+    router.push({ path: `/team/${encodedTeam}` })
   }
 }
 
@@ -551,14 +574,21 @@ const loadData = async () => {
 }
 
 onMounted(async () => {
-  await preferenceStore.fetchItems()
-  await getGamesFav()
-  await getChartsFav()
-  await loadData()
+  await Promise.all([
+    preferenceStore.fetchItems(),
+    getGamesFav(),
+    getChartsFav(),
+    loadData()
+  ])
 
-  // Load last viewed team if no team in URL
-  if (!route.query.team && preferenceStore.preferences.last_team) {
-    router.push({ path: '/team', query: { team: preferenceStore.preferences.last_team } })
+  // If navigating to the base /team route without a parameter
+  if (!route.params.team) {
+    // Check for a last-viewed team and redirect if it exists
+    if (preferenceStore.preferences.last_team) {
+      const encodedTeam = encodeURIComponent(preferenceStore.preferences.last_team)
+      router.push({ path: `/team/${encodedTeam}` })
+    }
+    // If no last_team, do nothing and let the page render its empty state
   }
 
   showRefreshButton.value = true

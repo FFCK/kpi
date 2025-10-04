@@ -14,4 +14,11 @@ db.version(2).stores({
   user: '&id',
 });
 
+db.version(3).stores({
+  preferences: '&id',
+  games: '&eventId, timestamp',
+  charts: '++id, eventId, timestamp',
+  user: null, // Remove user table
+});
+
 export default db;

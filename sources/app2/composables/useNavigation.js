@@ -19,6 +19,12 @@ export const useNavigation = () => {
   })
 
   const currentIndex = computed(() => {
+    // Get the base path (without parameters)
+    const basePath = route.path.split('/').slice(0, 2).join('/')
+    // Handle /team/:param case
+    if (route.path.startsWith('/team/')) {
+      return navigationOrder.value.indexOf('/team')
+    }
     return navigationOrder.value.indexOf(route.path)
   })
 

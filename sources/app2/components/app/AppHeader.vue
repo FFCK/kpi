@@ -103,6 +103,10 @@ const isAuthenticated = computed(() => {
 
 // Check if a link is active
 const isActive = (path) => {
+  // Handle /team route with parameters
+  if (path === '/team' && route.path.startsWith('/team')) {
+    return true
+  }
   return route.path === path
 }
 
