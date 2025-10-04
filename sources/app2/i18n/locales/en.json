@@ -45,6 +45,7 @@
   "Event": {
     "SelectEvent": "Select event",
     "PleaseSelectOne": "Please select one",
+    "Selecting": "Selecting event...",
     "Event": "Event",
     "Change": "Change",
     "Confirm": "Confirm",

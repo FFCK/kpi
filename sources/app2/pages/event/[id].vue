@@ -1,6 +1,6 @@
 <template>
   <div class="p-8 text-center text-gray-500">
-    <p>Sélection de l'événement...</p>
+    <p>{{ t('Event.Selecting') }}</p>
   </div>
 </template>
 
@@ -13,6 +13,7 @@ import { navigateTo } from '#app'
 import { useApi } from '~/composables/useApi'
 import db from '~/utils/db'
 
+const { t } = useI18n()
 const route = useRoute()
 const preferenceStore = usePreferenceStore()
 const eventStore = useEventStore()
