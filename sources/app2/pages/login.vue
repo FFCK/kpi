@@ -5,7 +5,7 @@
       <button @click="handleLogout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-4">
         {{ t('Login.Logout') }}
       </button>
-      <div class="flex justify-center">
+      <div class="flex justify-center pt-8">
         <NuxtLink to="/scrutineering" class="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-semibold rounded px-4 py-2 text-lg transition-colors flex items-center justify-center gap-2 w-64">
           <UIcon name="i-heroicons-clipboard-document-check" class="h-6 w-6" />
           <span>{{ t('nav.Scrutineering') }}</span>

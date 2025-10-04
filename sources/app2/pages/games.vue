@@ -155,6 +155,14 @@ const showFilters = ref(false)
 const teamSearchQuery = ref('')
 const visibleButton = ref(true)
 
+// Page-specific SEO
+useSeoMeta({
+  title: 'Games - KPI Application',
+  description: 'Browse all kayak polo matches, filter by categories, teams, and dates. Real-time scores and schedules.',
+  ogTitle: 'Games - KPI Application',
+  ogDescription: 'Browse all kayak polo matches with real-time scores'
+})
+
 const {
   gamesCount,
   filteredGames,

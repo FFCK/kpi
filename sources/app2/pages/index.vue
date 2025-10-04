@@ -38,4 +38,12 @@
 
 <script setup>
 const { t } = useI18n()
+
+// Page-specific SEO
+useSeoMeta({
+  title: 'Home - KPI Application',
+  description: 'Welcome to KPI Application - Your kayak polo information hub. Access live scores, rankings, team statistics, and tournament information.',
+  ogTitle: 'KPI Application - Kayak Polo Information',
+  ogDescription: 'Your kayak polo information hub - Live scores, rankings, and statistics'
+})
 </script>
