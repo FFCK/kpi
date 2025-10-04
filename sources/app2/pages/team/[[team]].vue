@@ -92,6 +92,7 @@
                       <div class="flex items-center">
                         <TeamName
                           :team-label="team.t_label || `Team ${index + 1}`"
+                          :team-id="team.t_id"
                           :is-winner="false"
                           :is-highlighted="team.t_label === selectedTeam"
                         />
@@ -115,6 +116,7 @@
                   <div v-for="team in getOrderedTeams(game)" :key="team.label" class="flex items-center gap-1">
                     <TeamName
                       :team-label="team.label"
+                      :team-id="team.id"
                       :is-winner="isWinner(game, team.side)"
                       :is-highlighted="team.highlighted"
                       class="text-xs flex-1"
@@ -170,6 +172,7 @@
                         <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-6 w-6 mr-3" alt="" />
                         <TeamName
                           :team-label="team.t_label"
+                          :team-id="team.t_id"
                           :is-winner="false"
                           :is-highlighted="team.t_label === selectedTeam"
                         />
@@ -267,6 +270,62 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+// Create team ID to name mapping
+const teamIdToName = computed(() => {
+  const mapping = new Map()
+
+  // Get teams from games
+  if (games.value) {
+    games.value.forEach(game => {
+      if (game.t_a_id && game.t_a_label && game.t_a_label[0] !== '¤') {
+        mapping.set(game.t_a_id.toString(), game.t_a_label)
+      }
+      if (game.t_b_id && game.t_b_label && game.t_b_label[0] !== '¤') {
+        mapping.set(game.t_b_id.toString(), game.t_b_label)
+      }
+    })
+  }
+
+  // Get teams from charts
+  if (chartData.value) {
+    chartData.value.forEach(category => {
+      if (category.ranking) {
+        category.ranking.forEach(team => {
+          if (team.t_id && team.t_label) {
+            mapping.set(team.t_id.toString(), team.t_label)
+          }
+        })
+      }
+      if (category.rounds) {
+        Object.values(category.rounds).forEach(round => {
+          if (round.phases) {
+            Object.values(round.phases).forEach(phase => {
+              if (phase.teams) {
+                phase.teams.forEach(team => {
+                  if (team.t_id && team.t_label) {
+                    mapping.set(team.t_id.toString(), team.t_label)
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+  }
+
+  return mapping
+})
+
+// Create team name to ID mapping
+const teamNameToId = computed(() => {
+  const mapping = new Map()
+  teamIdToName.value.forEach((name, id) => {
+    mapping.set(name, id)
+  })
+  return mapping
+})
+
 // Get available teams from games and charts
 const availableTeams = computed(() => {
   const teamsSet = new Set()
@@ -330,12 +389,20 @@ const teamExists = computed(() => {
 // Watch for team parameter in URL
 watch(() => route.params.team, async (newTeam) => {
   if (newTeam) {
-    const decodedTeam = decodeURIComponent(newTeam)
-    selectedTeam.value = decodedTeam
-    selectedTeamModel.value = decodedTeam
+    const decodedParam = decodeURIComponent(newTeam)
+
+    // Check if the parameter is a team ID (numeric) or team name
+    let teamName = decodedParam
+    if (/^\d+$/.test(decodedParam)) {
+      // It's an ID, convert to name
+      teamName = teamIdToName.value.get(decodedParam) || decodedParam
+    }
+
+    selectedTeam.value = teamName
+    selectedTeamModel.value = teamName
     // Save to preferences (client-side only)
     if (import.meta.client) {
-      await preferenceStore.putItem('last_team', decodedTeam)
+      await preferenceStore.putItem('last_team', teamName)
     }
   }
 }, { immediate: true })
@@ -343,8 +410,14 @@ watch(() => route.params.team, async (newTeam) => {
 // Handle team selection change
 const onTeamChange = () => {
   if (selectedTeamModel.value) {
-    const encodedTeam = encodeURIComponent(selectedTeamModel.value)
-    router.push({ path: `/team/${encodedTeam}` })
+    const teamId = teamNameToId.value.get(selectedTeamModel.value)
+    if (teamId) {
+      router.push({ path: `/team/${teamId}` })
+    } else {
+      // Fallback to using team name if ID not found
+      const encodedTeam = encodeURIComponent(selectedTeamModel.value)
+      router.push({ path: `/team/${encodedTeam}` })
+    }
   }
 }
 
@@ -558,8 +631,8 @@ const getTeamLogo = (logo) => {
 }
 
 const getOrderedTeams = (game) => {
-  const teamA = { label: game.t_a_label, score: game.g_score_a, highlighted: game.t_a_highlighted, side: 'A' }
-  const teamB = { label: game.t_b_label, score: game.g_score_b, highlighted: game.t_b_highlighted, side: 'B' }
+  const teamA = { label: game.t_a_label, id: game.t_a_id, score: game.g_score_a, highlighted: game.t_a_highlighted, side: 'A' }
+  const teamB = { label: game.t_b_label, id: game.t_b_id, score: game.g_score_b, highlighted: game.t_b_highlighted, side: 'B' }
 
   if (game.g_status !== 'END' || game.g_validation !== 'O') {
     return [teamA, teamB]
@@ -603,8 +676,14 @@ onMounted(async () => {
   if (!route.params.team) {
     // Check for a last-viewed team and redirect if it exists
     if (preferenceStore.preferences.last_team) {
-      const encodedTeam = encodeURIComponent(preferenceStore.preferences.last_team)
-      router.push({ path: `/team/${encodedTeam}` })
+      const teamId = teamNameToId.value.get(preferenceStore.preferences.last_team)
+      if (teamId) {
+        router.push({ path: `/team/${teamId}` })
+      } else {
+        // Fallback to using team name if ID not found
+        const encodedTeam = encodeURIComponent(preferenceStore.preferences.last_team)
+        router.push({ path: `/team/${encodedTeam}` })
+      }
     }
     // If no last_team, do nothing and let the page render its empty state
   }

@@ -17,6 +17,7 @@
           <div class="flex items-center gap-1">
             <TeamName
               :team-label="getFirstTeamLabel(game)"
+              :team-id="getFirstTeamId(game)"
               :is-winner="isWinner(game, getFirstTeam(game))"
               :is-highlighted="getFirstTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
               class="text-xs flex-1"
@@ -33,6 +34,7 @@
           <div class="flex items-center gap-1">
             <TeamName
               :team-label="getSecondTeamLabel(game)"
+              :team-id="getSecondTeamId(game)"
               :is-winner="isWinner(game, getSecondTeam(game))"
               :is-highlighted="getSecondTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
               class="text-xs flex-1"
@@ -89,6 +91,14 @@ const getFirstTeamLabel = (game) => {
 
 const getSecondTeamLabel = (game) => {
   return getSecondTeam(game) === 'A' ? (game.t_a_label || 'Team A') : (game.t_b_label || 'Team B')
+}
+
+const getFirstTeamId = (game) => {
+  return getFirstTeam(game) === 'A' ? game.t_a_id : game.t_b_id
+}
+
+const getSecondTeamId = (game) => {
+  return getSecondTeam(game) === 'A' ? game.t_a_id : game.t_b_id
 }
 
 const getFirstTeamScore = (game) => {

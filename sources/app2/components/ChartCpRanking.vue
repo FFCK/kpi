@@ -31,6 +31,7 @@
                   <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-8 w-8 mr-3" alt="" />
                   <TeamName
                     :team-label="team.t_label"
+                    :team-id="team.t_id"
                     :is-winner="false"
                     :is-highlighted="team.t_highlighted"
                   />

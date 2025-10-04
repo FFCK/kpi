@@ -33,6 +33,7 @@
               <div class="inline-block">
                 <TeamName
                   :team-label="showCode(game.t_a_label)"
+                  :team-id="game.t_a_id"
                   :is-winner="isWinner(game, 'A')"
                   :is-highlighted="game.t_a_highlighted"
                 />
@@ -53,6 +54,7 @@
                 <img v-if="showFlags" :src="`${baseUrl}/img/${game.t_b_logo}`" class="h-8 inline-block mr-1" alt="" />
                 <TeamName
                   :team-label="showCode(game.t_b_label)"
+                  :team-id="game.t_b_id"
                   :is-winner="isWinner(game, 'B')"
                   :is-highlighted="game.t_b_highlighted"
                 />
@@ -82,6 +84,7 @@
             <div class="text-right justify-self-end">
               <TeamName
                 :team-label="showCode(game.t_a_label)"
+                :team-id="game.t_a_id"
                 :is-winner="isWinner(game, 'A')"
                 :is-highlighted="game.t_a_highlighted"
               />
@@ -95,6 +98,7 @@
             <div class="text-left justify-self-start">
               <TeamName
                 :team-label="showCode(game.t_b_label)"
+                :team-id="game.t_b_id"
                 :is-winner="isWinner(game, 'B')"
                 :is-highlighted="game.t_b_highlighted"
               />

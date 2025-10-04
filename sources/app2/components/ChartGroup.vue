@@ -22,6 +22,7 @@
                 <div class="flex items-center">
                   <TeamName
                     :team-label="team.t_label || `Team ${index + 1}`"
+                    :team-id="team.t_id"
                     :is-winner="false"
                     :is-highlighted="team.t_highlighted"
                   />
