@@ -27,14 +27,17 @@
       <div v-if="authorized && user.profile <= 3">
         <!-- Team Name and Logo -->
         <div v-if="prefs?.scr_team_id" class="px-4 py-1 bg-gray-50 border-b">
-          <div class="flex items-center gap-3">
-            <img
-              v-if="prefs?.scr_team_logo"
-              class="h-12 w-12"
-              :src="`${baseUrl}/img/${prefs.scr_team_logo}`"
-              alt="Logo"
-            />
-            <h2 class="text-xl font-bold text-gray-800">{{ prefs?.scr_team_label }}</h2>
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <img
+                v-if="prefs?.scr_team_logo"
+                class="h-12 w-12"
+                :src="`${baseUrl}/img/${prefs.scr_team_logo}`"
+                alt="Logo"
+              />
+              <h2 class="text-xl font-bold text-gray-800">{{ prefs?.scr_team_label }}</h2>
+            </div>
+            <h1 class="text-xl font-bold text-gray-800">{{ t('nav.Scrutineering') }}</h1>
           </div>
         </div>
 
