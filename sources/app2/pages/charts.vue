@@ -115,6 +115,14 @@ const showFilters = ref(false)
 const teamSearchQuery = ref('')
 const visibleButton = ref(true)
 
+// Page-specific SEO
+useSeoMeta({
+  title: 'Rankings - KPI Application',
+  description: 'View tournament rankings, group standings, and elimination brackets for kayak polo competitions.',
+  ogTitle: 'Rankings - KPI Application',
+  ogDescription: 'Tournament rankings and standings for kayak polo'
+})
+
 const {
   chartData,
   chartIndex,

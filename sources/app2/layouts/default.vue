@@ -7,5 +7,6 @@
     </div>
 
     <AppFooter />
+    <AppInstallPrompt />
   </div>
 </template>

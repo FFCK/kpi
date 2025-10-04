@@ -69,9 +69,8 @@
         <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.TournamentRounds') }}</h3>
         <div :class="containerClasses">
           <div v-for="round in tournamentRounds" :key="round.id" class="w-80 border rounded-lg shadow-sm flex flex-col">
-            <div class="bg-gray-800 text-white px-3 py-2 rounded-t-lg">
-              {{ round.category }}
-              <span v-if="round.phase" class="text-sm font-normal ml-2">- {{ round.phase }}</span>
+            <div class="bg-gray-800 text-white px-3 py-2 rounded-t-lg text-sm">
+              {{ round.category }}<span v-if="round.phase"> - {{ round.phase }}</span>
             </div>
 
             <!-- Ranking Table -->
@@ -91,7 +90,6 @@
                     <td class="px-2 py-1 text-xs">{{ team.t_cltlv || (index + 1) }}</td>
                     <td class="px-2 py-1 text-xs">
                       <div class="flex items-center">
-                        <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-6 w-6 mr-2" alt="" />
                         <TeamName
                           :team-label="team.t_label || `Team ${index + 1}`"
                           :is-winner="false"
@@ -223,6 +221,23 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const preferenceStore = usePreferenceStore()
+
+// Page-specific SEO (will be updated when team is selected)
+const pageTitle = computed(() =>
+  selectedTeam.value ? `${selectedTeam.value} - Team Page - KPI Application` : 'Team Page - KPI Application'
+)
+const pageDescription = computed(() =>
+  selectedTeam.value
+    ? `View matches, rankings, and tournament progress for ${selectedTeam.value}`
+    : 'Select a team to view their matches, rankings, and tournament progress'
+)
+
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogTitle: pageTitle,
+  ogDescription: pageDescription
+})
 
 const {
   games,

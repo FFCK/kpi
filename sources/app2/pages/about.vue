@@ -97,6 +97,14 @@ const { getApi, postApi } = useApi()
 const runtimeConfig = useRuntimeConfig()
 const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
+// Page-specific SEO
+useSeoMeta({
+  title: 'About - KPI Application',
+  description: 'Learn more about KPI Application, a kayak polo information platform developed by Laurent. Rate the app and support development.',
+  ogTitle: 'About - KPI Application',
+  ogDescription: 'About KPI Application - Kayak Polo Information platform'
+})
+
 // State
 const stars = ref(0)
 const thanks = ref(false)
