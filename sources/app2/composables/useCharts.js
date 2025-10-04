@@ -6,12 +6,9 @@ import db from '~/utils/db'
 export const useCharts = () => {
   const preferenceStore = usePreferenceStore()
   const { getApi } = useApi()
-  const runtimeConfig = useRuntimeConfig()
-  const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
   const allChartData = ref(null)
   const chartIndex = ref(0)
-  const visibleButton = ref(true)
   const showFlags = ref(true)
   const fav_categories = ref([])
   const fav_teams = ref([])
@@ -85,47 +82,56 @@ export const useCharts = () => {
     return filtered
   })
 
-  const loadCharts = async () => {
+  const loadCharts = async (force = false) => {
     if (!preferenceStore.preferences.lastEvent) return
 
     const eventId = preferenceStore.preferences.lastEvent.id
-    visibleButton.value = false
-    setTimeout(() => {
-      visibleButton.value = true
-    }, 3000)
 
     try {
-      // Charger depuis Dexie d'abord
-      const cachedCharts = await db.charts.where('eventId').equals(eventId).toArray()
-      if (cachedCharts && cachedCharts.length > 0) {
+      // Vérifier si on doit charger depuis l'API
+      const now = Date.now()
+      const lastApiLoad = preferenceStore.preferences.charts_last_api_load || 0
+      const fiveMinutes = 5 * 60 * 1000
+      const shouldLoadFromApi = force || (now - lastApiLoad > fiveMinutes)
+
+      let cachedCharts = null
+
+      // Charger depuis Dexie
+      cachedCharts = await db.charts.where('eventId').equals(eventId).toArray()
+      if (cachedCharts && cachedCharts.length > 0 && !force) {
         allChartData.value = cachedCharts.map(item => item.data)
         loadCategories()
         chartIndex.value++
       }
 
-      // Charger depuis l'API en arrière-plan
-      try {
-        const response = await getApi(`/charts/${eventId}`)
-        const data = await response.json()
+      // Charger depuis l'API uniquement si nécessaire
+      if (shouldLoadFromApi || !cachedCharts || cachedCharts.length === 0) {
+        try {
+          const response = await getApi(`/charts/${eventId}`)
+          const data = await response.json()
 
-        // Sauvegarder dans Dexie
-        await db.charts.where('eventId').equals(eventId).delete()
-        await db.charts.bulkAdd(data.map(item => ({
-          eventId: eventId,
-          data: item,
-          timestamp: Date.now()
-        })))
+          // Sauvegarder dans Dexie
+          await db.charts.where('eventId').equals(eventId).delete()
+          await db.charts.bulkAdd(data.map(item => ({
+            eventId: eventId,
+            data: item,
+            timestamp: Date.now()
+          })))
 
-        // Mettre à jour l'interface seulement si les données ont changé
-        if (JSON.stringify(data) !== JSON.stringify(allChartData.value)) {
-          allChartData.value = data
-          loadCategories()
-          chartIndex.value++
-        }
-      } catch (apiError) {
-        console.error('Failed to load charts from API, using cached data:', apiError)
-        if (!cachedCharts || cachedCharts.length === 0) {
-          throw apiError
+          // Sauvegarder la date de chargement API
+          await preferenceStore.putItem('charts_last_api_load', now)
+
+          // Mettre à jour l'interface seulement si les données ont changé
+          if (JSON.stringify(data) !== JSON.stringify(allChartData.value)) {
+            allChartData.value = data
+            loadCategories()
+            chartIndex.value++
+          }
+        } catch (apiError) {
+          console.error('Failed to load charts from API, using cached data:', apiError)
+          if (!cachedCharts || cachedCharts.length === 0) {
+            throw apiError
+          }
         }
       }
 
@@ -196,7 +202,6 @@ export const useCharts = () => {
   return {
     chartData: filteredChartData,
     chartIndex,
-    visibleButton,
     showFlags,
     categories,
     teams,

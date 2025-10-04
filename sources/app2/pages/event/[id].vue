@@ -55,7 +55,9 @@ onMounted(async () => {
   if (lastEvent && lastEvent.id !== eventId) {
     await Promise.all([
       db.games.clear(),
-      db.charts.clear()
+      db.charts.clear(),
+      preferenceStore.putItem('games_last_api_load', 0),
+      preferenceStore.putItem('charts_last_api_load', 0)
     ])
   }
 

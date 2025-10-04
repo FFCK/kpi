@@ -17,7 +17,7 @@
         </div>
       </template>
       <template #right>
-        <button v-if="prefs?.scr_team_id" @click="loadPlayers" class="p-2 rounded-md hover:bg-gray-100">
+        <button v-if="prefs?.scr_team_id && visibleButton" @click="handleRefresh" class="p-2 rounded-md hover:bg-gray-100">
           <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
         </button>
       </template>
@@ -199,6 +199,15 @@ const { user, getUser } = useUser()
 const { authorized, checkAuthorized } = useStatus()
 const { prefs, getPrefs, updatePref } = usePrefs()
 const { players, loadPlayers, updatePlayer, updateComment } = useScrutineering()
+const visibleButton = ref(true)
+
+const handleRefresh = () => {
+  visibleButton.value = false
+  loadPlayers()
+  setTimeout(() => {
+    visibleButton.value = true
+  }, 5000)
+}
 const { checkOnline } = useStatus()
 
 const runtimeConfig = useRuntimeConfig()

@@ -59,6 +59,7 @@
 import { ref, onMounted } from 'vue'
 import logoKofi from '~/public/img/kofi/logo-kofi.png'
 import { usePreferenceStore } from '~/stores/preferenceStore'
+import db from '~/utils/db'
 
 // Composables & Stores
 const { t } = useI18n()
@@ -75,12 +76,50 @@ const currentRating = ref(null)
 const currentVoters = ref(null)
 
 // Methods
-const getCurrentRating = async () => {
+const getCurrentRating = async (force = false) => {
   try {
-    const result = await getApi(`/stars`)
-    const data = await result.json()
-    currentRating.value = parseFloat(data.average).toFixed(2)
-    currentVoters.value = data.count
+    // Vérifier si on doit charger depuis l'API
+    const now = Date.now()
+    const lastApiLoad = preferenceStore.preferences.stars_last_api_load || 0
+    const fiveMinutes = 5 * 60 * 1000
+    const shouldLoadFromApi = force || (now - lastApiLoad > fiveMinutes)
+
+    let cachedStars = null
+
+    // Charger depuis IndexedDB
+    const starsData = await db.stars.get('rating')
+    if (starsData && !force) {
+      cachedStars = starsData
+      currentRating.value = parseFloat(cachedStars.average).toFixed(2)
+      currentVoters.value = cachedStars.count
+    }
+
+    // Charger depuis l'API uniquement si nécessaire
+    if (shouldLoadFromApi || !cachedStars) {
+      try {
+        const result = await getApi(`/stars`)
+        const data = await result.json()
+
+        // Sauvegarder dans IndexedDB
+        await db.stars.put({
+          id: 'rating',
+          average: data.average,
+          count: data.count,
+          timestamp: now
+        })
+
+        // Sauvegarder la date de chargement API
+        await preferenceStore.putItem('stars_last_api_load', now)
+
+        currentRating.value = parseFloat(data.average).toFixed(2)
+        currentVoters.value = data.count
+      } catch (apiError) {
+        console.error('Failed to get current rating from API, using cached data:', apiError)
+        if (!cachedStars) {
+          throw apiError
+        }
+      }
+    }
   } catch (error) {
     console.error('Failed to get current rating:', error)
   }
@@ -97,12 +136,14 @@ const rated = async (newStars) => {
       console.error('User ID (uid) not found in preferences after init.')
       return
     }
-    
+
     // Assuming a postApi composable or similar for POST requests
     const result = await postApi(`${apiBaseUrl}/rating`, { uid, stars: newStars })
-    
+
     if (result.ok) {
       await preferenceStore.putItem('stars', newStars)
+      // Recharger les stats depuis l'API après un vote
+      await getCurrentRating(true)
     }
   } catch (error) {
     console.error('Failed to post rating:', error)
