@@ -1,55 +1,84 @@
 <template>
   <div class="container-fluid pb-16">
     <AppSecondaryNav>
-      <template #left></template>
+      <template #center>
+        <h1 class="text-2xl font-bold text-gray-800">{{ t("nav.About") }}</h1>
+      </template>
       <template #right></template>
     </AppSecondaryNav>
 
-    <div class="px-4 py-2">
+    <div class="max-w-3xl mx-auto px-4 py-6">
+      <!-- Introduction Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <img src="/img/logo_kp.png" alt="KPI Logo" class="h-16 w-16" />
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">KPI Application</h2>
+            <p class="text-sm text-gray-600">Kayak-Polo.Info</p>
+          </div>
+        </div>
+        <p class="text-gray-700 leading-relaxed">
+          {{ t("About.DoYouLike") }}
+        </p>
+        <p class="text-gray-700 leading-relaxed mt-2">
+          {{ t("About.IDevelopIt") }}
+        </p>
+      </div>
 
-    <!-- Main Content -->
-    <div class="text-sm">
-      <p class="my-3">
-        {{ t("About.DoYouLike") }}
-        <br />
-        {{ t("About.IDevelopIt") }}
-      </p>
-
-      <div class="mb-3">
-        {{ t("About.Rating") }}
+      <!-- Rating Card -->
+      <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3 text-center">{{ t("About.Rating") }}</h3>
         <Rating
           :thanks="thanks"
           :grade="stars"
           @rated="rated"
           :key="key"
-          class="text-center my-2"
+          class="my-4"
         />
-        <div v-if="currentRating" class="text-center italic text-xs text-gray-600">
-          <i>{{ t("About.Average") }} {{ currentRating }}/5 ({{ currentVoters }} {{ t("About.voters") }})</i>
+        <div v-if="currentRating" class="text-center">
+          <p class="text-sm text-gray-700">
+            <span class="font-semibold">{{ t("About.Average") }}</span>
+            <span class="text-lg font-bold text-blue-600 mx-1">{{ currentRating }}/5</span>
+          </p>
+          <p class="text-xs text-gray-600 mt-1">
+            {{ currentVoters }} {{ t("About.voters") }}
+          </p>
         </div>
       </div>
 
-      <p class="my-3">
-        <span>{{ t("About.SupportMeOnKofi") }}</span>
-        <a
-          href="https://ko-fi.com/kayakpoloinfo"
-          target="blank"
-          class="inline-block align-middle ml-2"
-        >
-          <img alt="logo Ko-fi" :src="logoKofi" class="h-12 inline-block" />
-        </a>
-      </p>
-    </div>
-    <hr class="my-3"/>
-    <p class="text-sm">
-      {{ t("About.OwnCompetition") }}
-      <br />
-      {{ t("About.ContactMe") }}
-      <a href="mailto:contact@kayak-polo.info" class="text-blue-600 hover:underline">contact@kayak-polo.info</a>
-    </p>
-    <p class="text-right mt-4 mr-5 font-serif">
-      Laurent.
-    </p>
+      <!-- Support Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">{{ t("About.SupportMeOnKofi") }}</h3>
+        <div class="flex justify-center">
+          <a
+            href="https://ko-fi.com/kayakpoloinfo"
+            target="_blank"
+            class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105"
+          >
+            <img alt="logo Ko-fi" :src="logoKofi" class="h-8" />
+            <span class="font-semibold">Support on Ko-fi</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">{{ t("About.OwnCompetition") }}</h3>
+        <p class="text-gray-700 mb-3">
+          {{ t("About.ContactMe") }}
+        </p>
+        <div class="flex items-center gap-2">
+          <UIcon name="i-heroicons-envelope" class="h-5 w-5 text-blue-600" />
+          <a href="mailto:contact@kayak-polo.info" class="text-blue-600 hover:underline font-medium">
+            contact@kayak-polo.info
+          </a>
+        </div>
+      </div>
+
+      <!-- Signature -->
+      <div class="text-right">
+        <p class="text-gray-600 font-serif italic text-lg">Laurent.</p>
+      </div>
     </div>
     <AppFooter />
   </div>
