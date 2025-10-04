@@ -25,6 +25,20 @@ help: ## cette aide
 
 
 ########## PROJECT ##########
+init_env_app2: ## Initialise les fichiers .env.development et .env.production pour app2
+	@if [ ! -f sources/app2/.env.development ]; then \
+		cp sources/app2/.env.development.example sources/app2/.env.development; \
+		echo "✅ Fichier .env.development créé pour app2"; \
+	else \
+		echo "⚠️  Le fichier .env.development existe déjà pour app2"; \
+	fi
+	@if [ ! -f sources/app2/.env.production ]; then \
+		cp sources/app2/.env.production.example sources/app2/.env.production; \
+		echo "✅ Fichier .env.production créé pour app2"; \
+	else \
+		echo "⚠️  Le fichier .env.production existe déjà pour app2"; \
+	fi
+
 # init: ## Initialise le projet en créant le fichier .env
 #	 ./init_project.sh
 
