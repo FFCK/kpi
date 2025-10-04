@@ -14,7 +14,7 @@ SYMFONY_CONSOLE = $(SYMFONY) symfony console
 HORDODATAGE_DUMP = $(shell date +%Y%m%d%H%M)
 
 
-.PHONY: help init_env_app2 dev_up run_dev npm_install_app2 npm_ls_app2 npm_clean_app2 \
+.PHONY: help init_env_app2 dev_up run_dev run_generate npm_install_app2 npm_ls_app2 npm_clean_app2 \
 npm_update_app2 npm_add_app2 npm_add_dev_app2
 
 
@@ -49,6 +49,9 @@ dev_up: ## Construit et lance les containers Docker en mode développement
 
 run_dev: ## Lance le serveur Nuxt (app2) en mode développement (port 3002)
 	docker exec kpi_node_app2 sh -c "npm run dev"
+
+run_generate: ## Génère l'application Nuxt (app2) en mode statique
+	docker exec kpi_node_app2 sh -c "npm run generate"
 
 ## NPM - APP2
 npm_install_app2: ## Installe toutes les dépendances npm pour app2
