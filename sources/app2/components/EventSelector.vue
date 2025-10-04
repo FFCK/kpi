@@ -71,6 +71,7 @@ import { ref, onMounted, computed, toRaw } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore';
 import { useEventStore } from '~/stores/eventStore';
 import { useGames } from '~/composables/useGames';
+import db from '~/utils/db'
 const { t } = useI18n()
 
 // Stores & Composables
@@ -133,10 +134,17 @@ const changeEvent = async () => {
   const selectedEvent = eventStore.getEventById(eventSelectedId.value)
   if (!selectedEvent) return
 
-  // NOTE: The old component cleared Games and Charts data here.
-  // This logic can be added back if those stores are migrated to app2.
+  // Clear old event data from IndexedDB when changing events
+  const lastEvent = preferenceStore.preferences.lastEvent
+  if (lastEvent && lastEvent.id !== eventSelectedId.value) {
+    await Promise.all([
+      db.games.clear(),
+      db.charts.clear()
+    ])
+  }
 
   await preferenceStore.putItem('lastEvent', toRaw(selectedEvent))
+  await preferenceStore.putItem('last_team', null)
 
   // Reset all game filters when changing event
   await resetAllFilters()

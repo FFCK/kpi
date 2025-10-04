@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     v-if="canLink && teamLabel && teamLabel[0] !== '¤'"
-    :to="`/team?team=${encodeURIComponent(teamLabel)}`"
+    :to="`/team/${encodeURIComponent(teamLabel)}`"
     :class="[
       teamBlockClass,
       'px-2 py-1 rounded hover:opacity-80 cursor-pointer inline-block'
