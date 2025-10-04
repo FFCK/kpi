@@ -16,7 +16,7 @@
         </button>
       </template>
       <template #right>
-        <button :disabled="!visibleButton" @click="loadCharts" class="p-2 rounded-md hover:bg-gray-100">
+        <button v-if="visibleButton" @click="handleRefresh" class="p-2 rounded-md hover:bg-gray-100">
           <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
         </button>
       </template>
@@ -113,11 +113,11 @@ import Charts from '~/components/Charts.vue'
 const { t } = useI18n()
 const showFilters = ref(false)
 const teamSearchQuery = ref('')
+const visibleButton = ref(true)
 
 const {
   chartData,
   chartIndex,
-  visibleButton,
   showFlags,
   categories,
   teams,
@@ -127,6 +127,14 @@ const {
   getFav,
   changeFav
 } = useCharts()
+
+const handleRefresh = () => {
+  visibleButton.value = false
+  loadCharts(true)
+  setTimeout(() => {
+    visibleButton.value = true
+  }, 5000)
+}
 
 onMounted(async () => {
   await getFav()

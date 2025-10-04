@@ -10,8 +10,6 @@ export const useGames = () => {
   const preferenceStore = usePreferenceStore()
   const { getApi } = useApi()
   const { saveGames, loadGames: loadGamesFromDB, clearOldGames } = useIndexedDB()
-  const runtimeConfig = useRuntimeConfig()
-  const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
   const games = computed(() => gameStore.games)
   const gamesCount = computed(() => gameStore.games.length)
@@ -30,22 +28,24 @@ export const useGames = () => {
   const fav_teams = ref([])
   const fav_dates = ref('')
 
-  const visibleButton = ref(true)
-
-  const loadGames = async () => {
+  const loadGames = async (force = false) => {
     if (!preferenceStore.preferences.lastEvent) return
 
     const eventId = preferenceStore.preferences.lastEvent.id
     gameStore.loading = true
-    visibleButton.value = false
-    setTimeout(() => {
-      visibleButton.value = true
-    }, 3000)
 
     try {
-      // Essayer de charger depuis IndexedDB d'abord
-      const cachedGames = await loadGamesFromDB(eventId)
-      if (cachedGames && cachedGames.length > 0) {
+      // Vérifier si on doit charger depuis l'API
+      const now = Date.now()
+      const lastApiLoad = preferenceStore.preferences.games_last_api_load || 0
+      const fiveMinutes = 5 * 60 * 1000
+      const shouldLoadFromApi = force || (now - lastApiLoad > fiveMinutes)
+
+      let cachedGames = null
+
+      // Charger depuis IndexedDB
+      cachedGames = await loadGamesFromDB(eventId)
+      if (cachedGames && cachedGames.length > 0 && !force) {
         // console.log('Loading games from IndexedDB cache')
         const gamelist = processGameData(cachedGames)
         await gameStore.clearAndUpdateGames(gamelist)
@@ -53,26 +53,31 @@ export const useGames = () => {
         filterGames()
       }
 
-      // Charger depuis l'API en arrière-plan
-      try {
-        // console.log('Loading games from API')
-        const response = await getApi(`/games/${eventId}`)
-        const data = await response.json()
-        const gamelist = processGameData(data)
+      // Charger depuis l'API uniquement si nécessaire
+      if (shouldLoadFromApi || !cachedGames || cachedGames.length === 0) {
+        try {
+          // console.log('Loading games from API')
+          const response = await getApi(`/games/${eventId}`)
+          const data = await response.json()
+          const gamelist = processGameData(data)
 
-        // Sauvegarder dans IndexedDB
-        await saveGames(eventId, data)
+          // Sauvegarder dans IndexedDB
+          await saveGames(eventId, data)
 
-        // Mettre à jour l'interface seulement si les données ont changé
-        if (JSON.stringify(gamelist) !== JSON.stringify(gameStore.games)) {
-          await gameStore.clearAndUpdateGames(gamelist)
-          loadCategories()
-          filterGames()
-        }
-      } catch (apiError) {
-        console.error('Failed to load games from API, using cached data:', apiError)
-        if (!cachedGames) {
-          gameStore.error = apiError
+          // Sauvegarder la date de chargement API
+          await preferenceStore.putItem('games_last_api_load', now)
+
+          // Mettre à jour l'interface seulement si les données ont changé
+          if (JSON.stringify(gamelist) !== JSON.stringify(gameStore.games)) {
+            await gameStore.clearAndUpdateGames(gamelist)
+            loadCategories()
+            filterGames()
+          }
+        } catch (apiError) {
+          console.error('Failed to load games from API, using cached data:', apiError)
+          if (!cachedGames) {
+            gameStore.error = apiError
+          }
         }
       }
 
@@ -351,7 +356,6 @@ export const useGames = () => {
     fav_categories,
     fav_teams,
     fav_dates,
-    visibleButton,
     loadGames,
     getFav,
     changeFav,

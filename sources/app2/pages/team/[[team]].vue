@@ -18,9 +18,8 @@
       </template>
       <template #right>
         <button
-          v-if="showRefreshButton"
-          :disabled="!visibleButton"
-          @click="loadData"
+          v-if="showRefreshButton && visibleButton"
+          @click="handleRefresh"
           class="p-2 rounded-md hover:bg-gray-100"
         >
           <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
@@ -220,7 +219,7 @@ import { usePreferenceStore } from '~/stores/preferenceStore'
 import GameList from '~/components/GameList.vue'
 import TeamName from '~/components/TeamName.vue'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const preferenceStore = usePreferenceStore()
@@ -229,14 +228,12 @@ const {
   games,
   showRefs,
   showFlags,
-  visibleButton: gamesVisibleButton,
   loadGames,
   getFav: getGamesFav
 } = useGames()
 
 const {
   chartData,
-  visibleButton: chartsVisibleButton,
   loadCharts,
   getFav: getChartsFav
 } = useCharts()
@@ -244,12 +241,11 @@ const {
 const selectedTeam = ref('')
 const selectedTeamModel = ref('')
 const showRefreshButton = ref(false)
+const visibleButton = ref(true)
+const isLoading = ref(false)
 
 const runtimeConfig = useRuntimeConfig()
 const baseUrl = runtimeConfig.public.backendBaseUrl
-
-const visibleButton = computed(() => gamesVisibleButton.value && chartsVisibleButton.value)
-const isLoading = computed(() => !visibleButton.value)
 
 // Scroll to top functionality
 const scrollToTop = () => {
@@ -566,11 +562,21 @@ const getOrderedTeams = (game) => {
   }
 }
 
-const loadData = async () => {
+const loadData = async (force = false) => {
+  isLoading.value = true
   await Promise.all([
-    loadGames(),
-    loadCharts()
+    loadGames(force),
+    loadCharts(force)
   ])
+  isLoading.value = false
+}
+
+const handleRefresh = () => {
+  visibleButton.value = false
+  loadData(true)
+  setTimeout(() => {
+    visibleButton.value = true
+  }, 5000)
 }
 
 onMounted(async () => {
