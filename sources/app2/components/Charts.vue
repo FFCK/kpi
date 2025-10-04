@@ -45,7 +45,7 @@
               <h6 class="font-semibold text-gray-700 mb-1 text-center">{{ phase.libelle }}</h6>
               <ChartGroup
                 v-if="category.type === 'CP' && phase.type === 'C'"
-                :chart-round="index"
+                :chart-round="+index"
                 :chart-team-list="category.ranking"
                 :chart-teams="phase.teams"
                 :chart-team-count="+phase.t_count"

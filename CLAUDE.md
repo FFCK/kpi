@@ -8,6 +8,12 @@ KPI is a sports management system with multiple Vue.js/Nuxt applications, PHP ba
 
 ## Development Commands
 
+### Environment Configuration
+- `make init_env_app2` - Initialize .env.development and .env.production for app2 from templates
+- `.env.development` - Used automatically in development mode (`npm run dev`)
+- `.env.production` - Used automatically for build/generate (`npm run build`, `npm run generate`)
+- Variables: API_BASE_URL and BACKEND_BASE_URL
+
 ### Docker Environment
 - `make dev_up` - Start development containers
 - `make run_dev` - Run Nuxt development server for app2
@@ -41,7 +47,7 @@ KPI is a sports management system with multiple Vue.js/Nuxt applications, PHP ba
 - **Modules**: Pinia for state management, i18n for internationalization, Nuxt UI components
 - **Base URL**: `/app2` - configured for production deployment
 - **Development**: Runs on port 3000 inside container, accessible via port 3002 on host
-- **API Integration**: Configured to use `https://kpi.local/api` as base URL
+- **API Integration**: Configured via .env.development (dev: `https://kpi.local/api`) and .env.production (prod: `https://kayak-polo.info/api`)
 
 ### PHP Backend
 - Legacy PHP codebase with custom database abstraction layer

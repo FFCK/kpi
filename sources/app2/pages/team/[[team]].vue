@@ -54,14 +54,14 @@
 
       <!-- Upcoming Matches -->
       <div v-if="formattedUpcomingMatches.length > 0" class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.UpcomingMatches') }}</h3>
-        <GameList :games="formattedUpcomingMatches" :show-refs="showRefs" :show-flags="showFlags" :games-count="upcomingMatchesCount" :filtered-games-count="upcomingMatchesCount" />
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.UpcomingMatches') }} ({{ upcomingMatches.length }})</h3>
+        <GameList :games="formattedUpcomingMatches" :show-refs="showRefs" :show-flags="showFlags" :show-count="false" />
       </div>
 
       <!-- Finished Matches -->
       <div v-if="formattedFinishedMatches.length > 0" class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.FinishedMatches') }}</h3>
-        <GameList :games="formattedFinishedMatches" :show-refs="showRefs" :show-flags="showFlags" :games-count="finishedMatchesCount" :filtered-games-count="finishedMatchesCount" />
+        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.FinishedMatches') }} ({{ finishedMatches.length }})</h3>
+        <GameList :games="formattedFinishedMatches" :show-refs="showRefs" :show-flags="showFlags" :show-count="false" />
       </div>
 
       <!-- Tournament Rounds (Rankings & Eliminations) -->
@@ -195,7 +195,7 @@
       </div>
 
       <!-- No data message -->
-      <div v-if="upcomingMatchesCount === 0 && finishedMatchesCount === 0 && tournamentRounds.length === 0 && finalRankings.length === 0" class="text-center text-gray-500 py-8">
+      <div v-if="upcomingMatches.length === 0 && finishedMatches.length === 0 && tournamentRounds.length === 0 && finalRankings.length === 0" class="text-center text-gray-500 py-8">
         {{ t('Team.NoData') }}
       </div>
       </div>
@@ -222,23 +222,6 @@ const route = useRoute()
 const router = useRouter()
 const preferenceStore = usePreferenceStore()
 
-// Page-specific SEO (will be updated when team is selected)
-const pageTitle = computed(() =>
-  selectedTeam.value ? `${selectedTeam.value} - Team Page - KPI Application` : 'Team Page - KPI Application'
-)
-const pageDescription = computed(() =>
-  selectedTeam.value
-    ? `View matches, rankings, and tournament progress for ${selectedTeam.value}`
-    : 'Select a team to view their matches, rankings, and tournament progress'
-)
-
-useSeoMeta({
-  title: pageTitle,
-  description: pageDescription,
-  ogTitle: pageTitle,
-  ogDescription: pageDescription
-})
-
 const {
   games,
   showRefs,
@@ -261,6 +244,23 @@ const isLoading = ref(false)
 
 const runtimeConfig = useRuntimeConfig()
 const baseUrl = runtimeConfig.public.backendBaseUrl
+
+// Page-specific SEO (will be updated when team is selected)
+const pageTitle = computed(() =>
+  selectedTeam.value ? `${selectedTeam.value} - Team Page - KPI Application` : 'Team Page - KPI Application'
+)
+const pageDescription = computed(() =>
+  selectedTeam.value
+    ? `View matches, rankings, and tournament progress for ${selectedTeam.value}`
+    : 'Select a team to view their matches, rankings, and tournament progress'
+)
+
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogTitle: pageTitle,
+  ogDescription: pageDescription
+})
 
 // Scroll to top functionality
 const scrollToTop = () => {
@@ -354,7 +354,7 @@ const upcomingMatches = computed(() => {
 
   return games.value
     .filter(game =>
-      game.g_status === 'ATT' &&
+      (game.g_status === 'ATT' || game.g_status === 'ON') &&
       (game.t_a_label === selectedTeam.value || game.t_b_label === selectedTeam.value)
     )
     .map(game => ({
@@ -385,7 +385,7 @@ const finishedMatches = computed(() => {
     .sort((a, b) => {
       const dateA = new Date(`${a.g_date} ${a.g_time}`)
       const dateB = new Date(`${b.g_date} ${b.g_time}`)
-      return dateB - dateA
+      return dateA - dateB
     })
 })
 
@@ -405,9 +405,6 @@ const formattedFinishedMatches = computed(() => {
     filtered: finishedMatches.value.filter(game => game.g_date === date)
   }))
 })
-
-const upcomingMatchesCount = computed(() => upcomingMatches.value.length)
-const finishedMatchesCount = computed(() => finishedMatches.value.length)
 
 // Get logo for selected team
 const selectedTeamLogo = computed(() => {

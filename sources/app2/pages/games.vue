@@ -7,8 +7,8 @@
           class="ml-4 px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100"
           :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
         >
+          <UIcon name="i-heroicons-funnel" class="h-4 w-4" />
           <span>{{ t('nav.Filters') }}</span>
-          <UIcon name="i-heroicons-filter" class="h-4 w-4" />
           <UIcon
             :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
             class="h-4 w-4"
@@ -22,7 +22,7 @@
         >
           <option value="">{{ t('Games.AllDates') }}</option>
           <option v-for="(game_date, index) in game_dates" :key="index" :value="game_date">
-            <NuxtTime :datetime="game_date" day="numeric" month="long" year="numeric" :locale="locale" />
+            {{ formatDate(game_date) }}
           </option>
           <option disabled>──────</option>
           <option value="Today">{{ t('Games.Today') }}</option>
@@ -256,5 +256,14 @@ const toggleTeam = (team, checked) => {
     }
   }
   changeFav()
+}
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat(locale.value, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(date)
 }
 </script>
