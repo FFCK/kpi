@@ -1,7 +1,21 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid pb-16">
     <AppSecondaryNav>
-      <template #left></template>
+      <template #left>
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700">{{ t('Teams.SelectTeam') }}:</label>
+          <select
+            v-model="selectedTeamId"
+            @change="onTeamChange"
+            class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-64"
+          >
+            <option value="">{{ t('Teams.PleaseSelectOne') }}</option>
+            <option v-for="team in availableTeams" :key="team.team_id" :value="team.team_id">
+              {{ team.label }}
+            </option>
+          </select>
+        </div>
+      </template>
       <template #right>
         <button v-if="prefs?.scr_team_id" @click="loadPlayers" class="p-2 rounded-md hover:bg-gray-100">
           <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
@@ -10,10 +24,21 @@
     </AppSecondaryNav>
 
     <div v-if="user">
-      <div v-if="authorized && user.profile <= 3" class="p-2">
-        <TeamSelector @change-team="loadPlayers" />
+      <div v-if="authorized && user.profile <= 3">
+        <!-- Team Name and Logo -->
+        <div v-if="prefs?.scr_team_id" class="px-4 py-1 bg-gray-50 border-b">
+          <div class="flex items-center gap-3">
+            <img
+              v-if="prefs?.scr_team_logo"
+              class="h-12 w-12"
+              :src="`${baseUrl}/img/${prefs.scr_team_logo}`"
+              alt="Logo"
+            />
+            <h2 class="text-xl font-bold text-gray-800">{{ prefs?.scr_team_label }}</h2>
+          </div>
+        </div>
 
-        <div v-if="prefs?.scr_team_id" class="mt-2">
+        <div v-if="prefs?.scr_team_id" class="p-2">
           <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-300">
               <thead class="bg-gray-50">
@@ -96,7 +121,7 @@
                       :title="player.comment || t('Scrutineering.AddComment')"
                     >
                       <span v-if="player.comment" class="block break-words">
-                        {{ player.comment.substring(0, 20) }}{{ player.comment.length > 20 ? '...' : '' }}
+                        {{ player.comment.substring(0, 25) }}{{ player.comment.length > 25 ? '...' : '' }}
                       </span>
                       <span v-else class="text-gray-400 italic">{{ t('Scrutineering.AddComment') }}</span>
                     </button>
@@ -164,19 +189,71 @@ import { useScrutineering } from '~/composables/useScrutineering'
 import { useUser } from '~/composables/useUser'
 import { useStatus } from '~/composables/useStatus'
 import { usePrefs } from '~/composables/usePrefs'
-import TeamSelector from '~/components/TeamSelector.vue'
 import CommentModal from '~/components/CommentModal.vue'
 
 const { t } = useI18n()
 const { user, getUser } = useUser()
 const { authorized, checkAuthorized } = useStatus()
-const { prefs, getPrefs } = usePrefs()
+const { prefs, getPrefs, updatePref } = usePrefs()
 const { players, loadPlayers, updatePlayer, updateComment } = useScrutineering()
+const { checkOnline } = useStatus()
+
+const runtimeConfig = useRuntimeConfig()
+const baseUrl = runtimeConfig.public.backendBaseUrl
 
 const isCommentModalOpen = ref(false)
 const selectedPlayerId = ref(null)
 const selectedComment = ref('')
 const modalTitle = ref('')
+const selectedTeamId = ref('')
+const availableTeams = ref([])
+
+// Load available teams
+const loadTeams = async () => {
+  if (!checkOnline()) {
+    return
+  }
+
+  const eventId = prefs.value?.lastEvent?.id
+  if (!eventId) {
+    console.error('No event selected')
+    return
+  }
+
+  const { getApi } = useApi()
+
+  try {
+    const response = await getApi(`/staff/${eventId}/teams`)
+
+    if (!response.ok) {
+      throw new Error(`Failed to load teams: ${response.status}`)
+    }
+
+    const data = await response.json()
+    availableTeams.value = data.sort((a, b) => a.label.localeCompare(b.label))
+    selectedTeamId.value = prefs.value?.scr_team_id || ''
+  } catch (error) {
+    console.error('Error loading teams:', error)
+  }
+}
+
+// Handle team change
+const onTeamChange = async () => {
+  if (!checkOnline() || !selectedTeamId.value) {
+    return
+  }
+
+  const selectedTeam = availableTeams.value.find(t => t.team_id === selectedTeamId.value)
+  if (selectedTeam) {
+    await updatePref({
+      scr_team_id: selectedTeam.team_id,
+      scr_team_label: selectedTeam.label,
+      scr_team_club: selectedTeam.club,
+      scr_team_logo: selectedTeam.logo
+    })
+    await loadPlayers()
+  }
+}
 
 onMounted(async () => {
   await getUser()
@@ -186,6 +263,7 @@ onMounted(async () => {
   }
   await checkAuthorized()
   await getPrefs()
+  await loadTeams()
   if (prefs.value?.scr_team_id) {
     loadPlayers()
   }

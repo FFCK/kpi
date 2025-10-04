@@ -2,14 +2,14 @@
   <div class="container mx-auto px-4 py-8">
     <div v-if="user" class="text-center">
       <h2 class="text-2xl font-semibold mb-4">{{ t('Login.Welcome') }}, {{ user.firstname }} {{ user.name }}</h2>
-      <div class="flex justify-center gap-4">
-        <NuxtLink to="/scrutineering" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
-          <UIcon name="i-heroicons-clipboard-document-check" class="h-5 w-5 mr-2" />
-          {{ t('nav.Scrutineering') }}
+      <button @click="handleLogout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mb-4">
+        {{ t('Login.Logout') }}
+      </button>
+      <div class="flex justify-center">
+        <NuxtLink to="/scrutineering" class="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-semibold rounded px-4 py-2 text-lg transition-colors flex items-center justify-center gap-2 w-64">
+          <UIcon name="i-heroicons-clipboard-document-check" class="h-6 w-6" />
+          <span>{{ t('nav.Scrutineering') }}</span>
         </NuxtLink>
-        <button @click="handleLogout" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-          {{ t('Login.Logout') }}
-        </button>
       </div>
     </div>
     <div v-else>

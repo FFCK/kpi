@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid pb-16">
     <AppSecondaryNav>
       <template #left></template>
       <template #right></template>
@@ -77,7 +77,7 @@ const currentVoters = ref(null)
 // Methods
 const getCurrentRating = async () => {
   try {
-    const result = await getApi(`${apiBaseUrl}/stars`)
+    const result = await getApi(`/stars`)
     const data = await result.json()
     currentRating.value = parseFloat(data.average).toFixed(2)
     currentVoters.value = data.count

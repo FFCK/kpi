@@ -78,8 +78,6 @@ const preferenceStore = usePreferenceStore()
 const eventStore = useEventStore()
 const { resetAllFilters } = useGames()
 const { getApi } = useApi()
-const runtimeConfig = useRuntimeConfig()
-const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
 // State
 const showSelector = ref(false)
@@ -97,11 +95,6 @@ const events = computed(() => {
 })
 
 // Methods
-const fetchApi = async (url) => {
-  const response = await getApi(url)
-  return await response.json()
-}
-
 const changeEventMode = async (mode) => {
   if (mode !== eventMode.value) {
     eventMode.value = mode
@@ -115,8 +108,12 @@ const loadEvents = async () => {
   eventStore.loading = true
   showSelector.value = false // Hide selector while loading
   try {
-    const result = await fetchApi(`${apiBaseUrl}/events/${eventMode.value}`)
-    const eventsResult = result.map(event => ({ ...event, id: parseInt(event.id) }))
+    const result = await getApi(`/events/${eventMode.value}`)
+    if (!result.ok) {
+      throw new Error(`HTTP error! status: ${result.status}`)
+    }
+    const eventsData = await result.json()
+    const eventsResult = eventsData.map(event => ({ ...event, id: parseInt(event.id) }))
     
     await eventStore.clearAndUpdateEvents(eventsResult)
     

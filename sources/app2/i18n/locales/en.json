@@ -10,7 +10,7 @@
     "Staff": "Organization",
     "Games": "Games",
     "Ranking": "Ranking",
-    "Chart": "Chart",
+    "Charts": "Charts",
     "GameReports": "Game reports",
     "Stats": "Stats",
     "StatReport": "Stat report",
@@ -59,6 +59,15 @@
     "Change": "Change",
     "Confirm": "Confirm",
     "Cancel": "Cancel"
+  },
+  "Team": {
+    "UpcomingMatches": "Upcoming games",
+    "FinishedMatches": "Finished games",
+    "GroupRankings": "Group rankings",
+    "EliminationGames": "Elimination games",
+    "FinalRanking": "Final ranking",
+    "NoData": "No data available for this team",
+    "TournamentRounds": "Bracket"
   },
   "Games": {
     "Categories": "Categories",

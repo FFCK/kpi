@@ -105,7 +105,7 @@ export const useCharts = () => {
 
       // Charger depuis l'API en arrière-plan
       try {
-        const response = await getApi(`${apiBaseUrl}/charts/${eventId}`)
+        const response = await getApi(`/charts/${eventId}`)
         const data = await response.json()
 
         // Sauvegarder dans Dexie

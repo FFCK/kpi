@@ -1,22 +1,15 @@
+import { computed } from 'vue'
 import { useScrutineeringStore } from '~/stores/scrutineeringStore'
-import { usePreferenceStore } from '~/stores/preferenceStore'
+import { usePrefs } from '~/composables/usePrefs'
 
 export const useScrutineering = () => {
-  const runtimeConfig = useRuntimeConfig()
-  const apiBaseUrl = runtimeConfig.public.apiBaseUrl
   const store = useScrutineeringStore()
-  const prefStore = usePreferenceStore()
-  const { getCookie } = useApi()
+  const { prefs } = usePrefs()
+  const { getApi, postApi } = useApi()
 
   const loadPlayers = async () => {
-    if (!prefStore.preferences?.lastEvent?.id || !prefStore.preferences?.scr_team_id) {
+    if (!prefs.value?.lastEvent?.id || !prefs.value?.scr_team_id) {
       console.error('Missing event or team ID')
-      return
-    }
-
-    const token = getCookie('kpi_app')
-    if (!token) {
-      console.error('No authentication token found in cookie')
       return
     }
 
@@ -24,16 +17,8 @@ export const useScrutineering = () => {
     store.error = null
 
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/staff/${prefStore.preferences.lastEvent.id}/players/${prefStore.preferences.scr_team_id}/force`,
-        {
-          headers: {
-            'Cache-Control': 'no-cache',
-            Pragma: 'no-cache',
-            Expires: '0',
-            'X-Auth-Token': token
-          }
-        }
+      const response = await getApi(
+        `/staff/${prefs.value.lastEvent.id}/players/${prefs.value.scr_team_id}/force`
       )
 
       if (!response.ok) {
@@ -54,27 +39,16 @@ export const useScrutineering = () => {
     const max = equipment === 'paddle_count' ? 6 : 4
     const newValue = currentValue >= max ? 0 : currentValue + 1
 
-    if (!prefStore.preferences?.lastEvent?.id || !prefStore.preferences?.scr_team_id) {
+    if (!prefs.value?.lastEvent?.id || !prefs.value?.scr_team_id) {
       console.error('Missing event or team ID')
       return
     }
 
-    const token = getCookie('kpi_app')
-    if (!token) {
-      console.error('No authentication token found in cookie')
-      return
-    }
-
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/staff/${prefStore.preferences.lastEvent.id}/player/${playerId}/team/${prefStore.preferences.scr_team_id}/${equipment}/${newValue}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': token
-          }
-        }
+      const response = await postApi(
+        `/staff/${prefs.value.lastEvent.id}/player/${playerId}/team/${prefs.value.scr_team_id}/${equipment}/${newValue}`,
+        {},
+        'PUT'
       )
 
       if (!response.ok) {
@@ -91,28 +65,16 @@ export const useScrutineering = () => {
   }
 
   const updateComment = async (playerId, comment) => {
-    if (!prefStore.preferences?.lastEvent?.id || !prefStore.preferences?.scr_team_id) {
+    if (!prefs.value?.lastEvent?.id || !prefs.value?.scr_team_id) {
       console.error('Missing event or team ID')
       return
     }
 
-    const token = getCookie('kpi_app')
-    if (!token) {
-      console.error('No authentication token found in cookie')
-      return
-    }
-
     try {
-      const response = await fetch(
-        `${apiBaseUrl}/staff/${prefStore.preferences.lastEvent.id}/player/${playerId}/team/${prefStore.preferences.scr_team_id}/comment`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Auth-Token': token
-          },
-          body: JSON.stringify({ comment })
-        }
+      const response = await postApi(
+        `/staff/${prefs.value.lastEvent.id}/player/${playerId}/team/${prefs.value.scr_team_id}/comment`,
+        { comment },
+        'PUT'
       )
 
       if (!response.ok) {

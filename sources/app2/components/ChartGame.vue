@@ -3,7 +3,7 @@
     <!-- Games laid out side by side, max 2 per row -->
     <div
       v-if="chartGames && chartGames.length > 0"
-      :class="chartGames.length === 1 ? 'flex justify-center' : 'grid grid-cols-1 md:grid-cols-2 gap-3'"
+      :class="chartGames.length === 1 ? 'flex justify-center' : 'grid grid-cols-1 gap-3'"
     >
       <div v-for="game in chartGames" :key="game.id" class="flex items-center space-x-2">
         <!-- Game number - grayed italic, vertically centered -->
@@ -15,10 +15,11 @@
         <div class="flex-1 space-y-2">
           <!-- First team (winner if there's a winner, otherwise Team A) -->
           <div class="flex items-center gap-1">
-            <span
-              :class="teamBlockClass(game, getFirstTeam(game))"
-              class="px-2 py-1 rounded text-xs flex-1"
-              v-html="teamNameResize(getFirstTeamLabel(game))"
+            <TeamName
+              :team-label="getFirstTeamLabel(game)"
+              :is-winner="isWinner(game, getFirstTeam(game))"
+              :is-highlighted="getFirstTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
+              class="text-xs flex-1"
             />
             <div
               v-if="getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
@@ -30,10 +31,11 @@
 
           <!-- Second team (loser if there's a winner, otherwise Team B) -->
           <div class="flex items-center gap-1">
-            <span
-              :class="teamBlockClass(game, getSecondTeam(game))"
-              class="px-2 py-1 rounded text-xs flex-1"
-              v-html="teamNameResize(getSecondTeamLabel(game))"
+            <TeamName
+              :team-label="getSecondTeamLabel(game)"
+              :is-winner="isWinner(game, getSecondTeam(game))"
+              :is-highlighted="getSecondTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
+              class="text-xs flex-1"
             />
             <div
               v-if="getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
@@ -52,9 +54,7 @@
 </template>
 
 <script setup>
-import { useGameDisplay } from '~/composables/useGameDisplay'
-
-const { teamNameResize } = useGameDisplay()
+import TeamName from '~/components/TeamName.vue'
 
 const props = defineProps({
   chartGames: {
