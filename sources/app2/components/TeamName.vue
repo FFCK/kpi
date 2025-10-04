@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     v-if="canLink && teamLabel && teamLabel[0] !== '¤'"
-    :to="`/team/${encodeURIComponent(teamLabel)}`"
+    :to="teamLink"
     :class="[
       teamBlockClass,
       'px-2 py-1 rounded hover:opacity-80 cursor-pointer inline-block'
@@ -31,6 +31,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  teamId: {
+    type: [String, Number],
+    default: null
+  },
   isWinner: {
     type: Boolean,
     default: false
@@ -43,6 +47,14 @@ const props = defineProps({
     type: Boolean,
     default: true
   }
+})
+
+// Compute team link URL - prefer ID over label
+const teamLink = computed(() => {
+  if (props.teamId) {
+    return `/team/${props.teamId}`
+  }
+  return `/team/${encodeURIComponent(props.teamLabel)}`
 })
 
 // Display team name with proper decoding
