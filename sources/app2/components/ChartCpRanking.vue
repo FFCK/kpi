@@ -24,12 +24,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(team, index) in chartRanking" :key="index" class="border-t" :class="team.t_highlighted ? 'bg-yellow-100' : ''">
+            <tr v-for="(team, index) in chartRanking" :key="index" class="border-t">
               <td class="px-6 py-3 text-center font-bold text-lg">{{ index + 1 }}</td>
               <td class="px-6 py-3">
                 <div class="flex items-center">
-                  <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-6 w-6 mr-3" alt="" />
-                  <span class="text-base font-medium" :class="team.t_highlighted ? 'font-bold text-yellow-900' : ''">{{ team.t_label }}</span>
+                  <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-8 w-8 mr-3" alt="" />
+                  <TeamName
+                    :team-label="team.t_label"
+                    :is-winner="false"
+                    :is-highlighted="team.t_highlighted"
+                  />
                 </div>
               </td>
               <!-- For CP competition, only show Ranking and Team columns -->
@@ -55,6 +59,8 @@
 </template>
 
 <script setup>
+import TeamName from '~/components/TeamName.vue'
+
 const { t } = useI18n()
 
 const props = defineProps({

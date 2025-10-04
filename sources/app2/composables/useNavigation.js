@@ -12,9 +12,9 @@ export const useNavigation = () => {
   // Define navigation order
   const navigationOrder = computed(() => {
     if (isAuthenticated.value) {
-      return ['/', '/games', '/charts', '/scrutineering', '/about']
+      return ['/', '/games', '/charts', '/team', '/scrutineering', '/about']
     } else {
-      return ['/', '/games', '/charts', '/about']
+      return ['/', '/games', '/charts', '/team', '/about']
     }
   })
 

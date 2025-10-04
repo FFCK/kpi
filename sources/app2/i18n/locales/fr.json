@@ -10,7 +10,7 @@
     "Staff": "Organisation",
     "Games": "Matchs",
     "Ranking": "Classement",
-    "Chart": "Progression",
+    "Charts": "Progression",
     "GameReports": "Feuilles de marque",
     "Stats": "Stats",
     "StatReport": "Stats du match",
@@ -59,6 +59,15 @@
     "Change": "Changer",
     "Confirm": "Confirmer",
     "Cancel": "Annuler"
+  },
+  "Team": {
+    "UpcomingMatches": "Prochains matchs",
+    "FinishedMatches": "Matchs terminés",
+    "GroupRankings": "Classements de groupe",
+    "EliminationGames": "Matchs d'élimination",
+    "FinalRanking": "Classement final",
+    "NoData": "Aucune donnée disponible pour cette équipe",
+    "TournamentRounds": "Phases du tournoi"
   },
   "Games": {
     "Categories": "Catégories",

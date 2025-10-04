@@ -74,13 +74,11 @@ import { useStatus } from '~/composables/useStatus'
 const emit = defineEmits(['changeTeam'])
 const { t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
-const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 const baseUrl = runtimeConfig.public.backendBaseUrl
 
 
 const { prefs, getPrefs, updatePref } = usePrefs()
 const { checkOnline } = useStatus()
-const { getCookie } = useApi()
 
 const showSelector = ref(false)
 const teamSelected = ref(0)
@@ -98,21 +96,10 @@ const loadTeams = async () => {
     return
   }
 
-  const token = getCookie('kpi_app')
-  if (!token) {
-    console.error('No authentication token found in cookie')
-    return
-  }
+  const { getApi } = useApi()
 
   try {
-    const response = await fetch(`${apiBaseUrl}/staff/${eventId}/teams`, {
-      headers: {
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache',
-        Expires: '0',
-        'X-Auth-Token': token
-      }
-    })
+    const response = await getApi(`/staff/${eventId}/teams`)
 
     if (!response.ok) {
       throw new Error(`Failed to load teams: ${response.status}`)

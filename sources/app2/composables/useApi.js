@@ -15,7 +15,7 @@ export const useApi = () => {
   }
 
   const getApi = (url) => {
-    return fetch(url, {
+    return fetch(`${apiBaseUrl}${url}`, {
       headers: {
         'Cache-Control': 'no-cache',
         Pragma: 'no-cache',
@@ -25,9 +25,9 @@ export const useApi = () => {
     })
   }
 
-  const postApi = (url, data) => {
-    return fetch(url, {
-      method: 'POST',
+  const postApi = (url, data, method = 'POST') => {
+    return fetch(`${apiBaseUrl}${url}`, {
+      method,
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeaders()

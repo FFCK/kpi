@@ -2,7 +2,7 @@
   <div>
     <AppHeader />
 
-    <div class="pb-12">
+    <div class="pb-16">
       <NuxtPage />
     </div>
 

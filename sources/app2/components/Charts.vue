@@ -31,15 +31,11 @@
         </div>
 
         <!-- Rounds and Phases -->
-        <div
-          class="gap-4 p-4"
-          style="display: grid !important; grid-template-columns: repeat(1, 1fr); gap: 1rem;"
-          :style="roundsGridStyle"
-        >
+        <div :class="getContainerClasses()">
           <article
             v-for="(round, index) in category.rounds"
             :key="index"
-            class="flex flex-col justify-center items-stretch bg-gray-50 p-4 rounded-lg border"
+            class="w-80 flex flex-col justify-center items-stretch bg-gray-50 p-4 rounded-lg border"
           >
             <div
               v-for="(phase, index2) in objectReorder(round.phases)"
@@ -88,41 +84,6 @@ const props = defineProps({
   }
 })
 
-const screenWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
-
-const updateScreenWidth = () => {
-  screenWidth.value = window.innerWidth
-}
-
-onMounted(() => {
-  if (typeof window !== 'undefined') {
-    window.addEventListener('resize', updateScreenWidth)
-    updateScreenWidth()
-  }
-})
-
-onUnmounted(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', updateScreenWidth)
-  }
-})
-
-const roundsGridStyle = computed(() => {
-  let columns = 1
-
-  if (screenWidth.value >= 1280) { // xl
-    columns = 4
-  } else if (screenWidth.value >= 1024) { // lg
-    columns = 3
-  } else if (screenWidth.value >= 768) { // md
-    columns = 2
-  }
-
-  return {
-    'grid-template-columns': `repeat(${columns}, 1fr)`
-  }
-})
-
 const objectReorder = (object) => {
   const ordered = []
   let key = ''
@@ -130,6 +91,10 @@ const objectReorder = (object) => {
     ordered[ordered.length] = object[key]
   }
   return ordered
+}
+
+const getContainerClasses = () => {
+  return 'flex flex-wrap justify-center gap-4'
 }
 </script>
 

@@ -53,9 +53,9 @@ export const useGameDisplay = () => {
   }
 
   const teamNameResize = (name) => {
-    if (name && name.length >= 20) {
+    if (name && name.length >= 25) {
       return (
-        name.substring(0, 12) + name.substring(12).replace(/\s|-|_/, '<br>')
+        name.substring(0, 15) + name.substring(15).replace(/\s|-|_/, '<br>')
       )
     }
     return name

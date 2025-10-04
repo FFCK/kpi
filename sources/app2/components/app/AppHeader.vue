@@ -16,8 +16,12 @@
           <span>{{ t('nav.Games') }}</span>
         </NuxtLink>
         <NuxtLink to="/charts" :class="isActive('/charts') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-1">
-          <UIcon name="i-heroicons-chart-bar" />
-          <span>{{ t('nav.Chart') }}</span>
+          <UIcon name="i-heroicons-rectangle-group" />
+          <span>{{ t('nav.Charts') }}</span>
+        </NuxtLink>
+        <NuxtLink to="/team" :class="isActive('/team') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-1">
+          <UIcon name="i-heroicons-users" />
+          <span>{{ t('Teams.Team') }}</span>
         </NuxtLink>
         <div class="relative group">
           <button :class="[isActive('/login') || isActive('/scrutineering') ? 'text-green-400 font-bold' : '', 'flex items-center space-x-1 focus:outline-none']">
@@ -51,12 +55,34 @@
     </div>
     <!-- Mobile menu -->
     <div v-if="showMenu" class="md:hidden px-4 pb-2">
-      <NuxtLink to="/" :class="isActive('/') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="block py-2">{{ t('nav.Home') }}</NuxtLink>
-      <NuxtLink to="/games" :class="isActive('/games') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="block py-2">{{ t('nav.Games') }}</NuxtLink>
-      <NuxtLink to="/charts" :class="isActive('/charts') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="block py-2">{{ t('nav.Chart') }}</NuxtLink>
-      <NuxtLink to="/login" :class="isActive('/login') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="block py-2">{{ t('nav.Login') }}</NuxtLink>
-      <NuxtLink v-if="isAuthenticated" to="/scrutineering" :class="isActive('/scrutineering') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="block py-2">{{ t('nav.Scrutineering') }}</NuxtLink>
-      <NuxtLink to="/about" :class="isActive('/about') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="block py-2">{{ t('nav.About') }}</NuxtLink>
+      <NuxtLink to="/" :class="isActive('/') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-2 py-2">
+        <UIcon name="i-heroicons-home" />
+        <span>{{ t('nav.Home') }}</span>
+      </NuxtLink>
+      <NuxtLink to="/games" :class="isActive('/games') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-2 py-2">
+        <UIcon name="i-heroicons-list-bullet" />
+        <span>{{ t('nav.Games') }}</span>
+      </NuxtLink>
+      <NuxtLink to="/charts" :class="isActive('/charts') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-2 py-2">
+        <UIcon name="i-heroicons-rectangle-group" />
+        <span>{{ t('nav.Charts') }}</span>
+      </NuxtLink>
+      <NuxtLink to="/team" :class="isActive('/team') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-2 py-2">
+        <UIcon name="i-heroicons-users" />
+        <span>{{ t('Teams.Team') }}</span>
+      </NuxtLink>
+      <NuxtLink to="/login" :class="isActive('/login') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-2 py-2">
+        <UIcon name="i-heroicons-user-circle" />
+        <span>{{ t('nav.Login') }}</span>
+      </NuxtLink>
+      <NuxtLink v-if="isAuthenticated" to="/scrutineering" :class="isActive('/scrutineering') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-2 py-2">
+        <UIcon name="i-heroicons-clipboard-document-check" />
+        <span>{{ t('nav.Scrutineering') }}</span>
+      </NuxtLink>
+      <NuxtLink to="/about" :class="isActive('/about') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-2 py-2">
+        <UIcon name="i-heroicons-information-circle" />
+        <span>{{ t('nav.About') }}</span>
+      </NuxtLink>
     </div>
   </header>
 </template>

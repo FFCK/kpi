@@ -56,7 +56,7 @@ export const useGames = () => {
       // Charger depuis l'API en arrière-plan
       try {
         // console.log('Loading games from API')
-        const response = await getApi(`${apiBaseUrl}/games/${eventId}`)
+        const response = await getApi(`/games/${eventId}`)
         const data = await response.json()
         const gamelist = processGameData(data)
 
