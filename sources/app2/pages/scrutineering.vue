@@ -7,7 +7,7 @@
           <select
             v-model="selectedTeamId"
             @change="onTeamChange"
-            class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-64"
+            class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-64 cursor-pointer"
           >
             <option value="">{{ t('Teams.PleaseSelectOne') }}</option>
             <option v-for="team in availableTeams" :key="team.team_id" :value="team.team_id">
@@ -17,7 +17,7 @@
         </div>
       </template>
       <template #right>
-        <button v-if="prefs?.scr_team_id && visibleButton" @click="handleRefresh" class="p-2 rounded-md hover:bg-gray-100">
+        <button v-if="prefs?.scr_team_id && visibleButton" @click="handleRefresh" class="p-2 rounded-md hover:bg-gray-100 cursor-pointer">
           <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
         </button>
       </template>

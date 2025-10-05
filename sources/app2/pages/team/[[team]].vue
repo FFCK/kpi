@@ -7,7 +7,7 @@
           <select
             v-model="selectedTeamModel"
             @change="onTeamChange"
-            class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-64"
+            class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-64 cursor-pointer"
           >
             <option value="">{{ t('Teams.PleaseSelectOne') }}</option>
             <option v-for="team in availableTeams" :key="team" :value="team">
@@ -20,7 +20,7 @@
         <button
           v-if="showRefreshButton && visibleButton"
           @click="handleRefresh"
-          class="p-2 rounded-md hover:bg-gray-100"
+          class="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
         >
           <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
         </button>

@@ -4,7 +4,7 @@
       <template #left>
         <button
           @click="showFilters = !showFilters"
-          class="ml-4 px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100"
+          class="ml-4 px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100 cursor-pointer"
           :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
         >
           <UIcon name="i-heroicons-funnel" class="h-4 w-4" />
@@ -17,7 +17,7 @@
         <select
           v-model="fav_dates"
           @change="changeFav"
-          class="ml-4 block w-auto px-3 py-2 border-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors hover:bg-gray-100"
+          class="ml-4 block w-auto px-3 py-2 border-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors hover:bg-gray-100 cursor-pointer"
           :style="hasActiveDateFilter ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
         >
           <option value="">{{ t('Games.AllDates') }}</option>
@@ -32,7 +32,7 @@
         </select>
       </template>
       <template #right>
-        <button v-if="visibleButton" @click="handleRefresh" class="p-2 rounded-md hover:bg-gray-100">
+        <button v-if="visibleButton" @click="handleRefresh" class="p-2 rounded-md hover:bg-gray-100 cursor-pointer">
           <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
         </button>
       </template>
@@ -80,7 +80,7 @@
                 <button
                   v-if="teamSearchQuery"
                   @click="teamSearchQuery = ''"
-                  class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  class="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
                 >
                   <UIcon name="i-heroicons-x-mark" class="h-3 w-3" />
                 </button>
