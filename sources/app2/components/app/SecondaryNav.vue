@@ -1,5 +1,5 @@
 <template>
-  <div class="py-1 px-4 bg-white border-b border-gray-200">
+  <div class="py-1 px-1 bg-white border-b border-gray-200">
     <div class="grid grid-cols-3 items-center">
       <div class="flex items-center justify-start">
         <button v-if="!hideLeft" @click="navigateTo(previousPage)" class="p-2 rounded-md hover:bg-gray-100 cursor-pointer">
@@ -13,7 +13,7 @@
       </div>
       <div class="flex items-center justify-end">
         <slot name="right" />
-        <button v-if="!hideRight" @click="navigateTo(nextPage)" class="ml-4 p-2 rounded-md hover:bg-gray-100 cursor-pointer">
+        <button v-if="!hideRight" @click="navigateTo(nextPage)" class="p-2 rounded-md hover:bg-gray-100 cursor-pointer">
           <UIcon name="i-heroicons-arrow-right" class="h-6 w-6" />
         </button>
       </div>

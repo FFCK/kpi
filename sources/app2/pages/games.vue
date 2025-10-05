@@ -4,11 +4,11 @@
       <template #left>
         <button
           @click="showFilters = !showFilters"
-          class="ml-4 px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100 cursor-pointer"
+          class="ml-2 sm:ml-4 px-2 sm:px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-sm sm:text-base hover:bg-gray-100 cursor-pointer"
           :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
         >
           <UIcon name="i-heroicons-funnel" class="h-4 w-4" />
-          <span>{{ t('nav.Filters') }}</span>
+          <span class="hidden sm:inline">{{ t('nav.Filters') }}</span>
           <UIcon
             :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
             class="h-4 w-4"
@@ -17,7 +17,7 @@
         <select
           v-model="fav_dates"
           @change="changeFav"
-          class="ml-4 block w-auto px-3 py-2 border-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md transition-colors hover:bg-gray-100 cursor-pointer"
+          class="ml-2 block w-auto px-2 sm:px-3 py-1 sm:py-2 border-2 text-sm sm:text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md transition-colors hover:bg-gray-100 cursor-pointer"
           :style="hasActiveDateFilter ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
         >
           <option value="">{{ t('Games.AllDates') }}</option>
