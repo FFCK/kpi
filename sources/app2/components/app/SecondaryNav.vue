@@ -8,7 +8,8 @@
         <slot name="left" />
       </div>
       <div class="flex items-center justify-center">
-        <slot name="center" />
+        <UIcon v-if="isLoading" name="i-heroicons-arrow-path" class="h-6 w-6 animate-spin text-blue-600" />
+        <slot v-else name="center" />
       </div>
       <div class="flex items-center justify-end">
         <slot name="right" />
@@ -22,6 +23,7 @@
 
 <script setup>
 import { useNavigation } from '~/composables/useNavigation'
+import { useLoadingState } from '~/composables/useLoadingState'
 import { navigateTo } from '#app'
 
 const props = defineProps({
@@ -36,4 +38,5 @@ const props = defineProps({
 })
 
 const { previousPage, nextPage } = useNavigation()
+const { isLoading } = useLoadingState()
 </script>

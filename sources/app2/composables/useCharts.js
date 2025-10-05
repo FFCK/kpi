@@ -1,10 +1,12 @@
 import { ref, computed } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore'
+import { useChartStore } from '~/stores/chartStore'
 import { useApi } from '~/composables/useApi'
 import db from '~/utils/db'
 
 export const useCharts = () => {
   const preferenceStore = usePreferenceStore()
+  const chartStore = useChartStore()
   const { getApi } = useApi()
 
   const allChartData = ref(null)
@@ -86,6 +88,7 @@ export const useCharts = () => {
     if (!preferenceStore.preferences.lastEvent) return
 
     const eventId = preferenceStore.preferences.lastEvent.id
+    chartStore.loading = true
 
     try {
       // Vérifier si on doit charger depuis l'API
@@ -139,7 +142,10 @@ export const useCharts = () => {
       const cutoffTime = Date.now() - (7 * 24 * 60 * 60 * 1000)
       await db.charts.where('timestamp').below(cutoffTime).delete()
     } catch (error) {
+      chartStore.error = error
       console.error('Failed to load charts:', error)
+    } finally {
+      chartStore.loading = false
     }
   }
 
