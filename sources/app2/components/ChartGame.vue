@@ -3,7 +3,7 @@
     <!-- Games laid out side by side, max 2 per row -->
     <div
       v-if="chartGames && chartGames.length > 0"
-      :class="chartGames.length === 1 ? 'flex justify-center' : 'grid grid-cols-1 gap-3'"
+      class="grid grid-cols-1 gap-3"
     >
       <div v-for="game in chartGames" :key="game.id" class="flex items-center space-x-2">
         <!-- Game number - grayed italic, vertically centered -->
@@ -12,7 +12,7 @@
         </div>
 
         <!-- Teams and scores -->
-        <div class="flex-1 space-y-2">
+        <div class="flex-1 space-y-1">
           <!-- First team (winner if there's a winner, otherwise Team A) -->
           <div class="flex items-center gap-1">
             <TeamName
