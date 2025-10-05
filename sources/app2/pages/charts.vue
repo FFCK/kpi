@@ -4,11 +4,11 @@
       <template #left>
         <button
           @click="showFilters = !showFilters"
-          class="ml-4 px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-base hover:bg-gray-100 cursor-pointer"
+          class="ml-2 px-2 sm:px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-sm sm:text-base hover:bg-gray-100 cursor-pointer"
           :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
         >
           <UIcon name="i-heroicons-funnel" class="h-4 w-4" />
-          <span>{{ t('nav.Filters') }}</span>
+          <span class="hidden sm:inline">{{ t('nav.Filters') }}</span>
           <UIcon
             :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
             class="h-4 w-4"

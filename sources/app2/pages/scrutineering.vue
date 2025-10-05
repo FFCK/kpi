@@ -2,12 +2,12 @@
   <div class="container-fluid pb-16">
     <AppSecondaryNav>
       <template #left>
-        <div class="flex items-center gap-2">
-          <label class="text-sm font-medium text-gray-700">{{ t('Teams.SelectTeam') }}:</label>
+        <div class="flex items-center gap-1 sm:gap-2">
+          <label class="hidden sm:inline text-sm font-medium text-gray-700">{{ t('Teams.SelectTeam') }}:</label>
           <select
             v-model="selectedTeamId"
             @change="onTeamChange"
-            class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-64 cursor-pointer"
+            class="px-2 sm:px-3 py-1 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-40 sm:min-w-64 cursor-pointer"
           >
             <option value="">{{ t('Teams.PleaseSelectOne') }}</option>
             <option v-for="team in availableTeams" :key="team.team_id" :value="team.team_id">

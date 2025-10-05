@@ -4,7 +4,7 @@
     :to="teamLink"
     :class="[
       teamBlockClass,
-      'px-2 py-1 rounded hover:opacity-80 cursor-pointer inline-block'
+      'px-2 py-1 rounded hover:opacity-80 cursor-pointer inline-block text-xs sm:text-sm'
     ]"
     v-html="displayName"
   />
@@ -12,7 +12,7 @@
     v-else
     :class="[
       teamBlockClass,
-      'px-2 py-1 rounded inline-block'
+      'px-2 py-1 rounded inline-block text-xs sm:text-sm'
     ]"
     v-html="displayName"
   />
