@@ -143,7 +143,9 @@
     "GA": "GA",
     "GD": "GD",
     "FinalRanking": "Final ranking",
-    "ProvisionalRanking": "Provisional ranking"
+    "ProvisionalRanking": "Provisional ranking",
+    "ChampionshipRanking": "Championship ranking",
+    "NoData": "No ranking data available"
   },
   "About": {
     "DoYouLike": "Do you like this application?",

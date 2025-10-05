@@ -32,7 +32,7 @@
       </div>
     </div>
     <div v-else class="text-gray-500 text-sm">
-      No ranking data available
+      {{ t('Charts.NoData') }}
     </div>
   </div>
 </template>

@@ -143,7 +143,9 @@
     "GA": "-",
     "GD": "+/-",
     "FinalRanking": "Classement final",
-    "ProvisionalRanking": "Classement provisoire"
+    "ProvisionalRanking": "Classement provisoire",
+    "ChampionshipRanking": "Classement du championnat",
+    "NoData": "Aucune donnée de classement disponible"
   },
   "About": {
     "DoYouLike": "Cette application vous plait ?",

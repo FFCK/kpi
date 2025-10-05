@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white rounded-lg p-4 shadow-sm border">
-    <h6 class="font-semibold text-gray-700 mb-3">Championship Ranking</h6>
+    <h6 class="font-semibold text-gray-700 mb-3">{{ t('Charts.ChampionshipRanking') }}</h6>
     <div v-if="chartRanking && chartRanking.length > 0">
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
@@ -46,7 +46,7 @@
       </div>
     </div>
     <div v-else class="text-gray-500 text-sm">
-      No ranking data available
+      {{ t('Charts.NoData') }}
     </div>
   </div>
 </template>
