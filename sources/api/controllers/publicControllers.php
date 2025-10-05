@@ -25,12 +25,12 @@ function GetEventsController($route, $params)
     $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
       FROM kp_evenement
       WHERE Publication = 'O'
-      ORDER BY Id DESC ";
+      ORDER BY Date_debut DESC, Id DESC ";
   } elseif ($event_mode === 'std') {
     $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
       FROM kp_evenement
       WHERE app = 'O'
-      ORDER BY Id DESC ";
+      ORDER BY Date_debut DESC, Id DESC ";
   } elseif ($event_mode === 'champ') {
     $sql = "SELECT j.Id id, j.Nom libelle, j.Lieu place,
       CASE
@@ -46,7 +46,7 @@ function GetEventsController($route, $params)
       AND c.Publication = 'O'
       AND j.Publication = 'O'
       AND s.Etat = 'A'
-      ORDER BY g.section, g.ordre, c.Code, j.Date_debut, j.Id ";
+      ORDER BY j.Date_debut DESC, g.section, g.ordre, c.Code, j.Id ";
   }
   $stmt = $myBdd->pdo->query($sql);
   $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
