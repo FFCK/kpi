@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev --hostname 0.0.0.0 --port 3000",
-    "generate": "nuxt generate",
+    "dev": "dotenv -e .env.development -- nuxt dev --hostname 0.0.0.0 --port 3000",
+    "generate": "dotenv -e .env.production -- nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
@@ -20,6 +20,7 @@
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/vite": "^4.1.13",
     "dexie": "^4.2.0",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^9.36.0",
     "idb": "^8.0.3",
     "nuxt": "^4.1.2",
