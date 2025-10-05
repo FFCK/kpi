@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore'
 
 const showMenu = ref(false)
@@ -109,6 +109,11 @@ const isActive = (path) => {
   }
   return route.path === path
 }
+
+// Close mobile menu when route changes
+watch(() => route.path, () => {
+  showMenu.value = false
+})
 
 onMounted(async () => {
   await preferenceStore.fetchItems()
