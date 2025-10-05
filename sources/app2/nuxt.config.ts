@@ -1,8 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-const baseURL = process.env.BASE_URL || '/app2'
-const apiBaseUrl = process.env.API_BASE_URL || 'https://kpi.local/api'
-const backendBaseUrl = process.env.BACKEND_BASE_URL || 'https://kpi.local'
+const baseURL = process.env.BASE_URL ?? '/app2'
+const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.local/api'
+const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.local'
+
+// Helper pour construire les chemins PWA
+const pwaPath = (path: string) => baseURL ? `${baseURL}/${path}` : `/${path}`
+const pwaScope = baseURL ? `${baseURL}/` : '/'
 
 export default defineNuxtConfig({
   app: {
@@ -15,7 +19,11 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
       ],
       link: [
-        { rel: 'sitemap', type: 'application/xml', href: baseURL + '/sitemap.xml' }
+        { rel: 'sitemap', type: 'application/xml', href: pwaPath('sitemap.xml') },
+        { rel: 'manifest', href: pwaPath('manifest.webmanifest') },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: pwaPath('pwa-192x192.png') },
+        { rel: 'icon', type: 'image/png', sizes: '512x512', href: pwaPath('pwa-512x512.png') },
+        { rel: 'apple-touch-icon', href: pwaPath('pwa-512x512.png') }
       ]
     }
   },
@@ -33,6 +41,11 @@ export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/ui', '@vite-pwa/nuxt'],
   pwa: {
     registerType: 'autoUpdate',
+    base: pwaScope,
+    scope: pwaScope,
+    injectRegister: null,
+    manifestFilename: 'manifest.webmanifest',
+    strategies: 'generateSW',
     manifest: {
       name: 'KPI Application',
       short_name: 'KPI App',
@@ -41,23 +54,23 @@ export default defineNuxtConfig({
       background_color: '#ffffff',
       display: 'standalone',
       orientation: 'portrait',
-      scope: baseURL + '/',
-      start_url: baseURL + '/',
+      scope: pwaScope,
+      start_url: pwaScope,
       icons: [
         {
-          src: baseURL + '/pwa-192x192.png',
+          src: pwaPath('pwa-192x192.png'),
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: baseURL + '/pwa-512x512.png',
+          src: pwaPath('pwa-512x512.png'),
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: baseURL + '/pwa-512x512.png',
+          src: pwaPath('pwa-512x512.png'),
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable'
@@ -65,8 +78,23 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: baseURL + '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      navigateFallback: baseURL ? `${baseURL}/index.html` : '/index.html',
+      cleanupOutdatedCaches: true,
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+      globDirectory: '.output/public',
+      navigateFallbackDenylist: [/^\/api\//],
+      manifestTransforms: [
+        (manifestEntries) => {
+          // Filter out empty URLs and fix baseURL
+          const manifest = manifestEntries.map(entry => {
+            if (entry.url === '' || entry.url === '/') {
+              return { ...entry, url: '/index.html' }
+            }
+            return entry
+          }).filter(entry => entry.url !== '')
+          return { manifest }
+        }
+      ],
       runtimeCaching: [
         {
           urlPattern: new RegExp('^' + apiBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/.*', 'i'),
