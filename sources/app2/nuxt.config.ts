@@ -1,8 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+const baseURL = process.env.BASE_URL || '/app2'
+const apiBaseUrl = process.env.API_BASE_URL || 'https://kpi.local/api'
+const backendBaseUrl = process.env.BACKEND_BASE_URL || 'https://kpi.local'
+
 export default defineNuxtConfig({
   app: {
-    baseURL: '/app2',
+    baseURL,
     head: {
       meta: [
         { name: 'theme-color', content: '#1f2937' },
@@ -11,14 +15,14 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
       ],
       link: [
-        { rel: 'sitemap', type: 'application/xml', href: '/app2/sitemap.xml' }
+        { rel: 'sitemap', type: 'application/xml', href: baseURL + '/sitemap.xml' }
       ]
     }
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL || 'https://kpi.local/api',
-      backendBaseUrl: process.env.BACKEND_BASE_URL || 'https://kpi.local'
+      apiBaseUrl,
+      backendBaseUrl
     }
   },
   compatibilityDate: '2025-07-15',
@@ -37,23 +41,23 @@ export default defineNuxtConfig({
       background_color: '#ffffff',
       display: 'standalone',
       orientation: 'portrait',
-      scope: '/app2/',
-      start_url: '/app2/',
+      scope: baseURL + '/',
+      start_url: baseURL + '/',
       icons: [
         {
-          src: '/app2/pwa-192x192.png',
+          src: baseURL + '/pwa-192x192.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/app2/pwa-512x512.png',
+          src: baseURL + '/pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any'
         },
         {
-          src: '/app2/pwa-512x512.png',
+          src: baseURL + '/pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable'
@@ -61,11 +65,11 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: '/app2/',
+      navigateFallback: baseURL + '/',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
       runtimeCaching: [
         {
-          urlPattern: /^https:\/\/kpi\.local\/api\/.*/i,
+          urlPattern: new RegExp('^' + apiBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/.*', 'i'),
           handler: 'NetworkFirst',
           options: {
             cacheName: 'api-cache',
