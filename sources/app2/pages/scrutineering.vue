@@ -206,7 +206,7 @@ useSeoMeta({
   title: 'Equipment Scrutineering - KPI Application',
   description: 'Team equipment verification and scrutineering management for kayak polo competitions. Staff access only.',
   ogTitle: 'Scrutineering - KPI Application',
-  ogDescription: 'Equipment verification for kayak polo competitions',
+  ogDescription: 'Equipment verification for canoe polo competitions',
   robots: 'noindex, nofollow' // Staff-only page
 })
 

@@ -117,10 +117,10 @@ const visibleButton = ref(true)
 
 // Page-specific SEO
 useSeoMeta({
-  title: 'Rankings - KPI Application',
+  title: 'Charts - KPI Application',
   description: 'View tournament rankings, group standings, and elimination brackets for kayak polo competitions.',
-  ogTitle: 'Rankings - KPI Application',
-  ogDescription: 'Tournament rankings and standings for kayak polo'
+  ogTitle: 'Charts - KPI Application',
+  ogDescription: 'Tournament charts and brackets for canoe polo'
 })
 
 const {
