@@ -13,6 +13,11 @@ import { navigateTo } from '#app'
 import { useApi } from '~/composables/useApi'
 import db from '~/utils/db'
 
+// Disable prerendering for this route since it only redirects
+defineRouteRules({
+  prerender: false
+})
+
 const { t } = useI18n()
 const route = useRoute()
 const preferenceStore = usePreferenceStore()

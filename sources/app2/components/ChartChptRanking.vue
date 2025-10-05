@@ -20,7 +20,7 @@
           </thead>
           <tbody>
             <tr v-for="(team, index) in chartRanking" :key="index" class="border-t">
-              <td class="px-3 py-2">{{ index + 1 }}</td>
+              <td class="px-3 py-2">{{ team.t_clt || 0 }}</td>
               <td class="px-3 py-2">
                 <div class="flex items-center">
                   <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-8 w-8 mr-2" alt="" />
@@ -32,14 +32,14 @@
                   />
                 </div>
               </td>
-              <td class="px-3 py-2 text-center font-bold">{{ team.pts || 0 }}</td>
-              <td class="px-3 py-2 text-center">{{ team.pld || 0 }}</td>
-              <td class="px-3 py-2 text-center">{{ team.w || 0 }}</td>
-              <td class="px-3 py-2 text-center">{{ team.d || 0 }}</td>
-              <td class="px-3 py-2 text-center">{{ team.l || 0 }}</td>
-              <td class="px-3 py-2 text-center">{{ team.gf || 0 }}</td>
-              <td class="px-3 py-2 text-center">{{ team.ga || 0 }}</td>
-              <td class="px-3 py-2 text-center">{{ team.gd || 0 }}</td>
+              <td class="px-3 py-2 text-center font-bold">{{ team.t_pts || 0 }}</td>
+              <td class="px-3 py-2 text-center">{{ team.t_pld || 0 }}</td>
+              <td class="px-3 py-2 text-center">{{ team.t_won || 0 }}</td>
+              <td class="px-3 py-2 text-center">{{ team.t_draw || 0 }}</td>
+              <td class="px-3 py-2 text-center">{{ team.t_lost || 0 }}</td>
+              <td class="px-3 py-2 text-center">{{ team.t_plus || 0 }}</td>
+              <td class="px-3 py-2 text-center">{{ team.t_minus || 0 }}</td>
+              <td class="px-3 py-2 text-center">{{ team.t_diff || 0 }}</td>
             </tr>
           </tbody>
         </table>
@@ -71,7 +71,10 @@ const props = defineProps({
   }
 })
 
+const runtimeConfig = useRuntimeConfig()
+const baseUrl = runtimeConfig.public.backendBaseUrl
+
 const getTeamLogo = (logo) => {
-  return `/img/Nations/${logo}`
+  return `${baseUrl}/img/${logo}`
 }
 </script>

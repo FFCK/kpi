@@ -10,13 +10,13 @@
       />
       <br />
       <span class="font-semibold">{{ preferenceStore.preferences.lastEvent.libelle }} - {{ preferenceStore.preferences.lastEvent.place }}</span>
-      <button class="ml-2 px-2 py-1 bg-gray-500 text-white text-xs rounded">
+      <button class="ml-2 px-2 py-1 bg-gray-500 text-white text-xs rounded cursor-pointer">
         <UIcon name="i-heroicons-arrows-right-left" /> {{ t('Event.Change') }}
       </button>
     </div>
     <!-- Button to select event if none is selected -->
     <div v-else-if="!showSelector" class="text-center">
-      <button class="px-4 py-2 bg-blue-600 text-white rounded" @click="loadEvents">
+      <button class="px-4 py-2 bg-blue-600 text-white rounded cursor-pointer" @click="loadEvents">
         {{ t('Event.SelectEvent') }}
       </button>
     </div>
@@ -28,14 +28,14 @@
         <button
           type="button"
           @click="changeEventMode('std')"
-          :class="['px-4 py-1 text-sm font-medium rounded-l-lg border border-gray-200', eventMode === 'std' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
+          :class="['px-4 py-1 text-sm font-medium rounded-l-lg border border-gray-200 cursor-pointer', eventMode === 'std' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
         >
           {{ t('Event.StdEvents') }}
         </button>
         <button
           type="button"
           @click="changeEventMode('champ')"
-          :class="['px-4 py-1 text-sm font-medium rounded-r-md border border-gray-200', eventMode === 'champ' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
+          :class="['px-4 py-1 text-sm font-medium rounded-r-md border border-gray-200 cursor-pointer', eventMode === 'champ' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
         >
           {{ t('Event.LocalChamp') }}
         </button>
@@ -43,7 +43,7 @@
       
       <!-- Event dropdown -->
       <div class="my-2 max-w-md mx-auto">
-        <select v-model="eventSelectedId" @change="changeButton = true" class="block w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring focus:border-blue-500">
+        <select v-model="eventSelectedId" @change="changeButton = true" class="block w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring focus:border-blue-500 cursor-pointer">
           <option disabled :value="null">
             ▼ {{ t('Event.PleaseSelectOne') }} ▼
           </option>
@@ -55,10 +55,10 @@
 
       <!-- Action buttons -->
       <div class="flex justify-center space-x-4">
-        <button @click.prevent="cancelEvent" class="px-4 py-1 bg-gray-500 text-white text-sm rounded">
+        <button @click.prevent="cancelEvent" class="px-4 py-1 bg-gray-500 text-white text-sm rounded cursor-pointer">
           {{ t('Event.Cancel') }}
         </button>
-        <button v-if="changeButton" @click.prevent="changeEvent" class="px-4 py-1 bg-blue-600 text-white text-sm rounded">
+        <button v-if="changeButton" @click.prevent="changeEvent" class="px-4 py-1 bg-blue-600 text-white text-sm rounded cursor-pointer">
           {{ t('Event.Confirm') }}
         </button>
       </div>
