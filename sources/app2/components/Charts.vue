@@ -31,7 +31,7 @@
         </div>
 
         <!-- Rounds and Phases -->
-        <div :class="getContainerClasses()">
+        <div :class="getContainerClasses()" class="py-2">
           <article
             v-for="(round, index) in category.rounds"
             :key="index"

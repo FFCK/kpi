@@ -63,12 +63,12 @@
   },
   "Team": {
     "UpcomingMatches": "Prochains matchs",
-    "FinishedMatches": "Matchs terminés",
+    "FinishedMatches": "Précédents matchs",
     "GroupRankings": "Classements de groupe",
     "EliminationGames": "Matchs d'élimination",
     "FinalRanking": "Classement final",
     "NoData": "Aucune donnée disponible pour cette équipe",
-    "TournamentRounds": "Phases du tournoi"
+    "TournamentRounds": "Progression"
   },
   "Games": {
     "Categories": "Catégories",

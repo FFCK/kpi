@@ -62,8 +62,8 @@
     "Cancel": "Cancel"
   },
   "Team": {
-    "UpcomingMatches": "Upcoming games",
-    "FinishedMatches": "Finished games",
+    "UpcomingMatches": "Next games",
+    "FinishedMatches": "Pervious games",
     "GroupRankings": "Group rankings",
     "EliminationGames": "Elimination games",
     "FinalRanking": "Final ranking",
