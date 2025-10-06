@@ -50,24 +50,24 @@
         </div>
       </div>
 
-      <div class="px-4 py-2">
+      <div class="py-2">
 
       <!-- Upcoming Matches -->
       <div v-if="formattedUpcomingMatches.length > 0" class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.UpcomingMatches') }} ({{ upcomingMatches.length }})</h3>
+        <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Team.UpcomingMatches') }} ({{ upcomingMatches.length }})</h3>
         <GameList :games="formattedUpcomingMatches" :show-refs="showRefs" :show-flags="showFlags" :show-count="false" />
       </div>
 
       <!-- Finished Matches -->
       <div v-if="formattedFinishedMatches.length > 0" class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.FinishedMatches') }} ({{ finishedMatches.length }})</h3>
+        <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Team.FinishedMatches') }} ({{ finishedMatches.length }})</h3>
         <GameList :games="formattedFinishedMatches" :show-refs="showRefs" :show-flags="showFlags" :show-count="false" />
       </div>
 
       <!-- Tournament Rounds (Rankings & Eliminations) -->
       <div v-if="tournamentRounds.length > 0" class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.TournamentRounds') }}</h3>
-        <div :class="containerClasses">
+        <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Team.TournamentRounds') }}</h3>
+        <div :class="containerClasses" class="px-2">
           <div v-for="round in tournamentRounds" :key="round.id" class="w-80 border rounded-lg shadow-sm flex flex-col">
             <div class="bg-gray-800 text-white px-3 py-2 rounded-t-lg text-sm">
               {{ round.category }}<span v-if="round.phase"> - {{ round.phase }}</span>
@@ -138,7 +138,7 @@
 
       <!-- Final Rankings -->
       <div v-if="finalRankings.length > 0" class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-700 mb-3">{{ t('Team.FinalRanking') }}</h3>
+        <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Team.FinalRanking') }}</h3>
         <div v-for="ranking in finalRankings" :key="ranking.id" class="mb-4" :class="ranking.type === 'CP' ? 'flex justify-center' : ''">
           <div :class="ranking.type === 'CP' ? 'w-full max-w-2xl' : ''">
             <div class="bg-gray-800 text-white px-3 py-2">
@@ -198,7 +198,7 @@
       </div>
 
       <!-- No data message -->
-      <div v-if="upcomingMatches.length === 0 && finishedMatches.length === 0 && tournamentRounds.length === 0 && finalRankings.length === 0" class="text-center text-gray-500 py-8">
+      <div v-if="upcomingMatches.length === 0 && finishedMatches.length === 0 && tournamentRounds.length === 0 && finalRankings.length === 0" class="text-center text-gray-500 py-8 px-4">
         {{ t('Team.NoData') }}
       </div>
       </div>
