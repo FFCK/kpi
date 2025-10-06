@@ -421,6 +421,16 @@ const onTeamChange = () => {
   }
 }
 
+// Helper function to check if team is refereeing
+const isTeamReferee = (refereeField, teamName) => {
+  if (!refereeField || !teamName) return false
+  // Check if team name is exactly the referee (alone)
+  if (refereeField === teamName) return true
+  // Check if team name is in parentheses (secondary referee)
+  if (refereeField.includes(`(${teamName})`)) return true
+  return false
+}
+
 // Computed properties for matches - formatted like in games page
 const upcomingMatches = computed(() => {
   if (!selectedTeam.value || !games.value) return []
@@ -428,12 +438,17 @@ const upcomingMatches = computed(() => {
   return games.value
     .filter(game =>
       (game.g_status === 'ATT' || game.g_status === 'ON') &&
-      (game.t_a_label === selectedTeam.value || game.t_b_label === selectedTeam.value)
+      (game.t_a_label === selectedTeam.value ||
+       game.t_b_label === selectedTeam.value ||
+       isTeamReferee(game.r_1, selectedTeam.value) ||
+       isTeamReferee(game.r_2, selectedTeam.value))
     )
     .map(game => ({
       ...game,
       t_a_highlighted: game.t_a_label === selectedTeam.value,
-      t_b_highlighted: game.t_b_label === selectedTeam.value
+      t_b_highlighted: game.t_b_label === selectedTeam.value,
+      r_1_highlighted: isTeamReferee(game.r_1, selectedTeam.value),
+      r_2_highlighted: isTeamReferee(game.r_2, selectedTeam.value)
     }))
     .sort((a, b) => {
       const dateA = new Date(`${a.g_date} ${a.g_time}`)
@@ -448,12 +463,17 @@ const finishedMatches = computed(() => {
   return games.value
     .filter(game =>
       game.g_status === 'END' &&
-      (game.t_a_label === selectedTeam.value || game.t_b_label === selectedTeam.value)
+      (game.t_a_label === selectedTeam.value ||
+       game.t_b_label === selectedTeam.value ||
+       isTeamReferee(game.r_1, selectedTeam.value) ||
+       isTeamReferee(game.r_2, selectedTeam.value))
     )
     .map(game => ({
       ...game,
       t_a_highlighted: game.t_a_label === selectedTeam.value,
-      t_b_highlighted: game.t_b_label === selectedTeam.value
+      t_b_highlighted: game.t_b_label === selectedTeam.value,
+      r_1_highlighted: isTeamReferee(game.r_1, selectedTeam.value),
+      r_2_highlighted: isTeamReferee(game.r_2, selectedTeam.value)
     }))
     .sort((a, b) => {
       const dateA = new Date(`${a.g_date} ${a.g_time}`)
@@ -610,14 +630,6 @@ const getGameTeamClass = (game, team) => {
       'bg-gray-800': true,
       'text-white': true,
       'font-bold': highlighted // Keep font-bold for the selected team even if it wins
-    }
-  }
-
-  if (highlighted) {
-    return {
-      'bg-yellow-400': true,
-      'text-black': true,
-      'font-bold': true
     }
   }
 

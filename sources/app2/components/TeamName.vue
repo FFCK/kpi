@@ -86,11 +86,10 @@ const teamBlockClass = computed(() => {
   // Highlighted team (selected/filtered)
   if (props.isHighlighted) {
     return {
-      'bg-yellow-400': true,
+      'bg-yellow-200': !props.isWinner,
+      'bg-yellow-400': props.isWinner,
       'text-black': true,
       'font-bold': props.isWinner, // Bold only if also winner
-      'border': props.isWinner,
-      'border-black': props.isWinner
     }
   }
 
