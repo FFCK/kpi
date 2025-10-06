@@ -140,34 +140,34 @@
       <div v-if="finalRankings.length > 0" class="mb-6">
         <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Team.FinalRanking') }}</h3>
         <div v-for="ranking in finalRankings" :key="ranking.id" class="mb-4" :class="ranking.type === 'CP' ? 'flex justify-center' : ''">
-          <div :class="ranking.type === 'CP' ? 'w-full max-w-2xl' : ''">
-            <div class="bg-gray-800 text-white px-3 py-2">
+          <div :class="ranking.type === 'CP' ? 'w-full max-w-2xl px-2' : 'px-2'">
+            <div class="bg-gray-800 text-white rounded-t-lg px-3 py-2">
               {{ ranking.category }}
               <span v-if="ranking.phase" class="text-sm font-normal ml-2">- {{ ranking.phase }}</span>
             </div>
-            <div class="bg-white rounded-lg p-4 shadow-sm border">
+            <div class="bg-white rounded-b-lg p-4 shadow-sm border">
               <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                 <thead class="bg-gray-50">
                   <tr>
-                    <th class="px-6 py-3 text-center w-20">{{ t('Charts.Ranking') }}</th>
-                    <th class="px-6 py-3 text-left">{{ t('Charts.Team') }}</th>
+                    <th class="px-2 md:px-6 py-3 text-center w-20">{{ t('Charts.Ranking') }}</th>
+                    <th class="px-2 md:px-6 py-3 text-left">{{ t('Charts.Team') }}</th>
                     <template v-if="ranking.type !== 'CP'">
-                      <th class="px-3 py-2 text-center">{{ t('Charts.Pts') }}</th>
-                      <th class="px-3 py-2 text-center">{{ t('Charts.Pld') }}</th>
-                      <th class="px-3 py-2 text-center">{{ t('Charts.W') }}</th>
-                      <th class="px-3 py-2 text-center">{{ t('Charts.D') }}</th>
-                      <th class="px-3 py-2 text-center">{{ t('Charts.L') }}</th>
-                      <th class="px-3 py-2 text-center">{{ t('Charts.GF') }}</th>
-                      <th class="px-3 py-2 text-center">{{ t('Charts.GA') }}</th>
-                      <th class="px-3 py-2 text-center">{{ t('Charts.GD') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.Pts') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.Pld') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.W') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.D') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.L') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.GF') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.GA') }}</th>
+                      <th class="px-2 md:px-3 py-2 text-center">{{ t('Charts.GD') }}</th>
                     </template>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="(team, index) in ranking.teams" :key="index" class="border-t">
-                    <td class="px-6 py-3 text-center font-bold text-lg">{{ index + 1 }}</td>
-                    <td class="px-6 py-3">
+                    <td class="px-2 md:px-6 py-3 text-center font-bold text-lg">{{ ranking.type === 'CP' ? team.t_clt_cp || (index + 1) : team.t_clt || '' }}</td>
+                    <td class="px-2 md:px-6 py-3">
                       <div class="flex items-center">
                         <img v-if="showFlags && team.t_logo" :src="getTeamLogo(team.t_logo)" class="h-6 w-6 mr-3" alt="" />
                         <TeamName
@@ -179,14 +179,14 @@
                       </div>
                     </td>
                     <template v-if="ranking.type !== 'CP'">
-                      <td class="px-3 py-2 text-center font-bold">{{ team.pts || 0 }}</td>
-                      <td class="px-3 py-2 text-center">{{ team.pld || 0 }}</td>
-                      <td class="px-3 py-2 text-center">{{ team.w || 0 }}</td>
-                      <td class="px-3 py-2 text-center">{{ team.d || 0 }}</td>
-                      <td class="px-3 py-2 text-center">{{ team.l || 0 }}</td>
-                      <td class="px-3 py-2 text-center">{{ team.gf || 0 }}</td>
-                      <td class="px-3 py-2 text-center">{{ team.ga || 0 }}</td>
-                      <td class="px-3 py-2 text-center">{{ team.gd || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center font-bold">{{ team.t_pts || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center">{{ team.t_pld || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center">{{ team.t_won || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center">{{ team.t_draw || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center">{{ team.t_lost || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center">{{ team.t_plus || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center">{{ team.t_minus || 0 }}</td>
+                      <td class="px-2 md:px-3 py-2 text-center">{{ team.t_diff || 0 }}</td>
                     </template>
                   </tr>
                 </tbody>
