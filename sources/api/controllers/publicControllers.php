@@ -390,34 +390,63 @@ function PostRatingController($route, $params)
 
 function GetTeamStatsController($route, $params)
 {
-  $team_id = (int) $route[1] ?? return_405();
-  $force = $route[2] ?? false;
-  $array = ($force !== 'force') ? json_cache_read('team_stats', $team_id, 120) : false;
-  if ($array) {
-    return_200($array);
-  }
+    $team_id = (int) $route[1] ?? return_405();
+    $event_id = (int) $route[2] ?? return_405();
+    $force = $route[3] ?? false;
 
-  $myBdd = new MyBdd();
-  $sql = "SELECT l.Matric AS licence, l.Nom AS name, l.Prenom AS firstname, 
+    $cache_key = "team_stats_{$team_id}_{$event_id}";
+    $array = ($force !== 'force') ? json_cache_read($cache_key, false, 120) : false;
+    if ($array) {
+        return_200($array);
+    }
+
+    $myBdd = new MyBdd();
+
+    $base_sql = "
+        SELECT 
+            l.Matric AS licence, l.Nom AS name, l.Prenom AS firstname, 
             l.Sexe AS gender, j.Numero AS number, j.Capitaine AS captain,
-            SUM(IF(md.Id_evt_match = 'B', 1, 0)) goals,
-            SUM(IF(md.Id_evt_match = 'V', 1, 0)) green_cards,
-            SUM(IF(md.Id_evt_match = 'J', 1, 0)) yellow_cards,
-            SUM(IF(md.Id_evt_match = 'R', 1, 0)) red_cards,
-            SUM(IF(md.Id_evt_match = 'T', 1, 0)) shots,
-            SUM(IF(md.Id_evt_match = 'A', 1, 0)) saves
+            CASE WHEN j.Capitaine = 'E' THEN 0 ELSE SUM(IF(md.Id_evt_match = 'B', 1, 0)) END AS goals,
+            SUM(IF(md.Id_evt_match = 'V', 1, 0)) AS green_cards,
+            CASE WHEN j.Capitaine = 'E' THEN 0 ELSE SUM(IF(md.Id_evt_match = 'J', 1, 0)) END AS yellow_cards,
+            SUM(IF(md.Id_evt_match = 'R', 1, 0)) AS red_cards,
+            SUM(IF(md.Id_evt_match = 'D', 1, 0)) AS final_red_cards
         FROM kp_competition_equipe_joueur j
         JOIN kp_licence l ON (j.Matric = l.Matric)
-        LEFT JOIN kp_match_detail md ON (l.Matric = md.Competiteur AND md.Equipe_A_B != 'E')
-        WHERE j.Id_equipe = ?
-        GROUP BY l.Matric, l.Nom, l.Prenom, l.Sexe, j.Numero, j.Capitaine
-        ORDER BY goals DESC, l.Nom ASC";
+    ";
 
-  $stmt = $myBdd->pdo->prepare($sql);
-  $stmt->execute([$team_id]);
-  $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($event_id < 3000) {
+        $sql = $base_sql . " 
+            LEFT JOIN (
+                kp_match_detail md 
+                JOIN kp_match m ON md.Id_match = m.Id
+                JOIN kp_evenement_journee ej ON m.Id_journee = ej.Id_journee AND ej.Id_evenement = ?
+            ) ON l.Matric = md.Competiteur
+            WHERE j.Id_equipe = ? 
+              AND (j.Capitaine IS NULL OR j.Capitaine NOT IN ('A', 'X'))
+            GROUP BY l.Matric, l.Nom, l.Prenom, l.Sexe, j.Numero, j.Capitaine
+            ORDER BY CASE WHEN j.Capitaine = 'E' THEN 1 ELSE 0 END, j.Numero ASC
+        ";
+        $stmt = $myBdd->pdo->prepare($sql);
+        $stmt->execute([$event_id, $team_id]);
+    } else {
+        $sql = $base_sql . " 
+            LEFT JOIN (
+                kp_match_detail md 
+                JOIN kp_match m ON md.Id_match = m.Id AND m.Id_journee = ?
+            ) ON l.Matric = md.Competiteur
+            WHERE j.Id_equipe = ? 
+              AND (j.Capitaine IS NULL OR j.Capitaine NOT IN ('A', 'X'))
+            GROUP BY l.Matric, l.Nom, l.Prenom, l.Sexe, j.Numero, j.Capitaine
+            ORDER BY CASE WHEN j.Capitaine = 'E' THEN 1 ELSE 0 END, j.Numero ASC
+        ";
+        $stmt = $myBdd->pdo->prepare($sql);
+        $stmt->execute([$event_id, $team_id]);
+    }
 
-  json_cache_write('team_stats', $team_id, $array);
+    $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  return_200($array);
+    json_cache_write($cache_key, false, $array);
+
+    return_200($array);
 }
