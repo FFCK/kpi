@@ -12,7 +12,7 @@ import { useI18n } from 'vue-i18n'
 const preferenceStore = usePreferenceStore()
 const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
-const baseUrl = process.env.BASE_URL
+const baseUrl = runtimeConfig.public.baseUrl
 
 // SEO Meta Tags
 useSeoMeta({
