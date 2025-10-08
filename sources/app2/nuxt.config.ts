@@ -29,6 +29,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
+      baseURL,
       apiBaseUrl,
       backendBaseUrl
     }
