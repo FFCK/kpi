@@ -203,5 +203,16 @@
     "BackToGame": "Back to game",
     "GameReport": "Game report",
     "Game": "Game"
+  },
+  "Stats": {
+    "BackToTeam": "Back to team",
+    "Title": "Team Statistics",
+    "Loading": "Loading statistics...",
+    "Error": "Error while fetching statistics",
+    "NoEventSelected": "No event selected",
+    "NoStats": "No statistics available for this team.",
+    "Player": "Player",
+    "Goals": "Goals",
+    "Coach": "Coach"
   }
 }

@@ -203,5 +203,16 @@
     "BackToGame": "Retour au match",
     "GameReport": "Feuille de marque",
     "Game": "Match"
+  },
+  "Stats": {
+    "BackToTeam": "Retour à l'équipe",
+    "Title": "Statistiques de l'équipe",
+    "Loading": "Chargement des statistiques...",
+    "Error": "Erreur lors de la récupération des statistiques",
+    "NoEventSelected": "Aucun événement sélectionné",
+    "NoStats": "Aucune statistique disponible pour cette équipe.",
+    "Player": "Joueur",
+    "Goals": "Buts",
+    "Coach": "Coach"
   }
 }
