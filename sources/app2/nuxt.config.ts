@@ -1,16 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-const baseURL = process.env.BASE_URL ?? '/app2'
+const baseUrl = process.env.BASE_URL ?? '/app2'
 const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.local/api'
 const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.local'
 
 // Helper pour construire les chemins PWA
-const pwaPath = (path: string) => baseURL ? `${baseURL}/${path}` : `/${path}`
-const pwaScope = baseURL ? `${baseURL}/` : '/'
+const pwaPath = (path: string) => baseUrl ? `${baseUrl}/${path}` : `/${path}`
+const pwaScope = baseUrl ? `${baseUrl}/` : '/'
 
 export default defineNuxtConfig({
   app: {
-    baseURL,
+    baseUrl,
     head: {
       meta: [
         { name: 'theme-color', content: '#1f2937' },
@@ -29,7 +29,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseURL,
+      baseUrl,
       apiBaseUrl,
       backendBaseUrl
     }
@@ -79,14 +79,14 @@ export default defineNuxtConfig({
       ]
     },
     workbox: {
-      navigateFallback: baseURL ? `${baseURL}/index.html` : '/index.html',
+      navigateFallback: baseUrl ? `${baseUrl}/index.html` : '/index.html',
       cleanupOutdatedCaches: true,
       globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
       globDirectory: '.output/public',
       navigateFallbackDenylist: [/^\/api\//],
       manifestTransforms: [
         (manifestEntries) => {
-          // Filter out empty URLs and fix baseURL
+          // Filter out empty URLs and fix baseUrl
           const manifest = manifestEntries.map(entry => {
             if (entry.url === '' || entry.url === '/') {
               return { ...entry, url: '/index.html' }

@@ -164,7 +164,9 @@
   },
   "Update": {
     "Message": "Une mise à jour est disponible",
-    "Button": "Appliquer maintenant !"
+    "Description": "Une nouvelle version de l'application est prête.",
+    "Button": "Appliquer maintenant !",
+    "Later": "Plus tard"
   },
   "Scrutineering": {
     "ChangeEvent": "Vous n'avez pas les droits suffisants pour cet événement ! ",

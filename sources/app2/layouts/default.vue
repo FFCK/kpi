@@ -8,5 +8,8 @@
 
     <AppFooter />
     <AppInstallPrompt />
+    <ClientOnly>
+      <UpdatePrompt />
+    </ClientOnly>
   </div>
 </template>

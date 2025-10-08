@@ -12,7 +12,8 @@ import { useI18n } from 'vue-i18n'
 const preferenceStore = usePreferenceStore()
 const { locale, t } = useI18n()
 const runtimeConfig = useRuntimeConfig()
-const baseUrl = runtimeConfig.public.baseUrl
+const baseUrl = runtimeConfig.public.baseUrl || '/app2'
+const backendBaseUrl = runtimeConfig.public.backendBaseUrl
 
 // SEO Meta Tags
 useSeoMeta({
@@ -21,7 +22,7 @@ useSeoMeta({
   ogTitle: 'KPI Application - Kayak Polo Information',
   ogDescription: 'Live scores, rankings, and statistics for kayak polo competitions',
   ogImage: `${baseUrl}/img/logo_kp.png`,
-  ogUrl: baseUrl,
+  ogUrl: backendBaseUrl,
   ogType: 'website',
   twitterCard: 'summary',
   twitterTitle: 'KPI Application - Kayak Polo Information',
