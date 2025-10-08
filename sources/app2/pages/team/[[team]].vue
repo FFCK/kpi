@@ -39,14 +39,19 @@
     <div v-else>
       <!-- Team Name and Logo -->
       <div class="px-4 py-1 bg-gray-50 border-b">
-        <div class="flex items-center gap-3">
-          <img
-            v-if="selectedTeamLogo"
-            class="h-12 w-12"
-            :src="getTeamLogo(selectedTeamLogo)"
-            alt="Logo"
-          />
-          <h2 class="text-xl font-bold text-gray-800">{{ selectedTeam }}</h2>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img
+              v-if="selectedTeamLogo"
+              class="h-12 w-12"
+              :src="getTeamLogo(selectedTeamLogo)"
+              alt="Logo"
+            />
+            <h2 class="text-xl font-bold text-gray-800">{{ selectedTeam }}</h2>
+          </div>
+          <NuxtLink :to="`/stats/${teamNameToId.get(selectedTeam)}`" class="px-3 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700" v-if="teamNameToId.get(selectedTeam)">
+            Statistiques
+          </NuxtLink>
         </div>
       </div>
 

@@ -10,6 +10,7 @@ function routing($path)
       'event' => ['GET', 'GetEventController'],
       'games' => ['GET', 'GetGamesController'],
       'charts' => ['GET', 'GetChartsController'],
+      'team-stats' => ['GET', 'GetTeamStatsController'],
       'stars' => ['GET', 'GetStarsController'],
       'rating' => ['POST', 'PostRatingController']
     ],
