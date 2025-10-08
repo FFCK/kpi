@@ -164,7 +164,9 @@
   },
   "Update": {
     "Message": "An update is available",
-    "Button": "Update now!"
+    "Description": "A new version of the app is ready.",
+    "Button": "Update now!",
+    "Later": "Later"
   },
   "Scrutineering": {
     "ChangeEvent": "You don't have sufficient rights for this event! ",

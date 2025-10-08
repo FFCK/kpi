@@ -4,7 +4,16 @@
       <NuxtLink to="/" class="flex items-center space-x-2">
         <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" />
         <span class="font-bold text-lg">KPI App</span>
-        <span class="ml-2 text-green-400"><UIcon name="i-heroicons-wifi" /></span>
+        <ClientOnly>
+          <span :class="isOnline ? 'ml-2 text-green-400' : 'ml-2 text-red-500'">
+            <UIcon name="i-heroicons-wifi" />
+          </span>
+          <template #fallback>
+            <span class="ml-2 text-green-400">
+              <UIcon name="i-heroicons-wifi" />
+            </span>
+          </template>
+        </ClientOnly>
       </NuxtLink>
       <nav class="hidden md:flex space-x-4">
         <NuxtLink to="/" :class="isActive('/') ? 'text-green-400 font-bold' : 'hover:text-green-400'" class="flex items-center space-x-1">
@@ -90,11 +99,13 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore'
+import { usePwa } from '~/composables/usePwa'
 
 const showMenu = ref(false)
 const { t } = useI18n()
 const route = useRoute()
 const preferenceStore = usePreferenceStore()
+const { isOnline } = usePwa()
 
 // Check if user is authenticated
 const isAuthenticated = computed(() => {
