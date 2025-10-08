@@ -387,3 +387,37 @@ function PostRatingController($route, $params)
 
   return_200(true);
 }
+
+function GetTeamStatsController($route, $params)
+{
+  $team_id = (int) $route[1] ?? return_405();
+  $force = $route[2] ?? false;
+  $array = ($force !== 'force') ? json_cache_read('team_stats', $team_id, 120) : false;
+  if ($array) {
+    return_200($array);
+  }
+
+  $myBdd = new MyBdd();
+  $sql = "SELECT l.Matric AS licence, l.Nom AS name, l.Prenom AS firstname, 
+            l.Sexe AS gender, j.Numero AS number, j.Capitaine AS captain,
+            SUM(IF(md.Id_evt_match = 'B', 1, 0)) goals,
+            SUM(IF(md.Id_evt_match = 'V', 1, 0)) green_cards,
+            SUM(IF(md.Id_evt_match = 'J', 1, 0)) yellow_cards,
+            SUM(IF(md.Id_evt_match = 'R', 1, 0)) red_cards,
+            SUM(IF(md.Id_evt_match = 'T', 1, 0)) shots,
+            SUM(IF(md.Id_evt_match = 'A', 1, 0)) saves
+        FROM kp_competition_equipe_joueur j
+        JOIN kp_licence l ON (j.Matric = l.Matric)
+        LEFT JOIN kp_match_detail md ON (l.Matric = md.Competiteur AND md.Equipe_A_B != 'E')
+        WHERE j.Id_equipe = ?
+        GROUP BY l.Matric, l.Nom, l.Prenom, l.Sexe, j.Numero, j.Capitaine
+        ORDER BY goals DESC, l.Nom ASC";
+
+  $stmt = $myBdd->pdo->prepare($sql);
+  $stmt->execute([$team_id]);
+  $array = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  json_cache_write('team_stats', $team_id, $array);
+
+  return_200($array);
+}
