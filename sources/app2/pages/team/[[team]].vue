@@ -39,19 +39,14 @@
     <div v-else>
       <!-- Team Name and Logo -->
       <div class="px-4 py-1 bg-gray-50 border-b">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <img
-              v-if="selectedTeamLogo"
-              class="h-12 w-12"
-              :src="getTeamLogo(selectedTeamLogo)"
-              alt="Logo"
-            />
-            <h2 class="text-xl font-bold text-gray-800">{{ selectedTeam }}</h2>
-          </div>
-          <NuxtLink :to="`/stats/${teamNameToId.get(selectedTeam)}`" class="px-3 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700" v-if="teamNameToId.get(selectedTeam)">
-            Statistiques
-          </NuxtLink>
+        <div class="flex items-center gap-3">
+          <img
+            v-if="selectedTeamLogo"
+            class="h-12 w-12"
+            :src="getTeamLogo(selectedTeamLogo)"
+            alt="Logo"
+          />
+          <h2 class="text-xl font-bold text-gray-800">{{ selectedTeam }}</h2>
         </div>
       </div>
 
@@ -202,6 +197,52 @@
         </div>
       </div>
 
+      <!-- Team Statistics -->
+      <div v-if="teamStats && teamStats.length > 0" class="mb-6 flex justify-center">
+        <div class="w-full max-w-3xl px-2">
+          <h3 class="px-2 text-xl font-semibold text-gray-700 mb-3">{{ t('Stats.Title') }}</h3>
+          <div class="overflow-x-auto bg-white rounded-lg shadow-sm border">
+            <table class="w-full">
+              <thead class="bg-gray-800 text-white">
+                <tr>
+                  <th class="py-2 px-3 border-b text-left">{{ t('Stats.Player') }}</th>
+                  <th class="py-2 px-2 border-b text-center">{{ t('Stats.Goals') }}</th>
+                  <th class="py-2 px-2 border-b text-center">
+                    <div class="inline-block bg-green-500 w-6 h-8 transform -rotate-12 rounded-sm"></div>
+                  </th>
+                  <th class="py-2 px-2 border-b text-center">
+                    <div class="inline-block bg-yellow-400 w-6 h-8 transform -rotate-12 rounded-sm"></div>
+                  </th>
+                  <th class="py-2 px-2 border-b text-center">
+                    <div class="inline-block bg-red-500 w-6 h-8 transform -rotate-12 rounded-sm"></div>
+                  </th>
+                  <th class="py-2 px-2 border-b text-center">
+                    <div class="flex items-center justify-center bg-red-500 w-6 h-8 transform -rotate-12 rounded-sm text-white font-bold text-xs">E</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="player in teamStats" :key="player.licence" class="hover:bg-gray-100 border-b">
+                  <td class="py-2 px-3">
+                    <div class="font-medium flex items-center">
+                      <span v-if="player.captain !== 'E'" class="text-sm text-gray-500 mr-2">#{{ player.number }}</span>
+                      <span>{{ player.firstname }} {{ player.name }}</span>
+                      <span v-if="player.captain === 'C'" class="ml-2 bg-black text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-sm">C</span>
+                      <span v-if="player.captain === 'E'" class="ml-2 text-xs text-gray-500">({{ t('Stats.Coach') }})</span>
+                    </div>
+                  </td>
+                  <td class="py-2 px-2 text-center">{{ player.goals > 0 ? player.goals : '' }}</td>
+                  <td class="py-2 px-2 text-center">{{ player.green_cards > 0 ? player.green_cards : '' }}</td>
+                  <td class="py-2 px-2 text-center">{{ player.captain !== 'E' && player.yellow_cards > 0 ? player.yellow_cards : '' }}</td>
+                  <td class="py-2 px-2 text-center">{{ player.red_cards > 0 ? player.red_cards : '' }}</td>
+                  <td class="py-2 px-2 text-center">{{ player.exclusions > 0 ? player.exclusions : '' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- No data message -->
       <div v-if="upcomingMatches.length === 0 && finishedMatches.length === 0 && tournamentRounds.length === 0 && finalRankings.length === 0" class="text-center text-gray-500 py-8 px-4">
         {{ t('Team.NoData') }}
@@ -222,6 +263,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useGames } from '~/composables/useGames'
 import { useCharts } from '~/composables/useCharts'
 import { usePreferenceStore } from '~/stores/preferenceStore'
+import { useApi } from '~/composables/useApi'
 import GameList from '~/components/GameList.vue'
 import TeamName from '~/components/TeamName.vue'
 
@@ -249,9 +291,11 @@ const selectedTeamModel = ref('')
 const showRefreshButton = ref(false)
 const visibleButton = ref(true)
 const isLoading = ref(false)
+const stats = ref(null)
 
 const runtimeConfig = useRuntimeConfig()
 const baseUrl = runtimeConfig.public.backendBaseUrl
+const { getApi } = useApi()
 
 // Page-specific SEO (will be updated when team is selected)
 const pageTitle = computed(() =>
@@ -273,6 +317,53 @@ useSeoMeta({
 // Scroll to top functionality
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// Filter and sort team statistics
+const teamStats = computed(() => {
+  if (!stats.value) return []
+
+  return stats.value
+    // Exclude non-players (A = referees, X = inactive)
+    .filter(player => player.captain !== 'A' && player.captain !== 'X')
+    // Sort: players first by number, then coaches by number
+    .sort((a, b) => {
+      const aIsCoach = a.captain === 'E'
+      const bIsCoach = b.captain === 'E'
+
+      // If one is coach and other is player, player comes first
+      if (aIsCoach && !bIsCoach) return 1
+      if (!aIsCoach && bIsCoach) return -1
+
+      // Both same type, sort by number
+      return (a.number || 0) - (b.number || 0)
+    })
+})
+
+// Fetch team statistics
+const fetchStats = async (teamId) => {
+  if (!teamId) {
+    stats.value = null
+    return
+  }
+
+  try {
+    const eventId = preferenceStore.preferences.lastEvent?.id
+    if (!eventId) {
+      stats.value = null
+      return
+    }
+
+    const response = await getApi(`/team-stats/${teamId}/${eventId}`)
+    if (response.ok) {
+      stats.value = await response.json()
+    } else {
+      stats.value = null
+    }
+  } catch (e) {
+    console.error('Error fetching stats:', e)
+    stats.value = null
+  }
 }
 
 // Create team ID to name mapping
@@ -398,13 +489,21 @@ watch(() => route.params.team, async (newTeam) => {
 
     // Check if the parameter is a team ID (numeric) or team name
     let teamName = decodedParam
+    let teamId = decodedParam
     if (/^\d+$/.test(decodedParam)) {
       // It's an ID, convert to name
       teamName = teamIdToName.value.get(decodedParam) || decodedParam
+    } else {
+      // It's a name, try to get the ID
+      teamId = teamNameToId.value.get(teamName)
     }
 
     selectedTeam.value = teamName
     selectedTeamModel.value = teamName
+
+    // Fetch stats for the team
+    await fetchStats(teamId)
+
     // Save to preferences (client-side only)
     if (import.meta.client) {
       await preferenceStore.putItem('last_team', teamName)
