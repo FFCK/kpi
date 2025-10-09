@@ -181,7 +181,7 @@ class GestionStructure extends MyPageSecure
 
 			if ($libelleEquipe2 != '') {
 				$sql = "INSERT INTO kp_equipe (Code_club, Libelle) 
-					VALUES ('" . $codeClub . "', '" . $libelleEquipe2 . "')";
+					VALUES (?, ?)";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeClub, $libelleEquipe2));
 				$selectValue = $myBdd->pdo->lastInsertId();
