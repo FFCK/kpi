@@ -678,7 +678,7 @@ class MyBdd
 
 		$matric =  $arrayToken[0];
 		$livret = $arrayToken[7];
-		$niveau = substr($livret, -1);
+		$niveau = '';
 		$saisonJuge = $this->m_saisonPCE;
 
 		$regional = 'N';
@@ -686,49 +686,94 @@ class MyBdd
 		$national = 'N';
 		$international = 'N';
 		$Arb = '';
-		if ($niveau != 'A' && $niveau != 'B' && $niveau != 'C') {
-			$niveau = '';
-		}
-		if (strlen($arrayToken[3]) > 0) {
-			$regional = substr($arrayToken[3], 0, 1);
-			if ($regional == 'O') {
-				$Arb = "Reg";
+
+		// Nouveau format livret : YYYY-KAP-...
+		if (preg_match('/^(\d{4})-KAP-(.+)$/', $livret, $matches)) {
+			$saisonJuge = $matches[1];
+			$parts = explode('-', $matches[2]);
+
+			if ($parts[0] === 'A') {
+				// Arbitre
+				if (isset($parts[1])) {
+					$levelPrefix = substr($parts[1], 0, 3);
+					if ($levelPrefix === 'REG') {
+						$Arb = 'Reg';
+						$regional = 'O';
+						if (isset($parts[2]) && $parts[2] === 'S') {
+							$niveau = 'S';
+						}
+					} elseif ($levelPrefix === 'NAT') {
+						$Arb = 'Nat';
+						$national = 'O';
+						// Déterminer le niveau A, B ou C
+						if (strlen($parts[1]) === 4) {
+							$niveau = substr($parts[1], 3, 1); // NATA, NATB, NATC
+						} elseif (isset($parts[2]) && $parts[2] === 'S') {
+							$niveau = 'S';
+						}
+					} elseif ($levelPrefix === 'INT') {
+						$Arb = 'Int';
+						$international = 'O';
+						$niveau = '';
+					}
+				}
+			} elseif ($parts[0] === 'OTM') {
+				// OTM
+				$Arb = 'OTM';
+				if (isset($parts[1]) && $parts[1] === 'S') {
+					$niveau = 'S';
+				}
+			} elseif ($parts[0] === 'JO') {
+				// Juge Observateur
+				$Arb = 'JO';
 			}
-		}
-		if (strrpos($livret, "JREG") !== false) {
-			$niveau = 'S';
-		}
-		if (strlen($arrayToken[4]) > 0) {
-			$interregional = substr($arrayToken[4], 0, 1);
-			if ($interregional == 'O') {
-				$Arb = "IR";
-			}
-		}
-		if (strlen($arrayToken[5]) > 0) {
-			$national = substr($arrayToken[5], 0, 1);
-			if ($national == 'O') {
-				$Arb = "Nat";
-			}
-		}
-		if (strrpos($livret, "JNAT") !== false) {
-			$niveau = 'S';
-		}
-		if (strlen($arrayToken[6]) > 0) {
-			$international = substr($arrayToken[6], 0, 1);
-			if ($international == 'O') {
-				$Arb = "Int";
-				// Pas de niveau pour les juges internationaux
+		} else {
+			// Traitement ancien format
+			$niveau = substr($livret, -1);
+			if ($niveau != 'A' && $niveau != 'B' && $niveau != 'C') {
 				$niveau = '';
 			}
-		}
-		if (strrpos($livret, "OTM") !== false) {
-			$Arb = "OTM";
-		}
-		if (strrpos($livret, "OTMS") !== false) {
-			$niveau = 'S';
-		}
-		if (strrpos($livret, "JO") !== false) {
-			$Arb = "JO";
+			if (strlen($arrayToken[3]) > 0) {
+				$regional = substr($arrayToken[3], 0, 1);
+				if ($regional == 'O') {
+					$Arb = "Reg";
+				}
+			}
+			if (strrpos($livret, "JREG") !== false) {
+				$niveau = 'S';
+			}
+			if (strlen($arrayToken[4]) > 0) {
+				$interregional = substr($arrayToken[4], 0, 1);
+				if ($interregional == 'O') {
+					$Arb = "IR";
+				}
+			}
+			if (strlen($arrayToken[5]) > 0) {
+				$national = substr($arrayToken[5], 0, 1);
+				if ($national == 'O') {
+					$Arb = "Nat";
+				}
+			}
+			if (strrpos($livret, "JNAT") !== false) {
+				$niveau = 'S';
+			}
+			if (strlen($arrayToken[6]) > 0) {
+				$international = substr($arrayToken[6], 0, 1);
+				if ($international == 'O') {
+					$Arb = "Int";
+					// Pas de niveau pour les juges internationaux
+					$niveau = '';
+				}
+			}
+			if (strrpos($livret, "OTM") !== false) {
+				$Arb = "OTM";
+			}
+			if (strrpos($livret, "OTMS") !== false) {
+				$niveau = 'S';
+			}
+			if (strrpos($livret, "JO") !== false) {
+				$Arb = "JO";
+			}
 		}
 
 		return array(
