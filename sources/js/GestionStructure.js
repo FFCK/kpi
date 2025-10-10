@@ -158,8 +158,15 @@ jq(document).ready(function() {
 			jq("#libelleEquipe2").val(data[2]);
 		}
 	});
-	
-	
+
+	// Convert libelleClub to uppercase on input and paste
+	jq("#libelleClub").on('input paste', function() {
+		var input = jq(this);
+		var start = this.selectionStart;
+		var end = this.selectionEnd;
+		input.val(input.val().toUpperCase());
+		this.setSelectionRange(start, end);
+	});
 
 });
 

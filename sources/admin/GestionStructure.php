@@ -177,13 +177,13 @@ class GestionStructure extends MyPageSecure
 				(Code, Libelle, Code_comite_dep, Coord, Postal, www, email) 
 				VALUES (?, ?, ?, ?, ?, ?, ?) ";
 			$result = $myBdd->pdo->prepare($sql);
-			$result->execute(array($codeClub, $libelleClub, $comiteDep, $coord2, $postal2, $www2, $email2));
+			$result->execute(array(strtoupper($codeClub), strtoupper($libelleClub), $comiteDep, $coord2, $postal2, $www2, $email2));
 
 			if ($libelleEquipe2 != '') {
 				$sql = "INSERT INTO kp_equipe (Code_club, Libelle) 
 					VALUES (?, ?)";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array($codeClub, $libelleEquipe2));
+				$result->execute(array(strtoupper($codeClub), $libelleEquipe2));
 				$selectValue = $myBdd->pdo->lastInsertId();
 
 				$myBdd->utyJournal('Ajout Equipe', '', '', null, null, null, $libelleEquipe2);
