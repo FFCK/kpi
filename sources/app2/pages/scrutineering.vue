@@ -86,7 +86,7 @@
                       :class="getEquipmentButtonClass(player.kayak_status)"
                       @click="updatePlayer(player.player_id, 'kayak_status', player.kayak_status)"
                     >
-                      <UIcon :name="getEquipmentIcon(player.kayak_status)" class="h-5 w-5" />
+                      <UIcon :name="getEquipmentIcon(player.kayak_status)" class="h-8 w-8" />
                     </button>
                   </td>
                   <td v-if="player.cap !== 'E'" class="px-1 py-2 text-center">
@@ -95,7 +95,7 @@
                       :class="getEquipmentButtonClass(player.vest_status)"
                       @click="updatePlayer(player.player_id, 'vest_status', player.vest_status)"
                     >
-                      <UIcon :name="getEquipmentIcon(player.vest_status)" class="h-5 w-5" />
+                      <UIcon :name="getEquipmentIcon(player.vest_status)" class="h-8 w-8" />
                     </button>
                   </td>
                   <td v-if="player.cap !== 'E'" class="px-1 py-2 text-center">
@@ -104,7 +104,7 @@
                       :class="getEquipmentButtonClass(player.helmet_status)"
                       @click="updatePlayer(player.player_id, 'helmet_status', player.helmet_status)"
                     >
-                      <UIcon :name="getEquipmentIcon(player.helmet_status)" class="h-5 w-5" />
+                      <UIcon :name="getEquipmentIcon(player.helmet_status)" class="h-8 w-8" />
                     </button>
                   </td>
                   <td v-if="player.cap !== 'E'" class="px-1 py-2 text-center">
@@ -113,7 +113,7 @@
                       :class="getPaddleButtonClass(player.paddle_count)"
                       @click="updatePlayer(player.player_id, 'paddle_count', player.paddle_count)"
                     >
-                      <b>{{ player.paddle_count || 0 }}</b>
+                      <b class="text-lg">{{ player.paddle_count || 0 }}</b>
                     </button>
                   </td>
                   <td v-if="player.cap !== 'E'" class="px-1 py-1 text-center">
@@ -140,16 +140,16 @@
               <i>{{ t('Scrutineering.Issues') }}:</i>
             </label>
             <div class="flex space-x-2">
-              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
-                <UIcon name="i-heroicons-exclamation-circle" class="h-4 w-4 mr-1" />
+              <UIcon name="i-heroicons-exclamation-circle-solid text-red-600" class="h-8 w-8" />
+              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded mr-8" disabled>
                 {{ t('Scrutineering.Cosmetic') }}
               </button>
-              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
-                <UIcon name="i-heroicons-exclamation-triangle" class="h-4 w-4 mr-1" />
+              <UIcon name="i-heroicons-exclamation-triangle-solid text-red-600" class="h-8 w-8" />
+              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded mr-8" disabled>
                 {{ t('Scrutineering.Safety') }}
               </button>
-              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded flex items-center" disabled>
-                <UIcon name="i-heroicons-shield-exclamation" class="h-4 w-4 mr-1" />
+              <UIcon name="i-heroicons-shield-exclamation-solid text-red-600" class="h-8 w-8" />
+              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded mr-8" disabled>
                 {{ t('Scrutineering.Technical') }}
               </button>
             </div>
@@ -291,18 +291,18 @@ onMounted(async () => {
 })
 
 const getEquipmentButtonClass = (status) => {
-  const baseClass = 'inline-flex items-center justify-center px-3 py-1 text-sm rounded'
-  if (status === 1) return `${baseClass} text-white bg-green-600 hover:bg-green-700`
-  if (status > 1) return `${baseClass} text-white bg-red-600 hover:bg-red-700`
-  return `${baseClass} text-gray-700 bg-gray-200 hover:bg-gray-300`
+  const baseClass = 'inline-flex items-center justify-center px-3 py-1 rounded'
+  if (status === 1) return `${baseClass} text-green-600 hover:text-green-700`
+  if (status > 1) return `${baseClass} text-red-600 hover:text-red-700`
+  return `${baseClass} text-gray-200 text:bg-gray-300`
 }
 
 const getEquipmentIcon = (status) => {
   if (status < 1) return 'i-heroicons-square-2-stack'
-  if (status === 1) return 'i-heroicons-check-badge'
-  if (status === 2) return 'i-heroicons-exclamation-circle'
-  if (status === 3) return 'i-heroicons-exclamation-triangle'
-  if (status === 4) return 'i-heroicons-shield-exclamation'
+  if (status === 1) return 'i-heroicons-check-circle-solid'
+  if (status === 2) return 'i-heroicons-exclamation-circle-solid'
+  if (status === 3) return 'i-heroicons-exclamation-triangle-solid'
+  if (status === 4) return 'i-heroicons-shield-exclamation-solid'
   return 'i-heroicons-square-2-stack'
 }
 
