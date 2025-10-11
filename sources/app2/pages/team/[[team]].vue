@@ -226,7 +226,7 @@
                   <td class="py-2 px-3">
                     <div class="font-medium flex items-center">
                       <span v-if="player.captain !== 'E'" class="text-sm text-gray-500 mr-2">#{{ player.number }}</span>
-                      <span>{{ player.firstname }} {{ player.name }}</span>
+                      <span class="text-xs md:text-sm lg:text-base ml-1">{{ player.firstname }} {{ player.name }}</span>
                       <span v-if="player.captain === 'C'" class="ml-2 bg-black text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-sm">C</span>
                       <span v-if="player.captain === 'E'" class="ml-2 text-xs text-gray-500">({{ t('Stats.Coach') }})</span>
                     </div>

@@ -68,15 +68,15 @@
               </thead>
               <tbody>
                 <tr v-for="player in players" :key="player.player_id" class="border-b hover:bg-gray-50">
-                  <td class="px-4 py-2">
-                    <span v-if="player.cap !== 'E'" class="inline-block px-2 py-1 text-xs font-bold text-white bg-gray-800 rounded mr-2">
+                  <td class="px-2 py-2">
+                    <span v-if="player.cap !== 'E'" class="inline-block px-2 py-1 text-xs font-bold text-white bg-gray-800 rounded">
                       {{ player.num }}
                     </span>
-                    <span v-if="player.cap === 'E'" class="inline-block px-2 py-1 text-xs font-bold text-white bg-gray-800 rounded mr-2">
+                    <span v-if="player.cap === 'E'" class="inline-block px-2 py-1 text-xs font-bold text-white bg-gray-800 rounded">
                       {{ t('Scrutineering.Coach') }}
                     </span>
-                    {{ player.last_name }} {{ player.first_name }}
-                    <span v-if="player.cap === 'C'" class="inline-block px-2 py-1 text-xs font-bold text-gray-900 bg-yellow-400 rounded ml-2">
+                    <span class="text-xs md:text-sm lg:text-base ml-1">{{ player.last_name }} {{ player.first_name }}</span>
+                    <span v-if="player.cap === 'C'" class="inline-block px-2 py-1 text-xs font-bold text-gray-900 bg-yellow-400 rounded ml-1">
                       C
                     </span>
                   </td>
