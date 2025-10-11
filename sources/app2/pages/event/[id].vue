@@ -13,16 +13,17 @@ import { navigateTo } from '#app'
 import { useApi } from '~/composables/useApi'
 import db from '~/utils/db'
 
-// Disable prerendering for this route since it only redirects
-defineRouteRules({
-  prerender: false
+// Disable prerendering and SSR for this route since it only redirects
+definePageMeta({
+  prerender: false,
+  ssr: false
 })
 
-const { t } = useI18n()
 const route = useRoute()
 const preferenceStore = usePreferenceStore()
 const eventStore = useEventStore()
 const { getApi } = useApi()
+const { t } = useI18n()
 
 // Function to fetch all events (both std and champ)
 const fetchAllEvents = async () => {

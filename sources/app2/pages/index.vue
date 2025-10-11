@@ -12,7 +12,7 @@
         <EventSelector />
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-5">
+      <div v-if="hasEventSelected" class="grid grid-cols-1 md:grid-cols-3 gap-4 my-5">
         <NuxtLink to="/games" class="border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white font-semibold rounded px-4 py-2 text-lg transition-colors text-center flex items-center justify-center gap-2">
           <UIcon name="i-heroicons-list-bullet" class="h-6 w-6" />
           <span>{{ t('nav.Games') }}</span>
@@ -37,7 +37,10 @@
 </template>
 
 <script setup>
+import { useEventGuard } from '~/composables/useEventGuard'
+
 const { t } = useI18n()
+const { hasEventSelected } = useEventGuard()
 
 // Page-specific SEO
 useSeoMeta({

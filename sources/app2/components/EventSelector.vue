@@ -1,5 +1,11 @@
 <template>
-  <div v-if="preferenceStore.preferences" class="mt-3">
+  <!-- Loading spinner for initial load -->
+  <div v-if="isInitialLoading" class="mt-3 text-center">
+    <UIcon name="i-heroicons-arrow-path" class="h-8 w-8 animate-spin text-blue-600 mx-auto" />
+    <p class="mt-2 text-gray-600">{{ t('Event.Loading') }}</p>
+  </div>
+
+  <div v-else-if="preferenceStore.preferences" class="mt-3">
     <!-- Display selected event -->
     <div v-if="preferenceStore.preferences.lastEvent && !showSelector" role="button" class="text-center" @click="loadEvents">
       <img
@@ -85,6 +91,7 @@ const showSelector = ref(false)
 const eventSelectedId = ref(null)
 const changeButton = ref(false)
 const eventMode = ref('std') // Default mode
+const isInitialLoading = ref(true) // Track initial loading from IndexedDB
 
 // Computed
 const events = computed(() => {
@@ -164,11 +171,18 @@ const cancelEvent = () => {
 }
 
 onMounted(async () => {
-  // Fetch initial preferences when the component is mounted
-  await preferenceStore.fetchItems()
-  // Set initial selected event ID if a preference exists
-  if (preferenceStore.preferences.lastEvent) {
-    eventSelectedId.value = preferenceStore.preferences.lastEvent.id
+  try {
+    // Fetch initial preferences when the component is mounted
+    await preferenceStore.fetchItems()
+    // Set initial selected event ID if a preference exists
+    if (preferenceStore.preferences.lastEvent) {
+      eventSelectedId.value = preferenceStore.preferences.lastEvent.id
+    }
+  } catch (error) {
+    console.error('Failed to load preferences:', error)
+  } finally {
+    // Hide loading spinner after initial load
+    isInitialLoading.value = false
   }
 })
 </script>

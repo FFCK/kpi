@@ -191,6 +191,11 @@ import { ref, onMounted } from 'vue'
 import { useScrutineering } from '~/composables/useScrutineering'
 import { useUser } from '~/composables/useUser'
 import { useStatus } from '~/composables/useStatus'
+
+// Protect this page - require event selection
+definePageMeta({
+  middleware: 'event-guard'
+})
 import { usePrefs } from '~/composables/usePrefs'
 import CommentModal from '~/components/CommentModal.vue'
 

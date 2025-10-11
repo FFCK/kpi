@@ -262,6 +262,11 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGames } from '~/composables/useGames'
 import { useCharts } from '~/composables/useCharts'
+
+// Protect this page - require event selection
+definePageMeta({
+  middleware: 'event-guard'
+})
 import { usePreferenceStore } from '~/stores/preferenceStore'
 import { useApi } from '~/composables/useApi'
 import GameList from '~/components/GameList.vue'

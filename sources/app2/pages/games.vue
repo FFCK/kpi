@@ -150,6 +150,11 @@ import { ref, computed, onMounted } from 'vue'
 import { useGames } from '~/composables/useGames'
 import GameList from '~/components/GameList.vue'
 
+// Protect this page - require event selection
+definePageMeta({
+  middleware: 'event-guard'
+})
+
 const { t, locale } = useI18n()
 const showFilters = ref(false)
 const teamSearchQuery = ref('')

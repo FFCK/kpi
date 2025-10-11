@@ -110,6 +110,11 @@ import { ref, computed, onMounted } from 'vue'
 import { useCharts } from '~/composables/useCharts'
 import Charts from '~/components/Charts.vue'
 
+// Protect this page - require event selection
+definePageMeta({
+  middleware: 'event-guard'
+})
+
 const { t } = useI18n()
 const showFilters = ref(false)
 const teamSearchQuery = ref('')
