@@ -171,9 +171,12 @@ const cancelEvent = () => {
 }
 
 onMounted(async () => {
+  const route = useRoute()
+
   try {
     // Fetch initial preferences when the component is mounted
     await preferenceStore.fetchItems()
+
     // Set initial selected event ID if a preference exists
     if (preferenceStore.preferences.lastEvent) {
       eventSelectedId.value = preferenceStore.preferences.lastEvent.id
@@ -183,6 +186,13 @@ onMounted(async () => {
   } finally {
     // Hide loading spinner after initial load
     isInitialLoading.value = false
+
+    // Check if there's a pending redirect from query parameter
+    if (preferenceStore.preferences.lastEvent && route.query.redirect) {
+      const targetUrl = String(route.query.redirect)
+      // Navigate to the stored URL, replacing the current history entry
+      await navigateTo(targetUrl, { replace: true })
+    }
   }
 })
 </script>

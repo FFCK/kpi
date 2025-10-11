@@ -6,7 +6,9 @@ export const usePreferenceStore = defineStore('preferenceStore', {
   state: () => ({
     preferences: {
       lastEvent: null
-    }
+    },
+    /** @type {string | null} Temporary property for pending redirects (not stored in IndexedDB) */
+    pendingRedirect: null
   }),
   actions: {
     async fetchItems() {

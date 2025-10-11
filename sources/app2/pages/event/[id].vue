@@ -1,7 +1,9 @@
 <template>
-  <div class="p-8 text-center text-gray-500">
-    <p>{{ t('Event.Selecting') }}</p>
-  </div>
+  <ClientOnly>
+    <div class="p-8 text-center text-gray-500">
+      <p>{{ t('Event.Selecting') }}</p>
+    </div>
+  </ClientOnly>
 </template>
 
 <script setup>

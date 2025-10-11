@@ -487,34 +487,61 @@ const teamExists = computed(() => {
   return false
 })
 
+// Helper to process team parameter from route
+const processTeamParam = async (teamParam) => {
+  if (!teamParam) return
+
+  const decodedParam = decodeURIComponent(teamParam)
+
+  // Check if the parameter is a team ID (numeric) or team name
+  let teamName = decodedParam
+  let teamId = decodedParam
+
+  if (/^\d+$/.test(decodedParam)) {
+    // It's an ID, convert to name
+    const mappedName = teamIdToName.value.get(decodedParam)
+    if (mappedName) {
+      teamName = mappedName
+    } else if (teamIdToName.value.size === 0) {
+      // Data not loaded yet, but still set the team temporarily
+      selectedTeam.value = decodedParam
+      selectedTeamModel.value = decodedParam
+      // Don't fetch stats yet, wait for name resolution
+      return
+    }
+  } else {
+    // It's a name, try to get the ID
+    teamId = teamNameToId.value.get(teamName)
+  }
+
+  selectedTeam.value = teamName
+  selectedTeamModel.value = teamName
+
+  // Fetch stats for the team
+  await fetchStats(teamId)
+
+  // Save to preferences (client-side only)
+  if (import.meta.client) {
+    await preferenceStore.putItem('last_team', teamName)
+  }
+}
+
 // Watch for team parameter in URL
 watch(() => route.params.team, async (newTeam) => {
-  if (newTeam) {
-    const decodedParam = decodeURIComponent(newTeam)
+  await processTeamParam(newTeam)
+}, { immediate: true })
 
-    // Check if the parameter is a team ID (numeric) or team name
-    let teamName = decodedParam
-    let teamId = decodedParam
-    if (/^\d+$/.test(decodedParam)) {
-      // It's an ID, convert to name
-      teamName = teamIdToName.value.get(decodedParam) || decodedParam
-    } else {
-      // It's a name, try to get the ID
-      teamId = teamNameToId.value.get(teamName)
-    }
-
-    selectedTeam.value = teamName
-    selectedTeamModel.value = teamName
-
-    // Fetch stats for the team
-    await fetchStats(teamId)
-
-    // Save to preferences (client-side only)
-    if (import.meta.client) {
-      await preferenceStore.putItem('last_team', teamName)
+// Watch for teamIdToName changes (when data loads) to re-process team param if needed
+watch(() => teamIdToName.value.size, async (newSize, oldSize) => {
+  // Only trigger when data first becomes available
+  if (oldSize === 0 && newSize > 0 && route.params.team) {
+    const decodedParam = decodeURIComponent(route.params.team)
+    // Only re-process if it's a numeric ID and hasn't been resolved yet
+    if (/^\d+$/.test(decodedParam) && selectedTeam.value === decodedParam) {
+      await processTeamParam(route.params.team)
     }
   }
-}, { immediate: true })
+})
 
 // Handle team selection change
 const onTeamChange = () => {
