@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-const baseUrl = process.env.BASE_URL ?? '/app2'
+const baseUrl = process.env.BASE_URL ?? ''
 const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.local/api'
 const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.local'
 
@@ -10,7 +10,7 @@ const pwaScope = baseUrl ? `${baseUrl}/` : '/'
 
 export default defineNuxtConfig({
   app: {
-    baseUrl,
+    baseURL: baseUrl,
     head: {
       meta: [
         { name: 'theme-color', content: '#1f2937' },
@@ -104,7 +104,7 @@ export default defineNuxtConfig({
       ]
     },
     devOptions: {
-      enabled: true,
+      enabled: false, // Disabled in dev to avoid caching issues
       type: 'module'
     }
   },

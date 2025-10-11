@@ -10,9 +10,9 @@ import { usePreferenceStore } from '~/stores/preferenceStore'
 import { useI18n } from 'vue-i18n'
 
 const preferenceStore = usePreferenceStore()
-const { locale, t } = useI18n()
+const { locale } = useI18n()
 const runtimeConfig = useRuntimeConfig()
-const baseUrl = runtimeConfig.public.baseUrl || '/app2'
+const baseUrl = runtimeConfig.public.baseUrl || ''
 const backendBaseUrl = runtimeConfig.public.backendBaseUrl
 
 // SEO Meta Tags
