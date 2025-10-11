@@ -139,17 +139,17 @@
             <label class="text-sm font-medium text-gray-700 mb-2 block">
               <i>{{ t('Scrutineering.Issues') }}:</i>
             </label>
-            <div class="flex space-x-2">
+            <div class="flex">
               <UIcon name="i-heroicons-exclamation-circle-solid text-red-600" class="h-8 w-8" />
-              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded mr-8" disabled>
+              <button class="px-1 py-1 text-sm text-red-600 font-bold mr-8" disabled>
                 {{ t('Scrutineering.Cosmetic') }}
               </button>
               <UIcon name="i-heroicons-exclamation-triangle-solid text-red-600" class="h-8 w-8" />
-              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded mr-8" disabled>
+              <button class="px-1 py-1 text-red-600 font-bold mr-8" disabled>
                 {{ t('Scrutineering.Safety') }}
               </button>
               <UIcon name="i-heroicons-shield-exclamation-solid text-red-600" class="h-8 w-8" />
-              <button class="px-3 py-1 text-sm text-white bg-red-600 rounded mr-8" disabled>
+              <button class="px-1 py-1 text-red-600 font-bold mr-8" disabled>
                 {{ t('Scrutineering.Technical') }}
               </button>
             </div>
@@ -291,19 +291,19 @@ onMounted(async () => {
 })
 
 const getEquipmentButtonClass = (status) => {
-  const baseClass = 'inline-flex items-center justify-center px-3 py-1 rounded'
+  const baseClass = 'inline-flex items-center justify-center px-2 py-1 rounded'
   if (status === 1) return `${baseClass} text-green-600 hover:text-green-700`
   if (status > 1) return `${baseClass} text-red-600 hover:text-red-700`
-  return `${baseClass} text-gray-200 text:bg-gray-300`
+  return `${baseClass} text-gray-400 text:bg-gray-500`
 }
 
 const getEquipmentIcon = (status) => {
-  if (status < 1) return 'i-heroicons-square-2-stack'
+  if (status < 1) return 'i-heroicons-clipboard'
   if (status === 1) return 'i-heroicons-check-circle-solid'
   if (status === 2) return 'i-heroicons-exclamation-circle-solid'
   if (status === 3) return 'i-heroicons-exclamation-triangle-solid'
   if (status === 4) return 'i-heroicons-shield-exclamation-solid'
-  return 'i-heroicons-square-2-stack'
+  return 'i-heroicons-clipboard'
 }
 
 const getPaddleButtonClass = (count) => {
