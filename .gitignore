@@ -8,23 +8,59 @@ sources/archives/
 nbproject/private/
 flyspray/flyspray.conf.php
 
-sources/wordpress/*.log
-sources/wordpress/wp-config.php
 sources/wordpress/wp-content/advanced-cache.php
-sources/wordpress/wp-content/backup-db/
-sources/wordpress/wp-content/backups/
 sources/wordpress/wp-content/blogs.dir/
-sources/wordpress/wp-content/cache/
-sources/wordpress/wp-content/upgrade/
-sources/wordpress/wp-content/uploads/
 sources/wordpress/wp-content/mu-plugins/
 sources/wordpress/wp-content/wp-cache-config.php
-sources/wordpress/wp-content/plugins/hello.php
 sources/wordpress/.htaccess
-sources/wordpress/license.txt
-sources/wordpress/readme.html
 sources/wordpress/sitemap.xml
 sources/wordpress/sitemap.xml.gz
+
+# ==========================================
+# WordPress Core (on ne versionne pas le core)
+# ==========================================
+sources/wordpress/wp-admin/
+sources/wordpress/wp-includes/
+sources/wordpress/license.txt
+sources/wordpress/readme.html
+sources/wordpress/readme.md
+
+# ==========================================
+# Fichiers de configuration sensibles
+# ==========================================
+sources/wordpress/wp-config*
+
+# ==========================================
+# Uploads & médias (dossier dynamique)
+# ==========================================
+sources/wordpress/wp-content/uploads/
+sources/wordpress/wp-content/upgrade/
+sources/wordpress/wp-content/cache/
+sources/wordpress/wp-content/backups/
+sources/wordpress/wp-content/ai1wm-backups/
+sources/wordpress/wp-content/backup-db/
+
+# ==========================================
+# Plugins
+# ==========================================
+# Ignore tous les plugins sauf ceux que tu développes
+sources/wordpress/wp-content/plugins/*
+# !wp-content/plugins/mon-plugin-personnel/
+
+# ==========================================
+# Thèmes
+# ==========================================
+# Ignore tous les thèmes sauf ceux que tu développes
+sources/wordpress/wp-content/themes/*
+# !wp-content/themes/mon-theme/
+
+# ==========================================
+# Divers
+# ==========================================
+sources/wordpress/*.log
+
+
+
 /docker/error.log
 /sources/commun/pce1.pce
 /sources/clubs.json

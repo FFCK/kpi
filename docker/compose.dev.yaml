@@ -16,6 +16,7 @@ services:
             - ../sources:/var/www/html
             - ./MyParams.php:/var/www/html/commun/MyParams.php
             - ./MyConfig.php:/var/www/html/commun/MyConfig.php
+            - ./config/opcache-dev.ini:/usr/local/etc/php/conf.d/opcache-dev.ini
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
         networks:
             - network_kpi
@@ -49,6 +50,7 @@ services:
             - ../sources:/var/www/html
             - ./MyParams.php:/var/www/html/commun/MyParams.php
             - ./MyConfig.php:/var/www/html/commun/MyConfig.php
+            - ./config/opcache-dev.ini:/usr/local/etc/php/conf.d/opcache-dev.ini
             - ${HOST_APACHE2_LOG_PATH_8}:/var/log/apache2/
         networks:
             - network_kpi
@@ -122,8 +124,6 @@ services:
             # 256 Mo
             UPLOAD_LIMIT: 262144000
             PMA_HOSTS: db,dbwp
-        # ports:
-        #     - 81${DOCKER_SUFFIXE_PORT}:80
         depends_on:
             - db
             - dbwp
@@ -136,15 +136,9 @@ services:
                 max-size: 10m
                 max-file: 3
         restart: unless-stopped
-        # volumes:
-        #     - ./config/config.dev.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.myadmin.rule=Host(`${MYADMIN_DOMAIN_NAME}`)"
-            # - "traefik.http.routers.myadmin.middlewares=redirect-slash,strip-myadmin-prefix"
-            # - "traefik.http.middlewares.strip-myadmin-prefix.stripprefix.prefixes=/myadmin"
-            # - "traefik.http.middlewares.redirect-slash.redirectregex.regex=^(https?://[^/]+/[^/]+)$"
-            # - "traefik.http.middlewares.redirect-slash.redirectregex.replacement=${1}/"
             - "traefik.http.routers.myadmin.middlewares=auth"
             - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
