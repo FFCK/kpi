@@ -12,8 +12,6 @@ services:
         user: ${USER_ID}:${GROUP_ID}
         volumes:
             - ../sources:/var/www/html
-            - ./MyParams.php:/var/www/html/commun/MyParams.php
-            - ./MyConfig.php:/var/www/html/commun/MyConfig.php
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
         networks:
             - network_kpi
