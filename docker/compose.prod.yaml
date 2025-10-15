@@ -29,6 +29,7 @@ services:
             - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`)"
             - "traefik.http.routers.kpi.entrypoints=websecure"
             - "traefik.http.routers.kpi.tls=true"
+            - "traefik.http.routers.kpi.tls.certresolver=myresolver"
     db:
         container_name: ${DB_CONTAINER_NAME}
         build:
@@ -74,13 +75,14 @@ services:
                 max-size: 10m
                 max-file: 3
         restart: unless-stopped
+
     myadmin:
         container_name: ${MYADMIN_CONTAINER_NAME}
-        image: phpmyadmin/phpmyadmin:latest
+        image: ${BASE_IMAGE_MYADMIN}
         environment:
             # 256 Mo
             UPLOAD_LIMIT: 262144000
-            PMA_HOSTS: db,dbwp
+            PMA_HOSTS: db,dbwp,dbmatomo
         depends_on:
             - db
             - dbwp
@@ -100,6 +102,7 @@ services:
             - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
             - "traefik.http.routers.myadmin.entrypoints=websecure"
             - "traefik.http.routers.myadmin.tls=true"
+            - "traefik.http.routers.myadmin.tls.certresolver=myresolver"
 
 networks:
     network_kpi:
