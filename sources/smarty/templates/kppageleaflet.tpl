@@ -73,39 +73,23 @@
             <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
         {/if}
         
-        {*{literal}
+        {literal}
+            <!-- Matomo -->
             <script>
-                window.fbAsyncInit = function() {
-                    FB.init({
-                        appId      : '693131394143366',
-                        xfbml      : true,
-                        version    : 'v2.3'
-                    });
-                };
-                (function(d, s, id){
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) {return;}
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/en_US/sdk.js";
-                    fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
+            var _paq = window._paq = window._paq || [];
+            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+                var u="https://matomo.kayak-polo.info/";
+                _paq.push(['setTrackerUrl', u+'matomo.php']);
+                _paq.push(['setSiteId', '1']);
+                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+            })();
             </script>
-            <!-- Piwik -->
-            <script type="text/javascript">
-                var _paq = _paq || [];
-                /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-                _paq.push(['trackPageView']);
-                _paq.push(['enableLinkTracking']);
-                (function() {
-                    var u="piwik/";
-                    _paq.push(['setTrackerUrl', u+'piwik.php']);
-                    _paq.push(['setSiteId', '1']);
-                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-                    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-                })();
-            </script>
-            <!-- End Piwik Code -->
-        {/literal}*}
+            <!-- End Matomo Code -->
+        {/literal}
     
     </body>
 </html>
