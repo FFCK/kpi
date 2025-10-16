@@ -2,33 +2,39 @@
 <div class="footer">
 {if $bPublic}
 	{literal}
-		<!-- Piwik -->
-			<script type="text/javascript">
-			var pkBaseURL = (("https:" == document.location.protocol) ? "https://www.poloweb.org/piwik/" : "http://www.poloweb.org/piwik/");
-			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-			</script><script type="text/javascript">
-			try {
-			var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-			piwikTracker.trackPageView();
-			piwikTracker.enableLinkTracking();
-			} catch( err ) {}
-			</script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=1" style="border:0" alt="" /></p></noscript>
-		<!-- End Piwik Tracking Code -->
+		<!-- Matomo -->
+		<script>
+		var _paq = window._paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="https://matomo.kayak-polo.info/";
+			_paq.push(['setTrackerUrl', u+'matomo.php']);
+			_paq.push(['setSiteId', '1']);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+		})();
+		</script>
+		<!-- End Matomo Code -->
 	{/literal}
 {else}
 	{literal}
-		<!-- Piwik -->
-			<script type="text/javascript">
-			var pkBaseURL = (("https:" == document.location.protocol) ? "https://www.poloweb.org/piwik/" : "http://www.poloweb.org/piwik/");
-			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-			</script><script type="text/javascript">
-			try {
-			var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 2);
-			piwikTracker.trackPageView();
-			piwikTracker.enableLinkTracking();
-			} catch( err ) {}
-			</script><noscript><p><img src="http://www.poloweb.org/piwik/piwik.php?idsite=2" style="border:0" alt="" /></p></noscript>
-		<!-- End Piwik Tracking Code -->
+		<!-- Matomo -->
+		<script>
+		var _paq = window._paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function() {
+			var u="https://matomo.kayak-polo.info/";
+			_paq.push(['setTrackerUrl', u+'matomo.php']);
+			_paq.push(['setSiteId', '2']);
+			var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+			g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+		})();
+		</script>
+		<!-- End Matomo Code -->
 	{/literal}
 {/if}
 </div>
