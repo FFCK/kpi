@@ -5,6 +5,7 @@ jQuery(document).ready(function() {
     var y = date.getFullYear();
 	jQuery('#calendar_fr').fullCalendar({
 		editable: false,
+		displayEventTime: false,
 //		events: [{
 //                title:"Tournoi International Seneffe - Charleroi (Seneffe - Charleroi-)",
 //                start:"2015-05-08",
@@ -44,6 +45,7 @@ jQuery(document).ready(function() {
 	});
 	jQuery('#calendar_en').fullCalendar({
 		editable: false,
+		displayEventTime: false,
 		events: "json-events.php",
 		monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 		monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],

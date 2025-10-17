@@ -42,8 +42,8 @@ while ($row = $result->fetch()) {
     //Si c'est un mode championnat, on dirige vers la journée demandée, sinon toute la compétition
     ($row['Code_typeclt'] == 'CHPT') ? $typ = '&J=' . $row['Id'] : $typ = '&typ=CP';
     //Si la compétition est passée, on dirige vers le classement, sinon les matchs
-    $ts = strtotime($row['Date_fin']) + 86400;
-    $datefin = date('Y-m-d', $ts);
+    $ts = strtotime($row['Date_fin']);
+    $datefin = date('Y-m-d', $ts) . 'T23:00:00';
 
     $Code_competition = $row['Code_competition'];
     $Group = $row['Code_ref'];
