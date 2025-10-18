@@ -79,38 +79,13 @@ services:
                 max-file: 3
         restart: unless-stopped
 
-    myadmin:
-        container_name: ${MYADMIN_CONTAINER_NAME}
-        image: ${BASE_IMAGE_MYADMIN}
-        environment:
-            # 512 Mo
-            UPLOAD_LIMIT: 525288000
-            PMA_HOSTS: db,dbwp,dbmatomo
-        depends_on:
-            - db
-            - dbwp
-        networks:
-            - network_kpi
-            - traefiknetwork
-        logging:
-            driver: "json-file"
-            options:
-                max-size: 10m
-                max-file: 3
-        restart: unless-stopped
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.myadmin.rule=Host(`${MYADMIN_DOMAIN_NAME}`)"
-            - "traefik.http.routers.myadmin.middlewares=auth"
-            - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
-            - "traefik.http.routers.myadmin.entrypoints=websecure"
-            - "traefik.http.routers.myadmin.tls=true"
-            - "traefik.http.routers.myadmin.tls.certresolver=myresolver"
-
 networks:
     network_kpi:
         external: true
         name: network_${APPLICATION_NAME}
+    pma_network:
+        name: pma_network
+        external: true
     traefiknetwork:
         name: traefiknetwork
         external: true
