@@ -87,6 +87,7 @@ services:
         #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
             - network_kpi
+            - pma_network
         logging:
             driver: "json-file"
             options:
@@ -111,38 +112,13 @@ services:
         #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
             - network_kpi
+            - pma_network
         logging:
             driver: "json-file"
             options:
                 max-size: 10m
                 max-file: 3
         restart: unless-stopped
-    myadmin:
-        container_name: ${MYADMIN_CONTAINER_NAME}
-        image: phpmyadmin/phpmyadmin:latest
-        environment:
-            # 256 Mo
-            UPLOAD_LIMIT: 262144000
-            PMA_HOSTS: db,dbwp
-        depends_on:
-            - db
-            - dbwp
-        networks:
-            - network_kpi
-            - traefiknetwork
-        logging:
-            driver: "json-file"
-            options:
-                max-size: 10m
-                max-file: 3
-        restart: unless-stopped
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.myadmin.rule=Host(`${MYADMIN_DOMAIN_NAME}`)"
-            - "traefik.http.routers.myadmin.middlewares=auth"
-            - "traefik.http.middlewares.auth.basicauth.users=${TRAEFIK_USERS}"
-            - "traefik.http.routers.myadmin.entrypoints=websecure"
-            - "traefik.http.routers.myadmin.tls=true"
     node_app2:
         container_name: kpi_node_app2
         build:
@@ -209,8 +185,11 @@ services:
 
 networks:
     network_kpi:
-        external: true
         name: network_${APPLICATION_NAME}
+        external: true
+    pma_network:
+        name: pma_network
+        external: true
     traefiknetwork:
         name: traefiknetwork
         external: true

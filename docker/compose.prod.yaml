@@ -47,6 +47,7 @@ services:
             MYSQL_DATABASE: ${DB_NAME}
         networks:
             - network_kpi
+            - pma_network
         logging:
             driver: "json-file"
             options:
@@ -69,6 +70,7 @@ services:
             MYSQL_DATABASE: ${DBWP_NAME}
         networks:
             - network_kpi
+            - pma_network
         logging:
             driver: "json-file"
             options:
@@ -80,8 +82,8 @@ services:
         container_name: ${MYADMIN_CONTAINER_NAME}
         image: ${BASE_IMAGE_MYADMIN}
         environment:
-            # 256 Mo
-            UPLOAD_LIMIT: 262144000
+            # 512 Mo
+            UPLOAD_LIMIT: 525288000
             PMA_HOSTS: db,dbwp,dbmatomo
         depends_on:
             - db
