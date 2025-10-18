@@ -27,10 +27,10 @@ services:
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`)"
-            - "traefik.http.routers.kpi.entrypoints=websecure"
-            - "traefik.http.routers.kpi.tls=true"
-            - "traefik.http.routers.kpi.tls.certresolver=myresolver"
+            - "traefik.http.routers.kpipreprod.rule=Host(`${KPI_DOMAIN_NAME}`)"
+            - "traefik.http.routers.kpipreprod.entrypoints=websecure"
+            - "traefik.http.routers.kpipreprod.tls=true"
+            - "traefik.http.routers.kpipreprod.tls.certresolver=myresolver"
     db_preprod:
         container_name: ${DB_CONTAINER_NAME}
         build:
