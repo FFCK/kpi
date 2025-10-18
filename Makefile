@@ -14,6 +14,7 @@ DOCKER_EXEC_NODE = docker exec -ti kpi_node_app2
 
 .PHONY: help init_env init_env_app2 \
 dev_up dev_down dev_restart dev_logs dev_status \
+preprod_up preprod_down preprod_restart preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_logs prod_status \
 run_dev run_build run_generate run_lint \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
@@ -78,6 +79,23 @@ dev_logs: ## Affiche les logs des containers de développement
 
 dev_status: ## Affiche le statut des containers de développement
 	$(DOCKER_COMPOSE) -f docker/compose.dev.yaml ps
+
+
+## DOCKER - PRÉ-PRODUCTION
+preprod_up: ## Lance les containers Docker en mode pré-production
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml up -d
+
+preprod_down: ## Arrête les containers Docker de pré-production
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml down
+
+preprod_restart: ## Redémarre les containers Docker de pré-production
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml restart
+
+preprod_logs: ## Affiche les logs des containers de pré-production
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml logs -f
+
+preprod_status: ## Affiche le statut des containers de pré-production
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml ps
 
 
 ## DOCKER - PRODUCTION
