@@ -1,0 +1,91 @@
+name: '${APPLICATION_NAME}'
+services:
+    kpi_preprod:
+        container_name: ${PHP_CONTAINER_NAME}
+        build:
+            context: ./config
+            dockerfile: Dockerfile.dev.web
+            args:
+                USER_ID: ${USER_ID}
+                GROUP_ID: ${GROUP_ID}
+                BASE_IMAGE_PHP: ${BASE_IMAGE_PHP}
+        user: ${USER_ID}:${GROUP_ID}
+        volumes:
+            - ../sources:/var/www/html
+            - ${HOST_WORDPRESS_PATH}:/var/www/html/wordpress
+            - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
+        networks:
+            - network_kpi
+            - traefiknetwork
+        depends_on:
+            - db_preprod
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`)"
+            - "traefik.http.routers.kpi.entrypoints=websecure"
+            - "traefik.http.routers.kpi.tls=true"
+            - "traefik.http.routers.kpi.tls.certresolver=myresolver"
+    db_preprod:
+        container_name: ${DB_CONTAINER_NAME}
+        build:
+            context: ./config
+            dockerfile: Dockerfile.db
+            args:
+                BASE_IMAGE_DB: ${BASE_IMAGE_DB}
+        command: mysqld --sql_mode=""
+        volumes:
+            - ${HOST_DB_PATH}:/var/lib/mysql/
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_NAME}
+        networks:
+            - network_kpi
+            - pma_network
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+    dbwp_preprod:
+        container_name: ${DBWP_CONTAINER_NAME}
+        build:
+            context: ./config
+            dockerfile: Dockerfile.db
+            args:
+                BASE_IMAGE_DB: ${BASE_IMAGE_DB}
+        volumes:
+            - ${HOST_DBWP_PATH}:/var/lib/mysql/
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DBWP_ROOT_PASSWORD}
+            MYSQL_USER: ${DBWP_USER}
+            MYSQL_PASSWORD: ${DBWP_PASSWORD}
+            MYSQL_DATABASE: ${DBWP_NAME}
+        networks:
+            - network_kpi
+            - pma_network
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+
+networks:
+    network_kpi:
+        external: true
+        name: network_${APPLICATION_NAME}
+    pma_network:
+        name: pma_network
+        external: true
+    traefiknetwork:
+        name: traefiknetwork
+        external: true
