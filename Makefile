@@ -12,14 +12,15 @@ DOCKER_EXEC_PHP8 = docker exec -ti kpi_php8
 DOCKER_EXEC_NODE = docker exec -ti kpi_node_app2
 .DEFAULT_GOAL = help
 
-.PHONY: help init_env init_env_app2 \
+.PHONY: help init init_env init_env_app2 init_networks \
 dev_up dev_down dev_restart dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_logs prod_status \
 run_dev run_build run_generate run_lint \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
 php_bash php8_bash node_bash db_bash \
-wordpress_backup wordpress_restore
+wordpress_backup wordpress_restore \
+networks_create networks_list networks_clean
 
 
 
@@ -40,6 +41,16 @@ help: ## Affiche cette aide
 
 
 ## INITIALISATION
+init: init_env init_env_app2 init_networks ## Initialisation complète du projet (env, réseaux)
+	@echo ""
+	@echo "✅ Initialisation complète terminée!"
+	@echo ""
+	@echo "Prochaines étapes:"
+	@echo "  1. Configurez les variables dans docker/.env"
+	@echo "  2. Lancez l'environnement: make dev_up"
+	@echo "  3. Installez les dépendances: make npm_install_app2"
+	@echo "  4. Lancez Nuxt: make run_dev"
+
 init_env: ## Initialise le fichier docker/.env depuis docker/.env.dist
 	@if [ ! -f docker/.env ]; then \
 		cp docker/.env.dist docker/.env; \
@@ -62,6 +73,8 @@ init_env_app2: ## Initialise les fichiers .env.development et .env.production po
 	else \
 		echo "⚠️  Le fichier .env.production existe déjà pour app2"; \
 	fi
+
+init_networks: networks_create ## Alias pour networks_create (crée les réseaux Docker)
 
 
 ## DOCKER - DÉVELOPPEMENT
@@ -161,6 +174,31 @@ node_bash: ## Ouvre un shell bash dans le container Node (app2)
 
 db_bash: ## Ouvre un shell dans le container MySQL
 	docker exec -ti kpi_db sh
+
+
+## RÉSEAUX DOCKER
+networks_create: ## Crée les réseaux Docker nécessaires (network_kpi, pma_network, traefiknetwork)
+	@echo "Création des réseaux Docker..."
+	@docker network inspect network_kpi >/dev/null 2>&1 || \
+		(docker network create network_kpi && echo "✅ Réseau network_kpi créé") || \
+		echo "⚠️  Le réseau network_kpi existe déjà"
+	@docker network inspect pma_network >/dev/null 2>&1 || \
+		(docker network create pma_network && echo "✅ Réseau pma_network créé") || \
+		echo "⚠️  Le réseau pma_network existe déjà"
+	@docker network inspect traefiknetwork >/dev/null 2>&1 || \
+		(docker network create traefiknetwork && echo "✅ Réseau traefiknetwork créé") || \
+		echo "⚠️  Le réseau traefiknetwork existe déjà"
+	@echo "✅ Tous les réseaux sont prêts"
+
+networks_list: ## Liste tous les réseaux Docker du projet
+	@echo "Réseaux Docker du projet KPI:"
+	@docker network ls --filter name=network_kpi --filter name=pma_network --filter name=traefiknetwork
+
+networks_clean: ## Supprime les réseaux Docker du projet (attention: seulement si non utilisés)
+	@echo "⚠️  Suppression des réseaux Docker..."
+	@docker network rm network_kpi 2>/dev/null && echo "✅ Réseau network_kpi supprimé" || echo "⚠️  network_kpi n'existe pas ou est utilisé"
+	@docker network rm pma_network 2>/dev/null && echo "✅ Réseau pma_network supprimé" || echo "⚠️  pma_network n'existe pas ou est utilisé"
+	@docker network rm traefiknetwork 2>/dev/null && echo "✅ Réseau traefiknetwork supprimé" || echo "⚠️  traefiknetwork n'existe pas ou est utilisé"
 
 
 ## WORDPRESS

@@ -8,23 +8,75 @@ KPI is a sports management system with multiple Vue.js/Nuxt applications, PHP ba
 
 ## Development Commands
 
-### Environment Configuration
-- `make init_env_app2` - Initialize .env.development and .env.production for app2 from templates
-- `.env.development` - Used automatically in development mode (`npm run dev`)
-- `.env.production` - Used automatically for build/generate (`npm run build`, `npm run generate`)
-- Variables: API_BASE_URL and BACKEND_BASE_URL
+Use `make help` to see all available commands.
 
-### Docker Environment
-- `make dev_up` - Start development containers
-- `make run_dev` - Run Nuxt development server for app2
+### Quick Start
+- `make init` - Complete project initialization (creates .env files and Docker networks)
+- `make dev_up` - Start development environment
 - `make npm_install_app2` - Install dependencies for app2
-- `make npm_clean_app2` - Clean node_modules and package-lock for app2
-- `make npm_add_app2 package=<name>` - Add npm package to app2
+- `make run_dev` - Run Nuxt development server (port 3002)
 
-### App2 (Nuxt 4 Application)
-- `docker exec kpi_node_app2 sh -c "npm run dev"` - Development mode on port 3000
-- `docker exec kpi_node_app2 sh -c "npm run build"` - Production build
-- `docker exec kpi_node_app2 sh -c "npm run lint"` - ESLint check
+### Initialization
+- `make init` - Complete initialization (env files + networks)
+- `make init_env` - Initialize docker/.env from docker/.env.dist
+- `make init_env_app2` - Initialize .env.development and .env.production for app2
+- `make init_networks` - Create required Docker networks
+
+### Docker - Development
+- `make dev_up` - Start development containers
+- `make dev_down` - Stop development containers
+- `make dev_restart` - Restart development containers
+- `make dev_logs` - Show development logs (follow mode)
+- `make dev_status` - Show development containers status
+
+### Docker - Pre-production
+- `make preprod_up` - Start pre-production containers
+- `make preprod_down` - Stop pre-production containers
+- `make preprod_restart` - Restart pre-production containers
+- `make preprod_logs` - Show pre-production logs
+- `make preprod_status` - Show pre-production status
+
+### Docker - Production
+- `make prod_up` - Start production containers
+- `make prod_down` - Stop production containers
+- `make prod_restart` - Restart production containers
+- `make prod_logs` - Show production logs
+- `make prod_status` - Show production status
+
+### Nuxt - App2
+- `make run_dev` - Run Nuxt development server (port 3002)
+- `make run_build` - Build Nuxt for production
+- `make run_generate` - Generate static Nuxt site
+- `make run_lint` - Run ESLint on app2
+
+### NPM - App2
+- `make npm_install_app2` - Install all npm dependencies
+- `make npm_clean_app2` - Remove node_modules and package-lock.json
+- `make npm_update_app2` - Update all npm dependencies
+- `make npm_add_app2 package=<name>` - Add npm package
+- `make npm_add_dev_app2 package=<name>` - Add npm dev package
+- `make npm_ls_app2` - List installed npm modules
+
+### Shell Access
+- `make php_bash` - Open bash in PHP 7.4 container
+- `make php8_bash` - Open bash in PHP 8 container
+- `make node_bash` - Open shell in Node/app2 container
+- `make db_bash` - Open shell in MySQL container
+
+### Docker Networks
+- `make networks_create` - Create required Docker networks (network_kpi, pma_network, traefiknetwork)
+- `make networks_list` - List project Docker networks
+- `make networks_clean` - Remove project Docker networks (if not in use)
+
+### WordPress
+- `make wordpress_backup` - Create WordPress backup (stored in docker/)
+- WordPress content is stored in `docker/wordpress/` (excluded from Git)
+- WordPress path is configured via `HOST_WORDPRESS_PATH` in docker/.env
+
+### Environment Files
+- `docker/.env` - Main Docker environment configuration (not versioned)
+- `sources/app2/.env.development` - Nuxt dev environment (API_BASE_URL, BACKEND_BASE_URL)
+- `sources/app2/.env.production` - Nuxt production environment
 
 ### Database
 - Access via phpMyAdmin at configured domain
