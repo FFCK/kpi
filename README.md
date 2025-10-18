@@ -40,6 +40,7 @@ Cette commande va :
 
 Éditer `docker/.env` et configurer :
 ```bash
+APPLICATION_NAME=kpi              # Nom de l'application (change selon l'environnement)
 USER_ID=1000
 GROUP_ID=33
 DB_ROOT_PASSWORD=votre_mot_de_passe
@@ -47,6 +48,11 @@ DB_USER=votre_utilisateur
 DB_PASSWORD=votre_mot_de_passe
 # ... etc
 ```
+
+**Important** : Le `APPLICATION_NAME` définit le nom du réseau Docker (`network_${APPLICATION_NAME}`).
+- **Développement local** : `APPLICATION_NAME=kpi` → réseau `network_kpi`
+- **Pré-production** : `APPLICATION_NAME=kpi_preprod` → réseau `network_kpi_preprod`
+- **Production** : `APPLICATION_NAME=kpi` ou `kpi_prod` selon votre configuration
 
 4. **Démarrer l'environnement de développement**
 ```bash
@@ -135,10 +141,15 @@ make db_bash           # Shell MySQL
 
 ### Réseaux Docker
 ```bash
-make networks_create   # Créer les réseaux nécessaires
-make networks_list     # Lister les réseaux
+make networks_create   # Créer les réseaux nécessaires (utilise APPLICATION_NAME)
+make networks_list     # Lister les réseaux du projet
 make networks_clean    # Supprimer les réseaux (si non utilisés)
 ```
+
+**Note** : Les réseaux sont créés en fonction de `APPLICATION_NAME` dans `docker/.env` :
+- Réseau KPI : `network_${APPLICATION_NAME}`
+- Réseau phpMyAdmin : `pma_network` (partagé)
+- Réseau Traefik : `traefiknetwork` (partagé)
 
 ### WordPress
 ```bash
@@ -262,9 +273,25 @@ make dev_logs          # Voir les erreurs
 ```
 
 ### Erreur "network not found"
+
+Le nom du réseau dépend de `APPLICATION_NAME` dans `docker/.env`.
+
+**Solution** :
 ```bash
-make networks_create   # Créer les réseaux Docker
+# Vérifier le nom attendu
+grep APPLICATION_NAME docker/.env
+
+# Créer les réseaux avec le bon nom
+make networks_create
+
+# Vérifier que les réseaux sont créés
+make networks_list
 ```
+
+Si vous avez plusieurs environnements (dev, preprod, prod) sur le même serveur, utilisez des `APPLICATION_NAME` différents :
+- Dev : `APPLICATION_NAME=kpi`
+- Preprod : `APPLICATION_NAME=kpi_preprod`
+- Prod : `APPLICATION_NAME=kpi_prod`
 
 ### Port déjà utilisé
 Modifier les ports dans `docker/.env` :
@@ -309,6 +336,34 @@ make dev_down
 ```
 
 ## 🚢 Déploiement
+
+### Configuration multi-environnements
+
+Si vous déployez plusieurs environnements (dev, preprod, prod) sur le même serveur, vous devez configurer des `APPLICATION_NAME` différents pour éviter les conflits de réseaux et containers.
+
+**1. Sur le serveur de pré-production :**
+
+Éditer `docker/.env` :
+```bash
+APPLICATION_NAME=kpi_preprod    # Nom unique pour la préprod
+```
+
+Puis initialiser :
+```bash
+make init              # Crée network_kpi_preprod
+```
+
+**2. Sur le serveur de production :**
+
+Éditer `docker/.env` :
+```bash
+APPLICATION_NAME=kpi_prod       # Nom unique pour la prod
+```
+
+Puis initialiser :
+```bash
+make init              # Crée network_kpi_prod
+```
 
 ### Préparer pour la production
 ```bash

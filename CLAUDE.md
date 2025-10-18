@@ -64,9 +64,16 @@ Use `make help` to see all available commands.
 - `make db_bash` - Open shell in MySQL container
 
 ### Docker Networks
-- `make networks_create` - Create required Docker networks (network_kpi, pma_network, traefiknetwork)
+- `make networks_create` - Create required Docker networks (network_${APPLICATION_NAME}, pma_network, traefiknetwork)
 - `make networks_list` - List project Docker networks
 - `make networks_clean` - Remove project Docker networks (if not in use)
+
+**Important**: Network names depend on `APPLICATION_NAME` in `docker/.env`:
+- KPI network: `network_${APPLICATION_NAME}` (e.g., `network_kpi`, `network_kpi_preprod`)
+- phpMyAdmin network: `pma_network` (shared)
+- Traefik network: `traefiknetwork` (shared)
+
+For multiple environments on the same server, use different `APPLICATION_NAME` values in each `.env` file.
 
 ### WordPress
 - `make wordpress_backup` - Create WordPress backup (stored in docker/)

@@ -5,6 +5,10 @@ GID := $(shell id -g)
 export USER_ID := $(UID)
 export GROUP_ID := $(GID)
 
+# Variables pour les noms des réseaux
+APPLICATION_NAME ?= kpi
+NETWORK_KPI_NAME = network_$(APPLICATION_NAME)
+
 DOCKER_COMPOSE = docker compose
 DOCKER_EXEC = docker exec -ti
 DOCKER_EXEC_PHP = docker exec -ti kpi_php
@@ -45,11 +49,17 @@ init: init_env init_env_app2 init_networks ## Initialisation complète du projet
 	@echo ""
 	@echo "✅ Initialisation complète terminée!"
 	@echo ""
+	@echo "Configuration actuelle:"
+	@echo "  - APPLICATION_NAME: $(APPLICATION_NAME)"
+	@echo "  - Réseau KPI: $(NETWORK_KPI_NAME)"
+	@echo ""
 	@echo "Prochaines étapes:"
 	@echo "  1. Configurez les variables dans docker/.env"
-	@echo "  2. Lancez l'environnement: make dev_up"
+	@echo "  2. Lancez l'environnement: make dev_up (ou preprod_up/prod_up)"
 	@echo "  3. Installez les dépendances: make npm_install_app2"
 	@echo "  4. Lancez Nuxt: make run_dev"
+	@echo ""
+	@echo "Note: Pour une préprod/prod, vérifiez APPLICATION_NAME dans docker/.env"
 
 init_env: ## Initialise le fichier docker/.env depuis docker/.env.dist
 	@if [ ! -f docker/.env ]; then \
@@ -177,11 +187,12 @@ db_bash: ## Ouvre un shell dans le container MySQL
 
 
 ## RÉSEAUX DOCKER
-networks_create: ## Crée les réseaux Docker nécessaires (network_kpi, pma_network, traefiknetwork)
+networks_create: ## Crée les réseaux Docker nécessaires (network_${APPLICATION_NAME}, pma_network, traefiknetwork)
 	@echo "Création des réseaux Docker..."
-	@docker network inspect network_kpi >/dev/null 2>&1 || \
-		(docker network create network_kpi && echo "✅ Réseau network_kpi créé") || \
-		echo "⚠️  Le réseau network_kpi existe déjà"
+	@echo "Nom du réseau KPI: $(NETWORK_KPI_NAME)"
+	@docker network inspect $(NETWORK_KPI_NAME) >/dev/null 2>&1 || \
+		(docker network create $(NETWORK_KPI_NAME) && echo "✅ Réseau $(NETWORK_KPI_NAME) créé") || \
+		echo "⚠️  Le réseau $(NETWORK_KPI_NAME) existe déjà"
 	@docker network inspect pma_network >/dev/null 2>&1 || \
 		(docker network create pma_network && echo "✅ Réseau pma_network créé") || \
 		echo "⚠️  Le réseau pma_network existe déjà"
@@ -191,12 +202,12 @@ networks_create: ## Crée les réseaux Docker nécessaires (network_kpi, pma_net
 	@echo "✅ Tous les réseaux sont prêts"
 
 networks_list: ## Liste tous les réseaux Docker du projet
-	@echo "Réseaux Docker du projet KPI:"
-	@docker network ls --filter name=network_kpi --filter name=pma_network --filter name=traefiknetwork
+	@echo "Réseaux Docker du projet KPI (APPLICATION_NAME=$(APPLICATION_NAME)):"
+	@docker network ls | grep -E "$(NETWORK_KPI_NAME)|pma_network|traefiknetwork" || echo "Aucun réseau trouvé"
 
 networks_clean: ## Supprime les réseaux Docker du projet (attention: seulement si non utilisés)
 	@echo "⚠️  Suppression des réseaux Docker..."
-	@docker network rm network_kpi 2>/dev/null && echo "✅ Réseau network_kpi supprimé" || echo "⚠️  network_kpi n'existe pas ou est utilisé"
+	@docker network rm $(NETWORK_KPI_NAME) 2>/dev/null && echo "✅ Réseau $(NETWORK_KPI_NAME) supprimé" || echo "⚠️  $(NETWORK_KPI_NAME) n'existe pas ou est utilisé"
 	@docker network rm pma_network 2>/dev/null && echo "✅ Réseau pma_network supprimé" || echo "⚠️  pma_network n'existe pas ou est utilisé"
 	@docker network rm traefiknetwork 2>/dev/null && echo "✅ Réseau traefiknetwork supprimé" || echo "⚠️  traefiknetwork n'existe pas ou est utilisé"
 
