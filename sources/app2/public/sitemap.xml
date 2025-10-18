@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kpi.local/app2/</loc>
+    <loc>https://kpi.localhost/app2/</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://kpi.local/app2/games</loc>
+    <loc>https://kpi.localhost/app2/games</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://kpi.local/app2/charts</loc>
+    <loc>https://kpi.localhost/app2/charts</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://kpi.local/app2/team</loc>
+    <loc>https://kpi.localhost/app2/team</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kpi.local/app2/about</loc>
+    <loc>https://kpi.localhost/app2/about</loc>
     <lastmod>2025-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

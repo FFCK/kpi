@@ -1,8 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 const baseUrl = process.env.BASE_URL ?? ''
-const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.local/api'
-const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.local'
+const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.localhost/api'
+const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.localhost'
 
 // Helper pour construire les chemins PWA
 const pwaPath = (path: string) => baseUrl ? `${baseUrl}/${path}` : `/${path}`
