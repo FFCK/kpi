@@ -1,6 +1,10 @@
 <?php
 // Paramètres de connexion
 
+define('URL_SITE', 'https://www.kayak-polo.info');
+
+define("PRODUCTION", FALSE);
+
 // Prod
 define('PARAM_PROD_LOGIN', '');
 define('PARAM_PROD_PASSWORD', '');
