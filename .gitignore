@@ -127,6 +127,9 @@ sources/wordpress
 docker/apachelogs_8/*
 !docker/apachelogs_8/.gitkeep
 
+docker/wordpress/*
+!docker/wordpress/.gitkeep
+
 sources/wordpress_archive/*
 
 .gemini/.env

@@ -12,6 +12,7 @@ services:
         user: ${USER_ID}:${GROUP_ID}
         volumes:
             - ../sources:/var/www/html
+            - ${HOST_WORDPRESS_PATH}:/var/www/html/wordpress
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
         networks:
             - network_kpi
