@@ -10,6 +10,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "dependencies": {},
   "devDependencies": {
     "@nuxt/eslint": "^1.9.0",
     "@nuxt/kit": "^4.1.2",
@@ -19,6 +20,10 @@
     "@pinia/nuxt": "^0.11.2",
     "@tailwindcss/postcss": "^4.1.13",
     "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^24.5.2",
+    "@vite-pwa/nuxt": "^1.0.4",
+    "buffer": "^6.0.3",
+    "dayjs": "^1.11.18",
     "dexie": "^4.2.0",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9.36.0",
@@ -30,11 +35,5 @@
     "uuid": "^13.0.0",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
-  },
-  "dependencies": {
-    "@types/node": "^24.5.2",
-    "@vite-pwa/nuxt": "^1.0.4",
-    "buffer": "^6.0.3",
-    "dayjs": "^1.11.18"
   }
 }
