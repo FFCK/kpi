@@ -36,3 +36,11 @@ define('MAIN_DIRECTORY', '');
 
 // Destinataires alertes cartons
 define('CARD_ALERT_RECIPIENTS', '');
+
+// Matomo Analytics
+// Site ID pour la partie publique (frontend)
+define('MATOMO_SITE_ID_PUBLIC', '1');
+// Site ID pour la partie administration (backend)
+define('MATOMO_SITE_ID_ADMIN', '2');
+// URL du serveur Matomo
+define('MATOMO_SERVER_URL', 'https://matomo.kayak-polo.info/');

@@ -1221,3 +1221,44 @@ function gen_uuid()
 		mt_rand(0, 0xffff)
 	);
 }
+
+/**
+ * Génère le script Matomo Analytics
+ *
+ * @param string $type Type de site : 'public' pour la partie publique, 'admin' pour l'administration
+ * @return string Le code JavaScript Matomo prêt à être inséré
+ */
+function utyGetMatomoScript($type = 'public')
+{
+	// Vérifier que les constantes sont définies
+	if (!defined('MATOMO_SERVER_URL')) {
+		return '<!-- Matomo non configuré -->';
+	}
+
+	// Déterminer le site ID selon le type
+	$siteId = ($type === 'admin') ? MATOMO_SITE_ID_ADMIN : MATOMO_SITE_ID_PUBLIC;
+
+	// URL du serveur Matomo (retirer le slash final s'il existe)
+	$matomoUrl = rtrim(MATOMO_SERVER_URL, '/') . '/';
+
+	// Générer le script
+	$script = <<<MATOMO
+<!-- Matomo -->
+<script>
+var _paq = window._paq = window._paq || [];
+/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+_paq.push(['trackPageView']);
+_paq.push(['enableLinkTracking']);
+(function() {
+	var u="{$matomoUrl}";
+	_paq.push(['setTrackerUrl', u+'matomo.php']);
+	_paq.push(['setSiteId', '{$siteId}']);
+	var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+	g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+})();
+</script>
+<!-- End Matomo Code -->
+MATOMO;
+
+	return $script;
+}

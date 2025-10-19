@@ -117,9 +117,9 @@
             _paq.push(['trackPageView']);
             _paq.push(['enableLinkTracking']);
             (function() {
-                var u="https://matomo.kayak-polo.info/";
+                var u="{/literal}{$smarty.const.MATOMO_SERVER_URL}{literal}";
                 _paq.push(['setTrackerUrl', u+'matomo.php']);
-                _paq.push(['setSiteId', '1']);
+                _paq.push(['setSiteId', '{/literal}{$smarty.const.MATOMO_SITE_ID_PUBLIC}{literal}']);
                 var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
                 g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
             })();
