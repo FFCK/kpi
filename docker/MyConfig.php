@@ -2,8 +2,6 @@
 // Configuration Generale 
 define('NUM_VERSION', '5.38.3');
 
-define('URL_SITE', 'https://www.kayak-polo.info');
-
 // Décalage horaire -35 minutes pour affichage des prochains matchs + match courant (kpmatchs.php)
 define('DECALAGE_MINUTES', '-395 minutes');
 
@@ -22,8 +20,6 @@ require_once('MyParams.php');
 //     }
 // }
 
-
-define("PRODUCTION", FALSE);
 define("DEV", TRUE);
 
 define('FPDF_FONTPATH', 'font/');
