@@ -4,7 +4,7 @@ services:
         container_name: ${PHP_CONTAINER_NAME}
         build:
             context: ./config
-            dockerfile: Dockerfile.dev.web
+            dockerfile: Dockerfile.prod.web
             args:
                 USER_ID: ${USER_ID}
                 GROUP_ID: ${GROUP_ID}

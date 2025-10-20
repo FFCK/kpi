@@ -4,12 +4,31 @@ ARG GROUP_ID
 
 FROM ${BASE_IMAGE_PHP}
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libonig-dev mailutils msmtp nano \
-    && docker-php-ext-install pdo pdo_mysql mbstring \
+# Install required packages and PHP extensions for production
+# Includes mPDF dependencies: gd (image processing), zip (file compression)
+# Single RUN layer for optimal caching and minimal image size
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    libonig-dev \
+    mailutils \
+    msmtp \
+    nano \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring mysqli gd zip \
+    && docker-php-ext-enable mysqli \
     && a2enmod headers \
     && a2enmod expires \
     && a2enmod rewrite \
-    && service apache2 restart
+    && service apache2 restart \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /var/run/apache2/apache2.pid \
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+# Install Composer (multi-stage copy for minimal footprint)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

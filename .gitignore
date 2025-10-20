@@ -134,3 +134,9 @@ sources/wordpress_archive/*
 
 .gemini/.env
 .gemini/settings.json
+
+# ==========================================
+# Composer dependencies (auto-generated)
+# ==========================================
+sources/vendor/
+vendor/

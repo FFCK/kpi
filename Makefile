@@ -22,6 +22,7 @@ preprod_up preprod_down preprod_restart preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_logs prod_status \
 run_dev run_build run_generate run_lint \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
+composer_install composer_update composer_require composer_require_dev composer_dump \
 php_bash php8_bash node_bash db_bash \
 wordpress_backup wordpress_restore \
 networks_create networks_list networks_clean
@@ -56,8 +57,9 @@ init: init_env init_env_app2 init_networks ## Initialisation complète du projet
 	@echo "Prochaines étapes:"
 	@echo "  1. Configurez les variables dans docker/.env"
 	@echo "  2. Lancez l'environnement: make dev_up (ou preprod_up/prod_up)"
-	@echo "  3. Installez les dépendances: make npm_install_app2"
-	@echo "  4. Lancez Nuxt: make run_dev"
+	@echo "  3. Installez les dépendances Composer: make composer_install"
+	@echo "  4. Installez les dépendances NPM: make npm_install_app2"
+	@echo "  5. Lancez Nuxt: make run_dev"
 	@echo ""
 	@echo "Note: Pour une préprod/prod, vérifiez APPLICATION_NAME dans docker/.env"
 
@@ -170,6 +172,38 @@ npm_add_app2: ## Ajoute un package npm à app2 (usage: make npm_add_app2 package
 
 npm_add_dev_app2: ## Ajoute un package npm de dev à app2 (usage: make npm_add_dev_app2 package=eslint)
 	$(DOCKER_EXEC_NODE) sh -c "npm install -D $(package)"
+
+
+## COMPOSER - PHP
+composer_install: ## Installe les dépendances Composer (sources/vendor/)
+	@echo "Installation des dépendances Composer..."
+	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer install"
+	@echo "✅ Dépendances Composer installées"
+
+composer_update: ## Met à jour les dépendances Composer
+	@echo "Mise à jour des dépendances Composer..."
+	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer update"
+	@echo "✅ Dépendances Composer mises à jour"
+
+composer_require: ## Ajoute un package Composer (usage: make composer_require package=vendor/package)
+	@if [ -z "$(package)" ]; then \
+		echo "❌ Erreur: spécifiez un package (make composer_require package=vendor/package)"; \
+		exit 1; \
+	fi
+	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer require $(package)"
+	@echo "✅ Package $(package) ajouté"
+
+composer_require_dev: ## Ajoute un package Composer de dev (usage: make composer_require_dev package=vendor/package)
+	@if [ -z "$(package)" ]; then \
+		echo "❌ Erreur: spécifiez un package (make composer_require_dev package=vendor/package)"; \
+		exit 1; \
+	fi
+	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer require --dev $(package)"
+	@echo "✅ Package de dev $(package) ajouté"
+
+composer_dump: ## Regénère l'autoloader Composer
+	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer dump-autoload"
+	@echo "✅ Autoloader Composer regénéré"
 
 
 ## ACCÈS SHELLS

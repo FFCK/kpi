@@ -1,0 +1,20 @@
+{
+    "name": "kpi/sports-management",
+    "description": "KPI Sports Management System",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "mpdf/mpdf": "^8.2",
+        "psr/log": "^1.1"
+    },
+    "config": {
+        "vendor-dir": "vendor",
+        "optimize-autoloader": true,
+        "platform-check": false
+    },
+    "autoload": {
+        "classmap": [
+            "commun/"
+        ]
+    }
+}
