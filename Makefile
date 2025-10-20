@@ -17,9 +17,9 @@ DOCKER_EXEC_NODE = docker exec -ti kpi_node_app2
 .DEFAULT_GOAL = help
 
 .PHONY: help init init_env init_env_app2 init_networks \
-dev_up dev_down dev_restart dev_logs dev_status \
-preprod_up preprod_down preprod_restart preprod_logs preprod_status \
-prod_up prod_down prod_restart prod_logs prod_status \
+dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
+preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
+prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
 run_dev run_build run_generate run_lint \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
 composer_install composer_update composer_require composer_require_dev composer_dump \
@@ -99,6 +99,13 @@ dev_down: ## Arrête les containers Docker de développement
 dev_restart: ## Redémarre les containers Docker de développement
 	$(DOCKER_COMPOSE) -f docker/compose.dev.yaml restart
 
+dev_rebuild: ## Reconstruit et relance les containers de développement (après modif Dockerfile)
+	@echo "🔄 Reconstruction des images Docker (développement)..."
+	$(DOCKER_COMPOSE) -f docker/compose.dev.yaml down
+	$(DOCKER_COMPOSE) -f docker/compose.dev.yaml build --no-cache
+	$(DOCKER_COMPOSE) -f docker/compose.dev.yaml up -d
+	@echo "✅ Containers reconstruits et relancés"
+
 dev_logs: ## Affiche les logs des containers de développement
 	$(DOCKER_COMPOSE) -f docker/compose.dev.yaml logs -f
 
@@ -116,6 +123,13 @@ preprod_down: ## Arrête les containers Docker de pré-production
 preprod_restart: ## Redémarre les containers Docker de pré-production
 	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml restart
 
+preprod_rebuild: ## Reconstruit et relance les containers de pré-production (après modif Dockerfile)
+	@echo "🔄 Reconstruction des images Docker (pré-production)..."
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml down
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml build --no-cache
+	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml up -d
+	@echo "✅ Containers reconstruits et relancés"
+
 preprod_logs: ## Affiche les logs des containers de pré-production
 	$(DOCKER_COMPOSE) -f docker/compose.preprod.yaml logs -f
 
@@ -132,6 +146,13 @@ prod_down: ## Arrête les containers Docker de production
 
 prod_restart: ## Redémarre les containers Docker de production
 	$(DOCKER_COMPOSE) -f docker/compose.prod.yaml restart
+
+prod_rebuild: ## Reconstruit et relance les containers de production (après modif Dockerfile)
+	@echo "🔄 Reconstruction des images Docker (production)..."
+	$(DOCKER_COMPOSE) -f docker/compose.prod.yaml down
+	$(DOCKER_COMPOSE) -f docker/compose.prod.yaml build --no-cache
+	$(DOCKER_COMPOSE) -f docker/compose.prod.yaml up -d
+	@echo "✅ Containers reconstruits et relancés"
 
 prod_logs: ## Affiche les logs des containers de production
 	$(DOCKER_COMPOSE) -f docker/compose.prod.yaml logs -f

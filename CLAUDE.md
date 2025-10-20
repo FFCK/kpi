@@ -26,6 +26,7 @@ Use `make help` to see all available commands.
 - `make dev_up` - Start development containers
 - `make dev_down` - Stop development containers
 - `make dev_restart` - Restart development containers
+- `make dev_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
 - `make dev_logs` - Show development logs (follow mode)
 - `make dev_status` - Show development containers status
 
@@ -33,6 +34,7 @@ Use `make help` to see all available commands.
 - `make preprod_up` - Start pre-production containers
 - `make preprod_down` - Stop pre-production containers
 - `make preprod_restart` - Restart pre-production containers
+- `make preprod_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
 - `make preprod_logs` - Show pre-production logs
 - `make preprod_status` - Show pre-production status
 
@@ -40,6 +42,7 @@ Use `make help` to see all available commands.
 - `make prod_up` - Start production containers
 - `make prod_down` - Stop production containers
 - `make prod_restart` - Restart production containers
+- `make prod_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
 - `make prod_logs` - Show production logs
 - `make prod_status` - Show production status
 
