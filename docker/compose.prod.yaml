@@ -13,6 +13,7 @@ services:
         environment:
             - SMTP_HOST=host.docker.internal
             - SMTP_PORT=25
+            - SMTP_PASSWORD=${SMTP_PASSWORD}
         extra_hosts:
             - "host.docker.internal:host-gateway"
         volumes:
@@ -20,7 +21,6 @@ services:
             - ${HOST_WORDPRESS_PATH}:/var/www/html/wordpress
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
             - /etc/msmtprc:/etc/msmtprc:ro
-            - /etc/msmtp-pass.gpg:/etc/msmtp-pass.gpg:ro
             - /var/log/msmtp:/var/log/msmtp
         networks:
             - network_kpi
