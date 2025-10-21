@@ -230,28 +230,28 @@ function utyGetVisuels($recordCompetition, $admin = FALSE)
 	} else {
 		$rel = '';
 	}
-	if ($recordCompetition['BandeauLink'] != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE) {
+	if (($recordCompetition['BandeauLink'] ?? '') != '' && strpos($recordCompetition['BandeauLink'], 'http') === FALSE) {
 		$recordCompetition['BandeauLink'] = $rel . 'img/logo/' . $recordCompetition['BandeauLink'];
 		if (is_file($recordCompetition['BandeauLink'])) {
 			$result['bandeau'] = $recordCompetition['BandeauLink'];
 		}
-	} elseif ($recordCompetition['BandeauLink'] != '') {
+	} elseif (($recordCompetition['BandeauLink'] ?? '') != '') {
 		$result['bandeau'] = $recordCompetition['BandeauLink'];
 	}
-	if ($recordCompetition['LogoLink'] != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE) {
+	if (($recordCompetition['LogoLink'] ?? '') != '' && strpos($recordCompetition['LogoLink'], 'http') === FALSE) {
 		$recordCompetition['LogoLink'] = $rel . 'img/logo/' . $recordCompetition['LogoLink'];
 		if (is_file($recordCompetition['LogoLink'])) {
 			$result['logo'] = $recordCompetition['LogoLink'];
 		}
-	} elseif ($recordCompetition['LogoLink'] != '') {
+	} elseif (($recordCompetition['LogoLink'] ?? '') != '') {
 		$result['logo'] = $recordCompetition['LogoLink'];
 	}
-	if ($recordCompetition['SponsorLink'] != '' && strpos($recordCompetition['SponsorLink'], 'http') === FALSE) {
+	if (($recordCompetition['SponsorLink'] ?? '') != '' && strpos($recordCompetition['SponsorLink'], 'http') === FALSE) {
 		$recordCompetition['SponsorLink'] = $rel . 'img/logo/' . $recordCompetition['SponsorLink'];
 		if (is_file($recordCompetition['SponsorLink'])) {
 			$result['sponsor'] = $recordCompetition['SponsorLink'];
 		}
-	} elseif ($recordCompetition['LogoLink'] != '') {
+	} elseif (($recordCompetition['SponsorLink'] ?? '') != '') {
 		$result['sponsor'] = $recordCompetition['SponsorLink'];
 	}
 	return $result;

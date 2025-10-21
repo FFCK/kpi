@@ -201,11 +201,11 @@ class GestionDoc extends MyPageSecure
 		$listMatchs = '';
 		$nbMatchsValid = 0;
 		$nbMatchsPubli = 0;
-		$sql = "SELECT m.Id, m.Numero_ordre, m.Validation, m.Publication 
-			FROM kp_journee j, kp_match m 
-			WHERE j.Code_saison = '".$codeSaison."' 
-			AND j.Code_competition = '".$codeCompet."' 
-			AND j.Id = m.Id_journee 
+		$sql = "SELECT m.Id, m.Numero_ordre, m.Validation, m.Publication
+			FROM kp_journee j, kp_match m
+			WHERE j.Code_saison = :Code_saison
+			AND j.Code_competition = :Code_competition
+			AND j.Id = m.Id_journee
 			ORDER BY m.Numero_ordre ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(

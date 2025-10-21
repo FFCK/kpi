@@ -34,7 +34,7 @@
 			{assign var="headerTitle0" value=$headerTitle|replace:' ':'_'}
 			<span class='saison'>{$smarty.config.Saison|default:'Saison'} {$Saison}</span>
 			<span class='repere'>{$smarty.config.$headerTitle0|default:$headerTitle}</span>
-			{if $headerSubTitle}
+			{if isset($headerSubTitle) && $headerSubTitle}
 				{assign var="headerSubTitle0" value=$headerSubTitle|replace:' ':'_'}
 				<span class='repere'>></span>
 				<span class='repere'>{$smarty.config.$headerSubTitle0|default:$headerSubTitle}</span>

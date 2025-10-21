@@ -4,7 +4,7 @@
 	<div id="banniere">
 		<div>
 			{* <a class="connexion" href="GestionParamUser.php" title="{#Mes_parametres#}">{$userName} ({$profile})</a> *}
-			{if $bMirror == 1}
+			{if isset($bMirror) && $bMirror == 1}
 				<br>
 				<span class='vert'>Base Mirror</span>
 			{/if}

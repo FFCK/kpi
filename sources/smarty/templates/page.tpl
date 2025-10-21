@@ -37,9 +37,11 @@
 				notamment sur les pages Journee.php et Classements.php 
 				intégrer en iframe : 
 			-->
-    {assign var=temp value="css/$css_supp.css"}
-    {if $css_supp && is_file($temp)}
-      <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css">
+    {if isset($css_supp)}
+      {assign var=temp value="css/$css_supp.css"}
+      {if $css_supp && is_file($temp)}
+        <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css">
+      {/if}
     {/if}
     <script src="js/dhtmlgoodies_calendar.js?random=20060118"></script>
     <script src="js/jquery-1.5.2.min.js"></script>
@@ -69,9 +71,11 @@
 				notamment sur les pages Journee.php et Classements.php 
 				intégrer en iframe : 
 			-->
-    {assign var=temp value="..css/$css_supp.css"}
-    {if $css_supp && is_file($temp)}
-      <link type="text/css" rel="stylesheet" href="..css/{$css_supp}.css">
+    {if isset($css_supp)}
+      {assign var=temp value="..css/$css_supp.css"}
+      {if $css_supp && is_file($temp)}
+        <link type="text/css" rel="stylesheet" href="..css/{$css_supp}.css">
+      {/if}
     {/if}
 
   {/if}
