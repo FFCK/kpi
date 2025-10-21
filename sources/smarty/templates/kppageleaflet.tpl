@@ -41,9 +41,11 @@
             notamment sur les pages Journee.php et Classements.php 
             intégrer en iframe : 
         -->
-        {assign var=temp value="css/$css_supp.css"} 
-        {if $css_supp && is_file($temp)}
-            <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css?v={$NUM_VERSION}">
+        {if isset($css_supp)}
+            {assign var=temp value="$adm./css/$css_supp.css"} 
+            {if $css_supp && is_file($temp)}
+                <link type="text/css" rel="stylesheet" href="{$adm}css/{$css_supp}.css?v={$NUM_VERSION}">
+            {/if}
         {/if}
         <title>{$smarty.config.$title|default:$title}</title>
     </head>
