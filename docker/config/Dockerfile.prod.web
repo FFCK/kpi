@@ -28,7 +28,13 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f /var/run/apache2/apache2.pid \
-    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+    && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && apt-get remove -y exim4 exim4-base exim4-config exim4-daemon-light || true \
+    && RUN echo "sendmail_path = /usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/sendmail.ini
+
+# Optional: create a dummy user to avoid 'Failed to get user name for uid 1000'
+ARG USER_ID
+RUN useradd -u ${USER_ID:-1000} -m dockeruser || true
 
 # Install Composer (multi-stage copy for minimal footprint)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
