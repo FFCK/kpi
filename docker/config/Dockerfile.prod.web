@@ -11,6 +11,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libonig-dev \
     mailutils \
     msmtp \
+    gnupg \
     nano \
     libpng-dev \
     libjpeg-dev \
@@ -30,7 +31,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     && rm -f /var/run/apache2/apache2.pid \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && apt-get remove -y exim4 exim4-base exim4-config exim4-daemon-light || true \
-    && RUN echo "sendmail_path = /usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/sendmail.ini
+    && echo "sendmail_path = /usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/sendmail.ini
 
 # Optional: create a dummy user to avoid 'Failed to get user name for uid 1000'
 ARG USER_ID
