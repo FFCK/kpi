@@ -270,13 +270,12 @@ class Smarty_Compiler extends Smarty {
         //                                . "'"
         //                                , $source_content);
 
-        //NEW
-        $source_content = preg_replace_callback($search, create_function ('$matches', "return '"
-                                       . $this->_quote_replace($this->left_delimiter) . 'php'
-                                       . "' . str_repeat(\"\n\", substr_count('\$matches[1]', \"\n\")) .'"
-                                       . $this->_quote_replace($this->right_delimiter)
-                                       . "';")
-                                       , $source_content); 
+        //NEW - PHP 8 compatible (replaced create_function with anonymous function)
+        $left_delim = $this->_quote_replace($this->left_delimiter);
+        $right_delim = $this->_quote_replace($this->right_delimiter);
+        $source_content = preg_replace_callback($search, function($matches) use ($left_delim, $right_delim) {
+            return $left_delim . 'php' . str_repeat("\n", substr_count($matches[1], "\n")) . $right_delim;
+        }, $source_content); 
         
         /* Gather all template tags. */
         preg_match_all("~{$ldq}\s*(.*?)\s*{$rdq}~s", $source_content, $_match);

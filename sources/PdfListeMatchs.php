@@ -4,12 +4,12 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('lib/fpdf/fpdf.php');
+require_once('commun/MyPDF.php');
 
 require_once('lib/qrcode/qrcode.class.php');
 
 // Pieds de page
-class PDF extends FPDF
+class PDF extends MyPDF
 {
     function Footer()
     {
@@ -19,7 +19,7 @@ class PDF extends FPDF
         $this->SetFont('Arial', 'I', 8);
         //Numéro de page centré
         $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-        $this->Cell(136, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 1, 'R');
+        $this->Cell(136, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 0)), 0, 1, 'R');
     }
 }
 
@@ -60,7 +60,8 @@ class PdfListeMatchs extends MyPage
         $orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
-        if ($laCompet != 0) {
+        // Ne vider $arrayJournees que si $laCompet est une vraie compétition (pas *, 0, ou vide)
+        if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
             $arrayJournees = [];
             $idEvenement = -1;
         }
@@ -135,29 +136,32 @@ class PdfListeMatchs extends MyPage
 
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
-        // Entête PDF ...	  
+        // Entête PDF ...
         $pdf = new PDF('L');
-        $pdf->Open();
+        // Open() removed - causes buffer corruption with mPDF
 
         $pdf->SetTitle("Liste des Matchs");
         $pdf->SetAuthor("Kayak-polo.info");
         $pdf->SetCreator("Kayak-polo.info avec FPDF");
         $pdf->SetTopMargin(30);
         $pdf->AddPage();
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 28);
-        } else {
-            $pdf->SetAutoPageBreak(true, 15);
-        }
+
         // Affichage
         $qr_x = 262;
+
+        // mPDF: Define where content should start (after top margin)
+        $yStart = 30;
+
+        // mPDF: Disable AutoPageBreak temporarily to prevent images from triggering page breaks
+        $pdf->SetAutoPageBreak(false);
+
         // Bandeau
         if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
             if (is_file($visuels['bandeau'])) {
                 $img = redimImage($visuels['bandeau'], 262, 10, 20, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
-            // KPI + Logo    
+            // KPI + Logo
         } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             $pdf->Image('img/CNAKPI_small.jpg', 40, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             if (is_file($visuels['logo'])) {
@@ -186,6 +190,18 @@ class PdfListeMatchs extends MyPage
         $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L'); // error level : L, M, Q, H
         $qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
+        // mPDF: Re-enable AutoPageBreak and set cursor to start position
+        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+            $pdf->SetAutoPageBreak(true, 28);
+        } else {
+            $pdf->SetAutoPageBreak(true, 15);
+        }
+        // mPDF: Reset all margins and cursor position
+        $pdf->SetY($yStart);
+        $pdf->SetLeftMargin(15);
+        $pdf->SetRightMargin(15);
+        $pdf->SetX(15);
+
         $titreDate = "Saison " . $codeSaison;
         // titre
         $pdf->SetFont('Arial', 'BI', 12);
@@ -194,6 +210,10 @@ class PdfListeMatchs extends MyPage
         $pdf->SetFont('Arial', 'B', 14);
         $pdf->Cell(273, 6, "Liste des Matchs", 0, 1, 'C');
         $pdf->Ln(3);
+
+        // mPDF: Ensure cursor is at left margin before loop
+        $pdf->SetX(15);
+
         $heure1 = '';
 
         foreach ($resultarray as $key => $row) {
@@ -250,13 +270,17 @@ class PdfListeMatchs extends MyPage
                 if ($Oldrupture != '') {
                     $pdf->Cell(273, 3, '', 'T', '1', 'C');
                     $pdf->AddPage();
+
+                    // mPDF: Disable AutoPageBreak temporarily to prevent images from triggering page breaks
+                    $pdf->SetAutoPageBreak(false);
+
                     // Bandeau
                     if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
                         if (is_file($visuels['bandeau'])) {
                             $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
                             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                         }
-                        // KPI + Logo    
+                        // KPI + Logo
                     } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                         $pdf->Image('img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                         if (is_file($visuels['logo'])) {
@@ -280,6 +304,16 @@ class PdfListeMatchs extends MyPage
                             $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
                         }
                     }
+
+                    // mPDF: Re-enable AutoPageBreak and set cursor to start position
+                    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+                        $pdf->SetAutoPageBreak(true, 28);
+                    } else {
+                        $pdf->SetAutoPageBreak(true, 15);
+                    }
+                    $pdf->SetY($yStart);
+                    $pdf->SetLeftMargin(15);  // Ensure left margin is set
+                    $pdf->SetX(15);  // Position cursor at left margin
                 }
                 $Oldrupture = $rupture;
                 $pdf->Cell(60, 5, '', '', '0', 'L');
@@ -507,7 +541,7 @@ class PdfListeMatchs extends MyPage
             }
         }
         $pdf->Cell(273, 3, '', 'T', '1', 'C');
-        $pdf->Output('Liste matchs' . '.pdf', 'I');
+        $pdf->Output('Liste matchs' . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

@@ -4,7 +4,7 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('lib/fpdf/fpdf.php');
+require_once('commun/MyPDF.php');
 
 require_once('lib/qrcode/qrcode.class.php');
 
@@ -18,6 +18,7 @@ class FeuilleCltNiveau extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('codeCompet', $codeCompet);
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
@@ -33,44 +34,41 @@ class FeuilleCltNiveau extends MyPage
             $arrayCompetition['En_actif'] = '';
         }
 
-        if ($arrayCompetition['En_actif'] == 'O') {
+        if (($arrayCompetition['En_actif'] ?? '') == 'O') {
             $lang = $langue['en'];
         } else {
             $lang = $langue['fr'];
         }
 
         //Création
-        $pdf = new FPDF('P');
-        $pdf->Open();
+        $pdf = new MyPDF('P');
         $pdf->SetTitle("Detail par equipe");
         $pdf->SetAuthor("kayak-polo.info");
         $pdf->SetCreator("kayak-polo.info");
         $pdf->AddPage();
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 30);
-        } else {
-            $pdf->SetAutoPageBreak(true, 15);
-        }
+
+        // Pattern 8: DESACTIVER AutoPageBreak avant les images
+        $pdf->SetAutoPageBreak(false);
 
         // Bandeau
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 210, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            // KPI + Logo
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             $pdf->Image('img/CNAKPI_small.jpg', 10, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 210, 10, 16, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
             $pdf->Image('img/CNAKPI_small.jpg', 84, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
             // Logo
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 210, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         }
         // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
         }
@@ -80,8 +78,12 @@ class FeuilleCltNiveau extends MyPage
         //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
         $qrcode->displayFPDF($pdf, 177, 240, 24);
 
-        // titre
-        $pdf->Ln(22);
+        // Pattern 8: REACTIVER AutoPageBreak après les images
+        // Marge de 30mm pour laisser la place au sponsor (16mm) + QRCode
+        $pdf->SetAutoPageBreak(true, 30);
+
+        // titre - Positionner le curseur après le bandeau
+        $pdf->SetY(30);
         $pdf->SetFont('Arial', 'B', 14);
         if ($arrayCompetition['Titre_actif'] == 'O') {
             $pdf->Cell(190, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
@@ -114,7 +116,7 @@ class FeuilleCltNiveau extends MyPage
             $pdf->Cell(55, 6, '', 0, '0', 'L');
             // médailles
             if ($row['CltNiveau_publi'] <= 3 && $row['CltNiveau_publi'] != 0 && $arrayCompetition['Code_tour'] == 'F') {
-                $pdf->image('img/medal' . $row['CltNiveau_publi'] . '.gif', $pdf->GetX(), $pdf->GetY() + 1, 3, 3);
+                $pdf->Image('img/medal' . $row['CltNiveau_publi'] . '.gif', $pdf->x, $pdf->y + 1, 3, 3);
             }
             $pdf->Cell(20, 6, '', 0, '0', 'C');
             // drapeaux
@@ -123,7 +125,7 @@ class FeuilleCltNiveau extends MyPage
                 if (is_numeric($pays[0]) || is_numeric($pays[1]) || is_numeric($pays[2])) {
                     $pays = 'FRA';
                 }
-                $pdf->image('img/Pays/' . $pays . '.png', $pdf->GetX(), $pdf->GetY() + 1, 7, 4);
+                $pdf->Image('img/Pays/' . $pays . '.png', $pdf->x, $pdf->y + 1, 7, 4);
                 $pdf->Cell(10, 6, '', 0, '0', 'C'); //Pays
             } else {
                 $pdf->Cell(10, 6, '', 0, '0', 'C');
@@ -131,22 +133,23 @@ class FeuilleCltNiveau extends MyPage
 
             $pdf->Cell(190, 6, $row['Libelle'], 0, 1, 'L');
             //Détail
-            $sql2 = "SELECT a.Id_equipeA, a.ScoreA, c.Libelle LibelleA, a.Id_equipeB, a.ScoreB, 
-                d.Libelle LibelleB, a.Id, a.Id_journee, a.Validation, b.Niveau, b.Phase 
-                FROM kp_journee b, kp_match a 
-                LEFT OUTER JOIN kp_competition_equipe c ON (c.Id = a.Id_equipeA) 
-                LEFT OUTER JOIN kp_competition_equipe d ON (d.Id = a.Id_equipeB) 
-                WHERE a.Id_journee = b.Id 
-                AND b.Code_competition = :codeCompet 
-                AND b.Code_saison = :codeSaison 
-                AND (a.Id_equipeA = :idEquipe Or a.Id_equipeB = :idEquipe) 
-                AND a.Publication = 'O' 
+            $sql2 = "SELECT a.Id_equipeA, a.ScoreA, c.Libelle LibelleA, a.Id_equipeB, a.ScoreB,
+                d.Libelle LibelleB, a.Id, a.Id_journee, a.Validation, b.Niveau, b.Phase
+                FROM kp_journee b, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe c ON (c.Id = a.Id_equipeA)
+                LEFT OUTER JOIN kp_competition_equipe d ON (d.Id = a.Id_equipeB)
+                WHERE a.Id_journee = b.Id
+                AND b.Code_competition = :codeCompet
+                AND b.Code_saison = :codeSaison
+                AND (a.Id_equipeA = :idEquipeA Or a.Id_equipeB = :idEquipeB)
+                AND a.Publication = 'O'
                 ORDER BY b.Niveau, b.Phase ";
             $result2 = $myBdd->pdo->prepare($sql2);
             $result2->execute(array(
                 ':codeCompet' => $codeCompet,
                 ':codeSaison' => $codeSaison,
-                ':idEquipe' => $idEquipe,
+                ':idEquipeA' => $idEquipe,
+                ':idEquipeB' => $idEquipe,
             ));
 
             $oldNiveauPhase = '';

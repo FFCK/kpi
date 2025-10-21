@@ -4,12 +4,12 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('lib/fpdf/fpdf.php');
+require_once('commun/MyPDF.php');
 
-// Gestion de la Feuille de Match
-class PDF extends FPDF
+// Gestion de la Feuille de Match - Migré vers mPDF v8 (UTF-8 compatible)
+class PDF extends MyPDF
 {
-    var $x0;
+    // Propriété $x0 héritée de MyPDF
 }
 
 class FeuilleMatch extends MyPage
@@ -28,11 +28,10 @@ class FeuilleMatch extends MyPage
 
         //Création du PDF de base
         $pdf = new PDF('L');
-        $pdf->Open();
         $pdf->SetTitle("Feuille de Marque");
 
         $pdf->SetAuthor("FFCK - Kayak-polo.info");
-        $pdf->SetCreator("FFCK - Kayak-polo.info avec FPDF");
+        $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
         for ($h = 0; $h < count($chaqueMatch); $h++) {
             // Infos match
@@ -173,20 +172,20 @@ class FeuilleMatch extends MyPage
 
             $organisateur = html_entity_decode($row['Organisateur']);
             if ($row['Responsable_R1'] || $arrayCompetition['En_actif'] == 'O') {
-                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_R1'])), 0, 25);
+                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_R1']) ?? ''), 0, 25);
                 $responsableT = $lang['R1'] . ': ';
             } else {
-                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_insc'])), 0, 25);
+                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_insc']) ?? ''), 0, 25);
                 $responsableT = 'Resp: ';
             }
             if ($arrayCompetition['En_actif'] == 'O') {
-                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']));
+                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']) ?? '');
                 $delegueT = $lang['Delegue'] . ': ';
             } elseif ($row['Delegue']) {
-                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']));
+                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']) ?? '');
                 $delegueT = 'Délégué CNA: ';
             } elseif ($row['ChefArbitre']) {
-                $delegue = html_entity_decode(utyGetNomPrenom($row['ChefArbitre']));
+                $delegue = html_entity_decode(utyGetNomPrenom($row['ChefArbitre']) ?? '');
                 $delegueT = 'Chef des arbitres: ';
             } else {
                 $delegue = '';
@@ -224,7 +223,7 @@ class FeuilleMatch extends MyPage
             //$Commentaires = $row['Commentaires_officiels'];
             $Commentaires = ''; // ON CACHE LES COMMENTAIRES AU PUBLIC
             $Commentaires1 = str_split($Commentaires, 85); //85
-            $Commentaires1 = $Commentaires1[0];
+            $Commentaires1 = isset($Commentaires1[0]) ? $Commentaires1[0] : '';
             if (strlen($Commentaires) > 85) {
                 $Commentaires1 .= '...';
             }
@@ -472,7 +471,10 @@ class FeuilleMatch extends MyPage
             $x0 = 10;
             $pdf->SetLeftMargin($x0);
             $pdf->SetX($x0);
-            $pdf->SetY(9);
+
+            // mPDF: Sauvegarder la position Y initiale avant les images
+            $yStart = 9;
+            $pdf->SetY($yStart);
 
             // Bandeau
             if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
@@ -496,6 +498,10 @@ class FeuilleMatch extends MyPage
                 $img = redimImage($visuels['sponsor'], 297, 10, 11, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 190, 0, $img['newHauteur']);
             }
+
+            // mPDF: Restaurer la position Y après les images (FPDF ne modifie pas Y avec Image(), mPDF peut le faire)
+            $pdf->SetY($yStart);
+            $pdf->SetX($x0);
 
             $pdf->Ln(11);
 
@@ -643,7 +649,14 @@ class FeuilleMatch extends MyPage
             $x0 = 150;
             $pdf->SetLeftMargin($x0);
             $pdf->SetX($x0);
-            $pdf->SetY(8);
+
+            // mPDF: Forcer position absolue Y pour colonne 2
+            // La colonne 1 a déjà descendu le curseur, il faut remonter explicitement
+            $yStartCol2 = 8;
+            // Désactiver temporairement AutoPageBreak pour permettre le repositionnement
+            $pdf->SetAutoPageBreak(false);
+            $pdf->SetY($yStartCol2);
+            $pdf->SetAutoPageBreak(true, 1);
 
             $pdf->SetFont('Arial', 'B', 14);
             if ($row['Type'] == 'E') {
@@ -657,8 +670,16 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(135, 6, $lang['FEUILLE_DE_MARQUE'], 0, 1, 'C');
             }
 
-            // Type de match
+            // mPDF: Sauvegarder position Y avant image type match
+            $yBeforeTypeImage = $pdf->y;
+
+            // Type de match (image en position absolue Y=14)
             $pdf->image('img/type' . $row['Type'] . '2.png', 214, 14, 6, 0);
+
+            // mPDF: Restaurer position après image type match
+            // L'image est en position absolue et ne doit PAS décaler le contenu
+            $pdf->SetY($yBeforeTypeImage);
+            $pdf->SetX($x0);
 
             $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(15, 5, $lang['Equ_A'] . ": ", 'LT', 0, 'L', 1);
@@ -815,7 +836,12 @@ class FeuilleMatch extends MyPage
 
             $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": "
                 . $dateprint . " " . date("H:i"), 0, 1, 'R');
-            // Pays
+
+            // mPDF: Sauvegarder position actuelle avant insertion drapeaux
+            $currentY = $pdf->y;
+            $currentX = $pdf->x;
+
+            // Pays (images en position absolue Y=15 - ne doivent pas décaler le curseur)
             if ($arrayCompetition['Code_niveau'] == 'INT' && $paysA != '') {
                 $pdf->image('img/Pays/' . $paysA . '.png', 151, 15, 9, 6);
             }
@@ -823,7 +849,9 @@ class FeuilleMatch extends MyPage
                 $pdf->image('img/Pays/' . $paysB . '.png', 229, 15, 9, 6);
             }
 
-            $pdf->SetX(10);
+            // mPDF: Restaurer position exacte après images drapeaux
+            $pdf->SetY($currentY);
+            $pdf->SetX($currentX);
 
             // Commentaires sur la 2ème page
             if (strlen($Commentaires) > 85 or $nblignes > 26) {
@@ -945,7 +973,8 @@ class FeuilleMatch extends MyPage
             }
         }
 
-        $pdf->Output('Match(s) ' . $listMatch . '.pdf', 'I');
+        // Sortie PDF avec mPDF v8 (Destination::INLINE pour affichage navigateur)
+        $pdf->Output('Match(s) ' . $listMatch . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 
