@@ -10,6 +10,11 @@ services:
                 GROUP_ID: ${GROUP_ID}
                 BASE_IMAGE_PHP: ${BASE_IMAGE_PHP}
         user: ${USER_ID}:${GROUP_ID}
+        environment:
+            - SMTP_HOST=host.docker.internal
+            - SMTP_PORT=25
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
         volumes:
             - ../sources:/var/www/html
             - ${HOST_WORDPRESS_PATH}:/var/www/html/wordpress
