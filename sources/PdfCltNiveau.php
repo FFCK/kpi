@@ -195,9 +195,12 @@ class FeuilleCltNiveau extends MyPage
 			$i++;
 		}
 
+		// Désactiver AutoPageBreak pour écrire la date en bas de page (comme pour les images Pattern 8)
+		$pdf->SetAutoPageBreak(false);
+
 		$pdf->SetFont('Arial', 'I', 8);
 		if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
-			$pdf->SetXY(165, 263);
+			$pdf->SetXY(165, 285);  // Positionner en dessous du sponsor (qui est à Y=267 + hauteur ~16mm)
 		} else {
 			$pdf->SetXY(165, 270);
 		}

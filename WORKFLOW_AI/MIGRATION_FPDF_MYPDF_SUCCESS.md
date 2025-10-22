@@ -1,7 +1,7 @@
 # Migration FPDF → mPDF - Succès ✅
 
 **Date de début**: 2025-10-19
-**Date dernière mise à jour**: 2025-10-20
+**Date dernière mise à jour**: 2025-10-22
 **Fichiers migrés**:
 - ✅ PdfMatchMulti.php (2025-10-19)
 - ✅ PdfListeMatchs.php (2025-10-20)
@@ -9,8 +9,15 @@
 - ✅ PdfCltNiveau.php (2025-10-20)
 - ✅ PdfCltNiveauPhase.php (2025-10-20)
 - ✅ PdfCltNiveauDetail.php (2025-10-20)
+- ✅ PdfCltChpt.php (2025-10-22)
+- ✅ PdfCltChptDetail.php (2025-10-22)
+- ✅ PdfCltNiveauJournee.php (2025-10-22)
+- ✅ PdfListeMatchs4TerrainsEn.php (2025-10-22)
+- ✅ PdfListeMatchs4TerrainsEn2.php (2025-10-22)
+- ✅ PdfListeMatchs4TerrainsEn3.php (2025-10-22)
+- ✅ PdfListeMatchs4TerrainsEn4.php (2025-10-22)
 
-**Statut**: ✅ **MIGRATION EN COURS** (6/43 fichiers)
+**Statut**: ✅ **MIGRATION EN COURS** (10/43 fichiers)
 
 ---
 
@@ -701,6 +708,377 @@ Identique aux fichiers précédents :
 - Sans sponsor → 15mm suffit
 
 ✅ **GetX()/GetY()** : Toujours remplacer par `$pdf->x` et `$pdf->y`
+
+---
+
+## 📄 Fichier Migré : PdfCltChpt.php
+
+### Modifications Apportées
+
+1. **Ligne 7** : `require('lib/fpdf/fpdf.php')` → `require_once('commun/MyPDF.php')`
+2. **Ligne 50** : `new FPDF('L')` → `new MyPDF('L')`
+3. **Lignes 31-32** : ⚠️ **PHP 8 FIX + Type casting** - `(int)($arrayCompetition['Qualifies'] ?? 0)` et `(int)($arrayCompetition['Elimines'] ?? 0)`
+4. **Lignes 56-88** : **SetHTMLHeader() et SetHTMLFooter()** pour bandeau/sponsor sur toutes les pages
+5. **Ligne 91** : `SetTopMargin(35)` pour éviter chevauchement avec header
+6. **Lignes 99-101** : QRCode avec `displayFPDF()` (compatible MyPDF)
+7. **Ligne 211** : `Output(..., 'I')` → `Output(..., Destination::INLINE)`
+
+### Particularités de ce Fichier
+
+**Classement général de championnat en paysage** :
+- PDF Landscape (format A4-L, 297x210mm)
+- Multi-pages (tableau peut s'étendre sur plusieurs pages)
+- **Header/Footer HTML** : Bandeau et sponsor affichés sur toutes les pages
+- Images décoratives : Bandeau, Logo KPI, Logo compétition, Sponsor, QRCode
+- Séparateurs visuels pour qualifiés/éliminés dans le tableau
+
+### Zones Critiques Corrigées
+
+#### Header/Footer HTML (NOUVEAU Pattern) 🆕
+
+**Problème initial** : Bandeau et sponsor affichés uniquement sur page 1 avec Pattern 8
+
+**Solution** : Utiliser `SetHTMLHeader()` et `SetHTMLFooter()` pour répéter sur toutes les pages
+
+```php
+// Header HTML (lignes 56-81)
+$headerHTML = '<div style="text-align: center;">';
+if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+    $img = redimImage($visuels['bandeau'], 265, 10, 20, 'C');
+    $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+} elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O') {
+    // KPI + Logo en table HTML
+    $headerHTML .= '<table width="100%"><tr>';
+    $headerHTML .= '<td width="33%" align="left"><img src="img/CNAKPI_small.jpg" style="height: 20mm;" /></td>';
+    $headerHTML .= '<td width="34%"></td>';
+    $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
+    $headerHTML .= '</tr></table>';
+}
+// ...
+$pdf->SetHTMLHeader($headerHTML);
+
+// Footer HTML (lignes 84-88)
+if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+    $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+    $footerHTML = '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+    $pdf->SetHTMLFooter($footerHTML);
+}
+```
+
+**Avantage** : Bandeau et sponsor répétés automatiquement sur chaque page
+
+#### SetTopMargin pour éviter chevauchement (ligne 91)
+
+**Problème** : Sur page 2+, le tableau chevauchait le bandeau du header
+
+**Solution** : Configurer `SetTopMargin(35)` AVANT `AddPage()`
+
+```php
+$pdf->SetTopMargin(35);  // Marge haute pour laisser place au header
+$pdf->AddPage();
+```
+
+**Résultat** : Le contenu commence à 35mm du haut sur toutes les pages
+
+#### Type Casting pour Qualifies/Elimines
+
+Même correction que PdfCltNiveau.php :
+```php
+$qualif = (int)($arrayCompetition['Qualifies'] ?? 0);
+$elim = (int)($arrayCompetition['Elimines'] ?? 0);
+```
+
+Évite l'erreur `Unsupported operand types: int - string` en PHP 8.
+
+### Tests Validés
+
+- ✅ **PHP 7.4** : Aucune erreur, PDF valide
+- ✅ **PHP 8.4** : Aucune erreur, PDF valide
+- ✅ **Multi-pages** : Bandeau et sponsor sur toutes les pages
+- ✅ **QR Code** : Visible en haut à droite page 1
+- ✅ **Séparateurs** : Qualifiés/éliminés correctement marqués
+- ✅ **Tableau** : Aucun chevauchement avec header/footer
+
+### Différence avec Fichiers Précédents
+
+- **SetHTMLHeader()/SetHTMLFooter()** : Première utilisation pour répéter images sur toutes les pages
+- **SetTopMargin(35)** : Marge plus haute que la normale (16mm) pour accommoder le header
+- **Format Landscape** : 297x210mm au lieu de 210x297mm
+- **Multi-pages automatique** : Le tableau s'étend naturellement sur plusieurs pages si nécessaire
+
+### Pattern Nouveau : Header/Footer HTML pour Multi-Pages
+
+**Quand utiliser** :
+- PDF avec plusieurs pages (classements, listes)
+- Images décoratives devant apparaître sur toutes les pages
+- Alternative à Pattern 8 qui n'affiche qu'en page 1
+
+**Comment** :
+1. Construire HTML pour header avec `<img>`, `<table>`, etc.
+2. Appeler `SetHTMLHeader($headerHTML)` avant `AddPage()`
+3. Construire HTML pour footer
+4. Appeler `SetHTMLFooter($footerHTML)` avant `AddPage()`
+5. Configurer `SetTopMargin()` et marges AutoPageBreak appropriées
+6. Appeler `AddPage()`
+
+---
+
+## 📄 Fichier Migré : PdfCltChptDetail.php
+
+### Modifications Apportées
+
+1. **Ligne 7** : `require('lib/fpdf/fpdf.php')` → `require_once('commun/MyPDF.php')`
+2. **Ligne 41** : `new FPDF('P')` → `new MyPDF('P')`
+3. **Ligne 42** : Supprimé `$pdf->Open()` (obsolète)
+4. **Lignes 28-32** : ⚠️ **PHP 8 FIX** - Initialisation de `En_actif`
+5. **Lignes 46-78** : **SetHTMLHeader() et SetHTMLFooter()** pour bandeau/sponsor sur toutes les pages
+6. **Ligne 81** : `SetTopMargin(30)` pour éviter chevauchement
+7. **Lignes 133-140** : **Pattern 5** - Sauvegarde/restauration position pour médailles
+8. **Lignes 143-157** : **Pattern 5** - Sauvegarde/restauration position pour drapeaux
+9. **Lignes 169-175** : ⚠️ **FIX SQL PDO** - Placeholders positionnels au lieu de nommés
+10. **Ligne 228** : `Output(..., 'I')` → `Output(..., Destination::INLINE)`
+
+### Particularités de ce Fichier
+
+**Détail par équipe avec liste des matchs** :
+- PDF Portrait (format A4, 210x297mm)
+- Multi-pages (une section par équipe + liste de leurs matchs)
+- **Header/Footer HTML** : Bandeau et sponsor affichés sur toutes les pages
+- **Pattern 5 critique** : Médailles et drapeaux dans boucle d'équipes
+- **Requête SQL imbriquée** : Pour chaque équipe, récupère ses matchs
+
+### Zones Critiques Corrigées
+
+#### Erreur SQL PDO - Paramètre utilisé 2 fois ⚠️
+
+**Problème PHP 7 & 8** : `SQLSTATE[HY093]: Invalid parameter number`
+
+**Cause** : Le paramètre nommé `:idEquipe` était utilisé **deux fois** dans la requête SQL :
+```sql
+AND (a.Id_equipeA = :idEquipe OR a.Id_equipeB = :idEquipe)
+```
+
+PDO n'autorise pas d'utiliser le même paramètre nommé plusieurs fois.
+
+**Solution** : Utiliser des placeholders positionnels `?` (lignes 169-175) :
+```php
+$sql2 = "SELECT ...
+    WHERE a.Id_journee = b.Id
+    AND b.Code_competition = ?
+    AND b.Code_saison = ?
+    AND (a.Id_equipeA = ? OR a.Id_equipeB = ?)
+    AND a.Publication = 'O'
+    ORDER BY b.Date_debut, b.Lieu ";
+$result2 = $myBdd->pdo->prepare($sql2);
+$result2->execute(array($codeCompet, $codeSaison, $idEquipe, $idEquipe));
+```
+
+**Avantage** : On peut passer la même valeur plusieurs fois dans l'array.
+
+#### Pattern 5 : Médailles et Drapeaux
+
+Identique à PdfCltNiveau.php - Sauvegarde/restauration Y/X pour éviter décalage :
+
+```php
+// Médailles (lignes 133-140)
+if ($row['Clt_publi'] <= 3 && $row['Clt_publi'] != 0 && $arrayCompetition['Code_tour'] == 'F') {
+    $savedY = $pdf->y;
+    $savedX = $pdf->x;
+    $pdf->image('img/medal' . $row['Clt_publi'] . '.gif', $pdf->x, $pdf->y + 1, 3, 3);
+    $pdf->SetY($savedY);
+    $pdf->SetX($savedX);
+}
+
+// Drapeaux (lignes 143-157)
+if ($arrayCompetition['Code_niveau'] == 'INT') {
+    $pays = substr($row['Code_club'], 0, 3);
+    if (is_numeric($pays[0]) || is_numeric($pays[1]) || is_numeric($pays[2])) {
+        $pays = 'FRA';
+    }
+    $savedY = $pdf->y;
+    $savedX = $pdf->x;
+    $pdf->image('img/Pays/' . $pays . '.png', $pdf->x, $pdf->y + 1, 7, 4);
+    $pdf->SetY($savedY);
+    $pdf->SetX($savedX);
+    $pdf->Cell(10, 6, '', 0, '0', 'C');
+}
+```
+
+#### Header/Footer HTML
+
+Même pattern que PdfCltChpt.php pour répéter bandeau/sponsor sur toutes les pages.
+
+### Tests Validés
+
+- ✅ **PHP 7.4** : Aucune erreur SQL, PDF valide
+- ✅ **PHP 8.4** : Aucune erreur, PDF valide
+- ✅ **Multi-pages** : Bandeau et sponsor sur toutes les pages
+- ✅ **Médailles** : Alignement correct (Pattern 5)
+- ✅ **Drapeaux** : Alignement correct (Pattern 5)
+- ✅ **Liste matchs** : Scores et adversaires par équipe
+- ✅ **Ruptures journées** : Dates et lieux affichés correctement
+
+### Différence avec Fichiers Précédents
+
+- **Requête SQL imbriquée** : Boucle d'équipes avec sous-requête de matchs
+- **Erreur PDO paramètres** : Première fois qu'on corrige ce type d'erreur
+- **Pattern 5 dans boucle principale** : Médailles et drapeaux pour chaque équipe
+- **Multi-sections** : Une section par équipe avec détails de matchs
+
+### Points d'Attention pour Migrations Futures
+
+⚠️ **Paramètres PDO répétés** :
+- Utiliser `?` au lieu de `:name` si paramètre utilisé plusieurs fois
+- Plus simple et compatible avec toutes versions PDO
+
+⚠️ **Pattern 5 systématique** :
+- TOUJOURS sauvegarder/restaurer Y/X pour images dans boucles
+- Sinon décalage cumulatif à chaque itération
+
+---
+
+### 10. PdfListeMatchs4TerrainsEn.php ✅
+
+**Date** : 2025-10-22
+**Objectif** : Tableau horaire des matchs sur 4 terrains (version anglaise)
+**Format** : Paysage (297mm)
+**Pages** : Multiples (1 page par jour)
+
+#### Erreur PHP 8 Initiale
+
+```
+PHP Fatal error: Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in /var/www/html/lib/fpdf/fpdf.php:921
+Stack trace:
+#0 /var/www/html/PdfListeMatchs4TerrainsEn.php(162): FPDF->Image('img/logo/B-CM-2...', 49.3, 8, 0, 20)
+```
+
+**Cause** : Fichier utilisait encore FPDF avec classe personnalisée `PDF extends FPDF` pour le footer.
+
+#### Modifications Appliquées
+
+**1. Remplacement FPDF par MyPDF** :
+```php
+// Avant
+require('lib/fpdf/fpdf.php');
+class PDF extends FPDF {
+    function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('Arial', 'I', 8);
+        $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
+        $this->Cell(136, 5, "Print: " . date("Y-m-d H:i"), 0, 1, 'R');
+    }
+}
+$pdf = new PDF('L');
+$pdf->Open();
+
+// Après
+require_once('commun/MyPDF.php');
+$pdf = new MyPDF('L');
+```
+
+**2. Migration du Footer vers HTML** :
+```php
+$footerHTML = '<table width="100%" style="font-family: Arial; font-size: 8pt; font-style: italic;"><tr>';
+$footerHTML .= '<td width="50%" align="left">Page {PAGENO}</td>';
+$footerHTML .= '<td width="50%" align="right">Print: ' . date("Y-m-d H:i") . '</td>';
+$footerHTML .= '</tr></table>';
+
+if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+    $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+    $footerHTML .= '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+    $pdf->SetHTMLFooter($footerHTML);
+    $pdf->SetAutoPageBreak(true, 30);  // Marge basse pour footer sponsor
+} else {
+    $pdf->SetHTMLFooter($footerHTML);
+    $pdf->SetAutoPageBreak(true, 20);  // Marge basse pour footer simple
+}
+```
+
+**3. SetHTMLHeader pour Bandeau/Logo** :
+```php
+$headerHTML = '<div style="text-align: center;">';
+
+if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+    $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
+    $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+} elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+    // KPI + Logo côte à côte
+    $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
+    $headerHTML .= '<table width="100%"><tr>';
+    $headerHTML .= '<td width="33%" align="left"><img src="img/CNAKPI_small.jpg" style="height: 20mm;" /></td>';
+    $headerHTML .= '<td width="34%"></td>';
+    $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
+    $headerHTML .= '</tr></table>';
+} // ... autres cas
+
+$headerHTML .= '</div>';
+$pdf->SetHTMLHeader($headerHTML);
+$pdf->SetTopMargin(30);
+```
+
+**4. Suppression du code dupliqué dans la boucle** :
+```php
+// Avant - bandeau/sponsor répétés manuellement dans foreach
+foreach ($tab as $date => $tab_heure) {
+    $pdf->AddPage();
+    // 25 lignes de duplication bandeau/sponsor/logo
+    $pdf->Image(...); // répété pour chaque page
+}
+
+// Après - SetHTMLHeader/Footer gère automatiquement
+foreach ($tab as $date => $tab_heure) {
+    $pdf->AddPage();
+    // Header/footer automatiques, pas de duplication !
+}
+```
+
+**5. Output avec Destination** :
+```php
+// Avant
+$pdf->Output('GameTable.pdf', 'I');
+
+// Après
+$pdf->Output('GameTable.pdf', \Mpdf\Output\Destination::INLINE);
+```
+
+#### Structure du Document
+
+Le PDF génère un tableau horaire avec :
+- **En-tête** : Bandeau/logo sur toutes les pages (SetHTMLHeader)
+- **Titre** : Nom compétition + saison (en haut de chaque page)
+- **Tableau** : 4 colonnes (Pitch 1-4) × lignes horaires
+- **Colonnes par terrain** : #match, Catégorie, Équipe A, Équipe B
+- **Pied de page** : N° page + date d'impression + sponsor (SetHTMLFooter)
+
+#### Patterns Utilisés
+
+✅ **Pattern Header/Footer HTML** : SetHTMLHeader/SetHTMLFooter pour affichage automatique sur toutes les pages
+✅ **Pattern SetTopMargin** : Configuré à 30mm avant AddPage() pour éviter chevauchement
+✅ **SetAutoPageBreak dynamique** : 30mm si sponsor, 20mm sinon
+✅ **Suppression Open()** : Méthode obsolète retirée
+✅ **Constante Destination** : INLINE pour affichage navigateur
+
+#### Particularités
+
+- **Footer personnalisé** : Combinaison page number + timestamp + sponsor optionnel
+- **Boucle AddPage()** : Une page par jour, header/footer automatiques sur chacune
+- **4 terrains en parallèle** : Grille complexe avec Cell() imbriquées
+- **Textes dynamiques** : Ajustement taille police selon longueur nom équipe (4pt/5pt/6pt)
+- **Version anglaise** : Labels "Game table", "Pitch", "Team A/B", "Season"
+
+#### Tests
+
+- ✅ **PHP 7.4** : Syntaxe OK, PDF valide
+- ✅ **PHP 8.4** : TypeError FPDF résolu, mPDF fonctionnel
+- ✅ **Multi-pages** : Header/footer apparaissent sur toutes les pages
+- ✅ **Footer dynamique** : Sponsor s'affiche correctement si actif
+- ✅ **Grille 4 terrains** : Alignement préservé
+
+#### Leçons
+
+⚠️ **Classe personnalisée FPDF** : Toujours remplacer par SetHTMLHeader/Footer (pas besoin d'héritage)
+⚠️ **PageNo()** : Utiliser `{PAGENO}` dans HTML footer avec mPDF
+✅ **SetAutoPageBreak adaptatif** : Ajuster la marge selon présence sponsor
 
 ---
 

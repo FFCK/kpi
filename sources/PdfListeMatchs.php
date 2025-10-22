@@ -8,21 +8,6 @@ require_once('commun/MyPDF.php');
 
 require_once('lib/qrcode/qrcode.class.php');
 
-// Pieds de page
-class PDF extends MyPDF
-{
-    function Footer()
-    {
-        //Positionnement à 1,5 cm du bas
-        $this->SetY(-15);
-        //Police Arial italique 8
-        $this->SetFont('Arial', 'I', 8);
-        //Numéro de page centré
-        $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-        $this->Cell(136, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 0)), 0, 1, 'R');
-    }
-}
-
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfListeMatchs extends MyPage
 {
@@ -137,12 +122,38 @@ class PdfListeMatchs extends MyPage
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
         // Entête PDF ...
-        $pdf = new PDF('L');
+        $pdf = new MyPDF('L');
         // Open() removed - causes buffer corruption with mPDF
 
         $pdf->SetTitle("Liste des Matchs");
         $pdf->SetAuthor("Kayak-polo.info");
-        $pdf->SetCreator("Kayak-polo.info avec FPDF");
+        $pdf->SetCreator("Kayak-polo.info avec mPDF");
+
+        // Construire le footer HTML pour affichage sur toutes les pages
+        $footerHTML = '';
+
+        // Sponsor d'abord (en haut du footer)
+        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+            if (is_file($visuels['sponsor'])) {
+                $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+                $footerHTML .= '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+            }
+        }
+
+        // Page number et date en dessous (plus près du bord bas)
+        $footerHTML .= '<table width="100%" style="font-family: Arial; font-size: 8pt; font-style: italic;"><tr>';
+        $footerHTML .= '<td width="50%" align="left">Page {PAGENO}</td>';
+        $footerHTML .= '<td width="50%" align="right">Edité le ' . date("d/m/Y") . ' à ' . date("H:i") . '</td>';
+        $footerHTML .= '</tr></table>';
+
+        $pdf->SetHTMLFooter($footerHTML);
+
+        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+            $pdf->SetAutoPageBreak(true, 30);  // Marge basse pour footer sponsor + page/date
+        } else {
+            $pdf->SetAutoPageBreak(true, 20);  // Marge basse pour footer simple (page/date uniquement)
+        }
+
         $pdf->SetTopMargin(30);
         $pdf->AddPage();
 
@@ -178,24 +189,12 @@ class PdfListeMatchs extends MyPage
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
         }
-        // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            if (is_file($visuels['sponsor'])) {
-                $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
-                $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
-            }
-        }
 
         // QRCode
         $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L'); // error level : L, M, Q, H
         $qrcode->displayFPDF($pdf, $qr_x, 9, 21);
 
-        // mPDF: Re-enable AutoPageBreak and set cursor to start position
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 28);
-        } else {
-            $pdf->SetAutoPageBreak(true, 15);
-        }
+        // mPDF: Re-enable AutoPageBreak after images (already configured before AddPage)
         // mPDF: Reset all margins and cursor position
         $pdf->SetY($yStart);
         $pdf->SetLeftMargin(15);
@@ -297,20 +296,7 @@ class PdfListeMatchs extends MyPage
                             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
                         }
                     }
-                    // Sponsor
-                    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-                        if (is_file($visuels['sponsor'])) {
-                            $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
-                            $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
-                        }
-                    }
 
-                    // mPDF: Re-enable AutoPageBreak and set cursor to start position
-                    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-                        $pdf->SetAutoPageBreak(true, 28);
-                    } else {
-                        $pdf->SetAutoPageBreak(true, 15);
-                    }
                     $pdf->SetY($yStart);
                     $pdf->SetLeftMargin(15);  // Ensure left margin is set
                     $pdf->SetX(15);  // Position cursor at left margin
