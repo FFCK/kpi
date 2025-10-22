@@ -1635,6 +1635,11 @@ class MyBdd
 			'Date_calcul' => '', 'Date_publication' => '', 'Date_publication_calcul' => '',
 			'Code_uti_calcul' => '', 'Code_uti_publication' => '',
 			'Mode_calcul' => '', 'Mode_publication_calcul' => '',
+			'BandeauLink' => '', 'LogoLink' => '', 'SponsorLink' => '',
+			'Kpi_ffck_actif' => '', 'Bandeau_actif' => '', 'Logo_actif' => '',
+			'Titre_actif' => '', 'Soustitre' => '', 'Soustitre2' => '',
+			'Sponsor_actif' => '', 'Publication' => '', 'Verrou' => '',
+			'commentairesCompet' => '',
 			'Calendar' => null
 		);
 	}

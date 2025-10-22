@@ -137,13 +137,13 @@ class GestionDoc extends MyPageSecure
 			$detailsCompet['Date_publication'] = date('d/m/Y \à H:i', strtotime($detailsCompet['Date_publication']));
 		}
 
-		if ($detailsCompet['BandeauLink'] != '' && strpos($detailsCompet['BandeauLink'], 'http') === FALSE ) {
+		if (isset($detailsCompet['BandeauLink']) && $detailsCompet['BandeauLink'] != '' && strpos($detailsCompet['BandeauLink'], 'http') === FALSE ) {
             $detailsCompet['BandeauLink'] = '../img/logo/' . $detailsCompet['BandeauLink'];
         }
-        if ($detailsCompet['LogoLink'] != '' && strpos($detailsCompet['LogoLink'], 'http') === FALSE ) {
+        if (isset($detailsCompet['LogoLink']) && $detailsCompet['LogoLink'] != '' && strpos($detailsCompet['LogoLink'], 'http') === FALSE ) {
             $detailsCompet['LogoLink'] = '../img/logo/' . $detailsCompet['LogoLink'];
         }
-        if ($detailsCompet['SponsorLink'] != '' && strpos($detailsCompet['SponsorLink'], 'http') === FALSE ) {
+        if (isset($detailsCompet['SponsorLink']) && $detailsCompet['SponsorLink'] != '' && strpos($detailsCompet['SponsorLink'], 'http') === FALSE ) {
             $detailsCompet['SponsorLink'] = '../img/logo/' . $detailsCompet['SponsorLink'];
         }
 		$this->m_tpl->assign('detailsCompet', $detailsCompet);

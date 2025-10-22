@@ -606,8 +606,10 @@
 								</td>
 							{else}
 								<td align='center' colspan=4>
+									{if isset($arrayJournees[0])}
 									<b>{$arrayJournees[0].Date_debut} -> {$arrayJournees[0].Date_fin}</b>
 									<br><br>
+									{/if}
 									{section name=i loop=$arrayJournees}
 										{if $smarty.section.i.iteration > 1}{if $arrayJournees[i].Niveau != $niveauTmp}<br>{else} | {/if}{/if}
 										{$arrayJournees[i].Phase}

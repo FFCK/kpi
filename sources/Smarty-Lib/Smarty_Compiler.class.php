@@ -76,7 +76,16 @@ class Smarty_Compiler extends Smarty {
 
     /**#@-*/
     /**
-     * The class constructor.
+     * Modern PHP constructor (PHP 5+)
+     * PHP 8 fix: Old-style constructors (same name as class) are deprecated
+     */
+    function __construct()
+    {
+        $this->Smarty_Compiler();
+    }
+
+    /**
+     * The class constructor (PHP 4 style - deprecated in PHP 8)
      */
     function Smarty_Compiler()
     {
@@ -271,11 +280,11 @@ class Smarty_Compiler extends Smarty {
         //                                , $source_content);
 
         //NEW - PHP 8 compatible (replaced create_function with anonymous function)
+        // Simply replace all special blocks (comments, literal, php) with {php} placeholder
+        // The actual content is stored in _folded_blocks and will be restored later
         $left_delim = $this->_quote_replace($this->left_delimiter);
         $right_delim = $this->_quote_replace($this->right_delimiter);
-        $source_content = preg_replace_callback($search, function($matches) use ($left_delim, $right_delim) {
-            return $left_delim . 'php' . str_repeat("\n", substr_count($matches[1], "\n")) . $right_delim;
-        }, $source_content); 
+        $source_content = preg_replace($search, $left_delim . 'php' . $right_delim, $source_content); 
         
         /* Gather all template tags. */
         preg_match_all("~{$ldq}\s*(.*?)\s*{$rdq}~s", $source_content, $_match);
@@ -445,12 +454,39 @@ class Smarty_Compiler extends Smarty {
         /* Matched comment. */
         if (substr($template_tag, 0, 1) == '*' && substr($template_tag, -1) == '*')
             return '';
-        
+
+        /* Handle placeholder {php} tags created during block folding */
+        if ($template_tag === 'php') {
+            // This is a placeholder tag for folded blocks (comments, literal, php)
+            // Restore the original block from _folded_blocks
+            $block = current($this->_folded_blocks);
+            if ($block === false) {
+                $this->_syntax_error("unexpected {php} tag - no folded blocks available", E_USER_ERROR, __FILE__, __LINE__);
+                return;
+            }
+            next($this->_folded_blocks);
+            $this->_current_line_no += substr_count($block[0], "\n");
+
+            switch (count($block)) {
+                case 2: /* comment */
+                    return '';
+                case 3: /* literal */
+                    return "<?php echo '" . strtr($block[2], array("'"=>"\'", "\\"=>"\\\\")) . "'; ?>" . $this->_additional_newline;
+                case 4: /* php */
+                    if ($this->security && !$this->security_settings['PHP_TAGS']) {
+                        $this->_syntax_error("(secure mode) php tags not permitted", E_USER_WARNING, __FILE__, __LINE__);
+                        return;
+                    }
+                    return '<?php ' . $block[3] .' ?>';
+            }
+        }
+
         /* Split tag into two three parts: command, command modifiers and the arguments. */
-        if(! preg_match('~^(?:(' . $this->_num_const_regexp . '|' . $this->_obj_call_regexp . '|' . $this->_var_regexp
-                . '|\/?' . $this->_reg_obj_regexp . '|\/?' . $this->_func_regexp . ')(' . $this->_mod_regexp . '*))
-                      (?:\s+(.*))?$
-                    ~xs', $template_tag, $match)) {
+        // PHP 8 fix: Changed ($this->_mod_regexp . '*') to ('(?:' . $this->_mod_regexp . ')*')
+        // to avoid "quantifier does not follow a repeatable item" error
+        // Also removed whitespace from regex string to avoid issues with 'x' flag
+        $pattern = '~^(?:(' . $this->_num_const_regexp . '|' . $this->_obj_call_regexp . '|' . $this->_var_regexp . '|\/?' . $this->_reg_obj_regexp . '|\/?' . $this->_func_regexp . ')((?:' . $this->_mod_regexp . ')*))(?:\s+(.*))?$~xs';
+        if(! preg_match($pattern, $template_tag, $match)) {
             $this->_syntax_error("unrecognized tag: $template_tag", E_USER_ERROR, __FILE__, __LINE__);
         }
         
@@ -562,27 +598,8 @@ class Smarty_Compiler extends Smarty {
                 }
                 return '';
 
-            case 'php':
-                /* handle folded tags replaced by {php} */
-                list(, $block) = each($this->_folded_blocks);
-                $this->_current_line_no += substr_count($block[0], "\n");
-                /* the number of matched elements in the regexp in _compile_file()
-                   determins the type of folded tag that was found */
-                switch (count($block)) {
-                    case 2: /* comment */
-                        return '';
-
-                    case 3: /* literal */
-                        return "<?php echo '" . strtr($block[2], array("'"=>"\'", "\\"=>"\\\\")) . "'; ?>" . $this->_additional_newline;
-
-                    case 4: /* php */
-                        if ($this->security && !$this->security_settings['PHP_TAGS']) {
-                            $this->_syntax_error("(secure mode) php tags not permitted", E_USER_WARNING, __FILE__, __LINE__);
-                            return;
-                        }
-                        return '<?php ' . $block[3] .' ?>';
-                }
-                break;
+            // Note: case 'php' has been moved to the beginning of _compile_tag()
+            // to handle it before regex validation (see line ~450)
 
             case 'insert':
                 return $this->_compile_insert_tag($tag_args);
