@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 📚 Documentation
+
+**Extended documentation** is available in the [`WORKFLOW_AI/`](WORKFLOW_AI/) directory, including:
+- Migration guides (PHP 8, FPDF → mPDF, etc.)
+- Technical fixes and optimizations
+- Audit reports and cleanup recommendations
+- Docker and infrastructure documentation
+
+See [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md) for the complete list.
+
 ## Project Overview
 
 KPI is a sports management system with multiple Vue.js/Nuxt applications, PHP backend, and Docker infrastructure. The project manages competitions, teams, matches, and player statistics.
@@ -13,7 +23,8 @@ Use `make help` to see all available commands.
 ### Quick Start
 - `make init` - Complete project initialization (creates .env files and Docker networks)
 - `make dev_up` - Start development environment
-- `make npm_install_app2` - Install dependencies for app2
+- `make composer_install` - Install PHP/Composer dependencies (mPDF, etc.)
+- `make npm_install_app2` - Install NPM dependencies for app2
 - `make run_dev` - Run Nuxt development server (port 3002)
 
 ### Initialization
@@ -59,6 +70,13 @@ Use `make help` to see all available commands.
 - `make npm_add_app2 package=<name>` - Add npm package
 - `make npm_add_dev_app2 package=<name>` - Add npm dev package
 - `make npm_ls_app2` - List installed npm modules
+
+### Composer - PHP
+- `make composer_install` - Install Composer dependencies (sources/vendor/)
+- `make composer_update` - Update Composer dependencies
+- `make composer_require package=<vendor/package>` - Add Composer package
+- `make composer_require_dev package=<vendor/package>` - Add Composer dev package
+- `make composer_dump` - Regenerate Composer autoloader
 
 ### Shell Access
 - `make php_bash` - Open bash in PHP 7.4 container

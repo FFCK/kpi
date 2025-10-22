@@ -1,6 +1,18 @@
 # Contexte projet
 
-- Backend en **PHP 7.4**, architecture MVC maison.
+## 📚 Documentation étendue
+
+Voir le dossier **[WORKFLOW_AI/](WORKFLOW_AI/)** pour la documentation technique détaillée :
+- Guides de migration (PHP 8, FPDF → mPDF)
+- Corrections et optimisations
+- Audits de code
+- Configuration Docker et infrastructure
+
+Index complet : [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md)
+
+## Architecture
+
+- Backend en **PHP 7.4/8.x**, architecture MVC maison.
 - Templates avec **Smarty** (`.tpl`) dans `sources/smarty/templates`
 - Base de données MySQL, requêtes préparées uniquement.
 - Suivre la convention **PSR-12** pour le code PHP.

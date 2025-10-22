@@ -177,8 +177,14 @@ kpi/
 │   ├── commun/                  # Classes PHP partagées
 │   └── wordpress_archive/       # Archive WordPress
 ├── SQL/                         # Scripts SQL
+├── WORKFLOW_AI/                 # Documentation technique détaillée
+│   ├── README.md                # Index de la documentation
+│   ├── PHP8_GESTIONDOC_FIXES.md # Correctifs PHP 8
+│   ├── MIGRATION.md             # Guide de migration
+│   └── ... (18 fichiers)        # Guides, audits, fixes
 ├── Makefile                     # Commandes Make
 ├── CLAUDE.md                    # Documentation pour Claude Code
+├── GEMINI.md                    # Documentation pour Gemini
 └── README.md                    # Ce fichier
 ```
 
@@ -308,7 +314,13 @@ make run_dev           # Relancer
 
 ## 📚 Documentation complémentaire
 
-- **CLAUDE.md** : Guide complet des commandes pour Claude Code
+- **[CLAUDE.md](CLAUDE.md)** : Guide complet des commandes pour Claude Code
+- **[WORKFLOW_AI/](WORKFLOW_AI/)** : Documentation technique détaillée
+  - Guides de migration (PHP 8, FPDF → mPDF)
+  - Fixes et optimisations
+  - Audits de code et recommandations
+  - Configuration Docker et infrastructure
+  - Voir [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md) pour l'index complet
 - **Makefile** : Toutes les commandes disponibles (`make help`)
 - **Wiki GitHub** : https://github.com/FFCK/kpi/wiki
 
