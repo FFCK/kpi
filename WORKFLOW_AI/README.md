@@ -8,7 +8,13 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ### Migration PHP 8
 
-- **[PHP8_GESTIONDOC_FIXES.md](PHP8_GESTIONDOC_FIXES.md)** ⭐ **NOUVEAU**
+- **[WORDPRESS_PHP8_FIXES.md](WORDPRESS_PHP8_FIXES.md)** ⭐ **NOUVEAU**
+  - Correctifs WordPress et plugins pour PHP 8.4
+  - NextGen Gallery, WordPress Core (pluggable.php, theme.php)
+  - Script de réapplication automatique inclus
+  - **Important** : Fichiers non versionnés, à réappliquer après mises à jour
+
+- **[PHP8_GESTIONDOC_FIXES.md](PHP8_GESTIONDOC_FIXES.md)**
   - Corrections complètes pour GestionDoc.php en PHP 8
   - 7 corrections majeures incluant le fix critique du constructeur Smarty
   - Guide détaillé avec exemples de code
@@ -113,9 +119,9 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 18 fichiers
-- **Lignes de documentation**: ~5000+
-- **Sujets couverts**: Migration PHP 8, PDF, Docker, Audits, Bugs
+- **Total documents**: 19 fichiers
+- **Lignes de documentation**: ~5500+
+- **Sujets couverts**: Migration PHP 8, PDF, Docker, WordPress, Audits, Bugs
 - **Date de création**: 2025-10-19 à 2025-10-22
 
 ---
@@ -123,6 +129,8 @@ Ce dossier contient toute la documentation technique générée durant le dével
 ## 🔄 Historique des Mises à Jour
 
 ### 2025-10-22
+- ✅ Ajout WORDPRESS_PHP8_FIXES.md (correctifs WordPress + NextGen Gallery pour PHP 8.4)
+- ✅ Script de réapplication automatique des correctifs WordPress
 - ✅ Ajout PHP8_GESTIONDOC_FIXES.md (corrections complètes GestionDoc.php)
 - ✅ Réorganisation documentation dans WORKFLOW_AI/
 - ✅ Création de ce README.md d'index

@@ -1,0 +1,14 @@
+# WordPress Files Directory
+#
+# Ce dossier contient les fichiers WordPress qui ne sont PAS versionnés.
+#
+# ⚠️ IMPORTANT :
+# - Les fichiers WordPress sont exclus du versioning (.gitignore)
+# - Des modifications PHP 8.4 ont été apportées à certains fichiers
+# - Documentation complète : WORKFLOW_AI/WORDPRESS_PHP8_FIXES.md
+# - Script de réapplication : docker/wordpress/apply_php8_fixes.sh
+#
+# Après toute mise à jour WordPress ou de plugin :
+# 1. Consulter WORKFLOW_AI/WORDPRESS_PHP8_FIXES.md
+# 2. Exécuter ./docker/wordpress/apply_php8_fixes.sh
+# 3. Vérifier les logs d'erreurs PHP
