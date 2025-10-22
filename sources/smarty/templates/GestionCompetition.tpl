@@ -30,7 +30,7 @@
 								<Option Value="N" {if $AfficheCompet == 'N'} selected{/if}>{#Championnat_de_France#}</Option>
 								<Option Value="CF" {if $AfficheCompet == 'CF'} selected{/if}>{#Coupe_de_France#}</Option>
 								{section name=i loop=10}
-									{if $sectionLabels[i]}
+									{if isset($sectionLabels[i])}
 										{assign var='temp' value=$sectionLabels[i]}
 										<Option Value="{$smarty.section.i.index}" {if $AfficheCompet == $smarty.section.i.index} selected{/if}>
 											{$smarty.config.$temp|default:$temp}</Option>
@@ -57,7 +57,7 @@
 										<th title="{#Statut#}">{#Statut#}</th>
 										<th>{#Equipes#}</th>
 										<th><img width="19" height="16" src="../img/verrou2.gif"
-												title="{#Verrouiller#} {#feuilles_de_presence#}" border="0"></th>
+												title="{#Verrouiller#} {#Feuilles_de_presence#}" border="0"></th>
 										<!--
 									<th><img width="16" height="16" src="../img/up.gif" alt="Nb d'équipes qualifiées" title="Nb d'équipes qualifiées" border="0"></th>
 									<th><img width="16" height="16" src="../img/down.gif" alt="Nb d'équipes éliminées" title="Nb d'équipes éliminées" border="0"></th>
@@ -68,6 +68,7 @@
 								</thead>
 
 								<tbody>
+									{assign var='j' value=null}
 									{section name=i loop=$arrayCompet}
 										{if $arrayCompet[i].section != $j}
 											{assign var='sectionLabel' value=$arrayCompet[i].sectionLabel}
@@ -105,12 +106,12 @@
 													<img src="../img/orga{$arrayCompet[i].rcs}.png" alt="RC" height="18">
 												</a>
 											</td>
-											<td class="cliquableNomEquipe" title="{if $arrayCompet[i].checktitre == 'O'}{$arrayCompet[i].Libelle}{else}{$arrayCompet[i].Soustitre}{/if}
+											<td class="cliquableNomEquipe" title="{if isset($arrayCompet[i].checktitre) && $arrayCompet[i].checktitre == 'O'}{$arrayCompet[i].Libelle}{else}{$arrayCompet[i].Soustitre}{/if}
 											| {$arrayCompet[i].Soustitre2}
 											| {#Qualifies#} : {$arrayCompet[i].Qualifies}
 											| {#Elimines#} : {$arrayCompet[i].Elimines}
 											| {$arrayCompet[i].commentairesCompet}
-											"><a href='GestionDoc.php?Compet={$arrayCompet[i].Code}'>{if $arrayCompet[i].checktitre != 'O' && $arrayCompet[i].Soustitre != ''}{$arrayCompet[i].Soustitre}{else}{$arrayCompet[i].Libelle}{/if}{if $arrayCompet[i].Soustitre2 != ''}<br />{$arrayCompet[i].Soustitre2}{/if}</a>
+											"><a href='GestionDoc.php?Compet={$arrayCompet[i].Code}'>{if isset($arrayCompet[i].checktitre) && $arrayCompet[i].checktitre != 'O' && $arrayCompet[i].Soustitre != ''}{$arrayCompet[i].Soustitre}{else}{$arrayCompet[i].Libelle}{/if}{if $arrayCompet[i].Soustitre2 != ''}<br />{$arrayCompet[i].Soustitre2}{/if}</a>
 											</td>
 											<td>{$arrayCompet[i].Code_ref|default:'&nbsp;'}</td>
 											<td>{if $arrayCompet[i].Code_tour == '10'}F{else}{$arrayCompet[i].Code_tour|default:'&nbsp;'}{/if}</td>
@@ -373,26 +374,24 @@
 -->
 								<tr>
 									<td colspan=4>
-										<label>{#Activer#} :</label>
-										<br>
-										<input type="checkbox" name="checktitre" id="checktitre" value="O"
-											{if $checktitre != ''}checked{/if}><label>Label ({#sinon#} : Label 2)</label>
-										<br>
-										<input type="checkbox" name="checken" id="checken" value="O"
-											{if $checken != ''}checked{/if}><label>{#Competition_en_anglais#}</label>
-										<br>
-										<input type="checkbox" name="checkkpiffck" id="checkkpiffck" value="O"
-											{if $checkkpiffck != ''}checked{/if}><label>Logo KPI/FFCK</label>
-										<br>
-										<input type="checkbox" name="checkbandeau" id="checkbandeau" value="O"
-											{if $checkbandeau != ''}checked{/if}><label>{#Bandeau#}</label>
-										<br>
-										<input type="checkbox" name="checklogo" id="checklogo" value="O"
-											{if $checklogo != ''}checked{/if}><label>Logo</label>
-										<br>
-										<input type="checkbox" name="checksponsor" id="checksponsor" value="O"
-											{if $checksponsor != ''}checked{/if}><label>Sponsor</label>
-									</td>
+																			<label>{#Activer#} :</label>
+																			<br>
+																			<input type="checkbox" name="checktitre" id="checktitre" value="O"
+																				{if $checktitre|default:'' != ''}checked{/if}><label>Label ({#sinon#} : Label 2)</label>
+																			<br>
+																			                                                                                    <input type="checkbox" name="checken" id="checken" value="O"
+																			                                                                                            {if $checken|default:'' != ''}checked{/if}><label>{#Competition_en_anglais#}</label>
+																			                                                                                    <br>
+																			                                                                                    <input type="checkbox" name="checkkpiffck" id="checkkpiffck" value="O"
+																			                                                                                            {if $checkkpiffck|default:'' != ''}checked{/if}><label>Logo KPI/FFCK</label>																			<br>
+																			<input type="checkbox" name="checkbandeau" id="checkbandeau" value="O"
+																				{if $checkbandeau|default:'' != ''}checked{/if}><label>{#Bandeau#}</label>
+																			<br>
+																			<input type="checkbox" name="checklogo" id="checklogo" value="O"
+																				{if $checklogo != ''}checked{/if}><label>Logo</label>
+																			<br>
+																			<input type="checkbox" name="checksponsor" id="checksponsor" value="O"
+																				{if $checksponsor != ''}checked{/if}><label>Sponsor</label>									</td>
 								</tr>
 								<tr>
 									<td>
@@ -429,23 +428,23 @@
 							<tr class='ajoutCalendrier'>
 								<td colspan=2>
 									<label for="Date_debut">{#Date_debut#}</label>
-									<input type="text" class='date' name="Date_debut" id="Date_debut" value="{$Date_debut}"
+									<input type="text" class='date' name="Date_debut" id="Date_debut" value="{$Date_debut|default:''}"
 										onfocus="displayCalendar(document.forms[0].Date_debut,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)">
 								</td>
 								<td colspan=2>
 									<label for="Date_fin">{#Date_fin#}</label>
-									<input type="text" class='date' name="Date_fin" id="Date_fin" value="{$Date_fin}"
+									<input type="text" class='date' name="Date_fin" id="Date_fin" value="{$Date_fin|default:''}"
 										onfocus="displayCalendar(document.forms[0].Date_fin,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)">
 								</td>
 							</tr>
 							<tr class='ajoutCalendrier'>
 								<td colspan=3>
 									<label for="Lieu">{#Lieu#}</label>
-									<input type="text" name="Lieu" id="Lieu" value="{$Lieu}" />
+									<input type="text" name="Lieu" id="Lieu" value="{$Lieu|default:''}" />
 								</td>
 								<td>
 									<label for="Departement">{#Dpt_Pays#}</label>
-									<input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement}" />
+									<input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement|default:''}" />
 								</td>
 							</tr>
 							<tr class='ajoutCalendrier'>
@@ -488,11 +487,10 @@
 									<input type="checkbox" name="checken" id="checken" value="O"
 										{if $checken != ''}checked{/if}><label>{#Competition_en_anglais#}</label>
 									<br>
-									<input type="checkbox" name="checkkpiffck" id="checkkpiffck" value="O"
-										{if $checkkpiffck != ''}checked{/if}><label>Logo KPI/FFCK</label>
-									<br>
+									                                                                                    <input type="checkbox" name="checkkpiffck" id="checkkpiffck" value="O"
+																												                                                                                            {if $checkkpiffck|default:'' != ''}checked{/if}><label>Logo KPI/FFCK</label>									<br>
 									<input type="checkbox" name="checkbandeau" id="checkbandeau" value="O"
-										{if $checkbandeau != ''}checked{/if}><label>{#Bandeau#}</label>
+										{if $checkbandeau|default:'' != ''}checked{/if}><label>{#Bandeau#}</label>
 									<br>
 									<input type="checkbox" name="checklogo" id="checklogo" value="O"
 										{if $checklogo != ''}checked{/if}><label>Logo</label>

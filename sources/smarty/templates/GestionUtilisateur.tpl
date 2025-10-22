@@ -165,12 +165,12 @@
 										</select>
 									{/if}
 						        </fieldset>
-<!--				        	<fieldset>
+{*				        	<fieldset>
 									<legend>Dates limites Export Evènement</legend>
 									<input type="text" name="Date_debut" id="Date_debut" value="{$Date_debut}" onfocus="displayCalendar(document.forms[0].Date_debut,'dd/mm/yyyy',this)">
 									<input type="text" name="Date_fin" id="Date_fin" value="{$Date_fin}" onfocus="displayCalendar(document.forms[0].Date_fin,'dd/mm/yyyy',this)">
 								</fieldset>
--->							</td>
+*}							</td>
 							<td colspan="3">
 								<input type="checkbox" name='plusmail' id='plusmail' value='O' checked />Envoyer un email de confirmation<br />
 								<!--<input type="checkbox" name='plusPJ' id='plusPJ' value='Manuel7.pdf' />Envoyer le manuel "profil 7-8"<br />-->
@@ -249,8 +249,8 @@
 									<td>{$arrayUser[i].Fonction}</td>
 									<td>{$arrayUser[i].Niveau}</td>
 									<td>{$arrayUser[i].filtreSaisons|default:'TOUTES'}</td>
-									<td>{$arrayUser[i].filtreCompets}</td>
-									<td title='Evènement : {$arrayUser[i].Libelle} {$arrayUser[i].Lieu} ({$arrayUser[i].Date_debut}->{$arrayUser[i].Date_fin})/ Journées : {$arrayUser[i].filtre_journee}'>{$arrayUser[i].Id_Evenement}/{$arrayUser[i].filtre_journee}</td>
+									<td>{$arrayUser[i].filtreCompets|default:''}</td>
+									<td title='Evènement : {$arrayUser[i].Libelle|default:''} {$arrayUser[i].Lieu|default:''} ({$arrayUser[i].Date_debut|default:''}->{$arrayUser[i].Date_fin|default:''})/ Journées : {$arrayUser[i].filtre_journee|default:''}'>{$arrayUser[i].Id_Evenement|default:''}/{$arrayUser[i].filtre_journee|default:''}</td>
 									<td>{$arrayUser[i].Limitation_equipe_club}</td>
 									<td>{if $arrayUser[i].Niveau > $profile or $profile == 1}<a href="#" onclick="updateUser('{$arrayUser[i].Code}');"><img hspace="2" width="16" height="16" src="../img/b_edit.png" alt="Modifier" title="Modifier" border="0"></a>{/if}</td>
 									<td>{if $profile <= 2}<a href="#" onclick="RemoveCheckbox('formUser', '{$arrayUser[i].Code}');return false;"><img hspace="2" width="16" height="16" src="../img/b_drop.png" alt="Supprimer" title="Supprimer" border="0"></a>{/if}</td>

@@ -36,7 +36,7 @@
                 {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrain]}
                 {assign var='validation1' value=$Match1.Validation}
                 {assign var='statut1' value=$Match1.Statut}
-                {assign var='periode1' value=$Match1.Periode}
+                {assign var='periode1' value=$Match1.Periode|default:''}
 
                 <tr class='{$Match1.past}'>
                   {if $Match1.Numero_ordre}
@@ -140,11 +140,11 @@
                   {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
                   {assign var='validation1' value=$Match1.Validation}
                   {assign var='statut1' value=$Match1.Statut}
-                  {assign var='periode1' value=$Match1.Periode}
+                  {assign var='periode1' value=$Match1.Periode|default:''}
                   {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
                   {assign var='validation2' value=$Match2.Validation}
                   {assign var='statut2' value=$Match2.Statut}
-                  {assign var='periode2' value=$Match2.Periode}
+                  {assign var='periode2' value=$Match2.Periode|default:''}
 
                   <tr class='{$Match1.past}'>
                     {if $Match1.Numero_ordre}
@@ -287,11 +287,11 @@
                     {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
                     {assign var='validation1' value=$Match1.Validation}
                     {assign var='statut1' value=$Match1.Statut}
-                    {assign var='periode1' value=$Match1.Periode}
+                    {assign var='periode1' value=$Match1.Periode|default:''}
                     {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
                     {assign var='validation2' value=$Match2.Validation}
                     {assign var='statut2' value=$Match2.Statut}
-                    {assign var='periode2' value=$Match2.Periode}
+                    {assign var='periode2' value=$Match2.Periode|default:''}
 
                     <tr class='{$Match1.past}'>
                       {if $Match1.Numero_ordre}
@@ -434,11 +434,11 @@
                     {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
                     {assign var='validation1' value=$Match1.Validation}
                     {assign var='statut1' value=$Match1.Statut}
-                    {assign var='periode1' value=$Match1.Periode}
+                    {assign var='periode1' value=$Match1.Periode|default:''}
                     {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
                     {assign var='validation2' value=$Match2.Validation}
                     {assign var='statut2' value=$Match2.Statut}
-                    {assign var='periode2' value=$Match2.Periode}
+                    {assign var='periode2' value=$Match2.Periode|default:''}
 
                     <tr class='{$Match1.past}'>
                       {if $Match1.Numero_ordre}
@@ -581,11 +581,11 @@
                     {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
                     {assign var='validation1' value=$Match1.Validation}
                     {assign var='statut1' value=$Match1.Statut}
-                    {assign var='periode1' value=$Match1.Periode}
+                    {assign var='periode1' value=$Match1.Periode|default:''}
                     {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
                     {assign var='validation2' value=$Match2.Validation}
                     {assign var='statut2' value=$Match2.Statut}
-                    {assign var='periode2' value=$Match2.Periode}
+                    {assign var='periode2' value=$Match2.Periode|default:''}
 
                     <tr class='{$Match1.past}'>
                       {if $Match1.Numero_ordre}

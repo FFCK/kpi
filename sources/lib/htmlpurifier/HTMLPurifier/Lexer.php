@@ -39,6 +39,7 @@
  * without a lot of lookaheads to see when a tag is closed. This is a
  * limitation of the token system and some workarounds would be nice.
  */
+#[\AllowDynamicProperties]
 class HTMLPurifier_Lexer
 {
 

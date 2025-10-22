@@ -2,7 +2,7 @@
 		<form method="POST" action="GestionGroupe.php" id="formGroupe" name="formGroupe" enctype="multipart/form-data">
 			<input type='hidden' id='Cmd' name='Cmd' Value='' />
 			<input type='hidden' id='ParamCmd' name='ParamCmd' Value='' />
-			<input type='hidden' id='idGroupe' name='idGroupe' Value='{$groupe.id}' />
+			<input type='hidden' id='idGroupe' name='idGroupe' Value='{$groupe.id|default:''}' />
 
 			<div class='blocLeft'>
 				<div class='titrePage'>{#Groupes#}</div>
@@ -21,7 +21,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							{section name=i loop=$arrayGroupes}{assign name=lastOrder value=$arrayGroupes[i].ordre}
+							{section name=i loop=$arrayGroupes}{assign var=lastOrder value=$arrayGroupes[i].ordre}
 								<tr class='{cycle values="impair,pair"} {$arrayGroupes[i].selected}'>
 									<td>
 										{$arrayGroupes[i].id}
@@ -53,27 +53,27 @@
 				<table width=100%>
 					<tr>
 						<th class='titreForm' colspan=2>
-							<label>{if $groupe.id == -1 || $groupe.id == ''}{#Ajouter#}{else}{#Modifier#}{/if}</label>
+							<label>{if ($groupe.id|default:'') == -1 || ($groupe.id|default:'') == ''}{#Ajouter#}{else}{#Modifier#}{/if}</label>
 						</th>
 					</tr>
 					<tr>
 						<td>
 							<label for="section">Section :</label>
 							<select name="section" id="section">
-								<option value="1" {if $groupe.section == 1}selected{/if}>ICF / ECA</option>
-								<option value="2" {if $groupe.section == 2}selected{/if}>National</option>
-								<option value="3" {if $groupe.section == 3}selected{/if}>Régional</option>
-								<option value="4" {if $groupe.section == 4}selected{/if}>Tournoi</option>
-								<option value="5" {if $groupe.section == 5}selected{/if}>Étranger</option>
-								<option value="100" {if $groupe.section == 100}selected{/if}>Autres</option>
+								<option value="1" {if ($groupe.section|default:'') == 1}selected{/if}>ICF / ECA</option>
+								<option value="2" {if ($groupe.section|default:'') == 2}selected{/if}>National</option>
+								<option value="3" {if ($groupe.section|default:'') == 3}selected{/if}>Régional</option>
+								<option value="4" {if ($groupe.section|default:'') == 4}selected{/if}>Tournoi</option>
+								<option value="5" {if ($groupe.section|default:'') == 5}selected{/if}>Étranger</option>
+								<option value="100" {if ($groupe.section|default:'') == 100}selected{/if}>Autres</option>
 							</select>
 						</td>
 						<td>
 							<label for="Libelle">{#Niveau#} :</label>
 							<select id="Code_niveau" name="Code_niveau">
-								<option value="REG" {if $groupe.Code_niveau == "REG"}selected{/if}>REG</option>
-								<option value="NAT" {if $groupe.Code_niveau == "NAT"}selected{/if}>NAT</option>
-								<option value="INT" {if $groupe.Code_niveau == "INT"}selected{/if}>INT</option>
+								<option value="REG" {if ($groupe.Code_niveau|default:'') == "REG"}selected{/if}>REG</option>
+								<option value="NAT" {if ($groupe.Code_niveau|default:'') == "NAT"}selected{/if}>NAT</option>
+								<option value="INT" {if ($groupe.Code_niveau|default:'') == "INT"}selected{/if}>INT</option>
 							</select>
 						</td>
 					</tr>
@@ -85,17 +85,17 @@
 						</td>
 						<td>
 							<label for="Groupe">{#Groupe#} :</label>
-							<input type="text" name="Groupe" value="{$groupe.Groupe}" maxlength=10 id="Groupe" required />
+							<input type="text" name="Groupe" value="{$groupe.Groupe|default:''}" maxlength=10 id="Groupe" required />
 						</td>
 					</tr>
 					<tr>
 						<td colspan=2>
 							<label for="Libelle">{#Nom#} :</label>
-							<input type="text" name="Libelle" value="{$groupe.Libelle}" maxlength=40 id="Libelle" required />
+							<input type="text" name="Libelle" value="{$groupe.Libelle|default:''}" maxlength=40 id="Libelle" required />
 						</td>
 					</tr>
 					<tr>
-						{if $groupe.id != -1 && $groupe.id != ''}
+						{if ($groupe.id|default:'') != -1 && ($groupe.id|default:'') != ''}
 							<td>
 								<br>
 								<br>

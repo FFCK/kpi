@@ -106,7 +106,7 @@
 							</thead>
 							<tbody>
 								{section name=i loop=$arrayEquipe}
-									{if $PouleX != $arrayEquipe[i].Poule && $arrayEquipe[i].Poule != ''}
+									{if ($PouleX|default:'') != $arrayEquipe[i].Poule && $arrayEquipe[i].Poule != ''}
 										<tr class='colorO'>
 											<th colspan={if $profile <= 2 && $AuthModif == 'O'}13{else}12{/if}>
 												<b>

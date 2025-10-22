@@ -60,9 +60,9 @@
     <body onload="testframe(); alertMsg('{$AlertMessage}'); ">
         <div id="fb-root"></div>
         
-        {if !$skipheader}{include file='kpheader.tpl'}{/if}
+        {if !($skipheader|default:false)}{include file='kpheader.tpl'}{/if}
         {include file="$contenutemplate.tpl"}
-        {if !$skipheader}{include file='kpfooter.tpl'}{/if}
+        {if !($skipheader|default:false)}{include file='kpfooter.tpl'}{/if}
         
         <script>
             masquer = 0;

@@ -73,7 +73,7 @@
 						<tr>
 							<td>
 								<label for="matricJoueur">N° Licence :</label>
-								<input type="text" name="matricJoueur" value="{$matricJoueur}"/>
+								<input type="text" name="matricJoueur" value="{$matricJoueur|default:''}"/>
 							</td>
 							<td>
 								<label for="sexeJoueur">Sexe :</label>
@@ -87,13 +87,13 @@
 						<tr>
 							<td colspan=2>
 								<label for="nomJoueur">Nom :</label>
-								<input type="text" name="nomJoueur" maxlength=30 value="{$nomJoueur}"/>
+								<input type="text" name="nomJoueur" maxlength=30 value="{$nomJoueur|default:''}"/>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2>
 								<label for="prenomJoueur">Prénom :</label>
-								<input type="text" name="prenomJoueur" maxlength=30 value="{$prenomJoueur}"/>
+								<input type="text" name="prenomJoueur" maxlength=30 value="{$prenomJoueur|default:''}"/>
 							</td>
 						</tr>
 						<tr>
@@ -129,31 +129,31 @@
 						<tr>
 							<td><label>Juge International</label></td>
 							<td>
-								<input type="checkbox" Name="CheckJugeInter" {$CheckJugeInter} />
+								<input type="checkbox" Name="CheckJugeInter" {$CheckJugeInter|default:''} />
 							</td>
 						</tr>
 						<tr>
 							<td><label>Juge National</label></td>
 							<td>
-								<input type="checkbox" Name="CheckJugeNational" {$CheckJugeNational}/>
+								<input type="checkbox" Name="CheckJugeNational" {$CheckJugeNational|default:''}/>
 							</td>
 						</tr>
 						<tr>
 							<td><label>Juge Régional</label></td>
 							<td>
-								<input type="checkbox" Name="CheckJugeReg" {$CheckJugeReg}/>
+								<input type="checkbox" Name="CheckJugeReg" {$CheckJugeReg|default:''}/>
 							</td>
 						</tr>
 						<tr>
 							<td><label>Officiel table de marque</label></td>
 							<td>
-								<input type="checkbox" Name="CheckJugeOTM" {$CheckJugeOTM}/>
+								<input type="checkbox" Name="CheckJugeOTM" {$CheckJugeOTM|default:''}/>
 							</td>
 						</tr>
 						<tr>
 							<td><label>Jeune officiel</label></td>
 							<td>
-								<input type="checkbox" Name="CheckJugeJO" {$CheckJugeJO}/>
+								<input type="checkbox" Name="CheckJugeJO" {$CheckJugeJO|default:''}/>
 							</td>
 						</tr>
 						<tr>

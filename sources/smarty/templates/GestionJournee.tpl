@@ -623,22 +623,22 @@
 													{/if}
 													{if $arrayMatchs[i].Statut == 'ON'}
 														<span class="directStatutMatch statutMatchOn" data-statut="ON" data-id="{$arrayMatchs[i].Id}"
-															data-periode="{$arrayMatchs[i].Periode}" title="{#Periode#} {$arrayMatchs[i].Periode}">
+															data-periode="{$arrayMatchs[i].Periode|default:''}" title="{#Periode#} {$arrayMatchs[i].Periode|default:''}">
 															{$arrayMatchs[i].Periode|default:$arrayMatchs[i].Statut}
 														</span>
-														<span class="scoreProvisoire" title="{#Score_provisoire#}">
+														<span class="scoreProvisoire" title="{#scoreProvisoire#}">
 															{$arrayMatchs[i].ScoreDetailA} - {$arrayMatchs[i].ScoreDetailB}
 														</span>
 													{elseif $arrayMatchs[i].Statut == 'END'}
 														<span class="directStatutMatch statutMatchOn" data-statut="END" data-id="{$arrayMatchs[i].Id}"
-															data-periode="{$arrayMatchs[i].Periode}" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
-														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} -
+															data-periode="{$arrayMatchs[i].Periode|default:''}" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
+														<span class="scoreProvisoire" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} -
 															{$arrayMatchs[i].ScoreDetailB}</span>
 													{else}
 														<span class="directStatutMatch scoreProvisoire" data-statut="ATT" data-id="{$arrayMatchs[i].Id}"
-															data-periode="{$arrayMatchs[i].Periode}"
+															data-periode="{$arrayMatchs[i].Periode|default:''}"
 															title="{#Match_en_attente#}">{$arrayMatchs[i].Statut}</span>
-														<span class="scoreProvisoire hidden" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} -
+														<span class="scoreProvisoire hidden" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} -
 															{$arrayMatchs[i].ScoreDetailB}</span>
 													{/if}
 												</td>
@@ -751,20 +751,20 @@
 													{/if}
 													{if $arrayMatchs[i].Statut == 'ON'}
 														<span class="directStatutMatchOff statutMatchOn" data-statut="ON" data-id="{$arrayMatchs[i].Id}"
-															data-periode="{$arrayMatchs[i].Periode}"
-															title="{#Periode#} {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode|default:$arrayMatchs[i].Statut}</span>
-														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} -
+															data-periode="{$arrayMatchs[i].Periode|default:''}"
+															title="{#Periode#} {$arrayMatchs[i].Periode|default:''}">{$arrayMatchs[i].Periode|default:$arrayMatchs[i].Statut}</span>
+														<span class="scoreProvisoire" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} -
 															{$arrayMatchs[i].ScoreDetailB}</span>
 													{elseif $arrayMatchs[i].Statut == 'END'}
 														<span class="directStatutMatchOff statutMatchOn" data-statut="END" data-id="{$arrayMatchs[i].Id}"
-															data-periode="{$arrayMatchs[i].Periode}" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
-														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} -
+															data-periode="{$arrayMatchs[i].Periode|default:''}" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
+														<span class="scoreProvisoire" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} -
 															{$arrayMatchs[i].ScoreDetailB}</span>
 													{else}
 														<span class="directStatutMatchOff scoreProvisoire" data-statut="ATT" data-id="{$arrayMatchs[i].Id}"
-															data-periode="{$arrayMatchs[i].Periode}"
+															data-periode="{$arrayMatchs[i].Periode|default:''}"
 															title="{#Match_en_attente#}">{$arrayMatchs[i].Statut}</span>
-														<span class="scoreProvisoire hidden" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} -
+														<span class="scoreProvisoire hidden" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} -
 															{$arrayMatchs[i].ScoreDetailB}</span>
 													{/if}
 												</td>
@@ -854,12 +854,12 @@
 														title="{#Verrouiller#}">
 													{if $arrayMatchs[i].Statut == 'ON'}
 														<span class="statutMatchOn"
-															title="{#Periode#} {$arrayMatchs[i].Periode}">{$arrayMatchs[i].Periode}</span>
-														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} -
+															title="{#Periode#} {$arrayMatchs[i].Periode|default:''}">{$arrayMatchs[i].Periode|default:''}</span>
+														<span class="scoreProvisoire" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} -
 															{$arrayMatchs[i].ScoreDetailB}</span>
 													{elseif $arrayMatchs[i].Statut == 'END'}
 														<span class="statutMatchOn" title="{#Match_termine#}">{$arrayMatchs[i].Statut}</span>
-														<span class="scoreProvisoire" title="{#Score_provisoire#}">{$arrayMatchs[i].ScoreDetailA} -
+														<span class="scoreProvisoire" title="{#scoreProvisoire#}">{$arrayMatchs[i].ScoreDetailA} -
 															{$arrayMatchs[i].ScoreDetailB}</span>
 													{/if}
 												</td>

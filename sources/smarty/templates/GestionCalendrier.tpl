@@ -210,7 +210,7 @@
 												<a href="#" onclick="ParamJournee({$arrayJournees[i].Id});"><img height="16"
 														src="../img/glyphicons-31-pencil.png" alt="{#Editer#}" title="{#Editer#}"></a>
 												<a href="#" onclick="duplicate({$arrayJournees[i].Id});"><img height="20"
-														src="../img/glyphicons-511-duplicate.png" alt="{#Dupliquer#}" title="{#Duppliquer#}"></a>
+														src="../img/glyphicons-511-duplicate.png" alt="{#Dupliquer#}" title="{#Dupliquer#}"></a>
 												<a href='GestionJournee.php?idJournee={$arrayJournees[i].Id}'><img height="20" src="../img/b_match.png"
 														alt="{#Matchs#}" title="{#Matchs#}"></a>
 												{if $profile == 1}

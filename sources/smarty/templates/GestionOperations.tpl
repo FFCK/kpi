@@ -22,7 +22,7 @@
 									<select name="evenementExport" id="evenementExport">
 										{section name=i loop=$arrayEvenement}
 											{assign var="evt_libelle" value=$arrayEvenement[i].Libelle}
-											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection}>
+											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection|default:''}>
 											{$arrayEvenement[i].Id} - {$smarty.config.$evt_libelle|default:$evt_libelle}
 											</Option>
 										{/section}
@@ -53,7 +53,7 @@
 									<select name="evenementImport" id="evenementImport">
 										{section name=i loop=$arrayEvenement}
 											{assign var="evt_libelle" value=$arrayEvenement[i].Libelle}
-											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection}>
+											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection|default:''}>
 											{$arrayEvenement[i].Id} - {$smarty.config.$evt_libelle|default:$evt_libelle}
 											</Option>
 										{/section}
@@ -78,12 +78,12 @@
 						<tbody>
 							<tr>
 								<td>
-									<a href="{$url_base}/admin/xml_icf_import.php" target="_blank">Import XML DT_PARTIC</a>
+									<a href="{$url_base|default:''}/admin/xml_icf_import.php" target="_blank">Import XML DT_PARTIC</a>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<a href="{$url_base}/admin/xmlparser.php" target="_blank">Parser le fichier XML</a>
+									<a href="{$url_base|default:''}/admin/xmlparser.php" target="_blank">Parser le fichier XML</a>
 								</td>
 							</tr>
 						</tbody>
@@ -97,7 +97,7 @@
 						<tbody>
 							<tr>
 								<td>
-									<a href="{$url_base}/admin/ImportPCE.php" target="_blank">Import PCE Extranet FFCK</a>
+									<a href="{$url_base|default:''}/admin/ImportPCE.php" target="_blank">Import PCE Extranet FFCK</a>
 								</td>
 							</tr>
 						</tbody>

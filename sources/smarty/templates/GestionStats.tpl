@@ -623,7 +623,7 @@
 							<center><a href="GestionAthlete.php" id='rechercheAthlete'>{#Acces#}</a></center>
 							<br />
 							<center><a href="GestionAthlete.php">{#Recherche_avancee#}</a></center>
-							<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete}" />
+							<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete|default:''}" />
 						</td>
 					</tr>
 				</table>

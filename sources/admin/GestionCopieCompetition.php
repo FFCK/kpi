@@ -187,8 +187,8 @@ class GestionCopieCompetition extends MyPageSecure
 		$_SESSION['recherche_tri'] = $recherche_tri;
 		$this->m_tpl->assign('recherche_tri', $recherche_tri);
 
+		$arraySchemas = array();
 		if ($recherche_nb_equipes != 0) {
-			$arraySchemas = array();
 			$sql = "SELECT c.*, g.id 
 				FROM kp_competition c, kp_groupe g 
 				WHERE 1=1 
@@ -240,8 +240,8 @@ class GestionCopieCompetition extends MyPageSecure
 				$column_code_saison  = array_column($arraySchemas, 'Code_saison');
 				array_multisort($column_nbMatchs, SORT_DESC, $column_code_saison, SORT_DESC, $arraySchemas);
 			}
-			$this->m_tpl->assign('arraySchemas', $arraySchemas);
 		}
+		$this->m_tpl->assign('arraySchemas', $arraySchemas);
 	}
 
 	function Ok()

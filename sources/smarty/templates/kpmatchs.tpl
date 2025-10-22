@@ -191,7 +191,7 @@
                 {section name=i loop=$arrayMatchs}
                     {assign var='validation' value=$arrayMatchs[i].Validation}
                     {assign var='statut' value=$arrayMatchs[i].Statut}
-                    {assign var='periode' value=$arrayMatchs[i].Periode}
+                    {assign var='periode' value=$arrayMatchs[i].Periode|default:''}
                     <tr class='{$arrayMatchs[i].StdOrSelected} {$arrayMatchs[i].past}'>
                             <td class="hidden-xs">{$arrayMatchs[i].Numero_ordre}</td>
                             <td class="hidden-xs" data-order="{$arrayMatchs[i].Date_EN} {$arrayMatchs[i].Heure_match}" data-filter="{if $lang == 'en'}{$arrayMatchs[i].Date_EN}{else}{$arrayMatchs[i].Date_match}{/if}">

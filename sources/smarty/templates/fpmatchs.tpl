@@ -50,7 +50,7 @@
                                             {assign var='Match' value=$arrayMatchs[$Date][$Heure][$Terrain]}
                                             {assign var='validation' value=$arrayMatchs[i].Validation}
                                             {assign var='statut' value=$arrayMatchs[i].Statut}
-                                            {assign var='periode' value=$arrayMatchs[i].Periode}
+                                            {assign var='periode' value=$arrayMatchs[i].Periode|default:''}
                                             <td>
                                                 <table width="100%" class='tableau2 table table-bordered'>
                                                     <tr>

@@ -28,6 +28,7 @@ class GestionGroupe extends MyPageSecure
 			FROM kp_groupe 
 			ORDER BY section, ordre ";
 		$arrayGroupes = array();
+		$groupe = null;
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
 		while ($row = $result->fetch()) {

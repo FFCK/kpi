@@ -29,7 +29,7 @@
                 {section name=i loop=$arrayMatchs}
                     {assign var='validation' value=$arrayMatchs[i].Validation}
                     {assign var='statut' value=$arrayMatchs[i].Statut}
-                    {assign var='periode' value=$arrayMatchs[i].Periode}
+                    {assign var='periode' value=$arrayMatchs[i].Periode|default:''}
                     <tr class='{$arrayMatchs[i].StdOrSelected} {$arrayMatchs[i].past}'>
                             <td class="text-center">{$arrayMatchs[i].Numero_ordre}</td>
                             <td class="text-center">{$arrayMatchs[i].Code_competition}</td>

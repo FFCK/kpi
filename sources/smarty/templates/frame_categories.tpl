@@ -33,7 +33,7 @@
                             {assign var='Match1' value=$arrayMatchs[j]}
                             {assign var='validation1' value=$Match1.Validation}
                             {assign var='statut1' value=$Match1.Statut}
-                            {assign var='periode1' value=$Match1.Periode}
+                            {assign var='periode1' value=$Match1.Periode|default:''}
 
                             <tr class='{$Match1.past}'>
                                 {if $Match1.Numero_ordre}

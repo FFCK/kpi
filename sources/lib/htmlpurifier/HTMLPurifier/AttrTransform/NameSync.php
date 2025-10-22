@@ -5,6 +5,7 @@
  * it is present with an equivalent id attribute, it is passed through;
  * otherwise validation is performed.
  */
+#[\AllowDynamicProperties]
 class HTMLPurifier_AttrTransform_NameSync extends HTMLPurifier_AttrTransform
 {
 

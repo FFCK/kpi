@@ -6,7 +6,7 @@
 				<input type='hidden' name='ParamCmd' id='ParamCmd' Value='' />
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}' />
 
-				<div class='titrePage'>{#Statistiques#} {#athlete#}</div>
+				<div class='titrePage'>{#Statistiques#} {#Athlete#}</div>
 				<div class='blocTop'>
 					<label>{#Chercher#}</label>
 					<input type="text" name="choixJoueur" id="choixJoueur" size="30"
@@ -19,10 +19,10 @@
 								alt="{#Recherche_avancee#}" title="{#Recherche_avancee#}" align=absmiddle /></a>
 					{/if}
 					<br />
-					<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete}" />
+					<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete|default:''}" />
 
 				</div>
-				{if $Courreur.Matric != ''}
+				{if isset($Courreur.Matric) && $Courreur.Matric != ''}
 					<div class='blocMiddle'>
 						<table class='tableau'>
 							<tr>
