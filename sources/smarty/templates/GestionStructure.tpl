@@ -3,8 +3,8 @@
 		    <div class='titrePage'>{#Structures_pratiquant_le_kayakpolo#}</div>
 		    <br>
 		    <div class='blocMap'>
-		      <div id="map_canvas" style="width: 620px; height: 550px"></div>
-		      <form name="formGeocode" onsubmit="return geocode(this.address.value);" enctype="multipart/form-data">
+		      <div id="carte" style="width: 620px; height: 550px"></div>
+		      <form name="formGeocode" onsubmit="return codeAddress(); return false;" enctype="multipart/form-data">
 		        <input type="text" size="50" name="address" id="address" placeholder="{#Adresse_Ville_Pays#}" />
 		        <input type="button" value="{#Localiser#}" onclick="codeAddress();" />
 		        {if $lang == 'en'}
@@ -225,3 +225,14 @@
   		  </form>
 		  {/if}
 </div>
+
+{literal}
+    <script type="text/javascript">
+        // Initialize markers after map is loaded
+        window.addEventListener('DOMContentLoaded', function() {
+            if (typeof map !== 'undefined') {
+                {/literal}{$mapParam|default:''}{literal}
+            }
+        });
+    </script>
+{/literal}

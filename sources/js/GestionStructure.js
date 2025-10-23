@@ -1,6 +1,8 @@
-jq = jQuery.noConflict();
-
+// Vanilla JS - no jQuery dependency for Leaflet code
 var langue = [];
+var map;
+var searchMarker = null;
+var redIcon;
 
 if(lang == 'en')  {
     langue['Echec_geocodage'] = 'Geocode was not successful for the following reason: ';
@@ -8,86 +10,103 @@ if(lang == 'en')  {
     langue['Echec_geocodage'] = 'Le géocodage a échoué pour les raisons suivantes';
 }
 
-// GOOGLE MAP API
+// Leaflet/OpenStreetMap initialization
+document.addEventListener('DOMContentLoaded', function() {
+    initMap();
+});
 
-//var map;
-//var geocoder;
-//var gmarkers = [];
-//var coord = [];
-//var coord2 = [];
-//var postal = [];
-//var www = [];
-//var email = [];
-//var i = 0;
+function initMap() {
+    // Initialize the map
+    map = L.map('carte').setView([46.85, 1.75], 5);
 
-    // géocodage
-    function codeAddress() {
-        var address = document.getElementById('address').value;
-        geocoder.geocode( { 'address': address}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                carte.setCenter(results[0].geometry.location);
-                var marker = new google.maps.Marker({
-                    map: carte,
-                    position: results[0].geometry.location,
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    }).addTo(map);
 
-                });
-                carte.setZoom(9);
-                var infoWindow = new google.maps.InfoWindow();
-                infoWindow.setContent('<i>' + address + '</i>'
-                        + '<br><br>' 
-                        + results[0].formatted_address
-                        + '<br>'
-                        + results[0].geometry.location
-                        );
-                infoWindow.open(carte, marker);
-            } else {
-                alert(langue['Echec_geocodage'] + status);
-            }
-        });
-    }
+    // Define red icon for search results
+    redIcon = L.icon({
+        iconUrl: '../img/Map-Marker-Ball-Left-Bronze-icon.png',
+        iconSize: [14, 25],
+        iconAnchor: [12, 25],
+        popupAnchor: [-6, -23]
+    });
 
-	// Sélection d'un club, affichage de sa fenêtre et remplissage du formulaire
-	function handleSelected($markerClick = true) {
-		var club = document.forms['formStructure'].elements['club'].value;
-		if (club == "") {
-			infowindow.close();
-		} else if (markers[club]) {
-            if($markerClick) {
-                google.maps.event.trigger(markers[club],"click");
-            }
-			document.forms['formStructure'].elements['coord'].value = coord[club];
-			document.forms['formStructure'].elements['coord2'].value = coord2[club];
-			document.forms['formStructure'].elements['postal'].value = postal[club];
-			document.forms['formStructure'].elements['www'].value = www[club];
-			document.forms['formStructure'].elements['email'].value = email[club];
-		} else {
-			document.forms['formStructure'].elements['coord'].value = '';
-			document.forms['formStructure'].elements['coord2'].value = '';
-			document.forms['formStructure'].elements['postal'].value = '';
-			document.forms['formStructure'].elements['www'].value = '';
-			document.forms['formStructure'].elements['email'].value = '';
-			infowindow.close();
-		}
-	}
-	
-    function geocode(address) {
-        geocoder.getLatLng(
-            address,
-            function(point) {
-                if (!point) {
-                    alert(address + " not found");
-                } else {
-                    map.setCenter(point, 14);
-                    var marker = createMarker(point, address);
-                    map.addOverlay(marker);
-                    htm = address + '<br />Coord. = ' + marker.getPoint().lat() + ', ' + marker.getPoint().lng();
-                    marker.openInfoWindowHtml(htm);
+    // Load markers from PHP (injected via template)
+    // This code is now in the template and uses {$mapParam}
+}
+
+// Geocoding using Nominatim (OpenStreetMap)
+function codeAddress() {
+    var address = document.getElementById('address').value;
+    if (!address) return false;
+
+    var geocodApiUrl = 'https://nominatim.openstreetmap.org/search?q=' +
+                       encodeURIComponent(address) + '&format=json&limit=1';
+
+    fetch(geocodApiUrl)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            if (data && data.length > 0) {
+                var result = data[0];
+                var lat = parseFloat(result.lat);
+                var lon = parseFloat(result.lon);
+
+                // Remove previous search marker if exists
+                if (searchMarker) {
+                    map.removeLayer(searchMarker);
                 }
+
+                // Add new marker
+                searchMarker = L.marker([lat, lon], {icon: redIcon}).addTo(map);
+                var popupContent = '<i>' + address + '</i><br><br>' +
+                                  result.display_name + '<br>' +
+                                  lat + ', ' + lon;
+                searchMarker.bindPopup(popupContent).openPopup();
+
+                // Center map on result
+                map.setView([lat, lon], 9);
+            } else {
+                alert(langue['Echec_geocodage']);
             }
-        );
-      
-        return false;
+        })
+        .catch(function(error) {
+            alert(langue['Echec_geocodage']);
+        });
+
+    return false;
+}
+
+// Sélection d'un club, affichage de sa fenêtre et remplissage du formulaire
+function handleSelected(markerClick) {
+    if (typeof markerClick === 'undefined') markerClick = true;
+
+    var club = document.forms['formStructure'].elements['club'].value;
+    if (club == "") {
+        // Close all popups
+        map.closePopup();
+    } else if (markers[club]) {
+        if(markerClick) {
+            markers[club].openPopup();
+            map.setView(markers[club].getLatLng(), 8);
+        }
+        document.forms['formStructure'].elements['coord'].value = coord[club];
+        document.forms['formStructure'].elements['coord2'].value = coord2[club];
+        document.forms['formStructure'].elements['postal'].value = postal[club];
+        document.forms['formStructure'].elements['www'].value = www[club];
+        document.forms['formStructure'].elements['email'].value = email[club];
+    } else {
+        document.forms['formStructure'].elements['coord'].value = '';
+        document.forms['formStructure'].elements['coord2'].value = '';
+        document.forms['formStructure'].elements['postal'].value = '';
+        document.forms['formStructure'].elements['www'].value = '';
+        document.forms['formStructure'].elements['email'].value = '';
+        map.closePopup();
     }
+}
 
     
 // AUTRES FONCTIONS
@@ -144,29 +163,126 @@ if(lang == 'en')  {
             return true;
         }
 	}
-		
-jq(document).ready(function() {
 
-	//Autocomplete recherche equipe
-	jq("#libelleEquipe2").autocomplete('Autocompl_equipe.php', {
-		width: 550,
-		max: 50,
-		mustMatch: false,
-	});
-	jq("#libelleEquipe2").result(function(event, data, formatted) {
-		if (data) {
-			jq("#libelleEquipe2").val(data[2]);
-		}
-	});
+// Modern vanilla JS autocomplete
+document.addEventListener('DOMContentLoaded', function() {
+    // Uppercase converter for libelleClub
+    var libelleClub = document.getElementById('libelleClub');
+    if (libelleClub) {
+        libelleClub.addEventListener('input', function() {
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(start, end);
+        });
+    }
 
-	// Convert libelleClub to uppercase on input and paste
-	jq("#libelleClub").on('input paste', function() {
-		var input = jq(this);
-		var start = this.selectionStart;
-		var end = this.selectionEnd;
-		input.val(input.val().toUpperCase());
-		this.setSelectionRange(start, end);
-	});
-
+    // Modern autocomplete for libelleEquipe2
+    var libelleEquipe2 = document.getElementById('libelleEquipe2');
+    if (libelleEquipe2) {
+        initAutocomplete(libelleEquipe2, 'Autocompl_equipe.php');
+    }
 });
+
+// Vanilla JS Autocomplete function
+function initAutocomplete(input, url) {
+    var currentFocus = -1;
+    var debounceTimer;
+    var autocompleteList;
+
+    // Create autocomplete container
+    var container = document.createElement('div');
+    container.className = 'autocomplete-items';
+    container.style.cssText = 'position:absolute;border:1px solid #d4d4d4;border-top:none;z-index:99;top:100%;left:0;right:0;max-height:200px;overflow-y:auto;background:#fff;';
+    input.parentNode.style.position = 'relative';
+    input.parentNode.appendChild(container);
+
+    // Input event handler with debounce
+    input.addEventListener('input', function() {
+        var val = this.value;
+        closeAllLists();
+        if (!val || val.length < 2) return;
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            fetch(url + '?q=' + encodeURIComponent(val) + '&format=json', {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                currentFocus = -1;
+                data.forEach(function(item) {
+                    var div = document.createElement('div');
+                    div.style.cssText = 'padding:10px;cursor:pointer;border-bottom:1px solid #d4d4d4;';
+                    div.innerHTML = item.label;
+                    div.addEventListener('mouseenter', function() {
+                        removeActive();
+                        this.classList.add('autocomplete-active');
+                        this.style.backgroundColor = '#e9e9e9';
+                    });
+                    div.addEventListener('mouseleave', function() {
+                        this.style.backgroundColor = '';
+                    });
+                    div.addEventListener('click', function() {
+                        input.value = item.value;
+                        closeAllLists();
+                    });
+                    container.appendChild(div);
+                });
+            })
+            .catch(error => console.error('Autocomplete error:', error));
+        }, 300);
+    });
+
+    // Keyboard navigation
+    input.addEventListener('keydown', function(e) {
+        var items = container.getElementsByTagName('div');
+        if (e.keyCode === 40) { // Down arrow
+            currentFocus++;
+            addActive(items);
+            e.preventDefault();
+        } else if (e.keyCode === 38) { // Up arrow
+            currentFocus--;
+            addActive(items);
+            e.preventDefault();
+        } else if (e.keyCode === 13) { // Enter
+            e.preventDefault();
+            if (currentFocus > -1 && items[currentFocus]) {
+                items[currentFocus].click();
+            }
+        } else if (e.keyCode === 27) { // Escape
+            closeAllLists();
+        }
+    });
+
+    function addActive(items) {
+        if (!items || items.length === 0) return;
+        removeActive();
+        if (currentFocus >= items.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = items.length - 1;
+        items[currentFocus].classList.add('autocomplete-active');
+        items[currentFocus].style.backgroundColor = '#e9e9e9';
+        items[currentFocus].scrollIntoView({ block: 'nearest' });
+    }
+
+    function removeActive() {
+        var items = container.getElementsByTagName('div');
+        for (var i = 0; i < items.length; i++) {
+            items[i].classList.remove('autocomplete-active');
+            items[i].style.backgroundColor = '';
+        }
+    }
+
+    function closeAllLists() {
+        container.innerHTML = '';
+        currentFocus = -1;
+    }
+
+    // Close on click outside
+    document.addEventListener('click', function(e) {
+        if (e.target !== input) {
+            closeAllLists();
+        }
+    });
+}
 
