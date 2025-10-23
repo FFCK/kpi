@@ -16,8 +16,11 @@
 - ✅ PdfListeMatchs4TerrainsEn2.php (2025-10-22)
 - ✅ PdfListeMatchs4TerrainsEn3.php (2025-10-22)
 - ✅ PdfListeMatchs4TerrainsEn4.php (2025-10-22)
+- ✅ FeuilleMatchMulti.php (2025-10-23)
+- ✅ FeuilleGroups.php (2025-10-23)
+- ✅ FeuilleInstances.php (2025-10-23)
 
-**Statut**: ✅ **MIGRATION EN COURS** (10/43 fichiers)
+**Statut**: ✅ **MIGRATION EN COURS** (16/43 fichiers)
 
 ---
 

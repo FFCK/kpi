@@ -3,12 +3,13 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../lib/fpdf/fpdf.php');
+// replaced FPDF by MyPDF wrapper (mPDF) for PHP7/8 compatibility
+require_once('../commun/MyPDF.php');
 
 require_once('../lib/qrcode/qrcode.class.php');
 
-// Gestion de la Feuille de Match
-class PDF extends FPDF
+// Gestion de la Feuille de Match - migré vers MyPDF/mPDF
+class PDF extends MyPDF
 {
     var $x0;
 }
@@ -44,11 +45,11 @@ class FeuilleMatch extends MyPage
 
         //Création du PDF de base
         $pdf = new PDF('L');
-        $pdf->Open();
+        // $pdf->Open(); // SUPPRIMÉ pour mPDF (bug)
         $pdf->SetTitle($lang['Feuille_de_marque']);
 
         $pdf->SetAuthor("FFCK - Kayak-polo.info");
-        $pdf->SetCreator("FFCK - Kayak-polo.info avec FPDF");
+        $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
         for ($h = 0; $h < count($chaqueMatch); $h++) {
             // Infos match
@@ -191,20 +192,20 @@ class FeuilleMatch extends MyPage
 
             $organisateur = html_entity_decode($row['Organisateur']);
             if ($row['Responsable_R1'] || $arrayCompetition['En_actif'] == 'O') {
-                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_R1'])), 0, 25);
+                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_R1']) ?? ''), 0, 25);
                 $responsableT = $lang['R1'] . ': ';
             } else {
-                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_insc'])), 0, 25);
+                $responsable = substr(html_entity_decode(utyGetNomPrenom($row['Responsable_insc']) ?? ''), 0, 25);
                 $responsableT = 'Resp: ';
             }
             if ($arrayCompetition['En_actif'] == 'O') {
-                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']));
+                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']) ?? '');
                 $delegueT = $lang['Delegue'] . ': ';
             } elseif ($row['Delegue']) {
-                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']));
+                $delegue = html_entity_decode(utyGetNomPrenom($row['Delegue']) ?? '');
                 $delegueT = 'Délégué CNA: ';
             } elseif ($row['ChefArbitre']) {
-                $delegue = html_entity_decode(utyGetNomPrenom($row['ChefArbitre']));
+                $delegue = html_entity_decode(utyGetNomPrenom($row['ChefArbitre']) ?? '');
                 $delegueT = 'Chef des arbitres: ';
             } else {
                 $delegue = '';
@@ -252,7 +253,7 @@ class FeuilleMatch extends MyPage
 
             $Commentaires = $row['Commentaires_officiels'];
             $Commentaires1 = str_split($Commentaires, 85); //85
-            $Commentaires1 = $Commentaires1[0];
+            $Commentaires1 = isset($Commentaires1[0]) ? $Commentaires1[0] : '';
             if (strlen($Commentaires) > 85) {
                 $Commentaires1 .= '...';
             }
@@ -500,21 +501,21 @@ class FeuilleMatch extends MyPage
             $x0 = 10;
             $pdf->SetLeftMargin($x0);
             $pdf->SetX($x0);
-            $pdf->SetY(9);
 
-            // Bandeau
+            // mPDF: Sauvegarder la position Y initiale avant les images et forcer la position de départ
+            $yStart = 9;
+            $pdf->SetY($yStart);
+
+            // Bandeau / Logo / Sponsor
             if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
                 $img = redimImage($visuels['bandeau'], 153, 10, 11, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI + Logo    
             } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                 $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI
             } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
                 $pdf->Image('../img/CNAKPI_small.jpg', 65, 10, 0, 11, 'jpg', "https://www.kayak-polo.info");
-                // Logo
             } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
                 $img = redimImage($visuels['logo'], 153, 10, 11, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
@@ -524,6 +525,10 @@ class FeuilleMatch extends MyPage
                 $img = redimImage($visuels['sponsor'], 297, 10, 11, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 190, 0, $img['newHauteur']);
             }
+
+            // mPDF: Restaurer la position Y après les images (mPDF peut déplacer le curseur)
+            $pdf->SetY($yStart);
+            $pdf->SetX($x0);
 
             $pdf->Ln(11);
 
@@ -702,7 +707,13 @@ class FeuilleMatch extends MyPage
             $x0 = 150;
             $pdf->SetLeftMargin($x0);
             $pdf->SetX($x0);
-            $pdf->SetY(8);
+
+            // mPDF: Forcer position absolue Y pour colonne 2
+            // Désactiver temporairement AutoPageBreak pour permettre le repositionnement
+            $yStartCol2 = 8;
+            $pdf->SetAutoPageBreak(false);
+            $pdf->SetY($yStartCol2);
+            $pdf->SetAutoPageBreak(true, 1);
 
             $pdf->SetFont('Arial', 'B', 14);
             if ($row['Type'] == 'E') {
@@ -718,11 +729,15 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(58, 6, '(' . $lang['Pas_de_prolongation'] . ')', 1, 1, 'C');
                 $pdf->SetFont('Arial', 'BI', 14);
                 $pdf->SetFillColor(200, 200, 200);
-                // $pdf->Cell(135, 6, $lang['FEUILLE_DE_MARQUE'], 0, 1, 'C');
             }
 
             // Type de match
+            // mPDF: sauvegarder Y avant image absolue
+            $yBeforeTypeImage = $pdf->y;
             $pdf->image('../img/type' . $row['Type'] . '2.png', 214, 14, 6, 0);
+            // restaurer position
+            $pdf->SetY($yBeforeTypeImage);
+            $pdf->SetX($x0);
 
             $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(15, 5, $lang['Equ_A'] . ": ", 'LT', 0, 'L', 1);
@@ -801,7 +816,6 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(5, 5, $lang['R'], 1, 1, 'C', 1);
 
             for ($i = 0; $i < 26; $i++) {
-                //			for($i=0;$i<23;$i++)	// @COSANDCO_WAMPSER
                 $pdf->SetFillColor(170, 255, 170);
                 $pdf->Cell(5, 4, isset($detail[$i]['d2']) ? $detail[$i]['d2'] : '', 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 255, 170);
@@ -887,9 +901,7 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(52, 12, "", '1', '1', 'C');
             $pdf->Cell(21, 4, $lang['apres_match'], 'LRB', 0, 'C');
             $pdf->Cell(31, 4, $lang['Capitaine'] . " A", 1, 0, 'C');
-            //$pdf->Cell(31,4,$lang['Entraineur']." A",1,0,'C');
             $pdf->Cell(31, 4, $lang['Capitaine'] . " B", 1, 0, 'C');
-            //$pdf->Cell(31,4,$lang['Entraineur']." B",1,0,'C');
             $pdf->Cell(31, 4, $lang['Arbitre_1'], 1, 0, 'C');
             $pdf->SetFont('Arial', '', 9);
             $pdf->Cell(21, 4, "ID #" . $idMatch, 1, 1, 'C');
@@ -899,17 +911,25 @@ class FeuilleMatch extends MyPage
 
             // QRCode
             $qrcode = new QRcode('https://kayak-polo.info/admin/FeuilleMarque2.php?idMatch=' . $idMatch, 'L'); // error level : L, M, Q, H
-            //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
             $qrcode->displayFPDF($pdf, 264, 164, 21);
 
-            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 1, 'R');
-            // Pays
+            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')), 0, 1, 'R');
+
+            // mPDF: Sauvegarder position actuelle avant insertion drapeaux (images absolues)
+            $currentY = $pdf->y;
+            $currentX = $pdf->x;
+
+            // Pays (images en position absolue Y=15 - ne doivent pas décaler le curseur)
             if ($arrayCompetition['Code_niveau'] == 'INT' && $paysA != '') {
                 $pdf->image('../img/Pays/' . $paysA . '.png', 151, 15, 9, 6);
             }
             if ($arrayCompetition['Code_niveau'] == 'INT' && $paysB != '') {
                 $pdf->image('../img/Pays/' . $paysB . '.png', 229, 15, 9, 6);
             }
+
+            // mPDF: Restaurer position exacte après images drapeaux
+            $pdf->SetY($currentY);
+            $pdf->SetX($currentX);
 
             $pdf->SetX(10);
 
@@ -957,19 +977,19 @@ class FeuilleMatch extends MyPage
 
                 $pdf->Cell(135, 1, "", 'LR', '1', 'C', 1);
                 $pdf->Cell(135, 1, "", 'LTR', '1', 'L');
-                $pdf->Cell(135, 4, $lang['Arbitre_1'] . ": " . $principal, 'LR', '1', 'L');
-                $pdf->Cell(135, 4, $lang['Arbitre_2'] . ": " . $secondaire, 'LR', '1', 'L');
+                $pdf->Cell(135, 4, $lang['Arbitre_1'] . ": " . $principal, 'LR', 1, 'L');
+                $pdf->Cell(135, 4, $lang['Arbitre_2'] . ": " . $secondaire, 'LR', 1, 'L');
                 $pdf->Cell(68, 4, $lang['Secretaire'] . ": " . $secretaire, 'L', '0', 'L');
-                $pdf->Cell(67, 4, $lang['Chronometre'] . ": " . $chronometre, 'R', '1', 'L');
+                $pdf->Cell(67, 4, $lang['Chronometre'] . ": " . $chronometre, 'R', 1, 'L');
                 $pdf->Cell(135, 1, "", 'LBR', '1', 'C');
 
                 //Equipe A
                 $pdf->Ln(1);
                 $pdf->SetFont('Arial', '', 10);
-                $pdf->Cell(45, 5, $lang['Equipe_A'] . ":", 'LTB', '0', 'C', 1);
-                $pdf->SetFont('Arial', 'B', 14);
-                $pdf->Cell(90, 5, $equipea, 'TRB', '1', 'C', 1);
-                $pdf->SetFont('Arial', '', 10);
+                if ($arrayCompetition['Titre_actif'] == 'O') {
+                    $pdf->Cell(111, 4, $competition, 'LT', '0', 'L');
+                }
+                $pdf->Cell(111, 4, '', 'LT', '0', 'L');
 
                 //Equipe B
                 $pdf->Ln(1);
@@ -1033,9 +1053,11 @@ class FeuilleMatch extends MyPage
             }
         }
 
-        $pdf->Output('Match(s) ' . $listMatch . '.pdf', 'I');
+        // Sortie PDF avec mPDF v8 (Destination::INLINE pour affichage navigateur)
+        $pdf->Output('Match(s) ' . $listMatch . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 
 //Création des feuilles
 $page = new FeuilleMatch();
+

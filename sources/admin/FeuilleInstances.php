@@ -3,22 +3,7 @@
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
-
-require('../lib/fpdf/fpdf.php');
-
-// Pieds de page
-class PDF extends FPDF
-{
-	function Footer()
-	{
-		//Positionnement à 1,5 cm du bas
-		$this->SetY(-15);
-		//Police Arial italique 8
-		$this->SetFont('Arial', 'I', 8);
-		//Numéro de page centré
-		$this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
-	}
-}
+require_once('../commun/MyPDF.php');
 
 // Gestion de la Feuille Instances
 class FeuilleInstances extends MyPage
@@ -83,73 +68,93 @@ class FeuilleInstances extends MyPage
 			$arrayCompetition['En_actif'] = '';
 		}
 
-		if ($arrayCompetition['En_actif'] == 'O') {
+		if (($arrayCompetition['En_actif'] ?? '') == 'O') {
 			$lang = $langue['en'];
 		} else {
 			$lang = $langue['fr'];
 		}
 
-		//Création
-		$pdf = new FPDF('P');
-		$pdf->Open();
+		// Création PDF
+		$pdf = new MyPDF('P');
 		$pdf->SetTitle("Instances");
+		$pdf->SetAuthor("Kayak-polo.info");
+		$pdf->SetCreator("Kayak-polo.info avec mPDF");
 
-		$pdf->SetAuthor("Poloweb.org");
-		$pdf->SetCreator("Poloweb.org avec FPDF");
+		// Pattern 8 : Images décoratives en arrière-plan
+		$yStart = 30;
+
+		$pdf->SetAutoPageBreak(false);
 		$pdf->AddPage();
-		if ($arrayCompetition['Sponsor_actif'] == 'O' && $sponsor != '') {
-			$pdf->SetAutoPageBreak(true, 40);
+
+		// KPI logo
+		if (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
+			$pdf->Image('../img/CNAKPI_small.jpg', 84, 10, 0, 20, 'jpg', "http://www.ffck.org");
+		}
+
+		// Bandeau ou logo (centrage précis)
+		if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($bandeau)) {
+			$size = getimagesize($bandeau);
+			$largeur = $size[0];
+			$hauteur = $size[1];
+			$ratio = 20 / $hauteur;
+			$newlargeur = $largeur * $ratio;
+			// Correction : utiliser $pdf->w (largeur totale) et PAS les marges
+			$posi = $pdf->w - ($newlargeur / 2);
+			$pdf->image($bandeau, $posi, 4, 0, 20);
+		} elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($logo)) {
+			$size = getimagesize($logo);
+			$largeur = $size[0];
+			$hauteur = $size[1];
+			$ratio = 20 / $hauteur;
+			$newlargeur = $largeur * $ratio;
+			$posi = $pdf->w - ($newlargeur / 2);
+			$pdf->image($logo, $posi, 4, 0, 20);
+		}
+
+		// Sponsor (en bas)
+		$hasSponsor = false;
+		if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($sponsor)) {
+			$size = getimagesize($sponsor);
+			$largeur = $size[0];
+			$hauteur = $size[1];
+			$ratio = 16 / $hauteur;
+			$newlargeur = $largeur * $ratio;
+			$posi = 105 - ($newlargeur / 2);
+			$pdf->image($sponsor, $posi, 267, 0, 16);
+			$hasSponsor = true;
+		}
+
+		// Footer HTML pour numéro de page sous le sponsor
+		$footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">Page {PAGENO}</div>';
+		$pdf->SetHTMLFooter($footerHTML);
+
+		// Réactiver AutoPageBreak avec marge basse adaptée
+		if ($hasSponsor) {
+			$pdf->SetAutoPageBreak(true, 30);
 		} else {
 			$pdf->SetAutoPageBreak(true, 15);
 		}
 
-		// logo
-		if ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-			$pdf->Image('../img/CNAKPI_small.jpg', 84, 10, 0, 20, 'jpg', "http://www.ffck.org");
-		}
-
-		if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($bandeau)) {
-			$size = getimagesize($bandeau);
-			$largeur = $size[0];
-			$hauteur = $size[1];
-			$ratio = 20 / $hauteur;	//hauteur imposée de 20mm
-			$newlargeur = $largeur * $ratio;
-			$posi = 105 - ($newlargeur / 2);	//210mm = largeur de page
-			$pdf->image($bandeau, $posi, 8, 0, 20);
-		} elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($logo)) {
-			$size = getimagesize($logo);
-			$largeur = $size[0];
-			$hauteur = $size[1];
-			$ratio = 20 / $hauteur;	//hauteur imposée de 20mm
-			$newlargeur = $largeur * $ratio;
-			$posi = 105 - ($newlargeur / 2);	//210mm = largeur de page
-			$pdf->image($logo, $posi, 8, 0, 20);
-		}
-
-		if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($sponsor)) {
-			$size = getimagesize($sponsor);
-			$largeur = $size[0];
-			$hauteur = $size[1];
-			$ratio = 16 / $hauteur;	//hauteur imposée de 16mm
-			$newlargeur = $largeur * $ratio;
-			$posi = 105 - ($newlargeur / 2);	//210mm = largeur de page
-			$pdf->image($sponsor, $posi, 267, 0, 16);
-		}
+		// Positionner le curseur pour le contenu (Pattern 8)
+		$pdf->SetY($yStart);
+		$pdf->SetLeftMargin(10);
+		$pdf->SetRightMargin(10);
+		$pdf->SetX(10);
 
 		// titre
-		$pdf->Ln(22);
 		$pdf->SetFont('Arial', 'B', 14);
-		if ($arrayCompetition['Titre_actif'] == 'O') {
+		if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
 			$pdf->Cell(188, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
 		} else {
-			$pdf->Cell(188, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
+			$pdf->Cell(188, 5, $arrayCompetition['Soustitre'] ?? '', 0, 1, 'C');
 		}
-		if ($arrayCompetition['Soustitre2'] != '') {
+		if (($arrayCompetition['Soustitre2'] ?? '') != '') {
 			$pdf->Cell(188, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
 		} else {
 			$pdf->Cell(188, 5, '(' . $codeCompet . ')', 0, 1, 'C');
 		}
 		$pdf->Ln(12);
+
 		// Contenu
 		$pdf->SetFont('Arial', '', 12);
 		$pdf->Cell(94, 7, $row['Nom'], 0, 0, 'L');
@@ -177,7 +182,7 @@ class FeuilleInstances extends MyPage
 		$pdf->Cell(94, 10, 'Représentant des compétiteurs: ', 0, 0, 'C');
 		$pdf->Cell(94, 10, '', 0, 1, 'C');
 
-		$pdf->Output('Instances ' . $codeCompet . '.pdf', 'I');
+		$pdf->Output('Instances ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
 	}
 }
 
