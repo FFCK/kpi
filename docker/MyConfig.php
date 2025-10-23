@@ -20,6 +20,4 @@ require_once('MyParams.php');
 //     }
 // }
 
-define("DEV", TRUE);
-
 define('FPDF_FONTPATH', 'font/');

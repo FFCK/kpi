@@ -4,6 +4,7 @@
 define('URL_SITE', 'https://kpi.localhost');
 
 define("PRODUCTION", FALSE);
+define("DEV", TRUE); // Development environment flag
 
 // Prod
 define('PARAM_PROD_LOGIN', 'root');

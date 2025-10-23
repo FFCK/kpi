@@ -4,6 +4,7 @@
 define('URL_SITE', 'https://www.kayak-polo.info');
 
 define("PRODUCTION", FALSE);
+define("DEV", FALSE); // Development environment flag (set to TRUE for dev environment)
 
 // Prod
 define('PARAM_PROD_LOGIN', '');
