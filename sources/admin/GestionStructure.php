@@ -74,37 +74,37 @@ class GestionStructure extends MyPageSecure
 				$postal = $row['Postal'];
 				$www = $row['www'];
 				$email = $row['email'];
-				$mapParam2  .= "\n	
-					var contentString = '<p id=\"infoWindowContent\" data-html=\"$html\" data-code=\"$code\" >$html</p>';
-					var marker = new google.maps.Marker({ 
-						position: new google.maps.LatLng($coord),
-						map: carte,
-						title: '$html',
-						icon: image,
-					});
+				$mapParam2  .= "\n
+					var marker = L.marker([$coord], {icon: blueIcon})
+						.addTo(map)
+						.bindPopup('<p id=\"infoWindowContent\" data-html=\"$html\" data-code=\"$code\">$html</p>');
                     markers['$code'] = marker;
                     coord['$code'] = \"$coord\";
                     postal['$code'] = \"$postal\";
                     www['$code'] = \"$www\";
                     email['$code'] = \"$email\";
-                    
-                    google.maps.event.addListener(marker,'click', (function(marker, contentString, infowindow){ 
-                        return function() {
-                            infowindow.setContent(contentString);
-                            infowindow.open(carte, marker);
-                            jq('#club').val(jq('#infoWindowContent').attr('data-code'));
-                            handleSelected(false);
-                        };
-                    })(marker,contentString,infowindow));
+
+                    marker.on('click', function(e) {
+                        document.getElementById('club').value = '$code';
+                        handleSelected(false);
+                    });
 
 				";
 			}
 		}
 		$this->m_tpl->assign('arrayClub', $arrayClub);
 		//Chargement paramètres carte ...
-		$mapParam  = "image = {url: '../img/Map-Marker-Ball-Right-Azure-icon.png'};\n";
-		$mapParam .= "infowindow = new google.maps.InfoWindow({});\n";
-		$mapParam .= "markers = [];";
+		$mapParam  = "var blueIcon = L.icon({
+			iconUrl: '../img/Map-Marker-Ball-Right-Azure-icon.png',
+			iconSize: [14, 25],
+			iconAnchor: [2, 25],
+			popupAnchor: [6, -23]
+		});\n";
+		$mapParam .= "markers = {};\n";
+		$mapParam .= "coord = {};\n";
+		$mapParam .= "postal = {};\n";
+		$mapParam .= "www = {};\n";
+		$mapParam .= "email = {};\n";
 		$mapParam .= $mapParam2;
 		$this->m_tpl->assign('mapParam', $mapParam);
 
@@ -272,7 +272,7 @@ class GestionStructure extends MyPageSecure
 		$this->SetTemplate("Gestion_des_structures", "Clubs", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
-		$this->DisplayTemplateMap('GestionStructure');
+		$this->DisplayTemplateLeaflet('GestionStructure');
 	}
 }
 

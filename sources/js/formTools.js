@@ -1,7 +1,11 @@
-//if ( typeof(jq) == "undefined" ) {
-jq = jQuery.noConflict();
-$ = jq;
-//}
+// Conditional jQuery support - only if jQuery is loaded
+if (typeof jQuery !== 'undefined') {
+	jq = jQuery.noConflict();
+	$ = jq;
+} else {
+	// Fallback: create dummy jq object for vanilla JS compatibility
+	jq = null;
+}
 if ( typeof(lang) == "undefined" ) {
 	lang = 'en';
 }
@@ -33,8 +37,9 @@ if(lang == 'en')  {
     langue_tools['Vider'] = 'Vider';
 }
 
-
-jq(document).ready(function() {
+// jQuery-dependent code - only execute if jQuery is available
+if (typeof jq !== 'undefined' && jq !== null) {
+	jq(document).ready(function() {
 //	jq("*").tooltip({
 //		showURL: false
 //	});
@@ -68,7 +73,8 @@ jq(document).ready(function() {
         jq(this).parent().removeClass('showall').addClass('hideall');
         jq('#blocMatchs').css('height', '500');
     });
-});
+	});
+} // End jQuery-dependent code
 
 // Drag and Drop (class='drag')
 // CSS: .drag {position:relative; cursor:pointer;}
@@ -327,6 +333,8 @@ function testframe()
 	}
 }
 
+// jQuery plugins - only define if jQuery is available
+if (typeof jQuery !== 'undefined') {
 /*
 highlight v3  !! Modified by Jon Raasch (http://jonraasch.com) to fix IE6 bug !!
 Highlights arbitrary terms.
@@ -452,6 +460,8 @@ jQuery.fn.removeHighlight2 = function() {
     newNormalize(thisParent);
  }).end();
 };
+
+} // End jQuery plugins
 /***************************************************************************/
 
 function calculCategorie(naissance, saison) {

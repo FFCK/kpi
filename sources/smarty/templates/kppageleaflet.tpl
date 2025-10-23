@@ -24,17 +24,27 @@
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux" href="http://kayak-polo.info/?feed=rss2" />
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux des commentaires" href="http://kayak-polo.info/?feed=comments-rss2" />
 
-        <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
-        {* <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
-        {* <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
-        <link rel="stylesheet" href="css/jquery-ui.css?v={$NUM_VERSION}">
-        <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
-        <link rel="stylesheet" type="text/css" href="js/leaflet/leaflet.css" />
-        
-        {assign var=temp value="css/$contenutemplate.css"} 
-        {if is_file($temp)}
-            <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
+        {if $bPublic}
+            <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
+            <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
+            {* <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+            {* <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+            <link rel="stylesheet" href="css/jquery-ui.css?v={$NUM_VERSION}">
+            <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
+            <link rel="stylesheet" type="text/css" href="js/leaflet/leaflet.css" />
+
+            {assign var=temp value="css/$contenutemplate.css"}
+            {if is_file($temp)}
+                <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
+            {/if}
+        {else}
+            <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+            <link rel="stylesheet" type="text/css" href="../css/GestionStyle.css" />
+            <link rel="stylesheet" type="text/css" href="../js/leaflet/leaflet.css" />
+            {assign var=temp value="../css/$contenutemplate.css"}
+            {if is_file($temp)}
+                <link type="text/css" rel="stylesheet" href="../css/{$contenutemplate}.css?v={$NUM_VERSION}" />
+            {/if}
         {/if}
         <!-- 
             Css = '' (simply, zsainto, ckca...) 
@@ -50,29 +60,46 @@
         <title>{$smarty.config.$title|default:$title}</title>
     </head>
     <body onload="testframe(); alertMsg('{$AlertMessage}'); ">
-        <div id="fb-root"></div>
-        
-        {include file='kpheader.tpl'}
-        {include file="$contenutemplate.tpl"}
-        {include file='kpfooter.tpl'}
-        
+        {if $bPublic}
+            <div id="fb-root"></div>
+            {include file='kpheader.tpl'}
+            {include file="$contenutemplate.tpl"}
+            {include file='kpfooter.tpl'}
+        {else}
+            {include file='header.tpl'}
+            {include file='main_menu.tpl'}
+            {include file="$contenutemplate.tpl"}
+            {include file='footer.tpl'}
+        {/if}
+
         <script>
-            masquer = 0;
+            {if $bPublic}
+                masquer = 0;
+            {else}
+                masquer = {$masquer};
+            {/if}
             lang = '{$lang}';
             version = '{$NUM_VERSION}';
         </script>
 
-        <script type='text/javascript' src='js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
-        {* <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script> *}
-        {* <script type='text/javascript' src='js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script> *}
-        <script type='text/javascript' src='js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
-        <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
-        <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}"></script>
-        <script type="text/javascript" src="js/leaflet/leaflet.js"></script>
-        {assign var=temp value="js/$contenutemplate.js"} 
-        {if is_file($temp)}
-            <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
+        {if $bPublic}
+            <script type='text/javascript' src='js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
+            <script type='text/javascript' src='js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
+            <script type='text/javascript' src='js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
+            <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
+            <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}"></script>
+            <script type="text/javascript" src="js/leaflet/leaflet.js"></script>
+            {assign var=temp value="js/$contenutemplate.js"}
+            {if is_file($temp)}
+                <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
+            {/if}
+        {else}
+            <script type="text/javascript" src="../js/formTools.js?v={$NUM_VERSION}"></script>
+            <script type="text/javascript" src="../js/leaflet/leaflet.js"></script>
+            {assign var=temp value="../js/$contenutemplate.js"}
+            {if is_file($temp)}
+                <script type="text/javascript" src="../js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
+            {/if}
         {/if}
         
         {literal}
@@ -85,7 +112,13 @@
             (function() {
                 var u="{/literal}{$smarty.const.MATOMO_SERVER_URL}{literal}";
                 _paq.push(['setTrackerUrl', u+'matomo.php']);
-                _paq.push(['setSiteId', '{/literal}{$smarty.const.MATOMO_SITE_ID_PUBLIC}{literal}']);
+                {/literal}
+                {if $bPublic}
+                    {literal}_paq.push(['setSiteId', '{/literal}{$smarty.const.MATOMO_SITE_ID_PUBLIC}{literal}']);{/literal}
+                {else}
+                    {literal}_paq.push(['setSiteId', '{/literal}{$smarty.const.MATOMO_SITE_ID_ADMIN}{literal}']);{/literal}
+                {/if}
+                {literal}
                 var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
                 g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
             })();
