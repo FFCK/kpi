@@ -1,12 +1,3 @@
-<!--<div class="container">
-    <div class="col-md-9">
-        <h1 class="col-md-11 col-xs-9">{#Clubs#}Clubs!</h1>
-    </div>
-    <div class="col-md-3">
-        <span class="badge pull-right">{$smarty.config.Saison|default:'Saison'} {$Saison}</span>
-    </div>
-</div>
--->
 <div class="container">
     <article class="col-md-6 padTopBottom">        
         <div class="form-horizontal">
@@ -63,7 +54,7 @@
     <script type="text/javascript">
 
             //création des marqueurs
-            {/literal}{$mapParam}{literal}
+            {/literal}{$mapParam|default:''}{literal}
 
     </script>
 {/literal}

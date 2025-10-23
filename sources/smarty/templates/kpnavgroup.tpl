@@ -1,14 +1,14 @@
-{if $visuels.bandeau or $visuels.logo or $recordCompetition.Web}
+{if ($visuels.bandeau|default:'') or ($visuels.logo|default:'') or $recordCompetition.Web}
     <div class="container logo_lien visible-lg visible-md">
         <div class="padTopBottom table-responsive col-md-12">
             <div class="text-center">
                 {if $recordCompetition.Web}
                     <a class="text-primary titre" href='{$recordCompetition.Web}' target='_blank'>
                 {/if}
-                {if $visuels.bandeau}
-                    <img class="img2" id='logo' src='{$visuels.bandeau}' alt="logo"><br>
-                {else if $visuels.logo}
-                    <img class="img2" id='logo' src='{$visuels.logo}' alt="logo"><br>
+                {if $visuels.bandeau|default:''}
+                    <img class="img2" id='logo' src='{$visuels.bandeau|default:''}' alt="logo"><br>
+                {else if $visuels.logo|default:''}
+                    <img class="img2" id='logo' src='{$visuels.logo|default:''}' alt="logo"><br>
                 {/if}
                 {if $recordCompetition.Web}
                     <i>{$recordCompetition.Web}</i></a>

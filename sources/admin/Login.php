@@ -16,6 +16,7 @@ class Login extends MyPage
 
 		$myBdd = new MyBdd();
 
+		$target = ''; // Initialize default value
 		if (utyGetGet('Src', false)) {
 			$loginTarget = utyGetGet('Src', false);
 			$_SESSION['loginTarget'] = $loginTarget;

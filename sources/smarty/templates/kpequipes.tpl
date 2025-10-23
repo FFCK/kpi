@@ -21,7 +21,7 @@
         <h2 class="col-sm-12 text-center" id="nomEquipe">{$nomEquipe}</h2>
         <div class="form-group">
           <div class="col-sm-12 text-center" id="nomClub">
-            <a class="btn btn-xs btn-default" {if !$arrayCompo}href='kpclubs.php?clubId={$Code_club}' title='{#Club#}'
+            <a class="btn btn-xs btn-default" {if !($arrayCompo|default:false)}href='kpclubs.php?clubId={$Code_club}' title='{#Club#}'
               {/if}>
               {$Club}
             </a>
@@ -41,7 +41,7 @@
         </div>
       {elseif $eLogo}
         <div class="col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="equipeColors">
-          <a {if !$arrayCompo}href="kpclubs.php?clubId={$Code_club}" title='{#Club#}' {/if}>
+          <a {if !($arrayCompo|default:false)}href="kpclubs.php?clubId={$Code_club}" title='{#Club#}' {/if}>
             <img class="img-responsive img-thumbnail" src="{$eLogo}?v={$NUM_VERSION}" alt="{$nomEquipe}">
           </a>
         </div>
@@ -49,10 +49,10 @@
     </article>
 
     <article class="col-md-6 padTopBottom" id="equipePalmares">
-      {if $eTeam}
+      {if $eTeam|default:''}
         <div class="col-sm-12" id="equipeTeam">
-          <a href="{$eTeam}?v={$NUM_VERSION}" target="_blank">
-            <img class="img-responsive img-thumbnail" src="{$eTeam}?v={$NUM_VERSION}" alt="{$nomEquipe}"
+          <a href="{$eTeam|default:''}?v={$NUM_VERSION}" target="_blank">
+            <img class="img-responsive img-thumbnail" src="{$eTeam|default:''}?v={$NUM_VERSION}" alt="{$nomEquipe}"
               title="{$nomEquipe}">
           </a>
           <span class="pull-right badge"><i>{$eSeason2}</i></span>
@@ -141,7 +141,7 @@
                 <tr>
                   <td>
                     <a class="btn btn-xs btn-default"
-                      {if !$arrayCompo}href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
+                      {if !($arrayCompo|default:false)}href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
                       title='{#Classement#}' {/if}>
                       {$arrayPalmares[$Saison][j].Competitions}
                     </a>
@@ -160,7 +160,7 @@
                 <tr>
                   <td class="text-right">
                     <a class="btn btn-xs btn-default"
-                      {if !$arrayCompo}href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
+                      {if !($arrayCompo|default:false)}href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
                       title='{#Classement#}' {/if}>
                       <i>{$arrayPalmares[$Saison][j].Competitions}</i>
                     </a>

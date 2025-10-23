@@ -55,13 +55,13 @@
                 <h3 class="row">
                     <div class="col-md-6 col-sm-6">
                         {#Saison#} {$arraySaisons[i].saison}
-                        {if $arrayCompets[$codesaison][0].LogoLink != ''}
+                        {if ($arrayCompets[$codesaison][0].LogoLink|default:'') != ''}
                             <div class="hidden-xs">
-                                {if $arrayCompets[$codesaison][0].Web != ''}
-                                    <a href='{$arrayCompets[$codesaison][0].Web}' target='_blank'>
+                                {if ($arrayCompets[$codesaison][0].Web|default:'') != ''}
+                                    <a href='{$arrayCompets[$codesaison][0].Web|default:''}' target='_blank'>
                                 {/if}
-                                <img class="img2" id='logo' src='{$arrayCompets[$codesaison][0].LogoLink}'>
-                                {if $arrayCompets[$codesaison][0].Web != ''}
+                                <img class="img2" id='logo' src='{$arrayCompets[$codesaison][0].LogoLink|default:''}'>
+                                {if ($arrayCompets[$codesaison][0].Web|default:'') != ''}
                                     </a>
                                 {/if}
                             </div>
@@ -75,34 +75,39 @@
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <table class='table table-striped table-condensed table-hover' id='tableMatchs'>
                             <caption>
-                                {if $arrayCompets[$codesaison][j].Titre_actif != 'O' && $arrayCompets[$codesaison][j].Soustitre != ''}
-                                    {$arrayCompets[$codesaison][j].Soustitre}
+                                {if ($arrayCompets[$codesaison][j].Titre_actif|default:'') != 'O' && ($arrayCompets[$codesaison][j].Soustitre|default:'') != ''}
+                                    {$arrayCompets[$codesaison][j].Soustitre|default:''}
                                 {else}
-                                    {$arrayCompets[$codesaison][j].libelle}
+                                    {$arrayCompets[$codesaison][j].libelle|default:''}
                                 {/if}
-                                {if $arrayCompets[$codesaison][j].Soustitre2 != ''}<br>{$arrayCompets[$codesaison][j].Soustitre2}{/if}
+                                {if ($arrayCompets[$codesaison][j].Soustitre2|default:'') != ''}<br>{$arrayCompets[$codesaison][j].Soustitre2|default:''}{/if}
                             </caption>
                             <tbody>
-                                {section name=k loop=$arrayClts[$codesaison][$codecompet]}
+                                {if isset($arrayClts[$codesaison][$codecompet])}
+                                    {assign var='arrayCltsCompet' value=$arrayClts[$codesaison][$codecompet]}
+                                {else}
+                                    {assign var='arrayCltsCompet' value=array()}
+                                {/if}
+                                {section name=k loop=$arrayCltsCompet}
                                     <tr>
-                                        {if $arrayClts[$codesaison][$codecompet][k].Code_typeclt=='CHPT'}
-                                            {if $arrayClts[$codesaison][$codecompet][k].Clt > 0 && $arrayClts[$codesaison][$codecompet][k].Clt <= 3}
-                                                <td class='medaille'><img width="28" src="img/medal{$arrayClts[$codesaison][$codecompet][k].Clt}.gif" alt="Podium" /></td>
+                                        {if ($arrayCltsCompet[k].Code_typeclt|default:'')=='CHPT'}
+                                            {if ($arrayCltsCompet[k].Clt|default:0) > 0 && ($arrayCltsCompet[k].Clt|default:0) <= 3}
+                                                <td class='medaille'><img width="28" src="img/medal{$arrayCltsCompet[k].Clt|default:0}.gif" alt="Podium" /></td>
                                             {else}
-                                                <td>{$arrayClts[$codesaison][$codecompet][k].Clt}</td>
+                                                <td>{$arrayCltsCompet[k].Clt|default:''}</td>
                                             {/if}
                                         {else}
-                                            {if $arrayClts[$codesaison][$codecompet][k].CltNiveau > 0 && $arrayClts[$codesaison][$codecompet][k].CltNiveau <= 3}
-                                                <td class='medaille'><img width="28" src="img/medal{$arrayClts[$codesaison][$codecompet][k].CltNiveau}.gif" alt="Podium" /></td>
+                                            {if ($arrayCltsCompet[k].CltNiveau|default:0) > 0 && ($arrayCltsCompet[k].CltNiveau|default:0) <= 3}
+                                                <td class='medaille'><img width="28" src="img/medal{$arrayCltsCompet[k].CltNiveau|default:0}.gif" alt="Podium" /></td>
                                             {else}
-                                                <td>{$arrayClts[$codesaison][$codecompet][k].CltNiveau}</td>
+                                                <td>{$arrayCltsCompet[k].CltNiveau|default:''}</td>
                                             {/if}
                                         {/if}
                                         <td class="cliquableNomEquipe">
-											{if $arrayClts[$codesaison][$codecompet][k].logo != ''}
-												<img class="img2 pull-left" width="28" src="{$arrayClts[$codesaison][$codecompet][k].logo}" alt="{$arrayClts[$codesaison][$codecompet][k].club}" />
+											{if ($arrayCltsCompet[k].logo|default:'') != ''}
+												<img class="img2 pull-left" width="28" src="{$arrayCltsCompet[k].logo|default:''}" alt="{$arrayCltsCompet[k].club|default:''}" />
 											{/if}
-                                            <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayClts[$codesaison][$codecompet][k].Numero}' title='{#Palmares#}'>{$arrayClts[$codesaison][$codecompet][k].Libelle}</a>
+                                            <a class="btn btn-xs btn-default" href='kpequipes.php?Equipe={$arrayCltsCompet[k].Numero|default:''}' title='{#Palmares#}'>{$arrayCltsCompet[k].Libelle|default:''}</a>
                                         </td>
                                     </tr>
                                 {sectionelse}

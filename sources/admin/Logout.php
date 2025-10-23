@@ -20,7 +20,7 @@ class Logout extends MyPage
   			$_SESSION = array();
 		}
 
-		header("Location: ../index.php");	
+		header("Location: /");	
 	}		
 }		  	
 
