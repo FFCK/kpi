@@ -93,6 +93,14 @@ class FeuilleMatch extends MyPage
                 $idEquipeB = 0;
             }
 
+            if (in_array(substr($arrayCompetition['Code'], 0, 2), ['CE', 'CM', 'EC', 'WC', 'WG'])) {
+                $international = true;
+                $lines = 12;
+            } else {
+                $international = false;
+                $lines = 10;
+            }
+
             // drapeaux
             if ($arrayCompetition['Code_niveau'] == 'INT' && $idEquipeA != 0) {
                 $paysA = substr($row['codeclubA'], 0, 3);
@@ -176,7 +184,6 @@ class FeuilleMatch extends MyPage
             } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
                 $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
             }
-            //
 
             $principal = $row['Arbitre_principal'];
             if ($principal == '-1') {
@@ -259,7 +266,7 @@ class FeuilleMatch extends MyPage
             }
 
             // Info Equipe A
-            for ($i = 1; $i <= 10; $i++) {
+            for ($i = 1; $i <= $lines; $i++) {
                 $na[$i] = '';
                 $noma[$i] = '';
                 $prenoma[$i] = '';
@@ -289,8 +296,7 @@ class FeuilleMatch extends MyPage
             $j = 0;
             while ($row3 = $result3->fetch()) {
                 $j++;
-                if ($row3["Capitaine"] == 'E' && $j <= 10) {
-                    //                                    $j=10;
+                if ($row3["Capitaine"] == 'E') {
                     $noma[$j] = mb_strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $na[$j] = 'C';
                 } elseif ($row3["Capitaine"] == 'C') {
@@ -321,7 +327,7 @@ class FeuilleMatch extends MyPage
                 }
             }
             // Info Equipe B
-            for ($i = 1; $i <= 10; $i++) {
+            for ($i = 1; $i <= $lines; $i++) {
                 $nb[$i] = '';
                 $nomb[$i] = '';
                 $prenomb[$i] = '';
@@ -340,8 +346,7 @@ class FeuilleMatch extends MyPage
             while ($row4 = $result3->fetch()) {
                 $j++;
 
-                if ($row4["Capitaine"] == 'E' && $j <= 10) {
-                    //                                    $j=10;
+                if ($row4["Capitaine"] == 'E') {
                     $nomb[$j] = mb_strtoupper($row4['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $nb[$j] = 'C';
                 } elseif ($row4["Capitaine"] == 'C') {
@@ -488,7 +493,6 @@ class FeuilleMatch extends MyPage
             }
 
 
-
             // Production de la feuille de match PDF suivante
             $pdf->AddPage();
             $pdf->SetAutoPageBreak(true, 1);
@@ -586,6 +590,7 @@ class FeuilleMatch extends MyPage
             $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(135, 1, "", 'LBR', '1', 'C');
 
+
             //Equipe A
 
             $pdf->Ln(1);
@@ -613,8 +618,8 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
             }
 
-            for ($i = 1; $i <= 10; $i++) {
-                if ($na[$i] == 'E') {
+            for ($i = 1; $i <= $lines; $i++) {
+                if ($na[$i] == 'C') {
                     $pdf->SetFillColor(235, 235, 190);
                 } else {
                     $pdf->SetFillColor(255, 255, 255);
@@ -632,7 +637,6 @@ class FeuilleMatch extends MyPage
                     $pdf->Cell(24, 4, $licencea[$i] . $saisona[$i], 'LRB', '0', 'C', 1);
                     $pdf->Cell(15, 4, $diva[$i], 'LRB', '1', 'C', 1);
                 }
-                $indiqsaison = '';
             }
             $pdf->SetFillColor(200, 200, 200);
 
@@ -664,8 +668,8 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
             }
 
-            for ($i = 1; $i <= 10; $i++) {
-                if ($nb[$i] == 'E') {
+            for ($i = 1; $i <= $lines; $i++) {
+                if ($nb[$i] == 'C') {
                     $pdf->SetFillColor(245, 245, 180);
                 } else {
                     $pdf->SetFillColor(255, 255, 255);
@@ -683,13 +687,11 @@ class FeuilleMatch extends MyPage
                     $pdf->Cell(24, 4, $licenceb[$i] . $saisonb[$i], 'LRB', '0', 'C', 1);
                     $pdf->Cell(15, 4, $divb[$i], 'LRB', '1', 'C', 1);
                 }
-                $indiqsaison = '';
             }
             $pdf->SetFillColor(200, 200, 200);
 
-            //signatures avant match
-            // si la compétition n'est pas ICF ou ECA
-            if (!in_array(substr($arrayCompetition['Code'], 0, 2), ['CE', 'CM', 'EC'])) {
+            // signatures avant match si la compétition n'est pas ICF ou ECA
+            if (!$international) {
                 $pdf->Ln(1);
                 $pdf->SetFont('Arial', '', 10);
                 $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');
