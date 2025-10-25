@@ -4,22 +4,7 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require('../lib/fpdf/fpdf.php');
-
-// Pieds de page
-class PDF extends FPDF
-{
-
-    function Footer()
-    {
-        //Positionnement à 1,5 cm du bas
-        $this->SetY(-15);
-        //Police Arial italique 8
-        $this->SetFont('Arial', 'I', 8);
-        //Numéro de page centré
-        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
-    }
-}
+require_once('../commun/MyPDF.php');
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class FeuilleStats extends MyPage
@@ -36,7 +21,10 @@ class FeuilleStats extends MyPage
 
         //CompetitionS selectionnées
         $Compets = utyGetSession('Compets', '');
-        $CompetsList = @implode(',', $Compets);
+        if (!is_array($Compets)) {
+            $Compets = $Compets !== '' ? [$Compets] : [];
+        }
+        $CompetsList = implode(',', $Compets);
         $CompetsList = utyGetGet('Compets', $CompetsList);
         $Compets = explode(',', $CompetsList);
         $CompetsList2 = $CompetsList;
@@ -47,12 +35,12 @@ class FeuilleStats extends MyPage
         //Données de la première compétition (pour logo, sponsor...)
         $arrayCompetition = $myBdd->GetCompetition($premiereCompet[0], $codeSaison);
         if (count($Compets) == 1) {
-            if ($arrayCompetition['Titre_actif'] == 'O') {
-                $CompetsList2 = $arrayCompetition['Libelle'];
+            if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
+                $CompetsList2 = $arrayCompetition['Libelle'] ?? '';
             } else {
-                $CompetsList2 = $arrayCompetition['Soustitre'];
+                $CompetsList2 = $arrayCompetition['Soustitre'] ?? '';
             }
-            if ($arrayCompetition['Soustitre2'] != '') {
+            if (($arrayCompetition['Soustitre2'] ?? '') != '') {
                 $CompetsList2 .= ' - ' . $arrayCompetition['Soustitre2'];
             }
         }
@@ -463,7 +451,7 @@ class FeuilleStats extends MyPage
                     AND j.Code_saison = ? 
                     AND m.Date_match <= CURDATE() 
                     AND m.Validation = 'O' 
-                    AND (lc.Origine <> ? 
+                    AND (lc.Origine < ? 
                         OR lc.Pagaie_ECA = '' OR lc.Pagaie_ECA = 'PAGJ' 
                         OR lc.Pagaie_ECA = 'PAGB' OR lc.Etat_certificat_CK = 'NON') 
                     GROUP BY nomEquipe, mj.Matric, j.Code_competition 
@@ -473,7 +461,7 @@ class FeuilleStats extends MyPage
                 $result->execute(array_merge($Compets, [$codeSaison], [$codeSaison]));
                 while ($row = $result->fetch()) {
                     $row['Irreg'] = '';
-                    if ($row['Origine'] != $codeSaison) {
+                    if ($row['Origine'] < $codeSaison) {
                         $row['Irreg'] = 'Licence ' . $row['Origine'];
                     }
                     if ($row['Pagaie_ECA'] == '' or $row['Pagaie_ECA'] == 'PAGJ' or $row['Pagaie_ECA'] == 'PAGB') {
@@ -488,7 +476,7 @@ class FeuilleStats extends MyPage
                     }
                     if ($row['Etat_certificat_CK'] == 'NON') {
                         if ($row['Irreg'] != '') {
-                            $row['Irreg'] .= '<br>';
+                            $row['Irreg'] .= '/';
                         }
                         $row['Irreg'] .= 'Certif CK';
                     }
@@ -569,7 +557,6 @@ class FeuilleStats extends MyPage
                 $nbOfficiels = 0;
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge($Compets, [$codeSaison]));
-                $num_results = $result->rowCount();
                 while ($row = $result->fetch()) {
                     array_push($arrayStats, $row);
                     if ($row['Delegue'] != '' or $row['ChefArbitre'] != '') {
@@ -676,42 +663,56 @@ class FeuilleStats extends MyPage
                 break;
         }
         // Entête PDF ...
-        $pdf = new PDF('P');
-        $pdf->Open();
+        $pdf = new MyPDF('P');
         $pdf->SetTitle("Statistiques");
-
         $pdf->SetAuthor("Kayak-polo.info");
-        $pdf->SetCreator("Kayak-polo.info avec FPDF");
-        $pdf->SetAutoPageBreak(true, 15);
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 30);
-        } else {
-            $pdf->SetAutoPageBreak(true, 15);
-        }
+        $pdf->SetCreator("kayak-polo.info avec mPDF");
+
+        // Footer HTML
+        $footerHTML = '<div style="text-align: center; font-family: Arial; font-size: 8pt; font-style: italic;">Page {PAGENO}</div>';
+        $pdf->SetHTMLFooter($footerHTML);
+
+        // Pattern 8: Désactiver AutoPageBreak avant images décoratives
+        $pdf->SetAutoPageBreak(false);
         $pdf->AddPage();
+
+        // Pattern 8: Position de départ du contenu
+        $yStart = 30;
+
         // Affichage
         // Bandeau
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 210, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            // KPI + Logo
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 210, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
             $pdf->Image('../img/CNAKPI_small.jpg', 84, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             // Logo
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 210, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         }
         // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
         }
+
+        // Pattern 8: Réactiver AutoPageBreak après images
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+            $pdf->SetAutoPageBreak(true, 30);
+        } else {
+            $pdf->SetAutoPageBreak(true, 15);
+        }
+
+        // Pattern 8: Forcer curseur à position de départ
+        $pdf->SetY($yStart);
+        $pdf->SetX(10);
 
         // titre
         if ($AfficheStat == 'CJoueesN') {
@@ -719,7 +720,6 @@ class FeuilleStats extends MyPage
         } elseif ($AfficheStat == 'CJoueesCF') {
             $CompetsList2 = 'Coupe de France';
         }
-        $pdf->Ln(19);
         $pdf->SetFont('Arial', 'BI', 11);
         $pdf->Cell(95, 6, $CompetsList2, 0, 0, 'L');
         $pdf->Cell(95, 6, 'Saison ' . $codeSaison, 0, 1, 'R');
@@ -1229,7 +1229,7 @@ class FeuilleStats extends MyPage
                 break;
         }
 
-        $pdf->Output('Statistiques_' . $AfficheStat . '.pdf', 'I');
+        $pdf->Output('Statistiques_' . $AfficheStat . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

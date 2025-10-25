@@ -83,8 +83,24 @@ class FeuilleCltNiveau extends MyPage
         // Construire le footer HTML pour affichage sur toutes les pages
         if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
-            $footerHTML = '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+            $footerHTML = '<div style="text-align: center;">'
+                . '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
+                . '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
+                . (($lang == $langue['en'])
+                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
+                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                . '</span></div>';
             $pdf->SetHTMLFooter($footerHTML);
+            $pdf->SetAutoPageBreak(true, 30);
+        } else {
+            // Footer HTML simple avec date/heure seule
+            $footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
+                . (($lang == $langue['en'])
+                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
+                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                . '</div>';
+            $pdf->SetHTMLFooter($footerHTML);
+            $pdf->SetAutoPageBreak(true, 15);
         }
 
         // Configurer les marges pour éviter chevauchement avec header/footer
@@ -210,11 +226,6 @@ class FeuilleCltNiveau extends MyPage
             $pdf->SetXY(250, 175);
         } else {
             $pdf->SetXY(250, 185);
-        }
-        if ($lang == $langue['en']) {
-            $pdf->Write(4, date('Y-m-d H:i', strtotime($_SESSION['tzOffset'])));
-        } else {
-            $pdf->Write(4, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'])));
         }
 
         $pdf->Output('Classement ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);

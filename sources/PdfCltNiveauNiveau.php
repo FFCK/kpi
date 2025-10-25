@@ -4,23 +4,9 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('lib/fpdf/fpdf.php');
+require_once('commun/MyPDF.php');
 
-// Pieds de page
-class PDF extends FPDF
-{
-    function Footer()
-    {
-        //Positionnement à 1,5 cm du bas
-        $this->SetY(-15);
-        //Police Arial italique 8
-        $this->SetFont('Arial', 'I', 8);
-        //Numéro de page centré
-        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
-    }
-}
-
-// Gestion de la Feuille de Classement par Niveau
+// Gestion de la Feuille de Classement par Niveau - Migration mPDF
 class FeuilleCltNiveauNiveau extends MyPage
 {
     function __construct()
@@ -37,39 +23,51 @@ class FeuilleCltNiveauNiveau extends MyPage
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
         //Création
-        $pdf = new PDF('P');
-        $pdf->Open();
+        $pdf = new MyPDF('P');
         $pdf->SetTitle("Classement par niveau");
-
         $pdf->SetAuthor("kayak-polo.info");
-        $pdf->SetCreator("kayak-polo.info");
+        $pdf->SetCreator("kayak-polo.info avec mPDF");
+
+        // Footer HTML
+        $footerHTML = '<div style="text-align: center; font-family: Arial; font-size: 8pt; font-style: italic;">Page {PAGENO}</div>';
+        $pdf->SetHTMLFooter($footerHTML);
+
+        // Pattern 8: Désactiver AutoPageBreak avant images décoratives
+        $pdf->SetAutoPageBreak(false);
         $pdf->AddPage();
-        $pdf->SetAutoPageBreak(true, 15);
+
+        // Pattern 8: Position de départ du contenu
+        $yStart = 30;
 
         // Bandeau
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 210, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            // KPI + Logo
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             $pdf->Image('img/CNAKPI_small.jpg', 10, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 210, 10, 16, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             // KPI
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
             $pdf->Image('img/CNAKPI_small.jpg', 84, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
             // Logo
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             $img = redimImage($visuels['logo'], 210, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         }
         // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
         }
 
-        $pdf->Ln(19);
+        // Pattern 8: Réactiver AutoPageBreak après images
+        $pdf->SetAutoPageBreak(true, 15);
+
+        // Pattern 8: Forcer curseur à position de départ
+        $pdf->SetY($yStart);
+        $pdf->SetX(10);
         // titre
         $pdf->SetFont('Arial', 'BI', 9);
         $pdf->Cell(95, 5, "Compétition à élimination", 0, 0, 'L');
@@ -139,7 +137,7 @@ class FeuilleCltNiveauNiveau extends MyPage
             $pdf->Cell(10, 5, $row['Diff_publi'], 'LTBR', '1', 'C');
         }
 
-        $pdf->Output('Classement par niveau ' . $codeCompet . '.pdf', 'I');
+        $pdf->Output('Classement par niveau ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

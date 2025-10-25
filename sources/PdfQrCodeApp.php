@@ -4,25 +4,9 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('lib/fpdf/fpdf.php');
+require_once('commun/MyPDF.php');
 
 require_once('lib/qrcode/qrcode.class.php');
-
-// Pieds de page
-class PDF extends FPDF
-{
-
-  function Footer()
-  {
-    //Positionnement à 1,5 cm du bas
-    $this->SetY(-15);
-    //Police Arial italique 8
-    $this->SetFont('Arial', 'I', 8);
-    //Numéro de page centré
-    $this->Cell(137, 10, '', 0, 0, 'L');
-    $this->Cell(136, 5, '', 0, 1, 'R');
-  }
-}
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfQrCodeApp extends MyPage
@@ -39,12 +23,11 @@ class PdfQrCodeApp extends MyPage
     $titreEvenementCompet = 'Evénement (Event) : ' . $libelleEvenement;
     $codeSaison = $myBdd->GetActiveSaison();
 
-    // Entête PDF ...	  
-    $pdf = new PDF('L');
-    $pdf->Open();
+    // Entête PDF ...
+    $pdf = new MyPDF('L');
     $pdf->SetTitle("QR Codes");
     $pdf->SetAuthor("Kayak-polo.info");
-    $pdf->SetCreator("Kayak-polo.info avec FPDF");
+    $pdf->SetCreator("Kayak-polo.info avec mPDF");
     $pdf->SetTopMargin(30);
     $pdf->AddPage();
     $pdf->SetAutoPageBreak(true, 15);
@@ -58,6 +41,10 @@ class PdfQrCodeApp extends MyPage
     $pdf->Cell(273, 25, "", 0, 1, 'C');
     $pdf->Cell(273, 6, "Application", 0, 1, 'C');
     $pdf->Ln(20);
+
+    // Pattern 5: Sauvegarde position avant images
+    $savedY = $pdf->y;
+    $savedX = $pdf->x;
 
     $logo = 'img/CNAKPI_small.jpg';
     $pdf->Image($logo, 118, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
@@ -74,10 +61,14 @@ class PdfQrCodeApp extends MyPage
     $qrcode->displayFPDF($pdf, 115, 85, 62);
     $pdf->Image($logoApp, 138, $y + 89, 16, $height, 'gif', "https://www.kayak-polo.info/app/#/event/" . $idEvenement);
 
+    // Pattern 5: Restauration position après images
+    $pdf->SetY($savedY);
+    $pdf->SetX($savedX);
+
     $pdf->Cell(273, 65, "", 0, 1, 'C');
     $pdf->Cell(273, 6, "https://www.kayak-polo.info/app/#/event/" . $idEvenement, 0, 1, 'C');
 
-    $pdf->Output('Links.pdf', 'I');
+    $pdf->Output('Links.pdf', \Mpdf\Output\Destination::INLINE);
   }
 }
 

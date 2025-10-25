@@ -4,25 +4,9 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require('lib/fpdf/fpdf.php');
+require_once('commun/MyPDF.php');
 
 require_once('lib/qrcode/qrcode.class.php');
-
-// Pieds de page
-class PDF extends FPDF
-{
-
-    function Footer()
-    {
-        //Positionnement à 1,5 cm du bas
-        $this->SetY(-15);
-        //Police Arial italique 8
-        $this->SetFont('Arial', 'I', 8);
-        //Numéro de page centré
-        $this->Cell(137, 10, '', 0, 0, 'L');
-        $this->Cell(136, 5, '', 0, 1, 'R');
-    }
-}
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfQrCodes extends MyPage
@@ -54,12 +38,13 @@ class PdfQrCodes extends MyPage
         $orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
-        if ($laCompet != 0) {
+        // Pattern Bug SQL : Vérifier que $laCompet n'est pas '*' ou vide
+        if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
             $lstJournee = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;
-        if ($lstJournee != 0) {
+        if (count($lstJournee) > 0) {
             $in  = str_repeat('?,', count($lstJournee) - 1) . '?';
             $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
                 a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
@@ -104,12 +89,12 @@ class PdfQrCodes extends MyPage
             $arrayCompetition = $myBdd->GetCompetition($lastCompetEvt, $codeSaison);
         } else {
             $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-            if ($arrayCompetition['Titre_actif'] == 'O') {
-                $titreEvenementCompet = $arrayCompetition['Libelle'];
+            if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
+                $titreEvenementCompet = $arrayCompetition['Libelle'] ?? '';
             } else {
-                $titreEvenementCompet = $arrayCompetition['Soustitre'];
+                $titreEvenementCompet = $arrayCompetition['Soustitre'] ?? '';
             }
-            if ($arrayCompetition['Soustitre2'] != '') {
+            if (($arrayCompetition['Soustitre2'] ?? '') != '') {
                 $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
             }
             //$titreEvenementCompet = 'Compétition : '.$arrayCompetition['Libelle'].' ('.$codeCompet.')';
@@ -118,51 +103,63 @@ class PdfQrCodes extends MyPage
 
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
-        // Entête PDF ...	  
-        $pdf = new PDF('L');
-        $pdf->Open();
+        // Entête PDF ...
+        $pdf = new MyPDF('L');
         $pdf->SetTitle("QR Codes");
         $pdf->SetAuthor("Kayak-polo.info");
-        $pdf->SetCreator("Kayak-polo.info avec FPDF");
+        $pdf->SetCreator("Kayak-polo.info avec mPDF");
         $pdf->SetTopMargin(30);
         $pdf->AddPage();
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 28);
-        } else {
-            $pdf->SetAutoPageBreak(true, 15);
-        }
-        // Affichage
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+
+        // Pattern 8: Définir position de départ du contenu
+        $yStart = 30;
+
+        // Pattern 8: Désactiver AutoPageBreak avant images décoratives
+        $pdf->SetAutoPageBreak(false);
+
+        // Affichage images décoratives
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
             // Bandeau
             $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            if ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            if (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
                 $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
                 $logo = $img['image'];
             } else {
                 $logo = 'img/CNAKPI_small.jpg';
             }
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            // KPI + Logo    
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+            // KPI + Logo
             $pdf->Image('img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             $logo = $img['image'];
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
             // KPI
             $pdf->Image('img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             $logo = 'img/CNAKPI_small.jpg';
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             // Logo
             $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
             $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             $logo = $img['image'];
         }
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
             // Sponsor
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
             $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
         }
+
+        // Pattern 8: Réactiver AutoPageBreak après images
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+            $pdf->SetAutoPageBreak(true, 28);
+        } else {
+            $pdf->SetAutoPageBreak(true, 15);
+        }
+
+        // Pattern 8: Forcer curseur à position de départ du contenu
+        $pdf->SetY($yStart);
+        $pdf->SetX(15);
 
         $titreDate = "Saison (Season) " . $codeSaison;
         // titre
@@ -173,6 +170,10 @@ class PdfQrCodes extends MyPage
         $pdf->Cell(273, 15, "", 0, 1, 'C');
         $pdf->Cell(273, 6, "Liens - Links", 0, 1, 'C');
         $pdf->Ln(20);
+
+        // Pattern 5: Sauvegarde position avant images/QRcodes
+        $savedY = $pdf->y;
+        $savedX = $pdf->x;
 
         $logo1 = imagecreatefromstring(file_get_contents($logo));
         $logo_width = imagesx($logo1);
@@ -185,15 +186,19 @@ class PdfQrCodes extends MyPage
         $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
         $qrcode->displayFPDF($pdf, 70, 85, 50);
         $pdf->Image($logo, 87, $y + 85, 16, $height, 'jpg', "https://www.kayak-polo.info");
-
-
+        $pdf->Text(40, 150, 'https://www.kayak-polo.info/kpmatchs.php?Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison . '&lang=en');
         // QRCode Progression
         $pdf->Text(170, 80, 'Progression - Progress');
         $qrcode2 = new QRcode('https://www.kayak-polo.info/kpchart.php?Group=' . $arrayCompetition['Code_ref'] . '&Compet=' . $arrayCompetition['Code'] . '&Saison=' . $codeSaison . '&lang=en', 'Q'); // error level : L, M, Q, H
         $qrcode2->displayFPDF($pdf, 170, 85, 50);
         $pdf->Image($logo, 187, $y + 85, 16, $height, 'jpg', "https://www.kayak-polo.info");
+        $pdf->Text(40, 160, 'https://www.kayak-polo.info/kpchart.php?Group=' . $arrayCompetition['Code_ref'] . '&Compet=' . $arrayCompetition['Code'] . '&Saison=' . $codeSaison . '&lang=en');
 
-        $pdf->Output('Links.pdf', 'I');
+        // Pattern 5: Restauration position après images
+        $pdf->SetY($savedY);
+        $pdf->SetX($savedX);
+
+        $pdf->Output('Links.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

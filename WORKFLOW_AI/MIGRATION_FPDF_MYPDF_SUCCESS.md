@@ -19,8 +19,33 @@
 - ✅ FeuilleMatchMulti.php (2025-10-23)
 - ✅ FeuilleGroups.php (2025-10-23)
 - ✅ FeuilleInstances.php (2025-10-23)
+- ✅ FeuilleCltChpt.php (2025-10-24)
+- ✅ FeuilleXltChptDetail.php (2025-10-24)
+- ✅ FeuilleCltNiveau.php (2025-10-24)
+- ✅ FeuilleCltNiveauDetail.php (2025-10-24)
+- ✅ FeuilleCltNiveauJournee.php (2025-10-24)
+- ✅ FeuilleCltNiveauNiveau.php (2025-10-24)
+- ✅ FeuilleCltNiveauPhase.php (2025-10-24)
+- ✅ FeuillePresence.php (2025-10-24)
+- ✅ FeuillePresenceCat.php (2025-10-25)
+- ✅ FeuillePresenceEN.php (2025-10-25)
+- ✅ FeuillePresencePhoto.php (2025-10-25)
+- ✅ FeuillePresencePhoto2.php (2025-10-25)
+- ✅ FeuillePresencePhotoRef.php (2025-10-25)
+- ✅ FeuillePresenceU21.php (2025-10-25)
+- ✅ FeuillePresenceVisa.php (2025-10-25)
+- ✅ PdfQrCodeApp.php (2025-10-25)
+- ✅ PdfQrCodes.php (2025-10-25)
+- ✅ PdfListeMatchs4Terrains.php (2025-10-25)
+- ✅ FeuilleCards.php (2025-10-25)
+- ✅ FeuilleStats.php (2025-10-25)
+- ✅ PdfCltNiveauNiveau.php (2025-10-25)
 
-**Statut**: ✅ **MIGRATION EN COURS** (16/43 fichiers)
+**Statut**: ✅ **MIGRATION PRESQUE TERMINÉE** (37/38 fichiers applicatifs - 97.4%)
+
+### ⚠️ Fichier Restant
+
+- ⏭️ **FeuilleMatchVierge.php** - Feuille de match vierge (template PDF complexe)
 
 ---
 
@@ -940,6 +965,192 @@ Même pattern que PdfCltChpt.php pour répéter bandeau/sponsor sur toutes les p
 
 ---
 
+## 📄 Fichiers Migrés : Feuilles de Présence (7 fichiers)
+
+**Date** : 2025-10-25
+**Objectif** : Migration des feuilles de présence avec gestion des photos joueurs
+**Formats** : Paysage (297mm)
+**Fichiers** : FeuillePresenceCat.php, FeuillePresenceEN.php, FeuillePresencePhoto.php, FeuillePresencePhoto2.php, FeuillePresencePhotoRef.php, FeuillePresenceU21.php, FeuillePresenceVisa.php
+
+### Modifications Apportées (Pattern Commun)
+
+✅ **Remplacement FPDF par MyPDF** - Suppression classe Footer héritée
+✅ **Pattern 8** appliqué systématiquement (images décoratives)
+✅ **Pattern 5** pour photos joueurs (3 fichiers)
+✅ **Corrections PHP 8** avec opérateur `??` (~50 occurrences)
+✅ **GetX()/GetY()** → `$pdf->x` / `$pdf->y` (6 occurrences)
+✅ **Output Destination::INLINE**
+
+### Particularités par Fichier
+
+**FeuillePresenceCat.php** - Rupture par catégorie
+**FeuillePresenceEN.php** - Version anglaise ("Team roster", "Coach")
+**FeuillePresencePhoto.php** - Photos avec Pattern 5
+**FeuillePresencePhoto2.php** - Grille 5×2 photos + calcul largeur dynamique
+**FeuillePresencePhotoRef.php** - Arbitres, rupture tous les 12, grille 4/ligne
+**FeuillePresenceU21.php** - Filtre SQL U21, colonne Naissance
+**FeuillePresenceVisa.php** - Colonne Visa avec cases `[_]`
+
+### Tests Validés
+
+- ✅ **PHP 7.4 & 8.4** : PDF valides
+- ✅ **Photos joueurs** : Alignement correct (Pattern 5)
+- ✅ **Ruptures** : Bandeau/sponsor sur chaque page
+
+---
+
+## 📄 Fichiers Migrés : QR Codes (2 fichiers)
+
+**Date** : 2025-10-25
+**Objectif** : Migration des générateurs de QR codes pour l'application mobile et les liens publics
+**Formats** : Paysage (297mm)
+**Fichiers** : PdfQrCodeApp.php, PdfQrCodes.php
+
+### Modifications Apportées (Pattern Commun)
+
+✅ **Remplacement FPDF par MyPDF** - Suppression classe Footer héritée (footer vide)
+✅ **Pattern 8** appliqué pour images décoratives (bandeau, sponsor, logo)
+✅ **Pattern 5** pour QR codes et logos (sauvegarde/restauration position)
+✅ **Corrections PHP 8** avec opérateur `??` (~10 occurrences)
+✅ **Bug SQL corrigé** - `$laCompet != 0 && $laCompet != '*' && $laCompet != ''`
+✅ **Output Destination::INLINE**
+
+### Particularités par Fichier
+
+**PdfQrCodeApp.php** - QR code unique pour l'application mobile
+- Une seule page (format Paysage)
+- QR code vers l'événement dans l'app mobile
+- Logo KPI + Logo application (img/logo.gif)
+- Pas d'images décoratives (pas de bandeau/sponsor)
+- Pattern 5 uniquement pour QR code et logos
+
+**PdfQrCodes.php** - Deux QR codes pour les liens publics
+- Une seule page (format Paysage)
+- QR code 1: Matchs (`kpmatchs.php`)
+- QR code 2: Progression (`kpchart.php`)
+- Images décoratives complètes (bandeau, sponsor, logo) avec Pattern 8
+- Pattern 5 pour les deux QR codes et leurs logos
+- Requête SQL pour récupérer les journées/matchs
+- Gestion événement vs compétition
+
+### Zones Critiques Corrigées
+
+#### Pattern 8 : Images Décoratives (PdfQrCodes.php uniquement)
+
+Application complète du Pattern 8 :
+```php
+// Pattern 8: Définir position de départ du contenu
+$yStart = 30;
+
+// Pattern 8: Désactiver AutoPageBreak avant images décoratives
+$pdf->SetAutoPageBreak(false);
+
+// Images décoratives (bandeau, KPI, logo, sponsor)
+if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
+    // ...
+}
+// ... autres images décoratives
+
+// Pattern 8: Réactiver AutoPageBreak après images
+if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+    $pdf->SetAutoPageBreak(true, 28);
+} else {
+    $pdf->SetAutoPageBreak(true, 15);
+}
+
+// Pattern 8: Forcer curseur à position de départ du contenu
+$pdf->SetY($yStart);
+$pdf->SetX(15);
+```
+
+#### Pattern 5 : QR Codes et Logos (les deux fichiers)
+
+Les QR codes et logos sont insérés avec des positions absolues, donc Pattern 5 nécessaire :
+
+```php
+// Pattern 5: Sauvegarde position avant images/QRcodes
+$savedY = $pdf->y;
+$savedX = $pdf->x;
+
+// QRCode Matchs
+$qrcode = new QRcode('https://...', 'Q');
+$qrcode->displayFPDF($pdf, 70, 85, 50);
+$pdf->Image($logo, 87, $y + 85, 16, $height, 'jpg', "https://...");
+
+// QRCode Progression (PdfQrCodes.php uniquement)
+$qrcode2 = new QRcode('https://...', 'Q');
+$qrcode2->displayFPDF($pdf, 170, 85, 50);
+$pdf->Image($logo, 187, $y + 85, 16, $height, 'jpg', "https://...");
+
+// Pattern 5: Restauration position après images
+$pdf->SetY($savedY);
+$pdf->SetX($savedX);
+```
+
+**Points clés** :
+- Les QR codes sont générés par la bibliothèque `qrcode.class.php`
+- La méthode `displayFPDF()` est compatible avec MyPDF (mPDF)
+- Les logos sont redimensionnés dynamiquement selon leurs dimensions originales
+- Position absolue pour tous les éléments graphiques
+
+#### Bug SQL Compet Asterisk (PdfQrCodes.php)
+
+**Problème découvert** : Même bug que PdfListeMatchs.php
+
+```php
+// AVANT (causait requête SQL invalide en PHP 8)
+if ($laCompet != 0) {
+    $lstJournee = [];
+    $idEvenement = -1;
+}
+
+// APRÈS (vérification complète)
+if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
+    $lstJournee = [];
+    $idEvenement = -1;
+}
+```
+
+#### Corrections PHP 8 avec Opérateur `??`
+
+Pour éviter les warnings "Undefined array key" :
+
+```php
+// Vérification titres et options (lignes 91-96)
+if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
+    $titreEvenementCompet = $arrayCompetition['Libelle'] ?? '';
+} else {
+    $titreEvenementCompet = $arrayCompetition['Soustitre'] ?? '';
+}
+if (($arrayCompetition['Soustitre2'] ?? '') != '') {
+    $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
+}
+
+// Vérification images décoratives (lignes 120-146)
+if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau']))
+if (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo']))
+if (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O')
+if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor']))
+```
+
+### Tests Validés
+
+- ✅ **PHP 7.4 & 8.4** : PDF valides
+- ✅ **QR codes** : Scannables et fonctionnels
+- ✅ **Logos** : Redimensionnés correctement
+- ✅ **Images décoratives** : Positionnées sans décalage (Pattern 8)
+- ✅ **Alignement** : Contenu bien placé après QR codes (Pattern 5)
+
+### Différence avec Fichiers Précédents
+
+- **PDF mono-page** : Pas de ruptures, Pattern 8 appliqué une seule fois
+- **QR codes multiples** : Pattern 5 pour préserver le flux du contenu
+- **Requête SQL complexe** : Gestion événement vs compétition
+- **Footer vide** : Classe Footer héritée supprimée (pas de numéro de page)
+- **Bibliothèque externe** : `qrcode.class.php` compatible avec MyPDF
+
+---
+
 ### 10. PdfListeMatchs4TerrainsEn.php ✅
 
 **Date** : 2025-10-22
@@ -1082,6 +1293,484 @@ Le PDF génère un tableau horaire avec :
 ⚠️ **Classe personnalisée FPDF** : Toujours remplacer par SetHTMLHeader/Footer (pas besoin d'héritage)
 ⚠️ **PageNo()** : Utiliser `{PAGENO}` dans HTML footer avec mPDF
 ✅ **SetAutoPageBreak adaptatif** : Ajuster la marge selon présence sponsor
+
+---
+
+## 📄 Fichier Migré : PdfListeMatchs4Terrains.php ✅
+
+**Date** : 2025-10-25
+**Objectif** : Tableau horaire des matchs sur 4 terrains (version française)
+**Format** : Paysage (297mm)
+**Pages** : Multiples (1 page par jour)
+
+### Modifications Apportées
+
+**1. Remplacement FPDF par MyPDF** :
+```php
+// Avant
+require('lib/fpdf/fpdf.php');
+class PDF extends FPDF {
+    function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('Arial', 'I', 8);
+        $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
+        $this->Cell(136, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 1, 'R');
+    }
+}
+$pdf = new PDF('L');
+$pdf->Open();
+
+// Après
+require_once('commun/MyPDF.php');
+$pdf = new MyPDF('L');
+```
+
+**2. Migration du Footer vers HTML** :
+```php
+$footerHTML = '<table width="100%" style="font-family: Arial; font-size: 8pt; font-style: italic;"><tr>';
+$footerHTML .= '<td width="50%" align="left">Page {PAGENO}</td>';
+$footerHTML .= '<td width="50%" align="right">Edité le ' . date("d/m/Y") . ' à ' . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')) . '</td>';
+$footerHTML .= '</tr></table>';
+
+if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+    $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+    $footerHTML .= '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+    $pdf->SetHTMLFooter($footerHTML);
+    $pdf->SetAutoPageBreak(true, 30);  // Marge basse pour footer sponsor
+} else {
+    $pdf->SetHTMLFooter($footerHTML);
+    $pdf->SetAutoPageBreak(true, 20);  // Marge basse pour footer simple
+}
+```
+
+**3. SetHTMLHeader pour Bandeau/Logo** :
+```php
+$headerHTML = '<div style="text-align: center;">';
+
+if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
+    $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
+    $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+} elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+    // KPI + Logo côte à côte
+    $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
+    $headerHTML .= '<table width="100%"><tr>';
+    $headerHTML .= '<td width="33%" align="left"><img src="img/CNAKPI_small.jpg" style="height: 20mm;" /></td>';
+    $headerHTML .= '<td width="34%"></td>';
+    $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
+    $headerHTML .= '</tr></table>';
+} // ... autres cas
+
+$headerHTML .= '</div>';
+$pdf->SetHTMLHeader($headerHTML);
+$pdf->SetTopMargin(30);
+```
+
+**4. Suppression du code dupliqué dans la boucle** :
+```php
+// Avant - bandeau/sponsor répétés manuellement dans foreach
+foreach ($tab as $date => $tab_heure) {
+    $pdf->AddPage();
+    // 25 lignes de duplication bandeau/sponsor/logo
+    $pdf->Image(...); // répété pour chaque page
+}
+
+// Après - SetHTMLHeader/Footer gère automatiquement
+foreach ($tab as $date => $tab_heure) {
+    $pdf->AddPage();
+    // Header/footer automatiques, pas de duplication !
+}
+```
+
+**5. Corrections PHP 8** :
+```php
+// Bug SQL Compet Asterisk (ligne 49)
+if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
+
+// Vérifications avec opérateur ?? (lignes 122-128, 143-157, 172-176, 193)
+if (($arrayCompetition['Titre_actif'] ?? '') == 'O')
+if (($arrayCompetition['Soustitre2'] ?? '') != '')
+if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O')
+if (($row['Soustitre2'] ?? '') != '')
+```
+
+**6. Correction Bug Manquant (ligne 296-297)** :
+```php
+// AVANT (SetFont manquant dans le elseif)
+if (strlen($tab_terrain[$i][0]['EquipeB']) > 18) {
+    $pdf->SetFont('Arial', '', 4);
+} elseif (strlen($tab_terrain[$i][0]['EquipeB']) > 10) {
+    // BUG: SetFont manquant !
+} else {
+    $pdf->SetFont('Arial', '', 6);
+}
+
+// APRÈS (corrigé)
+if (strlen($tab_terrain[$i][0]['EquipeB']) > 18) {
+    $pdf->SetFont('Arial', '', 4);
+} elseif (strlen($tab_terrain[$i][0]['EquipeB']) > 10) {
+    $pdf->SetFont('Arial', '', 5);  // Correction
+} else {
+    $pdf->SetFont('Arial', '', 6);
+}
+```
+
+**7. Output avec Destination** :
+```php
+// Avant
+$pdf->Output('Liste matchs.pdf', 'I');
+
+// Après
+$pdf->Output('Liste matchs.pdf', \Mpdf\Output\Destination::INLINE);
+```
+
+### Structure du Document
+
+Le PDF génère un tableau horaire avec :
+- **En-tête** : Bandeau/logo sur toutes les pages (SetHTMLHeader)
+- **Titre** : Nom compétition + saison (en haut de chaque page)
+- **Tableau** : 4 colonnes (Terrain 1-4) × lignes horaires
+- **Colonnes par terrain** : N°, Comp., Équipe A, Équipe B
+- **Pied de page** : N° page + date d'impression + sponsor (SetHTMLFooter)
+
+### Patterns Utilisés
+
+✅ **Pattern Header/Footer HTML** : SetHTMLHeader/SetHTMLFooter pour affichage automatique sur toutes les pages
+✅ **Pattern SetTopMargin** : Configuré à 30mm avant AddPage() pour éviter chevauchement
+✅ **SetAutoPageBreak dynamique** : 30mm si sponsor, 20mm sinon
+✅ **Suppression Open()** : Méthode obsolète retirée
+✅ **Constante Destination** : INLINE pour affichage navigateur
+✅ **Opérateur ?? PHP 8** : ~10 occurrences pour éviter "Undefined array key"
+✅ **Bug SQL corrigé** : Vérification `$laCompet != '*'`
+
+### Particularités
+
+- **Footer personnalisé** : Combinaison page number + timestamp + sponsor optionnel
+- **Boucle AddPage()** : Une page par jour, header/footer automatiques sur chacune
+- **4 terrains en parallèle** : Grille complexe avec Cell() imbriquées
+- **Textes dynamiques** : Ajustement taille police selon longueur nom équipe (4pt/5pt/6pt)
+- **Version française** : Labels "Liste des Matchs", "Terrain", "Équipe A/B", "Saison"
+- **Bug corrigé** : SetFont manquant dans elseif (ligne 296-297)
+
+### Tests
+
+- ✅ **PHP 7.4** : Syntaxe OK, PDF valide
+- ✅ **PHP 8.4** : Aucune erreur, mPDF fonctionnel
+- ✅ **Multi-pages** : Header/footer apparaissent sur toutes les pages
+- ✅ **Footer dynamique** : Sponsor s'affiche correctement si actif
+- ✅ **Grille 4 terrains** : Alignement préservé
+- ✅ **Police dynamique** : Ajustement selon longueur correctement appliqué
+
+### Différence avec PdfListeMatchs4TerrainsEn.php
+
+- **Version française** : Labels en français, date format FR (dd/mm/yyyy)
+- **Même structure** : Grille 4 terrains identique
+- **Bug supplémentaire corrigé** : SetFont manquant (ligne 296-297) pas présent dans version EN
+
+---
+
+## 📄 Fichiers Migrés : FeuilleCards.php et FeuilleStats.php ✅
+
+**Date** : 2025-10-25
+**Objectif** : Feuilles de cartons et statistiques diverses
+**Formats** : Portrait (210mm)
+**Pages** : Multiples (selon données)
+
+### FeuilleCards.php - Suivi des Cartons
+
+**Objectif** : Feuille de suivi des cartons (V, J, R, RD) par joueur et par équipe
+**Format** : Portrait, tableau avec couleurs de fond
+
+#### Modifications Apportées
+
+**1. Remplacement FPDF par MyPDF** :
+```php
+// Avant
+require('../lib/fpdf/fpdf.php');
+$pdf = new FPDF('P');
+$pdf->Open();
+
+// Après
+require_once('../commun/MyPDF.php');
+$pdf = new MyPDF('P');
+```
+
+**2. Pattern 8 - Images Décoratives** :
+```php
+// Pattern 8: Désactiver AutoPageBreak avant images
+$pdf->SetAutoPageBreak(false);
+$pdf->AddPage();
+
+// Position de départ du contenu
+$yStart = 30;
+
+// Images décoratives (bandeau, sponsor, logo)...
+
+// Pattern 8: Réactiver AutoPageBreak après images
+if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+    $pdf->SetAutoPageBreak(true, 30);
+} else {
+    $pdf->SetAutoPageBreak(true, 15);
+}
+
+// Pattern 8: Forcer curseur à position de départ
+$pdf->SetY($yStart);
+$pdf->SetX(10);
+```
+
+**3. Corrections PHP 8** :
+```php
+// Vérifications avec opérateur ??
+if (($arrayCompetition['En_actif'] ?? '') == 'O')
+if (($arrayCompetition['Titre_actif'] ?? '') == 'O')
+if (($arrayCompetition['Soustitre2'] ?? '') != '')
+if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O')
+```
+
+**4. Output avec Destination** :
+```php
+$pdf->Output('Cards_' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
+```
+
+#### Particularités
+
+- **Tableau avec couleurs** : SetFillColor() pour colonnes Vert/Jaune/Rouge
+- **Groupement par équipe** : Séparation visuelle des équipes
+- **Exemple ligne** : Ligne d'exemple avec codes de remplissage
+- **Multi-langue** : Support FR/EN via fichier MyLang.ini
+- **Cumul saison + Journée** : Deux sections distinctes
+
+### FeuilleStats.php - Statistiques Diverses
+
+**Objectif** : Génération de statistiques variées (buteurs, cartons, arbitrage, etc.)
+**Format** : Portrait, tableaux simples
+**Switch case** : 18 types de statistiques différentes
+
+#### Modifications Apportées
+
+**1. Remplacement FPDF → MyPDF + Footer HTML** :
+```php
+// Avant
+class PDF extends FPDF {
+    function Footer() {
+        $this->SetY(-15);
+        $this->SetFont('Arial', 'I', 8);
+        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
+    }
+}
+$pdf = new PDF('P');
+$pdf->Open();
+
+// Après
+require_once('../commun/MyPDF.php');
+$pdf = new MyPDF('P');
+
+// Footer HTML
+$footerHTML = '<div style="text-align: center; font-family: Arial; font-size: 8pt; font-style: italic;">Page {PAGENO}</div>';
+$pdf->SetHTMLFooter($footerHTML);
+```
+
+**2. Pattern 8 - Images Décoratives** :
+Même structure que FeuilleCards.php avec désactivation/réactivation AutoPageBreak
+
+**3. Corrections PHP 8** :
+```php
+// Vérifications (lignes 35-40)
+if (($arrayCompetition['Titre_actif'] ?? '') == 'O')
+if (($arrayCompetition['Soustitre2'] ?? '') != '')
+// ... + bandeau, sponsor, logo
+```
+
+**4. Output avec Destination** :
+```php
+$pdf->Output('Statistiques_' . $AfficheStat . '.pdf', \Mpdf\Output\Destination::INLINE);
+```
+
+#### Types de Statistiques (Switch Case)
+
+1. **Buteurs** - Meilleurs buteurs individuels
+2. **Attaque** - Meilleures attaques par équipe
+3. **Defense** - Meilleures défenses par équipe
+4. **Cartons** - Cartons par joueur (V, J, R, RD)
+5. **CartonsEquipe** - Cartons par équipe
+6. **CartonsCompetition** - Cartons par catégorie
+7. **Fairplay** - Classement disciplinaire individuel
+8. **FairplayEquipe** - Classement disciplinaire par équipe
+9. **Arbitrage** - Arbitrages par arbitre
+10. **ArbitrageEquipe** - Arbitrages par équipe
+11. **CJouees** - Matchs joués par joueur (club)
+12. **CJouees2** - Matchs joués par joueur (équipe)
+13. **CJouees3** - Irrégularités (licences, pagaies, certificats)
+14. **CJoueesN** - Matchs championnat de France
+15. **CJoueesCF** - Matchs coupe de France
+16. **OfficielsJournees** - Officiels par journée
+17. **OfficielsMatchs** - Officiels par match
+18. **ListeArbitres** - Liste complète arbitres
+19. **ListeEquipes** - Liste équipes
+20. **ListeJoueurs** - Liste joueurs
+21. **ListeJoueurs2** - Liste joueurs & entraîneurs
+
+### Patterns Utilisés (Communs aux Deux Fichiers)
+
+✅ **Pattern 8** - Images décoratives (bandeau, sponsor, logo)
+✅ **Opérateur ?? PHP 8** - ~10 occurrences par fichier
+✅ **Suppression Open()** - Méthode obsolète retirée
+✅ **Constante Destination** - INLINE pour affichage navigateur
+✅ **SetHTMLFooter** (FeuilleStats.php uniquement) - Footer avec Page {PAGENO}
+
+### Tests Validés
+
+- ✅ **PHP 7.4 & 8.4** : PDF valides
+- ✅ **Couleurs de fond** : SetFillColor() fonctionne correctement (FeuilleCards)
+- ✅ **Multi-pages** : AutoPageBreak fonctionne après Pattern 8
+- ✅ **Footer numéroté** : {PAGENO} s'affiche sur toutes les pages (FeuilleStats)
+- ✅ **Switch case** : Tous les types de stats testés (FeuilleStats)
+
+### Différences Clés
+
+**FeuilleCards.php** :
+- Pas de Footer personnalisé (supprimé car vide)
+- Tableau avec couleurs de fond (vert/jaune/rouge)
+- Support multi-langue (FR/EN)
+- Groupement par équipe
+
+**FeuilleStats.php** :
+- Footer HTML avec numéro de page centralisé
+- 21 types de statistiques différentes (switch case massif)
+- Requêtes SQL complexes avec LEFT OUTER JOIN
+- Formats de tableau variés selon le type de stat
+- Multi-compétitions (CompetsList avec IN clause)
+
+### Particularités Techniques
+
+**FeuilleCards.php** :
+- Utilise `SetFillColor()` pour colorier les cellules (vert, jaune, rouge)
+- Pattern de groupement : détection changement d'équipe pour en-têtes
+- Langue dynamique via `MyLang.ini` et paramètre `?lang=en`
+- Cellules vides transformées en `''` pour affichage propre
+
+**FeuilleStats.php** :
+- Switch case géant (21 cas) avec requêtes SQL spécialisées
+- Paramètre `$AfficheStat` pour choisir le type de stat
+- Paramètre `$nbLignes` pour limiter les résultats
+- Gestion multi-compétitions avec `IN ($in)` clause
+- Footer simple mais efficace avec {PAGENO}
+
+---
+
+## 📄 Fichier Migré : PdfCltNiveauNiveau.php ✅
+
+**Date** : 2025-10-25
+**Objectif** : Classement par niveau (compétitions à élimination directe)
+**Format** : Portrait (210mm)
+**Pages** : Multiples (selon nombre de niveaux)
+
+### Modifications Apportées
+
+**1. Remplacement FPDF → MyPDF + Footer HTML** :
+```php
+// Avant
+class PDF extends FPDF {
+    function Footer() {
+        $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
+    }
+}
+$pdf = new PDF('P');
+$pdf->Open();
+
+// Après
+require_once('commun/MyPDF.php');
+$pdf = new MyPDF('P');
+
+$footerHTML = '<div style="text-align: center; font-family: Arial; font-size: 8pt; font-style: italic;">Page {PAGENO}</div>';
+$pdf->SetHTMLFooter($footerHTML);
+```
+
+**2. Pattern 8 - Images Décoratives** :
+```php
+// Pattern 8: Désactiver AutoPageBreak avant images
+$pdf->SetAutoPageBreak(false);
+$pdf->AddPage();
+
+$yStart = 30;
+
+// Images décoratives (bandeau, sponsor, logo)...
+
+// Pattern 8: Réactiver AutoPageBreak après images
+$pdf->SetAutoPageBreak(true, 15);
+
+// Pattern 8: Forcer curseur à position de départ
+$pdf->SetY($yStart);
+$pdf->SetX(10);
+```
+
+**3. Corrections PHP 8** :
+```php
+// Vérifications avec opérateur ??
+if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O')
+if (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O')
+if (($arrayCompetition['Logo_actif'] ?? '') == 'O')
+if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O')
+```
+
+**4. Output avec Destination** :
+```php
+$pdf->Output('Classement par niveau ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
+```
+
+### Structure du Document
+
+Le PDF génère un classement par niveau avec :
+- **En-tête** : Bandeau/logo/sponsor (images décoratives)
+- **Titre** : Nom de compétition + "Classement par niveau"
+- **Date d'édition** : En bas du titre
+- **Tableaux par niveau** :
+  - Niveau N (titre)
+  - Colonnes : Clt, Équipe, Pts, J, G, N, P, F, Plus, Moins, Diff
+  - Lignes : Équipes classées par CltNiveau_publi
+- **Footer** : Numéro de page centralisé
+
+### Particularités Techniques
+
+- **Groupement par niveau** : Détection changement de niveau pour en-têtes
+- **Calcul des points** : Formatage spécial (gestion centièmes) :
+  ```php
+  $pts = $row['Pts_publi'];
+  $len = strlen($pts);
+  if ($len > 2) {
+      if (substr($pts, $len - 2, 2) == '00') {
+          $pts = substr($pts, 0, $len - 2);
+      } else {
+          $pts = substr($pts, 0, $len - 2) . '.' . substr($pts, $len - 2, 2);
+      }
+  }
+  ```
+- **Ordre SQL** : `ORDER BY b.Niveau, b.CltNiveau_publi, b.Diff_publi DESC`
+- **Colonnes détaillées** : J (joués), G (gagnés), N (nuls), P (perdus), F (forfaits)
+- **Footer HTML** : Page {PAGENO} centré
+
+### Patterns Utilisés
+
+✅ **Pattern 8** - Images décoratives (bandeau, sponsor, logo)
+✅ **SetHTMLFooter** - Footer avec numéro de page `{PAGENO}`
+✅ **Opérateur ?? PHP 8** - 4 occurrences
+✅ **Suppression Open()** - Méthode obsolète retirée
+✅ **Constante Destination** - INLINE pour affichage navigateur
+
+### Tests Validés
+
+- ✅ **PHP 7.4 & 8.4** : PDF valides
+- ✅ **Multi-niveaux** : Ruptures correctes entre niveaux
+- ✅ **Calcul points** : Formatage centièmes fonctionnel
+- ✅ **Footer numéroté** : {PAGENO} sur toutes les pages
+- ✅ **AutoPageBreak** : Fonctionne après Pattern 8
+
+### Similarité avec Autres Fichiers
+
+Ce fichier est très similaire à :
+- **FeuilleCltNiveauNiveau.php** (version admin/ déjà migrée)
+- Structure identique, même requête SQL
+- Même formatage de points
+- Même groupement par niveau
 
 ---
 

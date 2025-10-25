@@ -3,27 +3,20 @@
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
+require_once('../commun/MyPDF.php');
 
-require('../lib/fpdf/fpdf.php');
+// Gestion de la Feuille de Classement par Journee - Migration mPDF
 
-// Gestion de la Feuille de Classement par Journee
 class FeuilleCltNiveauJournee extends MyPage
 {
-
     function __construct()
     {
         parent::__construct();
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
-        //Saison
         $codeSaison = $myBdd->GetActiveSaison();
-        $titreDate = "Saison " . $codeSaison;
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-        $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';
-        $qualif = $arrayCompetition['Qualifies'];
-        $elim = $arrayCompetition['Elimines'];
-
         $visuels = utyGetVisuels($arrayCompetition, TRUE);
 
         // Langue
@@ -34,73 +27,72 @@ class FeuilleCltNiveauJournee extends MyPage
             $arrayCompetition['En_actif'] = '';
         }
 
-        if ($arrayCompetition['En_actif'] == 'O') {
+        if (($arrayCompetition['En_actif'] ?? '') == 'O') {
             $lang = $langue['en'];
         } else {
             $lang = $langue['fr'];
         }
 
-        //Création
-        $pdf = new FPDF('P');
-        $pdf->Open();
+        // Création PDF avec MyPDF (mPDF wrapper)
+        $pdf = new MyPDF('P');
         $pdf->SetTitle("Classement par journee");
-
         $pdf->SetAuthor("kayak-polo.info");
-        $pdf->SetCreator("kayak-polo.info");
-        $pdf->AddPage();
+        $pdf->SetCreator("kayak-polo.info avec mPDF");
 
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+        // Header HTML pour toutes les pages
+        $headerHTML = '<div style="text-align: center;">';
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
+            $img = redimImage($visuels['bandeau'], 210, 10, 16, 'C');
+            $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+            $img = redimImage($visuels['logo'], 210, 10, 16, 'R');
+            $headerHTML .= '<table width="100%"><tr>';
+            $headerHTML .= '<td width="33%" align="left"><img src="../img/CNAKPI_small.jpg" style="height: 16mm;" /></td>';
+            $headerHTML .= '<td width="34%"></td>';
+            $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
+            $headerHTML .= '</tr></table>';
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
+            $headerHTML .= '<img src="../img/CNAKPI_small.jpg" style="height: 16mm;" />';
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+            $img = redimImage($visuels['logo'], 210, 10, 16, 'C');
+            $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+        }
+        $headerHTML .= '</div>';
+        $pdf->SetHTMLHeader($headerHTML);
+
+        // Footer HTML pour sponsor (si présent)
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+            $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+            $footerHTML = '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+            $pdf->SetHTMLFooter($footerHTML);
             $pdf->SetAutoPageBreak(true, 30);
         } else {
             $pdf->SetAutoPageBreak(true, 15);
         }
 
-        // Bandeau
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
-            $img = redimImage($visuels['bandeau'], 210, 10, 16, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
-            $img = redimImage($visuels['logo'], 210, 10, 16, 'R');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('../img/CNAKPI_small.jpg', 84, 10, 0, 16, 'jpg', "https://www.kayak-polo.info");
-            // Logo
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $img = redimImage($visuels['logo'], 210, 10, 16, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-        }
-        // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
-        }
+        // Configurer les marges pour éviter chevauchement avec header/footer
+        $pdf->SetTopMargin(30);
+
+        $pdf->AddPage();
 
         // titre
-        $pdf->Ln(22);
+        $pdf->Ln(2);
         $pdf->SetFont('Arial', 'B', 14);
-        if ($arrayCompetition['Titre_actif'] == 'O') {
+        if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
             $pdf->Cell(190, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
         } else {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
+            $pdf->Cell(190, 5, $arrayCompetition['Soustitre'] ?? '', 0, 1, 'C');
         }
-
-        if ($arrayCompetition['Soustitre2'] != '') {
+        if (($arrayCompetition['Soustitre2'] ?? '') != '') {
             $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
-
         $pdf->Ln(4);
 
         $pdf->SetFont('Arial', 'BI', 10);
-        $pdf->Cell(190, 5, $lang['CLASSEMENT_PAR_JOURNEE'] . ' ' . $lang['PROVISOIRE'], 0, 0, 'C');
-
+        $pdf->Cell(190, 5, ($lang['CLASSEMENT_PAR_JOURNEE'] ?? 'Classement par journée') . ' ' . ($lang['PROVISOIRE'] ?? ''), 0, 0, 'C');
         $pdf->Ln(4);
 
         // données
-        $myBdd = new MyBdd();
-
         $sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt, b.Pts, b.J, 
             b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau, 
             c.Date_debut, c.Lieu 
@@ -115,14 +107,13 @@ class FeuilleCltNiveauJournee extends MyPage
 
         $idJournee = 0;
         while ($row = $result->fetch()) {
-            $idEquipe = $row['Id'];
             if ($row['Id_journee'] != $idJournee) {
                 $idJournee = $row['Id_journee'];
 
                 $pdf->Ln(5);
                 $pdf->Cell(26, 4, '', 0, 0, 'C');
                 $pdf->SetFont('Arial', 'BI', 9);
-                $pdf->Cell(61, 4, utyDateUsToFr($row['Date_debut']) . ' - ' . $row['Lieu'], 'B', 0, 'L'); //     "JOURNEE ".$codeCompet.'/'.$idJournee.'/'.
+                $pdf->Cell(61, 4, utyDateUsToFr($row['Date_debut']) . ' - ' . $row['Lieu'], 'B', 0, 'L');
                 $pdf->SetFont('Arial', 'BI', 9);
                 $pdf->Cell(8, 4, "Pts", 'B', 0, 'C');
                 $pdf->Cell(7, 4, "J", 'B', 0, 'C');
@@ -159,7 +150,7 @@ class FeuilleCltNiveauJournee extends MyPage
             $pdf->Cell(8, 4, $row['Diff'], 'B', 1, 'C');
         }
 
-        $pdf->Output('Classement par journee ' . $codeCompet . '.pdf', 'I');
+        $pdf->Output('Classement par journee ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

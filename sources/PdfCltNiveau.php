@@ -195,19 +195,27 @@ class FeuilleCltNiveau extends MyPage
 			$i++;
 		}
 
-		// Désactiver AutoPageBreak pour écrire la date en bas de page (comme pour les images Pattern 8)
-		$pdf->SetAutoPageBreak(false);
-
-		$pdf->SetFont('Arial', 'I', 8);
+		// Désactiver AutoPageBreak pour écrire la date en bas de page (Pattern 8)
+		// et placer la date/heure SOUS le sponsor via HTML footer
 		if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
-			$pdf->SetXY(165, 285);  // Positionner en dessous du sponsor (qui est à Y=267 + hauteur ~16mm)
+			$img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+			$footerHTML = '<div style="text-align: center;">'
+				. '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
+				. '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
+				. (($lang == $langue['en'])
+					? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
+					: date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+				. '</span></div>';
+			$pdf->SetHTMLFooter($footerHTML);
+			$pdf->SetAutoPageBreak(true, 30);
 		} else {
-			$pdf->SetXY(165, 270);
-		}
-		if ($lang == $langue['en']) {
-			$pdf->Write(4, date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? '')));
-		} else {
-			$pdf->Write(4, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')));
+			$footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
+				. (($lang == $langue['en'])
+					? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
+					: date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+				. '</div>';
+			$pdf->SetHTMLFooter($footerHTML);
+			$pdf->SetAutoPageBreak(true, 15);
 		}
 
 		$pdf->Output('Classement ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);

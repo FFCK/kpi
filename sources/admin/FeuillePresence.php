@@ -2,11 +2,10 @@
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
-
-require_once('../lib/fpdf/fpdf.php');
+require_once('../commun/MyPDF.php');
 
 // Pieds de page
-class PDF extends FPDF
+class PDF extends MyPDF
 {
 
     function Footer()
@@ -25,15 +24,14 @@ class PDF extends FPDF
 // liste des présents par équipe
 class FeuillePresence extends MyPage
 {
-
     function __construct()
     {
         parent::__construct();
 
         $myBdd = new MyBdd();
 
-        $codeCompet = utyGetSession('codeCompet');
-        $codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
+        $codeCompet = utyGetSession('codeCompet', '');
+        $codeSaison = $myBdd->GetActiveSaison();
         $equipe = utyGetGet('equipe', '%');
 
         // Chargement des équipes ...
@@ -129,55 +127,61 @@ class FeuillePresence extends MyPage
 
         // Chargement des infos de la compétition
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-        if ($arrayCompetition['Titre_actif'] == 'O') {
-            $titreCompet = $arrayCompetition['Libelle'];
-        } else {
-            $titreCompet = $arrayCompetition['Soustitre'];
-        }
+        $titreCompet = ($arrayCompetition['Titre_actif'] == 'O')
+            ? $arrayCompetition['Libelle']
+            : $arrayCompetition['Soustitre'];
         if ($arrayCompetition['Soustitre2'] != '') {
             $titreCompet .= ' - ' . $arrayCompetition['Soustitre2'];
         }
 
         $visuels = utyGetVisuels($arrayCompetition, TRUE);
 
-        // Entête PDF ...	  
-        $pdf = new PDF('L');
-        $pdf->Open();
-        $pdf->SetTitle("Feuilles de presence");
-
+        // Création PDF avec MyPDF (mPDF wrapper)
+        $pdf = new MyPDF('L');
+        $pdf->SetTitle("Feuille de présence");
         $pdf->SetAuthor("Kayak-polo.info");
-        $pdf->SetCreator("Kayak-polo.info avec FPDF");
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 30);
-        } else {
-            $pdf->SetAutoPageBreak(true, 15);
-        }
+        $pdf->SetCreator("Kayak-polo.info avec mPDF");
 
-        foreach ($resultarray as $key => $row) {
+        $yStart = 10;
+
+        foreach ($resultarray as $row) {
+            $pdf->SetTopMargin($yStart);
             $pdf->AddPage();
-            // Affichage
-            // Bandeau
-            if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+            $pdf->SetAutoPageBreak(false);
+
+            // Bandeau/logo/sponsor
+            if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
                 $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI + Logo    
-            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
                 $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                 $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI
-            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+            } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
                 $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-                // Logo
-            } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
                 $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
-            // Sponsor
-            if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+
+            // Correction : placer le sponsor EN BAS de la page courante, pas sur une nouvelle page
+            if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
                 $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+                // Place sponsor at bottom of current page (y=267 for A4 landscape)
                 $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
             }
+
+            // Réactiver AutoPageBreak avec marge basse adaptée
+            if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+                $pdf->SetAutoPageBreak(true, 30);
+            } else {
+                $pdf->SetAutoPageBreak(true, 15);
+            }
+            $pdf->SetLeftMargin(10);
+            $pdf->SetRightMargin(10);
+
+            $pdf->SetY($yStart);
+            $pdf->SetX(10);
 
             // titre
             $pdf->Ln(20);
@@ -186,30 +190,25 @@ class FeuillePresence extends MyPage
             $pdf->Cell(136, 8, 'Saison ' . $codeSaison, 0, 1, 'R');
             $pdf->SetFont('Arial', 'B', 14);
             $pdf->Cell(273, 8, "Feuille de présence - " . $row['Libelle'], 0, 1, 'C');
-            $pdf->Ln(10);
+            $pdf->Ln(4);
 
             $idEquipe = $row['Id'];
 
             $pdf->SetFont('Arial', 'BI', 10);
-            $pdf->Cell(25, 10, '', '', 0, 'C');
-            $pdf->Cell(16, 10, 'Num', 'B', 0, 'C');
-            $pdf->Cell(8, 10, 'Cap', 'B', 0, 'C');
-            $pdf->Cell(25, 10, 'Licence', 'B', 0, 'C');
-            $pdf->Cell(45, 10, 'Nom', 'B', 0, 'C');
-            $pdf->Cell(45, 10, 'Prenom', 'B', 0, 'C');
-            $pdf->Cell(16, 10, 'Categ', 'B', 0, 'C');
-            $pdf->Cell(16, 10, 'Pag. EC', 'B', 0, 'C');
-            $pdf->Cell(23, 10, 'Certif. comp.', 'B', 0, 'C');
-            $pdf->Cell(16, 10, 'Club', 'B', 0, 'C');
-            $pdf->Cell(16, 10, 'Arb', 'B', 1, 'C');
+            $pdf->Cell(25, 9, '', '', 0, 'C');
+            $pdf->Cell(16, 9, 'Num', 'B', 0, 'C');
+            $pdf->Cell(8, 9, 'Cap', 'B', 0, 'C');
+            $pdf->Cell(25, 9, 'Licence', 'B', 0, 'C');
+            $pdf->Cell(45, 9, 'Nom', 'B', 0, 'C');
+            $pdf->Cell(45, 9, 'Prenom', 'B', 0, 'C');
+            $pdf->Cell(16, 9, 'Categ', 'B', 0, 'C');
+            $pdf->Cell(16, 9, 'Pag. EC', 'B', 0, 'C');
+            $pdf->Cell(23, 9, 'Certif. comp.', 'B', 0, 'C');
+            $pdf->Cell(16, 9, 'Club', 'B', 0, 'C');
+            $pdf->Cell(16, 9, 'Arb', 'B', 1, 'C');
             $pdf->SetFont('Arial', '', 10);
 
-            // Mini 12 lignes par équipe
-            if (isset($arrayJoueur[$idEquipe][0]) && $arrayJoueur[$idEquipe][0]['nbJoueurs'] > 10) {
-                $nbJoueurs = $arrayJoueur[$idEquipe][0]['nbJoueurs'] + 2;
-            } else {
-                $nbJoueurs = 12;
-            }
+            $nbJoueurs = $arrayJoueur[$idEquipe][0]['nbJoueurs'];
 
             for ($j = 0; $j < $nbJoueurs; $j++) {
                 if (isset($arrayJoueur[$idEquipe][$j]['Matric']) && $arrayJoueur[$idEquipe][$j]['Matric'] != '') {
@@ -220,21 +219,29 @@ class FeuillePresence extends MyPage
                             $arrayJoueur[$idEquipe][$j]['Matric'] = $arrayJoueur[$idEquipe][$j]['Reserve'];
                         }
                     }
-                    $pdf->Cell(25, 10, '', '', 0, 'C');
-                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
-                    $pdf->Cell(8, 10, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
-                    $pdf->Cell(25, 10, $arrayJoueur[$idEquipe][$j]['Matric'] . $arrayJoueur[$idEquipe][$j]['Saison'], 'B', 0, 'C');
-                    $pdf->Cell(45, 10, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
-                    $pdf->Cell(45, 10, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
-                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Categ'], 'B', 0, 'C');
-                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Pagaie'], 'B', 0, 'C');
-                    $pdf->Cell(23, 10, $arrayJoueur[$idEquipe][$j]['CertifCK'], 'B', 0, 'C');
-                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Numero_club'], 'B', 0, 'C');
-                    $pdf->Cell(16, 10, $arrayJoueur[$idEquipe][$j]['Arbitre'], 'B', 1, 'C');
+                    $pdf->Cell(25, 9, '', '', 0, 'C');
+                    $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Numero'], 'B', 0, 'C');
+                    $pdf->Cell(8, 9, $arrayJoueur[$idEquipe][$j]['Capitaine'], 'B', 0, 'C');
+                    $pdf->Cell(25, 9, $arrayJoueur[$idEquipe][$j]['Matric'] . $arrayJoueur[$idEquipe][$j]['Saison'], 'B', 0, 'C');
+                    $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
+                    $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
+                    $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Categ'], 'B', 0, 'C');
+                    $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Pagaie'], 'B', 0, 'C');
+                    $pdf->Cell(23, 9, $arrayJoueur[$idEquipe][$j]['CertifCK'], 'B', 0, 'C');
+                    $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Numero_club'], 'B', 0, 'C');
+                    $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Arbitre'], 'B', 1, 'C');
                 }
             }
         }
-        $pdf->Output('Feuilles de presence' . '.pdf', 'I');
+
+        // Footer HTML pour numéro de page à gauche et date/heure à droite
+        $footerHTML = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td align="left" width="50%">Page {PAGENO}</td>'
+            . '<td align="right" width="50%">' . date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')) . '</td>'
+            . '</tr></table>';
+        $pdf->SetHTMLFooter($footerHTML);
+
+        $pdf->Output('FeuillePresence.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

@@ -3,34 +3,7 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-require_once('../lib/fpdf-1.7/fpdf.php');
-
-// Pieds de page
-class PDF extends FPDF
-{
-
-  function Footer()
-  {
-    //Positionnement à 1,5 cm du bas
-    $this->SetY(-15);
-    //Police Arial italique 8
-    $this->SetFont('Arial', 'I', 8);
-    //Numéro de page à gauche
-    $this->Cell(135, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-    //Date à droite
-    $this->Cell(135, 10, date('Y-m-d  H:i', strtotime($_SESSION['tzOffset'])), 0, 0, 'R');
-  }
-
-  function Cell($w, $h = 0, $txt = "", $border = 0, $ln = 0, $align = '', $fill = false, $link = '')
-  {
-    if (!empty($txt)) {
-      if (mb_detect_encoding($txt, 'UTF-8', false)) {
-        $txt = iconv('UTF-8', 'ISO-8859-1', $txt);
-      }
-    }
-    parent::Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
-  }
-}
+require_once('../commun/MyPDF.php');
 
 // liste des présents par équipe
 class FeuillePresencePhoto extends MyPage
@@ -38,8 +11,6 @@ class FeuillePresencePhoto extends MyPage
 
   function __construct()
   {
-    define('FPDF_FONTPATH', 'font/');
-
     parent::__construct();
 
     $myBdd = new MyBdd();
@@ -119,54 +90,60 @@ class FeuillePresencePhoto extends MyPage
     array_multisort(array_column($arrayJoueur['ref'], 'Nom'), SORT_ASC, $arrayJoueur['ref']);
 
     // Chargement des infos de la compétition
-
     $arrayCompetition = $myBdd->GetCompetition($codeCompet === 'POOL' ? 'WCM' : $codeCompet, $codeSaison === 1000 ? 2024 : $codeSaison);
-    if ($arrayCompetition['Titre_actif'] == 'O') {
+    if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
       $titreCompet = $arrayCompetition['Libelle'];
     } else {
-      $titreCompet = $arrayCompetition['Soustitre'];
+      $titreCompet = $arrayCompetition['Soustitre'] ?? '';
     }
 
     $visuels = utyGetVisuels($arrayCompetition, TRUE);
 
-    // Entête PDF ...	  
-    $pdf = new PDF('L');
-    $pdf->Open();
+    // Entête PDF avec MyPDF (mPDF wrapper)
+    $pdf = new MyPDF('L');
     $pdf->SetTitle($codeCompet === 'POOL' ? "Referees" : "Team Roster");
-
     $pdf->SetAuthor("Kayak-polo.info");
-    $pdf->SetCreator("Kayak-polo.info avec FPDF");
-    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-      $pdf->SetAutoPageBreak(true, 25);
-    } else {
-      $pdf->SetAutoPageBreak(true, 15);
-    }
+    $pdf->SetCreator("Kayak-polo.info avec mPDF");
 
-    // for ($i = 0; $i < as $key => $row) {
+    $yStart = 25;
+    $pdf->SetTopMargin($yStart);
     $pdf->AddPage();
-    // Affichage
-    // Bandeau
-    if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+    $pdf->SetAutoPageBreak(false);
+
+    // Affichage - Bandeau/Logo/Sponsor
+    if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
       $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
       $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-      // KPI + Logo    
-    } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+      // KPI + Logo
+    } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
       $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
       $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
       $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
       // KPI
-    } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+    } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
       $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
       // Logo
-    } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+    } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
       $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
       $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
     }
     // Sponsor
-    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+    if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
       $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
       $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
     }
+
+    // Réactiver AutoPageBreak avec marge basse adaptée
+    if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+      $pdf->SetAutoPageBreak(true, 30);
+    } else {
+      $pdf->SetAutoPageBreak(true, 15);
+    }
+    $pdf->SetLeftMargin(10);
+    $pdf->SetRightMargin(10);
+
+    $pdf->SetY($yStart);
+    $pdf->SetX(10);
 
     // titre
     $pdf->Ln(20);
@@ -194,30 +171,40 @@ class FeuillePresencePhoto extends MyPage
 
     for ($j = 1; $j < count($arrayJoueur[$idEquipe]) + 1; $j++) {
       if ($j > 1 && ($j - 1) % 12 === 0) {
+        $pdf->SetTopMargin($yStart);
         $pdf->AddPage();
-        // Affichage
-        // Bandeau
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+        $pdf->SetAutoPageBreak(false);
+
+        // Affichage - Bandeau/Logo/Sponsor (rupture)
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
           $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
           $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-          // KPI + Logo    
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+          // KPI + Logo
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
           $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
           $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
           $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
           // KPI
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
           $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
           // Logo
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
           $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
           $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
         }
         // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
           $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
           $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
         }
+
+        // Réactiver AutoPageBreak
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+          $pdf->SetAutoPageBreak(true, 30);
+        } else {
+          $pdf->SetAutoPageBreak(true, 15);
+        }
+        $pdf->SetY($yStart);
         $pdf->Ln(25);
       }
       $return = 0;
@@ -226,13 +213,17 @@ class FeuillePresencePhoto extends MyPage
       }
       if (isset($arrayJoueur[$idEquipe][$j - 1]['Matric']) && $arrayJoueur[$idEquipe][$j - 1]['Matric'] != '') {
 
-        // Photo joueur
+        // Photo joueur - Pattern 5: sauvegarder/restaurer position
         $file = '../img/KIP/players/' . $arrayJoueur[$idEquipe][$j - 1]['Matric'] . '.png';
         if (is_file($file)) {
+          $savedY = $pdf->y;
+          $savedX = $pdf->x;
           $size = getimagesize($file);
           $w = $size[0] / $size[1] * $h;
-          $x = $pdf->GetX() + ($l - $w) / 2;
-          $pdf->Image($file, $x, $pdf->GetY(), 0, $h);
+          $x = $pdf->x + ($l - $w) / 2;
+          $pdf->Image($file, $x, $pdf->y, 0, $h);
+          $pdf->SetY($savedY);
+          $pdf->SetX($savedX);
         }
         $pdf->Cell($l, $h, '', 0, $return, 'C');
 
@@ -254,7 +245,7 @@ class FeuillePresencePhoto extends MyPage
       }
     }
 
-    $pdf->Output('Referees.pdf', 'I');
+    $pdf->Output('Referees.pdf', \Mpdf\Output\Destination::INLINE);
   }
 }
 

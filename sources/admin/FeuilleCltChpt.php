@@ -3,14 +3,12 @@
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
-
-require('../lib/fpdf/fpdf.php');
+require_once('../commun/MyPDF.php');
 
 // Gestion de la Feuille de Classement
 
 class FeuilleCltNiveau extends MyPage
 {
-
     function __construct()
     {
         parent::__construct();
@@ -24,62 +22,76 @@ class FeuilleCltNiveau extends MyPage
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 
-        $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';
-        $qualif = $arrayCompetition['Qualifies'];
-        $elim = $arrayCompetition['Elimines'];
+        // PHP 8 fix: Type casting pour éviter "Unsupported operand types: int - string"
+        $qualif = (int)($arrayCompetition['Qualifies'] ?? 0);
+        $elim = (int)($arrayCompetition['Elimines'] ?? 0);
 
         $visuels = utyGetVisuels($arrayCompetition, TRUE);
 
         // Langue
         $langue = parse_ini_file("../commun/MyLang.ini", true);
+        $arrayCompetition['En_actif'] = '';
         if (utyGetGet('lang') == 'en') {
             $arrayCompetition['En_actif'] = 'O';
-        } elseif (utyGetGet('lang') == 'fr') {
-            $arrayCompetition['En_actif'] = '';
         }
-
-        if ($arrayCompetition['En_actif'] == 'O') {
+        if (($arrayCompetition['En_actif'] ?? '') == 'O') {
             $lang = $langue['en'];
         } else {
             $lang = $langue['fr'];
         }
 
-        //Création
-        $pdf = new FPDF('L');
-        $pdf->Open();
+        // Création PDF avec MyPDF (mPDF wrapper)
+        $pdf = new MyPDF('L');
         $pdf->SetTitle("Classement general");
-
         $pdf->SetAuthor("kayak-polo.info");
-        $pdf->SetCreator("kayak-polo.info avec FPDF");
-        $pdf->AddPage();
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 30);
+        $pdf->SetCreator("kayak-polo.info avec mPDF");
+
+        // Header HTML pour toutes les pages
+        $headerHTML = '<div style="text-align: center;">';
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
+            $img = redimImage($visuels['bandeau'], 265, 10, 20, 'C');
+            $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+            $img = redimImage($visuels['logo'], 265, 10, 20, 'R');
+            $headerHTML .= '<table width="100%"><tr>';
+            $headerHTML .= '<td width="33%" align="left"><img src="../img/CNAKPI_small.jpg" style="height: 20mm;" /></td>';
+            $headerHTML .= '<td width="34%"></td>';
+            $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
+            $headerHTML .= '</tr></table>';
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
+            $headerHTML .= '<img src="../img/CNAKPI_small.jpg" style="height: 20mm;" />';
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+            $img = redimImage($visuels['logo'], 265, 10, 20, 'C');
+            $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+        }
+        $headerHTML .= '</div>';
+        $pdf->SetHTMLHeader($headerHTML);
+
+        // Footer HTML pour sponsor + date/heure en dessous (Pattern PdfCltChpt.php)
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+            $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+            $footerHTML = '<div style="text-align: center;">'
+                . '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
+                . '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
+                . (($lang == $langue['en'])
+                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
+                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                . '</span></div>';
+            $pdf->SetHTMLFooter($footerHTML);
         } else {
-            $pdf->SetAutoPageBreak(true, 15);
+            // Footer HTML simple avec date/heure seule
+            $footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
+                . (($lang == $langue['en'])
+                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
+                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                . '</div>';
+            $pdf->SetHTMLFooter($footerHTML);
         }
 
-        // Bandeau
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
-            $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-            $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-            // Logo
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-        }
-        // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
-        }
+        // Configurer les marges pour éviter chevauchement avec header/footer
+        $pdf->SetTopMargin(35);
+
+        $pdf->AddPage();
 
         // titre
         $pdf->Ln(22);
@@ -87,20 +99,20 @@ class FeuilleCltNiveau extends MyPage
 
 
         $pdf->SetFont('Arial', 'B', 14);
-        if ($arrayCompetition['Titre_actif'] == 'O') {
+        if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
             $pdf->Cell(273, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
         } else {
-            $pdf->Cell(273, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
+            $pdf->Cell(273, 5, $arrayCompetition['Soustitre'] ?? '', 0, 1, 'C');
         }
 
         $pdf->Ln(4);
-        if ($arrayCompetition['Soustitre2'] != '') {
+        if (($arrayCompetition['Soustitre2'] ?? '') != '') {
             $pdf->Cell(273, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
 
         $pdf->Ln(4);
         $pdf->SetFont('Arial', 'BI', 10);
-        $pdf->Cell(273, 5, $lang['CLASSEMENT_PROVISOIRE'], 0, 0, 'C');
+        $pdf->Cell(273, 5, $lang['CLASSEMENT_PROVISOIRE'] ?? 'Classement provisoire', 0, 0, 'C');
         $pdf->Ln(10);
 
         //données
@@ -181,18 +193,20 @@ class FeuilleCltNiveau extends MyPage
             $i++;
         }
 
-        $pdf->SetFont('Arial', 'I', 8);
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetXY(250, 175);
-        } else {
-            $pdf->SetXY(250, 185);
-        }
-        if ($lang == $langue['en']) {
-            $pdf->Write(4, date('Y-m-d H:i', strtotime($_SESSION['tzOffset'])));
-        } else {
-            $pdf->Write(4, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'])));
-        }
-        $pdf->Output('Classement ' . $codeCompet . '.pdf', 'I');
+        // Supprimer le bloc qui positionnait la date en XY manuellement :
+        // $pdf->SetFont('Arial', 'I', 8);
+        // if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+        //     $pdf->SetXY(250, 175);
+        // } else {
+        //     $pdf->SetXY(250, 185);
+        // }
+        // if ($lang == $langue['en']) {
+        //     $pdf->Write(4, date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? '')));
+        // } else {
+        //     $pdf->Write(4, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')));
+        // }
+
+        $pdf->Output('Classement ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

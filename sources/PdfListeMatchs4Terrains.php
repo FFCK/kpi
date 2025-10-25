@@ -4,25 +4,9 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-//define('FPDF_FONTPATH','font/');
-require('lib/fpdf/fpdf.php');
+require_once('commun/MyPDF.php');
 
 require_once('lib/qrcode/qrcode.class.php');
-
-// Pieds de page
-class PDF extends FPDF
-{
-    function Footer()
-    {
-        //Positionnement à 1,5 cm du bas
-        $this->SetY(-15);
-        //Police Arial italique 8
-        $this->SetFont('Arial', 'I', 8);
-        //Numéro de page centré
-        $this->Cell(137, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-        $this->Cell(136, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 1, 'R');
-    }
-}
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfListeMatchs extends MyPage
@@ -61,7 +45,8 @@ class PdfListeMatchs extends MyPage
         $orderMatchs = 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain';
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
-        if ($laCompet != 0) {
+        // Pattern Bug SQL : Vérifier que $laCompet n'est pas '*' ou vide
+        if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
             $lstJournee = [];
             $idEvenement = -1;
         }
@@ -134,53 +119,67 @@ class PdfListeMatchs extends MyPage
             $arrayCompetition = $myBdd->GetCompetition($lastCompetEvt, $codeSaison);
         } else {
             $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
-            if ($arrayCompetition['Titre_actif'] == 'O') {
-                $titreEvenementCompet = $arrayCompetition['Libelle'];
+            if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
+                $titreEvenementCompet = $arrayCompetition['Libelle'] ?? '';
             } else {
-                $titreEvenementCompet = $arrayCompetition['Soustitre'];
+                $titreEvenementCompet = $arrayCompetition['Soustitre'] ?? '';
             }
-            if ($arrayCompetition['Soustitre2'] != '') {
+            if (($arrayCompetition['Soustitre2'] ?? '') != '') {
                 $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
             }
         }
 
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
-        // Entête PDF ...	  
-        $pdf = new PDF('L');
-        $pdf->Open();
+        // Entête PDF ...
+        $pdf = new MyPDF('L');
         $pdf->SetTitle("Liste des Matchs");
         $pdf->SetAuthor("Kayak-polo.info");
-        $pdf->SetCreator("Kayak-polo.info avec FPDF");
-        $pdf->SetTopMargin(30);
+        $pdf->SetCreator("Kayak-polo.info avec mPDF");
 
-        // Bandeau
-        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+        // Header HTML pour bandeau/logo répété sur toutes les pages
+        $headerHTML = '<div style="text-align: center;">';
+
+        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI + Logo    
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-            $pdf->Image('img/CNAKPI_small.jpg', 40, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+            $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+            // KPI + Logo côte à côte
             $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            // KPI
-        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-            $pdf->Image('img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-            // Logo
-        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            $headerHTML .= '<table width="100%"><tr>';
+            $headerHTML .= '<td width="33%" align="left"><img src="img/CNAKPI_small.jpg" style="height: 20mm;" /></td>';
+            $headerHTML .= '<td width="34%"></td>';
+            $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
+            $headerHTML .= '</tr></table>';
+        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
+            // KPI seul
+            $headerHTML .= '<img src="img/CNAKPI_small.jpg" style="height: 20mm;" />';
+        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+            // Logo seul
             $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
+            $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
         }
-        // Sponsor
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+
+        $headerHTML .= '</div>';
+        $pdf->SetHTMLHeader($headerHTML);
+
+        // Footer HTML pour numéro de page et sponsor
+        $footerHTML = '<table width="100%" style="font-family: Arial; font-size: 8pt; font-style: italic;"><tr>';
+        $footerHTML .= '<td width="50%" align="left">Page {PAGENO}</td>';
+        $footerHTML .= '<td width="50%" align="right">Edité le ' . date("d/m/Y") . ' à ' . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')) . '</td>';
+        $footerHTML .= '</tr></table>';
+
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
+            $footerHTML .= '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+            $pdf->SetHTMLFooter($footerHTML);
+            $pdf->SetAutoPageBreak(true, 30);  // Marge basse pour footer sponsor
+        } else {
+            $pdf->SetHTMLFooter($footerHTML);
+            $pdf->SetAutoPageBreak(true, 20);  // Marge basse pour footer simple
         }
-        // QRCode
-        $qrcode = new QRcode('https://www.kayak-polo.info/Journee.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L'); // error level : L, M, Q, H
-        //$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-        $qr_x = 265;
-        $qrcode->displayFPDF($pdf, $qr_x, 9, 21);
+
+        $pdf->SetTopMargin(30);
 
         $titreDate = "Saison " . $codeSaison;
         // titre
@@ -191,7 +190,7 @@ class PdfListeMatchs extends MyPage
         $pdf->Cell(273, 6, "Liste des Matchs", 0, 1, 'C');
         $pdf->Ln(3);
         foreach ($resultarray as $key => $row) {
-            if ($row['Soustitre2'] != '') {
+            if (($row['Soustitre2'] ?? '') != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
             }
             $phase_match = $row['Phase'];
@@ -229,28 +228,7 @@ class PdfListeMatchs extends MyPage
 
         foreach ($tab as $date => $tab_heure) {
             $pdf->AddPage();
-            // Bandeau
-            if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
-                $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
-                $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI + Logo    
-            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-                $pdf->Image('img/CNAKPI_small.jpg', 40, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-                $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
-                $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI
-            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
-                $pdf->Image('img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-                // Logo
-            } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
-                $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
-                $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-            }
-            // Sponsor
-            if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-                $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
-                $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
-            }
+            // Header/footer automatiques via SetHTMLHeader/SetHTMLFooter
 
             $pdf->SetFillColor(220, 220, 220);
             $pdf->SetFont('Arial', 'B', 7);
@@ -316,6 +294,7 @@ class PdfListeMatchs extends MyPage
                         if (strlen($tab_terrain[$i][0]['EquipeB']) > 18) {
                             $pdf->SetFont('Arial', '', 4);
                         } elseif (strlen($tab_terrain[$i][0]['EquipeB']) > 10) {
+                            $pdf->SetFont('Arial', '', 5);
                         } else {
                             $pdf->SetFont('Arial', '', 6);
                         }
@@ -332,7 +311,7 @@ class PdfListeMatchs extends MyPage
 
 
         $pdf->Cell(271, 3, '', 'T', '1', 'C');
-        $pdf->Output('Liste matchs' . '.pdf', 'I');
+        $pdf->Output('Liste matchs' . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

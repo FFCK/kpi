@@ -2,30 +2,12 @@
 include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
+require_once('../commun/MyPDF.php');
 
-require_once('../lib/fpdf/fpdf.php');
+// Gestion de la Feuille de Contrôle - Migration mPDF
 
-// Pieds de page
-class PDF extends FPDF
-{
-
-    function Footer()
-    {
-        //Positionnement à 1,5 cm du bas
-        $this->SetY(-15);
-        //Police Arial italique 8
-        $this->SetFont('Arial', 'I', 8);
-        //Numéro de page à gauche
-        $this->Cell(135, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-        //Date à droite
-        $this->Cell(135, 10, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'])), 0, 0, 'R');
-    }
-}
-
-// liste des présents par équipe
 class FeuilleControle extends MyPage
 {
-
     function __construct()
     {
         parent::__construct();
@@ -103,7 +85,7 @@ class FeuilleControle extends MyPage
                         array_push($arrayJoueur[$idEquipe], array(
                             'Matric' => $row2['Matric'], 'Nom' => mb_strtoupper($row2['Nom']), 'Prenom' => mb_convert_case(strtolower($row2['Prenom']), MB_CASE_TITLE, "UTF-8"),
                             'Categ' => $row2['Categ'], 'Numero' => $numero, 'Capitaine' => $capitaine, 
-                            'Saison' => $row2['Origine'], 'Numero_club' => $row2['Numero_club'], 'Reserve' => $row2['Reserve'],
+                            'Saison' => $row2['Origine'], 'Reserve' => $row2['Reserve'],
                             'Kayak' => $row2['Kayak'], 'Gilet' => $row2['Gilet'], 'Casque' => $row2['Casque'], 'Pagaies' => $row2['Pagaies'],
                             'nbJoueurs' => $num_results2
                         ));
@@ -131,47 +113,58 @@ class FeuilleControle extends MyPage
 
         $visuels = utyGetVisuels($arrayCompetition, TRUE);
 
-        // Entête PDF ...	  
-        $pdf = new PDF('L');
-        $pdf->Open();
+        // Création PDF avec MyPDF (mPDF wrapper)
+        $pdf = new MyPDF('L');
         $pdf->SetTitle("Feuilles de Controle");
-
         $pdf->SetAuthor("Kayak-polo.info");
-        $pdf->SetCreator("Kayak-polo.info avec FPDF");
-        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 30);
-        } else {
-            $pdf->SetAutoPageBreak(true, 15);
-        }
+        $pdf->SetCreator("Kayak-polo.info avec mPDF");
+
+        // Pattern 8: Images décoratives en arrière-plan
+        $yStart = 30;
 
         foreach ($resultarray as $key => $row) {
+            // --- Pattern 8 : AddPage() puis images décoratives ---
+            // 1. Définir TopMargin AVANT AddPage()
+            $pdf->SetTopMargin($yStart);
             $pdf->AddPage();
-            // Affichage
-            // Bandeau
-            if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+
+            // 2. Désactiver AutoPageBreak pour images décoratives
+            $pdf->SetAutoPageBreak(false);
+
+            // 3. Images décoratives AVANT tout contenu
+            if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
                 $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI + Logo    
-            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
                 $pdf->Image('../img/CNAKPI_small.jpg', 10, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
                 $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
-                // KPI
-            } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+            } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
                 $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
-                // Logo
-            } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+            } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
                 $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
             // Sponsor
-            if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+            if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
                 $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 184, 0, $img['newHauteur']);
             }
 
+            // 4. Réactiver AutoPageBreak et marges après images décoratives
+            if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+                $pdf->SetAutoPageBreak(true, 25);
+            } else {
+                $pdf->SetAutoPageBreak(true, 15);
+            }
+            $pdf->SetLeftMargin(10);
+            $pdf->SetRightMargin(10);
+
+            // 5. Positionner le curseur pour le contenu
+            $pdf->SetY($yStart);
+            $pdf->SetX(10);
+
             // titre
-            $pdf->Ln(20);
             $pdf->SetFont('Arial', 'BI', 12);
             $pdf->Cell(137, 8, $titreCompet, 0, 0, 'L');
             $pdf->Cell(136, 8, 'Saison ' . $codeSaison, 0, 1, 'R');
@@ -194,12 +187,7 @@ class FeuilleControle extends MyPage
             $pdf->Cell(32, 9, 'Nb pagaies', 'B', 1, 'C');
             $pdf->SetFont('Arial', '', 10);
 
-            // Mini 12 lignes par équipe
-            if (isset($arrayJoueur[$idEquipe][0]) && $arrayJoueur[$idEquipe][0]['nbJoueurs'] > 10) {
-                $nbJoueurs = $arrayJoueur[$idEquipe][0]['nbJoueurs'] + 2;
-            } else {
-                $nbJoueurs = 12;
-            }
+            $nbJoueurs = $arrayJoueur[$idEquipe][0]['nbJoueurs'];
 
             for ($j = 0; $j < $nbJoueurs; $j++) {
                 if (isset($arrayJoueur[$idEquipe][$j]['Matric']) && $arrayJoueur[$idEquipe][$j]['Matric'] != '') {
@@ -220,14 +208,22 @@ class FeuilleControle extends MyPage
                     $pdf->Cell(25, 9, $arrayJoueur[$idEquipe][$j]['Matric'] . $arrayJoueur[$idEquipe][$j]['Saison'], 'B', 0, 'C');
                     $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
                     $pdf->Cell(45, 9, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
-                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Kayak']], 'B', 0, 'C');
-                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Gilet']], 'B', 0, 'C');
-                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Casque']], 'B', 0, 'C');
-                    $pdf->Cell(32, 9, $arrayJoueur[$idEquipe][$j]['Pagaies'], 'B', 1, 'C');
+                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Kayak']] ?? '', 'B', 0, 'C');
+                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Gilet']] ?? '', 'B', 0, 'C');
+                    $pdf->Cell(25, 9, $controlStatus[$arrayJoueur[$idEquipe][$j]['Casque']] ?? '', 'B', 0, 'C');
+                    $pdf->Cell(32, 9, $arrayJoueur[$idEquipe][$j]['Pagaies'] ?? '', 'B', 1, 'C');
                 }
             }
         }
-        $pdf->Output('Feuilles de Controle' . '.pdf', 'I');
+
+        // Footer HTML pour numéro de page à gauche et date/heure à droite
+        $footerHTML = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td align="left" width="50%">Page {PAGENO}</td>'
+            . '<td align="right" width="50%">' . date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')) . '</td>'
+            . '</tr></table>';
+        $pdf->SetHTMLFooter($footerHTML);
+
+        $pdf->Output('Feuilles de Controle' . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 
