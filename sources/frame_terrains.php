@@ -30,6 +30,11 @@ class Matchs extends MyPage
         $Round = utyGetGet('Round', '*');
         $this->m_tpl->assign('Round', $Round);
 
+        // Load competition details
+        $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+        $this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref'] ?? '');
+        $this->m_tpl->assign('recordCompetition', $recordCompetition);
+
         if ($event > 0) {
             $sql = "SELECT DISTINCT(j.Code_competition), j.Code_saison 
                 FROM kp_journee j, kp_evenement_journee ej 
@@ -54,9 +59,10 @@ class Matchs extends MyPage
         }
         $_SESSION['codeCompetGroup'] = $codeCompetGroup;
 
+        $CompetsArray = array(); // Pour les requêtes préparées
         if ($Compets != '') {
-            $Compets = explode(',', $Compets);
-            foreach ($Compets as $value) {
+            $CompetsArray = explode(',', $Compets); // Sauvegarder les valeurs propres
+            foreach ($CompetsArray as $value) {
                 $Compets1[] = "'" . $value . "'";
             }
             $Compets = implode(',', $Compets1);
@@ -94,38 +100,55 @@ class Matchs extends MyPage
         $_SESSION['terrains'] = $terrains;
         $this->m_tpl->assign('terrains', $terrains);
 
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
         }
+        $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+        $this->m_tpl->assign('navGroup', $navGroup);
 
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
 
         $arrayDates = [];
         $arrayHeures = [];
+        $arrayJours = [];
 
         // Chargement des Compétitions ...
         $arrayCompetition = array();
-        $sql = "SELECT * 
-            FROM kp_competition 
-            WHERE Code_saison = $codeSaison 
-            AND (Publication='O' OR Code_ref = 'M') ";
-        if ($Compets == '') {
-            $sql .= "AND Code_ref = '$codeCompetGroup' ";
-        } else {
-            $sql .= "AND Code IN ($Compets) ";
-        }
-        $sql .= "ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code ";
+        $listCompet = ''; // Initialisation de la variable
 
-        $listCompet = '';
+        // Construction de la requête avec des placeholders
+        $sql = "SELECT *
+            FROM kp_competition
+            WHERE Code_saison = ?
+            AND (Publication = 'O' OR Code_ref = 'M') ";
+
+        $params = [$codeSaison]; // Tableau de paramètres pour execute()
+
+        if (empty($CompetsArray)) {
+            $sql .= "AND Code_ref = ? ";
+            $params[] = $codeCompetGroup;
+        } else {
+            // Utilise les valeurs propres sauvegardées (sans guillemets)
+            $competsClean = array_map('trim', $CompetsArray);
+            $placeholders = implode(',', array_fill(0, count($competsClean), '?'));
+            $sql .= "AND Code IN ($placeholders) ";
+            $params = array_merge($params, $competsClean);
+        }
+
+        $sql .= "ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code";
+
+        // Préparation et exécution
         $result = $myBdd->pdo->prepare($sql);
-        $result->execute();
+        $result->execute($params);
         $nbCompet = $result->rowCount();
         while ($row = $result->fetch()) {
             array_push($arrayCompetition, $row);
             if ($idSelCompet == '*' || $idSelCompet == $row["Code"]) {
-                if ($listCompet) {
+                if ($listCompet != '') {
                     $listCompet .= ',';
                 }
                 $listCompet .= "'" . $row["Code"] . "'";
@@ -137,7 +160,7 @@ class Matchs extends MyPage
         // Chargement des Compétitions du groupe
         $arrayCompetitionDuGroupe = array();
 
-        if (!$listCompet) {
+        if (!isset($listCompet) || $listCompet == '') {
             $listCompet = "'0'";
         }
 
@@ -265,7 +288,7 @@ class Matchs extends MyPage
             $date_match = '';
             $heure_match = '';
             $terrain_match = '';
-            $idTerrain = '';
+            $numTerrain = array();
             $result = $myBdd->pdo->prepare($sql);
             $result->execute();
             while ($row = $result->fetch()) {
@@ -422,7 +445,18 @@ class Matchs extends MyPage
 
             $lstTerrainsArray = $numTerrain;
             sort($numTerrain);
+            $numTerrain = array_values($numTerrain); // Réindexer de 0 à n-1
             $nbTerrains = count($numTerrain);
+
+            // Garantir que tous les indices existent jusqu'à 7 pour éviter les erreurs du template
+            // Le template suppose des paires : 0-1, 2-3, 4-5, 6-7
+            // Utiliser une valeur vide qui ne causera pas d'erreur dans $arrayMatchs
+            for ($idx = 0; $idx < 8; $idx++) {
+                if (!isset($numTerrain[$idx])) {
+                    $numTerrain[$idx] = '___EMPTY___'; // Marqueur pour terrain inexistant
+                }
+            }
+
             $this->m_tpl->assign('nbTerrains', $nbTerrains);
             $this->m_tpl->assign('numTerrain', $numTerrain);
             $this->m_tpl->assign('lstTerrainsArray', $lstTerrainsArray);
@@ -436,6 +470,14 @@ class Matchs extends MyPage
             $this->m_tpl->assign('PhaseLibelle', $PhaseLibelle);
 
             $i++;
+        } else {
+            // Si pas de journées, initialiser les variables vides pour le template
+            $this->m_tpl->assign('arrayDates', $arrayDates);
+            $this->m_tpl->assign('arrayHeures', $arrayHeures);
+            $this->m_tpl->assign('arrayMatchs', []);
+            $this->m_tpl->assign('arrayJours', []);
+            $this->m_tpl->assign('nbTerrains', 0);
+            $this->m_tpl->assign('numTerrain', []);
         }
 
         $this->m_tpl->assign('arrayJournees', $arrayJournees);
@@ -453,12 +495,11 @@ class Matchs extends MyPage
         // COSANDCO : Gestion Param Voie ...
         if (utyGetGet('voie', false)) {
             $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
             if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
-            }
-
-            $intervalle = (int) utyGetGet('intervalle', 0);
-            if ($intervalle > 0) {
+                // Toujours assigner intervalle si voie est défini, même si 0
                 $this->m_tpl->assign('intervalle', $intervalle);
             }
         }

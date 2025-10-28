@@ -27,15 +27,19 @@ class Chart extends MyPage
         $event = utyGetGet('event', '0');
         $this->m_tpl->assign('event', $event);
 
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $this->m_tpl->assign('navGroup', 1);
-            $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+            $navGroup = 1;
+            $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref'] ?? '');
             $this->m_tpl->assign('group', $group);
         }
+        $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+        $this->m_tpl->assign('navGroup', $navGroup);
 
-        if ($codeCompet == '*') {
+        if ($codeCompet == '*' && !empty($arrayNavGroup)) {
             $codeCompet = $arrayNavGroup[0]['Code'];
             $_SESSION['codeCompet'] = $codeCompet;
             $this->m_tpl->assign('codeCompet', $codeCompet);
@@ -50,14 +54,6 @@ class Chart extends MyPage
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
         $this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
 
-        //Logo
-        if ($codeCompet != -1) {
-            $logo = "img/logo/" . $codeSaison . '-' . $codeCompet . '.jpg';
-            if (file_exists($logo)) {
-                $this->m_tpl->assign('logo', $logo);
-            }
-        }
-
         // Chargement des Equipes ...
         $arrayEquipe = array();
         $arrayEquipe_journee = array();
@@ -65,6 +61,10 @@ class Chart extends MyPage
         $arrayEquipe_publi = array();
         $arrayJournee = array();
         $arrayMatchs = array();
+        $arrayJournees = array();
+        $arrayListJournees = array();
+        $arrayEquipes = array();
+        $etapes = 0;
 
         // Si type Championnat => frame_phases
         $typeClt = $recordCompetition['Code_typeclt'];
@@ -90,15 +90,7 @@ class Chart extends MyPage
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeCompet, $codeSaison));
             while ($row = $result->fetch()) {
-                //Logos
-                $logo = '';
                 $club = $row['Code_club'];
-                if (is_file('img/KIP/logo/' . $club . '-logo.png')) {
-                    $logo = 'img/KIP/logo/' . $club . '-logo.png';
-                } elseif (is_file('img/Nations/' . substr($club, 0, 3) . '.png')) {
-                    $club = substr($club, 0, 3);
-                    $logo = 'img/Nations/' . $club . '.png';
-                }
                 if (strlen($row['Code_comite_dep']) > 3) {
                     $row['Code_comite_dep'] = 'FRA';
                 }
@@ -110,7 +102,7 @@ class Chart extends MyPage
                     'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'],
                     'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
                     'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'],
-                    'logo' => $logo, 'club' => $club
+                    'club' => $club
                 ));
                 if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0)) {
                     $recordCompetition['Qualifies']    = 0;
@@ -352,7 +344,7 @@ class Chart extends MyPage
         $this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
         $this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
         $this->m_tpl->assign('etapes', $etapes);
-        $this->m_tpl->assign('largeur', round(12 / $etapes));
+        $this->m_tpl->assign('largeur', $etapes > 0 ? round(12 / $etapes) : 12);
         $this->m_tpl->assign('page', 'Deroulement');
 
         // Combo "CHPT" - "CP"		
@@ -383,12 +375,11 @@ class Chart extends MyPage
         // COSANDCO : Gestion Param Voie ...
         if (utyGetGet('voie', false)) {
             $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
             if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
-            }
-
-            $intervalle = (int) utyGetGet('intervalle', 0);
-            if ($intervalle > 0) {
+                // Toujours assigner intervalle si voie est défini, même si 0
                 $this->m_tpl->assign('intervalle', $intervalle);
             }
         }

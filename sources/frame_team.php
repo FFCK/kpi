@@ -25,9 +25,11 @@ class Team extends MyPage
         $codeCompet = utyGetGet('Compet', '');
         $this->m_tpl->assign('codeCompet', $codeCompet);
 
+        $navGroup = 0;
         if (utyGetGet('navGroup', false)) {
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
         }
+        $this->m_tpl->assign('navGroup', $navGroup);
 
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
 
@@ -54,26 +56,28 @@ class Team extends MyPage
             $eSeason = $Saison;
             $eSeason2 = $Saison;
             $eLink = $Equipe . '-' . $eSeason;
+            $eColors = '';
+            $eLogo = '';
             $eTeam = 'img/KIP/teams/' . $eLink . '-team.jpg';
             if (is_file('img/KIP/colors/' . $Equipe . '-' . date('Y') . '-colors.png')) {
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . date('Y') . '-colors.png');
+                $eColors = 'img/KIP/colors/' . $Equipe . '-' . date('Y') . '-colors.png';
                 $eSeason = date('Y');
             } elseif (is_file('img/KIP/colors/' . $Equipe . '-' . (date('Y') - 1) . '-colors.png')) {
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 1) . '-colors.png');
+                $eColors = 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 1) . '-colors.png';
                 $eSeason = date('Y') - 1;
             } elseif (is_file('img/KIP/colors/' . $Equipe . '-' . (date('Y') - 2) . '-colors.png')) {
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 2) . '-colors.png');
+                $eColors = 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 2) . '-colors.png';
                 $eSeason = date('Y') - 2;
             } elseif (is_file('img/KIP/colors/' . $Equipe . '-' . (date('Y') - 3) . '-colors.png')) {
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 3) . '-colors.png');
+                $eColors = 'img/KIP/colors/' . $Equipe . '-' . (date('Y') - 3) . '-colors.png';
                 $eSeason = date('Y') - 3;
             } elseif (is_file('img/KIP/colors/' . $Equipe . '-colors.png')) {
-                $this->m_tpl->assign('eColors', 'img/KIP/colors/' . $Equipe . '-colors.png');
+                $eColors = 'img/KIP/colors/' . $Equipe . '-colors.png';
                 $eSeason = '';
             } elseif (is_file('img/KIP/logo/' . $Code_club . '-logo.png')) {
-                $this->m_tpl->assign('eLogo', 'img/KIP/logo/' . $Code_club . '-logo.png');
+                $eLogo = 'img/KIP/logo/' . $Code_club . '-logo.png';
             } elseif (is_file('img/Nations/' . substr($Code_club, 0, 3) . '.png')) {
-                $this->m_tpl->assign('eLogo', 'img/Nations/' . substr($Code_club, 0, 3) . '.png');
+                $eLogo = 'img/Nations/' . substr($Code_club, 0, 3) . '.png';
             }
             $this->m_tpl->assign('eSeason', $eSeason);
 
@@ -91,6 +95,9 @@ class Team extends MyPage
                 $eSeason2 = date('Y') - 3;
             }
             $this->m_tpl->assign('eSeason2', $eSeason2);
+            $this->m_tpl->assign('eColors', $eColors);
+            $this->m_tpl->assign('eLogo', $eLogo);
+            $this->m_tpl->assign('eTeam', $eTeam);
 
             // Compo + stats individuelles
             if ($codeCompet != '' && $codeSaison > 2000) {
@@ -140,12 +147,11 @@ class Team extends MyPage
         // COSANDCO : Gestion Param Voie ...
         if (utyGetGet('voie', false)) {
             $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
             if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
-            }
-
-            $intervalle = (int) utyGetGet('intervalle', 0);
-            if ($intervalle > 0) {
+                // Toujours assigner intervalle si voie est défini, même si 0
                 $this->m_tpl->assign('intervalle', $intervalle);
             }
         }

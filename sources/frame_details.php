@@ -70,14 +70,18 @@ class Details extends MyPage
         //     $this->m_tpl->assign('idSelJournee', $idSelJournee);
         // }
 		$_SESSION['event'] = $event;
-        
+
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
         } else {
             $arrayNavGroup = [];
         }
+        $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+        $this->m_tpl->assign('navGroup', $navGroup);
 
         if($codeCompet == '*' || count($arrayNavGroup) == 1) {
             $codeCompet = $arrayNavGroup[0]['Code'];
@@ -388,17 +392,16 @@ class Details extends MyPage
 		$this->Load();
         
 		// COSANDCO : Gestion Param Voie ...
-		if (utyGetGet('voie', false)) {
-			$voie = (int) utyGetGet('voie', 0);
-			if ($voie > 0) {
+        if (utyGetGet('voie', false)) {
+            $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
+            if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
-            }
-            
-			$intervalle = (int) utyGetGet('intervalle', 0);
-			if ($intervalle > 0) {
+                // Toujours assigner intervalle si voie est défini, même si 0
                 $this->m_tpl->assign('intervalle', $intervalle);
-			}
-		}        
+            }
+        }
 
 		$this->DisplayTemplateFrame('frame_details');
 	}

@@ -22,14 +22,16 @@ class Qr extends MyPage
         $event = utyGetGet('event', '0');
         $this->m_tpl->assign('event', $event);
 
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $navgroup = "&navGroup=1";
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
             $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
             $this->m_tpl->assign('group', $group);
         }
+        $this->m_tpl->assign('navGroup', $navGroup);
 
         $Round = utyGetGet('Round', '*');
         $this->m_tpl->assign('Round', $Round);
@@ -38,6 +40,7 @@ class Qr extends MyPage
         $Group = $recordCompetition['Code_ref'];
         $this->m_tpl->assign('Code_ref', $Group);
         $typeClt = $recordCompetition['Code_typeclt'];
+        $this->m_tpl->assign('recordCompetition', $recordCompetition);
 
         $Css = utyGetGet('Css', '');
         $this->m_tpl->assign('Css', $Css);
@@ -53,7 +56,7 @@ class Qr extends MyPage
             $logo =  'img/CNAKPI_small.jpg';
         }
 
-        $data = "https://www.kayak-polo.info/kpmatchs.php?lang=$lang&event=$event&Saison=$codeSaison&Group=$Group&Compet=$codeCompet&Round=$Round" . $Css . $navgroup;
+        $data = "https://www.kayak-polo.info/kpmatchs.php?lang=$lang&event=$event&Saison=$codeSaison&Group=$Group&Compet=$codeCompet&Round=$Round" . $Css . $navGroup;
         $size = '500';
         $level = 'H';
 
@@ -65,7 +68,7 @@ class Qr extends MyPage
         $this->m_tpl->assign('dataUrl', $dataUrl);
 
 
-        $data2 = "https://www.kayak-polo.info/kpchart.php?lang=$lang&event=$event&Saison=$codeSaison&Group=$Group&Compet=$codeCompet&Round=$Round" . $Css . $navgroup;
+        $data2 = "https://www.kayak-polo.info/kpchart.php?lang=$lang&event=$event&Saison=$codeSaison&Group=$Group&Compet=$codeCompet&Round=$Round" . $Css . $navGroup;
 
         $qrcode = new QRcode($data2, $level);
         $QR = $qrcode->createPNG($size);
@@ -89,12 +92,11 @@ class Qr extends MyPage
         // COSANDCO : Gestion Param Voie ...
         if (utyGetGet('voie', false)) {
             $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
             if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
-            }
-
-            $intervalle = (int) utyGetGet('intervalle', 0);
-            if ($intervalle > 0) {
+                // Toujours assigner intervalle si voie est défini, même si 0
                 $this->m_tpl->assign('intervalle', $intervalle);
             }
         }

@@ -32,13 +32,17 @@
                         <tbody>
                             {section name=j loop=$arrayHeures[$Date]}
                                 {assign var='Heure' value=$arrayHeures[$Date][j].heure}
-                                {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrain]}
-                                {assign var='validation1' value=$Match1.Validation}
-                                {assign var='statut1' value=$Match1.Statut}
+                                {if isset($arrayMatchs[$Date][$Heure][$terrain])}
+                                    {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrain]}
+                                {else}
+                                    {assign var='Match1' value=null}
+                                {/if}
+                                {assign var='validation1' value=$Match1.Validation|default:''}
+                                {assign var='statut1' value=$Match1.Statut|default:''}
                                 {assign var='periode1' value=$Match1.Periode|default:''}
 
-                                <tr class='{$Match1.past}'>
-                                    {if $Match1.Numero_ordre}
+                                <tr class='{if $Match1}{$Match1.past}{/if}'>
+                                    {if $Match1 && $Match1.Numero_ordre}
                                         <td class="text-center" data-order="{$Heure}" data-filter="{$Heure}">
                                             <span class="badge">{$Heure}</span>
                                         </td>
@@ -126,18 +130,26 @@
                         <tbody>
                             {section name=j loop=$arrayHeures[$Date]}
                                 {assign var='Heure' value=$arrayHeures[$Date][j].heure}
-                                {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
-                                {assign var='validation1' value=$Match1.Validation}
-                                {assign var='statut1' value=$Match1.Statut}
+                                {if isset($arrayMatchs[$Date][$Heure][$terrainG])}
+                                    {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
+                                {else}
+                                    {assign var='Match1' value=null}
+                                {/if}
+                                {assign var='validation1' value=$Match1.Validation|default:''}
+                                {assign var='statut1' value=$Match1.Statut|default:''}
                                 {assign var='periode1' value=$Match1.Periode|default:''}
-                                {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
-                                {assign var='validation2' value=$Match2.Validation}
-                                {assign var='statut2' value=$Match2.Statut}
+                                {if isset($arrayMatchs[$Date][$Heure][$terrainD])}
+                                    {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
+                                {else}
+                                    {assign var='Match2' value=null}
+                                {/if}
+                                {assign var='validation2' value=$Match2.Validation|default:''}
+                                {assign var='statut2' value=$Match2.Statut|default:''}
                                 {assign var='periode2' value=$Match2.Periode|default:''}
 
-                                {if $Match1.Numero_ordre or $Match2.Numero_ordre}
-                                    <tr class='{$Match1.past}'>
-                                        {if $Match1.Numero_ordre}
+                                {if ($Match1 && $Match1.Numero_ordre) or ($Match2 && $Match2.Numero_ordre)}
+                                    <tr class='{if $Match1}{$Match1.past}{/if}'>
+                                        {if $Match1 && $Match1.Numero_ordre}
                                             <td>{$Match1.Numero_ordre}</td>
                                             <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                             <td>{$Match1.Phase|default:'&nbsp;'}</td>
@@ -179,7 +191,7 @@
                                             <span class="badge">{$Heure}</span>
                                         </td>
 
-                                        {if $Match2.Numero_ordre}
+                                        {if $Match2 && $Match2.Numero_ordre}
                                             <td>{$Match2.Numero_ordre}</td>
                                             <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                             <td>{$Match2.Phase|default:'&nbsp;'}</td>
@@ -227,7 +239,7 @@
                     </table>
                 </article>
                 
-                {if $nbTerrains > 2}
+                {if $nbTerrains > 2 && $numTerrain[2] != '___EMPTY___' && $numTerrain[3] != '___EMPTY___'}
                     {assign var='terrainG' value=$numTerrain[2]}
                     {assign var='terrainD' value=$numTerrain[3]}
                     <article class="table-responsive col-md-12 padTopBottom">
@@ -257,18 +269,26 @@
                             <tbody>
                                 {section name=j loop=$arrayHeures[$Date]}
                                     {assign var='Heure' value=$arrayHeures[$Date][j].heure}
-                                    {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
-                                    {assign var='validation1' value=$Match1.Validation}
-                                    {assign var='statut1' value=$Match1.Statut}
+                                    {if isset($arrayMatchs[$Date][$Heure][$terrainG])}
+                                        {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
+                                    {else}
+                                        {assign var='Match1' value=null}
+                                    {/if}
+                                    {assign var='validation1' value=$Match1.Validation|default:''}
+                                    {assign var='statut1' value=$Match1.Statut|default:''}
                                     {assign var='periode1' value=$Match1.Periode|default:''}
-                                    {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
-                                    {assign var='validation2' value=$Match2.Validation}
-                                    {assign var='statut2' value=$Match2.Statut}
+                                    {if isset($arrayMatchs[$Date][$Heure][$terrainD])}
+                                        {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
+                                    {else}
+                                        {assign var='Match2' value=null}
+                                    {/if}
+                                    {assign var='validation2' value=$Match2.Validation|default:''}
+                                    {assign var='statut2' value=$Match2.Statut|default:''}
                                     {assign var='periode2' value=$Match2.Periode|default:''}
 
-                                    {if $Match1.Numero_ordre or $Match2.Numero_ordre}
-                                        <tr class='{$Match1.past}'>
-                                            {if $Match1.Numero_ordre}
+                                    {if ($Match1 && $Match1.Numero_ordre) or ($Match2 && $Match2.Numero_ordre)}
+                                        <tr class='{if $Match1}{$Match1.past}{/if}'>
+                                            {if $Match1 && $Match1.Numero_ordre}
                                                 <td>{$Match1.Numero_ordre}</td>
                                                 <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                                 <td>{$Match1.Phase|default:'&nbsp;'}</td>
@@ -310,7 +330,7 @@
                                                 <span class="badge">{$Heure}</span>
                                             </td>
 
-                                            {if $Match2.Numero_ordre}
+                                            {if $Match2 && $Match2.Numero_ordre}
                                                 <td>{$Match2.Numero_ordre}</td>
                                                 <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                                 <td>{$Match2.Phase|default:'&nbsp;'}</td>
@@ -358,7 +378,7 @@
                         </table>
                     </article>
                 {/if}
-                {if $nbTerrains > 4}
+                {if $nbTerrains > 4 && $numTerrain[4] != '___EMPTY___' && $numTerrain[5] != '___EMPTY___'}
                     {assign var='terrainG' value=$numTerrain[4]}
                     {assign var='terrainD' value=$numTerrain[5]}
                     <article class="table-responsive col-md-12 padTopBottom">
@@ -388,18 +408,26 @@
                             <tbody>
                                 {section name=j loop=$arrayHeures[$Date]}
                                     {assign var='Heure' value=$arrayHeures[$Date][j].heure}
-                                    {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
-                                    {assign var='validation1' value=$Match1.Validation}
-                                    {assign var='statut1' value=$Match1.Statut}
+                                    {if isset($arrayMatchs[$Date][$Heure][$terrainG])}
+                                        {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
+                                    {else}
+                                        {assign var='Match1' value=null}
+                                    {/if}
+                                    {assign var='validation1' value=$Match1.Validation|default:''}
+                                    {assign var='statut1' value=$Match1.Statut|default:''}
                                     {assign var='periode1' value=$Match1.Periode|default:''}
-                                    {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
-                                    {assign var='validation2' value=$Match2.Validation}
-                                    {assign var='statut2' value=$Match2.Statut}
+                                    {if isset($arrayMatchs[$Date][$Heure][$terrainD])}
+                                        {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
+                                    {else}
+                                        {assign var='Match2' value=null}
+                                    {/if}
+                                    {assign var='validation2' value=$Match2.Validation|default:''}
+                                    {assign var='statut2' value=$Match2.Statut|default:''}
                                     {assign var='periode2' value=$Match2.Periode|default:''}
 
-                                    {if $Match1.Numero_ordre or $Match2.Numero_ordre}
-                                        <tr class='{$Match1.past}'>
-                                            {if $Match1.Numero_ordre}
+                                    {if ($Match1 && $Match1.Numero_ordre) or ($Match2 && $Match2.Numero_ordre)}
+                                        <tr class='{if $Match1}{$Match1.past}{/if}'>
+                                            {if $Match1 && $Match1.Numero_ordre}
                                                 <td>{$Match1.Numero_ordre}</td>
                                                 <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                                 <td>{$Match1.Phase|default:'&nbsp;'}</td>
@@ -441,7 +469,7 @@
                                                 <span class="badge">{$Heure}</span>
                                             </td>
 
-                                            {if $Match2.Numero_ordre}
+                                            {if $Match2 && $Match2.Numero_ordre}
                                                 <td>{$Match2.Numero_ordre}</td>
                                                 <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                                 <td>{$Match2.Phase|default:'&nbsp;'}</td>
@@ -489,7 +517,7 @@
                         </table>
                     </article>
                 {/if}
-                {if $nbTerrains > 6}
+                {if $nbTerrains > 6 && $numTerrain[6] != '___EMPTY___' && $numTerrain[7] != '___EMPTY___'}
                     {assign var='terrainG' value=$numTerrain[6]}
                     {assign var='terrainD' value=$numTerrain[7]}
                     <article class="table-responsive col-md-12 padTopBottom">
@@ -519,18 +547,26 @@
                             <tbody>
                                 {section name=j loop=$arrayHeures[$Date]}
                                     {assign var='Heure' value=$arrayHeures[$Date][j].heure}
-                                    {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
-                                    {assign var='validation1' value=$Match1.Validation}
-                                    {assign var='statut1' value=$Match1.Statut}
+                                    {if isset($arrayMatchs[$Date][$Heure][$terrainG])}
+                                        {assign var='Match1' value=$arrayMatchs[$Date][$Heure][$terrainG]}
+                                    {else}
+                                        {assign var='Match1' value=null}
+                                    {/if}
+                                    {assign var='validation1' value=$Match1.Validation|default:''}
+                                    {assign var='statut1' value=$Match1.Statut|default:''}
                                     {assign var='periode1' value=$Match1.Periode|default:''}
-                                    {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
-                                    {assign var='validation2' value=$Match2.Validation}
-                                    {assign var='statut2' value=$Match2.Statut}
+                                    {if isset($arrayMatchs[$Date][$Heure][$terrainD])}
+                                        {assign var='Match2' value=$arrayMatchs[$Date][$Heure][$terrainD]}
+                                    {else}
+                                        {assign var='Match2' value=null}
+                                    {/if}
+                                    {assign var='validation2' value=$Match2.Validation|default:''}
+                                    {assign var='statut2' value=$Match2.Statut|default:''}
                                     {assign var='periode2' value=$Match2.Periode|default:''}
 
-                                    {if $Match1.Numero_ordre or $Match2.Numero_ordre}
-                                        <tr class='{$Match1.past}'>
-                                            {if $Match1.Numero_ordre}
+                                    {if ($Match1 && $Match1.Numero_ordre) or ($Match2 && $Match2.Numero_ordre)}
+                                        <tr class='{if $Match1}{$Match1.past}{/if}'>
+                                            {if $Match1 && $Match1.Numero_ordre}
                                                 <td>{$Match1.Numero_ordre}</td>
                                                 <td class="cat" data-cat="{$Match1.Categorie}">{$Match1.Categorie}</td>
                                                 <td>{$Match1.Phase|default:'&nbsp;'}</td>
@@ -572,7 +608,7 @@
                                                 <span class="badge">{$Heure}</span>
                                             </td>
 
-                                            {if $Match2.Numero_ordre}
+                                            {if $Match2 && $Match2.Numero_ordre}
                                                 <td>{$Match2.Numero_ordre}</td>
                                                 <td class="cat" data-cat="{$Match2.Categorie}">{$Match2.Categorie}</td>
                                                 <td>{$Match2.Phase|default:'&nbsp;'}</td>

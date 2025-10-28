@@ -27,13 +27,16 @@ class Stats extends MyPage
         $event = utyGetGet('event', '0');
 		$this->m_tpl->assign('event', $event);
         
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
             $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
             $this->m_tpl->assign('group', $group);
         }
+        $this->m_tpl->assign('navGroup', $navGroup);
 
                 
         $Round = utyGetGet('Round', '*');
@@ -115,17 +118,16 @@ class Stats extends MyPage
 		$this->Load();
         
 		// COSANDCO : Gestion Param Voie ...
-		if (utyGetGet('voie', false)) {
-			$voie = (int) utyGetGet('voie', 0);
-			if ($voie > 0) {
+        if (utyGetGet('voie', false)) {
+            $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
+            if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
-            }
-            
-			$intervalle = (int) utyGetGet('intervalle', 0);
-			if ($intervalle > 0) {
+                // Toujours assigner intervalle si voie est défini, même si 0
                 $this->m_tpl->assign('intervalle', $intervalle);
-			}
-		}        
+            }
+        }
 
 		$this->DisplayTemplateFrame('frame_stats');
 	}

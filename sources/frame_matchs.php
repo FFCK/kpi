@@ -80,12 +80,16 @@ class Matchs extends MyPage
         // }
         $_SESSION['event'] = $event;
 
-        $arrayNavGroup = [];
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
+            $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+            $this->m_tpl->assign('group', $group);
         }
+        $this->m_tpl->assign('navGroup', $navGroup);
 
         if ($codeCompet == '*' || count($arrayNavGroup) == 1) {
             $codeCompet2 = $arrayNavGroup[0]['Code'];
@@ -477,6 +481,18 @@ class Matchs extends MyPage
 
         $this->SetTemplate("Matchs", "Matchs", true);
         $this->Load();
+
+        // COSANDCO : Gestion Param Voie ...
+        if (utyGetGet('voie', false)) {
+            $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
+            if ($voie > 0) {
+                $this->m_tpl->assign('voie', $voie);
+                // Toujours assigner intervalle si voie est défini, même si 0
+                $this->m_tpl->assign('intervalle', $intervalle);
+            }
+        }
 
         $this->DisplayTemplateFrame('frame_matchs');
     }

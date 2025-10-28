@@ -26,14 +26,18 @@ class Phases extends MyPage
         
         $event = utyGetGet('event', '0');
 		$this->m_tpl->assign('event', $event);
-        
+
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
         }
+        $this->m_tpl->assign('navGroup', $navGroup);
+        $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
 
-        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref'] ?? '');
 		$this->m_tpl->assign('group', $group);
         
 		if ($codeCompet == '*') {
@@ -51,14 +55,6 @@ class Phases extends MyPage
         $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref']);
         
-        //Logo
-		if($codeCompet != -1) {
-			$logo = "img/logo/".$codeSaison.'-'.$codeCompet.'.jpg';
-			if (file_exists($logo)) {
-                $this->m_tpl->assign('logo', $logo);
-            }
-        }
-
 		// Chargement des Equipes ...
 		$arrayEquipe = array();
 		$arrayEquipe_journee = array();
@@ -88,18 +84,7 @@ class Phases extends MyPage
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeCompet, $codeSaison));
             while ($row = $result->fetch()) {
-                    //Logos
-                $logo = '';
                 $club = $row['Code_club'];
-                if (is_file('img/KIP/logo/'.$club.'-logo.png')) {
-                    $logo = 'img/KIP/logo/'.$club.'-logo.png';
-                } elseif (is_file('img/Nations/'.substr($club, 0, 3).'.png')) {
-                    $club = substr($club, 0, 3);
-                    $logo = 'img/Nations/'.$club.'.png';
-                }
-				if (strlen($row['Code_comite_dep']) > 3) {
-                    $row['Code_comite_dep'] = 'FRA';
-                }
                 array_push($arrayEquipe_publi, array( 'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'], 
                     'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
                     'Clt_publi' => $row['Clt_publi'], 'Pts_publi' => $row['Pts_publi'], 
@@ -107,7 +92,7 @@ class Phases extends MyPage
                     'P_publi' => $row['P_publi'], 'F_publi' => $row['F_publi'], 'Plus_publi' => $row['Plus_publi'], 
                     'Moins_publi' => $row['Moins_publi'], 'Diff_publi' => $row['Diff_publi'],
                     'PtsNiveau_publi' => $row['PtsNiveau_publi'], 'CltNiveau_publi' => $row['CltNiveau_publi'], 
-                                                                        'logo' => $logo, 'club' => $club ));
+                    'club' => $club ));
 				if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0)) {
 					$recordCompetition['Qualifies']	= 0;
 					$recordCompetition['Elimines'] = 0;
@@ -411,17 +396,16 @@ class Phases extends MyPage
 		$this->Load();
         
 		// COSANDCO : Gestion Param Voie ...
-		if (utyGetGet('voie', false)) {
-			$voie = (int) utyGetGet('voie', 0);
-			if ($voie > 0) {
+        if (utyGetGet('voie', false)) {
+            $voie = (int) utyGetGet('voie', 0);
+            $intervalle = (int) utyGetGet('intervalle', 0);
+
+            if ($voie > 0) {
                 $this->m_tpl->assign('voie', $voie);
-            }
-            
-			$intervalle = (int) utyGetGet('intervalle', 0);
-			if ($intervalle > 0) {
+                // Toujours assigner intervalle si voie est défini, même si 0
                 $this->m_tpl->assign('intervalle', $intervalle);
-			}
-		}        
+            }
+        }
 
         $this->DisplayTemplateFrame('frame_phases');
 	}

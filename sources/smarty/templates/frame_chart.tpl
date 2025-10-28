@@ -29,9 +29,6 @@
                                     <tr>
                                         <td class="text-center">
                                             {$arrayEquipe_journee_publi[$idJournee][j].Clt}
-                                            {if $arrayEquipe_journee_publi[$idJournee][j].logo != ''}
-                                                <img class="img2 pull-right" width="30" src="{$arrayEquipe_journee_publi[$idJournee][j].logo}" alt="{$arrayEquipe_journee_publi[$idJournee][j].club}" />
-                                            {/if}
 
                                         </td>
                                         <td>

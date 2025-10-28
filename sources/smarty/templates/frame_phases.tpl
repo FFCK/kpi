@@ -46,10 +46,6 @@
                                     <tr>
                                         <td>
                                             {$arrayEquipe_journee_publi[$idJournee][j].Clt}
-                                            {if $arrayEquipe_journee_publi[$idJournee][j].logo != ''}
-                                                <img class="img2 pull-right" width="30" src="{$arrayEquipe_journee_publi[$idJournee][j].logo}" alt="{$arrayEquipe_journee_publi[$idJournee][j].club}" />
-                                            {/if}
-
                                         </td>
                                         <td>
                                             <a class="btn btn-xs btn-default"{if $arrayEquipe_journee_publi[$idJournee][j].Id > 0} href="frame_team.php?Team={$arrayEquipe_journee_publi[$idJournee][j].Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
