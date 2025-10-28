@@ -1017,8 +1017,10 @@
 						</table>
 						<br />
 					</div>
-					{assign var='nbmatch' value=$smarty.section.i.iteration-1}
-					{if $nbmatch > 0}{#Nb_matchs#} : {$nbmatch}{/if}
+					{if $arrayMatchs|@count > 0}
+						{assign var='nbmatch' value=$smarty.section.i.iteration-1}
+						{if $nbmatch > 0}{#Nb_matchs#} : {$nbmatch}{/if}
+					{/if}
 				</div>
 			</form>
 		</div>

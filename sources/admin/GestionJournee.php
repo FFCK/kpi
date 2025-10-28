@@ -38,6 +38,14 @@ class GestionJournee extends MyPageSecure
 
 		// Chargement des Evenements ...
 		$idEvenement = utyGetSession('idEvenement', -1);
+		$idEvenementPost = utyGetPost('evenement', null);
+
+		// Détection du changement d'événement
+		$evenementChanged = false;
+		if ($idEvenementPost !== null && $idEvenementPost != $idEvenement) {
+			$evenementChanged = true;
+		}
+
 		$idEvenement = utyGetPost('evenement', $idEvenement);
 		$_SESSION['idEvenement'] = $idEvenement;
 		$this->m_tpl->assign('idEvenement', $idEvenement);
@@ -97,9 +105,18 @@ class GestionJournee extends MyPageSecure
 		$_SESSION['filtreMois'] = $filtreMois;
 		$this->m_tpl->assign('filtreMois', $filtreMois);
 
-		$codeCompet = utyGetSession('codeCompet', '*');
-		$codeCompet = utyGetPost('comboCompet', $codeCompet);
+		// Si l'événement a changé, réinitialiser la compétition à '*' et ignorer le POST
+		if ($evenementChanged) {
+			$_SESSION['codeCompet'] = '*';
+			$codeCompet = '*';
+			// Ne pas lire le POST de comboCompet car il contient l'ancienne valeur
+		} else {
+			$codeCompet = utyGetSession('codeCompet', '*');
+			$codeCompet = utyGetPost('comboCompet', $codeCompet);
+		}
+
 		$codeCompet = utyGetGet('Compet', $codeCompet);
+
 		if ($codeCompet != $_SESSION['codeCompet'] || utyGetGet('Compet', false)) {
 			$this->Raz();
 			$idSelJournee = '*';
@@ -597,11 +614,7 @@ class GestionJournee extends MyPageSecure
 					$jourmatch = $row['Date_match'];
 				}
 			}
-			$this->m_tpl->assign('listeJours', $listeJours);
-			$this->m_tpl->assign('listMatch', $listMatch);
 			$_SESSION['listMatch'] = $listMatch;
-			$this->m_tpl->assign('arrayMatchs', $arrayMatchs);
-			$this->m_tpl->assign('arrayJours', $arrayJours);
 		}
 
 		$this->m_tpl->assign('PhaseLibelle', $PhaseLibelle);
@@ -720,16 +733,44 @@ class GestionJournee extends MyPageSecure
 				array_push($arrayArbitre, array('Matric' => $row2['Matric'], 'Identite' => ucwords(strtolower($row2['Nom'])) . ' ' . ucwords(strtolower($row2['Prenom'])) . ' (' . $row2['Libelle'] . ')' . $arb));
 			}
 
-			$this->m_tpl->assign('arrayEquipeA', $arrayEquipeA);
-			$this->m_tpl->assign('arrayEquipeB', $arrayEquipeB);
-			$this->m_tpl->assign('arrayArbitre', $arrayArbitre);
-			$this->m_tpl->assign('arrayArbitreEquipes', $arrayArbitreEquipes);
-
-			$this->m_tpl->assign('idCurrentJournee', $idJournee);
-			$this->m_tpl->assign('arrayJournees', $arrayJournees);
-			$this->m_tpl->assign('arrayJourneesAutorisees', $arrayJourneesAutorisees);
-			$this->m_tpl->assign('arrayJourneesAutoriseesFiltre', $arrayJourneesAutoriseesFiltre);
 		}
+
+		// Initialisation des variables par défaut si elles n'ont pas été définies
+		if (!isset($arrayEquipeA)) {
+			$arrayEquipeA = array();
+		}
+		if (!isset($arrayEquipeB)) {
+			$arrayEquipeB = array();
+		}
+		if (!isset($arrayArbitre)) {
+			$arrayArbitre = array();
+		}
+		if (!isset($arrayArbitreEquipes)) {
+			$arrayArbitreEquipes = array();
+		}
+		if (!isset($listeJours)) {
+			$listeJours = array();
+		}
+		if (!isset($listMatch)) {
+			$listMatch = '';
+		}
+		if (!isset($idJournee)) {
+			$idJournee = 0;
+		}
+
+		// Assignation des variables qui ne sont pas toujours définies
+		$this->m_tpl->assign('arrayEquipeA', $arrayEquipeA);
+		$this->m_tpl->assign('arrayEquipeB', $arrayEquipeB);
+		$this->m_tpl->assign('arrayArbitre', $arrayArbitre);
+		$this->m_tpl->assign('arrayArbitreEquipes', $arrayArbitreEquipes);
+		$this->m_tpl->assign('listeJours', $listeJours);
+		$this->m_tpl->assign('listMatch', $listMatch);
+		$this->m_tpl->assign('arrayMatchs', $arrayMatchs);
+		$this->m_tpl->assign('arrayJours', $arrayJours);
+		$this->m_tpl->assign('idCurrentJournee', $idJournee);
+		$this->m_tpl->assign('arrayJournees', $arrayJournees);
+		$this->m_tpl->assign('arrayJourneesAutorisees', $arrayJourneesAutorisees);
+		$this->m_tpl->assign('arrayJourneesAutoriseesFiltre', $arrayJourneesAutoriseesFiltre);
 
 		$this->m_tpl->assign('codeCurrentCompet', $codeCompet);
 		$this->m_tpl->assign('arrayCompetition', $arrayCompetition);
