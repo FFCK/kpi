@@ -51,28 +51,37 @@ class GestionJournee extends MyPageSecure
 		$this->m_tpl->assign('idEvenement', $idEvenement);
 		$idEvenement2 = $idEvenement;
 
-		$filtreJour = utyGetSession('filtreJour', '');
-		$filtreJour = utyGetPost('filtreJour', $filtreJour);
-		$filtreJour = utyGetGet('filtreJour', $filtreJour);
-		$_SESSION['filtreJour'] = $filtreJour;
+		// Si l'événement a changé, réinitialiser tous les filtres
+		if ($evenementChanged) {
+			$filtreJour = '';
+			$filtreTour = '';
+			$filtreTerrain = '';
+			$_SESSION['filtreJour'] = '';
+			$_SESSION['filtreTour'] = '';
+			$_SESSION['filtreTerrain'] = '';
+		} else {
+			$filtreJour = utyGetSession('filtreJour', '');
+			$filtreJour = utyGetPost('filtreJour', $filtreJour);
+			$filtreJour = utyGetGet('filtreJour', $filtreJour);
+			$_SESSION['filtreJour'] = $filtreJour;
+
+			$filtreTour = utyGetSession('filtreTour', '');
+			$filtreTour = utyGetPost('filtreTour', $filtreTour);
+			$filtreTour = utyGetGet('filtreTour', $filtreTour);
+			$_SESSION['filtreTour'] = $filtreTour;
+
+			$filtreTerrain = utyGetSession('filtreTerrain', '');
+			$filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
+			$filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
+			$_SESSION['filtreTerrain'] = $filtreTerrain;
+		}
+
 		$this->m_tpl->assign('filtreJour', $filtreJour);
-
-		$filtreTour = utyGetSession('filtreTour', '');
-		$filtreTour = utyGetPost('filtreTour', $filtreTour);
-		$filtreTour = utyGetGet('filtreTour', $filtreTour);
-		$_SESSION['filtreTour'] = $filtreTour;
 		$this->m_tpl->assign('filtreTour', $filtreTour);
-
-		$filtreTerrain = utyGetSession('filtreTerrain', '');
-		$filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
-		$filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
-		$_SESSION['filtreTerrain'] = $filtreTerrain;
 		$this->m_tpl->assign('filtreTerrain', $filtreTerrain);
 
 		$filtreMatchsNonVerrouilles = utyGetSession('filtreMatchsNonVerrouilles', '');
 		$this->m_tpl->assign('filtreMatchsNonVerrouilles', $filtreMatchsNonVerrouilles);
-
-		$filtreJour = utyGetSession('filtreJour', '');
 
 		$sql = "SELECT Id, Libelle, Date_debut, Publication 
 			FROM kp_evenement 
@@ -100,39 +109,46 @@ class GestionJournee extends MyPageSecure
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 
 		//Filtre mois
-		$filtreMois = utyGetSession('filtreMois', '');
-		$filtreMois = utyGetPost('filtreMois', $filtreMois);
-		$_SESSION['filtreMois'] = $filtreMois;
+		if ($evenementChanged) {
+			$filtreMois = '';
+			$_SESSION['filtreMois'] = '';
+		} else {
+			$filtreMois = utyGetSession('filtreMois', '');
+			$filtreMois = utyGetPost('filtreMois', $filtreMois);
+			$_SESSION['filtreMois'] = $filtreMois;
+		}
 		$this->m_tpl->assign('filtreMois', $filtreMois);
 
-		// Si l'événement a changé, réinitialiser la compétition à '*' et ignorer le POST
+		// Si l'événement a changé, réinitialiser la compétition, la journée et le match
 		if ($evenementChanged) {
 			$_SESSION['codeCompet'] = '*';
 			$codeCompet = '*';
+			$this->Raz();
+			$idSelJournee = '*';
+			$idMatch = -1;
 			// Ne pas lire le POST de comboCompet car il contient l'ancienne valeur
 		} else {
 			$codeCompet = utyGetSession('codeCompet', '*');
 			$codeCompet = utyGetPost('comboCompet', $codeCompet);
-		}
+			$codeCompet = utyGetGet('Compet', $codeCompet);
 
-		$codeCompet = utyGetGet('Compet', $codeCompet);
-
-		if ($codeCompet != $_SESSION['codeCompet'] || utyGetGet('Compet', false)) {
-			$this->Raz();
-			$idSelJournee = '*';
-			$idMatch = -1;
-		} else {
-			$idSelJournee = utyGetSession('idSelJournee', '*');  //ATTENTION : Comportement à surveiller
-			$idSelJournee = utyGetPost('comboJournee2', $idSelJournee);
-			$idSelJournee = utyGetGet('idJournee', $idSelJournee);
-
-			if (!isset($_SESSION['idSelJournee'])) {
-				$_SESSION['idSelJournee'] = '';
-			}
-			if ($idSelJournee != $_SESSION['idSelJournee']) {
+			if ($codeCompet != $_SESSION['codeCompet'] || utyGetGet('Compet', false)) {
+				$this->Raz();
+				$idSelJournee = '*';
 				$idMatch = -1;
 			} else {
-				$idMatch = utyGetSession('idMatch', -1);
+				$idSelJournee = utyGetSession('idSelJournee', '*');  //ATTENTION : Comportement à surveiller
+				$idSelJournee = utyGetPost('comboJournee2', $idSelJournee);
+				$idSelJournee = utyGetGet('idJournee', $idSelJournee);
+
+				if (!isset($_SESSION['idSelJournee'])) {
+					$_SESSION['idSelJournee'] = '';
+				}
+				if ($idSelJournee != $_SESSION['idSelJournee']) {
+					$idMatch = -1;
+				} else {
+					$idMatch = utyGetSession('idMatch', -1);
+				}
 			}
 		}
 		$_SESSION['idMatch'] = $idMatch;
