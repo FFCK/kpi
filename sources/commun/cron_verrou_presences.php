@@ -59,7 +59,7 @@ if (isset($codeCompet2)) {
 }
 
 $fp = fopen("log_cron.txt", "a");
-fputs($fp, "\n"); // on va a la ligne
 fputs($fp, date('Y-m-d H:s') . " - " 
     . "Verrou competitions : $codeCompet, deverrou competitions : $codeCompet2"); // on ecrit la ligne
+fputs($fp, "\n"); // on va a la ligne
 fclose($fp);
