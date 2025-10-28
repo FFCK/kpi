@@ -10,11 +10,6 @@ include_once('../commun/MyTools.php');
 
 $myBdd = new MyBdd();
 $myBdd->ImportPCE2();
-// trigger_error("Erreur test 2", E_USER_ERROR);
-// print_r($myBdd->m_arrayinfo);
-// echo $myBdd->m_arrayinfo[9] . " " . $myBdd->m_arrayinfo[10];
-// $time2 = time() - $time1;
-// echo "<br /><br />Traitement terminé en ". $time2 . " secondes.";
 $msg = date('Y-m-d H:s') . " - " 
 	. $myBdd->m_arrayinfo[11] . " : "
 	. $myBdd->m_arrayinfo[2] . " " 

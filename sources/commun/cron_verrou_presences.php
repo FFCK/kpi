@@ -1,8 +1,10 @@
 <?php
-
-header('Content-type:text/html; charset=utf-8');
-$time1 = time();
 include_once('../commun/MyBdd.php');
+// header('Content-type:text/html; charset=utf-8');
+
+$time1 = time();
+$codeCompet = '';
+$codeCompet2 = '';
 
 $myBdd = new MyBdd();
 $saison = $myBdd->GetActiveSaison();
@@ -25,16 +27,16 @@ while ($row = $result->fetch()) {
 if (isset($codeCompet)) {
     $sql = "UPDATE kp_competition 
         SET Verrou = 'O' 
-        WHERE Code_saison = $saison 
-        AND Code IN ($codeCompet) ";
+        WHERE Code_saison = ? 
+        AND Code IN (?) ";
     $result = $myBdd->pdo->prepare($sql);
-    $result->execute();
+    $result->execute(array($saison, $codeCompet));
 }
 
 $sql = "SELECT DISTINCT(Code_competition) 
     FROM `kp_journee` 
     WHERE 1 
-    AND Code_saison = $saison 
+    AND Code_saison = ?
     AND Date_fin < CURDATE() 
     AND DATEDIFF(CURDATE(), Date_fin) < 3 
     AND (Code_competition LIKE 'N%' 
@@ -50,10 +52,10 @@ while ($row = $result->fetch()) {
 if (isset($codeCompet2)) {
     $sql = "UPDATE kp_competition 
         SET Verrou = 'N' 
-        WHERE Code_saison = $saison 
-        AND Code IN ($codeCompet2) ";
+        WHERE Code_saison = ? 
+        AND Code IN (?) ";
     $result = $myBdd->pdo->prepare($sql);
-    $result->execute();
+    $result->execute(array($saison, $codeCompet2));
 }
 
 $fp = fopen("log_cron.txt", "a");
