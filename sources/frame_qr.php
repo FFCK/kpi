@@ -62,9 +62,18 @@ class Qr extends MyPage
 
         $qrcode = new QRcode($data, $level);
         $QR = $qrcode->createPNG($size);
-        $QR = $qrcode->addLogo($QR, $logo, .3);
-        $dataUrl = $qrcode->getBase64Url($QR);
-        imagedestroy($QR);
+        if ($QR !== null) {
+            $QR = $qrcode->addLogo($QR, $logo, .3);
+            if ($QR !== null) {
+                $dataUrl = $qrcode->getBase64Url($QR);
+                imagedestroy($QR);
+                $this->m_tpl->assign('dataUrl', $dataUrl);
+            } else {
+                // handle error: addLogo failed
+            }
+        } else {
+            // handle error: createPNG failed
+        }
         $this->m_tpl->assign('dataUrl', $dataUrl);
 
 
@@ -72,9 +81,18 @@ class Qr extends MyPage
 
         $qrcode = new QRcode($data2, $level);
         $QR = $qrcode->createPNG($size);
-        $QR = $qrcode->addLogo($QR, $logo, .3);
-        $dataUrl2 = $qrcode->getBase64Url($QR);
-        imagedestroy($QR);
+        if ($QR !== null) {
+            $QR = $qrcode->addLogo($QR, $logo, .3);
+            if ($QR !== null) {
+                $dataUrl2 = $qrcode->getBase64Url($QR);
+                imagedestroy($QR);
+                $this->m_tpl->assign('dataUrl2', $dataUrl2);
+            } else {
+                // handle error: addLogo failed
+            }
+        } else {
+            // handle error: createPNG failed
+        }
         $this->m_tpl->assign('dataUrl2', $dataUrl2);
 
         $this->m_tpl->assign('page', 'Qr');
