@@ -288,6 +288,8 @@ function utyDateUsToFrLong($dateUs, $separator = "-")
 
 function utyDateUsToFr($dateUs, $separaror = '-')
 {
+	if ($dateUs == '0000-00-00' || $dateUs == '' || $dateUs == null)
+		return '';
 	$data = explode($separaror, $dateUs);
 	if (count($data) == 3)
 		return $data[2] . '/' . $data[1] . '/' . $data[0];

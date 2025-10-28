@@ -24,37 +24,48 @@ class ImportPCE extends MyPageSecure
 			$jsondata = stripcslashes($_POST['json_data']);
 
 		$this->SetTemplate("MAJ Licenciés / Mode Local", "Import", false);
+		$arrayinfo = array();
 
-		if (isset($_POST['importPCE'])) {
-			$myBdd->ImportPCE2("licences.pce");
-			$this->m_tpl->assign('arrayinfo', $myBdd->m_arrayinfo);
-		} elseif (isset($_POST['Control']) && $_POST['Control'] == 'importPCE2') {
-			$myBdd->ImportPCE2();
-			$this->m_tpl->assign('arrayinfo', $myBdd->m_arrayinfo);
-		} elseif (isset($_POST['importCalendrier']) && $_SESSION['Profile'] <= 2) {
-			$myBdd->ImportCalendrier("calendrier.csv");
-			$this->m_tpl->assign('arrayinfo', $myBdd->m_arrayinfo);
-		} elseif (isset($_POST['uploadLicenceZip'])) {
-			$this->m_arrayinfo = array();
-			array_push($this->m_arrayinfo, 'Upload du fichier ...');
-			$this->uploadLicenceZip();
-			$this->m_tpl->assign('arrayinfo', $this->m_arrayinfo);
-		} elseif (isset($_POST['uploadCalendrierCsv'])) {
-			$this->m_arrayinfo = array();
-			array_push($this->m_arrayinfo, 'Upload du fichier ...');
-			$this->uploadCalendrierCsv();
-			$this->m_tpl->assign('arrayinfo', $this->m_arrayinfo);
-		} elseif (isset($_POST['testPDF'])) {
-			header('Location: http://' . $_SERVER['HTTP_HOST'] . MAIN_DIRECTORY . '/lib/fpdf/marque1.php');
-			exit;
-		} elseif (isset($_POST['DupliJournee'])) {
-			$myBdd->DupliJournee('N3H1', 'ESSAI2');
-			$this->m_tpl->assign('arrayinfo', $myBdd->m_arrayinfo);
-		} elseif (isset($_POST['Template_YUI'])) {
-			$_SESSION['TPL_EXTENSION'] = '_YUI.tpl';
-		} elseif (isset($_POST['Template_STD'])) {
-			$_SESSION['TPL_EXTENSION'] = '.tpl';
+		switch (true) {
+			case isset($_POST['importPCE']):
+				$myBdd->ImportPCE2("licences.pce");
+				$arrayinfo = $myBdd->m_arrayinfo;
+				break;
+			case isset($_POST['Control']) && $_POST['Control'] == 'importPCE2':
+				$myBdd->ImportPCE2();
+				$arrayinfo = $myBdd->m_arrayinfo;
+				break;
+			case isset($_POST['importCalendrier']) && $_SESSION['Profile'] <= 2:
+				$myBdd->ImportCalendrier("calendrier.csv");
+				$arrayinfo = $myBdd->m_arrayinfo;
+				break;
+			case isset($_POST['uploadLicenceZip']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Upload du fichier ...');
+				$this->uploadLicenceZip();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+			case isset($_POST['uploadCalendrierCsv']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Upload du fichier ...');
+				$this->uploadCalendrierCsv();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+			case isset($_POST['testPDF']):
+				header('Location: http://' . $_SERVER['HTTP_HOST'] . MAIN_DIRECTORY . '/lib/fpdf/marque1.php');
+				exit;
+			case isset($_POST['DupliJournee']):
+				$myBdd->DupliJournee('N3H1', 'ESSAI2');
+				$arrayinfo = $myBdd->m_arrayinfo;
+				break;
+			case isset($_POST['Template_YUI']):
+				$_SESSION['TPL_EXTENSION'] = '_YUI.tpl';
+				break;
+			case isset($_POST['Template_STD']):
+				$_SESSION['TPL_EXTENSION'] = '.tpl';
+				break;
 		}
+		$this->m_tpl->assign('arrayinfo', $arrayinfo);
 
 		$msg = '';
 		if (strlen($jsondata) > 0) {
