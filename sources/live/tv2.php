@@ -42,7 +42,12 @@ class TV extends MyPage
 
     function VerifNation($nation)
     {
-        if (strlen($nation) > 3) $nation = substr($nation, 0, 3);
+        if (!$nation) {
+            return '';
+        }
+        if (strlen($nation) > 3) {
+            $nation = substr($nation, 0, 3);
+        }
 
         for ($i = 0; $i < strlen($nation); $i++) {
             $c = substr($nation, $i, 1);
@@ -78,6 +83,9 @@ class TV extends MyPage
 
     function ImgNation64($nation, $logo = null)
     {
+        if (!$nation) {
+            return '';
+        }
         if ($logo) {
             return "<img src='../img/" . $logo . "?v=" . NUM_VERSION . "' height='64' />";
         }
@@ -594,30 +602,32 @@ class TV extends MyPage
 
         $rJoueur = null;
         $db->LoadRecord($cmd, $rJoueur);
-        $num = '<span class="clair">' . $numero . '</span> ';
+        if (count($rJoueur) > 0) {
+            $num = '<span class="clair">' . $numero . '</span> ';
 
-        if (utyGetString($rJoueur, 'Capitaine', '') == 'C') {
-            $capitaine = ' <span class="badge bg-warning capitaine">C</span>';
-        } else if (utyGetString($rJoueur, 'Capitaine', '') == 'E') {
-            $capitaine = ' (Coach)';
-            $num = '';
-        } else {
-            $capitaine = '';
-        }
+            if (utyGetString($rJoueur, 'Capitaine', '') == 'C') {
+                $capitaine = ' <span class="badge bg-warning capitaine">C</span>';
+            } else if (utyGetString($rJoueur, 'Capitaine', '') == 'E') {
+                $capitaine = ' (Coach)';
+                $num = '';
+            } else {
+                $capitaine = '';
+            }
 
-        echo '
-        <div class="container-fluid ban_single">
-            <div class="logo_xs"></div>
-            <div id="banner_single" class="text-center">
-                <div class="banner_line">' . $this->ImgNation64($rJoueur['Numero_comite_dept'], $rJoueur['logo']) . '&nbsp;
-                    <span>' . $num
-            . utyGetString($rJoueur, 'Nom', '')
-            . ' ' . utyGetPrenom($rJoueur, 'Prenom', '')
-            . $capitaine . '
-                    </span>
+            echo '
+            <div class="container-fluid ban_single">
+                <div class="logo_xs"></div>
+                <div id="banner_single" class="text-center">
+                    <div class="banner_line">' . $this->ImgNation64($rJoueur['Numero_comite_dept'], $rJoueur['logo']) . '&nbsp;
+                        <span>' . $num
+                . utyGetString($rJoueur, 'Nom', '')
+                . ' ' . utyGetPrenom($rJoueur, 'Prenom', '')
+                . $capitaine . '
+                        </span>
+                    </div>
                 </div>
-            </div>
-        </div>';
+            </div>';
+        }
     }
 
     function Content_Player_Medal()

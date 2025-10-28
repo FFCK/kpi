@@ -30,6 +30,11 @@ class Matchs extends MyPage
         $Round = utyGetGet('Round', '*');
         $this->m_tpl->assign('Round', $Round);
 
+        // Load competition details
+        $recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+        $this->m_tpl->assign('Code_ref', $recordCompetition['Code_ref'] ?? '');
+        $this->m_tpl->assign('recordCompetition', $recordCompetition);
+
         if ($event > 0) {
             $sql = "SELECT DISTINCT(j.Code_competition), j.Code_saison 
                 FROM kp_journee j, kp_evenement_journee ej 
@@ -98,16 +103,23 @@ class Matchs extends MyPage
         }
         $this->m_tpl->assign('len', $len);
 
+        $Pg = utyGetGet('Pg', '');
+        $this->m_tpl->assign('Pg', $Pg);
+
         $terrains = utyGetSession('terrains', '');
         $terrains = utyGetGet('terrains', $terrains);
         $_SESSION['terrains'] = $terrains;
         $this->m_tpl->assign('terrains', $terrains);
 
+        $navGroup = 0;
+        $arrayNavGroup = array();
+
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
-            $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
-            $this->m_tpl->assign('navGroup', 1);
+            $navGroup = 1;
         }
+        $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
+        $this->m_tpl->assign('navGroup', $navGroup);
 
         $this->m_tpl->assign('Css', utyGetGet('Css', ''));
 
@@ -116,26 +128,40 @@ class Matchs extends MyPage
 
         // Chargement des Compétitions ...
         $arrayCompetition = array();
+        // Construction de la requête avec des placeholders
         $sql = "SELECT * 
             FROM kp_competition 
-            WHERE Code_saison = $codeSaison 
-            AND (Publication='O' OR Code_ref = 'M') ";
+            WHERE Code_saison = ? 
+            AND (Publication = 'O' OR Code_ref = 'M') ";
+
+        $params = [$codeSaison]; // Tableau de paramètres pour execute()
+
         if ($Compets == '' && $codeCompetGroup != '') {
-            $sql .= "AND Code_ref = '$codeCompetGroup' ";
+            $sql .= "AND Code_ref = ? ";
+            $params[] = $codeCompetGroup;
+
         } elseif ($Compets != '') {
-            $sql .= "AND Code IN ($Compets) ";
+            // Découpe la liste et crée des placeholders sécurisés
+            $competsArray = array_map('trim', explode(',', $Compets));
+            $placeholders = implode(',', array_fill(0, count($competsArray), '?'));
+            $sql .= "AND Code IN ($placeholders) ";
+            $params = array_merge($params, $competsArray);
+
         } else {
-            $sql .= "AND Code = '$codeCompet' ";
+            $sql .= "AND Code = ? ";
+            $params[] = $codeCompet;
         }
-        $sql .= "ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code ";
-        $listCompet = '';
+
+        $sql .= "ORDER BY Code_niveau, COALESCE(Code_ref, 'z'), GroupOrder, Code_tour, Code";
+
+        // Préparation et exécution
         $result = $myBdd->pdo->prepare($sql);
-        $result->execute(array($event));
+        $result->execute($params);
         $nbCompet = $result->rowCount();
         while ($row = $result->fetch()) {
             array_push($arrayCompetition, $row);
             if ($idSelCompet == '*' || $idSelCompet == $row["Code"]) {
-                if ($listCompet) {
+                if (isset($listCompet) && $listCompet != '') {
                     $listCompet .= ',';
                 }
                 $listCompet .= "'" . $row["Code"] . "'";
@@ -147,7 +173,7 @@ class Matchs extends MyPage
         // Chargement des Compétitions du groupe
         $arrayCompetitionDuGroupe = array();
 
-        if (!$listCompet) {
+        if (!isset($listCompet)) {
             $listCompet = "'0'";
         }
 
@@ -252,7 +278,7 @@ class Matchs extends MyPage
                 cea.Libelle EquipeA, ceb.Libelle EquipeB, cea.Numero NumA, ceb.Numero NumB, cea.Code_club clubA, 
                 ceb.Code_club clubB, m.Terrain, m.ScoreA, m.ScoreB, m.CoeffA, m.CoeffB, 
                 m.Arbitre_principal, m.Arbitre_secondaire, m.Matric_arbitre_principal, m.Matric_arbitre_secondaire, 
-                j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, j.Date_debut, c.Soustitre2, 
+                j.Code_competition, j.Phase, j.Niveau, j.Lieu, j.Libelle LibelleJournee, c.Soustitre2, 
                 lcp.Nom Nom_arb_prin, lcp.Prenom Prenom_arb_prin, lcs.Nom Nom_arb_sec, lcs.Prenom Prenom_arb_sec 
                 FROM kp_match m 
                 LEFT OUTER JOIN kp_competition_equipe cea ON (m.Id_equipeA = cea.Id) 
@@ -469,17 +495,11 @@ class Matchs extends MyPage
         $this->Load();
 
         // COSANDCO : Gestion Param Voie ...
-        if (utyGetGet('voie', false)) {
-            $voie = (int) utyGetGet('voie', 0);
-            if ($voie > 0) {
-                $this->m_tpl->assign('voie', $voie);
-            }
+        $voie = (int) utyGetGet('voie', 0);
+        $this->m_tpl->assign('voie', $voie);
 
-            $intervalle = (int) utyGetGet('intervalle', 0);
-            if ($intervalle > 0) {
-                $this->m_tpl->assign('intervalle', $intervalle);
-            }
-        }
+        $intervalle = (int) utyGetGet('intervalle', 0);
+        $this->m_tpl->assign('intervalle', $intervalle);
 
         $this->DisplayTemplateFrame('frame_categories');
         // echo microtime(true) - $debut . 'ms.';

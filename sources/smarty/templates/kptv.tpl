@@ -16,9 +16,11 @@
         <label>{#Date#}</label>
         <select id="jour" name="jour">
           <option value="">{#Toutes#}</option>
-          {section name=i loop=$arrayJours}
-            <option value="{$arrayJours[i]}" {if $arrayJours[i] == $jour}selected{/if}>{$arrayJours[i]}</option>
-          {/section}
+          {if isset($arrayJours)}
+            {section name=i loop=$arrayJours}
+              <option value="{$arrayJours[i]}" {if $arrayJours[i] == $jour}selected{/if}>{$arrayJours[i]}</option>
+            {/section}
+          {/if}
         </select>
         <input type="hidden" id="saison" name="saison" value="{$saison}">
         <input type="hidden" id="filtrePres" name="filtrePres" value="{$filtrePres}">
@@ -234,10 +236,12 @@
           <label>{#Competition#}</label>
           <select id="competition" name="competition">
             <option value="" {if '' == $filtreCompet}selected{/if}>{#Selectionnez#}</option>
-            {section name=i loop=$arrayCompet}
-              <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet}selected{/if}>{$arrayCompet[i]}
-              </option>
-            {/section}
+            {if isset($arrayCompet)}
+              {section name=i loop=$arrayCompet}
+                <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet}selected{/if}>{$arrayCompet[i]}
+                </option>
+              {/section}
+            {/if}
           </select>
         </div>
         <div class='col-sm-3 params' id='match-col'>
@@ -522,10 +526,12 @@
           <label>{#Competition#}</label>
           <select id="competition2" name="competition2">
             <option value="" {if '' == $filtreCompet2}selected{/if}>{#Selectionnez#}</option>
-            {section name=i loop=$arrayCompet}
-              <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet2}selected{/if}>{$arrayCompet[i]}
-              </option>
-            {/section}
+            {if isset($arrayCompet)}
+              {section name=i loop=$arrayCompet}
+                <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet}selected{/if}>{$arrayCompet[i]}
+                </option>
+              {/section}
+            {/if}
           </select>
         </div>
         <div class='col-sm-3 params2' id='match-col2'>
@@ -776,10 +782,12 @@
           <label>{#Competition#}</label>
           <select id="competition3" name="competition3">
             <option value="" {if '' == $filtreCompet3}selected{/if}>{#Selectionnez#}</option>
-            {section name=i loop=$arrayCompet}
-              <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet3}selected{/if}>{$arrayCompet[i]}
-              </option>
-            {/section}
+            {if isset($arrayCompet)}
+              {section name=i loop=$arrayCompet}
+                <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet}selected{/if}>{$arrayCompet[i]}
+                </option>
+              {/section}
+            {/if}
           </select>
         </div>
         <div class='col-sm-3 params3' id='match-col3'>
@@ -1030,10 +1038,12 @@
           <label>{#Competition#}</label>
           <select id="competition4" name="competition4">
             <option value="" {if '' == $filtreCompet4}selected{/if}>{#Selectionnez#}</option>
-            {section name=i loop=$arrayCompet}
-              <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet4}selected{/if}>{$arrayCompet[i]}
-              </option>
-            {/section}
+            {if isset($arrayCompet)}
+              {section name=i loop=$arrayCompet}
+                <option value="{$arrayCompet[i]}" {if $arrayCompet[i] == $filtreCompet}selected{/if}>{$arrayCompet[i]}
+                </option>
+              {/section}
+            {/if}
           </select>
         </div>
         <div class='col-sm-3 params4' id='match-col4'>
