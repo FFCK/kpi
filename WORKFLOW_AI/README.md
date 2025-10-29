@@ -97,6 +97,16 @@ Ce dossier contient toute la documentation technique générée durant le dével
   - Optimisations des Dockerfiles
   - Réduction de la taille des images, performances
 
+### Plans de migration
+
+- **[PLAN_MIGRATION_BOOTSTRAP.md](PLAN_MIGRATION_BOOTSTRAP.md)** ⭐ **NOUVEAU** (29 oct 2025)
+  - Plan complet migration Bootstrap → 5.3.8
+  - Inventaire 4 versions (3.4.1, 3.3.0, 5.0.2, 5.1.3)
+  - 24 fichiers backend à migrer
+  - Phases: Installation → BS5.x → BS3.x (prudence)
+  - Breaking changes détaillés, scripts automatisation
+  - **Statut**: 📋 Planifié - Prêt pour exécution
+
 ### Configuration
 
 - **[MAKEFILE_COMPOSER_UPDATES.md](MAKEFILE_COMPOSER_UPDATES.md)**
@@ -133,8 +143,8 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 21 fichiers
-- **Lignes de documentation**: ~6400+
+- **Total documents**: 22 fichiers
+- **Lignes de documentation**: ~7600+
 - **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Docker, WordPress, Audits, Bugs
 - **Date de création**: 2025-10-19 à 2025-10-29
 
@@ -149,6 +159,8 @@ Ce dossier contient toute la documentation technique générée durant le dével
 - ✅ Internationalisation exports ODS avec MyLang.ini
 - ✅ Fix export CSV GestionStats (warnings "Deprecated" PHP 8.4)
 - ✅ Ajout FIX_CSV_EXPORT_OPENSPOUT.md
+- ✅ Plan migration Bootstrap vers 5.3.8 (1200+ lignes)
+- ✅ Ajout PLAN_MIGRATION_BOOTSTRAP.md (inventaire + phases)
 - ✅ Mise à jour AUDIT_PHASE_0.md (statut migrations)
 
 ### 2025-10-22
