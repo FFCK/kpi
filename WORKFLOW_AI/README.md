@@ -113,12 +113,20 @@ Ce dossier contient toute la documentation technique générée durant le dével
   - Fichier de test test_bootstrap538.php
   - **Statut**: ✅ Terminé
 
-- **[BOOTSTRAP_PHASE2_COMPLETE.md](BOOTSTRAP_PHASE2_COMPLETE.md)** ⭐ **NOUVEAU** (29 oct 2025)
+- **[BOOTSTRAP_PHASE2_COMPLETE.md](BOOTSTRAP_PHASE2_COMPLETE.md)** ⭐ (29 oct 2025)
   - Migration 14 fichiers Bootstrap 5.x → 5.3.8
   - Script automatique migrate_bootstrap5x_to_538.sh
   - 13 fichiers live/ + 1 fichier admin/
   - Backups créés (.bs513.bak, .bs502.bak)
-  - **Statut**: ✅ Terminé - Validation en cours
+  - **Statut**: ✅ Terminé et validé
+
+- **[BOOTSTRAP_PHASE3_INVENTORY.md](BOOTSTRAP_PHASE3_INVENTORY.md)** ⭐ **NOUVEAU** (29 oct 2025)
+  - Inventaire complet dépendances Bootstrap 3.x
+  - 7 templates de base + 40+ templates de contenu
+  - Classes Bootstrap 3 utilisées (col-xs-, hidden-xs, panel, glyphicon)
+  - Stratégie migration progressive template par template
+  - Estimation: 6-9h (base) ou 22-29h (complet)
+  - **Statut**: 📋 Planifié - Prêt pour exécution
 
 ### Configuration
 
@@ -156,8 +164,8 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 24 fichiers
-- **Lignes de documentation**: ~9100+
+- **Total documents**: 25 fichiers
+- **Lignes de documentation**: ~9900+
 - **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Bootstrap, Docker, WordPress, Audits, Bugs
 - **Date de création**: 2025-10-19 à 2025-10-29
 
@@ -178,6 +186,9 @@ Ce dossier contient toute la documentation technique générée durant le dével
 - ✅ Ajout BOOTSTRAP_PHASE1_COMPLETE.md
 - ✅ Bootstrap Phase 2: Migration 14 fichiers Bootstrap 5.x → 5.3.8
 - ✅ Ajout BOOTSTRAP_PHASE2_COMPLETE.md (script automatique)
+- ✅ Bootstrap Phase 2: Validation et nettoyage (backups supprimés, anciennes versions supprimées)
+- ✅ Bootstrap Phase 3: Inventaire complet dépendances (7 templates base + 40+ contenu)
+- ✅ Ajout BOOTSTRAP_PHASE3_INVENTORY.md (800+ lignes)
 - ✅ Mise à jour AUDIT_PHASE_0.md (statut migrations)
 
 ### 2025-10-22
