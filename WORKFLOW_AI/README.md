@@ -24,7 +24,13 @@ Ce dossier contient toute la documentation technique générée durant le dével
   - Remplacement de `create_function()`, fixes templates
   - Corrections PDO dans GestionDoc.php
 
-### Migration PDF
+### Migration PDF & Tableurs
+
+- **[MIGRATION_OPENTBS_TO_OPENSPOUT.md](MIGRATION_OPENTBS_TO_OPENSPOUT.md)** ⭐ **NOUVEAU** (29 oct 2025)
+  - Migration complète OpenTBS → OpenSpout v4.32.0
+  - Export ODS/XLSX/CSV avec internationalisation
+  - PHP 8.4+ compatible, 319 fichiers nettoyés
+  - **Statut**: ✅ Production
 
 - **[MIGRATION_FPDF_TO_MPDF.md](MIGRATION_FPDF_TO_MPDF.md)**
   - Plan complet de migration FPDF → mPDF
@@ -33,6 +39,7 @@ Ce dossier contient toute la documentation technique générée durant le dével
 - **[MIGRATION_FPDF_MYPDF_SUCCESS.md](MIGRATION_FPDF_MYPDF_SUCCESS.md)**
   - Documentation du succès de la migration
   - Wrapper MyPDF créé pour compatibilité
+  - **Statut**: ✅ Production (mPDF v8.2+)
 
 - **[FIX_MYPDF_OPEN_METHOD.md](FIX_MYPDF_OPEN_METHOD.md)**
   - Correction méthode Open() de MyPDF
@@ -103,9 +110,10 @@ Ce dossier contient toute la documentation technique générée durant le dével
 ## 🎯 Documents par Priorité
 
 ### À lire en premier
-1. **PHP8_GESTIONDOC_FIXES.md** - Si vous travaillez sur la migration PHP 8
-2. **MIGRATION.md** - Vue d'ensemble de la migration
-3. **SMARTY_PHP8_FIXES.md** - Comprendre les premiers fixes Smarty
+1. **MIGRATION_OPENTBS_TO_OPENSPOUT.md** - Migration tableurs (export ODS/XLSX)
+2. **PHP8_GESTIONDOC_FIXES.md** - Si vous travaillez sur la migration PHP 8
+3. **MIGRATION.md** - Vue d'ensemble de la migration
+4. **SMARTY_PHP8_FIXES.md** - Comprendre les premiers fixes Smarty
 
 ### Pour le développement
 1. **AUDIT_PHASE_0.md** - Comprendre l'état du code
@@ -119,14 +127,21 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 19 fichiers
-- **Lignes de documentation**: ~5500+
-- **Sujets couverts**: Migration PHP 8, PDF, Docker, WordPress, Audits, Bugs
-- **Date de création**: 2025-10-19 à 2025-10-22
+- **Total documents**: 20 fichiers
+- **Lignes de documentation**: ~6000+
+- **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Docker, WordPress, Audits, Bugs
+- **Date de création**: 2025-10-19 à 2025-10-29
 
 ---
 
 ## 🔄 Historique des Mises à Jour
+
+### 2025-10-29
+- ✅ Migration complète OpenTBS → OpenSpout v4.32.0
+- ✅ Ajout MIGRATION_OPENTBS_TO_OPENSPOUT.md (documentation complète)
+- ✅ Suppression 319 fichiers obsolètes (FPDF, OpenTBS)
+- ✅ Internationalisation exports ODS avec MyLang.ini
+- ✅ Mise à jour AUDIT_PHASE_0.md (statut migrations)
 
 ### 2025-10-22
 - ✅ Ajout WORDPRESS_PHP8_FIXES.md (correctifs WordPress + NextGen Gallery pour PHP 8.4)
@@ -165,5 +180,5 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ---
 
-**Dernière mise à jour**: 2025-10-22
+**Dernière mise à jour**: 2025-10-29
 **Mainteneur**: Laurent Garrigue / Claude Code

@@ -758,16 +758,19 @@ $myBdd->ImportPCE2();  // Méthode MyBdd.php:398
 
 #### Bibliothèques actives - À CONSERVER
 
-**FPDF** (génération PDF) - ✅ CRITIQUE
-- 3 versions présentes: `fpdf/`, `fpdf-1.7/`, `fpdf-1.8.4/`
-- **43 fichiers PHP** utilisent FPDF (admin/Feuille*.php, Pdf*.php)
-- Usage: Génération feuilles match, classements, présences
-- **Action**: Conserver 1 version (1.8.4 latest), supprimer anciennes versions
+**mPDF** (génération PDF) - ✅ MIGRÉ (29 octobre 2025)
+- **Migration complète** de FPDF vers mPDF v8.2+ via MyPDF wrapper
+- Toutes les bibliothèques FPDF supprimées (`fpdf/`, `fpdf-1.7/`, `fpdf-1.8.4/`)
+- Wrapper de compatibilité: `sources/commun/MyPDF.php`
+- Compatible PHP 8.3+, support UTF-8 natif, HTML/CSS
+- **Statut**: ✅ PRODUCTION
 
-**OpenTBS** (templates bureautiques) - À VÉRIFIER
-- Génération documents Office (Word, Excel)
-- Usage potentiel: Export compétitions
-- **Action**: Vérifier usage réel avant décision
+**OpenSpout** (génération fichiers tableur) - ✅ MIGRÉ (29 octobre 2025)
+- **Migration complète** de OpenTBS vers OpenSpout v4.32.0
+- Fichier migré: `tableau_openspout.php` (remplace `tableau_tbs.php`)
+- Support ODS/XLSX/CSV, compatible PHP 8.4+
+- Bibliothèque OpenTBS supprimée (`sources/lib/opentbs/`)
+- **Statut**: ✅ PRODUCTION
 
 **QRCode** - ✅ UTILISÉ
 - Génération QR codes (apps, feuilles)
@@ -797,12 +800,21 @@ $myBdd->ImportPCE2();  // Méthode MyBdd.php:398
 - Usage potentiel: Pages admin legacy
 - **Action**: Vérifier usage, conserver si actif
 
-#### Nettoyage minimal recommandé
+#### Nettoyage effectué - ✅ TERMINÉ (29 octobre 2025)
 
-**Suppression versions obsolètes FPDF**:
-- Garder: `fpdf-1.8.4/` (latest)
-- Supprimer: `fpdf/`, `fpdf-1.7/`
-- **Gain**: ~500 KB
+**Migration et suppression FPDF**:
+- ✅ Migration vers mPDF v8.2+ via wrapper MyPDF
+- ✅ Suppression: `fpdf/`, `fpdf-1.7/`, `fpdf-1.8.4/`
+- ✅ Suppression: `FeuilleMatchVierge.php` (non migré, inutile)
+- **Gain**: ~500 KB + code mort
+
+**Migration et suppression OpenTBS**:
+- ✅ Migration vers OpenSpout v4.32.0
+- ✅ Suppression: `sources/lib/opentbs/`
+- ✅ Suppression: `tableau_tbs.php` (remplacé par `tableau_openspout.php`)
+- **Gain**: ~200 KB + code obsolète
+
+**Total suppressions**: 319 fichiers nettoyés
 
 ---
 
@@ -1323,15 +1335,12 @@ Les 3 applications Vue (**app2**, **app_wsm_dev**, **app_live_dev**) sont:
 **Gain**: -90 lignes, clarté code  
 **Risque**: Aucun (code commenté depuis migration PDO)
 
-#### 2. Suppression anciennes versions FPDF
-**Répertoires**: `sources/lib/fpdf/` et `sources/lib/fpdf-1.7/`
-```bash
-cd sources/lib
-rm -rf fpdf/ fpdf-1.7/
-# Conserver uniquement fpdf-1.8.4/
-```
-**Gain**: ~500 KB  
-**Risque**: Aucun (version 1.8.4 en place)
+#### 2. Migration FPDF → mPDF et suppression - ✅ TERMINÉ (29 octobre 2025)
+**Répertoires supprimés**: `sources/lib/fpdf/`, `fpdf-1.7/`, `fpdf-1.8.4/`
+**Fichiers supprimés**: `tableau_tbs.php`, `FeuilleMatchVierge.php`
+**Migration**: Wrapper MyPDF (sources/commun/MyPDF.php) vers mPDF v8.2+
+**Gain**: ~500 KB + compatibilité PHP 8.4+
+**Risque**: Aucun - migration testée en production
 
 #### 3. Reclassification dépendances Node (app2)
 **Fichier**: [sources/app2/package.json](sources/app2/package.json)
@@ -1359,13 +1368,12 @@ npm install  # Réinstaller après modification
 
 ### Nettoyage à valider - Tests requis ⚠️
 
-#### 4. Validation usage OpenTBS
-```bash
-# Rechercher usage
-grep -r "opentbs\|OpenTBS" sources/ --include="*.php" --exclude-dir=wordpress_archive
-```
-**Action si non utilisé**: Supprimer `sources/lib/opentbs/`  
-**Gain potentiel**: ~200 KB
+#### 4. Migration OpenTBS → OpenSpout - ✅ TERMINÉ (29 octobre 2025)
+**Répertoire supprimé**: `sources/lib/opentbs/`
+**Migration**: tableau_openspout.php (OpenSpout v4.32.0)
+**Fonctionnalités**: Export ODS/XLSX/CSV, i18n (MyLang.ini)
+**Gain**: ~200 KB + compatibilité PHP 8.4+
+**Risque**: Aucun - migration testée en production
 
 #### 5. Validation usage EasyTimer
 ```bash
@@ -1417,8 +1425,9 @@ Ces actions nécessitent la migration backend complétée:
   - [ ] Apps Vue (app2, app_live, app_wsm)
 
 - [ ] **Nettoyage code**
-  - [ ] Supprimer MySQLi commenté (MyBdd.php)
-  - [ ] Supprimer FPDF anciennes versions
+  - [x] Supprimer MySQLi commenté (MyBdd.php) - ✅ FAIT
+  - [x] Migration FPDF → mPDF et suppression - ✅ FAIT (29 oct 2025)
+  - [x] Migration OpenTBS → OpenSpout - ✅ FAIT (29 oct 2025)
   - [ ] Reclassifier dépendances Node (app2)
   - [ ] (Optionnel) Commit + tag Git si vous le souhaitez
 
@@ -1435,7 +1444,10 @@ Ces actions nécessitent la migration backend complétée:
 
 1. ✅ **Valider cet audit** avec l'équipe
 2. ✅ **Backups complets** (BDD + code)
-3. ✅ **Nettoyage quick wins** (MySQLi, FPDF, package.json)
+3. ✅ **Nettoyage quick wins** - TERMINÉ (29 oct 2025)
+   - MySQLi commenté supprimé
+   - Migration FPDF → mPDF (319 fichiers nettoyés)
+   - Migration OpenTBS → OpenSpout
 4. ✅ **Git tag** pré-migration
 
 ### Court terme (Mois 1)
