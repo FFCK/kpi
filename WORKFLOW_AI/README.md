@@ -77,6 +77,12 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ### Bugs & Fixes
 
+- **[FIX_CSV_EXPORT_OPENSPOUT.md](FIX_CSV_EXPORT_OPENSPOUT.md)** ⭐ **NOUVEAU** (29 oct 2025)
+  - Fix messages "Deprecated" dans exports CSV (GestionStats)
+  - Migration upload_csv.php → OpenSpout v4.32.0
+  - Validation robuste, nom de fichier dynamique
+  - **Statut**: ✅ Corrigé
+
 - **[BUG_SQL_COMPET_ASTERISK.md](BUG_SQL_COMPET_ASTERISK.md)**
   - Documentation du bug SQL avec astérisque dans les compétitions
   - Solution et correctifs appliqués
@@ -127,8 +133,8 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 20 fichiers
-- **Lignes de documentation**: ~6000+
+- **Total documents**: 21 fichiers
+- **Lignes de documentation**: ~6400+
 - **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Docker, WordPress, Audits, Bugs
 - **Date de création**: 2025-10-19 à 2025-10-29
 
@@ -141,6 +147,8 @@ Ce dossier contient toute la documentation technique générée durant le dével
 - ✅ Ajout MIGRATION_OPENTBS_TO_OPENSPOUT.md (documentation complète)
 - ✅ Suppression 319 fichiers obsolètes (FPDF, OpenTBS)
 - ✅ Internationalisation exports ODS avec MyLang.ini
+- ✅ Fix export CSV GestionStats (warnings "Deprecated" PHP 8.4)
+- ✅ Ajout FIX_CSV_EXPORT_OPENSPOUT.md
 - ✅ Mise à jour AUDIT_PHASE_0.md (statut migrations)
 
 ### 2025-10-22

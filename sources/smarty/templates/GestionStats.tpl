@@ -49,7 +49,7 @@
 					<a href="FeuilleStatsEN.php" Target="_blank" title="Pdf (EN)"><img height="30" alt="pdf EN"
 							src="../img/pdfEN.png"></a>
 					{if $sql_csv != ''}
-						<a href="upload_csv.php?action=export" title="{#Telechargement#} CSV : {$sql_csv}"><img height="30" alt="CSV"
+						<a href="export_stats_csv.php?action=export" title="{#Telechargement#} CSV : {$sql_csv}"><img height="30" alt="CSV"
 								src="../img/csv.png"></a>
 					{/if}
 					<div align=right><span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach'
