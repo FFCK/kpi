@@ -299,6 +299,10 @@ class Matchs extends MyPage
             $i = 0;
             $listMatch = '';
             $arrayMatchs = array();
+            $numCategorie = array();
+            $arrayJours = array();
+            $arrayDates = array();
+            $arrayHeures = array();
             $PhaseLibelle = 0;
             $date_match = '';
             $heure_match = '';
