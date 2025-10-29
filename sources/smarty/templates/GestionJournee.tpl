@@ -432,7 +432,7 @@
 									<a href="FeuilleMatchMulti.php?listMatch={$listMatch}" {$TropDeMatchs} Target="_blank"
 										title="{#Feuilles_marque#} {$TropDeMatchsMsg}"><img height="25" src="../img/pdf2.png" /></a>
 									&nbsp;
-									<a href="tableau_tbs.php" title="Export (ODS)"><img height="25" src="../img/ods.png" /></a>
+									<a href="tableau_openspout.php" title="Export (ODS)"><img height="25" src="../img/ods.png" /></a>
 									&nbsp;
 									<a href="../PdfListeMatchs.php" {$TropDeMatchs} Target="_blank"
 										title="Liste publique des Matchs {$TropDeMatchsMsg}"><img height="25" src="../img/ListeFR.gif" /></a>

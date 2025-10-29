@@ -13,6 +13,8 @@ DOCKER_COMPOSE = docker compose
 DOCKER_EXEC = docker exec -ti
 DOCKER_EXEC_PHP = docker exec -ti kpi_php
 DOCKER_EXEC_PHP8 = docker exec -ti kpi_php8
+DOCKER_EXEC_PHP_NON_INTERACTIVE = docker exec kpi_php
+DOCKER_EXEC_PHP8_NON_INTERACTIVE = docker exec -u www-data kpi_php8
 DOCKER_EXEC_NODE = docker exec -ti kpi_node_app2
 .DEFAULT_GOAL = help
 
@@ -196,34 +198,34 @@ npm_add_dev_app2: ## Ajoute un package npm de dev à app2 (usage: make npm_add_d
 
 
 ## COMPOSER - PHP
-composer_install: ## Installe les dépendances Composer (sources/vendor/)
-	@echo "Installation des dépendances Composer..."
-	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer install"
+composer_install: ## Installe les dépendances Composer (sources/vendor/) - PHP 8
+	@echo "Installation des dépendances Composer avec PHP 8..."
+	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer install"
 	@echo "✅ Dépendances Composer installées"
 
-composer_update: ## Met à jour les dépendances Composer
-	@echo "Mise à jour des dépendances Composer..."
-	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer update"
+composer_update: ## Met à jour les dépendances Composer - PHP 8
+	@echo "Mise à jour des dépendances Composer avec PHP 8..."
+	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer update"
 	@echo "✅ Dépendances Composer mises à jour"
 
-composer_require: ## Ajoute un package Composer (usage: make composer_require package=vendor/package)
+composer_require: ## Ajoute un package Composer - PHP 8 (usage: make composer_require package=vendor/package)
 	@if [ -z "$(package)" ]; then \
 		echo "❌ Erreur: spécifiez un package (make composer_require package=vendor/package)"; \
 		exit 1; \
 	fi
-	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer require $(package)"
+	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer require $(package)"
 	@echo "✅ Package $(package) ajouté"
 
-composer_require_dev: ## Ajoute un package Composer de dev (usage: make composer_require_dev package=vendor/package)
+composer_require_dev: ## Ajoute un package Composer de dev - PHP 8 (usage: make composer_require_dev package=vendor/package)
 	@if [ -z "$(package)" ]; then \
 		echo "❌ Erreur: spécifiez un package (make composer_require_dev package=vendor/package)"; \
 		exit 1; \
 	fi
-	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer require --dev $(package)"
+	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer require --dev $(package)"
 	@echo "✅ Package de dev $(package) ajouté"
 
-composer_dump: ## Regénère l'autoloader Composer
-	$(DOCKER_EXEC_PHP) bash -c "cd /var/www/html && composer dump-autoload"
+composer_dump: ## Regénère l'autoloader Composer - PHP 8
+	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer dump-autoload"
 	@echo "✅ Autoloader Composer regénéré"
 
 
