@@ -6,7 +6,7 @@
         <title>KPI Scoreboard</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="../js/bootstrap-5.0.2-dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css?v=5.3.8" rel="stylesheet">
         <style type="text/css">
             body {
                 font-family: Lucida Grande, Lucida Sans, Arial, sans-serif;
@@ -127,7 +127,7 @@
             </div>
         </div>
 
-        <script src="../js/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=5.3.8"></script>
         <script src="v2/scoreboard.js?<?= $version ?>"></script>
     </body>
 </html>

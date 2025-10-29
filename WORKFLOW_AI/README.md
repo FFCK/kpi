@@ -99,13 +99,26 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ### Plans de migration
 
-- **[PLAN_MIGRATION_BOOTSTRAP.md](PLAN_MIGRATION_BOOTSTRAP.md)** ⭐ **NOUVEAU** (29 oct 2025)
+- **[PLAN_MIGRATION_BOOTSTRAP.md](PLAN_MIGRATION_BOOTSTRAP.md)** ⭐ (29 oct 2025)
   - Plan complet migration Bootstrap → 5.3.8
   - Inventaire 4 versions (3.4.1, 3.3.0, 5.0.2, 5.1.3)
   - 24 fichiers backend à migrer
   - Phases: Installation → BS5.x → BS3.x (prudence)
   - Breaking changes détaillés, scripts automatisation
-  - **Statut**: 📋 Planifié - Prêt pour exécution
+  - **Statut**: 🔄 En cours (Phase 2 terminée)
+
+- **[BOOTSTRAP_PHASE1_COMPLETE.md](BOOTSTRAP_PHASE1_COMPLETE.md)** ⭐ **NOUVEAU** (29 oct 2025)
+  - Installation Bootstrap 5.3.8 via Composer
+  - Structure vendor/twbs/bootstrap/dist/
+  - Fichier de test test_bootstrap538.php
+  - **Statut**: ✅ Terminé
+
+- **[BOOTSTRAP_PHASE2_COMPLETE.md](BOOTSTRAP_PHASE2_COMPLETE.md)** ⭐ **NOUVEAU** (29 oct 2025)
+  - Migration 14 fichiers Bootstrap 5.x → 5.3.8
+  - Script automatique migrate_bootstrap5x_to_538.sh
+  - 13 fichiers live/ + 1 fichier admin/
+  - Backups créés (.bs513.bak, .bs502.bak)
+  - **Statut**: ✅ Terminé - Validation en cours
 
 ### Configuration
 
@@ -143,9 +156,9 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 22 fichiers
-- **Lignes de documentation**: ~7600+
-- **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Docker, WordPress, Audits, Bugs
+- **Total documents**: 24 fichiers
+- **Lignes de documentation**: ~9100+
+- **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Bootstrap, Docker, WordPress, Audits, Bugs
 - **Date de création**: 2025-10-19 à 2025-10-29
 
 ---
@@ -161,6 +174,10 @@ Ce dossier contient toute la documentation technique générée durant le dével
 - ✅ Ajout FIX_CSV_EXPORT_OPENSPOUT.md
 - ✅ Plan migration Bootstrap vers 5.3.8 (1200+ lignes)
 - ✅ Ajout PLAN_MIGRATION_BOOTSTRAP.md (inventaire + phases)
+- ✅ Bootstrap Phase 1: Installation 5.3.8 via Composer
+- ✅ Ajout BOOTSTRAP_PHASE1_COMPLETE.md
+- ✅ Bootstrap Phase 2: Migration 14 fichiers Bootstrap 5.x → 5.3.8
+- ✅ Ajout BOOTSTRAP_PHASE2_COMPLETE.md (script automatique)
 - ✅ Mise à jour AUDIT_PHASE_0.md (statut migrations)
 
 ### 2025-10-22

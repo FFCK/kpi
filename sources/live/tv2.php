@@ -31,9 +31,9 @@ class TV extends MyPage
             <meta name="viewport" content="width=device-width, initial-scale=1">
 
             <!-- CSS styles -->
-            <link href="../lib/bootstrap-5.1.3-dist/css/bootstrap.min.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
-            <link href="../css/animate/animate.4.1.1.css?v=<?= NUM_VERSION ?>" rel="stylesheet" />
-            <link href="./css/tv2.css?v=<?= NUM_VERSION ?>" rel="stylesheet">
+            <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css?v=5.3.8" rel="stylesheet">
+            <link href="../css/animate/animate.4.1.1.css?v=5.3.8" rel="stylesheet" />
+            <link href="./css/tv2.css?v=5.3.8" rel="stylesheet">
             <?= $this->CheckCss() ?>
 
         </head>
@@ -1165,8 +1165,8 @@ class TV extends MyPage
     function Script()
     {
     ?>
-        <script type="text/javascript" src="../js/axios/axios.min.js?v=<?= NUM_VERSION ?>"></script>
-        <script type="text/javascript" src="../lib/bootstrap-5.1.3-dist/js/bootstrap.min.js?v=<?= NUM_VERSION ?>"></script>
+        <script type="text/javascript" src="../js/axios/axios.min.js?v=5.3.8"></script>
+        <script type="text/javascript" src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=5.3.8"></script>
         <?php
         $voie = $this->GetParamInt('voie', 0);
         $intervalle = $this->GetParamInt('intervalle', 3000);
@@ -1175,8 +1175,8 @@ class TV extends MyPage
             $voie = 0;
         }
         ?>
-        <script type="text/javascript" src="./js/voie_ax.js?v=<?= NUM_VERSION ?>"></script>
-        <script type="text/javascript" src="./js/tv.js?v=<?= NUM_VERSION ?>"></script>
+        <script type="text/javascript" src="./js/voie_ax.js?v=5.3.8"></script>
+        <script type="text/javascript" src="./js/tv.js?v=5.3.8"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 Init(<?= $voie; ?>, <?= $intervalle; ?>);
