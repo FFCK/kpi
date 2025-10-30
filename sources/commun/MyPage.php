@@ -256,13 +256,6 @@ class MyPage
 			$this->DisplayTemplateGlobal('frame_page');
 	}
     
-	// DisplayTemplateFullPage
-	function DisplayTemplateFullPage($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('fppage');
-	}
-    
 	// DisplayTemplateLogin
 	function DisplayTemplateBootstrap($tplName)
 	{
