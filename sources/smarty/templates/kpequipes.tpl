@@ -32,14 +32,14 @@
           </div>
         </div>
       </div>
-      {if $eColors}
+      {if $eColors|default: null}
         <div class="col-xs-10 col-xs-offset-1" id="equipeColors">
           <a href="{$eColors}?v={$NUM_VERSION}" target="_blank">
             <img class="img-responsive img-thumbnail" src="{$eColors}?v={$NUM_VERSION}" alt="{$nomEquipe}">
           </a>
           <span class="pull-right badge"><i>{$eSeason}</i></span>
         </div>
-      {elseif $eLogo}
+      {elseif $eLogo|default: null}
         <div class="col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="equipeColors">
           <a {if !($arrayCompo|default:false)}href="kpclubs.php?clubId={$Code_club}" title='{#Club#}' {/if}>
             <img class="img-responsive img-thumbnail" src="{$eLogo}?v={$NUM_VERSION}" alt="{$nomEquipe}">

@@ -1,4 +1,7 @@
 <?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
 if(!isset($_SESSION)) {
 	session_start(); 
 }
@@ -11,7 +14,7 @@ include_once('MySmarty.php');
 include_once('MyTools.php');
 
 if (utyGetGet('debug') == 1) {
-	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	error_reporting(E_ALL);
 	ini_set("display_errors", 1);
 	// echo "<pre>";
 } else {
@@ -263,11 +266,13 @@ class MyPage
 	// DisplayTemplate
 	function DisplayTemplateGlobal($tplName)
 	{
-		$tplFullName  = $this->m_tpl->template_dir;
+		// En Smarty 4, getTemplateDir() retourne un tableau
+		$templateDirs = $this->m_tpl->getTemplateDir();
+		$tplFullName  = is_array($templateDirs) ? $templateDirs[0] : $templateDirs;
 		$tplFullName .= '/';
 		$tplFullName .= $tplName;
 		$tplFullName .= $this->GetTemplateExtension();
-		
+
 		if (file_exists($tplFullName))
 			$tplName .= $this->GetTemplateExtension();
 		else

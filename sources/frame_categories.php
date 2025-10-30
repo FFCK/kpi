@@ -158,10 +158,11 @@ class Matchs extends MyPage
         $result = $myBdd->pdo->prepare($sql);
         $result->execute($params);
         $nbCompet = $result->rowCount();
+        $listCompet = ''; // Initialisation pour éviter le warning PHP 8
         while ($row = $result->fetch()) {
             array_push($arrayCompetition, $row);
             if ($idSelCompet == '*' || $idSelCompet == $row["Code"]) {
-                if (isset($listCompet) && $listCompet != '') {
+                if ($listCompet != '') {
                     $listCompet .= ',';
                 }
                 $listCompet .= "'" . $row["Code"] . "'";

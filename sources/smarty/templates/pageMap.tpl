@@ -1,6 +1,6 @@
 {* page.tpl Smarty *}
 
-{config_load file='../../commun/MyLang.conf' section=$lang}
+{config_load file='../../commun/MyLang_processed.conf' section=$lang}
 
 <!DOCTYPE html>
 <html lang="fr">

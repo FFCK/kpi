@@ -65,7 +65,7 @@
 								<tr>
 									<th width="17">&nbsp;</th>
 									<th>&nbsp;</th>
-									{if $Code_niveau == 'INT'}
+									{if (isset($Code_niveau) && $Code_niveau) == 'INT'}
 										<th></th>
 									{/if}
 									<th>{#Clt#}</th>
@@ -101,7 +101,7 @@
 													id="checkClassement{$smarty.section.i.iteration}" />
 											{/if}
 										</td>
-										{if $Code_niveau == 'INT'}
+										{if (isset($Code_niveau) && $Code_niveau) == 'INT'}
 											<td> <img width="20" src="../img/Pays/{$arrayEquipe[i].Code_comite_dep}.png"
 													alt="{$arrayEquipe[i].Code_comite_dep}" title="{$arrayEquipe[i].Code_comite_dep}" /></td>
 										{/if}
@@ -160,7 +160,7 @@
 						</table>
 						<div class="color0">
 							<b>{#Goal_average#} : <span
-									class="rouge">{if $compet.goalaverage == 'gen'}{#General#}{else}{#Particulier#}{/if}</span></b>
+									class="rouge">{if ($compet.goalaverage|default:'') == 'gen'}{#General#}{else}{#Particulier#}{/if}</span></b>
 						</div>
 						<br>
 						{if $typeCompetition == 'Championnat'}
@@ -281,7 +281,7 @@
 								<tr>
 									<th width="17">&nbsp;</th>
 									<th></th>
-									{if $Code_niveau == 'INT'}
+									{if (isset($Code_niveau) && $Code_niveau) == 'INT'}
 										<th>&nbsp;</th>
 									{/if}
 									<th colspan="2">{#Classement_public#}</th>
@@ -317,7 +317,7 @@
 													id="checkClassement{$smarty.section.i.iteration}" />
 											{/if}
 										</td>
-										{if $Code_niveau == 'INT'}
+										{if (isset($Code_niveau) && $Code_niveau) == 'INT'}
 											<td><img width="20" src="../img/Pays/{$arrayEquipe_publi[i].Code_comite_dep}.png"
 													alt="{$arrayEquipe_publi[i].Code_comite_dep}" title="{$arrayEquipe_publi[i].Code_comite_dep}" />
 											</td>
@@ -430,10 +430,10 @@
 						<tr>
 							<td align='center' colspan=4>
 								{if $profile <= 3 && $AuthModif == 'O'}
-									<span class="statutCompet statutCompet{$compet.Statut}" data-id="{$compet.Code}"
-										title="{#Detail_statut#}">{$compet.Statut}</span>
+									<span class="statutCompet statutCompet{$compet.Statut|default:''}" data-id="{$compet.Code}"
+										title="{#Detail_statut#}">{$compet.Statut|default:''}</span>
 								{else}
-									<span class="statutCompet{$compet.Statut}">{$compet.Statut}</span>
+									<span class="statutCompet{$compet.Statut|default:''}">{$compet.Statut|default:''}</span>
 								{/if}
 							</td>
 						</tr>
