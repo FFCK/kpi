@@ -63,14 +63,20 @@ class Details extends MyPage
         $event = utyGetSession('event', 0);
 		$event = utyGetPost('event', $event);
         $event = utyGetGet('event', $event);
+        $providedEvent = utyGetGet('event', 0);
 		$this->m_tpl->assign('event', $event);
-        if ($event != $_SESSION['event']) {
+        // Si l'event change ET que Compet n'est pas fourni explicitement, réinitialiser
+        if ($providedEvent > 0 && $event != $_SESSION['event'] && utyGetGet('Compet', '*') == '*') {
             $codeCompet = '*';
             $_SESSION['idSelCompet'] = $codeCompet;
             $this->m_tpl->assign('codeCompet', $codeCompet);
             $idSelJournee = '*';
             $_SESSION['idSelJournee'] = $idSelJournee;
             $this->m_tpl->assign('idSelJournee', $idSelJournee);
+        }
+        if ($providedEvent === 0 && $_SESSION['event'] !== 0) {
+            $event = 0;
+            $_SESSION['event'] = $event;
         }
 		$_SESSION['event'] = $event;
         
@@ -122,31 +128,32 @@ class Details extends MyPage
                 AND c.Publication = 'O' 
                 AND ej.Id_evenement = ? 
                 GROUP BY c.Code 
-                ORDER BY c.GroupOrder ";	 
+                ORDER BY c.GroupOrder ";
             $arrayListJournees = array();
+            $journee = array(); // Initialisation pour éviter warning PHP 8
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeSaison, $event));
             while ($row = $result->fetch()) {
                 if ($row['Code_competition'] == $codeCompet) {
-                    $row['Selected'] == true;
+                    $row['Selected'] = true; // Correction: = au lieu de ==
                     $row['Responsable_insc'] = utyGetNomPrenom($row['Responsable_insc']);
                     $row['Responsable_R1'] = utyGetNomPrenom($row['Responsable_R1']);
                     $row['Delegue'] = utyGetNomPrenom($row['Delegue']);
                     $row['ChefArbitre'] = utyGetNomPrenom($row['ChefArbitre']);
                     $journee[] = $row;
                 } else {
-                    $row['Selected'] == false;
+                    $row['Selected'] = false; // Correction: = au lieu de ==
                 }
-                array_push($arrayListJournees, $row);            
+                array_push($arrayListJournees, $row);
             }
             $this->m_tpl->assign('journee', $journee);
             $this->m_tpl->assign('arrayListJournees', $arrayListJournees);
-            
+
             // Chargement des Equipes ...
             $arrayEquipe = array();
             $arrayPoule = array();
             $poule = '';
-            if (in_array($arrayListJournees[0]['Statut'], ['ON', 'END'])) {
+            if (isset($arrayListJournees[0]) && in_array($arrayListJournees[0]['Statut'], ['ON', 'END'])) {
                 if (strlen($codeCompet) > 0 && $codeCompet != '*') {
                     $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
                         ce.Tirage, c.Code_comite_dep  
@@ -313,7 +320,7 @@ class Details extends MyPage
             $arrayEquipe = array();
             $arrayPoule = array();
             $poule = '';
-            if (in_array($arrayListJournees[0]['Statut'], ['ON', 'END'])) {
+            if (isset($arrayListJournees[0]) && in_array($arrayListJournees[0]['Statut'], ['ON', 'END'])) {
                 if (strlen($codeCompet) > 0 && $codeCompet != '*') { 
                     $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, ce.Poule, 
                         ce.Tirage, c.Code_comite_dep  
