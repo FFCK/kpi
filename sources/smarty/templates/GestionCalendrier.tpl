@@ -155,7 +155,7 @@
 								<th>Id</th>
 								<th>&nbsp;</th>
 								<th>Compet./Phase</th>
-								{if $competition.Code_typeclt == "CP"}
+								{if isset($competition) && $competition.Code_typeclt == "CP"}
 									<th>{#Niv#} <img width="12" src="../img/b_help.png" {if $lang == "en"} title="Level : Importance of the phase in the géléral classification. For example :
                                             <br>-The first groups are always at level 1,
                                             <br>-The final is always at the highest level,
@@ -218,7 +218,7 @@
 														href="https://www.google.com/calendar/render?action=TEMPLATE&text={$arrayJournees[i].Nom}+({$arrayJournees[i].Lieu}+-+{$arrayJournees[i].Departement})&dates={$arrayJournees[i].Date_debut_gcal}T060000Z/{$arrayJournees[i].Date_fin_gcal}T170000Z&ctz=Europe/Paris&details=https%3A%2F%2Fwww.kayak-polo.info%2Fkpdetails.php%3FJ%3D{$arrayJournees[i].Id}&location=paris,%20france"><img
 															height="20" src="../img/gcal.png"></a>
 												{/if}
-												{if $competition.Code_typeclt == "CHPT"}
+												{if isset($competition) && $competition.Code_typeclt == "CHPT"}
 													<a target="_blank" title="QR Code App"
 														href="https://www.kayak-polo.info/PdfQrCodeApp.php?Evt={$arrayJournees[i].Id}"><img height="20"
 															src="../img/qrcode.png"></a>
@@ -228,7 +228,7 @@
 												<span class='directInput' data-type="text" data-target="Phase" data-id="{$arrayJournees[i].Id}"
 													data-value="{$arrayJournees[i].Phase}">{$arrayJournees[i].Phase}</span>
 											</td>
-											{if $competition.Code_typeclt == "CP"}
+											{if isset($competition) && $competition.Code_typeclt == "CP"}
 												<td>
 													<span class='directInput' data-type="tel" data-target="Niveau" data-id="{$arrayJournees[i].Id}"
 														data-value="{$arrayJournees[i].Niveau}">{$arrayJournees[i].Niveau}</span>
@@ -303,7 +303,7 @@
 												-
 												{$arrayJournees[i].Phase}
 											</td>
-											{if $competition.Code_typeclt == "CP"}
+											{if isset($competition) && $competition.Code_typeclt == "CP"}
 												<td>{$arrayJournees[i].Niveau}</td>
 												<td>{$arrayJournees[i].Etape}</td>
 												<td>{$arrayJournees[i].Nbequipes}</td>
@@ -348,7 +348,7 @@
 											-
 											{$arrayJournees[i].Phase}
 										</td>
-										{if $competition.Code_typeclt == "CP"}
+										{if isset($competition) && $competition.Code_typeclt == "CP"}
 											<td>{$arrayJournees[i].Niveau}</td>
 											<td>{$arrayJournees[i].Etape}</td>
 											<td>{$arrayJournees[i].Nbequipes}</td>
@@ -392,7 +392,7 @@
 											-
 											{$arrayJournees[i].Phase}
 										</td>
-										{if $competition.Code_typeclt == "CP"}
+										{if isset($competition) && $competition.Code_typeclt == "CP"}
 											<td>{$arrayJournees[i].Niveau}</td>
 											<td>{$arrayJournees[i].Etape}</td>
 											<td>{$arrayJournees[i].Nbequipes}</td>

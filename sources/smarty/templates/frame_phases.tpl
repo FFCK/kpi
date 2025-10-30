@@ -5,9 +5,8 @@
         {assign var='niveau' value=$arrayJournees[$idJournee].Niveau}
         {assign var='compteur' value=0}
         <article class="col-md-12">
-        {section name=i loop=$arrayListJournees}
-            {assign var='idJournee' value=$arrayListJournees[i]}
-            {assign var='idJourneeNext' value=$arrayListJournees[i.index_next]}
+        {foreach from=$arrayListJournees item=idJournee key=i}
+            {assign var='idJourneeNext' value=$arrayListJournees[$i+1]|default:null}
             {if $niveau != $arrayJournees[$idJournee].Niveau}
                 </article><article class="col-md-12">
             {/if}
@@ -17,7 +16,7 @@
                 {if $compteur == 2}
                     {assign var='compteur' value=0}
                 {/if}
-                {if $niveau != $arrayJournees[$idJourneeNext].Niveau && $compteur == 1}
+                {if $idJourneeNext && isset($arrayJournees[$idJourneeNext]) && $niveau != $arrayJournees[$idJourneeNext].Niveau && $compteur == 1}
                     <div class="padTopBottom table-responsive col-md-6 col-md-offset-3 col-sm-12 tablePhase">
                     {assign var='compteur' value=0}
                 {else}
@@ -42,25 +41,25 @@
                         </thead>
                         <tbody>
                             {if $arrayJournees[$idJournee].Actif == 1}
-                                {section name=j loop=$arrayEquipe_journee_publi[$idJournee]}
+                                {foreach from=$arrayEquipe_journee_publi[$idJournee] item=j}
                                     <tr>
                                         <td>
-                                            {$arrayEquipe_journee_publi[$idJournee][j].Clt}
+                                            {$j.Clt}
                                         </td>
                                         <td>
-                                            <a class="btn btn-xs btn-default"{if $arrayEquipe_journee_publi[$idJournee][j].Id > 0} href="frame_team.php?Team={$arrayEquipe_journee_publi[$idJournee][j].Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>
+                                            <a class="btn btn-xs btn-default"{if $j.Id > 0} href="frame_team.php?Team={$j.Id}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.Libelle}</a>
                                         </td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Pts/100}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].J}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].G}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].N}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].P}</td>
-    {*                                    <td>{$arrayEquipe_journee_publi[$idJournee][j].F}</td>*}
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Plus}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Moins}</td>
-                                        <td>{$arrayEquipe_journee_publi[$idJournee][j].Diff}</td>
+                                        <td>{$j.Pts/100}</td>
+                                        <td>{$j.J}</td>
+                                        <td>{$j.G}</td>
+                                        <td>{$j.N}</td>
+                                        <td>{$j.P}</td>
+    {*                                    <td>{$j.F}</td>*}
+                                        <td>{$j.Plus}</td>
+                                        <td>{$j.Moins}</td>
+                                        <td>{$j.Diff}</td>
                                     </tr>
-                                {/section}
+                                {/foreach}
                             {else}
                                 {if $arrayEquipes[$idJournee]}
                                     {foreach from=$arrayEquipes[$idJournee] key=myId item=j}
@@ -80,9 +79,9 @@
                                         </tr>
                                     {/foreach}
                                 {else}
-                                    {section name=k loop=$arrayJournees[$idJournee].Nbequipes}
+                                    {foreach from=$arrayJournees[$idJournee].Nbequipes item=k}
                                         <tr>
-                                            <td>{$smarty.section.k.iteration}</td>
+                                            <td>{$k@iteration}</td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -93,7 +92,7 @@
                                             <td></td>
                                             <td></td>
                                         </tr>
-                                    {/section}
+                                    {/foreach}
                                 {/if}
                             {/if}
                         </tbody>
@@ -102,90 +101,90 @@
             {elseif $arrayMatchs[$idJournee]|@count > 0}
                 <div class="padTopBottom table-responsive col-md-12 tableMatch">
                     <h4 class="row text-center">{$arrayJournees[$idJournee].Phase}</h4>
-                    {section name=j loop=$arrayMatchs[$idJournee]}
-                        {if $smarty.section.j.index is odd}
+                    {foreach from=$arrayMatchs[$idJournee] item=j}
+                        {if $j@index is odd}
                             <br>
                         {/if}
                         <div class="row cliquableNomEquipe">
-                            {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
+                            {if $j.ScoreA > $j.ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-primary score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-primary"{if $j.Id_equipeA > 0} href="frame_team.php?Team={$j.Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeA}</a>
+                                    <span class="btn btn-xs btn-primary score">{$j.ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-default score">{$j.ScoreB}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeB > 0} href="frame_team.php?Team={$j.Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeB}</a>
                                 </div>
-                            {elseif $arrayMatchs[$idJournee][j].ScoreA < $arrayMatchs[$idJournee][j].ScoreB}
+                            {elseif $j.ScoreA < $j.ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeA > 0} href="frame_team.php?Team={$j.Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeA}</a>
+                                    <span class="btn btn-xs btn-default score">{$j.ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-primary score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-primary score">{$j.ScoreB}</span>
+                                    <a class="btn btn-xs btn-primary"{if $j.Id_equipeB > 0} href="frame_team.php?Team={$j.Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeB}</a>
                                 </div>
                             {else}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeA > 0} href="frame_team.php?Team={$j.Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeA}</a>
+                                    <span class="btn btn-xs btn-default score">{$j.ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-default score">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-default score">{$j.ScoreB}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeB > 0} href="frame_team.php?Team={$j.Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeB}</a>
                                 </div>
                             {/if}
                         </div>
-                    {/section}
+                    {/foreach}
                 </div>
             {/if}
-        {/section}
+        {/foreach}
         </article>
     </div>
 {else}
     <div class="container-fluid">
-        {section name=i loop=$arrayJournee}
-            {assign var='idJournee' value=$arrayJournee[i].Id_journee}
+        {foreach from=$arrayJournee item=journee}
+            {assign var='idJournee' value=$journee.Id_journee}
                 <article class="padTopBottom table-responsive col-md-12 tableJournee">
                     <div class="page-header">
                         <h4>
-                            {$arrayJournee[i].Lieu} ({$arrayJournee[i].Departement}) {$arrayJournee[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayJournee[i].Date_fin|date_format:'%d/%m/%Y'}
+                            {$journee.Lieu} ({$journee.Departement}) {$journee.Date_debut|date_format:'%d/%m/%Y'} - {$journee.Date_fin|date_format:'%d/%m/%Y'}
                         </h4>
                     </div>
-                    {section name=j loop=$arrayMatchs[$idJournee]}
+                    {foreach from=$arrayMatchs[$idJournee] item=j}
                         <div class="col-md-4 col-sm-6 col-xs-12">
-                            {if $arrayMatchs[$idJournee][j].ScoreA > $arrayMatchs[$idJournee][j].ScoreB}
+                            {if $j.ScoreA > $j.ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-primary"{if $j.Id_equipeA > 0} href="frame_team.php?Team={$j.Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeA}</a>
+                                    <span class="btn btn-xs btn-primary">{$j.ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-default">{$j.ScoreB}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeB > 0} href="frame_team.php?Team={$j.Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeB}</a>
                                 </div>
-                            {elseif $arrayMatchs[$idJournee][j].ScoreA < $arrayMatchs[$idJournee][j].ScoreB}
+                            {elseif $j.ScoreA < $j.ScoreB}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeA > 0} href="frame_team.php?Team={$j.Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeA}</a>
+                                    <span class="btn btn-xs btn-default">{$j.ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-primary">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-primary"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-primary">{$j.ScoreB}</span>
+                                    <a class="btn btn-xs btn-primary"{if $j.Id_equipeB > 0} href="frame_team.php?Team={$j.Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeB}</a>
                                 </div>
                             {else}
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-right">
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeA > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeA}</a>
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreA}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeA > 0} href="frame_team.php?Team={$j.Id_equipeA}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeA}</a>
+                                    <span class="btn btn-xs btn-default">{$j.ScoreA}</span>
                                 </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                                    <span class="btn btn-xs btn-default">{$arrayMatchs[$idJournee][j].ScoreB}</span>
-                                    <a class="btn btn-xs btn-default"{if $arrayMatchs[$idJournee][j].Id_equipeB > 0} href="frame_team.php?Team={$arrayMatchs[$idJournee][j].Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$arrayMatchs[$idJournee][j].EquipeB}</a>
+                                    <span class="btn btn-xs btn-default">{$j.ScoreB}</span>
+                                    <a class="btn btn-xs btn-default"{if $j.Id_equipeB > 0} href="frame_team.php?Team={$j.Id_equipeB}&Compet={$codeCompet}&Css={$Css}&navGroup={$navGroup}" title="{#Palmares#}"{/if}>{$j.EquipeB}</a>
                                 </div>
                             {/if}
                         </div>
-                    {/section}
+                    {/foreach}
                 </article>
-        {/section}
+        {/foreach}
         
     </div>
 {/if}

@@ -26,7 +26,7 @@
                 <img src="img/share.png" width="16">
             </a>
             {if $event > 0}
-                <span>{$eventTitle}</span>
+                <span>{$eventTitle|default: ''}</span>
             {elseif '*' == $codeCompet}
                 {$arrayNavGroup[0].Soustitre|default:$arrayNavGroup[0].Libelle}
             {elseif $recordCompetition.Titre_actif != 'O' && $recordCompetition.Soustitre2 != ''}

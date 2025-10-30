@@ -30,11 +30,11 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Delegue#}</label>
-                    <div class="col-sm-8" id="delegue">{$journee[0].Delegue}</div>
+                    <div class="col-sm-8" id="delegue">{if isset($journee[0])}{$journee[0].Delegue}{/if}</div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Chef_arbitres#}</label>
-                    <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
+                    <div class="col-sm-8" id="chefarbitre">{if isset($journee[0])}{$journee[0].ChefArbitre}{/if}</div>
                 </div>
             </div>
             <div class="form-horizontal">
@@ -52,7 +52,7 @@
                 {/if}
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
-                        <a class="btn {if $arrayListJournees[i].Code_competition == $journee[0].Code_competition}btn-primary{else}btn-default{/if}" 
+                        <a class="btn {if isset($journee[0]) && $arrayListJournees[i].Code_competition == $journee[0].Code_competition}btn-primary{else}btn-default{/if}" 
                             href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J=*&Css={$Css}" role="button">
                             {if $arrayListJournees[i].Titre_actif != 'O' && $arrayListJournees[i].Soustitre2 != ''}
                                 {$arrayListJournees[i].Soustitre} - {$arrayListJournees[i].Soustitre2}
@@ -60,7 +60,7 @@
                                 {$arrayListJournees[i].Libelle} - {$arrayListJournees[i].Soustitre2}
                             {/if}
                         </a>
-                        <a title="{#Telecharger_fichier_ics#}" href="upload_ics.php?Saison={$arrayListJournees[i].Code_saison}&Compet={$arrayListJournees[i].Code_competition}">
+                        <a title="{#Telecharger_fichier_ics#}1" href="upload_ics.php?Saison={$arrayListJournees[i].Code_saison}&Compet={$arrayListJournees[i].Code_competition}">
                             <img width="30" src="../img/ics.png">
                         </a>
                     </p>
@@ -131,11 +131,11 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Delegue#}</label>
-                    <div class="col-sm-8" id="delegue">{$journee[0].Delegue}</div>
+                    <div class="col-sm-8" id="delegue">{if isset($journee[0])}{$journee[0].Delegue}{/if}</div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Chef_arbitres#}</label>
-                    <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
+                    <div class="col-sm-8" id="chefarbitre">{if isset($journee[0])}{$journee[0].ChefArbitre}{/if}</div>
                 </div>
             </div>
             <div class="form-horizontal">
@@ -149,7 +149,7 @@
                             {#Abonnement_Google_Agenda#}
                         </a>
                     {/if}
-                    <a class="btn btn-success pull-right" title="{#Telecharger_fichier_ics#}" href="upload_ics.php?Saison={$arrayListJournees[i].Code_saison}&Compet={$arrayListJournees[i].Code_competition}">
+                    <a class="btn btn-success pull-right" title="{#Telecharger_fichier_ics#}_2" href="upload_ics.php?Saison={$Saison}&Compet={$codeCompet}">
                         <img width="40" src="../img/ics.png"> {#Telecharger_fichier_ics#}
                     </a>
                 </div>
@@ -164,7 +164,7 @@
                            href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}&Css={$Css}" role="button">
                             {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} à {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
                         </a>
-                        <a title="{#Telecharger_fichier_ics#}" href="upload_ics.php?J={$arrayListJournees[i].Id_journee}">
+                        <a title="{#Telecharger_fichier_ics#}3" href="upload_ics.php?J={$arrayListJournees[i].Id_journee}">
                             <img width="30" src="../img/ics.png">
                         </a>
                     </p>

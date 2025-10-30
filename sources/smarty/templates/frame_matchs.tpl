@@ -1,13 +1,13 @@
 {include file='frame_navgroup.tpl'}
 <div class="container-fluid frame_matchs" id="containor">
     <article class="table-responsive col-md-12 padTopBottom">
-        <table class='tableau table table-striped table-condensed table-hover display compact' {if is_array($arrayMatchs[0])}id='tableMatchs_{$lang}'{/if}>
+        <table class='tableau table table-striped table-condensed table-hover display compact' {if isset($arrayMatchs[0]) && is_array($arrayMatchs[0])}id='tableMatchs_{$lang}'{/if}>
             <thead>
                 <tr>
                     <th class="hidden-xs">#</th>
                     <th class="hidden-xs">{#Date#}</th>
                     <th class="hidden-xs">{#Cat#}</th>
-                    {if $arrayCompetition[0].Code_typeclt == 'CP'}
+                    {if isset($arrayCompetition[0]) && $arrayCompetition[0].Code_typeclt == 'CP'}
                         <th class="hidden-xs">{#Poules#}</th>
                     {else}
                         <th class="hidden-xs">{#Lieu#}</th>
@@ -54,7 +54,7 @@
                                 {if $lang == 'en'}{$arrayMatchs[i].Date_EN}{else}{$arrayMatchs[i].Date_match}{/if}<br /><span class="pull-right badge">{$arrayMatchs[i].Heure_match}</span>
                             </td>
                             <td class="hidden-xs">{$arrayMatchs[i].Categorie}</td>
-                            {if $arrayCompetition[0].Code_typeclt == 'CP'}
+                            {if isset($arrayCompetition[0]) && $arrayCompetition[0].Code_typeclt == 'CP'}
                                 <td class="hidden-xs">{$arrayMatchs[i].Phase|default:'&nbsp;'}</td>
                             {else}
                                 <td class="hidden-xs">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</td>
@@ -125,7 +125,7 @@
                                     </span>
                                 </div>
                                 <div class="col-xs-6">
-                                    {if $arrayCompetition[0].Code_typeclt == 'CP'}
+                                    {if isset($arrayCompetition[0]) && $arrayCompetition[0].Code_typeclt == 'CP'}
                                         <small><em><span class="pull-right">{$arrayMatchs[i].Phase|default:'&nbsp;'}</em></span></small>
                                     {else}
                                         <small><em><span class="pull-right">{$arrayMatchs[i].Lieu|default:'&nbsp;'}</em></span></small>
@@ -179,7 +179,7 @@
 	</article>
 </div>
 <script>
-    {if $arrayCompetition[0].Code_typeclt == 'CP'}
+    {if isset($arrayCompetition[0]) && $arrayCompetition[0].Code_typeclt == 'CP'}
         table_ordre = [[ 1, 'asc' ], [ 4, 'asc' ]];
     {else}
         table_ordre = [[ 0, 'asc' ]];

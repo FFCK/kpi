@@ -1,5 +1,5 @@
 {* page.tpl Smarty *}
-{config_load file='../../commun/MyLang.conf' section=$lang}
+{config_load file='../../commun/MyLang_processed.conf' section=$lang}
 <!DOCTYPE html>
 <html lang="fr" xmlns:og="http://ogp.me/ns#">
 
@@ -79,11 +79,11 @@
     <!-- End Matomo Code -->
   {/literal}
 
-  {if $voie}
+  {if isset($voie) && $voie}
     <script type="text/javascript" src="js/axios/axios.min.js?v={$NUM_VERSION}"></script>
     <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}"></script>
     <script type="text/javascript">
-      SetVoie({$voie}, {$intervalle});
+      SetVoie({$voie}, {$intervalle|default:0});
     </script>
   {/if}
 </body>
