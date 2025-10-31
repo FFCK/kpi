@@ -53,7 +53,7 @@
     </article>
 </div>
 
-{if $recordCompetition[0].BandeauLink != '' or $recordCompetition[0].LogoLink != '' or $recordCompetition[0].Web != ''}
+{if $recordCompetition[0].BandeauLink|default:'' != '' or $recordCompetition[0].LogoLink|default:'' != '' or $recordCompetition[0].Web|default:'' != ''}
     <div class="container logo_lien">
         <article class="padTopBottom table-responsive col-md-6 col-md-offset-3">
             <div class="text-center">

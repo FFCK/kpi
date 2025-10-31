@@ -60,7 +60,7 @@ class Matchs extends MyPage
                 $arrayCompets[] = $row['Code_competition'];
             }
         } elseif ($Compets != '') {
-            $arrayCompets = implode(',', $Compets);
+            $arrayCompets = explode(',', $Compets);
         } else {
             $arrayCompets = [];
         }
@@ -284,10 +284,10 @@ class Matchs extends MyPage
                 WHERE m.Id_journee IN ($in) 
                 AND m.Publication = 'O' ";
             if ($terrains != '') {
-                $in2  = str_repeat('?,', count($terrains) - 1) . '?';
+                $in2  = str_repeat('?,', count(explode(',', $terrains)) - 1) . '?';
                 $sqlterrains = " AND m.Terrain IN ($in2) ";
                 $result = $myBdd->pdo->prepare($sql . $sqlterrains . $orderMatchs);
-                $result->execute(array_merge($arrayInJournees, $terrains));
+                $result->execute(array_merge($arrayInJournees, explode(',', $terrains)));
             } else {
                 $result = $myBdd->pdo->prepare($sql . $orderMatchs);
                 $result->execute($arrayInJournees);
@@ -342,7 +342,7 @@ class Matchs extends MyPage
                         } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
                             $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
                         }
-                        $row['Libelle'] = $libelle[1];
+                        $row['Libelle'] = $libelle[1] ?? '';
                     }
 
                     $Validation = 'O';

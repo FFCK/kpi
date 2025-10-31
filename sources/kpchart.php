@@ -92,15 +92,7 @@ class Chart extends MyPage
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeCompet, $codeSaison));
             while ($row = $result->fetch()) {
-                //Logos
-                $logo = '';
                 $club = $row['Code_club'];
-                if (is_file('img/KIP/logo/' . $club . '-logo.png')) {
-                    $logo = 'img/KIP/logo/' . $club . '-logo.png';
-                } elseif (is_file('img/Nations/' . substr($club, 0, 3) . '.png')) {
-                    $club = substr($club, 0, 3);
-                    $logo = 'img/Nations/' . $club . '.png';
-                }
                 if (strlen($row['Code_comite_dep']) > 3) {
                     $row['Code_comite_dep'] = 'FRA';
                 }
@@ -112,7 +104,7 @@ class Chart extends MyPage
                     'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'],
                     'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
                     'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'],
-                    'logo' => $logo, 'club' => $club
+                    'club' => $club
                 ));
                 if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0)) {
                     $recordCompetition['Qualifies']    = 0;

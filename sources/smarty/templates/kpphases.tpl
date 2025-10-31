@@ -8,7 +8,11 @@
         <article class="col-md-12">
             {section name=i loop=$arrayListJournees}
                 {assign var='idJournee' value=$arrayListJournees[i]}
-                {assign var='idJourneeNext' value=$arrayListJournees[i.index_next]}
+                {if isset($arrayListJournees[i.index_next])}
+                    {assign var='idJourneeNext' value=$arrayListJournees[i.index_next]}
+                {else}
+                    {assign var='idJourneeNext' value=null}
+                {/if}
                 {if $niveau != $arrayJournees[$idJournee].Niveau}
                     </article><article class="col-md-12">
                 {/if}
@@ -18,7 +22,7 @@
                     {if $compteur == 2}
                         {assign var='compteur' value=0}
                     {/if}
-                    {if $niveau != $arrayJournees[$idJourneeNext].Niveau && $compteur == 1}
+                    {if $idJourneeNext !== null && $niveau != $arrayJournees[$idJourneeNext].Niveau && $compteur == 1}
                         <div class="padTopBottom table-responsive col-md-6 col-md-offset-3 col-sm-12 tablePhase">
                         {assign var='compteur' value=0}
                     {else}
@@ -47,10 +51,6 @@
                                         <tr>
                                             <td>
                                                 {$arrayEquipe_journee_publi[$idJournee][j].Clt}
-                                                {if $arrayEquipe_journee_publi[$idJournee][j].logo != ''}
-                                                    <img class="img2 pull-right" width="30" src="{$arrayEquipe_journee_publi[$idJournee][j].logo}" alt="{$arrayEquipe_journee_publi[$idJournee][j].club}" />
-                                                {/if}
-
                                             </td>
                                             <td class="cliquableNomEquipe">
                                                 <a class="btn btn-xs btn-default"{if $arrayEquipe_journee_publi[$idJournee][j].Numero > 0} href="kpequipes.php?Equipe={$arrayEquipe_journee_publi[$idJournee][j].Numero}&Compet={$codeCompet}&Css={$Css}" title="{#Palmares#}"{/if}>{$arrayEquipe_journee_publi[$idJournee][j].Libelle}</a>

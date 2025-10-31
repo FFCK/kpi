@@ -9,6 +9,9 @@ if (typeof jQuery !== 'undefined') {
 if ( typeof(lang) == "undefined" ) {
 	lang = 'en';
 }
+if ( typeof(masquer) == "undefined" ) {
+	masquer = 0;
+}
 var langue_tools = [];
 
 if(lang == 'en')  {
