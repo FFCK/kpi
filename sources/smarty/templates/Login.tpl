@@ -1,9 +1,12 @@
 <div class="container">
-    <div class="col-md-6 col-md-offset-3">
-        <h2 class="form-signin-heading text-center"><img src="../img/CNAKPI_small.png" alt="KPI" height="60"></h2>
+    <div class="row">
+        <div class="col-11 col-sm-10 col-md-6 mx-auto">
+            <h2 class="form-signin-heading text-center"><img src="../img/CNAKPI_small.png" alt="KPI" height="60"></h2>
+        </div>
     </div>
-    <div class="col-md-4 col-md-offset-4">
-        <form class="form-signin2" method="POST" action="Login.php" name="formLogin" id="formLogin" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-lg-4 mx-auto">
+            <form class="form-signin2" method="POST" action="Login.php" name="formLogin" id="formLogin" enctype="multipart/form-data">
             <label for="User">{#Identifiant#}</label>
             <input type="tel" name="User" id="idUser" class="form-control" placeholder="{#Identifiant#}" required autofocus>
             <div id="connect">
@@ -16,9 +19,11 @@
                 <input type="email" name="Mel" id="Mel" class="form-control" placeholder="E-mail" required>
             </div>
             <br>
-            <input class="btn btn-lg btn-primary btn-block" type="button" name="login" id="login" value="{#Connexion#}">
-            <input class="btn btn-lg btn-primary btn-block" type="button" name="Renvoyer" id="Renvoyer" value="{#Renvoyer#}">
-            <input class="btn btn-lg btn-primary btn-block" type="button" name="Annuler" id="Annuler" value="{#Annuler#}" onClick="return false">
+            <div class="d-grid gap-2">
+                <input class="btn btn-lg btn-primary" type="button" name="login" id="login" value="{#Connexion#}">
+                <input class="btn btn-lg btn-primary" type="button" name="Renvoyer" id="Renvoyer" value="{#Renvoyer#}">
+                <input class="btn btn-lg btn-primary" type="button" name="Annuler" id="Annuler" value="{#Annuler#}" onClick="return false">
+            </div>
 
             <input type="hidden" name="Mode" id="Mode" value="Connexion">        
             <br>
@@ -35,8 +40,11 @@
             <br>
             <br>
         </form>
+        </div>
     </div>
-    <div class="col-md-6 col-md-offset-3 text-center">
-        <p>{#Vous_devez_vous_identifier#} (<a href="../">{#Retour#}</a>)</p>
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-lg-6 mx-auto text-center">
+            <p>{#Vous_devez_vous_identifier#} (<a href="../">{#Retour#}</a>)</p>
+        </div>
     </div>
 </div> <!-- /container -->

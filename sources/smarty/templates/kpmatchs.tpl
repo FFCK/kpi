@@ -149,7 +149,7 @@
 
 <div class="container-fluid" id="containor">
     <article class="table-responsive col-md-12 padTopBottom">
-        <table class='tableau table table-striped table-condensed table-hover display compact' {if count($arrayMatchs) > 0}id='tableMatchs_{$lang}'{/if}>
+        <table class='tableau table table-striped table-condensed table-hover display compact' {if is_array($arrayMatchs) && count($arrayMatchs) > 0}id='tableMatchs_{$lang}'{/if}>
             <thead>
                 <tr>
                     <th class="hidden-xs">#</th>

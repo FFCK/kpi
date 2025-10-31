@@ -1,10 +1,8 @@
 <div class="container titre">
-    <div class="col-md-9">
-        <h1 class="col-md-11 col-xs-9">{#Classement#}</h1>
-    </div>
-    <div class="col-md-3">
-        <span class="badge pull-right">{$smarty.config.Saison|default:'Saison'} {$Saison}</span>
-    </div>
+    <h2 class="col-md-12">
+        <span class="pull-left">{#Classement#}</span>
+        <span class="label label-primary pull-right">{$Saison}</span>
+    </h2>
 </div>
 
 

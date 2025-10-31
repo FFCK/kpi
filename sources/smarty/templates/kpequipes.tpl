@@ -141,9 +141,9 @@
                 <tr>
                   <td>
                     <a class="btn btn-xs btn-default"
-                      {if !($arrayCompo|default:false)}href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
-                      title='{#Classement#}' {/if}>
-                      {$arrayPalmares[$Saison][j].Competitions}
+                      href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
+                      title='{#Classement#}'>
+                      <span>{$arrayPalmares[$Saison][j].Competitions}</span>
                     </a>
                   </td>
                   <td class="text-center">
@@ -160,8 +160,8 @@
                 <tr>
                   <td class="text-right">
                     <a class="btn btn-xs btn-default"
-                      {if !($arrayCompo|default:false)}href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
-                      title='{#Classement#}' {/if}>
+                      href='kpclassements.php?Compet={$arrayPalmares[$Saison][j].Code}&Group={$arrayPalmares[$Saison][j].Code_ref}&Saison={$arrayPalmares[$Saison][j].Saison}'
+                      title='{#Classement#}'>
                       <i>{$arrayPalmares[$Saison][j].Competitions}</i>
                     </a>
                     <i>{$arrayPalmares[$Saison][j].Classt}</i>

@@ -1,0 +1,150 @@
+/**
+ * Bootstrap 5 Navbar Fixes
+ * Date: 30 octobre 2025
+ * Correctifs pour compatibilité Bootstrap 5 avec CSS custom WordPress Material
+ */
+
+/* Fix: Bouton toggler invisible sur desktop (Bootstrap 5) */
+@media (min-width: 768px) {
+  .navbar-expand-md .navbar-toggler {
+    display: none !important;
+  }
+
+  .navbar-expand-md .navbar-collapse {
+    display: flex !important;
+    flex-basis: auto;
+  }
+}
+
+/* Fix: Menu centré verticalement et horizontalement */
+.navbar-expand-md .navbar-collapse {
+  justify-content: center;
+}
+
+/* Fix: Remplacer float:left par flexbox pour Bootstrap 5 */
+@media (min-width: 768px) {
+  .navbar-collapse .site-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .navbar-collapse .site-menu > li {
+    float: none !important; /* Désactive le float */
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Fix: Menu mobile (collapse) */
+@media (max-width: 767px) {
+  .navbar-collapse .site-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar-collapse .site-menu > li {
+    width: 100%;
+  }
+
+  /* Menu caché par défaut sur mobile */
+  .navbar-collapse:not(.show) {
+    display: none;
+  }
+
+  /* Menu visible quand ouvert */
+  .navbar-collapse.show {
+    display: flex;
+    width: 100%;
+  }
+}
+
+/* Fix: Alignement vertical du container */
+.menu-short-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+}
+
+/* Fix: Navbar toggler sur mobile */
+@media (max-width: 767px) {
+  .navbar-toggler {
+    display: block;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 1.5rem;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    border-radius: 0.375rem;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  .navbar-toggler:hover,
+  .navbar-toggler:focus,
+  .navbar-toggler:active,
+  .navbar-toggler[aria-expanded="true"] {
+    border-color: rgba(0, 0, 0, 0.7);
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar-toggler:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  /* Icône hamburger avec lignes CSS au lieu de background-image */
+  .navbar-toggler-icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.75)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+  }
+
+  /* Menu prend toute la largeur en dessous */
+  .navbar-collapse {
+    order: 3;
+    width: 100%;
+    flex-basis: 100%;
+  }
+
+  /* Évite le décalage du contenu */
+  .navbar-collapse.collapsing,
+  .navbar-collapse.show {
+    position: relative;
+  }
+
+  /* Liens du menu mobile pleine largeur */
+  .navbar-collapse .site-menu > li > a {
+    display: block;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Menu déroulant mobile avec fond */
+  .navbar-collapse {
+    background-color: #f8f9fa;
+    padding: 0.5rem 0;
+  }
+}
+
+/* Fix: Nav tabs Bootstrap 5 - Support de .active sur <a> au lieu de <li> */
+.nav-tabs > li > a.active,
+.nav-tabs > li > a.active:hover,
+.nav-tabs > li > a.active:focus {
+  color: #555555;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+  cursor: default;
+}

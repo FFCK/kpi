@@ -42,9 +42,9 @@
 
 <div role="tabpanel" class="container-fluid">
     <!-- Nav tabs -->
-    <ul class="pagination" role="tablist">
+    <ul class="nav nav-tabs pagination" role="tablist">
         {section  name=i loop=$arraySaisons}
-            <li role="presentation" {if $smarty.section.i.iteration == 1}class="active"{/if}><a href="#saison{$arraySaisons[i].saison}" aria-controls="saison{$arraySaisons[i].saison}" role="tab" data-toggle="tab">{$arraySaisons[i].saison}</a></li>
+            <li class="nav-item menu-item" role="presentation"><a class="nav-link{if $smarty.section.i.iteration == 1} active{/if}" href="#saison{$arraySaisons[i].saison}" aria-controls="saison{$arraySaisons[i].saison}" role="tab" data-bs-toggle="tab">{$arraySaisons[i].saison}</a></li>
         {/section}
     </ul>
     <!-- Tab panes -->

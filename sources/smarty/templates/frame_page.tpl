@@ -11,10 +11,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <link rel='stylesheet' href='css/fullcalendar.min.css' type='text/css' media='all' />
-  <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}'
-    type='text/css' media='all' />
-  <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css'
-    media='all' />
+  <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
+  <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='{$adm}css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
+  <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
   <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css'
     media='all' />
   <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' />
@@ -48,7 +47,7 @@
   <script type='text/javascript' src='js/jquery-ui-1.11.4.min.js?v={$NUM_VERSION}'></script>
   <script type='text/javascript' src='js/jquery.dataTables.min.js?v={$NUM_VERSION}'></script>
   <script type='text/javascript' src='js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
-  <script type='text/javascript' src='js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
+  <script type='text/javascript' src='vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v={$NUM_VERSION}'></script>
   <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
   <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}" defer></script>
   {assign var=temp value="js/$contenutemplate.js"}

@@ -4120,7 +4120,7 @@ tbody.collapse.in {
     max-width: none; }
 
 /* line 76, _navs.scss */
-.nav-tabs {
+/* .nav-tabs {
   border-bottom: 1px solid #ddd; }
   /* line 78, _navs.scss */
   .nav-tabs > li {
@@ -4141,7 +4141,7 @@ tbody.collapse.in {
       background-color: #fff;
       border: 1px solid #ddd;
       border-bottom-color: transparent;
-      cursor: default; }
+      cursor: default; } */
 
 /* line 118, _navs.scss */
 .nav-pills > li {
@@ -4751,6 +4751,15 @@ tbody.collapse.in {
     background-color: #555555;
     border-color: #555555;
     cursor: default; }
+  .pagination.nav-tabs > li > a.active,
+  .pagination.nav-tabs > li > a.active:hover,
+  .pagination.nav-tabs > li > a.active:focus {
+    z-index: 2;
+    color: #fff;
+    background-color: #555555;
+    border-color: #555555;
+    cursor: default;
+  }
   /* line 63, _pagination.scss */
   .pagination > .disabled > span,
   .pagination > .disabled > span:hover,

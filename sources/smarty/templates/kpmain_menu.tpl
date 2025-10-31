@@ -1,24 +1,17 @@
 {* main_menu.tpl Smarty *}
 
-<div class="col-xs-12">
-  <nav class="site-navigation navbar navbar-default navbar-mv-up" role="navigation">
+<div class="col-12">
+  <nav class="site-navigation navbar navbar-expand-md navbar-light bg-light navbar-mv-up" role="navigation">
     <div class="menu-short-container container-fluid">
-      <!--    Brand and toggle get grouped for better mobile di…    -->
-      <div class="navbar-header">
-        <button class="navbar-toggle collapsed navbar-color-mod" data-target="#bs-example-navbar-collapse-1"
-          data-toggle="collapse" type="button">
-          <span class="sr-only">
-            Toggle navigation
-          </span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <!--    Collect the nav links, forms, and other content f…  -->
-      <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse">
+      <!--    Brand and toggle get grouped for better mobile display    -->
+      <button class="navbar-toggler navbar-color-mod d-md-none" data-bs-target="#bs-example-navbar-collapse-1"
+        data-bs-toggle="collapse" type="button" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!--    Collect the nav links, forms, and other content for toggling  -->
+      <div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse justify-content-center">
         <div class="menu-nav1-container">
-          <ul id="menu-nav1" class="site-menu">
+          <ul id="menu-nav1" class="site-menu navbar-nav">
             {section name=i loop=$arraymenu}
               {assign var='temporaire' value=$arraymenu[i].name}
               <li

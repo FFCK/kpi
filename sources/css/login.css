@@ -20,3 +20,18 @@ div.blocformlogin input
 	width:100px;
 }
 
+/* Formulaire login plus large sur mobile */
+@media (max-width: 767px) {
+	.form-signin2 {
+		width: 100%;
+		max-width: 100%;
+		padding: 0 10px;
+	}
+
+	.form-signin2 .form-control,
+	.form-signin2 .btn {
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+}
+

@@ -34,6 +34,8 @@
 
         <link rel='stylesheet' href='{$adm}css/fullcalendar.min.css' type='text/css' media='all' />
         <link rel='stylesheet' id='material-custom-css' href='{$adm}css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
+        {* <link rel='stylesheet' id='bootstrap' href='{$adm}vendor/twbs/bootstrap/dist/css/bootstrap.min.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
+        <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='{$adm}css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
         <link rel='stylesheet' id='material-main-css' href='{$adm}css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
         <link rel='stylesheet' id='my_style-css' href='{$adm}css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' />
         <link rel='stylesheet' href='{$adm}css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' />
@@ -74,7 +76,7 @@
         <script type='text/javascript' src='{$adm}js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}js/jquery.dataTables-1.10.21.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
-        <script type='text/javascript' src='{$adm}js/bootstrap/js/bootstrap.min.js?v={$NUM_VERSION}'></script>
+        <script type='text/javascript' src='{$adm}vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v={$NUM_VERSION}'></script>
         <script type="text/javascript" src="{$adm}js/wordpress_material_javascripts_main.js"></script>
         <script type="text/javascript" src="{$adm}js/formTools.js?v={$NUM_VERSION}" defer></script>
         {assign var=temp value="$adm./js/$contenutemplate.js"} 
@@ -93,9 +95,9 @@
 
             {/literal}
         {/if}
-            
+
         {literal}
-            <script>
+            <!-- <script>
                 window.fbAsyncInit = function() {
                     FB.init({
                         appId      : '693131394143366',
@@ -110,7 +112,7 @@
                     js.src = "//connect.facebook.net/en_US/sdk.js";
                     fjs.parentNode.insertBefore(js, fjs);
                 }(document, 'script', 'facebook-jssdk'));
-            </script>
+            </script> -->
             
             <!-- Matomo -->
             <script>
