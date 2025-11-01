@@ -590,7 +590,7 @@ function RefreshCacheGlobal () {
 	var nb = theContext.Match.GetCount()
 	for (var i = 0; i < nb; i++) {
 		if (theContext.Match.GetId(i) > 0) {
-			axios({
+			axiosLikeFetch({
 				method: 'post',
 				url: './cache/' + theContext.Match.GetId(i) + '_match_global.json',
 				params: {},
@@ -610,7 +610,7 @@ function RefreshCacheScore () {
 	var nb = theContext.Match.GetCount()
 	for (var i = 0; i < nb; i++) {
 		if (theContext.Match.GetId(i) > 0) {
-			axios({
+			axiosLikeFetch({
 				method: 'post',
 				url: './cache/' + theContext.Match.GetId(i) + '_match_score.json',
 				params: {},
@@ -630,7 +630,7 @@ function RefreshCacheChrono () {
 	var nb = theContext.Match.GetCount()
 	for (var i = 0; i < nb; i++) {
 		if (theContext.Match.GetId(i) > 0) {
-			axios({
+			axiosLikeFetch({
 				method: 'post',
 				url: './cache/' + theContext.Match.GetId(i) + '_match_chrono.json',
 				params: {},
@@ -648,7 +648,7 @@ function RefreshCacheChrono () {
 
 function RefreshCacheTerrain (chrono = true, next = false) {
 	if (theContext.Event > 0) {
-		axios({
+		axiosLikeFetch({
 			method: 'post',
 			url: './cache/event' + theContext.Event + '_pitch' + theContext.Terrain + '.json',
 			params: {},

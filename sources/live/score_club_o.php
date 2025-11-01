@@ -91,7 +91,7 @@ class Score extends MyPage
   function Script()
   {
   ?>
-    <script type="text/javascript" src="../js/axios/axios.min.js?v=5.3.8"></script>
+    <script type="text/javascript" src="../js/fetch-utils.js?v=5.3.8"></script>
     <script type="text/javascript" src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=5.3.8"></script>
     <?php
 

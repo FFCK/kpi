@@ -104,7 +104,7 @@ function Go (param) {
 	// 	}
 	// })
 
-	axios({
+	axiosLikeFetch({
 		method: 'post',
 		url: './ajax_change_tv.php',
 		params: param,

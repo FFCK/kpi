@@ -20,13 +20,13 @@ async function SetVoie (voie, intervalle = 3000) {
     }
 
     try {
-      const resultat = await axios({
+      const resultat = await axiosLikeFetch({
         method: 'post',
         url: '/live/cache/voie_' + voie + '.json',
         responseType: 'json'
       })
       if (resultat.data.url === '') {
-        const resultat2 = await axios({
+        const resultat2 = await axiosLikeFetch({
           method: 'post',
           url: '/live/cache/voie_' + voie_min + '.json',
           responseType: 'json'
@@ -54,7 +54,7 @@ function RefreshScene (result, intervalle) {
 }
 
 function RefreshVoie () {
-  axios({
+  axiosLikeFetch({
     method: 'post',
     url: '/live/cache/voie_' + theCurrentVoie + '.json',
     responseType: 'json'
@@ -90,7 +90,7 @@ function ChangeVoie (voie, url, showUrl = 0) {
     const baseurl = window.location.origin + '/'
     document.querySelector('#showUrl' + showUrl).value = baseurl + url + "&voie=" + voie
   } else {
-    axios({
+    axiosLikeFetch({
       method: 'post',
       url: 'ajax_change_voie.php',
       params: {

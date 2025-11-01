@@ -226,7 +226,7 @@ function ParseCacheGlobal (jsonData) {
 
 function RefreshCacheNext (idMulti, idNext) {
 	if (idNext > 0) {
-		axios({
+		axiosLikeFetch({
 			method: 'post',
 			url: './cache/' + idNext + '_match_global.json',
 			params: {},

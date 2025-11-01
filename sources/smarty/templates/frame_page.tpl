@@ -79,7 +79,7 @@
   {/literal}
 
   {if isset($voie) && $voie}
-    <script type="text/javascript" src="js/axios/axios.min.js?v={$NUM_VERSION}"></script>
+    <script type="text/javascript" src="js/fetch-utils.js?v={$NUM_VERSION}"></script>
     <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}"></script>
     <script type="text/javascript">
       SetVoie({$voie}, {$intervalle|default:0});

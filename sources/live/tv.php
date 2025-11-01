@@ -989,6 +989,7 @@ class TV extends MyPage
 			$voie = 0;
 
 	?>
+		<script type="text/javascript" src="./js/fetch-utils.js"></script>
 		<script type="text/javascript" src="./js/voie.js"></script>
 		<script type="text/javascript" src="./js/tv.js"></script>
 		<script type="text/javascript">

@@ -1,7 +1,7 @@
 function RefreshHorloge () {
 	if (typeof (theContext.temps_offset) == 'undefined') {
 		// Prise de l'Offset entre le temps du serveur et le temps de la machine cliente ...
-		axios({
+		axiosLikeFetch({
 			method: 'post',
 			url: './get_sec.php',
 			params: {},

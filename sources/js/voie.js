@@ -22,13 +22,13 @@ async function SetVoie (voie, intervalle = 3000) {
 		}
 
 		try {
-			const resultat = await axios({
+			const resultat = await axiosLikeFetch({
 				method: 'post',
 				url: './live/cache/voie_' + voie + '.json',
 				responseType: 'json'
 			})
 			if (resultat.data.url === '') {
-				const resultat2 = await axios({
+				const resultat2 = await axiosLikeFetch({
 					method: 'post',
 					url: './live/cache/voie_' + voie_min + '.json',
 					responseType: 'json'

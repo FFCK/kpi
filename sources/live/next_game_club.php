@@ -83,7 +83,7 @@ class Teams extends MyPage
     $terrain = $this->GetParamInt('terrain', 1);
     $voie = $this->GetParamInt('voie', 0);
   ?>
-    <script type="text/javascript" src="../js/axios/axios.min.js?v=5.3.8"></script>
+    <script type="text/javascript" src="../js/fetch-utils.js?v=5.3.8"></script>
     <script type="text/javascript" src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=5.3.8"></script>
 
     <script type="text/javascript" src="./js/match.js?v=5.3.8"></script>

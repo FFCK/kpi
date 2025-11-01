@@ -68,7 +68,7 @@
       </script>
     {/literal}
   {/if}
-  <script type="text/javascript" src="js/axios/axios.min.js?v={$NUM_VERSION}"></script>
+  <script type="text/javascript" src="js/fetch-utils.js?v={$NUM_VERSION}"></script>
   <script type="text/javascript" src="js/voie.js?v={$NUM_VERSION}" defer></script>
 
   {literal}
