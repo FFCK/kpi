@@ -5,7 +5,7 @@
 				<input type='hidden' name='duppliThis' Value='' />
 				<input type='hidden' name='PrevSaison' Value='{$J_saison}' />
 				<input type='hidden' name='PrevCompetition' Value='{$J_competition}' />
-				<input type='hidden' name='PrevDate' Value='{$Date_debut}' />
+				<input type='hidden' name='PrevDate' Value='{$Date_debut|default:''}' />
 				<input type='hidden' name='idJournee' Value='{$idJournee}' />
 				<div class='blocRight Right3'>
 					<table class='tableau2'>
@@ -57,7 +57,7 @@
 						{/if}
 						<tr>
 							<td width="50%">
-								<label for="Phase">Phase ({#CP_type#})</label><input type="text" name="Phase" value="{$Phase}" />
+								<label for="Phase">Phase ({#CP_type#})</label><input type="text" name="Phase" value="{$Phase|default:''}" />
 								<select id="PhaseList" name="PhaseList" onChange="Phase.value=this.options[this.selectedIndex].value">
 									<optgroup label="FR version (EN bellow)">
 										<Option Value="">(Sélectionnez...)</Option>
@@ -171,7 +171,7 @@
                                         <br>même si elles se jouent avant." {/if}>
 								<select size=1 id="Niveau" name="Niveau">
 									{section name=foo start=1 loop=30}
-										<Option Value="{$smarty.section.foo.index}" {if $smarty.section.foo.index==$Niveau} selected{/if}>
+										<Option Value="{$smarty.section.foo.index}" {if $smarty.section.foo.index==$Niveau|default:''} selected{/if}>
 											{$smarty.section.foo.index}</Option>
 									{/section}
 								</select>
@@ -191,7 +191,7 @@
                                         <br>(la finale peut être au même tour que le match pour la 3ème place)." {/if}>
 								<select id="Etape" name="Etape">
 									{section name=foo start=1 loop=20}
-										<Option Value="{$smarty.section.foo.index}" {if $smarty.section.foo.index==$Etape} selected{/if}>
+										<Option Value="{$smarty.section.foo.index}" {if $smarty.section.foo.index==$Etape|default:''} selected{/if}>
 											{$smarty.section.foo.index}</Option>
 									{/section}
 								</select>
@@ -203,7 +203,7 @@
 									{/if}>
 								<select id="Nbequipes" name="Nbequipes">
 									{section name=foo start=1 loop=20}
-										<Option Value="{$smarty.section.foo.index}" {if $smarty.section.foo.index==$Nbequipes} selected{/if}>
+										<Option Value="{$smarty.section.foo.index}" {if $smarty.section.foo.index==$Nbequipes|default:''} selected{/if}>
 											{$smarty.section.foo.index}</Option>
 									{/section}
 								</select>
@@ -216,7 +216,7 @@
 								<span title="{#Matchs_de_classement#}">
 									<img src="../img/typeC.png" style="vertical-align: middle" />{#Classement#}</span>
 								&nbsp;&nbsp;
-								<input type="radio" name="Type" value="E" {if $Type == 'E'}checked{/if} />
+								<input type="radio" name="Type" value="E" {if $Type|default:'C' == 'E'}checked{/if} />
 								<span title="{#Matchs_eliminatoires#}">
 									<img src="../img/typeE.png" style="vertical-align: middle" />{#Elimination#}</span>
 							</td>
@@ -227,22 +227,22 @@
 						<tr>
 							<td class="vert">
 								<label for="Date_debut"><b>{#Date_debut#}</b></label>
-								<input type="text" class='date' name="Date_debut" value="{$Date_debut}"
+								<input type="text" class='date' name="Date_debut" value="{$Date_debut|default:''}"
 									onfocus="displayCalendar(document.forms[0].Date_debut,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)">
-								<input type="hidden" name="Date_origine" value="{$Date_debut}">
+								<input type="hidden" name="Date_origine" value="{$Date_debut|default:''}">
 							</td>
 							<td colspan=3 class="vert">
 								<label for="Date_fin"><b>{#Date_fin#}</b></label>
-								<input type="text" class='date' name="Date_fin" value="{$Date_fin}"
+								<input type="text" class='date' name="Date_fin" value="{$Date_fin|default:''}"
 									onfocus="displayCalendar(document.forms[0].Date_fin,{if $lang=='en'}'yyyy-mm-dd'{else}'dd/mm/yyyy'{/if},this)">
 							</td>
 						</tr>
 						<tr>
 							<td class="vert"><label for="Lieu"><b>{#Lieu#}</b></label>
-								<input type="text" name="Lieu" id="Lieu" value="{$Lieu}" placeholder="{#Commune_ou_cp#}" />
+								<input type="text" name="Lieu" id="Lieu" value="{$Lieu|default:''}" placeholder="{#Commune_ou_cp#}" />
 							</td>
 							<td colspan=3 class="vert"><label for="Departement"><b>{#Departement_ou_code_pays#}</b></label>
-								<input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement}"
+								<input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement|default:''}"
 									placeholder="{#Departement_ou_code_pays#}" />
 							</td>
 						</tr>
@@ -250,7 +250,7 @@
 							<td colspan=4 class="vert">
 								<label for="Nom"><b>{#Nom_journee_phase#}</b></label>
 								<img border="0" title="{#Nom_dans_le_calendrier_public#}." alt="{#Nom_dans_le_calendrier_public#}.">
-								<input type="text" name="Nom" id="Nom" value="{$Nom}" placeholder="{#Nom_dans_le_calendrier_public#}" />
+								<input type="text" name="Nom" id="Nom" value="{$Nom|default:''}" placeholder="{#Nom_dans_le_calendrier_public#}" />
 								<br>
 								{if $lang == "en"}
 									<label><i><u>Examples :</u><br />
@@ -270,50 +270,50 @@
 						</tr>
 						<tr>
 							<td><br><label for="Organisateur">{#Club_organisateur#}</label><input type="text" name="Organisateur"
-									id="Organisateur" value="{$Organisateur}" placeholder="{#Nom_ou_numero_de_club#}" /></td>
+									id="Organisateur" value="{$Organisateur|default:''}" placeholder="{#Nom_ou_numero_de_club#}" /></td>
 							<td colspan=3><br><label for="Plan_eau">{#Plan_eau#}</label><input type="text" name="Plan_eau"
-									value="{$Plan_eau}" /></td>
+									value="{$Plan_eau|default:''}" /></td>
 						</tr>
 						<tr>
 							<td>
 								<label for="Responsable_insc">{#RC#}
 									{section name=i loop=$arrayRC}
 										<a class="rcpick badge pull-right"
-											title="{$arrayRC[i].Prenom|upper} {$arrayRC[i].Nom|upper} ({$arrayRC[i].Matric})">{$arrayRC[i].Ordre}</a>&nbsp;
+											title="{$arrayRC[i].Prenom|upper|default:''} {$arrayRC[i].Nom|upper|default:''} ({$arrayRC[i].Matric|default:''})">{$arrayRC[i].Ordre|default:''}</a>&nbsp;
 									{/section}
 								</label>
-								<input type="text" id="Responsable_insc" name="Responsable_insc" value="{$Responsable_insc}"
+								<input type="text" id="Responsable_insc" name="Responsable_insc" value="{$Responsable_insc|default:''}"
 									placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" />
 							</td>
 							<td colspan=3><label for="Responsable_R1">{#R1#}</label><input type="text" id="Responsable_R1"
-									name="Responsable_R1" value="{$Responsable_R1}"
+									name="Responsable_R1" value="{$Responsable_R1|default:''}"
 									placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
 							<td><label for="Delegue">{#Delegue_federal#}</label><input type="text" id="Delegue" name="Delegue"
-									value="{$Delegue}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+									value="{$Delegue|default:''}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 							<td colspan=3><label for="ChefArbitre">{#Chef_arbitres#}</label><input type="text" id="ChefArbitre"
-									name="ChefArbitre" value="{$ChefArbitre}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" />
+									name="ChefArbitre" value="{$ChefArbitre|default:''}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" />
 							</td>
 						</tr>
 						<tr>
 							<td><label for="Rep_athletes">{#Rep_athletes#}</label><input type="text" id="Rep_athletes"
-									name="Rep_athletes" value="{$Rep_athletes}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" />
+									name="Rep_athletes" value="{$Rep_athletes|default:''}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" />
 							</td>
 							<td colspan=3><label for="Arb_nj1">{#Arb_nj#}</label><input type="text" id="Arb_nj1" name="Arb_nj1"
-									value="{$Arb_nj1}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+									value="{$Arb_nj1|default:''}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
-							<td><label for="Arb_nj2">{#Arb_nj#}</label><input type="text" id="Arb_nj2" name="Arb_nj2" value="{$Arb_nj2}"
+							<td><label for="Arb_nj2">{#Arb_nj#}</label><input type="text" id="Arb_nj2" name="Arb_nj2" value="{$Arb_nj2|default:''}"
 									placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 							<td colspan=3><label for="Arb_nj3">{#Arb_nj#}</label><input type="text" id="Arb_nj3" name="Arb_nj3"
-									value="{$Arb_nj3}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+									value="{$Arb_nj3|default:''}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
-							<td><label for="Arb_nj4">{#Arb_nj#}</label><input type="text" id="Arb_nj4" name="Arb_nj4" value="{$Arb_nj4}"
+							<td><label for="Arb_nj4">{#Arb_nj#}</label><input type="text" id="Arb_nj4" name="Arb_nj4" value="{$Arb_nj4|default:''}"
 									placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 							<td colspan=3><label for="Arb_nj5">{#Arb_nj#}</label><input type="text" id="Arb_nj5" name="Arb_nj5"
-									value="{$Arb_nj5}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
+									value="{$Arb_nj5|default:''}" placeholder="{#Nom_de_famille#}, {#Prenom#}, {#Licence#}" /></td>
 						</tr>
 						<tr>
 							{if $Num_Journee == 0}
@@ -339,7 +339,7 @@
 							</td>
 						</tr>
 					</table>
-					{if $Code_typeclt == 'CP'}
+					{if $Code_typeclt|default:'CHPT' == 'CP'}
 						<table class='tableau2'>
 							<tr>
 								<th class='titreForm' colspan=2 width="100%">
