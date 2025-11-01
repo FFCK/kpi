@@ -75,6 +75,28 @@ Ce dossier contient toute la documentation technique générée durant le dével
   - Actions de nettoyage rapides
   - Quick wins identifiés lors de l'audit
 
+- **[JS_LIBRARIES_AUDIT.md](JS_LIBRARIES_AUDIT.md)** ⭐ **NOUVEAU** (31 oct 2025)
+  - Audit complet bibliothèques JavaScript
+  - 35+ fichiers JS analysés
+  - Identification 6 versions jQuery (60+ CVEs)
+  - Axios 0.24.0 (3 CVE critiques)
+  - **Statut**: ✅ Phase 1 terminée
+
+- **[JS_LIBRARIES_CLEANUP_PLAN.md](JS_LIBRARIES_CLEANUP_PLAN.md)** ⭐ **NOUVEAU** (1er nov 2025)
+  - Plan nettoyage JavaScript (3 phases)
+  - Identification fichiers inutilisés vs obsolètes
+  - Phase 1: Suppression immédiate (5 fichiers)
+  - Phase 2: Consolidation jQuery UI
+  - Phase 3: Migration jQuery 3.7.1
+  - **Statut**: ✅ Phase 1 terminée
+
+- **[JS_CLEANUP_PHASE1_COMPLETE.md](JS_CLEANUP_PHASE1_COMPLETE.md)** ⭐ **NOUVEAU** (1er nov 2025)
+  - Nettoyage Phase 1 terminé
+  - 5 fichiers supprimés (event_ably, jQuery 1.3.2, 1.5.2, 1.11.0 ×2)
+  - 330 KB récupérés, 60+ CVE supprimées
+  - 6 versions jQuery → 2 versions
+  - **Statut**: ✅ Terminé
+
 ### Bugs & Fixes
 
 - **[FIX_CSV_EXPORT_OPENSPOUT.md](FIX_CSV_EXPORT_OPENSPOUT.md)** ⭐ **NOUVEAU** (29 oct 2025)
@@ -172,14 +194,37 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 26 fichiers
-- **Lignes de documentation**: ~11200+
-- **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Bootstrap, Docker, WordPress, Audits, Bugs
-- **Date de création**: 2025-10-19 à 2025-10-30
+- **Total documents**: 29 fichiers
+- **Lignes de documentation**: ~15000+
+- **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Bootstrap, JavaScript, Docker, WordPress, Audits, Bugs
+- **Date de création**: 2025-10-19 à 2025-11-01
 
 ---
 
 ## 🔄 Historique des Mises à Jour
+
+### 2025-11-01
+- ✅ Audit complet bibliothèques JavaScript (35+ fichiers)
+- ✅ Ajout JS_LIBRARIES_AUDIT.md (3000+ lignes)
+- ✅ Plan nettoyage JavaScript (3 phases)
+- ✅ Ajout JS_LIBRARIES_CLEANUP_PLAN.md (2500+ lignes)
+- ✅ Nettoyage Phase 1: Suppression 5 fichiers obsolètes
+- ✅ jQuery: 6 versions → 2 versions (-66%)
+- ✅ Suppression 60+ CVE (jQuery 1.3.2, 1.5.2, 1.11.0)
+- ✅ Récupération 330 KB espace disque
+- ✅ Ajout JS_CLEANUP_PHASE1_COMPLETE.md (documentation finale)
+
+### 2025-10-31
+- ✅ Migration Bootstrap 5 complète et finalisée
+- ✅ Tests Bootstrap 5 validés (login, backend, frames, tv.php)
+- ✅ Suppression backups .bs3.bak (10 fichiers)
+- ✅ Suppression anciennes versions Bootstrap (3 MB récupérés)
+- ✅ Mise à jour BOOTSTRAP_MIGRATION_STATUS.md (statut finalisé)
+- ✅ Création PHP8_MIGRATION_SUMMARY.md (4200+ lignes)
+- ✅ Création PHP8_DOCKER_SWITCH.md (1800+ lignes)
+- ✅ Création PHP8_TESTING_CHECKLIST.md (2500+ lignes)
+- ✅ Création KPI_FUNCTIONALITY_INVENTORY.md (7000+ lignes)
+- ✅ Fix PHP 8 warnings: kpterrains.php, kpphases.tpl, formTools.js
 
 ### 2025-10-30
 - ✅ Bootstrap Phase 3: Migration 10 fichiers Bootstrap 3.x → 5.3.8
@@ -243,5 +288,5 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ---
 
-**Dernière mise à jour**: 2025-10-30
+**Dernière mise à jour**: 2025-11-01
 **Mainteneur**: Laurent Garrigue / Claude Code
