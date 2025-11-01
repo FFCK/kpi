@@ -290,3 +290,60 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 **Dernière mise à jour**: 2025-11-01
 **Mainteneur**: Laurent Garrigue / Claude Code
+
+## JavaScript Libraries Management
+
+### Audits et Analyses
+- **[JS_LIBRARIES_AUDIT.md](JS_LIBRARIES_AUDIT.md)** - Audit complet des bibliothèques JavaScript (35+ libs)
+  - État de chaque bibliothèque (versions, CVE, maintenance)
+  - Recommandations de mise à jour et suppression
+  - Plan d'action en 4 phases
+  - **Statut** : Phase 1 terminée (5 fichiers supprimés, 330 KB récupérés)
+
+- **[JS_LIBRARIES_CLEANUP_PLAN.md](JS_LIBRARIES_CLEANUP_PLAN.md)** - Plan pragmatique de nettoyage
+  - Distinction bibliothèques inutilisées vs obsolètes
+  - Phase 1 : Nettoyage immédiat (✅ complété)
+  - Phase 2 : Consolidation jQuery UI
+  - Phase 3 : Migration jQuery 3.7.1
+
+- **[JS_LIBRARIES_USAGE_ANALYSIS.md](JS_LIBRARIES_USAGE_ANALYSIS.md)** - Analyse détaillée de l'usage
+  - Usage réel d'Axios (18 fichiers, Live Scores)
+  - Usage dhtmlgoodies_calendar (17 appels, 10 templates)
+  - Comparatif solutions natives vs bibliothèques
+  - Recommandations HTML5 vs Flatpickr
+
+- **[JS_CLEANUP_PHASE1_COMPLETE.md](JS_CLEANUP_PHASE1_COMPLETE.md)** - Rapport Phase 1
+  - 5 fichiers jQuery obsolètes supprimés
+  - 60+ CVE éliminées
+  - 330 KB récupérés
+
+### Migrations Complétées
+- **[AXIOS_TO_FETCH_MIGRATION.md](AXIOS_TO_FETCH_MIGRATION.md)** - Analyse migration Axios → fetch()
+  - Analyse technique patterns Axios
+  - Comparaison Axios vs fetch()
+  - Stratégie wrapper function
+  - Breaking changes analysis
+
+- **[MIGRATION_AXIOS_FETCH_GUIDE.md](MIGRATION_AXIOS_FETCH_GUIDE.md)** - Guide migration (Quick Start)
+  - 4 étapes de migration
+  - Test checklist
+  - Procédures rollback
+  - Problèmes courants
+
+- **[AXIOS_MIGRATION_TEMPLATES_UPDATE.md](AXIOS_MIGRATION_TEMPLATES_UPDATE.md)** - Mise à jour templates
+  - Liste des 11 templates à modifier
+  - Instructions ligne par ligne
+  - Procédures de test
+
+**Résultat** : ✅ Migration Axios → fetch() terminée (9 fichiers JS, 11 templates, 3 CVE éliminées)
+
+### Migrations en Attente
+- **[FLATPICKR_MIGRATION_GUIDE.md](FLATPICKR_MIGRATION_GUIDE.md)** - Guide complet migration dhtmlgoodies → Flatpickr
+  - Installation via npm (container temporaire Node.js)
+  - Création wrapper function rétrocompatible
+  - Modification templates (page.tpl)
+  - Tests sur 10 pages admin
+  - Procédures rollback
+  - **Durée estimée** : 1-2 heures
+  - **Complexité** : 🟢 Faible (transparente)
+

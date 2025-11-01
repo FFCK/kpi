@@ -24,6 +24,7 @@ preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_sta
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
 run_dev run_build run_generate run_lint \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
+npm_install_backend npm_add_backend npm_update_backend npm_ls_backend npm_clean_backend npm_init_backend \
 composer_install composer_update composer_require composer_require_dev composer_dump \
 php_bash php8_bash node_bash db_bash \
 wordpress_backup wordpress_restore \
@@ -195,6 +196,66 @@ npm_add_app2: ## Ajoute un package npm à app2 (usage: make npm_add_app2 package
 
 npm_add_dev_app2: ## Ajoute un package npm de dev à app2 (usage: make npm_add_dev_app2 package=eslint)
 	$(DOCKER_EXEC_NODE) sh -c "npm install -D $(package)"
+
+
+## NPM - BACKEND (JavaScript Libraries)
+npm_install_backend: ## Installe les dépendances npm du backend (sources/package.json) via container temporaire
+	@if [ ! -f sources/package.json ]; then \
+		echo "⚠️  Aucun package.json trouvé dans sources/"; \
+		echo "💡 Créez d'abord sources/package.json avec: make npm_init_backend"; \
+		exit 1; \
+	fi
+	@echo "📦 Installation des dépendances JavaScript du backend..."
+	@docker run --rm -v $(PWD)/sources:/app -w /app node:20-alpine sh -c "npm install"
+	@echo "✅ Dépendances installées dans sources/node_modules/"
+
+npm_init_backend: ## Initialise package.json dans sources/ (si absent)
+	@if [ -f sources/package.json ]; then \
+		echo "⚠️  Le fichier sources/package.json existe déjà"; \
+		exit 1; \
+	fi
+	@echo "📝 Création de package.json dans sources/..."
+	@docker run --rm -v $(PWD)/sources:/app -w /app node:20-alpine sh -c "npm init -y"
+	@echo "✅ Fichier package.json créé dans sources/"
+	@echo "💡 Modifiez sources/package.json puis lancez: make npm_install_backend"
+
+npm_add_backend: ## Ajoute un package npm au backend (usage: make npm_add_backend package=flatpickr)
+	@if [ -z "$(package)" ]; then \
+		echo "❌ Erreur: spécifiez un package (make npm_add_backend package=flatpickr)"; \
+		exit 1; \
+	fi
+	@if [ ! -f sources/package.json ]; then \
+		echo "⚠️  Aucun package.json trouvé. Initialisation..."; \
+		$(MAKE) npm_init_backend; \
+	fi
+	@echo "📦 Installation de $(package)..."
+	@docker run --rm -v $(PWD)/sources:/app -w /app node:20-alpine sh -c "npm install $(package)"
+	@echo "✅ Package $(package) installé"
+	@echo "💡 Fichiers disponibles dans sources/node_modules/$(package)/"
+
+npm_update_backend: ## Met à jour les dépendances npm du backend
+	@if [ ! -f sources/package.json ]; then \
+		echo "❌ Aucun package.json trouvé dans sources/"; \
+		exit 1; \
+	fi
+	@echo "🔄 Mise à jour des dépendances JavaScript du backend..."
+	@docker run --rm -v $(PWD)/sources:/app -w /app node:20-alpine sh -c "npm update"
+	@echo "✅ Dépendances mises à jour"
+
+npm_ls_backend: ## Liste les packages npm installés dans le backend
+	@if [ ! -d sources/node_modules ]; then \
+		echo "⚠️  Aucun node_modules trouvé dans sources/"; \
+		echo "💡 Lancez d'abord: make npm_install_backend"; \
+		exit 1; \
+	fi
+	@echo "📦 Packages npm installés dans sources/:"
+	@docker run --rm -v $(PWD)/sources:/app -w /app node:20-alpine sh -c "npm list --depth=0"
+
+npm_clean_backend: ## Supprime node_modules du backend (attention: supprime toutes les libs JS)
+	@echo "⚠️  Suppression de sources/node_modules..."
+	@rm -rf sources/node_modules
+	@rm -f sources/package-lock.json
+	@echo "✅ node_modules et package-lock.json supprimés"
 
 
 ## COMPOSER - PHP

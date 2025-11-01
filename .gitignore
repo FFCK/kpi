@@ -140,3 +140,18 @@ sources/wordpress_archive/*
 # ==========================================
 sources/vendor/
 vendor/
+
+# ==========================================
+# NPM Backend dependencies (JavaScript libraries)
+# Installées via: make npm_install_backend
+# Pattern: même principe que sources/vendor/ (Composer)
+# ==========================================
+sources/node_modules/
+
+# ==========================================
+# NPM App2 dependencies (Nuxt)
+# ==========================================
+sources/app2/node_modules/
+sources/app2/.nuxt/
+sources/app2/.output/
+sources/app2/dist/

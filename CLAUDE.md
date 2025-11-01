@@ -63,13 +63,33 @@ Use `make help` to see all available commands.
 - `make run_generate` - Generate static Nuxt site
 - `make run_lint` - Run ESLint on app2
 
-### NPM - App2
+### NPM - App2 (Nuxt Application)
 - `make npm_install_app2` - Install all npm dependencies
 - `make npm_clean_app2` - Remove node_modules and package-lock.json
 - `make npm_update_app2` - Update all npm dependencies
 - `make npm_add_app2 package=<name>` - Add npm package
 - `make npm_add_dev_app2 package=<name>` - Add npm dev package
 - `make npm_ls_app2` - List installed npm modules
+
+### NPM - Backend (JavaScript Libraries)
+Manage JavaScript libraries (Flatpickr, Day.js, etc.) in the PHP backend via temporary Node.js container:
+- `make npm_init_backend` - Initialize package.json in sources/ (if absent)
+- `make npm_add_backend package=<name>` - Add a JavaScript package (e.g., `make npm_add_backend package=flatpickr`)
+- `make npm_install_backend` - Install all backend dependencies from sources/package.json
+- `make npm_update_backend` - Update all backend JavaScript dependencies
+- `make npm_ls_backend` - List installed backend packages
+- `make npm_clean_backend` - Remove sources/node_modules (WARNING: removes all JS libraries)
+
+**Example usage**:
+```bash
+# Install Flatpickr for datepicker migration
+make npm_add_backend package=flatpickr
+
+# Files will be in sources/node_modules/flatpickr/
+# Copy to sources/lib/ or reference directly in templates
+```
+
+**Note**: These commands use a temporary Node.js container (`node:20-alpine`), so no permanent Node.js installation is needed on the host.
 
 ### Composer - PHP
 - `make composer_install` - Install Composer dependencies (sources/vendor/)
