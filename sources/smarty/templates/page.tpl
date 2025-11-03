@@ -25,7 +25,8 @@
     <meta name="twitter:image" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link type="text/css" rel="stylesheet" href="css/dhtmlgoodies_calendar.css?random=20051112" media="screen" />
+    {* Flatpickr - Datepicker moderne (depuis node_modules/) *}
+    <link rel="stylesheet" href="node_modules/flatpickr/dist/flatpickr.min.css?v={$NUM_VERSION}">
     <link type="text/css" rel="stylesheet" href="css/jquery.autocomplete.css" media="screen" />
     <link type="text/css" rel="stylesheet" href="css/jquery.tooltip.css" media="screen" />
     {assign var=temp value="css/$contenutemplate.css"}
@@ -43,7 +44,10 @@
         <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css">
       {/if}
     {/if}
-    <script src="js/dhtmlgoodies_calendar.js?random=20060118"></script>
+    <script src="node_modules/flatpickr/dist/flatpickr.min.js?v={$NUM_VERSION}"></script>
+    <script src="node_modules/flatpickr/dist/l10n/fr.js?v={$NUM_VERSION}"></script>
+    <script src="js/flatpickr-wrapper.js?v={$NUM_VERSION}"></script>
+    <script src="js/vanilla-autocomplete.js?v={$NUM_VERSION}"></script>
     <script src="js/jquery-1.5.2.min.js"></script>
     <script src="js/jquery.autocomplete.min.js"></script>
     <script src="js/jquery.tooltip.min.js"></script>
@@ -58,7 +62,8 @@
   {else}
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" type="text/css" href="../css/GestionStyle.css?v={$NUM_VERSION}" />
-    <link type="text/css" rel="stylesheet" href="../css/dhtmlgoodies_calendar.css?random=20051112" media="screen" />
+    {* Flatpickr - Datepicker moderne (depuis node_modules/) *}
+    <link rel="stylesheet" href="../node_modules/flatpickr/dist/flatpickr.min.css?v={$NUM_VERSION}">
     <link type="text/css" rel="stylesheet" href="../css/jquery.autocomplete.css" media="screen" />
     <link type="text/css" rel="stylesheet" href="../css/jquery.tooltip.css" media="screen" />
     {assign var=temp value="../css/$contenutemplate.css"}
@@ -90,9 +95,11 @@
     <script>
       masquer = {$masquer};
       lang = '{$lang}';
-      var languageCode = lang; // dhtmlgoodies_calendar. Possible values: 	en,ge,no,nl,es,pt-br,fr
     </script>
-    <script src="../js/dhtmlgoodies_calendar.js?random=20060118"></script>
+    <script src="../node_modules/flatpickr/dist/flatpickr.min.js?v={$NUM_VERSION}"></script>
+    <script src="../node_modules/flatpickr/dist/l10n/fr.js?v={$NUM_VERSION}"></script>
+    <script src="../js/flatpickr-wrapper.js?v={$NUM_VERSION}"></script>
+    <script src="../js/vanilla-autocomplete.js?v={$NUM_VERSION}"></script>
     <script src="../js/jquery-1.5.2.min.js"></script>
     <script src="../js/jquery.autocomplete.min.js"></script>
     <script src="../js/jquery.tooltip.min.js"></script>

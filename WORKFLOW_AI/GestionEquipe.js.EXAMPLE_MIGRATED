@@ -1,0 +1,146 @@
+/**
+ * GestionEquipe.js - VERSION MIGRÉE VANILLA JS
+ *
+ * Exemple de migration jQuery autocomplete → Vanilla autocomplete
+ *
+ * Changements principaux :
+ * 1. Garde jQuery temporairement (alias jq) pour autres plugins (tooltip, etc.)
+ * 2. Remplace .autocomplete() par vanillaAutocomplete()
+ * 3. Remplace .result() par onSelect callback
+ * 4. Remplace $.get() par fetch() (bonus - optionnel)
+ *
+ * Date: 3 novembre 2025
+ */
+
+jq = jQuery.noConflict()
+
+var langue = []
+
+if (lang == 'en') {
+	langue['Cliquez_pour_modifier'] = 'Click to edit'
+	langue['Confirmer_MAJ'] = 'Confirm composition update ?'
+	langue['Confirmer_verrouillage'] = 'Confirm presence sheets lock / unlock ?'
+	langue['MAJ_impossible'] = 'Unable to update'
+	langue['Nom_equipe_vide'] = 'Team name is empty, unable to create'
+	langue['Rechercher_equipe'] = 'Search team'
+	langue['Selectionner_competition'] = 'Select a competition'
+	langue['Selectionner_club'] = 'Select a club'
+	langue['Verrouiller_avant'] = 'Lock presence sheets before !'
+} else {
+	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
+	langue['Confirmer_MAJ'] = 'Confirmez-vous la mise à jour des feuilles de matchs ?'
+	langue['Confirmer_verrouillage'] = 'Confirmez-vous le verrouillage / déverrouillage des feuilles de présence ?'
+	langue['MAJ_impossible'] = 'Mise à jour impossible'
+	langue['Nom_equipe_vide'] = 'Le Nom de l\'Equipe est vide, ajout impossible'
+	langue['Rechercher_equipe'] = 'Rechercher une équipe'
+	langue['Selectionner_competition'] = 'Sélectionnez une compétition'
+	langue['Selectionner_club'] = 'Sélectionnez un club'
+	langue['Verrouiller_avant'] = 'Verrouillez les feuilles de présence avant !'
+}
+
+// ... (autres fonctions inchangées)
+
+// ========================================
+// SECTION MODIFIÉE : Autocomplete Migration
+// ========================================
+
+jq(document).ready(function () {
+	// ... (autres initialisations jQuery inchangées)
+
+	jq('#cltChEquipe').select().keyup(() => {
+		jq('#cltChEquipe').val(jq('#cltChEquipe').val().match(/[0-9]{0,2}/)[0])
+	})
+	jq('#cltCpEquipe').select().keyup(() => {
+		jq('#cltCpEquipe').val(jq('#cltCpEquipe').val().match(/[0-9]{0,2}/)[0])
+	})
+	jq('#ShowCompo').hide()
+
+	// ========================================
+	// AVANT (jQuery Autocomplete) :
+	// ========================================
+	/*
+	jq("#choixEquipe").autocomplete('Autocompl_equipe.php', {
+		width: 550,
+		max: 50,
+		mustMatch: true,
+	})
+	jq("#choixEquipe").result(function (event, data, formatted) {
+		if (data) {
+			var lequipe = data[1]
+			var lasaison = jq("#Saison").val()
+			jq("#EquipeNom").val(data[0])
+			jq('#EquipeNum').val(lequipe)
+			jq('#EquipeNumero').val(lequipe)
+			jq('#ShowCompo').show()
+			jq.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function (data2) {
+				jq('#GetCompo').html(data2)
+			})
+		}
+	})
+	*/
+
+	// ========================================
+	// APRÈS (Vanilla Autocomplete) :
+	// ========================================
+	vanillaAutocomplete('#choixEquipe', 'Autocompl_equipe.php', {
+		width: 550,
+		maxResults: 50,        // Changement 1: max → maxResults
+		// Note: mustMatch non supporté nativement (optionnel)
+		onSelect: function (data, index) {  // Changement 2: .result() → onSelect
+			if (data) {
+				var lequipe = data[1]
+				var lasaison = jq("#Saison").val()  // Garde jQuery pour selectors (temporaire)
+				jq("#EquipeNom").val(data[0])
+				jq('#EquipeNum').val(lequipe)
+				jq('#EquipeNumero').val(lequipe)
+				jq('#ShowCompo').show()
+
+				// Option A: Garder jQuery $.get() (temporaire)
+				jq.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function (data2) {
+					jq('#GetCompo').html(data2)
+				})
+
+				// Option B: Migrer vers fetch() moderne (bonus - recommandé)
+				/*
+				fetch(`Autocompl_getCompo.php?q=${encodeURIComponent(lequipe)}&s=${encodeURIComponent(lasaison)}`)
+					.then(response => response.text())
+					.then(data2 => {
+						document.querySelector('#GetCompo').innerHTML = data2
+					})
+					.catch(error => {
+						console.error('Erreur chargement composition:', error)
+					})
+				*/
+			}
+		}
+	})
+
+	// ========================================
+	// Reste du code jQuery inchangé (pour l'instant)
+	// ========================================
+	jq("#annulEquipe2").click(function () {
+		jq('#ShowCompo').hide()
+		jq('#plEquipe').val('')
+		jq('#tirEquipe').val('')
+		// ... etc.
+	})
+
+	// ... (reste du fichier inchangé)
+})
+
+// ========================================
+// NOTES MIGRATION :
+// ========================================
+/*
+1. ✅ jQuery garde alias 'jq' pour plugins restants (tooltip, maskedinput)
+2. ✅ Autocomplete migré vers vanillaAutocomplete()
+3. ✅ API compatible : changements minimaux
+4. ✅ Callbacks fonctionnent identiquement
+5. 🟡 Sélecteurs jQuery gardés temporairement (optionnel de migrer)
+6. 🟡 $.get() gardé temporairement (optionnel de migrer vers fetch())
+
+PROCHAINES ÉTAPES (optionnel) :
+- Migrer $.get() → fetch() pour suppression complète jQuery
+- Migrer selectors jQuery → document.querySelector()
+- Supprimer jQuery après migration tous plugins
+*/

@@ -320,22 +320,30 @@ jq(document).ready(function () {
 		jq('#cltCpEquipe').val(jq('#cltCpEquipe').val().match(/[0-9]{0,2}/)[0])
 	})
 	jq('#ShowCompo').hide()
-	jq("#choixEquipe").autocomplete('Autocompl_equipe.php', {
+	// Migration jQuery autocomplete → Vanilla JS (format JSON)
+	vanillaAutocomplete('#choixEquipe', 'Autocompl_equipe.php', {
 		width: 550,
-		max: 50,
-		mustMatch: true,
-	})
-	jq("#choixEquipe").result(function (event, data, formatted) {
-		if (data) {
-			var lequipe = data[1]
-			var lasaison = jq("#Saison").val()
-			jq("#EquipeNom").val(data[0])
-			jq('#EquipeNum').val(lequipe)
-			jq('#EquipeNumero').val(lequipe)
-			jq('#ShowCompo').show()
-			jq.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function (data2) {
-				jq('#GetCompo').html(data2)//"REPRISE DES COMPOSITIONS D'EQUIPE:<br>"
-			})
+		maxResults: 50,
+		dataType: 'json',  // Format JSON moderne
+		formatItem: function(item) {
+			// item = { numero, libelle, codeClub, nomClub, label, value }
+			return item.label;  // Affichage: "Code - Libelle (nomClub)"
+		},
+		formatResult: function(item) {
+			return item.value;  // Valeur dans input: Libelle
+		},
+		onSelect: function (item, index) {
+			if (item) {
+				var lequipe = item.numero;
+				var lasaison = jq("#Saison").val();
+				jq("#EquipeNom").val(item.libelle);
+				jq('#EquipeNum').val(lequipe);
+				jq('#EquipeNumero').val(lequipe);
+				jq('#ShowCompo').show();
+				jq.get("Autocompl_getCompo.php", { q: lequipe, s: lasaison }).done(function (data2) {
+					jq('#GetCompo').html(data2);
+				});
+			}
 		}
 	})
 	jq("#annulEquipe2").click(function () {
