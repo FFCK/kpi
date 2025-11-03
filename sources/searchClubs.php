@@ -16,7 +16,7 @@ $myBdd = new MyBdd();
 
 // Chargement des Clubs ayant une équipe inscrite dans une compétition de polo ...
 $a_json = array();
-$term = trim(utyGetGet('term'));
+$term = trim(utyGetGet('term', utyGetGet('q')));
 // replace multiple spaces with one
 $term = preg_replace('/\s+/', ' ', $term);
 $term2 = preg_replace('/\s/', '-', $term);

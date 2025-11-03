@@ -172,13 +172,16 @@ jq(document).ready(function() {
 
     });
 
-    jq( "#rechercheClub" ).autocomplete({
-        source: 'searchClubs.php',
-        minLength: 2,
-        select: function( event, ui ) {
-            event.preventDefault();
-            jq( "#clubId" ).val(ui.item.idClub);
-            jq( "#localise" ).show().click();
+    vanillaAutocomplete('#rechercheClub', 'searchClubs.php', {
+        minChars: 2,
+        dataType: 'json',
+        formatItem: (item) => item.label || item.value,
+        formatResult: (item) => item.value,
+        onSelect: function(item) {
+            if (item) {
+                jq( "#clubId" ).val(item.idClub);
+                jq( "#localise" ).show().click();
+            }
         }
     });
     

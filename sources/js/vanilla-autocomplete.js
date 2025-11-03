@@ -88,7 +88,7 @@
             this.dropdown = document.createElement('div');
             this.dropdown.className = 'vanilla-autocomplete-dropdown';
             this.dropdown.style.cssText = `
-                position: absolute;
+                position: fixed;
                 display: none;
                 background: white;
                 border: 1px solid #ccc;
@@ -110,8 +110,8 @@
 
             this.dropdown.appendChild(this.resultsList);
 
-            // Insérer après l'input
-            this.input.parentNode.insertBefore(this.dropdown, this.input.nextSibling);
+            // Attacher au body (évite problèmes de positionnement)
+            document.body.appendChild(this.dropdown);
 
             // Position et largeur
             this.updateDropdownPosition();
@@ -125,8 +125,8 @@
             const width = this.options.width || rect.width;
 
             this.dropdown.style.width = width + 'px';
-            this.dropdown.style.left = rect.left + window.scrollX + 'px';
-            this.dropdown.style.top = rect.bottom + window.scrollY + 'px';
+            this.dropdown.style.left = rect.left + 'px';
+            this.dropdown.style.top = rect.bottom + 'px';
         }
 
         /**

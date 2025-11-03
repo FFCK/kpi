@@ -175,69 +175,71 @@ jq(document).ready(function () {
 
 	// jq("*").tooltip()
 
-	jq("#choixCompet").autocomplete('Autocompl_compet.php', {
+	// Migration jQuery autocomplete → Vanilla JS (format JSON)
+	vanillaAutocomplete('#choixCompet', 'Autocompl_compet.php', {
 		width: 350,
-		max: 30,
-		mustMatch: true,
-		minLength: 2,
+		maxResults: 30,
+		minChars: 2,
 		cacheLength: 0,
-		//multiple: true,
-		//matchContains: true,
-		//formatItem: formatItem,
-		//formatResult: formatResult
-		//selectFirst: false
-	})
-	jq("#choixCompet").result(function (event, data, formatted) {
-		if (data) {
-			jq("#codeCompet").val(data[1])
-			jq("#labelCompet").val(data[2])
-			jq("#niveauCompet").val(data[3])
-			jq("#codeRef").val(data[4])
-			jq("#codeTypeClt").val(data[5])
-			jq("#etape").val(data[6])
-			jq("#qualifies").val(data[7])
-			jq("#elimines").val(data[8])
-			jq('#points[value="' + data[9] + '"]').attr('checked', 'checked')
-			jq("#soustitre").val(data[10])
-			jq("#web").val(data[11])
-			jq("#logoLink").val(data[12])
-			jq("#sponsorLink").val(data[13])
-			jq("#toutGroup").val(data[14])
-			jq("#touteSaisons").val(data[15])
-			jq("#groupOrder").val(data[16])
-			jq("#soustitre2").val(data[17])
-			if (data[18] == 'O') {
-				jq("#checktitre").attr('checked', 'checked')
-			} else {
-				jq("#checktitre").attr('checked', '')
+		dataType: 'json',
+		formatItem: function(item) {
+			return item.label;  // "Code - Libelle"
+		},
+		formatResult: function(item) {
+			return item.value;
+		},
+		onSelect: function (item, index) {
+			if (item) {
+				jq("#codeCompet").val(item.code);
+				jq("#labelCompet").val(item.libelle);
+				jq("#niveauCompet").val(item.codeNiveau);
+				jq("#codeRef").val(item.codeRef);
+				jq("#codeTypeClt").val(item.codeTypeclt);
+				jq("#etape").val(item.codeTour);
+				jq("#qualifies").val(item.qualifies);
+				jq("#elimines").val(item.elimines);
+				jq('#points[value="' + item.points + '"]').attr('checked', 'checked');
+				jq("#soustitre").val(item.soustitre);
+				jq("#web").val(item.web);
+				jq("#logoLink").val(item.logoLink);
+				jq("#sponsorLink").val(item.sponsorLink);
+				jq("#toutGroup").val(item.toutGroup);
+				jq("#touteSaisons").val(item.touteSaisons);
+				jq("#groupOrder").val(item.groupOrder);
+				jq("#soustitre2").val(item.soustitre2);
+				if (item.titreActif == 'O') {
+					jq("#checktitre").attr('checked', 'checked');
+				} else {
+					jq("#checktitre").attr('checked', '');
+				}
+				if (item.logoActif == 'O') {
+					jq("#checklogo").attr('checked', 'checked');
+				} else {
+					jq("#checklogo").attr('checked', '');
+				}
+				if (item.sponsorActif == 'O') {
+					jq("#checksponsor").attr('checked', 'checked');
+				} else {
+					jq("#checksponsor").attr('checked', '');
+				}
+				if (item.kpiFfckActif == 'O') {
+					jq("#checkkpiffck").attr('checked', 'checked');
+				} else {
+					jq("#checkkpiffck").attr('checked', '');
+				}
+				if (item.enActif == 'O') {
+					jq("#checken").attr('checked', 'checked');
+				} else {
+					jq("#checken").attr('checked', '');
+				}
+				if (item.bandeauActif == 'O') {
+					jq("#checkbandeau").attr('checked', 'checked');
+				} else {
+					jq("#checkbandeau").attr('checked', '');
+				}
+				jq("#bandeauLink").val(item.bandeauLink);
+				jq("#goalaverage[value='" + item.goalaverage + "']").attr('checked', 'checked');
 			}
-			if (data[19] == 'O') {
-				jq("#checklogo").attr('checked', 'checked')
-			} else {
-				jq("#checklogo").attr('checked', '')
-			}
-			if (data[20] == 'O') {
-				jq("#checksponsor").attr('checked', 'checked')
-			} else {
-				jq("#checksponsor").attr('checked', '')
-			}
-			if (data[21] == 'O') {
-				jq("#checkkpiffck").attr('checked', 'checked')
-			} else {
-				jq("#checkkpiffck").attr('checked', '')
-			}
-			if (data[22] == 'O') {
-				jq("#checken").attr('checked', 'checked')
-			} else {
-				jq("#checken").attr('checked', '')
-			}
-			if (data[23] == 'O') {
-				jq("#checkbandeau").attr('checked', 'checked')
-			} else {
-				jq("#checkbandeau").attr('checked', '')
-			}
-			jq("#bandeauLink").val(data[23])
-			jq("#goalaverage[value='" + data[25] + "']").attr('checked', 'checked')
 		}
 	})
 	jq("#bandeauLink").blur(function () {
@@ -275,30 +277,34 @@ jq(document).ready(function () {
 		alert('Vous allez affecter ces données (Sous-titre, Lien web, logo, sponsor) à toutes les saisons de la compétition ou du groupe ET perdre les données des autres saisons !')
 	})
 	//Fusion joueurs
-	jq("#FusionSource").autocomplete('Autocompl_joueur.php', {
+	vanillaAutocomplete('#FusionSource', 'Autocompl_joueur.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-		cacheLength: 0
-	})
-	jq("#FusionSource").result(function (event, data, formatted) {
-		if (data) {
-			jq("#numFusionSource").val(data[1])
-			jq("#FusionSource").val(data[0])
+		maxResults: 50,
+		cacheLength: 0,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numFusionSource").val(item.matric);
+				jq("#FusionSource").val(item.label);
+			}
 		}
-	})
-	jq("#FusionCible").autocomplete('Autocompl_joueur.php', {
+	});
+	vanillaAutocomplete('#FusionCible', 'Autocompl_joueur.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-		cacheLength: 0
-	})
-	jq("#FusionCible").result(function (event, data, formatted) {
-		if (data) {
-			jq("#numFusionCible").val(data[1])
-			jq("#FusionCible").val(data[0])
+		maxResults: 50,
+		cacheLength: 0,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numFusionCible").val(item.matric);
+				jq("#FusionCible").val(item.label);
+			}
 		}
-	})
+	});
 	jq("#FusionJoueurs").click(function () {
 		var fusSource = jq("#FusionSource").val()
 		var fusCible = jq("#FusionCible").val()
@@ -310,19 +316,21 @@ jq(document).ready(function () {
 	})
 
 	//Renomme Equipe
-	jq("#RenomSource").autocomplete('Autocompl_equipe.php', {
+	vanillaAutocomplete('#RenomSource', 'Autocompl_equipe.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-		cacheLength: 0
-	})
-	jq("#RenomSource").result(function (event, data, formatted) {
-		if (data) {
-			jq("#numRenomSource").val(data[1])
-			jq("#RenomSource").val(data[2])
-			jq("#RenomCible").val(data[2])
+		maxResults: 50,
+		cacheLength: 0,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numRenomSource").val(item.numero);
+				jq("#RenomSource").val(item.libelle);
+				jq("#RenomCible").val(item.libelle);
+			}
 		}
-	})
+	});
 	jq("#RenomEquipe").click(function () {
 		var renSource = jq("#RenomSource").val()
 		var renCible = jq("#RenomCible").val()
@@ -334,30 +342,34 @@ jq(document).ready(function () {
 	})
 
 	//Fusion équipes
-	jq("#FusionEquipeSource").autocomplete('Autocompl_equipe.php', {
+	vanillaAutocomplete('#FusionEquipeSource', 'Autocompl_equipe.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-		cacheLength: 0
-	})
-	jq("#FusionEquipeSource").result(function (event, data, formatted) {
-		if (data) {
-			jq("#numFusionEquipeSource").val(data[1])
-			jq("#FusionEquipeSource").val(data[2])
+		maxResults: 50,
+		cacheLength: 0,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numFusionEquipeSource").val(item.numero);
+				jq("#FusionEquipeSource").val(item.libelle);
+			}
 		}
-	})
-	jq("#FusionEquipeCible").autocomplete('Autocompl_equipe.php', {
+	});
+	vanillaAutocomplete('#FusionEquipeCible', 'Autocompl_equipe.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-		cacheLength: 0
-	})
-	jq("#FusionEquipeCible").result(function (event, data, formatted) {
-		if (data) {
-			jq("#numFusionEquipeCible").val(data[1])
-			jq("#FusionEquipeCible").val(data[2])
+		maxResults: 50,
+		cacheLength: 0,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numFusionEquipeCible").val(item.numero);
+				jq("#FusionEquipeCible").val(item.libelle);
+			}
 		}
-	})
+	});
 	jq("#FusionEquipes").click(function () {
 		var fusSource = jq("#FusionEquipeSource").val()
 		var fusCible = jq("#FusionEquipeCible").val()
@@ -369,30 +381,34 @@ jq(document).ready(function () {
 	})
 
 	//Déplacement équipe
-	jq("#DeplaceEquipeSource").autocomplete('Autocompl_equipe.php', {
+	vanillaAutocomplete('#DeplaceEquipeSource', 'Autocompl_equipe.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-		cacheLength: 0
-	})
-	jq("#DeplaceEquipeSource").result(function (event, data, formatted) {
-		if (data) {
-			jq("#numDeplaceEquipeSource").val(data[1])
-			jq("#DeplaceEquipeSource").val(data[0])
+		maxResults: 50,
+		cacheLength: 0,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.label,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numDeplaceEquipeSource").val(item.numero);
+				jq("#DeplaceEquipeSource").val(item.label);
+			}
 		}
-	})
-	jq("#DeplaceEquipeCible").autocomplete('Autocompl_club2.php', {
+	});
+	vanillaAutocomplete('#DeplaceEquipeCible', 'Autocompl_club2.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-		cacheLength: 0
-	})
-	jq("#DeplaceEquipeCible").result(function (event, data, formatted) {
-		if (data) {
-			jq("#numDeplaceEquipeCible").val(data[2])
-			jq("#DeplaceEquipeCible").val(data[0])
+		maxResults: 50,
+		cacheLength: 0,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.label,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numDeplaceEquipeCible").val(item.code);
+				jq("#DeplaceEquipeCible").val(item.label);
+			}
 		}
-	})
+	});
 	jq("#DeplaceEquipe").click(function () {
 		var depSource = jq("#DeplaceEquipeSource").val()
 		var depCible = jq("#DeplaceEquipeCible").val()
@@ -404,18 +420,23 @@ jq(document).ready(function () {
 	})
 
 	//Changement code competition
-	jq("#ChangeCodeRecherche").autocomplete('Autocompl_compet2.php?saison=' + jq('#saisonTravail').val(), {
+	vanillaAutocomplete('#ChangeCodeRecherche', 'Autocompl_compet2.php', {
 		width: 550,
-		max: 30,
-		mustMatch: true,
-		minLength: 2,
-		cacheLength: 0
-	})
-	jq("#ChangeCodeRecherche").result(function (event, data, formatted) {
-		if (data) {
-			jq("#changeCodeSource").val(data[1])
+		maxResults: 30,
+		minChars: 2,
+		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			saison: jq('#saisonTravail').val()
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.label,
+		onSelect: function(item) {
+			if (item) {
+				jq("#changeCodeSource").val(item.code);
+			}
 		}
-	})
+	});
 	jq("#ChangeCodeBtn").click(function () {
 		var changeCodeSource = jq("#changeCodeSource").val()
 		var changeCodeCible = jq("#changeCodeCible").val()

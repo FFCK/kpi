@@ -2,7 +2,7 @@ jq = jQuery.noConflict();
 
 function Add()
 {
-						
+
 	document.forms['formAthlete'].elements['Cmd'].value = 'Add';
 	document.forms['formAthlete'].elements['ParamCmd'].value = '';
 	document.forms['formAthlete'].submit();
@@ -20,18 +20,23 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#iframeRechercheLicenceIndi2').toggle();
 	});
 
-	jq("#choixJoueur").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur3.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-	});
-	jq("#choixJoueur").result(function(event, data, formatted) {
-		if (data) {
-			jq("#Athlete").val(data[1]);
-			jq("#choixJoueur").val(data[0]);
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#Athlete").val(item.matric);
+				jq("#choixJoueur").val(item.value);
+			}
 		}
 	});
-	
+
 	jq('#update_button').click(function(e){
         e.preventDefault();
         if(confirm('Modifier cet athlète ?')) {
@@ -39,28 +44,38 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
             jq('#formAthlete').submit();
         }
     });
-    
+
     //Fusion joueurs
-	jq("#FusionSource").autocomplete('Autocompl_joueur.php', {
+	vanillaAutocomplete('#FusionSource', 'Autocompl_joueur.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-	});
-	jq("#FusionSource").result(function(event, data, formatted) {
-		if (data) {
-			jq("#numFusionSource").val(data[1]);
-			jq("#FusionSource").val(data[0]);
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numFusionSource").val(item.matric);
+				jq("#FusionSource").val(item.value);
+			}
 		}
 	});
-	jq("#FusionCible").autocomplete('Autocompl_joueur.php', {
+	vanillaAutocomplete('#FusionCible', 'Autocompl_joueur.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-	});
-	jq("#FusionCible").result(function(event, data, formatted) {
-		if (data) {
-			jq("#numFusionCible").val(data[1]);
-			jq("#FusionCible").val(data[0]);
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#numFusionCible").val(item.matric);
+				jq("#FusionCible").val(item.value);
+			}
 		}
 	});
 	jq("#FusionJoueurs").click(function() {
@@ -73,18 +88,23 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#Cmd').val('FusionJoueurs');
 		jq('#formAthlete').submit();
 	});
-	
-    //Fusion joueurs
-	jq("#update_club").autocomplete('Autocompl_club2.php', {
+
+    //Changement club
+	vanillaAutocomplete('#update_club', 'Autocompl_club2.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-	});
-	jq("#update_club").result(function(event, data, formatted) {
-		if (data) {
-			jq("#update_club").val(data[2]);
-			jq("#update_cd").val(data[3]);
-			jq("#update_cr").val(data[4]);
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.libelle,
+		onSelect: function(item) {
+			if (item) {
+				jq("#update_club").val(item.code);
+				jq("#update_cd").val(item.codeComiteDep);
+				jq("#update_cr").val(item.codeComiteReg);
+			}
 		}
 	});
 });

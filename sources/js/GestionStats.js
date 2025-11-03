@@ -24,17 +24,21 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#iframeRechercheLicenceIndi2').toggle();
 	});
 	*/
-	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
 		width: 550,
-		max: 50,
-		mustMatch: false,
-	});
-	jq("#choixJoueur").result(function(event, data, formatted) {
-		if (data) {
-			jq("#Athlete").val(data[1]);
-			var athl = data[1];
-			jq("#choixJoueur").val(data[0]);
-			jq("#rechercheAthlete").attr( "href", "GestionAthlete.php?Athlete="+athl );
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#Athlete").val(item.matric);
+				jq("#choixJoueur").val(item.value);
+				jq("#rechercheAthlete").attr("href", "GestionAthlete.php?Athlete=" + item.matric);
+			}
 		}
 	});
 	

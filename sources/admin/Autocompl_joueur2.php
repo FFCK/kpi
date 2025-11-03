@@ -13,7 +13,7 @@ include_once('../commun/MyTools.php');
 $myBdd = new MyBdd();
 
 // Chargement
-$term = trim(utyGetGet('term'));
+$term = trim(utyGetGet('term', utyGetGet('q')));
 // replace multiple spaces with one
 $term = preg_replace('/\s+/', ' ', $term);
 // supprime les 0 devant les numéros de licence

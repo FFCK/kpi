@@ -56,18 +56,23 @@ if(lang == 'en')  {
     langue['Vider'] = 'Vider';
 }
 jq(document).ready(function() {
-	jq("#Representant").autocomplete('Autocompl_joueur.php', {
+	vanillaAutocomplete('#Representant', 'Autocompl_joueur.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
 		cacheLength: 0,
 		scrollHeight: 320,
-	});
-	jq("#Representant").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[7] + ' ' + data[6] + ' (' + data[12] + ')';
-			jq("#Representant").val(nom);
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.nom + ' ' + item.prenom + ' (' + item.clubLibelle + ')';
+				jq("#Representant").val(nom);
+			}
 		}
 	});
 
@@ -89,26 +94,31 @@ jq(document).ready(function() {
 			jq("#inputZone2valid").attr('data-value', '');
 			jq("#inputZone2vid").attr('data-target', typeChamps);
 			// AUTOCOMPLETE ARBITRES
-			jq("#inputZone2").autocomplete('Autocompl_joueur3.php', {
+			vanillaAutocomplete('#inputZone2', 'Autocompl_joueur3.php', {
 				width: 320,
-				max: 80,
-				mustMatch: false,
+				maxResults: 80,
 				minChars: 2,
 				cacheLength: 0,
 				scrollHeight: 320,
-			});
-			jq("#inputZone2").result(function(event, data, formatted) {
-				if (data) {
-					if(typeof(data[1]) == 'undefined' || data[1] == 'XXX') {
-						jq("#inputZone2valid").attr('data-id', dataid);
-						jq("#inputZone2valid").attr('data-target', typeChamps);
-						jq("#inputZone2valid").attr('data-value', '');
-					} else {
-						var nomArb = data[3]+' '+data[2]+' ('+data[1]+')';
-						jq("#inputZone2valid").attr('data-id', dataid);
-						jq("#inputZone2valid").attr('data-target', typeChamps);
-						jq("#inputZone2valid").attr('data-value', nomArb);
-						jq("#inputZone2").val(nomArb);
+				dataType: 'json',
+				extraParams: {
+					format: 'json'
+				},
+				formatItem: (item) => item.label,
+				formatResult: (item) => item.value,
+				onSelect: function(item) {
+					if (item) {
+						if(typeof(item.matric) == 'undefined' || item.matric == 'XXX') {
+							jq("#inputZone2valid").attr('data-id', dataid);
+							jq("#inputZone2valid").attr('data-target', typeChamps);
+							jq("#inputZone2valid").attr('data-value', '');
+						} else {
+							var nomArb = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+							jq("#inputZone2valid").attr('data-id', dataid);
+							jq("#inputZone2valid").attr('data-target', typeChamps);
+							jq("#inputZone2valid").attr('data-value', nomArb);
+							jq("#inputZone2").val(nomArb);
+						}
 					}
 				}
 			});

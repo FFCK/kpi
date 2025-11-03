@@ -1,1 +1,19 @@
-$(document).ready(function() {	$("*").tooltip({	//bodyHandler: function() {	//	return $($(this).attr("href")).html();	//},	showURL: false});	$("#choixEquipe").autocomplete('Autocompl_equipe.php', {		width: 350,		max: 50		//mustMatch: true,		//multiple: true,		//matchContains: true,		//formatItem: formatItem,		//formatResult: formatResult		//selectFirst: false	});	$("#choixEquipe").result(function(event, data, formatted) {		if (data) {			$("#choixEquipe").val(data[2]);			$("#formPalmares").attr('action', 'Palmares.php?Equipe='+data[1]);			//$("#formPalmares").get(0).setAttribute('action', '?Equipe='+data[1]);		}	});});
+$(document).ready(function() {
+	$("*").tooltip({
+		showURL: false
+	});
+
+	vanillaAutocomplete('#choixEquipe', 'Autocompl_equipe.php', {
+		width: 350,
+		maxResults: 50,
+		dataType: 'json',
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.libelle,
+		onSelect: function(item) {
+			if (item) {
+				$("#choixEquipe").val(item.libelle);
+				$("#formPalmares").attr('action', 'Palmares.php?Equipe=' + item.numero);
+			}
+		}
+	});
+});

@@ -333,27 +333,34 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 			jq('#comboJournee').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).focus()
 		}
 	})
-	jq("#arbitre1").autocomplete('Autocompl_arb.php', {
+	vanillaAutocomplete('#arbitre1', 'Autocompl_arb.php', {
 		width: 320,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
 		cacheLength: 0,
 		scrollHeight: 320,
-	})
-	jq("#arbitre1").result(function (event, data, formatted) {
-		if (data) {
-			if (data[1] == 'XXX') {
-				jq("#arbitre1_matric").val('')
-				jq("#arbitre1").val('')
-			}
-			else {
-				if (data[4] != '')
-					var nomArb = data[2] + ' ' + data[3] + ' (' + data[4] + ') ' + data[5]
-				else
-					var nomArb = data[2] + ' ' + data[3] + ' ' + data[5]
-				jq("#arbitre1_matric").val(data[1])
-				jq("#arbitre1").val(nomArb)
+		dataType: 'json',
+		formatItem: function(item) {
+			return item.label;
+		},
+		formatResult: function(item) {
+			return item.value;
+		},
+		onSelect: function (item, index) {
+			if (item) {
+				if (item.matric == 'XXX') {
+					jq("#arbitre1_matric").val('')
+					jq("#arbitre1").val('')
+				}
+				else {
+					var nomArb;
+					if (item.libelle != '')
+						nomArb = item.nom + ' ' + item.prenom + ' (' + item.libelle + ') ' + item.arbitre
+					else
+						nomArb = item.nom + ' ' + item.prenom + ' ' + item.arbitre
+					jq("#arbitre1_matric").val(item.matric)
+					jq("#arbitre1").val(nomArb)
+				}
 			}
 		}
 	})
@@ -365,27 +372,34 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 			jq('#comboJournee').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).focus()
 		}
 	})
-	jq("#arbitre2").autocomplete('Autocompl_arb.php', {
+	vanillaAutocomplete('#arbitre2', 'Autocompl_arb.php', {
 		width: 320,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
 		cacheLength: 0,
 		scrollHeight: 320,
-	})
-	jq("#arbitre2").result(function (event, data, formatted) {
-		if (data) {
-			if (data[1] == 'XXX') {
-				jq("#arbitre2_matric").val('')
-				jq("#arbitre2").val('')
-			}
-			else {
-				if (data[4] != '')
-					var nomArb = data[2] + ' ' + data[3] + ' (' + data[4] + ') ' + data[5]
-				else
-					var nomArb = data[2] + ' ' + data[3] + ' ' + data[5]
-				jq("#arbitre2_matric").val(data[1])
-				jq("#arbitre2").val(nomArb)
+		dataType: 'json',
+		formatItem: function(item) {
+			return item.label;
+		},
+		formatResult: function(item) {
+			return item.value;
+		},
+		onSelect: function (item, index) {
+			if (item) {
+				if (item.matric == 'XXX') {
+					jq("#arbitre2_matric").val('')
+					jq("#arbitre2").val('')
+				}
+				else {
+					var nomArb;
+					if (item.libelle != '')
+						nomArb = item.nom + ' ' + item.prenom + ' (' + item.libelle + ') ' + item.arbitre
+					else
+						nomArb = item.nom + ' ' + item.prenom + ' ' + item.arbitre
+					jq("#arbitre2_matric").val(item.matric)
+					jq("#arbitre2").val(nomArb)
+				}
 			}
 		}
 	})
@@ -667,37 +681,44 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 			jq("#inputZone2valid").attr('data-value', '')
 			jq("#inputZone2valid").attr('data-value2', 0)
 			// AUTOCOMPLETE ARBITRES
-			jq("#inputZone2").autocomplete('Autocompl_arb.php', {
+			vanillaAutocomplete('#inputZone2', 'Autocompl_arb.php', {
 				width: 320,
-				max: 80,
-				mustMatch: false,
+				maxResults: 80,
 				minChars: 2,
 				cacheLength: 0,
 				scrollHeight: 320,
+				dataType: 'json',
 				extraParams: {
 					journee: datajournee,
 					sessionMatch: datamatch
-				}
-			})
-			jq("#inputZone2").result(function (event, data, formatted) {
-				if (data) {
-					if (typeof (data[1]) == 'undefined' || data[1] == 'XXX') {
-						//						jq("#inputZone2").val('');
-						jq("#inputZone2valid").attr('data-match', datamatch)
-						jq("#inputZone2valid").attr('data-id', dataid)
-						jq("#inputZone2valid").attr('data-value', '')
-						jq("#inputZone2valid").attr('data-value2', 0)
-					} else {
-						if (data[4] != '') {
-							var nomArb = data[2] + ' ' + data[3] + ' (' + data[4] + ') ' + data[5]
+				},
+				formatItem: function(item) {
+					return item.label;
+				},
+				formatResult: function(item) {
+					return item.value;
+				},
+				onSelect: function (item, index) {
+					if (item) {
+						if (typeof (item.matric) == 'undefined' || item.matric == 'XXX') {
+							//						jq("#inputZone2").val('');
+							jq("#inputZone2valid").attr('data-match', datamatch)
+							jq("#inputZone2valid").attr('data-id', dataid)
+							jq("#inputZone2valid").attr('data-value', '')
+							jq("#inputZone2valid").attr('data-value2', 0)
 						} else {
-							var nomArb = data[2] + ' ' + data[3] + ' ' + data[5]
+							var nomArb;
+							if (item.libelle != '') {
+								nomArb = item.nom + ' ' + item.prenom + ' (' + item.libelle + ') ' + item.arbitre
+							} else {
+								nomArb = item.nom + ' ' + item.prenom + ' ' + item.arbitre
+							}
+							jq("#inputZone2valid").attr('data-match', datamatch)
+							jq("#inputZone2valid").attr('data-id', dataid)
+							jq("#inputZone2valid").attr('data-value', nomArb)
+							jq("#inputZone2valid").attr('data-value2', item.matric)
+							jq("#inputZone2").val(nomArb)
 						}
-						jq("#inputZone2valid").attr('data-match', datamatch)
-						jq("#inputZone2valid").attr('data-id', dataid)
-						jq("#inputZone2valid").attr('data-value', nomArb)
-						jq("#inputZone2valid").attr('data-value2', data[1])
-						jq("#inputZone2").val(nomArb)
 					}
 				}
 			})

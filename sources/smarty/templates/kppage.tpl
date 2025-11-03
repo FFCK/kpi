@@ -78,6 +78,7 @@
         <script type='text/javascript' src='{$adm}js/dataTables.fixedHeader.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v={$NUM_VERSION}'></script>
         <script type="text/javascript" src="{$adm}js/wordpress_material_javascripts_main.js"></script>
+        <script type="text/javascript" src="{$adm}js/vanilla-autocomplete.js?v={$NUM_VERSION}"></script>
         <script type="text/javascript" src="{$adm}js/formTools.js?v={$NUM_VERSION}" defer></script>
         {assign var=temp value="$adm./js/$contenutemplate.js"} 
         {if is_file($temp)}

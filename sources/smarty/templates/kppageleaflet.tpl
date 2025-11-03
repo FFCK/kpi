@@ -88,6 +88,7 @@
             <script type='text/javascript' src='js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
             <script type='text/javascript' src='vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v={$NUM_VERSION}'></script>
             <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
+            <script type="text/javascript" src="js/vanilla-autocomplete.js?v={$NUM_VERSION}"></script>
             <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}"></script>
             <script type="text/javascript" src="js/leaflet/leaflet.js"></script>
             {assign var=temp value="js/$contenutemplate.js"}
@@ -95,6 +96,7 @@
                 <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
             {/if}
         {else}
+            <script type="text/javascript" src="../js/vanilla-autocomplete.js?v={$NUM_VERSION}"></script>
             <script type="text/javascript" src="../js/formTools.js?v={$NUM_VERSION}"></script>
             <script type="text/javascript" src="../js/leaflet/leaflet.js"></script>
             {assign var=temp value="../js/$contenutemplate.js"}

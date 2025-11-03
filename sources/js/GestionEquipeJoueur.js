@@ -238,102 +238,39 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 	jq('#irregularite').hide()
 	jq('#addEquipeJoueurImpossible').hide()
 
-	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
-		width: 550,
-		max: 50,
-		mustMatch: true,
-	})
-	jq("#choixJoueur").result(function (event, data, formatted) {
+	// Fonction commune pour gérer la sélection d'un joueur
+	function handleJoueurSelect(item) {
 		var saisonCompet = jq('#saisonCompet').val()
 		var typeCompet = jq('#typeCompet').val()
-		if (data) {
-			jq("#matricJoueur2").val(data[1])
-			jq("#nomJoueur2").val(data[2])
-			jq("#prenomJoueur2").val(data[3])
-			jq("#naissanceJoueur2").val(data[4])
-			jq("#sexeJoueur2").val(data[5])
-			catJoueurs2 = calculCategorie(data[4], saisonCompet)
+		if (item) {
+			jq("#matricJoueur2").val(item.matric)
+			jq("#nomJoueur2").val(item.nom)
+			jq("#prenomJoueur2").val(item.prenom)
+			jq("#naissanceJoueur2").val(item.naissance)
+			jq("#sexeJoueur2").val(item.sexe)
+			catJoueurs2 = calculCategorie(item.naissance, saisonCompet)
 			jq("#categJoueur2").val(catJoueurs2)
 			jq("#categJoueur3").text('Cat: ' + catJoueurs2)
-			surclassement = data[13]
+			surclassement = item.dateSurclassement
 			if (surclassement != '') {
 				jq(".surclassement3").html('<b>Surcl: ' + surclassement + '</b>')
-			} else if (catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN' 
+			} else if (catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'
 				&& catJoueurs2 != 'V1' && catJoueurs2 != 'V2' && catJoueurs2 != 'V3' && catJoueurs2 != 'V4') {
 				jq(".surclassement3").html('Pas de surclassement')
 			}
-			jq("#origineJoueur2").text(data[8])
-			jq("#pagaieJoueur2").text(data[9])
-			jq("#CKJoueur2").text(data[10])
-			jq("#APSJoueur2").text(data[11])
+			jq("#origineJoueur2").text(item.origine)
+			jq("#pagaieJoueur2").text(item.pagaieECA)
+			jq("#CKJoueur2").text(item.certificatCK)
+			jq("#APSJoueur2").text(item.certificatAPS)
 			jq("#catJoueur2").text(catJoueurs2)
 			if (typeCompet == 'CH' || typeCompet == 'CF' || typeCompet == 'MC') {
 				var surcl_necess = jq('#surcl_necess').val()
 				var motif = ''
-				if (data[8] < saisonCompet) {
+				if (item.origine < saisonCompet) {
 					motif = langue['Saison_licence']
-				} else if (data[10] != 'OUI') {
+				} else if (item.certificatCK != 'OUI') {
 					motif = langue['Certif']
-				} else if (data[9] == '' || data[9] == 'PAGB' || data[9] == 'PAGJ') {
-					motif = langue['Pagaie_couleur']
-				} else if (surclassement == '' && surcl_necess == 1 && catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'
-					&& catJoueurs2 != 'V1' && catJoueurs2 != 'V2' && catJoueurs2 != 'V3' && catJoueurs2 != 'V4') {
-					motif = langue['Surclassement']
-				}
-				if (motif != '') {
-					jq('#motif').text(motif)
-					jq('#irregularite').show()
-					jq('#addEquipeJoueur2').hide()
-					jq('#addEquipeJoueurImpossible').show()
-				} else {
-					jq('#motif').text(motif)
-					jq('#irregularite').hide()
-					jq('#addEquipeJoueur2').show()
-					jq('#addEquipeJoueurImpossible').hide()
-				}
-				//Autoriser pagaie différente pour arbitres et entraineurs... ?
-
-			}
-		}
-	})
-
-	jq("#nomJoueur").autocomplete('Autocompl_joueur.php', {
-		width: 550,
-		max: 50,
-		mustMatch: false,
-	})
-	jq("#nomJoueur").result(function (event, data, formatted) {
-		var saisonCompet = jq('#saisonCompet').val()
-		var typeCompet = jq('#typeCompet').val()
-		if (data) {
-			jq("#matricJoueur2").val(data[1])
-			jq("#nomJoueur2").val(data[2])
-			jq("#prenomJoueur2").val(data[3])
-			jq("#naissanceJoueur2").val(data[4])
-			jq("#sexeJoueur2").val(data[5])
-			catJoueurs2 = calculCategorie(data[4], saisonCompet)
-			jq("#categJoueur2").val(catJoueurs2)
-			jq("#categJoueur3").text('Cat: ' + catJoueurs2)
-			surclassement = data[13]
-			if (surclassement != '') {
-				jq(".surclassement3").html('<b>Surcl: ' + surclassement + '</b>')
-			} else if (catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN' 
-				&& catJoueurs2 != 'V1' && catJoueurs2 != 'V2' && catJoueurs2 != 'V3' && catJoueurs2 != 'V4') {
-				jq(".surclassement3").html('Pas de surclassement')
-			}
-			jq("#origineJoueur2").text(data[8])
-			jq("#pagaieJoueur2").text(data[9])
-			jq("#CKJoueur2").text(data[10])
-			jq("#APSJoueur2").text(data[11])
-			jq("#catJoueur2").text(catJoueurs2)
-			if (typeCompet == 'CH' || typeCompet == 'CF' || typeCompet == 'MC') {
-				var surcl_necess = jq('#surcl_necess').val()
-				var motif = ''
-				if (data[8] < saisonCompet) {
-					motif = langue['Saison_licence']
-				} else if (data[10] != 'OUI') {
-					motif = langue['Certif']
-				} else if (data[9] == '' || data[9] == 'PAGB' || data[9] == 'PAGJ') {
+				} else if (item.pagaieECA == '' || item.pagaieECA == 'PAGB' || item.pagaieECA == 'PAGJ') {
 					motif = langue['Pagaie_couleur']
 				} else if (surclassement == '' && surcl_necess == 1 && catJoueurs2 != 'JUN' && catJoueurs2 != 'SEN'
 					&& catJoueurs2 != 'V1' && catJoueurs2 != 'V2' && catJoueurs2 != 'V3' && catJoueurs2 != 'V4') {
@@ -351,12 +288,31 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 					jq('#addEquipeJoueurImpossible').hide()
 				}
 			}
-			jq("#nomJoueur").val('')
-			jq("#matricJoueur2").focus()
-			setTimeout(function () {
-				jq("#numeroJoueur2").get(0).focus()
-			}, 200)
 		}
+	}
+
+	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
+		width: 550,
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: handleJoueurSelect
+	})
+
+	vanillaAutocomplete('#nomJoueur', 'Autocompl_joueur.php', {
+		width: 550,
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: handleJoueurSelect
 	})
 
 

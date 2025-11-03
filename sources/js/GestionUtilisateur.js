@@ -107,17 +107,22 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#iframeRechercheLicenceIndi2').toggle();
 	});
 
-	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
 		width: 550,
-		max: 50,
-		mustMatch: true,
-	});
-	jq("#choixJoueur").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[7]+' '+data[6];
-			jq("#guser").val(data[1]);
-			jq("#gidentite").val(nom);
-			jq("#limitclub").val(data[14]);
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.nom + ' ' + item.prenom;
+				jq("#guser").val(item.matric);
+				jq("#gidentite").val(nom);
+				jq("#limitclub").val(item.club);
+			}
 		}
 	});
 	
