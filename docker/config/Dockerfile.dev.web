@@ -33,6 +33,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     && apt-get remove -y exim4 exim4-base exim4-config exim4-daemon-light || true \
     && echo "sendmail_path = /usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/sendmail.ini
 
+# Copy PHP error logging configuration
+COPY php-error-logging.ini /usr/local/etc/php/conf.d/
+
 # Optional: create a dummy user to avoid 'Failed to get user name for uid 1000'
 ARG USER_ID
 RUN useradd -u ${USER_ID:-1000} -m dockeruser || true
