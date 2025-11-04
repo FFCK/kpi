@@ -90,19 +90,19 @@
 								ICF #<input type="tel" name="update_icf" id="update_icf" size="6" maxlength="10" minlength="2"
 									value="{$Courreur.Reserve}">
 								{#Arb#}:<select id="update_arb" name="update_arb">
-									<option value="" {if $Arbitre.Arb == 'Néant'}selected{/if}>-</option>
-									<option value="Reg" {if $Arbitre.Arb == 'Arbitre REGIONAL'}selected{/if}>REGIONAL</option>
-									<option value="Nat" {if $Arbitre.Arb == 'Arbitre NATIONAL'}selected{/if}>NATIONAL</option>
-									<option value="Int" {if $Arbitre.Arb == 'Arbitre INTERNATIONAL'}selected{/if}>INTERNATIONAL</option>
-									<option value="OTM" {if $Arbitre.Arb == 'Officiel table de marque'}selected{/if}>OTM</option>
-									<option value="JO" {if $Arbitre.Arb == 'Jeune officiel'}selected{/if}>JO</option>
+									<option value="" {if $Arbitre.Arb|default:'' == 'Néant'}selected{/if}>-</option>
+									<option value="Reg" {if $Arbitre.Arb|default:'' == 'Arbitre REGIONAL'}selected{/if}>REGIONAL</option>
+									<option value="Nat" {if $Arbitre.Arb|default:'' == 'Arbitre NATIONAL'}selected{/if}>NATIONAL</option>
+									<option value="Int" {if $Arbitre.Arb|default:'' == 'Arbitre INTERNATIONAL'}selected{/if}>INTERNATIONAL</option>
+									<option value="OTM" {if $Arbitre.Arb|default:'' == 'Officiel table de marque'}selected{/if}>OTM</option>
+									<option value="JO" {if $Arbitre.Arb|default:'' == 'Jeune officiel'}selected{/if}>JO</option>
 								</select>
 								{#Niveau#}:<select id="update_niveau" name="update_niveau">
-									<option value="" {if $Arbitre.niveau == ''}selected{/if}>-</option>
-									<option value="A" {if $Arbitre.niveau == 'A'}selected{/if}>A</option>
-									<option value="B" {if $Arbitre.niveau == 'B'}selected{/if}>B</option>
-									<option value="C" {if $Arbitre.niveau == 'C'}selected{/if}>C</option>
-									<option value="S" {if $Arbitre.niveau == 'S'}selected{/if}>S</option>
+									<option value="" {if $Arbitre.niveau|default:'' == ''}selected{/if}>-</option>
+									<option value="A" {if $Arbitre.niveau|default:'' == 'A'}selected{/if}>A</option>
+									<option value="B" {if $Arbitre.niveau|default:'' == 'B'}selected{/if}>B</option>
+									<option value="C" {if $Arbitre.niveau|default:'' == 'C'}selected{/if}>C</option>
+									<option value="S" {if $Arbitre.niveau|default:'' == 'S'}selected{/if}>S</option>
 								</select>
 								{#Nouveau#} club:<input type="text" name="update_club" id="update_club" size="4">
 								<input type="hidden" name="update_cd" id="update_cd">
