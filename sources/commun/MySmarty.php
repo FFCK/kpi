@@ -14,6 +14,8 @@ class MySmarty extends Smarty
 
         $this->setCaching(false);		// $this->debugging = true;
 
+        $this->registerPlugin('modifier', 'is_file', 'is_file');
+
         // Prétraiter MyLang.conf pour Smarty 4 (remplacer les tirets dans les clés)
         $this->preprocessConfigFile();
 

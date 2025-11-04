@@ -11,7 +11,7 @@
 						<label for="saisonTravail">{#Saison#} :</label>
 						<select name="saisonTravail"  id="saisonTravail" onChange="sessionSaison()">
 							{section name=i loop=$arraySaison} 
-								<Option Value="{$arraySaison[i].Code}" {$arraySaison[i].Selected}>{$arraySaison[i].Code}</Option>
+								<Option Value="{$arraySaison[i].Code}" {$arraySaison[i].Selected|default: false}>{$arraySaison[i].Code}</Option>
 							{/section}
 						</select>
 						<label for="AfficheCompet">{#Afficher#} :</label>
@@ -26,7 +26,7 @@
 							<Option Value="N"{if $AfficheCompet == 'N'} selected{/if}>{#Championnat_de_France#}</Option>
 							<Option Value="CF"{if $AfficheCompet == 'CF'} selected{/if}>{#Coupe_de_France#}</Option>
 							{section name=i loop=10}
-								{if $sectionLabels[i]}
+								{if $sectionLabels[i]|default: false}
 									{assign var='temp' value=$sectionLabels[i]}
 									<Option Value="{$smarty.section.i.index}"{if $AfficheCompet == $smarty.section.i.index} selected{/if}>{$smarty.config.$temp|default:$temp}</Option>
 								{/if}   

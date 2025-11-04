@@ -30,7 +30,7 @@
     <link type="text/css" rel="stylesheet" href="css/jquery.autocomplete.css" media="screen" />
     <link type="text/css" rel="stylesheet" href="css/jquery.tooltip.css" media="screen" />
     {assign var=temp value="css/$contenutemplate.css"}
-    {if is_file($temp)}
+    {if $temp|is_file}
       <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
     {/if}
     <!-- 
@@ -40,7 +40,7 @@
 			-->
     {if isset($css_supp)}
       {assign var=temp value="css/$css_supp.css"}
-      {if $css_supp && is_file($temp)}
+      {if $css_supp && $temp|is_file}
         <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css">
       {/if}
     {/if}
@@ -55,7 +55,7 @@
     <script src="js/jquery.fixedheadertable.min.js"></script>
     <script src="js/formTools.js?v={$NUM_VERSION}"></script>
     {assign var=temp value="js/$contenutemplate.js"}
-    {if is_file($temp)}
+    {if $temp|is_file}
       <script src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
     {/if}
 
@@ -67,7 +67,7 @@
     <link type="text/css" rel="stylesheet" href="../css/jquery.autocomplete.css" media="screen" />
     <link type="text/css" rel="stylesheet" href="../css/jquery.tooltip.css" media="screen" />
     {assign var=temp value="../css/$contenutemplate.css"}
-    {if is_file($temp)}
+    {if $temp|is_file}
       <link type="text/css" rel="stylesheet" href="../css/{$contenutemplate}.css?v={$NUM_VERSION}" />
     {/if}
 
@@ -78,7 +78,7 @@
 			-->
     {if isset($css_supp)}
       {assign var=temp value="..css/$css_supp.css"}
-      {if $css_supp && is_file($temp)}
+      {if $css_supp && $temp|is_file}
         <link type="text/css" rel="stylesheet" href="..css/{$css_supp}.css">
       {/if}
     {/if}
@@ -107,7 +107,7 @@
     <!--<script src="../js/jquery.fixedheadertable.min.js"></script>-->
     <script src="../js/formTools.js?v={$NUM_VERSION}"></script>
     {assign var=temp value="../js/$contenutemplate.js"}
-    {if is_file($temp)}
+    {if $temp|is_file}
       <script src="../js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
     {/if}
     {literal}

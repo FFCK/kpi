@@ -26,7 +26,7 @@
 
         {if $bPublic}
             <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
-            <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='{$adm}css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
+            <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
             <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
             {* <link rel='stylesheet' id='my_style-css' href='css/jquery.dataTables.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
             {* <link rel='stylesheet' href='css/dataTables.fixedHeader.min.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
@@ -35,7 +35,7 @@
             <link rel="stylesheet" type="text/css" href="js/leaflet/leaflet.css" />
 
             {assign var=temp value="css/$contenutemplate.css"}
-            {if is_file($temp)}
+            {if $temp|is_file}
                 <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
             {/if}
         {else}
@@ -43,7 +43,7 @@
             <link rel="stylesheet" type="text/css" href="../css/GestionStyle.css" />
             <link rel="stylesheet" type="text/css" href="../js/leaflet/leaflet.css" />
             {assign var=temp value="../css/$contenutemplate.css"}
-            {if is_file($temp)}
+            {if $temp|is_file}
                 <link type="text/css" rel="stylesheet" href="../css/{$contenutemplate}.css?v={$NUM_VERSION}" />
             {/if}
         {/if}
@@ -53,9 +53,9 @@
             intégrer en iframe : 
         -->
         {if isset($css_supp)}
-            {assign var=temp value="$adm./css/$css_supp.css"} 
-            {if $css_supp && is_file($temp)}
-                <link type="text/css" rel="stylesheet" href="{$adm}css/{$css_supp}.css?v={$NUM_VERSION}">
+            {assign var=temp value="./css/$css_supp.css"} 
+            {if $css_supp && $temp|is_file}
+                <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css?v={$NUM_VERSION}">
             {/if}
         {/if}
         <title>{$smarty.config.$title|default:$title}</title>
@@ -92,7 +92,7 @@
             <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}"></script>
             <script type="text/javascript" src="js/leaflet/leaflet.js"></script>
             {assign var=temp value="js/$contenutemplate.js"}
-            {if is_file($temp)}
+            {if $temp|is_file}
                 <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
             {/if}
         {else}
@@ -100,7 +100,7 @@
             <script type="text/javascript" src="../js/formTools.js?v={$NUM_VERSION}"></script>
             <script type="text/javascript" src="../js/leaflet/leaflet.js"></script>
             {assign var=temp value="../js/$contenutemplate.js"}
-            {if is_file($temp)}
+            {if $temp|is_file}
                 <script type="text/javascript" src="../js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
             {/if}
         {/if}

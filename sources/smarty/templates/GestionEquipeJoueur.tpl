@@ -175,7 +175,7 @@
 					{if $profile <= 7 && $idEquipe > 0}
 						<div>
 							<i>{#Dernier_ajout#} :
-								<br>{$LastUpdate} - {$LastUpdater}.</i>
+								<br>{$LastUpdate|default:''} - {$LastUpdater|default:''}</i>
 						</div>
 					{/if}
 					<div id='directSelecteur'>

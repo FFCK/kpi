@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
 
   {assign var=temp value="css/$contenutemplate.css"}
-  {if is_file($temp)}
+  {if $temp|is_file}
     <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
   {/if}
   <!-- 
@@ -29,7 +29,7 @@
         -->
   {if isset($css_supp)}
       {assign var=temp value="$adm./css/$css_supp.css"} 
-      {if $css_supp && is_file($temp)}
+      {if $css_supp && $temp|is_file}
           <link type="text/css" rel="stylesheet" href="{$adm}css/{$css_supp}.css?v={$NUM_VERSION}">
       {/if}
   {/if}
@@ -54,7 +54,7 @@
   <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
   <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}" defer></script>
   {assign var=temp value="js/$contenutemplate.js"}
-  {if is_file($temp)}
+  {if $temp|is_file}
     <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}" defer></script>
   {/if}
   {if $contenutemplate == 'kpcalendrier'}

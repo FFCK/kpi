@@ -12,7 +12,7 @@
         <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
         <link href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css?v={$NUM_VERSION}" rel="stylesheet" type="text/css"/>
         {assign var=temp value="../css/$contenutemplate.css"}
-        {if is_file($temp)}
+        {if $temp|is_file}
             <link type="text/css" rel="stylesheet" href="../css/{$contenutemplate}.css?v={$NUM_VERSION}" />
         {/if}
         <style>
@@ -65,7 +65,7 @@
         <script src="../js/jquery-1.11.2.min.js?v={$NUM_VERSION}" type="text/javascript"></script>
         <script src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v={$NUM_VERSION}" type="text/javascript"></script>
         {assign var=temp value="../js/$contenutemplate.js"} 
-        {if is_file($temp)}
+        {if $temp|is_file}
             <script src="../js/{$contenutemplate}.js?v={$NUM_VERSION}" type="text/javascript"></script>
         {/if}
 

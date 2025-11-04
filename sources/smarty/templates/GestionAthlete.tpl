@@ -65,9 +65,9 @@
 									CK ({#Competition#}) : {$Courreur.Etat_certificat_CK}
 								</td>
 								<td>
-									{#Niveau#} : {$Arbitre.arbitre} {$Arbitre.niveau}<br>
-									{#Saison#} : {$Arbitre.saison}<br>
-									{#Livret#} : {$Arbitre.livret}<br>
+									{#Niveau#} : {$Arbitre.arbitre|default:''} {$Arbitre.niveau|default:''}<br>
+									{#Saison#} : {$Arbitre.saison|default:''}<br>
+									{#Livret#} : {$Arbitre.livret|default:''}<br>
 								</td>
 							</tr>
 						</table>
@@ -123,7 +123,7 @@
 							<tr>
 								<td valign=top>
 
-									{if $Titulaire[0].Code_compet != ''}
+									{if $Titulaire[0].Code_compet|default:'' != ''}
 										<table class='tableau2'>
 											<thead>
 												<tr>
@@ -158,7 +158,7 @@
 											</tbody>
 										</table>
 									{/if}
-									{if $Arbitrages[0].Code_competition != ''}
+									{if $Arbitrages[0].Code_competition|default:'' != ''}
 										<table class='tableau2'>
 											<thead>
 												<tr>
@@ -199,7 +199,7 @@
 											</tbody>
 										</table>
 									{/if}
-									{if $OTM[0].Code_competition != ''}
+									{if $OTM[0].Code_competition|default:'' != ''}
 										<table class='tableau2'>
 											<thead>
 												<tr>
@@ -248,7 +248,7 @@
 									{/if}
 								</td>
 								<td>
-									{if $Joueur[0].Code_competition != ''}
+									{if $Joueur[0].Code_competition|default:'' != ''}
 										<table class='tableau2'>
 											<thead>
 												<tr>

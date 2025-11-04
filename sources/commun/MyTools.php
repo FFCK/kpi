@@ -543,8 +543,11 @@ function utyGetPrenom($array, $param, $default = '')
  */
 function utyGetNomPrenom($string)
 {
-	$result = explode(' (', $string);
-	return $result[0];
+	if (isset($string) && strlen($string) > 0) {
+		$result = explode(' (', $string);
+		return $result[0];
+	}
+	return $string;
 }
 
 /**

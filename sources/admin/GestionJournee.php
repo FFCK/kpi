@@ -736,7 +736,7 @@ class GestionJournee extends MyPageSecure
 			$result2 = $myBdd->pdo->prepare($sql2);
 			$result2->execute();
 			while ($row2 = $result2->fetch()) {
-				if (strlen($row2['arbitre']) > 0) {
+				if ($row2['arbitre'] && strlen($row2['arbitre']) > 0) {
 					$arb = ' ' . strtoupper($row2['arbitre']);
 				} else {
 					$arb = '';
