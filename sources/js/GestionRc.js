@@ -84,19 +84,23 @@ jq(document).ready(function() {
 	// Maskedinput
 	jq('#Ordre').mask("9");
 
-    jq("#Nom").autocomplete('Autocompl_joueur3.php', {
+    vanillaAutocomplete('#Nom', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: true,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Nom").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2];
-			jq("#NomSelectionne").text(nom);
-			jq("#Matric").val(data[1]);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom;
+				jq("#NomSelectionne").text(nom);
+				jq("#Matric").val(item.matric);
+			}
 		}
 	});
 

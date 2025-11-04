@@ -19,18 +19,35 @@ $myBdd = new MyBdd();
 // Chargement
 $q = trim(utyGetGet('q'));
 $q = preg_replace('`^[0]*`','',$q);
-$resultGlobal = '';
+$format = utyGetGet('format', 'legacy'); // Support both legacy and JSON format
 
 // Clubs
-$sql = "SELECT * 
-	FROM kp_club 
-	WHERE (UPPER(Libelle) LIKE UPPER(?) 
-		OR UPPER(Code) LIKE UPPER(?)) 
-	ORDER BY Code ";	 
+$sql = "SELECT *
+	FROM kp_club
+	WHERE (UPPER(Libelle) LIKE UPPER(?)
+		OR UPPER(Code) LIKE UPPER(?))
+	ORDER BY Code ";
 $result = $myBdd->pdo->prepare($sql);
 $result->execute(array('%'.$q.'%', $q.'%'));
-while ($row = $result->fetch()) {
-	$resultGlobal .= $row['Code']." - ".$row['Libelle']."|".$row['Libelle']."\n";
-}
 
-echo $resultGlobal;
+if ($format === 'json') {
+	// Modern JSON format
+	$results = [];
+	while ($row = $result->fetch()) {
+		$results[] = [
+			'code' => $row['Code'],
+			'libelle' => $row['Libelle'],
+			'label' => $row['Code'] . " - " . $row['Libelle'],
+			'value' => $row['Libelle']
+		];
+	}
+	header('Content-Type: application/json');
+	echo json_encode($results);
+} else {
+	// Legacy format
+	$resultGlobal = '';
+	while ($row = $result->fetch()) {
+		$resultGlobal .= $row['Code']." - ".$row['Libelle']."|".$row['Libelle']."\n";
+	}
+	echo $resultGlobal;
+}

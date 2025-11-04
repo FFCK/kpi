@@ -221,18 +221,23 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#directSelecteur').toggle();
 	});
 	
-	jq("#choixJoueur").autocomplete('Autocompl_joueur.php', {
+	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
 		width: 550,
-		max: 50,
-		mustMatch: true,
-	});
-	jq("#choixJoueur").result(function(event, data, formatted) {
-		if (data) {
-			jq("#matricJoueur2").val(data[1]);
-			jq("#nomJoueur2").val(data[2]);
-			jq("#prenomJoueur2").val(data[3]);
-			jq("#naissanceJoueur2").val(data[4]);
-			jq("#sexeJoueur2").val(data[5]);
+		maxResults: 50,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#matricJoueur2").val(item.matric);
+				jq("#nomJoueur2").val(item.nom);
+				jq("#prenomJoueur2").val(item.prenom);
+				jq("#naissanceJoueur2").val(item.naissance);
+				jq("#sexeJoueur2").val(item.sexe);
+			}
 		}
 	});
 

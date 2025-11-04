@@ -93,186 +93,236 @@ jq(document).ready(function() {
 		jq('.date').mask("99/99/9999");
 	}
 
-	jq("#Lieu").autocomplete('Autocompl_ville.php', {
+	vanillaAutocomplete('#Lieu', 'Autocompl_ville.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Lieu").result(function(event, data, formatted) {
-		if (data) {
-			jq("#Lieu").val(data[1]);
-			jq("#Departement").val(data[2]);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#Lieu").val(item.nom);
+				jq("#Departement").val(item.departement);
+			}
 		}
 	});
-	jq("#Nom").autocomplete('Autocompl_refJournee.php', {
+	vanillaAutocomplete('#Nom', 'Autocompl_refJournee.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Nom").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[1];
-			jq("#Nom").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#Nom").val(item.nom);
+			}
 		}
 	});
-	jq("#Organisateur").autocomplete('Autocompl_club.php', {
+	vanillaAutocomplete('#Organisateur', 'Autocompl_club.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Organisateur").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[1];
-			jq("#Organisateur").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				jq("#Organisateur").val(item.libelle);
+			}
 		}
 	});
-	jq("#Responsable_R1").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Responsable_R1', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Responsable_R1").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Responsable_R1").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Responsable_R1").val(nom);
+			}
 		}
 	});
-	jq("#Responsable_insc").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Responsable_insc', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Responsable_insc").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Responsable_insc").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Responsable_insc").val(nom);
+			}
 		}
 	});
-	jq("#Delegue").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Delegue', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Delegue").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Delegue").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Delegue").val(nom);
+			}
 		}
 	});
-	jq("#ChefArbitre").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#ChefArbitre', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#ChefArbitre").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#ChefArbitre").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#ChefArbitre").val(nom);
+			}
 		}
 	});
-	jq("#Rep_athletes").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Rep_athletes', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Rep_athletes").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Rep_athletes").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Rep_athletes").val(nom);
+			}
 		}
 	});
-	jq("#Arb_nj1").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Arb_nj1', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Arb_nj1").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Arb_nj1").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Arb_nj1").val(nom);
+			}
 		}
 	});
-	jq("#Arb_nj2").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Arb_nj2', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Arb_nj2").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Arb_nj2").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Arb_nj2").val(nom);
+			}
 		}
 	});
-	jq("#Arb_nj3").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Arb_nj3', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Arb_nj3").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Arb_nj3").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Arb_nj3").val(nom);
+			}
 		}
 	});
-	jq("#Arb_nj4").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Arb_nj4', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Arb_nj4").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Arb_nj4").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Arb_nj4").val(nom);
+			}
 		}
 	});
-	jq("#Arb_nj5").autocomplete('Autocompl_joueur3.php', {
+	vanillaAutocomplete('#Arb_nj5', 'Autocompl_joueur3.php', {
 		width: 420,
-		max: 80,
-		mustMatch: false,
+		maxResults: 80,
 		minChars: 2,
-		cacheLength: 0,
+		dataType: 'json',
+		extraParams: {
+			format: 'json'
+		},
 		scrollHeight: 320,
-	});
-	jq("#Arb_nj5").result(function(event, data, formatted) {
-		if (data) {
-			var nom = data[3]+' '+data[2]+' ('+data[1]+')';
-			jq("#Arb_nj5").val(nom);
+		formatItem: (item) => item.label,
+		formatResult: (item) => item.value,
+		onSelect: function(item) {
+			if (item) {
+				var nom = item.prenom + ' ' + item.nom + ' (' + item.matric + ')';
+				jq("#Arb_nj5").val(nom);
+			}
 		}
 	});
 
