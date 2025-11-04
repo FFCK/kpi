@@ -4,7 +4,7 @@ $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) AND
 strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 if(!$isAjax) {
   $user_error = 'Access denied - not an AJAX request...';
-  trigger_error($user_error, E_USER_ERROR);
+  error_log($user_error);
 }
 // ***************************************************************************
 if(!isset($_SESSION)) {
@@ -78,15 +78,15 @@ if ($ok == 'OK' && $tableName != '' && $where != '' && $typeValeur != '' && $key
 			echo 'Error 400';
 		}
 
-		if ($result->rowCount() == 1) {
+		if (in_array($result->rowCount() == 1, [0, 1])) {
 			$myBdd->utyJournal('Modification '.$tableName, $codeSaison, '', null, null, null, $key.'-'.$typeValeur.'->'.$valeur, $user);
 			echo 'OK!';
 		} else {
-			trigger_error("Aucune ligne modifiée : " . $sql . ',' . $valeur . ',' . $key, E_USER_ERROR);
+			error_log("Trop de lignes modifiées : " . $sql . ',' . $valeur . ',' . $key);
 			echo 'Error 400';
 		}
 } else {
-	trigger_error("Requete incorrecte : " . $sql, E_USER_ERROR);
+	error_log("Requete incorrecte : " . $sql);
 	echo 'Error 400';
 }
 
