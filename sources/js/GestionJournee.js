@@ -255,7 +255,7 @@ jq("body").delegate('#numMultiMatchsStart input:button:first', 'click', function
 		var numMatch = jq(this).parent().parent().find('.numMatch')
 		if (numMatch.text() != numMultiMatchs) {
 			var nouveauNumMatch = numMultiMatchs
-			console.log(checkboxIdMatch + ' : ' + numMatch.text() + ' -> ' + nouveauNumMatch)
+			// console.log(checkboxIdMatch + ' : ' + numMatch.text() + ' -> ' + nouveauNumMatch)
 			//                alert(valeurPrecedente + ' => ' + numMultiMatchs);
 			var AjaxWhere = jq('#AjaxWhere').val()
 			var AjaxTableName = jq('#AjaxTableName').val()
@@ -529,19 +529,57 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		event.preventDefault()
 		jq('#inputZone2annul').click()
 		var valeur = jq(this).text().trim()
-		console.log('valeur: ', valeur)
 		var tabindexVal = jq(this).attr('tabindex')
 		jq(this).attr('tabindex', tabindexVal + 1000)
+		var spanRef = jq(this) // Stocker la référence au span AVANT de le cacher
 		if (jq(this).hasClass('text')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="12" value="' + valeur + '">')
 		} else if (jq(this).hasClass('numMatch')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="1" value="' + valeur + '">')
 		} else if (jq(this).hasClass('date')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '">')
-			jq('#inputZone').mask("99/99/9999")
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '">')
+			// Stocker la référence au span directement sur l'élément DOM (pas via jQuery .data())
+			var inputElement = document.getElementById('inputZone')
+			inputElement._spanRef = spanRef[0]
+			// Initialiser Flatpickr avec format français
+			flatpickr('#inputZone', {
+				dateFormat: 'd/m/Y',
+				locale: 'fr',
+				allowInput: true,
+				clickOpens: true,
+				defaultDate: valeur || null,
+				onClose: function(selectedDates, dateStr, instance) {
+					// Déclencher le blur après fermeture du calendrier
+					// Passer l'élément input pour préserver la référence au span
+					setTimeout(function() {
+						var inputElem = instance.input
+						var inputValue = inputElem.value
+						validationDonnee(inputElem.className, inputElem, inputValue)
+					}, 100)
+				}
+			})
 		} else if (jq(this).hasClass('dateEN')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '">')
-			jq('#inputZone').mask("9999-99-99")
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '">')
+			// Stocker la référence au span directement sur l'élément DOM (pas via jQuery .data())
+			var inputElement = document.getElementById('inputZone')
+			inputElement._spanRef = spanRef[0]
+			// Initialiser Flatpickr avec format ISO (anglais)
+			flatpickr('#inputZone', {
+				dateFormat: 'Y-m-d',
+				locale: 'fr',
+				allowInput: true,
+				clickOpens: true,
+				defaultDate: valeur || null,
+				onClose: function(selectedDates, dateStr, instance) {
+					// Déclencher le blur après fermeture du calendrier
+					// Passer l'élément input pour préserver la référence au span
+					setTimeout(function() {
+						var inputElem = instance.input
+						var inputValue = inputElem.value
+						validationDonnee(inputElem.className, inputElem, inputValue)
+					}, 100)
+				}
+			})
 		} else if (jq(this).hasClass('heure')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="4" value="' + valeur + '">')
 			jq('#inputZone').mask("99:99")
@@ -734,8 +772,15 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 
 	// blur d'une input => validation de la donnée
 	jq('#inputZone').live('blur', function () {
+		// Si c'est un input avec Flatpickr, ne rien faire ici
+		// La validation sera déclenchée par onClose de Flatpickr
+		if (jq(this).hasClass('flatpickr-input')) {
+			// Ne rien faire, onClose gère la validation
+			return
+		}
+		// Pour tous les autres cas (non-Flatpickr), traiter normalement
 		var Classe = jq(this).attr('class')
-		validationDonnee(Classe)
+		validationDonnee(Classe, this)
 	})
 	jq('#inputZone2annul').live('click', function (event) {
 		event.preventDefault
@@ -822,17 +867,36 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 			'text' // Format des données reçues.
 		)
 	})
-	function validationDonnee (Classe) {
-		var nouvelleValeur = jq('#inputZone').val()
+	function validationDonnee (Classe, element, valueOverride) {
+		// Utiliser la valeur passée en paramètre si disponible, sinon récupérer depuis l'input
+		var nouvelleValeur = valueOverride !== undefined ? valueOverride : jq('#inputZone').val()
 		var tabindexVal = jq('#inputZone').attr('tabindex')
+
+		// Récupérer la référence au span (pour les champs date avec Flatpickr)
+		var thisSpan = null
+
+		// Si un élément est passé, utiliser sa référence DOM stockée
+		if (element && element._spanRef) {
+			thisSpan = jq(element._spanRef)
+		} else {
+			// Fallback: chercher le span dans le DOM (méthode classique)
+			thisSpan = jq('#inputZone + span')
+		}
+
+		if (!thisSpan || !thisSpan.length) {
+			console.error('validationDonnee: thisSpan not found')
+			jq('#inputZone').remove()
+			return
+		}
+
 		if (Classe == 'directInputSpan') {
-			jq('#inputZone + span').attr('tabindex', tabindexVal)
+			thisSpan.attr('tabindex', tabindexVal)
 		} else if (Classe == 'directInputTd') {
 			jq('#inputZone').parent('td').attr('tabindex', tabindexVal)
 		}
-		jq('#inputZone + span').show()
-		var valeur = jq('#inputZone + span').text().trim()
-		var identifiant = jq('#inputZone + span').attr('id')
+		thisSpan.show()
+		var valeur = thisSpan.text().trim()
+		var identifiant = thisSpan.attr('id')
 		var identifiant2 = identifiant.split('-')
 		var typeValeur = identifiant2[0]
 		var numMatch = identifiant2[1]
@@ -859,7 +923,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 					if (data != 'OK!') {
 						alert(langue['MAJ_impossible'] + ' : ' + data)
 					} else {
-						jq('#' + identifiant).text(nouvelleValeur)
+						thisSpan.text(nouvelleValeur)
 					}
 				}
 			)
@@ -1235,7 +1299,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 
 	if (arrayCheck != '') {
 		arrayCheck = arrayCheck.split(',').forEach(function (item) {
-			console.log(item)
+			// console.log(item)
 			jq('input[type="checkbox"][value="' + item + '"]').click()
 		})
 	}

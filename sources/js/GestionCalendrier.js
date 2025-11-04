@@ -126,6 +126,7 @@ jq(document).ready(function () {
 		event.preventDefault()
 		var valeur = jq(this).text()
 		var typeChamps = jq(this).attr('data-type')
+		var spanRef = jq(this) // Stocker la référence au span AVANT de le cacher
 		switch (typeChamps) {
 			case 'text':
 				jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="7" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
@@ -137,12 +138,42 @@ jq(document).ready(function () {
 				jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" size="1" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
 				break
 			case 'date':
-				jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="8" value="' + valeur + '" >')
-				jq('#inputZone').mask("99/99/9999")
+				jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '">')
+				// Stocker la référence au span directement sur l'élément DOM (pas via jQuery .data())
+				document.getElementById('inputZone')._spanRef = spanRef[0]
+				// Initialiser Flatpickr avec format français
+				flatpickr('#inputZone', {
+					dateFormat: 'd/m/Y',
+					locale: 'fr',
+					allowInput: true,
+					clickOpens: true,
+					defaultDate: valeur || null,
+					onClose: function(selectedDates, dateStr, instance) {
+						// Déclencher le blur après fermeture du calendrier
+						setTimeout(function() {
+							jq('#inputZone').blur()
+						}, 100)
+					}
+				})
 				break
 			case 'dateEN':
-				jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="8" value="' + valeur + '" >')
-				jq('#inputZone').mask("9999-99-99")
+				jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '">')
+				// Stocker la référence au span directement sur l'élément DOM (pas via jQuery .data())
+				document.getElementById('inputZone')._spanRef = spanRef[0]
+				// Initialiser Flatpickr avec format ISO
+				flatpickr('#inputZone', {
+					dateFormat: 'Y-m-d',
+					locale: 'fr',
+					allowInput: true,
+					clickOpens: true,
+					defaultDate: valeur || null,
+					onClose: function() {
+						// Déclencher le blur après fermeture du calendrier
+						setTimeout(function() {
+							jq('#inputZone').blur()
+						}, 100)
+					}
+				})
 				break
 		}
 		jq(this).hide()
@@ -158,15 +189,51 @@ jq(document).ready(function () {
 		}
 	})
 
-	jq('#inputZone').live('blur', function () {
-		var thisSpan = jq('#inputZone + span')
-		var nouvelleValeur = jq(this).val()
-		var typeChamps = jq(this).attr('type')
+	jq('#inputZone').live('blur', function (e) {
+		// Si c'est un input avec Flatpickr, ne rien faire ici
+		// Le blur sera déclenché par onClose de Flatpickr
+		if (jq(this).hasClass('flatpickr-input')) {
+			// Vérifier si le calendrier est ouvert
+			if (jq('.flatpickr-calendar.open').length > 0) {
+				// Le calendrier est ouvert, ne rien faire
+				return
+			}
+		}
+		// Pour tous les autres cas (ou Flatpickr fermé), traiter normalement
+		processBlur(this)
+	})
+
+	function processBlur(element) {
+		// Stratégie prioritaire: utiliser la référence stockée sur l'élément DOM (pour les champs date avec Flatpickr)
+		var thisSpan = null
+		if (element._spanRef) {
+			thisSpan = jq(element._spanRef)
+		}
+
+		// Fallback: chercher le span dans le DOM si pas de référence stockée
+		if (!thisSpan || !thisSpan.length) {
+			// Stratégie 1: chercher parmi les siblings suivants
+			thisSpan = jq(element).nextAll('span.directInput').first()
+		}
+
+		if (!thisSpan || !thisSpan.length) {
+			// Stratégie 2: Fallback sur .next('span') simple
+			thisSpan = jq(element).next('span')
+		}
+
+		var nouvelleValeur = jq(element).val()
+		var typeChamps = jq(element).attr('type')
 		var valeurEntier = nouvelleValeur | 0
+
+		// Vérifier que thisSpan existe
+		if (!thisSpan || !thisSpan.length) {
+			console.error('processBlur: thisSpan not found', element)
+			return
+		}
 		if (typeChamps == 'tel' && valeurEntier < 1) {
-			jq(this).focus().css('border', '1px solid red')
+			jq(element).focus().css('border', '1px solid red')
 		} else {
-			if (nouvelleValeur != jq(this).attr('data-anciennevaleur')) {
+			if (nouvelleValeur != jq(element).attr('data-anciennevaleur')) {
 				var AjaxWhere = jq('#AjaxWhere').val()
 				var AjaxTableName = jq('#AjaxTableName').val()
 				var AjaxAnd = ''
@@ -195,9 +262,9 @@ jq(document).ready(function () {
 				)
 			}
 			thisSpan.show()
-			jq(this).remove()
+			jq(element).remove()
 		}
-	})
+	}
 })
 
 function changeCompetition () {

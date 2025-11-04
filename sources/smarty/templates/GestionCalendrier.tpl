@@ -48,7 +48,7 @@
 								{else}
 									{#Mode_normal#}<input type="radio" onclick="changeModeEvenement();" name="choixModeEvenement" value="1">
 									<br>
-									<font color="FF0000">{#Association_evts#}</font><input type="radio" onclick="changeModeEvenement();"
+									<span style="color:#FF0000;">{#Association_evts#}</span><input type="radio" onclick="changeModeEvenement();"
 										name="choixModeEvenement" value="2" Checked>
 								{/if}
 							{else}
