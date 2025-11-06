@@ -217,9 +217,15 @@ Le même système d'intégration Flatpickr a été appliqué à [sources/js/Gest
    - Stockage de la référence span : `inputElement._spanRef = spanRef[0]`
    - Callback `onClose` : capture de la valeur et appel direct de `validationDonnee()`
 3. **Lignes 561-582** : Case 'dateEN' avec Flatpickr (format yyyy-mm-dd)
-4. **Lignes 735-746** : Modification du blur handler
+4. **Lignes 583-605** : Case 'heure' avec Flatpickr (format HH:MM)
+   - Mode time-only : `enableTime: true, noCalendar: true`
+   - Format 24h : `dateFormat: "H:i", time_24hr: true`
+5. **Lignes 435-443** : Champs statiques `.champsHeure` avec Flatpickr
+   - Remplace `mask("99:99")` par Flatpickr time picker
+   - Champ `id='Heure_match'` et autres champs heure
+6. **Lignes 735-746** : Modification du blur handler
    - Ignore complètement les inputs Flatpickr (validation gérée par `onClose`)
-5. **Lignes 825-898** : Refactorisation de `validationDonnee(Classe, element, valueOverride)`
+7. **Lignes 825-870** : Refactorisation de `validationDonnee(Classe, element, valueOverride)`
    - Nouveau paramètre `valueOverride` pour passer la valeur explicitement
    - Récupération de `thisSpan` depuis `element._spanRef`
    - Fallback sur sélecteur DOM classique si pas de référence
@@ -234,13 +240,32 @@ Le même système d'intégration Flatpickr a été appliqué à [sources/js/Gest
 - **Cause** : Valeur de l'input inaccessible après manipulation par Flatpickr
 - **Solution** : Capture de la valeur dans `onClose` et passage via paramètre `valueOverride`
 
+**Problème 3** : Span pas caché immédiatement lors de la création de l'input
+- **Cause** : Le `jq(this).hide()` était appelé à la fin du handler focus, après toutes les créations d'inputs
+- **Solution** : Déplacement du `jq(this).hide()` à la ligne 551, immédiatement après avoir stocké `spanRef` et avant de créer l'input
+
+**Problème 4** : Input supprimé lors du clic sur un deuxième span sans fermer le picker
+- **Cause** : Le callback `onClose` de l'ancien Flatpickr appelait `validationDonnee()` qui supprimait le **nouveau** `#inputZone` (ligne 868)
+- **Solution finale (lignes 868-873)** : Vérification avant suppression
+  ```javascript
+  // Ne supprimer inputZone que s'il est situé juste avant thisSpan
+  var inputZone = jq('#inputZone')
+  if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
+      inputZone.remove()
+  }
+  ```
+  Cette solution élégante garantit qu'on ne supprime `#inputZone` que s'il est bien l'input associé à `thisSpan`, et non un nouvel input créé ailleurs.
+
 **Bénéfices** :
 - ✅ Datepicker interactif sur les dates de matchs dans GestionJournee
+- ✅ Time picker interactif sur les heures de matchs (directInput + champs statiques)
 - ✅ Modification par clic : mise à jour immédiate en base de données
 - ✅ Modification manuelle : validation correcte avec tous les paramètres
+- ✅ Clic sur plusieurs spans sans fermer le picker : chaque input reste visible et fonctionnel
+- ✅ Cohérence de l'UI : même bibliothèque pour dates et heures
 
 ---
 
-**Mise à jour** : 4 novembre 2025, 17:00
+**Mise à jour** : 6 novembre 2025, 10:00
 **Par** : Claude Code
-**Statut** : ✅ **MIGRATION DIRECTINPUT COMPLÈTE ET TESTÉE (GestionCalendrier + GestionJournee)**
+**Statut** : ✅ **MIGRATION COMPLÈTE ET TESTÉE (GestionCalendrier + GestionJournee : dates + heures)**

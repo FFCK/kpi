@@ -431,7 +431,16 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 	})
 
 	// Maskedinput
-	jq(".champsHeure").mask("99:99")
+	// Flatpickr pour les champs heure (format HH:MM)
+	flatpickr('.champsHeure', {
+		enableTime: true,
+		noCalendar: true,
+		dateFormat: "H:i",
+		time_24hr: true,
+		locale: 'fr',
+		allowInput: true,
+		clickOpens: true
+	})
 	if (lang == 'en') {
 		jq('.date').mask("9999-99-99")
 	} else {
@@ -528,16 +537,34 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		//jq("body").on("focus", "#tableMatchs td > span.directInput", function(event){
 		event.preventDefault()
 		jq('#inputZone2annul').click()
+		// Nettoyer tout input#inputZone existant (pour les champs Flatpickr qui n'ont pas déclenché onClose)
+		if (jq('#inputZone').length) {
+			// Détruire l'instance Flatpickr si elle existe
+			var existingInput = document.getElementById('inputZone')
+			if (existingInput && existingInput._flatpickr) {
+				// Détruire l'instance sans appeler close() pour éviter de déclencher onClose
+				existingInput._flatpickr.destroy()
+			}
+			// Ré-afficher le span associé (le span est juste après l'input car on fait .before())
+			var associatedSpan = jq('#inputZone').next('span.directInput')
+			associatedSpan.show()
+			// Supprimer l'input
+			jq('#inputZone').remove()
+		}
 		var valeur = jq(this).text().trim()
 		var tabindexVal = jq(this).attr('tabindex')
 		jq(this).attr('tabindex', tabindexVal + 1000)
 		var spanRef = jq(this) // Stocker la référence au span AVANT de le cacher
+
+		// IMPORTANT: Cacher le span IMMÉDIATEMENT, avant de créer l'input
+		jq(this).hide()
+
 		if (jq(this).hasClass('text')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="12" value="' + valeur + '">')
 		} else if (jq(this).hasClass('numMatch')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="1" value="' + valeur + '">')
 		} else if (jq(this).hasClass('date')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '">')
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '" style="height: auto !important; min-height: 22px !important; line-height: normal !important;">')
 			// Stocker la référence au span directement sur l'élément DOM (pas via jQuery .data())
 			var inputElement = document.getElementById('inputZone')
 			inputElement._spanRef = spanRef[0]
@@ -559,7 +586,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 				}
 			})
 		} else if (jq(this).hasClass('dateEN')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '">')
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '" style="height: auto; min-height: 20px;">')
 			// Stocker la référence au span directement sur l'élément DOM (pas via jQuery .data())
 			var inputElement = document.getElementById('inputZone')
 			inputElement._spanRef = spanRef[0]
@@ -581,8 +608,27 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 				}
 			})
 		} else if (jq(this).hasClass('heure')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="4" value="' + valeur + '">')
-			jq('#inputZone').mask("99:99")
+			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="4" value="' + valeur + '" data-anciennevaleur="' + valeur + '" style="height: auto; min-height: 20px;">')
+			// Stocker la référence au span directement sur l'élément DOM
+			var inputElement = document.getElementById('inputZone')
+			inputElement._spanRef = spanRef[0]
+			// Initialiser Flatpickr en mode heure uniquement
+			flatpickr('#inputZone', {
+				enableTime: true,
+				noCalendar: true,
+				dateFormat: "H:i",
+				time_24hr: true,
+				locale: 'fr',
+				allowInput: true,
+				clickOpens: true,
+				onClose: function(selectedDates, dateStr, instance) {
+					setTimeout(function() {
+						var inputElem = instance.input
+						var inputValue = inputElem.value
+						validationDonnee(inputElem.className, inputElem, inputValue)
+					}, 100)
+				}
+			})
 		} else if (jq(this).hasClass('terrain')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" value="' + valeur + '">')
 		} else if (jq(this).hasClass('score')) {
@@ -762,8 +808,11 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 			})
 
 		}
-		jq(this).hide()
+		// Pour les inputs Flatpickr, s'assurer qu'ils restent visibles après hide() du span
 		setTimeout(function () {
+			if (jq('#inputZone').hasClass('flatpickr-input')) {
+				jq('#inputZone').show()
+			}
 			jq('#selectZone').select()
 			jq('#inputZone').select()
 			jq('#inputZone2').select()
@@ -884,7 +933,6 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		}
 
 		if (!thisSpan || !thisSpan.length) {
-			console.error('validationDonnee: thisSpan not found')
 			jq('#inputZone').remove()
 			return
 		}
@@ -924,61 +972,67 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 						alert(langue['MAJ_impossible'] + ' : ' + data)
 					} else {
 						thisSpan.text(nouvelleValeur)
+						thisSpan.data('anciennevaleur', nouvelleValeur)
 					}
 				}
 			)
 		};
-		jq('#inputZone').remove()
+		// Ne supprimer inputZone que s'il est situé juste avant thisSpan
+		// (pour éviter de supprimer un nouvel input créé ailleurs)
+		var inputZone = jq('#inputZone')
+		if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
+			inputZone.remove()
+		}
 	}
-	function validationDonnee2 () {
-		var nouvelleValeur = jq('#inputZone2').val()
-		var tabindexVal = jq('#inputZone2').attr('tabindex')
-		jq('#inputZone2 + span').attr('tabindex', tabindexVal)
-		jq('#inputZone2 + span').show()
-		var valeur = jq('#inputZone2 + span').text()
-		var identifiant = jq('#inputZone2 + span').attr('id')
-		var identifiant2 = identifiant.split('-')
-		var typeValeur = identifiant2[0]
-		var numMatch = identifiant2[1]
-		var formatValeur = identifiant2[2]
-		if (valeur != nouvelleValeur && confirm(langue['Confirm_update'] + ' : ' + nouvelleValeur + ' ?')) {
-			valeurTransmise = nouvelleValeur
-			if (formatValeur == 'date') {
-				valeurTransmise2 = valeurTransmise.split('/')
-				valeurTransmise = valeurTransmise2[2] + '-' + valeurTransmise2[1] + '-' + valeurTransmise2[0]
-			}
-			var AjaxWhere = jq('#AjaxWhere').val()
-			var AjaxTableName = jq('#AjaxTableName').val()
-			var AjaxAnd = ''
-			var AjaxUser = jq('#AjaxUser').val()
+	// function validationDonnee2 () {
+	// 	var nouvelleValeur = jq('#inputZone2').val()
+	// 	var tabindexVal = jq('#inputZone2').attr('tabindex')
+	// 	jq('#inputZone2 + span').attr('tabindex', tabindexVal)
+	// 	jq('#inputZone2 + span').show()
+	// 	var valeur = jq('#inputZone2 + span').text()
+	// 	var identifiant = jq('#inputZone2 + span').attr('id')
+	// 	var identifiant2 = identifiant.split('-')
+	// 	var typeValeur = identifiant2[0]
+	// 	var numMatch = identifiant2[1]
+	// 	var formatValeur = identifiant2[2]
+	// 	if (valeur != nouvelleValeur && confirm(langue['Confirm_update'] + ' : ' + nouvelleValeur + ' ?')) {
+	// 		valeurTransmise = nouvelleValeur
+	// 		if (formatValeur == 'date') {
+	// 			valeurTransmise2 = valeurTransmise.split('/')
+	// 			valeurTransmise = valeurTransmise2[2] + '-' + valeurTransmise2[1] + '-' + valeurTransmise2[0]
+	// 		}
+	// 		var AjaxWhere = jq('#AjaxWhere').val()
+	// 		var AjaxTableName = jq('#AjaxTableName').val()
+	// 		var AjaxAnd = ''
+	// 		var AjaxUser = jq('#AjaxUser').val()
 
-			/*			jq.get("UpdateCellJQ.php",
-							{
-								AjTableName: AjaxTableName,
-								AjWhere: AjaxWhere,
-								AjTypeValeur: typeValeur,
-								AjValeur: valeurTransmise,
-								AjAnd: AjaxAnd,
-								AjId: numMatch,
-								AjId2: '',
-								AjUser: AjaxUser,
-								AjOk: 'OK'
-							},
-							function(data){
-								if(data != 'OK!'){
-									alert('mise à jour impossible : '+data);
-								}else{
-									jq('#'+identifiant).text(nouvelleValeur);
-								}
-							}
-						);
-			*/
-			jq('#' + identifiant).text(nouvelleValeur)
-			jq('#' + identifiant).attr('data-idArb', jq('#inputZone2').attr('data-idArb'))
+	// 		/*			jq.get("UpdateCellJQ.php",
+	// 						{
+	// 							AjTableName: AjaxTableName,
+	// 							AjWhere: AjaxWhere,
+	// 							AjTypeValeur: typeValeur,
+	// 							AjValeur: valeurTransmise,
+	// 							AjAnd: AjaxAnd,
+	// 							AjId: numMatch,
+	// 							AjId2: '',
+	// 							AjUser: AjaxUser,
+	// 							AjOk: 'OK'
+	// 						},
+	// 						function(data){
+	// 							if(data != 'OK!'){
+	// 								alert('mise à jour impossible : '+data);
+	// 							}else{
+	// 								jq('#'+identifiant).text(nouvelleValeur);
+	// 							}
+	// 						}
+	// 					);
+	// 		*/
+	// 		jq('#' + identifiant).text(nouvelleValeur)
+	// 		jq('#' + identifiant).attr('data-idArb', jq('#inputZone2').attr('data-idArb'))
 
-		};
-		jq('#inputZone2').remove()
-	}
+	// 	};
+	// 	jq('#inputZone2').remove()
+	// }
 
 
 
