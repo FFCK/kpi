@@ -302,9 +302,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		jq('#filterAttspan').addClass('highlight3')
 	}
 
-	jq("*").tooltip({
-		showURL: false
-	})
+	// Tooltips now handled by Bootstrap 5 (bootstrap-tooltip-init.js)
 
 	//sessionJournee
 	//ajax

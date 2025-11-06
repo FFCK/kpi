@@ -1,9 +1,7 @@
 jq = jQuery.noConflict()
 
 jq(document).ready(function () {
-	jq("*").tooltip({
-		showURL: false
-	})
+	// Tooltips now handled by Bootstrap 5 (bootstrap-tooltip-init.js)
 
 	jq('#evenement').change(function () {
 		theTarget = jq(this).val()

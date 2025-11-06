@@ -258,11 +258,7 @@ function testframe()
 }
 
 $(function() {		// $(document).ready(function() {
-	$( document ).tooltip({
-		content: function () {
-			return $(this).prop('title');
-		}
-	});
+	// Tooltips now handled by Bootstrap 5 (bootstrap-tooltip-init.js)
 	$.widget( "custom.catcomplete", $.ui.autocomplete, { // Widget autocomplete avec gestion des categories
 		_create: function() {
 			this._super();

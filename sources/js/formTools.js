@@ -43,9 +43,8 @@ if(lang == 'en')  {
 // jQuery-dependent code - only execute if jQuery is available
 if (typeof jq !== 'undefined' && jq !== null) {
 	jq(document).ready(function() {
-//	jq("*").tooltip({
-//		showURL: false
-//	});
+// Tooltips now handled by Bootstrap 5 (bootstrap-tooltip-init.js)
+// Old jQuery tooltip code removed:
     
     jq("#masquer").click(function(event){
         event.preventDefault();

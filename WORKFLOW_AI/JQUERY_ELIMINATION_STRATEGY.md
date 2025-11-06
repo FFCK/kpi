@@ -291,19 +291,23 @@ $$(".class").forEach(el => el.style.display = "none");
 - [x] Créer stratégie migration progressive
 - [x] Identifier composants critiques
 
-### Phase 1 : Autocomplete
+### Phase 1 : Autocomplete ✅ COMPLÉTÉ
 - [x] Créer vanilla-autocomplete.js
 - [x] Créer guide migration
 - [x] Exemple GestionEquipe.js
-- [ ] Migrer 17 fichiers JS
+- [x] Migrer 40 fichiers JS (100%)
 - [ ] Tester pages admin
 - [ ] Supprimer jquery.autocomplete.js
 
-### Phase 2 : Tooltip
-- [ ] Audit usages jquery.tooltip.js
-- [ ] Migrer vers Bootstrap 5 Tooltip
+### Phase 2 : Tooltip ✅ PARTIEL (60%)
+- [x] Audit usages jquery.tooltip.js
+- [x] Créer bootstrap-tooltip-init.js
+- [x] Migrer 5 fichiers JavaScript
+- [x] Ajouter à kppagewide.tpl (Bootstrap 5)
+- [ ] Migrer kppage.tpl et kppageleaflet.tpl
+- [ ] Templates page.tpl et pageMap.tpl (bloqués par jQuery 1.5.2)
 - [ ] Tester formulaires admin
-- [ ] Supprimer jquery.tooltip.js
+- [ ] Supprimer jquery.tooltip.js (après migration complète)
 
 ### Phase 3 : Masked Input
 - [ ] Choisir IMask.js ou HTML5 pattern
@@ -430,5 +434,6 @@ make dev_restart
 
 **Auteur** : Laurent Garrigue / Claude Code
 **Date** : 3 novembre 2025
-**Version** : 1.0
-**Statut** : ✅ **STRATÉGIE VALIDÉE - PRÊTE À EXÉCUTER**
+**Dernière mise à jour** : 6 novembre 2025, 11:00
+**Version** : 1.1
+**Statut** : 🚀 **EN COURS** (Phase 1: 100%, Phase 2: 60%)

@@ -1,16 +1,17 @@
 # Résumé des Migrations JavaScript
 
 **Date**: Novembre 2025
-**Statut**: ✅ Migrations complètes
+**Statut**: 🚀 Migrations en cours (2 complètes, 1 partielle)
 
 ---
 
 ## 📊 Vue d'ensemble
 
-Ce document résume les deux migrations majeures effectuées pour moderniser le code JavaScript de l'application :
+Ce document résume les trois migrations majeures effectuées pour moderniser le code JavaScript de l'application :
 
 1. **Migration jQuery Autocomplete → Vanilla JavaScript** (100% complète)
 2. **Migration dhtmlgoodies_calendar → Flatpickr** (100% complète)
+3. **Migration jQuery Tooltip → Bootstrap 5** (60% complète)
 
 ---
 
@@ -180,6 +181,61 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
 
 ---
 
+## 3. Migration Tooltip (jQuery → Bootstrap 5)
+
+### 📋 Résumé
+
+- **Objectif** : Remplacer jquery.tooltip.js par Bootstrap 5 native tooltips
+- **Statut** : ✅ **60% complète** (JavaScript migré, templates modernes en cours)
+- **Documentation** : [TOOLTIP_MIGRATION_STATUS.md](TOOLTIP_MIGRATION_STATUS.md)
+
+### ✅ Réalisations
+
+| Catégorie | Nombre | Statut |
+|-----------|--------|--------|
+| Fichiers JavaScript migrés | 5 | ✅ |
+| Templates modernes migrés | 1 | ✅ |
+| Templates modernes à vérifier | 2 | ⏳ |
+| Templates legacy bloqués | 2 | ❌ (jQuery 1.5.2) |
+
+### 🔧 Infrastructure
+
+- **Bibliothèque** : Bootstrap 5.3 (déjà installé via Composer)
+- **Script** : [sources/js/bootstrap-tooltip-init.js](../sources/js/bootstrap-tooltip-init.js)
+- **Fonction** : Initialisation automatique + `reinitializeTooltips()`
+
+### 📦 Fichiers migrés
+
+1. **formTools.js** - Tooltip global commenté
+2. **Palmares.js** - Tooltip global commenté
+3. **GestionJournee.js** - Tooltip global commenté
+4. **GestionDoc.js** - Tooltip global commenté
+5. **AdmTools.js** - Tooltip avec content function commenté
+
+### 📦 Templates migrés
+
+1. **kppagewide.tpl** - Bootstrap 5 présent, script ajouté (ligne 54)
+
+### ⏳ Templates en attente
+
+- **kppage.tpl** - À vérifier si Bootstrap 5 présent
+- **kppageleaflet.tpl** - À vérifier si Bootstrap 5 présent
+
+### ❌ Templates bloqués
+
+- **page.tpl** - Utilise jQuery 1.5.2, nécessite migration complète
+- **pageMap.tpl** - Utilise jQuery 1.5.2, nécessite migration complète
+
+### 🎯 Points clés
+
+- ✅ Bootstrap 5 déjà installé (Composer : twbs/bootstrap ^5.3)
+- ✅ Script d'initialisation automatique créé
+- ✅ Tooltips Bootstrap 5 : WCAG 2.1 compliant
+- ✅ Support data attributes (`data-bs-toggle="tooltip"`)
+- ⚠️ Templates legacy bloqués par dépendance jQuery 1.5.2
+
+---
+
 ## 📊 Impact Global
 
 ### Gains de Performance
@@ -188,7 +244,8 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
 |----------|-------|-------|------|
 | **Autocomplete** | jQuery UI (~100 KB) | Vanilla JS (~8 KB) | -92 KB |
 | **Datepicker** | dhtmlgoodies (~50 KB) | Flatpickr (~16 KB) | -34 KB |
-| **Total JS** | ~150 KB | ~24 KB | **-126 KB (-84%)** |
+| **Tooltip** | jQuery Tooltip (~8 KB) | Bootstrap 5 init (~2 KB) | -6 KB |
+| **Total JS** | ~158 KB | ~26 KB | **-132 KB (-84%)** |
 
 ### Gains de Maintenabilité
 
@@ -200,8 +257,8 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
 
 ### Gains d'Accessibilité
 
-- ✅ WCAG 2.1 (Flatpickr)
-- ✅ Navigation clavier complète (autocomplete + datepicker)
+- ✅ WCAG 2.1 (Flatpickr + Bootstrap 5 Tooltips)
+- ✅ Navigation clavier complète (autocomplete + datepicker + tooltips)
 - ✅ Support mobile optimisé
 - ✅ Focus management amélioré
 
@@ -222,6 +279,13 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
    - [ ] Tester les 6 autres pages admin avec dates
    - [ ] Vérifier format français/anglais sur toutes les pages
 
+3. **Tooltip**
+   - [x] Migrer fichiers JavaScript (formTools, Palmares, GestionJournee, GestionDoc, AdmTools) ✅ (6 nov 2025)
+   - [x] Ajouter bootstrap-tooltip-init.js à kppagewide.tpl ✅ (6 nov 2025)
+   - [ ] Vérifier et migrer kppage.tpl
+   - [ ] Vérifier et migrer kppageleaflet.tpl
+   - [ ] Tester tooltips sur pages migrées
+
 ### Validation (48h après tests)
 
 - [ ] Monitoring en production
@@ -239,6 +303,12 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
 - [ ] Supprimer `sources/css/dhtmlgoodies_calendar.css`
 - [ ] Mettre à jour `JS_LIBRARIES_AUDIT.md`
 
+#### Tooltip
+- [ ] Migrer page.tpl et pageMap.tpl vers Bootstrap 5 (prerequis)
+- [ ] Supprimer `sources/js/jquery.tooltip.min.js`
+- [ ] Supprimer `sources/css/jquery.tooltip.css`
+- [ ] Mettre à jour `JS_LIBRARIES_AUDIT.md`
+
 ---
 
 ## 📚 Documentation Détaillée
@@ -252,31 +322,43 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
 - [FLATPICKR_MIGRATION_GUIDE.md](FLATPICKR_MIGRATION_GUIDE.md) - Guide complet
 - [sources/js/flatpickr-wrapper.js](../sources/js/flatpickr-wrapper.js) - Code source wrapper
 
+### Tooltip
+- [TOOLTIP_MIGRATION_STATUS.md](TOOLTIP_MIGRATION_STATUS.md) - Statut migration Bootstrap 5
+- [sources/js/bootstrap-tooltip-init.js](../sources/js/bootstrap-tooltip-init.js) - Script d'initialisation
+
 ### Ressources externes
 - [Flatpickr Documentation](https://flatpickr.js.org/)
+- [Bootstrap 5 Tooltips](https://getbootstrap.com/docs/5.3/components/tooltips/)
 - [MDN - Vanilla JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
 ---
 
 ## 🏆 Conclusion
 
-Les deux migrations JavaScript sont **100% complètes** et apportent des gains significatifs en performance, maintenabilité et accessibilité. Le code est plus moderne, mieux structuré, et plus facile à maintenir.
+Les trois migrations JavaScript sont **en cours** avec des gains significatifs déjà réalisés en performance, maintenabilité et accessibilité. Le code est plus moderne, mieux structuré, et plus facile à maintenir.
 
 ### Statut de validation
 
-- ✅ **Autocomplete** : Migration complète, tests unitaires nécessaires
-- ✅ **Flatpickr datepicker** : Migration complète, tests utilisateur en cours
+- ✅ **Autocomplete** : Migration complète (100%), tests unitaires nécessaires
+- ✅ **Flatpickr datepicker** : Migration complète (100%), tests utilisateur en cours
   - ✅ GestionCalendrier.js (dates) : **Testé et validé** (6 nov 2025)
   - ✅ GestionJournee.js (dates + heures) : **Testé et validé** (6 nov 2025)
   - ⏳ 6 autres pages admin : Tests restants
+- ⏳ **Tooltip Bootstrap 5** : Migration partielle (60%)
+  - ✅ 5 fichiers JavaScript migrés
+  - ✅ 1 template moderne migré (kppagewide.tpl)
+  - ⏳ 2 templates à vérifier (kppage.tpl, kppageleaflet.tpl)
+  - ❌ 2 templates bloqués par jQuery 1.5.2 (page.tpl, pageMap.tpl)
 
 **Prochaines actions** :
-1. Tests fonctionnels sur les 6 pages admin restantes (dates seulement)
-2. Validation 48h en production
-3. Nettoyage final des fichiers dhtmlgoodies obsolètes
+1. Vérifier et migrer kppage.tpl et kppageleaflet.tpl (Bootstrap 5)
+2. Tests fonctionnels tooltips sur pages migrées
+3. Tests fonctionnels Flatpickr sur les 6 pages admin restantes
+4. Validation 48h en production
+5. Nettoyage final des fichiers obsolètes (dhtmlgoodies, jquery.tooltip)
 
 ---
 
 **Auteur** : Laurent Garrigue / Claude Code
-**Date mise à jour** : 6 novembre 2025, 10:00
-**Version** : 1.1
+**Date mise à jour** : 6 novembre 2025, 11:00
+**Version** : 1.2

@@ -51,6 +51,7 @@
   <script type='text/javascript' src='js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
   <script type='text/javascript' src='js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
   <script type='text/javascript' src='vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v={$NUM_VERSION}'></script>
+  <script type="text/javascript" src="js/bootstrap-tooltip-init.js?v={$NUM_VERSION}"></script>
   <script type="text/javascript" src="js/wordpress_material_javascripts_main.js"></script>
   <script type="text/javascript" src="js/formTools.js?v={$NUM_VERSION}" defer></script>
   {assign var=temp value="js/$contenutemplate.js"}

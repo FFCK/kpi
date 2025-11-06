@@ -1,7 +1,5 @@
 $(document).ready(function() {
-	$("*").tooltip({
-		showURL: false
-	});
+	// Tooltips now handled by Bootstrap 5 (bootstrap-tooltip-init.js)
 
 	vanillaAutocomplete('#choixEquipe', 'Autocompl_equipe.php', {
 		width: 350,
