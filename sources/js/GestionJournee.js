@@ -439,11 +439,12 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		allowInput: true,
 		clickOpens: true
 	})
-	if (lang == 'en') {
-		jq('.date').mask("9999-99-99")
-	} else {
-		jq('.date').mask("99/99/9999")
-	}
+	// Maskedinput removed - obsolete (dates use Flatpickr above)
+	// if (lang == 'en') {
+	// 	jq('.date').mask("9999-99-99")
+	// } else {
+	// 	jq('.date').mask("99/99/9999")
+	// }
 
 	//Recherches arbitres
 	jq('#iframeRechercheLicenceIndi2').hide()

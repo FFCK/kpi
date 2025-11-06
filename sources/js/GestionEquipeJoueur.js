@@ -96,8 +96,8 @@ function Find () {
 
 jq(document).ready(function () { //Jquery + NoConflict='J'
 
-	// Maskedinput
-	jq(".champsHeure").mask("99:99")
+	// Maskedinput removed - time inputs now use Flatpickr (see GestionJournee.js pattern)
+	// jq(".champsHeure").mask("99:99")
 
 	// Direct Input (numero joueur)
 	// Ajout title

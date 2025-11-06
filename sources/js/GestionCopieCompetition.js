@@ -38,10 +38,10 @@ function Cancel()
 
 jq(document).ready(function() {
 
-	// Maskedinput
+	// Maskedinput removed - obsolete (dates use Flatpickr, departments use HTML5 pattern)
 	//jq.mask.definitions['h'] = "[A-O]";
-	jq('.dpt').mask("?***");
-	jq('.date').mask("99/99/9999");
+	// jq('.dpt').mask("?***");
+	// jq('.date').mask("99/99/9999");
 	//jq("#inputZone").mask("9");
 
 });

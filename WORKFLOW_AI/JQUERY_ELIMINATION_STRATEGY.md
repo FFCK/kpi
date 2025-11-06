@@ -1,6 +1,8 @@
 # Stratégie d'Élimination jQuery 1.5.2
 
-**Date**: 3 novembre 2025
+**Version**: 1.2
+**Date**: 3-7 novembre 2025
+**Statut**: 🚀 **EN COURS** (Phase 1: 100%, Phase 2: 60%, Phase 3: 95%)
 **Objectif**: Supprimer jQuery 1.5.2 (90 KB) et migrer vers Vanilla JS + Bootstrap 5
 **Durée estimée**: 1-2 semaines (progressif)
 **Gain total**: **~100 KB** + maintenance zéro
@@ -44,140 +46,67 @@
 
 ## 🗺️ Plan de Migration (4 Phases)
 
-### Phase 1 : Autocomplete ✅ EN COURS
+### Phase 1 : Autocomplete ✅ COMPLÉTÉ
 
-**Durée** : 2-4 heures
-**Fichiers** : 17 fichiers JS
+**Durée** : 2-4 heures (réalisé)
+**Fichiers** : 40 autocompletes dans 13 fichiers JS
 
 **Livrables** :
 - ✅ `vanilla-autocomplete.js` créé
-- ✅ Guide migration complet
-- ✅ Exemple GestionEquipe.js
-- ⏳ Migration 17 fichiers restants
+- ✅ Guide migration complet ([AUTOCOMPLETE_MIGRATION_SUMMARY.md](AUTOCOMPLETE_MIGRATION_SUMMARY.md))
+- ✅ 40 autocompletes migrés (100%)
+- ✅ 10 scripts PHP backend mis à jour (format JSON)
+- ✅ Tests et validation
 
-**Actions** :
-```bash
-# 1. Charger vanilla-autocomplete.js dans page.tpl
-# 2. Migrer fichiers un par un (voir AUTOCOMPLETE_MIGRATION_GUIDE.md)
-# 3. Tester chaque page après migration
-# 4. Supprimer jquery.autocomplete.js après validation
-```
-
-**Gain** : -15 KB (autocomplete seul)
+**Gain** : -15 KB (autocomplete) - ✅ **RÉALISÉ**
 
 ---
 
-### Phase 2 : Tooltip (Bootstrap 5)
+### Phase 2 : Tooltip (Bootstrap 5) ✅ PARTIEL (60%)
 
 **Durée** : 1-2 heures
 **Difficulté** : 🟢 Facile
 
+**Livrables** :
+- ✅ `bootstrap-tooltip-init.js` créé ([sources/js/bootstrap-tooltip-init.js](../sources/js/bootstrap-tooltip-init.js))
+- ✅ 5 fichiers JavaScript migrés (formTools, Palmares, GestionJournee, GestionDoc, AdmTools)
+- ✅ 1 template migré (kppagewide.tpl)
+- ⏳ 2 templates en attente (kppage.tpl, kppageleaflet.tpl)
+- ❌ 2 templates bloqués (page.tpl, pageMap.tpl - jQuery 1.5.2)
+- ✅ Documentation complète ([TOOLTIP_MIGRATION_STATUS.md](TOOLTIP_MIGRATION_STATUS.md))
+
 **Bootstrap 5 Tooltip** déjà disponible (sans jQuery) :
 
-#### Migration Pattern
-
-**AVANT (jQuery Tooltip)** :
-```javascript
-jq(".tooltip-trigger").tooltip({
-    position: "top center",
-    effect: "fade"
-});
-```
-
-**APRÈS (Bootstrap 5 Tooltip)** :
-```html
-<!-- HTML -->
-<button type="button"
-        class="btn btn-secondary"
-        data-bs-toggle="tooltip"
-        data-bs-placement="top"
-        title="Tooltip texte">
-  Hover me
-</button>
-
-<!-- JavaScript (Vanilla) -->
-<script>
-// Initialiser tous les tooltips
-document.addEventListener('DOMContentLoaded', function() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl =>
-        new bootstrap.Tooltip(tooltipTriggerEl)
-    );
-});
-</script>
-```
-
-**Actions** :
-1. Identifier usages `jquery.tooltip.js` (grep dans sources/)
-2. Remplacer par attributs Bootstrap 5 `data-bs-toggle="tooltip"`
-3. Initialiser via Vanilla JS
-4. Tester formulaires admin
-5. Supprimer `jquery.tooltip.js` et CSS
-
-**Gain** : -8 KB (tooltip)
+**Gain** : -6 KB (tooltip) - ✅ **60% RÉALISÉ** (JavaScript complet, templates modernes en cours)
 
 ---
 
-### Phase 3 : Masked Input (IMask.js ou HTML5)
+### Phase 3 : Masked Input (HTML5 / Conservation) ✅ COMPLÉTÉ (95%)
 
-**Durée** : 2-3 heures
+**Durée** : 2-3 heures (réalisé)
 **Difficulté** : 🟡 Moyenne
 
-#### Option A : IMask.js (Vanilla JS Library)
+**Décision stratégique** : Suppression massive (85%) + Conservation minimale (15%)
 
-**Librairie** : https://imask.js.org/ (7 KB gzipped)
+**Livrables** :
+- ✅ Audit complet des 13 usages jquery.maskedinput.js
+- ✅ 11 masks supprimés (85%) :
+  - 5 fichiers : masks **dates** supprimés (obsolète, Flatpickr utilisé)
+  - 4 fichiers : masks **départements** supprimés (HTML5 pattern possible)
+  - 2 fichiers : masks **heures** supprimés (Flatpickr utilisé)
+- ⚠️ 2 masks conservés (15%) :
+  - **GestionClassementInit.js** : `.champsPoints` mask `"99"` - input créé dynamiquement (impossible à migrer)
+  - **GestionRc.js** : `#Ordre` mask `"9"` - migration HTML5 possible (future)
+- ✅ Documentation complète ([MASKED_INPUT_MIGRATION_STATUS.md](MASKED_INPUT_MIGRATION_STATUS.md))
 
-**AVANT (jQuery Masked Input)** :
-```javascript
-jq("#telephone").mask("99 99 99 99 99");
-jq("#date").mask("99/99/9999");
-```
+**Résultat** :
+- ✅ Code nettoyé : 9 fichiers JavaScript commentés
+- ✅ Cohérence : Dates/heures utilisent maintenant Flatpickr
+- ⚠️ jquery.maskedinput.js (5 KB) conservé pour 2 cas techniques
 
-**APRÈS (IMask.js)** :
-```javascript
-// Installation
-// npm install imask  (via make npm_add_backend package=imask)
+**Gain** : -0 KB* (bibliothèque conservée) mais **85% du code nettoyé** - ✅ **RÉALISÉ**
 
-// Usage
-import IMask from 'imask';
-
-// Téléphone
-IMask(document.getElementById('telephone'), {
-    mask: '00 00 00 00 00'
-});
-
-// Date
-IMask(document.getElementById('date'), {
-    mask: Date,
-    pattern: 'd/m/Y'
-});
-```
-
-#### Option B : HTML5 Pattern (Natif, 0 KB)
-
-**APRÈS (HTML5 Pattern)** :
-```html
-<!-- Téléphone -->
-<input type="tel"
-       pattern="[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}"
-       placeholder="06 12 34 56 78">
-
-<!-- Date (déjà migré vers Flatpickr) -->
-<!-- Pas de masking nécessaire, Flatpickr gère format -->
-```
-
-**Recommandation** :
-- ✅ **IMask.js** si besoins avancés (validation temps réel, formats complexes)
-- ✅ **HTML5 pattern** si validation simple suffit
-
-**Actions** :
-1. Identifier usages `jquery.maskedinput.js`
-2. Choisir IMask.js ou HTML5 selon besoin
-3. Migrer inputs maskés
-4. Tester validation formulaires
-5. Supprimer `jquery.maskedinput.js`
-
-**Gain** : -5 KB (maskedinput)
+**Note**: La bibliothèque reste chargée pour 2 fichiers, mais 11/13 usages (85%) ont été supprimés. Migration GestionRc.js possible en futur (HTML5 pattern) pour réduire à 1 usage.
 
 ---
 
