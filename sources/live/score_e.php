@@ -1,5 +1,6 @@
 <?php
 include_once('page.php');
+include_once('MyConfig.php');
 
 class Score extends MyPage
 {
@@ -68,8 +69,8 @@ class Score extends MyPage
   function Script()
   {
   ?>
-    <script type="text/javascript" src="../js/axios/axios.min.js?v=5.3.8"></script>
-    <script type="text/javascript" src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=5.3.8"></script>
+    <script type="text/javascript" src="../js/fetch-utils.js?v=<?= NUM_VERSION ?>"></script>
+    <script type="text/javascript" src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=<?= NUM_VERSION ?>"></script>
     <?php
 
     $event = $this->GetParamInt('event', 0);
@@ -78,9 +79,9 @@ class Score extends MyPage
     $voie = $this->GetParamInt('voie', 0);
 
     ?>
-    <script type="text/javascript" src="./js/match.js?v=5.3.8"></script>
-    <script type="text/javascript" src="./js/voie_ax.js?v=5.3.8"></script>
-    <script type="text/javascript" src="./js/score_e.js?v=5.3.8"></script>
+    <script type="text/javascript" src="./js/match.js?v=<?= NUM_VERSION ?>"></script>
+    <script type="text/javascript" src="./js/voie_ax.js?v=<?= NUM_VERSION ?>"></script>
+    <script type="text/javascript" src="./js/score_e.js?v=<?= NUM_VERSION ?>"></script>
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function() {
         Init(<?php echo "$event, $terrain, $speaker, $voie"; ?>)
