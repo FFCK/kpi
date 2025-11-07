@@ -12,7 +12,7 @@ Ce document résume les quatre migrations majeures effectuées pour moderniser l
 1. **Migration jQuery Autocomplete → Vanilla JavaScript** (100% complète)
 2. **Migration dhtmlgoodies_calendar → Flatpickr** (100% complète)
 3. **Migration jQuery Tooltip → Bootstrap 5** (60% complète)
-4. **Migration jQuery Masked Input → HTML5 / Conservation minimale** (95% complète)
+4. **Migration jQuery Masked Input → Vanilla JS** (100% complète)
 
 ---
 
@@ -405,6 +405,10 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
 - [TOOLTIP_MIGRATION_STATUS.md](TOOLTIP_MIGRATION_STATUS.md) - Statut migration Bootstrap 5
 - [sources/js/bootstrap-tooltip-init.js](../sources/js/bootstrap-tooltip-init.js) - Script d'initialisation
 
+### Masked Input
+- [MASKED_INPUT_MIGRATION_STATUS.md](MASKED_INPUT_MIGRATION_STATUS.md) - Statut migration complète
+- [sources/js/formTools.js](../sources/js/formTools.js) - 5 patterns Vanilla JS
+
 ### Ressources externes
 - [Flatpickr Documentation](https://flatpickr.js.org/)
 - [Bootstrap 5 Tooltips](https://getbootstrap.com/docs/5.3/components/tooltips/)
@@ -414,7 +418,7 @@ if (inputZone.length && inputZone.next()[0] === thisSpan[0]) {
 
 ## 🏆 Conclusion
 
-Les trois migrations JavaScript sont **en cours** avec des gains significatifs déjà réalisés en performance, maintenabilité et accessibilité. Le code est plus moderne, mieux structuré, et plus facile à maintenir.
+Les quatre migrations JavaScript sont **en cours** avec des gains significatifs déjà réalisés en performance, maintenabilité et accessibilité. Le code est plus moderne, mieux structuré, et plus facile à maintenir.
 
 ### Statut de validation
 
@@ -428,6 +432,11 @@ Les trois migrations JavaScript sont **en cours** avec des gains significatifs d
   - ✅ 1 template moderne migré (kppagewide.tpl)
   - ⏳ 2 templates à vérifier (kppage.tpl, kppageleaflet.tpl)
   - ❌ 2 templates bloqués par jQuery 1.5.2 (page.tpl, pageMap.tpl)
+- ✅ **Masked Input** : Migration complète (100%), solution Vanilla JS créée
+  - ✅ 13/13 masks jQuery supprimés
+  - ✅ 5 patterns Vanilla JS créés dans formTools.js
+  - ✅ 9 fichiers JavaScript + 9 templates migrés
+  - ⏳ Tests fonctionnels restants
 
 **Prochaines actions** :
 1. Vérifier et migrer kppage.tpl et kppageleaflet.tpl (Bootstrap 5)
@@ -439,5 +448,5 @@ Les trois migrations JavaScript sont **en cours** avec des gains significatifs d
 ---
 
 **Auteur** : Laurent Garrigue / Claude Code
-**Date mise à jour** : 6 novembre 2025, 11:00
+**Date mise à jour** : 7 novembre 2025
 **Version** : 1.2

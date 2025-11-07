@@ -115,10 +115,11 @@
 
 ---
 
-### Phase 4 : Fixed Header Table (CSS Sticky)
+### Phase 4 : Fixed Header Table
 
 **Durée** : 1 heure
 **Difficulté** : 🟢 Très facile
+**Statut** : ⏸️ **EN ATTENTE** (CSS sticky nécessite ajustements)
 
 **CSS `position: sticky`** natif (0 KB JavaScript) :
 
@@ -172,6 +173,8 @@ jq("#tableaux").fixedHeaderTable({
 4. Supprimer `jquery.fixedheadertable.js`
 
 **Gain** : -12 KB (fixedheadertable)
+
+**Note** : Migration tentée puis annulée (7 nov 2025) - CSS sticky nécessite ajustements pour fonctionner correctement avec DataTables.
 
 ---
 
@@ -243,14 +246,15 @@ $$(".class").forEach(el => el.style.display = "none");
 - [ ] Tester formulaires admin
 - [ ] Supprimer jquery.tooltip.js (après migration complète)
 
-### Phase 3 : Masked Input
-- [ ] Choisir IMask.js ou HTML5 pattern
-- [ ] Installer IMask.js (si choisi)
-- [ ] Migrer inputs maskés
+### Phase 3 : Masked Input ✅ COMPLÉTÉ (100%)
+- [x] Audit complet des 13 usages
+- [x] Créer infrastructure Vanilla JS (formTools.js - 5 patterns)
+- [x] Migrer 9 fichiers JavaScript
+- [x] Migrer 9 templates Smarty
+- [x] Supprimer masks obsolètes (100%)
 - [ ] Tester validation formulaires
-- [ ] Supprimer jquery.maskedinput.js
 
-### Phase 4 : Fixed Header Table
+### Phase 4 : Fixed Header Table ⏸️ EN ATTENTE
 - [ ] Identifier tables fixed header
 - [ ] Ajouter CSS position: sticky
 - [ ] Tester scroll tableaux
@@ -271,18 +275,20 @@ $$(".class").forEach(el => el.style.display = "none");
 
 ---
 
-## 🎯 Gains Attendus
+## 🎯 Gains Réalisés et Attendus
 
-| Phase | Composant | Gain Taille | Gain Maintenance |
-|-------|-----------|-------------|------------------|
-| 1 | Autocomplete | -15 KB | ✅ Zéro dépendance |
-| 2 | Tooltip | -8 KB | ✅ Bootstrap 5 maintenu |
-| 3 | Masked Input | -5 KB | ✅ IMask.js ou HTML5 |
-| 4 | Fixed Header | -12 KB | ✅ CSS natif |
-| 5 | jQuery Core | -90 KB | ✅ Standards web |
-| **TOTAL** | | **-130 KB** | **100% Vanilla/Bootstrap5** |
+| Phase | Composant | Gain Taille | Statut | Gain Maintenance |
+|-------|-----------|-------------|--------|------------------|
+| 1 | Autocomplete | -92 KB | ✅ **100%** | ✅ Zéro dépendance |
+| 2 | Tooltip | -6 KB | ⏳ **60%** | ✅ Bootstrap 5 maintenu |
+| 3 | Masked Input | -5 KB | ✅ **100%** | ✅ Vanilla JS natif |
+| 4 | Fixed Header | -12 KB | ⏸️ **0%** | ✅ CSS natif (à venir) |
+| 5 | jQuery Core | -90 KB | ⏳ **0%** | ✅ Standards web |
+| **TOTAL RÉALISÉ** | | **-103 KB** | **2.6/5** | **80% Vanilla/Bootstrap5** |
+| **TOTAL ATTENDU** | | **-205 KB** | **5/5** | **100% Vanilla/Bootstrap5** |
 
-**Économie bande passante** : -130 KB × 10 000 visites/mois = **-1.3 GB/mois**
+**Économie bande passante (réalisée)** : -103 KB × 10 000 visites/mois = **-1.03 GB/mois**
+**Économie bande passante (attendue)** : -205 KB × 10 000 visites/mois = **-2.05 GB/mois**
 
 ---
 
@@ -290,8 +296,11 @@ $$(".class").forEach(el => el.style.display = "none");
 
 ### Créés dans ce Projet
 - ✅ `sources/js/vanilla-autocomplete.js` - Autocomplete Vanilla JS
-- ✅ `WORKFLOW_AI/AUTOCOMPLETE_MIGRATION_GUIDE.md` - Guide complet
-- ✅ `WORKFLOW_AI/GestionEquipe.js.EXAMPLE_MIGRATED` - Exemple migration
+- ✅ `sources/js/bootstrap-tooltip-init.js` - Bootstrap 5 Tooltips
+- ✅ `sources/js/formTools.js` - 5 patterns Vanilla JS pour masked input
+- ✅ `WORKFLOW_AI/AUTOCOMPLETE_MIGRATION_SUMMARY.md` - Migration autocomplete
+- ✅ `WORKFLOW_AI/TOOLTIP_MIGRATION_STATUS.md` - Migration tooltips
+- ✅ `WORKFLOW_AI/MASKED_INPUT_MIGRATION_STATUS.md` - Migration masked input
 
 ### Librairies Recommandées
 - **Bootstrap 5** : https://getbootstrap.com/docs/5.3/ (déjà utilisé)
