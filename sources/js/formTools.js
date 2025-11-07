@@ -519,4 +519,37 @@ function calculCategorie(naissance, saison) {
 
 }
 
+// Input type="tel" restriction to numeric only - vanilla JS
+document.querySelectorAll('input[type="tel"]').forEach(function(input) {
+	input.addEventListener('input', function(e) {
+		this.value = this.value.replace(/\D/g, '');
+	});
+});
 
+// Input class="dpt" restriction to uppercase letters and numbers only - vanilla JS
+document.querySelectorAll('input.dpt').forEach(function(input) {
+	input.addEventListener('input', function(e) {
+		this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+	});
+});
+
+// Input class="group" restriction to uppercase letters only - vanilla JS
+document.querySelectorAll('input.group').forEach(function(input) {
+	input.addEventListener('input', function(e) {
+		this.value = this.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+	});
+});
+
+// Input class="codecompet" restriction to uppercase letters, hyphens and numbers only - vanilla JS
+document.querySelectorAll('input.codecompet').forEach(function(input) {
+	input.addEventListener('input', function(e) {
+		this.value = this.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+	});
+});
+
+// Input class="codecompet" restriction to uppercase letters, spaces, hyphens and numbers only - vanilla JS
+document.querySelectorAll('input.libelleStructure').forEach(function(input) {
+	input.addEventListener('input', function(e) {
+		this.value = this.value.replace(/[^a-zA-Z0-9- ]/g, '').toUpperCase();
+	});
+});

@@ -35,13 +35,3 @@ function Cancel()
 	document.forms['formCopieCompetition'].elements['ParamCmd'].value = '';
 	document.forms['formCopieCompetition'].submit();
 }
-
-jq(document).ready(function() {
-
-	// Maskedinput removed - obsolete (dates use Flatpickr, departments use HTML5 pattern)
-	//jq.mask.definitions['h'] = "[A-O]";
-	// jq('.dpt').mask("?***");
-	// jq('.date').mask("99/99/9999");
-	//jq("#inputZone").mask("9");
-
-});

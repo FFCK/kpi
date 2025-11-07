@@ -105,11 +105,11 @@
 		        <tr>
 		          <td width=15%>
 		            <label for="codeCD">Code :</label>
-		            <input type="text" name="codeCD" maxlength=5 id="codeCD" />
+		            <input type="text" name="codeCD" id="codeCD" class="dpt" maxlength=5 />
 		          </td>
 		          <td>
 		            <label for="libelleCD">Nouveau comité départemental / pays :</label>
-		            <input type="text" name="libelleCD" maxlength=50 id="libelleCD" />
+		            <input type="text" name="libelleCD" id="libelleCD" class="libelleStructure" maxlength=50 />
 		          </td>
 		        </tr>
 		        <tr>
@@ -149,11 +149,11 @@
 		        <tr>
 		          <td width=15%>
 		            <label for="codeClub">Code :</label>
-		            <input type="text" name="codeClub" maxlength=5 id="codeClub" />
+		            <input type="text" name="codeClub" id="codeClub" class="dpt" maxlength=5 />
 		          </td>
 		          <td>
 		            <label for="libelleClub">Nouveau club / nouvelle structure :</label>
-		            <input type="text" name="libelleClub" maxlength=50 id="libelleClub" />
+		            <input type="text" name="libelleClub" id="libelleClub" class="libelleStructure" maxlength=50 />
 		          </td>
 		        </tr>
 		        <tr>

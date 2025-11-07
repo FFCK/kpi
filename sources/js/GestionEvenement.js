@@ -83,17 +83,3 @@ function paramEvt (idEvt) {
 	document.forms['formEvenement'].elements['ParamCmd'].value = idEvt
 	document.forms['formEvenement'].submit()
 }
-
-jq(document).ready(function () {
-
-	// Maskedinput removed - obsolete (dates use Flatpickr, departments use HTML5 pattern)
-	//jq.mask.definitions['h'] = "[A-O]";
-	// jq('.dpt').mask("?***")
-	// if (lang == 'en') {
-	// 	jq('.date').mask("9999-99-99")
-	// } else {
-	// 	jq('.date').mask("99/99/9999")
-	// }
-	//jq("#inputZone").mask("9");
-
-})

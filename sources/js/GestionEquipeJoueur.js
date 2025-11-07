@@ -96,9 +96,6 @@ function Find () {
 
 jq(document).ready(function () { //Jquery + NoConflict='J'
 
-	// Maskedinput removed - time inputs now use Flatpickr (see GestionJournee.js pattern)
-	// jq(".champsHeure").mask("99:99")
-
 	// Direct Input (numero joueur)
 	// Ajout title
 	jq('.directInput').attr('title', langue['Cliquez_pour_modifier'])
@@ -122,6 +119,9 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		jq(this).attr('tabindex', tabindexVal + 1000)
 		if (jq(this).hasClass('text')) {
 			jq(this).prepend('<input type="text" id="inputZone" class="directInputTd" tabindex="' + tabindexVal + '" size="2" value="' + valeur + '">')
+			jq('#inputZone').select().keyup(() => {
+				jq('#inputZone').val(jq('#inputZone').val().toUpperCase().match(/[0-9]{0,2}/)[0])
+			})
 		}
 		jq(this).children("span").hide()
 		setTimeout(function () { jq('#inputZone').select() }, 0)

@@ -102,20 +102,16 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan=3>
+							<td colspan=2>
 								<label for="Matric">{#Licence#} :</label>
-								<input type="text" name="Matric" value="{$selectMatric}" id="Matric" readonly>
+								<input type="tel" name="Matric" value="{$selectMatric}" id="Matric" readonly>
 							</td>
-							<td>
-								<label for="Ordre">{#Ordre#} :</label>
-								<input type="text" name="Ordre" value="{$selectOrdre}" id="Ordre" size=1>
+							<td colspan=2>
+								<label for="Code_saison">{#Saison#} :</label>
+								<input type="tel" name="Code_saison" value="{$selectSaison}" id="Code_saison" maxlength="4" size=4 readonly>
 							</td>
 						</tr>
 						<tr>
-							<td>
-								<label for="Code_saison">{#Saison#} :</label>
-								<input type="text" name="Code_saison" value="{$selectSaison}" id="Code_saison" size=4 readonly>
-							</td>
 							<td colspan=3>
 								<label for="Code_competition">{#Competition#} :</label>
 								<select name="Code_competition" id="Code_competition">
@@ -124,6 +120,10 @@
 										<option value="{$arrayCompetitions[i].Code}" {if $arrayCompetitions[i].Code==$selectCompetition}selected{/if}>{$arrayCompetitions[i].Code}</option>
 									{/section}
 								</select>
+							</td>
+							<td>
+								<label for="Ordre">{#Ordre#} :</label>
+								<input type="tel" name="Ordre" value="{$selectOrdre}" id="Ordre" maxlength="2" size=1>
 							</td>
 						</tr>
 						<tr>

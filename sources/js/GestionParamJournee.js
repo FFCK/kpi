@@ -83,16 +83,6 @@ function Duplicate()
 }
 jq(document).ready(function() {
 
-	// Maskedinput removed - obsolete (dates use Flatpickr, departments use HTML5 pattern)
-	//jq.mask.definitions['h'] = "[A-O]";
-	//jq('#Departement').mask("999");
-	// jq('.dpt').mask("?***");
-	// if (lang == 'en') {
-	// 	jq('.date').mask("9999-99-99");
-	// } else {
-	// 	jq('.date').mask("99/99/9999");
-	// }
-
 	vanillaAutocomplete('#Lieu', 'Autocompl_ville.php', {
 		width: 420,
 		maxResults: 80,

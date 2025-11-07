@@ -80,9 +80,6 @@ function DoNumero(matric, numero)	// Prototype remplacé par Jquery
 
 jq(document).ready(function() { //Jquery + NoConflict='J'
 
-	// Maskedinput removed - time inputs now use Flatpickr (see GestionJournee.js pattern)
-	// jq(".champsHeure").mask("99:99");
-
 	// Direct Input (numero joueur)
 	//Ajout title
 	jq('.directInput').attr('title','Cliquez pour modifier, puis tabulation pour passer à la valeur suivante');
