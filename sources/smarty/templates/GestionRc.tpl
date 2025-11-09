@@ -60,7 +60,7 @@
 						</thead>
 						<tbody>
 							{section name=i loop=$arrayRc}
-								<tr class='{cycle values="impair,pair"} {$arrayRc[i].Selected}' data-code="{$arrayRc[i].Code_competition}">
+								<tr class="{cycle values='impair,pair'} {$arrayRc[i].Selected|default: ''}" data-code="{$arrayRc[i].Code_competition}">
 									{if $profile <= 2}
 										<td>
 											<a href="#" Id="Param{$arrayRc[i].Id}" onclick="paramRc({$arrayRc[i].Id})">

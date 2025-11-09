@@ -399,7 +399,7 @@ class Matchs extends MyPage
                 $clubA = $row['clubA'];
                 if (is_file('img/KIP/logo/' . $clubA . '-logo.png')) {
                     $logoA = 'img/KIP/logo/' . $clubA . '-logo.png';
-                } elseif (is_file('img/Nations/' . substr($clubA, 0, 3) . '.png')) {
+                } elseif (is_file('img/Nations/' . substr($clubA ?? '', 0, 3) . '.png')) {
                     $clubA = substr($clubA, 0, 3);
                     $logoA = 'img/Nations/' . $clubA . '.png';
                 } else {
@@ -409,7 +409,7 @@ class Matchs extends MyPage
                 $clubB = $row['clubB'];
                 if (is_file('img/KIP/logo/' . $clubB . '-logo.png')) {
                     $logoB = 'img/KIP/logo/' . $clubB . '-logo.png';
-                } elseif (is_file('img/Nations/' . substr($clubB, 0, 3) . '.png')) {
+                } elseif (is_file('img/Nations/' . substr($clubB ?? '', 0, 3) . '.png')) {
                     $clubB = substr($clubB, 0, 3);
                     $logoB = 'img/Nations/' . $clubB . '.png';
                 } else {
