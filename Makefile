@@ -27,6 +27,7 @@ npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add
 npm_install_backend npm_add_backend npm_update_backend npm_ls_backend npm_clean_backend npm_init_backend \
 composer_install composer_update composer_require composer_require_dev composer_dump \
 php_bash php8_bash node_bash db_bash \
+event_worker_start event_worker_stop event_worker_status event_worker_logs event_worker_restart \
 wordpress_backup wordpress_restore \
 networks_create networks_list networks_clean
 
@@ -302,6 +303,44 @@ node_bash: ## Ouvre un shell bash dans le container Node (app2)
 
 db_bash: ## Ouvre un shell dans le container MySQL
 	docker exec -ti kpi_db sh
+
+
+## EVENT WORKER - Génération automatique des caches d'événements
+event_worker_start: ## Démarre le worker d'événements en arrière-plan
+	@echo "🚀 Démarrage du worker d'événements..."
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "php /var/www/html/live/event_worker.php > /var/www/html/live/logs/event_worker.log 2>&1 &"
+	@sleep 2
+	@echo "✅ Worker démarré en arrière-plan"
+	@echo "💡 Vérifiez le statut avec: make event_worker_status"
+	@echo "💡 Consultez les logs avec: make event_worker_logs"
+
+event_worker_stop: ## Arrête le worker d'événements
+	@echo "🛑 Arrêt du worker d'événements..."
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "pkill -f 'event_worker.php' || true"
+	@echo "✅ Worker arrêté"
+	@echo "💡 Note: Vous pouvez aussi arrêter via l'interface web (sources/live/event.php)"
+
+event_worker_status: ## Affiche le statut du worker d'événements
+	@echo "📊 Statut du worker d'événements:"
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "if pgrep -f 'event_worker.php' > /dev/null; then \
+		echo '  ✅ Worker en cours d\'exécution'; \
+		echo '  PID: '`pgrep -f 'event_worker.php'`; \
+	else \
+		echo '  ❌ Worker arrêté'; \
+	fi"
+	@echo ""
+	@echo "💡 Pour plus de détails, accédez à l'interface web: sources/live/event.php"
+
+event_worker_logs: ## Affiche les logs du worker d'événements
+	@echo "📋 Logs du worker d'événements (Ctrl+C pour quitter):"
+	@echo "─────────────────────────────────────────────────────────"
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "tail -f /var/www/html/live/logs/event_worker.log 2>/dev/null || echo '⚠️  Aucun log disponible. Le worker n\'a peut-être pas encore été démarré.'"
+
+event_worker_restart: ## Redémarre le worker d'événements
+	@echo "🔄 Redémarrage du worker d'événements..."
+	@$(MAKE) event_worker_stop
+	@sleep 2
+	@$(MAKE) event_worker_start
 
 
 ## RÉSEAUX DOCKER
