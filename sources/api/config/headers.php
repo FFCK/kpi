@@ -2,7 +2,7 @@
 
 function set_response_headers()
 {
-	$origin = &$_SERVER['HTTP_ORIGIN'];
+	$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
 	// Allow specific origins or any .local domain in development
 	if (
@@ -14,7 +14,7 @@ function set_response_headers()
 		$origin === "http://localhost:9002" ||
 		$origin === "http://localhost:3002" ||
 		$origin === "https://kpi-node.local" ||
-		preg_match('/^https?:\/\/.*\.local$/', $origin) // Allow all .local domains in dev
+		($origin && preg_match('/^https?:\/\/.*\.local$/', $origin)) // Allow all .local domains in dev
 	) {
 		header("Access-Control-Allow-Origin: $origin");
 	}
