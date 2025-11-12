@@ -6,7 +6,7 @@
 /* WebSocket */
 const checkWebSocket = () => {
     if (idEvent <= 0) {
-        exit
+        return;
     }
     fetch(`../live/cache/event${idEvent}_network.json`, {
         method: 'POST',

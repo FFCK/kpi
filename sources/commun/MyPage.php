@@ -179,55 +179,6 @@ class MyPage
 			$this->DisplayTemplateGlobal('page');
 	}
 
-	// DisplayTemplateJquery
-	function DisplayTemplateJquery($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('page_jq');
-	}
-	
-	
-	// DisplayTemplateMap
-	function DisplayTemplateMap($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageMap');
-	}
-	// DisplayTemplateMap2
-	function DisplayTemplateMap2($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageMap2');
-	}
-	
-	// DisplayTemplateNu
-	function DisplayTemplateNu($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageNu');
-	}
-	
-	// DisplayTemplateNu2
-	function DisplayTemplateNu2($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageNu2');
-	}
-	
-	// DisplayTemplateCalendar
-	function DisplayTemplateCalendar($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageCalendar');
-	}
-	
-	// DisplayTemplateWP
-	function DisplayTemplateWP($tplName)
-	{
-			$this->m_tpl->assign('contenutemplate', $tplName);	
-			$this->DisplayTemplateGlobal('pageWP');
-	}
-	
 	// DisplayTemplateNew
 	function DisplayTemplateNew($tplName)
 	{

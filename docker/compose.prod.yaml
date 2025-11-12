@@ -14,6 +14,7 @@ services:
             - SMTP_HOST=host.docker.internal
             - SMTP_PORT=25
             - SMTP_PASSWORD=${SMTP_PASSWORD}
+            - TZ=Europe/Paris
         extra_hosts:
             - "host.docker.internal:host-gateway"
         volumes:
@@ -54,6 +55,7 @@ services:
             MYSQL_USER: ${DB_USER}
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: ${DB_NAME}
+            TZ: Europe/Paris
         networks:
             - network_kpi
             - pma_network
@@ -77,6 +79,7 @@ services:
             MYSQL_USER: ${DBWP_USER}
             MYSQL_PASSWORD: ${DBWP_PASSWORD}
             MYSQL_DATABASE: ${DBWP_NAME}
+            TZ: Europe/Paris
         networks:
             - network_kpi
             - pma_network

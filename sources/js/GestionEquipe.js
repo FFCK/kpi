@@ -213,11 +213,6 @@ jq(document).ready(function () {
 	})
 
 
-	// Maskedinput
-	// jq.mask.definitions['h'] = "[A-Za-z_]"
-	//jq("#inputZone").mask("9");
-
-
 	// Direct Input (date, heure, intitule)
 	//Ajout title
 	jq('.directInput').attr('title', langue['Cliquez_pour_modifier'])
@@ -305,8 +300,6 @@ jq(document).ready(function () {
 		jq('#inputZone').remove()
 	}
 
-	//Autocomplete recherche equipe
-	// jq('#plEquipe').mask("h?h?h?h?h")
 	jq('#plEquipe').select().keyup(() => {
 		jq('#plEquipe').val(jq('#plEquipe').val().toUpperCase().match(/[A-Z_]{0,5}/)[0])
 	})

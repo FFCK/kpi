@@ -326,7 +326,8 @@ class CacheMatch
 		$result->execute(array($idMatch));
 		$rChrono = $result->fetch(PDO::FETCH_ASSOC);
 
-		if (!isset($rChrono['IdMatch'])) {
+		if (!$rChrono || !isset($rChrono['IdMatch'])) {
+			$rChrono = [];
 			$rChrono['IdMatch'] = $idMatch;
 			$rChrono['action'] = 'stop';
 			$rChrono['run_time'] = 600000;

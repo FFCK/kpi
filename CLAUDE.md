@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Technical fixes and optimizations
 - Audit reports and cleanup recommendations
 - Docker and infrastructure documentation
+- **[Makefile Multi-Environment Support](WORKFLOW_AI/MAKEFILE_MULTI_ENVIRONMENT.md)** - Running multiple instances (dev, preprod, prod) on the same server
 
 See [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md) for the complete list.
 
@@ -123,6 +124,9 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 
 ### Environment Files
 - `docker/.env` - Main Docker environment configuration (not versioned)
+  - **Important**: `APPLICATION_NAME` determines container names (e.g., `kpi`, `kpi_preprod`, `kpi_prod`)
+  - Makefile automatically detects container names from this variable
+  - Supports multiple instances on the same server (see [MAKEFILE_MULTI_ENVIRONMENT.md](WORKFLOW_AI/MAKEFILE_MULTI_ENVIRONMENT.md))
 - `sources/app2/.env.development` - Nuxt dev environment (API_BASE_URL, BACKEND_BASE_URL)
 - `sources/app2/.env.production` - Nuxt production environment
 

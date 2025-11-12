@@ -151,6 +151,13 @@ function sessionSaison()
 
 jq(document).ready(function() { //Jquery
 
+	document.querySelector('table.tableau').addEventListener('input', function(event) {
+		if (event.target.matches('input[type="tel"]')) {
+			// Supprime tous les caractères non numériques et non traits d'union
+			event.target.value = event.target.value.replace(/[^\d-]/g, '');
+		}
+	});
+
 	// Actualiser
 	jq('#actuButton').click(function(){
 		jq('#formClassement').submit();
@@ -172,7 +179,7 @@ jq(document).ready(function() { //Jquery
 		var valeur = jq(this).text();
 		var tabindexVal = jq(this).attr('tabindex');
 		jq(this).attr('tabindex',tabindexVal+1000);
-		jq(this).before('<input type="text" id="inputZone" class="champsPoints" tabindex="'+tabindexVal+'" size="1" value="'+valeur+'">');
+		jq(this).before('<input type="tel" id="inputZone" class="champsPoints" tabindex="'+tabindexVal+'" size="1" maxlength="3" value="'+valeur+'">');
 		jq(this).hide();
 		setTimeout( function() { jq('#inputZone').select() }, 0 );
 	});
@@ -199,7 +206,7 @@ jq(document).ready(function() { //Jquery
 			valeur = valeur * 100;
 			diviseur = 100;
 		}
-		if(valeur != nouvelleValeur) {
+		if (valeur != nouvelleValeur && nouvelleValeur != '') {
 			var AjaxWhere = jq('#AjaxWhere').val();
 			var AjaxUser = jq('#AjaxUser').val();
 			if(numJournee != '') {

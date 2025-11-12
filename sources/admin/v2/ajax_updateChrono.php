@@ -20,8 +20,8 @@ $myBdd = new MyBdd();
 $idMatch = (int) utyGetPost('idMatch');
 $start_time = trim(utyGetPost('start_time'));
 $run_time = trim(utyGetPost('run_time'));
-$shotclock = trim(utyGetPost('shotclock', null));
-$penalties = trim(utyGetJsonPost('penalties', null));
+$shotclock = trim(utyGetPost('shotclock', '') ?? '');
+$penalties = trim(utyGetJsonPost('penalties', '') ?? '');
 $start_time_server = time() % 86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
 
 $sql = "UPDATE kp_chrono 

@@ -52,8 +52,9 @@
 						<a href="export_stats_csv.php?action=export" title="{#Telechargement#} CSV : {$sql_csv}"><img height="30" alt="CSV"
 								src="../img/csv.png"></a>
 					{/if}
-					<div align=right><span id='reachspan'><i>{#Surligner#}:</i></span><input type=text name='reach' id='reach'
-							size='20'></div>
+					<div style="text-align: right">
+						<span id='reachspan'><i>{#Surligner#}:</i></span><input type="text" name="reach" id="reach" size='20'>
+					</div>
 				</div>
 				<div class='blocTable' id='blocCompet'>
 					<table class='tableau' id='tableCompet'>
@@ -600,7 +601,7 @@
 					<tr>
 						<td>
 							<label for="nbLignes" class="highlight">{#Nb_lignes#} :</label>
-							<input type="text" size="2" name="nbLignes" id="nbLignes" value="{$nbLignes|default:'30'}">
+							<input type="tel" size="2" name="nbLignes" id="nbLignes" value="{$nbLignes|default:'30'}">
 						</td>
 						<td>
 							<br>
@@ -620,9 +621,9 @@
 							<input type="text" name="choixJoueur" id="choixJoueur" size="30"
 								placeholder="{#Nom#}, {#Prenom#}, {#Licence#}" />
 							<br />
-							<center><a href="GestionAthlete.php" id='rechercheAthlete'>{#Acces#}</a></center>
+							<div style="text-align: center;"><a href="GestionAthlete.php" id='rechercheAthlete'>{#Acces#}</a></div>
 							<br />
-							<center><a href="GestionAthlete.php">{#Recherche_avancee#}</a></center>
+							<div style="text-align: center;"><a href="GestionAthlete.php">{#Recherche_avancee#}</a></div>
 							<input type="hidden" name="Athlete" id="Athlete" value="{$Athlete|default:''}" />
 						</td>
 					</tr>

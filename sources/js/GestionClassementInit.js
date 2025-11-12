@@ -2,9 +2,6 @@ jq = jQuery.noConflict();
 
 jq(document).ready(function() { //Jquery
 
-	// Maskedinput (ne fonctionne pas sur les champs dynamiques !
-	jq(".champsPoints").mask("99");
-
 	// Actualiser
 	jq('#actuButton').click(function(){
 		jq('#formClassementInit').submit();
@@ -23,19 +20,26 @@ jq(document).ready(function() { //Jquery
 	jq('#inputZone').live('blur', function(){
 		validationDonnee();
 	});
+
+	document.getElementById('tableauJQ').addEventListener('input', function(event) {
+		if (event.target.matches('input[type="tel"]')) {
+			// Supprime tous les caractères non numériques et non traits d'union
+			event.target.value = event.target.value.replace(/[^\d-]/g, '');
+		}
+	});
 	// focus sur un lien du tableau => remplace le lien par un input
 	jq('#tableauJQ td > a').focus(function(event){
 		event.preventDefault();
 		var valeur = jq(this).text();
 		var tabindexVal = jq(this).attr('tabindex');
 		jq(this).attr('tabindex',tabindexVal+1000);
-		jq(this).before('<input type="text" id="inputZone" class="champsPoints" tabindex="'+tabindexVal+'" size="2" value="'+valeur+'">');
+		jq(this).before('<input type="tel" id="inputZone" class="champsPoints" tabindex="'+tabindexVal+'" pattern="[0-9]{1,3}" maxlength="3" size="2" value="'+valeur+'">');
 		jq(this).hide();
 		setTimeout( function() { jq('#inputZone').select() }, 0 );
 	});
 	
 	function validationDonnee(){
-		var nouvelleValeur = jq('#inputZone').val();
+		var nouvelleValeur = jq('#inputZone').val() || 0;
 		var tabindexVal = jq('#inputZone').attr('tabindex');
 		jq('#inputZone + a').attr('tabindex',tabindexVal);
 		jq('#inputZone + a').show();
@@ -44,7 +48,7 @@ jq(document).ready(function() { //Jquery
 		var identifiant2 = identifiant.split('-');
 		var numEquipe = identifiant2[1];
 		var typeValeur = identifiant2[0];
-		if(valeur != nouvelleValeur){
+		if (valeur != nouvelleValeur && nouvelleValeur != '') {
 			AjaxTableName = jq('#AjaxTableName').val();
 			AjaxWhere = jq('#AjaxWhere').val();
 			var AjaxUser = jq('#AjaxUser').val();

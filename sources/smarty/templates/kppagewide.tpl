@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
-  <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='{$adm}css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
+  <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='{$adm|default: ''}css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
   <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
   <link rel="stylesheet" href="css/jquery-ui.css?v={$NUM_VERSION}">
   <link rel="stylesheet" href="css/fontawesome/font-awesome.css?v={$NUM_VERSION}">
@@ -30,7 +30,7 @@
   {if isset($css_supp)}
       {assign var=temp value="$adm./css/$css_supp.css"} 
       {if $css_supp && $temp|is_file}
-          <link type="text/css" rel="stylesheet" href="{$adm}css/{$css_supp}.css?v={$NUM_VERSION}">
+          <link type="text/css" rel="stylesheet" href="{$adm|default: ''}css/{$css_supp}.css?v={$NUM_VERSION}">
       {/if}
   {/if}
   <title>{$smarty.config.$title|default:$title}</title>

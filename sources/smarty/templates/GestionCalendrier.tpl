@@ -225,7 +225,7 @@
 												{/if}
 											</td>
 											<td>{$arrayJournees[i].Code_competition} -
-												<span class='directInput' data-type="text" data-target="Phase" data-id="{$arrayJournees[i].Id}"
+												<span class='directInput' data-type="longtext" data-target="Phase" data-id="{$arrayJournees[i].Id}"
 													data-value="{$arrayJournees[i].Phase}">{$arrayJournees[i].Phase}</span>
 											</td>
 											{if isset($competition) && $competition.Code_typeclt == "CP"}
@@ -247,7 +247,7 @@
 													title="{if $arrayJournees[i].Type == 'C'}{#Classement#}{else}{#Elimination#}{/if}" height="23" />
 											</td>
 											<td>
-												<span class='directInput' data-type="text" data-target="Nom" data-id="{$arrayJournees[i].Id}"
+												<span class='directInput' data-type="longtext" data-target="Nom" data-id="{$arrayJournees[i].Id}"
 													data-value="{$arrayJournees[i].Nom}">{$arrayJournees[i].Nom}</span>
 											</td>
 											<td>
@@ -261,11 +261,11 @@
 												{* {$arrayJournees[i].Date_debut} - {$arrayJournees[i].Date_fin} *}
 											</td>
 											<td>
-												<span class='directInput' data-type="text" data-target="Lieu" data-id="{$arrayJournees[i].Id}"
+												<span class='directInput' data-type="longtext" data-target="Lieu" data-id="{$arrayJournees[i].Id}"
 													data-value="{$arrayJournees[i].Lieu}">{$arrayJournees[i].Lieu}</span>
 											</td>
 											<td>
-												<span class='directInput' data-type="smalltext" data-target="Departement"
+												<span class='directInput' data-type="dpt" data-target="Departement"
 													data-id="{$arrayJournees[i].Id}"
 													data-value="{$arrayJournees[i].Departement}">{$arrayJournees[i].Departement}</span>
 											</td>

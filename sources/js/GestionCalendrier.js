@@ -120,6 +120,18 @@ jq(document).ready(function () {
 		)
 	})
 
+	document.querySelector('table.tableau').addEventListener('input', function(event) {
+		if (event.target.matches('input[type="tel"]')) {
+			// Supprime tous les caractères non numériques
+			event.target.value = event.target.value.replace(/\D/g, '');
+		}
+		if (event.target.matches('input[type="text"].dpt')) {
+			// Supprime tous les caractères non numériques et limite à 3 caractères
+			event.target.value = event.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+		}
+	});
+
+
 	jq('.directInput').attr('title', langue['Cliquez_pour_modifier'])
 
 	jq("body").delegate("span.directInput", "click", function (event) {
@@ -131,11 +143,17 @@ jq(document).ready(function () {
 			case 'text':
 				jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="7" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
 				break
+			case 'longtext':
+				jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="20" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
+				break
 			case 'smalltext':
 				jq(this).before('<input type="text" id="inputZone" class="directInputSpan" size="3" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
 				break
+			case 'dpt':
+				jq(this).before('<input type="text" id="inputZone" class="directInputSpan dpt" size="3" maxlength="3" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
+				break
 			case 'tel':
-				jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" size="1" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
+				jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" size="1" maxlength="2" data-anciennevaleur="' + valeur + '" value="' + valeur + '">')
 				break
 			case 'date':
 				jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '">')

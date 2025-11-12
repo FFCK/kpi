@@ -428,7 +428,6 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		}
 	})
 
-	// Maskedinput
 	// Flatpickr pour les champs heure (format HH:MM)
 	flatpickr('.champsHeure', {
 		enableTime: true,
@@ -439,12 +438,6 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		allowInput: true,
 		clickOpens: true
 	})
-	if (lang == 'en') {
-		jq('.date').mask("9999-99-99")
-	} else {
-		jq('.date').mask("99/99/9999")
-	}
-
 	//Recherches arbitres
 	jq('#iframeRechercheLicenceIndi2').hide()
 	jq('#rechercheArbitre1').click(function (e) {
@@ -517,6 +510,14 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		}
 	}
 
+	document.querySelector('table.tableau').addEventListener('input', function(event) {
+		if (event.target.matches('input[type="tel"]')) {
+			// Supprime tous les caractères non numériques
+			event.target.value = event.target.value.replace(/\D/g, '');
+		}
+	});
+
+
 	// Direct Input
 	//Ajout title
 	jq('.directInput').attr('title', langue['Cliquez_pour_modifier'])
@@ -560,7 +561,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		if (jq(this).hasClass('text')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="12" value="' + valeur + '">')
 		} else if (jq(this).hasClass('numMatch')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="1" value="' + valeur + '">')
+			jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="1" maxlength="4" value="' + valeur + '">')
 		} else if (jq(this).hasClass('date')) {
 			jq(this).before('<input type="text" id="inputZone" class="directInputSpan flatpickr-input" tabindex="' + tabindexVal + '" size="8" value="' + valeur + '" data-anciennevaleur="' + valeur + '" style="height: auto !important; min-height: 22px !important; line-height: normal !important;">')
 			// Stocker la référence au span directement sur l'élément DOM (pas via jQuery .data())
@@ -628,9 +629,9 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 				}
 			})
 		} else if (jq(this).hasClass('terrain')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" value="' + valeur + '">')
+			jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" maxlength="2" value="' + valeur + '">')
 		} else if (jq(this).hasClass('score')) {
-			jq(this).before('<input type="text" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" value="' + valeur + '">')
+			jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" maxlength="2" value="' + valeur + '">')
 		} else if (jq(this).hasClass('equipe')) {
 			jq('#selectZoneAnnul').click()
 			jq(this).before('<select id="selectZone" class="directInputSpan" tabindex="' + tabindexVal + '"></select>')
@@ -748,8 +749,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 					jq('#selectZone').remove()
 				}
 			})
-		}
-		else if (jq(this).hasClass('arbitre')) {
+		} else if (jq(this).hasClass('arbitre')) {
 			jq(this).before('<input type="text" id="inputZone2" class="directInputSpan" tabindex="' + tabindexVal + '" size="22" value="' + valeur + '">')
 			jq(this).before('<br>\n\
                             <input type="button" id="inputZone2valid" data-value2="0" value="' + langue['Valider'] + '">\n\
@@ -947,7 +947,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		var typeValeur = identifiant2[0]
 		var numMatch = identifiant2[1]
 		var formatValeur = identifiant2[2]
-		if (valeur != nouvelleValeur) {
+		if (valeur != nouvelleValeur && (nouvelleValeur != '' || thisSpan.hasClass('score'))) {
 			valeurTransmise = nouvelleValeur
 			var AjaxWhere = jq('#AjaxWhere').val()
 			var AjaxTableName = jq('#AjaxTableName').val()
