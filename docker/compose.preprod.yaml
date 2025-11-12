@@ -26,6 +26,8 @@ services:
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
             - /etc/msmtprc:/etc/msmtprc:ro
             - /var/log/msmtp:/var/log/msmtp
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
         networks:
             - network_kpi
             - traefiknetwork
@@ -53,6 +55,8 @@ services:
         command: mysqld --sql_mode=""
         volumes:
             - ${HOST_DB_PATH}:/var/lib/mysql/
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
             MYSQL_USER: ${DB_USER}
@@ -80,6 +84,8 @@ services:
                 BASE_IMAGE_DB: ${BASE_IMAGE_DB}
         volumes:
             - ${HOST_DBWP_PATH}:/var/lib/mysql/
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
         environment:
             MYSQL_ROOT_PASSWORD: ${DBWP_ROOT_PASSWORD}
             MYSQL_USER: ${DBWP_USER}
