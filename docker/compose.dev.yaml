@@ -10,6 +10,8 @@ services:
                 GROUP_ID: ${GROUP_ID}
                 BASE_IMAGE_PHP: ${BASE_IMAGE_PHP}
         user: ${USER_ID}:${GROUP_ID}
+        environment:
+            - TZ=Europe/Paris
         ports:
             - 80${DOCKER_SUFFIXE_PORT}:80
         volumes:
@@ -45,6 +47,8 @@ services:
                 GROUP_ID: ${GROUP_ID}
                 BASE_IMAGE_PHP: ${BASE_IMAGE_PHP_8}
         user: ${USER_ID}:${GROUP_ID}
+        environment:
+            - TZ=Europe/Paris
         ports:
             - 88${DOCKER_SUFFIXE_PORT}:80
         volumes:
@@ -85,6 +89,7 @@ services:
             MYSQL_USER: ${DB_USER}
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: ${DB_NAME}
+            TZ: Europe/Paris
         # ports:
         #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
@@ -110,6 +115,7 @@ services:
             MYSQL_USER: ${DBWP_USER}
             MYSQL_PASSWORD: ${DBWP_PASSWORD}
             MYSQL_DATABASE: ${DBWP_NAME}
+            TZ: Europe/Paris
         # ports:
         #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
@@ -134,6 +140,7 @@ services:
         environment:
             - HOST=0.0.0.0
             - PORT=3000
+            - TZ=Europe/Paris
         networks:
             - network_kpi
             - traefiknetwork
