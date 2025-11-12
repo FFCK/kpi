@@ -693,7 +693,7 @@ PAGES=(
 
 for page in "${PAGES[@]}"; do
     echo "Testing $page..."
-    curl -s "https://kpi.local/admin/$page" | grep -q "bootstrap" && echo "✓ OK" || echo "✗ FAIL"
+    curl -s "https://kpi.localhost/admin/$page" | grep -q "bootstrap" && echo "✓ OK" || echo "✗ FAIL"
 done
 ```
 

@@ -150,7 +150,7 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 - **Modules**: Pinia for state management, i18n for internationalization, Nuxt UI components
 - **Base URL**: `/app2` - configured for production deployment
 - **Development**: Runs on port 3000 inside container, accessible via port 3002 on host
-- **API Integration**: Configured via .env.development (dev: `https://kpi.local/api`) and .env.production (prod: `https://kayak-polo.info/api`)
+- **API Integration**: Configured via .env.development (dev: `https://kpi.localhost/api`) and .env.production (prod: `https://kayak-polo.info/api`)
 
 ### PHP Backend
 - **PHP Version**: PHP 8.4 in all environments (dev, preprod, prod)

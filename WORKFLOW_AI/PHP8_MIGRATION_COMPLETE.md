@@ -332,7 +332,7 @@ SET @@SESSION.sql_mode='';  // Mode permissif
 ### URLs Production
 
 - **Production** : https://kayak-polo.info
-- **Développement** : https://kpi.local
+- **Développement** : https://kpi.localhost
 
 ### Containers Docker
 
