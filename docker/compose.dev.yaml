@@ -12,6 +12,9 @@ services:
         user: ${USER_ID}:${GROUP_ID}
         environment:
             - TZ=Europe/Paris
+            - LANG=fr_FR.UTF-8
+            - LANGUAGE=fr_FR:fr
+            - LC_ALL=fr_FR.UTF-8
         ports:
             - 80${DOCKER_SUFFIXE_PORT}:80
         volumes:
@@ -49,6 +52,9 @@ services:
         user: ${USER_ID}:${GROUP_ID}
         environment:
             - TZ=Europe/Paris
+            - LANG=fr_FR.UTF-8
+            - LANGUAGE=fr_FR:fr
+            - LC_ALL=fr_FR.UTF-8
         ports:
             - 88${DOCKER_SUFFIXE_PORT}:80
         volumes:
@@ -90,6 +96,9 @@ services:
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: ${DB_NAME}
             TZ: Europe/Paris
+            LANG: fr_FR.UTF-8
+            LANGUAGE: fr_FR:fr
+            LC_ALL: fr_FR.UTF-8
         # ports:
         #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
@@ -116,6 +125,9 @@ services:
             MYSQL_PASSWORD: ${DBWP_PASSWORD}
             MYSQL_DATABASE: ${DBWP_NAME}
             TZ: Europe/Paris
+            LANG: fr_FR.UTF-8
+            LANGUAGE: fr_FR:fr
+            LC_ALL: fr_FR.UTF-8
         # ports:
         #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
@@ -141,6 +153,9 @@ services:
             - HOST=0.0.0.0
             - PORT=3000
             - TZ=Europe/Paris
+            - LANG=fr_FR.UTF-8
+            - LANGUAGE=fr_FR:fr
+            - LC_ALL=fr_FR.UTF-8
         networks:
             - network_kpi
             - traefiknetwork
