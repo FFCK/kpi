@@ -6,9 +6,23 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📋 Index des Documents
 
-### Migration PHP 8
+### Migration PHP 8 ✅ TERMINÉE
 
-- **[WORDPRESS_PHP8_FIXES.md](WORDPRESS_PHP8_FIXES.md)** ⭐ **NOUVEAU**
+**Statut global**: ✅ **Migration PHP 8.4 terminée** - Tous environnements (dev, preprod, prod) sous PHP 8.4
+
+- **[PHP8_MIGRATION_COMPLETE.md](PHP8_MIGRATION_COMPLETE.md)** 🎉 **NOUVEAU** (12 nov 2025)
+  - Document final de complétion migration PHP 8.4
+  - Statut: ✅ 100% déployé en production
+  - Métriques finales, configuration, timeline déploiement
+  - **DOCUMENT DE RÉFÉRENCE**
+
+- **[PHP8_MIGRATION_SUMMARY.md](PHP8_MIGRATION_SUMMARY.md)** ⭐ **DOCUMENT TECHNIQUE**
+  - Synthèse complète de la migration PHP 7.4 → PHP 8.4
+  - Statut: ✅ 100% terminée (mise à jour nov 2025)
+  - Timeline, métriques, checklist validation
+  - **Document de référence technique**
+
+- **[WORDPRESS_PHP8_FIXES.md](WORDPRESS_PHP8_FIXES.md)**
   - Correctifs WordPress et plugins pour PHP 8.4
   - NextGen Gallery, WordPress Core (pluggable.php, theme.php)
   - Script de réapplication automatique inclus
@@ -56,10 +70,12 @@ Ce dossier contient toute la documentation technique générée durant le dével
 - **[MIGRATION.md](MIGRATION.md)**
   - Guide général de migration PHP 7.4 → PHP 8
   - Plan de migration complet du projet
+  - **Note**: ✅ Migration terminée, document historique
 
 - **[README_MIGRATION.md](README_MIGRATION.md)**
   - Notes sur le processus de migration
   - État d'avancement et recommandations
+  - **Note**: ✅ Migration terminée, document historique
 
 ### Audits & Nettoyage
 
@@ -177,10 +193,11 @@ Ce dossier contient toute la documentation technique générée durant le dével
 ## 🎯 Documents par Priorité
 
 ### À lire en premier
-1. **MIGRATION_OPENTBS_TO_OPENSPOUT.md** - Migration tableurs (export ODS/XLSX)
-2. **PHP8_GESTIONDOC_FIXES.md** - Si vous travaillez sur la migration PHP 8
-3. **MIGRATION.md** - Vue d'ensemble de la migration
-4. **SMARTY_PHP8_FIXES.md** - Comprendre les premiers fixes Smarty
+1. **PHP8_MIGRATION_COMPLETE.md** 🎉 - Document final migration PHP 8.4 (TERMINÉE - Nov 2025)
+2. **PHP8_MIGRATION_SUMMARY.md** ⭐ - Synthèse technique complète migration PHP 8.4
+3. **JS_LIBRARIES_AUDIT.md** - État des bibliothèques JavaScript (migration en cours)
+4. **MIGRATION_OPENTBS_TO_OPENSPOUT.md** - Migration tableurs (export ODS/XLSX)
+5. **BOOTSTRAP_MIGRATION_STATUS.md** - Migration Bootstrap 5.3.8
 
 ### Pour le développement
 1. **AUDIT_PHASE_0.md** - Comprendre l'état du code
@@ -202,6 +219,16 @@ Ce dossier contient toute la documentation technique générée durant le dével
 ---
 
 ## 🔄 Historique des Mises à Jour
+
+### 2025-11-12
+- 🎉 **Migration PHP 8.4 TERMINÉE et déployée en production**
+- ✅ Création PHP8_MIGRATION_COMPLETE.md (document final de référence)
+- ✅ Mise à jour PHP8_MIGRATION_SUMMARY.md (statut 100% terminé)
+- ✅ Mise à jour CLAUDE.md (PHP 8.4 standard, suppression références PHP 7.4)
+- ✅ Mise à jour README.md principal (architecture PHP 8.4)
+- ✅ Mise à jour docker/.env.dist (PHP 8.4 par défaut)
+- ✅ Mise à jour WORKFLOW_AI/README.md (statut migration terminée)
+- 📝 Documentation complète de la migration (6000+ lignes)
 
 ### 2025-11-01
 - ✅ Audit complet bibliothèques JavaScript (35+ fichiers)
