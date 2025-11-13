@@ -48,12 +48,6 @@ class Event extends MyPageSecure
 		<![endif]-->
 
             <style>
-                .worker-controls {
-                    background: #f5f5f5;
-                    padding: 20px;
-                    border-radius: 8px;
-                    margin: 20px 0;
-                }
                 .worker-status {
                     padding: 15px;
                     margin: 15px 0;
@@ -95,11 +89,6 @@ class Event extends MyPageSecure
                     0%, 100% { opacity: 1; }
                     50% { opacity: 0.5; }
                 }
-                .btn-worker {
-                    margin: 5px;
-                    padding: 10px 20px;
-                    font-size: 14px;
-                }
                 .worker-info {
                     margin-top: 10px;
                     font-size: 13px;
@@ -111,6 +100,83 @@ class Event extends MyPageSecure
                     border-radius: 5px;
                     margin-bottom: 20px;
                     text-align: center;
+                }
+                .config-panel {
+                    background: #f9f9f9;
+                    padding: 20px;
+                    border-radius: 8px;
+                    border: 1px solid #ddd;
+                    margin: 20px 0;
+                }
+                .config-panel .form-group {
+                    margin-bottom: 15px;
+                }
+                .config-panel label {
+                    font-weight: bold;
+                    display: block;
+                    margin-bottom: 5px;
+                }
+                .config-panel input[type="date"],
+                .config-panel input[type="time"],
+                .config-panel input[type="text"],
+                .config-panel select {
+                    width: 100%;
+                    max-width: 400px;
+                    padding: 8px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                }
+                .config-panel input[type="text"][size="1"],
+                .config-panel input[type="text"][size="2"] {
+                    width: auto;
+                }
+                .btn_date_evt {
+                    margin: 3px;
+                    padding: 5px 10px;
+                    background: #007bff;
+                    color: white;
+                    border: none;
+                    border-radius: 3px;
+                    cursor: pointer;
+                }
+                .btn_date_evt:hover {
+                    background: #0056b3;
+                }
+                .status-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(0,0,0,0.4);
+                }
+                .modal-content {
+                    background-color: #fefefe;
+                    margin: 5% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 90%;
+                    max-width: 900px;
+                    border-radius: 8px;
+                }
+                .close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+                .close:hover,
+                .close:focus {
+                    color: black;
                 }
             </style>
 
@@ -189,75 +255,87 @@ class Event extends MyPageSecure
             <!-- Worker Status Display -->
             <div id="worker-status-container">
                 <div class="worker-status stopped" id="worker-status">
-                    <h3>
-                        <span class="status-indicator stopped" id="status-indicator"></span>
-                        <span id="status-text">Worker Status: Checking...</span>
-                    </h3>
+                    <div class="status-header">
+                        <h3 style="margin: 0;">
+                            <span class="status-indicator stopped" id="status-indicator"></span>
+                            <span id="status-text">Worker Status: Checking...</span>
+                        </h3>
+                        <button class="btn btn-danger" id="btn-stop-all" style="display:none;">
+                            ⏹ Stop All
+                        </button>
+                    </div>
                     <div class="worker-info" id="worker-info">
                         Loading worker status...
                     </div>
                 </div>
             </div>
 
-            <!-- Worker Controls -->
-            <div class="worker-controls">
-                <h4>Worker Controls</h4>
-                <button class="btn btn-success btn-worker" id="btn-start-worker">
-                    ▶ Start Worker
-                </button>
-                <button class="btn btn-warning btn-worker" id="btn-pause-worker" style="display:none;">
-                    ⏸ Pause Worker
-                </button>
-                <button class="btn btn-info btn-worker" id="btn-resume-worker" style="display:none;">
-                    ▶ Resume Worker
-                </button>
-                <button class="btn btn-danger btn-worker" id="btn-stop-worker" style="display:none;">
-                    ⏹ Stop Worker
-                </button>
+            <!-- Configuration Form -->
+            <div class="config-panel">
+                <h4>Event Configuration</h4>
+                <form method='GET' action='#' name='event_form' id='event_form' enctype='multipart/form-data'>
+
+                    <div class="form-group">
+                        <label for='idevent'>Event:</label>
+                        <select id='idevent' name='idevent' class="form-control" style="max-width: 400px;">
+                            <?= $this->Content_Events($evt); ?>
+                        </select>
+                        <input type="hidden" id='id_event' name='id_event' value="<?= $evt ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quick date selection:</label>
+                        <div id="event-dates">
+                            <?= $this->Btn_Events($evt); ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for='date_event'>Date:</label>
+                        <input type='date' id='date_event' name='date_event' class="form-control" Value='<?= date('Y-m-d') ?>' required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for='hour_event'>Start Time:</label>
+                        <input type='time' id='hour_event' name='hour_event' class="form-control" Value='<?= date('H:i') ?>' required>
+                        <small class="text-muted">(Initial reference time)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for='offset_event'>Warm-up:</label>
+                        <input type='text' id='offset_event' name='offset_event' class="form-control" Value='15' size="2"> minutes
+                    </div>
+
+                    <div class="form-group">
+                        <label for='pitch_event'>Pitches:</label>
+                        <input type='text' id='pitch_event' name='pitch_event' class="form-control" Value='4' size="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for='delay_event'>Refresh delay:</label>
+                        <input type='text' id='delay_event' name='delay_event' class="form-control" Value='10' size="2"> seconds
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" class="btn btn-success btn-lg" id="btn-start-worker">
+                            ▶ Start Worker
+                        </button>
+                    </div>
+
+                </form>
             </div>
 
-            <!-- Configuration Form -->
-            <form method='GET' action='#' name='event_form' id='event_form' enctype='multipart/form-data'>
-                <h4>Event Configuration</h4>
+        </div>
 
-                <label for='idevent'>Event:</label>
-                <select id='idevent' name='idevent'>
-                    <?= $this->Content_Events($evt); ?>
-                </select>
-                <input type="hidden" id='id_event' name='id_event' value="<?= $evt ?>">
-                <br>
-                <div id="event-dates">
-                    <?= $this->Btn_Events($evt); ?>
+        <!-- Modal pour Live Monitoring -->
+        <div id="monitoring-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Live Monitoring - Event <span id="modal-event-id"></span></h3>
+                <div id="modal-monitoring-content">
+                    <p>Loading...</p>
                 </div>
-                <br>
-
-                <label for='date_event'>Date</label>
-                <input type='date' id='date_event' name='date_event' Value='<?= date('Y-m-d') ?>' required>
-                <br>
-
-                <label for='hour_event'>Start Time</label>
-                <input type='time' id='hour_event' name='hour_event' Value='<?= date('H:i') ?>' required>
-                <small class="text-muted">(Initial reference time)</small>
-                <br>
-
-                <label for='offset_event'>Warm-up</label>
-                <input type='text' id='offset_event' name='offset_event' Value='15' size="2"> minutes
-                <br>
-
-                <label for='pitch_event'>Pitches</label>
-                <input type='text' id='pitch_event' name='pitch_event' Value='4' size="1">
-                <br>
-
-                <label for='delay_event'>Refresh delay</label>
-                <input type='text' id='delay_event' name='delay_event' Value='10' size="2"> seconds
-                <br>
-                <br>
-
-                <hr>
-                <h4>Live Monitoring</h4>
-                <div id='info'></div>
-
-            </form>
+            </div>
         </div>
     <?php
     }
