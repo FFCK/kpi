@@ -22,12 +22,6 @@ Ce dossier contient toute la documentation technique générée durant le dével
   - Timeline, métriques, checklist validation
   - **Document de référence technique**
 
-- **[WORDPRESS_PHP8_FIXES.md](WORDPRESS_PHP8_FIXES.md)**
-  - Correctifs WordPress et plugins pour PHP 8.4
-  - NextGen Gallery, WordPress Core (pluggable.php, theme.php)
-  - Script de réapplication automatique inclus
-  - **Important** : Fichiers non versionnés, à réappliquer après mises à jour
-
 - **[PHP8_GESTIONDOC_FIXES.md](PHP8_GESTIONDOC_FIXES.md)**
   - Corrections complètes pour GestionDoc.php en PHP 8
   - 7 corrections majeures incluant le fix critique du constructeur Smarty
@@ -64,6 +58,21 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 - **[PATTERN_8_IMAGES_ARRIERE_PLAN.md](PATTERN_8_IMAGES_ARRIERE_PLAN.md)**
   - Gestion des motifs de 8 images d'arrière-plan en PDF
+
+### WordPress
+
+- **[WORDPRESS_MIGRATION_OLD_PROD_TO_VPS.md](WORDPRESS_MIGRATION_OLD_PROD_TO_VPS.md)** ⭐ **NOUVEAU** (13 nov 2025)
+  - Guide complet migration WordPress old_prod (hébergeur) → VPS dockerisé
+  - WordPress intégré au container PHP KPI (non dockerisé séparément)
+  - Procédure complète : backup, transfert, import BDD, ajustement URLs
+  - Synchronisation prod → preprod (manuelle + script automatisé)
+  - **Statut**: ✅ Production
+
+- **[WORDPRESS_PHP8_FIXES.md](WORDPRESS_PHP8_FIXES.md)**
+  - Correctifs WordPress et plugins pour PHP 8.4
+  - NextGen Gallery, WordPress Core (pluggable.php, theme.php)
+  - Script de réapplication automatique inclus
+  - **Important** : Fichiers non versionnés, à réappliquer après mises à jour
 
 ### Migration & Architecture
 
@@ -219,6 +228,15 @@ Ce dossier contient toute la documentation technique générée durant le dével
 ---
 
 ## 🔄 Historique des Mises à Jour
+
+### 2025-11-13
+- 📝 **Création WORDPRESS_MIGRATION_OLD_PROD_TO_VPS.md**
+  - Guide complet migration WordPress old_prod → VPS
+  - WordPress intégré container PHP KPI (architecture actuelle)
+  - Procédure backup, transfert, import BDD, ajustement URLs
+  - Script synchronisation prod → preprod
+  - Annulation tentative dockerisation WordPress (séparé)
+  - Conservation configuration monolithique actuelle
 
 ### 2025-11-12
 - 🎉 **Migration PHP 8.4 TERMINÉE et déployée en production**
