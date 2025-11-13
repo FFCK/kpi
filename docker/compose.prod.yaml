@@ -52,7 +52,7 @@ services:
             dockerfile: Dockerfile.db
             args:
                 BASE_IMAGE_DB: ${BASE_IMAGE_DB}
-        command: mysqld --sql_mode=""
+        command: mariadbd --sql_mode=""
         volumes:
             - ${HOST_DB_PATH}:/var/lib/mysql/
             - /etc/timezone:/etc/timezone:ro
