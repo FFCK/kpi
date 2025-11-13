@@ -91,7 +91,8 @@ while ($running) {
         if ($startTime === null || $config['id'] !== ($lastConfigId ?? null)) {
             // Nouveau démarrage ou changement de config
             $startTime = microtime(true);
-            $initialTime = strtotime($config['hour_event_initial']);
+            // Combiner date et heure pour strtotime
+            $initialTime = strtotime($config['date_event'] . ' ' . $config['hour_event_initial']);
             $lastConfigId = $config['id'];
             logMessage("Worker configuration loaded:");
             logMessage("  Event ID: " . $config['id_event']);
@@ -100,12 +101,15 @@ while ($running) {
             logMessage("  Offset: " . $config['offset_event'] . " minutes");
             logMessage("  Pitches: " . $config['pitch_event']);
             logMessage("  Refresh delay: " . $config['delay_event'] . " seconds");
+            logMessage("  Initial timestamp: " . date('Y-m-d H:i:s', $initialTime));
         }
 
         // Calculer l'heure actuelle simulée
         $elapsedSeconds = microtime(true) - $startTime;
         $currentSimulatedTime = $initialTime + $elapsedSeconds;
         $currentHourEvent = date('H:i', $currentSimulatedTime);
+
+        logMessage("Processing event {$config['id_event']} - Current time: {$currentHourEvent}");
 
         // Ajouter l'offset (warm-up)
         $time = utyHHMM_To_MM($currentHourEvent);
@@ -120,6 +124,8 @@ while ($running) {
             }
         }
 
+        logMessage("Generating cache for " . count($arrayPitchs) . " pitches...");
+
         // Générer les caches
         $cache = new CacheMatch(['cache' => '1']);
         $arrayResult = $cache->Event(
@@ -131,8 +137,12 @@ while ($running) {
             $arrayPitchs
         );
 
+        logMessage("Cache generation completed");
+
         // Envoyer un heartbeat à l'API
         sendHeartbeat($config['id'], null);
+
+        logMessage("Heartbeat sent");
 
         // Log de l'exécution
         $executionInfo = sprintf(
