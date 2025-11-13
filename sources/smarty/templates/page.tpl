@@ -9,55 +9,6 @@
   <link rel="canonical" href="https://www.kayak-polo.info" />
   <link rel="next" href="https://www.kayak-polo.info/?paged=2" />
   {if $bPublic}
-    <meta property="og:locale" content="fr_FR">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Kayak-polo.info">
-    <meta property="og:url" content="https://www.kayak-polo.info">
-    <meta property="og:site_name" content="Kayak-polo.info">
-    <meta property="og:image" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
-    <meta property="og:image:secure_url"
-      content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:type" content="image/png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kayak-polo.info">
-    <meta name="twitter:image" content="https://www.kayak-polo.info/wordpress/wp-content/uploads/2020/04/kpi_og2.png">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    {* Flatpickr - Datepicker moderne (depuis node_modules/) *}
-    <link rel="stylesheet" href="node_modules/flatpickr/dist/flatpickr.min.css?v={$NUM_VERSION}">
-    <link type="text/css" rel="stylesheet" href="css/jquery.autocomplete.css" media="screen" />
-    <link type="text/css" rel="stylesheet" href="css/jquery.tooltip.css" media="screen" />
-    {assign var=temp value="css/$contenutemplate.css"}
-    {if $temp|is_file}
-      <link type="text/css" rel="stylesheet" href="css/{$contenutemplate}.css?v={$NUM_VERSION}" />
-    {/if}
-    <!-- 
-				Css = '' (simply, zsainto, ckca...) 
-				notamment sur les pages Journee.php et Classements.php 
-				intégrer en iframe : 
-			-->
-    {if isset($css_supp)}
-      {assign var=temp value="css/$css_supp.css"}
-      {if $css_supp && $temp|is_file}
-        <link type="text/css" rel="stylesheet" href="css/{$css_supp}.css">
-      {/if}
-    {/if}
-    <script src="node_modules/flatpickr/dist/flatpickr.min.js?v={$NUM_VERSION}"></script>
-    <script src="node_modules/flatpickr/dist/l10n/fr.js?v={$NUM_VERSION}"></script>
-    <script src="js/flatpickr-wrapper.js?v={$NUM_VERSION}"></script>
-    <script src="js/vanilla-autocomplete.js?v={$NUM_VERSION}"></script>
-    <script src="js/jquery-1.5.2.min.js"></script>
-    <script src="js/jquery.autocomplete.min.js"></script>
-    <script src="js/jquery.tooltip.min.js"></script>
-    <script src="js/jquery.maskedinput.min.js"></script>
-    <script src="js/jquery.fixedheadertable.min.js"></script>
-    <script src="js/formTools.js?v={$NUM_VERSION}"></script>
-    {assign var=temp value="js/$contenutemplate.js"}
-    {if $temp|is_file}
-      <script src="js/{$contenutemplate}.js?v={$NUM_VERSION}"></script>
-    {/if}
 
   {else}
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
@@ -103,7 +54,6 @@
     <script src="../js/jquery-1.5.2.min.js"></script>
     <script src="../js/jquery.autocomplete.min.js"></script>
     <script src="../js/jquery.tooltip.min.js"></script>
-    <script src="../js/jquery.maskedinput.min.js"></script>
     <!--<script src="../js/jquery.fixedheadertable.min.js"></script>-->
     <script src="../js/formTools.js?v={$NUM_VERSION}"></script>
     {assign var=temp value="../js/$contenutemplate.js"}

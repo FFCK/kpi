@@ -242,7 +242,7 @@
 								<input type="text" name="Lieu" id="Lieu" value="{$Lieu|default:''}" placeholder="{#Commune_ou_cp#}" />
 							</td>
 							<td colspan=3 class="vert"><label for="Departement"><b>{#Departement_ou_code_pays#}</b></label>
-								<input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement|default:''}"
+								<input type="text" class='dpt' name="Departement" id="Departement" maxlength="3" value="{$Departement|default:''}"
 									placeholder="{#Departement_ou_code_pays#}" />
 							</td>
 						</tr>

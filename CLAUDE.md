@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Technical fixes and optimizations
 - Audit reports and cleanup recommendations
 - Docker and infrastructure documentation
+- **[Makefile Multi-Environment Support](WORKFLOW_AI/MAKEFILE_MULTI_ENVIRONMENT.md)** - Running multiple instances (dev, preprod, prod) on the same server
 
 See [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md) for the complete list.
 
@@ -99,8 +100,7 @@ make npm_add_backend package=flatpickr
 - `make composer_dump` - Regenerate Composer autoloader
 
 ### Shell Access
-- `make php_bash` - Open bash in PHP 7.4 container
-- `make php8_bash` - Open bash in PHP 8 container
+- `make php_bash` - Open bash in PHP 8.4 container
 - `make node_bash` - Open shell in Node/app2 container
 - `make db_bash` - Open shell in MySQL container
 
@@ -123,6 +123,9 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 
 ### Environment Files
 - `docker/.env` - Main Docker environment configuration (not versioned)
+  - **Important**: `APPLICATION_NAME` determines container names (e.g., `kpi`, `kpi_preprod`, `kpi_prod`)
+  - Makefile automatically detects container names from this variable
+  - Supports multiple instances on the same server (see [MAKEFILE_MULTI_ENVIRONMENT.md](WORKFLOW_AI/MAKEFILE_MULTI_ENVIRONMENT.md))
 - `sources/app2/.env.development` - Nuxt dev environment (API_BASE_URL, BACKEND_BASE_URL)
 - `sources/app2/.env.production` - Nuxt production environment
 
@@ -147,13 +150,16 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 - **Modules**: Pinia for state management, i18n for internationalization, Nuxt UI components
 - **Base URL**: `/app2` - configured for production deployment
 - **Development**: Runs on port 3000 inside container, accessible via port 3002 on host
-- **API Integration**: Configured via .env.development (dev: `https://kpi.local/api`) and .env.production (prod: `https://kayak-polo.info/api`)
+- **API Integration**: Configured via .env.development (dev: `https://kpi.localhost/api`) and .env.production (prod: `https://kayak-polo.info/api`)
 
 ### PHP Backend
+- **PHP Version**: PHP 8.4 in all environments (dev, preprod, prod)
+- **Migration Status**: ✅ PHP 8 migration completed - PHP 7.4 fully deprecated
 - Legacy PHP codebase with custom database abstraction layer
 - Database classes in `commun/MyBdd.php` and `commun/Bdd_PDO.php`
 - Configuration through `commun/MyConfig.php` and `commun/MyParams.php`
 - API endpoints for JSON data exchange
+- Modern libraries: mPDF v8.2+, OpenSpout v4.32.0, Smarty v4
 
 ### Database
 - MySQL database with custom schema for sports management
@@ -164,12 +170,16 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 
 The project uses Docker Compose with multiple environments:
 - **Development**: `docker/compose.dev.yaml` - includes hot reload and development tools
+- **Pre-production**: `docker/compose.preprod.yaml` - staging environment for testing
 - **Production**: `docker/compose.prod.yaml` - optimized for production deployment
 
-Services include PHP (two versions), MySQL databases, phpMyAdmin, and Node.js containers for frontend applications.
+Services include PHP 8.4, MySQL databases, phpMyAdmin, and Node.js containers for frontend applications.
 
 ## Important Notes
 
+- **PHP 8.4**: All environments now run PHP 8.4 - migration from PHP 7.4 is complete
+- **Libraries Modernization**: Successfully migrated to modern PHP 8+ compatible libraries (mPDF, OpenSpout, Smarty v4)
+- **JavaScript Migration**: jQuery elimination and library modernization is ongoing (Flatpickr, Axios→fetch, etc.)
 - App2 is the primary modern frontend application being actively developed
 - Legacy Vue.js applications in `app_dev/`, `app_live_dev/`, `app_wsm_dev/` are maintained but not primary focus
 - Configuration files are mounted from Docker directory to avoid committing sensitive data

@@ -85,7 +85,7 @@
 									minlength="10" onfocus="displayCalendar(document.forms[0].update_naissance,'dd/mm/yyyy',this)"
 									value="{$Courreur.Naissance|replace:'0000-00-00':''|date_format:"%d/%m/%Y"}">
 								<br>
-								{#Derniere_saison#}:<input type="text" name="update_saison" id="update_saison" size="4" maxlength="4"
+								{#Derniere_saison#}:<input type="tel" name="update_saison" id="update_saison" size="4" maxlength="4"
 									minlength="4" value="{$Courreur.Origine}">
 								ICF #<input type="tel" name="update_icf" id="update_icf" size="6" maxlength="10" minlength="2"
 									value="{$Courreur.Reserve}">

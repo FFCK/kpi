@@ -206,8 +206,8 @@
 						<tr>
 							<td width=55% colspan=2>
 								<label for="codeCompet">Code :</label>
-								<input type="text" name="codeCompet" maxlength=12 id="codeCompet" {if $profile <= 2}class='gris'
-										{else}readonly{/if} {if $editCompet != ''}value="{$codeCompet}" {/if} />
+					<input type="text" name="codeCompet" id="codeCompet" maxlength=12 class='codecompet{if $profile <= 2} gris{/if}'
+										{if $profile > 2}readonly{/if} {if $editCompet != ''}value="{$codeCompet}" {/if} />
 								</td>
 								<td colspan=2>
 									<label for="niveauCompet">{#Niveau#} : </label>
@@ -275,7 +275,7 @@
 							</td>
 							<td>
 								<label for="groupOrder">{#Ordre#} :</label>
-								<input type="text" name="groupOrder" value="{$groupOrder}" maxlength=1 id="groupOrder" />
+								<input type="tel" name="groupOrder" id="groupOrder" value="{$groupOrder}" maxlength=1 size="2"/>
 							</td>
 						</tr>
 						<tr>
@@ -302,11 +302,11 @@
 							</td>
 							<td>
 								<label for="qualifies">{#Qualifies#}</label>
-								<input type="text" name="qualifies" id="qualifies" value="{$qualifies|default:'3'}" />
+								<input type="tel" name="qualifies" id="qualifies" value="{$qualifies|default:'3'}" maxlength=2 size="2" />
 							</td>
 							<td>
 								<label for="elimines">{#Elimines#}</label>
-								<input type="text" name="elimines" id="elimines" value="{$elimines|default:'0'}" />
+								<input type="tel" name="elimines" id="elimines" value="{$elimines|default:'0'}" maxlength=2 size="2" />
 							</td>
 						</tr>
 						<tr>
@@ -444,7 +444,7 @@
 								</td>
 								<td>
 									<label for="Departement">{#Dpt_Pays#}</label>
-									<input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement|default:''}" />
+									<input type="text" class='dpt' name="Departement" id="Departement" value="{$Departement|default:''}" maxlength="3"/>
 								</td>
 							</tr>
 							<tr class='ajoutCalendrier'>
@@ -609,7 +609,7 @@
 						<tr>
 							<td>
 								<label for="newSaison">Saison :</label>
-								<input type="text" name="newSaison">
+								<input type="tel" name="newSaison" size="4" maxlength="4">
 							</td>
 							<td>&nbsp;</td>
 						</tr>
@@ -756,7 +756,7 @@
 						<tr>
 							<td width=50%>
 								<label for="ChangeCodeRecherche">Code recherché</label>
-								<input type="text" name="ChangeCodeRecherche" size=40 id="ChangeCodeRecherche" placeholder="Chercher">
+								<input type="text" name="ChangeCodeRecherche" id="ChangeCodeRecherche" class='codecompet' size=40 placeholder="Chercher">
 								</td>
 								<td width=50%>
 								<label for="changeCodeSource">Code à changer</label>
@@ -766,7 +766,7 @@
 						<tr>
 							<td>
 								<label for="changeCodeCible">Code cible</label>
-								<input type="text" name="changeCodeCible" size=40 id="changeCodeCible">
+								<input type="text" name="changeCodeCible" id="changeCodeCible" class='codecompet' size=40>
 							</td>
 							<td>
 								<input type='checkbox' name='changeCodeExists' id='changeCodeExists' value='Exists'>

@@ -1,6 +1,6 @@
 <?php
 //include_once('base.php');
-include_once('../commun/MyParams.php');
+include_once('../commun/MyConfig.php');
 include_once('../commun/MyTools.php');
 include_once('../commun/MyBdd.php');
 
@@ -1165,8 +1165,8 @@ class TV extends MyPage
     function Script()
     {
     ?>
-        <script type="text/javascript" src="../js/axios/axios.min.js?v=5.3.8"></script>
-        <script type="text/javascript" src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=5.3.8"></script>
+        <script type="text/javascript" src="../js/fetch-utils.js?v=<?= NUM_VERSION ?>"></script>
+        <script type="text/javascript" src="../vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js?v=<?= NUM_VERSION ?>"></script>
         <?php
         $voie = $this->GetParamInt('voie', 0);
         $intervalle = $this->GetParamInt('intervalle', 3000);
@@ -1175,8 +1175,8 @@ class TV extends MyPage
             $voie = 0;
         }
         ?>
-        <script type="text/javascript" src="./js/voie_ax.js?v=5.3.8"></script>
-        <script type="text/javascript" src="./js/tv.js?v=5.3.8"></script>
+        <script type="text/javascript" src="./js/voie_ax.js?v=<?= NUM_VERSION ?>"></script>
+        <script type="text/javascript" src="./js/tv.js?v=<?= NUM_VERSION ?>"></script>
         <script type="text/javascript">
             document.addEventListener('DOMContentLoaded', function() {
                 Init(<?= $voie; ?>, <?= $intervalle; ?>);

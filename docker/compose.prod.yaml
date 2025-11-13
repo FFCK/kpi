@@ -14,6 +14,10 @@ services:
             - SMTP_HOST=host.docker.internal
             - SMTP_PORT=25
             - SMTP_PASSWORD=${SMTP_PASSWORD}
+            - TZ=Europe/Paris
+            - LANG=fr_FR.UTF-8
+            - LANGUAGE=fr_FR:fr
+            - LC_ALL=fr_FR.UTF-8
         extra_hosts:
             - "host.docker.internal:host-gateway"
         volumes:
@@ -22,6 +26,8 @@ services:
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
             - /etc/msmtprc:/etc/msmtprc:ro
             - /var/log/msmtp:/var/log/msmtp
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
         networks:
             - network_kpi
             - traefiknetwork
@@ -46,14 +52,20 @@ services:
             dockerfile: Dockerfile.db
             args:
                 BASE_IMAGE_DB: ${BASE_IMAGE_DB}
-        command: mysqld --sql_mode=""
+        command: mariadbd --sql_mode=""
         volumes:
             - ${HOST_DB_PATH}:/var/lib/mysql/
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
             MYSQL_USER: ${DB_USER}
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_DATABASE: ${DB_NAME}
+            TZ: Europe/Paris
+            LANG: fr_FR.UTF-8
+            LANGUAGE: fr_FR:fr
+            LC_ALL: fr_FR.UTF-8
         networks:
             - network_kpi
             - pma_network
@@ -72,11 +84,17 @@ services:
                 BASE_IMAGE_DB: ${BASE_IMAGE_DB}
         volumes:
             - ${HOST_DBWP_PATH}:/var/lib/mysql/
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
         environment:
             MYSQL_ROOT_PASSWORD: ${DBWP_ROOT_PASSWORD}
             MYSQL_USER: ${DBWP_USER}
             MYSQL_PASSWORD: ${DBWP_PASSWORD}
             MYSQL_DATABASE: ${DBWP_NAME}
+            TZ: Europe/Paris
+            LANG: fr_FR.UTF-8
+            LANGUAGE: fr_FR:fr
+            LC_ALL: fr_FR.UTF-8
         networks:
             - network_kpi
             - pma_network

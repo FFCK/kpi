@@ -80,9 +80,6 @@ function changeAffiche()
 }
 
 jq(document).ready(function() {
-    
-	// Maskedinput
-	jq('#Ordre').mask("9");
 
     vanillaAutocomplete('#Nom', 'Autocompl_joueur3.php', {
 		width: 420,

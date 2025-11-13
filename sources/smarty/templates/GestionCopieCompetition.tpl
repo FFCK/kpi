@@ -173,8 +173,10 @@
 		</tr>
 		<tr>
 		  <td class="vert"><label for="Lieu">Lieu</label><input type="text" name="Lieu" value="{$Lieu}" /></td>
-		  <td class="vert"><label for="Departement">Département</label><input type="text" class="dpt"
-			  name="Departement" value="{$Departement}" /></td>
+		  <td class="vert">
+		  	<label for="Departement">Département</label>
+			<input type="text" class="dpt" name="Departement" value="{$Departement}" maxlength="3"/>
+		</td>
 		</tr>
 		<tr>
 		  <td class="vert" colspan=2>
@@ -237,8 +239,7 @@
 	  Rechercher des schémas de compétitions
 	</h3>
 	<label for="recherche_nb_equipes">Nombre d'équipes : </label>
-	  <input type="tel" size="2" name="recherche_nb_equipes" id="recherche_nb_equipes"
-		value="{$recherche_nb_equipes}">
+	  <input type="tel" size="2" name="recherche_nb_equipes" id="recherche_nb_equipes" maxlength="2" value="{$recherche_nb_equipes}">
 	  <label for="tri">Trier par : </label>
 	  <select name="recherche_tri" id="recherche_tri" style="width: fit-content;">
 		<option value="saison" {if $recherche_tri === 'saison'}selected{/if}>Saison</option>

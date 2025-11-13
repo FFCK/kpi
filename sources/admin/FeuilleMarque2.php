@@ -817,7 +817,7 @@ stop_time: <span id="stop_time_display"></span><br />
 						}
 						statutActive(statutMatch, 'N');
 					<?php	}	?>
-					$('#end_match_time').val('<?= substr($heure_fin, -5, 2) . 'h' . substr($heure_fin, -2) ?>');
+					$('#end_match_time').val('<?= $heure_fin ? substr($heure_fin, -5, 2) . 'h' . substr($heure_fin, -2) : '' ?>');
 					if (statutMatch != 'END') {
 						$('.endmatch').hide();
 					}

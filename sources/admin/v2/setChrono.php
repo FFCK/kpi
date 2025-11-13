@@ -28,8 +28,8 @@ if ($action == 'RAZ') {
 	$start_time = utyGetPost('start_time');
 	$run_time = utyGetPost('run_time');
 	$max_time = utyGetPost('max_time');
-	$shotclock = trim(utyGetPost('shotclock', null));
-	$penalties = trim(utyGetJsonPost('penalties', null));
+	$shotclock = trim(utyGetPost('shotclock', '') ?? '');
+	$penalties = trim(utyGetJsonPost('penalties', '') ?? '');
 	$start_time_server = time()%86400; 	// COSANDCO : Prise en compte de l'heure du Serveur ...
 
 	$sql = "REPLACE kp_chrono 
