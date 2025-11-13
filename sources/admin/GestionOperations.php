@@ -77,14 +77,17 @@ class GestionOperations extends MyPageSecure
 		foreach ($rows_evenement_journee as $row) {
 			$array_journees[] = $row['Id_journee'];
 		}
-		$list_journees = implode(',', $array_journees);
 
-		$sql  = "SELECT *
-			FROM kp_journee
-			WHERE Id IN ($list_journees)";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_journee = array();
+		if (!empty($array_journees)) {
+			$placeholders = str_repeat('?,', count($array_journees) - 1) . '?';
+			$sql  = "SELECT *
+				FROM kp_journee
+				WHERE Id IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($array_journees);
+			$rows_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_journee'] = $rows_journee;
 
 		$arrayCompetitions = [];
@@ -93,24 +96,31 @@ class GestionOperations extends MyPageSecure
 				$arrayCompetitions[] = $row['Code_competition'];
 			}
 		}
-		$evt_saison = $rows_journee[0]['Code_saison'];
+		$evt_saison = isset($rows_journee[0]['Code_saison']) ? $rows_journee[0]['Code_saison'] : null;
 
-		$sql = "SELECT *
-			FROM kp_competition
-			WHERE Code_saison = ? 
-			AND Code IN ('" . implode("','", $arrayCompetitions) . "')";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($evt_saison));
-		$rows_competition = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_competition = array();
+		$rows_competition_equipe = array();
+		if (!empty($arrayCompetitions) && $evt_saison) {
+			$placeholders = str_repeat('?,', count($arrayCompetitions) - 1) . '?';
+			$sql = "SELECT *
+				FROM kp_competition
+				WHERE Code_saison = ?
+				AND Code IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$params = array_merge(array($evt_saison), $arrayCompetitions);
+			$stmt->execute($params);
+			$rows_competition = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe
+				WHERE Code_saison = ?
+				AND Code_compet IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$params = array_merge(array($evt_saison), $arrayCompetitions);
+			$stmt->execute($params);
+			$rows_competition_equipe = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_competition'] = $rows_competition;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe
-			WHERE Code_saison = ?
-			AND Code_compet IN ('" . implode("','", $arrayCompetitions) . "')";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($evt_saison));
-		$rows_competition_equipe = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_competition_equipe'] = $rows_competition_equipe;
 
 		$arrayCompetitionsEquipes = [];
@@ -118,44 +128,60 @@ class GestionOperations extends MyPageSecure
 			$arrayCompetitionsEquipes[] = $row['Id'];
 		}
 
-		$sql = "SELECT *
-			FROM kp_competition_equipe_init
-			WHERE Id IN (" . implode(',', $arrayCompetitionsEquipes) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_init = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_competition_equipe_init = array();
+		$rows_competition_equipe_joueur = array();
+		$rows_competition_equipe_niveau = array();
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe_init
+				WHERE Id IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayCompetitionsEquipes);
+			$rows_competition_equipe_init = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe_joueur
+				WHERE Id_equipe IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayCompetitionsEquipes);
+			$rows_competition_equipe_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe_niveau
+				WHERE Id IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayCompetitionsEquipes);
+			$rows_competition_equipe_niveau = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_competition_equipe_init'] = $rows_competition_equipe_init;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe_joueur
-			WHERE Id_equipe IN (" . implode(',', $arrayCompetitionsEquipes) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_competition_equipe_joueur'] = $rows_competition_equipe_joueur;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe_journee
-			WHERE Id_journee IN (" . implode(',', $array_journees) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
-		$export['kp_competition_equipe_journee'] = $rows_competition_equipe_journee;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe_niveau
-			WHERE Id IN (" . implode(',', $arrayCompetitionsEquipes) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_niveau = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_competition_equipe_niveau'] = $rows_competition_equipe_niveau;
 
-		$sql = "SELECT *
-			FROM kp_match
-			WHERE Id_journee IN (" . implode(',', $array_journees) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_match = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_competition_equipe_journee = array();
+		if (!empty($array_journees)) {
+			$placeholders = str_repeat('?,', count($array_journees) - 1) . '?';
+			$sql = "SELECT *
+				FROM kp_competition_equipe_journee
+				WHERE Id_journee IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($array_journees);
+			$rows_competition_equipe_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
+		$export['kp_competition_equipe_journee'] = $rows_competition_equipe_journee;
+		$export['kp_competition_equipe_niveau'] = $rows_competition_equipe_niveau;
+
+		$rows_match = array();
+		if (!empty($array_journees)) {
+			$placeholders = str_repeat('?,', count($array_journees) - 1) . '?';
+			$sql = "SELECT *
+				FROM kp_match
+				WHERE Id_journee IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($array_journees);
+			$rows_match = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_match'] = $rows_match;
 
 		$arrayMatchs = [];
@@ -163,28 +189,35 @@ class GestionOperations extends MyPageSecure
 			$arrayMatchs[] = $row['Id'];
 		}
 
-		$sql = "SELECT *
-			FROM kp_match_detail
-			WHERE Id_match IN (" . implode(',', $arrayMatchs) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_match_detail = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_match_detail = array();
+		$rows_match_joueur = array();
+		$rows_chrono = array();
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+
+			$sql = "SELECT *
+				FROM kp_match_detail
+				WHERE Id_match IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayMatchs);
+			$rows_match_detail = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_match_joueur
+				WHERE Id_match IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayMatchs);
+			$rows_match_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_chrono
+				WHERE IdMatch IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayMatchs);
+			$rows_chrono = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_match_detail'] = $rows_match_detail;
-
-		$sql = "SELECT *
-			FROM kp_match_joueur
-			WHERE Id_match IN (" . implode(',', $arrayMatchs) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_match_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_match_joueur'] = $rows_match_joueur;
-
-		$sql = "SELECT *
-			FROM kp_chrono
-			WHERE IdMatch IN (" . implode(',', $arrayMatchs) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_chrono = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_chrono'] = $rows_chrono;
 
 
@@ -493,7 +526,11 @@ class GestionOperations extends MyPageSecure
 
 		// import kp_competition_equipe
 		$arrayCompetitionsEquipes = array();
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe WHERE Code_compet IN ('" . implode("','", $arrayCompetitions) . "')");
+		if (!empty($arrayCompetitions)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitions) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe WHERE Code_compet IN ($placeholders)");
+			$stmt->execute($arrayCompetitions);
+		}
 
 		$sql = "INSERT INTO kp_competition_equipe (`Id`, `Code_compet`, `Code_saison`, `Libelle`, `Code_club`, `logo`, `color1`, 
 				`color2`, `colortext`, `Numero`, `Poule`, `Tirage`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`, 
@@ -519,7 +556,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_init
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_init WHERE Id IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_init WHERE Id IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_init` (`Id`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`) 
 			VALUES (:Id, :Pts, :Clt, :J, :G, :N, :P, :F, :Plus, :Moins, :Diff)";
@@ -533,7 +574,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_joueur
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_joueur WHERE Id_equipe IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_joueur WHERE Id_equipe IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_joueur` (`Id_equipe`, `Matric`, `Nom`, `Prenom`, `Sexe`, `Categ`, `Numero`, `Capitaine`) 
 			VALUES (:Id_equipe, :Matric, :Nom, :Prenom, :Sexe, :Categ, :Numero, :Capitaine)";
@@ -547,7 +592,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_journee
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_journee WHERE Id IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_journee WHERE Id IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_journee` (`Id`, `Id_journee`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`, 
 				`PtsNiveau`, `CltNiveau`, `Pts_publi`, `Clt_publi`, `J_publi`, `G_publi`, `N_publi`, `P_publi`, `F_publi`, `Plus_publi`, `Moins_publi`, 
@@ -569,7 +618,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_niveau
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_niveau WHERE Id IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_niveau WHERE Id IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_niveau` (`Id`, `Niveau`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`, 
 				`PtsNiveau`, `CltNiveau`, `Pts_publi`, `Clt_publi`, `J_publi`, `G_publi`, `N_publi`, `P_publi`, `F_publi`, `Plus_publi`, `Moins_publi`, 
@@ -592,7 +645,11 @@ class GestionOperations extends MyPageSecure
 
 		// import kp_match
 		$arrayMatchs = array();
-		$myBdd->pdo->query("DELETE FROM kp_match WHERE Id_journee IN (" . implode(",", $arrayJournees) . ")");
+		if (!empty($arrayJournees)) {
+			$placeholders = str_repeat('?,', count($arrayJournees) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_match WHERE Id_journee IN ($placeholders)");
+			$stmt->execute($arrayJournees);
+		}
 
 		$sql = "INSERT INTO `kp_match` (`Id`, `Id_journee`, `Libelle`, `Type`, `Statut`, `Date_match`, `Heure_match`, `Heure_fin`, `Terrain`, 
 				`Numero_ordre`, `Periode`, `Id_equipeA`, `Id_equipeB`, `ColorA`, `ColorB`, `ScoreA`, `ScoreB`, `ScoreDetailA`, `ScoreDetailB`, 
@@ -625,7 +682,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_match_detail
-		$myBdd->pdo->query("DELETE FROM kp_match_detail WHERE Id_match IN (" . implode(",", $arrayMatchs) . ")");
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_match_detail WHERE Id_match IN ($placeholders)");
+			$stmt->execute($arrayMatchs);
+		}
 
 		$sql = "INSERT INTO `kp_match_detail` (`Id`, `Id_match`, `Periode`, `Temps`, `Id_evt_match`, `motif`, 
 				`Competiteur`, `Numero`, `Equipe_A_B`, `date_insert`)
@@ -641,7 +702,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_match_joueur
-		$myBdd->pdo->query("DELETE FROM kp_match_joueur WHERE Id_match IN (" . implode(",", $arrayMatchs) . ")");
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_match_joueur WHERE Id_match IN ($placeholders)");
+			$stmt->execute($arrayMatchs);
+		}
 
 		$sql = "INSERT INTO `kp_match_joueur` (`Id_match`, `Matric`, `Numero`, `Equipe`, `Capitaine`)
 		VALUES (:Id_match, :Matric, :Numero, :Equipe, :Capitaine)";
@@ -655,7 +720,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_chrono
-		$myBdd->pdo->query("DELETE FROM kp_chrono WHERE IdMatch IN (" . implode(",", $arrayMatchs) . ")");
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_chrono WHERE IdMatch IN ($placeholders)");
+			$stmt->execute($arrayMatchs);
+		}
 
 		$sql = "INSERT INTO `kp_chrono` (`IdMatch`, `action`, `start_time`, `start_time_server`, `run_time`, `max_time`)
 			VALUES (:IdMatch, :action, :start_time, :start_time_server, :run_time, :max_time)";
