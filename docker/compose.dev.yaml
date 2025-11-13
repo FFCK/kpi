@@ -24,8 +24,6 @@ services:
             - ./MyConfig.php:/var/www/html/commun/MyConfig.php
             - ./config/opcache-dev.ini:/usr/local/etc/php/conf.d/opcache-dev.ini
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
         networks:
             - network_kpi
             - traefiknetwork
@@ -52,8 +50,6 @@ services:
         command: mysqld --sql_mode=""
         volumes:
             - ${HOST_DB_PATH}:/var/lib/mysql/
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
         environment:
             MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
             MYSQL_USER: ${DB_USER}
@@ -63,8 +59,6 @@ services:
             LANG: fr_FR.UTF-8
             LANGUAGE: fr_FR:fr
             LC_ALL: fr_FR.UTF-8
-        # ports:
-        #     - 33${DOCKER_SUFFIXE_PORT}:3306
         networks:
             - network_kpi
             - pma_network
@@ -83,8 +77,6 @@ services:
                 BASE_IMAGE_DB: ${BASE_IMAGE_DB}
         volumes:
             - ${HOST_DBWP_PATH}:/var/lib/mysql/
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
         environment:
             MYSQL_ROOT_PASSWORD: ${DBWP_ROOT_PASSWORD}
             MYSQL_USER: ${DBWP_USER}
@@ -112,11 +104,8 @@ services:
             dockerfile: ../../docker/node/Dockerfile # Crée ce Dockerfile si besoin
         working_dir: /app
         user: "${USER_ID}:${GROUP_ID}"
-        # command: "npm run http-server"
         volumes:
             - ../sources/app2:/app
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
         environment:
             - HOST=0.0.0.0
             - PORT=3000
@@ -136,43 +125,6 @@ services:
             - "traefik.http.routers.app2.entrypoints=websecure"
             - "traefik.http.routers.app2.tls=true"
             - "traefik.http.services.app2.loadbalancer.server.port=3000"
-    
-    # node:
-    #     container_name: kpi_node
-    #     # image: node:latest
-    #     build:
-    #         context: ../
-    #         dockerfile: ./docker/node/Dockerfile
-    #     ports:
-    #         - "8000:8000" # vue ui
-    #         - "9000:8080" # Vue-cli HMR
-    #     volumes:
-    #         - ../sources/app_dev:/app
-    #     user: "1000:33"
-    # node_live:
-    #     container_name: kpi_node_live
-    #     # image: node:latest
-    #     build:
-    #         context: ../
-    #         dockerfile: ./docker/node/Dockerfile_live
-    #     ports:
-    #         - "8001:8000" # vue ui
-    #         - "9001:8080" # Vue-cli HMR
-    #     volumes:
-    #         - ../sources/app_live_dev:/app
-    #     user: "1000:33"
-    # node_wsm:
-    #     container_name: kpi_node_wsm
-    #     # image: node:latest
-    #     build:
-    #         context: ../
-    #         dockerfile: ./docker/node/Dockerfile_wsm
-    #     ports:
-    #         - "8002:8000" # vue ui
-    #         - "9002:8080" # Vue-cli HMR
-    #     volumes:
-    #         - ../sources/app_wsm_dev:/app
-    #     user: "1000:33"
 
 
 networks:
