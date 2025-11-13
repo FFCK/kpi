@@ -267,7 +267,9 @@ try {
  */
 function getWorkerConfigs($db)
 {
-    $sql = "SELECT * FROM kp_event_worker_config
+    $sql = "SELECT *,
+            UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(last_execution) as seconds_since_last_execution
+            FROM kp_event_worker_config
             WHERE status IN ('running', 'paused')
             ORDER BY id_event ASC";
     $stmt = $db->pdo->prepare($sql);
@@ -307,15 +309,11 @@ function enrichConfig($config)
         $config['current_simulated_time'] = $config['hour_event'];
     }
 
-    // Calculer le temps depuis la dernière exécution (timezone local du serveur)
-    if ($config['last_execution']) {
-        $last = new DateTime($config['last_execution']);
-        $now = new DateTime('now');
-        $diff = $now->getTimestamp() - $last->getTimestamp();
-        $config['seconds_since_last_execution'] = $diff;
-        $config['is_healthy'] = $diff < ($config['delay_event'] * 3); // Considéré sain si < 3x le délai
+    // seconds_since_last_execution est déjà calculé par SQL (UNIX_TIMESTAMP)
+    // Vérifier si le worker est sain (heartbeat récent)
+    if ($config['last_execution'] && $config['seconds_since_last_execution'] !== null) {
+        $config['is_healthy'] = $config['seconds_since_last_execution'] < ($config['delay_event'] * 3);
     } else {
-        $config['seconds_since_last_execution'] = null;
         $config['is_healthy'] = true;
     }
 
