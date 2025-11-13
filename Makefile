@@ -322,19 +322,19 @@ event_worker_stop: ## Arrête le worker d'événements
 
 event_worker_status: ## Affiche le statut du worker d'événements
 	@echo "📊 Statut du worker d'événements:"
-	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "if pgrep -f 'event_worker.php' > /dev/null; then \
-		echo '  ✅ Worker en cours d\'exécution'; \
-		echo '  PID: '`pgrep -f 'event_worker.php'`; \
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c 'if pgrep -f event_worker.php > /dev/null; then \
+		echo "  ✅ Worker en cours d'"'"'exécution"; \
+		echo "  PID: $$(pgrep -f event_worker.php)"; \
 	else \
-		echo '  ❌ Worker arrêté'; \
-	fi"
+		echo "  ❌ Worker arrêté"; \
+	fi'
 	@echo ""
 	@echo "💡 Pour plus de détails, accédez à l'interface web: sources/live/event.php"
 
 event_worker_logs: ## Affiche les logs du worker d'événements
 	@echo "📋 Logs du worker d'événements (Ctrl+C pour quitter):"
 	@echo "─────────────────────────────────────────────────────────"
-	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "tail -f /var/www/html/live/logs/event_worker.log 2>/dev/null || echo '⚠️  Aucun log disponible. Le worker n\'a peut-être pas encore été démarré.'"
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c 'tail -f /var/www/html/live/logs/event_worker.log 2>/dev/null || echo "⚠️  Aucun log disponible. Le worker n'"'"'a peut-être pas encore été démarré."'
 
 event_worker_restart: ## Redémarre le worker d'événements
 	@echo "🔄 Redémarrage du worker d'événements..."
