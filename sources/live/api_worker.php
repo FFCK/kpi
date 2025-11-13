@@ -19,16 +19,17 @@ $action = utyGetGet('action', utyGetPost('action', 'status'));
 try {
     switch ($action) {
         case 'status':
-            // Récupère l'état actuel du worker
-            $config = getWorkerConfig($db);
+            // Récupère l'état de tous les événements actifs
+            $configs = getWorkerConfigs($db);
             return_200([
                 'status' => 'success',
-                'data' => $config
+                'data' => $configs,
+                'count' => count($configs)
             ]);
             break;
 
         case 'start':
-            // Démarre ou redémarre le worker avec les paramètres fournis
+            // Démarre un nouvel événement dans le worker
             $id_event = utyGetPost('id_event', false);
             $date_event = utyGetPost('date_event', false);
             $hour_event = utyGetPost('hour_event', false);
@@ -40,14 +41,17 @@ try {
                 return_400(['status' => 'error', 'message' => 'Missing required parameters: id_event, date_event, hour_event']);
             }
 
-            // Vérifier si une config existe déjà
-            $existing = getWorkerConfig($db);
+            // Vérifier si cet événement est déjà actif
+            $sql = "SELECT * FROM kp_event_worker_config
+                    WHERE id_event = ? AND status IN ('running', 'paused')";
+            $stmt = $db->pdo->prepare($sql);
+            $stmt->execute([$id_event]);
+            $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($existing) {
-                // Mettre à jour la config existante
+                // Mettre à jour l'événement existant
                 $sql = "UPDATE kp_event_worker_config
-                        SET id_event = ?,
-                            date_event = ?,
+                        SET date_event = ?,
                             hour_event = ?,
                             hour_event_initial = ?,
                             offset_event = ?,
@@ -59,7 +63,6 @@ try {
                         WHERE id = ?";
                 $stmt = $db->pdo->prepare($sql);
                 $stmt->execute([
-                    $id_event,
                     $date_event,
                     $hour_event,
                     $hour_event,
@@ -68,8 +71,9 @@ try {
                     $delay_event,
                     $existing['id']
                 ]);
+                $configId = $existing['id'];
             } else {
-                // Créer une nouvelle config
+                // Créer une nouvelle config pour cet événement
                 $sql = "INSERT INTO kp_event_worker_config
                         (id_event, date_event, hour_event, hour_event_initial, offset_event, pitch_event, delay_event, status)
                         VALUES (?, ?, ?, ?, ?, ?, ?, 'running')";
@@ -83,64 +87,103 @@ try {
                     $pitch_event,
                     $delay_event
                 ]);
+                $configId = $db->pdo->lastInsertId();
             }
 
-            $config = getWorkerConfig($db);
+            // Récupérer la config créée/mise à jour
+            $sql = "SELECT * FROM kp_event_worker_config WHERE id = ?";
+            $stmt = $db->pdo->prepare($sql);
+            $stmt->execute([$configId]);
+            $config = $stmt->fetch(PDO::FETCH_ASSOC);
+
             return_200([
                 'status' => 'success',
-                'message' => 'Worker started successfully',
-                'data' => $config
+                'message' => 'Event worker started successfully',
+                'data' => enrichConfig($config)
             ]);
             break;
 
         case 'stop':
-            // Arrête le worker
-            $sql = "UPDATE kp_event_worker_config
-                    SET status = 'stopped',
-                        updated_at = NOW()
-                    WHERE status IN ('running', 'paused')";
-            $stmt = $db->pdo->prepare($sql);
-            $stmt->execute();
+            // Arrête un ou tous les événements
+            $id_event = utyGetPost('id_event', null);
 
-            $config = getWorkerConfig($db);
+            if ($id_event) {
+                $sql = "UPDATE kp_event_worker_config
+                        SET status = 'stopped', updated_at = NOW()
+                        WHERE id_event = ? AND status IN ('running', 'paused')";
+                $stmt = $db->pdo->prepare($sql);
+                $stmt->execute([$id_event]);
+                $message = "Event #$id_event stopped successfully";
+            } else {
+                $sql = "UPDATE kp_event_worker_config
+                        SET status = 'stopped', updated_at = NOW()
+                        WHERE status IN ('running', 'paused')";
+                $stmt = $db->pdo->prepare($sql);
+                $stmt->execute();
+                $message = "All events stopped successfully";
+            }
+
+            $configs = getWorkerConfigs($db);
             return_200([
                 'status' => 'success',
-                'message' => 'Worker stopped successfully',
-                'data' => $config
+                'message' => $message,
+                'data' => $configs
             ]);
             break;
 
         case 'pause':
-            // Met en pause le worker
-            $sql = "UPDATE kp_event_worker_config
-                    SET status = 'paused',
-                        updated_at = NOW()
-                    WHERE status = 'running'";
-            $stmt = $db->pdo->prepare($sql);
-            $stmt->execute();
+            // Met en pause un ou tous les événements
+            $id_event = utyGetPost('id_event', null);
 
-            $config = getWorkerConfig($db);
+            if ($id_event) {
+                $sql = "UPDATE kp_event_worker_config
+                        SET status = 'paused', updated_at = NOW()
+                        WHERE id_event = ? AND status = 'running'";
+                $stmt = $db->pdo->prepare($sql);
+                $stmt->execute([$id_event]);
+                $message = "Event #$id_event paused successfully";
+            } else {
+                $sql = "UPDATE kp_event_worker_config
+                        SET status = 'paused', updated_at = NOW()
+                        WHERE status = 'running'";
+                $stmt = $db->pdo->prepare($sql);
+                $stmt->execute();
+                $message = "All events paused successfully";
+            }
+
+            $configs = getWorkerConfigs($db);
             return_200([
                 'status' => 'success',
-                'message' => 'Worker paused successfully',
-                'data' => $config
+                'message' => $message,
+                'data' => $configs
             ]);
             break;
 
         case 'resume':
-            // Reprend le worker après une pause
-            $sql = "UPDATE kp_event_worker_config
-                    SET status = 'running',
-                        updated_at = NOW()
-                    WHERE status = 'paused'";
-            $stmt = $db->pdo->prepare($sql);
-            $stmt->execute();
+            // Reprend un ou tous les événements
+            $id_event = utyGetPost('id_event', null);
 
-            $config = getWorkerConfig($db);
+            if ($id_event) {
+                $sql = "UPDATE kp_event_worker_config
+                        SET status = 'running', updated_at = NOW()
+                        WHERE id_event = ? AND status = 'paused'";
+                $stmt = $db->pdo->prepare($sql);
+                $stmt->execute([$id_event]);
+                $message = "Event #$id_event resumed successfully";
+            } else {
+                $sql = "UPDATE kp_event_worker_config
+                        SET status = 'running', updated_at = NOW()
+                        WHERE status = 'paused'";
+                $stmt = $db->pdo->prepare($sql);
+                $stmt->execute();
+                $message = "All events resumed successfully";
+            }
+
+            $configs = getWorkerConfigs($db);
             return_200([
                 'status' => 'success',
-                'message' => 'Worker resumed successfully',
-                'data' => $config
+                'message' => $message,
+                'data' => $configs
             ]);
             break;
 
@@ -220,15 +263,31 @@ try {
 }
 
 /**
- * Récupère la configuration actuelle du worker
+ * Récupère toutes les configurations du worker (tous les événements)
  */
-function getWorkerConfig($db)
+function getWorkerConfigs($db)
 {
-    $sql = "SELECT * FROM kp_event_worker_config ORDER BY id DESC LIMIT 1";
+    $sql = "SELECT * FROM kp_event_worker_config
+            WHERE status IN ('running', 'paused')
+            ORDER BY id_event ASC";
     $stmt = $db->pdo->prepare($sql);
     $stmt->execute();
-    $config = $stmt->fetch(PDO::FETCH_ASSOC);
+    $configs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Enrichir chaque config avec les informations calculées
+    $enrichedConfigs = [];
+    foreach ($configs as $config) {
+        $enrichedConfigs[] = enrichConfig($config);
+    }
+
+    return $enrichedConfigs;
+}
+
+/**
+ * Enrichit une configuration avec des informations calculées
+ */
+function enrichConfig($config)
+{
     if (!$config) {
         return null;
     }

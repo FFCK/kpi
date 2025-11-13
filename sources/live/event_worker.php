@@ -54,8 +54,7 @@ require_once('create_cache_match.php');
 $running = true;
 $lastConfigCheck = 0;
 $configCheckInterval = 5; // Vérifier la config toutes les 5 secondes
-$startTime = null;
-$initialTime = null;
+$eventStates = []; // Stocke le state de chaque événement (startTime, initialTime)
 
 // Gestionnaire de signaux pour arrêt propre
 if (function_exists('pcntl_signal')) {
@@ -82,85 +81,89 @@ while ($running) {
 
         $db = new MyBdd();
 
-        // Récupérer la configuration
-        $config = getWorkerConfig($db);
+        // Récupérer tous les événements actifs
+        $configs = getWorkerConfigs($db);
 
-        if (!$config) {
+        if (empty($configs)) {
             // Pas de configuration, attendre
-            logMessage("No configuration found, waiting...");
+            if (time() % 60 == 0) { // Log toutes les minutes seulement
+                logMessage("No active events, waiting...");
+            }
             sleep(10);
             continue;
         }
 
-        // Vérifier le statut
-        if ($config['status'] === 'stopped') {
-            logMessage("Worker stopped via configuration");
-            break;
-        }
+        // Traiter chaque événement actif
+        foreach ($configs as $config) {
+            // Initialiser le state de l'événement si nécessaire
+            if (!isset($eventStates[$config['id']])) {
+                $eventStates[$config['id']] = [
+                    'startTime' => microtime(true),
+                    'initialTime' => strtotime($config['date_event'] . ' ' . $config['hour_event_initial']),
+                    'id_event' => $config['id_event']
+                ];
+                logMessage("Event #{$config['id_event']} started - Date: {$config['date_event']} - Initial: {$config['hour_event_initial']}");
+            }
 
-        if ($config['status'] === 'paused') {
-            logMessage("Worker paused, waiting...");
-            sleep(5);
-            continue;
-        }
+            $state = $eventStates[$config['id']];
 
-        // Le worker est en mode 'running'
-        if ($startTime === null || $config['id'] !== ($lastConfigId ?? null)) {
-            // Nouveau démarrage ou changement de config
-            $startTime = microtime(true);
-            // Combiner date et heure pour strtotime
-            $initialTime = strtotime($config['date_event'] . ' ' . $config['hour_event_initial']);
-            $lastConfigId = $config['id'];
-            logMessage("Worker started for Event #{$config['id_event']} - Date: {$config['date_event']} - Initial: {$config['hour_event_initial']}");
-        }
+            // Calculer l'heure actuelle simulée
+            $elapsedSeconds = microtime(true) - $state['startTime'];
+            $currentSimulatedTime = $state['initialTime'] + $elapsedSeconds;
+            $currentHourEvent = date('H:i', $currentSimulatedTime);
 
-        // Calculer l'heure actuelle simulée
-        $elapsedSeconds = microtime(true) - $startTime;
-        $currentSimulatedTime = $initialTime + $elapsedSeconds;
-        $currentHourEvent = date('H:i', $currentSimulatedTime);
+            // Ajouter l'offset (warm-up)
+            $time = utyHHMM_To_MM($currentHourEvent);
+            $time += $config['offset_event'];
+            $hourEventWork = utyMM_To_HHMM($time);
 
-        // Ajouter l'offset (warm-up)
-        $time = utyHHMM_To_MM($currentHourEvent);
-        $time += $config['offset_event'];
-        $hourEventWork = utyMM_To_HHMM($time);
+            // Préparer le tableau des terrains
+            $arrayPitchs = [];
+            if ($config['pitch_event'] > 0) {
+                for ($i = 1; $i <= $config['pitch_event']; $i++) {
+                    $arrayPitchs[] = $i;
+                }
+            }
 
-        // Préparer le tableau des terrains
-        $arrayPitchs = [];
-        if ($config['pitch_event'] > 0) {
-            for ($i = 1; $i <= $config['pitch_event']; $i++) {
-                $arrayPitchs[] = $i;
+            // Générer les caches
+            try {
+                $cacheParams = ['cache' => '1'];
+                $cache = new CacheMatch($cacheParams);
+
+                $arrayResult = $cache->Event(
+                    $db,
+                    $config['id_event'],
+                    $config['date_event'],
+                    $hourEventWork,
+                    $currentHourEvent,
+                    $arrayPitchs
+                );
+
+                // Envoyer un heartbeat
+                sendHeartbeat($config['id'], null);
+
+                // Log résumé (toutes les 10 exécutions)
+                if ($config['execution_count'] % 10 == 0) {
+                    logMessage("Event #{$config['id_event']} - Execution #{$config['execution_count']} - Time: {$currentHourEvent}");
+                }
+            } catch (Exception $cacheException) {
+                logMessage("ERROR for Event #{$config['id_event']}: " . $cacheException->getMessage());
+                sendHeartbeat($config['id'], $cacheException->getMessage());
             }
         }
 
-        // Générer les caches
-        try {
-            // CacheMatch::__construct() requires parameter passed by reference
-            $cacheParams = ['cache' => '1'];
-            $cache = new CacheMatch($cacheParams);
-
-            $arrayResult = $cache->Event(
-                $db,
-                $config['id_event'],
-                $config['date_event'],
-                $hourEventWork,
-                $currentHourEvent,
-                $arrayPitchs
-            );
-        } catch (Exception $cacheException) {
-            logMessage("ERROR in cache generation: " . $cacheException->getMessage());
-            throw $cacheException; // Re-throw pour être capturé par le catch externe
+        // Nettoyer les states des événements qui ne sont plus actifs
+        $activeIds = array_column($configs, 'id');
+        foreach (array_keys($eventStates) as $stateId) {
+            if (!in_array($stateId, $activeIds)) {
+                logMessage("Event #{$eventStates[$stateId]['id_event']} stopped - Cleaning state");
+                unset($eventStates[$stateId]);
+            }
         }
 
-        // Envoyer un heartbeat à l'API
-        sendHeartbeat($config['id'], null);
-
-        // Log résumé (seulement toutes les 10 exécutions pour éviter trop de logs)
-        if ($config['execution_count'] % 10 == 0) {
-            logMessage("Event #{$config['id_event']} - Execution #{$config['execution_count']} - Time: {$currentHourEvent}");
-        }
-
-        // Attendre le délai configuré
-        $delaySeconds = max(1, intval($config['delay_event']));
+        // Attendre un délai (utiliser le plus petit délai parmi tous les événements)
+        $minDelay = min(array_column($configs, 'delay_event'));
+        $delaySeconds = max(1, intval($minDelay));
         sleep($delaySeconds);
 
     } catch (Exception $e) {
@@ -180,14 +183,16 @@ while ($running) {
 logMessage("Event Worker stopped");
 
 /**
- * Récupère la configuration actuelle du worker
+ * Récupère toutes les configurations actives du worker
  */
-function getWorkerConfig($db)
+function getWorkerConfigs($db)
 {
-    $sql = "SELECT * FROM kp_event_worker_config ORDER BY id DESC LIMIT 1";
+    $sql = "SELECT * FROM kp_event_worker_config
+            WHERE status IN ('running', 'paused')
+            ORDER BY id_event ASC";
     $stmt = $db->pdo->prepare($sql);
     $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /**
