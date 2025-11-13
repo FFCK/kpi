@@ -297,21 +297,20 @@ function enrichConfig($config)
     $config['is_paused'] = $config['status'] === 'paused';
     $config['is_stopped'] = $config['status'] === 'stopped';
 
-    // Calculer l'heure actuelle simulée (si running)
-    if ($config['status'] === 'running' && $config['created_at']) {
-        $startTime = strtotime($config['created_at']);
+    // Calculer l'heure actuelle simulée à partir du nombre d'exécutions
+    // Plus fiable que d'utiliser created_at car le worker peut redémarrer
+    if ($config['status'] === 'running' || $config['status'] === 'paused') {
         $initialTime = strtotime($config['date_event'] . ' ' . $config['hour_event_initial']);
-        $elapsedSeconds = time() - $startTime;
-        $currentSimulatedTime = $initialTime + $elapsedSeconds;
-        $config['current_simulated_time'] = date('H:i:s', $currentSimulatedTime);
+        $elapsedSeconds = $config['execution_count'] * $config['delay_event'];
+        $config['current_simulated_time'] = date('H:i:s', $initialTime + $elapsedSeconds);
     } else {
         $config['current_simulated_time'] = $config['hour_event'];
     }
 
-    // Calculer le temps depuis la dernière exécution (en UTC)
+    // Calculer le temps depuis la dernière exécution (timezone local du serveur)
     if ($config['last_execution']) {
-        $last = new DateTime($config['last_execution'], new DateTimeZone('UTC'));
-        $now = new DateTime('now', new DateTimeZone('UTC'));
+        $last = new DateTime($config['last_execution']);
+        $now = new DateTime('now');
         $diff = $now->getTimestamp() - $last->getTimestamp();
         $config['seconds_since_last_execution'] = $diff;
         $config['is_healthy'] = $diff < ($config['delay_event'] * 3); // Considéré sain si < 3x le délai
