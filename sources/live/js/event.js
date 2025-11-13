@@ -61,7 +61,8 @@ function checkWorkerStatus() {
 		cache: false,
 		success: function (response) {
 			if (response.status === 'success') {
-				updateUI(response.data)
+				// API now returns array of configs
+				updateUI(response.data || [])
 			} else {
 				showError('Failed to get worker status')
 			}
@@ -74,7 +75,92 @@ function checkWorkerStatus() {
 }
 
 /**
- * Start the worker
+ * Stop a specific event
+ */
+function stopEvent(idEvent) {
+	if (!confirm('Stop event #' + idEvent + '?')) {
+		return
+	}
+
+	$.ajax({
+		type: "POST",
+		url: "api_worker.php",
+		data: {
+			action: 'stop',
+			id_event: idEvent
+		},
+		dataType: "json",
+		cache: false,
+		success: function (response) {
+			if (response.status === 'success') {
+				showSuccess('Event #' + idEvent + ' stopped')
+				checkWorkerStatus()
+			} else {
+				showError('Failed to stop event: ' + response.message)
+			}
+		},
+		error: function (xhr, status, error) {
+			showError('Error stopping event: ' + error)
+		}
+	})
+}
+
+/**
+ * Pause a specific event
+ */
+function pauseEvent(idEvent) {
+	$.ajax({
+		type: "POST",
+		url: "api_worker.php",
+		data: {
+			action: 'pause',
+			id_event: idEvent
+		},
+		dataType: "json",
+		cache: false,
+		success: function (response) {
+			if (response.status === 'success') {
+				showSuccess('Event #' + idEvent + ' paused')
+				checkWorkerStatus()
+			} else {
+				showError('Failed to pause event: ' + response.message)
+			}
+		},
+		error: function (xhr, status, error) {
+			showError('Error pausing event: ' + error)
+		}
+	})
+}
+
+/**
+ * Resume a specific event
+ */
+function resumeEvent(idEvent) {
+	$.ajax({
+		type: "POST",
+		url: "api_worker.php",
+		data: {
+			action: 'resume',
+			id_event: idEvent
+		},
+		dataType: "json",
+		cache: false,
+		success: function (response) {
+			if (response.status === 'success') {
+				showSuccess('Event #' + idEvent + ' resumed')
+				checkWorkerStatus()
+			} else {
+				showError('Failed to resume event: ' + response.message)
+			}
+		},
+		error: function (xhr, status, error) {
+			showError('Error resuming event: ' + error)
+		}
+	})
+}
+
+/**
+ * Start a new event in the worker
  */
 function startWorker() {
 	const data = {
@@ -101,39 +187,35 @@ function startWorker() {
 		cache: false,
 		success: function (response) {
 			if (response.status === 'success') {
-				showSuccess('Worker started successfully!')
+				showSuccess('Event #' + data.id_event + ' started successfully!')
 				checkWorkerStatus()
-				// Start monitoring
-				if (!monitoringInterval) {
-					monitoringInterval = setInterval(refreshMonitoring, data.delay_event * 1000)
-				}
 			} else {
-				showError('Failed to start worker: ' + response.message)
+				showError('Failed to start event: ' + response.message)
 			}
 		},
 		error: function (xhr, status, error) {
-			showError('Error starting worker: ' + error)
+			showError('Error starting event: ' + error)
 		}
 	})
 }
 
 /**
- * Stop the worker
+ * Stop all events
  */
 function stopWorker() {
-	if (!confirm('Are you sure you want to stop the worker?')) {
+	if (!confirm('Are you sure you want to stop ALL events?')) {
 		return
 	}
 
 	$.ajax({
 		type: "POST",
 		url: "api_worker.php",
-		data: { action: 'stop' },
+		data: { action: 'stop' }, // No id_event = stop all
 		dataType: "json",
 		cache: false,
 		success: function (response) {
 			if (response.status === 'success') {
-				showSuccess('Worker stopped')
+				showSuccess('All events stopped')
 				checkWorkerStatus()
 				// Stop monitoring
 				if (monitoringInterval) {
@@ -142,11 +224,11 @@ function stopWorker() {
 				}
 				$('#info').html('')
 			} else {
-				showError('Failed to stop worker: ' + response.message)
+				showError('Failed to stop events: ' + response.message)
 			}
 		},
 		error: function (xhr, status, error) {
-			showError('Error stopping worker: ' + error)
+			showError('Error stopping events: ' + error)
 		}
 	})
 }
@@ -200,89 +282,92 @@ function resumeWorker() {
 }
 
 /**
- * Update the UI based on worker status
+ * Update the UI based on worker status (multiple events)
  */
-function updateUI(config) {
-	if (!config) {
+function updateUI(configs) {
+	if (!configs || configs.length === 0) {
 		updateUINoConfig()
 		return
 	}
 
-	const status = config.status
 	const $statusDiv = $('#worker-status')
 	const $indicator = $('#status-indicator')
 	const $statusText = $('#status-text')
 	const $workerInfo = $('#worker-info')
 
+	// Determine global status (running if at least one is running)
+	const hasRunning = configs.some(c => c.status === 'running')
+	const hasPaused = configs.some(c => c.status === 'paused')
+	const globalStatus = hasRunning ? 'running' : (hasPaused ? 'paused' : 'stopped')
+
 	// Update status display
-	$statusDiv.removeClass('running stopped paused').addClass(status)
-	$indicator.removeClass('running stopped paused').addClass(status)
+	$statusDiv.removeClass('running stopped paused').addClass(globalStatus)
+	$indicator.removeClass('running stopped paused').addClass(globalStatus)
 
 	// Update status text
-	let statusLabel = status.charAt(0).toUpperCase() + status.slice(1)
-	$statusText.text('Worker Status: ' + statusLabel)
+	$statusText.text('Worker Status: ' + configs.length + ' active event(s)')
 
-	// Update worker info
-	let infoHtml = '<strong>Event:</strong> ' + config.id_event + '<br>'
-	infoHtml += '<strong>Date:</strong> ' + config.date_event + '<br>'
-	infoHtml += '<strong>Current Time:</strong> ' + (config.current_simulated_time || config.hour_event) + ' (Initial: ' + config.hour_event_initial + ')<br>'
-	infoHtml += '<strong>Warm-up:</strong> ' + config.offset_event + ' minutes<br>'
-	infoHtml += '<strong>Pitches:</strong> ' + config.pitch_event + '<br>'
-	infoHtml += '<strong>Refresh delay:</strong> ' + config.delay_event + ' seconds<br>'
-	infoHtml += '<strong>Executions:</strong> ' + config.execution_count + '<br>'
+	// Build event list HTML
+	let infoHtml = '<div style="margin-top: 15px;">'
 
-	if (config.last_execution && config.seconds_since_last_execution !== null) {
-		let timeAgo = config.seconds_since_last_execution
-		if (timeAgo < 60) {
-			infoHtml += '<strong>Last execution:</strong> ' + timeAgo + 's ago<br>'
-		} else {
-			infoHtml += '<strong>Last execution:</strong> ' + Math.floor(timeAgo / 60) + 'm ' + (timeAgo % 60) + 's ago<br>'
+	configs.forEach((config, index) => {
+		const statusClass = config.status === 'running' ? 'success' : (config.status === 'paused' ? 'warning' : 'default')
+		const statusBadge = '<span class="label label-' + statusClass + '">' + config.status + '</span>'
+
+		infoHtml += '<div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 4px;">'
+		infoHtml += '<h5><strong>Event #' + config.id_event + '</strong> ' + statusBadge + '</h5>'
+		infoHtml += '<strong>Date:</strong> ' + config.date_event + '<br>'
+		infoHtml += '<strong>Current Time:</strong> ' + (config.current_simulated_time || config.hour_event) + ' (Initial: ' + config.hour_event_initial + ')<br>'
+		infoHtml += '<strong>Pitches:</strong> ' + config.pitch_event + ' | <strong>Delay:</strong> ' + config.delay_event + 's<br>'
+		infoHtml += '<strong>Executions:</strong> ' + config.execution_count
+
+		if (config.last_execution && config.seconds_since_last_execution !== null) {
+			let timeAgo = config.seconds_since_last_execution
+			if (timeAgo < 60) {
+				infoHtml += ' | <strong>Last:</strong> ' + timeAgo + 's ago'
+			} else {
+				infoHtml += ' | <strong>Last:</strong> ' + Math.floor(timeAgo / 60) + 'm ago'
+			}
 		}
-		if (!config.is_healthy && status === 'running') {
-			infoHtml += '<span style="color: red;">⚠ Warning: Worker may not be running properly</span><br>'
-		}
-	}
 
-	if (config.error_message) {
-		infoHtml += '<span style="color: red;"><strong>Error:</strong> ' + config.error_message + '</span><br>'
-	}
+		infoHtml += '<br>'
+
+		// Individual event controls
+		infoHtml += '<div style="margin-top: 5px;">'
+		if (config.status === 'running') {
+			infoHtml += '<button class="btn btn-xs btn-warning" onclick="pauseEvent(' + config.id_event + ')">⏸ Pause</button> '
+			infoHtml += '<button class="btn btn-xs btn-danger" onclick="stopEvent(' + config.id_event + ')">⏹ Stop</button>'
+		} else if (config.status === 'paused') {
+			infoHtml += '<button class="btn btn-xs btn-info" onclick="resumeEvent(' + config.id_event + ')">▶ Resume</button> '
+			infoHtml += '<button class="btn btn-xs btn-danger" onclick="stopEvent(' + config.id_event + ')">⏹ Stop</button>'
+		}
+		infoHtml += '</div>'
+
+		infoHtml += '</div>'
+	})
+
+	infoHtml += '</div>'
 
 	$workerInfo.html(infoHtml)
 
-	// Update button visibility
-	if (status === 'running') {
-		$('#btn-start-worker').hide()
-		$('#btn-pause-worker').show()
-		$('#btn-resume-worker').hide()
-		$('#btn-stop-worker').show()
-		// Load configuration into form
-		loadConfigToForm(config)
-		// Start monitoring if not already started
-		if (!monitoringInterval) {
-			monitoringInterval = setInterval(refreshMonitoring, config.delay_event * 1000)
-			refreshMonitoring() // Immediate refresh
-		}
-	} else if (status === 'paused') {
-		$('#btn-start-worker').hide()
-		$('#btn-pause-worker').hide()
-		$('#btn-resume-worker').show()
-		$('#btn-stop-worker').show()
-		// Stop monitoring
-		if (monitoringInterval) {
-			clearInterval(monitoringInterval)
-			monitoringInterval = null
-		}
+	// Update main buttons
+	$('#btn-start-worker').show()
+	if (hasRunning || hasPaused) {
+		$('#btn-stop-worker').show().text('⏹ Stop All')
 	} else {
-		// stopped
-		$('#btn-start-worker').show()
-		$('#btn-pause-worker').hide()
-		$('#btn-resume-worker').hide()
 		$('#btn-stop-worker').hide()
-		// Stop monitoring
-		if (monitoringInterval) {
-			clearInterval(monitoringInterval)
-			monitoringInterval = null
-		}
+	}
+	$('#btn-pause-worker').hide()
+	$('#btn-resume-worker').hide()
+
+	// Start monitoring if at least one event is running
+	if (hasRunning && !monitoringInterval) {
+		const minDelay = Math.min(...configs.map(c => c.delay_event))
+		monitoringInterval = setInterval(refreshMonitoring, minDelay * 1000)
+		refreshMonitoring()
+	} else if (!hasRunning && monitoringInterval) {
+		clearInterval(monitoringInterval)
+		monitoringInterval = null
 	}
 }
 
