@@ -111,22 +111,13 @@ while ($running) {
             // Combiner date et heure pour strtotime
             $initialTime = strtotime($config['date_event'] . ' ' . $config['hour_event_initial']);
             $lastConfigId = $config['id'];
-            logMessage("Worker configuration loaded:");
-            logMessage("  Event ID: " . $config['id_event']);
-            logMessage("  Date: " . $config['date_event']);
-            logMessage("  Initial hour: " . $config['hour_event_initial']);
-            logMessage("  Offset: " . $config['offset_event'] . " minutes");
-            logMessage("  Pitches: " . $config['pitch_event']);
-            logMessage("  Refresh delay: " . $config['delay_event'] . " seconds");
-            logMessage("  Initial timestamp: " . date('Y-m-d H:i:s', $initialTime));
+            logMessage("Worker started for Event #{$config['id_event']} - Date: {$config['date_event']} - Initial: {$config['hour_event_initial']}");
         }
 
         // Calculer l'heure actuelle simulée
         $elapsedSeconds = microtime(true) - $startTime;
         $currentSimulatedTime = $initialTime + $elapsedSeconds;
         $currentHourEvent = date('H:i', $currentSimulatedTime);
-
-        logMessage("Processing event {$config['id_event']} - Current time: {$currentHourEvent}");
 
         // Ajouter l'offset (warm-up)
         $time = utyHHMM_To_MM($currentHourEvent);
@@ -141,14 +132,11 @@ while ($running) {
             }
         }
 
-        logMessage("Generating cache for " . count($arrayPitchs) . " pitches...");
-
         // Générer les caches
         try {
             // CacheMatch::__construct() requires parameter passed by reference
             $cacheParams = ['cache' => '1'];
             $cache = new CacheMatch($cacheParams);
-            logMessage("CacheMatch object created");
 
             $arrayResult = $cache->Event(
                 $db,
@@ -158,34 +146,17 @@ while ($running) {
                 $currentHourEvent,
                 $arrayPitchs
             );
-
-            logMessage("Cache generation completed - " . count($arrayResult) . " results returned");
         } catch (Exception $cacheException) {
             logMessage("ERROR in cache generation: " . $cacheException->getMessage());
-            logMessage("Stack trace: " . $cacheException->getTraceAsString());
             throw $cacheException; // Re-throw pour être capturé par le catch externe
         }
 
         // Envoyer un heartbeat à l'API
         sendHeartbeat($config['id'], null);
 
-        logMessage("Heartbeat sent");
-
-        // Log de l'exécution
-        $executionInfo = sprintf(
-            "Cache generated - Count: %d - Time: %s (Work: %s) - Pitches: %d",
-            $config['execution_count'] + 1,
-            $currentHourEvent,
-            $hourEventWork,
-            count($arrayResult)
-        );
-        logMessage($executionInfo);
-
-        // Log détaillé des terrains
-        foreach ($arrayResult as $pitch) {
-            $gameInfo = $pitch['game'] ? "Game #{$pitch['num']} (ID: {$pitch['game']})" : "Waiting";
-            $nextInfo = $pitch['next']['id'] ? "Next #{$pitch['next']['num']} (ID: {$pitch['next']['id']})" : "No next";
-            logMessage("  Pitch {$pitch['pitch']}: {$gameInfo} | {$nextInfo}");
+        // Log résumé (seulement toutes les 10 exécutions pour éviter trop de logs)
+        if ($config['execution_count'] % 10 == 0) {
+            logMessage("Event #{$config['id_event']} - Execution #{$config['execution_count']} - Time: {$currentHourEvent}");
         }
 
         // Attendre le délai configuré

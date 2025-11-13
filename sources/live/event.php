@@ -5,11 +5,16 @@ include_once('page.php');
 include_once('../commun/MyTools.php');
 
 if(!isset($_SESSION)) {
-	session_start(); 
+	session_start();
 }
 
-class Event extends MyPage
+class Event extends MyPageSecure
 {
+    function __construct($arrayParam)
+    {
+        parent::__construct($arrayParam, 1); // Niveau 1 = authentification requise
+    }
+
     function Header()
     {
     }

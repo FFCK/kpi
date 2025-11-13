@@ -225,14 +225,19 @@ function updateUI(config) {
 	// Update worker info
 	let infoHtml = '<strong>Event:</strong> ' + config.id_event + '<br>'
 	infoHtml += '<strong>Date:</strong> ' + config.date_event + '<br>'
-	infoHtml += '<strong>Time:</strong> ' + config.hour_event + ' (Initial: ' + config.hour_event_initial + ')<br>'
+	infoHtml += '<strong>Current Time:</strong> ' + (config.current_simulated_time || config.hour_event) + ' (Initial: ' + config.hour_event_initial + ')<br>'
 	infoHtml += '<strong>Warm-up:</strong> ' + config.offset_event + ' minutes<br>'
 	infoHtml += '<strong>Pitches:</strong> ' + config.pitch_event + '<br>'
 	infoHtml += '<strong>Refresh delay:</strong> ' + config.delay_event + ' seconds<br>'
 	infoHtml += '<strong>Executions:</strong> ' + config.execution_count + '<br>'
 
-	if (config.last_execution) {
-		infoHtml += '<strong>Last execution:</strong> ' + config.last_execution + ' (' + config.seconds_since_last_execution + 's ago)<br>'
+	if (config.last_execution && config.seconds_since_last_execution !== null) {
+		let timeAgo = config.seconds_since_last_execution
+		if (timeAgo < 60) {
+			infoHtml += '<strong>Last execution:</strong> ' + timeAgo + 's ago<br>'
+		} else {
+			infoHtml += '<strong>Last execution:</strong> ' + Math.floor(timeAgo / 60) + 'm ' + (timeAgo % 60) + 's ago<br>'
+		}
 		if (!config.is_healthy && status === 'running') {
 			infoHtml += '<span style="color: red;">⚠ Warning: Worker may not be running properly</span><br>'
 		}

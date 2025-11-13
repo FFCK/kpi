@@ -238,10 +238,21 @@ function getWorkerConfig($db)
     $config['is_paused'] = $config['status'] === 'paused';
     $config['is_stopped'] = $config['status'] === 'stopped';
 
-    // Calculer le temps depuis la dernière exécution
+    // Calculer l'heure actuelle simulée (si running)
+    if ($config['status'] === 'running' && $config['created_at']) {
+        $startTime = strtotime($config['created_at']);
+        $initialTime = strtotime($config['date_event'] . ' ' . $config['hour_event_initial']);
+        $elapsedSeconds = time() - $startTime;
+        $currentSimulatedTime = $initialTime + $elapsedSeconds;
+        $config['current_simulated_time'] = date('H:i:s', $currentSimulatedTime);
+    } else {
+        $config['current_simulated_time'] = $config['hour_event'];
+    }
+
+    // Calculer le temps depuis la dernière exécution (en UTC)
     if ($config['last_execution']) {
-        $last = new DateTime($config['last_execution']);
-        $now = new DateTime();
+        $last = new DateTime($config['last_execution'], new DateTimeZone('UTC'));
+        $now = new DateTime('now', new DateTimeZone('UTC'));
         $diff = $now->getTimestamp() - $last->getTimestamp();
         $config['seconds_since_last_execution'] = $diff;
         $config['is_healthy'] = $diff < ($config['delay_event'] * 3); // Considéré sain si < 3x le délai
