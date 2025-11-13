@@ -20,9 +20,26 @@ if (php_sapi_name() !== 'cli') {
 
 // Configuration
 error_reporting(E_ALL);
-ini_set('display_errors', 0); // Pas d'affichage direct, on utilise les logs
+ini_set('display_errors', 1); // Afficher les erreurs dans les logs
+ini_set('log_errors', 1);
 ini_set('max_execution_time', 0); // Pas de limite de temps
 ini_set('memory_limit', '256M');
+
+// Gestionnaire d'erreurs personnalisé
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    $msg = "[" . date('Y-m-d H:i:s') . "] PHP Error [$errno]: $errstr in $errfile:$errline\n";
+    error_log($msg, 3, __DIR__ . '/logs/event_worker.log');
+    return false; // Laisser le gestionnaire par défaut s'exécuter aussi
+});
+
+// Gestionnaire d'erreurs fatales
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        $msg = "[" . date('Y-m-d H:i:s') . "] FATAL ERROR: {$error['message']} in {$error['file']}:{$error['line']}\n";
+        error_log($msg, 3, __DIR__ . '/logs/event_worker.log');
+    }
+});
 
 // Chemin du script
 $scriptPath = __DIR__;
@@ -127,17 +144,25 @@ while ($running) {
         logMessage("Generating cache for " . count($arrayPitchs) . " pitches...");
 
         // Générer les caches
-        $cache = new CacheMatch(['cache' => '1']);
-        $arrayResult = $cache->Event(
-            $db,
-            $config['id_event'],
-            $config['date_event'],
-            $hourEventWork,
-            $currentHourEvent,
-            $arrayPitchs
-        );
+        try {
+            $cache = new CacheMatch(['cache' => '1']);
+            logMessage("CacheMatch object created");
 
-        logMessage("Cache generation completed");
+            $arrayResult = $cache->Event(
+                $db,
+                $config['id_event'],
+                $config['date_event'],
+                $hourEventWork,
+                $currentHourEvent,
+                $arrayPitchs
+            );
+
+            logMessage("Cache generation completed - " . count($arrayResult) . " results returned");
+        } catch (Exception $cacheException) {
+            logMessage("ERROR in cache generation: " . $cacheException->getMessage());
+            logMessage("Stack trace: " . $cacheException->getTraceAsString());
+            throw $cacheException; // Re-throw pour être capturé par le catch externe
+        }
 
         // Envoyer un heartbeat à l'API
         sendHeartbeat($config['id'], null);
