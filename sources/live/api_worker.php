@@ -253,23 +253,13 @@ function getWorkerConfig($db)
     return $config;
 }
 
-function return_200($data)
-{
-    http_response_code(200);
-    echo json_encode($data);
-    exit;
-}
-
-function return_400($data)
-{
-    http_response_code(400);
-    echo json_encode($data);
-    exit;
-}
-
+/**
+ * Helper function for 500 errors (not in MyTools.php)
+ */
 function return_500($data)
 {
     http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
     echo json_encode($data);
     exit;
 }
