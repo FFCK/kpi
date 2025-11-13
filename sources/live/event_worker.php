@@ -145,7 +145,9 @@ while ($running) {
 
         // Générer les caches
         try {
-            $cache = new CacheMatch(['cache' => '1']);
+            // CacheMatch::__construct() requires parameter passed by reference
+            $cacheParams = ['cache' => '1'];
+            $cache = new CacheMatch($cacheParams);
             logMessage("CacheMatch object created");
 
             $arrayResult = $cache->Event(
