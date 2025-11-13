@@ -319,7 +319,7 @@ event_worker_start: ## Démarre le worker d'événements en arrière-plan
 
 event_worker_stop: ## Arrête le worker d'événements
 	@echo "🛑 Arrêt du worker d'événements..."
-	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "pkill -f 'event_worker.php' || true"
+	-@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "pkill -f event_worker.php" 2>/dev/null || true
 	@echo "✅ Worker arrêté"
 	@echo "💡 Note: Vous pouvez aussi arrêter via l'interface web (sources/live/event.php)"
 
