@@ -308,7 +308,10 @@ db_bash: ## Ouvre un shell dans le container MySQL
 ## EVENT WORKER - Génération automatique des caches d'événements
 event_worker_start: ## Démarre le worker d'événements en arrière-plan
 	@echo "🚀 Démarrage du worker d'événements..."
-	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "php /var/www/html/live/event_worker.php > /var/www/html/live/logs/event_worker.log 2>&1 &"
+	@echo "📁 Création du dossier de logs si nécessaire..."
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "mkdir -p /var/www/html/live/logs && chmod 755 /var/www/html/live/logs"
+	@echo "🔧 Lancement du processus worker..."
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "nohup php /var/www/html/live/event_worker.php > /var/www/html/live/logs/event_worker.log 2>&1 &"
 	@sleep 2
 	@echo "✅ Worker démarré en arrière-plan"
 	@echo "💡 Vérifiez le statut avec: make event_worker_status"
