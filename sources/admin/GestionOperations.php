@@ -20,8 +20,8 @@ class GestionOperations extends MyPageSecure
 		// Chargement des Evenements
 		$arrayEvenement = array();
 
-		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication, app 
-			FROM kp_evenement 
+		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication, app
+			FROM kp_evenement
 			ORDER BY Date_debut DESC, Libelle DESC ";
 
 		$arrayEvenement = array();
@@ -46,6 +46,526 @@ class GestionOperations extends MyPageSecure
 		}
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 
+		// Chargement des Saisons pour gestion des saisons
+		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin
+			FROM kp_saison
+			WHERE Code > '1900'
+			ORDER BY Code DESC ";
+
+		$arraySaison = array();
+		foreach ($myBdd->pdo->query($sql) as $row) {
+			if ($row['Etat'] == 'A') {
+				$saisonActive = $row['Code'];
+			}
+			if (utyGetSession('lang') == 'en') {
+				$row['Nat_debut'] = utyDateUsToFr($row['Nat_debut']);
+				$row['Nat_fin'] = utyDateUsToFr($row['Nat_fin']);
+				$row['Inter_debut'] = utyDateUsToFr($row['Inter_debut']);
+				$row['Inter_fin'] = utyDateUsToFr($row['Inter_fin']);
+			}
+			array_push(
+				$arraySaison,
+				array(
+					'Code' => $row['Code'], 'Etat' => $row['Etat'],
+					'Nat_debut' => $row['Nat_debut'],
+					'Nat_fin' => $row['Nat_fin'],
+					'Inter_debut' => $row['Inter_debut'],
+					'Inter_fin' => $row['Inter_fin']
+				)
+			);
+		}
+
+		$this->m_tpl->assign('arraySaison', $arraySaison);
+		$this->m_tpl->assign('saisonActive', $saisonActive);
+
+		$AuthSaison = utyGetSession('AuthSaison', '');
+		$this->m_tpl->assign('AuthSaison', $AuthSaison);
+
+	}
+
+	function SetActiveSaison()
+	{
+		$codeSaison = utyGetPost('ParamCmd', '');
+		if (strlen($codeSaison) == 0)
+			return;
+
+		$myBdd = $this->myBdd;
+
+		$sql  = "UPDATE kp_saison
+			SET Etat = 'I'
+			WHERE Etat = 'A' ";
+		$myBdd->pdo->exec($sql);
+
+		$sql = "UPDATE kp_saison
+			SET Etat = 'A'
+			WHERE Code = ? ";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($codeSaison));
+
+		$myBdd->utyJournal('Change Saison Active', $codeSaison);
+	}
+
+	function AddSaison()
+	{
+		$newSaison = utyGetPost('newSaison', '');
+		$newSaisonDN = utyDateFrToUs(utyGetPost('newSaisonDN', ''));
+		$newSaisonFN = utyDateFrToUs(utyGetPost('newSaisonFN', ''));
+		$newSaisonDI = utyDateFrToUs(utyGetPost('newSaisonDI', ''));
+		$newSaisonFI = utyDateFrToUs(utyGetPost('newSaisonFI', ''));
+
+		if (strlen($newSaison) == 0)
+			return;
+
+		$myBdd = $this->myBdd;
+
+		$sql  = "INSERT INTO kp_saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin)
+			VALUES (?, ?, ?, ?, ?, ?) ";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array(
+			$newSaison, 'I', $newSaisonDN, $newSaisonFN, $newSaisonDI, $newSaisonFI
+		));
+
+		$myBdd->utyJournal('Ajout Saison', $newSaison);
+	}
+
+	function FusionJoueurs()
+	{
+		$myBdd = $this->myBdd;
+		$numFusionSource = utyGetPost('numFusionSource', 0);
+		$numFusionCible = utyGetPost('numFusionCible', 0);
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			// buts et cartons
+			$sql  = "UPDATE kp_match_detail
+				SET Competiteur = ?
+				WHERE Competiteur = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// compos matchs
+			$sql  = "UPDATE kp_match_joueur
+				SET Matric = ?
+				WHERE Matric = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// feuilles de présence
+			$sql = "UPDATE kp_competition_equipe_joueur cej,
+                kp_licence lc
+                SET cej.Matric = :cible, cej.Nom = lc.Nom,
+                    cej.Prenom = lc.Prenom, cej.Sexe = lc.Sexe
+                WHERE cej.Matric = :source
+                AND lc.Matric = :cible2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute([
+				':cible' => $numFusionCible,
+				':cible2' => $numFusionCible,
+				':source' => $numFusionSource
+			]);
+
+			// arbitre principal
+			$sql  = "UPDATE kp_match
+				SET Matric_arbitre_principal = ?
+				WHERE Matric_arbitre_principal = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// arbitre secondaire
+			$sql  = "UPDATE kp_match
+				SET Matric_arbitre_secondaire = ?
+				WHERE Matric_arbitre_secondaire = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// Secretaire
+			$sql  = "UPDATE kp_match
+				SET Secretaire = REPLACE(Secretaire, :source, :cible)
+				WHERE Secretaire LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Chronometre
+			$sql  = "UPDATE kp_match
+				SET Chronometre = REPLACE(Chronometre, :source, :cible)
+				WHERE Chronometre LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Timeshoot
+			$sql  = "UPDATE kp_match
+				SET Timeshoot = REPLACE(Timeshoot, :source, :cible)
+				WHERE Timeshoot LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Ligne1
+			$sql  = "UPDATE kp_match
+				SET Ligne1 = REPLACE(Ligne1, :source, :cible)
+				WHERE Ligne1 LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Ligne2
+			$sql  = "UPDATE kp_match
+				SET Ligne2 = REPLACE(Ligne2, :source, :cible)
+				WHERE Ligne2 LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// TODO: changer noms (et matric) des lignes, arbitres, officiels...
+			// suppression
+			$sql  = "DELETE FROM kp_licence
+				WHERE Matric = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Fusion Joueurs" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numFusionSource . ' => ' . $numFusionCible);
+
+		return ('Joueurs fusionnés');
+	}
+
+	function RenomEquipe()
+	{
+		$myBdd = $this->myBdd;
+		$numRenomSource = utyGetPost('numRenomSource', 0);
+		$RenomSource = utyGetPost('RenomSource', 0);
+		$RenomCible = utyGetPost('RenomCible', 0);
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "UPDATE kp_equipe
+				SET Libelle = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($RenomCible, $numRenomSource));
+
+			$sql  = "UPDATE kp_competition_equipe
+				SET Libelle = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($RenomCible, $numRenomSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Rename Equipe, $RenomSource => $RenomCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $RenomSource . ' => ' . $RenomCible);
+		return ('Equipe renommée !');
+	}
+
+	function FusionEquipes()
+	{
+		$myBdd = $this->myBdd;
+		$numFusionEquipeSource = utyGetPost('numFusionEquipeSource', 0);
+		$numFusionEquipeCible = utyGetPost('numFusionEquipeCible', 0);
+		$FusionEquipeSource = utyGetPost('FusionEquipeSource', '');
+		$FusionEquipeCible = utyGetPost('FusionEquipeCible', '');
+		if ($numFusionEquipeSource == 0 or $numFusionEquipeCible == 0 or $FusionEquipeSource == '' or $FusionEquipeCible == '') {
+			return;
+		}
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "UPDATE kp_competition_equipe
+				SET `Numero` = ?,
+				Libelle = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionEquipeCible, $FusionEquipeCible, $numFusionEquipeSource));
+
+
+			$sql = "DELETE FROM kp_equipe
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionEquipeSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Fusion Equipes, $FusionEquipeSource => $FusionEquipeCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $FusionEquipeSource . ' => ' . $FusionEquipeCible);
+		return ('Equipes fusionnées');
+	}
+
+	function DeplaceEquipe()
+	{
+		$myBdd = $this->myBdd;
+		$numDeplaceEquipeSource = utyGetPost('numDeplaceEquipeSource', 0);
+		$numDeplaceEquipeCible = utyGetPost('numDeplaceEquipeCible', 0);
+		if ($numDeplaceEquipeSource === 0) {
+			return "Equipe source vide : $numDeplaceEquipeSource";
+		} elseif ($numDeplaceEquipeCible === 0) {
+			return "Club cible vide : $numDeplaceEquipeCible";
+		}
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "UPDATE kp_competition_equipe
+				SET Code_club = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+
+			$sql  = "UPDATE kp_equipe
+				SET Code_club = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Déplacement Equipe, $numDeplaceEquipeSource => $numDeplaceEquipeCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible);
+
+		return $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible;
+	}
+
+	function ChangeCode()
+	{
+		$myBdd = $this->myBdd;
+		$changeCodeSource = utyGetPost('changeCodeSource', '');
+		$changeCodeCible = strtoupper(utyGetPost('changeCodeCible', ''));
+		$codeSaison = $myBdd->GetActiveSaison();
+		$changeCodeAllSeason = utyGetPost('changeCodeAllSeason');
+		$changeCodeExists = utyGetPost('changeCodeExists');
+
+		if (
+			strlen($changeCodeSource) < 2 ||
+			strlen($changeCodeCible) < 2 ||
+			$changeCodeSource === $changeCodeCible
+		) {
+			return 'Codes incorrects : ' . $changeCodeSource . ' ' . $changeCodeCible . ' ' . $codeSaison;
+		}
+
+		if ($changeCodeAllSeason === 'All') {
+			$sql = "SELECT * FROM kp_competition
+				WHERE Code = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($changeCodeSource));
+			if ($stmt->rowCount() < 1) {
+				return 'Code source incorrect !';
+			}
+
+			if ($changeCodeExists !== 'Exists') {
+				$sql = "SELECT * FROM kp_competition
+					WHERE Code = ?; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array($changeCodeCible));
+				if ($stmt->rowCount() >= 1) {
+					return 'Code cible incorrect !';
+				}
+			}
+
+			try {
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=0;");
+
+				$sql = "UPDATE kp_competition
+					SET Code = :cible
+					WHERE Code = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_competition_equipe
+					SET Code_compet = :cible
+					WHERE Code_compet = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_journee
+					SET Code_competition = :cible
+					WHERE Code_competition = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_user
+					SET Filtre_competition = REPLACE(Filtre_competition, :source, :cible),
+						Filtre_competition_sql = REPLACE(Filtre_competition_sql, :source2, :cible2)
+					WHERE Filtre_competition LIKE :source3 ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => '|' . $changeCodeSource . '|',
+					':cible' => '|' . $changeCodeCible . '|',
+					':source2' => "'" . $changeCodeSource . "'",
+					':cible2' => "'" . $changeCodeCible . "'",
+					':source3' => '%|' . $changeCodeSource . '|%',
+				));
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=1;");
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+
+			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, 'All seasons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+			return ('Code changé toutes saisons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+
+		} else {
+
+			$sql = "SELECT * FROM kp_competition
+				WHERE Code = ?
+				AND Code_saison = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($changeCodeSource, $codeSaison));
+			if ($stmt->rowCount() != 1) {
+				return 'Code source incorrect !';
+			}
+
+			$sql = "SELECT * FROM kp_competition
+				WHERE Code = ?
+				AND Code_saison = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($changeCodeCible, $codeSaison));
+			if ($stmt->rowCount() == 1) {
+				return 'Code cible incorrect !';
+			}
+
+			try {
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=0;");
+
+				$sql = "UPDATE kp_competition
+					SET Code = :cible
+					WHERE Code = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_competition_equipe
+					SET Code_compet = :cible
+					WHERE Code_compet = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_journee
+					SET Code_competition = :cible
+					WHERE Code_competition = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_user
+					SET Filtre_competition = REPLACE(Filtre_competition, :source, :cible),
+						Filtre_competition_sql = REPLACE(Filtre_competition_sql, :source2, :cible2)
+					WHERE Filtre_competition LIKE :source3
+					AND (
+						Filtre_saison LIKE :saison
+						OR
+						Filtre_saison = ''
+					) ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => '|' . $changeCodeSource . '|',
+					':cible' => '|' . $changeCodeCible . '|',
+					':source2' => "'" . $changeCodeSource . "'",
+					':cible2' => "'" . $changeCodeCible . "'",
+					':source3' => '%|' . $changeCodeSource . '|%',
+					':saison' => '%|' . $codeSaison . '|%'
+				));
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=1;");
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+
+			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, $changeCodeSource . ' => ' . $changeCodeCible);
+			return ('Code changé saison ' . $codeSaison . ' : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+		}
+	}
+
+	function ChangeAuthSaison()
+	{
+		$AuthSaison = utyGetSession('AuthSaison');
+		if ($AuthSaison == 'O')
+			$AuthSaison = '';
+		else
+			$AuthSaison = 'O';
+		$_SESSION['AuthSaison'] = $AuthSaison;
 	}
 
 	function ExportEvt($idEvenement) {
@@ -692,6 +1212,22 @@ class GestionOperations extends MyPageSecure
 			if ($Cmd == 'ImportEvt') {
 				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->ImportEvt($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 			}
+
+			if ($Cmd == 'ActiveSaison') ($_SESSION['Profile'] <= 2) ? $this->SetActiveSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'AddSaison') ($_SESSION['Profile'] <= 2) ? $this->AddSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'FusionJoueurs') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'RenomEquipe') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->RenomEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'FusionEquipes') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionEquipes() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'DeplaceEquipe') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->DeplaceEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'ChangeCode') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->ChangeCode() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'ChangeAuthSaison') ($_SESSION['Profile'] <= 2) ? $this->ChangeAuthSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($alertMessage == '') {
 				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
