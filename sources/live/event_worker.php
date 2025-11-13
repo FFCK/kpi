@@ -110,7 +110,7 @@ while ($running) {
             // Calculer l'heure actuelle simulée
             $elapsedSeconds = microtime(true) - $state['startTime'];
             $currentSimulatedTime = $state['initialTime'] + $elapsedSeconds;
-            $currentHourEvent = date('H:i', $currentSimulatedTime);
+            $currentHourEvent = date('H:i', (int)$currentSimulatedTime);
 
             // Ajouter l'offset (warm-up)
             $time = utyHHMM_To_MM($currentHourEvent);
