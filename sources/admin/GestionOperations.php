@@ -1390,7 +1390,7 @@ class GestionOperations extends MyPageSecure
 				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
 			],
 			'logo_club' => [
-				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KPI/logo/',
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KIP/logo/',
 			],
 			'logo_nation' => [
 				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/Nations/',
