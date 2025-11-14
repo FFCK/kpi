@@ -5,9 +5,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 include_once('../commun/MyConfig.php');
-include_once('../connector/replace_evenement.php');
-
-include('pclzip.lib.php');
 
 // Importation du Fichier PCE ...
 class ImportPCE extends MyPageSecure
@@ -19,38 +16,10 @@ class ImportPCE extends MyPageSecure
 		parent::__construct(6);
 		$myBdd = new MyBdd();
 
-		$jsondata = '';
-		if (utyGetPost('json_data', false))
-			$jsondata = stripcslashes($_POST['json_data']);
-
-		$this->SetTemplate("MAJ Licenciés / Mode Local", "Import", false);
+		$this->SetTemplate("Import PCE", "Import", false);
 		$arrayinfo = array();
 
 		switch (true) {
-			case isset($_POST['importPCE']):
-				$myBdd->ImportPCE2("licences.pce");
-				$arrayinfo = $myBdd->m_arrayinfo;
-				break;
-			case isset($_POST['Control']) && $_POST['Control'] == 'importPCE2':
-				$myBdd->ImportPCE2();
-				$arrayinfo = $myBdd->m_arrayinfo;
-				break;
-			case isset($_POST['importCalendrier']) && $_SESSION['Profile'] <= 2:
-				$myBdd->ImportCalendrier("calendrier.csv");
-				$arrayinfo = $myBdd->m_arrayinfo;
-				break;
-			case isset($_POST['uploadLicenceZip']):
-				$this->m_arrayinfo = array();
-				array_push($this->m_arrayinfo, 'Upload du fichier ...');
-				$this->uploadLicenceZip();
-				$arrayinfo = $this->m_arrayinfo;
-				break;
-			case isset($_POST['uploadCalendrierCsv']):
-				$this->m_arrayinfo = array();
-				array_push($this->m_arrayinfo, 'Upload du fichier ...');
-				$this->uploadCalendrierCsv();
-				$arrayinfo = $this->m_arrayinfo;
-				break;
 			case isset($_POST['testPDF']):
 				header('Location: http://' . $_SERVER['HTTP_HOST'] . MAIN_DIRECTORY . '/lib/fpdf/marque1.php');
 				exit;
@@ -67,25 +36,9 @@ class ImportPCE extends MyPageSecure
 		}
 		$this->m_tpl->assign('arrayinfo', $arrayinfo);
 
-		$msg = '';
-		if (strlen($jsondata) > 0) {
-			$jsondata = str_replace("\\\"", "\"", $jsondata);
-			if (strstr($_SERVER['DOCUMENT_ROOT'], 'wamp') == false)
-				$msg .= "*** IMPORT VERS KPI SERVEUR POLOWEB4 *** <br>";
-			else
-				$msg .= "*** EXPORT VERS MODE LOCAL **** <br>";
-			$msg .= Replace_Evenement($jsondata);
-		}
-		$this->m_tpl->assign('msg_json', $msg);
-
-		if (PRODUCTION)
-			$this->m_tpl->assign('production', 'P');
-		else
-			$this->m_tpl->assign('production', 'W');
-
 		$arrayGroupes = array();
-		$sql = "SELECT * 
-			FROM kp_groupe 
+		$sql = "SELECT *
+			FROM kp_groupe
 			ORDER BY id ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute();
@@ -94,106 +47,10 @@ class ImportPCE extends MyPageSecure
 		}
 		$this->m_tpl->assign('arrayGroupes', $arrayGroupes);
 
+		// Redirect notice for moved features
+		$this->m_tpl->assign('redirect_notice', 'Les fonctionnalités "Mise à jour Licenciés", "Mise à jour Calendrier fédéral" et "Import vers mode local" ont été déplacées vers la page <a href="GestionOperations.php">Gestion des Opérations</a>.');
+
 		$this->DisplayTemplate('importPCE');
-	}
-
-	function uploadLicenceZip()
-	{
-		//Variables
-		$dossier = $_SERVER['DOCUMENT_ROOT'] . '/PCE/';
-		$fichier = basename($_FILES['licencies']['name']);
-		$taille_maxi = 2000000; //en octets
-		$taille = filesize($_FILES['licencies']['tmp_name']);
-		$extensions = array('.zip');
-		$extension = strrchr($_FILES['licencies']['name'], '.');
-
-		//Vérifications de sécurité...
-		if (!in_array($extension, $extensions)) { //Si l'extension n'est pas dans le tableau
-			$erreur = 'Erreur 1 !';
-		}
-		if ($taille > $taille_maxi) { // fichier trop gros
-			$erreur = 'Erreur  2 !';
-		}
-		if (!isset($erreur)) { //S'il n'y a pas d'erreur, on upload
-			if (move_uploaded_file($_FILES['licencies']['tmp_name'], $dossier . $fichier)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
-
-				array_push($this->m_arrayinfo, 'Upload effectué avec succès !');
-			} else { //Sinon (la fonction renvoie FALSE).
-				die('Echec de l\'upload ! ' . $_FILES['licencies']['tmp_name']);
-			}
-		} else {
-			die($erreur);
-		}
-
-		// FONCTION DEZIP
-		$zip = new PclZip($dossier . $fichier);
-
-		// contrôle du contenu de l'archive
-		if (($list = $zip->listContent()) == 0) {
-			unlink($dossier . $fichier); //On nettoie
-			die("Error : " . $zip->errorInfo(true));
-		}
-		// contrôle du nombre de fichiers contenus
-		if (sizeof($list) > 1) { // plusieurs fichiers dans l'archive !
-			unlink($dossier . $fichier); //On nettoie
-			die("Erreur 3 !");
-		}
-		// contrôle du nom de fichier
-		$dezip_name = explode('.', $list[0]['filename']);
-		if ($dezip_name[1] <> "pce") { // mauvaise extension
-			unlink($dossier . $fichier); //On nettoie
-			die("Erreur 4 !");
-		}
-		if (!preg_match("/^licences20/", $dezip_name[0])) { // mauvais nom de fichier
-			unlink($dossier . $fichier); //On nettoie
-			die("Erreur 5 !");
-		}
-
-		// dezip dans le même dossier
-		if ($zip->extract(PCLZIP_OPT_PATH, $dossier) == 0) {
-			unlink($dossier . $fichier); //On nettoie
-			die("Error : " . $zip->errorInfo(true));
-		} else {
-			unlink($dossier . $fichier); //On nettoie (le fichier zip est devenu inutile)
-			array_push($this->m_arrayinfo, 'Dezip effectué avec succès !');
-		}
-
-		rename($dossier . $list[0]['filename'], $dossier . "licences.pce"); // on renomme pour traitement suivant
-		$myBdd = new MyBdd();
-		$myBdd->ImportPCE2("licences.pce");
-
-		$this->m_arrayinfo = array_merge($this->m_arrayinfo, $myBdd->m_arrayinfo);
-	}
-
-	function uploadCalendrierCsv()
-	{
-		//Variables
-		$dossier = $_SERVER['DOCUMENT_ROOT'] . '/PCE/';
-		$fichier = basename($_FILES['calendrier']['name']);
-		$taille_maxi = 200000; //en octets
-		$taille = filesize($_FILES['calendrier']['tmp_name']);
-		$extensions = array('.csv');
-		$extension = strrchr($_FILES['calendrier']['name'], '.');
-
-		//Vérifications de sécurité...
-		if (!in_array($extension, $extensions)) { //Si l'extension n'est pas dans le tableau
-			$erreur = 'Erreur 1 !';
-		}
-		if ($taille > $taille_maxi) { // fichier trop gros
-			$erreur = 'Erreur  2 !';
-		}
-		if (!isset($erreur)) { //S'il n'y a pas d'erreur, on upload
-			if (move_uploaded_file($_FILES['calendrier']['tmp_name'], $dossier . $fichier)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
-				array_push($this->m_arrayinfo, 'Upload effectué avec succès !');
-				$myBdd = new MyBdd();
-				$myBdd->ImportCalendrier("calendrier.csv");
-				$this->m_arrayinfo = array_merge($this->m_arrayinfo, $myBdd->m_arrayinfo);
-			} else { //Sinon (la fonction renvoie FALSE).
-				die('Echec de l\'upload !' . $_FILES['calendrier']['tmp_name']);
-			}
-		} else {
-			die($erreur);
-		}
 	}
 }
 
