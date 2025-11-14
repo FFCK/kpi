@@ -1,6 +1,9 @@
 jq = jQuery.noConflict()
 
 var langue = []
+var theLstEvt = '-1'
+var theLocalUrl = 'http://localhost/KPI2'
+var theDistantUrl = "https://www.kayak-polo.info"
 
 if (lang == 'en') {
 	langue['Cliquez_pour_modifier'] = 'Click to edit'
@@ -49,6 +52,118 @@ function activeSaison () {
 		document.forms['formOperations'].elements['ParamCmd'].value = document.forms['formOperations'].elements['saisonActive'].value
 		document.forms['formOperations'].submit()
 	}
+}
+
+function showDataConnector(data)
+{
+	jq('#json_msg').html("<h1>Importation</h1>");
+	jq('#json_msg').append("<h2>Les donnees suivantes sont enregistr&eacute;es dans la base locale ...</h2>");
+
+	jq('#json_msg').append("<div>"+data+"</div>");
+}
+
+function showExportReturn(data)
+{
+	alert('showExportReturn = '+data);
+
+	jq('#json_msg').html('<h1>Exportation</h1>');
+	jq('#json_msg').append('<div>'+data+'</div>');
+}
+
+function submitJsonData(json)
+{
+	var txtJSON = JSON.stringify(json);
+
+   	var pos = txtJSON.indexOf('ERREUR');
+    if ((pos >= 0) && (pos <= 2))
+ 	{
+    	alert(txtJSON);
+    	return;
+    }
+
+	jq('#json_data').attr('value', txtJSON);
+	document.forms['formOperations'].submit();
+}
+
+function getRemoteData(url)
+{
+    var script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src = url + "&callback=submitJsonData"; //ajout de la fonction de retour
+	jq("head")[0].appendChild(script);
+}
+
+function OnImport()
+{
+	theLstEvt = jq('#lstEvent').attr('value');
+	var user = jq('#user').attr('value');
+	var pwd = jq('#pwd').attr('value');
+
+	if (theLstEvt.length == 0)
+	{
+	    alert("Erreur : Aucun Evenement ...");
+	    return;
+	}
+
+	if (user.length == 0)
+	{
+	    alert("Erreur : Utilisateur Vide ...");
+	    return;
+	}
+
+	if (pwd.length == 0)
+	{
+	    alert("Erreur : Mot de Passe Vide ...");
+	    return;
+	}
+
+	jq.ajax({
+		url : theLocalUrl+'/connector/ajax_md5.php?user='+user+'&pwd='+pwd,
+		type: 'GET',
+		dataType: 'text',
+		cache: false,
+		async: false,
+		crossDomain:true,
+		success: OnImportMD5
+	});
+}
+
+function OnImportMD5(session)
+{
+	getRemoteData(theDistantUrl+'/connector/get_evenement.php?lst='+theLstEvt+'&session='+session);
+}
+
+function OnImportServer()
+{
+    theLstEvt = jq('#lstEvent').attr('value');
+
+	if (theLstEvt.length == 0)
+	{
+	    alert("Erreur : Aucun Evenement !");
+	    return;
+	}
+
+    jq.ajax({
+		url : theDistantUrl+'/connector/ajax_okevent.php?lst='+theLstEvt,
+		type: 'GET',
+		dataType: 'text',
+		cache: false,
+		async: false,
+		crossDomain:false,
+		success: OnImportServerOk
+	});
+}
+
+function OnImportServerOk(msg)
+{
+    var pos = msg.indexOf('OK');
+    if (pos == 0)
+    {
+        getRemoteData(theLocalUrl+'/connector/get_evenement.php?lst='+theLstEvt);
+        return;
+    }
+
+    alert("ERREUR Evènement ou Login ... : "+msg);
 }
 
 jq(document).ready(function () {
@@ -234,6 +349,21 @@ jq(document).ready(function () {
 		jq('#Cmd').val('ChangeCode')
 		jq('#formOperations').submit()
 	})
+
+	// Import PCE handlers
+	jq('#importPCE2').click(function(){
+		jq('#json_msg').prepend( "Traitement en cours (patientez 15 à 20 secondes)..." );
+		jq('#Control').val('importPCE2');
+		jq('#formOperations').submit();
+	});
+
+	jq('#btnImportServer').click(function() {
+		OnImportServer();
+	});
+
+	jq('#btnImport').click(function() {
+		OnImport();
+	});
 
 })
 

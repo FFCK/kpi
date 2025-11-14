@@ -1,172 +1,33 @@
 jq = jQuery.noConflict();
 
-var theLstEvt = '-1';
-var theLocalUrl = 'http://localhost/KPI2';
-var theDistantUrl = "https://www.kayak-polo.info";
-
-function showDataConnector(data)
-{
-//	alert('showDataConnector = '+data);
-
-	jq('#result').html("<h1>Importation</h1>");
-	jq('#result').append("<h2>Les donnees suivantes sont enregistr&eacute;es dans la base locale ...</h2>");
-	
-	jq('#result').append("<div>"+data+"</div>");
-}
-
-function showExportReturn(data)
-{
-	alert('showExportReturn = '+data);
-
-	jq('#result').html('<h1>Exportation</h1>');
-	jq('#result').append('<div>'+data+'</div>');
-}
-
-function submitJsonData(json) 
-{
-	var txtJSON = JSON.stringify(json);
-  	
-   	var pos = txtJSON.indexOf('ERREUR');
-    if ((pos >= 0) && (pos <= 2))
- 	{
-    	alert(txtJSON);
-    	return;
-    }
-    
-	jq('#json_data').attr('value', txtJSON);
-	document.forms['ImportPCE'].submit();
-}
-
-function getRemoteData(url) 
-{
-    var script = document.createElement("script"); 
-	script.type = "text/javascript"; 
-	script.src = url + "&callback=submitJsonData"; //ajout de la fonction de retour
-	jq("head")[0].appendChild(script);
-}
-
-function OnImport()
-{
-	theLstEvt = jq('#lstEvent').attr('value');
-	var user = jq('#user').attr('value');
-	var pwd = jq('#pwd').attr('value');
-	
-	if (theLstEvt.length == 0)
-	{
-	    alert("Erreur : Aucun Evenement ...");
-	    return;
-	}
-
-	if (user.length == 0)
-	{
-	    alert("Erreur : Utilisateur Vide ...");
-	    return;
-	}
-	
-	if (pwd.length == 0)
-	{
-	    alert("Erreur : Mot de Passe Vide ...");
-	    return;
-	}
-  
-	jq.ajax({
-		url : theLocalUrl+'/connector/ajax_md5.php?user='+user+'&pwd='+pwd,
-		type: 'GET',
-		dataType: 'text',
-		cache: false,
-		async: false,
-		crossDomain:true,
-		success: OnImportMD5
-	});
-}
-
-function OnImportMD5(session)
-{
-//	alert('OnImportMD5 = '+session); //Revoir le texte d'alert
-	getRemoteData(theDistantUrl+'/connector/get_evenement.php?lst='+theLstEvt+'&session='+session);
-}
-
-function OnImportServer()
-{
-    theLstEvt = jq('#lstEvent').attr('value');
-    
-	if (theLstEvt.length == 0)
-	{
-	    alert("Erreur : Aucun Evenement !");
-	    return;
-	}
-	
-    jq.ajax({
-		url : theDistantUrl+'/connector/ajax_okevent.php?lst='+theLstEvt,
-		type: 'GET',
-		dataType: 'text',
-		cache: false,
-		async: false,
-		crossDomain:false,
-		success: OnImportServerOk
-	});
-}
-
-function OnImportServerOk(msg)
-{
-    var pos = msg.indexOf('OK');
-    if (pos == 0)
-    {
-		//alert(theLocalUrl+'/connector/get_evenement.php?lst='+theLstEvt);
-        getRemoteData(theLocalUrl+'/connector/get_evenement.php?lst='+theLstEvt);
-        return;
-    }
-
-    alert("ERREUR Evènement ou Login ... : "+msg);
-}
-
-function Init()
-{
-}
-
-jq(document).ready(function() { 
-	jq('#importPCE2').click(function(){
-		jq('#json_msg').prepend( "Traitement en cours (patientez 15 à 20 secondes)..." );
-		jq('#Control').val('importPCE2');
-		jq('#ImportPCE').submit();
-	});
+jq(document).ready(function() {
 	jq('#validNomImg').click(function(){
 		var nomImg = jq('#TypeImg').val() + jq('#CompImg').val() + jq('#SaisonImg').val() + '.jpg';
 		jq('#titre').val(nomImg);
 	});
 
-// "myAwesomeDropzone" is the camelized version of the HTML element's ID
+	// myAwesomeDropzone is the camelized version of the HTML element's ID
 	Dropzone.options.myAwesomeDropzone = {
-		//paramName: "file", // The name that will be used to transfer the file
 		maxFilesize: 2, // MB
 	};
-
-	jq('#btnImportServer').click(function() {
-		OnImportServer();
-	});
-
-	jq('#btnImport').click(function() {
-		OnImport();
-	});
-	
 });
 
 /*
 #
 # More info at [www.dropzonejs.com](http://www.dropzonejs.com)
-# 
-# Copyright (c) 2012, Matias Meno  
-# 
+#
+# Copyright (c) 2012, Matias Meno
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE

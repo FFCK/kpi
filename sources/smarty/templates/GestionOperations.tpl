@@ -2,6 +2,8 @@
 			<form method="POST" action="GestionOperations.php" name="formOperations" id="formOperations" enctype="multipart/form-data">
 				<input type='hidden' name='Cmd' id='Cmd' Value='' />
 				<input type='hidden' name='ParamCmd' id='ParamCmd' Value='' />
+				<input type='hidden' name='json_data' id='json_data' Value=''/>
+				<input type='hidden' name='Control' id='Control' Value=''/>
 
 				<div class='titrePage'>Opérations (Attention, sensible !!!)</div>
 
@@ -343,6 +345,85 @@
 							</tr>
 						</tbody>
 					</table>
+					{if $profile <= 6}
+						<table width="100%">
+							<tr>
+								<th class='titreForm' colspan=2>
+									<label>Mise à jour licenciés</label>
+								</th>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<input type="button" name="importPCE2" id="importPCE2" value="Mise à jour des licenciés (base fédérale J-1)">
+								</td>
+							</tr>
+						</table>
+					{/if}
+					{if $profile <= 2}
+						<table width="100%">
+							<tr>
+								<th class='titreForm' colspan=2>
+									<label>Mise à jour calendrier fédéral</label>
+								</th>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<label for="calendrier">Calendrier fédéral :</label>
+									<input type="file" name="calendrier">
+									<br>
+									<input type="submit" name="uploadCalendrierCsv" value="Importation Calendrier (calendrier.csv)">
+								</td>
+							</tr>
+						</table>
+					{/if}
+					{if $profile <= 3}
+						<table width="100%">
+							<tr>
+								<th class='titreForm' colspan=2>
+									{if $production eq 'P'}
+										<label>Import depuis mode local</label>
+									{else}
+										<label>Import vers mode local</label>
+									{/if}
+								</th>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<label for="lstEvent">Liste des Evénements à Importer</label>
+									<br>
+									<input type="text" name="lstEvent" maxlength=20 size=10 id="lstEvent"/>
+									<img title="Numéros d'évènements, séparés par une virgule. Vous devez avoir les autorisations adéquates."
+										alt="Numéros d'évènements, séparés par une virgule. Vous devez avoir les autorisations adéquates."
+										src="../img/b_help.png"
+										onclick="alert('Numéros d\'évènements, séparés par une virgule. Vous devez avoir les autorisations adéquates.')" />
+									<br>
+									{if $production eq 'P'}
+										<input type="button" name="btnImportServer" id="btnImportServer" value="Importation (WAMP ==> KPI)">
+									{else}
+										<br>
+										<label for="user">Identifiant KPI</label>
+										<input type="text" name="user" maxlength=20 id="user" autocomplete="off" />
+										<br>
+										<label for="pwd">Mot de passe KPI</label>
+										<input type="password" name="pwd" maxlength=20 id="pwd" autocomplete="off" />
+										<br>
+										<input type="button" name="btnImport" id="btnImport" value="Importation (KPI ==> WAMP)">
+									{/if}
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<span id="json_msg">
+										{$msg_json}
+									</span>
+									<br>
+									{section name=i loop=$arrayinfo}
+										{$arrayinfo[i]}<BR>
+									{/section}
+								</td>
+							</tr>
+						</table>
+					{/if}
 					{if $profile <= 4}
 						<table width="100%">
 							<tr>
