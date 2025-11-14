@@ -366,39 +366,39 @@ jq(document).ready(function () {
 	});
 
 	// Image upload handlers
-	jq('#codeCompetition, #saison, #numeroClub, #codeNation').on('input', function() {
+	jq('#codeCompetition, #saison, #numeroClub, #codeNation').bind('keyup change', function() {
 		updateFilenamePreview();
 		updateUploadButton();
 	});
 
-	jq('#imageFile').on('change', function() {
+	jq('#imageFile').change(function() {
 		updateUploadButton();
 	});
 
-	jq('#imageType').on('change', function() {
+	jq('#imageType').change(function() {
 		updateImageFields();
 	});
 
 	// Image rename handlers
-	jq('#renameImageType').on('change', function() {
+	jq('#renameImageType').change(function() {
 		loadExistingImages();
 	});
 
-	jq('#existingImageFile').on('change', function() {
+	jq('#existingImageFile').change(function() {
 		var selectedFile = jq('#existingImageFile').val();
 		jq('#currentImageName').val(selectedFile);
 		updateNewImageName();
 	});
 
-	jq('#renameCodeCompetition, #renameSaison, #renameNumeroClub, #renameCodeNation').on('input', function() {
+	jq('#renameCodeCompetition, #renameSaison, #renameNumeroClub, #renameCodeNation').bind('keyup change', function() {
 		updateNewImageName();
 	});
 
-	jq('#currentImageName').on('input', function() {
+	jq('#currentImageName').bind('keyup change', function() {
 		updateRenameButton();
 	});
 
-	jq('#btnRenameImage').on('click', function() {
+	jq('#btnRenameImage').click(function() {
 		if (confirm('Êtes-vous sûr de vouloir renommer ce fichier ?')) {
 			jq('#formOperations').submit();
 		}
