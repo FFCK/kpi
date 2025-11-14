@@ -1365,6 +1365,178 @@ class GestionOperations extends MyPageSecure
 		}
 	}
 
+	function uploadImage()
+	{
+		// Get form parameters
+		$imageType = utyGetPost('imageType', '');
+		$imageFile = $_FILES['imageFile'] ?? null;
+
+		if (!$imageFile || $imageFile['error'] !== UPLOAD_ERR_OK) {
+			array_push($this->m_arrayinfo, 'Erreur : Aucun fichier sélectionné ou erreur lors de l\'upload.');
+			return;
+		}
+
+		// Define image type configurations
+		$imageConfig = [
+			'logo_competition' => [
+				'prefix' => 'L-',
+				'extension' => '.jpg',
+				'mime_types' => ['image/jpeg', 'image/jpg'],
+				'max_width' => 1000,
+				'max_height' => 1000,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+				'name_fields' => ['codeCompetition', 'saison'],
+			],
+			'bandeau_competition' => [
+				'prefix' => 'B-',
+				'extension' => '.jpg',
+				'mime_types' => ['image/jpeg', 'image/jpg'],
+				'max_width' => 2480,
+				'max_height' => 250,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+				'name_fields' => ['codeCompetition', 'saison'],
+			],
+			'sponsor_competition' => [
+				'prefix' => 'S-',
+				'extension' => '.jpg',
+				'mime_types' => ['image/jpeg', 'image/jpg'],
+				'max_width' => 2480,
+				'max_height' => 250,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+				'name_fields' => ['codeCompetition', 'saison'],
+			],
+			'logo_club' => [
+				'prefix' => '',
+				'extension' => '-logo.png',
+				'mime_types' => ['image/png'],
+				'max_width' => 200,
+				'max_height' => 200,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KPI/logo/',
+				'name_fields' => ['numeroClub'],
+			],
+			'logo_nation' => [
+				'prefix' => '',
+				'extension' => '.png',
+				'mime_types' => ['image/png'],
+				'max_width' => 200,
+				'max_height' => 200,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/Nations/',
+				'name_fields' => ['codeNation'],
+			],
+		];
+
+		// Validate image type
+		if (!isset($imageConfig[$imageType])) {
+			array_push($this->m_arrayinfo, 'Erreur : Type d\'image non valide.');
+			return;
+		}
+
+		$config = $imageConfig[$imageType];
+
+		// Validate MIME type
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mimeType = finfo_file($finfo, $imageFile['tmp_name']);
+		finfo_close($finfo);
+
+		if (!in_array($mimeType, $config['mime_types'])) {
+			array_push($this->m_arrayinfo, 'Erreur : Type de fichier non autorisé. Attendu : ' . implode(', ', $config['mime_types']));
+			return;
+		}
+
+		// Build filename from form fields
+		$filenameParts = [];
+		foreach ($config['name_fields'] as $field) {
+			$value = utyGetPost($field, '');
+			if (empty($value)) {
+				array_push($this->m_arrayinfo, 'Erreur : Champ ' . $field . ' requis pour le nom du fichier.');
+				return;
+			}
+			$filenameParts[] = $value;
+		}
+
+		$filename = $config['prefix'] . implode('-', $filenameParts) . $config['extension'];
+		$destinationPath = $config['destination'] . $filename;
+
+		// Check if destination directory exists, create if needed
+		if (!is_dir($config['destination'])) {
+			if (!mkdir($config['destination'], 0755, true)) {
+				array_push($this->m_arrayinfo, 'Erreur : Impossible de créer le répertoire de destination.');
+				return;
+			}
+		}
+
+		// Get image dimensions
+		$imageInfo = getimagesize($imageFile['tmp_name']);
+		if ($imageInfo === false) {
+			array_push($this->m_arrayinfo, 'Erreur : Fichier image invalide.');
+			return;
+		}
+
+		list($width, $height) = $imageInfo;
+
+		// Check if resizing is needed
+		$needsResize = ($width > $config['max_width'] || $height > $config['max_height']);
+
+		if ($needsResize) {
+			// Calculate new dimensions maintaining aspect ratio
+			$ratio = min($config['max_width'] / $width, $config['max_height'] / $height);
+			$newWidth = (int)($width * $ratio);
+			$newHeight = (int)($height * $ratio);
+
+			// Create image resource from uploaded file
+			if (in_array('image/png', $config['mime_types'])) {
+				$sourceImage = imagecreatefrompng($imageFile['tmp_name']);
+			} else {
+				$sourceImage = imagecreatefromjpeg($imageFile['tmp_name']);
+			}
+
+			if ($sourceImage === false) {
+				array_push($this->m_arrayinfo, 'Erreur : Impossible de traiter l\'image source.');
+				return;
+			}
+
+			// Create new image with resized dimensions
+			$resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+
+			// Preserve transparency for PNG
+			if (in_array('image/png', $config['mime_types'])) {
+				imagealphablending($resizedImage, false);
+				imagesavealpha($resizedImage, true);
+				$transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+				imagefill($resizedImage, 0, 0, $transparent);
+			}
+
+			// Resize the image
+			imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+			// Save resized image
+			if (in_array('image/png', $config['mime_types'])) {
+				$result = imagepng($resizedImage, $destinationPath, 9);
+			} else {
+				$result = imagejpeg($resizedImage, $destinationPath, 90);
+			}
+
+			// Free memory
+			imagedestroy($sourceImage);
+			imagedestroy($resizedImage);
+
+			if ($result) {
+				array_push($this->m_arrayinfo, "Image redimensionnée et uploadée avec succès : $filename");
+				array_push($this->m_arrayinfo, "Dimensions originales : {$width}x{$height} → Nouvelles dimensions : {$newWidth}x{$newHeight}");
+			} else {
+				array_push($this->m_arrayinfo, 'Erreur : Impossible de sauvegarder l\'image redimensionnée.');
+			}
+		} else {
+			// No resizing needed, just move the file
+			if (move_uploaded_file($imageFile['tmp_name'], $destinationPath)) {
+				array_push($this->m_arrayinfo, "Image uploadée avec succès : $filename");
+				array_push($this->m_arrayinfo, "Dimensions : {$width}x{$height}");
+			} else {
+				array_push($this->m_arrayinfo, 'Erreur : Échec de l\'upload du fichier.');
+			}
+		}
+	}
+
 	function __construct()
 	{
 		parent::__construct(1);
@@ -1436,6 +1608,12 @@ class GestionOperations extends MyPageSecure
 				$this->m_arrayinfo = array();
 				array_push($this->m_arrayinfo, 'Upload du fichier ...');
 				$this->uploadCalendrierCsv();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+			case isset($_POST['uploadImage']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Upload de l\'image en cours...');
+				$this->uploadImage();
 				$arrayinfo = $this->m_arrayinfo;
 				break;
 		}

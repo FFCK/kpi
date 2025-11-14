@@ -365,5 +365,127 @@ jq(document).ready(function () {
 		OnImport();
 	});
 
+	// Image upload handlers
+	jq('#codeCompetition, #saison, #numeroClub, #codeNation').on('input', function() {
+		updateFilenamePreview();
+	});
+
+	jq('#imageFile').on('change', function() {
+		updateUploadButton();
+	});
+
 })
+
+function updateImageFields() {
+	var imageType = jq('#imageType').val();
+
+	// Hide all fields first
+	jq('#competitionFields').hide();
+	jq('#clubFields').hide();
+	jq('#nationFields').hide();
+	jq('#filenamePreview').hide();
+
+	// Clear all input fields
+	jq('#codeCompetition').val('');
+	jq('#saison').val('');
+	jq('#numeroClub').val('');
+	jq('#codeNation').val('');
+
+	// Show relevant fields based on selected type
+	if (imageType === 'logo_competition' || imageType === 'bandeau_competition' || imageType === 'sponsor_competition') {
+		jq('#competitionFields').show();
+		jq('#filenamePreview').show();
+	} else if (imageType === 'logo_club') {
+		jq('#clubFields').show();
+		jq('#filenamePreview').show();
+	} else if (imageType === 'logo_nation') {
+		jq('#nationFields').show();
+		jq('#filenamePreview').show();
+	}
+
+	updateFilenamePreview();
+	updateUploadButton();
+}
+
+function updateFilenamePreview() {
+	var imageType = jq('#imageType').val();
+	var filename = '';
+
+	switch(imageType) {
+		case 'logo_competition':
+			var code = jq('#codeCompetition').val();
+			var saison = jq('#saison').val();
+			if (code && saison) {
+				filename = 'L-' + code + '-' + saison + '.jpg';
+			} else {
+				filename = 'L-<CodeCompétition>-<Saison>.jpg';
+			}
+			break;
+		case 'bandeau_competition':
+			var code = jq('#codeCompetition').val();
+			var saison = jq('#saison').val();
+			if (code && saison) {
+				filename = 'B-' + code + '-' + saison + '.jpg';
+			} else {
+				filename = 'B-<CodeCompétition>-<Saison>.jpg';
+			}
+			break;
+		case 'sponsor_competition':
+			var code = jq('#codeCompetition').val();
+			var saison = jq('#saison').val();
+			if (code && saison) {
+				filename = 'S-' + code + '-' + saison + '.jpg';
+			} else {
+				filename = 'S-<CodeCompétition>-<Saison>.jpg';
+			}
+			break;
+		case 'logo_club':
+			var numero = jq('#numeroClub').val();
+			if (numero) {
+				filename = numero + '-logo.png';
+			} else {
+				filename = '<NuméroClub>-logo.png';
+			}
+			break;
+		case 'logo_nation':
+			var nation = jq('#codeNation').val().toUpperCase();
+			if (nation) {
+				filename = nation + '.png';
+			} else {
+				filename = '<NATION>.png';
+			}
+			break;
+		default:
+			filename = '-';
+	}
+
+	jq('#previewFilename').text(filename);
+	updateUploadButton();
+}
+
+function updateUploadButton() {
+	var imageType = jq('#imageType').val();
+	var hasFile = jq('#imageFile').val() !== '';
+	var fieldsValid = false;
+
+	switch(imageType) {
+		case 'logo_competition':
+		case 'bandeau_competition':
+		case 'sponsor_competition':
+			fieldsValid = jq('#codeCompetition').val() !== '' && jq('#saison').val() !== '';
+			break;
+		case 'logo_club':
+			fieldsValid = jq('#numeroClub').val() !== '';
+			break;
+		case 'logo_nation':
+			fieldsValid = jq('#codeNation').val() !== '';
+			break;
+	}
+
+	if (imageType && hasFile && fieldsValid) {
+		jq('#uploadImageBtn').prop('disabled', false);
+	} else {
+		jq('#uploadImageBtn').prop('disabled', true);
+	}
+}
 

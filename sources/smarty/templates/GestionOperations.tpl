@@ -209,6 +209,65 @@
 							</td>
 						</tr>
 					</table>
+					<br>
+					<br>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th class="titreForm">
+									Upload d'images
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<label for="imageType">Type d'image :</label>
+									<br>
+									<select name="imageType" id="imageType" onchange="updateImageFields()">
+										<option value="">-- Sélectionnez un type --</option>
+										<option value="logo_competition">Logo compétition (JPG, 1000x1000 max)</option>
+										<option value="bandeau_competition">Bandeau compétition (JPG, 2480x250 max)</option>
+										<option value="sponsor_competition">Sponsor compétition (JPG, 2480x250 max)</option>
+										<option value="logo_club">Logo club (PNG, 200x200 max)</option>
+										<option value="logo_nation">Logo nation (PNG, 200x200 max)</option>
+									</select>
+									<br><br>
+
+									<div id="competitionFields" style="display:none;">
+										<label for="codeCompetition">Code compétition :</label>
+										<input type="text" name="codeCompetition" id="codeCompetition" size="10" maxlength="20">
+										<br>
+										<label for="saison">Saison :</label>
+										<input type="text" name="saison" id="saison" size="4" maxlength="4" placeholder="2024">
+										<br><br>
+									</div>
+
+									<div id="clubFields" style="display:none;">
+										<label for="numeroClub">Numéro club :</label>
+										<input type="text" name="numeroClub" id="numeroClub" size="10" maxlength="10">
+										<br><br>
+									</div>
+
+									<div id="nationFields" style="display:none;">
+										<label for="codeNation">Code nation (ex: FRA) :</label>
+										<input type="text" name="codeNation" id="codeNation" size="3" maxlength="3" style="text-transform: uppercase;">
+										<br><br>
+									</div>
+
+									<div id="filenamePreview" style="margin-bottom: 10px; padding: 5px; background-color: #f0f0f0; border-radius: 3px; display:none;">
+										<strong>Nom du fichier :</strong> <span id="previewFilename">-</span>
+									</div>
+
+									<label for="imageFile">Fichier image :</label>
+									<input type="file" name="imageFile" id="imageFile" accept="image/jpeg,image/jpg,image/png">
+									<br><br>
+
+									<input type="submit" name="uploadImage" id="uploadImageBtn" value="Uploader l'image" disabled>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 				<div class='blocRight'>
 					<table width="100%">
