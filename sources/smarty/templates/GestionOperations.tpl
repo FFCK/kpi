@@ -94,11 +94,11 @@
 									<br>
 									<select name="renameImageType" id="renameImageType">
 										<option value="">-- Sélectionnez un type --</option>
-										<option value="logo_competition" {if $duplicate_file.type == 'logo_competition'}selected{/if}>Logo compétition</option>
-										<option value="bandeau_competition" {if $duplicate_file.type == 'bandeau_competition'}selected{/if}>Bandeau compétition</option>
-										<option value="sponsor_competition" {if $duplicate_file.type == 'sponsor_competition'}selected{/if}>Sponsor compétition</option>
-										<option value="logo_club" {if $duplicate_file.type == 'logo_club'}selected{/if}>Logo club</option>
-										<option value="logo_nation" {if $duplicate_file.type == 'logo_nation'}selected{/if}>Logo nation</option>
+										<option value="logo_competition" {if isset($duplicate_file.type) && $duplicate_file.type == 'logo_competition'}selected{/if}>Logo compétition</option>
+										<option value="bandeau_competition" {if isset($duplicate_file.type) && $duplicate_file.type == 'bandeau_competition'}selected{/if}>Bandeau compétition</option>
+										<option value="sponsor_competition" {if isset($duplicate_file.type) && $duplicate_file.type == 'sponsor_competition'}selected{/if}>Sponsor compétition</option>
+										<option value="logo_club" {if isset($duplicate_file.type) && $duplicate_file.type == 'logo_club'}selected{/if}>Logo club</option>
+										<option value="logo_nation" {if isset($duplicate_file.type) && $duplicate_file.type == 'logo_nation'}selected{/if}>Logo nation</option>
 									</select>
 									<br><br>
 
