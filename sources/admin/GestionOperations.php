@@ -1304,7 +1304,7 @@ class GestionOperations extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Operations_d_administration", "Operations", false);
+		$this->SetTemplate("Operations", "Operations", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionOperations');
