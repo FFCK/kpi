@@ -106,29 +106,14 @@
 									<input type="text" name="currentImageName" id="currentImageName" size="40" placeholder="Ex: L-CDM-2024.jpg" value="{$duplicate_file.filename|default:''}">
 									<br><br>
 
-									<div id="renameCompetitionFields" style="display:none;">
-										<label for="renameCodeCompetition">Code compétition (nouveau) :</label>
-										<input type="text" name="renameCodeCompetition" id="renameCodeCompetition" size="10" maxlength="20">
-										<br>
-										<label for="renameSaison">Saison (nouveau) :</label>
-										<input type="text" name="renameSaison" id="renameSaison" size="4" maxlength="4" placeholder="2025">
-										<br><br>
-									</div>
-
-									<div id="renameClubFields" style="display:none;">
-										<label for="renameNumeroClub">Numéro club (nouveau) :</label>
-										<input type="text" name="renameNumeroClub" id="renameNumeroClub" size="10" maxlength="10">
-										<br><br>
-									</div>
-
-									<div id="renameNationFields" style="display:none;">
-										<label for="renameCodeNation">Code nation (nouveau, ex: FRA) :</label>
-										<input type="text" name="renameCodeNation" id="renameCodeNation" size="3" maxlength="3" style="text-transform: uppercase;">
-										<br><br>
-									</div>
+									<label for="newImageBaseName">Nouveau nom (sans extension) :</label>
+									<input type="text" name="newImageBaseName" id="newImageBaseName" size="40" placeholder="Ex: ancien-logo">
+									<br>
+									<small style="color: #666;">L'extension sera automatiquement conservée</small>
+									<br><br>
 
 									<div id="newImageNamePreview" style="margin-bottom: 10px; padding: 5px; background-color: #e8f5e9; border-radius: 3px; display:none;">
-										<strong>Nouveau nom :</strong> <span id="newImageNameDisplay">-</span>
+										<strong>Nouveau nom complet :</strong> <span id="newImageNameDisplay">-</span>
 									</div>
 
 									<input type="hidden" name="newImageName" id="newImageName" value="">
