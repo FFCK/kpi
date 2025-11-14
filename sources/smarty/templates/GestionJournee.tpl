@@ -437,6 +437,9 @@
 										<a id="heureMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="heureMultiMatchs();"
 											title="Incrémenter l'heure des matchs sélectionnés {$TropDeMatchsMsg}"><img height="25"
 												src="../img/time.png"></a>
+										<a id="groupeMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="groupeMultiMatchs();"
+											title="Remplacer le nom de groupe/poule dans les matchs sélectionnés {$TropDeMatchsMsg}"><img height="25"
+												src="../img/glyphicons-82-refresh.png"></a>
 									{/if}
 								</fieldset>
 							</td>

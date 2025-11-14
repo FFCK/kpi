@@ -410,6 +410,130 @@ jq("body").delegate('#heureMultiMatchsStart input:button:first', 'click', functi
 	jq('#heureMultiMatchsBtn').show()
 })
 
+// ****************************************************************************************************
+// Remplacement de groupe/poule dans les codes de matchs sélectionnés
+// ****************************************************************************************************
+
+function groupeMultiMatchs () {
+	jq('#groupeMultiMatchsBtn')
+		.hide()
+		.after('<span id="groupeMultiMatchsStart" class="right">\n\
+                        <br><label>Groupe à remplacer :</label><input type="text" size=5 placeholder="A" style="text-transform:uppercase;">\n\
+                        <label>Par :</label><input type="text" size=5 placeholder="X" style="text-transform:uppercase;">\n\
+                        <input type="button" value="Confirmer">\n\
+                        <input type="button" value="Annuler">\n\
+                    </span>')
+}
+
+// Annuler remplacement de groupe
+jq("body").delegate('#groupeMultiMatchsStart input:button:last', 'click', function (e) {
+	e.preventDefault()
+	jq('#groupeMultiMatchsStart').remove()
+	jq('#groupeMultiMatchsBtn').show()
+})
+
+// Confirmer remplacement de groupe
+jq("body").delegate('#groupeMultiMatchsStart input:button:first', 'click', function (e) {
+	if (jq('#tableMatchs tbody input:checkbox:checked').length == 0) {
+		alert('Aucun match sélectionné')
+		return
+	}
+
+	const groupeRecherche = jq('#groupeMultiMatchsStart input[type="text"]:first').val().toUpperCase().trim()
+	const groupeRemplace = jq('#groupeMultiMatchsStart input[type="text"]:last').val().toUpperCase().trim()
+
+	if (!groupeRecherche || !groupeRemplace) {
+		alert('Veuillez saisir le groupe à remplacer et le nouveau groupe')
+		return
+	}
+
+	if (groupeRecherche === groupeRemplace) {
+		alert('Les groupes doivent être différents')
+		return
+	}
+
+	// Valider que ce sont bien des lettres majuscules
+	if (!/^[A-Z]+$/.test(groupeRecherche) || !/^[A-Z]+$/.test(groupeRemplace)) {
+		alert('Les noms de groupe doivent contenir uniquement des lettres majuscules')
+		return
+	}
+
+	let nbMatchsModifies = 0
+	const AjaxWhere = jq('#AjaxWhere').val()
+	const AjaxTableName = jq('#AjaxTableName').val()
+	const AjaxUser = jq('#AjaxUser').val()
+
+	jq('#tableMatchs tbody input:checkbox:checked').each(function () {
+		const checkboxIdMatch = jq(this).val()
+		const row = jq(this).parent().parent()
+		const verrouMatch = row.find('.verrouMatch')
+
+		// Vérifier si le match n'est pas verrouillé
+		if (verrouMatch.length > 0 && verrouMatch.attr('data-valeur') === 'O') {
+			return // Continue (skip ce match car il est verrouillé)
+		}
+
+		const codeSpan = row.find('.directInput.eq')
+		const codeActuel = codeSpan.text().trim()
+
+		// Fonction pour remplacer les groupes dans le code
+		function remplacerGroupe(code, ancien, nouveau) {
+			// Extraire le contenu entre crochets
+			const bracketMatch = code.match(/\[([^\]]+)\]/)
+			if (!bracketMatch) {
+				return code // Pas de code entre crochets, retourner tel quel
+			}
+
+			const contenuBrackets = bracketMatch[1]
+			let nouveauContenu = contenuBrackets
+
+			// Remplacer les groupes dans chaque élément séparé par -/*,;
+			// Pattern: chiffres suivis de lettres (ex: 1A, 2BC, 3DEF)
+			// On cherche un ou plusieurs chiffres suivis de lettres majuscules
+			const pattern = new RegExp('(\\d+)' + ancien + '(?=[\\-\\/\\*,;\\]]|$)', 'g')
+			nouveauContenu = nouveauContenu.replace(pattern, '$1' + nouveau)
+
+			// Reconstruire le code complet
+			return code.replace(/\[[^\]]+\]/, '[' + nouveauContenu + ']')
+		}
+
+		const nouveauCode = remplacerGroupe(codeActuel, groupeRecherche, groupeRemplace)
+
+		// Ne mettre à jour que si le code a changé
+		if (nouveauCode !== codeActuel) {
+			jq.get("UpdateCellJQ.php",
+				{
+					AjTableName: AjaxTableName,
+					AjWhere: AjaxWhere,
+					AjTypeValeur: 'Libelle',
+					AjValeur: nouveauCode,
+					AjAnd: '',
+					AjId: checkboxIdMatch,
+					AjId2: '',
+					AjUser: AjaxUser,
+					AjOk: 'OK'
+				},
+				function (data) {
+					if (data != 'OK!') {
+						alert(langue['MAJ_impossible'] + ' : ' + data)
+					} else {
+						codeSpan.text(nouveauCode)
+					}
+				}
+			)
+			nbMatchsModifies++
+		}
+	})
+
+	if (nbMatchsModifies > 0) {
+		alert(nbMatchsModifies + ' matchs modifiés.')
+	} else {
+		alert('Aucun match modifié (groupe "' + groupeRecherche + '" non trouvé dans les codes).')
+	}
+	jq('#groupeMultiMatchsStart').remove()
+	jq('#groupeMultiMatchsBtn').show()
+})
+
 
 
 // Annuler
