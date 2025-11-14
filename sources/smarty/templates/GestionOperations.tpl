@@ -67,59 +67,6 @@
 							</tr>
 						</tbody>
 					</table>
-				</div>
-				<div class='blocRight'>
-					<table width="100%">
-						<thead>
-							<tr>
-								<th class="titreForm">Worker Management</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<a href="{$url_base|default:''}/live/event.php" target="_blank">Event Cache Worker</a>
-									<br>
-									<small style="color: #666;">Gestion automatique des caches pour les événements live</small>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table width="100%">
-						<thead>
-							<tr>
-								<th class="titreForm">Imports SDP ICF</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<a href="{$url_base|default:''}/admin/xml_icf_import.php" target="_blank">Import XML DT_PARTIC</a>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<a href="{$url_base|default:''}/admin/xmlparser.php" target="_blank">Parser le fichier XML</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<table width="100%">
-						<thead>
-							<tr>
-								<th class="titreForm">Imports PCE...</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<a href="{$url_base|default:''}/admin/ImportPCE.php" target="_blank">Import PCE Extranet FFCK</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class='blocLeft'>
 					{if $profile <= 2}
 						<br>
 						<hr>
@@ -347,6 +294,55 @@
 					{/if}
 				</div>
 				<div class='blocRight'>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th class="titreForm">Worker Management</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="{$url_base|default:''}/live/event.php" target="_blank">Event Cache Worker</a>
+									<br>
+									<small style="color: #666;">Gestion automatique des caches pour les événements live</small>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th class="titreForm">Imports SDP ICF</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="{$url_base|default:''}/admin/xml_icf_import.php" target="_blank">Import XML DT_PARTIC</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<a href="{$url_base|default:''}/admin/xmlparser.php" target="_blank">Parser le fichier XML</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th class="titreForm">Imports PCE...</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="{$url_base|default:''}/admin/ImportPCE.php" target="_blank">Import PCE Extranet FFCK</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 					{if $profile <= 4}
 						<table width="100%">
 							<tr>
