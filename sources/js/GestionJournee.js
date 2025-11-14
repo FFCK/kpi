@@ -231,7 +231,185 @@ function imprimeMultiMatchs () {
 		jq(this).parent().parent().find('.imprimMatch').click()
 	})
 }
-	
+
+// ****************************************************************************************************
+// Changement de date des matchs sélectionnés
+// ****************************************************************************************************
+
+function dateMultiMatchs () {
+	const today = new Date().toISOString().split('T')[0]
+	jq('#dateMultiMatchsBtn')
+		.hide()
+		.after('<span id="dateMultiMatchsStart" class="right">\n\
+                        <br><label>Nouvelle date :</label><input type="date" value="' + today + '">\n\
+                        <input type="button" value="Confirmer">\n\
+                        <input type="button" value="Annuler">\n\
+                    </span>')
+}
+
+// Annuler changement de date
+jq("body").delegate('#dateMultiMatchsStart input:button:last', 'click', function (e) {
+	e.preventDefault()
+	jq('#dateMultiMatchsStart').remove()
+	jq('#dateMultiMatchsBtn').show()
+})
+
+// Confirmer changement de date
+jq("body").delegate('#dateMultiMatchsStart input:button:first', 'click', function (e) {
+	if (jq('#tableMatchs tbody input:checkbox:checked').length == 0) {
+		alert('Aucun match sélectionné')
+		return
+	}
+
+	const nouvelleDate = jq('#dateMultiMatchsStart input[type="date"]').val()
+	if (!nouvelleDate) {
+		alert('Veuillez sélectionner une date')
+		return
+	}
+
+	// Convertir la date au format français (DD/MM/YYYY)
+	const dateParts = nouvelleDate.split('-')
+	const dateFormatFr = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0]
+
+	let nbMatchsModifies = 0
+	const AjaxWhere = jq('#AjaxWhere').val()
+	const AjaxTableName = jq('#AjaxTableName').val()
+	const AjaxUser = jq('#AjaxUser').val()
+
+	jq('#tableMatchs tbody input:checkbox:checked').each(function () {
+		const checkboxIdMatch = jq(this).val()
+		const row = jq(this).parent().parent()
+		const verrouMatch = row.find('.verrouMatch')
+
+		// Vérifier si le match n'est pas verrouillé
+		if (verrouMatch.length > 0 && verrouMatch.attr('data-valeur') === 'O') {
+			return // Continue (skip ce match car il est verrouillé)
+		}
+
+		const dateSpan = row.find('.directInput.date, .directInput.dateEN')
+
+		jq.get("UpdateCellJQ.php",
+			{
+				AjTableName: AjaxTableName,
+				AjWhere: AjaxWhere,
+				AjTypeValeur: 'Date_match',
+				AjValeur: dateFormatFr,
+				AjAnd: '',
+				AjId: checkboxIdMatch,
+				AjId2: '',
+				AjUser: AjaxUser,
+				AjOk: 'OK'
+			},
+			function (data) {
+				if (data != 'OK!') {
+					alert(langue['MAJ_impossible'] + ' : ' + data)
+				} else {
+					dateSpan.text(dateFormatFr)
+				}
+			}
+		)
+		nbMatchsModifies++
+	})
+
+	alert(nbMatchsModifies + ' matchs modifiés.')
+	jq('#dateMultiMatchsStart').remove()
+	jq('#dateMultiMatchsBtn').show()
+})
+
+// ****************************************************************************************************
+// Incrémentation de l'heure des matchs sélectionnés
+// ****************************************************************************************************
+
+function heureMultiMatchs () {
+	jq('#heureMultiMatchsBtn')
+		.hide()
+		.after('<span id="heureMultiMatchsStart" class="right">\n\
+                        <br><label>Heure de départ :</label><input type="time" value="10:00">\n\
+                        <label>Intervalle (min) :</label><input type="number" size=3 value="40" min="1">\n\
+                        <input type="button" value="Confirmer">\n\
+                        <input type="button" value="Annuler">\n\
+                    </span>')
+}
+
+// Annuler incrémentation d'heure
+jq("body").delegate('#heureMultiMatchsStart input:button:last', 'click', function (e) {
+	e.preventDefault()
+	jq('#heureMultiMatchsStart').remove()
+	jq('#heureMultiMatchsBtn').show()
+})
+
+// Confirmer incrémentation d'heure
+jq("body").delegate('#heureMultiMatchsStart input:button:first', 'click', function (e) {
+	if (jq('#tableMatchs tbody input:checkbox:checked').length == 0) {
+		alert('Aucun match sélectionné')
+		return
+	}
+
+	const heureDepart = jq('#heureMultiMatchsStart input[type="time"]').val()
+	const intervalle = parseInt(jq('#heureMultiMatchsStart input[type="number"]').val())
+
+	if (!heureDepart || !intervalle) {
+		alert('Veuillez saisir une heure de départ et un intervalle')
+		return
+	}
+
+	// Parse heure de départ
+	const timeParts = heureDepart.split(':')
+	let heureEnMinutes = parseInt(timeParts[0]) * 60 + parseInt(timeParts[1])
+
+	let nbMatchsModifies = 0
+	const AjaxWhere = jq('#AjaxWhere').val()
+	const AjaxTableName = jq('#AjaxTableName').val()
+	const AjaxUser = jq('#AjaxUser').val()
+
+	jq('#tableMatchs tbody input:checkbox:checked').each(function () {
+		const checkboxIdMatch = jq(this).val()
+		const row = jq(this).parent().parent()
+		const verrouMatch = row.find('.verrouMatch')
+
+		// Vérifier si le match n'est pas verrouillé
+		if (verrouMatch.length > 0 && verrouMatch.attr('data-valeur') === 'O') {
+			return // Continue (skip ce match car il est verrouillé)
+		}
+
+		const heureSpan = row.find('.directInput.heure')
+
+		// Calculer la nouvelle heure
+		const heures = Math.floor(heureEnMinutes / 60)
+		const minutes = heureEnMinutes % 60
+		const nouvelleHeure = String(heures).padStart(2, '0') + ':' + String(minutes).padStart(2, '0')
+
+		jq.get("UpdateCellJQ.php",
+			{
+				AjTableName: AjaxTableName,
+				AjWhere: AjaxWhere,
+				AjTypeValeur: 'Heure_match',
+				AjValeur: nouvelleHeure,
+				AjAnd: '',
+				AjId: checkboxIdMatch,
+				AjId2: '',
+				AjUser: AjaxUser,
+				AjOk: 'OK'
+			},
+			function (data) {
+				if (data != 'OK!') {
+					alert(langue['MAJ_impossible'] + ' : ' + data)
+				} else {
+					heureSpan.text(nouvelleHeure)
+				}
+			}
+		)
+
+		// Incrémenter l'heure pour le prochain match
+		heureEnMinutes += intervalle
+		nbMatchsModifies++
+	})
+
+	alert(nbMatchsModifies + ' matchs modifiés.')
+	jq('#heureMultiMatchsStart').remove()
+	jq('#heureMultiMatchsBtn').show()
+})
+
 
 
 // Annuler
