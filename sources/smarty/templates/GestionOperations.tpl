@@ -117,7 +117,7 @@
 									</div>
 
 									<input type="hidden" name="newImageName" id="newImageName" value="">
-									<input type="button" name="renameImage" id="btnRenameImage" value="Renommer l'image" disabled>
+									<input type="submit" name="renameImage" id="btnRenameImage" value="Renommer l'image" disabled>
 								</td>
 							</tr>
 						</tbody>

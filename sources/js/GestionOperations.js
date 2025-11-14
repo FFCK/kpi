@@ -388,10 +388,15 @@ jq(document).ready(function () {
 		updateRenamePreview();
 	});
 
-	jq('#btnRenameImage').click(function() {
-		if (confirm('Êtes-vous sûr de vouloir renommer ce fichier ?')) {
-			jq('#formOperations').submit();
+	jq('#btnRenameImage').click(function(e) {
+		// Ensure newImageName is updated before submit
+		updateRenamePreview();
+
+		if (!confirm('Êtes-vous sûr de vouloir renommer ce fichier ?')) {
+			e.preventDefault();
+			return false;
 		}
+		return true;
 	});
 
 	// Initialize rename form if duplicate file was detected
