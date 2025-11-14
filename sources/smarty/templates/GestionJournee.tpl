@@ -431,6 +431,15 @@
 										<a id="numMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="numMultiMatchs();"
 											title="{#Renumeroter_les_matchs#} {$TropDeMatchsMsg}"><img height="25"
 												src="../img/numMatchs.png"></a>
+										<a id="dateMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="dateMultiMatchs();"
+											title="Changer la date des matchs sélectionnés {$TropDeMatchsMsg}"><img height="25"
+												src="../img/calendar.png"></a>
+										<a id="heureMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="heureMultiMatchs();"
+											title="Incrémenter l'heure des matchs sélectionnés {$TropDeMatchsMsg}"><img height="25"
+												src="../img/time.png"></a>
+										<a id="groupeMultiMatchsBtn" href="#" {$TropDeMatchs} onclick="groupeMultiMatchs();"
+											title="Remplacer le nom de groupe/poule dans les matchs sélectionnés {$TropDeMatchsMsg}"><img height="25"
+												src="../img/glyphicons-82-refresh.png"></a>
 									{/if}
 								</fieldset>
 							</td>
