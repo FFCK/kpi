@@ -534,8 +534,11 @@ function loadExistingImages() {
 	jq('#renameNationFields').hide();
 	jq('#newImageNamePreview').hide();
 
-	// Clear fields
-	jq('#currentImageName').val('');
+	// Clear fields only if not pre-filled by duplicate detection
+	var currentImageValue = jq('#currentImageName').val();
+	if (!currentImageValue) {
+		jq('#currentImageName').val('');
+	}
 	jq('#renameCodeCompetition').val('');
 	jq('#renameSaison').val('');
 	jq('#renameNumeroClub').val('');

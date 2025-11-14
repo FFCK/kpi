@@ -1413,16 +1413,27 @@ class GestionOperations extends MyPageSecure
 			return;
 		}
 
-		// Check if new filename already exists
-		if (file_exists($newPath)) {
-			array_push($this->m_arrayinfo, 'Erreur : Un fichier portant le nom "' . $newName . '" existe déjà dans le dossier de destination.');
-			return;
-		}
-
 		// Check if current and new names are the same
 		if ($currentName === $newName) {
 			array_push($this->m_arrayinfo, 'Erreur : Le nouveau nom doit être différent de l\'ancien.');
 			return;
+		}
+
+		// Extract base names (without extension) to allow renaming with different extensions
+		$currentBaseName = pathinfo($currentName, PATHINFO_FILENAME);
+		$newBaseName = pathinfo($newName, PATHINFO_FILENAME);
+		$currentExtension = pathinfo($currentName, PATHINFO_EXTENSION);
+		$newExtension = pathinfo($newName, PATHINFO_EXTENSION);
+
+		// Check if new filename already exists
+		// Allow renaming if only the extension changes (same base name)
+		if (file_exists($newPath)) {
+			if ($currentBaseName !== $newBaseName) {
+				// Different base name and file exists: block
+				array_push($this->m_arrayinfo, 'Erreur : Un fichier portant le nom "' . $newName . '" existe déjà dans le dossier de destination.');
+				return;
+			}
+			// Same base name, different extension: allow (will be handled by rename)
 		}
 
 		// Rename the file
