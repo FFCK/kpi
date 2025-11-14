@@ -9,58 +9,130 @@
 
 				<div class='blocLeft'>
 					<table width="100%">
-						<thead>
-							<tr>
-								<th class="titreForm">
-									Export événement
-								</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<label for="evenementExport">{#Filtre_evenement#}</label>
-									<br>
-									<select name="evenementExport" id="evenementExport">
-										{section name=i loop=$arrayEvenement}
-											{assign var="evt_libelle" value=$arrayEvenement[i].Libelle}
-											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection|default:''}>
-											{$arrayEvenement[i].Id} - {$smarty.config.$evt_libelle|default:$evt_libelle}
-											</Option>
-										{/section}
-									</select>
-									<br>
-									<input type="button" onclick="ExportEvt();" name="btnExportEvt" value="Exporter">
-								</td>
-							</tr>
-						</tbody>
+						<tr>
+							<td colspan=2>
+								<span id="json_msg">
+									{$msg_json}
+								</span>
+								<br>
+								{section name=i loop=$arrayinfo}
+									{$arrayinfo[i]}<BR>
+								{/section}
+							</td>
+						</tr>
 					</table>
 					<table width="100%">
 						<thead>
 							<tr>
 								<th class="titreForm">
-									Import événement
+									Upload d'images
 								</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td>
-									<label for="evenementImport">{#Filtre_evenement#}</label>
+									<label for="imageType">Type d'image :</label>
 									<br>
-									<select name="evenementImport" id="evenementImport">
-										{section name=i loop=$arrayEvenement}
-											{assign var="evt_libelle" value=$arrayEvenement[i].Libelle}
-											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection|default:''}>
-											{$arrayEvenement[i].Id} - {$smarty.config.$evt_libelle|default:$evt_libelle}
-											</Option>
-										{/section}
+									<select name="imageType" id="imageType" onchange="updateImageFields()">
+										<option value="">-- Sélectionnez un type --</option>
+										<option value="logo_competition">Logo compétition (JPG, 1000x1000 max)</option>
+										<option value="bandeau_competition">Bandeau compétition (JPG, 2480x250 max)</option>
+										<option value="sponsor_competition">Sponsor compétition (JPG, 2480x250 max)</option>
+										<option value="logo_club">Logo club (PNG, 200x200 max)</option>
+										<option value="logo_nation">Logo nation (PNG, 200x200 max)</option>
 									</select>
+									<br><br>
+
+									<div id="competitionFields" style="display:none;">
+										<label for="codeCompetition">Code compétition :</label>
+										<input type="text" name="codeCompetition" id="codeCompetition" size="10" maxlength="20">
+										<br>
+										<label for="saison">Saison :</label>
+										<input type="text" name="saison" id="saison" size="4" maxlength="4" placeholder="2024">
+										<br><br>
+									</div>
+
+									<div id="clubFields" style="display:none;">
+										<label for="numeroClub">Numéro club :</label>
+										<input type="text" name="numeroClub" id="numeroClub" size="10" maxlength="10">
+										<br><br>
+									</div>
+
+									<div id="nationFields" style="display:none;">
+										<label for="codeNation">Code nation (ex: FRA) :</label>
+										<input type="text" name="codeNation" id="codeNation" size="3" maxlength="3" style="text-transform: uppercase;">
+										<br><br>
+									</div>
+
+									<div id="filenamePreview" style="margin-bottom: 10px; padding: 5px; background-color: #f0f0f0; border-radius: 3px; display:none;">
+										<strong>Nom du fichier :</strong> <span id="previewFilename">-</span>
+									</div>
+
+									<label for="imageFile">Fichier image :</label>
+									<input type="file" name="imageFile" id="imageFile" accept="image/jpeg,image/jpg,image/png">
+									<br><br>
+
+									<input type="submit" name="uploadImage" id="uploadImageBtn" value="Uploader l'image" disabled>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<br>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th class="titreForm">
+									Renommer une image existante
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<label for="renameImageType">Type d'image :</label>
 									<br>
-									<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
-									<input type="file" id="jsonUpload" name="jsonUpload" accept="text/json" />
-									<br>
-									<input type="button" onclick="ImportEvt();" name="btnImportEvt" value="Importer">
+									<select name="renameImageType" id="renameImageType">
+										<option value="">-- Sélectionnez un type --</option>
+										<option value="logo_competition" {if $duplicate_file.type == 'logo_competition'}selected{/if}>Logo compétition</option>
+										<option value="bandeau_competition" {if $duplicate_file.type == 'bandeau_competition'}selected{/if}>Bandeau compétition</option>
+										<option value="sponsor_competition" {if $duplicate_file.type == 'sponsor_competition'}selected{/if}>Sponsor compétition</option>
+										<option value="logo_club" {if $duplicate_file.type == 'logo_club'}selected{/if}>Logo club</option>
+										<option value="logo_nation" {if $duplicate_file.type == 'logo_nation'}selected{/if}>Logo nation</option>
+									</select>
+									<br><br>
+
+									<label for="currentImageName">Nom du fichier actuel (avec extension) :</label>
+									<input type="text" name="currentImageName" id="currentImageName" size="40" placeholder="Ex: L-CDM-2024.jpg" value="{$duplicate_file.filename|default:''}">
+									<br><br>
+
+									<div id="renameCompetitionFields" style="display:none;">
+										<label for="renameCodeCompetition">Code compétition (nouveau) :</label>
+										<input type="text" name="renameCodeCompetition" id="renameCodeCompetition" size="10" maxlength="20">
+										<br>
+										<label for="renameSaison">Saison (nouveau) :</label>
+										<input type="text" name="renameSaison" id="renameSaison" size="4" maxlength="4" placeholder="2025">
+										<br><br>
+									</div>
+
+									<div id="renameClubFields" style="display:none;">
+										<label for="renameNumeroClub">Numéro club (nouveau) :</label>
+										<input type="text" name="renameNumeroClub" id="renameNumeroClub" size="10" maxlength="10">
+										<br><br>
+									</div>
+
+									<div id="renameNationFields" style="display:none;">
+										<label for="renameCodeNation">Code nation (nouveau, ex: FRA) :</label>
+										<input type="text" name="renameCodeNation" id="renameCodeNation" size="3" maxlength="3" style="text-transform: uppercase;">
+										<br><br>
+									</div>
+
+									<div id="newImageNamePreview" style="margin-bottom: 10px; padding: 5px; background-color: #e8f5e9; border-radius: 3px; display:none;">
+										<strong>Nouveau nom :</strong> <span id="newImageNameDisplay">-</span>
+									</div>
+
+									<input type="hidden" name="newImageName" id="newImageName" value="">
+									<input type="button" name="renameImage" id="btnRenameImage" value="Renommer l'image" disabled>
 								</td>
 							</tr>
 						</tbody>
@@ -210,120 +282,60 @@
 						</tr>
 					</table>
 					<br>
-					<br>
+					<hr>
 					<table width="100%">
 						<thead>
 							<tr>
 								<th class="titreForm">
-									Upload d'images
+									Export événement
 								</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td>
-									<label for="imageType">Type d'image :</label>
+									<label for="evenementExport">{#Filtre_evenement#}</label>
 									<br>
-									<select name="imageType" id="imageType" onchange="updateImageFields()">
-										<option value="">-- Sélectionnez un type --</option>
-										<option value="logo_competition">Logo compétition (JPG, 1000x1000 max)</option>
-										<option value="bandeau_competition">Bandeau compétition (JPG, 2480x250 max)</option>
-										<option value="sponsor_competition">Sponsor compétition (JPG, 2480x250 max)</option>
-										<option value="logo_club">Logo club (PNG, 200x200 max)</option>
-										<option value="logo_nation">Logo nation (PNG, 200x200 max)</option>
+									<select name="evenementExport" id="evenementExport">
+										{section name=i loop=$arrayEvenement}
+											{assign var="evt_libelle" value=$arrayEvenement[i].Libelle}
+											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection|default:''}>
+											{$arrayEvenement[i].Id} - {$smarty.config.$evt_libelle|default:$evt_libelle}
+											</Option>
+										{/section}
 									</select>
-									<br><br>
-
-									<div id="competitionFields" style="display:none;">
-										<label for="codeCompetition">Code compétition :</label>
-										<input type="text" name="codeCompetition" id="codeCompetition" size="10" maxlength="20">
-										<br>
-										<label for="saison">Saison :</label>
-										<input type="text" name="saison" id="saison" size="4" maxlength="4" placeholder="2024">
-										<br><br>
-									</div>
-
-									<div id="clubFields" style="display:none;">
-										<label for="numeroClub">Numéro club :</label>
-										<input type="text" name="numeroClub" id="numeroClub" size="10" maxlength="10">
-										<br><br>
-									</div>
-
-									<div id="nationFields" style="display:none;">
-										<label for="codeNation">Code nation (ex: FRA) :</label>
-										<input type="text" name="codeNation" id="codeNation" size="3" maxlength="3" style="text-transform: uppercase;">
-										<br><br>
-									</div>
-
-									<div id="filenamePreview" style="margin-bottom: 10px; padding: 5px; background-color: #f0f0f0; border-radius: 3px; display:none;">
-										<strong>Nom du fichier :</strong> <span id="previewFilename">-</span>
-									</div>
-
-									<label for="imageFile">Fichier image :</label>
-									<input type="file" name="imageFile" id="imageFile" accept="image/jpeg,image/jpg,image/png">
-									<br><br>
-
-									<input type="submit" name="uploadImage" id="uploadImageBtn" value="Uploader l'image" disabled>
+									<br>
+									<input type="button" onclick="ExportEvt();" name="btnExportEvt" value="Exporter">
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					<br>
-					<br>
 					<table width="100%">
 						<thead>
 							<tr>
 								<th class="titreForm">
-									Renommer une image existante
+									Import événement
 								</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td>
-									<label for="renameImageType">Type d'image :</label>
+									<label for="evenementImport">{#Filtre_evenement#}</label>
 									<br>
-									<select name="renameImageType" id="renameImageType">
-										<option value="">-- Sélectionnez un type --</option>
-										<option value="logo_competition" {if $duplicate_file.type == 'logo_competition'}selected{/if}>Logo compétition</option>
-										<option value="bandeau_competition" {if $duplicate_file.type == 'bandeau_competition'}selected{/if}>Bandeau compétition</option>
-										<option value="sponsor_competition" {if $duplicate_file.type == 'sponsor_competition'}selected{/if}>Sponsor compétition</option>
-										<option value="logo_club" {if $duplicate_file.type == 'logo_club'}selected{/if}>Logo club</option>
-										<option value="logo_nation" {if $duplicate_file.type == 'logo_nation'}selected{/if}>Logo nation</option>
+									<select name="evenementImport" id="evenementImport">
+										{section name=i loop=$arrayEvenement}
+											{assign var="evt_libelle" value=$arrayEvenement[i].Libelle}
+											<Option Value="{$arrayEvenement[i].Id}" {$arrayEvenement[i].Selection|default:''}>
+											{$arrayEvenement[i].Id} - {$smarty.config.$evt_libelle|default:$evt_libelle}
+											</Option>
+										{/section}
 									</select>
-									<br><br>
-
-									<label for="currentImageName">Nom du fichier actuel (avec extension) :</label>
-									<input type="text" name="currentImageName" id="currentImageName" size="40" placeholder="Ex: L-CDM-2024.jpg" value="{$duplicate_file.filename|default:''}">
-									<br><br>
-
-									<div id="renameCompetitionFields" style="display:none;">
-										<label for="renameCodeCompetition">Code compétition (nouveau) :</label>
-										<input type="text" name="renameCodeCompetition" id="renameCodeCompetition" size="10" maxlength="20">
-										<br>
-										<label for="renameSaison">Saison (nouveau) :</label>
-										<input type="text" name="renameSaison" id="renameSaison" size="4" maxlength="4" placeholder="2025">
-										<br><br>
-									</div>
-
-									<div id="renameClubFields" style="display:none;">
-										<label for="renameNumeroClub">Numéro club (nouveau) :</label>
-										<input type="text" name="renameNumeroClub" id="renameNumeroClub" size="10" maxlength="10">
-										<br><br>
-									</div>
-
-									<div id="renameNationFields" style="display:none;">
-										<label for="renameCodeNation">Code nation (nouveau, ex: FRA) :</label>
-										<input type="text" name="renameCodeNation" id="renameCodeNation" size="3" maxlength="3" style="text-transform: uppercase;">
-										<br><br>
-									</div>
-
-									<div id="newImageNamePreview" style="margin-bottom: 10px; padding: 5px; background-color: #e8f5e9; border-radius: 3px; display:none;">
-										<strong>Nouveau nom :</strong> <span id="newImageNameDisplay">-</span>
-									</div>
-
-									<input type="hidden" name="newImageName" id="newImageName" value="">
-									<input type="button" name="renameImage" id="btnRenameImage" value="Renommer l'image" disabled>
+									<br>
+									<input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+									<input type="file" id="jsonUpload" name="jsonUpload" accept="text/json" />
+									<br>
+									<input type="button" onclick="ImportEvt();" name="btnImportEvt" value="Importer">
 								</td>
 							</tr>
 						</tbody>
@@ -380,17 +392,6 @@
 						<tr>
 							<td colspan=2>
 								<input type="button" name="importPCE2" id="importPCE2" value="Mise à jour des licenciés (base fédérale J-1)">
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2>
-								<span id="json_msg">
-									{$msg_json}
-								</span>
-								<br>
-								{section name=i loop=$arrayinfo}
-									{$arrayinfo[i]}<BR>
-								{/section}
 							</td>
 						</tr>
 					</table>

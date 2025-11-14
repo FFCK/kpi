@@ -1479,7 +1479,7 @@ class GestionOperations extends MyPageSecure
 				'mime_types' => ['image/png'],
 				'max_width' => 200,
 				'max_height' => 200,
-				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KPI/logo/',
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KIP/logo/',
 				'name_fields' => ['numeroClub'],
 			],
 			'logo_nation' => [
