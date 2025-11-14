@@ -519,9 +519,9 @@ function updateUploadButton() {
 	}
 
 	if (imageType && hasFile && fieldsValid) {
-		jq('#uploadImageBtn').prop('disabled', false);
+		jq('#uploadImageBtn').removeAttr('disabled');
 	} else {
-		jq('#uploadImageBtn').prop('disabled', true);
+		jq('#uploadImageBtn').attr('disabled', 'disabled');
 	}
 }
 
@@ -635,9 +635,9 @@ function updateRenameButton() {
 	}
 
 	if (renameType && currentName && fieldsValid) {
-		jq('#btnRenameImage').prop('disabled', false);
+		jq('#btnRenameImage').removeAttr('disabled');
 	} else {
-		jq('#btnRenameImage').prop('disabled', true);
+		jq('#btnRenameImage').attr('disabled', 'disabled');
 	}
 }
 
