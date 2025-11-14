@@ -268,6 +268,66 @@
 							</tr>
 						</tbody>
 					</table>
+					<br>
+					<br>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th class="titreForm">
+									Renommer une image existante
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<label for="renameImageType">Type d'image :</label>
+									<br>
+									<select name="renameImageType" id="renameImageType">
+										<option value="">-- Sélectionnez un type --</option>
+										<option value="logo_competition" {if $duplicate_file.type == 'logo_competition'}selected{/if}>Logo compétition</option>
+										<option value="bandeau_competition" {if $duplicate_file.type == 'bandeau_competition'}selected{/if}>Bandeau compétition</option>
+										<option value="sponsor_competition" {if $duplicate_file.type == 'sponsor_competition'}selected{/if}>Sponsor compétition</option>
+										<option value="logo_club" {if $duplicate_file.type == 'logo_club'}selected{/if}>Logo club</option>
+										<option value="logo_nation" {if $duplicate_file.type == 'logo_nation'}selected{/if}>Logo nation</option>
+									</select>
+									<br><br>
+
+									<label for="currentImageName">Nom du fichier actuel (avec extension) :</label>
+									<input type="text" name="currentImageName" id="currentImageName" size="40" placeholder="Ex: L-CDM-2024.jpg" value="{$duplicate_file.filename|default:''}">
+									<br><br>
+
+									<div id="renameCompetitionFields" style="display:none;">
+										<label for="renameCodeCompetition">Code compétition (nouveau) :</label>
+										<input type="text" name="renameCodeCompetition" id="renameCodeCompetition" size="10" maxlength="20">
+										<br>
+										<label for="renameSaison">Saison (nouveau) :</label>
+										<input type="text" name="renameSaison" id="renameSaison" size="4" maxlength="4" placeholder="2025">
+										<br><br>
+									</div>
+
+									<div id="renameClubFields" style="display:none;">
+										<label for="renameNumeroClub">Numéro club (nouveau) :</label>
+										<input type="text" name="renameNumeroClub" id="renameNumeroClub" size="10" maxlength="10">
+										<br><br>
+									</div>
+
+									<div id="renameNationFields" style="display:none;">
+										<label for="renameCodeNation">Code nation (nouveau, ex: FRA) :</label>
+										<input type="text" name="renameCodeNation" id="renameCodeNation" size="3" maxlength="3" style="text-transform: uppercase;">
+										<br><br>
+									</div>
+
+									<div id="newImageNamePreview" style="margin-bottom: 10px; padding: 5px; background-color: #e8f5e9; border-radius: 3px; display:none;">
+										<strong>Nouveau nom :</strong> <span id="newImageNameDisplay">-</span>
+									</div>
+
+									<input type="hidden" name="newImageName" id="newImageName" value="">
+									<input type="button" name="renameImage" id="btnRenameImage" value="Renommer l'image" disabled>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 				<div class='blocRight'>
 					<table width="100%">

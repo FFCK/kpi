@@ -14,6 +14,7 @@ class GestionOperations extends MyPageSecure
 {
 	var $myBdd;
 	var $m_arrayinfo;
+	var $m_duplicate_file;
 
 	function Load()
 	{
@@ -1365,6 +1366,73 @@ class GestionOperations extends MyPageSecure
 		}
 	}
 
+	function renameImage()
+	{
+		// Get form parameters
+		$renameType = utyGetPost('renameImageType', '');
+		$currentName = utyGetPost('currentImageName', '');
+		$newName = utyGetPost('newImageName', '');
+
+		if (empty($renameType) || empty($currentName) || empty($newName)) {
+			array_push($this->m_arrayinfo, 'Erreur : Tous les champs sont requis pour le renommage.');
+			return;
+		}
+
+		// Define image type configurations
+		$imageConfig = [
+			'logo_competition' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+			],
+			'bandeau_competition' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+			],
+			'sponsor_competition' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+			],
+			'logo_club' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KPI/logo/',
+			],
+			'logo_nation' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/Nations/',
+			],
+		];
+
+		// Validate image type
+		if (!isset($imageConfig[$renameType])) {
+			array_push($this->m_arrayinfo, 'Erreur : Type d\'image non valide.');
+			return;
+		}
+
+		$config = $imageConfig[$renameType];
+		$currentPath = $config['destination'] . $currentName;
+		$newPath = $config['destination'] . $newName;
+
+		// Check if current file exists
+		if (!file_exists($currentPath)) {
+			array_push($this->m_arrayinfo, 'Erreur : Le fichier "' . $currentName . '" n\'existe pas dans le dossier de destination.');
+			return;
+		}
+
+		// Check if new filename already exists
+		if (file_exists($newPath)) {
+			array_push($this->m_arrayinfo, 'Erreur : Un fichier portant le nom "' . $newName . '" existe déjà dans le dossier de destination.');
+			return;
+		}
+
+		// Check if current and new names are the same
+		if ($currentName === $newName) {
+			array_push($this->m_arrayinfo, 'Erreur : Le nouveau nom doit être différent de l\'ancien.');
+			return;
+		}
+
+		// Rename the file
+		if (rename($currentPath, $newPath)) {
+			array_push($this->m_arrayinfo, 'Succès : Le fichier "' . $currentName . '" a été renommé en "' . $newName . '".');
+		} else {
+			array_push($this->m_arrayinfo, 'Erreur : Impossible de renommer le fichier.');
+		}
+	}
+
 	function uploadImage()
 	{
 		// Get form parameters
@@ -1463,6 +1531,20 @@ class GestionOperations extends MyPageSecure
 				array_push($this->m_arrayinfo, 'Erreur : Impossible de créer le répertoire de destination.');
 				return;
 			}
+		}
+
+		// Check if file already exists
+		if (file_exists($destinationPath)) {
+			array_push($this->m_arrayinfo, 'ERREUR : Un fichier portant le nom "' . $filename . '" existe déjà dans le dossier de destination.');
+			array_push($this->m_arrayinfo, 'Veuillez utiliser la fonctionnalité de renommage ci-dessous pour renommer le fichier existant avant de procéder à l\'upload.');
+
+			// Store duplicate file info for pre-filling rename form
+			$this->m_duplicate_file = array(
+				'filename' => $filename,
+				'type' => $imageType,
+				'destination' => $config['destination']
+			);
+			return;
 		}
 
 		// Get image dimensions
@@ -1616,6 +1698,12 @@ class GestionOperations extends MyPageSecure
 				$this->uploadImage();
 				$arrayinfo = $this->m_arrayinfo;
 				break;
+			case isset($_POST['renameImage']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Renommage de l\'image en cours...');
+				$this->renameImage();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
 		}
 
 		$msg = '';
@@ -1639,6 +1727,7 @@ class GestionOperations extends MyPageSecure
 		$this->m_tpl->assign('arrayinfo', $arrayinfo);
 		$this->m_tpl->assign('msg_json', $msg);
 		$this->m_tpl->assign('production', $production);
+		$this->m_tpl->assign('duplicate_file', $this->m_duplicate_file);
 		$this->DisplayTemplate('GestionOperations');
 
 

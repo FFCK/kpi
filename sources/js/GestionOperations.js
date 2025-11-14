@@ -368,11 +368,47 @@ jq(document).ready(function () {
 	// Image upload handlers
 	jq('#codeCompetition, #saison, #numeroClub, #codeNation').on('input', function() {
 		updateFilenamePreview();
+		updateUploadButton();
 	});
 
 	jq('#imageFile').on('change', function() {
 		updateUploadButton();
 	});
+
+	jq('#imageType').on('change', function() {
+		updateImageFields();
+	});
+
+	// Image rename handlers
+	jq('#renameImageType').on('change', function() {
+		loadExistingImages();
+	});
+
+	jq('#existingImageFile').on('change', function() {
+		var selectedFile = jq('#existingImageFile').val();
+		jq('#currentImageName').val(selectedFile);
+		updateNewImageName();
+	});
+
+	jq('#renameCodeCompetition, #renameSaison, #renameNumeroClub, #renameCodeNation').on('input', function() {
+		updateNewImageName();
+	});
+
+	jq('#currentImageName').on('input', function() {
+		updateRenameButton();
+	});
+
+	jq('#btnRenameImage').on('click', function() {
+		if (confirm('Êtes-vous sûr de vouloir renommer ce fichier ?')) {
+			jq('#formOperations').submit();
+		}
+	});
+
+	// Initialize rename form if duplicate file was detected
+	var renameType = jq('#renameImageType').val();
+	if (renameType) {
+		loadExistingImages();
+	}
 
 })
 
@@ -486,6 +522,122 @@ function updateUploadButton() {
 		jq('#uploadImageBtn').prop('disabled', false);
 	} else {
 		jq('#uploadImageBtn').prop('disabled', true);
+	}
+}
+
+function loadExistingImages() {
+	var renameType = jq('#renameImageType').val();
+
+	// Hide all rename fields first
+	jq('#renameCompetitionFields').hide();
+	jq('#renameClubFields').hide();
+	jq('#renameNationFields').hide();
+	jq('#newImageNamePreview').hide();
+
+	// Clear fields
+	jq('#currentImageName').val('');
+	jq('#renameCodeCompetition').val('');
+	jq('#renameSaison').val('');
+	jq('#renameNumeroClub').val('');
+	jq('#renameCodeNation').val('');
+
+	if (!renameType) {
+		return;
+	}
+
+	// Show relevant fields
+	if (renameType === 'logo_competition' || renameType === 'bandeau_competition' || renameType === 'sponsor_competition') {
+		jq('#renameCompetitionFields').show();
+		jq('#newImageNamePreview').show();
+	} else if (renameType === 'logo_club') {
+		jq('#renameClubFields').show();
+		jq('#newImageNamePreview').show();
+	} else if (renameType === 'logo_nation') {
+		jq('#renameNationFields').show();
+		jq('#newImageNamePreview').show();
+	}
+}
+
+function updateNewImageName() {
+	var renameType = jq('#renameImageType').val();
+	var newFilename = '';
+
+	switch(renameType) {
+		case 'logo_competition':
+			var code = jq('#renameCodeCompetition').val();
+			var saison = jq('#renameSaison').val();
+			if (code && saison) {
+				newFilename = 'L-' + code + '-' + saison + '.jpg';
+			} else {
+				newFilename = 'L-<CodeCompétition>-<Saison>.jpg';
+			}
+			break;
+		case 'bandeau_competition':
+			var code = jq('#renameCodeCompetition').val();
+			var saison = jq('#renameSaison').val();
+			if (code && saison) {
+				newFilename = 'B-' + code + '-' + saison + '.jpg';
+			} else {
+				newFilename = 'B-<CodeCompétition>-<Saison>.jpg';
+			}
+			break;
+		case 'sponsor_competition':
+			var code = jq('#renameCodeCompetition').val();
+			var saison = jq('#renameSaison').val();
+			if (code && saison) {
+				newFilename = 'S-' + code + '-' + saison + '.jpg';
+			} else {
+				newFilename = 'S-<CodeCompétition>-<Saison>.jpg';
+			}
+			break;
+		case 'logo_club':
+			var numero = jq('#renameNumeroClub').val();
+			if (numero) {
+				newFilename = numero + '-logo.png';
+			} else {
+				newFilename = '<NuméroClub>-logo.png';
+			}
+			break;
+		case 'logo_nation':
+			var nation = jq('#renameCodeNation').val().toUpperCase();
+			if (nation) {
+				newFilename = nation + '.png';
+			} else {
+				newFilename = '<NATION>.png';
+			}
+			break;
+		default:
+			newFilename = '-';
+	}
+
+	jq('#newImageName').val(newFilename);
+	jq('#newImageNameDisplay').text(newFilename);
+	updateRenameButton();
+}
+
+function updateRenameButton() {
+	var renameType = jq('#renameImageType').val();
+	var currentName = jq('#currentImageName').val();
+	var fieldsValid = false;
+
+	switch(renameType) {
+		case 'logo_competition':
+		case 'bandeau_competition':
+		case 'sponsor_competition':
+			fieldsValid = jq('#renameCodeCompetition').val() !== '' && jq('#renameSaison').val() !== '';
+			break;
+		case 'logo_club':
+			fieldsValid = jq('#renameNumeroClub').val() !== '';
+			break;
+		case 'logo_nation':
+			fieldsValid = jq('#renameCodeNation').val() !== '';
+			break;
+	}
+
+	if (renameType && currentName && fieldsValid) {
+		jq('#btnRenameImage').prop('disabled', false);
+	} else {
+		jq('#btnRenameImage').prop('disabled', true);
 	}
 }
 
