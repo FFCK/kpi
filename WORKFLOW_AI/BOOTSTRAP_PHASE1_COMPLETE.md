@@ -90,7 +90,7 @@ Le bundle inclut Popper.js nécessaire pour les composants positionnés (dropdow
 
 ### Fichier créé: `sources/admin/test_bootstrap538.php`
 
-**URL de test**: `https://kpi.local/admin/test_bootstrap538.php`
+**URL de test**: `https://kpi.localhost/admin/test_bootstrap538.php`
 
 **Tests inclus**:
 - ✅ Chargement CSS depuis vendor/

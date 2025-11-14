@@ -72,6 +72,22 @@
 					<table width="100%">
 						<thead>
 							<tr>
+								<th class="titreForm">Worker Management</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="{$url_base|default:''}/live/event.php" target="_blank">Event Cache Worker</a>
+									<br>
+									<small style="color: #666;">Gestion automatique des caches pour les événements live</small>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table width="100%">
+						<thead>
+							<tr>
 								<th class="titreForm">Imports SDP ICF</th>
 							</tr>
 						</thead>
