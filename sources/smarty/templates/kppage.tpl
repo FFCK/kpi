@@ -88,7 +88,7 @@
             {* FullCalendar v6.1.19 - loaded in order: core, daygrid, locales *}
             <script type='text/javascript' src='{$adm}js/fullcalendar-core.min.js?v={$NUM_VERSION}'></script>
             <script type='text/javascript' src='{$adm}js/fullcalendar-daygrid.min.js?v={$NUM_VERSION}'></script>
-            <script type='text/javascript' src='{$adm}js/fullcalendar-locales-fr.min.js?v={$NUM_VERSION}'></script>
+            <script type='text/javascript' src='{$adm}js/fullcalendar-locales-all.min.js?v={$NUM_VERSION}'></script>
         {/if}
         {if $contenutemplate|upper eq 'IMPORTPCE' }	
             {literal}
