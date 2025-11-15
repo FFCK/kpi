@@ -155,3 +155,6 @@ sources/app2/node_modules/
 sources/app2/.nuxt/
 sources/app2/.output/
 sources/app2/dist/
+
+sources/live/logs
+!sources/live/logs/.gitkeep
