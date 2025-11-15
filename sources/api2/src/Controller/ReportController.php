@@ -22,7 +22,6 @@ class ReportController extends AbstractController
         summary: 'Get game details with events and players',
         description: 'Returns complete game report including teams, players, and match events for official reports',
         tags: ['Report'],
-        security: [['TokenAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: 'token',

@@ -22,7 +22,6 @@ class StaffController extends AbstractController
         path: '/api/staff/{token}/test',
         summary: 'Test endpoint for staff authentication',
         tags: ['Staff - Scrutineering'],
-        security: [['TokenAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: 'token',
@@ -55,7 +54,6 @@ class StaffController extends AbstractController
         path: '/api/staff/{token}/teams/{eventId}',
         summary: 'Get teams for scrutineering',
         tags: ['Staff - Scrutineering'],
-        security: [['TokenAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: 'token',
@@ -115,7 +113,6 @@ class StaffController extends AbstractController
         path: '/api/staff/{token}/players/{teamId}',
         summary: 'Get players for a team',
         tags: ['Staff - Scrutineering'],
-        security: [['TokenAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: 'token',
