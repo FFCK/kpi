@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-const baseUrl = process.env.BASE_URL ?? '/app3'
+const baseUrl = process.env.BASE_URL ?? ''
 const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.localhost/api'
 const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.localhost'
 

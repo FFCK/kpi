@@ -56,40 +56,92 @@ Application de gestion de feuille de marque en temps réel pour le Kayak Polo, c
 
 ## 📦 Installation
 
-```bash
-# Installation des dépendances
-cd sources/app3
-npm install
+### Prérequis
+- Docker et Docker Compose installés
+- Traefik configuré (pour le domaine app3.localhost)
 
-# OU via Makefile (depuis la racine du projet)
+### Configuration
+
+1. **Initialiser les réseaux Docker** (si ce n'est pas déjà fait) :
+```bash
+make init_networks
+```
+
+2. **Vérifier le fichier `.env`** dans `docker/`:
+```bash
+# Assurez-vous que APP3_DOMAIN_NAME est défini
+APP3_DOMAIN_NAME=app3.localhost
+```
+
+3. **Démarrer les containers Docker** :
+```bash
+# Démarrer l'environnement de développement
+make dev_up
+```
+
+4. **Installer les dépendances NPM** :
+```bash
+# Via Makefile (recommandé)
 make npm_install_app3
 ```
 
 ## 🛠️ Développement
 
+### Démarrage
+
 ```bash
 # Démarrer le serveur de développement (port 3003)
-npm run dev
-
-# OU via Makefile
 make run_dev_app3
 ```
 
-L'application sera accessible sur `http://localhost:3003` ou `https://kpi.local/app3` selon votre configuration.
+L'application sera accessible sur :
+- **Via Docker avec Traefik** : `https://app3.localhost` (recommandé)
+- **Accès direct** : `http://localhost:3003`
+
+### Commandes disponibles
+
+```bash
+# Installation
+make npm_install_app3           # Installer les dépendances
+make npm_clean_app3             # Nettoyer node_modules
+
+# Développement
+make run_dev_app3               # Serveur dev (port 3003)
+make run_build_app3             # Build production
+make run_generate_app3          # Génération statique
+make run_lint_app3              # ESLint
+
+# Ajout de packages
+make npm_add_app3 package=uuid
+make npm_add_dev_app3 package=eslint
+
+# Shell
+make node3_bash                 # Ouvrir un shell dans le container
+```
+
+### Sans Docker (développement local)
+
+Si vous préférez développer sans Docker :
+
+```bash
+cd sources/app3
+npm install
+npm run dev
+```
+
+**Note** : Le développement avec Docker est recommandé pour bénéficier de Traefik et du domaine app3.localhost.
 
 ## 🏗️ Build Production
 
 ```bash
 # Build pour la production
-npm run build
+make run_build_app3
 
 # Générer le site statique
-npm run generate
-
-# OU via Makefile
-make run_build_app3
 make run_generate_app3
 ```
+
+Les fichiers générés seront dans `.output/` (build) ou `.output/public/` (generate).
 
 ## 📱 Utilisation
 

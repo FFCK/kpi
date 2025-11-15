@@ -10,6 +10,7 @@ APPLICATION_NAME ?= kpi
 NETWORK_KPI_NAME = network_$(APPLICATION_NAME)
 PHP_CONTAINER_NAME = $(APPLICATION_NAME)_php
 NODE_CONTAINER_NAME = $(APPLICATION_NAME)_node_app2
+NODE3_CONTAINER_NAME = $(APPLICATION_NAME)_node_app3
 DB_CONTAINER_NAME = $(APPLICATION_NAME)_db
 
 DOCKER_COMPOSE = docker compose
@@ -17,6 +18,7 @@ DOCKER_EXEC = docker exec -ti
 DOCKER_EXEC_PHP = docker exec -ti $(PHP_CONTAINER_NAME)
 DOCKER_EXEC_PHP_NON_INTERACTIVE = docker exec $(PHP_CONTAINER_NAME)
 DOCKER_EXEC_NODE = docker exec -ti $(NODE_CONTAINER_NAME)
+DOCKER_EXEC_NODE3 = docker exec -ti $(NODE3_CONTAINER_NAME)
 .DEFAULT_GOAL = help
 
 .PHONY: help init init_env init_env_app2 init_env_app3 init_networks \
@@ -216,56 +218,42 @@ npm_add_dev_app2: ## Ajoute un package npm de dev à app2 (usage: make npm_add_d
 
 ## NUXT - APP3 (Match Sheet)
 run_dev_app3: ## Lance le serveur Nuxt (app3) en mode développement (port 3003)
-	@echo "Démarrage de app3 sur le port 3003..."
-	@docker run --rm -ti -v $(PWD)/sources/app3:/app -w /app -p 3003:3003 --network=$(NETWORK_KPI_NAME) node:20-alpine sh -c "npm run dev"
+	$(DOCKER_EXEC_NODE3) sh -c "npm run dev"
 
 run_build_app3: ## Build l'application Nuxt (app3) pour la production
-	@echo "Build de app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "npm run build"
+	$(DOCKER_EXEC_NODE3) sh -c "npm run build"
 
 run_generate_app3: ## Génère l'application Nuxt (app3) en mode statique
-	@echo "Génération statique de app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "npm run generate"
+	$(DOCKER_EXEC_NODE3) sh -c "npm run generate"
 
 run_lint_app3: ## Exécute ESLint sur app3
-	@echo "Lint de app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "npm run lint"
+	$(DOCKER_EXEC_NODE3) sh -c "npm run lint"
 
 
 ## NPM - APP3 (Match Sheet)
 npm_install_app3: ## Installe toutes les dépendances npm pour app3
-	@echo "Installation des dépendances npm pour app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "npm install"
-	@echo "✅ Dépendances app3 installées"
+	@echo "Installation des dépendances npm pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm install"
 
 npm_ls_app3: ## Liste les modules npm installés dans app3
-	@echo "Modules npm dans app3:"
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "ls -l node_modules/@nuxtjs 2>/dev/null || echo 'Aucun module @nuxtjs trouvé'"
+	@echo "Modules npm dans app3 (container: $(NODE3_CONTAINER_NAME)):"
+	$(DOCKER_EXEC_NODE3) sh -c "ls -l node_modules/@nuxtjs"
 
 npm_clean_app3: ## Supprime node_modules et package-lock.json de app3
-	@echo "Nettoyage de node_modules pour app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "rm -rf node_modules package-lock.json"
-	@echo "✅ Nettoyage terminé"
+	@echo "Nettoyage de node_modules pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "rm -rf node_modules package-lock.json"
 
 npm_update_app3: ## Met à jour toutes les dépendances npm de app3
-	@echo "Mise à jour des dépendances npm pour app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "npm update"
+	@echo "Mise à jour des dépendances npm pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm update"
 
 npm_add_app3: ## Ajoute un package npm à app3 (usage: make npm_add_app3 package=uuid)
-	@if [ -z "$(package)" ]; then \
-		echo "❌ Erreur: spécifiez un package (make npm_add_app3 package=uuid)"; \
-		exit 1; \
-	fi
-	@echo "Ajout du package $(package) pour app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "npm install $(package)"
+	@echo "Ajout du package $(package) pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm install $(package)"
 
 npm_add_dev_app3: ## Ajoute un package npm de dev à app3 (usage: make npm_add_dev_app3 package=eslint)
-	@if [ -z "$(package)" ]; then \
-		echo "❌ Erreur: spécifiez un package (make npm_add_dev_app3 package=eslint)"; \
-		exit 1; \
-	fi
-	@echo "Ajout du package de dev $(package) pour app3..."
-	@docker run --rm -v $(PWD)/sources/app3:/app -w /app node:20-alpine sh -c "npm install -D $(package)"
+	@echo "Ajout du package de dev $(package) pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm install -D $(package)"
 
 
 ## NPM - BACKEND (JavaScript Libraries)
@@ -369,6 +357,9 @@ php_bash: ## Ouvre un shell bash dans le container PHP
 
 node_bash: ## Ouvre un shell bash dans le container Node (app2)
 	$(DOCKER_EXEC_NODE) sh
+
+node3_bash: ## Ouvre un shell bash dans le container Node (app3)
+	$(DOCKER_EXEC_NODE3) sh
 
 db_bash: ## Ouvre un shell dans le container MySQL
 	docker exec -ti $(DB_CONTAINER_NAME) sh
