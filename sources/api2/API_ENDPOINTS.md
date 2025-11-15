@@ -8,8 +8,8 @@
 
 ### Events API
 ```
-GET  /api/events/{mode}          Get events (mode: std|champ|all)
-GET  /api/event/{id}             Get single event
+GET  /events/{mode}          Get events (mode: std|champ|all)
+GET  /event/{id}             Get single event
 ```
 
 **Example Response:**
@@ -26,7 +26,7 @@ GET  /api/event/{id}             Get single event
 
 ### Games API
 ```
-GET  /api/games/{eventId}        Get games for an event
+GET  /games/{eventId}        Get games for an event
 ```
 
 **Example Response:**
@@ -48,7 +48,7 @@ GET  /api/games/{eventId}        Get games for an event
 
 ### Charts & Rankings API
 ```
-GET  /api/charts/{eventId}       Get rankings and brackets
+GET  /charts/{eventId}       Get rankings and brackets
 ```
 
 **Example Response:**
@@ -75,9 +75,9 @@ GET  /api/charts/{eventId}       Get rankings and brackets
 
 ### Statistics API
 ```
-GET  /api/team-stats/{teamId}/{eventId}    Get team statistics
-GET  /api/stars                             Get app ratings
-POST /api/rating                            Submit app rating
+GET  /team-stats/{teamId}/{eventId}    Get team statistics
+GET  /stars                             Get app ratings
+POST /rating                            Submit app rating
 ```
 
 **Rating Request:**
@@ -92,11 +92,11 @@ POST /api/rating                            Submit app rating
 
 ### Scrutineering API
 ```
-GET  /api/staff/{token}/test
-GET  /api/staff/{token}/teams/{eventId}
-GET  /api/staff/{token}/players/{teamId}
-PUT  /api/staff/{token}/player/{playerId}/team/{teamId}/{parameter}/{value}
-PUT  /api/staff/{token}/player/{playerId}/team/{teamId}/comment
+GET  /staff/{token}/test
+GET  /staff/{token}/teams/{eventId}
+GET  /staff/{token}/players/{teamId}
+PUT  /staff/{token}/player/{playerId}/team/{teamId}/{parameter}/{value}
+PUT  /staff/{token}/player/{playerId}/team/{teamId}/comment
 ```
 
 **Parameters:**
@@ -116,7 +116,7 @@ PUT  /api/staff/{token}/player/{playerId}/team/{teamId}/comment
 
 ### Match Report API
 ```
-GET  /api/report/{token}/game/{gameId}    Get full game report
+GET  /report/{token}/game/{gameId}    Get full game report
 ```
 
 **Response includes:**
@@ -128,16 +128,16 @@ GET  /api/report/{token}/game/{gameId}    Get full game report
 
 ### Network & Configuration
 ```
-PUT  /api/wsm/eventNetwork/{eventId}      Update event network
+PUT  /wsm/eventNetwork/{eventId}      Update event network
 ```
 
 ### Game Management
 ```
-PUT  /api/wsm/gameParam/{matchId}         Update game parameters
-PUT  /api/wsm/gameEvent/{matchId}         Add/remove match events
-PUT  /api/wsm/playerStatus/{matchId}      Update player status
-PUT  /api/wsm/gameTimer/{matchId}         Control match timer
-PUT  /api/wsm/stats                       Add match statistics
+PUT  /wsm/gameParam/{matchId}         Update game parameters
+PUT  /wsm/gameEvent/{matchId}         Add/remove match events
+PUT  /wsm/playerStatus/{matchId}      Update player status
+PUT  /wsm/gameTimer/{matchId}         Control match timer
+PUT  /wsm/stats                       Add match statistics
 ```
 
 ### Game Parameters (`gameParam`)

@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/report', name: 'api_report_')]
+#[Route('/report', name: 'report_')]
 class ReportController extends AbstractController
 {
     public function __construct(
@@ -18,7 +18,7 @@ class ReportController extends AbstractController
 
     #[Route('/{token}/game/{gameId}', name: 'game', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/report/{token}/game/{gameId}',
+        path: '/report/{token}/game/{gameId}',
         summary: 'Get game details with events and players',
         description: 'Returns complete game report including teams, players, and match events for official reports',
         tags: ['Report'],

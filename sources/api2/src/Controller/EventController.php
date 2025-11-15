@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api', name: 'api_')]
 class EventController extends AbstractController
 {
     public function __construct(
@@ -19,7 +18,7 @@ class EventController extends AbstractController
 
     #[Route('/events/{mode}', name: 'events', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/events/{mode}',
+        path: '/events/{mode}',
         summary: 'Get events list',
         tags: ['Events'],
         parameters: [
@@ -97,7 +96,7 @@ class EventController extends AbstractController
 
     #[Route('/event/{id}', name: 'event', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/event/{id}',
+        path: '/event/{id}',
         summary: 'Get single event',
         tags: ['Events'],
         parameters: [

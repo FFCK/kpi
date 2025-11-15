@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/staff', name: 'api_staff_')]
+#[Route('/staff', name: 'staff_')]
 class StaffController extends AbstractController
 {
     public function __construct(
@@ -19,7 +19,7 @@ class StaffController extends AbstractController
 
     #[Route('/{token}/test', name: 'test', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/staff/{token}/test',
+        path: '/staff/{token}/test',
         summary: 'Test endpoint for staff authentication',
         tags: ['Staff - Scrutineering'],
         parameters: [
@@ -51,7 +51,7 @@ class StaffController extends AbstractController
 
     #[Route('/{token}/teams/{eventId}', name: 'teams', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/staff/{token}/teams/{eventId}',
+        path: '/staff/{token}/teams/{eventId}',
         summary: 'Get teams for scrutineering',
         tags: ['Staff - Scrutineering'],
         parameters: [
@@ -110,7 +110,7 @@ class StaffController extends AbstractController
 
     #[Route('/{token}/players/{teamId}', name: 'players', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/staff/{token}/players/{teamId}',
+        path: '/staff/{token}/players/{teamId}',
         summary: 'Get players for a team',
         tags: ['Staff - Scrutineering'],
         parameters: [

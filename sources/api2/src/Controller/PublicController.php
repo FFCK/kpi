@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api', name: 'api_')]
 class PublicController extends AbstractController
 {
     public function __construct(
@@ -19,7 +18,7 @@ class PublicController extends AbstractController
 
     #[Route('/team-stats/{teamId}/{eventId}', name: 'team_stats', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/team-stats/{teamId}/{eventId}',
+        path: '/team-stats/{teamId}/{eventId}',
         summary: 'Get team statistics',
         description: 'Returns player statistics for a team in an event (goals, cards, etc.)',
         tags: ['Statistics'],
@@ -114,7 +113,7 @@ class PublicController extends AbstractController
 
     #[Route('/stars', name: 'stars', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/stars',
+        path: '/stars',
         summary: 'Get app ratings statistics',
         tags: ['App Ratings'],
         responses: [
@@ -145,7 +144,7 @@ class PublicController extends AbstractController
 
     #[Route('/rating', name: 'rating', methods: ['POST'])]
     #[OA\Post(
-        path: '/api/rating',
+        path: '/rating',
         summary: 'Submit app rating',
         tags: ['App Ratings'],
         requestBody: new OA\RequestBody(

@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/wsm', name: 'api_wsm_')]
+#[Route('/wsm', name: 'wsm_')]
 class WsmController extends AbstractController
 {
     public function __construct(
@@ -19,7 +19,7 @@ class WsmController extends AbstractController
 
     #[Route('/eventNetwork/{eventId}', name: 'event_network', methods: ['PUT'])]
     #[OA\Put(
-        path: '/api/wsm/eventNetwork/{eventId}',
+        path: '/wsm/eventNetwork/{eventId}',
         summary: 'Update event network configuration',
         tags: ['WSM - Web Score Management'],
         parameters: [
@@ -67,7 +67,7 @@ class WsmController extends AbstractController
 
     #[Route('/gameParam/{matchId}', name: 'game_param', methods: ['PUT'])]
     #[OA\Put(
-        path: '/api/wsm/gameParam/{matchId}',
+        path: '/wsm/gameParam/{matchId}',
         summary: 'Update game parameters',
         description: 'Update match status, period, scores, etc.',
         tags: ['WSM - Web Score Management'],

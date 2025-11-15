@@ -8,7 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api', name: 'api_')]
 class ChartsController extends AbstractController
 {
     public function __construct(
@@ -18,7 +17,7 @@ class ChartsController extends AbstractController
 
     #[Route('/charts/{eventId}', name: 'charts', methods: ['GET'])]
     #[OA\Get(
-        path: '/api/charts/{eventId}',
+        path: '/charts/{eventId}',
         summary: 'Get rankings and brackets for an event',
         description: 'Returns complex tournament structure with pools, brackets, rankings, and game details',
         tags: ['Charts & Rankings'],
