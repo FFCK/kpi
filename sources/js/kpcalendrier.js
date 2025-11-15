@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headerToolbar: {
                 left: '',
                 center: 'title',
-                right: 'today prev,next'
+                right: 'today prev,next,prevYear,nextYear'
             }
         }));
         calendarFr.render();
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headerToolbar: {
                 left: '',
                 center: 'title',
-                right: 'today prev,next'
+                right: 'today prev,next,prevYear,nextYear'
             }
         }));
         calendarEn.render();
