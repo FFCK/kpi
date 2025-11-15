@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Chargement des événements depuis json-events.php
         events: function(info, successCallback, failureCallback) {
-            // json-events.php attend les paramètres start et end en timestamps
-            var start = Math.floor(info.start.getTime() / 1000);
-            var end = Math.floor(info.end.getTime() / 1000);
+            // json-events.php attend les paramètres start et end au format date ISO (YYYY-MM-DD)
+            var start = info.start.toISOString().split('T')[0];
+            var end = info.end.toISOString().split('T')[0];
 
             fetch('json-events.php?start=' + start + '&end=' + end)
                 .then(function(response) {
