@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,6 +17,42 @@ class ReportController extends AbstractController
     }
 
     #[Route('/{token}/game/{gameId}', name: 'game', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/report/{token}/game/{gameId}',
+        summary: 'Get game details with events and players',
+        description: 'Returns complete game report including teams, players, and match events for official reports',
+        tags: ['Report'],
+        security: [['TokenAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'token',
+                in: 'path',
+                required: true,
+                description: 'Authentication token',
+                schema: new OA\Schema(type: 'string')
+            ),
+            new OA\Parameter(
+                name: 'gameId',
+                in: 'path',
+                required: true,
+                description: 'Game ID',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns complete game report',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'params', type: 'object', description: 'Game parameters'),
+                        new OA\Property(property: 'teams', type: 'array', description: 'Team details'),
+                        new OA\Property(property: 'events', type: 'array', description: 'Match events (goals, cards, etc.)')
+                    ]
+                )
+            )
+        ]
+    )]
     public function getGame(string $token, int $gameId): JsonResponse
     {
         // TODO: Implement token authentication

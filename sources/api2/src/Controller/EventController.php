@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,38 @@ class EventController extends AbstractController
     }
 
     #[Route('/events/{mode}', name: 'events', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/events/{mode}',
+        summary: 'Get events list',
+        tags: ['Events'],
+        parameters: [
+            new OA\Parameter(
+                name: 'mode',
+                in: 'path',
+                required: true,
+                description: 'Event mode: std (standard tournaments), champ (championships), or all (all events)',
+                schema: new OA\Schema(type: 'string', enum: ['std', 'champ', 'all'])
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns list of events',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer', example: 123),
+                            new OA\Property(property: 'libelle', type: 'string', example: 'Tournoi National'),
+                            new OA\Property(property: 'place', type: 'string', example: 'Paris'),
+                            new OA\Property(property: 'logo', type: 'string', nullable: true, example: 'logo/event123.png')
+                        ]
+                    )
+                )
+            ),
+            new OA\Response(response: 403, description: 'Invalid mode')
+        ]
+    )]
     public function getEvents(string $mode): JsonResponse
     {
         if (!in_array($mode, ['std', 'champ', 'all'])) {
@@ -63,6 +96,37 @@ class EventController extends AbstractController
     }
 
     #[Route('/event/{id}', name: 'event', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/event/{id}',
+        summary: 'Get single event',
+        tags: ['Events'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                description: 'Event ID',
+                schema: new OA\Schema(type: 'integer', example: 123)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns event details',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer', example: 123),
+                            new OA\Property(property: 'libelle', type: 'string', example: 'Tournoi National'),
+                            new OA\Property(property: 'place', type: 'string', example: 'Paris'),
+                            new OA\Property(property: 'logo', type: 'string', nullable: true, example: 'logo/event123.png')
+                        ]
+                    )
+                )
+            )
+        ]
+    )]
     public function getEvent(int $id): JsonResponse
     {
         $conn = $this->entityManager->getConnection();

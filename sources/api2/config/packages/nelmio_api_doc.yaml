@@ -1,0 +1,19 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: KPI API2
+            description: Modern REST API for Kayak Polo management (Symfony 7.3 + API Platform 4.2)
+            version: 2.0.0
+        servers:
+            - url: https://kpi.localhost/api2
+              description: Development server
+        components:
+            securitySchemes:
+                TokenAuth:
+                    type: apiKey
+                    in: path
+                    name: token
+                    description: 'Token for staff and report endpoints'
+    areas:
+        path_patterns:
+            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc

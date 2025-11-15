@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,32 @@ class StaffController extends AbstractController
     }
 
     #[Route('/{token}/test', name: 'test', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/staff/{token}/test',
+        summary: 'Test endpoint for staff authentication',
+        tags: ['Staff - Scrutineering'],
+        security: [['TokenAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'token',
+                in: 'path',
+                required: true,
+                description: 'Authentication token',
+                schema: new OA\Schema(type: 'string')
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Test successful',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'result', type: 'string', example: 'OK')
+                    ]
+                )
+            )
+        ]
+    )]
     public function test(string $token): JsonResponse
     {
         // TODO: Implement token authentication
@@ -24,6 +51,45 @@ class StaffController extends AbstractController
     }
 
     #[Route('/{token}/teams/{eventId}', name: 'teams', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/staff/{token}/teams/{eventId}',
+        summary: 'Get teams for scrutineering',
+        tags: ['Staff - Scrutineering'],
+        security: [['TokenAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'token',
+                in: 'path',
+                required: true,
+                description: 'Authentication token',
+                schema: new OA\Schema(type: 'string')
+            ),
+            new OA\Parameter(
+                name: 'eventId',
+                in: 'path',
+                required: true,
+                description: 'Event ID',
+                schema: new OA\Schema(type: 'integer', example: 123)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns list of teams',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'team_id', type: 'integer', example: 456),
+                            new OA\Property(property: 'label', type: 'string', example: 'Team A'),
+                            new OA\Property(property: 'club', type: 'string', example: 'CLUB01'),
+                            new OA\Property(property: 'logo', type: 'string', nullable: true)
+                        ]
+                    )
+                )
+            )
+        ]
+    )]
     public function getTeams(string $token, int $eventId): JsonResponse
     {
         // TODO: Implement token authentication
@@ -45,6 +111,49 @@ class StaffController extends AbstractController
     }
 
     #[Route('/{token}/players/{teamId}', name: 'players', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/staff/{token}/players/{teamId}',
+        summary: 'Get players for a team',
+        tags: ['Staff - Scrutineering'],
+        security: [['TokenAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'token',
+                in: 'path',
+                required: true,
+                description: 'Authentication token',
+                schema: new OA\Schema(type: 'string')
+            ),
+            new OA\Parameter(
+                name: 'teamId',
+                in: 'path',
+                required: true,
+                description: 'Team ID',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns list of players with scrutineering data',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer'),
+                            new OA\Property(property: 'licence', type: 'string'),
+                            new OA\Property(property: 'name', type: 'string'),
+                            new OA\Property(property: 'number', type: 'integer'),
+                            new OA\Property(property: 'kayak_status', type: 'string', nullable: true),
+                            new OA\Property(property: 'vest_status', type: 'string', nullable: true),
+                            new OA\Property(property: 'helmet_status', type: 'string', nullable: true),
+                            new OA\Property(property: 'paddle_count', type: 'integer', nullable: true)
+                        ]
+                    )
+                )
+            )
+        ]
+    )]
     public function getPlayers(string $token, int $teamId): JsonResponse
     {
         // TODO: Implement token authentication

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,38 @@ class WsmController extends AbstractController
     }
 
     #[Route('/eventNetwork/{eventId}', name: 'event_network', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/api/wsm/eventNetwork/{eventId}',
+        summary: 'Update event network configuration',
+        tags: ['WSM - Web Score Management'],
+        parameters: [
+            new OA\Parameter(
+                name: 'eventId',
+                in: 'path',
+                required: true,
+                description: 'Event ID',
+                schema: new OA\Schema(type: 'integer', example: 123)
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                description: 'Network configuration JSON'
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Network configuration updated',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true)
+                    ]
+                )
+            ),
+            new OA\Response(response: 405, description: 'Failed to write file')
+        ]
+    )]
     public function putEventNetwork(int $eventId, Request $request): JsonResponse
     {
         $network = $request->getContent();
@@ -33,6 +66,49 @@ class WsmController extends AbstractController
     }
 
     #[Route('/gameParam/{matchId}', name: 'game_param', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/api/wsm/gameParam/{matchId}',
+        summary: 'Update game parameters',
+        description: 'Update match status, period, scores, etc.',
+        tags: ['WSM - Web Score Management'],
+        parameters: [
+            new OA\Parameter(
+                name: 'matchId',
+                in: 'path',
+                required: true,
+                description: 'Match ID',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['param', 'value'],
+                properties: [
+                    new OA\Property(
+                        property: 'param',
+                        type: 'string',
+                        enum: ['Statut', 'Periode', 'ScoreA', 'ScoreB', 'ScoreDetailA', 'ScoreDetailB', 'Heure_fin'],
+                        example: 'ScoreA'
+                    ),
+                    new OA\Property(property: 'value', type: 'string', example: '5')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Parameter updated successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true)
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Game is locked (validated)'),
+            new OA\Response(response: 401, description: 'Invalid parameter')
+        ]
+    )]
     public function putGameParam(int $matchId, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent());

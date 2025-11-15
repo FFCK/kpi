@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,49 @@ class PublicController extends AbstractController
     }
 
     #[Route('/team-stats/{teamId}/{eventId}', name: 'team_stats', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/team-stats/{teamId}/{eventId}',
+        summary: 'Get team statistics',
+        description: 'Returns player statistics for a team in an event (goals, cards, etc.)',
+        tags: ['Statistics'],
+        parameters: [
+            new OA\Parameter(
+                name: 'teamId',
+                in: 'path',
+                required: true,
+                description: 'Team ID',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            ),
+            new OA\Parameter(
+                name: 'eventId',
+                in: 'path',
+                required: true,
+                description: 'Event ID',
+                schema: new OA\Schema(type: 'integer', example: 123)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns team player statistics',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'licence', type: 'string', example: '123456'),
+                            new OA\Property(property: 'name', type: 'string', example: 'Dupont'),
+                            new OA\Property(property: 'firstname', type: 'string', example: 'Jean'),
+                            new OA\Property(property: 'number', type: 'integer', example: 5),
+                            new OA\Property(property: 'goals', type: 'integer', example: 3),
+                            new OA\Property(property: 'green_cards', type: 'integer', example: 1),
+                            new OA\Property(property: 'yellow_cards', type: 'integer', example: 0),
+                            new OA\Property(property: 'red_cards', type: 'integer', example: 0)
+                        ]
+                    )
+                )
+            )
+        ]
+    )]
     public function getTeamStats(int $teamId, int $eventId): JsonResponse
     {
         $conn = $this->entityManager->getConnection();
@@ -69,6 +113,23 @@ class PublicController extends AbstractController
     }
 
     #[Route('/stars', name: 'stars', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/stars',
+        summary: 'Get app ratings statistics',
+        tags: ['App Ratings'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns average rating and count',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'average', type: 'number', format: 'float', example: 4.2),
+                        new OA\Property(property: 'count', type: 'integer', example: 150)
+                    ]
+                )
+            )
+        ]
+    )]
     public function getStars(): JsonResponse
     {
         $conn = $this->entityManager->getConnection();
@@ -83,6 +144,33 @@ class PublicController extends AbstractController
     }
 
     #[Route('/rating', name: 'rating', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/rating',
+        summary: 'Submit app rating',
+        tags: ['App Ratings'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['uid', 'stars'],
+                properties: [
+                    new OA\Property(property: 'uid', type: 'string', format: 'uuid', example: '550e8400-e29b-41d4-a716-446655440000'),
+                    new OA\Property(property: 'stars', type: 'integer', minimum: 1, maximum: 5, example: 4)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Rating submitted successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true)
+                    ]
+                )
+            ),
+            new OA\Response(response: 405, description: 'Invalid data')
+        ]
+    )]
     public function postRating(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent());
