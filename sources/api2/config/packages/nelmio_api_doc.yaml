@@ -10,4 +10,4 @@ nelmio_api_doc:
               description: Development server
     areas:
         path_patterns:
-            - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+            - ^/api # Accepts routes under /api

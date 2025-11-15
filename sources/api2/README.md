@@ -175,7 +175,7 @@ The API is served through Apache in the Docker container. The document root is `
 
 - Development: `https://kpi.localhost/api2/`
 - API Platform UI: `https://kpi.localhost/api2/api` (API Platform interface)
-- **Swagger UI**: `https://kpi.localhost/api2/api/doc` (Complete OpenAPI documentation - requires NelmioApiDocBundle)
+- **Swagger UI**: `https://kpi.localhost/api2/doc` (Complete OpenAPI documentation - requires NelmioApiDocBundle)
 
 **Note**: For complete Swagger/OpenAPI documentation with all endpoints, see [SWAGGER_SETUP.md](SWAGGER_SETUP.md) for installation instructions.
 

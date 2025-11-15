@@ -24,8 +24,8 @@ make api2_cache_clear
 
 Une fois installé, la documentation est accessible aux URLs suivantes :
 
-- **Swagger UI** : `https://kpi.localhost/api2/api/doc`
-- **JSON OpenAPI** : `https://kpi.localhost/api2/api/doc.json`
+- **Swagger UI** : `https://kpi.localhost/api2/doc`
+- **JSON OpenAPI** : `https://kpi.localhost/api2/doc.json`
 
 ### Architecture hybride mise en place
 
@@ -137,7 +137,7 @@ Si Swagger n'affiche pas tous les endpoints :
 
 4. **Tester l'URL JSON** :
    ```bash
-   curl https://kpi.localhost/api2/api/doc.json
+   curl https://kpi.localhost/api2/doc.json
    ```
 
 ### Avantages de cette approche hybride
