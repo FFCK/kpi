@@ -9,12 +9,14 @@
         "ext-iconv": "*",
         "api-platform/core": "^4.2",
         "nelmio/cors-bundle": "^2.6",
+        "symfony/asset": "7.3.*",
         "symfony/console": "7.3.*",
         "symfony/dotenv": "7.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.3.*",
         "symfony/runtime": "7.3.*",
         "symfony/security-bundle": "7.3.*",
+        "symfony/twig-bundle": "7.3.*",
         "symfony/yaml": "7.3.*"
     },
     "config": {
