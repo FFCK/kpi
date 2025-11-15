@@ -115,6 +115,20 @@ make npm_add_backend package=flatpickr
 - `make composer_require_dev package=<vendor/package>` - Add Composer dev package
 - `make composer_dump` - Regenerate Composer autoloader
 
+### API2 - Symfony (Symfony 7.3 + API Platform 4.2)
+- `make composer_install_api2` - Install Composer dependencies for API2
+- `make composer_update_api2` - Update Composer dependencies for API2
+- `make composer_require_api2 package=<vendor/package>` - Add package to API2
+- `make api2_cache_clear` - Clear Symfony cache for API2
+- `make api2_cache_warmup` - Warmup Symfony cache for API2
+- `make api2_migrations_diff` - Generate Doctrine migration (detect changes)
+- `make api2_migrations_migrate` - Execute Doctrine migrations
+
+**Location**: `sources/api2/` - Modern REST API with Symfony 7.3 and API Platform 4.2
+**Documentation**: See [sources/api2/README.md](sources/api2/README.md) and [sources/api2/API_ENDPOINTS.md](sources/api2/API_ENDPOINTS.md)
+**Base URL**: `https://kpi.local/api2/`
+**API Documentation**: `https://kpi.local/api2/api` (API Platform interface)
+
 ### Shell Access
 - `make php_bash` - Open bash in PHP 8.4 container
 - `make node_bash` - Open shell in Node container (app2)
@@ -158,7 +172,8 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
   - `app3/` - Nuxt 4 application (match sheet management)
   - `app_dev/`, `app_live_dev/`, `app_wsm_dev/` - Legacy Vue.js applications
   - `commun/` - Shared PHP utilities and database classes
-  - `api/` - PHP REST API endpoints
+  - `api/` - Legacy PHP REST API endpoints
+  - `api2/` - **NEW**: Modern REST API (Symfony 7.3 + API Platform 4.2)
   - `wordpress/` - WordPress integration
 - `docker/` - Docker configuration and compose files
 - `SQL/` - Database scripts
@@ -184,6 +199,26 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
   - WebSocket support (optional)
   - Offline-first with IndexedDB storage
   - Progressive Web App (PWA)
+
+### API2 (Modern REST API - Symfony 7.3 + API Platform 4.2)
+- **Framework**: Symfony 7.3 with API Platform 4.2
+- **Purpose**: Modern REST API replacing legacy PHP API with same functionality
+- **Location**: `sources/api2/`
+- **Base URL**: `https://kpi.local/api2/`
+- **API Documentation**: `https://kpi.local/api2/api` (OpenAPI/Swagger UI)
+- **Features**:
+  - REST API with automatic OpenAPI documentation
+  - Doctrine ORM for database abstraction
+  - CORS support for cross-origin requests
+  - Same database as legacy API (MariaDB 10.4)
+  - All endpoints from legacy API (`/api/`) replicated
+- **Endpoints**:
+  - Public: events, games, charts, team stats, ratings
+  - Staff: teams, players, scrutineering management
+  - Report: game details with events and players
+  - WSM: live score management, game events, timer, statistics
+- **Documentation**: See [sources/api2/README.md](sources/api2/README.md) and [sources/api2/API_ENDPOINTS.md](sources/api2/API_ENDPOINTS.md)
+- **Status**: ✅ Fully implemented - ready for testing and migration from legacy API
 
 ### PHP Backend
 - **PHP Version**: PHP 8.4 in all environments (dev, preprod, prod)
@@ -213,11 +248,17 @@ Services include PHP 8.4, MySQL databases, phpMyAdmin, and Node.js containers fo
 - **PHP 8.4**: All environments now run PHP 8.4 - migration from PHP 7.4 is complete
 - **Libraries Modernization**: Successfully migrated to modern PHP 8+ compatible libraries (mPDF, OpenSpout, Smarty v4)
 - **JavaScript Migration**: jQuery elimination and library modernization is ongoing (Flatpickr, Axios→fetch, etc.)
+- **API2 (NEW)**: Modern REST API built with Symfony 7.3 + API Platform 4.2 in `sources/api2/`
+  - Replicates all functionalities from legacy API (`sources/api/`)
+  - Provides automatic OpenAPI documentation
+  - Ready for testing and gradual migration
+  - See [sources/api2/README.md](sources/api2/README.md) for details
 - App2 is the primary modern frontend application being actively developed
+- App3 provides live match sheet management with real-time features
 - Legacy Vue.js applications in `app_dev/`, `app_live_dev/`, `app_wsm_dev/` are maintained but not primary focus
 - Configuration files are mounted from Docker directory to avoid committing sensitive data
 - The project uses Traefik for reverse proxy in production environments
-- ESLint configuration is managed by Nuxt for app2
+- ESLint configuration is managed by Nuxt for app2 and app3
 
 ## File Patterns
 
