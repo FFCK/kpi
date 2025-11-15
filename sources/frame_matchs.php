@@ -396,20 +396,20 @@ class Matchs extends MyPage
 
                 //Logos
                 $logoA = '';
-                $clubA = $row['clubA'];
-                if (is_file('img/KIP/logo/' . $clubA . '-logo.png')) {
+                $clubA = $row['clubA'] ?? '';
+                if ($clubA && is_file('img/KIP/logo/' . $clubA . '-logo.png')) {
                     $logoA = 'img/KIP/logo/' . $clubA . '-logo.png';
-                } elseif (is_file('img/Nations/' . substr($clubA, 0, 3) . '.png')) {
+                } elseif ($clubA && is_file('img/Nations/' . substr($clubA, 0, 3) . '.png')) {
                     $clubA = substr($clubA, 0, 3);
                     $logoA = 'img/Nations/' . $clubA . '.png';
                 } else {
                     $logoA = 'img/KIP/logo/empty-logo.png';
                 }
                 $logoB = '';
-                $clubB = $row['clubB'];
-                if (is_file('img/KIP/logo/' . $clubB . '-logo.png')) {
+                $clubB = $row['clubB'] ?? '';
+                if ($clubB && is_file('img/KIP/logo/' . $clubB . '-logo.png')) {
                     $logoB = 'img/KIP/logo/' . $clubB . '-logo.png';
-                } elseif (is_file('img/Nations/' . substr($clubB, 0, 3) . '.png')) {
+                } elseif ($clubB && is_file('img/Nations/' . substr($clubB, 0, 3) . '.png')) {
                     $clubB = substr($clubB, 0, 3);
                     $logoB = 'img/Nations/' . $clubB . '.png';
                 } else {
@@ -472,6 +472,7 @@ class Matchs extends MyPage
 
         $this->m_tpl->assign('arrayJournees', $arrayJournees);
         $this->m_tpl->assign('page', 'Matchs');
+        $this->m_tpl->assign('adm', ''); // Pour compatibilité frame_page.tpl
     }
 
 

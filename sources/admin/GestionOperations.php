@@ -5,11 +5,16 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 include_once('../commun/MyConfig.php');
+include_once('../connector/replace_evenement.php');
+
+include('pclzip.lib.php');
 
 
 class GestionOperations extends MyPageSecure
 {
 	var $myBdd;
+	var $m_arrayinfo;
+	var $m_duplicate_file;
 
 	function Load()
 	{
@@ -20,8 +25,8 @@ class GestionOperations extends MyPageSecure
 		// Chargement des Evenements
 		$arrayEvenement = array();
 
-		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication, app 
-			FROM kp_evenement 
+		$sql  = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication, app
+			FROM kp_evenement
 			ORDER BY Date_debut DESC, Libelle DESC ";
 
 		$arrayEvenement = array();
@@ -46,6 +51,526 @@ class GestionOperations extends MyPageSecure
 		}
 		$this->m_tpl->assign('arrayEvenement', $arrayEvenement);
 
+		// Chargement des Saisons pour gestion des saisons
+		$sql  = "SELECT Code, Etat, Nat_debut, Nat_fin, Inter_debut, Inter_fin
+			FROM kp_saison
+			WHERE Code > '1900'
+			ORDER BY Code DESC ";
+
+		$arraySaison = array();
+		foreach ($myBdd->pdo->query($sql) as $row) {
+			if ($row['Etat'] == 'A') {
+				$saisonActive = $row['Code'];
+			}
+			if (utyGetSession('lang') == 'en') {
+				$row['Nat_debut'] = utyDateUsToFr($row['Nat_debut']);
+				$row['Nat_fin'] = utyDateUsToFr($row['Nat_fin']);
+				$row['Inter_debut'] = utyDateUsToFr($row['Inter_debut']);
+				$row['Inter_fin'] = utyDateUsToFr($row['Inter_fin']);
+			}
+			array_push(
+				$arraySaison,
+				array(
+					'Code' => $row['Code'], 'Etat' => $row['Etat'],
+					'Nat_debut' => $row['Nat_debut'],
+					'Nat_fin' => $row['Nat_fin'],
+					'Inter_debut' => $row['Inter_debut'],
+					'Inter_fin' => $row['Inter_fin']
+				)
+			);
+		}
+
+		$this->m_tpl->assign('arraySaison', $arraySaison);
+		$this->m_tpl->assign('saisonActive', $saisonActive);
+
+		$AuthSaison = utyGetSession('AuthSaison', '');
+		$this->m_tpl->assign('AuthSaison', $AuthSaison);
+
+	}
+
+	function SetActiveSaison()
+	{
+		$codeSaison = utyGetPost('ParamCmd', '');
+		if (strlen($codeSaison) == 0)
+			return;
+
+		$myBdd = $this->myBdd;
+
+		$sql  = "UPDATE kp_saison
+			SET Etat = 'I'
+			WHERE Etat = 'A' ";
+		$myBdd->pdo->exec($sql);
+
+		$sql = "UPDATE kp_saison
+			SET Etat = 'A'
+			WHERE Code = ? ";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($codeSaison));
+
+		$myBdd->utyJournal('Change Saison Active', $codeSaison);
+	}
+
+	function AddSaison()
+	{
+		$newSaison = utyGetPost('newSaison', '');
+		$newSaisonDN = utyDateFrToUs(utyGetPost('newSaisonDN', ''));
+		$newSaisonFN = utyDateFrToUs(utyGetPost('newSaisonFN', ''));
+		$newSaisonDI = utyDateFrToUs(utyGetPost('newSaisonDI', ''));
+		$newSaisonFI = utyDateFrToUs(utyGetPost('newSaisonFI', ''));
+
+		if (strlen($newSaison) == 0)
+			return;
+
+		$myBdd = $this->myBdd;
+
+		$sql  = "INSERT INTO kp_saison (Code ,Etat ,Nat_debut ,Nat_fin ,Inter_debut ,Inter_fin)
+			VALUES (?, ?, ?, ?, ?, ?) ";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array(
+			$newSaison, 'I', $newSaisonDN, $newSaisonFN, $newSaisonDI, $newSaisonFI
+		));
+
+		$myBdd->utyJournal('Ajout Saison', $newSaison);
+	}
+
+	function FusionJoueurs()
+	{
+		$myBdd = $this->myBdd;
+		$numFusionSource = utyGetPost('numFusionSource', 0);
+		$numFusionCible = utyGetPost('numFusionCible', 0);
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			// buts et cartons
+			$sql  = "UPDATE kp_match_detail
+				SET Competiteur = ?
+				WHERE Competiteur = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// compos matchs
+			$sql  = "UPDATE kp_match_joueur
+				SET Matric = ?
+				WHERE Matric = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// feuilles de présence
+			$sql = "UPDATE kp_competition_equipe_joueur cej,
+                kp_licence lc
+                SET cej.Matric = :cible, cej.Nom = lc.Nom,
+                    cej.Prenom = lc.Prenom, cej.Sexe = lc.Sexe
+                WHERE cej.Matric = :source
+                AND lc.Matric = :cible2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute([
+				':cible' => $numFusionCible,
+				':cible2' => $numFusionCible,
+				':source' => $numFusionSource
+			]);
+
+			// arbitre principal
+			$sql  = "UPDATE kp_match
+				SET Matric_arbitre_principal = ?
+				WHERE Matric_arbitre_principal = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// arbitre secondaire
+			$sql  = "UPDATE kp_match
+				SET Matric_arbitre_secondaire = ?
+				WHERE Matric_arbitre_secondaire = ? ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
+			// Secretaire
+			$sql  = "UPDATE kp_match
+				SET Secretaire = REPLACE(Secretaire, :source, :cible)
+				WHERE Secretaire LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Chronometre
+			$sql  = "UPDATE kp_match
+				SET Chronometre = REPLACE(Chronometre, :source, :cible)
+				WHERE Chronometre LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Timeshoot
+			$sql  = "UPDATE kp_match
+				SET Timeshoot = REPLACE(Timeshoot, :source, :cible)
+				WHERE Timeshoot LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Ligne1
+			$sql  = "UPDATE kp_match
+				SET Ligne1 = REPLACE(Ligne1, :source, :cible)
+				WHERE Ligne1 LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// Ligne2
+			$sql  = "UPDATE kp_match
+				SET Ligne2 = REPLACE(Ligne2, :source, :cible)
+				WHERE Ligne2 LIKE :source2 ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array(
+				':cible' => '(' . $numFusionCible . ')',
+				':source' => '(' . $numFusionSource . ')',
+				':source2' => '%(' . $numFusionSource . ')%'
+			));
+
+			// TODO: changer noms (et matric) des lignes, arbitres, officiels...
+			// suppression
+			$sql  = "DELETE FROM kp_licence
+				WHERE Matric = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Fusion Joueurs" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numFusionSource . ' => ' . $numFusionCible);
+
+		return ('Joueurs fusionnés');
+	}
+
+	function RenomEquipe()
+	{
+		$myBdd = $this->myBdd;
+		$numRenomSource = utyGetPost('numRenomSource', 0);
+		$RenomSource = utyGetPost('RenomSource', 0);
+		$RenomCible = utyGetPost('RenomCible', 0);
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "UPDATE kp_equipe
+				SET Libelle = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($RenomCible, $numRenomSource));
+
+			$sql  = "UPDATE kp_competition_equipe
+				SET Libelle = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($RenomCible, $numRenomSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Rename Equipe, $RenomSource => $RenomCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $RenomSource . ' => ' . $RenomCible);
+		return ('Equipe renommée !');
+	}
+
+	function FusionEquipes()
+	{
+		$myBdd = $this->myBdd;
+		$numFusionEquipeSource = utyGetPost('numFusionEquipeSource', 0);
+		$numFusionEquipeCible = utyGetPost('numFusionEquipeCible', 0);
+		$FusionEquipeSource = utyGetPost('FusionEquipeSource', '');
+		$FusionEquipeCible = utyGetPost('FusionEquipeCible', '');
+		if ($numFusionEquipeSource == 0 or $numFusionEquipeCible == 0 or $FusionEquipeSource == '' or $FusionEquipeCible == '') {
+			return;
+		}
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql = "UPDATE kp_competition_equipe
+				SET `Numero` = ?,
+				Libelle = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionEquipeCible, $FusionEquipeCible, $numFusionEquipeSource));
+
+
+			$sql = "DELETE FROM kp_equipe
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionEquipeSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Fusion Equipes, $FusionEquipeSource => $FusionEquipeCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $FusionEquipeSource . ' => ' . $FusionEquipeCible);
+		return ('Equipes fusionnées');
+	}
+
+	function DeplaceEquipe()
+	{
+		$myBdd = $this->myBdd;
+		$numDeplaceEquipeSource = utyGetPost('numDeplaceEquipeSource', 0);
+		$numDeplaceEquipeCible = utyGetPost('numDeplaceEquipeCible', 0);
+		if ($numDeplaceEquipeSource === 0) {
+			return "Equipe source vide : $numDeplaceEquipeSource";
+		} elseif ($numDeplaceEquipeCible === 0) {
+			return "Club cible vide : $numDeplaceEquipeCible";
+		}
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			$sql  = "UPDATE kp_competition_equipe
+				SET Code_club = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+
+			$sql  = "UPDATE kp_equipe
+				SET Code_club = ?
+				WHERE Numero = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numDeplaceEquipeCible, $numDeplaceEquipeSource));
+
+			$myBdd->pdo->commit();
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Déplacement Equipe, $numDeplaceEquipeSource => $numDeplaceEquipeCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+		}
+
+		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible);
+
+		return $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible;
+	}
+
+	function ChangeCode()
+	{
+		$myBdd = $this->myBdd;
+		$changeCodeSource = utyGetPost('changeCodeSource', '');
+		$changeCodeCible = strtoupper(utyGetPost('changeCodeCible', ''));
+		$codeSaison = $myBdd->GetActiveSaison();
+		$changeCodeAllSeason = utyGetPost('changeCodeAllSeason');
+		$changeCodeExists = utyGetPost('changeCodeExists');
+
+		if (
+			strlen($changeCodeSource) < 2 ||
+			strlen($changeCodeCible) < 2 ||
+			$changeCodeSource === $changeCodeCible
+		) {
+			return 'Codes incorrects : ' . $changeCodeSource . ' ' . $changeCodeCible . ' ' . $codeSaison;
+		}
+
+		if ($changeCodeAllSeason === 'All') {
+			$sql = "SELECT * FROM kp_competition
+				WHERE Code = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($changeCodeSource));
+			if ($stmt->rowCount() < 1) {
+				return 'Code source incorrect !';
+			}
+
+			if ($changeCodeExists !== 'Exists') {
+				$sql = "SELECT * FROM kp_competition
+					WHERE Code = ?; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array($changeCodeCible));
+				if ($stmt->rowCount() >= 1) {
+					return 'Code cible incorrect !';
+				}
+			}
+
+			try {
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=0;");
+
+				$sql = "UPDATE kp_competition
+					SET Code = :cible
+					WHERE Code = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_competition_equipe
+					SET Code_compet = :cible
+					WHERE Code_compet = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_journee
+					SET Code_competition = :cible
+					WHERE Code_competition = :source ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible
+				));
+
+				$sql = "UPDATE kp_user
+					SET Filtre_competition = REPLACE(Filtre_competition, :source, :cible),
+						Filtre_competition_sql = REPLACE(Filtre_competition_sql, :source2, :cible2)
+					WHERE Filtre_competition LIKE :source3 ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => '|' . $changeCodeSource . '|',
+					':cible' => '|' . $changeCodeCible . '|',
+					':source2' => "'" . $changeCodeSource . "'",
+					':cible2' => "'" . $changeCodeCible . "'",
+					':source3' => '%|' . $changeCodeSource . '|%',
+				));
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=1;");
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+
+			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, 'All seasons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+			return ('Code changé toutes saisons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+
+		} else {
+
+			$sql = "SELECT * FROM kp_competition
+				WHERE Code = ?
+				AND Code_saison = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($changeCodeSource, $codeSaison));
+			if ($stmt->rowCount() != 1) {
+				return 'Code source incorrect !';
+			}
+
+			$sql = "SELECT * FROM kp_competition
+				WHERE Code = ?
+				AND Code_saison = ?; ";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($changeCodeCible, $codeSaison));
+			if ($stmt->rowCount() == 1) {
+				return 'Code cible incorrect !';
+			}
+
+			try {
+				$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$myBdd->pdo->beginTransaction();
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=0;");
+
+				$sql = "UPDATE kp_competition
+					SET Code = :cible
+					WHERE Code = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_competition_equipe
+					SET Code_compet = :cible
+					WHERE Code_compet = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_journee
+					SET Code_competition = :cible
+					WHERE Code_competition = :source
+					AND Code_saison = :saison ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => $changeCodeSource,
+					':cible' => $changeCodeCible,
+					':saison' => $codeSaison
+				));
+
+				$sql = "UPDATE kp_user
+					SET Filtre_competition = REPLACE(Filtre_competition, :source, :cible),
+						Filtre_competition_sql = REPLACE(Filtre_competition_sql, :source2, :cible2)
+					WHERE Filtre_competition LIKE :source3
+					AND (
+						Filtre_saison LIKE :saison
+						OR
+						Filtre_saison = ''
+					) ; ";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					':source' => '|' . $changeCodeSource . '|',
+					':cible' => '|' . $changeCodeCible . '|',
+					':source2' => "'" . $changeCodeSource . "'",
+					':cible2' => "'" . $changeCodeCible . "'",
+					':source3' => '%|' . $changeCodeSource . '|%',
+					':saison' => '%|' . $codeSaison . '|%'
+				));
+
+				$myBdd->pdo->query("SET FOREIGN_KEY_CHECKS=1;");
+
+				$myBdd->pdo->commit();
+			} catch (Exception $e) {
+				$myBdd->pdo->rollBack();
+				utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+
+				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			}
+
+			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, $changeCodeSource . ' => ' . $changeCodeCible);
+			return ('Code changé saison ' . $codeSaison . ' : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+		}
+	}
+
+	function ChangeAuthSaison()
+	{
+		$AuthSaison = utyGetSession('AuthSaison');
+		if ($AuthSaison == 'O')
+			$AuthSaison = '';
+		else
+			$AuthSaison = 'O';
+		$_SESSION['AuthSaison'] = $AuthSaison;
 	}
 
 	function ExportEvt($idEvenement) {
@@ -77,14 +602,17 @@ class GestionOperations extends MyPageSecure
 		foreach ($rows_evenement_journee as $row) {
 			$array_journees[] = $row['Id_journee'];
 		}
-		$list_journees = implode(',', $array_journees);
 
-		$sql  = "SELECT *
-			FROM kp_journee
-			WHERE Id IN ($list_journees)";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_journee = array();
+		if (!empty($array_journees)) {
+			$placeholders = str_repeat('?,', count($array_journees) - 1) . '?';
+			$sql  = "SELECT *
+				FROM kp_journee
+				WHERE Id IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($array_journees);
+			$rows_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_journee'] = $rows_journee;
 
 		$arrayCompetitions = [];
@@ -93,24 +621,31 @@ class GestionOperations extends MyPageSecure
 				$arrayCompetitions[] = $row['Code_competition'];
 			}
 		}
-		$evt_saison = $rows_journee[0]['Code_saison'];
+		$evt_saison = isset($rows_journee[0]['Code_saison']) ? $rows_journee[0]['Code_saison'] : null;
 
-		$sql = "SELECT *
-			FROM kp_competition
-			WHERE Code_saison = ? 
-			AND Code IN ('" . implode("','", $arrayCompetitions) . "')";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($evt_saison));
-		$rows_competition = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_competition = array();
+		$rows_competition_equipe = array();
+		if (!empty($arrayCompetitions) && $evt_saison) {
+			$placeholders = str_repeat('?,', count($arrayCompetitions) - 1) . '?';
+			$sql = "SELECT *
+				FROM kp_competition
+				WHERE Code_saison = ?
+				AND Code IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$params = array_merge(array($evt_saison), $arrayCompetitions);
+			$stmt->execute($params);
+			$rows_competition = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe
+				WHERE Code_saison = ?
+				AND Code_compet IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$params = array_merge(array($evt_saison), $arrayCompetitions);
+			$stmt->execute($params);
+			$rows_competition_equipe = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_competition'] = $rows_competition;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe
-			WHERE Code_saison = ?
-			AND Code_compet IN ('" . implode("','", $arrayCompetitions) . "')";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($evt_saison));
-		$rows_competition_equipe = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_competition_equipe'] = $rows_competition_equipe;
 
 		$arrayCompetitionsEquipes = [];
@@ -118,44 +653,60 @@ class GestionOperations extends MyPageSecure
 			$arrayCompetitionsEquipes[] = $row['Id'];
 		}
 
-		$sql = "SELECT *
-			FROM kp_competition_equipe_init
-			WHERE Id IN (" . implode(',', $arrayCompetitionsEquipes) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_init = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_competition_equipe_init = array();
+		$rows_competition_equipe_joueur = array();
+		$rows_competition_equipe_niveau = array();
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe_init
+				WHERE Id IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayCompetitionsEquipes);
+			$rows_competition_equipe_init = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe_joueur
+				WHERE Id_equipe IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayCompetitionsEquipes);
+			$rows_competition_equipe_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_competition_equipe_niveau
+				WHERE Id IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayCompetitionsEquipes);
+			$rows_competition_equipe_niveau = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_competition_equipe_init'] = $rows_competition_equipe_init;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe_joueur
-			WHERE Id_equipe IN (" . implode(',', $arrayCompetitionsEquipes) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_competition_equipe_joueur'] = $rows_competition_equipe_joueur;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe_journee
-			WHERE Id_journee IN (" . implode(',', $array_journees) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
-		$export['kp_competition_equipe_journee'] = $rows_competition_equipe_journee;
-
-		$sql = "SELECT *
-			FROM kp_competition_equipe_niveau
-			WHERE Id IN (" . implode(',', $arrayCompetitionsEquipes) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_competition_equipe_niveau = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_competition_equipe_niveau'] = $rows_competition_equipe_niveau;
 
-		$sql = "SELECT *
-			FROM kp_match
-			WHERE Id_journee IN (" . implode(',', $array_journees) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_match = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_competition_equipe_journee = array();
+		if (!empty($array_journees)) {
+			$placeholders = str_repeat('?,', count($array_journees) - 1) . '?';
+			$sql = "SELECT *
+				FROM kp_competition_equipe_journee
+				WHERE Id_journee IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($array_journees);
+			$rows_competition_equipe_journee = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
+		$export['kp_competition_equipe_journee'] = $rows_competition_equipe_journee;
+		$export['kp_competition_equipe_niveau'] = $rows_competition_equipe_niveau;
+
+		$rows_match = array();
+		if (!empty($array_journees)) {
+			$placeholders = str_repeat('?,', count($array_journees) - 1) . '?';
+			$sql = "SELECT *
+				FROM kp_match
+				WHERE Id_journee IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($array_journees);
+			$rows_match = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_match'] = $rows_match;
 
 		$arrayMatchs = [];
@@ -163,28 +714,35 @@ class GestionOperations extends MyPageSecure
 			$arrayMatchs[] = $row['Id'];
 		}
 
-		$sql = "SELECT *
-			FROM kp_match_detail
-			WHERE Id_match IN (" . implode(',', $arrayMatchs) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_match_detail = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		$rows_match_detail = array();
+		$rows_match_joueur = array();
+		$rows_chrono = array();
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+
+			$sql = "SELECT *
+				FROM kp_match_detail
+				WHERE Id_match IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayMatchs);
+			$rows_match_detail = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_match_joueur
+				WHERE Id_match IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayMatchs);
+			$rows_match_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
+
+			$sql = "SELECT *
+				FROM kp_chrono
+				WHERE IdMatch IN ($placeholders)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute($arrayMatchs);
+			$rows_chrono = $stmt->fetchAll( PDO::FETCH_ASSOC );
+		}
 		$export['kp_match_detail'] = $rows_match_detail;
-
-		$sql = "SELECT *
-			FROM kp_match_joueur
-			WHERE Id_match IN (" . implode(',', $arrayMatchs) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_match_joueur = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_match_joueur'] = $rows_match_joueur;
-
-		$sql = "SELECT *
-			FROM kp_chrono
-			WHERE IdMatch IN (" . implode(',', $arrayMatchs) . ")";
-		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute();
-		$rows_chrono = $stmt->fetchAll( PDO::FETCH_ASSOC );
 		$export['kp_chrono'] = $rows_chrono;
 
 
@@ -493,7 +1051,11 @@ class GestionOperations extends MyPageSecure
 
 		// import kp_competition_equipe
 		$arrayCompetitionsEquipes = array();
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe WHERE Code_compet IN ('" . implode("','", $arrayCompetitions) . "')");
+		if (!empty($arrayCompetitions)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitions) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe WHERE Code_compet IN ($placeholders)");
+			$stmt->execute($arrayCompetitions);
+		}
 
 		$sql = "INSERT INTO kp_competition_equipe (`Id`, `Code_compet`, `Code_saison`, `Libelle`, `Code_club`, `logo`, `color1`, 
 				`color2`, `colortext`, `Numero`, `Poule`, `Tirage`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`, 
@@ -519,7 +1081,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_init
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_init WHERE Id IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_init WHERE Id IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_init` (`Id`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`) 
 			VALUES (:Id, :Pts, :Clt, :J, :G, :N, :P, :F, :Plus, :Moins, :Diff)";
@@ -533,7 +1099,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_joueur
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_joueur WHERE Id_equipe IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_joueur WHERE Id_equipe IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_joueur` (`Id_equipe`, `Matric`, `Nom`, `Prenom`, `Sexe`, `Categ`, `Numero`, `Capitaine`) 
 			VALUES (:Id_equipe, :Matric, :Nom, :Prenom, :Sexe, :Categ, :Numero, :Capitaine)";
@@ -547,7 +1117,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_journee
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_journee WHERE Id IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_journee WHERE Id IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_journee` (`Id`, `Id_journee`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`, 
 				`PtsNiveau`, `CltNiveau`, `Pts_publi`, `Clt_publi`, `J_publi`, `G_publi`, `N_publi`, `P_publi`, `F_publi`, `Plus_publi`, `Moins_publi`, 
@@ -569,7 +1143,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_competition_equipe_niveau
-		$myBdd->pdo->query("DELETE FROM kp_competition_equipe_niveau WHERE Id IN (" . implode(",", $arrayCompetitionsEquipes) . ")");
+		if (!empty($arrayCompetitionsEquipes)) {
+			$placeholders = str_repeat('?,', count($arrayCompetitionsEquipes) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_competition_equipe_niveau WHERE Id IN ($placeholders)");
+			$stmt->execute($arrayCompetitionsEquipes);
+		}
 
 		$sql = "INSERT INTO `kp_competition_equipe_niveau` (`Id`, `Niveau`, `Pts`, `Clt`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`, 
 				`PtsNiveau`, `CltNiveau`, `Pts_publi`, `Clt_publi`, `J_publi`, `G_publi`, `N_publi`, `P_publi`, `F_publi`, `Plus_publi`, `Moins_publi`, 
@@ -592,7 +1170,11 @@ class GestionOperations extends MyPageSecure
 
 		// import kp_match
 		$arrayMatchs = array();
-		$myBdd->pdo->query("DELETE FROM kp_match WHERE Id_journee IN (" . implode(",", $arrayJournees) . ")");
+		if (!empty($arrayJournees)) {
+			$placeholders = str_repeat('?,', count($arrayJournees) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_match WHERE Id_journee IN ($placeholders)");
+			$stmt->execute($arrayJournees);
+		}
 
 		$sql = "INSERT INTO `kp_match` (`Id`, `Id_journee`, `Libelle`, `Type`, `Statut`, `Date_match`, `Heure_match`, `Heure_fin`, `Terrain`, 
 				`Numero_ordre`, `Periode`, `Id_equipeA`, `Id_equipeB`, `ColorA`, `ColorB`, `ScoreA`, `ScoreB`, `ScoreDetailA`, `ScoreDetailB`, 
@@ -625,7 +1207,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_match_detail
-		$myBdd->pdo->query("DELETE FROM kp_match_detail WHERE Id_match IN (" . implode(",", $arrayMatchs) . ")");
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_match_detail WHERE Id_match IN ($placeholders)");
+			$stmt->execute($arrayMatchs);
+		}
 
 		$sql = "INSERT INTO `kp_match_detail` (`Id`, `Id_match`, `Periode`, `Temps`, `Id_evt_match`, `motif`, 
 				`Competiteur`, `Numero`, `Equipe_A_B`, `date_insert`)
@@ -641,7 +1227,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_match_joueur
-		$myBdd->pdo->query("DELETE FROM kp_match_joueur WHERE Id_match IN (" . implode(",", $arrayMatchs) . ")");
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_match_joueur WHERE Id_match IN ($placeholders)");
+			$stmt->execute($arrayMatchs);
+		}
 
 		$sql = "INSERT INTO `kp_match_joueur` (`Id_match`, `Matric`, `Numero`, `Equipe`, `Capitaine`)
 		VALUES (:Id_match, :Matric, :Numero, :Equipe, :Capitaine)";
@@ -655,7 +1245,11 @@ class GestionOperations extends MyPageSecure
 		}
 
 		// import kp_chrono
-		$myBdd->pdo->query("DELETE FROM kp_chrono WHERE IdMatch IN (" . implode(",", $arrayMatchs) . ")");
+		if (!empty($arrayMatchs)) {
+			$placeholders = str_repeat('?,', count($arrayMatchs) - 1) . '?';
+			$stmt = $myBdd->pdo->prepare("DELETE FROM kp_chrono WHERE IdMatch IN ($placeholders)");
+			$stmt->execute($arrayMatchs);
+		}
 
 		$sql = "INSERT INTO `kp_chrono` (`IdMatch`, `action`, `start_time`, `start_time_server`, `run_time`, `max_time`)
 			VALUES (:IdMatch, :action, :start_time, :start_time_server, :run_time, :max_time)";
@@ -673,13 +1267,381 @@ class GestionOperations extends MyPageSecure
 		return "Import réussi";
 	}
 
+	function uploadLicenceZip()
+	{
+		//Variables
+		$dossier = $_SERVER['DOCUMENT_ROOT'] . '/PCE/';
+		$fichier = basename($_FILES['licencies']['name']);
+		$taille_maxi = 2000000; //en octets
+		$taille = filesize($_FILES['licencies']['tmp_name']);
+		$extensions = array('.zip');
+		$extension = strrchr($_FILES['licencies']['name'], '.');
+
+		//Vérifications de sécurité...
+		if (!in_array($extension, $extensions)) { //Si l'extension n'est pas dans le tableau
+			$erreur = 'Erreur 1 !';
+		}
+		if ($taille > $taille_maxi) { // fichier trop gros
+			$erreur = 'Erreur  2 !';
+		}
+		if (!isset($erreur)) { //S'il n'y a pas d'erreur, on upload
+			if (move_uploaded_file($_FILES['licencies']['tmp_name'], $dossier . $fichier)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
+
+				array_push($this->m_arrayinfo, 'Upload effectué avec succès !');
+			} else { //Sinon (la fonction renvoie FALSE).
+				die('Echec de l\'upload ! ' . $_FILES['licencies']['tmp_name']);
+			}
+		} else {
+			die($erreur);
+		}
+
+		// FONCTION DEZIP
+		$zip = new PclZip($dossier . $fichier);
+
+		// contrôle du contenu de l'archive
+		if (($list = $zip->listContent()) == 0) {
+			unlink($dossier . $fichier); //On nettoie
+			die("Error : " . $zip->errorInfo(true));
+		}
+		// contrôle du nombre de fichiers contenus
+		if (sizeof($list) > 1) { // plusieurs fichiers dans l'archive !
+			unlink($dossier . $fichier); //On nettoie
+			die("Erreur 3 !");
+		}
+		// contrôle du nom de fichier
+		$dezip_name = explode('.', $list[0]['filename']);
+		if ($dezip_name[1] <> "pce") { // mauvaise extension
+			unlink($dossier . $fichier); //On nettoie
+			die("Erreur 4 !");
+		}
+		if (!preg_match("/^licences20/", $dezip_name[0])) { // mauvais nom de fichier
+			unlink($dossier . $fichier); //On nettoie
+			die("Erreur 5 !");
+		}
+
+		// dezip dans le même dossier
+		if ($zip->extract(PCLZIP_OPT_PATH, $dossier) == 0) {
+			unlink($dossier . $fichier); //On nettoie
+			die("Error : " . $zip->errorInfo(true));
+		} else {
+			unlink($dossier . $fichier); //On nettoie (le fichier zip est devenu inutile)
+			array_push($this->m_arrayinfo, 'Dezip effectué avec succès !');
+		}
+
+		rename($dossier . $list[0]['filename'], $dossier . "licences.pce"); // on renomme pour traitement suivant
+		$myBdd = new MyBdd();
+		$myBdd->ImportPCE2("licences.pce");
+
+		$this->m_arrayinfo = array_merge($this->m_arrayinfo, $myBdd->m_arrayinfo);
+	}
+
+	function uploadCalendrierCsv()
+	{
+		//Variables
+		$dossier = $_SERVER['DOCUMENT_ROOT'] . '/PCE/';
+		$fichier = basename($_FILES['calendrier']['name']);
+		$taille_maxi = 200000; //en octets
+		$taille = filesize($_FILES['calendrier']['tmp_name']);
+		$extensions = array('.csv');
+		$extension = strrchr($_FILES['calendrier']['name'], '.');
+
+		//Vérifications de sécurité...
+		if (!in_array($extension, $extensions)) { //Si l'extension n'est pas dans le tableau
+			$erreur = 'Erreur 1 !';
+		}
+		if ($taille > $taille_maxi) { // fichier trop gros
+			$erreur = 'Erreur  2 !';
+		}
+		if (!isset($erreur)) { //S'il n'y a pas d'erreur, on upload
+			if (move_uploaded_file($_FILES['calendrier']['tmp_name'], $dossier . $fichier)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
+				array_push($this->m_arrayinfo, 'Upload effectué avec succès !');
+				$myBdd = new MyBdd();
+				$myBdd->ImportCalendrier("calendrier.csv");
+				$this->m_arrayinfo = array_merge($this->m_arrayinfo, $myBdd->m_arrayinfo);
+			} else { //Sinon (la fonction renvoie FALSE).
+				die('Echec de l\'upload !' . $_FILES['calendrier']['tmp_name']);
+			}
+		} else {
+			die($erreur);
+		}
+	}
+
+	function renameImage()
+	{
+		// Get form parameters
+		$renameType = utyGetPost('renameImageType', '');
+		$currentName = utyGetPost('currentImageName', '');
+		$newName = utyGetPost('newImageName', '');
+
+		if (empty($renameType) || empty($currentName) || empty($newName)) {
+			array_push($this->m_arrayinfo, 'Erreur : Tous les champs sont requis pour le renommage.');
+			return;
+		}
+
+		// Define image type configurations
+		$imageConfig = [
+			'logo_competition' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+			],
+			'bandeau_competition' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+			],
+			'sponsor_competition' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+			],
+			'logo_club' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KIP/logo/',
+			],
+			'logo_nation' => [
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/Nations/',
+			],
+		];
+
+		// Validate image type
+		if (!isset($imageConfig[$renameType])) {
+			array_push($this->m_arrayinfo, 'Erreur : Type d\'image non valide.');
+			return;
+		}
+
+		$config = $imageConfig[$renameType];
+		$currentPath = $config['destination'] . $currentName;
+		$newPath = $config['destination'] . $newName;
+
+		// Check if current file exists
+		if (!file_exists($currentPath)) {
+			array_push($this->m_arrayinfo, 'Erreur : Le fichier "' . $currentName . '" n\'existe pas dans le dossier de destination.');
+			return;
+		}
+
+		// Check if current and new names are the same
+		if ($currentName === $newName) {
+			array_push($this->m_arrayinfo, 'Erreur : Le nouveau nom doit être différent de l\'ancien.');
+			return;
+		}
+
+		// Extract extensions
+		$currentExtension = pathinfo($currentName, PATHINFO_EXTENSION);
+		$newExtension = pathinfo($newName, PATHINFO_EXTENSION);
+
+		// Validate that extension stays the same
+		if (strtolower($currentExtension) !== strtolower($newExtension)) {
+			array_push($this->m_arrayinfo, 'Erreur : L\'extension doit rester la même. Extension actuelle : .' . $currentExtension);
+			return;
+		}
+
+		// Check if new filename already exists
+		if (file_exists($newPath)) {
+			array_push($this->m_arrayinfo, 'Erreur : Un fichier portant le nom "' . $newName . '" existe déjà dans le dossier de destination.');
+			return;
+		}
+
+		// Rename the file
+		if (rename($currentPath, $newPath)) {
+			array_push($this->m_arrayinfo, 'Succès : Le fichier "' . $currentName . '" a été renommé en "' . $newName . '".');
+		} else {
+			array_push($this->m_arrayinfo, 'Erreur : Impossible de renommer le fichier.');
+		}
+	}
+
+	function uploadImage()
+	{
+		// Get form parameters
+		$imageType = utyGetPost('imageType', '');
+		$imageFile = $_FILES['imageFile'] ?? null;
+
+		if (!$imageFile || $imageFile['error'] !== UPLOAD_ERR_OK) {
+			array_push($this->m_arrayinfo, 'Erreur : Aucun fichier sélectionné ou erreur lors de l\'upload.');
+			return;
+		}
+
+		// Define image type configurations
+		$imageConfig = [
+			'logo_competition' => [
+				'prefix' => 'L-',
+				'extension' => '.jpg',
+				'mime_types' => ['image/jpeg', 'image/jpg'],
+				'max_width' => 1000,
+				'max_height' => 1000,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+				'name_fields' => ['codeCompetition', 'saison'],
+			],
+			'bandeau_competition' => [
+				'prefix' => 'B-',
+				'extension' => '.jpg',
+				'mime_types' => ['image/jpeg', 'image/jpg'],
+				'max_width' => 2480,
+				'max_height' => 250,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+				'name_fields' => ['codeCompetition', 'saison'],
+			],
+			'sponsor_competition' => [
+				'prefix' => 'S-',
+				'extension' => '.jpg',
+				'mime_types' => ['image/jpeg', 'image/jpg'],
+				'max_width' => 2480,
+				'max_height' => 250,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/logo/',
+				'name_fields' => ['codeCompetition', 'saison'],
+			],
+			'logo_club' => [
+				'prefix' => '',
+				'extension' => '-logo.png',
+				'mime_types' => ['image/png'],
+				'max_width' => 200,
+				'max_height' => 200,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/KIP/logo/',
+				'name_fields' => ['numeroClub'],
+			],
+			'logo_nation' => [
+				'prefix' => '',
+				'extension' => '.png',
+				'mime_types' => ['image/png'],
+				'max_width' => 200,
+				'max_height' => 200,
+				'destination' => $_SERVER['DOCUMENT_ROOT'] . '/img/Nations/',
+				'name_fields' => ['codeNation'],
+			],
+		];
+
+		// Validate image type
+		if (!isset($imageConfig[$imageType])) {
+			array_push($this->m_arrayinfo, 'Erreur : Type d\'image non valide.');
+			return;
+		}
+
+		$config = $imageConfig[$imageType];
+
+		// Validate MIME type
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mimeType = finfo_file($finfo, $imageFile['tmp_name']);
+		finfo_close($finfo);
+
+		if (!in_array($mimeType, $config['mime_types'])) {
+			array_push($this->m_arrayinfo, 'Erreur : Type de fichier non autorisé. Attendu : ' . implode(', ', $config['mime_types']));
+			return;
+		}
+
+		// Build filename from form fields
+		$filenameParts = [];
+		foreach ($config['name_fields'] as $field) {
+			$value = utyGetPost($field, '');
+			if (empty($value)) {
+				array_push($this->m_arrayinfo, 'Erreur : Champ ' . $field . ' requis pour le nom du fichier.');
+				return;
+			}
+			$filenameParts[] = $value;
+		}
+
+		$filename = $config['prefix'] . implode('-', $filenameParts) . $config['extension'];
+		$destinationPath = $config['destination'] . $filename;
+
+		// Check if destination directory exists, create if needed
+		if (!is_dir($config['destination'])) {
+			if (!mkdir($config['destination'], 0755, true)) {
+				array_push($this->m_arrayinfo, 'Erreur : Impossible de créer le répertoire de destination.');
+				return;
+			}
+		}
+
+		// Check if file already exists
+		if (file_exists($destinationPath)) {
+			array_push($this->m_arrayinfo, 'ERREUR : Un fichier portant le nom "' . $filename . '" existe déjà dans le dossier de destination.');
+			array_push($this->m_arrayinfo, 'Veuillez utiliser la fonctionnalité de renommage ci-dessous pour renommer le fichier existant avant de procéder à l\'upload.');
+
+			// Store duplicate file info for pre-filling rename form
+			$this->m_duplicate_file = array(
+				'filename' => $filename,
+				'type' => $imageType,
+				'destination' => $config['destination']
+			);
+			return;
+		}
+
+		// Get image dimensions
+		$imageInfo = getimagesize($imageFile['tmp_name']);
+		if ($imageInfo === false) {
+			array_push($this->m_arrayinfo, 'Erreur : Fichier image invalide.');
+			return;
+		}
+
+		list($width, $height) = $imageInfo;
+
+		// Check if resizing is needed
+		$needsResize = ($width > $config['max_width'] || $height > $config['max_height']);
+
+		if ($needsResize) {
+			// Calculate new dimensions maintaining aspect ratio
+			$ratio = min($config['max_width'] / $width, $config['max_height'] / $height);
+			$newWidth = (int)($width * $ratio);
+			$newHeight = (int)($height * $ratio);
+
+			// Create image resource from uploaded file
+			if (in_array('image/png', $config['mime_types'])) {
+				$sourceImage = imagecreatefrompng($imageFile['tmp_name']);
+			} else {
+				$sourceImage = imagecreatefromjpeg($imageFile['tmp_name']);
+			}
+
+			if ($sourceImage === false) {
+				array_push($this->m_arrayinfo, 'Erreur : Impossible de traiter l\'image source.');
+				return;
+			}
+
+			// Create new image with resized dimensions
+			$resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+
+			// Preserve transparency for PNG
+			if (in_array('image/png', $config['mime_types'])) {
+				imagealphablending($resizedImage, false);
+				imagesavealpha($resizedImage, true);
+				$transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+				imagefill($resizedImage, 0, 0, $transparent);
+			}
+
+			// Resize the image
+			imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+			// Save resized image
+			if (in_array('image/png', $config['mime_types'])) {
+				$result = imagepng($resizedImage, $destinationPath, 9);
+			} else {
+				$result = imagejpeg($resizedImage, $destinationPath, 90);
+			}
+
+			// Free memory
+			imagedestroy($sourceImage);
+			imagedestroy($resizedImage);
+
+			if ($result) {
+				array_push($this->m_arrayinfo, "Image redimensionnée et uploadée avec succès : $filename");
+				array_push($this->m_arrayinfo, "Dimensions originales : {$width}x{$height} → Nouvelles dimensions : {$newWidth}x{$newHeight}");
+			} else {
+				array_push($this->m_arrayinfo, 'Erreur : Impossible de sauvegarder l\'image redimensionnée.');
+			}
+		} else {
+			// No resizing needed, just move the file
+			if (move_uploaded_file($imageFile['tmp_name'], $destinationPath)) {
+				array_push($this->m_arrayinfo, "Image uploadée avec succès : $filename");
+				array_push($this->m_arrayinfo, "Dimensions : {$width}x{$height}");
+			} else {
+				array_push($this->m_arrayinfo, 'Erreur : Échec de l\'upload du fichier.');
+			}
+		}
+	}
+
 	function __construct()
 	{
 		parent::__construct(1);
 
 		$this->myBdd = new MyBdd();
+		$myBdd = $this->myBdd;
 
 		$alertMessage = '';
+		$arrayinfo = array();
+
+		$jsondata = '';
+		if (utyGetPost('json_data', false))
+			$jsondata = stripcslashes($_POST['json_data']);
 
 		$Cmd = utyGetPost('Cmd');
 		$ParamCmd = utyGetPost('ParamCmd');
@@ -693,15 +1655,89 @@ class GestionOperations extends MyPageSecure
 				($_SESSION['Profile'] <= 1) ? $alertMessage = $this->ImportEvt($ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 			}
 
+			if ($Cmd == 'ActiveSaison') ($_SESSION['Profile'] <= 2) ? $this->SetActiveSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'AddSaison') ($_SESSION['Profile'] <= 2) ? $this->AddSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'FusionJoueurs') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'RenomEquipe') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->RenomEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'FusionEquipes') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionEquipes() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'DeplaceEquipe') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->DeplaceEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'ChangeCode') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->ChangeCode() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'ChangeAuthSaison') ($_SESSION['Profile'] <= 2) ? $this->ChangeAuthSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
 			if ($alertMessage == '') {
 				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
 
-		$this->SetTemplate("Operations_d_administration", "Operations", false);
+		switch (true) {
+			case isset($_POST['importPCE']):
+				$myBdd->ImportPCE2("licences.pce");
+				$arrayinfo = $myBdd->m_arrayinfo;
+				break;
+			case isset($_POST['Control']) && $_POST['Control'] == 'importPCE2':
+				$myBdd->ImportPCE2();
+				$arrayinfo = $myBdd->m_arrayinfo;
+				break;
+			case isset($_POST['importCalendrier']) && $_SESSION['Profile'] <= 2:
+				$myBdd->ImportCalendrier("calendrier.csv");
+				$arrayinfo = $myBdd->m_arrayinfo;
+				break;
+			case isset($_POST['uploadLicenceZip']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Upload du fichier ...');
+				$this->uploadLicenceZip();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+			case isset($_POST['uploadCalendrierCsv']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Upload du fichier ...');
+				$this->uploadCalendrierCsv();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+			case isset($_POST['uploadImage']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Upload de l\'image en cours...');
+				$this->uploadImage();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+			case isset($_POST['renameImage']):
+				$this->m_arrayinfo = array();
+				array_push($this->m_arrayinfo, 'Renommage de l\'image en cours...');
+				$this->renameImage();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+		}
+
+		$msg = '';
+		if (strlen($jsondata) > 0) {
+			$jsondata = str_replace("\\\"", "\"", $jsondata);
+			if (strstr($_SERVER['DOCUMENT_ROOT'], 'wamp') == false)
+				$msg .= "*** IMPORT VERS KPI SERVEUR POLOWEB4 *** <br>";
+			else
+				$msg .= "*** EXPORT VERS MODE LOCAL **** <br>";
+			$msg .= Replace_Evenement($jsondata);
+		}
+
+		if (PRODUCTION)
+			$production = 'P';
+		else
+			$production = 'W';
+
+		$this->SetTemplate("Operations", "Operations", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
+		$this->m_tpl->assign('arrayinfo', $arrayinfo);
+		$this->m_tpl->assign('msg_json', $msg);
+		$this->m_tpl->assign('production', $production);
+		$this->m_tpl->assign('duplicate_file', $this->m_duplicate_file);
 		$this->DisplayTemplate('GestionOperations');
 
 

@@ -15,8 +15,8 @@
 
 **Accès** :
 ```
-https://kpi.local/kptv.php
-https://kpi.local/kptvscenario.php
+https://kpi.localhost/kptv.php
+https://kpi.localhost/kptvscenario.php
 ```
 
 ### 2. **kppage.tpl** ⏳ Bootstrap 5 présent, script tooltip à ajouter
@@ -34,9 +34,9 @@ https://kpi.local/kptvscenario.php
 
 **Accès exemples** :
 ```
-https://kpi.local/kpequipes.php
-https://kpi.local/kpclassement.php?Saison=2024&Compet=N1H
-https://kpi.local/admin/GestionSchema.php
+https://kpi.localhost/kpequipes.php
+https://kpi.localhost/kpclassement.php?Saison=2024&Compet=N1H
+https://kpi.localhost/admin/GestionSchema.php
 ```
 
 ### 3. **kppageleaflet.tpl** ⏳ Bootstrap 5 présent, script tooltip à ajouter
@@ -47,8 +47,8 @@ https://kpi.local/admin/GestionSchema.php
 
 **Accès exemples** :
 ```
-https://kpi.local/kpclubs.php
-https://kpi.local/admin/GestionStructure.php
+https://kpi.localhost/kpclubs.php
+https://kpi.localhost/admin/GestionStructure.php
 ```
 
 ---
@@ -178,7 +178,7 @@ try {
 ### Test 1 : kptv.php (kppagewide.tpl) ✅ Déjà migré
 ```bash
 # URL
-https://kpi.local/kptv.php
+https://kpi.localhost/kptv.php
 
 # Éléments à tester
 - Boutons avec title=""
@@ -189,7 +189,7 @@ https://kpi.local/kptv.php
 ### Test 2 : kpequipes.php (kppage.tpl)
 ```bash
 # URL
-https://kpi.local/kpequipes.php
+https://kpi.localhost/kpequipes.php
 
 # Vérifier
 - Autocomplete (déjà migré Vanilla JS)
@@ -199,7 +199,7 @@ https://kpi.local/kpequipes.php
 ### Test 3 : kpclubs.php (kppageleaflet.tpl)
 ```bash
 # URL
-https://kpi.local/kpclubs.php
+https://kpi.localhost/kpclubs.php
 
 # Vérifier
 - Carte Leaflet

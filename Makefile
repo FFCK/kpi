@@ -5,28 +5,34 @@ GID := $(shell id -g)
 export USER_ID := $(UID)
 export GROUP_ID := $(GID)
 
-# Variables pour les noms des réseaux
+# Variables pour les noms des réseaux et containers
 APPLICATION_NAME ?= kpi
 NETWORK_KPI_NAME = network_$(APPLICATION_NAME)
+PHP_CONTAINER_NAME = $(APPLICATION_NAME)_php
+NODE_CONTAINER_NAME = $(APPLICATION_NAME)_node_app2
+NODE3_CONTAINER_NAME = $(APPLICATION_NAME)_node_app3
+DB_CONTAINER_NAME = $(APPLICATION_NAME)_db
 
 DOCKER_COMPOSE = docker compose
 DOCKER_EXEC = docker exec -ti
-DOCKER_EXEC_PHP = docker exec -ti kpi_php
-DOCKER_EXEC_PHP8 = docker exec -ti kpi_php8
-DOCKER_EXEC_PHP_NON_INTERACTIVE = docker exec kpi_php
-DOCKER_EXEC_PHP8_NON_INTERACTIVE = docker exec -u www-data kpi_php8
-DOCKER_EXEC_NODE = docker exec -ti kpi_node_app2
+DOCKER_EXEC_PHP = docker exec -ti $(PHP_CONTAINER_NAME)
+DOCKER_EXEC_PHP_NON_INTERACTIVE = docker exec $(PHP_CONTAINER_NAME)
+DOCKER_EXEC_NODE = docker exec -ti $(NODE_CONTAINER_NAME)
+DOCKER_EXEC_NODE3 = docker exec -ti $(NODE3_CONTAINER_NAME)
 .DEFAULT_GOAL = help
 
-.PHONY: help init init_env init_env_app2 init_networks \
+.PHONY: help init init_env init_env_app2 init_env_app3 init_networks \
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
 run_dev run_build run_generate run_lint \
+run_dev_app3 run_build_app3 run_generate_app3 run_lint_app3 \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
+npm_install_app3 npm_ls_app3 npm_clean_app3 npm_update_app3 npm_add_app3 npm_add_dev_app3 \
 npm_install_backend npm_add_backend npm_update_backend npm_ls_backend npm_clean_backend npm_init_backend \
 composer_install composer_update composer_require composer_require_dev composer_dump \
-php_bash php8_bash node_bash db_bash \
+php_bash node_bash node3_bash db_bash \
+event_worker_start event_worker_stop event_worker_status event_worker_logs event_worker_restart \
 wordpress_backup wordpress_restore \
 networks_create networks_list networks_clean
 
@@ -49,13 +55,16 @@ help: ## Affiche cette aide
 
 
 ## INITIALISATION
-init: init_env init_env_app2 init_networks ## Initialisation complète du projet (env, réseaux)
+init: init_env init_env_app2 init_env_app3 init_networks ## Initialisation complète du projet (env, réseaux)
 	@echo ""
 	@echo "✅ Initialisation complète terminée!"
 	@echo ""
 	@echo "Configuration actuelle:"
 	@echo "  - APPLICATION_NAME: $(APPLICATION_NAME)"
 	@echo "  - Réseau KPI: $(NETWORK_KPI_NAME)"
+	@echo "  - Container PHP: $(PHP_CONTAINER_NAME)"
+	@echo "  - Container Node: $(NODE_CONTAINER_NAME)"
+	@echo "  - Container DB: $(DB_CONTAINER_NAME)"
 	@echo ""
 	@echo "Prochaines étapes:"
 	@echo "  1. Configurez les variables dans docker/.env"
@@ -88,6 +97,9 @@ init_env_app2: ## Initialise les fichiers .env.development et .env.production po
 	else \
 		echo "⚠️  Le fichier .env.production existe déjà pour app2"; \
 	fi
+
+init_env_app3: ## Initialise les fichiers .env.development et .env.production pour app3
+	@echo "✅ Les fichiers .env pour app3 sont déjà créés dans sources/app3/"
 
 init_networks: networks_create ## Alias pour networks_create (crée les réseaux Docker)
 
@@ -180,22 +192,68 @@ run_lint: ## Exécute ESLint sur app2
 
 ## NPM - APP2
 npm_install_app2: ## Installe toutes les dépendances npm pour app2
+	@echo "Installation des dépendances npm pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "npm install"
 
 npm_ls_app2: ## Liste les modules npm installés dans app2
+	@echo "Modules npm dans app2 (container: $(NODE_CONTAINER_NAME)):"
 	$(DOCKER_EXEC_NODE) sh -c "ls -l node_modules/@nuxtjs"
 
 npm_clean_app2: ## Supprime node_modules et package-lock.json de app2
+	@echo "Nettoyage de node_modules pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "rm -rf node_modules package-lock.json"
 
 npm_update_app2: ## Met à jour toutes les dépendances npm de app2
+	@echo "Mise à jour des dépendances npm pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "npm update"
 
 npm_add_app2: ## Ajoute un package npm à app2 (usage: make npm_add_app2 package=uuid)
+	@echo "Ajout du package $(package) pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "npm install $(package)"
 
 npm_add_dev_app2: ## Ajoute un package npm de dev à app2 (usage: make npm_add_dev_app2 package=eslint)
+	@echo "Ajout du package de dev $(package) pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "npm install -D $(package)"
+
+
+## NUXT - APP3 (Match Sheet)
+run_dev_app3: ## Lance le serveur Nuxt (app3) en mode développement (port 3003)
+	$(DOCKER_EXEC_NODE3) sh -c "npm run dev"
+
+run_build_app3: ## Build l'application Nuxt (app3) pour la production
+	$(DOCKER_EXEC_NODE3) sh -c "npm run build"
+
+run_generate_app3: ## Génère l'application Nuxt (app3) en mode statique
+	$(DOCKER_EXEC_NODE3) sh -c "npm run generate"
+
+run_lint_app3: ## Exécute ESLint sur app3
+	$(DOCKER_EXEC_NODE3) sh -c "npm run lint"
+
+
+## NPM - APP3 (Match Sheet)
+npm_install_app3: ## Installe toutes les dépendances npm pour app3
+	@echo "Installation des dépendances npm pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm install"
+
+npm_ls_app3: ## Liste les modules npm installés dans app3
+	@echo "Modules npm dans app3 (container: $(NODE3_CONTAINER_NAME)):"
+	$(DOCKER_EXEC_NODE3) sh -c "ls -l node_modules/@nuxtjs"
+
+npm_clean_app3: ## Supprime node_modules et package-lock.json de app3
+	@echo "Nettoyage de node_modules pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "rm -rf node_modules package-lock.json"
+
+npm_update_app3: ## Met à jour toutes les dépendances npm de app3
+	@echo "Mise à jour des dépendances npm pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm update"
+
+npm_add_app3: ## Ajoute un package npm à app3 (usage: make npm_add_app3 package=uuid)
+	@echo "Ajout du package $(package) pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm install $(package)"
+
+npm_add_dev_app3: ## Ajoute un package npm de dev à app3 (usage: make npm_add_dev_app3 package=eslint)
+	@echo "Ajout du package de dev $(package) pour app3 (container: $(NODE3_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE3) sh -c "npm install -D $(package)"
 
 
 ## NPM - BACKEND (JavaScript Libraries)
@@ -259,49 +317,92 @@ npm_clean_backend: ## Supprime node_modules du backend (attention: supprime tout
 
 
 ## COMPOSER - PHP
-composer_install: ## Installe les dépendances Composer (sources/vendor/) - PHP 8
-	@echo "Installation des dépendances Composer avec PHP 8..."
-	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer install"
+composer_install: ## Installe les dépendances Composer (sources/vendor/)
+	@echo "Installation des dépendances Composer (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html && composer install"
 	@echo "✅ Dépendances Composer installées"
 
-composer_update: ## Met à jour les dépendances Composer - PHP 8
-	@echo "Mise à jour des dépendances Composer avec PHP 8..."
-	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer update"
+composer_update: ## Met à jour les dépendances Composer
+	@echo "Mise à jour des dépendances Composer (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html && composer update"
 	@echo "✅ Dépendances Composer mises à jour"
 
-composer_require: ## Ajoute un package Composer - PHP 8 (usage: make composer_require package=vendor/package)
+composer_require: ## Ajoute un package Composer (usage: make composer_require package=vendor/package)
 	@if [ -z "$(package)" ]; then \
 		echo "❌ Erreur: spécifiez un package (make composer_require package=vendor/package)"; \
 		exit 1; \
 	fi
-	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer require $(package)"
+	@echo "Ajout du package $(package) (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html && composer require $(package)"
 	@echo "✅ Package $(package) ajouté"
 
-composer_require_dev: ## Ajoute un package Composer de dev - PHP 8 (usage: make composer_require_dev package=vendor/package)
+composer_require_dev: ## Ajoute un package Composer de dev (usage: make composer_require_dev package=vendor/package)
 	@if [ -z "$(package)" ]; then \
 		echo "❌ Erreur: spécifiez un package (make composer_require_dev package=vendor/package)"; \
 		exit 1; \
 	fi
-	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer require --dev $(package)"
+	@echo "Ajout du package de dev $(package) (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html && composer require --dev $(package)"
 	@echo "✅ Package de dev $(package) ajouté"
 
-composer_dump: ## Regénère l'autoloader Composer - PHP 8
-	$(DOCKER_EXEC_PHP8_NON_INTERACTIVE) bash -c "cd /var/www/html && composer dump-autoload"
+composer_dump: ## Regénère l'autoloader Composer
+	@echo "Regénération de l'autoloader Composer (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html && composer dump-autoload"
 	@echo "✅ Autoloader Composer regénéré"
 
 
 ## ACCÈS SHELLS
-php_bash: ## Ouvre un shell bash dans le container PHP 7.4
+php_bash: ## Ouvre un shell bash dans le container PHP
 	$(DOCKER_EXEC_PHP) bash
-
-php8_bash: ## Ouvre un shell bash dans le container PHP 8
-	$(DOCKER_EXEC_PHP8) bash
 
 node_bash: ## Ouvre un shell bash dans le container Node (app2)
 	$(DOCKER_EXEC_NODE) sh
 
+node3_bash: ## Ouvre un shell bash dans le container Node (app3)
+	$(DOCKER_EXEC_NODE3) sh
+
 db_bash: ## Ouvre un shell dans le container MySQL
-	docker exec -ti kpi_db sh
+	docker exec -ti $(DB_CONTAINER_NAME) sh
+
+
+## EVENT WORKER - Génération automatique des caches d'événements
+event_worker_start: ## Démarre le worker d'événements en arrière-plan
+	@echo "🚀 Démarrage du worker d'événements..."
+	@echo "📁 Création du dossier de logs si nécessaire..."
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "mkdir -p /var/www/html/live/logs && chmod 755 /var/www/html/live/logs"
+	@echo "🔧 Lancement du processus worker..."
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "nohup php /var/www/html/live/event_worker.php > /var/www/html/live/logs/event_worker.log 2>&1 &"
+	@sleep 2
+	@echo "✅ Worker démarré en arrière-plan"
+	@echo "💡 Vérifiez le statut avec: make event_worker_status"
+	@echo "💡 Consultez les logs avec: make event_worker_logs"
+
+event_worker_stop: ## Arrête le worker d'événements
+	@echo "🛑 Arrêt du worker d'événements..."
+	-@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "pkill -f event_worker.php" 2>/dev/null || true
+	@echo "✅ Worker arrêté"
+	@echo "💡 Note: Vous pouvez aussi arrêter via l'interface web (sources/live/event.php)"
+
+event_worker_status: ## Affiche le statut du worker d'événements
+	@echo "📊 Statut du worker d'événements:"
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c 'if pgrep -f event_worker.php > /dev/null; then \
+		echo "  ✅ Worker en cours d'"'"'exécution"; \
+		echo "  PID: $$(pgrep -f event_worker.php)"; \
+	else \
+		echo "  ❌ Worker arrêté"; \
+	fi'
+	@echo "💡 Pour plus de détails, accédez à l'interface web: sources/live/event.php"
+
+event_worker_logs: ## Affiche les logs du worker d'événements
+	@echo "📋 Logs du worker d'événements (Ctrl+C pour quitter):"
+	@echo "─────────────────────────────────────────────────────────"
+	@$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c 'tail -f /var/www/html/live/logs/event_worker.log 2>/dev/null || echo "⚠️  Aucun log disponible. Le worker n'"'"'a peut-être pas encore été démarré."'
+
+event_worker_restart: ## Redémarre le worker d'événements
+	@echo "🔄 Redémarrage du worker d'événements..."
+	@$(MAKE) event_worker_stop
+	@sleep 2
+	@$(MAKE) event_worker_start
 
 
 ## RÉSEAUX DOCKER

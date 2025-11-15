@@ -55,7 +55,7 @@ while ($row = $result->fetch()) {
     $jRow["matric"] = $row['Matric'];
 	$jRow["nom"] = mb_strtoupper($row['Nom']);
 	$jRow["prenom"] = mb_convert_case($row['Prenom'], MB_CASE_TITLE, "UTF-8");
-    if (strlen($row['arbitre']) > 1) {
+    if (strlen($row['arbitre'] ?? '') > 1) {
         $jRow["arb"] = ' ' . $row['arbitre'] . '-' . $row['niveau'];
     } else {
         $jRow["arb"] = '';

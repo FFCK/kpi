@@ -93,7 +93,7 @@
                         <div class='pull-right'>
                             {if $arrayEquipe_publi[$codetemp][0].Code_typeclt=='CHPT'}
                                 <a class="btn btn-default"
-                                    href='kpdetails.php?Saison={$idSaison}&event=0&Group={$codeCompetGroup}&Compet={$idCompet}&Journee={$idSelJournee}&typ=CHPT'>{#Infos#}</a>
+                                    href='kpdetails.php?Saison={$idSaison}&event=0&Group={$codeCompetGroup}&Compet={$idCompet}&Journee={$idSelJournee|default:''}&typ=CHPT'>{#Infos#}</a>
                             {else}
                                 <a class="btn btn-default"
                                     href='kpdetails.php?Saison={$idSaison}&event=0&Group={$codeCompetGroup}&Compet={$idCompet}&typ=CP'>{#Infos#}</a>
