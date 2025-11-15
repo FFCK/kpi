@@ -10,7 +10,7 @@
   <!-- Mobile Specific Meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <link rel='stylesheet' href='css/fullcalendar.min.css' type='text/css' media='all' />
+  {* FullCalendar v6 styles are now included in JS bundle *}
   <link rel='stylesheet' id='material-custom-css' href='css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
   <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
   <link rel='stylesheet' id='material-main-css' href='css/wordpress_material_style.css?v={$NUM_VERSION}' type='text/css' media='all' />
@@ -55,8 +55,11 @@
     <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}" defer></script>
   {/if}
   {if $contenutemplate == 'kpcalendrier'}
-    <script type='text/javascript' src='js/moment.min.js?v={$NUM_VERSION}'></script>
-    <script type='text/javascript' src='js/fullcalendar.min.js?v={$NUM_VERSION}'></script>
+    {* FullCalendar v6.1.19 - loaded in order: core, plugins, locales *}
+    <script type='text/javascript' src='js/fullcalendar-core.min.js?v={$NUM_VERSION}'></script>
+    <script type='text/javascript' src='js/fullcalendar-daygrid.min.js?v={$NUM_VERSION}'></script>
+    <script type='text/javascript' src='js/fullcalendar-multimonth.min.js?v={$NUM_VERSION}'></script>
+    <script type='text/javascript' src='js/fullcalendar-locales-all.min.js?v={$NUM_VERSION}'></script>
   {/if}
 
 

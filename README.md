@@ -5,12 +5,13 @@ KPI est un système de gestion pour les compétitions de kayak-polo, gérant les
 ## 🏗️ Architecture
 
 Le projet combine plusieurs technologies :
-- **Backend PHP** : PHP 7.4/8.x avec API REST
+- **Backend PHP** : ✅ PHP 8.4 (migration depuis PHP 7.4 terminée en novembre 2025) avec API REST
+- **Bibliothèques PHP modernes** : mPDF v8.2+, OpenSpout v4.32.0, Smarty v4
 - **Frontend moderne** : Nuxt 4 (Vue 3 + TypeScript + Tailwind CSS) dans `sources/app2/`
 - **Applications legacy** : Vue.js dans `sources/app_dev/`, `app_live_dev/`, `app_wsm_dev/`
-- **CMS** : WordPress pour le contenu éditorial
+- **CMS** : WordPress pour le contenu éditorial (compatible PHP 8.4)
 - **Infrastructure** : Docker Compose avec Traefik pour le reverse proxy
-- **Base de données** : MySQL/MariaDB (2 bases : KPI + WordPress)
+- **Base de données** : MySQL/MariaDB 10.4 (2 bases : KPI + WordPress)
 
 ## 🚀 Quick Start
 
@@ -133,8 +134,7 @@ make npm_add_app2 package=nom-package    # Ajouter un package
 
 ### Accès aux containers
 ```bash
-make php_bash          # Shell PHP 7.4
-make php8_bash         # Shell PHP 8
+make php_bash          # Shell PHP 8.4
 make node_bash         # Shell Node/App2
 make db_bash           # Shell MySQL
 ```
@@ -252,9 +252,12 @@ Accès via phpMyAdmin : http://kpi-myadmin.localhost
 - **Nuxt UI** : Composants UI
 
 ### Backend
-- **PHP 7.4 / 8.x** : Langage serveur
+- **PHP 8.4** : Langage serveur (migration PHP 7.4→8.4 terminée nov 2025)
+- **mPDF v8.2+** : Génération PDF (remplacement de FPDF)
+- **OpenSpout v4.32.0** : Export ODS/XLSX/CSV
+- **Smarty v4** : Moteur de templates
 - **MySQL/MariaDB 10.4** : Base de données
-- **WordPress** : CMS
+- **WordPress** : CMS (compatible PHP 8.4)
 
 ### Infrastructure
 - **Docker** : Conteneurisation
@@ -316,11 +319,13 @@ make run_dev           # Relancer
 
 - **[CLAUDE.md](CLAUDE.md)** : Guide complet des commandes pour Claude Code
 - **[WORKFLOW_AI/](WORKFLOW_AI/)** : Documentation technique détaillée
-  - Guides de migration (PHP 8, FPDF → mPDF)
+  - ✅ **[PHP8_MIGRATION_SUMMARY.md](WORKFLOW_AI/PHP8_MIGRATION_SUMMARY.md)** - Synthèse complète migration PHP 8.4 (TERMINÉE)
+  - Guides de migration (FPDF → mPDF, OpenTBS → OpenSpout, Bootstrap 5.3.8)
+  - Audits JavaScript et plan de modernisation (jQuery, bibliothèques legacy)
   - Fixes et optimisations
   - Audits de code et recommandations
-  - Configuration Docker et infrastructure
-  - Voir [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md) pour l'index complet
+  - Configuration Docker et infrastructure multi-environnements
+  - Voir [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md) pour l'index complet (29+ documents)
 - **Makefile** : Toutes les commandes disponibles (`make help`)
 - **Wiki GitHub** : https://github.com/FFCK/kpi/wiki
 

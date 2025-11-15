@@ -8,17 +8,19 @@ if (utyGetGet('json', false)) {
 	$user = '';
 	$pwd = '';
 	if (utyGetGet('user', false)) $user = utyGetGet('user', false);
-	if (utyGetGet('pwd', false)) $user = utyGetGet('pwd', false);
+	if (utyGetGet('pwd', false)) $pwd = utyGetGet('pwd', false);
 
-	$sql  = "SELECT Pwd 
-		FROM kp_user 
-		WHERE Code = '" . $user . "' ";
-	
+	$sql  = "SELECT Pwd
+		FROM kp_user
+		WHERE Code = ? ";
+
 	echo "PHP Insertion ...<br>";
-		
+
 	$myBdd = new MyBdd(true);	// Connexion sur le site Mirroir (poloweb5)
 
-	$result = $myBdd->pdo->query($sql);
+	$stmt = $myBdd->pdo->prepare($sql);
+	$stmt->execute(array($user));
+	$result = $stmt;
 	if ($result->rowCount() == 1)
 	{
 		$row = $result->fetch();
@@ -47,20 +49,17 @@ if (utyGetGet('json', false)) {
 //					echo 'count recEvenement = '.count($recEvenement). '!';
 					if (count($recEvenement) == 5)
 					{
-						$sql  = "Replace Into kp_evenement (Id, Libelle, Lieu, Date_debut, Date_fin) ";
-						$sql .= "Values (";
-						$sql .= $recEvenement[0];
-						$sql .= ",'";
-						$sql .= $recEvenement[1];
-						$sql .= "','";
-						$sql .= $recEvenement[2];
-						$sql .= "','";
-						$sql .= $recEvenement[3];
-						$sql .= "','";
-						$sql .= $recEvenement[4];
-						$sql .= "')";
-						
-						$myBdd->pdo->query($sql);
+						$sql  = "REPLACE INTO kp_evenement (Id, Libelle, Lieu, Date_debut, Date_fin) ";
+						$sql .= "VALUES (?, ?, ?, ?, ?)";
+
+						$stmt = $myBdd->pdo->prepare($sql);
+						$stmt->execute(array(
+							$recEvenement[0],
+							$recEvenement[1],
+							$recEvenement[2],
+							$recEvenement[3],
+							$recEvenement[4]
+						));
 					}
 				}
 				

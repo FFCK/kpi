@@ -1,0 +1,21 @@
+api_platform:
+    title: KPI API
+    version: 1.0.0
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+    # Enable Swagger UI
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+        html: ['text/html']
+    docs_formats:
+        jsonld: ['application/ld+json']
+        jsonhal: ['application/hal+json']
+        jsonapi: ['application/vnd.api+json']
+        json: ['application/json']
+        html: ['text/html']
+    # Enable Swagger UI documentation
+    enable_swagger_ui: true
+    enable_re_doc: true

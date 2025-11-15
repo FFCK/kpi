@@ -1411,74 +1411,88 @@ class MyBdd
 	{
 		$codeSaison = $this->GetActiveSaison();
 
-		// Suppression des Matchs  
-		$sql  = "DELETE FROM kp_match 
-			WHERE Id_journee IN (
-				SELECT Id 
-				FROM kp_journee 
-				WHERE Code_competition = '$codeCompet' 
-				AND Code_saison = '$codeSaison' )";
-		$this->pdo->query($sql) or die("Erreur Delete1");
+		// Suppression des Matchs (en 2 étapes pour éviter les sous-requêtes non paramétrables)
+		// Étape 1: Récupérer les IDs des journées
+		$sql = "SELECT Id FROM kp_journee WHERE Code_competition = ? AND Code_saison = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($codeCompet, $codeSaison));
+		$journeeIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+		// Étape 2: Supprimer les matchs si des journées existent
+		if (!empty($journeeIds)) {
+			$placeholders = str_repeat('?,', count($journeeIds) - 1) . '?';
+			$sql = "DELETE FROM kp_match WHERE Id_journee IN ($placeholders)";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute($journeeIds) or die("Erreur Delete1");
+		}
 
 		// Suppression des Journées
-		$sql = "DELETE FROM kp_journee 
-			WHERE Code_competition = '$codeCompet' 
-			AND Code_saison = '$codeSaison' ";
-		$this->pdo->query($sql) or die("Erreur Delete2");
+		$sql = "DELETE FROM kp_journee WHERE Code_competition = ? AND Code_saison = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($codeCompet, $codeSaison)) or die("Erreur Delete2");
 
 		// Insertion des Journées ...
 		$nextIdJournee = $this->GetNextIdJournee();
 
-		$sql  = "INSERT INTO kp_journee (Id, Id_dupli, Code_competition, code_saison, 
-			Phase, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, 
-			Departement, Responsable_insc, Responsable_R1, Organisateur) 
-			SELECT $nextIdJournee-abs(Id), Id, '$codeCompet', code_saison, Phase, 
-			Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau, 
-			Departement, Responsable_insc, Responsable_R1, Organisateur 
-			FROM kp_journee 
-			WHERE Code_competition = '$codeCompetRef' 
-			AND Code_saison = '$codeSaison' ";
+		// Note: $nextIdJournee est un entier généré par la fonction, donc sûr
+		$sql  = "INSERT INTO kp_journee (Id, Id_dupli, Code_competition, code_saison,
+			Phase, Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau,
+			Departement, Responsable_insc, Responsable_R1, Organisateur)
+			SELECT $nextIdJournee-abs(Id), Id, ?, code_saison, Phase,
+			Niveau, Date_debut, Date_fin, Nom, Libelle, Lieu, Plan_eau,
+			Departement, Responsable_insc, Responsable_R1, Organisateur
+			FROM kp_journee
+			WHERE Code_competition = ?
+			AND Code_saison = ? ";
 
-		$this->pdo->query($sql) or die("Erreur Insert1");
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($codeCompet, $codeCompetRef, $codeSaison)) or die("Erreur Insert1");
 
 		// Insertion des Matchs ...
-		$sql  = "INSERT INTO kp_match (Id_journee, Numero_ordre, Date_match, Heure_match, 
-			Libelle, Terrain, Id_equipeA, Id_equipeB, ScoreA, ScoreB, Arbitre_principal, 
-			Arbitre_secondaire) 
-			SELECT c.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Libelle, a.Terrain, 
-			a.Id_equipeA, a.Id_equipeB, '', '', a.Arbitre_principal, a.Arbitre_secondaire 
-			FROM kp_match a, kp_journee b, kp_journee c 
-			WHERE a.Id_journee = b.Id 
-			AND b.Code_competition = '$codeCompetRef' 
-			AND b.Code_saison = '$codeSaison' 
+		$sql  = "INSERT INTO kp_match (Id_journee, Numero_ordre, Date_match, Heure_match,
+			Libelle, Terrain, Id_equipeA, Id_equipeB, ScoreA, ScoreB, Arbitre_principal,
+			Arbitre_secondaire)
+			SELECT c.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Libelle, a.Terrain,
+			a.Id_equipeA, a.Id_equipeB, '', '', a.Arbitre_principal, a.Arbitre_secondaire
+			FROM kp_match a, kp_journee b, kp_journee c
+			WHERE a.Id_journee = b.Id
+			AND b.Code_competition = ?
+			AND b.Code_saison = ?
 			AND a.Id_journee = c.Id_dupli";
-		$this->pdo->query($sql) or die("Erreur Insert 2");
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($codeCompetRef, $codeSaison)) or die("Erreur Insert 2");
 
-		// Modification des Id_Equipes ...
-		$sql  = "UPDATE kp_match a, kp_competition_equipe b 
-			SET a.Id_equipeA = b.Id 
-			WHERE a.Id_equipeA = b.Id_dupli 
-			AND b.Code_compet = '$codeCompet' 
-			AND b.Code_saison = '$codeSaison' 
-			AND a.Id_journee IN (
-				SELECT Id 
-				FROM kp_journee 
-				WHERE Code_competition = '$codeCompet' 
-				AND Code_saison = '$codeSaison') ";
-		$this->pdo->query($sql) or die("Erreur Update A");
+		// Récupérer les IDs des journées pour les mises à jour
+		$sql = "SELECT Id FROM kp_journee WHERE Code_competition = ? AND Code_saison = ?";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($codeCompet, $codeSaison));
+		$journeeIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-		// Modification des Id_Equipes ...
-		$sql  = "UPDATE kp_match a, kp_competition_equipe b 
-			SET a.Id_equipeB = b.Id 
-			WHERE a.Id_equipeB = b.Id_dupli 
-			AND b.Code_compet = '$codeCompet' 
-			AND b.Code_saison = '$codeSaison' 
-			AND a.Id_journee IN (
-				SELECT Id 
-				FROM kp_journee 
-				WHERE Code_competition = '$codeCompet' 
-				AND Code_saison = '$codeSaison') ";
-		$this->pdo->query($sql) or die("Erreur Update B");
+		if (!empty($journeeIds)) {
+			$placeholders = str_repeat('?,', count($journeeIds) - 1) . '?';
+
+			// Modification des Id_Equipes A...
+			$sql  = "UPDATE kp_match a, kp_competition_equipe b
+				SET a.Id_equipeA = b.Id
+				WHERE a.Id_equipeA = b.Id_dupli
+				AND b.Code_compet = ?
+				AND b.Code_saison = ?
+				AND a.Id_journee IN ($placeholders) ";
+			$stmt = $this->pdo->prepare($sql);
+			$params = array_merge(array($codeCompet, $codeSaison), $journeeIds);
+			$stmt->execute($params) or die("Erreur Update A");
+
+			// Modification des Id_Equipes B...
+			$sql  = "UPDATE kp_match a, kp_competition_equipe b
+				SET a.Id_equipeB = b.Id
+				WHERE a.Id_equipeB = b.Id_dupli
+				AND b.Code_compet = ?
+				AND b.Code_saison = ?
+				AND a.Id_journee IN ($placeholders) ";
+			$stmt = $this->pdo->prepare($sql);
+			$params = array_merge(array($codeCompet, $codeSaison), $journeeIds);
+			$stmt->execute($params) or die("Erreur Update B");
+		}
 	}
 
 	// GetNextIdJournee 	
@@ -1494,15 +1508,16 @@ class MyBdd
 		}
 	}
 
-	// GetEvenementJournees 	
+	// GetEvenementJournees
 	function GetEvenementJournees($idEvenement)
 	{
 		$lstJournee = '0';
 
-		$sql = "SELECT Id_journee 
-			FROM kp_evenement_journee 
-			WHERE Id_evenement = $idEvenement ";
-		$stmt = $this->pdo->query($sql) or die("Erreur Load");
+		$sql = "SELECT Id_journee
+			FROM kp_evenement_journee
+			WHERE Id_evenement = ? ";
+		$stmt = $this->pdo->prepare($sql);
+		$stmt->execute(array($idEvenement)) or die("Erreur Load");
 		while ($row = $stmt->fetch()) {
 
 			$lstJournee .= ',';

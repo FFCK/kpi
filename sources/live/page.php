@@ -241,3 +241,26 @@ class MyPage
 <?php
   }
 }
+
+// Classe sécurisée nécessitant une authentification
+class MyPageSecure extends MyPage
+{
+  function __construct(&$arrayParams, $requiredProfile)
+  {
+    if (session_status() == PHP_SESSION_NONE) {
+      session_start();
+    }
+
+    // Test si Authentification et Niveau suffisant
+    if (isset($_SESSION['Profile']) && $_SESSION['Profile'] > 0) {
+      if ($requiredProfile >= $_SESSION['Profile']) {
+        parent::__construct($arrayParams);
+        return;
+      }
+    }
+
+    // Redirection vers la page de login
+    header("Location: ../admin/Login.php?Src=" . $_SERVER['PHP_SELF']);
+    exit;
+  }
+}
