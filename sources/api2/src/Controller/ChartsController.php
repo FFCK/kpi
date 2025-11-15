@@ -42,8 +42,13 @@ class ChartsController extends AbstractController
                             new OA\Property(property: 'code', type: 'string', example: 'N1'),
                             new OA\Property(property: 'libelle', type: 'string', example: 'Nationale 1'),
                             new OA\Property(property: 'type', type: 'string', example: 'CHPT'),
-                            new OA\Property(property: 'rounds', type: 'object'),
-                            new OA\Property(property: 'ranking', type: 'array')
+                            new OA\Property(property: 'rounds', type: 'object', description: 'Tournament rounds structure'),
+                            new OA\Property(
+                                property: 'ranking',
+                                type: 'array',
+                                items: new OA\Items(type: 'object'),
+                                description: 'Team rankings'
+                            )
                         ]
                     )
                 )
