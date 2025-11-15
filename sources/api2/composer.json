@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "api-platform/core": "^4.2",
+        "nelmio/api-doc-bundle": "^5.8",
         "nelmio/cors-bundle": "^2.6",
         "symfony/asset": "7.3.*",
         "symfony/console": "7.3.*",
