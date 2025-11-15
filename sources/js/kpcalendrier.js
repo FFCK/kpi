@@ -7,8 +7,20 @@ document.addEventListener('DOMContentLoaded', function() {
         initialView: 'dayGridMonth',
         editable: false,
         displayEventTime: false,
-        height: 550,
+        height: 'auto',
         firstDay: 1, // Lundi
+
+        // Vues disponibles
+        views: {
+            dayGridMonth: {
+                titleFormat: { year: 'numeric', month: 'long' }
+            },
+            multiMonthYear: {
+                titleFormat: { year: 'numeric' },
+                multiMonthMaxColumns: 3, // 3 colonnes pour un affichage grille
+                multiMonthMinWidth: 350
+            }
+        },
 
         // Chargement des événements depuis json-events.php
         events: function(info, successCallback, failureCallback) {
@@ -65,14 +77,13 @@ document.addEventListener('DOMContentLoaded', function() {
             locale: 'fr',
             buttonText: {
                 today: 'Aujourd\'hui',
-                month: 'mois',
-                week: 'semaine',
-                day: 'jour'
+                dayGridMonth: 'Mois',
+                multiMonthYear: 'Année'
             },
             headerToolbar: {
-                left: '',
+                left: 'dayGridMonth,multiMonthYear',
                 center: 'title',
-                right: 'today prev,next,prevYear,nextYear'
+                right: 'today prev,next'
             }
         }));
         calendarFr.render();
@@ -85,14 +96,13 @@ document.addEventListener('DOMContentLoaded', function() {
             locale: 'en',
             buttonText: {
                 today: 'Today',
-                month: 'month',
-                week: 'week',
-                day: 'day'
+                dayGridMonth: 'Month',
+                multiMonthYear: 'Year'
             },
             headerToolbar: {
-                left: '',
+                left: 'dayGridMonth,multiMonthYear',
                 center: 'title',
-                right: 'today prev,next,prevYear,nextYear'
+                right: 'today prev,next'
             }
         }));
         calendarEn.render();

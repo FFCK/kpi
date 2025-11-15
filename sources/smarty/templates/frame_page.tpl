@@ -55,9 +55,10 @@
     <script type="text/javascript" src="js/{$contenutemplate}.js?v={$NUM_VERSION}" defer></script>
   {/if}
   {if $contenutemplate == 'kpcalendrier'}
-    {* FullCalendar v6.1.19 - loaded in order: core, daygrid, locales *}
+    {* FullCalendar v6.1.19 - loaded in order: core, plugins, locales *}
     <script type='text/javascript' src='js/fullcalendar-core.min.js?v={$NUM_VERSION}'></script>
     <script type='text/javascript' src='js/fullcalendar-daygrid.min.js?v={$NUM_VERSION}'></script>
+    <script type='text/javascript' src='js/fullcalendar-multimonth.min.js?v={$NUM_VERSION}'></script>
     <script type='text/javascript' src='js/fullcalendar-locales-all.min.js?v={$NUM_VERSION}'></script>
   {/if}
 

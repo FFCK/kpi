@@ -16,6 +16,7 @@
   "dependencies": {
     "@fullcalendar/core": "^6.1.19",
     "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/multimonth": "^6.1.19",
     "flatpickr": "^4.6.13"
   }
 }
