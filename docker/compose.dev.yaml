@@ -126,6 +126,35 @@ services:
             - "traefik.http.routers.app2.tls=true"
             - "traefik.http.services.app2.loadbalancer.server.port=3000"
 
+    node_app3:
+        container_name: kpi_node_app3
+        build:
+            context: ../sources/app3
+            dockerfile: ../../docker/node/Dockerfile
+        working_dir: /app
+        user: "${USER_ID}:${GROUP_ID}"
+        volumes:
+            - ../sources/app3:/app
+        environment:
+            - HOST=0.0.0.0
+            - PORT=3003
+            - TZ=Europe/Paris
+            - LANG=fr_FR.UTF-8
+            - LANGUAGE=fr_FR:fr
+            - LC_ALL=fr_FR.UTF-8
+        networks:
+            - network_kpi
+            - traefiknetwork
+        ports:
+            - "3003:3003"
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.app3.rule=Host(`${APP3_DOMAIN_NAME}`)"
+            - "traefik.http.routers.app3.entrypoints=websecure"
+            - "traefik.http.routers.app3.tls=true"
+            - "traefik.http.services.app3.loadbalancer.server.port=3003"
+
 
 networks:
     network_kpi:

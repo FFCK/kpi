@@ -1,0 +1,40 @@
+{
+  "name": "kpi-app3-matchsheet",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "dotenv -e .env.development -- nuxt dev --hostname 0.0.0.0 --port 3003",
+    "generate": "dotenv -e .env.production -- nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "easytimer.js": "^4.6.0"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.9.0",
+    "@nuxt/kit": "^4.1.2",
+    "@nuxt/ui": "^4.0.0",
+    "@nuxtjs/i18n": "^10.1.0",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.2",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/node": "^24.5.2",
+    "@vite-pwa/nuxt": "^1.0.4",
+    "buffer": "^6.0.3",
+    "dayjs": "^1.11.18",
+    "dexie": "^4.2.0",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "^9.36.0",
+    "nuxt": "^4.1.2",
+    "pinia": "^3.0.3",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
+    "uuid": "^13.0.0",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1"
+  }
+}
