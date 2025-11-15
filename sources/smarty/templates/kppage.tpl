@@ -32,7 +32,7 @@
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux" href="http://kayak-polo.info/?feed=rss2" />
         <link rel="alternate" type="application/rss+xml" title="Kayak-polo.info &raquo; Flux des commentaires" href="http://kayak-polo.info/?feed=comments-rss2" />
 
-        <link rel='stylesheet' href='{$adm}css/fullcalendar.min.css' type='text/css' media='all' />
+        {* FullCalendar v6 styles are now included in JS bundle *}
         <link rel='stylesheet' id='material-custom-css' href='{$adm}css/wordpress_material_stylesheets_styles.css?v={$NUM_VERSION}' type='text/css' media='all' />
         {* <link rel='stylesheet' id='bootstrap' href='{$adm}vendor/twbs/bootstrap/dist/css/bootstrap.min.css?v={$NUM_VERSION}' type='text/css' media='all' /> *}
         <link rel='stylesheet' id='bootstrap5-navbar-fix-css' href='{$adm}css/bootstrap5_navbar_fix.css?v={$NUM_VERSION}' type='text/css' media='all' />
@@ -85,8 +85,10 @@
             <script type="text/javascript" src="{$adm}js/{$contenutemplate}.js?v={$NUM_VERSION}" defer></script>
         {/if}
         {if $contenutemplate == 'kpcalendrier'}
-            <script type='text/javascript' src='{$adm}js/moment.min.js?v={$NUM_VERSION}'></script>
-            <script type='text/javascript' src='{$adm}js/fullcalendar.min.js?v={$NUM_VERSION}'></script>
+            {* FullCalendar v6.1.19 - loaded in order: core, daygrid, locales *}
+            <script type='text/javascript' src='{$adm}js/fullcalendar-core.min.js?v={$NUM_VERSION}'></script>
+            <script type='text/javascript' src='{$adm}js/fullcalendar-daygrid.min.js?v={$NUM_VERSION}'></script>
+            <script type='text/javascript' src='{$adm}js/fullcalendar-locales-fr.min.js?v={$NUM_VERSION}'></script>
         {/if}
         {if $contenutemplate|upper eq 'IMPORTPCE' }	
             {literal}
