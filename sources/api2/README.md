@@ -12,16 +12,34 @@ This is a modern REST API built with Symfony 7.3 and API Platform 4.2, providing
 
 ## Installation
 
-The API has been created using Composer. All dependencies are already installed in the `vendor/` directory.
+### Initial Setup
+
+1. Copy the `.env.dist` file to `.env`:
+   ```bash
+   cp sources/api2/.env.dist sources/api2/.env
+   ```
+   Or use the Makefile command:
+   ```bash
+   make init_env_api2
+   ```
+
+2. Install Composer dependencies:
+   ```bash
+   make composer_install_api2
+   ```
+
+The API dependencies are managed by Composer and will be installed in the `vendor/` directory.
 
 ### Configuration
 
-The API is configured through the `.env` file:
+The API is configured through the `.env` file (copied from `.env.dist`):
 
 ```env
 DATABASE_URL="mysql://root:root@kpi_db:3306/kayak_polo?serverVersion=11.5.2-MariaDB&charset=utf8mb4"
 CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
 ```
+
+**Note**: The `.env` file is not versioned in Git (ignored via `.gitignore`). Always use `.env.dist` as the template and create your local `.env` file from it.
 
 ## API Endpoints
 

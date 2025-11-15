@@ -34,6 +34,8 @@ Use `make help` to see all available commands.
 - `make init` - Complete initialization (env files + networks)
 - `make init_env` - Initialize docker/.env from docker/.env.dist
 - `make init_env_app2` - Initialize .env.development and .env.production for app2
+- `make init_env_app3` - Initialize .env files for app3
+- `make init_env_api2` - Initialize .env for API2 from .env.dist
 - `make init_networks` - Create required Docker networks
 
 ### Docker - Development
@@ -153,12 +155,13 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 - WordPress path is configured via `HOST_WORDPRESS_PATH` in docker/.env
 
 ### Environment Files
-- `docker/.env` - Main Docker environment configuration (not versioned)
+- `docker/.env` - Main Docker environment configuration (not versioned, use docker/.env.dist as template)
   - **Important**: `APPLICATION_NAME` determines container names (e.g., `kpi`, `kpi_preprod`, `kpi_prod`)
   - Makefile automatically detects container names from this variable
   - Supports multiple instances on the same server (see [MAKEFILE_MULTI_ENVIRONMENT.md](WORKFLOW_AI/MAKEFILE_MULTI_ENVIRONMENT.md))
 - `sources/app2/.env.development` - Nuxt dev environment (API_BASE_URL, BACKEND_BASE_URL)
 - `sources/app2/.env.production` - Nuxt production environment
+- `sources/api2/.env` - Symfony/API Platform configuration (not versioned, use sources/api2/.env.dist as template)
 
 ### Database
 - Access via phpMyAdmin at configured domain

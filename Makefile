@@ -21,7 +21,7 @@ DOCKER_EXEC_NODE = docker exec -ti $(NODE_CONTAINER_NAME)
 DOCKER_EXEC_NODE3 = docker exec -ti $(NODE3_CONTAINER_NAME)
 .DEFAULT_GOAL = help
 
-.PHONY: help init init_env init_env_app2 init_env_app3 init_networks \
+.PHONY: help init init_env init_env_app2 init_env_app3 init_env_api2 init_networks \
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
@@ -56,7 +56,7 @@ help: ## Affiche cette aide
 
 
 ## INITIALISATION
-init: init_env init_env_app2 init_env_app3 init_networks ## Initialisation complète du projet (env, réseaux)
+init: init_env init_env_app2 init_env_app3 init_env_api2 init_networks ## Initialisation complète du projet (env, réseaux)
 	@echo ""
 	@echo "✅ Initialisation complète terminée!"
 	@echo ""
@@ -71,8 +71,9 @@ init: init_env init_env_app2 init_env_app3 init_networks ## Initialisation compl
 	@echo "  1. Configurez les variables dans docker/.env"
 	@echo "  2. Lancez l'environnement: make dev_up (ou preprod_up/prod_up)"
 	@echo "  3. Installez les dépendances Composer: make composer_install"
-	@echo "  4. Installez les dépendances NPM: make npm_install_app2"
-	@echo "  5. Lancez Nuxt: make run_dev"
+	@echo "  4. Installez les dépendances Composer pour API2: make composer_install_api2"
+	@echo "  5. Installez les dépendances NPM: make npm_install_app2"
+	@echo "  6. Lancez Nuxt: make run_dev"
 	@echo ""
 	@echo "Note: Pour une préprod/prod, vérifiez APPLICATION_NAME dans docker/.env"
 
@@ -101,6 +102,15 @@ init_env_app2: ## Initialise les fichiers .env.development et .env.production po
 
 init_env_app3: ## Initialise les fichiers .env.development et .env.production pour app3
 	@echo "✅ Les fichiers .env pour app3 sont déjà créés dans sources/app3/"
+
+init_env_api2: ## Initialise le fichier .env pour API2 depuis .env.dist
+	@if [ ! -f sources/api2/.env ]; then \
+		cp sources/api2/.env.dist sources/api2/.env; \
+		echo "✅ Fichier .env créé pour API2"; \
+		echo "⚠️  N'oubliez pas de configurer les variables dans sources/api2/.env si nécessaire"; \
+	else \
+		echo "⚠️  Le fichier sources/api2/.env existe déjà"; \
+	fi
 
 init_networks: networks_create ## Alias pour networks_create (crée les réseaux Docker)
 
