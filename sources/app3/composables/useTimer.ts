@@ -19,8 +19,14 @@ export const useTimer = () => {
   const initTimers = () => {
     if (typeof window === 'undefined') return
 
-    // Initialize buzzer audio
-    buzzerAudio.value = new Audio('/img/buzzeer-180942.mp3')
+    // Initialize buzzer audio (optional - will fail silently if file not found)
+    try {
+      buzzerAudio.value = new Audio('/img/buzzeer-180942.mp3')
+      // Preload audio silently
+      buzzerAudio.value.load()
+    } catch (e) {
+      console.warn('Buzzer audio file not available:', e)
+    }
 
     // Main timer
     mainTimer.value = new Timer({

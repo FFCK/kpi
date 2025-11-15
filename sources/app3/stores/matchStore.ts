@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { toRaw } from 'vue'
 import type { Match, Player, MatchEvent, Penalty } from '~/utils/db'
 import db from '~/utils/db'
 import { v4 as uuidv4 } from 'uuid'
@@ -154,10 +155,13 @@ export const useMatchStore = defineStore('match', {
       if (!this.currentMatch) return
 
       try {
+        // Convert reactive proxy to plain object for IndexedDB
+        const matchData = toRaw(this.currentMatch)
+
         if (this.currentMatch.id) {
-          await db.matches.update(this.currentMatch.id, this.currentMatch)
+          await db.matches.update(this.currentMatch.id, matchData)
         } else {
-          const id = await db.matches.add(this.currentMatch)
+          const id = await db.matches.add(matchData)
           this.currentMatch.id = id as number
         }
       } catch (error) {
