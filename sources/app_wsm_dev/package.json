@@ -12,7 +12,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
-    "vue-i18n": "^9.14.3",
+    "vue-i18n": "^9.14.5",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
@@ -36,8 +36,8 @@
     "bootstrap-icons": "^1.8.1",
     "css-loader": "^5.2.4",
     "dayjs": "^1.10.5",
-    "element-plus": "^2.1.0",
-    "eslint": "^6.7.2",
+    "element-plus": "^2.11.1",
+    "eslint": "^9.39.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
@@ -53,7 +53,7 @@
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
     "uuid": "^8.3.2",
-    "vue-cli-plugin-i18n": "~2.1.0",
+    "vue-cli-plugin-i18n": "~2.3.2",
     "vue-loader-v16": "npm:vue-loader@^16.0.0-alpha.3",
     "websocket": "^1.0.34",
     "workbox-cli": "^6.1.5"
