@@ -8,7 +8,7 @@ This is a modern REST API built with Symfony 7.3 and API Platform 4.2, providing
 - **API Platform 4.2** - REST API with OpenAPI documentation
 - **Doctrine ORM** - Database abstraction layer
 - **CORS Support** - Cross-Origin Resource Sharing enabled
-- **Same Database** - Uses the existing KPI database (MariaDB 10.4)
+- **Same Database** - Uses the existing KPI database (MariaDB 11.5)
 
 ## Installation
 
@@ -19,8 +19,8 @@ The API has been created using Composer. All dependencies are already installed 
 The API is configured through the `.env` file:
 
 ```env
-DATABASE_URL="mysql://root:root@kpi_db:3306/kayak_polo?serverVersion=10.4.34-MariaDB&charset=utf8mb4"
-CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.local)(:[0-9]+)?$'
+DATABASE_URL="mysql://root:root@kpi_db:3306/kayak_polo?serverVersion=11.5.2-MariaDB&charset=utf8mb4"
+CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
 ```
 
 ## API Endpoints
@@ -155,8 +155,8 @@ The API is served through Apache in the Docker container. The document root is `
 
 ### Accessing the API
 
-- Development: `https://kpi.local/api2/`
-- API Documentation: `https://kpi.local/api2/api` (API Platform interface)
+- Development: `https://kpi.localhost/api2/`
+- API Documentation: `https://kpi.localhost/api2/api` (API Platform interface)
 
 ### Cache Management
 

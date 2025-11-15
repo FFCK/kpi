@@ -1,8 +1,8 @@
 # API2 Endpoints - Quick Reference
 
 ## Base URL
-- Development: `https://kpi.local/api2/`
-- API Platform UI: `https://kpi.local/api2/api`
+- Development: `https://kpi.localhost/api2/`
+- API Platform UI: `https://kpi.localhost/api2/api`
 
 ## Public Endpoints
 

@@ -126,8 +126,8 @@ make npm_add_backend package=flatpickr
 
 **Location**: `sources/api2/` - Modern REST API with Symfony 7.3 and API Platform 4.2
 **Documentation**: See [sources/api2/README.md](sources/api2/README.md) and [sources/api2/API_ENDPOINTS.md](sources/api2/API_ENDPOINTS.md)
-**Base URL**: `https://kpi.local/api2/`
-**API Documentation**: `https://kpi.local/api2/api` (API Platform interface)
+**Base URL**: `https://kpi.localhost/api2/`
+**API Documentation**: `https://kpi.localhost/api2/api` (API Platform interface)
 
 ### Shell Access
 - `make php_bash` - Open bash in PHP 8.4 container
@@ -204,13 +204,13 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 - **Framework**: Symfony 7.3 with API Platform 4.2
 - **Purpose**: Modern REST API replacing legacy PHP API with same functionality
 - **Location**: `sources/api2/`
-- **Base URL**: `https://kpi.local/api2/`
-- **API Documentation**: `https://kpi.local/api2/api` (OpenAPI/Swagger UI)
+- **Base URL**: `https://kpi.localhost/api2/`
+- **API Documentation**: `https://kpi.localhost/api2/api` (OpenAPI/Swagger UI)
 - **Features**:
   - REST API with automatic OpenAPI documentation
   - Doctrine ORM for database abstraction
   - CORS support for cross-origin requests
-  - Same database as legacy API (MariaDB 10.4)
+  - Same database as legacy API (MariaDB 11.5)
   - All endpoints from legacy API (`/api/`) replicated
 - **Endpoints**:
   - Public: events, games, charts, team stats, ratings
