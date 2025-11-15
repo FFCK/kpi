@@ -46,8 +46,18 @@ class ReportController extends AbstractController
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: 'params', type: 'object', description: 'Game parameters'),
-                        new OA\Property(property: 'teams', type: 'array', description: 'Team details'),
-                        new OA\Property(property: 'events', type: 'array', description: 'Match events (goals, cards, etc.)')
+                        new OA\Property(
+                            property: 'teams',
+                            type: 'array',
+                            items: new OA\Items(type: 'object'),
+                            description: 'Team details'
+                        ),
+                        new OA\Property(
+                            property: 'events',
+                            type: 'array',
+                            items: new OA\Items(type: 'object'),
+                            description: 'Match events (goals, cards, etc.)'
+                        )
                     ]
                 )
             )
