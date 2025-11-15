@@ -26,12 +26,16 @@ Use `make help` to see all available commands.
 - `make dev_up` - Start development environment
 - `make composer_install` - Install PHP/Composer dependencies (mPDF, etc.)
 - `make npm_install_app2` - Install NPM dependencies for app2
-- `make run_dev` - Run Nuxt development server (port 3002)
+- `make npm_install_app3` - Install NPM dependencies for app3
+- `make run_dev` - Run Nuxt development server for app2 (port 3002)
+- `make run_dev_app3` - Run Nuxt development server for app3 (port 3003)
 
 ### Initialization
 - `make init` - Complete initialization (env files + networks)
 - `make init_env` - Initialize docker/.env from docker/.env.dist
 - `make init_env_app2` - Initialize .env.development and .env.production for app2
+- `make init_env_app3` - Initialize .env files for app3
+- `make init_env_api2` - Initialize .env for API2 from .env.dist
 - `make init_networks` - Create required Docker networks
 
 ### Docker - Development
@@ -64,6 +68,12 @@ Use `make help` to see all available commands.
 - `make run_generate` - Generate static Nuxt site
 - `make run_lint` - Run ESLint on app2
 
+### Nuxt - App3 (Match Sheet)
+- `make run_dev_app3` - Run Nuxt development server (port 3003)
+- `make run_build_app3` - Build Nuxt for production
+- `make run_generate_app3` - Generate static Nuxt site
+- `make run_lint_app3` - Run ESLint on app3
+
 ### NPM - App2 (Nuxt Application)
 - `make npm_install_app2` - Install all npm dependencies
 - `make npm_clean_app2` - Remove node_modules and package-lock.json
@@ -71,6 +81,14 @@ Use `make help` to see all available commands.
 - `make npm_add_app2 package=<name>` - Add npm package
 - `make npm_add_dev_app2 package=<name>` - Add npm dev package
 - `make npm_ls_app2` - List installed npm modules
+
+### NPM - App3 (Match Sheet)
+- `make npm_install_app3` - Install all npm dependencies
+- `make npm_clean_app3` - Remove node_modules and package-lock.json
+- `make npm_update_app3` - Update all npm dependencies
+- `make npm_add_app3 package=<name>` - Add npm package
+- `make npm_add_dev_app3 package=<name>` - Add npm dev package
+- `make npm_ls_app3` - List installed npm modules
 
 ### NPM - Backend (JavaScript Libraries)
 Manage JavaScript libraries (Flatpickr, Day.js, etc.) in the PHP backend via temporary Node.js container:
@@ -99,10 +117,24 @@ make npm_add_backend package=flatpickr
 - `make composer_require_dev package=<vendor/package>` - Add Composer dev package
 - `make composer_dump` - Regenerate Composer autoloader
 
+### API2 - Symfony (Symfony 7.3 + API Platform 4.2)
+- `make composer_install_api2` - Install Composer dependencies for API2
+- `make composer_update_api2` - Update Composer dependencies for API2
+- `make composer_require_api2 package=<vendor/package>` - Add package to API2
+- `make api2_cache_clear` - Clear Symfony cache for API2
+- `make api2_cache_warmup` - Warmup Symfony cache for API2
+- `make api2_migrations_diff` - Generate Doctrine migration (detect changes)
+- `make api2_migrations_migrate` - Execute Doctrine migrations
+
+**Location**: `sources/api2/` - Modern REST API with Symfony 7.3 and API Platform 4.2
+**Documentation**: See [sources/api2/README.md](sources/api2/README.md) and [sources/api2/API_ENDPOINTS.md](sources/api2/API_ENDPOINTS.md)
+**Base URL**: `https://kpi.localhost/api2/`
+**API Documentation**: `https://kpi.localhost/api2/api` (API Platform interface)
+
 ### Shell Access
-- `make php_bash` - Open bash in PHP 7.4 container
-- `make php8_bash` - Open bash in PHP 8 container
-- `make node_bash` - Open shell in Node/app2 container
+- `make php_bash` - Open bash in PHP 8.4 container
+- `make node_bash` - Open shell in Node container (app2)
+- `make node3_bash` - Open shell in Node container (app3)
 - `make db_bash` - Open shell in MySQL container
 
 ### Docker Networks
@@ -123,12 +155,13 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 - WordPress path is configured via `HOST_WORDPRESS_PATH` in docker/.env
 
 ### Environment Files
-- `docker/.env` - Main Docker environment configuration (not versioned)
+- `docker/.env` - Main Docker environment configuration (not versioned, use docker/.env.dist as template)
   - **Important**: `APPLICATION_NAME` determines container names (e.g., `kpi`, `kpi_preprod`, `kpi_prod`)
   - Makefile automatically detects container names from this variable
   - Supports multiple instances on the same server (see [MAKEFILE_MULTI_ENVIRONMENT.md](WORKFLOW_AI/MAKEFILE_MULTI_ENVIRONMENT.md))
 - `sources/app2/.env.development` - Nuxt dev environment (API_BASE_URL, BACKEND_BASE_URL)
 - `sources/app2/.env.production` - Nuxt production environment
+- `sources/api2/.env` - Symfony/API Platform configuration (not versioned, use sources/api2/.env.dist as template)
 
 ### Database
 - Access via phpMyAdmin at configured domain
@@ -138,26 +171,66 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 
 ### Core Structure
 - `sources/` - Main application code
-  - `app2/` - Nuxt 4 application (primary frontend)
+  - `app2/` - Nuxt 4 application (primary frontend - scrutineering/charts)
+  - `app3/` - Nuxt 4 application (match sheet management)
   - `app_dev/`, `app_live_dev/`, `app_wsm_dev/` - Legacy Vue.js applications
   - `commun/` - Shared PHP utilities and database classes
-  - `api/` - PHP REST API endpoints
+  - `api/` - Legacy PHP REST API endpoints
+  - `api2/` - **NEW**: Modern REST API (Symfony 7.3 + API Platform 4.2)
   - `wordpress/` - WordPress integration
 - `docker/` - Docker configuration and compose files
 - `SQL/` - Database scripts
 
-### App2 (Nuxt Application)
+### App2 (Nuxt Application - Scrutineering/Charts)
 - **Framework**: Nuxt 4 with Vue 3, TypeScript, Tailwind CSS
 - **Modules**: Pinia for state management, i18n for internationalization, Nuxt UI components
-- **Base URL**: `/app2` - configured for production deployment
+- **Domain**: `kpi_node.localhost` (via Traefik)
 - **Development**: Runs on port 3000 inside container, accessible via port 3002 on host
-- **API Integration**: Configured via .env.development (dev: `https://kpi.local/api`) and .env.production (prod: `https://kayak-polo.info/api`)
+- **API Integration**: Configured via .env.development (dev: `https://kpi.localhost/api`) and .env.production (prod: `https://kayak-polo.info/api`)
+
+### App3 (Nuxt Application - Match Sheet)
+- **Framework**: Nuxt 4 with Vue 3, TypeScript, Tailwind CSS
+- **Purpose**: Live match management with real-time scoring, timer, and broadcasting
+- **Modules**: Pinia, Dexie (IndexedDB), i18n, PWA, easytimer.js
+- **Domain**: `app3.localhost` (via Traefik)
+- **Development**: Runs on port 3003 inside container
+- **Features**:
+  - Create/load matches with teams and players
+  - Real-time match timer and shot clock
+  - Event tracking (goals, cards, penalties)
+  - BroadcastChannel API for scoreboard/shotclock synchronization
+  - WebSocket support (optional)
+  - Offline-first with IndexedDB storage
+  - Progressive Web App (PWA)
+
+### API2 (Modern REST API - Symfony 7.3 + API Platform 4.2)
+- **Framework**: Symfony 7.3 with API Platform 4.2
+- **Purpose**: Modern REST API replacing legacy PHP API with same functionality
+- **Location**: `sources/api2/`
+- **Base URL**: `https://kpi.localhost/api2/`
+- **API Documentation**: `https://kpi.localhost/api2/api` (OpenAPI/Swagger UI)
+- **Features**:
+  - REST API with automatic OpenAPI documentation
+  - Doctrine ORM for database abstraction
+  - CORS support for cross-origin requests
+  - Same database as legacy API (MariaDB 11.5)
+  - All endpoints from legacy API (`/api/`) replicated
+- **Endpoints**:
+  - Public: events, games, charts, team stats, ratings
+  - Staff: teams, players, scrutineering management
+  - Report: game details with events and players
+  - WSM: live score management, game events, timer, statistics
+- **Documentation**: See [sources/api2/README.md](sources/api2/README.md) and [sources/api2/API_ENDPOINTS.md](sources/api2/API_ENDPOINTS.md)
+- **Status**: ✅ Fully implemented - ready for testing and migration from legacy API
 
 ### PHP Backend
+- **PHP Version**: PHP 8.4 in all environments (dev, preprod, prod)
+- **Migration Status**: ✅ PHP 8 migration completed - PHP 7.4 fully deprecated
 - Legacy PHP codebase with custom database abstraction layer
 - Database classes in `commun/MyBdd.php` and `commun/Bdd_PDO.php`
 - Configuration through `commun/MyConfig.php` and `commun/MyParams.php`
 - API endpoints for JSON data exchange
+- Modern libraries: mPDF v8.2+, OpenSpout v4.32.0, Smarty v4
 
 ### Database
 - MySQL database with custom schema for sports management
@@ -168,17 +241,27 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 
 The project uses Docker Compose with multiple environments:
 - **Development**: `docker/compose.dev.yaml` - includes hot reload and development tools
+- **Pre-production**: `docker/compose.preprod.yaml` - staging environment for testing
 - **Production**: `docker/compose.prod.yaml` - optimized for production deployment
 
-Services include PHP (two versions), MySQL databases, phpMyAdmin, and Node.js containers for frontend applications.
+Services include PHP 8.4, MySQL databases, phpMyAdmin, and Node.js containers for frontend applications.
 
 ## Important Notes
 
+- **PHP 8.4**: All environments now run PHP 8.4 - migration from PHP 7.4 is complete
+- **Libraries Modernization**: Successfully migrated to modern PHP 8+ compatible libraries (mPDF, OpenSpout, Smarty v4)
+- **JavaScript Migration**: jQuery elimination and library modernization is ongoing (Flatpickr, Axios→fetch, etc.)
+- **API2 (NEW)**: Modern REST API built with Symfony 7.3 + API Platform 4.2 in `sources/api2/`
+  - Replicates all functionalities from legacy API (`sources/api/`)
+  - Provides automatic OpenAPI documentation
+  - Ready for testing and gradual migration
+  - See [sources/api2/README.md](sources/api2/README.md) for details
 - App2 is the primary modern frontend application being actively developed
+- App3 provides live match sheet management with real-time features
 - Legacy Vue.js applications in `app_dev/`, `app_live_dev/`, `app_wsm_dev/` are maintained but not primary focus
 - Configuration files are mounted from Docker directory to avoid committing sensitive data
 - The project uses Traefik for reverse proxy in production environments
-- ESLint configuration is managed by Nuxt for app2
+- ESLint configuration is managed by Nuxt for app2 and app3
 
 ## File Patterns
 

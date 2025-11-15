@@ -2,4 +2,11 @@ ARG BASE_IMAGE_DB
 
 FROM ${BASE_IMAGE_DB}
 
+# Install and configure French locale
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales \
+    && sed -i '/fr_FR.UTF-8/s/^# //g' /etc/locale.gen \
+    && locale-gen \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # ADD bdd.sql /docker-entrypoint-initdb.d/

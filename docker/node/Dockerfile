@@ -2,7 +2,10 @@ FROM node:20-alpine
 
 ARG GROUP_ID=33
 
-RUN apk update && apk upgrade --no-cache
+RUN apk update && apk upgrade --no-cache \
+    && apk add --no-cache musl-locales musl-locales-lang \
+    && echo "export LANG=fr_FR.UTF-8" >> /etc/profile.d/locale.sh \
+    && echo "export LC_ALL=fr_FR.UTF-8" >> /etc/profile.d/locale.sh
 
 # Crée le groupe si besoin
 RUN getent group $GROUP_ID || addgroup -g $GROUP_ID appgroup

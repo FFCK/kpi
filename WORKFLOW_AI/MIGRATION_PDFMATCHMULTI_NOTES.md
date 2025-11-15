@@ -140,7 +140,7 @@ $pdf->Output('Match(s) ' . $listMatch . '.pdf', \Mpdf\Output\Destination::INLINE
 **Comment tester**:
 ```bash
 # Générer une feuille de match via l'interface web
-# URL: https://kpi.local/PdfMatchMulti.php?listMatch=123
+# URL: https://kpi.localhost/PdfMatchMulti.php?listMatch=123
 ```
 
 ---
