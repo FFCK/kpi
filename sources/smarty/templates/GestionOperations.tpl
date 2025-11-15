@@ -526,6 +526,20 @@
 					<table width="100%">
 						<thead>
 							<tr>
+								<th class="titreForm">API v2</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="{$url_base|default:''}/api2/doc" target="_blank">REST API</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table width="100%">
+						<thead>
+							<tr>
 								<th class="titreForm">Imports SDP ICF</th>
 							</tr>
 						</thead>
