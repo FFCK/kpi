@@ -313,10 +313,10 @@ class Chart extends MyPage
                     }
                 }
                 if ($row['Id_equipeA'] <= 1) {
-                    $row['EquipeA'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[0]));
+                    $row['EquipeA'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[0] ?? ''));
                 }
                 if ($row['Id_equipeB'] <= 1) {
-                    $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
+                    $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1] ?? ''));
                 }
                 $arrayMatchs[$journee][] = $row;
             }
@@ -352,7 +352,7 @@ class Chart extends MyPage
                         'Libelle' => $row['EquipeA'], 'Num' => $row['NumA']
                     );
                 } else {
-                    $row['EquipeA'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[0]));
+                    $row['EquipeA'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[0] ?? ''));
                     $arrayEquipes[$journee][$row['EquipeA']] = array(
                         'Tirage' => $row['TirageA'], 'Id' => $row['Id_equipeA'],
                         'Libelle' => $row['EquipeA'], 'Num' => $row['NumA']
@@ -364,7 +364,7 @@ class Chart extends MyPage
                         'Libelle' => $row['EquipeB'], 'Num' => $row['NumB']
                     );
                 } else {
-                    $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1]));
+                    $row['EquipeB'] = str_replace('(', '<i>', str_replace(')', '</i>', $intitule[1] ?? ''));
                     $arrayEquipes[$journee][$row['EquipeB']] = array(
                         'Tirage' => $row['TirageB'], 'Id' => $row['Id_equipeB'],
                         'Libelle' => $row['EquipeB'], 'Num' => $row['NumB']

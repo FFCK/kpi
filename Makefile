@@ -21,7 +21,7 @@ DOCKER_EXEC_NODE = docker exec -ti $(NODE_CONTAINER_NAME)
 DOCKER_EXEC_NODE3 = docker exec -ti $(NODE3_CONTAINER_NAME)
 .DEFAULT_GOAL = help
 
-.PHONY: help init init_env init_env_app2 init_env_app3 init_networks \
+.PHONY: help init init_env init_env_app2 init_env_app3 init_env_api2 init_networks \
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
@@ -31,6 +31,7 @@ npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add
 npm_install_app3 npm_ls_app3 npm_clean_app3 npm_update_app3 npm_add_app3 npm_add_dev_app3 \
 npm_install_backend npm_add_backend npm_update_backend npm_ls_backend npm_clean_backend npm_init_backend \
 composer_install composer_update composer_require composer_require_dev composer_dump \
+composer_install_api2 composer_update_api2 composer_require_api2 api2_cache_clear api2_cache_warmup api2_migrations_diff api2_migrations_migrate \
 php_bash node_bash node3_bash db_bash \
 event_worker_start event_worker_stop event_worker_status event_worker_logs event_worker_restart \
 wordpress_backup wordpress_restore \
@@ -55,7 +56,7 @@ help: ## Affiche cette aide
 
 
 ## INITIALISATION
-init: init_env init_env_app2 init_env_app3 init_networks ## Initialisation complète du projet (env, réseaux)
+init: init_env init_env_app2 init_env_app3 init_env_api2 init_networks ## Initialisation complète du projet (env, réseaux)
 	@echo ""
 	@echo "✅ Initialisation complète terminée!"
 	@echo ""
@@ -70,8 +71,9 @@ init: init_env init_env_app2 init_env_app3 init_networks ## Initialisation compl
 	@echo "  1. Configurez les variables dans docker/.env"
 	@echo "  2. Lancez l'environnement: make dev_up (ou preprod_up/prod_up)"
 	@echo "  3. Installez les dépendances Composer: make composer_install"
-	@echo "  4. Installez les dépendances NPM: make npm_install_app2"
-	@echo "  5. Lancez Nuxt: make run_dev"
+	@echo "  4. Installez les dépendances Composer pour API2: make composer_install_api2"
+	@echo "  5. Installez les dépendances NPM: make npm_install_app2"
+	@echo "  6. Lancez Nuxt: make run_dev"
 	@echo ""
 	@echo "Note: Pour une préprod/prod, vérifiez APPLICATION_NAME dans docker/.env"
 
@@ -100,6 +102,15 @@ init_env_app2: ## Initialise les fichiers .env.development et .env.production po
 
 init_env_app3: ## Initialise les fichiers .env.development et .env.production pour app3
 	@echo "✅ Les fichiers .env pour app3 sont déjà créés dans sources/app3/"
+
+init_env_api2: ## Initialise le fichier .env pour API2 depuis .env.dist
+	@if [ ! -f sources/api2/.env ]; then \
+		cp sources/api2/.env.dist sources/api2/.env; \
+		echo "✅ Fichier .env créé pour API2"; \
+		echo "⚠️  N'oubliez pas de configurer les variables dans sources/api2/.env si nécessaire"; \
+	else \
+		echo "⚠️  Le fichier sources/api2/.env existe déjà"; \
+	fi
 
 init_networks: networks_create ## Alias pour networks_create (crée les réseaux Docker)
 
@@ -349,6 +360,47 @@ composer_dump: ## Regénère l'autoloader Composer
 	@echo "Regénération de l'autoloader Composer (container: $(PHP_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html && composer dump-autoload"
 	@echo "✅ Autoloader Composer regénéré"
+
+
+## API2 - SYMFONY (Symfony 7.3 + API Platform 4.2)
+composer_install_api2: ## Installe les dépendances Composer pour API2 (Symfony)
+	@echo "Installation des dépendances Composer pour API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && composer install --no-interaction --prefer-dist --optimize-autoloader"
+	@echo "✅ Dépendances Composer installées pour API2"
+
+composer_update_api2: ## Met à jour les dépendances Composer pour API2
+	@echo "Mise à jour des dépendances Composer pour API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && composer update --no-interaction"
+	@echo "✅ Dépendances Composer mises à jour pour API2"
+
+composer_require_api2: ## Ajoute un package Composer à API2 (usage: make composer_require_api2 package=vendor/package)
+	@if [ -z "$(package)" ]; then \
+		echo "❌ Erreur: spécifiez un package (make composer_require_api2 package=vendor/package)"; \
+		exit 1; \
+	fi
+	@echo "Ajout du package $(package) à API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && composer require $(package) --no-interaction"
+	@echo "✅ Package $(package) ajouté à API2"
+
+api2_cache_clear: ## Vide le cache Symfony de API2
+	@echo "Vidage du cache Symfony pour API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && php bin/console cache:clear"
+	@echo "✅ Cache Symfony vidé pour API2"
+
+api2_cache_warmup: ## Préchauffe le cache Symfony de API2
+	@echo "Préchauffage du cache Symfony pour API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && php bin/console cache:warmup"
+	@echo "✅ Cache Symfony préchauffé pour API2"
+
+api2_migrations_diff: ## Génère une migration Doctrine pour API2 (détecte les changements)
+	@echo "Génération d'une migration Doctrine pour API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && php bin/console doctrine:migrations:diff"
+	@echo "✅ Migration générée pour API2"
+
+api2_migrations_migrate: ## Exécute les migrations Doctrine pour API2
+	@echo "Exécution des migrations Doctrine pour API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && php bin/console doctrine:migrations:migrate --no-interaction"
+	@echo "✅ Migrations exécutées pour API2"
 
 
 ## ACCÈS SHELLS
