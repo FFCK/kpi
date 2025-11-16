@@ -5,8 +5,7 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 require_once('commun/MyPDF.php');
-
-require_once('lib/qrcode/qrcode.class.php');
+// QRcode class is now autoloaded via Composer
 
 // Gestion de la Feuille de Classement par Journée - Migré vers mPDF
 class FeuilleCltNiveauJournee extends MyPage

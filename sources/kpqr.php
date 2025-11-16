@@ -4,9 +4,7 @@ include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
-require_once('lib/qrcode/qrcode.class.php');
-
-// QrCodes
+// QrCodes - using endroid/qr-code via Composer autoloader
 
 class Logos extends MyPage
 {
