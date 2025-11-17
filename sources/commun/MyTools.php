@@ -3,14 +3,7 @@
 
 include_once('MyBdd.php');
 
-// htmlpurifier
-if (is_file('lib/htmlpurifier/HTMLPurifier.auto.php')) {
-	require_once 'lib/htmlpurifier/HTMLPurifier.auto.php';
-} elseif (is_file('../lib/htmlpurifier/HTMLPurifier.auto.php')) {
-	require_once '../lib/htmlpurifier/HTMLPurifier.auto.php';
-} else {
-	require_once '../../lib/htmlpurifier/HTMLPurifier.auto.php';
-}
+// htmlpurifier (loaded via Composer autoloader in MyConfig.php)
 $config = HTMLPurifier_Config::createDefault();
 $config->set('Core.Encoding', 'UTF-8'); // replace with your encoding
 $config->set('HTML.Doctype', 'XHTML 1.0 Transitional'); // replace with your doctype
