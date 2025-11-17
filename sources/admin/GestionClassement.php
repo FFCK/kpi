@@ -291,7 +291,7 @@ class GestionClassement extends MyPageSecure
         $this->m_tpl->assign('Qualifies_publi', $recordCompetition['Qualifies']);
 		$this->m_tpl->assign('Elimines_publi', $recordCompetition['Elimines']);
 		
-		// Combo "CHPT" - "CP"		
+		// Combo "CHPT" - "CP" - "MULTI"
 		$arrayOrderCompetition = array();
 		if ('CHPT' == $typeClt) {
             array_push($arrayOrderCompetition, array('CHPT', 'Championnat', 'SELECTED'));
@@ -304,6 +304,12 @@ class GestionClassement extends MyPageSecure
         } else {
             array_push($arrayOrderCompetition, array('CP', 'Coupe', ''));
         }
+
+        if ('MULTI' == $typeClt) {
+            array_push($arrayOrderCompetition, array('MULTI', 'Multi-Compétition', 'SELECTED'));
+        } else {
+            array_push($arrayOrderCompetition, array('MULTI', 'Multi-Compétition', ''));
+        }
         $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
 	}
 	
@@ -314,10 +320,10 @@ class GestionClassement extends MyPageSecure
         }
 
         $myBdd = $this->myBdd;
-		
+
 		$recordCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
 		$typeClt = $recordCompetition['Code_typeclt'];
-		if ($typeClt != 'CP') {
+		if ($typeClt != 'CP' && $typeClt != 'MULTI') {
             $typeClt = 'CHPT';
         }
 
@@ -341,36 +347,45 @@ class GestionClassement extends MyPageSecure
         // Recherche du type de Classement & Goal Average lié à cette compétition
 		$typeClt = '';
 		$goalaverage = '';
-		
-		$sql = "SELECT Code_typeclt, goalaverage 
-			FROM kp_competition 
-			WHERE Code = ? 
-			AND Code_saison = ? ";	 
+
+		$sql = "SELECT Code_typeclt, goalaverage, Code_ref, points_grid
+			FROM kp_competition
+			WHERE Code = ?
+			AND Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
-	
+
 		if ($result->rowCount() == 1) {
-			$row = $result->fetch();	  
+			$row = $result->fetch();
 			$typeClt = $row['Code_typeclt'];
 			$goalaverage = $row['goalaverage'];
 		}
-		
-		$this->RazClassementCompetitionEquipe($codeCompet, $codeSaison);
-		$this->InitClassementCompetitionEquipe($codeCompet, $codeSaison);
-		
-		$this->RazClassementCompetitionEquipeNiveau($codeCompet, $codeSaison);
-		$this->RazClassementCompetitionEquipeJournee($codeCompet, $codeSaison);
-		
-		$this->CalculClassement($codeCompet, $typeClt, $tousLesMatchs);
-		
-		$egalites = $this->FinalisationClassementChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs);
-		$this->FinalisationClassementNiveau($codeCompet, $codeSaison);
-		
-		$this->FinalisationClassementNiveauChpt($codeCompet, $codeSaison);
-		$this->FinalisationClassementNiveauNiveau($codeCompet, $codeSaison);
-		
-		$this->FinalisationClassementJourneeChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs);
-		$this->FinalisationClassementJourneeNiveau($codeCompet, $codeSaison);
+
+		// Traitement spécifique pour les compétitions MULTI
+		if ($typeClt == 'MULTI') {
+			$this->RazClassementCompetitionEquipe($codeCompet, $codeSaison);
+			$this->InitClassementCompetitionEquipe($codeCompet, $codeSaison);
+
+			$this->CalculClassementMulti($codeCompet, $codeSaison, $row['Code_ref'], $row['points_grid']);
+		} else {
+			// Traitement standard pour CHPT et CP
+			$this->RazClassementCompetitionEquipe($codeCompet, $codeSaison);
+			$this->InitClassementCompetitionEquipe($codeCompet, $codeSaison);
+
+			$this->RazClassementCompetitionEquipeNiveau($codeCompet, $codeSaison);
+			$this->RazClassementCompetitionEquipeJournee($codeCompet, $codeSaison);
+
+			$this->CalculClassement($codeCompet, $typeClt, $tousLesMatchs);
+
+			$egalites = $this->FinalisationClassementChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs);
+			$this->FinalisationClassementNiveau($codeCompet, $codeSaison);
+
+			$this->FinalisationClassementNiveauChpt($codeCompet, $codeSaison);
+			$this->FinalisationClassementNiveauNiveau($codeCompet, $codeSaison);
+
+			$this->FinalisationClassementJourneeChpt($codeCompet, $codeSaison, $goalaverage, $tousLesMatchs);
+			$this->FinalisationClassementJourneeNiveau($codeCompet, $codeSaison);
+		}
 	
 		$sql = "UPDATE kp_competition 
 			SET Date_calcul = ?, 
@@ -1409,6 +1424,143 @@ class GestionClassement extends MyPageSecure
 
 			$result1->execute(array($clt, $row['Id'], $row['Id_journee']));
 			$j ++;
+		}
+	}
+
+	/**
+	 * CalculClassementMulti - Calcule le classement d'une compétition MULTI
+	 *
+	 * Une compétition MULTI attribue des points aux équipes selon leur classement
+	 * dans d'autres compétitions du même groupe (exclut les tours Unique/Finale avec Code_tour = 10)
+	 *
+	 * @param string $codeCompet Code de la compétition MULTI
+	 * @param string $codeSaison Code de la saison
+	 * @param string $codeRef Code du groupe de compétitions
+	 * @param string $pointsGridJson Grille de points au format JSON (ex: {"1":10,"2":6,"3":4,"default":0})
+	 */
+	function CalculClassementMulti($codeCompet, $codeSaison, $codeRef, $pointsGridJson)
+	{
+		$myBdd = $this->myBdd;
+
+		// Décoder la grille de points
+		$pointsGrid = array();
+		$defaultPoints = 0;
+		if (!empty($pointsGridJson)) {
+			$pointsGrid = json_decode($pointsGridJson, true);
+			if (isset($pointsGrid['default'])) {
+				$defaultPoints = $pointsGrid['default'];
+				unset($pointsGrid['default']);
+			}
+		} else {
+			// Grille par défaut si non définie
+			$pointsGrid = array(
+				'1' => 10,
+				'2' => 6,
+				'3' => 4,
+				'4' => 3,
+				'5' => 2,
+				'6' => 1
+			);
+			$defaultPoints = 0;
+		}
+
+		// Récupérer toutes les équipes engagées dans la compétition MULTI
+		$sql = "SELECT Id, Libelle, Code_club, Numero
+			FROM kp_competition_equipe
+			WHERE Code_compet = ?
+			AND Code_saison = ?
+			ORDER BY Numero";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($codeCompet, $codeSaison));
+		$equipesMulti = $stmt->fetchAll();
+
+		// Récupérer toutes les compétitions du même groupe (même Code_ref)
+		// Exclure la compétition MULTI elle-même et les tours Unique/Finale (Code_tour = 10)
+		$sql = "SELECT Code, Libelle, Code_tour
+			FROM kp_competition
+			WHERE Code_saison = ?
+			AND Code_ref = ?
+			AND Code != ?
+			AND (Code_tour IS NULL OR Code_tour != 10)
+			AND Code_typeclt != 'MULTI'
+			ORDER BY Code";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($codeSaison, $codeRef, $codeCompet));
+		$competitionsPrecedentes = $stmt->fetchAll();
+
+		// Pour chaque équipe de la compétition MULTI
+		foreach ($equipesMulti as $equipeMulti) {
+			$totalPoints = 0;
+			$nbCompetitionsParticipees = 0;
+
+			// Pour chaque compétition précédente du groupe
+			foreach ($competitionsPrecedentes as $competPrecedente) {
+				// Chercher l'équipe dans cette compétition (par Code_club ou Libelle)
+				$sql = "SELECT Clt, Pts
+					FROM kp_competition_equipe
+					WHERE Code_compet = ?
+					AND Code_saison = ?
+					AND (Code_club = ? OR Libelle = ?)
+					AND Clt > 0";
+				$stmt = $myBdd->pdo->prepare($sql);
+				$stmt->execute(array(
+					$competPrecedente['Code'],
+					$codeSaison,
+					$equipeMulti['Code_club'],
+					$equipeMulti['Libelle']
+				));
+
+				if ($row = $stmt->fetch()) {
+					$classement = $row['Clt'];
+					$nbCompetitionsParticipees++;
+
+					// Appliquer la grille de points selon le classement
+					if (isset($pointsGrid[$classement])) {
+						$totalPoints += $pointsGrid[$classement];
+					} else {
+						$totalPoints += $defaultPoints;
+					}
+				}
+			}
+
+			// Mettre à jour les points de l'équipe
+			$sql = "UPDATE kp_competition_equipe
+				SET Pts = ?,
+				J = ?
+				WHERE Id = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($totalPoints, $nbCompetitionsParticipees, $equipeMulti['Id']));
+		}
+
+		// Calculer le classement final en triant par points décroissants
+		$sql = "SELECT Id, Pts
+			FROM kp_competition_equipe
+			WHERE Code_compet = ?
+			AND Code_saison = ?
+			ORDER BY Pts DESC, Libelle ASC";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($codeCompet, $codeSaison));
+
+		$clt = 1;
+		$oldClt = 1;
+		$oldPts = -1;
+		$j = 0;
+
+		$sqlUpdate = "UPDATE kp_competition_equipe SET Clt = ? WHERE Id = ?";
+		$stmtUpdate = $myBdd->pdo->prepare($sqlUpdate);
+
+		while ($row = $stmt->fetch()) {
+			// Gérer les égalités
+			if ($row['Pts'] != $oldPts) {
+				$clt = $j + 1;
+				$oldClt = $clt;
+				$oldPts = $row['Pts'];
+			} else {
+				$clt = $oldClt;
+			}
+
+			$stmtUpdate->execute(array($clt, $row['Id']));
+			$j++;
 		}
 	}
 

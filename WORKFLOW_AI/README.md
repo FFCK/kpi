@@ -183,6 +183,15 @@ Ce dossier contient toute la documentation technique générée durant le dével
   - Backups créés (.bs3.bak + archive)
   - **Statut**: ✅ Terminé - Tests requis
 
+### Fonctionnalités & Développement
+
+- **[COMPETITION_TYPE_MULTI.md](COMPETITION_TYPE_MULTI.md)** ⭐ **NOUVEAU** (17 nov 2025)
+  - Type de compétition multi-compétition (MULTI)
+  - Classement basé sur agrégation de plusieurs compétitions d'un même groupe
+  - Grille de points personnalisable (format JSON)
+  - Guide complet : création, configuration, calcul
+  - **Statut**: ✅ Implémenté
+
 ### Configuration
 
 - **[MAKEFILE_COMPOSER_UPDATES.md](MAKEFILE_COMPOSER_UPDATES.md)**
@@ -228,6 +237,14 @@ Ce dossier contient toute la documentation technique générée durant le dével
 ---
 
 ## 🔄 Historique des Mises à Jour
+
+### 2025-11-17
+- ✅ **Ajout type de compétition MULTI** (multi-compétition)
+- 📝 Création COMPETITION_TYPE_MULTI.md (guide complet)
+- ✅ Script SQL 20251117_add_multi_competition_type.sql
+- ✅ Modification GestionClassement.php (nouvelle fonction CalculClassementMulti)
+- ✅ Support grille de points personnalisable (format JSON)
+- ✅ Documentation complète : création, configuration, calcul, exemples
 
 ### 2025-11-13
 - 📝 **Création WORDPRESS_MIGRATION_OLD_PROD_TO_VPS.md**
