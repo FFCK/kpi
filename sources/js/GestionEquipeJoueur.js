@@ -325,5 +325,110 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		jq(location).attr('href', "?idEquipe=" + jq(this).val())
 	})
 
+	// ===== Copie de composition d'équipe =====
+
+	// Charger les saisons au chargement de la page
+	if (jq('#saisonSource').length > 0) {
+		jq.get('GetTeamCompetitions.php', { action: 'getSaisons' }, function (data) {
+			if (data && !data.error) {
+				jq('#saisonSource').empty()
+				jq('#saisonSource').append('<option value="">-- Sélectionner une saison --</option>')
+				data.forEach(function (saison) {
+					jq('#saisonSource').append('<option value="' + saison.code + '">' + saison.libelle + '</option>')
+				})
+			}
+		}, 'json')
+	}
+
+	// Quand une saison est sélectionnée, charger les compétitions
+	jq('#saisonSource').change(function () {
+		var saison = jq(this).val()
+		var idEquipe = jq('#idEquipe').val()
+
+		jq('#competitionSource').prop('disabled', true).empty().append('<option value="">-- Chargement... --</option>')
+		jq('#copyComposition').prop('disabled', true)
+		jq('#copyMessage').text('')
+
+		if (saison && idEquipe) {
+			jq.get('GetTeamCompetitions.php', {
+				action: 'getCompetitions',
+				saison: saison,
+				idEquipe: idEquipe
+			}, function (data) {
+				if (data && !data.error) {
+					jq('#competitionSource').empty()
+					if (data.length === 0) {
+						jq('#competitionSource').append('<option value="">-- Aucune compétition trouvée --</option>')
+					} else {
+						jq('#competitionSource').append('<option value="">-- Sélectionner une compétition --</option>')
+						data.forEach(function (competition) {
+							jq('#competitionSource').append(
+								'<option value="' + competition.id + '">' +
+								competition.libelle + ' (' + competition.code_compet + ')</option>'
+							)
+						})
+						jq('#competitionSource').prop('disabled', false)
+					}
+				} else {
+					jq('#competitionSource').empty().append('<option value="">-- Erreur --</option>')
+					if (data && data.error) {
+						jq('#copyMessage').text(data.error)
+					}
+				}
+			}, 'json').fail(function () {
+				jq('#competitionSource').empty().append('<option value="">-- Erreur de chargement --</option>')
+			})
+		} else {
+			jq('#competitionSource').empty().append('<option value="">-- Sélectionner une saison --</option>')
+		}
+	})
+
+	// Quand une compétition est sélectionnée, activer le bouton de copie
+	jq('#competitionSource').change(function () {
+		if (jq(this).val()) {
+			jq('#copyComposition').prop('disabled', false)
+		} else {
+			jq('#copyComposition').prop('disabled', true)
+		}
+		jq('#copyMessage').text('')
+	})
+
 })
+
+// Fonction pour copier la composition d'équipe
+function copyTeamComposition() {
+	var idEquipeSource = jq('#competitionSource').val()
+	var idEquipeCible = jq('#idEquipe').val()
+
+	if (!idEquipeSource || !idEquipeCible) {
+		alert('Veuillez sélectionner une saison et une compétition')
+		return
+	}
+
+	if (!confirm('Attention ! Cette action va remplacer tous les joueurs actuels de cette équipe par ceux de la compétition sélectionnée.\n\nÊtes-vous sûr de vouloir continuer ?')) {
+		return
+	}
+
+	jq('#copyComposition').prop('disabled', true)
+	jq('#copyMessage').text('Copie en cours...')
+
+	jq.post('CopyTeamComposition.php', {
+		idEquipeSource: idEquipeSource,
+		idEquipeCible: idEquipeCible
+	}, function (data) {
+		if (data && data.success) {
+			jq('#copyMessage').text(data.message).css('color', 'green')
+			// Recharger la page après 2 secondes pour afficher les nouveaux joueurs
+			setTimeout(function () {
+				location.reload()
+			}, 2000)
+		} else {
+			jq('#copyMessage').text(data.error || 'Erreur lors de la copie').css('color', 'red')
+			jq('#copyComposition').prop('disabled', false)
+		}
+	}, 'json').fail(function () {
+		jq('#copyMessage').text('Erreur de communication avec le serveur').css('color', 'red')
+		jq('#copyComposition').prop('disabled', false)
+	})
+}
 
