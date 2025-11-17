@@ -158,3 +158,9 @@ sources/app2/dist/
 
 sources/live/logs
 !sources/live/logs/.gitkeep
+
+# Medias
+sources/doc/*.wmv
+sources/img/KIP/teams/
+sources/img/KIP/players_2022/
+
