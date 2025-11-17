@@ -784,7 +784,7 @@ class GestionMatchDetail extends MyPageSecure
 			<script type="text/javascript" src="v2/jquery.jeditable.js"></script>
 			<script type="text/javascript" src="v2/jquery.dataTables.min.js"></script>
 			<script type="text/javascript" src="v2/jquery.maskedinput.min.js"></script>
-			<script type="text/javascript" src="../lib/easytimer-4.6.0/easytimer.custom.js"></script>
+			<script type="text/javascript" src="../node_modules/easytimer.js/dist/easytimer.min.js"></script>
 			<script>
 				//paramètres ajustables
 				var duree_prolongations = '05'; // ICF:'05', FFCK:'03'
