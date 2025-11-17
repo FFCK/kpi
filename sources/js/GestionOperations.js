@@ -380,6 +380,16 @@ jq(document).ready(function () {
 		jq('#formOperations').submit();
 	});
 
+	// Purge cache handler
+	jq('#PurgeCache').click(function(){
+		if (!confirm('Confirmez-vous la purge des fichiers cache obsolètes ?\n\n- Fichiers de match > 1 an\n- Fichiers d\'événement > 2 ans')) {
+			return false;
+		}
+		jq('#Cmd').val('PurgeCache');
+		jq('#ParamCmd').val('');
+		jq('#formOperations').submit();
+	});
+
 	jq('#btnImportServer').click(function() {
 		OnImportServer();
 	});
