@@ -185,9 +185,11 @@ class GestionCompetition extends MyPageSecure
 		if (utyGetSession('lang') == 'en') {
 			array_push($arrayTypeClt, array('CHPT', 'CHPT - Round-trip games (Championship)', ''));
 			array_push($arrayTypeClt, array('CP', 'CP - Playoff games (Cup, Tournament...)', ''));
+			array_push($arrayTypeClt, array('MULTI', 'MULTI - Multi-competition ranking', ''));
 		} else {
 			array_push($arrayTypeClt, array('CHPT', 'CHPT - Matchs aller-retour (Championnat)', ''));
 			array_push($arrayTypeClt, array('CP', 'CP - Matchs à élimination (Coupe,Tournoi...)', ''));
+			array_push($arrayTypeClt, array('MULTI', 'MULTI - Classement multi-compétition', ''));
 		}
 
 		$this->m_tpl->assign('arrayTypeClt', $arrayTypeClt);
@@ -422,6 +424,7 @@ class GestionCompetition extends MyPageSecure
 		$_SESSION['codeRef'] = '';
 		$_SESSION['groupOrder'] = '';
 		$_SESSION['codeTypeClt'] = '';
+		$_SESSION['pointsGrid'] = '';
 		$_SESSION['etape'] = '';
 		$_SESSION['qualifies'] = '';
 		$_SESSION['elimines'] = '';
@@ -440,12 +443,12 @@ class GestionCompetition extends MyPageSecure
 		$codeCompet = utyGetPost('ParamCmd', -1);
 		$_SESSION['codeCompet'] = $codeCompet;
 
-		$sql  = "SELECT Code_niveau, Libelle, Soustitre, Soustitre2, Web, BandeauLink, LogoLink, 
-			SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
-			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, Code_tour, Qualifies, 
-			Elimines, Points, goalaverage, Statut, commentairesCompet, Publication 
-			FROM kp_competition 
-			WHERE Code_saison = ? 
+		$sql  = "SELECT Code_niveau, Libelle, Soustitre, Soustitre2, Web, BandeauLink, LogoLink,
+			SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif,
+			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, points_grid, Code_tour, Qualifies,
+			Elimines, Points, goalaverage, Statut, commentairesCompet, Publication
+			FROM kp_competition
+			WHERE Code_saison = ?
 			AND Code = ? ";
 		$stmt = $myBdd->pdo->prepare($sql);
 		$stmt->execute(array($saison, $codeCompet));
@@ -472,6 +475,7 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['codeRef'] = $row['Code_ref'];
 			$_SESSION['groupOrder'] = $row['GroupOrder'];
 			$_SESSION['codeTypeClt'] = $row['Code_typeclt'];
+			$_SESSION['pointsGrid'] = $row['points_grid'];
 			$_SESSION['etape'] = $row['Code_tour'];
 			$_SESSION['qualifies'] = $row['Qualifies'];
 			$_SESSION['elimines'] = $row['Elimines'];
@@ -510,14 +514,14 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql  = "UPDATE kp_competition 
-				SET Code_niveau = ?, Libelle = ?, Soustitre = ?, 
-				Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?, 
-				En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?, 
-				Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?, 
-				Code_typeclt = ?, Code_tour = ?, Qualifies = ?, Elimines = ?, 
+			$sql  = "UPDATE kp_competition
+				SET Code_niveau = ?, Libelle = ?, Soustitre = ?,
+				Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?,
+				En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?,
+				Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?,
+				Code_typeclt = ?, points_grid = ?, Code_tour = ?, Qualifies = ?, Elimines = ?,
 				Points = ?, goalaverage = ?, Statut = ?, Publication = ?, commentairesCompet = ?
-				WHERE Code = ? 
+				WHERE Code = ?
 				AND Code_saison = ? ";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array(
@@ -525,7 +529,7 @@ class GestionCompetition extends MyPageSecure
 				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '',
 				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'),
 				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
-				utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
+				utyGetPost('codeTypeClt'), utyGetPost('pointsGrid'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
 				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
 				$codeCompet, $saison
 			));

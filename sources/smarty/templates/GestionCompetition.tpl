@@ -289,6 +289,15 @@
 								</select>
 							</td>
 						</tr>
+						<tr id="pointsGridRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
+							<td colspan=4 title='Grille de points au format JSON. Exemple: {"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0}'>
+								<label for="pointsGrid">Grille de points (MULTI) : </label>
+								<input type="text" name="pointsGrid" id="pointsGrid" maxlength=255 value="{$pointsGrid}"
+									{if $profile > 2}readonly{/if} {if $profile <= 2}class='gris'{/if}
+									placeholder='{"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0}' />
+								<br><small><i>Format JSON : {"1":10,"2":6,"3":4,"default":0}</i></small>
+							</td>
+						</tr>
 						<tr>
 							<td colspan=2 width=55%>
 								<label for="etape">{#Tour#}/Phase :</label>
@@ -564,4 +573,26 @@
 				{/if}
 			</div>
 			</form>
+			<script>
+			// Fonction pour afficher/masquer le champ points_grid selon le type de compétition
+			function changeCodeTypeClt() {
+				var typeCompet = document.getElementById('codeTypeClt');
+				var pointsGridRow = document.getElementById('pointsGridRow');
+
+				if (typeCompet && pointsGridRow) {
+					if (typeCompet.value === 'MULTI') {
+						pointsGridRow.style.display = 'table-row';
+					} else {
+						pointsGridRow.style.display = 'none';
+					}
+				}
+			}
+
+			// Appeler au chargement de la page pour initialiser l'état
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', changeCodeTypeClt);
+			} else {
+				changeCodeTypeClt();
+			}
+			</script>
 	</div>

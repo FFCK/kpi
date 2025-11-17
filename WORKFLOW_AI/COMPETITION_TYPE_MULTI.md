@@ -40,7 +40,15 @@ Dans l'interface d'administration (GestionCompetition.php) :
 
 ### 2. Configurer la grille de points
 
-La grille de points doit être définie directement dans la base de données (pour le moment) :
+La grille de points peut être configurée directement dans l'interface d'administration :
+
+1. Éditez la compétition MULTI dans GestionCompetition.php
+2. Le champ "Grille de points (MULTI)" apparaît automatiquement
+3. Saisissez la grille au format JSON (exemple : `{"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0}`)
+
+**Note** : Le champ est en lecture seule pour les utilisateurs avec profil > 2 (pour les profils avec moins de droits).
+
+**Alternative SQL** : Vous pouvez aussi modifier directement dans la base de données :
 
 ```sql
 UPDATE kp_competition
@@ -94,7 +102,9 @@ Le système effectue les étapes suivantes :
 
 2. **Pour chaque équipe inscrite** :
    - Recherche l'équipe dans chaque compétition précédente (par Code_club ou Libelle)
-   - Récupère son classement (Clt) dans cette compétition
+   - **Récupère son classement PUBLIÉ** :
+     - Pour les compétitions CHPT : utilise `Clt_publi` (classement championnat publié)
+     - Pour les compétitions CP : utilise `CltNiveau_publi` (classement niveau publié)
    - Applique la grille de points selon le classement
    - Somme tous les points obtenus
 
@@ -103,6 +113,8 @@ Le système effectue les étapes suivantes :
    - En cas d'égalité, ordre alphabétique du nom d'équipe
    - Le champ `J` (joué) contient le nombre de compétitions où l'équipe a participé
    - Le champ `Pts` contient le total des points
+
+**Important** : Seuls les classements **publiés** sont pris en compte. Assurez-vous de publier les classements des compétitions précédentes avant de calculer le classement MULTI.
 
 ## Exemple concret
 
@@ -165,11 +177,17 @@ Le système identifie une équipe dans une compétition précédente par :
 
 **Important** : Assurez-vous que les noms d'équipes sont cohérents entre les compétitions du groupe.
 
+## Améliorations apportées
+
+1. ✅ **Interface graphique** : La grille de points est maintenant configurable directement dans GestionCompetition.php
+2. ✅ **Contrôle d'accès** : Le champ est en lecture seule pour les profils > 2
+3. ✅ **Classements publiés** : Le calcul utilise les classements publiés (Clt_publi / CltNiveau_publi) au lieu des classements de travail
+4. ✅ **Visibilité conditionnelle** : Le champ de grille de points n'apparaît que si le type de compétition est MULTI
+
 ## Limitations actuelles
 
-1. **Configuration manuelle** : La grille de points doit être configurée via SQL (pas d'interface graphique pour le moment)
-2. **Ordre des compétitions** : Toutes les compétitions du groupe sont traitées au même niveau (pas de priorité/pondération)
-3. **Équipes non participantes** : Si une équipe n'a pas participé à une compétition du groupe, elle ne reçoit aucun point pour cette compétition
+1. **Ordre des compétitions** : Toutes les compétitions du groupe sont traitées au même niveau (pas de priorité/pondération)
+2. **Équipes non participantes** : Si une équipe n'a pas participé à une compétition du groupe, elle ne reçoit aucun point pour cette compétition
 
 ## Évolutions futures possibles
 

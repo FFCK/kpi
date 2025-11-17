@@ -1476,7 +1476,7 @@ class GestionClassement extends MyPageSecure
 
 		// Récupérer toutes les compétitions du même groupe (même Code_ref)
 		// Exclure la compétition MULTI elle-même et les tours Unique/Finale (Code_tour = 10)
-		$sql = "SELECT Code, Libelle, Code_tour
+		$sql = "SELECT Code, Libelle, Code_tour, Code_typeclt
 			FROM kp_competition
 			WHERE Code_saison = ?
 			AND Code_ref = ?
@@ -1495,13 +1495,26 @@ class GestionClassement extends MyPageSecure
 
 			// Pour chaque compétition précédente du groupe
 			foreach ($competitionsPrecedentes as $competPrecedente) {
+				// Déterminer quel champ de classement utiliser selon le type de compétition
+				// CHPT: utiliser Clt_publi
+				// CP: utiliser CltNiveau_publi
+				$typeCompet = $competPrecedente['Code_typeclt'];
+				if ($typeCompet == 'CHPT') {
+					$champClassement = 'Clt_publi';
+				} elseif ($typeCompet == 'CP') {
+					$champClassement = 'CltNiveau_publi';
+				} else {
+					// Par défaut, utiliser Clt_publi
+					$champClassement = 'Clt_publi';
+				}
+
 				// Chercher l'équipe dans cette compétition (par Code_club ou Libelle)
-				$sql = "SELECT Clt, Pts
+				$sql = "SELECT $champClassement AS classement, Pts_publi
 					FROM kp_competition_equipe
 					WHERE Code_compet = ?
 					AND Code_saison = ?
 					AND (Code_club = ? OR Libelle = ?)
-					AND Clt > 0";
+					AND $champClassement > 0";
 				$stmt = $myBdd->pdo->prepare($sql);
 				$stmt->execute(array(
 					$competPrecedente['Code'],
@@ -1511,7 +1524,7 @@ class GestionClassement extends MyPageSecure
 				));
 
 				if ($row = $stmt->fetch()) {
-					$classement = $row['Clt'];
+					$classement = $row['classement'];
 					$nbCompetitionsParticipees++;
 
 					// Appliquer la grille de points selon le classement
