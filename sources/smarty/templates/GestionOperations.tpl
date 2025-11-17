@@ -380,6 +380,20 @@
 							</td>
 						</tr>
 					</table>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Purge des fichiers cache</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<input type="button" name="PurgeCache" id="PurgeCache" value="Purger les fichiers cache obsolètes">
+								<br>
+								<small style="color: #666;">Supprime les fichiers de match (> 1 an) et d'événement (> 2 ans)</small>
+							</td>
+						</tr>
+					</table>
 					{* {if $profile <= 2}
 						<table width="100%">
 							<tr>
