@@ -1629,6 +1629,99 @@ class GestionOperations extends MyPageSecure
 		}
 	}
 
+	function CopyRc()
+	{
+		$saisonSource = utyGetPost('saisonSourceRc', '');
+		$saisonCible = utyGetPost('saisonCibleRc', '');
+
+		if (strlen($saisonSource) == 0 || strlen($saisonCible) == 0) {
+			return 'Veuillez sélectionner une saison source et une saison cible.';
+		}
+
+		if ($saisonSource == $saisonCible) {
+			return 'Les saisons source et cible doivent être différentes.';
+		}
+
+		$myBdd = $this->myBdd;
+
+		// Vérifier que la saison source existe et a des RC
+		$sql = "SELECT COUNT(*) as nb FROM kp_rc WHERE Code_saison = ?";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($saisonSource));
+		$row = $stmt->fetch();
+
+		if ($row['nb'] == 0) {
+			return "Aucun RC trouvé pour la saison source $saisonSource.";
+		}
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			// Récupérer tous les RC de la saison source
+			$sql = "SELECT Code_competition, Matric, Ordre
+				FROM kp_rc
+				WHERE Code_saison = ?
+				ORDER BY Code_competition, Ordre";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($saisonSource));
+			$arrayRc = $stmt->fetchAll();
+
+			$nbCopied = 0;
+			$nbSkipped = 0;
+
+			// Copier chaque RC vers la saison cible
+			$sqlInsert = "INSERT INTO kp_rc (Code_saison, Code_competition, Matric, Ordre)
+				VALUES (?, ?, ?, ?)";
+			$stmtInsert = $myBdd->pdo->prepare($sqlInsert);
+
+			// Vérifier si le RC existe déjà pour éviter les doublons
+			$sqlCheck = "SELECT COUNT(*) as nb FROM kp_rc
+				WHERE Code_saison = ? AND Code_competition = ? AND Matric = ?";
+			$stmtCheck = $myBdd->pdo->prepare($sqlCheck);
+
+			foreach ($arrayRc as $rc) {
+				// Vérifier si ce RC existe déjà dans la saison cible
+				$stmtCheck->execute(array(
+					$saisonCible,
+					$rc['Code_competition'],
+					$rc['Matric']
+				));
+				$check = $stmtCheck->fetch();
+
+				if ($check['nb'] == 0) {
+					// Insérer le RC dans la saison cible
+					$stmtInsert->execute(array(
+						$saisonCible,
+						$rc['Code_competition'],
+						$rc['Matric'],
+						$rc['Ordre']
+					));
+					$nbCopied++;
+				} else {
+					$nbSkipped++;
+				}
+			}
+
+			$myBdd->pdo->commit();
+
+			$message = "Copie des RC terminée : $nbCopied RC copiés de la saison $saisonSource vers $saisonCible.";
+			if ($nbSkipped > 0) {
+				$message .= " ($nbSkipped RC ignorés car déjà existants)";
+			}
+
+			$myBdd->utyJournal('Copie RC', $saisonSource, '', null, null, null, "Vers saison $saisonCible : $nbCopied copiés, $nbSkipped ignorés");
+
+			return $message;
+
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Copie RC, $saisonSource => $saisonCible" . '\r\n' . $e->getMessage());
+
+			return "La requête ne peut pas être exécutée !\\nCannot execute query!\\n" . $e->getMessage();
+		}
+	}
+
 	function __construct()
 	{
 		parent::__construct(1);
@@ -1670,6 +1763,8 @@ class GestionOperations extends MyPageSecure
 			if ($Cmd == 'ChangeCode') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->ChangeCode() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'ChangeAuthSaison') ($_SESSION['Profile'] <= 2) ? $this->ChangeAuthSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'CopyRc') ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->CopyRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($alertMessage == '') {
 				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
