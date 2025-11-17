@@ -3,7 +3,7 @@
 include_once('commun/MyPage.php');
 include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
-require_once('lib/qrcode/qrcode.class.php');
+// QRcode class is now autoloaded via Composer
 
 class Qr extends MyPage
 {
