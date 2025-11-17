@@ -13,7 +13,7 @@ include('pclzip.lib.php');
 class GestionOperations extends MyPageSecure
 {
 	var $myBdd;
-	var $m_arrayinfo;
+	var $m_arrayinfo = array();
 	var $m_duplicate_file;
 
 	function Load()
@@ -251,13 +251,14 @@ class GestionOperations extends MyPageSecure
 		} catch (Exception $e) {
 			$myBdd->pdo->rollBack();
 			utySendMail("[KPI] Erreur SQL", "Fusion Joueurs" . '\r\n' . $e->getMessage());
+			array_push($this->m_arrayinfo, "Erreur lors de la fusion de joueurs : " . $e->getMessage());
 
-			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			return;
 		}
 
 		$myBdd->utyJournal('Fusion Joueurs', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numFusionSource . ' => ' . $numFusionCible);
-
-		return ('Joueurs fusionnés');
+		array_push($this->m_arrayinfo, 'Fusion Joueurs : ' . $numFusionSource . ' => ' . $numFusionCible);
+		return;
 	}
 
 	function RenomEquipe()
@@ -287,12 +288,14 @@ class GestionOperations extends MyPageSecure
 		} catch (Exception $e) {
 			$myBdd->pdo->rollBack();
 			utySendMail("[KPI] Erreur SQL", "Rename Equipe, $RenomSource => $RenomCible" . '\r\n' . $e->getMessage());
+			array_push($this->m_arrayinfo, "Erreur lors du renommage d'équipe : " . $e->getMessage());
 
-			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			return;
 		}
 
 		$myBdd->utyJournal('Rename Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $RenomSource . ' => ' . $RenomCible);
-		return ('Equipe renommée !');
+		array_push($this->m_arrayinfo, 'Renommage Equipe : ' . $RenomSource . ' => ' . $RenomCible);
+		return;
 	}
 
 	function FusionEquipes()
@@ -327,12 +330,13 @@ class GestionOperations extends MyPageSecure
 		} catch (Exception $e) {
 			$myBdd->pdo->rollBack();
 			utySendMail("[KPI] Erreur SQL", "Fusion Equipes, $FusionEquipeSource => $FusionEquipeCible" . '\r\n' . $e->getMessage());
-
-			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			array_push($this->m_arrayinfo, "Erreur lors de la fusion d'équipes : " . $e->getMessage());
+			return;
 		}
 
 		$myBdd->utyJournal('Fusion Equipes', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $FusionEquipeSource . ' => ' . $FusionEquipeCible);
-		return ('Equipes fusionnées');
+		array_push($this->m_arrayinfo, 'Fusion Equipes : ' . $FusionEquipeSource . ' => ' . $FusionEquipeCible);
+		return;
 	}
 
 	function DeplaceEquipe()
@@ -367,12 +371,13 @@ class GestionOperations extends MyPageSecure
 			$myBdd->pdo->rollBack();
 			utySendMail("[KPI] Erreur SQL", "Déplacement Equipe, $numDeplaceEquipeSource => $numDeplaceEquipeCible" . '\r\n' . $e->getMessage());
 
-			return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+			array_push($this->m_arrayinfo, "Erreur lors du déplacement d'équipe : " . $e->getMessage());
+			return;
 		}
 
 		$myBdd->utyJournal('Déplacement Equipe', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible);
-
-		return $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible;
+		array_push($this->m_arrayinfo, 'Déplacement Equipe : ' . $numDeplaceEquipeSource . ' => ' . $numDeplaceEquipeCible);
+		return;
 	}
 
 	function ChangeCode()
@@ -468,7 +473,8 @@ class GestionOperations extends MyPageSecure
 			}
 
 			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, 'All seasons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
-			return ('Code changé toutes saisons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+			array_push($this->m_arrayinfo, 'Code changé toutes saisons : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+			return;
 
 		} else {
 
@@ -554,12 +560,13 @@ class GestionOperations extends MyPageSecure
 			} catch (Exception $e) {
 				$myBdd->pdo->rollBack();
 				utySendMail("[KPI] Erreur SQL", "Change code, $changeCodeSource => $changeCodeCible" . '\r\n' . $e->getMessage());
+				array_push($this->m_arrayinfo, "Erreur lors du changement de code : " . $e->getMessage());
 
-				return "La requête ne peut pas être exécutée !\\nCannot execute query!";
+				return;
 			}
 
 			$myBdd->utyJournal('Change code', $codeSaison, utyGetSession('codeCompet'), null, null, null, $changeCodeSource . ' => ' . $changeCodeCible);
-			return ('Code changé saison ' . $codeSaison . ' : ' . $changeCodeSource . ' => ' . $changeCodeCible);
+			return;
 		}
 	}
 
@@ -587,6 +594,7 @@ class GestionOperations extends MyPageSecure
 
 		$deletedMatchFiles = 0;
 		$deletedEventFiles = 0;
+		$readMatchFiles = 0;
 
 		// Parcourir les fichiers du dossier cache
 		$files = scandir($cacheDir);
@@ -595,6 +603,8 @@ class GestionOperations extends MyPageSecure
 			if ($file === '.' || $file === '..') {
 				continue;
 			}
+
+			$readMatchFiles++;
 
 			$filePath = $cacheDir . $file;
 
@@ -624,11 +634,12 @@ class GestionOperations extends MyPageSecure
 			}
 		}
 
-		$message = 'Purge du cache terminée :<br>';
-		$message .= '- Fichiers de match supprimés (> 1 an) : ' . $deletedMatchFiles . '<br>';
-		$message .= '- Fichiers d\'événement supprimés (> 2 ans) : ' . $deletedEventFiles;
+		array_push($this->m_arrayinfo, 'Purge du cache terminée.');
+		array_push($this->m_arrayinfo, '- Fichiers de match lus : ' . $readMatchFiles);
+		array_push($this->m_arrayinfo, '- Fichiers de match supprimés (> 1 an) : ' . $deletedMatchFiles);
+		array_push($this->m_arrayinfo, '- Fichiers d\'événement supprimés (> 2 ans) : ' . $deletedEventFiles);
 
-		return $message;
+		return;
 	}
 
 	function ExportEvt($idEvenement) {
@@ -1322,7 +1333,8 @@ class GestionOperations extends MyPageSecure
 
 		$myBdd->pdo->exec('SET FOREIGN_KEY_CHECKS = 1;');
 		$myBdd->pdo->commit();
-		return "Import réussi";
+		array_push($this->m_arrayinfo, "Import réussi");
+		return;
 	}
 
 	function uploadLicenceZip()
@@ -1709,7 +1721,8 @@ class GestionOperations extends MyPageSecure
 		$row = $stmt->fetch();
 
 		if ($row['nb'] == 0) {
-			return "Aucun RC trouvé pour la saison source $saisonSource.";
+			array_push($this->m_arrayinfo, "Aucun RC trouvé pour la saison source $saisonSource.");
+			return;
 		}
 
 		try {
@@ -1770,13 +1783,15 @@ class GestionOperations extends MyPageSecure
 
 			$myBdd->utyJournal('Copie RC', $saisonSource, '', null, null, null, "Vers saison $saisonCible : $nbCopied copiés, $nbSkipped ignorés");
 
-			return $message;
+			array_push($this->m_arrayinfo, $message);
+			return;
 
 		} catch (Exception $e) {
 			$myBdd->pdo->rollBack();
 			utySendMail("[KPI] Erreur SQL", "Copie RC, $saisonSource => $saisonCible" . '\r\n' . $e->getMessage());
 
-			return "La requête ne peut pas être exécutée !\\nCannot execute query!\\n" . $e->getMessage();
+			array_push($this->m_arrayinfo, "Erreur lors de la copie des RC : " . $e->getMessage());
+			return;
 		}
 	}
 
@@ -1822,11 +1837,19 @@ class GestionOperations extends MyPageSecure
 
 			if ($Cmd == 'ChangeAuthSaison') ($_SESSION['Profile'] <= 2) ? $this->ChangeAuthSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
-			if ($Cmd == 'PurgeCache') ($_SESSION['Profile'] <= 1) ? $alertMessage = $this->PurgeCacheFiles() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+			if ($Cmd == 'PurgeCache') {
+				if ($_SESSION['Profile'] <= 1) {
+					$this->PurgeCacheFiles();
+					// Les messages seront affichés via $arrayinfo dans le switch ci-dessous
+				} else {
+					$alertMessage = 'Vous n avez pas les droits pour cette action.';
+				}
+			}
 
 			if ($Cmd == 'CopyRc') ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->CopyRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
-			if ($alertMessage == '') {
+			// Pour PurgeCache, on ne redirige pas car on affiche les résultats via $arrayinfo
+			if ($alertMessage == '' && $Cmd != 'PurgeCache') {
 				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
@@ -1867,6 +1890,9 @@ class GestionOperations extends MyPageSecure
 				$this->m_arrayinfo = array();
 				array_push($this->m_arrayinfo, 'Renommage de l\'image en cours...');
 				$this->renameImage();
+				$arrayinfo = $this->m_arrayinfo;
+				break;
+			case $Cmd == 'PurgeCache':
 				$arrayinfo = $this->m_arrayinfo;
 				break;
 		}
