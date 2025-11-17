@@ -22,8 +22,20 @@ class FeuilleListeMatchs extends MyPage
         $filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
         $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
+        $filtreTour = utyGetSession('filtreTour', '');
+        $filtreTour = utyGetPost('filtreTour', $filtreTour);
+        $filtreTour = utyGetGet('filtreTour', $filtreTour);
+
+        $filtreMatchsNonVerrouilles = utyGetSession('filtreMatchsNonVerrouilles', '');
+
         $lstJournee = utyGetSession('lstJournee', 0);
         $arrayJournees = explode(',', $lstJournee);
+
+        // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
+        $idSelJournee = utyGetSession('idSelJournee', '*');
+        if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
+            $arrayJournees = [$idSelJournee];
+        }
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (utyGetGet('idEvenement', 0) > 0) {
@@ -77,6 +89,13 @@ class FeuilleListeMatchs extends MyPage
         if ($filtreTerrain != '') {
             $sql .= "AND a.Terrain = ? ";
             $arrayQuery = array_merge($arrayQuery, [$filtreTerrain]);
+        }
+        if ($filtreTour != '') {
+            $sql .= "AND d.Etape = ? ";
+            $arrayQuery = array_merge($arrayQuery, [$filtreTour]);
+        }
+        if ($filtreMatchsNonVerrouilles == 'on') {
+            $sql .= "AND a.Validation = 'N' ";
         }
         $sql .= $orderMatchs;
 
