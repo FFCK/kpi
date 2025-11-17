@@ -9,7 +9,8 @@
         "openspout/openspout": "^4.32",
         "twbs/bootstrap": "^5.3",
         "smarty/smarty": "^4",
-        "endroid/qr-code": "^5.0"
+        "endroid/qr-code": "^5.0",
+        "ezyang/htmlpurifier": "^4.13"
     },
     "config": {
         "vendor-dir": "vendor",
