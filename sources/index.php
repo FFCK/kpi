@@ -1,12 +1,4 @@
 <?php
-// Redirect WordPress REST API calls to /wordpress/
-if (isset($_GET['rest_route']) || strpos($_SERVER['REQUEST_URI'], '/wp-json/') !== false) {
-	$redirect_url = '/wordpress' . $_SERVER['REQUEST_URI'];
-	header('Location: ' . $redirect_url);
-	exit;
-}
-
-
 if(!isset($_SESSION)) {
 	session_start(); 
 }
