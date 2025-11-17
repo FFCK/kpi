@@ -573,6 +573,64 @@ class GestionOperations extends MyPageSecure
 		$_SESSION['AuthSaison'] = $AuthSaison;
 	}
 
+	function PurgeCacheFiles()
+	{
+		$cacheDir = '../live/cache/';
+
+		if (!is_dir($cacheDir)) {
+			return 'Le dossier cache n\'existe pas.';
+		}
+
+		$now = time();
+		$oneYearAgo = $now - (365 * 24 * 60 * 60);
+		$twoYearsAgo = $now - (2 * 365 * 24 * 60 * 60);
+
+		$deletedMatchFiles = 0;
+		$deletedEventFiles = 0;
+
+		// Parcourir les fichiers du dossier cache
+		$files = scandir($cacheDir);
+
+		foreach ($files as $file) {
+			if ($file === '.' || $file === '..') {
+				continue;
+			}
+
+			$filePath = $cacheDir . $file;
+
+			// Vérifier que c'est bien un fichier
+			if (!is_file($filePath)) {
+				continue;
+			}
+
+			$fileTime = filemtime($filePath);
+
+			// Vérifier les fichiers de match (plus d'1 an)
+			if (preg_match('/^\d+_match_(chrono|score|global)\.json$/', $file)) {
+				if ($fileTime < $oneYearAgo) {
+					if (unlink($filePath)) {
+						$deletedMatchFiles++;
+					}
+				}
+			}
+
+			// Vérifier les fichiers d'événement (plus de 2 ans)
+			if (preg_match('/^event\d+_pitch\d+\.json$/', $file)) {
+				if ($fileTime < $twoYearsAgo) {
+					if (unlink($filePath)) {
+						$deletedEventFiles++;
+					}
+				}
+			}
+		}
+
+		$message = 'Purge du cache terminée :<br>';
+		$message .= '- Fichiers de match supprimés (> 1 an) : ' . $deletedMatchFiles . '<br>';
+		$message .= '- Fichiers d\'événement supprimés (> 2 ans) : ' . $deletedEventFiles;
+
+		return $message;
+	}
+
 	function ExportEvt($idEvenement) {
 
 		$_SESSION['idEvenement'] = $idEvenement;
@@ -1670,6 +1728,8 @@ class GestionOperations extends MyPageSecure
 			if ($Cmd == 'ChangeCode') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->ChangeCode() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'ChangeAuthSaison') ($_SESSION['Profile'] <= 2) ? $this->ChangeAuthSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'PurgeCache') ($_SESSION['Profile'] <= 1) ? $alertMessage = $this->PurgeCacheFiles() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($alertMessage == '') {
 				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
