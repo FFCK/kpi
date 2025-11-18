@@ -40,6 +40,29 @@ function AddSaison () {
 	}
 }
 
+function CopyRc () {
+	var saisonSource = jq('#saisonSourceRc').val()
+	var saisonCible = jq('#saisonCibleRc').val()
+
+	if (!saisonSource || !saisonCible) {
+		alert('Veuillez sélectionner une saison source et une saison cible.')
+		return
+	}
+
+	if (saisonSource == saisonCible) {
+		alert('Les saisons source et cible doivent être différentes.')
+		return
+	}
+
+	if (!confirm('Confirmez-vous la copie des RC de la saison ' + saisonSource + ' vers la saison ' + saisonCible + ' ?')) {
+		return
+	}
+
+	document.forms['formOperations'].elements['Cmd'].value = 'CopyRc'
+	document.forms['formOperations'].elements['ParamCmd'].value = ''
+	document.forms['formOperations'].submit()
+}
+
 function activeSaison () {
 	if (!confirm(langue['Confirmer'])) {
 		document.forms['formOperations'].reset
@@ -354,6 +377,16 @@ jq(document).ready(function () {
 	jq('#importPCE2').click(function(){
 		jq('#json_msg').prepend( "Traitement en cours (patientez 15 à 20 secondes)..." );
 		jq('#Control').val('importPCE2');
+		jq('#formOperations').submit();
+	});
+
+	// Purge cache handler
+	jq('#PurgeCache').click(function(){
+		if (!confirm('Confirmez-vous la purge des fichiers cache obsolètes ?\n\n- Fichiers de match > 1 an\n- Fichiers d\'événement > 2 ans')) {
+			return false;
+		}
+		jq('#Cmd').val('PurgeCache');
+		jq('#ParamCmd').val('');
 		jq('#formOperations').submit();
 	});
 

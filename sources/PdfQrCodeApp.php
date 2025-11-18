@@ -5,8 +5,7 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 require_once('commun/MyPDF.php');
-
-require_once('lib/qrcode/qrcode.class.php');
+// QRcode class is now autoloaded via Composer
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfQrCodeApp extends MyPage
