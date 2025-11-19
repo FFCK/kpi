@@ -56,7 +56,6 @@ class PdfListeMatchs extends MyPage
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
-            $arrayJournees = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;

@@ -58,7 +58,6 @@ class PdfListeMatchs extends MyPage
         $laCompet = utyGetGet('Compet', $laCompet);
         // Ne vider $arrayJournees que si $laCompet est une vraie compétition (pas *, 0, ou vide)
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
-            $arrayJournees = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;

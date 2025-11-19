@@ -60,7 +60,6 @@ class PdfListeMatchs extends MyPage
     // Ne vider $lstJournee que si $laCompet est une VRAIE compétition
     // Pas *, pas 0, pas vide
     if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
-      $lstJournee = [];
       $idEvenement = -1;
     }
     $codeCompet = $laCompet;

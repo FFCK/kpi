@@ -3,7 +3,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 require_once('../commun/MyPDF.php');
-require_once('../lib/qrcode/qrcode.class.php');
 
 // Game list for a Day or Event - Migration mPDF
 
@@ -54,7 +53,6 @@ class FeuilleListeMatchs extends MyPage
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
-            $arrayJournees = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;
