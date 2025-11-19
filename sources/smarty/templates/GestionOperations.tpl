@@ -380,6 +380,20 @@
 							</td>
 						</tr>
 					</table>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Purge des fichiers cache</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<input type="button" name="PurgeCache" id="PurgeCache" value="Purger les fichiers cache obsolètes">
+								<br>
+								<small style="color: #666;">Supprime les fichiers de match (> 1 an) et d'événement (> 2 ans)</small>
+							</td>
+						</tr>
+					</table>
 					{* {if $profile <= 2}
 						<table width="100%">
 							<tr>
@@ -495,6 +509,42 @@
 							<td colspan=2>
 								<br>
 								<input type="button" name="AjoutSaison" onclick="AddSaison();" value="Créer">
+							</td>
+						</tr>
+					</table>
+					<br>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Copier les Responsables de Compétition (RC)</label>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<label for="saisonSourceRc">Saison source :</label>
+								<select name="saisonSourceRc" id="saisonSourceRc">
+									<option value="">-- Sélectionnez --</option>
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+							<td>
+								<label for="saisonCibleRc">Saison cible :</label>
+								<select name="saisonCibleRc" id="saisonCibleRc">
+									<option value="">-- Sélectionnez --</option>
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<br>
+								<input type="button" name="CopyRcBtn" id="CopyRcBtn" onclick="CopyRc();" value="Copier les RC">
+								<br>
+								<small style="color: #666;">Cette opération copie tous les RC de la saison source vers la saison cible (les doublons sont ignorés).</small>
 							</td>
 						</tr>
 					</table>

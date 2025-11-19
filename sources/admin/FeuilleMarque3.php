@@ -784,8 +784,26 @@ class GestionMatchDetail extends MyPageSecure
 			<script type="text/javascript" src="v2/jquery.jeditable.js"></script>
 			<script type="text/javascript" src="v2/jquery.dataTables.min.js"></script>
 			<script type="text/javascript" src="v2/jquery.maskedinput.min.js"></script>
-			<script type="text/javascript" src="../lib/easytimer-4.6.0/easytimer.custom.js"></script>
+			<script type="text/javascript" src="../node_modules/easytimer.js/dist/easytimer.min.js"></script>
 			<script>
+				// Polyfill for setParams method (not exposed in easytimer.js 4.6.0)
+				if (easytimer && easytimer.Timer && !easytimer.Timer.prototype.setParams) {
+					easytimer.Timer.prototype.setParams = function(params) {
+						const wasRunning = this.isRunning();
+						const wasPaused = this.isPaused();
+						this.stop();
+						if (wasRunning || wasPaused) {
+							this.start(params);
+							if (wasPaused) {
+								this.pause();
+							}
+						} else {
+							this.start(params);
+							this.pause();
+						}
+					};
+				}
+
 				//paramètres ajustables
 				var duree_prolongations = '05'; // ICF:'05', FFCK:'03'
 				var arret_chrono_sur_but = false;
