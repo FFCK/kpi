@@ -55,6 +55,6 @@
     "vue-cli-plugin-i18n": "~2.3.2",
     "vue-loader-v16": "npm:vue-loader@^16.0.0-alpha.3",
     "websocket": "^1.0.34",
-    "workbox-cli": "^6.1.5"
+    "workbox-cli": "^7.4.0"
   }
 }
