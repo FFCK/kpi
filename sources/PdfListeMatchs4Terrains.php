@@ -46,7 +46,6 @@ class PdfListeMatchs extends MyPage
         $laCompet = utyGetGet('Compet', $laCompet);
         // Pattern Bug SQL : Vérifier que $laCompet n'est pas '*' ou vide
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
-            $lstJournee = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;

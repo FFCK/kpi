@@ -6,8 +6,6 @@ include_once('../commun/MyTools.php');
 // replaced FPDF by MyPDF wrapper (mPDF) for PHP7/8 compatibility
 require_once('../commun/MyPDF.php');
 
-require_once('../lib/qrcode/qrcode.class.php');
-
 // Gestion de la Feuille de Match - migré vers MyPDF/mPDF
 class PDF extends MyPDF
 {
@@ -567,8 +565,8 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(135, 1, "", 'LTR', '1', 'C', 1);
             $pdf->Cell(60, 4, $lang['Lieu'] . ": " . $lieu . " (" . $dpt . ")", 'L', '0', 'L', 1);
             $pdf->SetFont('Arial', 'B', 12);
-            $pdf->Cell(40, 4, $date . "   " . $heure, '0', '0', 'L', 1);
-            $pdf->Cell(35, 4, $lang['Terrain'] . ": " . $terrain, 'R', '1', 'R', 1);
+            $pdf->Cell(45, 4, $date . "   " . $heure, '0', '0', 'L', 1);
+            $pdf->Cell(30, 4, $lang['Terrain'] . ": " . $terrain, 'R', '1', 'R', 1);
 
             $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(60, 4, $lang['Phase'] . ": " . $phase, 'L', '0', 'L', 1);
@@ -913,7 +911,7 @@ class FeuilleMatch extends MyPage
 
             // QRCode
             $qrcode = new QRcode('https://kayak-polo.info/admin/FeuilleMarque2.php?idMatch=' . $idMatch, 'L'); // error level : L, M, Q, H
-            $qrcode->displayFPDF($pdf, 264, 164, 21);
+            $qrcode->displayFPDF($pdf, 264, 168, 21);
 
             $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')), 0, 1, 'R');
 
