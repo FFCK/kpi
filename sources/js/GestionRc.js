@@ -59,6 +59,30 @@ function paramRc(idRc)
 	document.forms['formRc'].submit();
 }
 
+function CopyRc()
+{
+	var saisonSource = jq('#saisonSourceRc').val();
+	var saisonCible = jq('#saisonCibleRc').val();
+
+	if (!saisonSource || !saisonCible) {
+		alert('Veuillez sélectionner une saison source et une saison cible.');
+		return;
+	}
+
+	if (saisonSource == saisonCible) {
+		alert('Les saisons source et cible doivent être différentes.');
+		return;
+	}
+
+	if (!confirm('Confirmez-vous la copie des RC de la saison ' + saisonSource + ' vers la saison ' + saisonCible + ' ?')) {
+		return;
+	}
+
+	document.forms['formRc'].elements['Cmd'].value = 'CopyRc';
+	document.forms['formRc'].elements['ParamCmd'].value = '';
+	document.forms['formRc'].submit();
+}
+
 function sessionSaison()
 {
 	if(!confirm(langue['Confirmer']))

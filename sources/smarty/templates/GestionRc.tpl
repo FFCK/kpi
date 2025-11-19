@@ -6,6 +6,18 @@
 
 			<div class='blocLeft'>
 				<div class='titrePage'>{#Gestion_des_RC#}</div>
+				{if $arrayinfo|default:false}
+					<table width="100%">
+						<tr>
+							<td colspan=2>
+								{section name=i loop=$arrayinfo}
+									{$arrayinfo[i]}<BR>
+								{/section}
+							</td>
+						</tr>
+					</table>
+					<br>
+				{/if}
                 <div class='liens'>
 					{if $profile <= 2}
 						<label for="saisonTravail">{#Saison#} :</label>
@@ -112,7 +124,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan=3>
+							<td colspan=2>
 								<label for="Code_competition">{#Competition#} :</label>
 								<select name="Code_competition" id="Code_competition">
 									<option value="- CNA -">- CNA -</option>
@@ -121,7 +133,7 @@
 									{/section}
 								</select>
 							</td>
-							<td>
+							<td colspan=2>
 								<label for="Ordre">{#Ordre#} :</label>
 								<input type="tel" name="Ordre" value="{$selectOrdre}" id="Ordre" maxlength="2" size=1>
 							</td>
@@ -145,6 +157,41 @@
 									<input type="button" onclick="addRc()" value="<< {#Ajouter#}">
 								</td>
 							{/if}
+						</tr>
+					</table>
+					<table width=100%>
+						<tr>
+							<th class='titreForm' colspan=4>
+								<label>Copier les Responsables de Compétition (RC)</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<label for="saisonSourceRc">Saison source :</label>
+								<select name="saisonSourceRc" id="saisonSourceRc">
+									<option value="">-- Sélectionnez --</option>
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+							<td colspan=2>
+								<label for="saisonCibleRc">Saison cible :</label>
+								<select name="saisonCibleRc" id="saisonCibleRc">
+									<option value="">-- Sélectionnez --</option>
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=4>
+								<br>
+								<input type="button" name="CopyRcBtn" id="CopyRcBtn" onclick="CopyRc();" value="Copier les RC">
+								<br>
+								<small style="color: #666;">Cette opération copie tous les RC de la saison source vers la saison cible (les doublons sont ignorés).</small>
+							</td>
 						</tr>
 					</table>
 				</div>
