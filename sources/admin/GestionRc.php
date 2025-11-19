@@ -5,9 +5,10 @@ include_once('../commun/MyTools.php');
 
 // Gestion des RC
 
-class GestionRc extends MyPageSecure	 
-{	
+class GestionRc extends MyPageSecure
+{
 	var $myBdd;
+	var $m_arrayinfo = array();
 
 	function Load()
 	{
@@ -259,10 +260,106 @@ class GestionRc extends MyPageSecure
 		$myBdd->utyJournal('Modif Rc', '', '', $idRc);
 	}
 
+	function CopyRc()
+	{
+		$saisonSource = utyGetPost('saisonSourceRc', '');
+		$saisonCible = utyGetPost('saisonCibleRc', '');
+
+		if (strlen($saisonSource) == 0 || strlen($saisonCible) == 0) {
+			return 'Veuillez sélectionner une saison source et une saison cible.';
+		}
+
+		if ($saisonSource == $saisonCible) {
+			return 'Les saisons source et cible doivent être différentes.';
+		}
+
+		$myBdd = $this->myBdd;
+
+		// Vérifier que la saison source existe et a des RC
+		$sql = "SELECT COUNT(*) as nb FROM kp_rc WHERE Code_saison = ?";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($saisonSource));
+		$row = $stmt->fetch();
+
+		if ($row['nb'] == 0) {
+			array_push($this->m_arrayinfo, "Aucun RC trouvé pour la saison source $saisonSource.");
+			return;
+		}
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$myBdd->pdo->beginTransaction();
+
+			// Récupérer tous les RC de la saison source
+			$sql = "SELECT Code_competition, Matric, Ordre
+				FROM kp_rc
+				WHERE Code_saison = ?
+				ORDER BY Code_competition, Ordre";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($saisonSource));
+			$arrayRc = $stmt->fetchAll();
+
+			$nbCopied = 0;
+			$nbSkipped = 0;
+
+			// Copier chaque RC vers la saison cible
+			$sqlInsert = "INSERT INTO kp_rc (Code_saison, Code_competition, Matric, Ordre)
+				VALUES (?, ?, ?, ?)";
+			$stmtInsert = $myBdd->pdo->prepare($sqlInsert);
+
+			// Vérifier si le RC existe déjà pour éviter les doublons
+			$sqlCheck = "SELECT COUNT(*) as nb FROM kp_rc
+				WHERE Code_saison = ? AND Code_competition = ? AND Matric = ?";
+			$stmtCheck = $myBdd->pdo->prepare($sqlCheck);
+
+			foreach ($arrayRc as $rc) {
+				// Vérifier si ce RC existe déjà dans la saison cible
+				$stmtCheck->execute(array(
+					$saisonCible,
+					$rc['Code_competition'],
+					$rc['Matric']
+				));
+				$check = $stmtCheck->fetch();
+
+				if ($check['nb'] == 0) {
+					// Insérer le RC dans la saison cible
+					$stmtInsert->execute(array(
+						$saisonCible,
+						$rc['Code_competition'],
+						$rc['Matric'],
+						$rc['Ordre']
+					));
+					$nbCopied++;
+				} else {
+					$nbSkipped++;
+				}
+			}
+
+			$myBdd->pdo->commit();
+
+			$message = "Copie des RC terminée : $nbCopied RC copiés de la saison $saisonSource vers $saisonCible.";
+			if ($nbSkipped > 0) {
+				$message .= " ($nbSkipped RC ignorés car déjà existants)";
+			}
+
+			$myBdd->utyJournal('Copie RC', $saisonSource, '', null, null, null, "Vers saison $saisonCible : $nbCopied copiés, $nbSkipped ignorés");
+
+			array_push($this->m_arrayinfo, $message);
+			return;
+
+		} catch (Exception $e) {
+			$myBdd->pdo->rollBack();
+			utySendMail("[KPI] Erreur SQL", "Copie RC, $saisonSource => $saisonCible" . '\r\n' . $e->getMessage());
+
+			array_push($this->m_arrayinfo, "Erreur lors de la copie des RC : " . $e->getMessage());
+			return;
+		}
+	}
+
 	function __construct()
 	{
 	  	parent::__construct(4);
-		
+
 		$this->myBdd = new MyBdd();
 
 		$alertMessage = '';
@@ -288,10 +385,13 @@ class GestionRc extends MyPageSecure
 
             if ($Cmd == 'SessionSaison')
 				($_SESSION['Profile'] <= 2) ? $this->SetSessionSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
-				
+
+			if ($Cmd == 'CopyRc')
+				($_SESSION['Profile'] <= 2) ? $alertMessage = $this->CopyRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
             if ($alertMessage == '')
 			{
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
@@ -299,6 +399,7 @@ class GestionRc extends MyPageSecure
 		$this->SetTemplate("Gestion_des_RC", "Competitions", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
+		$this->m_tpl->assign('arrayinfo', $this->m_arrayinfo);
 		$this->DisplayTemplate('GestionRc');
 	}
 }		  	

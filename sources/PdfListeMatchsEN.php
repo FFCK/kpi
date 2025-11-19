@@ -21,9 +21,21 @@ class PdfListeMatchs extends MyPage
         $filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
         $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
+        $filtreTour = utyGetSession('filtreTour', '');
+        $filtreTour = utyGetPost('filtreTour', $filtreTour);
+        $filtreTour = utyGetGet('filtreTour', $filtreTour);
+
+        $filtreMatchsNonVerrouilles = utyGetSession('filtreMatchsNonVerrouilles', '');
+
         $myBdd = new MyBdd();
         $lstJournee = utyGetSession('lstJournee', 0);
         $arrayJournees = explode(',', $lstJournee);
+
+        // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
+        $idSelJournee = utyGetSession('idSelJournee', '*');
+        if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
+            $arrayJournees = [$idSelJournee];
+        }
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (utyGetGet('idEvenement', 0) > 0) {
@@ -44,7 +56,6 @@ class PdfListeMatchs extends MyPage
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
-            $arrayJournees = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;
@@ -80,6 +91,13 @@ class PdfListeMatchs extends MyPage
         if ($filtreTerrain != '') {
             $sql .= "AND a.Terrain = ? ";
             $arrayQuery = array_merge($arrayQuery, [$filtreTerrain]);
+        }
+        if ($filtreTour != '') {
+            $sql .= "AND d.Etape = ? ";
+            $arrayQuery = array_merge($arrayQuery, [$filtreTour]);
+        }
+        if ($filtreMatchsNonVerrouilles == 'on') {
+            $sql .= "AND a.Validation = 'N' ";
         }
         $sql .= $orderMatchs;
 

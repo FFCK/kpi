@@ -5,8 +5,8 @@
 header ('Content-type:text/html; charset=utf-8');
 $time1 = time();
 echo '<pre>';
-include_once('../commun/MyBdd.php');
-include_once('../commun/MyTools.php');
+include_once('MyBdd.php');
+include_once('MyTools.php');
 
 $myBdd = new MyBdd();
 $myBdd->ImportPCE2();
