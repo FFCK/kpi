@@ -1,5 +1,5 @@
 <?php
-include_once('../commun/MyBdd.php');
+include_once('MyBdd.php');
 // header('Content-type:text/html; charset=utf-8');
 
 $time1 = time();
