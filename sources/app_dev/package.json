@@ -51,6 +51,6 @@
     "style-loader": "^2.0.0",
     "uuid": "^8.3.2",
     "vue-cli-plugin-i18n": "~2.3.2",
-    "workbox-cli": "^6.6.0"
+    "workbox-cli": "^7.4.0"
   }
 }
