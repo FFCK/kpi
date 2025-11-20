@@ -1,16 +1,18 @@
 <?php
 
-include_once('../commun/MyPage.php');
+if (!isset($_SESSION)) {
+	session_start();
+}
+
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
+$myBdd = new MyBdd();
+
 // Vérification de la session
-session_start();
 if (!isset($_SESSION['Profile']) || $_SESSION['Profile'] > 7) {
 	die(json_encode(['error' => 'Accès refusé']));
 }
-
-$myBdd = new MyBdd();
 
 // Récupération des paramètres
 $action = utyGetGet('action', '');

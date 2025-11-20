@@ -1,16 +1,18 @@
 <?php
 
-include_once('../commun/MyPage.php');
+if (!isset($_SESSION)) {
+	session_start();
+}
+
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
+$myBdd = new MyBdd();
+
 // Vérification de la session
-session_start();
 if (!isset($_SESSION['Profile']) || $_SESSION['Profile'] > 7) {
 	die(json_encode(['error' => 'Accès refusé']));
 }
-
-$myBdd = new MyBdd();
 
 // Récupération des paramètres
 $idEquipeSource = (int) utyGetPost('idEquipeSource', 0);
@@ -39,15 +41,23 @@ try {
 	}
 
 	// Vérifier le verrou et les droits
-	$Limit_Clubs = utyGetSession('Limit_Clubs', '');
-	$Limit_Clubs = explode(',', $Limit_Clubs);
-
+	$profile = utyGetSession('Profile', 99);
 	$verrou = $equipeCible['Verrou'];
-	if ((count($Limit_Clubs) > 0 && $verrou != 'O') || utyGetSession('Profile', 99) <= 2) {
-		$verrou = 'O';
-		foreach ($Limit_Clubs as $value) {
-			if (mb_eregi('(^' . $value . ')', $equipeCible['Code_club']))
-				$verrou = '';
+
+	if ($profile <= 3) {
+		// Profil <= 3 : peut exécuter même si ce n'est pas leur club
+		$verrou = '';
+	} else {
+		// Autres profils : vérification normale
+		$Limit_Clubs = utyGetSession('Limit_Clubs', '');
+		$Limit_Clubs = explode(',', $Limit_Clubs);
+
+		if (count($Limit_Clubs) > 0 && $verrou != 'O') {
+			$verrou = 'O';
+			foreach ($Limit_Clubs as $value) {
+				if (mb_eregi('(^' . $value . ')', $equipeCible['Code_club']))
+					$verrou = '';
+			}
 		}
 	}
 
