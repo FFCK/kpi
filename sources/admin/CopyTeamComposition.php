@@ -43,7 +43,7 @@ try {
 	$Limit_Clubs = explode(',', $Limit_Clubs);
 
 	$verrou = $equipeCible['Verrou'];
-	if (count($Limit_Clubs) > 0 && $verrou != 'O') {
+	if ((count($Limit_Clubs) > 0 && $verrou != 'O') || utyGetSession('Profile', 99) <= 2) {
 		$verrou = 'O';
 		foreach ($Limit_Clubs as $value) {
 			if (mb_eregi('(^' . $value . ')', $equipeCible['Code_club']))

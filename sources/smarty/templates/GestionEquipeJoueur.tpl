@@ -70,8 +70,7 @@
 							</thead>
 							<tbody>
 								{section name=i loop=$arrayJoueur}
-									{if ($arrayJoueur[i].Capitaine == 'E' or $arrayJoueur[i].Capitaine == 'A' or $arrayJoueur[i].Capitaine == 'X') && $test != 'OK'}
-										{assign var='test' value='OK'}
+									{if $arrayJoueur[i].Capitaine == 'E' or $arrayJoueur[i].Capitaine == 'A' or $arrayJoueur[i].Capitaine == 'X'}
 										<tr class='{cycle values="impair,pair"}'>
 											<td><br><br></td>
 											<td>&nbsp;</td>
