@@ -23,12 +23,16 @@ header('Content-Type: application/json; charset=utf-8');
 
 try {
 	if ($action === 'getSaisons') {
-		// Récupérer les 3 dernières saisons
+		// Récupérer la saison active et les 2 précédentes
+		$codeSaison = $myBdd->GetActiveSaison();
+
 		$sql = "SELECT Code
 			FROM kp_saison
+			WHERE Code <= ?
 			ORDER BY Code DESC
 			LIMIT 3";
-		$result = $myBdd->pdo->query($sql);
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute([$codeSaison]);
 		$saisons = [];
 		while ($row = $result->fetch()) {
 			$saisons[] = [
