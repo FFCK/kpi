@@ -291,29 +291,33 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		}
 	}
 
-	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
-		width: 550,
-		maxResults: 50,
-		dataType: 'json',
-		extraParams: {
-			format: 'json'
-		},
-		formatItem: (item) => item.label,
-		formatResult: (item) => item.value,
-		onSelect: handleJoueurSelect
-	})
+	if (jq('#choixJoueur').length > 0) {
+		vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
+			width: 550,
+			maxResults: 50,
+			dataType: 'json',
+			extraParams: {
+				format: 'json'
+			},
+			formatItem: (item) => item.label,
+			formatResult: (item) => item.value,
+			onSelect: handleJoueurSelect
+		})
+	}
 
-	vanillaAutocomplete('#nomJoueur', 'Autocompl_joueur.php', {
-		width: 550,
-		maxResults: 50,
-		dataType: 'json',
-		extraParams: {
-			format: 'json'
-		},
-		formatItem: (item) => item.label,
-		formatResult: (item) => item.value,
-		onSelect: handleJoueurSelect
-	})
+	if (jq('#nomJoueur').length > 0) {
+		vanillaAutocomplete('#nomJoueur', 'Autocompl_joueur.php', {
+			width: 550,
+			maxResults: 50,
+			dataType: 'json',
+			extraParams: {
+				format: 'json'
+			},
+			formatItem: (item) => item.label,
+			formatResult: (item) => item.value,
+			onSelect: handleJoueurSelect
+		})
+	}
 
 
 	// Actualiser
