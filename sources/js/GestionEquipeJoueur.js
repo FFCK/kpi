@@ -345,8 +345,8 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		var saison = jq(this).val()
 		var idEquipe = jq('#idEquipe').val()
 
-		jq('#competitionSource').prop('disabled', true).empty().append('<option value="">-- Chargement... --</option>')
-		jq('#copyComposition').prop('disabled', true)
+		jq('#competitionSource').attr('disabled', 'disabled').empty().append('<option value="">-- Chargement... --</option>')
+		jq('#copyComposition').attr('disabled', 'disabled')
 		jq('#copyMessage').text('')
 
 		if (saison && idEquipe) {
@@ -367,7 +367,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 								competition.libelle + ' (' + competition.code_compet + ')</option>'
 							)
 						})
-						jq('#competitionSource').prop('disabled', false)
+						jq('#competitionSource').removeAttr('disabled')
 					}
 				} else {
 					jq('#competitionSource').empty().append('<option value="">-- Erreur --</option>')
@@ -386,9 +386,9 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 	// Quand une compétition est sélectionnée, activer le bouton de copie
 	jq('#competitionSource').change(function () {
 		if (jq(this).val()) {
-			jq('#copyComposition').prop('disabled', false)
+			jq('#copyComposition').removeAttr('disabled')
 		} else {
-			jq('#copyComposition').prop('disabled', true)
+			jq('#copyComposition').attr('disabled', 'disabled')
 		}
 		jq('#copyMessage').text('')
 	})
@@ -409,7 +409,7 @@ function copyTeamComposition() {
 		return
 	}
 
-	jq('#copyComposition').prop('disabled', true)
+	jq('#copyComposition').attr('disabled', 'disabled')
 	jq('#copyMessage').text('Copie en cours...')
 
 	jq.post('CopyTeamComposition.php', {
@@ -424,11 +424,11 @@ function copyTeamComposition() {
 			}, 2000)
 		} else {
 			jq('#copyMessage').text(data.error || 'Erreur lors de la copie').css('color', 'red')
-			jq('#copyComposition').prop('disabled', false)
+			jq('#copyComposition').removeAttr('disabled')
 		}
 	}, 'json').fail(function () {
 		jq('#copyMessage').text('Erreur de communication avec le serveur').css('color', 'red')
-		jq('#copyComposition').prop('disabled', false)
+		jq('#copyComposition').removeAttr('disabled')
 	})
 }
 
