@@ -42,8 +42,8 @@ try {
 		}
 		echo json_encode($saisons);
 	} elseif ($action === 'getCompetitions' && $saison && $idEquipe > 0) {
-		// Récupérer le code du club de l'équipe actuelle
-		$sql = "SELECT Code_club
+		// Récupérer le Numero (référence à kp_equipe) de l'équipe actuelle
+		$sql = "SELECT Numero
 			FROM kp_competition_equipe
 			WHERE Id = ?";
 		$result = $myBdd->pdo->prepare($sql);
@@ -54,19 +54,19 @@ try {
 			die(json_encode(['error' => 'Équipe non trouvée']));
 		}
 
-		$codeClub = $equipeActuelle['Code_club'];
+		$numeroEquipe = $equipeActuelle['Numero'];
 
-		// Récupérer les compétitions de ce club pour la saison sélectionnée
+		// Récupérer les compétitions de la même équipe pour la saison sélectionnée
 		// Exclure l'équipe actuelle
 		$sql = "SELECT ce.Id, ce.Libelle, ce.Code_compet, cp.Libelle as Libelle_compet
 			FROM kp_competition_equipe ce
 			INNER JOIN kp_competition cp ON ce.Code_compet = cp.Code AND ce.Code_saison = cp.Code_saison
-			WHERE ce.Code_club = ?
+			WHERE ce.Numero = ?
 			AND ce.Code_saison = ?
 			AND ce.Id != ?
 			ORDER BY ce.Libelle";
 		$result = $myBdd->pdo->prepare($sql);
-		$result->execute([$codeClub, $saison, $idEquipe]);
+		$result->execute([$numeroEquipe, $saison, $idEquipe]);
 
 		$competitions = [];
 		while ($row = $result->fetch()) {
