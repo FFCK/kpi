@@ -24,7 +24,7 @@ header('Content-Type: application/json; charset=utf-8');
 try {
 	if ($action === 'getSaisons') {
 		// Récupérer les 3 dernières saisons
-		$sql = "SELECT Code, Libelle
+		$sql = "SELECT Code
 			FROM kp_saison
 			ORDER BY Code DESC
 			LIMIT 3";
@@ -33,7 +33,7 @@ try {
 		while ($row = $result->fetch()) {
 			$saisons[] = [
 				'code' => $row['Code'],
-				'libelle' => $row['Libelle'] ?: $row['Code']
+				'libelle' => $row['Code'] // Utiliser Code comme libellé
 			];
 		}
 		echo json_encode($saisons);
