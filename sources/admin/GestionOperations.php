@@ -510,6 +510,11 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute();
 
+					// Vider la table temporaire (elle peut exister d'une itération précédente)
+					$sql = "DELETE FROM temp_scrutineering_fusion";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute();
+
 					// Copier les données du source dans la table temporaire
 					$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
 						SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
