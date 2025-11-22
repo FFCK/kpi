@@ -117,7 +117,7 @@
 							<br>
 							<br>
 							{/if}
-							<img width="21" src="../img/verrou{$Validation|default:'N'}" alt="Verrou" title="Verrou" />
+							<img width="21" src="../img/verrou{$Validation|default:'N'}.gif" alt="Verrou" title="Verrou" />
 						</div>
 					</div>
 					<div id='directSelecteur'>
