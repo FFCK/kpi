@@ -151,6 +151,16 @@ class GestionOperations extends MyPageSecure
 			$stmt->execute(array($numFusionCible, $numFusionSource));
 
 			// compos matchs
+			// D'abord supprimer les doublons si source et target sont dans le même match
+			$sql = "DELETE mj_source FROM kp_match_joueur mj_source
+				INNER JOIN kp_match_joueur mj_target
+					ON mj_source.Id_match = mj_target.Id_match
+				WHERE mj_source.Matric = ?
+				AND mj_target.Matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource, $numFusionCible));
+
+			// Puis mettre à jour les autres entrées
 			$sql  = "UPDATE kp_match_joueur
 				SET Matric = ?
 				WHERE Matric = ? ";
@@ -527,6 +537,16 @@ class GestionOperations extends MyPageSecure
 					$stmt->execute(array($numFusionCible, $numFusionSource));
 
 					// compos matchs
+					// D'abord supprimer les doublons si source et target sont dans le même match
+					$sql = "DELETE mj_source FROM kp_match_joueur mj_source
+						INNER JOIN kp_match_joueur mj_target
+							ON mj_source.Id_match = mj_target.Id_match
+						WHERE mj_source.Matric = ?
+						AND mj_target.Matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionSource, $numFusionCible));
+
+					// Puis mettre à jour les autres entrées
 					$sql = "UPDATE kp_match_joueur
 						SET Matric = ?
 						WHERE Matric = ?";
