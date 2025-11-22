@@ -6,7 +6,7 @@
 
 ```bash
 # Analyser les différences entre MyLang.conf et MyLang.ini
-docker exec -it kpi_php_1 php /sources/commun/compare_translations.php
+docker exec -it kpi_php php commun/compare_translations.php
 ```
 
 ### Pour Appliquer la Consolidation (Développement)
@@ -15,7 +15,7 @@ docker exec -it kpi_php_1 php /sources/commun/compare_translations.php
 
 ```bash
 # 1. Créer le fichier unifié
-docker exec -it kpi_php_1 php /sources/commun/merge_translations.php
+docker exec -it kpi_php php commun/merge_translations.php
 
 # 2. Sauvegarder les originaux (depuis l'hôte)
 cd sources/commun
@@ -28,7 +28,7 @@ mv MyLang_unified.ini MyLang.ini
 
 # 4. Patcher MySmarty.php
 cd ../..
-docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php
+docker exec -it kpi_php php commun/patch_mysmarty.php
 
 # 5. Redémarrer les conteneurs
 make dev_restart
@@ -60,7 +60,7 @@ rm -f MyLang.conf.backup MyLang.ini.backup MySmarty.php.backup
 rm -f MyLang_processed.conf MyLang_processed.ini
 
 # Nettoyer le cache Smarty
-rm -f ../templates_c/*.php
+rm -f ../smarty/templates_c/*.php
 ```
 
 ## 🔍 Commandes de Vérification
@@ -70,7 +70,7 @@ rm -f ../templates_c/*.php
 docker ps | grep php
 
 # Vérifier le contenu du fichier unifié
-docker exec -it kpi_php_1 head -50 /sources/commun/MyLang_unified.ini
+docker exec -it kpi_php head -50 commun/MyLang_unified.ini
 
 # Vérifier les logs en temps réel
 make dev_logs
@@ -102,7 +102,7 @@ make dev_status
 make dev_logs
 
 # Rechercher des erreurs spécifiques
-docker logs kpi_php_1 2>&1 | grep -i "error\|warning" | tail -20
+docker logs kpi_php 2>&1 | grep -i "error\|warning" | tail -20
 ```
 
 ## 🏭 Migration en Production
@@ -111,7 +111,7 @@ docker logs kpi_php_1 2>&1 | grep -i "error\|warning" | tail -20
 
 ```bash
 # 1. Créer le fichier unifié
-docker exec -it kpi_prod_php_1 php /sources/commun/merge_translations.php
+docker exec -it kpi_prod_php php commun/merge_translations.php
 
 # 2. Sauvegarder (depuis l'hôte)
 cd sources/commun
@@ -123,7 +123,7 @@ mv MyLang_unified.ini MyLang.ini
 
 # 4. Patcher
 cd ../..
-docker exec -it kpi_prod_php_1 php /sources/commun/patch_mysmarty.php
+docker exec -it kpi_prod_php php commun/patch_mysmarty.php
 
 # 5. Redémarrer production
 make prod_restart
@@ -161,10 +161,10 @@ make dev_restart
 
 ```bash
 # Aperçu de la fusion (sans créer le fichier)
-docker exec -it kpi_php_1 php /sources/commun/merge_translations.php --preview
+docker exec -it kpi_php php commun/merge_translations.php --preview
 
 # Aperçu du patch MySmarty.php (sans modifier)
-docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php --preview
+docker exec -it kpi_php php commun/patch_mysmarty.php --preview
 ```
 
 ## 📊 Résultats Attendus
@@ -196,17 +196,17 @@ docker exec -it [NOM_CONTENEUR] php /sources/commun/merge_translations.php
 
 ```bash
 # Vérifier que les fichiers existent
-docker exec -it kpi_php_1 ls -la /sources/commun/MyLang*
+docker exec -it kpi_php ls -la commun/MyLang*
 
 # Vérifier les permissions
-docker exec -it kpi_php_1 ls -la /sources/commun/
+docker exec -it kpi_php ls -la commun/
 ```
 
 ### Les traductions ne s'affichent pas
 
 ```bash
 # Vider le cache Smarty
-docker exec -it kpi_php_1 rm -rf /sources/templates_c/*.php
+docker exec -it kpi_php rm -rf templates_c/*.php
 
 # Supprimer les fichiers traités
 cd sources/commun
@@ -221,7 +221,7 @@ make dev_restart
 
 ```bash
 # Voir les dernières erreurs PHP
-docker logs kpi_php_1 2>&1 | grep -i error | tail -20
+docker logs kpi_php 2>&1 | grep -i error | tail -20
 
 # Suivre les logs en direct
 make dev_logs

@@ -3,7 +3,7 @@
     "description": "KPI Sports Management System",
     "type": "project",
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.4",
         "mpdf/mpdf": "^8.2",
         "psr/log": "^1.1",
         "openspout/openspout": "^4.32",
