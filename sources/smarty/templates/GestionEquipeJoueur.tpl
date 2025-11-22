@@ -70,8 +70,7 @@
 							</thead>
 							<tbody>
 								{section name=i loop=$arrayJoueur}
-									{if ($arrayJoueur[i].Capitaine == 'E' or $arrayJoueur[i].Capitaine == 'A' or $arrayJoueur[i].Capitaine == 'X') && $test != 'OK'}
-										{assign var='test' value='OK'}
+									{if $arrayJoueur[i].Capitaine == 'E' or $arrayJoueur[i].Capitaine == 'A' or $arrayJoueur[i].Capitaine == 'X'}
 										<tr class='{cycle values="impair,pair"}'>
 											<td><br><br></td>
 											<td>&nbsp;</td>
@@ -302,12 +301,47 @@
 									value="<< {#Ajouter#}">
 								{if $profile < 3}
 								<br />
+								<br />
 								<input type="button" onclick="Add2();" name="addEquipeJoueur3" id="addEquipeJoueur3"
 									value="<< {#Ajouter#} ({#Profil#} 1/2)">
 								{/if}
+								<br />
+								<br />
 							</td>
 						</tr>
 					</table>
+						<table width="100%">
+							<tr>
+								<th class='titreForm' colspan=2>
+									<label>{#Copier_composition_equipe#}</label>
+								</th>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<label for="saisonSource">{#Saison#} :</label>
+									<select name="saisonSource" id="saisonSource">
+										<option value="">-- {#Selectionner_une_saison#} --</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2>
+									<label for="competitionSource">{#Competition#} :</label>
+									<select name="competitionSource" id="competitionSource" disabled>
+										<option value="">-- {#Selectionner_une_saison#} --</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td colspan=2 align="center">
+									<input type="button" onclick="copyTeamComposition();" name="copyComposition" id="copyComposition" value="{#Copier_la_composition#}" disabled>
+									<br>
+									<span id="copyMessage" class="highlight2"></span>
+								</td>
+							</tr>
+						</table>
+						<br>
+						<br>
 					{/if}
 					{if $profile < 3 && $Verrou != 'O' && $AuthModif == 'O'}
 					<table width="100%">
