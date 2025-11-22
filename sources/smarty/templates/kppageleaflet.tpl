@@ -83,6 +83,13 @@
             version = '{$NUM_VERSION}';
         </script>
 
+        {* Chargement centralisé des traductions JavaScript *}
+        {if $bPublic}
+            <script type='text/javascript' src='commun/js_translations.php'></script>
+        {else}
+            <script type='text/javascript' src='../commun/js_translations.php'></script>
+        {/if}
+
         {if $bPublic}
             <script type='text/javascript' src='js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
             <script type='text/javascript' src='js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>

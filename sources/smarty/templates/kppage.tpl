@@ -72,6 +72,9 @@
             version = '{$NUM_VERSION}';
         </script>
 
+        {* Chargement centralisé des traductions JavaScript *}
+        <script type='text/javascript' src='{$adm}commun/js_translations.php'></script>
+
         <script type='text/javascript' src='{$adm}js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}js/jquery.dataTables-1.10.21.min.js?v={$NUM_VERSION}'></script>
