@@ -197,6 +197,15 @@ Ce dossier contient toute la documentation technique générée durant le dével
   - Documentation des tâches cron
   - Planification et maintenance
 
+### Fonctionnalités
+
+- **[MATCH_CONSISTENCY_STATS.md](MATCH_CONSISTENCY_STATS.md)** ⭐ **NOUVEAU** (22 nov 2025)
+  - Statistique de cohérence des matchs dans GestionStats
+  - Détection automatique de 4 types d'incohérences de planning
+  - Arbitrage/match < 1h après événement
+  - Surcharge journalière (>6 matchs) ou intensive (>3 matchs/4h)
+  - **Statut**: ✅ Production
+
 ---
 
 ## 🎯 Documents par Priorité
@@ -220,14 +229,23 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ## 📊 Statistiques
 
-- **Total documents**: 29 fichiers
-- **Lignes de documentation**: ~15000+
-- **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Bootstrap, JavaScript, Docker, WordPress, Audits, Bugs
-- **Date de création**: 2025-10-19 à 2025-11-01
+- **Total documents**: 30 fichiers
+- **Lignes de documentation**: ~16000+
+- **Sujets couverts**: Migration PHP 8, PDF, Tableurs (ODS/XLSX), Bootstrap, JavaScript, Docker, WordPress, Audits, Bugs, Fonctionnalités
+- **Date de création**: 2025-10-19 à 2025-11-22
 
 ---
 
 ## 🔄 Historique des Mises à Jour
+
+### 2025-11-22
+- ✅ **Création MATCH_CONSISTENCY_STATS.md**
+  - Documentation complète fonctionnalité cohérence des matchs
+  - Détection 4 types d'incohérences de planning d'équipes
+  - Guide utilisateur et détails techniques
+  - Exemples, limitations, évolutions possibles
+  - **Fichiers modifiés**: GestionStats.php, GestionStats.tpl
+  - **Commit**: f43d7d1
 
 ### 2025-11-13
 - 📝 **Création WORDPRESS_MIGRATION_OLD_PROD_TO_VPS.md**
@@ -333,7 +351,7 @@ Ce dossier contient toute la documentation technique générée durant le dével
 
 ---
 
-**Dernière mise à jour**: 2025-11-01
+**Dernière mise à jour**: 2025-11-22
 **Mainteneur**: Laurent Garrigue / Claude Code
 
 ## JavaScript Libraries Management
