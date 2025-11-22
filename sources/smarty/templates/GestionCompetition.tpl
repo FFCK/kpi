@@ -562,6 +562,21 @@
 						</tr>
 					</table>
 				{/if}
+				{if $profile <= 2}
+					<br>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>{#Gestion_des_RC#}</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<a href="GestionRc.php">{#Gestion_des_RC#}</a>
+							</td>
+						</tr>
+					</table>
+				{/if}
 			</div>
 			</form>
 	</div>

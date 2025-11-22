@@ -39,6 +39,10 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 # Copy PHP error logging configuration
 COPY php-error-logging.ini /usr/local/etc/php/conf.d/
 
+# Copy Apache vhost configuration with CORS and .htaccess support
+COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
+RUN chmod 644 /etc/apache2/sites-enabled/000-default.conf
+
 # Copy Apache API2 configuration
 COPY apache-api2.conf /etc/apache2/conf-available/
 RUN chmod 644 /etc/apache2/conf-available/apache-api2.conf && a2enconf apache-api2
