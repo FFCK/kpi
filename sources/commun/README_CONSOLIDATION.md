@@ -287,7 +287,7 @@ Le fichier `MyLang_processed.ini` est régénéré automatiquement par MySmarty.
 ## 🔗 Documentation Complète
 
 Pour plus de détails, consultez :
-- [`/home/user/kpi/WORKFLOW_AI/CONSOLIDATION_TRADUCTIONS.md`](../../WORKFLOW_AI/CONSOLIDATION_TRADUCTIONS.md)
+- [`/home/user/kpi/DOC/developer/guides/migrations/CONSOLIDATION_TRADUCTIONS.md`](../../DOC/developer/guides/migrations/CONSOLIDATION_TRADUCTIONS.md)
 
 ---
 

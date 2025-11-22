@@ -229,7 +229,7 @@ make dev_logs
 
 ## 📚 Documentation Complète
 
-- [CONSOLIDATION_TRADUCTIONS.md](../../WORKFLOW_AI/CONSOLIDATION_TRADUCTIONS.md) - Documentation technique complète
+- [CONSOLIDATION_TRADUCTIONS.md](../../DOC/developer/guides/migrations/CONSOLIDATION_TRADUCTIONS.md) - Documentation technique complète
 - [README_CONSOLIDATION.md](README_CONSOLIDATION.md) - Guide détaillé des scripts
 
 ---
