@@ -203,18 +203,18 @@ class GestionOperations extends MyPageSecure
 				FROM kp_scrutineering
 				WHERE matric = ?
 				ON DUPLICATE KEY UPDATE
-					kayak_status = CASE WHEN kayak_status IS NULL OR kayak_status = 0 THEN VALUES(kayak_status) ELSE kayak_status END,
-					kayak_print = CASE WHEN kayak_print IS NULL OR kayak_print = 0 THEN VALUES(kayak_print) ELSE kayak_print END,
-					vest_status = CASE WHEN vest_status IS NULL OR vest_status = 0 THEN VALUES(vest_status) ELSE vest_status END,
-					vest_print = CASE WHEN vest_print IS NULL OR vest_print = 0 THEN VALUES(vest_print) ELSE vest_print END,
-					helmet_status = CASE WHEN helmet_status IS NULL OR helmet_status = 0 THEN VALUES(helmet_status) ELSE helmet_status END,
-					helmet_print = CASE WHEN helmet_print IS NULL OR helmet_print = 0 THEN VALUES(helmet_print) ELSE helmet_print END,
-					paddle_count = CASE WHEN paddle_count IS NULL OR paddle_count = 0 THEN VALUES(paddle_count) ELSE paddle_count END,
-					paddle_print = CASE WHEN paddle_print IS NULL OR paddle_print = 0 THEN VALUES(paddle_print) ELSE paddle_print END,
+					kayak_status = CASE WHEN temp_scrutineering_fusion.kayak_status IS NULL OR temp_scrutineering_fusion.kayak_status = 0 THEN VALUES(kayak_status) ELSE temp_scrutineering_fusion.kayak_status END,
+					kayak_print = CASE WHEN temp_scrutineering_fusion.kayak_print IS NULL OR temp_scrutineering_fusion.kayak_print = 0 THEN VALUES(kayak_print) ELSE temp_scrutineering_fusion.kayak_print END,
+					vest_status = CASE WHEN temp_scrutineering_fusion.vest_status IS NULL OR temp_scrutineering_fusion.vest_status = 0 THEN VALUES(vest_status) ELSE temp_scrutineering_fusion.vest_status END,
+					vest_print = CASE WHEN temp_scrutineering_fusion.vest_print IS NULL OR temp_scrutineering_fusion.vest_print = 0 THEN VALUES(vest_print) ELSE temp_scrutineering_fusion.vest_print END,
+					helmet_status = CASE WHEN temp_scrutineering_fusion.helmet_status IS NULL OR temp_scrutineering_fusion.helmet_status = 0 THEN VALUES(helmet_status) ELSE temp_scrutineering_fusion.helmet_status END,
+					helmet_print = CASE WHEN temp_scrutineering_fusion.helmet_print IS NULL OR temp_scrutineering_fusion.helmet_print = 0 THEN VALUES(helmet_print) ELSE temp_scrutineering_fusion.helmet_print END,
+					paddle_count = CASE WHEN temp_scrutineering_fusion.paddle_count IS NULL OR temp_scrutineering_fusion.paddle_count = 0 THEN VALUES(paddle_count) ELSE temp_scrutineering_fusion.paddle_count END,
+					paddle_print = CASE WHEN temp_scrutineering_fusion.paddle_print IS NULL OR temp_scrutineering_fusion.paddle_print = 0 THEN VALUES(paddle_print) ELSE temp_scrutineering_fusion.paddle_print END,
 					comment = CASE
-						WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
-						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
-						ELSE CONCAT(comment, ' | ', VALUES(comment))
+						WHEN temp_scrutineering_fusion.comment IS NULL OR temp_scrutineering_fusion.comment = '' THEN VALUES(comment)
+						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN temp_scrutineering_fusion.comment
+						ELSE CONCAT(temp_scrutineering_fusion.comment, ' | ', VALUES(comment))
 					END";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionSource));
@@ -589,18 +589,18 @@ class GestionOperations extends MyPageSecure
 						FROM kp_scrutineering
 						WHERE matric = ?
 						ON DUPLICATE KEY UPDATE
-							kayak_status = CASE WHEN kayak_status IS NULL OR kayak_status = 0 THEN VALUES(kayak_status) ELSE kayak_status END,
-							kayak_print = CASE WHEN kayak_print IS NULL OR kayak_print = 0 THEN VALUES(kayak_print) ELSE kayak_print END,
-							vest_status = CASE WHEN vest_status IS NULL OR vest_status = 0 THEN VALUES(vest_status) ELSE vest_status END,
-							vest_print = CASE WHEN vest_print IS NULL OR vest_print = 0 THEN VALUES(vest_print) ELSE vest_print END,
-							helmet_status = CASE WHEN helmet_status IS NULL OR helmet_status = 0 THEN VALUES(helmet_status) ELSE helmet_status END,
-							helmet_print = CASE WHEN helmet_print IS NULL OR helmet_print = 0 THEN VALUES(helmet_print) ELSE helmet_print END,
-							paddle_count = CASE WHEN paddle_count IS NULL OR paddle_count = 0 THEN VALUES(paddle_count) ELSE paddle_count END,
-							paddle_print = CASE WHEN paddle_print IS NULL OR paddle_print = 0 THEN VALUES(paddle_print) ELSE paddle_print END,
+							kayak_status = CASE WHEN temp_scrutineering_fusion.kayak_status IS NULL OR temp_scrutineering_fusion.kayak_status = 0 THEN VALUES(kayak_status) ELSE temp_scrutineering_fusion.kayak_status END,
+							kayak_print = CASE WHEN temp_scrutineering_fusion.kayak_print IS NULL OR temp_scrutineering_fusion.kayak_print = 0 THEN VALUES(kayak_print) ELSE temp_scrutineering_fusion.kayak_print END,
+							vest_status = CASE WHEN temp_scrutineering_fusion.vest_status IS NULL OR temp_scrutineering_fusion.vest_status = 0 THEN VALUES(vest_status) ELSE temp_scrutineering_fusion.vest_status END,
+							vest_print = CASE WHEN temp_scrutineering_fusion.vest_print IS NULL OR temp_scrutineering_fusion.vest_print = 0 THEN VALUES(vest_print) ELSE temp_scrutineering_fusion.vest_print END,
+							helmet_status = CASE WHEN temp_scrutineering_fusion.helmet_status IS NULL OR temp_scrutineering_fusion.helmet_status = 0 THEN VALUES(helmet_status) ELSE temp_scrutineering_fusion.helmet_status END,
+							helmet_print = CASE WHEN temp_scrutineering_fusion.helmet_print IS NULL OR temp_scrutineering_fusion.helmet_print = 0 THEN VALUES(helmet_print) ELSE temp_scrutineering_fusion.helmet_print END,
+							paddle_count = CASE WHEN temp_scrutineering_fusion.paddle_count IS NULL OR temp_scrutineering_fusion.paddle_count = 0 THEN VALUES(paddle_count) ELSE temp_scrutineering_fusion.paddle_count END,
+							paddle_print = CASE WHEN temp_scrutineering_fusion.paddle_print IS NULL OR temp_scrutineering_fusion.paddle_print = 0 THEN VALUES(paddle_print) ELSE temp_scrutineering_fusion.paddle_print END,
 							comment = CASE
-								WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
-								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
-								ELSE CONCAT(comment, ' | ', VALUES(comment))
+								WHEN temp_scrutineering_fusion.comment IS NULL OR temp_scrutineering_fusion.comment = '' THEN VALUES(comment)
+								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN temp_scrutineering_fusion.comment
+								ELSE CONCAT(temp_scrutineering_fusion.comment, ' | ', VALUES(comment))
 							END";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionSource));
