@@ -125,12 +125,12 @@ Trois scripts PHP ont été créés pour automatiser la consolidation :
 # Méthode 1 : Utiliser make php_bash puis exécuter dans le conteneur
 make php_bash
 # Dans le conteneur :
-cd /sources/commun
+cd /sources/scripts
 php compare_translations.php
 exit
 
 # Méthode 2 : Commande directe avec docker exec
-docker exec -it kpi_php_1 php /sources/commun/compare_translations.php
+docker exec -it kpi_php_1 php /sources/scripts/compare_translations.php
 ```
 
 Ce script affiche :
@@ -145,12 +145,12 @@ Ce script affiche :
 # Méthode 1 : Utiliser make php_bash
 make php_bash
 # Dans le conteneur :
-cd /sources/commun
+cd /sources/scripts
 php merge_translations.php
 exit
 
 # Méthode 2 : Commande directe
-docker exec -it kpi_php_1 php /sources/commun/merge_translations.php
+docker exec -it kpi_php_1 php /sources/scripts/merge_translations.php
 ```
 
 Ce script :
@@ -166,7 +166,7 @@ Ce script :
 
 **Mode Preview** :
 ```bash
-docker exec -it kpi_php_1 php /sources/commun/merge_translations.php --preview
+docker exec -it kpi_php_1 php /sources/scripts/merge_translations.php --preview
 ```
 Affiche un aperçu sans créer le fichier.
 
@@ -177,12 +177,12 @@ Affiche un aperçu sans créer le fichier.
 # Méthode 1 : Via make php_bash
 make php_bash
 # Dans le conteneur :
-cd /sources/commun
+cd /sources/scripts
 php patch_mysmarty.php
 exit
 
 # Méthode 2 : Commande directe
-docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php
+docker exec -it kpi_php_1 php /sources/scripts/patch_mysmarty.php
 ```
 
 Ce script :
@@ -192,7 +192,7 @@ Ce script :
 
 **Mode Preview** :
 ```bash
-docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php --preview
+docker exec -it kpi_php_1 php /sources/scripts/patch_mysmarty.php --preview
 ```
 Affiche les modifications sans les appliquer.
 
@@ -302,9 +302,11 @@ Si tous les tests sont OK en développement :
 4. **Tester en environnement de développement**
 5. **Déployer en production** après validation
 
-## 📎 Fichiers Générés
+## 📎 Fichiers et Scripts
 
-- `sources/commun/compare_translations.php` - Script d'analyse des différences
+- `scripts/compare_translations.php` - Script d'analyse des différences entre MyLang.conf et MyLang.ini
+- `scripts/merge_translations.php` - Script de fusion des fichiers de traduction
+- `scripts/patch_mysmarty.php` - Script de modification de MySmarty.php
 - Ce document - Documentation complète de la consolidation
 
 ---

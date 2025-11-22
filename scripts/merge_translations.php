@@ -112,8 +112,8 @@ $translationChoices = [
 
 // Parser les deux fichiers
 echo "Chargement des fichiers de traduction...\n";
-$confData = parseTranslationFile(__DIR__ . '/MyLang.conf');
-$iniData = parseTranslationFile(__DIR__ . '/MyLang.ini');
+$confData = parseTranslationFile(__DIR__ . '/../sources/commun/MyLang.conf');
+$iniData = parseTranslationFile(__DIR__ . '/../sources/commun/MyLang.ini');
 
 $conf = $confData['translations'];
 $ini = $iniData['translations'];
@@ -211,7 +211,7 @@ if ($previewMode) {
     echo substr($output, 0, 2000) . "\n...\n[Tronqué pour l'aperçu]\n";
 } else {
     // Sauvegarder le fichier unifié
-    $outputFile = __DIR__ . '/MyLang_unified.ini';
+    $outputFile = __DIR__ . '/../sources/commun/MyLang_unified.ini';
     file_put_contents($outputFile, $output);
 
     echo "\n===========================================\n";

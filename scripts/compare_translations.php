@@ -47,8 +47,8 @@ function parseTranslationFile($filepath) {
 }
 
 // Charger les deux fichiers
-$conf = parseTranslationFile(__DIR__ . '/MyLang.conf');
-$ini = parseTranslationFile(__DIR__ . '/MyLang.ini');
+$conf = parseTranslationFile(__DIR__ . '/../sources/commun/MyLang.conf');
+$ini = parseTranslationFile(__DIR__ . '/../sources/commun/MyLang.ini');
 
 // Langues à comparer
 $languages = ['fr', 'en'];

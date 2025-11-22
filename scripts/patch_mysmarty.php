@@ -7,7 +7,7 @@
  *   --preview : Affiche les modifications sans les appliquer
  */
 
-$mySmartyFile = __DIR__ . '/MySmarty.php';
+$mySmartyFile = __DIR__ . '/../sources/commun/MySmarty.php';
 
 // Vérifier que le fichier existe
 if (!file_exists($mySmartyFile)) {

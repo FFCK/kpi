@@ -6,7 +6,7 @@
 
 ```bash
 # Analyser les différences entre MyLang.conf et MyLang.ini
-docker exec -it kpi_php php commun/compare_translations.php
+docker exec -it kpi_php php scripts/compare_translations.php
 ```
 
 ### Pour Appliquer la Consolidation (Développement)
@@ -15,7 +15,7 @@ docker exec -it kpi_php php commun/compare_translations.php
 
 ```bash
 # 1. Créer le fichier unifié
-docker exec -it kpi_php php commun/merge_translations.php
+docker exec -it kpi_php php scripts/merge_translations.php
 
 # 2. Sauvegarder les originaux (depuis l'hôte)
 cd sources/commun
@@ -28,7 +28,7 @@ mv MyLang_unified.ini MyLang.ini
 
 # 4. Patcher MySmarty.php
 cd ../..
-docker exec -it kpi_php php commun/patch_mysmarty.php
+docker exec -it kpi_php php scripts/patch_mysmarty.php
 
 # 5. Redémarrer les conteneurs
 make dev_restart
@@ -111,7 +111,7 @@ docker logs kpi_php 2>&1 | grep -i "error\|warning" | tail -20
 
 ```bash
 # 1. Créer le fichier unifié
-docker exec -it kpi_prod_php php commun/merge_translations.php
+docker exec -it kpi_prod_php php scripts/merge_translations.php
 
 # 2. Sauvegarder (depuis l'hôte)
 cd sources/commun
@@ -123,7 +123,7 @@ mv MyLang_unified.ini MyLang.ini
 
 # 4. Patcher
 cd ../..
-docker exec -it kpi_prod_php php commun/patch_mysmarty.php
+docker exec -it kpi_prod_php php scripts/patch_mysmarty.php
 
 # 5. Redémarrer production
 make prod_restart
@@ -141,10 +141,12 @@ make prod_logs
 make php_bash
 
 # Dans le conteneur :
-cd /sources/commun
+cd /sources/scripts
 php compare_translations.php    # Analyser
 php merge_translations.php      # Fusionner
+cd /sources/commun
 head -50 MyLang_unified.ini    # Vérifier
+cd /sources/scripts
 php patch_mysmarty.php         # Patcher
 exit
 
@@ -161,10 +163,10 @@ make dev_restart
 
 ```bash
 # Aperçu de la fusion (sans créer le fichier)
-docker exec -it kpi_php php commun/merge_translations.php --preview
+docker exec -it kpi_php php scripts/merge_translations.php --preview
 
 # Aperçu du patch MySmarty.php (sans modifier)
-docker exec -it kpi_php php commun/patch_mysmarty.php --preview
+docker exec -it kpi_php php scripts/patch_mysmarty.php --preview
 ```
 
 ## 📊 Résultats Attendus
@@ -189,7 +191,7 @@ Après la consolidation, vous devriez avoir :
 docker ps | grep php
 
 # Utiliser le nom trouvé dans les commandes
-docker exec -it [NOM_CONTENEUR] php /sources/commun/merge_translations.php
+docker exec -it [NOM_CONTENEUR] php /sources/scripts/merge_translations.php
 ```
 
 ### Erreur "MyLang.ini not found"
@@ -229,8 +231,8 @@ make dev_logs
 
 ## 📚 Documentation Complète
 
-- [CONSOLIDATION_TRADUCTIONS.md](../../DOC/developer/guides/migrations/CONSOLIDATION_TRADUCTIONS.md) - Documentation technique complète
-- [README_CONSOLIDATION.md](README_CONSOLIDATION.md) - Guide détaillé des scripts
+- [CONSOLIDATION_TRADUCTIONS.md](CONSOLIDATION_TRADUCTIONS.md) - Documentation technique complète
+- [CONSOLIDATION_TRADUCTIONS_SCRIPTS.md](CONSOLIDATION_TRADUCTIONS_SCRIPTS.md) - Guide détaillé des scripts
 
 ---
 

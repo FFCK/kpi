@@ -85,10 +85,10 @@ php patch_mysmarty.php --preview
 
 ```bash
 # 1. Analyser les différences (optionnel)
-docker exec -it kpi_php_1 php /sources/commun/compare_translations.php
+docker exec -it kpi_php_1 php /sources/scripts/compare_translations.php
 
 # 2. Créer le fichier unifié
-docker exec -it kpi_php_1 php /sources/commun/merge_translations.php
+docker exec -it kpi_php_1 php /sources/scripts/merge_translations.php
 
 # 3. Sauvegarder les fichiers originaux (depuis l'hôte - volumes Docker)
 cd sources/commun
@@ -98,7 +98,7 @@ cp MySmarty.php MySmarty.php.backup
 
 # 4. Appliquer les modifications
 mv MyLang_unified.ini MyLang.ini
-docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php
+docker exec -it kpi_php_1 php /sources/scripts/patch_mysmarty.php
 
 # 5. Redémarrer les conteneurs
 cd ../..
@@ -120,11 +120,11 @@ rm MyLang.conf.backup MyLang.ini.backup MySmarty.php.backup
 
 ```bash
 # 1. Tester en mode preview
-docker exec -it kpi_php_1 php /sources/commun/merge_translations.php --preview
-docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php --preview
+docker exec -it kpi_php_1 php /sources/scripts/merge_translations.php --preview
+docker exec -it kpi_php_1 php /sources/scripts/patch_mysmarty.php --preview
 
 # 2. Créer le fichier unifié sans l'activer
-docker exec -it kpi_php_1 php /sources/commun/merge_translations.php
+docker exec -it kpi_php_1 php /sources/scripts/merge_translations.php
 
 # 3. Tester le fichier unifié manuellement
 # (renommer temporairement et tester)
@@ -135,7 +135,7 @@ mv MyLang_unified.ini MyLang.ini
 # Si problème : mv MyLang.ini.old MyLang.ini
 
 # 4. Si OK, appliquer définitivement
-docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php
+docker exec -it kpi_php_1 php /sources/scripts/patch_mysmarty.php
 
 # 5. Redémarrer
 cd ../..
