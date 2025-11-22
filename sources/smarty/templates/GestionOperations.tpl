@@ -152,6 +152,30 @@
 					<table width=100%>
 						<tr>
 							<th class='titreForm' colspan=2>
+								<label>Fusion automatique de licenciés non fédéraux</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<p style="color: #666; font-size: 0.9em; margin: 10px 0;">
+									Cette fonction fusionne automatiquement les licenciés ayant :
+									<br>- Un numéro de licence > 2000000 (licences non fédérales)
+									<br>- Les mêmes Nom, Prénom et Club
+									<br><br>
+									Le licencié conservé sera celui ayant la meilleure cohérence de données (numéro ICF, date de naissance valide, qualification d'arbitre, saison la plus récente).
+								</p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" name="FusionAutoLicenciesNonFederaux" id="FusionAutoLicenciesNonFederaux" value="Lancer la fusion automatique" style="background-color: #ff9800; color: white; font-weight: bold;">
+							</td>
+						</tr>
+					</table>
+					<hr>
+					<table width=100%>
+						<tr>
+							<th class='titreForm' colspan=2>
 								<label>Renommer une équipe</label>
 							</th>
 						</tr>

@@ -240,6 +240,15 @@ jq(document).ready(function () {
 		document.forms['formOperations'].submit()
 	})
 
+	//Fusion automatique licenciés non fédéraux
+	jq("#FusionAutoLicenciesNonFederaux").click(function () {
+		if (!confirm('ATTENTION : Cette opération va fusionner automatiquement tous les doublons de licenciés non fédéraux (numéro > 2000000) ayant les mêmes Nom, Prénom et Club.\n\nCette action est irréversible.\n\nConfirmez-vous ?')) {
+			return false
+		}
+		document.forms['formOperations'].elements['Cmd'].value = 'FusionAutomatiqueLicenciesNonFederaux'
+		document.forms['formOperations'].submit()
+	})
+
 	//Renomme Equipe
 	vanillaAutocomplete('#RenomSource', 'Autocompl_equipe.php', {
 		width: 550,

@@ -261,6 +261,305 @@ class GestionOperations extends MyPageSecure
 		return;
 	}
 
+	function FusionAutomatiqueLicenciesNonFederaux()
+	{
+		$myBdd = $this->myBdd;
+		$nbFusions = 0;
+		$fusionDetails = array();
+
+		try {
+			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			// Trouver tous les doublons de licenciés non fédéraux (Matric > 2000000)
+			// ayant les mêmes Nom, Prenom et Numero_club
+			$sql = "SELECT
+						l.Nom,
+						l.Prenom,
+						l.Numero_club,
+						l.Club,
+						GROUP_CONCAT(l.Matric ORDER BY l.Matric SEPARATOR ',') as Matricules,
+						COUNT(*) as NbDoublons
+					FROM kp_licence l
+					WHERE l.Matric > 2000000
+					GROUP BY l.Nom, l.Prenom, l.Numero_club
+					HAVING COUNT(*) > 1
+					ORDER BY l.Nom, l.Prenom";
+
+			$stmt = $myBdd->pdo->query($sql);
+			$groupesDoublons = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+			if (empty($groupesDoublons)) {
+				array_push($this->m_arrayinfo, 'Aucun doublon de licencié non fédéral trouvé.');
+				return;
+			}
+
+			// Pour chaque groupe de doublons
+			foreach ($groupesDoublons as $groupe) {
+				$matricules = explode(',', $groupe['Matricules']);
+
+				// Récupérer les détails complets de chaque licencié du groupe
+				$placeholders = implode(',', array_fill(0, count($matricules), '?'));
+				$sql = "SELECT
+							l.Matric,
+							l.Nom,
+							l.Prenom,
+							l.Naissance,
+							l.Numero_club,
+							l.Club,
+							l.Reserve as Numero_ICF,
+							l.Origine as Saison,
+							a.arbitre,
+							a.niveau as Niveau_arbitre
+						FROM kp_licence l
+						LEFT JOIN kp_arbitre a ON l.Matric = a.Matric
+						WHERE l.Matric IN ($placeholders)
+						ORDER BY
+							-- Prioriser celui qui a un numéro ICF
+							CASE WHEN l.Reserve IS NOT NULL AND l.Reserve != '' THEN 0 ELSE 1 END,
+							-- Puis celui qui a une date de naissance valide
+							CASE WHEN l.Naissance IS NOT NULL AND l.Naissance != '0000-00-00' AND l.Naissance != '' THEN 0 ELSE 1 END,
+							-- Puis celui qui a une qualification d'arbitre
+							CASE WHEN a.arbitre IS NOT NULL AND a.arbitre != '' THEN 0 ELSE 1 END,
+							-- Puis la saison la plus récente
+							l.Origine DESC,
+							-- En dernier recours, le plus petit matricule
+							l.Matric ASC
+						LIMIT 1";
+
+				$stmtCible = $myBdd->pdo->prepare($sql);
+				$stmtCible->execute($matricules);
+				$cible = $stmtCible->fetch(PDO::FETCH_ASSOC);
+
+				if (!$cible) {
+					continue;
+				}
+
+				$numFusionCible = $cible['Matric'];
+
+				// Récupérer tous les licenciés du groupe sauf la cible
+				$sql = "SELECT
+							l.Matric,
+							l.Naissance,
+							l.Reserve as Numero_ICF,
+							l.Origine as Saison,
+							a.arbitre,
+							a.niveau as Niveau_arbitre
+						FROM kp_licence l
+						LEFT JOIN kp_arbitre a ON l.Matric = a.Matric
+						WHERE l.Matric IN ($placeholders)
+						AND l.Matric != ?";
+
+				$params = array_merge($matricules, array($numFusionCible));
+				$stmtSources = $myBdd->pdo->prepare($sql);
+				$stmtSources->execute($params);
+				$sources = $stmtSources->fetchAll(PDO::FETCH_ASSOC);
+
+				// Avant de fusionner, vérifier si on doit mettre à jour certaines informations de la cible
+				$updateCible = array();
+
+				// Si la cible n'a pas de date de naissance valide, chercher la meilleure parmi les sources
+				if (empty($cible['Naissance']) || $cible['Naissance'] == '0000-00-00' || $cible['Naissance'] == '') {
+					foreach ($sources as $source) {
+						if (!empty($source['Naissance']) && $source['Naissance'] != '0000-00-00' && $source['Naissance'] != '') {
+							$updateCible['Naissance'] = $source['Naissance'];
+							break;
+						}
+					}
+				}
+
+				// Si la cible n'a pas de numéro ICF, chercher parmi les sources
+				if (empty($cible['Numero_ICF'])) {
+					foreach ($sources as $source) {
+						if (!empty($source['Numero_ICF'])) {
+							$updateCible['Reserve'] = $source['Numero_ICF'];
+							break;
+						}
+					}
+				}
+
+				// Si la cible n'a pas de qualification d'arbitre, chercher parmi les sources
+				if (empty($cible['arbitre'])) {
+					foreach ($sources as $source) {
+						if (!empty($source['arbitre'])) {
+							// Copier les informations d'arbitre
+							$sqlCopyArb = "INSERT INTO kp_arbitre (Matric, regional, interregional, national, international, arbitre, livret, niveau, saison)
+										   SELECT :cible, regional, interregional, national, international, arbitre, livret, niveau, saison
+										   FROM kp_arbitre
+										   WHERE Matric = :source
+										   ON DUPLICATE KEY UPDATE
+										   regional = VALUES(regional),
+										   interregional = VALUES(interregional),
+										   national = VALUES(national),
+										   international = VALUES(international),
+										   arbitre = VALUES(arbitre),
+										   livret = VALUES(livret),
+										   niveau = VALUES(niveau),
+										   saison = VALUES(saison)";
+							$stmtCopyArb = $myBdd->pdo->prepare($sqlCopyArb);
+							$stmtCopyArb->execute(array(':cible' => $numFusionCible, ':source' => $source['Matric']));
+							break;
+						}
+					}
+				}
+
+				// Mettre à jour la cible avec les informations manquantes
+				if (!empty($updateCible)) {
+					$setClauses = array();
+					$params = array();
+					foreach ($updateCible as $field => $value) {
+						$setClauses[] = "$field = ?";
+						$params[] = $value;
+					}
+					$params[] = $numFusionCible;
+
+					$sqlUpdate = "UPDATE kp_licence SET " . implode(', ', $setClauses) . " WHERE Matric = ?";
+					$stmtUpdate = $myBdd->pdo->prepare($sqlUpdate);
+					$stmtUpdate->execute($params);
+				}
+
+				// Maintenant fusionner chaque source vers la cible
+				foreach ($sources as $source) {
+					$numFusionSource = $source['Matric'];
+
+					$myBdd->pdo->beginTransaction();
+
+					// buts et cartons
+					$sql = "UPDATE kp_match_detail
+						SET Competiteur = ?
+						WHERE Competiteur = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionCible, $numFusionSource));
+
+					// compos matchs
+					$sql = "UPDATE kp_match_joueur
+						SET Matric = ?
+						WHERE Matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionCible, $numFusionSource));
+
+					// feuilles de présence
+					$sql = "UPDATE kp_competition_equipe_joueur cej,
+						kp_licence lc
+						SET cej.Matric = :cible, cej.Nom = lc.Nom,
+							cej.Prenom = lc.Prenom, cej.Sexe = lc.Sexe
+						WHERE cej.Matric = :source
+						AND lc.Matric = :cible2";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute([
+						':cible' => $numFusionCible,
+						':cible2' => $numFusionCible,
+						':source' => $numFusionSource
+					]);
+
+					// arbitre principal
+					$sql = "UPDATE kp_match
+						SET Matric_arbitre_principal = ?
+						WHERE Matric_arbitre_principal = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionCible, $numFusionSource));
+
+					// arbitre secondaire
+					$sql = "UPDATE kp_match
+						SET Matric_arbitre_secondaire = ?
+						WHERE Matric_arbitre_secondaire = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionCible, $numFusionSource));
+
+					// Secretaire
+					$sql = "UPDATE kp_match
+						SET Secretaire = REPLACE(Secretaire, :source, :cible)
+						WHERE Secretaire LIKE :source2";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array(
+						':cible' => '(' . $numFusionCible . ')',
+						':source' => '(' . $numFusionSource . ')',
+						':source2' => '%(' . $numFusionSource . ')%'
+					));
+
+					// Chronometre
+					$sql = "UPDATE kp_match
+						SET Chronometre = REPLACE(Chronometre, :source, :cible)
+						WHERE Chronometre LIKE :source2";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array(
+						':cible' => '(' . $numFusionCible . ')',
+						':source' => '(' . $numFusionSource . ')',
+						':source2' => '%(' . $numFusionSource . ')%'
+					));
+
+					// Timeshoot
+					$sql = "UPDATE kp_match
+						SET Timeshoot = REPLACE(Timeshoot, :source, :cible)
+						WHERE Timeshoot LIKE :source2";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array(
+						':cible' => '(' . $numFusionCible . ')',
+						':source' => '(' . $numFusionSource . ')',
+						':source2' => '%(' . $numFusionSource . ')%'
+					));
+
+					// Ligne1
+					$sql = "UPDATE kp_match
+						SET Ligne1 = REPLACE(Ligne1, :source, :cible)
+						WHERE Ligne1 LIKE :source2";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array(
+						':cible' => '(' . $numFusionCible . ')',
+						':source' => '(' . $numFusionSource . ')',
+						':source2' => '%(' . $numFusionSource . ')%'
+					));
+
+					// Ligne2
+					$sql = "UPDATE kp_match
+						SET Ligne2 = REPLACE(Ligne2, :source, :cible)
+						WHERE Ligne2 LIKE :source2";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array(
+						':cible' => '(' . $numFusionCible . ')',
+						':source' => '(' . $numFusionSource . ')',
+						':source2' => '%(' . $numFusionSource . ')%'
+					));
+
+					// suppression
+					$sql = "DELETE FROM kp_licence
+						WHERE Matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionSource));
+
+					// Supprimer l'arbitre source s'il existe
+					$sql = "DELETE FROM kp_arbitre
+						WHERE Matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionSource));
+
+					$myBdd->pdo->commit();
+
+					$nbFusions++;
+					array_push($fusionDetails, $numFusionSource . ' => ' . $numFusionCible);
+				}
+			}
+		} catch (Exception $e) {
+			if ($myBdd->pdo->inTransaction()) {
+				$myBdd->pdo->rollBack();
+			}
+			utySendMail("[KPI] Erreur SQL", "Fusion Automatique Licenciés Non Fédéraux\r\n" . $e->getMessage());
+			array_push($this->m_arrayinfo, "Erreur lors de la fusion automatique : " . $e->getMessage());
+			return;
+		}
+
+		if ($nbFusions > 0) {
+			$myBdd->utyJournal('Fusion Auto Licenciés Non Fédéraux', $myBdd->GetActiveSaison(), utyGetSession('codeCompet'), null, null, null, $nbFusions . ' fusions effectuées');
+			array_push($this->m_arrayinfo, '<strong>Fusion automatique terminée : ' . $nbFusions . ' licencié(s) fusionné(s)</strong>');
+			foreach ($fusionDetails as $detail) {
+				array_push($this->m_arrayinfo, '  - ' . $detail);
+			}
+		} else {
+			array_push($this->m_arrayinfo, 'Aucune fusion effectuée.');
+		}
+
+		return;
+	}
+
 	function RenomEquipe()
 	{
 		$myBdd = $this->myBdd;
@@ -1826,6 +2125,8 @@ class GestionOperations extends MyPageSecure
 			if ($Cmd == 'AddSaison') ($_SESSION['Profile'] <= 2) ? $this->AddSaison() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'FusionJoueurs') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionJoueurs() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
+
+			if ($Cmd == 'FusionAutomatiqueLicenciesNonFederaux') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->FusionAutomatiqueLicenciesNonFederaux() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'RenomEquipe') ($_SESSION['Profile'] == 1) ? $alertMessage = $this->RenomEquipe() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
