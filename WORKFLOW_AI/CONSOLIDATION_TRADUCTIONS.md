@@ -120,9 +120,17 @@ Trois scripts PHP ont été créés pour automatiser la consolidation :
 
 ### Étape 1 : Analyser les Différences (Optionnel)
 
+**Depuis l'hôte** :
 ```bash
-cd /home/user/kpi/sources/commun
+# Méthode 1 : Utiliser make php_bash puis exécuter dans le conteneur
+make php_bash
+# Dans le conteneur :
+cd /sources/commun
 php compare_translations.php
+exit
+
+# Méthode 2 : Commande directe avec docker exec
+docker exec -it kpi_php_1 php /sources/commun/compare_translations.php
 ```
 
 Ce script affiche :
@@ -132,9 +140,17 @@ Ce script affiche :
 
 ### Étape 2 : Créer le Fichier Unifié
 
+**Depuis l'hôte** :
 ```bash
-cd /home/user/kpi/sources/commun
+# Méthode 1 : Utiliser make php_bash
+make php_bash
+# Dans le conteneur :
+cd /sources/commun
 php merge_translations.php
+exit
+
+# Méthode 2 : Commande directe
+docker exec -it kpi_php_1 php /sources/commun/merge_translations.php
 ```
 
 Ce script :
@@ -144,21 +160,29 @@ Ce script :
 - ✅ Trie les clés alphabétiquement
 
 **Résultat** :
-- Français : 722 clés (573 + 332 - 183 communes)
-- Anglais : 723 clés
-- Chinois : 333 clés (uniquement dans MyLang.ini)
+- Français : 722+ clés (augmenté avec les nouvelles traductions)
+- Anglais : 723+ clés
+- Chinois : 333+ clés (uniquement dans MyLang.ini)
 
 **Mode Preview** :
 ```bash
-php merge_translations.php --preview
+docker exec -it kpi_php_1 php /sources/commun/merge_translations.php --preview
 ```
 Affiche un aperçu sans créer le fichier.
 
 ### Étape 3 : Modifier MySmarty.php
 
+**Depuis l'hôte** :
 ```bash
-cd /home/user/kpi/sources/commun
+# Méthode 1 : Via make php_bash
+make php_bash
+# Dans le conteneur :
+cd /sources/commun
 php patch_mysmarty.php
+exit
+
+# Méthode 2 : Commande directe
+docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php
 ```
 
 Ce script :
@@ -168,7 +192,7 @@ Ce script :
 
 **Mode Preview** :
 ```bash
-php patch_mysmarty.php --preview
+docker exec -it kpi_php_1 php /sources/commun/patch_mysmarty.php --preview
 ```
 Affiche les modifications sans les appliquer.
 
@@ -176,13 +200,16 @@ Affiche les modifications sans les appliquer.
 
 1. **Sauvegarder les fichiers originaux** :
    ```bash
-   cd /home/user/kpi/sources/commun
+   # Depuis l'hôte (les fichiers sont montés en volume)
+   cd sources/commun
    cp MyLang.conf MyLang.conf.backup
    cp MyLang.ini MyLang.ini.backup
    ```
 
 2. **Activer le fichier unifié** :
    ```bash
+   # Depuis l'hôte
+   cd sources/commun
    mv MyLang_unified.ini MyLang.ini
    ```
 
@@ -196,10 +223,19 @@ Affiche les modifications sans les appliquer.
    - Vérifier que toutes les pages affichent correctement les traductions
    - Tester en français et en anglais
 
-5. **Vérifier le fichier de logs** :
+5. **Vérifier les logs PHP** :
    ```bash
-   # Vérifier qu'il n'y a pas d'erreurs PHP
-   tail -f docker/logs/php/error.log
+   # Depuis l'hôte - suivre les logs en temps réel
+   make dev_logs
+
+   # Ou spécifiquement pour le conteneur PHP
+   docker logs -f kpi_php_1
+   ```
+
+6. **Redémarrer les conteneurs si nécessaire** :
+   ```bash
+   # Redémarrer l'environnement de développement
+   make dev_restart
    ```
 
 ### Étape 5 : Migration en Production
@@ -208,24 +244,36 @@ Si tous les tests sont OK en développement :
 
 1. **Sauvegarder les anciens fichiers** :
    ```bash
+   # Depuis l'hôte
+   cd sources/commun
    mv MyLang.conf MyLang.conf.backup_$(date +%Y%m%d)
    mv MyLang.ini MyLang.ini.backup_$(date +%Y%m%d)
    ```
 
 2. **Déployer le fichier unifié** :
    ```bash
-   # Le fichier MyLang.ini est déjà en place
+   # Le fichier MyLang.ini est déjà en place (depuis l'hôte)
+   cd sources/commun
+
    # Supprimer le fichier de configuration traité par Smarty (sera régénéré)
    rm -f MyLang_processed.conf MyLang_processed.ini
    ```
 
-3. **Vérifier en production** :
+3. **Redémarrer les conteneurs de production** :
+   ```bash
+   # Depuis la racine du projet
+   make prod_restart
+   ```
+
+4. **Vérifier en production** :
    - Tester quelques pages
    - Générer quelques PDFs
-   - Vérifier les logs
+   - Vérifier les logs : `make prod_logs`
 
-4. **Nettoyer les fichiers de backup** (après quelques jours) :
+5. **Nettoyer les fichiers de backup** (après quelques jours) :
    ```bash
+   # Depuis l'hôte
+   cd sources/commun
    rm MyLang.conf.backup* MyLang.ini.backup*
    rm MySmarty.php.backup*
    ```
