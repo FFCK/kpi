@@ -17,6 +17,7 @@ Documentation technique pour le développement et la maintenance du projet.
 ### [Guides](developer/guides/)
 
 #### [Migrations](developer/guides/migrations/)
+- **[CONSOLIDATION_TRADUCTIONS.md](developer/guides/migrations/CONSOLIDATION_TRADUCTIONS.md)** - Consolidation fichiers de traductions (MyLang.conf + MyLang.ini)
 - **[MIGRATION_FPDF_TO_MPDF.md](developer/guides/migrations/MIGRATION_FPDF_TO_MPDF.md)** - Migration FPDF → mPDF
 - **[MIGRATION_SMARTY_V4.md](developer/guides/migrations/MIGRATION_SMARTY_V4.md)** - Migration Smarty v4
 - **[MIGRATION_OPENTBS_TO_OPENSPOUT.md](developer/guides/migrations/MIGRATION_OPENTBS_TO_OPENSPOUT.md)** - Migration OpenTBS → OpenSpout
@@ -111,9 +112,9 @@ Documentation technique pour le développement et la maintenance du projet.
 
 ## 📊 Statistiques
 
-- **Total documents**: 60+ fichiers
+- **Total documents**: 61+ fichiers
 - **Documentation utilisateur**: 3 fichiers
-- **Documentation développeur**: 57+ fichiers
+- **Documentation développeur**: 58+ fichiers
 - **Lignes de documentation**: ~20000+
 - **Dernière mise à jour**: 2025-11-22
 
