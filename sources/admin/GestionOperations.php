@@ -157,12 +157,13 @@ class GestionOperations extends MyPageSecure
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionCible, $numFusionSource));
 
-			// scrutineering (contrôle) - DOIT être fait avant kp_competition_equipe_joueur
-			$sql = "UPDATE kp_scrutineering
-				SET matric = ?
+			// scrutineering (contrôle) - Supprimer les entrées du source
+			// On ne peut pas les mettre à jour car la contrainte FK vérifie que (id_equipe, matric)
+			// existe dans kp_competition_equipe_joueur, et la cible n'y est pas encore
+			$sql = "DELETE FROM kp_scrutineering
 				WHERE matric = ?";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array($numFusionCible, $numFusionSource));
+			$stmt->execute(array($numFusionSource));
 
 			// feuilles de présence
 			$sql = "UPDATE kp_competition_equipe_joueur cej,
@@ -444,12 +445,13 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionCible, $numFusionSource));
 
-					// scrutineering (contrôle) - DOIT être fait avant kp_competition_equipe_joueur
-					$sql = "UPDATE kp_scrutineering
-						SET matric = ?
+					// scrutineering (contrôle) - Supprimer les entrées du source
+					// On ne peut pas les mettre à jour car la contrainte FK vérifie que (id_equipe, matric)
+					// existe dans kp_competition_equipe_joueur, et la cible n'y est pas encore
+					$sql = "DELETE FROM kp_scrutineering
 						WHERE matric = ?";
 					$stmt = $myBdd->pdo->prepare($sql);
-					$stmt->execute(array($numFusionCible, $numFusionSource));
+					$stmt->execute(array($numFusionSource));
 
 					// feuilles de présence
 					$sql = "UPDATE kp_competition_equipe_joueur cej,
