@@ -1,55 +1,7 @@
 jq = jQuery.noConflict()
 
-var langue = []
-
-if (lang == 'en') {
-	langue['Aucun_joueur'] = 'No player selected. unable to add !'
-	langue['Certif'] = '(Med. Certificat)'
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-	langue['Joueur_vide'] = 'Player is empty. unable to add !'
-	langue['Joueur_existant'] = 'Player is already selected. unable to add !'
-	langue['MAJ_impossible'] = 'Unable to update'
-	langue['Pagaie_couleur'] = '(Paddle level)'
-	langue['Prenom_vide'] = 'Player first name is empty. unable to add !'
-	langue['Saison_licence'] = '(Licence year)'
-	langue['Surclassement'] = '(Mandatory upgrade)'
-	langue['Selectionner_une_saison'] = 'Select a season'
-	langue['Selectionner_une_competition'] = 'Select a competition'
-	langue['Chargement'] = 'Loading...'
-	langue['Aucune_competition_trouvee'] = 'No competition found'
-	langue['Erreur'] = 'Error'
-	langue['Erreur_chargement'] = 'Loading error'
-	langue['Copie_en_cours'] = 'Copy in progress...'
-	langue['Attention_remplacement_joueurs'] = 'Warning! This action will replace all current players of this team with those from the selected competition.\n\nAre you sure you want to continue?'
-	langue['Joueurs_copies_succes'] = 'player(s) successfully copied'
-	langue['Erreur_copie'] = 'Copy error'
-	langue['Erreur_communication_serveur'] = 'Server communication error'
-	langue['Veuillez_selectionner_saison_competition'] = 'Please select a season and a competition'
-} else {
-	langue['Aucun_joueur'] = 'Aucun joueur sélectionné, ajout impossible !'
-	langue['Certif'] = '(Certificat CK)'
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-	langue['Joueur_vide'] = 'Joueur vide, ajout impossible !'
-	langue['Joueur_existant'] = 'Joueur déjà sélectionné, ajout impossible !'
-	langue['MAJ_impossible'] = 'Mise à jour impossible'
-	langue['Pagaie_couleur'] = '(Pagaie couleur)'
-	langue['Prenom_vide'] = 'Prénom joueur vide, ajout impossible!'
-	langue['Saison_licence'] = '(Saison licence)'
-	langue['Surclassement'] = '(Surclassement obligatoire)'
-	langue['Selectionner_une_saison'] = 'Sélectionner une saison'
-	langue['Selectionner_une_competition'] = 'Sélectionner une compétition'
-	langue['Chargement'] = 'Chargement...'
-	langue['Aucune_competition_trouvee'] = 'Aucune compétition trouvée'
-	langue['Erreur'] = 'Erreur'
-	langue['Erreur_chargement'] = 'Erreur de chargement'
-	langue['Copie_en_cours'] = 'Copie en cours...'
-	langue['Attention_remplacement_joueurs'] = 'Attention ! Cette action va remplacer tous les joueurs actuels de cette équipe par ceux de la compétition sélectionnée.\n\nÊtes-vous sûr de vouloir continuer ?'
-	langue['Joueurs_copies_succes'] = 'joueur(s) copié(s) avec succès'
-	langue['Erreur_copie'] = 'Erreur lors de la copie'
-	langue['Erreur_communication_serveur'] = 'Erreur de communication avec le serveur'
-	langue['Veuillez_selectionner_saison_competition'] = 'Veuillez sélectionner une saison et une compétition'
-}
-
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function validJoueur () {
 	var matricJoueur = jq('#matricJoueur2').val()
