@@ -214,7 +214,20 @@ class GestionOperations extends MyPageSecure
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionSource, $numFusionCible));
 
-			// Étape 3: Maintenant on peut mettre à jour kp_competition_equipe_joueur
+			// Étape 3a: Supprimer les doublons dans kp_competition_equipe_joueur
+			// Si source et target sont dans la même équipe, on supprime le source
+			$sql = "DELETE cej_source FROM kp_competition_equipe_joueur cej_source
+				INNER JOIN kp_competition_equipe_joueur cej_target
+					ON cej_source.Id_equipe = cej_target.Id_equipe
+				WHERE cej_source.Matric = :source
+				AND cej_target.Matric = :cible";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute([
+				':source' => $numFusionSource,
+				':cible' => $numFusionCible
+			]);
+
+			// Étape 3b: Mettre à jour les autres entrées (où source et target ne sont pas dans la même équipe)
 			$sql = "UPDATE kp_competition_equipe_joueur cej,
                 kp_licence lc
                 SET cej.Matric = :cible, cej.Nom = lc.Nom,
@@ -577,7 +590,20 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionSource, $numFusionCible));
 
-					// Étape 3: Maintenant on peut mettre à jour kp_competition_equipe_joueur
+					// Étape 3a: Supprimer les doublons dans kp_competition_equipe_joueur
+					// Si source et target sont dans la même équipe, on supprime le source
+					$sql = "DELETE cej_source FROM kp_competition_equipe_joueur cej_source
+						INNER JOIN kp_competition_equipe_joueur cej_target
+							ON cej_source.Id_equipe = cej_target.Id_equipe
+						WHERE cej_source.Matric = :source
+						AND cej_target.Matric = :cible";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute([
+						':source' => $numFusionSource,
+						':cible' => $numFusionCible
+					]);
+
+					// Étape 3b: Mettre à jour les autres entrées (où source et target ne sont pas dans la même équipe)
 					$sql = "UPDATE kp_competition_equipe_joueur cej,
 						kp_licence lc
 						SET cej.Matric = :cible, cej.Nom = lc.Nom,
