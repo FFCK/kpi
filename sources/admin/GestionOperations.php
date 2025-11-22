@@ -347,13 +347,21 @@ class GestionOperations extends MyPageSecure
 			));
 
 			// TODO: changer noms (et matric) des lignes, arbitres, officiels...
-			// suppression de l'arbitre source AVANT la licence (contrainte FK)
+			// Suppression des tables enfants AVANT la licence (contraintes FK)
+
+			// Supprimer l'arbitre source
 			$sql = "DELETE FROM kp_arbitre
 				WHERE Matric = ?";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionSource));
 
-			// suppression de la licence
+			// Supprimer la recherche de licence source
+			$sql = "DELETE FROM kp_recherche_licence
+				WHERE Matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource));
+
+			// Suppression de la licence
 			$sql  = "DELETE FROM kp_licence
 				WHERE Matric = ?; ";
 			$stmt = $myBdd->pdo->prepare($sql);
@@ -738,8 +746,16 @@ class GestionOperations extends MyPageSecure
 						':source2' => '%(' . $numFusionSource . ')%'
 					));
 
-					// Supprimer l'arbitre source AVANT la licence (contrainte FK)
+					// Suppression des tables enfants AVANT la licence (contraintes FK)
+
+					// Supprimer l'arbitre source
 					$sql = "DELETE FROM kp_arbitre
+						WHERE Matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionSource));
+
+					// Supprimer la recherche de licence source
+					$sql = "DELETE FROM kp_recherche_licence
 						WHERE Matric = ?";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionSource));
