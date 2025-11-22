@@ -179,21 +179,28 @@ class GestionOperations extends MyPageSecure
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute();
 
-			// Copier les données du source dans la table temporaire
-			// Utiliser INSERT ... ON DUPLICATE KEY UPDATE pour gérer le cas où le source est dans plusieurs équipes
+			// Copier les données du TARGET dans la table temporaire en premier
+			$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
+				SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
+				FROM kp_scrutineering
+				WHERE matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible));
+
+			// Puis copier les données du SOURCE et fusionner avec celles du target si même équipe
 			$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
 				SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
 				FROM kp_scrutineering
 				WHERE matric = ?
 				ON DUPLICATE KEY UPDATE
-					kayak_status = VALUES(kayak_status),
-					kayak_print = VALUES(kayak_print),
-					vest_status = VALUES(vest_status),
-					vest_print = VALUES(vest_print),
-					helmet_status = VALUES(helmet_status),
-					helmet_print = VALUES(helmet_print),
-					paddle_count = VALUES(paddle_count),
-					paddle_print = VALUES(paddle_print),
+					kayak_status = CASE WHEN kayak_status IS NULL OR kayak_status = 0 THEN VALUES(kayak_status) ELSE kayak_status END,
+					kayak_print = CASE WHEN kayak_print IS NULL OR kayak_print = 0 THEN VALUES(kayak_print) ELSE kayak_print END,
+					vest_status = CASE WHEN vest_status IS NULL OR vest_status = 0 THEN VALUES(vest_status) ELSE vest_status END,
+					vest_print = CASE WHEN vest_print IS NULL OR vest_print = 0 THEN VALUES(vest_print) ELSE vest_print END,
+					helmet_status = CASE WHEN helmet_status IS NULL OR helmet_status = 0 THEN VALUES(helmet_status) ELSE helmet_status END,
+					helmet_print = CASE WHEN helmet_print IS NULL OR helmet_print = 0 THEN VALUES(helmet_print) ELSE helmet_print END,
+					paddle_count = CASE WHEN paddle_count IS NULL OR paddle_count = 0 THEN VALUES(paddle_count) ELSE paddle_count END,
+					paddle_print = CASE WHEN paddle_print IS NULL OR paddle_print = 0 THEN VALUES(paddle_print) ELSE paddle_print END,
 					comment = CASE
 						WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
 						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
@@ -202,10 +209,10 @@ class GestionOperations extends MyPageSecure
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionSource));
 
-			// Étape 2: Supprimer les entrées de scrutineering du source (libère la contrainte FK)
-			$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+			// Étape 2: Supprimer les entrées de scrutineering du source ET du target (libère les contraintes FK)
+			$sql = "DELETE FROM kp_scrutineering WHERE matric IN (?, ?)";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array($numFusionSource));
+			$stmt->execute(array($numFusionSource, $numFusionCible));
 
 			// Étape 3: Maintenant on peut mettre à jour kp_competition_equipe_joueur
 			$sql = "UPDATE kp_competition_equipe_joueur cej,
@@ -535,21 +542,28 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute();
 
-					// Copier les données du source dans la table temporaire
-					// Utiliser INSERT ... ON DUPLICATE KEY UPDATE pour gérer le cas où le source est dans plusieurs équipes
+					// Copier les données du TARGET dans la table temporaire en premier
+					$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
+						SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
+						FROM kp_scrutineering
+						WHERE matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionCible));
+
+					// Puis copier les données du SOURCE et fusionner avec celles du target si même équipe
 					$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
 						SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
 						FROM kp_scrutineering
 						WHERE matric = ?
 						ON DUPLICATE KEY UPDATE
-							kayak_status = VALUES(kayak_status),
-							kayak_print = VALUES(kayak_print),
-							vest_status = VALUES(vest_status),
-							vest_print = VALUES(vest_print),
-							helmet_status = VALUES(helmet_status),
-							helmet_print = VALUES(helmet_print),
-							paddle_count = VALUES(paddle_count),
-							paddle_print = VALUES(paddle_print),
+							kayak_status = CASE WHEN kayak_status IS NULL OR kayak_status = 0 THEN VALUES(kayak_status) ELSE kayak_status END,
+							kayak_print = CASE WHEN kayak_print IS NULL OR kayak_print = 0 THEN VALUES(kayak_print) ELSE kayak_print END,
+							vest_status = CASE WHEN vest_status IS NULL OR vest_status = 0 THEN VALUES(vest_status) ELSE vest_status END,
+							vest_print = CASE WHEN vest_print IS NULL OR vest_print = 0 THEN VALUES(vest_print) ELSE vest_print END,
+							helmet_status = CASE WHEN helmet_status IS NULL OR helmet_status = 0 THEN VALUES(helmet_status) ELSE helmet_status END,
+							helmet_print = CASE WHEN helmet_print IS NULL OR helmet_print = 0 THEN VALUES(helmet_print) ELSE helmet_print END,
+							paddle_count = CASE WHEN paddle_count IS NULL OR paddle_count = 0 THEN VALUES(paddle_count) ELSE paddle_count END,
+							paddle_print = CASE WHEN paddle_print IS NULL OR paddle_print = 0 THEN VALUES(paddle_print) ELSE paddle_print END,
 							comment = CASE
 								WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
 								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
@@ -558,10 +572,10 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionSource));
 
-					// Étape 2: Supprimer les entrées de scrutineering du source (libère la contrainte FK)
-					$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+					// Étape 2: Supprimer les entrées de scrutineering du source ET du target (libère les contraintes FK)
+					$sql = "DELETE FROM kp_scrutineering WHERE matric IN (?, ?)";
 					$stmt = $myBdd->pdo->prepare($sql);
-					$stmt->execute(array($numFusionSource));
+					$stmt->execute(array($numFusionSource, $numFusionCible));
 
 					// Étape 3: Maintenant on peut mettre à jour kp_competition_equipe_joueur
 					$sql = "UPDATE kp_competition_equipe_joueur cej,
