@@ -543,6 +543,7 @@ class GestionOperations extends MyPageSecure
 				$myBdd->pdo->rollBack();
 			}
 			utySendMail("[KPI] Erreur SQL", "Fusion Automatique Licenciés Non Fédéraux\r\n" . $e->getMessage());
+			error_log("Erreur lors de la fusion automatique des licenciés non fédéraux : " . $e->getMessage());
 			array_push($this->m_arrayinfo, "Erreur lors de la fusion automatique : " . $e->getMessage());
 			return;
 		}
@@ -1883,7 +1884,6 @@ class GestionOperations extends MyPageSecure
 		// Validate MIME type
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$mimeType = finfo_file($finfo, $imageFile['tmp_name']);
-		finfo_close($finfo);
 
 		if (!in_array($mimeType, $config['mime_types'])) {
 			array_push($this->m_arrayinfo, 'Erreur : Type de fichier non autorisé. Attendu : ' . implode(', ', $config['mime_types']));
@@ -1978,8 +1978,8 @@ class GestionOperations extends MyPageSecure
 			}
 
 			// Free memory
-			imagedestroy($sourceImage);
-			imagedestroy($resizedImage);
+			unset($sourceImage);
+			unset($resizedImage);
 
 			if ($result) {
 				array_push($this->m_arrayinfo, "Image redimensionnée et uploadée avec succès : $filename");
