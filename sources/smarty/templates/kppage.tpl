@@ -1,5 +1,5 @@
 {* page.tpl Smarty *}
-{config_load file='../../commun/MyLang_processed.conf' section=$lang}
+{config_load file='../../commun/MyLang_processed.ini' section=$lang}
 {if $bPublic}{assign var=adm value=""}{else}{assign var=adm value="../"}{/if}
 <!DOCTYPE html>
 <html lang="fr" xmlns:og="http://ogp.me/ns#">
@@ -71,6 +71,9 @@
             lang = '{$lang}';
             version = '{$NUM_VERSION}';
         </script>
+
+        {* Chargement centralisé des traductions JavaScript *}
+        <script type='text/javascript' src='{$adm}commun/js_translations.php'></script>
 
         <script type='text/javascript' src='{$adm}js/jquery-3.5.1.min.js?v={$NUM_VERSION}'></script>
         <script type='text/javascript' src='{$adm}js/jquery-ui-1.12.1.min.js?v={$NUM_VERSION}'></script>

@@ -1,15 +1,11 @@
 jq = jQuery.noConflict()
 
-var langue = []
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
+
 var theLstEvt = '-1'
 var theLocalUrl = 'http://localhost/KPI2'
 var theDistantUrl = "https://www.kayak-polo.info"
-
-if (lang == 'en') {
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-} else {
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-}
 
 function ExportEvt () {
 	jq("#ParamCmd").val(jq('#evenementExport').val())

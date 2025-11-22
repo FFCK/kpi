@@ -1,14 +1,7 @@
 jq = jQuery.noConflict()
 
-var langue = []
-
-if (lang == 'en') {
-	langue['Confirmer_MAJ'] = 'Confirm update ?'
-	langue['Nom_evt_vide'] = 'Event name is empty, unable to create'
-} else {
-	langue['Confirmer_MAJ'] = 'Confirmez-vous le changement ?'
-	langue['Nom_evt_vide'] = 'Le Nom de l\'événement est vide, ajout impossible'
-}
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function validEvenement () {
 	var libelle = document.forms['formEvenement'].elements['Libelle'].value
