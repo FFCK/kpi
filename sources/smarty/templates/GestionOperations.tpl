@@ -8,19 +8,21 @@
 				<div class='titrePage'>Opérations (Attention, sensible !!!)</div>
 
 				<div class='blocLeft'>
-					<table width="100%">
-						<tr>
-							<td colspan=2>
-								<span id="json_msg">
-									{$msg_json}
-								</span>
-								<br>
-								{section name=i loop=$arrayinfo}
-									{$arrayinfo[i]}<BR>
-								{/section}
-							</td>
-						</tr>
-					</table>
+					{if $msg_json neq '' || $arrayinfo|@count gt 0}
+						{* Affichage d'une alerte JavaScript si un message est présent *}
+						<table width="100%">
+							<tr>
+								<td colspan=2 class="pair2">
+									<span id="json_msg">
+										{$msg_json}<br>
+									</span>
+									{section name=i loop=$arrayinfo}
+										{$arrayinfo[i]}<br>
+									{/section}
+								</td>
+							</tr>
+						</table>
+					{/if}
 					<table width="100%">
 						<thead>
 							<tr>

@@ -2384,7 +2384,7 @@ class GestionOperations extends MyPageSecure
 			if ($Cmd == 'CopyRc') ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->CopyRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			// Pour PurgeCache, on ne redirige pas car on affiche les résultats via $arrayinfo
-			if ($alertMessage == '' && $Cmd != 'PurgeCache') {
+			if ($alertMessage == '' && $Cmd != 'PurgeCache' && $Cmd != 'FusionAutomatiqueLicenciesNonFederaux') {
 				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
@@ -2428,6 +2428,7 @@ class GestionOperations extends MyPageSecure
 				$arrayinfo = $this->m_arrayinfo;
 				break;
 			case $Cmd == 'PurgeCache':
+			case $Cmd == 'FusionAutomatiqueLicenciesNonFederaux':
 				$arrayinfo = $this->m_arrayinfo;
 				break;
 		}
