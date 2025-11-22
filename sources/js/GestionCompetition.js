@@ -1,30 +1,7 @@
 jq = jQuery.noConflict()
 
-var langue = []
-
-if (lang == 'en') {
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-	langue['Confirmer'] = 'Confirm ?'
-	langue['Confirmer_verrouillage'] = 'Confirm presence sheets lock / unlock ?'
-	langue['MAJ_impossible'] = 'Unable to update'
-	langue['Code_competition_vide'] = 'Competition code is empty, unable to create'
-	langue['Label_competition_vide'] = 'Competition label is empty, unable to create'
-	langue['Rechercher_equipe'] = 'Search team'
-	langue['Selectionner_competition'] = 'Select a competition'
-	langue['Selectionner_club'] = 'Select a club'
-	langue['Verrouiller_avant'] = 'Lock presence sheets before !'
-} else {
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-	langue['Confirmer'] = 'Confirmez-vous ?'
-	langue['Confirmer_verrouillage'] = 'Confirmez-vous le verrouillage / déverrouillage des feuilles de présence ?'
-	langue['MAJ_impossible'] = 'Mise à jour impossible'
-	langue['Code_competition_vide'] = 'Code compétition vide, ajout impossible'
-	langue['Label_competition_vide'] = 'Label compétition vide, ajout impossible'
-	langue['Rechercher_equipe'] = 'Rechercher une équipe'
-	langue['Selectionner_competition'] = 'Sélectionnez une compétition'
-	langue['Selectionner_club'] = 'Sélectionnez un club'
-	langue['Verrouiller_avant'] = 'Verrouillez les feuilles de présence avant !'
-}
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function uploadLogo () {
 	document.forms['formCompet'].elements['Cmd'].value = 'UploadLogo'

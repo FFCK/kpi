@@ -47,6 +47,8 @@
       masquer = {$masquer};
       lang = '{$lang}';
     </script>
+    {* Chargement centralisé des traductions JavaScript *}
+    <script type='text/javascript' src='../commun/js_translations.php'></script>
     <script src="../node_modules/flatpickr/dist/flatpickr.min.js?v={$NUM_VERSION}"></script>
     <script src="../node_modules/flatpickr/dist/l10n/fr.js?v={$NUM_VERSION}"></script>
     <script src="../js/flatpickr-wrapper.js?v={$NUM_VERSION}"></script>
