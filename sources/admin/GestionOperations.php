@@ -157,15 +157,7 @@ class GestionOperations extends MyPageSecure
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionCible, $numFusionSource));
 
-			// scrutineering (contrôle) - Supprimer les entrées du source
-			// On ne peut pas les mettre à jour car la contrainte FK vérifie que (id_equipe, matric)
-			// existe dans kp_competition_equipe_joueur, et la cible n'y est pas encore
-			$sql = "DELETE FROM kp_scrutineering
-				WHERE matric = ?";
-			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array($numFusionSource));
-
-			// feuilles de présence
+			// feuilles de présence - DOIT être fait AVANT la fusion de scrutineering
 			$sql = "UPDATE kp_competition_equipe_joueur cej,
                 kp_licence lc
                 SET cej.Matric = :cible, cej.Nom = lc.Nom,
@@ -178,6 +170,34 @@ class GestionOperations extends MyPageSecure
 				':cible2' => $numFusionCible,
 				':source' => $numFusionSource
 			]);
+
+			// scrutineering (contrôle) - Fusionner les données du source vers la cible
+			// Maintenant que kp_competition_equipe_joueur est à jour, on peut fusionner
+			// On transfère uniquement les entrées qui n'existent pas déjà pour la cible
+			$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, helmet, vest, number_french, number_international, comment)
+				SELECT s.id_equipe, :cible, s.helmet, s.vest, s.number_french, s.number_international, s.comment
+				FROM kp_scrutineering s
+				WHERE s.matric = :source
+				ON DUPLICATE KEY UPDATE
+					helmet = VALUES(helmet),
+					vest = VALUES(vest),
+					number_french = VALUES(number_french),
+					number_international = VALUES(number_international),
+					comment = CASE
+						WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
+						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
+						ELSE CONCAT(comment, ' | ', VALUES(comment))
+					END";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute([
+				':cible' => $numFusionCible,
+				':source' => $numFusionSource
+			]);
+
+			// Supprimer les anciennes entrées du source
+			$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource));
 
 			// arbitre principal
 			$sql  = "UPDATE kp_match
@@ -445,15 +465,7 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionCible, $numFusionSource));
 
-					// scrutineering (contrôle) - Supprimer les entrées du source
-					// On ne peut pas les mettre à jour car la contrainte FK vérifie que (id_equipe, matric)
-					// existe dans kp_competition_equipe_joueur, et la cible n'y est pas encore
-					$sql = "DELETE FROM kp_scrutineering
-						WHERE matric = ?";
-					$stmt = $myBdd->pdo->prepare($sql);
-					$stmt->execute(array($numFusionSource));
-
-					// feuilles de présence
+					// feuilles de présence - DOIT être fait AVANT la fusion de scrutineering
 					$sql = "UPDATE kp_competition_equipe_joueur cej,
 						kp_licence lc
 						SET cej.Matric = :cible, cej.Nom = lc.Nom,
@@ -466,6 +478,34 @@ class GestionOperations extends MyPageSecure
 						':cible2' => $numFusionCible,
 						':source' => $numFusionSource
 					]);
+
+					// scrutineering (contrôle) - Fusionner les données du source vers la cible
+					// Maintenant que kp_competition_equipe_joueur est à jour, on peut fusionner
+					// On transfère uniquement les entrées qui n'existent pas déjà pour la cible
+					$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, helmet, vest, number_french, number_international, comment)
+						SELECT s.id_equipe, :cible, s.helmet, s.vest, s.number_french, s.number_international, s.comment
+						FROM kp_scrutineering s
+						WHERE s.matric = :source
+						ON DUPLICATE KEY UPDATE
+							helmet = VALUES(helmet),
+							vest = VALUES(vest),
+							number_french = VALUES(number_french),
+							number_international = VALUES(number_international),
+							comment = CASE
+								WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
+								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
+								ELSE CONCAT(comment, ' | ', VALUES(comment))
+							END";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute([
+						':cible' => $numFusionCible,
+						':source' => $numFusionSource
+					]);
+
+					// Supprimer les anciennes entrées du source
+					$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionSource));
 
 					// arbitre principal
 					$sql = "UPDATE kp_match
