@@ -159,8 +159,13 @@ class GestionOperations extends MyPageSecure
 
 			// scrutineering (contrôle) - Étape 1: Sauvegarder les données du source dans une table temporaire
 			// On doit faire ça AVANT de modifier kp_competition_equipe_joueur car la FK empêche la modification
-			$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_scrutineering_fusion (
-				id_equipe INT,
+			// On supprime et recrée la table pour éviter les duplications
+			$sql = "DROP TEMPORARY TABLE IF EXISTS temp_scrutineering_fusion";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute();
+
+			$sql = "CREATE TEMPORARY TABLE temp_scrutineering_fusion (
+				id_equipe INT PRIMARY KEY,
 				kayak_status INT,
 				kayak_print INT,
 				vest_status INT,
@@ -175,10 +180,25 @@ class GestionOperations extends MyPageSecure
 			$stmt->execute();
 
 			// Copier les données du source dans la table temporaire
+			// Utiliser INSERT ... ON DUPLICATE KEY UPDATE pour gérer le cas où le source est dans plusieurs équipes
 			$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
 				SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
 				FROM kp_scrutineering
-				WHERE matric = ?";
+				WHERE matric = ?
+				ON DUPLICATE KEY UPDATE
+					kayak_status = VALUES(kayak_status),
+					kayak_print = VALUES(kayak_print),
+					vest_status = VALUES(vest_status),
+					vest_print = VALUES(vest_print),
+					helmet_status = VALUES(helmet_status),
+					helmet_print = VALUES(helmet_print),
+					paddle_count = VALUES(paddle_count),
+					paddle_print = VALUES(paddle_print),
+					comment = CASE
+						WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
+						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
+						ELSE CONCAT(comment, ' | ', VALUES(comment))
+					END";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionSource));
 
@@ -495,8 +515,13 @@ class GestionOperations extends MyPageSecure
 
 					// scrutineering (contrôle) - Étape 1: Sauvegarder les données du source dans une table temporaire
 					// On doit faire ça AVANT de modifier kp_competition_equipe_joueur car la FK empêche la modification
-					$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_scrutineering_fusion (
-						id_equipe INT,
+					// On supprime et recrée la table à chaque itération pour éviter les duplications
+					$sql = "DROP TEMPORARY TABLE IF EXISTS temp_scrutineering_fusion";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute();
+
+					$sql = "CREATE TEMPORARY TABLE temp_scrutineering_fusion (
+						id_equipe INT PRIMARY KEY,
 						kayak_status INT,
 						kayak_print INT,
 						vest_status INT,
@@ -510,16 +535,26 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute();
 
-					// Vider la table temporaire (elle peut exister d'une itération précédente)
-					$sql = "DELETE FROM temp_scrutineering_fusion";
-					$stmt = $myBdd->pdo->prepare($sql);
-					$stmt->execute();
-
 					// Copier les données du source dans la table temporaire
+					// Utiliser INSERT ... ON DUPLICATE KEY UPDATE pour gérer le cas où le source est dans plusieurs équipes
 					$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
 						SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
 						FROM kp_scrutineering
-						WHERE matric = ?";
+						WHERE matric = ?
+						ON DUPLICATE KEY UPDATE
+							kayak_status = VALUES(kayak_status),
+							kayak_print = VALUES(kayak_print),
+							vest_status = VALUES(vest_status),
+							vest_print = VALUES(vest_print),
+							helmet_status = VALUES(helmet_status),
+							helmet_print = VALUES(helmet_print),
+							paddle_count = VALUES(paddle_count),
+							paddle_print = VALUES(paddle_print),
+							comment = CASE
+								WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
+								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
+								ELSE CONCAT(comment, ' | ', VALUES(comment))
+							END";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionSource));
 
