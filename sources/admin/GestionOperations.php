@@ -215,9 +215,9 @@ class GestionOperations extends MyPageSecure
 					paddle_count = VALUES(paddle_count),
 					paddle_print = VALUES(paddle_print),
 					comment = CASE
-						WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
-						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
-						ELSE CONCAT(comment, ' | ', VALUES(comment))
+						WHEN kp_scrutineering.comment IS NULL OR kp_scrutineering.comment = '' THEN VALUES(comment)
+						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN kp_scrutineering.comment
+						ELSE CONCAT(kp_scrutineering.comment, ' | ', VALUES(comment))
 					END";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute([':cible' => $numFusionCible]);
@@ -551,9 +551,9 @@ class GestionOperations extends MyPageSecure
 							paddle_count = VALUES(paddle_count),
 							paddle_print = VALUES(paddle_print),
 							comment = CASE
-								WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
-								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
-								ELSE CONCAT(comment, ' | ', VALUES(comment))
+								WHEN kp_scrutineering.comment IS NULL OR kp_scrutineering.comment = '' THEN VALUES(comment)
+								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN kp_scrutineering.comment
+								ELSE CONCAT(kp_scrutineering.comment, ' | ', VALUES(comment))
 							END";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute([':cible' => $numFusionCible]);
