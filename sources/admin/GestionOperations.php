@@ -347,7 +347,13 @@ class GestionOperations extends MyPageSecure
 			));
 
 			// TODO: changer noms (et matric) des lignes, arbitres, officiels...
-			// suppression
+			// suppression de l'arbitre source AVANT la licence (contrainte FK)
+			$sql = "DELETE FROM kp_arbitre
+				WHERE Matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource));
+
+			// suppression de la licence
 			$sql  = "DELETE FROM kp_licence
 				WHERE Matric = ?; ";
 			$stmt = $myBdd->pdo->prepare($sql);
@@ -732,14 +738,14 @@ class GestionOperations extends MyPageSecure
 						':source2' => '%(' . $numFusionSource . ')%'
 					));
 
-					// suppression
-					$sql = "DELETE FROM kp_licence
+					// Supprimer l'arbitre source AVANT la licence (contrainte FK)
+					$sql = "DELETE FROM kp_arbitre
 						WHERE Matric = ?";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionSource));
 
-					// Supprimer l'arbitre source s'il existe
-					$sql = "DELETE FROM kp_arbitre
+					// Suppression de la licence
+					$sql = "DELETE FROM kp_licence
 						WHERE Matric = ?";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionSource));
