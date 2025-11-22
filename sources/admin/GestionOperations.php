@@ -157,6 +157,13 @@ class GestionOperations extends MyPageSecure
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionCible, $numFusionSource));
 
+			// scrutineering (contrôle) - DOIT être fait avant kp_competition_equipe_joueur
+			$sql = "UPDATE kp_scrutineering
+				SET matric = ?
+				WHERE matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionCible, $numFusionSource));
+
 			// feuilles de présence
 			$sql = "UPDATE kp_competition_equipe_joueur cej,
                 kp_licence lc
@@ -434,6 +441,13 @@ class GestionOperations extends MyPageSecure
 					$sql = "UPDATE kp_match_joueur
 						SET Matric = ?
 						WHERE Matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionCible, $numFusionSource));
+
+					// scrutineering (contrôle) - DOIT être fait avant kp_competition_equipe_joueur
+					$sql = "UPDATE kp_scrutineering
+						SET matric = ?
+						WHERE matric = ?";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionCible, $numFusionSource));
 
