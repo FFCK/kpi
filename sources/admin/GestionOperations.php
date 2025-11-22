@@ -157,7 +157,33 @@ class GestionOperations extends MyPageSecure
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array($numFusionCible, $numFusionSource));
 
-			// feuilles de présence - DOIT être fait AVANT la fusion de scrutineering
+			// scrutineering (contrôle) - Étape 1: Sauvegarder les données du source dans une table temporaire
+			// On doit faire ça AVANT de modifier kp_competition_equipe_joueur car la FK empêche la modification
+			$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_scrutineering_fusion (
+				id_equipe INT,
+				helmet VARCHAR(255),
+				vest VARCHAR(255),
+				number_french VARCHAR(255),
+				number_international VARCHAR(255),
+				comment TEXT
+			)";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute();
+
+			// Copier les données du source dans la table temporaire
+			$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, helmet, vest, number_french, number_international, comment)
+				SELECT id_equipe, helmet, vest, number_french, number_international, comment
+				FROM kp_scrutineering
+				WHERE matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource));
+
+			// Étape 2: Supprimer les entrées de scrutineering du source (libère la contrainte FK)
+			$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+			$stmt = $myBdd->pdo->prepare($sql);
+			$stmt->execute(array($numFusionSource));
+
+			// Étape 3: Maintenant on peut mettre à jour kp_competition_equipe_joueur
 			$sql = "UPDATE kp_competition_equipe_joueur cej,
                 kp_licence lc
                 SET cej.Matric = :cible, cej.Nom = lc.Nom,
@@ -171,13 +197,10 @@ class GestionOperations extends MyPageSecure
 				':source' => $numFusionSource
 			]);
 
-			// scrutineering (contrôle) - Fusionner les données du source vers la cible
-			// Maintenant que kp_competition_equipe_joueur est à jour, on peut fusionner
-			// On transfère uniquement les entrées qui n'existent pas déjà pour la cible
+			// Étape 4: Fusionner les données de scrutineering depuis la table temporaire
 			$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, helmet, vest, number_french, number_international, comment)
-				SELECT s.id_equipe, :cible, s.helmet, s.vest, s.number_french, s.number_international, s.comment
-				FROM kp_scrutineering s
-				WHERE s.matric = :source
+				SELECT t.id_equipe, :cible, t.helmet, t.vest, t.number_french, t.number_international, t.comment
+				FROM temp_scrutineering_fusion t
 				ON DUPLICATE KEY UPDATE
 					helmet = VALUES(helmet),
 					vest = VALUES(vest),
@@ -189,15 +212,12 @@ class GestionOperations extends MyPageSecure
 						ELSE CONCAT(comment, ' | ', VALUES(comment))
 					END";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute([
-				':cible' => $numFusionCible,
-				':source' => $numFusionSource
-			]);
+			$stmt->execute([':cible' => $numFusionCible]);
 
-			// Supprimer les anciennes entrées du source
-			$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+			// Nettoyer la table temporaire pour la prochaine fusion
+			$sql = "DROP TEMPORARY TABLE IF EXISTS temp_scrutineering_fusion";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array($numFusionSource));
+			$stmt->execute();
 
 			// arbitre principal
 			$sql  = "UPDATE kp_match
@@ -465,7 +485,33 @@ class GestionOperations extends MyPageSecure
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute(array($numFusionCible, $numFusionSource));
 
-					// feuilles de présence - DOIT être fait AVANT la fusion de scrutineering
+					// scrutineering (contrôle) - Étape 1: Sauvegarder les données du source dans une table temporaire
+					// On doit faire ça AVANT de modifier kp_competition_equipe_joueur car la FK empêche la modification
+					$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_scrutineering_fusion (
+						id_equipe INT,
+						helmet VARCHAR(255),
+						vest VARCHAR(255),
+						number_french VARCHAR(255),
+						number_international VARCHAR(255),
+						comment TEXT
+					)";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute();
+
+					// Copier les données du source dans la table temporaire
+					$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, helmet, vest, number_french, number_international, comment)
+						SELECT id_equipe, helmet, vest, number_french, number_international, comment
+						FROM kp_scrutineering
+						WHERE matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionSource));
+
+					// Étape 2: Supprimer les entrées de scrutineering du source (libère la contrainte FK)
+					$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+					$stmt = $myBdd->pdo->prepare($sql);
+					$stmt->execute(array($numFusionSource));
+
+					// Étape 3: Maintenant on peut mettre à jour kp_competition_equipe_joueur
 					$sql = "UPDATE kp_competition_equipe_joueur cej,
 						kp_licence lc
 						SET cej.Matric = :cible, cej.Nom = lc.Nom,
@@ -479,13 +525,10 @@ class GestionOperations extends MyPageSecure
 						':source' => $numFusionSource
 					]);
 
-					// scrutineering (contrôle) - Fusionner les données du source vers la cible
-					// Maintenant que kp_competition_equipe_joueur est à jour, on peut fusionner
-					// On transfère uniquement les entrées qui n'existent pas déjà pour la cible
+					// Étape 4: Fusionner les données de scrutineering depuis la table temporaire
 					$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, helmet, vest, number_french, number_international, comment)
-						SELECT s.id_equipe, :cible, s.helmet, s.vest, s.number_french, s.number_international, s.comment
-						FROM kp_scrutineering s
-						WHERE s.matric = :source
+						SELECT t.id_equipe, :cible, t.helmet, t.vest, t.number_french, t.number_international, t.comment
+						FROM temp_scrutineering_fusion t
 						ON DUPLICATE KEY UPDATE
 							helmet = VALUES(helmet),
 							vest = VALUES(vest),
@@ -497,15 +540,12 @@ class GestionOperations extends MyPageSecure
 								ELSE CONCAT(comment, ' | ', VALUES(comment))
 							END";
 					$stmt = $myBdd->pdo->prepare($sql);
-					$stmt->execute([
-						':cible' => $numFusionCible,
-						':source' => $numFusionSource
-					]);
+					$stmt->execute([':cible' => $numFusionCible]);
 
-					// Supprimer les anciennes entrées du source
-					$sql = "DELETE FROM kp_scrutineering WHERE matric = ?";
+					// Nettoyer la table temporaire pour la prochaine fusion
+					$sql = "DROP TEMPORARY TABLE IF EXISTS temp_scrutineering_fusion";
 					$stmt = $myBdd->pdo->prepare($sql);
-					$stmt->execute(array($numFusionSource));
+					$stmt->execute();
 
 					// arbitre principal
 					$sql = "UPDATE kp_match
