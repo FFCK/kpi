@@ -161,18 +161,22 @@ class GestionOperations extends MyPageSecure
 			// On doit faire ça AVANT de modifier kp_competition_equipe_joueur car la FK empêche la modification
 			$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_scrutineering_fusion (
 				id_equipe INT,
-				helmet VARCHAR(255),
-				vest VARCHAR(255),
-				number_french VARCHAR(255),
-				number_international VARCHAR(255),
+				kayak_status INT,
+				kayak_print INT,
+				vest_status INT,
+				vest_print INT,
+				helmet_status INT,
+				helmet_print INT,
+				paddle_count INT,
+				paddle_print INT,
 				comment TEXT
 			)";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute();
 
 			// Copier les données du source dans la table temporaire
-			$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, helmet, vest, number_french, number_international, comment)
-				SELECT id_equipe, helmet, vest, number_french, number_international, comment
+			$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
+				SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
 				FROM kp_scrutineering
 				WHERE matric = ?";
 			$stmt = $myBdd->pdo->prepare($sql);
@@ -198,14 +202,18 @@ class GestionOperations extends MyPageSecure
 			]);
 
 			// Étape 4: Fusionner les données de scrutineering depuis la table temporaire
-			$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, helmet, vest, number_french, number_international, comment)
-				SELECT t.id_equipe, :cible, t.helmet, t.vest, t.number_french, t.number_international, t.comment
+			$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
+				SELECT t.id_equipe, :cible, t.kayak_status, t.kayak_print, t.vest_status, t.vest_print, t.helmet_status, t.helmet_print, t.paddle_count, t.paddle_print, t.comment
 				FROM temp_scrutineering_fusion t
 				ON DUPLICATE KEY UPDATE
-					helmet = VALUES(helmet),
-					vest = VALUES(vest),
-					number_french = VALUES(number_french),
-					number_international = VALUES(number_international),
+					kayak_status = VALUES(kayak_status),
+					kayak_print = VALUES(kayak_print),
+					vest_status = VALUES(vest_status),
+					vest_print = VALUES(vest_print),
+					helmet_status = VALUES(helmet_status),
+					helmet_print = VALUES(helmet_print),
+					paddle_count = VALUES(paddle_count),
+					paddle_print = VALUES(paddle_print),
 					comment = CASE
 						WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
 						WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
@@ -489,18 +497,22 @@ class GestionOperations extends MyPageSecure
 					// On doit faire ça AVANT de modifier kp_competition_equipe_joueur car la FK empêche la modification
 					$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_scrutineering_fusion (
 						id_equipe INT,
-						helmet VARCHAR(255),
-						vest VARCHAR(255),
-						number_french VARCHAR(255),
-						number_international VARCHAR(255),
+						kayak_status INT,
+						kayak_print INT,
+						vest_status INT,
+						vest_print INT,
+						helmet_status INT,
+						helmet_print INT,
+						paddle_count INT,
+						paddle_print INT,
 						comment TEXT
 					)";
 					$stmt = $myBdd->pdo->prepare($sql);
 					$stmt->execute();
 
 					// Copier les données du source dans la table temporaire
-					$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, helmet, vest, number_french, number_international, comment)
-						SELECT id_equipe, helmet, vest, number_french, number_international, comment
+					$sql = "INSERT INTO temp_scrutineering_fusion (id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
+						SELECT id_equipe, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment
 						FROM kp_scrutineering
 						WHERE matric = ?";
 					$stmt = $myBdd->pdo->prepare($sql);
@@ -526,14 +538,18 @@ class GestionOperations extends MyPageSecure
 					]);
 
 					// Étape 4: Fusionner les données de scrutineering depuis la table temporaire
-					$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, helmet, vest, number_french, number_international, comment)
-						SELECT t.id_equipe, :cible, t.helmet, t.vest, t.number_french, t.number_international, t.comment
+					$sql = "INSERT INTO kp_scrutineering (id_equipe, matric, kayak_status, kayak_print, vest_status, vest_print, helmet_status, helmet_print, paddle_count, paddle_print, comment)
+						SELECT t.id_equipe, :cible, t.kayak_status, t.kayak_print, t.vest_status, t.vest_print, t.helmet_status, t.helmet_print, t.paddle_count, t.paddle_print, t.comment
 						FROM temp_scrutineering_fusion t
 						ON DUPLICATE KEY UPDATE
-							helmet = VALUES(helmet),
-							vest = VALUES(vest),
-							number_french = VALUES(number_french),
-							number_international = VALUES(number_international),
+							kayak_status = VALUES(kayak_status),
+							kayak_print = VALUES(kayak_print),
+							vest_status = VALUES(vest_status),
+							vest_print = VALUES(vest_print),
+							helmet_status = VALUES(helmet_status),
+							helmet_print = VALUES(helmet_print),
+							paddle_count = VALUES(paddle_count),
+							paddle_print = VALUES(paddle_print),
 							comment = CASE
 								WHEN comment IS NULL OR comment = '' THEN VALUES(comment)
 								WHEN VALUES(comment) IS NULL OR VALUES(comment) = '' THEN comment
