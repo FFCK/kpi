@@ -1,31 +1,7 @@
 jq = jQuery.noConflict()
 
-var langue = []
-
-if (lang == 'en') {
-	langue['Aucun_joueur'] = 'No player selected. unable to add !'
-	langue['Certif'] = '(Med. Certificat)'
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-	langue['Joueur_vide'] = 'Player is empty. unable to add !'
-	langue['Joueur_existant'] = 'Player is already selected. unable to add !'
-	langue['MAJ_impossible'] = 'Unable to update'
-	langue['Pagaie_couleur'] = '(Paddle level)'
-	langue['Prenom_vide'] = 'Player first name is empty. unable to add !'
-	langue['Saison_licence'] = '(Licence year)'
-	langue['Surclassement'] = '(Mandatory upgrade)'
-} else {
-	langue['Aucun_joueur'] = 'Aucun joueur sélectionné, ajout impossible !'
-	langue['Certif'] = '(Certificat CK)'
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-	langue['Joueur_vide'] = 'Joueur vide, ajout impossible !'
-	langue['Joueur_existant'] = 'Joueur déjà sélectionné, ajout impossible !'
-	langue['MAJ_impossible'] = 'Mise à jour impossible'
-	langue['Pagaie_couleur'] = '(Pagaie couleur)'
-	langue['Prenom_vide'] = 'Prénom joueur vide, ajout impossible!'
-	langue['Saison_licence'] = '(Saison licence)'
-	langue['Surclassement'] = '(Surclassement obligatoire)'
-}
-
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function validJoueur () {
 	var matricJoueur = jq('#matricJoueur2').val()

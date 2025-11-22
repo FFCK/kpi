@@ -1,33 +1,7 @@
 jq = jQuery.noConflict();
 
-var langue = [];
-
-if(lang == 'en')  {
-    langue['Confirmer'] = 'Confirm ?';
-    langue['MAJ_impossible'] = 'Unable to update';
-    langue['Match_de_classement'] = 'Classifying game';
-    langue['Match_eliminatoire'] = 'Playoffs';
-    langue['Non_valide'] = 'Unvalidated (private score)';
-    langue['Rien_a_transferer'] = 'Nothing to transfer !';
-    langue['Selection_competition_cible'] = 'Select a target competition !';
-    langue['Selection_saison_cible'] = 'Select a target season !';
-    langue['Suppression_classement'] = 'Remove of public ranking ?';
-    langue['Valider'] = 'Valid';
-    langue['Valide'] = 'Validated, locked (public score)';
-} else {
-    langue['Confirmer'] = 'Confirmer ?';
-    langue['MAJ_impossible'] = 'Mise à jour impossible';
-    langue['Match_de_classement'] = 'Match de classement';
-    langue['Match_eliminatoire'] = 'Match éliminatoire';
-    langue['Non_valide'] = 'Non validé (score non public)';
-    langue['Rien_a_transferer'] = 'Rien à transférer !';
-    langue['Selection_competition_cible'] = 'Sélectionner une compétition cible !';
-    langue['Selection_saison_cible'] = 'Sélectionner une saison cible !';
-    langue['Suppression_classement'] = 'Suppression du classement public ?';
-    langue['Valider'] = 'Valider';
-    langue['Valide'] = 'Validé / verrouillé (score public)';
-}
-
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function changeCompetition()
 {
