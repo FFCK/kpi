@@ -1,31 +1,7 @@
 jq = jQuery.noConflict()
 
-var langue = []
-
-if (lang == 'en') {
-	langue['Aucun_joueur'] = 'No player selected. unable to add !'
-	langue['Certif'] = '(Med. Certificat)'
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-	langue['Joueur_vide'] = 'Player is empty. unable to add !'
-	langue['Joueur_existant'] = 'Player is already selected. unable to add !'
-	langue['MAJ_impossible'] = 'Unable to update'
-	langue['Pagaie_couleur'] = '(Paddle level)'
-	langue['Prenom_vide'] = 'Player first name is empty. unable to add !'
-	langue['Saison_licence'] = '(Licence year)'
-	langue['Surclassement'] = '(Mandatory upgrade)'
-} else {
-	langue['Aucun_joueur'] = 'Aucun joueur sélectionné, ajout impossible !'
-	langue['Certif'] = '(Certificat CK)'
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-	langue['Joueur_vide'] = 'Joueur vide, ajout impossible !'
-	langue['Joueur_existant'] = 'Joueur déjà sélectionné, ajout impossible !'
-	langue['MAJ_impossible'] = 'Mise à jour impossible'
-	langue['Pagaie_couleur'] = '(Pagaie couleur)'
-	langue['Prenom_vide'] = 'Prénom joueur vide, ajout impossible!'
-	langue['Saison_licence'] = '(Saison licence)'
-	langue['Surclassement'] = '(Surclassement obligatoire)'
-}
-
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function validJoueur () {
 	var matricJoueur = jq('#matricJoueur2').val()
@@ -291,29 +267,33 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		}
 	}
 
-	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
-		width: 550,
-		maxResults: 50,
-		dataType: 'json',
-		extraParams: {
-			format: 'json'
-		},
-		formatItem: (item) => item.label,
-		formatResult: (item) => item.value,
-		onSelect: handleJoueurSelect
-	})
+	if (jq('#choixJoueur').length > 0) {
+		vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
+			width: 550,
+			maxResults: 50,
+			dataType: 'json',
+			extraParams: {
+				format: 'json'
+			},
+			formatItem: (item) => item.label,
+			formatResult: (item) => item.value,
+			onSelect: handleJoueurSelect
+		})
+	}
 
-	vanillaAutocomplete('#nomJoueur', 'Autocompl_joueur.php', {
-		width: 550,
-		maxResults: 50,
-		dataType: 'json',
-		extraParams: {
-			format: 'json'
-		},
-		formatItem: (item) => item.label,
-		formatResult: (item) => item.value,
-		onSelect: handleJoueurSelect
-	})
+	if (jq('#nomJoueur').length > 0) {
+		vanillaAutocomplete('#nomJoueur', 'Autocompl_joueur.php', {
+			width: 550,
+			maxResults: 50,
+			dataType: 'json',
+			extraParams: {
+				format: 'json'
+			},
+			formatItem: (item) => item.label,
+			formatResult: (item) => item.value,
+			onSelect: handleJoueurSelect
+		})
+	}
 
 
 	// Actualiser
@@ -325,5 +305,110 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		jq(location).attr('href', "?idEquipe=" + jq(this).val())
 	})
 
+	// ===== Copie de composition d'équipe =====
+
+	// Charger les saisons au chargement de la page
+	if (jq('#saisonSource').length > 0) {
+		jq.get('GetTeamCompetitions.php', { action: 'getSaisons' }, function (data) {
+			if (data && !data.error) {
+				jq('#saisonSource').empty()
+				jq('#saisonSource').append('<option value="">-- ' + langue['Selectionner_une_saison'] + ' --</option>')
+				data.forEach(function (saison) {
+					jq('#saisonSource').append('<option value="' + saison.code + '">' + saison.libelle + '</option>')
+				})
+			}
+		}, 'json')
+	}
+
+	// Quand une saison est sélectionnée, charger les compétitions
+	jq('#saisonSource').change(function () {
+		var saison = jq(this).val()
+		var idEquipe = jq('#idEquipe').val()
+
+		jq('#competitionSource').attr('disabled', 'disabled').empty().append('<option value="">-- ' + langue['Chargement'] + ' --</option>')
+		jq('#copyComposition').attr('disabled', 'disabled')
+		jq('#copyMessage').text('')
+
+		if (saison && idEquipe) {
+			jq.get('GetTeamCompetitions.php', {
+				action: 'getCompetitions',
+				saison: saison,
+				idEquipe: idEquipe
+			}, function (data) {
+				if (data && !data.error) {
+					jq('#competitionSource').empty()
+					if (data.length === 0) {
+						jq('#competitionSource').append('<option value="">-- ' + langue['Aucune_competition_trouvee'] + ' --</option>')
+					} else {
+						jq('#competitionSource').append('<option value="">-- ' + langue['Selectionner_une_competition'] + ' --</option>')
+						data.forEach(function (competition) {
+							jq('#competitionSource').append(
+								'<option value="' + competition.id + '">' +
+								competition.libelle + ' (' + competition.code_compet + ')</option>'
+							)
+						})
+						jq('#competitionSource').removeAttr('disabled')
+					}
+				} else {
+					jq('#competitionSource').empty().append('<option value="">-- ' + langue['Erreur'] + ' --</option>')
+					if (data && data.error) {
+						jq('#copyMessage').text(data.error)
+					}
+				}
+			}, 'json').fail(function () {
+				jq('#competitionSource').empty().append('<option value="">-- ' + langue['Erreur_chargement'] + ' --</option>')
+			})
+		} else {
+			jq('#competitionSource').empty().append('<option value="">-- ' + langue['Selectionner_une_saison'] + ' --</option>')
+		}
+	})
+
+	// Quand une compétition est sélectionnée, activer le bouton de copie
+	jq('#competitionSource').change(function () {
+		if (jq(this).val()) {
+			jq('#copyComposition').removeAttr('disabled')
+		} else {
+			jq('#copyComposition').attr('disabled', 'disabled')
+		}
+		jq('#copyMessage').text('')
+	})
+
 })
+
+// Fonction pour copier la composition d'équipe
+function copyTeamComposition() {
+	var idEquipeSource = jq('#competitionSource').val()
+	var idEquipeCible = jq('#idEquipe').val()
+
+	if (!idEquipeSource || !idEquipeCible) {
+		alert(langue['Veuillez_selectionner_saison_competition'])
+		return
+	}
+
+	if (!confirm(langue['Attention_remplacement_joueurs'])) {
+		return
+	}
+
+	jq('#copyComposition').attr('disabled', 'disabled')
+	jq('#copyMessage').text(langue['Copie_en_cours'])
+
+	jq.post('CopyTeamComposition.php', {
+		idEquipeSource: idEquipeSource,
+		idEquipeCible: idEquipeCible
+	}, function (data) {
+		if (data && data.success) {
+			jq('#copyMessage').text(data.nbJoueurs + ' ' + langue['Joueurs_copies_succes']).css('color', 'green')
+			// Recharger la page après 2 secondes pour afficher les nouveaux joueurs
+			setTimeout(function () {
+				location.reload()
+			}, 2000)
+		} else {
+			jq('#copyMessage').text(data.error || langue['Erreur_copie']).css('color', 'red')
+			jq('#copyComposition').removeAttr('disabled')
+		}
+	}, 'json').fail(function () {
+		jq('#copyMessage').text(langue['Erreur_communication_serveur']).css('color', 'red')
+		jq('#copyComposition').removeAttr('disabled')
+	})
+}
 

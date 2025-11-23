@@ -1,16 +1,7 @@
 jq = jQuery.noConflict();
 
-var langue = [];
-
-if (lang == 'en')  {
-    langue['Confirmer_MAJ'] = 'Confirm update ?';
-    langue['Nom_rc_vide'] = 'Event name is empty, unable to create';
-    langue['Confirmer'] = 'Confirm ?';
-} else {
-    langue['Confirmer_MAJ'] = 'Confirmez-vous le changement ?';
-    langue['Nom_rc_vide'] = 'Le Nom de l\'événement est vide, ajout impossible';
-    langue['Confirmer'] = 'Confirmez-vous ?';
-}
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function addRc()
 {
@@ -56,6 +47,30 @@ function paramRc(idRc)
 {
 	document.forms['formRc'].elements['Cmd'].value = 'ParamRc';
 	document.forms['formRc'].elements['ParamCmd'].value = idRc;
+	document.forms['formRc'].submit();
+}
+
+function CopyRc()
+{
+	var saisonSource = jq('#saisonSourceRc').val();
+	var saisonCible = jq('#saisonCibleRc').val();
+
+	if (!saisonSource || !saisonCible) {
+		alert('Veuillez sélectionner une saison source et une saison cible.');
+		return;
+	}
+
+	if (saisonSource == saisonCible) {
+		alert('Les saisons source et cible doivent être différentes.');
+		return;
+	}
+
+	if (!confirm('Confirmez-vous la copie des RC de la saison ' + saisonSource + ' vers la saison ' + saisonCible + ' ?')) {
+		return;
+	}
+
+	document.forms['formRc'].elements['Cmd'].value = 'CopyRc';
+	document.forms['formRc'].elements['ParamCmd'].value = '';
 	document.forms['formRc'].submit();
 }
 

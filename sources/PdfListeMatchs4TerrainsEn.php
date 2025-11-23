@@ -5,8 +5,7 @@ include_once('commun/MyBdd.php');
 include_once('commun/MyTools.php');
 
 require_once('commun/MyPDF.php');
-
-require_once('lib/qrcode/qrcode.class.php');
+// QRcode class is now autoloaded via Composer
 
 // Liste des Matchs d'une Journee ou d'un Evenement 
 class PdfListeMatchs extends MyPage
@@ -23,8 +22,21 @@ class PdfListeMatchs extends MyPage
         $filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
         $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
+        $filtreTour = utyGetSession('filtreTour', '');
+        $filtreTour = utyGetPost('filtreTour', $filtreTour);
+        $filtreTour = utyGetGet('filtreTour', $filtreTour);
+
+        $filtreMatchsNonVerrouilles = utyGetSession('filtreMatchsNonVerrouilles', '');
+
         $myBdd = new MyBdd();
         $lstJournee = utyGetSession('lstJournee', 0);
+
+        // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
+        $idSelJournee = utyGetSession('idSelJournee', '*');
+        if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
+            $lstJournee = $idSelJournee;
+        }
+
         $idEvenement = utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (utyGetGet('idEvenement', 0) > 0) {
@@ -48,7 +60,6 @@ class PdfListeMatchs extends MyPage
         // Ne vider $lstJournee que si $laCompet est une VRAIE compétition
         // Pas *, pas 0, pas vide
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
-            $lstJournee = [];
             $idEvenement = -1;
         }
         $codeCompet = $laCompet;
@@ -76,6 +87,13 @@ class PdfListeMatchs extends MyPage
                 $sql .= "AND a.Terrain = ? ";
                 $merge = array_merge($merge, [$filtreTerrain]);
             }
+            if ($filtreTour != '') {
+                $sql .= "AND d.Etape = ? ";
+                $merge = array_merge($merge, [$filtreTour]);
+            }
+            if ($filtreMatchsNonVerrouilles == 'on') {
+                $sql .= "AND a.Validation = 'N' ";
+            }
             $sql .= $orderMatchs;
             $result = $myBdd->pdo->prepare($sql);
             $result->execute($merge);
@@ -102,6 +120,13 @@ class PdfListeMatchs extends MyPage
             if ($filtreTerrain != '') {
                 $sql .= "AND a.Terrain = ? ";
                 $merge = array_merge($merge, [$filtreTerrain]);
+            }
+            if ($filtreTour != '') {
+                $sql .= "AND d.Etape = ? ";
+                $merge = array_merge($merge, [$filtreTour]);
+            }
+            if ($filtreMatchsNonVerrouilles == 'on') {
+                $sql .= "AND a.Validation = 'N' ";
             }
             $sql .= $orderMatchs;
             $result = $myBdd->pdo->prepare($sql);

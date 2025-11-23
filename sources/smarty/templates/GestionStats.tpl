@@ -42,6 +42,8 @@
 					<div class='titrePage'>{#Joueurs#}</div>
 				{elseif $AfficheStat == 'ListeJoueurs2'}
 					<div class='titrePage'>{#Joueurs#} & {#Entraineurs#}</div>
+				{elseif $AfficheStat == 'CoherenceMatchs'}
+					<div class='titrePage'>Cohérence des matchs - {$nbIncoherences|default:0} incohérence(s) détectée(s)</div>
 				{/if}
 				<div class='liens'>
 					<a href="FeuilleStats.php" Target="_blank" title="Pdf (FR)"><img height="30" alt="pdf FR"
@@ -213,6 +215,14 @@
 									<th>Club</th>
 									<th>Catégorie {$codeSaison}</th>
 									<th>Club {$codeSaison}</th>
+								{elseif $AfficheStat == 'CoherenceMatchs'}
+									<th>#</th>
+									<th>Type d'incohérence</th>
+									<th>{#Equipe#}</th>
+									<th>{#Competition#}</th>
+									<th>Date</th>
+									<th>{#Lieu#}</th>
+									<th>Détails</th>
 								{/if}
 							</tr>
 						</thead>
@@ -517,6 +527,24 @@
 										<td>{$arrayListeJoueurs[i].Club}</td>
 									</tr>
 								{/section}
+							{elseif $AfficheStat == 'CoherenceMatchs'}
+								{section name=i loop=$arrayCoherenceMatchs}
+									<tr class='{cycle values="impair,pair"}'>
+										<td>{$smarty.section.i.iteration}</td>
+										<td><strong>{$arrayCoherenceMatchs[i].type}</strong></td>
+										<td>{$arrayCoherenceMatchs[i].equipe}</td>
+										<td>{$arrayCoherenceMatchs[i].competition}</td>
+										<td>{$arrayCoherenceMatchs[i].date}</td>
+										<td>{$arrayCoherenceMatchs[i].lieu}</td>
+										<td style="font-size: 0.9em;">{$arrayCoherenceMatchs[i].details}</td>
+									</tr>
+								{sectionelse}
+									<tr>
+										<td colspan="7" style="text-align: center; padding: 20px;">
+											<strong style="color: green;">✓ Aucune incohérence détectée</strong>
+										</td>
+									</tr>
+								{/section}
 							{/if}
 						</tbody>
 					</table>
@@ -572,6 +600,9 @@
 									<Option Value="ListeJoueurs" {if $AfficheStat == 'ListeJoueurs'} selected{/if}>{#Joueurs#}</Option>
 									<Option Value="ListeJoueurs2" {if $AfficheStat == 'ListeJoueurs2'} selected{/if}>
 										{#Joueurs#} & {#Entraineurs#}
+									</Option>
+									<Option Value="CoherenceMatchs" {if $AfficheStat == 'CoherenceMatchs'} selected{/if}>
+										Cohérence des matchs
 									</Option>
 								{/if}
 							</select>

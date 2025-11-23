@@ -1,15 +1,11 @@
 jq = jQuery.noConflict()
 
-var langue = []
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
+
 var theLstEvt = '-1'
 var theLocalUrl = 'http://localhost/KPI2'
 var theDistantUrl = "https://www.kayak-polo.info"
-
-if (lang == 'en') {
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-} else {
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-}
 
 function ExportEvt () {
 	jq("#ParamCmd").val(jq('#evenementExport').val())
@@ -38,6 +34,29 @@ function AddSaison () {
 		document.forms['formOperations'].elements['ParamCmd'].value = ''
 		document.forms['formOperations'].submit()
 	}
+}
+
+function CopyRc () {
+	var saisonSource = jq('#saisonSourceRc').val()
+	var saisonCible = jq('#saisonCibleRc').val()
+
+	if (!saisonSource || !saisonCible) {
+		alert('Veuillez sélectionner une saison source et une saison cible.')
+		return
+	}
+
+	if (saisonSource == saisonCible) {
+		alert('Les saisons source et cible doivent être différentes.')
+		return
+	}
+
+	if (!confirm('Confirmez-vous la copie des RC de la saison ' + saisonSource + ' vers la saison ' + saisonCible + ' ?')) {
+		return
+	}
+
+	document.forms['formOperations'].elements['Cmd'].value = 'CopyRc'
+	document.forms['formOperations'].elements['ParamCmd'].value = ''
+	document.forms['formOperations'].submit()
 }
 
 function activeSaison () {
@@ -217,6 +236,15 @@ jq(document).ready(function () {
 		document.forms['formOperations'].submit()
 	})
 
+	//Fusion automatique licenciés non fédéraux
+	jq("#FusionAutoLicenciesNonFederaux").click(function () {
+		if (!confirm('ATTENTION : Cette opération va fusionner automatiquement tous les doublons de licenciés non fédéraux (numéro > 2000000) ayant les mêmes Nom, Prénom et Club.\n\nCette action est irréversible.\n\nConfirmez-vous ?')) {
+			return false
+		}
+		document.forms['formOperations'].elements['Cmd'].value = 'FusionAutomatiqueLicenciesNonFederaux'
+		document.forms['formOperations'].submit()
+	})
+
 	//Renomme Equipe
 	vanillaAutocomplete('#RenomSource', 'Autocompl_equipe.php', {
 		width: 550,
@@ -354,6 +382,16 @@ jq(document).ready(function () {
 	jq('#importPCE2').click(function(){
 		jq('#json_msg').prepend( "Traitement en cours (patientez 15 à 20 secondes)..." );
 		jq('#Control').val('importPCE2');
+		jq('#formOperations').submit();
+	});
+
+	// Purge cache handler
+	jq('#PurgeCache').click(function(){
+		if (!confirm('Confirmez-vous la purge des fichiers cache obsolètes ?\n\n- Fichiers de match > 1 an\n- Fichiers d\'événement > 2 ans')) {
+			return false;
+		}
+		jq('#Cmd').val('PurgeCache');
+		jq('#ParamCmd').val('');
 		jq('#formOperations').submit();
 	});
 

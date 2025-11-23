@@ -8,19 +8,21 @@
 				<div class='titrePage'>Opérations (Attention, sensible !!!)</div>
 
 				<div class='blocLeft'>
-					<table width="100%">
-						<tr>
-							<td colspan=2>
-								<span id="json_msg">
-									{$msg_json}
-								</span>
-								<br>
-								{section name=i loop=$arrayinfo}
-									{$arrayinfo[i]}<BR>
-								{/section}
-							</td>
-						</tr>
-					</table>
+					{if $msg_json neq '' || $arrayinfo|@count gt 0}
+						{* Affichage d'une alerte JavaScript si un message est présent *}
+						<table width="100%">
+							<tr>
+								<td colspan=2 class="pair2">
+									<span id="json_msg">
+										{$msg_json}<br>
+									</span>
+									{section name=i loop=$arrayinfo}
+										{$arrayinfo[i]}<br>
+									{/section}
+								</td>
+							</tr>
+						</table>
+					{/if}
 					<table width="100%">
 						<thead>
 							<tr>
@@ -149,6 +151,30 @@
 							</td>
 						</tr>
 					</table>
+					<table width=100%>
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Fusion automatique de licenciés non fédéraux</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<p style="color: #666; font-size: 0.9em; margin: 10px 0;">
+									Cette fonction fusionne automatiquement les licenciés ayant :
+									<br>- Un numéro de licence > 2000000 (licences non fédérales)
+									<br>- Les mêmes Nom, Prénom et Club
+									<br><br>
+									Le licencié conservé sera celui ayant la meilleure cohérence de données (numéro ICF, date de naissance valide, qualification d'arbitre, saison la plus récente).
+								</p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="button" name="FusionAutoLicenciesNonFederaux" id="FusionAutoLicenciesNonFederaux" value="Lancer la fusion automatique" style="background-color: #ff9800; color: white; font-weight: bold;">
+							</td>
+						</tr>
+					</table>
+					<hr>
 					<table width=100%>
 						<tr>
 							<th class='titreForm' colspan=2>
@@ -380,6 +406,20 @@
 							</td>
 						</tr>
 					</table>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Purge des fichiers cache</label>
+							</th>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<input type="button" name="PurgeCache" id="PurgeCache" value="Purger les fichiers cache obsolètes">
+								<br>
+								<small style="color: #666;">Supprime les fichiers de match (> 1 an) et d'événement (> 2 ans)</small>
+							</td>
+						</tr>
+					</table>
 					{* {if $profile <= 2}
 						<table width="100%">
 							<tr>
@@ -495,6 +535,42 @@
 							<td colspan=2>
 								<br>
 								<input type="button" name="AjoutSaison" onclick="AddSaison();" value="Créer">
+							</td>
+						</tr>
+					</table>
+					<br>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Copier les Responsables de Compétition (RC)</label>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<label for="saisonSourceRc">Saison source :</label>
+								<select name="saisonSourceRc" id="saisonSourceRc">
+									<option value="">-- Sélectionnez --</option>
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+							<td>
+								<label for="saisonCibleRc">Saison cible :</label>
+								<select name="saisonCibleRc" id="saisonCibleRc">
+									<option value="">-- Sélectionnez --</option>
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<br>
+								<input type="button" name="CopyRcBtn" id="CopyRcBtn" onclick="CopyRc();" value="Copier les RC">
+								<br>
+								<small style="color: #666;">Cette opération copie tous les RC de la saison source vers la saison cible (les doublons sont ignorés).</small>
 							</td>
 						</tr>
 					</table>

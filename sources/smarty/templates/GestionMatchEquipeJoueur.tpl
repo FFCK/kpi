@@ -37,11 +37,11 @@
 								</tr>
 							</thead>
 							<tbody>
+								{assign var='separateur_inactif' value=''}
 								{section name=i loop=$arrayJoueur} 
-									{if ($arrayJoueur[i].Capitaine == 'E' or $arrayJoueur[i].Capitaine == 'A') && $test != 'OK'}
-									{assign var='test' value='OK'}
-									<tr class='{cycle values="impair,pair"}'>
-										<td><br><br></td>
+									{if ($arrayJoueur[i].Capitaine == 'E' or $arrayJoueur[i].Capitaine == 'A') && $separateur_inactif != 'OK'}
+										{assign var='separateur_inactif' value='OK'}
+										<tr class='{cycle values="impair,pair"}'>
 										<td>&nbsp;</td>
 										<td>&nbsp;</td>
 										<td>&nbsp;</td>
@@ -117,7 +117,7 @@
 							<br>
 							<br>
 							{/if}
-							<img width="21" src="../img/verrou{$Validation|default:'N'}" alt="Verrou" title="Verrou" />
+							<img width="21" src="../img/verrou{$Validation|default:'N'}.gif" alt="Verrou" title="Verrou" />
 						</div>
 					</div>
 					<div id='directSelecteur'>

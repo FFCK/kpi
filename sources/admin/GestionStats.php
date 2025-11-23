@@ -839,10 +839,10 @@ class GestionStats extends MyPageSecure
                     LEFT JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
                     LEFT JOIN kp_licence l ON cej.Matric = l.Matric
                     WHERE 1
-                    AND ce.Code_compet IN ($in) 
-                    AND ce.Code_saison = ? 
+                    AND ce.Code_compet IN ($in)
+                    AND ce.Code_saison = ?
                     GROUP BY cej.Matric
-                    ORDER BY ce.Code_club, ce.Libelle 
+                    ORDER BY ce.Code_club, ce.Libelle
                     LIMIT 0, $nbLignes ";
                 $sql_total .= '<br><br>' . $sql;
                 $result = $myBdd->pdo->prepare($sql);
@@ -851,6 +851,268 @@ class GestionStats extends MyPageSecure
                     array_push($arrayStats, $row);
                 }
                 $this->m_tpl->assign('arrayListeJoueurs', $arrayStats);
+                break;
+            case 'CoherenceMatchs': // Contrôle de cohérence des matchs
+                // Récupération de tous les matchs avec date, heure, équipes et arbitres
+                $sql = "SELECT m.Id, m.Date_match, m.Heure_match, m.Numero_ordre,
+                    j.Code_competition, j.Lieu,
+                    ea.Id as Id_equipeA, ea.Libelle as Equipe_A,
+                    eb.Id as Id_equipeB, eb.Libelle as Equipe_B,
+                    m.Arbitre_principal, m.Arbitre_secondaire
+                    FROM kp_match m
+                    INNER JOIN kp_journee j ON m.Id_journee = j.Id
+                    INNER JOIN kp_competition_equipe ea ON m.Id_equipeA = ea.Id
+                    INNER JOIN kp_competition_equipe eb ON m.Id_equipeB = eb.Id
+                    WHERE j.Code_competition IN ($in)
+                    AND j.Code_saison = ?
+                    AND m.Date_match IS NOT NULL
+                    AND m.Heure_match IS NOT NULL
+                    ORDER BY m.Date_match, m.Heure_match";
+                $sql_total .= '<br><br>' . $sql;
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array_merge($Compets, [$codeSaison]));
+
+                // Créer un tableau d'événements par équipe
+                $evenements_equipe = array();
+
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                    $datetime = $row['Date_match'] . ' ' . $row['Heure_match'];
+
+                    // Événement pour équipe A (match joué)
+                    $evenements_equipe[$row['Id_equipeA']][] = array(
+                        'type' => 'match',
+                        'datetime' => $datetime,
+                        'equipe' => $row['Equipe_A'],
+                        'match_id' => $row['Id'],
+                        'competition' => $row['Code_competition'],
+                        'lieu' => $row['Lieu'],
+                        'numero_ordre' => $row['Numero_ordre'],
+                        'role' => 'Équipe A',
+                        'adversaire' => $row['Equipe_B']
+                    );
+
+                    // Événement pour équipe B (match joué)
+                    $evenements_equipe[$row['Id_equipeB']][] = array(
+                        'type' => 'match',
+                        'datetime' => $datetime,
+                        'equipe' => $row['Equipe_B'],
+                        'match_id' => $row['Id'],
+                        'competition' => $row['Code_competition'],
+                        'lieu' => $row['Lieu'],
+                        'numero_ordre' => $row['Numero_ordre'],
+                        'role' => 'Équipe B',
+                        'adversaire' => $row['Equipe_A']
+                    );
+
+                    // Événements pour arbitres (en extrayant le nom de l'équipe depuis le texte)
+                    foreach (array('principal' => $row['Arbitre_principal'], 'secondaire' => $row['Arbitre_secondaire']) as $type_arb => $arbitre) {
+                        if (!empty($arbitre)) {
+                            // Extraire le nom de l'équipe (format souvent : "Nom Prénom (Équipe)")
+                            if (preg_match('/\(([^)]+)\)/', $arbitre, $matches)) {
+                                $equipe_arbitre = trim($matches[1]);
+
+                                // Trouver l'ID de l'équipe
+                                $equipe_id = null;
+                                if (strpos($row['Equipe_A'], $equipe_arbitre) !== false) {
+                                    $equipe_id = $row['Id_equipeA'];
+                                    $equipe_nom = $row['Equipe_A'];
+                                } elseif (strpos($row['Equipe_B'], $equipe_arbitre) !== false) {
+                                    $equipe_id = $row['Id_equipeB'];
+                                    $equipe_nom = $row['Equipe_B'];
+                                } else {
+                                    // Rechercher dans toutes les équipes de la compétition
+                                    $sql_equipe = "SELECT Id, Libelle FROM kp_competition_equipe
+                                        WHERE Code_compet IN ($in)
+                                        AND Code_saison = ?
+                                        AND (Libelle LIKE ? OR Libelle = ?)";
+                                    $stmt = $myBdd->pdo->prepare($sql_equipe);
+                                    $stmt->execute(array_merge($Compets, [$codeSaison, '%' . $equipe_arbitre . '%', $equipe_arbitre]));
+                                    if ($eq_row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                        $equipe_id = $eq_row['Id'];
+                                        $equipe_nom = $eq_row['Libelle'];
+                                    }
+                                }
+
+                                if ($equipe_id !== null) {
+                                    $evenements_equipe[$equipe_id][] = array(
+                                        'type' => 'arbitrage',
+                                        'datetime' => $datetime,
+                                        'equipe' => $equipe_nom,
+                                        'match_id' => $row['Id'],
+                                        'competition' => $row['Code_competition'],
+                                        'lieu' => $row['Lieu'],
+                                        'numero_ordre' => $row['Numero_ordre'],
+                                        'role' => 'Arbitre ' . $type_arb,
+                                        'match' => $row['Equipe_A'] . ' vs ' . $row['Equipe_B']
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Analyser les incohérences pour chaque équipe
+                $incoherences = array();
+                foreach ($evenements_equipe as $equipe_id => $evenements) {
+                    // Trier les événements par date/heure
+                    usort($evenements, function($a, $b) {
+                        return strcmp($a['datetime'], $b['datetime']);
+                    });
+
+                    // Vérifier les incohérences
+                    for ($i = 0; $i < count($evenements); $i++) {
+                        $evt = $evenements[$i];
+                        $datetime_evt = strtotime($evt['datetime']);
+
+                        // 1. Vérifier si arbitrage moins d'1h après un match
+                        if ($evt['type'] == 'arbitrage' && $i > 0) {
+                            for ($j = $i - 1; $j >= 0; $j--) {
+                                $evt_prev = $evenements[$j];
+                                if ($evt_prev['type'] == 'match') {
+                                    $datetime_prev = strtotime($evt_prev['datetime']);
+                                    $diff_minutes = ($datetime_evt - $datetime_prev) / 60;
+                                    if ($diff_minutes > 0 && $diff_minutes < 60) {
+                                        $incoherences[] = array(
+                                            'type' => 'Arbitrage < 1h après match',
+                                            'equipe' => $evt['equipe'],
+                                            'competition' => $evt['competition'],
+                                            'date' => date('d/m/Y', $datetime_evt),
+                                            'heure_match' => date('H:i', $datetime_prev),
+                                            'heure_arbitrage' => date('H:i', $datetime_evt),
+                                            'details' => 'Match ' . $evt_prev['role'] . ' vs ' . $evt_prev['adversaire'] .
+                                                ' à ' . date('H:i', $datetime_prev) . ', puis ' . $evt['role'] .
+                                                ' à ' . date('H:i', $datetime_evt) . ' (' . round($diff_minutes) . ' min)',
+                                            'lieu' => $evt['lieu']
+                                        );
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        // 2. Vérifier si match moins d'1h après un arbitrage
+                        if ($evt['type'] == 'match' && $i > 0) {
+                            for ($j = $i - 1; $j >= 0; $j--) {
+                                $evt_prev = $evenements[$j];
+                                if ($evt_prev['type'] == 'arbitrage') {
+                                    $datetime_prev = strtotime($evt_prev['datetime']);
+                                    $diff_minutes = ($datetime_evt - $datetime_prev) / 60;
+                                    if ($diff_minutes > 0 && $diff_minutes < 60) {
+                                        $incoherences[] = array(
+                                            'type' => 'Match < 1h après arbitrage',
+                                            'equipe' => $evt['equipe'],
+                                            'competition' => $evt['competition'],
+                                            'date' => date('d/m/Y', $datetime_evt),
+                                            'heure_arbitrage' => date('H:i', $datetime_prev),
+                                            'heure_match' => date('H:i', $datetime_evt),
+                                            'details' => $evt_prev['role'] . ' à ' . date('H:i', $datetime_prev) .
+                                                ', puis match ' . $evt['role'] . ' vs ' . $evt['adversaire'] .
+                                                ' à ' . date('H:i', $datetime_evt) . ' (' . round($diff_minutes) . ' min)',
+                                            'lieu' => $evt['lieu']
+                                        );
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        // 3. Compter les matchs joués le même jour
+                        if ($evt['type'] == 'match') {
+                            $date_jour = date('Y-m-d', $datetime_evt);
+                            $matchs_jour = array_filter($evenements, function($e) use ($date_jour) {
+                                return $e['type'] == 'match' &&
+                                    date('Y-m-d', strtotime($e['datetime'])) == $date_jour;
+                            });
+
+                            if (count($matchs_jour) > 6) {
+                                // Vérifier si on n'a pas déjà ajouté cette incohérence pour ce jour
+                                $deja_ajoute = false;
+                                foreach ($incoherences as $inc) {
+                                    if ($inc['type'] == 'Plus de 6 matchs/jour' &&
+                                        $inc['equipe'] == $evt['equipe'] &&
+                                        $inc['date'] == date('d/m/Y', $datetime_evt)) {
+                                        $deja_ajoute = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!$deja_ajoute) {
+                                    $incoherences[] = array(
+                                        'type' => 'Plus de 6 matchs/jour',
+                                        'equipe' => $evt['equipe'],
+                                        'competition' => $evt['competition'],
+                                        'date' => date('d/m/Y', $datetime_evt),
+                                        'heure_match' => '',
+                                        'heure_arbitrage' => '',
+                                        'details' => count($matchs_jour) . ' matchs joués le ' . date('d/m/Y', $datetime_evt),
+                                        'lieu' => $evt['lieu']
+                                    );
+                                }
+                            }
+                        }
+
+                        // 4. Vérifier plus de 3 matchs sur une période de 4h
+                        if ($evt['type'] == 'match') {
+                            $datetime_limit = $datetime_evt + (4 * 3600); // +4h
+                            $matchs_4h = array($evt);
+
+                            for ($k = $i + 1; $k < count($evenements); $k++) {
+                                $evt_next = $evenements[$k];
+                                $datetime_next = strtotime($evt_next['datetime']);
+
+                                if ($datetime_next > $datetime_limit) {
+                                    break;
+                                }
+
+                                if ($evt_next['type'] == 'match') {
+                                    $matchs_4h[] = $evt_next;
+                                }
+                            }
+
+                            if (count($matchs_4h) > 3) {
+                                // Vérifier si on n'a pas déjà ajouté cette incohérence
+                                $deja_ajoute = false;
+                                foreach ($incoherences as $inc) {
+                                    if ($inc['type'] == 'Plus de 3 matchs/4h' &&
+                                        $inc['equipe'] == $evt['equipe'] &&
+                                        $inc['date'] == date('d/m/Y', $datetime_evt) &&
+                                        $inc['heure_match'] == date('H:i', $datetime_evt)) {
+                                        $deja_ajoute = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!$deja_ajoute) {
+                                    $heure_fin = date('H:i', strtotime($matchs_4h[count($matchs_4h) - 1]['datetime']));
+                                    $incoherences[] = array(
+                                        'type' => 'Plus de 3 matchs/4h',
+                                        'equipe' => $evt['equipe'],
+                                        'competition' => $evt['competition'],
+                                        'date' => date('d/m/Y', $datetime_evt),
+                                        'heure_match' => date('H:i', $datetime_evt),
+                                        'heure_arbitrage' => $heure_fin,
+                                        'details' => count($matchs_4h) . ' matchs de ' .
+                                            date('H:i', $datetime_evt) . ' à ' . $heure_fin,
+                                        'lieu' => $evt['lieu']
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Trier les incohérences par équipe puis par date
+                usort($incoherences, function($a, $b) {
+                    $cmp = strcmp($a['equipe'], $b['equipe']);
+                    if ($cmp == 0) {
+                        $cmp = strcmp($a['date'], $b['date']);
+                    }
+                    return $cmp;
+                });
+
+                $arrayStats = $incoherences;
+                $this->m_tpl->assign('arrayCoherenceMatchs', $arrayStats);
+                $this->m_tpl->assign('nbIncoherences', count($incoherences));
                 break;
         }
         $_SESSION['sql_query'] = $sql;

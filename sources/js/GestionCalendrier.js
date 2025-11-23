@@ -1,23 +1,7 @@
 jq = jQuery.noConflict()
 
-var langue = []
-
-if (lang == 'en') {
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-	langue['Confirm_delete'] = 'Delete selected phases ?'
-	langue['Confirm_update'] = 'Confirm update ?'
-	langue['Confirm_dupplicate'] = 'Confirm dupplicate ?'
-	langue['MAJ_impossible'] = 'Unable to update'
-	langue['Selection_competition'] = 'Select a competition !'
-} else {
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-	langue['Confirm_delete'] = 'Supprimer les journées/phases sélectionnées ?'
-	langue['Confirm_update'] = 'Confirmer le changement ?'
-	langue['Confirm_dupplicate'] = 'Confirmez-vous la copie ?'
-	langue['MAJ_impossible'] = 'Mise à jour impossible'
-	langue['Selection_competition'] = 'Sélectionner une compétition !'
-}
-
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 jq(document).ready(function () {
 	jq("#evenement").change(function () {
