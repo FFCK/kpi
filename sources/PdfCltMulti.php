@@ -160,10 +160,10 @@ class PdfCltMulti extends MyPage
 
         // Colonnes réduites pour MULTI : Clt, Equipe, Pts, J
         $pdf->Cell(50, 5, '', 0, 0);
-        $pdf->Cell(30, 5, $lang['Clt'], 'B', 0, 'C');
-        $pdf->Cell(100, 5, $lang['Equipe'], 'B', 0, 'L');
-        $pdf->Cell(30, 5, $lang['Pts'], 'B', 0, 'C');
-        $pdf->Cell(30, 5, $lang['J'], 'B', 1, 'C');
+        $pdf->Cell(30, 5, $lang['Clt'] ?? 'Clt', 'B', 0, 'C');
+        $pdf->Cell(100, 5, $lang['Equipe'] ?? 'Equipe', 'B', 0, 'L');
+        $pdf->Cell(30, 5, $lang['Pts'] ?? 'Pts', 'B', 0, 'C');
+        $pdf->Cell(30, 5, $lang['J'] ?? 'J', 'B', 1, 'C');
 
         $i = 0;
         while ($row = $result->fetch()) {
