@@ -1557,7 +1557,7 @@ class GestionClassement extends MyPageSecure
 				J = ?
 				WHERE Id = ?";
 			$stmt = $myBdd->pdo->prepare($sql);
-			$stmt->execute(array($totalPoints, $nbCompetitionsParticipees, $equipeMulti['Id']));
+			$stmt->execute(array($totalPoints * 100, $nbCompetitionsParticipees, $equipeMulti['Id']));
 		}
 
 		// Calculer le classement final en triant par points décroissants
