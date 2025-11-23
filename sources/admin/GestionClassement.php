@@ -1133,6 +1133,11 @@ class GestionClassement extends MyPageSecure
 				}
 	
 	
+			// Vérifier que $rEgalites[$clt] existe avant de l'utiliser
+			if (!isset($rEgalites[$clt]) || empty($rEgalites[$clt])) {
+				continue;
+			}
+
 				foreach ($rEgalites[$clt] as $team => $team_value) {
 					$arrayCltGlobal[$clt][] = [
 						'clt' => $clt,
