@@ -35,6 +35,16 @@ Cette section contient la documentation orientée utilisateurs finaux du systèm
   - Planification et maintenance
   - Configuration et dépannage
 
+### Outils et Guides
+
+- **[DOCVIEWER_GUIDE.md](DOCVIEWER_GUIDE.md)** - **Guide du visualiseur de documentation**
+  - Accès et utilisation du visualiseur de documentation
+  - Comment ajouter de nouvelles documentations
+  - Format Markdown recommandé
+  - Organisation et bonnes pratiques
+  - Dépannage
+  - **Statut**: ✅ En production
+
 ---
 
 ## 🎯 Par où commencer ?

@@ -10,7 +10,8 @@
         "twbs/bootstrap": "^5.3",
         "smarty/smarty": "^4",
         "endroid/qr-code": "^5.0",
-        "ezyang/htmlpurifier": "^4.13"
+        "ezyang/htmlpurifier": "^4.13",
+        "erusev/parsedown": "^1.7"
     },
     "config": {
         "vendor-dir": "vendor",
