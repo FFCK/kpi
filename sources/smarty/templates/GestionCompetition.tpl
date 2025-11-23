@@ -292,7 +292,7 @@
 						<tr id="pointsGridRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
 							<td colspan=4 title='{#Exemple_grille_points_MULTI#}: {ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}'>
 								<label for="pointsGrid">{#Grille_de_points_MULTI#} : </label>
-								<input type="text" name="pointsGrid" id="pointsGrid" maxlength=255 value="{$pointsGrid}"
+								<input type="text" name="pointsGrid" id="pointsGrid" maxlength=255 value="{$pointsGrid nofilter}"
 									{if $profile > 2}readonly{/if} {if $profile <= 2}class='gris'{/if}
 									placeholder='{ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}' />
 								<br><small><i>{#Format_JSON#} : {ldelim}"1":10,"2":6,"3":4,"default":0{rdelim}</i></small>
@@ -302,7 +302,7 @@
 							<td colspan=4>
 								<label for="multiCompetitions">{#Competitions_sources_MULTI#} : </label>
 								<input type="hidden" name="multiCompetitions" id="multiCompetitionsHidden" value="" />
-								<select name="multiCompetitionsSelect[]" id="multiCompetitionsSelect" multiple size="15" style="width:100%"
+								<select id="multiCompetitionsSelect" multiple size="15" style="width:100%"
 									{if $profile > 2}disabled{/if}>
 									{foreach from=$competsBySection key=sectionKey item=sectionData}
 										<optgroup label="{$sectionData.sectionLabel}">
@@ -625,8 +625,8 @@
 				}
 			}
 
-			// Fonction pour convertir le select multiple en JSON avant la soumission
-			function updateCompet() {
+			// Fonction pour synchroniser le select avec le champ hidden
+			function syncMultiCompetitions() {
 				var select = document.getElementById('multiCompetitionsSelect');
 				var hidden = document.getElementById('multiCompetitionsHidden');
 
@@ -639,9 +639,13 @@
 					}
 					// Stocker la liste en JSON
 					hidden.value = JSON.stringify(selected);
-					// Renommer le champ hidden pour qu'il soit envoyé comme multiCompetitions
-					hidden.name = 'multiCompetitions';
 				}
+			}
+
+			// Fonction pour convertir le select multiple en JSON avant la soumission
+			function updateCompet() {
+				// S'assurer que le champ hidden est à jour
+				syncMultiCompetitions();
 
 				// Appeler la fonction originale updateCompet si elle existe
 				if (typeof window.originalUpdateCompet === 'function') {
@@ -652,11 +656,25 @@
 				}
 			}
 
+			// Attacher l'event listener sur le select pour synchroniser automatiquement
+			function initMultiCompetitionsSync() {
+				var select = document.getElementById('multiCompetitionsSelect');
+				if (select) {
+					select.addEventListener('change', syncMultiCompetitions);
+					// Synchroniser immédiatement au chargement
+					syncMultiCompetitions();
+				}
+			}
+
 			// Appeler au chargement de la page pour initialiser l'état
 			if (document.readyState === 'loading') {
-				document.addEventListener('DOMContentLoaded', changeCodeTypeClt);
+				document.addEventListener('DOMContentLoaded', function() {
+					changeCodeTypeClt();
+					initMultiCompetitionsSync();
+				});
 			} else {
 				changeCodeTypeClt();
+				initMultiCompetitionsSync();
 			}
 			</script>
 	</div>
