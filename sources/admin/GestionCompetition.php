@@ -372,23 +372,26 @@ class GestionCompetition extends MyPageSecure
 		$Departement = utyGetPost('Departement');
 		$publierJournee = utyGetPost('publierJournee');
 
+		// Récupérer les champs JSON directement sans purification HTML
+		$pointsGrid = isset($_POST['pointsGrid']) ? $_POST['pointsGrid'] : '';
+		$multiCompetitions = isset($_POST['multiCompetitions']) ? $_POST['multiCompetitions'] : '';
 
 		if (strlen($codeCompet) > 0) {
-			$sql = "INSERT INTO kp_competition 
-				(Code, Code_saison, Code_niveau, Libelle, Soustitre, 
-				Soustitre2, Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons, 
-				En_actif, Titre_actif, Bandeau_actif, Logo_actif, 
-				Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, 
-				Code_typeclt, Code_tour, Qualifies, Elimines, 
-				Points, goalaverage, Statut, Publication) 
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+			$sql = "INSERT INTO kp_competition
+				(Code, Code_saison, Code_niveau, Libelle, Soustitre,
+				Soustitre2, Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons,
+				En_actif, Titre_actif, Bandeau_actif, Logo_actif,
+				Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder,
+				Code_typeclt, points_grid, multi_competitions, Code_tour, Qualifies, Elimines,
+				Points, goalaverage, Statut, Publication)
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array(
 				$codeCompet, $saison, utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'),
 				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '',
 				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'),
 				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
-				utyGetPost('codeTypeClt'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
+				utyGetPost('codeTypeClt'), $pointsGrid, $multiCompetitions, utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
 				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet')
 			));
 
@@ -582,6 +585,10 @@ class GestionCompetition extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
+			// Récupérer les champs JSON directement sans purification HTML
+			$pointsGrid = isset($_POST['pointsGrid']) ? $_POST['pointsGrid'] : '';
+			$multiCompetitions = isset($_POST['multiCompetitions']) ? $_POST['multiCompetitions'] : '';
+
 			$sql  = "UPDATE kp_competition
 				SET Code_niveau = ?, Libelle = ?, Soustitre = ?,
 				Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?,
@@ -597,7 +604,7 @@ class GestionCompetition extends MyPageSecure
 				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '',
 				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'),
 				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
-				utyGetPost('codeTypeClt'), utyGetPost('pointsGrid'), utyGetPost('multiCompetitions'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
+				utyGetPost('codeTypeClt'), $pointsGrid, $multiCompetitions, utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
 				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
 				$codeCompet, $saison
 			));
