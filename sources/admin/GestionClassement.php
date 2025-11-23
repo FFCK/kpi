@@ -367,6 +367,7 @@ class GestionClassement extends MyPageSecure
 			$this->InitClassementCompetitionEquipe($codeCompet, $codeSaison);
 
 			$this->CalculClassementMulti($codeCompet, $codeSaison, $row['multi_competitions'], $row['points_grid']);
+			$egalites = 0; // Pas de gestion des égalités pour MULTI
 		} else {
 			// Traitement standard pour CHPT et CP
 			$this->RazClassementCompetitionEquipe($codeCompet, $codeSaison);
