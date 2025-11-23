@@ -70,17 +70,19 @@
 									{/if}
 									<th>{#Clt#}</th>
 									<th>{#Equipe#}</th>
-									{if $typeCompetition=='Championnat'}
+									{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 										<th>{#Pts#}</th>
 									{/if}
 									<th>{#J#}</th>
-									<th>{#G#}</th>
-									<th>{#N#}</th>
-									<th>{#P#}</th>
-									<th>{#F#}</th>
-									<th>+</th>
-									<th>-</th>
-									<th>{#Diff#}</th>
+									{if $typeCompetition!='Multi-Compétition'}
+										<th>{#G#}</th>
+										<th>{#N#}</th>
+										<th>{#P#}</th>
+										<th>{#F#}</th>
+										<th>+</th>
+										<th>-</th>
+										<th>{#Diff#}</th>
+									{/if}
 								</tr>
 							</thead>
 							<tbody>
@@ -106,7 +108,7 @@
 													alt="{$arrayEquipe[i].Code_comite_dep}" title="{$arrayEquipe[i].Code_comite_dep}" /></td>
 										{/if}
 										{if $profile <= 4 && $AuthModif == 'O'}
-											{if $typeCompetition=='Championnat'}
+											{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 												<td width="30"><span class='directInput' Id="Clt-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}0">{$arrayEquipe[i].Clt}</span></td>
 												<td width="200">{$arrayEquipe[i].Libelle}</td>
@@ -120,22 +122,24 @@
 											{/if}
 											<td width="30"><span class='directInput' Id="J-{$arrayEquipe[i].Id}"
 													tabindex="1{$smarty.section.i.iteration}2">{$arrayEquipe[i].J}</span></td>
-											<td width="30"><span class='directInput' Id="G-{$arrayEquipe[i].Id}"
-													tabindex="1{$smarty.section.i.iteration}3">{$arrayEquipe[i].G}</span></td>
-											<td width="30"><span class='directInput' Id="N-{$arrayEquipe[i].Id}"
-													tabindex="1{$smarty.section.i.iteration}4">{$arrayEquipe[i].N}</span></td>
-											<td width="30"><span class='directInput' Id="P-{$arrayEquipe[i].Id}"
-													tabindex="1{$smarty.section.i.iteration}5">{$arrayEquipe[i].P}</span></td>
-											<td width="30"><span class='directInput' Id="F-{$arrayEquipe[i].Id}"
-													tabindex="1{$smarty.section.i.iteration}6">{$arrayEquipe[i].F}</span></td>
-											<td width="40"><span class='directInput' Id="Plus-{$arrayEquipe[i].Id}"
-													tabindex="1{$smarty.section.i.iteration}7">{$arrayEquipe[i].Plus}</span></td>
-											<td width="40"><span class='directInput' Id="Moins-{$arrayEquipe[i].Id}"
-													tabindex="1{$smarty.section.i.iteration}8">{$arrayEquipe[i].Moins}</span></td>
-											<td width="40"><span class='directInput' Id="Diff-{$arrayEquipe[i].Id}"
-													tabindex="1{$smarty.section.i.iteration}9">{$arrayEquipe[i].Diff}</span></td>
+											{if $typeCompetition!='Multi-Compétition'}
+												<td width="30"><span class='directInput' Id="G-{$arrayEquipe[i].Id}"
+														tabindex="1{$smarty.section.i.iteration}3">{$arrayEquipe[i].G}</span></td>
+												<td width="30"><span class='directInput' Id="N-{$arrayEquipe[i].Id}"
+														tabindex="1{$smarty.section.i.iteration}4">{$arrayEquipe[i].N}</span></td>
+												<td width="30"><span class='directInput' Id="P-{$arrayEquipe[i].Id}"
+														tabindex="1{$smarty.section.i.iteration}5">{$arrayEquipe[i].P}</span></td>
+												<td width="30"><span class='directInput' Id="F-{$arrayEquipe[i].Id}"
+														tabindex="1{$smarty.section.i.iteration}6">{$arrayEquipe[i].F}</span></td>
+												<td width="40"><span class='directInput' Id="Plus-{$arrayEquipe[i].Id}"
+														tabindex="1{$smarty.section.i.iteration}7">{$arrayEquipe[i].Plus}</span></td>
+												<td width="40"><span class='directInput' Id="Moins-{$arrayEquipe[i].Id}"
+														tabindex="1{$smarty.section.i.iteration}8">{$arrayEquipe[i].Moins}</span></td>
+												<td width="40"><span class='directInput' Id="Diff-{$arrayEquipe[i].Id}"
+														tabindex="1{$smarty.section.i.iteration}9">{$arrayEquipe[i].Diff}</span></td>
+											{/if}
 										{else}
-											{if $typeCompetition=='Championnat'}
+											{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 												<td width="30">{$arrayEquipe[i].Clt}</td>
 												<td width="200">{$arrayEquipe[i].Libelle}</td>
 												<td width="40">{$arrayEquipe[i].Pts/100}</td>
@@ -145,13 +149,15 @@
 												{*<td width="40">{$arrayEquipe[i].PtsNiveau}</td>*}
 											{/if}
 											<td width="30">{$arrayEquipe[i].J}</td>
-											<td width="30">{$arrayEquipe[i].G}</td>
-											<td width="30">{$arrayEquipe[i].N}</td>
-											<td width="30">{$arrayEquipe[i].P}</td>
-											<td width="30">{$arrayEquipe[i].F}</td>
-											<td width="40">{$arrayEquipe[i].Plus}</td>
-											<td width="40">{$arrayEquipe[i].Moins}</td>
-											<td width="40">{$arrayEquipe[i].Diff}</td>
+											{if $typeCompetition!='Multi-Compétition'}
+												<td width="30">{$arrayEquipe[i].G}</td>
+												<td width="30">{$arrayEquipe[i].N}</td>
+												<td width="30">{$arrayEquipe[i].P}</td>
+												<td width="30">{$arrayEquipe[i].F}</td>
+												<td width="40">{$arrayEquipe[i].Plus}</td>
+												<td width="40">{$arrayEquipe[i].Moins}</td>
+												<td width="40">{$arrayEquipe[i].Diff}</td>
+											{/if}
 										{/if}
 
 									</tr>
@@ -285,17 +291,19 @@
 										<th>&nbsp;</th>
 									{/if}
 									<th colspan="2">{#Classement_public#}</th>
-									{if $typeCompetition=='Championnat'}
+									{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 										<th>{#Pts#}</th>
 									{/if}
 									<th>{#J#}</th>
-									<th>{#G#}</th>
-									<th>{#N#}</th>
-									<th>{#P#}</th>
-									<th>{#F#}</th>
-									<th>+</th>
-									<th>-</th>
-									<th>{#Diff#}</th>
+									{if $typeCompetition!='Multi-Compétition'}
+										<th>{#G#}</th>
+										<th>{#N#}</th>
+										<th>{#P#}</th>
+										<th>{#F#}</th>
+										<th>+</th>
+										<th>-</th>
+										<th>{#Diff#}</th>
+									{/if}
 								</tr>
 							</thead>
 							<tbody>
@@ -322,7 +330,7 @@
 													alt="{$arrayEquipe_publi[i].Code_comite_dep}" title="{$arrayEquipe_publi[i].Code_comite_dep}" />
 											</td>
 										{/if}
-										{if $typeCompetition=='Championnat'}
+										{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 											<td width="30">{$arrayEquipe_publi[i].Clt_publi}</td>
 											<td width="200">{$arrayEquipe_publi[i].Libelle}</td>
 											<td width="40">{$arrayEquipe_publi[i].Pts_publi/100}</td>
@@ -333,13 +341,15 @@
 										{/if}
 
 										<td width="30">{$arrayEquipe_publi[i].J_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].G_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].N_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].P_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].F_publi}</td>
-										<td width="40">{$arrayEquipe_publi[i].Plus_publi}</td>
-										<td width="40">{$arrayEquipe_publi[i].Moins_publi}</td>
-										<td width="40">{$arrayEquipe_publi[i].Diff_publi}</td>
+										{if $typeCompetition!='Multi-Compétition'}
+											<td width="30">{$arrayEquipe_publi[i].G_publi}</td>
+											<td width="30">{$arrayEquipe_publi[i].N_publi}</td>
+											<td width="30">{$arrayEquipe_publi[i].P_publi}</td>
+											<td width="30">{$arrayEquipe_publi[i].F_publi}</td>
+											<td width="40">{$arrayEquipe_publi[i].Plus_publi}</td>
+											<td width="40">{$arrayEquipe_publi[i].Moins_publi}</td>
+											<td width="40">{$arrayEquipe_publi[i].Diff_publi}</td>
+										{/if}
 
 									</tr>
 								{/section}
@@ -550,6 +560,24 @@
 									{if $Code_uti_publication != ''}
 										<a href="../PdfCltNiveauJournee.php" Target="_blank"><img height="30" src="../img/pdf.png"
 												title="{#Detail_par_journee#} - public" /></a>
+									{/if}
+								</td>
+							</tr>
+						{elseif $typeCompetition=='Multi-Compétition'}
+							<tr>
+								<td colspan=2 align='left' title="{#Provisoire#}"><b>Admin</b></td>
+								<td colspan=2 align='right'><b>Public</b></td>
+							</tr>
+							<tr>
+								<td align='left'>
+									<a href="FeuilleCltMulti.php" Target="_blank"><img height="30" src="../img/pdf.png"
+											title="{#Classement_general#} - admin" /></a>
+								</td>
+								<td colspan=2 align='center'>{#Classement_general#}</td>
+								<td align='right'>
+									{if $Code_uti_publication != ''}
+										<a href="../PdfCltMulti.php" Target="_blank"><img height="30" src="../img/pdf.png"
+												title="{#Classement_general#} - public" /></a>
 									{/if}
 								</td>
 							</tr>

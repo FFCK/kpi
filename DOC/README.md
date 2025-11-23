@@ -9,6 +9,7 @@ Documentation orientée utilisateurs finaux et fonctionnalités du système.
 - **[KPI_FUNCTIONALITY_INVENTORY.md](user/KPI_FUNCTIONALITY_INVENTORY.md)** - Inventaire complet des fonctionnalités (7000+ lignes)
 - **[MATCH_CONSISTENCY_STATS.md](user/MATCH_CONSISTENCY_STATS.md)** - Fonctionnalité de cohérence des matchs
 - **[CRON_DOCUMENTATION.md](user/CRON_DOCUMENTATION.md)** - Tâches planifiées automatiques
+- **[MULTI_COMPETITION_TYPE.md](user/MULTI_COMPETITION_TYPE.md)** - Type de compétition MULTI (agrégation multi-compétitions)
 
 ## 💻 [Documentation Développeur](developer/)
 
