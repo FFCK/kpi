@@ -291,17 +291,19 @@
 										<th>&nbsp;</th>
 									{/if}
 									<th colspan="2">{#Classement_public#}</th>
-									{if $typeCompetition=='Championnat'}
+									{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 										<th>{#Pts#}</th>
 									{/if}
 									<th>{#J#}</th>
-									<th>{#G#}</th>
-									<th>{#N#}</th>
-									<th>{#P#}</th>
-									<th>{#F#}</th>
-									<th>+</th>
-									<th>-</th>
-									<th>{#Diff#}</th>
+									{if $typeCompetition!='Multi-Compétition'}
+										<th>{#G#}</th>
+										<th>{#N#}</th>
+										<th>{#P#}</th>
+										<th>{#F#}</th>
+										<th>+</th>
+										<th>-</th>
+										<th>{#Diff#}</th>
+									{/if}
 								</tr>
 							</thead>
 							<tbody>
@@ -328,7 +330,7 @@
 													alt="{$arrayEquipe_publi[i].Code_comite_dep}" title="{$arrayEquipe_publi[i].Code_comite_dep}" />
 											</td>
 										{/if}
-										{if $typeCompetition=='Championnat'}
+										{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 											<td width="30">{$arrayEquipe_publi[i].Clt_publi}</td>
 											<td width="200">{$arrayEquipe_publi[i].Libelle}</td>
 											<td width="40">{$arrayEquipe_publi[i].Pts_publi/100}</td>
@@ -339,13 +341,15 @@
 										{/if}
 
 										<td width="30">{$arrayEquipe_publi[i].J_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].G_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].N_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].P_publi}</td>
-										<td width="30">{$arrayEquipe_publi[i].F_publi}</td>
-										<td width="40">{$arrayEquipe_publi[i].Plus_publi}</td>
-										<td width="40">{$arrayEquipe_publi[i].Moins_publi}</td>
-										<td width="40">{$arrayEquipe_publi[i].Diff_publi}</td>
+										{if $typeCompetition!='Multi-Compétition'}
+											<td width="30">{$arrayEquipe_publi[i].G_publi}</td>
+											<td width="30">{$arrayEquipe_publi[i].N_publi}</td>
+											<td width="30">{$arrayEquipe_publi[i].P_publi}</td>
+											<td width="30">{$arrayEquipe_publi[i].F_publi}</td>
+											<td width="40">{$arrayEquipe_publi[i].Plus_publi}</td>
+											<td width="40">{$arrayEquipe_publi[i].Moins_publi}</td>
+											<td width="40">{$arrayEquipe_publi[i].Diff_publi}</td>
+										{/if}
 
 									</tr>
 								{/section}

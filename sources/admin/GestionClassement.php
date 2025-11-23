@@ -1724,15 +1724,20 @@ class GestionClassement extends MyPageSecure
 				$result->execute($arrayEquipes);
 									
 				// Insertion des Equipes ...
-				$sql = "INSERT INTO kp_competition_equipe 
-					(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli) 
-					SELECT ?, ?, Libelle, Code_club, Numero, Id 
-					FROM kp_competition_equipe 
-					WHERE Id IN ($in) ";
+				// On vérifie d'abord qu'aucune équipe avec le même Numero n'existe déjà dans la compétition de destination
+				$sql = "INSERT INTO kp_competition_equipe
+					(Code_compet,Code_saison, Libelle, Code_club, Numero, Id_dupli)
+					SELECT ?, ?, src.Libelle, src.Code_club, src.Numero, src.Id
+					FROM kp_competition_equipe src
+					WHERE src.Id IN ($in)
+					AND NOT EXISTS (
+						SELECT 1 FROM kp_competition_equipe dest
+						WHERE dest.Code_compet = ?
+						AND dest.Code_saison = ?
+						AND dest.Numero = src.Numero
+					)";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array_merge([$codeCompetTransfert], [$codeSaisonTransfert], $arrayEquipes));
-				
-				// Insertion des Joueurs Equipes ...
+				$result->execute(array_merge([$codeCompetTransfert], [$codeSaisonTransfert], $arrayEquipes, [$codeCompetTransfert], [$codeSaisonTransfert]));
 				$sql = "INSERT INTO kp_competition_equipe_joueur 
 					(Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine) 
 					SELECT b.Id, a.Matric, a.Nom, a.Prenom, a.Sexe, d.id, a.Numero, a.Capitaine 
