@@ -292,7 +292,8 @@
 						<tr id="pointsGridRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
 							<td colspan=4 title='{#Exemple_grille_points_MULTI#}: {ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}'>
 								<label for="pointsGrid">{#Grille_de_points_MULTI#} : </label>
-								<input type="text" name="pointsGrid" id="pointsGrid" maxlength=255 value="{$pointsGrid nofilter}"
+								<input type="text" name="pointsGrid" id="pointsGrid" maxlength=255 value=""
+									data-json-value='{$pointsGrid|escape:"html"}'
 									{if $profile > 2}readonly{/if} {if $profile <= 2}class='gris'{/if}
 									placeholder='{ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}' />
 								<br><small><i>{#Format_JSON#} : {ldelim}"1":10,"2":6,"3":4,"default":0{rdelim}</i></small>
@@ -666,15 +667,31 @@
 				}
 			}
 
+			// Fonction pour initialiser le champ pointsGrid depuis data-json-value
+			function initPointsGrid() {
+				var input = document.getElementById('pointsGrid');
+				if (input && input.hasAttribute('data-json-value')) {
+					var jsonValue = input.getAttribute('data-json-value');
+					if (jsonValue) {
+						// Décoder les entités HTML et définir la valeur
+						var textarea = document.createElement('textarea');
+						textarea.innerHTML = jsonValue;
+						input.value = textarea.value;
+					}
+				}
+			}
+
 			// Appeler au chargement de la page pour initialiser l'état
 			if (document.readyState === 'loading') {
 				document.addEventListener('DOMContentLoaded', function() {
 					changeCodeTypeClt();
 					initMultiCompetitionsSync();
+					initPointsGrid();
 				});
 			} else {
 				changeCodeTypeClt();
 				initMultiCompetitionsSync();
+				initPointsGrid();
 			}
 			</script>
 	</div>
