@@ -563,6 +563,24 @@
 									{/if}
 								</td>
 							</tr>
+						{elseif $typeCompetition=='Multi-Compétition'}
+							<tr>
+								<td colspan=2 align='left' title="{#Provisoire#}"><b>Admin</b></td>
+								<td colspan=2 align='right'><b>Public</b></td>
+							</tr>
+							<tr>
+								<td align='left'>
+									<a href="FeuilleCltMulti.php" Target="_blank"><img height="30" src="../img/pdf.png"
+											title="{#Classement_general#} - admin" /></a>
+								</td>
+								<td colspan=2 align='center'>{#Classement_general#}</td>
+								<td align='right'>
+									{if $Code_uti_publication != ''}
+										<a href="../PdfCltMulti.php" Target="_blank"><img height="30" src="../img/pdf.png"
+												title="{#Classement_general#} - public" /></a>
+									{/if}
+								</td>
+							</tr>
 						{else}
 							<tr>
 								<td colspan=2 align='left' title="{#Provisoire#}"><b>Admin</b></td>
