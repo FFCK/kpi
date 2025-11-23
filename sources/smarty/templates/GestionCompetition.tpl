@@ -290,12 +290,12 @@
 							</td>
 						</tr>
 						<tr id="pointsGridRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
-							<td colspan=4 title='Grille de points au format JSON. Exemple: {"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0}'>
+							<td colspan=4 title='Grille de points au format JSON. Exemple: {ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}'>
 								<label for="pointsGrid">Grille de points (MULTI) : </label>
 								<input type="text" name="pointsGrid" id="pointsGrid" maxlength=255 value="{$pointsGrid}"
 									{if $profile > 2}readonly{/if} {if $profile <= 2}class='gris'{/if}
-									placeholder='{"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0}' />
-								<br><small><i>Format JSON : {"1":10,"2":6,"3":4,"default":0}</i></small>
+									placeholder='{ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}' />
+								<br><small><i>Format JSON : {ldelim}"1":10,"2":6,"3":4,"default":0{rdelim}</i></small>
 							</td>
 						</tr>
 						<tr id="multiCompetitionsRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
