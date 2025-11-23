@@ -186,8 +186,19 @@
 									{section name=i loop=$arrayEquipe_journee}
 										{if $arrayEquipe_journee[i].Type == 'C'}
 											{if $arrayEquipe_journee[i].Id_journee != $idJournee}
-												<tr class='head2'>
-													<th colspan="3">{$arrayEquipe_journee[i].Phase} ({$arrayEquipe_journee[i].Lieu})</th>
+												<tr class='head2' data-journee="{$arrayEquipe_journee[i].Id_journee}" data-consolidation="{$arrayEquipe_journee[i].Consolidation}">
+													<th>
+														{if $profile <= 4 && $AuthModif == 'O'}
+															<input type="checkbox" class="consolidationPhase" data-journee="{$arrayEquipe_journee[i].Id_journee}"
+																{if $arrayEquipe_journee[i].Consolidation == 'O'}checked{/if}
+																title="{#Consolider_phase#}">
+														{else}
+															{if $arrayEquipe_journee[i].Consolidation == 'O'}
+																<input type="checkbox" checked disabled title="{#Phase_consolidee#}">
+															{/if}
+														{/if}
+													</th>
+													<th colspan="2">{$arrayEquipe_journee[i].Phase} ({$arrayEquipe_journee[i].Lieu})</th>
 													<th>{#Pts#}</th>
 													<th>{#J#}</th>
 													<th>{#G#}</th>
@@ -200,6 +211,7 @@
 												</tr>
 											{/if}
 											{assign var='idJournee' value=$arrayEquipe_journee[i].Id_journee}
+											{assign var='consolidation' value=$arrayEquipe_journee[i].Consolidation}
 											<tr height="17" class='{cycle values="impair,pair"}'>
 												<td>
 													{if $arrayEquipe_journee[i].J == '0' && $profile <= 4 && $AuthModif == 'O'}
@@ -210,7 +222,7 @@
 														&nbsp;
 													{/if}
 												</td>
-												{if $profile <= 4 && $AuthModif == 'O'}
+												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O'}
 													<td width="30"><span class='directInput'
 															Id="Clt-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}0">{$arrayEquipe_journee[i].Clt}</span></td>
@@ -229,7 +241,7 @@
 												<td width="30">{$arrayEquipe_journee[i].N}</td>
 												<td width="30">{$arrayEquipe_journee[i].P}</td>
 												<td width="30">{$arrayEquipe_journee[i].F}</td>
-												{if $profile <= 4 && $AuthModif == 'O'}
+												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O'}
 													<td width="40"><span class='directInput'
 															Id="Plus-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}7">{$arrayEquipe_journee[i].Plus}</span></td>

@@ -243,15 +243,15 @@ class GestionClassement extends MyPageSecure
 			
 			if ($typeClt == 'CP') {
 				// Classement actuel par journée/phase
-				$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt, b.Pts, 
-					b.J, b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau, 
-					c.Phase, c.Niveau, c.Lieu, c.Type 
-					FROM kp_competition_equipe a, kp_competition_equipe_journee b 
-					JOIN kp_journee c ON (b.Id_journee = c.Id) 
-					WHERE a.Id = b.Id 
-					AND c.Code_competition = ? 
-					AND c.Code_saison = ? 
-					ORDER BY c.Niveau DESC, c.Phase, c.Date_debut, c.Lieu, b.Clt, b.Diff DESC, b.Plus ";	 
+				$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt, b.Pts,
+					b.J, b.G, b.N, b.P, b.F, b.Plus, b.Moins, b.Diff, b.PtsNiveau, b.CltNiveau,
+					c.Phase, c.Niveau, c.Lieu, c.Type, c.Consolidation
+					FROM kp_competition_equipe a, kp_competition_equipe_journee b
+					JOIN kp_journee c ON (b.Id_journee = c.Id)
+					WHERE a.Id = b.Id
+					AND c.Code_competition = ?
+					AND c.Code_saison = ?
+					ORDER BY c.Niveau DESC, c.Phase, c.Date_debut, c.Lieu, b.Clt, b.Diff DESC, b.Plus ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeCompet, $codeSaison));
 				while ($row = $result->fetch()) {
@@ -259,17 +259,17 @@ class GestionClassement extends MyPageSecure
 				}
 
 				// Classement public par journée/phase
-				$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt_publi, 
-					b.Pts_publi, b.J_publi, b.G_publi, b.N_publi, b.P_publi, b.F_publi, 
-					b.Plus_publi, b.Moins_publi, b.Diff_publi, b.PtsNiveau_publi, 
-					b.CltNiveau_publi, c.Phase, c.Niveau, c.Lieu, c.Type 
-					FROM kp_competition_equipe a, kp_competition_equipe_journee b 
-					JOIN kp_journee c ON (b.Id_journee = c.Id) 
-					WHERE a.Id = b.Id 
-					AND c.Code_competition = ? 
-					AND c.Code_saison = ? 
-					ORDER BY c.Niveau DESC, c.Phase, c.Date_debut, c.Lieu, b.Clt_publi, 
-						b.Diff_publi DESC, b.Plus_publi ";	 
+				$sql = "SELECT a.Id, a.Libelle, a.Code_club, b.Id_journee, b.Clt_publi,
+					b.Pts_publi, b.J_publi, b.G_publi, b.N_publi, b.P_publi, b.F_publi,
+					b.Plus_publi, b.Moins_publi, b.Diff_publi, b.PtsNiveau_publi,
+					b.CltNiveau_publi, c.Phase, c.Niveau, c.Lieu, c.Type, c.Consolidation
+					FROM kp_competition_equipe a, kp_competition_equipe_journee b
+					JOIN kp_journee c ON (b.Id_journee = c.Id)
+					WHERE a.Id = b.Id
+					AND c.Code_competition = ?
+					AND c.Code_saison = ?
+					ORDER BY c.Niveau DESC, c.Phase, c.Date_debut, c.Lieu, b.Clt_publi,
+						b.Diff_publi DESC, b.Plus_publi ";
 				$result = $myBdd->pdo->prepare($sql);
 				$result->execute(array($codeCompet, $codeSaison));
 				while ($row = $result->fetch()) {
@@ -463,13 +463,15 @@ class GestionClassement extends MyPageSecure
 	function RazClassementCompetitionEquipeJournee($codeCompet, $codeSaison)
 	{
 		$myBdd = $this->myBdd;
-		
-		$sql = "UPDATE kp_competition_equipe_journee a 
-			RIGHT OUTER JOIN kp_journee b ON a.Id_journee = b.Id 
-			SET a.Clt=0, a.Pts=0, a.J=0, a.G=0, a.N=0, a.P=0, a.F=0, 
-			a.Plus=0, a.Moins=0, a.Diff=0, a.PtsNiveau=0, a.CltNiveau=0 
-			WHERE b.Code_competition = ? 
-			AND b.Code_saison = ? ";
+
+		// Ne pas réinitialiser les phases consolidées
+		$sql = "UPDATE kp_competition_equipe_journee a
+			RIGHT OUTER JOIN kp_journee b ON a.Id_journee = b.Id
+			SET a.Clt=0, a.Pts=0, a.J=0, a.G=0, a.N=0, a.P=0, a.F=0,
+			a.Plus=0, a.Moins=0, a.Diff=0, a.PtsNiveau=0, a.CltNiveau=0
+			WHERE b.Code_competition = ?
+			AND b.Code_saison = ?
+			AND (b.Consolidation IS NULL OR b.Consolidation != 'O') ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 	}
@@ -489,16 +491,20 @@ class GestionClassement extends MyPageSecure
 		} else {
 			$sqlValidation = "";
 		}
-		$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA, 
-				a.CoeffB, a.Id, a.Id_journee, b.Niveau, c.Points 
-				FROM kp_match a, kp_journee b, kp_competition c 
-				WHERE a.Id_journee = b.Id 
-				AND b.Code_competition = ? 
-				AND b.Code_competition = c.Code 
-				AND b.Code_saison = ? 
-				AND b.Code_saison = c.Code_saison 
-				$sqlValidation 
-				ORDER BY b.Id ";	 
+		// Exclure les matchs des phases consolidées du recalcul du classement
+		$sqlConsolidation = "AND (b.Consolidation IS NULL OR b.Consolidation != 'O') ";
+
+		$sql = "SELECT a.Id_equipeA, a.ScoreA, a.Id_equipeB, a.ScoreB, a.CoeffA,
+				a.CoeffB, a.Id, a.Id_journee, b.Niveau, c.Points
+				FROM kp_match a, kp_journee b, kp_competition c
+				WHERE a.Id_journee = b.Id
+				AND b.Code_competition = ?
+				AND b.Code_competition = c.Code
+				AND b.Code_saison = ?
+				AND b.Code_saison = c.Code_saison
+				$sqlValidation
+				$sqlConsolidation
+				ORDER BY b.Id ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		while ($row = $result->fetch()) {
