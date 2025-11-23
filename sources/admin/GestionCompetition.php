@@ -213,6 +213,16 @@ class GestionCompetition extends MyPageSecure
 
 		// Organiser les compétitions par section
 		$competsBySection = array();
+
+		// Décoder la liste des compétitions sélectionnées
+		$multiCompetitionsList = array();
+		if (!empty($_SESSION['multiCompetitions'])) {
+			$multiCompetitionsList = json_decode($_SESSION['multiCompetitions'], true);
+			if (!is_array($multiCompetitionsList)) {
+				$multiCompetitionsList = array();
+			}
+		}
+
 		while ($row = $stmt->fetch()) {
 			$sectionNum = $row["section"] ?? 100;
 			$sectionKey = $sectionNum;
@@ -226,13 +236,18 @@ class GestionCompetition extends MyPageSecure
 					'competitions' => array()
 				);
 			}
+
+			// Vérifier si la compétition est sélectionnée
+			$isSelected = in_array($row["Code"], $multiCompetitionsList);
+
 			array_push($competsBySection[$sectionKey]['competitions'], array(
 				'Code' => $row["Code"],
 				'Libelle' => $row["Libelle"],
 				'Type' => $row["Code_typeclt"],
 				'Tour' => $row["Code_tour"],
 				'GroupOrder' => $row["GroupOrder"],
-				'GroupeLibelle' => $row["GroupeLibelle"]
+				'GroupeLibelle' => $row["GroupeLibelle"],
+				'Selected' => $isSelected
 			));
 		}
 

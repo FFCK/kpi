@@ -290,39 +290,31 @@
 							</td>
 						</tr>
 						<tr id="pointsGridRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
-							<td colspan=4 title='Grille de points au format JSON. Exemple: {ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}'>
-								<label for="pointsGrid">Grille de points (MULTI) : </label>
+							<td colspan=4 title='{#Exemple_grille_points_MULTI#}: {ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}'>
+								<label for="pointsGrid">{#Grille_de_points_MULTI#} : </label>
 								<input type="text" name="pointsGrid" id="pointsGrid" maxlength=255 value="{$pointsGrid}"
 									{if $profile > 2}readonly{/if} {if $profile <= 2}class='gris'{/if}
 									placeholder='{ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}' />
-								<br><small><i>Format JSON : {ldelim}"1":10,"2":6,"3":4,"default":0{rdelim}</i></small>
+								<br><small><i>{#Format_JSON#} : {ldelim}"1":10,"2":6,"3":4,"default":0{rdelim}</i></small>
 							</td>
 						</tr>
 						<tr id="multiCompetitionsRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
 							<td colspan=4>
-								<label for="multiCompetitions">Compétitions sources (MULTI) : </label>
+								<label for="multiCompetitions">{#Competitions_sources_MULTI#} : </label>
 								<input type="hidden" name="multiCompetitions" id="multiCompetitionsHidden" value="" />
 								<select name="multiCompetitionsSelect[]" id="multiCompetitionsSelect" multiple size="15" style="width:100%"
 									{if $profile > 2}disabled{/if}>
 									{foreach from=$competsBySection key=sectionKey item=sectionData}
 										<optgroup label="{$sectionData.sectionLabel}">
 											{foreach from=$sectionData.competitions item=compet}
-												{assign var='selected' value=''}
-												{php}
-													$multiCompsList = json_decode($this->getTemplateVars('multiCompetitions'), true);
-													$currentCode = $this->getTemplateVars('compet')['Code'];
-													if (is_array($multiCompsList) && in_array($currentCode, $multiCompsList)) {
-														$this->assign('selected', 'selected');
-													}
-												{/php}
-												<option value="{$compet.Code}" {$selected}>
+												<option value="{$compet.Code}" {if $compet.Selected}selected{/if}>
 													{$compet.Code} - {$compet.Libelle} ({$compet.Type})
 												</option>
 											{/foreach}
 										</optgroup>
 									{/foreach}
 								</select>
-								<br><small><i>Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs compétitions</i></small>
+								<br><small><i>{#Multi_select_instruction#}</i></small>
 							</td>
 						</tr>
 						<tr>
