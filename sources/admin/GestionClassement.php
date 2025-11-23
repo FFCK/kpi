@@ -348,7 +348,7 @@ class GestionClassement extends MyPageSecure
 		$typeClt = '';
 		$goalaverage = '';
 
-		$sql = "SELECT Code_typeclt, goalaverage, Code_ref, points_grid
+		$sql = "SELECT Code_typeclt, goalaverage, Code_ref, points_grid, multi_competitions
 			FROM kp_competition
 			WHERE Code = ?
 			AND Code_saison = ? ";
@@ -366,7 +366,7 @@ class GestionClassement extends MyPageSecure
 			$this->RazClassementCompetitionEquipe($codeCompet, $codeSaison);
 			$this->InitClassementCompetitionEquipe($codeCompet, $codeSaison);
 
-			$this->CalculClassementMulti($codeCompet, $codeSaison, $row['Code_ref'], $row['points_grid']);
+			$this->CalculClassementMulti($codeCompet, $codeSaison, $row['multi_competitions'], $row['points_grid']);
 		} else {
 			// Traitement standard pour CHPT et CP
 			$this->RazClassementCompetitionEquipe($codeCompet, $codeSaison);
@@ -1431,14 +1431,14 @@ class GestionClassement extends MyPageSecure
 	 * CalculClassementMulti - Calcule le classement d'une compétition MULTI
 	 *
 	 * Une compétition MULTI attribue des points aux équipes selon leur classement
-	 * dans d'autres compétitions du même groupe (exclut les tours Unique/Finale avec Code_tour = 10)
+	 * dans d'autres compétitions sélectionnées explicitement
 	 *
 	 * @param string $codeCompet Code de la compétition MULTI
 	 * @param string $codeSaison Code de la saison
-	 * @param string $codeRef Code du groupe de compétitions
+	 * @param string $multiCompetitionsJson Liste des codes de compétitions sources au format JSON (ex: ["REG1","REG2"])
 	 * @param string $pointsGridJson Grille de points au format JSON (ex: {"1":10,"2":6,"3":4,"default":0})
 	 */
-	function CalculClassementMulti($codeCompet, $codeSaison, $codeRef, $pointsGridJson)
+	function CalculClassementMulti($codeCompet, $codeSaison, $multiCompetitionsJson, $pointsGridJson)
 	{
 		$myBdd = $this->myBdd;
 
@@ -1464,6 +1464,20 @@ class GestionClassement extends MyPageSecure
 			$defaultPoints = 0;
 		}
 
+		// Décoder la liste des compétitions sources
+		$multiCompetitionsCodes = array();
+		if (!empty($multiCompetitionsJson)) {
+			$multiCompetitionsCodes = json_decode($multiCompetitionsJson, true);
+			if (!is_array($multiCompetitionsCodes)) {
+				$multiCompetitionsCodes = array();
+			}
+		}
+
+		// Si aucune compétition source n'est définie, retourner sans calculer
+		if (empty($multiCompetitionsCodes)) {
+			return;
+		}
+
 		// Récupérer toutes les équipes engagées dans la compétition MULTI
 		$sql = "SELECT Id, Libelle, Code_club, Numero
 			FROM kp_competition_equipe
@@ -1474,18 +1488,18 @@ class GestionClassement extends MyPageSecure
 		$stmt->execute(array($codeCompet, $codeSaison));
 		$equipesMulti = $stmt->fetchAll();
 
-		// Récupérer toutes les compétitions du même groupe (même Code_ref)
-		// Exclure la compétition MULTI elle-même et les tours Unique/Finale (Code_tour = 10)
-		$sql = "SELECT Code, Libelle, Code_tour, Code_typeclt
+		// Construire la requête pour récupérer les compétitions sources
+		// Utiliser la liste explicite de codes de compétitions
+		$placeholders = str_repeat('?,', count($multiCompetitionsCodes) - 1) . '?';
+		$sql = "SELECT Code, Libelle, Code_typeclt
 			FROM kp_competition
 			WHERE Code_saison = ?
-			AND Code_ref = ?
-			AND Code != ?
-			AND (Code_tour IS NULL OR Code_tour != 10)
+			AND Code IN ($placeholders)
 			AND Code_typeclt != 'MULTI'
 			ORDER BY Code";
 		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($codeSaison, $codeRef, $codeCompet));
+		$params = array_merge(array($codeSaison), $multiCompetitionsCodes);
+		$stmt->execute($params);
 		$competitionsPrecedentes = $stmt->fetchAll();
 
 		// Pour chaque équipe de la compétition MULTI

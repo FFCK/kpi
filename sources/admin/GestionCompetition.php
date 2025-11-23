@@ -194,11 +194,29 @@ class GestionCompetition extends MyPageSecure
 
 		$this->m_tpl->assign('arrayTypeClt', $arrayTypeClt);
 
+		// Chargement des compétitions de la saison courante pour le select multiple MULTI
+		$arrayCompetForMulti = array();
+		$sql  = "SELECT Code, Libelle, Code_typeclt
+			FROM kp_competition
+			WHERE Code_saison = ?
+			AND Code_typeclt != 'MULTI'
+			ORDER BY Code";
+		$stmt = $myBdd->pdo->prepare($sql);
+		$stmt->execute(array($codeSaison));
+		while ($row = $stmt->fetch()) {
+			array_push($arrayCompetForMulti, array(
+				'Code' => $row["Code"],
+				'Libelle' => $row["Libelle"],
+				'Type' => $row["Code_typeclt"]
+			));
+		}
+		$this->m_tpl->assign('arrayCompetForMulti', $arrayCompetForMulti);
+
 		// Chargement des Codes Compétitions existants
 		$arrayCompetExist = array();
-		$sql  = "SELECT Code, Code_niveau, Libelle, Code_ref 
-			FROM kp_competition 
-			GROUP BY Code, Libelle 
+		$sql  = "SELECT Code, Code_niveau, Libelle, Code_ref
+			FROM kp_competition
+			GROUP BY Code, Libelle
 			ORDER BY Code_ref, Code ";
 		foreach ($myBdd->pdo->query($sql) as $row) {
 			array_push($arrayCompetExist, array(
@@ -227,6 +245,8 @@ class GestionCompetition extends MyPageSecure
 		if (!isset($_SESSION['codeRef'])) $_SESSION['codeRef'] = 'AUTRES';
 		if (!isset($_SESSION['groupOrder'])) $_SESSION['groupOrder'] = '';
 		if (!isset($_SESSION['codeTypeClt'])) $_SESSION['codeTypeClt'] = '';
+		if (!isset($_SESSION['pointsGrid'])) $_SESSION['pointsGrid'] = '';
+		if (!isset($_SESSION['multiCompetitions'])) $_SESSION['multiCompetitions'] = '';
 		if (!isset($_SESSION['etape'])) $_SESSION['etape'] = '';
 		if (!isset($_SESSION['qualifies'])) $_SESSION['qualifies'] = '';
 		if (!isset($_SESSION['elimines'])) $_SESSION['elimines'] = '';
@@ -254,6 +274,8 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('codeRef', $_SESSION['codeRef']);
 		$this->m_tpl->assign('groupOrder', $_SESSION['groupOrder']);
 		$this->m_tpl->assign('codeTypeClt', $_SESSION['codeTypeClt']);
+		$this->m_tpl->assign('pointsGrid', $_SESSION['pointsGrid']);
+		$this->m_tpl->assign('multiCompetitions', $_SESSION['multiCompetitions']);
 		$this->m_tpl->assign('etape', $_SESSION['etape']);
 		$this->m_tpl->assign('qualifies', $_SESSION['qualifies']);
 		$this->m_tpl->assign('elimines', $_SESSION['elimines']);
@@ -425,6 +447,7 @@ class GestionCompetition extends MyPageSecure
 		$_SESSION['groupOrder'] = '';
 		$_SESSION['codeTypeClt'] = '';
 		$_SESSION['pointsGrid'] = '';
+		$_SESSION['multiCompetitions'] = '';
 		$_SESSION['etape'] = '';
 		$_SESSION['qualifies'] = '';
 		$_SESSION['elimines'] = '';
@@ -445,7 +468,7 @@ class GestionCompetition extends MyPageSecure
 
 		$sql  = "SELECT Code_niveau, Libelle, Soustitre, Soustitre2, Web, BandeauLink, LogoLink,
 			SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif,
-			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, points_grid, Code_tour, Qualifies,
+			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, points_grid, multi_competitions, Code_tour, Qualifies,
 			Elimines, Points, goalaverage, Statut, commentairesCompet, Publication
 			FROM kp_competition
 			WHERE Code_saison = ?
@@ -476,6 +499,7 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['groupOrder'] = $row['GroupOrder'];
 			$_SESSION['codeTypeClt'] = $row['Code_typeclt'];
 			$_SESSION['pointsGrid'] = $row['points_grid'];
+			$_SESSION['multiCompetitions'] = $row['multi_competitions'];
 			$_SESSION['etape'] = $row['Code_tour'];
 			$_SESSION['qualifies'] = $row['Qualifies'];
 			$_SESSION['elimines'] = $row['Elimines'];
@@ -519,7 +543,7 @@ class GestionCompetition extends MyPageSecure
 				Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?,
 				En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?,
 				Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?,
-				Code_typeclt = ?, points_grid = ?, Code_tour = ?, Qualifies = ?, Elimines = ?,
+				Code_typeclt = ?, points_grid = ?, multi_competitions = ?, Code_tour = ?, Qualifies = ?, Elimines = ?,
 				Points = ?, goalaverage = ?, Statut = ?, Publication = ?, commentairesCompet = ?
 				WHERE Code = ?
 				AND Code_saison = ? ";
@@ -529,7 +553,7 @@ class GestionCompetition extends MyPageSecure
 				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '',
 				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'),
 				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
-				utyGetPost('codeTypeClt'), utyGetPost('pointsGrid'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
+				utyGetPost('codeTypeClt'), utyGetPost('pointsGrid'), utyGetPost('multiCompetitions'), utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
 				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
 				$codeCompet, $saison
 			));

@@ -298,6 +298,29 @@
 								<br><small><i>Format JSON : {"1":10,"2":6,"3":4,"default":0}</i></small>
 							</td>
 						</tr>
+						<tr id="multiCompetitionsRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
+							<td colspan=4>
+								<label for="multiCompetitions">Compétitions sources (MULTI) : </label>
+								<input type="hidden" name="multiCompetitions" id="multiCompetitionsHidden" value="" />
+								<select name="multiCompetitionsSelect[]" id="multiCompetitionsSelect" multiple size="10" style="width:100%"
+									{if $profile > 2}disabled{/if}>
+									{section name=i loop=$arrayCompetForMulti}
+										{assign var='selected' value=''}
+										{php}
+											$multiCompsList = json_decode($this->getTemplateVars('multiCompetitions'), true);
+											$currentCode = $this->getTemplateVars('arrayCompetForMulti')[$this->getTemplateVars('smarty')->section['i']['index']]['Code'];
+											if (is_array($multiCompsList) && in_array($currentCode, $multiCompsList)) {
+												$this->assign('selected', 'selected');
+											}
+										{/php}
+										<option value="{$arrayCompetForMulti[i].Code}" {$selected}>
+											{$arrayCompetForMulti[i].Code} - {$arrayCompetForMulti[i].Libelle} ({$arrayCompetForMulti[i].Type})
+										</option>
+									{/section}
+								</select>
+								<br><small><i>Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs compétitions</i></small>
+							</td>
+						</tr>
 						<tr>
 							<td colspan=2 width=55%>
 								<label for="etape">{#Tour#}/Phase :</label>
@@ -589,17 +612,47 @@
 			</div>
 			</form>
 			<script>
-			// Fonction pour afficher/masquer le champ points_grid selon le type de compétition
+			// Fonction pour afficher/masquer les champs MULTI selon le type de compétition
 			function changeCodeTypeClt() {
 				var typeCompet = document.getElementById('codeTypeClt');
 				var pointsGridRow = document.getElementById('pointsGridRow');
+				var multiCompetitionsRow = document.getElementById('multiCompetitionsRow');
 
-				if (typeCompet && pointsGridRow) {
+				if (typeCompet && pointsGridRow && multiCompetitionsRow) {
 					if (typeCompet.value === 'MULTI') {
 						pointsGridRow.style.display = 'table-row';
+						multiCompetitionsRow.style.display = 'table-row';
 					} else {
 						pointsGridRow.style.display = 'none';
+						multiCompetitionsRow.style.display = 'none';
 					}
+				}
+			}
+
+			// Fonction pour convertir le select multiple en JSON avant la soumission
+			function updateCompet() {
+				var select = document.getElementById('multiCompetitionsSelect');
+				var hidden = document.getElementById('multiCompetitionsHidden');
+
+				if (select && hidden) {
+					var selected = [];
+					for (var i = 0; i < select.options.length; i++) {
+						if (select.options[i].selected) {
+							selected.push(select.options[i].value);
+						}
+					}
+					// Stocker la liste en JSON
+					hidden.value = JSON.stringify(selected);
+					// Renommer le champ hidden pour qu'il soit envoyé comme multiCompetitions
+					hidden.name = 'multiCompetitions';
+				}
+
+				// Appeler la fonction originale updateCompet si elle existe
+				if (typeof window.originalUpdateCompet === 'function') {
+					window.originalUpdateCompet();
+				} else {
+					document.getElementById('Cmd').value = 'UpdateCompet';
+					document.forms['formCompet'].submit();
 				}
 			}
 
