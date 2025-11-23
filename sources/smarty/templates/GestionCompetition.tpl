@@ -302,21 +302,25 @@
 							<td colspan=4>
 								<label for="multiCompetitions">Compétitions sources (MULTI) : </label>
 								<input type="hidden" name="multiCompetitions" id="multiCompetitionsHidden" value="" />
-								<select name="multiCompetitionsSelect[]" id="multiCompetitionsSelect" multiple size="10" style="width:100%"
+								<select name="multiCompetitionsSelect[]" id="multiCompetitionsSelect" multiple size="15" style="width:100%"
 									{if $profile > 2}disabled{/if}>
-									{section name=i loop=$arrayCompetForMulti}
-										{assign var='selected' value=''}
-										{php}
-											$multiCompsList = json_decode($this->getTemplateVars('multiCompetitions'), true);
-											$currentCode = $this->getTemplateVars('arrayCompetForMulti')[$this->getTemplateVars('smarty')->section['i']['index']]['Code'];
-											if (is_array($multiCompsList) && in_array($currentCode, $multiCompsList)) {
-												$this->assign('selected', 'selected');
-											}
-										{/php}
-										<option value="{$arrayCompetForMulti[i].Code}" {$selected}>
-											{$arrayCompetForMulti[i].Code} - {$arrayCompetForMulti[i].Libelle} ({$arrayCompetForMulti[i].Type})
-										</option>
-									{/section}
+									{foreach from=$competsBySection key=sectionKey item=sectionData}
+										<optgroup label="{$sectionData.sectionLabel}">
+											{foreach from=$sectionData.competitions item=compet}
+												{assign var='selected' value=''}
+												{php}
+													$multiCompsList = json_decode($this->getTemplateVars('multiCompetitions'), true);
+													$currentCode = $this->getTemplateVars('compet')['Code'];
+													if (is_array($multiCompsList) && in_array($currentCode, $multiCompsList)) {
+														$this->assign('selected', 'selected');
+													}
+												{/php}
+												<option value="{$compet.Code}" {$selected}>
+													{$compet.Code} - {$compet.Libelle} ({$compet.Type})
+												</option>
+											{/foreach}
+										</optgroup>
+									{/foreach}
 								</select>
 								<br><small><i>Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs compétitions</i></small>
 							</td>

@@ -196,21 +196,50 @@ class GestionCompetition extends MyPageSecure
 
 		// Chargement des compétitions de la saison courante pour le select multiple MULTI
 		$arrayCompetForMulti = array();
-		$sql  = "SELECT Code, Libelle, Code_typeclt
-			FROM kp_competition
-			WHERE Code_saison = ?
-			AND Code_typeclt != 'MULTI'
-			ORDER BY Code";
+		$sql  = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Code_tour, c.GroupOrder,
+				g.section, g.ordre, g.Groupe as GroupeLibelle
+			FROM kp_competition c
+			LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
+			WHERE c.Code_saison = ?
+			AND c.Code_typeclt != 'MULTI'
+			ORDER BY
+				COALESCE(g.section, 999),
+				COALESCE(g.ordre, 999),
+				COALESCE(c.Code_tour, 999),
+				COALESCE(c.GroupOrder, 999),
+				c.Libelle";
 		$stmt = $myBdd->pdo->prepare($sql);
 		$stmt->execute(array($codeSaison));
+
+		// Organiser les compétitions par section
+		$competsBySection = array();
 		while ($row = $stmt->fetch()) {
-			array_push($arrayCompetForMulti, array(
+			$sectionNum = $row["section"] ?? 100;
+			$sectionKey = $sectionNum;
+			$sectionLabel = isset($label[$sectionNum]) ? $label[$sectionNum] : 'Autres';
+
+			if (!isset($competsBySection[$sectionKey])) {
+				$competsBySection[$sectionKey] = array(
+					'sectionNum' => $sectionNum,
+					'sectionLabel' => $sectionLabel,
+					'ordre' => $row["ordre"] ?? 999,
+					'competitions' => array()
+				);
+			}
+			array_push($competsBySection[$sectionKey]['competitions'], array(
 				'Code' => $row["Code"],
 				'Libelle' => $row["Libelle"],
-				'Type' => $row["Code_typeclt"]
+				'Type' => $row["Code_typeclt"],
+				'Tour' => $row["Code_tour"],
+				'GroupOrder' => $row["GroupOrder"],
+				'GroupeLibelle' => $row["GroupeLibelle"]
 			));
 		}
-		$this->m_tpl->assign('arrayCompetForMulti', $arrayCompetForMulti);
+
+		// Trier les sections par numéro de section
+		ksort($competsBySection);
+
+		$this->m_tpl->assign('competsBySection', $competsBySection);
 
 		// Chargement des Codes Compétitions existants
 		$arrayCompetExist = array();
