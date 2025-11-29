@@ -74,6 +74,9 @@ Documentation technique pour le développement et la maintenance du projet.
 - **[FIX_CSV_EXPORT_OPENSPOUT.md](developer/fixes/bugs/FIX_CSV_EXPORT_OPENSPOUT.md)** - Fix export CSV OpenSpout
 - **[FIX_MYPDF_OPEN_METHOD.md](developer/fixes/bugs/FIX_MYPDF_OPEN_METHOD.md)** - Fix méthode Open() MyPDF
 
+#### [Fonctionnalités](developer/fixes/features/)
+- **[STAT_LICENCIES_CATEGORIE.md](developer/fixes/features/STAT_LICENCIES_CATEGORIE.md)** - ✅ Statistique licenciés FFCK par catégorie d'âge
+
 #### [Correctifs PHP 8](developer/fixes/php8/)
 - **[PHP84_DEPRECATED_FIXES.md](developer/fixes/php8/PHP84_DEPRECATED_FIXES.md)** - Correctifs deprecated PHP 8.4
 - **[SMARTY_PHP8_FIXES.md](developer/fixes/php8/SMARTY_PHP8_FIXES.md)** - Correctifs Smarty pour PHP 8
