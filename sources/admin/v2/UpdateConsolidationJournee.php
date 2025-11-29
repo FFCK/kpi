@@ -20,13 +20,16 @@ $idJournee = (int) utyGetPost('Id_Journee');
 $Valeur = trim(utyGetPost('Valeur'));
 
 // Contrôle des droits : seuls les profiles <= 4 peuvent consolider une phase
-if (!isset($_SESSION['profile']) || $_SESSION['profile'] > 4) {
+if (!isset($_SESSION['Profile']) || $_SESSION['Profile'] > 4) {
 	header('HTTP/1.0 401 Unauthorized');
 	die('Droits insuffisants !');
 }
 
 // Contrôle autorisation journée
-$myBdd->AutorisationJournee($idJournee, true);
+if (!utyIsAutorisationJournee($idJournee)) {
+	header('HTTP/1.0 401 Unauthorized');
+	die("Vous n'avez pas l'autorisation de modifier cette journée !");
+}
 
 // Mise à jour de la consolidation
 $sql = "UPDATE kp_journee
