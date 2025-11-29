@@ -17,7 +17,7 @@ class DocViewer extends MyPageSecure
 
 	function __construct()
 	{
-		MyPageSecure::__construct();
+		parent::__construct(10); // Profil 10 = accessible à tous les utilisateurs authentifiés
 		$this->myBdd = new MyBdd();
 
 		$this->setHeader();
