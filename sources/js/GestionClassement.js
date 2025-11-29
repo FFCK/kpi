@@ -269,13 +269,15 @@ jq(document).ready(function() { //Jquery
 		// Désactiver temporairement la checkbox pendant la requête
 		checkbox.attr('disabled', 'disabled');
 
-		jq.post(
-			'v2/UpdateConsolidationJournee.php',
-			{
+		jq.ajax({
+			type: 'POST',
+			url: 'v2/UpdateConsolidationJournee.php',
+			data: {
 				Id_Journee: idJournee,
 				Valeur: newValue
 			},
-			function(data) {
+			dataType: 'text',
+			success: function(data) {
 				if(data == 'OK') {
 					// Mettre à jour l'attribut data-consolidation
 					phaseRow.attr('data-consolidation', newValue);
@@ -290,20 +292,19 @@ jq(document).ready(function() { //Jquery
 						checkbox.attr('checked', 'checked');
 					}
 					alert(langue['MAJ_impossible'] + ' : ' + data);
+					checkbox.removeAttr('disabled');
 				}
 			},
-			'text'
-		).fail(function() {
-			// En cas d'erreur réseau
-			if(isChecked) {
-				checkbox.removeAttr('checked');
-			} else {
-				checkbox.attr('checked', 'checked');
+			error: function() {
+				// En cas d'erreur réseau
+				if(isChecked) {
+					checkbox.removeAttr('checked');
+				} else {
+					checkbox.attr('checked', 'checked');
+				}
+				alert(langue['MAJ_impossible']);
+				checkbox.removeAttr('disabled');
 			}
-			alert(langue['MAJ_impossible']);
-		}).always(function() {
-			// Réactiver la checkbox
-			checkbox.removeAttr('disabled');
 		});
 	});
 

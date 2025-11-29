@@ -192,9 +192,7 @@
 															<input type="checkbox" class="consolidationPhase" data-journee="{$arrayEquipe_journee[i].Id_journee}"
 																{if $arrayEquipe_journee[i].Consolidation == 'O'}checked{/if}
 																title="{#Consolider_phase#}">
-															{if $arrayEquipe_journee[i].Consolidation == 'O'}
-																<small>{#Phase_consolidee#}</small>
-															{/if}
+															<small>{#Phase_consolidee#}</small>
 														{else}
 															{if $arrayEquipe_journee[i].Consolidation == 'O'}
 																<input type="checkbox" checked disabled title="{#Phase_consolidee#}">
