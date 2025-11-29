@@ -19,9 +19,6 @@ class DocViewer extends MyPageSecure
 	{
 		parent::__construct(10); // Profil 10 = accessible à tous les utilisateurs authentifiés
 		$this->myBdd = new MyBdd();
-
-		$this->setHeader();
-		$this->setFooter();
 	}
 
 	function Load()
@@ -276,6 +273,8 @@ class DocViewer extends MyPageSecure
 }
 
 $page = new DocViewer();
+$page->SetTemplate("Documentation", "Documentation", false);
 $page->Load();
+$page->setHeader();
 $page->m_tpl->display('DocViewer.tpl');
 ?>
