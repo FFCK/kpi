@@ -279,7 +279,8 @@ KPI est un **système complet de gestion sportive** pour le Kayak-Polo, comprena
 - Statistiques joueurs (buts, passes, exclusions)
 - Statistiques équipes
 - Statistiques compétitions
-- Export multi-formats
+- **Licenciés par catégorie d'âge** - Répartition des licenciés FFCK ayant joué par sexe et catégorie (U16, U18, U23, U35, +35)
+- Export multi-formats (PDF FR/EN, CSV)
 
 ---
 
