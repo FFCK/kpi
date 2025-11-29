@@ -24,6 +24,7 @@ Documentation des bugs et correctifs appliqués.
 - **[bugs/](fixes/bugs/)** - Corrections de bugs spécifiques
 - **[php8/](fixes/php8/)** - Correctifs pour compatibilité PHP 8.4
 - **[docker/](fixes/docker/)** - Correctifs infrastructure Docker
+- **[features/](fixes/features/)** - Nouvelles fonctionnalités (Consolidation classement, Stats licenciés, etc.)
 
 ### [🔍 Audits & Analyses](audits/)
 Rapports d'audit de code et analyses techniques.

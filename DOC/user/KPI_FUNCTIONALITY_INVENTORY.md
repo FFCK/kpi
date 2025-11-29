@@ -117,6 +117,13 @@ KPI est un **système complet de gestion sportive** pour le Kayak-Polo, comprena
 - Gestion goal-average
 - Classements par phase/niveau/journée
 - Export PDF classements
+- **⭐ Consolidation des phases** (Coupe uniquement) :
+  - Figer le classement de phases spécifiques
+  - Empêcher le recalcul automatique des phases consolidées
+  - Préserver les classements finalisés ou ajustés manuellement
+  - Case à cocher par phase (administrateurs profile ≤ 4)
+  - Champs de classement en lecture seule quand consolidé
+  - Voir [CONSOLIDATION_PHASES_CLASSEMENT.md](CONSOLIDATION_PHASES_CLASSEMENT.md)
 
 ---
 

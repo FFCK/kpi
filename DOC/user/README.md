@@ -15,6 +15,14 @@ Cette section contient la documentation orientée utilisateurs finaux du systèm
 
 ### Fonctionnalités Spécifiques
 
+- **[CONSOLIDATION_PHASES_CLASSEMENT.md](CONSOLIDATION_PHASES_CLASSEMENT.md)** - **Consolidation des phases de classement**
+  - Permet de "figer" le classement de certaines phases dans les compétitions CP (Coupe)
+  - Empêche le recalcul automatique des phases consolidées
+  - Utile pour préserver les classements finalisés ou ajustés manuellement
+  - Accessible via GestionClassement pour les administrateurs (profile ≤ 4)
+  - Guide d'utilisation, cas d'usage et bonnes pratiques
+  - **Statut**: ✅ En production
+
 - **[MATCH_CONSISTENCY_STATS.md](MATCH_CONSISTENCY_STATS.md)** - **Statistiques de cohérence des matchs**
   - Détection automatique d'incohérences dans les plannings
   - 4 types d'incohérences détectées :
