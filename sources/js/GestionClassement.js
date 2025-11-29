@@ -262,12 +262,12 @@ jq(document).ready(function() { //Jquery
 	jq(".consolidationPhase").click(function() {
 		var checkbox = jq(this);
 		var idJournee = checkbox.attr('data-journee');
-		var isChecked = checkbox.is(':checked');
+		var isChecked = checkbox.attr('checked') ? true : false;
 		var newValue = isChecked ? 'O' : null;
 		var phaseRow = jq('tr.head2[data-journee="' + idJournee + '"]');
 
 		// Désactiver temporairement la checkbox pendant la requête
-		checkbox.prop('disabled', true);
+		checkbox.attr('disabled', 'disabled');
 
 		jq.post(
 			'v2/UpdateConsolidationJournee.php',
@@ -284,18 +284,26 @@ jq(document).ready(function() { //Jquery
 					location.reload();
 				} else {
 					// Erreur : annuler le changement de la checkbox
-					checkbox.prop('checked', !isChecked);
+					if(isChecked) {
+						checkbox.removeAttr('checked');
+					} else {
+						checkbox.attr('checked', 'checked');
+					}
 					alert(langue['MAJ_impossible'] + ' : ' + data);
 				}
 			},
 			'text'
 		).fail(function() {
 			// En cas d'erreur réseau
-			checkbox.prop('checked', !isChecked);
+			if(isChecked) {
+				checkbox.removeAttr('checked');
+			} else {
+				checkbox.attr('checked', 'checked');
+			}
 			alert(langue['MAJ_impossible']);
 		}).always(function() {
 			// Réactiver la checkbox
-			checkbox.prop('disabled', false);
+			checkbox.removeAttr('disabled');
 		});
 	});
 
