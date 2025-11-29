@@ -262,19 +262,10 @@ class DocViewer extends MyPageSecure
 		return $html;
 	}
 
-	function setHeader()
-	{
-		$this->m_tpl->assign('titre', utyGetMessage('titre_docviewer'));
-	}
-
-	function setFooter()
-	{
-	}
 }
 
 $page = new DocViewer();
-$page->SetTemplate("Documentation", "Documentation", false);
+$page->SetTemplate("Documentation KPI", "Documentation", false);
 $page->Load();
-$page->setHeader();
 $page->m_tpl->display('DocViewer.tpl');
 ?>
