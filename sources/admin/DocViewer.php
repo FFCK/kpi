@@ -11,13 +11,13 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-class DocViewer extends MyPageSecure
+class DocViewer extends MyPage
 {
 	var $myBdd;
 
 	function __construct()
 	{
-		parent::__construct(10); // Profil 10 = accessible à tous les utilisateurs authentifiés
+		parent::__construct(); // Page publique, pas d'authentification requise
 		$this->myBdd = new MyBdd();
 	}
 
@@ -36,21 +36,38 @@ class DocViewer extends MyPageSecure
 			$category = 'user';
 		}
 
+		// Vérifier les droits d'accès à la documentation développeur (profil 1 uniquement)
+		$profile = utyGetSession('Profile', 99);
+		$canAccessDeveloperDocs = ($profile == 1);
+
+		// Forcer la catégorie 'user' si l'utilisateur n'a pas accès à la doc développeur
+		if ($category == 'developer' && !$canAccessDeveloperDocs) {
+			$category = 'user';
+		}
+
 		// Charger la liste des fichiers markdown
 		$userDocs = $this->scanMarkdownFiles('user');
-		$devDocs = $this->scanMarkdownFiles('developer');
+		$devDocs = $canAccessDeveloperDocs ? $this->scanMarkdownFiles('developer') : [];
 
 		$this->m_tpl->assign('userDocs', $userDocs);
 		$this->m_tpl->assign('devDocs', $devDocs);
 		$this->m_tpl->assign('category', $category);
 		$this->m_tpl->assign('currentFile', $file);
+		$this->m_tpl->assign('canAccessDeveloperDocs', $canAccessDeveloperDocs);
 
 		// Si un fichier est demandé, charger son contenu
 		if (!empty($file)) {
-			$content = $this->loadMarkdownFile($category, $file);
-			$this->m_tpl->assign('markdownContent', $content['html']);
-			$this->m_tpl->assign('markdownTitle', $content['title']);
-			$this->m_tpl->assign('fileExists', $content['exists']);
+			// Vérifier à nouveau les droits pour le chargement du fichier
+			if ($category == 'developer' && !$canAccessDeveloperDocs) {
+				$this->m_tpl->assign('markdownContent', '<div class="alert alert-danger">Accès refusé : vous devez être connecté avec le profil Webmaster/Président (profil 1) pour accéder à la documentation développeur.</div>');
+				$this->m_tpl->assign('markdownTitle', 'Accès refusé');
+				$this->m_tpl->assign('fileExists', false);
+			} else {
+				$content = $this->loadMarkdownFile($category, $file);
+				$this->m_tpl->assign('markdownContent', $content['html']);
+				$this->m_tpl->assign('markdownTitle', $content['title']);
+				$this->m_tpl->assign('fileExists', $content['exists']);
+			}
 		} else {
 			$this->m_tpl->assign('markdownContent', '');
 			$this->m_tpl->assign('markdownTitle', '');
