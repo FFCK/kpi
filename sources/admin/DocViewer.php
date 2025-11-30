@@ -66,7 +66,7 @@ class DocViewer extends MyPageSecure
 	 */
 	function scanMarkdownFiles($category)
 	{
-		$basePath = dirname(dirname(__DIR__)) . '/DOC/' . $category;
+		$basePath = dirname(__DIR__) . '/DOC/' . $category;
 
 		if (!is_dir($basePath)) {
 			return [];
@@ -168,7 +168,7 @@ class DocViewer extends MyPageSecure
 	 */
 	function loadMarkdownFile($category, $file)
 	{
-		$basePath = dirname(dirname(__DIR__)) . '/DOC/' . $category;
+		$basePath = dirname(__DIR__) . '/DOC/' . $category;
 		$filePath = $basePath . '/' . $file;
 
 		// Vérifier que le fichier existe et est dans le bon dossier (sécurité)
@@ -267,5 +267,5 @@ class DocViewer extends MyPageSecure
 $page = new DocViewer();
 $page->SetTemplate("Documentation KPI", "Documentation", false);
 $page->Load();
-$page->m_tpl->display('DocViewer.tpl');
+$page->DisplayTemplate('DocViewer');
 ?>
