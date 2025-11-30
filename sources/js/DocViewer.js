@@ -105,19 +105,40 @@ function enhanceMarkdownLinks() {
 			const currentUrl = new URL(window.location.href);
 			const category = currentUrl.searchParams.get('category') || 'user';
 
-			// Construire le nouveau lien
-			let newHref = 'DocViewer.php?category=' + category + '&file=';
+			// Construire le chemin du fichier cible
+			let targetFile = href;
 
-			// Si le lien est relatif, construire le chemin complet
-			if (href.startsWith('../') || href.startsWith('./') || !href.startsWith('/')) {
+			// Si le lien est relatif, résoudre le chemin
+			if (href.startsWith('./') || href.startsWith('../') || (!href.startsWith('/') && !href.startsWith('http'))) {
 				const currentFile = currentUrl.searchParams.get('file') || '';
 				const currentDir = currentFile.substring(0, currentFile.lastIndexOf('/') + 1);
-				newHref += encodeURIComponent(currentDir + href);
-			} else {
-				newHref += encodeURIComponent(href.substring(1));
+
+				// Nettoyer le lien
+				targetFile = href.replace(/^\.\//, ''); // Supprimer ./
+
+				// Si c'est un lien parent (..)
+				if (targetFile.startsWith('../')) {
+					// Remonter dans l'arborescence
+					let dirParts = currentDir.split('/').filter(p => p);
+					let fileParts = targetFile.split('/');
+
+					while (fileParts[0] === '..') {
+						dirParts.pop();
+						fileParts.shift();
+					}
+
+					targetFile = dirParts.concat(fileParts).join('/');
+				} else {
+					// Lien dans le même dossier ou sous-dossier
+					targetFile = currentDir + targetFile;
+				}
+			} else if (targetFile.startsWith('/')) {
+				// Lien absolu depuis la racine de la catégorie
+				targetFile = targetFile.substring(1);
 			}
 
-			link.setAttribute('href', newHref);
+			// Construire le nouveau lien
+			link.setAttribute('href', 'DocViewer.php?category=' + category + '&file=' + encodeURIComponent(targetFile));
 		}
 	});
 }

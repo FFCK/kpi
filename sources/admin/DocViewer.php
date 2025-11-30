@@ -109,9 +109,22 @@ class DocViewer extends MyPage
 		ksort($organized);
 		foreach ($organized as &$folderFiles) {
 			usort($folderFiles, function($a, $b) {
-				// README en premier
-				if ($a['name'] === 'README.md') return -1;
-				if ($b['name'] === 'README.md') return 1;
+				// Ordre de priorité pour les fichiers importants
+				$priority = [
+					'README.md' => 1,
+					'NOUVEAUTES.md' => 2,
+					'DOCVIEWER_GUIDE.md' => 3,
+					'KPI_FUNCTIONALITY_INVENTORY.md' => 4,
+				];
+
+				$priorityA = $priority[$a['name']] ?? 999;
+				$priorityB = $priority[$b['name']] ?? 999;
+
+				if ($priorityA !== $priorityB) {
+					return $priorityA - $priorityB;
+				}
+
+				// Si même priorité, tri alphabétique
 				return strcasecmp($a['name'], $b['name']);
 			});
 		}
