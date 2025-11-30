@@ -66,8 +66,8 @@ class DocViewer extends MyPageSecure
 	 */
 	function scanMarkdownFiles($category)
 	{
-		// DOC est à la racine du projet, pas dans sources/
-		$basePath = dirname(dirname(__DIR__)) . '/DOC/' . $category;
+		// DOC est accessible via le lien symbolique sources/DOC -> ../DOC
+		$basePath = dirname(__DIR__) . '/DOC/' . $category;
 
 		if (!is_dir($basePath)) {
 			return [];
@@ -169,8 +169,8 @@ class DocViewer extends MyPageSecure
 	 */
 	function loadMarkdownFile($category, $file)
 	{
-		// DOC est à la racine du projet, pas dans sources/
-		$basePath = dirname(dirname(__DIR__)) . '/DOC/' . $category;
+		// DOC est accessible via le lien symbolique sources/DOC -> ../DOC
+		$basePath = dirname(__DIR__) . '/DOC/' . $category;
 		$filePath = $basePath . '/' . $file;
 
 		// Vérifier que le fichier existe et est dans le bon dossier (sécurité)
