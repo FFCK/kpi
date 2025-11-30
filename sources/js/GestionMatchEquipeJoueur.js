@@ -217,28 +217,31 @@ jq(document).ready(function() { //Jquery + NoConflict='J'
 		jq('#directSelected').removeAttr('id');
 		jq('#directSelecteur').toggle();
 	});
-	
-	vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
-		width: 550,
-		maxResults: 50,
-		dataType: 'json',
-		extraParams: {
-			format: 'json'
-		},
-		formatItem: (item) => item.label,
-		formatResult: (item) => item.value,
-		onSelect: function(item) {
-			if (item) {
-				jq("#matricJoueur2").val(item.matric);
-				jq("#nomJoueur2").val(item.nom);
-				jq("#prenomJoueur2").val(item.prenom);
-				jq("#naissanceJoueur2").val(item.naissance);
-				jq("#sexeJoueur2").val(item.sexe);
-			}
-		}
-	});
 
-	
+	// Initialiser l'autocomplete seulement si l'élément existe
+	if (document.getElementById('choixJoueur')) {
+		vanillaAutocomplete('#choixJoueur', 'Autocompl_joueur.php', {
+			width: 550,
+			maxResults: 50,
+			dataType: 'json',
+			extraParams: {
+				format: 'json'
+			},
+			formatItem: (item) => item.label,
+			formatResult: (item) => item.value,
+			onSelect: function(item) {
+				if (item) {
+					jq("#matricJoueur2").val(item.matric);
+					jq("#nomJoueur2").val(item.nom);
+					jq("#prenomJoueur2").val(item.prenom);
+					jq("#naissanceJoueur2").val(item.naissance);
+					jq("#sexeJoueur2").val(item.sexe);
+				}
+			}
+		});
+	}
+
+
 });
 
 		

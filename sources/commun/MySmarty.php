@@ -23,13 +23,13 @@ class MySmarty extends Smarty
     }
 
     /**
-     * Prétraite le fichier MyLang.conf pour remplacer les tirets par des underscores
+     * Prétraite le fichier MyLang.ini pour remplacer les tirets par des underscores
      * dans les clés de configuration (compatibilité Smarty 4)
      */
     private function preprocessConfigFile()
     {
-        $sourceFile = PATH_ABS . 'commun/MyLang.conf';
-        $targetFile = PATH_ABS . 'commun/MyLang_processed.conf';
+        $sourceFile = PATH_ABS . 'commun/MyLang.ini';
+        $targetFile = PATH_ABS . 'commun/MyLang_processed.ini';
 
         // Vérifier si le fichier source existe
         if (!file_exists($sourceFile)) {
@@ -44,8 +44,17 @@ class MySmarty extends Smarty
         // Lire et traiter le fichier
         $content = file_get_contents($sourceFile);
 
-        // Remplacer les tirets par des underscores dans les clés (format: KEY-PART = "value")
-        $processedContent = preg_replace('/^([A-Z0-9]+)-([A-Z0-9]+)\s*=/m', '$1_$2 =', $content);
+        // Remplacer TOUS les tirets par des underscores dans les clés de configuration
+        // Format: key-name = "value" ou key-name-part = "value"
+        // Cette regex capture n'importe quel identifiant (lettres, chiffres, tirets) avant le signe =
+        $processedContent = preg_replace_callback(
+            '/^([a-zA-Z0-9_-]+)\s*=\s*(.*)$/m',
+            function($matches) {
+                $key = str_replace('-', '_', $matches[1]);
+                return $key . ' = ' . $matches[2];
+            },
+            $content
+        );
 
         // Écrire le fichier traité
         file_put_contents($targetFile, $processedContent);

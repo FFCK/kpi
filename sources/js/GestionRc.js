@@ -1,16 +1,7 @@
 jq = jQuery.noConflict();
 
-var langue = [];
-
-if (lang == 'en')  {
-    langue['Confirmer_MAJ'] = 'Confirm update ?';
-    langue['Nom_rc_vide'] = 'Event name is empty, unable to create';
-    langue['Confirmer'] = 'Confirm ?';
-} else {
-    langue['Confirmer_MAJ'] = 'Confirmez-vous le changement ?';
-    langue['Nom_rc_vide'] = 'Le Nom de l\'événement est vide, ajout impossible';
-    langue['Confirmer'] = 'Confirmez-vous ?';
-}
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function addRc()
 {

@@ -42,6 +42,8 @@
 					<div class='titrePage'>{#Joueurs#}</div>
 				{elseif $AfficheStat == 'ListeJoueurs2'}
 					<div class='titrePage'>{#Joueurs#} & {#Entraineurs#}</div>
+				{elseif $AfficheStat == 'LicenciesNationaux'}
+					<div class='titrePage'>Licenciés FFCK ayant joué (par catégorie d'âge)</div>
 				{elseif $AfficheStat == 'CoherenceMatchs'}
 					<div class='titrePage'>Cohérence des matchs - {$nbIncoherences|default:0} incohérence(s) détectée(s)</div>
 				{/if}
@@ -215,6 +217,22 @@
 									<th>Club</th>
 									<th>Catégorie {$codeSaison}</th>
 									<th>Club {$codeSaison}</th>
+								{elseif $AfficheStat == 'LicenciesNationaux'}
+									<th>Saison</th>
+									<th>Activité</th>
+									<th>H U16</th>
+									<th>H U18</th>
+									<th>H U23</th>
+									<th>H U35</th>
+									<th>H +35</th>
+									<th>H Total</th>
+									<th>F U16</th>
+									<th>F U18</th>
+									<th>F U23</th>
+									<th>F U35</th>
+									<th>F +35</th>
+									<th>F Total</th>
+									<th>Total</th>
 								{elseif $AfficheStat == 'CoherenceMatchs'}
 									<th>#</th>
 									<th>Type d'incohérence</th>
@@ -527,6 +545,26 @@
 										<td>{$arrayListeJoueurs[i].Club}</td>
 									</tr>
 								{/section}
+							{elseif $AfficheStat == 'LicenciesNationaux'}
+								{section name=i loop=$arrayLicenciesNationaux}
+									<tr class='{cycle values="impair,pair"}'>
+										<td><strong>{$arrayLicenciesNationaux[i].saison}</strong></td>
+										<td>{$arrayLicenciesNationaux[i].code_activite}</td>
+										<td>{$arrayLicenciesNationaux[i].hommes_u16}</td>
+										<td>{$arrayLicenciesNationaux[i].hommes_u18}</td>
+										<td>{$arrayLicenciesNationaux[i].hommes_u23}</td>
+										<td>{$arrayLicenciesNationaux[i].hommes_u35}</td>
+										<td>{$arrayLicenciesNationaux[i].hommes_plus35}</td>
+										<td><strong>{$arrayLicenciesNationaux[i].hommes_total}</strong></td>
+										<td>{$arrayLicenciesNationaux[i].femmes_u16}</td>
+										<td>{$arrayLicenciesNationaux[i].femmes_u18}</td>
+										<td>{$arrayLicenciesNationaux[i].femmes_u23}</td>
+										<td>{$arrayLicenciesNationaux[i].femmes_u35}</td>
+										<td>{$arrayLicenciesNationaux[i].femmes_plus35}</td>
+										<td><strong>{$arrayLicenciesNationaux[i].femmes_total}</strong></td>
+										<td><strong>{$arrayLicenciesNationaux[i].total_activite}</strong></td>
+									</tr>
+								{/section}
 							{elseif $AfficheStat == 'CoherenceMatchs'}
 								{section name=i loop=$arrayCoherenceMatchs}
 									<tr class='{cycle values="impair,pair"}'>
@@ -600,6 +638,9 @@
 									<Option Value="ListeJoueurs" {if $AfficheStat == 'ListeJoueurs'} selected{/if}>{#Joueurs#}</Option>
 									<Option Value="ListeJoueurs2" {if $AfficheStat == 'ListeJoueurs2'} selected{/if}>
 										{#Joueurs#} & {#Entraineurs#}
+									</Option>
+									<Option Value="LicenciesNationaux" {if $AfficheStat == 'LicenciesNationaux'} selected{/if}>
+										Licenciés nationaux par catégorie
 									</Option>
 									<Option Value="CoherenceMatchs" {if $AfficheStat == 'CoherenceMatchs'} selected{/if}>
 										Cohérence des matchs

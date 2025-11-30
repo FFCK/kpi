@@ -1,33 +1,7 @@
 jq = jQuery.noConflict();
 
-var langue = [];
-
-if(lang == 'en')  {
-    langue['Confirmer'] = 'Confirm ?';
-    langue['MAJ_impossible'] = 'Unable to update';
-    langue['Match_de_classement'] = 'Classifying game';
-    langue['Match_eliminatoire'] = 'Playoffs';
-    langue['Non_valide'] = 'Unvalidated (private score)';
-    langue['Rien_a_transferer'] = 'Nothing to transfer !';
-    langue['Selection_competition_cible'] = 'Select a target competition !';
-    langue['Selection_saison_cible'] = 'Select a target season !';
-    langue['Suppression_classement'] = 'Remove of public ranking ?';
-    langue['Valider'] = 'Valid';
-    langue['Valide'] = 'Validated, locked (public score)';
-} else {
-    langue['Confirmer'] = 'Confirmer ?';
-    langue['MAJ_impossible'] = 'Mise à jour impossible';
-    langue['Match_de_classement'] = 'Match de classement';
-    langue['Match_eliminatoire'] = 'Match éliminatoire';
-    langue['Non_valide'] = 'Non validé (score non public)';
-    langue['Rien_a_transferer'] = 'Rien à transférer !';
-    langue['Selection_competition_cible'] = 'Sélectionner une compétition cible !';
-    langue['Selection_saison_cible'] = 'Sélectionner une saison cible !';
-    langue['Suppression_classement'] = 'Suppression du classement public ?';
-    langue['Valider'] = 'Valider';
-    langue['Valide'] = 'Validé / verrouillé (score public)';
-}
-
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
 
 function changeCompetition()
 {
@@ -283,6 +257,56 @@ jq(document).ready(function() { //Jquery
             jq('#formClassement').submit();
         }
     });
-	
+
+	// Gestion de la consolidation des phases
+	jq(".consolidationPhase").click(function() {
+		var checkbox = jq(this);
+		var idJournee = checkbox.attr('data-journee');
+		var isChecked = checkbox.attr('checked') ? true : false;
+		var newValue = isChecked ? 'O' : null;
+		var phaseRow = jq('tr.head2[data-journee="' + idJournee + '"]');
+
+		// Désactiver temporairement la checkbox pendant la requête
+		checkbox.attr('disabled', 'disabled');
+
+		jq.ajax({
+			type: 'POST',
+			url: 'v2/UpdateConsolidationJournee.php',
+			data: {
+				Id_Journee: idJournee,
+				Valeur: newValue
+			},
+			dataType: 'text',
+			success: function(data) {
+				if(data == 'OK') {
+					// Mettre à jour l'attribut data-consolidation
+					phaseRow.attr('data-consolidation', newValue);
+
+					// Recharger la page pour mettre à jour les classes directInput
+					location.reload();
+				} else {
+					// Erreur : annuler le changement de la checkbox
+					if(isChecked) {
+						checkbox.removeAttr('checked');
+					} else {
+						checkbox.attr('checked', 'checked');
+					}
+					alert(langue['MAJ_impossible'] + ' : ' + data);
+					checkbox.removeAttr('disabled');
+				}
+			},
+			error: function() {
+				// En cas d'erreur réseau
+				if(isChecked) {
+					checkbox.removeAttr('checked');
+				} else {
+					checkbox.attr('checked', 'checked');
+				}
+				alert(langue['MAJ_impossible']);
+				checkbox.removeAttr('disabled');
+			}
+		});
+	});
+
 });
 

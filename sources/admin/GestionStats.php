@@ -852,6 +852,124 @@ class GestionStats extends MyPageSecure
                 }
                 $this->m_tpl->assign('arrayListeJoueurs', $arrayStats);
                 break;
+            case 'LicenciesNationaux': // Licenciés FFCK ayant joué en compétition sélectionnée par catégorie
+                $sql = "SELECT
+                    'KAP' AS code_activite,
+
+                    -- Hommes U16 (< 16 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'M'
+                        AND ? - YEAR(l.Naissance) < 16
+                        THEN l.Matric
+                    END) AS hommes_u16,
+
+                    -- Hommes U18 (16-17 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'M'
+                        AND ? - YEAR(l.Naissance) BETWEEN 16 AND 17
+                        THEN l.Matric
+                    END) AS hommes_u18,
+
+                    -- Hommes U23 (18-22 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'M'
+                        AND ? - YEAR(l.Naissance) BETWEEN 18 AND 22
+                        THEN l.Matric
+                    END) AS hommes_u23,
+
+                    -- Hommes U35 (23-34 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'M'
+                        AND ? - YEAR(l.Naissance) BETWEEN 23 AND 34
+                        THEN l.Matric
+                    END) AS hommes_u35,
+
+                    -- Hommes +35 (35 ans et plus au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'M'
+                        AND ? - YEAR(l.Naissance) >= 35
+                        THEN l.Matric
+                    END) AS hommes_plus35,
+
+                    -- Hommes total
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'M'
+                        THEN l.Matric
+                    END) AS hommes_total,
+
+                    -- Femmes U16 (< 16 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'F'
+                        AND ? - YEAR(l.Naissance) < 16
+                        THEN l.Matric
+                    END) AS femmes_u16,
+
+                    -- Femmes U18 (16-17 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'F'
+                        AND ? - YEAR(l.Naissance) BETWEEN 16 AND 17
+                        THEN l.Matric
+                    END) AS femmes_u18,
+
+                    -- Femmes U23 (18-22 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'F'
+                        AND ? - YEAR(l.Naissance) BETWEEN 18 AND 22
+                        THEN l.Matric
+                    END) AS femmes_u23,
+
+                    -- Femmes U35 (23-34 ans au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'F'
+                        AND ? - YEAR(l.Naissance) BETWEEN 23 AND 34
+                        THEN l.Matric
+                    END) AS femmes_u35,
+
+                    -- Femmes +35 (35 ans et plus au 1er janvier)
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'F'
+                        AND ? - YEAR(l.Naissance) >= 35
+                        THEN l.Matric
+                    END) AS femmes_plus35,
+
+                    -- Femmes total
+                    COUNT(DISTINCT CASE
+                        WHEN l.Sexe = 'F'
+                        THEN l.Matric
+                    END) AS femmes_total,
+
+                    -- Total activité
+                    COUNT(DISTINCT l.Matric) AS total_activite
+
+                FROM kp_journee j
+                INNER JOIN kp_match m ON m.Id_journee = j.Id
+                INNER JOIN kp_match_joueur mj ON mj.Id_match = m.Id
+                INNER JOIN kp_licence l ON l.Matric = mj.Matric
+
+                WHERE
+                    -- Compétitions sélectionnées
+                    j.Code_competition IN ($in)
+                    -- Saison sélectionnée
+                    AND j.Code_saison = ?
+                    -- Licences FFCK uniquement
+                    AND l.Matric < 2000000
+                    -- Matchs validés uniquement (hors arbitres et exclus)
+                    AND mj.Capitaine NOT IN ('A','X')";
+                $sql_total .= '<br><br>' . $sql;
+                $result = $myBdd->pdo->prepare($sql);
+                // Paramètres : codeSaison (10 fois pour les calculs d'âge) + Compets + codeSaison
+                $result->execute(array_merge(
+                    [$codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison],
+                    $Compets,
+                    [$codeSaison]
+                ));
+                $row = $result->fetch(PDO::FETCH_ASSOC);
+                if ($row) {
+                    $row['saison'] = $codeSaison;
+                    array_push($arrayStats, $row);
+                }
+                $this->m_tpl->assign('arrayLicenciesNationaux', $arrayStats);
+                break;
             case 'CoherenceMatchs': // Contrôle de cohérence des matchs
                 // Récupération de tous les matchs avec date, heure, équipes et arbitres
                 $sql = "SELECT m.Id, m.Date_match, m.Heure_match, m.Numero_ordre,

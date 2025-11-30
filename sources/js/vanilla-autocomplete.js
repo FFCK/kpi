@@ -38,7 +38,7 @@
             // Éléments DOM
             this.input = typeof input === 'string' ? document.querySelector(input) : input;
             if (!this.input) {
-                console.error('VanillaAutocomplete: Input element not found');
+                // Retour silencieux si l'élément n'existe pas (normal sur certaines pages)
                 return;
             }
 

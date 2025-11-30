@@ -4,14 +4,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 📚 Documentation
 
-**Extended documentation** is available in the [`WORKFLOW_AI/`](WORKFLOW_AI/) directory, including:
-- Migration guides (PHP 8, FPDF → mPDF, etc.)
-- Technical fixes and optimizations
-- Audit reports and cleanup recommendations
-- Docker and infrastructure documentation
-- **[Makefile Multi-Environment Support](WORKFLOW_AI/MAKEFILE_MULTI_ENVIRONMENT.md)** - Running multiple instances (dev, preprod, prod) on the same server
+**Complete documentation** is organized in the [`DOC/`](DOC/) directory:
 
-See [WORKFLOW_AI/README.md](WORKFLOW_AI/README.md) for the complete list.
+### User Documentation
+- **[DOC/user/](DOC/user/)** - User guides and functionality descriptions
+  - [KPI Functionality Inventory](DOC/user/KPI_FUNCTIONALITY_INVENTORY.md) - Complete feature list
+  - [Match Consistency Stats](DOC/user/MATCH_CONSISTENCY_STATS.md) - Match scheduling consistency
+  - [Cron Documentation](DOC/user/CRON_DOCUMENTATION.md) - Automated tasks
+
+### Developer Documentation
+- **[DOC/developer/](DOC/developer/)** - Technical documentation for developers
+  - **[Guides](DOC/developer/guides/)** - Migration guides and technical documentation
+  - **[In Progress](DOC/developer/in-progress/)** - Current migrations and ongoing work
+  - **[Archive](DOC/developer/archive/)** - Completed migrations (PHP 8.4, mPDF, etc.)
+  - **[Fixes](DOC/developer/fixes/)** - Bug fixes and corrections
+  - **[Audits](DOC/developer/audits/)** - Code audits and analyses
+  - **[Infrastructure](DOC/developer/infrastructure/)** - Docker, WordPress, configuration
+
+**Key documents:**
+- **[Makefile Multi-Environment Support](DOC/developer/guides/infrastructure/MAKEFILE_MULTI_ENVIRONMENT.md)** - Running multiple instances (dev, preprod, prod) on the same server
+- **[PHP 8.4 Migration Complete](DOC/developer/archive/completed-migrations/PHP8_MIGRATION_COMPLETE.md)** - ✅ Final migration report
+
+See [DOC/README.md](DOC/README.md) for the complete index.
 
 ## Project Overview
 

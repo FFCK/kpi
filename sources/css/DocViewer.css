@@ -1,0 +1,467 @@
+/**
+ * DocViewer.css
+ * Styles pour le visualiseur de documentation
+ */
+
+/* Container principal */
+.doc-viewer-container {
+	display: flex;
+	gap: 20px;
+	max-width: 1400px;
+	margin: 20px auto;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
+}
+
+/* Sidebar */
+.doc-sidebar {
+	width: 300px;
+	min-width: 300px;
+	background: #f8f9fa;
+	border-right: 1px solid #dee2e6;
+	padding: 20px;
+	overflow-y: auto;
+	max-height: calc(100vh - 150px);
+}
+
+.doc-sidebar-header h3 {
+	margin: 0 0 20px 0;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #007bff;
+	color: #333;
+	font-size: 1.2rem;
+}
+
+/* Catégories */
+.doc-category {
+	margin-bottom: 20px;
+}
+
+.doc-category-header {
+	display: flex;
+	align-items: center;
+	padding: 10px;
+	background: #e9ecef;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.2s;
+	user-select: none;
+}
+
+.doc-category-header:hover {
+	background: #dee2e6;
+}
+
+.doc-category-icon {
+	margin-right: 8px;
+	font-size: 0.8rem;
+	transition: transform 0.2s;
+}
+
+.doc-category-title {
+	font-weight: 600;
+	color: #495057;
+}
+
+.doc-category-content {
+	margin-top: 10px;
+	padding-left: 10px;
+}
+
+/* Dossiers */
+.doc-folder {
+	margin: 10px 0 5px 0;
+}
+
+.doc-folder-name {
+	font-weight: 500;
+	color: #6c757d;
+	font-size: 0.9rem;
+	padding: 5px 0;
+}
+
+/* Liste de fichiers */
+.doc-file-list {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 10px 0;
+}
+
+.doc-file-item {
+	margin: 3px 0;
+}
+
+.doc-file-link {
+	display: block;
+	padding: 8px 12px;
+	color: #495057;
+	text-decoration: none;
+	border-radius: 4px;
+	transition: all 0.2s;
+	font-size: 0.9rem;
+	word-wrap: break-word;
+}
+
+.doc-file-link:hover {
+	background: #e9ecef;
+	color: #007bff;
+	padding-left: 16px;
+}
+
+.doc-file-item.active .doc-file-link {
+	background: #007bff;
+	color: #fff;
+	font-weight: 500;
+}
+
+.doc-file-item.active .doc-file-link:hover {
+	background: #0056b3;
+	color: #fff;
+}
+
+.doc-empty {
+	padding: 10px;
+	color: #6c757d;
+	font-style: italic;
+	font-size: 0.9rem;
+}
+
+/* Liens externes */
+.doc-external-links {
+	padding: 10px 0;
+	border-top: 1px solid #dee2e6;
+	margin-top: 10px;
+}
+
+.doc-external-link {
+	display: block;
+	padding: 8px 12px;
+	margin: 5px 0;
+	color: #495057;
+	text-decoration: none;
+	border-radius: 4px;
+	transition: all 0.2s;
+	font-size: 0.9rem;
+	background: #e9ecef;
+}
+
+.doc-external-link:hover {
+	background: #dee2e6;
+	color: #007bff;
+}
+
+/* Zone de contenu */
+.doc-content {
+	flex: 1;
+	padding: 30px;
+	overflow-y: auto;
+	max-height: calc(100vh - 150px);
+}
+
+.doc-content-header {
+	margin-bottom: 30px;
+	padding-bottom: 20px;
+	border-bottom: 2px solid #dee2e6;
+}
+
+.doc-content-title {
+	margin: 0 0 15px 0;
+	color: #212529;
+	font-size: 2rem;
+}
+
+/* Breadcrumb */
+.doc-breadcrumb {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	font-size: 0.9rem;
+	color: #6c757d;
+}
+
+.doc-breadcrumb a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.doc-breadcrumb a:hover {
+	text-decoration: underline;
+}
+
+.doc-breadcrumb-separator {
+	margin: 0 8px;
+}
+
+.doc-breadcrumb-category,
+.doc-breadcrumb-file {
+	color: #495057;
+}
+
+/* Contenu markdown */
+.doc-markdown-content {
+	line-height: 1.7;
+	color: #212529;
+}
+
+.doc-markdown-content h1 {
+	font-size: 2rem;
+	margin: 30px 0 20px 0;
+	padding-bottom: 10px;
+	border-bottom: 2px solid #dee2e6;
+	color: #212529;
+}
+
+.doc-markdown-content h2 {
+	font-size: 1.6rem;
+	margin: 25px 0 15px 0;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #e9ecef;
+	color: #343a40;
+}
+
+.doc-markdown-content h3 {
+	font-size: 1.3rem;
+	margin: 20px 0 12px 0;
+	color: #495057;
+}
+
+.doc-markdown-content h4 {
+	font-size: 1.1rem;
+	margin: 18px 0 10px 0;
+	color: #6c757d;
+}
+
+.doc-markdown-content h5,
+.doc-markdown-content h6 {
+	font-size: 1rem;
+	margin: 15px 0 8px 0;
+	color: #6c757d;
+}
+
+.doc-markdown-content p {
+	margin: 15px 0;
+}
+
+.doc-markdown-content ul,
+.doc-markdown-content ol {
+	margin: 15px 0;
+	padding-left: 30px;
+}
+
+.doc-markdown-content li {
+	margin: 8px 0;
+}
+
+.doc-markdown-content a {
+	color: #007bff;
+	text-decoration: none;
+}
+
+.doc-markdown-content a:hover {
+	text-decoration: underline;
+}
+
+.doc-markdown-content code {
+	background: #f8f9fa;
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-family: 'Courier New', monospace;
+	font-size: 0.9em;
+	color: #e83e8c;
+}
+
+.doc-markdown-content pre {
+	background: #f8f9fa;
+	padding: 15px;
+	border-radius: 5px;
+	border-left: 4px solid #007bff;
+	overflow-x: auto;
+	margin: 20px 0;
+}
+
+.doc-markdown-content pre code {
+	background: none;
+	padding: 0;
+	color: #212529;
+}
+
+.doc-markdown-content blockquote {
+	border-left: 4px solid #dee2e6;
+	padding-left: 20px;
+	margin: 20px 0;
+	color: #6c757d;
+	font-style: italic;
+}
+
+.doc-markdown-content table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 20px 0;
+}
+
+.doc-markdown-content table th,
+.doc-markdown-content table td {
+	padding: 10px;
+	border: 1px solid #dee2e6;
+	text-align: left;
+}
+
+.doc-markdown-content table th {
+	background: #f8f9fa;
+	font-weight: 600;
+}
+
+.doc-markdown-content img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 5px;
+	margin: 20px 0;
+}
+
+.doc-markdown-content hr {
+	border: none;
+	border-top: 2px solid #dee2e6;
+	margin: 30px 0;
+}
+
+/* Icône lien externe */
+.external-link-icon {
+	font-size: 0.8em;
+	opacity: 0.7;
+}
+
+/* Page d'accueil */
+.doc-welcome {
+	max-width: 800px;
+}
+
+.doc-welcome h1 {
+	color: #212529;
+	margin-bottom: 30px;
+}
+
+.doc-welcome-section {
+	background: #f8f9fa;
+	padding: 20px;
+	border-radius: 8px;
+	margin: 20px 0;
+	border-left: 4px solid #007bff;
+}
+
+.doc-welcome-section h2 {
+	margin-top: 0;
+	color: #343a40;
+}
+
+.doc-welcome-section h3 {
+	color: #495057;
+}
+
+.doc-welcome-count {
+	margin-top: 15px;
+	padding: 10px;
+	background: #fff;
+	border-radius: 5px;
+}
+
+/* Erreur */
+.doc-error {
+	max-width: 600px;
+	margin: 50px auto;
+}
+
+/* Bouton retour en haut */
+.doc-scroll-top {
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	padding: 12px 20px;
+	background: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 1rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	transition: all 0.3s;
+	z-index: 1000;
+}
+
+.doc-scroll-top:hover {
+	background: #0056b3;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+	.doc-viewer-container {
+		flex-direction: column;
+	}
+
+	.doc-sidebar {
+		width: 100%;
+		max-height: 400px;
+	}
+
+	.doc-content {
+		max-height: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.doc-sidebar {
+		padding: 15px;
+	}
+
+	.doc-content {
+		padding: 20px;
+	}
+
+	.doc-content-title {
+		font-size: 1.5rem;
+	}
+
+	.doc-markdown-content h1 {
+		font-size: 1.5rem;
+	}
+
+	.doc-markdown-content h2 {
+		font-size: 1.3rem;
+	}
+
+	.doc-scroll-top {
+		bottom: 20px;
+		right: 20px;
+		padding: 10px 16px;
+	}
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+	* {
+		transition: none !important;
+		animation: none !important;
+	}
+}
+
+/* Mode impression */
+@media print {
+	.doc-sidebar {
+		display: none;
+	}
+
+	.doc-content {
+		max-height: none;
+	}
+
+	.doc-scroll-top {
+		display: none;
+	}
+
+	.doc-breadcrumb {
+		display: none;
+	}
+}

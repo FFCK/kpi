@@ -154,7 +154,21 @@
 											</td>
 										</tr>
 									{/if}
-								{else}
+								{elseif $detailsCompet.Code_typeclt == 'MULTI'}
+								<tr class='{cycle values="impair,pair"}'>
+									<td>{#Classements#}</td>
+									<td>{#Classement_general#}</td>
+									<td><a href="FeuilleCltMulti.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+									<td><a href="../PdfCltMulti.php" Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+								</tr>
+								<tr class='{cycle values="impair,pair"}'>
+									<td>{#Liens#}</td>
+									<td>{#Acces_direct2#}</td>
+									<td><a href="../PdfQrCodes.php?S={$sessionSaison}&Compet={$codeCompet}" Target="_blank"><img height="22"
+												src="../img/pdf.png" /></a></td>
+									<td></td>
+								</tr>
+							{else}
 									<tr class='{cycle values="impair,pair"}'>
 										<td>{#Classements#}</td>
 										<td>{#Classement_general#}</td>

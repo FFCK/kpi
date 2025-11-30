@@ -117,6 +117,13 @@ KPI est un **système complet de gestion sportive** pour le Kayak-Polo, comprena
 - Gestion goal-average
 - Classements par phase/niveau/journée
 - Export PDF classements
+- **⭐ Consolidation des phases** (Coupe uniquement) :
+  - Figer le classement de phases spécifiques
+  - Empêcher le recalcul automatique des phases consolidées
+  - Préserver les classements finalisés ou ajustés manuellement
+  - Case à cocher par phase (administrateurs profile ≤ 4)
+  - Champs de classement en lecture seule quand consolidé
+  - Voir [CONSOLIDATION_PHASES_CLASSEMENT.md](CONSOLIDATION_PHASES_CLASSEMENT.md)
 
 ---
 
@@ -279,7 +286,8 @@ KPI est un **système complet de gestion sportive** pour le Kayak-Polo, comprena
 - Statistiques joueurs (buts, passes, exclusions)
 - Statistiques équipes
 - Statistiques compétitions
-- Export multi-formats
+- **Licenciés par catégorie d'âge** - Répartition des licenciés FFCK ayant joué par sexe et catégorie (U16, U18, U23, U35, +35)
+- Export multi-formats (PDF FR/EN, CSV)
 
 ---
 

@@ -1,15 +1,11 @@
 jq = jQuery.noConflict()
 
-var langue = []
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
+
 var theLstEvt = '-1'
 var theLocalUrl = 'http://localhost/KPI2'
 var theDistantUrl = "https://www.kayak-polo.info"
-
-if (lang == 'en') {
-	langue['Cliquez_pour_modifier'] = 'Click to edit'
-} else {
-	langue['Cliquez_pour_modifier'] = 'Cliquez pour modifier'
-}
 
 function ExportEvt () {
 	jq("#ParamCmd").val(jq('#evenementExport').val())
@@ -237,6 +233,15 @@ jq(document).ready(function () {
 			return false
 		}
 		document.forms['formOperations'].elements['Cmd'].value = 'FusionJoueurs'
+		document.forms['formOperations'].submit()
+	})
+
+	//Fusion automatique licenciés non fédéraux
+	jq("#FusionAutoLicenciesNonFederaux").click(function () {
+		if (!confirm('ATTENTION : Cette opération va fusionner automatiquement tous les doublons de licenciés non fédéraux (numéro > 2000000) ayant les mêmes Nom, Prénom et Club.\n\nCette action est irréversible.\n\nConfirmez-vous ?')) {
+			return false
+		}
+		document.forms['formOperations'].elements['Cmd'].value = 'FusionAutomatiqueLicenciesNonFederaux'
 		document.forms['formOperations'].submit()
 	})
 

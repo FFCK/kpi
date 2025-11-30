@@ -1,14 +1,10 @@
 // Vanilla JS - no jQuery dependency for Leaflet code
-var langue = [];
+// Les traductions sont maintenant chargées depuis le fichier centralisé js_translations.php
+// L'objet 'langue' est disponible globalement
+
 var map;
 var searchMarker = null;
 var redIcon;
-
-if(lang == 'en')  {
-    langue['Echec_geocodage'] = 'Geocode was not successful for the following reason: ';
-} else {
-    langue['Echec_geocodage'] = 'Le géocodage a échoué pour les raisons suivantes';
-}
 
 // Leaflet/OpenStreetMap initialization
 document.addEventListener('DOMContentLoaded', function() {

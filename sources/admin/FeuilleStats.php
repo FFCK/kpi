@@ -650,14 +650,50 @@ class FeuilleStats extends MyPage
                     LEFT JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
                     LEFT JOIN kp_licence l ON cej.Matric = l.Matric
                     WHERE 1
-                    AND ce.Code_compet IN ($in) 
-                    AND ce.Code_saison = ? 
+                    AND ce.Code_compet IN ($in)
+                    AND ce.Code_saison = ?
                     GROUP BY cej.Matric
-                    ORDER BY ce.Code_club, ce.Libelle 
+                    ORDER BY ce.Code_club, ce.Libelle
                     LIMIT 0, $nbLignes ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array_merge($Compets, [$codeSaison]));
                 while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                    array_push($arrayStats, $row);
+                }
+                break;
+            case 'LicenciesNationaux': // Licenciés FFCK ayant joué en compétition sélectionnée par catégorie
+                $sql = "SELECT
+                    'KAP' AS code_activite,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'M' AND ? - YEAR(l.Naissance) < 16 THEN l.Matric END) AS hommes_u16,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'M' AND ? - YEAR(l.Naissance) BETWEEN 16 AND 17 THEN l.Matric END) AS hommes_u18,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'M' AND ? - YEAR(l.Naissance) BETWEEN 18 AND 22 THEN l.Matric END) AS hommes_u23,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'M' AND ? - YEAR(l.Naissance) BETWEEN 23 AND 34 THEN l.Matric END) AS hommes_u35,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'M' AND ? - YEAR(l.Naissance) >= 35 THEN l.Matric END) AS hommes_plus35,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'M' THEN l.Matric END) AS hommes_total,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'F' AND ? - YEAR(l.Naissance) < 16 THEN l.Matric END) AS femmes_u16,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'F' AND ? - YEAR(l.Naissance) BETWEEN 16 AND 17 THEN l.Matric END) AS femmes_u18,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'F' AND ? - YEAR(l.Naissance) BETWEEN 18 AND 22 THEN l.Matric END) AS femmes_u23,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'F' AND ? - YEAR(l.Naissance) BETWEEN 23 AND 34 THEN l.Matric END) AS femmes_u35,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'F' AND ? - YEAR(l.Naissance) >= 35 THEN l.Matric END) AS femmes_plus35,
+                    COUNT(DISTINCT CASE WHEN l.Sexe = 'F' THEN l.Matric END) AS femmes_total,
+                    COUNT(DISTINCT l.Matric) AS total_activite
+                FROM kp_journee j
+                INNER JOIN kp_match m ON m.Id_journee = j.Id
+                INNER JOIN kp_match_joueur mj ON mj.Id_match = m.Id
+                INNER JOIN kp_licence l ON l.Matric = mj.Matric
+                WHERE j.Code_competition IN ($in)
+                    AND j.Code_saison = ?
+                    AND l.Matric < 2000000
+                    AND mj.Capitaine NOT IN ('A','X')";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array_merge(
+                    [$codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison, $codeSaison],
+                    $Compets,
+                    [$codeSaison]
+                ));
+                $row = $result->fetch(PDO::FETCH_ASSOC);
+                if ($row) {
+                    $row['saison'] = $codeSaison;
                     array_push($arrayStats, $row);
                 }
                 break;
@@ -1225,6 +1261,62 @@ class FeuilleStats extends MyPage
                     $pdf->Cell(20, 4, $arrayStats[$i]['Club_actuel'], 0, 0, 'C');
                     $pdf->Cell(30, 4, $arrayStats[$i]['Categorie'], 0, 0, 'C');
                     $pdf->Cell(30, 4, $arrayStats[$i]['Club'], 0, 1, 'C');
+                }
+                break;
+            case 'LicenciesNationaux':
+                // Passer en mode paysage pour avoir assez de place
+                $pdf = new MyPDF('L');
+                $pdf->SetTitle("Statistiques - Licenciés Nationaux");
+                $pdf->SetAuthor("Kayak-polo.info");
+                $pdf->SetCreator("kayak-polo.info avec mPDF");
+                $pdf->SetAutoPageBreak(true, 15);
+                $pdf->AddPage();
+
+                $pdf->SetY(30);
+                $pdf->SetX(10);
+
+                $pdf->SetFont('Arial', 'B', 14);
+                $pdf->Cell(277, 12, "Licenciés FFCK ayant joué par catégorie d'âge - Saison $codeSaison", 0, 1, 'C');
+                $pdf->Ln(3);
+
+                $pdf->SetFont('Arial', 'BI', 8);
+                $pdf->Cell(20, 7, 'Saison', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'Activité', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'H U16', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'H U18', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'H U23', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'H U35', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'H +35', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'H Total', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'F U16', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'F U18', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'F U23', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'F U35', 'B', 0, 'C');
+                $pdf->Cell(17, 7, 'F +35', 'B', 0, 'C');
+                $pdf->Cell(20, 7, 'F Total', 'B', 0, 'C');
+                $pdf->Cell(25, 7, 'TOTAL', 'B', 1, 'C');
+
+                $pdf->SetFont('Arial', '', 8);
+                for ($i = 0; $i < count($arrayStats); $i++) {
+                    $pdf->Cell(20, 5, $arrayStats[$i]['saison'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['code_activite'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['hommes_u16'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['hommes_u18'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['hommes_u23'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['hommes_u35'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['hommes_plus35'], 0, 0, 'C');
+                    $pdf->SetFont('Arial', 'B', 8);
+                    $pdf->Cell(20, 5, $arrayStats[$i]['hommes_total'], 0, 0, 'C');
+                    $pdf->SetFont('Arial', '', 8);
+                    $pdf->Cell(17, 5, $arrayStats[$i]['femmes_u16'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['femmes_u18'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['femmes_u23'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['femmes_u35'], 0, 0, 'C');
+                    $pdf->Cell(17, 5, $arrayStats[$i]['femmes_plus35'], 0, 0, 'C');
+                    $pdf->SetFont('Arial', 'B', 8);
+                    $pdf->Cell(20, 5, $arrayStats[$i]['femmes_total'], 0, 0, 'C');
+                    $pdf->Cell(25, 5, $arrayStats[$i]['total_activite'], 0, 1, 'C');
+                    $pdf->SetFont('Arial', '', 8);
                 }
                 break;
         }
