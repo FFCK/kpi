@@ -146,9 +146,7 @@ Détecte 4 types d'anomalies dans la planification :
 **Visualisation sur l'année du calendrier public des compétitions**
 - Visualisation de tous les événements sur l'année
 - Navigation par mois et par année
-- Filtrage par type d'événement
 - Accès rapide aux détails d'un événement
-- Export calendrier
 
 **Accès** : Administration > Calendrier
 
