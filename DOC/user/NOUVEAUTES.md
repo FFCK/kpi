@@ -143,7 +143,7 @@ Détecte 4 types d'anomalies dans la planification :
 
 ### 📆 Calendrier annuel (Septembre 2025)
 
-**Vue calendrier annuelle des événements**
+**Visualisation sur l'année du calendrier public des compétitions**
 - Visualisation de tous les événements sur l'année
 - Navigation par mois et par année
 - Filtrage par type d'événement
@@ -213,9 +213,9 @@ Détecte 4 types d'anomalies dans la planification :
 
 ---
 
-### 🎯 Gestion Compétition allégée (Août 2025)
+### 🎯 Centralisation des opérations d'administration et de maintenance (Août 2025)
 
-**Simplification de l'interface pour les utilisateurs non Webmaster**
+**Regroupement des opérations sensibles dans Gestion Opérations**
 
 **Fonctionnalités déplacées vers Gestion Opérations** (profil 1 uniquement) :
 - Upload d'images de compétition

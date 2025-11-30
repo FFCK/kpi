@@ -100,8 +100,8 @@ function enhanceMarkdownLinks() {
 				link.appendChild(icon);
 			}
 		}
-		// Liens vers d'autres fichiers markdown
-		else if (href.endsWith('.md')) {
+		// Liens vers d'autres fichiers markdown (mais pas les liens DocViewer.php déjà traités)
+		else if (href.endsWith('.md') && !href.includes('DocViewer.php')) {
 			const currentUrl = new URL(window.location.href);
 			const category = currentUrl.searchParams.get('category') || 'user';
 
