@@ -602,6 +602,22 @@
 					<table width="100%">
 						<thead>
 							<tr>
+								<th class="titreForm">📚 Documentation</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<a href="DocViewer.php" target="_blank">Documentation KPI</a>
+									<br>
+									<small style="color: #666;">Documentation utilisateur et développeur</small>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<table width="100%">
+						<thead>
+							<tr>
 								<th class="titreForm">API v2</th>
 							</tr>
 						</thead>

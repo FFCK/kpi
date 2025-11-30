@@ -4,6 +4,15 @@ Cette section contient la documentation orientée utilisateurs finaux du systèm
 
 ## 📋 Guides et Fonctionnalités
 
+### 🎉 Nouveautés
+
+- **[NOUVEAUTES.md](NOUVEAUTES.md)** - **Dernières fonctionnalités ajoutées**
+  - Historique des nouveautés par date
+  - Fonctionnalités récentes (Novembre 2025)
+  - Documentation intégrée, Fusion licenciés, Stats cohérence matchs
+  - Classement Multi-Compétitions, Event Cache Worker
+  - Guide complet des améliorations récentes
+
 ### Inventaire des Fonctionnalités
 
 - **[KPI_FUNCTIONALITY_INVENTORY.md](KPI_FUNCTIONALITY_INVENTORY.md)** - **Inventaire complet des fonctionnalités**
@@ -36,20 +45,23 @@ Cette section contient la documentation orientée utilisateurs finaux du systèm
 
 ### Administration Système
 
-- **[CRON_DOCUMENTATION.md](CRON_DOCUMENTATION.md)** - **Tâches planifiées automatiques**
-  - Documentation des tâches cron configurées
-  - Mise à jour automatique des licences
-  - Verrouillage des feuilles de présence
-  - Planification et maintenance
-  - Configuration et dépannage
+### Outils et Guides
+
+- **[DOCVIEWER_GUIDE.md](DOCVIEWER_GUIDE.md)** - **Guide du visualiseur de documentation**
+  - Accès et utilisation du visualiseur de documentation
+  - Comment ajouter de nouvelles documentations
+  - Format Markdown recommandé
+  - Organisation et bonnes pratiques
+  - Dépannage
+  - **Statut**: ✅ En production
 
 ---
 
 ## 🎯 Par où commencer ?
 
-1. **Découvrir le système** : Commencez par [KPI_FUNCTIONALITY_INVENTORY.md](KPI_FUNCTIONALITY_INVENTORY.md)
-2. **Utiliser les statistiques de cohérence** : Consultez [MATCH_CONSISTENCY_STATS.md](MATCH_CONSISTENCY_STATS.md)
-3. **Comprendre l'automatisation** : Lisez [CRON_DOCUMENTATION.md](CRON_DOCUMENTATION.md)
+1. **Découvrir les nouveautés** : Consultez [NOUVEAUTES.md](NOUVEAUTES.md)
+2. **Découvrir le système** : Commencez par [KPI_FUNCTIONALITY_INVENTORY.md](KPI_FUNCTIONALITY_INVENTORY.md)
+3. **Utiliser les statistiques de cohérence** : Consultez [MATCH_CONSISTENCY_STATS.md](MATCH_CONSISTENCY_STATS.md)
 
 ---
 

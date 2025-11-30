@@ -19,6 +19,7 @@ services:
             - 80${DOCKER_SUFFIXE_PORT}:80
         volumes:
             - ../sources:/var/www/html
+            - ../DOC:/var/www/html/DOC
             - ${HOST_WORDPRESS_PATH}:/var/www/html/wordpress
             - ./MyParams.php:/var/www/html/commun/MyParams.php
             - ./MyConfig.php:/var/www/html/commun/MyConfig.php
