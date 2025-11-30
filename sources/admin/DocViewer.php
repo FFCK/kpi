@@ -66,17 +66,10 @@ class DocViewer extends MyPageSecure
 	 */
 	function scanMarkdownFiles($category)
 	{
-		// DOC est accessible via le lien symbolique sources/DOC -> ../DOC
+		// DOC est monté directement via volume Docker: ../DOC:/var/www/html/DOC
 		$basePath = dirname(__DIR__) . '/DOC/' . $category;
 
-		// Debug: vérifier le chemin
-		error_log("DocViewer: Checking basePath: " . $basePath);
-		error_log("DocViewer: is_dir result: " . (is_dir($basePath) ? 'true' : 'false'));
-		error_log("DocViewer: file_exists result: " . (file_exists($basePath) ? 'true' : 'false'));
-		error_log("DocViewer: realpath result: " . (realpath($basePath) ?: 'false'));
-
 		if (!is_dir($basePath)) {
-			error_log("DocViewer: basePath is not a directory, returning empty array");
 			return [];
 		}
 
@@ -176,7 +169,7 @@ class DocViewer extends MyPageSecure
 	 */
 	function loadMarkdownFile($category, $file)
 	{
-		// DOC est accessible via le lien symbolique sources/DOC -> ../DOC
+		// DOC est monté directement via volume Docker: ../DOC:/var/www/html/DOC
 		$basePath = dirname(__DIR__) . '/DOC/' . $category;
 		$filePath = $basePath . '/' . $file;
 
