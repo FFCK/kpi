@@ -41,6 +41,8 @@ services:
             - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`)"
             - "traefik.http.routers.kpi.entrypoints=websecure"
             - "traefik.http.routers.kpi.tls=true"
+            # Configure Traefik to trust X-Forwarded-* headers and preserve real client IP
+            - "traefik.http.services.kpi.loadbalancer.passhostheader=true"
     db:
         container_name: ${DB_CONTAINER_NAME}
         build:
