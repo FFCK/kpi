@@ -179,6 +179,26 @@
 	# End HackRepair.com Blacklist, http://pastebin.com/u/hackrepair
 
 	# Blocage d’adresses IP - Solid Security > Réglages > Comptes bloqués
+	SetEnvIF REMOTE_ADDR "^212\.147\.5\.172$" DenyAccess
+	SetEnvIF X-FORWARDED-FOR "^212\.147\.5\.172$" DenyAccess
+	SetEnvIF X-CLUSTER-CLIENT-IP "^212\.147\.5\.172$" DenyAccess
+
+	SetEnvIF REMOTE_ADDR "^103\.42\.117\.165$" DenyAccess
+	SetEnvIF X-FORWARDED-FOR "^103\.42\.117\.165$" DenyAccess
+	SetEnvIF X-CLUSTER-CLIENT-IP "^103\.42\.117\.165$" DenyAccess
+
+	SetEnvIF REMOTE_ADDR "^37\.60\.141\.252$" DenyAccess
+	SetEnvIF X-FORWARDED-FOR "^37\.60\.141\.252$" DenyAccess
+	SetEnvIF X-CLUSTER-CLIENT-IP "^37\.60\.141\.252$" DenyAccess
+
+	SetEnvIF REMOTE_ADDR "^185\.238\.231\.10$" DenyAccess
+	SetEnvIF X-FORWARDED-FOR "^185\.238\.231\.10$" DenyAccess
+	SetEnvIF X-CLUSTER-CLIENT-IP "^185\.238\.231\.10$" DenyAccess
+
+	SetEnvIF REMOTE_ADDR "^185\.238\.231\.102$" DenyAccess
+	SetEnvIF X-FORWARDED-FOR "^185\.238\.231\.102$" DenyAccess
+	SetEnvIF X-CLUSTER-CLIENT-IP "^185\.238\.231\.102$" DenyAccess
+
 	SetEnvIF REMOTE_ADDR "^196\.251\.83\.126$" DenyAccess
 	SetEnvIF X-FORWARDED-FOR "^196\.251\.83\.126$" DenyAccess
 	SetEnvIF X-CLUSTER-CLIENT-IP "^196\.251\.83\.126$" DenyAccess
@@ -559,30 +579,15 @@
 	SetEnvIF X-FORWARDED-FOR "^218\.84\.173\.25$" DenyAccess
 	SetEnvIF X-CLUSTER-CLIENT-IP "^218\.84\.173\.25$" DenyAccess
 
-	SetEnvIF REMOTE_ADDR "^1\.190\.188\.3$" DenyAccess
-	SetEnvIF X-FORWARDED-FOR "^1\.190\.188\.3$" DenyAccess
-	SetEnvIF X-CLUSTER-CLIENT-IP "^1\.190\.188\.3$" DenyAccess
-
-	SetEnvIF REMOTE_ADDR "^148\.251\.43\.180$" DenyAccess
-	SetEnvIF X-FORWARDED-FOR "^148\.251\.43\.180$" DenyAccess
-	SetEnvIF X-CLUSTER-CLIENT-IP "^148\.251\.43\.180$" DenyAccess
-
-	SetEnvIF REMOTE_ADDR "^91\.200\.12\.110$" DenyAccess
-	SetEnvIF X-FORWARDED-FOR "^91\.200\.12\.110$" DenyAccess
-	SetEnvIF X-CLUSTER-CLIENT-IP "^91\.200\.12\.110$" DenyAccess
-
-	SetEnvIF REMOTE_ADDR "^91\.200\.12\.103$" DenyAccess
-	SetEnvIF X-FORWARDED-FOR "^91\.200\.12\.103$" DenyAccess
-	SetEnvIF X-CLUSTER-CLIENT-IP "^91\.200\.12\.103$" DenyAccess
-
-	SetEnvIF REMOTE_ADDR "^123\.31\.20\.69$" DenyAccess
-	SetEnvIF X-FORWARDED-FOR "^123\.31\.20\.69$" DenyAccess
-	SetEnvIF X-CLUSTER-CLIENT-IP "^123\.31\.20\.69$" DenyAccess
-
 	<IfModule mod_authz_core.c>
 		<RequireAll>
 			Require all granted
 			Require not env DenyAccess
+			Require not ip 212.147.5.172
+			Require not ip 103.42.117.165
+			Require not ip 37.60.141.252
+			Require not ip 185.238.231.10
+			Require not ip 185.238.231.102
 			Require not ip 196.251.83.126
 			Require not ip 196.251.112.126
 			Require not ip 20.203.232.214
@@ -678,17 +683,17 @@
 			Require not ip 118.240.44.158
 			Require not ip 223.68.186.126
 			Require not ip 218.84.173.25
-			Require not ip 1.190.188.3
-			Require not ip 148.251.43.180
-			Require not ip 91.200.12.110
-			Require not ip 91.200.12.103
-			Require not ip 123.31.20.69
 		</RequireAll>
 	</IfModule>
 	<IfModule !mod_authz_core.c>
 		Order allow,deny
 		Allow from all
 		Deny from env=DenyAccess
+		Deny from 212.147.5.172
+		Deny from 103.42.117.165
+		Deny from 37.60.141.252
+		Deny from 185.238.231.10
+		Deny from 185.238.231.102
 		Deny from 196.251.83.126
 		Deny from 196.251.112.126
 		Deny from 20.203.232.214
@@ -784,11 +789,6 @@
 		Deny from 118.240.44.158
 		Deny from 223.68.186.126
 		Deny from 218.84.173.25
-		Deny from 1.190.188.3
-		Deny from 148.251.43.180
-		Deny from 91.200.12.110
-		Deny from 91.200.12.103
-		Deny from 123.31.20.69
 	</IfModule>
 
 	# Protéger les fichiers système - Solid Security > Réglages > Ajustements système > Fichiers système
