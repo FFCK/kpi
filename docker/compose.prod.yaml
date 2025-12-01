@@ -22,6 +22,7 @@ services:
             - "host.docker.internal:host-gateway"
         volumes:
             - ../sources:/var/www/html
+            - ../DOC:/var/www/html/DOC
             - ${HOST_WORDPRESS_PATH}:/var/www/html/wordpress
             - ${HOST_APACHE2_LOG_PATH}:/var/log/apache2/
             - /etc/msmtprc:/etc/msmtprc:ro
