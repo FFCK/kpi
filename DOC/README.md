@@ -10,6 +10,7 @@ Documentation orientée utilisateurs finaux et fonctionnalités du système.
 - **[MATCH_CONSISTENCY_STATS.md](user/MATCH_CONSISTENCY_STATS.md)** - Fonctionnalité de cohérence des matchs
 - **[CRON_DOCUMENTATION.md](user/CRON_DOCUMENTATION.md)** - Tâches planifiées automatiques
 - **[MULTI_COMPETITION_TYPE.md](user/MULTI_COMPETITION_TYPE.md)** - Type de compétition MULTI (agrégation multi-compétitions)
+- **[MULTI_COMPETITION_SCORING_GRID.md](user/MULTI_COMPETITION_SCORING_GRID.md)** - Éditeur de grille de points pour compétitions MULTI
 
 ## 💻 [Documentation Développeur](developer/)
 

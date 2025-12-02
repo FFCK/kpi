@@ -178,7 +178,7 @@
 		if (jsonOutput) {
 			jsonOutput.select();
 			document.execCommand('copy');
-			alert('{#JSON_copie#}');
+			alert("{#JSON_copie#}");
 		}
 	}
 
@@ -189,10 +189,10 @@
 			var parentInput = window.opener.document.getElementById('pointsGrid');
 			if (parentInput) {
 				parentInput.value = jsonOutput.value;
-				alert('{#JSON_applique#}');
+				alert("{#JSON_applique#}");
 				window.close();
 			} else {
-				alert('{#Erreur_application#}');
+				alert("{#Erreur_application#}");
 			}
 		} else {
 			// Si pas de fenêtre parente, juste copier dans le presse-papiers
