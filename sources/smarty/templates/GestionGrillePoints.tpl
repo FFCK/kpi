@@ -114,7 +114,7 @@
 	<script>
 	// Données de la grille existante
 	var gridData = {$gridData|json_encode};
-	if (typeof gridData !== 'object' || gridData === null) {
+	if (!gridData || typeof gridData !== 'object' || Array.isArray(gridData)) {
 		gridData = {ldelim}{rdelim};
 	}
 

@@ -40,21 +40,22 @@ class GestionGrillePoints extends MyPageSecure
 		$this->m_tpl->assign('existingJson', $existingJson);
 
 		// Parser le JSON pour alimenter le formulaire
-		$gridData = [];
+		$gridData = new stdClass(); // Objet vide au lieu de tableau
 		$defaultValue = 0;
 		$maxPosition = 10; // Valeur par défaut
 
 		if (!empty($existingJson)) {
-			$decoded = json_decode($existingJson, true);
-			if (is_array($decoded)) {
-				if (isset($decoded['default'])) {
-					$defaultValue = $decoded['default'];
-					unset($decoded['default']);
+			$decoded = json_decode($existingJson, false); // false pour obtenir un objet
+			if (is_object($decoded)) {
+				if (isset($decoded->default)) {
+					$defaultValue = $decoded->default;
+					unset($decoded->default);
 				}
 				$gridData = $decoded;
 				// Déterminer le nombre maximum de positions
-				if (!empty($gridData)) {
-					$maxPosition = max(max(array_keys($gridData)), 10);
+				$keys = array_keys((array)$gridData);
+				if (!empty($keys)) {
+					$maxPosition = max(max($keys), 10);
 				}
 			}
 		}
