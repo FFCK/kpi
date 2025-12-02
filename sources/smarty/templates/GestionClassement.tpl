@@ -8,6 +8,7 @@
 				<input type='hidden' name='AjaxWhere' id='AjaxWhere' Value='Where Id = ' />
 				<input type='hidden' name='AjaxAnd' id='AjaxAnd' Value='And Id_journee = ' />
 				<input type='hidden' name='AjaxUser' id='AjaxUser' Value='{$user}' />
+				<input type='hidden' name='CompetStatut' id='CompetStatut' Value='{$compet.Statut|default:''}' />
 
 				<div class='blocLeft'>
 					<div class='titrePage'>{#Classement#}</div>
@@ -107,7 +108,7 @@
 											<td> <img width="20" src="../img/Pays/{$arrayEquipe[i].Code_comite_dep}.png"
 													alt="{$arrayEquipe[i].Code_comite_dep}" title="{$arrayEquipe[i].Code_comite_dep}" /></td>
 										{/if}
-										{if $profile <= 4 && $AuthModif == 'O'}
+										{if $profile <= 4 && $AuthModif == 'O' && $compet.Statut == 'ON'}
 											{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 												<td width="30"><span class='directInput' Id="Clt-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}0">{$arrayEquipe[i].Clt}</span></td>
@@ -224,7 +225,7 @@
 														&nbsp;
 													{/if}
 												</td>
-												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O'}
+												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O' && $compet.Statut == 'ON'}
 													<td width="30"><span class='directInput'
 															Id="Clt-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}0">{$arrayEquipe_journee[i].Clt}</span></td>
@@ -243,7 +244,7 @@
 												<td width="30">{$arrayEquipe_journee[i].N}</td>
 												<td width="30">{$arrayEquipe_journee[i].P}</td>
 												<td width="30">{$arrayEquipe_journee[i].F}</td>
-												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O'}
+												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O' && $compet.Statut == 'ON'}
 													<td width="40"><span class='directInput'
 															Id="Plus-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}7">{$arrayEquipe_journee[i].Plus}</span></td>
@@ -466,6 +467,8 @@
 								<label>Type :
 									{if $typeCompetition=='Championnat'}
 										{#CHPT_type#}
+									{elseif $typeCompetition=='Multi-Compétition'}
+										{#MULTI_type#}
 									{else}
 										{#CP_type#}
 									{/if}
@@ -480,7 +483,7 @@
 								<hr>
 							</td>
 						</tr>
-						{if ($profile <= 6 or $profile == 9) && $AuthModif == 'O'}
+						{if ($profile <= 6 or $profile == 9) && $AuthModif == 'O' && $compet.Statut == 'ON'}
 							<tr>
 								<td align='center' width=20><input type="checkbox" name="allMatchs" id="allMatchs" value="ok"
 										{if $Mode_calcul == 'tous'} checked{/if}></td>
@@ -521,7 +524,7 @@
 								{/if}
 							</td>
 						</tr>
-						{if ($profile <= 4) && $AuthModif == 'O'}
+						{if ($profile <= 4) && $AuthModif == 'O' && $compet.Statut == 'ON'}
 							<tr>
 								<td colspan=4 align='center'>
 									<input class="bigbutton" type="button" onclick="publicationClt();" name="Publier"
@@ -656,6 +659,7 @@
 								<hr>
 							</td>
 						</tr>
+						{if $typeCompetition != 'Multi-Compétition'}
 						<tr>
 							<td align='left'>
 								<a href="FeuilleListeMatchs.php?Compet={$codeCompet}" Target="_blank"><img height="30"
@@ -667,7 +671,8 @@
 										title="{#Matchs#} - public" /></a>
 							</td>
 						</tr>
-						{if ($profile <= 3) && $AuthModif == 'O'}
+						{/if}
+						{if ($profile <= 3) && $AuthModif == 'O' && $compet.Statut == 'ON'}
 							<tr>
 								<td align='center' colspan="4">
 									<br>
