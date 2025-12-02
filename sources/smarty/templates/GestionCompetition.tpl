@@ -296,6 +296,12 @@
 									data-json-value='{$pointsGrid|escape:"html"}'
 									{if $profile > 2}readonly{/if} {if $profile <= 2}class='gris'{/if}
 									placeholder='{ldelim}"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0{rdelim}' />
+								<br>
+								{if $profile <= 2}
+								<button type="button" onclick="openGridEditor()" class="newBtn" style="margin-top: 5px; padding: 5px 10px;">
+									{#Ouvrir_editeur_grille#}
+								</button>
+								{/if}
 								<br><small><i>{#Format_JSON#} : {ldelim}"1":10,"2":6,"3":4,"default":0{rdelim}</i></small>
 							</td>
 						</tr>
@@ -665,6 +671,20 @@
 					// Synchroniser immédiatement au chargement
 					syncMultiCompetitions();
 				}
+			}
+
+			// Fonction pour ouvrir l'éditeur de grille de points
+			function openGridEditor() {
+				var pointsGrid = document.getElementById('pointsGrid');
+				var currentJson = pointsGrid ? pointsGrid.value : '';
+
+				// Ouvrir la page dans une nouvelle fenêtre
+				var url = 'GestionGrillePoints.php';
+				if (currentJson) {
+					url += '?pointsGrid=' + encodeURIComponent(currentJson);
+				}
+
+				window.open(url, 'GridEditor', 'width=900,height=700,scrollbars=yes,resizable=yes');
 			}
 
 			// Fonction pour initialiser le champ pointsGrid depuis data-json-value
