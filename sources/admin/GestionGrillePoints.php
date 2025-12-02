@@ -38,6 +38,11 @@ class GestionGrillePoints extends MyPageSecure
 		// Récupération du JSON existant (si modification)
 		$existingJson = utyGetGet('pointsGrid', '');
 		error_log("DEBUG GestionGrillePoints - existingJson received: " . $existingJson);
+
+		// Décoder les entités HTML (les guillemets sont encodés en &quot;)
+		$existingJson = html_entity_decode($existingJson, ENT_QUOTES, 'UTF-8');
+		error_log("DEBUG GestionGrillePoints - existingJson after html_entity_decode: " . $existingJson);
+
 		$this->m_tpl->assign('existingJson', $existingJson);
 
 		// Parser le JSON pour alimenter le formulaire
