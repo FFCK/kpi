@@ -1,227 +1,238 @@
-# Type de Compétition MULTI - Documentation Utilisateur
+# Type de Compétition MULTI - Guide Utilisateur
 
-## Vue d'ensemble
+## 📋 Vue d'ensemble
 
-Le type de compétition **MULTI** (Multi-Compétition) est un type de classement qui agrège les résultats de plusieurs compétitions sources pour créer un classement global unique. Ce type est particulièrement utile pour :
+Le type de compétition **MULTI** (Multi-Compétition) permet de créer un classement général basé sur les résultats de plusieurs compétitions que vous sélectionnez. Ce type est particulièrement utile pour :
 
 - **Circuits de compétitions** : Créer un classement général sur plusieurs étapes d'un circuit
 - **Tournois multi-événements** : Agréger les résultats de plusieurs tournois pour établir un classement de saison
 - **Championnats combinés** : Combiner les résultats de différentes compétitions pour un titre global
 
-## Caractéristiques principales
+## 🎯 Caractéristiques principales
 
-### 1. Sélection des compétitions sources
+### Pas de matchs
+Une compétition MULTI ne contient pas de matchs, uniquement un classement calculé automatiquement.
 
-Le type MULTI permet de sélectionner explicitement les compétitions dont les résultats seront agrégés :
+### Sélection des compétitions sources
+Vous choisissez précisément quelles compétitions doivent être prises en compte via une interface multi-sélection :
+- Compétitions organisées par section pour faciliter la navigation
+- Possibilité de combiner des compétitions de différentes sections/groupes
 
-- **Multi-sélection** : Interface multi-select permettant de choisir plusieurs compétitions
-- **Compétitions organisées par section** : Les compétitions sources sont groupées par section pour faciliter la navigation
-- **Flexibilité** : Possibilité de combiner des compétitions de différentes sections/groupes
+### Grille de points personnalisable
+Vous définissez combien de points sont attribués selon le classement dans chaque compétition source :
+- 1er : X points
+- 2ème : Y points
+- 3ème : Z points
+- Etc.
+- Points par défaut pour les positions non spécifiées
 
-### 2. Grille de points personnalisable
+### Calcul automatique
+Le classement est calculé automatiquement en fonction des résultats **publiés** des compétitions sélectionnées.
 
-Une grille de points au format JSON définit les points attribués selon le classement dans chaque compétition source :
+## 🚀 Configuration d'une compétition MULTI
+
+### Étape 1 : Créer la compétition
+
+1. Connectez-vous à l'interface d'administration
+2. Allez dans **Gestion des Compétitions**
+3. Créez une nouvelle compétition
+4. Sélectionnez le type **"Multi-Compétition"** dans la liste déroulante
+5. Remplissez les informations de base (nom, saison, groupe, etc.)
+
+### Étape 2 : Configurer la grille de points
+
+Vous avez **deux options** pour configurer la grille de points :
+
+#### ⭐ Option A : Éditeur graphique (Recommandé)
+
+L'**Éditeur de Grille de Points** est un outil graphique qui facilite la configuration sans connaître le format JSON.
+
+**Comment l'utiliser :**
+
+1. Dans le formulaire de compétition, trouvez le champ **"Grille de points (MULTI)"**
+2. Cliquez sur le bouton **"Ouvrir l'éditeur de grille"**
+3. Une nouvelle fenêtre s'ouvre avec l'éditeur
+
+**Dans l'éditeur :**
+
+1. **Nombre de positions** : Indiquez combien de positions vous voulez configurer
+   - Par exemple : `10` si vous voulez attribuer des points aux 10 premières places
+   - Minimum : 1, Maximum : 50
+
+2. **Points par position** : Pour chaque position, indiquez le nombre de points
+   - Exemple :
+     - 1ère place : `10` points
+     - 2ème place : `6` points
+     - 3ème place : `4` points
+     - 4ème place : `3` points
+     - 5ème place : `2` points
+     - 6ème place : `1` point
+
+3. **Points par défaut** : Définissez les points attribués aux positions non spécifiées
+   - Généralement : `0` point
+
+4. Cliquez sur **"Générer le JSON"**
+5. Cliquez sur **"Appliquer au formulaire"** pour reporter le JSON
+6. La fenêtre se ferme automatiquement
+   - Vous pouvez aussi cliquer sur **"Fermer"** pour quitter sans appliquer les modifications
+
+**Avantages** :
+✅ Interface intuitive
+✅ Pas besoin de connaître le format JSON
+✅ Moins d'erreurs de saisie
+✅ Modification facile d'une grille existante
+
+#### Option B : Saisie manuelle du JSON
+
+Si vous êtes à l'aise avec le format JSON, vous pouvez saisir directement la grille :
 
 ```json
-{
-  "1": 10,
-  "2": 6,
-  "3": 4,
-  "4": 2,
-  "default": 0
-}
+{"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0}
 ```
 
-- **Format** : JSON avec clés numériques pour chaque position
-- **Clé "default"** : Points attribués pour toutes les positions non spécifiées
-- **Exemple** : Le 1er reçoit 10 points, le 2ème 6 points, etc.
+- `"1"`: points pour le 1er classé
+- `"2"`: points pour le 2ème classé
+- `"default"`: points pour les classements non spécifiés
 
-### 3. Calcul du classement
+### Étape 3 : Sélectionner les compétitions sources
 
-Le classement MULTI est calculé en :
+1. Dans le formulaire, trouvez le champ **"Compétitions sources (MULTI)"**
+2. Sélectionnez les compétitions que vous souhaitez inclure (multi-sélection)
+   - Maintenez `Ctrl` (Windows) ou `Cmd` (Mac) pour sélectionner plusieurs compétitions
+3. Les compétitions disponibles sont toutes les compétitions de la même saison (hors compétitions MULTI)
 
-1. **Récupération des classements publiés** : Utilise `Clt_publi` (CHPT) ou `CltNiveau_publi` (CP) de chaque compétition source
-2. **Attribution des points** : Applique la grille de points selon la position de chaque équipe dans chaque compétition
-3. **Agrégation** : Somme les points de toutes les compétitions pour obtenir le total
-4. **Multiplication par 100** : Le total est multiplié par 100 pour stockage (format standard KPI)
-5. **Tri** : Classement par points décroissants
+**Important** : Seules les compétitions explicitement sélectionnées seront prises en compte.
 
-### 4. Affichage simplifié
+### Étape 4 : Inscrire les équipes
+
+Inscrivez les équipes dans la compétition MULTI comme pour toute autre compétition :
+1. Allez dans la gestion des équipes
+2. Ajoutez les équipes participantes
+
+**Important** : Les équipes doivent être inscrites dans les compétitions sources avec le même nom ou code club pour être reconnues.
+
+### Étape 5 : Calculer le classement
+
+1. Assurez-vous que toutes les compétitions sélectionnées ont leurs classements calculés et **publiés**
+2. Allez dans **Gestion des Classements**
+3. Sélectionnez votre compétition MULTI
+4. Cliquez sur **"Calculer le classement"**
+
+Le système :
+- Récupère les classements publiés de chaque compétition source
+- Applique la grille de points selon le classement
+- Somme tous les points obtenus par chaque équipe
+- Génère le classement final
+
+### Étape 6 : Publier le classement
+
+1. Vérifiez le classement provisoire
+2. Cliquez sur **"Publier le classement"**
+3. Le classement devient visible publiquement
+
+## 💡 Exemple pratique
+
+### Scénario : Circuit régional de kayak-polo
+
+Vous organisez un circuit régional composé de 3 tournois. Vous voulez créer un classement général où :
+- Le 1er de chaque tournoi gagne 10 points
+- Le 2ème gagne 6 points
+- Le 3ème gagne 4 points
+- Les autres ne gagnent pas de points
+
+**Configuration dans l'éditeur de grille** :
+```
+Nombre de positions : 3
+1ère place : 10
+2ème place : 6
+3ème place : 4
+Points par défaut : 0
+```
+
+Le système génère : `{"1":10,"2":6,"3":4,"default":0}`
+
+**Compétitions sources** :
+- Tournoi Nord (code : REG1)
+- Tournoi Sud (code : REG2)
+- Tournoi Est (code : REG3)
+
+**Résultats des tournois** :
+
+| Équipe | Tournoi Nord | Tournoi Sud | Tournoi Est | **Total** |
+|--------|--------------|-------------|-------------|-----------|
+| Équipe A | 1er (10 pts) | 3ème (4 pts) | 2ème (6 pts) | **20 points** |
+| Équipe B | 2ème (6 pts) | 1er (10 pts) | 1er (10 pts) | **26 points** |
+| Équipe C | 3ème (4 pts) | 2ème (6 pts) | 3ème (4 pts) | **14 points** |
+
+**Classement final MULTI** :
+1. Équipe B - 26 points
+2. Équipe A - 20 points
+3. Équipe C - 14 points
+
+## 📊 Affichage du classement
 
 Le classement MULTI affiche uniquement les colonnes essentielles :
 
 - **Clt** : Position au classement
 - **Équipe** : Nom de l'équipe
-- **Pts** : Points totaux (affichés divisés par 100)
+- **Pts** : Points totaux
 - **J** : Nombre de compétitions auxquelles l'équipe a participé
 
 Les colonnes détaillées (G, N, P, F, +, -, Diff) ne sont pas affichées car non pertinentes pour ce type de classement.
 
-## Configuration d'une compétition MULTI
-
-### Étape 1 : Création de la compétition
-
-1. Accéder à **GestionCompetition.php**
-2. Créer une nouvelle compétition
-3. Sélectionner **Type de classement** : `MULTI` (Multi-Compétition)
-
-### Étape 2 : Configuration des compétitions sources
-
-Dans le formulaire de compétition MULTI :
-
-1. **Compétitions sources** :
-   - Utiliser la liste déroulante multi-select
-   - Maintenir `Ctrl` (Windows) ou `Cmd` (Mac) pour sélectionner plusieurs compétitions
-   - Les compétitions sont groupées par section pour faciliter la navigation
-
-2. **Grille de points** :
-   - Saisir la grille au format JSON
-   - Exemple : `{"1":10,"2":6,"3":4,"4":2,"default":0}`
-   - Tester la validité du JSON avant d'enregistrer
-
-### Étape 3 : Calcul du classement
-
-1. Accéder à **GestionClassement.php**
-2. Sélectionner la compétition MULTI
-3. Cliquer sur **Calculer le classement**
-4. Le système :
-   - Récupère les classements publiés de chaque compétition source
-   - Applique la grille de points
-   - Calcule le total pour chaque équipe
-   - Génère le classement final
-
-### Étape 4 : Publication
-
-1. Vérifier le classement provisoire
-2. Cliquer sur **Publier le classement**
-3. Le classement devient visible publiquement
-
-## Génération des PDF
+## 📄 Génération des PDF
 
 Les compétitions MULTI disposent de générateurs PDF dédiés :
 
 ### PDF Admin (Provisoire)
-
-- **Fichier** : `FeuilleCltMulti.php`
-- **Accès** : Via GestionClassement.php, section "Admin"
-- **Contenu** : Classement provisoire avec colonnes Clt, Équipe, Pts, J
-- **Langue** : Français par défaut, anglais si `En_actif = 'O'`
+- Accès via **Gestion des Classements**, section "Admin"
+- Contenu : Classement provisoire
+- Langue : Français par défaut, anglais si configuré
 
 ### PDF Public
+- Accès via **Gestion des Classements**, section "Public" (après publication)
+- Contenu : Classement publié
+- QR Code inclus pour accès direct
+- Langue : Français par défaut, anglais si configuré ou paramètre `?lang=en`
 
-- **Fichier** : `PdfCltMulti.php`
-- **Accès** : Via GestionClassement.php, section "Public" (après publication)
-- **Contenu** : Classement publié avec colonnes Clt, Équipe, Pts, J
-- **QR Code** : Inclus pour accès direct depuis l'extérieur
-- **Langue** : Français par défaut, anglais si `En_actif = 'O'` ou paramètre `?lang=en`
+## ❓ Questions fréquentes
 
-## Internationalisation
+### Que se passe-t-il si une équipe ne participe pas à un tournoi ?
 
-Les PDF MULTI supportent l'anglais automatiquement :
+L'équipe ne reçoit aucun point pour ce tournoi. Seuls les tournois auxquels l'équipe a participé sont comptabilisés. Le champ **J** (joué) indique le nombre de compétitions auxquelles l'équipe a participé.
 
-### Traductions disponibles
+### Comment modifier une grille de points existante ?
 
-| Français | Anglais | Clé MyLang.ini |
-|----------|---------|----------------|
-| Clt | Pos | `Clt` |
-| Équipe | Team | `Equipe` |
-| Pts | Pts | `Pts` |
-| J | Pld | `J` |
-| CLASSEMENT PROVISOIRE | TEMPORARY RANKING | `CLASSEMENT_PROVISOIRE` |
-| CLASSEMENT GENERAL | OVERALL RANKING | `CLASSEMENT_GENERAL` |
+1. Ouvrez l'éditeur de grille
+2. La grille actuelle se charge automatiquement
+3. Modifiez les valeurs souhaitées
+4. Générez et appliquez le nouveau JSON
+5. Enregistrez la compétition
 
-### Activation de l'anglais
+### Puis-je attribuer le même nombre de points à plusieurs positions ?
+
+Oui ! Vous pouvez par exemple attribuer 5 points à la fois à la 2ème et à la 3ème place.
+
+### Combien de positions maximum puis-je configurer ?
+
+L'éditeur permet de configurer jusqu'à 50 positions différentes.
+
+### Les points peuvent-ils être négatifs ?
+
+Non, seuls les nombres positifs (0 ou plus) sont acceptés.
+
+### Comment activer l'anglais pour les PDF ?
 
 **Méthode 1 : Configuration de la compétition**
-- Dans GestionCompetition.php, cocher `En_actif = 'O'`
+- Dans Gestion des Compétitions, cocher `En_actif = 'O'`
 - Tous les PDF de cette compétition seront en anglais
 
 **Méthode 2 : Paramètre URL (PDF public uniquement)**
 - Ajouter `?lang=en` à l'URL du PDF
-- Exemple : `PdfCltMulti.php?lang=en`
 
-## Validation et transfert d'équipes
+## 🚨 Dépannage
 
-### Validation Numero unique
-
-Lors de l'affectation/promotion/relégation d'équipes :
-
-- Le système vérifie que le `Numero` de l'équipe n'existe pas déjà dans la compétition de destination
-- Si un doublon est détecté, l'équipe n'est **pas transférée**
-- Garantit l'intégrité des données et évite les conflits
-
-## Structure de données
-
-### Table `kp_competition`
-
-Nouveaux champs pour le type MULTI :
-
-```sql
--- Grille de points au format JSON
-points_grid TEXT DEFAULT NULL COMMENT 'Grille de points pour les compétitions MULTI (format JSON)'
-
--- Liste des codes de compétitions sources
-multi_competitions TEXT DEFAULT NULL COMMENT 'Liste des codes de compétitions sources pour MULTI (format JSON array)'
-```
-
-### Exemple de données
-
-```sql
--- Compétition MULTI
-Code_typeclt = 'MULTI'
-points_grid = '{"1":10,"2":6,"3":4,"4":2,"default":0}'
-multi_competitions = '["N1H","NPOH","N2H"]'
-```
-
-## Cas d'usage
-
-### Exemple 1 : Circuit de 3 tournois
-
-**Configuration** :
-- Compétitions sources : Tournoi 1, Tournoi 2, Tournoi 3
-- Grille de points : `{"1":25,"2":18,"3":15,"4":12,"5":10,"6":8,"7":6,"8":4,"9":2,"10":1,"default":0}`
-
-**Résultat** :
-- Une équipe 1ère dans 2 tournois et 3ème dans le dernier obtient : (25×2) + 15 = 65 points
-
-### Exemple 2 : Championnat combiné N1/N2
-
-**Configuration** :
-- Compétitions sources : N1 Hommes, N1 Dames, N2 Hommes, N2 Dames
-- Grille de points : `{"1":10,"2":6,"3":4,"4":2,"default":0}`
-
-**Résultat** :
-- Classement global combinant les 4 compétitions
-
-## Limitations
-
-1. **Pas de détails de matchs** : Le type MULTI n'affiche pas G, N, P, F, +, -, Diff
-2. **Classements publiés uniquement** : Utilise les classements publiés (`Clt_publi`/`CltNiveau_publi`)
-3. **Format JSON strict** : La grille de points doit être un JSON valide
-4. **Pas de gestion de phases** : Contrairement au type CP, le MULTI ne gère pas les phases/journées
-
-## Fichiers impliqués
-
-### Backend PHP
-- `sources/admin/GestionCompetition.php` : Configuration des compétitions MULTI
-- `sources/admin/GestionClassement.php` : Calcul du classement MULTI (fonction `CalculClassementMulti()`)
-- `sources/admin/FeuilleCltMulti.php` : Générateur PDF admin
-- `sources/PdfCltMulti.php` : Générateur PDF public
-
-### Templates Smarty
-- `sources/smarty/templates/GestionCompetition.tpl` : Interface de configuration
-- `sources/smarty/templates/GestionClassement.tpl` : Affichage du classement et liens PDF
-- `sources/smarty/templates/GestionDoc.tpl` : Liste des documents PDF disponibles
-
-### Internationalisation
-- `sources/commun/MyLang.ini` : Traductions FR/EN/CN
-
-### Base de données
-- `SQL/20251117_add_multi_competition_type.sql` : Migration pour ajout du type MULTI
-
-## Support et dépannage
-
-### Problème : Le classement ne se calcule pas
+### Le classement ne se calcule pas
 
 **Causes possibles** :
 1. Les compétitions sources n'ont pas de classement publié
@@ -229,11 +240,11 @@ multi_competitions = '["N1H","NPOH","N2H"]'
 3. Aucune compétition source n'est sélectionnée
 
 **Solution** :
-1. Vérifier que toutes les compétitions sources ont un classement publié
-2. Valider le JSON de la grille de points
+1. Vérifier que toutes les compétitions sources ont un classement **publié**
+2. Vérifier que la grille de points est bien configurée (utiliser l'éditeur pour être sûr)
 3. S'assurer qu'au moins une compétition est sélectionnée
 
-### Problème : Les points sont incorrects
+### Les points sont incorrects
 
 **Causes possibles** :
 1. La grille de points ne correspond pas aux attentes
@@ -243,26 +254,46 @@ multi_competitions = '["N1H","NPOH","N2H"]'
 1. Vérifier la grille de points configurée
 2. Recalculer le classement MULTI après toute modification des compétitions sources
 
-### Problème : Le PDF ne s'affiche pas en anglais
+### Le PDF ne s'affiche pas en anglais
 
 **Causes possibles** :
 1. `En_actif` n'est pas défini sur 'O' dans la compétition
 2. Le paramètre `?lang=en` est manquant (PDF public)
 
 **Solution** :
-1. Vérifier la configuration `En_actif` dans GestionCompetition.php
+1. Vérifier la configuration dans Gestion des Compétitions
 2. Ajouter `?lang=en` à l'URL du PDF public
 
-## Migration depuis les versions précédentes
+### Une équipe n'apparaît pas dans le classement
 
-Si vous avez créé des compétitions MULTI avant cette documentation :
+**Causes possibles** :
+1. L'équipe n'est pas inscrite dans la compétition MULTI
+2. L'équipe a un nom différent dans les compétitions sources
+3. L'équipe n'a participé à aucune compétition source
 
-1. Vérifier que la migration SQL a été exécutée : `20251117_add_multi_competition_type.sql`
-2. Vérifier que les champs `points_grid` et `multi_competitions` existent dans la table `kp_competition`
-3. Reconfigurer les compétitions MULTI existantes avec la nouvelle interface
+**Solution** :
+1. Vérifier l'inscription de l'équipe dans la compétition MULTI
+2. S'assurer que le nom ou code club est cohérent entre les compétitions
+3. Vérifier que l'équipe a bien participé à au moins une compétition source
+
+## 📝 Remarques importantes
+
+- **Permissions** : Seuls les utilisateurs avec les droits d'administration (profil ≤ 2) peuvent modifier la grille de points et les compétitions sources
+- **Sauvegarde** : N'oubliez pas d'enregistrer la compétition après avoir configuré la grille et les compétitions sources
+- **Classements publiés** : Le calcul utilise uniquement les classements **publiés**. Assurez-vous de publier les classements des compétitions sources avant de calculer le classement MULTI
+- **Noms cohérents** : Les équipes doivent avoir le même nom ou code club dans toutes les compétitions sources pour être reconnues
+
+## 🆘 Besoin d'aide ?
+
+Si vous rencontrez un problème :
+1. Vérifiez que la grille de points est bien définie
+2. Vérifiez que les compétitions sources sont bien sélectionnées
+3. Assurez-vous que les classements des compétitions sources sont publiés
+4. Vérifiez la cohérence des noms d'équipes
+5. Contactez votre administrateur système
 
 ---
 
-**Version** : 1.0
-**Date** : 23 novembre 2025
-**Auteur** : Documentation générée pour KPI kayak-polo.info
+**Version** : 2.0
+**Date** : Décembre 2024
+**Compatibilité** : KPI v8.4+
