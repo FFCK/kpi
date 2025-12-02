@@ -96,15 +96,13 @@
 			</table>
 			{/if}
 
-			<!-- Bouton retour -->
+			<!-- Bouton fermer -->
 			<table width="100%" style="margin-top: 20px;">
 				<tr>
 					<td align="center">
-						<a href="GestionCompetition.php">
-							<button type="button" class="newBtn" style="padding: 10px 20px;">
-								{#Retour#}
-							</button>
-						</a>
+						<button type="button" onclick="window.close()" class="newBtn" style="padding: 10px 20px;">
+							{#Fermer#}
+						</button>
 					</td>
 				</tr>
 			</table>

@@ -74,6 +74,7 @@ L'**Éditeur de Grille de Points** est un outil graphique qui facilite la config
 4. Cliquez sur **"Générer le JSON"**
 5. Cliquez sur **"Appliquer au formulaire"** pour reporter le JSON
 6. La fenêtre se ferme automatiquement
+   - Vous pouvez aussi cliquer sur **"Fermer"** pour quitter sans appliquer les modifications
 
 **Avantages** :
 ✅ Interface intuitive
