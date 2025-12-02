@@ -16,10 +16,8 @@ $msg = date('Y-m-d H:s') . " - "
 	. $myBdd->m_arrayinfo[3] . " " 
 	. $myBdd->m_arrayinfo[4];
 print_r($myBdd->m_arrayinfo);
-$fp = fopen("log_cron.txt","a");
-fputs($fp, $msg); // on ecrit la ligne
-fputs($fp, "\n"); // on va a la ligne
-fclose($fp);
+// Log de l'exécution
+error_log($msg);
 // Envoi du mail
 echo '</pre>';
 $headers = 'From: KPI <contact@kayak-polo.info>' . "\r\n";

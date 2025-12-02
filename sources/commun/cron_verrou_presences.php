@@ -58,8 +58,13 @@ if (isset($codeCompet2)) {
     $result->execute(array($saison, $codeCompet2));
 }
 
-$fp = fopen("log_cron.txt", "a");
-fputs($fp, date('Y-m-d H:s') . " - " 
-    . "Verrou competitions : $codeCompet, deverrou competitions : $codeCompet2"); // on ecrit la ligne
-fputs($fp, "\n"); // on va a la ligne
-fclose($fp);
+// Log de l'exécution
+$msg = date('Y-m-d H:s') . " - "
+    . "Verrou competitions : $codeCompet, deverrou competitions : $codeCompet2";
+error_log($msg);
+
+// Envoi du mail uniquement s'il y a des compétitions verrouillées ou déverrouillées
+if (!empty($codeCompet) || !empty($codeCompet2)) {
+    $headers = 'From: KPI <contact@kayak-polo.info>' . "\r\n";
+    mail('contact@kayak-polo.info', '[KPI-CRON] Verrou présences', $msg, $headers);
+}
