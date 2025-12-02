@@ -8,12 +8,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### User Documentation
 - **[DOC/user/](DOC/user/)** - User guides and functionality descriptions
-  - [KPI Functionality Inventory](DOC/user/KPI_FUNCTIONALITY_INVENTORY.md) - Complete feature list
+  - [Event Cache Manager](DOC/user/EVENT_CACHE_MANAGER.md) - Background worker for video overlays
+  - [Image Upload Management](DOC/user/IMAGE_UPLOAD_MANAGEMENT.md) - Logo and photo management
+  - [Team Composition Copy](DOC/user/TEAM_COMPOSITION_COPY.md) - Copy player lists between teams
+  - [Match Day Bulk Operations](DOC/user/MATCH_DAY_BULK_OPERATIONS.md) - Bulk actions on matches
   - [Match Consistency Stats](DOC/user/MATCH_CONSISTENCY_STATS.md) - Match scheduling consistency
-  - [Cron Documentation](DOC/user/CRON_DOCUMENTATION.md) - Automated tasks
+  - [Multi-Competition Type](DOC/user/MULTI_COMPETITION_TYPE.md) - Multi-competition aggregation
+  - [Consolidation Phases](DOC/user/CONSOLIDATION_PHASES_CLASSEMENT.md) - Lock ranking phases
 
 ### Developer Documentation
 - **[DOC/developer/](DOC/developer/)** - Technical documentation for developers
+  - **[Reference](DOC/developer/reference/)** - Complete reference documentation (KPI Functionality Inventory)
   - **[Guides](DOC/developer/guides/)** - Migration guides and technical documentation
   - **[In Progress](DOC/developer/in-progress/)** - Current migrations and ongoing work
   - **[Archive](DOC/developer/archive/)** - Completed migrations (PHP 8.4, mPDF, etc.)
