@@ -9,6 +9,17 @@ class GestionGrillePoints extends MyPageSecure
 {
 	var $myBdd;
 
+	function __construct()
+	{
+		parent::__construct(10);
+
+		$this->myBdd = new MyBdd();
+
+		$this->SetTemplate("Editeur_grille_points_MULTI", "Competitions", false);
+		$this->Load();
+		$this->DisplayTemplate('GestionGrillePoints');
+	}
+
 	function Load()
 	{
 		$myBdd = $this->myBdd;
@@ -84,15 +95,7 @@ class GestionGrillePoints extends MyPageSecure
 			$this->m_tpl->assign('showResult', false);
 		}
 	}
-
-	function Header()
-	{
-	}
 }
 
-
 $page = new GestionGrillePoints();
-$page->InitPage();
-$page->Load();
-$page->DisplayPage();
 
