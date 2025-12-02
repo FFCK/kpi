@@ -33,7 +33,7 @@ class GestionGrillePoints extends MyPageSecure
 		}
 
 		// Récupération du JSON existant (si modification)
-		$existingJson = utyGetRequest('pointsGrid', '');
+		$existingJson = utyGetGet('pointsGrid', '');
 		$this->m_tpl->assign('existingJson', $existingJson);
 
 		// Parser le JSON pour alimenter le formulaire
