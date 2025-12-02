@@ -133,6 +133,15 @@
 
 		var table = document.getElementById('pointsFieldsTable');
 
+		// Sauvegarder les valeurs actuelles des champs avant de reconstruire
+		var currentValues = {};
+		for (var i = 1; i <= 50; i++) {
+			var input = document.getElementById('points_' + i);
+			if (input && input.value !== '') {
+				currentValues[i] = input.value;
+			}
+		}
+
 		// Supprimer toutes les lignes sauf l'en-tête
 		while (table.rows.length > 1) {
 			table.deleteRow(1);
@@ -148,8 +157,14 @@
 			cell1.innerHTML = '<label for="points_' + i + '">' + getPositionLabel(i) + ' :</label>';
 
 			var cell2 = row.insertCell(1);
-			var existingValue = (gridData && gridData[i.toString()]) ? gridData[i.toString()] : '';
-			console.log('DEBUG - Position ' + i + ':', 'gridData[' + i + ']=' + gridData[i.toString()], 'existingValue=' + existingValue);
+			// Priorité : 1) valeur saisie précédemment, 2) valeur du JSON chargé, 3) vide
+			var existingValue = '';
+			if (currentValues[i] !== undefined) {
+				existingValue = currentValues[i];
+			} else if (gridData && gridData[i.toString()]) {
+				existingValue = gridData[i.toString()];
+			}
+			console.log('DEBUG - Position ' + i + ':', 'currentValues[' + i + ']=' + currentValues[i], 'gridData[' + i + ']=' + gridData[i.toString()], 'existingValue=' + existingValue);
 			cell2.innerHTML = '<input type="number" name="points_' + i + '" id="points_' + i +
 				'" value="' + existingValue + '" min="0" style="width: 80px;" />';
 		}
