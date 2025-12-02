@@ -258,8 +258,8 @@ jq(document).ready(function() { //Jquery
 				},
 				function(data) { // callback
 					if(data == 'OK'){
-						laCompet.html(changeType);
-						laCompet.removeClass('statutCompetATT statutCompetON statutCompetEND').addClass('statutCompet' + changeType);
+						// Rechargement de la page pour mettre à jour les boutons et champs selon le nouveau statut
+						location.reload();
 					} else {
 						laCompet.html(statut);
 						alert(langue['MAJ_impossible'] + ' : ' + data);
