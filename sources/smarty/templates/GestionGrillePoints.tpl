@@ -153,7 +153,7 @@
 
 	// Obtenir le libellé de position (1er, 2ème, 3ème, etc.)
 	function getPositionLabel(position) {
-		var lang = '{$lang|default:"fr"}';
+		var lang = '{$lang}' || 'fr';
 
 		if (lang === 'en') {
 			if (position === 1) return '1st place';
