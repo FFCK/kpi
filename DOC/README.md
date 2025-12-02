@@ -35,6 +35,9 @@ Documentation technique pour le développement et la maintenance du projet.
 - **[NPM_BACKEND_PRODUCTION_GUIDE.md](developer/guides/infrastructure/NPM_BACKEND_PRODUCTION_GUIDE.md)** - NPM pour backend PHP
 - **[TOOLTIP_TESTING_GUIDE.md](developer/guides/infrastructure/TOOLTIP_TESTING_GUIDE.md)** - Guide de test tooltips
 
+#### [Bonnes Pratiques](developer/guides/)
+- **[BEST_PRACTICES_JAVASCRIPT_SMARTY.md](developer/guides/BEST_PRACTICES_JAVASCRIPT_SMARTY.md)** - Bonnes pratiques JavaScript & Smarty (traductions, JSON, constructeurs)
+
 ### [Travaux en cours](developer/in-progress/)
 
 #### [Statuts des migrations](developer/in-progress/status/)
