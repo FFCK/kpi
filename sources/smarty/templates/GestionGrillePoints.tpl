@@ -113,7 +113,7 @@
 
 	<script>
 	// Données de la grille existante
-	var gridData = {$gridData|@json_encode};
+	var gridData = {$gridData|json_encode};
 	if (typeof gridData !== 'object' || gridData === null) {
 		gridData = {ldelim}{rdelim};
 	}

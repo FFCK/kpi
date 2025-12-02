@@ -26,11 +26,14 @@ class GestionGrillePoints extends MyPageSecure
 
 		// Langue
 		$langue = parse_ini_file("../commun/MyLang.ini", true);
-		if (utyGetSession('lang') == 'en') {
+		$langCode = utyGetSession('lang', 'fr');
+		if ($langCode == 'en') {
 			$lang = $langue['en'];
 		} else {
 			$lang = $langue['fr'];
+			$langCode = 'fr';
 		}
+		$this->m_tpl->assign('lang', $langCode);
 
 		// Récupération du JSON existant (si modification)
 		$existingJson = utyGetGet('pointsGrid', '');
