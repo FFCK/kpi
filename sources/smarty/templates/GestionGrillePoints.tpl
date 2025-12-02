@@ -114,9 +114,12 @@
 	<script>
 	// Données de la grille existante
 	var gridData = {$gridData|json_encode};
+	console.log('DEBUG - gridData from PHP:', gridData);
+	console.log('DEBUG - type:', typeof gridData, 'isArray:', Array.isArray(gridData));
 	if (!gridData || typeof gridData !== 'object' || Array.isArray(gridData)) {
 		gridData = {ldelim}{rdelim};
 	}
+	console.log('DEBUG - gridData after validation:', gridData);
 
 	// Générer les champs de saisie en fonction du nombre de positions
 	function generateFields() {
@@ -146,6 +149,7 @@
 
 			var cell2 = row.insertCell(1);
 			var existingValue = (gridData && gridData[i.toString()]) ? gridData[i.toString()] : '';
+			console.log('DEBUG - Position ' + i + ':', 'gridData[' + i + ']=' + gridData[i.toString()], 'existingValue=' + existingValue);
 			cell2.innerHTML = '<input type="number" name="points_' + i + '" id="points_' + i +
 				'" value="' + existingValue + '" min="0" style="width: 80px;" />';
 		}

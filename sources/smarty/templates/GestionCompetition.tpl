@@ -677,12 +677,15 @@
 			function openGridEditor() {
 				var pointsGrid = document.getElementById('pointsGrid');
 				var currentJson = pointsGrid ? pointsGrid.value : '';
+				console.log('DEBUG openGridEditor - pointsGrid element:', pointsGrid);
+				console.log('DEBUG openGridEditor - currentJson:', currentJson);
 
 				// Ouvrir la page dans une nouvelle fenêtre
 				var url = 'GestionGrillePoints.php';
 				if (currentJson) {
 					url += '?pointsGrid=' + encodeURIComponent(currentJson);
 				}
+				console.log('DEBUG openGridEditor - URL:', url);
 
 				window.open(url, 'GridEditor', 'width=900,height=700,scrollbars=yes,resizable=yes');
 			}

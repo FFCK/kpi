@@ -37,6 +37,7 @@ class GestionGrillePoints extends MyPageSecure
 
 		// Récupération du JSON existant (si modification)
 		$existingJson = utyGetGet('pointsGrid', '');
+		error_log("DEBUG GestionGrillePoints - existingJson received: " . $existingJson);
 		$this->m_tpl->assign('existingJson', $existingJson);
 
 		// Parser le JSON pour alimenter le formulaire
@@ -46,19 +47,27 @@ class GestionGrillePoints extends MyPageSecure
 
 		if (!empty($existingJson)) {
 			$decoded = json_decode($existingJson, false); // false pour obtenir un objet
+			error_log("DEBUG GestionGrillePoints - decoded: " . print_r($decoded, true));
+			error_log("DEBUG GestionGrillePoints - is_object: " . (is_object($decoded) ? 'true' : 'false'));
 			if (is_object($decoded)) {
 				if (isset($decoded->default)) {
 					$defaultValue = $decoded->default;
+					error_log("DEBUG GestionGrillePoints - defaultValue: " . $defaultValue);
 					unset($decoded->default);
 				}
 				$gridData = $decoded;
 				// Déterminer le nombre maximum de positions
 				$keys = array_keys((array)$gridData);
+				error_log("DEBUG GestionGrillePoints - keys: " . print_r($keys, true));
 				if (!empty($keys)) {
 					$maxPosition = max(max($keys), 10);
+					error_log("DEBUG GestionGrillePoints - maxPosition: " . $maxPosition);
 				}
 			}
 		}
+		error_log("DEBUG GestionGrillePoints - Final gridData: " . json_encode($gridData));
+		error_log("DEBUG GestionGrillePoints - Final defaultValue: " . $defaultValue);
+		error_log("DEBUG GestionGrillePoints - Final maxPosition: " . $maxPosition);
 
 		$this->m_tpl->assign('gridData', $gridData);
 		$this->m_tpl->assign('defaultValue', $defaultValue);
