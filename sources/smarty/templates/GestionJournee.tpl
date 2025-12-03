@@ -378,9 +378,9 @@
 				<div class='blocMiddle'>
 					<table width=100%>
 						<tr>
-							<td width="490">
+							<td width="520">
+								<label>{#Selection#}:</label>
 								<fieldset>
-									<label>{#Selection#}:</label>
 									&nbsp;
 									<a href="#" {$TropDeMatchs}
 										onclick="setCheckboxes('formJournee', 'checkMatch', true);return false;"><img
@@ -443,9 +443,9 @@
 									{/if}
 								</fieldset>
 							</td>
-							<td width="620">
+							<td width="550">
+								<label>{#Tous_les_matchs#}:</label>
 								<fieldset>
-									<label>{#Tous_les_matchs#}:</label>
 									&nbsp;
 									<a href="FeuilleListeMatchs.php" {$TropDeMatchs} Target="_blank"
 										title="Liste des Matchs {$TropDeMatchsMsg}"><img height="25"
