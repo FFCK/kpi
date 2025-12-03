@@ -42,7 +42,7 @@ services:
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`)"
+            - "traefik.http.routers.kpi.rule=Host(`${KPI_DOMAIN_NAME}`) || Host(`www.${KPI_DOMAIN_NAME}`)"
             - "traefik.http.routers.kpi.entrypoints=websecure"
             - "traefik.http.routers.kpi.tls=true"
             - "traefik.http.routers.kpi.tls.certresolver=myresolver"

@@ -26,6 +26,11 @@ function changeOrderCompetition()
 
 function computeClt()
 {
+	var statutCompet = jq('#CompetStatut').val();
+	if (statutCompet !== 'ON') {
+		alert(langue['Statut_competition_inactif'] || 'Cette action n\'est disponible que pour les compétitions en cours (statut ON).');
+		return false;
+	}
 	document.forms['formClassement'].elements['Cmd'].value = 'DoClassement';
 	document.forms['formClassement'].elements['ParamCmd'].value = '';
 	document.forms['formClassement'].submit();
@@ -40,6 +45,11 @@ function initClt()
 
 function publicationClt()
 {
+	var statutCompet = jq('#CompetStatut').val();
+	if (statutCompet !== 'ON') {
+		alert(langue['Statut_competition_inactif'] || 'Cette action n\'est disponible que pour les compétitions en cours (statut ON).');
+		return false;
+	}
 	if (!confirm(langue['Confirmer']))
 		return false;
 
@@ -50,6 +60,11 @@ function publicationClt()
 
 function depublicationClt()
 {
+	var statutCompet = jq('#CompetStatut').val();
+	if (statutCompet !== 'ON') {
+		alert(langue['Statut_competition_inactif'] || 'Cette action n\'est disponible que pour les compétitions en cours (statut ON).');
+		return false;
+	}
 	if (!confirm(langue['Suppression_classement']))
 		return false;
 
@@ -150,6 +165,12 @@ jq(document).ready(function() { //Jquery
 	// focus sur un lien du tableau => remplace le lien par un input
 	jq('.directInput').focus(function(event){
 		event.preventDefault();
+		var statutCompet = jq('#CompetStatut').val();
+		if (statutCompet !== 'ON') {
+			alert(langue['Statut_competition_inactif'] || 'Les modifications manuelles ne sont disponibles que pour les compétitions en cours (statut ON).');
+			jq(this).blur(); // Retire le focus
+			return false;
+		}
 		var valeur = jq(this).text();
 		var tabindexVal = jq(this).attr('tabindex');
 		jq(this).attr('tabindex',tabindexVal+1000);
@@ -237,8 +258,8 @@ jq(document).ready(function() { //Jquery
 				},
 				function(data) { // callback
 					if(data == 'OK'){
-						laCompet.html(changeType);
-						laCompet.removeClass('statutCompetATT statutCompetON statutCompetEND').addClass('statutCompet' + changeType);
+						// Rechargement de la page pour mettre à jour les boutons et champs selon le nouveau statut
+						location.reload();
 					} else {
 						laCompet.html(statut);
 						alert(langue['MAJ_impossible'] + ' : ' + data);
