@@ -41,13 +41,30 @@ Dans l'interface d'administration (GestionCompetition.php) :
 
 ### 2. Configurer la grille de points
 
-La grille de points peut être configurée directement dans l'interface d'administration :
+La grille de points peut être configurée de deux façons dans l'interface d'administration :
+
+#### Option A : Éditeur graphique de grille (Recommandé)
+
+1. Éditez la compétition MULTI dans GestionCompetition.php
+2. Le champ "Grille de points (MULTI)" apparaît automatiquement
+3. Cliquez sur le bouton **"Ouvrir l'éditeur de grille"**
+4. Dans la fenêtre qui s'ouvre :
+   - Définissez le nombre de positions à configurer (ex: 10 pour un classement de 10 équipes)
+   - Saisissez les points pour chaque position (1ère place, 2ème place, etc.)
+   - Définissez les points par défaut (pour les positions non spécifiées)
+   - Cliquez sur "Générer le JSON"
+   - Cliquez sur "Appliquer au formulaire" pour reporter le JSON dans GestionCompetition
+5. Enregistrez la compétition
+
+**Avantages** : Interface intuitive, pas besoin de connaître le format JSON, moins d'erreurs de saisie
+
+#### Option B : Saisie manuelle du JSON
 
 1. Éditez la compétition MULTI dans GestionCompetition.php
 2. Le champ "Grille de points (MULTI)" apparaît automatiquement
 3. Saisissez la grille au format JSON (exemple : `{"1":10,"2":6,"3":4,"4":3,"5":2,"6":1,"default":0}`)
 
-**Note** : Le champ est en lecture seule pour les utilisateurs avec profil > 2 (pour les profils avec moins de droits).
+**Note** : Le champ et le bouton sont en lecture seule pour les utilisateurs avec profil > 2 (pour les profils avec moins de droits).
 
 **Alternative SQL** : Vous pouvez aussi modifier directement dans la base de données :
 
@@ -192,6 +209,9 @@ Le classement MULTI s'affiche comme un classement normal dans :
 - `sources/admin/GestionClassement.php` - Logique de calcul MULTI (fonction `CalculClassementMulti`)
 - `sources/admin/GestionCompetition.php` - Support du type MULTI et gestion des champs
 - `sources/smarty/templates/GestionCompetition.tpl` - Interface de configuration MULTI
+- **`sources/admin/GestionGrillePoints.php`** - Éditeur graphique de grille de points (nouveau)
+- **`sources/smarty/templates/GestionGrillePoints.tpl`** - Interface de l'éditeur de grille (nouveau)
+- `sources/commun/MyLang.ini` - Traductions pour l'éditeur de grille
 
 ### Table de base de données
 - **Table** : `kp_competition`
@@ -210,10 +230,12 @@ Le système identifie une équipe dans une compétition sélectionnée par :
 
 1. ✅ **Sélection explicite** : Les compétitions sources sont explicitement sélectionnées via une interface multi-sélection
 2. ✅ **Interface graphique** : La grille de points et la sélection de compétitions sont configurables dans GestionCompetition.php
-3. ✅ **Contrôle d'accès** : Les champs sont en lecture seule pour les profils > 2
-4. ✅ **Classements publiés** : Le calcul utilise les classements publiés (Clt_publi / CltNiveau_publi) au lieu des classements de travail
-5. ✅ **Visibilité conditionnelle** : Les champs spécifiques MULTI n'apparaissent que si le type de compétition est MULTI
-6. ✅ **Flexibilité** : Les compétitions peuvent provenir de groupes différents
+3. ✅ **Éditeur de grille graphique** : Nouvelle page dédiée (GestionGrillePoints.php) pour configurer la grille de points de façon intuitive sans connaître le format JSON
+4. ✅ **Contrôle d'accès** : Les champs sont en lecture seule pour les profils > 2
+5. ✅ **Classements publiés** : Le calcul utilise les classements publiés (Clt_publi / CltNiveau_publi) au lieu des classements de travail
+6. ✅ **Visibilité conditionnelle** : Les champs spécifiques MULTI n'apparaissent que si le type de compétition est MULTI
+7. ✅ **Flexibilité** : Les compétitions peuvent provenir de groupes différents
+8. ✅ **Validation simplifiée** : L'éditeur graphique réduit les erreurs de saisie JSON
 
 ## Limitations actuelles
 

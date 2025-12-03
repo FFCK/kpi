@@ -18,6 +18,7 @@ Documentation orientée utilisateurs finaux et fonctionnalités du système.
 - **[MULTI_COMPETITION_TYPE.md](user/MULTI_COMPETITION_TYPE.md)** - Type de compétition MULTI (agrégation multi-compétitions)
 - **[DOCVIEWER_GUIDE.md](user/DOCVIEWER_GUIDE.md)** - Guide du visualiseur de documentation
 - **[NOUVEAUTES.md](user/NOUVEAUTES.md)** - Dernières nouveautés et fonctionnalités ajoutées
+- **[CRON_DOCUMENTATION.md](user/CRON_DOCUMENTATION.md)** - Tâches planifiées automatiques
 
 Voir [user/README.md](user/README.md) pour plus de détails.
 
@@ -46,6 +47,13 @@ Documentation technique pour le développement et la maintenance du projet.
 - **[MAKEFILE_MULTI_ENVIRONMENT.md](developer/guides/infrastructure/MAKEFILE_MULTI_ENVIRONMENT.md)** - Gestion multi-environnements (dev, preprod, prod)
 - **[NPM_BACKEND_PRODUCTION_GUIDE.md](developer/guides/infrastructure/NPM_BACKEND_PRODUCTION_GUIDE.md)** - NPM pour backend PHP
 - **[TOOLTIP_TESTING_GUIDE.md](developer/guides/infrastructure/TOOLTIP_TESTING_GUIDE.md)** - Guide de test tooltips
+
+#### [Bonnes Pratiques](developer/guides/)
+- **[BEST_PRACTICES_JAVASCRIPT_SMARTY.md](developer/guides/BEST_PRACTICES_JAVASCRIPT_SMARTY.md)** - Bonnes pratiques JavaScript & Smarty (traductions, JSON, constructeurs)
+
+#### [Fonctionnalités](developer/guides/features/)
+- **[COMPETITION_TYPE_MULTI.md](developer/guides/features/COMPETITION_TYPE_MULTI.md)** - Documentation développeur type MULTI (héritée, voir version technique ci-dessous)
+- **[COMPETITION_TYPE_MULTI_TECHNICAL.md](developer/guides/features/COMPETITION_TYPE_MULTI_TECHNICAL.md)** - Documentation technique complète compétitions MULTI et éditeur de grille
 
 ### [Travaux en cours](developer/in-progress/)
 
