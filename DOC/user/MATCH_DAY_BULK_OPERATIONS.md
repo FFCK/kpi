@@ -288,6 +288,9 @@ Les opérations sont présentées dans l'ordre où elles apparaissent dans l'int
 4. Définir l'**intervalle** en minutes (ex: 40 min)
 5. Valider
 
+⚠️ **RECOMMANDATION IMPORTANTE** :
+**Filtrez par terrain avant d'agir sur les heures** ! Si vous avez plusieurs terrains avec des matchs simultanés, ne sélectionnez QUE les matchs d'un seul terrain à la fois. Sinon, tous les matchs de tous les terrains auront les mêmes horaires, ce qui créera des conflits de planning.
+
 **Exemple** :
 - 5 matchs sélectionnés
 - Heure de départ : 10:00
@@ -531,9 +534,11 @@ Si un match a **un score saisi** :
 
 **Planification rapide avec incrémentation d'heure** :
 1. Créer tous les matchs d'une session
-2. Les sélectionner dans l'ordre chronologique
-3. Utiliser l'incrémentation d'heure (10:00, intervalle 40 min)
-4. Résultat : planning automatique en quelques secondes
+2. **Filtrer par terrain** (si plusieurs terrains)
+3. Les sélectionner dans l'ordre chronologique (un terrain à la fois)
+4. Utiliser l'incrémentation d'heure (10:00, intervalle 40 min)
+5. Répéter pour chaque terrain
+6. Résultat : planning automatique en quelques secondes
 
 **Réorganisation rapide** :
 1. Créer les matchs avec des codes génériques `[1A-2A]`
