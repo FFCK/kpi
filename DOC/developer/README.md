@@ -4,6 +4,10 @@ Documentation technique complète pour le développement et la maintenance du pr
 
 ## 📂 Organisation
 
+### [📚 Référence](reference/)
+Documentation de référence complète du système.
+- **[KPI_FUNCTIONALITY_INVENTORY.md](reference/KPI_FUNCTIONALITY_INVENTORY.md)** - Inventaire complet des fonctionnalités (~7000 lignes)
+
 ### [📖 Guides](guides/)
 Guides de migration et documentation technique pour le développement.
 - **[migrations/](guides/migrations/)** - Guides de migration (FPDF→mPDF, Smarty v4, OpenSpout, Axios→fetch, etc.)

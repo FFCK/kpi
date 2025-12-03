@@ -6,14 +6,28 @@ Cette documentation est organisée en deux sections principales :
 
 Documentation orientée utilisateurs finaux et fonctionnalités du système.
 
-- **[KPI_FUNCTIONALITY_INVENTORY.md](user/KPI_FUNCTIONALITY_INVENTORY.md)** - Inventaire complet des fonctionnalités (7000+ lignes)
-- **[MATCH_CONSISTENCY_STATS.md](user/MATCH_CONSISTENCY_STATS.md)** - Fonctionnalité de cohérence des matchs
+### Fonctionnalités Principales
+- **[EVENT_CACHE_MANAGER.md](user/EVENT_CACHE_MANAGER.md)** - Event Cache Manager - Worker en arrière-plan pour incrustations vidéo
+- **[IMAGE_UPLOAD_MANAGEMENT.md](user/IMAGE_UPLOAD_MANAGEMENT.md)** - Upload et gestion d'images (logos, photos)
+- **[TEAM_COMPOSITION_COPY.md](user/TEAM_COMPOSITION_COPY.md)** - Copie de composition d'équipe entre compétitions
+- **[MATCH_DAY_BULK_OPERATIONS.md](user/MATCH_DAY_BULK_OPERATIONS.md)** - Opérations de masse sur les matchs (publication, validation, suppression)
+
+### Fonctionnalités Spécifiques
+- **[MATCH_CONSISTENCY_STATS.md](user/MATCH_CONSISTENCY_STATS.md)** - Statistiques de cohérence des matchs
+- **[CONSOLIDATION_PHASES_CLASSEMENT.md](user/CONSOLIDATION_PHASES_CLASSEMENT.md)** - Consolidation des phases de classement
+- **[MULTI_COMPETITION_TYPE.md](user/MULTI_COMPETITION_TYPE.md)** - Type de compétition MULTI (agrégation multi-compétitions)
+- **[DOCVIEWER_GUIDE.md](user/DOCVIEWER_GUIDE.md)** - Guide du visualiseur de documentation
+- **[NOUVEAUTES.md](user/NOUVEAUTES.md)** - Dernières nouveautés et fonctionnalités ajoutées
 - **[CRON_DOCUMENTATION.md](user/CRON_DOCUMENTATION.md)** - Tâches planifiées automatiques
-- **[MULTI_COMPETITION_TYPE.md](user/MULTI_COMPETITION_TYPE.md)** - Guide utilisateur compétitions MULTI (avec éditeur de grille)
+
+Voir [user/README.md](user/README.md) pour plus de détails.
 
 ## 💻 [Documentation Développeur](developer/)
 
 Documentation technique pour le développement et la maintenance du projet.
+
+### [Référence](developer/reference/)
+- **[KPI_FUNCTIONALITY_INVENTORY.md](developer/reference/KPI_FUNCTIONALITY_INVENTORY.md)** - Inventaire complet des fonctionnalités (~7000 lignes)
 
 ### [Guides](developer/guides/)
 
@@ -123,11 +137,11 @@ Documentation technique pour le développement et la maintenance du projet.
 
 ## 📊 Statistiques
 
-- **Total documents**: 61+ fichiers
-- **Documentation utilisateur**: 3 fichiers
-- **Documentation développeur**: 58+ fichiers
-- **Lignes de documentation**: ~20000+
-- **Dernière mise à jour**: 2025-11-22
+- **Total documents**: 65+ fichiers
+- **Documentation utilisateur**: 9 fichiers
+- **Documentation développeur**: 59+ fichiers (dont 1 référence)
+- **Lignes de documentation**: ~22000+
+- **Dernière mise à jour**: 2025-12-02
 
 ---
 
