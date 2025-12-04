@@ -105,9 +105,43 @@ Si vous êtes à l'aise avec le format JSON, vous pouvez saisir directement la g
 
 ### Étape 4 : Inscrire les équipes
 
-Inscrivez les équipes dans la compétition MULTI comme pour toute autre compétition :
+#### ⭐ Méthode recommandée : Affectation - Promotion - Relégation
+
+**Cette méthode simplifie grandement l'inscription des équipes** en copiant automatiquement les équipes depuis les compétitions sources vers la compétition MULTI.
+
+**Procédure** :
+
+1. Dans **Gestion Classement**, affichez le classement de la première compétition source
+   - Exemple : *Tournoi Nord*
+
+2. Cliquez sur **Affectation - Promotion - Relégation**
+
+3. Dans l'interface d'affectation :
+   - Choisissez la **saison** appropriée
+   - Sélectionnez la **compétition cible** de type MULTI
+     - Exemple : *Circuit Régional*
+
+4. **Cochez les équipes** à prendre en compte dans le classement
+   - Vous pouvez sélectionner toutes les équipes ou seulement certaines
+
+5. Cliquez sur **"Affecter les équipes cochées"**
+   - Les équipes sont automatiquement inscrites dans la compétition MULTI
+
+6. **Répétez la procédure** pour chaque compétition source
+   - Exemple : *Tournoi Sud*, *Tournoi Est*, etc.
+   - Les équipes déjà inscrites ne seront pas dupliquées
+
+**Avantages** :
+✅ Gain de temps considérable
+✅ Pas de risque d'erreur de saisie sur les noms d'équipes
+✅ Garantit la cohérence des noms entre compétitions sources et MULTI
+✅ Permet de sélectionner précisément quelles équipes inclure
+
+#### Méthode alternative : Inscription manuelle
+
+Vous pouvez aussi inscrire les équipes manuellement comme pour toute autre compétition :
 1. Allez dans la gestion des équipes
-2. Ajoutez les équipes participantes
+2. Ajoutez les équipes participantes une par une
 
 **Important** : Les équipes doivent être inscrites dans les compétitions sources avec le même nom ou code club pour être reconnues.
 
