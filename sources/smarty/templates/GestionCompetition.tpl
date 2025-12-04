@@ -305,6 +305,19 @@
 								<br><small><i>{#Format_JSON#} : {ldelim}"1":10,"2":6,"3":4,"default":0{rdelim}</i></small>
 							</td>
 						</tr>
+					<tr id="rankingStructureTypeRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
+						<td colspan=4>
+							<label for="rankingStructureType">{#Type_classement_MULTI#} : </label>
+							<select name="rankingStructureType" id="rankingStructureType" {if $profile > 2}disabled{/if}>
+								<option value="team" {if $rankingStructureType == 'team' || $rankingStructureType == ''}selected{/if}>{#Classement_equipe#}</option>
+								<option value="club" {if $rankingStructureType == 'club'}selected{/if}>{#Classement_club#}</option>
+								<option value="cd" {if $rankingStructureType == 'cd'}selected{/if}>{#Classement_CD#}</option>
+								<option value="cr" {if $rankingStructureType == 'cr'}selected{/if}>{#Classement_CR#}</option>
+								<option value="nation" {if $rankingStructureType == 'nation'}selected{/if}>{#Classement_nation#}</option>
+							</select>
+							<br><small><i>{#Info_type_classement_MULTI#}</i></small>
+						</td>
+					</tr>
 						<tr id="multiCompetitionsRow" style="display:{if $codeTypeClt == 'MULTI'}table-row{else}none{/if};">
 							<td colspan=4>
 								<label for="multiCompetitions">{#Competitions_sources_MULTI#} : </label>
@@ -619,14 +632,17 @@
 			function changeCodeTypeClt() {
 				var typeCompet = document.getElementById('codeTypeClt');
 				var pointsGridRow = document.getElementById('pointsGridRow');
+				var rankingStructureTypeRow = document.getElementById('rankingStructureTypeRow');
 				var multiCompetitionsRow = document.getElementById('multiCompetitionsRow');
 
-				if (typeCompet && pointsGridRow && multiCompetitionsRow) {
+				if (typeCompet && pointsGridRow && rankingStructureTypeRow && multiCompetitionsRow) {
 					if (typeCompet.value === 'MULTI') {
 						pointsGridRow.style.display = 'table-row';
+						rankingStructureTypeRow.style.display = 'table-row';
 						multiCompetitionsRow.style.display = 'table-row';
 					} else {
 						pointsGridRow.style.display = 'none';
+						rankingStructureTypeRow.style.display = 'none';
 						multiCompetitionsRow.style.display = 'none';
 					}
 				}
