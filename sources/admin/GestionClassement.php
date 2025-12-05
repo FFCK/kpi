@@ -1860,8 +1860,8 @@ private function calculClassementFinal($codeCompet, $codeSaison)
 
 	$sql = "SELECT Id, Pts
 		FROM kp_competition_equipe
-		WHERE ce.Code_compet = ?
-		AND ce.Code_saison = ?
+		WHERE Code_compet = ?
+		AND Code_saison = ?
 		ORDER BY Pts DESC, Libelle ASC";
 	$stmt = $myBdd->pdo->prepare($sql);
 	$stmt->execute(array($codeCompet, $codeSaison));
@@ -1904,18 +1904,18 @@ private function calculClassementFinal($codeCompet, $codeSaison)
 			Code_uti_publication = ?, 
 			Mode_publication_calcul = Mode_calcul 
 			WHERE Code = ?  
-			AND ce.Code_saison = ? ";	 
+			AND Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
 		//Update Classement
-		$sql = "UPDATE kp_competition_equipe 
-			SET Pts_publi = Pts, Clt_publi = Clt, J_publi = J, G_publi = G, 
-			N_publi = N, P_publi = P, F_publi = F, Plus_publi = Plus, 
-			Moins_publi = Moins, Diff_publi = Diff, PtsNiveau_publi = PtsNiveau, 
-			CltNiveau_publi = CltNiveau 
-			WHERE ce.Code_compet = ? 
-			AND ce.Code_saison = ? ";	 
+		$sql = "UPDATE kp_competition_equipe
+			SET Pts_publi = Pts, Clt_publi = Clt, J_publi = J, G_publi = G,
+			N_publi = N, P_publi = P, F_publi = F, Plus_publi = Plus,
+			Moins_publi = Moins, Diff_publi = Diff, PtsNiveau_publi = PtsNiveau,
+			CltNiveau_publi = CltNiveau
+			WHERE Code_compet = ?
+			AND Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		
@@ -1962,15 +1962,15 @@ private function calculClassementFinal($codeCompet, $codeSaison)
 			Code_uti_publication = ?, 
 			Mode_publication_calcul = Mode_calcul 
 			WHERE Code = ?  
-			AND ce.Code_saison = ? ";	 
+			AND Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
 		//Update Classement
-		$sql = "UPDATE kp_competition_equipe 
-			SET Clt_publi = 0, CltNiveau_publi = 0 
-			WHERE ce.Code_compet = ? 
-			AND ce.Code_saison = ? ";	 
+		$sql = "UPDATE kp_competition_equipe
+			SET Clt_publi = 0, CltNiveau_publi = 0
+			WHERE Code_compet = ?
+			AND Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		
