@@ -1733,10 +1733,13 @@ private function getStructureKey($equipe, $rankingType)
 
 		case 'nation':
 			// Pour les nations:
-			// - Si code_comite_reg = '98' : équipe nationale internationale, utiliser code_comite_dep (code CIO)
+			// - Si code_comite_dep = 'FRA' : équipe nationale France
 			// - Si code_comite_reg != '98' : équipe de club français, toujours compter pour France (FRA)
-			if ($equipe['Code_comite_reg'] == '98') {
-				return $equipe['Code_comite_dep']; // Code CIO pour nations internationales
+			// - Si code_comite_reg = '98' et code_comite_dep != 'FRA' : équipe nationale internationale, utiliser code_comite_dep (code CIO)
+			if ($equipe['Code_comite_dep'] === 'FRA') {
+				return 'FRA'; // Équipe nationale France ou club français
+			} elseif ($equipe['Code_comite_reg'] == '98') {
+				return $equipe['Code_comite_dep']; // Code CIO pour nations internationales (hors FRA)
 			} else {
 				return 'FRA'; // Toutes les équipes françaises (clubs) comptent pour France
 			}
@@ -1821,17 +1824,17 @@ private function getEquipesStructureInCompetition($structureKey, $rankingType, $
 
 		case 'nation':
 			// Pour les nations:
-			// - Si structureKey = 'FRA' : toutes les équipes françaises (code_comite_reg != '98')
+			// - Si structureKey = 'FRA' : toutes les équipes françaises (clubs + équipe nationale)
 			// - Sinon : équipes nationales avec code_comite_reg = '98' ET code_comite_dep = structureKey
 			if ($structureKey === 'FRA') {
-				// Toutes les équipes de clubs français (code_comite_reg != '98')
+				// Toutes les équipes françaises: clubs français (code_comite_reg != '98') + équipe nationale (code_comite_dep = 'FRA')
 				$sql = "SELECT ce.$champClassement AS classement
 					FROM kp_competition_equipe ce
 					LEFT JOIN kp_club club ON ce.Code_club = club.Code
 					LEFT JOIN kp_cd cd ON club.Code_comite_dep = cd.Code
 					WHERE ce.Code_compet = ?
 					AND ce.Code_saison = ?
-					AND cd.Code_comite_reg != '98'
+					AND (cd.Code_comite_reg != '98' OR club.Code_comite_dep = 'FRA')
 					AND ce.$champClassement > 0";
 				$params = array($codeCompet, $codeSaison);
 			} else {
@@ -1848,8 +1851,6 @@ private function getEquipesStructureInCompetition($structureKey, $rankingType, $
 				$params = array($codeCompet, $codeSaison, $structureKey);
 			}
 			break;
-
-		default:
 			return array();
 	}
 
