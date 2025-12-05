@@ -1860,34 +1860,36 @@ private function getEquipesStructureInCompetition($structureKey, $rankingType, $
 }
 
 /**
- * Calcule le classement final en triant par points décroissants
+ * Calcule le classement final en triant par points décroissants, puis par nombre de matchs joués
  */
 private function calculClassementFinal($codeCompet, $codeSaison)
 {
 	$myBdd = $this->myBdd;
 
-	$sql = "SELECT Id, Pts
+	$sql = "SELECT Id, Pts, J
 		FROM kp_competition_equipe
 		WHERE Code_compet = ?
 		AND Code_saison = ?
-		ORDER BY Pts DESC, Libelle ASC";
+		ORDER BY Pts DESC, J DESC, Libelle ASC";
 	$stmt = $myBdd->pdo->prepare($sql);
 	$stmt->execute(array($codeCompet, $codeSaison));
 
 	$clt = 1;
 	$oldClt = 1;
 	$oldPts = -1;
+	$oldJ = -1;
 	$j = 0;
 
 	$sqlUpdate = "UPDATE kp_competition_equipe SET Clt = ? WHERE Id = ?";
 	$stmtUpdate = $myBdd->pdo->prepare($sqlUpdate);
 
 	while ($row = $stmt->fetch()) {
-		// Gérer les égalités
-		if ($row['Pts'] != $oldPts) {
+		// Gérer les égalités : même rang seulement si même Pts ET même J
+		if ($row['Pts'] != $oldPts || $row['J'] != $oldJ) {
 			$clt = $j + 1;
 			$oldClt = $clt;
 			$oldPts = $row['Pts'];
+			$oldJ = $row['J'];
 		}  else {
 			$clt = $oldClt;
 		}
