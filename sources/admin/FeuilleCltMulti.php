@@ -151,8 +151,6 @@ class FeuilleCltMulti extends MyPage
 		$pdf->Cell(100, 5, $labelStructure, 'B', 0, 'L');
 		$pdf->Cell(30, 5, $lang['Pts'] ?? 'Points', 'B', 0, 'C');
 		$pdf->Cell(30, 5, $lang['J'] ?? 'Joués', 'B', 1, 'C');
-        $pdf->Cell(30, 5, $lang['Pts'] ?? 'Points', 'B', 0, 'C');
-        $pdf->Cell(30, 5, $lang['J'] ?? 'Joués', 'B', 1, 'C');
 
         $i = 0;
         while ($row = $result->fetch()) {

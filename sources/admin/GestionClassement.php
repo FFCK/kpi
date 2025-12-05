@@ -1631,6 +1631,7 @@ private function calculClassementMultiParStructure($codeCompet, $codeSaison, $co
 	$structures = array();
 	foreach ($equipesMulti as $equipe) {
 		$structureKey = $this->getStructureKey($equipe, $rankingType);
+
 		if (!$structureKey) {
 			continue; // Ignorer les équipes sans structure définie
 		}
@@ -1685,6 +1686,8 @@ private function calculClassementMultiParStructure($codeCompet, $codeSaison, $co
 			}
 		}
 	}
+	// IMPORTANT: Détruire la référence créée par le foreach précédent pour éviter les effets de bord
+	unset($structure);
 
 	// Mettre à jour les équipes de la compétition MULTI avec les points de leur structure
 	foreach ($structures as $structureKey => $structure) {
@@ -1716,13 +1719,17 @@ private function getStructureKey($equipe, $rankingType)
 {
 	switch ($rankingType) {
 		case 'club':
-			return $equipe['Code_club'];
+			// Accepter '0' comme code club valide, mais rejeter NULL et chaîne vide
+			$codeClub = $equipe['Code_club'];
+			return ($codeClub !== null && $codeClub !== '') ? $codeClub : null;
 
 		case 'cd':
-			return $equipe['Code_comite_dep'];
+			$codeCD = $equipe['Code_comite_dep'];
+			return ($codeCD !== null && $codeCD !== '') ? $codeCD : null;
 
 		case 'cr':
-			return $equipe['Code_comite_reg'];
+			$codeCR = $equipe['Code_comite_reg'];
+			return ($codeCR !== null && $codeCR !== '') ? $codeCR : null;
 
 		case 'nation':
 			// Pour les nations:
