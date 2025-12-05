@@ -189,7 +189,8 @@ class GestionClassement extends MyPageSecure
 			$this->m_tpl->assign('UserName_publication', $myBdd->GetUserName($recordCompetition['Code_uti_publication']));
 			$this->m_tpl->assign('Mode_calcul', $recordCompetition['Mode_calcul']);
 			$this->m_tpl->assign('Mode_publication_calcul', $recordCompetition['Mode_publication_calcul']);
-			
+			$this->m_tpl->assign('typeClt', $typeClt);
+			$this->m_tpl->assign('ranking_structure_type', $recordCompetition['ranking_structure_type']);
 			
 			// Classement actuel				
 			$sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Clt, ce.Pts, 
@@ -311,6 +312,7 @@ class GestionClassement extends MyPageSecure
             array_push($arrayOrderCompetition, array('MULTI', 'Multi-Compétition', ''));
         }
         $this->m_tpl->assign('arrayOrderCompetition', $arrayOrderCompetition);
+
 	}
 	
 	function GetTypeClt($codeCompet,  $codeSaison)
