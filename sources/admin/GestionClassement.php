@@ -353,7 +353,7 @@ class GestionClassement extends MyPageSecure
 		$sql = "SELECT Code_typeclt, goalaverage, Code_ref, points_grid, multi_competitions
 			FROM kp_competition
 			WHERE Code = ?
-			AND Code_saison = ? ";
+			AND ce.Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 
@@ -395,7 +395,7 @@ class GestionClassement extends MyPageSecure
 			Code_uti_calcul = ?, 
 			Mode_calcul = ? 
 			WHERE Code = ? 
-			AND Code_saison = ? ";
+			AND ce.Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(date('Y-m-d H:i:s'), utyGetSession('User'), $tousLesMatchs, $codeCompet, $codeSaison));
 
@@ -428,8 +428,8 @@ class GestionClassement extends MyPageSecure
 		$sql = "UPDATE kp_competition_equipe 
 			SET Clt=1, Pts=0, J=0, G=0, N=0, P=0, F=0, Plus=0, Moins=0, Diff=0, 
 			CltNiveau = 1, PtsNiveau = 0 
-			WHERE Code_compet = ? 
-			AND Code_saison = ? ";
+			WHERE ce.Code_compet = ? 
+			AND ce.Code_saison = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 	}
@@ -878,8 +878,8 @@ class GestionClassement extends MyPageSecure
 		// Chargement des Equipes par ordre de Pts, Diff & Plus
 		$sql = "SELECT Id, Clt, Pts, J, G, N, P, F, Plus, Moins, Diff 
 				FROM kp_competition_equipe 
-				WHERE Code_compet = ? 
-				AND Code_saison = ? 
+				WHERE ce.Code_compet = ? 
+				AND ce.Code_saison = ? 
 				ORDER BY Pts DESC, Diff DESC, Plus DESC ";	 
 		$result2 = $myBdd->pdo->prepare($sql);
 		$result2->execute(array($codeCompet, $codeSaison));
@@ -1204,8 +1204,8 @@ class GestionClassement extends MyPageSecure
 		// Chargement des Equipes par ordre de Pts ...
 		$sql = "SELECT Id, PtsNiveau, Diff 
 			FROM kp_competition_equipe 
-			WHERE Code_compet = ? 
-			AND Code_saison = ? 
+			WHERE ce.Code_compet = ? 
+			AND ce.Code_saison = ? 
 			ORDER BY PtsNiveau DESC, Diff DESC ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
@@ -1501,7 +1501,7 @@ function CalculClassementMulti($codeCompet, $codeSaison, $multiCompetitionsJson,
 	}
 
 	// Récupérer le type de classement de la compétition MULTI
-	$sql = "SELECT ranking_structure_type FROM kp_competition WHERE Code = ? AND Code_saison = ?";
+	$sql = "SELECT ranking_structure_type FROM kp_competition WHERE Code = ? AND ce.Code_saison = ?";
 	$stmt = $myBdd->pdo->prepare($sql);
 	$stmt->execute(array($codeCompet, $codeSaison));
 	$rankingType = $stmt->fetchColumn();
@@ -1538,11 +1538,12 @@ private function calculClassementMultiParEquipe($codeCompet, $codeSaison, $compe
 	$myBdd = $this->myBdd;
 
 	// Récupérer toutes les équipes engagées dans la compétition MULTI
-	$sql = "SELECT Id, Libelle, Code_club, Numero
-		FROM kp_competition_equipe
-		WHERE Code_compet = ?
-		AND Code_saison = ?
-		ORDER BY Numero";
+	$sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, ce.Numero, eq.Libelle AS LibelleOriginal
+		FROM kp_competition_equipe ce
+		LEFT JOIN kp_equipe eq ON ce.Numero = eq.Numero
+		WHERE ce.Code_compet = ?
+		AND ce.Code_saison = ?
+		ORDER BY ce.Numero";
 	$stmt = $myBdd->pdo->prepare($sql);
 	$stmt->execute(array($codeCompet, $codeSaison));
 	$equipesMulti = $stmt->fetchAll();
@@ -1591,13 +1592,15 @@ private function calculClassementMultiParEquipe($codeCompet, $codeSaison, $compe
 			}
 		}
 
+		// Restaurer le libellé original de l'équipe
+		$libelleToUse = $equipeMulti['LibelleOriginal'] ? $equipeMulti['LibelleOriginal'] : $equipeMulti['Libelle'];
 		// Mettre à jour les points de l'équipe
 		$sql = "UPDATE kp_competition_equipe
-			SET Pts = ?,
+			SET Libelle = ?, Pts = ?,
 			J = ?
 			WHERE Id = ?";
 		$stmt = $myBdd->pdo->prepare($sql);
-		$stmt->execute(array($totalPoints * 100, $nbCompetitionsParticipees, $equipeMulti['Id']));
+		$stmt->execute(array($libelleToUse, $totalPoints * 100, $nbCompetitionsParticipees, $equipeMulti['Id']));
 	}
 
 	// Calculer le classement final
@@ -1837,8 +1840,8 @@ private function calculClassementFinal($codeCompet, $codeSaison)
 
 	$sql = "SELECT Id, Pts
 		FROM kp_competition_equipe
-		WHERE Code_compet = ?
-		AND Code_saison = ?
+		WHERE ce.Code_compet = ?
+		AND ce.Code_saison = ?
 		ORDER BY Pts DESC, Libelle ASC";
 	$stmt = $myBdd->pdo->prepare($sql);
 	$stmt->execute(array($codeCompet, $codeSaison));
@@ -1881,7 +1884,7 @@ private function calculClassementFinal($codeCompet, $codeSaison)
 			Code_uti_publication = ?, 
 			Mode_publication_calcul = Mode_calcul 
 			WHERE Code = ?  
-			AND Code_saison = ? ";	 
+			AND ce.Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
@@ -1891,8 +1894,8 @@ private function calculClassementFinal($codeCompet, $codeSaison)
 			N_publi = N, P_publi = P, F_publi = F, Plus_publi = Plus, 
 			Moins_publi = Moins, Diff_publi = Diff, PtsNiveau_publi = PtsNiveau, 
 			CltNiveau_publi = CltNiveau 
-			WHERE Code_compet = ? 
-			AND Code_saison = ? ";	 
+			WHERE ce.Code_compet = ? 
+			AND ce.Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		
@@ -1939,15 +1942,15 @@ private function calculClassementFinal($codeCompet, $codeSaison)
 			Code_uti_publication = ?, 
 			Mode_publication_calcul = Mode_calcul 
 			WHERE Code = ?  
-			AND Code_saison = ? ";	 
+			AND ce.Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(utyGetSession('User'), $codeCompet, $codeSaison));
 
 		//Update Classement
 		$sql = "UPDATE kp_competition_equipe 
 			SET Clt_publi = 0, CltNiveau_publi = 0 
-			WHERE Code_compet = ? 
-			AND Code_saison = ? ";	 
+			WHERE ce.Code_compet = ? 
+			AND ce.Code_saison = ? ";	 
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($codeCompet, $codeSaison));
 		
