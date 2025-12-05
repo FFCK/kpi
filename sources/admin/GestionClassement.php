@@ -1725,10 +1725,14 @@ private function getStructureKey($equipe, $rankingType)
 			return $equipe['Code_comite_reg'];
 
 		case 'nation':
-			// Pour les nations: utiliser le code_comite_dep (code CIO)
-			// Exception: les équipes françaises (ou autres nations) avec code_comite_reg != '98'
-			// doivent aussi être comptées pour leur nation
-			return $equipe['Code_comite_dep'];
+			// Pour les nations:
+			// - Si code_comite_reg = '98' : équipe nationale internationale, utiliser code_comite_dep (code CIO)
+			// - Si code_comite_reg != '98' : équipe de club français, toujours compter pour France (FRA)
+			if ($equipe['Code_comite_reg'] == '98') {
+				return $equipe['Code_comite_dep']; // Code CIO pour nations internationales
+			} else {
+				return 'FRA'; // Toutes les équipes françaises (clubs) comptent pour France
+			}
 
 		default:
 			return null;
@@ -1809,17 +1813,33 @@ private function getEquipesStructureInCompetition($structureKey, $rankingType, $
 			break;
 
 		case 'nation':
-			// Pour les nations: récupérer toutes les équipes ayant le même code_comite_dep
-			// EXCEPTION: inclure aussi les équipes avec code_comite_reg != '98' mais même code_comite_dep
-			$sql = "SELECT ce.$champClassement AS classement
-				FROM kp_competition_equipe ce
-				LEFT JOIN kp_club club ON ce.Code_club = club.Code
-				LEFT JOIN kp_cd cd ON club.Code_comite_dep = cd.Code
-				WHERE ce.Code_compet = ?
-				AND ce.Code_saison = ?
-				AND club.Code_comite_dep = ?
-				AND ce.$champClassement > 0";
-			$params = array($codeCompet, $codeSaison, $structureKey);
+			// Pour les nations:
+			// - Si structureKey = 'FRA' : toutes les équipes françaises (code_comite_reg != '98')
+			// - Sinon : équipes nationales avec code_comite_reg = '98' ET code_comite_dep = structureKey
+			if ($structureKey === 'FRA') {
+				// Toutes les équipes de clubs français (code_comite_reg != '98')
+				$sql = "SELECT ce.$champClassement AS classement
+					FROM kp_competition_equipe ce
+					LEFT JOIN kp_club club ON ce.Code_club = club.Code
+					LEFT JOIN kp_cd cd ON club.Code_comite_dep = cd.Code
+					WHERE ce.Code_compet = ?
+					AND ce.Code_saison = ?
+					AND cd.Code_comite_reg != '98'
+					AND ce.$champClassement > 0";
+				$params = array($codeCompet, $codeSaison);
+			} else {
+				// Équipes nationales internationales (code_comite_reg = '98' et même code_comite_dep)
+				$sql = "SELECT ce.$champClassement AS classement
+					FROM kp_competition_equipe ce
+					LEFT JOIN kp_club club ON ce.Code_club = club.Code
+					LEFT JOIN kp_cd cd ON club.Code_comite_dep = cd.Code
+					WHERE ce.Code_compet = ?
+					AND ce.Code_saison = ?
+					AND cd.Code_comite_reg = '98'
+					AND club.Code_comite_dep = ?
+					AND ce.$champClassement > 0";
+				$params = array($codeCompet, $codeSaison, $structureKey);
+			}
 			break;
 
 		default:
