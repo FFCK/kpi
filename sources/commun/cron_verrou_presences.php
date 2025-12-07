@@ -59,8 +59,7 @@ if (isset($codeCompet2)) {
 }
 
 // Log de l'exécution
-$msg = date('Y-m-d H:s') . " - "
-    . "Verrou competitions : $codeCompet, deverrou competitions : $codeCompet2";
+$msg = date('Y-m-d H:s') . " - Verrou competitions : $codeCompet - Déverrou competitions : $codeCompet2";
 error_log($msg);
 
 // Envoi du mail uniquement s'il y a des compétitions verrouillées ou déverrouillées

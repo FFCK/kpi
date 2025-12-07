@@ -105,9 +105,43 @@ Si vous êtes à l'aise avec le format JSON, vous pouvez saisir directement la g
 
 ### Étape 4 : Inscrire les équipes
 
-Inscrivez les équipes dans la compétition MULTI comme pour toute autre compétition :
+#### ⭐ Méthode recommandée : Affectation - Promotion - Relégation
+
+**Cette méthode simplifie grandement l'inscription des équipes** en copiant automatiquement les équipes depuis les compétitions sources vers la compétition MULTI.
+
+**Procédure** :
+
+1. Dans **Gestion Classement**, affichez le classement de la première compétition source
+   - Exemple : *Tournoi Nord*
+
+2. Cliquez sur **Affectation - Promotion - Relégation**
+
+3. Dans l'interface d'affectation :
+   - Choisissez la **saison** appropriée
+   - Sélectionnez la **compétition cible** de type MULTI
+     - Exemple : *Circuit Régional*
+
+4. **Cochez les équipes** à prendre en compte dans le classement
+   - Vous pouvez sélectionner toutes les équipes ou seulement certaines
+
+5. Cliquez sur **"Affecter les équipes cochées"**
+   - Les équipes sont automatiquement inscrites dans la compétition MULTI
+
+6. **Répétez la procédure** pour chaque compétition source
+   - Exemple : *Tournoi Sud*, *Tournoi Est*, etc.
+   - Les équipes déjà inscrites ne seront pas dupliquées
+
+**Avantages** :
+✅ Gain de temps considérable
+✅ Pas de risque d'erreur de saisie sur les noms d'équipes
+✅ Garantit la cohérence des noms entre compétitions sources et MULTI
+✅ Permet de sélectionner précisément quelles équipes inclure
+
+#### Méthode alternative : Inscription manuelle
+
+Vous pouvez aussi inscrire les équipes manuellement comme pour toute autre compétition :
 1. Allez dans la gestion des équipes
-2. Ajoutez les équipes participantes
+2. Ajoutez les équipes participantes une par une
 
 **Important** : Les équipes doivent être inscrites dans les compétitions sources avec le même nom ou code club pour être reconnues.
 
@@ -169,16 +203,183 @@ Le système génère : `{"1":10,"2":6,"3":4,"default":0}`
 2. Équipe A - 20 points
 3. Équipe C - 14 points
 
+## 📊 Types de classement multi-structure
+
+Les compétitions MULTI offrent **5 types de classement différents** qui permettent d'agréger les résultats selon différentes structures :
+
+### 🏆 Classement par équipe (par défaut)
+
+Le classement standard où chaque équipe est classée individuellement.
+
+**Caractéristiques** :
+- Chaque équipe conserve son nom original
+- Les points sont calculés individuellement pour chaque équipe
+- C'est le mode de classement traditionnel
+
+**Exemple** :
+```
+1. Team Kayak Paris A - 26 pts (3 participations)
+2. Team Kayak Lyon B - 20 pts (3 participations)
+3. Team Kayak Marseille - 14 pts (2 participations)
+```
+
+### 🏛️ Classement par club
+
+Regroupe toutes les équipes d'un même club pour créer un classement de clubs.
+
+**Caractéristiques** :
+- Les équipes sont regroupées par `code_club`
+- Les points de toutes les équipes du même club sont cumulés
+- Le libellé du club remplace les noms d'équipes
+- La colonne **J** indique le nombre total de participations de toutes les équipes du club
+
+**Fonctionnement** :
+1. Le système identifie toutes les équipes d'un même club dans les compétitions sources
+2. Pour chaque équipe, la grille de points est appliquée selon son classement
+3. Les points de toutes les équipes du club sont additionnés
+4. Le nombre de participations (J) est également cumulé
+
+**Exemple** :
+```
+Compétitions sources :
+- Tournoi 1 : Kayak Paris A (1er = 10 pts), Kayak Paris B (3ème = 4 pts)
+- Tournoi 2 : Kayak Paris A (2ème = 6 pts)
+
+Classement par club :
+1. Kayak Paris - 20 pts (3 participations)
+   └─ 10 + 4 + 6 = 20 points
+```
+
+### 🗺️ Classement par Comité Départemental (CD)
+
+Regroupe les équipes par comité départemental.
+
+**Caractéristiques** :
+- Regroupement par `code_comite_dep` du club
+- Cumul des points de toutes les équipes du même département
+- Affiche le nom du comité départemental
+
+**Exemple** :
+```
+1. CD des Hauts-de-Seine - 45 pts (8 participations)
+2. CD du Rhône - 38 pts (6 participations)
+3. CD des Bouches-du-Rhône - 22 pts (4 participations)
+```
+
+### 🌍 Classement par Comité Régional (CR)
+
+Regroupe les équipes par comité régional.
+
+**Caractéristiques** :
+- Regroupement par `code_comite_reg` via le CD du club
+- Cumul des points de toutes les équipes de la même région
+- Affiche le nom du comité régional
+
+**Exemple** :
+```
+1. CR Île-de-France - 120 pts (15 participations)
+2. CR Auvergne-Rhône-Alpes - 95 pts (12 participations)
+3. CR Provence-Alpes-Côte d'Azur - 67 pts (9 participations)
+```
+
+### 🌐 Classement par nation
+
+Regroupe les équipes par nation (particulièrement utile pour les compétitions internationales).
+
+**Caractéristiques** :
+- Regroupement par nation basé sur le code comité
+- Traitement spécial pour la France (FRA)
+- Affiche le nom de la nation ou du pays
+
+**Logique spéciale pour la France** :
+La nation **France (FRA)** regroupe :
+1. **Toutes les équipes de clubs français** (`code_comite_reg != '98'`)
+2. **L'équipe nationale France** (`code_comite_dep = 'FRA'`)
+
+**Équipes nationales internationales** :
+- Les équipes avec `code_comite_reg = '98'` ET `code_comite_dep != 'FRA'`
+- Utilisent leur `code_comite_dep` comme code nation (code CIO)
+- Exemples : ITA, GER, ESP, BEL, etc.
+
+**Exemple de classement par nation** :
+```
+1. France (FRA) - 250 pts (25 participations)
+   └─ Clubs français + Équipe nationale France
+2. Italie (ITA) - 180 pts (18 participations)
+3. Allemagne (GER) - 145 pts (15 participations)
+4. Espagne (ESP) - 120 pts (12 participations)
+```
+
+## 🎯 Configuration du type de classement
+
+### Comment sélectionner le type de classement
+
+1. Lors de la création ou modification d'une compétition MULTI
+2. Un champ **"Type de classement"** apparaît dans le formulaire
+3. Sélectionnez le type souhaité parmi les 5 options :
+   - Classement par équipe
+   - Classement par club
+   - Classement par comité départemental
+   - Classement par comité régional
+   - Classement par nation
+4. Enregistrez la compétition
+
+**Note** : Ce champ n'est visible que pour les compétitions de type MULTI.
+
+### Critères de tri du classement
+
+Pour tous les types de classement, le tri s'effectue selon **3 niveaux** :
+
+1. **Points (Pts)** - Décroissant ⬇️
+   - Critère principal : les structures avec le plus de points sont en tête
+
+2. **Nombre de participations (J)** - Décroissant ⬇️
+   - En cas d'égalité de points, priorité à la structure ayant le plus de participations
+   - Favorise les structures qui ont participé à plus de compétitions
+
+3. **Libellé** - Alphabétique ⬆️
+   - En dernier recours, tri alphabétique par nom de structure
+
+**Exemple de tri** :
+```
+Rang  Structure         Points  Participations
+  1   Club Alpha          400        5        ← Plus de matchs
+  2   Club Beta           400        3        ← Même points mais moins de matchs
+  3   Club Gamma          350        6        ← Moins de points
+  4   Club Delta          350        4        ← Même points que Gamma
+```
+
+### Attribution des rangs
+
+Deux structures reçoivent le **même rang (Clt)** uniquement si elles ont :
+- **Les mêmes points** (Pts) **ET**
+- **Le même nombre de participations** (J)
+
+**Exemple** :
+```
+Rang  Structure         Points  Participations
+  1   Club A              400        5
+  1   Club B              400        5        ← Même rang (points ET J égaux)
+  3   Club C              400        3        ← Rang 3 (J différent)
+```
+
 ## 📊 Affichage du classement
 
-Le classement MULTI affiche uniquement les colonnes essentielles :
+Le classement MULTI affiche les colonnes essentielles selon le type de classement :
 
 - **Clt** : Position au classement
-- **Équipe** : Nom de l'équipe
+- **Équipe/Club/CD/CR/Nation** : Nom de la structure (selon le type de classement)
 - **Pts** : Points totaux
-- **J** : Nombre de compétitions auxquelles l'équipe a participé
+- **J** : Nombre total de participations (compétitions jouées ou équipes participantes selon le type)
 
 Les colonnes détaillées (G, N, P, F, +, -, Diff) ne sont pas affichées car non pertinentes pour ce type de classement.
+
+**Adaptation du libellé de colonne** :
+- Type "équipe" → Colonne "Équipe"
+- Type "club" → Colonne "Club"
+- Type "cd" → Colonne "Comité Départemental"
+- Type "cr" → Colonne "Comité Régional"
+- Type "nation" → Colonne "Nation"
 
 ## 📄 Génération des PDF
 
@@ -230,6 +431,56 @@ Non, seuls les nombres positifs (0 ou plus) sont acceptés.
 **Méthode 2 : Paramètre URL (PDF public uniquement)**
 - Ajouter `?lang=en` à l'URL du PDF
 
+### Puis-je changer le type de classement après création ?
+
+Oui ! Vous pouvez modifier le type de classement à tout moment :
+1. Éditez la compétition MULTI
+2. Changez le type de classement
+3. Enregistrez
+4. Recalculez le classement
+
+**Important** : Pensez à recalculer le classement après avoir changé le type.
+
+### Comment fonctionne le regroupement par club exactement ?
+
+Le système :
+1. Récupère toutes les équipes inscrites dans la compétition MULTI
+2. Pour chaque équipe, cherche ses résultats dans les compétitions sources **par numéro d'équipe unique**
+3. Applique la grille de points selon le classement obtenu
+4. Regroupe les équipes qui ont le même `code_club`
+5. Additionne leurs points et participations
+6. Affiche le libellé du club au lieu des noms d'équipes
+
+### Pourquoi certaines équipes françaises ne sont pas comptées pour FRA ?
+
+Vérifiez que :
+- Les équipes ont bien `code_comite_reg != '98'` (clubs français) OU
+- L'équipe a `code_comite_dep = 'FRA'` (équipe nationale)
+
+Si une équipe française n'apparaît pas dans le classement FRA, vérifiez sa configuration dans la base de données (table `kp_club`, `kp_cd`).
+
+### Quelle est la différence entre J dans un classement par équipe vs par club ?
+
+**Classement par équipe** :
+- J = nombre de compétitions sources auxquelles **cette équipe** a participé
+
+**Classement par club (ou CD/CR/nation)** :
+- J = nombre total de participations de **toutes les équipes** de cette structure
+- Exemple : Club A avec 2 équipes → Équipe 1 participe à 3 tournois, Équipe 2 à 2 tournois → J = 5
+
+### En cas d'égalité de points, qui est classé premier ?
+
+Le tri se fait dans cet ordre :
+1. Points (Pts) décroissant
+2. Participations (J) décroissant - **celui qui a participé le plus est devant**
+3. Alphabétique sur le nom
+
+Exemple : Si Club A et Club B ont 400 pts, mais Club A a J=5 et Club B a J=3, alors Club A sera classé devant.
+
+### Peut-on avoir un classement par nation pour une compétition nationale française ?
+
+Oui, mais ce n'est généralement pas pertinent. Le classement par nation est surtout utile pour les compétitions internationales où plusieurs pays participent. Pour une compétition nationale, préférez le classement par CR, CD ou club.
+
 ## 🚨 Dépannage
 
 ### Le classement ne se calcule pas
@@ -276,12 +527,41 @@ Non, seuls les nombres positifs (0 ou plus) sont acceptés.
 2. S'assurer que le nom ou code club est cohérent entre les compétitions
 3. Vérifier que l'équipe a bien participé à au moins une compétition source
 
+### Le classement par structure affiche des résultats incorrects
+
+**Causes possibles** :
+1. Les codes club/CD/CR ne sont pas correctement renseignés dans la base
+2. Le type de classement sélectionné ne correspond pas à l'attente
+3. Les équipes n'ont pas le bon rattachement structurel
+
+**Solution** :
+1. Vérifier les codes dans les tables `kp_club`, `kp_cd`, `kp_cr`
+2. S'assurer que le bon type de classement est sélectionné (équipe/club/CD/CR/nation)
+3. Vérifier que chaque équipe a bien un code_club renseigné
+4. Pour le classement par CD/CR : vérifier que les clubs ont leur code_comite_dep renseigné
+5. Pour le classement par nation : vérifier les codes comité (voir documentation nation)
+
+### Les points d'une structure semblent manquants
+
+**Causes possibles** :
+1. Certaines équipes de la structure n'ont pas le même code_club
+2. Les équipes ne sont pas trouvées dans les compétitions sources (recherche par numéro)
+3. Problème de rattachement CD/CR pour les classements départementaux/régionaux
+
+**Solution** :
+1. Vérifier que toutes les équipes d'un même club ont exactement le même `code_club`
+2. S'assurer que les équipes sont bien inscrites avec leur `Numero` unique
+3. Recalculer le classement après correction des données
+
 ## 📝 Remarques importantes
 
-- **Permissions** : Seuls les utilisateurs avec les droits d'administration (profil ≤ 2) peuvent modifier la grille de points et les compétitions sources
-- **Sauvegarde** : N'oubliez pas d'enregistrer la compétition après avoir configuré la grille et les compétitions sources
+- **Permissions** : Seuls les utilisateurs avec les droits d'administration (profil ≤ 2) peuvent modifier la grille de points, les compétitions sources et le type de classement
+- **Sauvegarde** : N'oubliez pas d'enregistrer la compétition après avoir configuré la grille, les compétitions sources et le type de classement
 - **Classements publiés** : Le calcul utilise uniquement les classements **publiés**. Assurez-vous de publier les classements des compétitions sources avant de calculer le classement MULTI
-- **Noms cohérents** : Les équipes doivent avoir le même nom ou code club dans toutes les compétitions sources pour être reconnues
+- **Identification des équipes** : Les équipes sont identifiées par leur **numéro unique** (champ `Numero`) dans les compétitions sources
+- **Codes structurels** : Pour les classements par club/CD/CR/nation, assurez-vous que les codes `code_club`, `code_comite_dep`, `code_comite_reg` sont correctement renseignés dans les tables `kp_club`, `kp_cd`, `kp_cr`
+- **Recalcul nécessaire** : Après avoir changé le type de classement, pensez à recalculer le classement pour voir les modifications
+- **Tri automatique** : Le classement est trié automatiquement par Points (DESC) puis Participations (DESC) puis Libellé (ASC)
 
 ## 🆘 Besoin d'aide ?
 
@@ -294,6 +574,7 @@ Si vous rencontrez un problème :
 
 ---
 
-**Version** : 2.0
+**Version** : 3.0
 **Date** : Décembre 2024
 **Compatibilité** : KPI v8.4+
+**Nouveautés v3.0** : Classements multi-structure (équipe, club, CD, CR, nation) avec tri par participations

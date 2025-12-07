@@ -24,6 +24,8 @@ class PdfCltMulti extends MyPage
         $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+		// Récupérer le type de classement pour MULTI
+		$rankingStructureType = $arrayCompetition['ranking_structure_type'] ?? 'team';
 
         $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';
         // PHP 8 fix: Type casting pour éviter "Unsupported operand types: int - string"
@@ -158,12 +160,29 @@ class PdfCltMulti extends MyPage
 
         $pdf->SetFont('Arial', 'BI', 11);
 
-        // Colonnes réduites pour MULTI : Clt, Equipe, Pts, J
-        $pdf->Cell(50, 5, '', 0, 0);
-        $pdf->Cell(30, 5, $lang['Clt'] ?? 'Clt', 'B', 0, 'C');
-        $pdf->Cell(100, 5, $lang['Equipe'] ?? 'Equipe', 'B', 0, 'L');
-        $pdf->Cell(30, 5, $lang['Pts'] ?? 'Pts', 'B', 0, 'C');
-        $pdf->Cell(30, 5, $lang['J'] ?? 'J', 'B', 1, 'C');
+		// Colonnes réduites pour MULTI : Clt, Equipe/Club/CD/CR/Nation, Pts, J
+		// Déterminer le libellé de la colonne selon le type de classement
+		$labelStructure = $lang['Equipe'] ?? 'Equipe'; // Défaut
+		switch ($rankingStructureType) {
+			case 'club':
+				$labelStructure = $lang['Club'] ?? 'Club';
+				break;
+			case 'cd':
+				$labelStructure = $lang['Comite_departemental'] ?? 'Comité Départemental';
+				break;
+			case 'cr':
+				$labelStructure = $lang['Comite_regional'] ?? 'Comité Régional';
+				break;
+			case 'nation':
+				$labelStructure = $lang['Nation'] ?? 'Nation';
+				break;
+		}
+
+		$pdf->Cell(50, 5, '', 0, 0);
+		$pdf->Cell(30, 5, $lang['Clt'] ?? 'Rang', 'B', 0, 'C');
+		$pdf->Cell(100, 5, $labelStructure, 'B', 0, 'L');
+		$pdf->Cell(30, 5, $lang['Pts'] ?? 'Points', 'B', 0, 'C');
+		$pdf->Cell(30, 5, $lang['J'] ?? 'Joués', 'B', 1, 'C');
 
         $i = 0;
         while ($row = $result->fetch()) {

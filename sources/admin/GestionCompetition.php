@@ -291,6 +291,7 @@ class GestionCompetition extends MyPageSecure
 		if (!isset($_SESSION['codeTypeClt'])) $_SESSION['codeTypeClt'] = '';
 		if (!isset($_SESSION['pointsGrid'])) $_SESSION['pointsGrid'] = '';
 		if (!isset($_SESSION['multiCompetitions'])) $_SESSION['multiCompetitions'] = '';
+		if (!isset($_SESSION['rankingStructureType'])) $_SESSION['rankingStructureType'] = 'team';
 		if (!isset($_SESSION['etape'])) $_SESSION['etape'] = '';
 		if (!isset($_SESSION['qualifies'])) $_SESSION['qualifies'] = '';
 		if (!isset($_SESSION['elimines'])) $_SESSION['elimines'] = '';
@@ -320,6 +321,7 @@ class GestionCompetition extends MyPageSecure
 		$this->m_tpl->assign('codeTypeClt', $_SESSION['codeTypeClt']);
 		$this->m_tpl->assign('pointsGrid', $_SESSION['pointsGrid']);
 		$this->m_tpl->assign('multiCompetitions', $_SESSION['multiCompetitions']);
+		$this->m_tpl->assign('rankingStructureType', $_SESSION['rankingStructureType']);
 		$this->m_tpl->assign('etape', $_SESSION['etape']);
 		$this->m_tpl->assign('qualifies', $_SESSION['qualifies']);
 		$this->m_tpl->assign('elimines', $_SESSION['elimines']);
@@ -375,6 +377,7 @@ class GestionCompetition extends MyPageSecure
 		// Récupérer les champs JSON directement sans purification HTML
 		$pointsGrid = isset($_POST['pointsGrid']) ? $_POST['pointsGrid'] : '';
 		$multiCompetitions = isset($_POST['multiCompetitions']) ? $_POST['multiCompetitions'] : '';
+	$rankingStructureType = isset($_POST['rankingStructureType']) ? $_POST['rankingStructureType'] : 'team';
 
 		if (strlen($codeCompet) > 0) {
 			$sql = "INSERT INTO kp_competition
@@ -382,16 +385,16 @@ class GestionCompetition extends MyPageSecure
 				Soustitre2, Web, BandeauLink, LogoLink, SponsorLink, ToutGroup, TouteSaisons,
 				En_actif, Titre_actif, Bandeau_actif, Logo_actif,
 				Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder,
-				Code_typeclt, points_grid, multi_competitions, Code_tour, Qualifies, Elimines,
+				Code_typeclt, points_grid, multi_competitions, ranking_structure_type, Code_tour, Qualifies, Elimines,
 				Points, goalaverage, Statut, Publication)
-				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 			$stmt = $myBdd->pdo->prepare($sql);
 			$stmt->execute(array(
 				$codeCompet, $saison, utyGetPost('niveauCompet'), utyGetPost('labelCompet'), utyGetPost('soustitre'),
 				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '',
 				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'),
 				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
-				utyGetPost('codeTypeClt'), $pointsGrid, $multiCompetitions, utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
+				utyGetPost('codeTypeClt'), $pointsGrid, $multiCompetitions, $rankingStructureType, utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
 				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet')
 			));
 
@@ -495,6 +498,7 @@ class GestionCompetition extends MyPageSecure
 		$_SESSION['codeTypeClt'] = '';
 		$_SESSION['pointsGrid'] = '';
 		$_SESSION['multiCompetitions'] = '';
+	$_SESSION['rankingStructureType'] = 'team';
 		$_SESSION['etape'] = '';
 		$_SESSION['qualifies'] = '';
 		$_SESSION['elimines'] = '';
@@ -515,7 +519,7 @@ class GestionCompetition extends MyPageSecure
 
 		$sql  = "SELECT Code_niveau, Libelle, Soustitre, Soustitre2, Web, BandeauLink, LogoLink,
 			SponsorLink, ToutGroup, TouteSaisons, En_actif, Titre_actif, Bandeau_actif, Logo_actif,
-			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, points_grid, multi_competitions, Code_tour, Qualifies,
+			Sponsor_actif, Kpi_ffck_actif, Code_ref, GroupOrder, Code_typeclt, points_grid, multi_competitions, ranking_structure_type, Code_tour, Qualifies,
 			Elimines, Points, goalaverage, Statut, commentairesCompet, Publication
 			FROM kp_competition
 			WHERE Code_saison = ?
@@ -547,6 +551,7 @@ class GestionCompetition extends MyPageSecure
 			$_SESSION['codeTypeClt'] = $row['Code_typeclt'];
 			$_SESSION['pointsGrid'] = $row['points_grid'];
 			$_SESSION['multiCompetitions'] = $row['multi_competitions'];
+		$_SESSION['rankingStructureType'] = $row['ranking_structure_type'] ?? 'team';
 			$_SESSION['etape'] = $row['Code_tour'];
 			$_SESSION['qualifies'] = $row['Qualifies'];
 			$_SESSION['elimines'] = $row['Elimines'];
@@ -588,13 +593,14 @@ class GestionCompetition extends MyPageSecure
 			// Récupérer les champs JSON directement sans purification HTML
 			$pointsGrid = isset($_POST['pointsGrid']) ? $_POST['pointsGrid'] : '';
 			$multiCompetitions = isset($_POST['multiCompetitions']) ? $_POST['multiCompetitions'] : '';
+	$rankingStructureType = isset($_POST['rankingStructureType']) ? $_POST['rankingStructureType'] : 'team';
 
 			$sql  = "UPDATE kp_competition
 				SET Code_niveau = ?, Libelle = ?, Soustitre = ?,
 				Soustitre2 = ?, Web = ?, BandeauLink = ?, LogoLink = ?, SponsorLink = ?, ToutGroup = ?, TouteSaisons = ?,
 				En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?,
 				Sponsor_actif = ?, Kpi_ffck_actif = ?, Code_ref = ?, GroupOrder = ?,
-				Code_typeclt = ?, points_grid = ?, multi_competitions = ?, Code_tour = ?, Qualifies = ?, Elimines = ?,
+				Code_typeclt = ?, points_grid = ?, multi_competitions = ?, ranking_structure_type = ?, Code_tour = ?, Qualifies = ?, Elimines = ?,
 				Points = ?, goalaverage = ?, Statut = ?, Publication = ?, commentairesCompet = ?
 				WHERE Code = ?
 				AND Code_saison = ? ";
@@ -604,7 +610,7 @@ class GestionCompetition extends MyPageSecure
 				utyGetPost('soustitre2'), utyGetPost('web'), $bandeauLink, $logoLink, $sponsorLink, '', '',
 				utyGetPost('checken'), utyGetPost('checktitre'), utyGetPost('checkbandeau'), utyGetPost('checklogo'),
 				utyGetPost('checksponsor'), utyGetPost('checkkpiffck'), $codeRef, utyGetPost('groupOrder'),
-				utyGetPost('codeTypeClt'), $pointsGrid, $multiCompetitions, utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
+				utyGetPost('codeTypeClt'), $pointsGrid, $multiCompetitions, $rankingStructureType, utyGetPost('etape'), utyGetPost('qualifies'), utyGetPost('elimines'),
 				utyGetPost('points'), utyGetPost('goalaverage'), utyGetPost('statut'), utyGetPost('publierCompet'), utyGetPost('commentairesCompet'),
 				$codeCompet, $saison
 			));

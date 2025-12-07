@@ -64,18 +64,28 @@
 						<table class='tableauJQ tableauClassement tableau'>
 							<thead>
 								<tr>
+									<th style="border-bottom: 1px solid #FFF;" colspan="{if (isset($Code_niveau) && $Code_niveau) == 'INT'}15{else}14{/if}">{#Classement_calcule#}</th>
+								</tr>
+								<tr>
 									<th width="17">&nbsp;</th>
 									<th>&nbsp;</th>
 									{if (isset($Code_niveau) && $Code_niveau) == 'INT'}
 										<th></th>
 									{/if}
 									<th>{#Clt#}</th>
-									<th>{#Equipe#}</th>
+									<th>
+										{if $ranking_structure_type=='team'}{#Equipe#}
+										{elseif $ranking_structure_type=='club'}{#Club#}
+										{elseif $ranking_structure_type=='cd'}{#Comite_departemental#}
+										{elseif $ranking_structure_type=='cr'}{#Comite_regional#}
+										{elseif $ranking_structure_type=='nation'}{#Nation#}
+										{/if}
+									</th>
 									{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 										<th>{#Pts#}</th>
 									{/if}
 									<th>{#J#}</th>
-									{if $typeCompetition!='Multi-Compétition'}
+									{if $typeCompetition=='Championnat'}
 										<th>{#G#}</th>
 										<th>{#N#}</th>
 										<th>{#P#}</th>
@@ -105,58 +115,58 @@
 											{/if}
 										</td>
 										{if (isset($Code_niveau) && $Code_niveau) == 'INT'}
-											<td> <img width="20" src="../img/Pays/{$arrayEquipe[i].Code_comite_dep}.png"
+											<td><img width="20" src="../img/Pays/{$arrayEquipe[i].Code_comite_dep}.png"
 													alt="{$arrayEquipe[i].Code_comite_dep}" title="{$arrayEquipe[i].Code_comite_dep}" /></td>
 										{/if}
 										{if $profile <= 4 && $AuthModif == 'O' && $compet.Statut == 'ON'}
 											{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
-												<td width="30"><span class='directInput' Id="Clt-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="Clt-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}0">{$arrayEquipe[i].Clt}</span></td>
-												<td width="200">{$arrayEquipe[i].Libelle}</td>
-												<td width="40"><span class='directInput' Id="Pts-{$arrayEquipe[i].Id}"
+												<td>{$arrayEquipe[i].Libelle}</td>
+												<td><span class='directInput' Id="Pts-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}1">{$arrayEquipe[i].Pts/100}</span></td>
 											{else}
-												<td width="30"><span class='directInput' Id="CltNiveau-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="CltNiveau-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}0">{$arrayEquipe[i].CltNiveau}</span></td>
-												<td width="200">{$arrayEquipe[i].Libelle}</td>
+												<td>{$arrayEquipe[i].Libelle}</td>
 												{*<td width="40"><span class='directInput' Id="PtsNiveau-{$arrayEquipe[i].Id}" tabindex="1{$smarty.section.i.iteration}1">{$arrayEquipe[i].PtsNiveau}</span></td>*}
 											{/if}
 											<td width="30"><span class='directInput' Id="J-{$arrayEquipe[i].Id}"
 													tabindex="1{$smarty.section.i.iteration}2">{$arrayEquipe[i].J}</span></td>
-											{if $typeCompetition!='Multi-Compétition'}
-												<td width="30"><span class='directInput' Id="G-{$arrayEquipe[i].Id}"
+											{if $typeCompetition=='Championnat'}
+												<td><span class='directInput' Id="G-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}3">{$arrayEquipe[i].G}</span></td>
-												<td width="30"><span class='directInput' Id="N-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="N-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}4">{$arrayEquipe[i].N}</span></td>
-												<td width="30"><span class='directInput' Id="P-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="P-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}5">{$arrayEquipe[i].P}</span></td>
-												<td width="30"><span class='directInput' Id="F-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="F-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}6">{$arrayEquipe[i].F}</span></td>
-												<td width="40"><span class='directInput' Id="Plus-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="Plus-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}7">{$arrayEquipe[i].Plus}</span></td>
-												<td width="40"><span class='directInput' Id="Moins-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="Moins-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}8">{$arrayEquipe[i].Moins}</span></td>
-												<td width="40"><span class='directInput' Id="Diff-{$arrayEquipe[i].Id}"
+												<td><span class='directInput' Id="Diff-{$arrayEquipe[i].Id}"
 														tabindex="1{$smarty.section.i.iteration}9">{$arrayEquipe[i].Diff}</span></td>
 											{/if}
 										{else}
 											{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
-												<td width="30">{$arrayEquipe[i].Clt}</td>
-												<td width="200">{$arrayEquipe[i].Libelle}</td>
-												<td width="40">{$arrayEquipe[i].Pts/100}</td>
+												<td>{$arrayEquipe[i].Clt}</td>
+												<td>{$arrayEquipe[i].Libelle}</td>
+												<td>{$arrayEquipe[i].Pts/100}</td>
 											{else}
-												<td width="30">{$arrayEquipe[i].CltNiveau}</td>
-												<td width="200">{$arrayEquipe[i].Libelle}</td>
+												<td>{$arrayEquipe[i].CltNiveau}</td>
+												<td>{$arrayEquipe[i].Libelle}</td>
 												{*<td width="40">{$arrayEquipe[i].PtsNiveau}</td>*}
 											{/if}
 											<td width="30">{$arrayEquipe[i].J}</td>
-											{if $typeCompetition!='Multi-Compétition'}
-												<td width="30">{$arrayEquipe[i].G}</td>
-												<td width="30">{$arrayEquipe[i].N}</td>
-												<td width="30">{$arrayEquipe[i].P}</td>
-												<td width="30">{$arrayEquipe[i].F}</td>
-												<td width="40">{$arrayEquipe[i].Plus}</td>
-												<td width="40">{$arrayEquipe[i].Moins}</td>
+											{if $typeCompetition=='Championnat'}
+												<td>{$arrayEquipe[i].G}</td>
+												<td>{$arrayEquipe[i].N}</td>
+												<td>{$arrayEquipe[i].P}</td>
+												<td>{$arrayEquipe[i].F}</td>
+												<td>{$arrayEquipe[i].Plus}</td>
+												<td>{$arrayEquipe[i].Moins}</td>
 												<td width="40">{$arrayEquipe[i].Diff}</td>
 											{/if}
 										{/if}
@@ -226,38 +236,38 @@
 													{/if}
 												</td>
 												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O' && $compet.Statut == 'ON'}
-													<td width="30"><span class='directInput'
+													<td><span class='directInput'
 															Id="Clt-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}0">{$arrayEquipe_journee[i].Clt}</span></td>
-													<td width="200">{$arrayEquipe_journee[i].Libelle}</td>
-													<td width="40"><span class='directInput'
+													<td>{$arrayEquipe_journee[i].Libelle}</td>
+													<td><span class='directInput'
 															Id="Pts-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}1">{$arrayEquipe_journee[i].Pts/100}</span></td>
 												{else}
-													<td width="30">{$arrayEquipe_journee[i].Clt}</td>
-													<td width="200">{$arrayEquipe_journee[i].Libelle}</td>
-													<td width="40">{$arrayEquipe_journee[i].Pts/100}</td>
+													<td>{$arrayEquipe_journee[i].Clt}</td>
+													<td>{$arrayEquipe_journee[i].Libelle}</td>
+													<td>{$arrayEquipe_journee[i].Pts/100}</td>
 												{/if}
 												{*<td width="40">{$arrayEquipe_journee[i].Pts/100}</td>*}
-												<td width="30">{$arrayEquipe_journee[i].J}</td>
-												<td width="30">{$arrayEquipe_journee[i].G}</td>
-												<td width="30">{$arrayEquipe_journee[i].N}</td>
-												<td width="30">{$arrayEquipe_journee[i].P}</td>
-												<td width="30">{$arrayEquipe_journee[i].F}</td>
+												<td>{$arrayEquipe_journee[i].J}</td>
+												<td>{$arrayEquipe_journee[i].G}</td>
+												<td>{$arrayEquipe_journee[i].N}</td>
+												<td>{$arrayEquipe_journee[i].P}</td>
+												<td>{$arrayEquipe_journee[i].F}</td>
 												{if $profile <= 4 && $AuthModif == 'O' && $consolidation != 'O' && $compet.Statut == 'ON'}
-													<td width="40"><span class='directInput'
+													<td><span class='directInput'
 															Id="Plus-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}7">{$arrayEquipe_journee[i].Plus}</span></td>
-													<td width="40"><span class='directInput'
+													<td><span class='directInput'
 															Id="Moins-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}8">{$arrayEquipe_journee[i].Moins}</span></td>
-													<td width="40"><span class='directInput'
+													<td><span class='directInput'
 															Id="Diff-{$arrayEquipe_journee[i].Id}-{$arrayEquipe_journee[i].Id_journee}"
 															tabindex="2{$smarty.section.i.iteration}9">{$arrayEquipe_journee[i].Diff}</span></td>
 												{else}
-													<td width="40">{$arrayEquipe_journee[i].Plus}</td>
-													<td width="40">{$arrayEquipe_journee[i].Moins}</td>
-													<td width="40">{$arrayEquipe_journee[i].Diff}</td>
+													<td>{$arrayEquipe_journee[i].Plus}</td>
+													<td>{$arrayEquipe_journee[i].Moins}</td>
+													<td>{$arrayEquipe_journee[i].Diff}</td>
 												{/if}
 											</tr>
 										{/if}
@@ -300,17 +310,28 @@
 						<table class='tableau tableauPublic'>
 							<thead>
 								<tr>
+									<th style="border-bottom: 1px solid #FFF;" colspan="{if (isset($Code_niveau) && $Code_niveau) == 'INT'}15{else}14{/if}">{#Classement_public#}</th>
+								</tr>
+								<tr>
 									<th width="17">&nbsp;</th>
 									<th></th>
 									{if (isset($Code_niveau) && $Code_niveau) == 'INT'}
 										<th>&nbsp;</th>
 									{/if}
-									<th colspan="2">{#Classement_public#}</th>
+									<th>{#Clt#}</th>
+									<th>
+										{if $ranking_structure_type=='team'}{#Equipe#}
+										{elseif $ranking_structure_type=='club'}{#Club#}
+										{elseif $ranking_structure_type=='cd'}{#Comite_departemental#}
+										{elseif $ranking_structure_type=='cr'}{#Comite_regional#}
+										{elseif $ranking_structure_type=='nation'}{#Nation#}
+										{/if}
+									</th>
 									{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
 										<th>{#Pts#}</th>
 									{/if}
 									<th>{#J#}</th>
-									{if $typeCompetition!='Multi-Compétition'}
+									{if $typeCompetition=='Championnat'}
 										<th>{#G#}</th>
 										<th>{#N#}</th>
 										<th>{#P#}</th>
@@ -346,24 +367,24 @@
 											</td>
 										{/if}
 										{if $typeCompetition=='Championnat' || $typeCompetition=='Multi-Compétition'}
-											<td width="30">{$arrayEquipe_publi[i].Clt_publi}</td>
-											<td width="200">{$arrayEquipe_publi[i].Libelle}</td>
-											<td width="40">{$arrayEquipe_publi[i].Pts_publi/100}</td>
+											<td>{$arrayEquipe_publi[i].Clt_publi}</td>
+											<td>{$arrayEquipe_publi[i].Libelle}</td>
+											<td>{$arrayEquipe_publi[i].Pts_publi/100}</td>
 										{else}
-											<td width="30">{$arrayEquipe_publi[i].CltNiveau_publi}</td>
-											<td width="200">{$arrayEquipe_publi[i].Libelle}</td>
+											<td>{$arrayEquipe_publi[i].CltNiveau_publi}</td>
+											<td>{$arrayEquipe_publi[i].Libelle}</td>
 											{*<td width="40">{$arrayEquipe_publi[i].PtsNiveau}</td>*}
 										{/if}
 
-										<td width="30">{$arrayEquipe_publi[i].J_publi}</td>
-										{if $typeCompetition!='Multi-Compétition'}
-											<td width="30">{$arrayEquipe_publi[i].G_publi}</td>
-											<td width="30">{$arrayEquipe_publi[i].N_publi}</td>
-											<td width="30">{$arrayEquipe_publi[i].P_publi}</td>
-											<td width="30">{$arrayEquipe_publi[i].F_publi}</td>
-											<td width="40">{$arrayEquipe_publi[i].Plus_publi}</td>
-											<td width="40">{$arrayEquipe_publi[i].Moins_publi}</td>
-											<td width="40">{$arrayEquipe_publi[i].Diff_publi}</td>
+										<td>{$arrayEquipe_publi[i].J_publi}</td>
+										{if $typeCompetition=='Championnat'}
+											<td>{$arrayEquipe_publi[i].G_publi}</td>
+											<td>{$arrayEquipe_publi[i].N_publi}</td>
+											<td>{$arrayEquipe_publi[i].P_publi}</td>
+											<td>{$arrayEquipe_publi[i].F_publi}</td>
+											<td>{$arrayEquipe_publi[i].Plus_publi}</td>
+											<td>{$arrayEquipe_publi[i].Moins_publi}</td>
+											<td>{$arrayEquipe_publi[i].Diff_publi}</td>
 										{/if}
 
 									</tr>
@@ -375,8 +396,7 @@
 							<table class='tableau tableauPublic'>
 								<thead>
 									<tr>
-										<th></th>
-										<th colspan="11">{#Deroulement#}</th>
+										<th colspan="12">{#Deroulement#}</th>
 									</tr>
 								</thead>
 								<tbody>
