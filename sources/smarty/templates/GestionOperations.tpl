@@ -262,16 +262,16 @@
 							<td width=50%>
 								<label for="ChangeCodeRecherche">Code recherché</label>
 								<input type="text" name="ChangeCodeRecherche" id="ChangeCodeRecherche" class='codecompet' size=40 placeholder="Chercher">
-								</td>
-								<td width=50%>
-								<label for="changeCodeSource">Code à changer</label>
-								<input type="text" name="changeCodeSource" id="changeCodeSource" readonly>
+							</td>
+							<td width=50%>
+								<label for="changeCodeCible">Code cible</label>
+								<input type="text" name="changeCodeCible" id="changeCodeCible" class='codecompet' size=40>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<label for="changeCodeCible">Code cible</label>
-								<input type="text" name="changeCodeCible" id="changeCodeCible" class='codecompet' size=40>
+								<label for="changeCodeSource">Code à changer</label>
+								<input type="text" name="changeCodeSource" id="changeCodeSource" readonly>
 							</td>
 							<td>
 								<input type='checkbox' name='changeCodeExists' id='changeCodeExists' value='Exists'>
@@ -279,11 +279,15 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan=2>
+							<td>
 								<div align='center'>
-									<input type='checkbox' name='changeCodeAllSeason' id='changeCodeAllSeason' value='All'>
-									Toutes saisons
+									Saison : {$saisonEnCours}
+									<input type='hidden' name='saisonChangeCode' id='saisonChangeCode' value='{$saisonEnCours}'>
 								</div>
+							</td>
+							<td>
+								<input type='checkbox' name='changeCodeAllSeason' id='changeCodeAllSeason' value='All'>
+								Toutes saisons
 							</td>
 						</tr>
 						<tr>
