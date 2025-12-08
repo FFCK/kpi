@@ -22,6 +22,9 @@ class GestionOperations extends MyPageSecure
 
 		$idEvenement = (int) utyGetSession('idEvenement', -1);
 
+		$saisonEnCours = $myBdd->GetActiveSaison();
+		$this->m_tpl->assign('saisonEnCours', $saisonEnCours);
+
 		// Chargement des Evenements
 		$arrayEvenement = array();
 

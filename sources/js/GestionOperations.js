@@ -357,7 +357,7 @@ jq(document).ready(function () {
 		cacheLength: 0,
 		dataType: 'json',
 		extraParams: {
-			saison: jq('#saisonTravail').val()
+			saison: jq('#saisonChangeCode').val()
 		},
 		formatItem: (item) => item.label,
 		formatResult: (item) => item.label,
