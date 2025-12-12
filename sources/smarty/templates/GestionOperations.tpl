@@ -588,7 +588,7 @@
 						<tr>
 							<td>
 								<label for="saisonSourceCompet">Saison source :</label>
-								<select name="saisonSourceCompet" id="saisonSourceCompet">
+								<select name="saisonSourceCompet" id="saisonSourceCompet" onchange="loadCompetitionsForSeason()">
 									{section name=i loop=$arraySaison}
 										<option value="{$arraySaison[i].Code}" {if $arraySaison[i].Etat=='A'}selected{/if}>{$arraySaison[i].Code}</option>
 									{/section}
