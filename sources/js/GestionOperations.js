@@ -59,6 +59,44 @@ function CopyRc () {
 	document.forms['formOperations'].submit()
 }
 
+function CopyCompetitions () {
+	var saisonSource = jq('#saisonSourceCompet').val()
+	var saisonCible = jq('#saisonCibleCompet').val()
+	var selectedCompets = jq('#codesCompet').val()
+
+	if (!saisonSource || !saisonCible) {
+		alert('Veuillez sélectionner une saison source et une saison cible.')
+		return
+	}
+
+	if (saisonSource == saisonCible) {
+		alert('Les saisons source et cible doivent être différentes.')
+		return
+	}
+
+	if (!selectedCompets || selectedCompets.length === 0) {
+		alert('Veuillez sélectionner au moins une compétition à copier.')
+		return
+	}
+
+	var nbCompets = selectedCompets.length
+	var confirmMsg = 'Confirmez-vous la copie de ' + nbCompets + ' compétition(s) '
+	confirmMsg += 'de la saison ' + saisonSource + ' vers la saison ' + saisonCible + ' ?\n\n'
+	confirmMsg += 'Les compétitions seront créées avec :\n'
+	confirmMsg += '- Statut ATT (en attente)\n'
+	confirmMsg += '- Non publiques\n'
+	confirmMsg += '- Sans équipes\n'
+	confirmMsg += '- Journées avec dates ajustées (+' + (parseInt(saisonCible) - parseInt(saisonSource)) + ' an(s), même jour de semaine)'
+
+	if (!confirm(confirmMsg)) {
+		return
+	}
+
+	document.forms['formOperations'].elements['Cmd'].value = 'CopyCompetitions'
+	document.forms['formOperations'].elements['ParamCmd'].value = ''
+	document.forms['formOperations'].submit()
+}
+
 function activeSaison () {
 	if (!confirm(langue['Confirmer'])) {
 		document.forms['formOperations'].reset

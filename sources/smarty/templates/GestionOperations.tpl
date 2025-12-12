@@ -578,6 +578,60 @@
 							</td>
 						</tr>
 					</table>
+					<br>
+					<table width="100%">
+						<tr>
+							<th class='titreForm' colspan=2>
+								<label>Copier des compétitions (avec journées)</label>
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<label for="saisonSourceCompet">Saison source :</label>
+								<select name="saisonSourceCompet" id="saisonSourceCompet">
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}" {if $arraySaison[i].Etat=='A'}selected{/if}>{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+							<td>
+								<label for="saisonCibleCompet">Saison cible :</label>
+								<select name="saisonCibleCompet" id="saisonCibleCompet">
+									{section name=i loop=$arraySaison}
+										<option value="{$arraySaison[i].Code}" {if $arraySaison[i].Etat=='A'}selected{/if}>{$arraySaison[i].Code}</option>
+									{/section}
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<label for="codesCompet">Compétitions à copier :</label>
+								<br>
+								<select name="codesCompet[]" id="codesCompet" multiple size="12" style="width: 100%;">
+									{section name=g loop=$arrayCompetitionCopy}
+										<optgroup label="{$arrayCompetitionCopy[g].label}">
+											{section name=o loop=$arrayCompetitionCopy[g].options}
+												<option value="{$arrayCompetitionCopy[g].options[o].Code}">{$arrayCompetitionCopy[g].options[o].Code} - {$arrayCompetitionCopy[g].options[o].Libelle}</option>
+											{/section}
+										</optgroup>
+									{/section}
+								</select>
+								<br>
+								<small style="color: #666;">Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs compétitions</small>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<br>
+								<input type="button" name="CopyCompetitionsBtn" id="CopyCompetitionsBtn" onclick="CopyCompetitions();" value="Copier les compétitions">
+								<br>
+								<small style="color: #666;">
+									Les compétitions seront créées avec : statut ATT, non publiques, sans équipes.
+									<br>Les journées seront copiées avec les mêmes jours de la semaine à des dates équivalentes.
+								</small>
+							</td>
+						</tr>
+					</table>
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
