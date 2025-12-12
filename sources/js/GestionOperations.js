@@ -59,6 +59,93 @@ function CopyRc () {
 	document.forms['formOperations'].submit()
 }
 
+function CopyCompetitions () {
+	var saisonSource = jq('#saisonSourceCompet').val()
+	var saisonCible = jq('#saisonCibleCompet').val()
+	var selectedCompets = jq('#codesCompet').val()
+
+	if (!saisonSource || !saisonCible) {
+		alert('Veuillez sélectionner une saison source et une saison cible.')
+		return
+	}
+
+	if (saisonSource == saisonCible) {
+		alert('Les saisons source et cible doivent être différentes.')
+		return
+	}
+
+	if (!selectedCompets || selectedCompets.length === 0) {
+		alert('Veuillez sélectionner au moins une compétition à copier.')
+		return
+	}
+
+	var nbCompets = selectedCompets.length
+	var yearDiff = parseInt(saisonCible) - parseInt(saisonSource)
+	var confirmMsg = 'Confirmez-vous la copie de ' + nbCompets + ' compétition(s) '
+	confirmMsg += 'de la saison ' + saisonSource + ' vers la saison ' + saisonCible + ' ?\n\n'
+	confirmMsg += 'Les compétitions seront créées avec :\n'
+	confirmMsg += '- Statut ATT (en attente)\n'
+	confirmMsg += '- Non publiques\n'
+	confirmMsg += '- Sans équipes\n'
+	confirmMsg += '- Journées avec dates ajustées (+' + yearDiff + ' an(s), même jour de semaine)\n'
+	confirmMsg += '- Pour les compétitions CP : matchs copiés avec encodages (sans équipes/scores/arbitres)'
+
+	if (!confirm(confirmMsg)) {
+		return
+	}
+
+	document.forms['formOperations'].elements['Cmd'].value = 'CopyCompetitions'
+	document.forms['formOperations'].elements['ParamCmd'].value = ''
+	document.forms['formOperations'].submit()
+}
+
+function loadCompetitionsForSeason () {
+	var saison = jq('#saisonSourceCompet').val()
+	var selectCompet = jq('#codesCompet')
+
+	if (!saison) {
+		return
+	}
+
+	// Afficher un message de chargement
+	selectCompet.html('<option value="">Chargement...</option>')
+
+	jq.ajax({
+		url: 'Ajax_competitions_by_saison.php',
+		type: 'GET',
+		dataType: 'json',
+		data: { saison: saison },
+		success: function (data) {
+			selectCompet.empty()
+
+			if (data.error) {
+				selectCompet.html('<option value="">Erreur : ' + data.error + '</option>')
+				return
+			}
+
+			if (data.length === 0) {
+				selectCompet.html('<option value="">Aucune compétition pour cette saison</option>')
+				return
+			}
+
+			// Reconstruire le select avec les optgroups
+			for (var g = 0; g < data.length; g++) {
+				var optgroup = jq('<optgroup>').attr('label', data[g].label)
+				for (var o = 0; o < data[g].options.length; o++) {
+					var opt = data[g].options[o]
+					optgroup.append(
+						jq('<option>').val(opt.Code).text(opt.Code + ' - ' + opt.Libelle)
+					)
+				}
+				selectCompet.append(optgroup)
+			}
+		},
+		error: function () {
+			selectCompet.html('<option value="">Erreur de chargement</option>')
+		}
+	})
+}
+
 function activeSaison () {
 	if (!confirm(langue['Confirmer'])) {
 		document.forms['formOperations'].reset
