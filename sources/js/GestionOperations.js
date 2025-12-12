@@ -63,6 +63,7 @@ function CopyCompetitions () {
 	var saisonSource = jq('#saisonSourceCompet').val()
 	var saisonCible = jq('#saisonCibleCompet').val()
 	var selectedCompets = jq('#codesCompet').val()
+	var copierMatchsCP = jq('#copierMatchsCP').is(':checked')
 
 	if (!saisonSource || !saisonCible) {
 		alert('Veuillez sélectionner une saison source et une saison cible.')
@@ -88,7 +89,12 @@ function CopyCompetitions () {
 	confirmMsg += '- Non publiques\n'
 	confirmMsg += '- Sans équipes\n'
 	confirmMsg += '- Journées avec dates ajustées (+' + yearDiff + ' an(s), même jour de semaine)\n'
-	confirmMsg += '- Pour les compétitions CP : matchs copiés avec encodages (sans équipes/scores/arbitres)'
+
+	if (copierMatchsCP) {
+		confirmMsg += '- Pour les compétitions CP : toutes les journées et matchs copiés avec encodages (sans équipes/scores/arbitres)'
+	} else {
+		confirmMsg += '- Pour les compétitions CP : UNIQUEMENT la première journée sera copiée, SANS les matchs'
+	}
 
 	if (!confirm(confirmMsg)) {
 		return
@@ -529,6 +535,18 @@ jq(document).ready(function () {
 	if (currentImage) {
 		jq('#newImageNamePreview').show();
 	}
+
+	// Update info text when checkbox for copying CP matches changes
+	jq('#copierMatchsCP').change(function() {
+		var isChecked = jq(this).is(':checked');
+		var infoText = jq('#infoCopieMatchs');
+
+		if (isChecked) {
+			infoText.text('Pour les compétitions CP : les matchs sont copiés avec leurs encodages (sans équipes/scores/arbitres).');
+		} else {
+			infoText.text('Pour les compétitions CP : seule la PREMIÈRE journée sera copiée, SANS les matchs.');
+		}
+	});
 
 })
 
