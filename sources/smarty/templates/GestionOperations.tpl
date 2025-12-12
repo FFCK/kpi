@@ -628,6 +628,7 @@
 								<small style="color: #666;">
 									Les compétitions seront créées avec : statut ATT, non publiques, sans équipes.
 									<br>Les journées seront copiées avec les mêmes jours de la semaine à des dates équivalentes.
+									<br>Pour les compétitions CP : les matchs sont copiés avec leurs encodages (sans équipes/scores/arbitres).
 								</small>
 							</td>
 						</tr>

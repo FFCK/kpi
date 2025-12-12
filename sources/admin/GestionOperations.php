@@ -2278,6 +2278,7 @@ class GestionOperations extends MyPageSecure
 	 * Copie plusieurs compétitions d'une saison à une autre avec leurs journées
 	 * - Les compétitions copiées sont non publiques, statut ATT
 	 * - Les journées sont dupliquées avec dates ajustées (+1 an, même jour de semaine)
+	 * - Pour les compétitions de type CP, les matchs sont copiés avec leurs encodages
 	 * - Les équipes ne sont pas copiées
 	 */
 	function CopyCompetitions()
@@ -2313,6 +2314,7 @@ class GestionOperations extends MyPageSecure
 			$nbCompetCopied = 0;
 			$nbCompetSkipped = 0;
 			$nbJourneesCopied = 0;
+			$nbMatchsCopied = 0;
 
 			foreach ($arrayCodesCompet as $codeCompet) {
 				// Vérifier si la compétition existe déjà dans la saison cible
@@ -2338,6 +2340,9 @@ class GestionOperations extends MyPageSecure
 					array_push($this->m_arrayinfo, "⚠️ Compétition $codeCompet non trouvée dans la saison $saisonSource");
 					continue;
 				}
+
+				// Détecter si c'est une compétition de type CP (phases)
+				$isTypeCP = ($compet['Code_typeclt'] == 'CP');
 
 				// Insérer la nouvelle compétition avec les modifications demandées
 				$sqlInsertCompet = "INSERT INTO kp_competition (
@@ -2414,8 +2419,11 @@ class GestionOperations extends MyPageSecure
 				$sqlJournees = "SELECT * FROM kp_journee WHERE Code_competition = ? AND Code_saison = ?";
 				$stmtJournees = $myBdd->pdo->prepare($sqlJournees);
 				$stmtJournees->execute(array($codeCompet, $saisonSource));
+				$journees = $stmtJournees->fetchAll(PDO::FETCH_ASSOC);
 
-				while ($journee = $stmtJournees->fetch(PDO::FETCH_ASSOC)) {
+				foreach ($journees as $journee) {
+					$oldIdJournee = $journee['Id'];
+
 					// Calculer les nouvelles dates (même jour de semaine, année suivante)
 					$newDateDebut = $this->adjustDateSameWeekday($journee['Date_debut'], $yearOffset);
 					$newDateFin = $this->adjustDateSameWeekday($journee['Date_fin'], $yearOffset);
@@ -2480,21 +2488,103 @@ class GestionOperations extends MyPageSecure
 					));
 
 					$nbJourneesCopied++;
+
+					// Pour les compétitions de type CP, copier les matchs avec leurs encodages
+					if ($isTypeCP) {
+						$sqlMatchs = "SELECT * FROM kp_match WHERE Id_journee = ?";
+						$stmtMatchs = $myBdd->pdo->prepare($sqlMatchs);
+						$stmtMatchs->execute(array($oldIdJournee));
+
+						while ($match = $stmtMatchs->fetch(PDO::FETCH_ASSOC)) {
+							// Ajuster la date du match
+							$newDateMatch = $this->adjustDateSameWeekday($match['Date_match'], $yearOffset);
+
+							$sqlInsertMatch = "INSERT INTO kp_match (
+								Id_journee, Libelle, Type, Statut, Date_match, Heure_match, Heure_fin,
+								Terrain, Numero_ordre, Periode,
+								Id_equipeA, Id_equipeB, ColorA, ColorB,
+								ScoreA, ScoreB, ScoreDetailA, ScoreDetailB, CoeffA, CoeffB,
+								Commentaires_officiels, Commentaires,
+								Arbitre_principal, Arbitre_secondaire,
+								Matric_arbitre_principal, Matric_arbitre_secondaire,
+								Secretaire, Chronometre, Timeshoot, Ligne1, Ligne2,
+								Publication, Code_uti, Validation
+							) VALUES (
+								?, ?, ?, ?, ?, ?, ?,
+								?, ?, ?,
+								?, ?, ?, ?,
+								?, ?, ?, ?, ?, ?,
+								?, ?,
+								?, ?,
+								?, ?,
+								?, ?, ?, ?, ?,
+								?, ?, ?
+							)";
+
+							$stmtInsertMatch = $myBdd->pdo->prepare($sqlInsertMatch);
+							$stmtInsertMatch->execute(array(
+								$newIdJournee, // Nouvelle journée
+								$match['Libelle'], // Libelle : conserver (encodage)
+								$match['Type'], // Type : conserver
+								'ATT', // Statut = 'ATT' (non validé)
+								$newDateMatch, // Date_match : ajustée
+								$match['Heure_match'], // Heure_match : conserver
+								'00:00:00', // Heure_fin : vide
+								$match['Terrain'], // Terrain : conserver
+								$match['Numero_ordre'], // Numero_ordre : conserver
+								$match['Periode'], // Periode : conserver
+								null, // Id_equipeA : vide
+								null, // Id_equipeB : vide
+								null, // ColorA : vide
+								null, // ColorB : vide
+								null, // ScoreA : vide
+								null, // ScoreB : vide
+								null, // ScoreDetailA : vide
+								null, // ScoreDetailB : vide
+								1, // CoeffA : défaut
+								1, // CoeffB : défaut
+								null, // Commentaires_officiels : vide
+								null, // Commentaires : vide
+								null, // Arbitre_principal : vide
+								null, // Arbitre_secondaire : vide
+								null, // Matric_arbitre_principal : vide
+								null, // Matric_arbitre_secondaire : vide
+								null, // Secretaire : vide
+								null, // Chronometre : vide
+								null, // Timeshoot : vide
+								null, // Ligne1 : vide
+								null, // Ligne2 : vide
+								'', // Publication = '' (non publié)
+								'', // Code_uti : vide
+								'' // Validation = '' (non validé)
+							));
+
+							$nbMatchsCopied++;
+						}
+					}
 				}
 
-				array_push($this->m_arrayinfo, "✓ Compétition $codeCompet copiée vers la saison $saisonCible");
+				$competInfo = "✓ Compétition $codeCompet copiée vers la saison $saisonCible";
+				if ($isTypeCP && $nbMatchsCopied > 0) {
+					$competInfo .= " (avec matchs)";
+				}
+				array_push($this->m_arrayinfo, $competInfo);
 			}
 
 			$myBdd->pdo->commit();
 
-			$message = "Copie terminée : $nbCompetCopied compétition(s) copiée(s), $nbJourneesCopied journée(s) créée(s).";
+			$message = "Copie terminée : $nbCompetCopied compétition(s) copiée(s), $nbJourneesCopied journée(s) créée(s)";
+			if ($nbMatchsCopied > 0) {
+				$message .= ", $nbMatchsCopied match(s) créé(s)";
+			}
+			$message .= ".";
 			if ($nbCompetSkipped > 0) {
 				$message .= " ($nbCompetSkipped ignorée(s) car déjà existante(s))";
 			}
 			array_push($this->m_arrayinfo, $message);
 
 			$myBdd->utyJournal('Copie Compétitions', $saisonSource, '', null, null, null,
-				"Vers saison $saisonCible : $nbCompetCopied copiées, $nbJourneesCopied journées, $nbCompetSkipped ignorées");
+				"Vers saison $saisonCible : $nbCompetCopied copiées, $nbJourneesCopied journées, $nbMatchsCopied matchs, $nbCompetSkipped ignorées");
 
 		} catch (Exception $e) {
 			$myBdd->pdo->rollBack();

@@ -80,13 +80,15 @@ function CopyCompetitions () {
 	}
 
 	var nbCompets = selectedCompets.length
+	var yearDiff = parseInt(saisonCible) - parseInt(saisonSource)
 	var confirmMsg = 'Confirmez-vous la copie de ' + nbCompets + ' compétition(s) '
 	confirmMsg += 'de la saison ' + saisonSource + ' vers la saison ' + saisonCible + ' ?\n\n'
 	confirmMsg += 'Les compétitions seront créées avec :\n'
 	confirmMsg += '- Statut ATT (en attente)\n'
 	confirmMsg += '- Non publiques\n'
 	confirmMsg += '- Sans équipes\n'
-	confirmMsg += '- Journées avec dates ajustées (+' + (parseInt(saisonCible) - parseInt(saisonSource)) + ' an(s), même jour de semaine)'
+	confirmMsg += '- Journées avec dates ajustées (+' + yearDiff + ' an(s), même jour de semaine)\n'
+	confirmMsg += '- Pour les compétitions CP : matchs copiés avec encodages (sans équipes/scores/arbitres)'
 
 	if (!confirm(confirmMsg)) {
 		return
