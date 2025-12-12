@@ -8,10 +8,14 @@
 
 La fonctionnalité de **copie en masse de compétitions** permet de **dupliquer plusieurs compétitions** d'une saison source vers une saison cible en une seule opération, avec :
 - Les **journées** associées
-- Pour les compétitions de type CP (phases) : les **matchs** avec leurs encodages
+- Pour les compétitions de type CP (phases) : **deux modes de copie**
+  - **Mode complet** (par défaut) : toutes les journées + tous les matchs avec leurs encodages
+  - **Mode minimal** : uniquement la première journée, sans les matchs
 - Ajustement automatique des **dates** (même jour de la semaine, année suivante)
 
 **Gain de temps** : Préparer la structure d'une nouvelle saison en quelques minutes au lieu de recréer manuellement toutes les compétitions.
+
+**Flexibilité** : Choisissez entre une copie complète avec matchs ou une structure minimale selon vos besoins.
 
 ---
 
@@ -37,14 +41,26 @@ La fonctionnalité de **copie en masse de compétitions** permet de **dupliquer 
 2. Les dates des journées sont automatiquement ajustées
 3. Ajouter les équipes inscrites pour la nouvelle saison
 
-### 3. Duplication de compétitions avec phases
+### 3. Duplication de compétitions avec phases (mode complet)
 
-**Situation** : Compétition à phases multiples (poules + phases finales) à reproduire
+**Situation** : Compétition à phases multiples (poules + phases finales) à reproduire à l'identique
 
 **Solution** :
-1. Copier la compétition avec toutes ses phases
-2. Les matchs encodés sont dupliqués avec leurs libellés
-3. Affecter les équipes par la suite
+1. ✅ **Cocher** "Copier les matchs des compétitions CP"
+2. Copier la compétition avec toutes ses phases
+3. Les matchs encodés sont dupliqués avec leurs libellés
+4. Affecter les équipes par la suite
+
+### 4. Création rapide d'une structure de base (mode minimal)
+
+**Situation** : Nouvelle compétition CP dont vous ne connaissez pas encore la structure exacte des matchs
+
+**Solution** :
+1. ⬜ **Décocher** "Copier les matchs des compétitions CP"
+2. Copier la compétition → seule la première journée est créée
+3. Créer manuellement les journées et matchs selon le nouveau format souhaité
+
+**Avantage** : Évite de copier une structure de 50 matchs que vous allez devoir supprimer
 
 ---
 
@@ -76,17 +92,42 @@ La fonctionnalité de **copie en masse de compétitions** permet de **dupliquer 
    - Cliquer sur chaque compétition à copier
    - Possibilité de sélectionner des compétitions de différentes sections
 
-### Étape 4 : Lancer la copie
+### Étape 4 : Choisir les options de copie (compétitions CP)
+
+**Case à cocher** : "Copier les matchs des compétitions CP (phases)"
+
+Cette option contrôle le comportement de copie pour les compétitions de type CP (phases) :
+
+✅ **Cochée (par défaut)** - Mode complet :
+- Copie **toutes les journées** de la compétition
+- Copie **tous les matchs** avec leurs encodages `[1A - 2B]`
+- Utile pour reproduire une structure complète
+
+⬜ **Décochée** - Mode minimal :
+- Copie **UNIQUEMENT la première journée**
+- **SANS les matchs**
+- Utile pour créer une structure de base à compléter manuellement
+
+**Quand décocher ?**
+- Vous voulez créer une structure minimale rapidement
+- Vous comptez ajouter les matchs manuellement
+- La structure de matchs de l'année précédente ne convient pas
+- Vous voulez juste une "coquille" de compétition à remplir
+
+**Note** : Cette option n'affecte **QUE** les compétitions de type CP. Les autres types de compétitions copient toujours toutes leurs journées (sans matchs, car elles n'en ont pas).
+
+### Étape 5 : Lancer la copie
 
 1. **Bouton "Copier les compétitions"**
 2. **Message de confirmation** :
    - Nombre de compétitions sélectionnées
    - Décalage en années (ex: +1 an)
    - Rappel des paramètres de copie
+   - **Information sur le mode de copie CP** (avec ou sans matchs)
 
 3. **Validation** : Cliquer sur "OK"
 
-### Étape 5 : Vérification
+### Étape 6 : Vérification
 
 1. **Message de résultat** :
    - Nombre de compétitions copiées
@@ -119,13 +160,19 @@ La fonctionnalité de **copie en masse de compétitions** permet de **dupliquer 
 - Type, Phase, Niveau, Étape
 - Nombre d'équipes
 
-✅ **Matchs (compétitions type CP uniquement)** :
+**Important** : Pour les compétitions CP, le nombre de journées copiées dépend de l'option choisie :
+- ✅ **Option cochée** : TOUTES les journées sont copiées
+- ⬜ **Option décochée** : UNIQUEMENT la première journée est copiée
+
+✅ **Matchs (compétitions type CP - SI option cochée)** :
 - Libellé (encodage du match, ex: `[1A - 2B]`)
 - Type de match
 - Terrain
 - Numéro d'ordre
 - Période
 - Date et heure (ajustées)
+
+**Note** : Si l'option "Copier les matchs des compétitions CP" est **décochée**, **aucun match n'est copié**, même pour les compétitions CP.
 
 ### Ce qui est réinitialisé
 
@@ -242,6 +289,11 @@ Le système vérifie :
    - Vérifier que toutes les compétitions souhaitées sont sélectionnées
    - Ne pas sélectionner de compétitions inutiles
 
+4. **Choix de l'option pour les compétitions CP**
+   - ✅ **Cocher** si vous voulez copier toutes les journées et matchs (structure complète)
+   - ⬜ **Décocher** si vous voulez juste une structure minimale (1ère journée uniquement, sans matchs)
+   - Réfléchissez bien : décocher évite de copier des dizaines de matchs inutiles
+
 ### Après la copie
 
 1. **Compétitions** :
@@ -257,10 +309,16 @@ Le système vérifie :
    - ✅ Nommer les délégués et chefs arbitres
 
 3. **Matchs (CP uniquement)** :
-   - ✅ Vérifier les encodages `[...]`
-   - ✅ Affecter les équipes (manuellement ou automatiquement)
-   - ✅ Ajuster les heures si nécessaire
-   - ✅ Configurer les terrains
+   - **Si option cochée** (mode complet) :
+     - ✅ Vérifier les encodages `[...]`
+     - ✅ Affecter les équipes (manuellement ou automatiquement)
+     - ✅ Ajuster les heures si nécessaire
+     - ✅ Configurer les terrains
+   - **Si option décochée** (mode minimal) :
+     - ⚠️ **Aucun match copié** : vous devez créer manuellement :
+       - Les journées manquantes (seule la 1ère a été copiée)
+       - Tous les matchs
+       - La planification complète
 
 4. **Équipes** :
    - ✅ Inscrire les équipes pour la nouvelle saison
@@ -451,6 +509,7 @@ Le système vérifie :
 - `saisonSourceCompet` : Code de la saison source
 - `saisonCibleCompet` : Code de la saison cible
 - `codesCompet[]` : Array des codes de compétitions à copier
+- `copierMatchsCP` : `'on'` si checkbox cochée, `'off'` sinon (défaut : `'off'`)
 
 **Fonction auxiliaire** : `adjustDateSameWeekday($dateStr, $yearOffset)`
 - Ajuste une date pour conserver le même jour de semaine
@@ -494,35 +553,46 @@ Le système vérifie :
 
 ### Q4 : Les matchs sont-ils copiés pour toutes les compétitions ?
 
-**R** : Non, uniquement pour les compétitions de **type CP** (phases). Les autres types de compétitions n'ont que leurs journées copiées.
+**R** : Non, uniquement pour les compétitions de **type CP** (phases), et **UNIQUEMENT si la case "Copier les matchs des compétitions CP" est cochée**. Les autres types de compétitions n'ont que leurs journées copiées (ils n'ont pas de matchs).
 
-### Q5 : Puis-je annuler une copie ?
+### Q5 : Pourquoi décocher l'option "Copier les matchs des compétitions CP" ?
+
+**R** : Décochez cette option si :
+- Vous voulez créer une structure minimale (juste la compétition + première journée)
+- Vous comptez créer les matchs manuellement avec un format différent
+- Vous ne voulez pas copier une grosse structure de matchs qui ne convient plus
+- Vous voulez gagner du temps en évitant de supprimer des dizaines de matchs inutiles
+
+**Résultat** : Seule la **première journée** est copiée, **sans aucun match**.
+
+### Q6 : Puis-je annuler une copie ?
 
 **R** : Il n'y a pas de fonction "Annuler". Si vous avez copié par erreur, vous devez **supprimer manuellement** les compétitions créées.
 
-### Q6 : Les dates sont-elles toujours exactement +1 an ?
+### Q7 : Les dates sont-elles toujours exactement +1 an ?
 
 **R** : Non, les dates sont ajustées pour **conserver le même jour de la semaine**. Exemple : samedi 5 avril 2025 → samedi 4 avril 2026 (même jour de semaine, mais pas exactement +365 jours).
 
-### Q7 : Puis-je copier des compétitions d'une saison verrouillée ?
+### Q8 : Puis-je copier des compétitions d'une saison verrouillée ?
 
 **R** : Oui, la saison **source** peut être verrouillée (lecture seule). Seule la saison **cible** doit être modifiable.
 
-### Q8 : Combien de compétitions puis-je copier en une seule fois ?
+### Q9 : Combien de compétitions puis-je copier en une seule fois ?
 
 **R** : Pas de limite technique, mais il est recommandé de ne pas dépasser 50 compétitions par opération pour éviter les problèmes de timeout.
 
-### Q9 : Les sponsors et logos sont-ils copiés ?
+### Q10 : Les sponsors et logos sont-ils copiés ?
 
 **R** : Les **liens** (BandeauLink, LogoLink, SponsorLink) sont copiés, mais vous devrez peut-être les mettre à jour si les sponsors changent.
 
-### Q10 : Comment savoir si une compétition a été ignorée ?
+### Q11 : Comment savoir si une compétition a été ignorée ?
 
 **R** : Un message d'avertissement s'affiche : `⚠️ Compétition XXX ignorée : existe déjà dans la saison YYYY`. Le compteur de compétitions ignorées est affiché dans le résumé final.
 
 ---
 
-**Version** : 1.0
+**Version** : 1.1
 **Date** : Décembre 2025
+**Dernière mise à jour** : 12/12/2025 - Ajout option copie matchs CP
 **Public** : Administrateurs, gestionnaires de compétitions
 **Auteur** : Laurent Garrigue / Claude Code
