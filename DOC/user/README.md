@@ -43,6 +43,14 @@ Cette section contient la documentation orientée utilisateurs finaux du systèm
   - Droits d'accès et sécurité
   - **Statut**: ✅ En production
 
+- **[BULK_COMPETITION_COPY.md](BULK_COMPETITION_COPY.md)** - **Copie en masse de compétitions entre saisons**
+  - Duplication de plusieurs compétitions d'une saison vers une autre
+  - Copie automatique des journées avec ajustement des dates
+  - Pour les compétitions CP : copie des matchs encodés
+  - Gain de temps majeur pour la préparation des nouvelles saisons
+  - Guide complet d'utilisation et FAQ
+  - **Statut**: ✅ En production
+
 - **[MULTI_COMPETITION_TYPE.md](MULTI_COMPETITION_TYPE.md)** - **Type de compétition Multiple**
   - Gestion des compétitions avec plusieurs types
   - Configuration et utilisation
@@ -88,6 +96,7 @@ Cette section contient la documentation orientée utilisateurs finaux du systèm
 1. **Découvrir les nouveautés** : Consultez [NOUVEAUTES.md](NOUVEAUTES.md)
 2. **Comprendre le système complet** : Consultez l'[Inventaire des Fonctionnalités](../developer/reference/KPI_FUNCTIONALITY_INVENTORY.md) (documentation développeur)
 3. **Fonctionnalités clés** :
+   - **Administrateurs** : [Copie en masse de compétitions](BULK_COMPETITION_COPY.md) - Préparation rapide des nouvelles saisons
    - **Organisateurs de tournois** : [Event Cache Manager](EVENT_CACHE_MANAGER.md), [Opérations de masse](MATCH_DAY_BULK_OPERATIONS.md)
    - **Gestionnaires d'équipes** : [Copie de composition](TEAM_COMPOSITION_COPY.md), [Upload d'images](IMAGE_UPLOAD_MANAGEMENT.md)
    - **Analystes** : [Statistiques de cohérence](MATCH_CONSISTENCY_STATS.md)

@@ -11,6 +11,7 @@ Documentation orientée utilisateurs finaux et fonctionnalités du système.
 - **[IMAGE_UPLOAD_MANAGEMENT.md](user/IMAGE_UPLOAD_MANAGEMENT.md)** - Upload et gestion d'images (logos, photos)
 - **[TEAM_COMPOSITION_COPY.md](user/TEAM_COMPOSITION_COPY.md)** - Copie de composition d'équipe entre compétitions
 - **[MATCH_DAY_BULK_OPERATIONS.md](user/MATCH_DAY_BULK_OPERATIONS.md)** - Opérations de masse sur les matchs (publication, validation, suppression)
+- **[BULK_COMPETITION_COPY.md](user/BULK_COMPETITION_COPY.md)** - Copie en masse de compétitions entre saisons (avec journées et matchs)
 
 ### Fonctionnalités Spécifiques
 - **[MATCH_CONSISTENCY_STATS.md](user/MATCH_CONSISTENCY_STATS.md)** - Statistiques de cohérence des matchs
@@ -137,11 +138,11 @@ Documentation technique pour le développement et la maintenance du projet.
 
 ## 📊 Statistiques
 
-- **Total documents**: 65+ fichiers
-- **Documentation utilisateur**: 9 fichiers
+- **Total documents**: 66+ fichiers
+- **Documentation utilisateur**: 10 fichiers
 - **Documentation développeur**: 59+ fichiers (dont 1 référence)
-- **Lignes de documentation**: ~22000+
-- **Dernière mise à jour**: 2025-12-02
+- **Lignes de documentation**: ~23000+
+- **Dernière mise à jour**: 2025-12-12
 
 ---
 
