@@ -24,6 +24,7 @@ class GestionOperations extends MyPageSecure
 
 		$saisonEnCours = $myBdd->GetActiveSaison();
 		$this->m_tpl->assign('saisonEnCours', $saisonEnCours);
+		$this->m_tpl->assign('profile', $_SESSION['Profile']);
 
 		// Chargement des Evenements
 		$arrayEvenement = array();
@@ -2789,7 +2790,7 @@ class GestionOperations extends MyPageSecure
 			if ($Cmd == 'CopyRc') ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->CopyRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'CopyCompetitions') {
-				if ($_SESSION['Profile'] <= 2) {
+				if ($_SESSION['Profile'] == 1) {
 					$this->CopyCompetitions();
 					// Les messages seront affichés via $arrayinfo dans le switch ci-dessous
 				} else {

@@ -244,12 +244,13 @@ Cette option contrôle le comportement de copie pour les compétitions de type C
 
 ### Droits d'accès
 
-**Profil ≤ 6** :
+**Profil 1 (Webmaster uniquement)** :
 - ✅ Peut copier des compétitions entre saisons
 - ✅ Accès à la fonctionnalité dans "Gestion Opérations"
 
-**Profil > 6** :
+**Profil > 1** :
 - ❌ Fonctionnalité non accessible
+- ❌ Section masquée dans l'interface
 
 ### Validations automatiques
 

@@ -579,6 +579,7 @@
 						</tr>
 					</table>
 					<br>
+					{if $profile == 1}
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
@@ -647,6 +648,7 @@
 							</td>
 						</tr>
 					</table>
+					{/if}
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>

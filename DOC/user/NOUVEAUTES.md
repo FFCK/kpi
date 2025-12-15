@@ -4,6 +4,24 @@ Ce document liste les dernières fonctionnalités et améliorations ajoutées au
 
 ---
 
+## 📅 Décembre 2025
+
+### 🔄 Copie en masse de compétitions entre saisons (Décembre 2025)
+
+**Duplication rapide de plusieurs compétitions**
+- Copie de plusieurs compétitions d'une saison vers une autre en une opération
+- Copie automatique des journées avec ajustement des dates (même jour de semaine)
+- Pour les compétitions à phases (CP) : copie optionnelle des matchs (mode complet ou minimal)
+- Préparation d'une saison complète en 30 minutes au lieu de 3 jours
+
+**Accès** : Administration > Opérations > Copier des compétitions (avec journées)
+
+**⚠️ Attention** : Opération sensible réservée au profil 1 (Webmaster)
+
+**Documentation complète** : [BULK_COMPETITION_COPY.md](BULK_COMPETITION_COPY.md)
+
+---
+
 ## 📅 Novembre 2025
 
 ### 📚 Documentation intégrée (30/11/2025)
@@ -265,4 +283,4 @@ Les fonctionnalités suivantes sont en cours de développement ou planifiées :
 
 ---
 
-**Dernière mise à jour** : 30 novembre 2025
+**Dernière mise à jour** : 15 décembre 2025
