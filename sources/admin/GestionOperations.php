@@ -24,6 +24,7 @@ class GestionOperations extends MyPageSecure
 
 		$saisonEnCours = $myBdd->GetActiveSaison();
 		$this->m_tpl->assign('saisonEnCours', $saisonEnCours);
+		$this->m_tpl->assign('profile', $_SESSION['Profile']);
 
 		// Chargement des Evenements
 		$arrayEvenement = array();
@@ -2278,7 +2279,7 @@ class GestionOperations extends MyPageSecure
 	 * Copie plusieurs compétitions d'une saison à une autre avec leurs journées
 	 * - Les compétitions copiées sont non publiques, statut ATT
 	 * - Les journées sont dupliquées avec dates ajustées (+1 an, même jour de semaine)
-	 * - Pour les compétitions de type CP, les matchs sont copiés avec leurs encodages
+	 * - Pour les compétitions de type CP : si option cochée, les matchs sont copiés avec leurs encodages ; sinon, seule la première journée est copiée
 	 * - Les équipes ne sont pas copiées
 	 */
 	function CopyCompetitions()
@@ -2286,6 +2287,7 @@ class GestionOperations extends MyPageSecure
 		$saisonSource = utyGetPost('saisonSourceCompet', '');
 		$saisonCible = utyGetPost('saisonCibleCompet', '');
 		$arrayCodesCompet = utyGetPost('codesCompet', array());
+		$copierMatchsCP = utyGetPost('copierMatchsCP', 'off') === 'on';
 
 		if (strlen($saisonSource) == 0 || strlen($saisonCible) == 0) {
 			array_push($this->m_arrayinfo, 'Veuillez sélectionner une saison source et une saison cible.');
@@ -2421,6 +2423,11 @@ class GestionOperations extends MyPageSecure
 				$stmtJournees->execute(array($codeCompet, $saisonSource));
 				$journees = $stmtJournees->fetchAll(PDO::FETCH_ASSOC);
 
+
+				// Si compétition CP et copierMatchsCP = false, ne copier que la première journée
+				if ($isTypeCP && !$copierMatchsCP && count($journees) > 0) {
+					$journees = array(reset($journees)); // Ne garder que la première journée
+				}
 				foreach ($journees as $journee) {
 					$oldIdJournee = $journee['Id'];
 
@@ -2490,7 +2497,7 @@ class GestionOperations extends MyPageSecure
 					$nbJourneesCopied++;
 
 					// Pour les compétitions de type CP, copier les matchs avec leurs encodages
-					if ($isTypeCP) {
+					if ($isTypeCP && $copierMatchsCP) {
 						$sqlMatchs = "SELECT * FROM kp_match WHERE Id_journee = ?";
 						$stmtMatchs = $myBdd->pdo->prepare($sqlMatchs);
 						$stmtMatchs->execute(array($oldIdJournee));
@@ -2783,7 +2790,7 @@ class GestionOperations extends MyPageSecure
 			if ($Cmd == 'CopyRc') ($_SESSION['Profile'] <= 2) ? $alertMessage = $this->CopyRc() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($Cmd == 'CopyCompetitions') {
-				if ($_SESSION['Profile'] <= 2) {
+				if ($_SESSION['Profile'] == 1) {
 					$this->CopyCompetitions();
 					// Les messages seront affichés via $arrayinfo dans le switch ci-dessous
 				} else {

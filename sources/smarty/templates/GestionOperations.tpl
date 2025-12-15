@@ -579,6 +579,7 @@
 						</tr>
 					</table>
 					<br>
+					{if $profile == 1}
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
@@ -623,16 +624,31 @@
 						<tr>
 							<td colspan=2>
 								<br>
+								<label>
+									<input type="checkbox" name="copierMatchsCP" id="copierMatchsCP" checked>
+									Copier les matchs des compétitions CP (phases)
+								</label>
+								<br>
+								<small style="color: #666;">
+									Si décoché : pour les compétitions CP, seule la <strong>première journée</strong> sera copiée, <strong>sans les matchs</strong>.
+									<br>Utile pour créer une structure minimale à compléter manuellement.
+								</small>
+							</td>
+						</tr>
+						<tr>
+							<td colspan=2>
+								<br>
 								<input type="button" name="CopyCompetitionsBtn" id="CopyCompetitionsBtn" onclick="CopyCompetitions();" value="Copier les compétitions">
 								<br>
 								<small style="color: #666;">
 									Les compétitions seront créées avec : statut ATT, non publiques, sans équipes.
 									<br>Les journées seront copiées avec les mêmes jours de la semaine à des dates équivalentes.
-									<br>Pour les compétitions CP : les matchs sont copiés avec leurs encodages (sans équipes/scores/arbitres).
+									<br><span id="infoCopieMatchs">Pour les compétitions CP : les matchs sont copiés avec leurs encodages (sans équipes/scores/arbitres).</span>
 								</small>
 							</td>
 						</tr>
 					</table>
+					{/if}
 					<table width="100%">
 						<tr>
 							<th class='titreForm' colspan=2>
