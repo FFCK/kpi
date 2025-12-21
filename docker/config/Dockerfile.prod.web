@@ -37,6 +37,15 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     && apt-get remove -y exim4 exim4-base exim4-config exim4-daemon-light || true \
     && echo "sendmail_path = /usr/bin/msmtp -t" > /usr/local/etc/php/conf.d/sendmail.ini
 
+# Copy PHP auto-prepend configuration for CORS
+COPY php-auto-prepend.ini /usr/local/etc/php/conf.d/
+COPY auto-prepend-cors.php /var/www/html/commun/auto-prepend-cors.php
+RUN chmod 644 /var/www/html/commun/auto-prepend-cors.php
+
+# Copy Apache vhost configuration with CORS and .htaccess support
+COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
+RUN chmod 644 /etc/apache2/sites-enabled/000-default.conf
+
 # Copy Apache API2 configuration
 COPY apache-api2.conf /etc/apache2/conf-available/
 RUN chmod 644 /etc/apache2/conf-available/apache-api2.conf && a2enconf apache-api2

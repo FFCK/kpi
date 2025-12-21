@@ -84,14 +84,24 @@ Use `make help` to see all available commands.
 ### Nuxt - App2
 - `make run_dev` - Run Nuxt development server (port 3002)
 - `make run_build` - Build Nuxt for production
-- `make run_generate` - Generate static Nuxt site
+- `make run_generate` - Generate static Nuxt site (production by default)
+- `make run_generate_dev` - Generate static Nuxt site for development (uses .env.development, requires Node container)
+- `make run_generate_preprod` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
+- `make run_generate_prod` - Generate static Nuxt site for production (uses .env.production, temporary container)
 - `make run_lint` - Run ESLint on app2
+
+**Note**: `run_generate_preprod` and `run_generate_prod` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
 
 ### Nuxt - App3 (Match Sheet)
 - `make run_dev_app3` - Run Nuxt development server (port 3003)
 - `make run_build_app3` - Build Nuxt for production
-- `make run_generate_app3` - Generate static Nuxt site
+- `make run_generate_app3` - Generate static Nuxt site (production by default)
+- `make run_generate_dev_app3` - Generate static Nuxt site for development (uses .env.development, requires Node container)
+- `make run_generate_preprod_app3` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
+- `make run_generate_prod_app3` - Generate static Nuxt site for production (uses .env.production, temporary container)
 - `make run_lint_app3` - Run ESLint on app3
+
+**Note**: `run_generate_preprod_app3` and `run_generate_prod_app3` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
 
 ### NPM - App2 (Nuxt Application)
 - `make npm_install_app2` - Install all npm dependencies
@@ -203,9 +213,17 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 ### App2 (Nuxt Application - Scrutineering/Charts)
 - **Framework**: Nuxt 4 with Vue 3, TypeScript, Tailwind CSS
 - **Modules**: Pinia for state management, i18n for internationalization, Nuxt UI components
-- **Domain**: `kpi_node.localhost` (via Traefik)
+- **Domain**:
+  - Dev: `kpi_node.localhost` (Node dev server via Traefik)
+  - Dev static: `app.kpi.localhost` (Nginx serving .output/public/)
+  - Prod: `app.kayak-polo.info` (Nginx serving .output/public/)
 - **Development**: Runs on port 3000 inside container, accessible via port 3002 on host
 - **API Integration**: Configured via .env.development (dev: `https://kpi.localhost/api`) and .env.production (prod: `https://kayak-polo.info/api`)
+- **Deployment**:
+  - Generated files (`.output/public/`) are NOT committed to Git
+  - Dev: `make run_generate_dev` (requires Node container)
+  - Prod: `make run_generate_prod` (uses temporary Docker container, works without permanent Node.js setup)
+  - After build: `make dev_restart` or `make prod_restart` to restart Nginx
 
 ### App3 (Nuxt Application - Match Sheet)
 - **Framework**: Nuxt 4 with Vue 3, TypeScript, Tailwind CSS

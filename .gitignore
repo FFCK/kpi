@@ -164,3 +164,5 @@ sources/doc/*.wmv
 sources/img/KIP/teams/
 sources/img/KIP/players_2022/
 
+docker/nginxlogs/access.log
+docker/nginxlogs/error.log

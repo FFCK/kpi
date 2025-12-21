@@ -9,6 +9,7 @@ const pwaPath = (path: string) => baseUrl ? `${baseUrl}/${path}` : `/${path}`
 const pwaScope = baseUrl ? `${baseUrl}/` : '/'
 
 export default defineNuxtConfig({
+  ssr: false,
   app: {
     baseURL: baseUrl,
     head: {
