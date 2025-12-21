@@ -243,6 +243,7 @@ function GetChartsController($route, $params)
   }
   $stmt = $myBdd->pdo->prepare($sql);
   $stmt->execute(array($event_id));
+  $games = [];
   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     if ($row['d_type'] === 'E' || $row['c_type'] === 'CHPT') {
       $games[$row['d_id']][] = $row;
@@ -294,6 +295,7 @@ function GetChartsController($route, $params)
   $stmt = $myBdd->pdo->prepare($sql);
   $stmt->execute(array($event_id));
   $array_chpt = [];
+  $charts = [];
   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     $phaseOrder = (100 - $row['d_level']) . '-' . $row['d_phase'];
     $charts[$row['c_code']]['type'] = $row['c_type'];
