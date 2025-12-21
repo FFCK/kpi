@@ -27,8 +27,8 @@ DOCKER_EXEC_NODE3_NON_INTERACTIVE = docker exec $(NODE3_CONTAINER_NAME)
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
-run_dev run_build run_generate run_generate_dev run_generate_prod run_lint \
-run_dev_app3 run_build_app3 run_generate_app3 run_generate_dev_app3 run_generate_prod_app3 run_lint_app3 \
+run_dev run_build run_generate run_generate_dev run_generate_preprod run_generate_prod run_lint \
+run_dev_app3 run_build_app3 run_generate_app3 run_generate_dev_app3 run_generate_preprod_app3 run_generate_prod_app3 run_lint_app3 \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
 npm_install_app3 npm_ls_app3 npm_clean_app3 npm_update_app3 npm_add_app3 npm_add_dev_app3 \
 npm_install_backend npm_add_backend npm_update_backend npm_ls_backend npm_clean_backend npm_init_backend \
@@ -88,12 +88,19 @@ init_env: ## Initialise le fichier docker/.env depuis docker/.env.dist
 		echo "⚠️  Le fichier docker/.env existe déjà"; \
 	fi
 
-init_env_app2: ## Initialise les fichiers .env.development et .env.production pour app2
+init_env_app2: ## Initialise les fichiers .env.development, .env.preprod et .env.production pour app2
 	@if [ ! -f sources/app2/.env.development ]; then \
 		cp sources/app2/.env.development.example sources/app2/.env.development; \
 		echo "✅ Fichier .env.development créé pour app2"; \
 	else \
 		echo "⚠️  Le fichier .env.development existe déjà pour app2"; \
+	fi
+	@if [ ! -f sources/app2/.env.preprod ]; then \
+		cp sources/app2/.env.preprod.dist sources/app2/.env.preprod; \
+		echo "✅ Fichier .env.preprod créé pour app2"; \
+		echo "⚠️  N'oubliez pas de configurer le domaine de préproduction dans .env.preprod"; \
+	else \
+		echo "⚠️  Le fichier .env.preprod existe déjà pour app2"; \
 	fi
 	@if [ ! -f sources/app2/.env.production ]; then \
 		cp sources/app2/.env.production.example sources/app2/.env.production; \
@@ -102,8 +109,15 @@ init_env_app2: ## Initialise les fichiers .env.development et .env.production po
 		echo "⚠️  Le fichier .env.production existe déjà pour app2"; \
 	fi
 
-init_env_app3: ## Initialise les fichiers .env.development et .env.production pour app3
-	@echo "✅ Les fichiers .env pour app3 sont déjà créés dans sources/app3/"
+init_env_app3: ## Initialise les fichiers .env.development, .env.preprod et .env.production pour app3
+	@if [ ! -f sources/app3/.env.preprod ]; then \
+		cp sources/app3/.env.preprod.dist sources/app3/.env.preprod; \
+		echo "✅ Fichier .env.preprod créé pour app3"; \
+		echo "⚠️  N'oubliez pas de configurer le domaine de préproduction dans .env.preprod"; \
+	else \
+		echo "⚠️  Le fichier .env.preprod existe déjà pour app3"; \
+	fi
+	@echo "✅ Les autres fichiers .env pour app3 sont déjà créés dans sources/app3/"
 
 init_env_api2: ## Initialise le fichier .env pour API2 depuis .env.dist
 	@if [ ! -f sources/api2/.env ]; then \
@@ -205,6 +219,11 @@ run_generate_dev: ## Génère l'application Nuxt (app2) en mode statique pour d�
 	@docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
 	@echo "✅ App2 generated and nginx restarted!"
 
+run_generate_preprod: ## Génère l'application Nuxt (app2) en mode statique pour pré-production (utilise container temporaire)
+	@echo "🔨 Building app2 for pre-production using temporary Node.js container..."
+	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
+	@echo "✅ Build complete! Files are in sources/app2/.output/public/"
+
 run_generate_prod: ## Génère l'application Nuxt (app2) en mode statique pour production (utilise container temporaire)
 	@echo "🔨 Building app2 for production using temporary Node.js container..."
 	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
@@ -252,6 +271,11 @@ run_generate_app3: ## Génère l'application Nuxt (app3) en mode statique (produ
 
 run_generate_dev_app3: ## Génère l'application Nuxt (app3) en mode statique pour développement
 	$(DOCKER_EXEC_NODE3_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
+
+run_generate_preprod_app3: ## Génère l'application Nuxt (app3) en mode statique pour pré-production (utilise container temporaire)
+	@echo "🔨 Building app3 for pre-production using temporary Node.js container..."
+	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
+	@echo "✅ Build complete! Files are in sources/app3/.output/public/"
 
 run_generate_prod_app3: ## Génère l'application Nuxt (app3) en mode statique pour production (utilise container temporaire)
 	@echo "🔨 Building app3 for production using temporary Node.js container..."

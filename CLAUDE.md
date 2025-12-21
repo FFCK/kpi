@@ -86,20 +86,22 @@ Use `make help` to see all available commands.
 - `make run_build` - Build Nuxt for production
 - `make run_generate` - Generate static Nuxt site (production by default)
 - `make run_generate_dev` - Generate static Nuxt site for development (uses .env.development, requires Node container)
+- `make run_generate_preprod` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
 - `make run_generate_prod` - Generate static Nuxt site for production (uses .env.production, temporary container)
 - `make run_lint` - Run ESLint on app2
 
-**Note**: `run_generate_prod` uses a temporary Node.js container, so it works even without a permanent Node container (ideal for production servers).
+**Note**: `run_generate_preprod` and `run_generate_prod` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
 
 ### Nuxt - App3 (Match Sheet)
 - `make run_dev_app3` - Run Nuxt development server (port 3003)
 - `make run_build_app3` - Build Nuxt for production
 - `make run_generate_app3` - Generate static Nuxt site (production by default)
 - `make run_generate_dev_app3` - Generate static Nuxt site for development (uses .env.development, requires Node container)
+- `make run_generate_preprod_app3` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
 - `make run_generate_prod_app3` - Generate static Nuxt site for production (uses .env.production, temporary container)
 - `make run_lint_app3` - Run ESLint on app3
 
-**Note**: `run_generate_prod_app3` uses a temporary Node.js container, so it works even without a permanent Node container (ideal for production servers).
+**Note**: `run_generate_preprod_app3` and `run_generate_prod_app3` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
 
 ### NPM - App2 (Nuxt Application)
 - `make npm_install_app2` - Install all npm dependencies
