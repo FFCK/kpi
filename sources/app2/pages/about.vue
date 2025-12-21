@@ -94,8 +94,6 @@ import db from '~/utils/db'
 const { t } = useI18n()
 const preferenceStore = usePreferenceStore()
 const { getApi, postApi } = useApi()
-const runtimeConfig = useRuntimeConfig()
-const apiBaseUrl = runtimeConfig.public.apiBaseUrl
 
 // Page-specific SEO
 useSeoMeta({
@@ -175,7 +173,7 @@ const rated = async (newStars) => {
     }
 
     // Assuming a postApi composable or similar for POST requests
-    const result = await postApi(`${apiBaseUrl}/rating`, { uid, stars: newStars })
+    const result = await postApi(`/rating`, { uid, stars: newStars })
 
     if (result.ok) {
       await preferenceStore.putItem('stars', newStars)
