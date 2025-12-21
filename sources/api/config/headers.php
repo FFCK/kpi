@@ -13,8 +13,9 @@ function set_response_headers()
 		$origin === "http://localhost:9001" ||
 		$origin === "http://localhost:9002" ||
 		$origin === "http://localhost:3002" ||
-		$origin === "https://kpi-node.local" ||
-		($origin && preg_match('/^https?:\/\/.*\.local$/', $origin)) // Allow all .local domains in dev
+		$origin === "https://kpi-node.localhost" ||
+		$origin === "https://app.kpi.localhost" || // Nginx static app
+		($origin && preg_match('/^https?:\/\/.*\.localhost$/', $origin)) // Allow all .localhost domains in dev
 	) {
 		header("Access-Control-Allow-Origin: $origin");
 	}

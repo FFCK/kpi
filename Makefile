@@ -18,15 +18,17 @@ DOCKER_EXEC = docker exec -ti
 DOCKER_EXEC_PHP = docker exec -ti $(PHP_CONTAINER_NAME)
 DOCKER_EXEC_PHP_NON_INTERACTIVE = docker exec $(PHP_CONTAINER_NAME)
 DOCKER_EXEC_NODE = docker exec -ti $(NODE_CONTAINER_NAME)
+DOCKER_EXEC_NODE_NON_INTERACTIVE = docker exec $(NODE_CONTAINER_NAME)
 DOCKER_EXEC_NODE3 = docker exec -ti $(NODE3_CONTAINER_NAME)
+DOCKER_EXEC_NODE3_NON_INTERACTIVE = docker exec $(NODE3_CONTAINER_NAME)
 .DEFAULT_GOAL = help
 
 .PHONY: help init init_env init_env_app2 init_env_app3 init_env_api2 init_networks \
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
-run_dev run_build run_generate run_lint \
-run_dev_app3 run_build_app3 run_generate_app3 run_lint_app3 \
+run_dev run_build run_generate run_generate_dev run_generate_prod run_lint \
+run_dev_app3 run_build_app3 run_generate_app3 run_generate_dev_app3 run_generate_prod_app3 run_lint_app3 \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
 npm_install_app3 npm_ls_app3 npm_clean_app3 npm_update_app3 npm_add_app3 npm_add_dev_app3 \
 npm_install_backend npm_add_backend npm_update_backend npm_ls_backend npm_clean_backend npm_init_backend \
@@ -192,10 +194,21 @@ run_dev: ## Lance le serveur Nuxt (app2) en mode développement (port 3002)
 	$(DOCKER_EXEC_NODE) sh -c "npm run dev"
 
 run_build: ## Build l'application Nuxt (app2) pour la production
-	$(DOCKER_EXEC_NODE) sh -c "npm run build"
+	$(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npm run build"
 
-run_generate: ## Génère l'application Nuxt (app2) en mode statique
-	$(DOCKER_EXEC_NODE) sh -c "npm run generate"
+run_generate: ## Génère l'application Nuxt (app2) en mode statique (production par défaut)
+	$(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npm run generate"
+
+run_generate_dev: ## Génère l'application Nuxt (app2) en mode statique pour développement
+	$(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
+	@echo "🔄 Restarting nginx to remount volume..."
+	@docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
+	@echo "✅ App2 generated and nginx restarted!"
+
+run_generate_prod: ## Génère l'application Nuxt (app2) en mode statique pour production (utilise container temporaire)
+	@echo "🔨 Building app2 for production using temporary Node.js container..."
+	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
+	@echo "✅ Build complete! Files are in sources/app2/.output/public/"
 
 run_lint: ## Exécute ESLint sur app2
 	$(DOCKER_EXEC_NODE) sh -c "npm run lint"
@@ -232,10 +245,18 @@ run_dev_app3: ## Lance le serveur Nuxt (app3) en mode développement (port 3003)
 	$(DOCKER_EXEC_NODE3) sh -c "npm run dev"
 
 run_build_app3: ## Build l'application Nuxt (app3) pour la production
-	$(DOCKER_EXEC_NODE3) sh -c "npm run build"
+	$(DOCKER_EXEC_NODE3_NON_INTERACTIVE) sh -c "npm run build"
 
-run_generate_app3: ## Génère l'application Nuxt (app3) en mode statique
-	$(DOCKER_EXEC_NODE3) sh -c "npm run generate"
+run_generate_app3: ## Génère l'application Nuxt (app3) en mode statique (production par défaut)
+	$(DOCKER_EXEC_NODE3_NON_INTERACTIVE) sh -c "npm run generate"
+
+run_generate_dev_app3: ## Génère l'application Nuxt (app3) en mode statique pour développement
+	$(DOCKER_EXEC_NODE3_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
+
+run_generate_prod_app3: ## Génère l'application Nuxt (app3) en mode statique pour production (utilise container temporaire)
+	@echo "🔨 Building app3 for production using temporary Node.js container..."
+	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
+	@echo "✅ Build complete! Files are in sources/app3/.output/public/"
 
 run_lint_app3: ## Exécute ESLint sur app3
 	$(DOCKER_EXEC_NODE3) sh -c "npm run lint"
