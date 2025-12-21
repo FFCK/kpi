@@ -4,6 +4,10 @@ const baseUrl = process.env.BASE_URL ?? ''
 const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.localhost/api'
 const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.localhost'
 
+// Generate unique build ID based on timestamp to force cache invalidation
+// This ensures browser cache is invalidated when deploying new builds
+const buildId = `v${Date.now()}`
+
 // Helper pour construire les chemins PWA
 const pwaPath = (path: string) => baseUrl ? `${baseUrl}/${path}` : `/${path}`
 const pwaScope = baseUrl ? `${baseUrl}/` : '/'
@@ -12,6 +16,7 @@ export default defineNuxtConfig({
   ssr: false,
   app: {
     baseURL: baseUrl,
+    buildAssetsDir: `/_nuxt/${buildId}/`,
     head: {
       meta: [
         { name: 'theme-color', content: '#1f2937' },
@@ -85,6 +90,11 @@ export default defineNuxtConfig({
       globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
       globDirectory: '.output/public',
       navigateFallbackDenylist: [/^\/api\//],
+      // Include buildId in cache name to force SW update on new builds
+      cacheId: `kpi-app2-${buildId}`,
+      // Immediately activate new Service Worker
+      skipWaiting: true,
+      clientsClaim: true,
       manifestTransforms: [
         (manifestEntries) => {
           // Filter out empty URLs and fix baseUrl
