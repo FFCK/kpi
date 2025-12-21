@@ -216,18 +216,22 @@ run_generate: ## Génère l'application Nuxt (app2) en mode statique (production
 run_generate_dev: ## Génère l'application Nuxt (app2) en mode statique pour développement
 	$(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
 	@echo "🔄 Restarting nginx to remount volume..."
-	@docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
+	docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
 	@echo "✅ App2 generated and nginx restarted!"
 
 run_generate_preprod: ## Génère l'application Nuxt (app2) en mode statique pour pré-production (utilise container temporaire)
 	@echo "🔨 Building app2 for pre-production using temporary Node.js container..."
 	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
-	@echo "✅ Build complete! Files are in sources/app2/.output/public/"
+	@echo "🔄 Restarting nginx to remount volume..."
+	docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
+	@echo "✅ App2 generated and nginx restarted!"
 
 run_generate_prod: ## Génère l'application Nuxt (app2) en mode statique pour production (utilise container temporaire)
 	@echo "🔨 Building app2 for production using temporary Node.js container..."
 	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
-	@echo "✅ Build complete! Files are in sources/app2/.output/public/"
+	@echo "🔄 Restarting nginx to remount volume..."
+	docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
+	@echo "✅ App2 generated and nginx restarted!"
 
 run_lint: ## Exécute ESLint sur app2
 	$(DOCKER_EXEC_NODE) sh -c "npm run lint"
