@@ -50,7 +50,7 @@ export default defineNuxtConfig({
     registerType: 'autoUpdate',
     base: pwaScope,
     scope: pwaScope,
-    injectRegister: null,
+    injectRegister: false, // We'll handle registration manually
     manifestFilename: 'manifest.webmanifest',
     strategies: 'generateSW',
     manifest: {
@@ -87,7 +87,8 @@ export default defineNuxtConfig({
     workbox: {
       navigateFallback: baseUrl ? `${baseUrl}/index.html` : '/index.html',
       cleanupOutdatedCaches: true,
-      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+      // Disable precaching entirely - use runtime caching only
+      globPatterns: [],
       globDirectory: '.output/public',
       navigateFallbackDenylist: [/^\/api\//],
       // Include buildId in cache name to force SW update on new builds
@@ -109,6 +110,45 @@ export default defineNuxtConfig({
       ],
       runtimeCaching: [
         {
+          // Network-first strategy for navigation requests (HTML pages)
+          urlPattern: ({ request }) => request.mode === 'navigate',
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'pages',
+            networkTimeoutSeconds: 3,
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 300 // 5 minutes max cache
+            }
+          }
+        },
+        {
+          // NetworkFirst for JS/CSS - always check network first
+          urlPattern: /\/_nuxt\/.*\.(js|css)$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'assets-js-css',
+            networkTimeoutSeconds: 3,
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 3600 // 1 hour
+            }
+          }
+        },
+        {
+          // CacheFirst for images and fonts (they don't change)
+          urlPattern: /\.(png|jpg|jpeg|svg|gif|webp|ico|woff|woff2|ttf|eot)$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'assets-static',
+            expiration: {
+              maxEntries: 100,
+              maxAgeSeconds: 86400 // 24 hours
+            }
+          }
+        },
+        {
+          // API calls always from network
           urlPattern: new RegExp('^' + apiBaseUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '/.*', 'i'),
           handler: 'NetworkOnly'
         }

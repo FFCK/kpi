@@ -23,25 +23,52 @@ This causes users to see old URLs or configuration even after deployment.
 
 **Code**:
 ```typescript
-// Generate unique build ID based on timestamp to force cache invalidation
-// This ensures browser cache is invalidated when deploying new builds
+// nuxt.config.ts
 const buildId = `v${Date.now()}`
 
 export default defineNuxtConfig({
   app: {
     buildAssetsDir: `/_nuxt/${buildId}/`,
-    // ...
   },
   pwa: {
+    injectRegister: false, // Manual registration in plugin
     workbox: {
-      // Include buildId in cache name to force SW update on new builds
+      // Disable precaching - use runtime caching only
+      globPatterns: [],
       cacheId: `kpi-app2-${buildId}`,
-      // Immediately activate new Service Worker
       skipWaiting: true,
       clientsClaim: true,
       cleanupOutdatedCaches: true,
-      // ...
+      runtimeCaching: [
+        {
+          urlPattern: ({ request }) => request.mode === 'navigate',
+          handler: 'NetworkFirst'
+        },
+        {
+          urlPattern: /\/_nuxt\/.*\.(js|css)$/,
+          handler: 'NetworkFirst' // Check network for each request
+        }
+      ]
     }
+  }
+})
+```
+
+```typescript
+// plugins/pwa.client.ts
+export default defineNuxtPlugin(() => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', {
+      updateViaCache: 'none' // Bypass HTTP cache for SW file
+    }).then((registration) => {
+      // Force update check on every page load
+      registration.update()
+
+      // Auto-reload when new SW takes control
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload()
+      })
+    })
   }
 })
 ```
@@ -50,27 +77,34 @@ export default defineNuxtConfig({
 
 1. **Every build generates a unique timestamp**
    - Example: `v1766333103611`
+   - Assets path: `/_nuxt/v1766333103611/`
 
-2. **Assets are stored in versioned directories**
-   - Old: `/_nuxt/BZu7b7xY.js`
-   - New: `/_nuxt/v1766333103611/BZu7b7xY.js`
+2. **Service Worker update check on every page load**
+   - `updateViaCache: 'none'` → SW file bypasses browser cache
+   - `registration.update()` → forces immediate update check
+   - New SW detected → downloads in background
 
-3. **HTML references new paths**
-   ```html
-   <!-- Old build -->
-   <script src="/_nuxt/v1766333103611/BZu7b7xY.js"></script>
+3. **No precaching - everything uses NetworkFirst**
+   - `globPatterns: []` → no files are precached
+   - HTML: always fetched from network (timeout 3s)
+   - JS/CSS: always checked on network first (timeout 3s)
+   - Fallback to cache only if network unavailable
 
-   <!-- New build -->
-   <script src="/_nuxt/v1766334567890/BZu7b7xY.js"></script>
-   ```
+4. **Immediate activation and takeover**
+   - `skipWaiting: true` → new SW activates immediately
+   - `clientsClaim: true` → takes control of all pages
+   - `controllerchange` event → auto-reload page
 
-4. **Service Worker updates immediately**
-   - `cacheId` includes buildId → new cache storage created
-   - `skipWaiting: true` → new SW activates immediately without waiting
-   - `clientsClaim: true` → new SW takes control of all pages immediately
-   - `cleanupOutdatedCaches: true` → old caches are deleted automatically
+5. **Automatic cache cleanup**
+   - New `cacheId` → new cache storage created
+   - `cleanupOutdatedCaches: true` → old caches deleted
+   - Only current version cached
 
-5. **Browser sees different URLs → bypasses cache**
+6. **Result: Simple F5 gets new version**
+   - Page loads → SW update check runs
+   - New SW found → downloads and activates
+   - Page reloads → new assets fetched
+   - **No Ctrl+F5 needed!**
 
 ## Benefits
 
@@ -84,11 +118,12 @@ export default defineNuxtConfig({
 - No version file to maintain
 - No build number tracking needed
 
-### ✅ Service Worker Auto-Update
+### ✅ Service Worker Auto-Update (No Ctrl+F5 Required!)
+- HTML never precached → simple F5 fetches new version
 - Each build gets a unique Service Worker cache ID
 - Old Service Worker immediately replaced (no waiting for tab close)
 - Stale caches automatically cleaned up
-- Users always get the latest version without manual cache clearing
+- **Users get updates with simple page refresh - no hard reload needed**
 
 ### ✅ Environment-Specific Builds
 - Dev build: `v1766333103611` with `kpi.localhost/api`
@@ -139,22 +174,30 @@ docker restart kpi_nginx_app2
 
 ## Verification
 
-After deployment, check browser DevTools:
+After deployment, verify the update mechanism works:
 
-1. **Network tab**: Verify new asset paths
-   ```
-   /_nuxt/v1766335678901/BZu7b7xY.js  ← New timestamp
-   ```
-
-2. **Console**: Check runtime config
-   ```javascript
-   window.__NUXT__.config.public.apiBaseUrl
-   // Should show: "https://preprod.kayak-polo.info/api"
+1. **Deploy new build**:
+   ```bash
+   make run_generate_preprod
+   docker restart kpi_preprod_nginx_app2
    ```
 
-3. **Application tab**: Clear Service Workers if needed
-   - Unregister old Service Workers
-   - Hard reload (Ctrl+Shift+R)
+2. **Simple refresh test** (F5 or Cmd+R):
+   - Open app in browser
+   - Note current buildId in Network tab: `/_nuxt/v1766335678901/`
+   - Deploy new build on server
+   - Press F5 (NOT Ctrl+F5)
+   - Should see new buildId: `/_nuxt/v1766999999999/`
+
+3. **DevTools verification**:
+   - **Network tab**: Verify new asset paths with new timestamp
+   - **Console**: Check runtime config
+     ```javascript
+     window.__NUXT__.config.public.apiBaseUrl
+     // Should show: "https://preprod.kayak-polo.info/api"
+     ```
+   - **Application → Service Workers**: Should see new SW activating
+   - **Application → Cache Storage**: Old caches should be cleaned automatically
 
 ## Alternative Approaches (Not Used)
 
