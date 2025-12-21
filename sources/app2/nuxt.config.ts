@@ -46,6 +46,15 @@ export default defineNuxtConfig({
     port: 3000
   },
   modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/ui', '@vite-pwa/nuxt'],
+  icon: {
+    // Use local icons from @iconify-json/heroicons instead of CDN
+    provider: 'iconify',
+    clientBundle: {
+      // Include heroicons in client bundle (embedded, no CDN)
+      scan: true,
+      includeCustomCollections: true
+    }
+  },
   pwa: {
     registerType: 'autoUpdate',
     base: pwaScope,
