@@ -27,6 +27,8 @@
         </NuxtLink>
       </div>
 
+      <EventQrCode />
+
       <div class="text-center mt-8">
         <img class="w-30 mx-auto" src="/img/logo_kp.png" alt="kayak-polo" />
       </div>
