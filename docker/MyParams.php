@@ -2,6 +2,7 @@
 // Paramètres de connexion
 
 define('URL_SITE', 'https://kpi.localhost');
+define('URL_APP', 'https://app.kpi.localhost');
 
 define("PRODUCTION", FALSE);
 define("DEV", TRUE); // Development environment flag
