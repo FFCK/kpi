@@ -52,7 +52,8 @@
     "Confirm": "Confirmer",
     "Cancel": "Annuler",
     "StdEvents": "Événements",
-    "LocalChamp": "Championnats locaux"
+    "LocalChamp": "Championnats locaux",
+    "ShareEvent": "Partager l'événement"
   },
   "Teams": {
     "SelectTeam": "Equipe",

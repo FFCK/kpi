@@ -46,7 +46,7 @@ class PdfQrCodeApp extends MyPage
     $savedX = $pdf->x;
 
     $logo = 'img/CNAKPI_small.jpg';
-    $pdf->Image($logo, 118, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
+    $pdf->Image($logo, 118, 10, 0, 20, 'jpg', URL_SITE);
 
     $logoApp = 'img/logo.gif';
     $logo1 = imagecreatefromstring(file_get_contents($logoApp));
@@ -56,16 +56,16 @@ class PdfQrCodeApp extends MyPage
     $y = (50 - $height) / 2;
 
     // QRCode Matchs
-    $qrcode = new QRcode('https://www.kayak-polo.info/app/#/event/' . $idEvenement, 'Q'); // error level : L, M, Q, H
+    $qrcode = new QRcode(URL_APP . '/event/' . $idEvenement, 'Q'); // error level : L, M, Q, H
     $qrcode->displayFPDF($pdf, 115, 85, 62);
-    $pdf->Image($logoApp, 138, $y + 89, 16, $height, 'gif', "https://www.kayak-polo.info/app/#/event/" . $idEvenement);
+    $pdf->Image($logoApp, 138, $y + 89, 16, $height, 'gif', URL_APP . '/event/' . $idEvenement);
 
     // Pattern 5: Restauration position après images
     $pdf->SetY($savedY);
     $pdf->SetX($savedX);
 
     $pdf->Cell(273, 65, "", 0, 1, 'C');
-    $pdf->Cell(273, 6, "https://www.kayak-polo.info/app/#/event/" . $idEvenement, 0, 1, 'C');
+    $pdf->Cell(273, 6, URL_APP . '/event/' . $idEvenement, 0, 1, 'C');
 
     $pdf->Output('Links.pdf', \Mpdf\Output\Destination::INLINE);
   }
