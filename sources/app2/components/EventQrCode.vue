@@ -1,11 +1,11 @@
 <template>
   <div v-if="hasEventSelected" class="event-qrcode-container text-center my-8">
+    <p class="mb-3 text-gray-700 font-medium">
+      {{ t('Event.ShareEvent') }}
+    </p>
     <div class="qrcode-wrapper inline-block">
       <canvas ref="qrcodeCanvas" class="mx-auto"></canvas>
     </div>
-    <p class="mt-3 text-gray-700 font-medium">
-      {{ t('Event.ShareEvent') }}
-    </p>
   </div>
 </template>
 
@@ -33,9 +33,10 @@ const generateQRCode = async () => {
   const eventId = preferenceStore.preferences.lastEvent?.id
   if (!eventId) return
 
-  // Construct the event URL
-  const backendBaseUrl = runtimeConfig.public.backendBaseUrl || window.location.origin
-  const eventUrl = `${backendBaseUrl}/event/${eventId}`
+  // Construct the event URL using app's base URL
+  const baseUrl = runtimeConfig.public.baseUrl || ''
+  const origin = window.location.origin
+  const eventUrl = `${origin}${baseUrl}/event/${eventId}`
 
   try {
     const canvas = qrcodeCanvas.value
