@@ -35,5 +35,8 @@
     "uuid": "^13.0.0",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
   }
 }
