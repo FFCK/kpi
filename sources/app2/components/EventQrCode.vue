@@ -35,7 +35,7 @@ const generateQRCode = async () => {
 
   // Construct the event URL
   const backendBaseUrl = runtimeConfig.public.backendBaseUrl || window.location.origin
-  const eventUrl = `${backendBaseUrl}/evt/${eventId}`
+  const eventUrl = `${backendBaseUrl}/event/${eventId}`
 
   try {
     const canvas = qrcodeCanvas.value
