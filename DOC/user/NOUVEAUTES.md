@@ -6,6 +6,44 @@ Ce document liste les dernières fonctionnalités et améliorations ajoutées au
 
 ## 📅 Décembre 2025
 
+### 📱 Application Web KPI (App2) - Nouvelle version (Décembre 2025)
+
+**Application web moderne pour tous vos appareils**
+- Interface Nuxt 4 avec navigation intuitive
+- Consultation rapide : matchs, résultats, classements
+- Filtres avancés : catégories, dates, équipes, arbitres
+- **Fiches équipes détaillées** :
+  - Matchs précédents et prochains matchs
+  - Progression dans la compétition
+  - Position au classement
+  - Statistiques des joueurs
+- **Contrôle du matériel** (utilisateurs habilités) :
+  - Validation des kayaks, casques, gilets, pagaies, équipements
+  - Commentaires et historique des contrôles
+- Responsive : fonctionne sur mobile, tablette et ordinateur
+
+**Accès** : [app.kayak-polo.info](https://app.kayak-polo.info)
+
+**Documentation complète** : [APP2_APPLICATION_WEB.md](APP2_APPLICATION_WEB.md)
+
+---
+
+### 🔒 Verrouillage de Phases de Classement (Décembre 2025)
+
+**Consolidation et gel des classements de phases terminées**
+- Verrouillage définitif d'une phase de classement terminée (ex: phase de poules)
+- Évite toute modification accidentelle des classements publiés
+- Garantit la cohérence lors du passage aux phases finales
+- Protège l'historique des classements
+
+**Accès** : Administration > Gestion Classement > Consolidation Phases
+
+**⚠️ Attention** : Opération sensible - vérifiez que la phase est bien terminée avant consolidation
+
+**Documentation complète** : [CONSOLIDATION_PHASES_CLASSEMENT.md](CONSOLIDATION_PHASES_CLASSEMENT.md)
+
+---
+
 ### 🔄 Copie en masse de compétitions entre saisons (Décembre 2025)
 
 **Duplication rapide de plusieurs compétitions**
@@ -259,18 +297,28 @@ Détecte 4 types d'anomalies dans la planification :
 - **[Statistiques de cohérence des matchs](MATCH_CONSISTENCY_STATS.md)** - Documentation détaillée de la fonctionnalité
 - **[Classement Multi-Compétitions](MULTI_COMPETITION_TYPE.md)** - Guide complet du type MULTI
 - **[Guide du visualiseur de documentation](DOCVIEWER_GUIDE.md)** - Comment utiliser et enrichir la documentation
+- **[Application Web KPI (App2)](APP2_APPLICATION_WEB.md)** - Guide complet de l'application web moderne
+- **[Roadmap KPI](../developer/guides/ROADMAP_KPI.md)** - Prochains objectifs et travaux planifiés (2026-2028)
 
 ---
 
 ## 💡 Prochaines fonctionnalités
 
-Les fonctionnalités suivantes sont en cours de développement ou planifiées :
+Pour connaître les prochains objectifs et travaux planifiés, consultez la **[Roadmap KPI](../developer/guides/ROADMAP_KPI.md)**.
 
-- Migration complète vers API Platform (API v2)
-- Amélioration des performances de génération de documents PDF
-- Nouveau module de gestion des licences avec synchronisation FFCK
-- Interface mobile responsive pour la gestion des matchs
-- Notifications en temps réel pour les événements importants
+**Court terme (2026)** :
+- Stabilisation et déploiement des nouvelles fonctionnalités
+- Feuille de match numérique accessible via App2
+
+**Moyen terme (2026-2027)** :
+- Migration WebSocket Manager vers Nuxt 4
+- Refonte de l'Admin en Nuxt 4 + API moderne
+- Refonte du Live Overlay en Nuxt 4
+- Refonte de la navigation publique en Nuxt 4
+
+**Long terme (2027+)** :
+- Application mobile native (iOS/Android)
+- Améliorations continues selon retours utilisateurs
 
 ---
 
