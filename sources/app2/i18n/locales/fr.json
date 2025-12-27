@@ -97,6 +97,7 @@
     "Ref": "Arb.",
     "Referee": "Arbitrage",
     "GameReport": "Feuille de marque",
+    "MatchSheet": "Ouvrir la feuille de marque",
     "Status": {
       "ATT": "En attente",
       "ON": "En cours",
@@ -216,5 +217,20 @@
     "Player": "Joueur",
     "Goals": "Buts",
     "Coach": "Coach"
+  },
+  "MatchSheet": {
+    "Title": "Feuille de match",
+    "Match": "Match",
+    "Pitch": "Terrain",
+    "To": "à",
+    "Referees": "Arbitres",
+    "Player": "Joueur",
+    "Goals": "Buts",
+    "Coach": "Coach",
+    "Timeline": "Chronologie",
+    "Loading": "Chargement de la feuille de match...",
+    "NotFound": "Match non trouvé ou non disponible",
+    "DownloadPdf": "Télécharger le PDF",
+    "Back": "Retour"
   }
 }

@@ -46,7 +46,14 @@
                   <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
                   <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
                 </div>
-                <div :class="statusClass(game)">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+                <a
+                  v-if="isMatchSheetAvailable(game)"
+                  :href="getMatchSheetUrl(game)"
+                  target="_blank"
+                  :class="statusClass(game)"
+                  :title="t('Games.MatchSheet')"
+                >{{ t('Games.Status.' + game.g_status) }}</a>
+                <div v-else :class="statusClass(game)">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
               </div>
             </td>
             <td class="px-2 py-2">
@@ -105,7 +112,15 @@
             </div>
             <div :class="['text-left text-xs text-gray-900 justify-self-start', { 'invisible': !showRefs }]" v-html="highlightReferee(game.r_1, game.r_1_highlighted)" />
             <div class="text-center justify-self-center">
-                <div :class="statusClass(game)" class="text-xs">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+                <a
+                  v-if="isMatchSheetAvailable(game)"
+                  :href="getMatchSheetUrl(game)"
+                  target="_blank"
+                  :class="statusClass(game)"
+                  class="text-xs"
+                  :title="t('Games.MatchSheet')"
+                >{{ t('Games.Status.' + game.g_status) }}</a>
+                <div v-else :class="statusClass(game)" class="text-xs">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
             </div>
             <div :class="['text-right text-xs text-gray-900 justify-self-end', { 'invisible': !showRefs }]" v-html="highlightReferee(game.r_2, game.r_2_highlighted)" />
           </div>
@@ -158,6 +173,16 @@ const statusClass = (game) => {
     'bg-blue-500 text-white': game.g_status === 'ON',
     'bg-gray-500 text-white': game.g_status === 'ATT',
   }
+}
+
+// Check if match sheet is available (match finished and validated)
+const isMatchSheetAvailable = (game) => {
+  return game.g_status === 'END' && game.g_validation === 'O'
+}
+
+// Get the URL for the match sheet PDF
+const getMatchSheetUrl = (game) => {
+  return `${baseUrl}/PdfMatchMulti.php?listMatch=${game.g_id}`
 }
 
 // Function to highlight referee text if needed
