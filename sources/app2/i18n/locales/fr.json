@@ -1,7 +1,12 @@
 {
   "message": "Bienvenue sur KPI-App !",
   "status": {
-    "Offline": "Vous n'êtes pas connecté !"
+    "Online": "En ligne",
+    "Offline": "Hors connexion",
+    "OfflineDescription": "Les données affichées proviennent du cache local.",
+    "BackOnline": "Connexion rétablie",
+    "CachedData": "Données en cache",
+    "CachedDataDescription": "Ces données peuvent ne pas être à jour."
   },
   "nav": {
     "Home": "Accueil",

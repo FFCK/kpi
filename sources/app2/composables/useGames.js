@@ -3,6 +3,7 @@ import { useGameStore } from '~/stores/gameStore'
 import { usePreferenceStore } from '~/stores/preferenceStore'
 import { useApi } from '~/composables/useApi'
 import { useIndexedDB } from '~/composables/useIndexedDB'
+import { useOnlineStatus } from '~/composables/useOnlineStatus'
 import dayjs from 'dayjs'
 
 export const useGames = () => {
@@ -10,11 +11,13 @@ export const useGames = () => {
   const preferenceStore = usePreferenceStore()
   const { getApi, showCacheToast } = useApi()
   const { saveGames, loadGames: loadGamesFromDB, clearOldGames } = useIndexedDB()
+  const { isOnline, checkConnection } = useOnlineStatus()
 
   const games = computed(() => gameStore.games)
   const gamesCount = computed(() => gameStore.games.length)
   const filteredGames = ref([])
   const filteredGamesCount = computed(() => filteredGames.value.reduce((acc, group) => acc + group.filtered.length, 0))
+  const isFromCache = ref(false)
 
   const categories = ref([])
   const game_dates = ref([])
@@ -33,6 +36,7 @@ export const useGames = () => {
 
     const eventId = preferenceStore.preferences.lastEvent.id
     gameStore.loading = true
+    isFromCache.value = false
 
     try {
       // Vérifier si on doit charger depuis l'API
@@ -51,6 +55,7 @@ export const useGames = () => {
         await gameStore.clearAndUpdateGames(gamelist)
         loadCategories()
         filterGames()
+        isFromCache.value = true
 
         // Show toast only if user is offline
         if (!navigator.onLine) {
@@ -58,8 +63,11 @@ export const useGames = () => {
         }
       }
 
-      // Charger depuis l'API uniquement si nécessaire
-      if (shouldLoadFromApi || !cachedGames || cachedGames.length === 0) {
+      // Vérifier la connexion réseau avant d'appeler l'API
+      const online = checkConnection()
+
+      // Charger depuis l'API uniquement si en ligne et nécessaire
+      if (online && (shouldLoadFromApi || !cachedGames || cachedGames.length === 0)) {
         try {
           // console.log('Loading games from API')
           const response = await getApi(`/event/${eventId}/games`)
@@ -78,16 +86,31 @@ export const useGames = () => {
             loadCategories()
             filterGames()
           }
+          isFromCache.value = false
         } catch (apiError) {
           console.error('Failed to load games from API, using cached data:', apiError)
-          if (!cachedGames) {
+          if (!cachedGames || cachedGames.length === 0) {
             gameStore.error = apiError
           }
+          // Keep isFromCache as true since we're using cached data
+          if (cachedGames && cachedGames.length > 0) {
+            isFromCache.value = true
+          }
         }
+      } else if (!online && cachedGames && cachedGames.length > 0) {
+        // Offline with cached data
+        console.log('[Games] Offline mode - using cached data')
+        isFromCache.value = true
+      } else if (!online && (!cachedGames || cachedGames.length === 0)) {
+        // Offline without cached data
+        console.log('[Games] Offline mode - no cached data available')
+        gameStore.error = new Error('OFFLINE_NO_CACHE')
       }
 
-      // Nettoyer les anciennes données
-      await clearOldGames()
+      // Nettoyer les anciennes données (seulement si en ligne)
+      if (online) {
+        await clearOldGames()
+      }
     } catch (error) {
       gameStore.error = error
       console.error('Failed to load games:', error)
@@ -361,6 +384,8 @@ export const useGames = () => {
     fav_categories,
     fav_teams,
     fav_dates,
+    isFromCache,
+    isOnline,
     loadGames,
     getFav,
     changeFav,
