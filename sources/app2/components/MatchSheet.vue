@@ -166,25 +166,48 @@
             {{ getPeriodLabel(period) }}
           </div>
           <div v-for="event in periodEvents" :key="event.e_id" class="px-3 py-2 flex items-center gap-3 hover:bg-gray-50">
+            <!-- Time always on left -->
             <div class="w-12 text-center text-xs text-gray-500 font-mono">{{ formatTime(event.e_time, event.e_period) }}</div>
-            <!-- Event icon -->
-            <div v-if="event.e_type === 'B'" class="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
-              <div class="w-4 h-4 border-2 border-white rounded-full"></div>
-            </div>
-            <div v-else-if="event.e_type === 'V'" class="w-5 h-7 bg-green-500 rounded-sm transform -rotate-12"></div>
-            <div v-else-if="event.e_type === 'J'" class="w-5 h-7 bg-yellow-400 rounded-sm transform -rotate-12"></div>
-            <div v-else-if="event.e_type === 'R'" class="w-5 h-7 bg-red-500 rounded-sm transform -rotate-12"></div>
-            <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-800 rounded-sm transform -rotate-12 flex items-center justify-center text-white text-xs font-bold">E</div>
-            <div v-else class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">?</div>
-            <!-- Event details -->
-            <div class="flex-1">
-              <span :class="event.e_team === 'A' ? 'text-blue-700' : 'text-red-700'" class="font-medium">
-                {{ event.e_firstname }} {{ event.e_name }}
-              </span>
-              <span class="text-gray-500 text-sm ml-2">#{{ event.e_number }}</span>
-              <span class="text-gray-400 text-xs ml-2">({{ event.e_team === 'A' ? matchData.team_a.label : matchData.team_b.label }})</span>
-              <span v-if="event.e_motif" class="text-gray-500 text-xs ml-2">- {{ event.e_motif }}</span>
-            </div>
+
+            <!-- Team A: icon + details on left -->
+            <template v-if="event.e_team === 'A'">
+              <!-- Event icon -->
+              <div v-if="event.e_type === 'B'" class="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
+                <div class="w-4 h-4 border-2 border-white rounded-full"></div>
+              </div>
+              <div v-else-if="event.e_type === 'V'" class="w-5 h-7 bg-green-500 rounded-sm transform -rotate-12"></div>
+              <div v-else-if="event.e_type === 'J'" class="w-5 h-7 bg-yellow-400 rounded-sm transform -rotate-12"></div>
+              <div v-else-if="event.e_type === 'R'" class="w-5 h-7 bg-red-500 rounded-sm transform -rotate-12"></div>
+              <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-800 rounded-sm transform -rotate-12 flex items-center justify-center text-white text-xs font-bold">E</div>
+              <div v-else class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">?</div>
+              <!-- Event details -->
+              <div class="flex-1 text-left">
+                <span class="text-blue-700 font-medium">{{ event.e_firstname }} {{ event.e_name }}</span>
+                <span class="text-gray-500 text-sm ml-2">#{{ event.e_number }}</span>
+                <span class="text-gray-400 text-xs ml-2">({{ matchData.team_a.label }})</span>
+                <span v-if="event.e_motif" class="text-gray-500 text-xs ml-2">- {{ event.e_motif }}</span>
+              </div>
+            </template>
+
+            <!-- Team B: details + icon on right -->
+            <template v-else>
+              <!-- Event details -->
+              <div class="flex-1 text-right">
+                <span v-if="event.e_motif" class="text-gray-500 text-xs mr-2">{{ event.e_motif }} -</span>
+                <span class="text-gray-400 text-xs mr-2">({{ matchData.team_b.label }})</span>
+                <span class="text-gray-500 text-sm mr-2">#{{ event.e_number }}</span>
+                <span class="text-red-700 font-medium">{{ event.e_firstname }} {{ event.e_name }}</span>
+              </div>
+              <!-- Event icon -->
+              <div v-if="event.e_type === 'B'" class="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
+                <div class="w-4 h-4 border-2 border-white rounded-full"></div>
+              </div>
+              <div v-else-if="event.e_type === 'V'" class="w-5 h-7 bg-green-500 rounded-sm transform -rotate-12"></div>
+              <div v-else-if="event.e_type === 'J'" class="w-5 h-7 bg-yellow-400 rounded-sm transform -rotate-12"></div>
+              <div v-else-if="event.e_type === 'R'" class="w-5 h-7 bg-red-500 rounded-sm transform -rotate-12"></div>
+              <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-800 rounded-sm transform -rotate-12 flex items-center justify-center text-white text-xs font-bold">E</div>
+              <div v-else class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">?</div>
+            </template>
           </div>
         </div>
       </div>
