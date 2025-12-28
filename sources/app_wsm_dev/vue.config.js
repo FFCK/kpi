@@ -1,10 +1,18 @@
 // vue.config.js
+const { ProvidePlugin } = require('webpack')
+
 process.env.VUE_APP_VERSION = require('./package.json').version
 
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
 module.exports = {
+  devServer: {
+    client: {
+      webSocketURL: 'auto://0.0.0.0:0/ws'
+    },
+    allowedHosts: 'all'
+  },
   pluginOptions: {
     i18n: {
       locale: 'en',
@@ -18,7 +26,17 @@ module.exports = {
     }
   },
   configureWebpack: {
-    devtool: 'source-map'
+    devtool: 'source-map',
+    plugins: [
+      new ProvidePlugin({
+        Buffer: ['buffer', 'Buffer']
+      })
+    ],
+    resolve: {
+      fallback: {
+        buffer: require.resolve('buffer/')
+      }
+    }
   },
   publicPath: '',
   pwa: {

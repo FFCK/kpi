@@ -112,7 +112,9 @@ export default {
       }
 
       this.socketFaker.onmessage = (event) => {
-        this.wsProcess(JSON.parse(event.data))
+        // Process incoming WebSocket messages if needed
+        console.log('WS Message received:', event.data)
+        // this.wsProcess(JSON.parse(event.data)) // TODO: implement wsProcess if needed
       }
 
       this.socketFaker.onclose = (event) => {
@@ -197,16 +199,22 @@ export default {
       this.faker[n].ivPosses = setInterval(this.decrementPosses, 100, 'posses', n, 20000)
       this.faker[n].ivGreen = setInterval(this.green, 60000, n)
       setTimeout(() => {
-        this.goal(n)
-        this.faker[n].ivGoal = setInterval(this.goal, 60000, n)
+        if (this.faker[n]) {
+          this.goal(n)
+          this.faker[n].ivGoal = setInterval(this.goal, 60000, n)
+        }
       }, 15000)
       setTimeout(() => {
-        this.yellow(n)
-        this.faker[n].ivYellow = setInterval(this.yellow, 60000, n)
+        if (this.faker[n]) {
+          this.yellow(n)
+          this.faker[n].ivYellow = setInterval(this.yellow, 60000, n)
+        }
       }, 30000)
       setTimeout(() => {
-        this.red(n)
-        this.faker[n].ivRed = setInterval(this.red, 60000, n)
+        if (this.faker[n]) {
+          this.red(n)
+          this.faker[n].ivRed = setInterval(this.red, 60000, n)
+        }
       }, 45000)
     },
     stop (n) {
