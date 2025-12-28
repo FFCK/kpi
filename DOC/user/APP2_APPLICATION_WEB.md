@@ -51,6 +51,9 @@ L'icône KPI apparaît sur votre écran comme une vraie application !
 - Liste des compétitions en cours
 - Filtres par saison, type de compétition
 - Recherche rapide
+- **QR Code de partage** : Partagez facilement l'événement sélectionné
+  - Cliquez sur le QR code pour copier le lien dans le presse-papiers
+  - Scannez le QR code avec un smartphone pour accéder directement à l'événement
 
 **Menu de navigation** :
 - Compétitions
@@ -96,11 +99,80 @@ Cliquez sur une équipe pour voir :
 - Scores mis à jour en temps réel (si live)
 - Détail des matchs (buteurs, cartons)
 - Filtres par journée, terrain, date
+- Filtres par arbitres (nom de l'arbitre, équipes engagées dans l'arbitrage)
 
 **Consultation rapide** :
 - Derniers résultats affichés en premier
 - Code couleur : vert (victoire), rouge (défaite), gris (nul)
-- Accès direct à la feuille de match
+- Accès direct à la feuille de match complète
+
+### 3bis. Feuille de Match Intégrée (Nouveau !)
+
+**Consultation détaillée de chaque match** :
+
+Cliquez sur un match pour accéder à sa feuille de match complète, directement dans l'application.
+
+**Informations affichées** :
+
+**En-tête du match** :
+- Compétition et phase (ex: "Championnat N1 - Poule A")
+- Numéro de match, terrain, lieu
+- Date et heure de début et fin
+- Arbitres désignés
+
+**Score et statut** :
+- Score final avec affichage LCD stylisé
+- Score de la mi-temps (si disponible)
+- Logos des équipes (cliquables vers les pages équipes)
+- Statut du match :
+  - "EN COURS - 1ère période" ou "EN COURS - 2ème période" pour les matchs en direct
+  - "TERMINÉ" pour les matchs validés
+  - "TERMINÉ (Provisoire)" pour les matchs terminés mais non validés
+
+**Compositions d'équipes** :
+- Liste complète des joueurs de chaque équipe avec numéros de maillot
+- Capitaines identifiés (symbole ©)
+- Statistiques individuelles :
+  - Nombre de buts marqués par joueur
+  - Cartons verts (2 minutes)
+  - Cartons jaunes (5 minutes)
+  - Cartons rouges (expulsion)
+- Coach de chaque équipe
+
+**Chronologie des événements** :
+- Timeline visuelle de tous les événements du match
+- Horodatage avec période (1ère, 2ème, 3ème période...)
+- Événements alignés par équipe (gauche/droite) pour meilleure lisibilité
+- Icônes et badges de couleur pour chaque type d'événement
+- Détail de chaque action (buteur, joueur sanctionné, etc.)
+
+**Actions disponibles** :
+- Bouton retour vers la liste des matchs
+- Bouton de rafraîchissement (mise à jour des données en direct)
+- Téléchargement PDF de la feuille de match
+- Navigation vers les fiches équipes en un clic
+
+**Cas d'usage pratiques** :
+
+1. **Pendant le match** :
+   - Suivre les buts et cartons en temps réel
+   - Voir qui a marqué, qui a été sanctionné
+   - Consulter les stats individuelles des joueurs
+
+2. **Après le match** :
+   - Revoir la chronologie complète du match
+   - Analyser les performances individuelles
+   - Télécharger la feuille de match officielle en PDF
+
+3. **Pour les arbitres et délégués** :
+   - Vérifier les compositions avant le match
+   - Consulter l'historique des cartons
+   - Accéder rapidement aux informations officielles
+
+**Accès** :
+```
+Page matchs → Cliquer sur un match → Feuille de match complète
+```
 
 ### 4. Classements
 
@@ -199,6 +271,27 @@ Cliquez sur une équipe pour voir :
 - ✅ **Mise en cache** : Fonctionne même hors ligne (dernières données)
 - ✅ **Actualisation automatique** : Scores mis à jour en temps réel
 - ✅ **Consommation réduite** : Peu de données téléchargées
+
+### Mode Hors Ligne (Nouveau !)
+
+**Détection automatique de connectivité** :
+
+L'application détecte automatiquement votre statut de connexion internet et vous informe :
+
+- **Badge orange** affiché en haut de la page quand vous êtes hors ligne
+- **Notifications automatiques** :
+  - Alerte quand vous perdez la connexion
+  - Notification de reconnexion
+  - Suggestion de rafraîchir si une nouvelle version est disponible
+
+**Fonctionnement** :
+- Les dernières données consultées restent accessibles sans connexion
+- Dès que vous êtes reconnecté, l'application se met à jour automatiquement
+- Vérification automatique de nouvelle version lors de la reconnexion
+
+**Avantage** :
+- Consultez vos données même dans des zones sans réseau (gymnase, vestiaires...)
+- Reprenez automatiquement là où vous en étiez une fois reconnecté
 
 ---
 

@@ -1,7 +1,7 @@
 # Synthèse des Travaux KPI - Octobre à Décembre 2025
 
-**Période** : 20 octobre au 27 décembre 2025
-**Durée** : 2 mois
+**Période** : 20 octobre au 28 décembre 2025
+**Durée** : 2 mois et 1 semaine
 
 ---
 
@@ -41,9 +41,28 @@ Le projet KPI (système de gestion de compétitions de kayak-polo) a bénéfici�
 
 ### Améliorations techniques diverses
 
+**Infrastructure** :
 - Possibilité de faire tourner plusieurs environnements (test, production) sur le même serveur
+- Configuration Nginx optimisée pour App2 (génération statique)
+- Rechargement automatique de Nginx après génération (mise en service immédiate)
+- Support de génération multi-environnements (dev, preprod, prod) via Makefile
+
+**Performance** :
+- Cache busting automatique avec hashes uniques pour chaque build
 - Rechargement automatique des styles après mise à jour (plus besoin de vider le cache)
+- Chargement local des icônes (évite les requêtes externes CDN)
+- Amélioration de 15 à 25% de la vitesse de chargement
+
+**Backend et API** :
+- Nouveau endpoint API2 `/match-sheet/{gameId}` pour feuille de match complète
+- Configuration CORS améliorée pour cross-origin requests
+- Corrections de format (heure de fin de match, affichage équipes)
 - Amélioration des journaux automatiques (imports de licences, etc.)
+
+**Développement** :
+- Génération via container temporaire pour preprod/prod (pas besoin de Node.js permanent)
+- Support du backend NPM via Makefile (`make npm_add_backend`, `make npm_install_backend`)
+- Migration de librairies JavaScript vers node_modules (easytimer.js, dayjs)
 
 ---
 
@@ -202,24 +221,81 @@ Avant, il fallait saisir un code complexe. Maintenant, une interface simple :
 **Accès** : [app.kayak-polo.info](https://app.kayak-polo.info)
 
 **Principales fonctionnalités** :
-- **Navigation améliorée** : Interface intuitive et fluide
-- **Consultation rapide** : Matchs, résultats, classements
-- **Filtres avancés** : Catégories, dates, équipes, arbitres
-- **Fiches équipes détaillées** :
-  - Matchs précédents et à venir
-  - Progression dans la compétition
-  - Position au classement
-  - Statistiques des joueurs
-- **Contrôle du matériel (utilisateurs habilités)** :
-  - Validation des kayaks, casques, gilets, pagaies, équipements
-  - Commentaires et historique des contrôles
-- **Responsive** : Fonctionne sur mobile, tablette et ordinateur
+
+**Navigation améliorée** :
+- Interface intuitive et fluide
+- **QR Code de partage** : Partagez facilement un événement en cliquant sur le QR code (copie automatique du lien)
+
+**Feuille de Match Intégrée (Nouveau !)** :
+- **Consultation complète** de chaque match directement dans l'application
+- **Informations détaillées** :
+  - En-tête : compétition, phase, numéro de match, terrain, date/heure
+  - Arbitres désignés
+  - Score en temps réel avec affichage LCD professionnel
+  - Score de mi-temps si disponible
+  - Logos d'équipes cliquables
+- **Statuts enrichis** :
+  - "EN COURS - 1ère période" ou "EN COURS - 2ème période" pour les matchs en direct
+  - "TERMINÉ" pour les matchs validés
+  - "TERMINÉ (Provisoire)" pour les matchs terminés non validés
+- **Compositions complètes** :
+  - Liste des joueurs avec numéros de maillot
+  - Capitaines identifiés (symbole ©)
+  - Coach de chaque équipe
+- **Statistiques individuelles** :
+  - Buts marqués par joueur
+  - Cartons verts (2 minutes)
+  - Cartons jaunes (5 minutes)
+  - Cartons rouges (expulsion)
+- **Timeline visuelle** :
+  - Chronologie de tous les événements du match
+  - Horodatage avec indication de période
+  - Alignement par équipe pour meilleure lisibilité
+  - Icônes et badges colorés pour chaque type d'événement
+- **Actions disponibles** :
+  - Bouton de rafraîchissement (mise à jour en direct)
+  - Téléchargement PDF de la feuille de match
+  - Navigation vers les fiches équipes en un clic
+
+**Consultation rapide** :
+- Matchs, résultats, classements
+- Filtres avancés : catégories, dates, équipes, arbitres
+- Filtres par arbitres : utile pour trouver vos arbitrages
+
+**Fiches équipes détaillées** :
+- Matchs précédents et à venir
+- Progression dans la compétition
+- Position au classement
+- Statistiques des joueurs
+
+**Contrôle du matériel (utilisateurs habilités)** :
+- Validation des kayaks, casques, gilets, pagaies, équipements
+- Commentaires et historique des contrôles
+
+**Mode Hors Ligne (Nouveau !)** :
+- Détection automatique de votre connexion internet
+- Badge orange affiché quand vous êtes hors ligne
+- Notifications automatiques (perte/récupération de connexion)
+- Vérification automatique de nouvelle version lors de reconnexion
+- Accès aux dernières données consultées sans connexion
+- **Avantage** : Consultez vos données même sans réseau (gymnase, vestiaires)
+
+**Responsive** :
+- Fonctionne sur mobile, tablette et ordinateur
 
 **Bénéfices** :
 - ✅ Toutes les informations sur vos équipes en un clic
-- ✅ Suivi en temps réel de vos compétitions
+- ✅ Suivi en temps réel de vos compétitions avec la feuille de match complète
+- ✅ Analyse détaillée des performances (buts, cartons par joueur)
 - ✅ Interface moderne et rapide
-- ✅ Accessible partout, tout le temps
+- ✅ Accessible partout, tout le temps (même hors ligne)
+- ✅ Téléchargement PDF pour archivage ou impression
+
+**Cas d'usage** :
+- **Pendant le match** : Suivre les buts et cartons en temps réel
+- **Après le match** : Revoir la chronologie complète et analyser les performances
+- **Pour les arbitres** : Vérifier les compositions et consulter l'historique des cartons
+- **Pour les supporters** : Suivre leur équipe en détail depuis n'importe où
 
 [Documentation complète](user/APP2_APPLICATION_WEB.md)
 
@@ -346,4 +422,4 @@ De nombreuses corrections ont été apportées pour améliorer la stabilité :
 
 
 **Réalisé par** : Laurent Garrigue avec Claude Code
-**Date** : 27 décembre 2025
+**Date** : 28 décembre 2025

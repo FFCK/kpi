@@ -15,6 +15,7 @@ Ce document présente les prochains objectifs et travaux prévus pour le projet 
 - ✅ Unification Bootstrap 5.3.8 terminée
 - ✅ 7 nouvelles fonctionnalités déployées
 - ✅ App2 (Nuxt 4) en production
+- ✅ Feuille de match intégrée dans App2 (Décembre 2025)
 
 **Prochaines étapes** : Consolidation, migration progressive vers une architecture moderne complète.
 
@@ -50,17 +51,23 @@ Ce document présente les prochains objectifs et travaux prévus pour le projet 
 
 ---
 
-### 3. Feuille de Match Numérique
+### 3. Feuille de Match Numérique ✅
 
-**Objectif** : Permettre l'accès à la feuille de match depuis l'app mobile après validation.
+**Statut** : ✅ Implémenté (Décembre 2025)
 
-**Fonctionnalité** :
-- Accès via l'App mobile (app.kayak-polo.info)
-- Disponible uniquement quand le match est verrouillé
-- Consultation des compositions, scores, événements
-- Export PDF possible
+**Fonctionnalité réalisée** :
+- ✅ Accès via l'App mobile (app.kayak-polo.info)
+- ✅ Page dédiée `/game/[id]` avec feuille de match complète
+- ✅ Consultation des compositions, scores, événements avec timeline visuelle
+- ✅ Export PDF disponible
+- ✅ Rafraîchissement en temps réel
+- ✅ Statuts enrichis (EN COURS avec période, TERMINÉ, Provisoire)
+- ✅ Navigation vers fiches équipes
 
-**Durée estimée** : 1-2 mois
+**Prochaines améliorations possibles** :
+- Restriction d'accès (uniquement matchs verrouillés) si souhaité
+- Notifications push pour les matchs suivis
+- Signature numérique des capitaines/arbitres
 
 ---
 
