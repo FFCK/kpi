@@ -333,7 +333,10 @@ export default {
                 this.sync(this.game[id].id_match, 'ScoreB', this.scoreB[id])
                 this.sync(this.game[id].id_match, 'Statut', 'END')
                 const now = new Date()
-                this.sync(this.game[id].id_match, 'Heure_fin', '00:' + now.getHours() + ':' + now.getMinutes())
+                // Format as HH:MM:00 (hours:minutes:00)
+                const hours = String(now.getHours()).padStart(2, '0')
+                const minutes = String(now.getMinutes()).padStart(2, '0')
+                this.sync(this.game[id].id_match, 'Heure_fin', hours + ':' + minutes + ':00')
                 this.period[id] = 'M1'
                 this.tpsJeu[id] = '600000'
                 this.posses[id] = '60000'

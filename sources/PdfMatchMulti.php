@@ -54,7 +54,8 @@ class FeuilleMatch extends MyPage
             $idMatch = $row['Id'];
             $saison = $row['Code_saison'];
             $categorie = $row['Code_competition'];
-            $heure_fin = substr($row['Heure_fin'], -5);
+            // Extract HH:MM from HH:MM:SS format
+            $heure_fin = substr($row['Heure_fin'], 0, 5);
             if ($heure_fin == '00:00') {
                 $heure_fin = '';
             }
@@ -536,8 +537,8 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(135, 1, "", 'LTR', '1', 'C', 1);
             $pdf->Cell(60, 4, $lang['Lieu'] . ": " . $lieu . " (" . $dpt . ")", 'L', '0', 'L', 1);
             $pdf->SetFont('Arial', 'B', 12);
-            $pdf->Cell(40, 4, $date . "   " . $heure, '0', '0', 'L', 1);
-            $pdf->Cell(35, 4, $lang['Terrain'] . ": " . $terrain, 'R', '1', 'R', 1);
+            $pdf->Cell(45, 4, $date . "   " . $heure, '0', '0', 'L', 1);
+            $pdf->Cell(30, 4, $lang['Terrain'] . ": " . $terrain, 'R', '1', 'R', 1);
 
             $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(60, 4, $lang['Phase'] . ": " . $phase, 'L', '0', 'L', 1);
