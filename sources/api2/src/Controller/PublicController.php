@@ -223,7 +223,7 @@ class PublicController extends AbstractController
     {
         $conn = $this->entityManager->getConnection();
 
-        // Get game info - only if finished (END) and validated (O)
+        // Get game info - if in progress (ON) or finished (END), not pending (ATT)
         $gameSql = "
             SELECT c.Code c_code, c.Code_saison c_season, j.Phase d_phase, j.Niveau d_level, j.Type d_type,
                 j.Lieu d_place, j.Libelle d_label, c.Soustitre2 c_label, c.Code_typeclt c_type,
@@ -246,8 +246,7 @@ class PublicController extends AbstractController
             INNER JOIN kp_journee j ON (m.Id_journee = j.Id)
             INNER JOIN kp_competition c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison)
             WHERE m.Id = ?
-            AND m.Statut = 'END'
-            AND m.Validation = 'O'
+            AND m.Statut IN ('ON', 'END')
             AND c.Publication = 'O'
             AND j.Publication = 'O'
             AND m.Publication = 'O'
@@ -343,18 +342,40 @@ class PublicController extends AbstractController
             }
         }
 
-        // Calculate team stats summary
+        // Calculate team stats summary and halftime score
         $teamAStats = ['goals' => 0, 'green_cards' => 0, 'yellow_cards' => 0, 'red_cards' => 0, 'exclusions' => 0];
         $teamBStats = ['goals' => 0, 'green_cards' => 0, 'yellow_cards' => 0, 'red_cards' => 0, 'exclusions' => 0];
+        $halftimeScoreA = 0;
+        $halftimeScoreB = 0;
 
         foreach ($events as $event) {
-            $statsRef = $event['e_team'] === 'A' ? 'teamAStats' : 'teamBStats';
+            $isTeamA = $event['e_team'] === 'A';
             switch ($event['e_type']) {
-                case 'B': $$statsRef['goals']++; break;
-                case 'V': $$statsRef['green_cards']++; break;
-                case 'J': $$statsRef['yellow_cards']++; break;
-                case 'R': $$statsRef['red_cards']++; break;
-                case 'D': $$statsRef['exclusions']++; break;
+                case 'B':
+                    if ($isTeamA) {
+                        $teamAStats['goals']++;
+                        if ($event['e_period'] === 'M1') $halftimeScoreA++;
+                    } else {
+                        $teamBStats['goals']++;
+                        if ($event['e_period'] === 'M1') $halftimeScoreB++;
+                    }
+                    break;
+                case 'V':
+                    if ($isTeamA) $teamAStats['green_cards']++;
+                    else $teamBStats['green_cards']++;
+                    break;
+                case 'J':
+                    if ($isTeamA) $teamAStats['yellow_cards']++;
+                    else $teamBStats['yellow_cards']++;
+                    break;
+                case 'R':
+                    if ($isTeamA) $teamAStats['red_cards']++;
+                    else $teamBStats['red_cards']++;
+                    break;
+                case 'D':
+                    if ($isTeamA) $teamAStats['exclusions']++;
+                    else $teamBStats['exclusions']++;
+                    break;
             }
         }
 
@@ -381,6 +402,10 @@ class PublicController extends AbstractController
                 'stats' => $teamBStats
             ],
             'events' => $events,
+            'halftime_score' => [
+                'team_a' => $halftimeScoreA,
+                'team_b' => $halftimeScoreB
+            ],
             'stats' => [
                 'total_goals' => $teamAStats['goals'] + $teamBStats['goals'],
                 'total_cards' => $teamAStats['green_cards'] + $teamBStats['green_cards'] +

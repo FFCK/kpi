@@ -231,6 +231,7 @@
     "Loading": "Chargement de la feuille de match...",
     "NotFound": "Match non trouvé ou non disponible",
     "DownloadPdf": "Télécharger le PDF",
+    "Refresh": "Actualiser",
     "Back": "Retour"
   }
 }

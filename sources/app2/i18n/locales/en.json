@@ -231,6 +231,7 @@
     "Loading": "Loading match sheet...",
     "NotFound": "Match not found or not available",
     "DownloadPdf": "Download PDF",
+    "Refresh": "Refresh",
     "Back": "Back"
   }
 }

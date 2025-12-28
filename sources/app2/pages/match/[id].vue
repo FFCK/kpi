@@ -29,6 +29,7 @@
         :loading="loading"
         :error="error"
         :game-id="gameId"
+        @refresh="loadMatchSheet"
       />
     </div>
 

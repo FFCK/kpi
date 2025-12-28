@@ -32,15 +32,17 @@
         <!-- Score -->
         <div class="text-center">
           <div class="flex items-center justify-center gap-2">
-            <span class="lcd text-4xl font-bold px-4 py-2 bg-gray-800 text-white rounded">{{ matchData.game.g_score_a }}</span>
+            <span class="lcd text-4xl font-bold px-4 py-2 bg-gray-800 text-white rounded">{{ matchData.game.g_score_a ?? '-' }}</span>
             <span class="text-2xl text-gray-400">-</span>
-            <span class="lcd text-4xl font-bold px-4 py-2 bg-gray-800 text-white rounded">{{ matchData.game.g_score_b }}</span>
+            <span class="lcd text-4xl font-bold px-4 py-2 bg-gray-800 text-white rounded">{{ matchData.game.g_score_b ?? '-' }}</span>
           </div>
-          <div v-if="matchData.game.g_score_detail_a || matchData.game.g_score_detail_b" class="text-sm text-gray-500 mt-2">
-            ({{ matchData.game.g_score_detail_a || '0' }} - {{ matchData.game.g_score_detail_b || '0' }})
+          <!-- Halftime score -->
+          <div v-if="matchData.halftime_score" class="text-sm text-gray-500 mt-2">
+            ({{ matchData.halftime_score.team_a }} - {{ matchData.halftime_score.team_b }})
           </div>
-          <div class="inline-block bg-green-500 text-white text-xs px-2 py-1 rounded mt-2">
-            {{ t('Games.Status.END') }}
+          <!-- Status badge -->
+          <div :class="statusClass" class="inline-block text-white text-xs px-2 py-1 rounded mt-2">
+            {{ matchData.game.g_status === 'END' ? t('Games.Status.END') : t('Games.Period.' + matchData.game.g_period) }}
           </div>
         </div>
 
@@ -56,8 +58,8 @@
     <!-- Referees -->
     <div v-if="matchData.game.g_referee_1 || matchData.game.g_referee_2" class="bg-gray-50 px-4 py-2 border-x border-gray-300 text-center text-sm text-gray-600">
       <span class="font-medium">{{ t('MatchSheet.Referees') }}:</span>
-      {{ matchData.game.g_referee_1 }}
-      <span v-if="matchData.game.g_referee_2"> / {{ matchData.game.g_referee_2 }}</span>
+      {{ formatReferee(matchData.game.g_referee_1) }}
+      <span v-if="matchData.game.g_referee_2"> / {{ formatReferee(matchData.game.g_referee_2) }}</span>
     </div>
 
     <!-- Team Compositions -->
@@ -74,13 +76,13 @@
               <th class="px-2 py-1 text-left">{{ t('MatchSheet.Player') }}</th>
               <th class="px-2 py-1 text-center">{{ t('MatchSheet.Goals') }}</th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-green-500 w-3 h-4 rounded-sm"></div>
+                <div class="inline-block bg-green-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-yellow-400 w-3 h-4 rounded-sm"></div>
+                <div class="inline-block bg-yellow-400 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-red-500 w-3 h-4 rounded-sm"></div>
+                <div class="inline-block bg-red-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
             </tr>
           </thead>
@@ -115,13 +117,13 @@
               <th class="px-2 py-1 text-left">{{ t('MatchSheet.Player') }}</th>
               <th class="px-2 py-1 text-center">{{ t('MatchSheet.Goals') }}</th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-green-500 w-3 h-4 rounded-sm"></div>
+                <div class="inline-block bg-green-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-yellow-400 w-3 h-4 rounded-sm"></div>
+                <div class="inline-block bg-yellow-400 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-red-500 w-3 h-4 rounded-sm"></div>
+                <div class="inline-block bg-red-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
             </tr>
           </thead>
@@ -157,9 +159,16 @@
           </div>
           <div v-for="event in periodEvents" :key="event.e_id" class="px-3 py-2 flex items-center gap-3 hover:bg-gray-50">
             <div class="w-12 text-center text-xs text-gray-500 font-mono">{{ formatTime(event.e_time) }}</div>
-            <div :class="getEventIcon(event.e_type)" class="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold">
-              {{ getEventSymbol(event.e_type) }}
+            <!-- Event icon -->
+            <div v-if="event.e_type === 'B'" class="w-6 h-6 flex items-center justify-center text-lg">
+              🤽
             </div>
+            <div v-else-if="event.e_type === 'V'" class="w-5 h-7 bg-green-500 rounded-sm transform -rotate-12"></div>
+            <div v-else-if="event.e_type === 'J'" class="w-5 h-7 bg-yellow-400 rounded-sm transform -rotate-12"></div>
+            <div v-else-if="event.e_type === 'R'" class="w-5 h-7 bg-red-500 rounded-sm transform -rotate-12"></div>
+            <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-800 rounded-sm transform -rotate-12 flex items-center justify-center text-white text-xs font-bold">E</div>
+            <div v-else class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">?</div>
+            <!-- Event details -->
             <div class="flex-1">
               <span :class="event.e_team === 'A' ? 'text-blue-700' : 'text-red-700'" class="font-medium">
                 {{ event.e_firstname }} {{ event.e_name }}
@@ -173,8 +182,15 @@
       </div>
     </div>
 
-    <!-- PDF Link -->
-    <div class="mt-4 text-center">
+    <!-- Actions -->
+    <div class="mt-4 flex justify-center gap-4">
+      <button
+        @click="$emit('refresh')"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors cursor-pointer"
+      >
+        <UIcon name="i-heroicons-arrow-path" class="h-5 w-5" />
+        {{ t('MatchSheet.Refresh') }}
+      </button>
       <a
         :href="getPdfUrl()"
         target="_blank"
@@ -213,12 +229,26 @@ const props = defineProps({
   gameId: { type: [Number, String], required: true }
 })
 
+defineEmits(['refresh'])
+
+const statusClass = computed(() => {
+  if (!props.matchData?.game) return 'bg-gray-500'
+  return props.matchData.game.g_status === 'END' ? 'bg-green-500' : 'bg-blue-500'
+})
+
 const getLogoUrl = (logo) => {
   return `${baseUrl}/img/${logo}`
 }
 
 const getPdfUrl = () => {
   return `${baseUrl}/PdfMatchMulti.php?listMatch=${props.gameId}`
+}
+
+// Format referee name - remove level after parenthesis (e.g., "NAME (COUNTRY) INT-B" -> "NAME (COUNTRY)")
+const formatReferee = (referee) => {
+  if (!referee) return ''
+  // Match everything up to and including the closing parenthesis, remove anything after
+  return referee.replace(/(\([^)]+\)).*$/, '$1').trim()
 }
 
 const groupedEvents = computed(() => {
@@ -253,29 +283,16 @@ const formatTime = (time) => {
     const seconds = totalSeconds % 60
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
   }
+  // If already in mm:ss or hh:mm:ss format, extract mm:ss
+  if (time.includes(':')) {
+    const parts = time.split(':')
+    if (parts.length >= 2) {
+      const minutes = parts.length === 3 ? parts[1] : parts[0]
+      const seconds = parts.length === 3 ? parts[2] : parts[1]
+      return `${String(parseInt(minutes)).padStart(2, '0')}:${String(parseInt(seconds)).padStart(2, '0')}`
+    }
+  }
   return time
-}
-
-const getEventIcon = (type) => {
-  switch (type) {
-    case 'B': return 'bg-gray-800' // Goal
-    case 'V': return 'bg-green-500' // Green card
-    case 'J': return 'bg-yellow-400' // Yellow card
-    case 'R': return 'bg-red-500' // Red card
-    case 'D': return 'bg-red-800' // Exclusion
-    default: return 'bg-gray-400'
-  }
-}
-
-const getEventSymbol = (type) => {
-  switch (type) {
-    case 'B': return '⚽'
-    case 'V': return 'V'
-    case 'J': return 'J'
-    case 'R': return 'R'
-    case 'D': return 'E'
-    default: return '?'
-  }
 }
 </script>
 
