@@ -1,24 +1,25 @@
 <template>
-  <div v-if="hasEventSelected" class="event-qrcode-container text-center my-8">
-    <p class="mb-3 text-gray-700 font-medium">
-      {{ t('Event.ShareEvent') }}
+  <div v-if="hasEventSelected" class="event-qrcode-container text-center my-12">
+    <p class="mb-1 text-gray-700 font-medium font-semibold text-lg py-2 flex items-center justify-center gap-2">
+      <UIcon name="i-heroicons-share" class="h-6 w-6 flex-shrink-0" />
+      <span class="align-middle">{{ t('Event.ShareEvent') }}</span>
     </p>
-    <div class="qrcode-wrapper inline-block">
+    <div class="qrcode-wrapper inline-block cursor-pointer" @click="copyEventLinkToClipboard">
       <canvas ref="qrcodeCanvas" class="mx-auto"></canvas>
+      <p class="text-sm text-gray-600 mt-2">{{ t('Event.ClickToCopy') }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted, nextTick } from 'vue'
-import { usePreferenceStore } from '~/stores/preferenceStore'
-import { useEventGuard } from '~/composables/useEventGuard'
 import QRCode from 'qrcode'
 
 const { t } = useI18n()
 const preferenceStore = usePreferenceStore()
 const { hasEventSelected } = useEventGuard()
 const runtimeConfig = useRuntimeConfig()
+const toast = useToast()
 
 const qrcodeCanvas = ref(null)
 
@@ -79,6 +80,47 @@ const generateQRCode = async () => {
     }
   } catch (error) {
     console.error('Failed to generate QR code:', error)
+  }
+}
+
+/**
+ * Copy event link to clipboard
+ */
+const copyEventLinkToClipboard = async () => {
+  if (!hasEventSelected.value) {
+    return
+  }
+
+  const eventId = preferenceStore.preferences.lastEvent?.id
+  if (!eventId) return
+
+  // Construct the event URL
+  const baseUrl = runtimeConfig.public.baseUrl || ''
+  const origin = window.location.origin
+  const eventUrl = `${origin}${baseUrl}/event/${eventId}`
+
+  try {
+    await navigator.clipboard.writeText(eventUrl)
+
+    // Show success toast notification
+    toast.add({
+      title: t('Event.LinkCopied'),
+      description: eventUrl,
+      icon: 'i-heroicons-check-circle',
+      color: 'green',
+      duration: 3000
+    })
+  } catch (error) {
+    console.error('Failed to copy event link to clipboard:', error)
+
+    // Show error toast notification
+    toast.add({
+      title: t('Event.CopyFailed'),
+      description: error.message,
+      icon: 'i-heroicons-x-circle',
+      color: 'red',
+      duration: 3000
+    })
   }
 }
 

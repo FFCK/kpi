@@ -219,9 +219,10 @@ class PublicController extends AbstractController
             new OA\Response(response: 404, description: 'Game not found or not available')
         ]
     )]
-    public function getMatchSheet(int $gameId): JsonResponse
+    public function getMatchSheet(string $gameId): JsonResponse
     {
         $conn = $this->entityManager->getConnection();
+        $gameId = (int) $gameId;
 
         // Get game info - if in progress (ON) or finished (END), not pending (ATT)
         $gameSql = "

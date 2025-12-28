@@ -38,7 +38,7 @@
 
     <div v-else>
       <!-- Team Name and Logo -->
-      <div class="px-4 py-1 bg-gray-50 border-b">
+      <div class="px-4 py-1 bg-gray-50 border-b flex justify-center">
         <div class="flex items-center gap-3">
           <img
             v-if="selectedTeamLogo"
