@@ -160,8 +160,8 @@
           <div v-for="event in periodEvents" :key="event.e_id" class="px-3 py-2 flex items-center gap-3 hover:bg-gray-50">
             <div class="w-12 text-center text-xs text-gray-500 font-mono">{{ formatTime(event.e_time) }}</div>
             <!-- Event icon -->
-            <div v-if="event.e_type === 'B'" class="w-6 h-6 flex items-center justify-center text-lg">
-              🤽
+            <div v-if="event.e_type === 'B'" class="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
+              <div class="w-4 h-4 border-2 border-white rounded-full"></div>
             </div>
             <div v-else-if="event.e_type === 'V'" class="w-5 h-7 bg-green-500 rounded-sm transform -rotate-12"></div>
             <div v-else-if="event.e_type === 'J'" class="w-5 h-7 bg-yellow-400 rounded-sm transform -rotate-12"></div>
