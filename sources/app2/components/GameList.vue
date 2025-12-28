@@ -180,7 +180,7 @@ const isMatchSheetAvailable = (game) => {
 
 // Get the URL for the match sheet (internal page instead of PDF)
 const getMatchSheetUrl = (game) => {
-  return `/match/${game.g_id}`
+  return `/game/${game.g_id}`
 }
 
 // Function to highlight referee text if needed

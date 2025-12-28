@@ -11,15 +11,24 @@
         </button>
       </template>
       <template #right>
-        <a
-          v-if="matchData"
-          :href="getPdfUrl()"
-          target="_blank"
-          class="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
-          :title="t('MatchSheet.DownloadPdf')"
-        >
-          <UIcon name="i-heroicons-document-arrow-down" class="h-6 w-6" />
-        </a>
+        <div class="flex items-center gap-2">
+          <button
+            @click="loadMatchSheet"
+            class="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+            :title="t('MatchSheet.Refresh')"
+          >
+            <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
+          </button>
+          <a
+            v-if="matchData"
+            :href="getPdfUrl()"
+            target="_blank"
+            class="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+            :title="t('MatchSheet.DownloadPdf')"
+          >
+            <UIcon name="i-heroicons-document-arrow-down" class="h-6 w-6" />
+          </a>
+        </div>
       </template>
     </AppSecondaryNav>
 
