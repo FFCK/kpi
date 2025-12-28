@@ -78,7 +78,7 @@
 				$("#chrono_ajust").mask("99:99");
 				$("#periode_ajust").mask("99:99");
 				$("#time_evt").mask("99:99");
-				$("#end_match_time, #time_end_match").mask("99h99");
+				$("#end_match_time, #time_end_match").mask("99:99");
                 $('#list_up').hide();
                 $('#liste_evt').click(function(e){
                     e.preventDefault();

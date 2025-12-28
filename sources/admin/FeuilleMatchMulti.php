@@ -72,7 +72,8 @@ class FeuilleMatch extends MyPage
             $idMatch = $row['Id'];
             $saison = $row['Code_saison'];
             $categorie = $row['Code_competition'];
-            $heure_fin = substr($row['Heure_fin'], -5);
+            // Extract HH:MM from HH:MM:SS format
+            $heure_fin = substr($row['Heure_fin'], 0, 5);
             if ($heure_fin == '00:00') {
                 $heure_fin = '';
             }

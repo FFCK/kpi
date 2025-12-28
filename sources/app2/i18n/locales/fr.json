@@ -53,7 +53,10 @@
     "Cancel": "Annuler",
     "StdEvents": "Événements",
     "LocalChamp": "Championnats locaux",
-    "ShareEvent": "Partager l'événement"
+    "ShareEvent": "Partager l'événement",
+    "ClickToCopy": "Cliquez pour copier le lien",
+    "LinkCopied": "Lien copié dans le presse-papiers !",
+    "CopyFailed": "Échec de la copie du lien"
   },
   "Teams": {
     "SelectTeam": "Equipe",
@@ -97,10 +100,12 @@
     "Ref": "Arb.",
     "Referee": "Arbitrage",
     "GameReport": "Feuille de marque",
+    "MatchSheet": "Ouvrir la feuille de marque",
     "Status": {
       "ATT": "En attente",
       "ON": "En cours",
-      "END": "Terminé"
+      "END": "Terminé",
+      "Provisional": "Provisoire"
     },
     "Period": {
       "M1": "1ère période",
@@ -216,5 +221,21 @@
     "Player": "Joueur",
     "Goals": "Buts",
     "Coach": "Coach"
+  },
+  "MatchSheet": {
+    "Title": "Feuille de match",
+    "Match": "Match",
+    "Pitch": "Terrain",
+    "To": "à",
+    "Referees": "Arbitres",
+    "Player": "Joueur",
+    "Goals": "Buts",
+    "Coach": "Coach",
+    "Timeline": "Chronologie",
+    "Loading": "Chargement de la feuille de match...",
+    "NotFound": "Match non trouvé ou non disponible",
+    "DownloadPdf": "Télécharger le PDF",
+    "Refresh": "Actualiser",
+    "Back": "Retour"
   }
 }

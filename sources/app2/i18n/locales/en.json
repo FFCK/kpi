@@ -53,7 +53,10 @@
     "Cancel": "Cancel",
     "StdEvents": "Events",
     "LocalChamp": "Local Championships",
-    "ShareEvent": "Share event"
+    "ShareEvent": "Share event",
+    "ClickToCopy": "Click to copy link",
+    "LinkCopied": "Link copied to clipboard!",
+    "CopyFailed": "Failed to copy link"
   },
   "Teams": {
     "SelectTeam": "Team",
@@ -97,10 +100,12 @@
     "Ref": "Ref.",
     "Referee": "Referee",
     "GameReport": "Game report",
+    "MatchSheet": "Open match sheet",
     "Status": {
       "ATT": "Pending",
       "ON": "In progress",
-      "END": "Completed"
+      "END": "Completed",
+      "Provisional": "Provisional"
     },
     "Period": {
       "M1": "1st period",
@@ -216,5 +221,21 @@
     "Player": "Player",
     "Goals": "Goals",
     "Coach": "Coach"
+  },
+  "MatchSheet": {
+    "Title": "Game Sheet",
+    "Match": "Game",
+    "Pitch": "Pitch",
+    "To": "to",
+    "Referees": "Referees",
+    "Player": "Player",
+    "Goals": "Goals",
+    "Coach": "Coach",
+    "Timeline": "Timeline",
+    "Loading": "Loading match sheet...",
+    "NotFound": "Match not found or not available",
+    "DownloadPdf": "Download PDF",
+    "Refresh": "Refresh",
+    "Back": "Back"
   }
 }
