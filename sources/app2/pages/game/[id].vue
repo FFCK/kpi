@@ -15,19 +15,21 @@
           <button
             v-if="refreshButtonVisible"
             @click="handleRefresh"
-            class="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+            class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
             :title="t('MatchSheet.Refresh')"
           >
             <UIcon name="i-heroicons-arrow-path" class="h-6 w-6" />
+            <span class="hidden sm:inline text-sm">{{ t('MatchSheet.Refresh') }}</span>
           </button>
           <a
             v-if="matchData"
             :href="getPdfUrl()"
             target="_blank"
-            class="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
+            class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100 cursor-pointer"
             :title="t('MatchSheet.DownloadPdf')"
           >
             <UIcon name="i-heroicons-document-arrow-down" class="h-6 w-6" />
+            <span class="hidden sm:inline text-sm">{{ t('MatchSheet.DownloadPdf') }}</span>
           </a>
         </div>
       </template>

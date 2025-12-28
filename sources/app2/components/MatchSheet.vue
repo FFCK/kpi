@@ -166,7 +166,7 @@
             {{ getPeriodLabel(period) }}
           </div>
           <div v-for="event in periodEvents" :key="event.e_id" class="px-3 py-2 flex items-center gap-3 hover:bg-gray-50">
-            <div class="w-12 text-center text-xs text-gray-500 font-mono">{{ formatTime(event.e_time) }}</div>
+            <div class="w-12 text-center text-xs text-gray-500 font-mono">{{ formatTime(event.e_time, event.e_period) }}</div>
             <!-- Event icon -->
             <div v-if="event.e_type === 'B'" class="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
               <div class="w-4 h-4 border-2 border-white rounded-full"></div>
@@ -188,25 +188,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="mt-4 flex justify-center gap-4">
-      <button
-        @click="$emit('refresh')"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors cursor-pointer"
-      >
-        <UIcon name="i-heroicons-arrow-path" class="h-5 w-5" />
-        {{ t('MatchSheet.Refresh') }}
-      </button>
-      <a
-        :href="getPdfUrl()"
-        target="_blank"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-      >
-        <UIcon name="i-heroicons-document-arrow-down" class="h-5 w-5" />
-        {{ t('MatchSheet.DownloadPdf') }}
-      </a>
     </div>
   </div>
 
@@ -296,25 +277,40 @@ const getPeriodLabel = (period) => {
   return labels[period] || period
 }
 
-const formatTime = (time) => {
+const formatTime = (time, period) => {
   if (!time) return '--:--'
+
+  // Period durations in seconds
+  const periodDurations = {
+    'M1': 600, // 10 minutes
+    'M2': 600, // 10 minutes
+    'P1': 300, // 5 minutes
+    'P2': 300  // 5 minutes
+    // TB: no countdown, show elapsed time
+  }
+
+  let elapsedSeconds = 0
+
   // Time is in seconds or mm:ss format
   if (typeof time === 'number' || /^\d+$/.test(time)) {
-    const totalSeconds = parseInt(time)
-    const minutes = Math.floor(totalSeconds / 60)
-    const seconds = totalSeconds % 60
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-  }
-  // If already in mm:ss or hh:mm:ss format, extract mm:ss
-  if (time.includes(':')) {
+    elapsedSeconds = parseInt(time)
+  } else if (time.includes(':')) {
+    // If already in mm:ss or hh:mm:ss format, convert to seconds
     const parts = time.split(':')
     if (parts.length >= 2) {
-      const minutes = parts.length === 3 ? parts[1] : parts[0]
-      const seconds = parts.length === 3 ? parts[2] : parts[1]
-      return `${String(parseInt(minutes)).padStart(2, '0')}:${String(parseInt(seconds)).padStart(2, '0')}`
+      const minutes = parseInt(parts.length === 3 ? parts[1] : parts[0])
+      const seconds = parseInt(parts.length === 3 ? parts[2] : parts[1])
+      elapsedSeconds = minutes * 60 + seconds
     }
   }
-  return time
+
+  // Calculate remaining time (regressive) for periods with duration
+  const duration = periodDurations[period]
+  const displaySeconds = duration ? Math.max(0, duration - elapsedSeconds) : elapsedSeconds
+
+  const minutes = Math.floor(displaySeconds / 60)
+  const seconds = displaySeconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 </script>
 
