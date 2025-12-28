@@ -10,12 +10,8 @@ function set_response_headers()
 		$origin === "https://www.kayak-polo.info" ||
 		$origin === "https://app.kayak-polo.info" ||
 		$origin === "https://app.preprod.kayak-polo.info" ||
-		$origin === "http://localhost:9000" ||
-		$origin === "http://localhost:9001" ||
-		$origin === "http://localhost:9002" ||
-		$origin === "http://localhost:3002" ||
-		$origin === "https://kpi-node.localhost" ||
-		$origin === "https://app.kpi.localhost" || // Nginx static app
+		// $origin === "http://localhost:8080" ||
+		// $origin === "https://app.kpi.localhost" || // Nginx static app
 		($origin && preg_match('/^https?:\/\/.*\.localhost$/', $origin)) // Allow all .localhost domains in dev
 	) {
 		header("Access-Control-Allow-Origin: $origin");

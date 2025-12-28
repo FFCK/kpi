@@ -528,9 +528,14 @@ export default {
       liveApi
         .setStat(obj)
         .then(result => {
-          if (result.data) {
+          if (result && result.data) {
             console.log(result.data)
+          } else {
+            console.warn('setStat returned undefined or no data:', result)
           }
+        })
+        .catch(error => {
+          console.error('Error setting stat:', error)
         })
     }
   },

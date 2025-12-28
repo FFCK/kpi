@@ -2,10 +2,14 @@
 node_modules
 /dist
 
-.env
-# local env files
+# Environment files - commit standard ones, ignore local overrides
 .env.local
 .env.*.local
+.env.dev
+!.env.development
+!.env.production
+!.env.preprod
+!.env.dist
 
 # Log files
 npm-debug.log*
