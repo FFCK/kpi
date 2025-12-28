@@ -53,7 +53,10 @@
     "Cancel": "Cancel",
     "StdEvents": "Events",
     "LocalChamp": "Local Championships",
-    "ShareEvent": "Share event"
+    "ShareEvent": "Share event",
+    "ClickToCopy": "Click to copy link",
+    "LinkCopied": "Link copied to clipboard!",
+    "CopyFailed": "Failed to copy link"
   },
   "Teams": {
     "SelectTeam": "Team",
