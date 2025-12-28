@@ -25,7 +25,12 @@
         <!-- Team A -->
         <div class="text-center">
           <img v-if="matchData.team_a.logo" :src="getLogoUrl(matchData.team_a.logo)" class="h-16 w-16 mx-auto mb-2" alt="" />
-          <div class="font-bold text-lg">{{ matchData.team_a.label }}</div>
+          <NuxtLink
+            :to="`/team/${matchData.team_a.id}`"
+            class="inline-block font-bold text-lg bg-gray-200 text-black px-3 py-1 rounded hover:opacity-80 cursor-pointer"
+          >
+            {{ matchData.team_a.label }}
+          </NuxtLink>
         </div>
 
         <!-- Score -->
@@ -48,7 +53,12 @@
         <!-- Team B -->
         <div class="text-center">
           <img v-if="matchData.team_b.logo" :src="getLogoUrl(matchData.team_b.logo)" class="h-16 w-16 mx-auto mb-2" alt="" />
-          <div class="font-bold text-lg">{{ matchData.team_b.label }}</div>
+          <NuxtLink
+            :to="`/team/${matchData.team_b.id}`"
+            class="inline-block font-bold text-lg bg-gray-200 text-black px-3 py-1 rounded hover:opacity-80 cursor-pointer"
+          >
+            {{ matchData.team_b.label }}
+          </NuxtLink>
         </div>
       </div>
     </div>
