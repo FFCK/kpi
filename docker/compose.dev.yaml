@@ -159,6 +159,35 @@ services:
             - "traefik.http.routers.app3.tls=true"
             - "traefik.http.services.app3.loadbalancer.server.port=3003"
 
+    node_wsm:
+        container_name: kpi_node_wsm
+        build:
+            context: ../sources/app_wsm_dev
+            dockerfile: ../../docker/node/Dockerfile
+        working_dir: /app
+        user: "${USER_ID}:${GROUP_ID}"
+        volumes:
+            - ../sources/app_wsm_dev:/app
+        environment:
+            - HOST=0.0.0.0
+            - PORT=8080
+            - TZ=Europe/Paris
+            - LANG=fr_FR.UTF-8
+            - LANGUAGE=fr_FR:fr
+            - LC_ALL=fr_FR.UTF-8
+        networks:
+            - network_kpi
+            - traefiknetwork
+        ports:
+            - "8080:8080"
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.wsm.rule=Host(`${WSM_DOMAIN_NAME}`)"
+            - "traefik.http.routers.wsm.entrypoints=websecure"
+            - "traefik.http.routers.wsm.tls=true"
+            - "traefik.http.services.wsm.loadbalancer.server.port=8080"
+
     nginx_app2:
         container_name: ${APPLICATION_NAME}_nginx_app2
         image: nginx:alpine
