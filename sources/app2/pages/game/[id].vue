@@ -13,7 +13,8 @@
       <template #right>
         <div class="flex items-center gap-2">
           <button
-            @click="loadMatchSheet"
+            v-if="refreshButtonVisible"
+            @click="handleRefresh"
             class="p-2 rounded-md hover:bg-gray-100 cursor-pointer"
             :title="t('MatchSheet.Refresh')"
           >
@@ -38,7 +39,7 @@
         :loading="loading"
         :error="error"
         :game-id="gameId"
-        @refresh="loadMatchSheet"
+        @refresh="handleRefresh"
       />
     </div>
 
@@ -64,6 +65,7 @@ const gameId = computed(() => route.params.id)
 const matchData = ref(null)
 const loading = ref(true)
 const error = ref(null)
+const refreshButtonVisible = ref(true)
 
 // Page-specific SEO
 const pageTitle = computed(() =>
@@ -112,6 +114,14 @@ const loadMatchSheet = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const handleRefresh = () => {
+  refreshButtonVisible.value = false
+  loadMatchSheet()
+  setTimeout(() => {
+    refreshButtonVisible.value = true
+  }, 5000)
 }
 
 onMounted(() => {

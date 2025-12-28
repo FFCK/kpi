@@ -104,7 +104,8 @@
     "Status": {
       "ATT": "En attente",
       "ON": "En cours",
-      "END": "Terminé"
+      "END": "Terminé",
+      "Provisional": "Provisoire"
     },
     "Period": {
       "M1": "1ère période",

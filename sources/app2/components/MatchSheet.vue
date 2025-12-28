@@ -41,7 +41,7 @@
           </div>
           <!-- Status badge -->
           <div :class="statusClass" class="inline-block text-white text-xs px-2 py-1 rounded mt-2">
-            {{ matchData.game.g_status === 'END' ? t('Games.Status.END') : t('Games.Period.' + matchData.game.g_period) }}
+            {{ statusLabel }}
           </div>
         </div>
 
@@ -231,7 +231,21 @@ defineEmits(['refresh'])
 
 const statusClass = computed(() => {
   if (!props.matchData?.game) return 'bg-gray-500'
-  return props.matchData.game.g_status === 'END' ? 'bg-green-500' : 'bg-blue-500'
+  if (props.matchData.game.g_status === 'END') {
+    return props.matchData.game.g_validation === 'O' ? 'bg-green-500' : 'bg-orange-500'
+  }
+  return 'bg-blue-500'
+})
+
+const statusLabel = computed(() => {
+  if (!props.matchData?.game) return ''
+  if (props.matchData.game.g_status === 'ON') {
+    return t('Games.Period.' + props.matchData.game.g_period)
+  }
+  if (props.matchData.game.g_status === 'END') {
+    return props.matchData.game.g_validation === 'O' ? t('Games.Status.END') : t('Games.Status.Provisional')
+  }
+  return t('Games.Status.' + props.matchData.game.g_status)
 })
 
 const getLogoUrl = (logo) => {

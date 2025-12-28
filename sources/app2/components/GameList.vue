@@ -51,8 +51,8 @@
                   :to="getMatchSheetUrl(game)"
                   :class="statusClass(game)"
                   :title="t('Games.MatchSheet')"
-                >{{ t('Games.Status.' + game.g_status) }}</NuxtLink>
-                <div v-else :class="statusClass(game)">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+                >{{ getStatusLabel(game) }}</NuxtLink>
+                <div v-else :class="statusClass(game)">{{ getStatusLabel(game) }}</div>
               </div>
             </td>
             <td class="px-2 py-2">
@@ -117,8 +117,8 @@
                   :class="statusClass(game)"
                   class="text-xs"
                   :title="t('Games.MatchSheet')"
-                >{{ t('Games.Status.' + game.g_status) }}</NuxtLink>
-                <div v-else :class="statusClass(game)" class="text-xs">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+                >{{ getStatusLabel(game) }}</NuxtLink>
+                <div v-else :class="statusClass(game)" class="text-xs">{{ getStatusLabel(game) }}</div>
             </div>
             <div :class="['text-right text-xs text-gray-900 justify-self-end', { 'invisible': !showRefs }]" v-html="highlightReferee(game.r_2, game.r_2_highlighted)" />
           </div>
@@ -167,10 +167,22 @@ const scoreClass = (game, team) => {
 const statusClass = (game) => {
   return {
     'inline-block text-xs px-1 py-0 rounded-sm': true,
-    'bg-green-500 text-white': game.g_status === 'END',
+    'bg-green-500 text-white': game.g_status === 'END' && game.g_validation === 'O',
+    'bg-orange-500 text-white': game.g_status === 'END' && game.g_validation !== 'O',
     'bg-blue-500 text-white': game.g_status === 'ON',
     'bg-gray-500 text-white': game.g_status === 'ATT',
   }
+}
+
+// Get the status label based on game state
+const getStatusLabel = (game) => {
+  if (game.g_status === 'ON') {
+    return t('Games.Period.' + game.g_period)
+  }
+  if (game.g_status === 'END') {
+    return game.g_validation === 'O' ? t('Games.Status.END') : t('Games.Status.Provisional')
+  }
+  return t('Games.Status.' + game.g_status)
 }
 
 // Check if match sheet is available (match in progress or finished, not pending)

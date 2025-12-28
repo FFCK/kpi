@@ -104,7 +104,8 @@
     "Status": {
       "ATT": "Pending",
       "ON": "In progress",
-      "END": "Completed"
+      "END": "Completed",
+      "Provisional": "Provisional"
     },
     "Period": {
       "M1": "1st period",
