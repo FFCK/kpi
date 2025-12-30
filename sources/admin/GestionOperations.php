@@ -2313,11 +2313,13 @@ class GestionOperations extends MyPageSecure
 				$isTypeCP = ($compet['Code_typeclt'] == 'CP');
 
 				// Insérer la nouvelle compétition avec les modifications demandées
+				// Inclure les champs pour les compétitions MULTI : points_grid, multi_competitions, ranking_structure_type
 				$sqlInsertCompet = "INSERT INTO kp_competition (
 					Code, Code_saison, Code_niveau, Libelle, Soustitre, Soustitre2,
 					Web, BandeauLink, LogoLink, SponsorLink, En_actif, Titre_actif,
 					Bandeau_actif, Logo_actif, Sponsor_actif, Kpi_ffck_actif,
 					ToutGroup, TouteSaisons, Code_ref, GroupOrder, Code_typeclt,
+					points_grid, multi_competitions, ranking_structure_type,
 					Age_min, Age_max, Sexe, Code_tour, Nb_equipes, Verrou, Statut,
 					Qualifies, Elimines, Points, Date_calcul, Mode_calcul,
 					Date_publication, Date_publication_calcul, Mode_publication_calcul,
@@ -2328,6 +2330,7 @@ class GestionOperations extends MyPageSecure
 					?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?,
 					?, ?, ?, ?, ?,
+					?, ?, ?,
 					?, ?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?, ?,
 					?, ?, ?,
@@ -2358,6 +2361,9 @@ class GestionOperations extends MyPageSecure
 					$compet['Code_ref'],
 					$compet['GroupOrder'],
 					$compet['Code_typeclt'],
+					$compet['points_grid'] ?? null, // Grille de points pour MULTI
+					$compet['multi_competitions'] ?? null, // Compétitions sources pour MULTI (JSON)
+					$compet['ranking_structure_type'] ?? 'team', // Type de classement pour MULTI
 					$compet['Age_min'],
 					$compet['Age_max'],
 					$compet['Sexe'],

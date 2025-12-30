@@ -75,18 +75,30 @@ class Classement extends MyPage
 		$journee = 0;
 
 		if (strlen($codeCompet) > 0) {
-			// Classement public				
-			$sql = "SELECT ce.*, c.Code_comite_dep 
-				FROM kp_competition_equipe ce, kp_club c 
-				WHERE ce.Code_compet = ? 
-				AND ce.Code_saison = ? 
-				AND ce.Code_club = c.Code ";
-			if ($typeClt == 'CP') {
-				$sql .= "AND CltNiveau_publi > 0 
-					ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";
+			// Classement public
+			// Pour les compétitions MULTI, on n'affiche que Clt_publi, Libelle, Pts_publi, J_publi
+			if ($typeClt == 'MULTI') {
+				$sql = "SELECT ce.Id, ce.Numero, ce.Libelle, ce.Code_club, ce.Clt_publi, ce.Pts_publi,
+					ce.J_publi, c.Code_comite_dep
+					FROM kp_competition_equipe ce, kp_club c
+					WHERE ce.Code_compet = ?
+					AND ce.Code_saison = ?
+					AND ce.Code_club = c.Code
+					AND Clt_publi > 0
+					ORDER BY Clt_publi Asc, Pts_publi Desc ";
 			} else {
-				$sql .= "AND Clt_publi > 0 
-					ORDER BY Clt_publi Asc, Diff_publi Desc ";
+				$sql = "SELECT ce.*, c.Code_comite_dep
+					FROM kp_competition_equipe ce, kp_club c
+					WHERE ce.Code_compet = ?
+					AND ce.Code_saison = ?
+					AND ce.Code_club = c.Code ";
+				if ($typeClt == 'CP') {
+					$sql .= "AND CltNiveau_publi > 0
+						ORDER BY CltNiveau_publi Asc, Diff_publi Desc ";
+				} else {
+					$sql .= "AND Clt_publi > 0
+						ORDER BY Clt_publi Asc, Diff_publi Desc ";
+				}
 			}
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($codeCompet, $codeSaison));
@@ -103,16 +115,27 @@ class Classement extends MyPage
 				if (strlen($row['Code_comite_dep']) > 3) {
 					$row['Code_comite_dep'] = 'FRA';
 				}
-				array_push($arrayEquipe_publi, array(
-					'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'],
-					'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
-					'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'],
-					'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'],
-					'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'],
-					'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
-					'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'],
-					'logo' => $logo, 'club' => $club
-				));
+				// Pour les compétitions MULTI, on ne stocke que les colonnes nécessaires
+				if ($typeClt == 'MULTI') {
+					array_push($arrayEquipe_publi, array(
+						'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'],
+						'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
+						'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'],
+						'J' => $row['J_publi'],
+						'logo' => $logo, 'club' => $club
+					));
+				} else {
+					array_push($arrayEquipe_publi, array(
+						'Id' => $row['Id'], 'Numero' => $row['Numero'], 'Libelle' => $row['Libelle'],
+						'Code_club' => $row['Code_club'], 'Code_comite_dep' => $row['Code_comite_dep'],
+						'Clt' => $row['Clt_publi'], 'Pts' => $row['Pts_publi'],
+						'J' => $row['J_publi'], 'G' => $row['G_publi'], 'N' => $row['N_publi'],
+						'P' => $row['P_publi'], 'F' => $row['F_publi'], 'Plus' => $row['Plus_publi'],
+						'Moins' => $row['Moins_publi'], 'Diff' => $row['Diff_publi'],
+						'PtsNiveau' => $row['PtsNiveau_publi'], 'CltNiveau' => $row['CltNiveau_publi'],
+						'logo' => $logo, 'club' => $club
+					));
+				}
 				if (($typeClt == 'CHPT' && $row['Clt_publi'] == 0) || ($typeClt == 'CP' && $row['CltNiveau_publi'] == 0)) {
 					$recordCompetition['Qualifies']	= 0;
 					$recordCompetition['Elimines'] = 0;
