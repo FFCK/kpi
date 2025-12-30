@@ -110,6 +110,7 @@ function loadCompetitionsForSeason () {
 	var selectCompet = jq('#codesCompet')
 
 	if (!saison) {
+		selectCompet.html('<option value="">Veuillez d\'abord sélectionner une saison source</option>')
 		return
 	}
 

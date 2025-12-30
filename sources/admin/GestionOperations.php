@@ -90,43 +90,9 @@ class GestionOperations extends MyPageSecure
 		$AuthSaison = utyGetSession('AuthSaison', '');
 		$this->m_tpl->assign('AuthSaison', $AuthSaison);
 
-		// Chargement des compétitions pour la copie en masse (groupées par section comme comboCompet)
+		// Ne plus charger les compétitions par défaut - elles seront chargées dynamiquement via AJAX
+		// quand l'utilisateur sélectionne une saison source
 		$arrayCompetition = array();
-		$label = $myBdd->getSections();
-
-		$sql = "SELECT DISTINCT c.GroupOrder, c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
-			c.Titre_actif, g.id, g.section, g.ordre
-			FROM kp_competition c, kp_groupe g
-			WHERE c.Code_saison = ?
-			AND c.Code_ref = g.Groupe
-			ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($saisonEnCours));
-
-		$j = '';
-		$i = -1;
-		while ($row = $result->fetch()) {
-			// Titre
-			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
-				$Libelle = $row["Soustitre"];
-			} else {
-				$Libelle = $row["Libelle"];
-			}
-			if ($row["Soustitre2"] != '') {
-				$Libelle .= ' - ' . $row["Soustitre2"];
-			}
-
-			if ($j != $row['section']) {
-				$i++;
-				$arrayCompetition[$i]['label'] = $label[$row['section']];
-			}
-			$j = $row['section'];
-			$arrayCompetition[$i]['options'][] = array(
-				'Code' => $row['Code'],
-				'Libelle' => $Libelle
-			);
-		}
-
 		$this->m_tpl->assign('arrayCompetitionCopy', $arrayCompetition);
 
 	}
