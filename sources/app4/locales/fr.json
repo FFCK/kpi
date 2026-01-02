@@ -1,0 +1,95 @@
+{
+  "app": {
+    "title": "Administration KPI"
+  },
+  "menu": {
+    "events": "Événements",
+    "documents": "Documents",
+    "statistics": "Statistiques",
+    "operations": "Opérations"
+  },
+  "profile": "Profil",
+  "logout": "Déconnexion",
+  "login": {
+    "title": "Connexion",
+    "subtitle": "Panneau d'administration",
+    "username": "Identifiant",
+    "username_placeholder": "Entrez votre identifiant",
+    "password": "Mot de passe",
+    "password_placeholder": "Entrez votre mot de passe",
+    "submit": "Se connecter",
+    "error_invalid_credentials": "Identifiant ou mot de passe incorrect",
+    "error_profile_restricted": "Accès restreint au profil 1 pendant la phase beta",
+    "error_generic": "Erreur de connexion. Veuillez réessayer.",
+    "beta_title": "Version Beta",
+    "beta_message": "Accès limité au profil 1 (Super Admin) uniquement."
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue, {name}",
+    "manage_events": "Gérer les événements",
+    "manage_documents": "Gérer les documents",
+    "view_statistics": "Voir les statistiques",
+    "system_operations": "Opérations système",
+    "beta_notice_title": "Version Beta",
+    "beta_notice_message": "Cette nouvelle interface d'administration est en cours de développement. Seul le profil 1 y a accès pendant la phase de test."
+  },
+  "events": {
+    "title": "Gestion des événements",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "delete_selected": "Supprimer la sélection",
+    "select_all": "Tout sélectionner",
+    "columns": {
+      "id": "ID",
+      "libelle": "Libellé",
+      "lieu": "Lieu",
+      "date_debut": "Date début",
+      "date_fin": "Date fin",
+      "publication": "Publié",
+      "app": "App",
+      "actions": "Actions"
+    },
+    "form": {
+      "add_title": "Ajouter un événement",
+      "edit_title": "Modifier l'événement",
+      "libelle": "Libellé",
+      "libelle_placeholder": "Nom de l'événement",
+      "lieu": "Lieu",
+      "lieu_placeholder": "Lieu de l'événement",
+      "date_debut": "Date de début",
+      "date_fin": "Date de fin",
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cet événement ?",
+    "confirm_delete_multiple": "Êtes-vous sûr de vouloir supprimer {count} événement(s) ?",
+    "success_created": "Événement créé avec succès",
+    "success_updated": "Événement modifié avec succès",
+    "success_deleted": "Événement supprimé avec succès",
+    "error_load": "Erreur lors du chargement des événements",
+    "error_save": "Erreur lors de l'enregistrement",
+    "error_delete": "Erreur lors de la suppression",
+    "empty": "Aucun événement trouvé",
+    "pagination": {
+      "showing": "Affichage de {from} à {to} sur {total} événements",
+      "items_per_page": "Éléments par page"
+    }
+  },
+  "common": {
+    "yes": "Oui",
+    "no": "Non",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "confirm": "Confirmer",
+    "actions": "Actions"
+  }
+}

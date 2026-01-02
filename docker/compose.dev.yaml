@@ -213,6 +213,68 @@ services:
             - "traefik.http.routers.nginx_app2.tls=true"
             - "traefik.http.services.nginx_app2.loadbalancer.server.port=80"
 
+    # App4 - Admin application (Nuxt)
+    node_app4:
+        container_name: kpi_node_app4
+        build:
+            context: ../sources/app4
+            dockerfile: ../../docker/node/Dockerfile
+        working_dir: /app
+        user: "${USER_ID}:${GROUP_ID}"
+        volumes:
+            - ../sources/app4:/app
+        environment:
+            - HOST=0.0.0.0
+            - PORT=3004
+            - TZ=Europe/Paris
+            - LANG=fr_FR.UTF-8
+            - LANGUAGE=fr_FR:fr
+            - LC_ALL=fr_FR.UTF-8
+        networks:
+            - network_kpi
+            - traefiknetwork
+        ports:
+            - "3004:3004"
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.app4.rule=Host(`${NODE4_DOMAIN_NAME}`)"
+            - "traefik.http.routers.app4.entrypoints=websecure"
+            - "traefik.http.routers.app4.tls=true"
+            - "traefik.http.services.app4.loadbalancer.server.port=3004"
+
+    # Nginx for app4 static files - serves /admin2/ path
+    nginx_app4:
+        container_name: ${APPLICATION_NAME}_nginx_app4
+        image: nginx:alpine
+        volumes:
+            - ../sources/app4/.output/public:/usr/share/nginx/html:ro
+            - ./config/nginx-app4.conf:/etc/nginx/conf.d/default.conf:ro
+            - ${HOST_NGINX_LOG_PATH}:/var/log/nginx/
+        environment:
+            - TZ=Europe/Paris
+        networks:
+            - network_kpi
+            - traefiknetwork
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 10m
+                max-file: 3
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            # Route /admin2/* to this nginx container
+            - "traefik.http.routers.nginx_app4.rule=Host(`${KPI_DOMAIN_NAME}`) && PathPrefix(`/admin2`)"
+            - "traefik.http.routers.nginx_app4.entrypoints=websecure"
+            - "traefik.http.routers.nginx_app4.tls=true"
+            # Strip the /admin2 prefix before forwarding to nginx
+            - "traefik.http.routers.nginx_app4.middlewares=strip-admin2"
+            - "traefik.http.middlewares.strip-admin2.stripprefix.prefixes=/admin2"
+            - "traefik.http.services.nginx_app4.loadbalancer.server.port=80"
+            # Higher priority than the main kpi router
+            - "traefik.http.routers.nginx_app4.priority=100"
+
 
 networks:
     network_kpi:

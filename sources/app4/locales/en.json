@@ -1,0 +1,95 @@
+{
+  "app": {
+    "title": "KPI Administration"
+  },
+  "menu": {
+    "events": "Events",
+    "documents": "Documents",
+    "statistics": "Statistics",
+    "operations": "Operations"
+  },
+  "profile": "Profile",
+  "logout": "Logout",
+  "login": {
+    "title": "Login",
+    "subtitle": "Administration Panel",
+    "username": "Username",
+    "username_placeholder": "Enter your username",
+    "password": "Password",
+    "password_placeholder": "Enter your password",
+    "submit": "Sign in",
+    "error_invalid_credentials": "Invalid username or password",
+    "error_profile_restricted": "Access restricted to profile 1 during beta phase",
+    "error_generic": "Login error. Please try again.",
+    "beta_title": "Beta Version",
+    "beta_message": "Access limited to profile 1 (Super Admin) only."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {name}",
+    "manage_events": "Manage events",
+    "manage_documents": "Manage documents",
+    "view_statistics": "View statistics",
+    "system_operations": "System operations",
+    "beta_notice_title": "Beta Version",
+    "beta_notice_message": "This new administration interface is under development. Only profile 1 has access during the testing phase."
+  },
+  "events": {
+    "title": "Event Management",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "delete_selected": "Delete selected",
+    "select_all": "Select all",
+    "columns": {
+      "id": "ID",
+      "libelle": "Name",
+      "lieu": "Location",
+      "date_debut": "Start date",
+      "date_fin": "End date",
+      "publication": "Published",
+      "app": "App",
+      "actions": "Actions"
+    },
+    "form": {
+      "add_title": "Add event",
+      "edit_title": "Edit event",
+      "libelle": "Name",
+      "libelle_placeholder": "Event name",
+      "lieu": "Location",
+      "lieu_placeholder": "Event location",
+      "date_debut": "Start date",
+      "date_fin": "End date",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "confirm_delete": "Are you sure you want to delete this event?",
+    "confirm_delete_multiple": "Are you sure you want to delete {count} event(s)?",
+    "success_created": "Event created successfully",
+    "success_updated": "Event updated successfully",
+    "success_deleted": "Event deleted successfully",
+    "error_load": "Error loading events",
+    "error_save": "Error saving event",
+    "error_delete": "Error deleting event",
+    "empty": "No events found",
+    "pagination": {
+      "showing": "Showing {from} to {to} of {total} events",
+      "items_per_page": "Items per page"
+    }
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "actions": "Actions"
+  }
+}
