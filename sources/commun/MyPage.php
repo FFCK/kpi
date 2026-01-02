@@ -98,6 +98,9 @@ class MyPage
 				array_push($arrayMenu, array('name' => 'Utilisateurs', 'href' => 'GestionUtilisateur.php'));
 			if (isset($profile) && $profile==1)
 				array_push($arrayMenu, array('name' => 'Operations', 'href' => 'GestionOperations.php'));
+			// Admin2 - New admin interface (Beta - profile 1 only)
+			if (isset($profile) && $profile==1)
+				array_push($arrayMenu, array('name' => 'Admin2_Beta', 'href' => '/admin2/'));
 		}
 		
 		$this->m_arrayMenu = $arrayMenu;
