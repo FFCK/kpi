@@ -12,9 +12,40 @@ Migrer progressivement le backend d'administration PHP (Smarty 4, jQuery, Bootst
 | **URL** | `kpi.localhost/admin2/...` |
 | **API** | API2 avec JWT (Symfony 7.3 + API Platform) |
 | **Authentification** | JWT tokens via LexikJWTAuthenticationBundle |
+| **Clés JWT** | Générées via commande Makefile (reproductible preprod/prod) |
 | **Page pilote** | GestionEvenement (gestion des événements) |
 | **Accès initial** | Profil 1 uniquement (Super Admin) |
 | **Transition** | Lien dans menu PHP vers nouvelle interface |
+
+## Principes de migration
+
+### Analyse fonctionnelle par page
+
+Pour chaque page migrée :
+1. **Inventaire** : Lister toutes les fonctionnalités existantes
+2. **Évaluation** : Pour chaque fonctionnalité, décider si elle doit être :
+   - ✅ Conservée telle quelle
+   - 🔧 Améliorée (UX, performance)
+   - 📦 Simplifiée (réduire la complexité)
+   - ❌ Supprimée (obsolète, jamais utilisée)
+3. **Validation** : S'assurer qu'aucune fonctionnalité n'est oubliée
+
+### Design de l'interface
+
+| Élément | Spécification |
+|---------|---------------|
+| **Liste des données** | Pleine largeur, icônes d'action par ligne |
+| **Actions bulk** | Barre d'outils au-dessus (sélection multiple ou tous) |
+| **Formulaire ajout/modif** | Fenêtre modale |
+| **Pagination** | 20 items par page par défaut |
+| **Responsive** | Mobile-first, adaptatif desktop |
+
+### Ordre de migration
+
+1. **GestionEvenement** (pilote) - CRUD événements
+2. **GestionDoc** - CRUD documents
+3. **GestionStats** - Statistiques
+4. **GestionOperations** - Opérations système (profil 1)
 
 ## Phase 1 : Infrastructure (Fondations)
 
@@ -88,7 +119,32 @@ composer require symfony/security-bundle
 - `config/packages/security.yaml` (firewall JWT)
 - Génération des clés RSA (privée/publique)
 
-### 2.3 Endpoint de login
+### 2.3 Commande Makefile pour génération des clés
+
+```makefile
+# JWT - Génération des clés RSA
+jwt_generate_keys:
+	@echo "Génération des clés JWT..."
+	docker compose -f docker/compose.dev.yaml exec php \
+		sh -c "cd /var/www/html/api2 && \
+		mkdir -p config/jwt && \
+		openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 -pass pass:\$${JWT_PASSPHRASE} && \
+		openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:\$${JWT_PASSPHRASE}"
+	@echo "Clés JWT générées dans sources/api2/config/jwt/"
+```
+
+**Usage :**
+```bash
+# En développement
+make jwt_generate_keys
+
+# En préprod/prod (même commande, fichiers .env différents)
+make jwt_generate_keys
+```
+
+**Note** : Les clés sont dans `.gitignore` et doivent être générées sur chaque environnement.
+
+### 2.4 Endpoint de login
 
 ```
 POST /api2/auth/login
@@ -96,7 +152,7 @@ Body: { "username": "...", "password": "..." }
 Response: { "token": "eyJ...", "user": { "id", "name", "profile" } }
 ```
 
-### 2.4 Protection des routes admin
+### 2.5 Protection des routes admin
 
 ```yaml
 # security.yaml
@@ -153,27 +209,76 @@ class EventDto {
 
 ### 4.1 Page Events (pages/events/index.vue)
 
+**Structure de la page :**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  [+ Ajouter]  [⬜ Tout sélectionner]  [🗑️ Supprimer (0)]    │  ← Barre d'actions bulk
+├─────────────────────────────────────────────────────────────┤
+│ ⬜ │ 👁️ │ 📱 │ ID  │ Libellé        │ Lieu    │ Début │ Fin │ ← En-têtes triables
+├─────────────────────────────────────────────────────────────┤
+│ ⬜ │ 🟢 │ 🟢 │ 123 │ Championnat... │ Paris   │ 01/03 │ ... │ ✏️ 🗑️
+│ ⬜ │ 🔴 │ 🟢 │ 122 │ Tournoi...     │ Lyon    │ 15/02 │ ... │ ✏️ 🗑️
+│ ...                                                         │
+├─────────────────────────────────────────────────────────────┤
+│ ◀ Page 1 sur 5 ▶                    20 items/page ▼         │  ← Pagination
+└─────────────────────────────────────────────────────────────┘
+```
+
 **Fonctionnalités :**
-- Liste des événements dans une DataTable
-- Tri par date (DESC par défaut)
-- Actions : Éditer, Supprimer, Toggle Publication, Toggle App
-- Formulaire modal pour Ajouter/Modifier
+- Liste pleine largeur avec colonnes triables
+- Pagination : 20 items par page (configurable)
+- Sélection multiple avec checkbox
+- Actions bulk : supprimer sélection, tout sélectionner
+- Actions par ligne : Éditer (✏️), Supprimer (🗑️), Toggle Publication (👁️), Toggle App (📱)
+- Formulaire ajout/modification en **modal**
 - Confirmation avant suppression
-- Messages de succès/erreur (toast)
+- Messages de succès/erreur (toast notifications)
+- **Responsive** : colonnes masquées sur mobile, actions en menu déroulant
 
 **Composants utilisés :**
-- Nuxt UI : `UTable`, `UButton`, `UModal`, `UForm`, `UInput`, `UNotification`
+- Nuxt UI : `UTable`, `UButton`, `UModal`, `UForm`, `UInput`, `UPagination`, `UCheckbox`, `UDropdown`
 - Icônes : `@nuxt/icon`
 
-### 4.2 Layout Admin (layouts/admin.vue)
+### 4.2 Modal Ajout/Modification
+
+```
+┌─────────────────────────────────────┐
+│  Ajouter un événement          [X] │
+├─────────────────────────────────────┤
+│  Libellé *                          │
+│  ┌─────────────────────────────┐    │
+│  │                             │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  Lieu                               │
+│  ┌─────────────────────────────┐    │
+│  │                             │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  Date début        Date fin         │
+│  ┌────────────┐    ┌────────────┐   │
+│  │ 📅         │    │ 📅         │   │
+│  └────────────┘    └────────────┘   │
+│                                     │
+│         [Annuler]  [Enregistrer]    │
+└─────────────────────────────────────┘
+```
+
+### 4.3 Layout Admin (layouts/admin.vue)
 
 ```vue
 <template>
-  <div class="flex min-h-screen">
-    <AdminSidebar />
-    <div class="flex-1">
-      <AdminHeader />
-      <main class="p-6">
+  <div class="flex min-h-screen bg-gray-50">
+    <!-- Sidebar (masquée sur mobile, toggle via hamburger) -->
+    <AdminSidebar :collapsed="sidebarCollapsed" />
+
+    <div class="flex-1 flex flex-col">
+      <!-- Header avec hamburger menu mobile -->
+      <AdminHeader @toggle-sidebar="sidebarCollapsed = !sidebarCollapsed" />
+
+      <!-- Contenu principal -->
+      <main class="flex-1 p-4 md:p-6 overflow-auto">
         <slot />
       </main>
     </div>
@@ -181,12 +286,24 @@ class EventDto {
 </template>
 ```
 
-### 4.3 Sidebar avec menu
+### 4.4 Sidebar avec menu
 
-Menu conditionnel selon le profil utilisateur :
-- Profil ≤ 1 : Toutes les options + Operations
-- Profil ≤ 2 : Events, Users, etc.
-- Profil ≤ 3 : Options limitées
+Menu conditionnel selon le profil utilisateur (pour les 4 pages prévues) :
+
+| Page | Profil requis | Icône |
+|------|---------------|-------|
+| Events | ≤ 2 | 📅 |
+| Documents | ≤ 9 | 📄 |
+| Statistics | ≤ 9 | 📊 |
+| Operations | = 1 | ⚙️ |
+
+### 4.5 Responsive breakpoints
+
+| Breakpoint | Comportement |
+|------------|--------------|
+| **Mobile** (< 640px) | Sidebar masquée, colonnes réduites, actions en dropdown |
+| **Tablet** (640-1024px) | Sidebar rétractable, colonnes principales visibles |
+| **Desktop** (> 1024px) | Sidebar déployée, toutes colonnes visibles |
 
 ## Phase 5 : Intégration Menu PHP
 
@@ -272,18 +389,16 @@ Ajouter un lien conditionnel pour le profil 1 :
 5. **Validation utilisateur** : Période de test (1-2 semaines)
 6. **Migration complète** : Supprimer ancienne page, ouvrir à tous les profils
 
-## Prochaines pages à migrer (ordre suggéré)
+## Pages à migrer (ordre validé)
 
-1. ✅ GestionEvenement (pilote)
-2. GestionDoc (simple CRUD documents)
-3. GestionUtilisateur (CRUD utilisateurs)
-4. GestionStructure (CRUD clubs)
-5. GestionCompetition (plus complexe, autocomplete)
-6. GestionEquipe (relations équipes)
-7. GestionJournee (matchs, calendrier)
-8. GestionClassement (classements)
-9. GestionStats (statistiques)
-10. GestionOperations (opérations système)
+| # | Page PHP | Page Nuxt | Profil | Statut |
+|---|----------|-----------|--------|--------|
+| 1 | GestionEvenement | `/events` | ≤ 2 | 🔄 En cours |
+| 2 | GestionDoc | `/documents` | ≤ 9 | ⏳ À faire |
+| 3 | GestionStats | `/statistics` | ≤ 9 | ⏳ À faire |
+| 4 | GestionOperations | `/operations` | = 1 | ⏳ À faire |
+
+Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migration.
 
 ## Estimation effort
 
@@ -298,6 +413,51 @@ Ajouter un lien conditionnel pour le profil 1 :
 
 ---
 
+## Annexe A : Analyse fonctionnelle - GestionEvenement
+
+### Fonctionnalités existantes
+
+| # | Fonctionnalité | Profil | Évaluation | Décision |
+|---|----------------|--------|------------|----------|
+| 1 | Liste des événements (tri date DESC) | ≤ 2 | Essentielle | ✅ Conserver |
+| 2 | Afficher ID | ≤ 2 | Utile debug | ✅ Conserver |
+| 3 | Toggle Publication (O/N) | ≤ 2 | Essentielle | ✅ Conserver |
+| 4 | Toggle App (O/N) | ≤ 2 | Essentielle | ✅ Conserver |
+| 5 | Éditer un événement | ≤ 2 | Essentielle | ✅ Conserver |
+| 6 | Supprimer un événement | ≤ 1 | Essentielle | ✅ Conserver |
+| 7 | Ajouter un événement | ≤ 2 | Essentielle | ✅ Conserver |
+| 8 | Formulaire à droite (fixe) | - | UX ancienne | 🔧 → Modal |
+| 9 | Confirmation JS avant action | - | Bonne pratique | ✅ Conserver |
+| 10 | Formatage dates FR/EN | - | i18n | ✅ Conserver |
+| 11 | Journalisation des actions | - | Audit | ✅ Conserver (API) |
+
+### Améliorations prévues
+
+| # | Amélioration | Description |
+|---|--------------|-------------|
+| 1 | Pagination | 20 items/page (actuellement: tout sur une page) |
+| 2 | Sélection multiple | Checkbox pour actions bulk |
+| 3 | Suppression bulk | Supprimer plusieurs événements à la fois |
+| 4 | Recherche/Filtre | Filtrer par libellé, lieu, dates |
+| 5 | Tri colonnes | Clic sur en-tête pour trier |
+| 6 | Responsive | Interface adaptée mobile/tablet |
+| 7 | Feedback visuel | Toast notifications succès/erreur |
+| 8 | Validation temps réel | Erreurs affichées dans le formulaire |
+
+### Champs de l'entité Event
+
+| Champ | Type | Requis | Validation |
+|-------|------|--------|------------|
+| id | int | Auto | PK |
+| libelle | string(40) | Oui | NotBlank, MaxLength(40) |
+| lieu | string(40) | Non | MaxLength(40) |
+| date_debut | date | Non | Format date valide |
+| date_fin | date | Non | Format date valide, >= date_debut |
+| publication | char(1) | Non | Enum: O/N, défaut: N |
+| app | char(1) | Non | Enum: O/N, défaut: N |
+
+---
+
 **Document créé le** : 2026-01-02
 **Dernière mise à jour** : 2026-01-02
-**Statut** : En attente de validation
+**Statut** : ✅ Validé - Prêt pour implémentation
