@@ -380,9 +380,81 @@ Ajouter un lien conditionnel pour le profil 1 :
 | `sources/smarty/templates/main_menu.tpl` | Lien nouvelle admin |
 | `docker/.env.dist` | Variables app4 |
 
+## Statut d'implémentation
+
+| Phase | Description | Statut |
+|-------|-------------|--------|
+| Phase 1.1 | Créer l'application Nuxt app4 | ✅ Terminé |
+| Phase 1.2 | Configurer Docker (compose files, Traefik) | ✅ Terminé |
+| Phase 1.3 | Ajouter commandes Makefile | ✅ Terminé |
+| Phase 2 | Implémenter JWT dans API2 | ✅ Terminé |
+| Phase 3 | Créer endpoints API2 pour events | ✅ Terminé |
+| Phase 4 | Créer interface Nuxt events | ✅ Terminé |
+| Phase 5 | Ajouter lien menu PHP | ✅ Terminé |
+| Phase 6 | Préparer tests de validation | ✅ Terminé |
+
+## Guide de test rapide
+
+### Prérequis
+
+1. **Démarrer les conteneurs Docker** :
+   ```bash
+   make dev_up
+   ```
+
+2. **Générer les clés JWT** (première fois seulement) :
+   ```bash
+   make jwt_generate_keys
+   ```
+   Entrer un passphrase quand demandé (et le noter dans `.env` de API2).
+
+3. **Installer les dépendances app4** :
+   ```bash
+   make npm_install_app4
+   ```
+
+4. **Démarrer le serveur de développement app4** :
+   ```bash
+   make run_dev_app4
+   ```
+
+### Tests manuels
+
+1. **Accéder à la nouvelle interface** :
+   - URL : `https://kpi.localhost/admin2/`
+   - Ou via le menu PHP : cliquer sur "Admin2 (Beta)" (visible profil 1 uniquement)
+
+2. **Se connecter** :
+   - Utiliser un compte profil 1 (Super Admin)
+   - Les autres profils sont bloqués pendant la phase beta
+
+3. **Tester les fonctionnalités Events** :
+   - Liste des événements avec pagination
+   - Tri des colonnes (cliquer sur les en-têtes)
+   - Recherche par libellé/lieu
+   - Ajouter un événement (bouton + modal)
+   - Modifier un événement (icône crayon)
+   - Toggle publication (icône check vert/rouge)
+   - Toggle app (icône téléphone)
+   - Supprimer un événement (icône poubelle, profil 1 uniquement)
+   - Sélection multiple et suppression bulk
+
+4. **Vérifier la synchronisation** :
+   - Les modifications doivent être visibles dans l'ancien `GestionEvenement.php`
+   - Et inversement
+
+### Configuration API2 (.env)
+
+S'assurer que le fichier `sources/api2/.env` contient :
+```env
+JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+JWT_PASSPHRASE=votre_passphrase
+```
+
 ## Étapes de mise en production
 
-1. **Développement** : Implémenter sur branche `claude/migrate-admin-backend-A1TBN`
+1. **Développement** : ✅ Implémenté sur branche `claude/migrate-admin-backend-A1TBN`
 2. **Tests locaux** : Valider tous les tests fonctionnels
 3. **Déploiement preprod** : Tester en conditions réelles
 4. **Déploiement prod** : Activer pour profil 1 uniquement
@@ -393,7 +465,7 @@ Ajouter un lien conditionnel pour le profil 1 :
 
 | # | Page PHP | Page Nuxt | Profil | Statut |
 |---|----------|-----------|--------|--------|
-| 1 | GestionEvenement | `/events` | ≤ 2 | 🔄 En cours |
+| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté (en test) |
 | 2 | GestionDoc | `/documents` | ≤ 9 | ⏳ À faire |
 | 3 | GestionStats | `/statistics` | ≤ 9 | ⏳ À faire |
 | 4 | GestionOperations | `/operations` | = 1 | ⏳ À faire |
@@ -460,4 +532,4 @@ Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migr
 
 **Document créé le** : 2026-01-02
 **Dernière mise à jour** : 2026-01-02
-**Statut** : ✅ Validé - Prêt pour implémentation
+**Statut** : ✅ Phase 1-6 implémentées - Prêt pour tests
