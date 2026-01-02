@@ -13,15 +13,23 @@ export interface AuthResponse {
   user: User
 }
 
-// Event type
+// Event type (from API)
 export interface Event {
   id: number
   libelle: string
   lieu: string | null
   dateDebut: string | null
   dateFin: string | null
-  publication: 'O' | 'N'
-  app: 'O' | 'N'
+  publication: boolean
+  app: boolean
+}
+
+// Event form data (for create/update)
+export interface EventFormData {
+  libelle: string
+  lieu: string
+  dateDebut: string
+  dateFin: string
 }
 
 // Paginated response
