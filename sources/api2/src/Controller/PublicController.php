@@ -16,9 +16,9 @@ class PublicController extends AbstractController
     ) {
     }
 
-    #[Route('/team-stats/{teamId}/{eventId}', name: 'team_stats', methods: ['GET'])]
+    #[Route('/event/{eventId}/team/{teamId}/stats', name: 'team_stats', methods: ['GET'])]
     #[OA\Get(
-        path: '/team-stats/{teamId}/{eventId}',
+        path: '/event/{eventId}/team/{teamId}/stats',
         summary: 'Get team statistics',
         description: 'Returns player statistics for a team in an event (goals, cards, etc.)',
         tags: ['2. App2 - Public'],

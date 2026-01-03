@@ -6,11 +6,11 @@
         <span class="font-bold text-lg">KPI App</span>
         <ClientOnly>
           <span :class="isOnline ? 'ml-2 text-green-400' : 'ml-2 text-red-500'">
-            <UIcon name="i-heroicons-wifi" />
+            <UIcon :name="isOnline ? 'i-heroicons-wifi' : 'i-heroicons-signal-slash'" class="h-6 w-6" />
           </span>
           <template #fallback>
             <span class="ml-2 text-green-400">
-              <UIcon name="i-heroicons-wifi" />
+              <UIcon name="i-heroicons-wifi" class="h-6 w-6" />
             </span>
           </template>
         </ClientOnly>

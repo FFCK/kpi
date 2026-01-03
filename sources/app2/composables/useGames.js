@@ -8,7 +8,7 @@ import dayjs from 'dayjs'
 export const useGames = () => {
   const gameStore = useGameStore()
   const preferenceStore = usePreferenceStore()
-  const { getApi } = useApi()
+  const { getApi, showCacheToast } = useApi()
   const { saveGames, loadGames: loadGamesFromDB, clearOldGames } = useIndexedDB()
 
   const games = computed(() => gameStore.games)
@@ -51,13 +51,18 @@ export const useGames = () => {
         await gameStore.clearAndUpdateGames(gamelist)
         loadCategories()
         filterGames()
+
+        // Show toast only if user is offline
+        if (!navigator.onLine) {
+          showCacheToast()
+        }
       }
 
       // Charger depuis l'API uniquement si nécessaire
       if (shouldLoadFromApi || !cachedGames || cachedGames.length === 0) {
         try {
           // console.log('Loading games from API')
-          const response = await getApi(`/games/${eventId}`)
+          const response = await getApi(`/event/${eventId}/games`)
           const data = await response.json()
           const gamelist = processGameData(data)
 

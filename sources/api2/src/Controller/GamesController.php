@@ -15,9 +15,9 @@ class GamesController extends AbstractController
     ) {
     }
 
-    #[Route('/games/{eventId}', name: 'games', methods: ['GET'])]
+    #[Route('/event/{eventId}/games', name: 'games', methods: ['GET'])]
     #[OA\Get(
-        path: '/games/{eventId}',
+        path: '/event/{eventId}/games',
         summary: 'Get games for an event',
         tags: ['2. App2 - Public'],
         parameters: [

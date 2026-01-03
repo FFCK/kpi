@@ -359,7 +359,7 @@ const fetchStats = async (teamId) => {
       return
     }
 
-    const response = await getApi(`/team-stats/${teamId}/${eventId}`)
+    const response = await getApi(`/event/${eventId}/team/${teamId}/stats`)
     if (response.ok) {
       stats.value = await response.json()
     } else {

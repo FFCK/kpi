@@ -189,6 +189,10 @@
     "Cosmetic": "Cosmétique",
     "Safety": "Sécurité",
     "Technical": "Techn.",
+    "NotChecked": "Non contrôlé",
+    "Valid": "Valide",
+    "ValidPaddles": "Pagaies valides",
+    "Legend": "Légende",
     "Issues": "Problèmes",
     "Comments": "Commentaires",
     "Comment": "Commentaire",
@@ -237,5 +241,96 @@
     "DownloadPdf": "Télécharger le PDF",
     "Refresh": "Actualiser",
     "Back": "Retour"
+  },
+  "errors": {
+    "generic": {
+      "title": "Erreur",
+      "description": "Une erreur inattendue s'est produite"
+    },
+    "http": {
+      "400": {
+        "title": "Requête Invalide",
+        "description": "La requête n'a pas pu être traitée"
+      },
+      "401": {
+        "title": "Authentification Requise",
+        "description": "Votre session a expiré. Redirection vers la connexion..."
+      },
+      "403": {
+        "title": "Accès Refusé",
+        "description": "Vous n'avez pas la permission d'accéder à cette ressource"
+      },
+      "404": {
+        "title": "Non Trouvé",
+        "description": "La ressource demandée n'a pas été trouvée"
+      },
+      "4xx": {
+        "title": "Erreur de Requête",
+        "description": "Erreur {status}: La requête n'a pas pu être complétée"
+      },
+      "500": {
+        "title": "Erreur Serveur",
+        "description": "Le serveur a rencontré une erreur. Veuillez réessayer plus tard."
+      },
+      "503": {
+        "title": "Service Indisponible",
+        "description": "Le service est temporairement indisponible. Veuillez réessayer."
+      },
+      "5xx": {
+        "title": "Erreur Serveur",
+        "description": "Erreur {status}: Une erreur serveur s'est produite"
+      }
+    },
+    "network": {
+      "offline": {
+        "title": "Pas de Connexion Internet",
+        "description": "Vous êtes actuellement hors ligne. Certaines fonctionnalités peuvent être indisponibles.",
+        "message": "Connexion réseau perdue. Utilisation des données en cache."
+      },
+      "online": {
+        "title": "Connexion Rétablie",
+        "message": "Vous êtes de nouveau en ligne !"
+      },
+      "timeout": {
+        "title": "Délai Expiré",
+        "description": "La requête a pris trop de temps. Vérifiez votre connexion et réessayez."
+      },
+      "failed": {
+        "title": "Connexion Échouée",
+        "description": "Impossible de se connecter au serveur. Vérifiez votre réseau et réessayez."
+      },
+      "cors": {
+        "title": "Connexion Bloquée",
+        "description": "Impossible de se connecter en raison de restrictions de sécurité"
+      }
+    },
+    "operations": {
+      "loadGames": {
+        "title": "Échec du Chargement des Matchs",
+        "description": "Impossible de charger les données des matchs"
+      },
+      "loadCharts": {
+        "title": "Échec du Chargement des Classements",
+        "description": "Impossible de charger les données de classement"
+      },
+      "loadPlayers": {
+        "title": "Échec du Chargement des Joueurs",
+        "description": "Impossible de charger les informations des joueurs"
+      },
+      "savePlayer": {
+        "title": "Échec de l'Enregistrement",
+        "description": "Impossible d'enregistrer les modifications"
+      },
+      "login": {
+        "title": "Échec de la Connexion",
+        "description": "L'authentification a échoué. Vérifiez vos identifiants."
+      }
+    },
+    "cache": {
+      "usingOfflineData": {
+        "title": "Données en Cache",
+        "description": "Affichage des données précédemment chargées"
+      }
+    }
   }
 }

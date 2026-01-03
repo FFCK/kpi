@@ -29,6 +29,8 @@ Documentation technique pour le développement et la maintenance du projet.
 
 ### [Référence](developer/reference/)
 - **[KPI_FUNCTIONALITY_INVENTORY.md](developer/reference/KPI_FUNCTIONALITY_INVENTORY.md)** - Inventaire complet des fonctionnalités (~7000 lignes)
+- **[APP2_TECHNICAL_ARCHITECTURE.md](developer/reference/APP2_TECHNICAL_ARCHITECTURE.md)** - Architecture technique complète de l'application web (stack, PWA, gestion erreurs, API)
+- **[API2_ENDPOINTS.md](developer/reference/API2_ENDPOINTS.md)** - Documentation complète API2 (Symfony 7.3 + API Platform 4.2)
 
 ### [Guides](developer/guides/)
 
@@ -141,11 +143,11 @@ Documentation technique pour le développement et la maintenance du projet.
 
 ## 📊 Statistiques
 
-- **Total documents**: 66+ fichiers
+- **Total documents**: 68+ fichiers
 - **Documentation utilisateur**: 10 fichiers
-- **Documentation développeur**: 59+ fichiers (dont 1 référence)
-- **Lignes de documentation**: ~23000+
-- **Dernière mise à jour**: 2025-12-12
+- **Documentation développeur**: 60+ fichiers (dont 3 références)
+- **Lignes de documentation**: ~24000+
+- **Dernière mise à jour**: 2026-01-03
 
 ---
 

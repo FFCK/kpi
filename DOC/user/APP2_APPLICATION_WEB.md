@@ -339,6 +339,42 @@ Fonctionnalité dédiée au contrôle du matériel des joueurs avant les matchs.
 - Le scrutineering nécessite une connexion pour la sauvegarde
 - Les mises à jour de scores nécessitent une connexion
 
+### Notifications Automatiques
+
+**L'application affiche des notifications toast pour vous informer en temps réel** :
+
+**Types de notifications** :
+
+- **🔴 Rouge (Erreur)** :
+  - Erreur serveur (500, 503)
+  - Échec de connexion
+  - Délai d'attente dépassé (plus de 10 secondes)
+  - **Action** : Vérifiez votre connexion internet et réessayez
+
+- **🟠 Orange (Avertissement)** :
+  - Perte de connexion internet détectée
+  - Requête invalide (400, 404)
+  - **Action** : Vérifiez votre réseau, attendez la reconnexion automatique
+
+- **🔵 Bleu (Information)** :
+  - Utilisation des données en cache (mode hors ligne)
+  - Affichage des données précédemment chargées
+  - **Action** : Vous pouvez continuer à consulter les données disponibles
+
+- **🟢 Vert (Succès)** :
+  - Connexion internet rétablie automatiquement
+  - Sauvegarde réussie
+  - **Action** : L'application fonctionne normalement et se synchronise
+
+**Session expirée (401)** :
+- Si votre session expire (après 10 jours d'inactivité), une notification rouge apparaît automatiquement
+- Vous serez redirigé vers la page de connexion après 1,5 seconde
+- Reconnectez-vous pour continuer à utiliser l'application
+
+**Messages multilingues** :
+- Toutes les notifications s'affichent dans votre langue (français ou anglais)
+- Changez la langue via le sélecteur dans le menu
+
 ---
 
 ## 💡 Cas d'Usage Pratiques
@@ -455,6 +491,37 @@ Fonctionnalité dédiée au contrôle du matériel des joueurs avant les matchs.
 3. Vérifier dans quelle compétition l'équipe joue
 4. Contacter l'organisateur de la compétition
 
+### Messages d'erreur affichés
+
+**L'application affiche automatiquement des notifications en cas de problème** :
+
+**Notifications rouges** (erreurs critiques) :
+- **"Erreur Serveur"** : Le serveur rencontre un problème technique
+  - **Solution** : Réessayez dans quelques minutes, le problème est généralement temporaire
+- **"Connexion Échouée"** : Impossible de contacter le serveur
+  - **Solution** : Vérifiez votre connexion internet et réessayez
+- **"Délai Expiré"** : La requête a pris trop de temps (plus de 10 secondes)
+  - **Solution** : Vérifiez votre connexion, réessayez avec une meilleure connection
+
+**Notifications orange** (avertissements) :
+- **"Pas de Connexion Internet"** : Vous êtes passé en mode hors ligne
+  - **Solution** : L'application continue à fonctionner avec les données en cache
+- **"Non Trouvé"** : La ressource demandée n'existe pas
+  - **Solution** : Vérifiez que vous consultez le bon événement/match/équipe
+
+**Notifications bleues** (informations) :
+- **"Données en Cache"** : Vous consultez des données enregistrées localement
+  - **Solution** : Normal en mode hors ligne, les données seront mises à jour dès reconnexion
+
+**Notifications vertes** (succès) :
+- **"Connexion Rétablie"** : Vous êtes de nouveau en ligne
+  - **Solution** : L'application se synchronise automatiquement
+
+**Si vous voyez "Authentification Requise"** :
+- Votre session a expiré après 10 jours
+- Vous serez redirigé automatiquement vers la page de connexion
+- Reconnectez-vous avec vos identifiants
+
 ### Le scrutineering ne sauvegarde pas
 
 **Causes possibles** :
@@ -558,6 +625,8 @@ Si vous rencontrez un problème :
 **Performance** :
 - Chargement initial : < 2 secondes
 - Mise en cache intelligente pour réduire la consommation de données
+- Gestion intelligente des erreurs avec notifications automatiques
+- Timeout de requête : 10 secondes maximum
 - Design épuré pour une meilleure lisibilité
 - Optimisation des images et assets
 
@@ -575,6 +644,7 @@ Si vous rencontrez un problème :
 
 **Technologies** :
 - Frontend : Nuxt 4, Vue 3, TypeScript, Tailwind CSS
+- Notifications : Nuxt UI Toast (Sonner) pour les notifications temps réel
 - Backend : API REST (Symfony 7.3 + API Platform 4.2)
 - Base de données : MariaDB 11.5
 - Hébergement : Docker (PHP 8.4)

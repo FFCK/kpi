@@ -189,6 +189,10 @@
     "Cosmetic": "Cosmetic",
     "Safety": "Safety",
     "Technical": "Techn.",
+    "NotChecked": "Not checked",
+    "Valid": "Valid",
+    "ValidPaddles": "Valid paddles",
+    "Legend": "Legend",
     "Issues": "Issues",
     "Comments": "Comments",
     "Comment": "Comment",
@@ -237,5 +241,96 @@
     "DownloadPdf": "Download PDF",
     "Refresh": "Refresh",
     "Back": "Back"
+  },
+  "errors": {
+    "generic": {
+      "title": "Error",
+      "description": "An unexpected error occurred"
+    },
+    "http": {
+      "400": {
+        "title": "Bad Request",
+        "description": "The request could not be processed"
+      },
+      "401": {
+        "title": "Authentication Required",
+        "description": "Your session has expired. Redirecting to login..."
+      },
+      "403": {
+        "title": "Access Denied",
+        "description": "You don't have permission to access this resource"
+      },
+      "404": {
+        "title": "Not Found",
+        "description": "The requested resource was not found"
+      },
+      "4xx": {
+        "title": "Request Error",
+        "description": "Error {status}: The request could not be completed"
+      },
+      "500": {
+        "title": "Server Error",
+        "description": "The server encountered an error. Please try again later."
+      },
+      "503": {
+        "title": "Service Unavailable",
+        "description": "The service is temporarily unavailable. Please try again."
+      },
+      "5xx": {
+        "title": "Server Error",
+        "description": "Error {status}: A server error occurred"
+      }
+    },
+    "network": {
+      "offline": {
+        "title": "No Internet Connection",
+        "description": "You are currently offline. Some features may not be available.",
+        "message": "Network connection lost. Using cached data."
+      },
+      "online": {
+        "title": "Connection Restored",
+        "message": "You are back online!"
+      },
+      "timeout": {
+        "title": "Request Timeout",
+        "description": "The request took too long. Please check your connection and try again."
+      },
+      "failed": {
+        "title": "Connection Failed",
+        "description": "Unable to connect to the server. Please check your network and try again."
+      },
+      "cors": {
+        "title": "Connection Blocked",
+        "description": "Unable to connect due to security restrictions"
+      }
+    },
+    "operations": {
+      "loadGames": {
+        "title": "Failed to Load Games",
+        "description": "Could not load game data"
+      },
+      "loadCharts": {
+        "title": "Failed to Load Rankings",
+        "description": "Could not load ranking data"
+      },
+      "loadPlayers": {
+        "title": "Failed to Load Players",
+        "description": "Could not load player information"
+      },
+      "savePlayer": {
+        "title": "Save Failed",
+        "description": "Could not save player changes"
+      },
+      "login": {
+        "title": "Login Failed",
+        "description": "Authentication failed. Please check your credentials."
+      }
+    },
+    "cache": {
+      "usingOfflineData": {
+        "title": "Using Cached Data",
+        "description": "Displaying previously loaded data"
+      }
+    }
   }
 }
