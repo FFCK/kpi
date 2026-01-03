@@ -20,7 +20,7 @@ class ChartsController extends AbstractController
         path: '/charts/{eventId}',
         summary: 'Get rankings and brackets for an event',
         description: 'Returns complex tournament structure with pools, brackets, rankings, and game details',
-        tags: ['Charts & Rankings'],
+        tags: ['2. App2 - Public'],
         parameters: [
             new OA\Parameter(
                 name: 'eventId',

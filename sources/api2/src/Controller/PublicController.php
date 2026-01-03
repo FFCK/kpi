@@ -21,7 +21,7 @@ class PublicController extends AbstractController
         path: '/team-stats/{teamId}/{eventId}',
         summary: 'Get team statistics',
         description: 'Returns player statistics for a team in an event (goals, cards, etc.)',
-        tags: ['Statistics'],
+        tags: ['2. App2 - Public'],
         parameters: [
             new OA\Parameter(
                 name: 'teamId',
@@ -115,7 +115,7 @@ class PublicController extends AbstractController
     #[OA\Get(
         path: '/stars',
         summary: 'Get app ratings statistics',
-        tags: ['App Ratings'],
+        tags: ['2. App2 - Public'],
         responses: [
             new OA\Response(
                 response: 200,
@@ -146,7 +146,7 @@ class PublicController extends AbstractController
     #[OA\Post(
         path: '/rating',
         summary: 'Submit app rating',
-        tags: ['App Ratings'],
+        tags: ['2. App2 - Public'],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -187,12 +187,12 @@ class PublicController extends AbstractController
         return new JsonResponse(['success' => true]);
     }
 
-    #[Route('/match-sheet/{gameId}', name: 'match_sheet', methods: ['GET'])]
+    #[Route('/game-sheet/{gameId}', name: 'game_sheet', methods: ['GET'])]
     #[OA\Get(
-        path: '/match-sheet/{gameId}',
-        summary: 'Get match sheet data',
-        description: 'Returns complete match sheet data for a finished and validated game. Includes game info, team compositions, events timeline, and player statistics.',
-        tags: ['Match Sheet'],
+        path: '/game-sheet/{gameId}',
+        summary: 'Get game sheet data',
+        description: 'Returns complete game sheet data for a finished and validated game. Includes game info, team compositions, events timeline, and player statistics. Publicly accessible for sharing match results.',
+        tags: ['2. App2 - Public'],
         parameters: [
             new OA\Parameter(
                 name: 'gameId',
@@ -219,7 +219,7 @@ class PublicController extends AbstractController
             new OA\Response(response: 404, description: 'Game not found or not available')
         ]
     )]
-    public function getMatchSheet(string $gameId): JsonResponse
+    public function getGameSheet(string $gameId): JsonResponse
     {
         $conn = $this->entityManager->getConnection();
         $gameId = (int) $gameId;

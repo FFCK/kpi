@@ -19,7 +19,7 @@ class GamesController extends AbstractController
     #[OA\Get(
         path: '/games/{eventId}',
         summary: 'Get games for an event',
-        tags: ['Games'],
+        tags: ['2. App2 - Public'],
         parameters: [
             new OA\Parameter(
                 name: 'eventId',

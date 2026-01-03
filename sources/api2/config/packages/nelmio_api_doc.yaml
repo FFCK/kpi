@@ -8,6 +8,8 @@ nelmio_api_doc:
         servers:
             - url: https://kpi.localhost/api2
               description: Development server
+    html_config:
+        assets_mode: bundle  # Use local assets instead of CDN
     areas:
         path_patterns:
-            - ^/(?!doc) # Accepts all routes except /doc
+            - ^/(?!(_error|doc)) # Accepts all routes except /_error and /doc

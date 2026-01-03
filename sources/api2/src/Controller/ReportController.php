@@ -2,34 +2,31 @@
 
 namespace App\Controller;
 
+use App\Service\TokenAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/report', name: 'report_')]
 class ReportController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TokenAuthService $tokenAuthService
     ) {
     }
 
-    #[Route('/{token}/game/{gameId}', name: 'game', methods: ['GET'])]
+    #[Route('/game/{gameId}', name: 'game', methods: ['GET'])]
     #[OA\Get(
-        path: '/report/{token}/game/{gameId}',
+        path: '/report/game/{gameId}',
         summary: 'Get game details with events and players',
         description: 'Returns complete game report including teams, players, and match events for official reports',
-        tags: ['Report'],
+        tags: ['4. Report'],
+        security: [['ApiToken' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'token',
-                in: 'path',
-                required: true,
-                description: 'Authentication token',
-                schema: new OA\Schema(type: 'string')
-            ),
             new OA\Parameter(
                 name: 'gameId',
                 in: 'path',
@@ -59,12 +56,17 @@ class ReportController extends AbstractController
                         )
                     ]
                 )
-            )
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized - Invalid or missing token')
         ]
     )]
-    public function getGame(string $token, int $gameId): JsonResponse
+    public function getGame(Request $request, int $gameId): JsonResponse
     {
-        // TODO: Implement token authentication
+        $auth = $this->tokenAuthService->validateToken($request);
+        if (!$auth) {
+            return $this->tokenAuthService->createUnauthorizedResponse();
+        }
+
         $conn = $this->entityManager->getConnection();
 
         // Game params

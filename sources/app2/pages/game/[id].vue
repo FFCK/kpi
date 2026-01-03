@@ -101,7 +101,7 @@ const loadMatchSheet = async () => {
   error.value = null
 
   try {
-    const response = await getApi(`/match-sheet/${gameId.value}`)
+    const response = await getApi(`/game-sheet/${gameId.value}`)
 
     if (response.ok) {
       matchData.value = await response.json()
@@ -111,7 +111,7 @@ const loadMatchSheet = async () => {
       error.value = t('MatchSheet.NotFound')
     }
   } catch (e) {
-    console.error('Error loading match sheet:', e)
+    console.error('Error loading game sheet:', e)
     error.value = t('MatchSheet.NotFound')
   } finally {
     loading.value = false

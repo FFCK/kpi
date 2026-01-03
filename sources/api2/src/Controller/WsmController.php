@@ -21,7 +21,7 @@ class WsmController extends AbstractController
     #[OA\Put(
         path: '/wsm/eventNetwork/{eventId}',
         summary: 'Update event network configuration',
-        tags: ['WSM - Web Score Management'],
+        tags: ['6. WSM - Web Score Management'],
         parameters: [
             new OA\Parameter(
                 name: 'eventId',
@@ -70,7 +70,7 @@ class WsmController extends AbstractController
         path: '/wsm/gameParam/{matchId}',
         summary: 'Update game parameters',
         description: 'Update match status, period, scores, etc.',
-        tags: ['WSM - Web Score Management'],
+        tags: ['6. WSM - Web Score Management'],
         parameters: [
             new OA\Parameter(
                 name: 'matchId',
@@ -133,6 +133,47 @@ class WsmController extends AbstractController
     }
 
     #[Route('/gameEvent/{matchId}', name: 'game_event', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/wsm/gameEvent/{matchId}',
+        summary: 'Add or remove match events',
+        description: 'Manage match events like goals, cards, penalties',
+        tags: ['6. WSM - Web Score Management'],
+        parameters: [
+            new OA\Parameter(
+                name: 'matchId',
+                in: 'path',
+                required: true,
+                description: 'Match ID',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'params',
+                        type: 'object',
+                        properties: [
+                            new OA\Property(property: 'action', type: 'string', enum: ['add', 'remove'], example: 'add'),
+                            new OA\Property(property: 'uid', type: 'string', example: 'event-123', description: 'Unique event ID (auto-generated if not provided)'),
+                            new OA\Property(property: 'period', type: 'string', example: 'M1'),
+                            new OA\Property(property: 'tpsJeu', type: 'string', example: '10:30'),
+                            new OA\Property(property: 'code', type: 'string', enum: ['B', 'V', 'J', 'R', 'D'], example: 'B'),
+                            new OA\Property(property: 'player', type: 'string', example: '123456'),
+                            new OA\Property(property: 'number', type: 'integer', example: 5),
+                            new OA\Property(property: 'team', type: 'string', enum: ['A', 'B'], example: 'A'),
+                            new OA\Property(property: 'reason', type: 'string', example: '')
+                        ]
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Event added/removed successfully'),
+            new OA\Response(response: 400, description: 'Game is locked')
+        ]
+    )]
     public function putGameEvent(int $matchId, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent());
@@ -180,6 +221,41 @@ class WsmController extends AbstractController
     }
 
     #[Route('/playerStatus/{matchId}', name: 'player_status', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/wsm/playerStatus/{matchId}',
+        summary: 'Update player status in match',
+        description: 'Set player role (Captain, Coach, etc.)',
+        tags: ['6. WSM - Web Score Management'],
+        parameters: [
+            new OA\Parameter(
+                name: 'matchId',
+                in: 'path',
+                required: true,
+                description: 'Match ID',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'params',
+                        type: 'object',
+                        properties: [
+                            new OA\Property(property: 'team', type: 'string', enum: ['A', 'B'], example: 'A'),
+                            new OA\Property(property: 'player', type: 'string', example: '123456'),
+                            new OA\Property(property: 'status', type: 'string', example: 'C', description: 'C=Captain, E=Coach')
+                        ]
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Player status updated'),
+            new OA\Response(response: 400, description: 'Game is locked or invalid parameters')
+        ]
+    )]
     public function putPlayerStatus(int $matchId, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent());
@@ -216,6 +292,43 @@ class WsmController extends AbstractController
     }
 
     #[Route('/gameTimer/{matchId}', name: 'game_timer', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/wsm/gameTimer/{matchId}',
+        summary: 'Control match timer',
+        description: 'Start, stop, or reset the match timer',
+        tags: ['6. WSM - Web Score Management'],
+        parameters: [
+            new OA\Parameter(
+                name: 'matchId',
+                in: 'path',
+                required: true,
+                description: 'Match ID',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'params',
+                        type: 'object',
+                        properties: [
+                            new OA\Property(property: 'action', type: 'string', enum: ['run', 'stop', 'RAZ'], example: 'run'),
+                            new OA\Property(property: 'startTime', type: 'integer', example: 0),
+                            new OA\Property(property: 'runTime', type: 'integer', example: 600),
+                            new OA\Property(property: 'maxTime', type: 'integer', example: 1200)
+                        ]
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Timer updated'),
+            new OA\Response(response: 400, description: 'Game is locked'),
+            new OA\Response(response: 401, description: 'Invalid action')
+        ]
+    )]
     public function putGameTimer(int $matchId, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent());
@@ -262,6 +375,31 @@ class WsmController extends AbstractController
     }
 
     #[Route('/stats', name: 'stats', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/wsm/stats',
+        summary: 'Add match statistics',
+        description: 'Record match statistics (passes, shots, possessions, etc.)',
+        tags: ['6. WSM - Web Score Management'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'user', type: 'string', example: 'user-123'),
+                    new OA\Property(property: 'game', type: 'integer', example: 456),
+                    new OA\Property(property: 'team', type: 'string', enum: ['A', 'B'], example: 'A'),
+                    new OA\Property(property: 'player', type: 'string', example: '123456'),
+                    new OA\Property(property: 'action', type: 'string', enum: ['pass', 'possession', 'kickoff', 'kickoff-ko', 'shot-in', 'shot-out', 'shot-stop'], example: 'pass'),
+                    new OA\Property(property: 'period', type: 'integer', example: 1),
+                    new OA\Property(property: 'timer', type: 'string', example: '10:30')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Statistic recorded'),
+            new OA\Response(response: 400, description: 'Game is locked'),
+            new OA\Response(response: 401, description: 'Invalid action')
+        ]
+    )]
     public function putStats(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent());

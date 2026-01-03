@@ -88,22 +88,77 @@ POST /rating                            Submit app rating
 }
 ```
 
+## Authentication
+
+### Login
+```
+POST /login
+```
+
+**Authentication:** HTTP Basic Auth (use Authorization header)
+
+**Request:**
+```bash
+# Example with curl
+curl -X POST https://kpi.localhost/api2/login \
+  -H "Authorization: Basic $(echo -n 'user:password' | base64)"
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": "123456",
+    "name": "Dupont",
+    "firstname": "Jean",
+    "profile": "O",
+    "events": "123|456|789",
+    "token": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+  }
+}
+```
+
+**Token Usage:**
+- The returned `token` should be used in Staff and Report endpoints
+- Token is valid for 10 days from generation
+- **Recommended:** Pass token via header `X-Auth-Token: {token}` (used by app2)
+- Alternative: Pass via cookie `kpi_app={token}`
+- Alternative: Legacy API accepts token in URL (deprecated in API2)
+
 ## Staff Endpoints (Require Token)
+
+**Authentication:** All staff endpoints require a valid token obtained from `/login`
+
+**Token transmission:** Use `X-Auth-Token` header or `kpi_app` cookie
 
 ### Scrutineering API
 ```
-GET  /staff/{token}/test
-GET  /staff/{token}/teams/{eventId}
-GET  /staff/{token}/players/{teamId}
-PUT  /staff/{token}/player/{playerId}/team/{teamId}/{parameter}/{value}
-PUT  /staff/{token}/player/{playerId}/team/{teamId}/comment
+GET  /staff/{eventId}/teams                                           Get teams for event
+GET  /staff/{eventId}/team/{teamId}/players                          Get players for team
+PUT  /staff/{eventId}/team/{teamId}/player/{playerId}/{parameter}/{value}   Update player data
+PUT  /staff/{eventId}/team/{teamId}/player/{playerId}/comment        Update player comment
 ```
 
-**Parameters:**
-- `kayak_status` - Kayak inspection status
-- `vest_status` - Life vest inspection status
-- `helmet_status` - Helmet inspection status
-- `paddle_count` - Number of paddles
+**Available Parameters:**
+- `kayak_status` - Kayak inspection status (0-2)
+- `vest_status` - Life vest inspection status (0-2)
+- `helmet_status` - Helmet inspection status (0-2)
+- `paddle_count` - Number of paddles (0-5)
+
+**Example with curl:**
+```bash
+# Get teams for event 222
+curl -X GET https://kpi.localhost/api2/staff/222/teams \
+  -H "X-Auth-Token: a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+
+# Get players for team 789 (with no-cache headers)
+curl -X GET https://kpi.localhost/api2/staff/222/team/789/players \
+  -H "X-Auth-Token: your-token-here"
+
+# Update kayak status to 1 (validated)
+curl -X PUT https://kpi.localhost/api2/staff/222/team/789/player/123456/kayak_status/1 \
+  -H "X-Auth-Token: your-token-here"
+```
 
 **Comment Request:**
 ```json
@@ -114,9 +169,19 @@ PUT  /staff/{token}/player/{playerId}/team/{teamId}/comment
 
 ## Report Endpoints (Require Token)
 
+**Authentication:** All report endpoints require a valid token obtained from `/login`
+
+**Token transmission:** Use `X-Auth-Token` header or `kpi_app` cookie
+
 ### Match Report API
 ```
-GET  /report/{token}/game/{gameId}    Get full game report
+GET  /report/game/{gameId}    Get full game report with events and players
+```
+
+**Example with curl:**
+```bash
+curl -X GET https://kpi.localhost/api2/report/game/456 \
+  -H "X-Auth-Token: your-token-here"
 ```
 
 **Response includes:**
@@ -269,19 +334,36 @@ Cross-Origin Resource Sharing is enabled for:
 
 Allowed methods: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`
 
+## Error Routes
+
+The `/_error/` routes are internal Symfony routes used for error handling:
+- `/_error/{code}` - Displays error pages (404, 500, etc.) in development mode
+- These routes are NOT part of the public API
+- In production, custom error pages should be configured via `config/packages/framework.yaml`
+
 ## Migration from Legacy API
 
 | Legacy Endpoint | New Endpoint |
 |----------------|--------------|
-| `/api/events/{mode}` | `/api2/api/events/{mode}` |
-| `/api/event/{id}` | `/api2/api/event/{id}` |
-| `/api/games/{eventId}` | `/api2/api/games/{eventId}` |
-| `/api/charts/{eventId}` | `/api2/api/charts/{eventId}` |
-| `/api/team-stats/{teamId}/{eventId}` | `/api2/api/team-stats/{teamId}/{eventId}` |
-| `/api/stars` | `/api2/api/stars` |
-| `/api/rating` | `/api2/api/rating` |
-| `/api/staff/{token}/*` | `/api2/api/staff/{token}/*` |
-| `/api/report/{token}/*` | `/api2/api/report/{token}/*` |
-| `/api/wsm/*` | `/api2/api/wsm/*` |
+| `/api/login` | `/api2/login` |
+| `/api/events/{mode}` | `/api2/events/{mode}` |
+| `/api/event/{id}` | `/api2/event/{id}` |
+| `/api/games/{eventId}` | `/api2/games/{eventId}` |
+| `/api/charts/{eventId}` | `/api2/charts/{eventId}` |
+| `/api/team-stats/{teamId}/{eventId}` | `/api2/team-stats/{teamId}/{eventId}` |
+| `/api/stars` | `/api2/stars` |
+| `/api/rating` | `/api2/rating` |
+| `/api/staff/{token}/teams/{eventId}` | `/api2/staff/{eventId}/teams` + `X-Auth-Token` header |
+| `/api/staff/{token}/players/{teamId}` | `/api2/staff/{eventId}/team/{teamId}/players` + `X-Auth-Token` header |
+| `/api/staff/{token}/player/{playerId}/team/{teamId}/{param}/{value}` | `/api2/staff/{eventId}/team/{teamId}/player/{playerId}/{param}/{value}` + `X-Auth-Token` header |
+| `/api/staff/{token}/player/{playerId}/team/{teamId}/comment` | `/api2/staff/{eventId}/team/{teamId}/player/{playerId}/comment` + `X-Auth-Token` header |
+| `/api/report/{token}/game/{gameId}` | `/api2/report/game/{gameId}` + `X-Auth-Token` header |
+| `/api/wsm/*` | `/api2/wsm/*` |
+
+**Important differences:**
+- **Authentication:** API2 uses `X-Auth-Token` header instead of token in URL for Staff/Report endpoints
+- **URL Structure:** Staff routes now include `eventId` at the beginning and follow RESTful patterns (`/staff/{eventId}/team/{teamId}/...`)
+- **Caching:** All staff endpoints return fresh data with no-cache headers
+- The `/api2/api` or `/api2/doc` URL is only for the API Platform UI documentation. The actual API endpoints use `/api2/` directly.
 
 All endpoints return the same JSON structure as the legacy API.
