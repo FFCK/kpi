@@ -154,8 +154,8 @@
               </div>
               <div class="flex items-center gap-1">
                 <div class="flex gap-0.5">
-                  <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-green-600 rounded">1</span>
-                  <span class="text-gray-400">-</span>
+                  <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-gray-700 bg-gray-200 rounded">0</span>
+                  <span class="text-gray-600 font-bold">/</span>
                   <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-green-600 rounded">6</span>
                 </div>
                 <span class="px-1 py-1 text-sm text-green-600 font-bold">
