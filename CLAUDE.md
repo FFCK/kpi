@@ -84,13 +84,13 @@ Use `make help` to see all available commands.
 ### Nuxt - App2
 - `make run_dev` - Run Nuxt development server (port 3002)
 - `make run_build` - Build Nuxt for production
-- `make run_generate` - Generate static Nuxt site (production by default)
 - `make run_generate_dev` - Generate static Nuxt site for development (uses .env.development, requires Node container)
 - `make run_generate_preprod` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
-- `make run_generate_prod` - Generate static Nuxt site for production (uses .env.production, temporary container)
+- `make run_generate_production` - Generate static Nuxt site for production (uses .env.production, temporary container)
+- `make run_generate_prod` - Alias for run_generate_production
 - `make run_lint` - Run ESLint on app2
 
-**Note**: `run_generate_preprod` and `run_generate_prod` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
+**Note**: `run_generate_preprod` and `run_generate_production` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
 
 ### Nuxt - App3 (Match Sheet)
 - `make run_dev_app3` - Run Nuxt development server (port 3003)
@@ -222,8 +222,9 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 - **Deployment**:
   - Generated files (`.output/public/`) are NOT committed to Git
   - Dev: `make run_generate_dev` (requires Node container)
-  - Prod: `make run_generate_prod` (uses temporary Docker container, works without permanent Node.js setup)
-  - After build: `make dev_restart` or `make prod_restart` to restart Nginx
+  - Preprod: `make run_generate_preprod` (uses temporary Docker container)
+  - Prod: `make run_generate_production` (uses temporary Docker container, works without permanent Node.js setup)
+  - After build: `make dev_restart`, `make preprod_restart`, or `make prod_restart` to restart Nginx
 
 ### App3 (Nuxt Application - Match Sheet)
 - **Framework**: Nuxt 4 with Vue 3, TypeScript, Tailwind CSS
