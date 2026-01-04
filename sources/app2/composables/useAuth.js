@@ -1,12 +1,18 @@
 import { usePreferenceStore } from '~/stores/preferenceStore'
 
 export const useAuth = () => {
-  const { getToken } = useApi()
+  // FIXED: Don't call useApi() at composable init - causes circular dependency!
+  // useApi() → useAuth() → useApi() = INFINITE RECURSION
+  // Instead, import it dynamically only when needed (in login function)
   const preferenceStore = usePreferenceStore()
 
   const user = computed(() => preferenceStore.preferences.user)
 
   const login = async (login, password) => {
+    // Import useApi dynamically to avoid circular dependency
+    const { useApi } = await import('~/composables/useApi')
+    const { getToken } = useApi()
+
     const authToken = btoa(`${login}:${password}`)
     const response = await getToken(authToken)
     if (response.ok) {

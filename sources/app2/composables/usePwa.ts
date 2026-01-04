@@ -1,22 +1,33 @@
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 
-export const usePwa = () => {
-  // Initialize to true to avoid hydration mismatch
-  // Will be updated to real value onMounted client-side
-  const isOnline = ref(true)
-  const needRefresh = ref(false)
-  const offlineReady = ref(false)
+// Singleton state - initialized once and shared across all usages
+let initialized = false
+const isOnline = ref(true)
+const needRefresh = ref(false)
+const offlineReady = ref(false)
+let updateServiceWorker: (() => Promise<void>) | null = null
 
-  let updateServiceWorker: (() => Promise<void>) | null = null
+// Initialize PWA only once
+const initializePwa = () => {
+  if (initialized || !import.meta.client) return
+  initialized = true
+  
+  console.log('[PWA] Initializing singleton...')
+  
+  // Update online status
+  isOnline.value = navigator.onLine
 
-  // Only run on client-side to avoid hydration issues
-  if (import.meta.client) {
-    // Update online status immediately on client
-    isOnline.value = navigator.onLine
-  }
+  // Monitor online/offline status
+  window.addEventListener('online', () => {
+    isOnline.value = true
+  })
 
-  // Only register service worker in production
-  if (import.meta.client && import.meta.env.PROD) {
+  window.addEventListener('offline', () => {
+    isOnline.value = false
+  })
+
+  // Register service worker only in production
+  if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     import('virtual:pwa-register/vue').then(({ useRegisterSW }) => {
       const {
         offlineReady: swOfflineReady,
@@ -41,67 +52,30 @@ export const usePwa = () => {
       })
 
       updateServiceWorker = swUpdateServiceWorker
-    }).catch(() => {
-      console.log('[PWA] Service Worker not available in development mode')
+
+      // Sync reactive refs INSIDE the initialization, only once
+      watch(swOfflineReady, (val) => { offlineReady.value = val })
+      watch(swNeedRefresh, (val) => { needRefresh.value = val })
+    }).catch((error) => {
+      console.log('[PWA] Service Worker not available:', error)
     })
-  } else if (import.meta.client) {
-    console.log('[PWA] Service Worker disabled in development mode')
   }
+}
 
-  // Monitor online/offline status changes
-  if (import.meta.client) {
-    window.addEventListener('online', () => {
-      console.log('[PWA] Network: Online')
-      isOnline.value = true
-    })
-
-    window.addEventListener('offline', () => {
-      console.log('[PWA] Network: Offline')
-      isOnline.value = false
-    })
-
-    // Listen to service worker lifecycle events (only in production)
-    if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('[PWA] Service Worker: Controller changed')
-      })
-
-      navigator.serviceWorker.ready.then((registration) => {
-        console.log('[PWA] Service Worker: Ready')
-
-        // Listen to state changes
-        if (registration.installing) {
-          console.log('[PWA] Service Worker: Installing')
-          registration.installing.addEventListener('statechange', (e: Event) => {
-            const sw = e.target as ServiceWorker
-            console.log('[PWA] Service Worker state:', sw.state)
-          })
-        }
-
-        if (registration.waiting) {
-          console.log('[PWA] Service Worker: Waiting')
-        }
-
-        if (registration.active) {
-          console.log('[PWA] Service Worker: Active')
-        }
-      }).catch(() => {
-        // Service worker not ready, ignore
-      })
-    }
-  }
+export const usePwa = () => {
+  // Initialize on first call
+  initializePwa()
 
   const updateApp = async () => {
-    console.log('[PWA] Updating app...')
     if (updateServiceWorker) {
       await updateServiceWorker()
     }
   }
 
   return {
-    isOnline,
-    needRefresh,
-    offlineReady,
+    isOnline: computed(() => isOnline.value),
+    needRefresh: computed(() => needRefresh.value),
+    offlineReady: computed(() => offlineReady.value),
     updateApp
   }
 }

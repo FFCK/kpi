@@ -44,10 +44,10 @@
 import { ref } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 
-// Protect this page - require event selection
-definePageMeta({
-  middleware: 'event-guard'
-})
+// Login page is public - no event selection required
+// definePageMeta({
+//   middleware: 'event-guard'
+// })
 
 const { t } = useI18n()
 const { user, login, logout } = useAuth()

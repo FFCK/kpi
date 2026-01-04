@@ -64,7 +64,7 @@ export default defineNuxtConfig({
     registerType: 'autoUpdate',
     base: pwaScope,
     scope: pwaScope,
-    injectRegister: false, // We'll handle registration manually
+    injectRegister: false, // We'll handle registration manually via usePwa composable
     manifestFilename: 'manifest.webmanifest',
     strategies: 'generateSW',
     manifest: {
