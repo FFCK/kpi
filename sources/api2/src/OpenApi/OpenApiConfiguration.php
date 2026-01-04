@@ -11,8 +11,7 @@ use OpenApi\Attributes as OA;
         description: 'Modern REST API for KPI (Kayak Polo Information) - Symfony 7.3 + API Platform 4.2'
     ),
     servers: [
-        new OA\Server(url: 'https://kpi.localhost/api2', description: 'Development server'),
-        new OA\Server(url: 'https://kayak-polo.info/api2', description: 'Production server')
+        new OA\Server(url: '%env(API_DOCS_SERVER_URL)%', description: '%env(API_DOCS_SERVER_DESCRIPTION)%')
     ],
     tags: [
         new OA\Tag(name: '1. App2 - Authentication', description: 'Authentication endpoint for app2'),
@@ -37,5 +36,6 @@ use OpenApi\Attributes as OA;
 )]
 class OpenApiConfiguration
 {
-    // This class only holds OpenAPI metadata via attributes
+    // This class holds OpenAPI metadata via attributes
+    // The %env(VAR_NAME)% placeholders are processed by Symfony's parameter processor
 }

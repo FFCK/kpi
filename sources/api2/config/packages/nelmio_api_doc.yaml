@@ -6,8 +6,8 @@ nelmio_api_doc:
             description: Modern REST API for Kayak Polo management (Symfony 7.3 + API Platform 4.2)
             version: 2.0.0
         servers:
-            - url: https://kpi.localhost/api2
-              description: Development server
+            - url: '%env(API_DOCS_SERVER_URL)%'
+              description: '%env(API_DOCS_SERVER_DESCRIPTION)%'
     html_config:
         assets_mode: bundle  # Use local assets instead of CDN
     areas:
