@@ -11,9 +11,7 @@ let updateServiceWorker: (() => Promise<void>) | null = null
 const initializePwa = () => {
   if (initialized || !import.meta.client) return
   initialized = true
-  
-  console.log('[PWA] Initializing singleton...')
-  
+    
   // Update online status
   isOnline.value = navigator.onLine
 
@@ -36,7 +34,7 @@ const initializePwa = () => {
       } = useRegisterSW({
         immediate: true,
         onRegistered(registration) {
-          console.log('[PWA] Service Worker registered:', registration)
+          console.log('[PWA] Service Worker registered')
         },
         onRegisterError(error) {
           console.error('[PWA] Service Worker registration error:', error)
