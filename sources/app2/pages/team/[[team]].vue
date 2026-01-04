@@ -801,6 +801,19 @@ const loadData = async (force = false) => {
     loadGames(force),
     loadCharts(force)
   ])
+
+  // Also reload team stats for the currently selected team
+  try {
+    if (selectedTeam.value) {
+      const teamId = teamNameToId.value.get(selectedTeam.value) || selectedTeam.value
+      await fetchStats(teamId)
+    } else {
+      stats.value = null
+    }
+  } catch (e) {
+    console.error('Failed to load team stats:', e)
+  }
+
   isLoading.value = false
 }
 
