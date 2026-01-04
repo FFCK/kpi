@@ -18,7 +18,7 @@ export const useScrutineering = () => {
 
     try {
       const response = await getApi(
-        `/staff/${prefs.value.lastEvent.id}/players/${prefs.value.scr_team_id}/force`
+        `/staff/${prefs.value.lastEvent.id}/team/${prefs.value.scr_team_id}/players`
       )
 
       if (!response.ok) {
@@ -46,7 +46,7 @@ export const useScrutineering = () => {
 
     try {
       const response = await postApi(
-        `/staff/${prefs.value.lastEvent.id}/player/${playerId}/team/${prefs.value.scr_team_id}/${equipment}/${newValue}`,
+        `/staff/${prefs.value.lastEvent.id}/team/${prefs.value.scr_team_id}/player/${playerId}/${equipment}/${newValue}`,
         {},
         'PUT'
       )
@@ -72,7 +72,7 @@ export const useScrutineering = () => {
 
     try {
       const response = await postApi(
-        `/staff/${prefs.value.lastEvent.id}/player/${playerId}/team/${prefs.value.scr_team_id}/comment`,
+        `/staff/${prefs.value.lastEvent.id}/team/${prefs.value.scr_team_id}/player/${playerId}/comment`,
         { comment },
         'PUT'
       )

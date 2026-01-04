@@ -76,14 +76,16 @@
 import { ref, onMounted, computed, toRaw } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore';
 import { useEventStore } from '~/stores/eventStore';
-import { useGames } from '~/composables/useGames';
+// FIXED: Don't import useGames at component init - it causes circular dependency
+// useGames() → useApi() → useAuth() → useApi() = INFINITE RECURSION!
+// import { useGames } from '~/composables/useGames';
 import db from '~/utils/db'
 const { t } = useI18n()
 
 // Stores & Composables
 const preferenceStore = usePreferenceStore()
 const eventStore = useEventStore()
-const { resetAllFilters } = useGames()
+// REMOVED: const { resetAllFilters } = useGames()
 const { getApi } = useApi()
 
 // State
@@ -155,7 +157,18 @@ const changeEvent = async () => {
   await preferenceStore.putItem('lastEvent', toRaw(selectedEvent))
   await preferenceStore.putItem('last_team', null)
 
+  // Reset scrutineering team data when changing event
+  await Promise.all([
+    preferenceStore.putItem('scr_team_id', null),
+    preferenceStore.putItem('scr_team_label', null),
+    preferenceStore.putItem('scr_team_club', null),
+    preferenceStore.putItem('scr_team_logo', null)
+  ])
+
   // Reset all game filters when changing event
+  // FIXED: Import useGames dynamically to avoid circular dependency at init
+  const { useGames } = await import('~/composables/useGames')
+  const { resetAllFilters } = useGames()
   await resetAllFilters()
 
   showSelector.value = false

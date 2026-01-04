@@ -858,19 +858,15 @@ class MyBdd
 	function ImportPCE_MajClub()
 	{
 		array_push($this->m_arrayinfo, "Mise à jour des Clubs ...");
-		$sql = "INSERT INTO kp_club (Code, Libelle, Officiel, Reserve, Code_comite_dep) 
-			SELECT lc.Numero_club selNumero_club, lc.Club selClub , 'O' selOfficiel, 
-			'' selReserve, MIN(lc.Numero_comite_dept) selNumero_comite_dept 
+		$sql = "INSERT IGNORE INTO kp_club (Code, Libelle, Officiel, Reserve, Code_comite_dep) 
+			SELECT DISTINCT lc.Numero_club,
+				lc.Club, 
+				'O', '', MIN(lc.Numero_comite_dept) 
 			FROM kp_licence lc 
-			WHERE lc.Numero_club <> '0' 
-			AND lc.Numero_club <> '0000' 
+			WHERE lc.Numero_club NOT IN ('0', '0000') 
 			AND lc.Numero_comite_reg <> '98' 
 			AND lc.Origine = ? 
-			AND lc.Club != '' 
-			GROUP BY Numero_club 
-			ON DUPLICATE KEY UPDATE 
-				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
-				Reserve = VALUES(Reserve), Code_comite_dep = VALUES(Code_comite_dep) ";
+			AND lc.Club != '' ";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute(array($this->m_saisonPCE)) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
@@ -879,19 +875,15 @@ class MyBdd
 	function ImportPCE_MajComiteDept()
 	{
 		array_push($this->m_arrayinfo, "Mise à jour des Comités Départementaux  ...");
-		$sql = "INSERT INTO kp_cd (Code, Libelle, Officiel, Reserve, Code_comite_reg) 
-			SELECT lc.Numero_comite_dept, lc.Comite_dept , 'O' selOfficiel, 
-			'' selReserve, lc.Numero_comite_reg 
+		$sql = "INSERT IGNORE INTO kp_cd (Code, Libelle, Officiel, Reserve, Code_comite_reg) 
+			SELECT DISTINCT lc.Numero_comite_dept,
+				REPLACE(REPLACE(lc.Comite_dept, 'COMITE DEPARTEMENTAL', 'CD'), 'CANOE KAYAK', 'CK'), 
+				'O', '', lc.Numero_comite_reg 
 			FROM kp_licence lc 
-			WHERE lc.Numero_club <> '0' 
-			AND lc.Numero_club <> '0000' 
+			WHERE lc.Numero_club NOT IN ('0', '0000')
 			AND lc.Numero_comite_reg <> '98' 
 			AND lc.Origine = ? 
-			AND lc.Comite_dept <> '' 
-			GROUP BY Numero_comite_dept 
-			ON DUPLICATE KEY UPDATE 
-				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
-				Reserve = VALUES(Reserve), Code_comite_reg = VALUES(Code_comite_reg) ";
+			AND lc.Comite_dept <> '' ";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute(array($this->m_saisonPCE)) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}
@@ -900,18 +892,15 @@ class MyBdd
 	function ImportPCE_MajComiteReg()
 	{
 		array_push($this->m_arrayinfo, "Mise à jour des Comités Régionaux ...");
-		$sql = "INSERT INTO kp_cr (Code, Libelle, Officiel, Reserve) 
-			SELECT lc.Numero_comite_reg, lc.Comite_reg , 'O' selOfficiel, '' selReserve 
+		$sql = "INSERT IGNORE INTO kp_cr (Code, Libelle, Officiel, Reserve) 
+			SELECT DISTINCT lc.Numero_comite_reg, 
+				REPLACE(REPLACE(lc.Comite_reg, 'COMITE REGIONAL', 'CR'), 'CANOE KAYAK', 'CK'),
+				'O', '' 
 			FROM kp_licence lc 
-			WHERE lc.Numero_club <> '0' 
-			AND lc.Numero_club <> '0000' 
+			WHERE lc.Numero_club NOT IN ('0', '0000')
 			AND lc.Numero_comite_reg <> '98' 
 			AND lc.Origine = ? 
-            AND lc.Comite_reg <> '' 
-			GROUP BY Numero_comite_reg 
-			ON DUPLICATE KEY UPDATE 
-				Code = VALUES(Code), Libelle = VALUES(Libelle), Officiel = VALUES(Officiel), 
-				Reserve = VALUES(Reserve) ";
+            AND lc.Comite_reg <> '' ";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->execute(array($this->m_saisonPCE)) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());
 	}

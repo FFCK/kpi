@@ -90,43 +90,9 @@ class GestionOperations extends MyPageSecure
 		$AuthSaison = utyGetSession('AuthSaison', '');
 		$this->m_tpl->assign('AuthSaison', $AuthSaison);
 
-		// Chargement des compétitions pour la copie en masse (groupées par section comme comboCompet)
+		// Ne plus charger les compétitions par défaut - elles seront chargées dynamiquement via AJAX
+		// quand l'utilisateur sélectionne une saison source
 		$arrayCompetition = array();
-		$label = $myBdd->getSections();
-
-		$sql = "SELECT DISTINCT c.GroupOrder, c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
-			c.Titre_actif, g.id, g.section, g.ordre
-			FROM kp_competition c, kp_groupe g
-			WHERE c.Code_saison = ?
-			AND c.Code_ref = g.Groupe
-			ORDER BY g.section, g.ordre, c.Code_tour, c.GroupOrder, c.Code ";
-		$result = $myBdd->pdo->prepare($sql);
-		$result->execute(array($saisonEnCours));
-
-		$j = '';
-		$i = -1;
-		while ($row = $result->fetch()) {
-			// Titre
-			if ($row["Titre_actif"] != 'O' && $row["Soustitre"] != '') {
-				$Libelle = $row["Soustitre"];
-			} else {
-				$Libelle = $row["Libelle"];
-			}
-			if ($row["Soustitre2"] != '') {
-				$Libelle .= ' - ' . $row["Soustitre2"];
-			}
-
-			if ($j != $row['section']) {
-				$i++;
-				$arrayCompetition[$i]['label'] = $label[$row['section']];
-			}
-			$j = $row['section'];
-			$arrayCompetition[$i]['options'][] = array(
-				'Code' => $row['Code'],
-				'Libelle' => $Libelle
-			);
-		}
-
 		$this->m_tpl->assign('arrayCompetitionCopy', $arrayCompetition);
 
 	}
@@ -2347,11 +2313,13 @@ class GestionOperations extends MyPageSecure
 				$isTypeCP = ($compet['Code_typeclt'] == 'CP');
 
 				// Insérer la nouvelle compétition avec les modifications demandées
+				// Inclure les champs pour les compétitions MULTI : points_grid, multi_competitions, ranking_structure_type
 				$sqlInsertCompet = "INSERT INTO kp_competition (
 					Code, Code_saison, Code_niveau, Libelle, Soustitre, Soustitre2,
 					Web, BandeauLink, LogoLink, SponsorLink, En_actif, Titre_actif,
 					Bandeau_actif, Logo_actif, Sponsor_actif, Kpi_ffck_actif,
 					ToutGroup, TouteSaisons, Code_ref, GroupOrder, Code_typeclt,
+					points_grid, multi_competitions, ranking_structure_type,
 					Age_min, Age_max, Sexe, Code_tour, Nb_equipes, Verrou, Statut,
 					Qualifies, Elimines, Points, Date_calcul, Mode_calcul,
 					Date_publication, Date_publication_calcul, Mode_publication_calcul,
@@ -2362,6 +2330,7 @@ class GestionOperations extends MyPageSecure
 					?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?,
 					?, ?, ?, ?, ?,
+					?, ?, ?,
 					?, ?, ?, ?, ?, ?, ?,
 					?, ?, ?, ?, ?,
 					?, ?, ?,
@@ -2392,6 +2361,9 @@ class GestionOperations extends MyPageSecure
 					$compet['Code_ref'],
 					$compet['GroupOrder'],
 					$compet['Code_typeclt'],
+					$compet['points_grid'] ?? null, // Grille de points pour MULTI
+					$compet['multi_competitions'] ?? null, // Compétitions sources pour MULTI (JSON)
+					$compet['ranking_structure_type'] ?? 'team', // Type de classement pour MULTI
 					$compet['Age_min'],
 					$compet['Age_max'],
 					$compet['Sexe'],

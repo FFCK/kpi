@@ -46,7 +46,13 @@
                   <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
                   <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
                 </div>
-                <div :class="statusClass(game)">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+                <NuxtLink
+                  v-if="isMatchSheetAvailable(game)"
+                  :to="getMatchSheetUrl(game)"
+                  :class="statusClass(game)"
+                  :title="t('Games.MatchSheet')"
+                >{{ getStatusLabel(game) }}</NuxtLink>
+                <div v-else :class="statusClass(game)">{{ getStatusLabel(game) }}</div>
               </div>
             </td>
             <td class="px-2 py-2">
@@ -105,7 +111,14 @@
             </div>
             <div :class="['text-left text-xs text-gray-900 justify-self-start', { 'invisible': !showRefs }]" v-html="highlightReferee(game.r_1, game.r_1_highlighted)" />
             <div class="text-center justify-self-center">
-                <div :class="statusClass(game)" class="text-xs">{{ game.g_status !== 'ON' ? t('Games.Status.' + game.g_status) : t('Games.Period.' + game.g_period) }}</div>
+                <NuxtLink
+                  v-if="isMatchSheetAvailable(game)"
+                  :to="getMatchSheetUrl(game)"
+                  :class="statusClass(game)"
+                  class="text-xs"
+                  :title="t('Games.MatchSheet')"
+                >{{ getStatusLabel(game) }}</NuxtLink>
+                <div v-else :class="statusClass(game)" class="text-xs">{{ getStatusLabel(game) }}</div>
             </div>
             <div :class="['text-right text-xs text-gray-900 justify-self-end', { 'invisible': !showRefs }]" v-html="highlightReferee(game.r_2, game.r_2_highlighted)" />
           </div>
@@ -154,10 +167,32 @@ const scoreClass = (game, team) => {
 const statusClass = (game) => {
   return {
     'inline-block text-xs px-1 py-0 rounded-sm': true,
-    'bg-green-500 text-white': game.g_status === 'END',
+    'bg-green-500 text-white': game.g_status === 'END' && game.g_validation === 'O',
+    'bg-orange-500 text-white': game.g_status === 'END' && game.g_validation !== 'O',
     'bg-blue-500 text-white': game.g_status === 'ON',
     'bg-gray-500 text-white': game.g_status === 'ATT',
   }
+}
+
+// Get the status label based on game state
+const getStatusLabel = (game) => {
+  if (game.g_status === 'ON') {
+    return t('Games.Period.' + game.g_period)
+  }
+  if (game.g_status === 'END') {
+    return game.g_validation === 'O' ? t('Games.Status.END') : t('Games.Status.Provisional')
+  }
+  return t('Games.Status.' + game.g_status)
+}
+
+// Check if match sheet is available (match in progress or finished, not pending)
+const isMatchSheetAvailable = (game) => {
+  return game.g_status === 'ON' || game.g_status === 'END'
+}
+
+// Get the URL for the match sheet (internal page instead of PDF)
+const getMatchSheetUrl = (game) => {
+  return `/game/${game.g_id}`
 }
 
 // Function to highlight referee text if needed

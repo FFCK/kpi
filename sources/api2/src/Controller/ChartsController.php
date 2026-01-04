@@ -15,12 +15,12 @@ class ChartsController extends AbstractController
     ) {
     }
 
-    #[Route('/charts/{eventId}', name: 'charts', methods: ['GET'])]
+    #[Route('/event/{eventId}/charts', name: 'charts', methods: ['GET'])]
     #[OA\Get(
-        path: '/charts/{eventId}',
+        path: '/event/{eventId}/charts',
         summary: 'Get rankings and brackets for an event',
         description: 'Returns complex tournament structure with pools, brackets, rankings, and game details',
-        tags: ['Charts & Rankings'],
+        tags: ['2. App2 - Public'],
         parameters: [
             new OA\Parameter(
                 name: 'eventId',

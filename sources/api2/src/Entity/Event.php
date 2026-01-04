@@ -9,12 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'kp_evenement')]
-#[ApiResource(
-    operations: [
-        new Get(),
-        new GetCollection(),
-    ]
-)]
+// API Platform routes disabled - using custom controllers in EventController.php instead
+// #[ApiResource(
+//     operations: [
+//         new Get(),
+//         new GetCollection(),
+//     ]
+// )]
 class Event
 {
     #[ORM\Id]

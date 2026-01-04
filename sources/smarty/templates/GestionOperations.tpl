@@ -590,16 +590,18 @@
 							<td>
 								<label for="saisonSourceCompet">Saison source :</label>
 								<select name="saisonSourceCompet" id="saisonSourceCompet" onchange="loadCompetitionsForSeason()">
+									<option value="">-- Sélectionnez --</option>
 									{section name=i loop=$arraySaison}
-										<option value="{$arraySaison[i].Code}" {if $arraySaison[i].Etat=='A'}selected{/if}>{$arraySaison[i].Code}</option>
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
 									{/section}
 								</select>
 							</td>
 							<td>
 								<label for="saisonCibleCompet">Saison cible :</label>
 								<select name="saisonCibleCompet" id="saisonCibleCompet">
+									<option value="">-- Sélectionnez --</option>
 									{section name=i loop=$arraySaison}
-										<option value="{$arraySaison[i].Code}" {if $arraySaison[i].Etat=='A'}selected{/if}>{$arraySaison[i].Code}</option>
+										<option value="{$arraySaison[i].Code}">{$arraySaison[i].Code}</option>
 									{/section}
 								</select>
 							</td>
@@ -609,13 +611,7 @@
 								<label for="codesCompet">Compétitions à copier :</label>
 								<br>
 								<select name="codesCompet[]" id="codesCompet" multiple size="12" style="width: 100%;">
-									{section name=g loop=$arrayCompetitionCopy}
-										<optgroup label="{$arrayCompetitionCopy[g].label}">
-											{section name=o loop=$arrayCompetitionCopy[g].options}
-												<option value="{$arrayCompetitionCopy[g].options[o].Code}">{$arrayCompetitionCopy[g].options[o].Code} - {$arrayCompetitionCopy[g].options[o].Libelle}</option>
-											{/section}
-										</optgroup>
-									{/section}
+									<option value="">Veuillez d'abord sélectionner une saison source</option>
 								</select>
 								<br>
 								<small style="color: #666;">Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs compétitions</small>

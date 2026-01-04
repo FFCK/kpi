@@ -20,7 +20,7 @@ class EventController extends AbstractController
     #[OA\Get(
         path: '/events/{mode}',
         summary: 'Get events list',
-        tags: ['Events'],
+        tags: ['2. App2 - Public'],
         parameters: [
             new OA\Parameter(
                 name: 'mode',
@@ -98,7 +98,7 @@ class EventController extends AbstractController
     #[OA\Get(
         path: '/event/{id}',
         summary: 'Get single event',
-        tags: ['Events'],
+        tags: ['2. App2 - Public'],
         parameters: [
             new OA\Parameter(
                 name: 'id',

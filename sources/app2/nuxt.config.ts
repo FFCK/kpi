@@ -46,6 +46,11 @@ export default defineNuxtConfig({
     port: 3000
   },
   modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/ui', '@vite-pwa/nuxt'],
+  ui: {
+    theme: {
+      colors: ['green', 'red', 'blue', 'yellow']
+    }
+  },
   icon: {
     // Use local icons from @iconify-json/heroicons instead of CDN
     provider: 'iconify',
@@ -59,7 +64,7 @@ export default defineNuxtConfig({
     registerType: 'autoUpdate',
     base: pwaScope,
     scope: pwaScope,
-    injectRegister: false, // We'll handle registration manually
+    injectRegister: false, // We'll handle registration manually via usePwa composable
     manifestFilename: 'manifest.webmanifest',
     strategies: 'generateSW',
     manifest: {

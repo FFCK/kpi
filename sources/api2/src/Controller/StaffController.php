@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\TokenAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,55 +14,51 @@ use Symfony\Component\Routing\Annotation\Route;
 class StaffController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TokenAuthService $tokenAuthService
     ) {
     }
 
-    #[Route('/{token}/test', name: 'test', methods: ['GET'])]
+    #[Route('/test', name: 'test', methods: ['GET'])]
     #[OA\Get(
-        path: '/staff/{token}/test',
+        path: '/staff/test',
         summary: 'Test endpoint for staff authentication',
-        tags: ['Staff - Scrutineering'],
-        parameters: [
-            new OA\Parameter(
-                name: 'token',
-                in: 'path',
-                required: true,
-                description: 'Authentication token',
-                schema: new OA\Schema(type: 'string')
-            )
-        ],
+        tags: ['3. App2 - Staff'],
+        security: [['ApiToken' => []]],
         responses: [
             new OA\Response(
                 response: 200,
                 description: 'Test successful',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'result', type: 'string', example: 'OK')
+                        new OA\Property(property: 'result', type: 'string', example: 'OK'),
+                        new OA\Property(property: 'user', type: 'string', example: '123456')
                     ]
                 )
-            )
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized - Invalid or missing token')
         ]
     )]
-    public function test(string $token): JsonResponse
+    public function test(Request $request): JsonResponse
     {
-        // TODO: Implement token authentication
-        return new JsonResponse(['result' => 'OK']);
+        $auth = $this->tokenAuthService->validateToken($request);
+        if (!$auth) {
+            return $this->tokenAuthService->createUnauthorizedResponse();
+        }
+
+        return new JsonResponse([
+            'result' => 'OK',
+            'user' => $auth['user']
+        ]);
     }
 
-    #[Route('/{token}/teams/{eventId}', name: 'teams', methods: ['GET'])]
+    #[Route('/{eventId}/teams', name: 'teams', methods: ['GET'])]
     #[OA\Get(
-        path: '/staff/{token}/teams/{eventId}',
+        path: '/staff/{eventId}/teams',
         summary: 'Get teams for scrutineering',
-        tags: ['Staff - Scrutineering'],
+        tags: ['3. App2 - Staff'],
+        security: [['ApiToken' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'token',
-                in: 'path',
-                required: true,
-                description: 'Authentication token',
-                schema: new OA\Schema(type: 'string')
-            ),
             new OA\Parameter(
                 name: 'eventId',
                 in: 'path',
@@ -85,12 +82,18 @@ class StaffController extends AbstractController
                         ]
                     )
                 )
-            )
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized - Invalid or missing token'),
+            new OA\Response(response: 403, description: 'Forbidden - No access to this event')
         ]
     )]
-    public function getTeams(string $token, int $eventId): JsonResponse
+    public function getTeams(Request $request, int $eventId): JsonResponse
     {
-        // TODO: Implement token authentication
+        $auth = $this->tokenAuthService->validateToken($request, null, $eventId);
+        if (!$auth) {
+            return $this->tokenAuthService->createUnauthorizedResponse();
+        }
+
         $conn = $this->entityManager->getConnection();
 
         $sql = "SELECT ce.Id team_id, ce.Libelle label, ce.Code_club club, ce.logo
@@ -108,18 +111,20 @@ class StaffController extends AbstractController
         return new JsonResponse($teams);
     }
 
-    #[Route('/{token}/players/{teamId}', name: 'players', methods: ['GET'])]
+    #[Route('/{eventId}/team/{teamId}/players', name: 'team_players', methods: ['GET'])]
     #[OA\Get(
-        path: '/staff/{token}/players/{teamId}',
+        path: '/staff/{eventId}/team/{teamId}/players',
         summary: 'Get players for a team',
-        tags: ['Staff - Scrutineering'],
+        description: 'Get list of players with scrutineering data.',
+        tags: ['3. App2 - Staff'],
+        security: [['ApiToken' => []]],
         parameters: [
             new OA\Parameter(
-                name: 'token',
+                name: 'eventId',
                 in: 'path',
                 required: true,
-                description: 'Authentication token',
-                schema: new OA\Schema(type: 'string')
+                description: 'Event ID',
+                schema: new OA\Schema(type: 'integer', example: 222)
             ),
             new OA\Parameter(
                 name: 'teamId',
@@ -132,7 +137,7 @@ class StaffController extends AbstractController
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'Returns list of players with scrutineering data',
+                description: 'Returns list of players with scrutineering data (fresh data)',
                 content: new OA\JsonContent(
                     type: 'array',
                     items: new OA\Items(
@@ -148,12 +153,17 @@ class StaffController extends AbstractController
                         ]
                     )
                 )
-            )
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized - Invalid or missing token')
         ]
     )]
-    public function getPlayers(string $token, int $teamId): JsonResponse
+    public function getPlayers(Request $request, int $eventId, int $teamId): JsonResponse
     {
-        // TODO: Implement token authentication
+        $auth = $this->tokenAuthService->validateToken($request);
+        if (!$auth) {
+            return $this->tokenAuthService->createUnauthorizedResponse();
+        }
+
         $conn = $this->entityManager->getConnection();
 
         $sql = "SELECT cej.Matric player_id, cej.Nom last_name, cej.Prenom first_name,
@@ -171,14 +181,74 @@ class StaffController extends AbstractController
         $result = $stmt->executeQuery([$teamId]);
         $players = $result->fetchAllAssociative();
 
-        return new JsonResponse($players);
+        $response = new JsonResponse($players);
+
+        // If force parameter is present, add no-cache headers
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', '0');
+
+        return $response;
     }
 
-    #[Route('/{token}/player/{playerId}/team/{teamId}/{parameter}/{value}', name: 'update_player', methods: ['PUT'], defaults: ['value' => null])]
-    #[Route('/{token}/player/{playerId}/team/{teamId}/comment', name: 'update_player_comment', methods: ['PUT'])]
-    public function updatePlayer(string $token, int $playerId, int $teamId, string $parameter, ?int $value = null, Request $request): JsonResponse
+    #[Route('/{eventId}/team/{teamId}/player/{playerId}/{parameter}/{value}', name: 'update_player', methods: ['PUT'], defaults: ['value' => null])]
+    #[OA\Put(
+        path: '/staff/{eventId}/team/{teamId}/player/{playerId}/{parameter}/{value}',
+        summary: 'Update player scrutineering data',
+        tags: ['3. App2 - Staff'],
+        security: [['ApiToken' => []]],
+        parameters: [
+            new OA\Parameter(name: 'eventId', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 222)),
+            new OA\Parameter(name: 'playerId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'teamId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'parameter', in: 'path', required: true, schema: new OA\Schema(type: 'string', enum: ['kayak_status', 'vest_status', 'helmet_status', 'paddle_count'])),
+            new OA\Parameter(name: 'value', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Player data updated'),
+            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 405, description: 'Invalid parameter')
+        ]
+    )]
+    #[Route('/{eventId}/team/{teamId}/player/{playerId}/comment', name: 'update_player_comment', methods: ['PUT'])]
+    #[OA\Put(
+        path: '/staff/{eventId}/team/{teamId}/player/{playerId}/comment',
+        summary: 'Update player comment',
+        tags: ['3. App2 - Staff'],
+        security: [['ApiToken' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'comment', type: 'string', example: 'Equipment OK', maxLength: 255)
+                ]
+            )
+        ),
+        parameters: [
+            new OA\Parameter(name: 'eventId', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 222)),
+            new OA\Parameter(name: 'playerId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'teamId', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Comment updated',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'comment', type: 'string', example: 'Equipment OK')
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized')
+        ]
+    )]
+    public function updatePlayer(Request $request, int $eventId, int $playerId, int $teamId, string $parameter, ?int $value = null): JsonResponse
     {
-        // TODO: Implement token authentication
+        $auth = $this->tokenAuthService->validateToken($request);
+        if (!$auth) {
+            return $this->tokenAuthService->createUnauthorizedResponse();
+        }
+
         $conn = $this->entityManager->getConnection();
 
         if ($parameter === 'comment') {

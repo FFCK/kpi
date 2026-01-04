@@ -7,7 +7,7 @@ import db from '~/utils/db'
 export const useCharts = () => {
   const preferenceStore = usePreferenceStore()
   const chartStore = useChartStore()
-  const { getApi } = useApi()
+  const { getApi, showCacheToast } = useApi()
 
   const allChartData = ref(null)
   const chartIndex = ref(0)
@@ -105,12 +105,17 @@ export const useCharts = () => {
         allChartData.value = cachedCharts.map(item => item.data)
         loadCategories()
         chartIndex.value++
+
+        // Show toast only if user is offline
+        if (!navigator.onLine) {
+          showCacheToast()
+        }
       }
 
       // Charger depuis l'API uniquement si nécessaire
       if (shouldLoadFromApi || !cachedCharts || cachedCharts.length === 0) {
         try {
-          const response = await getApi(`/charts/${eventId}`)
+          const response = await getApi(`/event/${eventId}/charts`)
           const data = await response.json()
 
           // Sauvegarder dans Dexie

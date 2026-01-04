@@ -137,21 +137,49 @@
 
           <div class="mt-4">
             <label class="text-sm font-medium text-gray-700 mb-2 block">
-              <i>{{ t('Scrutineering.Issues') }}:</i>
+              <i>{{ t('Scrutineering.Legend') }}:</i>
             </label>
-            <div class="flex">
-              <UIcon name="i-heroicons-exclamation-circle-solid text-red-600" class="h-8 w-8" />
-              <button class="px-1 py-1 text-sm text-red-600 font-bold mr-8" disabled>
-                {{ t('Scrutineering.Cosmetic') }}
-              </button>
-              <UIcon name="i-heroicons-exclamation-triangle-solid text-red-600" class="h-8 w-8" />
-              <button class="px-1 py-1 text-red-600 font-bold mr-8" disabled>
-                {{ t('Scrutineering.Safety') }}
-              </button>
-              <UIcon name="i-heroicons-shield-exclamation-solid text-red-600" class="h-8 w-8" />
-              <button class="px-1 py-1 text-red-600 font-bold mr-8" disabled>
-                {{ t('Scrutineering.Technical') }}
-              </button>
+            <div class="inline-grid grid-cols-3 gap-2">
+              <div class="flex items-center">
+                <UIcon name="i-heroicons-clipboard" class="h-8 w-8 text-gray-400" />
+                <span class="px-1 py-1 text-sm text-gray-600 font-bold">
+                  {{ t('Scrutineering.NotChecked') }}
+                </span>
+              </div>
+              <div class="flex items-center">
+                <UIcon name="i-heroicons-check-circle-solid" class="h-8 w-8 text-green-600" />
+                <span class="px-1 py-1 text-sm text-green-600 font-bold">
+                  {{ t('Scrutineering.Valid') }}
+                </span>
+              </div>
+              <div class="flex items-center gap-1">
+                <div class="flex gap-0.5">
+                  <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-gray-700 bg-gray-200 rounded">0</span>
+                  <span class="text-gray-600 font-bold">/</span>
+                  <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-green-600 rounded">6</span>
+                </div>
+                <span class="px-1 py-1 text-sm text-green-600 font-bold">
+                  {{ t('Scrutineering.ValidPaddles') }}
+                </span>
+              </div>
+              <div class="flex items-center">
+                <UIcon name="i-heroicons-exclamation-circle-solid" class="h-8 w-8 text-red-600" />
+                <span class="px-1 py-1 text-sm text-red-600 font-bold">
+                  {{ t('Scrutineering.Cosmetic') }}
+                </span>
+              </div>
+              <div class="flex items-center">
+                <UIcon name="i-heroicons-exclamation-triangle-solid" class="h-8 w-8 text-red-600" />
+                <span class="px-1 py-1 text-red-600 font-bold">
+                  {{ t('Scrutineering.Safety') }}
+                </span>
+              </div>
+              <div class="flex items-center">
+                <UIcon name="i-heroicons-shield-exclamation-solid" class="h-8 w-8 text-red-600" />
+                <span class="px-1 py-1 text-sm text-red-600 font-bold">
+                  {{ t('Scrutineering.Technical') }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -204,6 +232,7 @@ const { user, getUser } = useUser()
 const { authorized, checkAuthorized } = useStatus()
 const { prefs, getPrefs, updatePref } = usePrefs()
 const { players, loadPlayers, updatePlayer, updateComment } = useScrutineering()
+const { getApi } = useApi()
 const visibleButton = ref(true)
 
 // Page-specific SEO
@@ -245,8 +274,6 @@ const loadTeams = async () => {
     console.error('No event selected')
     return
   }
-
-  const { getApi } = useApi()
 
   try {
     const response = await getApi(`/staff/${eventId}/teams`)

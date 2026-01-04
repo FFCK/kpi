@@ -38,7 +38,7 @@
 
     <div v-else>
       <!-- Team Name and Logo -->
-      <div class="px-4 py-1 bg-gray-50 border-b">
+      <div class="px-4 py-1 bg-gray-50 border-b flex justify-center">
         <div class="flex items-center gap-3">
           <img
             v-if="selectedTeamLogo"
@@ -198,10 +198,11 @@
       </div>
 
       <!-- Team Statistics -->
-      <div v-if="teamStats && teamStats.length > 0" class="mb-6 flex justify-center">
-        <div class="w-full max-w-3xl px-2">
-          <h3 class="px-2 text-xl font-semibold text-gray-700 mb-3">{{ t('Stats.Title') }}</h3>
-          <div class="overflow-x-auto bg-white rounded-lg shadow-sm border">
+      <div v-if="teamStats && teamStats.length > 0" class="mb-6">
+        <div class="w-full px-2">
+          <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Stats.Title') }}</h3>
+          <div class="flex justify-center">
+            <div class="overflow-x-auto bg-white rounded-lg shadow-sm border w-full max-w-3xl">
             <table class="w-full">
               <thead class="bg-gray-800 text-white">
                 <tr>
@@ -233,12 +234,13 @@
                   </td>
                   <td class="py-2 px-2 text-center">{{ player.goals > 0 ? player.goals : '' }}</td>
                   <td class="py-2 px-2 text-center">{{ player.green_cards > 0 ? player.green_cards : '' }}</td>
-                  <td class="py-2 px-2 text-center">{{ player.captain !== 'E' && player.yellow_cards > 0 ? player.yellow_cards : '' }}</td>
+                  <td class="py-2 px-2 text-center">{{ player.yellow_cards > 0 ? player.yellow_cards : '' }}</td>
                   <td class="py-2 px-2 text-center">{{ player.red_cards > 0 ? player.red_cards : '' }}</td>
                   <td class="py-2 px-2 text-center">{{ player.exclusions > 0 ? player.exclusions : '' }}</td>
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </div>
@@ -359,7 +361,7 @@ const fetchStats = async (teamId) => {
       return
     }
 
-    const response = await getApi(`/team-stats/${teamId}/${eventId}`)
+    const response = await getApi(`/event/${eventId}/team/${teamId}/stats`)
     if (response.ok) {
       stats.value = await response.json()
     } else {
@@ -526,22 +528,12 @@ const processTeamParam = async (teamParam) => {
   }
 }
 
-// Watch for team parameter in URL
+// Watch for team parameter changes (navigation only, not initial load)
 watch(() => route.params.team, async (newTeam) => {
-  await processTeamParam(newTeam)
-}, { immediate: true })
-
-// Watch for teamIdToName changes (when data loads) to re-process team param if needed
-watch(() => teamIdToName.value.size, async (newSize, oldSize) => {
-  // Only trigger when data first becomes available
-  if (oldSize === 0 && newSize > 0 && route.params.team) {
-    const decodedParam = decodeURIComponent(route.params.team)
-    // Only re-process if it's a numeric ID and hasn't been resolved yet
-    if (/^\d+$/.test(decodedParam) && selectedTeam.value === decodedParam) {
-      await processTeamParam(route.params.team)
-    }
+  if (newTeam) {
+    await processTeamParam(newTeam)
   }
-})
+}, { immediate: false })
 
 // Handle team selection change
 const onTeamChange = () => {
@@ -801,6 +793,19 @@ const loadData = async (force = false) => {
     loadGames(force),
     loadCharts(force)
   ])
+
+  // Also reload team stats for the currently selected team
+  try {
+    if (selectedTeam.value) {
+      const teamId = teamNameToId.value.get(selectedTeam.value) || selectedTeam.value
+      await fetchStats(teamId)
+    } else {
+      stats.value = null
+    }
+  } catch (e) {
+    console.error('Failed to load team stats:', e)
+  }
+
   isLoading.value = false
 }
 
@@ -820,21 +825,21 @@ onMounted(async () => {
     loadData()
   ])
 
-  // If navigating to the base /team route without a parameter
-  if (!route.params.team) {
-    // Check for a last-viewed team and redirect if it exists
-    if (preferenceStore.preferences.last_team) {
-      const teamId = teamNameToId.value.get(preferenceStore.preferences.last_team)
-      if (teamId) {
-        router.push({ path: `/team/${teamId}` })
-      } else {
-        // Fallback to using team name if ID not found
-        const encodedTeam = encodeURIComponent(preferenceStore.preferences.last_team)
-        router.push({ path: `/team/${encodedTeam}` })
-      }
+  // Process the team parameter after data is loaded (single call)
+  if (route.params.team) {
+    await processTeamParam(route.params.team)
+  } else if (preferenceStore.preferences.last_team) {
+    // If no team param, redirect to last viewed team if it exists
+    const teamId = teamNameToId.value.get(preferenceStore.preferences.last_team)
+    if (teamId) {
+      router.push({ path: `/team/${teamId}` })
+    } else {
+      // Fallback to using team name if ID not found
+      const encodedTeam = encodeURIComponent(preferenceStore.preferences.last_team)
+      router.push({ path: `/team/${encodedTeam}` })
     }
-    // If no last_team, do nothing and let the page render its empty state
   }
+  // If no last_team, do nothing and let the page render its empty state
 
   showRefreshButton.value = true
 })

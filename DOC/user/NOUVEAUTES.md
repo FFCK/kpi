@@ -9,18 +9,42 @@ Ce document liste les dernières fonctionnalités et améliorations ajoutées au
 ### 📱 Application Web KPI (App2) - Nouvelle version (Décembre 2025)
 
 **Application web moderne pour tous vos appareils**
+
+**Interface modernisée** :
 - Interface Nuxt 4 avec navigation intuitive
 - Consultation rapide : matchs, résultats, classements
 - Filtres avancés : catégories, dates, équipes, arbitres
-- **Fiches équipes détaillées** :
+- **QR Code de partage** : Partagez facilement l'événement (copie de lien au clic)
+
+**Feuille de Match Intégrée (Nouveau !)** :
+- **Consultation détaillée** de chaque match directement dans l'app
+- **En-tête complet** : compétition, phase, numéro, terrain, date/heure, arbitres
+- **Score en temps réel** : affichage LCD stylisé, mi-temps, logos d'équipes
+- **Statuts enrichis** :
+  - "EN COURS - 1ère période" / "EN COURS - 2ème période" pour les matchs en direct
+  - "TERMINÉ (Provisoire)" pour les matchs non validés
+- **Compositions d'équipes** : joueurs, numéros, capitaines, coach
+- **Statistiques individuelles** : buts, cartons verts/jaunes/rouges par joueur
+- **Chronologie visuelle** : timeline des événements avec horodatage et période
+- **Actions** : rafraîchissement en direct, téléchargement PDF, navigation vers fiches équipes
+
+**Fiches équipes détaillées** :
   - Matchs précédents et prochains matchs
   - Progression dans la compétition
   - Position au classement
   - Statistiques des joueurs
-- **Contrôle du matériel** (utilisateurs habilités) :
+
+**Contrôle du matériel** (utilisateurs habilités) :
   - Validation des kayaks, casques, gilets, pagaies, équipements
   - Commentaires et historique des contrôles
-- Responsive : fonctionne sur mobile, tablette et ordinateur
+
+**Mode Hors Ligne (Nouveau !)** :
+- Détection automatique de connectivité
+- Badge orange et notifications lors de perte/récupération de connexion
+- Vérification automatique de nouvelle version disponible
+- Accès aux dernières données consultées sans connexion
+
+**Responsive** : fonctionne sur mobile, tablette et ordinateur
 
 **Accès** : [app.kayak-polo.info](https://app.kayak-polo.info)
 
@@ -331,4 +355,4 @@ Pour connaître les prochains objectifs et travaux planifiés, consultez la **[R
 
 ---
 
-**Dernière mise à jour** : 15 décembre 2025
+**Dernière mise à jour** : 28 décembre 2025

@@ -72,6 +72,9 @@ if ($format === 'json') {
 			'bandeauLink' => $row['BandeauLink'],
 			'bandeauActif' => $row['Bandeau_actif'],
 			'goalaverage' => $row['goalaverage'],
+			'pointsGrid' => $row['points_grid'],
+			'multiCompetitions' => $row['multi_competitions'],
+			'rankingStructureType' => $row['ranking_structure_type'],
 			'label' => $row['Code'] . ' - ' . $row['Libelle'],
 			'value' => $row['Code'] . ' - ' . $row['Libelle']
 		];

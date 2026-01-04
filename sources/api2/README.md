@@ -43,25 +43,50 @@ CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
 
 ## API Endpoints
 
+### Authentication
+
+#### Login
+- `POST /login` - User authentication
+  - **Authentication:** HTTP Basic Auth (Authorization header)
+  - **Request:** `Authorization: Basic base64(username:password)`
+  - **Response:**
+    ```json
+    {
+      "user": {
+        "id": "123456",
+        "name": "Dupont",
+        "firstname": "Jean",
+        "profile": "O",
+        "events": "123|456|789",
+        "token": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+      }
+    }
+    ```
+  - **Token Usage:** The returned `token` should be used in Staff and Report endpoints
+  - **Token Validity:** 10 days from generation
+  - **Token Transmission:**
+    - **Recommended:** Via header `X-Auth-Token: {token}` (used by app2)
+    - Alternative: Via cookie `kpi_app={token}`
+
 ### Public Endpoints (No Authentication)
 
 #### Events
-- `GET /api/events/{mode}` - Get events list
+- `GET /events/{mode}` - Get events list
   - `mode`: `std`, `champ`, or `all`
-- `GET /api/event/{id}` - Get single event
+- `GET /event/{id}` - Get single event
 
 #### Games
-- `GET /api/games/{eventId}` - Get games for an event
+- `GET /games/{eventId}` - Get games for an event
 
 #### Charts & Rankings
-- `GET /api/charts/{eventId}` - Get charts and rankings for an event
+- `GET /charts/{eventId}` - Get charts and rankings for an event
 
 #### Team Statistics
-- `GET /api/team-stats/{teamId}/{eventId}` - Get team statistics
+- `GET /team-stats/{teamId}/{eventId}` - Get team statistics
 
 #### App Ratings
-- `GET /api/stars` - Get app ratings statistics
-- `POST /api/rating` - Submit app rating
+- `GET /stars` - Get app ratings statistics
+- `POST /rating` - Submit app rating
   ```json
   {
     "uid": "uuid-v4",
@@ -71,12 +96,15 @@ CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
 
 ### Staff Endpoints (Token Authentication Required)
 
-- `GET /api/staff/{token}/test` - Test endpoint
-- `GET /api/staff/{token}/teams/{eventId}` - Get teams for scrutineering
-- `GET /api/staff/{token}/players/{teamId}` - Get players for a team
-- `PUT /api/staff/{token}/player/{playerId}/team/{teamId}/{parameter}/{value}` - Update player scrutineering data
+**Authentication:** All staff endpoints require a valid token obtained from `/login`
+
+**Token transmission:** Use `X-Auth-Token` header or `kpi_app` cookie
+
+- `GET /staff/{eventId}/teams` - Get teams for scrutineering
+- `GET /staff/{eventId}/team/{teamId}/players` - Get players for a team (returns fresh data with no-cache headers)
+- `PUT /staff/{eventId}/team/{teamId}/player/{playerId}/{parameter}/{value}` - Update player scrutineering data
   - `parameter`: `kayak_status`, `vest_status`, `helmet_status`, `paddle_count`
-- `PUT /api/staff/{token}/player/{playerId}/team/{teamId}/comment` - Update player comment
+- `PUT /staff/{eventId}/team/{teamId}/player/{playerId}/comment` - Update player comment
   ```json
   {
     "comment": "Comment text"
@@ -85,7 +113,11 @@ CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
 
 ### Report Endpoints (Token Authentication Required)
 
-- `GET /api/report/{token}/game/{gameId}` - Get game details with events and players
+**Authentication:** All report endpoints require a valid token obtained from `/login`
+
+**Token transmission:** Use `X-Auth-Token` header or `kpi_app` cookie
+
+- `GET /report/game/{gameId}` - Get game details with events and players
 
 ### WSM (Web Score Management) Endpoints
 
@@ -189,6 +221,11 @@ php bin/console cache:clear
 php bin/console cache:warmup
 ```
 
+## Complete API Documentation
+
+For complete endpoint reference with examples and migration guide, see:
+- **[API2_ENDPOINTS.md](../../DOC/developer/reference/API2_ENDPOINTS.md)** - Complete endpoint reference with examples
+
 ## Migration from Legacy API
 
 This API provides the same endpoints and functionality as `/sources/api/` but with:
@@ -199,16 +236,20 @@ This API provides the same endpoints and functionality as `/sources/api/` but wi
 - **Auto-documentation** - OpenAPI/Swagger via API Platform
 - **Extensibility** - Easy to add new endpoints and features
 - **Security** - Built-in CSRF protection, input validation
+- **RESTful URLs** - Staff routes follow RESTful patterns (`/staff/{eventId}/team/{teamId}/...`)
+- **No-cache headers** - Staff endpoints return fresh data for real-time scrutineering
 
 ## TODO
 
-- [ ] Implement proper token authentication for staff and report endpoints
+- [x] ✅ Add `/login` endpoint for authentication
+- [x] ✅ Add authentication documentation
+- [x] ✅ Implement token validation service for staff and report endpoints
+- [x] ✅ Update Staff/Report endpoints to use `X-Auth-Token` header (compatible with app2)
 - [ ] Add cache layer (similar to json_cache_read/write in legacy API)
 - [ ] Implement cache creation for WSM endpoints (CacheMatch equivalent)
 - [ ] Add rate limiting
 - [ ] Add logging for user actions
 - [ ] Add unit and functional tests
-- [ ] Add authentication documentation
 - [ ] Optimize database queries with Doctrine Query Builder
 - [ ] Add API versioning support
 

@@ -7,12 +7,31 @@
       <article class="col-md-6 col-md-offset-3">
       {/if}
       {if ($recordCompetition.Statut != 'ATT' && $recordCompetition.Code_typeclt == 'CHPT')
-          || $recordCompetition.Statut == 'END' }
-      {if $recordCompetition.Statut != 'END'}
+          || $recordCompetition.Statut == 'END'
+          || $recordCompetition.Code_typeclt == 'MULTI' }
+      {* Afficher "Classement provisoire" si statut ON, "Classement général" si statut END *}
+      {if $recordCompetition.Statut == 'ON'}
         <div class="label label-warning">{#Classement_provisoire#}</div>
+      {elseif $recordCompetition.Statut == 'END'}
+        <div class="label label-success">{#Classement_general#}</div>
       {/if}
       <table class='table table-striped table-condensed table-hover'>
-        {if $recordCompetition.Code_typeclt == 'CHPT'}
+        {if $recordCompetition.Code_typeclt == 'MULTI'}
+          {* Pour les compétitions MULTI : colonnes Clt, Equipe, Pts, J avec lien vers PdfCltMulti.php *}
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>{#Clt#}</th>
+              <th>
+                {#Equipes#}
+                <a class="pdfLink badge pull-right" href="PdfCltMulti.php?S={$Saison}" Target="_blank"><img width="20"
+                    src="img/pdf.gif" alt="{#Classement#} (pdf)" title="{#Classement#} (pdf)" /></a>
+              </th>
+              <th>{#Pts#}</th>
+              <th>{#J#}</th>
+            </tr>
+          </thead>
+        {elseif $recordCompetition.Code_typeclt == 'CHPT'}
           <thead>
             <tr>
               <th>&nbsp;</th>
@@ -50,12 +69,24 @@
         <tbody>
           {section name=i loop=$arrayEquipe_publi}
             <tr>
-              {if $recordCompetition.Code_typeclt == 'CHPT' && $recordCompetition.Code_tour == '10' && $arrayEquipe_publi[i].Clt <= 3 && $arrayEquipe_publi[i].Clt > 0 && $recordCompetition.Statut == 'END'}
+              {* Médailles et qualifications pour toutes les compétitions (y compris MULTI) *}
+              {if $recordCompetition.Code_typeclt == 'MULTI' && $recordCompetition.Code_tour == '10' && $arrayEquipe_publi[i].Clt <= 3 && $arrayEquipe_publi[i].Clt > 0 && $recordCompetition.Statut == 'END'}
+                <td class='medaille text-center'><img width="30" src="img/medal{$arrayEquipe_publi[i].Clt}.gif" alt="Podium"
+                    title="Podium" /></td>
+              {elseif $recordCompetition.Code_typeclt == 'CHPT' && $recordCompetition.Code_tour == '10' && $arrayEquipe_publi[i].Clt <= 3 && $arrayEquipe_publi[i].Clt > 0 && $recordCompetition.Statut == 'END'}
                 <td class='medaille text-center'><img width="30" src="img/medal{$arrayEquipe_publi[i].Clt}.gif" alt="Podium"
                     title="Podium" /></td>
               {elseif $recordCompetition.Code_typeclt == 'CP' && $recordCompetition.Code_tour == '10' && $arrayEquipe_publi[i].CltNiveau <= 3 && $arrayEquipe_publi[i].CltNiveau > 0 && $recordCompetition.Statut == 'END'}
                 <td class='medaille text-center'><img width="30" src="img/medal{$arrayEquipe_publi[i].CltNiveau}.gif"
                     alt="Podium" title="Podium" /></td>
+              {elseif $recordCompetition.Code_typeclt == 'MULTI'}
+                {if $smarty.section.i.iteration <= $recordCompetition.Qualifies}
+                  <td class='qualifie text-center'><img width="30" src="img/up.gif" alt="Qualifié" title="Qualifié" /></td>
+                {elseif $smarty.section.i.iteration > $recordCompetition.Nb_equipes - $recordCompetition.Elimines}
+                  <td class='elimine text-center'><img width="30" src="img/down.gif" alt="Eliminés" title="Eliminés" /></td>
+                {else}
+                  <td>&nbsp;</td>
+                {/if}
               {elseif $recordCompetition.Code_typeclt == 'CHPT'}
                 {if $smarty.section.i.iteration <= $recordCompetition.Qualifies}
                   <td class='qualifie text-center'><img width="30" src="img/up.gif" alt="Qualifié" title="Qualifié" /></td>
@@ -74,7 +105,25 @@
                 {/if}
               {/if}
 
-              {if $recordCompetition.Code_typeclt == 'CHPT'}
+              {* Affichage des colonnes pour les compétitions MULTI *}
+              {if $recordCompetition.Code_typeclt == 'MULTI'}
+                <td class="droite">
+                  {$arrayEquipe_publi[i].Clt}
+                  {if $arrayEquipe_publi[i].logo != ''}
+                    <img class="img2 pull-right" width="30" src="{$arrayEquipe_publi[i].logo}"
+                      alt="{$arrayEquipe_publi[i].club}" />
+                  {/if}
+                </td>
+                <td class="cliquableNomEquipe">
+                  <a class="btn btn-xs btn-default"
+                    href="kpequipes.php?Equipe={$arrayEquipe_publi[i].Numero}&Compet={$codeCompet}&Css={$Css}"
+                    title="{#Palmares#}">
+                    {$arrayEquipe_publi[i].Libelle}
+                  </a>
+                </td>
+                <td>{$arrayEquipe_publi[i].Pts/100}</td>
+                <td>{$arrayEquipe_publi[i].J}</td>
+              {elseif $recordCompetition.Code_typeclt == 'CHPT'}
                 <td class="droite">
                   {$arrayEquipe_publi[i].Clt}
                   {if $arrayEquipe_publi[i].logo != ''}

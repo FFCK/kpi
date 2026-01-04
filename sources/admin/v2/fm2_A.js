@@ -243,11 +243,8 @@ function statutActive (leStatut, leClick) {
                 end_hours = '0' + end_hours
             }
             var end_minuts = end_time.getMinutes()
-            if (end_minuts < 10) {
-                end_minuts = '0' + end_minuts
-            }
             if ($('#end_match_time').val() == '00:00' || $('#end_match_time').val() == '00h00') {
-                $('#time_end_match').val(end_hours + 'h' + end_minuts)
+                $('#time_end_match').val(String(end_hours).padStart(2, '0') + ':' + String(end_minuts).padStart(2, '0'))
             } else {
                 $('#time_end_match').val($('#end_match_time').val())
             }
@@ -310,7 +307,7 @@ $(function () {
     $("#chrono_ajust").mask("99:99")
     $("#periode_ajust").mask("99:99")
     $("#time_evt").mask("99:99")
-    $("#end_match_time, #time_end_match").mask("99h99")
+    $("#end_match_time, #time_end_match").mask("99:99")
     /* COMPO EQUIPE */
     $('#equipeA, #equipeB').dataTable({
         "paging": false,

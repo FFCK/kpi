@@ -10,6 +10,12 @@
     <AppInstallPrompt />
     <ClientOnly>
       <UpdatePrompt />
+      <UNotifications />
+      <NetworkMonitor />
     </ClientOnly>
   </div>
 </template>
+
+<script setup>
+// Network monitoring is initialized via NetworkMonitor component (client-only)
+</script>
