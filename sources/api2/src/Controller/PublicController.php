@@ -72,7 +72,7 @@ class PublicController extends AbstractController
                 SUM(IF(md.Id_evt_match = 'V', 1, 0)) AS green_cards,
                 CASE WHEN j.Capitaine = 'E' THEN 0 ELSE SUM(IF(md.Id_evt_match = 'J', 1, 0)) END AS yellow_cards,
                 SUM(IF(md.Id_evt_match = 'R', 1, 0)) AS red_cards,
-                SUM(IF(md.Id_evt_match = 'D', 1, 0)) AS final_red_cards
+                SUM(IF(md.Id_evt_match = 'D', 1, 0)) AS exclusions
             FROM kp_competition_equipe_joueur j
             JOIN kp_licence l ON (j.Matric = l.Matric)
         ";

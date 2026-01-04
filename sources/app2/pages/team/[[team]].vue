@@ -233,7 +233,7 @@
                   </td>
                   <td class="py-2 px-2 text-center">{{ player.goals > 0 ? player.goals : '' }}</td>
                   <td class="py-2 px-2 text-center">{{ player.green_cards > 0 ? player.green_cards : '' }}</td>
-                  <td class="py-2 px-2 text-center">{{ player.captain !== 'E' && player.yellow_cards > 0 ? player.yellow_cards : '' }}</td>
+                  <td class="py-2 px-2 text-center">{{ player.yellow_cards > 0 ? player.yellow_cards : '' }}</td>
                   <td class="py-2 px-2 text-center">{{ player.red_cards > 0 ? player.red_cards : '' }}</td>
                   <td class="py-2 px-2 text-center">{{ player.exclusions > 0 ? player.exclusions : '' }}</td>
                 </tr>
