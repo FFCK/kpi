@@ -90,7 +90,13 @@
                 <div class="inline-block bg-yellow-400 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-red-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
+                <div class="relative inline-block">
+                  <div class="absolute bg-yellow-400 w-3 h-4 rounded-sm transform -rotate-3 translate-x-0.5 translate-y-0.5"></div>
+                  <div class="relative bg-red-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
+                </div>
+              </th>
+              <th class="px-2 py-1 text-center">
+                <div class="inline-block bg-red-600 text-white w-3 h-4 rounded-sm transform -rotate-12">E</div>
               </th>
             </tr>
           </thead>
@@ -108,6 +114,7 @@
               <td class="px-2 py-1 text-center">{{ player.stats.green_cards || '' }}</td>
               <td class="px-2 py-1 text-center">{{ player.stats.yellow_cards || '' }}</td>
               <td class="px-2 py-1 text-center">{{ player.stats.red_cards || '' }}</td>
+              <td class="px-2 py-1 text-center">{{ player.stats.exclusions || '' }}</td>
             </tr>
           </tbody>
         </table>
@@ -131,7 +138,13 @@
                 <div class="inline-block bg-yellow-400 w-3 h-4 rounded-sm transform -rotate-12"></div>
               </th>
               <th class="px-2 py-1 text-center">
-                <div class="inline-block bg-red-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
+                <div class="relative inline-block">
+                  <div class="absolute bg-yellow-400 w-3 h-4 rounded-sm transform -rotate-3 translate-x-0.5 translate-y-0.5"></div>
+                  <div class="relative bg-red-500 w-3 h-4 rounded-sm transform -rotate-12"></div>
+                </div>
+              </th>
+              <th class="px-2 py-1 text-center">
+                <div class="inline-block bg-red-600 text-white w-3 h-4 rounded-sm transform -rotate-12">E</div>
               </th>
             </tr>
           </thead>
@@ -149,6 +162,7 @@
               <td class="px-2 py-1 text-center">{{ player.stats.green_cards || '' }}</td>
               <td class="px-2 py-1 text-center">{{ player.stats.yellow_cards || '' }}</td>
               <td class="px-2 py-1 text-center">{{ player.stats.red_cards || '' }}</td>
+              <td class="px-2 py-1 text-center">{{ player.stats.exclusions || '' }}</td>
             </tr>
           </tbody>
         </table>
@@ -177,8 +191,11 @@
               </div>
               <div v-else-if="event.e_type === 'V'" class="w-5 h-7 bg-green-500 rounded-sm transform -rotate-12"></div>
               <div v-else-if="event.e_type === 'J'" class="w-5 h-7 bg-yellow-400 rounded-sm transform -rotate-12"></div>
-              <div v-else-if="event.e_type === 'R'" class="w-5 h-7 bg-red-500 rounded-sm transform -rotate-12"></div>
-              <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-800 rounded-sm transform -rotate-12 flex items-center justify-center text-white text-xs font-bold">E</div>
+              <div v-else-if="event.e_type === 'R'" class="relative w-5 h-7">
+                <div class="absolute bg-yellow-400 w-5 h-7 rounded-sm transform -rotate-3 translate-x-1 translate-y-1"></div>
+                <div class="relative bg-red-500 rounded-sm transform -rotate-12 w-5 h-7"></div>
+              </div>
+              <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-600 rounded-sm transform -rotate-12 flex items-center justify-center text-white font-bold">E</div>
               <div v-else class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">?</div>
               <!-- Event details -->
               <div class="flex-1 text-left">
@@ -204,8 +221,11 @@
               </div>
               <div v-else-if="event.e_type === 'V'" class="w-5 h-7 bg-green-500 rounded-sm transform -rotate-12"></div>
               <div v-else-if="event.e_type === 'J'" class="w-5 h-7 bg-yellow-400 rounded-sm transform -rotate-12"></div>
-              <div v-else-if="event.e_type === 'R'" class="w-5 h-7 bg-red-500 rounded-sm transform -rotate-12"></div>
-              <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-800 rounded-sm transform -rotate-12 flex items-center justify-center text-white text-xs font-bold">E</div>
+              <div v-else-if="event.e_type === 'R'" class="relative w-5 h-7">
+                <div class="absolute bg-yellow-400 w-5 h-7 rounded-sm transform -rotate-3 translate-x-1 translate-y-1"></div>
+                <div class="relative bg-red-500 rounded-sm transform -rotate-12 w-5 h-7"></div>
+              </div>
+              <div v-else-if="event.e_type === 'D'" class="w-5 h-7 bg-red-600 rounded-sm transform -rotate-12 flex items-center justify-center text-white font-bold">E</div>
               <div v-else class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">?</div>
             </template>
           </div>
@@ -286,6 +306,32 @@ const groupedEvents = computed(() => {
     if (!groups[period]) groups[period] = []
     groups[period].push(event)
   }
+  
+  // Fonction utilitaire pour convertir e_time en secondes
+  const convertTimeToSeconds = (time) => {
+    if (!time) return 0
+    if (typeof time === 'number') return time
+    if (/^\d+$/.test(time)) return parseInt(time)
+    if (typeof time === 'string' && time.includes(':')) {
+      const parts = time.split(':')
+      if (parts.length >= 2) {
+        const minutes = parseInt(parts.length === 3 ? parts[1] : parts[0])
+        const seconds = parseInt(parts.length === 3 ? parts[2] : parts[1])
+        return minutes * 60 + seconds
+      }
+    }
+    return 0
+  }
+  
+  // Trier les events de chaque période par e_time en ordre décroissant
+  for (const period in groups) {
+    groups[period].sort((a, b) => {
+      const timeA = convertTimeToSeconds(a.e_time)
+      const timeB = convertTimeToSeconds(b.e_time)
+      return timeB - timeA
+    })
+  }
+  
   return groups
 })
 
@@ -327,14 +373,13 @@ const formatTime = (time, period) => {
     }
   }
 
-  // Calculate remaining time (regressive) for periods with duration
-  const duration = periodDurations[period]
-  const displaySeconds = duration ? Math.max(0, duration - elapsedSeconds) : elapsedSeconds
+  // elapsedSeconds est déjà le temps restant
+  const displaySeconds = Math.max(0, elapsedSeconds)
 
   const minutes = Math.floor(displaySeconds / 60)
   const seconds = displaySeconds % 60
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-}
+
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
 </script>
 
 <style scoped>
