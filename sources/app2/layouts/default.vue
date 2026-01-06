@@ -10,7 +10,6 @@
     <AppInstallPrompt />
     <ClientOnly>
       <UpdatePrompt />
-      <UNotifications />
       <NetworkMonitor />
     </ClientOnly>
   </div>
