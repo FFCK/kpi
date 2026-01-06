@@ -3,7 +3,6 @@ include_once('../commun/MyPage.php');
 include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 
-// replaced FPDF by MyPDF wrapper (mPDF) for PHP7/8 compatibility
 require_once('../commun/MyPDF.php');
 
 // Gestion de la Feuille de Match - migré vers MyPDF/mPDF
@@ -24,30 +23,7 @@ class FeuilleMatch extends MyPage
             die('Aucun match à afficher !');
         }
         $chaqueMatch = explode(',', $listMatch);
-        $arrayCompetition['En_actif'] = '';
 
-        // Langue
-        $langue = parse_ini_file("../commun/MyLang.ini", true);
-        if (utyGetGet('lang') == 'en') {
-            $arrayCompetition['En_actif'] = 'O';
-        } elseif (utyGetGet('lang') == 'fr') {
-            $arrayCompetition['En_actif'] = '';
-        }
-
-        if ($arrayCompetition['En_actif'] == 'O') {
-            $lang = $langue['en'];
-        } else {
-            $lang = $langue['fr'];
-        }
-
-
-        //Création du PDF de base
-        $pdf = new PDF('L');
-        // $pdf->Open(); // SUPPRIMÉ pour mPDF (bug)
-        $pdf->SetTitle($lang['Feuille_de_marque']);
-
-        $pdf->SetAuthor("FFCK - Kayak-polo.info");
-        $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
         for ($h = 0; $h < count($chaqueMatch); $h++) {
             // Infos match
@@ -80,6 +56,22 @@ class FeuilleMatch extends MyPage
 
             // Données compétition
             $arrayCompetition = $myBdd->GetCompetition($categorie, $saison);
+            // $arrayCompetition['En_actif'] = '';
+
+            // Langue
+            $langue = parse_ini_file("../commun/MyLang.ini", true);
+            if (utyGetGet('lang') == 'en') {
+                $arrayCompetition['En_actif'] = 'O';
+            } elseif (utyGetGet('lang') == 'fr') {
+                $arrayCompetition['En_actif'] = '';
+            }
+
+            if ($arrayCompetition['En_actif'] == 'O') {
+                $lang = $langue['en'];
+            } else {
+                $lang = $langue['fr'];
+            }
+
 
             $visuels = utyGetVisuels($arrayCompetition, TRUE);
 
@@ -92,7 +84,7 @@ class FeuilleMatch extends MyPage
                 $idEquipeB = 0;
             }
 
-            if (in_array(substr($arrayCompetition['Code'], 0, 2), ['CE', 'CM', 'EC', 'WC', 'WG'])) {
+            if ($arrayCompetition['Code_niveau'] == 'INT') {
                 $international = true;
                 $lines = 12;
             } else {
@@ -116,21 +108,6 @@ class FeuilleMatch extends MyPage
                 }
             } else {
                 $paysB = '';
-            }
-
-            // Langue
-            $getlang = utyGetGet('lang');
-            $langue = parse_ini_file("../commun/MyLang.ini", true);
-            if ($getlang == 'en') {
-                $arrayCompetition['En_actif'] = 'O';
-            } elseif ($getlang == 'fr') {
-                $arrayCompetition['En_actif'] = '';
-            }
-
-            if ($arrayCompetition['En_actif'] == 'O') {
-                $lang = $langue['en'];
-            } else {
-                $lang = $langue['fr'];
             }
 
             $competition = html_entity_decode($row['Nom']);
@@ -308,7 +285,7 @@ class FeuilleMatch extends MyPage
 
                 $prenoma[$j] = mb_convert_case($row3['Prenom'], MB_CASE_TITLE, "UTF-8");
                 if ($arrayCompetition['Code_niveau'] == 'INT' && $row3['icf'] != NULL && $row3['icf'] != 0) {
-                    $licencea[$j] = $row3['icf'];
+                    $licencea[$j] = 'Icf-' . $row3['icf'];
                 } elseif ($row3['Matric'] < 2000000) {
                     $licencea[$j] = $row3['Matric'];
                 } else {
@@ -412,20 +389,20 @@ class FeuilleMatch extends MyPage
                         }
                         switch ($row5['Id_evt_match']) {
                             case 'B':
-                                $d[5] = 'x';
+                                $d[5] = 'X';
                                 $scoreDetailA++;
                                 if ($row5['Periode'] == 'M1') {
                                     $scoreMitempsA++;
                                 }
                                 break;
                             case 'V':
-                                $d[2] = 'x';
+                                $d[2] = 'X';
                                 break;
                             case 'J':
-                                $d[3] = 'x';
+                                $d[3] = 'X';
                                 break;
                             case 'R':
-                                $d[4] = 'x';
+                                $d[4] = 'X';
                                 break;
                             case 'D':
                                 $d[4] = $lang['D'];
@@ -439,20 +416,20 @@ class FeuilleMatch extends MyPage
                         }
                         switch ($row5['Id_evt_match']) {
                             case 'B':
-                                $d[7] = 'x';
+                                $d[7] = 'X';
                                 $scoreDetailB++;
                                 if ($row5['Periode'] == 'M1') {
                                     $scoreMitempsB++;
                                 }
                                 break;
                             case 'V':
-                                $d[8] = 'x';
+                                $d[8] = 'X';
                                 break;
                             case 'J':
-                                $d[9] = 'x';
+                                $d[9] = 'X';
                                 break;
                             case 'R':
-                                $d[10] = 'x';
+                                $d[10] = 'X';
                                 break;
                             case 'D':
                                 $d[10] = $lang['D'];
@@ -491,6 +468,13 @@ class FeuilleMatch extends MyPage
                 $scoreMitempsA = 0;
             }
 
+
+            //Création du PDF de base
+            $pdf = new PDF('L');
+            $pdf->SetTitle($lang['Feuille_de_marque']);
+
+            $pdf->SetAuthor("FFCK - Kayak-polo.info");
+            $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
             // Production de la feuille de match PDF suivante
             $pdf->AddPage();
@@ -588,7 +572,6 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(135, 4, $lang['Time_shoot2'] . ": " . $timeshoot, 'LR', 1, 'L');
             $pdf->SetFont('Arial', '', 10);
             $pdf->Cell(135, 1, "", 'LBR', '1', 'C');
-
 
             //Equipe A
 
@@ -912,8 +895,9 @@ class FeuilleMatch extends MyPage
 
             // QRCode
             $qrcode = new QRcode('https://kayak-polo.info/admin/FeuilleMarque2.php?idMatch=' . $idMatch, 'L'); // error level : L, M, Q, H
-            $qrcode->displayFPDF($pdf, 264, 168, 21);
+            $qrcode->displayFPDF($pdf, 264, 164, 21);
 
+            $pdf->SetY(190);
             $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')), 0, 1, 'R');
 
             // mPDF: Sauvegarder position actuelle avant insertion drapeaux (images absolues)
@@ -1061,4 +1045,3 @@ class FeuilleMatch extends MyPage
 
 //Création des feuilles
 $page = new FeuilleMatch();
-

@@ -100,13 +100,14 @@ class Matchs extends MyPage
         $terrains = utyGetGet('terrains', $terrains);
         $_SESSION['terrains'] = $terrains;
         $this->m_tpl->assign('terrains', $terrains);
-        
+
+        $arrayNavGroup = array(); // Initialisation pour éviter warning PHP 8
         if (utyGetGet('navGroup', false)) {
             $arrayNavGroup = $myBdd->GetOtherCompetitions($codeCompet, $codeSaison, true, $event);
             $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
             $this->m_tpl->assign('navGroup', 1);
         }
-        
+
         if($codeCompet == '*' || count($arrayNavGroup) == 1) {
             $codeCompet2 = $arrayNavGroup[0]['Code'];
             if(count($arrayNavGroup) == 1) {

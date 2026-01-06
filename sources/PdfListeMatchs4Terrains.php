@@ -129,6 +129,19 @@ class PdfListeMatchs extends MyPage
 
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
+        // Initialiser les clés de arrayCompetition avec des valeurs par défaut pour éviter les NULL
+        $arrayCompetition = array_merge([
+            'Bandeau_actif' => '',
+            'Kpi_ffck_actif' => '',
+            'Logo_actif' => '',
+            'Sponsor_actif' => '',
+            'Titre_actif' => '',
+            'Libelle' => '',
+            'Soustitre' => '',
+            'Soustitre2' => '',
+            'Code_ref' => ''
+        ], array_filter($arrayCompetition, function($v) { return $v !== null; }));
+
         // Entête PDF ...
         $pdf = new MyPDF('L');
         $pdf->SetTitle("Liste des Matchs");
@@ -138,10 +151,10 @@ class PdfListeMatchs extends MyPage
         // Header HTML pour bandeau/logo répété sur toutes les pages
         $headerHTML = '<div style="text-align: center;">';
 
-        if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
+        if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
             $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
             $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
-        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             // KPI + Logo côte à côte
             $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
             $headerHTML .= '<table width="100%"><tr>';
@@ -149,10 +162,10 @@ class PdfListeMatchs extends MyPage
             $headerHTML .= '<td width="34%"></td>';
             $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
             $headerHTML .= '</tr></table>';
-        } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
+        } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
             // KPI seul
             $headerHTML .= '<img src="img/CNAKPI_small.jpg" style="height: 20mm;" />';
-        } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
+        } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
             // Logo seul
             $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
             $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
@@ -167,7 +180,7 @@ class PdfListeMatchs extends MyPage
         $footerHTML .= '<td width="50%" align="right">Edité le ' . date("d/m/Y") . ' à ' . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')) . '</td>';
         $footerHTML .= '</tr></table>';
 
-        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+        if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
             $footerHTML .= '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
             $pdf->SetHTMLFooter($footerHTML);
@@ -188,16 +201,19 @@ class PdfListeMatchs extends MyPage
         $pdf->Cell(273, 6, "Liste des Matchs", 0, 1, 'C');
         $pdf->Ln(3);
         foreach ($resultarray as $key => $row) {
-            if (($row['Soustitre2'] ?? '') != '') {
+            // Convertir NULL en chaîne vide pour éviter les problèmes avec mPDF et strtolower
+            $row = array_map(function($v) { return $v === null ? '' : $v; }, $row);
+
+            if ($row['Soustitre2'] != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
             }
             $phase_match = $row['Phase'];
             if ($row['Libelle'] != '') {
                 $libelle = explode(']', $row['Libelle']);
-                if ($libelle[1] != '') {
+                if (isset($libelle[1]) && $libelle[1] != '') {
                     $phase_match .= "  |  " . $libelle[1];
                 }
-                //Codes équipes	
+                //Codes équipes
                 $EquipesAffectAuto = utyEquipesAffectAutoFR($row['Libelle']);
             }
             if ($row['Id_equipeA'] < 1 && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
@@ -210,11 +226,15 @@ class PdfListeMatchs extends MyPage
                 $row['Arbitre_principal'] = utyArbSansNiveau($row['Arbitre_principal']);
             } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
                 $row['Arbitre_principal'] = $EquipesAffectAuto[2];
+            } else {
+                $row['Arbitre_principal'] = '';
             }
             if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
                 $row['Arbitre_secondaire'] = utyArbSansNiveau($row['Arbitre_secondaire']);
             } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
                 $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
+            } else {
+                $row['Arbitre_secondaire'] = '';
             }
 
             $datematch = $row['Date_match'];
@@ -265,7 +285,6 @@ class PdfListeMatchs extends MyPage
             //            $pdf->Cell(17,5, 'Arbitre',1,1,'C');
 
             foreach ($tab_heure as $heure => $tab_terrain) {
-
                 $pdf->SetFont('Arial', '', 6);
                 $pdf->Cell(10, 5, $heure, 1, '0', 'C');
 

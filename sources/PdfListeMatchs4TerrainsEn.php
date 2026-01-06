@@ -158,6 +158,19 @@ class PdfListeMatchs extends MyPage
 
         $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
+        // Initialiser les clés de arrayCompetition avec des valeurs par défaut pour éviter les NULL
+        $arrayCompetition = array_merge([
+            'Bandeau_actif' => '',
+            'Kpi_ffck_actif' => '',
+            'Logo_actif' => '',
+            'Sponsor_actif' => '',
+            'Titre_actif' => '',
+            'Libelle' => '',
+            'Soustitre' => '',
+            'Soustitre2' => '',
+            'Code_ref' => ''
+        ], array_filter($arrayCompetition, function($v) { return $v !== null; }));
+
         //Création avec MyPDF (wrapper mPDF compatible FPDF)
         $pdf = new MyPDF('L');
         $pdf->SetTitle("Game table");
@@ -234,6 +247,9 @@ class PdfListeMatchs extends MyPage
         $tab = [];
 
         foreach ($resultarray as $key => $row) {
+            // Convertir NULL en chaîne vide pour éviter les problèmes avec mPDF et strtolower
+            $row = array_map(function($v) { return $v === null ? '' : $v; }, $row);
+
             $EquipesAffectAuto = ['', '', '', ''];
             if ($row['Soustitre2'] != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
@@ -241,10 +257,10 @@ class PdfListeMatchs extends MyPage
             $phase_match = $row['Phase'];
             if ($row['Libelle'] != '') {
                 $libelle = explode(']', $row['Libelle']);
-                if ($libelle[1] != '') {
+                if (isset($libelle[1]) && $libelle[1] != '') {
                     $phase_match .= "  |  " . $libelle[1];
                 }
-                //Codes équipes	
+                //Codes équipes
                 $EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
             }
             if ($row['Id_equipeA'] < 1 && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
@@ -257,16 +273,20 @@ class PdfListeMatchs extends MyPage
                 $row['Arbitre_principal'] = utyArbSansNiveau($row['Arbitre_principal']);
             } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
                 $row['Arbitre_principal'] = $EquipesAffectAuto[2];
+            } else {
+                $row['Arbitre_principal'] = '';
             }
             if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
                 $row['Arbitre_secondaire'] = utyArbSansNiveau($row['Arbitre_secondaire']);
             } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
                 $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
+            } else {
+                $row['Arbitre_secondaire'] = '';
             }
 
-            $datematch = $row['Date_match'];
-            $heure = $row['Heure_match'];
-            $terrain = $row['Terrain'];
+            $datematch = $row['Date_match'] ?? '';
+            $heure = $row['Heure_match'] ?? '';
+            $terrain = $row['Terrain'] ?? '';
 
             $tab[$datematch][$heure][$terrain][] = $row;
         }

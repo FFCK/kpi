@@ -84,8 +84,142 @@ class MyPDF extends Mpdf
      */
     public function SetFont($family, $style = '', $size = 0, $write = true, $forcewrite = false)
     {
+        // Ensure $family is a non-null string to avoid PHP deprecation in strtolower()
+        if ($family === null || $family === '') {
+            $family = (isset($this->default_font) && $this->default_font) ? $this->default_font : 'Arial';
+        }
+        
+        // Cast to string to ensure type safety
+        $family = (string)$family;
+        $style = (string)$style;
+
         // mPDF v8 supporte déjà le style FPDF (B, I, U, BI, etc.)
         parent::SetFont($family, $style, $size, $write, $forcewrite);
+    }
+
+    /**
+     * SetHTMLHeader - Set page header with HTML content
+     * Sanitizes HTML to prevent null values in CSS processing
+     *
+     * @param string $header HTML content for header
+     * @param string $OE Optional element
+     * @param bool $write Whether to write immediately
+     */
+    public function SetHTMLHeader($header = '', $OE = '', $write = false)
+    {
+        // Sanitize HTML to prevent null values in CSS attributes
+        $header = (string)$header;
+        if (!empty($header)) {
+            $header = $this->sanitizeHTML($header);
+        }
+        // Suppress deprecated warnings from mPDF's CSS processing
+        @parent::SetHTMLHeader($header, $OE, $write);
+    }
+
+    /**
+     * SetHTMLFooter - Set page footer with HTML content
+     * Sanitizes HTML to prevent null values in CSS processing
+     *
+     * @param string $footer HTML content for footer
+     * @param string $OE Optional element
+     * @param bool $write Whether to write immediately
+     */
+    public function SetHTMLFooter($footer = '', $OE = '', $write = false)
+    {
+        // Sanitize HTML to prevent null values in CSS processing
+        $footer = (string)$footer;
+        if (!empty($footer)) {
+            $footer = $this->sanitizeHTML($footer);
+        }
+        // Suppress deprecated warnings from mPDF's CSS processing
+        @parent::SetHTMLFooter($footer, $OE, $write);
+    }
+
+    /**
+     * WriteHTML - Override to sanitize HTML/CSS before processing
+     * Accepts all mPDF v8 WriteHTML parameters
+     *
+     * @param string $html HTML content to write
+     * @param int $mode HTML parser mode
+     * @param bool $init Initialize
+     * @param bool $close Close
+     */
+    public function WriteHTML($html, $mode = \Mpdf\HTMLParserMode::DEFAULT_MODE, $init = true, $close = true)
+    {
+        // Sanitize HTML to prevent null values in CSS attributes
+        $html = (string)$html;
+        if (!empty($html)) {
+            $html = $this->sanitizeHTML($html);
+        }
+        
+        // Suppress deprecated warnings from mPDF's CSS processing
+        @parent::WriteHTML($html, $mode, $init, $close);
+    }
+
+    /**
+     * sanitizeHTML - Remove or replace problematic patterns in HTML
+     * Prevents null values from being passed to strtolower() in mPDF CSS processing
+     *
+     * @param string $html HTML content to sanitize
+     * @return string Sanitized HTML
+     */
+    private function sanitizeHTML($html)
+    {
+        // Convert to string if not already
+        $html = (string)$html;
+        
+        // Ensure all attributes have non-empty values
+        // This is the key to avoiding null values passed to strtolower()
+        
+        // 1. Replace empty style attributes with safe defaults
+        $html = preg_replace('/style\s*=\s*["\'][\s]*["\']/i', 'style="font-family:Arial"', $html);
+        
+        // 2. Remove null-like values in common attributes
+        $html = preg_replace('/\s+(class|id|style|lang)\s*=\s*["\']?(null|undefined|empty|NULL)["\']?/i', '', $html);
+        
+        // 3. Ensure ALL style attributes have at least a minimal valid value
+        $html = preg_replace_callback(
+            '/style\s*=\s*["\']([^"\']*?)["\']/i',
+            function($matches) {
+                $styleContent = trim($matches[1] ?? '');
+                if (empty($styleContent)) {
+                    return 'style="font-family:Arial"';
+                }
+                return $matches[0];
+            },
+            $html
+        );
+        
+        // 4. Remove any remaining style="" (empty value) before CSS parsing
+        $html = preg_replace('/\s+style\s*=\s*["\'][\s]*["\']/i', '', $html);
+        
+        // 5. Ensure no null values in attribute values (safeguard for CSS)
+        $html = preg_replace_callback(
+            '/\s+(\w+)\s*=\s*["\']([^"\']*?)["\']/i',
+            function($matches) {
+                $attrName = $matches[1];
+                $attrValue = $matches[2] ?? '';
+                
+                // Cast to string and trim
+                $attrValue = (string)$attrValue;
+                $attrValue = trim($attrValue);
+                
+                // If attribute is empty or only whitespace, remove it
+                if (empty($attrValue) && !in_array(strtolower($attrName), ['style'])) {
+                    return '';
+                }
+                
+                // For style specifically, add minimal default if empty
+                if (strtolower($attrName) === 'style' && empty($attrValue)) {
+                    return ' style="font-family:Arial"';
+                }
+                
+                return $matches[0];
+            },
+            $html
+        );
+        
+        return $html;
     }
 
     /**

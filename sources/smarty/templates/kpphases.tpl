@@ -104,7 +104,7 @@
                             </tbody>
                         </table>
                     </div>
-                {elseif $arrayMatchs[$idJournee]|@count > 0}
+                {elseif isset($arrayMatchs[$idJournee]) && $arrayMatchs[$idJournee]|@count > 0}
                     <div class="padTopBottom table-responsive col-md-12 tableMatch">
                         <h4 class="row text-center">{$arrayJournees[$idJournee].Phase}</h4>
                         {section name=j loop=$arrayMatchs[$idJournee]}

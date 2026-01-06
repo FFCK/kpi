@@ -27,7 +27,7 @@ DOCKER_EXEC_NODE3_NON_INTERACTIVE = docker exec $(NODE3_CONTAINER_NAME)
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
-run_dev run_build run_generate run_generate_dev run_generate_preprod run_generate_prod run_lint \
+run_dev run_build run_generate_dev run_generate_preprod run_generate_production run_generate_prod run_lint \
 run_dev_app3 run_build_app3 run_generate_app3 run_generate_dev_app3 run_generate_preprod_app3 run_generate_prod_app3 run_lint_app3 \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
 npm_install_app3 npm_ls_app3 npm_clean_app3 npm_update_app3 npm_add_app3 npm_add_dev_app3 \
@@ -210,9 +210,6 @@ run_dev: ## Lance le serveur Nuxt (app2) en mode développement (port 3002)
 run_build: ## Build l'application Nuxt (app2) pour la production
 	$(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npm run build"
 
-run_generate: ## Génère l'application Nuxt (app2) en mode statique (production par défaut)
-	$(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npm run generate"
-
 run_generate_dev: ## Génère l'application Nuxt (app2) en mode statique pour développement
 	$(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
 	@echo "🔄 Restarting nginx to remount volume..."
@@ -226,12 +223,15 @@ run_generate_preprod: ## Génère l'application Nuxt (app2) en mode statique pou
 	docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
 	@echo "✅ App2 generated and nginx restarted!"
 
-run_generate_prod: ## Génère l'application Nuxt (app2) en mode statique pour production (utilise container temporaire)
+run_generate_production: ## Génère l'application Nuxt (app2) en mode statique pour production (utilise container temporaire)
 	@echo "🔨 Building app2 for production using temporary Node.js container..."
 	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
 	@echo "🔄 Restarting nginx to remount volume..."
 	docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
 	@echo "✅ App2 generated and nginx restarted!"
+
+run_generate_prod: ## Alias pour run_generate_production (génère l'application Nuxt en mode statique pour production)
+	@$(MAKE) run_generate_production
 
 run_lint: ## Exécute ESLint sur app2
 	$(DOCKER_EXEC_NODE) sh -c "npm run lint"

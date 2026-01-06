@@ -265,6 +265,10 @@ function utySearchLogoFile($club)
 // Transformation Date Us : YYYY-MM-DD en Date Fr Long : dddd DD mmmm YYYY
 function utyDateUsToFrLong($dateUs, $separator = "-")
 {
+	// Vérifier si la date est vide ou null pour éviter erreurs PHP 8
+	if ($dateUs == '0000-00-00' || $dateUs == '' || $dateUs == null)
+		return '';
+
 	$tab_dmy = explode($separator, $dateUs);
 	$prefix = "";
 	$tab_month = array(0, "janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "decembre");
@@ -628,6 +632,11 @@ function utyTruncateString($str, $num = 15)
  */
 function utyArbSansNiveau($string)
 {
+	// Vérifier si la chaîne est null pour éviter erreurs PHP 8
+	if ($string === null || $string === '') {
+		return '';
+	}
+
 	$arbsup = array(
 		" (Pool Arbitres 1)", " (Pool Arbitres 2)", " INT-A", " INT-B", " INT-C", " INT-S",
 		" INT", " NAT-A", " NAT-B", " NAT-C", " NAT-S", " NAT", " REG-S", "REG", " OTM", " JO"
@@ -866,13 +875,15 @@ function utyEquipesAffectAuto($intitule)
 			$codePoule = '';
 			preg_match("/([A-Z_]+)/", $intitule[$j], $codeLettres); // lettre
 			preg_match("/([0-9]+)/", $intitule[$j], $codeNumero); // numero de match ou classement de poule
+			$posNumero = null;
+			$posLettres = null;
 			if (isset($codeNumero[1])) {
 				$posNumero = strpos($intitule[$j], $codeNumero[1]);
 			}
 			if (isset($codeLettres[1])) {
 				$posLettres = strpos($intitule[$j], $codeLettres[1]);
 			}
-			if (isset($codeLettres[1]) && $posNumero > $posLettres) { // Tirage ou match
+			if (isset($codeLettres[1]) && isset($codeNumero[1]) && $posNumero > $posLettres) { // Tirage ou match
 				switch ($codeLettres[1]) {
 					case 'T': // tirage
 					case 'D': // draw
@@ -891,7 +902,7 @@ function utyEquipesAffectAuto($intitule)
 						$resultat = 'ERREUR CODE : ' . $intitule[$j];
 						break;
 				}
-			} elseif (isset($codeLettres[1]) && $posNumero < $posLettres) { // poule
+			} elseif (isset($codeLettres[1]) && isset($codeNumero[1]) && $posNumero < $posLettres) { // poule
 				if ($codeNumero[1] == 1) {
 					$resultat = '(1st Group ' . $codeLettres[1] . ')';
 				} elseif ($codeNumero[1] == 2) {
@@ -931,13 +942,15 @@ function utyEquipesAffectAutoFR($intitule)
 			$codePoule = '';
 			preg_match("/([A-Z_]+)/", $intitule[$j], $codeLettres); // lettre
 			preg_match("/([0-9]+)/", $intitule[$j], $codeNumero); // numero de match ou classement de poule
+			$posNumero = null;
+			$posLettres = null;
 			if (isset($codeNumero[1])) {
 				$posNumero = strpos($intitule[$j], $codeNumero[1]);
 			}
 			if (isset($codeLettres[1])) {
 				$posLettres = strpos($intitule[$j], $codeLettres[1]);
 			}
-			if (isset($codeLettres[1]) && $posNumero > $posLettres) { // Tirage ou match
+			if (isset($codeLettres[1]) && isset($codeNumero[1]) && $posNumero > $posLettres) { // Tirage ou match
 				switch ($codeLettres[1]) {
 					case 'T': // tirage
 					case 'D': // draw
@@ -956,7 +969,7 @@ function utyEquipesAffectAutoFR($intitule)
 						$resultat = 'ERREUR CODE : ' . $intitule[$j];
 						break;
 				}
-			} elseif (isset($codeLettres[1]) && $posNumero < $posLettres) { // poule
+			} elseif (isset($codeLettres[1]) && isset($codeNumero[1]) && $posNumero < $posLettres) { // poule
 				if (isset($codeNumero[1]) && isset($codeLettres[1])) {
 					if ($codeNumero[1] == 1) {
 						$resultat = '(1er Poule ' . $codeLettres[1] . ')';

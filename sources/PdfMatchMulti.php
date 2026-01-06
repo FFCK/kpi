@@ -17,6 +17,7 @@ class FeuilleMatch extends MyPage
     function __construct()
     {
         parent::__construct();
+        $myBdd = new MyBdd();
 
         $listMatch = utyGetGet('listMatch', -1);
         if ($listMatch == -1 || $listMatch == '') {
@@ -24,14 +25,6 @@ class FeuilleMatch extends MyPage
         }
         $chaqueMatch = explode(',', $listMatch);
 
-        $myBdd = new MyBdd();
-
-        //Création du PDF de base
-        $pdf = new PDF('L');
-        $pdf->SetTitle("Feuille de Marque");
-
-        $pdf->SetAuthor("FFCK - Kayak-polo.info");
-        $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
         for ($h = 0; $h < count($chaqueMatch); $h++) {
             // Infos match
@@ -40,7 +33,9 @@ class FeuilleMatch extends MyPage
                 a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Ligne1, a.Ligne2, a.Type, 
                 a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, 
                 ce1.Code_club codeclubA, ce1.Libelle LibelleA, ce2.Code_club codeclubB, ce2.Libelle LibelleB, 
-                a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels, 
+                a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels,
+                ce1.color1 color1A, ce1.color2 color2A, ce1.colortext colortextA, 
+                ce2.color1 color1B, ce2.color2 color2B, ce1.colortext colortextB,
                 b.Nom, b.Phase, b.Libelle, b.Lieu, b.Departement, b.Organisateur, b.Responsable_R1, 
                 b.Responsable_insc, b.Delegue, b.ChefArbitre, b.Code_competition, b.Code_saison 
                 FROM kp_match a
@@ -62,6 +57,22 @@ class FeuilleMatch extends MyPage
 
             // Données compétition
             $arrayCompetition = $myBdd->GetCompetition($categorie, $saison);
+            // $arrayCompetition['En_actif'] = '';
+
+            // Langue
+            $langue = parse_ini_file("commun/MyLang.ini", true);
+            if (utyGetGet('lang') == 'en') {
+                $arrayCompetition['En_actif'] = 'O';
+            } elseif (utyGetGet('lang') == 'fr') {
+                $arrayCompetition['En_actif'] = '';
+            }
+
+            if ($arrayCompetition['En_actif'] == 'O') {
+                $lang = $langue['en'];
+            } else {
+                $lang = $langue['fr'];
+            }
+
 
             $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
@@ -72,6 +83,14 @@ class FeuilleMatch extends MyPage
             }
             if ($idEquipeB == '') {
                 $idEquipeB = 0;
+            }
+
+            if ($arrayCompetition['Code_niveau'] == 'INT') {
+                $international = true;
+                $lines = 12;
+            } else {
+                $international = false;
+                $lines = 10;
             }
 
             // drapeaux
@@ -90,21 +109,6 @@ class FeuilleMatch extends MyPage
                 }
             } else {
                 $paysB = '';
-            }
-
-            // Langue
-            $getlang = utyGetGet('lang');
-            $langue = parse_ini_file("commun/MyLang.ini", true);
-            if ($getlang == 'en') {
-                $arrayCompetition['En_actif'] = 'O';
-            } elseif ($getlang == 'fr') {
-                $arrayCompetition['En_actif'] = '';
-            }
-
-            if ($arrayCompetition['En_actif'] == 'O') {
-                $lang = $langue['en'];
-            } else {
-                $lang = $langue['fr'];
             }
 
             $competition = html_entity_decode($row['Nom']);
@@ -157,7 +161,6 @@ class FeuilleMatch extends MyPage
             } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
                 $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
             }
-            //
 
             $principal = $row['Arbitre_principal'];
             if ($principal == '-1') {
@@ -209,6 +212,17 @@ class FeuilleMatch extends MyPage
             $no = $row['Numero_ordre'];
             $colorA = $row['ColorA'];
             $colorB = $row['ColorB'];
+            if ($row['color1A']) {
+                $color1A = sscanf($row['color1A'], "#%02x%02x%02x");
+                $color2A = sscanf($row['color2A'], "#%02x%02x%02x");
+                $colortextA = sscanf($row['colortextA'], "#%02x%02x%02x");
+            }
+            if ($row['color1B']) {
+                $color1B = sscanf($row['color1B'], "#%02x%02x%02x");
+                $color2B = sscanf($row['color2B'], "#%02x%02x%02x");
+                $colortextB = sscanf($row['colortextB'], "#%02x%02x%02x");
+            }
+
             if ($row['ScoreA'] != '?' && $row['ScoreA'] != '') {
                 $ScoreA = $row['ScoreA'];
             } else {
@@ -221,7 +235,6 @@ class FeuilleMatch extends MyPage
                 $ScoreB = '';
             }
 
-            //$Commentaires = $row['Commentaires_officiels'];
             $Commentaires = ''; // ON CACHE LES COMMENTAIRES AU PUBLIC
             $Commentaires1 = str_split($Commentaires, 85); //85
             $Commentaires1 = isset($Commentaires1[0]) ? $Commentaires1[0] : '';
@@ -230,7 +243,7 @@ class FeuilleMatch extends MyPage
             }
 
             // Info Equipe A
-            for ($i = 1; $i <= 10; $i++) {
+            for ($i = 1; $i <= $lines; $i++) {
                 $na[$i] = '';
                 $noma[$i] = '';
                 $prenoma[$i] = '';
@@ -260,8 +273,7 @@ class FeuilleMatch extends MyPage
             $j = 0;
             while ($row3 = $result3->fetch()) {
                 $j++;
-                if ($row3["Capitaine"] == 'E' && $j <= 10) {
-                    //                                    $j=10;
+                if ($row3["Capitaine"] == 'E') {
                     $noma[$j] = mb_strtoupper($row3['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $na[$j] = 'C';
                 } elseif ($row3["Capitaine"] == 'C') {
@@ -292,7 +304,7 @@ class FeuilleMatch extends MyPage
                 }
             }
             // Info Equipe B
-            for ($i = 1; $i <= 10; $i++) {
+            for ($i = 1; $i <= $lines; $i++) {
                 $nb[$i] = '';
                 $nomb[$i] = '';
                 $prenomb[$i] = '';
@@ -311,8 +323,7 @@ class FeuilleMatch extends MyPage
             while ($row4 = $result3->fetch()) {
                 $j++;
 
-                if ($row4["Capitaine"] == 'E' && $j <= 10) {
-                    //                                    $j=10;
+                if ($row4["Capitaine"] == 'E') {
                     $nomb[$j] = mb_strtoupper($row4['Nom']) . ' (' . $lang['Entraineur'] . ')';
                     $nb[$j] = 'C';
                 } elseif ($row4["Capitaine"] == 'C') {
@@ -451,14 +462,20 @@ class FeuilleMatch extends MyPage
                 $typeScore = $lang['Final'];
             }
 
-            if ($scoreMitempsA != '' && $scoreMitempsB == '') {
+            if (($scoreMitempsA != '' || $typeScore == $lang['Final']) && $scoreMitempsB == '') {
                 $scoreMitempsB = 0;
             }
-            if ($scoreMitempsB != '' && $scoreMitempsA == '') {
+            if (($scoreMitempsB != '' || $typeScore == $lang['Final']) && $scoreMitempsA == '') {
                 $scoreMitempsA = 0;
             }
 
 
+            //Création du PDF de base
+            $pdf = new PDF('L');
+            $pdf->SetTitle($lang['Feuille_de_marque']);
+
+            $pdf->SetAuthor("FFCK - Kayak-polo.info");
+            $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
             // Production de la feuille de match PDF suivante
             $pdf->AddPage();
@@ -473,7 +490,7 @@ class FeuilleMatch extends MyPage
             $pdf->SetLeftMargin($x0);
             $pdf->SetX($x0);
 
-            // mPDF: Sauvegarder la position Y initiale avant les images
+            // mPDF: Sauvegarder la position Y initiale avant les images et forcer la position de départ
             $yStart = 9;
             $pdf->SetY($yStart);
 
@@ -500,7 +517,7 @@ class FeuilleMatch extends MyPage
                 $pdf->Image($img['image'], $img['positionX'], 190, 0, $img['newHauteur']);
             }
 
-            // mPDF: Restaurer la position Y après les images (FPDF ne modifie pas Y avec Image(), mPDF peut le faire)
+            // mPDF: Restaurer la position Y après les images (mPDF peut déplacer le curseur)
             $pdf->SetY($yStart);
             $pdf->SetX($x0);
 
@@ -574,25 +591,38 @@ class FeuilleMatch extends MyPage
             }
             $pdf->SetFont('Arial', '', 10);
 
-            $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
-            $pdf->Cell(24, 6, "Licence", '1', '0', 'C');
-            $pdf->Cell(15, 6, "Cat.", '1', '1', 'C');
+            if ($arrayCompetition['Code_niveau'] == 'INT') {
+                $pdf->Cell(16, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Prenom'], '1', '0', 'C');
+                $pdf->Cell(9, 6, "", 1, 1, 'C');
+            } else {
+                $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
+                $pdf->Cell(24, 6, "Licence", 1, 0, 'C');
+                $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
+            }
 
-            for ($i = 1; $i <= 10; $i++) {
-                if ($na[$i] == 'E') {
+            for ($i = 1; $i <= $lines; $i++) {
+                if ($na[$i] == 'C') {
                     $pdf->SetFillColor(235, 235, 190);
                 } else {
                     $pdf->SetFillColor(255, 255, 255);
                 }
                 $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(6, 4, $na[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $noma[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(24, 4, $licencea[$i] . $saisona[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(15, 4, $diva[$i], 'LRB', '1', 'C', 1);
-                $indiqsaison = '';
+                if ($arrayCompetition['Code_niveau'] == 'INT') {
+                    $pdf->Cell(16, 4, $na[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $noma[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(9, 4, "", 'LRB', '1', 'C', 1);
+                } else {
+                    $pdf->Cell(6, 4, $na[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $noma[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $prenoma[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(24, 4, $licencea[$i] . $saisona[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(15, 4, $diva[$i], 'LRB', '1', 'C', 1);
+                }
             }
             $pdf->SetFillColor(200, 200, 200);
 
@@ -611,39 +641,54 @@ class FeuilleMatch extends MyPage
             }
             $pdf->SetFont('Arial', '', 10);
 
-            $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
-            $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
-            $pdf->Cell(24, 6, "Licence", '1', '0', 'C');
-            $pdf->Cell(15, 6, "Cat", '1', '1', 'C');
+            if ($arrayCompetition['Code_niveau'] == 'INT') {
+                $pdf->Cell(16, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(55, 6, $lang['Prenom'], '1', '0', 'C');
+                $pdf->Cell(9, 6, "", 1, 1, 'C');
+            } else {
+                $pdf->Cell(6, 6, $lang['Num'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Nom'], '1', '0', 'C');
+                $pdf->Cell(45, 6, $lang['Prenom'], '1', '0', 'C');
+                $pdf->Cell(24, 6, "Licence", 1, 0, 'C');
+                $pdf->Cell(15, 6, "Cat.", 1, 1, 'C');
+            }
 
-            for ($i = 1; $i <= 10; $i++) {
-                if ($nb[$i] == 'E') {
+            for ($i = 1; $i <= $lines; $i++) {
+                if ($nb[$i] == 'C') {
                     $pdf->SetFillColor(245, 245, 180);
                 } else {
                     $pdf->SetFillColor(255, 255, 255);
                 }
                 $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(6, 4, $nb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $nomb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(45, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(24, 4, $licenceb[$i] . $saisonb[$i], 'LRB', '0', 'C', 1);
-                $pdf->Cell(15, 4, $divb[$i], 'LRB', '1', 'C', 1);
-                $indiqsaison = '';
+                if ($arrayCompetition['Code_niveau'] == 'INT') {
+                    $pdf->Cell(16, 4, $nb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $nomb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(55, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(9, 4, "", 'LRB', '1', 'C', 1);
+                } else {
+                    $pdf->Cell(6, 4, $nb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $nomb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(45, 4, $prenomb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(24, 4, $licenceb[$i] . $saisonb[$i], 'LRB', '0', 'C', 1);
+                    $pdf->Cell(15, 4, $divb[$i], 'LRB', '1', 'C', 1);
+                }
             }
             $pdf->SetFillColor(200, 200, 200);
 
-            //signatures
-            $pdf->Ln(1);
-            $pdf->SetFont('Arial', '', 10);
-            $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');
-            $pdf->Cell(38, 12, "", '1', '0', 'C');
-            $pdf->Cell(38, 12, "", '1', '0', 'C');
-            $pdf->Cell(38, 12, "", '1', '1', 'C');
-            $pdf->Cell(21, 4, $lang['avant_match'], 'LRB', '0', 'C');
-            $pdf->Cell(38, 4, $lang['Capitaine'] . " A", '1', '0', 'C');
-            $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
-            $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
+            // signatures avant match si la compétition n'est pas ICF ou ECA
+            if (!$international) {
+                $pdf->Ln(1);
+                $pdf->SetFont('Arial', '', 10);
+                $pdf->Cell(21, 12, $lang['Signatures'], 'LRT', '0', 'C');
+                $pdf->Cell(38, 12, "", '1', '0', 'C');
+                $pdf->Cell(38, 12, "", '1', '0', 'C');
+                $pdf->Cell(38, 12, "", '1', '1', 'C');
+                $pdf->Cell(21, 4, $lang['avant_match'], 'LRB', '0', 'C');
+                $pdf->Cell(38, 4, $lang['Capitaine'] . " A", '1', '0', 'C');
+                $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
+                $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
+            }
 
             //Colonne 2
 
@@ -652,9 +697,8 @@ class FeuilleMatch extends MyPage
             $pdf->SetX($x0);
 
             // mPDF: Forcer position absolue Y pour colonne 2
-            // La colonne 1 a déjà descendu le curseur, il faut remonter explicitement
-            $yStartCol2 = 8;
             // Désactiver temporairement AutoPageBreak pour permettre le repositionnement
+            $yStartCol2 = 8;
             $pdf->SetAutoPageBreak(false);
             $pdf->SetY($yStartCol2);
             $pdf->SetAutoPageBreak(true, 1);
@@ -668,17 +712,18 @@ class FeuilleMatch extends MyPage
                 $pdf->SetFont('Arial', 'BI', 14);
                 $pdf->SetFillColor(200, 200, 200);
             } else {
-                $pdf->Cell(135, 6, $lang['FEUILLE_DE_MARQUE'], 0, 1, 'C');
+                $pdf->Cell(70, 6, $lang['FEUILLE_DE_MARQUE'], 0, 0, 'C');
+                $pdf->SetFont('Arial', 'I', 12);
+                $pdf->Cell(58, 6, '(' . $lang['Pas_de_prolongation'] . ')', 1, 1, 'C');
+                $pdf->SetFont('Arial', 'BI', 14);
+                $pdf->SetFillColor(200, 200, 200);
             }
 
-            // mPDF: Sauvegarder position Y avant image type match
+            // Type de match
+            // mPDF: sauvegarder Y avant image absolue
             $yBeforeTypeImage = $pdf->y;
-
-            // Type de match (image en position absolue Y=14)
             $pdf->image('img/type' . $row['Type'] . '2.png', 214, 14, 6, 0);
-
             // mPDF: Restaurer position après image type match
-            // L'image est en position absolue et ne doit PAS décaler le contenu
             $pdf->SetY($yBeforeTypeImage);
             $pdf->SetX($x0);
 
@@ -710,12 +755,32 @@ class FeuilleMatch extends MyPage
 
             $pdf->SetFont('Arial', 'I', 8);
             $pdf->Cell(15, 3, '', 'LB', 0, 'C', 1);
-            $pdf->Cell(42, 3, $colorA, 'RB', 0, 'C', 1);
+            if (isset($color1A) && is_array($color1A)) {
+                $pdf->Cell(10, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color1A[0], $color1A[1], $color1A[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color2A[0], $color2A[1], $color2A[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor(200, 200, 200);
+                $pdf->Cell(10, 3, '', 'RB', 0, 'C', 1);
+            } else {
+                $pdf->Cell(42, 3, $colorA, 'RB', 0, 'C', 1);
+            }
             $pdf->Cell(1, 3, "", 0, 0, 'C');
             $pdf->Cell(19, 3, $lang['Periode'], 'LR', 0, 'C');
             $pdf->Cell(1, 3, "", 0, 0, 'C');
             $pdf->Cell(15, 3, '', 'LB', 0, 'C', 1);
-            $pdf->Cell(42, 3, $colorB, 'RB', 1, 'C', 1);
+            if (isset($color1B) && is_array($color1B)) {
+                $pdf->Cell(10, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color1B[0], $color1B[1], $color1B[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor($color2B[0], $color2B[1], $color2B[2]);
+                $pdf->Cell(11, 3, '', 'B', 0, 'C', 1);
+                $pdf->SetFillColor(200, 200, 200);
+                $pdf->Cell(10, 3, '', 'RB', 1, 'C', 1);
+            } else {
+                $pdf->Cell(42, 3, $colorB, 'RB', 1, 'C', 1);
+            }
 
             $pdf->SetFont('Arial', '', 8);
             $pdf->SetFillColor(170, 255, 170);
@@ -739,7 +804,6 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(5, 5, $lang['R'], 1, 1, 'C', 1);
 
             for ($i = 0; $i < 26; $i++) {
-                //			for($i=0;$i<23;$i++)	// @COSANDCO_WAMPSER
                 $pdf->SetFillColor(170, 255, 170);
                 $pdf->Cell(5, 4, isset($detail[$i]['d2']) ? $detail[$i]['d2'] : '', 1, 0, 'C', 1);
                 $pdf->SetFillColor(255, 255, 170);
@@ -825,9 +889,7 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(52, 12, "", '1', '1', 'C');
             $pdf->Cell(21, 4, $lang['apres_match'], 'LRB', 0, 'C');
             $pdf->Cell(31, 4, $lang['Capitaine'] . " A", 1, 0, 'C');
-            //$pdf->Cell(31,4,$lang['Entraineur']." A",1,0,'C');
             $pdf->Cell(31, 4, $lang['Capitaine'] . " B", 1, 0, 'C');
-            //$pdf->Cell(31,4,$lang['Entraineur']." B",1,0,'C');
             $pdf->Cell(31, 4, $lang['Arbitre_1'], 1, 0, 'C');
             $pdf->SetFont('Arial', '', 9);
             $pdf->Cell(21, 4, "ID #" . $idMatch, 1, 1, 'C');
@@ -853,6 +915,8 @@ class FeuilleMatch extends MyPage
             // mPDF: Restaurer position exacte après images drapeaux
             $pdf->SetY($currentY);
             $pdf->SetX($currentX);
+
+            $pdf->SetX(10);
 
             // Commentaires sur la 2ème page
             if (strlen($Commentaires) > 85 or $nblignes > 26) {
@@ -898,10 +962,10 @@ class FeuilleMatch extends MyPage
 
                 $pdf->Cell(135, 1, "", 'LR', '1', 'C', 1);
                 $pdf->Cell(135, 1, "", 'LTR', '1', 'L');
-                $pdf->Cell(135, 4, $lang['Arbitre_1'] . ": " . $principal, 'LR', '1', 'L');
-                $pdf->Cell(135, 4, $lang['Arbitre_2'] . ": " . $secondaire, 'LR', '1', 'L');
+                $pdf->Cell(135, 4, $lang['Arbitre_1'] . ": " . $principal, 'LR', 1, 'L');
+                $pdf->Cell(135, 4, $lang['Arbitre_2'] . ": " . $secondaire, 'LR', 1, 'L');
                 $pdf->Cell(68, 4, $lang['Secretaire'] . ": " . $secretaire, 'L', '0', 'L');
-                $pdf->Cell(67, 4, $lang['Chronometre'] . ": " . $chronometre, 'R', '1', 'L');
+                $pdf->Cell(67, 4, $lang['Chronometre'] . ": " . $chronometre, 'R', 1, 'L');
                 $pdf->Cell(135, 1, "", 'LBR', '1', 'C');
 
                 //Equipe A

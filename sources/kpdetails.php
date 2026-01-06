@@ -74,7 +74,7 @@ class Details extends MyPage
             $_SESSION['idSelJournee'] = $idSelJournee;
             $this->m_tpl->assign('idSelJournee', $idSelJournee);
         }
-        if ($providedEvent === 0 && $_SESSION['event'] !== 0) {
+        if ($providedEvent === 0 && isset($_SESSION['event']) && $_SESSION['event'] !== 0) {
             $event = 0;
             $_SESSION['event'] = $event;
         }
@@ -300,6 +300,7 @@ class Details extends MyPage
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeSaison, $codeCompetGroup));
             $arrayListJournees = array();
+            $journee = array(); // Initialisation pour éviter warning PHP 8
             while ($row = $result->fetch()) {
                 if($row['Code_competition'] == $codeCompet){
                     $row['Selected'] = true;
