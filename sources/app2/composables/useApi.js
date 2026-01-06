@@ -129,30 +129,27 @@ export const useApi = () => {
 
   /**
    * Show network error toast
+   * Note: OFFLINE errors are handled by useOnlineStatus, so we skip them here
    */
   const showNetworkErrorToast = (errorType) => {
+    // Skip OFFLINE errors - they are handled by useOnlineStatus
+    if (errorType === ErrorType.OFFLINE) {
+      return
+    }
+
     let titleKey, descKey, icon
 
     switch (errorType) {
-      case ErrorType.OFFLINE:
-        titleKey = 'errors.network.offline.title'
-        descKey = 'errors.network.offline.description'
-        icon = 'i-heroicons-wifi'
-        break
       case ErrorType.TIMEOUT:
         titleKey = 'errors.network.timeout.title'
         descKey = 'errors.network.timeout.description'
         icon = 'i-heroicons-clock'
         break
       case ErrorType.NETWORK:
+      default:
         titleKey = 'errors.network.failed.title'
         descKey = 'errors.network.failed.description'
         icon = 'i-heroicons-signal-slash'
-        break
-      default:
-        titleKey = 'errors.generic.title'
-        descKey = 'errors.generic.description'
-        icon = 'i-heroicons-x-circle'
     }
 
     toast.add({
