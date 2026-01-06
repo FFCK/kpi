@@ -35,9 +35,9 @@ export const useOnlineStatus = () => {
       id: 'offline-status',
       title: t('status.Offline'),
       description: t('status.OfflineDescription'),
-      icon: 'i-heroicons-wifi',
+      icon: 'i-heroicons-signal-slash',
       color: 'warning',
-      timeout: 5000
+      timeout: 3000
     })
   }
 

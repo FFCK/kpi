@@ -36,10 +36,11 @@ export const useApi = () => {
     lastCacheToastTime = now
 
     toast.add({
+      id: 'cache-toast',
       title: t('errors.cache.usingOfflineData.title'),
       description: t('errors.cache.usingOfflineData.description'),
       icon: 'i-heroicons-archive-box',
-      color: 'blue',
+      color: 'info',
       timeout: 3000
     })
   }
@@ -117,6 +118,7 @@ export const useApi = () => {
     }
 
     toast.add({
+      id: `http-error-${errorType}`,
       title: t(titleKey),
       description: t(descKey, { status }),
       icon,
@@ -154,10 +156,11 @@ export const useApi = () => {
     }
 
     toast.add({
+      id: `network-error-${errorType}`,
       title: t(titleKey),
       description: t(descKey),
       icon,
-      color: 'red',
+      color: 'error',
       timeout: 3000
     })
   }
@@ -199,11 +202,12 @@ export const useApi = () => {
             last401Time = now
 
             toast.add({
+              id: 'http-error-401',
               title: t('errors.http.401.title'),
               description: t('errors.http.401.description'),
               icon: 'i-heroicons-shield-exclamation',
-              color: 'red',
-              timeout: 4000
+              color: 'error',
+              timeout: 3000
             })
 
             // Logout user and redirect to login after short delay
