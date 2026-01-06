@@ -10,11 +10,10 @@
     <AppInstallPrompt />
     <ClientOnly>
       <UpdatePrompt />
-      <NetworkMonitor />
     </ClientOnly>
   </div>
 </template>
 
 <script setup>
-// Network monitoring is initialized via NetworkMonitor component (client-only)
+// Network monitoring is handled by useOnlineStatus composable (used in AppHeader and other components)
 </script>
