@@ -6,6 +6,7 @@ FROM ${BASE_IMAGE_PHP}
 
 # Install required packages and PHP extensions for production
 # Includes mPDF dependencies: gd (image processing), zip (file compression)
+# Includes Symfony optimization: intl (internationalization)
 # Single RUN layer for optimal caching and minimal image size
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libonig-dev \
@@ -17,11 +18,12 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
+    libicu-dev \
     zip \
     unzip \
     locales \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring mysqli gd zip \
+    && docker-php-ext-install pdo pdo_mysql mbstring mysqli gd zip intl \
     && docker-php-ext-enable mysqli \
     && a2enmod headers \
     && a2enmod expires \

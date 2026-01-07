@@ -7,7 +7,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class EventController extends AbstractController
 {
@@ -153,7 +153,8 @@ class EventController extends AbstractController
         }
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([$id]);
+        $stmt->bindValue(1, $id);
+        $result = $stmt->executeQuery();
         $event = $result->fetchAllAssociative();
 
         return new JsonResponse($event);

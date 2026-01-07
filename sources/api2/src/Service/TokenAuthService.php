@@ -46,7 +46,8 @@ class TokenAuthService
             WHERE ut.token = ?";
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([$token]);
+        $stmt->bindValue(1, $token);
+        $result = $stmt->executeQuery();
         $row = $result->fetchAssociative();
 
         if (!$row) {

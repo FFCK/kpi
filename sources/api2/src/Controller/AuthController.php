@@ -7,7 +7,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class AuthController extends AbstractController
 {
@@ -74,7 +74,8 @@ class AuthController extends AbstractController
             WHERE u.Code = ?";
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([$user]);
+        $stmt->bindValue(1, $user);
+        $result = $stmt->executeQuery();
         $row = $result->fetchAssociative();
 
         if (!$row) {

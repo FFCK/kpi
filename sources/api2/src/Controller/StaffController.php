@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/staff', name: 'staff_')]
 class StaffController extends AbstractController
@@ -105,7 +105,8 @@ class StaffController extends AbstractController
             ORDER BY club, label";
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([$eventId]);
+        $stmt->bindValue(1, $eventId);
+        $result = $stmt->executeQuery();
         $teams = $result->fetchAllAssociative();
 
         return new JsonResponse($teams);
@@ -178,7 +179,8 @@ class StaffController extends AbstractController
             ORDER BY FIELD(IF(cej.Capitaine='C', '-', IF(cej.Capitaine='', '-', cej.Capitaine)), '-', 'E', 'A', 'X'), num, last_name, first_name";
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([$teamId]);
+        $stmt->bindValue(1, $teamId);
+        $result = $stmt->executeQuery();
         $players = $result->fetchAllAssociative();
 
         $response = new JsonResponse($players);
