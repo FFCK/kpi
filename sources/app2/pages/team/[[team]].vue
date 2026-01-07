@@ -109,10 +109,40 @@
             <!-- Elimination Games -->
             <div v-if="round.type === 'elimination'" class="p-2 space-y-3">
               <div v-for="game in round.data" :key="game.g_id" class="flex items-center space-x-2">
-                <div class="text-xs text-gray-500 italic font-medium flex-shrink-0">
+                <NuxtLink
+                  v-if="isMatchSheetAvailable(game)"
+                  :to="getMatchSheetUrl(game)"
+                  class="text-xs text-gray-500 italic font-medium flex-shrink-0 hover:text-gray-700 cursor-pointer transition-colors"
+                  :title="t('Games.MatchSheet')"
+                >
+                  #{{ game.g_number }}
+                </NuxtLink>
+                <div v-else class="text-xs text-gray-500 italic font-medium flex-shrink-0">
                   #{{ game.g_number }}
                 </div>
-                <div class="flex-1 space-y-2">
+                <NuxtLink
+                  v-if="isMatchSheetAvailable(game)"
+                  :to="getMatchSheetUrl(game)"
+                  class="flex-1 space-y-2 hover:opacity-80 cursor-pointer transition-opacity"
+                  :title="t('Games.MatchSheet')"
+                >
+                  <div v-for="team in getOrderedTeams(game)" :key="team.label" class="flex items-center gap-1">
+                    <TeamName
+                      :team-label="team.label"
+                      :team-id="team.id"
+                      :is-winner="isWinner(game, team.side)"
+                      :is-highlighted="team.highlighted"
+                      class="text-xs flex-1"
+                    />
+                    <div
+                      v-if="team.score !== undefined && team.score !== ''"
+                      :class="[getGameTeamClass(game, team.side), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
+                    >
+                      {{ team.score }}
+                    </div>
+                  </div>
+                </NuxtLink>
+                <div v-else class="flex-1 space-y-2">
                   <div v-for="team in getOrderedTeams(game)" :key="team.label" class="flex items-center gap-1">
                     <TeamName
                       :team-label="team.label"
@@ -785,6 +815,16 @@ const getOrderedTeams = (game) => {
   } else { // Handle draws or other cases
     return [teamA, teamB]
   }
+}
+
+// Check if match sheet is available (match in progress or finished, not pending)
+const isMatchSheetAvailable = (game) => {
+  return game.g_status === 'ON' || game.g_status === 'END'
+}
+
+// Get the URL for the match sheet
+const getMatchSheetUrl = (game) => {
+  return `/game/${game.g_id}`
 }
 
 const loadData = async (force = false) => {
