@@ -20,12 +20,7 @@
         </div>
 
         <!-- Teams and scores -->
-        <NuxtLink
-          v-if="isMatchSheetAvailable(game)"
-          :to="getMatchSheetUrl(game)"
-          class="flex-1 space-y-1 hover:opacity-80 cursor-pointer transition-opacity"
-          :title="t('Games.MatchSheet')"
-        >
+        <div class="flex-1 space-y-1">
           <!-- First team (winner if there's a winner, otherwise Team A) -->
           <div class="flex items-center gap-1">
             <TeamName
@@ -35,8 +30,16 @@
               :is-highlighted="getFirstTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
               class="text-xs flex-1"
             />
+            <NuxtLink
+              v-if="isMatchSheetAvailable(game) && getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
+              :to="getMatchSheetUrl(game)"
+              :class="[teamBlockClass(game, getFirstTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8 hover:opacity-80 cursor-pointer transition-opacity']"
+              :title="t('Games.MatchSheet')"
+            >
+              {{ getFirstTeamScore(game) }}
+            </NuxtLink>
             <div
-              v-if="getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
+              v-else-if="getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
               :class="[teamBlockClass(game, getFirstTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
             >
               {{ getFirstTeamScore(game) }}
@@ -52,43 +55,16 @@
               :is-highlighted="getSecondTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
               class="text-xs flex-1"
             />
-            <div
-              v-if="getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
-              :class="[teamBlockClass(game, getSecondTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
+            <NuxtLink
+              v-if="isMatchSheetAvailable(game) && getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
+              :to="getMatchSheetUrl(game)"
+              :class="[teamBlockClass(game, getSecondTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8 hover:opacity-80 cursor-pointer transition-opacity']"
+              :title="t('Games.MatchSheet')"
             >
               {{ getSecondTeamScore(game) }}
-            </div>
-          </div>
-        </NuxtLink>
-        <div v-else class="flex-1 space-y-1">
-          <!-- First team (winner if there's a winner, otherwise Team A) -->
-          <div class="flex items-center gap-1">
-            <TeamName
-              :team-label="getFirstTeamLabel(game)"
-              :team-id="getFirstTeamId(game)"
-              :is-winner="isWinner(game, getFirstTeam(game))"
-              :is-highlighted="getFirstTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
-              class="text-xs flex-1"
-            />
+            </NuxtLink>
             <div
-              v-if="getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
-              :class="[teamBlockClass(game, getFirstTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
-            >
-              {{ getFirstTeamScore(game) }}
-            </div>
-          </div>
-
-          <!-- Second team (loser if there's a winner, otherwise Team B) -->
-          <div class="flex items-center gap-1">
-            <TeamName
-              :team-label="getSecondTeamLabel(game)"
-              :team-id="getSecondTeamId(game)"
-              :is-winner="isWinner(game, getSecondTeam(game))"
-              :is-highlighted="getSecondTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
-              class="text-xs flex-1"
-            />
-            <div
-              v-if="getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
+              v-else-if="getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
               :class="[teamBlockClass(game, getSecondTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
             >
               {{ getSecondTeamScore(game) }}

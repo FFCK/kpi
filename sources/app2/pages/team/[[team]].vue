@@ -120,12 +120,7 @@
                 <div v-else class="text-xs text-gray-500 italic font-medium flex-shrink-0">
                   #{{ game.g_number }}
                 </div>
-                <NuxtLink
-                  v-if="isMatchSheetAvailable(game)"
-                  :to="getMatchSheetUrl(game)"
-                  class="flex-1 space-y-2 hover:opacity-80 cursor-pointer transition-opacity"
-                  :title="t('Games.MatchSheet')"
-                >
+                <div class="flex-1 space-y-2">
                   <div v-for="team in getOrderedTeams(game)" :key="team.label" class="flex items-center gap-1">
                     <TeamName
                       :team-label="team.label"
@@ -134,25 +129,16 @@
                       :is-highlighted="team.highlighted"
                       class="text-xs flex-1"
                     />
-                    <div
-                      v-if="team.score !== undefined && team.score !== ''"
-                      :class="[getGameTeamClass(game, team.side), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
+                    <NuxtLink
+                      v-if="isMatchSheetAvailable(game) && team.score !== undefined && team.score !== ''"
+                      :to="getMatchSheetUrl(game)"
+                      :class="[getGameTeamClass(game, team.side), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8 hover:opacity-80 cursor-pointer transition-opacity']"
+                      :title="t('Games.MatchSheet')"
                     >
                       {{ team.score }}
-                    </div>
-                  </div>
-                </NuxtLink>
-                <div v-else class="flex-1 space-y-2">
-                  <div v-for="team in getOrderedTeams(game)" :key="team.label" class="flex items-center gap-1">
-                    <TeamName
-                      :team-label="team.label"
-                      :team-id="team.id"
-                      :is-winner="isWinner(game, team.side)"
-                      :is-highlighted="team.highlighted"
-                      class="text-xs flex-1"
-                    />
+                    </NuxtLink>
                     <div
-                      v-if="team.score !== undefined && team.score !== ''"
+                      v-else-if="team.score !== undefined && team.score !== ''"
                       :class="[getGameTeamClass(game, team.side), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
                     >
                       {{ team.score }}
