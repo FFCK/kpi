@@ -145,7 +145,6 @@ export const useCharts = () => {
           }
           isFromCache.value = false
         } catch (apiError) {
-          console.error('Failed to load charts from API, using cached data:', apiError)
           if (!cachedCharts || cachedCharts.length === 0) {
             throw apiError
           }
@@ -156,11 +155,9 @@ export const useCharts = () => {
         }
       } else if (!online && cachedCharts && cachedCharts.length > 0) {
         // Offline with cached data
-        console.log('[Charts] Offline mode - using cached data')
         isFromCache.value = true
       } else if (!online && (!cachedCharts || cachedCharts.length === 0)) {
         // Offline without cached data
-        console.log('[Charts] Offline mode - no cached data available')
         chartStore.error = new Error('OFFLINE_NO_CACHE')
       }
 
@@ -171,7 +168,6 @@ export const useCharts = () => {
       }
     } catch (error) {
       chartStore.error = error
-      console.error('Failed to load charts:', error)
     } finally {
       chartStore.loading = false
     }

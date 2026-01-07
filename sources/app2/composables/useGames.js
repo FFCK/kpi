@@ -50,7 +50,6 @@ export const useGames = () => {
       // Charger depuis IndexedDB
       cachedGames = await loadGamesFromDB(eventId)
       if (cachedGames && cachedGames.length > 0 && !force) {
-        // console.log('Loading games from IndexedDB cache')
         const gamelist = processGameData(cachedGames)
         await gameStore.clearAndUpdateGames(gamelist)
         loadCategories()
@@ -69,7 +68,6 @@ export const useGames = () => {
       // Charger depuis l'API uniquement si en ligne et nécessaire
       if (online && (shouldLoadFromApi || !cachedGames || cachedGames.length === 0)) {
         try {
-          // console.log('Loading games from API')
           const response = await getApi(`/event/${eventId}/games`)
           const data = await response.json()
           const gamelist = processGameData(data)
@@ -88,7 +86,6 @@ export const useGames = () => {
           }
           isFromCache.value = false
         } catch (apiError) {
-          console.error('Failed to load games from API, using cached data:', apiError)
           if (!cachedGames || cachedGames.length === 0) {
             gameStore.error = apiError
           }
@@ -99,11 +96,9 @@ export const useGames = () => {
         }
       } else if (!online && cachedGames && cachedGames.length > 0) {
         // Offline with cached data
-        console.log('[Games] Offline mode - using cached data')
         isFromCache.value = true
       } else if (!online && (!cachedGames || cachedGames.length === 0)) {
         // Offline without cached data
-        console.log('[Games] Offline mode - no cached data available')
         gameStore.error = new Error('OFFLINE_NO_CACHE')
       }
 
@@ -113,7 +108,6 @@ export const useGames = () => {
       }
     } catch (error) {
       gameStore.error = error
-      console.error('Failed to load games:', error)
     } finally {
       gameStore.loading = false
     }

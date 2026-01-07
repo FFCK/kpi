@@ -10,7 +10,6 @@ export const useOnlineStatus = () => {
   const { t } = useI18n()
 
   const handleOnline = () => {
-    console.log('[OnlineStatus] Network: Online')
     isOnline.value = true
 
     // Show toast only if we were previously offline
@@ -19,7 +18,7 @@ export const useOnlineStatus = () => {
         id: 'online-status',
         title: t('status.BackOnline'),
         icon: 'i-heroicons-wifi',
-        color: 'success',
+        color: 'green',
         timeout: 3000
       })
       wasOffline.value = false
@@ -36,7 +35,7 @@ export const useOnlineStatus = () => {
       title: t('status.Offline'),
       description: t('status.OfflineDescription'),
       icon: 'i-heroicons-signal-slash',
-      color: 'warning',
+      color: 'yellow',
       timeout: 3000
     })
   }
