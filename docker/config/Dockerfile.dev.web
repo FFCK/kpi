@@ -43,9 +43,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 COPY php-error-logging.ini /usr/local/etc/php/conf.d/
 
 # Copy PHP auto-prepend configuration for CORS
+# Note: auto-prepend-cors.php is in sources/commun/ and will be available via volume mount
 COPY php-auto-prepend.ini /usr/local/etc/php/conf.d/
-COPY auto-prepend-cors.php /var/www/html/commun/auto-prepend-cors.php
-RUN chmod 644 /var/www/html/commun/auto-prepend-cors.php
 
 # Copy Apache vhost configuration with CORS and .htaccess support
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
