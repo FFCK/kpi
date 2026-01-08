@@ -36,10 +36,11 @@ export const useApi = () => {
     lastCacheToastTime = now
 
     toast.add({
+      id: 'cache-toast',
       title: t('errors.cache.usingOfflineData.title'),
       description: t('errors.cache.usingOfflineData.description'),
       icon: 'i-heroicons-archive-box',
-      color: 'blue',
+      color: 'info',
       timeout: 3000
     })
   }
@@ -117,6 +118,7 @@ export const useApi = () => {
     }
 
     toast.add({
+      id: `http-error-${errorType}`,
       title: t(titleKey),
       description: t(descKey, { status }),
       icon,
@@ -127,37 +129,35 @@ export const useApi = () => {
 
   /**
    * Show network error toast
+   * Note: OFFLINE errors are handled by useOnlineStatus, so we skip them here
    */
   const showNetworkErrorToast = (errorType) => {
+    // Skip OFFLINE errors - they are handled by useOnlineStatus
+    if (errorType === ErrorType.OFFLINE) {
+      return
+    }
+
     let titleKey, descKey, icon
 
     switch (errorType) {
-      case ErrorType.OFFLINE:
-        titleKey = 'errors.network.offline.title'
-        descKey = 'errors.network.offline.description'
-        icon = 'i-heroicons-wifi'
-        break
       case ErrorType.TIMEOUT:
         titleKey = 'errors.network.timeout.title'
         descKey = 'errors.network.timeout.description'
         icon = 'i-heroicons-clock'
         break
       case ErrorType.NETWORK:
+      default:
         titleKey = 'errors.network.failed.title'
         descKey = 'errors.network.failed.description'
         icon = 'i-heroicons-signal-slash'
-        break
-      default:
-        titleKey = 'errors.generic.title'
-        descKey = 'errors.generic.description'
-        icon = 'i-heroicons-x-circle'
     }
 
     toast.add({
+      id: `network-error-${errorType}`,
       title: t(titleKey),
       description: t(descKey),
       icon,
-      color: 'red',
+      color: 'error',
       timeout: 3000
     })
   }
@@ -199,11 +199,12 @@ export const useApi = () => {
             last401Time = now
 
             toast.add({
+              id: 'http-error-401',
               title: t('errors.http.401.title'),
               description: t('errors.http.401.description'),
               icon: 'i-heroicons-shield-exclamation',
-              color: 'red',
-              timeout: 4000
+              color: 'error',
+              timeout: 3000
             })
 
             // Logout user and redirect to login after short delay

@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/report', name: 'report_')]
 class ReportController extends AbstractController
@@ -96,7 +96,8 @@ class ReportController extends AbstractController
             AND m.Publication = 'O'";
 
         $stmt = $conn->prepare($sql);
-        $gameResult = $stmt->executeQuery([$gameId]);
+        $stmt->bindValue(1, $gameId);
+        $gameResult = $stmt->executeQuery();
 
         if ($gameResult->rowCount() === 0) {
             return new JsonResponse([]);
@@ -116,7 +117,8 @@ class ReportController extends AbstractController
             ORDER BY md.date_insert DESC, md.Periode DESC, md.Temps ASC, md.Id_evt_match DESC";
 
         $stmt = $conn->prepare($sql);
-        $eventsResult = $stmt->executeQuery([$gameId]);
+        $stmt->bindValue(1, $gameId);
+        $eventsResult = $stmt->executeQuery();
         $result['g_events'] = $eventsResult->fetchAllAssociative();
 
         // Teams
@@ -128,7 +130,8 @@ class ReportController extends AbstractController
             ORDER BY mj.Equipe, mj.Numero";
 
         $stmt = $conn->prepare($sql);
-        $teamsResult = $stmt->executeQuery([$gameId]);
+        $stmt->bindValue(1, $gameId);
+        $teamsResult = $stmt->executeQuery();
         $result['t_members'] = $teamsResult->fetchAllAssociative();
 
         return new JsonResponse($result);

@@ -109,7 +109,15 @@
             <!-- Elimination Games -->
             <div v-if="round.type === 'elimination'" class="p-2 space-y-3">
               <div v-for="game in round.data" :key="game.g_id" class="flex items-center space-x-2">
-                <div class="text-xs text-gray-500 italic font-medium flex-shrink-0">
+                <NuxtLink
+                  v-if="isMatchSheetAvailable(game)"
+                  :to="getMatchSheetUrl(game)"
+                  class="text-xs text-gray-500 italic font-medium flex-shrink-0 hover:text-gray-700 cursor-pointer transition-colors"
+                  :title="t('Games.MatchSheet')"
+                >
+                  #{{ game.g_number }}
+                </NuxtLink>
+                <div v-else class="text-xs text-gray-500 italic font-medium flex-shrink-0">
                   #{{ game.g_number }}
                 </div>
                 <div class="flex-1 space-y-2">
@@ -121,8 +129,16 @@
                       :is-highlighted="team.highlighted"
                       class="text-xs flex-1"
                     />
+                    <NuxtLink
+                      v-if="isMatchSheetAvailable(game) && team.score !== undefined && team.score !== ''"
+                      :to="getMatchSheetUrl(game)"
+                      :class="[getGameTeamClass(game, team.side), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8 hover:opacity-80 cursor-pointer transition-opacity']"
+                      :title="t('Games.MatchSheet')"
+                    >
+                      {{ team.score }}
+                    </NuxtLink>
                     <div
-                      v-if="team.score !== undefined && team.score !== ''"
+                      v-else-if="team.score !== undefined && team.score !== ''"
                       :class="[getGameTeamClass(game, team.side), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
                     >
                       {{ team.score }}
@@ -215,7 +231,10 @@
                     <div class="inline-block bg-yellow-400 w-6 h-8 transform -rotate-12 rounded-sm"></div>
                   </th>
                   <th class="py-2 px-2 border-b text-center">
-                    <div class="inline-block bg-red-500 w-6 h-8 transform -rotate-12 rounded-sm"></div>
+                    <div class="relative inline-block">
+                      <div class="absolute bg-yellow-400 w-6 h-8 rounded-sm transform -rotate-3 translate-x-0.5 translate-y-0.5"></div>
+                      <div class="relative bg-red-500 w-6 h-8 rounded-sm transform -rotate-12"></div>
+                    </div>
                   </th>
                   <th class="py-2 px-2 border-b text-center">
                     <div class="flex items-center justify-center bg-red-500 w-6 h-8 transform -rotate-12 rounded-sm text-white font-bold text-xs">E</div>
@@ -785,6 +804,16 @@ const getOrderedTeams = (game) => {
   } else { // Handle draws or other cases
     return [teamA, teamB]
   }
+}
+
+// Check if match sheet is available (match in progress or finished, not pending)
+const isMatchSheetAvailable = (game) => {
+  return game.g_status === 'ON' || game.g_status === 'END'
+}
+
+// Get the URL for the match sheet
+const getMatchSheetUrl = (game) => {
+  return `/game/${game.g_id}`
 }
 
 const loadData = async (force = false) => {

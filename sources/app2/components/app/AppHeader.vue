@@ -5,9 +5,11 @@
         <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" />
         <span class="font-bold text-lg">KPI App</span>
         <ClientOnly>
-          <span :class="isOnline ? 'ml-2 text-green-400' : 'ml-2 text-red-500'">
-            <UIcon :name="isOnline ? 'i-heroicons-wifi' : 'i-heroicons-signal-slash'" class="h-6 w-6" />
-          </span>
+          <UTooltip :text="isOnline ? t('status.Online') : t('status.Offline')">
+            <span :class="isOnline ? 'ml-2 text-green-400' : 'ml-2 text-red-500 animate-pulse'">
+              <UIcon :name="isOnline ? 'i-heroicons-wifi' : 'i-heroicons-signal-slash'" class="h-6 w-6" />
+            </span>
+          </UTooltip>
           <template #fallback>
             <span class="ml-2 text-green-400">
               <UIcon name="i-heroicons-wifi" class="h-6 w-6" />
@@ -99,14 +101,14 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore'
-import { usePwa } from '~/composables/usePwa'
+import { useOnlineStatus } from '~/composables/useOnlineStatus'
 import { useEventGuard } from '~/composables/useEventGuard'
 
 const showMenu = ref(false)
 const { t } = useI18n()
 const route = useRoute()
 const preferenceStore = usePreferenceStore()
-const { isOnline } = usePwa()
+const { isOnline } = useOnlineStatus()
 const { hasEventSelected } = useEventGuard()
 
 // Check if user is authenticated

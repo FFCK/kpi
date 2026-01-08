@@ -6,8 +6,16 @@
       class="grid grid-cols-1 gap-3"
     >
       <div v-for="game in chartGames" :key="game.id" class="flex items-center space-x-2">
-        <!-- Game number - grayed italic, vertically centered -->
-        <div class="text-xs text-gray-500 italic font-medium flex-shrink-0">
+        <!-- Game number - grayed italic, vertically centered, clickable -->
+        <NuxtLink
+          v-if="isMatchSheetAvailable(game)"
+          :to="getMatchSheetUrl(game)"
+          class="text-xs text-gray-500 italic font-medium flex-shrink-0 hover:text-gray-700 cursor-pointer transition-colors"
+          :title="t('Games.MatchSheet')"
+        >
+          #{{ game.g_number }}
+        </NuxtLink>
+        <div v-else class="text-xs text-gray-500 italic font-medium flex-shrink-0">
           #{{ game.g_number }}
         </div>
 
@@ -22,8 +30,16 @@
               :is-highlighted="getFirstTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
               class="text-xs flex-1"
             />
+            <NuxtLink
+              v-if="isMatchSheetAvailable(game) && getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
+              :to="getMatchSheetUrl(game)"
+              :class="[teamBlockClass(game, getFirstTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8 hover:opacity-80 cursor-pointer transition-opacity']"
+              :title="t('Games.MatchSheet')"
+            >
+              {{ getFirstTeamScore(game) }}
+            </NuxtLink>
             <div
-              v-if="getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
+              v-else-if="getFirstTeamScore(game) !== undefined && getFirstTeamScore(game) !== ''"
               :class="[teamBlockClass(game, getFirstTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
             >
               {{ getFirstTeamScore(game) }}
@@ -39,8 +55,16 @@
               :is-highlighted="getSecondTeam(game) === 'A' ? game.t_a_highlighted : game.t_b_highlighted"
               class="text-xs flex-1"
             />
+            <NuxtLink
+              v-if="isMatchSheetAvailable(game) && getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
+              :to="getMatchSheetUrl(game)"
+              :class="[teamBlockClass(game, getSecondTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8 hover:opacity-80 cursor-pointer transition-opacity']"
+              :title="t('Games.MatchSheet')"
+            >
+              {{ getSecondTeamScore(game) }}
+            </NuxtLink>
             <div
-              v-if="getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
+              v-else-if="getSecondTeamScore(game) !== undefined && getSecondTeamScore(game) !== ''"
               :class="[teamBlockClass(game, getSecondTeam(game)), 'lcd text-xs px-2 py-1 rounded text-center border-0 min-w-8']"
             >
               {{ getSecondTeamScore(game) }}
@@ -57,6 +81,8 @@
 
 <script setup>
 import TeamName from '~/components/TeamName.vue'
+
+const { t } = useI18n()
 
 const props = defineProps({
   chartGames: {
@@ -123,6 +149,16 @@ const teamBlockClass = (game, team) => {
     'text-white': winner && !highlighted, // White text for winners not highlighted
     'font-bold': highlighted // Bold for highlighted teams
   }
+}
+
+// Check if match sheet is available (match in progress or finished, not pending)
+const isMatchSheetAvailable = (game) => {
+  return game.g_status === 'ON' || game.g_status === 'END'
+}
+
+// Get the URL for the match sheet
+const getMatchSheetUrl = (game) => {
+  return `/game/${game.g_id}`
 }
 </script>
 

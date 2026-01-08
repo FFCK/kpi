@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class GamesController extends AbstractController
 {
@@ -120,7 +120,8 @@ class GamesController extends AbstractController
         }
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([$eventId]);
+        $stmt->bindValue(1, $eventId);
+        $result = $stmt->executeQuery();
         $games = $result->fetchAllAssociative();
 
         return new JsonResponse($games);
