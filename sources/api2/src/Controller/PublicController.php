@@ -105,7 +105,9 @@ class PublicController extends AbstractController
         }
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery($params);
+        $stmt->bindValue(1, $params[0]);
+        $stmt->bindValue(2, $params[1]);
+        $result = $stmt->executeQuery();
         $stats = $result->fetchAllAssociative();
 
         return new JsonResponse($stats);
