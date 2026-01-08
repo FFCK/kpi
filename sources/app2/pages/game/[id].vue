@@ -36,7 +36,7 @@
     </AppSecondaryNav>
 
     <div class="p-4">
-      <MatchSheet
+      <GameSheet
         :match-data="matchData"
         :loading="loading"
         :error="error"
@@ -53,7 +53,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useApi } from '~/composables/useApi'
-import MatchSheet from '~/components/MatchSheet.vue'
+import GameSheet from '~/components/GameSheet.vue'
 
 const { t } = useI18n()
 const route = useRoute()

@@ -2,12 +2,14 @@ import { ref, computed } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore'
 import { useChartStore } from '~/stores/chartStore'
 import { useApi } from '~/composables/useApi'
+import { useOnlineStatus } from '~/composables/useOnlineStatus'
 import db from '~/utils/db'
 
 export const useCharts = () => {
   const preferenceStore = usePreferenceStore()
   const chartStore = useChartStore()
   const { getApi, showCacheToast } = useApi()
+  const { isOnline, checkConnection } = useOnlineStatus()
 
   const allChartData = ref(null)
   const chartIndex = ref(0)
@@ -16,6 +18,7 @@ export const useCharts = () => {
   const fav_teams = ref([])
   const categories = ref([])
   const teams = ref([])
+  const isFromCache = ref(false)
 
   const filteredChartData = computed(() => {
     if (!allChartData.value) return null
@@ -89,6 +92,7 @@ export const useCharts = () => {
 
     const eventId = preferenceStore.preferences.lastEvent.id
     chartStore.loading = true
+    isFromCache.value = false
 
     try {
       // Vérifier si on doit charger depuis l'API
@@ -105,6 +109,7 @@ export const useCharts = () => {
         allChartData.value = cachedCharts.map(item => item.data)
         loadCategories()
         chartIndex.value++
+        isFromCache.value = true
 
         // Show toast only if user is offline
         if (!navigator.onLine) {
@@ -112,8 +117,11 @@ export const useCharts = () => {
         }
       }
 
-      // Charger depuis l'API uniquement si nécessaire
-      if (shouldLoadFromApi || !cachedCharts || cachedCharts.length === 0) {
+      // Vérifier la connexion réseau avant d'appeler l'API
+      const online = checkConnection()
+
+      // Charger depuis l'API uniquement si en ligne et nécessaire
+      if (online && (shouldLoadFromApi || !cachedCharts || cachedCharts.length === 0)) {
         try {
           const response = await getApi(`/event/${eventId}/charts`)
           const data = await response.json()
@@ -135,20 +143,31 @@ export const useCharts = () => {
             loadCategories()
             chartIndex.value++
           }
+          isFromCache.value = false
         } catch (apiError) {
-          console.error('Failed to load charts from API, using cached data:', apiError)
           if (!cachedCharts || cachedCharts.length === 0) {
             throw apiError
           }
+          // Keep isFromCache as true since we're using cached data
+          if (cachedCharts && cachedCharts.length > 0) {
+            isFromCache.value = true
+          }
         }
+      } else if (!online && cachedCharts && cachedCharts.length > 0) {
+        // Offline with cached data
+        isFromCache.value = true
+      } else if (!online && (!cachedCharts || cachedCharts.length === 0)) {
+        // Offline without cached data
+        chartStore.error = new Error('OFFLINE_NO_CACHE')
       }
 
-      // Nettoyer les anciennes données (plus de 7 jours)
-      const cutoffTime = Date.now() - (7 * 24 * 60 * 60 * 1000)
-      await db.charts.where('timestamp').below(cutoffTime).delete()
+      // Nettoyer les anciennes données (plus de 7 jours) - seulement si en ligne
+      if (online) {
+        const cutoffTime = Date.now() - (7 * 24 * 60 * 60 * 1000)
+        await db.charts.where('timestamp').below(cutoffTime).delete()
+      }
     } catch (error) {
       chartStore.error = error
-      console.error('Failed to load charts:', error)
     } finally {
       chartStore.loading = false
     }
@@ -218,6 +237,8 @@ export const useCharts = () => {
     teams,
     fav_categories,
     fav_teams,
+    isFromCache,
+    isOnline,
     loadCharts,
     getFav,
     changeFav

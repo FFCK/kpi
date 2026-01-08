@@ -7,7 +7,7 @@ use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class PublicController extends AbstractController
 {
@@ -105,7 +105,9 @@ class PublicController extends AbstractController
         }
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery($params);
+        $stmt->bindValue(1, $params[0]);
+        $stmt->bindValue(2, $params[1]);
+        $result = $stmt->executeQuery();
         $stats = $result->fetchAllAssociative();
 
         return new JsonResponse($stats);
@@ -254,7 +256,8 @@ class PublicController extends AbstractController
         ";
 
         $stmt = $conn->prepare($gameSql);
-        $result = $stmt->executeQuery([$gameId]);
+        $stmt->bindValue(1, $gameId);
+        $result = $stmt->executeQuery();
         $game = $result->fetchAssociative();
 
         if (!$game) {
@@ -273,7 +276,8 @@ class PublicController extends AbstractController
         ";
 
         $stmt = $conn->prepare($eventsSql);
-        $result = $stmt->executeQuery([$gameId]);
+        $stmt->bindValue(1, $gameId);
+        $result = $stmt->executeQuery();
         $events = $result->fetchAllAssociative();
 
         // Get team members with their stats
@@ -287,7 +291,8 @@ class PublicController extends AbstractController
         ";
 
         $stmt = $conn->prepare($membersSql);
-        $result = $stmt->executeQuery([$gameId]);
+        $stmt->bindValue(1, $gameId);
+        $result = $stmt->executeQuery();
         $members = $result->fetchAllAssociative();
 
         // Calculate player stats from events

@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class ChartsController extends AbstractController
 {
@@ -115,7 +115,8 @@ class ChartsController extends AbstractController
         }
 
         $stmtGames = $conn->prepare($sqlGames);
-        $resultGames = $stmtGames->executeQuery([$eventId]);
+        $stmtGames->bindValue(1, $eventId);
+        $resultGames = $stmtGames->executeQuery();
 
         while ($row = $resultGames->fetchAssociative()) {
             if ($row['d_type'] === 'E' || $row['c_type'] === 'CHPT') {
@@ -168,7 +169,8 @@ class ChartsController extends AbstractController
         }
 
         $stmtTeams = $conn->prepare($sqlTeams);
-        $resultTeams = $stmtTeams->executeQuery([$eventId]);
+        $stmtTeams->bindValue(1, $eventId);
+        $resultTeams = $stmtTeams->executeQuery();
 
         $arrayChpt = [];
         while ($row = $resultTeams->fetchAssociative()) {
@@ -220,7 +222,9 @@ class ChartsController extends AbstractController
             }
 
             $stmt2 = $conn->prepare($sql2);
-            $result2 = $stmt2->executeQuery([$compet['code'], $compet['season']]);
+            $stmt2->bindValue(1, $compet['code']);
+            $stmt2->bindValue(2, $compet['season']);
+            $result2 = $stmt2->executeQuery();
             $charts[$compet['code']]['ranking'] = $result2->fetchAllAssociative();
         }
 

@@ -42,7 +42,16 @@
             </td>
             <td class="px-2 py-2 text-center">
               <div class="flex flex-col items-center">
-                <div class="text-nowrap inline-block">
+                <NuxtLink
+                  v-if="isMatchSheetAvailable(game) && game.g_status !== 'ATT'"
+                  :to="getMatchSheetUrl(game)"
+                  class="text-nowrap inline-block cursor-pointer hover:opacity-80 transition-opacity"
+                  :title="t('Games.MatchSheet')"
+                >
+                  <span :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
+                  <span :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
+                </NuxtLink>
+                <div v-else class="text-nowrap inline-block">
                   <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
                   <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
                 </div>
@@ -96,7 +105,16 @@
               />
             </div>
             <div class="text-center justify-self-center">
-              <div class="text-nowrap inline-block text-sm">
+              <NuxtLink
+                v-if="isMatchSheetAvailable(game) && game.g_status !== 'ATT'"
+                :to="getMatchSheetUrl(game)"
+                class="text-nowrap inline-block text-sm cursor-pointer hover:opacity-80 transition-opacity"
+                :title="t('Games.MatchSheet')"
+              >
+                <span :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
+                <span :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
+              </NuxtLink>
+              <div v-else class="text-nowrap inline-block text-sm">
                 <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'A')">{{ game.g_score_a }}</span>
                 <span v-if="game.g_status !== 'ATT'" :class="scoreClass(game, 'B')">{{ game.g_score_b }}</span>
               </div>

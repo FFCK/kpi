@@ -17,7 +17,7 @@
           </thead>
           <tbody>
             <tr v-for="(team, index) in sortedTeams" :key="index" class="border-t">
-              <td class="px-1 py-1 text-xs">{{ team.t_cltlv || (index + 1) }}</td>
+              <td class="px-1 py-1 text-xs">{{ team.t_clt || (index + 1) }}</td>
               <td class="px-1 py-1 text-xs">
                 <div class="flex items-center">
                   <TeamName
@@ -82,7 +82,7 @@ const props = defineProps({
   }
 })
 
-// Sort teams by points (desc), then by goal difference (desc), then by name
+// Sort teams by ranking, points (desc), then by goal difference (desc), then by name
 const sortedTeams = computed(() => {
   if (!props.chartTeams || props.chartTeams.length === 0) {
     return []
@@ -91,6 +91,11 @@ const sortedTeams = computed(() => {
   return [...props.chartTeams].sort((a, b) => {
     // For phase type C, use specific team properties
     if (props.phaseType === 'C') {
+      // Sort by ranking (ascending)
+      const rankA = parseInt(a.t_clt) || 0
+      const rankB = parseInt(b.t_clt) || 0
+      if (rankA !== rankB) return rankA - rankB
+
       // Sort by points (descending) - t_pts divided by 100
       const ptsA = Math.floor((parseInt(a.t_pts) || 0) / 100)
       const ptsB = Math.floor((parseInt(b.t_pts) || 0) / 100)

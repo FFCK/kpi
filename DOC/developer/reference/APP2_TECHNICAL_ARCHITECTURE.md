@@ -34,7 +34,8 @@ App2 est une Progressive Web Application (PWA) construite avec Nuxt 4, Vue 3 et 
 
 - **Service Worker**: Via @vite-pwa/nuxt
 - **Stratégie**: Offline-first avec cache fallback
-- **Détection Réseau**: navigator.onLine + composable useNetworkMonitor
+- **Détection Réseau**: navigator.onLine + composables useOnlineStatus / usePwa
+- **Mise à jour auto**: Vérification au retour online et visibilitychange
 
 ### API Backend
 
@@ -75,16 +76,48 @@ const data = await response.json()
 const response = await getApi('/games/123', { silentErrors: true })
 ```
 
-### useNetworkMonitor.js - Monitoring Réseau
+### useOnlineStatus.ts - Monitoring Réseau et Notifications
 
-**Localisation**: [sources/app2/composables/useNetworkMonitor.js](../../sources/app2/composables/useNetworkMonitor.js)
+**Localisation**: [sources/app2/composables/useOnlineStatus.ts](../../sources/app2/composables/useOnlineStatus.ts)
 
 **Responsabilités**:
-1. Surveillance état online/offline
-2. Toast automatique lors des changements réseau
-3. Export de `isOnline` pour composants
+1. Surveillance état online/offline (navigator.onLine + events)
+2. Toast automatique lors des changements réseau (avec IDs uniques pour éviter les doublons)
+3. Export de `isOnline` et `checkConnection()` pour composants
+4. Détection du retour sur l'app (visibilitychange)
 
-**Initialisation**: Automatique dans `layouts/default.vue`
+**Caractéristiques**:
+- Singleton global (initialisé une seule fois)
+- Toast "Hors connexion" avec icône signal-slash (orange/warning)
+- Toast "Connexion rétablie" (vert/success)
+- Timeout uniforme de 3 secondes
+
+**Initialisation**: Automatique via les composables useGames/useCharts
+
+### usePwa.ts - Service Worker et Mises à Jour
+
+**Localisation**: [sources/app2/composables/usePwa.ts](../../sources/app2/composables/usePwa.ts)
+
+**Responsabilités**:
+1. Enregistrement du Service Worker (production uniquement)
+2. Détection des mises à jour disponibles (needRefresh)
+3. Vérification automatique des mises à jour
+4. Export de `isOnline`, `needRefresh`, `offlineReady`, `updateApp`, `checkForUpdates`
+
+**Vérification des mises à jour**:
+- Au retour online (après perte de connexion)
+- Quand l'app redevient visible (visibilitychange)
+- Toutes les 60 minutes (si en ligne)
+
+**Pattern Singleton**:
+```javascript
+let initialized = false
+const initializePwa = () => {
+  if (initialized || !import.meta.client) return
+  initialized = true
+  // ...
+}
+```
 
 ### useGames.js / useCharts.js - Données Métier
 
@@ -201,18 +234,34 @@ errors.
 
 **Mécanisme**:
 - `navigator.onLine` (propriété browser)
-- Event listeners: `online`, `offline`
-- Composable: `usePwa().isOnline`
+- Event listeners: `online`, `offline`, `visibilitychange`
+- Composables: `useOnlineStatus().isOnline` et `usePwa().isOnline`
 
-**Monitoring Actif**:
+**Monitoring Actif** (useOnlineStatus.ts):
 ```javascript
-useNetworkMonitor()
+// Initialisation unique (singleton)
+window.addEventListener('online', handleOnline)
+window.addEventListener('offline', handleOffline)
+document.addEventListener('visibilitychange', handleVisibilityChange)
+
+// Gestion des événements
+handleOffline()
   ↓
-watch(isOnline)
+Toast warning "Hors connexion" (id: 'offline-status')
+
+handleOnline()
   ↓
-  ├─ offline → Toast orange "Pas de connexion"
-  └─ online → Toast vert "Connexion rétablie"
+Toast success "Connexion rétablie" (id: 'online-status')
+  ↓
+usePwa().checkForUpdates() // Vérifie nouvelle version
 ```
+
+**IDs uniques des toasts** (évite les doublons):
+- `offline-status` - Notification hors ligne
+- `online-status` - Notification retour en ligne
+- `cache-toast` - Données en cache
+- `http-error-{type}` - Erreurs HTTP
+- `network-error-{type}` - Erreurs réseau
 
 ### Comportement Offline
 
@@ -236,11 +285,11 @@ watch(isOnline)
 |-----------|-------|--------------|
 | Requête API | 10s timeout | Toast erreur + throw |
 | Token validité | 10 jours | Auto-logout si expiré |
-| Toast erreur | 5s affichage | Dismiss auto ou manuel |
-| Toast cache | 4s affichage | Dismiss auto ou manuel |
-| Toast succès | 3-4s affichage | Dismiss auto ou manuel |
+| Toast (tous types) | 3s affichage | Dismiss auto ou manuel |
 | 401 redirect | 1.5s après toast | Navigation /login |
 | 401 throttle | 5s minimum | Max 1 toast par 5s |
+| Cache toast throttle | 3s minimum | Évite doublons |
+| SW update check | 60 minutes | Vérification périodique |
 
 ---
 
@@ -416,11 +465,12 @@ BACKEND_BASE_URL=https://kayak-polo.info
 ## Fichiers Critiques
 
 ### Composables
-- [sources/app2/composables/useApi.js](../../sources/app2/composables/useApi.js) - Core API layer
-- [sources/app2/composables/useNetworkMonitor.js](../../sources/app2/composables/useNetworkMonitor.js) - Network monitoring
+- [sources/app2/composables/useApi.js](../../sources/app2/composables/useApi.js) - Core API layer + error toasts
+- [sources/app2/composables/useOnlineStatus.ts](../../sources/app2/composables/useOnlineStatus.ts) - Network monitoring + toasts
+- [sources/app2/composables/usePwa.ts](../../sources/app2/composables/usePwa.ts) - Service Worker + auto-update
 - [sources/app2/composables/useAuth.js](../../sources/app2/composables/useAuth.js) - Authentication
-- [sources/app2/composables/useGames.js](../../sources/app2/composables/useGames.js) - Games data
-- [sources/app2/composables/useCharts.js](../../sources/app2/composables/useCharts.js) - Rankings data
+- [sources/app2/composables/useGames.js](../../sources/app2/composables/useGames.js) - Games data + offline
+- [sources/app2/composables/useCharts.js](../../sources/app2/composables/useCharts.js) - Rankings data + offline
 
 ### Layouts
 - [sources/app2/layouts/default.vue](../../sources/app2/layouts/default.vue) - Main layout with toast container

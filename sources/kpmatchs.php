@@ -486,6 +486,10 @@ class Matchs extends MyPage
             $this->m_tpl->assign('PhaseLibelle', $PhaseLibelle);
 
             $i++;
+        } else {
+            // Initialisation pour éviter warnings PHP 8 quand $lstJournee est vide
+            $this->m_tpl->assign('arrayMatchs', array());
+            $this->m_tpl->assign('PhaseLibelle', 0);
         }
 
         $this->m_tpl->assign('arrayJournees', $arrayJournees);

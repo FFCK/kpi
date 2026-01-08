@@ -136,7 +136,8 @@ class Equipes extends MyPage
                 $this->m_tpl->assign('recordCompetition', $recordCompetition);
 
                 // stats individuelles
-                $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ, cej.Numero, 
+                $arrayCompo = array(); // Initialisation pour éviter warning PHP 8
+                $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ, cej.Numero,
                         cej.Capitaine,
                         SUM(IF(md.Id_evt_match = 'B', 1, 0)) buts,
                         SUM(IF(md.Id_evt_match = 'V', 1, 0)) verts,
@@ -149,15 +150,15 @@ class Equipes extends MyPage
                     LEFT OUTER JOIN kp_match m ON j.Id = m.Id_journee
                     LEFT OUTER JOIN kp_match_detail md ON m.Id = md.Id_match
                     WHERE md.Competiteur = cej.Matric
-                    AND ce.Numero = ? 
-                    AND ce.Code_compet = ? 
-                    AND ce.Code_saison = ? 
+                    AND ce.Numero = ?
+                    AND ce.Code_compet = ?
+                    AND ce.Code_saison = ?
                     AND cej.Capitaine != 'A'
                     AND cej.Capitaine != 'X'
                     AND m.Validation = 'O'
                     AND m.Publication = 'O'
                     GROUP BY cej.Matric
-                    ORDER BY Field(if(cej.Capitaine='C','-',if(cej.Capitaine='','-',cej.Capitaine)), '-', 'E', 'A', 'X'), 
+                    ORDER BY Field(if(cej.Capitaine='C','-',if(cej.Capitaine='','-',cej.Capitaine)), '-', 'E', 'A', 'X'),
                         cej.Numero, cej.Nom, cej.Prenom ";
                 $result = $myBdd->pdo->prepare($sql);
                 $result->execute(array($Equipe, $codeCompet, $codeSaison));

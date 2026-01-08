@@ -158,6 +158,18 @@ class PdfListeMatchs extends MyPage
 
     $visuels = utyGetVisuels($arrayCompetition, FALSE);
 
+    // Initialiser les clés de arrayCompetition avec des valeurs par défaut pour éviter les NULL
+    $arrayCompetition = array_merge([
+      'Bandeau_actif' => '',
+      'Kpi_ffck_actif' => '',
+      'Logo_actif' => '',
+      'Sponsor_actif' => '',
+      'Titre_actif' => '',
+      'Libelle' => '',
+      'Soustitre' => '',
+      'Soustitre2' => '',
+      'Code_ref' => ''
+    ], array_filter($arrayCompetition, function($v) { return $v !== null; }));
 
     // Entête PDF ...	  
         $pdf = new MyPDF('L');
@@ -235,12 +247,15 @@ class PdfListeMatchs extends MyPage
     $tab = [];
 
     foreach ($resultarray as $key => $row) {
+      // Convertir NULL en chaîne vide pour éviter les problèmes avec mPDF et strtolower
+      $row = array_map(function($v) { return $v === null ? '' : $v; }, $row);
+
       if ($row['Soustitre2'] != '') {
         $row['Code_competition'] = $row['Soustitre2'];
       }
       if ($row['Libelle'] != '') {
         $libelle = explode(']', $row['Libelle']);
-        if ($libelle[1] != '') {
+        if (isset($libelle[1]) && $libelle[1] != '') {
           $row['Phase'] .= "  |  " . $libelle[1];
         }
       }
