@@ -231,7 +231,10 @@
                     <div class="inline-block bg-yellow-400 w-6 h-8 transform -rotate-12 rounded-sm"></div>
                   </th>
                   <th class="py-2 px-2 border-b text-center">
-                    <div class="inline-block bg-red-500 w-6 h-8 transform -rotate-12 rounded-sm"></div>
+                    <div class="relative inline-block">
+                      <div class="absolute bg-yellow-400 w-6 h-8 rounded-sm transform -rotate-3 translate-x-0.5 translate-y-0.5"></div>
+                      <div class="relative bg-red-500 w-6 h-8 rounded-sm transform -rotate-12"></div>
+                    </div>
                   </th>
                   <th class="py-2 px-2 border-b text-center">
                     <div class="flex items-center justify-center bg-red-500 w-6 h-8 transform -rotate-12 rounded-sm text-white font-bold text-xs">E</div>
