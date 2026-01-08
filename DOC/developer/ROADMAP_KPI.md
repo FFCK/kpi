@@ -23,7 +23,58 @@ Ce document présente les prochains objectifs et travaux prévus pour le projet 
 
 ## 📋 Court Terme (Saison 2026)
 
-### 1. Déploiement et Stabilisation
+### 1. Migration JWT pour App2
+
+**Objectif** : Moderniser l'authentification App2 ↔ API2 avec JWT pour améliorer la sécurité.
+
+**Contexte actuel** :
+- App2 utilise un système de token simple (32 caractères hexadécimaux)
+- Pas d'expiration automatique des tokens
+- API2 dispose déjà de l'infrastructure JWT (lexik/jwt-authentication-bundle)
+- App4 (admin) utilise déjà JWT avec succès
+
+**Migration prévue** :
+- Remplacer le token simple par JWT (JSON Web Token)
+- Implémenter l'expiration automatique (TTL : 24h recommandé)
+- Ajouter refresh token pour sessions longues
+- Maintenir les fonctionnalités publiques (home, games, charts, team, about) sans authentification
+
+**Bénéfices** :
+- **Sécurité renforcée** : Expiration automatique, signature cryptographique, impossibilité de falsification
+- **Performance** : Validation stateless sans requête DB (JWT contient user_id, profile, events, roles)
+- **Standardisation** : Uniformisation avec App4, standard RFC 7519
+- **Scalabilité** : Zéro charge DB pour valider chaque requête
+- **Fonctionnalités avancées** : Auto-déconnexion après inactivité, sessions multiples, audit trail
+
+**Architecture** :
+```
+📁 App2 Routes
+├── 🌍 PUBLIQUES (sans JWT)
+│   ├── / (home)
+│   ├── /about
+│   ├── /games (liste des matchs)
+│   ├── /game/[id] (détail d'un match)
+│   ├── /charts (graphiques)
+│   ├── /team/[team] (équipe publique)
+│   └── /login
+│
+└── 🔒 PROTÉGÉES (JWT requis)
+    └── /scrutineering (gestion d'équipe, profile <= 3)
+```
+
+**Plan de migration** :
+1. Phase 1 : Ajouter endpoint JWT dans API2 pour App2 (réutiliser infrastructure existante)
+2. Phase 2 : Modifier App2 pour utiliser JWT au lieu du token simple
+3. Phase 3 : Période de transition avec double système (token legacy + JWT)
+4. Phase 4 : Dépréciation et suppression de l'ancien système
+
+**Statut** : 📋 Planifié
+**Priorité** : Haute (sécurité)
+**Durée estimée** : 1-2 semaines
+
+---
+
+### 2. Déploiement et Stabilisation
 
 **Objectif** : Assurer le bon fonctionnement de toutes les nouvelles fonctionnalités en production.
 
@@ -37,7 +88,7 @@ Ce document présente les prochains objectifs et travaux prévus pour le projet 
 
 ---
 
-### 2. Communication et Adoption
+### 3. Communication et Adoption
 
 **Objectif** : Faire connaître les nouvelles fonctionnalités aux utilisateurs.
 
@@ -51,7 +102,7 @@ Ce document présente les prochains objectifs et travaux prévus pour le projet 
 
 ---
 
-### 3. Feuille de Match Numérique ✅
+### 4. Feuille de Match Numérique ✅
 
 **Statut** : ✅ Implémenté (Décembre 2025)
 
@@ -281,7 +332,8 @@ Ce document présente les prochains objectifs et travaux prévus pour le projet 
 
 | Période | Travaux Principaux |
 |---------|-------------------|
-| **2026 Q1-Q4** | Stabilisation, feuille de match numérique |
+| **2026 Q1** | Migration JWT App2, stabilisation |
+| **2026 Q2-Q4** | Stabilisation, feuille de match numérique |
 | **2026 Q4 - 2027 Q1** | Migration WebSocket Manager |
 | **2027 Q1-Q2** | Refonte Admin (partie 1) |
 | **2027 Q2-Q3** | Refonte Admin (partie 2) |
