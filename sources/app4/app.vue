@@ -1,11 +1,25 @@
 <script setup lang="ts">
 // KPI Admin - Root component
+const { locale } = useI18n()
+
+// Head configuration
+useHead({
+  htmlAttrs: {
+    lang: locale
+  },
+  meta: [
+    { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes' }
+  ]
+})
 </script>
 
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <UApp>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+    <UNotifications />
+  </UApp>
 </template>
 
 <style>

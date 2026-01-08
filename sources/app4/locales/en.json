@@ -91,5 +91,42 @@
     "success": "Success",
     "confirm": "Confirm",
     "actions": "Actions"
+  },
+  "errors": {
+    "generic": {
+      "description": "An unexpected error occurred"
+    },
+    "network": {
+      "offline": {
+        "title": "Offline",
+        "description": "You are currently offline"
+      },
+      "timeout": {
+        "title": "Timeout",
+        "description": "The request took too long"
+      },
+      "failed": {
+        "title": "Network error",
+        "description": "Unable to reach the server"
+      }
+    },
+    "http": {
+      "401": {
+        "title": "Session expired",
+        "description": "Please log in again"
+      },
+      "403": {
+        "title": "Access denied",
+        "description": "You don't have the required permissions"
+      },
+      "4xx": {
+        "title": "Request error",
+        "description": "Error {status}"
+      },
+      "5xx": {
+        "title": "Server error",
+        "description": "The server encountered an error"
+      }
+    }
   }
 }

@@ -91,5 +91,42 @@
     "success": "Succès",
     "confirm": "Confirmer",
     "actions": "Actions"
+  },
+  "errors": {
+    "generic": {
+      "description": "Une erreur inattendue s'est produite"
+    },
+    "network": {
+      "offline": {
+        "title": "Hors ligne",
+        "description": "Vous êtes actuellement hors ligne"
+      },
+      "timeout": {
+        "title": "Délai dépassé",
+        "description": "La requête a pris trop de temps"
+      },
+      "failed": {
+        "title": "Erreur réseau",
+        "description": "Impossible de contacter le serveur"
+      }
+    },
+    "http": {
+      "401": {
+        "title": "Session expirée",
+        "description": "Veuillez vous reconnecter"
+      },
+      "403": {
+        "title": "Accès refusé",
+        "description": "Vous n'avez pas les droits nécessaires"
+      },
+      "4xx": {
+        "title": "Erreur de requête",
+        "description": "Erreur {status}"
+      },
+      "5xx": {
+        "title": "Erreur serveur",
+        "description": "Le serveur a rencontré une erreur"
+      }
+    }
   }
 }
