@@ -543,15 +543,21 @@ api2_migrations_migrate: ## Exécute les migrations Doctrine pour API2
 ## JWT - Authentification
 jwt_generate_keys: ## Génère les clés RSA pour JWT (API2) - reproductible sur chaque environnement
 	@echo "🔐 Génération des clés JWT pour API2..."
-	@if [ -z "$(JWT_PASSPHRASE)" ]; then \
-		echo "❌ Erreur: JWT_PASSPHRASE non défini. Définissez-le dans sources/api2/.env"; \
-		echo "   Exemple: JWT_PASSPHRASE=votre_passphrase_secrete"; \
+	@if [ ! -f sources/api2/.env ]; then \
+		echo "❌ Erreur: sources/api2/.env n'existe pas"; \
+		echo "   Exécutez d'abord: make init_env_api2"; \
 		exit 1; \
 	fi
 	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && \
+		if ! grep -q '^JWT_PASSPHRASE=' .env; then \
+			echo '❌ Erreur: JWT_PASSPHRASE non défini dans sources/api2/.env'; \
+			echo '   Exemple: JWT_PASSPHRASE=votre_passphrase_secrete'; \
+			exit 1; \
+		fi && \
+		export \$$(grep -v '^#' .env | grep JWT_PASSPHRASE | xargs) && \
 		mkdir -p config/jwt && \
-		openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 -pass pass:$(JWT_PASSPHRASE) && \
-		openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:$(JWT_PASSPHRASE) && \
+		openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 -pass pass:\$$JWT_PASSPHRASE && \
+		openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:\$$JWT_PASSPHRASE && \
 		chmod 644 config/jwt/public.pem && \
 		chmod 600 config/jwt/private.pem"
 	@echo "✅ Clés JWT générées dans sources/api2/config/jwt/"
