@@ -46,7 +46,36 @@ export default defineNuxtConfig({
     provider: 'iconify',
     clientBundle: {
       scan: true,
-      includeCustomCollections: true
+      includeCustomCollections: true,
+      icons: [
+        'heroicons:bars-3',
+        'heroicons:x-mark',
+        'heroicons:calendar-days',
+        'heroicons:document-text',
+        'heroicons:chart-bar',
+        'heroicons:cog-6-tooth',
+        'heroicons:arrow-right-on-rectangle',
+        'heroicons:chevron-down',
+        'heroicons:magnifying-glass',
+        'heroicons:plus',
+        'heroicons:pencil',
+        'heroicons:trash',
+        'heroicons:check-circle',
+        'heroicons:x-circle',
+        'heroicons:device-phone-mobile',
+        'heroicons:arrows-up-down',
+        'heroicons:arrow-up',
+        'heroicons:arrow-down',
+        'heroicons:chevron-left',
+        'heroicons:chevron-right',
+        'heroicons:arrow-path',
+        'heroicons:exclamation-triangle',
+        'heroicons-solid:check-circle',
+        'heroicons-solid:x-circle',
+        'heroicons-solid:device-phone-mobile',
+        'heroicons-solid:pencil',
+        'heroicons-solid:trash'
+      ]
     }
   },
 

@@ -2,54 +2,34 @@
 import { useAuthStore } from '~/stores/authStore'
 
 const authStore = useAuthStore()
-const sidebarCollapsed = ref(false)
-const sidebarOpen = ref(false)
+const mobileMenuOpen = ref(false)
 
-const toggleSidebar = () => {
-  // On mobile, toggle open/close
-  // On desktop, toggle collapsed/expanded
-  if (window.innerWidth < 1024) {
-    sidebarOpen.value = !sidebarOpen.value
-  } else {
-    sidebarCollapsed.value = !sidebarCollapsed.value
-  }
-}
-
-// Close mobile sidebar on route change
+// Close mobile menu on route change
 const route = useRoute()
 watch(() => route.path, () => {
-  sidebarOpen.value = false
+  mobileMenuOpen.value = false
 })
 </script>
 
 <template>
-  <div class="flex min-h-screen bg-gray-50">
-    <!-- Mobile sidebar backdrop -->
+  <div class="flex flex-col min-h-screen bg-gray-50">
+    <!-- Mobile menu backdrop -->
     <div
-      v-if="sidebarOpen"
+      v-if="mobileMenuOpen"
       class="fixed inset-0 z-40 bg-black/50 lg:hidden"
-      @click="sidebarOpen = false"
+      @click="mobileMenuOpen = false"
     />
 
-    <!-- Sidebar -->
-    <AdminSidebar
-      :collapsed="sidebarCollapsed"
-      :mobile-open="sidebarOpen"
-      @close="sidebarOpen = false"
+    <!-- Header with horizontal menu -->
+    <AdminHeader
+      :user="authStore.user"
+      :mobile-menu-open="mobileMenuOpen"
+      @toggle-mobile-menu="mobileMenuOpen = !mobileMenuOpen"
     />
 
-    <!-- Main content -->
-    <div class="flex-1 flex flex-col min-w-0">
-      <!-- Header -->
-      <AdminHeader
-        :user="authStore.user"
-        @toggle-sidebar="toggleSidebar"
-      />
-
-      <!-- Page content -->
-      <main class="flex-1 p-4 md:p-6 overflow-auto">
-        <slot />
-      </main>
-    </div>
+    <!-- Page content -->
+    <main class="flex-1 p-4 md:p-6 overflow-auto">
+      <slot />
+    </main>
   </div>
 </template>
