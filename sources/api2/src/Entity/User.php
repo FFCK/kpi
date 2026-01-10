@@ -133,9 +133,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    #[\Deprecated]
     public function eraseCredentials(): void
     {
-        // Nothing to erase
+        // Required by UserInterface but nothing to erase:
+        // password is never stored in plain text in this entity
     }
 
     /**
