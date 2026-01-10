@@ -6,7 +6,7 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
 
@@ -305,10 +305,24 @@ const getSortIcon = (column: string) => {
   return sortOrder.value === 'ASC' ? 'heroicons:arrow-up' : 'heroicons:arrow-down'
 }
 
-// Format date for display
+// Format date for display based on current locale
 const formatDate = (date: string | null) => {
   if (!date) return '-'
-  return new Date(date).toLocaleDateString('fr-FR')
+  const d = new Date(date)
+  if (locale.value === 'fr') {
+    // French: DD/MM/YYYY
+    return d.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+  } else {
+    // English: YYYY-MM-DD (ISO format)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
 }
 </script>
 
