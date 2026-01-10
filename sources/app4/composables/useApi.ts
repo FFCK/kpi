@@ -74,7 +74,7 @@ export const useApi = () => {
     let title: string
     let description: string
     let icon: string
-    let color: 'red' | 'orange' | 'yellow' = 'red'
+    let color: 'error' | 'warning' = 'error'
 
     switch (errorType) {
       case ErrorType.OFFLINE:
@@ -96,13 +96,13 @@ export const useApi = () => {
         title = t('errors.http.403.title')
         description = t('errors.http.403.description')
         icon = 'i-heroicons-lock-closed'
-        color = 'orange'
+        color = 'warning'
         break
       case ErrorType.HTTP_4XX:
         title = t('errors.http.4xx.title')
         description = t('errors.http.4xx.description', { status })
         icon = 'i-heroicons-exclamation-triangle'
-        color = 'orange'
+        color = 'warning'
         break
       case ErrorType.HTTP_5XX:
         title = t('errors.http.5xx.title')
@@ -120,7 +120,7 @@ export const useApi = () => {
       description,
       icon,
       color,
-      timeout: 3000
+      duration: 3000
     })
   }
 
@@ -160,8 +160,8 @@ export const useApi = () => {
               title: t('errors.http.401.title'),
               description: t('errors.http.401.description'),
               icon: 'i-heroicons-shield-exclamation',
-              color: 'red',
-              timeout: 3000
+              color: 'error',
+              duration: 3000
             })
           }
           authStore.clearAuth()
