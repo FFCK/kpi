@@ -217,7 +217,7 @@ onMounted(() => {
         v-if="mobileMenuOpen"
         class="lg:hidden py-4 border-t border-gray-800"
       >
-        <div class="md:hidden px-4 pb-2">
+        <div class="px-4 pb-2">
           <NuxtLink
             v-for="item in menuItems"
             :key="item.to"

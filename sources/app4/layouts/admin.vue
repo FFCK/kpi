@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/authStore'
+import { version } from '~/package.json'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const mobileMenuOpen = ref(false)
 
@@ -31,5 +33,10 @@ watch(() => route.path, () => {
     <main class="flex-1 p-4 md:p-6 overflow-auto">
       <slot />
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 border-t border-gray-200 py-3 px-4 text-center text-sm text-gray-500">
+      {{ t('app.title') }} - {{ t('footer.version') }} {{ version }}
+    </footer>
   </div>
 </template>

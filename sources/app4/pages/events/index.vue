@@ -310,10 +310,6 @@ const formatDate = (date: string | null) => {
   if (!date) return '-'
   return new Date(date).toLocaleDateString('fr-FR')
 }
-
-// Pagination info
-const paginationFrom = computed(() => ((page.value - 1) * limit.value) + 1)
-const paginationTo = computed(() => Math.min(page.value * limit.value, total.value))
 </script>
 
 <template>
@@ -326,45 +322,19 @@ const paginationTo = computed(() => Math.min(page.value * limit.value, total.val
     </div>
 
     <!-- Toolbar -->
-    <div class="mb-4 flex flex-col sm:flex-row gap-4 justify-between">
-      <!-- Left side: bulk actions -->
-      <div class="flex items-center gap-2">
-        <button
-          v-if="authStore.isSuperAdmin && selectedIds.length > 0"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors"
-          @click="openBulkDeleteModal"
-        >
-          <UIcon name="heroicons:trash" class="w-5 h-5" />
-          {{ t('events.delete_selected') }} ({{ selectedIds.length }})
-        </button>
-      </div>
+    <AdminToolbar
+      v-model:search="search"
+      :search-placeholder="t('common.search')"
+      :add-label="t('events.add')"
+      :show-bulk-delete="authStore.isSuperAdmin"
+      :bulk-delete-label="t('events.delete_selected')"
+      :selected-count="selectedIds.length"
+      @add="openAddModal"
+      @bulk-delete="openBulkDeleteModal"
+    />
 
-      <!-- Right side: search and add -->
-      <div class="flex items-center gap-3">
-        <div class="relative">
-          <UIcon
-            name="heroicons:magnifying-glass"
-            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-          />
-          <input
-            v-model="search"
-            type="text"
-            :placeholder="t('common.search')"
-            class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <button
-          class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors"
-          @click="openAddModal"
-        >
-          <UIcon name="heroicons:plus" class="w-5 h-5" />
-          {{ t('events.add') }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <!-- Desktop Table -->
+    <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
@@ -502,47 +472,37 @@ const paginationTo = computed(() => Math.min(page.value * limit.value, total.val
 
               <!-- Publication toggle -->
               <td class="px-4 py-3 text-center">
-                <button
-                  :class="[
-                    'p-1.5 transition-colors',
-                    event.publication
-                      ? 'text-green-600 hover:text-green-700'
-                      : 'text-gray-300 hover:text-gray-500'
-                  ]"
-                  :title="event.publication ? t('events.published') : t('events.unpublished')"
-                  @click="togglePublication(event)"
-                >
-                  <UIcon
-                    :name="event.publication ? 'heroicons-solid:check-circle' : 'heroicons-solid:x-circle'"
-                    class="w-8 h-8"
-                  />
-                </button>
+                <AdminToggleButton
+                  :active="event.publication"
+                  active-icon="heroicons-solid:eye"
+                  inactive-icon="heroicons-solid:x-circle"
+                  active-color="green"
+                  :active-title="t('events.published')"
+                  :inactive-title="t('events.unpublished')"
+                  size="lg"
+                  @toggle="togglePublication(event)"
+                />
               </td>
 
               <!-- App toggle -->
               <td class="px-4 py-3 text-center">
-                <button
-                  :class="[
-                    'p-1.5 transition-colors',
-                    event.app
-                      ? 'text-blue-600 hover:text-blue-700'
-                      : 'text-gray-300 hover:text-gray-500'
-                  ]"
-                  :title="event.app ? t('events.app_enabled') : t('events.app_disabled')"
-                  @click="toggleApp(event)"
-                >
-                  <UIcon
-                    name="heroicons-solid:device-phone-mobile"
-                    class="w-8 h-8"
-                  />
-                </button>
+                <AdminToggleButton
+                  :active="event.app"
+                  active-icon="heroicons-solid:device-phone-mobile"
+                  inactive-icon="heroicons-solid:device-phone-mobile"
+                  active-color="blue"
+                  :active-title="t('events.app_enabled')"
+                  :inactive-title="t('events.app_disabled')"
+                  size="lg"
+                  @toggle="toggleApp(event)"
+                />
               </td>
 
               <!-- Actions -->
               <td class="px-4 py-3">
                 <div class="flex items-center justify-end gap-1">
                   <button
-                    class="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
+                    class="p-1.5 text-blue-600"
                     :title="t('common.edit')"
                     @click="openEditModal(event)"
                   >
@@ -550,7 +510,7 @@ const paginationTo = computed(() => Math.min(page.value * limit.value, total.val
                   </button>
                   <button
                     v-if="authStore.isSuperAdmin"
-                    class="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
+                    class="p-1.5 text-red-600"
                     :title="t('common.delete')"
                     @click="openDeleteModal(event)"
                   >
@@ -563,278 +523,234 @@ const paginationTo = computed(() => Math.min(page.value * limit.value, total.val
         </table>
       </div>
 
-      <!-- Pagination -->
-      <div class="px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="text-sm text-gray-500">
-          <span v-if="total > 0">
-            {{ t('events.pagination.showing', { from: paginationFrom, to: paginationTo, total }) }}
-          </span>
-        </div>
-
-        <div class="flex items-center gap-4">
-          <!-- Items per page -->
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-600">{{ t('events.pagination.items_per_page') }}</span>
-            <select
-              v-model.number="limit"
-              class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-            >
-              <option :value="10">10</option>
-              <option :value="20">20</option>
-              <option :value="50">50</option>
-              <option :value="100">100</option>
-            </select>
-          </div>
-
-          <!-- Page navigation -->
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              :disabled="page <= 1"
-              @click="page--"
-            >
-              <UIcon name="heroicons:chevron-left" class="w-5 h-5" />
-            </button>
-            <span class="text-sm text-gray-700 px-2 min-w-[4rem] text-center">
-              {{ page }} / {{ totalPages || 1 }}
-            </span>
-            <button
-              type="button"
-              class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-              :disabled="page >= totalPages"
-              @click="page++"
-            >
-              <UIcon name="heroicons:chevron-right" class="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
+      <!-- Desktop Pagination -->
+      <AdminPagination
+        v-model:page="page"
+        v-model:limit="limit"
+        :total="total"
+        :total-pages="totalPages"
+        :showing-text="t('events.pagination.showing', { from: '{from}', to: '{to}', total: '{total}' })"
+        :items-per-page-text="t('events.pagination.items_per_page')"
+      />
     </div>
 
-    <!-- Add/Edit Modal -->
-    <Teleport to="body">
-      <div
-        v-if="isModalOpen"
-        class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-        @click.self="closeModal"
+    <!-- Mobile Cards -->
+    <AdminCardList
+      :loading="loading && events.length === 0"
+      :empty="events.length === 0"
+      :loading-text="t('common.loading')"
+      :empty-text="t('events.empty')"
+    >
+      <AdminCard
+        v-for="event in events"
+        :key="event.id"
+        :selected="isSelected(event.id)"
+        :show-checkbox="authStore.isSuperAdmin"
+        :checked="isSelected(event.id)"
+        @toggle-select="toggleSelect(event.id)"
       >
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="closeModal" />
+        <!-- Header -->
+        <template #header>
+          <h3 class="font-semibold text-gray-900 truncate">
+            {{ event.libelle }}
+          </h3>
+        </template>
+        <template #header-right>
+          <span class="text-sm text-gray-600 flex-shrink-0 ml-2">ID: {{ event.id }}</span>
+        </template>
 
-        <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-          <!-- Header -->
-          <div class="flex items-center justify-between p-6 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">
-              {{ editingEvent ? t('events.form.edit_title') : t('events.form.add_title') }}
-            </h3>
-            <button
-              type="button"
-              class="text-gray-400 hover:text-gray-600 p-1"
-              @click="closeModal"
-            >
-              <UIcon name="heroicons:x-mark" class="w-6 h-6" />
-            </button>
+        <!-- Content -->
+        <div v-if="event.lieu" class="flex items-start gap-2 text-sm">
+          <UIcon name="heroicons-solid:map-pin" class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+          <span class="text-gray-700">{{ event.lieu }}</span>
+        </div>
+
+        <div class="flex flex-col gap-2 text-sm">
+          <div v-if="event.dateDebut" class="flex items-center gap-2">
+            <UIcon name="heroicons-solid:calendar" class="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <div>
+              <span class="text-gray-900 ml-1">{{ formatDate(event.dateDebut) }}</span>
+              -
+              <span class="text-gray-900 ml-1">{{ formatDate(event.dateFin) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer left: toggles -->
+        <template #footer-left>
+          <AdminToggleButton
+            :active="event.publication"
+            active-icon="heroicons-solid:check-circle"
+            inactive-icon="heroicons-solid:x-circle"
+            active-color="green"
+            :active-title="t('events.published')"
+            :inactive-title="t('events.unpublished')"
+            @toggle="togglePublication(event)"
+          />
+          <AdminToggleButton
+            :active="event.app"
+            active-icon="heroicons-solid:device-phone-mobile"
+            inactive-icon="heroicons-solid:device-phone-mobile"
+            active-color="blue"
+            :active-title="t('events.app_enabled')"
+            :inactive-title="t('events.app_disabled')"
+            @toggle="toggleApp(event)"
+          />
+        </template>
+
+        <!-- Footer right: actions -->
+        <template #footer-right>
+          <AdminActionButton
+            icon="heroicons-solid:pencil"
+            @click="openEditModal(event)"
+          >
+            {{ t('common.edit') }}
+          </AdminActionButton>
+          <AdminActionButton
+            v-if="authStore.isSuperAdmin"
+            variant="danger"
+            icon="heroicons-solid:trash"
+            @click="openDeleteModal(event)"
+          >
+            {{ t('common.delete') }}
+          </AdminActionButton>
+        </template>
+      </AdminCard>
+
+      <!-- Mobile Pagination -->
+      <AdminPagination
+        v-if="events.length > 0"
+        v-model:page="page"
+        v-model:limit="limit"
+        :total="total"
+        :total-pages="totalPages"
+        :showing-text="t('events.pagination.showing', { from: '{from}', to: '{to}', total: '{total}' })"
+        :items-per-page-text="t('events.pagination.items_per_page')"
+        class="mt-4 rounded-lg shadow"
+      />
+    </AdminCardList>
+
+    <!-- Add/Edit Modal -->
+    <AdminModal
+      :open="isModalOpen"
+      :title="editingEvent ? t('events.form.edit_title') : t('events.form.add_title')"
+      @close="closeModal"
+    >
+      <form @submit.prevent="saveEvent">
+        <div class="space-y-4">
+          <!-- Error message -->
+          <div
+            v-if="formError"
+            class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800"
+          >
+            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <span class="text-sm">{{ formError }}</span>
           </div>
 
-          <!-- Body -->
-          <form @submit.prevent="saveEvent" class="p-6">
-            <div class="space-y-4">
-              <!-- Error message -->
-              <div
-                v-if="formError"
-                class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800"
-              >
-                <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5" />
-                <span class="text-sm">{{ formError }}</span>
-              </div>
+          <!-- Libelle -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('events.form.libelle') }} <span class="text-red-500">*</span>
+            </label>
+            <input
+              v-model="formData.libelle"
+              type="text"
+              :placeholder="t('events.form.libelle_placeholder')"
+              maxlength="40"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
 
-              <!-- Libelle -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  {{ t('events.form.libelle') }} <span class="text-red-500">*</span>
-                </label>
-                <input
-                  v-model="formData.libelle"
-                  type="text"
-                  :placeholder="t('events.form.libelle_placeholder')"
-                  maxlength="40"
-                  required
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+          <!-- Lieu -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('events.form.lieu') }}
+            </label>
+            <input
+              v-model="formData.lieu"
+              type="text"
+              :placeholder="t('events.form.lieu_placeholder')"
+              maxlength="40"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
 
-              <!-- Lieu -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  {{ t('events.form.lieu') }}
-                </label>
-                <input
-                  v-model="formData.lieu"
-                  type="text"
-                  :placeholder="t('events.form.lieu_placeholder')"
-                  maxlength="40"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+          <!-- Date debut -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('events.form.date_debut') }}
+            </label>
+            <input
+              v-model="formData.dateDebut"
+              type="date"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
 
-              <!-- Date debut -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  {{ t('events.form.date_debut') }}
-                </label>
-                <input
-                  v-model="formData.dateDebut"
-                  type="date"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-
-              <!-- Date fin -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  {{ t('events.form.date_fin') }}
-                </label>
-                <input
-                  v-model="formData.dateFin"
-                  type="date"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
-              <button
-                type="button"
-                class="px-4 py-2 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
-                @click="closeModal"
-              >
-                {{ t('events.form.cancel') }}
-              </button>
-              <button
-                type="submit"
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                :disabled="loading"
-              >
-                <span v-if="loading" class="flex items-center gap-2">
-                  <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
-                  {{ t('events.form.save') }}
-                </span>
-                <span v-else>{{ t('events.form.save') }}</span>
-              </button>
-            </div>
-          </form>
+          <!-- Date fin -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ t('events.form.date_fin') }}
+            </label>
+            <input
+              v-model="formData.dateFin"
+              type="date"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
         </div>
-      </div>
-    </Teleport>
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
+          <button
+            type="button"
+            class="px-4 py-2 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+            @click="closeModal"
+          >
+            {{ t('events.form.cancel') }}
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            :disabled="loading"
+          >
+            <span v-if="loading" class="flex items-center gap-2">
+              <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
+              {{ t('events.form.save') }}
+            </span>
+            <span v-else>{{ t('events.form.save') }}</span>
+          </button>
+        </div>
+      </form>
+    </AdminModal>
 
     <!-- Delete confirmation modal -->
-    <Teleport to="body">
-      <div
-        v-if="deleteModalOpen"
-        class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-        @click.self="deleteModalOpen = false"
-      >
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="deleteModalOpen = false" />
-
-        <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">
-          <!-- Header -->
-          <div class="p-6 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-red-600">
-              {{ t('events.delete') }}
-            </h3>
-          </div>
-
-          <!-- Body -->
-          <div class="p-6">
-            <p class="text-gray-600">
-              {{ t('events.confirm_delete') }}
-            </p>
-            <p v-if="eventToDelete" class="mt-2 font-medium text-gray-900">
-              {{ eventToDelete.libelle }}
-            </p>
-          </div>
-
-          <!-- Footer -->
-          <div class="flex justify-end gap-2 p-6 pt-4 border-t border-gray-200 bg-gray-50">
-            <button
-              type="button"
-              class="px-4 py-2 text-gray-700 border border-gray-300 bg-white hover:bg-gray-100 rounded-lg transition-colors"
-              @click="deleteModalOpen = false"
-            >
-              {{ t('common.cancel') }}
-            </button>
-            <button
-              type="button"
-              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
-              :disabled="isDeleting"
-              @click="confirmDelete"
-            >
-              <span v-if="isDeleting" class="flex items-center gap-2">
-                <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
-                {{ t('common.delete') }}
-              </span>
-              <span v-else>{{ t('common.delete') }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <AdminConfirmModal
+      :open="deleteModalOpen"
+      :title="t('events.delete')"
+      :message="t('events.confirm_delete')"
+      :item-name="eventToDelete?.libelle"
+      :confirm-text="t('common.delete')"
+      :cancel-text="t('common.cancel')"
+      :loading="isDeleting"
+      @close="deleteModalOpen = false"
+      @confirm="confirmDelete"
+    />
 
     <!-- Bulk delete confirmation modal -->
-    <Teleport to="body">
-      <div
-        v-if="bulkDeleteModalOpen"
-        class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-        @click.self="bulkDeleteModalOpen = false"
-      >
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="bulkDeleteModalOpen = false" />
+    <AdminConfirmModal
+      :open="bulkDeleteModalOpen"
+      :title="t('events.delete_selected')"
+      :message="t('events.confirm_delete_multiple', { count: selectedIds.length })"
+      :confirm-text="t('common.delete')"
+      :cancel-text="t('common.cancel')"
+      :loading="isDeleting"
+      @close="bulkDeleteModalOpen = false"
+      @confirm="confirmBulkDelete"
+    />
 
-        <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">
-          <!-- Header -->
-          <div class="p-6 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-red-600">
-              {{ t('events.delete_selected') }}
-            </h3>
-          </div>
-
-          <!-- Body -->
-          <div class="p-6">
-            <p class="text-gray-600">
-              {{ t('events.confirm_delete_multiple', { count: selectedIds.length }) }}
-            </p>
-          </div>
-
-          <!-- Footer -->
-          <div class="flex justify-end gap-2 p-6 pt-4 border-t border-gray-200 bg-gray-50">
-            <button
-              type="button"
-              class="px-4 py-2 text-gray-700 border border-gray-300 bg-white hover:bg-gray-100 rounded-lg transition-colors"
-              @click="bulkDeleteModalOpen = false"
-            >
-              {{ t('common.cancel') }}
-            </button>
-            <button
-              type="button"
-              class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
-              :disabled="isDeleting"
-              @click="confirmBulkDelete"
-            >
-              <span v-if="isDeleting" class="flex items-center gap-2">
-                <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
-                {{ t('common.delete') }}
-              </span>
-              <span v-else>{{ t('common.delete') }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </Teleport>
+    <!-- Scroll to top button -->
+    <AdminScrollToTop :title="t('common.scroll_to_top')" />
   </div>
 </template>

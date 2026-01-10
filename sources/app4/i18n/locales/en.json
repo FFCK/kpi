@@ -2,6 +2,9 @@
   "app": {
     "title": "KPI Administration"
   },
+  "footer": {
+    "version": "Version"
+  },
   "menu": {
     "events": "Events",
     "documents": "Documents",
@@ -72,6 +75,10 @@
     "error_save": "Error saving event",
     "error_delete": "Error deleting event",
     "empty": "No events found",
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "app_enabled": "App enabled",
+    "app_disabled": "App disabled",
     "pagination": {
       "showing": "Showing {from} to {to} of {total} events",
       "items_per_page": "Items per page"
@@ -90,7 +97,8 @@
     "error": "Error",
     "success": "Success",
     "confirm": "Confirm",
-    "actions": "Actions"
+    "actions": "Actions",
+    "scroll_to_top": "Back to top"
   },
   "errors": {
     "generic": {
