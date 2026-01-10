@@ -16,6 +16,7 @@ const { logout } = useAuth()
 const router = useRouter()
 const authStore = useAuthStore()
 const route = useRoute()
+const { isOnline } = useOnlineStatus()
 
 const languages = [
   { code: 'fr', label: 'FR', flag: '🇫🇷' },
@@ -108,6 +109,19 @@ onMounted(() => {
             <span class="text-xl font-bold text-blue-400">KPI</span>
             <span class="text-sm text-gray-300">Admin</span>
           </NuxtLink>
+          <!-- Online/Offline indicator -->
+          <ClientOnly>
+            <UTooltip :text="isOnline ? t('status.online') : t('status.offline')">
+              <span :class="isOnline ? 'text-green-400' : 'text-red-500 animate-pulse'">
+                <UIcon :name="isOnline ? 'i-heroicons-wifi' : 'i-heroicons-signal-slash'" class="h-5 w-5" />
+              </span>
+            </UTooltip>
+            <template #fallback>
+              <span class="text-green-400">
+                <UIcon name="i-heroicons-wifi" class="h-5 w-5" />
+              </span>
+            </template>
+          </ClientOnly>
         </div>
 
         <!-- Center: Horizontal menu (desktop only) -->

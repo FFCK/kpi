@@ -70,6 +70,8 @@ export default defineNuxtConfig({
         'heroicons:chevron-right',
         'heroicons:arrow-path',
         'heroicons:exclamation-triangle',
+        'heroicons:wifi',
+        'heroicons:signal-slash',
         'heroicons-solid:check-circle',
         'heroicons-solid:x-circle',
         'heroicons-solid:device-phone-mobile',

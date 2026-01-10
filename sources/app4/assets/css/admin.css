@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@nuxt/ui";
+@import "./toast.css";
 
 /* Modal improvements */
 .umodal-container {
@@ -112,6 +114,14 @@ select {
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   transition: border-color 0.2s, box-shadow 0.2s;
+  color: rgb(17 24 39) !important; /* Force dark text color */
+  background-color: white !important;
+}
+
+/* Placeholder text - lighter gray */
+input::placeholder,
+textarea::placeholder {
+  color: rgb(156 163 175) !important;
 }
 
 input[type="text"]:focus,
@@ -307,10 +317,25 @@ form button[type="submit"] {
 /* ===== Fix Modal Display Issues ===== */
 
 /* Modal backdrop should cover entire screen when visible */
-[data-headlessui-portal] {
+[data-headlessui-portal]:has([role="dialog"]) {
   position: fixed !important;
   inset: 0 !important;
   z-index: 9999 !important;
+}
+
+/* ===== Toast/Notification Styles ===== */
+/* Ensure toasts are visible and properly positioned */
+[data-sonner-toaster] {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+[data-sonner-toast] {
+  background-color: white !important;
+  border: 1px solid rgb(229 231 235) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  padding: 1rem !important;
 }
 
 /* Ensure modals are centered */

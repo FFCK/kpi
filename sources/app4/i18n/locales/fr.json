@@ -5,6 +5,12 @@
   "footer": {
     "version": "Version"
   },
+  "status": {
+    "online": "En ligne",
+    "offline": "Hors connexion",
+    "offline_description": "Vous êtes actuellement hors ligne.",
+    "back_online": "Connexion rétablie"
+  },
   "menu": {
     "events": "Événements",
     "documents": "Documents",

@@ -580,7 +580,7 @@ const formatDate = (date: string | null) => {
         <template #footer-left>
           <AdminToggleButton
             :active="event.publication"
-            active-icon="heroicons-solid:check-circle"
+            active-icon="heroicons-solid:eye"
             inactive-icon="heroicons-solid:x-circle"
             active-color="green"
             :active-title="t('events.published')"

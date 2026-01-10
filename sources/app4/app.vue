@@ -2,6 +2,9 @@
 // KPI Admin - Root component
 const { locale } = useI18n()
 
+// Initialize online status monitoring at app level
+useOnlineStatus()
+
 // Head configuration
 useHead({
   htmlAttrs: {
@@ -14,11 +17,10 @@ useHead({
 </script>
 
 <template>
-  <UApp>
+  <UApp :toaster="{ position: 'bottom-right' }">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-    <UNotifications />
   </UApp>
 </template>
 
