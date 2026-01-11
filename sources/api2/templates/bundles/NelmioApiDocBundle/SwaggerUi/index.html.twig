@@ -1,0 +1,37 @@
+{# templates/bundles/NelmioApiDocBundle/SwaggerUi/index.html.twig #}
+{# Force light theme - Swagger UI detects browser dark mode and applies light grey text #}
+{% extends '@!NelmioApiDoc/SwaggerUi/index.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        /* Disable dark mode media query detection */
+        @media (prefers-color-scheme: dark) {
+            .swagger-ui,
+            .swagger-ui .info .title,
+            .swagger-ui .info .description,
+            .swagger-ui .info .description p,
+            .swagger-ui .opblock .opblock-summary-description,
+            .swagger-ui .opblock .opblock-summary-path,
+            .swagger-ui .opblock .opblock-summary-path span,
+            .swagger-ui .opblock-tag,
+            .swagger-ui .opblock-tag small {
+                color: #3b4151 !important;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Remove dark-mode class that Swagger UI adds based on browser preference
+        document.documentElement.classList.remove('dark-mode');
+        // Prevent it from being added
+        new MutationObserver(function(mutations) {
+            if (document.documentElement.classList.contains('dark-mode')) {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    </script>
+{% endblock %}
