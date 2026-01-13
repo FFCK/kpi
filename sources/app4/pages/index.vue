@@ -59,7 +59,7 @@ const authStore = useAuthStore()
       <!-- Statistics card -->
       <NuxtLink
         v-if="authStore.hasProfile(9)"
-        to="/statistics"
+        to="/stats"
         class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
       >
         <div class="flex items-center gap-4">

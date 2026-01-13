@@ -49,7 +49,7 @@ const menuItems = computed(() => {
   // Statistics - profile <= 9
   if (profile <= 9) {
     items.push({
-      to: '/statistics',
+      to: '/stats',
       icon: 'heroicons:chart-bar',
       label: t('menu.statistics')
     })
