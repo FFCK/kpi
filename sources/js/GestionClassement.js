@@ -201,7 +201,7 @@ jq(document).ready(function() { //Jquery
 			valeur = valeur * 100;
 			diviseur = 100;
 		}
-		if (valeur != nouvelleValeur && nouvelleValeur != '') {
+		if (valeur != nouvelleValeur && nouvelleValeur !== '') {
 			var AjaxWhere = jq('#AjaxWhere').val();
 			var AjaxUser = jq('#AjaxUser').val();
 			if(numJournee != '') {
