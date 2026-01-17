@@ -148,3 +148,101 @@
   border-bottom-color: transparent;
   cursor: default;
 }
+
+/* Fix: Nav mobile responsive pour kpnavgroup (menu secondaire mobile/tablet) */
+/* Container principal : une seule ligne */
+.nav-mobile-row {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  flex-wrap: nowrap !important;
+}
+
+/* Menu à gauche */
+.nav-mobile-left {
+  flex-shrink: 0;
+}
+
+/* Éléments à droite */
+.nav-mobile-right {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.5rem;
+  flex-wrap: nowrap !important;
+}
+
+/* Style des liens et dropdowns */
+.nav-mobile-link,
+.nav-mobile-left > a {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  color: #333;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.nav-mobile-link:hover,
+.nav-mobile-link:focus,
+.nav-mobile-left > a:hover,
+.nav-mobile-left > a:focus {
+  background-color: #e9ecef;
+  text-decoration: none;
+  color: #333;
+}
+
+.nav-mobile-link.active {
+  background-color: #555555;
+  color: #fff;
+  border-color: #555555;
+}
+
+/* Dropdown menu positionnement */
+.nav-mobile-row .dropdown-menu {
+  position: absolute;
+  z-index: 1000;
+}
+
+/* Menu déroulant aligné à droite pour les éléments de droite */
+.nav-mobile-right .dropdown-menu-end {
+  right: 0;
+  left: auto;
+}
+
+/* Caret Bootstrap 5 (compatible avec la classe .caret) */
+.nav-mobile-row .caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 0.25rem;
+  vertical-align: middle;
+  border-top: 4px solid;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+}
+
+/* Sur très petits écrans, réduire le padding */
+@media (max-width: 480px) {
+  .nav-mobile-link,
+  .nav-mobile-left > a {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .nav-mobile-row {
+    gap: 0.25rem;
+  }
+
+  .nav-mobile-right {
+    gap: 0.25rem;
+  }
+}

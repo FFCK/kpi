@@ -61,7 +61,7 @@
                 
                 {if $page == 'Terrains'}
                     <span class="dropdown">
-                        <a id="drop4" class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        <a id="drop4" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                             <span class="fa fa-calendar"></span>
                             <b>{#Date#}</b>
                             <span class="caret"></span>
@@ -111,9 +111,10 @@
     </div>
 
     <div class="container-fluid article hidden-lg navgroup">
-        <ul class="nav nav-pills">
-            <li role="presentation" class="dropdown">
-                <a id="drop1" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <div class="nav-mobile-row">
+            {* Menu secondaire à gauche *}
+            <div class="dropdown nav-mobile-left">
+                <a id="drop1" class="dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <span class="fa fa-bars"></span>
                     <b>{$smarty.config.$page}</b>
                     <span class="caret"></span>
@@ -131,83 +132,83 @@
                     <li class="{if $page == 'Classement'}active{/if}"><a href="frame_classement.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">{#Classement#}</a></li>
                     <li class="{if $page == 'Stats'}active{/if}"><a href="frame_stats.php?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&Round={$Round}&Css={$Css}&navGroup=1">{#Stats#}</a></li>
                 </ul>
-            </li>
-            <li role="presentation" class="dropdown pull-right">
-                <a id="drop2" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    {foreach from=$arrayNavGroup|default:[] item=nav}
-                        {if $nav.Code == $codeCompet}
-                            <b>{$nav.Soustitre2}</b>
-                        {/if}
-                    {/foreach}
-                    {if '*' == $codeCompet}
-                       <b> {#Toutes_divisions#}</b>
+            </div>
+
+            {* Éléments à droite : Prochains matchs + Catégorie *}
+            <div class="nav-mobile-right">
+                {if $page == 'Matchs'}
+                    {if $next}
+                        <a class="nav-mobile-link active" href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
+                            {#Prochains_matchs#}
+                        </a>
+                    {else}
+                        <a class="nav-mobile-link" href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
+                            {#Prochains_matchs#}
+                        </a>
                     {/if}
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="drop2">
-                    {if ($page == 'Matchs' || $page == 'Terrains') && isset($arrayNavGroup) && $arrayNavGroup}
-                        <li {if '*' == $codeCompet}class="active"{/if}>
-                            <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet=*&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1">
-                            {#Toutes_divisions#}</a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                    {/if}
-                    {foreach from=$arrayNavGroup|default:[] item=nav}
-                        <li {if $nav.Code == $codeCompet}class="active"{/if}>
-                            <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$nav.Code_ref}&Compet={$nav.Code}&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1">
-                            {$nav.Soustitre2}</a>
-                        </li>
-                    {foreachelse}
-                        <a class="btn btn-primary">
-                            {$recordCompetition.Soustitre2}
-                        </a>
-                    {/foreach}
-                </ul>
-            </li>
-            
-            {if $page == 'Matchs'}
-                {if $next}
-                    <li role="presentation" class="active pull-right">
-                        <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1&next=0">
-                            <b>{#Prochains_matchs#}</b>
-                        </a>
-                    </li>
-                {else}
-                    <li role="presentation" class="pull-right">
-                        <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1&next=next">
-                            <b>{#Prochains_matchs#}</b>
-                        </a>
-                    </li>
                 {/if}
-            {/if}
-            
-            {if $page == 'Terrains'}
-                <li role="presentation" class="dropdown pull-right">
-                    <a id="drop3" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="fa fa-calendar"></span>
-                        <b>{#Date#}</b>
+
+                {if $page == 'Terrains'}
+                    <div class="dropdown">
+                        <a id="drop3" class="dropdown-toggle nav-mobile-link" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-calendar"></span>
+                            {#Date#}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="drop3">
+                            <li {if '' == $filtreJour}class="active"{/if}>
+                                <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&filtreJour=&Css={$Css}&navGroup=1">
+                                {#Tous#}</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            {foreach from=$arrayJours item=jour}
+                                <li {if $jour == $filtreJour}class="active"{/if}>
+                                    <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&filtreJour={$jour}&Css={$Css}&navGroup=1">
+                                    {if $lang == 'fr'}{$jour|date_format:"%d/%m/%Y"}{else}{$jour}{/if}</a>
+                                </li>
+                            {foreachelse}
+                                <a class="btn btn-primary">
+                                    {#Aucune#}
+                                </a>
+                            {/foreach}
+                        </ul>
+                    </div>
+                {/if}
+
+                <div class="dropdown">
+                    <a id="drop2" class="dropdown-toggle nav-mobile-link" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                        {foreach from=$arrayNavGroup|default:[] item=nav}
+                            {if $nav.Code == $codeCompet}
+                                {$nav.Soustitre2}
+                            {/if}
+                        {/foreach}
+                        {if '*' == $codeCompet}
+                            {#Toutes_divisions#}
+                        {/if}
                         <span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="drop3">
-                        <li {if '' == $filtreJour}class="active"{/if}>
-                            <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&filtreJour=&Css={$Css}&navGroup=1">
-                            {#Tous#}</a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                        {foreach from=$arrayJours item=jour}
-                            <li {if $jour == $filtreJour}class="active"{/if}>
-                                <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet={$codeCompet}&J={$idSelJournee|default:''}&Round={$Round}&filtreJour={$jour}&Css={$Css}&navGroup=1">
-                                {if $lang == 'fr'}{$jour|date_format:"%d/%m/%Y"}{else}{$jour}{/if}</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="drop2">
+                        {if ($page == 'Matchs' || $page == 'Terrains') && isset($arrayNavGroup) && $arrayNavGroup}
+                            <li {if '*' == $codeCompet}class="active"{/if}>
+                                <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$group|default:''}&Compet=*&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1">
+                                {#Toutes_divisions#}</a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                        {/if}
+                        {foreach from=$arrayNavGroup|default:[] item=nav}
+                            <li {if $nav.Code == $codeCompet}class="active"{/if}>
+                                <a href="?lang={$lang}&event={$event}&Saison={$Saison}&Group={$nav.Code_ref}&Compet={$nav.Code}&J={$idSelJournee|default:''}&Round={$Round}&Css={$Css}&navGroup=1">
+                                {$nav.Soustitre2}</a>
                             </li>
                         {foreachelse}
                             <a class="btn btn-primary">
-                                {#Aucune#}
+                                {$recordCompetition.Soustitre2}
                             </a>
                         {/foreach}
                     </ul>
-                </li>
-            {/if}
-        </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
 {else}
