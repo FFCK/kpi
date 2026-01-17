@@ -19,7 +19,7 @@ export const useOnlineStatus = () => {
         title: t('status.BackOnline'),
         icon: 'i-heroicons-wifi',
         color: 'green',
-        timeout: 3000
+        duration: 3000
       })
       wasOffline.value = false
     }
@@ -36,7 +36,7 @@ export const useOnlineStatus = () => {
       description: t('status.OfflineDescription'),
       icon: 'i-heroicons-signal-slash',
       color: 'yellow',
-      timeout: 3000
+      duration: 5000
     })
   }
 

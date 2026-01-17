@@ -172,75 +172,81 @@ onMounted(async () => {
   }
 })
 
-// Get column label for display
-const getColumnLabel = (column: string): string => {
-  const labels: Record<string, string> = {
-    competition: t('stats.columns.competition'),
-    licence: t('stats.columns.licence'),
-    matric: t('stats.columns.matric'),
-    nom: t('stats.columns.nom'),
-    prenom: t('stats.columns.prenom'),
-    sexe: t('stats.columns.sexe'),
-    numero: t('stats.columns.numero'),
-    equipe: t('stats.columns.equipe'),
-    buts: t('stats.columns.buts'),
-    vert: t('stats.columns.vert'),
-    jaune: t('stats.columns.jaune'),
-    rouge: t('stats.columns.rouge'),
-    rougeDefinitif: t('stats.columns.rouge_definitif'),
-    fairplay: t('stats.columns.fairplay'),
-    principal: t('stats.columns.principal'),
-    secondaire: t('stats.columns.secondaire'),
-    total: t('stats.columns.total'),
-    nbMatchs: t('stats.columns.nb_matchs'),
-    nomEquipe: t('stats.columns.nom_equipe'),
-    numeroClub: t('stats.columns.numero_club'),
-    nomClub: t('stats.columns.nom_club'),
-    irregularite: t('stats.columns.irregularite'),
-    matchs: t('stats.columns.matchs'),
-    id: t('stats.columns.id'),
-    libelle: t('stats.columns.libelle'),
-    lieu: t('stats.columns.lieu'),
-    dateDebut: t('stats.columns.date_debut'),
-    dateFin: t('stats.columns.date_fin'),
-    delegue: t('stats.columns.delegue'),
-    chefArbitre: t('stats.columns.chef_arbitre'),
-    dateMatch: t('stats.columns.date_match'),
-    heureMatch: t('stats.columns.heure_match'),
-    equipeA: t('stats.columns.equipe_a'),
-    equipeB: t('stats.columns.equipe_b'),
-    arbitrePrincipal: t('stats.columns.arbitre_principal'),
-    arbitreSecondaire: t('stats.columns.arbitre_secondaire'),
-    codeClub: t('stats.columns.code_club'),
-    club: t('stats.columns.club'),
-    arbitre: t('stats.columns.arbitre'),
-    niveau: t('stats.columns.niveau'),
-    saison: t('stats.columns.saison'),
-    naissance: t('stats.columns.naissance'),
-    clubActuel: t('stats.columns.club_actuel'),
-    categorie: t('stats.columns.categorie'),
-    cd: t('stats.columns.cd'),
-    cr: t('stats.columns.cr'),
-    clubActuelJoueurs: t('stats.columns.club_actuel_joueurs'),
-    hommesU16: t('stats.columns.hommes_u16'),
-    hommesU18: t('stats.columns.hommes_u18'),
-    hommesU23: t('stats.columns.hommes_u23'),
-    hommesU35: t('stats.columns.hommes_u35'),
-    hommesPlus35: t('stats.columns.hommes_plus35'),
-    hommesTotal: t('stats.columns.hommes_total'),
-    femmesU16: t('stats.columns.femmes_u16'),
-    femmesU18: t('stats.columns.femmes_u18'),
-    femmesU23: t('stats.columns.femmes_u23'),
-    femmesU35: t('stats.columns.femmes_u35'),
-    femmesPlus35: t('stats.columns.femmes_plus35'),
-    femmesTotal: t('stats.columns.femmes_total'),
-    totalActivite: t('stats.columns.total_activite'),
-    type: t('stats.columns.type'),
-    date: t('stats.columns.date'),
-    details: t('stats.columns.details')
-  }
-  return labels[column] || column
-}
+// Column labels - computed once and cached
+const columnLabels = computed<Record<string, string>>(() => ({
+  competition: t('stats.columns.competition'),
+  licence: t('stats.columns.licence'),
+  matric: t('stats.columns.matric'),
+  nom: t('stats.columns.nom'),
+  prenom: t('stats.columns.prenom'),
+  sexe: t('stats.columns.sexe'),
+  numero: t('stats.columns.numero'),
+  equipe: t('stats.columns.equipe'),
+  buts: t('stats.columns.buts'),
+  vert: t('stats.columns.vert'),
+  jaune: t('stats.columns.jaune'),
+  rouge: t('stats.columns.rouge'),
+  rougeDefinitif: t('stats.columns.rouge_definitif'),
+  fairplay: t('stats.columns.fairplay'),
+  principal: t('stats.columns.principal'),
+  secondaire: t('stats.columns.secondaire'),
+  total: t('stats.columns.total'),
+  nbMatchs: t('stats.columns.nb_matchs'),
+  nomEquipe: t('stats.columns.nom_equipe'),
+  numeroClub: t('stats.columns.numero_club'),
+  nomClub: t('stats.columns.nom_club'),
+  irregularite: t('stats.columns.irregularite'),
+  matchs: t('stats.columns.matchs'),
+  id: t('stats.columns.id'),
+  libelle: t('stats.columns.libelle'),
+  lieu: t('stats.columns.lieu'),
+  dateDebut: t('stats.columns.date_debut'),
+  dateFin: t('stats.columns.date_fin'),
+  delegue: t('stats.columns.delegue'),
+  chefArbitre: t('stats.columns.chef_arbitre'),
+  dateMatch: t('stats.columns.date_match'),
+  heureMatch: t('stats.columns.heure_match'),
+  equipeA: t('stats.columns.equipe_a'),
+  equipeB: t('stats.columns.equipe_b'),
+  arbitrePrincipal: t('stats.columns.arbitre_principal'),
+  arbitreSecondaire: t('stats.columns.arbitre_secondaire'),
+  codeClub: t('stats.columns.code_club'),
+  club: t('stats.columns.club'),
+  arbitre: t('stats.columns.arbitre'),
+  niveau: t('stats.columns.niveau'),
+  saison: t('stats.columns.saison'),
+  naissance: t('stats.columns.naissance'),
+  clubActuel: t('stats.columns.club_actuel'),
+  categorie: t('stats.columns.categorie'),
+  cd: t('stats.columns.cd'),
+  cr: t('stats.columns.cr'),
+  clubActuelJoueurs: t('stats.columns.club_actuel_joueurs'),
+  hommesU16: t('stats.columns.hommes_u16'),
+  hommesU18: t('stats.columns.hommes_u18'),
+  hommesU23: t('stats.columns.hommes_u23'),
+  hommesU35: t('stats.columns.hommes_u35'),
+  hommesPlus35: t('stats.columns.hommes_plus35'),
+  hommesTotal: t('stats.columns.hommes_total'),
+  femmesU16: t('stats.columns.femmes_u16'),
+  femmesU18: t('stats.columns.femmes_u18'),
+  femmesU23: t('stats.columns.femmes_u23'),
+  femmesU35: t('stats.columns.femmes_u35'),
+  femmesPlus35: t('stats.columns.femmes_plus35'),
+  femmesTotal: t('stats.columns.femmes_total'),
+  totalActivite: t('stats.columns.total_activite'),
+  type: t('stats.columns.type'),
+  date: t('stats.columns.date'),
+  details: t('stats.columns.details')
+}))
+
+// Numeric columns set for O(1) lookup
+const numericColumnsSet = new Set([
+  'buts', 'vert', 'jaune', 'rouge', 'rougeDefinitif', 'fairplay',
+  'principal', 'secondaire', 'total', 'nbMatchs', 'matchs',
+  'hommesU16', 'hommesU18', 'hommesU23', 'hommesU35', 'hommesPlus35', 'hommesTotal',
+  'femmesU16', 'femmesU18', 'femmesU23', 'femmesU35', 'femmesPlus35', 'femmesTotal',
+  'totalActivite', 'numero', 'numeroOrdre', 'id'
+])
 
 // Format cell value for display
 const formatCellValue = (value: unknown, column: string): string => {
@@ -260,17 +266,14 @@ const formatCellValue = (value: unknown, column: string): string => {
   return String(value)
 }
 
-// Check if column is numeric
-const isNumericColumn = (column: string): boolean => {
-  const numericColumns = [
-    'buts', 'vert', 'jaune', 'rouge', 'rougeDefinitif', 'fairplay',
-    'principal', 'secondaire', 'total', 'nbMatchs', 'matchs',
-    'hommesU16', 'hommesU18', 'hommesU23', 'hommesU35', 'hommesPlus35', 'hommesTotal',
-    'femmesU16', 'femmesU18', 'femmesU23', 'femmesU35', 'femmesPlus35', 'femmesTotal',
-    'totalActivite', 'numero', 'numeroOrdre', 'id'
-  ]
-  return numericColumns.includes(column)
-}
+// Check if column is numeric - use Set for O(1) lookup
+const isNumericColumn = (column: string): boolean => numericColumnsSet.has(column)
+
+// Get column label - use cached computed
+const getColumnLabel = (column: string): string => columnLabels.value[column] || column
+
+// Pre-compute columns for mobile view (exclude nom/prenom)
+const mobileColumns = computed(() => columns.value.filter(c => c !== 'nom' && c !== 'prenom'))
 
 // Get stat type label
 const getStatTypeLabel = computed(() => {
@@ -440,7 +443,7 @@ const showRankingColumn = computed(() => {
         <!-- Content: show all columns -->
         <div class="space-y-1 text-sm">
           <div
-            v-for="column in columns.filter(c => !['nom', 'prenom'].includes(c))"
+            v-for="column in mobileColumns"
             :key="column"
             class="flex justify-between"
           >
