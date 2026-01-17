@@ -97,6 +97,100 @@ class MyPDF extends Mpdf
         parent::SetFont($family, $style, $size, $write, $forcewrite);
     }
 
+    // ========================================================================
+    // MÉTADONNÉES PDF - Protection contre les valeurs null (PHP 8.1+ deprecation)
+    // ========================================================================
+
+    /**
+     * SetTitle - Définir le titre du document PDF
+     * @param string $title Titre du document
+     */
+    public function SetTitle($title)
+    {
+        parent::SetTitle((string)($title ?? ''));
+    }
+
+    /**
+     * SetSubject - Définir le sujet du document PDF
+     * @param string $subject Sujet du document
+     */
+    public function SetSubject($subject)
+    {
+        parent::SetSubject((string)($subject ?? ''));
+    }
+
+    /**
+     * SetKeywords - Définir les mots-clés du document PDF
+     * @param string $keywords Mots-clés séparés par des virgules
+     */
+    public function SetKeywords($keywords)
+    {
+        parent::SetKeywords((string)($keywords ?? ''));
+    }
+
+    /**
+     * SetAuthor - Définir l'auteur du document PDF
+     * @param string $author Nom de l'auteur
+     */
+    public function SetAuthor($author)
+    {
+        parent::SetAuthor((string)($author ?? ''));
+    }
+
+    /**
+     * SetCreator - Définir le créateur du document PDF
+     * @param string $creator Nom du créateur/application
+     */
+    public function SetCreator($creator)
+    {
+        parent::SetCreator((string)($creator ?? ''));
+    }
+
+    // ========================================================================
+    // CELLULES - Protection contre les valeurs null (PHP 8.1+ deprecation)
+    // ========================================================================
+
+    /**
+     * Cell - Écrire une cellule avec protection contre null
+     * Compatible FPDF et mPDF v8
+     * Signature identique à mPDF::Cell()
+     */
+    public function Cell($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = 0, $link = '', $currentx = 0, $lcpaddingL = 0, $lcpaddingR = 0, $valign = 'M', $spanfill = 0, $exactWidth = false, $OTLdata = false, $textvar = 0, $lineBox = false)
+    {
+        // Convertir null en chaîne vide pour le texte et l'alignement
+        $txt = (string)($txt ?? '');
+        $align = (string)($align ?? '');
+        $link = (string)($link ?? '');
+
+        parent::Cell($w, $h, $txt, $border, $ln, $align, $fill, $link, $currentx, $lcpaddingL, $lcpaddingR, $valign, $spanfill, $exactWidth, $OTLdata, $textvar, $lineBox);
+    }
+
+    /**
+     * MultiCell - Écrire une cellule multi-lignes avec protection contre null
+     * Compatible FPDF et mPDF v8
+     */
+    public function MultiCell($w, $h, $txt = '', $border = 0, $align = 'J', $fill = 0, $link = '', $directionRTL = false, $encoded = false, $OTLdata = false, $maxrows = false)
+    {
+        // Convertir null en chaîne vide pour le texte
+        $txt = (string)($txt ?? '');
+        $align = (string)($align ?? 'J');
+        $link = (string)($link ?? '');
+
+        parent::MultiCell($w, $h, $txt, $border, $align, $fill, $link, $directionRTL, $encoded, $OTLdata, $maxrows);
+    }
+
+    /**
+     * Text - Écrire du texte à une position avec protection contre null
+     * Signature identique à mPDF::Text()
+     */
+    public function Text($x, $y, $txt, $OTLdata = [], $textvar = 0, $aixextra = '', $coordsys = '', $return = false)
+    {
+        // Convertir null en chaîne vide pour le texte
+        $txt = (string)($txt ?? '');
+
+        parent::Text($x, $y, $txt, $OTLdata, $textvar, $aixextra, $coordsys, $return);
+    }
+
     /**
      * SetHTMLHeader - Set page header with HTML content
      * Sanitizes HTML to prevent null values in CSS processing
