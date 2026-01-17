@@ -11,6 +11,7 @@ NETWORK_KPI_NAME = network_$(APPLICATION_NAME)
 PHP_CONTAINER_NAME = $(APPLICATION_NAME)_php
 NODE_CONTAINER_NAME = $(APPLICATION_NAME)_node_app2
 NODE3_CONTAINER_NAME = $(APPLICATION_NAME)_node_app3
+NODE4_CONTAINER_NAME = kpi_node_app4
 DB_CONTAINER_NAME = $(APPLICATION_NAME)_db
 
 DOCKER_COMPOSE = docker compose
@@ -21,20 +22,25 @@ DOCKER_EXEC_NODE = docker exec -ti $(NODE_CONTAINER_NAME)
 DOCKER_EXEC_NODE_NON_INTERACTIVE = docker exec $(NODE_CONTAINER_NAME)
 DOCKER_EXEC_NODE3 = docker exec -ti $(NODE3_CONTAINER_NAME)
 DOCKER_EXEC_NODE3_NON_INTERACTIVE = docker exec $(NODE3_CONTAINER_NAME)
+DOCKER_EXEC_NODE4 = docker exec -ti $(NODE4_CONTAINER_NAME)
+DOCKER_EXEC_NODE4_NON_INTERACTIVE = docker exec $(NODE4_CONTAINER_NAME)
 .DEFAULT_GOAL = help
 
-.PHONY: help init init_env init_env_app2 init_env_app3 init_env_api2 init_networks \
+.PHONY: help init init_env init_env_app2 init_env_app3 init_env_app4 init_env_api2 init_networks \
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
 run_dev run_build run_generate_dev run_generate_preprod run_generate_production run_generate_prod run_lint \
 run_dev_app3 run_build_app3 run_generate_app3 run_generate_dev_app3 run_generate_preprod_app3 run_generate_prod_app3 run_lint_app3 \
+run_dev_app4 run_build_app4 run_generate_app4 run_generate_dev_app4 run_generate_preprod_app4 run_generate_prod_app4 run_lint_app4 \
 npm_install_app2 npm_ls_app2 npm_clean_app2 npm_update_app2 npm_add_app2 npm_add_dev_app2 \
 npm_install_app3 npm_ls_app3 npm_clean_app3 npm_update_app3 npm_add_app3 npm_add_dev_app3 \
+npm_install_app4 npm_ls_app4 npm_clean_app4 npm_update_app4 npm_add_app4 npm_add_dev_app4 \
 npm_install_backend npm_add_backend npm_update_backend npm_ls_backend npm_clean_backend npm_init_backend \
 composer_install composer_update composer_require composer_require_dev composer_dump \
 composer_install_api2 composer_update_api2 composer_require_api2 api2_cache_clear api2_cache_warmup api2_migrations_diff api2_migrations_migrate \
-php_bash node_bash node3_bash db_bash \
+jwt_generate_keys \
+php_bash node_bash node3_bash node4_bash db_bash \
 event_worker_start event_worker_stop event_worker_status event_worker_logs event_worker_restart \
 wordpress_backup wordpress_restore \
 networks_create networks_list networks_clean
@@ -58,7 +64,7 @@ help: ## Affiche cette aide
 
 
 ## INITIALISATION
-init: init_env init_env_app2 init_env_app3 init_env_api2 init_networks ## Initialisation complète du projet (env, réseaux)
+init: init_env init_env_app2 init_env_app3 init_env_app4 init_env_api2 init_networks ## Initialisation complète du projet (env, réseaux)
 	@echo ""
 	@echo "✅ Initialisation complète terminée!"
 	@echo ""
@@ -118,6 +124,28 @@ init_env_app3: ## Initialise les fichiers .env.development, .env.preprod et .env
 		echo "⚠️  Le fichier .env.preprod existe déjà pour app3"; \
 	fi
 	@echo "✅ Les autres fichiers .env pour app3 sont déjà créés dans sources/app3/"
+
+init_env_app4: ## Initialise les fichiers .env pour app4 (admin) depuis .env.dist
+	@if [ ! -f sources/app4/.env.development ]; then \
+		cp sources/app4/.env.dist sources/app4/.env.development; \
+		echo "✅ Fichier .env.development créé pour app4"; \
+	else \
+		echo "⚠️  Le fichier .env.development existe déjà pour app4"; \
+	fi
+	@if [ ! -f sources/app4/.env.preprod ]; then \
+		cp sources/app4/.env.dist sources/app4/.env.preprod; \
+		echo "✅ Fichier .env.preprod créé pour app4"; \
+		echo "⚠️  N'oubliez pas de configurer API2_BASE_URL dans .env.preprod"; \
+	else \
+		echo "⚠️  Le fichier .env.preprod existe déjà pour app4"; \
+	fi
+	@if [ ! -f sources/app4/.env.production ]; then \
+		cp sources/app4/.env.dist sources/app4/.env.production; \
+		echo "✅ Fichier .env.production créé pour app4"; \
+		echo "⚠️  N'oubliez pas de configurer API2_BASE_URL dans .env.production"; \
+	else \
+		echo "⚠️  Le fichier .env.production existe déjà pour app4"; \
+	fi
 
 init_env_api2: ## Initialise le fichier .env pour API2 depuis .env.dist
 	@if [ ! -f sources/api2/.env ]; then \
@@ -316,6 +344,66 @@ npm_add_dev_app3: ## Ajoute un package npm de dev à app3 (usage: make npm_add_d
 	$(DOCKER_EXEC_NODE3) sh -c "npm install -D $(package)"
 
 
+## NUXT - APP4 (Admin)
+run_dev_app4: ## Lance le serveur Nuxt (app4 admin) en mode développement (port 3004)
+	$(DOCKER_EXEC_NODE4) sh -c "npm run dev"
+
+run_build_app4: ## Build l'application Nuxt (app4 admin) pour la production
+	$(DOCKER_EXEC_NODE4_NON_INTERACTIVE) sh -c "npm run build"
+
+run_generate_app4: ## Génère l'application Nuxt (app4 admin) en mode statique (production par défaut)
+	$(DOCKER_EXEC_NODE4_NON_INTERACTIVE) sh -c "npm run generate"
+
+run_generate_dev_app4: ## Génère l'application Nuxt (app4 admin) en mode statique pour développement
+	$(DOCKER_EXEC_NODE4_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
+	@echo "🔄 Restarting nginx to remount volume..."
+	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
+	@echo "✅ App4 generated and nginx restarted!"
+
+run_generate_preprod_app4: ## Génère l'application Nuxt (app4 admin) en mode statique pour pré-production (utilise container temporaire)
+	@echo "🔨 Building app4 for pre-production using temporary Node.js container..."
+	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
+	@echo "🔄 Restarting nginx to remount volume..."
+	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
+	@echo "✅ App4 generated and nginx restarted!"
+
+run_generate_prod_app4: ## Génère l'application Nuxt (app4 admin) en mode statique pour production (utilise container temporaire)
+	@echo "🔨 Building app4 for production using temporary Node.js container..."
+	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
+	@echo "🔄 Restarting nginx to remount volume..."
+	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
+	@echo "✅ App4 generated and nginx restarted!"
+
+run_lint_app4: ## Exécute ESLint sur app4
+	$(DOCKER_EXEC_NODE4) sh -c "npm run lint"
+
+
+## NPM - APP4 (Admin)
+npm_install_app4: ## Installe toutes les dépendances npm pour app4
+	@echo "Installation des dépendances npm pour app4 (container: $(NODE4_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE4) sh -c "npm install"
+
+npm_ls_app4: ## Liste les modules npm installés dans app4
+	@echo "Modules npm dans app4 (container: $(NODE4_CONTAINER_NAME)):"
+	$(DOCKER_EXEC_NODE4) sh -c "ls -l node_modules/@nuxtjs"
+
+npm_clean_app4: ## Supprime node_modules et package-lock.json de app4
+	@echo "Nettoyage de node_modules pour app4 (container: $(NODE4_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE4) sh -c "rm -rf node_modules package-lock.json"
+
+npm_update_app4: ## Met à jour toutes les dépendances npm de app4
+	@echo "Mise à jour des dépendances npm pour app4 (container: $(NODE4_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE4) sh -c "npm update"
+
+npm_add_app4: ## Ajoute un package npm à app4 (usage: make npm_add_app4 package=uuid)
+	@echo "Ajout du package $(package) pour app4 (container: $(NODE4_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE4) sh -c "npm install $(package)"
+
+npm_add_dev_app4: ## Ajoute un package npm de dev à app4 (usage: make npm_add_dev_app4 package=eslint)
+	@echo "Ajout du package de dev $(package) pour app4 (container: $(NODE4_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_NODE4) sh -c "npm install -D $(package)"
+
+
 ## NPM - BACKEND (JavaScript Libraries)
 npm_install_backend: ## Installe les dépendances npm du backend (sources/package.json) via container temporaire
 	@if [ ! -f sources/package.json ]; then \
@@ -452,6 +540,33 @@ api2_migrations_migrate: ## Exécute les migrations Doctrine pour API2
 	@echo "✅ Migrations exécutées pour API2"
 
 
+## JWT - Authentification
+jwt_generate_keys: ## Génère les clés RSA pour JWT (API2) - reproductible sur chaque environnement
+	@echo "🔐 Génération des clés JWT pour API2..."
+	@if [ ! -f sources/api2/.env ]; then \
+		echo "❌ Erreur: sources/api2/.env n'existe pas"; \
+		echo "   Exécutez d'abord: make init_env_api2"; \
+		exit 1; \
+	fi
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && \
+		if ! grep -q '^JWT_PASSPHRASE=' .env; then \
+			echo '❌ Erreur: JWT_PASSPHRASE non défini dans sources/api2/.env'; \
+			echo '   Exemple: JWT_PASSPHRASE=votre_passphrase_secrete'; \
+			exit 1; \
+		fi && \
+		export \$$(grep -v '^#' .env | grep JWT_PASSPHRASE | xargs) && \
+		mkdir -p config/jwt && \
+		openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 -pass pass:\$$JWT_PASSPHRASE && \
+		openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:\$$JWT_PASSPHRASE && \
+		chmod 644 config/jwt/public.pem && \
+		chmod 600 config/jwt/private.pem"
+	@echo "✅ Clés JWT générées dans sources/api2/config/jwt/"
+	@echo "   - private.pem (clé privée, chmod 600)"
+	@echo "   - public.pem (clé publique, chmod 644)"
+	@echo ""
+	@echo "💡 Commande à exécuter aussi sur preprod/prod avec le même JWT_PASSPHRASE"
+
+
 ## ACCÈS SHELLS
 php_bash: ## Ouvre un shell bash dans le container PHP
 	$(DOCKER_EXEC_PHP) bash
@@ -461,6 +576,9 @@ node_bash: ## Ouvre un shell bash dans le container Node (app2)
 
 node3_bash: ## Ouvre un shell bash dans le container Node (app3)
 	$(DOCKER_EXEC_NODE3) sh
+
+node4_bash: ## Ouvre un shell bash dans le container Node (app4 admin)
+	$(DOCKER_EXEC_NODE4) sh
 
 db_bash: ## Ouvre un shell dans le container MySQL
 	docker exec -ti $(DB_CONTAINER_NAME) sh

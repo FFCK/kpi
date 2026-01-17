@@ -9,6 +9,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Authentication controller for App2 (Basic Auth with token)
+ *
+ * Note: For App4 admin JWT authentication, see AdminAuthController
+ */
 class AuthController extends AbstractController
 {
     public function __construct(

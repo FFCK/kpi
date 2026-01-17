@@ -1,0 +1,478 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@import "./toast.css";
+
+/* Modal improvements */
+.umodal-container {
+  z-index: 9999 !important;
+}
+
+.umodal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Icon improvements - ensure proper size and visibility */
+.u-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Button icon improvements */
+button .u-icon {
+  flex-shrink: 0;
+}
+
+/* Make sure icons in tables are visible */
+table button .u-icon {
+  min-width: 1.25rem;
+  min-height: 1.25rem;
+}
+
+/* Improve action buttons in tables */
+table button {
+  padding: 0.5rem;
+}
+
+table button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0.375rem;
+}
+
+/* Toggle buttons (publication, app) should be more visible */
+button[class*="color-green"] svg,
+button[class*="color-blue"] svg {
+  color: currentColor;
+}
+
+/* Checkbox improvements */
+input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+/* Improve modal card spacing */
+.ucard {
+  min-width: 320px;
+}
+
+@media (min-width: 640px) {
+  .ucard {
+    min-width: 500px;
+  }
+}
+
+/* Ensure proper z-index stacking */
+.fixed.inset-0.z-40 {
+  z-index: 40;
+}
+
+header.sticky {
+  z-index: 30;
+}
+
+/* ===== Nuxt UI Component Improvements ===== */
+
+/* Buttons - ensure proper styling */
+button[class*="bg-blue"] {
+  background-color: rgb(37 99 235) !important;
+  color: white !important;
+}
+
+button[class*="bg-blue"]:hover {
+  background-color: rgb(29 78 216) !important;
+}
+
+button[class*="bg-red"] {
+  background-color: rgb(220 38 38) !important;
+  color: white !important;
+}
+
+button[class*="bg-red"]:hover {
+  background-color: rgb(185 28 28) !important;
+}
+
+button[class*="bg-green"] {
+  background-color: rgb(22 163 74) !important;
+  color: white !important;
+}
+
+button[class*="bg-green"]:hover {
+  background-color: rgb(21 128 61) !important;
+}
+
+/* Input fields improvements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  border: 1px solid rgb(209 213 219);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  color: rgb(17 24 39) !important; /* Force dark text color */
+  background-color: white !important;
+}
+
+/* Placeholder text - lighter gray */
+input::placeholder,
+textarea::placeholder {
+  color: rgb(156 163 175) !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: rgb(59 130 246);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Date inputs specific styling */
+input[type="date"] {
+  min-width: 150px;
+}
+
+/* Modal overlay improvements */
+[class*="backdrop"] {
+  backdrop-filter: blur(4px);
+}
+
+/* Modal card improvements */
+[class*="modal"] [class*="card"] {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: 0.75rem;
+}
+
+/* Modal header */
+[class*="modal"] h3,
+[class*="modal"] h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: rgb(17 24 39);
+  margin-bottom: 1rem;
+}
+
+/* Modal footer buttons */
+[class*="modal-footer"] {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(229 231 235);
+}
+
+/* Search input styling */
+input[placeholder*="Rechercher"],
+input[placeholder*="Search"] {
+  padding-left: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.75rem center;
+  background-size: 1.25rem;
+}
+
+/* Table improvements */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table thead {
+  background-color: rgb(249 250 251);
+  border-bottom: 2px solid rgb(229 231 235);
+}
+
+table tbody tr {
+  border-bottom: 1px solid rgb(229 231 235);
+  transition: background-color 0.15s;
+}
+
+table tbody tr:hover {
+  background-color: rgb(249 250 251);
+}
+
+/* Pagination improvements */
+[class*="pagination"] button {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Badge/chip improvements */
+[class*="badge"],
+[class*="chip"] {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Tooltip improvements */
+[role="tooltip"] {
+  background-color: rgb(17 24 39);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Nuxt UI v4 Specific Fixes ===== */
+
+/* UModal backdrop */
+[data-headlessui-state*="open"] > div:first-child {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* UCard in modal */
+[role="dialog"] > div > div {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 95vw;
+}
+
+@media (min-width: 640px) {
+  [role="dialog"] > div > div {
+    max-width: 500px;
+  }
+}
+
+/* UFormGroup label */
+[class*="FormGroup"] label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(55 65 81);
+  margin-bottom: 0.375rem;
+}
+
+/* UInput wrapper */
+[class*="Input"] {
+  width: 100%;
+}
+
+/* UButton in forms */
+form button[type="submit"] {
+  font-weight: 500;
+}
+
+/* Alert component */
+[class*="Alert"] {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+[class*="Alert"][class*="red"] {
+  background-color: rgb(254 242 242);
+  border: 1px solid rgb(252 165 165);
+  color: rgb(153 27 27);
+}
+
+/* UCard header */
+[class*="Card"] > header {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgb(229 231 235);
+}
+
+/* UCard body */
+[class*="Card"] > div:not(header):not(footer) {
+  padding: 1.5rem;
+}
+
+/* UCard footer */
+[class*="Card"] > footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgb(229 231 235);
+  background-color: rgb(249 250 251);
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+}
+
+/* ===== Fix Modal Display Issues ===== */
+
+/* Modal backdrop should cover entire screen when visible */
+[data-headlessui-portal]:has([role="dialog"]) {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+}
+
+/* ===== Toast/Notification Styles ===== */
+/* Ensure toasts are visible and properly positioned */
+[data-sonner-toaster] {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+[data-sonner-toast] {
+  background-color: white !important;
+  border: 1px solid rgb(229 231 235) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  padding: 1rem !important;
+}
+
+/* Ensure modals are centered */
+[role="dialog"] {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+}
+
+/* ===== Fix UButton Styling ===== */
+
+/* Primary buttons (blue) */
+button[color="primary"],
+button[class*="color-primary"] {
+  background-color: rgb(37 99 235) !important;
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+button[color="primary"]:hover,
+button[class*="color-primary"]:hover {
+  background-color: rgb(29 78 216) !important;
+}
+
+/* Gray variant buttons */
+button[variant="ghost"][color="gray"],
+button[class*="variant-ghost"][class*="color-gray"] {
+  color: rgb(107 114 128) !important;
+  background-color: transparent !important;
+}
+
+button[variant="ghost"][color="gray"]:hover,
+button[class*="variant-ghost"][class*="color-gray"]:hover {
+  background-color: rgb(243 244 246) !important;
+}
+
+/* Soft variant buttons */
+button[variant="soft"] {
+  background-color: rgba(37, 99, 235, 0.1) !important;
+  color: rgb(37 99 235) !important;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+}
+
+button[variant="soft"]:hover {
+  background-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+/* ===== Fix UInput Styling ===== */
+
+/* Input container */
+div[class*="input-wrapper"],
+div[class*="Input"] > div {
+  position: relative;
+  width: 100%;
+}
+
+/* Input with icon */
+div[class*="Input"] input {
+  width: 100%;
+  border: 1px solid rgb(209 213 219);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+div[class*="Input"][class*="icon"] input {
+  padding-left: 2.5rem;
+}
+
+/* Input icon */
+div[class*="Input"] svg {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: rgb(156 163 175);
+  pointer-events: none;
+}
+
+/* ===== Fix UCheckbox Styling ===== */
+
+/* Checkbox wrapper */
+div[class*="Checkbox"] {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Checkbox input */
+div[class*="Checkbox"] input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgb(209 213 219);
+  cursor: pointer;
+}
+
+div[class*="Checkbox"] input[type="checkbox"]:checked {
+  background-color: rgb(37 99 235);
+  border-color: rgb(37 99 235);
+}
+
+/* ===== Cursor Pointer for Clickable Elements ===== */
+
+/* All buttons should have pointer cursor */
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Links should have pointer cursor */
+a {
+  cursor: pointer;
+}
+
+/* Table row actions */
+table tbody tr {
+  cursor: default;
+}
+
+table th.cursor-pointer,
+table button,
+table a {
+  cursor: pointer;
+}
+
+/* Labels with inputs */
+label[for] {
+  cursor: pointer;
+}
