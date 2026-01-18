@@ -64,14 +64,15 @@
         <GameList :games="formattedFinishedMatches" :show-refs="showRefs" :show-flags="showFlags" :show-count="false" />
       </div>
 
-      <!-- Tournament Rounds (Rankings & Eliminations) -->
-      <div v-if="tournamentRounds.length > 0" class="mb-6">
+      <!-- Tournament Rounds (Rankings & Eliminations) - grouped by category -->
+      <div v-if="tournamentRoundsByCategory.length > 0" class="mb-6">
         <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Team.TournamentRounds') }}</h3>
-        <div :class="containerClasses" class="px-2">
-          <div v-for="round in tournamentRounds" :key="round.id" class="w-80 border rounded-lg shadow-sm flex flex-col">
-            <div class="bg-gray-800 text-white px-3 py-2 rounded-t-lg text-sm">
-              {{ round.category }}<span v-if="round.phase"> - {{ round.phase }}</span>
-            </div>
+        <div v-for="group in tournamentRoundsByCategory" :key="group.category" class="mb-4">
+          <div :class="containerClasses" class="px-2">
+            <div v-for="round in group.rounds" :key="round.id" class="w-80 border rounded-lg shadow-sm flex flex-col">
+              <div class="bg-gray-800 text-white px-3 py-2 rounded-t-lg text-sm">
+                {{ round.category }}<span v-if="round.phase"> - {{ round.phase }}</span>
+              </div>
 
             <!-- Ranking Table -->
             <div v-if="round.type === 'ranking'" class="p-1">
@@ -148,6 +149,7 @@
               </div>
             </div>
 
+            </div>
           </div>
         </div>
       </div>
@@ -265,7 +267,7 @@
       </div>
 
       <!-- No data message -->
-      <div v-if="upcomingMatches.length === 0 && finishedMatches.length === 0 && tournamentRounds.length === 0 && finalRankings.length === 0" class="text-center text-gray-500 py-8 px-4">
+      <div v-if="upcomingMatches.length === 0 && finishedMatches.length === 0 && tournamentRoundsByCategory.length === 0 && finalRankings.length === 0" class="text-center text-gray-500 py-8 px-4">
         {{ t('Team.NoData') }}
       </div>
       </div>
@@ -682,7 +684,14 @@ const finalRankings = computed(() => {
 
   const rankings = []
 
-  chartData.value.forEach(category => {
+  // Sort categories by tour ASC, then order ASC for Team page
+  const sortedCategories = [...chartData.value].sort((a, b) => {
+    const tourCmp = (a.tour ?? 0) - (b.tour ?? 0)
+    if (tourCmp !== 0) return tourCmp
+    return (a.order ?? 0) - (b.order ?? 0)
+  })
+
+  sortedCategories.forEach(category => {
     // Check final ranking for championships
     if (category.ranking && Array.isArray(category.ranking)) {
       const teamInRanking = category.ranking.find(team => team.t_label === selectedTeam.value)
@@ -708,13 +717,43 @@ const tournamentRounds = computed(() => {
 
   const rounds = []
 
-  chartData.value.forEach(category => {
+  // Sort categories by tour ASC, then order ASC for Team page
+  const sortedCategories = [...chartData.value].sort((a, b) => {
+    const tourCmp = (a.tour ?? 0) - (b.tour ?? 0)
+    if (tourCmp !== 0) return tourCmp
+    return (a.order ?? 0) - (b.order ?? 0)
+  })
+
+  sortedCategories.forEach(category => {
+    // For CHPT (championship) type, add the general ranking as a bracket card
+    if (category.type === 'CHPT' && category.ranking && Array.isArray(category.ranking)) {
+      const teamInRanking = category.ranking.find(team => team.t_label === selectedTeam.value)
+      if (teamInRanking) {
+        // Adapt ranking data to match the pool ranking format used by the template
+        // Note: for CHPT, t_pts is already divided by 100 in the API, but template divides again
+        // So we multiply by 100 here to compensate for the template's division
+        const rankingData = category.ranking.map(team => ({
+          ...team,
+          t_pts: (team.t_pts || 0) * 100, // Multiply by 100 because template divides by 100
+          t_cltlv: team.t_clt // Use t_clt as ranking position
+        }))
+        rounds.push({
+          id: `${category.code}-general`,
+          type: 'ranking',
+          category: category.libelle || category.code,
+          phase: category.status === 'END' ? t('Charts.FinalRanking') : t('Charts.ProvisionalRanking'),
+          data: rankingData,
+          isGeneral: true // Flag to identify this is the general ranking
+        })
+      }
+    }
+
     if (category.rounds) {
       Object.values(category.rounds).forEach(round => {
         if (round.phases) {
           Object.values(round.phases).forEach(phase => {
-            // Type C for group rankings
-            if (phase.type === 'C' && phase.teams && Array.isArray(phase.teams)) {
+            // Type C for group rankings (skip for CHPT as we use the general ranking instead)
+            if (phase.type === 'C' && phase.teams && Array.isArray(phase.teams) && category.type !== 'CHPT') {
               const teamInPhase = phase.teams.find(team => team.t_label === selectedTeam.value)
               if (teamInPhase) {
                 rounds.push({
@@ -754,6 +793,36 @@ const tournamentRounds = computed(() => {
   })
 
   return rounds
+})
+
+// Group tournament rounds by category for display (one row per competition)
+const tournamentRoundsByCategory = computed(() => {
+  if (!tournamentRounds.value || tournamentRounds.value.length === 0) return []
+
+  const grouped = []
+  let currentCategory = null
+  let currentGroup = null
+
+  tournamentRounds.value.forEach(round => {
+    if (round.category !== currentCategory) {
+      if (currentGroup) {
+        grouped.push(currentGroup)
+      }
+      currentCategory = round.category
+      currentGroup = {
+        category: round.category,
+        rounds: [round]
+      }
+    } else {
+      currentGroup.rounds.push(round)
+    }
+  })
+
+  if (currentGroup) {
+    grouped.push(currentGroup)
+  }
+
+  return grouped
 })
 
 const containerClasses = 'flex flex-wrap justify-center gap-4'

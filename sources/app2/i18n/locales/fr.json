@@ -50,6 +50,7 @@
   "Event": {
     "SelectEvent": "Sélectionnez un événement",
     "PleaseSelectOne": "Sélectionnez un événement",
+    "PleaseSelectGroup": "Sélectionnez un groupe",
     "Selecting": "Sélection de l'événement...",
     "Loading": "Chargement...",
     "Event": "Événement",
@@ -58,10 +59,23 @@
     "Cancel": "Annuler",
     "StdEvents": "Événements",
     "LocalChamp": "Championnats locaux",
+    "Groups": "Groupes",
     "ShareEvent": "Partager l'événement",
     "ClickToCopy": "Cliquez pour copier le lien",
     "LinkCopied": "Lien copié dans le presse-papiers !",
     "CopyFailed": "Échec de la copie du lien"
+  },
+  "Section": {
+    "Competitions_Internationales": "Compétitions Internationales",
+    "Competitions_Nationales": "Compétitions Nationales",
+    "Competitions_Regionales": "Compétitions Régionales",
+    "Tournois_Internationaux": "Tournois Internationaux",
+    "Continents": "Continents",
+    "Divers": "Divers"
+  },
+  "Season": {
+    "Label": "Saison",
+    "Change": "Changer de saison"
   },
   "Teams": {
     "SelectTeam": "Equipe",

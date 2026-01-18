@@ -129,7 +129,7 @@ useSeoMeta({
 })
 
 const {
-  chartData,
+  chartData: rawChartData,
   chartIndex,
   showFlags,
   categories,
@@ -140,6 +140,16 @@ const {
   getFav,
   changeFav
 } = useCharts()
+
+// Sort chart data by tour DESC, then order DESC for display
+const chartData = computed(() => {
+  if (!rawChartData.value) return null
+  return [...rawChartData.value].sort((a, b) => {
+    const tourCmp = (b.tour ?? 0) - (a.tour ?? 0)
+    if (tourCmp !== 0) return tourCmp
+    return (b.order ?? 0) - (a.order ?? 0)
+  })
+})
 
 const handleRefresh = () => {
   visibleButton.value = false

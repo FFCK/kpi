@@ -88,9 +88,25 @@ export const useCharts = () => {
   })
 
   const loadCharts = async (force = false) => {
-    if (!preferenceStore.preferences.lastEvent) return
+    const eventMode = preferenceStore.preferences?.eventMode
+    const lastGroup = preferenceStore.preferences?.lastGroup
+    const lastSeason = preferenceStore.preferences?.lastSeason
+    const lastEvent = preferenceStore.preferences?.lastEvent
 
-    const eventId = preferenceStore.preferences.lastEvent.id
+    // Determine API URL and cache key based on mode
+    let apiUrl
+    let cacheKey
+
+    if (eventMode === 'group' && lastGroup?.code && lastSeason) {
+      apiUrl = `/group/${lastSeason}/${lastGroup.code}/charts`
+      cacheKey = `group_${lastSeason}_${lastGroup.code}`
+    } else if (lastEvent?.id) {
+      apiUrl = `/event/${lastEvent.id}/charts`
+      cacheKey = lastEvent.id
+    } else {
+      return // No selection
+    }
+
     chartStore.loading = true
     isFromCache.value = false
 
@@ -104,7 +120,7 @@ export const useCharts = () => {
       let cachedCharts = null
 
       // Charger depuis Dexie
-      cachedCharts = await db.charts.where('eventId').equals(eventId).toArray()
+      cachedCharts = await db.charts.where('eventId').equals(cacheKey).toArray()
       if (cachedCharts && cachedCharts.length > 0 && !force) {
         allChartData.value = cachedCharts.map(item => item.data)
         loadCategories()
@@ -123,13 +139,13 @@ export const useCharts = () => {
       // Charger depuis l'API uniquement si en ligne et nécessaire
       if (online && (shouldLoadFromApi || !cachedCharts || cachedCharts.length === 0)) {
         try {
-          const response = await getApi(`/event/${eventId}/charts`)
+          const response = await getApi(apiUrl)
           const data = await response.json()
 
           // Sauvegarder dans Dexie
-          await db.charts.where('eventId').equals(eventId).delete()
+          await db.charts.where('eventId').equals(cacheKey).delete()
           await db.charts.bulkAdd(data.map(item => ({
-            eventId: eventId,
+            eventId: cacheKey,
             data: item,
             timestamp: Date.now()
           })))
@@ -175,7 +191,13 @@ export const useCharts = () => {
 
   const loadCategories = () => {
     if (!allChartData.value) return
-    categories.value = allChartData.value.map(chart => chart.libelle || chart.code)
+    // Sort categories by tour DESC, then order DESC (same as chart display)
+    const sortedCharts = [...allChartData.value].sort((a, b) => {
+      const tourCmp = (b.tour ?? 0) - (a.tour ?? 0)
+      if (tourCmp !== 0) return tourCmp
+      return (b.order ?? 0) - (a.order ?? 0)
+    })
+    categories.value = sortedCharts.map(chart => chart.libelle || chart.code)
 
     // Extract teams from all charts
     const allTeams = new Set()

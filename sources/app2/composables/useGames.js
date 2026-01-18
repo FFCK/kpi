@@ -32,9 +32,25 @@ export const useGames = () => {
   const fav_dates = ref('')
 
   const loadGames = async (force = false) => {
-    if (!preferenceStore.preferences.lastEvent) return
+    const eventMode = preferenceStore.preferences?.eventMode
+    const lastGroup = preferenceStore.preferences?.lastGroup
+    const lastSeason = preferenceStore.preferences?.lastSeason
+    const lastEvent = preferenceStore.preferences?.lastEvent
 
-    const eventId = preferenceStore.preferences.lastEvent.id
+    // Determine API URL and cache key based on mode
+    let apiUrl
+    let cacheKey
+
+    if (eventMode === 'group' && lastGroup?.code && lastSeason) {
+      apiUrl = `/group/${lastSeason}/${lastGroup.code}/games`
+      cacheKey = `group_${lastSeason}_${lastGroup.code}`
+    } else if (lastEvent?.id) {
+      apiUrl = `/event/${lastEvent.id}/games`
+      cacheKey = lastEvent.id
+    } else {
+      return // No selection
+    }
+
     gameStore.loading = true
     isFromCache.value = false
 
@@ -48,7 +64,7 @@ export const useGames = () => {
       let cachedGames = null
 
       // Charger depuis IndexedDB
-      cachedGames = await loadGamesFromDB(eventId)
+      cachedGames = await loadGamesFromDB(cacheKey)
       if (cachedGames && cachedGames.length > 0 && !force) {
         const gamelist = processGameData(cachedGames)
         await gameStore.clearAndUpdateGames(gamelist)
@@ -68,12 +84,12 @@ export const useGames = () => {
       // Charger depuis l'API uniquement si en ligne et nécessaire
       if (online && (shouldLoadFromApi || !cachedGames || cachedGames.length === 0)) {
         try {
-          const response = await getApi(`/event/${eventId}/games`)
+          const response = await getApi(apiUrl)
           const data = await response.json()
           const gamelist = processGameData(data)
 
           // Sauvegarder dans IndexedDB
-          await saveGames(eventId, data)
+          await saveGames(cacheKey, data)
 
           // Sauvegarder la date de chargement API
           await preferenceStore.putItem('games_last_api_load', now)

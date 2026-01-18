@@ -269,14 +269,24 @@ const loadTeams = async () => {
     return
   }
 
-  const eventId = prefs.value?.lastEvent?.id
-  if (!eventId) {
-    console.error('No event selected')
+  const eventMode = prefs.value?.eventMode
+  const lastGroup = prefs.value?.lastGroup
+  const lastSeason = prefs.value?.lastSeason
+  const lastEvent = prefs.value?.lastEvent
+
+  // Determine API URL based on mode
+  let apiUrl
+  if (eventMode === 'group' && lastGroup?.code && lastSeason) {
+    apiUrl = `/group/${lastSeason}/${lastGroup.code}/teams`
+  } else if (lastEvent?.id) {
+    apiUrl = `/staff/${lastEvent.id}/teams`
+  } else {
+    console.error('No event or group selected')
     return
   }
 
   try {
-    const response = await getApi(`/staff/${eventId}/teams`)
+    const response = await getApi(apiUrl)
 
     if (!response.ok) {
       throw new Error(`Failed to load teams: ${response.status}`)
