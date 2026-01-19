@@ -3,6 +3,7 @@
 			<input type='hidden' id='Cmd' name='Cmd' Value='' />
 			<input type='hidden' id='ParamCmd' name='ParamCmd' Value='' />
 			<input type='hidden' id='idGroupe' name='idGroupe' Value='{$groupe.id|default:''}' />
+			<input type='hidden' id='oldGroupe' name='oldGroupe' Value='{$groupe.Groupe|default:''}' />
 
 			<div class='blocLeft'>
 				<div class='titrePage'>{#Groupes#}</div>

@@ -170,12 +170,18 @@ class GestionGroupe extends MyPageSecure
 		$ordre = utyGetPost('ordre');
 		$Code_niveau = utyGetPost('Code_niveau');
 		$Groupe = utyGetPost('Groupe');
+		$oldGroupe = utyGetPost('oldGroupe');
 
 		$myBdd = new MyBdd();
 
 		try {
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
+
+			// Si le code groupe a changé, désactiver temporairement les FK pour permettre la mise à jour
+			if ($oldGroupe && $Groupe && $oldGroupe !== $Groupe) {
+				$myBdd->pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+			}
 
 			$sql = "UPDATE kp_groupe
 				SET Libelle = ?, Libelle_en = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ?
@@ -185,8 +191,20 @@ class GestionGroupe extends MyPageSecure
 				$libelle, $libelle_en ?: null, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
 			));
 
+			// Si le code groupe a changé, mettre à jour les Code_ref dans kp_competition
+			if ($oldGroupe && $Groupe && $oldGroupe !== $Groupe) {
+				$sql = "UPDATE kp_competition
+					SET Code_ref = ?
+					WHERE Code_ref = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($Groupe, $oldGroupe));
+
+				$myBdd->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+			}
+
 			$myBdd->pdo->commit();
 		} catch (Exception $e) {
+			$myBdd->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 			$myBdd->pdo->rollBack();
 			utySendMail("[KPI] Erreur SQL", "Modif Groupe, $libelle" . '\r\n' . $e->getMessage());
 
