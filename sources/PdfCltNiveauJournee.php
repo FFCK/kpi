@@ -82,6 +82,9 @@ class FeuilleCltNiveauJournee extends MyPage
 
         $pdf->AddPage();
 
+        // Pattern 8: Définir la position de départ du contenu
+        $yStart = 32;  // Après la marge haute de 30 + un peu d'espace
+
         // Pattern 8: Désactiver AutoPageBreak temporairement pour QRCode
         $pdf->SetAutoPageBreak(false);
 
@@ -95,6 +98,12 @@ class FeuilleCltNiveauJournee extends MyPage
         } else {
             $pdf->SetAutoPageBreak(true, 15);
         }
+
+        // Pattern 8: FORCER le curseur à la position de départ du contenu
+        $pdf->SetY($yStart);
+        $pdf->SetLeftMargin(10);
+        $pdf->SetRightMargin(10);
+        $pdf->SetX(10);
 
         // titre - le curseur est déjà positionné par TopMargin
         $pdf->Ln(2);
