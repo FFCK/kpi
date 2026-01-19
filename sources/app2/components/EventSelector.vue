@@ -21,7 +21,7 @@
       </template>
       <!-- Group display -->
       <template v-else-if="preferenceStore.preferences.lastGroup">
-        <span class="font-semibold">{{ preferenceStore.preferences.lastGroup.code }} - {{ preferenceStore.preferences.lastGroup.libelle }}</span>
+        <span class="font-semibold">{{ preferenceStore.preferences.lastGroup.code }} - {{ getGroupLabel(preferenceStore.preferences.lastGroup) }}</span>
         <span class="text-sm text-gray-500 ml-2">({{ t('Season.Label') }}: {{ preferenceStore.preferences.lastSeason }})</span>
       </template>
       <button class="ml-2 px-2 py-1 bg-gray-500 text-white text-xs rounded cursor-pointer">
@@ -89,7 +89,7 @@
           </option>
           <optgroup v-for="section in groupSections" :key="section.section" :label="t(`Section.${section.label}`)">
             <option v-for="group in section.groups" :key="group.code" :value="group.code">
-              {{ group.code }} - {{ group.libelle }}
+              {{ group.code }} - {{ getGroupLabel(group) }}
             </option>
           </optgroup>
         </select>
@@ -115,6 +115,7 @@ import { useEventStore } from '~/stores/eventStore';
 import { useGroupStore } from '~/stores/groupStore';
 import db from '~/utils/db'
 const { t } = useI18n()
+const { getGroupLabel } = useGroupLabel()
 
 // Stores & Composables
 const preferenceStore = usePreferenceStore()

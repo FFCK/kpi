@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useGroupStore = defineStore('groupStore', {
   state: () => ({
     sections: [],        // Groups organized by section (for optgroup display)
-    selectedGroup: null, // { code: 'N1H', libelle: '...' }
+    selectedGroup: null, // { code: 'N1H', libelle: '...', libelle_en: '...' }
     selectedSeason: null, // Selected season (e.g. "2026")
     loading: false,
     error: null

@@ -17,6 +17,7 @@
 								<th>{#Ordre#}</th>
 								<th>{#Groupe#}</th>
 								<th>{#Nom#}</th>
+								<th>{#Nom#} EN</th>
 								<th>{#Supprimer#}</th>
 							</tr>
 						</thead>
@@ -38,6 +39,7 @@
 									<td>{$arrayGroupes[i].ordre}</td>
 									<td>{$arrayGroupes[i].Groupe}</td>
 									<td>{$arrayGroupes[i].Libelle}</td>
+									<td>{$arrayGroupes[i].Libelle_en}</td>
 									<td>
 										<a href="#" Id="Delete{$arrayGroupes[i].id}" onclick="removeGroupe({$arrayGroupes[i].id})">
 											<img height="18" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" title="{#Supprimer#}" />
@@ -92,6 +94,12 @@
 						<td colspan=2>
 							<label for="Libelle">{#Nom#} :</label>
 							<input type="text" name="Libelle" value="{$groupe.Libelle|default:''}" maxlength=40 id="Libelle" required />
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2>
+							<label for="Libelle_en">{#Nom#} EN :</label>
+							<input type="text" name="Libelle_en" value="{$groupe.Libelle_en|default:''}" maxlength=255 id="Libelle_en" placeholder="English translation (optional)" />
 						</td>
 					</tr>
 					<tr>

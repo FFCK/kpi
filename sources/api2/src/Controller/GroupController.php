@@ -59,7 +59,8 @@ class GroupController extends AbstractController
                                         items: new OA\Items(
                                             properties: [
                                                 new OA\Property(property: 'code', type: 'string', example: 'N1H'),
-                                                new OA\Property(property: 'libelle', type: 'string', example: 'Nationale 1 Hommes')
+                                                new OA\Property(property: 'libelle', type: 'string', example: 'Nationale 1 Hommes'),
+                                                new OA\Property(property: 'libelle_en', type: 'string', nullable: true, example: 'National 1 Men')
                                             ]
                                         )
                                     )
@@ -75,7 +76,7 @@ class GroupController extends AbstractController
     {
         $conn = $this->entityManager->getConnection();
 
-        $sql = "SELECT g.Groupe as code, g.Libelle as libelle, g.section, g.ordre
+        $sql = "SELECT g.Groupe as code, g.Libelle as libelle, g.Libelle_en as libelle_en, g.section, g.ordre
             FROM kp_groupe g
             WHERE g.section < 100
             AND EXISTS (
@@ -108,7 +109,8 @@ class GroupController extends AbstractController
             }
             $sections[$sectionIndex]['groups'][] = [
                 'code' => $row['code'],
-                'libelle' => $row['libelle']
+                'libelle' => $row['libelle'],
+                'libelle_en' => $row['libelle_en']
             ];
         }
 

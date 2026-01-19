@@ -49,6 +49,7 @@ class GestionGroupe extends MyPageSecure
 	function Add()
 	{
 		$libelle = utyGetPost('Libelle');
+		$libelle_en = utyGetPost('Libelle_en');
 		$section = utyGetPost('section');
 		$ordre = utyGetPost('ordre');
 		$Code_niveau = utyGetPost('Code_niveau');
@@ -56,17 +57,17 @@ class GestionGroupe extends MyPageSecure
 
 		$myBdd = new MyBdd();
 
-		$sql = "UPDATE kp_groupe 
-			SET ordre = ordre + 1 
+		$sql = "UPDATE kp_groupe
+			SET ordre = ordre + 1
 			WHERE ordre >= ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($ordre));
 
-		$sql = "INSERT INTO kp_groupe 
-			SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? ";
+		$sql = "INSERT INTO kp_groupe
+			SET Libelle = ?, Libelle_en = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(
-			$libelle, $section, $ordre, $Code_niveau, $Groupe
+			$libelle, $libelle_en ?: null, $section, $ordre, $Code_niveau, $Groupe
 		));
 
 		$this->Raz();
@@ -163,6 +164,7 @@ class GestionGroupe extends MyPageSecure
 	{
 		$idGroupe = utyGetPost('idGroupe');
 		$libelle = utyGetPost('Libelle');
+		$libelle_en = utyGetPost('Libelle_en');
 		$section = utyGetPost('section');
 		$ordre = utyGetPost('ordre');
 		$Code_niveau = utyGetPost('Code_niveau');
@@ -174,12 +176,12 @@ class GestionGroupe extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "UPDATE kp_groupe 
-				SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? 
+			$sql = "UPDATE kp_groupe
+				SET Libelle = ?, Libelle_en = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ?
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(
-				$libelle, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
+				$libelle, $libelle_en ?: null, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
 			));
 
 			$myBdd->pdo->commit();
