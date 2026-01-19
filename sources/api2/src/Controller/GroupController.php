@@ -114,10 +114,12 @@ class GroupController extends AbstractController
             ];
         }
 
-        return new JsonResponse([
+        $response = new JsonResponse([
             'season' => $season,
             'sections' => array_values($sections)
         ]);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 
     #[Route('/group/{season}/{groupCode}/games', name: 'group_games', methods: ['GET'])]
@@ -210,7 +212,9 @@ class GroupController extends AbstractController
         $result = $stmt->executeQuery();
         $games = $result->fetchAllAssociative();
 
-        return new JsonResponse($games);
+        $response = new JsonResponse($games);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 
     #[Route('/group/{season}/{groupCode}/charts', name: 'group_charts', methods: ['GET'])]
@@ -402,7 +406,9 @@ class GroupController extends AbstractController
             return ($a['tour'] ?? 0) <=> ($b['tour'] ?? 0);
         });
 
-        return new JsonResponse(array_values($charts));
+        $response = new JsonResponse(array_values($charts));
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 
     #[Route('/group/{season}/{groupCode}/teams', name: 'group_teams', methods: ['GET'])]
@@ -467,6 +473,8 @@ class GroupController extends AbstractController
         $result = $stmt->executeQuery();
         $teams = $result->fetchAllAssociative();
 
-        return new JsonResponse($teams);
+        $response = new JsonResponse($teams);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }

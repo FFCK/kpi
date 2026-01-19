@@ -109,7 +109,9 @@ class StaffController extends AbstractController
         $result = $stmt->executeQuery();
         $teams = $result->fetchAllAssociative();
 
-        return new JsonResponse($teams);
+        $response = new JsonResponse($teams);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 
     #[Route('/{eventId}/team/{teamId}/players', name: 'team_players', methods: ['GET'])]
@@ -184,6 +186,7 @@ class StaffController extends AbstractController
         $players = $result->fetchAllAssociative();
 
         $response = new JsonResponse($players);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
 
         // If force parameter is present, add no-cache headers
         $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');

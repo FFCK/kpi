@@ -91,7 +91,9 @@ class EventController extends AbstractController
         $result = $stmt->executeQuery();
         $events = $result->fetchAllAssociative();
 
-        return new JsonResponse($events);
+        $response = new JsonResponse($events);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 
     #[Route('/event/{id}', name: 'event', methods: ['GET'])]
@@ -157,6 +159,8 @@ class EventController extends AbstractController
         $result = $stmt->executeQuery();
         $event = $result->fetchAllAssociative();
 
-        return new JsonResponse($event);
+        $response = new JsonResponse($event);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }

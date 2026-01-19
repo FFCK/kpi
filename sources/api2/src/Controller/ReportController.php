@@ -134,6 +134,8 @@ class ReportController extends AbstractController
         $teamsResult = $stmt->executeQuery();
         $result['t_members'] = $teamsResult->fetchAllAssociative();
 
-        return new JsonResponse($result);
+        $response = new JsonResponse($result);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }
