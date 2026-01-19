@@ -62,12 +62,11 @@
 						<td>
 							<label for="section">Section :</label>
 							<select name="section" id="section">
-								<option value="1" {if ($groupe.section|default:'') == 1}selected{/if}>ICF / ECA</option>
-								<option value="2" {if ($groupe.section|default:'') == 2}selected{/if}>National</option>
-								<option value="3" {if ($groupe.section|default:'') == 3}selected{/if}>Régional</option>
-								<option value="4" {if ($groupe.section|default:'') == 4}selected{/if}>Tournoi</option>
-								<option value="5" {if ($groupe.section|default:'') == 5}selected{/if}>Étranger</option>
-								<option value="100" {if ($groupe.section|default:'') == 100}selected{/if}>Autres</option>
+								{foreach from=$arraySectionNames key=id item=label}
+									<option value="{$id}"{if $id == $groupe.section} selected="selected"{/if}>
+										{$label}
+									</option>
+								{/foreach}
 							</select>
 						</td>
 						<td>

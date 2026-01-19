@@ -16,12 +16,12 @@ class GestionGroupe extends MyPageSecure
 		$myBdd = new MyBdd();
 		$arrayGroupes = array();
 		$arraySectionNames = [
-			1 => 'ICF/ECA',
+			1 => 'International',
 			2 => 'National',
 			3 => 'Regional',
-			4 => 'Tournoi',
-			5 => 'Etranger',
-			100 => 'Divers'
+			4 => 'Tournoi/Tournament',
+			5 => 'Continental',
+			100 => 'Divers/Miscellaneous'
 		];
 
 		$sql = "SELECT * 
@@ -44,6 +44,7 @@ class GestionGroupe extends MyPageSecure
 
 		$this->m_tpl->assign('groupe', $groupe);
 		$this->m_tpl->assign('arrayGroupes', $arrayGroupes);
+		$this->m_tpl->assign('arraySectionNames', $arraySectionNames);
 	}
 
 	function Add()
@@ -226,7 +227,7 @@ class GestionGroupe extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Gestion_des_groupes", "Competitions", false);
+		$this->SetTemplate("Gestion_des_groupes", "Operations", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionGroupe');
