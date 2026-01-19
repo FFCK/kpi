@@ -259,7 +259,7 @@ jq(document).ready(function() { //Jquery
 				function(data) { // callback
 					if(data == 'OK'){
 						// Rechargement de la page pour mettre à jour les boutons et champs selon le nouveau statut
-						location.reload();
+						location.href = location.href;
 					} else {
 						laCompet.html(statut);
 						alert(langue['MAJ_impossible'] + ' : ' + data);
@@ -304,7 +304,7 @@ jq(document).ready(function() { //Jquery
 					phaseRow.attr('data-consolidation', newValue);
 
 					// Recharger la page pour mettre à jour les classes directInput
-					location.reload();
+					location.href = location.href;
 				} else {
 					// Erreur : annuler le changement de la checkbox
 					if(isChecked) {
