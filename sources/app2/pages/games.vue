@@ -136,7 +136,7 @@
       </div>
     </div>
 
-    <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :key="locale" />
+    <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :is-group-mode="isGroupMode" :key="locale" />
 
     <button @click="scrollToTop" class="fixed bottom-8 right-4 bg-gray-800 hover:bg-gray-700 text-white font-bold p-3 rounded-full">
       <UIcon name="i-heroicons-arrow-up" class="h-6 w-6" />
@@ -172,6 +172,7 @@ const {
   gamesCount,
   filteredGames,
   filteredGamesCount,
+  isGroupMode,
   categories,
   game_dates,
   teams,

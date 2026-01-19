@@ -50,7 +50,7 @@
   "Event": {
     "SelectEvent": "Select event",
     "PleaseSelectOne": "Please select one",
-    "PleaseSelectGroup": "Please select a group",
+    "PleaseSelectGroup": "Please select a competition",
     "Selecting": "Selecting event...",
     "Loading": "Loading...",
     "Event": "Event",
@@ -60,6 +60,7 @@
     "StdEvents": "Events",
     "LocalChamp": "Local Championships",
     "Groups": "Groups",
+    "Competitions": "Competitions",
     "ShareEvent": "Share event",
     "ClickToCopy": "Click to copy link",
     "LinkCopied": "Link copied to clipboard!",
@@ -154,7 +155,9 @@
       "twentytwo": "nd ",
       "twentythree": "rd ",
       "th": "th "
-    }
+    },
+    "Location": "Location",
+    "UnknownLocation": "Location not specified"
   },
   "Charts": {
     "Ranking": "#",

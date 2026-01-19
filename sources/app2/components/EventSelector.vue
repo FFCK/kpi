@@ -41,24 +41,17 @@
       <div class="mb-1 inline-flex rounded-md shadow-sm" role="group">
         <button
           type="button"
+          @click="changeEventMode('group')"
+          :class="['px-4 py-1 text-sm font-medium rounded-l-lg border border-gray-200 cursor-pointer', eventMode === 'group' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
+        >
+          {{ t('Event.Competitions') }}
+        </button>
+        <button
+          type="button"
           @click="changeEventMode('std')"
-          :class="['px-4 py-1 text-sm font-medium rounded-l-lg border border-gray-200 cursor-pointer', eventMode === 'std' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
+          :class="['px-4 py-1 text-sm font-medium rounded-r-md border border-gray-200 cursor-pointer', eventMode === 'std' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
         >
           {{ t('Event.StdEvents') }}
-        </button>
-        <button
-          type="button"
-          @click="changeEventMode('champ')"
-          :class="['px-4 py-1 text-sm font-medium border-t border-b border-gray-200 cursor-pointer', eventMode === 'champ' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
-        >
-          {{ t('Event.LocalChamp') }}
-        </button>
-        <button
-          type="button"
-          @click="changeEventMode('group')"
-          :class="['px-4 py-1 text-sm font-medium rounded-r-md border border-gray-200 cursor-pointer', eventMode === 'group' ? 'bg-blue-600 text-white' : 'bg-white text-gray-900 hover:bg-gray-100']"
-        >
-          {{ t('Event.Groups') }}
         </button>
       </div>
 
@@ -82,7 +75,7 @@
           <select
             v-model="selectedSeason"
             @change="onSeasonChange"
-            class="px-3 py-1 border border-gray-300 rounded cursor-pointer"
+            class="px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring focus:border-blue-500 cursor-pointer"
           >
             <option v-for="year in availableSeasons" :key="year" :value="year">
               {{ year }}
@@ -231,10 +224,21 @@ const loadGroups = async () => {
 
 // Called when season is changed in the dropdown
 const onSeasonChange = async () => {
+  const previousSeason = groupStore.getCurrentSeason
   groupStore.selectSeason(selectedSeason.value)
-  selectedGroupCode.value = null // Reset group selection
-  changeButton.value = false
+
+  // Keep the current group selection if changing season only
+  // Show confirm button if we have a group selected (even from a previous season)
+  const hadGroupSelected = selectedGroupCode.value !== null
+  selectedGroupCode.value = null // Reset group selection for new season's groups
+
   await loadGroups()
+
+  // If there was a previously selected group and we changed season, show confirm button
+  // This allows user to confirm the season change with a new group
+  if (hadGroupSelected || previousSeason !== selectedSeason.value) {
+    changeButton.value = true
+  }
 }
 
 // Reset game filters directly via preferences (avoids composable context issues)

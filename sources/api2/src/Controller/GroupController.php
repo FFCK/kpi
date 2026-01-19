@@ -156,7 +156,9 @@ class GroupController extends AbstractController
                             new OA\Property(property: 'g_score_a', type: 'integer', nullable: true, example: 5),
                             new OA\Property(property: 'g_score_b', type: 'integer', nullable: true, example: 3),
                             new OA\Property(property: 'g_date', type: 'string', example: '2025-01-15'),
-                            new OA\Property(property: 'g_time', type: 'string', example: '10:00:00')
+                            new OA\Property(property: 'g_time', type: 'string', example: '10:00:00'),
+                            new OA\Property(property: 'c_order', type: 'integer', nullable: true, example: 1, description: 'Competition order within the group'),
+                            new OA\Property(property: 'c_type', type: 'string', nullable: true, example: 'CHPT', description: 'Competition type (CHPT or CP)')
                         ]
                     )
                 )
@@ -169,6 +171,7 @@ class GroupController extends AbstractController
 
         $sql = "SELECT j.Code_competition c_code, c.Code_saison c_season, j.Phase d_phase, j.Niveau d_level,
             j.Lieu d_place, j.Libelle d_label, c.Soustitre2 c_label,
+            c.GroupOrder c_order, c.Code_tour c_tour, c.Code_typeclt c_type,
             m.Id g_id, m.Id_journee d_id, m.Numero_ordre g_number, m.Date_match g_date,
             m.Heure_match g_time, m.Terrain g_pitch, m.Libelle g_code,
             m.Validation g_validation, m.Statut g_status, m.Periode g_period,
@@ -197,7 +200,7 @@ class GroupController extends AbstractController
             AND m.Publication = 'O'
             AND j.Phase != 'Break'
             AND j.Phase != 'Pause'
-            ORDER BY m.Date_match DESC, m.Heure_match, m.Terrain";
+            ORDER BY c.Code_tour DESC, c.GroupOrder, j.Lieu, m.Date_match DESC, m.Heure_match, m.Terrain";
 
         $stmt = $conn->prepare($sql);
         $stmt->bindValue(1, $groupCode);

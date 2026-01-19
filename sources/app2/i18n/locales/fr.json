@@ -50,7 +50,7 @@
   "Event": {
     "SelectEvent": "Sélectionnez un événement",
     "PleaseSelectOne": "Sélectionnez un événement",
-    "PleaseSelectGroup": "Sélectionnez un groupe",
+    "PleaseSelectGroup": "Sélectionnez une compétition",
     "Selecting": "Sélection de l'événement...",
     "Loading": "Chargement...",
     "Event": "Événement",
@@ -60,6 +60,7 @@
     "StdEvents": "Événements",
     "LocalChamp": "Championnats locaux",
     "Groups": "Groupes",
+    "Competitions": "Compétitions",
     "ShareEvent": "Partager l'événement",
     "ClickToCopy": "Cliquez pour copier le lien",
     "LinkCopied": "Lien copié dans le presse-papiers !",
@@ -154,7 +155,9 @@
       "twentytwo": "e ",
       "twentythree": "e ",
       "th": "e "
-    }
+    },
+    "Location": "Lieu",
+    "UnknownLocation": "Lieu non précisé"
   },
   "Charts": {
     "Ranking": "#",
