@@ -177,6 +177,9 @@
     "NoData": "No ranking data available"
   },
   "About": {
+    "Information": "Informations",
+    "ClickForDetails": "Click for more details...",
+    "ClickableElements": "Team names, match numbers and scores are clickable!",
     "DoYouLike": "Do you like this application?",
     "IDevelopIt": "I develop it in my spare time.",
     "Rating": "Rate this app:",
