@@ -631,21 +631,31 @@ const finishedMatches = computed(() => {
     })
 })
 
-// Format matches like in games page (grouped by date)
+// Format matches like in games page (grouped by date, with place)
 const formattedUpcomingMatches = computed(() => {
   const dates = [...new Set(upcomingMatches.value.map(x => x.g_date))]
-  return dates.map(date => ({
-    goupDate: date,
-    filtered: upcomingMatches.value.filter(game => game.g_date === date)
-  }))
+  return dates.map(date => {
+    const gamesForDate = upcomingMatches.value.filter(game => game.g_date === date)
+    const firstGame = gamesForDate[0]
+    return {
+      goupDate: date,
+      groupPlace: firstGame?.d_place || null,
+      filtered: gamesForDate
+    }
+  })
 })
 
 const formattedFinishedMatches = computed(() => {
   const dates = [...new Set(finishedMatches.value.map(x => x.g_date))]
-  return dates.map(date => ({
-    goupDate: date,
-    filtered: finishedMatches.value.filter(game => game.g_date === date)
-  }))
+  return dates.map(date => {
+    const gamesForDate = finishedMatches.value.filter(game => game.g_date === date)
+    const firstGame = gamesForDate[0]
+    return {
+      goupDate: date,
+      groupPlace: firstGame?.d_place || null,
+      filtered: gamesForDate
+    }
+  })
 })
 
 // Get logo for selected team

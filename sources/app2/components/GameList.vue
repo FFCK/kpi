@@ -24,6 +24,9 @@
             <tr class="bg-gray-800 text-white">
               <th :colspan="showRefs ? 7 : 6" scope="row" class="px-2 py-2 font-medium whitespace-nowrap">
                 <NuxtTime :datetime="game_group.goupDate" day="numeric" month="long" year="numeric" :locale="locale" />
+                <span v-if="game_group.groupPlace" class="ml-2 text-gray-300">
+                  <UIcon name="i-heroicons-map-pin" class="h-4 w-4 inline-block mr-1" />{{ game_group.groupPlace }}
+                </span>
               </th>
             </tr>
             <tr v-for="(game, game_index) in game_group.filtered" :key="game.g_id" :class="(group_index + game_index) % 2 === 0 ? 'bg-gray-100' : 'bg-white'">
@@ -185,7 +188,12 @@
       <!-- Event mode: simple date grouping -->
       <template v-if="!isGroupMode">
         <div v-for="game_group in games" :key="game_group.goupDate">
-          <div class="bg-gray-800 text-white p-2"><NuxtTime :datetime="game_group.goupDate" day="numeric" month="long" year="numeric" :locale="locale" /></div>
+          <div class="bg-gray-800 text-white p-2">
+            <NuxtTime :datetime="game_group.goupDate" day="numeric" month="long" year="numeric" :locale="locale" />
+            <span v-if="game_group.groupPlace" class="ml-2 text-gray-300">
+              <UIcon name="i-heroicons-map-pin" class="h-4 w-4 inline-block mr-1" />{{ game_group.groupPlace }}
+            </span>
+          </div>
           <div v-for="game in game_group.filtered" :key="game.g_id" class="p-2 border-b">
             <div class="grid grid-cols-[1fr_auto_1fr] gap-1 items-center">
               <div class="text-left text-xs text-gray-900 justify-self-start">
