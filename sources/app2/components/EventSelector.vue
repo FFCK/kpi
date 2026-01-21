@@ -57,11 +57,25 @@
 
       <!-- Event dropdown (for std and champ modes) -->
       <div v-if="eventMode !== 'group'" class="my-2 max-w-md mx-auto">
+        <!-- Season selector for events -->
+        <div class="mb-2 flex items-center justify-center gap-2">
+          <label class="text-sm text-gray-600">{{ t('Season.Label') }}:</label>
+          <select
+            v-model="selectedEventSeason"
+            @change="onEventSeasonChange"
+            class="px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring focus:border-blue-500 cursor-pointer"
+          >
+            <option v-for="year in availableEventSeasons" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+        </div>
+        <!-- Event dropdown -->
         <select v-model="eventSelectedId" @change="changeButton = true" class="block w-full px-3 py-2 border border-gray-400 rounded focus:outline-none focus:ring focus:border-blue-500 cursor-pointer">
           <option disabled :value="null">
             ▼ {{ t('Event.PleaseSelectOne') }} ▼
           </option>
-          <option v-for="event in events" :key="event.id" :value="event.id">
+          <option v-for="event in filteredEvents" :key="event.id" :value="event.id">
             {{ event.id }} | {{ event.libelle }} - {{ event.place }}
           </option>
         </select>
@@ -135,6 +149,7 @@ const groupSections = ref([])
 // Season management
 const currentYear = new Date().getFullYear()
 const selectedSeason = ref(currentYear.toString())
+const selectedEventSeason = ref(currentYear.toString())
 const availableSeasons = computed(() => {
   const seasons = []
   for (let i = 0; i < 6; i++) {
@@ -143,12 +158,39 @@ const availableSeasons = computed(() => {
   return seasons
 })
 
+// Available seasons for events (based on loaded events)
+const availableEventSeasons = computed(() => {
+  const years = new Set()
+  eventStore.events.forEach(event => {
+    if (event.year) {
+      years.add(event.year.toString())
+    }
+  })
+  // Sort descending and return array
+  const sortedYears = Array.from(years).sort((a, b) => parseInt(b) - parseInt(a))
+  // If no years found, return default list
+  if (sortedYears.length === 0) {
+    return availableSeasons.value
+  }
+  return sortedYears
+})
+
 // Computed
 const events = computed(() => {
   if (eventMode.value === 'std') {
     return [...eventStore.events].sort((a, b) => b.id - a.id)
   }
   return eventStore.events
+})
+
+// Filtered events by selected season
+const filteredEvents = computed(() => {
+  const selectedYear = parseInt(selectedEventSeason.value)
+  const filtered = eventStore.events.filter(event => event.year === selectedYear)
+  if (eventMode.value === 'std') {
+    return [...filtered].sort((a, b) => b.id - a.id)
+  }
+  return filtered
 })
 
 const hasSelection = computed(() => {
@@ -223,7 +265,7 @@ const loadGroups = async () => {
   }
 }
 
-// Called when season is changed in the dropdown
+// Called when season is changed in the dropdown (for groups)
 const onSeasonChange = async () => {
   const previousSeason = groupStore.getCurrentSeason
   groupStore.selectSeason(selectedSeason.value)
@@ -238,6 +280,18 @@ const onSeasonChange = async () => {
   // If there was a previously selected group and we changed season, show confirm button
   // This allows user to confirm the season change with a new group
   if (hadGroupSelected || previousSeason !== selectedSeason.value) {
+    changeButton.value = true
+  }
+}
+
+// Called when season is changed for events
+const onEventSeasonChange = () => {
+  // Reset event selection when changing season
+  const hadEventSelected = eventSelectedId.value !== null
+  eventSelectedId.value = null
+
+  // Show confirm button if we had an event selected
+  if (hadEventSelected) {
     changeButton.value = true
   }
 }
