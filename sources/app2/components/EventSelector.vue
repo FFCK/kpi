@@ -76,7 +76,7 @@
             ▼ {{ t('Event.PleaseSelectOne') }} ▼
           </option>
           <option v-for="event in filteredEvents" :key="event.id" :value="event.id">
-            {{ event.id }} | {{ event.libelle }} - {{ event.place }}
+            ({{ event.id }}) - {{ event.libelle }} - {{ event.place }}
           </option>
         </select>
       </div>
@@ -103,7 +103,7 @@
           </option>
           <optgroup v-for="section in groupSections" :key="section.section" :label="t(`Section.${section.label}`)">
             <option v-for="group in section.groups" :key="group.code" :value="group.code">
-              {{ group.code }} - {{ getGroupLabel(group) }}
+              ({{ group.code }}) {{ getGroupLabel(group) }}
             </option>
           </optgroup>
         </select>
@@ -127,6 +127,7 @@ import { ref, onMounted, computed, toRaw } from 'vue'
 import { usePreferenceStore } from '~/stores/preferenceStore';
 import { useEventStore } from '~/stores/eventStore';
 import { useGroupStore } from '~/stores/groupStore';
+import { useGames } from '~/composables/useGames';
 import db from '~/utils/db'
 const { t } = useI18n()
 const { getGroupLabel } = useGroupLabel()
@@ -135,6 +136,7 @@ const { getGroupLabel } = useGroupLabel()
 const preferenceStore = usePreferenceStore()
 const eventStore = useEventStore()
 const groupStore = useGroupStore()
+const { clearAllData: clearGamesData } = useGames()
 const { getApi } = useApi()
 
 // State
@@ -204,8 +206,16 @@ const changeEventMode = async (mode) => {
     eventMode.value = mode
     changeButton.value = false
     if (mode === 'group') {
+      // Sync group season with event season when switching to group mode
+      if (selectedEventSeason.value) {
+        selectedSeason.value = selectedEventSeason.value
+      }
       await loadGroups()
     } else {
+      // Sync event season with group season when switching to event mode
+      if (selectedSeason.value) {
+        selectedEventSeason.value = selectedSeason.value
+      }
       await loadEvents()
     }
   }
@@ -229,7 +239,17 @@ const loadEvents = async () => {
 
     await eventStore.clearAndUpdateEvents(eventsResult)
 
-    eventSelectedId.value = preferenceStore.preferences.lastEvent?.id || null
+    // Restore event and season from preferences
+    const lastEvent = preferenceStore.preferences.lastEvent
+    if (lastEvent) {
+      eventSelectedId.value = lastEvent.id
+      // Restore season from the last selected event
+      if (lastEvent.year) {
+        selectedEventSeason.value = lastEvent.year.toString()
+      }
+    } else {
+      eventSelectedId.value = null
+    }
     showSelector.value = true
   } catch (error) {
     eventStore.error = error
@@ -243,6 +263,12 @@ const loadGroups = async () => {
   groupStore.loading = true
   showSelector.value = false
   try {
+    // Restore season from preferences if available and not already set differently
+    const lastSeason = preferenceStore.preferences.lastSeason
+    if (lastSeason && selectedSeason.value === currentYear.toString()) {
+      selectedSeason.value = lastSeason
+    }
+
     // Use selected season
     const season = selectedSeason.value
     groupStore.selectSeason(season)
@@ -255,7 +281,13 @@ const loadGroups = async () => {
     groupStore.setSections(data.sections)
     groupSections.value = data.sections
 
-    selectedGroupCode.value = preferenceStore.preferences.lastGroup?.code || null
+    // Restore group selection only if it matches the current season
+    const lastGroup = preferenceStore.preferences.lastGroup
+    if (lastGroup && lastSeason === season) {
+      selectedGroupCode.value = lastGroup.code
+    } else {
+      selectedGroupCode.value = null
+    }
     showSelector.value = true
   } catch (error) {
     groupStore.error = error
@@ -317,15 +349,18 @@ const changeEvent = async () => {
   const selectedEvent = eventStore.getEventById(eventSelectedId.value)
   if (!selectedEvent) return
 
-  // Clear old event data from IndexedDB when changing events
+  // Clear old event data from IndexedDB and stores when changing events
   const lastEvent = preferenceStore.preferences.lastEvent
   if (lastEvent && lastEvent.id !== eventSelectedId.value) {
+    // Clear IndexedDB
     await Promise.all([
       db.games.clear(),
       db.charts.clear(),
       preferenceStore.putItem('games_last_api_load', 0),
       preferenceStore.putItem('charts_last_api_load', 0)
     ])
+    // Clear Pinia stores and singleton refs
+    clearGamesData()
   }
 
   await preferenceStore.putItem('lastEvent', toRaw(selectedEvent))
@@ -357,13 +392,15 @@ const changeGroup = async () => {
 
   const season = groupStore.getCurrentSeason
 
-  // Clear old data from IndexedDB when changing groups
+  // Clear old data from IndexedDB and stores when changing groups
   await Promise.all([
     db.games.clear(),
     db.charts.clear(),
     preferenceStore.putItem('games_last_api_load', 0),
     preferenceStore.putItem('charts_last_api_load', 0)
   ])
+  // Clear Pinia stores and singleton refs
+  clearGamesData()
 
   await preferenceStore.putItem('lastGroup', toRaw(selectedGroup))
   await preferenceStore.putItem('lastSeason', season)

@@ -501,6 +501,20 @@ export const useGames = () => {
     filterGames()
   }
 
+  // Clear all game data (store + singleton refs) - called when changing event/group
+  const clearAllData = () => {
+    // Clear store state directly (works even if action not available)
+    gameStore.games = []
+    gameStore.error = null
+    // Clear singleton refs
+    filteredGames.value = []
+    categories.value = []
+    game_dates.value = []
+    teams.value = []
+    refs.value = []
+    isFromCache.value = false
+  }
+
   return {
     games,
     gamesCount,
@@ -521,6 +535,7 @@ export const useGames = () => {
     loadGames,
     getFav,
     changeFav,
-    resetAllFilters
+    resetAllFilters,
+    clearAllData
   }
 }

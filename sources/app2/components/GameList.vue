@@ -19,7 +19,7 @@
         </thead>
 
         <!-- Event mode: simple date grouping -->
-        <template v-if="!isGroupMode">
+        <template v-if="!hasGroupStructure">
           <tbody v-for="(game_group, group_index) in games" :key="game_group.goupDate">
             <tr class="bg-gray-800 text-white">
               <th :colspan="showRefs ? 7 : 6" scope="row" class="px-2 py-2 font-medium whitespace-nowrap">
@@ -186,7 +186,7 @@
     <!-- Mobile view -->
     <div class="md:hidden">
       <!-- Event mode: simple date grouping -->
-      <template v-if="!isGroupMode">
+      <template v-if="!hasGroupStructure">
         <div v-for="game_group in games" :key="game_group.goupDate">
           <div class="bg-gray-800 text-white p-2">
             <NuxtTime :datetime="game_group.goupDate" day="numeric" month="long" year="numeric" :locale="locale" />
@@ -338,13 +338,14 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useGameDisplay } from '~/composables/useGameDisplay'
 import TeamName from '~/components/TeamName.vue'
 
 const { showCode } = useGameDisplay()
 const { t, locale } = useI18n()
 
-defineProps({
+const props = defineProps({
   games: { type: Array, default: () => [] },
   showRefs: { type: Boolean, default: true },
   showFlags: { type: Boolean, default: true },
@@ -352,6 +353,14 @@ defineProps({
   gamesCount: { type: Number, default: 0 },
   showCount: { type: Boolean, default: true },
   isGroupMode: { type: Boolean, default: false }
+})
+
+// Check actual data structure rather than relying only on isGroupMode prop
+// This prevents errors when data structure doesn't match the expected mode
+const hasGroupStructure = computed(() => {
+  if (!props.games || props.games.length === 0) return false
+  const firstItem = props.games[0]
+  return firstItem?.competition !== undefined
 })
 
 const runtimeConfig = useRuntimeConfig()
