@@ -4,6 +4,65 @@ Ce document liste les dernières fonctionnalités et améliorations ajoutées au
 
 ---
 
+## 📅 Janvier 2026
+
+### 🏆 Sélection par Compétition/Groupe (App2) (18/01/2026)
+
+**Nouveau mode de navigation dans l'application web**
+
+L'application web KPI propose maintenant deux modes de sélection :
+
+**Mode "Compétitions"** (nouveau, par défaut) :
+- Navigation par catégorie (N1H, N1F, N2H, etc.)
+- Sélection de la saison souhaitée
+- Accès direct à tous les matchs d'une catégorie sur la saison
+- URL de partage directe : `app.kayak-polo.info/group/{saison}/{code}`
+- Exemple : `app.kayak-polo.info/group/2026/N1H` pour la Nationale 1 Hommes 2026
+
+**Mode "Événements"** (existant) :
+- Navigation par événement ponctuel (tournoi, journée de championnat)
+- Sélection d'un événement spécifique
+- Accès aux matchs de cet événement uniquement
+
+**Avantages du mode Compétitions** :
+- ✅ Vue globale sur toute la saison
+- ✅ Suivi de l'évolution du classement
+- ✅ Partage facile d'un lien vers une catégorie
+- ✅ Idéal pour suivre un championnat complet
+
+**Accès** : [app.kayak-polo.info](https://app.kayak-polo.info) > Boutons "Compétitions" / "Événements"
+
+---
+
+### 🌐 Traduction des Groupes/Catégories (18/01/2026)
+
+**Support multilingue pour les noms de catégories**
+
+- Nouveau champ "Libellé anglais" dans la gestion des groupes (admin)
+- Affichage automatique en anglais dans App2 quand l'utilisateur choisit l'anglais
+- Exemple : "Nationale 1 Hommes" → "National 1 Men"
+
+**Accès** : Administration > Gestion Groupe > Modifier > Champ "Libellé EN"
+
+---
+
+### 🔒 Sécurisation du changement de code Groupe (18/01/2026)
+
+**Protection contre les modifications accidentelles de codes**
+
+- Confirmation obligatoire avant toute modification du code d'un groupe
+- Message d'avertissement explicite indiquant l'impact sur les compétitions
+- Mise à jour automatique des compétitions référençant le groupe modifié
+- Rollback automatique en cas d'erreur
+
+**Impact** : Toutes les compétitions utilisant l'ancien code sont automatiquement mises à jour avec le nouveau code.
+
+**Accès** : Administration > Gestion Groupe > Modifier > Champ "Code"
+
+⚠️ **Attention** : Opération sensible - vérifiez bien le nouveau code avant de confirmer
+
+---
+
 ## 📅 Décembre 2025
 
 ### 📱 Application Web KPI (App2) - Nouvelle version (Décembre 2025)
@@ -348,11 +407,13 @@ Pour connaître les prochains objectifs et travaux planifiés, consultez la **[R
 
 ## 📝 Historique des versions
 
-- **Version 2024.11** - Documentation intégrée, Fusion automatique licenciés
-- **Version 2024.10** - Event Cache Worker, Upload images, Multi-compétitions
-- **Version 2024.09** - Calendrier annuel, Sélecteurs Date/Heure
-- **Version 2024.08** - Gestion Journée masse, Consolidation tournois
+- **Version 2026.01** - Sélection par compétition/groupe, Traduction des groupes
+- **Version 2025.12** - App2 v2.0, Verrouillage phases, Copie compétitions en masse
+- **Version 2025.11** - Documentation intégrée, Fusion automatique licenciés
+- **Version 2025.10** - Event Cache Worker, Upload images, Multi-compétitions
+- **Version 2025.09** - Calendrier annuel, Sélecteurs Date/Heure
+- **Version 2025.08** - Gestion Journée masse, Consolidation tournois
 
 ---
 
-**Dernière mise à jour** : 28 décembre 2025
+**Dernière mise à jour** : 23 janvier 2026
