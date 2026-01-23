@@ -461,6 +461,11 @@ onMounted(async () => {
       const targetUrl = String(route.query.redirect)
       await navigateTo(targetUrl, { replace: true })
     }
+
+    // Auto-open selector if requested via query parameter
+    if (route.query.openSelector) {
+      await loadEvents()
+    }
   }
 })
 </script>

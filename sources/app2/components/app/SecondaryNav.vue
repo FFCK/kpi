@@ -10,9 +10,13 @@
       <div class="flex items-center justify-center">
         <UIcon v-if="isLoading" name="i-heroicons-arrow-path" class="h-6 w-6 animate-spin text-blue-600" />
         <template v-else>
-          <span v-if="eventInfo" class="hidden md:inline text-sm font-medium text-gray-700 text-center truncate max-w-xs lg:max-w-md">
+          <NuxtLink
+            v-if="eventInfo"
+            to="/?openSelector=1"
+            class="hidden md:inline text-sm font-medium text-gray-700 text-center truncate max-w-xs lg:max-w-md hover:text-blue-600 cursor-pointer"
+          >
             {{ eventInfo }}
-          </span>
+          </NuxtLink>
           <slot name="center" />
         </template>
       </div>
