@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid pb-16">
-    <AppSecondaryNav hide-left hide-right>
+    <AppSecondaryNav hide-left hide-right show-event-info>
       <template #left>
         <button
           @click="goBack"

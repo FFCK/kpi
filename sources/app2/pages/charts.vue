@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid pb-16">
-    <AppSecondaryNav>
+    <AppSecondaryNav show-event-info>
       <template #left>
         <button
           @click="showFilters = !showFilters"

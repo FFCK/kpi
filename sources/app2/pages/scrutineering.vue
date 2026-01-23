@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid pb-16">
-    <AppSecondaryNav>
+    <AppSecondaryNav show-event-info>
       <template #left>
         <div class="flex items-center gap-1 sm:gap-2">
           <label class="hidden sm:inline text-sm font-medium text-gray-700">{{ t('Teams.SelectTeam') }}:</label>
