@@ -155,6 +155,20 @@ sources/app2/node_modules/
 sources/app2/.nuxt/
 sources/app2/.output/
 sources/app2/dist/
+sources/app2/.env.development
+sources/app2/.env.preprod
+sources/app2/.env.production
+
+# ==========================================
+# NPM App4 dependencies and env files (Admin)
+# ==========================================
+sources/app4/node_modules/
+sources/app4/.nuxt/
+sources/app4/.output/
+sources/app4/dist/
+sources/app4/.env.development
+sources/app4/.env.preprod
+sources/app4/.env.production
 
 sources/live/logs
 !sources/live/logs/.gitkeep

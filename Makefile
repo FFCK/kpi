@@ -26,7 +26,7 @@ DOCKER_EXEC_NODE4 = docker exec -ti $(NODE4_CONTAINER_NAME)
 DOCKER_EXEC_NODE4_NON_INTERACTIVE = docker exec $(NODE4_CONTAINER_NAME)
 .DEFAULT_GOAL = help
 
-.PHONY: help init init_env init_env_app2 init_env_app3 init_env_app4 init_env_api2 init_networks \
+.PHONY: help init init_env init_env_app2 init_env_app3 init_env_app4 init_env_api2 init_networks check_env \
 dev_up dev_down dev_restart dev_rebuild dev_logs dev_status \
 preprod_up preprod_down preprod_restart preprod_rebuild preprod_logs preprod_status \
 prod_up prod_down prod_restart prod_rebuild prod_logs prod_status \
@@ -96,21 +96,23 @@ init_env: ## Initialise le fichier docker/.env depuis docker/.env.dist
 
 init_env_app2: ## Initialise les fichiers .env.development, .env.preprod et .env.production pour app2
 	@if [ ! -f sources/app2/.env.development ]; then \
-		cp sources/app2/.env.development.example sources/app2/.env.development; \
+		cp sources/app2/.env.dist sources/app2/.env.development; \
 		echo "✅ Fichier .env.development créé pour app2"; \
+		echo "⚠️  N'oubliez pas de configurer les variables dans .env.development"; \
 	else \
 		echo "⚠️  Le fichier .env.development existe déjà pour app2"; \
 	fi
 	@if [ ! -f sources/app2/.env.preprod ]; then \
-		cp sources/app2/.env.preprod.dist sources/app2/.env.preprod; \
+		cp sources/app2/.env.dist sources/app2/.env.preprod; \
 		echo "✅ Fichier .env.preprod créé pour app2"; \
-		echo "⚠️  N'oubliez pas de configurer le domaine de préproduction dans .env.preprod"; \
+		echo "⚠️  N'oubliez pas de configurer les variables dans .env.preprod"; \
 	else \
 		echo "⚠️  Le fichier .env.preprod existe déjà pour app2"; \
 	fi
 	@if [ ! -f sources/app2/.env.production ]; then \
-		cp sources/app2/.env.production.example sources/app2/.env.production; \
+		cp sources/app2/.env.dist sources/app2/.env.production; \
 		echo "✅ Fichier .env.production créé pour app2"; \
+		echo "⚠️  N'oubliez pas de configurer les variables dans .env.production"; \
 	else \
 		echo "⚠️  Le fichier .env.production existe déjà pour app2"; \
 	fi
@@ -157,6 +159,136 @@ init_env_api2: ## Initialise le fichier .env pour API2 depuis .env.dist
 	fi
 
 init_networks: networks_create ## Alias pour networks_create (crée les réseaux Docker)
+
+check_env: ## Vérifie que les fichiers d'environnement existent et sont configurés
+	@echo "🔍 Vérification des fichiers d'environnement..."
+	@echo ""
+	@errors=0; \
+	\
+	echo "📁 docker/.env (depuis docker/.env.dist)"; \
+	if [ ! -f docker/.env ]; then \
+		echo "  ❌ Fichier manquant: docker/.env"; \
+		echo "     → Exécutez: make init_env"; \
+		errors=$$((errors + 1)); \
+	else \
+		echo "  ✅ Fichier existe"; \
+		missing=""; \
+		for var in USER_ID GROUP_ID DB_ROOT_PASSWORD DB_USER DB_PASSWORD DB_NAME; do \
+			val=$$(grep "^$$var=" docker/.env 2>/dev/null | cut -d'=' -f2-); \
+			if [ -z "$$val" ]; then \
+				missing="$$missing $$var"; \
+			fi; \
+		done; \
+		if [ -n "$$missing" ]; then \
+			echo "  ⚠️  Variables vides:$$missing"; \
+			errors=$$((errors + 1)); \
+		else \
+			echo "  ✅ Variables principales configurées"; \
+		fi; \
+	fi; \
+	echo ""; \
+	\
+	echo "📁 sources/commun/MyParams.php (depuis sources/commun/MyParams.php.modele)"; \
+	if [ ! -f sources/commun/MyParams.php ]; then \
+		echo "  ❌ Fichier manquant: sources/commun/MyParams.php"; \
+		echo "     → Copiez MyParams.php.modele vers MyParams.php et configurez-le"; \
+		errors=$$((errors + 1)); \
+	elif [ ! -s sources/commun/MyParams.php ]; then \
+		echo "  ❌ Fichier vide: sources/commun/MyParams.php"; \
+		echo "     → Copiez MyParams.php.modele vers MyParams.php et configurez-le"; \
+		errors=$$((errors + 1)); \
+	else \
+		echo "  ✅ Fichier existe et non vide"; \
+		missing=""; \
+		for var in PARAM_LOCAL_LOGIN PARAM_LOCAL_PASSWORD PARAM_LOCAL_DB PARAM_LOCAL_SERVER; do \
+			if ! grep -q "define('$$var'" sources/commun/MyParams.php 2>/dev/null; then \
+				missing="$$missing $$var"; \
+			else \
+				val=$$(grep "define('$$var'" sources/commun/MyParams.php | sed "s/.*define('$$var', *'\\([^']*\\)'.*/\\1/"); \
+				if [ -z "$$val" ]; then \
+					missing="$$missing $$var"; \
+				fi; \
+			fi; \
+		done; \
+		if [ -n "$$missing" ]; then \
+			echo "  ⚠️  Variables vides ou manquantes:$$missing"; \
+			errors=$$((errors + 1)); \
+		else \
+			echo "  ✅ Variables principales configurées"; \
+		fi; \
+	fi; \
+	echo ""; \
+	\
+	echo "📁 sources/app2/.env.* (depuis sources/app2/.env.dist)"; \
+	if [ ! -f sources/app2/.env.dist ]; then \
+		echo "  ❌ Fichier modèle manquant: sources/app2/.env.dist"; \
+		errors=$$((errors + 1)); \
+	else \
+		echo "  ✅ Fichier modèle existe"; \
+	fi; \
+	for env in development preprod production; do \
+		if [ ! -f sources/app2/.env.$$env ]; then \
+			echo "  ❌ Fichier manquant: sources/app2/.env.$$env"; \
+			echo "     → Exécutez: make init_env_app2"; \
+			errors=$$((errors + 1)); \
+		else \
+			missing=""; \
+			for var in API_BASE_URL BACKEND_BASE_URL; do \
+				val=$$(grep "^$$var=" sources/app2/.env.$$env 2>/dev/null | cut -d'=' -f2-); \
+				if [ -z "$$val" ]; then \
+					missing="$$missing $$var"; \
+				fi; \
+			done; \
+			if [ -n "$$missing" ]; then \
+				echo "  ⚠️  .env.$$env - Variables vides:$$missing"; \
+				errors=$$((errors + 1)); \
+			else \
+				echo "  ✅ .env.$$env configuré"; \
+			fi; \
+		fi; \
+	done; \
+	echo ""; \
+	\
+	echo "📁 sources/app4/.env.* (depuis sources/app4/.env.dist)"; \
+	if [ ! -f sources/app4/.env.dist ]; then \
+		echo "  ❌ Fichier modèle manquant: sources/app4/.env.dist"; \
+		errors=$$((errors + 1)); \
+	else \
+		echo "  ✅ Fichier modèle existe"; \
+	fi; \
+	for env in development preprod production; do \
+		if [ ! -f sources/app4/.env.$$env ]; then \
+			echo "  ❌ Fichier manquant: sources/app4/.env.$$env"; \
+			echo "     → Exécutez: make init_env_app4"; \
+			errors=$$((errors + 1)); \
+		else \
+			missing=""; \
+			for var in API2_BASE_URL; do \
+				val=$$(grep "^$$var=" sources/app4/.env.$$env 2>/dev/null | cut -d'=' -f2-); \
+				if [ -z "$$val" ]; then \
+					missing="$$missing $$var"; \
+				fi; \
+			done; \
+			if [ -n "$$missing" ]; then \
+				echo "  ⚠️  .env.$$env - Variables vides:$$missing"; \
+				errors=$$((errors + 1)); \
+			else \
+				echo "  ✅ .env.$$env configuré"; \
+			fi; \
+		fi; \
+	done; \
+	echo ""; \
+	\
+	if [ $$errors -gt 0 ]; then \
+		echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"; \
+		echo "❌ $$errors problème(s) détecté(s)"; \
+		echo ""; \
+		echo "💡 Pour initialiser les fichiers manquants: make init"; \
+		exit 1; \
+	else \
+		echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"; \
+		echo "✅ Tous les fichiers d'environnement sont configurés!"; \
+	fi
 
 
 ## DOCKER - DÉVELOPPEMENT
