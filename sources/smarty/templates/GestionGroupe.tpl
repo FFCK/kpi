@@ -3,6 +3,7 @@
 			<input type='hidden' id='Cmd' name='Cmd' Value='' />
 			<input type='hidden' id='ParamCmd' name='ParamCmd' Value='' />
 			<input type='hidden' id='idGroupe' name='idGroupe' Value='{$groupe.id|default:''}' />
+			<input type='hidden' id='oldGroupe' name='oldGroupe' Value='{$groupe.Groupe|default:''}' />
 
 			<div class='blocLeft'>
 				<div class='titrePage'>{#Groupes#}</div>
@@ -17,6 +18,7 @@
 								<th>{#Ordre#}</th>
 								<th>{#Groupe#}</th>
 								<th>{#Nom#}</th>
+								<th>{#Nom#} EN</th>
 								<th>{#Supprimer#}</th>
 							</tr>
 						</thead>
@@ -38,6 +40,7 @@
 									<td>{$arrayGroupes[i].ordre}</td>
 									<td>{$arrayGroupes[i].Groupe}</td>
 									<td>{$arrayGroupes[i].Libelle}</td>
+									<td>{$arrayGroupes[i].Libelle_en}</td>
 									<td>
 										<a href="#" Id="Delete{$arrayGroupes[i].id}" onclick="removeGroupe({$arrayGroupes[i].id})">
 											<img height="18" src="../img/glyphicons-17-bin.png" alt="{#Supprimer#}" title="{#Supprimer#}" />
@@ -60,12 +63,11 @@
 						<td>
 							<label for="section">Section :</label>
 							<select name="section" id="section">
-								<option value="1" {if ($groupe.section|default:'') == 1}selected{/if}>ICF / ECA</option>
-								<option value="2" {if ($groupe.section|default:'') == 2}selected{/if}>National</option>
-								<option value="3" {if ($groupe.section|default:'') == 3}selected{/if}>Régional</option>
-								<option value="4" {if ($groupe.section|default:'') == 4}selected{/if}>Tournoi</option>
-								<option value="5" {if ($groupe.section|default:'') == 5}selected{/if}>Étranger</option>
-								<option value="100" {if ($groupe.section|default:'') == 100}selected{/if}>Autres</option>
+								{foreach from=$arraySectionNames key=id item=label}
+									<option value="{$id}"{if $id == $groupe.section} selected="selected"{/if}>
+										{$label}
+									</option>
+								{/foreach}
 							</select>
 						</td>
 						<td>
@@ -92,6 +94,12 @@
 						<td colspan=2>
 							<label for="Libelle">{#Nom#} :</label>
 							<input type="text" name="Libelle" value="{$groupe.Libelle|default:''}" maxlength=40 id="Libelle" required />
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2>
+							<label for="Libelle_en">{#Nom#} EN :</label>
+							<input type="text" name="Libelle_en" value="{$groupe.Libelle_en|default:''}" maxlength=255 id="Libelle_en" placeholder="English translation (optional)" />
 						</td>
 					</tr>
 					<tr>

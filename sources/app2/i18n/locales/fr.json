@@ -50,6 +50,7 @@
   "Event": {
     "SelectEvent": "Sélectionnez un événement",
     "PleaseSelectOne": "Sélectionnez un événement",
+    "PleaseSelectGroup": "Sélectionnez une compétition",
     "Selecting": "Sélection de l'événement...",
     "Loading": "Chargement...",
     "Event": "Événement",
@@ -58,10 +59,25 @@
     "Cancel": "Annuler",
     "StdEvents": "Événements",
     "LocalChamp": "Championnats locaux",
+    "Groups": "Groupes",
+    "Competitions": "Compétitions",
     "ShareEvent": "Partager l'événement",
     "ClickToCopy": "Cliquez pour copier le lien",
     "LinkCopied": "Lien copié dans le presse-papiers !",
-    "CopyFailed": "Échec de la copie du lien"
+    "CopyFailed": "Échec de la copie du lien",
+    "ModeDescription": "Compétitions combinées"
+  },
+  "Section": {
+    "Competitions_Internationales": "Compétitions Internationales",
+    "Competitions_Nationales": "Compétitions Nationales",
+    "Competitions_Regionales": "Compétitions Régionales",
+    "Tournois_Internationaux": "Tournois Internationaux",
+    "Continents": "Continents",
+    "Divers": "Divers"
+  },
+  "Season": {
+    "Label": "Saison",
+    "Change": "Changer de saison"
   },
   "Teams": {
     "SelectTeam": "Equipe",
@@ -140,7 +156,9 @@
       "twentytwo": "e ",
       "twentythree": "e ",
       "th": "e "
-    }
+    },
+    "Location": "Lieu",
+    "UnknownLocation": "Lieu non précisé"
   },
   "Charts": {
     "Ranking": "#",
@@ -160,6 +178,9 @@
     "NoData": "Aucune donnée de classement disponible"
   },
   "About": {
+    "Information": "Informations",
+    "ClickForDetails": "Cliquez pour plus de détails...",
+    "ClickableElements": "Les noms d'équipes, numéros de match et scores sont cliquables !",
     "DoYouLike": "Cette application vous plait ?",
     "IDevelopIt": "Je la développe sur mon temps libre.",
     "Rating": "Evaluez cette application :",

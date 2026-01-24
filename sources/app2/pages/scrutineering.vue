@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid pb-16">
-    <AppSecondaryNav>
+    <AppSecondaryNav show-event-info>
       <template #left>
         <div class="flex items-center gap-1 sm:gap-2">
           <label class="hidden sm:inline text-sm font-medium text-gray-700">{{ t('Teams.SelectTeam') }}:</label>
@@ -269,14 +269,24 @@ const loadTeams = async () => {
     return
   }
 
-  const eventId = prefs.value?.lastEvent?.id
-  if (!eventId) {
-    console.error('No event selected')
+  const eventMode = prefs.value?.eventMode
+  const lastGroup = prefs.value?.lastGroup
+  const lastSeason = prefs.value?.lastSeason
+  const lastEvent = prefs.value?.lastEvent
+
+  // Determine API URL based on mode
+  let apiUrl
+  if (eventMode === 'group' && lastGroup?.code && lastSeason) {
+    apiUrl = `/group/${lastSeason}/${lastGroup.code}/teams`
+  } else if (lastEvent?.id) {
+    apiUrl = `/staff/${lastEvent.id}/teams`
+  } else {
+    console.error('No event or group selected')
     return
   }
 
   try {
-    const response = await getApi(`/staff/${eventId}/teams`)
+    const response = await getApi(apiUrl)
 
     if (!response.ok) {
       throw new Error(`Failed to load teams: ${response.status}`)

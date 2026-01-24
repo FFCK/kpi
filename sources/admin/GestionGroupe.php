@@ -16,12 +16,12 @@ class GestionGroupe extends MyPageSecure
 		$myBdd = new MyBdd();
 		$arrayGroupes = array();
 		$arraySectionNames = [
-			1 => 'ICF/ECA',
+			1 => 'International',
 			2 => 'National',
 			3 => 'Regional',
-			4 => 'Tournoi',
-			5 => 'Etranger',
-			100 => 'Divers'
+			4 => 'Tournoi/Tournament',
+			5 => 'Continental',
+			100 => 'Divers/Miscellaneous'
 		];
 
 		$sql = "SELECT * 
@@ -44,11 +44,13 @@ class GestionGroupe extends MyPageSecure
 
 		$this->m_tpl->assign('groupe', $groupe);
 		$this->m_tpl->assign('arrayGroupes', $arrayGroupes);
+		$this->m_tpl->assign('arraySectionNames', $arraySectionNames);
 	}
 
 	function Add()
 	{
 		$libelle = utyGetPost('Libelle');
+		$libelle_en = utyGetPost('Libelle_en');
 		$section = utyGetPost('section');
 		$ordre = utyGetPost('ordre');
 		$Code_niveau = utyGetPost('Code_niveau');
@@ -56,17 +58,17 @@ class GestionGroupe extends MyPageSecure
 
 		$myBdd = new MyBdd();
 
-		$sql = "UPDATE kp_groupe 
-			SET ordre = ordre + 1 
+		$sql = "UPDATE kp_groupe
+			SET ordre = ordre + 1
 			WHERE ordre >= ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array($ordre));
 
-		$sql = "INSERT INTO kp_groupe 
-			SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? ";
+		$sql = "INSERT INTO kp_groupe
+			SET Libelle = ?, Libelle_en = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? ";
 		$result = $myBdd->pdo->prepare($sql);
 		$result->execute(array(
-			$libelle, $section, $ordre, $Code_niveau, $Groupe
+			$libelle, $libelle_en ?: null, $section, $ordre, $Code_niveau, $Groupe
 		));
 
 		$this->Raz();
@@ -163,10 +165,12 @@ class GestionGroupe extends MyPageSecure
 	{
 		$idGroupe = utyGetPost('idGroupe');
 		$libelle = utyGetPost('Libelle');
+		$libelle_en = utyGetPost('Libelle_en');
 		$section = utyGetPost('section');
 		$ordre = utyGetPost('ordre');
 		$Code_niveau = utyGetPost('Code_niveau');
 		$Groupe = utyGetPost('Groupe');
+		$oldGroupe = utyGetPost('oldGroupe');
 
 		$myBdd = new MyBdd();
 
@@ -174,16 +178,33 @@ class GestionGroupe extends MyPageSecure
 			$myBdd->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$myBdd->pdo->beginTransaction();
 
-			$sql = "UPDATE kp_groupe 
-				SET Libelle = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ? 
+			// Si le code groupe a changé, désactiver temporairement les FK pour permettre la mise à jour
+			if ($oldGroupe && $Groupe && $oldGroupe !== $Groupe) {
+				$myBdd->pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+			}
+
+			$sql = "UPDATE kp_groupe
+				SET Libelle = ?, Libelle_en = ?, section = ?, ordre = ?, Code_niveau = ?, Groupe = ?
 				WHERE Id = ? ";
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array(
-				$libelle, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
+				$libelle, $libelle_en ?: null, $section, $ordre, $Code_niveau, $Groupe, $idGroupe
 			));
+
+			// Si le code groupe a changé, mettre à jour les Code_ref dans kp_competition
+			if ($oldGroupe && $Groupe && $oldGroupe !== $Groupe) {
+				$sql = "UPDATE kp_competition
+					SET Code_ref = ?
+					WHERE Code_ref = ? ";
+				$result = $myBdd->pdo->prepare($sql);
+				$result->execute(array($Groupe, $oldGroupe));
+
+				$myBdd->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+			}
 
 			$myBdd->pdo->commit();
 		} catch (Exception $e) {
+			$myBdd->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 			$myBdd->pdo->rollBack();
 			utySendMail("[KPI] Erreur SQL", "Modif Groupe, $libelle" . '\r\n' . $e->getMessage());
 
@@ -224,7 +245,7 @@ class GestionGroupe extends MyPageSecure
 			}
 		}
 
-		$this->SetTemplate("Gestion_des_groupes", "Competitions", false);
+		$this->SetTemplate("Gestion_des_groupes", "Operations", false);
 		$this->Load();
 		$this->m_tpl->assign('AlertMessage', $alertMessage);
 		$this->DisplayTemplate('GestionGroupe');

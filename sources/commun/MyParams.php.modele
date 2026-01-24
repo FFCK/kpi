@@ -38,6 +38,9 @@ define('MAIN_DIRECTORY', '');
 // Destinataires alertes cartons
 define('CARD_ALERT_RECIPIENTS', '');
 
+// URL FFCK PCE (licences)
+define('FFCK_PCE_URL', 'https://link.to.pce/');
+
 // Matomo Analytics
 // Site ID pour la partie publique (frontend)
 define('MATOMO_SITE_ID_PUBLIC', '1');

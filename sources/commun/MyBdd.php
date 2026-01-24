@@ -320,7 +320,7 @@ class MyBdd
 		$nbReq2 = 0;
 		$nbReq3 = 0;
 
-		$url = "https://extranet.ffck.org/reportingExterne/getFichierPce/" . date('Y');
+		$url = FFCK_PCE_URL . date('Y');
 		$newfile = __DIR__ . "/pce1.pce";
 
 		if (!$header = get_web_page($url)) {

@@ -6,6 +6,19 @@ import { useIndexedDB } from '~/composables/useIndexedDB'
 import { useOnlineStatus } from '~/composables/useOnlineStatus'
 import dayjs from 'dayjs'
 
+// Singleton state - shared across all useGames() calls
+const filteredGames = ref([])
+const isFromCache = ref(false)
+const categories = ref([])
+const game_dates = ref([])
+const teams = ref([])
+const refs = ref([])
+const showRefs = ref(true)
+const showFlags = ref(true)
+const fav_categories = ref([])
+const fav_teams = ref([])
+const fav_dates = ref('')
+
 export const useGames = () => {
   const gameStore = useGameStore()
   const preferenceStore = usePreferenceStore()
@@ -15,26 +28,43 @@ export const useGames = () => {
 
   const games = computed(() => gameStore.games)
   const gamesCount = computed(() => gameStore.games.length)
-  const filteredGames = ref([])
-  const filteredGamesCount = computed(() => filteredGames.value.reduce((acc, group) => acc + group.filtered.length, 0))
-  const isFromCache = ref(false)
+  const isGroupMode = computed(() => preferenceStore.preferences?.eventMode === 'group')
+  const filteredGamesCount = computed(() => {
+    if (!filteredGames.value || filteredGames.value.length === 0) return 0
 
-  const categories = ref([])
-  const game_dates = ref([])
-  const teams = ref([])
-  const refs = ref([])
-
-  const showRefs = ref(true)
-  const showFlags = ref(true)
-
-  const fav_categories = ref([])
-  const fav_teams = ref([])
-  const fav_dates = ref('')
+    // Check structure to determine mode (more reliable than isGroupMode)
+    const firstItem = filteredGames.value[0]
+    if (firstItem?.competition) {
+      // Hierarchical structure: competition -> location -> date -> games
+      return filteredGames.value.reduce((total, comp) =>
+        total + (comp.locations || []).reduce((locTotal, loc) =>
+          locTotal + (loc.dates || []).reduce((dateTotal, date) =>
+            dateTotal + (date.filtered?.length || 0), 0), 0), 0)
+    }
+    // Flat structure: date -> games
+    return filteredGames.value.reduce((acc, group) => acc + (group.filtered?.length || 0), 0)
+  })
 
   const loadGames = async (force = false) => {
-    if (!preferenceStore.preferences.lastEvent) return
+    const eventMode = preferenceStore.preferences?.eventMode
+    const lastGroup = preferenceStore.preferences?.lastGroup
+    const lastSeason = preferenceStore.preferences?.lastSeason
+    const lastEvent = preferenceStore.preferences?.lastEvent
 
-    const eventId = preferenceStore.preferences.lastEvent.id
+    // Determine API URL and cache key based on mode
+    let apiUrl
+    let cacheKey
+
+    if (eventMode === 'group' && lastGroup?.code && lastSeason) {
+      apiUrl = `/group/${lastSeason}/${lastGroup.code}/games`
+      cacheKey = `group_${lastSeason}_${lastGroup.code}`
+    } else if (lastEvent?.id) {
+      apiUrl = `/event/${lastEvent.id}/games`
+      cacheKey = lastEvent.id
+    } else {
+      return // No selection
+    }
+
     gameStore.loading = true
     isFromCache.value = false
 
@@ -48,8 +78,16 @@ export const useGames = () => {
       let cachedGames = null
 
       // Charger depuis IndexedDB
-      cachedGames = await loadGamesFromDB(eventId)
-      if (cachedGames && cachedGames.length > 0 && !force) {
+      cachedGames = await loadGamesFromDB(cacheKey)
+      const hasCachedGames = cachedGames && cachedGames.length > 0
+
+      // Vérifier la connexion réseau avant d'appeler l'API
+      const online = checkConnection()
+      const willLoadFromApi = online && (shouldLoadFromApi || !hasCachedGames)
+
+      // Charger depuis le cache seulement si on ne va pas immédiatement charger depuis l'API
+      // (pour éviter double filterGames)
+      if (hasCachedGames && !force && !willLoadFromApi) {
         const gamelist = processGameData(cachedGames)
         await gameStore.clearAndUpdateGames(gamelist)
         loadCategories()
@@ -62,49 +100,58 @@ export const useGames = () => {
         }
       }
 
-      // Vérifier la connexion réseau avant d'appeler l'API
-      const online = checkConnection()
-
       // Charger depuis l'API uniquement si en ligne et nécessaire
-      if (online && (shouldLoadFromApi || !cachedGames || cachedGames.length === 0)) {
+      if (willLoadFromApi) {
         try {
-          const response = await getApi(`/event/${eventId}/games`)
+          const response = await getApi(apiUrl)
           const data = await response.json()
           const gamelist = processGameData(data)
 
           // Sauvegarder dans IndexedDB
-          await saveGames(eventId, data)
+          await saveGames(cacheKey, data)
 
           // Sauvegarder la date de chargement API
           await preferenceStore.putItem('games_last_api_load', now)
 
-          // Mettre à jour l'interface seulement si les données ont changé
-          if (JSON.stringify(gamelist) !== JSON.stringify(gameStore.games)) {
+          // Mettre à jour l'interface (comparaison simple par taille pour éviter JSON.stringify coûteux)
+          const hasDataChanged = gamelist.length !== gameStore.games.length ||
+            (gamelist.length > 0 && gameStore.games.length > 0 &&
+             gamelist[0].g_id !== gameStore.games[0].g_id)
+
+          if (hasDataChanged || gameStore.games.length === 0) {
             await gameStore.clearAndUpdateGames(gamelist)
             loadCategories()
             filterGames()
           }
           isFromCache.value = false
         } catch (apiError) {
-          if (!cachedGames || cachedGames.length === 0) {
+          // API failed, fall back to cache if available
+          if (hasCachedGames && !force) {
+            const gamelist = processGameData(cachedGames)
+            await gameStore.clearAndUpdateGames(gamelist)
+            loadCategories()
+            filterGames()
+            isFromCache.value = true
+          } else {
             gameStore.error = apiError
           }
-          // Keep isFromCache as true since we're using cached data
-          if (cachedGames && cachedGames.length > 0) {
-            isFromCache.value = true
-          }
         }
-      } else if (!online && cachedGames && cachedGames.length > 0) {
-        // Offline with cached data
+      } else if (!online && hasCachedGames) {
+        // Offline with cached data - already loaded above
         isFromCache.value = true
-      } else if (!online && (!cachedGames || cachedGames.length === 0)) {
+      } else if (!online && !hasCachedGames) {
         // Offline without cached data
         gameStore.error = new Error('OFFLINE_NO_CACHE')
       }
 
-      // Nettoyer les anciennes données (seulement si en ligne)
+      // Nettoyer les anciennes données (seulement si en ligne, max 1 fois par heure)
       if (online) {
-        await clearOldGames()
+        const lastCleanup = preferenceStore.preferences.games_last_cleanup || 0
+        const oneHour = 60 * 60 * 1000
+        if (now - lastCleanup > oneHour) {
+          await clearOldGames()
+          await preferenceStore.putItem('games_last_cleanup', now)
+        }
       }
     } catch (error) {
       gameStore.error = error
@@ -303,18 +350,108 @@ export const useGames = () => {
       return newValue
     })
 
-    const filteredGamesDates = [...new Set(newFilteredGames.map(x => x.g_date))]
-    const newGames = []
-    filteredGamesDates.forEach(goupDate => {
-      const filtered = newFilteredGames.filter(
-        value => value.g_date === goupDate
-      )
-      newGames.push({
-        goupDate: goupDate,
-        filtered: filtered
-      })
+    // Group games based on mode
+    const eventMode = preferenceStore.preferences?.eventMode
+    if (eventMode === 'group') {
+      // Group mode: competition -> location -> date
+      filteredGames.value = groupByCompetitionLocationDate(newFilteredGames)
+    } else {
+      // Event mode: date only
+      filteredGames.value = groupByDateOnly(newFilteredGames)
+    }
+  }
+
+  // Helper: Group by date only (event mode)
+  const groupByDateOnly = (games) => {
+    const filteredGamesDates = [...new Set(games.map(x => x.g_date))]
+    return filteredGamesDates.map(goupDate => ({
+      goupDate: goupDate,
+      filtered: games.filter(value => value.g_date === goupDate)
+    }))
+  }
+
+  // Helper: Group by competition -> location -> date (group mode)
+  const groupByCompetitionLocationDate = (games) => {
+    const competitionMap = new Map()
+
+    games.forEach(game => {
+      const compKey = game.c_code
+      const locationKey = game.d_place || ''
+      const dateKey = game.g_date
+
+      if (!competitionMap.has(compKey)) {
+        competitionMap.set(compKey, {
+          competition: {
+            code: game.c_code,
+            label: game.c_label,
+            tour: game.c_tour || 0,
+            order: game.c_order || 0,
+            type: game.c_type
+          },
+          locations: new Map()
+        })
+      }
+
+      const compEntry = competitionMap.get(compKey)
+      if (!compEntry.locations.has(locationKey)) {
+        compEntry.locations.set(locationKey, {
+          place: locationKey,
+          dates: new Map(),
+          // Store the earliest date for this location (for CHPT sorting)
+          earliestDate: dateKey
+        })
+      }
+
+      const locEntry = compEntry.locations.get(locationKey)
+      // Update earliest date if this game's date is earlier
+      if (dateKey < locEntry.earliestDate) {
+        locEntry.earliestDate = dateKey
+      }
+
+      if (!locEntry.dates.has(dateKey)) {
+        locEntry.dates.set(dateKey, {
+          goupDate: dateKey,
+          filtered: []
+        })
+      }
+
+      locEntry.dates.get(dateKey).filtered.push(game)
     })
-    filteredGames.value = newGames
+
+    // Convert maps to arrays and sort by tour DESC then order ASC
+    return Array.from(competitionMap.values())
+      .sort((a, b) => {
+        const tourCmp = (b.competition.tour || 0) - (a.competition.tour || 0) // DESC
+        if (tourCmp !== 0) return tourCmp
+        return (a.competition.order || 0) - (b.competition.order || 0) // ASC
+      })
+      .map(comp => {
+        // For CHPT competitions, sort locations by earliest date then by place name
+        const isChampionship = comp.competition.type === 'CHPT'
+
+        const sortedLocations = Array.from(comp.locations.values())
+          .sort((a, b) => {
+            if (isChampionship) {
+              // Sort by earliest date DESC, then by place name ASC
+              const dateCmp = b.earliestDate.localeCompare(a.earliestDate)
+              if (dateCmp !== 0) return dateCmp
+              return a.place.localeCompare(b.place)
+            } else {
+              // Default: sort by place name only
+              return a.place.localeCompare(b.place)
+            }
+          })
+          .map(loc => ({
+            place: loc.place,
+            dates: Array.from(loc.dates.values())
+              .sort((a, b) => b.goupDate.localeCompare(a.goupDate)) // DESC
+          }))
+
+        return {
+          competition: comp.competition,
+          locations: sortedLocations
+        }
+      })
   }
 
   const gameEncode = (gameCode, codeNumber) => {
@@ -364,11 +501,26 @@ export const useGames = () => {
     filterGames()
   }
 
+  // Clear all game data (store + singleton refs) - called when changing event/group
+  const clearAllData = () => {
+    // Clear store state directly (works even if action not available)
+    gameStore.games = []
+    gameStore.error = null
+    // Clear singleton refs
+    filteredGames.value = []
+    categories.value = []
+    game_dates.value = []
+    teams.value = []
+    refs.value = []
+    isFromCache.value = false
+  }
+
   return {
     games,
     gamesCount,
     filteredGames,
     filteredGamesCount,
+    isGroupMode,
     categories,
     game_dates,
     teams,
@@ -383,6 +535,7 @@ export const useGames = () => {
     loadGames,
     getFav,
     changeFav,
-    resetAllFilters
+    resetAllFilters,
+    clearAllData
   }
 }

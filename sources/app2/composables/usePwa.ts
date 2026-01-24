@@ -30,7 +30,7 @@ const initializePwa = () => {
   // Check for updates when app becomes visible
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && navigator.onLine) {
-      console.log('[PWA] App became visible, checking for updates...')
+      // console.log('[PWA] App became visible, checking for updates...')
       checkForUpdates()
     }
   })

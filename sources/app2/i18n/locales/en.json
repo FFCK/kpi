@@ -50,6 +50,7 @@
   "Event": {
     "SelectEvent": "Select event",
     "PleaseSelectOne": "Please select one",
+    "PleaseSelectGroup": "Please select a competition",
     "Selecting": "Selecting event...",
     "Loading": "Loading...",
     "Event": "Event",
@@ -58,10 +59,25 @@
     "Cancel": "Cancel",
     "StdEvents": "Events",
     "LocalChamp": "Local Championships",
+    "Groups": "Groups",
+    "Competitions": "Competitions",
     "ShareEvent": "Share event",
     "ClickToCopy": "Click to copy link",
     "LinkCopied": "Link copied to clipboard!",
-    "CopyFailed": "Failed to copy link"
+    "CopyFailed": "Failed to copy link",
+    "ModeDescription": "Combined competitions"
+  },
+  "Section": {
+    "Competitions_Internationales": "International Competitions",
+    "Competitions_Nationales": "National Competitions",
+    "Competitions_Regionales": "Regional Competitions",
+    "Tournois_Internationaux": "International Tournaments",
+    "Continents": "Continents",
+    "Divers": "Other"
+  },
+  "Season": {
+    "Label": "Season",
+    "Change": "Change season"
   },
   "Teams": {
     "SelectTeam": "Team",
@@ -140,7 +156,9 @@
       "twentytwo": "nd ",
       "twentythree": "rd ",
       "th": "th "
-    }
+    },
+    "Location": "Location",
+    "UnknownLocation": "Location not specified"
   },
   "Charts": {
     "Ranking": "#",
@@ -160,6 +178,9 @@
     "NoData": "No ranking data available"
   },
   "About": {
+    "Information": "Informations",
+    "ClickForDetails": "Click for more details...",
+    "ClickableElements": "Team names, match numbers and scores are clickable!",
     "DoYouLike": "Do you like this application?",
     "IDevelopIt": "I develop it in my spare time.",
     "Rating": "Rate this app:",

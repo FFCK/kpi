@@ -110,7 +110,9 @@ class PublicController extends AbstractController
         $result = $stmt->executeQuery();
         $stats = $result->fetchAllAssociative();
 
-        return new JsonResponse($stats);
+        $response = new JsonResponse($stats);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 
     #[Route('/stars', name: 'stars', methods: ['GET'])]
@@ -385,7 +387,7 @@ class PublicController extends AbstractController
             }
         }
 
-        return new JsonResponse([
+        $response = new JsonResponse([
             'game' => $game,
             'team_a' => [
                 'id' => $game['t_a_id'],
@@ -419,5 +421,7 @@ class PublicController extends AbstractController
                                 $teamAStats['red_cards'] + $teamBStats['red_cards']
             ]
         ]);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }
