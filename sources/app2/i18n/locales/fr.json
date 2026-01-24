@@ -64,7 +64,8 @@
     "ShareEvent": "Partager l'événement",
     "ClickToCopy": "Cliquez pour copier le lien",
     "LinkCopied": "Lien copié dans le presse-papiers !",
-    "CopyFailed": "Échec de la copie du lien"
+    "CopyFailed": "Échec de la copie du lien",
+    "ModeDescription": "Compétitions combinées"
   },
   "Section": {
     "Competitions_Internationales": "Compétitions Internationales",

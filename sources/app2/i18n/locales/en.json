@@ -64,7 +64,8 @@
     "ShareEvent": "Share event",
     "ClickToCopy": "Click to copy link",
     "LinkCopied": "Link copied to clipboard!",
-    "CopyFailed": "Failed to copy link"
+    "CopyFailed": "Failed to copy link",
+    "ModeDescription": "Combined competitions"
   },
   "Section": {
     "Competitions_Internationales": "International Competitions",

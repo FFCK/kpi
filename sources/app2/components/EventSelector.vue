@@ -17,13 +17,14 @@
           alt="Logo"
         />
         <br />
-        <span class="font-semibold">{{ preferenceStore.preferences.lastEvent.libelle }} - {{ preferenceStore.preferences.lastEvent.place }}</span>
+        <span class="font-semibold text-md lg:text-xl">{{ preferenceStore.preferences.lastEvent.libelle }} - {{ preferenceStore.preferences.lastEvent.place }}</span>
       </template>
       <!-- Group display -->
       <template v-else-if="preferenceStore.preferences.lastGroup">
-        <span class="font-semibold">{{ preferenceStore.preferences.lastGroup.code }} - {{ getGroupLabel(preferenceStore.preferences.lastGroup) }}</span>
-        <span class="text-sm text-gray-500 ml-2">({{ t('Season.Label') }}: {{ preferenceStore.preferences.lastSeason }})</span>
+        <span class="font-semibold text-md lg:text-xl">{{ preferenceStore.preferences.lastGroup.code }} - {{ getGroupLabel(preferenceStore.preferences.lastGroup) }}</span>
+        <span class="text-sm text-gray-500 ml-2">({{ preferenceStore.preferences.lastSeason }})</span>
       </template>
+      <br>
       <button class="ml-2 px-2 py-1 bg-gray-500 text-white text-xs rounded cursor-pointer">
         <UIcon name="i-heroicons-arrows-right-left" /> {{ t('Event.Change') }}
       </button>
@@ -53,6 +54,9 @@
         >
           {{ t('Event.StdEvents') }}
         </button>
+      </div>
+      <div v-if="eventMode === 'std'" class="mb-4 text-sm text-gray-600 italic">
+        ({{ t('Event.ModeDescription') }})
       </div>
 
       <!-- Event dropdown (for std and champ modes) -->
