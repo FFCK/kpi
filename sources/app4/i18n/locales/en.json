@@ -115,6 +115,7 @@
     "params": {
       "title": "Parameters",
       "configure": "Settings",
+      "change": "Change",
       "apply": "Apply",
       "season": "Season",
       "stat_type": "Stat type",

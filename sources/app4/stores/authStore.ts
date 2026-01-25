@@ -15,6 +15,11 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   getters: {
+    // Get user profile level (returns 99 if not authenticated)
+    profile: (state): number => {
+      return state.user?.profile ?? 99
+    },
+
     // Check if user has required profile level
     hasProfile: (state) => (requiredProfile: number): boolean => {
       if (!state.user) return false

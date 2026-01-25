@@ -7,6 +7,7 @@ definePageMeta({
 const { t } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
+const statsStore = useStatsStore()
 
 // Types
 interface StatType {
@@ -71,9 +72,10 @@ const count = ref(0)
 const loadFilters = async () => {
   loadingFilters.value = true
   try {
-    const response = await api.get<FiltersResponse>('/admin/stats/filters')
+    // Use stored season if available, otherwise use active season from API
+    const seasonParam = statsStore.initialized && statsStore.season ? statsStore.season : undefined
+    const response = await api.get<FiltersResponse>('/admin/stats/filters', seasonParam ? { season: seasonParam } : undefined)
     seasons.value = response.seasons
-    selectedSeason.value = response.activeSeason
     competitionGroups.value = response.competitions
 
     // Filter stat types based on user profile
@@ -82,8 +84,16 @@ const loadFilters = async () => {
       return true
     })
 
-    // No default competition selection - user must configure parameters
-    selectedCompetitions.value = []
+    // Restore from store if initialized, otherwise use defaults
+    if (statsStore.initialized) {
+      selectedSeason.value = statsStore.season || response.activeSeason
+      selectedStatType.value = statsStore.statType
+      selectedCompetitions.value = [...statsStore.competitions]
+      limit.value = statsStore.limit
+    } else {
+      selectedSeason.value = response.activeSeason
+      selectedCompetitions.value = []
+    }
   } catch (error: unknown) {
     const message = (error as { message?: string })?.message || t('stats.error_load_filters')
     toast.add({
@@ -149,6 +159,15 @@ const applyFilters = async () => {
   selectedCompetitions.value = [...tempCompetitions.value]
   limit.value = tempLimit.value
   showFiltersModal.value = false
+
+  // Save to store for persistence
+  statsStore.setParams({
+    season: tempSeason.value,
+    statType: tempStatType.value,
+    competitions: tempCompetitions.value,
+    limit: tempLimit.value
+  })
+
   await loadStats()
 }
 
@@ -298,33 +317,24 @@ const showRankingColumn = computed(() => {
 
 <template>
   <div>
-    <!-- Page header with filter button -->
-    <div class="mb-6 flex items-center justify-between">
+    <!-- Page header -->
+    <div class="mb-6">
       <h1 class="text-2xl font-bold text-gray-900">
         {{ t('stats.title') }}
       </h1>
-
-      <button
-        type="button"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-        @click="openFiltersModal"
-      >
-        <UIcon name="heroicons:cog-6-tooth" class="w-5 h-5" />
-        {{ t('stats.params.configure') }}
-      </button>
     </div>
 
     <!-- Current parameters summary -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
       <div class="flex flex-wrap items-center gap-4 text-sm">
         <div class="flex items-center gap-2">
-          <span class="text-gray-500">{{ t('stats.params.season') }}:</span>
-          <span class="font-semibold text-gray-900">{{ selectedSeason }}</span>
+          <span class="text-gray-500">{{ t('stats.params.stat_type') }}:</span>
+          <span class="font-semibold text-gray-900">{{ getStatTypeLabel }}</span>
         </div>
         <div class="w-px h-4 bg-gray-300" />
         <div class="flex items-center gap-2">
-          <span class="text-gray-500">{{ t('stats.params.stat_type') }}:</span>
-          <span class="font-semibold text-gray-900">{{ getStatTypeLabel }}</span>
+          <span class="text-gray-500">{{ t('stats.params.season') }}:</span>
+          <span class="font-semibold text-gray-900">{{ selectedSeason }}</span>
         </div>
         <div class="w-px h-4 bg-gray-300" />
         <div class="flex items-center gap-2">
@@ -337,15 +347,27 @@ const showRankingColumn = computed(() => {
           <span class="font-semibold text-gray-900">{{ limit }}</span>
         </div>
         <div class="ml-auto">
-          <span v-if="loading" class="text-gray-500">
-            <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin inline mr-1" />
-            {{ t('common.loading') }}
-          </span>
-          <span v-else class="font-semibold text-blue-600">
-            {{ t('stats.results_count', { count }) }}
-          </span>
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm text-sm"
+            @click="openFiltersModal"
+          >
+            <UIcon name="heroicons:adjustments-horizontal" class="w-4 h-4" />
+            {{ t('stats.params.change') }}
+          </button>
         </div>
       </div>
+    </div>
+
+    <!-- Results count -->
+    <div class="mb-4 text-sm">
+      <span v-if="loading" class="text-gray-500">
+        <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin inline mr-1" />
+        {{ t('common.loading') }}
+      </span>
+      <span v-else class="font-semibold text-gray-700">
+        {{ t('stats.results_count', { count }) }}
+      </span>
     </div>
 
     <!-- Desktop Table -->
@@ -439,6 +461,7 @@ const showRankingColumn = computed(() => {
             <template v-if="!row['nom'] && !row['equipe'] && row['competition']">{{ row['competition'] }}</template>
           </h3>
         </template>
+        <template #header-right>Toto</template>
 
         <!-- Content: show all columns -->
         <div class="space-y-1 text-sm">
@@ -468,6 +491,21 @@ const showRankingColumn = computed(() => {
       @close="showFiltersModal = false"
     >
       <div class="space-y-4">
+        <!-- Stat Type -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ t('stats.params.stat_type') }}
+          </label>
+          <select
+            v-model="tempStatType"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option v-for="st in statTypes" :key="st.value" :value="st.value">
+              {{ st.label }}
+            </option>
+          </select>
+        </div>
+
         <!-- Season + Limit on same row -->
         <div class="grid grid-cols-2 gap-4">
           <!-- Season -->
@@ -486,34 +524,35 @@ const showRankingColumn = computed(() => {
             </select>
           </div>
 
-          <!-- Limit -->
+          <!-- Limit with +/- buttons -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
               {{ t('stats.params.limit') }}
             </label>
-            <input
-              v-model.number="tempLimit"
-              type="number"
-              min="1"
-              max="500"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            <div class="flex items-center">
+              <button
+                type="button"
+                class="px-3 py-2 border border-gray-300 rounded-l-lg bg-gray-50 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                @click="tempLimit = Math.max(1, tempLimit - 1)"
+              >
+                <UIcon name="heroicons:minus" class="w-4 h-4" />
+              </button>
+              <input
+                v-model.number="tempLimit"
+                type="tel"
+                min="1"
+                max="500"
+                class="w-full px-3 py-2 border-y border-gray-300 bg-white text-gray-900 text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              <button
+                type="button"
+                class="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                @click="tempLimit = Math.min(500, tempLimit + 1)"
+              >
+                <UIcon name="heroicons:plus" class="w-4 h-4" />
+              </button>
+            </div>
           </div>
-        </div>
-
-        <!-- Stat Type -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ t('stats.params.stat_type') }}
-          </label>
-          <select
-            v-model="tempStatType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option v-for="st in statTypes" :key="st.value" :value="st.value">
-              {{ st.label }}
-            </option>
-          </select>
         </div>
 
         <!-- Competitions with optgroups -->
