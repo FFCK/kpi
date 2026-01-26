@@ -718,9 +718,9 @@ class AdminStatsController extends AbstractController
                 AND m.Validation = 'O'
                 GROUP BY nomEquipe, mj.Matric, j.Code_competition
                 ORDER BY lc.Nom, lc.Prenom, competition
-                LIMIT ?";
+                LIMIT $limit";
 
-        $result = $this->connection->executeQuery($sql, [$codeSaison, $limit]);
+        $result = $this->connection->executeQuery($sql, [$codeSaison]);
 
         return array_map(fn($row) => [
             'competition' => $row['competition'],
@@ -751,9 +751,9 @@ class AdminStatsController extends AbstractController
                 AND m.Validation = 'O'
                 GROUP BY nomEquipe, mj.Matric, j.Code_competition
                 ORDER BY lc.Nom, lc.Prenom, competition
-                LIMIT ?";
+                LIMIT $limit";
 
-        $result = $this->connection->executeQuery($sql, [$codeSaison, $limit]);
+        $result = $this->connection->executeQuery($sql, [$codeSaison]);
 
         return array_map(fn($row) => [
             'competition' => $row['competition'],
