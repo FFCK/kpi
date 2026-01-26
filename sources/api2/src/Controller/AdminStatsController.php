@@ -428,7 +428,7 @@ class AdminStatsController extends AbstractController
                 AND f.Id = IF(b.Equipe_A_B='A', c.Id_equipeA, c.Id_equipeB)
                 AND b.Id_evt_match IN ('V','J','R','D')
                 GROUP BY a.Matric
-                ORDER BY fairplay DESC, a.Nom
+                ORDER BY fairplay ASC, a.Nom
                 LIMIT $limit";
 
         $result = $this->connection->executeQuery($sql, [
@@ -468,7 +468,7 @@ class AdminStatsController extends AbstractController
                 AND f.Id = IF(b.Equipe_A_B='A', c.Id_equipeA, c.Id_equipeB)
                 AND b.Id_evt_match IN ('V','J','R','D')
                 GROUP BY equipe
-                ORDER BY fairplay DESC, equipe
+                ORDER BY fairplay ASC, equipe
                 LIMIT $limit";
 
         $result = $this->connection->executeQuery($sql, [
@@ -771,7 +771,9 @@ class AdminStatsController extends AbstractController
     private function getOfficielsJournees(array $compets, string $codeSaison, int $limit): array
     {
         $sql = "SELECT j.Id, j.Code_competition AS competition, j.Libelle AS libelle,
-                j.Lieu AS lieu, j.Date_debut AS dateDebut, j.Date_fin AS dateFin,
+                j.Lieu AS lieu, j.Departement AS departement,
+                j.Date_debut AS dateDebut, j.Date_fin AS dateFin,
+                j.Responsable_insc AS responsableInsc, j.Responsable_R1 AS responsableR1,
                 j.Delegue AS delegue, j.ChefArbitre AS chefArbitre
                 FROM kp_journee j
                 WHERE j.Code_competition IN (:compets)
@@ -792,8 +794,11 @@ class AdminStatsController extends AbstractController
             'competition' => $row['competition'],
             'libelle' => $row['libelle'],
             'lieu' => $row['lieu'],
+            'departement' => $row['departement'],
             'dateDebut' => $row['dateDebut'],
             'dateFin' => $row['dateFin'],
+            'responsableInsc' => $row['responsableInsc'],
+            'responsableR1' => $row['responsableR1'],
             'delegue' => $row['delegue'],
             'chefArbitre' => $row['chefArbitre']
         ], $result->fetchAllAssociative());
@@ -1324,8 +1329,8 @@ class AdminStatsController extends AbstractController
             'CJouees' => ['competition', 'matric', 'nom', 'prenom', 'numeroClub', 'nomClub', 'nbMatchs'],
             'CJouees2', 'CJoueesN', 'CJoueesCF' => ['competition', 'matric', 'nom', 'prenom', 'nomEquipe', 'nbMatchs'],
             'CJouees3' => ['competition', 'matric', 'nom', 'prenom', 'nomEquipe', 'nbMatchs', 'irregularite'],
-            'OfficielsJournees' => ['id', 'competition', 'libelle', 'lieu', 'dateDebut', 'dateFin', 'delegue', 'chefArbitre'],
-            'OfficielsMatchs' => ['id', 'competition', 'lieu', 'dateMatch', 'heureMatch', 'equipeA', 'equipeB', 'arbitrePrincipal', 'arbitreSecondaire'],
+            'OfficielsJournees' => ['id', 'competition', 'libelle', 'lieu', 'departement', 'dateDebut', 'dateFin', 'responsableInsc', 'responsableR1', 'delegue', 'chefArbitre'],
+            'OfficielsMatchs' => ['id', 'competition', 'lieu', 'dateMatch', 'heureMatch', 'numeroOrdre', 'equipeA', 'equipeB', 'arbitrePrincipal', 'arbitreSecondaire', 'ligne1', 'ligne2', 'secretaire', 'chronometre', 'timeshoot'],
             'ListeArbitres' => ['matric', 'nom', 'prenom', 'sexe', 'codeClub', 'club', 'arbitre', 'niveau', 'saison'],
             'ListeEquipes' => ['equipe', 'club', 'cd', 'cr', 'clubActuelJoueurs'],
             'ListeJoueurs', 'ListeJoueurs2' => ['matric', 'nom', 'prenom', 'sexe', 'naissance', 'clubActuel', 'categorie', 'club'],
