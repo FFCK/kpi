@@ -1078,13 +1078,27 @@ class AdminStatsController extends AbstractController
         ]);
         $matches = $result->fetchAllAssociative();
 
+        // Get all teams for referee lookup
+        $sqlTeams = "SELECT Id, Libelle FROM kp_competition_equipe
+                     WHERE Code_compet IN (:compets) AND Code_saison = :saison";
+        $resultTeams = $this->connection->executeQuery($sqlTeams, [
+            'compets' => $compets,
+            'saison' => $codeSaison,
+        ], [
+            'compets' => ArrayParameterType::STRING,
+        ]);
+        $allTeams = [];
+        foreach ($resultTeams->fetchAllAssociative() as $team) {
+            $allTeams[$team['Libelle']] = $team['Id'];
+        }
+
         // Build event list per team
         $eventsPerTeam = [];
 
         foreach ($matches as $row) {
             $datetime = $row['dateMatch'] . ' ' . $row['heureMatch'];
 
-            // Event for team A
+            // Event for team A (match played)
             $eventsPerTeam[$row['idEquipeA']][] = [
                 'type' => 'match',
                 'datetime' => $datetime,
@@ -1096,7 +1110,7 @@ class AdminStatsController extends AbstractController
                 'adversaire' => $row['equipeB']
             ];
 
-            // Event for team B
+            // Event for team B (match played)
             $eventsPerTeam[$row['idEquipeB']][] = [
                 'type' => 'match',
                 'datetime' => $datetime,
@@ -1107,12 +1121,57 @@ class AdminStatsController extends AbstractController
                 'role' => 'Équipe B',
                 'adversaire' => $row['equipeA']
             ];
+
+            // Events for referees (extract team name from referee field)
+            foreach (['principal' => $row['arbitrePrincipal'], 'secondaire' => $row['arbitreSecondaire']] as $typeArb => $arbitre) {
+                if (!empty($arbitre)) {
+                    // Extract team name (format: "Nom Prénom (Équipe)")
+                    if (preg_match('/\(([^)]+)\)/', $arbitre, $matches2)) {
+                        $equipeArbitre = trim($matches2[1]);
+
+                        // Find team ID
+                        $equipeId = null;
+                        $equipeNom = null;
+
+                        // Check if it's team A or B
+                        if (str_contains($row['equipeA'], $equipeArbitre)) {
+                            $equipeId = $row['idEquipeA'];
+                            $equipeNom = $row['equipeA'];
+                        } elseif (str_contains($row['equipeB'], $equipeArbitre)) {
+                            $equipeId = $row['idEquipeB'];
+                            $equipeNom = $row['equipeB'];
+                        } else {
+                            // Search in all teams
+                            foreach ($allTeams as $libelle => $id) {
+                                if (str_contains($libelle, $equipeArbitre) || $libelle === $equipeArbitre) {
+                                    $equipeId = $id;
+                                    $equipeNom = $libelle;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($equipeId !== null) {
+                            $eventsPerTeam[$equipeId][] = [
+                                'type' => 'arbitrage',
+                                'datetime' => $datetime,
+                                'equipe' => $equipeNom,
+                                'matchId' => $row['Id'],
+                                'competition' => $row['competition'],
+                                'lieu' => $row['lieu'],
+                                'role' => 'Arbitre ' . $typeArb,
+                                'match' => $row['equipeA'] . ' vs ' . $row['equipeB']
+                            ];
+                        }
+                    }
+                }
+            }
         }
 
         // Analyze inconsistencies
         $inconsistencies = [];
 
-        foreach ($eventsPerTeam as $teamId => $events) {
+        foreach ($eventsPerTeam as $events) {
             usort($events, fn($a, $b) => strcmp($a['datetime'], $b['datetime']));
 
             for ($i = 0; $i < count($events); $i++) {
@@ -1120,35 +1179,85 @@ class AdminStatsController extends AbstractController
                 $datetimeEvt = strtotime($evt['datetime']);
                 $dateJour = date('Y-m-d', $datetimeEvt);
 
-                // Count matches played same day
-                $matchsJour = array_filter($events, fn($e) =>
-                    $e['type'] == 'match' && date('Y-m-d', strtotime($e['datetime'])) == $dateJour
-                );
-
-                if (count($matchsJour) > 6) {
-                    $alreadyAdded = false;
-                    foreach ($inconsistencies as $inc) {
-                        if ($inc['type'] == 'Plus de 6 matchs/jour' &&
-                            $inc['equipe'] == $evt['equipe'] &&
-                            $inc['date'] == date('d/m/Y', $datetimeEvt)) {
-                            $alreadyAdded = true;
+                // 1. Check if refereeing less than 1h after a match
+                if ($evt['type'] == 'arbitrage' && $i > 0) {
+                    for ($j = $i - 1; $j >= 0; $j--) {
+                        $evtPrev = $events[$j];
+                        if ($evtPrev['type'] == 'match') {
+                            $datetimePrev = strtotime($evtPrev['datetime']);
+                            $diffMinutes = ($datetimeEvt - $datetimePrev) / 60;
+                            if ($diffMinutes > 0 && $diffMinutes < 60) {
+                                $inconsistencies[] = [
+                                    'type' => 'Arbitrage < 1h après match',
+                                    'equipe' => $evt['equipe'],
+                                    'competition' => $evt['competition'],
+                                    'date' => date('d/m/Y', $datetimeEvt),
+                                    'details' => 'Match ' . $evtPrev['role'] . ' vs ' . $evtPrev['adversaire'] .
+                                        ' à ' . date('H:i', $datetimePrev) . ', puis ' . $evt['role'] .
+                                        ' à ' . date('H:i', $datetimeEvt) . ' (' . round($diffMinutes) . ' min)',
+                                    'lieu' => $evt['lieu']
+                                ];
+                            }
                             break;
                         }
                     }
+                }
 
-                    if (!$alreadyAdded) {
-                        $inconsistencies[] = [
-                            'type' => 'Plus de 6 matchs/jour',
-                            'equipe' => $evt['equipe'],
-                            'competition' => $evt['competition'],
-                            'date' => date('d/m/Y', $datetimeEvt),
-                            'details' => count($matchsJour) . ' matchs joués le ' . date('d/m/Y', $datetimeEvt),
-                            'lieu' => $evt['lieu']
-                        ];
+                // 2. Check if match less than 1h after refereeing
+                if ($evt['type'] == 'match' && $i > 0) {
+                    for ($j = $i - 1; $j >= 0; $j--) {
+                        $evtPrev = $events[$j];
+                        if ($evtPrev['type'] == 'arbitrage') {
+                            $datetimePrev = strtotime($evtPrev['datetime']);
+                            $diffMinutes = ($datetimeEvt - $datetimePrev) / 60;
+                            if ($diffMinutes > 0 && $diffMinutes < 60) {
+                                $inconsistencies[] = [
+                                    'type' => 'Match < 1h après arbitrage',
+                                    'equipe' => $evt['equipe'],
+                                    'competition' => $evt['competition'],
+                                    'date' => date('d/m/Y', $datetimeEvt),
+                                    'details' => $evtPrev['role'] . ' à ' . date('H:i', $datetimePrev) .
+                                        ', puis match ' . $evt['role'] . ' vs ' . $evt['adversaire'] .
+                                        ' à ' . date('H:i', $datetimeEvt) . ' (' . round($diffMinutes) . ' min)',
+                                    'lieu' => $evt['lieu']
+                                ];
+                            }
+                            break;
+                        }
                     }
                 }
 
-                // Check more than 3 matches in 4h period
+                // 3. Count matches played same day
+                if ($evt['type'] == 'match') {
+                    $matchsJour = array_filter($events, fn($e) =>
+                        $e['type'] == 'match' && date('Y-m-d', strtotime($e['datetime'])) == $dateJour
+                    );
+
+                    if (count($matchsJour) > 6) {
+                        $alreadyAdded = false;
+                        foreach ($inconsistencies as $inc) {
+                            if ($inc['type'] == 'Plus de 6 matchs/jour' &&
+                                $inc['equipe'] == $evt['equipe'] &&
+                                $inc['date'] == date('d/m/Y', $datetimeEvt)) {
+                                $alreadyAdded = true;
+                                break;
+                            }
+                        }
+
+                        if (!$alreadyAdded) {
+                            $inconsistencies[] = [
+                                'type' => 'Plus de 6 matchs/jour',
+                                'equipe' => $evt['equipe'],
+                                'competition' => $evt['competition'],
+                                'date' => date('d/m/Y', $datetimeEvt),
+                                'details' => count($matchsJour) . ' matchs joués le ' . date('d/m/Y', $datetimeEvt),
+                                'lieu' => $evt['lieu']
+                            ];
+                        }
+                    }
+                }
+
+                // 4. Check more than 3 matches in 4h period
                 if ($evt['type'] == 'match') {
                     $datetimeLimit = $datetimeEvt + (4 * 3600);
                     $matchs4h = [$evt];
@@ -1166,7 +1275,8 @@ class AdminStatsController extends AbstractController
                         foreach ($inconsistencies as $inc) {
                             if ($inc['type'] == 'Plus de 3 matchs/4h' &&
                                 $inc['equipe'] == $evt['equipe'] &&
-                                $inc['date'] == date('d/m/Y', $datetimeEvt)) {
+                                $inc['date'] == date('d/m/Y', $datetimeEvt) &&
+                                $inc['details'] == count($matchs4h) . ' matchs de ' . date('H:i', $datetimeEvt) . ' à ' . date('H:i', strtotime($matchs4h[count($matchs4h) - 1]['datetime']))) {
                                 $alreadyAdded = true;
                                 break;
                             }
