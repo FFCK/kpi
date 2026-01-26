@@ -327,6 +327,12 @@ const selectedCompetitionsSummary = computed(() => {
   return t('stats.params.competitions_count', { count })
 })
 
+// Get tooltip text for competitions when more than 3 are selected
+const selectedCompetitionsTooltip = computed(() => {
+  const count = selectedCompetitions.value.length
+  return count > 3 ? selectedCompetitions.value.join(', ') : ''
+})
+
 // Check if current stat type should show ranking column
 const showRankingColumn = computed(() => {
   const rankedStatTypes = ['Buteurs', 'Cartons', 'Fairplay', 'Arbitres']
@@ -358,7 +364,9 @@ const showRankingColumn = computed(() => {
         <div class="w-px h-4 bg-gray-300" />
         <div class="flex items-center gap-2">
           <span class="text-gray-500">{{ t('stats.params.competitions') }}:</span>
-          <span class="font-semibold text-gray-900">{{ selectedCompetitionsSummary }}</span>
+          <UTooltip :text="selectedCompetitionsTooltip">
+            <span class="font-semibold text-gray-900">{{ selectedCompetitionsSummary }}</span>
+          </UTooltip>
         </div>
         <div class="w-px h-4 bg-gray-300" />
         <div class="flex items-center gap-2">
