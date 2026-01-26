@@ -13,6 +13,9 @@ Documentation orientée utilisateurs finaux et fonctionnalités du système.
 - **[MATCH_DAY_BULK_OPERATIONS.md](user/MATCH_DAY_BULK_OPERATIONS.md)** - Opérations de masse sur les matchs (publication, validation, suppression)
 - **[BULK_COMPETITION_COPY.md](user/BULK_COMPETITION_COPY.md)** - Copie en masse de compétitions entre saisons (avec journées et matchs)
 
+### Nouvelle Interface Administration (app4)
+- **[ADMIN_STATISTICS.md](user/ADMIN_STATISTICS.md)** - Statistiques - Nouvelle interface (22 types, exports PDF/Excel)
+
 ### Fonctionnalités Spécifiques
 - **[MATCH_CONSISTENCY_STATS.md](user/MATCH_CONSISTENCY_STATS.md)** - Statistiques de cohérence des matchs
 - **[CONSOLIDATION_PHASES_CLASSEMENT.md](user/CONSOLIDATION_PHASES_CLASSEMENT.md)** - Consolidation des phases de classement
@@ -143,11 +146,11 @@ Documentation technique pour le développement et la maintenance du projet.
 
 ## 📊 Statistiques
 
-- **Total documents**: 68+ fichiers
-- **Documentation utilisateur**: 10 fichiers
+- **Total documents**: 70+ fichiers
+- **Documentation utilisateur**: 11 fichiers
 - **Documentation développeur**: 60+ fichiers (dont 3 références)
-- **Lignes de documentation**: ~24000+
-- **Dernière mise à jour**: 2026-01-03
+- **Lignes de documentation**: ~25000+
+- **Dernière mise à jour**: 2026-01-26
 
 ---
 

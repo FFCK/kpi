@@ -317,6 +317,117 @@ PUT  /wsm/stats                       Add match statistics
 }
 ```
 
+## Admin Endpoints (JWT Protected)
+
+**Authentication:** All admin endpoints require a valid JWT token obtained from `/auth/login`
+
+**Token transmission:** Use `Authorization: Bearer {token}` header
+
+### JWT Authentication
+```
+POST /auth/login
+```
+
+**Request:**
+```json
+{
+  "username": "admin",
+  "password": "password"
+}
+```
+
+**Response:**
+```json
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...",
+  "user": {
+    "id": 123456,
+    "name": "Admin",
+    "firstname": "Super",
+    "profile": 1
+  }
+}
+```
+
+### Admin Events
+```
+GET    /admin/events              Get all events (paginated)
+POST   /admin/events              Create event
+GET    /admin/events/{id}         Get single event
+PUT    /admin/events/{id}         Update event
+DELETE /admin/events/{id}         Delete event (profile <= 1)
+PATCH  /admin/events/{id}/publish Toggle publication
+PATCH  /admin/events/{id}/app     Toggle app visibility
+DELETE /admin/events/bulk         Bulk delete events
+```
+
+**Query Parameters (GET list):**
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 20, max: 100)
+- `search` - Search in libelle/lieu
+
+### Admin Statistics
+```
+GET /admin/stats/filters          Get available filters
+GET /admin/stats/data             Get statistics data
+GET /admin/stats/export/xlsx      Export as Excel
+GET /admin/stats/export/pdf       Export as PDF
+```
+
+**Query Parameters (filters):**
+- `season` - Season code (optional, uses active season if not provided)
+
+**Query Parameters (data/export):**
+- `season` - Season code
+- `type` - Stat type (Buteurs, Attaque, Defense, etc.)
+- `competitions[]` - Array of competition codes
+- `limit` - Max results (1-500, default: 30)
+- `labels` - JSON-encoded column labels for export (optional)
+- `title` - Translated stat type name for export (optional)
+- `timezone` - User timezone for PDF date (optional)
+- `locale` - User locale for PDF translations (optional)
+
+**Available Stat Types:**
+- `Buteurs` - Top scorers
+- `Attaque` - Team attack stats
+- `Defense` - Team defense stats
+- `Cartons` - Individual cards
+- `CartonsEquipe` - Team cards
+- `CartonsCompetition` - Competition cards summary
+- `Fairplay` - Individual fairplay score
+- `FairplayEquipe` - Team fairplay score
+- `Arbitrage` - Individual refereeing stats
+- `ArbitrageEquipe` - Team refereeing stats
+- `CJouees` - Matches played (by club)
+- `CJouees2` - Matches played (by team)
+- `CJouees3` - Irregularities (profile <= 6)
+- `CJoueesN` - National competitions
+- `CJoueesCF` - French Cup
+- `OfficielsJournees` - Officials per matchday
+- `OfficielsMatchs` - Officials per match
+- `ListeArbitres` - Referees list
+- `ListeEquipes` - Teams list
+- `ListeJoueurs` - Players list
+- `ListeJoueurs2` - Players & coaches list
+- `LicenciesNationaux` - National licensees (profile <= 6)
+- `CoherenceMatchs` - Match consistency check (profile <= 6)
+
+**Example with curl:**
+```bash
+# Get filters
+curl -X GET "https://kpi.localhost/api2/admin/stats/filters?season=2025" \
+  -H "Authorization: Bearer eyJ..."
+
+# Get data
+curl -X GET "https://kpi.localhost/api2/admin/stats/data?season=2025&type=Buteurs&competitions[]=N1&competitions[]=N2&limit=50" \
+  -H "Authorization: Bearer eyJ..."
+
+# Export Excel
+curl -X GET "https://kpi.localhost/api2/admin/stats/export/xlsx?season=2025&type=Buteurs&competitions[]=N1" \
+  -H "Authorization: Bearer eyJ..." \
+  -o stats.xlsx
+```
+
 ## HTTP Status Codes
 
 - `200` - Success

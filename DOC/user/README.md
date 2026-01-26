@@ -56,6 +56,15 @@ Cette section contient la documentation orientée utilisateurs finaux du systèm
   - Configuration et utilisation
   - **Statut**: ✅ En production
 
+### Nouvelle Interface Administration (app4)
+
+- **[ADMIN_STATISTICS.md](ADMIN_STATISTICS.md)** - **Statistiques - Nouvelle Interface**
+  - 22 types de statistiques disponibles
+  - Export Excel et PDF avec traductions
+  - Interface responsive (mobile/desktop)
+  - Paramètres sauvegardés
+  - **Statut**: ✅ En production
+
 ### Fonctionnalités Spécifiques
 
 - **[CONSOLIDATION_PHASES_CLASSEMENT.md](CONSOLIDATION_PHASES_CLASSEMENT.md)** - **Consolidation des phases de classement**

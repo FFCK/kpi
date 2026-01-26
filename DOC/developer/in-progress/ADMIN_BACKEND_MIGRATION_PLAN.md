@@ -467,7 +467,7 @@ JWT_PASSPHRASE=votre_passphrase
 |---|----------|-----------|--------|--------|
 | 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté (en test) |
 | 2 | GestionDoc | `/documents` | ≤ 9 | ⏳ À faire |
-| 3 | GestionStats | `/statistics` | ≤ 9 | ⏳ À faire |
+| 3 | GestionStats | `/stats` | ≤ 9 | ✅ Implémenté |
 | 4 | GestionOperations | `/operations` | = 1 | ⏳ À faire |
 
 Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migration.
@@ -530,6 +530,82 @@ Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migr
 
 ---
 
+## Annexe B : Analyse fonctionnelle - GestionStats
+
+### Fonctionnalités existantes
+
+| # | Fonctionnalité | Profil | Évaluation | Décision |
+|---|----------------|--------|------------|----------|
+| 1 | Sélection saison | ≤ 9 | Essentielle | ✅ Conserver |
+| 2 | Sélection compétitions multiples | ≤ 9 | Essentielle | ✅ Conserver |
+| 3 | 22 types de statistiques | ≤ 9 | Essentielle | ✅ Conserver |
+| 4 | Restriction certaines stats (profil ≤ 6) | ≤ 6 | Sécurité | ✅ Conserver |
+| 5 | Export Excel | ≤ 9 | Essentielle | ✅ Conserver |
+| 6 | Export PDF | ≤ 9 | Essentielle | 🔧 Améliorer |
+| 7 | Limite de résultats | ≤ 9 | Utile | ✅ Conserver |
+| 8 | Colonne de classement (#) | - | Utile | ✅ Conserver |
+
+### Améliorations implémentées
+
+| # | Amélioration | Description |
+|---|--------------|-------------|
+| 1 | Interface responsive | Adapté mobile/tablet/desktop |
+| 2 | Descriptions des stats | Explication de chaque type de statistique |
+| 3 | Traductions exports | PDF et Excel traduits selon langue interface |
+| 4 | En-tête PDF | Logo KPI, titre, site web |
+| 5 | Pied de page PDF | Date/heure locale, numéro de page |
+| 6 | Compétitions groupées | Sections (National, CF, Régional, etc.) |
+| 7 | Persistance paramètres | Sauvegarde et restauration automatique |
+| 8 | Tooltip compétitions | Affiche détail si > 3 sélectionnées |
+| 9 | Modal paramétrage | Interface claire avec descriptions |
+
+### Types de statistiques
+
+| # | Type | Colonnes | Classement |
+|---|------|----------|------------|
+| 1 | Buteurs | competition, licence, nom, prenom, sexe, numero, equipe, buts | ✅ |
+| 2 | Attaque | competition, equipe, buts | |
+| 3 | Défense | competition, equipe, buts | |
+| 4 | Cartons | competition, licence, nom, prenom, sexe, numero, equipe, vert, jaune, rouge, rougeDefinitif | ✅ |
+| 5 | CartonsEquipe | competition, equipe, vert, jaune, rouge, rougeDefinitif | |
+| 6 | CartonsCompetition | competition, matchs, buts, vert, jaune, rouge, rougeDefinitif | |
+| 7 | Fairplay | competition, licence, nom, prenom, sexe, numero, equipe, fairplay | ✅ |
+| 8 | FairplayEquipe | competition, equipe, fairplay | |
+| 9 | Arbitrage | competition, licence, nom, prenom, sexe, principal, secondaire, total | ✅ |
+| 10 | ArbitrageEquipe | competition, equipe, principal, secondaire, total | |
+| 11 | CJouees | competition, matric, nom, prenom, numeroClub, nomClub, nbMatchs | |
+| 12 | CJouees2 | competition, matric, nom, prenom, nomEquipe, nbMatchs | |
+| 13 | CJouees3 | competition, matric, nom, prenom, nomEquipe, nbMatchs, irregularite | |
+| 14 | CJoueesN | competition, matric, nom, prenom, nomEquipe, nbMatchs | |
+| 15 | CJoueesCF | competition, matric, nom, prenom, nomEquipe, nbMatchs | |
+| 16 | OfficielsJournees | id, competition, libelle, lieu, departement, dateDebut, dateFin, responsableInsc, responsableR1, delegue, chefArbitre | |
+| 17 | OfficielsMatchs | id, competition, lieu, dateMatch, heureMatch, numeroOrdre, equipeA, equipeB, arbitrePrincipal, arbitreSecondaire, ligne1, ligne2, secretaire, chronometre, timeshoot | |
+| 18 | ListeArbitres | matric, nom, prenom, sexe, codeClub, club, arbitre, niveau, saison | |
+| 19 | ListeEquipes | equipe, club, cd, cr, clubActuelJoueurs | |
+| 20 | ListeJoueurs | matric, nom, prenom, sexe, naissance, clubActuel, categorie, club | |
+| 21 | ListeJoueurs2 | matric, nom, prenom, sexe, naissance, clubActuel, categorie, club | |
+| 22 | LicenciesNationaux | saison, hommesU16...femmesTotal, totalActivite | |
+| 23 | CoherenceMatchs | type, equipe, competition, date, lieu, details | |
+
+### Endpoints API2
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/admin/stats/filters` | Filtres disponibles (saisons, compétitions, types) |
+| GET | `/admin/stats/data` | Données statistiques |
+| GET | `/admin/stats/export/xlsx` | Export Excel |
+| GET | `/admin/stats/export/pdf` | Export PDF |
+
+### Statut d'implémentation
+
+- ✅ Tous les types de statistiques implémentés
+- ✅ Exports PDF et Excel avec traductions
+- ✅ Interface responsive
+- ✅ Sauvegarde des paramètres
+- ✅ Restrictions par profil
+
+---
+
 **Document créé le** : 2026-01-02
-**Dernière mise à jour** : 2026-01-02
-**Statut** : ✅ Phase 1-6 implémentées - Prêt pour tests
+**Dernière mise à jour** : 2026-01-26
+**Statut** : ✅ Phase 1-6 implémentées - Events et Stats terminés
