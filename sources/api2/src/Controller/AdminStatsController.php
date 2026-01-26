@@ -62,7 +62,7 @@ class AdminStatsController extends AbstractController
             $label = $sections[$section] ?? 'Autres';
             if (!isset($groupedCompetitions[$section])) {
                 $groupedCompetitions[$section] = [
-                    'label' => $label,
+                    'labelKey' => $label,
                     'options' => []
                 ];
             }
@@ -1335,7 +1335,7 @@ class AdminStatsController extends AbstractController
             'ListeEquipes' => ['equipe', 'club', 'cd', 'cr', 'clubActuelJoueurs'],
             'ListeJoueurs', 'ListeJoueurs2' => ['matric', 'nom', 'prenom', 'sexe', 'naissance', 'clubActuel', 'categorie', 'club'],
             'LicenciesNationaux' => ['saison', 'hommesU16', 'hommesU18', 'hommesU23', 'hommesU35', 'hommesPlus35', 'hommesTotal', 'femmesU16', 'femmesU18', 'femmesU23', 'femmesU35', 'femmesPlus35', 'femmesTotal', 'totalActivite'],
-            'CoherenceMatchs' => ['type', 'equipe', 'competition', 'date', 'details', 'lieu'],
+            'CoherenceMatchs' => ['type', 'equipe', 'competition', 'date', 'lieu', 'details'],
             default => []
         };
     }
@@ -1346,29 +1346,29 @@ class AdminStatsController extends AbstractController
     private function getStatTypes(): array
     {
         return [
-            ['value' => 'Buteurs', 'label' => 'Buteurs', 'restricted' => false],
-            ['value' => 'Attaque', 'label' => 'Attaque', 'restricted' => false],
-            ['value' => 'Defense', 'label' => 'Défense', 'restricted' => false],
-            ['value' => 'Cartons', 'label' => 'Cartons (joueurs)', 'restricted' => false],
-            ['value' => 'CartonsEquipe', 'label' => 'Cartons (équipes)', 'restricted' => false],
-            ['value' => 'CartonsCompetition', 'label' => 'Cartons (compétitions)', 'restricted' => false],
-            ['value' => 'Fairplay', 'label' => 'Fairplay (joueurs)', 'restricted' => false],
-            ['value' => 'FairplayEquipe', 'label' => 'Fairplay (équipes)', 'restricted' => false],
-            ['value' => 'Arbitrage', 'label' => 'Arbitrage (arbitres)', 'restricted' => false],
-            ['value' => 'ArbitrageEquipe', 'label' => 'Arbitrage (équipes)', 'restricted' => false],
-            ['value' => 'CJouees', 'label' => 'Compétitions jouées (clubs)', 'restricted' => false],
-            ['value' => 'CJouees2', 'label' => 'Compétitions jouées (équipes)', 'restricted' => false],
-            ['value' => 'CJouees3', 'label' => 'Irrégularités', 'restricted' => true],
-            ['value' => 'CJoueesN', 'label' => 'Compétitions nationales', 'restricted' => false],
-            ['value' => 'CJoueesCF', 'label' => 'Coupe de France', 'restricted' => false],
-            ['value' => 'OfficielsJournees', 'label' => 'Officiels (journées)', 'restricted' => false],
-            ['value' => 'OfficielsMatchs', 'label' => 'Officiels (matchs)', 'restricted' => false],
-            ['value' => 'ListeArbitres', 'label' => 'Liste des arbitres', 'restricted' => false],
-            ['value' => 'ListeEquipes', 'label' => 'Liste des équipes', 'restricted' => false],
-            ['value' => 'ListeJoueurs', 'label' => 'Liste des joueurs', 'restricted' => false],
-            ['value' => 'ListeJoueurs2', 'label' => 'Liste joueurs & coachs', 'restricted' => false],
-            ['value' => 'LicenciesNationaux', 'label' => 'Licenciés nationaux', 'restricted' => true],
-            ['value' => 'CoherenceMatchs', 'label' => 'Cohérence matchs', 'restricted' => true],
+            ['value' => 'Buteurs', 'labelKey' => 'stats.types.buteurs', 'restricted' => false],
+            ['value' => 'Attaque', 'labelKey' => 'stats.types.attaque', 'restricted' => false],
+            ['value' => 'Defense', 'labelKey' => 'stats.types.defense', 'restricted' => false],
+            ['value' => 'Cartons', 'labelKey' => 'stats.types.cartons_joueurs', 'restricted' => false],
+            ['value' => 'CartonsEquipe', 'labelKey' => 'stats.types.cartons_equipes', 'restricted' => false],
+            ['value' => 'CartonsCompetition', 'labelKey' => 'stats.types.cartons_competitions', 'restricted' => false],
+            ['value' => 'Fairplay', 'labelKey' => 'stats.types.fairplay_joueurs', 'restricted' => false],
+            ['value' => 'FairplayEquipe', 'labelKey' => 'stats.types.fairplay_equipes', 'restricted' => false],
+            ['value' => 'Arbitrage', 'labelKey' => 'stats.types.arbitrage_arbitres', 'restricted' => false],
+            ['value' => 'ArbitrageEquipe', 'labelKey' => 'stats.types.arbitrage_equipes', 'restricted' => false],
+            ['value' => 'CJouees', 'labelKey' => 'stats.types.competitions_jouees_clubs', 'restricted' => false],
+            ['value' => 'CJouees2', 'labelKey' => 'stats.types.competitions_jouees_equipes', 'restricted' => false],
+            ['value' => 'CJoueesN', 'labelKey' => 'stats.types.competitions_nationales', 'restricted' => false],
+            ['value' => 'CJoueesCF', 'labelKey' => 'stats.types.coupe_france', 'restricted' => false],
+            ['value' => 'OfficielsJournees', 'labelKey' => 'stats.types.officiels_journees', 'restricted' => false],
+            ['value' => 'OfficielsMatchs', 'labelKey' => 'stats.types.officiels_matchs', 'restricted' => false],
+            ['value' => 'CJouees3', 'labelKey' => 'stats.types.irregularites', 'restricted' => true],
+            ['value' => 'ListeArbitres', 'labelKey' => 'stats.types.liste_arbitres', 'restricted' => false],
+            ['value' => 'ListeEquipes', 'labelKey' => 'stats.types.liste_equipes', 'restricted' => false],
+            ['value' => 'ListeJoueurs', 'labelKey' => 'stats.types.liste_joueurs', 'restricted' => false],
+            ['value' => 'ListeJoueurs2', 'labelKey' => 'stats.types.liste_joueurs_coachs', 'restricted' => false],
+            ['value' => 'LicenciesNationaux', 'labelKey' => 'stats.types.licencies_nationaux', 'restricted' => true],
+            ['value' => 'CoherenceMatchs', 'labelKey' => 'stats.types.coherence_matchs', 'restricted' => true],
         ];
     }
 
@@ -1378,12 +1378,12 @@ class AdminStatsController extends AbstractController
     private function getSections(): array
     {
         return [
-            1 => 'Championnat National',
-            2 => 'Coupe de France',
-            3 => 'Championnat Régional',
-            4 => 'Championnat Départemental',
-            5 => 'Autres compétitions',
-            6 => 'International',
+            1 => 'stats.sections.championnat_national',
+            2 => 'stats.sections.coupe_france',
+            3 => 'stats.sections.championnat_regional',
+            4 => 'stats.sections.championnat_departemental',
+            5 => 'stats.sections.autres_competitions',
+            6 => 'stats.sections.international',
         ];
     }
 }

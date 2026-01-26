@@ -12,12 +12,12 @@ const statsStore = useStatsStore()
 // Types
 interface StatType {
   value: string
-  label: string
+  labelKey: string
   restricted: boolean
 }
 
 interface CompetitionGroup {
-  label: string
+  labelKey: string
   options: { code: string; libelle: string }[]
 }
 
@@ -308,7 +308,7 @@ const mobileColumns = computed(() => columns.value.filter(c => c !== 'nom' && c 
 // Get stat type label
 const getStatTypeLabel = computed(() => {
   const st = statTypes.value.find(s => s.value === selectedStatType.value)
-  return st?.label || selectedStatType.value
+  return st ? t(st.labelKey) : selectedStatType.value
 })
 
 // Get stat type description
@@ -533,7 +533,7 @@ const showRankingColumn = computed(() => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option v-for="st in statTypes" :key="st.value" :value="st.value">
-              {{ st.label }}
+              {{ t(st.labelKey) }}
             </option>
           </select>
           <p v-if="getTempStatTypeDescription" class="mt-1 text-xs text-gray-500 italic">
@@ -603,8 +603,8 @@ const showRankingColumn = computed(() => {
           >
             <optgroup
               v-for="group in competitionGroups"
-              :key="group.label"
-              :label="group.label"
+              :key="group.labelKey"
+              :label="t(group.labelKey)"
             >
               <option
                 v-for="comp in group.options"
