@@ -99,7 +99,8 @@ const loadFilters = async () => {
     toast.add({
       title: t('common.error'),
       description: message,
-      color: 'red'
+      color: 'error',
+      duration: 3000
     })
   } finally {
     loadingFilters.value = false
@@ -133,7 +134,8 @@ const loadStats = async () => {
     toast.add({
       title: t('common.error'),
       description: message,
-      color: 'red'
+      color: 'error',
+      duration: 3000
     })
     data.value = []
     columns.value = []

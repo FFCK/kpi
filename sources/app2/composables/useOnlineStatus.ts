@@ -1,4 +1,5 @@
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useToast } from '#imports'
 
 // Global state to ensure single initialization
 const isOnline = ref(true)
@@ -18,7 +19,7 @@ export const useOnlineStatus = () => {
         id: 'online-status',
         title: t('status.BackOnline'),
         icon: 'i-heroicons-wifi',
-        color: 'green',
+        color: 'success',
         duration: 3000
       })
       wasOffline.value = false
@@ -35,7 +36,7 @@ export const useOnlineStatus = () => {
       title: t('status.Offline'),
       description: t('status.OfflineDescription'),
       icon: 'i-heroicons-signal-slash',
-      color: 'yellow',
+      color: 'warning',
       duration: 5000
     })
   }

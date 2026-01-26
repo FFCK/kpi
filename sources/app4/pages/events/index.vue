@@ -72,7 +72,8 @@ const loadEvents = async () => {
     toast.add({
       title: t('common.error'),
       description: message,
-      color: 'red'
+      color: 'error',
+      duration: 3000
     })
   } finally {
     loading.value = false
@@ -179,7 +180,8 @@ const saveEvent = async () => {
       toast.add({
         title: t('common.success'),
         description: t('events.success_updated'),
-        color: 'green'
+        color: 'success',
+        duration: 3000
       })
     } else {
       // Create
@@ -187,7 +189,8 @@ const saveEvent = async () => {
       toast.add({
         title: t('common.success'),
         description: t('events.success_created'),
-        color: 'green'
+        color: 'success',
+        duration: 3000
       })
     }
     closeModal()
@@ -208,7 +211,8 @@ const togglePublication = async (event: Event) => {
     toast.add({
       title: t('common.error'),
       description: (error as { message?: string })?.message || 'Erreur',
-      color: 'red'
+      color: 'error',
+      duration: 3000
     })
   }
 }
@@ -222,7 +226,8 @@ const toggleApp = async (event: Event) => {
     toast.add({
       title: t('common.error'),
       description: (error as { message?: string })?.message || 'Erreur',
-      color: 'red'
+      color: 'error',
+      duration: 3000
     })
   }
 }
@@ -242,7 +247,8 @@ const confirmDelete = async () => {
     toast.add({
       title: t('common.success'),
       description: t('events.success_deleted'),
-      color: 'green'
+      color: 'success',
+      duration: 3000
     })
     deleteModalOpen.value = false
     eventToDelete.value = null
@@ -251,7 +257,8 @@ const confirmDelete = async () => {
     toast.add({
       title: t('common.error'),
       description: (error as { message?: string })?.message || t('events.error_delete'),
-      color: 'red'
+      color: 'error',
+      duration: 3000
     })
   } finally {
     isDeleting.value = false
@@ -273,7 +280,8 @@ const confirmBulkDelete = async () => {
     toast.add({
       title: t('common.success'),
       description: `${selectedIds.value.length} événement(s) supprimé(s)`,
-      color: 'green'
+      color: 'success',
+      duration: 3000
     })
     bulkDeleteModalOpen.value = false
     selectedIds.value = []
@@ -283,7 +291,8 @@ const confirmBulkDelete = async () => {
     toast.add({
       title: t('common.error'),
       description: (error as { message?: string })?.message || t('events.error_delete'),
-      color: 'red'
+      color: 'error',
+      duration: 3000
     })
   } finally {
     isDeleting.value = false
