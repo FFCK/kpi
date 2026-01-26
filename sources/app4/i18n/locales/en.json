@@ -117,6 +117,8 @@
       "configure": "Settings",
       "change": "Change",
       "apply": "Apply",
+      "export_xlsx": "Export Excel",
+      "export_pdf": "Export PDF",
       "season": "Season",
       "stat_type": "Stat type",
       "competitions": "Competitions",

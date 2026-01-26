@@ -340,6 +340,77 @@ const showRankingColumn = computed(() => {
   const rankedStatTypes = ['Buteurs', 'Cartons', 'Fairplay', 'Arbitres']
   return rankedStatTypes.includes(selectedStatType.value)
 })
+
+// Export functions
+const exportingXlsx = ref(false)
+const exportingPdf = ref(false)
+
+const getExportParams = (): Record<string, string> => {
+  const params: Record<string, string> = {
+    season: selectedSeason.value,
+    type: selectedStatType.value,
+    limit: String(limit.value),
+    labels: JSON.stringify(columnLabels.value),
+    title: getStatTypeLabel.value
+  }
+  return params
+}
+
+const getExportUrl = (format: 'xlsx' | 'pdf'): string => {
+  const params = new URLSearchParams()
+  const exportParams = getExportParams()
+  Object.entries(exportParams).forEach(([key, value]) => {
+    params.set(key, value)
+  })
+  selectedCompetitions.value.forEach(c => params.append('competitions[]', c))
+  return `/admin/stats/export/${format}?${params.toString()}`
+}
+
+const exportXlsx = async () => {
+  if (selectedCompetitions.value.length === 0) return
+  exportingXlsx.value = true
+  try {
+    const url = getExportUrl('xlsx')
+    const response = await api.getBlob(url)
+    const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `stats_${selectedStatType.value}_${new Date().toISOString().slice(0, 10)}.xlsx`
+    link.click()
+    URL.revokeObjectURL(link.href)
+  } catch (error) {
+    toast.add({
+      title: t('common.error'),
+      description: t('stats.error_export'),
+      color: 'error'
+    })
+  } finally {
+    exportingXlsx.value = false
+  }
+}
+
+const exportPdf = async () => {
+  if (selectedCompetitions.value.length === 0) return
+  exportingPdf.value = true
+  try {
+    const url = getExportUrl('pdf')
+    const response = await api.getBlob(url)
+    const blob = new Blob([response], { type: 'application/pdf' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `stats_${selectedStatType.value}_${new Date().toISOString().slice(0, 10)}.pdf`
+    link.click()
+    URL.revokeObjectURL(link.href)
+  } catch (error) {
+    toast.add({
+      title: t('common.error'),
+      description: t('stats.error_export'),
+      color: 'error'
+    })
+  } finally {
+    exportingPdf.value = false
+  }
+}
 </script>
 
 <template>
@@ -375,7 +446,29 @@ const showRankingColumn = computed(() => {
           <span class="text-gray-500">{{ t('stats.params.limit') }}:</span>
           <span class="font-semibold text-gray-900">{{ limit }}</span>
         </div>
-        <div class="ml-auto">
+        <div class="ml-auto flex items-center gap-2">
+          <!-- Export buttons -->
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="selectedCompetitions.length === 0 || exportingXlsx"
+            @click="exportXlsx"
+          >
+            <UIcon v-if="exportingXlsx" name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
+            <UIcon v-else name="heroicons:table-cells" class="w-4 h-4" />
+            {{ t('stats.params.export_xlsx') }}
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="selectedCompetitions.length === 0 || exportingPdf"
+            @click="exportPdf"
+          >
+            <UIcon v-if="exportingPdf" name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
+            <UIcon v-else name="heroicons:document-text" class="w-4 h-4" />
+            {{ t('stats.params.export_pdf') }}
+          </button>
+          <!-- Parameters button -->
           <button
             type="button"
             class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm text-sm"

@@ -259,11 +259,73 @@ export const useApi = () => {
     return apiFetch<T>(endpoint, { method: 'DELETE' })
   }
 
+  // GET request returning Blob (for file downloads)
+  const getBlob = async (endpoint: string): Promise<ArrayBuffer> => {
+    const url = `${baseUrl}${endpoint}`
+    let response: Response | null = null
+    let fetchError: Error | null = null
+
+    try {
+      response = await Promise.race([
+        fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': authStore.token ? `Bearer ${authStore.token}` : ''
+          }
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Request timeout')), REQUEST_TIMEOUT_MS)
+        )
+      ])
+
+      if (!response.ok) {
+        const errorType = detectErrorType(null, response)
+
+        if (errorType === ErrorType.HTTP_401) {
+          const now = Date.now()
+          if (now - last401Time > THROTTLE_401_MS) {
+            last401Time = now
+            toast.add({
+              title: t('errors.http.401.title'),
+              description: t('errors.http.401.description'),
+              icon: 'i-heroicons-shield-exclamation',
+              color: 'error',
+              duration: 3000
+            })
+          }
+          authStore.clearAuth()
+          navigateTo('/login')
+          throw new Error('Session expired')
+        }
+
+        if (errorType) {
+          showErrorToast(errorType, response.status)
+        }
+
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      return response.arrayBuffer()
+    } catch (err) {
+      fetchError = err as Error
+
+      if (!response || response.ok) {
+        const errorType = detectErrorType(fetchError, null)
+        if (errorType) {
+          showErrorToast(errorType)
+        }
+      }
+
+      throw fetchError
+    }
+  }
+
   return {
     get,
     post,
     put,
     patch,
-    del
+    del,
+    getBlob
   }
 }

@@ -4,9 +4,14 @@ namespace App\Controller;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Mpdf\Mpdf;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -162,6 +167,294 @@ class AdminStatsController extends AbstractController
                 'count' => count($data)
             ]
         ]);
+    }
+
+    /**
+     * Export stats data as XLSX
+     */
+    #[Route('/export/xlsx', name: 'admin_stats_export_xlsx', methods: ['GET'])]
+    public function exportXlsx(Request $request): StreamedResponse
+    {
+        $exportData = $this->getExportData($request);
+        if ($exportData instanceof JsonResponse) {
+            // Access denied - return empty file
+            return new StreamedResponse(function() {}, 403);
+        }
+
+        [$title, $columns, $data, $columnLabels] = $exportData;
+        $statType = $request->query->get('type', 'Buteurs');
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle(substr($title, 0, 31)); // Max 31 chars for sheet name
+
+        // Header row
+        $col = 1;
+        foreach ($columns as $column) {
+            $sheet->setCellValue([$col, 1], $columnLabels[$column] ?? $column);
+            $col++;
+        }
+        // Style header row (bold)
+        $lastColLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($columns));
+        $sheet->getStyle("A1:{$lastColLetter}1")->getFont()->setBold(true);
+
+        // Data rows
+        $row = 2;
+        foreach ($data as $item) {
+            $col = 1;
+            foreach ($columns as $column) {
+                $value = $item[$column] ?? '';
+                $sheet->setCellValue([$col, $row], $value);
+                $col++;
+            }
+            $row++;
+        }
+
+        // Auto-size columns
+        foreach (range(1, count($columns)) as $col) {
+            $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
+            $sheet->getColumnDimension($colLetter)->setAutoSize(true);
+        }
+
+        $filename = sprintf('stats_%s_%s.xlsx', $statType, date('Y-m-d_His'));
+
+        return new StreamedResponse(
+            function() use ($spreadsheet) {
+                $writer = new Xlsx($spreadsheet);
+                $writer->save('php://output');
+            },
+            200,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+                'Cache-Control' => 'max-age=0',
+            ]
+        );
+    }
+
+    /**
+     * Export stats data as PDF
+     */
+    #[Route('/export/pdf', name: 'admin_stats_export_pdf', methods: ['GET'])]
+    public function exportPdf(Request $request): Response
+    {
+        $exportData = $this->getExportData($request);
+        if ($exportData instanceof JsonResponse) {
+            return new Response('Access denied', 403);
+        }
+
+        [$title, $columns, $data, $columnLabels] = $exportData;
+        $statType = $request->query->get('type', 'Buteurs');
+
+        // Build HTML table
+        $html = '<style>
+            body { font-family: DejaVu Sans, sans-serif; font-size: 9pt; }
+            h1 { font-size: 14pt; margin-bottom: 10px; }
+            table { width: 100%; border-collapse: collapse; }
+            th { background-color: #f0f0f0; font-weight: bold; text-align: left; padding: 5px; border: 1px solid #ccc; }
+            td { padding: 4px; border: 1px solid #ccc; }
+            tr:nth-child(even) { background-color: #f9f9f9; }
+            .numeric { text-align: right; }
+        </style>';
+
+        $html .= sprintf('<h1>%s</h1>', htmlspecialchars($title));
+        $html .= sprintf('<p>%s - %d</p>', date('d/m/Y H:i'), count($data));
+
+        $html .= '<table><thead><tr>';
+        foreach ($columns as $column) {
+            $html .= sprintf('<th>%s</th>', htmlspecialchars($columnLabels[$column] ?? $column));
+        }
+        $html .= '</tr></thead><tbody>';
+
+        $numericColumns = ['buts', 'vert', 'jaune', 'rouge', 'rougeDefinitif', 'fairplay',
+            'principal', 'secondaire', 'total', 'nbMatchs', 'matchs', 'numero', 'numeroOrdre', 'id'];
+
+        foreach ($data as $item) {
+            $html .= '<tr>';
+            foreach ($columns as $column) {
+                $value = $item[$column] ?? '';
+                $class = in_array($column, $numericColumns) ? ' class="numeric"' : '';
+                $html .= sprintf('<td%s>%s</td>', $class, htmlspecialchars((string)$value));
+            }
+            $html .= '</tr>';
+        }
+        $html .= '</tbody></table>';
+
+        // Create PDF
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L', // Landscape for wide tables
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 10,
+        ]);
+
+        $mpdf->SetTitle($statType);
+        $mpdf->WriteHTML($html);
+
+        $filename = sprintf('stats_%s_%s.pdf', $statType, date('Y-m-d_His'));
+
+        return new Response(
+            $mpdf->Output($filename, 'S'),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+            ]
+        );
+    }
+
+    /**
+     * Get data for export (shared logic between XLSX and PDF)
+     */
+    private function getExportData(Request $request): array|JsonResponse
+    {
+        $codeSaison = $request->query->get('season');
+        $compets = $request->query->all('competitions');
+        if (is_string($compets)) {
+            $compets = $compets !== '' ? array_map('trim', explode(',', $compets)) : [];
+        }
+        $statType = $request->query->get('type', 'Buteurs');
+        $limit = min(500, max(1, (int) $request->query->get('limit', 30)));
+
+        // Get translated labels from frontend (if provided)
+        $labelsJson = $request->query->get('labels', '');
+        $frontendLabels = $labelsJson ? json_decode($labelsJson, true) : [];
+
+        // Get translated title from frontend (if provided)
+        $title = $request->query->get('title', $statType);
+
+        // Get active season if not provided
+        if (!$codeSaison) {
+            $sql = "SELECT Code FROM kp_saison WHERE Actif = 'O' LIMIT 1";
+            $result = $this->connection->executeQuery($sql);
+            $codeSaison = $result->fetchOne() ?: date('Y');
+        }
+
+        // Check profile restrictions
+        $user = $this->getUser();
+        $profile = $user instanceof \App\Entity\User ? $user->getNiveau() : 10;
+        $restrictedTypes = ['CJouees3', 'LicenciesNationaux', 'CoherenceMatchs'];
+        if ($profile > 6 && in_array($statType, $restrictedTypes)) {
+            return $this->json(['message' => 'Access denied for this stat type'], 403);
+        }
+
+        // Get data
+        $data = match($statType) {
+            'Buteurs' => $this->getButeurs($compets, $codeSaison, $limit),
+            'Attaque' => $this->getAttaque($compets, $codeSaison, $limit),
+            'Defense' => $this->getDefense($compets, $codeSaison, $limit),
+            'Cartons' => $this->getCartons($compets, $codeSaison, $limit),
+            'CartonsEquipe' => $this->getCartonsEquipe($compets, $codeSaison, $limit),
+            'CartonsCompetition' => $this->getCartonsCompetition($compets, $codeSaison, $limit),
+            'Fairplay' => $this->getFairplay($compets, $codeSaison, $limit),
+            'FairplayEquipe' => $this->getFairplayEquipe($compets, $codeSaison, $limit),
+            'Arbitrage' => $this->getArbitrage($compets, $codeSaison, $limit),
+            'ArbitrageEquipe' => $this->getArbitrageEquipe($compets, $codeSaison, $limit),
+            'CJouees' => $this->getCJouees($compets, $codeSaison, $limit),
+            'CJouees2' => $this->getCJouees2($compets, $codeSaison, $limit),
+            'CJouees3' => $this->getCJouees3($compets, $codeSaison, $limit),
+            'CJoueesN' => $this->getCJoueesN($codeSaison, $limit),
+            'CJoueesCF' => $this->getCJoueesCF($codeSaison, $limit),
+            'OfficielsJournees' => $this->getOfficielsJournees($compets, $codeSaison, $limit),
+            'OfficielsMatchs' => $this->getOfficielsMatchs($compets, $codeSaison, $limit),
+            'ListeArbitres' => $this->getListeArbitres($limit),
+            'ListeEquipes' => $this->getListeEquipes($compets, $codeSaison, $limit),
+            'ListeJoueurs' => $this->getListeJoueurs($compets, $codeSaison, $limit),
+            'ListeJoueurs2' => $this->getListeJoueurs2($compets, $codeSaison, $limit),
+            'LicenciesNationaux' => $this->getLicenciesNationaux($compets, $codeSaison),
+            'CoherenceMatchs' => $this->getCoherenceMatchs($compets, $codeSaison),
+            default => []
+        };
+
+        $columns = $this->getColumnsForType($statType);
+
+        // Use frontend labels if provided, otherwise fallback to default French labels
+        $columnLabels = !empty($frontendLabels) ? $frontendLabels : $this->getColumnLabels();
+
+        return [$title, $columns, $data, $columnLabels];
+    }
+
+    /**
+     * Get human-readable column labels for export
+     */
+    private function getColumnLabels(): array
+    {
+        return [
+            'competition' => 'Compétition',
+            'licence' => 'Licence',
+            'matric' => 'Matricule',
+            'nom' => 'Nom',
+            'prenom' => 'Prénom',
+            'sexe' => 'Sexe',
+            'numero' => 'N°',
+            'equipe' => 'Équipe',
+            'buts' => 'Buts',
+            'vert' => 'Vert',
+            'jaune' => 'Jaune',
+            'rouge' => 'Rouge',
+            'rougeDefinitif' => 'Rouge déf.',
+            'fairplay' => 'Fairplay',
+            'principal' => 'Principal',
+            'secondaire' => 'Secondaire',
+            'total' => 'Total',
+            'nbMatchs' => 'Matchs',
+            'nomEquipe' => 'Équipe',
+            'numeroClub' => 'N° Club',
+            'nomClub' => 'Club',
+            'irregularite' => 'Irrégularité',
+            'matchs' => 'Matchs',
+            'id' => 'ID',
+            'libelle' => 'Libellé',
+            'lieu' => 'Lieu',
+            'departement' => 'Dépt',
+            'dateDebut' => 'Date début',
+            'dateFin' => 'Date fin',
+            'responsableInsc' => 'RC',
+            'responsableR1' => 'R1',
+            'delegue' => 'Délégué',
+            'chefArbitre' => 'Chef arbitres',
+            'dateMatch' => 'Date',
+            'heureMatch' => 'Heure',
+            'numeroOrdre' => 'N° ordre',
+            'equipeA' => 'Équipe A',
+            'equipeB' => 'Équipe B',
+            'arbitrePrincipal' => 'Arb. principal',
+            'arbitreSecondaire' => 'Arb. secondaire',
+            'ligne1' => 'Ligne 1',
+            'ligne2' => 'Ligne 2',
+            'secretaire' => 'Secrétaire',
+            'chronometre' => 'Chrono',
+            'timeshoot' => 'Timeshoot',
+            'codeClub' => 'Code club',
+            'club' => 'Club',
+            'arbitre' => 'Arbitre',
+            'niveau' => 'Niveau',
+            'saison' => 'Saison',
+            'naissance' => 'Naissance',
+            'clubActuel' => 'Club actuel',
+            'categorie' => 'Catégorie',
+            'cd' => 'CD',
+            'cr' => 'CR',
+            'clubActuelJoueurs' => 'Clubs joueurs',
+            'hommesU16' => 'H U16',
+            'hommesU18' => 'H U18',
+            'hommesU23' => 'H U23',
+            'hommesU35' => 'H U35',
+            'hommesPlus35' => 'H +35',
+            'hommesTotal' => 'H Total',
+            'femmesU16' => 'F U16',
+            'femmesU18' => 'F U18',
+            'femmesU23' => 'F U23',
+            'femmesU35' => 'F U35',
+            'femmesPlus35' => 'F +35',
+            'femmesTotal' => 'F Total',
+            'totalActivite' => 'Total',
+            'type' => 'Type',
+            'date' => 'Date',
+            'details' => 'Détails',
+        ];
     }
 
     /**
