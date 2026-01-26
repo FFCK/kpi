@@ -4,7 +4,7 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
 const statsStore = useStatsStore()
@@ -337,7 +337,7 @@ const selectedCompetitionsTooltip = computed(() => {
 
 // Check if current stat type should show ranking column
 const showRankingColumn = computed(() => {
-  const rankedStatTypes = ['Buteurs', 'Cartons', 'Fairplay', 'Arbitres']
+  const rankedStatTypes = ['Buteurs', 'Cartons', 'Fairplay', 'Arbitrage']
   return rankedStatTypes.includes(selectedStatType.value)
 })
 
@@ -351,7 +351,9 @@ const getExportParams = (): Record<string, string> => {
     type: selectedStatType.value,
     limit: String(limit.value),
     labels: JSON.stringify(columnLabels.value),
-    title: getStatTypeLabel.value
+    title: getStatTypeLabel.value,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    locale: locale.value
   }
   return params
 }

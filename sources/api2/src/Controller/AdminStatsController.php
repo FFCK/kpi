@@ -181,7 +181,7 @@ class AdminStatsController extends AbstractController
             return new StreamedResponse(function() {}, 403);
         }
 
-        [$title, $columns, $data, $columnLabels] = $exportData;
+        [$title, $columns, $data, $columnLabels, $showRanking] = $exportData;
         $statType = $request->query->get('type', 'Buteurs');
 
         $spreadsheet = new Spreadsheet();
@@ -190,18 +190,29 @@ class AdminStatsController extends AbstractController
 
         // Header row
         $col = 1;
+        if ($showRanking) {
+            $sheet->setCellValue([$col, 1], '#');
+            $col++;
+        }
         foreach ($columns as $column) {
             $sheet->setCellValue([$col, 1], $columnLabels[$column] ?? $column);
             $col++;
         }
         // Style header row (bold)
-        $lastColLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($columns));
+        $totalCols = count($columns) + ($showRanking ? 1 : 0);
+        $lastColLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($totalCols);
         $sheet->getStyle("A1:{$lastColLetter}1")->getFont()->setBold(true);
 
         // Data rows
         $row = 2;
+        $rank = 1;
         foreach ($data as $item) {
             $col = 1;
+            if ($showRanking) {
+                $sheet->setCellValue([$col, $row], $rank);
+                $col++;
+                $rank++;
+            }
             foreach ($columns as $column) {
                 $value = $item[$column] ?? '';
                 $sheet->setCellValue([$col, $row], $value);
@@ -211,7 +222,7 @@ class AdminStatsController extends AbstractController
         }
 
         // Auto-size columns
-        foreach (range(1, count($columns)) as $col) {
+        foreach (range(1, $totalCols) as $col) {
             $colLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
             $sheet->getColumnDimension($colLetter)->setAutoSize(true);
         }
@@ -243,8 +254,36 @@ class AdminStatsController extends AbstractController
             return new Response('Access denied', 403);
         }
 
-        [$title, $columns, $data, $columnLabels] = $exportData;
+        [$title, $columns, $data, $columnLabels, $showRanking] = $exportData;
         $statType = $request->query->get('type', 'Buteurs');
+
+        // Get user timezone and locale for footer date
+        $timezone = $request->query->get('timezone', 'Europe/Paris');
+        $locale = $request->query->get('locale', 'fr');
+        try {
+            $tz = new \DateTimeZone($timezone);
+        } catch (\Exception) {
+            $tz = new \DateTimeZone('Europe/Paris');
+        }
+        $dateTime = new \DateTime('now', $tz);
+
+        // Format date based on locale
+        if ($locale === 'en') {
+            $exportDate = $dateTime->format('m/d/Y h:i A'); // US format with AM/PM
+            $exportedLabel = 'Exported on';
+            $resultsLabel = 'result(s)';
+        } else {
+            $exportDate = $dateTime->format('d/m/Y H:i'); // French format 24h
+            $exportedLabel = 'Édité le';
+            $resultsLabel = 'résultat(s)';
+        }
+
+        // Logo path
+        $logoPath = dirname(__DIR__, 3) . '/img/logoKPI-medium.png';
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
 
         // Build HTML table
         $html = '<style>
@@ -258,9 +297,12 @@ class AdminStatsController extends AbstractController
         </style>';
 
         $html .= sprintf('<h1>%s</h1>', htmlspecialchars($title));
-        $html .= sprintf('<p>%s - %d</p>', date('d/m/Y H:i'), count($data));
+        $html .= sprintf('<p style="color: #666; margin-bottom: 15px;">%d %s</p>', count($data), $resultsLabel);
 
         $html .= '<table><thead><tr>';
+        if ($showRanking) {
+            $html .= '<th style="text-align: center; width: 30px;">#</th>';
+        }
         foreach ($columns as $column) {
             $html .= sprintf('<th>%s</th>', htmlspecialchars($columnLabels[$column] ?? $column));
         }
@@ -269,8 +311,13 @@ class AdminStatsController extends AbstractController
         $numericColumns = ['buts', 'vert', 'jaune', 'rouge', 'rougeDefinitif', 'fairplay',
             'principal', 'secondaire', 'total', 'nbMatchs', 'matchs', 'numero', 'numeroOrdre', 'id'];
 
+        $rank = 1;
         foreach ($data as $item) {
             $html .= '<tr>';
+            if ($showRanking) {
+                $html .= sprintf('<td style="text-align: center; font-weight: bold; color: #666;">%d</td>', $rank);
+                $rank++;
+            }
             foreach ($columns as $column) {
                 $value = $item[$column] ?? '';
                 $class = in_array($column, $numericColumns) ? ' class="numeric"' : '';
@@ -280,17 +327,39 @@ class AdminStatsController extends AbstractController
         }
         $html .= '</tbody></table>';
 
-        // Create PDF
+        // Create PDF with header/footer margins
         $mpdf = new Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4-L', // Landscape for wide tables
             'margin_left' => 10,
             'margin_right' => 10,
-            'margin_top' => 10,
-            'margin_bottom' => 10,
+            'margin_top' => 25,    // Space for header
+            'margin_bottom' => 15, // Space for footer
+            'margin_header' => 5,
+            'margin_footer' => 5,
         ]);
 
-        $mpdf->SetTitle($statType);
+        // Header with logo
+        $header = '<table width="100%" style="border-bottom: 1px solid #ccc; margin-bottom: 10px;">
+            <tr>
+                <td width="20%">' . ($logoBase64 ? '<img src="' . $logoBase64 . '" height="30" />' : 'KPI') . '</td>
+                <td width="60%" style="text-align: center; font-size: 12pt; font-weight: bold;">' . htmlspecialchars($title) . '</td>
+                <td width="20%" style="text-align: right; font-size: 8pt; color: #666;">kayak-polo.info</td>
+            </tr>
+        </table>';
+
+        // Footer with date and page number
+        $footer = '<table width="100%" style="border-top: 1px solid #ccc; font-size: 8pt; color: #666;">
+            <tr>
+                <td width="33%">' . $exportedLabel . ' ' . $exportDate . '</td>
+                <td width="34%" style="text-align: center;"></td>
+                <td width="33%" style="text-align: right;">Page {PAGENO}/{nbpg}</td>
+            </tr>
+        </table>';
+
+        $mpdf->SetHTMLHeader($header);
+        $mpdf->SetHTMLFooter($footer);
+        $mpdf->SetTitle($title);
         $mpdf->WriteHTML($html);
 
         $filename = sprintf('stats_%s_%s.pdf', $statType, date('Y-m-d_His'));
@@ -373,7 +442,11 @@ class AdminStatsController extends AbstractController
         // Use frontend labels if provided, otherwise fallback to default French labels
         $columnLabels = !empty($frontendLabels) ? $frontendLabels : $this->getColumnLabels();
 
-        return [$title, $columns, $data, $columnLabels];
+        // Check if this stat type should have a ranking column
+        $rankedStatTypes = ['Buteurs', 'Cartons', 'Fairplay', 'Arbitrage'];
+        $showRanking = in_array($statType, $rankedStatTypes);
+
+        return [$title, $columns, $data, $columnLabels, $showRanking];
     }
 
     /**
