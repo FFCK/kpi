@@ -300,6 +300,16 @@ const getStatTypeLabel = computed(() => {
   return st?.label || selectedStatType.value
 })
 
+// Get stat type description
+const getStatTypeDescription = computed(() => {
+  return t(`stats.descriptions.${selectedStatType.value}`) || ''
+})
+
+// Get temp stat type description (for modal)
+const getTempStatTypeDescription = computed(() => {
+  return t(`stats.descriptions.${tempStatType.value}`) || ''
+})
+
 // Get summary of selected competitions
 const selectedCompetitionsSummary = computed(() => {
   const count = selectedCompetitions.value.length
@@ -359,8 +369,11 @@ const showRankingColumn = computed(() => {
       </div>
     </div>
 
-    <!-- Results count -->
-    <div class="mb-4 text-sm">
+    <!-- Description and results count -->
+    <div class="mb-4 flex items-center justify-between text-sm">
+      <span class="text-gray-600 italic">
+        {{ getStatTypeDescription }}
+      </span>
       <span v-if="loading" class="text-gray-500">
         <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin inline mr-1" />
         {{ t('common.loading') }}
@@ -504,6 +517,9 @@ const showRankingColumn = computed(() => {
               {{ st.label }}
             </option>
           </select>
+          <p v-if="getTempStatTypeDescription" class="mt-1 text-xs text-gray-500 italic">
+            {{ getTempStatTypeDescription }}
+          </p>
         </div>
 
         <!-- Season + Limit on same row -->
