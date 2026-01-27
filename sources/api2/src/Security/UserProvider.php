@@ -21,7 +21,10 @@ class UserProvider implements UserProviderInterface
 
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        $sql = "SELECT u.Code, u.Pwd, u.Niveau, u.Filtre_competition_sql, u.Limitation_equipe_club,
+        $sql = "SELECT u.Code, u.Pwd, u.Niveau,
+                       u.Filtre_competition, u.Filtre_saison,
+                       u.Filtre_journee, u.Id_Evenement,
+                       u.Limitation_equipe_club,
                        l.Nom, l.Prenom, l.Numero_club
                 FROM kp_user u
                 LEFT JOIN kp_licence l ON u.Code = l.Matric
@@ -60,7 +63,10 @@ class UserProvider implements UserProviderInterface
         $user->setNiveau((int) ($row['Niveau'] ?? 100));
         $user->setNom($row['Nom'] ?? null);
         $user->setPrenom($row['Prenom'] ?? null);
-        $user->setFiltreCompetition($row['Filtre_competition_sql'] ?? null);
+        $user->setFiltreCompetition($row['Filtre_competition'] ?? null);
+        $user->setFiltreSaison($row['Filtre_saison'] ?? null);
+        $user->setFiltreJournee($row['Filtre_journee'] ?? null);
+        $user->setIdEvenement($row['Id_Evenement'] ?? null);
         $user->setLimitClubs($row['Limitation_equipe_club'] ?? null);
         $user->setClub($row['Numero_club'] ?? null);
 

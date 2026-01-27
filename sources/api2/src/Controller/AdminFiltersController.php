@@ -1,0 +1,231 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\User;
+use Doctrine\DBAL\Connection;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
+
+/**
+ * Admin Filters Controller
+ *
+ * Provides filter data (seasons, competitions, events) for admin pages.
+ * All results are filtered according to the authenticated user's restrictions.
+ */
+#[Route('/admin/filters')]
+class AdminFiltersController extends AbstractController
+{
+    private const SECTIONS = [
+        1 => 'Competitions_Internationales',
+        2 => 'Competitions_Nationales',
+        3 => 'Competitions_Regionales',
+        4 => 'Tournois_Internationaux',
+        5 => 'Continents',
+        100 => 'Divers',
+    ];
+
+    public function __construct(
+        private readonly Connection $connection
+    ) {
+    }
+
+    /**
+     * Get available seasons (filtered by user restrictions)
+     */
+    #[Route('/seasons', name: 'admin_filters_seasons', methods: ['GET'])]
+    public function getSeasons(): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $sql = "SELECT Code, Etat FROM kp_saison WHERE Code > '1900' ORDER BY Code DESC";
+        $result = $this->connection->executeQuery($sql);
+        $rows = $result->fetchAllAssociative();
+
+        $allowedSeasons = $user->getAllowedSeasons();
+        $activeSeason = null;
+
+        $seasons = [];
+        foreach ($rows as $row) {
+            // Filter by user restrictions
+            if ($allowedSeasons !== null && !in_array($row['Code'], $allowedSeasons)) {
+                continue;
+            }
+            $isActive = $row['Etat'] === 'A';
+            if ($isActive) {
+                $activeSeason = $row['Code'];
+            }
+            $seasons[] = [
+                'code' => $row['Code'],
+                'active' => $isActive,
+            ];
+        }
+
+        return $this->json([
+            'seasons' => $seasons,
+            'activeSeason' => $activeSeason,
+        ]);
+    }
+
+    /**
+     * Get competitions for a season (filtered by user restrictions)
+     * Returns competitions grouped by section, with enActif and codeTypeclt
+     */
+    #[Route('/competitions', name: 'admin_filters_competitions', methods: ['GET'])]
+    public function getCompetitions(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $season = $request->query->get('season');
+        if (!$season) {
+            $season = $this->getActiveSeason();
+        }
+
+        // Check season access
+        $allowedSeasons = $user->getAllowedSeasons();
+        if ($allowedSeasons !== null && !in_array($season, $allowedSeasons)) {
+            return $this->json(['message' => 'Access denied for this season'], 403);
+        }
+
+        $sql = "SELECT c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
+                       c.Titre_actif, c.Code_ref, c.Code_tour, c.Code_niveau,
+                       c.En_actif, c.Code_typeclt,
+                       g.section, g.ordre
+                FROM kp_competition c
+                LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
+                WHERE c.Code_saison = ?
+                ORDER BY g.section, g.ordre,
+                    COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
+
+        $result = $this->connection->executeQuery($sql, [$season]);
+        $rows = $result->fetchAllAssociative();
+
+        $allowedCompetitions = $user->getAllowedCompetitions();
+
+        $groups = [];
+        foreach ($rows as $row) {
+            // Filter by user restrictions
+            if ($allowedCompetitions !== null && !in_array($row['Code'], $allowedCompetitions)) {
+                continue;
+            }
+
+            $section = (int) ($row['section'] ?? 100);
+            $sectionLabel = self::SECTIONS[$section] ?? 'Divers';
+
+            if (!isset($groups[$section])) {
+                $groups[$section] = [
+                    'section' => $section,
+                    'sectionLabel' => $sectionLabel,
+                    'competitions' => [],
+                ];
+            }
+
+            $groups[$section]['competitions'][] = [
+                'code' => $row['Code'],
+                'libelle' => $row['Libelle'],
+                'soustitre' => $row['Soustitre'] ?: null,
+                'soustitre2' => $row['Soustitre2'] ?: null,
+                'titreActif' => $row['Titre_actif'] === 'O',
+                'enActif' => $row['En_actif'] === 'O',
+                'codeTypeclt' => $row['Code_typeclt'] ?: null,
+                'codeRef' => $row['Code_ref'] ?: null,
+            ];
+        }
+
+        return $this->json([
+            'season' => $season,
+            'groups' => array_values($groups),
+        ]);
+    }
+
+    /**
+     * Get events for a season (filtered by user restrictions)
+     */
+    #[Route('/events', name: 'admin_filters_events', methods: ['GET'])]
+    public function getEvents(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $season = $request->query->get('season');
+
+        $sql = "SELECT Id, Libelle, Date_debut, Date_fin, Publication
+                FROM kp_evenement
+                ORDER BY Date_debut DESC, Libelle";
+
+        $result = $this->connection->executeQuery($sql);
+        $rows = $result->fetchAllAssociative();
+
+        $allowedEvents = $user->getAllowedEvents();
+
+        $events = [];
+        foreach ($rows as $row) {
+            // Filter by user restrictions
+            if ($allowedEvents !== null && !in_array((int) $row['Id'], $allowedEvents)) {
+                continue;
+            }
+
+            $events[] = [
+                'id' => (int) $row['Id'],
+                'libelle' => $row['Libelle'],
+                'dateDebut' => $row['Date_debut'],
+                'dateFin' => $row['Date_fin'],
+                'publication' => $row['Publication'] === 'O',
+            ];
+        }
+
+        return $this->json([
+            'events' => $events,
+        ]);
+    }
+
+    /**
+     * Get match IDs for a competition (used for match sheet PDF links)
+     */
+    #[Route('/match-ids', name: 'admin_filters_match_ids', methods: ['GET'])]
+    public function getMatchIds(Request $request): JsonResponse
+    {
+        $season = $request->query->get('season');
+        $competition = $request->query->get('competition');
+
+        if (!$season || !$competition) {
+            return $this->json(['message' => 'season and competition are required'], 400);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // Check competition access
+        $allowedCompetitions = $user->getAllowedCompetitions();
+        if ($allowedCompetitions !== null && !in_array($competition, $allowedCompetitions)) {
+            return $this->json(['message' => 'Access denied for this competition'], 403);
+        }
+
+        $sql = "SELECT m.Id
+                FROM kp_journee j
+                INNER JOIN kp_match m ON j.Id = m.Id_journee
+                WHERE j.Code_saison = ?
+                AND j.Code_competition = ?
+                ORDER BY m.Numero_ordre";
+
+        $result = $this->connection->executeQuery($sql, [$season, $competition]);
+        $rows = $result->fetchAllAssociative();
+
+        $matchIds = array_map(fn($row) => (int) $row['Id'], $rows);
+
+        return $this->json([
+            'matchIds' => $matchIds,
+        ]);
+    }
+
+    private function getActiveSeason(): string
+    {
+        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
+        $result = $this->connection->executeQuery($sql);
+        return $result->fetchOne() ?: (string) date('Y');
+    }
+}

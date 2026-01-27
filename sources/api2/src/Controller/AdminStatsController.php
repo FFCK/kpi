@@ -22,7 +22,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Replicates GestionStats.php functionality
  */
 #[Route('/admin/stats')]
-#[IsGranted('ROLE_ADMIN')]
 class AdminStatsController extends AbstractController
 {
     public function __construct(
