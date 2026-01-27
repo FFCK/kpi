@@ -66,15 +66,9 @@ export const useAuthStore = defineStore('auth', {
       if (token && userJson) {
         try {
           const user = JSON.parse(userJson) as User
-          // Check profile 1 restriction for beta phase
-          if (user.profile === 1) {
-            this.user = user
-            this.token = token
-            this.isAuthenticated = true
-          } else {
-            // Profile not allowed in beta, clear auth
-            this.clearAuth()
-          }
+          this.user = user
+          this.token = token
+          this.isAuthenticated = true
         } catch {
           this.clearAuth()
         }

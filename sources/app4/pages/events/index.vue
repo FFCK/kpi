@@ -497,8 +497,8 @@ const formatDate = (date: string | null) => {
               <td class="px-4 py-3 text-center">
                 <AdminToggleButton
                   :active="event.publication"
-                  active-icon="heroicons-solid:eye"
-                  inactive-icon="heroicons-solid:x-circle"
+                  active-icon="heroicons:eye-solid"
+                  inactive-icon="heroicons:x-circle-solid"
                   active-color="green"
                   :active-title="t('events.published')"
                   :inactive-title="t('events.unpublished')"
@@ -511,8 +511,8 @@ const formatDate = (date: string | null) => {
               <td class="px-4 py-3 text-center">
                 <AdminToggleButton
                   :active="event.app"
-                  active-icon="heroicons-solid:device-phone-mobile"
-                  inactive-icon="heroicons-solid:device-phone-mobile"
+                  active-icon="heroicons:device-phone-mobile-solid"
+                  inactive-icon="heroicons:device-phone-mobile-solid"
                   active-color="blue"
                   :active-title="t('events.app_enabled')"
                   :inactive-title="t('events.app_disabled')"
@@ -529,7 +529,7 @@ const formatDate = (date: string | null) => {
                     :title="t('common.edit')"
                     @click="openEditModal(event)"
                   >
-                    <UIcon name="heroicons-solid:pencil" class="w-8 h-8" />
+                    <UIcon name="heroicons:pencil-solid" class="w-8 h-8" />
                   </button>
                   <button
                     v-if="authStore.isSuperAdmin"
@@ -537,7 +537,7 @@ const formatDate = (date: string | null) => {
                     :title="t('common.delete')"
                     @click="openDeleteModal(event)"
                   >
-                    <UIcon name="heroicons-solid:trash" class="w-8 h-8" />
+                    <UIcon name="heroicons:trash-solid" class="w-8 h-8" />
                   </button>
                 </div>
               </td>
@@ -584,13 +584,13 @@ const formatDate = (date: string | null) => {
 
         <!-- Content -->
         <div v-if="event.lieu" class="flex items-start gap-2 text-sm">
-          <UIcon name="heroicons-solid:map-pin" class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+          <UIcon name="heroicons:map-pin-solid" class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
           <span class="text-gray-700">{{ event.lieu }}</span>
         </div>
 
         <div class="flex flex-col gap-2 text-sm">
           <div v-if="event.dateDebut" class="flex items-center gap-2">
-            <UIcon name="heroicons-solid:calendar" class="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <UIcon name="heroicons:calendar-solid" class="w-5 h-5 text-gray-400 flex-shrink-0" />
             <div>
               <span class="text-gray-900 ml-1">{{ formatDate(event.dateDebut) }}</span>
               -
@@ -603,8 +603,8 @@ const formatDate = (date: string | null) => {
         <template #footer-left>
           <AdminToggleButton
             :active="event.publication"
-            active-icon="heroicons-solid:eye"
-            inactive-icon="heroicons-solid:x-circle"
+            active-icon="heroicons:eye-solid"
+            inactive-icon="heroicons:x-circle-solid"
             active-color="green"
             :active-title="t('events.published')"
             :inactive-title="t('events.unpublished')"
@@ -612,8 +612,8 @@ const formatDate = (date: string | null) => {
           />
           <AdminToggleButton
             :active="event.app"
-            active-icon="heroicons-solid:device-phone-mobile"
-            inactive-icon="heroicons-solid:device-phone-mobile"
+            active-icon="heroicons:device-phone-mobile-solid"
+            inactive-icon="heroicons:device-phone-mobile-solid"
             active-color="blue"
             :active-title="t('events.app_enabled')"
             :inactive-title="t('events.app_disabled')"
@@ -624,7 +624,7 @@ const formatDate = (date: string | null) => {
         <!-- Footer right: actions -->
         <template #footer-right>
           <AdminActionButton
-            icon="heroicons-solid:pencil"
+            icon="heroicons:pencil-solid"
             @click="openEditModal(event)"
           >
             {{ t('common.edit') }}
@@ -632,7 +632,7 @@ const formatDate = (date: string | null) => {
           <AdminActionButton
             v-if="authStore.isSuperAdmin"
             variant="danger"
-            icon="heroicons-solid:trash"
+            icon="heroicons:trash-solid"
             @click="openDeleteModal(event)"
           >
             {{ t('common.delete') }}

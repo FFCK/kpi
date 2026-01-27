@@ -1,3 +1,12 @@
+// User filters (from JWT)
+export interface UserFilters {
+  seasons: string[] | null
+  competitions: string[] | null
+  events: number[] | null
+  journees: number[] | null
+  clubs: string[] | null
+}
+
 // User type
 export interface User {
   id: string
@@ -5,6 +14,41 @@ export interface User {
   firstname: string
   profile: number
   token: string
+  filters?: UserFilters
+}
+
+// Season from filters API
+export interface Season {
+  code: string
+  active: boolean
+}
+
+// Competition from filters API
+export interface Competition {
+  code: string
+  libelle: string
+  soustitre: string | null
+  soustitre2: string | null
+  titreActif: boolean
+  enActif: boolean
+  codeTypeclt: string | null
+  codeRef: string | null
+}
+
+// Competition group (by section)
+export interface CompetitionGroup {
+  section: number
+  sectionLabel: string
+  competitions: Competition[]
+}
+
+// Filter event
+export interface FilterEvent {
+  id: number
+  libelle: string
+  dateDebut: string | null
+  dateFin: string | null
+  publication: boolean
 }
 
 // Auth response from API

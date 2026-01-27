@@ -26,11 +26,6 @@ export const useAuth = () => {
 
       const data: AuthResponse = await response.json()
 
-      // Check profile 1 restriction for beta phase
-      if (data.user.profile !== 1) {
-        throw new Error('Access restricted to profile 1 during beta')
-      }
-
       authStore.setAuth(data.user, data.token)
       return true
     } catch (error) {

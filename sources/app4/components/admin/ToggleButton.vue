@@ -11,8 +11,8 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   active: false,
-  activeIcon: 'heroicons-solid:check-circle',
-  inactiveIcon: 'heroicons-solid:x-circle',
+  activeIcon: 'heroicons:check-circle-solid',
+  inactiveIcon: 'heroicons:x-circle-solid',
   activeColor: 'green',
   activeTitle: '',
   inactiveTitle: '',

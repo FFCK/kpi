@@ -21,10 +21,4 @@ export default defineNuxtRouteMiddleware((to) => {
   if (!authStore.isAuthenticated) {
     return navigateTo('/login')
   }
-
-  // Check profile 1 restriction for beta
-  if (authStore.user?.profile !== 1) {
-    authStore.clearAuth()
-    return navigateTo('/login')
-  }
 })

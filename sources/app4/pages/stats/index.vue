@@ -8,6 +8,7 @@ const { t, locale } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
 const statsStore = useStatsStore()
+const filtersStore = useFiltersStore()
 
 // Types
 interface StatType {
@@ -72,8 +73,12 @@ const count = ref(0)
 const loadFilters = async () => {
   loadingFilters.value = true
   try {
-    // Use stored season if available, otherwise use active season from API
-    const seasonParam = statsStore.initialized && statsStore.season ? statsStore.season : undefined
+    // Use stored season if available (statsStore first, then filtersStore), otherwise use active season from API
+    const seasonParam = (statsStore.initialized && statsStore.season)
+      ? statsStore.season
+      : (filtersStore.initialized && filtersStore.season)
+        ? filtersStore.season
+        : undefined
     const response = await api.get<FiltersResponse>('/admin/stats/filters', seasonParam ? { season: seasonParam } : undefined)
     seasons.value = response.seasons
     competitionGroups.value = response.competitions
@@ -90,6 +95,9 @@ const loadFilters = async () => {
       selectedStatType.value = statsStore.statType
       selectedCompetitions.value = [...statsStore.competitions]
       limit.value = statsStore.limit
+    } else if (filtersStore.initialized && filtersStore.season) {
+      selectedSeason.value = filtersStore.season
+      selectedCompetitions.value = filtersStore.competition ? [filtersStore.competition] : []
     } else {
       selectedSeason.value = response.activeSeason
       selectedCompetitions.value = []
@@ -169,6 +177,8 @@ const applyFilters = async () => {
     competitions: tempCompetitions.value,
     limit: tempLimit.value
   })
+  // Sync season to shared filters store
+  filtersStore.setSeason(tempSeason.value)
 
   await loadStats()
 }

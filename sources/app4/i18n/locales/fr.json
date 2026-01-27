@@ -263,6 +263,72 @@
       "details": "Détails"
     }
   },
+  "documents": {
+    "title": "Documents",
+    "season": "Saison",
+    "competition": "Compétition",
+    "select_competition": "Sélectionnez une compétition",
+    "error_load_filters": "Erreur lors du chargement des filtres",
+    "categories": {
+      "teams": "Équipes",
+      "matches": "Matchs",
+      "rankings": "Classements",
+      "statistics": "Statistiques",
+      "event": "Événement",
+      "control": "Contrôle"
+    },
+    "teams": {
+      "registered": "Équipes engagées",
+      "presence_fr": "Feuilles de présence (FR)",
+      "presence_en": "Feuilles de présence (EN)",
+      "presence_visa": "Présence avec visa",
+      "presence_photo": "Présence avec photo"
+    },
+    "matches": {
+      "list_fr": "Liste des matchs (FR)",
+      "list_en": "Liste des matchs (EN)",
+      "export_spreadsheet": "Export tableur",
+      "match_sheets": "Feuilles de marque",
+      "matches_count": "matchs",
+      "no_matches": "Aucun match"
+    },
+    "rankings": {
+      "general": "Classement général",
+      "detail_team": "Détail par équipe",
+      "detail_gameday": "Détail par journée",
+      "detail_phase": "Détail par phase",
+      "multi": "Classement multi-compétition",
+      "no_type": "Type de classement non défini pour cette compétition"
+    },
+    "stats": {
+      "scorers": "Buteurs",
+      "attack": "Attaque",
+      "defense": "Défense",
+      "cards_players": "Cartons (joueurs)",
+      "cards_teams": "Cartons (équipes)",
+      "fairplay_players": "Fairplay (joueurs)",
+      "fairplay_teams": "Fairplay (équipes)",
+      "refereeing_refs": "Arbitrage (arbitres)",
+      "refereeing_teams": "Arbitrage (équipes)"
+    },
+    "event": {
+      "select": "Événement",
+      "matches_fr": "Matchs événement (FR)",
+      "matches_en": "Matchs événement (EN)",
+      "qr_codes": "QR Codes",
+      "qr_code_app": "QR Code App"
+    },
+    "control": {
+      "presence_category": "Présence par catégorie",
+      "presence_u21": "Présence U21",
+      "competitions_played_club": "Compétitions jouées (club)",
+      "competitions_played_team": "Compétitions jouées (équipe)",
+      "irregularities": "Irrégularités",
+      "national_licensees": "Licenciés nationaux",
+      "match_consistency": "Cohérence matchs",
+      "cumulated_cards": "Cartons cumulés"
+    }
+  },
   "errors": {
     "generic": {
       "description": "Une erreur inattendue s'est produite"
