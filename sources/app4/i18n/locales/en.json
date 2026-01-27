@@ -12,9 +12,19 @@
     "back_online": "Connection restored"
   },
   "menu": {
-    "events": "Events",
+    "competition": "Competition",
     "documents": "Documents",
+    "events": "Events",
+    "teams": "Teams",
+    "gamedays": "Gamedays/Phases",
+    "matches": "Matches",
+    "rankings": "Rankings",
+    "initial_ranking": "Initial ranking",
     "statistics": "Statistics",
+    "athletes": "Athletes",
+    "management": "Management",
+    "clubs": "Clubs",
+    "users": "Users",
     "operations": "Operations"
   },
   "profile": "Profile",

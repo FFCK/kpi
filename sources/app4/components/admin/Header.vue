@@ -2,6 +2,13 @@
 import type { User } from '~/types'
 import { useAuthStore } from '~/stores/authStore'
 
+interface MenuItem {
+  to?: string
+  icon: string
+  label: string
+  children?: MenuItem[]
+}
+
 defineProps<{
   user: User | null
   mobileMenuOpen: boolean
@@ -24,44 +31,127 @@ const languages = [
 ]
 
 // Menu items based on user profile
-const menuItems = computed(() => {
+const menuItems = computed<MenuItem[]>(() => {
   const profile = authStore.user?.profile ?? 99
-  const items = []
+  const items: MenuItem[] = []
 
-  // Events - profile <= 2
-  if (profile <= 2) {
+  // Compétition (dropdown) - profile <= 10
+  if (profile <= 10) {
+    const children: MenuItem[] = []
+    if (profile <= 9) {
+      children.push({
+        to: '/documents',
+        icon: 'heroicons:document-text',
+        label: t('menu.documents')
+      })
+    }
+    if (profile <= 2) {
+      children.push({
+        to: '/events',
+        icon: 'heroicons:calendar-days',
+        label: t('menu.events')
+      })
+    }
     items.push({
-      to: '/events',
-      icon: 'heroicons:calendar-days',
-      label: t('menu.events')
+      to: '/competitions',
+      icon: 'heroicons:trophy',
+      label: t('menu.competition'),
+      ...(children.length > 0 ? { children } : {})
     })
   }
 
-  // Documents - profile <= 9
+  // Équipes - profile <= 9
   if (profile <= 9) {
     items.push({
-      to: '/documents',
-      icon: 'heroicons:document-text',
-      label: t('menu.documents')
+      to: '/teams',
+      icon: 'heroicons:user-group',
+      label: t('menu.teams')
     })
   }
 
-  // Statistics - profile <= 9
+  // Journées/Phases - profile <= 9
   if (profile <= 9) {
+    items.push({
+      to: '/gamedays',
+      icon: 'heroicons:calendar',
+      label: t('menu.gamedays')
+    })
+  }
+
+  // Matchs - profile <= 9
+  if (profile <= 9) {
+    items.push({
+      to: '/matches',
+      icon: 'heroicons:play-circle',
+      label: t('menu.matches')
+    })
+  }
+
+  // Classements (dropdown) - profile <= 9
+  if (profile <= 9) {
+    items.push({
+      to: '/rankings',
+      icon: 'heroicons:chart-bar',
+      label: t('menu.rankings'),
+      children: [
+        {
+          to: '/rankings/initial',
+          icon: 'heroicons:list-bullet',
+          label: t('menu.initial_ranking')
+        }
+      ]
+    })
+  }
+
+  // Stats (dropdown) - profile <= 9
+  if (profile <= 9) {
+    const children: MenuItem[] = []
+    if (profile <= 8) {
+      children.push({
+        to: '/athletes',
+        icon: 'heroicons:user',
+        label: t('menu.athletes')
+      })
+    }
     items.push({
       to: '/stats',
-      icon: 'heroicons:chart-bar',
-      label: t('menu.statistics')
+      icon: 'heroicons:chart-pie',
+      label: t('menu.statistics'),
+      ...(children.length > 0 ? { children } : {})
     })
   }
 
-  // Operations - profile == 1 only
-  if (profile === 1) {
-    items.push({
-      to: '/operations',
-      icon: 'heroicons:cog-6-tooth',
-      label: t('menu.operations')
-    })
+  // Gestion (dropdown) - visible if any child is accessible
+  {
+    const children: MenuItem[] = []
+    if (profile <= 9) {
+      children.push({
+        to: '/clubs',
+        icon: 'heroicons:building-office-2',
+        label: t('menu.clubs')
+      })
+    }
+    if (profile <= 3) {
+      children.push({
+        to: '/users',
+        icon: 'heroicons:users',
+        label: t('menu.users')
+      })
+    }
+    if (profile === 1) {
+      children.push({
+        to: '/operations',
+        icon: 'heroicons:wrench-screwdriver',
+        label: t('menu.operations')
+      })
+    }
+    if (children.length > 0) {
+      items.push({
+        icon: 'heroicons:cog-6-tooth',
+        label: t('menu.management'),
+        children
+      })
+    }
   }
 
   return items
@@ -77,17 +167,34 @@ const switchLanguage = (code: string) => {
   setLocale(code)
 }
 
-const isActive = (path: string) => route.path === path
+const isActive = (path: string) => route.path.startsWith(path)
 
 // User dropdown
 const userMenuOpen = ref(false)
 const userMenuRef = ref<HTMLElement | null>(null)
 
-// Close dropdown when clicking outside
+// Nav dropdowns
+const openDropdown = ref<string | null>(null)
+const navRef = ref<HTMLElement | null>(null)
+
+const toggleDropdown = (label: string) => {
+  openDropdown.value = openDropdown.value === label ? null : label
+}
+
+// Mobile accordion
+const mobileExpanded = ref<string | null>(null)
+const toggleMobileExpanded = (label: string) => {
+  mobileExpanded.value = mobileExpanded.value === label ? null : label
+}
+
+// Close dropdowns when clicking outside
 onMounted(() => {
   const handleClickOutside = (event: MouseEvent) => {
     if (userMenuRef.value && !userMenuRef.value.contains(event.target as Node)) {
       userMenuOpen.value = false
+    }
+    if (navRef.value && !navRef.value.contains(event.target as Node)) {
+      openDropdown.value = null
     }
   }
   document.addEventListener('click', handleClickOutside)
@@ -125,21 +232,82 @@ onMounted(() => {
         </div>
 
         <!-- Center: Horizontal menu (desktop only) -->
-        <nav class="hidden lg:flex space-x-4">
-          <NuxtLink
-            v-for="item in menuItems"
-            :key="item.to"
-            :to="item.to"
-            :class="[
-              'flex items-center space-x-1 transition-colors',
-              isActive(item.to)
-                ? 'text-blue-400 font-bold' 
-                : 'hover:text-blue-400'
-            ]"
-          >
-            <UIcon :name="item.icon" class="w-5 h-5" />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
+        <nav ref="navRef" class="hidden lg:flex items-center space-x-1">
+          <template v-for="item in menuItems" :key="item.label">
+            <!-- Item with dropdown -->
+            <div v-if="item.children" class="relative">
+              <button
+                :class="[
+                  'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                  openDropdown === item.label || (item.to && isActive(item.to))
+                    ? 'text-blue-400 bg-gray-800'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                ]"
+                @click="toggleDropdown(item.label)"
+              >
+                <UIcon :name="item.icon" class="w-4 h-4" />
+                <span>{{ item.label }}</span>
+                <UIcon
+                  name="heroicons:chevron-down"
+                  class="w-3 h-3 transition-transform"
+                  :class="{ 'rotate-180': openDropdown === item.label }"
+                />
+              </button>
+
+              <!-- Dropdown panel -->
+              <Transition
+                enter-active-class="transition ease-out duration-100"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
+              >
+                <div
+                  v-if="openDropdown === item.label"
+                  class="absolute left-0 mt-1 w-52 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-50"
+                >
+                  <!-- Parent link if it has a route -->
+                  <NuxtLink
+                    v-if="item.to"
+                    :to="item.to"
+                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
+                    @click="openDropdown = null"
+                  >
+                    <UIcon :name="item.icon" class="w-4 h-4" />
+                    <span>{{ item.label }}</span>
+                  </NuxtLink>
+                  <div v-if="item.to" class="border-t border-gray-700 my-1" />
+                  <!-- Children -->
+                  <NuxtLink
+                    v-for="child in item.children"
+                    :key="child.to"
+                    :to="child.to!"
+                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
+                    @click="openDropdown = null"
+                  >
+                    <UIcon :name="child.icon" class="w-4 h-4" />
+                    <span>{{ child.label }}</span>
+                  </NuxtLink>
+                </div>
+              </Transition>
+            </div>
+
+            <!-- Simple link (no dropdown) -->
+            <NuxtLink
+              v-else
+              :to="item.to!"
+              :class="[
+                'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                isActive(item.to!)
+                  ? 'text-blue-400 bg-gray-800'
+                  : 'text-gray-300 hover:text-white hover:bg-gray-800'
+              ]"
+            >
+              <UIcon :name="item.icon" class="w-4 h-4" />
+              <span>{{ item.label }}</span>
+            </NuxtLink>
+          </template>
         </nav>
 
         <!-- Right: Language + User + Mobile toggle -->
@@ -231,21 +399,63 @@ onMounted(() => {
         v-if="mobileMenuOpen"
         class="lg:hidden py-4 border-t border-gray-800"
       >
-        <div class="px-4 pb-2">
-          <NuxtLink
-            v-for="item in menuItems"
-            :key="item.to"
-            :to="item.to"
-            :class="[
-              'flex items-center space-x-2 py-2 transition-colors',
-              isActive(item.to)
-                ? 'text-blue-400 font-bold'
-                : 'hover:text-blue-400 font-bold'
-            ]"
-          >
-            <UIcon :name="item.icon" class="w-5 h-5" />
-            <span>{{ item.label }}</span>
-          </NuxtLink>
+        <div class="px-4 pb-2 space-y-1">
+          <template v-for="item in menuItems" :key="item.label">
+            <!-- Item with dropdown (accordion on mobile) -->
+            <div v-if="item.children">
+              <button
+                :class="[
+                  'w-full flex items-center justify-between py-2 text-sm font-medium transition-colors',
+                  mobileExpanded === item.label ? 'text-blue-400' : 'text-gray-200 hover:text-white'
+                ]"
+                @click="toggleMobileExpanded(item.label)"
+              >
+                <span class="flex items-center gap-2">
+                  <UIcon :name="item.icon" class="w-5 h-5" />
+                  {{ item.label }}
+                </span>
+                <UIcon
+                  name="heroicons:chevron-down"
+                  class="w-4 h-4 transition-transform"
+                  :class="{ 'rotate-180': mobileExpanded === item.label }"
+                />
+              </button>
+              <div v-if="mobileExpanded === item.label" class="ml-6 space-y-1 border-l border-gray-700 pl-3">
+                <NuxtLink
+                  v-if="item.to"
+                  :to="item.to"
+                  class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
+                >
+                  <UIcon :name="item.icon" class="w-4 h-4" />
+                  {{ item.label }}
+                </NuxtLink>
+                <NuxtLink
+                  v-for="child in item.children"
+                  :key="child.to"
+                  :to="child.to!"
+                  class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
+                >
+                  <UIcon :name="child.icon" class="w-4 h-4" />
+                  {{ child.label }}
+                </NuxtLink>
+              </div>
+            </div>
+
+            <!-- Simple link -->
+            <NuxtLink
+              v-else
+              :to="item.to!"
+              :class="[
+                'flex items-center gap-2 py-2 text-sm font-medium transition-colors',
+                isActive(item.to!)
+                  ? 'text-blue-400'
+                  : 'text-gray-200 hover:text-white'
+              ]"
+            >
+              <UIcon :name="item.icon" class="w-5 h-5" />
+              <span>{{ item.label }}</span>
+            </NuxtLink>
+          </template>
         </div>
 
         <!-- User info mobile -->
