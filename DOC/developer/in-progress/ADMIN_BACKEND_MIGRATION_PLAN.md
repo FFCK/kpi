@@ -96,10 +96,8 @@ sources/app4/
 app4_npm_install
 app4_npm_clean
 app4_dev          # Port 3004
-app2_generate_dev_app4
-app4_generate_dev
-app4_generate_preprod
-app4_generate_prod
+app4_generate      # Génère via container Node permanent
+app4_generate_tmp  # Génère via container temporaire (preprod/prod)
 ```
 
 ## Phase 2 : Authentification JWT dans API2

@@ -125,26 +125,13 @@ init_env_app3: ## Initialise les fichiers .env.development, .env.preprod et .env
 	fi
 	@echo "Les autres fichiers .env pour app3 sont déjà créés dans sources/app3/"
 
-init_env_app4: ## Initialise les fichiers .env pour app4 (admin) depuis .env.dist
-	@if [ ! -f sources/app4/.env.development ]; then \
-		cp sources/app4/.env.dist sources/app4/.env.development; \
-		echo "Fichier .env.development créé pour app4"; \
+init_env_app4: ## Initialise le fichier .env pour app4 (admin) depuis .env.dist
+	@if [ ! -f sources/app4/.env ]; then \
+		cp sources/app4/.env.dist sources/app4/.env; \
+		echo "Fichier .env créé pour app4"; \
+		echo "N'oubliez pas de configurer les variables dans sources/app4/.env selon l'environnement"; \
 	else \
-		echo "Le fichier .env.development existe déjà pour app4"; \
-	fi
-	@if [ ! -f sources/app4/.env.preprod ]; then \
-		cp sources/app4/.env.dist sources/app4/.env.preprod; \
-		echo "Fichier .env.preprod créé pour app4"; \
-		echo "N'oubliez pas de configurer API2_BASE_URL dans .env.preprod"; \
-	else \
-		echo "Le fichier .env.preprod existe déjà pour app4"; \
-	fi
-	@if [ ! -f sources/app4/.env.production ]; then \
-		cp sources/app4/.env.dist sources/app4/.env.production; \
-		echo "Fichier .env.production créé pour app4"; \
-		echo "N'oubliez pas de configurer API2_BASE_URL dans .env.production"; \
-	else \
-		echo "Le fichier .env.production existe déjà pour app4"; \
+		echo "Le fichier .env existe déjà pour app4"; \
 	fi
 
 init_env_api2: ## Initialise le fichier .env pour API2 depuis .env.dist
@@ -353,22 +340,15 @@ app4_dev: ## Lance le serveur Nuxt (app4 admin) en mode développement (port 300
 app4_build: ## Build l'application Nuxt (app4 admin) pour la production
 	$(DOCKER_EXEC_NODE4_NON_INTERACTIVE) sh -c "npm run build"
 
-app4_generate_dev: ## Génère l'application Nuxt (app4 admin) en mode statique pour développement
-	$(DOCKER_EXEC_NODE4_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
+app4_generate: ## Génère l'application Nuxt (app4 admin) en mode statique (utilise .env)
+	$(DOCKER_EXEC_NODE4_NON_INTERACTIVE) sh -c "nuxt generate"
 	@echo "Restarting nginx to remount volume..."
 	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
 	@echo "App4 generated and nginx restarted!"
 
-app4_generate_preprod: ## Génère l'application Nuxt (app4 admin) en mode statique pour pré-production (utilise container temporaire)
-	@echo "Building app4 for pre-production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
-	@echo "Restarting nginx to remount volume..."
-	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
-	@echo "App4 generated and nginx restarted!"
-
-app4_generate_prod: ## Génère l'application Nuxt (app4 admin) en mode statique pour production (utilise container temporaire)
-	@echo "Building app4 for production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
+app4_generate_tmp: ## Génère l'application Nuxt (app4 admin) via container temporaire (utilise .env, pour preprod/prod)
+	@echo "Building app4 using temporary Node.js container..."
+	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:20-alpine sh -c "npm ci && npx nuxt generate"
 	@echo "Restarting nginx to remount volume..."
 	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
 	@echo "App4 generated and nginx restarted!"
