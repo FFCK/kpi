@@ -367,7 +367,7 @@ $$(".class").forEach(el => el.style.display = "none");
 rm -rf sources/smarty/templates_c/*
 
 # 3. Redémarrer
-make dev_restart
+make docker_dev_restart
 
 # 4. Tester première page
 # Ouvrir : http://localhost/admin/GestionEquipe.php

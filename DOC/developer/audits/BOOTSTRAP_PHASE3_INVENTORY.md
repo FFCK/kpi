@@ -348,7 +348,7 @@ sed -i 's/data-dismiss/data-bs-dismiss/g' template.tpl
 
 2. **Tests en environnement dev**:
    - Ne PAS tester directement en production
-   - Utiliser `make dev_up` pour environnement développement
+   - Utiliser `make docker_dev_up` pour environnement développement
 
 3. **Migration progressive**:
    - 1 template à la fois

@@ -111,7 +111,7 @@ git checkout sources/smarty/templates/pageMap.tpl
 rm -rf sources/smarty/templates_c/*
 
 # 3. Redémarrer PHP
-make dev_restart
+make docker_dev_restart
 ```
 
 ### Vérifications console

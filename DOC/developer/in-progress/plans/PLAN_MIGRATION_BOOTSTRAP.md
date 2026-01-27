@@ -140,7 +140,7 @@ sources/live/
 
 ```bash
 # Via Makefile (recommandé)
-make composer_require package=twbs/bootstrap:^5.3
+make backend_composer_require package=twbs/bootstrap:^5.3
 
 # Ou directement
 docker exec kpi_php8 composer require twbs/bootstrap:^5.3

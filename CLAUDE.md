@@ -42,12 +42,12 @@ Use `make help` to see all available commands.
 
 ### Quick Start
 - `make init` - Complete project initialization (creates .env files and Docker networks)
-- `make dev_up` - Start development environment
-- `make composer_install` - Install PHP/Composer dependencies (mPDF, etc.)
-- `make npm_install_app2` - Install NPM dependencies for app2
-- `make npm_install_app3` - Install NPM dependencies for app3
-- `make run_dev` - Run Nuxt development server for app2 (port 3002)
-- `make run_dev_app3` - Run Nuxt development server for app3 (port 3003)
+- `make docker_dev_up` - Start development environment
+- `make backend_composer_install` - Install PHP/Composer dependencies (mPDF, etc.)
+- `make app2_npm_install` - Install NPM dependencies for app2
+- `make app3_npm_install` - Install NPM dependencies for app3
+- `make app2_dev` - Run Nuxt development server for app2 (port 3002)
+- `make app3_dev` - Run Nuxt development server for app3 (port 3003)
 
 ### Initialization
 - `make init` - Complete initialization (env files + networks)
@@ -58,80 +58,79 @@ Use `make help` to see all available commands.
 - `make init_networks` - Create required Docker networks
 
 ### Docker - Development
-- `make dev_up` - Start development containers
-- `make dev_down` - Stop development containers
-- `make dev_restart` - Restart development containers
-- `make dev_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
-- `make dev_logs` - Show development logs (follow mode)
-- `make dev_status` - Show development containers status
+- `make docker_dev_up` - Start development containers
+- `make docker_dev_down` - Stop development containers
+- `make docker_dev_restart` - Restart development containers
+- `make docker_dev_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
+- `make docker_dev_logs` - Show development logs (follow mode)
+- `make docker_dev_status` - Show development containers status
 
 ### Docker - Pre-production
-- `make preprod_up` - Start pre-production containers
-- `make preprod_down` - Stop pre-production containers
-- `make preprod_restart` - Restart pre-production containers
-- `make preprod_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
-- `make preprod_logs` - Show pre-production logs
-- `make preprod_status` - Show pre-production status
+- `make docker_preprod_up` - Start pre-production containers
+- `make docker_preprod_down` - Stop pre-production containers
+- `make docker_preprod_restart` - Restart pre-production containers
+- `make docker_preprod_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
+- `make docker_preprod_logs` - Show pre-production logs
+- `make docker_preprod_status` - Show pre-production status
 
 ### Docker - Production
-- `make prod_up` - Start production containers
-- `make prod_down` - Stop production containers
-- `make prod_restart` - Restart production containers
-- `make prod_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
-- `make prod_logs` - Show production logs
-- `make prod_status` - Show production status
+- `make docker_prod_up` - Start production containers
+- `make docker_prod_down` - Stop production containers
+- `make docker_prod_restart` - Restart production containers
+- `make docker_prod_rebuild` - Rebuild images and restart containers (after Dockerfile changes)
+- `make docker_prod_logs` - Show production logs
+- `make docker_prod_status` - Show production status
 
-### Nuxt - App2
-- `make run_dev` - Run Nuxt development server (port 3002)
-- `make run_build` - Build Nuxt for production
-- `make run_generate_dev` - Generate static Nuxt site for development (uses .env.development, requires Node container)
-- `make run_generate_preprod` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
-- `make run_generate_production` - Generate static Nuxt site for production (uses .env.production, temporary container)
-- `make run_generate_prod` - Alias for run_generate_production
-- `make run_lint` - Run ESLint on app2
+### App2 - Nuxt (Scrutineering/Charts)
+- `make app2_dev` - Run Nuxt development server (port 3002)
+- `make app2_build` - Build Nuxt for production
+- `make app2_generate_dev` - Generate static Nuxt site for development (uses .env.development, requires Node container)
+- `make app2_generate_preprod` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
+- `make app2_generate_production` - Generate static Nuxt site for production (uses .env.production, temporary container)
+- `make app2_generate_prod` - Alias for app2_generate_production
+- `make app2_lint` - Run ESLint on app2
 
-**Note**: `run_generate_preprod` and `run_generate_production` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
+**Note**: `app2_generate_preprod` and `app2_generate_production` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
 
-### Nuxt - App3 (Match Sheet)
-- `make run_dev_app3` - Run Nuxt development server (port 3003)
-- `make run_build_app3` - Build Nuxt for production
-- `make run_generate_app3` - Generate static Nuxt site (production by default)
-- `make run_generate_dev_app3` - Generate static Nuxt site for development (uses .env.development, requires Node container)
-- `make run_generate_preprod_app3` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
-- `make run_generate_prod_app3` - Generate static Nuxt site for production (uses .env.production, temporary container)
-- `make run_lint_app3` - Run ESLint on app3
+### App3 - Nuxt (Match Sheet)
+- `make app3_dev` - Run Nuxt development server (port 3003)
+- `make app3_build` - Build Nuxt for production
+- `make app3_generate_dev` - Generate static Nuxt site for development (uses .env.development, requires Node container)
+- `make app3_generate_preprod` - Generate static Nuxt site for pre-production (uses .env.preprod, temporary container)
+- `make app3_generate_prod` - Generate static Nuxt site for production (uses .env.production, temporary container)
+- `make app3_lint` - Run ESLint on app3
 
-**Note**: `run_generate_preprod_app3` and `run_generate_prod_app3` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
+**Note**: `app3_generate_preprod` and `app3_generate_prod` use a temporary Node.js container, so they work even without a permanent Node container (ideal for preprod/production servers).
 
-### NPM - App2 (Nuxt Application)
-- `make npm_install_app2` - Install all npm dependencies
-- `make npm_clean_app2` - Remove node_modules and package-lock.json
-- `make npm_update_app2` - Update all npm dependencies
-- `make npm_add_app2 package=<name>` - Add npm package
-- `make npm_add_dev_app2 package=<name>` - Add npm dev package
-- `make npm_ls_app2` - List installed npm modules
+### App2 - NPM
+- `make app2_npm_install` - Install all npm dependencies
+- `make app2_npm_clean` - Remove node_modules and package-lock.json
+- `make app2_npm_update` - Update all npm dependencies
+- `make app2_npm_add package=<name>` - Add npm package
+- `make app2_npm_add_dev package=<name>` - Add npm dev package
+- `make app2_npm_ls` - List installed npm modules
 
-### NPM - App3 (Match Sheet)
-- `make npm_install_app3` - Install all npm dependencies
-- `make npm_clean_app3` - Remove node_modules and package-lock.json
-- `make npm_update_app3` - Update all npm dependencies
-- `make npm_add_app3 package=<name>` - Add npm package
-- `make npm_add_dev_app3 package=<name>` - Add npm dev package
-- `make npm_ls_app3` - List installed npm modules
+### App3 - NPM
+- `make app3_npm_install` - Install all npm dependencies
+- `make app3_npm_clean` - Remove node_modules and package-lock.json
+- `make app3_npm_update` - Update all npm dependencies
+- `make app3_npm_add package=<name>` - Add npm package
+- `make app3_npm_add_dev package=<name>` - Add npm dev package
+- `make app3_npm_ls` - List installed npm modules
 
-### NPM - Backend (JavaScript Libraries)
+### Backend - NPM (JavaScript Libraries)
 Manage JavaScript libraries (Flatpickr, Day.js, etc.) in the PHP backend via temporary Node.js container:
-- `make npm_init_backend` - Initialize package.json in sources/ (if absent)
-- `make npm_add_backend package=<name>` - Add a JavaScript package (e.g., `make npm_add_backend package=flatpickr`)
-- `make npm_install_backend` - Install all backend dependencies from sources/package.json
-- `make npm_update_backend` - Update all backend JavaScript dependencies
-- `make npm_ls_backend` - List installed backend packages
-- `make npm_clean_backend` - Remove sources/node_modules (WARNING: removes all JS libraries)
+- `make backend_npm_init` - Initialize package.json in sources/ (if absent)
+- `make backend_npm_add package=<name>` - Add a JavaScript package (e.g., `make backend_npm_add package=flatpickr`)
+- `make backend_npm_install` - Install all backend dependencies from sources/package.json
+- `make backend_npm_update` - Update all backend JavaScript dependencies
+- `make backend_npm_ls` - List installed backend packages
+- `make backend_npm_clean` - Remove sources/node_modules (WARNING: removes all JS libraries)
 
 **Example usage**:
 ```bash
 # Install Flatpickr for datepicker migration
-make npm_add_backend package=flatpickr
+make backend_npm_add package=flatpickr
 
 # Files will be in sources/node_modules/flatpickr/
 # Copy to sources/lib/ or reference directly in templates
@@ -139,17 +138,17 @@ make npm_add_backend package=flatpickr
 
 **Note**: These commands use a temporary Node.js container (`node:20-alpine`), so no permanent Node.js installation is needed on the host.
 
-### Composer - PHP
-- `make composer_install` - Install Composer dependencies (sources/vendor/)
-- `make composer_update` - Update Composer dependencies
-- `make composer_require package=<vendor/package>` - Add Composer package
-- `make composer_require_dev package=<vendor/package>` - Add Composer dev package
-- `make composer_dump` - Regenerate Composer autoloader
+### Backend - Composer (PHP)
+- `make backend_composer_install` - Install Composer dependencies (sources/vendor/)
+- `make backend_composer_update` - Update Composer dependencies
+- `make backend_composer_require package=<vendor/package>` - Add Composer package
+- `make backend_composer_require_dev package=<vendor/package>` - Add Composer dev package
+- `make backend_composer_dump` - Regenerate Composer autoloader
 
 ### API2 - Symfony (Symfony 7.3 + API Platform 4.2)
-- `make composer_install_api2` - Install Composer dependencies for API2
-- `make composer_update_api2` - Update Composer dependencies for API2
-- `make composer_require_api2 package=<vendor/package>` - Add package to API2
+- `make api2_composer_install` - Install Composer dependencies for API2
+- `make api2_composer_update` - Update Composer dependencies for API2
+- `make api2_composer_require package=<vendor/package>` - Add package to API2
 - `make api2_cache_clear` - Clear Symfony cache for API2
 - `make api2_cache_warmup` - Warmup Symfony cache for API2
 - `make api2_migrations_diff` - Generate Doctrine migration (detect changes)
@@ -161,15 +160,16 @@ make npm_add_backend package=flatpickr
 **API Documentation**: `https://kpi.localhost/api2/api` (API Platform interface)
 
 ### Shell Access
-- `make php_bash` - Open bash in PHP 8.4 container
-- `make node_bash` - Open shell in Node container (app2)
-- `make node3_bash` - Open shell in Node container (app3)
+- `make backend_bash` - Open bash in PHP 8.4 container
+- `make app2_bash` - Open shell in Node container (app2)
+- `make app3_bash` - Open shell in Node container (app3)
+- `make app4_bash` - Open shell in Node container (app4)
 - `make db_bash` - Open shell in MySQL container
 
 ### Docker Networks
-- `make networks_create` - Create required Docker networks (network_${APPLICATION_NAME}, pma_network, traefiknetwork)
-- `make networks_list` - List project Docker networks
-- `make networks_clean` - Remove project Docker networks (if not in use)
+- `make docker_networks_create` - Create required Docker networks (network_${APPLICATION_NAME}, pma_network, traefiknetwork)
+- `make docker_networks_list` - List project Docker networks
+- `make docker_networks_clean` - Remove project Docker networks (if not in use)
 
 **Important**: Network names depend on `APPLICATION_NAME` in `docker/.env`:
 - KPI network: `network_${APPLICATION_NAME}` (e.g., `network_kpi`, `network_kpi_preprod`)
@@ -221,10 +221,10 @@ For multiple environments on the same server, use different `APPLICATION_NAME` v
 - **API Integration**: Configured via .env.development (dev: `https://kpi.localhost/api`) and .env.production (prod: `https://kayak-polo.info/api`)
 - **Deployment**:
   - Generated files (`.output/public/`) are NOT committed to Git
-  - Dev: `make run_generate_dev` (requires Node container)
-  - Preprod: `make run_generate_preprod` (uses temporary Docker container)
-  - Prod: `make run_generate_production` (uses temporary Docker container, works without permanent Node.js setup)
-  - After build: `make dev_restart`, `make preprod_restart`, or `make prod_restart` to restart Nginx
+  - Dev: `make app2_generate_dev` (requires Node container)
+  - Preprod: `make app2_generate_preprod` (uses temporary Docker container)
+  - Prod: `make app2_generate_production` (uses temporary Docker container, works without permanent Node.js setup)
+  - After build: `make docker_dev_restart`, `make docker_preprod_restart`, or `make docker_prod_restart` to restart Nginx
 
 ### App3 (Nuxt Application - Match Sheet)
 - **Framework**: Nuxt 4 with Vue 3, TypeScript, Tailwind CSS

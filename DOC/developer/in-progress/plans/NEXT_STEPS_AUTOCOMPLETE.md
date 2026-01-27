@@ -227,7 +227,7 @@ grep "vanilla-autocomplete" sources/smarty/templates/page.tpl
 
 # Vider cache
 rm -rf sources/smarty/templates_c/*
-make dev_restart
+make docker_dev_restart
 ```
 
 ### Problème : Dropdown ne s'affiche pas

@@ -25,7 +25,7 @@ This is a modern REST API built with Symfony 7.3 and API Platform 4.2, providing
 
 2. Install Composer dependencies:
    ```bash
-   make composer_install_api2
+   make api2_backend_composer_install
    ```
 
 The API dependencies are managed by Composer and will be installed in the `vendor/` directory.

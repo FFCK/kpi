@@ -57,17 +57,17 @@ DB_PASSWORD=votre_mot_de_passe
 
 4. **Démarrer l'environnement de développement**
 ```bash
-make dev_up
+make docker_dev_up
 ```
 
 5. **Installer les dépendances Node**
 ```bash
-make npm_install_app2
+make app2_npm_install
 ```
 
 6. **Lancer le serveur Nuxt**
 ```bash
-make run_dev
+make app2_dev
 ```
 
 L'application est accessible sur :
@@ -96,54 +96,54 @@ make init_networks     # Créer les réseaux Docker
 
 ### Développement
 ```bash
-make dev_up            # Démarrer les containers
-make dev_down          # Arrêter les containers
-make dev_restart       # Redémarrer les containers
-make dev_logs          # Voir les logs en temps réel
-make dev_status        # Statut des containers
+make docker_dev_up            # Démarrer les containers
+make docker_dev_down          # Arrêter les containers
+make docker_dev_restart       # Redémarrer les containers
+make docker_dev_logs          # Voir les logs en temps réel
+make docker_dev_status        # Statut des containers
 ```
 
 ### Pré-production
 ```bash
-make preprod_up        # Démarrer la pré-production
-make preprod_down      # Arrêter la pré-production
-make preprod_logs      # Voir les logs
+make docker_preprod_up        # Démarrer la pré-production
+make docker_preprod_down      # Arrêter la pré-production
+make docker_preprod_logs      # Voir les logs
 ```
 
 ### Production
 ```bash
-make prod_up           # Démarrer la production
-make prod_down         # Arrêter la production
-make prod_logs         # Voir les logs
+make docker_prod_up           # Démarrer la production
+make docker_prod_down         # Arrêter la production
+make docker_prod_logs         # Voir les logs
 ```
 
 ### Nuxt (App2)
 ```bash
-make run_dev           # Serveur dev Nuxt (port 3002)
-make run_build         # Build pour production
-make run_generate      # Génération statique
-make run_lint          # Linter ESLint
+make app2_dev           # Serveur dev Nuxt (port 3002)
+make app2_build         # Build pour production
+make app2_generate_dev  # Génération statique
+make app2_lint          # Linter ESLint
 ```
 
 ### NPM
 ```bash
-make npm_install_app2                    # Installer les dépendances
-make npm_clean_app2                      # Nettoyer node_modules
-make npm_add_app2 package=nom-package    # Ajouter un package
+make app2_npm_install                    # Installer les dépendances
+make app2_npm_clean                      # Nettoyer node_modules
+make app2_npm_add package=nom-package    # Ajouter un package
 ```
 
 ### Accès aux containers
 ```bash
-make php_bash          # Shell PHP 8.4
-make node_bash         # Shell Node/App2
+make backend_bash      # Shell PHP 8.4
+make app2_bash         # Shell Node/App2
 make db_bash           # Shell MySQL
 ```
 
 ### Réseaux Docker
 ```bash
-make networks_create   # Créer les réseaux nécessaires (utilise APPLICATION_NAME)
-make networks_list     # Lister les réseaux du projet
-make networks_clean    # Supprimer les réseaux (si non utilisés)
+make docker_networks_create   # Créer les réseaux nécessaires (utilise APPLICATION_NAME)
+make docker_networks_list     # Lister les réseaux du projet
+make docker_networks_clean    # Supprimer les réseaux (si non utilisés)
 ```
 
 **Note** : Les réseaux sont créés en fonction de `APPLICATION_NAME` dans `docker/.env` :
@@ -284,9 +284,9 @@ Accès via phpMyAdmin : http://kpi-myadmin.localhost
 
 ### Les containers ne démarrent pas
 ```bash
-make networks_create   # Créer les réseaux manquants
-make dev_status        # Vérifier le statut
-make dev_logs          # Voir les erreurs
+make docker_networks_create   # Créer les réseaux manquants
+make docker_dev_status        # Vérifier le statut
+make docker_dev_logs          # Voir les erreurs
 ```
 
 ### Erreur "network not found"
@@ -299,10 +299,10 @@ Le nom du réseau dépend de `APPLICATION_NAME` dans `docker/.env`.
 grep APPLICATION_NAME docker/.env
 
 # Créer les réseaux avec le bon nom
-make networks_create
+make docker_networks_create
 
 # Vérifier que les réseaux sont créés
-make networks_list
+make docker_networks_list
 ```
 
 Si vous avez plusieurs environnements (dev, preprod, prod) sur le même serveur, utilisez des `APPLICATION_NAME` différents :
@@ -318,9 +318,9 @@ DOCKER_SUFFIXE_PORT=03  # Changer ce suffixe
 
 ### Nuxt ne démarre pas
 ```bash
-make npm_clean_app2    # Nettoyer
-make npm_install_app2  # Réinstaller
-make run_dev           # Relancer
+make app2_npm_clean    # Nettoyer
+make app2_npm_install  # Réinstaller
+make app2_dev          # Relancer
 ```
 
 ## 📚 Documentation complémentaire
@@ -350,8 +350,8 @@ make run_dev           # Relancer
 
 1. **Démarrer la journée**
 ```bash
-make dev_up
-make run_dev
+make docker_dev_up
+make app2_dev
 ```
 
 2. **Développer**
@@ -360,13 +360,13 @@ make run_dev
 
 3. **Tester**
 ```bash
-make run_lint          # Vérifier le code
-make run_build         # Tester le build
+make app2_lint         # Vérifier le code
+make app2_build        # Tester le build
 ```
 
 4. **Fin de journée**
 ```bash
-make dev_down
+make docker_dev_down
 ```
 
 ## 🚢 Déploiement
@@ -401,20 +401,20 @@ make init              # Crée network_kpi_prod
 
 ### Préparer pour la production
 ```bash
-make run_build         # Build Nuxt
-make run_generate      # Génération statique (si nécessaire)
+make app2_build         # Build Nuxt
+make app2_generate_dev  # Génération statique (si nécessaire)
 ```
 
 ### Déployer en pré-production
 ```bash
-make preprod_up        # Tester en préprod
-make preprod_logs      # Vérifier les logs
+make docker_preprod_up        # Tester en préprod
+make docker_preprod_logs      # Vérifier les logs
 ```
 
 ### Déployer en production
 ```bash
-make prod_up           # Lancer en production
-make prod_status       # Vérifier le statut
+make docker_prod_up           # Lancer en production
+make docker_prod_status       # Vérifier le statut
 ```
 
 ## 📝 CRON
@@ -427,7 +427,7 @@ Tâches planifiées :
 
 1. Créer une branche pour votre fonctionnalité
 2. Développer et tester localement
-3. Faire un build de production : `make run_build`
+3. Faire un build de production : `make app2_build`
 4. Créer une Pull Request
 
 ## 📄 Licence

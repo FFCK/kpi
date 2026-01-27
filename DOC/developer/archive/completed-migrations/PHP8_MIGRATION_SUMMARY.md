@@ -323,7 +323,7 @@ SET @@SESSION.sql_mode='';  // Mode permissif
 
 ### Semaine 3 : Bascule Développement
 - Modification `docker/compose.dev.yaml`
-- Rebuild containers: `make dev_rebuild`
+- Rebuild containers: `make docker_dev_rebuild`
 - Tests intensifs 48h
 - Fix bugs éventuels
 

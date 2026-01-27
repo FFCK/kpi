@@ -122,8 +122,8 @@ Trois scripts PHP ont été créés pour automatiser la consolidation :
 
 **Depuis l'hôte** :
 ```bash
-# Méthode 1 : Utiliser make php_bash puis exécuter dans le conteneur
-make php_bash
+# Méthode 1 : Utiliser make backend_bash puis exécuter dans le conteneur
+make backend_bash
 # Dans le conteneur :
 cd /sources/scripts
 php compare_translations.php
@@ -142,8 +142,8 @@ Ce script affiche :
 
 **Depuis l'hôte** :
 ```bash
-# Méthode 1 : Utiliser make php_bash
-make php_bash
+# Méthode 1 : Utiliser make backend_bash
+make backend_bash
 # Dans le conteneur :
 cd /sources/scripts
 php merge_translations.php
@@ -174,8 +174,8 @@ Affiche un aperçu sans créer le fichier.
 
 **Depuis l'hôte** :
 ```bash
-# Méthode 1 : Via make php_bash
-make php_bash
+# Méthode 1 : Via make backend_bash
+make backend_bash
 # Dans le conteneur :
 cd /sources/scripts
 php patch_mysmarty.php
@@ -226,7 +226,7 @@ Affiche les modifications sans les appliquer.
 5. **Vérifier les logs PHP** :
    ```bash
    # Depuis l'hôte - suivre les logs en temps réel
-   make dev_logs
+   make docker_dev_logs
 
    # Ou spécifiquement pour le conteneur PHP
    docker logs -f kpi_php_1
@@ -235,7 +235,7 @@ Affiche les modifications sans les appliquer.
 6. **Redémarrer les conteneurs si nécessaire** :
    ```bash
    # Redémarrer l'environnement de développement
-   make dev_restart
+   make docker_dev_restart
    ```
 
 ### Étape 5 : Migration en Production
@@ -262,13 +262,13 @@ Si tous les tests sont OK en développement :
 3. **Redémarrer les conteneurs de production** :
    ```bash
    # Depuis la racine du projet
-   make prod_restart
+   make docker_prod_restart
    ```
 
 4. **Vérifier en production** :
    - Tester quelques pages
    - Générer quelques PDFs
-   - Vérifier les logs : `make prod_logs`
+   - Vérifier les logs : `make docker_prod_logs`
 
 5. **Nettoyer les fichiers de backup** (après quelques jours) :
    ```bash

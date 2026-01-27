@@ -153,7 +153,7 @@ Le système utilise la bibliothèque **Parsedown** pour convertir le Markdown en
 
 Installation (si nécessaire) :
 ```bash
-make composer_install
+make backend_composer_install
 ```
 
 ### Mise à jour
@@ -193,7 +193,7 @@ titre_docviewer = "Documentation Viewer"
 
 1. Vérifiez la syntaxe Markdown du document
 2. Testez le document sur un éditeur Markdown en ligne
-3. Assurez-vous que Parsedown est installé : `make composer_install`
+3. Assurez-vous que Parsedown est installé : `make backend_composer_install`
 
 ### Les liens ne fonctionnent pas
 

@@ -27,11 +27,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 | Commande | Description | Usage |
 |----------|-------------|-------|
-| `make composer_install` | Installe les dépendances Composer | `make composer_install` |
-| `make composer_update` | Met à jour les dépendances | `make composer_update` |
-| `make composer_require` | Ajoute un package | `make composer_require package=mpdf/mpdf` |
-| `make composer_require_dev` | Ajoute un package dev | `make composer_require_dev package=phpunit/phpunit` |
-| `make composer_dump` | Regénère l'autoloader | `make composer_dump` |
+| `make backend_composer_install` | Installe les dépendances Composer | `make backend_composer_install` |
+| `make backend_composer_update` | Met à jour les dépendances | `make backend_composer_update` |
+| `make backend_composer_require` | Ajoute un package | `make backend_composer_require package=mpdf/mpdf` |
+| `make backend_composer_require_dev` | Ajoute un package dev | `make backend_composer_require_dev package=phpunit/phpunit` |
+| `make backend_composer_dump` | Regénère l'autoloader | `make backend_composer_dump` |
 
 #### Mise à Jour de `make init`
 
@@ -39,19 +39,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ```
 Prochaines étapes:
   1. Configurez les variables dans docker/.env
-  2. Lancez l'environnement: make dev_up
-  3. Installez les dépendances: make npm_install_app2
-  4. Lancez Nuxt: make run_dev
+  2. Lancez l'environnement: make docker_dev_up
+  3. Installez les dépendances: make app2_npm_install
+  4. Lancez Nuxt: make app2_dev
 ```
 
 **Après** :
 ```
 Prochaines étapes:
   1. Configurez les variables dans docker/.env
-  2. Lancez l'environnement: make dev_up
-  3. Installez les dépendances Composer: make composer_install
-  4. Installez les dépendances NPM: make npm_install_app2
-  5. Lancez Nuxt: make run_dev
+  2. Lancez l'environnement: make docker_dev_up
+  3. Installez les dépendances Composer: make backend_composer_install
+  4. Installez les dépendances NPM: make app2_npm_install
+  5. Lancez Nuxt: make app2_dev
 ```
 
 ## 📚 Utilisation
@@ -66,16 +66,16 @@ make init
 nano docker/.env
 
 # 3. Démarrer l'environnement
-make dev_up
+make docker_dev_up
 
 # 4. Installer Composer (NOUVEAU!)
-make composer_install
+make backend_composer_install
 
 # 5. Installer NPM
-make npm_install_app2
+make app2_npm_install
 
 # 6. Lancer Nuxt
-make run_dev
+make app2_dev
 ```
 
 ### Gestion des Dépendances Composer
@@ -83,7 +83,7 @@ make run_dev
 #### Installer les Dépendances
 
 ```bash
-make composer_install
+make backend_composer_install
 ```
 
 Équivalent à :
@@ -95,22 +95,22 @@ docker exec -ti kpi_php bash -c "cd /var/www/html && composer install"
 
 ```bash
 # Package normal
-make composer_require package=mpdf/mpdf
+make backend_composer_require package=mpdf/mpdf
 
 # Package de développement
-make composer_require_dev package=phpunit/phpunit
+make backend_composer_require_dev package=phpunit/phpunit
 ```
 
 #### Mettre à Jour les Dépendances
 
 ```bash
-make composer_update
+make backend_composer_update
 ```
 
 #### Régénérer l'Autoloader
 
 ```bash
-make composer_dump
+make backend_composer_dump
 ```
 
 ## 🔧 Configuration Technique
@@ -161,7 +161,7 @@ docker exec -ti kpi_php8 bash -c "cd /var/www/html && composer install"
 
 ```bash
 # Après rebuild des containers
-make php_bash
+make backend_bash
 composer --version
 
 # Résultat attendu:
@@ -175,18 +175,18 @@ composer --version
 make help
 
 # Résultat attendu (section COMPOSER - PHP):
-# composer_install           Installe les dépendances Composer (sources/vendor/)
-# composer_update            Met à jour les dépendances Composer
-# composer_require           Ajoute un package Composer (usage: make composer_require package=vendor/package)
-# composer_require_dev       Ajoute un package Composer de dev
-# composer_dump              Regénère l'autoloader Composer
+# backend_composer_install           Installe les dépendances Composer (sources/vendor/)
+# backend_composer_update            Met à jour les dépendances Composer
+# backend_composer_require           Ajoute un package Composer (usage: make backend_composer_require package=vendor/package)
+# backend_composer_require_dev       Ajoute un package Composer de dev
+# backend_composer_dump              Regénère l'autoloader Composer
 ```
 
 ### Test d'Installation
 
 ```bash
 # Test complet
-make composer_install
+make backend_composer_install
 
 # Vérifier que vendor/ existe
 ls -la sources/vendor/
@@ -203,13 +203,13 @@ Après modification des Dockerfiles, il faut rebuild :
 
 ```bash
 # Development
-make dev_down
+make docker_dev_down
 docker compose -f docker/compose.dev.yaml build --no-cache
-make dev_up
+make docker_dev_up
 
 # Production
 docker compose -f docker/compose.prod.yaml build --no-cache
-make prod_up
+make docker_prod_up
 ```
 
 ### 2. vendor/ dans .gitignore
@@ -251,10 +251,10 @@ Pour un nouveau développeur sur le projet :
 1. Cloner le repo
 2. `make init`
 3. Configurer `docker/.env`
-4. `make dev_up`
-5. **`make composer_install`** ← NOUVEAU
-6. `make npm_install_app2`
-7. `make run_dev`
+4. `make docker_dev_up`
+5. **`make backend_composer_install`** ← NOUVEAU
+6. `make app2_npm_install`
+7. `make app2_dev`
 
 ---
 

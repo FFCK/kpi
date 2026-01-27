@@ -15,10 +15,10 @@ Application Nuxt 4 pour l'administration de KPI.
 
 ```bash
 # Installer les dépendances
-make npm_install_app4
+make app4_npm_install
 
 # Lancer en développement
-make run_dev_app4
+make app4_dev
 ```
 
 ## URLs

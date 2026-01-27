@@ -61,7 +61,7 @@ old_prod (hébergeur)
 
 ```bash
 # Vérifier que tout fonctionne
-make preprod_status   # Ou prod_status
+make docker_preprod_status   # Ou docker_prod_status
 
 # Variables .env configurées
 ✅ DBWP_ROOT_PASSWORD
@@ -145,7 +145,7 @@ define('DB_HOST', 'localhost');               // Sera 'dbwp' sur VPS
 
 ```bash
 cd /path/to/kpi_preprod/
-make preprod_down
+make docker_preprod_down
 ```
 
 #### 2.2 Nettoyer Dossier WordPress Preprod (Optionnel)
@@ -253,7 +253,7 @@ define('DISALLOW_FILE_EDIT', true);
 
 ```bash
 cd /path/to/kpi_preprod/
-make preprod_up
+make docker_preprod_up
 
 # Vérifier container MySQL
 docker ps | grep dbwp_preprod
@@ -339,10 +339,10 @@ WHERE option_name NOT IN ('home', 'siteurl');
 
 ```bash
 cd /path/to/kpi_preprod/
-make preprod_restart
+make docker_preprod_restart
 
 # Vérifier logs
-make preprod_logs
+make docker_preprod_logs
 # Attendre : "Apache/2.4.x configured -- resuming normal operations"
 
 # Vérifier containers
@@ -443,7 +443,7 @@ docker exec kpi_dbwp mysqldump -u root -proot kpiwordpress > /tmp/wordpress_prod
 
 ```bash
 cd /path/to/kpi_preprod/
-make preprod_down
+make docker_preprod_down
 ```
 
 #### Étape 3 : Backup Preprod (Sécurité)
@@ -505,7 +505,7 @@ UPDATE wp_postmeta SET meta_value = REPLACE(meta_value, 'https://kayak-polo.info
 
 ```bash
 cd /path/to/kpi_preprod/
-make preprod_up
+make docker_preprod_up
 ```
 
 ---

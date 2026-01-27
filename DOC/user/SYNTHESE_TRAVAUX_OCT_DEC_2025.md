@@ -61,7 +61,7 @@ Le projet KPI (système de gestion de compétitions de kayak-polo) a bénéfici�
 
 **Développement** :
 - Génération via container temporaire pour preprod/prod (pas besoin de Node.js permanent)
-- Support du backend NPM via Makefile (`make npm_add_backend`, `make npm_install_backend`)
+- Support du backend NPM via Makefile (`make backend_npm_add`, `make backend_npm_install`)
 - Migration de librairies JavaScript vers node_modules (easytimer.js, dayjs)
 
 ---

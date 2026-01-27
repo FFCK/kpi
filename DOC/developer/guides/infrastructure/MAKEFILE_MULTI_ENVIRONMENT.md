@@ -41,39 +41,39 @@ DOCKER_EXEC_NODE = docker exec -ti $(NODE_CONTAINER_NAME)
 
 #### 1. Composer (PHP)
 Toutes les commandes Composer utilisent maintenant `$(PHP_CONTAINER_NAME)`:
-- `composer_install` - Affiche "container: kpi_php" ou "container: kpi_preprod_php"
-- `composer_update`
-- `composer_require`
-- `composer_require_dev`
-- `composer_dump`
+- `backend_composer_install` - Affiche "container: kpi_php" ou "container: kpi_preprod_php"
+- `backend_composer_update`
+- `backend_composer_require`
+- `backend_composer_require_dev`
+- `backend_composer_dump`
 
 **Exemple**:
 ```makefile
-composer_install:
+backend_composer_install:
 	@echo "Installation des dépendances Composer (container: $(PHP_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html && composer install"
 ```
 
 #### 2. NPM - App2 (Node)
 Toutes les commandes NPM pour app2 utilisent maintenant `$(NODE_CONTAINER_NAME)`:
-- `npm_install_app2`
-- `npm_update_app2`
-- `npm_add_app2`
-- `npm_add_dev_app2`
-- `npm_clean_app2`
-- `npm_ls_app2`
+- `app2_npm_install`
+- `app2_npm_update`
+- `app2_npm_add`
+- `app2_npm_add_dev`
+- `app2_npm_clean`
+- `app2_npm_ls`
 
 **Exemple**:
 ```makefile
-npm_install_app2:
+app2_npm_install:
 	@echo "Installation des dépendances npm pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "npm install"
 ```
 
 #### 3. Shell Access
 Les commandes d'accès shell sont également dynamiques:
-- `php_bash` - Utilise `$(PHP_CONTAINER_NAME)`
-- `node_bash` - Utilise `$(NODE_CONTAINER_NAME)`
+- `backend_bash` - Utilise `$(PHP_CONTAINER_NAME)`
+- `app2_bash` - Utilise `$(NODE_CONTAINER_NAME)`
 - `db_bash` - Utilise `$(DB_CONTAINER_NAME)`
 
 **Exemple**:
@@ -112,8 +112,8 @@ APPLICATION_NAME=kpi
 
 **Commandes**:
 ```bash
-make composer_install  # Utilise kpi_php
-make npm_install_app2  # Utilise kpi_node_app2
+make backend_composer_install  # Utilise kpi_php
+make app2_npm_install  # Utilise kpi_node_app2
 ```
 
 ---
@@ -133,8 +133,8 @@ APPLICATION_NAME=kpi_preprod
 
 **Commandes**:
 ```bash
-make composer_install  # Utilise kpi_preprod_php
-make npm_install_app2  # Utilise kpi_preprod_node_app2
+make backend_composer_install  # Utilise kpi_preprod_php
+make app2_npm_install  # Utilise kpi_preprod_node_app2
 ```
 
 ---
@@ -154,8 +154,8 @@ APPLICATION_NAME=kpi_prod
 
 **Commandes**:
 ```bash
-make composer_install  # Utilise kpi_prod_php
-make npm_install_app2  # Utilise kpi_prod_node_app2
+make backend_composer_install  # Utilise kpi_prod_php
+make app2_npm_install  # Utilise kpi_prod_node_app2
 ```
 
 ---
@@ -171,11 +171,11 @@ make npm_install_app2  # Utilise kpi_prod_node_app2
 ```bash
 # Dans /var/www/kpi_preprod/
 cd /var/www/kpi_preprod
-make composer_update   # ✅ Utilise kpi_preprod_php
+make backend_composer_update   # ✅ Utilise kpi_preprod_php
 
 # Dans /var/www/kpi_prod/
 cd /var/www/kpi_prod
-make composer_update   # ✅ Utilise kpi_prod_php
+make backend_composer_update   # ✅ Utilise kpi_prod_php
 ```
 
 **Aucune interférence** entre les deux environnements car les noms de containers sont différents.
@@ -210,7 +210,7 @@ docker ps | grep kpi
 
 ```bash
 # Affichera le nom du container utilisé
-make composer_install
+make backend_composer_install
 
 # Output attendu:
 # Installation des dépendances Composer (container: kpi_php)...
@@ -245,7 +245,7 @@ docker exec -ti kpi_prod_php bash  # Utilise le mauvais container
 **✅ CORRECT**:
 ```bash
 cd /var/www/kpi_preprod
-make php_bash  # Utilise automatiquement kpi_preprod_php
+make backend_bash  # Utilise automatiquement kpi_preprod_php
 ```
 
 ### 3. Composer et versions PHP
@@ -256,7 +256,7 @@ Si vos environnements utilisent des versions PHP différentes, les fichiers `com
 ```bash
 # Dev local (PHP 7.4) → Preprod (PHP 8.4)
 cd /var/www/kpi_preprod
-make composer_update  # Régénère le lock file avec PHP 8.4
+make backend_composer_update  # Régénère le lock file avec PHP 8.4
 ```
 
 ---
@@ -276,7 +276,7 @@ grep APPLICATION_NAME docker/.env
 docker ps | grep kpi
 
 # 3. Démarrer les containers
-make dev_up  # ou preprod_up / prod_up
+make docker_dev_up  # ou docker_preprod_up / docker_prod_up
 ```
 
 ---

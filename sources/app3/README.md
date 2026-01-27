@@ -64,7 +64,7 @@ Application de gestion de feuille de marque en temps réel pour le Kayak Polo, c
 
 1. **Initialiser les réseaux Docker** (si ce n'est pas déjà fait) :
 ```bash
-make init_networks
+make docker_networks_create
 ```
 
 2. **Vérifier le fichier `.env`** dans `docker/`:
@@ -76,13 +76,13 @@ APP3_DOMAIN_NAME=app3.localhost
 3. **Démarrer les containers Docker** :
 ```bash
 # Démarrer l'environnement de développement
-make dev_up
+make docker_dev_up
 ```
 
 4. **Installer les dépendances NPM** :
 ```bash
 # Via Makefile (recommandé)
-make npm_install_app3
+make app3_npm_install
 ```
 
 ## 🛠️ Développement
@@ -91,7 +91,7 @@ make npm_install_app3
 
 ```bash
 # Démarrer le serveur de développement (port 3003)
-make run_dev_app3
+make app3_dev
 ```
 
 L'application sera accessible sur :
@@ -102,21 +102,21 @@ L'application sera accessible sur :
 
 ```bash
 # Installation
-make npm_install_app3           # Installer les dépendances
-make npm_clean_app3             # Nettoyer node_modules
+make app3_npm_install           # Installer les dépendances
+make app3_npm_clean             # Nettoyer node_modules
 
 # Développement
-make run_dev_app3               # Serveur dev (port 3003)
-make run_build_app3             # Build production
-make run_generate_app3          # Génération statique
-make run_lint_app3              # ESLint
+make app3_dev               # Serveur dev (port 3003)
+make app3_build             # Build production
+make app3_generate_prod          # Génération statique
+make app3_lint              # ESLint
 
 # Ajout de packages
-make npm_add_app3 package=uuid
-make npm_add_dev_app3 package=eslint
+make app3_npm_add package=uuid
+make app3_npm_add_dev package=eslint
 
 # Shell
-make node3_bash                 # Ouvrir un shell dans le container
+make app3_bash                 # Ouvrir un shell dans le container
 ```
 
 ### Sans Docker (développement local)
@@ -135,10 +135,10 @@ npm run dev
 
 ```bash
 # Build pour la production
-make run_build_app3
+make app3_build
 
 # Générer le site statique
-make run_generate_app3
+make app3_generate_prod
 ```
 
 Les fichiers générés seront dans `.output/` (build) ou `.output/public/` (generate).

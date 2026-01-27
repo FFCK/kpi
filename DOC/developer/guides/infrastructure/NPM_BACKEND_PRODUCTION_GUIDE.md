@@ -29,7 +29,7 @@ sources/
 ├── package.json           # ✅ VERSIONNÉ (déclaration dépendances)
 ├── package-lock.json      # ✅ VERSIONNÉ (versions exactes + hash)
 ├── node_modules/          # ❌ IGNORÉ (.gitignore)
-│   └── flatpickr/         # Installé via make npm_install_backend
+│   └── flatpickr/         # Installé via make backend_npm_install
 └── js/
     └── flatpickr-wrapper.js  # ✅ VERSIONNÉ (votre code)
 ```
@@ -59,7 +59,7 @@ sources/vendor/
 
 ```bash
 # Exemple : Ajouter Flatpickr
-make npm_add_backend package=flatpickr
+make backend_npm_add package=flatpickr
 
 # Résultat :
 # ✅ sources/package.json créé/modifié
@@ -106,7 +106,7 @@ git commit -m "feat: add Flatpickr 4.6.13 via npm
 
 - Gestion bibliothèques JavaScript backend via npm
 - Versions exactes garanties par package-lock.json
-- Installation via container temporaire (make npm_install_backend)
+- Installation via container temporaire (make backend_npm_install)
 
 🤖 Generated with Claude Code
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -126,7 +126,7 @@ cd /var/www/html
 git pull origin main
 
 # 2. Installer les dépendances JavaScript (comme Composer)
-make npm_install_backend
+make backend_npm_install
 
 # Résultat :
 # ✅ Container Node.js temporaire démarre
@@ -151,23 +151,23 @@ git pull origin main
 
 # 2. Dépendances PHP
 echo "🐘 Installation Composer..."
-make composer_install
+make backend_composer_install
 
 # 3. Dépendances JavaScript Backend
 echo "📦 Installation NPM Backend..."
-make npm_install_backend
+make backend_npm_install
 
 # 4. Dépendances Nuxt App2
 echo "🚀 Installation NPM App2..."
-make npm_install_app2
+make app2_npm_install
 
 # 5. Build Nuxt
 echo "🏗️  Build Nuxt..."
-make run_build
+make app2_build
 
 # 6. Redémarrage services
 echo "🔄 Redémarrage containers..."
-make prod_restart
+make docker_prod_restart
 
 echo "✅ Déploiement terminé !"
 ```
@@ -206,18 +206,18 @@ echo "✅ Déploiement terminé !"
 
 ```bash
 # Initialisation (première fois)
-make npm_init_backend                    # Créer package.json
+make backend_npm_init                    # Créer package.json
 
 # Gestion dépendances
-make npm_add_backend package=flatpickr   # Ajouter bibliothèque
-make npm_install_backend                 # Installer toutes dépendances (PROD)
-make npm_update_backend                  # Mettre à jour dépendances
+make backend_npm_add package=flatpickr   # Ajouter bibliothèque
+make backend_npm_install                 # Installer toutes dépendances (PROD)
+make backend_npm_update                  # Mettre à jour dépendances
 
 # Informations
-make npm_ls_backend                      # Lister packages installés
+make backend_npm_ls                      # Lister packages installés
 
 # Nettoyage
-make npm_clean_backend                   # Supprimer node_modules (local dev)
+make backend_npm_clean                   # Supprimer node_modules (local dev)
 ```
 
 ---
@@ -235,7 +235,7 @@ docker run --rm -v $(PWD):/app -w /app node:20-alpine sh -c "npm update flatpick
 # "flatpickr": "^4.7.0"
 
 # 2. Installer nouvelle version
-make npm_install_backend
+make backend_npm_install
 
 # 3. Tester localement
 # ...
@@ -246,7 +246,7 @@ git commit -m "chore: update Flatpickr 4.6.13 → 4.7.0"
 
 # 5. Déployer
 git push origin main
-# Sur serveur : make npm_install_backend
+# Sur serveur : make backend_npm_install
 ```
 
 ---
@@ -257,7 +257,7 @@ git push origin main
 |---------|--------------------------------------|-------------------------------------|
 | **Repository** | 🟢 Léger (~2 KB) | 🔴 Lourd (+16 KB par lib) |
 | **Git diff** | 🟢 Lisible (package.json) | 🔴 Pollution (minified files) |
-| **Déploiement** | 🟡 `make npm_install_backend` | 🟢 Aucune install (déjà dans Git) |
+| **Déploiement** | 🟡 `make backend_npm_install` | 🟢 Aucune install (déjà dans Git) |
 | **Mises à jour** | 🟢 Facile (package.json) | 🟡 Commit lourd |
 | **Dépendance réseau** | ⚠️ Registry npm (déploiement) | ✅ Aucune |
 | **Cohérence Composer** | ✅ Identique | ❌ Différent |
@@ -271,7 +271,7 @@ git push origin main
 
 ```bash
 # Ajouter Flatpickr
-make npm_add_backend package=flatpickr
+make backend_npm_add package=flatpickr
 
 # Vérifier installation
 ls -lh sources/node_modules/flatpickr/dist/
@@ -345,10 +345,10 @@ cd /var/www/html
 git pull origin main
 
 # Installer dépendances JavaScript (comme Composer)
-make npm_install_backend
+make backend_npm_install
 
 # Redémarrer (si cache applicatif)
-make prod_restart
+make docker_prod_restart
 ```
 
 ---
@@ -357,12 +357,12 @@ make prod_restart
 
 ### Erreur : `node_modules/flatpickr not found`
 
-**Cause** : `npm_install_backend` pas exécuté en production
+**Cause** : `backend_npm_install` pas exécuté en production
 
 **Solution** :
 ```bash
 # Sur serveur
-make npm_install_backend
+make backend_npm_install
 ```
 
 ### Erreur : `Package integrity check failed`
@@ -373,7 +373,7 @@ make npm_install_backend
 ```bash
 # Régénérer package-lock.json
 rm sources/package-lock.json
-make npm_install_backend
+make backend_npm_install
 git add sources/package-lock.json
 git commit -m "chore: regenerate package-lock.json"
 ```
@@ -384,7 +384,7 @@ git commit -m "chore: regenerate package-lock.json"
 
 ```bash
 # Fonctionne SANS Node.js sur l'hôte
-make npm_install_backend
+make backend_npm_install
 # → docker run --rm node:20-alpine npm install
 ```
 
@@ -403,8 +403,8 @@ make npm_install_backend
 
 - [ ] `.gitignore` configuré (`sources/node_modules/` ignoré)
 - [ ] `package.json` et `package-lock.json` versionnés
-- [ ] Makefile testé (`make npm_install_backend` fonctionne)
-- [ ] Script déploiement inclut `make npm_install_backend`
+- [ ] Makefile testé (`make backend_npm_install` fonctionne)
+- [ ] Script déploiement inclut `make backend_npm_install`
 - [ ] Documentation équipe mise à jour
 - [ ] Procédure rollback documentée
 

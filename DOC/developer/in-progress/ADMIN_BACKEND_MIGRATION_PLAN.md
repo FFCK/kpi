@@ -93,13 +93,13 @@ sources/app4/
 
 ```makefile
 # NPM - App4
-npm_install_app4
-npm_clean_app4
-run_dev_app4          # Port 3004
-run_generate_app4
-run_generate_dev_app4
-run_generate_preprod_app4
-run_generate_prod_app4
+app4_npm_install
+app4_npm_clean
+app4_dev          # Port 3004
+app2_generate_dev_app4
+app4_generate_dev
+app4_generate_preprod
+app4_generate_prod
 ```
 
 ## Phase 2 : Authentification JWT dans API2
@@ -123,7 +123,7 @@ composer require symfony/security-bundle
 
 ```makefile
 # JWT - Génération des clés RSA
-jwt_generate_keys:
+api2_jwt_generate_keys:
 	@echo "Génération des clés JWT..."
 	docker compose -f docker/compose.dev.yaml exec php \
 		sh -c "cd /var/www/html/api2 && \
@@ -136,10 +136,10 @@ jwt_generate_keys:
 **Usage :**
 ```bash
 # En développement
-make jwt_generate_keys
+make api2_jwt_generate_keys
 
 # En préprod/prod (même commande, fichiers .env différents)
-make jwt_generate_keys
+make api2_jwt_generate_keys
 ```
 
 **Note** : Les clés sont dans `.gitignore` et doivent être générées sur chaque environnement.
@@ -399,23 +399,23 @@ Ajouter un lien conditionnel pour le profil 1 :
 
 1. **Démarrer les conteneurs Docker** :
    ```bash
-   make dev_up
+   make docker_dev_up
    ```
 
 2. **Générer les clés JWT** (première fois seulement) :
    ```bash
-   make jwt_generate_keys
+   make api2_jwt_generate_keys
    ```
    Entrer un passphrase quand demandé (et le noter dans `.env` de API2).
 
 3. **Installer les dépendances app4** :
    ```bash
-   make npm_install_app4
+   make app4_npm_install
    ```
 
 4. **Démarrer le serveur de développement app4** :
    ```bash
-   make run_dev_app4
+   make app4_dev
    ```
 
 ### Tests manuels

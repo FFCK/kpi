@@ -187,19 +187,19 @@ BASE_IMAGE_PHP=php:8.4-apache
 
 ```bash
 # Développement
-make dev_rebuild   # Rebuild avec PHP 8.4
-make dev_up
-make dev_status
+make docker_dev_rebuild   # Rebuild avec PHP 8.4
+make docker_dev_up
+make docker_dev_status
 
 # Pré-production
-make preprod_rebuild
-make preprod_up
-make preprod_status
+make docker_preprod_rebuild
+make docker_preprod_up
+make docker_preprod_status
 
 # Production
-make prod_rebuild
-make prod_up
-make prod_status
+make docker_prod_rebuild
+make docker_prod_up
+make docker_prod_status
 ```
 
 ---
@@ -360,7 +360,7 @@ ${APPLICATION_NAME}_node_app2   # Nuxt 4
 
 ```bash
 # Vérifier version PHP
-make php_bash
+make backend_bash
 php -v
 
 # Vérifier modules PHP
@@ -370,9 +370,9 @@ php -m
 composer --version
 
 # Logs en temps réel
-make dev_logs
-make preprod_logs
-make prod_logs
+make docker_dev_logs
+make docker_preprod_logs
+make docker_prod_logs
 ```
 
 ---
@@ -401,10 +401,10 @@ En cas de problème critique nécessitant un retour à PHP 7.4 :
 BASE_IMAGE_PHP=php:7.4.33-apache-bullseye
 
 # 2. Rebuild
-make dev_rebuild  # ou preprod_rebuild, prod_rebuild
+make docker_dev_rebuild  # ou docker_preprod_rebuild, docker_prod_rebuild
 
 # 3. Vérifier
-make dev_status
+make docker_dev_status
 ```
 
 ⚠️ **Note** : Le rollback n'est **pas recommandé** car :
