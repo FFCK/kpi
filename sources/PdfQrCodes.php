@@ -34,7 +34,6 @@ class PdfQrCodes extends MyPage
         }
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
-        $orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         // Pattern Bug SQL : Vérifier que $laCompet n'est pas '*' ou vide
@@ -47,16 +46,14 @@ class PdfQrCodes extends MyPage
             $in  = str_repeat('?,', count($lstJournee) - 1) . '?';
             $sql = "SELECT d.Code_competition
                 FROM kp_journee d 
-                WHERE d.Id In ($in) 
-                $orderMatchs ";
+                WHERE d.Id In ($in) ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute($lstJournee);
         } else {
             $sql = "SELECT d.Code_competition
                 FROM kp_journee d                 
                 WHERE d.Code_competition = ?
-                AND d.Code_saison = ?  
-                $orderMatchs ";
+                AND d.Code_saison = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeCompet, $codeSaison));
         }

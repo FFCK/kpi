@@ -24,6 +24,10 @@ class FeuilleMatch extends MyPage
         }
         $chaqueMatch = explode(',', $listMatch);
 
+        // Création du PDF UNE SEULE FOIS avant la boucle
+        $pdf = new PDF('L');
+        $pdf->SetAuthor("FFCK - Kayak-polo.info");
+        $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
         for ($h = 0; $h < count($chaqueMatch); $h++) {
             // Infos match
@@ -49,7 +53,7 @@ class FeuilleMatch extends MyPage
             $saison = $row['Code_saison'];
             $categorie = $row['Code_competition'];
             // Extract HH:MM from HH:MM:SS format
-            $heure_fin = substr($row['Heure_fin'], 0, 5);
+            $heure_fin = $row['Heure_fin'] ? substr($row['Heure_fin'], 0, 5) : '';
             if ($heure_fin == '00:00') {
                 $heure_fin = '';
             }
@@ -234,8 +238,8 @@ class FeuilleMatch extends MyPage
                 $ScoreB = '';
             }
 
-            $Commentaires = $row['Commentaires_officiels'];
-            $Commentaires1 = str_split($Commentaires, 85); //85
+            $Commentaires = $row['Commentaires_officiels'] ?? '';
+            $Commentaires1 = $Commentaires !== '' ? str_split($Commentaires, 85) : [];
             $Commentaires1 = isset($Commentaires1[0]) ? $Commentaires1[0] : '';
             if (strlen($Commentaires) > 85) {
                 $Commentaires1 .= '...';
@@ -369,8 +373,8 @@ class FeuilleMatch extends MyPage
             $result5->execute(array($idMatch));
 
             $j = 0;
-            $scoreMitempsA = '';
-            $scoreMitempsB = '';
+            $scoreMitempsA = 0;
+            $scoreMitempsB = 0;
             $nblignes = 0;
 
             while ($row5 = $result5->fetch()) {
@@ -469,14 +473,8 @@ class FeuilleMatch extends MyPage
             }
 
 
-            //Création du PDF de base
-            $pdf = new PDF('L');
-            $pdf->SetTitle($lang['Feuille_de_marque']);
-
-            $pdf->SetAuthor("FFCK - Kayak-polo.info");
-            $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
-
             // Production de la feuille de match PDF suivante
+            $pdf->SetTitle($lang['Feuille_de_marque']);
             $pdf->AddPage();
             $pdf->SetAutoPageBreak(true, 1);
 
@@ -895,7 +893,8 @@ class FeuilleMatch extends MyPage
 
             // QRCode
             $qrcode = new QRcode('https://kayak-polo.info/admin/FeuilleMarque2.php?idMatch=' . $idMatch, 'L'); // error level : L, M, Q, H
-            $qrcode->displayFPDF($pdf, 264, 164, 21);
+            $qrcode->displayFPDF($pdf, 264, 164, 21);  // Réduit de 21 à 15 pour réduire la consommation mémoire
+            unset($qrcode);  // Libérer la ressource QR code
 
             $pdf->SetY(190);
             $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')), 0, 1, 'R');
@@ -918,7 +917,7 @@ class FeuilleMatch extends MyPage
 
             $pdf->SetX(10);
 
-            // Commentaires sur la 2ème page
+            // Commentaires sur la 2ème page (ou fin de boucle)
             if (strlen($Commentaires) > 85 or $nblignes > 26) {
                 $pdf->AddPage();
                 $pdf->SetAutoPageBreak(true, 1);
@@ -1036,6 +1035,14 @@ class FeuilleMatch extends MyPage
                 $pdf->SetFont('Arial', '', 7);
                 $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 0, 'L');
             }
+
+            // Libérer les ressources après chaque match pour éviter l'épuisement mémoire
+            unset($row);
+            unset($result5);
+            unset($detail);
+            unset($detail2);
+            unset($visuels);
+            gc_collect_cycles();  // Force garbage collection
         }
 
         // Sortie PDF avec mPDF v8 (Destination::INLINE pour affichage navigateur)
