@@ -15,7 +15,9 @@ class FeuilleCltNiveauJournee extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         $codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = utyGetGet('S', $codeSaison);
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
         $visuels = utyGetVisuels($arrayCompetition, TRUE);
 

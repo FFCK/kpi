@@ -54,6 +54,7 @@ class FeuilleListeMatchs extends MyPage
         $laCompet = utyGetGet('Compet', $laCompet);
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
             $idEvenement = -1;
+            $arrayJournees = [];
         }
         $codeCompet = $laCompet;
         $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 

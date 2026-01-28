@@ -16,7 +16,9 @@ class FeuillePresenceVisa extends MyPage
     $myBdd = new MyBdd();
 
     $codeCompet = utyGetSession('codeCompet');
+    $codeCompet = utyGetGet('Compet', $codeCompet);
     $codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
+    $codeSaison = utyGetGet('S', $codeSaison);
 
     // Chargement des équipes ...
     $arrayEquipe = array();

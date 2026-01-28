@@ -24,6 +24,7 @@ if (utyGetSession('lang') == 'en') {
 
 $myBdd = new MyBdd();
 $listMatch = utyGetSession('listMatch', '');
+$listMatch = utyGetGet('listMatch', $listMatch);
 
 if (empty($listMatch)) {
 	exit("Erreur : Aucun match sélectionné.");

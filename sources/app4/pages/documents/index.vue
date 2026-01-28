@@ -153,8 +153,8 @@ const onSeasonChange = async () => {
 // Uses full legacy base URL (different host from app4)
 const pdfUrl = (file: string, extra?: Record<string, string | number>): string => {
   const params = new URLSearchParams()
-  params.set('Code_saison', selectedSeason.value)
-  params.set('Code_competition', selectedCompetitionCode.value)
+  params.set('S', selectedSeason.value)
+  params.set('Compet', selectedCompetitionCode.value)
   if (extra) {
     Object.entries(extra).forEach(([k, v]) => params.set(k, String(v)))
   }
@@ -371,7 +371,7 @@ onMounted(async () => {
             {{ t('documents.matches.list_en') }}
           </a>
           <a
-            :href="pdfUrl('tableau_tbs.php')"
+            :href="pdfUrl('tableau_openspout.php')"
             target="_blank"
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"

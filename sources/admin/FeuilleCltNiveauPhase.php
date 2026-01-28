@@ -16,6 +16,7 @@ class FeuilleCltNiveauPhase extends MyPage
 
         $codeCompet = utyGetSession('codeCompet', '');
         $codeCompet = utyGetGet('codeCompet', $codeCompet);
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);

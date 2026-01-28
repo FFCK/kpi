@@ -14,6 +14,7 @@ class FeuilleCltNiveauNiveau extends MyPage
 
         $myBdd = new MyBdd();
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
         $titreDate = "Saison " . $codeSaison;
