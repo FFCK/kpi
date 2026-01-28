@@ -17,7 +17,7 @@
     "events": "Events",
     "teams": "Teams",
     "gamedays": "Gamedays/Phases",
-    "matches": "Matches",
+    "matches": "Games",
     "rankings": "Rankings",
     "initial_ranking": "Initial ranking",
     "statistics": "Statistics",
@@ -187,7 +187,7 @@
       "liste_joueurs": "Players list",
       "liste_joueurs_coachs": "Players & coaches list",
       "licencies_nationaux": "National licensees",
-      "coherence_matchs": "Match consistency"
+      "coherence_matchs": "Game consistency"
     },
     "sections": {
       "championnat_national": "National Championship",
@@ -280,7 +280,7 @@
     "error_load_filters": "Error loading filters",
     "categories": {
       "teams": "Teams",
-      "matches": "Matches",
+      "matches": "Games",
       "rankings": "Rankings",
       "statistics": "Statistics",
       "event": "Event",
@@ -288,16 +288,16 @@
     },
     "teams": {
       "registered": "Registered teams",
-      "presence_fr": "Presence sheets (FR)",
-      "presence_en": "Presence sheets (EN)",
+      "presence_fr": "Team roster (FR)",
+      "presence_en": "Team roster (EN)",
       "presence_visa": "Presence with visa",
       "presence_photo": "Presence with photo"
     },
     "matches": {
-      "list_fr": "Match list (FR)",
-      "list_en": "Match list (EN)",
+      "list_fr": "Game list (FR)",
+      "list_en": "Game list (EN)",
       "export_spreadsheet": "Spreadsheet export",
-      "match_sheets": "Match sheets",
+      "match_sheets": "Game sheets",
       "matches_count": "matches",
       "no_matches": "No matches"
     },
@@ -322,8 +322,8 @@
     },
     "event": {
       "select": "Event",
-      "matches_fr": "Event matches (FR)",
-      "matches_en": "Event matches (EN)",
+      "matches_fr": "Event games (FR)",
+      "matches_en": "Event games (EN)",
       "qr_codes": "QR Codes",
       "qr_code_app": "QR Code App"
     },
