@@ -56,7 +56,7 @@ function redimImage($image, $largeurPage, $marge, $newHauteur, $position = 'C')
  * Get a web file (HTML, XHTML, XML, image, etc.) from a URL.  Return an
  * array containing the HTTP server response header fields and content.
  */
-function get_web_page($url)
+function get_web_page($url, $auth = null)
 {
 	$options = array(
 		CURLOPT_RETURNTRANSFER => true,     // return web page
@@ -70,6 +70,10 @@ function get_web_page($url)
 		CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
 		CURLOPT_SSL_VERIFYPEER => false     // Disabled SSL Cert checks
 	);
+
+	if ($auth) {
+		$options[CURLOPT_USERPWD] = $auth['user'] . ":" . $auth['pwd'];
+	}
 
 	$ch      = curl_init($url);
 	curl_setopt_array($ch, $options);
