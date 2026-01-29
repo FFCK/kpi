@@ -461,12 +461,12 @@ JWT_PASSPHRASE=votre_passphrase
 
 ## Pages à migrer (ordre validé)
 
-| # | Page PHP | Page Nuxt | Profil | Statut |
-|---|----------|-----------|--------|--------|
-| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté (en test) |
-| 2 | GestionDoc | `/documents` | ≤ 9 | ⏳ À faire |
-| 3 | GestionStats | `/stats` | ≤ 9 | ✅ Implémenté |
-| 4 | GestionOperations | `/operations` | = 1 | ⏳ À faire |
+| # | Page PHP | Page Nuxt | Profil | Statut | Specs |
+|---|----------|-----------|--------|--------|-------|
+| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté (en test) | Annexe A |
+| 2 | GestionDoc | `/documents` | ≤ 9 | ✅ Implémenté | [PAGE_DOCUMENTS.md](../../specs/PAGE_DOCUMENTS.md) |
+| 3 | GestionStats | `/stats` | ≤ 9 | ✅ Implémenté | Annexe B |
+| 4 | GestionOperations | `/operations` | = 1 | 📋 Specs créées | [PAGE_OPERATIONS.md](../../specs/PAGE_OPERATIONS.md) |
 
 Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migration.
 
@@ -605,5 +605,5 @@ Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migr
 ---
 
 **Document créé le** : 2026-01-02
-**Dernière mise à jour** : 2026-01-26
-**Statut** : ✅ Phase 1-6 implémentées - Events et Stats terminés
+**Dernière mise à jour** : 2026-01-29
+**Statut** : ✅ Phase 1-6 implémentées - Events, Stats et Documents terminés, Operations specs créées
