@@ -9,7 +9,16 @@
       </div>
       <div class="flex items-center justify-center">
         <UIcon v-if="isLoading" name="i-heroicons-arrow-path" class="h-6 w-6 animate-spin text-blue-600" />
-        <slot v-else name="center" />
+        <template v-else>
+          <NuxtLink
+            v-if="eventInfo"
+            to="/?openSelector=1"
+            class="hidden md:inline text-sm font-medium text-gray-700 text-center truncate max-w-xs lg:max-w-md hover:text-blue-600 cursor-pointer"
+          >
+            {{ eventInfo }}
+          </NuxtLink>
+          <slot name="center" />
+        </template>
       </div>
       <div class="flex items-center justify-end">
         <slot name="right" />
@@ -22,9 +31,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useNavigation } from '~/composables/useNavigation'
 import { useLoadingState } from '~/composables/useLoadingState'
+import { usePreferenceStore } from '~/stores/preferenceStore'
 import { navigateTo } from '#app'
+
+const { getGroupLabel } = useGroupLabel()
 
 const props = defineProps({
   hideLeft: {
@@ -34,9 +47,26 @@ const props = defineProps({
   hideRight: {
     type: Boolean,
     default: false
+  },
+  showEventInfo: {
+    type: Boolean,
+    default: false
   }
 })
 
 const { previousPage, nextPage } = useNavigation()
 const { isLoading } = useLoadingState()
+const preferenceStore = usePreferenceStore()
+
+const eventInfo = computed(() => {
+  if (!props.showEventInfo) return null
+
+  const prefs = preferenceStore.preferences
+  if (prefs?.lastEvent) {
+    return `${prefs.lastEvent.libelle} (${prefs.lastEvent.year})`
+  } else if (prefs?.lastGroup && prefs?.lastSeason) {
+    return `${getGroupLabel(prefs.lastGroup)} (${prefs.lastSeason})`
+  }
+  return null
+})
 </script>

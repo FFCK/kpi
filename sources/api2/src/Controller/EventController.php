@@ -49,6 +49,9 @@ class EventController extends AbstractController
             new OA\Response(response: 403, description: 'Invalid mode')
         ]
     )]
+    /**
+     * Note: Response includes 'year' field (integer) for filtering by start date year
+     */
     public function getEvents(string $mode): JsonResponse
     {
         if (!in_array($mode, ['std', 'champ', 'all'])) {
@@ -58,13 +61,13 @@ class EventController extends AbstractController
         $conn = $this->entityManager->getConnection();
 
         if ($mode === 'all') {
-            $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
+            $sql = "SELECT Id id, Libelle libelle, Lieu place, logo, YEAR(Date_debut) year
                 FROM kp_evenement
                 WHERE Publication = 'O'
                 ORDER BY Date_debut DESC, Id DESC";
             $stmt = $conn->prepare($sql);
         } elseif ($mode === 'std') {
-            $sql = "SELECT Id id, Libelle libelle, Lieu place, logo
+            $sql = "SELECT Id id, Libelle libelle, Lieu place, logo, YEAR(Date_debut) year
                 FROM kp_evenement
                 WHERE app = 'O'
                 ORDER BY Date_debut DESC, Id DESC";
@@ -75,7 +78,8 @@ class EventController extends AbstractController
                     WHEN (c.BandeauLink != '' AND c.Bandeau_actif = 'O') THEN CONCAT('logo/', c.BandeauLink)
                     WHEN (c.LogoLink != '' AND c.Logo_actif = 'O') THEN CONCAT('logo/', c.LogoLink)
                     ELSE NULL
-                END logo
+                END logo,
+                YEAR(j.Date_debut) year
                 FROM kp_journee j
                 JOIN kp_competition c ON (j.Code_competition = c.Code AND j.Code_saison = c.Code_saison)
                 JOIN kp_groupe g ON (c.Code_ref = g.Groupe)
@@ -91,7 +95,9 @@ class EventController extends AbstractController
         $result = $stmt->executeQuery();
         $events = $result->fetchAllAssociative();
 
-        return new JsonResponse($events);
+        $response = new JsonResponse($events);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 
     #[Route('/event/{id}', name: 'event', methods: ['GET'])]
@@ -157,6 +163,8 @@ class EventController extends AbstractController
         $result = $stmt->executeQuery();
         $event = $result->fetchAllAssociative();
 
-        return new JsonResponse($event);
+        $response = new JsonResponse($event);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }

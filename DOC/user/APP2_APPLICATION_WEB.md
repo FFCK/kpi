@@ -46,24 +46,45 @@ L'icône KPI apparaît sur votre écran comme une vraie application !
 
 ## 🎯 Fonctionnalités Principales
 
-### 1. Accueil - Sélection d'Événement
+### 1. Accueil - Sélection d'Événement ou Compétition
 
-**Navigation rapide** :
-- Liste de tous les événements disponibles (championnats, tournois, coupes)
-- Filtres par saison, type de compétition, catégorie
-- Recherche rapide par nom d'événement ou équipe
-- Sélection de l'événement pour accéder à toutes ses données
+L'application propose deux modes de navigation :
+
+**Mode "Compétitions"** (par défaut) :
+- Navigation par catégorie/groupe (N1H, N1F, N2H, U20H, etc.)
+- Sélection de la saison souhaitée
+- Accès à tous les matchs d'une catégorie sur l'ensemble de la saison
+- Idéal pour suivre un championnat complet
+- URL de partage directe par catégorie
+
+**Mode "Événements"** :
+- Liste de tous les événements ponctuels (journées de championnat, tournois, coupes)
+- Filtres par saison, type de compétition
+- Sélection d'un événement spécifique
+- Accès aux matchs de cet événement uniquement
 
 **Partage simplifié** :
-- **QR Code** affiché pour chaque événement sélectionné
+- **QR Code** affiché pour chaque sélection (compétition ou événement)
 - Clic sur le QR code pour copier le lien dans le presse-papiers
-- Scan du QR code avec un smartphone pour accès direct à l'événement
+- Scan du QR code avec un smartphone pour accès direct
 - Partage facile avec joueurs, supporters, organisateurs
+- **URL directe par compétition** : `app.kayak-polo.info/group/{saison}/{code}`
+  - Exemple : `app.kayak-polo.info/group/2026/N1H` pour la Nationale 1 Hommes
 
-**Exemple d'usage** :
+**Exemple d'usage - Mode Compétitions** :
 ```
-1. Sélectionner "Championnat National N1 2025"
-2. Cliquer sur le QR code
+1. Cliquer sur "Compétitions"
+2. Sélectionner la saison "2026"
+3. Choisir "Nationale 1 Hommes"
+→ Accès à tous les matchs N1H de la saison 2026
+→ QR code disponible pour partager ce lien
+```
+
+**Exemple d'usage - Mode Événements** :
+```
+1. Cliquer sur "Événements"
+2. Sélectionner "Championnat National N1 - Journée 3"
+3. Cliquer sur le QR code
 → Lien copié, prêt à être partagé par email, SMS ou réseaux sociaux
 ```
 
@@ -301,6 +322,10 @@ Fonctionnalité dédiée au contrôle du matériel des joueurs avant les matchs.
 - Bouton de sélection de langue dans le menu
 - Sauvegarde de la préférence dans le navigateur
 - Application automatique au prochain chargement
+
+**Traduction des catégories** :
+- Les noms de catégories (N1H, N2F, etc.) s'affichent dans la langue choisie
+- Exemple : "Nationale 1 Hommes" → "National 1 Men" en anglais
 
 ### Application Responsive (Mobile First)
 
@@ -666,7 +691,7 @@ Si vous rencontrez un problème :
 
 ---
 
-**Version** : 2.0
+**Version** : 2.1
 **Date** : Janvier 2026
 **Public** : Joueurs, entraîneurs, supporters, organisateurs, arbitres
 **Auteur** : Laurent Garrigue / Claude Code

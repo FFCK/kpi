@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid pb-16">
-    <AppSecondaryNav>
+    <AppSecondaryNav show-event-info>
       <template #left>
         <button
           @click="showFilters = !showFilters"
@@ -53,7 +53,7 @@
               {{ t('Games.Reset') }}
             </button>
           </div>
-          <div class="max-h-32 overflow-y-auto border rounded-md p-3 bg-white space-y-2">
+          <div class="max-h-48 overflow-y-auto border rounded-md p-3 bg-white space-y-2">
             <div v-for="category in categories" :key="category" class="flex items-center">
               <UCheckbox
                 :model-value="fav_categories.includes(category)"
@@ -96,17 +96,39 @@
               </button>
             </div>
           </div>
-          <div class="max-h-32 overflow-y-auto border rounded-md p-3 bg-white space-y-2">
-            <div v-for="item in filteredTeamsAndRefs" :key="item" class="flex items-center">
-              <UCheckbox
-                :model-value="fav_teams.includes(item)"
-                @update:model-value="(checked) => toggleTeam(item, checked)"
-                :id="`team-${item}`"
-              />
-              <label :for="`team-${item}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
-                {{ item }}
-              </label>
-            </div>
+          <div class="max-h-48 overflow-y-auto border rounded-md p-3 bg-white space-y-2">
+            <!-- Teams group -->
+            <template v-if="filteredTeams.length > 0">
+              <div class="text-xs font-semibold text-blue-500 uppercase tracking-wide border-b border-blue-200 pb-1 mb-2">
+                {{ t('Games.Teams') }}
+              </div>
+              <div v-for="item in filteredTeams" :key="`team-${item}`" class="flex items-center">
+                <UCheckbox
+                  :model-value="fav_teams.includes(item)"
+                  @update:model-value="(checked) => toggleTeam(item, checked)"
+                  :id="`team-${item}`"
+                />
+                <label :for="`team-${item}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                  {{ item }}
+                </label>
+              </div>
+            </template>
+            <!-- Refs group -->
+            <template v-if="filteredRefs.length > 0">
+              <div class="text-xs font-semibold text-blue-500 uppercase tracking-wide border-b border-blue-200 pb-1 mb-2" :class="{ 'mt-3': filteredTeams.length > 0 }">
+                {{ t('Games.Refs') }}
+              </div>
+              <div v-for="item in filteredRefs" :key="`ref-${item}`" class="flex items-center">
+                <UCheckbox
+                  :model-value="fav_teams.includes(item)"
+                  @update:model-value="(checked) => toggleTeam(item, checked)"
+                  :id="`ref-${item}`"
+                />
+                <label :for="`ref-${item}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                  {{ item }}
+                </label>
+              </div>
+            </template>
           </div>
         </div>
         <div class="flex items-center">
@@ -136,7 +158,7 @@
       </div>
     </div>
 
-    <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :key="locale" />
+    <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :is-group-mode="isGroupMode" :key="locale" />
 
     <button @click="scrollToTop" class="fixed bottom-8 right-4 bg-gray-800 hover:bg-gray-700 text-white font-bold p-3 rounded-full">
       <UIcon name="i-heroicons-arrow-up" class="h-6 w-6" />
@@ -172,6 +194,7 @@ const {
   gamesCount,
   filteredGames,
   filteredGamesCount,
+  isGroupMode,
   categories,
   game_dates,
   teams,
@@ -215,12 +238,20 @@ const hasActiveDateFilter = computed(() => {
   return fav_dates.value !== ''
 })
 
-const filteredTeamsAndRefs = computed(() => {
-  const allItems = [...teams.value, ...refs.value]
+const filteredTeams = computed(() => {
   if (!teamSearchQuery.value) {
-    return allItems
+    return teams.value
   }
-  return allItems.filter(item =>
+  return teams.value.filter(item =>
+    item.toLowerCase().includes(teamSearchQuery.value.toLowerCase())
+  )
+})
+
+const filteredRefs = computed(() => {
+  if (!teamSearchQuery.value) {
+    return refs.value
+  }
+  return refs.value.filter(item =>
     item.toLowerCase().includes(teamSearchQuery.value.toLowerCase())
   )
 })

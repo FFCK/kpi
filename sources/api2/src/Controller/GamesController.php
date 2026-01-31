@@ -124,6 +124,8 @@ class GamesController extends AbstractController
         $result = $stmt->executeQuery();
         $games = $result->fetchAllAssociative();
 
-        return new JsonResponse($games);
+        $response = new JsonResponse($games);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }

@@ -18,14 +18,26 @@ class FeuilleMatch extends MyPage
         parent::__construct();
         $myBdd = new MyBdd();
 
+        // Langue
+        $langue = parse_ini_file("../commun/MyLang.ini", true);
+        $langParam = utyGetGet('lang');
+        if ($langParam == 'en') {
+            $lang = $langue['en'];
+            $forceLangEn = true;
+        } else {
+            $lang = $langue['fr'];
+            $forceLangEn = false;
+        }
+
         $listMatch = utyGetGet('listMatch', -1);
         if ($listMatch == -1 || $listMatch == '') {
             die('Aucun match à afficher !');
         }
         $chaqueMatch = explode(',', $listMatch);
 
-        // Création du PDF UNE SEULE FOIS avant la boucle
+        // Création du PDF une seule fois avant la boucle
         $pdf = new PDF('L');
+        $pdf->SetTitle($lang['Feuille_de_marque']);
         $pdf->SetAuthor("FFCK - Kayak-polo.info");
         $pdf->SetCreator("FFCK - Kayak-polo.info avec mPDF");
 
@@ -60,22 +72,16 @@ class FeuilleMatch extends MyPage
 
             // Données compétition
             $arrayCompetition = $myBdd->GetCompetition($categorie, $saison);
-            // $arrayCompetition['En_actif'] = '';
-
-            // Langue
-            $langue = parse_ini_file("../commun/MyLang.ini", true);
-            if (utyGetGet('lang') == 'en') {
+            // Override language if forced via URL parameter
+            if ($forceLangEn) {
                 $arrayCompetition['En_actif'] = 'O';
-            } elseif (utyGetGet('lang') == 'fr') {
-                $arrayCompetition['En_actif'] = '';
-            }
-
-            if ($arrayCompetition['En_actif'] == 'O') {
-                $lang = $langue['en'];
             } else {
-                $lang = $langue['fr'];
+                if ($arrayCompetition['En_actif'] == 'O') {
+                    $lang = $langue['en'];
+                } else {
+                    $lang = $langue['fr'];
+                }
             }
-
 
             $visuels = utyGetVisuels($arrayCompetition, TRUE);
 
@@ -222,8 +228,8 @@ class FeuilleMatch extends MyPage
             }
             if ($row['color1B']) {
                 $color1B = sscanf($row['color1B'], "#%02x%02x%02x");
-                $color2B = sscanf($row['color2B'], "#%02x%02x%02x");
-                $colortextB = sscanf($row['colortextB'], "#%02x%02x%02x");
+                $color2B = sscanf($row['color2B'] ?? '#000000', "#%02x%02x%02x");
+                $colortextB = sscanf($row['colortextB'] ?? '#000000', "#%02x%02x%02x");
             }
 
             if ($row['ScoreA'] != '?' && $row['ScoreA'] != '') {
@@ -897,7 +903,7 @@ class FeuilleMatch extends MyPage
             unset($qrcode);  // Libérer la ressource QR code
 
             $pdf->SetY(190);
-            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')), 0, 1, 'R');
+            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 'now')), 0, 1, 'R');
 
             // mPDF: Sauvegarder position actuelle avant insertion drapeaux (images absolues)
             $currentY = $pdf->y;
@@ -1033,7 +1039,7 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
                 $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
                 $pdf->SetFont('Arial', '', 7);
-                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 0, 'L');
+                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 'now')), 0, 0, 'L');
             }
 
             // Libérer les ressources après chaque match pour éviter l'épuisement mémoire

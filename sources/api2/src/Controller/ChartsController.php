@@ -228,6 +228,8 @@ class ChartsController extends AbstractController
             $charts[$compet['code']]['ranking'] = $result2->fetchAllAssociative();
         }
 
-        return new JsonResponse(array_values($charts));
+        $response = new JsonResponse(array_values($charts));
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }

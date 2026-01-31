@@ -27,6 +27,18 @@ function updateGroupe () {
     if (!validGroupe())
         return
 
+    var oldGroupe = jq('#oldGroupe').val()
+    var newGroupe = jq('#Groupe').val()
+
+    if (oldGroupe && newGroupe && oldGroupe !== newGroupe) {
+        var message = 'Attention : Vous allez modifier le code du groupe de "' + oldGroupe + '" vers "' + newGroupe + '".\n\n' +
+            'Cette modification va également mettre à jour toutes les compétitions (kp_competition.Code_ref) qui référencent ce groupe.\n\n' +
+            'Voulez-vous continuer ?'
+        if (!confirm(message)) {
+            return
+        }
+    }
+
     jq('#Cmd').val('Update')
     jq('#ParamCmd').val()
     jq('#formGroupe').submit()

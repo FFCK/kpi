@@ -9,6 +9,10 @@ export const useGameStore = defineStore('gameStore', {
   actions: {
     async clearAndUpdateGames(games) {
       this.games = games
+    },
+    clearGames() {
+      this.games = []
+      this.error = null
     }
   }
 })

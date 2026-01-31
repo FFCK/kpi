@@ -320,10 +320,15 @@ class MyBdd
 		$nbReq2 = 0;
 		$nbReq3 = 0;
 
-		$url = "https://extranet.ffck.org/reportingExterne/getFichierPce/" . date('Y');
+		$url = FFCK_PCE_URL . date('Y');
 		$newfile = __DIR__ . "/pce1.pce";
 
-		if (!$header = get_web_page($url)) {
+		$auth = array(
+			'user' => FFCK_PCE_USER,
+			'pwd' => FFCK_PCE_PWD
+		);
+
+		if (!$header = get_web_page($url, $auth)) {
 			array_push($this->m_arrayinfo, "Ouverture impossible du fichier distant");
 		}
 		if (!file_put_contents($newfile, $header['content'])) {

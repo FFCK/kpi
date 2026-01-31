@@ -1,10 +1,10 @@
 <template>
-  <div v-if="hasEventSelected" class="event-qrcode-container text-center my-12">
+  <div v-if="hasSelection" class="event-qrcode-container text-center my-12">
     <p class="mb-1 text-gray-700 font-medium font-semibold text-lg py-2 flex items-center justify-center gap-2">
       <UIcon name="i-heroicons-share" class="h-6 w-6 flex-shrink-0" />
       <span class="align-middle">{{ t('Event.ShareEvent') }}</span>
     </p>
-    <div class="qrcode-wrapper inline-block cursor-pointer" @click="copyEventLinkToClipboard">
+    <div class="qrcode-wrapper inline-block cursor-pointer" @click="copyLinkToClipboard">
       <canvas ref="qrcodeCanvas" class="mx-auto"></canvas>
       <p class="text-sm text-gray-600 mt-2">{{ t('Event.ClickToCopy') }}</p>
     </div>
@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { ref, watch, onMounted, nextTick, computed } from 'vue'
 import QRCode from 'qrcode'
 
 const { t } = useI18n()
@@ -23,28 +23,52 @@ const toast = useToast()
 
 const qrcodeCanvas = ref(null)
 
+// Check if we have either an event or a group selected
+const hasSelection = computed(() => {
+  return hasEventSelected.value ||
+         (preferenceStore.preferences?.lastGroup !== undefined && preferenceStore.preferences?.lastGroup !== null)
+})
+
+/**
+ * Get the share URL based on current selection (event or group)
+ */
+const getShareUrl = () => {
+  const baseUrl = runtimeConfig.public.baseUrl || ''
+  const origin = window.location.origin
+
+  // Check if we have an event selected
+  const eventId = preferenceStore.preferences.lastEvent?.id
+  if (eventId) {
+    return `${origin}${baseUrl}/event/${eventId}`
+  }
+
+  // Check if we have a group selected
+  const groupCode = preferenceStore.preferences.lastGroup?.code
+  const season = preferenceStore.preferences.lastSeason
+  if (groupCode && season) {
+    return `${origin}${baseUrl}/group/${season}/${groupCode}`
+  }
+
+  return null
+}
+
 /**
  * Generate QR code with centered logo
  */
 const generateQRCode = async () => {
-  if (!hasEventSelected.value || !qrcodeCanvas.value) {
+  if (!hasSelection.value || !qrcodeCanvas.value) {
     return
   }
 
-  const eventId = preferenceStore.preferences.lastEvent?.id
-  if (!eventId) return
-
-  // Construct the event URL using app's base URL
-  const baseUrl = runtimeConfig.public.baseUrl || ''
-  const origin = window.location.origin
-  const eventUrl = `${origin}${baseUrl}/event/${eventId}`
+  const shareUrl = getShareUrl()
+  if (!shareUrl) return
 
   try {
     const canvas = qrcodeCanvas.value
     const ctx = canvas.getContext('2d')
 
     // Generate QR code on canvas with high error correction (to allow logo overlay)
-    await QRCode.toCanvas(canvas, eventUrl, {
+    await QRCode.toCanvas(canvas, shareUrl, {
       errorCorrectionLevel: 'H',
       margin: 2,
       width: 280,
@@ -84,34 +108,29 @@ const generateQRCode = async () => {
 }
 
 /**
- * Copy event link to clipboard
+ * Copy link to clipboard
  */
-const copyEventLinkToClipboard = async () => {
-  if (!hasEventSelected.value) {
+const copyLinkToClipboard = async () => {
+  if (!hasSelection.value) {
     return
   }
 
-  const eventId = preferenceStore.preferences.lastEvent?.id
-  if (!eventId) return
-
-  // Construct the event URL
-  const baseUrl = runtimeConfig.public.baseUrl || ''
-  const origin = window.location.origin
-  const eventUrl = `${origin}${baseUrl}/event/${eventId}`
+  const shareUrl = getShareUrl()
+  if (!shareUrl) return
 
   try {
-    await navigator.clipboard.writeText(eventUrl)
+    await navigator.clipboard.writeText(shareUrl)
 
     // Show success toast notification
     toast.add({
       title: t('Event.LinkCopied'),
-      description: eventUrl,
+      description: shareUrl,
       icon: 'i-heroicons-check-circle',
       color: 'success',
       duration: 3000
     })
   } catch (error) {
-    console.error('Failed to copy event link to clipboard:', error)
+    console.error('Failed to copy link to clipboard:', error)
 
     // Show error toast notification
     toast.add({
@@ -127,6 +146,16 @@ const copyEventLinkToClipboard = async () => {
 // Watch for event changes and regenerate QR code
 watch(
   () => preferenceStore.preferences.lastEvent,
+  async () => {
+    await nextTick()
+    generateQRCode()
+  },
+  { immediate: true }
+)
+
+// Watch for group changes and regenerate QR code
+watch(
+  () => preferenceStore.preferences.lastGroup,
   async () => {
     await nextTick()
     generateQRCode()

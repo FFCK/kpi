@@ -41,6 +41,11 @@ define('MAIN_DIRECTORY', '');
 define('CARD_ALERT_RECIPIENTS', '');
 define('SEND_MAIL', true);
 
+// URL FFCK PCE (licences)
+define('FFCK_PCE_URL', 'https://link.to.pce/');
+define('FFCK_PCE_USER', 'user');
+define('FFCK_PCE_PWD', 'password');
+
 // Matomo Analytics
 // Site ID pour la partie publique (frontend)
 define('MATOMO_SITE_ID_PUBLIC', '3');

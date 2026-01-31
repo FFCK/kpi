@@ -27,7 +27,7 @@ export const useOnlineStatus = () => {
   }
 
   const handleOffline = () => {
-    console.log('[OnlineStatus] Network: Offline')
+    // console.log('[OnlineStatus] Network: Offline')
     isOnline.value = false
     wasOffline.value = true
 
@@ -43,7 +43,7 @@ export const useOnlineStatus = () => {
 
   const handleVisibilityChange = () => {
     if (document.visibilityState === 'visible') {
-      console.log('[OnlineStatus] App became visible')
+      // console.log('[OnlineStatus] App became visible')
       // Update online status when app becomes visible
       const currentOnlineStatus = navigator.onLine
       if (currentOnlineStatus !== isOnline.value) {

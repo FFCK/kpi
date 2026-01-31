@@ -8,6 +8,25 @@
     </AppSecondaryNav>
 
     <div class="max-w-3xl mx-auto px-4 py-6">
+      <!-- Information Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6 text-center">
+        <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ t("About.Information") }}</h3>
+        <p class="text-sm italic text-gray-600 mb-3">{{ t("About.ClickForDetails") }}</p>
+        <p class="text-gray-700 mb-4">{{ t("About.ClickableElements") }}</p>
+        <!-- Large image for desktop -->
+        <img
+          src="/img/tuto_lg.png"
+          :alt="t('About.Information')"
+          class="hidden md:block w-full rounded-lg shadow"
+        />
+        <!-- Small image for mobile -->
+        <img
+          src="/img/tuto_sm.png"
+          :alt="t('About.Information')"
+          class="block md:hidden w-full rounded-lg shadow"
+        />
+      </div>
+
       <!-- Introduction Card -->
       <div class="bg-white rounded-lg shadow-md p-6 mb-6">
         <div class="flex items-center gap-3 mb-4">

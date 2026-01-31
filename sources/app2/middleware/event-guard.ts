@@ -15,11 +15,14 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return
   }
 
-  // Check if an event is selected
-  const hasEventSelected = preferenceStore.preferences?.lastEvent !== undefined &&
-                           preferenceStore.preferences?.lastEvent !== null
+  // Check if an event or group is selected
+  const hasEvent = preferenceStore.preferences?.lastEvent !== undefined &&
+                   preferenceStore.preferences?.lastEvent !== null
+  const hasGroup = preferenceStore.preferences?.lastGroup !== undefined &&
+                   preferenceStore.preferences?.lastGroup !== null
+  const hasEventSelected = hasEvent || hasGroup
 
-  // If no event is selected, store the intended URL and redirect to home
+  // If no event/group is selected, store the intended URL and redirect to home
   if (!hasEventSelected) {
     // Store path in query parameter so it survives the redirect
     return navigateTo({

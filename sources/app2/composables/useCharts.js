@@ -5,20 +5,21 @@ import { useApi } from '~/composables/useApi'
 import { useOnlineStatus } from '~/composables/useOnlineStatus'
 import db from '~/utils/db'
 
+// Singleton state - shared across all useCharts() calls
+const allChartData = ref(null)
+const chartIndex = ref(0)
+const showFlags = ref(true)
+const fav_categories = ref([])
+const fav_teams = ref([])
+const categories = ref([])
+const teams = ref([])
+const isFromCache = ref(false)
+
 export const useCharts = () => {
   const preferenceStore = usePreferenceStore()
   const chartStore = useChartStore()
   const { getApi, showCacheToast } = useApi()
   const { isOnline, checkConnection } = useOnlineStatus()
-
-  const allChartData = ref(null)
-  const chartIndex = ref(0)
-  const showFlags = ref(true)
-  const fav_categories = ref([])
-  const fav_teams = ref([])
-  const categories = ref([])
-  const teams = ref([])
-  const isFromCache = ref(false)
 
   const filteredChartData = computed(() => {
     if (!allChartData.value) return null
@@ -88,9 +89,25 @@ export const useCharts = () => {
   })
 
   const loadCharts = async (force = false) => {
-    if (!preferenceStore.preferences.lastEvent) return
+    const eventMode = preferenceStore.preferences?.eventMode
+    const lastGroup = preferenceStore.preferences?.lastGroup
+    const lastSeason = preferenceStore.preferences?.lastSeason
+    const lastEvent = preferenceStore.preferences?.lastEvent
 
-    const eventId = preferenceStore.preferences.lastEvent.id
+    // Determine API URL and cache key based on mode
+    let apiUrl
+    let cacheKey
+
+    if (eventMode === 'group' && lastGroup?.code && lastSeason) {
+      apiUrl = `/group/${lastSeason}/${lastGroup.code}/charts`
+      cacheKey = `group_${lastSeason}_${lastGroup.code}`
+    } else if (lastEvent?.id) {
+      apiUrl = `/event/${lastEvent.id}/charts`
+      cacheKey = lastEvent.id
+    } else {
+      return // No selection
+    }
+
     chartStore.loading = true
     isFromCache.value = false
 
@@ -104,8 +121,14 @@ export const useCharts = () => {
       let cachedCharts = null
 
       // Charger depuis Dexie
-      cachedCharts = await db.charts.where('eventId').equals(eventId).toArray()
-      if (cachedCharts && cachedCharts.length > 0 && !force) {
+      cachedCharts = await db.charts.where('eventId').equals(cacheKey).toArray()
+      const hasCachedCharts = cachedCharts && cachedCharts.length > 0
+
+      const online = checkConnection()
+      const willLoadFromApi = online && (shouldLoadFromApi || !hasCachedCharts)
+
+      // Charger depuis le cache seulement si on ne va pas immédiatement charger depuis l'API
+      if (hasCachedCharts && !force && !willLoadFromApi) {
         allChartData.value = cachedCharts.map(item => item.data)
         loadCategories()
         chartIndex.value++
@@ -117,19 +140,16 @@ export const useCharts = () => {
         }
       }
 
-      // Vérifier la connexion réseau avant d'appeler l'API
-      const online = checkConnection()
-
       // Charger depuis l'API uniquement si en ligne et nécessaire
-      if (online && (shouldLoadFromApi || !cachedCharts || cachedCharts.length === 0)) {
+      if (willLoadFromApi) {
         try {
-          const response = await getApi(`/event/${eventId}/charts`)
+          const response = await getApi(apiUrl)
           const data = await response.json()
 
           // Sauvegarder dans Dexie
-          await db.charts.where('eventId').equals(eventId).delete()
+          await db.charts.where('eventId').equals(cacheKey).delete()
           await db.charts.bulkAdd(data.map(item => ({
-            eventId: eventId,
+            eventId: cacheKey,
             data: item,
             timestamp: Date.now()
           })))
@@ -137,34 +157,45 @@ export const useCharts = () => {
           // Sauvegarder la date de chargement API
           await preferenceStore.putItem('charts_last_api_load', now)
 
-          // Mettre à jour l'interface seulement si les données ont changé
-          if (JSON.stringify(data) !== JSON.stringify(allChartData.value)) {
+          // Mettre à jour l'interface (comparaison simple par taille)
+          const hasDataChanged = !allChartData.value ||
+            data.length !== allChartData.value.length
+
+          if (hasDataChanged) {
             allChartData.value = data
             loadCategories()
             chartIndex.value++
           }
           isFromCache.value = false
         } catch (apiError) {
-          if (!cachedCharts || cachedCharts.length === 0) {
+          if (!hasCachedCharts) {
             throw apiError
           }
-          // Keep isFromCache as true since we're using cached data
-          if (cachedCharts && cachedCharts.length > 0) {
-            isFromCache.value = true
+          // Fallback to cache
+          if (hasCachedCharts && !allChartData.value) {
+            allChartData.value = cachedCharts.map(item => item.data)
+            loadCategories()
+            chartIndex.value++
           }
+          isFromCache.value = true
         }
-      } else if (!online && cachedCharts && cachedCharts.length > 0) {
-        // Offline with cached data
+      } else if (!online && hasCachedCharts) {
+        // Offline with cached data - already loaded above
         isFromCache.value = true
-      } else if (!online && (!cachedCharts || cachedCharts.length === 0)) {
+      } else if (!online && !hasCachedCharts) {
         // Offline without cached data
         chartStore.error = new Error('OFFLINE_NO_CACHE')
       }
 
-      // Nettoyer les anciennes données (plus de 7 jours) - seulement si en ligne
+      // Nettoyer les anciennes données (plus de 7 jours) - seulement si en ligne, max 1 fois par heure
       if (online) {
-        const cutoffTime = Date.now() - (7 * 24 * 60 * 60 * 1000)
-        await db.charts.where('timestamp').below(cutoffTime).delete()
+        const lastCleanup = preferenceStore.preferences.charts_last_cleanup || 0
+        const oneHour = 60 * 60 * 1000
+        if (now - lastCleanup > oneHour) {
+          const cutoffTime = Date.now() - (7 * 24 * 60 * 60 * 1000)
+          await db.charts.where('timestamp').below(cutoffTime).delete()
+          await preferenceStore.putItem('charts_last_cleanup', now)
+        }
       }
     } catch (error) {
       chartStore.error = error
@@ -175,7 +206,13 @@ export const useCharts = () => {
 
   const loadCategories = () => {
     if (!allChartData.value) return
-    categories.value = allChartData.value.map(chart => chart.libelle || chart.code)
+    // Sort categories by tour DESC, then order DESC (same as chart display)
+    const sortedCharts = [...allChartData.value].sort((a, b) => {
+      const tourCmp = (b.tour ?? 0) - (a.tour ?? 0)
+      if (tourCmp !== 0) return tourCmp
+      return (b.order ?? 0) - (a.order ?? 0)
+    })
+    categories.value = sortedCharts.map(chart => chart.libelle || chart.code)
 
     // Extract teams from all charts
     const allTeams = new Set()
