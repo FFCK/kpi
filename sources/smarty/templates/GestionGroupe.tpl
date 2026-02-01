@@ -27,8 +27,6 @@
 								<tr class='{cycle values="impair,pair"} {$arrayGroupes[i].selected}'>
 									<td>
 										{$arrayGroupes[i].id}
-										<img src="../img/up.png" class="ordre_up" data-id="{$arrayGroupes[i].id}"
-											data-order="{$arrayGroupes[i].ordre}" style="cursor: pointer" />
 									</td>
 									<td>
 										<a href="#" Id="Param{$arrayGroupes[i].id}" onclick="editGroupe({$arrayGroupes[i].id})">
@@ -37,7 +35,11 @@
 									</td>
 									<td>{$arrayGroupes[i].section_name}</td>
 									<td>{$arrayGroupes[i].Code_niveau}</td>
-									<td>{$arrayGroupes[i].ordre}</td>
+									<td>
+										<img src="../img/up.png" class="ordre_up" data-id="{$arrayGroupes[i].id}"
+											data-order="{$arrayGroupes[i].ordre}" style="cursor: pointer" />
+										{$arrayGroupes[i].ordre}
+									</td>
 									<td>{$arrayGroupes[i].Groupe}</td>
 									<td>{$arrayGroupes[i].Libelle}</td>
 									<td>{$arrayGroupes[i].Libelle_en}</td>
