@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Security\UserProvider;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
  * JWT Authentication controller for App4 admin interface
  */
 #[Route('/auth')]
+#[OA\Tag(name: '20. App4 - Authentication')]
 class AdminAuthController extends AbstractController
 {
     public function __construct(
@@ -31,6 +33,12 @@ class AdminAuthController extends AbstractController
     public function login(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+
+        if (!is_array($data)) {
+            return $this->json([
+                'message' => 'Invalid JSON payload'
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
         $username = $data['username'] ?? '';
         $password = $data['password'] ?? '';

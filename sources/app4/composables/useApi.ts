@@ -259,6 +259,86 @@ export const useApi = () => {
     return apiFetch<T>(endpoint, { method: 'DELETE' })
   }
 
+  // POST request with FormData (for file uploads)
+  const upload = async <T>(endpoint: string, formData: FormData): Promise<T> => {
+    const url = `${baseUrl}${endpoint}`
+    let response: Response | null = null
+    let fetchError: Error | null = null
+
+    try {
+      // Add timeout wrapper
+      response = await Promise.race([
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            // Don't set Content-Type for FormData - browser will set it with boundary
+            'Authorization': authStore.token ? `Bearer ${authStore.token}` : ''
+          },
+          body: formData
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Request timeout')), REQUEST_TIMEOUT_MS * 3) // 30s for uploads
+        )
+      ])
+
+      if (!response.ok) {
+        const errorType = detectErrorType(null, response)
+
+        if (errorType === ErrorType.HTTP_401) {
+          const now = Date.now()
+          if (now - last401Time > THROTTLE_401_MS) {
+            last401Time = now
+            toast.add({
+              title: t('errors.http.401.title'),
+              description: t('errors.http.401.description'),
+              icon: 'i-heroicons-shield-exclamation',
+              color: 'error',
+              duration: 3000
+            })
+          }
+          authStore.clearAuth()
+          navigateTo('/login')
+          throw new Error('Session expired')
+        }
+
+        if (errorType === ErrorType.HTTP_403) {
+          showErrorToast(ErrorType.HTTP_403)
+          throw new Error('Access denied')
+        }
+
+        if (errorType) {
+          showErrorToast(errorType, response.status)
+        }
+
+        let error: ApiError
+        try {
+          error = await response.json()
+        } catch {
+          error = { message: `HTTP ${response.status}: ${response.statusText}` }
+        }
+
+        throw error
+      }
+
+      if (response.status === 204) {
+        return {} as T
+      }
+
+      return response.json()
+    } catch (err) {
+      fetchError = err as Error
+
+      if (!response || response.ok) {
+        const errorType = detectErrorType(fetchError, null)
+        if (errorType) {
+          showErrorToast(errorType)
+        }
+      }
+
+      throw fetchError
+    }
+  }
+
   // GET request returning Blob (for file downloads)
   const getBlob = async (endpoint: string): Promise<ArrayBuffer> => {
     const url = `${baseUrl}${endpoint}`
@@ -326,6 +406,7 @@ export const useApi = () => {
     put,
     patch,
     del,
+    upload,
     getBlob
   }
 }

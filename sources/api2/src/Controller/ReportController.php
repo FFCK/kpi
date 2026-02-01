@@ -24,7 +24,7 @@ class ReportController extends AbstractController
         path: '/report/game/{gameId}',
         summary: 'Get game details with events and players',
         description: 'Returns complete game report including teams, players, and match events for official reports',
-        tags: ['4. Report'],
+        tags: ['2. App2 - Public'],
         security: [['ApiToken' => []]],
         parameters: [
             new OA\Parameter(

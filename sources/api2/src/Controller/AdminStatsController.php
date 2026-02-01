@@ -5,6 +5,7 @@ namespace App\Controller;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Mpdf\Mpdf;
+use OpenApi\Attributes as OA;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,6 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Replicates GestionStats.php functionality
  */
 #[Route('/admin/stats')]
+#[OA\Tag(name: '23. App4 - Statistics')]
 class AdminStatsController extends AbstractController
 {
     public function __construct(

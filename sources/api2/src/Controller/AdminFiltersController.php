@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\DBAL\Connection;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
  * All results are filtered according to the authenticated user's restrictions.
  */
 #[Route('/admin/filters')]
+#[OA\Tag(name: '21. App4 - Filters')]
 class AdminFiltersController extends AbstractController
 {
     private const SECTIONS = [

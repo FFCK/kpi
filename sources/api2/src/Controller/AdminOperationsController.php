@@ -8,6 +8,7 @@ use App\Service\PlayerMergeService;
 use App\Service\SeasonOperationsService;
 use App\Service\TeamOperationsService;
 use Doctrine\DBAL\Connection;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  */
 #[Route('/admin/operations')]
 #[IsGranted('ROLE_SUPER_ADMIN')]
+#[OA\Tag(name: '24. App4 - Operations')]
 class AdminOperationsController extends AbstractController
 {
     public function __construct(

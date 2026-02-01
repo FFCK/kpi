@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Doctrine\DBAL\Connection;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  */
 #[Route('/admin/events')]
 #[IsGranted('ROLE_ADMIN')]
+#[OA\Tag(name: '22. App4 - Events')]
 class AdminEventController extends AbstractController
 {
     public function __construct(
