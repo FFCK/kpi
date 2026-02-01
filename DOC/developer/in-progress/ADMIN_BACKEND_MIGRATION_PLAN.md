@@ -465,10 +465,10 @@ JWT_PASSPHRASE=votre_passphrase
 
 | # | Page PHP | Page Nuxt | Profil | Statut | Specs |
 |---|----------|-----------|--------|--------|-------|
-| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté (en test) | Annexe A |
+| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté | Annexe A |
 | 2 | GestionDoc | `/documents` | ≤ 9 | ✅ Implémenté | [PAGE_DOCUMENTS.md](../../specs/PAGE_DOCUMENTS.md) |
 | 3 | GestionStats | `/stats` | ≤ 9 | ✅ Implémenté | Annexe B |
-| 4 | GestionOperations | `/operations` | = 1 | 📋 Specs créées | [PAGE_OPERATIONS.md](../../specs/PAGE_OPERATIONS.md) |
+| 4 | GestionOperations | `/operations` | = 1 | ✅ Implémenté | [PAGE_OPERATIONS.md](../../specs/PAGE_OPERATIONS.md) |
 | 5 | GestionCompetition | `/competitions` | ≤ 10 | 🚧 Specs en cours | [PAGE_COMPETITIONS.md](../../specs/PAGE_COMPETITIONS.md) |
 
 ### Pages avec redirection provisoire vers legacy
@@ -642,4 +642,4 @@ Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migr
 
 **Document créé le** : 2026-01-02
 **Dernière mise à jour** : 2026-02-01
-**Statut** : ✅ Phase 1-6 implémentées - Events, Stats, Documents terminés, Operations specs créées, Redirections legacy configurées
+**Statut** : ✅ Phase 1-6 implémentées - Events, Stats, Documents, Operations terminés, Redirections legacy configurées

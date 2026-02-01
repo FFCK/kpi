@@ -1,5 +1,7 @@
 # Spécification - Page Opérations
 
+## Statut : ✅ IMPLÉMENTÉ (2026-02-01)
+
 ## 1. Vue d'ensemble
 
 Page d'administration système regroupant les opérations sensibles réservées au profil Super Admin (= 1). Cette page permet la gestion des saisons, la fusion de données, les imports/exports et diverses opérations de maintenance.
@@ -9,6 +11,8 @@ Page d'administration système regroupant les opérations sensibles réservées 
 **Accès** : Profil = 1 (Super Admin uniquement)
 
 **Source PHP** : `sources/admin/GestionOperations.php`
+
+**Implémentation Nuxt** : `sources/app4/pages/operations/index.vue`
 
 ---
 
@@ -414,18 +418,13 @@ L'interface étant très dense, la migration vers Nuxt devrait organiser les fon
 
 ---
 
-## Priorité de migration
+## Statut d'implémentation
 
-Cette page est classée en **priorité 4** car :
-- Profil 1 uniquement (usage limité)
-- Fonctionnalités sensibles nécessitant des tests approfondis
-- Pas d'urgence fonctionnelle
-
-**Ordre recommandé pour les migrations app4:**
+**Ordre de migration app4:**
 1. ✅ GestionEvenement (terminé)
-2. ⏳ GestionDoc
+2. ✅ GestionDoc (terminé)
 3. ✅ GestionStats (terminé)
-4. ⏳ **GestionOperations** (ce document)
+4. ✅ **GestionOperations** (terminé - 2026-02-01)
 
 ---
 
@@ -452,5 +451,5 @@ Cette page est classée en **priorité 4** car :
 ---
 
 **Document créé le**: 29 janvier 2026
-**Dernière mise à jour**: 29 janvier 2026
+**Dernière mise à jour**: 01 février 2026
 **Auteur**: Claude Code
