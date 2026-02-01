@@ -39,7 +39,7 @@ app4_npm_install app4_npm_ls app4_npm_clean app4_npm_update app4_npm_add app4_np
 backend_npm_install backend_npm_add backend_npm_update backend_npm_ls backend_npm_clean backend_npm_init \
 backend_composer_install backend_composer_update backend_composer_require backend_composer_require_dev backend_composer_dump backend_bash \
 api2_composer_install api2_composer_update api2_composer_require api2_cache_clear api2_cache_warmup api2_migrations_diff api2_migrations_migrate \
-api2_jwt_generate_keys \
+api2_assets_install api2_jwt_generate_keys \
 db_bash \
 backend_worker_start backend_worker_stop backend_worker_status backend_worker_logs backend_worker_restart \
 wordpress_backup wordpress_restore \
@@ -787,6 +787,11 @@ api2_migrations_migrate: ## Exécute les migrations Doctrine pour API2
 	@echo "Exécution des migrations Doctrine pour API2 (container: $(PHP_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && php bin/console doctrine:migrations:migrate --no-interaction"
 	@echo "Migrations exécutées pour API2"
+
+api2_assets_install: ## Installe les assets pour API2
+	@echo "Installation des assets pour API2 (container: $(PHP_CONTAINER_NAME))..."
+	$(DOCKER_EXEC_PHP_NON_INTERACTIVE) bash -c "cd /var/www/html/api2 && php bin/console assets:install public"
+	@echo "Assets installés pour API2"
 
 api2_jwt_generate_keys: ## Génère les clés RSA pour JWT (API2) - reproductible sur chaque environnement
 	@echo "Génération des clés JWT pour API2..."
