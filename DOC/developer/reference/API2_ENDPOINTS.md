@@ -428,13 +428,101 @@ curl -X GET "https://kpi.localhost/api2/admin/stats/export/xlsx?season=2025&type
   -o stats.xlsx
 ```
 
+### Admin Competitions
+```
+GET    /admin/competitions                    List competitions (paginated)
+GET    /admin/competitions/{code}             Get single competition
+POST   /admin/competitions                    Create competition (profile ≤3)
+PUT    /admin/competitions/{code}             Update competition (profile ≤3)
+DELETE /admin/competitions/{code}             Delete competition (profile ≤2)
+POST   /admin/competitions/bulk-delete        Bulk delete (profile ≤2)
+PATCH  /admin/competitions/{code}/publish     Toggle publication (profile ≤4)
+PATCH  /admin/competitions/{code}/lock        Toggle lock (profile ≤3)
+PATCH  /admin/competitions/{code}/status      Change status ATT/ON/END (profile ≤3)
+GET    /admin/competitions-groups             List groups for select
+GET    /admin/competitions-for-multi          List competitions for MULTI select
+```
+
+**Query Parameters (GET list):**
+- `season` - Season code (required)
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 50)
+- `search` - Search in libelle/code
+- `level` - Filter by level (INT/NAT/REG)
+- `type` - Filter by type (CHPT/CP/MULTI)
+- `sortBy` - Sort field (default: section)
+- `sortOrder` - Sort direction (ASC/DESC)
+
+**Response Fields:**
+```json
+{
+  "items": [{
+    "code": "N1H",
+    "codeSaison": "2025",
+    "codeNiveau": "NAT",
+    "libelle": "Nationale 1 Hommes",
+    "soustitre": null,
+    "soustitre2": null,
+    "codeRef": "NAT1",
+    "groupOrder": 1,
+    "codeTypeclt": "CHPT",
+    "codeTour": 1,
+    "qualifies": 3,
+    "elimines": 0,
+    "points": "4-2-1-0",
+    "goalaverage": "gen",
+    "statut": "ON",
+    "publication": true,
+    "verrou": false,
+    "nbEquipes": 12,
+    "nbJournees": 6,
+    "nbMatchs": 66,
+    "hasRc": true,
+    "section": 1,
+    "sectionLabel": "France Nationale",
+    "web": null,
+    "enActif": true,
+    "titreActif": true,
+    "bandeauActif": true,
+    "logoActif": true,
+    "sponsorActif": true,
+    "kpiFfckActif": true,
+    "pointsGrid": null,
+    "multiCompetitions": null,
+    "rankingStructureType": null,
+    "commentairesCompet": null
+  }],
+  "total": 45,
+  "page": 1,
+  "limit": 50,
+  "totalPages": 1
+}
+```
+
+**Delete Validation:**
+A competition can only be deleted if:
+- `nbEquipes === 0` (no teams)
+- `nbJournees === 0` (no gamedays/phases)
+- `nbMatchs === 0` (no matches)
+
+**Status Change (PATCH /status):**
+```json
+{
+  "statut": "ON"
+}
+```
+Valid values: `ATT` (Pending), `ON` (Ongoing), `END` (Finished)
+
 ## HTTP Status Codes
 
 - `200` - Success
+- `204` - No content (successful delete)
 - `400` - Bad request / Game locked
 - `401` - Unauthorized / Invalid action
-- `403` - Forbidden / Invalid mode
+- `403` - Forbidden / Invalid mode / Insufficient permissions
+- `404` - Not found
 - `405` - Method not allowed / Invalid data
+- `409` - Conflict (cannot delete: has dependencies)
 
 ## CORS
 
@@ -470,6 +558,7 @@ The `/_error/` routes are internal Symfony routes used for error handling:
 | `/api/staff/{token}/player/{playerId}/team/{teamId}/comment` | `/api2/staff/{eventId}/team/{teamId}/player/{playerId}/comment` + `X-Auth-Token` header |
 | `/api/report/{token}/game/{gameId}` | `/api2/report/game/{gameId}` + `X-Auth-Token` header |
 | `/api/wsm/*` | `/api2/wsm/*` |
+| `GestionCompetition.php` | `/api2/admin/competitions/*` (app4 page) |
 
 **Important differences:**
 - **Authentication:** API2 uses `X-Auth-Token` header instead of token in URL for Staff/Report endpoints

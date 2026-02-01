@@ -179,6 +179,25 @@ CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
   }
   ```
 
+### Admin Competitions (JWT Protected, app4)
+```
+GET    /admin/competitions                    List competitions (paginated)
+GET    /admin/competitions/{code}             Get single competition
+POST   /admin/competitions                    Create competition (profile ≤3)
+PUT    /admin/competitions/{code}             Update competition (profile ≤3)
+DELETE /admin/competitions/{code}             Delete competition (profile ≤2)
+POST   /admin/competitions/bulk-delete        Bulk delete (profile ≤2)
+PATCH  /admin/competitions/{code}/publish     Toggle publication (profile ≤4)
+PATCH  /admin/competitions/{code}/lock        Toggle lock (profile ≤3)
+PATCH  /admin/competitions/{code}/status      Change status ATT/ON/END (profile ≤3)
+GET    /admin/competitions-groups             List groups for select
+GET    /admin/competitions-for-multi          List competitions for MULTI select
+```
+
+**Query Parameters (GET list):** `season`, `page`, `limit`, `search`, `level`, `type`, `sortBy`, `sortOrder`
+
+**Delete validation:** Competition must have 0 teams, 0 gamedays, and 0 matches
+
 ## Database Tables Used
 
 - `kp_evenement` - Events
