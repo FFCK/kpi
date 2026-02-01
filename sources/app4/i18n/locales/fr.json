@@ -531,6 +531,153 @@
       "irreversible": "Cette action est irréversible."
     }
   },
+  "competitions": {
+    "title": "Gestion des compétitions",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "delete_selected": "Supprimer la sélection",
+    "select_all": "Tout sélectionner",
+    "documents": "Documents",
+    "rc": "RC",
+    "copy": "Copier",
+    "columns": {
+      "code": "Code",
+      "niveau": "Niveau",
+      "libelle": "Libellé",
+      "groupe": "Groupe",
+      "type": "Type",
+      "statut": "Statut",
+      "publication": "Pub.",
+      "verrou": "Verrou",
+      "equipes": "Éq.",
+      "journees": "J.",
+      "phases": "Ph.",
+      "matchs": "Matchs",
+      "actions": "Actions"
+    },
+    "form": {
+      "add_title": "Ajouter une compétition",
+      "edit_title": "Modifier la compétition",
+      "code": "Code",
+      "code_placeholder": "Ex: N1H",
+      "code_hint": "Le code doit être unique pour la saison",
+      "niveau": "Niveau",
+      "libelle": "Libellé",
+      "libelle_placeholder": "Nom de la compétition",
+      "soustitre": "Sous-titre",
+      "soustitre_placeholder": "Sous-titre (optionnel)",
+      "soustitre2": "Sous-titre 2",
+      "soustitre2_placeholder": "Sous-titre 2 (optionnel)",
+      "groupe": "Groupe",
+      "groupe_placeholder": "Sélectionner un groupe",
+      "group_order": "Ordre dans le groupe",
+      "type": "Type de classement",
+      "tour": "Tour/Phase",
+      "qualifies": "Qualifiés",
+      "elimines": "Éliminés",
+      "points": "Système de points",
+      "goalaverage": "Goal average",
+      "statut": "Statut",
+      "web": "Lien web",
+      "web_placeholder": "URL du site web",
+      "options": "Options d'affichage",
+      "en_actif": "Libellé anglais actif",
+      "titre_actif": "Titre actif",
+      "bandeau_actif": "Bandeau actif",
+      "logo_actif": "Logo actif",
+      "sponsor_actif": "Sponsor actif",
+      "kpi_ffck_actif": "Lien KPI/FFCK actif",
+      "commentaires": "Commentaires",
+      "commentaires_placeholder": "Commentaires internes",
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "filters": {
+      "season": "Saison",
+      "level": "Niveau",
+      "level_all": "Tous les niveaux",
+      "type": "Type",
+      "type_all": "Tous les types"
+    },
+    "levels": {
+      "INT": "International",
+      "NAT": "National",
+      "REG": "Régional"
+    },
+    "types": {
+      "CHPT": "Championnat",
+      "CP": "Coupe/Tournoi",
+      "MULTI": "Multi-compétition"
+    },
+    "types_long": {
+      "CHPT": "CHPT - Matchs aller-retour (Championnat)",
+      "CP": "CP - Matchs à élimination (Coupe, Tournoi...)",
+      "MULTI": "MULTI - Classement multi-compétition"
+    },
+    "status": {
+      "ATT": "En attente",
+      "ON": "En cours",
+      "END": "Terminée"
+    },
+    "points_options": {
+      "4-2-1-0": "4-2-1-0 (V/N/P/F)",
+      "3-1-0-0": "3-1-0-0 (V/N/P/F)"
+    },
+    "goalaverage_options": {
+      "gen": "Général",
+      "part": "Particulier"
+    },
+    "tour_options": {
+      "1": "Tour 1",
+      "2": "Tour 2",
+      "3": "Tour 3",
+      "4": "Tour 4",
+      "5": "Tour 5",
+      "6": "Tour 6",
+      "10": "Phase finale"
+    },
+    "multi": {
+      "title": "Configuration multi-compétition",
+      "points_grid": "Grille de points",
+      "points_grid_hint": "Points attribués par position (1er, 2ème, etc.)",
+      "source_competitions": "Compétitions sources",
+      "source_competitions_hint": "Compétitions à agréger",
+      "ranking_type": "Type de classement",
+      "ranking_types": {
+        "team": "Par équipe",
+        "club": "Par club",
+        "cd": "Par comité départemental",
+        "cr": "Par comité régional",
+        "nation": "Par nation"
+      }
+    },
+    "published": "Publié",
+    "unpublished": "Non publié",
+    "locked": "Verrouillé",
+    "unlocked": "Déverrouillé",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer cette compétition ?",
+    "confirm_delete_multiple": "Êtes-vous sûr de vouloir supprimer {count} compétition(s) ?",
+    "confirm_delete_warning": "Cette action supprimera définitivement la compétition.",
+    "success_created": "Compétition créée avec succès",
+    "success_updated": "Compétition modifiée avec succès",
+    "success_deleted": "Compétition supprimée avec succès",
+    "success_published": "Publication modifiée",
+    "success_locked": "Verrouillage modifié",
+    "success_status": "Statut modifié",
+    "click_to_change_status": "Cliquer pour changer le statut",
+    "error_load": "Erreur lors du chargement des compétitions",
+    "error_save": "Erreur lors de l'enregistrement",
+    "error_delete": "Erreur lors de la suppression",
+    "error_has_teams": "Impossible de supprimer : la compétition contient des équipes",
+    "error_has_gamedays": "Impossible de supprimer : la compétition contient des journées",
+    "error_has_matches": "Impossible de supprimer : la compétition contient des matchs",
+    "empty": "Aucune compétition trouvée",
+    "pagination": {
+      "showing": "Affichage de {from} à {to} sur {total} compétitions",
+      "items_per_page": "Éléments par page"
+    }
+  },
   "errors": {
     "generic": {
       "description": "Une erreur inattendue s'est produite"

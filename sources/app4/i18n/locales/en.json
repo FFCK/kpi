@@ -530,6 +530,153 @@
       "irreversible": "This action is irreversible."
     }
   },
+  "competitions": {
+    "title": "Competition Management",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "delete_selected": "Delete selected",
+    "select_all": "Select all",
+    "documents": "Documents",
+    "rc": "RC",
+    "copy": "Copy",
+    "columns": {
+      "code": "Code",
+      "niveau": "Level",
+      "libelle": "Name",
+      "groupe": "Group",
+      "type": "Type",
+      "statut": "Status",
+      "publication": "Pub.",
+      "verrou": "Lock",
+      "equipes": "Teams",
+      "journees": "Days",
+      "phases": "Phases",
+      "matchs": "Games",
+      "actions": "Actions"
+    },
+    "form": {
+      "add_title": "Add competition",
+      "edit_title": "Edit competition",
+      "code": "Code",
+      "code_placeholder": "e.g. N1H",
+      "code_hint": "Code must be unique for the season",
+      "niveau": "Level",
+      "libelle": "Name",
+      "libelle_placeholder": "Competition name",
+      "soustitre": "Subtitle",
+      "soustitre_placeholder": "Subtitle (optional)",
+      "soustitre2": "Subtitle 2",
+      "soustitre2_placeholder": "Subtitle 2 (optional)",
+      "groupe": "Group",
+      "groupe_placeholder": "Select a group",
+      "group_order": "Order in group",
+      "type": "Ranking type",
+      "tour": "Round/Phase",
+      "qualifies": "Qualified",
+      "elimines": "Eliminated",
+      "points": "Points system",
+      "goalaverage": "Goal average",
+      "statut": "Status",
+      "web": "Web link",
+      "web_placeholder": "Website URL",
+      "options": "Display options",
+      "en_actif": "English label active",
+      "titre_actif": "Title active",
+      "bandeau_actif": "Banner active",
+      "logo_actif": "Logo active",
+      "sponsor_actif": "Sponsor active",
+      "kpi_ffck_actif": "KPI/FFCK link active",
+      "commentaires": "Comments",
+      "commentaires_placeholder": "Internal comments",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "filters": {
+      "season": "Season",
+      "level": "Level",
+      "level_all": "All levels",
+      "type": "Type",
+      "type_all": "All types"
+    },
+    "levels": {
+      "INT": "International",
+      "NAT": "National",
+      "REG": "Regional"
+    },
+    "types": {
+      "CHPT": "Championship",
+      "CP": "Cup/Tournament",
+      "MULTI": "Multi-competition"
+    },
+    "types_long": {
+      "CHPT": "CHPT - Round-trip games (Championship)",
+      "CP": "CP - Playoff games (Cup, Tournament...)",
+      "MULTI": "MULTI - Multi-competition ranking"
+    },
+    "status": {
+      "ATT": "Pending",
+      "ON": "Ongoing",
+      "END": "Finished"
+    },
+    "points_options": {
+      "4-2-1-0": "4-2-1-0 (W/D/L/F)",
+      "3-1-0-0": "3-1-0-0 (W/D/L/F)"
+    },
+    "goalaverage_options": {
+      "gen": "General",
+      "part": "Head-to-head"
+    },
+    "tour_options": {
+      "1": "Round 1",
+      "2": "Round 2",
+      "3": "Round 3",
+      "4": "Round 4",
+      "5": "Round 5",
+      "6": "Round 6",
+      "10": "Final phase"
+    },
+    "multi": {
+      "title": "Multi-competition configuration",
+      "points_grid": "Points grid",
+      "points_grid_hint": "Points awarded by position (1st, 2nd, etc.)",
+      "source_competitions": "Source competitions",
+      "source_competitions_hint": "Competitions to aggregate",
+      "ranking_type": "Ranking type",
+      "ranking_types": {
+        "team": "By team",
+        "club": "By club",
+        "cd": "By departmental committee",
+        "cr": "By regional committee",
+        "nation": "By nation"
+      }
+    },
+    "published": "Published",
+    "unpublished": "Unpublished",
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "confirm_delete": "Are you sure you want to delete this competition?",
+    "confirm_delete_multiple": "Are you sure you want to delete {count} competition(s)?",
+    "confirm_delete_warning": "This will permanently delete the competition.",
+    "success_created": "Competition created successfully",
+    "success_updated": "Competition updated successfully",
+    "success_deleted": "Competition deleted successfully",
+    "success_published": "Publication changed",
+    "success_locked": "Lock status changed",
+    "success_status": "Status changed",
+    "click_to_change_status": "Click to change status",
+    "error_load": "Error loading competitions",
+    "error_save": "Error saving competition",
+    "error_delete": "Error deleting competition",
+    "error_has_teams": "Cannot delete: competition has teams",
+    "error_has_gamedays": "Cannot delete: competition has gamedays",
+    "error_has_matches": "Cannot delete: competition has matches",
+    "empty": "No competitions found",
+    "pagination": {
+      "showing": "Showing {from} to {to} of {total} competitions",
+      "items_per_page": "Items per page"
+    }
+  },
   "errors": {
     "generic": {
       "description": "An unexpected error occurred"
