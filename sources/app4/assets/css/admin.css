@@ -2,6 +2,33 @@
 @import "@nuxt/ui";
 @import "./toast.css";
 
+/* ===== Force Light Mode for Admin Interface ===== */
+/* Override dark mode styles to ensure consistent light theme */
+:root {
+  color-scheme: light;
+}
+
+/* Ensure dropdowns and popover menus have dark text on white backgrounds */
+.bg-white,
+[class*="bg-white"] {
+  color: rgb(17 24 39);
+}
+
+/* Force dark text on light backgrounds in dropdown menus */
+div[class*="dropdown"],
+div[class*="menu"],
+div[class*="popover"],
+.absolute.z-10.bg-white {
+  color: rgb(17 24 39);
+}
+
+/* Ensure buttons in dropdowns have proper text color */
+.absolute.z-10 button,
+div[class*="dropdown"] button,
+div[class*="menu"] button {
+  color: rgb(17 24 39);
+}
+
 /* Modal improvements */
 .umodal-container {
   z-index: 9999 !important;

@@ -116,6 +116,22 @@
     "actions": "Actions",
     "scroll_to_top": "Retour en haut"
   },
+  "legacy_redirect": {
+    "message": "Redirection vers l'interface classique en cours...",
+    "info": "Cette page n'est pas encore disponible dans la nouvelle interface. Vous allez être redirigé vers l'ancienne interface.",
+    "go_now": "Accéder maintenant",
+    "page_titles": {
+      "competitions": "Gestion des compétitions",
+      "teams": "Gestion des équipes",
+      "gamedays": "Gestion des journées",
+      "matches": "Gestion des matchs",
+      "rankings": "Gestion des classements",
+      "rankings_initial": "Classement initial",
+      "athletes": "Gestion des athlètes",
+      "clubs": "Gestion des clubs",
+      "users": "Gestion des utilisateurs"
+    }
+  },
   "stats": {
     "title": "Statistiques",
     "empty": "Aucune donnée trouvée. Sélectionnez au moins une compétition.",

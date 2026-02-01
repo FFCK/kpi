@@ -44,6 +44,13 @@ export default defineNuxtConfig({
     '@nuxt/ui'
   ],
 
+  // Force light mode for admin interface
+  colorMode: {
+    preference: 'light',
+    fallback: 'light',
+    classSuffix: ''
+  },
+
   icon: {
     provider: 'iconify',
     clientBundle: {
