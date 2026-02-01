@@ -157,6 +157,15 @@ class AdminOperationsController extends AbstractController
     // ==================== IMAGES ====================
 
     /**
+     * Get image types configuration
+     */
+    #[Route('/images/types', name: 'admin_operations_images_types', methods: ['GET'])]
+    public function getImageTypes(): JsonResponse
+    {
+        return $this->json($this->imageService->getImageTypesConfig());
+    }
+
+    /**
      * Upload an image
      */
     #[Route('/images/upload', name: 'admin_operations_images_upload', methods: ['POST'])]
@@ -271,16 +280,16 @@ class AdminOperationsController extends AbstractController
             return $this->json([]);
         }
 
-        $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Nom as Club
+        $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
                 FROM kp_licence l
-                LEFT JOIN kp_club c ON l.Numero_club = c.Numero
+                LEFT JOIN kp_club c ON l.Numero_club = c.Code
                 WHERE l.Nom LIKE ? OR l.Prenom LIKE ? OR l.Matric LIKE ?
                 ORDER BY l.Nom, l.Prenom
-                LIMIT ?";
+                LIMIT $limit";
 
         $searchTerm = "%$query%";
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery([$searchTerm, $searchTerm, $searchTerm, $limit]);
+        $result = $stmt->executeQuery([$searchTerm, $searchTerm, $searchTerm]);
 
         $players = array_map(function ($row) {
             return [
@@ -388,16 +397,16 @@ class AdminOperationsController extends AbstractController
             return $this->json([]);
         }
 
-        $sql = "SELECT e.Numero, e.Libelle, e.Code_club, c.Nom as Club
+        $sql = "SELECT e.Numero, e.Libelle, e.Code_club, c.Libelle as Club
                 FROM kp_equipe e
-                LEFT JOIN kp_club c ON e.Code_club = c.Numero
+                LEFT JOIN kp_club c ON e.Code_club = c.Code
                 WHERE e.Libelle LIKE ? OR e.Numero LIKE ?
                 ORDER BY e.Libelle
-                LIMIT ?";
+                LIMIT $limit";
 
         $searchTerm = "%$query%";
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery([$searchTerm, $searchTerm, $limit]);
+        $result = $stmt->executeQuery([$searchTerm, $searchTerm]);
 
         $teams = array_map(function ($row) {
             return [
@@ -425,22 +434,22 @@ class AdminOperationsController extends AbstractController
             return $this->json([]);
         }
 
-        $sql = "SELECT Numero, Nom, Departement
+        $sql = "SELECT Code, Libelle, Code_comite_dep
                 FROM kp_club
-                WHERE Nom LIKE ? OR Numero LIKE ?
-                ORDER BY Nom
-                LIMIT ?";
+                WHERE Libelle LIKE ? OR Code LIKE ?
+                ORDER BY Libelle
+                LIMIT $limit";
 
         $searchTerm = "%$query%";
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery([$searchTerm, $searchTerm, $limit]);
+        $result = $stmt->executeQuery([$searchTerm, $searchTerm]);
 
         $clubs = array_map(function ($row) {
             return [
-                'numero' => $row['Numero'],
-                'nom' => $row['Nom'],
-                'departement' => $row['Departement'],
-                'label' => "{$row['Nom']} ({$row['Numero']})"
+                'numero' => $row['Code'],
+                'nom' => $row['Libelle'],
+                'departement' => $row['Code_comite_dep'],
+                'label' => "{$row['Libelle']} ({$row['Code']})"
             ];
         }, $result->fetchAllAssociative());
 
@@ -554,7 +563,8 @@ class AdminOperationsController extends AbstractController
     #[Route('/cache/purge', name: 'admin_operations_cache_purge', methods: ['POST'])]
     public function purgeCache(): JsonResponse
     {
-        $cacheDir = dirname(__DIR__, 3) . '/../live/cache/';
+        // In Docker: api2/src/Controller -> dirname 3 levels = /var/www/html, then /live/cache/
+        $cacheDir = dirname(__DIR__, 3) . '/live/cache/';
 
         if (!is_dir($cacheDir)) {
             return $this->json(['message' => 'Cache directory does not exist'], Response::HTTP_NOT_FOUND);
@@ -748,7 +758,7 @@ class AdminOperationsController extends AbstractController
 
             $stmt = $this->connection->prepare($sql);
             $stmt->executeStatement([$userId, $action, $eventId, $details]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // Log silently fails - don't break the main operation
         }
     }

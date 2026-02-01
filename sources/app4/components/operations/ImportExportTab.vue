@@ -61,16 +61,9 @@ const exportEvent = async () => {
 
   loading.value = true
   try {
-    // Use fetch directly for file download
-    const response = await fetch(`/api2/admin/operations/events/${selectedExportEvent.value.id}/export`, {
-      credentials: 'include'
-    })
-
-    if (!response.ok) {
-      throw new Error('Export failed')
-    }
-
-    const blob = await response.blob()
+    // Use getBlob from API composable for authenticated file download
+    const arrayBuffer = await api.getBlob(`/admin/operations/events/${selectedExportEvent.value.id}/export`)
+    const blob = new Blob([arrayBuffer], { type: 'application/json' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url

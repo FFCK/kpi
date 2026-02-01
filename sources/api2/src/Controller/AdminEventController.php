@@ -52,8 +52,14 @@ class AdminEventController extends AbstractController
         $params = [];
 
         if (!empty($search)) {
-            $whereClause = "WHERE Libelle LIKE ? OR Lieu LIKE ?";
-            $params = ["%$search%", "%$search%"];
+            // Check if search is a numeric ID
+            if (is_numeric($search)) {
+                $whereClause = "WHERE Id = ? OR Libelle LIKE ? OR Lieu LIKE ?";
+                $params = [(int) $search, "%$search%", "%$search%"];
+            } else {
+                $whereClause = "WHERE Libelle LIKE ? OR Lieu LIKE ?";
+                $params = ["%$search%", "%$search%"];
+            }
         }
 
         // Count total

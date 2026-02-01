@@ -34,7 +34,7 @@ onMounted(() => {
 
       <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
         <div class="flex items-start gap-3">
-          <UIcon name="heroicons:information-circle" class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+          <UIcon name="heroicons:information-circle" class="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" />
           <p class="text-sm text-yellow-800">
             {{ t('legacy_redirect.info') }}
           </p>

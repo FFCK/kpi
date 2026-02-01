@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import type { ImageType } from '~/types/operations'
 
+interface ImageTypeConfig {
+  label: string
+  formatHint: string
+  accept: string
+  maxWidth: number
+  maxHeight: number
+  requiredFields: string[]
+}
+
 const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
@@ -10,6 +19,7 @@ const loading = ref(false)
 const selectedImageType = ref<ImageType>('logo_competition')
 const fileInput = ref<HTMLInputElement | null>(null)
 const selectedFile = ref<File | null>(null)
+const imageTypesConfig = ref<Record<string, ImageTypeConfig>>({})
 
 // Form fields based on image type
 const codeCompetition = ref('')
@@ -22,18 +32,49 @@ const currentName = ref('')
 const newName = ref('')
 const confirmRenameModal = ref(false)
 
-// Image type options
-const imageTypes = [
-  { value: 'logo_competition', label: 'Logo compétition', accept: 'image/jpeg', ext: '.jpg' },
-  { value: 'bandeau_competition', label: 'Bandeau compétition', accept: 'image/jpeg', ext: '.jpg' },
-  { value: 'sponsor_competition', label: 'Sponsor compétition', accept: 'image/jpeg', ext: '.jpg' },
-  { value: 'logo_club', label: 'Logo club', accept: 'image/png', ext: '.png' },
-  { value: 'logo_nation', label: 'Logo nation', accept: 'image/png', ext: '.png' }
-] as const
+// Fallback image type options (used before API loads)
+const imageTypesFallback: { value: ImageType; label: string; accept: string; formatHint: string }[] = [
+  { value: 'logo_competition', label: 'Logo compétition', accept: 'image/jpeg,image/png', formatHint: 'JPG ou PNG, max 1000x1000px' },
+  { value: 'bandeau_competition', label: 'Bandeau compétition', accept: 'image/jpeg,image/png', formatHint: 'JPG ou PNG, max 2480x250px' },
+  { value: 'sponsor_competition', label: 'Sponsor compétition', accept: 'image/jpeg,image/png', formatHint: 'JPG ou PNG, max 2480x250px' },
+  { value: 'logo_club', label: 'Logo club', accept: 'image/png', formatHint: 'PNG uniquement, max 200x200px' },
+  { value: 'logo_nation', label: 'Logo nation', accept: 'image/png', formatHint: 'PNG uniquement, max 200x200px' }
+]
+
+// Fetch image types config on mount
+onMounted(async () => {
+  try {
+    const config = await api.get<Record<string, ImageTypeConfig>>('/admin/operations/images/types')
+    imageTypesConfig.value = config
+  } catch {
+    // Use fallback if API fails
+    console.warn('Failed to load image types config, using fallback')
+  }
+})
 
 // Computed
+const imageTypes = computed(() => {
+  return imageTypesFallback.map(fallback => {
+    const apiConfig = imageTypesConfig.value[fallback.value]
+    return {
+      value: fallback.value,
+      label: apiConfig?.label || fallback.label,
+      accept: apiConfig?.accept || fallback.accept,
+      formatHint: apiConfig?.formatHint || fallback.formatHint
+    }
+  })
+})
+
+const currentConfig = computed(() => {
+  return imageTypes.value.find(t => t.value === selectedImageType.value)
+})
+
 const currentAccept = computed(() => {
-  return imageTypes.find(t => t.value === selectedImageType.value)?.accept || 'image/jpeg'
+  return currentConfig.value?.accept || 'image/jpeg'
+})
+
+const currentFormatHint = computed(() => {
+  return currentConfig.value?.formatHint || ''
 })
 
 const needsCompetitionFields = computed(() => {
@@ -59,7 +100,10 @@ const canRename = computed(() => {
 const onFileSelected = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
-    selectedFile.value = target.files[0]
+    const file = target.files[0]
+    if (file) {
+      selectedFile.value = file
+    }
   }
 }
 
@@ -180,6 +224,11 @@ const confirmRename = async () => {
           {{ type.label }}
         </button>
       </div>
+      <!-- Format hint for selected type -->
+      <p v-if="currentFormatHint" class="mt-2 text-sm text-blue-600 flex items-center gap-1">
+        <UIcon name="i-heroicons-information-circle" class="w-4 h-4" />
+        {{ currentFormatHint }}
+      </p>
     </div>
 
     <!-- Upload section -->

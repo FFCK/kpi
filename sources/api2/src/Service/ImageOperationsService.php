@@ -15,29 +15,38 @@ class ImageOperationsService
         'logo_competition' => [
             'prefix' => 'L-',
             'extension' => '.jpg',
-            'mimeTypes' => ['image/jpeg', 'image/jpg'],
+            'extensionByMime' => ['image/png' => '.png', 'image/jpeg' => '.jpg', 'image/jpg' => '.jpg'],
+            'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/png'],
             'maxWidth' => 1000,
             'maxHeight' => 1000,
             'destination' => '/img/logo/',
             'nameFields' => ['codeCompetition', 'saison'],
+            'label' => 'Logo compétition',
+            'formatHint' => 'JPG ou PNG, max 1000x1000px',
         ],
         'bandeau_competition' => [
             'prefix' => 'B-',
             'extension' => '.jpg',
-            'mimeTypes' => ['image/jpeg', 'image/jpg'],
+            'extensionByMime' => ['image/png' => '.png', 'image/jpeg' => '.jpg', 'image/jpg' => '.jpg'],
+            'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/png'],
             'maxWidth' => 2480,
             'maxHeight' => 250,
             'destination' => '/img/logo/',
             'nameFields' => ['codeCompetition', 'saison'],
+            'label' => 'Bandeau compétition',
+            'formatHint' => 'JPG ou PNG, max 2480x250px',
         ],
         'sponsor_competition' => [
             'prefix' => 'S-',
             'extension' => '.jpg',
-            'mimeTypes' => ['image/jpeg', 'image/jpg'],
+            'extensionByMime' => ['image/png' => '.png', 'image/jpeg' => '.jpg', 'image/jpg' => '.jpg'],
+            'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/png'],
             'maxWidth' => 2480,
             'maxHeight' => 250,
             'destination' => '/img/logo/',
             'nameFields' => ['codeCompetition', 'saison'],
+            'label' => 'Sponsor compétition',
+            'formatHint' => 'JPG ou PNG, max 2480x250px',
         ],
         'logo_club' => [
             'prefix' => '',
@@ -47,6 +56,8 @@ class ImageOperationsService
             'maxHeight' => 200,
             'destination' => '/img/KIP/logo/',
             'nameFields' => ['numeroClub'],
+            'label' => 'Logo club',
+            'formatHint' => 'PNG uniquement, max 200x200px',
         ],
         'logo_nation' => [
             'prefix' => '',
@@ -56,6 +67,8 @@ class ImageOperationsService
             'maxHeight' => 200,
             'destination' => '/img/Nations/',
             'nameFields' => ['codeNation'],
+            'label' => 'Logo nation',
+            'formatHint' => 'PNG uniquement, max 200x200px',
         ],
     ];
 
@@ -94,7 +107,13 @@ class ImageOperationsService
             $filenameParts[] = $value;
         }
 
-        $filename = $config['prefix'] . implode('-', $filenameParts) . $config['extension'];
+        // Determine extension based on mime type if extensionByMime is configured
+        $extension = $config['extension'];
+        if (isset($config['extensionByMime'][$mimeType])) {
+            $extension = $config['extensionByMime'][$mimeType];
+        }
+
+        $filename = $config['prefix'] . implode('-', $filenameParts) . $extension;
         $destinationDir = $this->documentRoot . $config['destination'];
         $destinationPath = $destinationDir . $filename;
 
@@ -127,8 +146,11 @@ class ImageOperationsService
             $newWidth = (int)($width * $ratio);
             $newHeight = (int)($height * $ratio);
 
+            // Determine if this is a PNG based on actual mime type
+            $isPng = ($mimeType === 'image/png');
+
             // Create source image
-            if (in_array('image/png', $config['mimeTypes'])) {
+            if ($isPng) {
                 $sourceImage = imagecreatefrompng($file->getPathname());
             } else {
                 $sourceImage = imagecreatefromjpeg($file->getPathname());
@@ -142,7 +164,7 @@ class ImageOperationsService
             $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
 
             // Preserve transparency for PNG
-            if (in_array('image/png', $config['mimeTypes'])) {
+            if ($isPng) {
                 imagealphablending($resizedImage, false);
                 imagesavealpha($resizedImage, true);
                 $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
@@ -153,14 +175,11 @@ class ImageOperationsService
             imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
             // Save resized image
-            if (in_array('image/png', $config['mimeTypes'])) {
+            if ($isPng) {
                 $result = imagepng($resizedImage, $destinationPath, 9);
             } else {
                 $result = imagejpeg($resizedImage, $destinationPath, 90);
             }
-
-            imagedestroy($sourceImage);
-            imagedestroy($resizedImage);
 
             if (!$result) {
                 throw new \Exception('Cannot save resized image');
@@ -282,5 +301,41 @@ class ImageOperationsService
         usort($images, fn($a, $b) => strcmp($a['filename'], $b['filename']));
 
         return $images;
+    }
+
+    /**
+     * Get image types configuration for frontend display
+     */
+    public function getImageTypesConfig(): array
+    {
+        $types = [];
+        foreach ($this->imageConfig as $key => $config) {
+            $types[$key] = [
+                'label' => $config['label'] ?? $key,
+                'formatHint' => $config['formatHint'] ?? '',
+                'accept' => $this->mimeTypesToAccept($config['mimeTypes']),
+                'maxWidth' => $config['maxWidth'],
+                'maxHeight' => $config['maxHeight'],
+                'requiredFields' => $config['nameFields'],
+            ];
+        }
+        return $types;
+    }
+
+    /**
+     * Convert MIME types to HTML accept attribute value
+     */
+    private function mimeTypesToAccept(array $mimeTypes): string
+    {
+        // Deduplicate and convert to accept format
+        $accepts = [];
+        foreach ($mimeTypes as $mime) {
+            if ($mime === 'image/jpg') {
+                $accepts['image/jpeg'] = true;
+            } else {
+                $accepts[$mime] = true;
+            }
+        }
+        return implode(',', array_keys($accepts));
     }
 }

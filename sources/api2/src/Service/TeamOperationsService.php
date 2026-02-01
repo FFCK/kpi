@@ -171,7 +171,7 @@ class TeamOperationsService
      */
     private function verifyClubExists(string $clubCode): void
     {
-        $sql = "SELECT COUNT(*) FROM kp_club WHERE Numero = ?";
+        $sql = "SELECT COUNT(*) FROM kp_club WHERE Code = ?";
         $stmt = $this->connection->prepare($sql);
         $result = $stmt->executeQuery([$clubCode]);
 

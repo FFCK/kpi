@@ -46,7 +46,7 @@ const changeTab = (tabId: OperationsTab) => {
     <!-- Warning banner -->
     <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
       <div class="flex items-start gap-3">
-        <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+        <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" />
         <div>
           <h4 class="font-medium text-yellow-800">{{ t('operations.common.warning') }}</h4>
           <p class="mt-1 text-sm text-yellow-700">{{ t('operations.common.irreversible') }}</p>

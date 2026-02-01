@@ -196,7 +196,7 @@ const onClickOutside = () => {
               v-for="player in sourceResults"
               :key="player.matric"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm text-gray-900"
               @click="selectSource(player)"
             >
               <div class="font-medium">{{ player.nom }} {{ player.prenom }}</div>
@@ -237,7 +237,7 @@ const onClickOutside = () => {
               v-for="player in targetResults"
               :key="player.matric"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm text-gray-900"
               @click="selectTarget(player)"
             >
               <div class="font-medium">{{ player.nom }} {{ player.prenom }}</div>
