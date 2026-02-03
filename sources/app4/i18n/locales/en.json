@@ -12,7 +12,7 @@
     "back_online": "Connection restored"
   },
   "menu": {
-    "competition": "Competition",
+    "competition": "Competitions",
     "documents": "Documents",
     "events": "Events",
     "teams": "Teams",
@@ -22,7 +22,7 @@
     "initial_ranking": "Initial ranking",
     "statistics": "Statistics",
     "athletes": "Athletes",
-    "management": "Management",
+    "administration": "Administration",
     "clubs": "Clubs",
     "users": "Users",
     "operations": "Operations"
@@ -46,8 +46,10 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome, {name}",
+    "manage_competitions": "Manage competitions",
     "manage_events": "Manage events",
     "manage_documents": "Manage documents",
+    "manage_matches": "Manage matches",
     "view_statistics": "View statistics",
     "system_operations": "System operations",
     "beta_notice_title": "Beta Version",
@@ -675,6 +677,38 @@
     "pagination": {
       "showing": "Showing {from} to {to} of {total} competitions",
       "items_per_page": "Items per page"
+    }
+  },
+  "context": {
+    "title": "Working Context",
+    "season": "Season",
+    "scope": "Working Scope",
+    "type_section": "Entire Section",
+    "type_group": "Entire Group",
+    "type_competition": "Single Competition",
+    "type_event": "Event",
+    "select_season": "Select a season",
+    "select_section": "Select a section",
+    "select_group": "Select a group",
+    "select_competition": "Select a competition",
+    "select_event": "Select an event",
+    "competitions_from_context": "Competitions (from context)",
+    "competition_from_context": "Competition (from context)",
+    "all_competitions": "All",
+    "current": "Context",
+    "competitions_count": "{count} competition(s)",
+    "no_context": "No context selected",
+    "active_season": "Active season",
+    "change": "Change",
+    "summary": "Summary",
+    "no_competitions": "No competitions in this scope",
+    "sections": {
+      "1": "International Competitions",
+      "2": "National Competitions",
+      "3": "Regional Competitions",
+      "4": "International Tournaments",
+      "5": "Continents",
+      "100": "Other"
     }
   },
   "errors": {

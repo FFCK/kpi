@@ -30,33 +30,26 @@ const languages = [
   { code: 'en', label: 'EN', flag: '🇬🇧' }
 ]
 
-// Menu items based on user profile
-const menuItems = computed<MenuItem[]>(() => {
+// Competition management menu items (linked to work context)
+const competitionMenuItems = computed<MenuItem[]>(() => {
   const profile = authStore.user?.profile ?? 99
   const items: MenuItem[] = []
 
-  // Compétition (dropdown) - profile <= 10
+  // Compétitions - profile <= 10
   if (profile <= 10) {
-    const children: MenuItem[] = []
-    if (profile <= 9) {
-      children.push({
-        to: '/documents',
-        icon: 'heroicons:document-text',
-        label: t('menu.documents')
-      })
-    }
-    if (profile <= 2) {
-      children.push({
-        to: '/events',
-        icon: 'heroicons:calendar-days',
-        label: t('menu.events')
-      })
-    }
     items.push({
       to: '/competitions',
       icon: 'heroicons:trophy',
-      label: t('menu.competition'),
-      ...(children.length > 0 ? { children } : {})
+      label: t('menu.competition')
+    })
+  }
+
+  // Documents - profile <= 9
+  if (profile <= 9) {
+    items.push({
+      to: '/documents',
+      icon: 'heroicons:document-text',
+      label: t('menu.documents')
     })
   }
 
@@ -87,71 +80,75 @@ const menuItems = computed<MenuItem[]>(() => {
     })
   }
 
-  // Classements (dropdown) - profile <= 9
+  // Classements - profile <= 9 (simple link, initial accessible from page)
   if (profile <= 9) {
     items.push({
       to: '/rankings',
       icon: 'heroicons:chart-bar',
-      label: t('menu.rankings'),
-      children: [
-        {
-          to: '/rankings/initial',
-          icon: 'heroicons:list-bullet',
-          label: t('menu.initial_ranking')
-        }
-      ]
+      label: t('menu.rankings')
     })
   }
 
-  // Stats (dropdown) - profile <= 9
+  // Statistiques - profile <= 9
   if (profile <= 9) {
-    const children: MenuItem[] = []
-    if (profile <= 8) {
-      children.push({
-        to: '/athletes',
-        icon: 'heroicons:user',
-        label: t('menu.athletes')
-      })
-    }
     items.push({
       to: '/stats',
       icon: 'heroicons:chart-pie',
-      label: t('menu.statistics'),
-      ...(children.length > 0 ? { children } : {})
+      label: t('menu.statistics')
     })
   }
 
-  // Gestion (dropdown) - visible if any child is accessible
-  {
-    const children: MenuItem[] = []
-    if (profile <= 9) {
-      children.push({
-        to: '/clubs',
-        icon: 'heroicons:building-office-2',
-        label: t('menu.clubs')
-      })
-    }
-    if (profile <= 3) {
-      children.push({
-        to: '/users',
-        icon: 'heroicons:users',
-        label: t('menu.users')
-      })
-    }
-    if (profile === 1) {
-      children.push({
-        to: '/operations',
-        icon: 'heroicons:wrench-screwdriver',
-        label: t('menu.operations')
-      })
-    }
-    if (children.length > 0) {
-      items.push({
-        icon: 'heroicons:cog-6-tooth',
-        label: t('menu.management'),
-        children
-      })
-    }
+  return items
+})
+
+// Administration menu items (global, not linked to a specific competition)
+const adminMenuItems = computed<MenuItem[]>(() => {
+  const profile = authStore.user?.profile ?? 99
+  const items: MenuItem[] = []
+
+  // Événements - profile <= 2
+  if (profile <= 2) {
+    items.push({
+      to: '/events',
+      icon: 'heroicons:calendar-days',
+      label: t('menu.events')
+    })
+  }
+
+  // Athlètes - profile <= 8
+  if (profile <= 8) {
+    items.push({
+      to: '/athletes',
+      icon: 'heroicons:user',
+      label: t('menu.athletes')
+    })
+  }
+
+  // Clubs - profile <= 9
+  if (profile <= 9) {
+    items.push({
+      to: '/clubs',
+      icon: 'heroicons:building-office-2',
+      label: t('menu.clubs')
+    })
+  }
+
+  // Utilisateurs - profile <= 3
+  if (profile <= 3) {
+    items.push({
+      to: '/users',
+      icon: 'heroicons:users',
+      label: t('menu.users')
+    })
+  }
+
+  // Opérations - profile === 1
+  if (profile === 1) {
+    items.push({
+      to: '/operations',
+      icon: 'heroicons:wrench-screwdriver',
+      label: t('menu.operations')
+    })
   }
 
   return items
@@ -233,69 +230,9 @@ onMounted(() => {
 
         <!-- Center: Horizontal menu (desktop only) -->
         <nav ref="navRef" class="hidden lg:flex items-center space-x-1">
-          <template v-for="item in menuItems" :key="item.label">
-            <!-- Item with dropdown -->
-            <div v-if="item.children" class="relative">
-              <button
-                :class="[
-                  'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                  openDropdown === item.label || (item.to && isActive(item.to))
-                    ? 'text-blue-400 bg-gray-800'
-                    : 'text-gray-300 hover:text-white hover:bg-gray-800'
-                ]"
-                @click="toggleDropdown(item.label)"
-              >
-                <UIcon :name="item.icon" class="w-4 h-4" />
-                <span>{{ item.label }}</span>
-                <UIcon
-                  name="heroicons:chevron-down"
-                  class="w-3 h-3 transition-transform"
-                  :class="{ 'rotate-180': openDropdown === item.label }"
-                />
-              </button>
-
-              <!-- Dropdown panel -->
-              <Transition
-                enter-active-class="transition ease-out duration-100"
-                enter-from-class="transform opacity-0 scale-95"
-                enter-to-class="transform opacity-100 scale-100"
-                leave-active-class="transition ease-in duration-75"
-                leave-from-class="transform opacity-100 scale-100"
-                leave-to-class="transform opacity-0 scale-95"
-              >
-                <div
-                  v-if="openDropdown === item.label"
-                  class="absolute left-0 mt-1 w-52 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-50"
-                >
-                  <!-- Parent link if it has a route -->
-                  <NuxtLink
-                    v-if="item.to"
-                    :to="item.to"
-                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
-                    @click="openDropdown = null"
-                  >
-                    <UIcon :name="item.icon" class="w-4 h-4" />
-                    <span>{{ item.label }}</span>
-                  </NuxtLink>
-                  <div v-if="item.to" class="border-t border-gray-700 my-1" />
-                  <!-- Children -->
-                  <NuxtLink
-                    v-for="child in item.children"
-                    :key="child.to"
-                    :to="child.to!"
-                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
-                    @click="openDropdown = null"
-                  >
-                    <UIcon :name="child.icon" class="w-4 h-4" />
-                    <span>{{ child.label }}</span>
-                  </NuxtLink>
-                </div>
-              </Transition>
-            </div>
-
-            <!-- Simple link (no dropdown) -->
+          <!-- Section: Competition Management -->
+          <template v-for="item in competitionMenuItems" :key="item.label">
             <NuxtLink
-              v-else
               :to="item.to!"
               :class="[
                 'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
@@ -308,6 +245,56 @@ onMounted(() => {
               <span>{{ item.label }}</span>
             </NuxtLink>
           </template>
+
+          <!-- Separator between sections -->
+          <div v-if="adminMenuItems.length > 0" class="h-6 w-px bg-gray-700 mx-2" />
+
+          <!-- Section: Administration (dropdown) -->
+          <div v-if="adminMenuItems.length > 0" class="relative">
+            <button
+              :class="[
+                'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                openDropdown === 'admin'
+                  ? 'text-blue-400 bg-gray-800'
+                  : 'text-gray-300 hover:text-white hover:bg-gray-800'
+              ]"
+              @click="toggleDropdown('admin')"
+            >
+              <UIcon name="heroicons:cog-6-tooth" class="w-4 h-4" />
+              <span>{{ t('menu.administration') }}</span>
+              <UIcon
+                name="heroicons:chevron-down"
+                class="w-3 h-3 transition-transform"
+                :class="{ 'rotate-180': openDropdown === 'admin' }"
+              />
+            </button>
+
+            <!-- Dropdown panel -->
+            <Transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
+            >
+              <div
+                v-if="openDropdown === 'admin'"
+                class="absolute left-0 mt-1 w-52 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-50"
+              >
+                <NuxtLink
+                  v-for="item in adminMenuItems"
+                  :key="item.to"
+                  :to="item.to!"
+                  class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
+                  @click="openDropdown = null"
+                >
+                  <UIcon :name="item.icon" class="w-4 h-4" />
+                  <span>{{ item.label }}</span>
+                </NuxtLink>
+              </div>
+            </Transition>
+          </div>
         </nav>
 
         <!-- Right: Language + User + Mobile toggle -->
@@ -400,50 +387,9 @@ onMounted(() => {
         class="lg:hidden py-4 border-t border-gray-800"
       >
         <div class="px-4 pb-2 space-y-1">
-          <template v-for="item in menuItems" :key="item.label">
-            <!-- Item with dropdown (accordion on mobile) -->
-            <div v-if="item.children">
-              <button
-                :class="[
-                  'w-full flex items-center justify-between py-2 text-sm font-medium transition-colors',
-                  mobileExpanded === item.label ? 'text-blue-400' : 'text-gray-200 hover:text-white'
-                ]"
-                @click="toggleMobileExpanded(item.label)"
-              >
-                <span class="flex items-center gap-2">
-                  <UIcon :name="item.icon" class="w-5 h-5" />
-                  {{ item.label }}
-                </span>
-                <UIcon
-                  name="heroicons:chevron-down"
-                  class="w-4 h-4 transition-transform"
-                  :class="{ 'rotate-180': mobileExpanded === item.label }"
-                />
-              </button>
-              <div v-if="mobileExpanded === item.label" class="ml-6 space-y-1 border-l border-gray-700 pl-3">
-                <NuxtLink
-                  v-if="item.to"
-                  :to="item.to"
-                  class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
-                >
-                  <UIcon :name="item.icon" class="w-4 h-4" />
-                  {{ item.label }}
-                </NuxtLink>
-                <NuxtLink
-                  v-for="child in item.children"
-                  :key="child.to"
-                  :to="child.to!"
-                  class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
-                >
-                  <UIcon :name="child.icon" class="w-4 h-4" />
-                  {{ child.label }}
-                </NuxtLink>
-              </div>
-            </div>
-
-            <!-- Simple link -->
+          <!-- Section: Competition Management -->
+          <template v-for="item in competitionMenuItems" :key="item.label">
             <NuxtLink
-              v-else
               :to="item.to!"
               :class="[
                 'flex items-center gap-2 py-2 text-sm font-medium transition-colors',
@@ -456,6 +402,41 @@ onMounted(() => {
               <span>{{ item.label }}</span>
             </NuxtLink>
           </template>
+
+          <!-- Separator -->
+          <div v-if="adminMenuItems.length > 0" class="border-t border-gray-700 my-3" />
+
+          <!-- Section: Administration (accordion) -->
+          <div v-if="adminMenuItems.length > 0">
+            <button
+              :class="[
+                'w-full flex items-center justify-between py-2 text-sm font-medium transition-colors',
+                mobileExpanded === 'admin' ? 'text-blue-400' : 'text-gray-200 hover:text-white'
+              ]"
+              @click="toggleMobileExpanded('admin')"
+            >
+              <span class="flex items-center gap-2">
+                <UIcon name="heroicons:cog-6-tooth" class="w-5 h-5" />
+                {{ t('menu.administration') }}
+              </span>
+              <UIcon
+                name="heroicons:chevron-down"
+                class="w-4 h-4 transition-transform"
+                :class="{ 'rotate-180': mobileExpanded === 'admin' }"
+              />
+            </button>
+            <div v-if="mobileExpanded === 'admin'" class="ml-6 space-y-1 border-l border-gray-700 pl-3">
+              <NuxtLink
+                v-for="item in adminMenuItems"
+                :key="item.to"
+                :to="item.to!"
+                class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
+              >
+                <UIcon :name="item.icon" class="w-4 h-4" />
+                {{ item.label }}
+              </NuxtLink>
+            </div>
+          </div>
         </div>
 
         <!-- User info mobile -->

@@ -12,7 +12,7 @@
     "back_online": "Connexion rétablie"
   },
   "menu": {
-    "competition": "Compétition",
+    "competition": "Compétitions",
     "documents": "Documents",
     "events": "Événements",
     "teams": "Équipes",
@@ -22,7 +22,7 @@
     "initial_ranking": "Classement initial",
     "statistics": "Statistiques",
     "athletes": "Athlètes",
-    "management": "Gestion",
+    "administration": "Administration",
     "clubs": "Clubs",
     "users": "Utilisateurs",
     "operations": "Opérations"
@@ -46,8 +46,10 @@
   "dashboard": {
     "title": "Tableau de bord",
     "welcome": "Bienvenue, {name}",
+    "manage_competitions": "Gérer les compétitions",
     "manage_events": "Gérer les événements",
     "manage_documents": "Gérer les documents",
+    "manage_matches": "Gérer les matchs",
     "view_statistics": "Voir les statistiques",
     "system_operations": "Opérations système",
     "beta_notice_title": "Version Beta",
@@ -676,6 +678,38 @@
     "pagination": {
       "showing": "Affichage de {from} à {to} sur {total} compétitions",
       "items_per_page": "Éléments par page"
+    }
+  },
+  "context": {
+    "title": "Contexte de travail",
+    "season": "Saison",
+    "scope": "Périmètre de travail",
+    "type_section": "Section entière",
+    "type_group": "Groupe entier",
+    "type_competition": "Compétition unique",
+    "type_event": "Événement",
+    "select_season": "Sélectionnez une saison",
+    "select_section": "Sélectionnez une section",
+    "select_group": "Sélectionnez un groupe",
+    "select_competition": "Sélectionnez une compétition",
+    "select_event": "Sélectionnez un événement",
+    "competitions_from_context": "Compétitions (du contexte)",
+    "competition_from_context": "Compétition (du contexte)",
+    "all_competitions": "Toutes",
+    "current": "Contexte",
+    "competitions_count": "{count} compétition(s)",
+    "no_context": "Aucun contexte sélectionné",
+    "active_season": "Saison active",
+    "change": "Modifier",
+    "summary": "Résumé",
+    "no_competitions": "Aucune compétition dans ce périmètre",
+    "sections": {
+      "1": "Compétitions Internationales",
+      "2": "Compétitions Nationales",
+      "3": "Compétitions Régionales",
+      "4": "Tournois Internationaux",
+      "5": "Continents",
+      "100": "Divers"
     }
   },
   "errors": {

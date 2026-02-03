@@ -224,6 +224,59 @@ class AdminFiltersController extends AbstractController
         ]);
     }
 
+    /**
+     * Get competitions linked to an event (via journée-événement relationships)
+     */
+    #[Route('/event-competitions', name: 'admin_filters_event_competitions', methods: ['GET'])]
+    public function getEventCompetitions(Request $request): JsonResponse
+    {
+        $eventId = $request->query->get('eventId');
+
+        if (!$eventId) {
+            return $this->json(['message' => 'eventId is required'], 400);
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // Check event access
+        $allowedEvents = $user->getAllowedEvents();
+        if ($allowedEvents !== null && !in_array((int) $eventId, $allowedEvents)) {
+            return $this->json(['message' => 'Access denied for this event'], 403);
+        }
+
+        $sql = "SELECT DISTINCT c.Code, c.Libelle, c.Code_ref
+                FROM kp_competition c
+                INNER JOIN kp_journee j ON j.Code_competition = c.Code AND j.Code_saison = c.Code_saison
+                INNER JOIN kp_evenement_journee ej ON ej.Id_journee = j.Id
+                WHERE ej.Id_evenement = ?
+                ORDER BY c.Code";
+
+        $result = $this->connection->executeQuery($sql, [(int) $eventId]);
+        $rows = $result->fetchAllAssociative();
+
+        $allowedCompetitions = $user->getAllowedCompetitions();
+
+        $competitions = [];
+        foreach ($rows as $row) {
+            // Filter by user restrictions
+            if ($allowedCompetitions !== null && !in_array($row['Code'], $allowedCompetitions)) {
+                continue;
+            }
+
+            $competitions[] = [
+                'code' => $row['Code'],
+                'libelle' => $row['Libelle'],
+                'codeRef' => $row['Code_ref'] ?: null,
+            ];
+        }
+
+        return $this->json([
+            'eventId' => (int) $eventId,
+            'competitions' => $competitions,
+        ]);
+    }
+
     private function getActiveSeason(): string
     {
         $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
