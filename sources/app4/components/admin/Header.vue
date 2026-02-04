@@ -74,7 +74,7 @@ const competitionMenuItems = computed<MenuItem[]>(() => {
   // Matchs - profile <= 9
   if (profile <= 9) {
     items.push({
-      to: '/matches',
+      to: '/games',
       icon: 'heroicons:play-circle',
       label: t('menu.matches')
     })

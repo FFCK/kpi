@@ -194,28 +194,21 @@ export const useWorkContextStore = defineStore('workContext', {
         const api = useApi()
 
         // Load seasons
-        console.log('[WorkContext] Loading seasons...')
         const seasonsResponse = await api.get<{ seasons: Season[]; activeSeason: string }>('/admin/filters/seasons')
-        console.log('[WorkContext] Seasons response:', seasonsResponse)
         if (seasonsResponse) {
           this.seasons = seasonsResponse.seasons
           // Set default season from localStorage or active season
           const storedSeason = localStorage.getItem(STORAGE_KEYS.season)
           this.season = storedSeason || seasonsResponse.activeSeason || this.seasons[0]?.code || ''
-          console.log('[WorkContext] Season set to:', this.season, '- Total seasons:', this.seasons.length)
         }
 
         // Load competitions and events for the season
         if (this.season) {
-          console.log('[WorkContext] Loading competitions for season:', this.season)
           await this.loadSeasonData(api)
-          console.log('[WorkContext] Competitions loaded:', this.competitions.length, '- Groups:', this.groups.length)
         }
 
         // Load events
-        console.log('[WorkContext] Loading events...')
         await this.loadEvents(api)
-        console.log('[WorkContext] Events loaded:', this.events.length)
 
         // Restore selection from localStorage
         const storedType = localStorage.getItem(STORAGE_KEYS.selectionType) as SelectionType
@@ -255,7 +248,6 @@ export const useWorkContextStore = defineStore('workContext', {
         }
 
         this.initialized = true
-        console.log('[WorkContext] Initialization complete')
       }
       catch (error) {
         // Context loading failed - continue without context
@@ -270,23 +262,19 @@ export const useWorkContextStore = defineStore('workContext', {
 
     // Load season-specific data (competitions grouped by section)
     async loadSeasonData(apiInstance?: ReturnType<typeof useApi>) {
-      console.log('[WorkContext] loadSeasonData() called for season:', this.season)
       const api = apiInstance ?? useApi()
-      console.log('[WorkContext] Calling GET /admin/filters/competitions?season=' + this.season)
 
       try {
         const response = await api.get<{ season: string; groups: CompetitionGroup[] }>(
           '/admin/filters/competitions',
           { season: this.season },
         )
-        console.log('[WorkContext] Competitions response received:', response)
 
         if (response) {
           this.groups = response.groups
 
           // Flatten competitions for easy access
           this.competitions = response.groups.flatMap(g => g.competitions)
-          console.log('[WorkContext] Loaded', this.competitions.length, 'competitions in', this.groups.length, 'groups')
         }
       }
       catch (error) {
@@ -297,15 +285,12 @@ export const useWorkContextStore = defineStore('workContext', {
 
     // Load events
     async loadEvents(apiInstance?: ReturnType<typeof useApi>) {
-      console.log('[WorkContext] loadEvents() called')
       const api = apiInstance ?? useApi()
 
       try {
         const response = await api.get<{ events: FilterEvent[] }>('/admin/filters/events')
-        console.log('[WorkContext] Events response:', response)
         if (response) {
           this.events = response.events
-          console.log('[WorkContext] Loaded', this.events.length, 'events')
         }
       }
       catch (error) {

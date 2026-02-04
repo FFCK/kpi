@@ -11,20 +11,18 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const statsStore = useStatsStore()
-const filtersStore = useFiltersStore()
 
 onMounted(() => {
   const type = route.params.type as string
   const saison = route.params.saison as string
   const competition = route.params.competition as string
 
-  // Set params in both stores so the stats page loads with these values
+  // Set params in stats store so the stats page loads with these values
   statsStore.setParams({
     statType: type,
     season: saison,
     competitions: [competition]
   })
-  filtersStore.setSeasonAndCompetition(saison, competition)
 
   // Redirect to stats page
   router.replace('/stats')

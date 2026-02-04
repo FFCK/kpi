@@ -50,14 +50,6 @@ async function onEventChange(eventId: string) {
   }
 }
 
-// Get groups for the selected section
-const groupsForSelectedSection = computed(() => {
-  if (workContext.selectionType === 'section' && workContext.sectionId) {
-    return workContext.groupsBySection(workContext.sectionId)
-  }
-  return workContext.uniqueGroups
-})
-
 // Format competition label
 function formatCompetitionLabel(comp: { code: string; libelle: string; soustitre?: string | null }): string {
   return comp.soustitre ? `${comp.code} - ${comp.libelle} (${comp.soustitre})` : `${comp.code} - ${comp.libelle}`
@@ -169,13 +161,19 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
                 @change="onGroupChange(($event.target as HTMLSelectElement).value)"
               >
                 <option value="" disabled>{{ t('context.select_group') }}</option>
-                <option
-                  v-for="group in groupsForSelectedSection"
-                  :key="group.code"
-                  :value="group.code"
+                <optgroup
+                  v-for="section in workContext.availableSections"
+                  :key="section.id"
+                  :label="t(section.labelKey)"
                 >
-                  {{ group.code }} - {{ group.libelle }} ({{ group.competitions.length }})
-                </option>
+                  <option
+                    v-for="group in workContext.groupsBySection(section.id)"
+                    :key="group.code"
+                    :value="group.code"
+                  >
+                    {{ group.code }} - {{ group.libelle }} ({{ group.competitions.length }})
+                  </option>
+                </optgroup>
               </select>
             </div>
           </div>

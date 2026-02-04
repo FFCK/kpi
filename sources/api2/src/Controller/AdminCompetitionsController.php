@@ -74,6 +74,7 @@ class AdminCompetitionsController extends AbstractController
         $search = $request->query->get('search', '');
         $level = $request->query->get('level', ''); // INT, NAT, REG
         $type = $request->query->get('type', ''); // CHPT, CP, MULTI
+        $codes = $request->query->get('codes', ''); // Comma-separated competition codes (from work context)
         $sortBy = $request->query->get('sortBy', 'section');
         $sortOrder = strtoupper($request->query->get('sortOrder', 'ASC')) === 'DESC' ? 'DESC' : 'ASC';
 
@@ -101,6 +102,16 @@ class AdminCompetitionsController extends AbstractController
         if (!empty($type)) {
             $whereConditions[] = 'c.Code_typeclt = ?';
             $params[] = $type;
+        }
+
+        // Filter by competition codes (from work context)
+        if (!empty($codes)) {
+            $codeList = array_filter(array_map('trim', explode(',', $codes)));
+            if (count($codeList) > 0) {
+                $placeholders = implode(',', array_fill(0, count($codeList), '?'));
+                $whereConditions[] = "c.Code IN ($placeholders)";
+                $params = array_merge($params, $codeList);
+            }
         }
 
         // Apply competition filter from user

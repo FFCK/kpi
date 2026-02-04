@@ -45,6 +45,57 @@ const authStore = useAuthStore()
         </div>
       </NuxtLink>
 
+      <!-- Teams card -->
+      <NuxtLink
+        v-if="authStore.hasProfile(9)"
+        to="/teams"
+        class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+      >
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-indigo-100 rounded-lg">
+            <UIcon name="i-heroicons-user-group" class="w-6 h-6 text-indigo-600" />
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ t('menu.teams') }}</h3>
+            <p class="text-sm text-gray-500">{{ t('dashboard.manage_teams') }}</p>
+          </div>
+        </div>
+      </NuxtLink>
+
+      <!-- Gamedays/Phases card -->
+      <NuxtLink
+        v-if="authStore.hasProfile(9)"
+        to="/gamedays"
+        class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+      >
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-cyan-100 rounded-lg">
+            <UIcon name="i-heroicons-calendar-days" class="w-6 h-6 text-cyan-600" />
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ t('menu.gamedays') }}</h3>
+            <p class="text-sm text-gray-500">{{ t('dashboard.manage_gamedays') }}</p>
+          </div>
+        </div>
+      </NuxtLink>
+
+      <!-- Rankings card -->
+      <NuxtLink
+        v-if="authStore.hasProfile(9)"
+        to="/rankings"
+        class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+      >
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-amber-100 rounded-lg">
+            <UIcon name="i-heroicons-chart-bar-square" class="w-6 h-6 text-amber-600" />
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ t('menu.rankings') }}</h3>
+            <p class="text-sm text-gray-500">{{ t('dashboard.manage_rankings') }}</p>
+          </div>
+        </div>
+      </NuxtLink>
+
       <!-- Documents card -->
       <NuxtLink
         v-if="authStore.hasProfile(9)"
@@ -62,10 +113,10 @@ const authStore = useAuthStore()
         </div>
       </NuxtLink>
 
-      <!-- Matches card -->
+      <!-- Games card -->
       <NuxtLink
         v-if="authStore.hasProfile(9)"
-        to="/matches"
+        to="/games"
         class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
       >
         <div class="flex items-center gap-4">
@@ -74,7 +125,7 @@ const authStore = useAuthStore()
           </div>
           <div>
             <h3 class="font-semibold text-gray-900">{{ t('menu.matches') }}</h3>
-            <p class="text-sm text-gray-500">{{ t('dashboard.manage_matches') }}</p>
+            <p class="text-sm text-gray-500">{{ t('dashboard.manage_games') }}</p>
           </div>
         </div>
       </NuxtLink>

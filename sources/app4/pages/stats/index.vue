@@ -8,7 +8,7 @@ const { t, locale } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
 const statsStore = useStatsStore()
-const filtersStore = useFiltersStore()
+const workContext = useWorkContextStore()
 
 // Types
 interface StatType {
@@ -69,19 +69,50 @@ const columns = ref<string[]>([])
 const data = ref<Record<string, unknown>[]>([])
 const count = ref(0)
 
+// Filter competition groups by work context (keep only competitions in context)
+// Rebuilds optgroups using workContext sections for correct labels
+const filterCompetitionsByContext = (groups: CompetitionGroup[]): CompetitionGroup[] => {
+  if (!workContext.hasValidContext) return groups
+  const contextCodes = new Set(workContext.competitionCodes)
+
+  // Build lookup: code → option from stats API
+  const optionsByCode = new Map<string, { code: string; libelle: string }>()
+  for (const group of groups) {
+    for (const opt of group.options) {
+      optionsByCode.set(opt.code, opt)
+    }
+  }
+
+  // Rebuild groups using workContext sections for correct labels
+  const sectionGroups = new Map<number, CompetitionGroup>()
+  for (const wcGroup of workContext.groups) {
+    for (const comp of wcGroup.competitions) {
+      if (contextCodes.has(comp.code) && optionsByCode.has(comp.code)) {
+        if (!sectionGroups.has(wcGroup.section)) {
+          sectionGroups.set(wcGroup.section, {
+            labelKey: `context.sections.${wcGroup.section}`,
+            options: []
+          })
+        }
+        sectionGroups.get(wcGroup.section)!.options.push(optionsByCode.get(comp.code)!)
+      }
+    }
+  }
+
+  return Array.from(sectionGroups.values())
+}
+
 // Load filters on mount
 const loadFilters = async () => {
   loadingFilters.value = true
   try {
-    // Use stored season if available (statsStore first, then filtersStore), otherwise use active season from API
+    // Use stored season from statsStore if available, otherwise use workContext season
     const seasonParam = (statsStore.initialized && statsStore.season)
       ? statsStore.season
-      : (filtersStore.initialized && filtersStore.season)
-        ? filtersStore.season
-        : undefined
+      : workContext.season || undefined
     const response = await api.get<FiltersResponse>('/admin/stats/filters', seasonParam ? { season: seasonParam } : undefined)
     seasons.value = response.seasons
-    competitionGroups.value = response.competitions
+    competitionGroups.value = filterCompetitionsByContext(response.competitions)
 
     // Filter stat types based on user profile
     statTypes.value = response.statTypes.filter(st => {
@@ -95,11 +126,8 @@ const loadFilters = async () => {
       selectedStatType.value = statsStore.statType
       selectedCompetitions.value = [...statsStore.competitions]
       limit.value = statsStore.limit
-    } else if (filtersStore.initialized && filtersStore.season) {
-      selectedSeason.value = filtersStore.season
-      selectedCompetitions.value = filtersStore.competition ? [filtersStore.competition] : []
     } else {
-      selectedSeason.value = response.activeSeason
+      selectedSeason.value = workContext.season || response.activeSeason
       selectedCompetitions.value = []
     }
   } catch (error: unknown) {
@@ -177,8 +205,6 @@ const applyFilters = async () => {
     competitions: tempCompetitions.value,
     limit: tempLimit.value
   })
-  // Sync season to shared filters store
-  filtersStore.setSeason(tempSeason.value)
 
   await loadStats()
 }
@@ -187,7 +213,7 @@ const applyFilters = async () => {
 const onTempSeasonChange = async () => {
   try {
     const response = await api.get<FiltersResponse>('/admin/stats/filters', { season: tempSeason.value })
-    competitionGroups.value = response.competitions
+    competitionGroups.value = filterCompetitionsByContext(response.competitions)
     // Reset temp competition selection when season changes
     tempCompetitions.value = []
   } catch {
@@ -197,6 +223,7 @@ const onTempSeasonChange = async () => {
 
 // Load on mount
 onMounted(async () => {
+  await workContext.initContext()
   await loadFilters()
   if (selectedCompetitions.value.length > 0) {
     loadStats()
@@ -427,6 +454,36 @@ const exportPdf = async () => {
 
 <template>
   <div>
+    <!-- Work Context Summary -->
+    <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-2 sm:gap-4">
+        <div class="flex items-center gap-2">
+          <UIcon name="i-heroicons-calendar" class="w-5 h-5 text-blue-600 shrink-0" />
+          <span class="text-sm text-gray-600">{{ t('context.season') }}:</span>
+          <span class="font-semibold text-gray-900">{{ workContext.season || '-' }}</span>
+        </div>
+        <div v-if="workContext.hasValidContext" class="flex items-center gap-2">
+          <UIcon name="i-heroicons-funnel" class="w-5 h-5 text-blue-600 shrink-0" />
+          <span class="text-sm text-gray-600">{{ t('context.scope') }}:</span>
+          <span class="font-semibold text-gray-900">{{ workContext.contextLabel }}</span>
+          <span class="text-sm text-gray-500">
+            ({{ t('context.competitions_count', { count: workContext.competitionCount }) }})
+          </span>
+        </div>
+        <div v-else class="flex items-center gap-2 text-sm text-amber-600">
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 shrink-0" />
+          {{ t('context.no_context') }}
+        </div>
+        <NuxtLink
+          to="/"
+          class="inline-flex items-center gap-1 self-start px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors"
+        >
+          <UIcon name="i-heroicons-pencil-square" class="w-4 h-4" />
+          {{ t('context.change') }}
+        </NuxtLink>
+      </div>
+    </div>
+
     <!-- Page header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-gray-900">

@@ -7,7 +7,7 @@ import type {
   CompetitionStatus,
   CompetitionSectionForMulti
 } from '~/types/competitions'
-import type { PaginatedResponse, Season } from '~/types'
+import type { PaginatedResponse } from '~/types'
 
 definePageMeta({
   layout: 'admin',
@@ -17,6 +17,7 @@ definePageMeta({
 const { t } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
+const workContext = useWorkContextStore()
 
 // State
 const loading = ref(false)
@@ -29,11 +30,7 @@ const search = ref('')
 const sortBy = ref('section')
 const sortOrder = ref<'ASC' | 'DESC'>('ASC')
 
-// Filters
-const seasons = ref<Season[]>([])
-const selectedSeason = ref('')
-const selectedLevel = ref('')
-const selectedType = ref('')
+// Filters - only groups for multi type (level/type removed - use context)
 const groups = ref<CompetitionGroup[]>([])
 const competitionsForMulti = ref<CompetitionSectionForMulti[]>([])
 
@@ -87,26 +84,6 @@ function getDefaultFormData(): CompetitionFormData {
   }
 }
 
-// Load seasons
-const loadSeasons = async () => {
-  try {
-    const response = await api.get<{ seasons: Season[] }>('/admin/filters/seasons')
-    seasons.value = response.seasons
-    // Set active season as default
-    const activeSeason = seasons.value.find(s => s.active)
-    if (activeSeason) {
-      selectedSeason.value = activeSeason.code
-    } else {
-      const firstSeason = seasons.value[0]
-      if (firstSeason) {
-        selectedSeason.value = firstSeason.code
-      }
-    }
-  } catch (error) {
-    console.error('Error loading seasons:', error)
-  }
-}
-
 // Load groups
 const loadGroups = async () => {
   try {
@@ -119,10 +96,10 @@ const loadGroups = async () => {
 
 // Load competitions for MULTI select
 const loadCompetitionsForMulti = async () => {
-  if (!selectedSeason.value) return
+  if (!workContext.season) return
   try {
     const response = await api.get<CompetitionSectionForMulti[]>('/admin/competitions-for-multi', {
-      season: selectedSeason.value
+      season: workContext.season
     })
     competitionsForMulti.value = response
   } catch (error) {
@@ -132,12 +109,13 @@ const loadCompetitionsForMulti = async () => {
 
 // Load competitions
 const loadCompetitions = async () => {
-  if (!selectedSeason.value) return
+  // Wait for context to be initialized
+  if (!workContext.initialized || !workContext.season) return
 
   loading.value = true
   try {
-    const params: Record<string, string | number> = {
-      season: selectedSeason.value,
+    const params: Record<string, string | number | string[]> = {
+      season: workContext.season,
       page: page.value,
       limit: limit.value,
       sortBy: sortBy.value,
@@ -146,11 +124,9 @@ const loadCompetitions = async () => {
     if (search.value) {
       params.search = search.value
     }
-    if (selectedLevel.value) {
-      params.level = selectedLevel.value
-    }
-    if (selectedType.value) {
-      params.type = selectedType.value
+    // Filter by competitions from context if available
+    if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
+      params.codes = workContext.competitionCodes.join(',')
     }
 
     const response = await api.get<PaginatedResponse<AdminCompetition> & { season: string }>('/admin/competitions', params)
@@ -179,13 +155,18 @@ watch([page, limit, sortBy, sortOrder], () => {
   loadCompetitions()
 })
 
-watch([selectedSeason, selectedLevel, selectedType], () => {
-  page.value = 1
-  loadCompetitions()
-  if (selectedSeason.value) {
-    loadCompetitionsForMulti()
-  }
-})
+// Watch for context changes
+watch(
+  () => [workContext.initialized, workContext.season, workContext.competitionCodes],
+  () => {
+    if (workContext.initialized) {
+      page.value = 1
+      loadCompetitions()
+      loadCompetitionsForMulti()
+    }
+  },
+  { deep: true }
+)
 
 // Debounced search
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -199,7 +180,8 @@ watch(search, () => {
 
 // Load on mount
 onMounted(async () => {
-  await loadSeasons()
+  // Initialize work context if not already done
+  await workContext.initContext()
   await loadGroups()
   await loadCompetitions()
   await loadCompetitionsForMulti()
@@ -536,55 +518,39 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
 
 <template>
   <div>
+    <!-- Work Context Summary -->
+    <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-2 sm:gap-4">
+        <div class="flex items-center gap-2">
+          <UIcon name="i-heroicons-calendar" class="w-5 h-5 text-blue-600 shrink-0" />
+          <span class="text-sm text-gray-600">{{ t('context.season') }}:</span>
+          <span class="font-semibold text-gray-900">{{ workContext.season || '-' }}</span>
+        </div>
+        <div v-if="workContext.hasValidContext" class="flex items-center gap-2">
+          <UIcon name="i-heroicons-funnel" class="w-5 h-5 text-blue-600 shrink-0" />
+          <span class="text-sm text-gray-600">{{ t('context.scope') }}:</span>
+          <span class="font-semibold text-gray-900">{{ workContext.contextLabel }}</span>
+          <span class="text-sm text-gray-500">({{ t('context.competitions_count', { count: workContext.competitionCount }) }})</span>
+        </div>
+        <div v-else class="flex items-center gap-2 text-sm text-amber-600">
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 shrink-0" />
+          {{ t('context.no_context') }}
+        </div>
+        <NuxtLink
+          to="/"
+          class="inline-flex items-center gap-1 self-start px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors"
+        >
+          <UIcon name="i-heroicons-pencil-square" class="w-4 h-4" />
+          {{ t('context.change') }}
+        </NuxtLink>
+      </div>
+    </div>
+
     <!-- Page header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-gray-900">
         {{ t('competitions.title') }}
       </h1>
-    </div>
-
-    <!-- Filters bar -->
-    <div class="mb-4 flex flex-wrap gap-3 items-center">
-      <!-- Season select -->
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-medium text-gray-700">{{ t('competitions.filters.season') }}</label>
-        <select
-          v-model="selectedSeason"
-          class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option v-for="season in seasons" :key="season.code" :value="season.code">
-            {{ season.code }}{{ season.active ? ' *' : '' }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Level select -->
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-medium text-gray-700">{{ t('competitions.filters.level') }}</label>
-        <select
-          v-model="selectedLevel"
-          class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">{{ t('competitions.filters.level_all') }}</option>
-          <option value="INT">{{ t('competitions.levels.INT') }}</option>
-          <option value="NAT">{{ t('competitions.levels.NAT') }}</option>
-          <option value="REG">{{ t('competitions.levels.REG') }}</option>
-        </select>
-      </div>
-
-      <!-- Type select -->
-      <div class="flex items-center gap-2">
-        <label class="text-sm font-medium text-gray-700">{{ t('competitions.filters.type') }}</label>
-        <select
-          v-model="selectedType"
-          class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">{{ t('competitions.filters.type_all') }}</option>
-          <option value="CHPT">{{ t('competitions.types.CHPT') }}</option>
-          <option value="CP">{{ t('competitions.types.CP') }}</option>
-          <option value="MULTI">{{ t('competitions.types.MULTI') }}</option>
-        </select>
-      </div>
     </div>
 
     <!-- Toolbar -->

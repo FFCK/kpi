@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Season, Competition, CompetitionGroup, FilterEvent } from '~/types'
+import type { Competition, FilterEvent } from '~/types'
 
 definePageMeta({
   layout: 'admin',
@@ -10,7 +10,7 @@ const { t } = useI18n()
 const config = useRuntimeConfig()
 const api = useApi()
 const authStore = useAuthStore()
-const filtersStore = useFiltersStore()
+const workContext = useWorkContextStore()
 const toast = useToast()
 
 // Legacy backend base URL (e.g. https://kpi.localhost)
@@ -18,9 +18,6 @@ const legacyBase = config.public.legacyBaseUrl as string
 
 // State
 const loading = ref(true)
-const seasons = ref<Season[]>([])
-const selectedSeason = ref('')
-const competitionGroups = ref<CompetitionGroup[]>([])
 const selectedCompetition = ref<Competition | null>(null)
 const selectedCompetitionCode = ref('')
 const events = ref<FilterEvent[]>([])
@@ -34,55 +31,8 @@ const profile = computed(() => authStore.user?.profile ?? 99)
 // Computed: competition type for ranking documents
 const competitionType = computed(() => selectedCompetition.value?.codeTypeclt ?? null)
 
-// Load seasons
-const loadSeasons = async () => {
-  try {
-    const response = await api.get<{ seasons: Season[]; activeSeason: string }>('/admin/filters/seasons')
-    seasons.value = response.seasons
-    // Restore from store if available, otherwise use active season
-    selectedSeason.value = filtersStore.initialized && filtersStore.season
-      ? filtersStore.season
-      : response.activeSeason
-  } catch {
-    toast.add({
-      title: t('common.error'),
-      description: t('documents.error_load_filters'),
-      color: 'error',
-      duration: 3000
-    })
-  }
-}
-
-// Load competitions for selected season
-const loadCompetitions = async () => {
-  if (!selectedSeason.value) return
-  try {
-    const response = await api.get<{ season: string; groups: CompetitionGroup[] }>('/admin/filters/competitions', {
-      season: selectedSeason.value
-    })
-    competitionGroups.value = response.groups
-    // Restore from store, or auto-select first competition
-    if (!selectedCompetitionCode.value && filtersStore.initialized && filtersStore.competition) {
-      selectCompetition(filtersStore.competition)
-    } else if (!selectedCompetitionCode.value) {
-      const firstGroup = response.groups[0] as CompetitionGroup | undefined
-      const firstComp = firstGroup?.competitions[0]
-      if (firstComp) {
-        selectCompetition(firstComp.code)
-      }
-    } else {
-      // Re-find the competition object after reload
-      updateSelectedCompetitionObject()
-    }
-  } catch {
-    toast.add({
-      title: t('common.error'),
-      description: t('documents.error_load_filters'),
-      color: 'error',
-      duration: 3000
-    })
-  }
-}
+// Computed: competitions from context
+const contextCompetitions = computed(() => workContext.contextCompetitions)
 
 // Load events
 const loadEvents = async () => {
@@ -101,14 +51,14 @@ const loadEvents = async () => {
 
 // Load match IDs for selected competition
 const loadMatchIds = async () => {
-  if (!selectedSeason.value || !selectedCompetitionCode.value) {
+  if (!workContext.season || !selectedCompetitionCode.value) {
     matchIds.value = []
     return
   }
   loadingMatchIds.value = true
   try {
     const response = await api.get<{ matchIds: number[] }>('/admin/filters/match-ids', {
-      season: selectedSeason.value,
+      season: workContext.season,
       competition: selectedCompetitionCode.value
     })
     matchIds.value = response.matchIds
@@ -122,38 +72,38 @@ const loadMatchIds = async () => {
 // Select a competition by code
 const selectCompetition = (code: string) => {
   selectedCompetitionCode.value = code
-  updateSelectedCompetitionObject()
+  selectedCompetition.value = contextCompetitions.value.find(c => c.code === code) ?? null
   loadMatchIds()
-  // Persist to shared store
-  filtersStore.setSeasonAndCompetition(selectedSeason.value, code)
 }
 
-// Update the selected competition object from groups
-const updateSelectedCompetitionObject = () => {
-  for (const group of competitionGroups.value) {
-    const found = group.competitions.find(c => c.code === selectedCompetitionCode.value)
-    if (found) {
-      selectedCompetition.value = found
-      return
-    }
+// Auto-select first competition from context
+const autoSelectFirstCompetition = () => {
+  const comps = contextCompetitions.value
+  if (comps.length > 0 && !selectedCompetitionCode.value) {
+    selectCompetition(comps[0].code)
   }
-  selectedCompetition.value = null
 }
 
-// Handle season change
-const onSeasonChange = async () => {
-  selectedCompetitionCode.value = ''
-  selectedCompetition.value = null
-  matchIds.value = []
-  filtersStore.setSeason(selectedSeason.value)
-  await loadCompetitions()
-}
+// Watch for context changes (resets competition selection)
+watch(
+  () => workContext.competitionCodes,
+  () => {
+    // If current selection is no longer in context, reset
+    if (selectedCompetitionCode.value && !workContext.competitionCodes.includes(selectedCompetitionCode.value)) {
+      selectedCompetitionCode.value = ''
+      selectedCompetition.value = null
+      matchIds.value = []
+    }
+    autoSelectFirstCompetition()
+  },
+  { deep: true }
+)
 
 // Build legacy PDF URL with season + competition params
 // Uses full legacy base URL (different host from app4)
 const pdfUrl = (file: string, extra?: Record<string, string | number>): string => {
   const params = new URLSearchParams()
-  params.set('S', selectedSeason.value)
+  params.set('S', workContext.season)
   params.set('Compet', selectedCompetitionCode.value)
   if (extra) {
     Object.entries(extra).forEach(([k, v]) => params.set(k, String(v)))
@@ -175,7 +125,7 @@ const eventPdfUrl = (file: string, paramName: string): string => {
 
 // Build app4 stats route
 const statsRoute = (type: string): string => {
-  return `/stats/${type}/${selectedSeason.value}/${selectedCompetitionCode.value}`
+  return `/stats/${type}/${workContext.season}/${selectedCompetitionCode.value}`
 }
 
 // Match sheets URL (using match IDs)
@@ -191,7 +141,7 @@ const cardsUrl = computed(() => {
 })
 
 // Has valid competition selected
-const hasCompetition = computed(() => !!selectedCompetitionCode.value && !!selectedSeason.value)
+const hasCompetition = computed(() => !!selectedCompetitionCode.value && !!workContext.season)
 
 // Has valid event selected
 const hasEvent = computed(() => !!selectedEventId.value)
@@ -199,17 +149,45 @@ const hasEvent = computed(() => !!selectedEventId.value)
 // Init
 onMounted(async () => {
   loading.value = true
-  await loadSeasons()
-  await Promise.all([
-    loadCompetitions(),
-    profile.value <= 2 ? loadEvents() : Promise.resolve()
-  ])
+  await workContext.initContext()
+  autoSelectFirstCompetition()
+  if (profile.value <= 2) {
+    await loadEvents()
+  }
   loading.value = false
 })
 </script>
 
 <template>
   <div>
+    <!-- Work Context Summary -->
+    <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-2 sm:gap-4">
+        <div class="flex items-center gap-2">
+          <UIcon name="i-heroicons-calendar" class="w-5 h-5 text-blue-600 shrink-0" />
+          <span class="text-sm text-gray-600">{{ t('context.season') }}:</span>
+          <span class="font-semibold text-gray-900">{{ workContext.season || '-' }}</span>
+        </div>
+        <div v-if="workContext.hasValidContext" class="flex items-center gap-2">
+          <UIcon name="i-heroicons-funnel" class="w-5 h-5 text-blue-600 shrink-0" />
+          <span class="text-sm text-gray-600">{{ t('context.scope') }}:</span>
+          <span class="font-semibold text-gray-900">{{ workContext.contextLabel }}</span>
+          <span class="text-sm text-gray-500">({{ t('context.competitions_count', { count: workContext.competitionCount }) }})</span>
+        </div>
+        <div v-else class="flex items-center gap-2 text-sm text-amber-600">
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 shrink-0" />
+          {{ t('context.no_context') }}
+        </div>
+        <NuxtLink
+          to="/"
+          class="inline-flex items-center gap-1 self-start px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors"
+        >
+          <UIcon name="i-heroicons-pencil-square" class="w-4 h-4" />
+          {{ t('context.change') }}
+        </NuxtLink>
+      </div>
+    </div>
+
     <!-- Page header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-gray-900">
@@ -217,49 +195,27 @@ onMounted(async () => {
       </h1>
     </div>
 
-    <!-- Filter bar -->
+    <!-- Competition selector -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">
       <div class="flex flex-wrap items-end gap-4">
-        <!-- Season selector -->
-        <div class="w-full sm:w-auto">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ t('documents.season') }}
-          </label>
-          <select
-            v-model="selectedSeason"
-            class="w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @change="onSeasonChange"
-          >
-            <option v-for="season in seasons" :key="season.code" :value="season.code">
-              {{ season.code }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Competition selector -->
         <div class="w-full sm:w-auto flex-1 min-w-0">
           <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ t('documents.competition') }}
+            {{ t('context.competition_from_context') }}
           </label>
           <select
             v-model="selectedCompetitionCode"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             @change="selectCompetition(selectedCompetitionCode)"
           >
-            <optgroup
-              v-for="group in competitionGroups"
-              :key="group.section"
-              :label="group.sectionLabel"
+            <option value="" disabled>{{ t('context.select_competition') }}</option>
+            <option
+              v-for="comp in contextCompetitions"
+              :key="comp.code"
+              :value="comp.code"
             >
-              <option
-                v-for="comp in group.competitions"
-                :key="comp.code"
-                :value="comp.code"
-              >
-                {{ comp.code }} - {{ comp.libelle }}
-                <template v-if="comp.soustitre"> ({{ comp.soustitre }})</template>
-              </option>
-            </optgroup>
+              {{ comp.code }} - {{ comp.libelle }}
+              <template v-if="comp.soustitre"> ({{ comp.soustitre }})</template>
+            </option>
           </select>
         </div>
 
