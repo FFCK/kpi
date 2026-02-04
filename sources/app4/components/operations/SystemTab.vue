@@ -78,7 +78,7 @@ const confirmPurge = async () => {
       :confirm-text="t('operations.system.purge_button')"
       :cancel-text="t('common.cancel')"
       :loading="loading"
-      variant="danger"
+      danger
       @close="confirmPurgeModal = false"
       @confirm="confirmPurge"
     />
