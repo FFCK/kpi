@@ -14,14 +14,16 @@ La page Documents permet de générer et télécharger des documents PDF relatif
 
 ### 2.1 Filtrage
 
-Deux modes de filtrage selon le type de document :
+La page utilise le **contexte de travail** (`workContextStore`) pour la saison et le périmètre de compétitions. La barre de rappel du contexte est affichée au-dessus du titre.
 
 #### Mode Compétition
-- Sélecteur Saison → Sélecteur Compétition
+- Saison : issue du contexte de travail (lecture seule)
+- Sélecteur Compétition : dropdown simple filtré par les compétitions du contexte, auto-sélection de la première compétition
 - Pour : Équipes, Matchs, Classements, Statistiques
 
 #### Mode Événement
-- Sélecteur Saison → Sélecteur Événement
+- Saison : issue du contexte de travail (lecture seule)
+- Sélecteur Événement : dropdown simple
 - Pour : Documents événementiels (matchs par événement, QR codes événement)
 
 ### 2.2 Catégories de Documents
@@ -49,16 +51,19 @@ Les documents sont organisés en cartes par catégorie :
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
+│  Contexte : Saison 2026 | Groupe N1H (2 compétitions)       │
+│                                                [Modifier]   │
+├─────────────────────────────────────────────────────────────┤
 │  Header : Documents                                          │
 ├─────────────────────────────────────────────────────────────┤
 │  Filtres :                                                   │
-│  ┌──────────────┐  ┌──────────────────────────────────────┐ │
-│  │ Saison: 2025 │  │ Compétition: N1M - Nationale 1 Masc. │ │
-│  └──────────────┘  └──────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────┐                   │
+│  │ Compétition: N1H - Nationale 1 Masc. │  (du contexte)   │
+│  └──────────────────────────────────────┘                   │
 │                    ou                                        │
-│  ┌──────────────┐  ┌──────────────────────────────────────┐ │
-│  │ Saison: 2025 │  │ Événement: Championnat de France     │ │
-│  └──────────────┘  └──────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────┐                   │
+│  │ Événement: Championnat de France     │                   │
+│  └──────────────────────────────────────┘                   │
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
 │  ┌─────────────────────┐  ┌─────────────────────┐           │

@@ -77,10 +77,11 @@ La page Compétitions permet de gérer les compétitions d'une saison : créatio
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  Header : Gestion des compétitions                                       │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  Filtres :                                                               │
-│  ┌──────────────┐  ┌────────────────┐  ┌──────────────────────┐         │
-│  │ Saison: 2025 │  │ Niveau: Tous ▼ │  │ Type: Toutes ▼       │         │
-│  └──────────────┘  └────────────────┘  └──────────────────────┘         │
+│  Contexte de travail (lecture seule) :                                   │
+│  ┌─────────────────────────────────────────────────────────────────────┐│
+│  │ 📅 Saison: 2026  │  🔽 Périmètre: Groupe N1H (2 compétitions)       ││
+│  │                                                    [Modifier]       ││
+│  └─────────────────────────────────────────────────────────────────────┘│
 │                                                                          │
 │  [+ Ajouter compétition]                                                 │
 ├─────────────────────────────────────────────────────────────────────────┤
@@ -237,6 +238,7 @@ Select multiple groupé par section permettant de sélectionner les compétition
 | level | string | Filtre niveau (INT/NAT/REG) |
 | section | int | Filtre section |
 | type | string | Filtre type (N/CF/M) |
+| codes | string | Codes compétitions séparés par virgule (filtrage contexte de travail) |
 
 ---
 
@@ -404,5 +406,5 @@ Utiliser l'API d'upload d'images existante de la page Operations.
 ---
 
 **Document créé le** : 2026-02-01
-**Dernière mise à jour** : 2026-02-01
+**Dernière mise à jour** : 2026-02-04
 **Statut** : 🚧 Spécifications en cours

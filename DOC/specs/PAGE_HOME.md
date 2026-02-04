@@ -143,11 +143,13 @@ Ces pages ne peuvent travailler qu'avec une seule compétition à la fois :
 │  │  │ ○ Section entière                                    │   ││
 │  │  │   [▼ Compétitions Nationales         ]               │   ││
 │  │  │                                                      │   ││
-│  │  │ ○ Groupe entier                                      │   ││
-│  │  │   [▼ N1H - Nationale 1 Hommes        ]               │   ││
+│  │  │ ○ Groupe entier (optgroups par section)               │   ││
+│  │  │   [▼ — Comp. Internationales —       ]               │   ││
+│  │  │   [    ECCM (2) / N1H (2) / ...      ]               │   ││
 │  │  │                                                      │   ││
-│  │  │ ● Compétition unique                                 │   ││
-│  │  │   [▼ N1H - Nationale 1 Hommes Ph.1   ]               │   ││
+│  │  │ ● Compétition unique (optgroups par section)         │   ││
+│  │  │   [▼ — Comp. Internationales —       ]               │   ││
+│  │  │   [    ECCM / ECCW / N1H / ...       ]               │   ││
 │  │  │                                                      │   ││
 │  │  │ ○ Événement                                          │   ││
 │  │  │   [▼ Championnat de France 2026      ]               │   ││
@@ -159,8 +161,11 @@ Ces pages ne peuvent travailler qu'avec une seule compétition à la fois :
 │  └─────────────────────────────────────────────────────────────┘│
 │                                                                 │
 │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────┐│
-│  │ 📅 Événements│ │ 📄 Documents │ │ 📊 Stats     │ │ ⚙️ Opéra.││
+│  │ 🏆 Compétit. │ │ 👥 Équipes   │ │ 📅 J./Phases │ │ 📊 Class.││
 │  └──────────────┘ └──────────────┘ └──────────────┘ └──────────┘│
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐              │
+│  │ 📄 Documents │ │ ⚽ Matchs    │ │ 📈 Stats     │              │
+│  └──────────────┘ └──────────────┘ └──────────────┘              │
 │                                                                 │
 │  ⚠️ Version Beta                                                │
 └─────────────────────────────────────────────────────────────────┘
@@ -531,12 +536,14 @@ onMounted(() => {
 
 ### 8.4 Comportement de la Saison
 
-**La saison de travail ne peut être changée que depuis la page d'accueil.**
+**La saison de travail ne peut être changée que depuis la page d'accueil**, sauf exception.
 
 Sur les autres pages :
 - La saison est affichée en lecture seule (badge ou texte)
 - Pas de sélecteur de saison modifiable
 - La saison vient toujours du contexte de travail
+
+**Exception - Page Statistiques** : la saison peut être changée dans la modale de paramétrage pour consulter des stats d'une autre saison. Les compétitions restent filtrées par le périmètre du contexte.
 
 ```vue
 <!-- Affichage de la saison sur les autres pages -->
@@ -676,38 +683,40 @@ function computeCompetitionCodes(): string[] {
 
 ### Phase 1 : Backend API
 
-- [ ] Créer endpoint `/admin/filters/event-competitions`
-- [ ] Ajouter les compétitions groupées par `codeRef` dans `/admin/filters/competitions`
+- [x] Créer endpoint `/admin/filters/event-competitions`
+- [x] Ajouter les compétitions groupées par `codeRef` dans `/admin/filters/competitions`
+- [x] Ajouter paramètre `codes` dans `GET /admin/competitions` pour filtrage par contexte
 
 ### Phase 2 : Store
 
-- [ ] Créer `stores/workContextStore.ts`
-- [ ] Implémenter les 4 modes de sélection
-- [ ] Gérer la persistance localStorage
-- [ ] Calculer les compétitions résultantes
+- [x] Créer `stores/workContextStore.ts`
+- [x] Implémenter les 4 modes de sélection
+- [x] Gérer la persistance localStorage
+- [x] Calculer les compétitions résultantes
 
 ### Phase 3 : Composants
 
-- [ ] Créer `WorkContextSelector.vue` avec radio buttons et dropdowns
+- [x] Créer `WorkContextSelector.vue` avec radio buttons et dropdowns (optgroups par section)
 - [ ] Créer `CompetitionMultiSelect.vue` pour pages multi-compétition (checkbox list avec "Toutes")
 - [ ] Créer `CompetitionSingleSelect.vue` pour pages mono-compétition (dropdown simple)
-- [ ] Ajouter traductions i18n
+- [x] Ajouter traductions i18n
 
 ### Phase 4 : Page d'Accueil
 
-- [ ] Modifier `pages/index.vue`
-- [ ] Intégrer WorkContextSelector
-- [ ] Afficher le récapitulatif du contexte
+- [x] Modifier `pages/index.vue`
+- [x] Intégrer WorkContextSelector
+- [x] Afficher le récapitulatif du contexte
+- [x] Ajouter les cartes de navigation manquantes (Équipes, Journées, Classements)
 
 ### Phase 5 : Intégration Pages
 
-- [ ] `pages/competitions/index.vue` - utilise directement le périmètre (pas de filtre)
-- [ ] `pages/gamedays/index.vue` - multi-select avec CompetitionMultiSelect
-- [ ] `pages/matches/index.vue` - multi-select avec CompetitionMultiSelect
-- [ ] `pages/stats/index.vue` - multi-select avec CompetitionMultiSelect
-- [ ] `pages/documents/index.vue` - mono avec CompetitionSingleSelect
-- [ ] `pages/teams/index.vue` - mono avec CompetitionSingleSelect
-- [ ] `pages/rankings/index.vue` - mono avec CompetitionSingleSelect
+- [x] `pages/competitions/index.vue` - contexte de travail (barre de contexte, filtrage par codes)
+- [ ] `pages/gamedays/index.vue` - legacy redirect (à migrer)
+- [x] `pages/games/index.vue` - legacy redirect (renommé depuis /matches)
+- [x] `pages/stats/index.vue` - contexte de travail (barre de contexte, compétitions filtrées dans modale, saison modifiable)
+- [x] `pages/documents/index.vue` - contexte de travail (barre de contexte, mono-select filtré)
+- [ ] `pages/teams/index.vue` - legacy redirect (à migrer)
+- [ ] `pages/rankings/index.vue` - legacy redirect (à migrer)
 
 ### Phase 6 : Tests
 
